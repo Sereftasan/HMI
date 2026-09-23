@@ -1,0 +1,14 @@
+[
+  {
+    "MediaKey": "MEDIA_SensorTestVideo",
+    "Type": "Video",
+    "FilePath": "Media\\Common\\How_To_Test_Sensor.mp4",
+    "TitleKey": "UI_Watch_Sensor_Test_Video"
+  },
+  {
+    "MediaKey": "MEDIA_FA2010_Pneumatics",
+    "Type": "PDF",
+    "FilePath": "Media\\FA2010\\Pneumatic_Diagram_Page4.pdf",
+    "TitleKey": "UI_View_Pneumatic_Diagram"
+  }
+]

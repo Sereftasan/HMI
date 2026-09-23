@@ -1,0 +1,9 @@
+Key;EN;TR;RU;DE;IT;ES
+Machine_MD3020;Edge Cleaning Centre;Kenar Temizleme Merkezi;Центр зачистки кромок;Kantenreinigungszentrum;Centro di pulizia bordi;Centro de limpieza de cantos
+Btn_H800_Manual;Manual;Manuel;Ручной;Manuell;Manuale;Manual
+Fnc_H800_Unit1;Unit 1;Ünite 1;Узел 1;Einheit 1;Unità 1;Unidad 1
+Fnc_H800_Unit2;Unit 2;Ünite 2;Узел 2;Einheit 2;Unità 2;Unidad 2
+Tip_H800_AtHome;Unit at home position;Ünite başlangıç konumunda;Узел в исходном положении;Einheit in Grundstellung;Unità in posizione di riferimento;Unidad en posición de origen
+Alm_H800_Fault1;H800: unit fault;Alt Makine 2: ünite arızası;H800: неисправность узла;H800: Einheitsstörung;H800: guasto unità;H800: fallo de unidad
+Alm_H800_NotHome;H800: not at home position;Alt Makine 2: başlangıç konumunda değil;H800: не в исходном положении;H800: nicht in Grundstellung;H800: non in posizione di riferimento;H800: no está en posición de origen
+

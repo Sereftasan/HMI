@@ -1,0 +1,57 @@
+# MD3020 - SAMPLE label list, invented as a starting point.
+# Replace with the machine's real export before any commissioning.
+Label;DataType;Address
+MAN__X_Ileri;Bit;M700
+MAN__X_Geri;Bit;M701
+MAN__Y_Ileri;Bit;M702
+MAN__Y_Geri;Bit;M703
+MAN__Z_Ileri;Bit;M704
+MAN__Z_Geri;Bit;M705
+MAN_Bicak_Yukari;Bit;M706
+MAN_Bicak_Asagi;Bit;M707
+MAN_Konveyor_Ileri;Bit;M708
+MAN_Sikma_SikmaSIK;Bit;M709
+MAN_Sikma_SikmaAC;Bit;M710
+MAN_Yaglama;Bit;M711
+MAN_TalasTemizleme;Bit;M712
+MAN_InverterReset;Bit;M713
+IN_X_RefSN;Bit;M1300
+IN_Y_RefSN;Bit;M1301
+IN_Z_RefSN;Bit;M1302
+IN_Bicak_YukaridaSN;Bit;M1303
+IN_Bicak_AsagidaSN;Bit;M1304
+IN_Sikma_GerideSN;Bit;M1305
+IN_Sikma_IlerideSN;Bit;M1306
+IN_AcilStop;Bit;M1307
+IN_Konveyor_InverterRUN;Bit;M1308
+OUT_Calisiyor;Bit;M1400
+OUT_Alarm;Bit;M1401
+OUT_Hazir;Bit;M1402
+X_AktPoz;Double Word [Signed];W0
+Y_AktPoz;Double Word [Signed];W10
+Z_AktPoz;Double Word [Signed];W20
+PC_Calisma_Start;Bit;M20
+PC_Duraklat;Bit;M21
+PC_Iptal;Bit;M22
+PC_Reset;Bit;M23
+PC_Barkod_Aktif;Bit;L0
+PC_KenarTemizleme_Aktif;Bit;L1
+PC_ProfilDondurme_Aktif;Bit;L2
+PC_DenemeMakine;Bit;L3
+KenarTemizleme_Derinlik;Word [Signed];D300
+KenarTemizleme_Hiz;Word [Signed];D302
+Bicak_Bekleme_Sure;Word [Signed];D304
+Profil_Genislik;Word [Signed];D306
+Profil_Yukseklik;Word [Signed];D308
+X_MAX;Double Word [Signed];D310
+X_MIN;Double Word [Signed];D312
+Y_MAX;Double Word [Signed];D314
+Y_MIN;Double Word [Signed];D316
+Z_MAX;Double Word [Signed];D318
+Z_MIN;Double Word [Signed];D320
+Dondurme_Aci;Word [Signed];D322
+Konveyor_Hiz;Word [Signed];D324
+Hiz_Override;Word [Signed];D326
+Is_Adet;Word [Signed];D328
+Is_Tamamlanan;Word [Signed];D330
+

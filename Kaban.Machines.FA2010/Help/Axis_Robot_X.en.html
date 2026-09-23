@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Robot X - axis information</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.2em;color:#23262c;line-height:1.45;font-size:14px}
+ h1{font-size:1.45em;margin:.2em 0 .6em}
+ h2{font-size:1.15em;color:#1f4e79;margin:1.6em 0 .4em}
+ p{margin:.25em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em}
+ td,th{border:1px solid #444;padding:.35em .5em;vertical-align:top;text-align:left}
+ th{background:#dcdcdc}
+ table.caution td:first-child{background:#f4b6bf;font-weight:bold;text-align:center;width:14%}
+ table.point td:first-child{background:#eeeeee;font-weight:bold;text-align:center;width:14%}
+ code{background:#f2f4f7;padding:0 .25em;border:1px solid #dde1e6;font-family:Consolas,monospace}
+ .fig{text-align:center;margin:1em 0}
+ .cap{text-align:center;color:#1f4e79;font-weight:bold}
+ .small{color:#555;font-size:.92em}
+</style></head><body>
+
+<h1>Robot X &ndash; axis information</h1>
+
+<table class="caution"><tr><td>CAUTION</td><td>
+A servo axis holds position with the brake and the drive enabled. Before working inside its travel, stop the machine,
+switch off and lock out the supply, and support the carriage mechanically. Releasing the brake with the load unsupported
+lets a vertical axis drop.
+</td></tr></table>
+
+<table class="point"><tr><td>POINT</td><td>
+This sheet is about the axis itself: its drive, its limits and its homing. For a drive alarm, open the servo drive
+manual from the alarm code shown on the Axis Settings page &ndash; it is written for that code.
+</td></tr></table>
+
+<h2>What it moves</h2>
+<p>
+Robot X carries the transfer arm along the machine, from the entry conveyor to the exit station. Ball screw driven
+through a toothed belt, with the reference (home) sensor at the entry end.
+</p>
+
+<h2>Drive and mechanics</h2>
+<table>
+<tr><th>Item</th><th>Value</th><th>Notes</th></tr>
+<tr><td>Servo drive</td><td>Mitsubishi MR-J4, 400 W</td><td>Alarm and warning codes are shown on the Axis Settings page</td></tr>
+<tr><td>Motor</td><td>HG-KR43, absolute encoder, with brake</td><td>Battery in the drive keeps the absolute position</td></tr>
+<tr><td>Transmission</td><td>Toothed belt 2:1, ball screw 10 mm pitch</td><td>5 mm of travel per motor revolution</td></tr>
+<tr><td>Movement per rotation</td><td>5.00 mm</td><td>On the Machine Parameters page; changing it changes every position</td></tr>
+<tr><td>Software limits</td><td>0 &ndash; 3,250 mm</td><td>Set on the Axis Settings page, Min and Max</td></tr>
+<tr><td>Hardware limit switches</td><td>10 mm outside each software limit</td><td>Wired to the drive, not to the PLC</td></tr>
+<tr><td>Reference sensor</td><td>Inductive, at the entry end</td><td>Shown on the left jog button's lamp</td></tr>
+<tr><td>Backlash</td><td>0.05 mm typical when new</td><td>Entered on the Axis Settings page</td></tr>
+</table>
+
+<h2>Homing</h2>
+<p>
+The axis homes towards the entry end at setup speed until the reference sensor switches, then creeps back to the
+encoder's Z pulse. Home after any of these: a drive battery change, a motor or encoder change, a belt change, or any
+alarm that mentions position loss.
+</p>
+<table>
+<tr><th>Step</th><th>What to do</th></tr>
+<tr><td>1</td><td>Clear the travel: no profile in the transfer station, no tooling in the path.</td></tr>
+<tr><td>2</td><td>Select setup mode and put the machine in manual.</td></tr>
+<tr><td>3</td><td>Jog the axis until it is clear of the reference sensor, towards the exit end.</td></tr>
+<tr><td>4</td><td>Start the homing cycle and let it finish without interruption.</td></tr>
+<tr><td>5</td><td>Check the position reading against the scale mark at the entry end: it must read 0.00 &plusmn; 0.05 mm.</td></tr>
+</table>
+
+<h2>Maintenance</h2>
+<table>
+<tr><th>Task</th><th>Interval</th><th>How</th></tr>
+<tr><td>Ball screw lubrication</td><td>Every 500 running hours</td><td>Two strokes of grease at the nipple, with the axis at mid travel.</td></tr>
+<tr><td>Belt tension</td><td>Every 6 months</td><td>About 3 mm deflection under light thumb pressure at mid span. Re-home after re-tensioning.</td></tr>
+<tr><td>Backlash check</td><td>Every 6 months</td><td>Approach a mark from both directions at setup speed and compare the readings. Above 0.15 mm, ask for support.</td></tr>
+<tr><td>Drive battery</td><td>Every 2 years</td><td>Replace with the drive powered, or the absolute position is lost and the axis must be homed.</td></tr>
+</table>
+
+<h2>After a servo alarm</h2>
+<p>
+Note the alarm code from the Axis Settings page before resetting it: the drive keeps only the most recent ones.
+Reset, then jog the axis both ways at setup speed and watch for noise or jerking movement. If the same code returns,
+leave the machine stopped and pass the code to maintenance &ndash; repeated resets of an overload or overheat alarm
+damage the motor.
+</p>
+
+<p class="small">
+Template note: one file per axis, named <code>Axis_&lt;axis name&gt;.html</code>. Keep the values in the tables the same
+as the ones entered on the Axis Settings page, so the sheet and the HMI never disagree.
+</p>
+
+</body></html>
+

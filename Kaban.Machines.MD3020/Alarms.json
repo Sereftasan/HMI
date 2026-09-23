@@ -1,0 +1,21 @@
+[
+  {
+    "Code": 1,
+    "PlcNumber": 1,
+    "Address": "M910",
+    "DescriptionKey": "Alm_H800_Fault1",
+    "DescriptionEN": "H800: unit fault",
+    "DescriptionTR": "Alt Makine 2: unite arizasi",
+    "Severity": "Warning"
+  },
+  {
+    "Code": 2,
+    "PlcNumber": 1,
+    "Address": "M911",
+    "DescriptionKey": "Alm_H800_NotHome",
+    "DescriptionEN": "H800: not at home position",
+    "DescriptionTR": "Alt Makine 2: baslangic konumunda degil",
+    "Severity": "Fault"
+  }
+]
+

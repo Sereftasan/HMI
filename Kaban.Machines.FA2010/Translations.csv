@@ -1,0 +1,43 @@
+Key;EN;TR;RU;DE;IT;ES
+Machine_FA2010;Processing Center;İşleme Merkezi;Обрабатывающий центр;Bearbeitungszentrum;Centro di lavoro;Centro de mecanizado
+Lbl_Plc1Header;PLC 1;PLC 1;ПЛК 1;SPS 1;PLC 1;PLC 1
+Lbl_Plc2Header;PLC 2;PLC 2;ПЛК 2;SPS 2;PLC 2;PLC 2
+Btn_Demo;Demo Button;Demo Butonu;Демо-кнопка;Demo-Taste;Pulsante demo;Botón de demostración
+Btn_Demo2;Demo Button (PLC2);Demo Butonu (PLC2);Демо-кнопка (ПЛК2);Demo-Taste (SPS2);Pulsante demo (PLC2);Botón demo (PLC2)
+Btn_Forward;Forward;İleri;Вперёд;Vorwärts;Avanti;Adelante
+Btn_Reverse;Reverse;Geri;Назад;Rückwärts;Indietro;Retroceso
+Fnc_Demo_Unit;Demo Unit (PLC1);Demo Ünite (PLC1);Демо-узел (ПЛК1);Demo-Einheit (SPS1);Unità demo (PLC1);Unidad demo (PLC1)
+Fnc_Demo_Unit2;Demo Unit (PLC2);Demo Ünite (PLC2);Демо-узел (ПЛК2);Demo-Einheit (SPS2);Unità demo (PLC2);Unidad demo (PLC2)
+Tip_Demo;Demo command button;Demo komut butonu;Демо-кнопка команды;Demo-Befehlstaste;Pulsante comando demo;Botón de mando demo
+Tip_Demo_Lamp;Demo indicator;Demo gösterge;Демо-индикатор;Demo-Anzeige;Indicatore demo;Indicador demo
+Tip_Demo_Lamp1;Sensor 1;Sensör 1;Датчик 1;Sensor 1;Sensore 1;Sensor 1
+Tip_Demo_Lamp2;Sensor 2;Sensör 2;Датчик 2;Sensor 2;Sensore 2;Sensor 2
+Tip_Demo_Display;Demo read-only value;Demo salt-okunur değer;Демо-значение (только чтение);Demo-Wert (nur Anzeige);Valore demo (sola lettura);Valor demo (solo lectura)
+Tip_Demo_Fwd;Forward sensor;İleri sensörü;Вперёд sensor;Vorwärts sensor;Avanti sensor;Adelante sensor
+Tip_Demo_Rev;Reverse sensor;Geri sensörü;Датчик заднего положения;Sensor Rückwärts;Sensore di ritorno;Sensor de retroceso
+Tip_Demo_Position;Current position;Mevcut konum;Ток position;Strom position;Corrente position;Corriente position
+Tab_ManualEntry_Conveyor;Entry Conveyor;Entry Conveyor;Entry Конвейер;Entry Förderer;Entry Trasportatore;Entry Transportador
+Tab_ManualRobot;Robot;Robot;Робот;Roboter;Robot;Robot
+Tab_ManualProfile_Recognition;Profile Recognition;Profile Recognition;Распознавание профиля;Profilerkennung;Riconoscimento profilo;Reconocimiento de perfil
+Tab_ManualMilling;Milling;Milling;Фрезерование;Fräsen;Fresatura;Fresado
+Tab_ManualCutting;Cutting;Cutting;Резка;Schneiden;Taglio;Corte
+Tab_ManualExit;Exit;Exit;Выход;Ausgang;Uscita;Salida
+Tab_ManualClamping_Moulds;Clamping Moulds;Clamping Moulds;Зажим Moulds;Spannen Moulds;Bloccaggio Moulds;Amarre Moulds
+Tab_ManualYZ_Cross_Rollers;YZ Cross Rollers;YZ Cross Rollers;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
+Tab_ManualOther;Other;Other;Прочее;Sonstige;Altro;Otros
+Tab_ParamEntry_Conveyor_Giris_Konveyoru;Entry Conveyor;Giriş Konveyörü;Входной конвейер;Einlaufförderer;Trasportatore d'ingresso;Transportador de entrada
+Tab_ParamRobot;Robot;Robot;Робот;Roboter;Robot;Robot
+Tab_ParamMilling_Freze;Milling;Freze;Фрезеровка;Fräsen;Fresatura;Fresado
+Tab_ParamCutting_Kesim;Cutting;Kesim;Резка;Schnitt;Taglio;Corte
+Tab_ParamKesim_Boy_Ofseti;Kesim Boy Ofseti;Kesim Boy Ofseti;Смещение длины реза;Schnittlängen-Offset;Offset lunghezza di taglio;Desfase de longitud de corte
+Tab_ParamExit_Conveyor_Cikis_Konveyoru;Exit Conveyor;Çıkış Konveyörü;Выходной конвейер;Auslaufförderer;Trasportatore d'uscita;Transportador de salida
+Tab_ParamDistances_Beetwen_Units_Uniteler_Arasi_Mesafeler;Distances Beetwen Units;Üniteler Arası Mesafeler;Расстояния между узлами;Abstände zwischen Einheiten;Distanze tra le unità;Distancias entre unidades
+Tab_ParamMachine_Lubrication_Makine_Yaglama;Machine Lubrication;Makine Yağlama;Смазка станка;Maschinenschmierung;Lubrificazione macchina;Lubricación de la máquina
+Tab_ParamEntry_Conveyor;Entry Conveyor;Giriş Konveyörü;Entry Конвейер;Entry Förderer;Entry Trasportatore;Entry Transportador
+Tab_ParamMilling;Milling;Freze;Фрезерование;Fräsen;Fresatura;Fresado
+Tab_ParamCutting;Cutting;Kesim;Резка;Schneiden;Taglio;Corte
+Tab_ParamExit_Conveyor;Exit Conveyor;Çıkış Konveyörü;Exit Конвейер;Exit Förderer;Exit Trasportatore;Exit Transportador
+Tab_ParamDistances_Beetwen_Units;Distances Beetwen Units;Üniteler Arası Mesafeler;Расстояния между узлами;Abstände zwischen Einheiten;Distanze tra le unità;Distancias entre unidades
+Tab_ParamMachine_Lubrication;Machine Lubrication;Makine Yağlama;Станок Смазка;Maschine Schmierung;Macchina Lubrificazione;Máquina Lubricación
+Tab_ParamCut_Length_Offset;Cut Length Offset;Kesim Boy Ofseti;Смещение длины реза;Schnittlängen-Offset;Offset lunghezza di taglio;Desfase de longitud de corte
+

@@ -1,0 +1,18 @@
+[
+  {
+    "MachineCode": "COMMON",
+    "Key": "TS_Pneumatic_CheckAir",
+    "Translations": {
+      "EN": "Verify the main air supply is at least 6 Bar.",
+      "TR": "Ana hava girişinin en az 6 Bar olduğunu doğrulayın."
+    }
+  },
+  {
+    "MachineCode": "COMMON",
+    "Key": "TS_Pneumatic_CheckSensor",
+    "Translations": {
+      "EN": "Check if the magnetic sensor on the cylinder is lit.",
+      "TR": "Silindir üzerindeki manyetik sensörün yandığını kontrol edin."
+    }
+  }
+]

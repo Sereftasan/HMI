@@ -1,0 +1,1448 @@
+[
+  {
+    "PlcAddress": "M801",
+    "TagCode": "Robot_X_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot X Error",
+      "TR": "Eksen1_Ariza",
+      "RU": "Ошибка Robot X",
+      "DE": "Robot X Fehler",
+      "IT": "Errore Robot X",
+      "ES": "Error Robot X"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 0"
+  },
+  {
+    "PlcAddress": "M802",
+    "TagCode": "Milling_Angle_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Angle Error",
+      "TR": "Eksen2_Ariza",
+      "RU": "Ошибка угла Milling",
+      "DE": "Milling Winkel Fehler",
+      "IT": "Errore Angolo Fresatura",
+      "ES": "Error Ángulo Fresado"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 1"
+  },
+  {
+    "PlcAddress": "M803",
+    "TagCode": "Milling_1_Y_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Y Error",
+      "TR": "Eksen3_Ariza",
+      "RU": "Ошибка Milling 1 Y",
+      "DE": "Milling 1 Y Fehler",
+      "IT": "Errore Fresatura 1 Y",
+      "ES": "Error Fresado 1 Y"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 2"
+  },
+  {
+    "PlcAddress": "M804",
+    "TagCode": "Milling_1_Z_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Z Error",
+      "TR": "Eksen4_Ariza",
+      "RU": "Ошибка Milling 1 Z",
+      "DE": "Milling 1 Z Fehler",
+      "IT": "Errore Fresatura 1 Z",
+      "ES": "Error Fresado 1 Z"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 3"
+  },
+  {
+    "PlcAddress": "M805",
+    "TagCode": "Cutting_Z_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Z Error",
+      "TR": "Eksen5_Ariza",
+      "RU": "Ошибка Z резки",
+      "DE": "Schnitt Z Fehler",
+      "IT": "Errore Z Taglio",
+      "ES": "Error Z de Corte"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 4"
+  },
+  {
+    "PlcAddress": "M806",
+    "TagCode": "Exit_Robot_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Error",
+      "TR": "Eksen6_Ariza",
+      "RU": "Ошибка выходного робота",
+      "DE": "Ausgangsroboter Fehler",
+      "IT": "Errore Robot Uscita",
+      "ES": "Error Robot de Salida"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 5"
+  },
+  {
+    "PlcAddress": "M807",
+    "TagCode": "Milling_2_Y_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 2 Y Error",
+      "TR": "Eksen7_Ariza",
+      "RU": "Ошибка Milling 2 Y",
+      "DE": "Milling 2 Y Fehler",
+      "IT": "Errore Fresatura 2 Y",
+      "ES": "Error Fresado 2 Y"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 6"
+  },
+  {
+    "PlcAddress": "M808",
+    "TagCode": "Milling_2_Z_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 2 Z Error",
+      "TR": "Eksen8_Ariza",
+      "RU": "Ошибка Milling 2 Z",
+      "DE": "Milling 2 Z Fehler",
+      "IT": "Errore Fresatura 2 Z",
+      "ES": "Error Fresado 2 Z"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 7"
+  },
+  {
+    "PlcAddress": "M809",
+    "TagCode": "Robot_X_Servo_SError",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot X Servo SError",
+      "TR": "Eksen1_Servo_Ariza"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 8"
+  },
+  {
+    "PlcAddress": "M810",
+    "TagCode": "Milling_Angle_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Angle Servo Error",
+      "TR": "Eksen2_Servo_Ariza",
+      "RU": "Ошибка угла Milling",
+      "DE": "Milling Winkel Fehler",
+      "IT": "Servo Errore Angolo Fresatura",
+      "ES": "Servo Error Ángulo Fresado"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 9"
+  },
+  {
+    "PlcAddress": "M811",
+    "TagCode": "Milling_1_Y_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Y Servo Error",
+      "TR": "Eksen3_Servo_Ariza",
+      "RU": "Ошибка Milling 1 Y",
+      "DE": "Milling 1 Y Fehler",
+      "IT": "Servo Errore Fresatura 1 Y",
+      "ES": "Servo Error Fresado 1 Y"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 10"
+  },
+  {
+    "PlcAddress": "M812",
+    "TagCode": "Milling_1_Z_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Z Servo Error",
+      "TR": "Eksen4_Servo_Ariza",
+      "RU": "Ошибка Milling 1 Z",
+      "DE": "Milling 1 Z Fehler",
+      "IT": "Servo Errore Fresatura 1 Z",
+      "ES": "Servo Error Fresado 1 Z"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 11"
+  },
+  {
+    "PlcAddress": "M813",
+    "TagCode": "Cutting_Z_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Z Servo Error",
+      "TR": "Eksen5_Servo_Ariza"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 12"
+  },
+  {
+    "PlcAddress": "M814",
+    "TagCode": "Exit_Robot_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Servo Error",
+      "TR": "Eksen6_Servo_Ariza",
+      "RU": "Ошибка выходного робота",
+      "DE": "Ausgangsroboter Fehler",
+      "IT": "Servo Errore Robot Uscita",
+      "ES": "Servo Error Robot de Salida"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 13"
+  },
+  {
+    "PlcAddress": "M815",
+    "TagCode": "Milling_2_Y_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 2 Y Servo Error",
+      "TR": "Eksen7_Servo_Ariza",
+      "RU": "Ошибка Milling 2 Y",
+      "DE": "Milling 2 Y Fehler",
+      "IT": "Servo Errore Fresatura 2 Y",
+      "ES": "Servo Error Fresado 2 Y"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 14"
+  },
+  {
+    "PlcAddress": "M816",
+    "TagCode": "Milling_2_Z_Servo_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 2 Z Servo Error",
+      "TR": "Eksen8_Servo_Ariza",
+      "RU": "Ошибка Milling 2 Z",
+      "DE": "Milling 2 Z Fehler",
+      "IT": "Servo Errore Fresatura 2 Z",
+      "ES": "Servo Error Fresado 2 Z"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 15"
+  },
+  {
+    "PlcAddress": "M817",
+    "TagCode": "Entry_Conveyor_Inverter_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Conveyor Inverter Alarm",
+      "TR": "Giris_Konv_Inverter_Ariza",
+      "RU": "Авария инвертора входного конвейера",
+      "DE": "Eingang Förderer Inverter Alarm",
+      "IT": "Allarme Inverter Conv. Ingresso",
+      "ES": "Alarma Inversor Transportador Entrada"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 16"
+  },
+  {
+    "PlcAddress": "M818",
+    "TagCode": "Entry_Conveyor_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Conveyor Inverter RUN Failure",
+      "TR": "Giris_Konv_Inverter_Calismadi",
+      "RU": "Ошибка запуска инвертора входного конвейера",
+      "DE": "Eingang Förderer Inverter Startfehler",
+      "IT": "Errore avvio inverter convogliatore ingresso",
+      "ES": "Fallo arranque inverter transportador entrada"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 17"
+  },
+  {
+    "PlcAddress": "M819",
+    "TagCode": "Milling_1_Inverter_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Inverter Alarm",
+      "TR": "Freze1_Inverter_Ariza",
+      "RU": "Авария инвертора Milling 1",
+      "DE": "Milling 1 Inverter Alarm",
+      "IT": "Allarme Inverter Fresatura 1",
+      "ES": "Alarma Inversor Fresado 1"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 18"
+  },
+  {
+    "PlcAddress": "M820",
+    "TagCode": "Milling_1_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Inverter RUN Failure",
+      "TR": "Freze1_Inverter_Calismadi",
+      "RU": "Ошибка запуска инвертора Freze 1",
+      "DE": "Milling 1 Inverter Startfehler",
+      "IT": "Errore avvio inverter fresatura 1",
+      "ES": "Fallo arranque inverter fresado 1"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 19"
+  },
+  {
+    "PlcAddress": "M821",
+    "TagCode": "Milling_2_Inverter_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 2 Inverter Alarm",
+      "TR": "Freze2_Inverter_Ariza",
+      "RU": "Авария инвертора Milling 2",
+      "DE": "Milling 2 Inverter Alarm",
+      "IT": "Allarme Inverter Fresatura 2",
+      "ES": "Alarma Inversor Fresado 2"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 20"
+  },
+  {
+    "PlcAddress": "M822",
+    "TagCode": "Milling_1_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling 1 Inverter RUN Failure",
+      "TR": "Freze2_Inverter_Calismadi",
+      "RU": "Ошибка запуска инвертора Freze 1",
+      "DE": "Milling 1 Inverter Startfehler",
+      "IT": "Errore avvio inverter fresatura 1",
+      "ES": "Fallo arranque inverter fresado 1"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 21"
+  },
+  {
+    "PlcAddress": "M823",
+    "TagCode": "45_Saw_Inverter_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "+45 Saw Inverter Alarm",
+      "TR": "Testere45P_Inverter_Ariza",
+      "RU": "Авария инвертора пилы +45",
+      "DE": "+45 Säge Inverter Alarm",
+      "IT": "Allarme Inverter Sega +45",
+      "ES": "Alarma Inversor Sierra +45"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 22"
+  },
+  {
+    "PlcAddress": "M824",
+    "TagCode": "45_Saw_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "+45 Saw Inverter RUN Failure",
+      "TR": "Testere_45P_Inv_Calismadi",
+      "RU": "Ошибка запуска инвертора пилы +45",
+      "DE": "+45 Säge Inverter Startfehler",
+      "IT": "Errore avvio inverter sega +45",
+      "ES": "Fallo arranque inverter sierra +45"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 23"
+  },
+  {
+    "PlcAddress": "M825",
+    "TagCode": "45_Saw_Inverter_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "-45 Saw Inverter Error",
+      "TR": "Testere45N_Inverter_Ariza",
+      "RU": "Ошибка инвертора пилы -45",
+      "DE": "-45 Säge Inverter Fehler",
+      "IT": "Errore inverter sega -45",
+      "ES": "Error inversor sierra -45"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 24"
+  },
+  {
+    "PlcAddress": "M826",
+    "TagCode": "45_Saw_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "-45 Saw Inverter RUN Failure",
+      "TR": "Testere_45N_Inv_Calismadi",
+      "RU": "Ошибка запуска инвертора пилы -45",
+      "DE": "-45 Säge Inverter Startfehler",
+      "IT": "Errore avvio inverter sega -45",
+      "ES": "Fallo arranque inverter sierra -45"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 25"
+  },
+  {
+    "PlcAddress": "M827",
+    "TagCode": "90_Saw_Inverter_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "90 Saw Inverter Error",
+      "TR": "Testere90_Inverter_Ariza",
+      "RU": "Ошибка инвертора пилы 90°",
+      "DE": "90 Säge Inverter Fehler",
+      "IT": "Errore inverter sega 90°",
+      "ES": "Error inversor sierra 90°"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 26"
+  },
+  {
+    "PlcAddress": "M828",
+    "TagCode": "90_Saw_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "90 Saw Inverter RUN Failure",
+      "TR": "Testere_90_Inv_Calismadi",
+      "RU": "Ошибка запуска инвертора пилы 90°",
+      "DE": "90 Säge Inverter Startfehler",
+      "IT": "Errore avvio inverter sega 90°",
+      "ES": "Fallo arranque inverter sierra 90°"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 27"
+  },
+  {
+    "PlcAddress": "M829",
+    "TagCode": "Exit_Conveyor_Thermic_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Conveyor Thermic Error",
+      "TR": "Cikis_Konv_Termik_Ariza",
+      "RU": "Термическая ошибка выходного конвейера",
+      "DE": "Ausgang Förderer Thermischer Fehler",
+      "IT": "Errore termico convogliatore uscita",
+      "ES": "Error térmico transportador salida"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 28"
+  },
+  {
+    "PlcAddress": "M830",
+    "TagCode": "Exit_Conveyor_Inverter_RUN_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Conveyor Inverter RUN Failure",
+      "TR": "Cikis_Konv_Mot_Calismadi",
+      "RU": "Ошибка запуска инвертора выходного конвейера",
+      "DE": "Ausgang Förderer Inverter Startfehler",
+      "IT": "Errore avvio inverter convogliatore uscita",
+      "ES": "Fallo arranque inverter transportador salida"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 29"
+  },
+  {
+    "PlcAddress": "M831",
+    "TagCode": "Sawdust_Conveyor_Thermic_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Sawdust Conveyor Thermic Error",
+      "TR": "Capak_Konv_Termik_Ariza",
+      "RU": "Термическая ошибка конвейера стружки",
+      "DE": "Späneförderer Thermischer Fehler",
+      "IT": "Errore termico convogliatore trucioli",
+      "ES": "Error térmico transportador virutas"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 30"
+  },
+  {
+    "PlcAddress": "M832",
+    "TagCode": "Emergency_Stop",
+    "Severity": "Critical",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Emergency Stop",
+      "TR": "Acil_Stop",
+      "RU": "Аварийная остановка",
+      "DE": "Not-Aus",
+      "IT": "Arresto di emergenza",
+      "ES": "Parada de emergencia"
+    },
+    "Comment": "StateCode 4 / First 32 Errors (1) bit 31"
+  },
+  {
+    "PlcAddress": "M833",
+    "TagCode": "Low_Air_Pressure",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Low Air Pressure",
+      "TR": "Dusuk_Basinc",
+      "RU": "Низкое давление воздуха",
+      "DE": "Niedriger Luftdruck",
+      "IT": "Bassa Pressione Aria",
+      "ES": "Presión de Aire Baja"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 0"
+  },
+  {
+    "PlcAddress": "M834",
+    "TagCode": "Entry_Robot_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Clamping Failure",
+      "TR": "Robot_SIKMADI",
+      "RU": "Авария зажима входного робота",
+      "DE": "Eingangsroboter Spannfehler",
+      "IT": "Errore serraggio robot ingresso",
+      "ES": "Fallo sujeción robot entrada"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 1"
+  },
+  {
+    "PlcAddress": "M835",
+    "TagCode": "Entry_Robot_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Releasing Failure",
+      "TR": "Robot_ACMADI",
+      "RU": "Авария открытия зажима входного робота",
+      "DE": "Eingangsroboter Öffnungsfehler",
+      "IT": "Errore rilascio robot ingresso",
+      "ES": "Fallo liberación robot entrada"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 2"
+  },
+  {
+    "PlcAddress": "M836",
+    "TagCode": "Entry_Robot_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Moving Up Failure",
+      "TR": "Giris_Robot_Yukari_Cikamadi",
+      "RU": "Авария подъёма входного робота",
+      "DE": "Eingangsroboter Aufwärtsbewegung Fehler",
+      "IT": "Errore salita robot ingresso",
+      "ES": "Fallo subida robot entrada"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 3"
+  },
+  {
+    "PlcAddress": "M837",
+    "TagCode": "Entry_Robot_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Moving Down Failure",
+      "TR": "Giris_Robot_Asagi_Inemedi",
+      "RU": "Авария опускания входного робота",
+      "DE": "Eingangsroboter Abwärtsbewegung Fehler",
+      "IT": "Errore discesa robot ingresso",
+      "ES": "Fallo bajada robot entrada"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 4"
+  },
+  {
+    "PlcAddress": "M838",
+    "TagCode": "Entry_Robot_Stopper_Positioning_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Stopper Positioning Failure",
+      "TR": "Giris_Robot_Yukseklik_Ayar_Ariz",
+      "RU": "Авария позиционирования упора входного робота",
+      "DE": "Eingangsroboter Anschlag Positionierfehler",
+      "IT": "Errore posizionamento stopper robot ingresso",
+      "ES": "Fallo posicionamiento tope robot entrada"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 5"
+  },
+  {
+    "PlcAddress": "M839",
+    "TagCode": "Profile_Measuring_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Moving Up Failure",
+      "TR": "PT_Yukari_CIKMADI",
+      "RU": "Авария подъёма измерения профиля",
+      "DE": "Profilmessung Aufwärts Fehler",
+      "IT": "Errore salita misurazione profilo",
+      "ES": "Fallo subida medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 6"
+  },
+  {
+    "PlcAddress": "M840",
+    "TagCode": "Profile_Measuring_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Moving Down Failure",
+      "TR": "PT_Asagi_ACMADI",
+      "RU": "Авария опускания измерения профиля",
+      "DE": "Profilmessung Abwärts Fehler",
+      "IT": "Errore discesa misurazione profilo",
+      "ES": "Fallo bajada medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 7"
+  },
+  {
+    "PlcAddress": "M841",
+    "TagCode": "Profile_Measuring_Front_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Front Clamping Failure",
+      "TR": "PT_On_SIKMADI",
+      "RU": "Авария переднего зажима измерения профиля",
+      "DE": "Profilmessung Vorne Spannfehler",
+      "IT": "Errore serraggio anteriore misurazione profilo",
+      "ES": "Fallo sujeción frontal medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 8"
+  },
+  {
+    "PlcAddress": "M842",
+    "TagCode": "Profile_Measuring_Front_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Front Releasing Failure",
+      "TR": "PT_On_ACMADI",
+      "RU": "Авария открытия переднего зажима измерения",
+      "DE": "Profilmessung Vorne Öffnungsfehler",
+      "IT": "Errore rilascio anteriore misurazione profilo",
+      "ES": "Fallo liberación frontal medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 9"
+  },
+  {
+    "PlcAddress": "M843",
+    "TagCode": "Profile_Measuring_Top_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Top Clamping Failure",
+      "TR": "PT_Ust_SIKMADI",
+      "RU": "Авария верхнего зажима измерения профиля",
+      "DE": "Profilmessung Oben Spannfehler",
+      "IT": "Errore serraggio superiore misurazione profilo",
+      "ES": "Fallo sujeción superior medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 10"
+  },
+  {
+    "PlcAddress": "M844",
+    "TagCode": "Profile_Measuring_Top_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Measuring Top Releasing Failure",
+      "TR": "PT_Ust_ACMADI",
+      "RU": "Авария открытия верхнего зажима измерения",
+      "DE": "Profilmessung Oben Öffnungsfehler",
+      "IT": "Errore rilascio superiore misurazione profilo",
+      "ES": "Fallo liberación superior medición perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 11"
+  },
+  {
+    "PlcAddress": "M845",
+    "TagCode": "Profil_Algilama_Piston_Sw_Ariza",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profil_Algilama_Piston_Sw_Ariza",
+      "TR": "Profil_Algilama_Piston_Sw_Ariza"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 12"
+  },
+  {
+    "PlcAddress": "M846",
+    "TagCode": "Profile_Recognition_Sensor_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Recognition Sensor Error",
+      "TR": "Profil_Algilama_Limit_Ariza",
+      "RU": "Ошибка датчика распознавания профиля",
+      "DE": "Profil-Erkennung Sensorfehler",
+      "IT": "Errore sensore riconoscimento profilo",
+      "ES": "Error sensor reconocimiento perfil"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 13"
+  },
+  {
+    "PlcAddress": "M847",
+    "TagCode": "Cutting_45_Left_Front_Roller_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Front Roller Clamping Failure",
+      "TR": "Kesim_On1_SIKMADI",
+      "RU": "Авария зажима левого переднего ролика 45° резки",
+      "DE": "Schnitt 45 Links Vorne Rolle Spannfehler",
+      "IT": "Errore serraggio rullo anteriore sinistro taglio 45°",
+      "ES": "Fallo sujeción rodillo frontal izquierdo corte 45°"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 14"
+  },
+  {
+    "PlcAddress": "M848",
+    "TagCode": "Cutting_45_Left_Front_Roller_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Front Roller Releasing Failure",
+      "TR": "Kesim_On1_ACMADI",
+      "RU": "Авария открытия зажима левого переднего ролика 45°",
+      "DE": "Schnitt 45 Links Vorne Rolle Öffnungsfehler",
+      "IT": "Errore rilascio rullo anteriore sinistro taglio 45°",
+      "ES": "Fallo liberación rodillo frontal izquierdo corte 45°"
+    },
+    "Comment": "StateCode 4 / Following 16 Errors (2) bit 15"
+  },
+  {
+    "PlcAddress": "M849",
+    "TagCode": "Cutting_45_Left_Top_Roller_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Roller Clamping Failure",
+      "TR": "Kesim_Ust1_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 0"
+  },
+  {
+    "PlcAddress": "M850",
+    "TagCode": "Cutting_45_Left_Top_Roller_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Roller Releasing Failure",
+      "TR": "Kesim_Ust1_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 1"
+  },
+  {
+    "PlcAddress": "M851",
+    "TagCode": "Kesim_UST_KUCUK_SIKMADI",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Kesim_UST_KUCUK_SIKMADI",
+      "TR": "Kesim_UST_KUCUK_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 2"
+  },
+  {
+    "PlcAddress": "M852",
+    "TagCode": "Kesim_UST_KUCUK_ACMADI",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Kesim_UST_KUCUK_ACMADI",
+      "TR": "Kesim_UST_KUCUK_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 3"
+  },
+  {
+    "PlcAddress": "M853",
+    "TagCode": "Cutting_45_Middle_Front_Roller_Moving_FW_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Middle Front Roller Moving FW Failure",
+      "TR": "Kesim_Orta_Dayama_Ileri_GITMEDI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 4"
+  },
+  {
+    "PlcAddress": "M854",
+    "TagCode": "Cutting_45_Middle_Front_Roller_Moving_Back_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Middle Front Roller Moving Back Failure",
+      "TR": "Kesim_Orta_Dayama_Geri_GITMEDI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 5"
+  },
+  {
+    "PlcAddress": "M855",
+    "TagCode": "Cutting_45_Right_Front_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Front Clamping Failure",
+      "TR": "Kesim_On2_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 6"
+  },
+  {
+    "PlcAddress": "M856",
+    "TagCode": "Cutting_45_Right_Front_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Front Releasing Failure",
+      "TR": "Kesim_On2_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 7"
+  },
+  {
+    "PlcAddress": "M857",
+    "TagCode": "Cutting_45_Right_Top_Big_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Top Big Clamping Failure",
+      "TR": "Kesim_Ust2_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 8"
+  },
+  {
+    "PlcAddress": "M858",
+    "TagCode": "Cutting_45_Right_Top_Big_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Top Big Releasing Failure",
+      "TR": "Kesim_Ust2_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 9"
+  },
+  {
+    "PlcAddress": "M859",
+    "TagCode": "Cutting_45_Right_Front_Roller_Moving_FW_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Front Roller Moving FW Failure",
+      "TR": "Kesim_Sag_Dayama_Ileri_GITMEDI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 10"
+  },
+  {
+    "PlcAddress": "M860",
+    "TagCode": "Cutting_45_Right_Front_Roller_Moving_Back_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Front Roller Moving Back Failure",
+      "TR": "Kesim_Sag_Dayama_Geri_GITMEDI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 11"
+  },
+  {
+    "PlcAddress": "M861",
+    "TagCode": "Cutting_90_Roller_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Roller Moving Up Failure",
+      "TR": "Kesim90_Alt_Unite_Yuk_CIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 12"
+  },
+  {
+    "PlcAddress": "M862",
+    "TagCode": "Cutting_90_Roller_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Roller Moving Down Failure",
+      "TR": "Kesim90_Alt_Unite_Asagi_INMEDI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 13"
+  },
+  {
+    "PlcAddress": "M863",
+    "TagCode": "Cutting_90_Front_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Front Clamping Failure",
+      "TR": "Kesim90_On_Sikma_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 14"
+  },
+  {
+    "PlcAddress": "M864",
+    "TagCode": "Cutting_90_Front_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Front Releasing Failure",
+      "TR": "Kesim90_On_Sikma_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 15"
+  },
+  {
+    "PlcAddress": "M865",
+    "TagCode": "Cutting_90_Top_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Top Clamping Failure",
+      "TR": "Kesim90_Ust_Sikma_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 16"
+  },
+  {
+    "PlcAddress": "M866",
+    "TagCode": "Cutting_90_Top_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 90 Top Releasing Failure",
+      "TR": "Kesim90_Ust_Sikma_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 17"
+  },
+  {
+    "PlcAddress": "M867",
+    "TagCode": "Wastage_Pushing_Cylinder_Moving_FW_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Wastage Pushing Cylinder Moving FW Failure",
+      "TR": "KesimSolAltTablaIleriGitmedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 18"
+  },
+  {
+    "PlcAddress": "M868",
+    "TagCode": "Wastage_Pushing_Cylinder_Moving_Back_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Wastage Pushing Cylinder Moving Back Failure",
+      "TR": "KesimSolAltTablaGeriGitmedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 19"
+  },
+  {
+    "PlcAddress": "M869",
+    "TagCode": "Exit_Robot_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Clamping Failure",
+      "TR": "Cikis_Robot_SIKMADI",
+      "RU": "Авария зажима выходного робота",
+      "DE": "Ausgangsroboter Spannfehler",
+      "IT": "Errore serraggio robot uscita",
+      "ES": "Fallo sujeción robot salida"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 20"
+  },
+  {
+    "PlcAddress": "M870",
+    "TagCode": "Exit_Robot_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Releasing Failure",
+      "TR": "Cikis_Robot_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 21"
+  },
+  {
+    "PlcAddress": "M871",
+    "TagCode": "Exit_Robot_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Moving Up Failure",
+      "TR": "Cikis_Robot_Yukari_Cikamadi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 22"
+  },
+  {
+    "PlcAddress": "M872",
+    "TagCode": "Exit_Robot_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Moving Down Failure",
+      "TR": "Cikis_Robot_Asagi_Inemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 23"
+  },
+  {
+    "PlcAddress": "M873",
+    "TagCode": "Exit_Robot_Stopper_Positioning_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Stopper Positioning Failure",
+      "TR": "Cik_Robot_Yukseklik_Ayar_Ariz"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 24"
+  },
+  {
+    "PlcAddress": "M874",
+    "TagCode": "Exit_Conveyor_Stopping_SW_Error",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Conveyor Stopping SW Error",
+      "TR": "Cikis_Konveyor_Sw_Ariza"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 25"
+  },
+  {
+    "PlcAddress": "M875",
+    "TagCode": "Profile_is_Detected_on_the_Machine",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile is Detected on the Machine",
+      "TR": "Bekleme_Konumunda_Profil_Var"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 26"
+  },
+  {
+    "PlcAddress": "M876",
+    "TagCode": "The_Bar_Length_is_Too_Short_to_Process",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "The Bar Length is Too Short to Process",
+      "TR": "Parca_Boyu_Kucuk_Ariza"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 27"
+  },
+  {
+    "PlcAddress": "M877",
+    "TagCode": "Milling_Gcode_Starting_Y_and_Z_Values_are_Zero",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Gcode Starting Y and Z Values are Zero",
+      "TR": "Profil_Yanasma_Deger_Ariza"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 28"
+  },
+  {
+    "PlcAddress": "M878",
+    "TagCode": "PC_is_not_Online",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "PC is not Online",
+      "TR": "PC_Online_Degil",
+      "RU": "ПК не в сети",
+      "DE": "PC nicht online",
+      "IT": "PC non online",
+      "ES": "PC no está en línea"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 29"
+  },
+  {
+    "PlcAddress": "M879",
+    "TagCode": "Entry_Robot_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Entry Robot Outside The Limit",
+      "TR": "Eksen1_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 30"
+  },
+  {
+    "PlcAddress": "M880",
+    "TagCode": "Milling_Angle_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Angle Outside The Limit",
+      "TR": "Eksen2_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (3) bit 31"
+  },
+  {
+    "PlcAddress": "M881",
+    "TagCode": "Milling_Y1_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Y1 Outside The Limit",
+      "TR": "Eksen3_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 0"
+  },
+  {
+    "PlcAddress": "M882",
+    "TagCode": "Milling_Z1_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Z1 Outside The Limit",
+      "TR": "Eksen4_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 1"
+  },
+  {
+    "PlcAddress": "M883",
+    "TagCode": "Cutting_Z_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Z Outside The Limit",
+      "TR": "Eksen5_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 2"
+  },
+  {
+    "PlcAddress": "M884",
+    "TagCode": "Exit_Robot_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Robot Outside The Limit",
+      "TR": "Eksen6_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 3"
+  },
+  {
+    "PlcAddress": "M885",
+    "TagCode": "Milling_Y2_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Y2 Outside The Limit",
+      "TR": "Eksen7_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 4"
+  },
+  {
+    "PlcAddress": "M886",
+    "TagCode": "Milling_Z2_Outside_The_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Z2 Outside The Limit",
+      "TR": "Eksen8_Limit_Disi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 5"
+  },
+  {
+    "PlcAddress": "M887",
+    "TagCode": "Milling_Z1_Milling_Z2_Crushing_Limit",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Z1 + Milling Z2 Crushing Limit",
+      "TR": "Freze_Z1_Z2_Caprpisma"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 6"
+  },
+  {
+    "PlcAddress": "M888",
+    "TagCode": "Profile_is_Detected_in_Exit_Robot",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile is Detected in Exit Robot",
+      "TR": "Cikis_Konv_Donus_Engelleme"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 7"
+  },
+  {
+    "PlcAddress": "M889",
+    "TagCode": "Cutting_45_Left_Top_Big_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Big Clamping Failure",
+      "TR": "Kesim45_Sol2_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 8"
+  },
+  {
+    "PlcAddress": "M890",
+    "TagCode": "Cutting_45_Left_Top_Big_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Big Releasing Failure",
+      "TR": "Kesim45_Sol2_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 9"
+  },
+  {
+    "PlcAddress": "M891",
+    "TagCode": "Cutting_45_Left_Top_Small_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Small Clamping Failure",
+      "TR": "Kesim_UST1_KUCUK_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 10"
+  },
+  {
+    "PlcAddress": "M892",
+    "TagCode": "Cutting_45_Left_Top_Small_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Left Top Small Releasing Failure",
+      "TR": "Kesim_UST1_KUCUK_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 11"
+  },
+  {
+    "PlcAddress": "M893",
+    "TagCode": "Cutting_45_Right_Top_Small_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Top Small Clamping Failure",
+      "TR": "Kesim_UST2_KUCUK_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 12"
+  },
+  {
+    "PlcAddress": "M894",
+    "TagCode": "Cutting_45_Right_Top_Small_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting 45 Right Top Small Releasing Failure",
+      "TR": "Kesim_UST2_KUCUK_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 13"
+  },
+  {
+    "PlcAddress": "M895",
+    "TagCode": "Milling_Front_Plate_Moving_Back_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Front Plate Moving Back Failure",
+      "TR": "FrezeOnDayGeriGitmedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 14"
+  },
+  {
+    "PlcAddress": "M896",
+    "TagCode": "Milling_Front_Plate_Moving_FW_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Front Plate Moving FW Failure",
+      "TR": "FrezeOnDayIleriGitmedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 15"
+  },
+  {
+    "PlcAddress": "M897",
+    "TagCode": "Milling_Front_Clamping_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Front Clamping Failure",
+      "TR": "FrezeOnSik_SIKMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 16"
+  },
+  {
+    "PlcAddress": "M898",
+    "TagCode": "Milling_Front_Releasing_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Milling Front Releasing Failure",
+      "TR": "FrezeOnSik_ACMADI"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 17"
+  },
+  {
+    "PlcAddress": "M899",
+    "TagCode": "90_Saw_Down_Movement_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "90 Saw Down Movement Failure",
+      "TR": "Testere90_Asagi_Inemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 18"
+  },
+  {
+    "PlcAddress": "M900",
+    "TagCode": "90_Saw_Up_Movement_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "90 Saw Up Movement Failure",
+      "TR": "Testere90_Yukari_Cikamadi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 19"
+  },
+  {
+    "PlcAddress": "M901",
+    "TagCode": "Cutting_Foil_Roll_Moving_FW_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Foil Roll Moving FW Failure",
+      "TR": "KesimFolyoRulosuIleriGidemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 20"
+  },
+  {
+    "PlcAddress": "M902",
+    "TagCode": "Cutting_Foil_Roll_Moving_Back_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Foil Roll Moving Back Failure",
+      "TR": "KesimFolyoRulosuGeriGidemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 21"
+  },
+  {
+    "PlcAddress": "M903",
+    "TagCode": "Cutting_Foil_Roll_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Foil Roll Moving Up Failure",
+      "TR": "KesimFolyoRulosuBasamadi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 22"
+  },
+  {
+    "PlcAddress": "M904",
+    "TagCode": "Cutting_Foil_Roll_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Cutting Foil Roll Moving Down Failure",
+      "TR": "KesimFolyoRulosuAsagiİnemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 23"
+  },
+  {
+    "PlcAddress": "M905",
+    "TagCode": "Exit_Conveyor_Inverter_Alarm",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Exit Conveyor Inverter Alarm",
+      "TR": "Cikis_Konv_Inverter_Ariza",
+      "RU": "Авария инвертора выходного конвейера",
+      "DE": "Ausgang Förderer Inverter Alarm",
+      "IT": "Allarme Inverter Conv. Uscita",
+      "ES": "Alarma Inversor Transportador Salida"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 24"
+  },
+  {
+    "PlcAddress": "M906",
+    "TagCode": "Conveyor_Roller_Moving_Up_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Roller Moving Up Failure",
+      "TR": "KonveyorRuloYukariCikamadi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 25"
+  },
+  {
+    "PlcAddress": "M907",
+    "TagCode": "Conveyor_Roller_Moving_Down_Failure",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Roller Moving Down Failure",
+      "TR": "KonveyorRuloAsagiInemedi"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 26"
+  },
+  {
+    "PlcAddress": "M908",
+    "TagCode": "KesimSolAltTabla_SensordenKurtardi_Sikmada",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSolAltTabla_SensordenKurtardi_Sikmada",
+      "TR": "KesimSolAltTabla_SensordenKurtardi_Sikmada"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 27"
+  },
+  {
+    "PlcAddress": "M909",
+    "TagCode": "KesimSolDayama_SensordenKurtardi_Sikmada",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSolDayama_SensordenKurtardi_Sikmada",
+      "TR": "KesimSolDayama_SensordenKurtardi_Sikmada"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 28"
+  },
+  {
+    "PlcAddress": "M910",
+    "TagCode": "KesimSagDayama_SensordenKurtardi_Sikmada",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSagDayama_SensordenKurtardi_Sikmada",
+      "TR": "KesimSagDayama_SensordenKurtardi_Sikmada"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 29"
+  },
+  {
+    "PlcAddress": "M911",
+    "TagCode": "KesimSolAltTabla_SensordenKurtardi_Sikmasiz",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSolAltTabla_SensordenKurtardi_Sikmasiz",
+      "TR": "KesimSolAltTabla_SensordenKurtardi_Sikmasiz"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 30"
+  },
+  {
+    "PlcAddress": "M912",
+    "TagCode": "KesimSolDayama_SensordenKurtardi_Sikmasiz",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSolDayama_SensordenKurtardi_Sikmasiz",
+      "TR": "KesimSolDayama_SensordenKurtardi_Sikmasiz"
+    },
+    "Comment": "StateCode 14 / Following 32 Errors (4) bit 31"
+  },
+  {
+    "PlcAddress": "M913",
+    "TagCode": "KesimSagDayama_SensordenKurtardi_Sikmasiz",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "KesimSagDayama_SensordenKurtardi_Sikmasiz",
+      "TR": "KesimSagDayama_SensordenKurtardi_Sikmasiz"
+    },
+    "Comment": ""
+  },
+  {
+    "PlcAddress": "M914",
+    "TagCode": "Kesimde_FolyoRulosuGerideDegil",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Kesimde_FolyoRulosuGerideDegil",
+      "TR": "Kesimde_FolyoRulosuGerideDegil"
+    },
+    "Comment": ""
+  }
+]

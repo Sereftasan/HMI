@@ -1,0 +1,18 @@
+[
+  {
+    "MachineCode": "FA2010",
+    "Key": "TS_FA2010_CabinetA_Inverter",
+    "Translations": {
+      "EN": "Check the inverter panel in Cabinet A.",
+      "TR": "Kabin A'daki inverter panosunu kontrol edin."
+    }
+  },
+  {
+    "MachineCode": "FA2010",
+    "Key": "TS_FA2010_CleanSawTrack",
+    "Translations": {
+      "EN": "Clear aluminum chips from the lower saw track.",
+      "TR": "Alt testere rayındaki alüminyum talaşlarını temizleyin."
+    }
+  }
+]

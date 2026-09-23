@@ -1,0 +1,78 @@
+page;control;device;data_type;divisor;floating_point;digits;mask;read_mode;button_type;caption
+AlarmPanelScrewing;btnReset;M36;;;;;;;Momentary;Reset
+ucAlarmsScrewing;btnReset;M36;;;;;;;Momentary;Alarm List
+ucScrewingAxisPositions;kabanLedLabel1;D80;Bit_32;1;0;6;;CONTINUOUS;;Axis X1
+ucScrewingAxisPositions;kabanLedLabel2;D82;Bit_32;1;0;6;;CONTINUOUS;;Axis X2
+ucScrewingConfiguration;btnSave;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnRefreshProcess;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnRefreshProfileCuttingInfo;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnDeleteProfileCuttingInfo;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnAddProfileCuttingInfo;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnProfileProcess_SendPLC;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnRefreshProfileProcess;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnProfileProcessDelete;null;;;;;;;Momentary;Profile Info List
+ucScrewingConfiguration;btnAddProfileProcess;null;;;;;;;Momentary;Profile Info List
+ucScrewingControls;btnManuelMode;M2;;;;;;;Set;Manual
+ucScrewingControls;btnAutomaticMode;M2;;;;;;;Set;Automatic
+ucScrewingEntryConveyor;kabanLedLabel14;D80;Bit_32;1;0;6;;CONTINUOUS;;
+ucScrewingEntryConveyor;kabanLedLabel1;D82;Bit_32;1;0;6;;CONTINUOUS;;
+ucScrewingEntryConveyor;kabanLedLabel2;D222;Bit_16;1;0;6;;CONTINUOUS;;Bolt Level Motor
+ucScrewingEntryConveyor;kabanLedLabel3;D223;Bit_16;1;0;6;;CONTINUOUS;;Bolt Level Motor
+ucScrewingEntryConveyor;kabanNumericButton1;D367;Bit_16;1;;;n0;;;
+ucScrewingEntryConveyor;kabanNumericButton46;D368;Bit_16;1;;;n0;;;GO!
+ucScrewingEntryConveyor;kabanButton7;M102;;;;;;;Momentary;Lubrication
+ucScrewingEntryConveyor;kabanButton1;M110;;;;;;;Momentary;
+ucScrewingEntryConveyor;kabanLambButton5;M111;;;;;;;Momentary;
+ucScrewingEntryConveyor;kabanLambButton1;M112;;;;;;;Momentary;
+ucScrewingEntryConveyor;kabanButton3;M113;;;;;;;Momentary;
+ucScrewingEntryConveyor;kabanLambButton4;M150;;;;;;;Momentary;Conveyor Motor
+ucScrewingEntryConveyor;kabanLambButton3;M151;;;;;;;Momentary;Clampings Up/Down
+ucScrewingEntryConveyor;kabanLambButton6;M152;;;;;;;Momentary;Clampings Up/Down
+ucScrewingEntryConveyor;kabanButton8;M153;;;;;;;Momentary;Clamping 1
+ucScrewingEntryConveyor;kabanButton10;M154;;;;;;;Momentary;Clamping 2
+ucScrewingEntryConveyor;kabanButton11;M155;;;;;;;Momentary;Clamping 3
+ucScrewingEntryConveyor;kabanButton9;M156;;;;;;;Momentary;Clamping 4
+ucScrewingEntryConveyor;kabanButton12;M157;;;;;;;Momentary;Clamping 5
+ucScrewingEntryConveyor;kabanButton13;M158;;;;;;;Momentary;Clamping 6
+ucScrewingEntryConveyor;kabanButton15;M159;;;;;;;Momentary;Clampings Release
+ucScrewingEntryConveyor;kabanButton5;M160;;;;;;;Momentary;Screwing ON/OFF
+ucScrewingEntryConveyor;kabanButton6;M161;;;;;;;Momentary;Screwing ON/OFF
+ucScrewingEntryConveyor;kabanLambButton9;M162;;;;;;;Momentary;Screwing ON/OFF
+ucScrewingEntryConveyor;kabanLambButton20;M163;;;;;;;Momentary;Screwing ON/OFF
+ucScrewingEntryConveyor;kabanButton14;M175;;;;;;;Momentary;Bolt Level Motor
+ucScrewingEntryConveyor;kabanButton4;M176;;;;;;;Momentary;Bolt Level Motor
+ucScrewingEntryConveyor;kabanButton16;M177;;;;;;;Momentary;GO!
+ucScrewingEntryConveyor;kabanButton2;M178;;;;;;;Momentary;GO!
+ucScrewingEntryConveyor;kabanLambButton7;M181;;;;;;;Alternate;Unit FW/Back
+ucScrewingEntryConveyor;kabanLambButton2;M182;;;;;;;Alternate;Unit Back
+ucScrewingHeadControlButtons;btnReset;M36;;;;;;;Momentary;
+ucScrewingMainControlPanel;btnPause;M0;;;;;;;Alternate;Pause
+ucScrewingMainControlPanel;btnCancel;M132;;;;;;;Momentary;Cancel
+ucScrewingParameter;kabanNumericButton4;D98;Bit_16;1;;;n0;;;Maximum Length
+ucScrewingParameter;kabanNumericButton3;D99;Bit_16;1;;;n0;;;Minimum Length
+ucScrewingParameter;kabanNumericButton23;D172;Bit_32;1;;;n0;;;Lubrication Period
+ucScrewingParameter;kabanNumericButton22;D175;Bit_16;1;;;n0;;;Pulse Number
+ucScrewingParameter;kabanNumericButton21;D176;Bit_16;1;;;n0;;;Tank Pulse Capacity
+ucScrewingParameter;kabanNumericButton5;D330;Bit_32;1;;;n0;;;Reference Speed
+ucScrewingParameter;kabanNumericButton2;D334;Bit_32;1;;;n0;;;Manuel Speed
+ucScrewingParameter;kabanNumericButton1;D338;Bit_32;1;;;n0;;;Automatic Speed
+ucScrewingParameter;kabanNumericButton16;D342;Bit_16;1;;;n0;;;Ref. Position 1
+ucScrewingParameter;kabanNumericButton17;D343;Bit_16;1;;;n0;;;Ref. Position 2
+ucScrewingParameter;kabanNumericButton14;D344;Bit_16;1;;;n0;;;Distance
+ucScrewingParameter;kabanNumericButton15;D345;Bit_16;1;;;n0;;;Safety Distance
+ucScrewingParameter;kabanNumericButton13;D346;Bit_16;1;;;n0;;;Sensor Reflector Pos.
+ucScrewingParameter;kabanNumericButton7;D347;Bit_16;1;;;n0;;;Unit Positions on The Conveyor
+ucScrewingParameter;kabanNumericButton8;D348;Bit_16;1;;;n0;;;Clamping 3
+ucScrewingParameter;kabanNumericButton9;D349;Bit_16;1;;;n0;;;Clamping 4
+ucScrewingParameter;kabanNumericButton10;D350;Bit_16;1;;;n0;;;Clamping 5
+ucScrewingParameter;kabanNumericButton11;D351;Bit_16;1;;;n0;;;Clamping 6
+ucScrewingParameter;kabanNumericButton12;D354;Bit_16;1;;;n0;;;Max Screwing Time
+ucScrewingParameter;kabanNumericButton19;D357;Bit_16;1;;;n0;;;Reference Step Number 1
+ucScrewingParameter;kabanNumericButton18;D358;Bit_16;1;;;n0;;;Reference Step Number 2
+ucScrewingParameter;kabanNumericButton25;D359;Bit_16;1;;;n0;;;Step Stopping Delay 1
+ucScrewingParameter;kabanNumericButton24;D360;Bit_16;1;;;n0;;;Step Stopping Delay 2
+ucScrewingParameter;kabanNumericButton20;D363;Bit_16;1;;;n0;;;Total Step Number
+ucScrewingParameter;kabanLambButton2;M1000;;;;;;;Alternate;Accesories Position Shift
+ucScrewingParameter;kabanLambButton1;M1001;;;;;;;Alternate;Magnetic Proximity Sensor
+ucScrewingParameter;kabanLambButton3;M1002;;;;;;;Alternate;Stoppers Auto Settings
+

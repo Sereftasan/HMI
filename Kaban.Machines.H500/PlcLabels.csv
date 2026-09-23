@@ -1,0 +1,68 @@
+# H500 - recovered from the old _H100 project's screens.
+"# The label is the CAPTION that sat beside each control; replace"
+# with the machine's real label export when it is available.
+Label;DataType;Address
+MAN_Reset;Bit;M36
+Axis_X1;Double Word [Signed];D80
+Axis_X2;Double Word [Signed];D82
+MAN_Profile_Info_List;Word [Signed];null
+MAN_Manual;Bit;M2
+Bolt_Level_Motor;Word [Signed];D222
+Bolt_Level_Motor;Word [Signed];D223
+D367;Word [Signed];D367
+GO;Word [Signed];D368
+MAN_Lubrication;Bit;M102
+MAN_M110;Bit;M110
+MAN_M111;Bit;M111
+MAN_M112;Bit;M112
+MAN_M113;Bit;M113
+MAN_Conveyor_Motor;Bit;M150
+MAN_Clampings_Up_Down;Bit;M151
+MAN_Clampings_Up_Down;Bit;M152
+MAN_Clamping_1;Bit;M153
+MAN_Clamping_2;Bit;M154
+MAN_Clamping_3;Bit;M155
+MAN_Clamping_4;Bit;M156
+MAN_Clamping_5;Bit;M157
+MAN_Clamping_6;Bit;M158
+MAN_Clampings_Release;Bit;M159
+MAN_Screwing_ON_OFF;Bit;M160
+MAN_Screwing_ON_OFF;Bit;M161
+MAN_Screwing_ON_OFF;Bit;M162
+MAN_Screwing_ON_OFF;Bit;M163
+MAN_Bolt_Level_Motor;Bit;M175
+MAN_Bolt_Level_Motor;Bit;M176
+MAN_GO;Bit;M177
+MAN_GO;Bit;M178
+MAN_Unit_FW_Back;Bit;M181
+MAN_Unit_Back;Bit;M182
+MAN_Pause;Bit;M0
+MAN_Cancel;Bit;M132
+Maximum_Length;Word [Signed];D98
+Minimum_Length;Word [Signed];D99
+Lubrication_Period;Double Word [Signed];D172
+Pulse_Number;Word [Signed];D175
+Tank_Pulse_Capacity;Word [Signed];D176
+Reference_Speed;Double Word [Signed];D330
+Manuel_Speed;Double Word [Signed];D334
+Automatic_Speed;Double Word [Signed];D338
+Ref_Position_1;Word [Signed];D342
+Ref_Position_2;Word [Signed];D343
+Distance;Word [Signed];D344
+Safety_Distance;Word [Signed];D345
+Sensor_Reflector_Pos;Word [Signed];D346
+Unit_Positions_on_The_Conveyor;Word [Signed];D347
+Clamping_3;Word [Signed];D348
+Clamping_4;Word [Signed];D349
+Clamping_5;Word [Signed];D350
+Clamping_6;Word [Signed];D351
+Max_Screwing_Time;Word [Signed];D354
+Reference_Step_Number_1;Word [Signed];D357
+Reference_Step_Number_2;Word [Signed];D358
+Step_Stopping_Delay_1;Word [Signed];D359
+Step_Stopping_Delay_2;Word [Signed];D360
+Total_Step_Number;Word [Signed];D363
+MAN_Accesories_Position_Shift;Bit;M1000
+MAN_Magnetic_Proximity_Sensor;Bit;M1001
+MAN_Stoppers_Auto_Settings;Bit;M1002
+

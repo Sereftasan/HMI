@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PLC connection troubleshooting</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;max-width:860px;margin:2em auto;padding:0 1.5em;color:#23262c;line-height:1.55}
+ h1{font-size:1.5em;border-bottom:2px solid #1e78dc;padding-bottom:.3em}
+ h2{font-size:1.15em;margin-top:2em;background:#f2f5f9;padding:.45em .7em;border-left:4px solid #1e78dc}
+ code{background:#eef1f5;padding:.1em .4em;border-radius:3px}
+ ol{padding-left:1.4em} li{margin:.45em 0}
+ .note{background:#fff8e6;border-left:4px solid #d7a528;padding:.7em 1em;margin:1.2em 0}
+
+ /* The section the HMI linked to is highlighted: the page covers four codes and
+    the reader is chasing one of them. */
+ h2:target{background:#fff3cd;border-left-color:#d7a528;box-shadow:0 0 0 3px #fff3cd}
+ h2:target + p, h2:target + ol{background:#fffdf5}
+</style></head><body>
+<h1>PLC connection troubleshooting</h1>
+<p>The HMI shows this warning when a controller stops answering. Values already on
+screen are the <strong>last ones read</strong> and are not being refreshed.</p>
+
+<div class="note"><strong>Before anything else:</strong> the machine may still be
+moving. The HMI has lost sight of the controller, not control of the machine.
+Treat the machine as live until you have checked it.</div>
+
+<h2 id="C01">C01 &mdash; No driver configured for this station</h2>
+<p>The station exists in the program but nothing was set up to talk to it.</p>
+<ol>
+<li>Open <em>HMI Settings &rarr; PLC Connection</em>.</li>
+<li>Check the <strong>Driver</strong> column for this controller. An empty or wrong
+driver is the usual cause after a settings import.</li>
+<li>Set the driver, save, and restart the program.</li>
+</ol>
+
+<h2 id="C02">C02 &mdash; Link not open</h2>
+<p>The program tried to open the link and could not. Nothing has been reached.</p>
+<ol>
+<li>Check the controller has power and its run lamp is on.</li>
+<li>Check the network cable at both ends, and the switch port lamp.</li>
+<li>Check the <strong>Address</strong> on the PLC Connection page matches the
+controller (e.g. <code>192.168.1.31</code>).</li>
+<li>From the panel PC, ping that address. No reply means the fault is in the
+network, not in the HMI.</li>
+<li>For a serial or USB driver, check the cable and that no other program
+(GX&nbsp;Works, a configurator) is holding the port.</li>
+</ol>
+
+<h2 id="C03">C03 &mdash; Link open but no reply</h2>
+<p>The connection exists but reads are failing. This is the one that most often
+means a cable half out or a controller that has stopped.</p>
+<ol>
+<li>Check the controller is in RUN, not STOP or an error state.</li>
+<li>Check its own error lamps and, if fitted, its display code.</li>
+<li>Check the network for a loose plug or a switch that has lost power.</li>
+<li>If the controller was recently reprogrammed, check the device addresses the
+HMI reads still exist in the new program.</li>
+</ol>
+
+<h2 id="C04">C04 &mdash; Unexpected reply</h2>
+<p>Something answered, but not in the form expected.</p>
+<ol>
+<li>Check the <strong>Driver</strong> matches the controller make - a Mitsubishi
+driver pointed at a Siemens controller reaches it and fails here.</li>
+<li>Check the station number on the PLC Connection page.</li>
+<li>Check the PLC program version in the <strong>State</strong> column against the
+version this machine expects.</li>
+</ol>
+
+<h2>After the connection returns</h2>
+<p>The warning clears by itself once reads succeed again. Values resume updating
+immediately; nothing needs to be acknowledged.</p>
+</body></html>
+

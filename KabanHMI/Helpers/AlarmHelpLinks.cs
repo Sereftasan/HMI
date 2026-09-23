@@ -1,0 +1,401 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Kaban.Core.Helpers;
+using Kaban.Core.Machines;
+using Kaban.UI.Controls;
+using Kaban.UI.Settings;
+using TC = Kaban.Core.Helpers.TroubleshootingCatalog;
+
+namespace Kaban.UI.Helpers
+{
+    /// <summary>
+    /// Which unit on the machine an alarm belongs to - learned from the units.
+    ///
+    /// THE MODEL
+    /// ---------
+    /// A FunctionUnitHMI IS a cylinder: its valve and its feedback sensor are
+    /// facts about that physical unit, and its two error bits are the alarms it
+    /// can raise. An AxisSettingHMI IS a servo axis, with one error bit. So the
+    /// knowledge lives on the control, set once where the unit is designed,
+    /// instead of being re-typed on every alarm the unit can raise - where two
+    /// alarms of one cylinder could quietly be given different valves.
+    ///
+    /// At start-up every machine page is built off-screen once, each unit's
+    /// error bits are collected, and an alarm on the same station and device is
+    /// linked to that unit. Alarms that belong to no unit - emergency stop, air
+    /// pressure - carry their help as plain helper links.
+    /// </summary>
+    public static class AlarmHelpLinks
+    {
+        public sealed class Link
+        {
+            public TC.ErrorType Kind;
+            public int Station;
+            public string Address = "";
+            public int Valve;
+            public int Feedback;
+            /// <summary>The unit or axis as it is named on its page.</summary>
+            public string Unit = "";
+            /// <summary>The unit's own help files, listed after its manual.</summary>
+            public List<string> HelpFiles = new List<string>();
+        }
+
+        private static readonly Dictionary<string, Link> _links =
+            new Dictionary<string, Link>(StringComparer.OrdinalIgnoreCase);
+        private static readonly List<string> _conflicts = new List<string>();
+
+        public static int Count { get { return _links.Count; } }
+        public static IList<string> Conflicts { get { return _conflicts.AsReadOnly(); } }
+        public static TimeSpan LastDiscovery { get; private set; }
+
+        private static string Key(int station, string address)
+        {
+            return station + "|" + (address ?? "").Trim().ToUpperInvariant();
+        }
+
+        public static void Clear()
+        {
+            SimulationMotion.Clear();      // collected in the same pass over the pages
+            _links.Clear();
+            _conflicts.Clear();
+            _axes.Clear();
+        }
+
+        // ---- axes ------------------------------------------------------------
+        //
+        // Every AxisSettingHMI row seen by discovery, so an AxisUnitHMI on a manual
+        // page can mirror it by number. Copied, not referenced: the page the row
+        // was found on is disposed straight after.
+
+        public sealed class AxisInfo
+        {
+            public int Station, Number, Decimals, Digits;
+            public string NameKey = "", Back = "", Forward = "", Position = "", Suffix = "",
+                          ReferenceSensor = "", Error = "";
+            public AxisReferenceSide ReferenceSide;
+            public Kaban.Core.Enums.DataTypeEnum PositionType;
+            public double Divisor;
+            public bool Vertical;
+        }
+
+        private static readonly Dictionary<string, AxisInfo> _axes = new Dictionary<string, AxisInfo>();
+        private static bool _discovered, _discovering;
+
+        /// <summary>True while discovery is building pages only to search them.</summary>
+        public static bool IsDiscovering { get { return _discovering; } }
+
+        public static AxisInfo FindAxis(int station, int number)
+        {
+            AxisInfo a;
+            return _axes.TryGetValue(station + "|" + number, out a) ? a : null;
+        }
+
+        /// <summary>Runs discovery once, if it has not run yet.</summary>
+        public static void EnsureDiscovered()
+        {
+            if (_discovered || _discovering) return;
+            if (_pending == null) StartDiscovery();
+            while (_pending != null && _pending.Count > 0) RunOne();
+            if (_pending != null) Finish();
+        }
+
+        private static void RegisterAxis(AxisSettingHMI a)
+        {
+            if (a == null || a.AxisNumber <= 0) return;
+            var key = a.PlcNumber + "|" + a.AxisNumber;
+            if (_axes.ContainsKey(key))
+            {
+                var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.AxisNumber);
+                if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("axis conflict - " + msg); }
+                return;
+            }
+            _axes[key] = new AxisInfo
+            {
+                Station = a.PlcNumber, Number = a.AxisNumber, NameKey = a.AxisNameKey ?? "",
+                Back = a.CommandBackAddress ?? "", Forward = a.CommandForwardAddress ?? "",
+                Position = a.PositionAddress ?? "", PositionType = a.PositionDataType,
+                Divisor = a.Divisor, Decimals = a.DecimalPlaces, Digits = a.Digits, Suffix = a.Suffix ?? "",
+                ReferenceSensor = a.ReferenceSensorAddress ?? "", ReferenceSide = a.ReferenceSensorSide,
+                Error = a.ErrorAddress ?? "", Vertical = a.VerticalMovement
+            };
+        }
+
+        /// <summary>
+        /// Adds a unit's error bit. The same unit shown on two pages is normal and
+        /// ignored; two units describing ONE error bit differently is a design
+        /// mistake, and it is reported rather than settled silently - otherwise the
+        /// operator's help would depend on which page happened to be built first.
+        /// </summary>
+        public static void Register(Link link)
+        {
+            if (link == null || link.Station <= 0 || string.IsNullOrWhiteSpace(link.Address)) return;
+            var key = Key(link.Station, link.Address);
+
+            Link existing;
+            if (_links.TryGetValue(key, out existing))
+            {
+                if (existing.Kind != link.Kind || existing.Valve != link.Valve || existing.Feedback != link.Feedback)
+                {
+                    var msg = string.Format("PLC {0} {1}: '{2}' and '{3}' describe this error differently",
+                                            link.Station, link.Address.Trim(), existing.Unit, link.Unit);
+                    if (!_conflicts.Contains(msg))
+                    {
+                        _conflicts.Add(msg);
+                        AuditLogger.Log("help link conflict - " + msg);
+                    }
+                }
+                return;
+            }
+            _links[key] = link;
+        }
+
+        public static Link Find(int station, string address)
+        {
+            Link l;
+            return _links.TryGetValue(Key(station, address), out l) ? l : null;
+        }
+
+        /// <summary>Collects every unit under a control, pages inside settings screens included.</summary>
+        public static void Harvest(Control root)
+        {
+            if (root == null) return;
+
+            var unit = root as FunctionUnitHMI;
+            if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
+
+            var axis = root as AxisSettingHMI;
+            if (axis != null) { Register(axis.HelpLink()); RegisterAxis(axis); SimulationMotion.Register(axis); return; }
+
+            // A settings screen builds its tabs only when they are opened; its
+            // pages are built here one at a time instead.
+            var settings = root as SettingsScreen;
+            if (settings != null)
+                foreach (var page in settings.AllPages) HarvestPage(page);
+
+            foreach (Control c in root.Controls) Harvest(c);
+        }
+
+        private static void HarvestControls(Control root)
+        {
+            if (root == null) return;
+            var unit = root as FunctionUnitHMI;
+            if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
+            var axis = root as AxisSettingHMI;
+            if (axis != null) { Register(axis.HelpLink()); RegisterAxis(axis); SimulationMotion.Register(axis); return; }
+            foreach (Control c in root.Controls) HarvestControls(c);
+        }
+
+        private static void HarvestPage(ISettingsPage page)
+        {
+            Control view = null;
+            try
+            {
+                view = page.GetControl();
+                Harvest(view);
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("help discovery skipped page '" + page.TitleFallback + "': " + ex.Message);
+            }
+            finally
+            {
+                Discard(view);
+            }
+        }
+
+        // ---- discovery, in idle-time steps -----------------------------------
+        //
+        // Every machine page is built off-screen once, searched, and disposed.
+        // Done in one go it held the UI thread for seconds on a cold first start -
+        // the wait before the user name could be typed. Now each page is its own
+        // step, run while the program is idle, about 25 ms at a time; anything that
+        // needs the result early (an axis unit, an alarm's help) finishes the rest.
+
+        private static Queue<Action> _pending;
+        private static readonly Stopwatch _work = new Stopwatch();
+
+        /// <summary>Queues discovery to run in idle time. Returns at once.</summary>
+        public static void StartDiscovery()
+        {
+            if (_discovered || _pending != null) return;
+            Clear();
+            _work.Reset();
+            _pending = new Queue<Action>();
+            foreach (var kv in MachineRegistry.AllScreens())
+            {
+                var screen = kv.Value;
+                if (screen.CreateView == null) continue;
+                if (screen.Role == ScreenRoles.Alarms || screen.Role == ScreenRoles.HmiSettings) continue;
+                _pending.Enqueue(() => HarvestScreen(screen));
+            }
+            Application.Idle += OnIdle;
+        }
+
+        private static bool _inIdle;
+
+        private static void OnIdle(object sender, EventArgs e)
+        {
+            // NOT RE-ENTERED. A step builds pages, page building can process
+            // messages, and a second Idle then ran inside the first: it finished
+            // the queue and cleared it, and the outer one fell over the cleared
+            // queue (NullReferenceException in OnIdle).
+            if (_inIdle) return;
+            if (_pending == null) { Application.Idle -= OnIdle; return; }
+            _inIdle = true;
+            try
+            {
+                var slice = Stopwatch.StartNew();
+                while (_pending != null && _pending.Count > 0 && slice.ElapsedMilliseconds < 25) RunOne();
+                if (_pending != null && _pending.Count == 0) Finish();
+            }
+            finally { _inIdle = false; }
+        }
+
+        private static void RunOne()
+        {
+            var step = _pending.Dequeue();
+            _discovering = true;
+            _work.Start();
+            try { step(); }
+            catch (Exception ex) { AuditLogger.Log("help discovery step failed: " + ex.Message); }
+            finally { _work.Stop(); _discovering = false; }
+        }
+
+        private static void Finish()
+        {
+            Application.Idle -= OnIdle;
+            _pending = null;
+            _discovered = true;
+            LastDiscovery = _work.Elapsed;
+            AuditLogger.Log(string.Format("help links: {0} error bit(s) linked to units in {1} ms of idle time{2}",
+                _links.Count, (int)_work.ElapsedMilliseconds,
+                _conflicts.Count == 0 ? "" : ", " + _conflicts.Count + " conflict(s)"));
+        }
+
+        private static void HarvestScreen(MachineScreen screen)
+        {
+            Control view = null;
+            try
+            {
+                view = screen.CreateView() as Control;
+                // A settings screen's tabs become steps of their own.
+                var settings = view as SettingsScreen;
+                if (settings != null)
+                    foreach (var page in settings.AllPages) { var pg = page; _pending.Enqueue(() => HarvestPage(pg)); }
+                HarvestControls(view);
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("help discovery skipped '" + screen.TitleFallback + "': " + ex.Message);
+            }
+            finally { Discard(view); }
+        }
+
+        /// <summary>
+        /// Disposes a page built only to be searched - after removing its controls
+        /// from the shared tooltip. WinForms never removes a disposed control from
+        /// a tooltip, and a tooltip full of dead off-screen controls throws when it
+        /// next needs its window (the login's NullReferenceException).
+        /// </summary>
+        private static void Discard(Control view)
+        {
+            if (view == null) return;
+            var tips = UiStyle.Tips();
+            var stack = new Stack<Control>(); stack.Push(view);
+            while (stack.Count > 0)
+            {
+                var c = stack.Pop();
+                if (!string.IsNullOrEmpty(tips.GetToolTip(c))) tips.SetToolTip(c, null);
+                foreach (Control k in c.Controls) stack.Push(k);
+            }
+            view.Dispose();
+        }
+
+        /// <summary>Discovery all at once - for tests, and for callers that need it finished.</summary>
+        public static TimeSpan DiscoverAll()
+        {
+            _discovered = false;
+            _pending = null;
+            StartDiscovery();
+            while (_pending != null && _pending.Count > 0) RunOne();
+            if (_pending != null) Finish();
+            return LastDiscovery;
+        }
+
+        /// <summary>
+        /// The documents for an alarm: its unit's manual first - tailored to that
+        /// cylinder's valve and feedback - then the alarm's own helper files.
+        /// </summary>
+        public static List<TC.HelpDocument> DocumentsFor(AlarmDefinition def)
+        {
+            return def == null ? new List<TC.HelpDocument>()
+                               : DocumentsFor(def.PlcNumber, def.Address, def.HelperKeys);
+        }
+
+        public static List<TC.HelpDocument> DocumentsFor(int station, string address, IEnumerable<string> helperFiles)
+        {
+            var docs = new List<TC.HelpDocument>();
+
+            var link = Find(station, address);
+            string file;
+            if (link != null && TC.DocumentForType.TryGetValue(link.Kind, out file) && !string.IsNullOrEmpty(file))
+            {
+                bool cylinder = link.Kind == TC.ErrorType.CylinderMovement;
+                docs.Add(new TC.HelpDocument
+                {
+                    FileName = file,
+                    Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
+                                      : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
+                            + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
+                    Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
+                    Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0
+                });
+            }
+
+            // The unit's own help next: what the unit IS, beside what went wrong.
+            if (link != null && link.HelpFiles != null)
+                foreach (var n in link.HelpFiles)
+                    docs.Add(new TC.HelpDocument { FileName = n, Title = Path.GetFileNameWithoutExtension(n) });
+
+            if (helperFiles != null)
+                foreach (var entry in helperFiles.Where(f => !string.IsNullOrWhiteSpace(f)))
+                    foreach (var name in entry.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var n = name.Trim();
+                        if (n.Length == 0) continue;
+                        docs.Add(new TC.HelpDocument { FileName = n, Title = Path.GetFileNameWithoutExtension(n) });
+                    }
+
+            // One entry per file: an alarm helper link that repeats a unit file
+            // would list the same document twice.
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return docs.Where(d => d.Exists && (d.Valve != 0 || d.Feedback != 0 || seen.Add(d.FileName))).ToList();
+        }
+
+        /// <summary>Opens a document - tailored or sectioned where that applies.</summary>
+        public static void Open(IWin32Window owner, TC.HelpDocument doc)
+        {
+            if (doc == null) return;
+            string target = TC.ExtractSection(doc);
+            try
+            {
+                AuditLogger.Log("opened help document " + doc.FileName + ".");
+                Process.Start(new ProcessStartInfo { FileName = target, UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not open help document: " + ex.Message);
+                MessageBox.Show(owner,
+                    LanguageManager.GetString("Msg_HelpOpenFailed", "Could not open the help document.") +
+                    "\r\n" + target + "\r\n\r\n" + ex.Message,
+                    LanguageManager.GetString("Alarm_Col_Help", "Help"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+    }
+}
+

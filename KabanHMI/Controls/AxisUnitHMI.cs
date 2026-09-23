@@ -1,0 +1,143 @@
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+using Kaban.Core.Enums;
+using Kaban.Core.Helpers;
+using Kaban.UI.Helpers;
+
+namespace Kaban.UI.Controls
+{
+    /// <summary>
+    /// An axis on a manual-movement page, defined by ONE property: its number.
+    ///
+    /// Everything else - jog bits, position and its scaling, name, error bit,
+    /// reference sensor - already exists on the matching AxisSettingHMI row, and
+    /// is taken from there. Entering the same addresses and divisors on two pages
+    /// is how the two end up disagreeing; now there is nothing to disagree about.
+    ///
+    /// It looks exactly like the FunctionUnitHMI units around it, because it IS
+    /// one inside: the same frame, two jog buttons, position display, the
+    /// reference sensor lamp on one button, and the "?" on its border when the
+    /// axis faults.
+    /// </summary>
+    [ToolboxItem(true)]
+    public class AxisUnitHMI : UserControl
+    {
+        private readonly FunctionUnitHMI _unit = new FunctionUnitHMI { Dock = DockStyle.Fill };
+        private int _axisNumber;
+        private int _plcNumber = 1;
+
+        public AxisUnitHMI()
+        {
+            Controls.Add(_unit);
+            Size = DefaultSize;
+        }
+
+        protected override Size DefaultSize { get { return new Size(360, 64); } }
+
+        [Category(" Axis"), DefaultValue(0),
+         Description("The axis number set on its AxisSettingHMI row. Everything else is taken from that row.")]
+        public int AxisNumber
+        {
+            get { return _axisNumber; }
+            set { _axisNumber = value; Apply(); }
+        }
+
+        /// <summary>The controller the axis is on - 1 unless the machine has several.</summary>
+        [Category(" Axis"), DefaultValue(1), Description("Controller of the axis (1 unless the machine has several).")]
+        public int PlcNumber
+        {
+            get { return _plcNumber; }
+            set { _plcNumber = value; Apply(); }
+        }
+
+        /// <summary>The unit inside, for tests and for code that needs its parts.</summary>
+        [Browsable(false)]
+        public FunctionUnitHMI Unit { get { return _unit; } }
+
+        /// <summary>True when the axis row was found and applied.</summary>
+        [Browsable(false)]
+        public bool IsResolved { get; private set; }
+
+        private bool InDesigner
+        {
+            get { return DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime; }
+        }
+
+        /// <summary>
+        /// Looks the axis up and becomes it. Done as the number is SET - while the
+        /// page is being built - so the scanner, which collects addresses when the
+        /// page is loaded, already sees the jog bits and the position.
+        /// </summary>
+        private void Apply()
+        {
+            IsResolved = false;
+
+            // CLEARED FIRST, every time. While a page is built the station is still
+            // the machine's local "1" - on a mounted H800 that first lookup found
+            // FA2010's axis of the same number, and when the right lookup then came
+            // up empty that configuration stayed: an H800 button would have jogged
+            // an FA2010 axis. A unit that cannot find its axis is now inert.
+            _unit.CommandAAddress = _unit.CommandBAddress = "";
+            _unit.PositionAddress = "";
+            _unit.Lamp1AAddress = _unit.Lamp1BAddress = "";
+            _unit.ErrorAAddress = _unit.ErrorBAddress = "";
+            if (InDesigner || _axisNumber <= 0)
+            {
+                _unit.TitleTextKey = _axisNumber > 0 ? "Axis " + _axisNumber : "Axis";
+                return;
+            }
+
+            // Discovery builds pages only to search them; resolving then would ask
+            // for discovery again from inside it.
+            if (AlarmHelpLinks.IsDiscovering) return;
+            AlarmHelpLinks.EnsureDiscovered();
+
+            var a = AlarmHelpLinks.FindAxis(_plcNumber, _axisNumber);
+            if (a == null)
+            {
+                // Said on the control, not left blank: an axis unit that silently
+                // does nothing looks like a machine that will not move.
+                _unit.TitleTextKey = string.Format(
+                    LanguageManager.GetString("Axis_NotFound", "Axis {0}: no axis settings row"), _axisNumber);
+                return;
+            }
+
+            _unit.PlcNumber = a.Station;
+            _unit.TitleTextKey = a.NameKey;
+            _unit.Kind = UnitKind.Axis;
+
+            _unit.CommandAAddress = a.Back;
+            _unit.CommandAAction = BitActionType.Momentary;
+            _unit.CommandBAddress = a.Forward;
+            _unit.CommandBAction = BitActionType.Momentary;
+
+            // The axis row's own widths, so every axis control looks the same.
+            _unit.ButtonSlotWidth = AxisSettingHMI.WJog;
+            _unit.PositionSlotWidth = AxisSettingHMI.WPosition;
+
+            _unit.PositionAddress = a.Position;
+            _unit.PositionDataType = a.PositionType;
+            _unit.PositionDivisor = a.Divisor <= 0 ? 1 : a.Divisor;
+            _unit.PositionDecimalPlaces = a.Decimals;
+            _unit.PositionDigits = a.Digits;
+            _unit.PositionSuffix = a.Suffix;
+
+            // The reference sensor on ONE side only, as on the axis row.
+            bool back = a.ReferenceSide == AxisReferenceSide.Back;
+            _unit.Lamp1AAddress = back ? a.ReferenceSensor : "";
+            _unit.Lamp1BAddress = back ? "" : a.ReferenceSensor;
+
+            // One error bit for an axis; its "?" goes on the forward (right) border.
+            _unit.ErrorAAddress = "";
+            _unit.ErrorBAddress = a.Error;
+
+            _unit.ButtonA.Direction = a.Vertical ? ButtonGlyphs.Direction.Down : ButtonGlyphs.Direction.Left;
+            _unit.ButtonB.Direction = a.Vertical ? ButtonGlyphs.Direction.Up : ButtonGlyphs.Direction.Right;
+
+            IsResolved = true;
+        }
+    }
+}
+

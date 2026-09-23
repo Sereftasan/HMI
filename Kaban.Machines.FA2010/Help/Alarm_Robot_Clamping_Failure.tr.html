@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<title>M840 Robot Sıkma Alarmı - arıza giderme</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.2em;color:#23262c;line-height:1.45;font-size:14px}
+ h1{font-size:1.45em;margin:.2em 0 .6em}
+ h2{font-size:1.15em;color:#1f4e79;margin:1.6em 0 .4em}
+ p{margin:.25em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em;table-layout:fixed}
+ td,th{border:1px solid #444;padding:.35em .5em;vertical-align:top;text-align:left}
+ th{background:#dcdcdc;text-align:center}
+ td.no{text-align:center;width:5%}
+ table.caution td:first-child{background:#f4b6bf;font-weight:bold;text-align:center;width:14%}
+ table.point td:first-child{background:#eeeeee;font-weight:bold;text-align:center;width:14%}
+ code{background:#f2f4f7;padding:0 .25em;border:1px solid #dde1e6;font-family:Consolas,monospace}
+ .small{color:#555;font-size:.92em}
+</style></head><body>
+
+<h1>M840 &ndash; Robot Sıkma Alarmı</h1>
+
+<table class="caution"><tr><td>DİKKAT</td><td>
+Alarmı resetlemeden önce nedenini giderin ve bölgeyi güvene alın. Sıkma ünitesine dokunmadan önce elektrik ve hava
+beslemesini kesip kilitleyin ve silindirin her iki tarafındaki havayı boşaltın: sıkılı bir silindir basıncı tutar ve
+hava geldiğinde ani hareket edebilir. Bu alarmı gidermek için koruyucu kapı kilidini asla devre dışı bırakmayın.
+</td></tr></table>
+
+<table class="point"><tr><td>NOT</td><td>
+<b>Alarm:</b> sıkma komutu verildi, ancak sıkma sensörü izleme süresi içinde onay vermedi.<br>
+<b>Ünite:</b> Robot Üst Sıkma &ndash; sıkma <code>M656</code>, bırakma <code>M657</code>, sıkma sensörü
+<code>M233</code>.<br>
+Tabloyu sırayla uygulayın. Arızaların çoğu 2. veya 3. adımda çözülür.
+</td></tr></table>
+
+<h2>Kontroller, sırasıyla</h2>
+<table>
+<colgroup><col style="width:5%"><col style="width:22%"><col style="width:26%"><col style="width:22%"><col style="width:25%"></colgroup>
+<tr><th>No.</th><th>Neden</th><th>Kontrol</th><th>Sonuç</th><th>Yapılacak</th></tr>
+
+<tr><td class="no" rowspan="2">1</td><td rowspan="2">Profil yerinde değil, bu yüzden sıkma kapanamıyor</td>
+    <td rowspan="2">Transfer istasyonuna bakın. Profil referans yüzeyine tam olarak dayanmış mı?</td>
+    <td>Profil kısa, eğri veya yok</td>
+    <td>İstasyonu boşaltın, önceki transferi düzeltin ve çevrimi yeniden başlatın.</td></tr>
+<tr><td>Profil yerinde</td><td>2. kontrole geçin.</td></tr>
+
+<tr><td class="no" rowspan="2">2</td><td rowspan="2">Sensör kaymış veya arızalı</td>
+    <td rowspan="2">Manuel Hareket sayfasından elle sıkın. Strok sonunda sol butonun lambası yanıyor mu?</td>
+    <td>Sıkma kapanıyor ama lamba yanmıyor</td>
+    <td>Sensörü yeniden ayarlayın (ünite bilgi sayfasına bakın); hiçbir konumda anahtarlamıyorsa değiştirin.</td></tr>
+<tr><td>Lamba yanıyor</td><td>Alarm bir süre problemi &ndash; 5. kontrole geçin.</td></tr>
+
+<tr><td class="no" rowspan="2">3</td><td rowspan="2">Hava yok veya basınç yetersiz</td>
+    <td rowspan="2">Makine çalışırken besleme manometresini okuyun.</td>
+    <td>5,5 bar'ın altında</td>
+    <td>Beslemeyi düzeltin; filtre/regülatörü ve ana hattı kaçak için kontrol edin.</td></tr>
+<tr><td>6 bar ve sabit</td><td>4. kontrole geçin.</td></tr>
+
+<tr><td class="no" rowspan="2">4</td><td rowspan="2">Valf yer değiştirmiyor</td>
+    <td rowspan="2">Sıkma komutunu verip valfin bobin LED'ine bakın, ardından valf üzerindeki manuel override'a basın.</td>
+    <td>LED sönük, ancak override ile sıkma hareket ediyor</td>
+    <td>Elektriksel arıza: çıkıştan bobine kadar kabloyu kontrol edin, sonra bobini değiştirin.</td></tr>
+<tr><td>LED yanıyor, sıkma yine de hareket etmiyor</td>
+    <td>Makara sıkışmış veya kirlenmiş: valfi temizleyin ya da değiştirin, hava kalitesini kontrol edin.</td></tr>
+
+<tr><td class="no" rowspan="2">5</td><td rowspan="2">Strok, izleme süresi için fazla yavaş</td>
+    <td rowspan="2">Manuel Hareket sayfasından sıkma strokunu gözle süreleyin.</td>
+    <td>Yarım saniyeden belirgin şekilde yavaş</td>
+    <td>Egzoz kısma valflerini biraz açın, hortumda ezilme olup olmadığına ve sıkma pabucunda birikme olup olmadığına bakın.</td></tr>
+<tr><td>Strok normal görünüyor</td>
+    <td>PLC programındaki izleme süresinin gözden geçirilmesini isteyin &ndash; destek talep edin.</td></tr>
+</table>
+
+<h2>Onarımdan sonra</h2>
+<p>
+Alarmı resetleyin, ardından ayar hızında üç kez sıkma ve bırakma yaptırıp her seferinde sensör lambasını doğrulayın.
+Makineyi üretime vermeden önce gözetim altında bir otomatik çevrim çalıştırın. Alarm aynı vardiya içinde tekrarlarsa,
+yaptığınız değişikliği kaydedin ve resetlemeye devam etmek yerine Kaban Makine Teknik Servis ile iletişime geçin.
+</p>
+
+<p class="small">
+Çeviri notu: bu dosya <code>Alarm_Robot_Clamping_Failure.en.html</code> dosyasının Türkçesidir. Dosya adı, bölüm sırası
+ve tablo yapısı İngilizce aslıyla aynı tutulmalıdır; yalnızca metin çevrilir. Cihaz adresleri
+(<code>M840</code>, <code>M233</code>) hiçbir zaman çevrilmez.
+</p>
+
+</body></html>
+

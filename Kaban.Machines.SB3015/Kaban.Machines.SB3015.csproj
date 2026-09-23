@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F4998BF9-D767-4207-BC3F-D669DEFE46EC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kaban.Machines.SB3015</RootNamespace>
+    <AssemblyName>Kaban.Machines.SB3015</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- GLOBAL bitness: unconditioned, so it applies for ANY configuration or
+         solution platform VS resolves. The MX Component stations on this site
+         are visible only to 64-bit processes; a 32-bit HMI gets 0xF0000003. -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screens\AlarmScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\AlarmScreen.Designer.cs">
+      <DependentUpon>AlarmScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\HomeScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\HomeScreen.Designer.cs">
+      <DependentUpon>HomeScreen.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kaban.Core\Kaban.Core.csproj">
+      <Project>{d8f9c31a-d5b2-48a0-8338-c417fb105b49}</Project>
+      <Name>Kaban.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Drivers.Simulation\Kaban.Drivers.Simulation.csproj">
+      <Project>{90b5ff2b-8d40-4d34-977b-6196b5a2179b}</Project>
+      <Name>Kaban.Drivers.Simulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KabanHMI\Kaban.UI.csproj">
+      <Project>{ac4e46e4-8e1e-4d8a-8231-62588c3d42f9}</Project>
+      <Name>Kaban.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Screens\AlarmScreen.resx">
+      <DependentUpon>AlarmScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\HomeScreen.resx">
+      <DependentUpon>HomeScreen.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\KabanHMI\Help\Connection_Troubleshooting.html">
+      <Link>Help\Connection_Troubleshooting.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Cylinder_Troubleshooting.html">
+      <Link>Help\Cylinder_Troubleshooting.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Cylinder_Troubleshooting_Manual_EN.pdf">
+      <Link>Help\Cylinder_Troubleshooting_Manual_EN.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\MR_J4_TroubleShooting.pdf">
+      <Link>Help\MR_J4_TroubleShooting.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+
+
+
+    <None Include="Alarms.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Translations.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\KabanHMI\CommonTranslations.csv">
+      <Link>CommonTranslations.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- SAFETY NET: proven on site by PE analysis of the working build and by the
+       0x80040154 (REGDB_E_CLASSNOTREG) crash - MX Component's ActUtlType COM
+       server is registered in the 32-BIT view only, so this HMI must run as a
+       32-bit process. Fail the build if that is ever switched off. -->
+  <Target Name="KabanAssert32Bit" BeforeTargets="Build">
+    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'"
+           Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
+  </Target>
+  <!-- Shared profile drawings: one source in KabanHMI\Profiles, copied to
+       bin\Debug\Profiles\ at build - add a DXF there and every machine has it. -->
+  <Target Name="CopySharedProfiles" AfterTargets="Build">
+    <ItemGroup>
+      <SharedProfile Include="..\KabanHMI\Profiles\*.dxf" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SharedProfile)" DestinationFolder="$(OutDir)Profiles\" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

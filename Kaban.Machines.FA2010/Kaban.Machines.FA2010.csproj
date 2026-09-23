@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6999337A-A0B2-4148-AEB4-792CE93E29CA}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kaban.Machines.FA2010</RootNamespace>
+    <AssemblyName>Kaban.Machines.FA2010</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- GLOBAL bitness: unconditioned, so it applies for ANY configuration or
+         solution platform VS resolves. The MX Component stations on this site
+         are visible only to 64-bit processes; a 32-bit HMI gets 0xF0000003. -->
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MachineConfig.cs" />
+    <Compile Include="FA2010Module.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\AlarmScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\AlarmScreen.Designer.cs">
+      <DependentUpon>AlarmScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualClamping_Moulds.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualClamping_Moulds.Designer.cs">
+      <DependentUpon>ManualClamping_Moulds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualCutting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualCutting.Designer.cs">
+      <DependentUpon>ManualCutting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualEntry_Conveyor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualEntry_Conveyor.Designer.cs">
+      <DependentUpon>ManualEntry_Conveyor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualExit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualExit.Designer.cs">
+      <DependentUpon>ManualExit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualMilling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualMilling.Designer.cs">
+      <DependentUpon>ManualMilling.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualOther.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualOther.Designer.cs">
+      <DependentUpon>ManualOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualProfile_Recognition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualProfile_Recognition.Designer.cs">
+      <DependentUpon>ManualProfile_Recognition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualRobot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualRobot.Designer.cs">
+      <DependentUpon>ManualRobot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
+      <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamCutting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamCutting.Designer.cs">
+      <DependentUpon>ParamCutting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamDistances_Beetwen_Units.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamDistances_Beetwen_Units.Designer.cs">
+      <DependentUpon>ParamDistances_Beetwen_Units.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamEntry_Conveyor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamEntry_Conveyor.Designer.cs">
+      <DependentUpon>ParamEntry_Conveyor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamExit_Conveyor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamExit_Conveyor.Designer.cs">
+      <DependentUpon>ParamExit_Conveyor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMachine_Lubrication.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMachine_Lubrication.Designer.cs">
+      <DependentUpon>ParamMachine_Lubrication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMilling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMilling.Designer.cs">
+      <DependentUpon>ParamMilling.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamRobot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamRobot.Designer.cs">
+      <DependentUpon>ParamRobot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\AxisSettings.cs" />
+    <Compile Include="Screens\Parameters\AxisSettings.Designer.cs">
+      <DependentUpon>AxisSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\GeneratedPage.cs" />
+    <Compile Include="Screens\ProfilesScreen.cs" />
+    <Compile Include="Screens\HomeScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\HomeScreen.Designer.cs">
+      <DependentUpon>HomeScreen.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kaban.Core\Kaban.Core.csproj">
+      <Project>{d8f9c31a-d5b2-48a0-8338-c417fb105b49}</Project>
+      <Name>Kaban.Core</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Drivers.MitsubishiActUtl\Kaban.Drivers.MitsubishiActUtl.csproj">
+      <Project>{9979fe55-4d80-4ddf-8d1b-6944cad0b75a}</Project>
+      <Name>Kaban.Drivers.MitsubishiActUtl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Drivers.Simulation\Kaban.Drivers.Simulation.csproj">
+      <Project>{90b5ff2b-8d40-4d34-977b-6196b5a2179b}</Project>
+      <Name>Kaban.Drivers.Simulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Drivers.Siemens\Kaban.Drivers.Siemens.csproj">
+      <Project>{18e86399-d5f4-46c3-90df-7f41f4d3ed4e}</Project>
+      <Name>Kaban.Drivers.Siemens</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Drivers.Delta\Kaban.Drivers.Delta.csproj">
+      <Project>{3c7a91e4-6b52-4d18-9a03-77e1c4d5b920}</Project>
+      <Name>Kaban.Drivers.Delta</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Machines.H500\Kaban.Machines.H500.csproj">
+      <Project>{A1B2C3D4-1111-4E5F-9A8B-0C1D2E3F4A51}</Project>
+      <Name>Kaban.Machines.H500</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Kaban.Machines.H800\Kaban.Machines.H800.csproj">
+      <Project>{A1B2C3D4-2222-4E5F-9A8B-0C1D2E3F4A52}</Project>
+      <Name>Kaban.Machines.H800</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KabanHMI\Kaban.UI.csproj">
+      <Project>{ac4e46e4-8e1e-4d8a-8231-62588c3d42f9}</Project>
+      <Name>Kaban.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\AlarmScreen.resx">
+      <DependentUpon>AlarmScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\HomeScreen.resx">
+      <DependentUpon>HomeScreen.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\KabanHMI\Help\Connection_Troubleshooting.html">
+      <Link>Help\Connection_Troubleshooting.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Cylinder_Troubleshooting.html">
+      <Link>Help\Cylinder_Troubleshooting.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Cylinder_Troubleshooting_Manual_EN.pdf">
+      <Link>Help\Cylinder_Troubleshooting_Manual_EN.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\MR_J4_TroubleShooting.pdf">
+      <Link>Help\MR_J4_TroubleShooting.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+
+
+
+    <None Include="Translations.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+     <None Include="..\SimSeed.Station2.txt">
+      <Link>SimSeed.Station2.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+       <Visible>false</Visible>
+     </None>
+    <None Include="PlcLabels.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Alarms.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- H500 and H800 are mounted SUB-machines: MachineRegistry.Mount calls their
+         RegisterData(), which resolves "Translations.csv"/"Alarms.json" through
+         ctx.ResolveFile - a PER-MODULE SUBFOLDER lookup
+         (<output>/<ModuleId>/<file>) so a sub-machine's own files do not
+         collide with the host's. A plain ProjectReference copies the compiled
+         DLL only; it does NOT copy a referenced project's content items, so
+         without these entries ResolveFile silently fell through to FA2010's
+         OWN files and a sub-machine's translations - and alarm definitions,
+         same mechanism - never actually loaded. Caught because a mounted
+         machine's display name rendered as its raw translation key
+         ("Machine_H500") instead of its name. -->
+    <None Include="..\Kaban.Machines.H500\Translations.csv">
+      <Link>H500\Translations.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H500\Alarms.json">
+      <Link>H500\Alarms.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H800\Translations.csv">
+      <Link>H800\Translations.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H800\Alarms.json">
+      <Link>H800\Alarms.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\CommonTranslations.csv">
+      <Link>CommonTranslations.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+ </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- SAFETY NET: proven on site by PE analysis of the working build and by the
+       0x80040154 (REGDB_E_CLASSNOTREG) crash - MX Component's ActUtlType COM
+       server is registered in the 32-BIT view only, so this HMI must run as a
+       32-bit process. Fail the build if that is ever switched off. -->
+  <Target Name="KabanAssert32Bit" BeforeTargets="Build">
+    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'"
+           Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
+  </Target>
+  <!-- Shared profile drawings: one source in KabanHMI\Profiles, copied to
+       bin\Debug\Profiles\ at build - add a DXF there and every machine has it. -->
+  <Target Name="CopySharedProfiles" AfterTargets="Build">
+    <ItemGroup>
+      <SharedProfile Include="..\KabanHMI\Profiles\*.dxf" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SharedProfile)" DestinationFolder="$(OutDir)Profiles\" SkipUnchangedFiles="true" />
+  </Target>
+  <ItemGroup>
+    <None Include="..\Kaban.Machines.H500\PlcLabels.csv">
+      <Link>H500\PlcLabels.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H800\PlcLabels.csv">
+      <Link>H800\PlcLabels.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+  <!-- FA2010's own help files, one per language (name.en.html, name.tr.html).
+       The HMI opens the current language and falls back to English. Shared
+       manuals live in KabanHMI\Help; both end up in bin\Debug\Help. -->
+  <ItemGroup>
+    <None Include="Help\Alarm_Robot_Clamping_Failure.en.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Help\Alarm_Robot_Clamping_Failure.tr.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Help\Axis_Robot_X.en.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Help\Unit_Robot_Top_Clamping.en.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Help\_How_to_write_help_files.en.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

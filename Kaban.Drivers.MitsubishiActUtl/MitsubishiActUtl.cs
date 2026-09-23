@@ -1,0 +1,389 @@
+using System;
+using Kaban.Core.Interfaces;
+using ActUtlTypeLib;
+
+namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
+{
+    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver
+    {
+        // The actual MX Component Object
+        private ActUtlType _plc;              // touched ONLY on _worker's thread
+
+        /// <summary>MX Component's own thread - see StaWorker for why.</summary>
+        private readonly StaWorker _worker;
+
+        /// <summary>
+        /// How long the UI waits for a Connect before carrying on. Short: a PLC
+        /// that is there opens well inside it, and one that is not must not stall
+        /// the screen. The attempt continues in the background either way.
+        /// </summary>
+        private const int ConnectWaitMs = 150;
+
+        /// <summary>How long the UI waits for a read or write.</summary>
+        private const int CallWaitMs = 1000;
+        private int _stationNumber;
+        private volatile bool _isConnected = false;
+        private volatile bool _needsFreshControl;
+        private int _failCount;
+        private DateTime _lastFailLog = DateTime.MinValue;
+        private bool _lastOpOk = true;
+
+        public MitsubishiActUtl(int stationNumber)
+        {
+            _stationNumber = stationNumber;
+
+            // Created on its own thread and used only there, from the first moment.
+            // Building it here on the UI thread and moving it later would leave the
+            // object tied to the wrong apartment for its whole life.
+            _worker = new StaWorker("MX Component station " + stationNumber);
+            bool created;
+            _worker.TryRun(() => { CreateInitialControl(); return true; }, 15000, out created);
+        }
+
+        private void CreateInitialControl()
+        {
+
+            // The COM object is created DEFENSIVELY. On a PC without MX Component
+            // (or with it registered for a different bitness) this throws
+            // REGDB_E_CLASSNOTREG 0x80040154, which previously escaped as an
+            // UNHANDLED exception and killed the whole HMI at startup. A missing
+            // driver must degrade to "not connected", never take the machine down.
+            try
+            {
+                _plc = new ActUtlType();
+                Kaban.Core.Helpers.AuditLogger.Log(
+                    "[PLC DIAG] ActUtlType interop: " + typeof(ActUtlTypeLib.ActUtlType).Assembly.Location +
+                    " | COM created OK | process " + (Environment.Is64BitProcess ? "64" : "32") + "-bit.");
+            }
+            catch (Exception ex)
+            {
+                _plc = null;
+                LastConnectError = ex.Message;
+                Kaban.Core.Helpers.AuditLogger.Log(
+                    "[PLC DIAG] ActUtlType COM creation FAILED (" + (Environment.Is64BitProcess ? "64" : "32") +
+                    "-bit process): " + ex.Message);
+                MxDiagnostics.Report();     // says exactly WHERE the class is registered
+            }
+        }
+
+        /// <summary>
+        /// Releases the current control and creates a new one. Used before every
+        /// reconnect attempt that follows a failure, because MX Component does not
+        /// recover a control whose Open() has failed.
+        /// </summary>
+        private void RecreateControl()
+        {
+            try
+            {
+                if (_plc != null)
+                {
+                    try { _plc.Close(); } catch { /* was never open */ }
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(_plc);
+                }
+            }
+            catch { }
+            _plc = null;
+
+            try { _plc = new ActUtlType(); }
+            catch (Exception ex)
+            {
+                LastConnectError = ex.Message;
+                Kaban.Core.Helpers.AuditLogger.Log("[PLC DIAG] could not recreate ActUtlType: " + ex.Message);
+            }
+        }
+
+        // --- PUBLIC SURFACE: every call is carried to the MX thread ---------------
+        //
+        // Each one answers AT ONCE when there is nothing to wait for - no link, or
+        // another call still in flight - and otherwise waits a bounded time. The
+        // screen can be slowed by a failing controller for at most CallWaitMs, once;
+        // it can no longer be frozen by one.
+
+        public bool Connect()
+        {
+            if (_worker.IsWorkerThread) return ConnectDirect();
+
+            // CONNECT ALONE REFUSES WHEN BUSY. The call in flight is most likely
+            // an Open() to a PLC that is not there, which can take seconds; waiting
+            // behind it every poll is exactly the stall the worker exists to avoid.
+            if (_worker.IsBusy) return _isConnected;
+
+            bool ok;
+            // Not finished in time? It carries on in the background and sets
+            // _isConnected itself; the next poll sees the result.
+            if (!_worker.TryRun(ConnectDirect, ConnectWaitMs, out ok)) return _isConnected;
+            return ok;
+        }
+
+        public void Disconnect()
+        {
+            if (_worker.IsWorkerThread) { DisconnectDirect(); return; }
+            bool ignored;
+            _worker.TryRun(() => { DisconnectDirect(); return true; }, CallWaitMs, out ignored);
+        }
+
+        public bool TryRead(string address, out int value)
+        {
+            value = 0;
+            if (_worker.IsWorkerThread) return TryReadDirect(address, out value);
+            if (!_isConnected) return false;              // no link: answer at once
+
+            ReadOne r;
+            if (!_worker.TryRun(() =>
+                {
+                    int v;
+                    bool ok = TryReadDirect(address, out v);
+                    return new ReadOne { Ok = ok, Value = v };
+                }, CallWaitMs, out r))
+            {
+                Stalled();
+                return false;
+            }
+            value = r.Value;
+            return r.Ok;
+        }
+
+        public bool TryReadMulti(string[] addresses, out int[] values)
+        {
+            values = null;
+            if (_worker.IsWorkerThread) return TryReadMultiDirect(addresses, out values);
+            if (!_isConnected) return false;              // no link: answer at once
+
+            ReadMany r;
+            if (!_worker.TryRun(() =>
+                {
+                    int[] v;
+                    bool ok = TryReadMultiDirect(addresses, out v);
+                    return new ReadMany { Ok = ok, Values = v };
+                }, CallWaitMs, out r))
+            {
+                Stalled();
+                return false;
+            }
+            values = r.Values;
+            return r.Ok;
+        }
+
+        public int Write(string address, int value)
+        {
+            if (_worker.IsWorkerThread) return WriteDirect(address, value);
+            // A write to a dead link is refused immediately - this is the path a
+            // button press takes, and it is the one that froze the panel. A write
+            // to a LIVE link that finds a scan read in flight waits for it; that is
+            // milliseconds, and refusing it cancelled good writes.
+            if (!_isConnected) return -1;
+
+            int rc;
+            if (!_worker.TryRun(() => WriteDirect(address, value), CallWaitMs, out rc))
+            {
+                Stalled();
+                return -1;
+            }
+            return rc;
+        }
+
+        /// <summary>
+        /// A call that did not come back in time: treat the link as down.
+        ///
+        /// A controller that cannot answer within a second is not one the HMI can
+        /// work with, whatever the socket believes. The next Connect runs on the
+        /// worker once the stuck call has finished, so the fresh control is built
+        /// - and the old one released - when nothing is using it.
+        /// </summary>
+        private void Stalled()
+        {
+            _isConnected = false;
+            _needsFreshControl = true;
+            _lastOpOk = false;
+        }
+
+        private struct ReadOne { public bool Ok; public int Value; }
+        private struct ReadMany { public bool Ok; public int[] Values; }
+
+        // --- INTERFACE PROPERTIES ---
+        public bool IsConnected => _isConnected;
+        public bool IsHealthy => _isConnected && _lastOpOk;
+
+        /// <summary>
+        /// Last connection failure, e.g. "0xF0000003" (logical station not defined
+        /// in MX Component's Communication Setup Utility, or the target/simulator
+        /// not running yet). Kept for diagnostics instead of throwing.
+        /// </summary>
+        public string LastConnectError { get; private set; } = "";
+
+        private bool ConnectDirect()
+        {
+            // CONTRACT: IPlcDriver.Connect() reports failure by returning false -
+            // it must NOT throw. The previous version threw, which surfaced as a
+            // "Startup Error" popup whenever the PLC/simulator was not reachable at
+            // launch (e.g. MX Component code 0xF0000003). A failed connection is a
+            // NORMAL state at startup: the scanner shows comm-lost and retries every
+            // ~2 seconds, so the HMI comes alive the moment the PLC does.
+            // THE FIX (proved by the on-site station scan): a FRESH ActUtlType opens
+            // logical station 1 without trouble, while the control that already
+            // failed once keeps returning 0xF0000003 for ever. MX Component leaves
+            // the control unusable after a failed Open, so every attempt now starts
+            // from a brand-new control instead of reusing the broken one.
+            if (_plc == null || _needsFreshControl)
+            {
+                RecreateControl();
+                _needsFreshControl = false;
+            }
+            if (_plc == null)
+            {
+                LastConnectError = "MX Component ActUtlType is not available in this process.";
+                return false;                      // stays disconnected; scanner retries
+            }
+
+            try
+            {
+                _plc.ActLogicalStationNumber = _stationNumber;
+                int returnCode = _plc.Open();
+
+                if (returnCode == 0)
+                {
+                    _isConnected = true;
+                    _lastOpOk = true;
+                    LastConnectError = "";
+                    return true;
+                }
+
+                _isConnected = false;
+                _needsFreshControl = true;         // this control is spent - rebuild it next time
+                LastConnectError = $"0x{returnCode:X8}";
+                // Log the first failure in full, then at most once a minute - the
+                // 1 Hz retry was burying everything else in the audit log.
+                if (_failCount++ == 0 || (DateTime.Now - _lastFailLog).TotalSeconds >= 60)
+                {
+                    _lastFailLog = DateTime.Now;
+                    Kaban.Core.Helpers.AuditLogger.Log(
+                        $"[PLC DIAG] Mitsubishi station {_stationNumber} connect failed with {LastConnectError} " +
+                        $"({MxDiagnostics.DescribeOpenError(returnCode)}; process is {(Environment.Is64BitProcess ? "64" : "32")}-bit)" +
+                        (_failCount > 1 ? $" [repeated {_failCount} times]" : ""));
+                }
+                if (_failCount == 1)
+                {
+                    MxDiagnostics.ReportOnce();    // registry facts, once
+                    MxDiagnostics.AutoScanOnce(_stationNumber);   // find a station that DOES answer
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _isConnected = false;
+                LastConnectError = ex.Message;
+                Kaban.Core.Helpers.AuditLogger.Log(
+                    $"[PLC DIAG] Mitsubishi station {_stationNumber} connect exception: {ex.Message} (process is {(Environment.Is64BitProcess ? "64" : "32")}-bit).");
+                return false;
+            }
+        }
+
+        private void DisconnectDirect()
+        {
+            try
+            {
+                _plc.Close();
+            }
+            catch { } // Ignore close errors
+            finally
+            {
+                _isConnected = false;
+            }
+        }
+
+        public int Read(string address)
+        {
+            int value;
+            TryRead(address, out value);
+            return value; // preserved for backward compatibility - returns 0 on failure, same as before.
+        }
+
+        /// <summary>Real fix for issue: read failures used to be indistinguishable from a genuine 0.</summary>
+        private bool TryReadDirect(string address, out int value)
+        {
+            value = 0;
+
+            if (!_isConnected)
+            {
+                _lastOpOk = false;
+                return false;
+            }
+
+            int result = _plc.GetDevice(address, out value);
+
+            if (result != 0)
+            {
+                // Communication/read failure - do NOT pretend this was a real 0.
+                value = 0;
+                _lastOpOk = false;
+                return false;
+            }
+
+            _lastOpOk = true;
+            return true;
+        }
+
+        public int[] ReadMulti(string[] addresses)
+        {
+            int[] values;
+            TryReadMulti(addresses, out values);
+            return values; // preserved for backward compatibility.
+        }
+
+        private bool TryReadMultiDirect(string[] addresses, out int[] values)
+        {
+            if (addresses == null) { values = new int[0]; return true; }
+            values = new int[addresses.Length];
+            if (addresses.Length == 0) return true;
+            if (!_isConnected) { _lastOpOk = false; return false; }
+
+            // ONE COM CALL PER ADDRESS WAS THE PROBLEM.
+            // With the real alarm list the batch grew to ~170 devices; at the ~15 ms
+            // round trip this PLC reports that is over two seconds per scan, which
+            // starved the whole HMI. ReadDeviceRandom fetches the entire list in a
+            // SINGLE call instead, so a scan costs one round trip rather than 170.
+            try
+            {
+                var joined = string.Join("\n", addresses);
+                var buffer = new int[addresses.Length];
+                int rc = _plc.ReadDeviceRandom(joined, addresses.Length, out buffer[0]);
+                if (rc == 0)
+                {
+                    for (int i = 0; i < addresses.Length; i++) values[i] = buffer[i];
+                    _lastOpOk = true;
+                    return true;
+                }
+            }
+            catch
+            {
+                // fall through to the per-address path below
+            }
+
+            // FALLBACK: some devices/addresses are not valid for a random read, so
+            // keep the old behaviour rather than losing the scan entirely.
+            bool allOk = true;
+            for (int i = 0; i < addresses.Length; i++)
+            {
+                int v;
+                allOk &= TryRead(addresses[i], out v);
+                values[i] = v;
+            }
+            return allOk;
+        }
+
+        private int WriteDirect(string address, int value)
+        {
+            if (!_isConnected)
+            {
+                _lastOpOk = false;
+                return -1;
+            }
+
+            // SetDevice returns 0 on success
+            int result = _plc.SetDevice(address, value);
+            _lastOpOk = (result == 0);
+            return result;
+        }
+    }
+}
+

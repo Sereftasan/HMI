@@ -1,0 +1,17 @@
+# ---------------------------------------------------------------------------
+# Simulation seed file - STATION 2 (the second CPU of the main machine).
+#
+# Loaded automatically at startup by SimulationDriver.LoadSeedFile() when the
+# file sits next to the .exe. Edit values and restart - no recompile needed.
+#
+# Format:  ADDRESS = VALUE      ('#' or '//' start a comment)
+# ---------------------------------------------------------------------------
+
+# FA2010 conditions that live on CPU2 (see FA2010Module.RegisterConditions):
+X25 = 1        # MillingUnitIsBack        -> 1 = satisfied
+M23 = 0        # MillingUnitInside_PLC2   -> compared Equal 0, so 0 = satisfied
+
+# Example words to watch on the second CPU
+D100 = 1234
+D200 = 0
+

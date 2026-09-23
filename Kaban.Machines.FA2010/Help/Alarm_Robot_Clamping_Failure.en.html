@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>M840 Robot Clamping Alarm - troubleshooting</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.2em;color:#23262c;line-height:1.45;font-size:14px}
+ h1{font-size:1.45em;margin:.2em 0 .6em}
+ h2{font-size:1.15em;color:#1f4e79;margin:1.6em 0 .4em}
+ p{margin:.25em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em;table-layout:fixed}
+ td,th{border:1px solid #444;padding:.35em .5em;vertical-align:top;text-align:left}
+ th{background:#dcdcdc;text-align:center}
+ td.no{text-align:center;width:5%}
+ table.caution td:first-child{background:#f4b6bf;font-weight:bold;text-align:center;width:14%}
+ table.point td:first-child{background:#eeeeee;font-weight:bold;text-align:center;width:14%}
+ code{background:#f2f4f7;padding:0 .25em;border:1px solid #dde1e6;font-family:Consolas,monospace}
+ .small{color:#555;font-size:.92em}
+</style></head><body>
+
+<h1>M840 &ndash; Robot Clamping Alarm</h1>
+
+<table class="caution"><tr><td>CAUTION</td><td>
+Eliminate the cause and make the area safe before resetting. Before touching the clamp, isolate the electrical and
+pneumatic supplies and exhaust both sides of the cylinder: a clamped cylinder holds pressure and can move when air is
+restored. Never bypass the guard interlock to clear this alarm.
+</td></tr></table>
+
+<table class="point"><tr><td>POINT</td><td>
+<b>Alarm:</b> the clamp command was issued but the clamped sensor did not confirm within the monitoring time.<br>
+<b>Unit:</b> Robot Top Clamping &ndash; clamp <code>M656</code>, release <code>M657</code>, clamped sensor
+<code>M233</code>.<br>
+Work down the table in order. Most cases stop at detail 2 or 3.
+</td></tr></table>
+
+<h2>Checks, in order</h2>
+<table>
+<colgroup><col style="width:5%"><col style="width:22%"><col style="width:26%"><col style="width:22%"><col style="width:25%"></colgroup>
+<tr><th>No.</th><th>Cause</th><th>Check</th><th>Result</th><th>Action</th></tr>
+
+<tr><td class="no" rowspan="2">1</td><td rowspan="2">The profile is not in position, so the clamp cannot close on it</td>
+    <td rowspan="2">Look at the transfer station. Is the profile fully against the reference face?</td>
+    <td>The profile is short, skewed or missing</td>
+    <td>Clear the station, correct the upstream transfer, restart the cycle.</td></tr>
+<tr><td>The profile is in position</td><td>Go to check 2.</td></tr>
+
+<tr><td class="no" rowspan="2">2</td><td rowspan="2">The sensor is out of position or has failed</td>
+    <td rowspan="2">Clamp by hand from Manual Movement. Does the left button's lamp light at the end of the stroke?</td>
+    <td>The clamp closes but the lamp stays dark</td>
+    <td>Re-set the sensor (see the unit sheet), or replace it if it does not switch at any position.</td></tr>
+<tr><td>The lamp lights</td><td>The alarm is a timing problem &ndash; go to check 5.</td></tr>
+
+<tr><td class="no" rowspan="2">3</td><td rowspan="2">No air, or not enough pressure</td>
+    <td rowspan="2">Read the supply gauge with the machine running.</td>
+    <td>Below 5.5 bar</td>
+    <td>Restore the supply; check the filter/regulator and the main line for leaks.</td></tr>
+<tr><td>6 bar and steady</td><td>Go to check 4.</td></tr>
+
+<tr><td class="no" rowspan="2">4</td><td rowspan="2">The valve does not shift</td>
+    <td rowspan="2">Command the clamp and watch the valve's coil LED, then press the manual override on the valve.</td>
+    <td>LED off, but the override moves the clamp</td>
+    <td>Electrical fault: check the wiring from the output to the coil, then replace the coil.</td></tr>
+<tr><td>LED on, the clamp still does not move</td>
+    <td>Spool stuck or contaminated: clean or replace the valve, and check air quality.</td></tr>
+
+<tr><td class="no" rowspan="2">5</td><td rowspan="2">The stroke is too slow for the monitoring time</td>
+    <td rowspan="2">Time the clamping stroke by eye from Manual Movement.</td>
+    <td>Noticeably slower than about half a second</td>
+    <td>Open the exhaust throttles a little, check for a kinked hose, and check the clamp pad for build-up.</td></tr>
+<tr><td>The stroke looks normal</td>
+    <td>Have the monitoring time reviewed in the PLC program &ndash; request support.</td></tr>
+</table>
+
+<h2>After the repair</h2>
+<p>
+Reset the alarm, then run the clamp and release three times at setup speed and confirm the sensor lamp every time.
+Run one automatic cycle under supervision before returning the machine to production. If the alarm returns within the
+same shift, record what you changed and contact Kaban Machine Technical Service rather than resetting repeatedly.
+</p>
+
+<p class="small">
+Template note: one file per alarm, named <code>Alarm_&lt;what happened&gt;.html</code>. Keep the order of checks from
+the cheapest and safest to the most invasive, and always give both outcomes of a check so the reader knows where to go
+next.
+</p>
+
+</body></html>
+

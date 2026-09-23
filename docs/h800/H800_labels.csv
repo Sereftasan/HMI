@@ -1,0 +1,304 @@
+Label;DataType;Address
+PC_ProfilBasiKontrol_Aktif;Bit;L0
+PC_Barkod_Aktif;Bit;L1
+PC_IsBitiste_BaslangicPoza;Bit;L2
+PC_ProfilDondurme_IlerlemeAciylaBeraber;Bit;L3
+PC_AksesuarBolmePasif;Bit;L7
+PC_ProfilDondurmeDayamali;Bit;L8
+PC_DenemeMakine;Bit;L9
+PCye_Barkoda_IsGonder;Bit;L10
+PCden_IsGonderildi;Bit;L11
+PCden_IsListesiBos;Bit;L12
+PC_IsSatiriSil;Bit;L13
+PC_IsListesiniSil;Bit;L14
+MAN_Tahliye1_Test;Bit;L15
+MAN_ProfilDondurme_Test;Bit;L16
+PC_Homing_Start;Bit;B21
+PC_CalismaStart;Bit;M21
+PC_Iptal;Bit;M22
+PC_Surekli;Bit;M23
+PC_SikmalarSik;Bit;M24
+PC_Duraklat;Bit;M25
+___OTO_SikmalarAktif;Bit;M26
+PC_CalismaAktif;Bit;M27
+PC_AlarmResetTrigger;Bit;M28
+PC_X_ReferansTrigger;Bit;M29
+PC_AlarmReset;Bit;M102
+PC_ListeTemizle;Bit;M103
+PC_X1_KalibreEt;Bit;M140
+PC_Y1_KalibreEt;Bit;M141
+PC_Z1_KalibreEt;Bit;M142
+PC_X2_KalibreEt;Bit;M143
+PC_Y2_KalibreEt;Bit;M144
+PC_Z2_KalibreEt;Bit;M145
+PC_1mm_Step_Aktif;Bit;M173
+PC_01mm_Step_Aktif;Bit;M172
+PC_001mm_Step_Aktif;Bit;M171
+PC_10mm_Step_Aktif;Bit;M170
+StepMode_Pasif;Bit;M174
+MAN__X1_Ileri;Bit;M600
+MAN__X1_Geri;Bit;M601
+MAN__Y1_Ileri;Bit;M602
+MAN__Y1_Geri;Bit;M603
+MAN__Z1_Ileri;Bit;M604
+MAN__Z1_Geri;Bit;M605
+MAN__X2_Ileri;Bit;M606
+MAN__X2_Geri;Bit;M607
+MAN__Y2_Ileri;Bit;M608
+MAN__Y2_Geri;Bit;M609
+MAN__Z2_Ileri;Bit;M610
+MAN__Z2_Geri;Bit;M611
+MAN_Yaglama;Bit;M612
+MAN_Matkap1_Sogutma;Bit;M613
+MAN_Matkap2_Sogutma;Bit;M614
+MAN_Konveyor_Ileri;Bit;M615
+MAN_VidalamaKonv_TahliyeMotoruCalis;Bit;M616
+MAN_Maktap1_Calis;Bit;M617
+MAN_Maktap1_YuksekHiz;Bit;M618
+MAN_Maktap2_Calis;Bit;M619
+MAN_Maktap2_YuksekHiz;Bit;M620
+MAN_InverterReset;Bit;M621
+MAN_VidalamaKonv_TahliyeSikmaSIK;Bit;M622
+MAN_VidalamaKonv_TahliyeSikmaAC;Bit;M623
+MAN_Robot_Yukari;Bit;M624
+MAN_Robot_Asagi;Bit;M625
+MAN_Robot_SikmaSIK;Bit;M626
+MAN_Robot_SikmaAC;Bit;M627
+MAN_Tahliye1_Kapak_Yukari;Bit;M628
+MAN_Tahliye1_Kapak_Asagi;Bit;M629
+___MAN_Tahliye1_ProfilBosaltma_Geri;Bit;M630
+MAN_Tahliye1_ProfilBosaltma_Ileri;Bit;M631
+MAN_Tahliye2_Kapak_Yukari;Bit;M632
+MAN_Tahliye2_Kapak_Asagi;Bit;M633
+___MAN_Tahliye2_ProfilBosaltma_Geri;Bit;M634
+MAN_Tahliye2_ProfilBosaltma_Ileri;Bit;M635
+MAN_KonveyorSikmaUnite1_2_3_Asagi;Bit;M636
+MAN_KonveyorSikmaUnite1_2_Yukari;Bit;M637
+__MAN_KonveyorSikmaUnite3_Asagi;Bit;M638
+MAN_KonveyorSikmaUnite3_Yukari;Bit;M639
+MAN_KonveyorSikma1_2_SikmaSIK;Bit;M640
+MAN_KonveyorSikma1_2_3_SikmaAC;Bit;M641
+MAN_KonveyorSikma3_SikmaSIK;Bit;M642
+__MAN_KonveyorSikma3_SikmaAC;Bit;M643
+MAN_ProfilDondurmeUnite1_2_Asagi;Bit;M644
+MAN_ProfilDondurmeUnite1_2_Yukari;Bit;M645
+MAN_ProfilDondurmeUnite3_Asagi;Bit;M646
+MAN_ProfilDondurmeUnite3_Yukari;Bit;M647
+MAN_ProfilDondurmeUnite1_2_Geri;Bit;M648
+MAN_ProfilDondurmeUnite1_2_Ileri;Bit;M649
+MAN_ProfilDondurmeUnite3_Geri;Bit;M650
+MAN_ProfilDondurmeUnite3_Ileri;Bit;M651
+MAN_ProfilDondurmeUnite1_2_0der;Bit;M652
+MAN_ProfilDondurmeUnite1_2_90der;Bit;M653
+MAN_ProfilDondurmeUnite3_0der;Bit;M654
+MAN_ProfilDondurmeUnite3_90der;Bit;M655
+MAN_Matkap1_UstSIK;Bit;M656
+MAN_Matkap2_UstSIK;Bit;M657
+MAN_VidalamaKonvTahliye_UniteYukari;Bit;M658
+MAN_VidalamaKonvTahliye_UniteAsagi;Bit;M659
+MAN_VidalamaKonveyorDuraklat;Bit;M660
+MAN_ProfilDondurmeUnite_Dayama_Ileri;Bit;M661
+MAN_TalasTemizleme;Bit;M662
+X1_AktPoz;Double Word [Signed];W0
+Y1_AktPoz;Double Word [Signed];W10
+Z1_AktPoz;Double Word [Signed];W20
+X2_AktPoz;Double Word [Signed];W30
+Y2_AktPoz;Double Word [Signed];W40
+Z2_AktPoz;Double Word [Signed];W50
+PC_Axis_RefSN_ZFaz_Mesafe_Md1;Word [Signed](0..5);D4
+PLC_ProgramVersiyonu;Word [Signed];D36
+PC_ScreenNo;Word [Signed];D70
+PC_PopUpNo;Word [Signed];D71
+PC_X1_EncoderPos;Double Word [Signed];D72
+PC_SecurityLevel;Word [Signed];D74
+PC_SystemSignal_1_1;Word [Signed](0..39);D75
+PC_SystemSignal_2_1;Word [Signed](0..12);D78
+PC_Barkod_Okunan;Word [Signed](0..39);D100
+PC_Barkod_KarakterSayisi;Word [Signed];D139
+PC_BarkodVeri;Word [Signed](0..39);D140
+PC_ProfilBasi_EncoderPos;Double Word [Signed];D180
+PC_X2_EncoderPos;Double Word [Signed];D182
+PC_X_MAX;Double Word [Signed];D318
+PC_X_MIN;Double Word [Signed];D320
+PC_Y_MAX;Double Word [Signed];D324
+PC_Y_MIN;Double Word [Signed];D326
+PC_Z_MAX;Double Word [Signed];D330
+PC_Z_MIN;Double Word [Signed];D332
+PC_X1_HOME;Double Word [Signed];D322
+PC_Y1_HOME;Double Word [Signed];D328
+PC_Z1_HOME;Double Word [Signed];D334
+PC_X2_HOME;Double Word [Signed];D336
+PC_Y2_HOME;Double Word [Signed];D338
+PC_Z2_HOME;Double Word [Signed];D340
+PC_X1_X2_MinMesafe;Double Word [Signed];D342
+PC_X1_KalibreDegeri;Double Word [Signed];D344
+PC_Y1_KalibreDegeri;Double Word [Signed];D346
+PC_Z1_KalibreDegeri;Double Word [Signed];D348
+PC_X2_KalibreDegeri;Double Word [Signed];D350
+PC_Y2_KalibreDegeri;Double Word [Signed];D352
+PC_Z2_KalibreDegeri;Double Word [Signed];D354
+PC_Calisma_Hiz_Override;Word [Signed];D408
+PC_JogHiz_Override;Word [Signed];D409
+PC_X_ManuelHiz;Double Word [Signed];D422
+PC_YZ_ManuelHiz;Double Word [Signed];D424
+PC_X_OtomatikHiz;Double Word [Signed];D426
+PC_YZ_OtomatikHiz;Double Word [Signed];D428
+_PC_MatkapManuelHiz;Double Word [Signed];D430
+PC_SogutmaSuresi;Word [Signed];D432
+PC_SogutmaPeriyodu;Word [Signed];D433
+PC_EnerjideKalmaSuresi_Sayac;Double Word [Signed];D434
+PC_CalismaSuresi_Toplam;Double Word [Signed];D436
+Yaglama_CalismaSuresiSayaci;Double Word [Signed];D438
+Yaglama_BasmaSayaci;Word [Signed];D440
+Yaglama_TankSayaci;Word [Signed];D441
+PC_Yaglama_BeklemeSuresi;Double Word [Signed];D442
+PC_Yaglama_BasmaSayisi;Word [Signed];D444
+PC_Yaglama_TankKapasitesi;Word [Signed];D445
+PC_TalasTemizleme_DelikSayisi;Word [Signed];D446
+PC_TalasTemizleme_DelikSayaci;Word [Signed];D447
+PC_X_TalasTemizlemeHiz;Double Word [Signed];D448
+PC_YaklasmaZ_Mesafe;Word [Signed];D590
+PC_Takim2_Ofset;Word [Signed];D591
+PC_Takim1_PVC_KesmeHizi;Double Word [Signed];D592
+PC_Takim2_PVC_KesmeHizi;Double Word [Signed];D594
+PC_Takim1_DestelSaci_KesmeHizi;Double Word [Signed];D596
+PC_Takim2_DestelSaci_KesmeHizi;Double Word [Signed];D598
+PC_ClientPortalNo;Word [Signed];D600
+PC_JobList_First;Word [Unsigned]/Bit String [16-bit];D601
+PC_ProfileNo;Word [Signed];D602
+PC_ProfilBoyu;Double Word [Signed];D603
+PC_EkranDil;Word [Signed];D605
+PC_Takim1_AgizSayisi;Word [Signed];D606
+PC_Takim2_AgizSayisi;Word [Signed];D607
+PC_Takim1_PVC_Ilerleme;Word [Signed];D608
+PC_Takim2_PVC_Ilerleme;Word [Signed];D609
+PC_Takim1_DestekSaci_Ilerleme;Word [Signed];D610
+PC_Takim2_DestekSaci_Ilerleme;Word [Signed];D611
+PC_SikmaUniteleri3_MinimumProfilBoyu;Double Word [Signed];D700
+PC_Matkap1_ProfilBasiOlcum_Mesafe;Double Word [Signed];D702
+PC_Z_ProfildenKurtarmaMiktari;Double Word [Signed];D704
+PC_MaktapDevri_PVC;Word [Signed];D706
+PC_MaktapDevri_Steel;Word [Signed];D707
+PC_Y1_ProfilBasiOlcumPozisyonu;Double Word [Signed];D708
+PC_SiradakiProfilAdedi;Word [Unsigned]/Bit String [16-bit];D710
+PC_KonveyorEnkoder_PulseRev;Word [Signed];D711
+PC_KonveyorEnkoder_Divisor;Word [Signed];D712
+PC_Konveyor_TahliyePozisyonu;Word [Signed];D713
+PC_Konveyor_TahliyeToleransi;Word [Signed];D714
+PC_Konveyor_DondurmePozisyonu;Word [Signed];D715
+PC_Konveyor_DondurmeToleransi;Word [Signed];D716
+PC_SilinecekSatirNo;Word [Unsigned]/Bit String [16-bit];D717
+KonveyorEnkoder_SonPoz;Double Word [Signed];D718
+_PC_DondurmeUniteleri3_MinimumProfilBoyu;Double Word [Signed];D720
+PC_JobListLast_Index;Word [Unsigned]/Bit String [16-bit];D722
+PC_KonveyoreAktarilacakParca_Index;Word [Unsigned]/Bit String [16-bit];D723
+Konveyor_DusurmePozisyonu_Enkoder;Double Word [Signed];D724
+X1_Enkoder;Double Word [Signed];SD4500
+X2_Enkoder;Double Word [Signed];SD4530
+ProfilBasiOlcum_Enkoder;Double Word [Signed];SD4560
+VidalamaKonveyor_Enkoder;Double Word [Signed];SD4590
+IN_ProfilBasiOlcum_RefSN;Bit;M1210
+IN_X1_RefSN;Bit;M1211
+IN_Y1_RefSN;Bit;M1212
+IN_Z1_RefSN;Bit;M1213
+IN_X2_RefSN;Bit;M1214
+IN_Y2_RefSN;Bit;M1215
+IN_Z2_RefSN;Bit;M1216
+IN_3D_ProfilAlgilamaSN;Bit;M1217
+IN_VidalamaKonv_TahliyeUnitesiAsagidaSN;Bit;M1220
+IN_VidalamaKonv_TahliyeSikma_GerideSN;Bit;M1221
+IN_VidalamaKonv_TahliyeSikma_IlerideSN;Bit;M1222
+IN_Robot_YukaridaSN;Bit;M1223
+IN_Robot_AsagidaSN;Bit;M1224
+IN_RobotSikma_GerideSN;Bit;M1225
+IN_RobotSikma_Ileride_AlarmSN;Bit;M1226
+IN_InverterAriza;Bit;M1227
+IN_AcilStop;Bit;M1230
+IN_Konveyor_InverterRUN;Bit;M1231
+IN_Matkap1_InverterSU;Bit;M1232
+IN_Matkap2_InverterSU;Bit;M1233
+IN_Tahliye1_Kapak_YukaridaSN;Bit;M1234
+IN_Tahliye1_Kapak_AsagidaSN;Bit;M1235
+IN_Tahliye1_ProfilBosaltma_GerideSN;Bit;M1236
+IN_Tahliye1_ProfilBosaltma_IlerideSN;Bit;M1237
+IN_Tahliye2_Kapak_YukaridaSN;Bit;M1240
+IN_Tahliye2_Kapak_AsagidaSN;Bit;M1241
+IN_Tahliye2_ProfilBosaltma_GerideSN;Bit;M1242
+IN_Tahliye2_ProfilBosaltma_IlerideSN;Bit;M1243
+IN_KonveyorSikmaUnite1_AsagidaSN;Bit;M1244
+IN_KonveyorSikmaUnite2_AsagidaSN;Bit;M1245
+IN_KonveyorSikmaUnite3_AsagidaSN;Bit;M1246
+IN_KonveyorSikma1_GerideSN;Bit;M1247
+IN_KonveyorSikma2_GerideSN;Bit;M1250
+IN_KonveyorSikma3_GerideSN;Bit;M1251
+IN_KonveyorSikmalar_IlerideSN;Bit;M1252
+IN_Tahlite1_ServoAlarm;Bit;M1253
+IN_KonveyorBaslangici_BosSN;Bit;M1254
+IN_ProfilDondurmeUnite1_AsagidaSN;Bit;M1255
+IN_ProfilDondurmeUnite2_AsagidaSN;Bit;M1256
+IN_ProfilDondurmeUnite3_AsagidaSN;Bit;M1257
+IN_ProfilDondurmeUnite1_YukaridaSN;Bit;M1260
+IN_ProfilDondurmeUnite2_YukaridaSN;Bit;M1261
+IN_ProfilDondurmeUnite3_YukaridaSN;Bit;M1262
+IN_ProfilDondurmeUnite1_GerideSN;Bit;M1263
+IN_ProfilDondurmeUnite2_GerideSN;Bit;M1264
+IN_ProfilDondurmeUnite3_GerideSN;Bit;M1265
+IN_ProfilDondurmeUnite1_IlerideSN;Bit;M1266
+IN_ProfilDondurmeUnite2_IlerideSN;Bit;M1267
+IN_ProfilDondurmeUnite3_IlerideSN;Bit;M1270
+IN_ProfilDondurmeUnite1_0derSN;Bit;M1271
+IN_ProfilDondurmeUnite2_0derSN;Bit;M1272
+IN_ProfilDondurmeUnite3_0derSN;Bit;M1273
+IN_ProfilDondurmeUnite1_90derSN;Bit;M1274
+IN_ProfilDondurmeUnite2_90derSN;Bit;M1275
+IN_ProfilDondurmeUnite3_90derSN;Bit;M1276
+IN_KonveyorSonu_DoluSN;Bit;M1277
+OUT_Konveyor_Ileri;Bit;M1300
+OUT_VidalamaKonv_TahliyeMotoruCalis;Bit;M1301
+OUT_Maktap1_Calis;Bit;M1302
+OUT_Maktap2_Calis;Bit;M1303
+OUT_InverterReset;Bit;M1304
+OUT_Yaglama;Bit;M1305
+OUT_Z1_Fren;Bit;M1306
+OUT_Z2_Fren;Bit;M1307
+OUT_VidalamaKonv_TahliyeSikmaSIK;Bit;M1310
+OUT_VidalamaKonv_TahliyeSikmaAC;Bit;M1311
+OUT_Robot_Yukari;Bit;M1312
+OUT_Robot_Asagi;Bit;M1313
+OUT_Robot_SikmaSIK;Bit;M1314
+OUT_Robot_SikmaAC;Bit;M1315
+OUT_Tahliye1_Kapak_Yukari;Bit;M1316
+OUT_Tahliye1_Kapak_Asagi;Bit;M1317
+OUT_VidalamaKonveyor_Donebilir;Bit;M1320
+OUT_Tahliye1_ProfilBosaltma_Ileri;Bit;M1321
+OUT_Tahliye2_Kapak_Yukari;Bit;M1322
+OUT_Tahliye2_Kapak_Asagi;Bit;M1323
+OUT_ProfilDondurmeUnite_Dayama_Ileri;Bit;M1324
+OUT_Tahliye2_ProfilBosaltma_Ileri;Bit;M1325
+OUT_KonveyorSikmaUnite1_2_3_Asagi;Bit;M1326
+OUT_KonveyorSikmaUnite1_2_Yukari;Bit;M1327
+OUT_Maktap1_YuksekHiz;Bit;M1330
+OUT_KonveyorSikmaUnite3_Yukari;Bit;M1331
+OUT_KonveyorSikma1_2_3_SikmaAC;Bit;M1332
+OUT_KonveyorSikma1_2_SikmaSIK;Bit;M1333
+OUT_Maktap2_YuksekHiz;Bit;M1334
+OUT_KonveyorSikma3_SikmaSIK;Bit;M1335
+OUT_ProfilDondurmeUnite1_2_Asagi;Bit;M1336
+OUT_ProfilDondurmeUnite1_2_Yukari;Bit;M1337
+OUT_ProfilDondurmeUnite3_Asagi;Bit;M1340
+OUT_ProfilDondurmeUnite3_Yukari;Bit;M1341
+OUT_ProfilDondurmeUnite1_2_Geri;Bit;M1342
+OUT_ProfilDondurmeUnite1_2_Ileri;Bit;M1343
+OUT_ProfilDondurmeUnite3_Geri;Bit;M1344
+OUT_ProfilDondurmeUnite3_Ileri;Bit;M1345
+OUT_ProfilDondurmeUnite1_2_0der;Bit;M1346
+OUT_ProfilDondurmeUnite1_2_90der;Bit;M1347
+OUT_ProfilDondurmeUnite3_0der;Bit;M1350
+OUT_ProfilDondurmeUnite3_90der;Bit;M1351
+OUT_Matkap1_UstSIK;Bit;M1352
+OUT_Matkap2_UstSIK;Bit;M1353
+OUT_Matkap1_Sogutma;Bit;M1354
+OUT_TalasTemizleme;Bit;M1355
+OUT_VidalamaKonvTahliye_UniteYukari;Bit;M1356
+OUT_VidalamaKonvTahliye_UniteAsagi;Bit;M1357
+

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>How to write Kaban HMI help files</title>
+<style>
+ body{font-family:Segoe UI,Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.2em;color:#23262c;line-height:1.45;font-size:14px}
+ h1{font-size:1.45em;margin:.2em 0 .6em}
+ h2{font-size:1.15em;color:#1f4e79;margin:1.8em 0 .4em}
+ h3{font-size:1.02em;margin:1em 0 .2em}
+ p{margin:.25em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em}
+ td,th{border:1px solid #444;padding:.35em .5em;vertical-align:top;text-align:left}
+ th{background:#dcdcdc}
+ code{background:#f2f4f7;padding:0 .25em;border:1px solid #dde1e6;font-family:Consolas,monospace}
+ pre{background:#f7f8fa;border:1px solid #dde1e6;padding:.6em .8em;overflow-x:auto;font-family:Consolas,monospace;font-size:.92em}
+ table.point td:first-child{background:#eeeeee;font-weight:bold;text-align:center;width:14%}
+ .small{color:#555;font-size:.92em}
+</style></head><body>
+
+<h1>How to write Kaban HMI help files</h1>
+
+<table class="point"><tr><td>POINT</td><td>
+Three example files sit beside this one. Copy the closest one and replace its content &ndash; that is faster and safer
+than starting from a blank page.
+<br><br>
+<code>Unit_Robot_Top_Clamping.html</code> &ndash; what a unit is<br>
+<code>Alarm_Robot_Clamping_Failure.html</code> &ndash; what to do about one alarm<br>
+<code>Axis_Robot_X.html</code> &ndash; what an axis is, and how it is homed and maintained
+</td></tr></table>
+
+<h2>1. The three kinds, and who reads them</h2>
+<table>
+<tr><th>Kind</th><th>Opened from</th><th>Read when</th><th>Answers</th></tr>
+<tr><td>Unit sheet</td><td>The <b>?</b> on a unit on a Manual Movement page</td><td>Any time, often before a fault</td>
+    <td>What is this thing, where is it, what is fitted to it, how is it set?</td></tr>
+<tr><td>Alarm sheet</td><td>The Help column of the alarm, and the unit's <b>?</b> while its alarm is active</td>
+    <td>With the machine stopped and someone waiting</td><td>Why did this alarm happen and what do I do now?</td></tr>
+<tr><td>Axis sheet</td><td>The <b>?</b> on the Axis Settings row</td><td>During setup or maintenance</td>
+    <td>What drives this axis, what are its limits, how is it homed and maintained?</td></tr>
+</table>
+
+<h2>2. Where the files go</h2>
+<p>
+A file that belongs to <b>one machine</b> goes in that machine's project, in its <code>Help</code> folder:
+</p>
+<pre>Kaban.Machines.FA2010\Help\Unit_Robot_Top_Clamping.html</pre>
+<p>
+A file <b>shared by every machine</b> (a supplier's manual, the cylinder troubleshooting manual) goes in
+<code>KabanHMI\Help</code>; every machine's build copies it. Add a new file to the machine's project file once, and the
+build puts it in <code>bin\Debug\Help</code>, which is where the HMI looks.
+</p>
+
+<h2>3. Naming</h2>
+<table>
+<tr><th>Kind</th><th>Pattern</th><th>Example</th></tr>
+<tr><td>Unit</td><td><code>Unit_&lt;unit name&gt;.&lt;language&gt;.html</code></td><td><code>Unit_Robot_Top_Clamping.en.html</code></td></tr>
+<tr><td>Alarm</td><td><code>Alarm_&lt;what happened&gt;.&lt;language&gt;.html</code></td><td><code>Alarm_Robot_Clamping_Failure.en.html</code></td></tr>
+<tr><td>Axis</td><td><code>Axis_&lt;axis name&gt;.&lt;language&gt;.html</code></td><td><code>Axis_Robot_X.en.html</code></td></tr>
+</table>
+<p class="small">
+Use the name exactly as it appears on the HMI, with underscores for spaces. No dates or version numbers in the file
+name: the file is the current one, and its history belongs in your document system.
+</p>
+
+<h2>4. How a file is attached</h2>
+<h3>To a unit</h3>
+<p>
+In the designer, select the unit and set <b>HelpFiles</b> under the Help group. The picker lists file names, separated
+by <code>;</code>. Several files are allowed &ndash; the <b>?</b> then opens a list:
+</p>
+<pre>Unit_Robot_Top_Clamping.html;Robot_Clamp_Photo.png</pre>
+
+<h3>To an alarm</h3>
+<p>
+On <b>Machine Parameters &rarr; Alarm Settings</b>, in the Help column of that alarm, or directly in the machine's
+<code>Alarms.json</code>:
+</p>
+<pre>{
+  "PlcAddress": "M840",
+  "TagCode": "Robot_Clamping_Alarm",
+  "Severity": "Fault",
+  "PlcNumber": 1,
+  "Translations": { "EN": "Robot Clamping Alarm", "TR": "Robot Sikma Alarmi" },
+  "HelperKeys": [ "Alarm_Robot_Clamping_Failure.html" ]
+}</pre>
+<p>
+An alarm raised by a unit also shows that unit's own help, so don't repeat the unit description in the alarm sheet.
+</p>
+
+<h2>5. What the HMI can open</h2>
+<table>
+<tr><th>Format</th><th>Use it for</th><th>Notes</th></tr>
+<tr><td><code>.html</code></td><td>Everything you write yourself</td>
+    <td>Best choice: opens instantly, prints, and the program can show one section of it</td></tr>
+<tr><td><code>.pdf</code></td><td>Supplier manuals</td><td>Opens at page one; say in the entry which section to turn to</td></tr>
+<tr><td><code>.png</code>, <code>.jpg</code></td><td>A photograph of the real part</td><td>Keep under about 1 MB</td></tr>
+</table>
+
+<h2>6. Writing rules that matter on the shop floor</h2>
+<table>
+<tr><th>Rule</th><th>Why</th></tr>
+<tr><td>Safety first, in its own box at the top</td><td>It is read while the machine is stopped and someone is in a hurry</td></tr>
+<tr><td>Checks in order, cheapest and safest first</td><td>Most faults end at the second or third check</td></tr>
+<tr><td>Give BOTH outcomes of every check</td><td>"If yes &hellip; if no &hellip;" is what keeps the reader moving</td></tr>
+<tr><td>Name devices exactly as the HMI does (<code>M840</code>, <code>M233</code>)</td><td>So the reader can find them on the monitor page</td></tr>
+<tr><td>Short sentences, no abbreviations</td><td>The reader may not have written the document, or share your first language</td></tr>
+<tr><td>Say when to stop and call for support</td><td>Repeated resets of a real fault damage the machine</td></tr>
+<tr><td>One subject per file</td><td>The HMI opens exactly what was asked for; a combined document forces searching</td></tr>
+</table>
+
+<h2>9. Languages</h2>
+<p>
+A document is referred to by ONE name everywhere &ndash; in the designer and in <code>Alarms.json</code> you always
+write <code>Unit_Robot_Top_Clamping.html</code>, without a language. On disk you keep one file per language:
+</p>
+<pre>Help\Unit_Robot_Top_Clamping.en.html      English (the master)
+Help\Unit_Robot_Top_Clamping.tr.html      Turkish
+Help\Unit_Robot_Top_Clamping.ru.html      Russian
+Help\Robot_Clamp_Photo.png                no language needed</pre>
+<p>
+The HMI opens the file for the language the operator has selected. If that language has not been translated yet it opens
+English, and if there is no language suffix at all it opens the plain file. So:
+</p>
+<table>
+<tr><th>This means</th><th>Why it matters</th></tr>
+<tr><td>Nothing is re-pointed when a translation arrives</td><td>Drop the new file into <code>Help</code>, add it to the project, done &ndash; the operator simply stops seeing English</td></tr>
+<tr><td>A machine can ship with only some languages done</td><td>A missing translation never leaves an operator with nothing</td></tr>
+<tr><td>A translator receives one whole file</td><td>No string lists, no tooling; they see the tables and the context they are translating</td></tr>
+<tr><td>Supplier manuals follow the same rule</td><td><code>MR_J4_TroubleShooting.en.pdf</code> beside a translated one, referred to by the one name</td></tr>
+</table>
+<h3>Rules for translators</h3>
+<table>
+<tr><th>Rule</th><th>Reason</th></tr>
+<tr><td>Keep the file name, section order and table structure identical to the English master</td><td>Anyone comparing the two can see at a glance what is missing</td></tr>
+<tr><td>Never translate device addresses (<code>M840</code>, <code>M233</code>), part numbers or units</td><td>The reader has to find them on the HMI and in the cabinet</td></tr>
+<tr><td>Translate the safety box first and most carefully</td><td>It is the part that must be understood without a second reading</td></tr>
+<tr><td>Set <code>&lt;html lang="tr"&gt;</code> and keep <code>&lt;meta charset="utf-8"&gt;</code></td><td>So accented characters show correctly everywhere</td></tr>
+<tr><td>When the English master changes, change every translation in the same commit</td><td>Otherwise the machine quietly ships two different instructions</td></tr>
+</table>
+<p class="small">
+<code>Alarm_Robot_Clamping_Failure.tr.html</code> beside this file is a finished example of a translated sheet.
+</p>
+
+<h2>10. Adding a photograph</h2>
+<p>
+Put the image file in the same <code>Help</code> folder, add it to the unit's <b>HelpFiles</b>, and reference it from your
+page if you want it inline:
+</p>
+<pre>&lt;p class="fig"&gt;&lt;img src="Robot_Clamp_Photo.png" width="520" alt="The clamp seen from the exit side"&gt;&lt;/p&gt;
+&lt;p class="cap"&gt;Fig. 2 - the clamp seen from the exit side&lt;/p&gt;</pre>
+<p class="small">
+Photograph the part in place, with enough surroundings to find it, and with the guard open in the same way the reader
+will open it.
+</p>
+
+<h2>11. Before you hand it over</h2>
+<table>
+<tr><th>Check</th></tr>
+<tr><td>Open it from the HMI itself, not from the folder &ndash; that proves the name and the link are right.</td></tr>
+<tr><td>Have someone who did not write it follow it once on the machine.</td></tr>
+<tr><td>Every device number in the file matches the PLC program and the HMI.</td></tr>
+<tr><td>Nothing in it tells the reader to bypass a guard, an interlock or a light curtain.</td></tr>
+</table>
+
+</body></html>
+

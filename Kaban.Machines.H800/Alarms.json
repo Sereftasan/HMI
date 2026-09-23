@@ -1,0 +1,978 @@
+[
+  {
+    "PlcAddress": "M801",
+    "TagCode": "X_1_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "X 1 Fault",
+      "TR": "X1 Ariza",
+      "RU": "X 1 Fault",
+      "DE": "X 1 Fault",
+      "IT": "X 1 Fault",
+      "ES": "X 1 Fault"
+    },
+    "Comment": "code 1 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M802",
+    "TagCode": "Y_1_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Y 1 Fault",
+      "TR": "Y1 Ariza",
+      "RU": "Y 1 Fault",
+      "DE": "Y 1 Fault",
+      "IT": "Y 1 Fault",
+      "ES": "Y 1 Fault"
+    },
+    "Comment": "code 2 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M803",
+    "TagCode": "Z_1_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Z 1 Fault",
+      "TR": "Z1 Ariza",
+      "RU": "Z 1 Fault",
+      "DE": "Z 1 Fault",
+      "IT": "Z 1 Fault",
+      "ES": "Z 1 Fault"
+    },
+    "Comment": "code 3 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M804",
+    "TagCode": "X_2_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "X 2 Fault",
+      "TR": "X2 Ariza",
+      "RU": "X 2 Fault",
+      "DE": "X 2 Fault",
+      "IT": "X 2 Fault",
+      "ES": "X 2 Fault"
+    },
+    "Comment": "code 4 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M805",
+    "TagCode": "Y_2_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Y 2 Fault",
+      "TR": "Y2 Ariza",
+      "RU": "Y 2 Fault",
+      "DE": "Y 2 Fault",
+      "IT": "Y 2 Fault",
+      "ES": "Y 2 Fault"
+    },
+    "Comment": "code 5 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M806",
+    "TagCode": "Z_2_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Z 2 Fault",
+      "TR": "Z2 Ariza",
+      "RU": "Z 2 Fault",
+      "DE": "Z 2 Fault",
+      "IT": "Z 2 Fault",
+      "ES": "Z 2 Fault"
+    },
+    "Comment": "code 6 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M807",
+    "TagCode": "Emergency_Stop",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Emergency Stop",
+      "TR": "AcilStop",
+      "RU": "Emergency Stop",
+      "DE": "Emergency Stop",
+      "IT": "Emergency Stop",
+      "ES": "Emergency Stop"
+    },
+    "Comment": "code 7 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M808",
+    "TagCode": "Inverter_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Inverter Fault",
+      "TR": "Inverter Ariza",
+      "RU": "Inverter Fault",
+      "DE": "Inverter Fault",
+      "IT": "Inverter Fault",
+      "ES": "Inverter Fault"
+    },
+    "Comment": "code 8 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M809",
+    "TagCode": "Conveyor_Calismiyor",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Calismiyor",
+      "TR": "Konveyor Calismiyor",
+      "RU": "Conveyor Calismiyor",
+      "DE": "Conveyor Calismiyor",
+      "IT": "Conveyor Calismiyor",
+      "ES": "Conveyor Calismiyor"
+    },
+    "Comment": "code 9 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M810",
+    "TagCode": "Screwing_Conveyor_Discharge_Motor_Calismiyor",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Screwing Conveyor Discharge Motor Calismiyor",
+      "TR": "VidalamaKonvTahliyeMotoru Calismiyor",
+      "RU": "Screwing Conveyor Discharge Motor Calismiyor",
+      "DE": "Screwing Conveyor Discharge Motor Calismiyor",
+      "IT": "Screwing Conveyor Discharge Motor Calismiyor",
+      "ES": "Screwing Conveyor Discharge Motor Calismiyor"
+    },
+    "Comment": "code 10 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M811",
+    "TagCode": "Drill_1_Calismiyor",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Drill 1 Calismiyor",
+      "TR": "Maktap1 Calismiyor",
+      "RU": "Drill 1 Calismiyor",
+      "DE": "Drill 1 Calismiyor",
+      "IT": "Drill 1 Calismiyor",
+      "ES": "Drill 1 Calismiyor"
+    },
+    "Comment": "code 11 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M812",
+    "TagCode": "Drill_2_Calismiyor",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Drill 2 Calismiyor",
+      "TR": "Maktap2 Calismiyor",
+      "RU": "Drill 2 Calismiyor",
+      "DE": "Drill 2 Calismiyor",
+      "IT": "Drill 2 Calismiyor",
+      "ES": "Drill 2 Calismiyor"
+    },
+    "Comment": "code 12 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M813",
+    "TagCode": "Screwing_Conveyor_Discharge_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Screwing Conveyor Discharge Sikamadi",
+      "TR": "VidalamaKonvTahliye Sikamadi",
+      "RU": "Screwing Conveyor Discharge Sikamadi",
+      "DE": "Screwing Conveyor Discharge Sikamadi",
+      "IT": "Screwing Conveyor Discharge Sikamadi",
+      "ES": "Screwing Conveyor Discharge Sikamadi"
+    },
+    "Comment": "code 13 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M814",
+    "TagCode": "Screwing_Conveyor_Discharge_Clamping_Acamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Screwing Conveyor Discharge Clamping Acamadi",
+      "TR": "VidalamaKonvTahliye SikmaAcamadi",
+      "RU": "Screwing Conveyor Discharge Clamping Acamadi",
+      "DE": "Screwing Conveyor Discharge Clamping Acamadi",
+      "IT": "Screwing Conveyor Discharge Clamping Acamadi",
+      "ES": "Screwing Conveyor Discharge Clamping Acamadi"
+    },
+    "Comment": "code 14 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M815",
+    "TagCode": "Robot_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot Up Cikamadi",
+      "TR": "Robot YukariCikamadi",
+      "RU": "Robot Up Cikamadi",
+      "DE": "Robot Up Cikamadi",
+      "IT": "Robot Up Cikamadi",
+      "ES": "Robot Up Cikamadi"
+    },
+    "Comment": "code 15 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M816",
+    "TagCode": "Robot_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot Down Inemedi",
+      "TR": "Robot Asagi Inemedi",
+      "RU": "Robot Down Inemedi",
+      "DE": "Robot Down Inemedi",
+      "IT": "Robot Down Inemedi",
+      "ES": "Robot Down Inemedi"
+    },
+    "Comment": "code 16 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M817",
+    "TagCode": "Robot_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot Sikamadi",
+      "TR": "Robot Sikamadi",
+      "RU": "Robot Sikamadi",
+      "DE": "Robot Sikamadi",
+      "IT": "Robot Sikamadi",
+      "ES": "Robot Sikamadi"
+    },
+    "Comment": "code 17 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M818",
+    "TagCode": "Robot_Clamping_Acamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Robot Clamping Acamadi",
+      "TR": "Robot SikmaAcamadi",
+      "RU": "Robot Clamping Acamadi",
+      "DE": "Robot Clamping Acamadi",
+      "IT": "Robot Clamping Acamadi",
+      "ES": "Robot Clamping Acamadi"
+    },
+    "Comment": "code 18 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M819",
+    "TagCode": "Discharge_1_Cover_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 1 Cover Up Cikamadi",
+      "TR": "Tahliye1 Kapak YukariCikamadi",
+      "RU": "Discharge 1 Cover Up Cikamadi",
+      "DE": "Discharge 1 Cover Up Cikamadi",
+      "IT": "Discharge 1 Cover Up Cikamadi",
+      "ES": "Discharge 1 Cover Up Cikamadi"
+    },
+    "Comment": "code 19 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M820",
+    "TagCode": "Discharge_1_Cover_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 1 Cover Down Inemedi",
+      "TR": "Tahliye1 Kapak Asagi Inemedi",
+      "RU": "Discharge 1 Cover Down Inemedi",
+      "DE": "Discharge 1 Cover Down Inemedi",
+      "IT": "Discharge 1 Cover Down Inemedi",
+      "ES": "Discharge 1 Cover Down Inemedi"
+    },
+    "Comment": "code 20 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M821",
+    "TagCode": "Discharge_1_Profile_Unload_Back_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 1 Profile Unload Back Gidemedi",
+      "TR": "Tahliye1 ProfilBosaltma GeriGidemedi",
+      "RU": "Discharge 1 Profile Unload Back Gidemedi",
+      "DE": "Discharge 1 Profile Unload Back Gidemedi",
+      "IT": "Discharge 1 Profile Unload Back Gidemedi",
+      "ES": "Discharge 1 Profile Unload Back Gidemedi"
+    },
+    "Comment": "code 21 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M822",
+    "TagCode": "Discharge_1_Profile_Unload_Forward_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 1 Profile Unload Forward Gidemedi",
+      "TR": "Tahliye1 ProfilBosaltma IleriGidemedi",
+      "RU": "Discharge 1 Profile Unload Forward Gidemedi",
+      "DE": "Discharge 1 Profile Unload Forward Gidemedi",
+      "IT": "Discharge 1 Profile Unload Forward Gidemedi",
+      "ES": "Discharge 1 Profile Unload Forward Gidemedi"
+    },
+    "Comment": "code 22 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M823",
+    "TagCode": "Discharge_2_Cover_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 2 Cover Up Cikamadi",
+      "TR": "Tahliye2 Kapak YukariCikamadi",
+      "RU": "Discharge 2 Cover Up Cikamadi",
+      "DE": "Discharge 2 Cover Up Cikamadi",
+      "IT": "Discharge 2 Cover Up Cikamadi",
+      "ES": "Discharge 2 Cover Up Cikamadi"
+    },
+    "Comment": "code 23 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M824",
+    "TagCode": "Discharge_2_Cover_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 2 Cover Down Inemedi",
+      "TR": "Tahliye2 Kapak Asagi Inemedi",
+      "RU": "Discharge 2 Cover Down Inemedi",
+      "DE": "Discharge 2 Cover Down Inemedi",
+      "IT": "Discharge 2 Cover Down Inemedi",
+      "ES": "Discharge 2 Cover Down Inemedi"
+    },
+    "Comment": "code 24 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M825",
+    "TagCode": "Discharge_2_Profile_Unload_Back_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 2 Profile Unload Back Gidemedi",
+      "TR": "Tahliye2 ProfilBosaltma GeriGidemedi",
+      "RU": "Discharge 2 Profile Unload Back Gidemedi",
+      "DE": "Discharge 2 Profile Unload Back Gidemedi",
+      "IT": "Discharge 2 Profile Unload Back Gidemedi",
+      "ES": "Discharge 2 Profile Unload Back Gidemedi"
+    },
+    "Comment": "code 25 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M826",
+    "TagCode": "Discharge_2_Profile_Unload_Forward_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 2 Profile Unload Forward Gidemedi",
+      "TR": "Tahliye2 ProfilBosaltma IleriGidemedi",
+      "RU": "Discharge 2 Profile Unload Forward Gidemedi",
+      "DE": "Discharge 2 Profile Unload Forward Gidemedi",
+      "IT": "Discharge 2 Profile Unload Forward Gidemedi",
+      "ES": "Discharge 2 Profile Unload Forward Gidemedi"
+    },
+    "Comment": "code 26 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M827",
+    "TagCode": "Conveyor_Clamping_Unit_1_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 1 Down Inemedi",
+      "TR": "KonveyorSikmaUnite1 Asagi Inemedi",
+      "RU": "Conveyor Clamping Unit 1 Down Inemedi",
+      "DE": "Conveyor Clamping Unit 1 Down Inemedi",
+      "IT": "Conveyor Clamping Unit 1 Down Inemedi",
+      "ES": "Conveyor Clamping Unit 1 Down Inemedi"
+    },
+    "Comment": "code 27 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M828",
+    "TagCode": "Conveyor_Clamping_Unit_2_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 2 Down Inemedi",
+      "TR": "KonveyorSikmaUnite2 Asagi Inemedi",
+      "RU": "Conveyor Clamping Unit 2 Down Inemedi",
+      "DE": "Conveyor Clamping Unit 2 Down Inemedi",
+      "IT": "Conveyor Clamping Unit 2 Down Inemedi",
+      "ES": "Conveyor Clamping Unit 2 Down Inemedi"
+    },
+    "Comment": "code 28 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M829",
+    "TagCode": "Conveyor_Clamping_Unit_3_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 3 Down Inemedi",
+      "TR": "KonveyorSikmaUnite3 Asagi Inemedi",
+      "RU": "Conveyor Clamping Unit 3 Down Inemedi",
+      "DE": "Conveyor Clamping Unit 3 Down Inemedi",
+      "IT": "Conveyor Clamping Unit 3 Down Inemedi",
+      "ES": "Conveyor Clamping Unit 3 Down Inemedi"
+    },
+    "Comment": "code 29 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M830",
+    "TagCode": "Conveyor_Clamping_Unit_1_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 1 Up Cikamadi",
+      "TR": "KonveyorSikmaUnite1 YukariCikamadi",
+      "RU": "Conveyor Clamping Unit 1 Up Cikamadi",
+      "DE": "Conveyor Clamping Unit 1 Up Cikamadi",
+      "IT": "Conveyor Clamping Unit 1 Up Cikamadi",
+      "ES": "Conveyor Clamping Unit 1 Up Cikamadi"
+    },
+    "Comment": "code 30 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M831",
+    "TagCode": "Conveyor_Clamping_Unit_2_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 2 Up Cikamadi",
+      "TR": "KonveyorSikmaUnite2 YukariCikamadi",
+      "RU": "Conveyor Clamping Unit 2 Up Cikamadi",
+      "DE": "Conveyor Clamping Unit 2 Up Cikamadi",
+      "IT": "Conveyor Clamping Unit 2 Up Cikamadi",
+      "ES": "Conveyor Clamping Unit 2 Up Cikamadi"
+    },
+    "Comment": "code 31 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M832",
+    "TagCode": "Conveyor_Clamping_Unit_3_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping Unit 3 Up Cikamadi",
+      "TR": "KonveyorSikmaUnite3 YukariCikamadi",
+      "RU": "Conveyor Clamping Unit 3 Up Cikamadi",
+      "DE": "Conveyor Clamping Unit 3 Up Cikamadi",
+      "IT": "Conveyor Clamping Unit 3 Up Cikamadi",
+      "ES": "Conveyor Clamping Unit 3 Up Cikamadi"
+    },
+    "Comment": "code 32 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M833",
+    "TagCode": "Conveyor_Clamping_1_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 1 Sikamadi",
+      "TR": "KonveyorSikma1 Sikamadi",
+      "RU": "Conveyor Clamping 1 Sikamadi",
+      "DE": "Conveyor Clamping 1 Sikamadi",
+      "IT": "Conveyor Clamping 1 Sikamadi",
+      "ES": "Conveyor Clamping 1 Sikamadi"
+    },
+    "Comment": "code 33 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M834",
+    "TagCode": "Conveyor_Clamping_2_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 2 Sikamadi",
+      "TR": "KonveyorSikma2 Sikamadi",
+      "RU": "Conveyor Clamping 2 Sikamadi",
+      "DE": "Conveyor Clamping 2 Sikamadi",
+      "IT": "Conveyor Clamping 2 Sikamadi",
+      "ES": "Conveyor Clamping 2 Sikamadi"
+    },
+    "Comment": "code 34 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M835",
+    "TagCode": "Conveyor_Clamping_3_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 3 Sikamadi",
+      "TR": "KonveyorSikma3 Sikamadi",
+      "RU": "Conveyor Clamping 3 Sikamadi",
+      "DE": "Conveyor Clamping 3 Sikamadi",
+      "IT": "Conveyor Clamping 3 Sikamadi",
+      "ES": "Conveyor Clamping 3 Sikamadi"
+    },
+    "Comment": "code 35 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M836",
+    "TagCode": "Conveyor_Clamping_1_Acamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 1 Acamadi",
+      "TR": "KonveyorSikma1 Acamadi",
+      "RU": "Conveyor Clamping 1 Acamadi",
+      "DE": "Conveyor Clamping 1 Acamadi",
+      "IT": "Conveyor Clamping 1 Acamadi",
+      "ES": "Conveyor Clamping 1 Acamadi"
+    },
+    "Comment": "code 36 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M837",
+    "TagCode": "Conveyor_Clamping_2_Acamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 2 Acamadi",
+      "TR": "KonveyorSikma2 Acamadi",
+      "RU": "Conveyor Clamping 2 Acamadi",
+      "DE": "Conveyor Clamping 2 Acamadi",
+      "IT": "Conveyor Clamping 2 Acamadi",
+      "ES": "Conveyor Clamping 2 Acamadi"
+    },
+    "Comment": "code 37 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M838",
+    "TagCode": "Conveyor_Clamping_3_Acamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Clamping 3 Acamadi",
+      "TR": "KonveyorSikma3 Acamadi",
+      "RU": "Conveyor Clamping 3 Acamadi",
+      "DE": "Conveyor Clamping 3 Acamadi",
+      "IT": "Conveyor Clamping 3 Acamadi",
+      "ES": "Conveyor Clamping 3 Acamadi"
+    },
+    "Comment": "code 38 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M839",
+    "TagCode": "Profile_Rotation_Unit_1_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 Down Inemedi",
+      "TR": "ProfilDondurmeUnite1 Asagi Inemedi",
+      "RU": "Profile Rotation Unit 1 Down Inemedi",
+      "DE": "Profile Rotation Unit 1 Down Inemedi",
+      "IT": "Profile Rotation Unit 1 Down Inemedi",
+      "ES": "Profile Rotation Unit 1 Down Inemedi"
+    },
+    "Comment": "code 39 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M840",
+    "TagCode": "Profile_Rotation_Unit_2_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 Down Inemedi",
+      "TR": "ProfilDondurmeUnite2 Asagi Inemedi",
+      "RU": "Profile Rotation Unit 2 Down Inemedi",
+      "DE": "Profile Rotation Unit 2 Down Inemedi",
+      "IT": "Profile Rotation Unit 2 Down Inemedi",
+      "ES": "Profile Rotation Unit 2 Down Inemedi"
+    },
+    "Comment": "code 40 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M841",
+    "TagCode": "Profile_Rotation_Unit_3_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 Down Inemedi",
+      "TR": "ProfilDondurmeUnite3 Asagi Inemedi",
+      "RU": "Profile Rotation Unit 3 Down Inemedi",
+      "DE": "Profile Rotation Unit 3 Down Inemedi",
+      "IT": "Profile Rotation Unit 3 Down Inemedi",
+      "ES": "Profile Rotation Unit 3 Down Inemedi"
+    },
+    "Comment": "code 41 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M842",
+    "TagCode": "Profile_Rotation_Unit_1_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 Up Cikamadi",
+      "TR": "ProfilDondurmeUnite1 YukariCikamadi",
+      "RU": "Profile Rotation Unit 1 Up Cikamadi",
+      "DE": "Profile Rotation Unit 1 Up Cikamadi",
+      "IT": "Profile Rotation Unit 1 Up Cikamadi",
+      "ES": "Profile Rotation Unit 1 Up Cikamadi"
+    },
+    "Comment": "code 42 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M843",
+    "TagCode": "Profile_Rotation_Unit_2_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 Up Cikamadi",
+      "TR": "ProfilDondurmeUnite2 YukariCikamadi",
+      "RU": "Profile Rotation Unit 2 Up Cikamadi",
+      "DE": "Profile Rotation Unit 2 Up Cikamadi",
+      "IT": "Profile Rotation Unit 2 Up Cikamadi",
+      "ES": "Profile Rotation Unit 2 Up Cikamadi"
+    },
+    "Comment": "code 43 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M844",
+    "TagCode": "Profile_Rotation_Unit_3_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 Up Cikamadi",
+      "TR": "ProfilDondurmeUnite3 YukariCikamadi",
+      "RU": "Profile Rotation Unit 3 Up Cikamadi",
+      "DE": "Profile Rotation Unit 3 Up Cikamadi",
+      "IT": "Profile Rotation Unit 3 Up Cikamadi",
+      "ES": "Profile Rotation Unit 3 Up Cikamadi"
+    },
+    "Comment": "code 44 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M845",
+    "TagCode": "Profile_Rotation_Unit_1_Back_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 Back Gidemedi",
+      "TR": "ProfilDondurmeUnite1 GeriGidemedi",
+      "RU": "Profile Rotation Unit 1 Back Gidemedi",
+      "DE": "Profile Rotation Unit 1 Back Gidemedi",
+      "IT": "Profile Rotation Unit 1 Back Gidemedi",
+      "ES": "Profile Rotation Unit 1 Back Gidemedi"
+    },
+    "Comment": "code 45 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M846",
+    "TagCode": "Profile_Rotation_Unit_2_Back_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 Back Gidemedi",
+      "TR": "ProfilDondurmeUnite2 GeriGidemedi",
+      "RU": "Profile Rotation Unit 2 Back Gidemedi",
+      "DE": "Profile Rotation Unit 2 Back Gidemedi",
+      "IT": "Profile Rotation Unit 2 Back Gidemedi",
+      "ES": "Profile Rotation Unit 2 Back Gidemedi"
+    },
+    "Comment": "code 46 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M847",
+    "TagCode": "Profile_Rotation_Unit_3_Back_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 Back Gidemedi",
+      "TR": "ProfilDondurmeUnite3 GeriGidemedi",
+      "RU": "Profile Rotation Unit 3 Back Gidemedi",
+      "DE": "Profile Rotation Unit 3 Back Gidemedi",
+      "IT": "Profile Rotation Unit 3 Back Gidemedi",
+      "ES": "Profile Rotation Unit 3 Back Gidemedi"
+    },
+    "Comment": "code 47 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M848",
+    "TagCode": "Profile_Rotation_Unit_1_Forward_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 Forward Gidemedi",
+      "TR": "ProfilDondurmeUnite1 IleriGidemedi",
+      "RU": "Profile Rotation Unit 1 Forward Gidemedi",
+      "DE": "Profile Rotation Unit 1 Forward Gidemedi",
+      "IT": "Profile Rotation Unit 1 Forward Gidemedi",
+      "ES": "Profile Rotation Unit 1 Forward Gidemedi"
+    },
+    "Comment": "code 48 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M849",
+    "TagCode": "Profile_Rotation_Unit_2_Forward_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 Forward Gidemedi",
+      "TR": "ProfilDondurmeUnite2 IleriGidemedi",
+      "RU": "Profile Rotation Unit 2 Forward Gidemedi",
+      "DE": "Profile Rotation Unit 2 Forward Gidemedi",
+      "IT": "Profile Rotation Unit 2 Forward Gidemedi",
+      "ES": "Profile Rotation Unit 2 Forward Gidemedi"
+    },
+    "Comment": "code 49 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M850",
+    "TagCode": "Profile_Rotation_Unit_3_Forward_Gidemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 Forward Gidemedi",
+      "TR": "ProfilDondurmeUnite3 IleriGidemedi",
+      "RU": "Profile Rotation Unit 3 Forward Gidemedi",
+      "DE": "Profile Rotation Unit 3 Forward Gidemedi",
+      "IT": "Profile Rotation Unit 3 Forward Gidemedi",
+      "ES": "Profile Rotation Unit 3 Forward Gidemedi"
+    },
+    "Comment": "code 50 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M851",
+    "TagCode": "Profile_Rotation_Unit_1_0_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 0 deg Donemedi",
+      "TR": "ProfilDondurmeUnite1 0der Donemedi",
+      "RU": "Profile Rotation Unit 1 0 deg Donemedi",
+      "DE": "Profile Rotation Unit 1 0 deg Donemedi",
+      "IT": "Profile Rotation Unit 1 0 deg Donemedi",
+      "ES": "Profile Rotation Unit 1 0 deg Donemedi"
+    },
+    "Comment": "code 51 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M852",
+    "TagCode": "Profile_Rotation_Unit_2_0_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 0 deg Donemedi",
+      "TR": "ProfilDondurmeUnite2 0der Donemedi",
+      "RU": "Profile Rotation Unit 2 0 deg Donemedi",
+      "DE": "Profile Rotation Unit 2 0 deg Donemedi",
+      "IT": "Profile Rotation Unit 2 0 deg Donemedi",
+      "ES": "Profile Rotation Unit 2 0 deg Donemedi"
+    },
+    "Comment": "code 52 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M853",
+    "TagCode": "Profile_Rotation_Unit_3_0_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 0 deg Donemedi",
+      "TR": "ProfilDondurmeUnite3 0der Donemedi",
+      "RU": "Profile Rotation Unit 3 0 deg Donemedi",
+      "DE": "Profile Rotation Unit 3 0 deg Donemedi",
+      "IT": "Profile Rotation Unit 3 0 deg Donemedi",
+      "ES": "Profile Rotation Unit 3 0 deg Donemedi"
+    },
+    "Comment": "code 53 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M854",
+    "TagCode": "Profile_Rotation_Unit_1_90_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 1 90 deg Donemedi",
+      "TR": "ProfilDondurmeUnite1 90der Donemedi",
+      "RU": "Profile Rotation Unit 1 90 deg Donemedi",
+      "DE": "Profile Rotation Unit 1 90 deg Donemedi",
+      "IT": "Profile Rotation Unit 1 90 deg Donemedi",
+      "ES": "Profile Rotation Unit 1 90 deg Donemedi"
+    },
+    "Comment": "code 54 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M855",
+    "TagCode": "Profile_Rotation_Unit_2_90_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 2 90 deg Donemedi",
+      "TR": "ProfilDondurmeUnite2 90der Donemedi",
+      "RU": "Profile Rotation Unit 2 90 deg Donemedi",
+      "DE": "Profile Rotation Unit 2 90 deg Donemedi",
+      "IT": "Profile Rotation Unit 2 90 deg Donemedi",
+      "ES": "Profile Rotation Unit 2 90 deg Donemedi"
+    },
+    "Comment": "code 55 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M856",
+    "TagCode": "Profile_Rotation_Unit_3_90_deg_Donemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Rotation Unit 3 90 deg Donemedi",
+      "TR": "ProfilDondurmeUnite3 90der Donemedi",
+      "RU": "Profile Rotation Unit 3 90 deg Donemedi",
+      "DE": "Profile Rotation Unit 3 90 deg Donemedi",
+      "IT": "Profile Rotation Unit 3 90 deg Donemedi",
+      "ES": "Profile Rotation Unit 3 90 deg Donemedi"
+    },
+    "Comment": "code 56 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M857",
+    "TagCode": "Drill_1_Top_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Drill 1 Top Sikamadi",
+      "TR": "Matkap1 Ust Sikamadi",
+      "RU": "Drill 1 Top Sikamadi",
+      "DE": "Drill 1 Top Sikamadi",
+      "IT": "Drill 1 Top Sikamadi",
+      "ES": "Drill 1 Top Sikamadi"
+    },
+    "Comment": "code 57 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M858",
+    "TagCode": "Drill_2_Top_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Drill 2 Top Sikamadi",
+      "TR": "Matkap2 Ust Sikamadi",
+      "RU": "Drill 2 Top Sikamadi",
+      "DE": "Drill 2 Top Sikamadi",
+      "IT": "Drill 2 Top Sikamadi",
+      "ES": "Drill 2 Top Sikamadi"
+    },
+    "Comment": "code 58 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M859",
+    "TagCode": "Screwing_Conveyor_Discharge_Unit_Up_Cikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Screwing Conveyor Discharge Unit Up Cikamadi",
+      "TR": "VidalamaKonvTahliyeUnitesi YukariCikamadi",
+      "RU": "Screwing Conveyor Discharge Unit Up Cikamadi",
+      "DE": "Screwing Conveyor Discharge Unit Up Cikamadi",
+      "IT": "Screwing Conveyor Discharge Unit Up Cikamadi",
+      "ES": "Screwing Conveyor Discharge Unit Up Cikamadi"
+    },
+    "Comment": "code 59 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M860",
+    "TagCode": "Screwing_Conveyor_Discharge_Unit_Down_Inemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Screwing Conveyor Discharge Unit Down Inemedi",
+      "TR": "VidalamaKonveyorTahliyeUnitesi Asagi Inemedi",
+      "RU": "Screwing Conveyor Discharge Unit Down Inemedi",
+      "DE": "Screwing Conveyor Discharge Unit Down Inemedi",
+      "IT": "Screwing Conveyor Discharge Unit Down Inemedi",
+      "ES": "Screwing Conveyor Discharge Unit Down Inemedi"
+    },
+    "Comment": "code 60 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M861",
+    "TagCode": "Profile_Conveyor_Discharge_Pozisyonunu_Gecti",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Conveyor Discharge Pozisyonunu Gecti",
+      "TR": "Profil KonveyorTahliyePozisyonunuGecti",
+      "RU": "Profile Conveyor Discharge Pozisyonunu Gecti",
+      "DE": "Profile Conveyor Discharge Pozisyonunu Gecti",
+      "IT": "Profile Conveyor Discharge Pozisyonunu Gecti",
+      "ES": "Profile Conveyor Discharge Pozisyonunu Gecti"
+    },
+    "Comment": "code 61 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M862",
+    "TagCode": "Conveyor_Discharge_Profili_Sikamadi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Discharge Profili Sikamadi",
+      "TR": "KonveyorTahliye ProfiliSikamadi",
+      "RU": "Conveyor Discharge Profili Sikamadi",
+      "DE": "Conveyor Discharge Profili Sikamadi",
+      "IT": "Conveyor Discharge Profili Sikamadi",
+      "ES": "Conveyor Discharge Profili Sikamadi"
+    },
+    "Comment": "code 62 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M863",
+    "TagCode": "Conveyor_Discharge_Profili_Discharge_Edemedi",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Conveyor Discharge Profili Discharge Edemedi",
+      "TR": "KonveyorTahliye ProfiliTahliyeEdemedi",
+      "RU": "Conveyor Discharge Profili Discharge Edemedi",
+      "DE": "Conveyor Discharge Profili Discharge Edemedi",
+      "IT": "Conveyor Discharge Profili Discharge Edemedi",
+      "ES": "Conveyor Discharge Profili Discharge Edemedi"
+    },
+    "Comment": "code 63 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M864",
+    "TagCode": "Profile_Conveyor_Rotation_Pozisyonunu_Gecti",
+    "Severity": "Warning",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Profile Conveyor Rotation Pozisyonunu Gecti",
+      "TR": "Profil KonveyorDondurmePozisyonunuGecti",
+      "RU": "Profile Conveyor Rotation Pozisyonunu Gecti",
+      "DE": "Profile Conveyor Rotation Pozisyonunu Gecti",
+      "IT": "Profile Conveyor Rotation Pozisyonunu Gecti",
+      "ES": "Profile Conveyor Rotation Pozisyonunu Gecti"
+    },
+    "Comment": "code 64 (from the earlier alarm list)"
+  },
+  {
+    "PlcAddress": "M865",
+    "TagCode": "Discharge_1_Servo_Fault",
+    "Severity": "Fault",
+    "PlcNumber": 1,
+    "Translations": {
+      "EN": "Discharge 1 Servo Fault",
+      "TR": "Tahliye1 ServoAriza",
+      "RU": "Discharge 1 Servo Fault",
+      "DE": "Discharge 1 Servo Fault",
+      "IT": "Discharge 1 Servo Fault",
+      "ES": "Discharge 1 Servo Fault"
+    },
+    "Comment": "code 65 (from the earlier alarm list)"
+  }
+]
+

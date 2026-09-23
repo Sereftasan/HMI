@@ -1,0 +1,283 @@
+Key;EN;TR;RU;DE;IT;ES
+Btn_Start;Start Machine;Makineyi Başlat;Пуск Станок;Start Maschine;Avvio Macchina;Inicio Máquina
+Btn_Stop;Stop Machine;Makineyi Durdur;Stop Станок;Stop Maschine;Stop Macchina;Stop Máquina
+Sys_ConfirmTitle;Confirm;Onay;Подтвердить;Bestätigen;Conferma;Confirmar
+Sys_ConfirmAction;Confirm Action?;İşlemi Onaylıyor musunuz?;Подтвердить действие?;Aktion bestätigen?;Confermare l'azione?;¿Confirmar la acción?
+Sys_ConfirmChange;Are you sure you want to change this value to {0}?;Bu değeri {0} olarak değiştirmek istediğinize emin misiniz?;Изменить это значение на {0}?;Diesen Wert wirklich auf {0} ändern?;Cambiare questo valore in {0}?;¿Cambiar este valor a {0}?
+Sys_InputTitle;Input;Giriş;Ввод;Eingabe;Immissione;Entrada
+Sys_InputMsg;Enter ({0} - {1}):;Girin ({0} - {1}):;Введите ({0} - {1}):;Eingabe ({0} - {1}):;Inserire ({0} - {1}):;Introducir ({0} - {1}):
+Sys_Disabled;Action Disabled.;İşlem Devre Dışı.;Действие отключено.;Aktion deaktiviert.;Azione disabilitata.;Acción deshabilitada.
+Sys_Reason;Reason:;Sebep:;Причина:;Grund:;Motivo:;Motivo:
+Sys_ReqSec;Requires Security Level:;Gerekli Yetki Seviyesi:;Требуется уровень доступа:;Erforderliche Berechtigung:;Livello richiesto:;Nivel requerido:
+Sys_ReqState;Required Machine State:;Gerekli Makine Durumu:;Required Станок State:;Required Maschine State:;Required Macchina State:;Required Máquina State:
+Sys_WaitSignal;Waiting for Signal:;Sinyal Bekleniyor:;Ожидание сигнала:;Warte auf Signal:;In attesa del segnale:;Esperando señal:
+Unit_mm;mm;milim;mm;mm;mm;mm
+Unit_inch;inch;inç;inch;inch;inch;inch
+Unit_sec;sec;sn;sec;sec;sec;sec
+Unit_min;min;dk;min;min;min;min
+Unit_lbs;lbs;libre;lbs;lbs;lbs;lbs
+Sys_NoData;Waiting for PLC data.;PLC verisi bekleniyor.;Ожидание данных ПЛК.;Warte auf SPS-Daten.;In attesa dei dati PLC.;Esperando datos del PLC.
+Btn_Login;Login;Giriş;Вход;Anmelden;Accedi;Iniciar sesión
+Btn_Logout;Logout;Oturumu kapat;Выйти;Abmelden;Esci;Cerrar sesión
+Sys_NotLoggedIn;No user logged;Oturum açılmadı;Пользователь не вошёл;Nicht angemeldet;Nessun utente;Sin sesión iniciada
+Set_Units;Unit Settings;Birim Ayarları;Настройки единиц;Einheiten;Unità di misura;Unidades
+Set_Users;User Settings;Kullanıcı Ayarları;Пользователи;Benutzer;Utenti;Usuarios
+Set_Logs;Log Settings;Kayıt Ayarları;Журналы;Protokolle;Registri;Registros
+Set_About;About;Hakkında;О программе;Über;Informazioni;Acerca de
+Unit_Family_Length;Length;Uzunluk;Длина;Länge;Lunghezza;Longitud
+Unit_Family_Weight;Weight;Ağırlık;Вес;Gewicht;Peso;Peso
+Unit_Family_Temperature;Temperature;Sıcaklık;Температура;Temperatur;Temperatura;Temperatura
+Unit_Family_Pressure;Pressure;Basınç;Давление;Druck;Pressione;Presión
+Unit_Family_Time;Time;Zaman;Время;Zeit;Tempo;Tiempo
+Sys_ConfirmChangeAddr;Write {0} to {1}?;{1} adresine {0} yaz?;Записать {0} в {1}?;{0} nach {1} schreiben?;Scrivere {0} in {1}?;¿Escribir {0} en {1}?
+Sys_WriteRejected;The PLC rejected the write.;PLC yazma işlemini reddetti.;ПЛК отклонил запись.;Die SPS hat das Schreiben abgelehnt.;Il PLC ha rifiutato la scrittura.;El PLC rechazó la escritura.
+Sys_WriteRejectedAddr;The PLC rejected the write to {0}.;PLC {0} adresine yazmayı reddetti.;ПЛК отклонил запись в {0}.;Die SPS hat das Schreiben auf {0} abgelehnt.;Il PLC ha rifiutato la scrittura su {0}.;El PLC rechazó la escritura en {0}.
+Sys_WriteError;The value could not be written.;Değer yazılamadı.;Не удалось записать значение.;Der Wert konnte nicht geschrieben werden.;Impossibile scrivere il valore.;No se pudo escribir el valor.
+Sys_WriteErrorTitle;Write Error;Yazma Hatası;Ошибка записи;Schreibfehler;Errore di scrittura;Error de escritura
+Sys_WriteFailedTitle;Write Failed;Yazma Başarısız;Запись не выполнена;Schreiben fehlgeschlagen;Scrittura non riuscita;Error al escribir
+Tip_ForAdmin;For Admin;Yönetici için;Для администратора;Für Administrator;Per amministratore;Para administrador
+Btn_Profiles;Profiles;Profiller;Профили;Profile;Profili;Perfiles
+Btn_Save;Save;Kaydet;Сохранить;Speichern;Salva;Guardar
+Usr_Name;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
+Usr_Pass;Password;Şifre;Пароль;Passwort;Password;Contraseña
+Usr_Level;Level;Seviye;Уровень доступа;Berechtigungsstufe;Livello di accesso;Nivel de acceso
+Log_Enabled;Audit logging enabled;Denetim kaydı etkin;Журнал аудита включён;Audit-Protokoll aktiviert;Registro di audit attivo;Registro de auditoría activo
+Log_Retain;Keep logs (days);Kayıt saklama (gün);Хранить журналы (дней);Protokolle aufbewahren (Tage);Conserva i log (giorni);Conservar registros (días)
+Btn_Ack;Acknowledge;Onayla;Подтвердить;Quittieren;Conferma;Reconocer
+Btn_Reset;Reset;Sıfırla;Сброс;Zurücksetzen;Reimposta;Reiniciar
+Set_PlcDiag;PLC Diagnostics;PLC Tanılama;Диагностика ПЛК;SPS-Diagnose;Diagnostica PLC;Diagnóstico del PLC
+Sys_ConfirmLogout;Log out of this session?;Oturumu kapatmak istiyor musunuz?;Завершить сеанс?;Diese Sitzung beenden?;Terminare questa sessione?;¿Cerrar esta sesión?
+Btn_ChangeUser;Change user;Kullanıcı değiştir;Сменить пользователя;Benutzer wechseln;Cambia utente;Cambiar usuario
+Btn_Cancel;Cancel;İptal;Отмена;Abbrechen;Annulla;Cancelar
+Sys_ConfirmClose;Close the program?;Program kapatılsın mı?;Закрыть программу?;Programm schließen?;Chiudere il programma?;¿Cerrar el programa?
+Btn_Close;Close;Kapat;Закрыть;Schließen;Chiudi;Cerrar
+Btn_AlarmReset;Reset alarms;Alarmları sıfırla;Сброс аварий;Alarme zurücksetzen;Reimposta allarmi;Reiniciar alarmas
+Btn_ManualMovement;Manual Movement;Manuel Hareket;Ручное перемещение;Manuelle Bewegung;Movimento manuale;Movimiento manual
+Btn_MachineParameters;Machine Parameters;Makine Parametreleri;Параметры станка;Maschinenparameter;Parametri macchina;Parámetros de la máquina
+Btn_Back;Back;Geri;Назад;Zurück;Indietro;Atrás
+Btn_Forward;Forward;İleri;Вперёд;Vorwärts;Avanti;Adelante
+Tab_MainMachine;Main;Ana Makine;Основной;Haupt;Principale;Principal
+Tab_HmiSettings;HMI Settings;HMI Ayarları;Настройки HMI;HMI-Einstellungen;Impostazioni HMI;Ajustes HMI
+Tab_MachineSettings;Machine Settings;Makine Ayarları;Настройки станка;Maschineneinstellungen;Impostazioni macchina;Ajustes de la máquina
+Tab_Machinery;Machinery;Makine;Оборудование;Maschine;Macchina;Maquinaria
+Set_AiPrompt;AI Prompt;AI Komutu;AI-запрос;KI-Prompt;Prompt IA;Prompt de IA
+Set_Manual;Manual;Kullanım Kılavuzu;Руководство;Handbuch;Manuale;Manual
+Btn_SimMonitor;Simulation Monitor (F12);Simülasyon Monitörü (F12);Монитор симуляции (F12);Simulationsmonitor (F12);Monitor di simulazione (F12);Monitor de simulación (F12)
+Set_Alarms;Alarm Settings;Alarm Ayarları;Настройки аварий;Alarmeinstellungen;Impostazioni allarmi;Ajustes de alarmas
+Sys_InputMin;Enter (minimum {0}):;Girin (en az {0}):;Введите (минимум {0}):;Eingabe (mindestens {0}):;Inserire (minimo {0}):;Introducir (mínimo {0}):
+Sys_InputMax;Enter (maximum {0}):;Girin (en fazla {0}):;Введите (максимум {0}):;Eingabe (höchstens {0}):;Inserire (massimo {0}):;Introducir (máximo {0}):
+Sys_InputPlain;Enter a value:;Bir değer girin:;Введите значение:;Wert eingeben:;Inserire un valore:;Introducir un valor:
+Btn_Home;Home;Ana Sayfa;Главная;Startseite;Home;Inicio
+Btn_Alarms;Alarms;Alarmlar;Аварии;Alarme;Allarmi;Alarmas
+Btn_Manual;Manual;Manuel;Ручной;Manuell;Manuale;Manual
+Btn_Refresh;Refresh;Yenile;Обновить;Aktualisieren;Aggiorna;Actualizar
+Btn_Export;Export;Dışa aktar;Экспорт;Exportieren;Esporta;Exportar
+Tab_AlarmsActive;Active;Aktif;Активные;Aktiv;Attivi;Activos
+Tab_AlarmsHistory;History;Geçmiş;История;Verlauf;Cronologia;Historial
+Alarm_None;No active alarms.;Aktif alarm yok.;Нет активных аварий.;Keine aktiven Alarme.;Nessun allarme attivo.;No hay alarmas activas.
+Alarm_NoHistory;No alarms have been recorded yet.;Henüz kayıtlı alarm yok.;Аварии ещё не регистрировались.;Noch keine Alarme aufgezeichnet.;Nessun allarme registrato.;Aún no hay alarmas registradas.
+Alarm_Col_AlarmCode;Code;Kod;Код;Code;Codice;Código
+Alarm_Col_Description;Alarm;Alarm;Авария;Alarm;Allarme;Alarma
+Alarm_Col_Severity;Severity;Önem;Важность;Schwere;Gravità;Gravedad
+Alarm_Col_TriggerTime;Time;Zaman;Время;Zeit;Ora;Hora
+
+Set_StationConn;PLC Connection;PLC Bağlantısı;Подключение ПЛК;SPS-Verbindung;Connessione PLC;Conexión PLC
+Col_Controller;Controller;Kontrolör;Контроллер;Steuerung;Controllore;Controlador
+Col_Driver;Driver;Sürücü;Драйвер;Treiber;Driver;Controlador
+Col_StationNo;Station no.;İstasyon no.;Номер станции;Stations-Nr.;N. stazione;N.º estación
+Col_NetAddress;Address;Adres;Адрес;Adresse;Indirizzo;Dirección
+Col_State;State;Durum;Состояние;Zustand;Stato;Estado
+Lbl_MainMachine;main machine;ana makine;главная машина;Hauptmaschine;macchina principale;máquina principal
+Sta_Connected;Connected;Bağlı;Подключено;Verbunden;Connesso;Conectado
+Sta_Disconnected;disconnected;bağlı değil;отключено;getrennt;disconnesso;desconectado
+Sta_NotRegistered;not registered;kayıtlı değil;не зарегистрировано;nicht registriert;non registrato;no registrado
+Msg_ConnRestart;Changes take effect the next time the HMI starts. Use PLC Diagnostics to find which logical station actually answers.;Değişiklikler HMI bir sonraki açılışta geçerli olur. Hangi mantıksal istasyonun yanıt verdiğini bulmak için PLC Tanılama'yı kullanın.;Изменения вступят в силу при следующем запуске HMI. Используйте диагностику ПЛК, чтобы определить отвечающую станцию.;Änderungen werden beim nächsten HMI-Start wirksam. Mit SPS-Diagnose die antwortende logische Station ermitteln.;Le modifiche hanno effetto al prossimo avvio dell'HMI. Usare Diagnostica PLC per trovare la stazione che risponde.;Los cambios se aplican al reiniciar el HMI. Use Diagnóstico del PLC para hallar la estación que responde.
+Msg_ConnSaved;Station connections saved.;İstasyon bağlantıları kaydedildi.;Подключения станций сохранены.;Stationsverbindungen gespeichert.;Connessioni stazione salvate.;Conexiones de estación guardadas.
+Msg_ConnSaveFailed;Could not write the settings file. See the audit log.;Ayar dosyası yazılamadı. Denetim kaydına bakın.;Не удалось записать файл настроек. См. журнал аудита.;Einstellungsdatei konnte nicht geschrieben werden. Siehe Audit-Log.;Impossibile scrivere il file impostazioni. Vedere il registro.;No se pudo escribir el archivo. Consulte el registro.
+Msg_NoControllers;No machine module has declared a PLC station.;Hiçbir makine modülü PLC istasyonu tanımlamadı.;Ни один модуль машины не объявил станцию ПЛК.;Kein Maschinenmodul hat eine SPS-Station deklariert.;Nessun modulo macchina ha dichiarato una stazione PLC.;Ningún módulo de máquina declaró una estación PLC.
+Tip_SaveConnections;Save these connections;Bu bağlantıları kaydet;Сохранить эти подключения;Diese Verbindungen speichern;Salva queste connessioni;Guardar estas conexiones
+Tip_ReloadConnections;Discard changes and re-read the saved file;Değişiklikleri iptal et ve kayıtlı dosyayı yeniden oku;Отменить изменения и перечитать файл;Änderungen verwerfen und Datei neu lesen;Annulla le modifiche e rileggi il file;Descartar cambios y releer el archivo
+Tip_LogicalStation;MX Component LOGICAL station number - what the Communication Setting Utility stores. Not the same as the HMI's own station id.;MX Component MANTIKSAL istasyon numarası - Communication Setting Utility'nin sakladığı değer. HMI'nin kendi istasyon numarasıyla aynı değildir.;Логический номер станции MX Component из Communication Setting Utility. Это не идентификатор станции HMI.;Logische MX-Component-Stationsnummer aus dem Communication Setting Utility. Nicht die Stations-ID des HMI.;Numero di stazione LOGICO di MX Component, non l'id stazione dell'HMI.;Número de estación LÓGICO de MX Component, no el id de estación del HMI.
+Tip_HmiStationId;Controls bind to this machine with PlcNumber ;Kontroller bu makineye şu PlcNumber ile bağlanır: ;Элементы привязываются к этой машине через PlcNumber ;Steuerelemente binden an diese Maschine mit PlcNumber ;I controlli si legano a questa macchina con PlcNumber ;Los controles se enlazan con PlcNumber 
+Tip_NetAddress;Where the CPU is, for the drivers that reach it over the network.;Ağ üzerinden bağlanan sürücüler için CPU'nun adresi.;Адрес ЦПУ для драйверов, работающих по сети.;Adresse der CPU für Treiber, die über das Netz zugreifen.;Indirizzo della CPU per i driver che usano la rete.;Dirección de la CPU para los drivers de red.
+Drv_None;(not connected);(bağlı değil);(не подключено);(nicht verbunden);(non connesso);(no conectado)
+Drv_Simulation;Simulation (in-memory);Simülasyon (bellek içi);Симуляция (в памяти);Simulation (im Speicher);Simulazione (in memoria);Simulación (en memoria)
+Drv_Mitsubishi;Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component);Mitsubishi (MX Component)
+Drv_Siemens;Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP)
+Drv_Delta;Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP)
+Ttl_SimMonitor;PLC Monitor - live device memory;PLC Monitörü - canlı cihaz belleği;Монитор ПЛК - память устройств;SPS-Monitor - Live-Gerätespeicher;Monitor PLC - memoria dispositivi;Monitor PLC - memoria de dispositivos
+Msg_SimMonitorHelp;One tab per machine controller. Values update live, edit a cell (or double-click a row) to change one.;Her makine kontrolörü için bir sekme. Değerler canlı güncellenir, değiştirmek için hücreyi düzenleyin (veya satıra çift tıklayın).;По вкладке на каждый контроллер. Значения обновляются вживую, измените ячейку или дважды щёлкните строку.;Ein Reiter je Steuerung. Werte laufen live, Zelle bearbeiten oder Zeile doppelklicken.;Una scheda per controllore. Valori in tempo reale, modificare una cella o doppio clic sulla riga.;Una pestaña por controlador. Valores en vivo, edite una celda o haga doble clic en la fila.
+Msg_LiveStation;LIVE PLC - a value typed here is written to the machine immediately.;CANLI PLC - buraya yazılan değer makineye anında yazılır.;РАБОЧИЙ ПЛК - введённое значение сразу записывается в машину.;LIVE-SPS - ein Wert wird sofort in die Maschine geschrieben.;PLC REALE - il valore viene scritto subito nella macchina.;PLC REAL - el valor se escribe de inmediato en la máquina.
+Tab_NoStations;No controllers;Kontrolör yok;Нет контроллеров;Keine Steuerungen;Nessun controllore;Sin controladores
+Col_Label;Label;Etiket;Метка;Bezeichnung;Etichetta;Etiqueta
+Col_DataType;DataType;Veri Tipi;Тип данных;Datentyp;Tipo dati;Tipo de dato
+Col_Address;Address;Adres;Адрес;Adresse;Indirizzo;Dirección
+Col_Value;Value;Değer;Значение;Wert;Valore;Valor
+Btn_ExportCsv;Export CSV...;CSV Dışa Aktar...;Экспорт CSV...;CSV exportieren...;Esporta CSV...;Exportar CSV...
+Btn_ImportCsv;Import CSV...;CSV İçe Aktar...;Импорт CSV...;CSV importieren...;Importa CSV...;Importar CSV...
+Tip_ExportCsv;Save this tab's list as Label / DataType / Address / Value;Bu sekmenin listesini Label / DataType / Address / Value olarak kaydet;Сохранить список вкладки как Label / DataType / Address / Value;Liste als Label / DataType / Address / Value speichern;Salva l'elenco come Label / DataType / Address / Value;Guardar la lista como Label / DataType / Address / Value
+Tip_ImportCsv;Add devices from a CSV. A PlcLabels.csv (Label / DataType / Address) can be used as-is.;CSV'den cihaz ekle. PlcLabels.csv (Label / DataType / Address) doğrudan kullanılabilir.;Добавить устройства из CSV. PlcLabels.csv (Label / DataType / Address) подходит как есть.;Geräte aus CSV hinzufügen. PlcLabels.csv (Label / DataType / Address) ist direkt verwendbar.;Aggiungi dispositivi da CSV. PlcLabels.csv (Label / DataType / Address) è utilizzabile così com'è.;Añadir dispositivos desde CSV. PlcLabels.csv (Label / DataType / Address) sirve tal cual.
+Ttl_ExportCsv;Export this controller's list;Bu kontrolörün listesini dışa aktar;Экспорт списка контроллера;Liste dieser Steuerung exportieren;Esporta l'elenco di questo controllore;Exportar la lista del controlador
+Ttl_ImportCsv;Add devices from a CSV;CSV'den cihaz ekle;Добавить устройства из CSV;Geräte aus CSV hinzufügen;Aggiungi dispositivi da CSV;Añadir dispositivos desde CSV
+Ttl_EditDevice;Edit device;Cihazı düzenle;Изменить устройство;Gerät bearbeiten;Modifica dispositivo;Editar dispositivo
+Mnu_EditRow;Edit this device...;Bu cihazı düzenle...;Изменить это устройство...;Dieses Gerät bearbeiten...;Modifica questo dispositivo...;Editar este dispositivo...
+Mnu_RemoveRow;Remove from this list;Bu listeden çıkar;Убрать из списка;Aus dieser Liste entfernen;Rimuovi da questo elenco;Quitar de esta lista
+Mnu_RestoreRows;Show everything again;Her şeyi tekrar göster;Показать всё снова;Alles wieder anzeigen;Mostra di nuovo tutto;Mostrar todo de nuevo
+Msg_AddressRequired;An address is required.;Bir adres gereklidir.;Требуется адрес.;Eine Adresse ist erforderlich.;È richiesto un indirizzo.;Se requiere una dirección.
+Msg_AddressAlreadyListed;That address is already in this list.;Bu adres zaten listede.;Этот адрес уже в списке.;Diese Adresse steht bereits in der Liste.;Questo indirizzo è già nell'elenco.;Esa dirección ya está en la lista.
+Msg_ExportFailed;Could not write the file:;Dosya yazılamadı:;Не удалось записать файл:;Datei konnte nicht geschrieben werden:;Impossibile scrivere il file:;No se pudo escribir el archivo:
+Msg_ImportFailed;Could not read the file:;Dosya okunamadı:;Не удалось прочитать файл:;Datei konnte nicht gelesen werden:;Impossibile leggere il file:;No se pudo leer el archivo:
+Msg_ImportNothing;No usable rows found. Expected Label / DataType / Address and optionally a Value column.;Kullanılabilir satır yok. Label / DataType / Address ve isteğe bağlı Value sütunu bekleniyor.;Подходящих строк нет. Ожидается Label / DataType / Address и необязательный Value.;Keine brauchbaren Zeilen. Erwartet Label / DataType / Address und optional Value.;Nessuna riga utilizzabile. Attesi Label / DataType / Address e facoltativo Value.;No hay filas utilizables. Se espera Label / DataType / Address y opcionalmente Value.
+Msg_ImportApplyValues;The file also carries {0} values. Write them to this controller as well?;Dosya ayrıca {0} değer içeriyor. Bunlar da bu kontrolöre yazılsın mı?;Файл содержит {0} значений. Записать их в контроллер?;Die Datei enthält {0} Werte. Auch in die Steuerung schreiben?;Il file contiene {0} valori. Scriverli anche nel controllore?;El archivo trae {0} valores. ¿Escribirlos también?
+Msg_ImportDone;Added {0} device(s). {1} were already listed.;{0} cihaz eklendi. {1} tanesi zaten listedeydi.;Добавлено {0}. Уже было в списке: {1}.;{0} Gerät(e) hinzugefügt. {1} waren bereits gelistet.;Aggiunti {0} dispositivi. {1} erano già presenti.;Añadidos {0}. {1} ya estaban en la lista.
+Msg_ImportWrote;Wrote {0} value(s).;{0} değer yazıldı.;Записано значений: {0}.;{0} Wert(e) geschrieben.;Scritti {0} valori.;Escritos {0} valores.
+Msg_NoStations;No PLC driver is registered.;Kayıtlı PLC sürücüsü yok.;Драйвер ПЛК не зарегистрирован.;Kein SPS-Treiber registriert.;Nessun driver PLC registrato.;No hay driver PLC registrado.
+Lbl_Plc;PLC;PLC;ПЛК;SPS;PLC;PLC
+Lbl_Station;Station;İstasyon;Станция;Station;Stazione;Estación
+Lbl_StationLower;station;istasyon;станция;Station;stazione;estación
+Btn_Ok;OK;Tamam;ОК;OK;OK;Aceptar
+
+Msg_NotLoggedIn;Please log in before operating the machine.;Makineyi kullanmadan önce lütfen giriş yapın.;Пожалуйста, войдите в систему перед работой с машиной.;Bitte melden Sie sich an, bevor Sie die Maschine bedienen.;Accedere prima di utilizzare la macchina.;Inicie sesión antes de operar la máquina.
+Msg_NoPermission;Your user level is not high enough for this action.;Kullanıcı seviyeniz bu işlem için yeterli değil.;Ваш уровень доступа недостаточен для этого действия.;Ihre Benutzerstufe reicht für diese Aktion nicht aus.;Il livello utente non è sufficiente per questa azione.;Su nivel de usuario no es suficiente para esta acción.
+Msg_PlcNotRegistered;This PLC station is not configured.;Bu PLC istasyonu yapılandırılmamış.;Эта станция ПЛК не настроена.;Diese SPS-Station ist nicht konfiguriert.;Questa stazione PLC non è configurata.;Esta estación PLC no está configurada.
+Msg_PlcDisconnected;This PLC station is disconnected. Check the connection.;Bu PLC istasyonu bağlı değil. Bağlantıyı kontrol edin.;Станция ПЛК отключена. Проверьте соединение.;Diese SPS-Station ist getrennt. Verbindung prüfen.;Stazione PLC disconnessa. Controllare la connessione.;Estación PLC desconectada. Compruebe la conexión.
+Sys_Time;Time;Zaman;Время;Zeit;Ora;Hora
+Sys_Code;Code;Kod;Код;Code;Codice;Código
+Sys_Description;Description;Açıklama;Описание;Beschreibung;Descrizione;Descripción
+Ai_Project;Project;Proje;Проект;Projekt;Progetto;Proyecto
+Ai_Page;Page;Sayfa;Страница;Seite;Pagina;Página
+Ai_Task;Task;Görev;Задача;Aufgabe;Attività;Tarea
+Ai_Notes;Notes;Notlar;Заметки;Notizen;Note;Notas
+Ai_Build;Build;Oluştur;Собрать;Erstellen;Genera;Generar
+Ai_Copy;Copy;Kopyala;Копировать;Kopieren;Copia;Copiar
+Ai_Save;Save;Kaydet;Сохранить;Speichern;Salva;Guardar
+
+Btn_HmiSettings;HMI Settings;HMI Ayarları;Настройки HMI;HMI-Einstellungen;Impostazioni HMI;Ajustes HMI
+
+Btn_Restart;Restart;Yeniden Başlat;Перезапуск;Neu starten;Riavvia;Reiniciar
+Msg_ConnSavedRestart;Saved. The new connections take effect when the HMI restarts. Restart now?;Kaydedildi. Yeni bağlantılar HMI yeniden başlatıldığında etkin olur. Şimdi yeniden başlatılsın mı?;Сохранено. Новые подключения вступят в силу после перезапуска HMI. Перезапустить сейчас?;Gespeichert. Die neuen Verbindungen gelten nach einem Neustart. Jetzt neu starten?;Salvato. Le nuove connessioni sono attive dopo il riavvio. Riavviare ora?;Guardado. Las nuevas conexiones se aplican tras reiniciar. ¿Reiniciar ahora?
+Msg_RestartFailed;Could not restart automatically. Please close and start the HMI again.;Otomatik yeniden başlatılamadı. Lütfen HMI'yi kapatıp yeniden açın.;Не удалось перезапустить автоматически. Закройте и запустите HMI снова.;Neustart nicht möglich. Bitte HMI schließen und neu starten.;Riavvio automatico non riuscito. Chiudere e riaprire l'HMI.;No se pudo reiniciar. Cierre y abra el HMI de nuevo.
+Msg_RestartManually;Please close and start the HMI again for the change to take effect.;Değişikliğin etkin olması için lütfen HMI'yi kapatıp yeniden açın.;Закройте и запустите HMI снова, чтобы изменения вступили в силу.;Bitte HMI neu starten, damit die Änderung wirksam wird.;Riavviare l'HMI perché la modifica abbia effetto.;Reinicie el HMI para que el cambio surta efecto.
+
+Nav_Machine;Machine;Makine;Машина;Maschine;Macchina;Máquina
+
+Lbl_Username;Username;Kullanıcı adı;Имя пользователя;Benutzername;Nome utente;Usuario
+Lbl_Password;Password;Şifre;Пароль;Passwort;Password;Contraseña
+Ttl_RestartNeeded;Restart needed;Yeniden başlatma gerekli;Требуется перезапуск;Neustart erforderlich;Riavvio necessario;Reinicio necesario
+Msg_RestartNeeded;This change takes effect when the HMI restarts.;Bu değişiklik HMI yeniden başlatıldığında etkin olur.;Изменение вступит в силу после перезапуска HMI.;Diese Änderung wirkt nach einem Neustart des HMI.;La modifica ha effetto al riavvio dell'HMI.;El cambio se aplica al reiniciar el HMI.
+Msg_RestartNow;Restart now?;Şimdi yeniden başlatılsın mı?;Перезапустить сейчас?;Jetzt neu starten?;Riavviare ora?;¿Reiniciar ahora?
+
+Btn_OpenJob;Open job file...;İş dosyası aç...;Открыть файл задания...;Auftragsdatei öffnen...;Apri file lavoro...;Abrir archivo de trabajo...
+Msg_JobSelected;Job file selected. Sending it to the machine is not wired up yet.;İş dosyası seçildi. Makineye gönderme henüz bağlanmadı.;Файл задания выбран. Отправка на станок ещё не подключена.;Auftragsdatei gewählt. Die Übertragung ist noch nicht angebunden.;File lavoro selezionato. L'invio alla macchina non è ancora collegato.;Archivo seleccionado. El envío a la máquina aún no está conectado.
+
+Col_Section;Section;Bölümler;Раздел;Bereich;Sezione;Sección
+Col_Axis;Axis;Eksen;Ось;Achse;Asse;Eje
+Col_Backlash;Backlash;Boşluk;Люфт;Spiel;Gioco;Holgura
+Col_AxisPosition;Position;Eksen Pozisyonu;Позиция;Position;Posizione;Posición
+Col_MinLimit;Min;Min;Мин;Min;Min;Mín
+Col_MaxLimit;Max;Maks;Макс;Max;Max;Máx
+Col_Reference;Reference;Referans;Референс;Referenz;Riferimento;Referencia
+Col_Calibration;Calibration;Kalibrasyon;Калибровка;Kalibrierung;Calibrazione;Calibración
+Col_Calibrate;Cal;Kal;Кал;Kal;Cal;Cal
+Col_SendRef;Ref;Ref;Реф;Ref;Rif;Ref
+Col_AxisCurrent;Current;Akım;Ток;Strom;Corrente;Corriente
+Col_ZDistance;Z dist;Z mesafe;Z расст;Z Abstand;Z dist;Z dist
+Btn_DeleteJob;Delete;Sil;Удалить;Löschen;Elimina;Eliminar
+
+Axis_RobotX;Robot X;Robot X;Робот X;Roboter X;Robot X;Robot X
+Axis_RobotY;Robot Y;Robot Y;Робот Y;Roboter Y;Robot Y;Robot Y
+Axis_RobotZ;Robot Z;Robot Z;Робот Z;Roboter Z;Robot Z;Robot Z
+Axis_Milling1Angle;Milling 1 Angle;Freze 1 Açı;Фреза 1 угол;Fräse 1 Winkel;Fresa 1 angolo;Fresa 1 ángulo
+Axis_Milling1X;Milling 1X;Freze 1 X;Фреза 1 X;Fräse 1 X;Fresa 1 X;Fresa 1 X
+Axis_Milling1Y;Milling 1Y;Freze 1 Y;Фреза 1 Y;Fräse 1 Y;Fresa 1 Y;Fresa 1 Y
+Axis_Milling1Z;Milling 1Z;Freze 1 Z;Фреза 1 Z;Fräse 1 Z;Fresa 1 Z;Fresa 1 Z
+Axis_Milling2Angle;Milling 2 Angle;Freze 2 Açı;Фреза 2 угол;Fräse 2 Winkel;Fresa 2 angolo;Fresa 2 ángulo
+Axis_Milling2X;Milling 2X;Freze 2 X;Фреза 2 X;Fräse 2 X;Fresa 2 X;Fresa 2 X
+Axis_Milling2Y;Milling 2Y;Freze 2 Y;Фреза 2 Y;Fräse 2 Y;Fresa 2 Y;Fresa 2 Y
+Axis_Milling2Z;Milling 2Z;Freze 2 Z;Фреза 2 Z;Fräse 2 Z;Fresa 2 Z;Fresa 2 Z
+Axis_CuttingAngle;Cutting Angle;Kesim Açı;Рез угол;Schnitt Winkel;Taglio angolo;Corte ángulo
+Axis_CuttingZ;Cutting Z;Kesim Z;Рез Z;Schnitt Z;Taglio Z;Corte Z
+Axis_VCuttingY;V Cutting Y;V Kesim Y;V-рез Y;V-Schnitt Y;V taglio Y;V corte Y
+Axis_VCuttingZ;V Cutting Z;V Kesim Z;V-рез Z;V-Schnitt Z;V taglio Z;V corte Z
+Axis_ExitX;Exit X;Çıkış X;Выход X;Ausgang X;Uscita X;Salida X
+Axis_X;X;X;X;X;X;X
+Axis_Y;Y;Y;Y;Y;Y;Y
+Axis_Z;Z;Z;Z;Z;Z;Z
+Axis_X1;X1;X1;X1;X1;X1;X1
+Axis_Y1;Y1;Y1;Y1;Y1;Y1;Y1
+Axis_Z1;Z1;Z1;Z1;Z1;Z1;Z1
+Axis_X2;X2;X2;X2;X2;X2;X2
+Axis_Y2;Y2;Y2;Y2;Y2;Y2;Y2
+Axis_Z2;Z2;Z2;Z2;Z2;Z2;Z2
+
+Sys_ClickToToggle;Click to toggle.;Değiştirmek için tıklayın.;Нажмите для переключения.;Zum Umschalten klicken.;Clicca per commutare.;Haga clic para alternar.
+
+Alarm_Col_Help;Help;Yardım;Помощь;Hilfe;Aiuto;Ayuda
+Btn_OpenHelp;Open;Aç;Открыть;Öffnen;Apri;Abrir
+Msg_HelpOpenFailed;Could not open the help document.;Yardım belgesi açılamadı.;Не удалось открыть документ.;Hilfedokument konnte nicht geöffnet werden.;Impossibile aprire il documento.;No se pudo abrir el documento.
+
+Ttl_TroubleshootingCode;Troubleshooting code;Arıza kodu;Код неисправности;Fehlercode;Codice guasto;Código de avería
+Lbl_ErrorType;Error type;Hata tipi;Тип ошибки;Fehlertyp;Tipo errore;Tipo de error
+Btn_Clear;Clear;Temizle;Очистить;Löschen;Cancella;Borrar
+Btn_OK;OK;Tamam;ОК;OK;OK;Aceptar
+
+Ttl_ActiveAlarms;Active Alarms;Aktif Alarmlar;Активные аварии;Aktive Alarme;Allarmi attivi;Alarmas activas
+Sys_NoActiveAlarms;No active alarms;Aktif alarm yok;Нет активных аварий;Keine aktiven Alarme;Nessun allarme attivo;Sin alarmas activas
+Sys_Machine;Machine;Makine;Станок;Maschine;Macchina;Máquina
+
+Sys_Active;Active;Aktif;Активно;Aktiv;Attivo;Activo
+
+Btn_ResetNActive;Reset ({0}) Active Alarms;({0}) Aktif Alarmı Sıfırla;Сбросить ({0}) активных аварий;({0}) aktive Alarme zurücksetzen;Azzera ({0}) allarmi attivi;Restablecer ({0}) alarmas activas
+
+Ttl_Language;Language / Dil;Language / Dil;Language / Dil;Language / Dil;Language / Dil;Language / Dil
+
+Ttl_ProgramExit;Program Exit;Programdan Çıkış;Выход из программы;Programm beenden;Uscita programma;Salir del programa
+
+Set_Import;Import Settings;Ayarları Aktar;Импорт настроек;Einstellungen importieren;Importa impostazioni;Importar ajustes
+Ttl_ImportSettings;Import settings;Ayarları aktar;Импорт настроек;Einstellungen importieren;Importa impostazioni;Importar ajustes
+Imp_Source;Previous installation folder:;Önceki kurulum klasörü:;Папка предыдущей установки:;Ordner der vorherigen Installation:;Cartella installazione precedente:;Carpeta de la instalación anterior:
+Imp_SourceTip;The folder the old program ran from.;Eski programın çalıştığı klasör.;Папка, из которой работала старая программа.;Ordner, aus dem das alte Programm lief.;Cartella da cui funzionava il vecchio programma.;Carpeta desde la que se ejecutaba el programa anterior.
+Btn_Browse;Browse...;Gözat...;Обзор...;Durchsuchen...;Sfoglia...;Examinar...
+Btn_Scan;Look for settings;Ayarları ara;Найти настройки;Einstellungen suchen;Cerca impostazioni;Buscar ajustes
+Btn_Import;Import selected;Seçilenleri aktar;Импортировать выбранное;Auswahl importieren;Importa selezionati;Importar seleccionados
+Imp_Use;Import;Aktar;Импорт;Import;Importa;Importar
+Imp_Kind;Settings;Ayarlar;Настройки;Einstellungen;Impostazioni;Ajustes
+Imp_File;File;Dosya;Файл;Datei;File;Archivo
+Imp_Rows;Entries;Kayıt;Записей;Einträge;Voci;Entradas
+Imp_Version;Format;Biçim;Формат;Format;Formato;Formato
+Imp_Note;What will happen;Ne olacak;Что произойдёт;Was passiert;Cosa accadrà;Qué ocurrirá
+Imp_Replace;replaces the current file;mevcut dosyanın yerine geçer;заменит текущий файл;ersetzt die aktuelle Datei;sostituisce il file attuale;reemplaza el archivo actual
+Imp_Hint;Choose the folder of the previous version, then look for settings.;Önceki sürümün klasörünü seçin, sonra ayarları arayın.;Выберите папку предыдущей версии, затем найдите настройки.;Ordner der vorherigen Version wählen, dann Einstellungen suchen.;Scegliere la cartella della versione precedente, poi cercare le impostazioni.;Elija la carpeta de la versión anterior y busque los ajustes.
+Imp_NoneFound;No settings files found in that folder.;Bu klasörde ayar dosyası bulunamadı.;В этой папке файлы настроек не найдены.;In diesem Ordner wurden keine Einstellungsdateien gefunden.;Nessun file di impostazioni trovato in quella cartella.;No se encontraron archivos de ajustes en esa carpeta.
+Imp_Found;{0} files found, {1} need converting.;{0} dosya bulundu, {1} tanesi dönüştürülecek.;Найдено файлов: {0}, требуют преобразования: {1}.;{0} Dateien gefunden, {1} müssen konvertiert werden.;Trovati {0} file, {1} da convertire.;{0} archivos encontrados, {1} requieren conversión.
+Imp_Confirm;Import {0} settings files into this installation?\r\n\r\nThe current files are backed up first.;{0} ayar dosyası bu kuruluma aktarılsın mı?\r\n\r\nMevcut dosyalar önce yedeklenir.;Импортировать {0} файлов настроек в эту установку?\r\n\r\nТекущие файлы будут сохранены в резервной копии.;{0} Einstellungsdateien in diese Installation importieren?\r\n\r\nDie aktuellen Dateien werden zuvor gesichert.;Importare {0} file di impostazioni in questa installazione?\r\n\r\nI file attuali vengono prima salvati.;¿Importar {0} archivos de ajustes en esta instalación?\r\n\r\nLos archivos actuales se copian de seguridad primero.
+Imp_Done;{0} files imported. Previous files saved in {1}. Restart to load them.;{0} dosya aktarıldı. Önceki dosyalar {1} içine kaydedildi. Yüklemek için yeniden başlatın.;Импортировано файлов: {0}. Прежние файлы сохранены в {1}. Перезапустите для загрузки.;{0} Dateien importiert. Vorherige Dateien in {1} gesichert. Zum Laden neu starten.;{0} file importati. I file precedenti sono in {1}. Riavviare per caricarli.;{0} archivos importados. Los anteriores están en {1}. Reinicie para cargarlos.
+Imp_Restart;The imported settings take effect after the program restarts.;Aktarılan ayarlar program yeniden başlatıldığında geçerli olur.;Импортированные настройки вступят в силу после перезапуска программы.;Die importierten Einstellungen gelten nach einem Neustart des Programms.;Le impostazioni importate hanno effetto dopo il riavvio del programma.;Los ajustes importados se aplican tras reiniciar el programa.
+Imp_Failed;Import failed: ;Aktarım başarısız: ;Сбой импорта: ;Import fehlgeschlagen: ;Importazione non riuscita: ;Error de importación: 
+
+Ttl_Connections;Controller Connections;Kontrolör Bağlantıları;Соединения контроллеров;Steuerungsverbindungen;Connessioni controllori;Conexiones de controladores
+Conn_AllOk;All controllers connected;Tüm kontrolörler bağlı;Все контроллеры на связи;Alle Steuerungen verbunden;Tutti i controllori connessi;Todos los controladores conectados
+Conn_StaleFor;No reply for {0} s;{0} sn yanıt yok;Нет ответа {0} с;Seit {0} s keine Antwort;Nessuna risposta da {0} s;Sin respuesta durante {0} s
+Conn_C01;No driver configured for this station;Bu istasyon için sürücü tanımlı değil;Для этой станции не настроен драйвер;Für diese Station ist kein Treiber konfiguriert;Nessun driver configurato per questa stazione;No hay driver configurado para esta estación
+Conn_C02;Link not open - check cable, power and address;Bağlantı açılmadı - kablo, besleme ve adresi kontrol edin;Связь не установлена - проверьте кабель, питание и адрес;Verbindung nicht offen - Kabel, Spannung und Adresse prüfen;Collegamento non aperto - controllare cavo, alimentazione e indirizzo;Enlace no abierto - compruebe cable, alimentación y dirección
+Conn_C03;Link open but no reply - check network and PLC run state;Bağlantı var ama yanıt yok - ağı ve PLC çalışma durumunu kontrol edin;Связь есть, но нет ответа - проверьте сеть и режим работы ПЛК;Verbindung offen, keine Antwort - Netzwerk und SPS-Betriebszustand prüfen;Collegamento aperto ma nessuna risposta - controllare rete e stato del PLC;Enlace abierto sin respuesta - compruebe la red y el estado del PLC
+Conn_C04;Unexpected reply from the controller;Kontrolörden beklenmeyen yanıt;Неожиданный ответ от контроллера;Unerwartete Antwort der Steuerung;Risposta inattesa dal controllore;Respuesta inesperada del controlador
+Col_VersionDevice;Version device;Sürüm cihazı;Устройство версии;Versionsgerät;Dispositivo versione;Dispositivo de versión
+Tip_VersionDevice;Device holding the PLC program version, e.g. D36. Leave empty if there is none.;PLC program sürümünü tutan cihaz, örn. D36. Yoksa boş bırakın.;Устройство с версией программы ПЛК, например D36. Оставьте пустым, если его нет.;Gerät mit der SPS-Programmversion, z. B. D36. Leer lassen, wenn nicht vorhanden.;Dispositivo con la versione del programma PLC, es. D36. Lasciare vuoto se assente.;Dispositivo con la versión del programa del PLC, p. ej. D36. Déjelo vacío si no existe.
+Sta_Ver;Ver.:;Sür.:;Вер.:;Ver.:;Ver.:;Ver.:
+
+Ttl_ConnFailure;PLC Connection Failure;PLC Bağlantı Hatası;Сбой подключения ПЛК;SPS-Verbindungsfehler;Errore di connessione PLC;Fallo de conexión PLC
+Conn_ErrorCode;Error Code;Hata Kodu;Код ошибки;Fehlercode;Codice errore;Código de error
+
+Col_Plc;PLC;PLC;ПЛК;SPS;PLC;PLC
+Col_PlcNo;PLC no.;PLC no.;№ ПЛК;SPS-Nr.;N. PLC;N.º PLC
+Col_ConnState;Connection State;Bağlantı Durumu;Состояние связи;Verbindungsstatus;Stato connessione;Estado de conexión
+Sta_Failed;Connection failed;Bağlantı başarısız;Нет связи;Verbindung fehlgeschlagen;Connessione non riuscita;Conexión fallida
+Ttl_HelpDocs;Help Documents;Yardım Belgeleri;Справочные документы;Hilfedokumente;Documenti di aiuto;Documentos de ayuda
+Hlp_Cylinder;Cylinder troubleshooting;Silindir arıza giderme;Устранение неисправностей цилиндра;Zylinder-Fehlersuche;Diagnostica cilindri;Diagnóstico de cilindros
+
+Tip_HelpBadge;Click for help;Yardım için tıklayın;Нажмите для справки;Für Hilfe klicken;Clicca per l'aiuto;Haga clic para obtener ayuda
+Hlp_Servo;Servo drive troubleshooting;Servo sürücü arıza giderme;Устранение неисправностей сервопривода;Servoantrieb-Fehlersuche;Diagnostica azionamento servo;Diagnóstico del servoaccionamiento
+Tip_UnitInfo;About this unit;Bu ünite hakkında;Об этом узле;Über diese Einheit;Informazioni su questa unità;Acerca de esta unidad
+Axis_NotFound;Axis {0}: no axis settings row;Eksen {0}: eksen ayar satırı yok;Ось {0}: нет строки настроек оси;Achse {0}: keine Achseinstellung;Asse {0}: nessuna riga impostazioni;Eje {0}: sin fila de ajustes
+

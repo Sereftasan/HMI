@@ -1,0 +1,1219 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+
+namespace Kaban.UI.Controls
+{
+    /// <summary>
+    /// Shared styling helpers so plain WinForms buttons (toolbars, dialogs, the
+    /// alarm page) match the rounded look of the HMI control family instead of
+    /// looking like raw system buttons.
+    /// </summary>
+    public static class UiStyle
+    {
+        public static readonly Color BorderColor = Color.FromArgb(180, 186, 194);
+        public static readonly Color AccentBack = Color.FromArgb(200, 224, 248);
+
+        /// <summary>
+        /// THE ONLY PLACE BLUE IS USED: the border of the control the pointer is
+        /// actually over.
+        ///
+        /// Blue used to mean several unrelated things at once - the active settings
+        /// tab, some buttons' hover, an accent fill - so it told the operator
+        /// nothing. It now means exactly one thing: "this is the control you are
+        /// about to click, and this is what the tooltip belongs to".
+        ///
+        /// CONTAINERS DO NOT LIGHT UP. A group box or a function-unit frame is not
+        /// clickable, so outlining it says nothing about where the click will land
+        /// and competes with the leaf control that IS under the pointer. Only
+        /// controls the operator can actually interact with take the border.
+        /// </summary>
+        public static readonly Color HoverBorderColor = Color.FromArgb(30, 120, 220);
+
+        // ---- shared fonts -------------------------------------------------
+        //
+        // A Font is a handle to a system resource, and every control was creating
+        // its own copy of the same one. Two hundred bound controls on a page meant
+        // two hundred identical fonts to allocate at open and to finalise later.
+        // They are immutable and safe to share, so the program keeps one of each.
+        public static readonly Font Body = new Font("Segoe UI", 9.5F);
+        public static readonly Font Small = new Font("Segoe UI", 9F);
+        public static readonly Font Mono = new Font("Consolas", 10F, FontStyle.Bold);
+
+        /// <summary>
+        /// Makes a control repaint on enter/leave and reports whether the pointer is
+        /// over it, so its own Paint handler can pick HoverBorderColor.
+        ///
+        /// For controls that PAINT THEIR OWN border (ButtonHMI, BaseNumericHMI).
+        /// Anything else should use HoverOutline, which needs no cooperation from
+        /// the control at all.
+        ///
+        /// Tracked with an explicit flag rather than by hit-testing the cursor
+        /// during paint: a control repaints for many reasons the mouse has nothing
+        /// to do with, and testing MousePosition mid-paint made borders flicker blue
+        /// when a value changed under a stationary pointer.
+        /// </summary>
+        public static Func<bool> HoverBorder(Control c)
+        {
+            if (c == null) return () => false;
+            var state = new bool[1];
+            c.MouseEnter += (s, e) => { state[0] = true; c.Invalidate(); };
+            c.MouseLeave += (s, e) => { state[0] = false; c.Invalidate(); };
+            return () => state[0];
+        }
+
+        /// <summary>The border colour a control should draw right now.</summary>
+        /// <summary>
+        /// Washes out a display control whose PLC is not answering.
+        ///
+        /// A meter or a code cell is never DISABLED for a lost connection -
+        /// Enabled = false switches off its tooltip and its hover, which is what
+        /// left them looking dead - but its last value must not pass for a live
+        /// one either. A pale wash keeps the stale reading legible and plainly
+        /// not current, and the tooltip says why.
+        /// </summary>
+        public static void DrawStale(Graphics g, Rectangle r)
+        {
+            using (var wash = new SolidBrush(Color.FromArgb(150, 255, 255, 255)))
+                g.FillRectangle(wash, r);
+        }
+
+        /// <summary>The heading every dropdown menu opens with.</summary>
+        public static ToolStripLabel MenuHeader(string text)
+        {
+            return new ToolStripLabel(text)
+            {
+                Font = new Font("Segoe UI", 10F, FontStyle.Regular),
+                ForeColor = Color.FromArgb(40, 46, 56),
+                Margin = new Padding(-34, 2, 2, 2)
+            };
+        }
+
+        /// <summary>A dropdown built the same way as every other in the program.</summary>
+        public static ContextMenuStrip Menu()
+        {
+            var m = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            m.Renderer = new HmiMenuRenderer();
+            m.ImageScalingSize = new Size(22, 22);
+            return m;
+        }
+
+        public static Color BorderFor(bool hovering, Color normal)
+        {
+            return hovering ? HoverBorderColor : normal;
+        }
+
+        /// <summary>
+        /// Implemented by a control that already draws its own hover border, so the
+        /// shared walk does not outline it a second time.
+        /// </summary>
+        public interface IDrawsOwnHoverBorder { }
+
+        /// <summary>
+        /// A control that SHOWS something and cannot be clicked - a meter, an alarm
+        /// code cell. It keeps the blue hover outline, because that says "there is
+        /// a tooltip here", but never the hand: a hand promises a click, and on a
+        /// meter or a blank code cell there is nothing to click.
+        /// </summary>
+        public interface IDisplayOnly { }
+
+        /// <summary>
+        /// A control that sets its own cursor from its own state (a button that
+        /// greys itself through soft enable). The sweep leaves its cursor alone.
+        /// </summary>
+        public interface IManagesOwnCursor { }
+
+        /// <summary>
+        /// Gives a STANDARD WinForms control (TextBox, ComboBox, CheckBox, grid...)
+        /// the same blue hover border, without needing to subclass it.
+        ///
+        /// The outline is drawn by the PARENT, just outside the control's bounds.
+        /// A TextBox with a system border paints its own frame and gives us no way
+        /// in; a ComboBox's drop-down is a separate window; a DataGridView repaints
+        /// its own edges. Drawing on the parent sidesteps all of it and works for
+        /// any control, including ones we did not write.
+        /// </summary>
+        public static void HoverOutline(Control c)
+        {
+            if (c == null || c.Parent == null) return;
+
+            var parent = c.Parent;
+            bool[] on = { false };
+
+            PaintEventHandler paint = (s, e) =>
+            {
+                if (!on[0] || !c.Visible) return;
+                var r = c.Bounds;
+                r.Inflate(2, 2);
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                using (var pen = new Pen(HoverBorderColor, 1.6f))
+                    e.Graphics.DrawRectangle(pen, r);
+            };
+
+            Action refresh = () =>
+            {
+                var r = c.Bounds;
+                r.Inflate(4, 4);              // a little wider than the pen, so nothing is clipped
+                parent.Invalidate(r, false);
+            };
+
+            c.MouseEnter += (s, e) => { on[0] = true; refresh(); };
+            c.MouseLeave += (s, e) => { on[0] = false; refresh(); };
+            // A control that loses Enabled or Visible under a stationary pointer
+            // would otherwise keep a stale outline.
+            c.EnabledChanged += (s, e) => { if (!c.Enabled) { on[0] = false; refresh(); } };
+            c.VisibleChanged += (s, e) => { if (!c.Visible) { on[0] = false; refresh(); } };
+            c.Disposed += (s, e) => { parent.Paint -= paint; };
+            parent.Paint += paint;
+        }
+
+        /// <summary>
+        /// The cursor a control should show when it is ENABLED. A text box keeps its
+        /// I-beam; anything the operator clicks gets the hand.
+        /// </summary>
+        private static Cursor EnabledCursorFor(Control c)
+        {
+            if (c is TextBoxBase) return Cursors.IBeam;
+            return Cursors.Hand;
+        }
+
+        /// <summary>
+        /// Hand while the control is usable, plain arrow once it is disabled - so a
+        /// button greyed out by an interlock is obvious BEFORE it is clicked rather
+        /// than after nothing happens.
+        ///
+        /// WinForms does not do this: Cursor is independent of Enabled, so a
+        /// disabled control keeps whatever hand it was given.
+        /// </summary>
+        public static void CursorFollowsEnabled(Control c)
+        {
+            if (c == null) return;
+            var enabledCursor = EnabledCursorFor(c);
+            EventHandler apply = (s, e) => c.Cursor = c.Enabled ? enabledCursor : Cursors.Default;
+            c.EnabledChanged += apply;
+            apply(c, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// True for a control that only GROUPS other controls. These get no hover
+        /// border and no hand: the pointer is really over whatever sits inside them.
+        /// </summary>
+        private static bool IsContainer(Control c)
+        {
+            return c is Panel || c is GroupBox || c is TableLayoutPanel || c is FlowLayoutPanel
+                || c is SplitContainer || c is TabControl || c is TabPage || c is UserControl
+                || c is Form || c is ToolStrip || c is Label;
+        }
+
+        /// <summary>
+        /// Walks a page and gives every INTERACTIVE control the two shared cues: a
+        /// blue border under the pointer, and a hand that disappears when the
+        /// control is disabled.
+        ///
+        /// Call it once after a page is put on screen. Applying it centrally rather
+        /// than control by control is the point - the previous rule ("some controls
+        /// turn blue") was really "whoever remembered to implement it".
+        /// </summary>
+        public static void ApplyInteractionCues(Control root)
+        {
+            if (root == null) return;
+
+            foreach (Control child in root.Controls)
+            {
+                if (IsContainer(child))
+                {
+                    ApplyInteractionCues(child);          // the cue belongs to what is inside
+                    continue;
+                }
+
+                if (_cued.Add(child))
+                {
+                    child.Disposed += (s, e) => _cued.Remove(child);
+                    // No outline round a whole grid: the pointer is over a cell,
+                    // not over the table as one thing.
+                    if (!(child is IDrawsOwnHoverBorder) && !(child is DataGridView)) HoverOutline(child);
+                    ApplyCursorRule(child);
+                }
+
+                // a leaf may still nest (a grid's editing controls, a spin box)
+                if (child.Controls.Count > 0) ApplyInteractionCues(child);
+            }
+        }
+
+        /// <summary>
+        /// The cursor a control gets from the sweep.
+        ///
+        /// The sweep used to hand EVERY leaf control the hand cursor, on the theory
+        /// that anything not a container was interactive. Meters, alarm code cells
+        /// and grids are not: they showed a hand over nothing clickable. Only a
+        /// control that can actually be operated gets the hand, and only while it
+        /// can be.
+        /// </summary>
+        private static void ApplyCursorRule(Control c)
+        {
+            if (c is IDisplayOnly || c is DataGridView) { c.Cursor = Cursors.Default; return; }
+            if (c is IManagesOwnCursor) return;
+            CursorFollowsEnabled(c);
+        }
+
+        /// <summary>
+        /// Controls already wired, so re-showing a page does not stack a second set
+        /// of handlers on the same control - a settings tab is revisited constantly
+        /// and the outlines would thicken each time.
+        ///
+        /// A side set rather than control.Tag: Tag belongs to whoever built the
+        /// screen, and quietly taking it over is the kind of thing that breaks a
+        /// machine page months later. Reference identity, so two controls that
+        /// compare equal are still tracked separately.
+        /// </summary>
+        private static readonly HashSet<Control> _cued =
+            new HashSet<Control>(new ReferenceComparer());
+
+        private class ReferenceComparer : IEqualityComparer<Control>
+        {
+            public bool Equals(Control a, Control b) { return ReferenceEquals(a, b); }
+            public int GetHashCode(Control c)
+            {
+                return System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(c);
+            }
+        }
+
+        /// <summary>Applies the standard 4px corner radius, tracking size changes.</summary>
+        public static Button Round(Button b, int radius = 4)
+        {
+            b.FlatStyle = FlatStyle.Flat;
+            // WinForms draws the FlatAppearance border as a square rectangle ON the
+            // control bounds, which the rounded Region then clips - that is why the
+            // corners looked square and only two edges showed. Draw the border
+            // ourselves, 1px inside the region, so all four sides and the radius render.
+            b.FlatAppearance.BorderSize = 0;
+            ApplyRegion(b, radius);
+            b.Resize += (s, e) => ApplyRegion(b, radius);
+
+            var hovering = HoverBorder(b);
+            b.Paint += (s, e) =>
+            {
+                var c = (Control)s;
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                int d = Math.Max(2, (radius - 1) * 2);
+                var r = new Rectangle(1, 1, c.Width - 3, c.Height - 3);
+                using (var path = new GraphicsPath())
+                {
+                    path.AddArc(r.X, r.Y, d, d, 180, 90);
+                    path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+                    path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                    path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+                    path.CloseFigure();
+                    using (var pen = new Pen(BorderFor(hovering(), BorderColor), 1.6f))
+                        e.Graphics.DrawPath(pen, path);
+                }
+            };
+            return b;
+        }
+
+        private static void ApplyRegion(Control c, int radius)
+        {
+            if (c.Width <= 0 || c.Height <= 0) return;
+            int d = radius * 2;
+            using (var path = new GraphicsPath())
+            {
+                var r = new Rectangle(0, 0, c.Width, c.Height);
+                path.AddArc(r.X, r.Y, d, d, 180, 90);
+                path.AddArc(r.Right - d - 1, r.Y, d, d, 270, 90);
+                path.AddArc(r.Right - d - 1, r.Bottom - d - 1, d, d, 0, 90);
+                path.AddArc(r.X, r.Bottom - d - 1, d, d, 90, 90);
+                path.CloseFigure();
+                c.Region = new Region(path);
+            }
+        }
+
+        // ==================================================================
+        // FORM ROWS  (label : field)
+        // ==================================================================
+
+        /// <summary>
+        /// Formats a parameter caption: the text, then a colon, with NO space before
+        /// it and one after - "Cut depth (mm): ".
+        ///
+        /// Three styles were in use across the pages at once (" : ", " :" and ":"),
+        /// which on a screen full of parameters reads as sloppy alignment even when
+        /// the controls line up perfectly. English, Turkish, German, Italian and
+        /// Spanish all set the colon tight to the word; French would want a space,
+        /// and if the HMI ever ships in French this is the one place to change.
+        /// </summary>
+        public static string Caption(string text)
+        {
+            text = (text ?? "").Trim();
+            if (text.Length == 0) return "";
+            text = text.TrimEnd(':', ' ');           // tolerate a caption that already has one
+            return text + ":";
+        }
+
+        /// <summary>Standard label width for a parameter caption column.</summary>
+        public const int CaptionWidth = 150;
+
+        /// <summary>Vertical pitch of one parameter row.</summary>
+        public const int RowPitch = 34;
+
+        /// <summary>
+        /// Builds one parameter row - caption RIGHT-aligned against its field.
+        ///
+        /// Right alignment is the point: a left-aligned caption column leaves a
+        /// ragged gap of whitespace between each word and the box it belongs to, and
+        /// on a dense settings page the eye stops being able to pair them. Every
+        /// other parameter page in the program already reads this way.
+        /// </summary>
+        public static Label CaptionLabel(string text, int x, int y, int width = CaptionWidth)
+        {
+            var lbl = new Label
+            {
+                Text = Caption(text),
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleRight,
+                Width = width,
+                Height = 24
+            };
+            lbl.Location = new Point(x, y);
+            return lbl;
+        }
+
+        // ==================================================================
+        // GRIDS
+        // ==================================================================
+
+        /// <summary>
+        /// Raises every column's MinimumWidth to fit its own HEADING.
+        ///
+        /// DataGridView's default minimum is 5px, so a column narrower than its
+        /// caption shows an ellipsis and the operator has to drag every one before
+        /// the table can be read - which on an alarm page is exactly when nobody
+        /// has time to. Called after a grid's columns are built; a column may still
+        /// be made wider, never narrower than its own name.
+        /// </summary>
+        /// <summary>
+        /// Sizes columns and the header row to their content, and lets a
+        /// double-click on a divider re-fit at any time.
+        ///
+        /// DisplayedCells, NOT AllCells: measuring every row of a long history
+        /// table on every fill is work proportional to the data, and the operator
+        /// only ever sees a screenful. Measuring the visible rows costs the same
+        /// whether the table holds fifty rows or fifty thousand.
+        ///
+        /// The header row auto-sizes too, which is what stops a two-word caption
+        /// being clipped to one line.
+        /// </summary>
+/// <summary>
+        /// Remembers a table's column widths and order between sessions.
+        ///
+        /// An engineer who widens a column has made a decision about their own
+        /// screen and their own work; throwing it away on every restart means
+        /// making it again every morning. Saved per grid NAME under the user's
+        /// application data, so two machines on one panel do not fight over it.
+        ///
+        /// Restoring is best-effort: a column that no longer exists is skipped and
+        /// a corrupt file is ignored, because a remembered layout must never be
+        /// able to stop a page opening.
+        /// </summary>
+/// <summary>
+        /// Multi-level sorting, column hiding and reordering - remembered.
+        ///
+        /// SORTING KEEPS WHAT CAME BEFORE, like a spreadsheet. Clicking Severity
+        /// then Time gives "by time within severity", not "by time"; the earlier
+        /// key is demoted rather than discarded. That is how anyone who uses Excel
+        /// expects a table to behave, and re-establishing a two-level sort by hand
+        /// every time is tedious enough that people stop sorting at all.
+        ///
+        /// COLUMNS CAN BE HIDDEN. Code and Severity mean nothing to most operators
+        /// and take the width the alarm text needs. Right-click any heading to pick
+        /// what shows; the choice is saved with the widths.
+        /// </summary>
+        public static void EnableTableTools(DataGridView grid, string key)
+        {
+            if (grid == null) return;
+
+            var order = new System.Collections.Generic.List<string>();       // sort keys, most recent first
+            var descending = new System.Collections.Generic.Dictionary<string, bool>();
+
+            grid.AllowUserToOrderColumns = true;
+
+            foreach (DataGridViewColumn c in grid.Columns)
+                c.SortMode = DataGridViewColumnSortMode.Programmatic;
+
+            grid.ColumnHeaderMouseClick += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Left) return;
+                var col = grid.Columns[e.ColumnIndex];
+                if (col == null) return;
+
+                bool desc;
+                descending.TryGetValue(col.Name, out desc);
+                descending[col.Name] = order.Count > 0 && order[0] == col.Name ? !desc : false;
+
+                order.Remove(col.Name);
+                order.Insert(0, col.Name);          // newest key wins, the rest demote
+                if (order.Count > 3) order.RemoveRange(3, order.Count - 3);
+
+                ApplySort(grid, order, descending);
+                SaveLayout(grid, key, order, descending);
+            };
+
+            // Right-click a heading: choose which columns show.
+            grid.ColumnHeaderMouseClick += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Right) return;
+                var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+
+                // STAYS OPEN while columns are ticked. Choosing what a table shows
+                // is several decisions at once, and a menu that shuts after each
+                // one has to be reopened for every column.
+                menu.Closing += (s2, e2) =>
+                {
+                    if (e2.CloseReason == ToolStripDropDownCloseReason.ItemClicked)
+                        e2.Cancel = true;
+                };
+
+                foreach (DataGridViewColumn c in grid.Columns)
+                {
+                    var col = c;
+                    var item = new ToolStripMenuItem(col.HeaderText) { Checked = col.Visible, CheckOnClick = true };
+                    item.CheckedChanged += (s2, e2) =>
+                    {
+                        // Never let the last column be hidden: an empty table looks
+                        // broken and there is no heading left to right-click.
+                        if (!item.Checked && VisibleCount(grid) <= 1) { item.Checked = true; return; }
+                        col.Visible = item.Checked;
+                        SaveLayout(grid, key, order, descending);
+                    };
+                    menu.Items.Add(item);
+                }
+                menu.Show(Cursor.Position);
+            };
+
+            // AUTO-SIZING OFF from here on. EnableAutoFit leaves the grid in
+            // DisplayedCells mode, which recomputes every width on each fill - so a
+            // width the user set was overwritten by the next refresh and the saved
+            // file just recorded whatever the grid had recalculated. The headings
+            // have already been fitted by that point; from now on the widths belong
+            // to the user.
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            bool restoring = true;
+            grid.ColumnDisplayIndexChanged += (s, e) => { if (!restoring) SaveLayout(grid, key, order, descending); };
+            grid.ColumnWidthChanged += (s, e) => { if (!restoring) SaveLayout(grid, key, order, descending); };
+
+            RestoreLayout(grid, key, order, descending);
+            restoring = false;
+            if (order.Count > 0) ApplySort(grid, order, descending);
+        }
+
+        /// <summary>
+        /// Auto-fits one column, then adds about two characters of air.
+        ///
+        /// A bare auto-fit leaves the longest value touching both cell borders,
+        /// which reads as clipped even when nothing is missing - and the next value
+        /// one character longer really will be.
+        /// </summary>
+        private static void FitColumn(DataGridView grid, int index)
+        {
+            if (index < 0 || index >= grid.Columns.Count) return;
+            grid.AutoResizeColumn(index, DataGridViewAutoSizeColumnMode.DisplayedCells);
+
+            var col = grid.Columns[index];
+            int pad = TextRenderer.MeasureText("00", col.DefaultCellStyle.Font ?? grid.Font).Width;
+            col.Width = col.Width + pad;
+        }
+
+        private static int VisibleCount(DataGridView grid)
+        {
+            int n = 0;
+            foreach (DataGridViewColumn c in grid.Columns) if (c.Visible) n++;
+            return n;
+        }
+
+        /// <summary>
+        /// Sorts by every remembered key at once, least significant applied first.
+        ///
+        /// A DataGridView sorts on ONE column, so a stable sort run from the last
+        /// key backwards produces the same result as a true multi-key sort - and
+        /// needs no custom comparer for the bound types.
+        /// </summary>
+        private static void ApplySort(DataGridView grid,
+                                      System.Collections.Generic.List<string> order,
+                                      System.Collections.Generic.Dictionary<string, bool> descending)
+        {
+            // SORTED HERE, not handed to the binding.
+            //
+            // BindingList<T> - which is what the alarm list and every other table
+            // in this program is bound to - reports SupportsSorting == false, so
+            // grid.Sort() and IBindingList.ApplySort do nothing at all and fail
+            // silently. Reordering the list ourselves is the only thing that
+            // actually works, and it works for any list type.
+            if (order.Count == 0) { ShowGlyphs(grid, order, descending); return; }
+
+            // AN UNBOUND GRID SORTS ITS OWN ROWS.
+            //
+            // The alarm history adds rows directly rather than binding a list, so
+            // DataSource is null and the bound path below did nothing at all - the
+            // headings responded, the arrow moved, and the rows stayed put. A grid
+            // that looks like it sorted but did not is worse than one that plainly
+            // cannot.
+            if (grid.DataSource == null)
+            {
+                SortRows(grid, order, descending);
+                ShowGlyphs(grid, order, descending);
+                return;
+            }
+
+            var list = grid.DataSource as System.Collections.IList;
+            if (list == null || list.Count < 2) { ShowGlyphs(grid, order, descending); return; }
+
+            var items = new System.Collections.Generic.List<object>();
+            foreach (var o in list) items.Add(o);
+
+            var keys = new System.Collections.Generic.List<string>();
+            foreach (var name in order)
+            {
+                var col = grid.Columns[name];
+                if (col != null && col.Visible && !string.IsNullOrEmpty(col.DataPropertyName))
+                    keys.Add(col.DataPropertyName);
+                else if (col != null && col.Visible)
+                    keys.Add(col.Name);
+            }
+            if (keys.Count == 0) { ShowGlyphs(grid, order, descending); return; }
+
+            items.Sort((a, b) =>
+            {
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    int cmp = CompareBy(a, b, keys[i]);
+                    if (cmp == 0) continue;
+                    bool desc;
+                    descending.TryGetValue(order[i], out desc);
+                    return desc ? -cmp : cmp;
+                }
+                return 0;
+            });
+
+            try
+            {
+                // RaiseListChangedEvents and ResetBindings live on BindingList<T>,
+                // not on IBindingList, and the element type is not known here - so
+                // they are reached by reflection. Suppressing the events matters:
+                // without it the grid rebuilds on every single Add and a modest
+                // table visibly redraws itself dozens of times per sort.
+                var src = grid.DataSource;
+                var raise = src.GetType().GetProperty("RaiseListChangedEvents");
+                var reset = src.GetType().GetMethod("ResetBindings");
+
+                if (raise != null && raise.CanWrite) raise.SetValue(src, false, null);
+
+                list.Clear();
+                foreach (var o in items) list.Add(o);
+
+                if (raise != null && raise.CanWrite) raise.SetValue(src, true, null);
+                if (reset != null) reset.Invoke(src, null);
+                else grid.Refresh();
+            }
+            catch { }
+
+            ShowGlyphs(grid, order, descending);
+        }
+
+        /// <summary>
+        /// Reorders the rows of an unbound grid by the same key list.
+        ///
+        /// Cell values are compared as numbers or dates when both sides parse as
+        /// one, and as text otherwise - so a Time column orders chronologically
+        /// rather than alphabetically, which for "2026-09-17 9:05" versus
+        /// "2026-09-17 10:05" are different answers.
+        /// </summary>
+        private static void SortRows(DataGridView grid,
+                                     System.Collections.Generic.List<string> order,
+                                     System.Collections.Generic.Dictionary<string, bool> descending)
+        {
+            if (grid.Rows.Count < 2) return;
+
+            // THE VALUES ARE SORTED AND WRITTEN BACK - the row objects never move.
+            //
+            // The previous version did Rows.Clear() then AddRange(rows). A
+            // DataGridViewRow that has been through Clear() is detached and cannot
+            // be re-added intact, so the grid came back with cells from one record
+            // sitting beside cells from another: dates ordered correctly while the
+            // alarm text stayed put. That is the worst kind of table bug, because
+            // every row still looks plausible.
+            //
+            // Copying the cell VALUES into a list, sorting that, and writing them
+            // back into the rows that are already there cannot mismatch: a row is
+            // rewritten as one unit.
+            var cols = new System.Collections.Generic.List<DataGridViewColumn>();
+            foreach (DataGridViewColumn c in grid.Columns) cols.Add(c);
+
+            var records = new System.Collections.Generic.List<object[]>();
+            foreach (DataGridViewRow r in grid.Rows)
+            {
+                if (r.IsNewRow) continue;
+                var values = new object[cols.Count];
+                for (int i = 0; i < cols.Count; i++) values[i] = r.Cells[cols[i].Index].Value;
+                records.Add(values);
+            }
+            if (records.Count < 2) return;
+
+            var keyIndex = new System.Collections.Generic.List<int>();
+            var keyDesc = new System.Collections.Generic.List<bool>();
+            foreach (var name in order)
+            {
+                var col = grid.Columns[name];
+                if (col == null || !col.Visible) continue;
+                keyIndex.Add(cols.IndexOf(col));
+                bool d; descending.TryGetValue(name, out d);
+                keyDesc.Add(d);
+            }
+            if (keyIndex.Count == 0) return;
+
+            records.Sort((a, b) =>
+            {
+                for (int i = 0; i < keyIndex.Count; i++)
+                {
+                    int cmp = CompareCells(a[keyIndex[i]], b[keyIndex[i]]);
+                    if (cmp == 0) continue;
+                    return keyDesc[i] ? -cmp : cmp;
+                }
+                return 0;
+            });
+
+            grid.SuspendLayout();
+            try
+            {
+                int row = 0;
+                foreach (DataGridViewRow r in grid.Rows)
+                {
+                    if (r.IsNewRow) continue;
+                    var values = records[row++];
+                    for (int i = 0; i < cols.Count; i++)
+                        r.Cells[cols[i].Index].Value = values[i];
+                }
+            }
+            finally { grid.ResumeLayout(); }
+        }
+
+        private static int CompareCells(object a, object b)
+        {
+            string sa = a == null ? "" : a.ToString();
+            string sb = b == null ? "" : b.ToString();
+
+            double da, db;
+            if (double.TryParse(sa, out da) && double.TryParse(sb, out db))
+                return da.CompareTo(db);
+
+            DateTime ta, tb;
+            if (DateTime.TryParse(sa, out ta) && DateTime.TryParse(sb, out tb))
+                return ta.CompareTo(tb);
+
+            return string.Compare(sa, sb, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        private static int CompareBy(object a, object b, string property)
+        {
+            var pa = a == null ? null : a.GetType().GetProperty(property);
+            var pb = b == null ? null : b.GetType().GetProperty(property);
+            if (pa == null || pb == null) return 0;
+
+            var va = pa.GetValue(a, null) as IComparable;
+            var vb = pb.GetValue(b, null) as IComparable;
+            if (va == null && vb == null) return 0;
+            if (va == null) return -1;
+            if (vb == null) return 1;
+            try { return va.CompareTo(vb); } catch { return 0; }
+        }
+
+        /// <summary>
+        /// The arrow marks the PRIMARY key only; three arrows would suggest three
+        /// independent sorts rather than one ordered set.
+        /// </summary>
+        private static void ShowGlyphs(DataGridView grid,
+                                       System.Collections.Generic.List<string> order,
+                                       System.Collections.Generic.Dictionary<string, bool> descending)
+        {
+            foreach (DataGridViewColumn c in grid.Columns) c.HeaderCell.SortGlyphDirection = SortOrder.None;
+            if (order.Count == 0) return;
+            var col = grid.Columns[order[0]];
+            if (col == null) return;
+            bool d; descending.TryGetValue(order[0], out d);
+            col.HeaderCell.SortGlyphDirection = d ? SortOrder.Descending : SortOrder.Ascending;
+        }
+
+        private static void SaveLayout(DataGridView grid, string key,
+                                       System.Collections.Generic.List<string> order,
+                                       System.Collections.Generic.Dictionary<string, bool> descending)
+        {
+            try
+            {
+                var lines = new System.Collections.Generic.List<string>();
+                foreach (DataGridViewColumn c in grid.Columns)
+                    lines.Add(string.Join("\t", new[]
+                    {
+                        "col", c.Name, c.Width.ToString(), c.DisplayIndex.ToString(),
+                        c.Visible ? "1" : "0"
+                    }));
+                foreach (var name in order)
+                {
+                    bool d; descending.TryGetValue(name, out d);
+                    lines.Add(string.Join("\t", new[] { "sort", name, d ? "desc" : "asc" }));
+                }
+
+                var path = LayoutPath(key);
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllLines(path, lines);
+            }
+            catch { }
+        }
+
+        private static void RestoreLayout(DataGridView grid, string key,
+                                          System.Collections.Generic.List<string> order,
+                                          System.Collections.Generic.Dictionary<string, bool> descending)
+        {
+            try
+            {
+                var path = LayoutPath(key);
+                if (!File.Exists(path)) return;
+
+                foreach (var line in File.ReadAllLines(path))
+                {
+                    var p = line.Split('\t');
+                    if (p.Length >= 5 && p[0] == "col")
+                    {
+                        var col = grid.Columns[p[1]];
+                        if (col == null) continue;
+                        int w, idx;
+                        if (int.TryParse(p[2], out w) && w > 10)
+                        {
+                            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                            col.Width = w;
+                        }
+                        if (int.TryParse(p[3], out idx) && idx >= 0 && idx < grid.Columns.Count)
+                            col.DisplayIndex = idx;
+                        col.Visible = p[4] == "1";
+                    }
+                    else if (p.Length >= 3 && p[0] == "sort")
+                    {
+                        order.Add(p[1]);
+                        descending[p[1]] = p[2] == "desc";
+                    }
+                }
+            }
+            catch { }
+        }
+
+                private static string LayoutPath(string key)
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "KabanHMI", "Layouts", key + ".cols");
+        }
+
+        public static void EnableAutoFit(DataGridView grid)
+        {
+            if (grid == null) return;
+
+            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            grid.AllowUserToResizeColumns = true;
+            grid.AllowUserToResizeRows = true;
+
+            // Double-clicking a divider is the built-in gesture for "fit this
+            // column"; it only works while the column is user-resizable, which
+            // DisplayedCells mode would otherwise take away.
+            grid.ColumnDividerDoubleClick += (s, e) =>
+            {
+                FitColumn(grid, e.ColumnIndex);
+                e.Handled = true;
+            };
+            grid.RowDividerDoubleClick += (s, e) =>
+            {
+                grid.AutoResizeRow(e.RowIndex, DataGridViewAutoSizeRowMode.AllCells);
+                e.Handled = true;
+            };
+            // Double-clicking a HEADING fits every column at once.
+            grid.ColumnHeaderMouseDoubleClick += (s, e) =>
+            {
+                for (int i = 0; i < grid.Columns.Count; i++) FitColumn(grid, i);
+            };
+
+            FitColumnsToHeadings(grid);
+        }
+
+        public static void FitColumnsToHeadings(DataGridView grid, int extra = 28)
+        {
+            if (grid == null || grid.Columns.Count == 0) return;
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+
+            // MeasureText without a Graphics: CreateGraphics on a control that has
+            // no handle yet returns a useless device context, and a grid built in a
+            // constructor has no handle. That is why the widths never changed.
+            {
+                var font = grid.ColumnHeadersDefaultCellStyle.Font ?? grid.Font;
+                foreach (DataGridViewColumn col in grid.Columns)
+                {
+                    var size = TextRenderer.MeasureText(col.HeaderText ?? "", font);
+                    // + sort glyph, cell padding and both grid lines
+                    int need = size.Width + extra;
+                    if (col.MinimumWidth < need) col.MinimumWidth = need;
+                    if (col.Width < need) col.Width = need;
+                }
+            }
+        }
+
+        // ==================================================================
+        // TOOLTIPS
+        // ==================================================================
+
+        /// <summary>Pointer must rest this long before a tooltip appears.</summary>
+        public const int TooltipInitialDelayMs = 1000;
+
+        /// <summary>How long a tooltip stays up if the pointer never moves.</summary>
+        public const int TooltipAutoPopMs = 10000;
+
+        /// <summary>
+        /// The ONE tooltip configuration for the whole program. Use this instead of
+        /// `new ToolTip()`.
+        ///
+        /// WHY A DELAY: WinForms defaults to a ~half-second delay and, because a
+        /// screenful of HMI controls all carry tips, popups appeared the instant the
+        /// pointer crossed anything - the screen flickered with yellow boxes while
+        /// the operator was only moving toward a button. A full second means a tip
+        /// appears when someone has actually STOPPED on a control to ask what it is.
+        ///
+        /// WHY IT EXPIRES: on a panel PC the pointer is often parked and left. A tip
+        /// that never times out sits over live values indefinitely, hiding exactly
+        /// the readings it was explaining, so it retires after ten seconds.
+        /// </summary>
+        /// <summary>
+        /// THE shared tooltip host. One for the whole program, not one per control.
+        ///
+        /// A ToolTip is a native window component, and every HMI control was
+        /// constructing its own: a page with two hundred bound controls created two
+        /// hundred of them, which is most of the time such a page took to open.
+        /// They all carry identical settings, so there was never a reason for more
+        /// than one - a single ToolTip serves any number of controls through
+        /// SetToolTip.
+        ///
+        /// Callers keep using Tips() exactly as before; they simply get the shared
+        /// instance now.
+        /// </summary>
+        private static ToolTip _shared;
+
+        public static ToolTip Tips()
+        {
+            if (_shared == null)
+            {
+                _shared = new SharedToolTip();
+                Style(_shared);
+            }
+            return _shared;
+        }
+
+        /// <summary>A tooltip styled like the shared one, owned by the caller - one per window.</summary>
+        public static ToolTip CreateTips() { return NewTips(); }
+
+        /// <summary>
+        /// The program-wide tooltip. It IGNORES Dispose: many controls hold it,
+        /// none owns it, and one control's cleanup disposing it ended tooltips for
+        /// every other control - the login crash (ToolTip.CreateHandle) and pages
+        /// with no tips. It lives as long as the program.
+        /// </summary>
+        private sealed class SharedToolTip : ToolTip
+        {
+            protected override void Dispose(bool disposing) { /* shared - never ended by a borrower */ }
+        }
+
+        private static ToolTip NewTips()
+        {
+            var t = new ToolTip();
+            Style(t);
+            return t;
+        }
+
+        private static void Style(ToolTip t)
+        {
+            t.InitialDelay = TooltipInitialDelayMs;
+            t.ReshowDelay = TooltipInitialDelayMs;   // no instant re-pop moving along a row;
+            t.AutoPopDelay = TooltipAutoPopMs;
+            t.AutomaticDelay = TooltipInitialDelayMs;
+            t.ShowAlways = false;                    // never over an inactive window;
+            t.UseAnimation = false;                  // fade made the 1s delay feel like 1.3s;
+            t.UseFading = false;
+        }
+
+        /// <summary>
+        /// Forces a tooltip DOWN the moment the pointer leaves the control.
+        ///
+        /// WinForms hides a tip on leave only if it decides it noticed - a tip whose
+        /// text was re-set while it was on screen (which ButtonHMI does on every
+        /// hover, to rebuild the admin wiring text) can outlive the pointer and hang
+        /// over the next control. Hiding explicitly is the only reliable cure.
+        /// </summary>
+        public static void HideTooltipOnLeave(ToolTip tips, Control c)
+        {
+            if (tips == null || c == null) return;
+            c.MouseLeave += (s, e) => { try { tips.Hide(c); } catch { } };
+        }
+
+        /// <summary>Standard emoji tool button: 44x32, rounded, tooltip carries the label.</summary>
+        public static Button ToolButton(string emoji, string tip, ToolTip tips, System.EventHandler onClick = null)
+        {
+            var b = new Button
+            {
+                Text = emoji,
+                Width = 44,
+                Height = 32,
+                Font = new Font("Segoe UI", 12F),
+                Cursor = Cursors.Hand
+            };
+            Round(b);
+            if (tips != null) tips.SetToolTip(b, tip);
+            if (onClick != null) b.Click += onClick;
+            return b;
+        }
+
+        /// <summary>
+        /// Draws the "you are here" mark under a caption: a rule spanning the TEXT
+        /// (not the whole row), sitting clear of the deepest descender the FONT can
+        /// produce - not the deepest descender this one string happens to use, so
+        /// switching between two active captions never makes the rule jump up and
+        /// down depending on which letters are in the word.
+        ///
+        /// The vertical position comes from the font's own line box, not from a
+        /// hand-picked "height minus N". That offset is what put an underline
+        /// through p/g/q tails in the first place: it was tuned against one
+        /// renderer's idea of where text sits, and a different font size, DPI or
+        /// renderer puts the glyph somewhere else.
+        /// </summary>
+        public static void DrawActiveCaptionRule(Graphics g, Rectangle textBounds, string text,
+                                                 Font font, Color color)
+        {
+            if (g == null || string.IsNullOrEmpty(text) || font == null) return;
+
+            var size = TextRenderer.MeasureText(g, text, font, textBounds.Size,
+                                                TextFormatFlags.Left | TextFormatFlags.NoPadding);
+            int left = textBounds.Left + Math.Max(0, (textBounds.Width - size.Width) / 2);
+            int right = left + Math.Max(size.Width, 4);
+
+            // The caption is vertically centred, so its line box starts here...
+            float lineHeight = font.GetHeight(g);
+            float lineTop = textBounds.Top + (textBounds.Height - lineHeight) / 2f;
+
+            // ...and the descender bottom is the line box bottom minus the font's
+            // internal leading. Two pixels of air below that keeps the rule off the
+            // anti-aliased edge of a tail without letting it drift away from the word.
+            int y = (int)Math.Ceiling(lineTop + lineHeight) + 1;
+            y = Math.Min(y, textBounds.Bottom - 1);   // never leave the control
+
+            using (var pen = new Pen(color, 2f))
+                g.DrawLine(pen, left, y, right, y);
+        }
+    }
+
+    /// <summary>
+    /// Keeps a Save button greyed until something has actually changed.
+    ///
+    /// The Station Connection page already worked this way and it is the right
+    /// behaviour everywhere: an enabled Save invites a press, and a press that
+    /// writes an unchanged file still rewrites timestamps, still logs an edit, and
+    /// on an alarm file still makes the operator wonder what they just changed.
+    ///
+    /// Reset() after a successful save, MarkDirty() from any edit.
+    /// </summary>
+    public class DirtyTracker
+    {
+        private readonly System.Collections.Generic.List<Control> _buttons =
+            new System.Collections.Generic.List<Control>();
+        private bool _dirty;
+
+        public bool IsDirty { get { return _dirty; } }
+
+        /// <summary>Buttons that only make sense once there is a change.</summary>
+        public DirtyTracker Guard(params Control[] buttons)
+        {
+            foreach (var b in buttons)
+                if (b != null) { _buttons.Add(b); b.Enabled = _dirty; }
+            return this;
+        }
+
+        /// <summary>Wires a grid so any edit marks the page dirty.</summary>
+        public DirtyTracker Watch(DataGridView grid)
+        {
+            if (grid == null) return this;
+            grid.CellValueChanged += (s, e) => MarkDirty();
+            grid.RowsAdded += (s, e) => MarkDirty();
+            grid.RowsRemoved += (s, e) => MarkDirty();
+            return this;
+        }
+
+        public void MarkDirty()
+        {
+            if (_dirty) return;
+            _dirty = true;
+            foreach (var b in _buttons) b.Enabled = true;
+        }
+
+        public void Reset()
+        {
+            _dirty = false;
+            foreach (var b in _buttons) b.Enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// The drawn icons the caption bar and the alarm pages share.
+    ///
+    /// Drawn rather than typed as emoji: a font emoji arrives coloured by the
+    /// font, at whatever weight the font chooses, and differs between Windows
+    /// versions. These have to sit next to each other and blink in step, so they
+    /// are strokes this program controls.
+    /// </summary>
+    public static class HmiGlyphs
+    {
+        /// <summary>Circular refresh arrows, outline only.</summary>
+        public static void Reset(Graphics g, Rectangle area, Color colour)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            float cx = area.Left + area.Width / 2f;
+            float cy = area.Top + area.Height / 2f;
+            float r = Math.Min(area.Width, area.Height) * 0.30f;
+
+            using (var pen = new Pen(colour, Math.Max(2f, r * 0.34f)))
+            {
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                g.DrawArc(pen, cx - r, cy - r, r * 2, r * 2, -35, 300);
+            }
+
+            double a = -35 * Math.PI / 180.0;
+            float hx = cx + (float)(Math.Cos(a) * r);
+            float hy = cy + (float)(Math.Sin(a) * r);
+            float h = Math.Max(3f, r * 0.55f);
+            using (var pen = new Pen(colour, Math.Max(1.8f, r * 0.30f)))
+            {
+                pen.LineJoin = LineJoin.Round;
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                g.DrawLines(pen, new[]
+                {
+                    new PointF(hx - h * 0.15f, hy - h * 0.95f),
+                    new PointF(hx + h * 0.85f, hy - h * 0.05f),
+                    new PointF(hx - h * 0.25f, hy + h * 0.60f)
+                });
+            }
+        }
+
+        /// <summary>Warning triangle with an exclamation, outline only.</summary>
+        public static void Warning(Graphics g, Rectangle area, Color colour)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+
+            float side = Math.Min(area.Width, area.Height) * 0.78f;
+            float cx = area.Left + area.Width / 2f;
+            float cy = area.Top + area.Height / 2f;
+            float h = side * 0.88f;
+
+            var top = new PointF(cx, cy - h / 2f);
+            var left = new PointF(cx - side / 2f, cy + h / 2f);
+            var right = new PointF(cx + side / 2f, cy + h / 2f);
+
+            using (var pen = new Pen(colour, Math.Max(1.8f, side * 0.10f)))
+            {
+                pen.LineJoin = LineJoin.Round;
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                g.DrawPolygon(pen, new[] { top, right, left });
+            }
+
+            using (var pen = new Pen(colour, Math.Max(1.8f, side * 0.11f)))
+            {
+                pen.StartCap = LineCap.Round;
+                pen.EndCap = LineCap.Round;
+                g.DrawLine(pen, cx, cy - h * 0.20f, cx, cy + h * 0.04f);
+            }
+
+            float dot = Math.Max(1.6f, side * 0.10f);
+            using (var pen = new Pen(colour, dot))
+                // Clear of the bar: at 34px a dot placed any closer merged with
+                // it and the mark read as a solid stroke rather than an exclamation.
+                g.DrawEllipse(pen, cx - dot / 2f, cy + h * 0.20f, dot, dot);
+        }
+
+        /// <summary>A drawn glyph as a button face, for toolbars that take images.</summary>
+        public static Button ToolButton(Action<Graphics, Rectangle, Color> glyph,
+                                        string tip, ToolTip tips, EventHandler onClick,
+                                        Color colour)
+        {
+            var b = new Button
+            {
+                Width = 36, Height = 30, FlatStyle = FlatStyle.Flat,
+                BackColor = Color.White, Cursor = Cursors.Hand, Text = ""
+            };
+            b.FlatAppearance.BorderColor = Color.FromArgb(205, 210, 217);
+            b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, colour);
+            if (onClick != null) b.Click += onClick;
+            if (tips != null && !string.IsNullOrEmpty(tip)) tips.SetToolTip(b, tip);
+            return b;
+        }
+    }
+
+    /// <summary>
+    /// Draws menu items the way every other control in this program shows hover:
+    /// a BLUE BORDER, not a filled bar.
+    ///
+    /// The default renderer floods the whole row, which is the one hover style the
+    /// program does not use anywhere else - buttons, numeric fields and grid cells
+    /// all outline. A menu that fills instead of outlines reads as a different
+    /// kind of surface, and on a dark caption bar the filled bar is the brightest
+    /// thing on screen for something as ordinary as passing the mouse over.
+    /// </summary>
+    public class HmiMenuRenderer : ToolStripProfessionalRenderer
+    {
+        public HmiMenuRenderer() : base(new HmiMenuColours()) { }
+
+        protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+        {
+            var item = e.Item;
+            var g = e.Graphics;
+            var r = new Rectangle(1, 0, e.Item.Width - 3, e.Item.Height - 1);
+
+            using (var back = new SolidBrush(Color.White))
+                g.FillRectangle(back, 0, 0, e.Item.Width, e.Item.Height);
+
+            if (!item.Selected || !item.Enabled) return;
+
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            using (var pen = new Pen(UiStyle.HoverBorderColor, 1.6f))
+                g.DrawRectangle(pen, r);
+        }
+
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            // The text colour must not change on hover either - a border is the
+            // whole signal, and a colour shift on top of it says it twice.
+            if (e.Item.Enabled) e.TextColor = Color.FromArgb(35, 40, 48);
+            base.OnRenderItemText(e);
+        }
+    }
+
+    internal class HmiMenuColours : ProfessionalColorTable
+    {
+        public override Color MenuItemSelected => Color.White;
+        public override Color MenuItemSelectedGradientBegin => Color.White;
+        public override Color MenuItemSelectedGradientEnd => Color.White;
+        public override Color MenuItemBorder => UiStyle.HoverBorderColor;
+        public override Color MenuBorder => Color.FromArgb(205, 210, 217);
+        public override Color ToolStripDropDownBackground => Color.White;
+        public override Color ImageMarginGradientBegin => Color.White;
+        public override Color ImageMarginGradientMiddle => Color.White;
+        public override Color ImageMarginGradientEnd => Color.White;
+    }
+}
+
