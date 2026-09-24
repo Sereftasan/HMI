@@ -195,7 +195,11 @@ namespace Kaban.UI.Controls
             this.BorderStyle = BorderStyle.Fixed3D;
             this.TextAlign = ContentAlignment.MiddleRight;
             _originalBackColor = this.BackColor;
-            LanguageManager.LanguageChanged += (s, e) => ApplyTranslation();
+            // THE SAME HANDLER Dispose removes. This subscribed a lambda while
+            // Dispose unsubscribed OnLanguageChanged - a different delegate - so
+            // the removal did nothing and the static event held every numeric field
+            // ever created (and the page around it) for the life of the program.
+            LanguageManager.LanguageChanged += OnLanguageChanged;
             // Re-render immediately when the operator changes units, instead of
             // waiting for the next PLC scan (which never comes when offline).
             UnitManager.UnitChanged += OnUnitChanged;
@@ -354,7 +358,10 @@ namespace Kaban.UI.Controls
             base.Dispose(disposing);
         }
 
-        private void OnLanguageChanged(object sender, EventArgs e) => ApplyTranslation();
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            if (!IsDisposed) ApplyTranslation();
+        }
 
         protected string GetEffectiveAddress(Func<string, int> readPlc)
         {

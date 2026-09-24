@@ -119,7 +119,9 @@ namespace Kaban.UI.Screens
             _grid.DataSource = _view;
             _grid.ColumnWidthChanged += (s, e) => SaveColumnWidths();
             _grid.ColumnHeaderMouseClick += (s, e) => SortBy(_grid.Columns[e.ColumnIndex].Name);
-            AlarmManager.ActiveAlarms.ListChanged += (s, e) => Refresh_();
+            // Named and removed on dispose: the list is static and outlives the page.
+            AlarmManager.ActiveAlarms.ListChanged += OnActiveAlarmsChanged;
+            Disposed += (s, e) => AlarmManager.ActiveAlarms.ListChanged -= OnActiveAlarmsChanged;
             Refresh_();
 
             _empty.Text = LanguageManager.GetString("Alarm_None", "No active alarms.");
@@ -327,8 +329,26 @@ namespace Kaban.UI.Screens
             // machine's pages, found at start-up; its own helper files follow.
             var item = _grid.Rows[rowIndex].DataBoundItem as AlarmItem;
             if (item == null) return new List<TroubleshootingCatalog.HelpDocument>();
-            return Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(AlarmManager.FindByAddressOrCode(item.AlarmCode));
+
+            // CACHED BRIEFLY. This is asked by CellFormatting, CellPainting and
+            // CellMouseEnter - for every row, on every repaint - and each answer
+            // probes the disk several times per document (language variants).
+            // Two seconds is short enough that a document copied in by hand shows
+            // up almost at once, and long enough that painting never touches disk.
+            string key = (item.AlarmCode ?? "") + "|" + LanguageManager.CurrentLanguage;
+            CachedHelp hit;
+            int now = Environment.TickCount;
+            if (_helpCache.TryGetValue(key, out hit) && now - hit.Tick < HelpCacheMs) return hit.Docs;
+
+            var docs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(AlarmManager.FindByAddressOrCode(item.AlarmCode));
+            if (_helpCache.Count > 200) _helpCache.Clear();     // bounded
+            _helpCache[key] = new CachedHelp { Tick = now, Docs = docs };
+            return docs;
         }
+
+        private const int HelpCacheMs = 2000;
+        private sealed class CachedHelp { public int Tick; public List<TroubleshootingCatalog.HelpDocument> Docs; }
+        private readonly Dictionary<string, CachedHelp> _helpCache = new Dictionary<string, CachedHelp>();
 
         /// <summary>Opens the document list under the cell, like a combo.</summary>
         private void ShowHelpFor(int rowIndex, int columnIndex)
@@ -437,6 +457,11 @@ namespace Kaban.UI.Screens
         }
 
         /// <summary>Rebuilds the visible list from the live alarms, in sort order.</summary>
+        private void OnActiveAlarmsChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
+        {
+            if (!IsDisposed) Refresh_();
+        }
+
         private void Refresh_()
         {
             // ONLY THIS MACHINE'S ALARMS.
@@ -503,23 +528,6 @@ namespace Kaban.UI.Screens
         }
 
         private ButtonHMI _btnReset;
-
-        private void ResetAlarms()
-        {
-            if (!SecurityManager.HasAccess(SecurityLevel.Operator)) return;
-            int plc = _ctx != null ? _ctx.Station(1) : 1;
-            var drv = PlcManager.Instance.GetDriver(plc);
-            if (drv == null) return;
-            try
-            {
-                drv.Write(Forms.MainForm.AlarmResetAddress, 1);
-                var off = new Timer { Interval = 300 };
-                off.Tick += (s, e) => { off.Stop(); off.Dispose(); try { drv.Write(Forms.MainForm.AlarmResetAddress, 0); } catch { } };
-                off.Start();
-                AuditLogger.Log("alarm reset pressed on station " + plc + ".");
-            }
-            catch (Exception ex) { AuditLogger.Log("alarm reset failed: " + ex.Message); }
-        }
 
         // ---- column widths survive a restart ----
         private string WidthsPath

@@ -20,8 +20,14 @@ namespace Kaban.UI.Forms
         private Screens.MachineSelectorStrip _machineStrip;
         private Panel _navSpacer;
         // Minimum security level required to open each page (SecurityLevel.None = anyone).
-        private readonly System.Collections.Generic.Dictionary<Type, Kaban.Core.Enums.SecurityLevel> _screenLevels
-            = new System.Collections.Generic.Dictionary<Type, Kaban.Core.Enums.SecurityLevel>();
+        //
+        // PER PAGE INSTANCE, not per Type. Every multi-machine page is a
+        // SettingsScreen, so keyed by Type they all shared ONE entry - whichever
+        // group registered last - and Home could demand Machine Parameters'
+        // Maintenance level (the click answered with a permission box and the page
+        // "did not load"), or a restricted page could take an open page's level.
+        private readonly System.Collections.Generic.Dictionary<UserControl, Kaban.Core.Enums.SecurityLevel> _screenLevels
+            = new System.Collections.Generic.Dictionary<UserControl, Kaban.Core.Enums.SecurityLevel>();
         private PlcScanner _scanner;
 
         // --- Login UI (added programmatically so the .Designer file stays untouched) ---
@@ -43,6 +49,7 @@ namespace Kaban.UI.Forms
             if (_currentScreen != null && ReferenceEquals(_currentScreen, newScreen))
             {
                 // REMOVED newScreen.Dispose() here to prevent crash on re-clicking menu buttons
+                SyncMachineStrip();
                 return;
             }
 
@@ -51,7 +58,7 @@ namespace Kaban.UI.Forms
             // was carried on the screen but never checked, which is a false sense
             // of protection.
             Kaban.Core.Enums.SecurityLevel needed;
-            if (_screenLevels.TryGetValue(newScreen.GetType(), out needed)
+            if (_screenLevels.TryGetValue(newScreen, out needed)
                 && !Kaban.Core.Helpers.SecurityManager.HasAccess(needed))
             {
                 string msg = LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + needed;
@@ -86,17 +93,11 @@ namespace Kaban.UI.Forms
             // SECOND-LEVEL MENU: the machines this page can show. It hides itself
             // for a page with only one (HMI Settings, or any page on a machine with
             // no sub-machines), so it never asks a question with a single answer.
-            if (_machineStrip != null)
-            {
-                Kaban.Core.Machines.MachineRegistry.RoleGroup grp;
-                _screenGroups.TryGetValue(newScreen, out grp);
-                _machineStrip.ShowFor(grp);
-                _machineStrip.ApplyCollapsed(_navCollapsed);
-            }
+            SyncMachineStrip();
 
-            // history: page changes are recorded like browser visits
-            var visited = newScreen;
-            Helpers.NavigationHistory.Record(() => LoadScreen(visited));
+            // history: page changes are recorded like browser visits - the page
+            // AND the machine/tab it is showing (see RecordLocation).
+            RecordLocation();
 
             // Re-layout every function unit on the freshly shown screen. Re-adding a
             // screen fires no resize/parent event on its children, so without this
@@ -106,6 +107,61 @@ namespace Kaban.UI.Forms
             // TRIGGER THE SCANNER: Only scan the screen we just loaded!
             _scanner.RefreshTags(true);
             UpdateAlarmPulse();       // opening the alarm page stops the pulse
+        }
+
+        /// <summary>
+        /// Shows the machine strip for the current page with the machine that page
+        /// is ACTUALLY showing marked - not always the first one.
+        /// </summary>
+        private void SyncMachineStrip()
+        {
+            if (_machineStrip == null || _currentScreen == null) return;
+            Kaban.Core.Machines.MachineRegistry.RoleGroup grp;
+            _screenGroups.TryGetValue(_currentScreen, out grp);
+            var tabbed = _currentScreen as Kaban.UI.Settings.SettingsScreen;
+            int index = tabbed != null ? Math.Max(0, tabbed.ActiveIndex) : 0;
+            _machineStrip.ShowFor(grp, index);
+            _machineStrip.ApplyCollapsed(_navCollapsed);
+        }
+
+        // ==================================================================
+        // BACK / FORWARD
+        // ------------------------------------------------------------------
+        // A history step is a LOCATION: the page in the content area plus the tab
+        // chosen on every tab strip inside it (the machine on a multi-machine
+        // page, the sub-page on HMI Settings). What went wrong before:
+        //  * a step held only the page, and showing the page already on screen
+        //    returns at once - so Back from "Home / H500" to "Home / FA2010" did
+        //    nothing;
+        //  * a tab step re-found its window through FindForm(), which is null once
+        //    that page has been navigated away from - Back re-activated a tab
+        //    nobody could see;
+        //  * returning to a page left the machine strip marking the main machine
+        //    whatever machine the page was showing.
+        // ==================================================================
+
+        /// <summary>Records where the operator is now as one Back/Forward step.</summary>
+        public void RecordLocation()
+        {
+            var screen = _currentScreen;
+            if (screen == null || Helpers.NavigationHistory.IsReplaying) return;
+
+            var chain = Kaban.UI.Settings.SettingsScreen.CaptureChain(screen);
+            var key = new System.Collections.Generic.List<object> { screen };
+            foreach (var step in chain) { key.Add(step.Key); key.Add(step.Value); }
+
+            Helpers.NavigationHistory.Record(() => RestoreLocation(screen, chain), key.ToArray());
+        }
+
+        private void RestoreLocation(UserControl screen,
+            System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<Kaban.UI.Settings.SettingsScreen, Kaban.UI.Settings.ISettingsPage>> chain)
+        {
+            if (screen == null || screen.IsDisposed) return;
+            LoadScreen(screen);
+            if (!ReferenceEquals(_currentScreen, screen)) return;     // refused: permission
+            foreach (var step in chain)
+                if (step.Key != null && !step.Key.IsDisposed) step.Key.ShowPage(step.Value);
+            SyncMachineStrip();
         }
 
         private static void RelayoutFunctionUnits(Control root)
@@ -143,8 +199,18 @@ namespace Kaban.UI.Forms
                 // generic one so the menu keeps a single "icon + label" format.
                 var navIcon = group.Icon?.Invoke() as Image ?? SafeIcon("chevron_right_24");
                 AddMenuButton(group.TitleKey, group.TitleFallback, navIcon, view);
-                _screenLevels[view.GetType()] = group.RequiredLevel;
+                _screenLevels[view] = group.RequiredLevel;
                 _screenGroups[view] = group;
+
+                // A multi-machine page tells the shell whenever its machine changes
+                // (strip click, Back/Forward, login rebuild), so the strip's mark
+                // follows the machine actually shown.
+                var tabbed = view as Kaban.UI.Settings.SettingsScreen;
+                if (tabbed != null)
+                    tabbed.ActivePageChanged += (s2, e2) =>
+                    {
+                        if (ReferenceEquals(s2, _currentScreen)) SyncMachineStrip();
+                    };
 
                 // Auto-select the first page the current user may actually open, so
                 // startup doesn't pop a permission warning for a restricted page.
@@ -236,13 +302,7 @@ namespace Kaban.UI.Forms
 
             // The open page may have just become forbidden, or the machine strip may
             // now have more (or fewer) machines this user can see.
-            if (_currentScreen != null && _machineStrip != null)
-            {
-                Kaban.Core.Machines.MachineRegistry.RoleGroup grp;
-                _screenGroups.TryGetValue(_currentScreen, out grp);
-                _machineStrip.ShowFor(grp);
-                _machineStrip.ApplyCollapsed(_navCollapsed);
-            }
+            if (_currentScreen != null) SyncMachineStrip();
             SizeNavSpacer();
         }
 
@@ -587,7 +647,15 @@ namespace Kaban.UI.Forms
             try
             {
                 using (var st = typeof(MainForm).Assembly.GetManifestResourceStream(name))
-                    return st == null ? null : Image.FromStream(st);
+                {
+                    if (st == null) return null;
+                    // A COPY. GDI+ keeps reading the stream an Image was loaded
+                    // from for as long as the Image lives; this returned an Image
+                    // whose stream had already been disposed, which works until the
+                    // day it throws "A generic error occurred in GDI+" mid-paint.
+                    using (var loaded = Image.FromStream(st))
+                        return new Bitmap(loaded);
+                }
             }
             catch { return null; }
         }
@@ -637,8 +705,8 @@ namespace Kaban.UI.Forms
             // the black caption bar. Recolour to white (keeping the anti-aliased
             // alpha) and pre-scale once at 2x the drawn size, so the caption icon is
             // as crisp as the painted language flag.
-            _icoLogin = Whiten(LoadEmbeddedImage("Kaban.UI.IconLogin.png"), 56);
-            _icoLogout = Whiten(LoadEmbeddedImage("Kaban.UI.IconLogout.png"), 56);
+            using (var art = LoadEmbeddedImage("Kaban.UI.IconLogin.png")) _icoLogin = Whiten(art, 56);
+            using (var art = LoadEmbeddedImage("Kaban.UI.IconLogout.png")) _icoLogout = Whiten(art, 56);
             _btnLogin.Paint += (s, e) =>
             {
                 bool signedIn = SecurityManager.CurrentLevel != SecurityLevel.None;
@@ -651,7 +719,7 @@ namespace Kaban.UI.Forms
                     var box = new Rectangle((_btnLogin.Width - side) / 2, (_btnLogin.Height - side) / 2, side, side);
                     e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                     if (_btnLoginTint == Color.White) e.Graphics.DrawImage(art, box);
-                    else using (var tinted = Tint(art, _btnLoginTint)) e.Graphics.DrawImage(tinted, box);
+                    else e.Graphics.DrawImage(TintedCached(art, _btnLoginTint), box);
                 }
                 else DrawLoginIcon(e.Graphics, _btnLogin.ClientRectangle, Color.White, signedIn);
             };
@@ -709,13 +777,16 @@ namespace Kaban.UI.Forms
             // be tried without a PLC (see SimulationMotion).
             Kaban.UI.Helpers.SimulationMotion.Start();
 
-            var connPoll = new Timer { Interval = ConnectionMonitor.BeatMs };
-            connPoll.Tick += (s, e) =>
+            // A FIELD, so closing can stop it: the beat RECONNECTS any station it
+            // finds closed, and a tick after DisconnectAll() re-opened a station on
+            // the way out - which the restarting instance then could not open.
+            _connPoll = new Timer { Interval = ConnectionMonitor.BeatMs };
+            _connPoll.Tick += (s, e) =>
             {
                 try { ConnectionMonitor.Beat(); }
                 catch (Exception ex) { AuditLogger.Log("connection poll: " + ex.Message); }
             };
-            connPoll.Start();
+            _connPoll.Start();
 
             pnlTop.Controls.Add(_lblUser);
             pnlTop.Controls.Add(_btnLogin);
@@ -1171,6 +1242,26 @@ namespace Kaban.UI.Forms
             }
         }
 
+        // The blink colour of each login glyph, made once. Tint() walks every
+        // pixel with GetPixel/SetPixel, and it ran on every paint of the blinking
+        // login button - several times a second for as long as nobody logged in.
+        private readonly System.Collections.Generic.Dictionary<Image, Image> _tinted =
+            new System.Collections.Generic.Dictionary<Image, Image>();
+        private Color _tintedColour;
+
+        private Image TintedCached(Image art, Color colour)
+        {
+            if (colour != _tintedColour)
+            {
+                foreach (var old in _tinted.Values) old.Dispose();
+                _tinted.Clear();
+                _tintedColour = colour;
+            }
+            Image img;
+            if (!_tinted.TryGetValue(art, out img)) _tinted[art] = img = Tint(art, colour);
+            return img;
+        }
+
         /// <summary>Recolours an already-white glyph to another colour (keeps alpha).</summary>
         private static Image Tint(Image src, Color colour)
         {
@@ -1618,26 +1709,6 @@ namespace Kaban.UI.Forms
             }
         }
 
-        /// <summary>Momentary press: set M102, release it a moment later.</summary>
-        private void PulseAlarmReset()
-        {
-            var drv = PlcManager.Instance.GetDriver(1);
-            if (drv == null) return;
-            try
-            {
-                drv.Write(AlarmResetAddress, 1);
-                AuditLogger.Log("alarm reset pressed (momentary " + AlarmResetAddress + ").");
-                var off = new Timer { Interval = 300 };
-                off.Tick += (s2, e2) =>
-                {
-                    off.Stop(); off.Dispose();
-                    try { drv.Write(AlarmResetAddress, 0); } catch { }
-                };
-                off.Start();
-            }
-            catch (Exception ex) { AuditLogger.Log("alarm reset failed: " + ex.Message); }
-        }
-
         /// <summary>
         /// Reset mark: a near-closed circular arrow, the standard "reset" symbol
         /// (as in the flaticon reference). Drawn with GDI+ rather than shipping
@@ -1694,42 +1765,6 @@ namespace Kaban.UI.Forms
                 g.DrawEllipse(pen, cx - dot / 2f, cy + h * 0.20f, dot, dot);
         }
 
-        private static void DrawResetGlyph(Graphics g, Rectangle area, Color colour)
-        {
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            float cx = area.Left + area.Width / 2f;
-            float cy = area.Top + area.Height / 2f;
-            float r = Math.Min(area.Width, area.Height) * 0.30f;
-
-            using (var pen = new Pen(colour, Math.Max(2f, r * 0.34f)))
-            {
-                pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                // open ring, leaving a gap at the top right for the arrow head
-                g.DrawArc(pen, cx - r, cy - r, r * 2, r * 2, -35, 300);
-            }
-
-            // AN OUTLINED chevron, not a filled head - the whole mark is drawn in
-            // strokes so it matches the warning triangle beside it rather than
-            // looking like a different icon set.
-            double a = -35 * Math.PI / 180.0;
-            float hx = cx + (float)(Math.Cos(a) * r);
-            float hy = cy + (float)(Math.Sin(a) * r);
-            float h = Math.Max(3f, r * 0.55f);
-            using (var pen = new Pen(colour, Math.Max(1.8f, r * 0.30f)))
-            {
-                pen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
-                pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-                g.DrawLines(pen, new[]
-                {
-                    new PointF(hx - h * 0.15f, hy - h * 0.95f),
-                    new PointF(hx + h * 0.85f, hy - h * 0.05f),
-                    new PointF(hx - h * 0.25f, hy + h * 0.60f)
-                });
-            }
-        }
-
         /// <summary>Small screen-with-trace icon for the user menu.</summary>
         private static Image MonitorIcon(int size)
         {
@@ -1745,15 +1780,17 @@ namespace Kaban.UI.Forms
 
         private static Image MenuIcon(string resource)
         {
-            var img = LoadEmbeddedImage(resource);
-            if (img == null) return null;
-            var scaled = new Bitmap(22, 22);
-            using (var g = Graphics.FromImage(scaled))
+            using (var img = LoadEmbeddedImage(resource))     // the full-size art is only a source
             {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(img, new Rectangle(0, 0, 22, 22));
+                if (img == null) return null;
+                var scaled = new Bitmap(22, 22);
+                using (var g = Graphics.FromImage(scaled))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(img, new Rectangle(0, 0, 22, 22));
+                }
+                return scaled;
             }
-            return scaled;
         }
 
         /// <summary>Language chooser: one entry per available language, with its flag.</summary>
@@ -1943,52 +1980,6 @@ namespace Kaban.UI.Forms
             }
         }
 
-        /// <summary>Draws a small painted flag plus the language code.</summary>
-        private void DrawLanguageItem(object sender, DrawItemEventArgs e)
-        {
-            e.DrawBackground();
-            if (e.Index < 0) return;
-            string code = Convert.ToString(cmbLanguage.Items[e.Index]).Trim().ToUpperInvariant();
-
-            var flag = new Rectangle(e.Bounds.Left + 4, e.Bounds.Top + 3, 20, 14);
-            var g = e.Graphics;
-            switch (code)
-            {
-                case "TR":
-                    using (var b = new SolidBrush(Color.FromArgb(227, 10, 23))) g.FillRectangle(b, flag);
-                    using (var w = new Pen(Color.White, 2f))
-                    {
-                        g.DrawEllipse(w, flag.Left + 5, flag.Top + 3, 8, 8);
-                        using (var r2 = new SolidBrush(Color.FromArgb(227, 10, 23)))
-                            g.FillEllipse(r2, flag.Left + 8, flag.Top + 3, 7, 8);
-                    }
-                    break;
-                case "EN":
-                case "GB":
-                    using (var b = new SolidBrush(Color.FromArgb(1, 33, 105))) g.FillRectangle(b, flag);
-                    using (var w = new Pen(Color.White, 2.5f))
-                    {
-                        g.DrawLine(w, flag.Left, flag.Top + flag.Height / 2f, flag.Right, flag.Top + flag.Height / 2f);
-                        g.DrawLine(w, flag.Left + flag.Width / 2f, flag.Top, flag.Left + flag.Width / 2f, flag.Bottom);
-                    }
-                    using (var r3 = new Pen(Color.FromArgb(200, 16, 46), 1.2f))
-                    {
-                        g.DrawLine(r3, flag.Left, flag.Top + flag.Height / 2f, flag.Right, flag.Top + flag.Height / 2f);
-                        g.DrawLine(r3, flag.Left + flag.Width / 2f, flag.Top, flag.Left + flag.Width / 2f, flag.Bottom);
-                    }
-                    break;
-                default:
-                    using (var b = new SolidBrush(Color.FromArgb(120, 130, 145))) g.FillRectangle(b, flag);
-                    break;
-            }
-            using (var border = new Pen(Color.FromArgb(150, 158, 170))) g.DrawRectangle(border, flag);
-
-            TextRenderer.DrawText(g, code, e.Font,
-                new Rectangle(flag.Right + 6, e.Bounds.Top, e.Bounds.Width - flag.Width - 10, e.Bounds.Height),
-                e.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
-            e.DrawFocusRectangle();
-        }
-
         private void UpdateLoginUi()
         {
             if (_btnLogin == null) return;
@@ -2060,8 +2051,11 @@ namespace Kaban.UI.Forms
             // on its own schedule. Both matter for restart: the incoming instance
             // cannot open a station the outgoing one still holds.
             try { if (_scanner != null) _scanner.Stop(); } catch { }
+            try { if (_connPoll != null) _connPoll.Stop(); } catch { }
             PlcManager.Instance.DisconnectAll();
         }
+
+        private Timer _connPoll;
 
         private void btnUnitSettings_Click(object sender, EventArgs e)
         {
@@ -2157,7 +2151,13 @@ namespace Kaban.UI.Forms
         {
             if (keyData == Keys.F12)
             {
-                ShowSimulationMonitor();
+                // ADMIN ONLY, like the menu entry. The monitor writes any device on
+                // any station, bypassing every control's own security level and
+                // interlock conditions; F12 opened it for whoever stood at the panel.
+                // (The caption-bar button stays: it only appears on bench builds
+                // with simulated stations.)
+                if (SecurityManager.HasAccess(SecurityLevel.Admin)) ShowSimulationMonitor();
+                else AuditLogger.Log("F12 (PLC monitor) refused: admin level required.");
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -2180,8 +2180,6 @@ namespace Kaban.UI.Forms
         private bool _navCollapsed;
         private Button _btnNavToggle;
         private Button _btnHistBack, _btnHistFwd;
-        private readonly System.Collections.Generic.Dictionary<Controls.ButtonHMI, string> _navSavedText
-            = new System.Collections.Generic.Dictionary<Controls.ButtonHMI, string>();
         private int MenuWidthFull = 204;   // user-draggable; persisted
         private const int MenuWidthCompact = 56;
 

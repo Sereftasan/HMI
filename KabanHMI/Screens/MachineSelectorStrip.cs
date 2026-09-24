@@ -75,6 +75,20 @@ namespace Kaban.UI.Screens
         /// </summary>
         public void ShowFor(MachineRegistry.RoleGroup group)
         {
+            ShowFor(group, 0);
+        }
+
+        /// <summary>
+        /// Same, with the machine the page is ACTUALLY showing marked.
+        ///
+        /// The mark was always put on the first (main) machine, because the page
+        /// was assumed to open on it - but a machine page remembers its last
+        /// machine, so Back/Forward, or returning to Home, showed a sub-machine's
+        /// page with the MAIN machine highlighted.
+        /// </summary>
+        public void ShowFor(MachineRegistry.RoleGroup group, int selectedIndex)
+        {
+            if (selectedIndex < 0) selectedIndex = 0;
             // SAME MACHINES AS LAST TIME -> leave the strip completely alone.
             //
             // It used to be torn down and rebuilt on every navigation click, so the
@@ -83,7 +97,7 @@ namespace Kaban.UI.Screens
             // should only change when the ANSWER changes.
             if (SameMachines(group, _group))
             {
-                if (group != null && group.IsTabbed) Select(0, notify: false);
+                if (group != null && group.IsTabbed) Select(selectedIndex, notify: false);
                 return;
             }
 
@@ -139,7 +153,7 @@ namespace Kaban.UI.Screens
             Visible = true;
             // Children are Dock.Top INSIDE this panel; the panel itself is sized here.
             PerformLayout();
-            Select(0, notify: false);
+            Select(selectedIndex, notify: false);
             ApplyCollapsed(_collapsed);
         }
 

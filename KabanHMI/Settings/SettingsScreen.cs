@@ -128,12 +128,89 @@ namespace Kaban.UI.Settings
             set { _tabStrip.Visible = !value; ApplyContentPadding(); }
         }
 
-        /// <summary>Switches to the Nth VISIBLE page - what the machine strip calls.</summary>
+        /// <summary>
+        /// Switches to the Nth page - what the machine strip calls.
+        ///
+        /// Counted over ALL pages, the same list the strip draws one button per
+        /// machine from. It used to count only the pages the user may open, so
+        /// with one machine's page above the user's level every button after it
+        /// opened the NEXT machine's page.
+        /// </summary>
         public void ActivateByIndex(int index)
         {
-            var visible = VisiblePages();
-            if (index < 0 || index >= visible.Count) return;
-            Activate(visible[index]);
+            if (index < 0 || index >= _pages.Count) return;
+            var page = _pages[index];
+            if (!SecurityManager.HasAccess(page.RequiredLevel))
+            {
+                MessageBox.Show(LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + page.RequiredLevel,
+                                LanguageManager.GetString("Sys_Disabled", "Action Disabled."),
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                RaiseActivePageChanged();          // put the strip's mark back where the page is
+                return;
+            }
+            Activate(page, record: true);
+        }
+
+        /// <summary>The page on show.</summary>
+        public ISettingsPage ActivePage { get { return _active; } }
+
+        /// <summary>Index of the page on show among ALL pages (see ActivateByIndex), or -1.</summary>
+        public int ActiveIndex { get { return _active == null ? -1 : _pages.IndexOf(_active); } }
+
+        /// <summary>
+        /// Raised whenever the page on show changes - by a click, by the machine
+        /// strip, by a login rebuild or by Back/Forward - so the shell can keep
+        /// the machine strip's "you are here" mark on the machine actually shown.
+        /// </summary>
+        public event EventHandler ActivePageChanged;
+
+        private void RaiseActivePageChanged()
+        {
+            var h = ActivePageChanged;
+            if (h != null) h(this, EventArgs.Empty);
+        }
+
+        /// <summary>Shows a page WITHOUT recording a history step (Back/Forward replay).</summary>
+        internal void ShowPage(ISettingsPage page)
+        {
+            if (page == null || !_pages.Contains(page)) return;
+            if (!SecurityManager.HasAccess(page.RequiredLevel)) return;
+            Activate(page, record: false);
+        }
+
+        /// <summary>
+        /// Where the operator is inside a page: every tab strip on the way down,
+        /// outermost first, with the page each one shows. Back/Forward restore this
+        /// whole path - restoring only the outer page brought back whatever tab it
+        /// happened to have open by then.
+        /// </summary>
+        internal static List<KeyValuePair<SettingsScreen, ISettingsPage>> CaptureChain(Control top)
+        {
+            var chain = new List<KeyValuePair<SettingsScreen, ISettingsPage>>();
+            Control c = top;
+            for (int depth = 0; c != null && depth < 8; depth++)
+            {
+                var s = c as SettingsScreen ?? FindFirstIn(c);
+                if (s == null || s._active == null) break;
+                chain.Add(new KeyValuePair<SettingsScreen, ISettingsPage>(s, s._active));
+                UserControl view;
+                c = s._instances.TryGetValue(s._active, out view) ? view : null;
+            }
+            return chain;
+        }
+
+        private static SettingsScreen FindFirstIn(Control root)
+        {
+            var queue = new Queue<Control>();
+            foreach (Control ch in root.Controls) queue.Enqueue(ch);
+            while (queue.Count > 0)
+            {
+                var c = queue.Dequeue();
+                var s = c as SettingsScreen;
+                if (s != null) return s;
+                foreach (Control ch in c.Controls) queue.Enqueue(ch);
+            }
+            return null;
         }
 
         private List<ISettingsPage> VisiblePages()
@@ -169,7 +246,7 @@ namespace Kaban.UI.Settings
                     AutoSizeMode = AutoSizeMode.GrowAndShrink,
                     Height = 22,
                     FlatStyle = FlatStyle.Flat,
-                    Font = new Font("Segoe UI", 10F),
+                    Font = TabFont,                 // shared, not one per tab per rebuild
                     ForeColor = ColTextDim,
                     BackColor = ColStrip,
                     Cursor = Cursors.Hand,
@@ -181,7 +258,7 @@ namespace Kaban.UI.Settings
                 btn.FlatAppearance.MouseOverBackColor = ColHover;
 
                 var captured = page;
-                btn.Click += (s, e) => Activate(captured);
+                btn.Click += (s, e) => Activate(captured, record: true);
                 btn.Resize += (s, e) => ShapeTab(btn);   // rounded-top region on size only
                 ShapeTab(btn);
 
@@ -192,21 +269,28 @@ namespace Kaban.UI.Settings
             if (_active == null || !visible.Contains(_active))
                 _active = visible.Count > 0 ? visible[0] : null;
 
-            if (_active != null) Activate(_active);
-            else _host.Controls.Clear();
+            // NOT a visit: a rebuild after a login or a language change must not
+            // add history steps (it added one per parented settings screen).
+            if (_active != null) Activate(_active, record: false);
+            else { _host.Controls.Clear(); RaiseActivePageChanged(); }
         }
 
         /// <summary>Rounded-TOP region (square bottom merges into the white page).</summary>
         private static void ShapeTab(Button btn)
         {
-            var gp = new System.Drawing.Drawing2D.GraphicsPath();
-            int r = 6, w = Math.Max(1, btn.Width), h = Math.Max(1, btn.Height);
-            gp.AddArc(0, 0, r * 2, r * 2, 180, 90);
-            gp.AddArc(w - r * 2 - 1, 0, r * 2, r * 2, 270, 90);
-            gp.AddLine(w - 1, h, 0, h);
-            gp.CloseFigure();
-            btn.Region = new Region(gp);
+            // Disposed: this runs on every resize of every tab.
+            using (var gp = new System.Drawing.Drawing2D.GraphicsPath())
+            {
+                int r = 6, w = Math.Max(1, btn.Width), h = Math.Max(1, btn.Height);
+                gp.AddArc(0, 0, r * 2, r * 2, 180, 90);
+                gp.AddArc(w - r * 2 - 1, 0, r * 2, r * 2, 270, 90);
+                gp.AddLine(w - 1, h, 0, h);
+                gp.CloseFigure();
+                btn.Region = new Region(gp);
+            }
         }
+
+        private static readonly Font TabFont = new Font("Segoe UI", 10F);
 
         /// <summary>
         /// Applies active/inactive colours OUTSIDE of any paint cycle. Doing this
@@ -279,8 +363,8 @@ namespace Kaban.UI.Settings
                 var want = isActive ? FontStyle.Bold : FontStyle.Regular;
                 if (kv.Value.Font.Style != want)
                 {
-                    var old = kv.Value.Font;
-                    kv.Value.Font = new Font(old.FontFamily, old.Size, want);
+                    // Shared variant: a new Font on every tab switch was never disposed.
+                    kv.Value.Font = Kaban.UI.Controls.UiStyle.FontVariant(kv.Value.Font, want);
                     // the bold caption is wider - let the tab grow with it
                     kv.Value.Width = TextRenderer.MeasureText(kv.Value.Text, kv.Value.Font).Width + 26;
                 }
@@ -301,11 +385,11 @@ namespace Kaban.UI.Settings
         {
             var page = VisiblePages().Find(p => p.TitleKey == titleKey);
             if (page == null) return false;
-            Activate(page);
+            Activate(page, record: true);
             return true;
         }
 
-        private void Activate(ISettingsPage page)
+        private void Activate(ISettingsPage page, bool record)
         {
             if (page == null) return;
             _active = page;
@@ -336,21 +420,20 @@ namespace Kaban.UI.Settings
             Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
 
             StyleTabs();
+            RaiseActivePageChanged();
 
-            // history: a settings TAB change is a navigation step too. The restore
-            // action re-shows this settings screen first, then the tab.
-            // Only record REAL visits: BuildTabs also calls Activate during
-            // construction and on login/language rebuilds, before/without the
-            // screen being shown - those must not pollute the history.
-            if (Parent == null) return;
-
-            var capturedPage = page;
-            Kaban.UI.Helpers.NavigationHistory.Record(() =>
-            {
-                var mf = FindForm() as Kaban.UI.Forms.MainForm;
-                mf?.LoadScreen(this);
-                Activate(capturedPage);
-            });
+            // history: a settings TAB change is a navigation step too.
+            //
+            // THE SHELL RECORDS IT, as a whole location: the page in the content
+            // area plus every tab on the way down. The step recorded here used to
+            // re-show "this" through FindForm() - which is null once the page has
+            // been navigated away from, so Back re-activated a tab on a screen
+            // nobody could see and appeared to do nothing. And a nested tab strip
+            // handed ITSELF to LoadScreen, pulling it out of its outer page.
+            // Only real visits: a rebuild (login, language) or a replay passes false.
+            if (!record || Parent == null) return;
+            var mf = FindForm() as Kaban.UI.Forms.MainForm;
+            if (mf != null) mf.RecordLocation();
         }
 
         protected override void Dispose(bool disposing)
@@ -359,6 +442,12 @@ namespace Kaban.UI.Settings
             {
                 SecurityManager.UserChanged -= _onUserChanged;
                 LanguageManager.LanguageChanged -= _onLanguageChanged;
+
+                // The page on show goes with the host; the cached ones that are NOT
+                // on show belong to nobody else, so they are disposed here.
+                foreach (var view in _instances.Values)
+                    if (view != null && !view.IsDisposed && view.Parent == null) view.Dispose();
+                _instances.Clear();
             }
             base.Dispose(disposing);
         }
