@@ -110,7 +110,14 @@ namespace Kaban.Drivers.MitsubishiActUtl
                 Thread.Sleep(1);
             }
 
+            // One kernel event per call, previously never disposed (left to the
+            // finalizer - thousands of handles a minute at the scan rate). On a
+            // timeout the worker still Set()s it after the caller has gone, so it
+            // cannot be disposed straight after the wait: both sides hold a
+            // reference and whichever finishes second disposes it.
             var done = new ManualResetEvent(false);
+            int refs = 2;
+            Action release = () => { if (Interlocked.Decrement(ref refs) == 0) done.Dispose(); };
             var box = new Box<T>();
             try
             {
@@ -122,17 +129,23 @@ namespace Kaban.Drivers.MitsubishiActUtl
                     {
                         Volatile.Write(ref _busy, 0);
                         done.Set();
+                        release();
                     }
                 }));
             }
             catch
             {
                 Volatile.Write(ref _busy, 0);
+                done.Dispose();
                 return false;
             }
 
-            int remaining = Math.Max(0, deadline - Environment.TickCount);
-            if (!WaitWithoutPumping(done, remaining)) return false;
+            try
+            {
+                int remaining = Math.Max(0, deadline - Environment.TickCount);
+                if (!WaitWithoutPumping(done, remaining)) return false;
+            }
+            finally { release(); }
             if (!box.Ok) return false;
 
             result = box.Value;

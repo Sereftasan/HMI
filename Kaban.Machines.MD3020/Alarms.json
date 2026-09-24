@@ -1,21 +1,32 @@
 [
   {
-    "Code": 1,
+    "PlcAddress": "M910",
+    "TagCode": "H800_Fault1",
+    "Severity": "Warning",
     "PlcNumber": 1,
-    "Address": "M910",
-    "DescriptionKey": "Alm_H800_Fault1",
-    "DescriptionEN": "H800: unit fault",
-    "DescriptionTR": "Alt Makine 2: unite arizasi",
-    "Severity": "Warning"
+    "Translations": {
+      "EN": "H800: unit fault",
+      "TR": "Alt Makine 2: ünite arızası",
+      "RU": "H800: неисправность узла",
+      "DE": "H800: Einheitsstörung",
+      "IT": "H800: guasto unità",
+      "ES": "H800: fallo de unidad"
+    },
+    "Comment": "code 1 - converted from the legacy format (was Alm_H800_Fault1); the loader skipped the old layout, so MD3020 had no alarms"
   },
   {
-    "Code": 2,
+    "PlcAddress": "M911",
+    "TagCode": "H800_NotHome",
+    "Severity": "Fault",
     "PlcNumber": 1,
-    "Address": "M911",
-    "DescriptionKey": "Alm_H800_NotHome",
-    "DescriptionEN": "H800: not at home position",
-    "DescriptionTR": "Alt Makine 2: baslangic konumunda degil",
-    "Severity": "Fault"
+    "Translations": {
+      "EN": "H800: not at home position",
+      "TR": "Alt Makine 2: başlangıç konumunda değil",
+      "RU": "H800: не в исходном положении",
+      "DE": "H800: nicht in Grundstellung",
+      "IT": "H800: non in posizione di riferimento",
+      "ES": "H800: no está en posición de origen"
+    },
+    "Comment": "code 2 - converted from the legacy format (was Alm_H800_NotHome); the loader skipped the old layout, so MD3020 had no alarms"
   }
 ]
-

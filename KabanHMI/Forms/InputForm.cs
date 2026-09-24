@@ -86,8 +86,12 @@ namespace Kaban.UI.Forms
                 return;
             }
 
-            // Try to parse the value
-            if (double.TryParse(txtInput.Text, out double value))
+            // Try to parse the value. NO THOUSANDS SEPARATORS: the plain overload
+            // allows them, so on a panel whose group separator is "." (Turkish,
+            // German...) "12.5" passed this check as 125 - while the caller, which
+            // parses without them, then threw the entry away without a word.
+            if (double.TryParse(txtInput.Text, System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.CurrentCulture, out double value))
             {
                 // CHECK LIMITS
                 if (value < MinValue || value > MaxValue)

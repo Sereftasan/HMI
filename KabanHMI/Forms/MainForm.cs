@@ -752,7 +752,7 @@ namespace Kaban.UI.Forms
                 // A stray tap must not end a shift, so offer the two real choices in
                 // a dropdown; clicking elsewhere simply dismisses it.
                 var menu = BuildLogoutMenu();
-                menu.Show(_btnLogin, new Point(0, _btnLogin.Height));
+                Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnLogin, new Point(0, _btnLogin.Height));
             }
         }
 
@@ -856,7 +856,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         internal ContextMenuStrip BuildCloseMenu()
         {
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
             menu.ImageScalingSize = new Size(22, 22);
 
@@ -1015,7 +1015,7 @@ namespace Kaban.UI.Forms
         {
             var menu = BuildCloseMenu();
             // drop it from the close button, in the corner of the screen
-            menu.Show(_btnClose, new Point(_btnClose.Width - menu.PreferredSize.Width, _btnClose.Height));
+            Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnClose, new Point(_btnClose.Width - menu.PreferredSize.Width, _btnClose.Height));
         }
 
         /// <summary>Standard power symbol, drawn so it needs no font or asset.</summary>
@@ -1074,7 +1074,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         internal ContextMenuStrip BuildLogoutMenu()
         {
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
             menu.ImageScalingSize = new Size(22, 22);
 
@@ -1231,7 +1231,7 @@ namespace Kaban.UI.Forms
             _btnConnection.Click += (s, e) =>
             {
                 var menu = BuildConnectionMenu();
-                menu.Show(_btnConnection, new Point(0, _btnConnection.Height));
+                Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnConnection, new Point(0, _btnConnection.Height));
             };
 
             _topTips.SetToolTip(_btnConnection,
@@ -1316,7 +1316,7 @@ namespace Kaban.UI.Forms
             _btnAlarmReset.Click += (s, e) =>
             {
                 var menu = BuildAlarmMenu();
-                menu.Show(_btnAlarmReset, new Point(0, _btnAlarmReset.Height));
+                Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnAlarmReset, new Point(0, _btnAlarmReset.Height));
             };
             _topTips.SetToolTip(_btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
             pnlTop.Controls.Add(_btnAlarmReset);
@@ -1348,7 +1348,8 @@ namespace Kaban.UI.Forms
             // PLAIN. It was bold, then underlined - but a separator is drawn
             // directly beneath every heading already, so the rule was a second line
             // saying the same thing. Position and the separator are enough.
-            return new Font("Segoe UI", 10F, FontStyle.Regular);
+            // Shared: a new Font per menu opened was never disposed.
+            return Kaban.UI.Controls.UiStyle.MenuFont;
         }
 
         private ContextMenuStrip BuildAlarmMenu()
@@ -1359,7 +1360,7 @@ namespace Kaban.UI.Forms
             // three caption-bar menus feel like one family. A menu that renders its
             // own way looks like a different program when you move along the row,
             // and the operator has to re-learn where to aim.
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
             menu.ImageScalingSize = new Size(22, 22);
 
@@ -1434,7 +1435,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         private ContextMenuStrip BuildConnectionMenu()
         {
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
             menu.ImageScalingSize = new Size(22, 22);
 
@@ -1761,7 +1762,7 @@ namespace Kaban.UI.Forms
             // The SAME construction as the user and alarm menus. This one was built
             // bare - no header, default icon size, default margins - so moving along
             // the caption bar produced three menus that looked like three programs.
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
             menu.ImageScalingSize = new Size(22, 22);
 
@@ -1788,7 +1789,7 @@ namespace Kaban.UI.Forms
                 };
                 menu.Items.Add(item);
             }
-            menu.Show(_btnLang, new Point(0, _btnLang.Height));
+            Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnLang, new Point(0, _btnLang.Height));
         }
 
         private static Bitmap FlagBitmap(string code)

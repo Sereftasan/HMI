@@ -38,6 +38,13 @@ namespace Kaban.Core.Helpers
             public Dictionary<string, string> Translations { get; set; }
             public List<string> TroubleshootingKeys { get; set; }
             public List<string> HelperKeys { get; set; }
+
+            /// <summary>
+            /// The engineer's note ("StateCode 4 / First 32 Errors (1) bit 0").
+            /// Every shipped Alarms.json carries one; without this property the
+            /// loader dropped it and the first Save erased it from the file.
+            /// </summary>
+            public string Comment { get; set; }
         }
 
         private static readonly List<AlarmJsonEntry> _loaded = new List<AlarmJsonEntry>();
@@ -47,6 +54,11 @@ namespace Kaban.Core.Helpers
         // definition was registered under. Without this the definition and its
         // translation used different keys and every alarm showed as its raw key.
         private static readonly List<string> _loadedModuleIds = new List<string>();
+
+        // File each loaded entry came from, parallel to _loaded. Several machines
+        // load into one HMI (FA2010 + H500 + H800), so "the file" is per entry:
+        // saving must put each machine's alarms back into ITS OWN Alarms.json.
+        private static readonly List<string> _loadedFiles = new List<string>();
 
         internal static string ScopedCode(string moduleId, string tagCode)
             => string.IsNullOrEmpty(moduleId) ? tagCode : moduleId + "." + tagCode;
@@ -58,37 +70,69 @@ namespace Kaban.Core.Helpers
         /// <summary>All entries from the last successful Load(), for troubleshooting screens etc.</summary>
         public static IReadOnlyList<AlarmJsonEntry> LoadedEntries => _loaded;
 
-        /// <summary>Path the last Load() read, so Save writes the same file.</summary>
-        private static string _loadedPath;
-
         /// <summary>
-        /// Writes the loaded entries back to the file they came from.
+        /// Writes the loaded entries back to the files they came from.
         ///
-        /// ONE FILE. AlarmSettings.cfg stored address, severity and helper only,
-        /// so a troubleshooting code had nowhere to go - the cfg's timestamp moved
-        /// on every save while its contents never changed. Alarms.json already
-        /// carries all three, so the cfg was a lossy duplicate and a second place
-        /// for the same facts to disagree.
+        /// ONE FILE PER MACHINE. AlarmSettings.cfg stored address, severity and
+        /// helper only, so a troubleshooting code had nowhere to go. Alarms.json
+        /// already carries all three, so the cfg was a lossy duplicate.
+        ///
+        /// FIXED: the loader overload every module uses never recorded the path,
+        /// so Save always answered "Nothing to save" and no edit ever reached the
+        /// disk. Had it recorded one path, the next machine to load would have
+        /// overwritten it and Save would have written EVERY machine's alarms into
+        /// that one file. Entries were also matched back by ADDRESS, which FA2010,
+        /// H500 and H800 share (M801...), so one machine's severity could be
+        /// written into another's alarm. Each entry now remembers its own file and
+        /// is matched by its scoped code.
+        ///
+        /// moduleId limits the save to one machine's file(s); null or empty saves
+        /// every loaded file. Returns the file(s) written, "; "-separated, or "".
         /// </summary>
-        public static string SaveLoadedEntries()
+        public static string SaveLoadedEntries(string moduleId = null)
         {
-            if (string.IsNullOrEmpty(_loadedPath) || _loaded == null || _loaded.Count == 0)
-                return "";
+            if (_loaded.Count == 0) return "";
 
-            foreach (var entry in _loaded)
+            // Group by file, keeping the file's own entry order.
+            var byFile = new Dictionary<string, List<AlarmJsonEntry>>(StringComparer.OrdinalIgnoreCase);
+            var order = new List<string>();
+            for (int i = 0; i < _loaded.Count; i++)
             {
-                var def = AlarmManager.FindByAddress(entry.PlcAddress);
-                if (def == null) continue;
-                entry.Severity = def.Severity.ToString();
-                entry.TroubleshootingKeys = def.TroubleshootingKeys;
-                entry.HelperKeys = def.HelperKeys;
-            }
+                string mod = i < _loadedModuleIds.Count ? _loadedModuleIds[i] : "";
+                string file = i < _loadedFiles.Count ? _loadedFiles[i] : "";
+                if (string.IsNullOrEmpty(file)) continue;
+                if (!string.IsNullOrEmpty(moduleId) &&
+                    !string.Equals(mod, moduleId, StringComparison.OrdinalIgnoreCase)) continue;
 
-            var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-            System.IO.File.WriteAllText(_loadedPath,
-                System.Text.Json.JsonSerializer.Serialize(_loaded, options),
-                new System.Text.UTF8Encoding(true));
-            return _loadedPath;
+                var entry = _loaded[i];
+                var def = AlarmManager.FindByCode(ScopedCode(mod, entry.TagCode));
+                if (def != null)
+                {
+                    entry.Severity = def.Severity.ToString();
+                    entry.TroubleshootingKeys = def.TroubleshootingKeys;
+                    entry.HelperKeys = def.HelperKeys;
+                }
+
+                List<AlarmJsonEntry> list;
+                if (!byFile.TryGetValue(file, out list)) { byFile[file] = list = new List<AlarmJsonEntry>(); order.Add(file); }
+                list.Add(entry);
+            }
+            if (order.Count == 0) return "";
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                // Omit empty lists rather than writing "HelperKeys": null.
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                // Keep Turkish, Russian, German... text readable in the file. The
+                // default encoder writes every non-ASCII letter as \uXXXX, which
+                // turned "Ошибка" into a line nobody on site can check or edit.
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+            foreach (var file in order)
+                SafeFile.WriteAllText(file, JsonSerializer.Serialize(byFile[file], options),
+                                      new System.Text.UTF8Encoding(true));
+            return string.Join("; ", order);
         }
 
         /// <summary>
@@ -112,7 +156,6 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static int Load(string filePath, bool replaceExisting, string moduleId)
         {
-            _loadedPath = filePath;   // so SaveLoadedEntries writes the same file
             return Load(filePath, replaceExisting, moduleId, stationRemap: null);
         }
 
@@ -137,7 +180,7 @@ namespace Kaban.Core.Helpers
 
         private static int LoadInternal(string filePath, bool replaceExisting, string moduleId)
         {
-            if (replaceExisting) { _loaded.Clear(); _loadedModuleIds.Clear(); }
+            if (replaceExisting) { _loaded.Clear(); _loadedModuleIds.Clear(); _loadedFiles.Clear(); }
 
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
@@ -197,6 +240,7 @@ namespace Kaban.Core.Helpers
 
                     _loaded.Add(entry);
                     _loadedModuleIds.Add(moduleId ?? "");
+                    _loadedFiles.Add(Path.GetFullPath(filePath));
                     count++;
                 }
 

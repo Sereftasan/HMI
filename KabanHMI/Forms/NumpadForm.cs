@@ -111,7 +111,7 @@ namespace Kaban.UI.Forms
         {
             Minimum = min; Maximum = max;
             AllowNegative = allowNegative; AllowDecimal = allowDecimal; HexMode = hex;
-            _text = initial ?? "";
+            _text = hex ? (initial ?? "").Trim() : ToKeypadForm(initial);
             _caret = _text.Length;
 
             Text = caption ?? LanguageManager.GetString("Sys_InputTitle", "Input");
@@ -326,6 +326,19 @@ namespace Kaban.UI.Forms
             return true;
         }
 
+        /// <summary>
+        /// A starting value in the keypad's own form: "." as the decimal point.
+        /// Callers pass invariant text (NumericInputHMI.KeypadText); a decimal
+        /// comma from a regional format is still turned into the point the "."
+        /// key and Accept() work with, rather than left as a character the pad
+        /// can neither edit nor parse.
+        /// </summary>
+        internal static string ToKeypadForm(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return "";
+            return text.Trim().Replace(",", ".");
+        }
+
         private void Accept()
         {
             if (_text.Length == 0) { DialogResult = DialogResult.Cancel; Close(); return; }
@@ -338,7 +351,10 @@ namespace Kaban.UI.Forms
                 { Flash(); return; }
                 v = iv;
             }
-            else if (!double.TryParse(_text, NumberStyles.Float, CultureInfo.CurrentCulture, out v))
+            // INVARIANT: the keypad only ever types "." as the decimal point. With
+            // the panel's regional settings, a Turkish, German, Russian, Italian or
+            // Spanish Windows (decimal ",") refused every decimal entry.
+            else if (!double.TryParse(_text, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
             { Flash(); return; }
 
             if ((Minimum.HasValue && v < Minimum.Value) ||

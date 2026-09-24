@@ -43,6 +43,83 @@ namespace Kaban.UI.Controls
         public static readonly Font Small = new Font("Segoe UI", 9F);
         public static readonly Font Mono = new Font("Consolas", 10F, FontStyle.Bold);
 
+        /// <summary>The font every dropdown menu uses (was a new Font per menu opened).</summary>
+        public static readonly Font MenuFont = new Font("Segoe UI", 10F);
+
+        private static readonly Dictionary<string, Font> _fontVariants = new Dictionary<string, Font>();
+
+        /// <summary>
+        /// The same font in another style (bold for the active page, say), shared.
+        /// Toggling IsActivePage created a new Font on every page change and left
+        /// the previous one for the finalizer. Never dispose what this returns.
+        /// </summary>
+        public static Font FontVariant(Font baseFont, FontStyle style)
+        {
+            if (baseFont == null || baseFont.Style == style) return baseFont;
+            string key = baseFont.FontFamily.Name + "|" +
+                         baseFont.Size.ToString(System.Globalization.CultureInfo.InvariantCulture) + "|" +
+                         (int)baseFont.Unit + "|" + (int)style;
+            lock (_fontVariants)
+            {
+                Font f;
+                if (!_fontVariants.TryGetValue(key, out f))
+                    _fontVariants[key] = f = new Font(baseFont.FontFamily, baseFont.Size, style, baseFont.Unit);
+                return f;
+            }
+        }
+
+        // ---- menus built per click ---------------------------------------
+        //
+        // The top-bar, alarm-help and column menus are built fresh on every click
+        // (their items depend on the moment) and were never disposed: each one
+        // kept a window handle, its items, images and renderer until the
+        // finalizer got to them. On a panel that runs for weeks that is a steady
+        // leak of USER and GDI handles.
+        //
+        // Disposing a menu the moment it closes is NOT safe: the clicked item's
+        // Click handler runs after Closed, and one that opens a dialog would be
+        // running inside a disposed menu. So the previous menu of the SAME control
+        // is disposed when the next one is shown (it is certainly closed by then),
+        // and the last one goes with the control.
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, ToolStripDropDown[]> _lastPopup =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, ToolStripDropDown[]>();
+
+        /// <summary>Shows a per-click menu below/at a point of its owner and takes care of disposing it.</summary>
+        public static void ShowPopup(ToolStripDropDown menu, Control owner, Point at)
+        {
+            if (menu == null) return;
+            Adopt(menu, owner);
+            if (owner != null) menu.Show(owner, at); else menu.Show(at);
+        }
+
+        /// <summary>Same, at a screen position (the cursor, for a right-click).</summary>
+        public static void ShowPopupAt(ToolStripDropDown menu, Control owner, Point screenPoint)
+        {
+            if (menu == null) return;
+            Adopt(menu, owner);
+            menu.Show(screenPoint);
+        }
+
+        private static void Adopt(ToolStripDropDown menu, Control owner)
+        {
+            if (owner == null) return;
+            ToolStripDropDown[] slot;
+            if (!_lastPopup.TryGetValue(owner, out slot))
+            {
+                slot = new ToolStripDropDown[1];
+                _lastPopup.Add(owner, slot);
+                owner.Disposed += (s, e) =>
+                {
+                    var last = slot[0];
+                    slot[0] = null;
+                    if (last != null && !last.IsDisposed) last.Dispose();
+                };
+            }
+            var old = slot[0];
+            slot[0] = menu;
+            if (old != null && old != menu && !old.IsDisposed) old.Dispose();
+        }
+
         /// <summary>
         /// Makes a control repaint on enter/leave and reports whether the pointer is
         /// over it, so its own Paint handler can pick HoverBorderColor.
@@ -86,7 +163,7 @@ namespace Kaban.UI.Controls
         {
             return new ToolStripLabel(text)
             {
-                Font = new Font("Segoe UI", 10F, FontStyle.Regular),
+                Font = MenuFont,
                 ForeColor = Color.FromArgb(40, 46, 56),
                 Margin = new Padding(-34, 2, 2, 2)
             };
@@ -95,7 +172,7 @@ namespace Kaban.UI.Controls
         /// <summary>A dropdown built the same way as every other in the program.</summary>
         public static ContextMenuStrip Menu()
         {
-            var m = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+            var m = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
             m.Renderer = new HmiMenuRenderer();
             m.ImageScalingSize = new Size(22, 22);
             return m;
@@ -464,7 +541,7 @@ namespace Kaban.UI.Controls
             grid.ColumnHeaderMouseClick += (s, e) =>
             {
                 if (e.Button != MouseButtons.Right) return;
-                var menu = new ContextMenuStrip { ShowImageMargin = true, Font = new Font("Segoe UI", 10F) };
+                var menu = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
 
                 // STAYS OPEN while columns are ticked. Choosing what a table shows
                 // is several decisions at once, and a menu that shuts after each
@@ -489,7 +566,7 @@ namespace Kaban.UI.Controls
                     };
                     menu.Items.Add(item);
                 }
-                menu.Show(Cursor.Position);
+                ShowPopupAt(menu, grid, Cursor.Position);
             };
 
             // AUTO-SIZING OFF from here on. EnableAutoFit leaves the grid in

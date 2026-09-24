@@ -129,13 +129,21 @@ namespace Kaban.UI.Settings
 
         private void ExportToday()
         {
-            string src = Path.Combine(AuditLogger.LogDirectory, DateTime.Now.ToString("yyyy-MM-dd") + ".txt");
+            // AuditLogger.TodayFile: this used to build "yyyy-MM-dd.txt", a name the
+            // logger never writes, so export always reported "no log file".
+            string src = AuditLogger.TodayFile;
             if (!File.Exists(src)) { _lblStatus.Text = "No log file for today yet."; return; }
             using (var dlg = new SaveFileDialog { Filter = "Log file (*.txt)|*.txt", FileName = "KabanHMI-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt" })
             {
                 if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
-                File.Copy(src, dlg.FileName, true);
-                _lblStatus.Text = "Exported: " + dlg.FileName;
+                // The logger may be appending at this instant, and the target may be
+                // read-only or on a removed USB stick: report it, don't crash the HMI.
+                try
+                {
+                    File.Copy(src, dlg.FileName, true);
+                    _lblStatus.Text = "Exported: " + dlg.FileName;
+                }
+                catch (Exception ex) { _lblStatus.Text = "Export failed: " + ex.Message; }
             }
         }
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace Kaban.Core.Helpers
@@ -18,18 +20,38 @@ namespace Kaban.Core.Helpers
         /// <summary>Master switch - the Log Settings page can pause auditing.</summary>
         public static bool Enabled { get; set; } = true;
 
+        /// <summary>
+        /// Today's log file - the ONE place its name is spelled. The viewer and the
+        /// "export today" button each built their own name ("yyyy-MM-dd.txt")
+        /// while Log() writes "HmiAudit_yyyy-MM-dd.txt", so the viewer was always
+        /// empty and the export always said there was nothing to export.
+        /// </summary>
+        public static string TodayFile
+        {
+            get { return Path.Combine(LogDirectory, "HmiAudit_" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".txt"); }
+        }
+
         /// <summary>Last N lines of today's log (for the on-screen viewer).</summary>
         public static string[] Tail(int lines)
         {
             try
             {
-                string f = Path.Combine(LogDirectory, DateTime.Now.ToString("yyyy-MM-dd") + ".txt");
+                string f = TodayFile;
                 if (!File.Exists(f)) return new string[0];
-                var all = File.ReadAllLines(f);
-                int start = Math.Max(0, all.Length - lines);
-                var outp = new string[all.Length - start];
-                Array.Copy(all, start, outp, 0, outp.Length);
-                return outp;
+                // SHARE WRITE: File.ReadAllLines opens with FileShare.Read, which
+                // makes Log()'s append fail while the viewer is reading - and Log()
+                // swallows that, so the line was silently lost. The viewer polls
+                // every 2 s, so this happened in normal use.
+                var all = new List<string>();
+                using (var fs = new FileStream(f, FileMode.Open, FileAccess.Read,
+                                               FileShare.ReadWrite | FileShare.Delete))
+                using (var sr = new StreamReader(fs))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null) all.Add(line);
+                }
+                int start = Math.Max(0, all.Count - lines);
+                return all.GetRange(start, all.Count - start).ToArray();
             }
             catch { return new string[0]; }
         }
@@ -49,7 +71,7 @@ namespace Kaban.Core.Helpers
                 lock (_lock)
                 {
                     Directory.CreateDirectory(LogDirectory);
-                    string file = Path.Combine(LogDirectory, $"HmiAudit_{DateTime.Now:yyyy-MM-dd}.txt");
+                    string file = TodayFile;
                     File.AppendAllText(file, logLine + Environment.NewLine);
 
                     // Rotate: prune old daily files at most once a day.

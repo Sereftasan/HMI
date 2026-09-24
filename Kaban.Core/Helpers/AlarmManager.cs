@@ -90,6 +90,19 @@ namespace Kaban.Core.Helpers
         public static IEnumerable<AlarmDefinition> GetAllDefinitions() => _definitions.Values;
 
         /// <summary>
+        /// The definition registered under a (scoped) code, or null. Use this rather
+        /// than FindByAddress wherever the code is known: FA2010, H500 and H800 use
+        /// the SAME addresses (M801...) on different stations, so an address alone
+        /// finds whichever machine's alarm happens to come first.
+        /// </summary>
+        public static AlarmDefinition FindByCode(string alarmCode)
+        {
+            if (string.IsNullOrEmpty(alarmCode)) return null;
+            AlarmDefinition def;
+            return _definitions.TryGetValue(alarmCode, out def) ? def : null;
+        }
+
+        /// <summary>
         /// Changes the severity an alarm is reported with. Engineers tune this on
         /// site, so it is applied to the live definition rather than requiring the
         /// alarm file to be regenerated.
@@ -173,49 +186,100 @@ namespace Kaban.Core.Helpers
         /// Re-checks every registered alarm condition against live PLC data.
         /// `lookup` should resolve a PLC address to its last-scanned raw value
         /// (the same delegate PlcScanner already builds for its controls).
+        ///
+        /// Evaluates EVERY definition against the one lookup, whatever station it
+        /// belongs to - only right on a single-PLC machine. The scanner uses the
+        /// per-station overload below.
         /// </summary>
         public static void Evaluate(Func<string, int> lookup)
         {
+            EvaluateWhere(lookup, null);
+        }
+
+        /// <summary>
+        /// Re-checks only the alarms that live on ONE station, against that
+        /// station's data.
+        ///
+        /// WHY: the scanner used to read every alarm address from station 1 and
+        /// evaluate every definition against it. A mounted sub-machine's alarms
+        /// are remapped to their own station (H500 -> 3, H800 -> 4) and share
+        /// addresses with the host (M801...), so they were raised and cleared by
+        /// the HOST's bits: false alarms on one side, missed alarms on the other.
+        /// </summary>
+        public static void Evaluate(int station, Func<string, int> lookup)
+        {
+            EvaluateWhere(lookup, station);
+        }
+
+        /// <summary>The station an alarm or condition is read from (0 or less means the main PLC).</summary>
+        public static int StationOf(ConditionRule rule)
+        {
+            return rule == null || rule.PlcNumber <= 0 ? 1 : rule.PlcNumber;
+        }
+
+        private static void EvaluateWhere(Func<string, int> lookup, int? station)
+        {
             if (lookup == null || _definitions.Count == 0) return;
 
-            foreach (var def in _definitions.Values)
+            // ONE REFRESH PER SCAN, not one per alarm. An E-stop trips a dozen bits
+            // in the same scan; each Add/Remove used to repaint every grid bound to
+            // this list and fire AlarmsChanged, a dozen times over, on the UI thread.
+            bool changed = false;
+            bool raise = ActiveAlarms.RaiseListChangedEvents;
+            ActiveAlarms.RaiseListChangedEvents = false;
+            try
             {
-                bool isActive = false;
-                try
+                foreach (var def in _definitions.Values)
                 {
-                    int low = lookup(def.Address);
-                    double currentVal = low;
+                    if (station.HasValue && StationOf(def) != station.Value) continue;
 
-                    if (def.DataType == DataTypeEnum.Bin_32)
+                    bool isActive = false;
+                    try
                     {
-                        int high = lookup(PlcAddressHelper.GetNextAddress(def.Address));
-                        currentVal = PlcValueConverter.ConvertToDouble(low, high, def.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+                        int low = lookup(def.Address);
+                        double currentVal = low;
+
+                        if (def.DataType == DataTypeEnum.Bin_32)
+                        {
+                            int high = lookup(PlcAddressHelper.GetNextAddress(def.Address));
+                            currentVal = PlcValueConverter.ConvertToDouble(low, high, def.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+                        }
+
+                        isActive = ComparisonHelper.Compare(currentVal, def.Operator, def.RequiredValue);
+                    }
+                    catch
+                    {
+                        // If we can't evaluate the condition (comm failure, bad address, etc.)
+                        // don't silently pretend the alarm is cleared - leave its previous
+                        // state alone rather than mask a real problem.
+                        continue;
                     }
 
-                    isActive = ComparisonHelper.Compare(currentVal, def.Operator, def.RequiredValue);
-                }
-                catch
-                {
-                    // If we can't evaluate the condition (comm failure, bad address, etc.)
-                    // don't silently pretend the alarm is cleared - leave its previous
-                    // state alone rather than mask a real problem.
-                    continue;
-                }
+                    bool currentlyShown = IsCurrentlyActive(def.AlarmCode);
 
-                bool currentlyShown = IsCurrentlyActive(def.AlarmCode);
+                    if (isActive && !currentlyShown)
+                    {
+                        var item = new AlarmItem(def.AlarmCode, def.TranslationKey, def.Severity);
+                        ActiveAlarms.Add(item);
+                        AddToHistory(item);
+                        changed = true;
+                    }
+                    else if (!isActive && currentlyShown)
+                    {
+                        RemoveActive(def.AlarmCode);
+                        changed = true;
+                    }
+                }
+            }
+            finally
+            {
+                ActiveAlarms.RaiseListChangedEvents = raise;
+            }
 
-                if (isActive && !currentlyShown)
-                {
-                    var item = new AlarmItem(def.AlarmCode, def.TranslationKey, def.Severity);
-                    ActiveAlarms.Add(item);
-                    AddToHistory(item);
-                    AlarmsChanged?.Invoke(null, EventArgs.Empty);
-                }
-                else if (!isActive && currentlyShown)
-                {
-                    RemoveActive(def.AlarmCode);
-                    AlarmsChanged?.Invoke(null, EventArgs.Empty);
-                }
+            if (changed)
+            {
+                if (raise) ActiveAlarms.ResetBindings();
+                AlarmsChanged?.Invoke(null, EventArgs.Empty);
             }
         }
 
@@ -245,15 +309,23 @@ namespace Kaban.Core.Helpers
 
             string prefix = moduleId + ".";
             bool any = false;
-            for (int i = ActiveAlarms.Count - 1; i >= 0; i--)
+            // One list refresh for the lot, as in Evaluate.
+            bool raise = ActiveAlarms.RaiseListChangedEvents;
+            ActiveAlarms.RaiseListChangedEvents = false;
+            try
             {
-                var code = ActiveAlarms[i].AlarmCode ?? "";
-                if (!code.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
-                ActiveAlarms.RemoveAt(i);
-                any = true;
+                for (int i = ActiveAlarms.Count - 1; i >= 0; i--)
+                {
+                    var code = ActiveAlarms[i].AlarmCode ?? "";
+                    if (!code.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) continue;
+                    ActiveAlarms.RemoveAt(i);
+                    any = true;
+                }
             }
+            finally { ActiveAlarms.RaiseListChangedEvents = raise; }
             if (any)
             {
+                if (raise) ActiveAlarms.ResetBindings();
                 AuditLogger.Log("acknowledged active alarms for " + moduleId + ".");
                 AlarmsChanged?.Invoke(null, EventArgs.Empty);
             }

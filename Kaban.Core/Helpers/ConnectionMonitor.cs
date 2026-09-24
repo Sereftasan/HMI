@@ -42,6 +42,19 @@ namespace Kaban.Core.Helpers
             public string ModuleId = "";
             public int LocalNumber;
 
+            /// <summary>
+            /// Guards the timestamps and ReportedDown. ReportRead is called from the
+            /// scanner's pool thread AND from Beat() on the UI thread, and a DateTime
+            /// is 64 bits: in this 32-bit process it can be read half-written.
+            /// </summary>
+            internal readonly object Sync = new object();
+
+            // UTC, NOT LOCAL TIME. When the clocks go back an hour in autumn,
+            // "now - last good read" computed in local time comes out an hour
+            // SHORT, so a station that had just died still counted as live for up
+            // to an hour - controls enabled, frozen values shown as current. UTC
+            // never jumps. (Nothing displays these as a clock time; only the
+            // differences are used.)
             public DateTime LastGoodRead = DateTime.MinValue;
             public DateTime LastAttempt = DateTime.MinValue;
 
@@ -66,7 +79,13 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public bool IsLive
             {
-                get { return DateTime.Now - LastGoodRead <= GraceTime; }
+                get { lock (Sync) return DateTime.UtcNow - LastGoodRead <= GraceTime; }
+            }
+
+            /// <summary>Tried at least once (read under the lock, see Sync).</summary>
+            internal bool Attempted
+            {
+                get { lock (Sync) return LastAttempt != DateTime.MinValue; }
             }
 
             /// <summary>How long the values on screen have been standing still.</summary>
@@ -74,8 +93,9 @@ namespace Kaban.Core.Helpers
             {
                 get
                 {
-                    return LastGoodRead == DateTime.MinValue
-                        ? TimeSpan.MaxValue : DateTime.Now - LastGoodRead;
+                    lock (Sync)
+                        return LastGoodRead == DateTime.MinValue
+                            ? TimeSpan.MaxValue : DateTime.UtcNow - LastGoodRead;
                 }
             }
         }
@@ -211,17 +231,28 @@ namespace Kaban.Core.Helpers
         public static void ReportRead(int stationId, bool succeeded, string error = "")
         {
             var s = Get(stationId);
-            s.LastAttempt = DateTime.Now;
-            if (succeeded)
+            bool changed, down;
+            string lastError;
+            lock (s.Sync)
             {
-                s.LastGoodRead = DateTime.Now;
-                s.LastError = "";
-                s.ErrorCode = "";
-            }
-            else
-            {
-                s.LastError = error ?? "";
-                s.ErrorCode = CodeFor(error);
+                var now = DateTime.UtcNow;
+                s.LastAttempt = now;
+                if (succeeded)
+                {
+                    s.LastGoodRead = now;
+                    s.LastError = "";
+                    s.ErrorCode = "";
+                }
+                else
+                {
+                    s.LastError = error ?? "";
+                    s.ErrorCode = CodeFor(error);
+                }
+
+                down = !(now - s.LastGoodRead <= GraceTime);
+                changed = down != s.ReportedDown;
+                if (changed) s.ReportedDown = down;
+                lastError = s.LastError;
             }
 
             // COMPARED WITH WHAT WAS LAST ANNOUNCED, not with the moment before.
@@ -230,12 +261,14 @@ namespace Kaban.Core.Helpers
             // before/after comparison inside one report never saw it: the event
             // fired for recoveries only, and anything listening for a loss waited
             // for ever.
-            bool down = s.LastAttempt != DateTime.MinValue && !s.IsLive;
-            if (down != s.ReportedDown)
+            //
+            // Decided under the lock (so the scanner thread and the UI beat cannot
+            // both announce the same change), announced outside it (so a handler
+            // can never deadlock against a reader).
+            if (changed)
             {
-                s.ReportedDown = down;
                 AuditLogger.Log("station " + stationId +
-                                (down ? " lost: " + s.LastError : " reconnected."));
+                                (down ? " lost: " + lastError : " reconnected."));
                 var handler = ConnectionChanged;
                 if (handler != null) handler(null, EventArgs.Empty);
             }
@@ -283,7 +316,7 @@ namespace Kaban.Core.Helpers
             // Only stations that have been TRIED. One never polled is not a failure
             // - listing it as one showed "Connection failed" with no code for
             // stations nobody had asked.
-            get { return Stations.Where(s => s.LastAttempt != DateTime.MinValue && !s.IsLive)
+            get { return Stations.Where(s => s.Attempted && !s.IsLive)
                                  .OrderBy(s => s.StationId); }
         }
 
@@ -301,7 +334,7 @@ namespace Kaban.Core.Helpers
         {
             if (stationId <= 0) return false;
             var s = Get(stationId);
-            return s.LastAttempt != DateTime.MinValue && !s.IsLive;
+            return s.Attempted && !s.IsLive;
         }
 
         /// <summary>The sentence a disabled control shows on hover.</summary>

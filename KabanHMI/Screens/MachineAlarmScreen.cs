@@ -338,7 +338,7 @@ namespace Kaban.UI.Screens
 
             var menu = BuildHelpMenu(docs, OpenDocument);
             var cell = _grid.GetCellDisplayRectangle(columnIndex, rowIndex, false);
-            menu.Show(_grid, new Point(cell.Left, cell.Bottom));
+            UiStyle.ShowPopup(menu, _grid, new Point(cell.Left, cell.Bottom));
         }
 
         /// <summary>

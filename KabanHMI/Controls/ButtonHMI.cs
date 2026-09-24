@@ -246,7 +246,7 @@ namespace Kaban.UI.Controls
                 // uses - one visual language for "you are here".
                 var want = value ? FontStyle.Bold : FontStyle.Regular;
                 if (this.Font != null && this.Font.Style != want)
-                    this.Font = new Font(this.Font.FontFamily, this.Font.Size, want);
+                    this.Font = UiStyle.FontVariant(this.Font, want);   // shared: no new font per page change
                 SyncFlatFills();
                 this.Invalidate();
             }
@@ -299,13 +299,30 @@ namespace Kaban.UI.Controls
             this.BackColor = ColorPassive;
             this.ForeColor = Color.Black;
             this.Font = UiStyle.Body;
-            LanguageManager.LanguageChanged += (s, e) => ApplyTranslation();
+            // A NAMED handler, removed in Dispose. The lambda this used could never
+            // be unsubscribed, so the static event kept every button ever created -
+            // and through it the whole page it sat on - alive for the life of the
+            // program, and re-translated all of them on each language change.
+            LanguageManager.LanguageChanged += OnLanguageChanged;
             // ApplyTranslation decides whether this button shows a caption or a
             // sign, and it only ran on a language change. A button placed by the
             // designer and never re-translated therefore kept _glyph null, so the
             // arrow and latch marks were never drawn at all - the button just sat
             // there blank, which is exactly what was reported.
             this.HandleCreated += (s, e) => ApplyTranslation();
+        }
+
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            if (!IsDisposed) ApplyTranslation();
+        }
+
+        /// <summary>Called from Dispose (ButtonHMI.Designer.cs).</summary>
+        private void DisposeOwnResources()
+        {
+            LanguageManager.LanguageChanged -= OnLanguageChanged;
+            _alerting.Remove(this);
+            ReleaseMomentary();
         }
 
         // keep the mouse-over/down fill identical to the current back color
@@ -323,33 +340,38 @@ namespace Kaban.UI.Controls
                 return;
             }
             int d = _cornerRadius * 2;
-            var path = new System.Drawing.Drawing2D.GraphicsPath();
-            var r = new Rectangle(0, 0, this.Width, this.Height);
-            if (RoundLeftOnly)
+            // Disposed after use: a GraphicsPath is a GDI+ object, and this runs on
+            // every resize. (Region(path) copies the outline; the old Region is
+            // disposed by the Region setter itself.)
+            using (var path = new System.Drawing.Drawing2D.GraphicsPath())
             {
-                // rounded left corners, square right (connects to the form edge)
-                path.AddArc(r.X, r.Y, d, d, 180, 90);
-                path.AddLine(r.Right, r.Y, r.Right, r.Bottom);
-                path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
-                path.CloseFigure();
+                var r = new Rectangle(0, 0, this.Width, this.Height);
+                if (RoundLeftOnly)
+                {
+                    // rounded left corners, square right (connects to the form edge)
+                    path.AddArc(r.X, r.Y, d, d, 180, 90);
+                    path.AddLine(r.Right, r.Y, r.Right, r.Bottom);
+                    path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+                    path.CloseFigure();
+                }
+                else if (RoundRightOnly)
+                {
+                    // square left (at the panel edge), rounded right corners
+                    path.AddLine(r.X, r.Bottom, r.X, r.Y);
+                    path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+                    path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                    path.CloseFigure();
+                }
+                else
+                {
+                    path.AddArc(r.X, r.Y, d, d, 180, 90);
+                    path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+                    path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                    path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+                    path.CloseFigure();
+                }
+                this.Region = new Region(path);
             }
-            else if (RoundRightOnly)
-            {
-                // square left (at the panel edge), rounded right corners
-                path.AddLine(r.X, r.Bottom, r.X, r.Y);
-                path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
-                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
-                path.CloseFigure();
-            }
-            else
-            {
-                path.AddArc(r.X, r.Y, d, d, 180, 90);
-                path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
-                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
-                path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
-                path.CloseFigure();
-            }
-            this.Region = new Region(path);
         }
 
         private System.Drawing.Drawing2D.GraphicsPath BuildBorderPath(Rectangle r, int d)
@@ -641,6 +663,10 @@ namespace Kaban.UI.Controls
 
             bool en = secOk && condOk && trigOk && connOk;
             _softEnabled = en;
+            // A button that may not be pressed must not stay pressed: the enable
+            // condition dropping (manual mode left, logged out, station lost) ends
+            // a jog in progress.
+            if (!en) ReleaseMomentary();
 
             var wantCursor = en ? Cursors.Hand : Cursors.Default;
             if (this.Cursor != wantCursor) this.Cursor = wantCursor;
@@ -1185,8 +1211,6 @@ namespace Kaban.UI.Controls
             return sb.ToString().TrimEnd('\n');
         }
 
-        private static string Str(string s) => string.IsNullOrWhiteSpace(s) ? "None" : s;
-
         protected override void OnMouseLeave(EventArgs eventargs)
         {
             base.OnMouseLeave(eventargs);
@@ -1248,10 +1272,34 @@ namespace Kaban.UI.Controls
             }
         }
 
+        // ==================================================================
+        // MOMENTARY (JOG) BITS - SAFETY
+        // ------------------------------------------------------------------
+        // A momentary bit was set on mouse-down and cleared ONLY on mouse-up,
+        // through the permission-gated driver. Every other way a press can end
+        // left the bit ON - the axis kept jogging with nobody touching the panel:
+        //   * the mouse-up never arrived (a message box or window took the mouse,
+        //     a right-click opened a menu, the touch driver lost the contact);
+        //   * the button was hidden or disabled mid-press (UpdateState hides it
+        //     when its visibility condition drops, e.g. leaving manual mode);
+        //   * the page was closed or the control disposed;
+        //   * the user was logged out mid-press, so GetDriver() returned null
+        //     and the release was never written.
+        // Now the bits actually SET are remembered, and released on all of these,
+        // through the monitoring driver, which is not permission-gated: releasing
+        // a jog is never something a login level should be able to prevent.
+        // ==================================================================
+        private readonly List<KeyValuePair<string, string>> _heldMomentary = new List<KeyValuePair<string, string>>();
+        private int _heldStation;
+
         protected override void OnMouseDown(MouseEventArgs mevent)
         {
             base.OnMouseDown(mevent);
             if (!_softEnabled) return;
+            // LEFT BUTTON (a touch) only. A right-click could set the bit and then
+            // lose its release to a context menu.
+            if (mevent.Button != MouseButtons.Left) return;
+            if (_heldMomentary.Count > 0) return;   // already held
 
             var driver = PlcManager.Instance.GetDriver(PlcNumber);
             if (driver == null) return;
@@ -1259,21 +1307,65 @@ namespace Kaban.UI.Controls
             foreach (var action in BitActions)
             {
                 if (action == null || action.Action != BitActionType.Momentary) continue;
-                WriteBit(driver, EffectiveAddress(action.Address, action.AddressOffset), true, action.Address);
+                string eff = EffectiveAddress(action.Address, action.AddressOffset);
+                if (string.IsNullOrEmpty(eff)) continue;
+                // Recorded BEFORE the write: a write that timed out may still have
+                // reached the PLC, so its release must be sent regardless.
+                _heldMomentary.Add(new KeyValuePair<string, string>(eff, action.Address));
+                _heldStation = PlcNumber;
+                WriteBit(driver, eff, true, action.Address);
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs mevent)
         {
             base.OnMouseUp(mevent);
+            ReleaseMomentary();
+        }
 
-            var driver = PlcManager.Instance.GetDriver(PlcNumber);
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            ReleaseMomentary();          // the mouse went elsewhere: the press is over
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (!Visible) ReleaseMomentary();
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            if (!Enabled) ReleaseMomentary();
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            ReleaseMomentary();
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            ReleaseMomentary();
+            base.OnHandleDestroyed(e);
+        }
+
+        /// <summary>Writes 0 to every momentary bit this button is holding ON.</summary>
+        private void ReleaseMomentary()
+        {
+            if (_heldMomentary.Count == 0) return;
+            var held = _heldMomentary.ToArray();
+            _heldMomentary.Clear();
+
+            var driver = PlcManager.Instance.GetDriverForMonitoring(_heldStation);
             if (driver == null) return;
-
-            foreach (var action in BitActions)
+            foreach (var h in held)
             {
-                if (action == null || action.Action != BitActionType.Momentary) continue;
-                WriteBit(driver, EffectiveAddress(action.Address, action.AddressOffset), false, action.Address);
+                try { WriteBit(driver, h.Key, false, h.Value); }
+                catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " failed: " + ex.Message); }
             }
         }
 

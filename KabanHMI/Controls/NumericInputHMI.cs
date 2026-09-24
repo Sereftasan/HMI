@@ -305,14 +305,20 @@ namespace Kaban.UI.Controls
             }
         }
 
-        /// <summary>The value as shown, with no suffix.</summary>
-        private string DisplayNumberText()
+        /// <summary>
+        /// The value handed to the keypad: the number on screen, in the unit on
+        /// screen, written the way the keypad reads it - "." decimal for decimal
+        /// fields, plain hex digits for hex fields (a hex field used to be handed
+        /// its DECIMAL value, which ENT then read back as hex: 255 became 0x255).
+        /// </summary>
+        private string KeypadText()
         {
             double shown = UnitType != UnitType.None
                 ? UnitManager.ToDisplay(UnitType, _lastNumericValue)
                 : _lastNumericValue;
-            return shown.ToString("F" + EffectiveDecimals,
-                                  System.Globalization.CultureInfo.CurrentCulture);
+            if (DataFormat == DisplayFormatEnum.Hexadecimal)
+                return ((long)shown).ToString("X", System.Globalization.CultureInfo.InvariantCulture);
+            return shown.ToString("F" + EffectiveDecimals, System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private double ResolveLimit(DynamicValue limit, Func<string, int> readPlc, double defaultVal)
@@ -405,26 +411,6 @@ namespace Kaban.UI.Controls
                 if (kMin > kMax) { double t = kMin; kMin = kMax; kMax = t; } // guard inverted scales
             }
 
-            // Only offer a RANGE when a real limit is set. With no MinLimit/MaxLimit
-            // the effective range is the data type's full span, and telling an
-            // operator "Enter (-2147483648 - 2147483647)" is worse than saying
-            // nothing. The figures are also formatted the way THIS control formats
-            // its value, so the prompt matches what is on screen.
-            bool hasMin = MinLimit != null && MinLimit.Type != LimitSourceType.None;
-            bool hasMax = MaxLimit != null && MaxLimit.Type != LimitSourceType.None;
-
-            string promptText;
-            if (hasMin && hasMax)
-                promptText = string.Format(LanguageManager.GetString("Sys_InputMsg", "Enter ({0} - {1}):"),
-                                          FormatLimit(kMin), FormatLimit(kMax));
-            else if (hasMin)
-                promptText = string.Format(LanguageManager.GetString("Sys_InputMin", "Enter (minimum {0}):"),
-                                          FormatLimit(kMin));
-            else if (hasMax)
-                promptText = string.Format(LanguageManager.GetString("Sys_InputMax", "Enter (maximum {0}):"),
-                                          FormatLimit(kMax));
-            else
-                promptText = LanguageManager.GetString("Sys_InputPlain", "Enter a value:");
 
             // THE TOUCH NUMPAD, not a text box. These machines are operated on a
             // panel with no keyboard, and the limits are shown across the top so a
@@ -439,7 +425,12 @@ namespace Kaban.UI.Controls
                        // decimal count, which is a different number of places. The
                        // write path converts back, so what goes in must be what the
                        // operator is looking at.
-                       DisplayNumberText(),
+                       //
+                       // INVARIANT, "." decimal. The field shows the number in the
+                       // panel's regional format ("12,50" on a Turkish or German
+                       // Windows) but the keypad only knows ".", so the value it
+                       // was handed could not be edited or even accepted there.
+                       KeypadText(),
                        // TESTED BEFORE CONVERSION. "No limit" is double.MinValue;
                        // dividing that by 25.4 for inches gives a merely enormous
                        // number that is no longer equal to MinValue, so the guard
@@ -475,45 +466,27 @@ namespace Kaban.UI.Controls
             }
         }
 
-        private string FormatCurrentValueForEdit()
-        {
-            string clean = this.Text;
-            if (string.IsNullOrEmpty(clean) || clean == "Err") clean = "0";
-            // Strip whichever suffix is actually being shown. In unit mode this is
-            // the active unit's name ("inch"), not the designer-set Suffix ("mm").
-            string shownSuffix = UnitType != UnitType.None
-                ? UnitManager.GetActiveSuffix(UnitType)
-                : Suffix;
-            if (!string.IsNullOrEmpty(shownSuffix)) clean = clean.Replace(shownSuffix, "");
-            if (!string.IsNullOrEmpty(Suffix)) clean = clean.Replace(Suffix, "");
-            return clean.Trim();
-        }
-
-        /// <summary>A limit rendered exactly the way this control renders its value.</summary>
-        private string FormatLimit(double value)
-        {
-            int decimals = DecimalPlaces;
-            if (UnitType != UnitType.None)
-                decimals += Math.Max(0, UnitManager.GetActiveExtraDecimals(UnitType));
-
-            switch (DataFormat)
-            {
-                case DisplayFormatEnum.Hexadecimal:
-                    return "0x" + ((long)value).ToString("X");
-                case DisplayFormatEnum.Octal:
-                    return Convert.ToString((long)value, 8);
-                case DisplayFormatEnum.Binary:
-                    return Convert.ToString((long)value, 2);
-                default:
-                    return value.ToString("F" + decimals,
-                        System.Globalization.CultureInfo.CurrentCulture);
-            }
-        }
-
         private void ProcessWrite(string input, IPlcDriver driver, Func<string, int> liveTagReader)
         {
+            // THE KEYPAD'S FORMAT, not the panel's. This parsed with the regional
+            // settings AND thousands separators allowed: on a Turkish or German
+            // Windows "." is the thousands separator, so "12.5" would have been
+            // written as 125. Hex fields come back as hex digits.
             double val;
-            if (!double.TryParse(input, out val))
+            bool parsed;
+            if (DataFormat == DisplayFormatEnum.Hexadecimal)
+            {
+                long hexVal;
+                parsed = long.TryParse(input, System.Globalization.NumberStyles.HexNumber,
+                                       System.Globalization.CultureInfo.InvariantCulture, out hexVal);
+                val = hexVal;
+            }
+            else
+            {
+                parsed = double.TryParse(input, System.Globalization.NumberStyles.Float,
+                                         System.Globalization.CultureInfo.InvariantCulture, out val);
+            }
+            if (!parsed)
             {
                 MessageBox.Show("Please enter a valid number.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;

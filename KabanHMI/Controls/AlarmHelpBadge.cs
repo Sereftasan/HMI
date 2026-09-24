@@ -138,7 +138,7 @@ namespace Kaban.UI.Controls
 
             // The SAME list the alarm grid shows, so the two routes to help agree.
             var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d));
-            menu.Show(this, new Point(0, Height));
+            UiStyle.ShowPopup(menu, this, new Point(0, Height));
         }
     }
 }
@@ -209,7 +209,7 @@ namespace Kaban.UI.Controls
 
             var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs,
                 d => Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), d));
-            menu.Show(this, new System.Drawing.Point(0, Height));
+            UiStyle.ShowPopup(menu, this, new System.Drawing.Point(0, Height));
         }
     }
 }

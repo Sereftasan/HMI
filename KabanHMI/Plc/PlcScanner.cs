@@ -121,12 +121,13 @@ namespace Kaban.UI.Plc
             int curPlc = 1;
 
             // --- DEEP EXTRACTION HELPERS ---
-            Action<string> Add = (s) =>
+            Action<int, string> AddTo = (station, s) =>
             {
                 if (string.IsNullOrWhiteSpace(s)) return;
-                if (!perPlc.ContainsKey(curPlc)) perPlc[curPlc] = new HashSet<string>();
-                perPlc[curPlc].Add(s.Trim().ToUpper());
+                if (!perPlc.ContainsKey(station)) perPlc[station] = new HashSet<string>();
+                perPlc[station].Add(s.Trim().ToUpper());
             };
+            Action<string> Add = (s) => AddTo(curPlc, s);
 
             Action<DynamicValue, DataTypeEnum> AddDynamic = (dv, dataType) =>
             {
@@ -150,22 +151,24 @@ namespace Kaban.UI.Plc
 
             Action<PlcTrigger> AddTrigger = (pt) => { if (pt != null && !string.IsNullOrEmpty(pt.MonitorAddress)) Add(pt.MonitorAddress); };
 
+            // A condition is read from the station IT is registered on, not from
+            // the control's: MillingUnitIsBack lives on PLC2, and a PLC1 button
+            // gated by it used to read X25 from PLC1 - a different input entirely.
             Action<SystemCondition> AddConditions = (cond) =>
             {
                 if (cond == SystemCondition.None) return;
                 long val = (long)cond;
 
                 // 1. Extract Enum Bits (0-15)
-                foreach (SystemCondition flag in Enum.GetValues(typeof(SystemCondition)))
+                foreach (var flag in ConditionFlags)
                 {
-                    if (flag != SystemCondition.None && cond.HasFlag(flag))
+                    if (((long)flag & val) == 0) continue;
+                    var rule = MachineConditionMap.GetRule(flag);
+                    if (rule != null && !string.IsNullOrEmpty(rule.Address))
                     {
-                        var rule = MachineConditionMap.GetRule(flag);
-                        if (rule != null && !string.IsNullOrEmpty(rule.Address))
-                        {
-                            Add(rule.Address);
-                            if (rule.DataType == DataTypeEnum.Bin_32) Add(PlcAddressHelper.GetNextAddress(rule.Address));
-                        }
+                        int st = AlarmManager.StationOf(rule);
+                        AddTo(st, rule.Address);
+                        if (rule.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(rule.Address));
                     }
                 }
 
@@ -174,11 +177,12 @@ namespace Kaban.UI.Plc
                 {
                     if ((val & bit.Key) != 0)
                     {
-                        Add(bit.Value.Address);
+                        int st = AlarmManager.StationOf(bit.Value);
+                        AddTo(st, bit.Value.Address);
                         // Automatically poll the next address if the hardware tag is 32-bit
                         if (bit.Value.DataType == DataTypeEnum.Bin_32)
                         {
-                            Add(PlcAddressHelper.GetNextAddress(bit.Value.Address));
+                            AddTo(st, PlcAddressHelper.GetNextAddress(bit.Value.Address));
                         }
                     }
                 }
@@ -281,15 +285,26 @@ namespace Kaban.UI.Plc
                 Add(PlcAddressHelper.GetNextAddress(bound.Address));
             }
 
+            // Stations whose values are ON THE PAGE. The "communication lost" banner
+            // speaks for these only: alarm-only stations below are watched for
+            // alarms, and their loss is already shown by the connection warning.
+            _displayStations.Clear();
+            foreach (var st in perPlc.Keys) _displayStations.Add(st);
+            foreach (var kvDyn in _dynamicAddresses) _displayStations.Add(kvDyn.Key);
+
             // Every registered alarm condition is polled on each scan, so
             // AlarmManager evaluates real PLC bits rather than a cached snapshot.
-            curPlc = 1;   // alarm definitions monitor the main PLC
-            Add(Kaban.UI.Forms.MainForm.MachineErrorAddress);   // machine-error summary bit
+            //
+            // EACH ON ITS OWN STATION. All of them used to be read from station 1,
+            // so H500's and H800's alarms (remapped to stations 3 and 4, same M801...
+            // addresses) were raised and cleared by FA2010's bits.
+            AddTo(1, Kaban.UI.Forms.MainForm.MachineErrorAddress);   // machine-error summary bit (main PLC)
             foreach (var alarmDef in AlarmManager.GetAllDefinitions())
             {
                 if (string.IsNullOrEmpty(alarmDef.Address)) continue;
-                Add(alarmDef.Address);
-                if (alarmDef.DataType == DataTypeEnum.Bin_32) Add(PlcAddressHelper.GetNextAddress(alarmDef.Address));
+                int st = AlarmManager.StationOf(alarmDef);
+                AddTo(st, alarmDef.Address);
+                if (alarmDef.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(alarmDef.Address));
             }
 
             // Fold in the addresses discovered at runtime (see _dynamicAddresses).
@@ -412,16 +427,33 @@ namespace Kaban.UI.Plc
             }
         }
 
-        private bool CheckGlobalCondition(SystemCondition required, Func<string, int> lookup)
+        /// <summary>
+        /// The condition flags, looked up once. Enum.GetValues plus HasFlag (which
+        /// boxes) ran for every condition of every control on every 100 ms scan.
+        /// </summary>
+        private static readonly SystemCondition[] ConditionFlags =
+            ((SystemCondition[])Enum.GetValues(typeof(SystemCondition)))
+                .Where(f => f != SystemCondition.None).ToArray();
+
+        /// <summary>Stations with page controls (see RefreshTags).</summary>
+        private readonly HashSet<int> _displayStations = new HashSet<int>();
+
+        /// <summary>
+        /// Checks a control's conditions, each against the data of the station the
+        /// condition is registered on. A station with no data at all fails the
+        /// condition (fail-closed): "we cannot tell if it is in manual" must not
+        /// read as "it is in manual".
+        /// </summary>
+        private bool CheckGlobalCondition(SystemCondition required, Func<int, Func<string, int>> lookupFor)
         {
             if (required == SystemCondition.None) return true;
             long val = (long)required;
             bool result = true;
 
             // Tier 1: System Enum Logic (Bits 0-15)
-            foreach (SystemCondition flag in Enum.GetValues(typeof(SystemCondition)))
+            foreach (var flag in ConditionFlags)
             {
-                if (flag != SystemCondition.None && required.HasFlag(flag))
+                if (((long)flag & val) != 0)
                 {
                     if (flag == SystemCondition.AdminUser)
                     {
@@ -430,7 +462,12 @@ namespace Kaban.UI.Plc
                     }
 
                     var rule = MachineConditionMap.GetRule(flag);
-                    if (rule != null && !string.IsNullOrEmpty(rule.Address))
+                    var lookup = rule == null ? null : lookupFor(AlarmManager.StationOf(rule));
+                    if (rule != null && !string.IsNullOrEmpty(rule.Address) && lookup == null)
+                    {
+                        result = false;
+                    }
+                    else if (rule != null && !string.IsNullOrEmpty(rule.Address))
                     {
                         int low = lookup(rule.Address);
                         int currentValue = low;
@@ -462,7 +499,8 @@ namespace Kaban.UI.Plc
             {
                 if ((val & bit.Key) != 0)
                 {
-                    result &= MachineConditionMap.CheckMachineBit(bit.Key, lookup);
+                    var lookup = lookupFor(AlarmManager.StationOf(bit.Value));
+                    result &= lookup != null && MachineConditionMap.CheckMachineBit(bit.Key, lookup);
                 }
             }
 
@@ -474,7 +512,13 @@ namespace Kaban.UI.Plc
         // a healthy station's scans reset a failing station's back-off.
         private const int ReconnectEveryTicks = 10;
 
-        private bool _scanBusy;
+        // Set on the UI thread, cleared from the worker on some paths: volatile so
+        // neither side works from a stale copy.
+        private volatile bool _scanBusy;
+
+        // When each station's version device was last read (worker thread only).
+        private readonly Dictionary<int, int> _versionReadTick = new Dictionary<int, int>();
+        private const int VersionReadEveryMs = 1000;
 
         /// <summary>
         /// UI-thread tick: it no longer TALKS to the PLC. Every read and reconnect
@@ -493,20 +537,34 @@ namespace Kaban.UI.Plc
             var work = new Dictionary<int, string[]>(_plcBatch);
             System.Threading.ThreadPool.QueueUserWorkItem(_ =>
             {
-                Dictionary<int, int[]> fresh;
-                Dictionary<int, string> failed;
-                ReadAllStations(work, out fresh, out failed);
+                // NOTHING MAY ESCAPE THIS THREAD. An exception on a pool thread ends
+                // the process, and ReadAllStations raises ConnectionChanged, whose
+                // handlers run right here. It also must never leave _scanBusy set,
+                // or the screen stops updating for good.
+                bool handedOver = false;
                 try
                 {
+                    Dictionary<int, int[]> fresh;
+                    Dictionary<int, string> failed;
+                    ReadAllStations(work, out fresh, out failed);
                     if (_targetControl != null && !_targetControl.IsDisposed && _targetControl.IsHandleCreated)
+                    {
                         _targetControl.BeginInvoke(new Action(() =>
                         {
                             try { ApplyScan(work, fresh, failed); }
                             finally { _scanBusy = false; }
                         }));
-                    else _scanBusy = false;
+                        handedOver = true;
+                    }
                 }
-                catch { _scanBusy = false; }
+                catch (Exception ex)
+                {
+                    AuditLogger.Log("[PLC DIAG] scan worker failed: " + ex.Message);
+                }
+                finally
+                {
+                    if (!handedOver) _scanBusy = false;
+                }
             });
         }
 
@@ -577,13 +635,21 @@ namespace Kaban.UI.Plc
 
                 // The station's own program version, read on the same pass. Once a
                 // second is plenty - the ladder does not change while the machine
-                // runs - and it costs one word when it is read at all.
+                // runs. It WAS read on every 100 ms scan: a second round trip to
+                // the controller per station per scan, for a number that never
+                // changes. (The connection beat reads it once a second as well.)
                 var verDev = ConnectionMonitor.GetVersionDevice(plc);
                 if (ok && !string.IsNullOrEmpty(verDev))
                 {
-                    int raw;
-                    try { if (driver.TryRead(verDev, out raw)) ConnectionMonitor.ReportVersion(plc, raw); }
-                    catch { }
+                    int now = Environment.TickCount, last;
+                    bool due = !_versionReadTick.TryGetValue(plc, out last) || now - last >= VersionReadEveryMs;
+                    if (due)
+                    {
+                        _versionReadTick[plc] = now;
+                        int raw;
+                        try { if (driver.TryRead(verDev, out raw)) ConnectionMonitor.ReportVersion(plc, raw); }
+                        catch { }
+                    }
                 }
             }
         }
@@ -610,9 +676,11 @@ namespace Kaban.UI.Plc
 
                 int[] fresh;
                 bool ok = freshValues.TryGetValue(plc, out fresh);
+                // Only stations whose values are on the page decide the banner.
+                bool onPage = _displayStations.Contains(plc);
                 if (!ok && failures.ContainsKey(plc) && failures[plc] == "no driver registered")
                 {
-                    allHealthy = false;
+                    if (onPage) allHealthy = false;
                     LogStation(plc, false, "no driver registered");
                     continue;
                 }
@@ -626,7 +694,7 @@ namespace Kaban.UI.Plc
                 }
                 else
                 {
-                    allHealthy = false;
+                    if (onPage) allHealthy = false;
                     string why;
                     LogStation(plc, false, failures.TryGetValue(plc, out why) ? why : "read failed");
                     // stale-but-real beats lying zeros; nothing at all -> no update
@@ -675,30 +743,42 @@ namespace Kaban.UI.Plc
                 // no data for that station yet -> control keeps its state (fail-closed)
             };
 
-            foreach (var num in _numerics) withLookup(num.PlcNumber, lk => num.UpdateState(lk, checkGlobal: (cond) => CheckGlobalCondition(cond, lk)));
-            foreach (var btn in _buttons) withLookup(btn.PlcNumber, lk => btn.UpdateState(lk, checkGlobal: (cond) => CheckGlobalCondition(cond, lk)));
-            foreach (var lamp in _lamps) withLookup(lamp.PlcNumber, lk => lamp.UpdateState(lk, checkGlobal: (cond) => CheckGlobalCondition(cond, lk)));
+            // Conditions read the station they are registered on (see AddConditions).
+            Func<int, Func<string, int>> lookupFor = st =>
+            {
+                Func<string, int> lk;
+                return lookups.TryGetValue(st, out lk) ? lk : null;
+            };
+            Func<SystemCondition, bool> checkGlobal = cond => CheckGlobalCondition(cond, lookupFor);
+
+            foreach (var num in _numerics) withLookup(num.PlcNumber, lk => num.UpdateState(lk, checkGlobal: checkGlobal));
+            foreach (var btn in _buttons) withLookup(btn.PlcNumber, lk => btn.UpdateState(lk, checkGlobal: checkGlobal));
+            foreach (var lamp in _lamps) withLookup(lamp.PlcNumber, lk => lamp.UpdateState(lk, checkGlobal: checkGlobal));
             foreach (var other in _others)
             {
                 var bound = other as IPlcBoundControl;
                 int plc = bound != null ? bound.PlcNumber : 1;
                 var target = other;
-                withLookup(plc, lk => target.UpdateState(lk, checkGlobal: (cond) => CheckGlobalCondition(cond, lk)));
+                withLookup(plc, lk => target.UpdateState(lk, checkGlobal: checkGlobal));
             }
-            foreach (var cl in _checkLists) withLookup(cl.PlcNumber, lk => cl.UpdateState(lk, (cond) => CheckGlobalCondition(cond, lk)));
-            foreach (var cb in _checkBoxes) withLookup(cb.PlcNumber, lk => cb.UpdateState(lk, (cond) => CheckGlobalCondition(cond, lk)));
-            foreach (var cmb in _combos) withLookup(cmb.PlcNumber, lk => cmb.UpdateState(lk, (cond) => CheckGlobalCondition(cond, lk)));
+            foreach (var cl in _checkLists) withLookup(cl.PlcNumber, lk => cl.UpdateState(lk, checkGlobal));
+            foreach (var cb in _checkBoxes) withLookup(cb.PlcNumber, lk => cb.UpdateState(lk, checkGlobal));
+            foreach (var cmb in _combos) withLookup(cmb.PlcNumber, lk => cmb.UpdateState(lk, checkGlobal));
 
             // LAST, after every UpdateState. Run in the middle of the loop, it was
             // undone by the checkboxes and combos updating after it.
             ApplyConnectionState();
 
-            // Alarms watch the MAIN PLC and only ever on FRESH data - never raise or
-            // clear an alarm from stale/failed reads.
+            // Alarms only ever on FRESH data - never raise or clear an alarm from
+            // stale/failed reads - and each station's alarms from that station.
+            foreach (var kvFresh in freshValues)
+            {
+                Func<string, int> lk;
+                if (lookups.TryGetValue(kvFresh.Key, out lk)) AlarmManager.Evaluate(kvFresh.Key, lk);
+            }
+
             if (station1Fresh && lookups.ContainsKey(1))
             {
-                AlarmManager.Evaluate(lookups[1]);
-
                 // Machine-error bit: drives the pulsing Alarms menu entry and the
                 // caption's reset button. Only ever updated from FRESH station-1 data.
                 var shell = _targetControl == null ? null : _targetControl.FindForm() as Kaban.UI.Forms.MainForm;

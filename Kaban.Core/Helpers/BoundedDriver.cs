@@ -146,7 +146,15 @@ namespace Kaban.Core.Helpers
                 Thread.Sleep(1);
             }
 
+            // ONE KERNEL EVENT PER CALL, and it used to be left for the finalizer:
+            // at a 100 ms scan plus the 1 s beat that is thousands of undisposed
+            // handles a minute per station, freed only when the GC gets round to
+            // them. It cannot simply be disposed after the wait, because on a
+            // timeout the worker still Set()s it later. So both sides hold a
+            // reference and whichever finishes second disposes it.
             var done = new ManualResetEvent(false);
+            int refs = 2;
+            Action release = () => { if (Interlocked.Decrement(ref refs) == 0) done.Dispose(); };
             T value = default(T);
             bool ok = false;
             try
@@ -155,12 +163,18 @@ namespace Kaban.Core.Helpers
                 {
                     try { value = work(); ok = true; }
                     catch { ok = false; }
-                    finally { Volatile.Write(ref _busy, 0); done.Set(); }
+                    // Order matters: free the slot, THEN signal - the caller's next
+                    // call must find the slot free (see StaWorker for the history).
+                    finally { Volatile.Write(ref _busy, 0); done.Set(); release(); }
                 });
             }
-            catch { Volatile.Write(ref _busy, 0); return false; }
+            catch { Volatile.Write(ref _busy, 0); done.Dispose(); return false; }
 
-            if (!WaitWithoutPumping(done, Math.Max(0, deadline - Environment.TickCount))) return false;
+            try
+            {
+                if (!WaitWithoutPumping(done, Math.Max(0, deadline - Environment.TickCount))) return false;
+            }
+            finally { release(); }
             result = value;
             return ok;
         }

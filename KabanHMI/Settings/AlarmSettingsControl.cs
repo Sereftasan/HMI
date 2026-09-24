@@ -65,7 +65,7 @@ namespace Kaban.UI.Settings
             _btnSave = UiStyle.ToolButton("\uD83D\uDCBE", "Save the alarm settings", tips, (s, e) => Save());
             add(_btnSave);
             _dirty.Guard(_btnSave);
-            add(UiStyle.ToolButton("\uD83D\uDD04", "Reload from disk", tips, (s, e) => Load()));
+            add(UiStyle.ToolButton("\uD83D\uDD04", "Reload from disk", tips, (s, e) => LoadRows()));
             add(UiStyle.ToolButton("\uD83D\uDCC2", "Open the helper document of the selected alarm",
                                    tips, (s, e) => OpenHelper()));
 
@@ -133,11 +133,11 @@ namespace Kaban.UI.Settings
             Controls.Add(_status);
             Controls.Add(bar);
 
-            Load();
+            LoadRows();
         }
 
 
-        private void Load()
+        private void LoadRows()
         {
             _grid.Rows.Clear();
             foreach (var def in AlarmManager.GetAllDefinitions().Where(Mine).OrderBy(d => d.Address))
@@ -147,7 +147,11 @@ namespace Kaban.UI.Settings
                 string sev = def.Severity.ToString();
                 string helper = def.HelperKeys != null && def.HelperKeys.Count > 0
                               ? string.Join(";", def.HelperKeys) : "";
-                _grid.Rows.Add(def.Address, LanguageManager.Localize(def.TranslationKey), sev, helper);
+                int row = _grid.Rows.Add(def.Address, LanguageManager.Localize(def.TranslationKey), sev, helper);
+                // The DEFINITION rides on the row. Save used to look alarms up by
+                // address, and FA2010, H500 and H800 all use M801...: an edit on one
+                // machine's page could land on another machine's alarm.
+                _grid.Rows[row].Tag = def;
             }
             // What discovery found, so a unit whose error bits were set in the designer
             // can be checked without raising an alarm.
@@ -173,20 +177,28 @@ namespace Kaban.UI.Settings
                 foreach (DataGridViewRow r in _grid.Rows)
                 {
                     if (r.IsNewRow) continue;
-                    string addr = Convert.ToString(r.Cells["Address"].Value);
-                    if (string.IsNullOrEmpty(addr)) continue;
+                    var def = r.Tag as AlarmDefinition;
+                    if (def == null) continue;
 
                     AlarmSeverity sev;
                     if (Enum.TryParse(Convert.ToString(r.Cells["Severity"].Value), out sev))
-                        AlarmManager.SetSeverity(addr, sev);
+                        def.Severity = sev;
 
                     // Helper files only: which unit an alarm belongs to now comes
                     // from the unit itself (FunctionUnitHMI / AxisSettingHMI).
-                    AlarmManager.SetHelperLinks(addr, Convert.ToString(r.Cells["Helper"].Value));
+                    string helper = Convert.ToString(r.Cells["Helper"].Value);
+                    def.HelperKeys = string.IsNullOrWhiteSpace(helper)
+                        ? new List<string>() : new List<string> { helper.Trim() };
                 }
 
-                string path = AlarmDefinitionLoader.SaveLoadedEntries();
-                _status.Text = string.IsNullOrEmpty(path) ? "Nothing to save." : "Saved to " + path;
+                // THIS machine's file only (all files when the page has no machine).
+                string path = AlarmDefinitionLoader.SaveLoadedEntries(_moduleId);
+                if (string.IsNullOrEmpty(path))
+                {
+                    _status.Text = "Nothing to save.";
+                    return;
+                }
+                _status.Text = "Saved to " + path;
                 AuditLogger.Log("alarm settings saved to " + path + ".");
                 _dirty.Reset();
             }
