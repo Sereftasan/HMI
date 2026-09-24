@@ -66,6 +66,13 @@ namespace Kaban.Core.Helpers
         {
             if (string.IsNullOrWhiteSpace(username)) throw new ArgumentException("Username required.");
             if (string.IsNullOrEmpty(plainTextPassword)) throw new ArgumentException("Password required.");
+            // The store is one "name;level;salt;hash" line per user: a ";" or a line
+            // break in a name split that line on the next start, and the account
+            // (with every account after it on a broken line) was silently lost.
+            if (!IsValidUsername(username))
+                throw new ArgumentException("A user name may not contain ';' or line breaks.");
+            if (WouldRemoveLastAdmin(username, level))
+                throw new InvalidOperationException("The last Admin account cannot be given a lower level.");
 
             byte[] salt = new byte[SaltSize];
             using (var rng = new RNGCryptoServiceProvider()) rng.GetBytes(salt);
@@ -83,6 +90,9 @@ namespace Kaban.Core.Helpers
 
         public static bool RemoveUser(string username)
         {
+            // Never the last Admin: with none left, nobody can manage users, PLC
+            // connections or imports on this machine again.
+            if (WouldRemoveLastAdmin(username, null)) return false;
             bool ok = _users.Remove(username);
             if (ok) Persist();
             return ok;
@@ -96,9 +106,31 @@ namespace Kaban.Core.Helpers
         {
             UserAccount u;
             if (!_users.TryGetValue(username, out u)) return false;
+            if (WouldRemoveLastAdmin(username, level)) return false;     // see RemoveUser
             u.Level = level;
             Persist();
             return true;
+        }
+
+        /// <summary>True for a name the store can keep (no ';', no line breaks).</summary>
+        public static bool IsValidUsername(string username)
+        {
+            return !string.IsNullOrWhiteSpace(username) &&
+                   username.IndexOfAny(new[] { ';', '\r', '\n' }) < 0;
+        }
+
+        /// <summary>
+        /// True when removing the user (newLevel null) or giving it newLevel would
+        /// leave no Admin account at all.
+        /// </summary>
+        public static bool WouldRemoveLastAdmin(string username, SecurityLevel? newLevel)
+        {
+            UserAccount u;
+            if (username == null || !_users.TryGetValue(username, out u) || u.Level != SecurityLevel.Admin) return false;
+            if (newLevel.HasValue && newLevel.Value >= SecurityLevel.Admin) return false;
+            int admins = 0;
+            foreach (var x in _users.Values) if (x.Level == SecurityLevel.Admin) admins++;
+            return admins <= 1;
         }
 
         // ------------------------------------------------------------------
@@ -115,11 +147,12 @@ namespace Kaban.Core.Helpers
             if (_loading) return;
             try
             {
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(StorePath));
                 var sb = new System.Text.StringBuilder();
                 foreach (var u in _users.Values)
                     sb.AppendLine(u.Username + ";" + u.Level + ";" + u.Salt + ";" + u.PasswordHash);
-                System.IO.File.WriteAllText(StorePath, sb.ToString());
+                // All-or-nothing: a power cut mid-write must not leave a machine
+                // with no accounts (see SafeFile).
+                SafeFile.WriteAllText(StorePath, sb.ToString(), new UTF8Encoding(false));
             }
             catch { /* keep running even if the store is unwritable */ }
         }
@@ -157,8 +190,19 @@ namespace Kaban.Core.Helpers
 
             if (!_users.TryGetValue(username, out var user)) return false;
 
-            byte[] salt = Convert.FromBase64String(user.Salt);
-            string attemptHash = HashPassword(password, salt);
+            // A damaged line in Users.dat (bad base64, a truncated salt) used to
+            // throw here - out of the login dialog. It is simply a failed login.
+            string attemptHash;
+            try
+            {
+                byte[] salt = Convert.FromBase64String(user.Salt ?? "");
+                attemptHash = HashPassword(password, salt);
+            }
+            catch (Exception ex) when (ex is FormatException || ex is ArgumentException || ex is CryptographicException)
+            {
+                AuditLogger.Log("login refused: the stored account '" + username + "' is damaged.");
+                return false;
+            }
 
             // Constant-time compare to avoid leaking hash info via timing.
             if (!FixedTimeEquals(attemptHash, user.PasswordHash)) return false;
@@ -170,8 +214,7 @@ namespace Kaban.Core.Helpers
         public static bool ChangePassword(string username, string oldPassword, string newPassword)
         {
             if (!TryValidate(username, oldPassword, out var account)) return false;
-            AddOrUpdateUser(username, newPassword, account.Level);
-            Persist();
+            AddOrUpdateUser(username, newPassword, account.Level);     // saves
             return true;
         }
 

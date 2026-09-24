@@ -24,8 +24,11 @@ namespace Kaban.Core.Data
 
         public HmiDatabase(string host, string database, string user, string password, int port = 5432)
         {
+            // Timeout=3: Npgsql's default connect timeout is 15 s, and IsAvailable is
+            // asked from the UI thread - with the server switched off, a page that
+            // checks the database froze the whole panel for 15 seconds.
             _connectionString =
-                $"Host={host};Port={port};Database={database};Username={user};Password={password}";
+                $"Host={host};Port={port};Database={database};Username={user};Password={password};Timeout=3";
             _connType = Type.GetType("Npgsql.NpgsqlConnection, Npgsql");
         }
 

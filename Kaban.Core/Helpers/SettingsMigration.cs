@@ -192,7 +192,9 @@ namespace Kaban.Core.Helpers
                 var lines = File.ReadAllLines(f.SourcePath);
                 if (f.NeedsUpgrade) lines = kind.Upgrade(lines, f.DetectedVersion);
 
-                File.WriteAllLines(f.TargetPath, lines, new System.Text.UTF8Encoding(true));
+                SafeFile.WriteAllText(f.TargetPath,
+                    string.Join(Environment.NewLine, lines) + Environment.NewLine,
+                    new System.Text.UTF8Encoding(true));
                 AuditLogger.Log("imported " + f.FileName + " from " + f.SourcePath +
                                 (f.NeedsUpgrade ? " (converted from v" + f.DetectedVersion + ")" : ""));
             }

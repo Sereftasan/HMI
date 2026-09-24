@@ -20,7 +20,7 @@ namespace Kaban.UI.Settings
     /// change to it meant a new build. An HTML file can carry drawings, photos
     /// and charts, can be edited and translated by someone who does not build
     /// the program, and is picked in the language on screen like every other
-    /// help document (TroubleshootingCatalog.Resolve).
+    /// help document (TroubleshootingCatalog.ResolveLanguageFile).
     /// </summary>
     public class AboutControl : UserControl
     {
@@ -115,7 +115,7 @@ namespace Kaban.UI.Settings
         /// <summary>Full path of the manual in the language on screen (English, then the plain name, as fallbacks).</summary>
         public static string ManualPath()
         {
-            return TroubleshootingCatalog.Resolve(ManualFile);
+            return TroubleshootingCatalog.ResolveLanguageFile(ManualFile);
         }
 
         private void OpenManual()

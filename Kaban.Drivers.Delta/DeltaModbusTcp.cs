@@ -317,13 +317,14 @@ namespace Kaban.Drivers.Delta
 
                 try
                 {
+                    bool accepted;
                     if (dev.IsBit)
                     {
-                        WriteSingleCoil(dev.ModbusAddress, value != 0);
+                        accepted = WriteSingleCoil(dev.ModbusAddress, value != 0);
                     }
                     else if (dev.Is32Bit)
                     {
-                        WriteMultipleRegisters(dev.ModbusAddress, new[]
+                        accepted = WriteMultipleRegisters(dev.ModbusAddress, new[]
                         {
                             (ushort)(value & 0xFFFF),
                             (ushort)((value >> 16) & 0xFFFF)
@@ -331,10 +332,14 @@ namespace Kaban.Drivers.Delta
                     }
                     else
                     {
-                        WriteSingleRegister(dev.ModbusAddress, (ushort)(value & 0xFFFF));
+                        accepted = WriteSingleRegister(dev.ModbusAddress, (ushort)(value & 0xFFFF));
                     }
+                    // The link is fine either way - the device ANSWERED. But a write
+                    // it refused (Modbus exception: bad address, read-only area) was
+                    // reported as success, so the operator saw nothing wrong while
+                    // the machine never received the value.
                     _lastOpOk = true;
-                    return 0;
+                    return accepted ? 0 : -1;
                 }
                 catch (Exception ex)
                 {
@@ -375,24 +380,26 @@ namespace Kaban.Drivers.Delta
             return true;
         }
 
-        private void WriteSingleCoil(int address, bool on)
+        // Each returns false when the device answered with a Modbus exception
+        // (Transact returns null and logs it).
+        private bool WriteSingleCoil(int address, bool on)
         {
-            Transact(0x05, Be(address).Concat(new byte[] { (byte)(on ? 0xFF : 0x00), 0x00 }).ToArray());
+            return Transact(0x05, Be(address).Concat(new byte[] { (byte)(on ? 0xFF : 0x00), 0x00 }).ToArray()) != null;
         }
 
-        private void WriteSingleRegister(int address, ushort value)
+        private bool WriteSingleRegister(int address, ushort value)
         {
-            Transact(0x06, Be(address).Concat(Be(value)).ToArray());
+            return Transact(0x06, Be(address).Concat(Be(value)).ToArray()) != null;
         }
 
-        private void WriteMultipleRegisters(int address, ushort[] values)
+        private bool WriteMultipleRegisters(int address, ushort[] values)
         {
             var body = new List<byte>();
             body.AddRange(Be(address));
             body.AddRange(Be(values.Length));
             body.Add((byte)(values.Length * 2));
             foreach (var v in values) body.AddRange(Be(v));
-            Transact(0x10, body.ToArray());
+            return Transact(0x10, body.ToArray()) != null;
         }
 
         private static byte[] Be(int v) { return new[] { (byte)((v >> 8) & 0xFF), (byte)(v & 0xFF) }; }

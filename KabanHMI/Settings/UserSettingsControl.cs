@@ -115,16 +115,32 @@ namespace Kaban.UI.Settings
             if (!exists && _txtPass.Text.Length == 0)
             { _lblStatus.Text = "A NEW user needs a password."; return; }
 
-            if (exists && _txtPass.Text.Length == 0)
+            // Checked here so the operator gets a sentence, not an exception: a
+            // ";" in a name broke the stored file, and demoting the only Admin
+            // left nobody able to manage the HMI.
+            if (!UserStore.IsValidUsername(name))
+            { _lblStatus.Text = "A user name may not contain ';'."; return; }
+            if (UserStore.WouldRemoveLastAdmin(name, level))
+            { _lblStatus.Text = "The LAST admin account cannot be given a lower level."; return; }
+
+            try
             {
-                // level-only change: keep the current password hash
-                UserStore.SetLevel(name, level);
-                AuditLogger.Log($"changed level of user '{name}' to {level}.");
+                if (exists && _txtPass.Text.Length == 0)
+                {
+                    // level-only change: keep the current password hash
+                    UserStore.SetLevel(name, level);
+                    AuditLogger.Log($"changed level of user '{name}' to {level}.");
+                }
+                else
+                {
+                    UserStore.AddOrUpdateUser(name, _txtPass.Text, level);
+                    AuditLogger.Log($"{(exists ? "reset password of" : "created")} user '{name}' ({level}).");
+                }
             }
-            else
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException)
             {
-                UserStore.AddOrUpdateUser(name, _txtPass.Text, level);
-                AuditLogger.Log($"{(exists ? "reset password of" : "created")} user '{name}' ({level}).");
+                _lblStatus.Text = ex.Message;
+                return;
             }
             _txtPass.Text = "";
             RefreshList();

@@ -191,10 +191,12 @@ namespace Kaban.Core.Helpers
             if (_loadingUnits) return;
             try
             {
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(UnitStorePath));
-                System.IO.File.WriteAllLines(UnitStorePath, _activeUnits
+                // All-or-nothing (SafeFile): a power cut mid-write must not leave
+                // the units file empty, which silently reverted every unit choice.
+                var lines = _activeUnits
                     .Where(kv => kv.Value != null && !string.IsNullOrEmpty(kv.Value.Name))
-                    .Select(kv => kv.Key + ";" + kv.Value.Name).ToArray());
+                    .Select(kv => kv.Key + ";" + kv.Value.Name + Environment.NewLine);
+                SafeFile.WriteAllText(UnitStorePath, string.Concat(lines), new System.Text.UTF8Encoding(false));
             }
             catch { /* keep running even if the store is unwritable */ }
         }

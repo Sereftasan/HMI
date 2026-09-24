@@ -263,7 +263,11 @@ namespace Kaban.Core.Helpers
                               kv.Value.LogicalStation.ToString(CultureInfo.InvariantCulture) + ";" +
                               (kv.Value.Endpoint ?? ""));
 
-                File.WriteAllLines(SettingsPath, lines);
+                // All-or-nothing (SafeFile): a half-written file here is a machine
+                // that starts with no PLC addresses.
+                SafeFile.WriteAllText(SettingsPath,
+                    string.Join(Environment.NewLine, lines) + Environment.NewLine,
+                    new System.Text.UTF8Encoding(false));
                 AuditLogger.Log("saved PLC connection settings (" + _byKey.Count + " controllers).");
                 return true;
             }

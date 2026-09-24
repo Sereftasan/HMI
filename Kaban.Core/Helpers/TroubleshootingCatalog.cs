@@ -247,7 +247,7 @@ namespace Kaban.Core.Helpers
 
             public string FullPath
             {
-                get { return Resolve(FileName); }
+                get { return ResolveLanguageFile(FileName); }
             }
 
             public bool Exists
@@ -281,7 +281,13 @@ namespace Kaban.Core.Helpers
         /// translated, and nobody has to re-point anything when one arrives: the
         /// operator simply stops getting English.
         /// </summary>
-        public static string Resolve(string fileName)
+        /// <remarks>
+        /// NAMED ResolveLanguageFile, not Resolve: it used to share that name with
+        /// Resolve(code, title = ""), so a one-argument Resolve("1.2.1") quietly
+        /// bound to THIS method and returned a path string instead of the code's
+        /// documents - which is why four of the help tests no longer compiled.
+        /// </remarks>
+        public static string ResolveLanguageFile(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return "";
             var plain = Path.Combine(HelpFolder, fileName);
