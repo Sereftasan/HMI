@@ -170,6 +170,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_3.TitleTextKey = "Profile Clamping 3";
             this.unitProfile_Clamping_3.ErrorAAddress = "M867";
             this.unitProfile_Clamping_3.ErrorBAddress = "M866";
+            this.unitProfile_Clamping_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_2;
+            this.unitProfile_Clamping_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             this.unitProfile_Clamping_3.Location = new System.Drawing.Point(16, 608);
             this.unitProfile_Clamping_3.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Clamping_3.LogAction = true;

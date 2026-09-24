@@ -3796,3 +3796,13 @@ and `UnitLookAndErrors` extended.
 - Tests: `tools/ui_test/PlcMonitor.cs` (undo, delete menu, keys, toolbar),
   `tools/ui_test/MonitorFind.cs` (Find on the real FA2010 program, page opened,
   unit framed).
+
+## 2026-09-24 (night) - Unit help list names, blinking code cells, tooltips, demo types
+
+- The unit's "?" list does not repeat the unit or axis name (`AlarmHelpBadge.Documents`,
+  `FunctionUnitHMI.CylinderDocument` / `HelpDocuments`).
+- `HexCodeHMI`: no corner "?"; the digits of a code with help blink (one shared timer).
+- `UiStyle` tooltips: `ShowAlways = true` - the shared tooltip belongs to whichever
+  window its first control was on, and did not show on the main window.
+- Demo `ValveType` / `FeedbackType` on nine FA2010 units (see REVIEW 4f).
+- Tests: `AxisCodeHelpUi` (blinking, titles), `CylinderHelpAndLogin` (titles, demo types).

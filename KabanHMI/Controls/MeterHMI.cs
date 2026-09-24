@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -539,8 +540,9 @@ namespace Kaban.UI.Controls
 
         /// <summary>
         /// True while the code is not zero and its manual has an entry to open:
-        /// then the cell is a link - hand pointer, a small "?" in its corner, and
-        /// a click opens that code's entry. A zero code is inert, as before.
+        /// then the cell is a link - hand pointer, the DIGITS BLINKING, and a click
+        /// opens that code's entry. A zero code is inert, as before. (It had a
+        /// small "?" in its corner: too small to read, it was noise, not a sign.)
         /// </summary>
         [Browsable(false)]
         public bool HasHelp { get { return _raw > 0 && _help != null; } }
@@ -630,8 +632,49 @@ namespace Kaban.UI.Controls
             // too: the manual says the axis has not been stopped by it.
             _warningCode = Severity == CodeSeverity.Warning || AxisCodeHelp.IsWarning(CodeKind, v);
             Cursor = HasHelp ? Cursors.Hand : Cursors.Default;
+            if (HasHelp) StartBlinking(this); else StopBlinking(this);
             RefreshTip();
             Invalidate();
+        }
+
+        // ONE timer for every blinking code cell: a page of sixteen axes has
+        // forty-eight of them.
+        private static readonly List<HexCodeHMI> _blinking = new List<HexCodeHMI>();
+        private static Timer _blink;
+        private static bool _phase = true;
+
+        /// <summary>True in the half of the blink the digits are drawn strong (for tests).</summary>
+        public static bool BlinkPhase { get { return _phase; } set { _phase = value; } }
+
+        private static void StartBlinking(HexCodeHMI c)
+        {
+            if (!_blinking.Contains(c)) _blinking.Add(c);
+            if (_blink == null)
+            {
+                _blink = new Timer { Interval = 500 };
+                _blink.Tick += (s, e) =>
+                {
+                    _phase = !_phase;
+                    foreach (var x in _blinking.ToArray())
+                    {
+                        if (x.IsDisposed) { _blinking.Remove(x); continue; }
+                        x.Invalidate();
+                    }
+                };
+            }
+            _blink.Start();
+        }
+
+        private static void StopBlinking(HexCodeHMI c)
+        {
+            _blinking.Remove(c);
+            if (_blinking.Count == 0 && _blink != null) { _blink.Stop(); _phase = true; }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) StopBlinking(this);
+            base.Dispose(disposing);
         }
 
         protected override void OnClick(EventArgs e)
@@ -669,22 +712,15 @@ namespace Kaban.UI.Controls
             var colour = !faulted ? Color.FromArgb(25, 28, 34)
                        : (Severity == CodeSeverity.Warning || _warningCode) ? Color.FromArgb(190, 140, 20)
                                                           : Color.FromArgb(190, 40, 40);
+            // A code with an entry to open BLINKS - strong, then faint - so the
+            // row says "look here, click me" without a mark beside the number.
+            // Faint = blended into the white cell: text drawing ignores transparency.
+            if (HasHelp && !IsStale && !_phase)
+                colour = Color.FromArgb((colour.R + 3 * 255) / 4, (colour.G + 3 * 255) / 4, (colour.B + 3 * 255) / 4);
             TextRenderer.DrawText(g, AxisCodeHelp.Format(CodeKind, _raw), Font, r, colour,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                 TextFormatFlags.NoPadding);
-
-            // The link mark: a small "?" in the top right corner, in the code's
-            // own colour - so the cell says "there is an answer to this" without
-            // becoming a second, louder badge beside the number.
-            if (HasHelp && !IsStale)
-            {
-                if (_markFont == null) _markFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);
-                TextRenderer.DrawText(g, "?", _markFont, new Rectangle(Width - 12, 0, 11, 13), colour,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.Top | TextFormatFlags.NoPadding);
-            }
         }
-
-        private static Font _markFont;
     }
 }
 

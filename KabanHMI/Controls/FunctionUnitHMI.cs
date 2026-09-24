@@ -857,14 +857,14 @@ namespace Kaban.UI.Controls
             string file;
             if (!TroubleshootingCatalog.DocumentForType.TryGetValue(TroubleshootingCatalog.ErrorType.CylinderMovement, out file) ||
                 string.IsNullOrEmpty(file)) return null;
-            var unit = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText);
             var mv = side == null ? null : MovementFor(side);
             return new TroubleshootingCatalog.HelpDocument
             {
                 FileName = file,
+                // No unit name: the list opens from the unit's own "?". The
+                // movement is named - it is what tells two entries apart.
                 Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
-                        (string.IsNullOrEmpty(unit) ? "" : " - " + unit) +
-                        (mv == null ? "" : " (" + (string.IsNullOrEmpty(mv.Name) ? mv.Side : mv.Name) + ")"),
+                        (mv == null ? "" : " - " + (string.IsNullOrEmpty(mv.Name) ? mv.Side : mv.Name)),
                 Valve = TroubleshootingCatalog.CanonicalValve((int)_valve),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)_feedback),
                 Movement = mv
@@ -897,6 +897,11 @@ namespace Kaban.UI.Controls
             {
                 if (errB) docs.AddRange(_helpB.Documents());           // the drive codes (or the error bit)
                 if (errA) docs.AddRange(_helpA.Documents());
+                // The alarm list names the unit in its entries; its own "?" need not.
+                var unit = string.IsNullOrEmpty(_titleText) ? "" : Tr(_titleText);
+                if (unit.Length > 0)
+                    foreach (var d in docs)
+                        d.Title = d.Title.Replace(" - " + unit, "").Replace("  (" + unit + ")", "");
             }
             else
             {

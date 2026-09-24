@@ -308,8 +308,8 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <ul>
  <li><b>Axis Settings:</b> one row per axis &ndash; jog, position, limits, reference, calibration, drive codes. The axis units on the Manual Movement pages take everything from these rows.</li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
-     <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero is a link &ndash; a small <b>?</b>
-     in its corner &ndash; that opens just that code's entry of its manual: its causes, how to check each, and what to do.
+     <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link
+     (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; its causes, how to check each, and what to do.
      Warnings are amber, alarms red; a blank cell means no code.</li>
  <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper link</b> (a document, drawing or page opened from the alarm). Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
 </ul>

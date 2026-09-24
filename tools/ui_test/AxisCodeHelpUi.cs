@@ -50,8 +50,8 @@ class AX {
         Check("  one menu entry: the 16.3 entry of the servo manual",
               docs.Count == 1 && docs[0].Code == "16.3" && docs[0].FileName == AxisCodeHelp.ServoAlarmDocument,
               string.Join(" | ", docs.Select(d => d.Title)));
-        Check("  titled with the code, its name and the axis",
-              docs.Count == 1 && docs[0].Title.Contains("Servo alarm 16.3") && docs[0].Title.Contains("Encoder") && docs[0].Title.Contains("Robot X"),
+        Check("  titled with the code and its name - not the axis: the '?' is on that axis's unit",
+              docs.Count == 1 && docs[0].Title.Contains("Servo alarm 16.3") && docs[0].Title.Contains("Encoder") && !docs[0].Title.Contains("Robot X"),
               docs.Count == 1 ? docs[0].Title : "");
         Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
         Check("  the unit's '?' lists the same", axis.HelpDocuments().Count == 1 && axis.HelpDocuments()[0].Code == "16.3");
@@ -121,10 +121,12 @@ class AX {
         var err = cells[0];
         err.UpdateState(a => a == "W4" ? 0x1904 : 0, c => true);
         Check("a non-zero code is a link: hand pointer, help ready", err.HasHelp && err.Cursor == Cursors.Hand);
+        var blinking = (System.Collections.IList)typeof(HexCodeHMI).GetField("_blinking", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+        Check("  its digits blink (no '?' in the corner any more)", blinking.Contains(err));
         err.UpdateState(a => 0x51904, c => true);
         Check("  one 16-bit word: the neighbour's high half is not part of the code", err.HasHelp && AxisCodeHelp.Format(err.CodeKind, 0x51904 & 0xFFFF) == "1904H");
         err.UpdateState(a => 0, c => true);
-        Check("zero: inert again", !err.HasHelp && err.Cursor == Cursors.Default);
+        Check("zero: inert again", !err.HasHelp && err.Cursor == Cursors.Default && !blinking.Contains(err));
         var plain = new HexCodeHMI { Address = "D1" };
         plain.UpdateState(a => 0x502, c => true);
         Check("a code cell of no kind has no help (as before)", !plain.HasHelp);

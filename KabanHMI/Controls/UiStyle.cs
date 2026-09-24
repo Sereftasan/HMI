@@ -1178,7 +1178,14 @@ namespace Kaban.UI.Controls
             t.ReshowDelay = TooltipInitialDelayMs;   // no instant re-pop moving along a row;
             t.AutoPopDelay = TooltipAutoPopMs;
             t.AutomaticDelay = TooltipInitialDelayMs;
-            t.ShowAlways = false;                    // never over an inactive window;
+            // SHOWN WHETHER OR NOT ITS WINDOW IS ACTIVE. With ShowAlways off a tip
+            // appears only while the window the tooltip belongs to is the active
+            // one - and the program's ONE shared tooltip belongs to whichever
+            // window its first control was on, often a page that is not on screen
+            // (a machine tab, a page built to be searched). The pointer rested on a
+            // control, its border turned blue, and no tip came. A tip still needs
+            // the pointer to REST on a control of this program for a second.
+            t.ShowAlways = true;
             t.UseAnimation = false;                  // fade made the 1s delay feel like 1.3s;
             t.UseFading = false;
         }

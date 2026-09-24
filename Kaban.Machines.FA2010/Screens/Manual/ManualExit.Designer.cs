@@ -43,6 +43,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.HelpFiles = "Unit_Robot_Top_Clamping.html";
             this.unitRobot_Top_Clamping.ErrorAAddress = "M854";
             this.unitRobot_Top_Clamping.ErrorBAddress = "M840";
+            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_2;
+            this.unitRobot_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(16, 16);
             this.unitRobot_Top_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRobot_Top_Clamping.LogAction = true;
@@ -128,6 +130,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.PlcNumber = 1;
             this.unitShort_Profile_Support.TitleTextKey = "Short Profile Support";
             this.unitShort_Profile_Support.ErrorAAddress = "M861";
+            this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid_5_2;
+            this.unitShort_Profile_Support.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
             this.unitShort_Profile_Support.Location = new System.Drawing.Point(16, 386);
             this.unitShort_Profile_Support.Size = new System.Drawing.Size(360, 64);
             this.unitShort_Profile_Support.LogAction = true;

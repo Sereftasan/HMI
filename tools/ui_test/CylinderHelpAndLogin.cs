@@ -64,6 +64,8 @@ class CH {
         Check("its help names movement A", doc != null && doc.Movement.Side == "A" && doc.Movement.Name == "Clamp" &&
               doc.Movement.Command.Address == "M604" && doc.Movement.Output.Address == "Y24",
               doc == null ? "none" : doc.Title);
+        Check("  the entry names the movement, not the unit (the '?' is on the unit)",
+              doc != null && doc.Title.Contains("Clamp") && !doc.Title.Contains("Left Top Clamping"), doc == null ? "" : doc.Title);
         Check("  sensors: X30 must turn on, X31 must turn off",
               doc != null && doc.Movement.Feedback.Single().Address == "X30" && doc.Movement.OppositeFeedback.Single().Address == "X31");
         string path = TC.ExtractSection(doc);
@@ -118,6 +120,18 @@ class CH {
         bool overlap = cu.Any(a => cu.Any(b => a != b && a.Bounds.IntersectsWith(b.Bounds)));
         Check("  none overlapping", !overlap);
         Check("  rows 74 apart as on the other pages", cu.All(c => (c.Top - 16) % 74 == 0));
+
+        Console.WriteLine("--- demo valve and sensor types on the FA2010 pages ---");
+        var valves = new HashSet<CylinderValve>(); var feedbacks = new HashSet<CylinderFeedback>(); int typed = 0;
+        foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition" })
+        {
+            var pg = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + name));
+            foreach (var u in pg.Controls.OfType<FunctionUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
+            { typed++; valves.Add(u.ValveType); feedbacks.Add(u.FeedbackType); }
+            pg.Dispose();
+        }
+        Check("nine units carry a valve and a feedback type, every valve and every feedback among them",
+              typed == 9 && valves.Count == 3 && feedbacks.Count == 6, typed + " units, " + valves.Count + " valves, " + feedbacks.Count + " feedbacks");
 
         Console.WriteLine("--- the login: pick the user, type the password ---");
         string dir = Path.Combine(Path.GetTempPath(), "lg_" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir);

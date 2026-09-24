@@ -281,7 +281,8 @@ namespace Kaban.UI.Controls
         {
             if (_codes.Count > 0)
                 return _codes.Where(c => c.Value != 0)
-                             .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, UnitName))
+                             // No axis name in the entry: the "?" is on that axis's own unit.
+                             .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, ""))
                              .Where(d => d != null).ToList();
             var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
             return AlarmHelpLinks.DocumentsFor(PlcNumber, Address, def != null ? def.HelperKeys : null);
