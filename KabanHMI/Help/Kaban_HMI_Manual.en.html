@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaban HMI - Operator and Engineer Manual</title>
+<!--
+  THE HMI MANUAL. Opened from HMI Settings > About > "Open the HMI manual".
+
+  One file per language, beside each other in the Help folder:
+      Kaban_HMI_Manual.en.html   English (this file)
+      Kaban_HMI_Manual.tr.html   Turkish - add it and Turkish users get it automatically
+  The HMI opens the file of the language on screen, then English.
+
+  Pictures: keep drawings INLINE (SVG, as below) or put image files in the same
+  Help folder and refer to them by name (<img src="Screen_Home.png">), so the
+  manual keeps working on a panel PC with no network.
+-->
+<style>
+ :root{--ink:#23262c;--muted:#5b6270;--rule:#d5d9df;--head:#1f4e79;--soft:#f4f6f9;--code:#f2f4f7;--red:#d62424;--blue:#1e78dc}
+ *{box-sizing:border-box}
+ body{font-family:"Segoe UI",Arial,sans-serif;color:var(--ink);line-height:1.5;font-size:15px;margin:0;background:#fff}
+ header{background:#111;color:#fff;padding:18px 28px}
+ header h1{margin:0;font-size:1.5em;font-weight:600}
+ header p{margin:.2em 0 0;color:#c9ced6}
+ .wrap{display:flex;max-width:1280px;margin:0 auto}
+ nav.toc{flex:0 0 250px;padding:18px 18px 40px 24px;border-right:1px solid var(--rule);position:sticky;top:0;align-self:flex-start;max-height:100vh;overflow:auto}
+ nav.toc b{display:block;margin:0 0 .5em;color:var(--muted);font-size:.85em;letter-spacing:.06em;text-transform:uppercase}
+ nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;font-size:.95em}
+ nav.toc a:hover{color:var(--blue)}
+ main{flex:1;min-width:0;padding:10px 34px 60px}
+ h2{font-size:1.25em;color:var(--head);margin:1.9em 0 .5em;padding-top:.4em;border-top:1px solid var(--rule)}
+ h3{font-size:1.04em;margin:1.2em 0 .3em}
+ p{margin:.35em 0}
+ ul,ol{margin:.3em 0 .6em 1.3em;padding:0}
+ li{margin:.15em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em}
+ td,th{border:1px solid #9aa1ab;padding:.4em .55em;vertical-align:top;text-align:left}
+ th{background:#e3e6ea}
+ code,kbd{background:var(--code);padding:0 .3em;border:1px solid #dde1e6;border-radius:3px;font-family:Consolas,monospace;font-size:.92em}
+ .note{background:#fff8e1;border-left:4px solid #e0a800;padding:.6em .9em;margin:.8em 0}
+ .safety{background:#fdecec;border-left:4px solid var(--red);padding:.6em .9em;margin:.8em 0}
+ .tip{background:#e9f3fd;border-left:4px solid var(--blue);padding:.6em .9em;margin:.8em 0}
+ figure{margin:1em 0 1.2em;padding:12px;background:var(--soft);border:1px solid var(--rule);border-radius:6px}
+ figcaption{color:var(--muted);font-size:.9em;margin-top:.5em}
+ svg{max-width:100%;height:auto;display:block}
+ .lvl{display:inline-block;padding:0 .5em;border-radius:10px;font-size:.85em;font-weight:600;color:#fff}
+ .l0{background:#7a828e}.l1{background:#2f7d4f}.l2{background:#b26b00}.l3{background:#9c2a2a}
+ footer{color:var(--muted);font-size:.85em;margin-top:3em}
+ @media (max-width:820px){.wrap{display:block}nav.toc{position:static;border-right:none;border-bottom:1px solid var(--rule);max-height:none}main{padding:10px 16px 40px}}
+ @media print{nav.toc{display:none}header{background:#fff;color:#000}h2{break-after:avoid}figure{break-inside:avoid}}
+</style></head><body>
+
+<header>
+ <h1>Kaban HMI &ndash; Operator and Engineer Manual</h1>
+ <p>For FA2010 and the sub-machines mounted with it (H500, H800), MD3020, SB3012 and SB3015.</p>
+</header>
+
+<div class="wrap">
+<nav class="toc">
+ <b>Contents</b>
+ <a href="#screen">1. The screen</a>
+ <a href="#signin">2. Signing in and levels</a>
+ <a href="#nav">3. Moving between pages</a>
+ <a href="#units">4. Manual Movement: the units</a>
+ <a href="#keypad">5. Entering a value</a>
+ <a href="#alarms">6. Alarms</a>
+ <a href="#conn">7. PLC connection</a>
+ <a href="#unitset">8. Units of measure</a>
+ <a href="#hmiset">9. HMI Settings</a>
+ <a href="#params">10. Machine Parameters</a>
+ <a href="#profiles">11. Profiles (FA2010)</a>
+ <a href="#diag">12. Logs and diagnostics</a>
+ <a href="#files">13. Where things are kept</a>
+</nav>
+
+<main>
+
+<p class="tip"><b>Keep this manual beside the program.</b> It opens from <b>HMI Settings &rsaquo; About</b>. It is a file
+in the program's <code>Help</code> folder, so it works on a machine with no network.</p>
+
+<!-- ================================================================== -->
+<h2 id="screen">1. The screen</h2>
+
+<figure>
+<svg viewBox="0 0 900 470" role="img" aria-label="Layout of the HMI screen">
+ <defs><style>.t{font:13px "Segoe UI",Arial;fill:#23262c}.w{font:13px "Segoe UI",Arial;fill:#fff}.s{font:11px "Segoe UI",Arial;fill:#5b6270}.n{font:bold 13px "Segoe UI",Arial;fill:#fff}</style></defs>
+ <!-- caption bar -->
+ <rect x="10" y="10" width="880" height="36" fill="#111"/>
+ <text class="w" x="24" y="33">KABAN &nbsp; FA2010 &ndash; Processing Center &nbsp;&middot;&nbsp; user</text>
+ <rect x="520" y="16" width="30" height="24" rx="4" fill="#c81e1e"/><text class="n" x="530" y="33">!</text>
+ <rect x="560" y="16" width="30" height="24" rx="4" fill="#333"/><text class="w" x="566" y="33">&#128279;</text>
+ <circle cx="615" cy="28" r="10" fill="none" stroke="#fff" stroke-width="2"/>
+ <rect x="640" y="16" width="70" height="24" rx="3" fill="#333"/><text class="w" x="650" y="33">EN &#9662;</text>
+ <text class="w" x="760" y="33">&#9472;</text><text class="w" x="800" y="33">&#9744;</text><text class="w" x="840" y="33">&#10005;</text>
+ <!-- nav bar -->
+ <rect x="10" y="46" width="190" height="414" fill="#eef0f3"/>
+ <rect x="10" y="60" width="190" height="38" fill="#fff"/><text class="t" x="40" y="84" font-weight="bold">Home</text>
+ <text class="t" x="40" y="124">Manual Movement</text>
+ <text class="t" x="40" y="162">Alarms</text>
+ <text class="t" x="40" y="200">Machine Parameters</text>
+ <text class="t" x="40" y="238">HMI Settings</text>
+ <line x1="22" y1="262" x2="188" y2="262" stroke="#c7ccd3"/>
+ <rect x="16" y="300" width="178" height="30" rx="4" fill="#d1d6dd"/><text class="t" x="40" y="320">Processing Center</text>
+ <text class="t" x="40" y="352">Screwing_Holing</text>
+ <text class="t" x="40" y="384">3D_HingeDrilling</text>
+ <text class="t" x="30" y="444">&#9664;</text><text class="t" x="70" y="444">&#9654;</text>
+ <!-- content -->
+ <rect x="200" y="46" width="690" height="414" fill="#fff" stroke="#d5d9df"/>
+ <text class="t" x="230" y="90" font-size="15">The page you chose, for the machine you chose</text>
+ <!-- callouts -->
+ <g fill="#1e78dc">
+  <circle cx="535" cy="62" r="10"/><circle cx="575" cy="62" r="10"/><circle cx="615" cy="62" r="10"/><circle cx="675" cy="62" r="10"/><circle cx="800" cy="62" r="10"/>
+  <circle cx="190" cy="80" r="10"/><circle cx="190" cy="315" r="10"/><circle cx="110" cy="444" r="10"/>
+ </g>
+ <g class="n" text-anchor="middle">
+  <text x="535" y="66">1</text><text x="575" y="66">2</text><text x="615" y="66">3</text><text x="675" y="66">4</text><text x="800" y="66">5</text>
+  <text x="190" y="84">6</text><text x="190" y="319">7</text><text x="110" y="448">8</text>
+ </g>
+</svg>
+<figcaption>The screen. The caption bar at the top, the page menu on the left, the machine list under it, the page on the right.</figcaption>
+</figure>
+
+<table>
+<tr><th>#</th><th>What</th><th>What it does</th></tr>
+<tr><td>1</td><td>Alarms (red, blinking)</td><td>Only there while a machine reports an error. Click it for the list of machines in alarm. See <a href="#alarms">6</a>.</td></tr>
+<tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
+<tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
+<tr><td>4</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
+<tr><td>5</td><td>Minimise, maximise, close</td><td>Close asks first: <b>Close</b> or <b>Restart the program</b>. A stray tap never ends a shift.</td></tr>
+<tr><td>6</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown.</td></tr>
+<tr><td>7</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. The highlighted one is the machine on screen.</td></tr>
+<tr><td>8</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
+</table>
+
+<p>Everything you can click shows a <b>hand</b> pointer; anything that cannot be used right now shows the plain arrow and,
+when you rest the pointer on it, says <b>why</b> (not signed in, level too low, machine not in manual, controller not answering).</p>
+
+<!-- ================================================================== -->
+<h2 id="signin">2. Signing in and levels</h2>
+
+<p>Click the user icon on the caption bar, enter your user name and password. The icon stops pulsing once someone is signed in.</p>
+
+<table>
+<tr><th>Level</th><th>Typically</th><th>Can</th></tr>
+<tr><td><span class="lvl l0">None</span></td><td>Nobody signed in</td><td>Watch every page. Change nothing.</td></tr>
+<tr><td><span class="lvl l1">Operator</span></td><td>Machine operator</td><td>Manual Movement, units of measure, acknowledge and reset alarms, most machine controls.</td></tr>
+<tr><td><span class="lvl l2">Maintenance</span></td><td>Maintenance / setter</td><td>Everything an operator can, plus Machine Parameters (axis settings, alarm settings) and the logs.</td></tr>
+<tr><td><span class="lvl l3">Admin</span></td><td>Engineer</td><td>Everything: users, PLC connection, PLC diagnostics, importing settings, the PLC memory monitor. Tooltips also show the wiring (addresses, conditions).</td></tr>
+</table>
+
+<p class="note">Each controller also has its own level. A page may be open to you while a sub-machine's controls on it
+still need a higher one &ndash; the control's tooltip says so.</p>
+
+<!-- ================================================================== -->
+<h2 id="nav">3. Moving between pages</h2>
+<ul>
+ <li><b>Page menu (left):</b> Home, Manual Movement, Alarms, Machine Parameters, HMI Settings &ndash; plus machine pages such as Profiles on FA2010.</li>
+ <li><b>Machine list (under it):</b> when sub-machines are mounted, each page exists once per machine. Pick the machine here.
+     The highlighted machine is always the one whose page is on screen.</li>
+ <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages).</li>
+ <li><b>&#9664; Back / &#9654; Forward:</b> return to where you were &ndash; the same page, the same machine and the same tab.
+     Choosing the page you are already on does not add a step.</li>
+ <li><b>Collapse the menu</b> with the button at its top to icons only; drag its right edge to set its width. Both are remembered.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="units">4. Manual Movement: the units</h2>
+
+<p>Every cylinder, motor and axis you can move by hand is a <b>unit</b>: a frame with its name on the top line, one or two
+buttons, and sometimes a position reading between them. Axis units and cylinder units are the same size and shape so a page reads as one table.</p>
+
+<figure>
+<svg viewBox="0 0 900 212" role="img" aria-label="Anatomy of a unit">
+ <defs><style>.t{font:13px "Segoe UI",Arial;fill:#23262c}.s{font:12px "Segoe UI",Arial;fill:#5b6270}.b{font:bold 20px Consolas,monospace}</style></defs>
+ <!-- cylinder unit -->
+ <rect x="20" y="40" width="400" height="92" rx="5" fill="#fff" stroke="#b4b4b4"/>
+ <rect x="30" y="30" width="150" height="20" fill="#fff"/><text class="t" x="34" y="45">Left Top Clamping</text>
+ <circle cx="396" cy="40" r="9" fill="#fff" stroke="#d62424" stroke-width="2"/><text x="392" y="45" font-weight="bold" font-size="12" fill="#d62424">?</text>
+ <circle cx="372" cy="40" r="9" fill="#fff" stroke="#2870be" stroke-width="1.5"/><text x="369" y="45" font-style="italic" font-weight="bold" font-size="12" fill="#2870be" font-family="Georgia">i</text>
+ <rect x="30" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#d62424" stroke-width="3"/>
+ <circle cx="42" cy="74" r="5" fill="#2fbf4a"/><text x="84" y="97" font-size="18" fill="#8a929c">&#9664;</text>
+ <rect x="160" y="62" width="120" height="56" rx="4" fill="#000"/><text class="b" x="176" y="98" fill="#ff2020">125.0</text>
+ <rect x="290" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="340" y="97" font-size="18" fill="#8a929c">&#9654;</text>
+ <!-- axis unit -->
+ <rect x="480" y="40" width="400" height="92" rx="5" fill="#fff" stroke="#b4b4b4"/>
+ <rect x="490" y="30" width="80" height="20" fill="#fff"/><text class="t" x="494" y="45">Cutting Z</text>
+ <circle cx="856" cy="40" r="9" fill="#d62424"/><text x="852" y="45" font-weight="bold" font-size="12" fill="#fff">?</text>
+ <rect x="490" y="62" width="100" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="530" y="97" font-size="18" fill="#8a929c">&#9664;</text>
+ <rect x="600" y="62" width="170" height="56" rx="4" fill="#dcdcdc" stroke="#d62424" stroke-width="3"/><text x="618" y="97" font-size="17" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">412.50 mm</text>
+ <rect x="780" y="62" width="90" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="815" y="97" font-size="18" fill="#8a929c">&#9654;</text>
+ <!-- labels -->
+ <text class="s" x="20" y="160">Cylinder unit with an error on movement A:</text>
+ <text class="s" x="20" y="178">the red <tspan font-weight="bold">?</tspan> appears on the top line, button A's border blinks red.</text>
+ <text class="s" x="20" y="196">Green dot = sensor on. Red-on-black = encoder reading.</text>
+ <text class="s" x="480" y="160">Axis unit in error: the <tspan font-weight="bold">?</tspan> on the top line,</text>
+ <text class="s" x="480" y="178">and the POSITION's border blinks red.</text>
+ <text class="s" x="480" y="196">The position reads as on the Axis Settings row (black, bold).</text>
+</svg>
+<figcaption>Left: a cylinder unit with a position reading. Right: an axis unit. Both are shown while in error.</figcaption>
+</figure>
+
+<h3>The buttons</h3>
+<ul>
+ <li><b>Momentary</b> (jog): the movement runs <b>only while you hold</b> the button. It stops when you let go &ndash; and also if the pointer
+     is taken away by a message, the page changes, the button is hidden or disabled, or you are signed out.</li>
+ <li><b>Alternate</b>: one press on, the next off (motors, cooling, blowing).</li>
+ <li>A button turns <b>darker</b> while its relay is on, and darker still with <b>white text</b> while the physical output is on.</li>
+ <li>The small <b>dots</b> on a button's outer corner are its sensors; rest the pointer on one to see which.</li>
+ <li>A slot with no function stays as an empty grey cell, so the buttons of neighbouring units line up.</li>
+</ul>
+
+<div class="safety"><b>Safety.</b> A jog is released by the HMI in every case it can detect. The machine's own interlocks,
+emergency stop and the PLC program remain the protection &ndash; never rely on the screen to stop a movement.</div>
+
+<h3>The marks on the top line</h3>
+<table>
+<tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
+<tr><td><b style="color:#d62424">?</b> red, blinking</td><td>While one of the unit's error bits is set</td><td>The help for that fault: the unit's troubleshooting section (for a cylinder, only the parts for its valve and sensor), then the unit's own sheets.</td></tr>
+<tr><td><i style="color:#2870be">i</i> blue</td><td>Whenever the unit has help files</td><td>What the unit is: photos, drawing, settings.</td></tr>
+</table>
+<p>The <b>?</b> takes the right end of the line; the <b>i</b> moves just left of it while an error is shown.
+While the error is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
+or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
+
+<!-- ================================================================== -->
+<h2 id="keypad">5. Entering a value</h2>
+<ul>
+ <li>Touch a value field: the keypad opens beside it and the field is outlined in blue so you can see which one you are changing.</li>
+ <li>The line at the top gives the allowed range. A value outside it is refused (the entry flashes red) &ndash; nothing is sent.</li>
+ <li>The first key replaces the whole value; &#9664; &#9654; move into it to change one digit.</li>
+ <li>Use the keypad's <b>.</b> key for decimals &ndash; on any Windows language setting. On a keyboard both <kbd>.</kbd> and <kbd>,</kbd> type the decimal point.</li>
+ <li>Values are typed in the unit shown on screen (mm or inch, &deg;C or &deg;F); the HMI converts them for the PLC.</li>
+ <li>Some fields ask for confirmation before writing.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="alarms">6. Alarms</h2>
+<ul>
+ <li>While a machine reports an error, the <b>Alarms</b> page button pulses red and the red alarm button appears on the caption bar.</li>
+ <li>The caption-bar alarm button lists the machines in alarm and how many alarms each has. Choosing a machine <b>acknowledges</b>
+     its alarms on the screen; an alarm whose cause is still there comes straight back. The PLC reset itself is the <b>Reset</b> button on the Alarms page.</li>
+ <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button is momentary, like a physical reset button.</li>
+ <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
+ <li>An alarm is only raised or cleared from a fresh reading. When a controller stops answering, its alarms are left as they were rather than cleared.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="conn">7. PLC connection</h2>
+<p>A controller counts as connected only while reads are succeeding. When one stops answering for three seconds:</p>
+<ul>
+ <li>the red link mark appears on the caption bar;</li>
+ <li>the controls of that controller grey out and say why, and its values are washed out &ndash; they are the last known values, not live ones;</li>
+ <li>it reconnects by itself when the controller answers again.</li>
+</ul>
+<table>
+<tr><th>Code</th><th>Meaning</th><th>Check</th></tr>
+<tr><td>C01</td><td>No driver configured for this station</td><td>HMI Settings &rsaquo; PLC Connection</td></tr>
+<tr><td>C02</td><td>Link not open</td><td>Cable, power, IP address / station number</td></tr>
+<tr><td>C03</td><td>Link open but no reply</td><td>Network, switch, PLC in RUN</td></tr>
+<tr><td>C04</td><td>Unexpected reply</td><td>Driver type and PLC model in PLC Connection</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="unitset">8. Units of measure</h2>
+<p><b>HMI Settings &rsaquo; Unit Settings</b> <span class="lvl l1">Operator</span> chooses the units for the whole program (length, speed, temperature...).
+Values are always <b>stored</b> in the machine's units and only <b>shown</b> in yours, so switching never changes a machine setting.</p>
+
+<!-- ================================================================== -->
+<h2 id="hmiset">9. HMI Settings</h2>
+<table>
+<tr><th>Tab</th><th>Level</th><th>For</th></tr>
+<tr><td>Unit Settings</td><td><span class="lvl l1">Operator</span></td><td>Units of measure (see 8).</td></tr>
+<tr><td>User Settings</td><td><span class="lvl l3">Admin</span></td><td>Users, passwords and levels. The last Admin cannot be removed or lowered.</td></tr>
+<tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
+<tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log on screen, how long it is kept, export of today's file.</td></tr>
+<tr><td>PLC Connection</td><td><span class="lvl l3">Admin</span></td><td>Driver, address and station of each controller; live status of each.</td></tr>
+<tr><td>PLC Diagnostics</td><td><span class="lvl l3">Admin</span></td><td>Checks the Mitsubishi MX Component set-up and can scan logical stations.</td></tr>
+<tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>Builds a description of the machine's set-up to ask an assistant for help.</td></tr>
+<tr><td>About</td><td><span class="lvl l0">None</span></td><td>Program version, machines mounted, and this manual.</td></tr>
+</table>
+
+<!-- ================================================================== -->
+<h2 id="params">10. Machine Parameters</h2>
+<p><span class="lvl l2">Maintenance</span> One tab per machine.</p>
+<ul>
+ <li><b>Axis Settings:</b> one row per axis &ndash; jog, position, limits, reference, calibration, drive codes. The axis units on the Manual Movement pages take everything from these rows.</li>
+ <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper link</b> (a document, drawing or page opened from the alarm). Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="profiles">11. Profiles (FA2010)</h2>
+<ul>
+ <li>The table, details, drawing and G-code are separate <b>panes</b>: drag them by the caption, resize from any edge, minimise with <b>&ndash;</b>.</li>
+ <li>Save an arrangement by name and pick it from the <b>Layout</b> box; <b>Default</b> restores the built-in one. Your last arrangement returns by itself.</li>
+ <li>Drawing: click to select, drag a box to select many (right-to-left catches anything it touches), <kbd>Del</kbd> removes, <kbd>Esc</kbd> clears. The wheel zooms, the middle button pans.</li>
+ <li>The green band is the tool at its real width; clicking it selects the matching G-code line, and the other way round.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="diag">12. Logs and diagnostics</h2>
+<ul>
+ <li>Every change made from the HMI is written to the <b>audit log</b> with the time and the user: one file per day, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
+ <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
+ <li><b>PLC memory monitor</b> <span class="lvl l3">Admin</span>: <kbd>F12</kbd> or the user menu. Reads and <b>writes</b> any device of any controller &ndash; it bypasses every control's own checks, so use it with care.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="files">13. Where things are kept</h2>
+<table>
+<tr><th>What</th><th>Where</th></tr>
+<tr><td>Users, units, PLC connections, audit logs, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>)</td></tr>
+<tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
+<tr><td>Help documents and this manual</td><td>The <code>Help</code> folder beside the program</td></tr>
+</table>
+<p class="tip">Settings files are written safely: the new version is completed first and then swapped in, so switching the
+machine off at the wrong moment cannot leave a half-written file.</p>
+
+<footer>Kaban Machines &middot; HMI manual. To translate it, copy this file as <code>Kaban_HMI_Manual.&lt;language&gt;.html</code>
+(for example <code>.tr.html</code>) in the same folder.</footer>
+</main>
+</div>
+</body></html>

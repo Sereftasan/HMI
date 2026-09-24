@@ -113,6 +113,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
+    <!-- The HMI manual, opened from HMI Settings > About. One file per language. -->
+    <None Include="..\KabanHMI\Help\Kaban_HMI_Manual.en.html">
+      <Link>Help\Kaban_HMI_Manual.en.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
     <None Include="..\KabanHMI\Help\Cylinder_Troubleshooting.html">
       <Link>Help\Cylinder_Troubleshooting.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -6,10 +6,8 @@ using Kaban.Core.Helpers;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// Body for a settings page that has no content of its own yet. Only About
-    /// uses it now - User and Log Settings have real controls, and the Machine
-    /// Parameter Records and Barcode placeholders were removed because nothing
-    /// ever navigated to them.
+    /// Body for a page that has no content of its own - a machine with no
+    /// parameter pages (StandardScreens). About has its own control now.
     /// </summary>
     internal class PlaceholderControl : UserControl
     {
@@ -69,9 +67,9 @@ namespace Kaban.UI.Settings
         public string TitleKey => "Set_About";
         public string TitleFallback => "About";
         public SecurityLevel RequiredLevel => SecurityLevel.None;
-        public UserControl GetControl() =>
-            new PlaceholderControl(TitleKey, TitleFallback,
-                "Kaban Machines HMI\nVersion information and support contact here.");
+        // Program, version, machines - and the button that opens the HMI manual,
+        // which replaced the plain-text "Manual" tab (see AboutControl).
+        public UserControl GetControl() => new AboutControl();
     }
 }
 

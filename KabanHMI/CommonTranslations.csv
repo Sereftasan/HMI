@@ -61,7 +61,6 @@ Tab_HmiSettings;HMI Settings;HMI Ayarları;Настройки HMI;HMI-Einstellun
 Tab_MachineSettings;Machine Settings;Makine Ayarları;Настройки станка;Maschineneinstellungen;Impostazioni macchina;Ajustes de la máquina
 Tab_Machinery;Machinery;Makine;Оборудование;Maschine;Macchina;Maquinaria
 Set_AiPrompt;AI Prompt;AI Komutu;AI-запрос;KI-Prompt;Prompt IA;Prompt de IA
-Set_Manual;Manual;Kullanım Kılavuzu;Руководство;Handbuch;Manuale;Manual
 Btn_SimMonitor;Simulation Monitor (F12);Simülasyon Monitörü (F12);Монитор симуляции (F12);Simulationsmonitor (F12);Monitor di simulazione (F12);Monitor de simulación (F12)
 Set_Alarms;Alarm Settings;Alarm Ayarları;Настройки аварий;Alarmeinstellungen;Impostazioni allarmi;Ajustes de alarmas
 Sys_InputMin;Enter (minimum {0}):;Girin (en az {0}):;Введите (минимум {0}):;Eingabe (mindestens {0}):;Inserire (minimo {0}):;Introducir (mínimo {0}):
@@ -280,4 +279,10 @@ Tip_HelpBadge;Click for help;Yardım için tıklayın;Нажмите для сп
 Hlp_Servo;Servo drive troubleshooting;Servo sürücü arıza giderme;Устранение неисправностей сервопривода;Servoantrieb-Fehlersuche;Diagnostica azionamento servo;Diagnóstico del servoaccionamiento
 Tip_UnitInfo;About this unit;Bu ünite hakkında;Об этом узле;Über diese Einheit;Informazioni su questa unità;Acerca de esta unidad
 Axis_NotFound;Axis {0}: no axis settings row;Eksen {0}: eksen ayar satırı yok;Ось {0}: нет строки настроек оси;Achse {0}: keine Achseinstellung;Asse {0}: nessuna riga impostazioni;Eje {0}: sin fila de ajustes
-
+Btn_OpenManual;Open the HMI manual;HMI kullanım kılavuzunu aç;Открыть руководство HMI;HMI-Handbuch öffnen;Apri il manuale HMI;Abrir el manual del HMI
+Tip_OpenManual;Opens the operator and engineer manual in the browser, in the language on screen.;Operatör ve mühendis kılavuzunu, ekrandaki dilde tarayıcıda açar.;Открывает руководство оператора и инженера в браузере на языке интерфейса.;Öffnet das Bediener- und Technikerhandbuch im Browser, in der angezeigten Sprache.;Apre il manuale per operatore e tecnico nel browser, nella lingua sullo schermo.;Abre el manual del operador y del técnico en el navegador, en el idioma de la pantalla.
+About_Program;Program;Program;Программа;Programm;Programma;Programa
+About_Library;HMI library;HMI kütüphanesi;Библиотека HMI;HMI-Bibliothek;Libreria HMI;Biblioteca HMI
+About_Machines;Machines;Makineler;Станки;Maschinen;Macchine;Máquinas
+Msg_ManualMissing;The manual was not found:;Kılavuz bulunamadı:;Руководство не найдено:;Das Handbuch wurde nicht gefunden:;Manuale non trovato:;No se encontró el manual:
+Msg_ManualOpenFailed;Could not open the manual:;Kılavuz açılamadı:;Не удалось открыть руководство:;Das Handbuch konnte nicht geöffnet werden:;Impossibile aprire il manuale:;No se pudo abrir el manual:

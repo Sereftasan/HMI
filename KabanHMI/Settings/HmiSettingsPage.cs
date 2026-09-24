@@ -27,7 +27,7 @@ namespace Kaban.UI.Settings
                 new StationConnectionPage(),
                 new PlcDiagnosticsPage(),
                 new AiPromptPage(),
-                new HmiManualPage(),
+                // No "Manual" tab: the manual is an HTML file opened from About.
                 new AboutPage()
             });
         }

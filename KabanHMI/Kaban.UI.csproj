@@ -140,6 +140,7 @@
     <Compile Include="Settings\SettingsScreen.cs" />
     <Compile Include="Settings\UnitSettingsPage.cs" />
     <Compile Include="Settings\PlaceholderPages.cs" />
+    <Compile Include="Settings\AboutControl.cs" />
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -302,6 +303,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="Help\Connection_Troubleshooting.html" />
+    <None Include="Help\Kaban_HMI_Manual.en.html" />
     <None Include="Help\Cylinder_Troubleshooting.html" />
     <None Include="Help\Cylinder_Troubleshooting_Manual_EN.pdf" />
     <None Include="Help\MR_J4_TroubleShooting.pdf" />
