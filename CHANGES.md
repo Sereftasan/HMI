@@ -3669,3 +3669,58 @@ the original build too, and fails there on the bugs it covers).
 `MachineAlarmScreen.ResetAlarms`; `NumericInputHMI` prompt text,
 `FormatCurrentValueForEdit`, `FormatLimit`; `ButtonHMI.Str`;
 `HmiManualControl`/`HmiManualPage` (replaced by the HTML manual).
+
+## 2026-09-24 (afternoon) - Axis code help, alarm menu reset, PLC Monitor, maximise and close
+
+Requests of 24 September. New tests: `tools/core_test/AxisCodes.cs`,
+`tools/ui_test/AxisCodeHelpUi.cs`, `tools/ui_test/PlcMonitor.cs`; `AboutManual`
+and `UnitLookAndErrors` extended.
+
+### Changes that affect how the machine behaves - please review
+
+- **"Reset (n) Active Alarms" (caption-bar alarm menu) pulses the machine's alarm
+  reset**, 300 ms, on the machine's own controller, then clears the list. The bit
+  is the machine's `PC_AlarmReset` label, else M102 - unless the machine's label
+  list gives M102 another job: H500's M102 is `MAN_Lubrication`, so H500 is not
+  pulsed and the menu says why. Needs Operator; when nothing could be sent the
+  list is still cleared and a message says the machine was not reset. The release
+  is retried and logged if it fails. (`Helpers/AlarmReset.cs`, `MainForm`)
+- **A button whose actions are all momentary does nothing on Click** - it used to
+  ask "Are you sure?" after the jog when `ConfirmationNeeded` was set.
+  `ConfirmationNeeded` is documented as not applying to jogs. (`ButtonHMI`)
+- **Closing**: only the caption-bar X opens the Close / Restart menu; the taskbar,
+  Alt+F4 and Windows shutdown close at once. (`MainForm`)
+
+### Axis codes
+- `tools/build_code_help.py` builds `Help/Servo_Alarm_Codes.en.html` (MR-J4 1.4/1.5),
+  `Axis_Warning_Codes.en.html` and `Axis_Error_Codes.en.html` (FX5-40SSC-S 12.4/12.5)
+  from the manuals' tables, one `<section class="code">` per code.
+  `Help/FX5_40SSC_Troubleshooting.pdf` is chapter 12 of the FX5 manual.
+- `Kaban.Core/Helpers/AxisCodeHelp.cs`: formats (`16.3`, `1904H`), finds, names and
+  extracts one code's entry into a page of its own (with a `<base>` so the PDF
+  link works from the temp copy). `TroubleshootingCatalog.HelpDocument.Code`.
+- The axis unit's "?" follows the three code words (shown while any is non-zero,
+  one menu entry per code, amber for warnings); the error bit still blinks the
+  position. `AlarmHelpBadge.SetCodeWords`, `FunctionUnitHMI.SetAxisCodes`,
+  `IPlcExtraAddresses` (scanner reads the words).
+- Axis Settings code cells print each code as its manual does and open it on click
+  (`HexCodeHMI.CodeKind`). The alarm list's help for an axis alarm reads the codes
+  and lists their entries first (`AlarmHelpLinks.CodeDocuments`).
+
+### Look and manual
+- Function units' position drawn like Axis Settings (black bold on grey) by default.
+- The manual names no machine; About composes it for the machines running, with
+  each machine's own chapter (`Help/Manual_<ModuleId>.<lang>.html`).
+- Maximise fills the monitor the window is on (was thrown off-screen on an
+  extended display).
+- Manual Movement / Cutting page back to the original.
+
+### PLC Monitor
+- Own tabs per controller (new/rename/delete/move); devices of the screen on
+  display, of the whole program (one tab, or one tab per page) or of the label list
+  added in one go (`Helpers/DeviceCollector.cs`); arrays with sequential addresses;
+  copy/paste above the selected row or at the end; comment lines; double-click a
+  value to edit it in place, anything else to open the editor on that field;
+  toolbar of emoji buttons; double words' high words read on real PLCs and not
+  listed separately on the simulator; only the visible tab refreshed. Old list
+  files open as one tab "Main".

@@ -37,3 +37,25 @@ settings page, shown in the manual's own hexadecimal form (`50.2`, `1A.5`).
 An alarm may carry several codes, and `HelperKeys` names one-off files outright.
 Rows with nothing to open show no button.
 
+
+## Axis codes: one entry, not the whole manual
+
+The three code columns of Axis Settings each have their own document, built from
+the manufacturer's manual by `tools/build_code_help.py`:
+
+| Column | Document | From |
+|---|---|---|
+| Axis alarm (`1904H`) | `Axis_Error_Codes.en.html` | FX5-40SSC-S manual 12.5 (`FX5_40SSC_Troubleshooting.pdf`) |
+| Axis warning (`0900H`) | `Axis_Warning_Codes.en.html` | FX5-40SSC-S manual 12.4 |
+| Servo alarm (`16.3`) | `Servo_Alarm_Codes.en.html` | MR-J4 troubleshooting 1.4 / 1.5 (`MR_J4_TroubleShooting.pdf`) |
+
+Each code is a `<section class="code" data-code="...">`; the HMI shows only the
+section of the code on the screen (a servo detail that is not listed shows its
+alarm's sections). Run the script again when a manual is replaced. A translation
+is a copy named `.tr.html` and is left alone by the script.
+
+## The HMI manual
+
+`Kaban_HMI_Manual.en.html` names no machine. Opened from HMI Settings > About it
+is filled in with the machines the program runs, plus each machine's own chapter:
+`Manual_<ModuleId>.<language>.html`, kept in that machine's project `Help` folder.
