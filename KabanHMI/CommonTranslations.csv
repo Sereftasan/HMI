@@ -119,9 +119,9 @@ Tip_ImportCsv;Add devices from a CSV. A PlcLabels.csv (Label / DataType / Addres
 Ttl_ExportCsv;Export this controller's list;Bu kontrolörün listesini dışa aktar;Экспорт списка контроллера;Liste dieser Steuerung exportieren;Esporta l'elenco di questo controllore;Exportar la lista del controlador
 Ttl_ImportCsv;Add devices from a CSV;CSV'den cihaz ekle;Добавить устройства из CSV;Geräte aus CSV hinzufügen;Aggiungi dispositivi da CSV;Añadir dispositivos desde CSV
 Ttl_EditDevice;Edit device;Cihazı düzenle;Изменить устройство;Gerät bearbeiten;Modifica dispositivo;Editar dispositivo
-Mnu_EditRow;Edit this device...;Bu cihazı düzenle...;Изменить это устройство...;Dieses Gerät bearbeiten...;Modifica questo dispositivo...;Editar este dispositivo...
+Mnu_EditRow;Edit...;Düzenle...;Изменить...;Bearbeiten...;Modifica...;Editar...
 Mnu_RemoveRow;Remove from this list;Bu listeden çıkar;Убрать из списка;Aus dieser Liste entfernen;Rimuovi da questo elenco;Quitar de esta lista
-Mnu_RestoreRows;Show everything again;Her şeyi tekrar göster;Показать всё снова;Alles wieder anzeigen;Mostra di nuovo tutto;Mostrar todo de nuevo
+Mnu_RestoreRows;Show removed devices again;Kaldırılan cihazları tekrar göster;Снова показать удалённые устройства;Entfernte Geräte wieder anzeigen;Mostra di nuovo i dispositivi rimossi;Mostrar de nuevo los dispositivos quitados
 Msg_AddressRequired;An address is required.;Bir adres gereklidir.;Требуется адрес.;Eine Adresse ist erforderlich.;È richiesto un indirizzo.;Se requiere una dirección.
 Msg_AddressAlreadyListed;That address is already in this list.;Bu adres zaten listede.;Этот адрес уже в списке.;Diese Adresse steht bereits in der Liste.;Questo indirizzo è già nell'elenco.;Esa dirección ya está en la lista.
 Msg_ExportFailed;Could not write the file:;Dosya yazılamadı:;Не удалось записать файл:;Datei konnte nicht geschrieben werden:;Impossibile scrivere il file:;No se pudo escribir el archivo:
@@ -294,3 +294,55 @@ Msg_ResetNotSent;The alarms were cleared from the list, but no reset was sent to
 Msg_ResetNeedsLogin;sign in as Operator or higher to reset the machine;makineyi sıfırlamak için Operatör veya üstü olarak giriş yapın;для сброса станка войдите как Оператор или выше;zum Zurücksetzen der Maschine als Bediener oder höher anmelden;accedere come Operatore o superiore per resettare la macchina;inicie sesión como Operador o superior para reiniciar la máquina
 Msg_ResetNoBit;{0} is {1} on this machine, not an alarm reset - add a PC_AlarmReset label to its PLC label list;{0} bu makinede {1}, alarm sıfırlama değil - PLC etiket listesine bir PC_AlarmReset etiketi ekleyin;{0} на этом станке - {1}, а не сброс аварий - добавьте метку PC_AlarmReset в его список меток ПЛК;{0} ist auf dieser Maschine {1}, kein Alarm-Reset - fügen Sie der SPS-Labelliste ein Label PC_AlarmReset hinzu;{0} su questa macchina è {1}, non un reset allarmi - aggiungere un'etichetta PC_AlarmReset al suo elenco etichette PLC;{0} en esta máquina es {1}, no un reinicio de alarmas - añada una etiqueta PC_AlarmReset a su lista de etiquetas del PLC
 Msg_ResetRefused;the controller did not accept the write;kontrol ünitesi yazmayı kabul etmedi;контроллер не принял запись;die Steuerung hat das Schreiben nicht angenommen;il controllore non ha accettato la scrittura;el controlador no aceptó la escritura
+Tip_MonAdd;Add a device or a comment line;Cihaz veya açıklama satırı ekle;;;;
+Tip_MonCopy;Copy the selected rows (Ctrl+C);Seçili satırları kopyala (Ctrl+C);;;;
+Tip_MonPaste;Paste the copied rows (Ctrl+V: above the selected row);Kopyalanan satırları yapıştır (Ctrl+V: seçili satırın üstüne);;;;
+Tip_MonRemove;Remove the selected rows from this list (Del);Seçili satırları bu listeden kaldır (Del);;;;
+Tip_MonUp;Move the selected rows up (Ctrl+Up);Seçili satırları yukarı taşı (Ctrl+Yukarı);;;;
+Tip_MonDown;Move the selected rows down (Ctrl+Down);Seçili satırları aşağı taşı (Ctrl+Aşağı);;;;
+Tip_MonCollect;Add the devices of this screen, of the whole program or of the PLC label list;Bu ekranın, tüm programın veya PLC etiket listesinin cihazlarını ekle;;;;
+Tip_MonTabs;Tabs: new, rename, delete;Sekmeler: yeni, yeniden adlandır, sil;;;;
+Tip_MonRestore;Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - a device removed from a list is kept off it until this is pressed.;Kaldırılan cihazları tekrar göster. Simülatör tuttuğu her cihazı kendiliğinden listeler - listeden kaldırılan bir cihaz bu düğmeye basılana kadar listeye geri gelmez.;;;;
+Mnu_MonAddEnd;New device at the end...;Sona yeni cihaz...;;;;
+Mnu_MonAddAbove;New device above the selected row...;Seçili satırın üstüne yeni cihaz...;;;;
+Mnu_MonCommentEnd;Comment line at the end...;Sona açıklama satırı...;;;;
+Mnu_MonCommentAbove;Comment line above the selected row...;Seçili satırın üstüne açıklama satırı...;;;;
+Mnu_MonPasteAbove;Paste above the selected row;Seçili satırın üstüne yapıştır;;;;
+Mnu_MonPasteEnd;Paste at the end;Sona yapıştır;;;;
+Hdr_MonCollect;Add every device used by...;Şunun kullandığı tüm cihazları ekle...;;;;
+Mnu_MonFromScreen;the screen on display - into this tab;görüntülenen ekran - bu sekmeye;;;;
+Mnu_MonFromProgram;the whole program - into this tab;tüm program - bu sekmeye;;;;
+Mnu_MonFromProgramTabs;the whole program - one tab per page;tüm program - her sayfa için bir sekme;;;;
+Mnu_MonFromLabels;the PLC label list - into this tab;PLC etiket listesi - bu sekmeye;;;;
+Mnu_SheetNew;New tab...;Yeni sekme...;;;;
+Mnu_SheetRename;Rename this tab...;Bu sekmeyi yeniden adlandır...;;;;
+Mnu_SheetDelete;Delete this tab;Bu sekmeyi sil;;;;
+Mnu_SheetLeft;Move this tab left;Bu sekmeyi sola taşı;;;;
+Mnu_SheetRight;Move this tab right;Bu sekmeyi sağa taşı;;;;
+Tab_MonMain;Main;Ana;;;;
+Mnu_MonCopy;Copy;Kopyala;;;;
+Hint_MonNewRow;Double-click to add a device;Cihaz eklemek için çift tıklayın;;;;
+Msg_MonCopied;{0} row(s) copied.;{0} satır kopyalandı.;;;;
+Msg_MonPasted;{0} row(s) pasted.;{0} satır yapıştırıldı.;;;;
+Ttl_SheetNew;New tab;Yeni sekme;;;;
+Lbl_SheetName;Name of the tab:;Sekmenin adı:;;;;
+Tab_MonNew;Tab;Sekme;;;;
+Ttl_SheetRename;Rename tab;Sekmeyi yeniden adlandır;;;;
+Msg_SheetLast;A controller keeps at least one tab.;Bir kontrol ünitesinde en az bir sekme kalır.;;;;
+Msg_SheetDelete;Delete the tab '{0}' and its {1} row(s)?;'{0}' sekmesi ve {1} satırı silinsin mi?;;;;
+Msg_SheetNameEmpty;Type a name.;Bir ad yazın.;;;;
+Msg_SheetNameTaken;This controller already has a tab with that name.;Bu kontrol ünitesinde bu adda bir sekme zaten var.;;;;
+Msg_MonScreenNone;The screen on display uses no device of {0}.;Görüntülenen ekran {0} cihazı kullanmıyor.;;;;
+Msg_MonProgramNone;No page of the program uses a device of {0}.;Programın hiçbir sayfası {0} cihazı kullanmıyor.;;;;
+Msg_MonLabelsNone;This controller has no PLC label list (PlcLabels.csv).;Bu kontrol ünitesinin PLC etiket listesi (PlcLabels.csv) yok.;;;;
+Msg_MonNotNumber;Not a whole number - nothing written.;Tam sayı değil - hiçbir şey yazılmadı.;;;;
+Msg_MonOutOfRange;Out of range for this data type - nothing written.;Bu veri tipi için aralık dışında - hiçbir şey yazılmadı.;;;;
+Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2}  ·  {3};{0} cihaz, {1} açıklama satırı  ·  {2}  ·  {3};;;;
+Lbl_Simulated;simulated;simülasyon;;;;
+Lbl_LivePlc;LIVE PLC;CANLI PLC;;;;
+Lbl_CommentLine;Comment line (no address, no value);Açıklama satırı (adres ve değer yok);;;;
+Lbl_ArrayCount;Array (how many);Dizi (kaç adet);;;;
+Msg_CommentRequired;Type the comment's text.;Açıklama metnini yazın.;;;;
+Col_Comment;Comment;Açıklama;;;;
+Lbl_Step2;every 2nd device;her 2. cihaz;;;;
+Ttl_AddDevice;Add device;Cihaz ekle;;;;

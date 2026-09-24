@@ -324,7 +324,7 @@ namespace Kaban.UI.Helpers
         /// a tooltip, and a tooltip full of dead off-screen controls throws when it
         /// next needs its window (the login's NullReferenceException).
         /// </summary>
-        private static void Discard(Control view)
+        public static void Discard(Control view)
         {
             if (view == null) return;
             var tips = UiStyle.Tips();

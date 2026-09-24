@@ -74,6 +74,7 @@
     <Compile Include="Helpers\StationMap.cs" />
     <Compile Include="Helpers\AlarmHelpLinks.cs" />
     <Compile Include="Helpers\AlarmReset.cs" />
+    <Compile Include="Helpers\DeviceCollector.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs" />
     <Compile Include="Controls\MeterHMI.cs" />

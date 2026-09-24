@@ -139,7 +139,8 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
 <tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
 <tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
 <tr><td>4</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
-<tr><td>5</td><td>Minimise, maximise, close</td><td>Close asks first: <b>Close</b> or <b>Restart the program</b>. A stray tap never ends a shift.</td></tr>
+<tr><td>5</td><td>Minimise, maximise, close</td><td>The &#10005; asks first: <b>Close</b> or <b>Restart the program</b>, so a stray tap never ends a shift.
+Closing from the Windows taskbar or with <kbd>Alt</kbd>+<kbd>F4</kbd> closes at once. Maximise fills the screen the window is on.</td></tr>
 <tr><td>6</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown.</td></tr>
 <tr><td>7</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. The highlighted one is the machine on screen.</td></tr>
 <tr><td>8</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
@@ -313,7 +314,15 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <ul>
  <li>Every change made from the HMI is written to the <b>audit log</b> with the time and the user: one file per day, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
  <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
- <li><b>PLC memory monitor</b> <span class="lvl l3">Admin</span>: <kbd>F12</kbd> or the user menu. Reads and <b>writes</b> any device of any controller &ndash; it bypasses every control's own checks, so use it with care.</li>
+ <li><b>PLC Monitor</b> <span class="lvl l3">Admin</span>: <kbd>F12</kbd> or the user menu. Reads and <b>writes</b> any device of any controller &ndash; it bypasses every control's own checks, so use it with care.
+  <ul>
+   <li>One tab per controller; under each, <b>your own tabs</b> (&#128209;): new, rename (or double-click the tab), delete, move.</li>
+   <li>&#128269; adds every device used by the screen on display, by the whole program (into one tab, or one tab per page), or listed in the PLC label list &ndash; with its data type and name.</li>
+   <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>M100, 10 of them</i> adds M100&hellip;M109; a double word counts in twos (D200, D202&hellip;). A <b>comment line</b> has only text: a heading for the rows under it.</li>
+   <li>&#128203; copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), &#128204; pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end; &#128465; removes (<kbd>Del</kbd>); &#11014;&#11015; or dragging re-orders.</li>
+   <li><b>Double-click a value</b> to change it right there in the table; double-click anything else to open that row with the clicked field selected.</li>
+   <li>On a simulated controller every device the simulator holds is listed by itself; one you remove stays off the list until &#8617; <i>Show removed devices again</i>.</li>
+  </ul></li>
 </ul>
 
 <!-- ================================================================== -->

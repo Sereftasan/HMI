@@ -70,6 +70,8 @@ namespace Kaban.Core.Helpers
 
         private static readonly Dictionary<int, Dictionary<string, Entry>> _byStation =
             new Dictionary<int, Dictionary<string, Entry>>();
+        private static readonly Dictionary<int, List<Entry>> _entriesByStation =
+            new Dictionary<int, List<Entry>>();
 
         /// <summary>Loads one station's labels beside the default table, leaving it untouched.</summary>
         public static int LoadStation(string path, int station)
@@ -79,6 +81,7 @@ namespace Kaban.Core.Helpers
             var byAddress = new Dictionary<string, Entry>(_byAddress, StringComparer.OrdinalIgnoreCase);
             int n = Load(path);
             _byStation[station] = new Dictionary<string, Entry>(_byAddress, StringComparer.OrdinalIgnoreCase);
+            _entriesByStation[station] = new List<Entry>(_entries);
             _entries.Clear(); _entries.AddRange(entries);
             _byLabel.Clear(); foreach (var kv in byLabel) _byLabel[kv.Key] = kv.Value;
             _byAddress.Clear(); foreach (var kv in byAddress) _byAddress[kv.Key] = kv.Value;
@@ -107,6 +110,17 @@ namespace Kaban.Core.Helpers
             if (station > 0 && _byStation.TryGetValue(station, out table))
                 return table.Values.FirstOrDefault(e => string.Equals(e.Label, label.Trim(), StringComparison.OrdinalIgnoreCase));
             return ByLabel(label);
+        }
+
+        /// <summary>
+        /// Every label of one station, in the list's order: a mounted machine's
+        /// own list, else the default (main machine's) one.
+        /// </summary>
+        public static IEnumerable<Entry> EntriesFor(int station)
+        {
+            List<Entry> list;
+            if (station > 0 && _entriesByStation.TryGetValue(station, out list)) return list;
+            return _entries;
         }
 
         public static int Load(string path)

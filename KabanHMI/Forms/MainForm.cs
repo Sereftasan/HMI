@@ -11,6 +11,9 @@ namespace Kaban.UI.Forms
     public partial class MainForm : Form
     {
         private UserControl _currentScreen;
+
+        /// <summary>The page on display (the PLC Monitor lists the devices it uses).</summary>
+        public Control CurrentPage { get { return _currentScreen; } }
         private readonly System.Collections.Generic.Dictionary<Controls.ButtonHMI, UserControl> _menuButtons
             = new System.Collections.Generic.Dictionary<Controls.ButtonHMI, UserControl>();
         // The role group behind each nav page, so opening a page can populate the
@@ -838,8 +841,11 @@ namespace Kaban.UI.Forms
         private void SetupCaptionBar()
         {
             FormBorderStyle = FormBorderStyle.None;
-            MaximizedBounds = Screen.FromControl(this).WorkingArea;   // respect the taskbar
+            FitMaximizedBounds();                                     // respect the taskbar
             WindowState = FormWindowState.Maximized;                  // HMIs run full screen
+            // Moved to another monitor while restored: the next maximise - the
+            // button, a double-click on the caption, Win+Up - fills THAT monitor.
+            Move += (s, e) => { if (WindowState == FormWindowState.Normal) FitMaximizedBounds(); };
             // 31, not 36. The bar carried more clear space above and below its
             // controls than it needed; on a panel that space is screen the machine
             // pages could be using. The controls below are sized from this, so they
@@ -1113,10 +1119,71 @@ namespace Kaban.UI.Forms
 
         private void ToggleMaximize()
         {
-            MaximizedBounds = Screen.FromControl(this).WorkingArea;
+            FitMaximizedBounds();
             WindowState = WindowState == FormWindowState.Maximized
                 ? FormWindowState.Normal : FormWindowState.Maximized;
             if (_btnMax != null) _btnMax.Text = WindowState == FormWindowState.Maximized ? "\u2750" : "\u2610";
+        }
+
+        // ==================================================================
+        // MAXIMISED ON THE MONITOR THE WINDOW IS ON
+        // ------------------------------------------------------------------
+        // On an extended (second) screen the full-screen button threw the
+        // window off the edge of the desktop. MaximizedBounds was set to the
+        // monitor's working area in DESKTOP coordinates - say x = 1920 for a
+        // screen to the right of the main one. Windows takes the maximised
+        // position (WM_GETMINMAXINFO) relative to the monitor the window
+        // maximises on and adds that monitor's origin itself, so the window
+        // went to x = 3840: off the desktop. On the main screen, whose origin
+        // is 0,0, the two readings agree - which is why it worked there.
+        //
+        // Now the position is given relative to the monitor, and as a safety
+        // net the maximised window is placed on its monitor's working area
+        // whatever Windows proposes (WM_WINDOWPOSCHANGING): Windows also
+        // "adjusts" the size for a monitor larger than the main one, and the
+        // taskbar may sit on either screen.
+        // ==================================================================
+
+        /// <summary>The working area of the window's monitor, relative to that monitor.</summary>
+        private void FitMaximizedBounds()
+        {
+            var scr = Screen.FromControl(this);
+            var wa = scr.WorkingArea;
+            MaximizedBounds = new Rectangle(wa.X - scr.Bounds.X, wa.Y - scr.Bounds.Y, wa.Width, wa.Height);
+        }
+
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct WINDOWPOS
+        {
+            public IntPtr hwnd, hwndInsertAfter;
+            public int x, y, cx, cy;
+            public uint flags;
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool IsZoomed(IntPtr hWnd);
+
+        private const int WM_WINDOWPOSCHANGING = 0x46;
+        private static bool _noUser32;
+        private const uint SWP_NOSIZE = 0x1, SWP_NOMOVE = 0x2;
+
+        /// <summary>A maximised window goes exactly onto its monitor's working area.</summary>
+        private void KeepMaximizedOnItsMonitor(ref Message m)
+        {
+            if (m.LParam == IntPtr.Zero || !IsZoomed(Handle)) return;
+            var wp = (WINDOWPOS)System.Runtime.InteropServices.Marshal.PtrToStructure(m.LParam, typeof(WINDOWPOS));
+            if ((wp.flags & SWP_NOMOVE) != 0 && (wp.flags & SWP_NOSIZE) != 0) return;   // z-order only
+
+            // The monitor the window is being placed on: where the proposed
+            // rectangle is (a move), or where the window is (a size).
+            var target = (wp.flags & SWP_NOMOVE) == 0
+                ? Screen.FromRectangle(new Rectangle(wp.x, wp.y, Math.Max(1, wp.cx), Math.Max(1, wp.cy)))
+                : Screen.FromHandle(Handle);
+            var wa = target.WorkingArea;
+            if (wp.x == wa.X && wp.y == wa.Y && wp.cx == wa.Width && wp.cy == wa.Height) return;
+            wp.x = wa.X; wp.y = wa.Y; wp.cx = wa.Width; wp.cy = wa.Height;
+            wp.flags &= ~(SWP_NOMOVE | SWP_NOSIZE);
+            System.Runtime.InteropServices.Marshal.StructureToPtr(wp, m.LParam, false);
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -1128,6 +1195,13 @@ namespace Kaban.UI.Forms
         /// <summary>Keeps edge RESIZING working on a borderless window.</summary>
         protected override void WndProc(ref Message m)
         {
+            if (UseCustomCaption && m.Msg == WM_WINDOWPOSCHANGING && !_noUser32)
+            {
+                try { KeepMaximizedOnItsMonitor(ref m); }
+                catch (DllNotFoundException) { _noUser32 = true; }      // not on Windows (the test bench)
+                catch (EntryPointNotFoundException) { _noUser32 = true; }
+                catch { }
+            }
             base.WndProc(ref m);
             if (!UseCustomCaption || m.Msg != WM_NCHITTEST || WindowState == FormWindowState.Maximized) return;
             const int grip = 6;
@@ -2057,23 +2131,20 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// Asks before the HMI closes - a machine screen shut by a mis-tap is
-        /// disruptive - then tears the PLC connection down. The question is skipped
-        /// when Windows itself is shutting down.
+        /// Tears the PLC connection down as the HMI closes.
+        ///
+        /// THE CLOSE MENU IS THE X BUTTON'S, AND ONLY ITS. The X on the caption
+        /// bar sits where a stray tap on a touch panel lands, so it offers Close
+        /// and Restart instead of closing outright. Every other way of closing -
+        /// the taskbar's "Close window", Alt+F4, the system menu, Windows shutting
+        /// down - is a deliberate act done somewhere else, and closes at once. It
+        /// used to be cancelled and turned into the same dropdown, so closing from
+        /// the taskbar meant going back to the program to click Close again.
         /// </summary>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            bool ask = e.CloseReason != CloseReason.WindowsShutDown &&
-                       e.CloseReason != CloseReason.TaskManagerClosing;
-            if (ask && !_closeConfirmed)
-            {
-                // Alt+F4 and the system menu land here too: cancel, and ask with the
-                // same dropdown the close button uses.
-                e.Cancel = true;
-                ShowCloseMenu();
-                return;
-            }
-            if (_closeConfirmed) AuditLogger.Log("HMI closed by the operator.");
+            AuditLogger.Log(_closeConfirmed ? "HMI closed by the operator."
+                                            : "HMI closed (" + e.CloseReason + ").");
 
             // Stop scanning FIRST, then close every station - not just station 1.
             // A scan in flight would otherwise re-open a station we just closed, and
