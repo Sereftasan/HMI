@@ -3573,3 +3573,99 @@ CuttablePlacements(), which returns CONFIRMED/OVERRIDDEN only. A missing datum
 is an error naming the datum ("NX-CD-STD op1: needs HARDWARE_AXIS"). Re-resolving
 cannot overwrite a confirmed row - that is a WHERE clause, not a convention.
 
+
+---
+
+## 2026-09-24 - Code review: bugs, leaks and performance (conservative), plus six UI requests
+
+A review of the whole solution. Scope agreed: **fix bugs, leaks and performance
+problems with minimal structural change**; nothing redesigned, no project or file
+removed. Every fix carries a "why" comment where it is made. New tests:
+`tools/core_test/ReviewFixes.cs`, `tools/ui_test/ReviewFixesUi.cs`,
+`tools/ui_test/UnitLookAndErrors.cs`, `tools/ui_test/HandCursors.cs`,
+`tools/ui_test/AboutManual.cs`, `tools/nav_test/History.cs` (each was run against
+the original build too, and fails there on the bugs it covers).
+
+### Changes that affect how the machine behaves - please review
+
+- **Jog (momentary) bits are always released.** A momentary bit was cleared only
+  on mouse-up, through the permission-gated driver. Now the bits a press actually
+  set are released on mouse-up, loss of mouse capture, hide, disable, parent
+  change, handle destruction, dispose, and when the button's enable condition
+  drops - through the monitoring driver, so a logout mid-press cannot block the
+  release. Right-click no longer starts a jog. (`ButtonHMI`)
+- **Alarms are evaluated per station.** Every alarm address used to be read from
+  station 1 and every definition evaluated against it, so H500/H800 alarms
+  (remapped to stations 3/4, same M801... addresses) were raised and cleared by
+  FA2010's bits. (`PlcScanner`, `AlarmManager.Evaluate(station, lookup)`)
+- **Conditions are read from the station they are registered on**, fail-closed
+  when that station has no data (SB3012's reset button: MillingUnitIsBack is X25
+  on PLC2, and was read from PLC1).
+- **F12 (PLC memory monitor) needs Admin**, like its menu entry. It writes any
+  device of any station.
+- **Page security is per page instance.** It was keyed by class, and every
+  multi-machine page is a SettingsScreen - so they all shared whichever group's
+  level registered last (Back/Forward could open Machine Parameters without
+  Maintenance).
+
+### Bugs
+- Audit log viewer and "export today" read `yyyy-MM-dd.txt`; the logger writes
+  `HmiAudit_yyyy-MM-dd.txt` - the viewer was always empty. The viewer's read also
+  blocked the logger's append (lost lines). (`AuditLogger.TodayFile`)
+- Alarm Settings **Save never saved** ("Nothing to save": the Load overload every
+  module uses never recorded the path); would also have written every machine's
+  alarms into one file, and matched by address across machines. Now per file,
+  per scoped code; `Comment` kept; non-ASCII text written readable.
+- `MD3020/Alarms.json` was in the old format, so MD3020 had no alarms; converted.
+- Numeric entry on a Windows with decimal comma (TR/DE/RU/IT/ES) refused every
+  decimal; the write path parsed with thousands separators ("12.5" -> 125); hex
+  fields were handed their decimal value. (`NumpadForm`, `NumericInputHMI`,
+  `InputForm`)
+- `ConnectionMonitor` used local time: the autumn clock change kept a dead
+  station "live" for up to an hour. Now UTC, and thread-safe (32-bit torn reads).
+- Back/Forward: restored only the outer page (no-op when already shown), found its
+  window through `FindForm()` (null once away), and the machine strip always marked
+  the main machine. A step is now a location: page + every tab on the way down.
+  Identical steps are not recorded twice; login/language rebuilds add no steps.
+- Users: a `;` in a name corrupted Users.dat; the last Admin could be demoted; a
+  damaged account threw out of the login.
+- Delta Modbus: a write the device refused was reported as success.
+- `TroubleshootingCatalog.Resolve(fileName)` shadowed `Resolve(code)` - renamed
+  `ResolveLanguageFile`; four help tests compile again.
+- `MainForm.LoadEmbeddedImage` returned an Image whose stream was disposed.
+- The scan worker could throw out of a pool thread (process exit) or leave
+  `_scanBusy` set (screen frozen).
+
+### Leaks and performance
+- Kernel wait handle per driver call never disposed (`BoundedDriver`, `StaWorker`).
+- Static `LanguageChanged` lambdas that could never be removed kept every
+  `BaseNumericHMI`, `ButtonHMI`, `LabelHMI` (and their pages) alive.
+- Per-click menus (caption bar, alarm help, column chooser) never disposed; one
+  new Font per menu, per tab switch, per bold toggle, per readout size.
+- Version device read on every 100 ms scan -> once a second.
+- Alarm list refreshed once per alarm -> once per scan.
+- Alarm help lookups probed the disk on every cell paint -> 2 s cache.
+- Login icon re-tinted pixel by pixel on every paint -> cached.
+- Condition checks: `Enum.GetValues` + boxing `HasFlag` per control per scan.
+- Settings files (users, units, PLC connections, imports, Alarms.json) are
+  written all-or-nothing (`SafeFile`), so a power cut cannot leave them empty.
+- Npgsql connect timeout 15 s -> 3 s (checked from the UI thread).
+
+### UI requests (2026-09-23)
+1. Back/Forward load reliably and the machine strip marks the machine shown.
+2. `AxisUnitHMI` position looks like the Axis Settings row (black bold on the
+   read-only grey); only its border blinks red on an axis error.
+3. Axis and function units render the same frame at the same size: the "?"
+   no longer takes width from the sides; axis slots scale with the unit.
+4. The "?" sits on the top frame line at the right end (the "i" moves left of
+   it); the failing button's (cylinder) or the position's (axis) border blinks red.
+5. Hand cursor on every enabled button/combo in every window, the caption bar
+   and all dropdown menu items; disabled items show the arrow.
+6. HMI Settings "Manual" tab removed; About has "Open the HMI manual", which opens
+   `Help/Kaban_HMI_Manual.<lang>.html` (English shipped; add `.tr.html` etc.).
+
+### Removed (dead code only)
+`MainForm.PulseAlarmReset`, `DrawResetGlyph`, `DrawLanguageItem`, `_navSavedText`;
+`MachineAlarmScreen.ResetAlarms`; `NumericInputHMI` prompt text,
+`FormatCurrentValueForEdit`, `FormatLimit`; `ButtonHMI.Str`;
+`HmiManualControl`/`HmiManualPage` (replaced by the HTML manual).
