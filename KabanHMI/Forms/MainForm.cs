@@ -39,6 +39,10 @@ namespace Kaban.UI.Forms
             InitializeComponent();
             if (this.DesignMode) return;
             _scanner = new PlcScanner(pnlContent);
+
+            // The hand over everything clickable, in every window - the caption
+            // bar, its dropdown menus and the dialogs included (see UiStyle).
+            Kaban.UI.Controls.UiStyle.EnableHandCursorsEverywhere();
         }
 
         public void LoadScreen(UserControl newScreen)
@@ -883,6 +887,7 @@ namespace Kaban.UI.Forms
                     FlatStyle = FlatStyle.Flat,
                     Font = new Font("Segoe UI", 9F),
                     TabStop = false,
+                    Cursor = Cursors.Hand,      // like every other caption button
                     BackColor = Color.Black,
                     ForeColor = Color.White
                 };

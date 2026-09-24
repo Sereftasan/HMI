@@ -137,6 +137,14 @@ class H {
         LanguageManager.ChangeLanguage(LanguageManager.CurrentLanguage);
         Check("no steps added by the tab rebuilds", HistoryCount() == before, before + " -> " + HistoryCount());
 
+        Console.WriteLine("--- the caption bar shows the hand on every button ---");
+        for (int i = 0; i < 5; i++) { Application.DoEvents(); System.Threading.Thread.Sleep(10); }
+        foreach (var name in new[] { "_btnLogin", "_btnLang", "_btnMin", "_btnMax", "_btnClose", "_btnConnection", "_btnAlarmReset" })
+        {
+            var b = typeof(MainForm).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(form) as Control;
+            Check(name + ": hand", b != null && b.Cursor == Cursors.Hand, b == null ? "missing" : b.Cursor.ToString());
+        }
+
         Console.WriteLine(fail == 0 ? "\nHISTORY ALL PASS" : "\nHISTORY " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

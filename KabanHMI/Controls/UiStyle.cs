@@ -68,6 +68,117 @@ namespace Kaban.UI.Controls
             }
         }
 
+        // ---- the hand cursor, everywhere ---------------------------------
+        //
+        // "Anything that can be clicked shows the hand" was applied by a sweep of
+        // each PAGE when it was shown - so the caption bar, the dropdown menus
+        // (connection, alarms, login, language), dialogs, and any control added
+        // after the sweep kept the arrow. Menu items are not controls at all, so
+        // no sweep could ever reach them. Now:
+        //   * every open window is swept once, on the first idle moment after it
+        //     appears, and every container is watched for controls added later;
+        //   * every menu and toolbar shows the hand over its enabled items.
+        // Disabled controls still fall back to the arrow (CursorFollowsEnabled).
+
+        private static bool _handCursorsOn;
+        private static readonly HashSet<Control> _sweptForms = new HashSet<Control>(new ReferenceComparer());
+        private static readonly HashSet<Control> _watched = new HashSet<Control>(new ReferenceComparer());
+        private static readonly HashSet<Control> _handCued = new HashSet<Control>(new ReferenceComparer());
+        private static readonly HashSet<Control> _menuCued = new HashSet<Control>(new ReferenceComparer());
+
+        /// <summary>Turns the hand-cursor rule on for every window of the program. Call once.</summary>
+        public static void EnableHandCursorsEverywhere()
+        {
+            if (_handCursorsOn) return;
+            _handCursorsOn = true;
+            Application.Idle += (s, e) => SweepOpenForms();
+            SweepOpenForms();
+        }
+
+        /// <summary>
+        /// Applies the rule to every open window not swept yet. Runs on each idle
+        /// moment (cheap: a handful of windows and a set lookup each); public for
+        /// tests, as Mono's DoEvents does not raise Idle.
+        /// </summary>
+        public static void SweepOpenForms()
+        {
+            foreach (Form f in Application.OpenForms)
+            {
+                if (f == null || f.IsDisposed || !_sweptForms.Add(f)) continue;
+                var form = f;
+                form.Disposed += (s2, e2) => _sweptForms.Remove(form);
+                ApplyHandCursors(form);
+            }
+        }
+
+        /// <summary>Gives every button, combo box, menu and toolbar under root the hand rule, now and later.</summary>
+        public static void ApplyHandCursors(Control root)
+        {
+            if (root == null || root.IsDisposed) return;
+            HandCursorFor(root);
+            if (_watched.Add(root))
+            {
+                var r = root;
+                r.ControlAdded += (s, e) => ApplyHandCursors(e.Control);
+                r.Disposed += (s, e) => _watched.Remove(r);
+            }
+            foreach (Control c in root.Controls) ApplyHandCursors(c);
+        }
+
+        private static void HandCursorFor(Control c)
+        {
+            if (c.ContextMenuStrip != null) HandOverMenuItems(c.ContextMenuStrip);
+
+            var ts = c as ToolStrip;
+            if (ts != null) { HandOverMenuItems(ts); return; }
+
+            if (!(c is ButtonBase || c is ComboBox)) return;
+            if (c is IManagesOwnCursor || c is IDisplayOnly) return;          // they decide for themselves
+            // A cursor somebody chose on purpose (a drag handle, say) is kept.
+            if (c.Cursor != Cursors.Default && c.Cursor != Cursors.Hand) return;
+            if (_cued.Contains(c) || !_handCued.Add(c)) return;               // already following Enabled
+            var ctl = c;
+            ctl.Disposed += (s, e) => _handCued.Remove(ctl);
+            CursorFollowsEnabled(ctl);
+        }
+
+        /// <summary>
+        /// The hand over a menu's or toolbar's clickable items, the arrow over its
+        /// headings, separators and disabled entries. Submenus get the same as
+        /// they open.
+        /// </summary>
+        public static void HandOverMenuItems(ToolStrip ts)
+        {
+            if (ts == null || !_menuCued.Add(ts)) return;
+            var strip = ts;
+            strip.Disposed += (s, e) => _menuCued.Remove(strip);
+            strip.MouseMove += (s, e) =>
+            {
+                var item = strip.GetItemAt(e.Location);
+                var want = IsClickable(item) ? Cursors.Hand : Cursors.Default;
+                if (strip.Cursor != want) strip.Cursor = want;
+            };
+            strip.MouseLeave += (s, e) => { if (strip.Cursor != Cursors.Default) strip.Cursor = Cursors.Default; };
+            foreach (ToolStripItem it in strip.Items) HookSubMenu(it);
+            strip.ItemAdded += (s, e) => HookSubMenu(e.Item);
+        }
+
+        private static bool IsClickable(ToolStripItem item)
+        {
+            if (item == null || !item.Enabled || !item.Available) return false;
+            if (item is ToolStripSeparator || item is ToolStripControlHost) return false;
+            var label = item as ToolStripLabel;
+            if (label != null && !(item is ToolStripStatusLabel) && !label.IsLink) return false;   // a heading
+            return true;
+        }
+
+        private static void HookSubMenu(ToolStripItem item)
+        {
+            var dd = item as ToolStripDropDownItem;
+            if (dd == null) return;
+            dd.DropDownOpened += (s, e) => HandOverMenuItems(dd.DropDown);
+        }
+
         // ---- error border blink ------------------------------------------
         //
         // One shared timer for every control whose border is blinking an error
@@ -145,6 +256,7 @@ namespace Kaban.UI.Controls
 
         private static void Adopt(ToolStripDropDown menu, Control owner)
         {
+            HandOverMenuItems(menu);
             if (owner == null) return;
             ToolStripDropDown[] slot;
             if (!_lastPopup.TryGetValue(owner, out slot))
@@ -218,6 +330,7 @@ namespace Kaban.UI.Controls
             var m = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
             m.Renderer = new HmiMenuRenderer();
             m.ImageScalingSize = new Size(22, 22);
+            HandOverMenuItems(m);
             return m;
         }
 
