@@ -18,8 +18,8 @@ namespace Kaban.UI.Controls
     ///
     /// It looks exactly like the FunctionUnitHMI units around it, because it IS
     /// one inside: the same frame, two jog buttons, position display, the
-    /// reference sensor lamp on one button, and the "?" on its border when the
-    /// axis faults.
+    /// reference sensor lamp on one button, and the "?" on its top frame line
+    /// while the drive reports a code (servo alarm, axis alarm, axis warning).
     /// </summary>
     [ToolboxItem(true)]
     public class AxisUnitHMI : UserControl
@@ -31,8 +31,8 @@ namespace Kaban.UI.Controls
         public AxisUnitHMI()
         {
             // The axis reading as the Axis Settings rows show it - black bold on
-            // the read-only grey - rather than the red-on-black readout of a function unit; the
-            // same axis should look the same on both pages. An axis error blinks
+            // the read-only grey (every unit's default now; set here as well so an
+            // axis can never be switched to the red readout). An axis error blinks
             // this display's border red (see FunctionUnitHMI.UpdateErrorBlink).
             _unit.PositionStyle = UnitPositionStyle.Standard;
             _unit.Kind = UnitKind.Axis;
@@ -95,6 +95,7 @@ namespace Kaban.UI.Controls
             _unit.PositionAddress = "";
             _unit.Lamp1AAddress = _unit.Lamp1BAddress = "";
             _unit.ErrorAAddress = _unit.ErrorBAddress = "";
+            _unit.SetAxisCodes("", "", "");
             if (InDesigner || _axisNumber <= 0)
             {
                 _unit.TitleTextKey = _axisNumber > 0 ? "Axis " + _axisNumber : "Axis";
@@ -141,10 +142,14 @@ namespace Kaban.UI.Controls
             _unit.Lamp1AAddress = back ? a.ReferenceSensor : "";
             _unit.Lamp1BAddress = back ? "" : a.ReferenceSensor;
 
-            // One error bit for an axis: its "?" goes on the top frame line and the
-            // position display's border blinks red while it is set.
+            // The error bit blinks the position display's border red while set.
+            // The "?" on the top frame line follows the axis row's three DRIVE
+            // CODES instead: shown while any is not zero, one menu entry per code,
+            // each opening just that code's entry of its manual. All three zero,
+            // no "?" - there is nothing to look up.
             _unit.ErrorAAddress = "";
             _unit.ErrorBAddress = a.Error;
+            _unit.SetAxisCodes(a.ServoAlarm, a.AxisAlarm, a.AxisWarning);
 
             _unit.ButtonA.Direction = a.Vertical ? ButtonGlyphs.Direction.Down : ButtonGlyphs.Direction.Left;
             _unit.ButtonB.Direction = a.Vertical ? ButtonGlyphs.Direction.Up : ButtonGlyphs.Direction.Right;

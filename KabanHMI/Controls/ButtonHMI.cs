@@ -144,7 +144,18 @@ namespace Kaban.UI.Controls
         [TypeConverter(typeof(PlcTriggerSorter))] // <--- THIS FIXES THE CRASH & ALLOWS EXPANSION
         public PlcTrigger EnableTrigger { get; set; } = new PlcTrigger();
 
-        [Category(" System")] public bool ConfirmationNeeded { get; set; } = false;
+        /// <summary>
+        /// Asks "Are you sure?" before the button's Set / Reset / Alternate and
+        /// word actions are written.
+        ///
+        /// NOT for Momentary (jog) actions: a jog runs only while the button is
+        /// HELD, so holding it is the confirmation, and letting go stops it. A
+        /// dialog before a jog would take the mouse mid-press - which is exactly
+        /// what releases a jog (see the MOMENTARY section below).
+        /// </summary>
+        [Category(" System")]
+        [Description("Ask before writing Set/Reset/Alternate and word actions. Not used for Momentary (jog) actions: holding the button is the confirmation.")]
+        public bool ConfirmationNeeded { get; set; } = false;
         [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.None;
         [Category(" Security")] public bool LogAction { get; set; } = false;
 
@@ -1238,6 +1249,14 @@ namespace Kaban.UI.Controls
             base.OnClick(e);
 
             if (!_softEnabled) return;
+
+            // A button whose every action is MOMENTARY (a jog) did its work while
+            // it was held - there is nothing left to do on the click. It used to
+            // go on to ask "Are you sure?" after the jog had already happened
+            // when ConfirmationNeeded was set, confirming nothing.
+            bool hasClickActions = BitActions.Any(a => a != null && a.Action != BitActionType.Momentary) ||
+                                   WordActions.Any(a => a != null);
+            if (!hasClickActions) return;
 
             if (ConfirmationNeeded)
             {

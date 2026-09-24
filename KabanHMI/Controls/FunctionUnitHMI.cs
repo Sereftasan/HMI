@@ -148,11 +148,13 @@ namespace Kaban.UI.Controls
             _btnA.Font = UiStyle.Body;
             _btnB.Font = UiStyle.Body;
 
-            _numPosition.BackColor = Color.Black;
             _numPosition.TextAlign = ContentAlignment.MiddleCenter; // center the digits in the box
             _numPosition.Visible = false; // only shown when a position device is configured
-            _numPosition.ForeColor = Color.Red;
-            _numPosition.Font = PositionFontFor(20);
+            // The Axis Settings look - black bold on the read-only grey - unless a
+            // page asks for the red readout (see PositionStyle).
+            _numPosition.BackColor = Color.Gainsboro;
+            _numPosition.ForeColor = Color.Black;
+            _numPosition.Font = StandardPositionFont;
             _numPosition.Padding = new Padding(0);
             _numPosition.CornerRadius = 4;      // matches the buttons beside it
             _btnA.CornerRadius = 4;
@@ -280,15 +282,20 @@ namespace Kaban.UI.Controls
             return new Font(FontFamily.GenericMonospace, size, FontStyle.Bold);
         }
 
-        private UnitPositionStyle _positionStyle = UnitPositionStyle.Readout;
+        private UnitPositionStyle _positionStyle = UnitPositionStyle.Standard;
 
         /// <summary>
-        /// Red-on-black readout, or the black bold reading of the axis rows.
-        /// An AxisUnitHMI uses Standard, so an axis looks the same on the manual
-        /// page as it does in Axis Settings.
+        /// The black bold reading of the axis rows - the default for EVERY unit,
+        /// so a function unit's position, an axis unit's and the Axis Settings
+        /// row's all read alike - or the old red-on-black readout, kept for a
+        /// page that wants it.
+        ///
+        /// Standard became the default because a function unit next to an axis
+        /// unit showed the same kind of number in two different styles, and red
+        /// digits read as an alarm on a page where red means exactly that.
         /// </summary>
-        [Category(" Position"), DefaultValue(UnitPositionStyle.Readout)]
-        [Description("Readout: red digits on black. Standard: black bold digits on grey, like the Axis Settings rows.")]
+        [Category(" Position"), DefaultValue(UnitPositionStyle.Standard)]
+        [Description("Standard: black bold digits on grey, like the Axis Settings rows. Readout: red digits on black.")]
         public UnitPositionStyle PositionStyle
         {
             get { return _positionStyle; }
@@ -757,6 +764,23 @@ namespace Kaban.UI.Controls
          Description("Cylinder units: the feedback fitted. The help shows only this sensor's part of detail 1.7.")]
         public CylinderFeedback Feedback { get { return _feedback; } set { _feedback = value; } }
 
+        /// <summary>
+        /// Makes the "?" an AXIS's: shown while any of the axis's three drive
+        /// codes is not zero, with one menu entry per code that opens only that
+        /// code's entry of its manual (see AlarmHelpBadge). The error bit keeps
+        /// driving the red border. Called by AxisUnitHMI with its axis row's
+        /// code words; empty addresses leave the "?" on the error bit.
+        /// </summary>
+        public void SetAxisCodes(string servoAlarmAddress, string axisAlarmAddress, string axisWarningAddress)
+        {
+            _codeWords = new[] { servoAlarmAddress ?? "", axisAlarmAddress ?? "", axisWarningAddress ?? "" };
+            _helpA.SetCodeWords(null, null, null);
+            _helpB.SetCodeWords(servoAlarmAddress, axisAlarmAddress, axisWarningAddress);
+            LayoutBadges();
+        }
+
+        private string[] _codeWords = { "", "", "" };
+
         /// <summary>This unit's error bits, for AlarmHelpLinks.</summary>
         public IEnumerable<Kaban.UI.Helpers.AlarmHelpLinks.Link> HelpLinks()
         {
@@ -773,7 +797,10 @@ namespace Kaban.UI.Controls
                         Valve = _kind == UnitKind.Axis ? 0 : (int)_valve,
                         Feedback = _kind == UnitKind.Axis ? 0 : (int)_feedback,
                         Unit = name,
-                        HelpFiles = HelpFileNames()
+                        HelpFiles = HelpFileNames(),
+                        ServoAlarm = _kind == UnitKind.Axis ? _codeWords[0] : "",
+                        AxisAlarm = _kind == UnitKind.Axis ? _codeWords[1] : "",
+                        AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : ""
                     };
         }
 
@@ -878,6 +905,7 @@ namespace Kaban.UI.Controls
             // fallback gives the same "translate if key exists, else show literally"
             // behavior.
             _grp.Text = Tr(_titleText);
+            _helpA.UnitName = _helpB.UnitName = _grp.Text;     // named in the help titles
             _btnA.Text = Tr(_buttonAText);
             _btnB.Text = Tr(_buttonBText);
 
@@ -1145,7 +1173,9 @@ namespace Kaban.UI.Controls
         /// </summary>
         private void UpdateErrorBlink()
         {
-            bool errA = _helpA.IsActive, errB = _helpB.IsActive;
+            // The ERROR BIT, not whether the "?" is shown: an axis shows its "?"
+            // for its drive codes, and a warning code must not blink the border.
+            bool errA = _helpA.IsErrorSet, errB = _helpB.IsErrorSet;
             bool hasPos = !string.IsNullOrWhiteSpace(_positionAddress);
             bool hasA = !string.IsNullOrWhiteSpace(_commandAAddress);
             bool hasB = !string.IsNullOrWhiteSpace(_commandBAddress);

@@ -279,10 +279,18 @@ namespace Kaban.UI.Plc
             foreach (var o in _others)
             {
                 var bound = o as IPlcBoundControl;
-                if (bound == null || string.IsNullOrWhiteSpace(bound.Address)) continue;
+                if (bound == null) continue;
                 curPlc = bound.PlcNumber;
-                Add(bound.Address);
-                Add(PlcAddressHelper.GetNextAddress(bound.Address));
+                if (!string.IsNullOrWhiteSpace(bound.Address))
+                {
+                    Add(bound.Address);
+                    Add(PlcAddressHelper.GetNextAddress(bound.Address));
+                }
+                // Code words beside the error bit (the axis "?"): single words.
+                var extra = o as IPlcExtraAddresses;
+                if (extra != null)
+                    foreach (var a in extra.ExtraAddresses)
+                        if (!string.IsNullOrWhiteSpace(a)) Add(a);
             }
 
             // Stations whose values are ON THE PAGE. The "communication lost" banner

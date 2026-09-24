@@ -95,6 +95,20 @@ namespace Kaban.Core.Helpers
             return ByAddress(address);
         }
 
+        /// <summary>
+        /// A label on a given station - a mounted machine's OWN list, so asking
+        /// H500's station for "PC_AlarmReset" cannot answer with FA2010's. A
+        /// station without a list of its own uses the default (main machine's).
+        /// </summary>
+        public static Entry ByLabel(int station, string label)
+        {
+            if (string.IsNullOrWhiteSpace(label)) return null;
+            Dictionary<string, Entry> table;
+            if (station > 0 && _byStation.TryGetValue(station, out table))
+                return table.Values.FirstOrDefault(e => string.Equals(e.Label, label.Trim(), StringComparison.OrdinalIgnoreCase));
+            return ByLabel(label);
+        }
+
         public static int Load(string path)
         {
             _entries.Clear(); _byLabel.Clear(); _byAddress.Clear();

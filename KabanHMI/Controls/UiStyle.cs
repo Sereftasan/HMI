@@ -487,8 +487,10 @@ namespace Kaban.UI.Controls
         /// </summary>
         private static void ApplyCursorRule(Control c)
         {
-            if (c is IDisplayOnly || c is DataGridView) { c.Cursor = Cursors.Default; return; }
+            // FIRST: a display that turns into a link while it has something to
+            // open (an axis code cell) sets its own cursor as that changes.
             if (c is IManagesOwnCursor) return;
+            if (c is IDisplayOnly || c is DataGridView) { c.Cursor = Cursors.Default; return; }
             CursorFollowsEnabled(c);
         }
 

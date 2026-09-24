@@ -506,7 +506,7 @@ namespace Kaban.UI.Controls
     /// and should not draw the eye across a page of sixteen axes.
     /// </summary>
     [ToolboxItem(true)]
-    public class HexCodeHMI : Control, IPlcBoundControl, UiStyle.IDisplayOnly, UiStyle.IDrawsOwnHoverBorder
+    public class HexCodeHMI : Control, IPlcBoundControl, UiStyle.IDisplayOnly, UiStyle.IManagesOwnCursor, UiStyle.IDrawsOwnHoverBorder
     {
         [Category("  PLC")] public int PlcNumber { get; set; }
         [Category("  PLC")] public string Address { get; set; }
@@ -524,6 +524,29 @@ namespace Kaban.UI.Controls
 
         [Category("Appearance"), Description("Alarm codes show red, warnings amber.")]
         public CodeSeverity Severity { get; set; }
+
+        /// <summary>
+        /// Which code this is, which decides how it is printed and which manual
+        /// answers it. None prints the servo way ("50.2") with no help behind it.
+        /// </summary>
+        [Category("Appearance"), DefaultValue(AxisCodeKind.None),
+         Description("Servo alarm: printed 16.3, help from the servo manual. Axis alarm / warning: printed 1904H, help from the motion module's manual.")]
+        public AxisCodeKind CodeKind { get; set; }
+
+        /// <summary>The axis's name, for the help's title.</summary>
+        [Browsable(false)]
+        public string UnitName { get; set; }
+
+        /// <summary>
+        /// True while the code is not zero and its manual has an entry to open:
+        /// then the cell is a link - hand pointer, a small "?" in its corner, and
+        /// a click opens that code's entry. A zero code is inert, as before.
+        /// </summary>
+        [Browsable(false)]
+        public bool HasHelp { get { return _raw > 0 && _help != null; } }
+
+        private TroubleshootingCatalog.HelpDocument _help;
+        private bool _warningCode;
 
         private int _raw = -1;
         private readonly ToolTip _tip = UiStyle.Tips();
@@ -561,6 +584,9 @@ namespace Kaban.UI.Controls
             var text = PlcAddressHelper.StationHeader(PlcNumber) +
                        (string.IsNullOrEmpty(Address) ? "(no device)"
                                                       : PlcAddressHelper.Describe(PlcNumber, Address));
+            // What the code means, and that a click explains it - above the device.
+            if (HasHelp)
+                text = _help.Title + "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help") + "\r\n\r\n" + text;
             if (IsStale) text = ConnectionMonitor.ReasonFor(PlcNumber) + "\r\n" + text;
             _tip.SetToolTip(this, text);
         }
@@ -586,21 +612,33 @@ namespace Kaban.UI.Controls
         /// </summary>
         public static string Format(int raw)
         {
-            if (raw == 0) return "";
-            if (raw < 0) return "-";
-            string hex = raw.ToString("X");
-            if (hex.Length == 1) return "0." + hex;
-            return hex.Substring(0, hex.Length - 1) + "." + hex.Substring(hex.Length - 1);
+            return AxisCodeHelp.Format(AxisCodeKind.None, raw);
         }
 
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             if (readPlc == null || string.IsNullOrEmpty(Address)) return;
             int v = readPlc(Address);
+            // ONE 16-bit word: the scanner reads a pair for widths it cannot know,
+            // and the neighbouring word must not turn 1904H into 51904H.
+            if (CodeKind != AxisCodeKind.None) v &= 0xFFFF;
             if (v == _raw) return;
             _raw = v;
+            // Looked up when the code CHANGES, not on every scan.
+            _help = CodeKind != AxisCodeKind.None && v > 0 ? AxisCodeHelp.Document(CodeKind, v, UnitName) : null;
+            // A servo WARNING (E6.1 forced stop...) in the servo column is amber
+            // too: the manual says the axis has not been stopped by it.
+            _warningCode = Severity == CodeSeverity.Warning || AxisCodeHelp.IsWarning(CodeKind, v);
+            Cursor = HasHelp ? Cursors.Hand : Cursors.Default;
             RefreshTip();
             Invalidate();
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            if (!HasHelp || IsStale) return;
+            Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), _help);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -629,12 +667,24 @@ namespace Kaban.UI.Controls
             // Zero is BLACK and quiet - no fault is the normal state and must not
             // draw the eye across a page of sixteen axes.
             var colour = !faulted ? Color.FromArgb(25, 28, 34)
-                       : Severity == CodeSeverity.Warning ? Color.FromArgb(190, 140, 20)
+                       : (Severity == CodeSeverity.Warning || _warningCode) ? Color.FromArgb(190, 140, 20)
                                                           : Color.FromArgb(190, 40, 40);
-            TextRenderer.DrawText(g, Format(_raw), Font, r, colour,
+            TextRenderer.DrawText(g, AxisCodeHelp.Format(CodeKind, _raw), Font, r, colour,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                 TextFormatFlags.NoPadding);
+
+            // The link mark: a small "?" in the top right corner, in the code's
+            // own colour - so the cell says "there is an answer to this" without
+            // becoming a second, louder badge beside the number.
+            if (HasHelp && !IsStale)
+            {
+                if (_markFont == null) _markFont = new Font("Segoe UI", 7.5f, FontStyle.Bold);
+                TextRenderer.DrawText(g, "?", _markFont, new Rectangle(Width - 12, 0, 11, 13), colour,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.Top | TextFormatFlags.NoPadding);
+            }
         }
+
+        private static Font _markFont;
     }
 }
 

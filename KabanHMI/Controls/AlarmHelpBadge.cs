@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
@@ -12,28 +13,81 @@ using Kaban.UI.Helpers;
 namespace Kaban.UI.Controls
 {
     /// <summary>
-    /// The "?" on a unit's frame: shown, blinking red, while its error bit is
-    /// set; a click opens the help for it.
+    /// The "?" on a unit's frame: shown, blinking, while there is something to
+    /// look up; a click opens the help for it.
     ///
     /// On the unit itself because that is where the operator is looking when a
     /// cylinder fails to move - the alarm list is a page away. On the TOP frame
     /// line, at its right end, beside the unit's "i" (its caption holds the left
     /// end): outside the buttons, so opening help can never be mistaken for
-    /// moving the unit. It used to sit on the SIDE lines, which cost the unit a
-    /// strip of its width whenever an error bit was set. Hidden while there is
-    /// no error: a permanent "?" on every unit is clutter that trains the eye to
-    /// skip it.
+    /// moving the unit. Hidden while there is nothing to look up: a permanent
+    /// "?" on every unit is clutter that trains the eye to skip it.
+    ///
+    /// TWO WAYS TO BE SHOWN
+    /// --------------------
+    /// A cylinder: while its error bit is set, and the menu is the unit's
+    /// troubleshooting help.
+    ///
+    /// An axis (SetCodeWords): while any of its three drive codes is not zero -
+    /// servo alarm, axis alarm, axis warning - with ONE MENU ENTRY PER CODE,
+    /// each opening only that code's entry of the manual. All three zero, no
+    /// "?", whatever the error bit says: there is nothing to look up. The error
+    /// bit still drives the red border on the position (IsErrorSet). Only
+    /// warnings: drawn amber, as the Axis Settings row draws a warning code.
     /// </summary>
     [ToolboxItem(false)]
-    public class AlarmHelpBadge : Control, IPlcBoundControl, UiStyle.IDrawsOwnHoverBorder
+    public class AlarmHelpBadge : Control, IPlcExtraAddresses, UiStyle.IDrawsOwnHoverBorder
     {
         public int PlcNumber { get; set; } = 1;
         public string Address { get; set; } = "";
 
-        private bool _active;
+        private bool _active, _error, _warningOnly;
+
+        /// <summary>True while the "?" is shown.</summary>
         public bool IsActive { get { return _active; } }
 
+        /// <summary>True while the error bit is set - what the unit's red border follows.</summary>
+        public bool IsErrorSet { get { return _error; } }
+
         public const int BadgeSize = 16;
+
+        // ---- the axis's code words ----------------------------------------
+
+        private sealed class CodeWord
+        {
+            public AxisCodeKind Kind;
+            public string Address;
+            public int Value;
+        }
+
+        private readonly List<CodeWord> _codes = new List<CodeWord>();
+
+        /// <summary>The unit's name, for the help titles.</summary>
+        public string UnitName { get; set; } = "";
+
+        /// <summary>
+        /// Makes this an axis's "?": shown from the three code words instead of
+        /// the error bit. Empty addresses are left out; all empty returns the
+        /// badge to the error bit.
+        /// </summary>
+        public void SetCodeWords(string servoAlarm, string axisError, string axisWarning)
+        {
+            _codes.Clear();
+            Action<AxisCodeKind, string> add = (k, a) =>
+            {
+                if (!string.IsNullOrWhiteSpace(a)) _codes.Add(new CodeWord { Kind = k, Address = a.Trim() });
+            };
+            // The order of the menu: the drive's own alarm first - it is usually
+            // the root of the other two - then the module's alarm, then its warning.
+            add(AxisCodeKind.ServoAlarm, servoAlarm);
+            add(AxisCodeKind.AxisError, axisError);
+            add(AxisCodeKind.AxisWarning, axisWarning);
+        }
+
+        /// <summary>True when the "?" follows code words (an axis), not the error bit.</summary>
+        public bool UsesCodeWords { get { return _codes.Count > 0; } }
+
+        public IEnumerable<string> ExtraAddresses { get { return _codes.Select(c => c.Address); } }
 
         // One timer for every badge: a page of twenty units must not run twenty.
         private static readonly List<AlarmHelpBadge> _blinking = new List<AlarmHelpBadge>();
@@ -54,38 +108,74 @@ namespace Kaban.UI.Controls
 
         public void UpdateState(Func<string, int> lookup, Func<SystemCondition, bool> checkGlobal)
         {
-            bool on = !string.IsNullOrWhiteSpace(Address) &&
-                      !ConnectionMonitor.IsKnownDown(PlcNumber) &&
-                      lookup != null && lookup(Address) != 0;
-            SetActive(on);
+            // A station that stopped answering cannot say anything has cleared, or
+            // what the code is now: shown as nothing rather than as a stale fault.
+            bool live = lookup != null && !ConnectionMonitor.IsKnownDown(PlcNumber);
+            bool error = live && !string.IsNullOrWhiteSpace(Address) && lookup(Address) != 0;
+
+            if (_codes.Count == 0) { Set(error, error, false); return; }
+
+            bool codesChanged = false;
+            foreach (var c in _codes)
+            {
+                // A code word is one 16-bit word; the high half of the pair the
+                // scanner may have read beside it is not part of it.
+                int v = live ? lookup(c.Address) & 0xFFFF : 0;
+                if (v != c.Value) { c.Value = v; codesChanged = true; }
+            }
+            bool any = _codes.Any(c => c.Value != 0);
+            // Looked up only when a code CHANGES, not on every 100 ms scan.
+            bool warningOnly = codesChanged
+                ? any && _codes.Where(c => c.Value != 0).All(c => AxisCodeHelp.IsWarning(c.Kind, c.Value))
+                : _warningOnly;
+            Set(any, error, warningOnly);
+            if (codesChanged && _active) RefreshTip();
         }
 
         /// <summary>
-        /// Raised when the error comes or goes, so the unit can place the badge and
-        /// blink the border of the part that failed.
+        /// Raised when the "?" comes or goes, or the error bit changes, so the
+        /// unit can place the badge and blink the border of the part that failed.
         /// </summary>
         public event EventHandler ActiveChanged;
 
-        /// <summary>Shows or hides the badge; public so a test can drive it.</summary>
+        /// <summary>Shows or hides the badge for an error bit; public so a test can drive it.</summary>
         public void SetActive(bool on)
         {
-            if (on == _active) return;
-            _active = on;
-            Visible = on;
-            var changed = ActiveChanged;
-            if (changed != null) changed(this, EventArgs.Empty);
-            if (on)
+            Set(on, on, false);
+        }
+
+        private void Set(bool shown, bool error, bool warningOnly)
+        {
+            bool changed = shown != _active || error != _error;
+            bool repaint = warningOnly != _warningOnly;
+            _warningOnly = warningOnly;
+            if (!changed) { if (repaint) Invalidate(); return; }
+
+            bool wasShown = _active;
+            _active = shown;
+            _error = error;
+            Visible = shown;
+            var handler = ActiveChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
+            if (shown && !wasShown) { RefreshTip(); StartBlinking(this); }
+            else if (!shown && wasShown) StopBlinking(this);
+        }
+
+        /// <summary>The codes currently set, one line each, or the alarm's name.</summary>
+        private void RefreshTip()
+        {
+            string text;
+            if (_codes.Count > 0)
             {
-                var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
-                UiStyle.Tips().SetToolTip(this,
-                    (def != null ? LanguageManager.GetString(def.TranslationKey, def.AlarmCode) + "\r\n" : "") +
-                    LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
-                StartBlinking(this);
+                text = string.Join("\r\n", _codes.Where(c => c.Value != 0).Select(c => AxisCodeHelp.Describe(c.Kind, c.Value)));
             }
             else
             {
-                StopBlinking(this);
+                var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
+                text = def != null ? LanguageManager.GetString(def.TranslationKey, def.AlarmCode) : "";
             }
+            UiStyle.Tips().SetToolTip(this, (text.Length > 0 ? text + "\r\n" : "") +
+                                            LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
         }
 
         private static void StartBlinking(AlarmHelpBadge b)
@@ -101,7 +191,7 @@ namespace Kaban.UI.Controls
                     {
                         // A station that stopped answering cannot say the error has
                         // cleared; hide rather than blink a reading nobody can trust.
-                        if (x.IsDisposed || ConnectionMonitor.IsKnownDown(x.PlcNumber)) { x.SetActive(false); continue; }
+                        if (x.IsDisposed || ConnectionMonitor.IsKnownDown(x.PlcNumber)) { x.Set(false, false, false); continue; }
                         x.Invalidate();
                     }
                 };
@@ -127,6 +217,12 @@ namespace Kaban.UI.Controls
             base.Dispose(disposing);
         }
 
+        /// <summary>Red for a fault; amber when every code set is a warning (the axis still runs).</summary>
+        public Color MarkColor
+        {
+            get { return _warningOnly ? Color.FromArgb(214, 150, 20) : Color.FromArgb(214, 36, 36); }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -134,11 +230,11 @@ namespace Kaban.UI.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
             var r = new Rectangle(1, 1, Width - 3, Height - 3);
 
-            // RED AND WHITE ALTERNATING, as the caption bar's alarm mark does.
-            var red = Color.FromArgb(214, 36, 36);
-            using (var fill = new SolidBrush(_phase ? red : Color.White))
+            // ALTERNATING with white, as the caption bar's alarm mark does.
+            var mark = MarkColor;
+            using (var fill = new SolidBrush(_phase ? mark : Color.White))
                 g.FillEllipse(fill, r);
-            using (var pen = new Pen(red, 1.6f))
+            using (var pen = new Pen(mark, 1.6f))
                 g.DrawEllipse(pen, r);
 
             // Cached: this paints twice a second on every active badge.
@@ -147,15 +243,28 @@ namespace Kaban.UI.Controls
                 if (_font != null) _font.Dispose();
                 _font = new Font("Segoe UI", Math.Max(7f, Height * 0.5f), FontStyle.Bold, GraphicsUnit.Pixel);
             }
-            TextRenderer.DrawText(g, "?", _font, r, _phase ? Color.White : red,
+            TextRenderer.DrawText(g, "?", _font, r, _phase ? Color.White : mark,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+        }
+
+        /// <summary>
+        /// The documents behind the "?" right now: one per code set (an axis), or
+        /// the error bit's troubleshooting help (a cylinder).
+        /// </summary>
+        public List<TroubleshootingCatalog.HelpDocument> Documents()
+        {
+            if (_codes.Count > 0)
+                return _codes.Where(c => c.Value != 0)
+                             .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, UnitName))
+                             .Where(d => d != null).ToList();
+            var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
+            return AlarmHelpLinks.DocumentsFor(PlcNumber, Address, def != null ? def.HelperKeys : null);
         }
 
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
-            var docs = AlarmHelpLinks.DocumentsFor(PlcNumber, Address, def != null ? def.HelperKeys : null);
+            var docs = Documents();
             if (docs.Count == 0) return;
 
             // The SAME list the alarm grid shows, so the two routes to help agree.

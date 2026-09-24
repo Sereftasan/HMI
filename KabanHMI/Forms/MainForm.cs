@@ -1514,10 +1514,35 @@ namespace Kaban.UI.Forms
             return Screens.MachineIcon.ForModule(moduleId);
         }
 
-        /// <summary>Clears one machine's alarms, leaving the others standing.</summary>
+        /// <summary>
+        /// Resets one machine's alarms, leaving the others standing: pulses the
+        /// machine's alarm reset bit on ITS OWN controller (station 3 for an H500
+        /// mounted under FA2010 - see AlarmReset), then clears its list. Clearing
+        /// only the list let an alarm whose cause was latched come straight back.
+        ///
+        /// When the reset cannot be sent - not signed in, controller not
+        /// answering, no reset bit on that machine - the list is still cleared,
+        /// as before, and a message says the machine itself was NOT reset: an
+        /// operator who believes it was would wait for a machine that is still
+        /// holding its alarm.
+        /// </summary>
         private void ResetAlarmsFor(string moduleId)
         {
+            var mounted = System.Linq.Enumerable.FirstOrDefault(Kaban.Core.Machines.MachineRegistry.Modules,
+                m => string.Equals(m.Module.ModuleId, moduleId, StringComparison.OrdinalIgnoreCase));
+            int station = mounted != null ? mounted.Context.Station(1) : 1;
+            string name = mounted != null ? Screens.MachineTabScreen.DisplayNameOf(mounted) : moduleId;
+
+            string why;
+            bool sent = Kaban.UI.Helpers.AlarmReset.Pulse(station, name, out why);
             AlarmManager.AcknowledgeMachine(moduleId);
+
+            if (!sent)
+                MessageBox.Show(this,
+                    string.Format(LanguageManager.GetString("Msg_ResetNotSent",
+                        "The alarms were cleared from the list, but no reset was sent to {0}: {1}."), name, why),
+                    LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         /// <summary>

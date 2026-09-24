@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Helpers\StationMap.cs" />
     <Compile Include="Helpers\AlarmHelpLinks.cs" />
+    <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs" />
     <Compile Include="Controls\MeterHMI.cs" />
@@ -307,6 +308,10 @@
     <None Include="Help\Cylinder_Troubleshooting.html" />
     <None Include="Help\Cylinder_Troubleshooting_Manual_EN.pdf" />
     <None Include="Help\MR_J4_TroubleShooting.pdf" />
+    <None Include="Help\Servo_Alarm_Codes.en.html" />
+    <None Include="Help\Axis_Error_Codes.en.html" />
+    <None Include="Help\Axis_Warning_Codes.en.html" />
+    <None Include="Help\FX5_40SSC_Troubleshooting.pdf" />
     <None Include="Help\README.md" />
   </ItemGroup>
   <ItemGroup>

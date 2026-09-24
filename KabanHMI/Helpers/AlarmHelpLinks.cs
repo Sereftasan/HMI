@@ -42,6 +42,18 @@ namespace Kaban.UI.Helpers
             public string Unit = "";
             /// <summary>The unit's own help files, listed after its manual.</summary>
             public List<string> HelpFiles = new List<string>();
+
+            /// <summary>
+            /// An axis's three drive code words (Axis Settings, last three
+            /// columns). Read when the alarm's help is opened, so the list starts
+            /// with the entry for the code the drive is showing now.
+            /// </summary>
+            public string ServoAlarm = "", AxisAlarm = "", AxisWarning = "";
+
+            public bool HasCodes
+            {
+                get { return ServoAlarm.Length > 0 || AxisAlarm.Length > 0 || AxisWarning.Length > 0; }
+            }
         }
 
         private static readonly Dictionary<string, Link> _links =
@@ -75,7 +87,8 @@ namespace Kaban.UI.Helpers
         {
             public int Station, Number, Decimals, Digits;
             public string NameKey = "", Back = "", Forward = "", Position = "", Suffix = "",
-                          ReferenceSensor = "", Error = "";
+                          ReferenceSensor = "", Error = "",
+                          ServoAlarm = "", AxisAlarm = "", AxisWarning = "";
             public AxisReferenceSide ReferenceSide;
             public Kaban.Core.Enums.DataTypeEnum PositionType;
             public double Divisor;
@@ -120,7 +133,9 @@ namespace Kaban.UI.Helpers
                 Position = a.PositionAddress ?? "", PositionType = a.PositionDataType,
                 Divisor = a.Divisor, Decimals = a.DecimalPlaces, Digits = a.Digits, Suffix = a.Suffix ?? "",
                 ReferenceSensor = a.ReferenceSensorAddress ?? "", ReferenceSide = a.ReferenceSensorSide,
-                Error = a.ErrorAddress ?? "", Vertical = a.VerticalMovement
+                Error = a.ErrorAddress ?? "", Vertical = a.VerticalMovement,
+                ServoAlarm = a.ServoAlarmAddress ?? "", AxisAlarm = a.AxisAlarmAddress ?? "",
+                AxisWarning = a.AxisWarningAddress ?? ""
             };
         }
 
@@ -138,6 +153,14 @@ namespace Kaban.UI.Helpers
             Link existing;
             if (_links.TryGetValue(key, out existing))
             {
+                // The axis row knows the code words; a manual-page unit of the same
+                // axis may have been seen first without them.
+                if (!existing.HasCodes && link.HasCodes)
+                {
+                    existing.ServoAlarm = link.ServoAlarm;
+                    existing.AxisAlarm = link.AxisAlarm;
+                    existing.AxisWarning = link.AxisWarning;
+                }
                 if (existing.Kind != link.Kind || existing.Valve != link.Valve || existing.Feedback != link.Feedback)
                 {
                     var msg = string.Format("PLC {0} {1}: '{2}' and '{3}' describe this error differently",
@@ -341,6 +364,12 @@ namespace Kaban.UI.Helpers
             var docs = new List<TC.HelpDocument>();
 
             var link = Find(station, address);
+
+            // An axis: the entry for each code its drive shows NOW comes first -
+            // the answer to this fault, not the manual it is somewhere in.
+            if (link != null && link.HasCodes)
+                docs.AddRange(CodeDocuments(link));
+
             string file;
             if (link != null && TC.DocumentForType.TryGetValue(link.Kind, out file) && !string.IsNullOrEmpty(file))
             {
@@ -373,7 +402,47 @@ namespace Kaban.UI.Helpers
             // One entry per file: an alarm helper link that repeats a unit file
             // would list the same document twice.
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            return docs.Where(d => d.Exists && (d.Valve != 0 || d.Feedback != 0 || seen.Add(d.FileName))).ToList();
+            return docs.Where(d => d.Exists && (d.Valve != 0 || d.Feedback != 0 || !string.IsNullOrEmpty(d.Code) ||
+                                                seen.Add(d.FileName))).ToList();
+        }
+
+        /// <summary>
+        /// Reads a code word once, for an alarm's help (null when it cannot be
+        /// read). Replaceable so a test can supply the values. Monitoring access:
+        /// looking a code up is not commanding the machine.
+        /// </summary>
+        public static Func<int, string, int?> ReadCodeNow = (station, address) =>
+        {
+            try
+            {
+                if (ConnectionMonitor.IsKnownDown(station)) return null;
+                var drv = PlcManager.Instance.GetDriverForMonitoring(station);
+                int v;
+                if (drv != null && drv.TryRead(address, out v)) return v & 0xFFFF;
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read code word " + address + ": " + ex.Message); }
+            return null;
+        };
+
+        /// <summary>One document per code of the axis that is not zero right now.</summary>
+        public static List<TC.HelpDocument> CodeDocuments(Link link)
+        {
+            var docs = new List<TC.HelpDocument>();
+            if (link == null) return docs;
+            foreach (var kv in new[]
+            {
+                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.ServoAlarm, link.ServoAlarm),
+                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.AxisError, link.AxisAlarm),
+                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.AxisWarning, link.AxisWarning)
+            })
+            {
+                if (string.IsNullOrWhiteSpace(kv.Value)) continue;
+                var v = ReadCodeNow(link.Station, kv.Value.Trim());
+                if (v == null || v.Value == 0) continue;
+                var d = AxisCodeHelp.Document(kv.Key, v.Value, link.Unit);
+                if (d != null) docs.Add(d);
+            }
+            return docs;
         }
 
         /// <summary>Opens a document - tailored or sectioned where that applies.</summary>

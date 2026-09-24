@@ -194,7 +194,11 @@ namespace Kaban.UI.Controls
                 Kind = TroubleshootingCatalog.ErrorType.ServoFault,
                 Station = PlcNumber,
                 Address = ErrorAddress.Trim(),
-                Unit = LanguageManager.GetString(AxisNameKey ?? "", AxisNameKey ?? "")
+                Unit = LanguageManager.GetString(AxisNameKey ?? "", AxisNameKey ?? ""),
+                // So the alarm's help opens the entry for the code the drive shows.
+                ServoAlarm = (ServoAlarmAddress ?? "").Trim(),
+                AxisAlarm = (AxisAlarmAddress ?? "").Trim(),
+                AxisWarning = (AxisWarningAddress ?? "").Trim()
             };
         }
 
@@ -413,10 +417,14 @@ namespace Kaban.UI.Controls
             _zdist   = AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
             x += GroupGap;
 
-            _axisAlarm   = AddCode(AxisAlarmAddress,   "axis alarm",    ref x);
-            _axisWarning = AddCode(AxisWarningAddress, "axis warning",  ref x,
+            // Each code cell opens ITS code's entry of the manual while it is not
+            // zero - the axis alarm and warning in the motion module's manual
+            // (printed "1904H", as that manual does), the servo alarm in the
+            // drive's ("16.3", as the amplifier's display does).
+            _axisAlarm   = AddCode(AxisAlarmAddress,   AxisCodeKind.AxisError,   ref x);
+            _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
                                    HexCodeHMI.CodeSeverity.Warning);
-            _servoAlarm  = AddCode(ServoAlarmAddress,  "servo alarm",   ref x);
+            _servoAlarm  = AddCode(ServoAlarmAddress,  AxisCodeKind.ServoAlarm,  ref x);
 
             Width = Math.Max(Width, x);
         }
@@ -606,7 +614,7 @@ namespace Kaban.UI.Controls
             return m;
         }
 
-        private HexCodeHMI AddCode(string address, string what, ref int x,
+        private HexCodeHMI AddCode(string address, AxisCodeKind kind, ref int x,
                                    HexCodeHMI.CodeSeverity severity = HexCodeHMI.CodeSeverity.Alarm)
         {
             HexCodeHMI c = null;
@@ -617,7 +625,9 @@ namespace Kaban.UI.Controls
                     PlcNumber = PlcNumber,
                     Address = address,
                     Caption = "",
-                    Severity = severity
+                    Severity = severity,
+                    CodeKind = kind,
+                    UnitName = LanguageManager.GetString(AxisNameKey ?? "", AxisNameKey ?? "")
                 };
                 c.SetBounds(x, 6, WCode, RowHeight - 12);
                 Controls.Add(c);

@@ -25,4 +25,14 @@ namespace Kaban.UI.Controls
         int PlcNumber { get; }
         string Address { get; }
     }
+
+    /// <summary>
+    /// A bound control that reads MORE devices than its Address - the axis "?"
+    /// watches the axis's three code words as well as its error bit. The
+    /// scanner adds each of these to the batch too; read as 16-bit words.
+    /// </summary>
+    public interface IPlcExtraAddresses : IPlcBoundControl
+    {
+        System.Collections.Generic.IEnumerable<string> ExtraAddresses { get; }
+    }
 }

@@ -245,6 +245,14 @@ namespace Kaban.Core.Helpers
             public int Valve;
             public int Feedback;
 
+            /// <summary>
+            /// For a code document (see AxisCodeHelp): the code whose sections
+            /// to show - "16.3", "1904" - and the servo alarm they fall back to
+            /// when the manual does not list that detail ("16").
+            /// </summary>
+            public string Code = "";
+            public string CodeGroup = "";
+
             public string FullPath
             {
                 get { return ResolveLanguageFile(FileName); }
@@ -421,6 +429,10 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static string ExtractSection(HelpDocument doc)
         {
+            // An axis code: only that code's entry of the manual (AxisCodeHelp).
+            if (doc != null && doc.Exists && !string.IsNullOrEmpty(doc.Code))
+                return AxisCodeHelp.Extract(doc);
+
             if (doc != null && doc.Exists && (doc.Valve != 0 || doc.Feedback != 0))
                 return Tailor(doc);
 

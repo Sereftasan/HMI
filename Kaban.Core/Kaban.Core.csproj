@@ -79,6 +79,7 @@
     <Compile Include="Helpers\BoundedDriver.cs" />
     <Compile Include="Helpers\SettingsMigration.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.cs" />
+    <Compile Include="Helpers\AxisCodeHelp.cs" />
     <Compile Include="Helpers\ComparisonHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\HmiInternalVariables.cs" />

@@ -166,6 +166,26 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
+    <None Include="..\KabanHMI\Help\Servo_Alarm_Codes.en.html">
+      <Link>Help\Servo_Alarm_Codes.en.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Axis_Error_Codes.en.html">
+      <Link>Help\Axis_Error_Codes.en.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Axis_Warning_Codes.en.html">
+      <Link>Help\Axis_Warning_Codes.en.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\FX5_40SSC_Troubleshooting.pdf">
+      <Link>Help\FX5_40SSC_Troubleshooting.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
 
 
 
