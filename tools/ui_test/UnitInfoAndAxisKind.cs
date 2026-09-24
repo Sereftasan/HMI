@@ -21,11 +21,11 @@ class U {
         var none     = unit("");
         host.Show(); Application.DoEvents();
 
-        Console.WriteLine("--- the 'i': there when the unit has help that exists ---");
-        var info = Field<UnitInfoBadge>(withHelp, "_info");
-        Check("shown for a unit with a help file", info.Visible);
-        Check("hidden when the file is not in the Help folder", !Field<UnitInfoBadge>(missing, "_info").Visible);
-        Check("hidden for a unit with no help", !Field<UnitInfoBadge>(none, "_info").Visible);
+        Console.WriteLine("--- the blue '?': there when the unit has help that exists ---");
+        var info = Field<UnitHelpBadge>(withHelp, "_help");
+        Check("shown for a unit with a help file", info.Visible && info.State == UnitHelpBadge.BadgeState.Info);
+        Check("hidden when the file is not in the Help folder", !Field<UnitHelpBadge>(missing, "_help").Visible);
+        Check("hidden for a unit with no help", !Field<UnitHelpBadge>(none, "_help").Visible);
         int frameTop = (int)(withHelp.Font.GetHeight() / 2f);
         Check("ON the top frame line", Math.Abs(info.Top + info.Height / 2 - frameTop) <= 2, info.Top + " vs line " + frameTop);
         Check("  at its right end", info.Right <= withHelp.ClientSize.Width && info.Left > withHelp.ClientSize.Width / 2, info.Left.ToString());
@@ -35,7 +35,7 @@ class U {
         Console.WriteLine("--- with an alarm active: manual, then unit help, then alarm files ---");
         AlarmHelpLinks.Clear();
         var clamp = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", ErrorBAddress = "M900",
-                                          Valve = CylinderValve.DoubleSolenoid52, Feedback = CylinderFeedback.TwoEndMagnetic,
+                                          Valve = CylinderValve.DoubleSolenoid_5_2, Feedback = CylinderFeedback.TwoEndMagnetic,
                                           HelpFiles = "Clamp_Photo.png;Clamp_Drawing.pdf" };
         AlarmHelpLinks.Harvest(clamp);
         var docs = AlarmHelpLinks.DocumentsFor(5, "M900", new[] { "MR_J4_TroubleShooting.pdf;Clamp_Photo.png" });
@@ -49,7 +49,7 @@ class U {
         Console.WriteLine("--- an AXIS unit on a manual page ---");
         AlarmHelpLinks.Clear();
         var x1 = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot X", Kind = UnitKind.Axis, ErrorAAddress = "M901",
-                                       Valve = CylinderValve.DoubleSolenoid52, HelpFiles = "Clamp_Drawing.pdf" };
+                                       Valve = CylinderValve.DoubleSolenoid_5_2, HelpFiles = "Clamp_Drawing.pdf" };
         var link = x1.HelpLinks().Single();
         Check("its error is a servo fault", link.Kind == TC.ErrorType.ServoFault);
         Check("  and a stray valve setting is ignored", link.Valve == 0 && link.Feedback == 0);

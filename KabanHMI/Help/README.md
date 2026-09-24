@@ -22,10 +22,11 @@ Three digits: `errorType . param1 . param2`
 | `9.0.0` | general |
 
 **Valve** (`v`): 1 = 5/2 double solenoid, 2 = 5/2 single solenoid spring return,
-3 = 5/3 closed centre, 4 = 5/3 open centre.
+3 = 5/3 centre position (4, the old "open centre", reads as 3).
 
 **Feedback** (`f`): 1 = single magnetic, 2 = magnetic both ends, 3 = single
-inductive, 4 = analogue magnetic, 5 = pressure switch, 9 = none (timed).
+inductive, 4 = analogue magnetic, 5 = magnetic + pressure switch, 6 = encoder +
+reference, 9 = none (timed).
 
 So `1.2.1` opens the cylinder manual at the general section, **§1.4 for that
 valve** and **§1.7 for that sensor** — the two choices the manual asks the reader
@@ -36,6 +37,24 @@ settings page, shown in the manual's own hexadecimal form (`50.2`, `1A.5`).
 
 An alarm may carry several codes, and `HelperKeys` names one-off files outright.
 Rows with nothing to open show no button.
+
+## A cylinder unit's own manual
+
+A `FunctionUnitHMI` says what it is fitted with: **ValveType** and **FeedbackType**
+(Properties window, *Help*). Its `?` - and the alarm list's help for its error
+bits - then opens a copy of `Cylinder_Troubleshooting.html` with:
+
+- only that valve's block of detail 1.4 and that feedback's block of 1.7;
+- the details joined into ONE table under one heading row, 1.1 to 1.8
+  (`TroubleshootingCatalog.Tailor` / `JoinBlocks`; each detail stays a
+  `<tbody data-detail="...">`);
+- for an alarm, a box at the top naming **the movement that failed** (ErrorA =
+  button A, ErrorB = button B): its PLC bit, valve output, the sensors that should
+  turn on (that button's lamps) and off (the other button's lamps).
+
+The manual keeps its variants in `<section class="block" data-detail="1.4"
+data-variant="valve:n">` / `feedback:n` - keep that markup when editing it. With
+neither type set, the full manual opens.
 
 
 ## Axis codes: one entry, not the whole manual

@@ -43,8 +43,21 @@ namespace Kaban.UI.Controls
 
         private bool _active, _error, _warningOnly;
 
-        /// <summary>True while the "?" is shown.</summary>
+        /// <summary>
+        /// Watches its bit and codes but never shows itself: a function unit shows
+        /// ONE "?" (UnitHelpBadge) for both of its error bits and its own help,
+        /// and follows its two watchers through ActiveChanged.
+        /// </summary>
+        public bool Watcher { get; set; }
+
+        /// <summary>True while there is something to look up - the "?" of a stand-alone badge is shown.</summary>
         public bool IsActive { get { return _active; } }
+
+        /// <summary>True when every code set is a warning (an axis that still runs).</summary>
+        public bool IsWarningOnly { get { return _warningOnly; } }
+
+        /// <summary>What is wrong, one line per code or the alarm's name - for a tooltip.</summary>
+        public string TipText { get; private set; } = "";
 
         /// <summary>True while the error bit is set - what the unit's red border follows.</summary>
         public bool IsErrorSet { get { return _error; } }
@@ -128,8 +141,11 @@ namespace Kaban.UI.Controls
             bool warningOnly = codesChanged
                 ? any && _codes.Where(c => c.Value != 0).All(c => AxisCodeHelp.IsWarning(c.Kind, c.Value))
                 : _warningOnly;
+            bool warnChanged = warningOnly != _warningOnly;
             Set(any, error, warningOnly);
             if (codesChanged && _active) RefreshTip();
+            // A watcher's unit repaints its "?" amber or red as the codes change.
+            if (Watcher && _active && (codesChanged || warnChanged)) { var h = ActiveChanged; if (h != null) h(this, EventArgs.Empty); }
         }
 
         /// <summary>
@@ -154,10 +170,18 @@ namespace Kaban.UI.Controls
             bool wasShown = _active;
             _active = shown;
             _error = error;
+            if (shown && !wasShown) RefreshTip();
+            if (Watcher)
+            {
+                Visible = false;
+                var h = ActiveChanged;
+                if (h != null) h(this, EventArgs.Empty);
+                return;
+            }
             Visible = shown;
             var handler = ActiveChanged;
             if (handler != null) handler(this, EventArgs.Empty);
-            if (shown && !wasShown) { RefreshTip(); StartBlinking(this); }
+            if (shown && !wasShown) StartBlinking(this);
             else if (!shown && wasShown) StopBlinking(this);
         }
 
@@ -174,6 +198,8 @@ namespace Kaban.UI.Controls
                 var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
                 text = def != null ? LanguageManager.GetString(def.TranslationKey, def.AlarmCode) : "";
             }
+            TipText = text;
+            if (Watcher) return;
             UiStyle.Tips().SetToolTip(this, (text.Length > 0 ? text + "\r\n" : "") +
                                             LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
         }
@@ -277,57 +303,135 @@ namespace Kaban.UI.Controls
 namespace Kaban.UI.Controls
 {
     /// <summary>
-    /// The "i" on a unit's top frame line: always there when the unit has help,
-    /// opening it directly - photos of the real mechanism, its drawing, its notes.
+    /// A function unit's ONE "?", on the right end of its top frame line.
     ///
-    /// Where the alarm "?" is on the SIDE lines and only while something is
-    /// wrong, this one is on the TOP line and always available: "what is this
-    /// unit" is a question worth answering before anything has failed. One file
-    /// opens straight away; several offer the same list as everywhere else.
+    /// It used to be two marks: an "i" for the unit's own help and a red "?"
+    /// beside it while an error bit was set - two small circles side by side
+    /// that read as the same thing. Now one: BLUE while there is help to offer
+    /// (the unit's own files, the cylinder manual for its valve and feedback),
+    /// RED and blinking while an error is set (AMBER for an axis showing only
+    /// warnings), hidden when there is nothing to open. One document opens
+    /// straight away; several offer the list used everywhere else.
     /// </summary>
     [System.ComponentModel.ToolboxItem(false)]
-    public class UnitInfoBadge : System.Windows.Forms.Control, UiStyle.IDrawsOwnHoverBorder
+    public class UnitHelpBadge : Control, UiStyle.IDrawsOwnHoverBorder
     {
+        public enum BadgeState { Hidden, Info, Error, Warning }
+
         public const int BadgeSize = 16;
 
         /// <summary>Supplied by the unit that owns the badge.</summary>
-        public Func<System.Collections.Generic.List<Kaban.Core.Helpers.TroubleshootingCatalog.HelpDocument>> Documents;
+        public Func<List<TroubleshootingCatalog.HelpDocument>> Documents;
 
+        private BadgeState _state = BadgeState.Hidden;
         private bool _hover;
+        private Font _font;
 
-        public UnitInfoBadge()
+        // One timer for every blinking "?": a page of twenty units must not run twenty.
+        private static readonly List<UnitHelpBadge> _blinking = new List<UnitHelpBadge>();
+        private static Timer _blink;
+        private static bool _phase;
+
+        public UnitHelpBadge()
         {
-            SetStyle(System.Windows.Forms.ControlStyles.UserPaint | System.Windows.Forms.ControlStyles.AllPaintingInWmPaint |
-                     System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer | System.Windows.Forms.ControlStyles.SupportsTransparentBackColor, true);
-            BackColor = System.Drawing.Color.Transparent;
-            Size = new System.Drawing.Size(BadgeSize, BadgeSize);
+            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.OptimizedDoubleBuffer | ControlStyles.SupportsTransparentBackColor |
+                     ControlStyles.ResizeRedraw, true);
+            BackColor = Color.Transparent;
+            Size = new Size(BadgeSize, BadgeSize);
             Visible = false;
             TabStop = false;
-            Cursor = System.Windows.Forms.Cursors.Hand;
+            Cursor = Cursors.Hand;
+        }
+
+        public BadgeState State
+        {
+            get { return _state; }
+            set
+            {
+                if (value == _state) return;
+                bool blinking = value == BadgeState.Error || value == BadgeState.Warning;
+                bool wasBlinking = _state == BadgeState.Error || _state == BadgeState.Warning;
+                _state = value;
+                Visible = value != BadgeState.Hidden;
+                if (blinking && !wasBlinking) StartBlinking(this);
+                else if (!blinking && wasBlinking) StopBlinking(this);
+                Invalidate();
+            }
+        }
+
+        public static readonly Color Blue = Color.FromArgb(40, 110, 190);
+        public static readonly Color Red = Color.FromArgb(214, 36, 36);
+        public static readonly Color Amber = Color.FromArgb(214, 150, 20);
+
+        /// <summary>The colour of the mark in its present state.</summary>
+        public Color MarkColor
+        {
+            get { return _state == BadgeState.Error ? Red : _state == BadgeState.Warning ? Amber : Blue; }
+        }
+
+        private static void StartBlinking(UnitHelpBadge b)
+        {
+            if (!_blinking.Contains(b)) _blinking.Add(b);
+            if (_blink == null)
+            {
+                _blink = new Timer { Interval = 500 };
+                _blink.Tick += (s, e) =>
+                {
+                    _phase = !_phase;
+                    foreach (var x in _blinking.ToArray())
+                    {
+                        if (x.IsDisposed) { _blinking.Remove(x); continue; }
+                        x.Invalidate();
+                    }
+                };
+            }
+            _blink.Start();
+        }
+
+        private static void StopBlinking(UnitHelpBadge b)
+        {
+            _blinking.Remove(b);
+            if (_blinking.Count == 0 && _blink != null) _blink.Stop();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                StopBlinking(this);
+                if (_font != null) { _font.Dispose(); _font = null; }
+            }
+            base.Dispose(disposing);
         }
 
         protected override void OnMouseEnter(EventArgs e) { base.OnMouseEnter(e); _hover = true; Invalidate(); }
         protected override void OnMouseLeave(EventArgs e) { base.OnMouseLeave(e); _hover = false; Invalidate(); }
 
-        protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             var g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            var r = new System.Drawing.Rectangle(1, 1, Width - 3, Height - 3);
-            var blue = System.Drawing.Color.FromArgb(40, 110, 190);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            var r = new Rectangle(1, 1, Width - 3, Height - 3);
+            var mark = MarkColor;
 
-            // White by default so it covers the frame line under it; filled on hover.
-            using (var fill = new System.Drawing.SolidBrush(_hover ? blue : System.Drawing.Color.White))
+            // Blue: white with a blue "?" (it covers the frame line under it),
+            // filled on hover. Red/amber: ALTERNATING with white, as the caption
+            // bar's alarm mark does.
+            bool filled = _state == BadgeState.Info ? _hover : _phase;
+            using (var fill = new SolidBrush(filled ? mark : Color.White))
                 g.FillEllipse(fill, r);
-            using (var pen = new System.Drawing.Pen(blue, 1.4f))
+            using (var pen = new Pen(mark, _state == BadgeState.Info ? 1.4f : 1.6f))
                 g.DrawEllipse(pen, r);
-            using (var f = new System.Drawing.Font("Georgia", Math.Max(7f, Height * 0.55f),
-                                                   System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic,
-                                                   System.Drawing.GraphicsUnit.Pixel))
-                System.Windows.Forms.TextRenderer.DrawText(g, "i", f, r, _hover ? System.Drawing.Color.White : blue,
-                    System.Windows.Forms.TextFormatFlags.HorizontalCenter | System.Windows.Forms.TextFormatFlags.VerticalCenter |
-                    System.Windows.Forms.TextFormatFlags.NoPadding);
+
+            if (_font == null || Math.Abs(_font.Size - Math.Max(7f, Height * 0.5f)) > 0.1f)
+            {
+                if (_font != null) _font.Dispose();
+                _font = new Font("Segoe UI", Math.Max(7f, Height * 0.5f), FontStyle.Bold, GraphicsUnit.Pixel);
+            }
+            TextRenderer.DrawText(g, "?", _font, r, filled ? Color.White : mark,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         }
 
         protected override void OnClick(EventArgs e)
@@ -336,12 +440,11 @@ namespace Kaban.UI.Controls
             var docs = Documents != null ? Documents() : null;
             if (docs == null || docs.Count == 0) return;
 
-            if (docs.Count == 1) { Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), docs[0]); return; }
+            if (docs.Count == 1) { AlarmHelpLinks.Open(FindForm(), docs[0]); return; }
 
-            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs,
-                d => Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), d));
-            UiStyle.ShowPopup(menu, this, new System.Drawing.Point(0, Height));
+            // The SAME list the alarm grid shows, so the two routes to help agree.
+            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d));
+            UiStyle.ShowPopup(menu, this, new Point(0, Height));
         }
     }
 }
-

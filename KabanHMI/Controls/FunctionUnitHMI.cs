@@ -30,9 +30,9 @@ namespace Kaban.UI.Controls
     public enum CylinderValve
     {
         Unspecified = 0,
-        DoubleSolenoid52 = 1,          // (1) double solenoid 5/2, impulse / memory
-        SingleSolenoid52Spring = 2,    // (2) single solenoid 5/2, spring return
-        DoubleSolenoid53Centre = 3     // (3) double solenoid 5/3, centre position
+        DoubleSolenoid_5_2 = 1,        // (1) double solenoid 5/2, impulse / memory
+        SingleSolenoid_5_2 = 2,        // (2) single solenoid 5/2, spring return
+        DoubleSolenoid_5_3 = 3         // (3) double solenoid 5/3, centre position
     }
 
     /// <summary>The cylinder's feedback - detail 1.7 of the cylinder manual.</summary>
@@ -177,20 +177,21 @@ namespace Kaban.UI.Controls
             _grp.Controls.Add(_numPosition);
             Controls.Add(_grp);
 
-            // The "?" marks sit ON the top frame line, at its right end, beside
-            // the "i" - see LayoutBadges.
+            // ONE "?" on the top frame line, at its right end - see LayoutBadges.
+            // The two error bits are watched by badges that never show themselves
+            // (the scanner reads them like any bound control); the "?" follows them.
+            _helpA.Watcher = _helpB.Watcher = true;
             Controls.Add(_helpA);
             Controls.Add(_helpB);
-            Controls.Add(_info);
-            _helpA.BringToFront();
-            _helpB.BringToFront();
-            _info.BringToFront();
+            Controls.Add(_help);
+            _help.BringToFront();
+            _help.Documents = HelpDocuments;
             _grp.Resize += (s2, e2) => LayoutChildren();
 
-            // An error coming or going moves the badges along the top line and
-            // blinks the border of the part that failed.
-            _helpA.ActiveChanged += (s2, e2) => { LayoutBadges(); UpdateErrorBlink(); };
-            _helpB.ActiveChanged += (s2, e2) => { LayoutBadges(); UpdateErrorBlink(); };
+            // An error coming or going turns the "?" red and blinks the border of
+            // the part that failed.
+            _helpA.ActiveChanged += (s2, e2) => { UpdateHelpBadge(); UpdateErrorBlink(); };
+            _helpB.ActiveChanged += (s2, e2) => { UpdateHelpBadge(); UpdateErrorBlink(); };
 
             // The unit's own buttons blink a HEAVIER red than the alarm menu entry.
             _btnA.AlertBorderWidth = _btnB.AlertBorderWidth = 2.4f;
@@ -746,7 +747,7 @@ namespace Kaban.UI.Controls
                 .Where(d => d.Exists).ToList();
         }
 
-        private readonly UnitInfoBadge _info = new UnitInfoBadge();
+        private readonly UnitHelpBadge _help = new UnitHelpBadge();
 
         /// <summary>Exact button width (0 = share the width). An axis unit sets the axis row's.</summary>
         [Browsable(false)]
@@ -756,13 +757,26 @@ namespace Kaban.UI.Controls
         [Browsable(false)]
         public int PositionSlotWidth { get; set; }
 
+        /// <summary>
+        /// The valve fitted to this cylinder. The "?" opens the cylinder manual with
+        /// only this valve's part of detail 1.4 - see TroubleshootingCatalog.Tailor.
+        /// </summary>
         [Category("Help"), DefaultValue(CylinderValve.Unspecified),
-         Description("Cylinder units: the valve fitted. The help shows only this valve's part of detail 1.4.")]
-        public CylinderValve Valve { get { return _valve; } set { _valve = value; } }
+         Description("Cylinder units: the valve fitted. The '?' opens the cylinder troubleshooting manual with only this valve's part of detail 1.4.")]
+        public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
+        /// <summary>The feedback fitted to this cylinder: only its part of detail 1.7 is shown.</summary>
         [Category("Help"), DefaultValue(CylinderFeedback.Unspecified),
-         Description("Cylinder units: the feedback fitted. The help shows only this sensor's part of detail 1.7.")]
-        public CylinderFeedback Feedback { get { return _feedback; } set { _feedback = value; } }
+         Description("Cylinder units: the feedback fitted. The '?' opens the cylinder troubleshooting manual with only this feedback's part of detail 1.7.")]
+        public CylinderFeedback FeedbackType { get { return _feedback; } set { _feedback = value; ApplySettings(); } }
+
+        /// <summary>The former name of ValveType, kept for code that uses it.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public CylinderValve Valve { get { return ValveType; } set { ValveType = value; } }
+
+        /// <summary>The former name of FeedbackType, kept for code that uses it.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public CylinderFeedback Feedback { get { return FeedbackType; } set { FeedbackType = value; } }
 
         /// <summary>
         /// Makes the "?" an AXIS's: shown while any of the axis's three drive
@@ -776,7 +790,7 @@ namespace Kaban.UI.Controls
             _codeWords = new[] { servoAlarmAddress ?? "", axisAlarmAddress ?? "", axisWarningAddress ?? "" };
             _helpA.SetCodeWords(null, null, null);
             _helpB.SetCodeWords(servoAlarmAddress, axisAlarmAddress, axisWarningAddress);
-            LayoutBadges();
+            UpdateHelpBadge();
         }
 
         private string[] _codeWords = { "", "", "" };
@@ -800,8 +814,160 @@ namespace Kaban.UI.Controls
                         HelpFiles = HelpFileNames(),
                         ServoAlarm = _kind == UnitKind.Axis ? _codeWords[0] : "",
                         AxisAlarm = _kind == UnitKind.Axis ? _codeWords[1] : "",
-                        AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : ""
+                        AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : "",
+                        // Which side's error bit this is: the alarm list's help names
+                        // that movement's devices, like the unit's own "?".
+                        Movement = _kind == UnitKind.Axis ? null : MovementFor(address == _errorAAddress ? "A" : "B")
                     };
+        }
+
+        /// <summary>
+        /// The devices of one side's movement, for the top of the tailored manual:
+        /// A is the left button's (ErrorA), B the right button's (ErrorB).
+        /// </summary>
+        public TroubleshootingCatalog.MovementInfo MovementFor(string side)
+        {
+            bool a = side == "A";
+            Func<string, string, TroubleshootingCatalog.MovementInfo.Device> dev = (address, name) =>
+                string.IsNullOrWhiteSpace(address) ? null
+                    : new TroubleshootingCatalog.MovementInfo.Device { Address = Abs(address), Name = Tr(name) };
+            var mv = new TroubleshootingCatalog.MovementInfo
+            {
+                Station = _plcNumber,
+                Unit = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText),
+                Side = a ? "A" : "B",
+                Name = Tr(a ? _buttonAText : _buttonBText),
+                Command = dev(a ? _commandAAddress : _commandBAddress, a ? _buttonATip : _buttonBTip),
+                Output = dev(a ? _outputAAddress : _outputBAddress, ""),
+                OtherCommand = dev(a ? _commandBAddress : _commandAAddress, a ? _buttonBTip : _buttonATip),
+                OtherOutput = dev(a ? _outputBAddress : _outputAAddress, "")
+            };
+            foreach (var d in a ? new[] { dev(_lamp1AAddress, _lamp1ATip), dev(_lamp2AAddress, _lamp2ATip) }
+                                : new[] { dev(_lamp1BAddress, _lamp1BTip), dev(_lamp2BAddress, _lamp2BTip) })
+                if (d != null) mv.Feedback.Add(d);
+            foreach (var d in a ? new[] { dev(_lamp1BAddress, _lamp1BTip), dev(_lamp2BAddress, _lamp2BTip) }
+                                : new[] { dev(_lamp1AAddress, _lamp1ATip), dev(_lamp2AAddress, _lamp2ATip) })
+                if (d != null) mv.OppositeFeedback.Add(d);
+            return mv;
+        }
+
+        /// <summary>The cylinder manual for this unit - its valve and feedback, and the movement that failed when given.</summary>
+        private TroubleshootingCatalog.HelpDocument CylinderDocument(string side)
+        {
+            string file;
+            if (!TroubleshootingCatalog.DocumentForType.TryGetValue(TroubleshootingCatalog.ErrorType.CylinderMovement, out file) ||
+                string.IsNullOrEmpty(file)) return null;
+            var unit = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText);
+            var mv = side == null ? null : MovementFor(side);
+            return new TroubleshootingCatalog.HelpDocument
+            {
+                FileName = file,
+                Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
+                        (string.IsNullOrEmpty(unit) ? "" : " - " + unit) +
+                        (mv == null ? "" : " (" + (string.IsNullOrEmpty(mv.Name) ? mv.Side : mv.Name) + ")"),
+                Valve = TroubleshootingCatalog.CanonicalValve((int)_valve),
+                Feedback = TroubleshootingCatalog.CanonicalFeedback((int)_feedback),
+                Movement = mv
+            };
+        }
+
+        /// <summary>True when the unit's cylinder manual is worth offering before anything has failed.</summary>
+        private bool OffersManual
+        {
+            get
+            {
+                return _kind == UnitKind.Cylinder &&
+                       (_valve != CylinderValve.Unspecified || _feedback != CylinderFeedback.Unspecified);
+            }
+        }
+
+        /// <summary>
+        /// Everything behind the "?" right now. While an error is set: the help for
+        /// what failed first - the manual tailored to this cylinder and to the
+        /// movement whose error bit is set (an axis: the entry of each drive code
+        /// it shows) - then the alarm's own files. Otherwise the cylinder manual
+        /// for this valve and feedback. The unit's own files always come last.
+        /// </summary>
+        public List<TroubleshootingCatalog.HelpDocument> HelpDocuments()
+        {
+            var docs = new List<TroubleshootingCatalog.HelpDocument>();
+            bool errA = _helpA.IsActive, errB = _helpB.IsActive;
+
+            if (_kind == UnitKind.Axis)
+            {
+                if (errB) docs.AddRange(_helpB.Documents());           // the drive codes (or the error bit)
+                if (errA) docs.AddRange(_helpA.Documents());
+            }
+            else
+            {
+                foreach (var side in new[] { errA ? "A" : null, errB ? "B" : null })
+                {
+                    if (side == null) continue;
+                    var d = CylinderDocument(side);
+                    if (d != null) docs.Add(d);
+                    // The alarm's own helper files, as the alarm list shows them.
+                    var bit = side == "A" ? _errorAAddress : _errorBAddress;
+                    var def = AlarmManager.FindByStationAndAddress(_plcNumber, bit);
+                    if (def != null && def.HelperKeys != null)
+                        foreach (var entry in def.HelperKeys.Where(f => !string.IsNullOrWhiteSpace(f)))
+                            foreach (var n in entry.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                                docs.Add(new TroubleshootingCatalog.HelpDocument { FileName = n.Trim(), Title = System.IO.Path.GetFileNameWithoutExtension(n.Trim()) });
+                }
+                if (!errA && !errB && (OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0))
+                {
+                    var d = CylinderDocument(null);
+                    if (d != null) docs.Add(d);
+                }
+            }
+            docs.AddRange(UnitHelpDocuments());
+
+            // One entry per file - except the tailored and coded ones, which differ by what they show.
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return docs.Where(d => d.Exists && (d.Movement != null || d.Valve != 0 || d.Feedback != 0 ||
+                                                !string.IsNullOrEmpty(d.Code) || seen.Add(d.FileName))).ToList();
+        }
+
+        /// <summary>
+        /// The "?"'s look: red and blinking while an error bit is set (amber when an
+        /// axis shows only warnings), blue while there is help to offer - the
+        /// unit's own files, or the manual for its valve and feedback - and hidden
+        /// otherwise: a mark that opens nothing teaches the operator to ignore it.
+        /// </summary>
+        private void UpdateHelpBadge()
+        {
+            bool errA = _helpA.IsActive, errB = _helpB.IsActive;
+            UnitHelpBadge.BadgeState state;
+            if (errA || errB)
+                state = (!errA || _helpA.IsWarningOnly) && (!errB || _helpB.IsWarningOnly)
+                        ? UnitHelpBadge.BadgeState.Warning : UnitHelpBadge.BadgeState.Error;
+            else if (DesignMode)
+                state = _helpFiles.Length > 0 || OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0
+                        ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
+            else
+                state = UnitHelpDocuments().Count > 0 || (OffersManual && CylinderManualExists())
+                        ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
+            _help.State = state;
+
+            if (!DesignMode && state != UnitHelpBadge.BadgeState.Hidden)
+            {
+                string tip;
+                if (state == UnitHelpBadge.BadgeState.Info)
+                    tip = LanguageManager.GetString("Tip_UnitHelp", "Help for this unit") + "\r\n" +
+                          string.Join("\r\n", HelpDocuments().Select(d => d.Title));
+                else
+                    tip = string.Join("\r\n", new[] { errA ? _helpA.TipText : "", errB ? _helpB.TipText : "" }
+                                                   .Where(t => !string.IsNullOrEmpty(t))) +
+                          "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help");
+                UiStyle.Tips().SetToolTip(_help, tip.Trim());
+            }
+            LayoutBadges();
+        }
+
+        private static bool CylinderManualExists()
+        {
+            string file;
+            return TroubleshootingCatalog.DocumentForType.TryGetValue(TroubleshootingCatalog.ErrorType.CylinderMovement, out file) &&
+                   new TroubleshootingCatalog.HelpDocument { FileName = file }.Exists;
         }
 
         // NO ROOM IS MADE FOR THE "?" ANY MORE. It used to sit on the side lines,
@@ -815,17 +981,6 @@ namespace Kaban.UI.Controls
             _helpA.PlcNumber = _plcNumber; _helpA.Address = _errorAAddress;
             _helpB.PlcNumber = _plcNumber; _helpB.Address = _errorBAddress;
             if (this.Padding != Padding.Empty) this.Padding = Padding.Empty;
-            if (DesignMode) { _helpA.Visible = _errorAAddress.Length > 0; _helpB.Visible = _errorBAddress.Length > 0; }
-
-            // The "i": shown when the unit has help that is actually THERE - a mark
-            // that opens nothing teaches the operator to ignore it. In the designer
-            // the files are not beside the designer, so the property alone shows it.
-            _info.Documents = UnitHelpDocuments;
-            var unitDocs = DesignMode ? null : UnitHelpDocuments();
-            _info.Visible = DesignMode ? _helpFiles.Length > 0 : unitDocs.Count > 0;
-            if (unitDocs != null && unitDocs.Count > 0)
-                UiStyle.Tips().SetToolTip(_info, LanguageManager.GetString("Tip_UnitInfo", "About this unit") +
-                                                 "\r\n" + string.Join("\r\n", unitDocs.Select(d => d.Title)));
 
             // Relay fallback: RelayAddress/RelayBAddress are an EDGE case - when a
             // unit has no separate internal relay bit, the command bit itself is the
@@ -861,6 +1016,10 @@ namespace Kaban.UI.Controls
 
             ApplyTranslation();
             LayoutChildren();
+            // Not while the page is being built: every property the designer code
+            // sets runs this, and the "?" looks its files up on disk. Done once the
+            // unit has a window (OnHandleCreated), and on every change after that.
+            if (IsHandleCreated || DesignMode) UpdateHelpBadge();
         }
 
         private void ConfigureButton(ButtonHMI btn, string cmdAddress, BitActionType action,
@@ -951,6 +1110,7 @@ namespace Kaban.UI.Controls
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
+            UpdateHelpBadge();
             // Re-run layout once the control is realized. This makes instances
             // that were placed on a form with an OLDER version of this control
             // (stale serialized child bounds) correct themselves at load/design
@@ -1145,24 +1305,15 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
-        /// The badges ON THE TOP FRAME LINE, at its right end - the caption holds
-        /// the left end of the same line, so together they read as the unit's
-        /// heading. From the right: the "?" of B, the "?" of A (only while their
-        /// error is active), then the "i".
+        /// The "?" ON THE TOP FRAME LINE, at its right end - the caption holds the
+        /// left end of the same line, so together they read as the unit's heading.
         /// </summary>
         private void LayoutBadges()
         {
             if (_grp == null) return;
             int frameTop = (int)(_grp.Font.GetHeight() / 2f);
-            int y = Math.Max(0, frameTop - AlarmHelpBadge.BadgeSize / 2);
-            int x = this.ClientSize.Width - 12 - AlarmHelpBadge.BadgeSize;
-
-            bool showB = _helpB.IsActive || (DesignMode && _errorBAddress.Length > 0);
-            bool showA = _helpA.IsActive || (DesignMode && _errorAAddress.Length > 0);
-            if (showB) { _helpB.Location = new Point(x, y); x -= AlarmHelpBadge.BadgeSize + 4; }
-            if (showA) { _helpA.Location = new Point(x, y); x -= AlarmHelpBadge.BadgeSize + 4; }
-            _info.Location = new Point(x + AlarmHelpBadge.BadgeSize - UnitInfoBadge.BadgeSize,
-                                       Math.Max(0, frameTop - UnitInfoBadge.BadgeSize / 2));
+            _help.Location = new Point(this.ClientSize.Width - 12 - UnitHelpBadge.BadgeSize,
+                                       Math.Max(0, frameTop - UnitHelpBadge.BadgeSize / 2));
         }
 
         /// <summary>

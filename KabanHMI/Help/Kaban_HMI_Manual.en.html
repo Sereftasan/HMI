@@ -152,7 +152,9 @@ when you rest the pointer on it, says <b>why</b> (not signed in, level too low, 
 <!-- ================================================================== -->
 <h2 id="signin">2. Signing in and levels</h2>
 
-<p>Click the user icon on the caption bar, enter your user name and password. The icon stops pulsing once someone is signed in.</p>
+<p>Click the user icon on the caption bar, choose your name from the list and type your password. The name of the last person
+who signed in is already chosen and the cursor waits in the password box; <b>Change user</b> opens the list straight away.
+The icon stops pulsing once someone is signed in. Five wrong passwords lock that account for a minute.</p>
 
 <table>
 <tr><th>Level</th><th>Typically</th><th>Can</th></tr>
@@ -227,14 +229,15 @@ and every position reads the same way: black bold figures on grey, as on the Axi
 <div class="safety"><b>Safety.</b> A jog is released by the HMI in every case it can detect. The machine's own interlocks,
 emergency stop and the PLC program remain the protection &ndash; never rely on the screen to stop a movement.</div>
 
-<h3>The marks on the top line</h3>
+<h3>The unit's <b>?</b></h3>
+<p>One mark at the right end of the unit's top line. Its colour says what it offers:</p>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
-<tr><td><b style="color:#d62424">?</b> red, blinking</td><td>Cylinder: while one of its error bits is set</td><td>The help for that fault: the cylinder troubleshooting section for its valve and sensor only, then the unit's own sheets.</td></tr>
+<tr><td><b style="color:#2870be">?</b> blue</td><td>The unit has help to offer: its own files, or &ndash; a cylinder whose valve and feedback are set &ndash; its troubleshooting manual</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8; then the unit's own sheets (photos, drawing, settings).</td></tr>
+<tr><td><b style="color:#d62424">?</b> red, blinking</td><td>Cylinder: while one of its error bits is set</td><td>The same manual, headed with <b>the movement that failed</b> &ndash; which button, its PLC bit and valve output, the sensor that should have come on and the one that should have gone off &ndash; then the alarm's and the unit's own sheets.</td></tr>
 <tr><td><b style="color:#d62424">?</b> red or <b style="color:#d69614">amber</b>, blinking</td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning. Amber when every code set is a warning &ndash; the axis has not been stopped by it.</td></tr>
-<tr><td><i style="color:#2870be">i</i> blue</td><td>Whenever the unit has help files</td><td>What the unit is: photos, drawing, settings.</td></tr>
 </table>
-<p>The <b>?</b> takes the right end of the line; the <b>i</b> moves just left of it while a <b>?</b> is shown.
+<p>One document opens straight away; several are offered as a list. A unit with nothing to open shows no mark until something fails.
 While an error bit is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
 or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
 

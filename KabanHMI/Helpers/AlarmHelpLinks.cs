@@ -50,6 +50,12 @@ namespace Kaban.UI.Helpers
             /// </summary>
             public string ServoAlarm = "", AxisAlarm = "", AxisWarning = "";
 
+            /// <summary>
+            /// A cylinder's error bit is one side's: the movement it reports and
+            /// that movement's devices, named at the top of the tailored manual.
+            /// </summary>
+            public TC.MovementInfo Movement;
+
             public bool HasCodes
             {
                 get { return ServoAlarm.Length > 0 || AxisAlarm.Length > 0 || AxisWarning.Length > 0; }
@@ -381,7 +387,8 @@ namespace Kaban.UI.Helpers
                                       : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
                             + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
                     Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
-                    Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0
+                    Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0,
+                    Movement = cylinder ? link.Movement : null
                 });
             }
 
@@ -402,8 +409,8 @@ namespace Kaban.UI.Helpers
             // One entry per file: an alarm helper link that repeats a unit file
             // would list the same document twice.
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            return docs.Where(d => d.Exists && (d.Valve != 0 || d.Feedback != 0 || !string.IsNullOrEmpty(d.Code) ||
-                                                seen.Add(d.FileName))).ToList();
+            return docs.Where(d => d.Exists && (d.Valve != 0 || d.Feedback != 0 || d.Movement != null ||
+                                                !string.IsNullOrEmpty(d.Code) || seen.Add(d.FileName))).ToList();
         }
 
         /// <summary>

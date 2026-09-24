@@ -30,7 +30,8 @@ class AX {
                                          PositionAddress = "D100", ErrorBAddress = "M890" };
         axis.SetAxisCodes("W0B", "W4", "W5");
         host.Controls.Add(axis); host.Show(); Application.DoEvents();
-        var badge = Field<AlarmHelpBadge>(axis, "_helpB");
+        var badge = Field<AlarmHelpBadge>(axis, "_helpB");       // watches the codes, never shown itself
+        var mark = Field<UnitHelpBadge>(axis, "_help");          // the unit's ONE "?"
         Check("the scanner is asked for the three code words", badge.ExtraAddresses.SequenceEqual(new[] { "W0B", "W4", "W5" }),
               string.Join(",", badge.ExtraAddresses));
 
@@ -38,12 +39,13 @@ class AX {
         Func<string, int> plc = a => a == "M890" ? m890 : a == "W0B" ? w0b : a == "W4" ? w4 : a == "W5" ? w5 : 0;
 
         badge.UpdateState(plc, c => true);
-        Check("error bit set but every code 0: NO '?' - nothing to look up", !badge.IsActive && !badge.Visible);
+        Check("error bit set but every code 0: NO '?' - nothing to look up", !badge.IsActive && !mark.Visible && !badge.Visible);
         Check("  the position's border still blinks for the error", axis.PositionDisplay.AlertBlink);
 
         w0b = 0x163; badge.UpdateState(plc, c => true);
-        Check("servo alarm 16.3: the '?' shows", badge.IsActive && badge.Visible);
-        Check("  red", badge.MarkColor.ToArgb() == Color.FromArgb(214, 36, 36).ToArgb());
+        Check("servo alarm 16.3: the '?' shows", badge.IsActive && mark.Visible && mark.State == UnitHelpBadge.BadgeState.Error);
+        Check("  red", mark.MarkColor.ToArgb() == Color.FromArgb(214, 36, 36).ToArgb());
+        Check("  the watcher itself stays hidden", !badge.Visible);
         var docs = badge.Documents();
         Check("  one menu entry: the 16.3 entry of the servo manual",
               docs.Count == 1 && docs[0].Code == "16.3" && docs[0].FileName == AxisCodeHelp.ServoAlarmDocument,
@@ -51,7 +53,8 @@ class AX {
         Check("  titled with the code, its name and the axis",
               docs.Count == 1 && docs[0].Title.Contains("Servo alarm 16.3") && docs[0].Title.Contains("Encoder") && docs[0].Title.Contains("Robot X"),
               docs.Count == 1 ? docs[0].Title : "");
-        Check("  on the top frame line", badge.Top <= 4, "top=" + badge.Top);
+        Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
+        Check("  the unit's '?' lists the same", axis.HelpDocuments().Count == 1 && axis.HelpDocuments()[0].Code == "16.3");
 
         w4 = 0x1904; w5 = 0x0900; badge.UpdateState(plc, c => true);
         docs = badge.Documents();
@@ -63,12 +66,13 @@ class AX {
                               return System.Text.RegularExpressions.Regex.Matches(h, "<section class=\"code\"").Count == 1; }));
 
         m890 = 0; w0b = 0; w4 = 0; badge.UpdateState(plc, c => true);
-        Check("only a warning: the '?' stays", badge.IsActive);
-        Check("  drawn AMBER - the axis has not been stopped", badge.MarkColor.ToArgb() == Color.FromArgb(214, 150, 20).ToArgb());
+        Check("only a warning: the '?' stays", badge.IsActive && mark.Visible);
+        Check("  drawn AMBER - the axis has not been stopped", mark.State == UnitHelpBadge.BadgeState.Warning &&
+              mark.MarkColor.ToArgb() == Color.FromArgb(214, 150, 20).ToArgb(), mark.State.ToString());
         Check("  and the position does not blink (no error bit)", !axis.PositionDisplay.AlertBlink);
 
         w5 = 0; badge.UpdateState(plc, c => true);
-        Check("all three back to 0: the '?' goes", !badge.IsActive && !badge.Visible);
+        Check("all three back to 0: the '?' goes", !badge.IsActive && !mark.Visible);
 
         w0b = 0xE61; badge.UpdateState(plc, c => true);
         Check("a servo WARNING code (E6.1 forced stop) is amber too", badge.IsActive && badge.MarkColor.ToArgb() == Color.FromArgb(214, 150, 20).ToArgb());
@@ -78,10 +82,11 @@ class AX {
         var cyl = new FunctionUnitHMI { TitleTextKey = "Clamp", CommandAAddress = "M672", ErrorAAddress = "M892" };
         host.Controls.Add(cyl);
         var cb = Field<AlarmHelpBadge>(cyl, "_helpA");
+        var cm = Field<UnitHelpBadge>(cyl, "_help");
         cb.UpdateState(a => a == "M892" ? 1 : 0, c => true);
-        Check("shown while the error bit is set, button A blinks", cb.IsActive && cyl.ButtonA.AlertBlink);
+        Check("shown (red) while the error bit is set, button A blinks", cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Error && cyl.ButtonA.AlertBlink);
         cb.UpdateState(a => 0, c => true);
-        Check("gone with it", !cb.IsActive && !cyl.ButtonA.AlertBlink);
+        Check("gone with it", !cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Hidden && !cyl.ButtonA.AlertBlink);
 
         Console.WriteLine("--- every function unit reads like the Axis Settings row ---");
         var fu = new FunctionUnitHMI { PositionAddress = "D15" };

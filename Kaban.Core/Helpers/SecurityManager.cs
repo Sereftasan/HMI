@@ -42,6 +42,7 @@ namespace Kaban.Core.Helpers
             {
                 _failedAttempts[key] = 0;
                 Login(account.Username, account.Level);
+                UserStore.RememberLastUser(account.Username);   // offered first by the next login dialog
                 AuditLogger.Log($"logged in (level: {account.Level}).");
                 return true;
             }

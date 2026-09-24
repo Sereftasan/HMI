@@ -225,6 +225,40 @@ namespace Kaban.Core.Helpers
         }
 
         // ------------------------------------------------------------------
+        /// <summary>
+        /// The movement of a cylinder unit that failed - one side of it: the
+        /// button that commands it, the output that drives the valve, the sensors
+        /// that should confirm it and the ones that should go off.
+        ///
+        /// The manual speaks of "the output" and "the target feedback"; the unit
+        /// knows which devices those are for THIS movement, so the page can name
+        /// them instead of leaving the operator to find them in the drawings.
+        /// </summary>
+        public class MovementInfo
+        {
+            public sealed class Device
+            {
+                public string Address = "";
+                /// <summary>What the page calls it (a lamp's tooltip), or "".</summary>
+                public string Name = "";
+            }
+
+            public int Station;
+            public string Unit = "";
+            /// <summary>"A" (left button) or "B" (right button).</summary>
+            public string Side = "";
+            /// <summary>The button's caption: "Clamp", "Forward"...</summary>
+            public string Name = "";
+            public Device Command, Output;
+            /// <summary>The other side's command and output - the second coil of a double solenoid valve.</summary>
+            public Device OtherCommand, OtherOutput;
+            /// <summary>Sensors that turn ON when this movement completes.</summary>
+            public readonly List<Device> Feedback = new List<Device>();
+            /// <summary>Sensors of the other end, which go OFF as the cylinder leaves it.</summary>
+            public readonly List<Device> OppositeFeedback = new List<Device>();
+        }
+
+        // ------------------------------------------------------------------
         /// <summary>A document to open, and where in it to start.</summary>
         public class HelpDocument
         {
@@ -252,6 +286,13 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public string Code = "";
             public string CodeGroup = "";
+
+            /// <summary>
+            /// For a cylinder fault raised by a unit: WHICH movement failed and the
+            /// devices it involves, shown at the top of the tailored manual. Null
+            /// when no movement is known (the manual opened without an alarm).
+            /// </summary>
+            public MovementInfo Movement;
 
             public string FullPath
             {
@@ -433,7 +474,8 @@ namespace Kaban.Core.Helpers
             if (doc != null && doc.Exists && !string.IsNullOrEmpty(doc.Code))
                 return AxisCodeHelp.Extract(doc);
 
-            if (doc != null && doc.Exists && (doc.Valve != 0 || doc.Feedback != 0))
+            if (doc != null && doc.Exists && (doc.Valve != 0 || doc.Feedback != 0 || doc.Movement != null) &&
+                doc.FileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 return Tailor(doc);
 
             if (doc == null || !doc.Exists) return doc == null ? "" : doc.FullPath;
@@ -475,14 +517,19 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
-        /// Writes a copy of the manual holding only this alarm's valve and feedback
-        /// variants, and returns its path.
+        /// Writes a copy of the manual holding only this cylinder's valve and
+        /// feedback variants, as ONE chart, and returns its path.
         ///
         /// The manual's own instructions: details 1.4 and 1.7 are ALTERNATIVES -
         /// identify the valve and the feedback type, then read only the matching
-        /// rows. The alarm knows both, so the program does the identifying. Every
-        /// other detail is kept whole, and a note at the top says what the copy
-        /// was prepared for.
+        /// rows. The unit knows both, so the program does the identifying: the
+        /// other variants are left out, and the details are joined into one table
+        /// under one heading row - 1.1, 1.2 ... 1.8, read top to bottom - instead
+        /// of a table per detail with the heading repeated between them.
+        ///
+        /// With the MOVEMENT that failed (see MovementInfo) a box at the top names
+        /// its devices: the command, the valve output, the sensors that should
+        /// confirm it and the ones that should go off.
         ///
         /// A digit the manual has no block for filters NOTHING: hiding every
         /// variant would leave the operator with less than the full manual.
@@ -494,7 +541,7 @@ namespace Kaban.Core.Helpers
                 var html = File.ReadAllText(doc.FullPath);
                 bool byValve = doc.Valve != 0 && html.Contains("data-variant=\"valve:" + doc.Valve + "\"");
                 bool byFeedback = doc.Feedback != 0 && html.Contains("data-variant=\"feedback:" + doc.Feedback + "\"");
-                if (!byValve && !byFeedback) return doc.FullPath;
+                if (!byValve && !byFeedback && doc.Movement == null) return doc.FullPath;
 
                 html = Regex.Replace(html,
                     "<section class=\"block\"[^>]*data-variant=\"(valve|feedback):(\\d+)\"[^>]*>.*?</section>\\s*",
@@ -507,16 +554,32 @@ namespace Kaban.Core.Helpers
                     },
                     RegexOptions.Singleline);
 
+                if (byValve || byFeedback)
+                {
+                    html = JoinBlocks(html);
+                    // "(2) Single solenoid 5/2": the number told the alternatives
+                    // apart; with one left it only reads like a step number.
+                    html = Regex.Replace(html, "(<strong class=\"vt\">)\\(\\d\\)\\s*", "$1");
+                }
+
                 var chosen = new List<string>();
                 if (byValve) chosen.Add("<b>Valve:</b> " + WebUtility.HtmlEncode(Describe((ValveType)doc.Valve)));
                 if (byFeedback) chosen.Add("<b>Feedback:</b> " + WebUtility.HtmlEncode(Describe((FeedbackType)doc.Feedback)));
-                var note = "<div class=\"tailored\">Prepared for this alarm - " + string.Join(" &middot; ", chosen) +
-                           ". Other types in details 1.4 and 1.7 are left out; they do not apply to this cylinder.</div>";
+                var note = new System.Text.StringBuilder();
+                note.Append("<div class=\"tailored\">");
+                if (chosen.Count > 0)
+                    note.Append("<p>Prepared for this cylinder - " + string.Join(" &middot; ", chosen) +
+                                ". Other types in details " + (byValve && byFeedback ? "1.4 and 1.7" : byValve ? "1.4" : "1.7") +
+                                " are left out; they do not apply to it.</p>");
+                if (doc.Movement != null) note.Append(MovementBox(doc.Movement, (ValveType)doc.Valve));
+                note.Append("</div>");
 
                 int h1 = html.IndexOf("</h1>", StringComparison.OrdinalIgnoreCase);
-                html = h1 >= 0 ? html.Insert(h1 + 5, note) : html.Replace("<body>", "<body>" + note);
+                html = h1 >= 0 ? html.Insert(h1 + 5, note.ToString()) : html.Replace("<body>", "<body>" + note);
+                html = html.Replace("</style>", TailoredStyle + "</style>");
 
-                var name = Path.GetFileNameWithoutExtension(doc.FullPath) + "_v" + doc.Valve + "_f" + doc.Feedback + ".html";
+                var name = Path.GetFileNameWithoutExtension(doc.FullPath) + "_v" + doc.Valve + "_f" + doc.Feedback +
+                           (doc.Movement == null ? "" : "_" + SafeName(doc.Movement.Unit) + "_" + doc.Movement.Side) + ".html";
                 var path = Path.Combine(Path.GetTempPath(), name);
                 File.WriteAllText(path, html, new System.Text.UTF8Encoding(true));
                 return path;
@@ -525,6 +588,88 @@ namespace Kaban.Core.Helpers
             {
                 return doc.FullPath;
             }
+        }
+
+        private const string TailoredStyle =
+            " .tailored p{margin:.1em 0 .4em}" +
+            " table.movement{width:auto;margin:.3em 0 .2em}" +
+            " table.movement td{border:none;padding:.15em .8em .15em 0;vertical-align:top}" +
+            " table.movement td:first-child{font-weight:bold;white-space:nowrap}" +
+            " table.movement code{font-size:1.05em;font-weight:bold;color:#1f4e79}\n";
+
+        /// <summary>
+        /// The detail tables joined into one: the first table's column widths and
+        /// heading row, then every detail's rows in order - each detail its own
+        /// tbody, so it can still be told apart (data-detail). The per-detail
+        /// sections were one table each, and the repeated heading between them
+        /// broke the chart into pieces.
+        /// </summary>
+        internal static string JoinBlocks(string html)
+        {
+            var blocks = Regex.Matches(html, "<section class=\"block\"([^>]*)>(.*?)</section>\\s*", RegexOptions.Singleline);
+            if (blocks.Count < 2) return html;
+
+            var first = blocks[0].Groups[2].Value;
+            int tbody = first.IndexOf("<tbody", StringComparison.OrdinalIgnoreCase);
+            if (tbody < 0) return html;
+            var head = first.Substring(0, tbody);           // <table ...><colgroup>...</colgroup><thead>...</thead>
+
+            var sb = new System.Text.StringBuilder();
+            sb.Append("<section class=\"chart\">").Append(head);
+            foreach (Match b in blocks)
+            {
+                // The section's own attributes move to its rows: data-detail, and
+                // data-variant on the valve and feedback blocks.
+                var attributes = b.Groups[1].Value.Trim();
+                var body = Regex.Match(b.Groups[2].Value, "<tbody>(.*?)</tbody>", RegexOptions.Singleline);
+                if (!body.Success) return html;              // not the shape expected: leave the manual as it is
+                sb.Append("<tbody ").Append(attributes).Append(">").Append(body.Groups[1].Value).Append("</tbody>");
+            }
+            sb.Append("</table></section>\n");
+
+            int from = blocks[0].Index;
+            var last = blocks[blocks.Count - 1];
+            int to = last.Index + last.Length;
+            return html.Substring(0, from) + sb + html.Substring(to);
+        }
+
+        /// <summary>The failed movement's devices, as a small table in the note at the top.</summary>
+        private static string MovementBox(MovementInfo mv, ValveType valve)
+        {
+            Func<MovementInfo.Device, string> dev = d =>
+            {
+                if (d == null || string.IsNullOrWhiteSpace(d.Address)) return "";
+                var label = PlcLabelTable.ByAddress(mv.Station, d.Address);
+                var text = !string.IsNullOrWhiteSpace(d.Name) ? d.Name : label != null ? label.Label : "";
+                return "<code>" + WebUtility.HtmlEncode(d.Address.Trim()) + "</code>" +
+                       (text.Length > 0 ? " " + WebUtility.HtmlEncode(text) : "");
+            };
+            Func<IEnumerable<MovementInfo.Device>, string> list = ds =>
+                string.Join("<br>", ds.Select(dev).Where(t => t.Length > 0));
+
+            var rows = new List<string>();
+            Action<string, string> row = (caption, value) =>
+            {
+                if (!string.IsNullOrEmpty(value)) rows.Add("<tr><td>" + caption + "</td><td>" + value + "</td></tr>");
+            };
+            string side = mv.Side == "A" ? "A (left button)" : mv.Side == "B" ? "B (right button)" : mv.Side;
+            row("Movement that failed:", WebUtility.HtmlEncode((mv.Name ?? "").Trim()) +
+                                         (side.Length > 0 ? (string.IsNullOrWhiteSpace(mv.Name) ? "" : " &mdash; ") + "movement " + side : ""));
+            row("Command (PLC bit):", dev(mv.Command));
+            row("Valve output:", dev(mv.Output));
+            if (valve == ValveType.DoubleSolenoid || valve == ValveType.ClosedCentre || valve == ValveType.OpenCentre)
+                row("Other coil (must be OFF):", string.Join("<br>", new[] { dev(mv.OtherOutput), dev(mv.OtherCommand) }.Where(t => t.Length > 0).Take(1)));
+            row("Must turn ON (feedback):", list(mv.Feedback));
+            row("Must turn OFF (other end):", list(mv.OppositeFeedback));
+            return "<p><b>This alarm" + (string.IsNullOrWhiteSpace(mv.Unit) ? "" : " - " + WebUtility.HtmlEncode(mv.Unit)) + "</b></p>" +
+                   "<table class=\"movement\">" + string.Join("", rows) + "</table>" +
+                   "<p>The details below speak of &quot;the output&quot; and &quot;the target feedback&quot;: for this movement they are the devices above.</p>";
+        }
+
+        private static string SafeName(string s)
+        {
+            var t = new string((s ?? "").Where(char.IsLetterOrDigit).ToArray());
+            return t.Length == 0 ? "unit" : t.Length > 40 ? t.Substring(0, 40) : t;
         }
 
         public static string Describe(ValveType v)

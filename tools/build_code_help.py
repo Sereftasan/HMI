@@ -277,6 +277,11 @@ def build_mrj4():
                     content = cell_html(page, c["bbox"])
             # the column header row: the one whose first cell reads "Detail No."
             hdr = next((c["r0"] for c in cells if c["c0"] == 0 and plain(page, c["bbox"]).startswith("Detail")), 2)
+            # NO "Target" column: it names the amplifier series a row is written
+            # for, and the amplifier showing the code is the one on the axis.
+            tcol = next((c["c0"] for c in cells if c["r0"] == hdr and plain(page, c["bbox"]) == "Target"), None)
+            if tcol is not None:
+                cells = [dict(c, c1=min(c["c1"], tcol)) for c in cells if c["c0"] < tcol or c["r0"] < hdr]
             header = rows_html(page, cells, hdr, hdr + 1, header=True)
             starts = []
             for c in cells:
@@ -331,8 +336,7 @@ setting again. As soon as an alarm occurs, make the Servo-off status and interru
 overheat], [AL. 46 Servo motor overheat], [AL. 50 Overload 1] or [AL. 51 Overload 2]. Remove the cause and allow about
 30 minutes for cooling before resuming the operation.</div>
 <p class="how">Work down the table: check each <b>Cause</b> in order with its <b>Check method</b>; the <b>Check result</b>
-tells you the <b>Action</b>, or which cause to check next. <b>Target</b> lists the amplifier types the row applies to
-(<b>[B]</b> is the SSCNET III/H amplifier, MR-J4-_B_).</p>"""
+tells you the <b>Action</b>, or which cause to check next.</p>"""
     write("Servo_Alarm_Codes.en.html", "Servo amplifier alarms and warnings (MR-J4)", intro, "\n".join(body))
     return n
 

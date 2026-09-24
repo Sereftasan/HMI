@@ -50,7 +50,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Angle.AxisNumber = 12;
             this.unitCutting_Angle.PlcNumber = 1;
             this.unitCutting_Angle.Location = new System.Drawing.Point(16, 16);
-            this.unitCutting_Angle.Size = new System.Drawing.Size(248, 60);
+            this.unitCutting_Angle.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.unitCutting_Angle);
             // 
             // unitCutting_Z
@@ -58,8 +58,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Z.Name = "unitCutting_Z";
             this.unitCutting_Z.AxisNumber = 13;
             this.unitCutting_Z.PlcNumber = 1;
-            this.unitCutting_Z.Location = new System.Drawing.Point(552, 16);
-            this.unitCutting_Z.Size = new System.Drawing.Size(248, 60);
+            this.unitCutting_Z.Location = new System.Drawing.Point(1036, 16);
+            this.unitCutting_Z.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.unitCutting_Z);
             // 
             // unitHigh_Air_Pressure
@@ -68,8 +68,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitHigh_Air_Pressure.Name = "unitHigh_Air_Pressure";
             this.unitHigh_Air_Pressure.PlcNumber = 1;
             this.unitHigh_Air_Pressure.TitleTextKey = "High Air Pressure";
-            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(284, 86);
-            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(248, 60);
+            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(526, 90);
+            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 64);
             this.unitHigh_Air_Pressure.LogAction = true;
             this.unitHigh_Air_Pressure.CommandBAddress = "M651";
             this.unitHigh_Air_Pressure.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
@@ -82,8 +82,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping.Name = "unitLeft_Top_Clamping";
             this.unitLeft_Top_Clamping.PlcNumber = 1;
             this.unitLeft_Top_Clamping.TitleTextKey = "Left Top Clamping";
-            this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 156);
-            this.unitLeft_Top_Clamping.Size = new System.Drawing.Size(248, 60);
+            this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 164);
+            this.unitLeft_Top_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_Clamping.LogAction = true;
             this.unitLeft_Top_Clamping.CommandAAddress = "M672";
             this.unitLeft_Top_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -108,8 +108,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Small_Clamping.TitleTextKey = "Left Top Small Clamping";
             this.unitLeft_Top_Small_Clamping.ErrorAAddress = "M892";
             this.unitLeft_Top_Small_Clamping.ErrorBAddress = "M891";
-            this.unitLeft_Top_Small_Clamping.Location = new System.Drawing.Point(552, 156);
-            this.unitLeft_Top_Small_Clamping.Size = new System.Drawing.Size(248, 60);
+            this.unitLeft_Top_Small_Clamping.Location = new System.Drawing.Point(1036, 164);
+            this.unitLeft_Top_Small_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_Small_Clamping.LogAction = true;
             this.unitLeft_Top_Small_Clamping.CommandAAddress = "M699";
             this.unitLeft_Top_Small_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -127,8 +127,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Clamping.TitleTextKey = "Right Front Clamping";
             this.unitRight_Front_Clamping.ErrorAAddress = "M852";
             this.unitRight_Front_Clamping.ErrorBAddress = "M851";
-            this.unitRight_Front_Clamping.Location = new System.Drawing.Point(284, 226);
-            this.unitRight_Front_Clamping.Size = new System.Drawing.Size(248, 60);
+            this.unitRight_Front_Clamping.Location = new System.Drawing.Point(526, 238);
+            this.unitRight_Front_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRight_Front_Clamping.LogAction = true;
             this.unitRight_Front_Clamping.CommandAAddress = "M655";
             this.unitRight_Front_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -151,8 +151,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Height_Setting.Name = "unitFront_Height_Setting";
             this.unitFront_Height_Setting.PlcNumber = 1;
             this.unitFront_Height_Setting.TitleTextKey = "Front Height Setting";
-            this.unitFront_Height_Setting.Location = new System.Drawing.Point(16, 296);
-            this.unitFront_Height_Setting.Size = new System.Drawing.Size(248, 60);
+            this.unitFront_Height_Setting.Location = new System.Drawing.Point(16, 312);
+            this.unitFront_Height_Setting.Size = new System.Drawing.Size(360, 64);
             this.unitFront_Height_Setting.LogAction = true;
             this.unitFront_Height_Setting.CommandAAddress = "M750";
             this.unitFront_Height_Setting.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -174,8 +174,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Vert_Clamping.Name = "unitRight_Front_Vert_Clamping";
             this.unitRight_Front_Vert_Clamping.PlcNumber = 1;
             this.unitRight_Front_Vert_Clamping.TitleTextKey = "Right Front Vert.Clamping";
-            this.unitRight_Front_Vert_Clamping.Location = new System.Drawing.Point(552, 296);
-            this.unitRight_Front_Vert_Clamping.Size = new System.Drawing.Size(248, 60);
+            this.unitRight_Front_Vert_Clamping.Location = new System.Drawing.Point(1036, 312);
+            this.unitRight_Front_Vert_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRight_Front_Vert_Clamping.LogAction = true;
             this.unitRight_Front_Vert_Clamping.CommandAAddress = "M659";
             this.unitRight_Front_Vert_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -198,8 +198,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitSaw_Motor.Name = "unitSaw_Motor";
             this.unitSaw_Motor.PlcNumber = 1;
             this.unitSaw_Motor.TitleTextKey = "Saw Motor";
-            this.unitSaw_Motor.Location = new System.Drawing.Point(284, 366);
-            this.unitSaw_Motor.Size = new System.Drawing.Size(248, 60);
+            this.unitSaw_Motor.Location = new System.Drawing.Point(526, 386);
+            this.unitSaw_Motor.Size = new System.Drawing.Size(360, 64);
             this.unitSaw_Motor.LogAction = true;
             this.unitSaw_Motor.CommandBAddress = "M636";
             this.unitSaw_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
@@ -213,8 +213,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitSaw_Inverter_Error.Name = "unitSaw_Inverter_Error";
             this.unitSaw_Inverter_Error.PlcNumber = 1;
             this.unitSaw_Inverter_Error.TitleTextKey = "Saw Inverter Error";
-            this.unitSaw_Inverter_Error.Location = new System.Drawing.Point(16, 436);
-            this.unitSaw_Inverter_Error.Size = new System.Drawing.Size(248, 60);
+            this.unitSaw_Inverter_Error.Location = new System.Drawing.Point(16, 460);
+            this.unitSaw_Inverter_Error.Size = new System.Drawing.Size(360, 64);
             this.unitSaw_Inverter_Error.LogAction = true;
             this.unitSaw_Inverter_Error.PositionAddress = "D669";
             this.unitSaw_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -231,8 +231,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitSaw_Cooling.Name = "unitSaw_Cooling";
             this.unitSaw_Cooling.PlcNumber = 1;
             this.unitSaw_Cooling.TitleTextKey = "Saw Cooling";
-            this.unitSaw_Cooling.Location = new System.Drawing.Point(284, 16);
-            this.unitSaw_Cooling.Size = new System.Drawing.Size(248, 60);
+            this.unitSaw_Cooling.Location = new System.Drawing.Point(526, 16);
+            this.unitSaw_Cooling.Size = new System.Drawing.Size(360, 64);
             this.unitSaw_Cooling.LogAction = true;
             this.unitSaw_Cooling.CommandBAddress = "M714";
             this.unitSaw_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
@@ -245,8 +245,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitWaste_Profile_Blowing.Name = "unitWaste_Profile_Blowing";
             this.unitWaste_Profile_Blowing.PlcNumber = 1;
             this.unitWaste_Profile_Blowing.TitleTextKey = "Waste Profile Blowing";
-            this.unitWaste_Profile_Blowing.Location = new System.Drawing.Point(16, 86);
-            this.unitWaste_Profile_Blowing.Size = new System.Drawing.Size(248, 60);
+            this.unitWaste_Profile_Blowing.Location = new System.Drawing.Point(16, 90);
+            this.unitWaste_Profile_Blowing.Size = new System.Drawing.Size(360, 64);
             this.unitWaste_Profile_Blowing.LogAction = true;
             this.unitWaste_Profile_Blowing.CommandBAddress = "M706";
             this.unitWaste_Profile_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -259,8 +259,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitN45_Waste_Blowing.Name = "unitN45_Waste_Blowing";
             this.unitN45_Waste_Blowing.PlcNumber = 1;
             this.unitN45_Waste_Blowing.TitleTextKey = "45 Waste Blowing";
-            this.unitN45_Waste_Blowing.Location = new System.Drawing.Point(552, 86);
-            this.unitN45_Waste_Blowing.Size = new System.Drawing.Size(248, 60);
+            this.unitN45_Waste_Blowing.Location = new System.Drawing.Point(1036, 90);
+            this.unitN45_Waste_Blowing.Size = new System.Drawing.Size(360, 64);
             this.unitN45_Waste_Blowing.LogAction = true;
             this.unitN45_Waste_Blowing.CommandBAddress = "M746";
             this.unitN45_Waste_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -273,8 +273,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitSawdust_Blowing_Robot_Kramier.Name = "unitSawdust_Blowing_Robot_Kramier";
             this.unitSawdust_Blowing_Robot_Kramier.PlcNumber = 1;
             this.unitSawdust_Blowing_Robot_Kramier.TitleTextKey = "Sawdust Blowing - Robot Kramier";
-            this.unitSawdust_Blowing_Robot_Kramier.Location = new System.Drawing.Point(284, 156);
-            this.unitSawdust_Blowing_Robot_Kramier.Size = new System.Drawing.Size(248, 60);
+            this.unitSawdust_Blowing_Robot_Kramier.Location = new System.Drawing.Point(526, 164);
+            this.unitSawdust_Blowing_Robot_Kramier.Size = new System.Drawing.Size(360, 64);
             this.unitSawdust_Blowing_Robot_Kramier.LogAction = true;
             this.unitSawdust_Blowing_Robot_Kramier.CommandBAddress = "M697";
             this.unitSawdust_Blowing_Robot_Kramier.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -287,8 +287,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Press_Roller_FW_Back.Name = "unitProfile_Press_Roller_FW_Back";
             this.unitProfile_Press_Roller_FW_Back.PlcNumber = 1;
             this.unitProfile_Press_Roller_FW_Back.TitleTextKey = "Profile Press Roller FW/Back";
-            this.unitProfile_Press_Roller_FW_Back.Location = new System.Drawing.Point(16, 226);
-            this.unitProfile_Press_Roller_FW_Back.Size = new System.Drawing.Size(248, 60);
+            this.unitProfile_Press_Roller_FW_Back.Location = new System.Drawing.Point(16, 238);
+            this.unitProfile_Press_Roller_FW_Back.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Press_Roller_FW_Back.LogAction = true;
             this.unitProfile_Press_Roller_FW_Back.CommandAAddress = "M738";
             this.unitProfile_Press_Roller_FW_Back.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
@@ -306,8 +306,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Press_Roller_Up.PlcNumber = 1;
             this.unitProfile_Press_Roller_Up.TitleTextKey = "Profile Press Roller Up";
             this.unitProfile_Press_Roller_Up.ErrorBAddress = "M897";
-            this.unitProfile_Press_Roller_Up.Location = new System.Drawing.Point(552, 226);
-            this.unitProfile_Press_Roller_Up.Size = new System.Drawing.Size(248, 60);
+            this.unitProfile_Press_Roller_Up.Location = new System.Drawing.Point(1036, 238);
+            this.unitProfile_Press_Roller_Up.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Press_Roller_Up.LogAction = true;
             this.unitProfile_Press_Roller_Up.Lamp1AAddress = "M237";
             this.unitProfile_Press_Roller_Up.CommandBAddress = "M739";
@@ -320,8 +320,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Cutting_Y.Name = "unitV_Cutting_Y";
             this.unitV_Cutting_Y.AxisNumber = 14;
             this.unitV_Cutting_Y.PlcNumber = 1;
-            this.unitV_Cutting_Y.Location = new System.Drawing.Point(284, 296);
-            this.unitV_Cutting_Y.Size = new System.Drawing.Size(248, 60);
+            this.unitV_Cutting_Y.Location = new System.Drawing.Point(526, 312);
+            this.unitV_Cutting_Y.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.unitV_Cutting_Y);
             // 
             // unitV_Cutting_Z
@@ -329,8 +329,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Cutting_Z.Name = "unitV_Cutting_Z";
             this.unitV_Cutting_Z.AxisNumber = 15;
             this.unitV_Cutting_Z.PlcNumber = 1;
-            this.unitV_Cutting_Z.Location = new System.Drawing.Point(16, 366);
-            this.unitV_Cutting_Z.Size = new System.Drawing.Size(248, 60);
+            this.unitV_Cutting_Z.Location = new System.Drawing.Point(16, 386);
+            this.unitV_Cutting_Z.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.unitV_Cutting_Z);
             // 
             // unitV_Saw_Motors
@@ -339,8 +339,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Saw_Motors.Name = "unitV_Saw_Motors";
             this.unitV_Saw_Motors.PlcNumber = 1;
             this.unitV_Saw_Motors.TitleTextKey = "V Saw Motors";
-            this.unitV_Saw_Motors.Location = new System.Drawing.Point(552, 366);
-            this.unitV_Saw_Motors.Size = new System.Drawing.Size(248, 60);
+            this.unitV_Saw_Motors.Location = new System.Drawing.Point(1036, 386);
+            this.unitV_Saw_Motors.Size = new System.Drawing.Size(360, 64);
             this.unitV_Saw_Motors.LogAction = true;
             this.unitV_Saw_Motors.CommandBAddress = "M637";
             this.unitV_Saw_Motors.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
@@ -353,8 +353,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Saw_Inverter_Error.Name = "unitV_Saw_Inverter_Error";
             this.unitV_Saw_Inverter_Error.PlcNumber = 1;
             this.unitV_Saw_Inverter_Error.TitleTextKey = "V Saw Inverter Error";
-            this.unitV_Saw_Inverter_Error.Location = new System.Drawing.Point(284, 436);
-            this.unitV_Saw_Inverter_Error.Size = new System.Drawing.Size(248, 60);
+            this.unitV_Saw_Inverter_Error.Location = new System.Drawing.Point(526, 460);
+            this.unitV_Saw_Inverter_Error.Size = new System.Drawing.Size(360, 64);
             this.unitV_Saw_Inverter_Error.LogAction = true;
             this.unitV_Saw_Inverter_Error.PositionAddress = "D670";
             this.unitV_Saw_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;

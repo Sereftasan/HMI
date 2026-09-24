@@ -28,7 +28,7 @@ class F {
             Check("  detail " + d + " kept whole", html.Contains("data-detail=\"" + d + "\""));
         Check("the caution box kept", html.Contains("CAUTION"));
         Check("a note says what it was prepared for",
-              html.Contains("Prepared for this alarm") && html.Contains("Double solenoid 5/2"));
+              html.Contains("Prepared for this cylinder") && html.Contains("Double solenoid 5/2"));
 
         var valveOnly = File.ReadAllText(TC.ExtractSection(TC.Resolve("1.2.0").Single()));
         Check("valve given, feedback not: all six feedback blocks stay",

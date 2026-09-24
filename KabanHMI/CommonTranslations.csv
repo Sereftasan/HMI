@@ -18,6 +18,8 @@ Unit_min;min;dk;min;min;min;min
 Unit_lbs;lbs;libre;lbs;lbs;lbs;lbs
 Sys_NoData;Waiting for PLC data.;PLC verisi bekleniyor.;Ожидание данных ПЛК.;Warte auf SPS-Daten.;In attesa dei dati PLC.;Esperando datos del PLC.
 Btn_Login;Login;Giriş;Вход;Anmelden;Accedi;Iniciar sesión
+Ttl_Login;HMI Login;HMI Giriş;Вход в HMI;HMI-Anmeldung;Accesso HMI;Inicio de sesión HMI
+Msg_PickUser;Choose a user.;Bir kullanıcı seçin.;Выберите пользователя.;Wählen Sie einen Benutzer.;Scegli un utente.;Elija un usuario.
 Btn_Logout;Logout;Oturumu kapat;Выйти;Abmelden;Esci;Cerrar sesión
 Sys_NotLoggedIn;No user logged;Oturum açılmadı;Пользователь не вошёл;Nicht angemeldet;Nessun utente;Sin sesión iniciada
 Set_Units;Unit Settings;Birim Ayarları;Настройки единиц;Einheiten;Unità di misura;Unidades
@@ -276,7 +278,7 @@ Hlp_Cylinder;Cylinder troubleshooting;Silindir arıza giderme;Устранени
 
 Tip_HelpBadge;Click for help;Yardım için tıklayın;Нажмите для справки;Für Hilfe klicken;Clicca per l'aiuto;Haga clic para obtener ayuda
 Hlp_Servo;Servo drive troubleshooting;Servo sürücü arıza giderme;Устранение неисправностей сервопривода;Servoantrieb-Fehlersuche;Diagnostica azionamento servo;Diagnóstico del servoaccionamiento
-Tip_UnitInfo;About this unit;Bu ünite hakkında;Об этом узле;Über diese Einheit;Informazioni su questa unità;Acerca de esta unidad
+Tip_UnitHelp;Help for this unit;Bu ünite için yardım;Справка по этому узлу;Hilfe zu dieser Einheit;Aiuto per questa unità;Ayuda para esta unidad
 Axis_NotFound;Axis {0}: no axis settings row;Eksen {0}: eksen ayar satırı yok;Ось {0}: нет строки настроек оси;Achse {0}: keine Achseinstellung;Asse {0}: nessuna riga impostazioni;Eje {0}: sin fila de ajustes
 Btn_OpenManual;Open the HMI manual;HMI kullanım kılavuzunu aç;Открыть руководство HMI;HMI-Handbuch öffnen;Apri il manuale HMI;Abrir el manual del HMI
 Tip_OpenManual;Opens the operator and engineer manual in the browser, in the language on screen.;Operatör ve mühendis kılavuzunu, ekrandaki dilde tarayıcıda açar.;Открывает руководство оператора и инженера в браузере на языке интерфейса.;Öffnet das Bediener- und Technikerhandbuch im Browser, in der angezeigten Sprache.;Apre il manuale per operatore e tecnico nel browser, nella lingua sullo schermo.;Abre el manual del operador y del técnico en el navegador, en el idioma de la pantalla.

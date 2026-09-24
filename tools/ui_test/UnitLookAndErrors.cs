@@ -67,6 +67,13 @@ class U {
         }
     }
 
+    // Visible marks on a unit: its "?" - the two error-bit watchers never show.
+    static int CountMarks(Control unit) {
+        int n = 0;
+        foreach (Control c in unit.Controls) if ((c is UnitHelpBadge || c is AlarmHelpBadge) && c.Visible) n++;
+        return n;
+    }
+
     [STAThread]
     static void Main() {
         System.IO.Directory.CreateDirectory("/tmp/unitlook");
@@ -133,20 +140,21 @@ class U {
 
         Console.WriteLine("--- an axis error: '?' top right, the DISPLAY's border blinks ---");
         var axisHelp = Field<AlarmHelpBadge>(axis, "_helpB");
+        var mark = Field<UnitHelpBadge>(axis, "_help");
         axisHelp.UpdateState(x => x == "M890" ? 1 : 0, c => true);
         Application.DoEvents();
-        Check("the '?' shows", axisHelp.Visible && axisHelp.IsActive);
-        Check("  on the top frame line", axisHelp.Top <= 4, "top=" + axisHelp.Top);
-        Check("  at its right end", axisHelp.Right >= axis.ClientSize.Width - 16, axisHelp.Right + " of " + axis.ClientSize.Width);
+        Check("the '?' shows", mark.Visible && axisHelp.IsActive);
+        Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
+        Check("  at its right end", mark.Right >= axis.ClientSize.Width - 16, mark.Right + " of " + axis.ClientSize.Width);
         Check("the display's border blinks", pos.AlertBlink);
         Check("the jog buttons do not", !axis.ButtonA.AlertBlink && !axis.ButtonB.AlertBlink);
-        var info = Field<UnitInfoBadge>(axis, "_info");
-        Check("the 'i' (when present) moves left of the '?'", info.Right <= axisHelp.Left, info.Right + " <= " + axisHelp.Left);
+        Check("ONE mark on the unit - no separate 'i' beside the '?'",
+              CountMarks(axis) == 1);
         ForceRedPhase();
         Check("  and in the red half it really DRAWS a red border", RedPixels(pos) > 100, RedPixels(pos) + " red px");
         using (var a = Shot(axisHost)) a.Save("/tmp/unitlook/axis_error.png", ImageFormat.Png);
         axisHelp.UpdateState(x => 0, c => true);
-        Check("clears with the error", !pos.AlertBlink && !axisHelp.Visible);
+        Check("clears with the error", !pos.AlertBlink && !mark.Visible);
 
         Console.WriteLine("--- a cylinder error: its BUTTON's border blinks ---");
         var helpA = Field<AlarmHelpBadge>(fuPos, "_helpA");

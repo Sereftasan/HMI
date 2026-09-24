@@ -38,7 +38,7 @@ class L {
 
     [STAThread] static void Main(){
         Console.WriteLine("--- a unit and an axis describe their own errors ---");
-        var clamp = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid52, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
+        var clamp = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
         var links = clamp.HelpLinks().ToList();
         Check("two error bits, one per side", links.Count == 2);
         Check("  carrying the unit's valve and feedback", links.All(l => l.Valve == 1 && l.Feedback == 2 && l.Station == 3));
@@ -50,7 +50,7 @@ class L {
         var page = new UserControl();
         page.Controls.Add(clamp); page.Controls.Add(axis);
         var tabs = new SettingsScreen(new ISettingsPage[] {
-            new OnePage(() => { var p = new UserControl(); p.Controls.Add(Clamp(3, "M820", "", CylinderValve.SingleSolenoid52Spring, CylinderFeedback.SingleMagnetic, "Conveyor Stop")); return p; })
+            new OnePage(() => { var p = new UserControl(); p.Controls.Add(Clamp(3, "M820", "", CylinderValve.SingleSolenoid_5_2, CylinderFeedback.SingleMagnetic, "Conveyor Stop")); return p; })
         });
         page.Controls.Add(tabs);
         AlarmHelpLinks.Harvest(page);
@@ -59,10 +59,10 @@ class L {
         Check("station AND address must match", AlarmHelpLinks.Find(1, "M810") == null);
 
         Console.WriteLine("--- the same bit described two ways is reported, not guessed ---");
-        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid53Centre, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
+        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_5_3, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
         Check("one conflict logged", AlarmHelpLinks.Conflicts.Count == 1, AlarmHelpLinks.Conflicts.FirstOrDefault() ?? "");
         Check("  the first description kept", AlarmHelpLinks.Find(3, "M810").Valve == 1);
-        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid52, CylinderFeedback.TwoEndMagnetic, "Same unit, 2nd page").HelpLinks().First());
+        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Same unit, 2nd page").HelpLinks().First());
         Check("the same unit on a second page is NOT a conflict", AlarmHelpLinks.Conflicts.Count == 1);
 
         Console.WriteLine("--- an alarm finds its unit's help, then its own files ---");
@@ -84,36 +84,44 @@ class L {
 
         Console.WriteLine("--- the '?' on the unit's TOP frame line ---");
         var host = new Form { ClientSize = new System.Drawing.Size(420, 120) };
-        var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid52, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
+        var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
         unit.CommandAAddress = "M700"; unit.CommandBAddress = "M701";     // two movements, two buttons
         unit.SetBounds(10, 10, 360, 64);
         var plain = new FunctionUnitHMI { PlcNumber = 3 }; plain.SetBounds(10, 80, 360, 64);
         host.Controls.Add(unit); host.Controls.Add(plain); host.Show(); Application.DoEvents();
         var helpA = Field<AlarmHelpBadge>(unit, "_helpA"); var helpB = Field<AlarmHelpBadge>(unit, "_helpB");
+        var mark = Field<UnitHelpBadge>(unit, "_help");
         // The side badges used to take half a badge of width off each side with an
         // error bit, so a unit with error bits drew narrower than one without.
         Check("NO room taken from the sides: error bits do not narrow the frame",
               unit.Padding == Padding.Empty && plain.Padding == Padding.Empty, unit.Padding.ToString());
-        Check("hidden while there is no error", !helpA.Visible && !helpB.Visible);
+        Check("a cylinder with its valve and feedback set: a BLUE '?' - its manual is there to read",
+              mark.Visible && mark.State == UnitHelpBadge.BadgeState.Info && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb(),
+              mark.State.ToString());
+        Check("  the watchers never show themselves", !helpA.Visible && !helpB.Visible);
+        Check("  a unit with nothing to open has none", !Field<UnitHelpBadge>(plain, "_help").Visible);
         helpB.UpdateState(a => a == "M811" ? 1 : 0, c => true);
-        Check("B's error shows its '?' only", helpB.Visible && helpB.IsActive && !helpA.Visible);
-        Check("  on the top frame line", helpB.Top <= 4, "top=" + helpB.Top);
-        Check("  at its RIGHT end", helpB.Right >= unit.ClientSize.Width - 16 && helpB.Right <= unit.ClientSize.Width,
-              "right=" + helpB.Right + " of " + unit.ClientSize.Width);
+        Check("B's error turns the '?' RED", mark.State == UnitHelpBadge.BadgeState.Error && helpB.IsActive && !helpB.Visible);
+        Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
+        Check("  at its RIGHT end", mark.Right >= unit.ClientSize.Width - 16 && mark.Right <= unit.ClientSize.Width,
+              "right=" + mark.Right + " of " + unit.ClientSize.Width);
         Check("  and button B's border blinks red, A's does not", unit.ButtonB.AlertBlink && !unit.ButtonA.AlertBlink);
+        var bdocs = unit.HelpDocuments();
+        Check("  its help: the manual for movement B", bdocs.Count >= 1 && bdocs[0].Movement != null && bdocs[0].Movement.Side == "B" &&
+              bdocs[0].Valve == 1 && bdocs[0].Feedback == 2, string.Join(" | ", bdocs.Select(d => d.Title)));
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
-        Check("A's '?' joins it on the same line, to its left", helpA.Visible && helpA.Top == helpB.Top && helpA.Right < helpB.Left,
-              helpA.Left + ".." + helpA.Right + " / " + helpB.Left);
+        Check("A's error too: still ONE '?', both movements in its list", mark.State == UnitHelpBadge.BadgeState.Error &&
+              unit.HelpDocuments().Count(d => d.Movement != null) == 2);
         Check("  and button A blinks too", unit.ButtonA.AlertBlink);
         helpA.UpdateState(a => 0, c => true);
-        Check("A clears: its blink stops", !unit.ButtonA.AlertBlink && !helpA.Visible);
+        Check("A clears: its blink stops", !unit.ButtonA.AlertBlink);
         helpB.UpdateState(a => 0, c => true);
         Check("B clears: its blink stops", !unit.ButtonB.AlertBlink);
-        Check("and it goes when the error clears", !helpB.Visible);
+        Check("and the '?' is blue again", mark.State == UnitHelpBadge.BadgeState.Info);
         ConnectionMonitor.ReportRead(3, false, "not connected");
         ConnectionMonitor.GraceTime = TimeSpan.Zero;
         helpA.UpdateState(a => 1, c => true);
-        Check("a dead station shows no '?' - its reading cannot be trusted", !helpA.Visible);
+        Check("a dead station turns nothing red - its reading cannot be trusted", !helpA.IsActive && mark.State != UnitHelpBadge.BadgeState.Error);
         host.Close();
 
         Console.WriteLine("--- sub-machine pages speak to THEIR controller ---");

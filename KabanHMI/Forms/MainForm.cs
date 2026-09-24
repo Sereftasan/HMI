@@ -1258,7 +1258,8 @@ namespace Kaban.UI.Forms
             change.Click += (s, e) =>
             {
                 SecurityManager.Logout();
-                using (var login = new LoginForm()) login.ShowDialog(this);
+                // The list opens straight away: picking another name is the point.
+                using (var login = new LoginForm(chooseUser: true)) login.ShowDialog(this);
             };
 
             menu.Items.Add(logout);

@@ -142,6 +142,37 @@ namespace Kaban.Core.Helpers
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "Users.dat");
         private static bool _loading;
 
+        // ------------------------------------------------------------------
+        // THE LAST USER: who signed in last, so the login dialog can start with
+        // that name selected and the cursor in the password box. Only a name -
+        // never a password or anything that would sign anybody in by itself.
+        // ------------------------------------------------------------------
+        internal static string LastUserPath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "LastUser.txt");
+
+        /// <summary>The name that signed in last ("" when none, or when it is no longer an account).</summary>
+        public static string LastUser
+        {
+            get
+            {
+                try
+                {
+                    if (!System.IO.File.Exists(LastUserPath)) return "";
+                    string name = System.IO.File.ReadAllText(LastUserPath).Trim();
+                    return _users.ContainsKey(name) ? _users[name].Username : "";
+                }
+                catch { return ""; }
+            }
+        }
+
+        /// <summary>Kept after a successful login (see SecurityManager.TryLogin).</summary>
+        public static void RememberLastUser(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return;
+            try { SafeFile.WriteAllText(LastUserPath, username.Trim(), new UTF8Encoding(false)); }
+            catch { /* a name not remembered is only a convenience lost */ }
+        }
+
         internal static void Persist()
         {
             if (_loading) return;

@@ -3753,3 +3753,24 @@ and `UnitLookAndErrors` extended.
   deleted; `Msg_MonStatus` has one argument less).
 - Tests: `tools/ui_test/PlcMonitor.cs` (64 checks), `tools/ui_test/AxisCodeHelpUi.cs`
   reset section rewritten (40 checks).
+
+## 2026-09-24 (later) - Cylinder help by valve and feedback, one "?", login list, Cutting page sizes
+
+- `tools/build_code_help.py`: the MR-J4 tables without their "Target" column;
+  `Help/Servo_Alarm_Codes.en.html` regenerated.
+- `LoginForm`: accounts in a drop-down list, the last user (`UserStore.LastUser`,
+  `LastUser.txt`, written by `SecurityManager.TryLogin`) preselected, focus in the
+  password; `LoginForm(chooseUser: true)` for Change user opens the list.
+- `FunctionUnitHMI`: `ValveType` / `FeedbackType` (the former `Valve` / `Feedback`
+  kept hidden); `CylinderValve` members renamed `DoubleSolenoid_5_2`,
+  `SingleSolenoid_5_2`, `DoubleSolenoid_5_3` (values unchanged). `MovementFor(side)`,
+  `HelpDocuments()`. One `UnitHelpBadge` (blue / red / amber) replaces the "i"
+  (`UnitInfoBadge`, removed) and the visible `AlarmHelpBadge`s, which are now
+  `Watcher`s of the error bits and drive codes.
+- `TroubleshootingCatalog`: `MovementInfo`, `HelpDocument.Movement`; `Tailor` joins
+  the detail tables into one chart (`JoinBlocks`), drops the kept variant's number
+  and heads the copy with the failed movement's devices. `AlarmHelpLinks.Link.Movement`
+  so the alarm list's help names the movement too.
+- `ManualCutting`: 20 units 360 x 64 on the Milling page's grid.
+- Tests: `tools/ui_test/CylinderHelpAndLogin.cs` (34 checks); `UnitHelpLinks`,
+  `UnitLookAndErrors`, `AxisCodeHelpUi`, `UnitInfoAndAxisKind` follow the one "?".
