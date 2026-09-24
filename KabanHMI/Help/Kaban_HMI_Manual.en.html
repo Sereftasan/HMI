@@ -324,15 +324,25 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
    <li>Every button says what it does when the pointer rests on it.</li>
    <li>One tab per controller; under each, <b>your own tabs</b> (&#128209;): a new tab goes <b>before</b> the one on display; rename (or double-click the tab); delete &ndash; every tab can go, and adding a device then makes a <i>Main</i> tab for it.
        <b>Drag a tab</b> along the strip to move it, as many places as you like.</li>
-   <li>&#128269; adds every device used by the screen on display, by the whole program (into one tab, or one tab per page), or listed in the PLC label list &ndash; with its data type and name.</li>
+   <li>&#128451; adds every device used by: the screen on display; the whole program &ndash; with a heading line per page, or as <b>one list</b>
+       (each device once, so a click on <i>Address</i> sorts every device the HMI uses); the whole program as one tab per page; or every device
+       named in the <b>PLC label list</b> &ndash; <code>PlcLabels.csv</code> beside the program: the PLC programmer's names for its devices, which name
+       the devices on the monitor and include devices no page shows.</li>
+   <li>&#128269; <b>Find</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>, or right-click a row: <i>Where is it used?</i>): type an address, a label or part of a unit's name.
+       Every use is listed &ndash; twice if a page uses it twice &ndash; with its page. <b>Click a line</b>: the page opens and the unit is framed in blinking blue.</li>
    <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>M100, 10 of them</i> adds M100&hellip;M109; a double word counts in twos (D200, D202&hellip;). A <b>comment line</b> has only text: a heading for the rows under it.</li>
-   <li>&#128203; copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), &#128204; pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end; &#128465; removes (<kbd>Del</kbd>); &#11014;&#11015; or dragging re-orders.
+   <li>&#128203; copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), &#128204; pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end; &#128316;&#128317; or dragging re-orders (<kbd>Ctrl</kbd>+<kbd>&uarr;</kbd>/<kbd>&darr;</kbd>).
        A right-click on a selection of several rows keeps them all selected, so Copy and Remove take them all.</li>
+   <li>&#128465; <b>deletes</b>: the selected rows (<kbd>Del</kbd>), this tab, every tab of this controller, or every tab of every controller (these two ask first).</li>
+   <li>&#8617; <b>Undo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) takes back the last change to the lists &ndash; a sort, a delete, a paste, a move, a name or address typed, a tab
+       added, renamed, moved or deleted &ndash; one step at a time. It is also how a list gets back its order from before a sort. A <b>value</b> written to the PLC is not undone.</li>
    <li>&#128228; exports the tab to a CSV file, &#128229; imports devices from one (a <code>PlcLabels.csv</code> works as it is).</li>
    <li><b>Columns</b>: drag a heading to put the column elsewhere, drag its border to size it &ndash; the others keep their widths, and every tab uses the same layout.
        <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).</li>
-   <li><b>Double-click a value</b> to change it right there in the table; double-click anything else to open that row with the clicked field selected.</li>
-   <li>On a simulated controller every device the simulator holds is listed by itself; one you remove stays off the list until &#8617; <i>Show removed devices again</i>.</li>
+   <li><b>Double-click a value</b> (or <kbd>Enter</kbd>) to change it right there in the table; on anything else it opens that row with the field selected. <kbd>F2</kbd> edits the cell in place.</li>
+   <li>Keys on the tab strip: <kbd>Ins</kbd> new tab, <kbd>F2</kbd> rename, <kbd>Del</kbd> delete, <kbd>Ctrl</kbd>+<kbd>&larr;</kbd>/<kbd>&rarr;</kbd> move,
+       <kbd>Ctrl</kbd>+<kbd>Tab</kbd> next tab. <kbd>Tab</kbd> moves between the table and the tab strips.</li>
+   <li>On a simulated controller every device the simulator holds is listed by itself; one you remove stays off the list until &#128065; <i>Show removed devices again</i>.</li>
   </ul></li>
 </ul>
 

@@ -171,6 +171,64 @@ namespace Kaban.UI.Forms
             SyncMachineStrip();
         }
 
+        /// <summary>
+        /// Opens the page a device is used on - the machine, the tab on every tab
+        /// strip on the way down - and returns the control that uses it, on show,
+        /// for the PLC Monitor's Find to point at. Null, with the reason, when the
+        /// page cannot be opened (the level of the user) or no longer has it.
+        /// </summary>
+        public Control ShowDeviceUse(Helpers.DeviceCollector.Use use, out string why)
+        {
+            why = "";
+            if (use == null || use.Screen == null)
+            {
+                why = LanguageManager.GetString("Msg_FindNoPage", "It is not on a page (an alarm definition).");
+                return null;
+            }
+
+            UserControl nav = null;
+            Kaban.Core.Machines.MachineRegistry.RoleGroup group = null;
+            int machine = 0;
+            foreach (var kv in _screenGroups)
+            {
+                int i = kv.Value.Pages.FindIndex(p => ReferenceEquals(p.Value, use.Screen));
+                if (i >= 0) { nav = kv.Key; group = kv.Value; machine = i; break; }
+            }
+            if (nav == null) { why = LanguageManager.GetString("Msg_FindNoScreen", "That page is not in the menu."); return null; }
+
+            LoadScreen(nav);
+            if (!ReferenceEquals(_currentScreen, nav)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
+
+            Control view = nav;
+            var steps = new System.Collections.Generic.List<int>();
+            if (group.IsTabbed) steps.Add(machine);          // the machine's tab of a shared page
+            steps.AddRange(use.PagePath);
+            foreach (int i in steps)
+            {
+                var tabs = view as Kaban.UI.Settings.SettingsScreen;
+                if (tabs == null || i < 0 || i >= tabs.AllPages.Count) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
+                var page = tabs.AllPages[i];
+                if (!SecurityManager.HasAccess(page.RequiredLevel)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
+                tabs.ShowPage(page);
+                view = tabs.ViewOf(page);
+            }
+            SyncMachineStrip();
+            RecordLocation();
+
+            var target = Helpers.DeviceCollector.Locate(view, use.ControlPath);
+            if (target == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
+
+            // Scrolled into view when the page scrolls.
+            for (Control p = target.Parent; p != null && p != pnlContent; p = p.Parent)
+            {
+                var sc = p as ScrollableControl;
+                if (sc != null && sc.AutoScroll) { sc.ScrollControlIntoView(target); break; }
+            }
+            RelayoutFunctionUnits(_currentScreen);
+            Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
+            return target;
+        }
+
         private static void RelayoutFunctionUnits(Control root)
         {
             if (root == null) return;

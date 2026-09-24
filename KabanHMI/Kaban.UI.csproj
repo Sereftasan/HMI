@@ -75,6 +75,7 @@
     <Compile Include="Helpers\AlarmHelpLinks.cs" />
     <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\DeviceCollector.cs" />
+    <Compile Include="Helpers\ControlHighlight.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs" />
     <Compile Include="Controls\MeterHMI.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="Forms\NumpadForm.cs" />
     <Compile Include="Forms\SimulationMonitorForm.cs" />
     <Compile Include="Forms\PlcRowEditorForm.cs" />
+    <Compile Include="Forms\DeviceFindForm.cs" />
     <Compile Include="Settings\ImportSettingsControl.cs" />
     <Compile Include="Settings\StationConnectionControl.cs" />
     <Compile Include="Helpers\PlcEndpointNaming.cs" />

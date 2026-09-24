@@ -3774,3 +3774,25 @@ and `UnitLookAndErrors` extended.
 - `ManualCutting`: 20 units 360 x 64 on the Milling page's grid.
 - Tests: `tools/ui_test/CylinderHelpAndLogin.cs` (34 checks); `UnitHelpLinks`,
   `UnitLookAndErrors`, `AxisCodeHelpUi`, `UnitInfoAndAxisKind` follow the one "?".
+
+## 2026-09-24 (evening) - PLC Monitor: delete menu, undo, find, one-list collect, keys
+
+- Toolbar: 🔼 🔽 for move up/down; 🗑 opens a menu (selected rows / this tab / every
+  tab of this controller / of every controller - `DeleteAllSheets`); ↩ Undo;
+  🗃 add devices; 🔍 Find; 👁 show removed devices again.
+- Undo: `Remember(what, monitors)` keeps `Serialize(mon)` before every list change;
+  `Undo()` restores (`RestoreState`), 50 steps; Ctrl+Z.
+- "The whole program - into this tab": with a heading per page, or one list without
+  headings (`CollectFromProgram(perPage, headings)`). The label-list entry explains
+  PlcLabels.csv.
+- Find: `DeviceCollector.UsesOf(station)` (every use, with `PagePath` and
+  `ControlPath` to the outermost unit; cached), `DeviceCollector.Locate`,
+  `MainForm.ShowDeviceUse`, `SettingsScreen.ViewOf`, `Forms/DeviceFindForm.cs`,
+  `Helpers/ControlHighlight.cs` (click-through blinking blue frame).
+- Keys: Enter = open cell, Tab leaves the grid (`StandardTab`), tab strip Del / F2 /
+  Ins / Ctrl+Left/Right, Ctrl+Z, Ctrl+F. A cancelled edit no longer stops the refresh.
+- Screen titles in the device lists use the screen's own wording when a key has no
+  translation (was the bare key).
+- Tests: `tools/ui_test/PlcMonitor.cs` (undo, delete menu, keys, toolbar),
+  `tools/ui_test/MonitorFind.cs` (Find on the real FA2010 program, page opened,
+  unit framed).

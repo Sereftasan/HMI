@@ -170,6 +170,13 @@ namespace Kaban.UI.Settings
             if (h != null) h(this, EventArgs.Empty);
         }
 
+        /// <summary>The view built for a page, or null when it has not been shown yet.</summary>
+        internal UserControl ViewOf(ISettingsPage page)
+        {
+            UserControl view;
+            return page != null && _instances.TryGetValue(page, out view) ? view : null;
+        }
+
         /// <summary>Shows a page WITHOUT recording a history step (Back/Forward replay).</summary>
         internal void ShowPage(ISettingsPage page)
         {

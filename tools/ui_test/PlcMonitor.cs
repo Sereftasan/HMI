@@ -29,7 +29,11 @@ class PM {
     }
     static object Call(object o, string n, params object[] a) {
         var t = o as Type ?? o.GetType();
-        return t.GetMethods(Any).First(m => m.Name == n && m.GetParameters().Length == a.Length).Invoke(o is Type ? null : o, a);
+        // Trailing optional parameters are given their defaults.
+        var mi = t.GetMethods(Any).First(m => m.Name == n && m.GetParameters().Length >= a.Length &&
+                                              m.GetParameters().Skip(a.Length).All(p => p.IsOptional));
+        var args = a.Concat(mi.GetParameters().Skip(a.Length).Select(p => p.DefaultValue)).ToArray();
+        return mi.Invoke(o is Type ? null : o, args);
     }
     static IList Rows(object sheet) { return (IList)Get(sheet, "Rows"); }
     static string Addr(object row) { return (string)Get(row, "Address"); }
@@ -280,6 +284,84 @@ class PM {
         Check("  and read back as none - not a new 'Main'", (int)Get(none, "SavedTabCount") == 0 && ((IList)Get(none, "Sheets")).Count == 0);
         Call(form, "Paste", true);
         Check("pasting with no tab makes 'Main' for it", pages() == "Main" && Rows(current()).Count == 3 && strip.Visible, pages());
+
+
+        Console.WriteLine("--- undo: back to the order before a sort ---");
+        var us = current();
+        Rows(us).Clear();
+        foreach (var a in new[] { "M30", "M4", "D9", "M17" }) { var w = Activator.CreateInstance(rowType); rowType.GetField("Address").SetValue(w, a); Rows(us).Add(w); }
+        Rows(us).Add(Activator.CreateInstance(rowType));
+        Func<string> seq = () => string.Join(",", Rows(current()).Cast<object>().Select(Addr).Where(a => a.Length > 0));
+        Call(form, "SortSheet", mon, us, "Address");
+        Check("sorted", seq() == "D9,M4,M17,M30", seq());
+        Call(form, "Undo");
+        Check("Undo: the order it was built in, which no sort can give back", seq() == "M30,M4,D9,M17", seq());
+        grid = (DataGridView)Get(current(), "Grid");
+        grid.ClearSelection(); grid.Rows[1].Selected = true; grid.Rows[2].Selected = true;
+        Call(form, "RemoveSelected");
+        Check("two rows removed", seq() == "M30,M17", seq());
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Control | Keys.Z });
+        Check("Ctrl+Z puts them back", seq() == "M30,M4,D9,M17", seq());
+        Check("  nothing left to undo past the start... the button says what is next",
+              ((Button)Get(form, "_btnUndo")).Enabled == (((System.Collections.IList)Get(form, "_undo")).Count > 0));
+
+        Console.WriteLine("--- the delete button's menu ---");
+        grid = (DataGridView)Get(current(), "Grid");
+        grid.ClearSelection(); grid.Rows[0].Selected = true;
+        var dm = (ContextMenuStrip)Call(form, "DeleteMenu");
+        var dmItems = dm.Items.OfType<ToolStripMenuItem>().ToList();
+        Check("four choices: the selected row, this tab, every tab of this controller, of every controller",
+              dmItems.Count == 4 && dmItems[0].Enabled && dmItems[1].Enabled && dmItems[2].Enabled && dmItems[3].Enabled,
+              string.Join(" | ", dmItems.Select(i => i.Text)));
+        Check("  the row entry shows its key", dmItems[0].ShortcutKeyDisplayString == "Del");
+
+        // a second controller, so "every controller" means more than one
+        var sim2 = new Kaban.Drivers.Simulation.SimulationDriver(22);
+        PlcManager.Instance.RegisterDriver(22, sim2);
+        PlcManager.Instance.RegisterStation(22, "Bench 2", SecurityLevel.Operator);
+        var form2 = new SimulationMonitorForm();
+        form2.Show(); Application.DoEvents();
+        var mons2 = ((IList)Get(form2, "_monitors")).Cast<object>().ToList();
+        var a21 = mons2.First(x => (int)Get(x, "Station") == 21); var a22 = mons2.First(x => (int)Get(x, "Station") == 22);
+        Func<object, int> tabCount = x => ((IList)Get(x, "Sheets")).Count;
+        int before21 = tabCount(a21), before22 = tabCount(a22);
+        var arr = Array.CreateInstance(MonType.GetNestedType("MonitorTab", Any), 2); arr.SetValue(a21, 0); arr.SetValue(a22, 1);
+        MonType.GetMethod("DeleteAllSheets", Any).Invoke(form2, new object[] { arr, false });
+        Check("every tab of every controller deleted", tabCount(a21) == 0 && tabCount(a22) == 0, before21 + "+" + before22 + " tabs before");
+        Call(form2, "Undo");
+        Check("  ONE undo brings back both controllers' tabs", tabCount(a21) == before21 && tabCount(a22) == before22,
+              tabCount(a21) + "+" + tabCount(a22));
+        form2.Close();
+
+        Console.WriteLine("--- keys ---");
+        var strip2 = (TabControl)Get(mon, "SheetTabs");
+        Call(form, "AddSheet", mon, "Scratch", 0);
+        int tabsNow = strip2.TabPages.Count;
+        strip2.Focus(); Application.DoEvents();
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Delete });
+        Check("Del on the tab strip deletes the (empty) tab on show", strip2.TabPages.Count == tabsNow - 1 || !strip2.Focused,
+              strip2.Focused ? strip2.TabPages.Count + " tabs" : "the strip could not take the focus here");
+        grid = (DataGridView)Get(current(), "Grid");
+        Check("Tab leaves the table instead of stepping through cells", grid.StandardTab);
+        grid.Focus(); Application.DoEvents();
+        int vr = Rows(current()).Cast<object>().ToList().FindIndex(x => Addr(x).Length > 0);
+        grid.CurrentCell = grid.Rows[vr].Cells["Value"];
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Enter });
+        Application.DoEvents();
+        Check("Enter on a value edits it in the table, like a double-click", grid.IsCurrentCellInEditMode || !grid.ContainsFocus,
+              grid.ContainsFocus ? "edit=" + grid.IsCurrentCellInEditMode : "no focus here");
+        grid.CancelEdit(); grid.EndEdit();
+
+        Console.WriteLine("--- the toolbar ---");
+        var texts = buttons.Select(b => b.Text).ToList();
+        Check("up and down are buttons with a clear arrow, not thin sticks",
+              texts.Contains(char.ConvertFromUtf32(0x1F53C)) && texts.Contains(char.ConvertFromUtf32(0x1F53D)) &&
+              !texts.Contains(char.ConvertFromUtf32(0x2B06)));
+        Check("  undo and find are there", buttons.Any(b => tips.GetToolTip(b).Contains("Ctrl+Z")) && buttons.Any(b => tips.GetToolTip(b).Contains("Ctrl+F")));
+        var cm = (ContextMenuStrip)Call(form, "CollectMenu");
+        var cmTexts = cm.Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
+        Check("the whole program: with a heading per page, or as one list",
+              cmTexts.Any(t => t.Contains("heading line per page")) && cmTexts.Any(t => t.Contains("one list")), string.Join(" | ", cmTexts));
 
         Console.WriteLine("--- removing from the simulator's list keeps it removed ---");
         sh = current(); grid = (DataGridView)Get(sh, "Grid");

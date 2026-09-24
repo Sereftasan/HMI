@@ -37,8 +37,7 @@ namespace Kaban.UI.Forms
     ///
     /// A VALUE TYPED HERE IS WRITTEN STRAIGHT THROUGH, on a simulated station and
     /// on a real one alike - that is the point of the page. Writes to a real
-    /// station are logged, and its tab carries a red banner saying so, so nobody
-    /// types into a live machine thinking it is the bench.
+    /// station are logged (the page is the admin's: no warning banner).
     ///
     /// The lists are kept per controller in ProgramData\KabanHMI\Monitor, one
     /// file each, "#sheet:" lines separating the tabs. A file from before the
@@ -58,6 +57,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private ToolStripItem _restoreItem;
+        private Button _btnUndo;
 
         /// <summary>Copied rows - shared by every controller, so a list can be copied from one PLC to another.</summary>
         private static readonly List<WatchRow> _clip = new List<WatchRow>();
@@ -310,7 +310,7 @@ namespace Kaban.UI.Forms
             Action gap = () => bar.Items.Add(new ToolStripSeparator { Margin = new Padding(6, 0, 6, 0) });
 
             Button btnAdd = null;
-            btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line"), _tips,
+            btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line (Insert)"), _tips,
                 (s, e) => ShowMenu(btnAdd, AddMenu()));
             add(btnAdd);
             add(UiStyle.ToolButton(E(0x1F4CB), T("Tip_MonCopy", "Copy the selected rows (Ctrl+C)"), _tips, (s, e) => CopySelected()));
@@ -318,14 +318,23 @@ namespace Kaban.UI.Forms
             btnPaste = UiStyle.ToolButton(E(0x1F4CC), T("Tip_MonPaste", "Paste the copied rows (Ctrl+V: above the selected row)"), _tips,
                 (s, e) => ShowMenu(btnPaste, PasteMenu()));
             add(btnPaste);
-            add(UiStyle.ToolButton(E(0x1F5D1), T("Tip_MonRemove", "Remove the selected rows from this list (Del)"), _tips, (s, e) => RemoveSelected()));
-            add(UiStyle.ToolButton(E(0x2B06), T("Tip_MonUp", "Move the selected rows up (Ctrl+Up)"), _tips, (s, e) => MoveSelected(-1)));
-            add(UiStyle.ToolButton(E(0x2B07), T("Tip_MonDown", "Move the selected rows down (Ctrl+Down)"), _tips, (s, e) => MoveSelected(+1)));
+            Button btnDelete = null;
+            btnDelete = UiStyle.ToolButton(E(0x1F5D1), T("Tip_MonDelete",
+                "Delete: the selected rows (Del), this tab, every tab of this controller or of every controller"), _tips,
+                (s, e) => ShowMenu(btnDelete, DeleteMenu()));
+            add(btnDelete);
+            // Up / down BUTTONS, not arrows: the thin arrows read as two sticks.
+            add(UiStyle.ToolButton(E(0x1F53C), T("Tip_MonUp", "Move the selected rows up (Ctrl+Up)"), _tips, (s, e) => MoveSelected(-1)));
+            add(UiStyle.ToolButton(E(0x1F53D), T("Tip_MonDown", "Move the selected rows down (Ctrl+Down)"), _tips, (s, e) => MoveSelected(+1)));
+            _btnUndo = UiStyle.ToolButton(E(0x21A9), T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"), _tips, (s, e) => Undo());
+            add(_btnUndo);
             gap();
             Button btnFrom = null;
-            btnFrom = UiStyle.ToolButton(E(0x1F50D), T("Tip_MonCollect", "Add the devices of this screen, of the whole program or of the PLC label list"), _tips,
+            btnFrom = UiStyle.ToolButton(E(0x1F5C3), T("Tip_MonCollect", "Add the devices of this screen, of the whole program or of the PLC label list"), _tips,
                 (s, e) => ShowMenu(btnFrom, CollectMenu()));
             add(btnFrom);
+            add(UiStyle.ToolButton(E(0x1F50D), T("Tip_MonFind", "Find where a device is used in the program, and open that page (Ctrl+F)"), _tips,
+                (s, e) => OpenFind(null)));
             Button btnTabs = null;
             btnTabs = UiStyle.ToolButton(E(0x1F4D1), T("Tip_MonTabs", "Tabs: new, rename, delete"), _tips,
                 (s, e) => ShowMenu(btnTabs, SheetMenu()));
@@ -336,7 +345,7 @@ namespace Kaban.UI.Forms
             add(UiStyle.ToolButton(E(0x1F4E4), T("Tip_MonExport", "Export this tab to a CSV file (Label / DataType / Address / Value)"), _tips, (s, e) => ExportSheet()));
             add(UiStyle.ToolButton(E(0x1F4E5), T("Tip_MonImport", "Import devices from a CSV file into this tab (a PlcLabels.csv works as it is)"), _tips, (s, e) => ImportSheet()));
 
-            var restore = UiStyle.ToolButton(E(0x21A9), T("Tip_MonRestore",
+            var restore = UiStyle.ToolButton(E(0x1F441), T("Tip_MonRestore",
                 "Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - " +
                 "a device removed from a list is kept off it until this is pressed."), _tips, (s, e) => RestoreHidden());
             var host = new ToolStripControlHost(restore) { AutoSize = false, Size = restore.Size, Alignment = ToolStripItemAlignment.Right };
@@ -359,10 +368,12 @@ namespace Kaban.UI.Forms
             return m;
         }
 
-        private static ToolStripMenuItem Item(string text, EventHandler click, bool enabled = true, Keys keys = Keys.None)
+        private static ToolStripMenuItem Item(string text, EventHandler click, bool enabled = true, Keys keys = Keys.None, string keyText = null)
         {
             var i = new ToolStripMenuItem(text, null, click) { Enabled = enabled };
             if (keys != Keys.None) i.ShortcutKeys = keys;
+            // Shown only - the window handles the key itself (see ProcessCmdKey).
+            if (keyText != null) { i.ShortcutKeyDisplayString = keyText; i.ShowShortcutKeys = true; }
             return i;
         }
 
@@ -401,9 +412,16 @@ namespace Kaban.UI.Forms
             m.Items.Add(UiStyle.MenuHeader(T("Hdr_MonCollect", "Add every device used by...")));
             m.Items.Add(new ToolStripSeparator());
             m.Items.Add(Item(T("Mnu_MonFromScreen", "the screen on display - into this tab"), (s, e) => CollectFromScreen()));
-            m.Items.Add(Item(T("Mnu_MonFromProgram", "the whole program - into this tab"), (s, e) => CollectFromProgram(perPage: false)));
-            m.Items.Add(Item(T("Mnu_MonFromProgramTabs", "the whole program - one tab per page"), (s, e) => CollectFromProgram(perPage: true)));
-            m.Items.Add(Item(T("Mnu_MonFromLabels", "the PLC label list - into this tab"), (s, e) => CollectFromLabels()));
+            m.Items.Add(Item(T("Mnu_MonFromProgram", "the whole program - into this tab, a heading line per page"), (s, e) => CollectFromProgram(perPage: false, headings: true)));
+            m.Items.Add(Item(T("Mnu_MonFromProgramList", "the whole program - into this tab, one list (each device once, no headings)"), (s, e) => CollectFromProgram(perPage: false, headings: false)));
+            m.Items.Add(Item(T("Mnu_MonFromProgramTabs", "the whole program - one tab per page"), (s, e) => CollectFromProgram(perPage: true, headings: false)));
+            m.Items.Add(new ToolStripSeparator());
+            var labels = Item(T("Mnu_MonFromLabels", "every device named in the PLC label list (PlcLabels.csv) - into this tab"), (s, e) => CollectFromLabels());
+            labels.ToolTipText = T("Tip_MonFromLabels",
+                "PlcLabels.csv beside the program: the PLC programmer's names for its devices (Label / DataType / Address, from GX Works). " +
+                "It names the devices on the monitor and adds devices the pages do not show.");
+            m.ShowItemToolTips = true;
+            m.Items.Add(labels);
             return m;
         }
 
@@ -411,13 +429,51 @@ namespace Kaban.UI.Forms
         {
             var m = NewMenu();
             var mon = CurrentMonitor;
-            m.Items.Add(Item(T("Mnu_SheetNew", "New tab (before this one)..."), (s, e) => NewSheet(), mon != null));
-            m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null));
-            m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null));
+            m.Items.Add(Item(T("Mnu_SheetNew", "New tab (before this one)..."), (s, e) => NewSheet(), mon != null, keyText: "Ins"));
+            m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null, keyText: "F2"));
+            m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null, keyText: "Del"));
             m.Items.Add(new ToolStripSeparator());
-            m.Items.Add(Item(T("Mnu_SheetLeft", "Move this tab left"), (s, e) => MoveSheet(-1), mon != null && mon.SheetTabs.SelectedIndex > 0));
-            m.Items.Add(Item(T("Mnu_SheetRight", "Move this tab right"), (s, e) => MoveSheet(+1), mon != null && mon.SheetTabs.SelectedIndex < mon.Sheets.Count - 1));
+            m.Items.Add(Item(T("Mnu_SheetLeft", "Move this tab left"), (s, e) => MoveSheet(-1), mon != null && mon.SheetTabs.SelectedIndex > 0, keyText: "Ctrl+Left"));
+            m.Items.Add(Item(T("Mnu_SheetRight", "Move this tab right"), (s, e) => MoveSheet(+1), mon != null && mon.SheetTabs.SelectedIndex < mon.Sheets.Count - 1, keyText: "Ctrl+Right"));
             return m;
+        }
+
+        /// <summary>What the delete button offers: a row, a tab, one controller's tabs, everything.</summary>
+        private ContextMenuStrip DeleteMenu()
+        {
+            var m = NewMenu();
+            var mon = CurrentMonitor;
+            int rows = mon != null && mon.Current != null ? SelectedIndices(mon.Current).Count : 0;
+            m.Items.Add(Item(rows > 1 ? string.Format(T("Mnu_DelRows", "The {0} selected rows"), rows)
+                                      : T("Mnu_DelRow", "The selected row"), (s, e) => RemoveSelected(), rows > 0, keyText: "Del"));
+            m.Items.Add(Item(mon != null && mon.Current != null
+                                ? string.Format(T("Mnu_DelTab", "The tab '{0}'"), mon.Current.Name) : T("Mnu_DelTabNone", "This tab"),
+                             (s, e) => DeleteSheet(), mon != null && mon.Current != null));
+            m.Items.Add(new ToolStripSeparator());
+            m.Items.Add(Item(string.Format(T("Mnu_DelAllTabs", "Every tab of {0}..."), mon != null ? PlcEndpointNaming.Caption(mon.Endpoint) : ""),
+                             (s, e) => DeleteAllSheets(new[] { mon }), mon != null && mon.Sheets.Count > 0));
+            m.Items.Add(Item(T("Mnu_DelEverything", "Every tab of every controller..."),
+                             (s, e) => DeleteAllSheets(_monitors.ToArray()), _monitors.Any(x => x.Sheets.Count > 0)));
+            return m;
+        }
+
+        /// <summary>
+        /// Deletes every tab of the given controllers, after asking. Undo brings
+        /// them all back in one step.
+        /// </summary>
+        internal void DeleteAllSheets(MonitorTab[] mons, bool ask = true)
+        {
+            mons = mons.Where(x => x != null && x.Sheets.Count > 0).ToArray();
+            if (mons.Length == 0) return;
+            int tabs = mons.Sum(x => x.Sheets.Count), rows = mons.Sum(x => x.Sheets.Sum(sh => sh.Rows.Count(r => !r.IsBlank)));
+            string question = mons.Length == 1
+                ? string.Format(T("Msg_DelAllTabs", "Delete all {0} tab(s) of {1}, with their {2} row(s)?"), tabs, PlcEndpointNaming.Caption(mons[0].Endpoint), rows)
+                : string.Format(T("Msg_DelEverything", "Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?"), tabs, mons.Length, rows);
+            question += "\r\n\r\n" + T("Msg_UndoHint", "Undo (Ctrl+Z) brings them back.");
+            if (ask && MessageBox.Show(this, question, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            Remember(mons.Length == 1 ? T("Undo_DelAllTabs", "delete every tab") : T("Undo_DelEverything", "delete every tab of every controller"), mons);
+            foreach (var m in mons)
+                foreach (var sh in m.Sheets.ToList()) RemoveSheet(m, sh, remember: false);
         }
 
         private void UpdateToolbar()
@@ -425,6 +481,79 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             if (_restoreItem != null)
                 _restoreItem.Visible = mon != null && mon.IsSimulated && mon.Hidden.Count > 0;
+            if (_btnUndo != null)
+            {
+                _btnUndo.Enabled = _undo.Count > 0;
+                _tips.SetToolTip(_btnUndo, _undo.Count > 0
+                    ? string.Format(T("Tip_MonUndoWhat", "Undo: {0} (Ctrl+Z)"), _undo[_undo.Count - 1].What)
+                    : T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"));
+            }
+        }
+
+        // ==================================================================
+        // UNDO
+        // ------------------------------------------------------------------
+        // Every change to the lists - add, paste, remove, move, a sort, an edit
+        // of a name or address, a tab created, renamed, moved or deleted - first
+        // keeps the state of the controllers it touches. Undo puts the last one
+        // back. It is what gets a list back to its order before a sort: no sort
+        // can, since the order a list was built in is not a column.
+        //
+        // Writing a VALUE to the PLC is not undone: that went to the machine.
+        // ==================================================================
+
+        private sealed class UndoStep
+        {
+            public string What = "";
+            public readonly List<KeyValuePair<MonitorTab, List<string>>> States = new List<KeyValuePair<MonitorTab, List<string>>>();
+        }
+
+        private readonly List<UndoStep> _undo = new List<UndoStep>();
+        private const int UndoDepth = 50;
+
+        /// <summary>Keeps the state of the controllers about to change (the one on show by default).</summary>
+        private void Remember(string what, params MonitorTab[] mons)
+        {
+            if (mons == null || mons.Length == 0) mons = new[] { CurrentMonitor };
+            var step = new UndoStep { What = what ?? "" };
+            foreach (var m in mons.Where(x => x != null))
+                step.States.Add(new KeyValuePair<MonitorTab, List<string>>(m, Serialize(m)));
+            if (step.States.Count == 0) return;
+            _undo.Add(step);
+            if (_undo.Count > UndoDepth) _undo.RemoveAt(0);
+            UpdateToolbar();
+        }
+
+        /// <summary>Puts back the state kept before the last change.</summary>
+        internal void Undo()
+        {
+            if (_undo.Count == 0) return;
+            var mon = CurrentMonitor;
+            if (mon != null && mon.Current != null && mon.Current.Grid.IsCurrentCellInEditMode) return;
+            var step = _undo[_undo.Count - 1];
+            _undo.RemoveAt(_undo.Count - 1);
+            foreach (var kv in step.States) RestoreState(kv.Key, kv.Value);
+            UpdateToolbar();
+            SetStatus(string.Format(T("Msg_Undone", "Undone: {0}."), step.What));
+        }
+
+        private void RestoreState(MonitorTab mon, List<string> lines)
+        {
+            var tabs = mon.SheetTabs;
+            int selected = tabs.SelectedIndex;
+            tabs.SuspendLayout();
+            foreach (var page in tabs.TabPages.Cast<TabPage>().ToList()) { tabs.TabPages.Remove(page); page.Dispose(); }
+            mon.Sheets.Clear();
+            mon.Hidden.Clear();
+            mon.SavedTabCount = -1;
+            Deserialize(mon, lines);
+            foreach (var sh in mon.Sheets.ToList()) AttachSheet(mon, sh, tabs.TabPages.Count);
+            tabs.ResumeLayout();
+            if (tabs.TabPages.Count > 0) tabs.SelectedIndex = Math.Max(0, Math.Min(selected, tabs.TabPages.Count - 1));
+            UpdateEmptyState(mon);
+            SaveWatchList(mon);
+            foreach (var sh in mon.Sheets) Render(mon, sh);
+            if (ReferenceEquals(mon, CurrentMonitor)) RefreshValues();
         }
 
         // ---- the controllers and their tabs ------------------------------------
@@ -600,8 +729,9 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>Takes a tab away - any tab, the last one too.</summary>
-        internal void RemoveSheet(MonitorTab mon, Sheet sh)
+        internal void RemoveSheet(MonitorTab mon, Sheet sh, bool remember = true)
         {
+            if (remember) Remember(string.Format(T("Undo_DelTab", "delete the tab '{0}'"), sh.Name), mon);
             int i = mon.SheetTabs.TabPages.IndexOf(sh.Page);
             foreach (var r in sh.Rows.Where(r => r.IsDevice).ToList()) HideIfUnlisted(mon, r.Address, sh, -2);
             mon.SheetTabs.TabPages.Remove(sh.Page);
@@ -657,6 +787,7 @@ namespace Kaban.UI.Forms
                 {
                     if (Math.Abs(e.X - _dragSheetFrom.X) < SystemInformation.DragSize.Width * 2) return;
                     _draggingSheet = true;
+                    Remember(string.Format(T("Undo_MoveTab", "move the tab '{0}'"), _dragSheet.Name), mon);
                     tabs.Cursor = Cursors.SizeWE;
                 }
                 int over = SheetAt(mon, e.Location);
@@ -755,7 +886,10 @@ namespace Kaban.UI.Forms
                 rowMenu.Items.Clear();
                 bool sel = SelectedIndices(sh).Count > 0;
                 bool any = _clip.Count > 0 || ClipboardHasText();
-                rowMenu.Items.Add(Item(T("Mnu_EditRow", "Edit..."), (s2, e2) => { if (grid.CurrentRow != null) EditRow(mon, sh, grid.CurrentRow.Index, null); }, grid.CurrentRow != null));
+                rowMenu.Items.Add(Item(T("Mnu_EditRow", "Edit..."), (s2, e2) => { if (grid.CurrentRow != null) EditRow(mon, sh, grid.CurrentRow.Index, null); }, grid.CurrentRow != null, keyText: "Enter"));
+                var at = grid.CurrentRow != null && grid.CurrentRow.Index < sh.Rows.Count ? sh.Rows[grid.CurrentRow.Index] : null;
+                rowMenu.Items.Add(Item(at != null && at.IsDevice ? string.Format(T("Mnu_FindUses", "Where is {0} used?"), at.Address) : T("Mnu_FindUsesNone", "Where is it used?"),
+                                       (s2, e2) => OpenFind(at != null ? at.Address : null), at != null && at.IsDevice, keyText: "Ctrl+F"));
                 rowMenu.Items.Add(new ToolStripSeparator());
                 rowMenu.Items.Add(Item(T("Mnu_MonAddAbove", "New device above the selected row..."), (s2, e2) => AddRows(false, false), sel));
                 rowMenu.Items.Add(Item(T("Mnu_MonCommentAbove", "Comment line above the selected row..."), (s2, e2) => AddRows(false, true), sel));
@@ -801,21 +935,11 @@ namespace Kaban.UI.Forms
             grid.CellDoubleClick += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.RowIndex >= sh.Rows.Count) return;
-                var row = sh.Rows[e.RowIndex];
-                string col = e.ColumnIndex >= 0 ? grid.Columns[e.ColumnIndex].Name : "";
-
-                if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
-                if (row.IsComment || (col == "Value" && row.IsDevice))
-                {
-                    // In the table itself: the value is what is changed nine times
-                    // out of ten, and a dialog for it is a detour.
-                    var cell = grid.Rows[e.RowIndex].Cells[row.IsComment ? "Label" : "Value"];
-                    grid.CurrentCell = cell;
-                    grid.BeginEdit(true);
-                    return;
-                }
-                EditRow(mon, sh, e.RowIndex, col);
+                OpenCell(mon, sh, e.RowIndex, e.ColumnIndex >= 0 ? grid.Columns[e.ColumnIndex].Name : "");
             };
+            // Tab leaves the table for the next control: stepping cell by cell
+            // through a table that selects whole rows shows nothing moving.
+            grid.StandardTab = true;
 
             // ---- drag a row to re-order ----
             // Only once the pointer has really MOVED: starting the drag on the first
@@ -850,6 +974,7 @@ namespace Kaban.UI.Forms
                 // The blank line stays last: it is where the next device is typed.
                 if (sh.Rows[from].IsBlank) return;
                 to = Math.Min(to, sh.Rows.Count - 1);
+                Remember(T("Undo_Move", "move rows"), mon);
                 var moved = sh.Rows[from];
                 sh.Rows.RemoveAt(from);
                 sh.Rows.Insert(Math.Min(to, sh.Rows.Count - 1), moved);
@@ -867,6 +992,8 @@ namespace Kaban.UI.Forms
                 // A comment is only its text; the empty line has no value to write.
                 if (row == null || (row.IsComment && col != "Label") || (row.IsBlank && col == "Value")) { e.Cancel = true; return; }
                 sh.Editing = true;
+                // A value goes to the PLC and is not undone; a name or an address is.
+                if (col != "Value") Remember(T("Undo_Edit", "edit a row"), mon);
             };
             grid.CellEndEdit += (s, e) =>
             {
@@ -893,8 +1020,92 @@ namespace Kaban.UI.Forms
             };
         }
 
+        /// <summary>
+        /// What a double-click - or Enter - does to a cell: a VALUE (or a comment)
+        /// is edited right there in the table; any other cell opens the row's
+        /// editor on that field; the empty last line adds a device.
+        /// </summary>
+        private void OpenCell(MonitorTab mon, Sheet sh, int rowIndex, string column)
+        {
+            if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
+            var row = sh.Rows[rowIndex];
+            if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
+            if (row.IsComment || (column == "Value" && row.IsDevice))
+            {
+                // In the table itself: the value is what is changed nine times
+                // out of ten, and a dialog for it is a detour.
+                sh.Grid.CurrentCell = sh.Grid.Rows[rowIndex].Cells[row.IsComment ? "Label" : "Value"];
+                sh.Grid.BeginEdit(true);
+                return;
+            }
+            EditRow(mon, sh, rowIndex, column);
+        }
+
+        // ---- find where a device is used -------------------------------------
+
+        private DeviceFindForm _find;
+
+        /// <summary>
+        /// Opens Find for the controller on show - with the selected row's address,
+        /// or the text given. Clicking a use opens its page and frames the unit.
+        /// </summary>
+        internal DeviceFindForm OpenFind(string query)
+        {
+            var mon = CurrentMonitor;
+            if (mon == null) return null;
+            if (query == null && mon.Current != null)
+            {
+                var sel = SelectedIndices(mon.Current);
+                if (sel.Count > 0 && mon.Current.Rows[sel[0]].IsDevice) query = mon.Current.Rows[sel[0]].Address;
+            }
+            if (_find != null && !_find.IsDisposed) _find.Close();
+            _find = new DeviceFindForm(mon.Station, PlcEndpointNaming.CaptionWithStation(mon.Endpoint), query, OpenUse);
+            _find.Show(this);
+            return _find;
+        }
+
+        /// <summary>Opens a use's page in the main window and frames the unit; "" or why not.</summary>
+        internal string OpenUse(DeviceCollector.Use use)
+        {
+            var shell = Owner as MainForm ?? Application.OpenForms.OfType<MainForm>().FirstOrDefault();
+            if (shell == null) return T("Msg_FindNoShell", "The main window is not open.");
+            string why;
+            var target = shell.ShowDeviceUse(use, out why);
+            if (target == null) return why;
+            // Once the page has laid itself out.
+            shell.BeginInvoke((MethodInvoker)(() => ControlHighlight.Flash(target)));
+            return "";
+        }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            var monK = CurrentMonitor;
+            var shK = monK != null ? monK.Current : null;
+            bool editing = shK != null && shK.Grid.IsCurrentCellInEditMode;
+            // Anywhere in the window, unless a cell is being typed into.
+            if (!editing)
+            {
+                if (keyData == (Keys.Control | Keys.Z)) { Undo(); return true; }
+                if (keyData == (Keys.Control | Keys.F)) { OpenFind(null); return true; }
+            }
+            // The tab strip of the controller's tabs, when it has the focus.
+            if (monK != null && monK.SheetTabs.Focused)
+            {
+                switch (keyData)
+                {
+                    case Keys.Delete: DeleteSheet(); return true;
+                    case Keys.F2: RenameSheet(); return true;
+                    case Keys.Insert: NewSheet(); return true;
+                    case Keys.Control | Keys.Left: MoveSheet(-1); return true;
+                    case Keys.Control | Keys.Right: MoveSheet(+1); return true;
+                }
+            }
+            if (shK != null && !editing && shK.Grid.ContainsFocus && keyData == Keys.Enter && shK.Grid.CurrentCell != null)
+            {
+                OpenCell(monK, shK, shK.Grid.CurrentCell.RowIndex, shK.Grid.CurrentCell.OwningColumn.Name);
+                return true;
+            }
+
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             bool gridHasFocus = sh != null && sh.Grid.ContainsFocus && !sh.Grid.IsCurrentCellInEditMode;
@@ -1037,6 +1248,7 @@ namespace Kaban.UI.Forms
                        focusField, isNew: false, isComment: row.IsComment))
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                Remember(T("Undo_Edit", "edit a row"), mon);
 
                 if (row.IsComment) row.Comment = dlg.RowLabel;
                 else
@@ -1093,6 +1305,7 @@ namespace Kaban.UI.Forms
                                                   comment ? "Label" : "Address", isNew: true, isComment: comment))
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                Remember(dlg.IsComment ? T("Undo_AddComment", "add a comment line") : T("Undo_AddDevice", "add a device"), mon);
                 if (sh == null) { sh = EnsureSheet(mon); at = InsertPoint(sh, true); }
 
                 var added = new List<WatchRow>();
@@ -1178,6 +1391,7 @@ namespace Kaban.UI.Forms
             else rows = ParseLines(text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));
             if (rows.Count == 0) return;
 
+            Remember(T("Undo_Paste", "paste"), mon);
             var sh = EnsureSheet(mon);
             int at = InsertPoint(sh, atEnd);
             foreach (var r in rows)
@@ -1204,6 +1418,7 @@ namespace Kaban.UI.Forms
             if (sh == null) return;
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
+            Remember(string.Format(T("Undo_Remove", "remove {0} row(s)"), sel.Count), mon);
 
             for (int k = sel.Count - 1; k >= 0; k--)
             {
@@ -1241,6 +1456,7 @@ namespace Kaban.UI.Forms
             int last = sh.Rows.Count - 1;                        // the empty line stays last
             if (direction < 0 && sel[0] == 0) return;
             if (direction > 0 && sel[sel.Count - 1] >= last - 1) return;
+            Remember(T("Undo_Move", "move rows"), mon);
 
             var order = direction < 0 ? sel : Enumerable.Reverse(sel).ToList();
             foreach (var i in order)
@@ -1364,6 +1580,7 @@ namespace Kaban.UI.Forms
         internal void SortSheet(MonitorTab mon, Sheet sh, string column)
         {
             if (sh == null || Array.IndexOf(ColumnNames, column) < 0) return;
+            Remember(string.Format(T("Undo_Sort", "sort by {0}"), sh.Grid.Columns[column].HeaderText), mon);
             sh.SortDescending = column == sh.SortColumn && !sh.SortDescending;
             sh.SortColumn = column;
 
@@ -1473,6 +1690,7 @@ namespace Kaban.UI.Forms
         {
             var mon = CurrentMonitor;
             if (mon == null) return;
+            Remember(T("Undo_Restore", "show removed devices again"), mon);
             mon.Hidden.Clear();
             SaveWatchList(mon);
             UpdateToolbar();
@@ -1488,6 +1706,7 @@ namespace Kaban.UI.Forms
             string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
                                   UniqueName(mon, T("Tab_MonNew", "Tab") + " " + (mon.Sheets.Count + 1)), mon, null);
             if (name == null) return;
+            Remember(string.Format(T("Undo_NewTab", "new tab '{0}'"), name), mon);
             // BEFORE the tab on display, as asked; at the start when there is none.
             AddSheet(mon, name, Math.Max(0, mon.SheetTabs.SelectedIndex));
         }
@@ -1499,6 +1718,7 @@ namespace Kaban.UI.Forms
             if (sh == null) return;
             string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
             if (name == null || name == sh.Name) return;
+            Remember(string.Format(T("Undo_RenameTab", "rename the tab '{0}'"), sh.Name), mon);
             sh.Name = name;
             sh.Page.Text = name;
             mon.SheetTabs.Invalidate();
@@ -1522,7 +1742,10 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
-            MoveSheetTo(mon, sh, mon.SheetTabs.TabPages.IndexOf(sh.Page) + direction);
+            int to = mon.SheetTabs.TabPages.IndexOf(sh.Page) + direction;
+            if (to < 0 || to >= mon.SheetTabs.TabPages.Count) return;
+            Remember(string.Format(T("Undo_MoveTab", "move the tab '{0}'"), sh.Name), mon);
+            MoveSheetTo(mon, sh, to);
             SaveWatchList(mon);
         }
 
@@ -1616,6 +1839,7 @@ namespace Kaban.UI.Forms
                                 PlcEndpointNaming.Caption(mon.Endpoint)), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            Remember(T("Undo_Collect", "add the devices"), mon);
             var sh = EnsureSheet(mon);                    // a tab only once there is something to put in it
             int added = AddDevices(mon, sh, devices, null);
             SaveWatchList(mon);
@@ -1623,7 +1847,13 @@ namespace Kaban.UI.Forms
             Report(added, devices.Count);
         }
 
-        private void CollectFromProgram(bool perPage)
+        /// <param name="perPage">One tab per page.</param>
+        /// <param name="headings">
+        /// Into this tab: a comment line naming each page above its devices - or
+        /// ONE list, each device once, which a click on a heading sorts as a whole
+        /// (comment lines split a list into sections that are sorted on their own).
+        /// </param>
+        private void CollectFromProgram(bool perPage, bool headings)
         {
             var mon = CurrentMonitor;
             if (mon == null) return;
@@ -1633,6 +1863,7 @@ namespace Kaban.UI.Forms
             try { pages = DeviceCollector.FromProgram(mon.Station); }
             finally { Cursor.Current = cursor; }
 
+            if (pages.Count > 0) Remember(T("Undo_Collect", "add the devices"), mon);
             // One tab per page needs no tab to start from.
             var sh = perPage || pages.Count == 0 ? mon.Current : EnsureSheet(mon);
 
@@ -1652,7 +1883,7 @@ namespace Kaban.UI.Forms
                     }
                     added += AddDevices(mon, target, p.Devices, null);
                 }
-                else added += AddDevices(mon, sh, p.Devices, "— " + p.Title + " —");
+                else added += AddDevices(mon, sh, p.Devices, headings ? "— " + p.Title + " —" : null);
             }
             SaveWatchList(mon);
             foreach (var s in mon.Sheets) Render(mon, s);
@@ -1673,6 +1904,7 @@ namespace Kaban.UI.Forms
                                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            Remember(T("Undo_Collect", "add the devices"), mon);
             var sh = EnsureSheet(mon);
             int added = AddDevices(mon, sh, devices, null);
             SaveWatchList(mon);
@@ -1768,6 +2000,9 @@ namespace Kaban.UI.Forms
             if (mon == null) return;
             var sh = mon.Current;
             if (sh == null) { UpdateStatus(mon, null); return; }
+            // An edit that ended without CellEndEdit (cancelled from code) must not
+            // stop the refresh for good.
+            if (sh.Editing && !sh.Grid.IsCurrentCellInEditMode) sh.Editing = false;
             if (sh.Editing) return;
 
             if (mon.IsSimulated) ReadSimulated(mon);
@@ -2038,6 +2273,7 @@ namespace Kaban.UI.Forms
                     return;
                 }
 
+                Remember(T("Undo_Import", "import"), mon);
                 var sh = EnsureSheet(mon);
                 var existing = new HashSet<string>(sh.Rows.Where(r => r.IsDevice).Select(r => r.Address), StringComparer.OrdinalIgnoreCase);
                 int at = InsertPoint(sh, true), added = 0, offered = 0;
