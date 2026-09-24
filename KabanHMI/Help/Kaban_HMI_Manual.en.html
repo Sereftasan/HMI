@@ -258,6 +258,8 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      An alarm whose cause is still there comes straight back. <span class="lvl l1">Operator</span> If the reset cannot be sent &ndash; nobody signed in,
      controller not answering &ndash; the list is still cleared and a message says the machine itself was <b>not</b> reset.</li>
  <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button is momentary, like a physical reset button.</li>
+ <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
+     and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
  <li>An alarm is only raised or cleared from a fresh reading. When a controller stops answering, its alarms are left as they were rather than cleared.</li>
 </ul>
@@ -316,10 +318,16 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
  <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
  <li><b>PLC Monitor</b> <span class="lvl l3">Admin</span>: <kbd>F12</kbd> or the user menu. Reads and <b>writes</b> any device of any controller &ndash; it bypasses every control's own checks, so use it with care.
   <ul>
-   <li>One tab per controller; under each, <b>your own tabs</b> (&#128209;): new, rename (or double-click the tab), delete, move.</li>
+   <li>Every button says what it does when the pointer rests on it.</li>
+   <li>One tab per controller; under each, <b>your own tabs</b> (&#128209;): a new tab goes <b>before</b> the one on display; rename (or double-click the tab); delete &ndash; every tab can go, and adding a device then makes a <i>Main</i> tab for it.
+       <b>Drag a tab</b> along the strip to move it, as many places as you like.</li>
    <li>&#128269; adds every device used by the screen on display, by the whole program (into one tab, or one tab per page), or listed in the PLC label list &ndash; with its data type and name.</li>
    <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>M100, 10 of them</i> adds M100&hellip;M109; a double word counts in twos (D200, D202&hellip;). A <b>comment line</b> has only text: a heading for the rows under it.</li>
-   <li>&#128203; copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), &#128204; pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end; &#128465; removes (<kbd>Del</kbd>); &#11014;&#11015; or dragging re-orders.</li>
+   <li>&#128203; copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), &#128204; pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end; &#128465; removes (<kbd>Del</kbd>); &#11014;&#11015; or dragging re-orders.
+       A right-click on a selection of several rows keeps them all selected, so Copy and Remove take them all.</li>
+   <li>&#128228; exports the tab to a CSV file, &#128229; imports devices from one (a <code>PlcLabels.csv</code> works as it is).</li>
+   <li><b>Columns</b>: drag a heading to put the column elsewhere, drag its border to size it &ndash; the others keep their widths, and every tab uses the same layout.
+       <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).</li>
    <li><b>Double-click a value</b> to change it right there in the table; double-click anything else to open that row with the clicked field selected.</li>
    <li>On a simulated controller every device the simulator holds is listed by itself; one you remove stays off the list until &#8617; <i>Show removed devices again</i>.</li>
   </ul></li>
@@ -331,6 +339,7 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><th>What</th><th>Where</th></tr>
 <tr><td>Users, units, PLC connections, audit logs, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>)</td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
+<tr><td>PLC Monitor lists and column layout</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
 <tr><td>Help documents and this manual</td><td>The <code>Help</code> folder beside the program</td></tr>
 <tr><td>Drive code help</td><td><code>Help\Servo_Alarm_Codes.en.html</code>, <code>Axis_Error_Codes.en.html</code>, <code>Axis_Warning_Codes.en.html</code>,
 built from the manuals beside them by <code>tools\build_code_help.py</code></td></tr>

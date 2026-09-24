@@ -58,33 +58,52 @@ namespace Kaban.UI.Screens
             Action<Control> add = c => bar.Items.Add(new ToolStripControlHost(c) { AutoSize = false, Size = c.Size });
             add(UiStyle.ToolButton("\u2714", LanguageManager.GetString("Btn_Ack", "Acknowledge the listed alarms"),
                                    tips, (s, e) => Acknowledge()));
-            // A REAL ButtonHMI, not a toolbar button calling the driver directly.
-            //
-            // The hand-rolled version wrote the bit itself, which meant it missed
-            // everything a bound button does for free: the station mapping for a
-            // mounted sub-machine, the security check, the audit entry, the
-            // disabled look when the PLC is unreachable - and the tooltip that
-            // tells an admin WHICH DEVICE it drives. That last one is why a reset
-            // that quietly did nothing was so hard to diagnose.
-            _btnReset = new ButtonHMI
+            // THE MACHINE'S OWN RESET BIT, as its module declares it (see
+            // AlarmReset). It was M102 for every machine; that is FA2010 PLC1's
+            // reset only, and on a mounted H500 it started the lubrication.
+            int station = _ctx != null ? _ctx.Station(1) : 1;
+            string why;
+            string resetBit = Kaban.UI.Helpers.AlarmReset.AddressFor(station, out why);
+            if (resetBit != null)
             {
-                // The machine's OWN controller: station 3 for an H500 mounted under
-                // FA2010. "1" here reset FA2010's alarms from H500's alarm page.
-                PlcNumber = _ctx != null ? _ctx.Station(1) : 1,
-                FallbackText = "\uD83D\uDD04",
-                Width = 36,
-                Height = 30,
-                RequiredSecurity = SecurityLevel.Operator,
-                LogAction = true
-            };
-            _btnReset.BitActions.Add(new Kaban.Core.Models.BitAction
+                // A REAL ButtonHMI, not a toolbar button calling the driver directly.
+                //
+                // The hand-rolled version wrote the bit itself, which meant it missed
+                // everything a bound button does for free: the station mapping for a
+                // mounted sub-machine, the security check, the audit entry, the
+                // disabled look when the PLC is unreachable - and the tooltip that
+                // tells an admin WHICH DEVICE it drives.
+                _btnReset = new ButtonHMI
+                {
+                    // The machine's OWN controller: station 3 for an H500 mounted under FA2010.
+                    PlcNumber = station,
+                    FallbackText = "\uD83D\uDD04",
+                    Width = 36,
+                    Height = 30,
+                    RequiredSecurity = SecurityLevel.Operator,
+                    LogAction = true
+                };
+                _btnReset.BitActions.Add(new Kaban.Core.Models.BitAction
+                {
+                    Address = resetBit,
+                    Action = Kaban.Core.Enums.BitActionType.Momentary
+                });
+                _btnReset.ApplyTranslation();
+                tips.SetToolTip(_btnReset, LanguageManager.GetString("Btn_AlarmReset", "Reset alarms"));
+                add(_btnReset);
+            }
+            else
             {
-                Address = Forms.MainForm.AlarmResetAddress,
-                Action = Kaban.Core.Enums.BitActionType.Momentary
-            });
-            _btnReset.ApplyTranslation();
-            tips.SetToolTip(_btnReset, LanguageManager.GetString("Btn_AlarmReset", "Reset alarms"));
-            add(_btnReset);
+                // No bit declared: a button that SAYS so, rather than one that
+                // pulses somebody else's device or silently does nothing.
+                var none = UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") +
+                                              " - " + why, tips, (s, e) =>
+                    MessageBox.Show(FindForm(), LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") + ": " + why + ".",
+                                    LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information));
+                none.ForeColor = Color.FromArgb(150, 156, 166);
+                add(none);
+            }
 
             _grid.Dock = DockStyle.Fill;
             // Column captions need room UNDER the text: a header sized to the

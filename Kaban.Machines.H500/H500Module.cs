@@ -37,6 +37,13 @@ namespace Kaban.Machines.H500
             // a settings page invited someone to edit it, and an edited version
             // device reports the wrong version or none at all.
             ConnectionMonitor.SetVersionDevice(ctx.Station(1), "");
+
+            // WHERE THE PLC RESETS ITS ALARMS - pulsed by the Alarms page's Reset
+            // and the caption bar's alarm menu. NOT M102: that is FA2010's reset,
+            // and on this machine it is another device. Until the right bit is
+            // written below, this machine has no alarm reset on the HMI (the
+            // button says so) rather than one that pulses the wrong device.
+            // PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M...");
         }
 
         public void RegisterConditions(IMachineMountContext ctx) { }

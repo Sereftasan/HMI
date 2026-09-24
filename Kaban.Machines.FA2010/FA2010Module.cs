@@ -56,6 +56,11 @@ namespace Kaban.Machines.FA2010
             // a settings page invited someone to edit it, and an edited version
             // device reports the wrong version or none at all.
             ConnectionMonitor.SetVersionDevice(ctx.Station(1), "D36");
+
+            // WHERE THE PLC RESETS ITS ALARMS - pulsed by the Alarms page's Reset
+            // and the caption bar's alarm menu. M102 is PLC1's; PLC2 has none of
+            // its own. Like the version device, a fact of the ladder.
+            PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M102");
             PlcManager.Instance.RegisterStation(ctx.Station(2), "FA2010 Aux PLC",
                 SecurityLevel.Operator, ctx.ModuleId, 2);
 

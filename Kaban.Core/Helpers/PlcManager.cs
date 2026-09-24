@@ -66,6 +66,30 @@ namespace Kaban.Core.Helpers
             };
         }
 
+        // ---- the machine's alarm reset bit ---------------------------------
+        //
+        // A PROPERTY OF THE MACHINE'S LADDER, declared by its module next to its
+        // program-version device - not a setting, and NOT a default. M102 is the
+        // reset of FA2010's PLC1 only; every other machine resets on a bit of its
+        // own. It used to be M102 everywhere: the Alarms page of a mounted H500
+        // pulsed H500's M102, which there is MAN_Lubrication.
+
+        private readonly Dictionary<int, string> _alarmReset = new Dictionary<int, string>();
+
+        /// <summary>Declares the bit a station's PLC resets its alarms on (pulsed: on, then off).</summary>
+        public void SetAlarmResetDevice(int stationId, string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) _alarmReset.Remove(stationId);
+            else _alarmReset[stationId] = address.Trim().ToUpperInvariant();
+        }
+
+        /// <summary>The station's alarm reset bit, or null when the machine has not declared one.</summary>
+        public string AlarmResetDevice(int stationId)
+        {
+            string a;
+            return _alarmReset.TryGetValue(stationId, out a) ? a : null;
+        }
+
         public PlcStationInfo GetStation(int stationId)
         {
             PlcStationInfo info;

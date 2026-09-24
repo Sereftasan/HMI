@@ -19,11 +19,12 @@ namespace Kaban.UI.Helpers
     ///
     /// WHICH BIT
     /// ---------
-    /// The bit is the machine's own "PC_AlarmReset" label (FA2010 and H800:
-    /// M102). A machine without that label uses M102 - what its Alarms page
-    /// button pulses - UNLESS its label list gives M102 another job: on H500,
-    /// M102 is MAN_Lubrication, and an alarm reset must not start the
-    /// lubrication. Such a machine is not pulsed at all, and the menu says why.
+    /// The one the machine's module DECLARES for its PLC
+    /// (PlcManager.SetAlarmResetDevice, next to the program-version device):
+    /// M102 on FA2010's PLC1, a different bit on every other machine. There is
+    /// no default - a machine that has not declared its bit is not pulsed, and
+    /// the menu and the Alarms page say so. It used to be M102 everywhere, and
+    /// on a mounted H500 that is MAN_Lubrication.
     ///
     /// THE PULSE
     /// ---------
@@ -34,7 +35,6 @@ namespace Kaban.UI.Helpers
     /// </summary>
     public static class AlarmReset
     {
-        public const string ResetLabel = "PC_AlarmReset";
         public const int PulseMilliseconds = 300;
         private const int ReleaseAttempts = 3;
 
@@ -44,20 +44,10 @@ namespace Kaban.UI.Helpers
         public static string AddressFor(int station, out string why)
         {
             why = "";
-            var own = PlcLabelTable.ByLabel(station, ResetLabel);
-            if (own != null && !string.IsNullOrWhiteSpace(own.Address)) return own.Address.Trim();
-
-            string fallback = Kaban.UI.Forms.MainForm.AlarmResetAddress;
-            var other = PlcLabelTable.ByAddress(station, fallback);
-            if (other != null && other.Label.Length > 0 &&
-                other.Label.IndexOf("Reset", StringComparison.OrdinalIgnoreCase) < 0)
-            {
-                why = string.Format(LanguageManager.GetString("Msg_ResetNoBit",
-                          "{0} is {1} on this machine, not an alarm reset - add a PC_AlarmReset label to its PLC label list"),
-                          fallback, other.Label);
-                return null;
-            }
-            return fallback;
+            var device = PlcManager.Instance.AlarmResetDevice(station);
+            if (!string.IsNullOrWhiteSpace(device)) return device;
+            why = LanguageManager.GetString("Msg_ResetNoBit", "no alarm reset bit is set up for this machine yet");
+            return null;
         }
 
         /// <summary>

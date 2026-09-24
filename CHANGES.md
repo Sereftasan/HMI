@@ -3724,3 +3724,32 @@ and `UnitLookAndErrors` extended.
   toolbar of emoji buttons; double words' high words read on real PLCs and not
   listed separately on the simulator; only the visible tab refreshed. Old list
   files open as one tab "Main".
+
+## 2026-09-24 (evening) - Alarm reset per machine; PLC Monitor fixes
+
+### Alarm reset
+- `PlcManager.SetAlarmResetDevice(station, address)` / `AlarmResetDevice(station)`:
+  each machine's module declares its reset bit, like the version device.
+  `FA2010Module` declares M102 on PLC1; H500, H800, MD3020, SB3012 and SB3015 have
+  the line marked and commented out until their addresses are known.
+- `AlarmReset.AddressFor` uses only the declared bit (no label lookup, no M102
+  default). The Alarms page Reset button is bound to it; without one it is grey and
+  says why. `Msg_ResetNoBit` reworded.
+
+### PLC Monitor
+- The tab on display is found from the selected page (`TabPage.Tag`), never by
+  position; pages inserted after the strip has a window; the tab list re-read
+  from the strip after every change. Fixes: devices added to an empty tab went to
+  the previous tab; deleting a tab also deleted the previous one.
+- Own `ToolTip` (the shared one never shows over the monitor window); Export and
+  Import buttons (`Tip_MonExport`, `Tip_MonImport`).
+- Right-click keeps a multi-selection.
+- New tab inserted before the tab on display; every tab can be deleted
+  (`#tabs:N` line in the list file; `Msg_MonNoTabs`); tabs dragged along the strip.
+- Columns: fixed widths, re-orderable headings, the same layout on every tab, kept
+  in `Monitor\Columns.cfg`; click a heading to sort (section by section under
+  comment lines, PLC address order, values numeric).
+- "LIVE PLC" banner and status text removed (`Msg_LiveStation`, `Lbl_LivePlc`
+  deleted; `Msg_MonStatus` has one argument less).
+- Tests: `tools/ui_test/PlcMonitor.cs` (64 checks), `tools/ui_test/AxisCodeHelpUi.cs`
+  reset section rewritten (40 checks).

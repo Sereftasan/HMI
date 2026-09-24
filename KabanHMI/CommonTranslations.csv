@@ -106,7 +106,6 @@ Drv_Siemens;Siemens S7-1200/1500 (TCP);Siemens S7-1200/1500 (TCP);Siemens S7-120
 Drv_Delta;Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP);Delta AS/DVP (Modbus TCP)
 Ttl_SimMonitor;PLC Monitor - live device memory;PLC Monitörü - canlı cihaz belleği;Монитор ПЛК - память устройств;SPS-Monitor - Live-Gerätespeicher;Monitor PLC - memoria dispositivi;Monitor PLC - memoria de dispositivos
 Msg_SimMonitorHelp;One tab per machine controller. Values update live, edit a cell (or double-click a row) to change one.;Her makine kontrolörü için bir sekme. Değerler canlı güncellenir, değiştirmek için hücreyi düzenleyin (veya satıra çift tıklayın).;По вкладке на каждый контроллер. Значения обновляются вживую, измените ячейку или дважды щёлкните строку.;Ein Reiter je Steuerung. Werte laufen live, Zelle bearbeiten oder Zeile doppelklicken.;Una scheda per controllore. Valori in tempo reale, modificare una cella o doppio clic sulla riga.;Una pestaña por controlador. Valores en vivo, edite una celda o haga doble clic en la fila.
-Msg_LiveStation;LIVE PLC - a value typed here is written to the machine immediately.;CANLI PLC - buraya yazılan değer makineye anında yazılır.;РАБОЧИЙ ПЛК - введённое значение сразу записывается в машину.;LIVE-SPS - ein Wert wird sofort in die Maschine geschrieben.;PLC REALE - il valore viene scritto subito nella macchina.;PLC REAL - el valor se escribe de inmediato en la máquina.
 Tab_NoStations;No controllers;Kontrolör yok;Нет контроллеров;Keine Steuerungen;Nessun controllore;Sin controladores
 Col_Label;Label;Etiket;Метка;Bezeichnung;Etichetta;Etiqueta
 Col_DataType;DataType;Veri Tipi;Тип данных;Datentyp;Tipo dati;Tipo de dato
@@ -292,7 +291,7 @@ Code_AxisWarning;Axis warning;Eksen uyarısı;Предупреждение ос�
 Ttl_AlarmReset;Alarm reset;Alarm sıfırlama;Сброс аварий;Alarm-Reset;Reset allarmi;Reinicio de alarmas
 Msg_ResetNotSent;The alarms were cleared from the list, but no reset was sent to {0}: {1}.;Alarmlar listeden silindi, ancak {0} makinesine sıfırlama gönderilmedi: {1}.;Аварии удалены из списка, но сброс на {0} не отправлен: {1}.;Die Alarme wurden aus der Liste entfernt, aber an {0} wurde kein Reset gesendet: {1}.;Gli allarmi sono stati rimossi dall'elenco, ma nessun reset è stato inviato a {0}: {1}.;Las alarmas se quitaron de la lista, pero no se envió ningún reinicio a {0}: {1}.
 Msg_ResetNeedsLogin;sign in as Operator or higher to reset the machine;makineyi sıfırlamak için Operatör veya üstü olarak giriş yapın;для сброса станка войдите как Оператор или выше;zum Zurücksetzen der Maschine als Bediener oder höher anmelden;accedere come Operatore o superiore per resettare la macchina;inicie sesión como Operador o superior para reiniciar la máquina
-Msg_ResetNoBit;{0} is {1} on this machine, not an alarm reset - add a PC_AlarmReset label to its PLC label list;{0} bu makinede {1}, alarm sıfırlama değil - PLC etiket listesine bir PC_AlarmReset etiketi ekleyin;{0} на этом станке - {1}, а не сброс аварий - добавьте метку PC_AlarmReset в его список меток ПЛК;{0} ist auf dieser Maschine {1}, kein Alarm-Reset - fügen Sie der SPS-Labelliste ein Label PC_AlarmReset hinzu;{0} su questa macchina è {1}, non un reset allarmi - aggiungere un'etichetta PC_AlarmReset al suo elenco etichette PLC;{0} en esta máquina es {1}, no un reinicio de alarmas - añada una etiqueta PC_AlarmReset a su lista de etiquetas del PLC
+Msg_ResetNoBit;no alarm reset bit is set up for this machine yet;bu makine için henüz alarm sıfırlama biti tanımlanmadı;для этого станка ещё не задан бит сброса аварий;für diese Maschine ist noch kein Alarm-Reset-Bit eingerichtet;per questa macchina non è ancora impostato un bit di reset allarmi;todavía no hay un bit de reinicio de alarmas para esta máquina
 Msg_ResetRefused;the controller did not accept the write;kontrol ünitesi yazmayı kabul etmedi;контроллер не принял запись;die Steuerung hat das Schreiben nicht angenommen;il controllore non ha accettato la scrittura;el controlador no aceptó la escritura
 Tip_MonAdd;Add a device or a comment line;Cihaz veya açıklama satırı ekle;;;;
 Tip_MonCopy;Copy the selected rows (Ctrl+C);Seçili satırları kopyala (Ctrl+C);;;;
@@ -303,6 +302,8 @@ Tip_MonDown;Move the selected rows down (Ctrl+Down);Seçili satırları aşağı
 Tip_MonCollect;Add the devices of this screen, of the whole program or of the PLC label list;Bu ekranın, tüm programın veya PLC etiket listesinin cihazlarını ekle;;;;
 Tip_MonTabs;Tabs: new, rename, delete;Sekmeler: yeni, yeniden adlandır, sil;;;;
 Tip_MonRestore;Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - a device removed from a list is kept off it until this is pressed.;Kaldırılan cihazları tekrar göster. Simülatör tuttuğu her cihazı kendiliğinden listeler - listeden kaldırılan bir cihaz bu düğmeye basılana kadar listeye geri gelmez.;;;;
+Tip_MonExport;Export this tab to a CSV file (Label / DataType / Address / Value);Bu sekmeyi CSV dosyasına aktar (Etiket / Veri tipi / Adres / Değer);;;;
+Tip_MonImport;Import devices from a CSV file into this tab (a PlcLabels.csv works as it is);CSV dosyasından bu sekmeye cihaz al (PlcLabels.csv olduğu gibi kullanılabilir);;;;
 Mnu_MonAddEnd;New device at the end...;Sona yeni cihaz...;;;;
 Mnu_MonAddAbove;New device above the selected row...;Seçili satırın üstüne yeni cihaz...;;;;
 Mnu_MonCommentEnd;Comment line at the end...;Sona açıklama satırı...;;;;
@@ -314,7 +315,7 @@ Mnu_MonFromScreen;the screen on display - into this tab;görüntülenen ekran - 
 Mnu_MonFromProgram;the whole program - into this tab;tüm program - bu sekmeye;;;;
 Mnu_MonFromProgramTabs;the whole program - one tab per page;tüm program - her sayfa için bir sekme;;;;
 Mnu_MonFromLabels;the PLC label list - into this tab;PLC etiket listesi - bu sekmeye;;;;
-Mnu_SheetNew;New tab...;Yeni sekme...;;;;
+Mnu_SheetNew;New tab (before this one)...;Yeni sekme (bunun önüne)...;;;;
 Mnu_SheetRename;Rename this tab...;Bu sekmeyi yeniden adlandır...;;;;
 Mnu_SheetDelete;Delete this tab;Bu sekmeyi sil;;;;
 Mnu_SheetLeft;Move this tab left;Bu sekmeyi sola taşı;;;;
@@ -337,9 +338,10 @@ Msg_MonProgramNone;No page of the program uses a device of {0}.;Programın hiçb
 Msg_MonLabelsNone;This controller has no PLC label list (PlcLabels.csv).;Bu kontrol ünitesinin PLC etiket listesi (PlcLabels.csv) yok.;;;;
 Msg_MonNotNumber;Not a whole number - nothing written.;Tam sayı değil - hiçbir şey yazılmadı.;;;;
 Msg_MonOutOfRange;Out of range for this data type - nothing written.;Bu veri tipi için aralık dışında - hiçbir şey yazılmadı.;;;;
-Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2}  ·  {3};{0} cihaz, {1} açıklama satırı  ·  {2}  ·  {3};;;;
+Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2};{0} cihaz, {1} açıklama satırı  ·  {2};;;;
+Msg_MonNoTabs;No tabs. Add one with the tabs button (📑), or add a device and a tab 'Main' is made for it.;Sekme yok. Sekmeler düğmesiyle (📑) ekleyin ya da bir cihaz ekleyin, onun için 'Main' sekmesi açılır.;;;;
+Msg_MonNoTabsShort;No tabs;Sekme yok;;;;
 Lbl_Simulated;simulated;simülasyon;;;;
-Lbl_LivePlc;LIVE PLC;CANLI PLC;;;;
 Lbl_CommentLine;Comment line (no address, no value);Açıklama satırı (adres ve değer yok);;;;
 Lbl_ArrayCount;Array (how many);Dizi (kaç adet);;;;
 Msg_CommentRequired;Type the comment's text.;Açıklama metnini yazın.;;;;

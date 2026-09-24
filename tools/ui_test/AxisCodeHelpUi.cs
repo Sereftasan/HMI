@@ -134,23 +134,25 @@ class AX {
         list = AlarmHelpLinks.DocumentsFor(1, "M890", null);
         Check("no code set: just the manual", list.All(d => string.IsNullOrEmpty(d.Code)) && list.Count >= 1);
 
-        Console.WriteLine("--- the alarm menu's reset: the machine's OWN reset bit ---");
+        Console.WriteLine("--- the alarm menu's reset: the bit the machine's module DECLARES ---");
         string dir = Path.Combine(Path.GetTempPath(), "ax_" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir);
-        File.WriteAllText(Path.Combine(dir, "main.csv"), "Label;DataType;Address\nPC_AlarmReset;Bit;M102\n");
-        File.WriteAllText(Path.Combine(dir, "h500.csv"), "Label;DataType;Address\nMAN_Reset;Bit;M36\nMAN_Lubrication;Bit;M102\n");
-        File.WriteAllText(Path.Combine(dir, "other.csv"), "Label;DataType;Address\nPC_AlarmReset;Bit;M28\n");
-        File.WriteAllText(Path.Combine(dir, "none.csv"), "Label;DataType;Address\nIN_Start;Bit;X0\n");
-        PlcLabelTable.Load(Path.Combine(dir, "main.csv"));
+        // A label list naming PC_AlarmReset must NOT decide it: M102 is FA2010 PLC1's
+        // reset only, every other machine has its own bit.
+        File.WriteAllText(Path.Combine(dir, "h500.csv"), "Label;DataType;Address\nPC_AlarmReset;Bit;M102\nMAN_Lubrication;Bit;M102\n");
         PlcLabelTable.LoadStation(Path.Combine(dir, "h500.csv"), 3);
-        PlcLabelTable.LoadStation(Path.Combine(dir, "other.csv"), 6);
-        PlcLabelTable.LoadStation(Path.Combine(dir, "none.csv"), 7);
         string why;
-        Check("main machine: its PC_AlarmReset (M102)", AlarmReset.AddressFor(1, out why) == "M102");
-        Check("a machine whose PC_AlarmReset is another bit: that bit", AlarmReset.AddressFor(6, out why) == "M28");
-        Check("no label, M102 free: M102, as its Alarms page button", AlarmReset.AddressFor(7, out why) == "M102");
+        PlcManager.Instance.SetAlarmResetDevice(1, "M102");            // as FA2010Module does
+        PlcManager.Instance.SetAlarmResetDevice(7, "m28 ");            // another machine's own bit
+        Check("FA2010 PLC1: M102", AlarmReset.AddressFor(1, out why) == "M102");
+        Check("another machine: its own bit (trimmed, upper case)", AlarmReset.AddressFor(7, out why) == "M28");
         var h500 = AlarmReset.AddressFor(3, out why);
-        Check("H500 (M102 is its LUBRICATION): nothing is pulsed, and it says why",
-              h500 == null && why.Contains("MAN_Lubrication"), why);
+        Check("a machine that declared none (H500): nothing - even with PC_AlarmReset in its labels - and it says why",
+              h500 == null && why.Length > 0, why);
+        PlcManager.Instance.SetAlarmResetDevice(7, "M102");
+        Check("a declaration can be changed", AlarmReset.AddressFor(7, out why) == "M102");
+        PlcManager.Instance.SetAlarmResetDevice(7, "");
+        Check("and taken away again", AlarmReset.AddressFor(7, out why) == null);
+        PlcManager.Instance.SetAlarmResetDevice(7, "M102");
 
         var sim = new Kaban.Drivers.Simulation.SimulationDriver(7);
         PlcManager.Instance.RegisterDriver(7, sim);
@@ -166,7 +168,7 @@ class AX {
         var until = DateTime.Now.AddMilliseconds(900);
         while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); }
         Check("  and OFF again after the pulse", m102() == 0);
-        Check("H500's station is not pulsed at all", !AlarmReset.Pulse(3, "H500", out why) && why.Contains("MAN_Lubrication"), why);
+        Check("H500's station is not pulsed at all", !AlarmReset.Pulse(3, "H500", out why) && why.Length > 0, why);
 
         try { Directory.Delete(dir, true); } catch { }
         host.Close();

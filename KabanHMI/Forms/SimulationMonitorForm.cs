@@ -50,7 +50,13 @@ namespace Kaban.UI.Forms
         private readonly Timer _refresh = new Timer();
         private readonly List<MonitorTab> _monitors = new List<MonitorTab>();
         private readonly Label _status = new Label();
-        private readonly ToolTip _tips = UiStyle.Tips();
+        /// <summary>
+        /// THIS WINDOW'S OWN tooltip. The program-wide one never shows over an
+        /// inactive window, and it counts the main window as its own - so over
+        /// this separate window it never showed at all, and the toolbar was a row
+        /// of pictures nobody could read.
+        /// </summary>
+        private readonly ToolTip _tips = UiStyle.CreateTips();
         private ToolStripItem _restoreItem;
 
         /// <summary>Copied rows - shared by every controller, so a list can be copied from one PLC to another.</summary>
@@ -129,6 +135,9 @@ namespace Kaban.UI.Forms
             public bool Editing;
             public int DragFrom = -1;
             public Point DragStart;
+            /// <summary>The column last sorted on, and which way - a second click reverses it.</summary>
+            public string SortColumn = "";
+            public bool SortDescending;
         }
 
         internal class MonitorTab
@@ -137,7 +146,6 @@ namespace Kaban.UI.Forms
             public bool IsSimulated;
             public TabPage Page;
             public TabControl SheetTabs;
-            public Label Banner;
             public readonly List<Sheet> Sheets = new List<Sheet>();
 
             /// <summary>
@@ -155,12 +163,39 @@ namespace Kaban.UI.Forms
 
             public int Station { get { return Endpoint != null ? Endpoint.StationId : 0; } }
 
+            /// <summary>
+            /// The tab ON DISPLAY - found from the selected page itself, never by
+            /// its position. The list of tabs and the tab strip were kept in step by
+            /// index, and TabPages.Insert on a strip that has no window yet adds at
+            /// the END whatever index it is given: the two orders parted, the
+            /// selected tab's index pointed at its neighbour, and a device added to
+            /// an empty tab went into the tab before it - as did a delete.
+            /// </summary>
             public Sheet Current
             {
                 get
                 {
-                    int i = SheetTabs != null ? SheetTabs.SelectedIndex : -1;
-                    return i >= 0 && i < Sheets.Count ? Sheets[i] : Sheets.FirstOrDefault();
+                    if (SheetTabs == null) return Sheets.FirstOrDefault();
+                    var page = SheetTabs.SelectedTab;
+                    return page != null ? page.Tag as Sheet : null;
+                }
+            }
+
+            /// <summary>Tabs counted in the file (-1: no file). Zero means the engineer deleted them all.</summary>
+            public int SavedTabCount = -1;
+
+            /// <summary>Shown instead of the tab strip when every tab has been deleted.</summary>
+            public Label EmptyHint;
+
+            /// <summary>The list of tabs re-read from the strip, in the order shown.</summary>
+            public void SyncOrder()
+            {
+                if (SheetTabs == null) return;
+                Sheets.Clear();
+                foreach (TabPage p in SheetTabs.TabPages)
+                {
+                    var sh = p.Tag as Sheet;
+                    if (sh != null) Sheets.Add(sh);
                 }
             }
 
@@ -296,8 +331,10 @@ namespace Kaban.UI.Forms
                 (s, e) => ShowMenu(btnTabs, SheetMenu()));
             add(btnTabs);
             gap();
-            add(UiStyle.ToolButton(E(0x1F4BE), T("Tip_ExportCsv", "Save this tab's list as a CSV file (Label / DataType / Address / Value)"), _tips, (s, e) => ExportSheet()));
-            add(UiStyle.ToolButton(E(0x1F4C2), T("Tip_ImportCsv", "Add devices from a CSV file. A PlcLabels.csv can be used as it is."), _tips, (s, e) => ImportSheet()));
+            // Out and in, as the pictures say: the floppy and the folder mean Save
+            // and Reload everywhere else in the program, and were not found here.
+            add(UiStyle.ToolButton(E(0x1F4E4), T("Tip_MonExport", "Export this tab to a CSV file (Label / DataType / Address / Value)"), _tips, (s, e) => ExportSheet()));
+            add(UiStyle.ToolButton(E(0x1F4E5), T("Tip_MonImport", "Import devices from a CSV file into this tab (a PlcLabels.csv works as it is)"), _tips, (s, e) => ImportSheet()));
 
             var restore = UiStyle.ToolButton(E(0x21A9), T("Tip_MonRestore",
                 "Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - " +
@@ -374,9 +411,9 @@ namespace Kaban.UI.Forms
         {
             var m = NewMenu();
             var mon = CurrentMonitor;
-            m.Items.Add(Item(T("Mnu_SheetNew", "New tab..."), (s, e) => NewSheet(), mon != null));
-            m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null));
-            m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Sheets.Count > 1));
+            m.Items.Add(Item(T("Mnu_SheetNew", "New tab (before this one)..."), (s, e) => NewSheet(), mon != null));
+            m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null));
+            m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null));
             m.Items.Add(new ToolStripSeparator());
             m.Items.Add(Item(T("Mnu_SheetLeft", "Move this tab left"), (s, e) => MoveSheet(-1), mon != null && mon.SheetTabs.SelectedIndex > 0));
             m.Items.Add(Item(T("Mnu_SheetRight", "Move this tab right"), (s, e) => MoveSheet(+1), mon != null && mon.SheetTabs.SelectedIndex < mon.Sheets.Count - 1));
@@ -447,28 +484,30 @@ namespace Kaban.UI.Forms
                 UiStyle.ShowPopupAt(SheetMenu(), mon.SheetTabs, mon.SheetTabs.PointToScreen(e.Location));
             };
 
-            // Which kind of station is this? Not a lock, a LABEL: writes go through
-            // either way; this is what stops a real CPU being taken for the bench.
-            if (!mon.IsSimulated)
-            {
-                mon.Banner = new Label
-                {
-                    Dock = DockStyle.Top,
-                    Height = 26,
-                    Padding = new Padding(8, 5, 8, 4),
-                    BackColor = Color.FromArgb(255, 232, 232),
-                    ForeColor = Color.FromArgb(150, 40, 40),
-                    Text = T("Msg_LiveStation", "LIVE PLC - a value typed here is written to the machine immediately.")
-                };
-            }
+            // NO "LIVE PLC" BANNER: the page is the admin's, who knows a value
+            // typed here goes to the machine. Writes to a real PLC are logged.
 
             LoadWatchList(mon);
-            if (mon.Sheets.Count == 0) mon.Sheets.Add(new Sheet { Name = T("Tab_MonMain", "Main") });
-            foreach (var sh in mon.Sheets) AttachSheet(mon, sh, mon.SheetTabs.TabPages.Count);
+            // A first "Main" tab only for a controller that has never had a list;
+            // one whose tabs were all deleted stays empty.
+            if (mon.Sheets.Count == 0 && mon.SavedTabCount != 0) mon.Sheets.Add(new Sheet { Name = T("Tab_MonMain", "Main") });
+            foreach (var sh in mon.Sheets.ToList()) AttachSheet(mon, sh, mon.SheetTabs.TabPages.Count);
+            WireTabDrag(mon);
+
+            mon.EmptyHint = new Label
+            {
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.FromArgb(120, 126, 136),
+                Font = UiStyle.Body,
+                Text = T("Msg_MonNoTabs", "No tabs. Add one with the tabs button (" + E(0x1F4D1) + "), or add a device and a tab 'Main' is made for it."),
+                Visible = false
+            };
+            page.Controls.Add(mon.EmptyHint);
+            UpdateEmptyState(mon);
 
 
             page.Controls.Add(mon.SheetTabs);
-            if (mon.Banner != null) page.Controls.Add(mon.Banner);
 
             _monitors.Add(mon);
             return page;
@@ -507,9 +546,147 @@ namespace Kaban.UI.Forms
             g.HandleCreated += (s, e) => g.BeginInvoke((MethodInvoker)(() => { g.ClearSelection(); g.CurrentCell = null; }));
             sh.Page = new TabPage(sh.Name) { BackColor = Color.White };
             sh.Page.Controls.Add(sh.Grid);
+            sh.Page.Tag = sh;                               // the page KNOWS its tab: see Current
             WireGrid(mon, sh);
             EnsureBlankRow(sh);
-            mon.SheetTabs.TabPages.Insert(Math.Min(at, mon.SheetTabs.TabPages.Count), sh.Page);
+            InsertPage(mon, sh.Page, at);
+            mon.SyncOrder();
+            UpdateEmptyState(mon);
+        }
+
+        /// <summary>
+        /// Puts a page at a position of the strip. The strip's window is created
+        /// first: without it WinForms appends the page at the end, whatever the
+        /// index.
+        /// </summary>
+        private static void InsertPage(MonitorTab mon, TabPage page, int at)
+        {
+            var tabs = mon.SheetTabs;
+            at = Math.Max(0, Math.Min(at, tabs.TabPages.Count));
+            if (at >= tabs.TabPages.Count) { tabs.TabPages.Add(page); return; }
+            if (!tabs.IsHandleCreated) { var unused = tabs.Handle; }
+            tabs.TabPages.Insert(at, page);
+        }
+
+        private static void UpdateEmptyState(MonitorTab mon)
+        {
+            bool none = mon.SheetTabs.TabPages.Count == 0;
+            mon.SheetTabs.Visible = !none;
+            if (mon.EmptyHint != null) mon.EmptyHint.Visible = none;
+        }
+
+        /// <summary>
+        /// The tab on display - or, when every tab has been deleted, a new "Main"
+        /// one: adding a device should never fail for want of somewhere to put it.
+        /// </summary>
+        private Sheet EnsureSheet(MonitorTab mon)
+        {
+            if (mon == null) return null;
+            var sh = mon.Current;
+            if (sh != null) return sh;
+            sh = AddSheet(mon, UniqueName(mon, T("Tab_MonMain", "Main")), 0);
+            return sh;
+        }
+
+        /// <summary>A new, empty tab at a position of the strip, selected.</summary>
+        internal Sheet AddSheet(MonitorTab mon, string name, int at)
+        {
+            var sh = new Sheet { Name = name };
+            AttachSheet(mon, sh, at);
+            mon.SheetTabs.SelectedTab = sh.Page;
+            SaveWatchList(mon);
+            UpdateToolbar();
+            return sh;
+        }
+
+        /// <summary>Takes a tab away - any tab, the last one too.</summary>
+        internal void RemoveSheet(MonitorTab mon, Sheet sh)
+        {
+            int i = mon.SheetTabs.TabPages.IndexOf(sh.Page);
+            foreach (var r in sh.Rows.Where(r => r.IsDevice).ToList()) HideIfUnlisted(mon, r.Address, sh, -2);
+            mon.SheetTabs.TabPages.Remove(sh.Page);
+            sh.Page.Dispose();
+            mon.SyncOrder();
+            if (mon.SheetTabs.TabPages.Count > 0)
+                mon.SheetTabs.SelectedIndex = Math.Max(0, Math.Min(i, mon.SheetTabs.TabPages.Count - 1));
+            UpdateEmptyState(mon);
+            SaveWatchList(mon);
+            UpdateToolbar();
+        }
+
+        /// <summary>Moves a tab to a position of the strip, keeping it selected.</summary>
+        internal void MoveSheetTo(MonitorTab mon, Sheet sh, int to)
+        {
+            var tabs = mon.SheetTabs;
+            int from = tabs.TabPages.IndexOf(sh.Page);
+            to = Math.Max(0, Math.Min(to, tabs.TabPages.Count - 1));
+            if (from < 0 || from == to) return;
+            tabs.SuspendLayout();
+            tabs.TabPages.Remove(sh.Page);
+            InsertPage(mon, sh.Page, to);
+            tabs.SelectedTab = sh.Page;
+            tabs.ResumeLayout();
+            mon.SyncOrder();
+        }
+
+        // ---- drag a tab along the strip -------------------------------------------
+        //
+        // Hold a tab and slide it: it moves across the others as the pointer
+        // passes them, several places in one gesture where the menu's "move left"
+        // goes one at a time. Released, the new order is saved.
+
+        private Sheet _dragSheet;
+        private Point _dragSheetFrom;
+        private bool _draggingSheet;
+
+        private void WireTabDrag(MonitorTab mon)
+        {
+            var tabs = mon.SheetTabs;
+            tabs.MouseDown += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Left) return;
+                int i = SheetAt(mon, e.Location);
+                _dragSheet = i >= 0 ? tabs.TabPages[i].Tag as Sheet : null;
+                _dragSheetFrom = e.Location;
+                _draggingSheet = false;
+            };
+            tabs.MouseMove += (s, e) =>
+            {
+                if (_dragSheet == null || e.Button != MouseButtons.Left) return;
+                if (!_draggingSheet)
+                {
+                    if (Math.Abs(e.X - _dragSheetFrom.X) < SystemInformation.DragSize.Width * 2) return;
+                    _draggingSheet = true;
+                    tabs.Cursor = Cursors.SizeWE;
+                }
+                int over = SheetAt(mon, e.Location);
+                if (over < 0)
+                {
+                    // Past the last tab or before the first: to that end.
+                    if (tabs.TabCount == 0) return;
+                    var last = tabs.GetTabRect(tabs.TabCount - 1);
+                    if (e.X > last.Right) over = tabs.TabCount - 1;
+                    else if (e.X < tabs.GetTabRect(0).Left) over = 0;
+                    else return;
+                }
+                int from = tabs.TabPages.IndexOf(_dragSheet.Page);
+                if (over == from || from < 0) return;
+                // Only once the pointer is far enough over the other tab that, moved,
+                // the dragged tab is still under it: a narrow tab passing a wide one
+                // would otherwise swap back and forth on every pixel.
+                var target = tabs.GetTabRect(over);
+                int width = tabs.GetTabRect(from).Width;
+                if (over > from ? e.X < target.Right - width : e.X > target.Left + width) return;
+                MoveSheetTo(mon, _dragSheet, over);
+            };
+            MouseEventHandler end = (s, e) =>
+            {
+                if (_draggingSheet) { SaveWatchList(mon); tabs.Cursor = Cursors.Default; }
+                _dragSheet = null;
+                _draggingSheet = false;
+            };
+            tabs.MouseUp += end;
+            tabs.MouseCaptureChanged += (s, e) => { if (_draggingSheet && Control.MouseButtons == MouseButtons.None) end(s, null); };
         }
 
         private static DataGridView BuildGrid()
@@ -539,21 +716,23 @@ namespace Kaban.UI.Forms
             grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
 
             // Label first: an engineer thinks in names, not addresses.
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Label", HeaderText = T("Col_Label", "Label"), FillWeight = 90, SortMode = DataGridViewColumnSortMode.NotSortable });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "DataType", HeaderText = T("Col_DataType", "DataType"), FillWeight = 45, SortMode = DataGridViewColumnSortMode.NotSortable });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Address", HeaderText = T("Col_Address", "Address"), FillWeight = 32, SortMode = DataGridViewColumnSortMode.NotSortable });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value"), FillWeight = 36, SortMode = DataGridViewColumnSortMode.NotSortable });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Label", HeaderText = T("Col_Label", "Label") });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "DataType", HeaderText = T("Col_DataType", "DataType") });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Address", HeaderText = T("Col_Address", "Address") });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value") });
             grid.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
-            // NOT sortable: the order of a watch list is the engineer's own, and a
-            // sort would scatter its comment lines away from what they head.
-            // FILL, by the weights above - not the program's fit-to-contents: a
-            // list that fills as it is scanned would change its column widths
-            // under the reader's eyes, and the value column is the one that must
-            // never be cut short.
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            // EXPLICIT WIDTHS, each column its own: narrowing the last column
+            // leaves space at the right instead of widening the one before it (a
+            // Fill grid always stretches to the edge). Headings can be dragged to
+            // re-order the columns, and a click sorts on one - see SortSheet. The
+            // widths and order are kept, the same for every tab.
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             grid.AllowUserToResizeColumns = true;
+            grid.AllowUserToOrderColumns = true;
+            foreach (DataGridViewColumn c in grid.Columns) c.SortMode = DataGridViewColumnSortMode.Programmatic;
+            ApplyColumnLayout(grid);
             grid.EnableHeadersVisualStyles = false;
             grid.ColumnHeadersDefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 248);
@@ -591,13 +770,33 @@ namespace Kaban.UI.Forms
             };
             grid.ContextMenuStrip = rowMenu;
 
-            // A right-click selects the row under it first, as in Explorer.
+            // A right-click on an UNSELECTED row selects it, as in Explorer. On a
+            // selected row it changes nothing: the menu is for the whole selection.
+            // (Setting the current cell - which this also did - drops every other
+            // selected row, so Copy and Remove saw just one.)
             grid.CellMouseDown += (s, e) =>
             {
                 if (e.Button != MouseButtons.Right || e.RowIndex < 0) return;
-                if (!grid.Rows[e.RowIndex].Selected) { grid.ClearSelection(); grid.Rows[e.RowIndex].Selected = true; }
+                if (grid.Rows[e.RowIndex].Selected) return;
+                grid.ClearSelection();
                 grid.CurrentCell = grid.Rows[e.RowIndex].Cells[Math.Max(0, e.ColumnIndex)];
+                grid.Rows[e.RowIndex].Selected = true;
             };
+
+            // ---- columns: drag to re-order, resize freely, click to sort ----
+            // A heading DRAGGED to another place, or a border dragged to resize,
+            // ends in a click on a heading too - that is not a request to sort.
+            string layoutAtPress = "";
+            Func<string> layout = () => string.Join(",", grid.Columns.Cast<DataGridViewColumn>().Select(c => c.DisplayIndex + ":" + c.Width));
+            grid.CellMouseDown += (s, e) => { if (e.RowIndex < 0) layoutAtPress = layout(); };
+            grid.ColumnHeaderMouseClick += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Left || e.ColumnIndex < 0) return;
+                if (layoutAtPress.Length > 0 && layoutAtPress != layout()) return;
+                SortSheet(mon, sh, grid.Columns[e.ColumnIndex].Name);
+            };
+            grid.ColumnWidthChanged += (s, e) => ColumnLayoutChanged(grid);
+            grid.ColumnDisplayIndexChanged += (s, e) => ColumnLayoutChanged(grid);
 
             grid.CellDoubleClick += (s, e) =>
             {
@@ -875,13 +1074,15 @@ namespace Kaban.UI.Forms
         private void AddRows(bool atEnd, bool comment)
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
-            int at = InsertPoint(sh, atEnd);
+            if (mon == null) return;
+            // With every tab deleted, a "Main" one is made - once the device is
+            // confirmed, not for a dialog that is then cancelled.
+            var sh = mon.Current;
+            int at = sh != null ? InsertPoint(sh, atEnd) : 0;
 
             // Suggest what comes next: the device after the one above the new line.
             string suggestType = "Bit", suggestAddress = "";
-            var above = sh.Rows.Take(at).LastOrDefault(r => r.IsDevice);
+            var above = sh != null ? sh.Rows.Take(at).LastOrDefault(r => r.IsDevice) : null;
             if (above != null && !comment)
             {
                 suggestType = string.IsNullOrWhiteSpace(above.EffectiveDataType) ? "Bit" : above.EffectiveDataType;
@@ -892,6 +1093,7 @@ namespace Kaban.UI.Forms
                                                   comment ? "Label" : "Address", isNew: true, isComment: comment))
             {
                 if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                if (sh == null) { sh = EnsureSheet(mon); at = InsertPoint(sh, true); }
 
                 var added = new List<WatchRow>();
                 if (dlg.IsComment) added.Add(new WatchRow { Station = mon.Station, Comment = dlg.RowLabel });
@@ -967,8 +1169,7 @@ namespace Kaban.UI.Forms
         private void Paste(bool atEnd)
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
+            if (mon == null) return;
 
             List<WatchRow> rows;
             string text = "";
@@ -977,6 +1178,7 @@ namespace Kaban.UI.Forms
             else rows = ParseLines(text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None));
             if (rows.Count == 0) return;
 
+            var sh = EnsureSheet(mon);
             int at = InsertPoint(sh, atEnd);
             foreach (var r in rows)
             {
@@ -1023,7 +1225,8 @@ namespace Kaban.UI.Forms
         private static void HideIfUnlisted(MonitorTab mon, string address, Sheet skipSheet, int skipRow)
         {
             if (!mon.IsSimulated || string.IsNullOrWhiteSpace(address)) return;
-            bool elsewhere = mon.Sheets.Any(s => s.Rows.Where((r, i) => !(s == skipSheet && i == skipRow))
+            // skipRow -2: leave the whole of skipSheet out (the tab being deleted).
+            bool elsewhere = mon.Sheets.Any(s => s.Rows.Where((r, i) => !(s == skipSheet && (skipRow == -2 || i == skipRow)))
                                                       .Any(r => string.Equals(r.Address, address, StringComparison.OrdinalIgnoreCase)));
             if (!elsewhere) mon.Hidden.Add(address);
         }
@@ -1051,6 +1254,221 @@ namespace Kaban.UI.Forms
             Select(sh, sel.Select(i => i + direction));
         }
 
+        // ==================================================================
+        // COLUMNS: widths, order, sorting
+        // ==================================================================
+
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Address", "Value" };
+        private static readonly int[] DefaultWidths = { 280, 170, 90, 120 };
+        private static Dictionary<string, int> _colWidth, _colOrder;
+        private static bool _applyingLayout;
+        private bool _layoutPending;
+
+        private static string ColumnsPath { get { return Path.Combine(WatchFolder, "Columns.cfg"); } }
+
+        private static void LoadColumnLayout()
+        {
+            if (_colWidth != null) return;
+            _colWidth = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            _colOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (!File.Exists(ColumnsPath)) return;
+                foreach (var line in File.ReadAllLines(ColumnsPath))
+                {
+                    // Label=280;0   (width;position)
+                    int eq = line.IndexOf('=');
+                    if (eq <= 0 || line.StartsWith("#")) continue;
+                    var f = line.Substring(eq + 1).Split(';');
+                    int w, o;
+                    if (int.TryParse(f[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out w)) _colWidth[line.Substring(0, eq)] = w;
+                    if (f.Length > 1 && int.TryParse(f[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out o)) _colOrder[line.Substring(0, eq)] = o;
+                }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the monitor's column layout: " + ex.Message); }
+        }
+
+        private static void SaveColumnLayout()
+        {
+            try
+            {
+                Directory.CreateDirectory(WatchFolder);
+                var lines = new List<string> { "# PLC Monitor columns: <column>=<width>;<position>" };
+                foreach (var n in ColumnNames)
+                {
+                    int w, o;
+                    if (!_colWidth.TryGetValue(n, out w)) continue;
+                    _colOrder.TryGetValue(n, out o);
+                    lines.Add(n + "=" + w.ToString(CultureInfo.InvariantCulture) + ";" + o.ToString(CultureInfo.InvariantCulture));
+                }
+                SafeFile.WriteAllText(ColumnsPath, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(false));
+            }
+            catch (Exception ex) { AuditLogger.Log("could not save the monitor's column layout: " + ex.Message); }
+        }
+
+        /// <summary>The kept widths and order on a grid - every tab looks the same.</summary>
+        private static void ApplyColumnLayout(DataGridView grid)
+        {
+            LoadColumnLayout();
+            _applyingLayout = true;
+            try
+            {
+                for (int i = 0; i < ColumnNames.Length; i++)
+                {
+                    int w;
+                    var c = grid.Columns[ColumnNames[i]];
+                    c.Width = _colWidth.TryGetValue(ColumnNames[i], out w) ? Math.Max(40, w) : DefaultWidths[i];
+                }
+                var ordered = ColumnNames.OrderBy(n =>
+                {
+                    int o;
+                    return _colOrder.TryGetValue(n, out o) ? o : Array.IndexOf(ColumnNames, n);
+                }).ToList();
+                for (int k = 0; k < ordered.Count; k++) grid.Columns[ordered[k]].DisplayIndex = k;
+            }
+            catch { }
+            finally { _applyingLayout = false; }
+        }
+
+        /// <summary>
+        /// A column was resized or moved: kept, and done on every other tab too.
+        /// Taken once the grid has finished - it renumbers the other columns'
+        /// positions one event at a time.
+        /// </summary>
+        private void ColumnLayoutChanged(DataGridView source)
+        {
+            if (_applyingLayout || _layoutPending) return;
+            MethodInvoker take = () =>
+            {
+                _layoutPending = false;
+                LoadColumnLayout();
+                foreach (DataGridViewColumn c in source.Columns) { _colWidth[c.Name] = c.Width; _colOrder[c.Name] = c.DisplayIndex; }
+                SaveColumnLayout();
+                foreach (var m in _monitors)
+                    foreach (var other in m.Sheets)
+                        if (other.Grid != null && other.Grid != source) ApplyColumnLayout(other.Grid);
+            };
+            if (IsHandleCreated) { _layoutPending = true; BeginInvoke(take); }
+            else take();
+        }
+
+        /// <summary>
+        /// Sorts a tab on a column - a second click on the same heading reverses it.
+        ///
+        /// SECTION BY SECTION: a comment line heads the rows under it, so each
+        /// section is sorted on its own and the comment stays on top of it. Sorting
+        /// the whole list at once would pull every device out from under its
+        /// heading. The sorted order is the list's order from then on (drag and the
+        /// arrows still move rows).
+        /// </summary>
+        internal void SortSheet(MonitorTab mon, Sheet sh, string column)
+        {
+            if (sh == null || Array.IndexOf(ColumnNames, column) < 0) return;
+            sh.SortDescending = column == sh.SortColumn && !sh.SortDescending;
+            sh.SortColumn = column;
+
+            Comparison<WatchRow> compare = (a, b) => CompareRows(mon, a, b, column);
+            var result = new List<WatchRow>();
+            var block = new List<WatchRow>();
+            Action flush = () =>
+            {
+                var sorted = block.Select((r, i) => new { r, i }).ToList();
+                sorted.Sort((x, y) =>
+                {
+                    int c = compare(x.r, y.r);
+                    if (sh.SortDescending) c = -c;
+                    return c != 0 ? c : x.i.CompareTo(y.i);      // stable: equal rows keep their order
+                });
+                result.AddRange(sorted.Select(x => x.r));
+                block.Clear();
+            };
+            foreach (var r in sh.Rows.Where(r => !r.IsBlank))
+            {
+                if (r.IsComment) { flush(); result.Add(r); }
+                else block.Add(r);
+            }
+            flush();
+
+            sh.Rows.Clear();
+            sh.Rows.AddRange(result);
+            EnsureBlankRow(sh);
+            foreach (DataGridViewColumn c in sh.Grid.Columns)
+                c.HeaderCell.SortGlyphDirection = c.Name != column ? SortOrder.None
+                                                : sh.SortDescending ? SortOrder.Descending : SortOrder.Ascending;
+            SaveWatchList(mon);
+            Render(mon, sh);
+            sh.Grid.ClearSelection();
+        }
+
+        private static int CompareRows(MonitorTab mon, WatchRow a, WatchRow b, string column)
+        {
+            switch (column)
+            {
+                case "Label":
+                    return string.Compare(a.EffectiveLabel, b.EffectiveLabel, StringComparison.CurrentCultureIgnoreCase);
+                case "DataType":
+                {
+                    int c = string.Compare(a.EffectiveDataType, b.EffectiveDataType, StringComparison.CurrentCultureIgnoreCase);
+                    return c != 0 ? c : CompareAddress(a.Address, b.Address);
+                }
+                case "Address":
+                    return CompareAddress(a.Address, b.Address);
+                case "Value":
+                {
+                    long? va = ValueOf(mon, a), vb = ValueOf(mon, b);
+                    if (va == null || vb == null) return va == null ? (vb == null ? 0 : 1) : -1;   // unread last
+                    return va.Value.CompareTo(vb.Value);
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Addresses in the PLC's own order: by device, then by number in the
+        /// device's own base - M2 before M10, X17 before X20 (octal), W0F before
+        /// W10 (hexadecimal) - where plain text order puts M10 before M2.
+        /// </summary>
+        internal static int CompareAddress(string a, string b)
+        {
+            string pa, pb; long na, nb;
+            SplitAddress(a, out pa, out na);
+            SplitAddress(b, out pb, out nb);
+            int c = string.Compare(pa, pb, StringComparison.OrdinalIgnoreCase);
+            return c != 0 ? c : na.CompareTo(nb);
+        }
+
+        private static void SplitAddress(string address, out string device, out long number)
+        {
+            string a = (address ?? "").Trim().ToUpperInvariant();
+            device = a; number = long.MaxValue;
+            // Hexadecimal devices first: their number may start with a letter (WA0).
+            foreach (var hex in new[] { "SB", "SW", "B", "W" })
+                if (a.Length > hex.Length && a.StartsWith(hex, StringComparison.Ordinal) &&
+                    System.Text.RegularExpressions.Regex.IsMatch(a.Substring(hex.Length), "^[0-9A-F]+$"))
+                {
+                    device = hex;
+                    number = Convert.ToInt64(a.Substring(hex.Length), 16);
+                    return;
+                }
+            var m = System.Text.RegularExpressions.Regex.Match(a, "^([A-Z]+)([0-9]+)$");
+            if (!m.Success) return;
+            device = m.Groups[1].Value;
+            int radix = device == "X" || device == "Y" || device == "DX" || device == "DY" ? 8 : 10;   // as PlcAddressHelper
+            try { number = Convert.ToInt64(m.Groups[2].Value, radix); }
+            catch { number = long.MaxValue; }
+        }
+
+        /// <summary>A row's value as shown (a double word as one number), null when not read.</summary>
+        private static long? ValueOf(MonitorTab mon, WatchRow r)
+        {
+            int v;
+            if (!r.IsDevice || !mon.Values.TryGetValue(r.Address, out v)) return null;
+            if (!IsDoubleWord(r.EffectiveDataType)) return v;
+            int high;
+            mon.Values.TryGetValue(PlcAddressHelper.GetNextAddress(r.Address), out high);
+            return CombineDouble(v, high, IsUnsigned(r.EffectiveDataType));
+        }
+
         private void RestoreHidden()
         {
             var mon = CurrentMonitor;
@@ -1070,12 +1488,8 @@ namespace Kaban.UI.Forms
             string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
                                   UniqueName(mon, T("Tab_MonNew", "Tab") + " " + (mon.Sheets.Count + 1)), mon, null);
             if (name == null) return;
-            var sh = new Sheet { Name = name };
-            int at = mon.SheetTabs.SelectedIndex + 1;
-            mon.Sheets.Insert(at, sh);
-            AttachSheet(mon, sh, at);
-            mon.SheetTabs.SelectedIndex = at;
-            SaveWatchList(mon);
+            // BEFORE the tab on display, as asked; at the start when there is none.
+            AddSheet(mon, name, Math.Max(0, mon.SheetTabs.SelectedIndex));
         }
 
         private void RenameSheet()
@@ -1096,25 +1510,11 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
-            if (mon.Sheets.Count <= 1)
-            {
-                MessageBox.Show(this, T("Msg_SheetLast", "A controller keeps at least one tab."), Text,
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
             int n = sh.Rows.Count(r => !r.IsBlank);
             if (n > 0 && MessageBox.Show(this,
                     string.Format(T("Msg_SheetDelete", "Delete the tab '{0}' and its {1} row(s)?"), sh.Name, n),
                     Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-
-            int i = mon.Sheets.IndexOf(sh);
-            mon.Sheets.Remove(sh);
-            foreach (var r in sh.Rows.Where(r => r.IsDevice)) HideIfUnlisted(mon, r.Address, null, -1);
-            mon.SheetTabs.TabPages.Remove(sh.Page);
-            sh.Page.Dispose();
-            mon.SheetTabs.SelectedIndex = Math.Min(i, mon.Sheets.Count - 1);
-            SaveWatchList(mon);
-            UpdateToolbar();
+            RemoveSheet(mon, sh);
         }
 
         private void MoveSheet(int direction)
@@ -1122,13 +1522,7 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
-            int i = mon.Sheets.IndexOf(sh), j = i + direction;
-            if (j < 0 || j >= mon.Sheets.Count) return;
-            mon.Sheets.RemoveAt(i);
-            mon.Sheets.Insert(j, sh);
-            mon.SheetTabs.TabPages.Remove(sh.Page);
-            mon.SheetTabs.TabPages.Insert(j, sh.Page);
-            mon.SheetTabs.SelectedIndex = j;
+            MoveSheetTo(mon, sh, mon.SheetTabs.TabPages.IndexOf(sh.Page) + direction);
             SaveWatchList(mon);
         }
 
@@ -1210,8 +1604,7 @@ namespace Kaban.UI.Forms
         private void CollectFromScreen()
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
+            if (mon == null) return;
             var shell = Owner as MainForm ?? Application.OpenForms.OfType<MainForm>().FirstOrDefault();
             var page = shell != null ? shell.CurrentPage : null;
             if (page == null) return;
@@ -1223,6 +1616,7 @@ namespace Kaban.UI.Forms
                                 PlcEndpointNaming.Caption(mon.Endpoint)), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            var sh = EnsureSheet(mon);                    // a tab only once there is something to put in it
             int added = AddDevices(mon, sh, devices, null);
             SaveWatchList(mon);
             Render(mon, sh);
@@ -1232,14 +1626,15 @@ namespace Kaban.UI.Forms
         private void CollectFromProgram(bool perPage)
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
-
+            if (mon == null) return;
             List<DeviceCollector.PageDevices> pages;
             var cursor = Cursor.Current;
             Cursor.Current = Cursors.WaitCursor;
             try { pages = DeviceCollector.FromProgram(mon.Station); }
             finally { Cursor.Current = cursor; }
+
+            // One tab per page needs no tab to start from.
+            var sh = perPage || pages.Count == 0 ? mon.Current : EnsureSheet(mon);
 
             int added = 0, offered = 0;
             foreach (var p in pages)
@@ -1253,7 +1648,6 @@ namespace Kaban.UI.Forms
                     if (target == null)
                     {
                         target = new Sheet { Name = p.Title };
-                        mon.Sheets.Add(target);
                         AttachSheet(mon, target, mon.SheetTabs.TabPages.Count);
                     }
                     added += AddDevices(mon, target, p.Devices, null);
@@ -1271,8 +1665,7 @@ namespace Kaban.UI.Forms
         private void CollectFromLabels()
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
+            if (mon == null) return;
             var devices = DeviceCollector.FromLabelList(mon.Station);
             if (devices.Count == 0)
             {
@@ -1280,6 +1673,7 @@ namespace Kaban.UI.Forms
                                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            var sh = EnsureSheet(mon);
             int added = AddDevices(mon, sh, devices, null);
             SaveWatchList(mon);
             Render(mon, sh);
@@ -1373,7 +1767,8 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             if (mon == null) return;
             var sh = mon.Current;
-            if (sh == null || sh.Editing) return;
+            if (sh == null) { UpdateStatus(mon, null); return; }
+            if (sh.Editing) return;
 
             if (mon.IsSimulated) ReadSimulated(mon);
             else BeginReadReal(mon, sh);
@@ -1563,10 +1958,12 @@ namespace Kaban.UI.Forms
 
         private void UpdateStatus(MonitorTab mon, Sheet sh)
         {
-            int devices = sh.Rows.Count(r => r.IsDevice), comments = sh.Rows.Count(r => r.IsComment);
-            string text = string.Format(T("Msg_MonStatus", "{0} device(s), {1} comment line(s)  ·  {2}  ·  {3}"),
-                                        devices, comments, PlcEndpointNaming.CaptionWithStation(mon.Endpoint),
-                                        mon.IsSimulated ? T("Lbl_Simulated", "simulated") : T("Lbl_LivePlc", "LIVE PLC"));
+            string where = PlcEndpointNaming.CaptionWithStation(mon.Endpoint) +
+                           (mon.IsSimulated ? "  \u00B7  " + T("Lbl_Simulated", "simulated") : "");
+            string text = sh == null
+                ? T("Msg_MonNoTabsShort", "No tabs") + "  \u00B7  " + where
+                : string.Format(T("Msg_MonStatus", "{0} device(s), {1} comment line(s)  \u00B7  {2}"),
+                                sh.Rows.Count(r => r.IsDevice), sh.Rows.Count(r => r.IsComment), where);
             if (_statusNote.Length > 0 && DateTime.UtcNow < _statusNoteUntil) text = _statusNote + "     " + text;
             if (_status.Text != text) _status.Text = text;
         }
@@ -1618,8 +2015,7 @@ namespace Kaban.UI.Forms
         private void ImportSheet()
         {
             var mon = CurrentMonitor;
-            var sh = mon != null ? mon.Current : null;
-            if (sh == null) return;
+            if (mon == null) return;
             using (var dlg = new OpenFileDialog())
             {
                 dlg.Title = T("Ttl_ImportCsv", "Add devices from a CSV");
@@ -1642,6 +2038,7 @@ namespace Kaban.UI.Forms
                     return;
                 }
 
+                var sh = EnsureSheet(mon);
                 var existing = new HashSet<string>(sh.Rows.Where(r => r.IsDevice).Select(r => r.Address), StringComparer.OrdinalIgnoreCase);
                 int at = InsertPoint(sh, true), added = 0, offered = 0;
                 foreach (var r in parsed)
@@ -1772,6 +2169,7 @@ namespace Kaban.UI.Forms
 
         private const string SheetPrefix = "#sheet:";
         private const string HiddenPrefix = "#hidden:";
+        private const string TabsPrefix = "#tabs:";
 
         internal static List<string> Serialize(MonitorTab mon)
         {
@@ -1779,7 +2177,10 @@ namespace Kaban.UI.Forms
             {
                 "# Kaban HMI monitor watch list - " + (mon.Endpoint != null ? PlcEndpointNaming.CaptionWithStation(mon.Endpoint) : ""),
                 "# One section per tab (#sheet:). A line with a label and no address is a comment. Values are not kept.",
-                CsvHeader
+                CsvHeader,
+                // How many tabs there are, so a list whose tabs were ALL deleted
+                // opens empty instead of growing a new "Main".
+                TabsPrefix + mon.Sheets.Count.ToString(CultureInfo.InvariantCulture)
             };
             foreach (var sh in mon.Sheets)
             {
@@ -1800,6 +2201,12 @@ namespace Kaban.UI.Forms
             {
                 var line = raw.Trim();
                 if (line.StartsWith(HiddenPrefix, StringComparison.OrdinalIgnoreCase)) { mon.Hidden.Add(line.Substring(HiddenPrefix.Length).Trim()); continue; }
+                if (line.StartsWith(TabsPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    int n;
+                    if (int.TryParse(line.Substring(TabsPrefix.Length).Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) mon.SavedTabCount = n;
+                    continue;
+                }
                 if (line.StartsWith(SheetPrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     var name = line.Substring(SheetPrefix.Length).Trim();
@@ -1850,7 +2257,7 @@ namespace Kaban.UI.Forms
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) _refresh.Dispose();
+            if (disposing) { _refresh.Dispose(); _tips.Dispose(); }
             base.Dispose(disposing);
         }
     }

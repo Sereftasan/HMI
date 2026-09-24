@@ -44,6 +44,12 @@ namespace Kaban.Machines.SB3015
             // machine profile goes to hardware.
             PlcManager.Instance.RegisterDriver(1, new SimulationDriver(1));
 
+            // WHERE THE PLC RESETS ITS ALARMS - pulsed by the Alarms page's Reset
+            // and the caption bar's alarm menu. NOT M102 (FA2010's). Until the
+            // right bit is written here, the HMI offers no alarm reset for this
+            // machine rather than pulsing the wrong device.
+            // PlcManager.Instance.SetAlarmResetDevice(1, "M...");
+
             // Create the universal shell from the UI library
             string here = AppDomain.CurrentDomain.BaseDirectory;
             int loaded = AlarmDefinitionLoader.Load(System.IO.Path.Combine(here, "Alarms.json"));

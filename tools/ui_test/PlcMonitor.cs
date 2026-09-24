@@ -163,7 +163,126 @@ class PM {
         Check("read back: the same tabs", bs.Count == 2 && (string)Get(bs[1], "Name") == "Job List" && Addr(Rows(bs[1])[0]) == "D500");
         Check("  the comment is a comment again", Rows(bs[0]).Cast<object>().Any(x => (bool)Get(x, "IsComment")));
 
+
+        Console.WriteLine("--- the buttons have tooltips of the monitor's own (export and import among them) ---");
+        var tips = Get(form, "_tips") as ToolTip;
+        var buttons = new List<Control>();
+        foreach (var ts in form.Controls.OfType<ToolStrip>())
+            foreach (var h in ts.Items.OfType<ToolStripControlHost>()) buttons.Add(h.Control);
+        Check("a tooltip on every toolbar button", tips != null && buttons.Count >= 10 && buttons.All(b => (tips.GetToolTip(b) ?? "").Length > 0),
+              buttons.Count + " buttons");
+        Check("  export and import are there", buttons.Any(b => tips.GetToolTip(b).StartsWith("Export")) && buttons.Any(b => tips.GetToolTip(b).StartsWith("Import")));
+        Check("  the status line has no LIVE PLC warning", !((Label)Get(form, "_status")).Text.Contains("LIVE"), ((Label)Get(form, "_status")).Text);
+
+        Console.WriteLine("--- tabs: the one on display is the one worked on ---");
+        ((IList)Get(mon, "Sheets")).Remove(second);             // added above for the file test only
+        var strip = (TabControl)Get(mon, "SheetTabs");
+        Func<string> pages = () => string.Join(",", strip.TabPages.Cast<TabPage>().Select(p => p.Text));
+        Func<string> names = () => string.Join(",", ((IList)Get(mon, "Sheets")).Cast<object>().Select(x => (string)Get(x, "Name")));
+        Func<object> current = () => Get(mon, "Current");
+        strip.SelectedIndex = 0;
+        Call(form, "AddSheet", mon, "A", Math.Max(0, strip.SelectedIndex));
+        Call(form, "AddSheet", mon, "B", Math.Max(0, strip.SelectedIndex));
+        Check("a new tab goes BEFORE the one on display", pages() == "B,A,Main" && names() == pages(), pages() + " / " + names());
+        Check("  and is the one on display", (string)Get(current(), "Name") == "B");
+        strip.SelectedIndex = 2;
+        Call(form, "AddSheet", mon, "C", strip.SelectedIndex);
+        Check("before Main: B,A,C,Main", pages() == "B,A,C,Main" && names() == pages(), pages() + " / " + names());
+        var c = current();
+        Check("  the page on display holds the tab's own grid", strip.SelectedTab.Controls.Contains((DataGridView)Get(c, "Grid")));
+        int mainRows = Rows(sh).Count;
+        Call(form, "Paste", true);
+        Check("pasting into the EMPTY new tab fills that tab", Rows(c).Count == 3 && Addr(Rows(c)[0]) == "M5" && Rows(sh).Count == mainRows,
+              Rows(c).Count + " rows in C, Main " + Rows(sh).Count + " (was " + mainRows + ")");
+        Check("  and its own grid shows them", ((DataGridView)Get(c, "Grid")).Rows.Count == 3);
+
+        strip.SelectedIndex = 1;                                   // A
+        Call(form, "RemoveSheet", mon, current());
+        Check("deleting A deletes A only", pages() == "B,C,Main" && names() == pages(), pages() + " / " + names());
+
+        var tabB = ((IList)Get(mon, "Sheets"))[0];
+        Call(form, "MoveSheetTo", mon, tabB, 2);
+        Check("a tab dragged two places at once", pages() == "C,Main,B" && names() == pages() && current() == tabB, pages() + " / " + names());
+
+        Console.WriteLine("--- columns: own widths, dragged order, the same on every tab ---");
+        var g1 = (DataGridView)Get(sh, "Grid"); var g2 = (DataGridView)Get(c, "Grid");
+        Check("no column is stretched to the edge", g1.AutoSizeColumnsMode == DataGridViewAutoSizeColumnsMode.None &&
+              g1.Columns.Cast<DataGridViewColumn>().All(col => col.AutoSizeMode == DataGridViewAutoSizeColumnMode.NotSet || col.AutoSizeMode == DataGridViewAutoSizeColumnMode.None));
+        Check("  headings can be dragged to re-order", g1.AllowUserToOrderColumns);
+        g1.Columns["Label"].Width = 333;
+        Application.DoEvents();
+        int valueBefore = g1.Columns["Value"].Width;
+        g1.Columns["Value"].Width = 60;
+        Application.DoEvents();
+        Check("narrowing the last column leaves the others as they were", g1.Columns["Label"].Width == 333 && g1.Columns["Value"].Width == 60,
+              g1.Columns["Label"].Width + "/" + g1.Columns["Value"].Width);
+        g1.Columns["Value"].DisplayIndex = 0;
+        Application.DoEvents(); Application.DoEvents();
+        // Mono's DisplayIndex setter ranks a tie by column number (Value set to 0
+        // lands at 1 there); .NET moves the column. The ORDER is compared with
+        // whatever the first grid ended up with, and only on .NET.
+        bool mono = Type.GetType("Mono.Runtime") != null;
+        Func<DataGridView, string> colOrder = g => string.Join(",", g.Columns.Cast<DataGridViewColumn>().OrderBy(x => x.DisplayIndex).Select(x => x.Name));
+        Check("the other tabs take the same widths", g2.Columns["Label"].Width == 333 && g2.Columns["Value"].Width == 60,
+              g2.Columns["Label"].Width + "/" + g2.Columns["Value"].Width);
+        Check("  and the same order" + (mono ? " (not compared on Mono)" : ""), mono || colOrder(g2) == colOrder(g1), colOrder(g1) + " / " + colOrder(g2));
+        string cfg = Path.Combine(dir, "Columns.cfg");
+        Check("  and they are kept", File.Exists(cfg) && File.ReadAllText(cfg).Contains("Label=333;") &&
+              File.ReadAllText(cfg).Contains("Value=60;" + g1.Columns["Value"].DisplayIndex));
+        var gd = (DataGridView)Get(Call(form, "AddSheet", mon, "D", 0), "Grid");
+        Check("  a new tab opens with them", gd.Columns["Label"].Width == 333 && gd.Columns["Value"].Width == 60 && (mono || colOrder(gd) == colOrder(g1)));
+        Call(form, "RemoveSheet", mon, current());
+
+        Console.WriteLine("--- sorting: section by section under the comment lines ---");
+        Check("M2 before M10, X7 before X10 (octal), W0F before W10 (hex)",
+              (int)Call(MonType, "CompareAddress", "M2", "M10") < 0 && (int)Call(MonType, "CompareAddress", "X7", "X10") < 0 &&
+              (int)Call(MonType, "CompareAddress", "W0F", "W10") < 0 && (int)Call(MonType, "CompareAddress", "D1", "M1") < 0);
+        strip.SelectedTab = (TabPage)Get(c, "Page");
+        Rows(c).Clear();
+        Func<string, string, string, object> mk = (a, lbl, com) => {
+            var w = Activator.CreateInstance(rowType); rowType.GetField("Address").SetValue(w, a);
+            rowType.GetField("LabelOverride").SetValue(w, lbl); rowType.GetField("Comment").SetValue(w, com); return w; };
+        foreach (var w in new[] { mk("", "", "--- A ---"), mk("M10", "zeta", ""), mk("M2", "alpha", ""), mk("X10", "Beta", ""), mk("X7", "gamma", ""),
+                                  mk("", "", "--- B ---"), mk("D5", "b", ""), mk("D1", "a", ""), mk("", "", "") }) Rows(c).Add(w);
+        Func<string> order = () => string.Join(",", Rows(c).Cast<object>().Select(x => Addr(x).Length > 0 ? Addr(x) : (string)Get(x, "Comment") == "" ? "_" : ((string)Get(x, "Comment")).Trim('-', ' ')));
+        Call(form, "SortSheet", mon, c, "Address");
+        Check("by address: each section on its own, the heading on top", order() == "A,M2,M10,X7,X10,B,D1,D5,_", order());
+        Check("  the heading shows the direction", g2.Columns["Address"].HeaderCell.SortGlyphDirection == SortOrder.Ascending);
+        Call(form, "SortSheet", mon, c, "Address");
+        Check("a second click reverses it", order() == "A,X10,X7,M10,M2,B,D5,D1,_" && g2.Columns["Address"].HeaderCell.SortGlyphDirection == SortOrder.Descending, order());
+        Call(form, "SortSheet", mon, c, "Label");
+        Check("by label, case ignored", order() == "A,M2,X10,X7,M10,B,D1,D5,_" && g2.Columns["Address"].HeaderCell.SortGlyphDirection == SortOrder.None, order());
+        var vals = (IDictionary<string, int>)Get(mon, "Values");
+        vals["M10"] = 1; vals["M2"] = 0; vals["X7"] = 1; vals["D1"] = 7; vals["D5"] = 3;
+        Call(form, "SortSheet", mon, c, "Value");
+        Check("by value (equal values keep their order), the unread last", order() == "A,M2,X7,M10,X10,B,D5,D1,_", order());
+
+        Console.WriteLine("--- a right-click keeps a multiple selection ---");
+        var gc = (DataGridView)Get(c, "Grid");
+        gc.ClearSelection(); gc.Rows[1].Selected = true; gc.Rows[2].Selected = true;
+        var rightClick = typeof(DataGridView).GetMethod("OnCellMouseDown", Any);
+        rightClick.Invoke(gc, new object[] { new DataGridViewCellMouseEventArgs(0, 2, 5, 5, new MouseEventArgs(MouseButtons.Right, 1, 5, 5, 0)) });
+        Check("right-click on a selected row: both stay selected", gc.SelectedRows.Count == 2, gc.SelectedRows.Count.ToString());
+        Call(form, "CopySelected");
+        Check("  and Copy takes both", ((IList)Get(MonType, "_clip")).Count == 2);
+        rightClick.Invoke(gc, new object[] { new DataGridViewCellMouseEventArgs(0, 4, 5, 5, new MouseEventArgs(MouseButtons.Right, 1, 5, 5, 0)) });
+        Check("right-click on another row: that row alone", gc.SelectedRows.Count == 1 && gc.SelectedRows[0].Index == 4);
+
+        Console.WriteLine("--- every tab can be deleted ---");
+        while (strip.TabPages.Count > 0) Call(form, "RemoveSheet", mon, current());
+        Check("no tabs left, and the page says what to do", ((IList)Get(mon, "Sheets")).Count == 0 && !strip.Visible && ((Label)Get(mon, "EmptyHint")).Visible);
+        Call(form, "RefreshValues");
+        Check("  the refresh copes, the status line says so", ((Label)Get(form, "_status")).Text.Contains("No tabs"), ((Label)Get(form, "_status")).Text);
+        var saved = (List<string>)Call(MonType, "Serialize", mon);
+        Check("  saved as no tabs", saved.Contains("#tabs:0"));
+        var none = Activator.CreateInstance(MonType.GetNestedType("MonitorTab", Any));
+        Call(MonType, "Deserialize", none, saved);
+        Check("  and read back as none - not a new 'Main'", (int)Get(none, "SavedTabCount") == 0 && ((IList)Get(none, "Sheets")).Count == 0);
+        Call(form, "Paste", true);
+        Check("pasting with no tab makes 'Main' for it", pages() == "Main" && Rows(current()).Count == 3 && strip.Visible, pages());
+
         Console.WriteLine("--- removing from the simulator's list keeps it removed ---");
+        sh = current(); grid = (DataGridView)Get(sh, "Grid");
         grid.ClearSelection();
         int idx = Rows(sh).Cast<object>().ToList().FindIndex(x => Addr(x) == "M5");
         // remove every M5 row (there are copies now)

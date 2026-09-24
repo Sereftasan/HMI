@@ -1775,7 +1775,10 @@ namespace Kaban.UI.Forms
         /// <summary>Address of the machine-error summary bit (same on all machines).</summary>
         public const string MachineErrorAddress = "M800";
 
-        /// <summary>Momentary reset coil pulsed by the caption's reset button.</summary>
+        /// <summary>
+        /// FA2010 PLC1's alarm reset. Kept for code that names it; the reset of
+        /// any machine is AlarmReset.AddressFor(station) - M102 is FA2010's only.
+        /// </summary>
         public const string AlarmResetAddress = "M102";
 
         /// <summary>
