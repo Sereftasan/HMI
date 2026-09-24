@@ -30,6 +30,18 @@ namespace Kaban.UI.Controls
 
         public AxisUnitHMI()
         {
+            // The axis reading as the Axis Settings rows show it - black bold on
+            // the read-only grey - rather than the red-on-black readout of a function unit; the
+            // same axis should look the same on both pages. An axis error blinks
+            // this display's border red (see FunctionUnitHMI.UpdateErrorBlink).
+            _unit.PositionStyle = UnitPositionStyle.Standard;
+            _unit.Kind = UnitKind.Axis;
+
+            // White, like the unit inside: the unit rounds its own corners, and the
+            // default grey showed through them as four dots.
+            BackColor = Color.White;
+            Padding = Padding.Empty;
+
             Controls.Add(_unit);
             Size = DefaultSize;
         }
@@ -129,7 +141,8 @@ namespace Kaban.UI.Controls
             _unit.Lamp1AAddress = back ? a.ReferenceSensor : "";
             _unit.Lamp1BAddress = back ? "" : a.ReferenceSensor;
 
-            // One error bit for an axis; its "?" goes on the forward (right) border.
+            // One error bit for an axis: its "?" goes on the top frame line and the
+            // position display's border blinks red while it is set.
             _unit.ErrorAAddress = "";
             _unit.ErrorBAddress = a.Error;
 

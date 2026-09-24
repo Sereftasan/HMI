@@ -229,6 +229,11 @@ namespace Kaban.UI.Controls
             }
         }
 
+        /// <summary>Width of the red AlertBlink border (thin on the menu, heavier on a unit in error).</summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float AlertBorderWidth { get; set; } = 1.4f;
+
         private bool _isActivePage = false;
         /// <summary>Marks this button as the currently-active navigation page.</summary>
         [Category("  State")]
@@ -1050,9 +1055,10 @@ namespace Kaban.UI.Controls
 
             if (_alertBlink && _alertPhase)
             {
-                // THIN: just enough to point the operator at the page. A heavy border
-                // dominated the whole menu and made everything else hard to read.
-                using (var pen = new Pen(Color.FromArgb(220, 30, 30), 1.4f))
+                // THIN on the menu: just enough to point the operator at the page. A
+                // heavy border dominated the whole menu. A unit's button in error sets
+                // a heavier one (AlertBorderWidth).
+                using (var pen = new Pen(Color.FromArgb(220, 30, 30), AlertBorderWidth))
                 {
                     var r2 = new Rectangle(1, 1, this.Width - 3, this.Height - 3);
                     if (_cornerRadius > 0)

@@ -34,6 +34,26 @@ namespace Kaban.UI.Controls
         [Category("   Appearance")]
         public System.Drawing.Color ValueBorderColor { get; set; } = System.Drawing.Color.FromArgb(150, 158, 170);
 
+        private bool _alertBlink;
+
+        /// <summary>
+        /// Blinks the border RED - set by a unit while its axis is in error, so the
+        /// operator's eye goes to the reading of the axis that faulted. Only the
+        /// border: the number itself stays readable.
+        /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool AlertBlink
+        {
+            get { return _alertBlink; }
+            set
+            {
+                if (_alertBlink == value) return;
+                _alertBlink = value;
+                UiStyle.SetAlerting(this, value);
+            }
+        }
+
         private int _cornerRadius = 4;
 
         /// <summary>Rounded corners, matching the buttons and lamps around it.</summary>
@@ -112,6 +132,10 @@ namespace Kaban.UI.Controls
                 path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
                 path.CloseFigure();
                 e.Graphics.DrawPath(pen, path);
+
+                if (_alertBlink && UiStyle.AlertPhase)
+                    using (var red = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 30, 30), 2.4f))
+                        e.Graphics.DrawPath(red, path);
             }
         }
 
@@ -346,6 +370,7 @@ namespace Kaban.UI.Controls
             if (disposing)
             {
                 _descr?.Dispose();
+                UiStyle.SetAlerting(this, false);
                 UnitManager.UnitChanged -= OnUnitChanged;
                 LanguageManager.LanguageChanged -= OnLanguageChanged;
                 // UNREGISTER, never dispose: the tooltip is the program's shared one.

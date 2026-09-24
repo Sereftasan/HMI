@@ -68,6 +68,49 @@ namespace Kaban.UI.Controls
             }
         }
 
+        // ---- error border blink ------------------------------------------
+        //
+        // One shared timer for every control whose border is blinking an error
+        // (a unit's position display, say): a page with twenty faulted units must
+        // not run twenty timers. 500 ms, in step with the red "?" on the frame.
+        private static readonly List<Control> _alerting = new List<Control>();
+        private static Timer _alertTimer;
+
+        /// <summary>True during the "red" half of the shared error blink.</summary>
+        public static bool AlertPhase { get; private set; }
+
+        /// <summary>Starts or stops a control's share of the error blink.</summary>
+        public static void SetAlerting(Control c, bool on)
+        {
+            if (c == null) return;
+            if (on)
+            {
+                if (_alerting.Contains(c)) return;
+                _alerting.Add(c);
+                if (_alertTimer == null)
+                {
+                    _alertTimer = new Timer { Interval = 500 };
+                    _alertTimer.Tick += (s, e) =>
+                    {
+                        AlertPhase = !AlertPhase;
+                        for (int i = _alerting.Count - 1; i >= 0; i--)
+                        {
+                            if (_alerting[i].IsDisposed) { _alerting.RemoveAt(i); continue; }
+                            _alerting[i].Invalidate();
+                        }
+                        if (_alerting.Count == 0) _alertTimer.Stop();
+                    };
+                }
+                _alertTimer.Start();
+            }
+            else
+            {
+                _alerting.Remove(c);
+                if (_alerting.Count == 0 && _alertTimer != null) _alertTimer.Stop();
+            }
+            c.Invalidate();
+        }
+
         // ---- menus built per click ---------------------------------------
         //
         // The top-bar, alarm-help and column menus are built fresh on every click

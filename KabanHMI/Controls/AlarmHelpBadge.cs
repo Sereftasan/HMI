@@ -12,14 +12,17 @@ using Kaban.UI.Helpers;
 namespace Kaban.UI.Controls
 {
     /// <summary>
-    /// The "?" on a unit's border: shown, blinking red, while that side's error
-    /// bit is set; a click opens the help for it.
+    /// The "?" on a unit's frame: shown, blinking red, while its error bit is
+    /// set; a click opens the help for it.
     ///
     /// On the unit itself because that is where the operator is looking when a
-    /// cylinder fails to move - the alarm list is a page away. On the BORDER,
-    /// outside the buttons, so opening help can never be mistaken for moving the
-    /// unit. Hidden while there is no error: a permanent "?" on every unit is
-    /// clutter that trains the eye to skip it.
+    /// cylinder fails to move - the alarm list is a page away. On the TOP frame
+    /// line, at its right end, beside the unit's "i" (its caption holds the left
+    /// end): outside the buttons, so opening help can never be mistaken for
+    /// moving the unit. It used to sit on the SIDE lines, which cost the unit a
+    /// strip of its width whenever an error bit was set. Hidden while there is
+    /// no error: a permanent "?" on every unit is clutter that trains the eye to
+    /// skip it.
     /// </summary>
     [ToolboxItem(false)]
     public class AlarmHelpBadge : Control, IPlcBoundControl, UiStyle.IDrawsOwnHoverBorder
@@ -57,12 +60,20 @@ namespace Kaban.UI.Controls
             SetActive(on);
         }
 
+        /// <summary>
+        /// Raised when the error comes or goes, so the unit can place the badge and
+        /// blink the border of the part that failed.
+        /// </summary>
+        public event EventHandler ActiveChanged;
+
         /// <summary>Shows or hides the badge; public so a test can drive it.</summary>
         public void SetActive(bool on)
         {
             if (on == _active) return;
             _active = on;
             Visible = on;
+            var changed = ActiveChanged;
+            if (changed != null) changed(this, EventArgs.Empty);
             if (on)
             {
                 var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
@@ -104,9 +115,15 @@ namespace Kaban.UI.Controls
             if (_blinking.Count == 0 && _blink != null) _blink.Stop();
         }
 
+        private Font _font;
+
         protected override void Dispose(bool disposing)
         {
-            if (disposing) StopBlinking(this);
+            if (disposing)
+            {
+                StopBlinking(this);
+                if (_font != null) { _font.Dispose(); _font = null; }
+            }
             base.Dispose(disposing);
         }
 
@@ -124,9 +141,14 @@ namespace Kaban.UI.Controls
             using (var pen = new Pen(red, 1.6f))
                 g.DrawEllipse(pen, r);
 
-            using (var f = new Font("Segoe UI", Math.Max(7f, Height * 0.5f), FontStyle.Bold, GraphicsUnit.Pixel))
-                TextRenderer.DrawText(g, "?", f, r, _phase ? Color.White : red,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
+            // Cached: this paints twice a second on every active badge.
+            if (_font == null || Math.Abs(_font.Size - Math.Max(7f, Height * 0.5f)) > 0.1f)
+            {
+                if (_font != null) _font.Dispose();
+                _font = new Font("Segoe UI", Math.Max(7f, Height * 0.5f), FontStyle.Bold, GraphicsUnit.Pixel);
+            }
+            TextRenderer.DrawText(g, "?", _font, r, _phase ? Color.White : red,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
         }
 
         protected override void OnClick(EventArgs e)

@@ -82,22 +82,33 @@ class L {
         var estop = AlarmHelpLinks.DocumentsFor(AlarmManager.FindByStationAndAddress(3, "M800"));
         Check("an alarm with no unit keeps just its helper links", estop.Count == 1 && estop[0].FileName.EndsWith(".pdf"));
 
-        Console.WriteLine("--- the '?' on the unit's border ---");
+        Console.WriteLine("--- the '?' on the unit's TOP frame line ---");
         var host = new Form { ClientSize = new System.Drawing.Size(420, 120) };
         var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid52, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
+        unit.CommandAAddress = "M700"; unit.CommandBAddress = "M701";     // two movements, two buttons
         unit.SetBounds(10, 10, 360, 64);
         var plain = new FunctionUnitHMI { PlcNumber = 3 }; plain.SetBounds(10, 80, 360, 64);
         host.Controls.Add(unit); host.Controls.Add(plain); host.Show(); Application.DoEvents();
         var helpA = Field<AlarmHelpBadge>(unit, "_helpA"); var helpB = Field<AlarmHelpBadge>(unit, "_helpB");
-        Check("room made on both sides that have an error bit", unit.Padding.Left == 8 && unit.Padding.Right == 8, unit.Padding.ToString());
-        Check("a unit with no error bits keeps its layout exactly", plain.Padding == Padding.Empty);
-        Check("left '?' centred on the left frame line", helpA.Left + helpA.Width / 2 == unit.Padding.Left, helpA.Left.ToString());
-        Check("right '?' centred on the right frame line",
-              Math.Abs(helpB.Left + helpB.Width / 2 - (unit.ClientSize.Width - unit.Padding.Right - 1)) <= 1, helpB.Left.ToString());
+        // The side badges used to take half a badge of width off each side with an
+        // error bit, so a unit with error bits drew narrower than one without.
+        Check("NO room taken from the sides: error bits do not narrow the frame",
+              unit.Padding == Padding.Empty && plain.Padding == Padding.Empty, unit.Padding.ToString());
         Check("hidden while there is no error", !helpA.Visible && !helpB.Visible);
         helpB.UpdateState(a => a == "M811" ? 1 : 0, c => true);
-        Check("B's error shows the RIGHT '?' only", helpB.Visible && helpB.IsActive && !helpA.Visible);
+        Check("B's error shows its '?' only", helpB.Visible && helpB.IsActive && !helpA.Visible);
+        Check("  on the top frame line", helpB.Top <= 4, "top=" + helpB.Top);
+        Check("  at its RIGHT end", helpB.Right >= unit.ClientSize.Width - 16 && helpB.Right <= unit.ClientSize.Width,
+              "right=" + helpB.Right + " of " + unit.ClientSize.Width);
+        Check("  and button B's border blinks red, A's does not", unit.ButtonB.AlertBlink && !unit.ButtonA.AlertBlink);
+        helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
+        Check("A's '?' joins it on the same line, to its left", helpA.Visible && helpA.Top == helpB.Top && helpA.Right < helpB.Left,
+              helpA.Left + ".." + helpA.Right + " / " + helpB.Left);
+        Check("  and button A blinks too", unit.ButtonA.AlertBlink);
+        helpA.UpdateState(a => 0, c => true);
+        Check("A clears: its blink stops", !unit.ButtonA.AlertBlink && !helpA.Visible);
         helpB.UpdateState(a => 0, c => true);
+        Check("B clears: its blink stops", !unit.ButtonB.AlertBlink);
         Check("and it goes when the error clears", !helpB.Visible);
         ConnectionMonitor.ReportRead(3, false, "not connected");
         ConnectionMonitor.GraceTime = TimeSpan.Zero;

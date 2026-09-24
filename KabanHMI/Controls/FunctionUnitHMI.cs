@@ -47,6 +47,20 @@ namespace Kaban.UI.Controls
         EncoderPlusReference = 6       // incremental encoder + reference sensor
     }
 
+    /// <summary>How a unit's position reading is drawn.</summary>
+    public enum UnitPositionStyle
+    {
+        /// <summary>Red digits on black - the encoder readout of a function unit.</summary>
+        Readout = 0,
+
+        /// <summary>
+        /// Black bold digits on the read-only grey, exactly as the axis rows of
+        /// Axis Settings show a position - what an axis unit on a manual page uses, so an axis
+        /// reads the same on both pages.
+        /// </summary>
+        Standard = 1
+    }
+
     /// <summary>
     /// COMPOSITE "FUNCTION UNIT" - per the sketch:
     ///
@@ -124,7 +138,7 @@ namespace Kaban.UI.Controls
             _grp.Dock = DockStyle.Fill;
             _grp.BackColor = Color.White;
             _grp.ForeColor = Color.Black;
-            _grp.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);   // caption: normal weight
+            _grp.Font = CaptionFont;   // caption: normal weight, shared by every unit
 
             // outer-corner lamps, per the sketch (A = LEFT button, B = RIGHT button)
             _btnA.LampDirection = ButtonHMI.LampDirectionPosition.Left;   // outer edge
@@ -138,7 +152,7 @@ namespace Kaban.UI.Controls
             _numPosition.TextAlign = ContentAlignment.MiddleCenter; // center the digits in the box
             _numPosition.Visible = false; // only shown when a position device is configured
             _numPosition.ForeColor = Color.Red;
-            _numPosition.Font = MakePositionFont(20);
+            _numPosition.Font = PositionFontFor(20);
             _numPosition.Padding = new Padding(0);
             _numPosition.CornerRadius = 4;      // matches the buttons beside it
             _btnA.CornerRadius = 4;
@@ -161,7 +175,8 @@ namespace Kaban.UI.Controls
             _grp.Controls.Add(_numPosition);
             Controls.Add(_grp);
 
-            // The "?" marks sit ABOVE the frame, on its side borders.
+            // The "?" marks sit ON the top frame line, at its right end, beside
+            // the "i" - see LayoutBadges.
             Controls.Add(_helpA);
             Controls.Add(_helpB);
             Controls.Add(_info);
@@ -169,6 +184,14 @@ namespace Kaban.UI.Controls
             _helpB.BringToFront();
             _info.BringToFront();
             _grp.Resize += (s2, e2) => LayoutChildren();
+
+            // An error coming or going moves the badges along the top line and
+            // blinks the border of the part that failed.
+            _helpA.ActiveChanged += (s2, e2) => { LayoutBadges(); UpdateErrorBlink(); };
+            _helpB.ActiveChanged += (s2, e2) => { LayoutBadges(); UpdateErrorBlink(); };
+
+            // The unit's own buttons blink a HEAVIER red than the alarm menu entry.
+            _btnA.AlertBorderWidth = _btnB.AlertBorderWidth = 2.4f;
 
             LanguageManager.LanguageChanged += OnLangChanged;
             this.Disposed += (s, e) => LanguageManager.LanguageChanged -= OnLangChanged;
@@ -214,18 +237,79 @@ namespace Kaban.UI.Controls
             }
         }
 
+        /// <summary>The unit caption font - one for every unit, not one each.</summary>
+        private static readonly Font CaptionFont = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+
+        /// <summary>The axis-row position font (see AxisSettingHMI), for UnitPositionStyle.Standard.</summary>
+        private static readonly Font StandardPositionFont = new Font("Segoe UI", 12F, FontStyle.Bold);
+
+        private static readonly Dictionary<int, Font> _positionFonts = new Dictionary<int, Font>();
+
+        /// <summary>
+        /// The readout font at a size, SHARED. The layout asks for a new size as a
+        /// unit is resized, and each request used to create a font that was never
+        /// disposed - plus one or two more for every face tried and rejected.
+        /// Sizes are kept to the half point.
+        /// </summary>
+        private static Font PositionFontFor(float size)
+        {
+            int key = (int)Math.Round(size * 2);
+            lock (_positionFonts)
+            {
+                Font cached;
+                if (_positionFonts.TryGetValue(key, out cached)) return cached;
+                var f = MakePositionFont(key / 2f);
+                _positionFonts[key] = f;
+                return f;
+            }
+        }
+
         private static Font MakePositionFont(float size)
         {
             foreach (var name in new[] { "DejaVu Sans Mono", "Consolas", "Courier New" })
             {
+                Font f = null;
                 try
                 {
-                    var f = new Font(name, size, FontStyle.Bold);
+                    f = new Font(name, size, FontStyle.Bold);
                     if (f.Name == name || name == "Consolas") return f;
                 }
                 catch { }
+                if (f != null) f.Dispose();          // a face this machine does not have
             }
             return new Font(FontFamily.GenericMonospace, size, FontStyle.Bold);
+        }
+
+        private UnitPositionStyle _positionStyle = UnitPositionStyle.Readout;
+
+        /// <summary>
+        /// Red-on-black readout, or the black bold reading of the axis rows.
+        /// An AxisUnitHMI uses Standard, so an axis looks the same on the manual
+        /// page as it does in Axis Settings.
+        /// </summary>
+        [Category(" Position"), DefaultValue(UnitPositionStyle.Readout)]
+        [Description("Readout: red digits on black. Standard: black bold digits on grey, like the Axis Settings rows.")]
+        public UnitPositionStyle PositionStyle
+        {
+            get { return _positionStyle; }
+            set
+            {
+                _positionStyle = value;
+                if (value == UnitPositionStyle.Standard)
+                {
+                    // Exactly the Axis Settings row: a NumericDisplayHMI's own
+                    // read-only grey, black text, Segoe UI 12 bold.
+                    _numPosition.BackColor = Color.Gainsboro;
+                    _numPosition.ForeColor = Color.Black;
+                    _numPosition.Font = StandardPositionFont;
+                }
+                else
+                {
+                    _numPosition.BackColor = Color.Black;
+                    _numPosition.ForeColor = Color.Red;
+                }
+                LayoutChildren();
+            }
         }
 
         // ==================================================================
@@ -610,18 +694,18 @@ namespace Kaban.UI.Controls
         private CylinderFeedback _feedback = CylinderFeedback.Unspecified;
 
         [Category("Help"), DefaultValue(""),
-         Description("Error bit set when the A (left button) movement fails. Its '?' shows on the left border.")]
+         Description("Error bit set when the A (left button) movement fails. Its '?' shows on the top frame line, and button A's border blinks red.")]
         public string ErrorAAddress { get { return _errorAAddress; } set { _errorAAddress = (value ?? "").Trim(); ApplySettings(); } }
 
         [Category("Help"), DefaultValue(""),
-         Description("Error bit set when the B (right button) movement fails. Its '?' shows on the right border.")]
+         Description("Error bit set when the B (right button) movement fails. Its '?' shows on the top frame line, and button B's border blinks red.")]
         public string ErrorBAddress { get { return _errorBAddress; } set { _errorBAddress = (value ?? "").Trim(); ApplySettings(); } }
 
         [Category("Help"), DefaultValue(UnitKind.Cylinder),
          Description("Cylinder: errors open the cylinder manual for its Valve and Feedback. " +
                      "Axis: errors open the servo drive manual, and Valve and Feedback are not used - " +
                      "put the reference sensor on ONE button's lamp (Lamp1A or Lamp1B).")]
-        public UnitKind Kind { get { return _kind; } set { _kind = value; } }
+        public UnitKind Kind { get { return _kind; } set { _kind = value; UpdateErrorBlink(); } }
         private UnitKind _kind = UnitKind.Cylinder;
 
         /// <summary>
@@ -693,19 +777,17 @@ namespace Kaban.UI.Controls
                     };
         }
 
-        /// <summary>
-        /// Room outside the frame for a "?" - only on a side that has an error bit,
-        /// so units without one keep exactly their current layout.
-        /// </summary>
-        private int InsetLeft { get { return _errorAAddress.Length > 0 ? AlarmHelpBadge.BadgeSize / 2 : 0; } }
-        private int InsetRight { get { return _errorBAddress.Length > 0 ? AlarmHelpBadge.BadgeSize / 2 : 0; } }
+        // NO ROOM IS MADE FOR THE "?" ANY MORE. It used to sit on the side lines,
+        // and a unit with an error bit narrowed its frame by half a badge on that
+        // side to make room - so an axis unit (which always has one) rendered a
+        // few pixels narrower than a function unit of the very same width. The
+        // badges now sit on the top line, which the frame has anyway.
 
         private void ApplySettings()
         {
             _helpA.PlcNumber = _plcNumber; _helpA.Address = _errorAAddress;
             _helpB.PlcNumber = _plcNumber; _helpB.Address = _errorBAddress;
-            var pad = new Padding(InsetLeft, 0, InsetRight, 0);
-            if (this.Padding != pad) this.Padding = pad;
+            if (this.Padding != Padding.Empty) this.Padding = Padding.Empty;
             if (DesignMode) { _helpA.Visible = _errorAAddress.Length > 0; _helpB.Visible = _errorBAddress.Length > 0; }
 
             // The "i": shown when the unit has help that is actually THERE - a mark
@@ -917,8 +999,8 @@ namespace Kaban.UI.Controls
 
             int areaX = leftPad;
             int areaY = topPad;
-            // The frame is inset on a side that carries a "?"; the buttons live inside it.
-            int areaW = this.ClientSize.Width - InsetLeft - InsetRight - leftPad - rightPad;
+            // The full width, whatever error bits the unit has (see ApplySettings).
+            int areaW = this.ClientSize.Width - leftPad - rightPad;
             int areaH = this.ClientSize.Height - topPad - botPad;
 
             LayoutTrace($"unit={this.Width}x{this.Height} unitClient={this.ClientSize.Width}x{this.ClientSize.Height} grpClient={_grp.ClientSize.Width}x{_grp.ClientSize.Height} area={areaW}x{areaH}");
@@ -947,8 +1029,22 @@ namespace Kaban.UI.Controls
             // ~ per-digit width from the readout font + padding for sign/decimal/suffix.
             // EXACT SLOTS when asked for (an axis unit copies the axis row's
             // widths); otherwise the buttons and display share the width as before.
+            // EXACT SLOTS SCALE WITH THE UNIT. They are the axis row's widths at the
+            // generated 248 px unit; kept fixed on a wider unit they left a strip of
+            // empty frame on the right, so the same axis looked narrower than the
+            // function units beside it. Same proportions, whatever the width.
+            int slotBtn = 0, slotPos = 0;
+            if (ButtonSlotWidth > 0)
+            {
+                int nominal = 2 * ButtonSlotWidth + (hasPos ? PositionSlotWidth + 2 * gap : gap);
+                double k = nominal > 0 ? Math.Max(1.0, (double)areaW / nominal) : 1.0;
+                slotBtn = (int)(ButtonSlotWidth * k);
+                slotPos = hasPos ? areaW - 2 * slotBtn - 2 * gap : 0;
+            }
+
             int posW = 0;
-            if (hasPos && PositionSlotWidth > 0) posW = Math.Min(PositionSlotWidth, areaW - 2 * gap - 20);
+            if (hasPos && slotPos > 0) posW = slotPos;
+            else if (hasPos && PositionSlotWidth > 0) posW = Math.Min(PositionSlotWidth, areaW - 2 * gap - 20);
             else if (hasPos)
             {
                 // Build a representative widest string: all digits + optional decimal
@@ -986,7 +1082,7 @@ namespace Kaban.UI.Controls
 
             int totalGaps = hasPos && posW > 0 ? 2 * gap : gap;
             int buttonsW = areaW - posW - totalGaps;
-            int halfW = ButtonSlotWidth > 0 ? Math.Min(ButtonSlotWidth, buttonsW / 2) : buttonsW / 2;
+            int halfW = slotBtn > 0 ? Math.Min(slotBtn, buttonsW / 2) : buttonsW / 2;
             int wA = halfW;
             int wB = ButtonSlotWidth > 0 ? halfW : buttonsW - halfW; // remainder to B unless slots are fixed
 
@@ -997,17 +1093,7 @@ namespace Kaban.UI.Controls
             PlaceSlot(_btnA, _blankA, hasA, xA, rowY, wA, btnH);
             PlaceSlot(_btnB, _blankB, hasB, xB, rowY, wB, btnH);
 
-            // Each "?" centred ON its side of the frame, level with the buttons.
-            int half = AlarmHelpBadge.BadgeSize / 2;
-            int badgeY = rowY + btnH / 2 - half;
-            _helpA.Location = new Point(InsetLeft - half, badgeY);
-            _helpB.Location = new Point(this.ClientSize.Width - InsetRight - half - 1, badgeY);
-
-            // The "i" ON the top frame line, at its right end - the caption sits on
-            // the same line at the left, so the two read as the unit's heading.
-            int frameTop = (int)(_grp.Font.GetHeight() / 2f);
-            _info.Location = new Point(this.ClientSize.Width - InsetRight - 12 - UnitInfoBadge.BadgeSize,
-                                       Math.Max(0, frameTop - UnitInfoBadge.BadgeSize / 2));
+            LayoutBadges();
 
             LayoutTrace($"btnH={btnH} rowY={rowY} btnBottom={rowY + btnH} unitClientH={this.ClientSize.Height} overflow={(rowY + btnH) - this.ClientSize.Height}");
 
@@ -1016,9 +1102,11 @@ namespace Kaban.UI.Controls
             {
                 // Font scales to the row height so the digits fill the box nicely
                 // (about 55% of height as point size works well for a 7-seg look).
+                // The Standard style keeps the axis rows' fixed font instead.
                 float fontSize = Math.Max(9f, btnH * 0.36f);
-                if (Math.Abs(_numPosition.Font.Size - fontSize) > 0.5f)
-                    _numPosition.Font = MakePositionFont(fontSize);
+                if (_positionStyle == UnitPositionStyle.Readout &&
+                    Math.Abs(_numPosition.Font.Size - fontSize) > 0.5f)
+                    _numPosition.Font = PositionFontFor(fontSize);
 
                 // Height ALWAYS equals the button row height -> aligned with the buttons.
                 _numPosition.SetBounds(xPos, rowY, posW, btnH);
@@ -1026,6 +1114,46 @@ namespace Kaban.UI.Controls
             }
             }
             finally { _inLayout = false; }
+        }
+
+        /// <summary>
+        /// The badges ON THE TOP FRAME LINE, at its right end - the caption holds
+        /// the left end of the same line, so together they read as the unit's
+        /// heading. From the right: the "?" of B, the "?" of A (only while their
+        /// error is active), then the "i".
+        /// </summary>
+        private void LayoutBadges()
+        {
+            if (_grp == null) return;
+            int frameTop = (int)(_grp.Font.GetHeight() / 2f);
+            int y = Math.Max(0, frameTop - AlarmHelpBadge.BadgeSize / 2);
+            int x = this.ClientSize.Width - 12 - AlarmHelpBadge.BadgeSize;
+
+            bool showB = _helpB.IsActive || (DesignMode && _errorBAddress.Length > 0);
+            bool showA = _helpA.IsActive || (DesignMode && _errorAAddress.Length > 0);
+            if (showB) { _helpB.Location = new Point(x, y); x -= AlarmHelpBadge.BadgeSize + 4; }
+            if (showA) { _helpA.Location = new Point(x, y); x -= AlarmHelpBadge.BadgeSize + 4; }
+            _info.Location = new Point(x + AlarmHelpBadge.BadgeSize - UnitInfoBadge.BadgeSize,
+                                       Math.Max(0, frameTop - UnitInfoBadge.BadgeSize / 2));
+        }
+
+        /// <summary>
+        /// While an error bit is set, the border of what failed blinks red: the
+        /// position display of an axis (its reading is what the operator watches),
+        /// otherwise the button of the movement that failed - A for ErrorA, B for
+        /// ErrorB. A slot with no button falls back to the display.
+        /// </summary>
+        private void UpdateErrorBlink()
+        {
+            bool errA = _helpA.IsActive, errB = _helpB.IsActive;
+            bool hasPos = !string.IsNullOrWhiteSpace(_positionAddress);
+            bool hasA = !string.IsNullOrWhiteSpace(_commandAAddress);
+            bool hasB = !string.IsNullOrWhiteSpace(_commandBAddress);
+
+            bool onDisplay = hasPos && (_kind == UnitKind.Axis || (errA && !hasA) || (errB && !hasB));
+            _numPosition.AlertBlink = onDisplay && (errA || errB);
+            _btnA.AlertBlink = !(_kind == UnitKind.Axis && hasPos) && errA && hasA;
+            _btnB.AlertBlink = !(_kind == UnitKind.Axis && hasPos) && errB && hasB;
         }
 
         private void PlaceSlot(ButtonHMI btn, Panel blank, bool hasCommand, int x, int y, int w, int h)
