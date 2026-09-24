@@ -36,7 +36,7 @@ namespace Kaban.Core.Helpers
     /// -------------
     /// tools/build_code_help.py reads the manuals' code tables once into HTML,
     /// one &lt;section class="code" data-code="16.3" data-group="16"
-    /// data-kind="alarm" data-name="..."&gt; per code. Extract() copies the
+    /// data-kind="alarm" data-alarm="..." data-name="..."&gt; per code. Extract() copies the
     /// matching sections - with the document's own introduction and its safety
     /// notes - into a page of their own. Each section links back to its page of
     /// the original PDF, so the whole manual stays one click away.
@@ -118,7 +118,8 @@ namespace Kaban.Core.Helpers
         /// <summary>One code as its document lists it.</summary>
         public sealed class Entry
         {
-            public string Code = "", Group = "", Name = "";
+            /// <summary>Name is the code's own ("Receive data error 3"); Alarm its servo alarm's ("Encoder initial communication error 1").</summary>
+            public string Code = "", Group = "", Name = "", Alarm = "";
             public bool IsWarning;
             public int Page;
         }
@@ -173,6 +174,7 @@ namespace Kaban.Core.Helpers
                                 case "code": e.Code = v; break;
                                 case "group": e.Group = v; break;
                                 case "name": e.Name = v; break;
+                                case "alarm": e.Alarm = v; break;
                                 case "kind": e.IsWarning = v.Equals("warning", StringComparison.OrdinalIgnoreCase); break;
                                 case "page": int.TryParse(v, out e.Page); break;
                             }
@@ -215,17 +217,18 @@ namespace Kaban.Core.Helpers
             return e != null && e.IsWarning;
         }
 
-        /// <summary>"Servo alarm 16.3 - Encoder initial communication error 1 - ...".</summary>
+        /// <summary>"Servo alarm 16.3 - Encoder initial communication - Receive data error 3".</summary>
         public static string Describe(AxisCodeKind kind, int raw)
         {
             var e = Find(kind, raw);
             var text = Caption(kind) + " " + Format(kind, raw);
-            if (e != null && e.Name.Length > 0)
+            if (e != null)
             {
-                // A servo detail missing from the manual is named by its alarm only.
+                // A servo detail missing from the manual is named by its ALARM:
+                // the name of a neighbouring detail would be a wrong answer.
                 bool exact = e.Code.Equals(Key(kind, raw), StringComparison.OrdinalIgnoreCase);
-                var name = exact ? e.Name : e.Name.Split(new[] { " - " }, StringSplitOptions.None)[0];
-                text += " - " + name;
+                var name = exact ? e.Name : (e.Alarm.Length > 0 ? e.Alarm : e.Name);
+                if (name.Length > 0) text += " - " + name;
             }
             return text;
         }

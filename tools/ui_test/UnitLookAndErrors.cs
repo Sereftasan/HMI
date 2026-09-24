@@ -9,7 +9,7 @@ using Kaban.UI.Controls;
 // The axis unit and the function unit on a manual page must read as ONE family:
 //   * the same default size renders the same frame, with or without a position
 //     display and whatever error bits either has;
-//   * the axis unit's position reads like the Axis Settings row: black bold on
+//   * every unit's position reads like the Axis Settings row: black bold on
 //     the read-only grey, not the red-on-black readout;
 //   * an error puts a red "?" on the TOP frame line, right end, and blinks the
 //     border of what failed - the display on an axis, the button on a cylinder.
@@ -125,9 +125,11 @@ class U {
         Check("black digits", pos.ForeColor.ToArgb() == Color.Black.ToArgb(), pos.ForeColor.ToString());
         Check("on the read-only grey of the axis row", pos.BackColor.ToArgb() == new NumericDisplayHMI().BackColor.ToArgb(), pos.BackColor.ToString());
         Check("bold, the axis row's size", pos.Font.Bold && Math.Abs(pos.Font.Size - 12f) < 0.1f, pos.Font.ToString());
-        Check("a function unit keeps its red-on-black readout",
-              fuPos.PositionDisplay.ForeColor.ToArgb() == Color.Red.ToArgb() &&
-              fuPos.PositionDisplay.BackColor.ToArgb() == Color.Black.ToArgb());
+        Check("a function unit's position reads the same way: black bold on the grey (no more red-on-black)",
+              fuPos.PositionDisplay.ForeColor.ToArgb() == Color.Black.ToArgb() &&
+              fuPos.PositionDisplay.BackColor.ToArgb() == pos.BackColor.ToArgb() &&
+              fuPos.PositionDisplay.Font.Bold && Math.Abs(fuPos.PositionDisplay.Font.Size - 12f) < 0.1f,
+              fuPos.PositionDisplay.ForeColor + " on " + fuPos.PositionDisplay.BackColor + ", " + fuPos.PositionDisplay.Font);
 
         Console.WriteLine("--- an axis error: '?' top right, the DISPLAY's border blinks ---");
         var axisHelp = Field<AlarmHelpBadge>(axis, "_helpB");

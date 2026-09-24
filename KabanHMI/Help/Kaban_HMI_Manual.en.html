@@ -13,6 +13,20 @@
   Pictures: keep drawings INLINE (SVG, as below) or put image files in the same
   Help folder and refer to them by name (<img src="Screen_Home.png">), so the
   manual keeps working on a panel PC with no network.
+
+  ONE MANUAL, ANY MACHINE. This file names no machine. When it is opened from
+  About, the HMI fills in the machines THIS program runs (the main machine and
+  the sub-machines mounted with it) - nothing about any other machine. It
+  replaces what stands between these pairs of marker comments in the body
+  (written here with brackets, as a comment cannot hold a comment):
+    [machines] ... [/machines]                 the line under the title
+    [svg-title] ... [/svg-title]               the caption bar in the drawing
+    [svg-machines] ... [/svg-machines]         the machine list in the drawing
+    [machine-chapter] ... [/machine-chapter]   chapter 13
+  Chapter 13 lists each machine's pages, then adds the machine's own chapter
+  file if it has one: Help\Manual_<ModuleId>.<language>.html, kept in that
+  machine's own project - whatever is inside its <body>. Keep the markers when translating; the text between them is what a
+  reader sees if the file is opened on its own.
 -->
 <style>
  :root{--ink:#23262c;--muted:#5b6270;--rule:#d5d9df;--head:#1f4e79;--soft:#f4f6f9;--code:#f2f4f7;--red:#d62424;--blue:#1e78dc}
@@ -29,6 +43,7 @@
  main{flex:1;min-width:0;padding:10px 34px 60px}
  h2{font-size:1.25em;color:var(--head);margin:1.9em 0 .5em;padding-top:.4em;border-top:1px solid var(--rule)}
  h3{font-size:1.04em;margin:1.2em 0 .3em}
+ h4{font-size:1em;margin:1em 0 .25em;color:var(--head)}
  p{margin:.35em 0}
  ul,ol{margin:.3em 0 .6em 1.3em;padding:0}
  li{margin:.15em 0}
@@ -51,7 +66,7 @@
 
 <header>
  <h1>Kaban HMI &ndash; Operator and Engineer Manual</h1>
- <p>For FA2010 and the sub-machines mounted with it (H500, H800), MD3020, SB3012 and SB3015.</p>
+ <p><!--machines-->For the machine this program runs, and the sub-machines mounted with it.<!--/machines--></p>
 </header>
 
 <div class="wrap">
@@ -67,9 +82,9 @@
  <a href="#unitset">8. Units of measure</a>
  <a href="#hmiset">9. HMI Settings</a>
  <a href="#params">10. Machine Parameters</a>
- <a href="#profiles">11. Profiles (FA2010)</a>
- <a href="#diag">12. Logs and diagnostics</a>
- <a href="#files">13. Where things are kept</a>
+ <a href="#diag">11. Logs and diagnostics</a>
+ <a href="#files">12. Where things are kept</a>
+ <a href="#machine">13. This machine</a>
 </nav>
 
 <main>
@@ -85,7 +100,7 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
  <defs><style>.t{font:13px "Segoe UI",Arial;fill:#23262c}.w{font:13px "Segoe UI",Arial;fill:#fff}.s{font:11px "Segoe UI",Arial;fill:#5b6270}.n{font:bold 13px "Segoe UI",Arial;fill:#fff}</style></defs>
  <!-- caption bar -->
  <rect x="10" y="10" width="880" height="36" fill="#111"/>
- <text class="w" x="24" y="33">KABAN &nbsp; FA2010 &ndash; Processing Center &nbsp;&middot;&nbsp; user</text>
+ <text class="w" x="24" y="33"><!--svg-title-->KABAN &nbsp; Machine &ndash; Name &nbsp;&middot;&nbsp; user<!--/svg-title--></text>
  <rect x="520" y="16" width="30" height="24" rx="4" fill="#c81e1e"/><text class="n" x="530" y="33">!</text>
  <rect x="560" y="16" width="30" height="24" rx="4" fill="#333"/><text class="w" x="566" y="33">&#128279;</text>
  <circle cx="615" cy="28" r="10" fill="none" stroke="#fff" stroke-width="2"/>
@@ -99,9 +114,8 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
  <text class="t" x="40" y="200">Machine Parameters</text>
  <text class="t" x="40" y="238">HMI Settings</text>
  <line x1="22" y1="262" x2="188" y2="262" stroke="#c7ccd3"/>
- <rect x="16" y="300" width="178" height="30" rx="4" fill="#d1d6dd"/><text class="t" x="40" y="320">Processing Center</text>
- <text class="t" x="40" y="352">Screwing_Holing</text>
- <text class="t" x="40" y="384">3D_HingeDrilling</text>
+ <!--svg-machines--><rect x="16" y="300" width="178" height="30" rx="4" fill="#d1d6dd"/><text class="t" x="40" y="320">Main machine</text>
+ <text class="t" x="40" y="352">Sub-machine</text><!--/svg-machines-->
  <text class="t" x="30" y="444">&#9664;</text><text class="t" x="70" y="444">&#9654;</text>
  <!-- content -->
  <rect x="200" y="46" width="690" height="414" fill="#fff" stroke="#d5d9df"/>
@@ -153,7 +167,7 @@ still need a higher one &ndash; the control's tooltip says so.</p>
 <!-- ================================================================== -->
 <h2 id="nav">3. Moving between pages</h2>
 <ul>
- <li><b>Page menu (left):</b> Home, Manual Movement, Alarms, Machine Parameters, HMI Settings &ndash; plus machine pages such as Profiles on FA2010.</li>
+ <li><b>Page menu (left):</b> Home, Manual Movement, Alarms, Machine Parameters, HMI Settings &ndash; plus the machine's own pages (see <a href="#machine">13</a>).</li>
  <li><b>Machine list (under it):</b> when sub-machines are mounted, each page exists once per machine. Pick the machine here.
      The highlighted machine is always the one whose page is on screen.</li>
  <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages).</li>
@@ -166,7 +180,8 @@ still need a higher one &ndash; the control's tooltip says so.</p>
 <h2 id="units">4. Manual Movement: the units</h2>
 
 <p>Every cylinder, motor and axis you can move by hand is a <b>unit</b>: a frame with its name on the top line, one or two
-buttons, and sometimes a position reading between them. Axis units and cylinder units are the same size and shape so a page reads as one table.</p>
+buttons, and sometimes a position reading between them. Axis units and cylinder units are the same size and shape so a page reads as one table,
+and every position reads the same way: black bold figures on grey, as on the Axis Settings rows.</p>
 
 <figure>
 <svg viewBox="0 0 900 212" role="img" aria-label="Anatomy of a unit">
@@ -178,7 +193,7 @@ buttons, and sometimes a position reading between them. Axis units and cylinder 
  <circle cx="372" cy="40" r="9" fill="#fff" stroke="#2870be" stroke-width="1.5"/><text x="369" y="45" font-style="italic" font-weight="bold" font-size="12" fill="#2870be" font-family="Georgia">i</text>
  <rect x="30" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#d62424" stroke-width="3"/>
  <circle cx="42" cy="74" r="5" fill="#2fbf4a"/><text x="84" y="97" font-size="18" fill="#8a929c">&#9664;</text>
- <rect x="160" y="62" width="120" height="56" rx="4" fill="#000"/><text class="b" x="176" y="98" fill="#ff2020">125.0</text>
+ <rect x="160" y="62" width="120" height="56" rx="4" fill="#dcdcdc" stroke="#aab1bb"/><text x="186" y="97" font-size="17" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">125.0 mm</text>
  <rect x="290" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="340" y="97" font-size="18" fill="#8a929c">&#9654;</text>
  <!-- axis unit -->
  <rect x="480" y="40" width="400" height="92" rx="5" fill="#fff" stroke="#b4b4b4"/>
@@ -190,10 +205,10 @@ buttons, and sometimes a position reading between them. Axis units and cylinder 
  <!-- labels -->
  <text class="s" x="20" y="160">Cylinder unit with an error on movement A:</text>
  <text class="s" x="20" y="178">the red <tspan font-weight="bold">?</tspan> appears on the top line, button A's border blinks red.</text>
- <text class="s" x="20" y="196">Green dot = sensor on. Red-on-black = encoder reading.</text>
- <text class="s" x="480" y="160">Axis unit in error: the <tspan font-weight="bold">?</tspan> on the top line,</text>
- <text class="s" x="480" y="178">and the POSITION's border blinks red.</text>
- <text class="s" x="480" y="196">The position reads as on the Axis Settings row (black, bold).</text>
+ <text class="s" x="20" y="196">Green dot = sensor on. Every position reads black on grey.</text>
+ <text class="s" x="480" y="160">Axis unit in error: its POSITION's border blinks red;</text>
+ <text class="s" x="480" y="178">the <tspan font-weight="bold">?</tspan> is there while the drive shows a code,</text>
+ <text class="s" x="480" y="196">one menu entry per code.</text>
 </svg>
 <figcaption>Left: a cylinder unit with a position reading. Right: an axis unit. Both are shown while in error.</figcaption>
 </figure>
@@ -214,11 +229,12 @@ emergency stop and the PLC program remain the protection &ndash; never rely on t
 <h3>The marks on the top line</h3>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
-<tr><td><b style="color:#d62424">?</b> red, blinking</td><td>While one of the unit's error bits is set</td><td>The help for that fault: the unit's troubleshooting section (for a cylinder, only the parts for its valve and sensor), then the unit's own sheets.</td></tr>
+<tr><td><b style="color:#d62424">?</b> red, blinking</td><td>Cylinder: while one of its error bits is set</td><td>The help for that fault: the cylinder troubleshooting section for its valve and sensor only, then the unit's own sheets.</td></tr>
+<tr><td><b style="color:#d62424">?</b> red or <b style="color:#d69614">amber</b>, blinking</td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning. Amber when every code set is a warning &ndash; the axis has not been stopped by it.</td></tr>
 <tr><td><i style="color:#2870be">i</i> blue</td><td>Whenever the unit has help files</td><td>What the unit is: photos, drawing, settings.</td></tr>
 </table>
-<p>The <b>?</b> takes the right end of the line; the <b>i</b> moves just left of it while an error is shown.
-While the error is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
+<p>The <b>?</b> takes the right end of the line; the <b>i</b> moves just left of it while a <b>?</b> is shown.
+While an error bit is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
 or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
 
 <!-- ================================================================== -->
@@ -236,8 +252,10 @@ or the position reading (axis). A controller that is not answering shows no <b>?
 <h2 id="alarms">6. Alarms</h2>
 <ul>
  <li>While a machine reports an error, the <b>Alarms</b> page button pulses red and the red alarm button appears on the caption bar.</li>
- <li>The caption-bar alarm button lists the machines in alarm and how many alarms each has. Choosing a machine <b>acknowledges</b>
-     its alarms on the screen; an alarm whose cause is still there comes straight back. The PLC reset itself is the <b>Reset</b> button on the Alarms page.</li>
+ <li>The caption-bar alarm button lists the machines in alarm and how many alarms each has. <b>Reset (n) Active Alarms</b> resets that machine:
+     it pulses the machine's alarm reset on its own controller, like the <b>Reset</b> button on the Alarms page, and clears its list.
+     An alarm whose cause is still there comes straight back. <span class="lvl l1">Operator</span> If the reset cannot be sent &ndash; nobody signed in,
+     controller not answering &ndash; the list is still cleared and a message says the machine itself was <b>not</b> reset.</li>
  <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button is momentary, like a physical reset button.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
  <li>An alarm is only raised or cleared from a fresh reading. When a controller stops answering, its alarms are left as they were rather than cleared.</li>
@@ -283,20 +301,15 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <p><span class="lvl l2">Maintenance</span> One tab per machine.</p>
 <ul>
  <li><b>Axis Settings:</b> one row per axis &ndash; jog, position, limits, reference, calibration, drive codes. The axis units on the Manual Movement pages take everything from these rows.</li>
+ <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
+     <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero is a link &ndash; a small <b>?</b>
+     in its corner &ndash; that opens just that code's entry of its manual: its causes, how to check each, and what to do.
+     Warnings are amber, alarms red; a blank cell means no code.</li>
  <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper link</b> (a document, drawing or page opened from the alarm). Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
 </ul>
 
 <!-- ================================================================== -->
-<h2 id="profiles">11. Profiles (FA2010)</h2>
-<ul>
- <li>The table, details, drawing and G-code are separate <b>panes</b>: drag them by the caption, resize from any edge, minimise with <b>&ndash;</b>.</li>
- <li>Save an arrangement by name and pick it from the <b>Layout</b> box; <b>Default</b> restores the built-in one. Your last arrangement returns by itself.</li>
- <li>Drawing: click to select, drag a box to select many (right-to-left catches anything it touches), <kbd>Del</kbd> removes, <kbd>Esc</kbd> clears. The wheel zooms, the middle button pans.</li>
- <li>The green band is the tool at its real width; clicking it selects the matching G-code line, and the other way round.</li>
-</ul>
-
-<!-- ================================================================== -->
-<h2 id="diag">12. Logs and diagnostics</h2>
+<h2 id="diag">11. Logs and diagnostics</h2>
 <ul>
  <li>Every change made from the HMI is written to the <b>audit log</b> with the time and the user: one file per day, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
  <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
@@ -304,15 +317,22 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 </ul>
 
 <!-- ================================================================== -->
-<h2 id="files">13. Where things are kept</h2>
+<h2 id="files">12. Where things are kept</h2>
 <table>
 <tr><th>What</th><th>Where</th></tr>
 <tr><td>Users, units, PLC connections, audit logs, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>)</td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>Help documents and this manual</td><td>The <code>Help</code> folder beside the program</td></tr>
+<tr><td>Drive code help</td><td><code>Help\Servo_Alarm_Codes.en.html</code>, <code>Axis_Error_Codes.en.html</code>, <code>Axis_Warning_Codes.en.html</code>,
+built from the manuals beside them by <code>tools\build_code_help.py</code></td></tr>
 </table>
 <p class="tip">Settings files are written safely: the new version is completed first and then swapped in, so switching the
 machine off at the wrong moment cannot leave a half-written file.</p>
+
+<!-- ================================================================== -->
+<h2 id="machine">13. This machine</h2>
+<!--machine-chapter--><p>The machines this program runs, their controllers and their own pages are listed here when the manual is
+opened from <b>HMI Settings &rsaquo; About</b>.</p><!--/machine-chapter-->
 
 <footer>Kaban Machines &middot; HMI manual. To translate it, copy this file as <code>Kaban_HMI_Manual.&lt;language&gt;.html</code>
 (for example <code>.tr.html</code>) in the same folder.</footer>

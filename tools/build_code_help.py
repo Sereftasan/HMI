@@ -24,7 +24,8 @@ matching section into a page of its own (Kaban.Core AxisCodeHelp.Extract).
 data-code is the code as the HMI prints it, data-group the servo alarm number
 (a detail the manual does not list falls back to its alarm's sections),
 data-kind "alarm" or "warning" (a warning draws the "?" amber), data-name the
-text of the menu entry, data-page the PDF page the section came from.
+text of the menu entry, data-alarm the servo alarm's own name (what an unlisted
+detail is called), data-page the PDF page the section came from.
 
 Run it again when a manual is replaced by a newer revision. It needs
 pdfplumber (pip install pdfplumber). The output is plain HTML: a translator can
@@ -308,9 +309,9 @@ def write_mrj4(alarms):
         warning = a["page"] >= MRJ4_WARNINGS_FROM
         for code, d in a["details"].items():
             title = "AL. %s &mdash; %s" % (code, html.escape(d["name"] or a["name"]))
-            body.append('<section class="code" data-code="%s" data-group="%s" data-kind="%s" data-name="%s" data-page="%d">'
-                        % (code, no, "warning" if warning else "alarm",
-                           html.escape((a["name"] + " - " + d["name"]).strip(" -"), quote=True), d["page"]))
+            body.append('<section class="code" data-code="%s" data-group="%s" data-kind="%s" data-alarm="%s" data-name="%s" data-page="%d">'
+                        % (code, no, "warning" if warning else "alarm", html.escape(a["name"], quote=True),
+                           html.escape(d["name"] or a["name"], quote=True), d["page"]))
             body.append('<h2 id="AL%s">%s</h2>' % (code, title))
             body.append('<div class="alarm"><b>%s %s: %s</b>%s</div>'
                         % ("Warning" if warning else "Alarm", no, html.escape(a["name"]), a["content"]))
