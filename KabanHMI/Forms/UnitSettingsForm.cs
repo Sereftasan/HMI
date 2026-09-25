@@ -11,6 +11,7 @@ namespace Kaban.UI.Forms
         public UnitSettingsForm()
         {
             InitializeComponent();
+            Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             this.Text = "Unit Configuration";
             this.Size = new Size(300, 400);
             this.StartPosition = FormStartPosition.CenterParent;

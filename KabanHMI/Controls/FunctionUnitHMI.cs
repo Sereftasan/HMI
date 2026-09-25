@@ -241,10 +241,10 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>The unit caption font - one for every unit, not one each.</summary>
-        private static readonly Font CaptionFont = new Font("Segoe UI", 9.5f, FontStyle.Regular);
+        private static readonly Font CaptionFont = UiScale.NewFont("Segoe UI", 9.5f, FontStyle.Regular);
 
         /// <summary>The axis-row position font (see AxisSettingHMI), for UnitPositionStyle.Standard.</summary>
-        private static readonly Font StandardPositionFont = new Font("Segoe UI", 12F, FontStyle.Bold);
+        private static readonly Font StandardPositionFont = UiScale.NewFont("Segoe UI", 12F, FontStyle.Bold);
 
         private static readonly Dictionary<int, Font> _positionFonts = new Dictionary<int, Font>();
 

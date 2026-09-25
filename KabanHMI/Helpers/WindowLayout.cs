@@ -75,7 +75,16 @@ namespace Kaban.UI.Helpers
             if (r.Width < 100 || r.Height < 80 || !OnScreen(r)) return false;
             form.StartPosition = FormStartPosition.Manual;
             form.Bounds = r;
-            if (from.TryGetValue(name + ".Maximized", out text) && text == "1") form.WindowState = FormWindowState.Maximized;
+            bool maximized = from.TryGetValue(name + ".Maximized", out text) && text == "1";
+            if (maximized) form.WindowState = FormWindowState.Maximized;
+            // The magnifier scales a window as it loads; a kept size is the size it
+            // had on screen, so it is put back after that (call UiScale.ApplyOnLoad
+            // first, so this runs after it).
+            if (Kaban.UI.Controls.UiScale.Active)
+                form.Load += (s, e) =>
+                {
+                    if (form.WindowState == FormWindowState.Normal) form.Bounds = r;
+                };
             return true;
         }
 
@@ -106,8 +115,11 @@ namespace Kaban.UI.Helpers
         /// <summary>A list's columns: "width:position" each, in the columns' own order.</summary>
         public static string ColumnsOf(ListView list)
         {
+            // At factor 1 (see UiScale): the list is scaled again when it opens.
+            bool scaled = Kaban.UI.Controls.UiScale.IsScaled(list);
             return string.Join(",", list.Columns.Cast<ColumnHeader>().Select(c =>
-                c.Width.ToString(CultureInfo.InvariantCulture) + ":" + c.DisplayIndex.ToString(CultureInfo.InvariantCulture)));
+                (scaled ? Kaban.UI.Controls.UiScale.Logical(c.Width) : c.Width).ToString(CultureInfo.InvariantCulture) + ":" +
+                c.DisplayIndex.ToString(CultureInfo.InvariantCulture)));
         }
 
         /// <summary>Gives a list the widths and order kept by ColumnsOf; a different number of columns is ignored.</summary>

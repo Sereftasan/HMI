@@ -86,6 +86,7 @@ namespace Kaban.UI.Forms
         public PlcRowEditorForm(string caption, string label, string dataType, string address,
                                 string value, string focusField = null, bool isNew = false, bool isComment = false)
         {
+            Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             _isNew = isNew;
             Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
                    + " - " + caption;

@@ -93,6 +93,12 @@ namespace Kaban.Core.Machines
                     yield return new KeyValuePair<MountedModule, MachineScreen>(m, s);
         }
 
+        /// <summary>The side pages of every mounted machine (ScreenRoles.SidePage), main machine first.</summary>
+        public static IEnumerable<KeyValuePair<MountedModule, MachineScreen>> SidePages()
+        {
+            return AllScreens().Where(kv => string.Equals(kv.Value.Role ?? "", ScreenRoles.SidePage, StringComparison.OrdinalIgnoreCase));
+        }
+
         /// <summary>One navigation entry: either a single screen or a set of tabs.</summary>
         public class RoleGroup
         {
@@ -126,6 +132,8 @@ namespace Kaban.Core.Machines
                 var mounted = pair.Key;
                 var screen = pair.Value;
                 string role = screen.Role ?? "";
+                // Side pages are on the right-hand bar, not in the menu (see SidePages).
+                if (string.Equals(role, ScreenRoles.SidePage, StringComparison.OrdinalIgnoreCase)) continue;
 
                 if (role.Length == 0)
                 {

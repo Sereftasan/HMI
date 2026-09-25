@@ -109,6 +109,7 @@ namespace Kaban.UI.Forms
                           bool allowNegative = true, bool allowDecimal = true,
                           bool hex = false)
         {
+            Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             Minimum = min; Maximum = max;
             AllowNegative = allowNegative; AllowDecimal = allowDecimal; HexMode = hex;
             _text = hex ? (initial ?? "").Trim() : ToKeypadForm(initial);

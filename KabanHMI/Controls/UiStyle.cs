@@ -14,6 +14,12 @@ namespace Kaban.UI.Controls
     /// </summary>
     public static class UiStyle
     {
+        /// <summary>
+        /// Initialised when first USED, not whenever the runtime likes: the fonts
+        /// below are made at the magnifying factor, which must be known by then.
+        /// </summary>
+        static UiStyle() { }
+
         public static readonly Color BorderColor = Color.FromArgb(180, 186, 194);
         public static readonly Color AccentBack = Color.FromArgb(200, 224, 248);
 
@@ -39,12 +45,16 @@ namespace Kaban.UI.Controls
         // its own copy of the same one. Two hundred bound controls on a page meant
         // two hundred identical fonts to allocate at open and to finalise later.
         // They are immutable and safe to share, so the program keeps one of each.
-        public static readonly Font Body = new Font("Segoe UI", 9.5F);
-        public static readonly Font Small = new Font("Segoe UI", 9F);
-        public static readonly Font Mono = new Font("Consolas", 10F, FontStyle.Bold);
+        //
+        // At the magnifying factor this run started with (see UiScale): they are
+        // used to DRAW as well as given to controls, and a control given one is
+        // not scaled a second time.
+        public static readonly Font Body = UiScale.NewFont("Segoe UI", 9.5F);
+        public static readonly Font Small = UiScale.NewFont("Segoe UI", 9F);
+        public static readonly Font Mono = UiScale.NewFont("Consolas", 10F, FontStyle.Bold);
 
         /// <summary>The font every dropdown menu uses (was a new Font per menu opened).</summary>
-        public static readonly Font MenuFont = new Font("Segoe UI", 10F);
+        public static readonly Font MenuFont = UiScale.NewFont("Segoe UI", 10F);
 
         private static readonly Dictionary<string, Font> _fontVariants = new Dictionary<string, Font>();
 
@@ -63,7 +73,10 @@ namespace Kaban.UI.Controls
             {
                 Font f;
                 if (!_fontVariants.TryGetValue(key, out f))
+                {
                     _fontVariants[key] = f = new Font(baseFont.FontFamily, baseFont.Size, style, baseFont.Unit);
+                    if (UiScale.IsScaled(baseFont)) UiScale.Marked(f);     // the same size: scaled if its base is
+                }
                 return f;
             }
         }
@@ -107,6 +120,8 @@ namespace Kaban.UI.Controls
                 if (f == null || f.IsDisposed || !_sweptForms.Add(f)) continue;
                 var form = f;
                 form.Disposed += (s2, e2) => _sweptForms.Remove(form);
+                // A window no one scaled as it loaded is scaled now (UiScale).
+                UiScale.Apply(form);
                 ApplyHandCursors(form);
             }
         }
@@ -1188,7 +1203,31 @@ namespace Kaban.UI.Controls
             t.ShowAlways = true;
             t.UseAnimation = false;                  // fade made the 1s delay feel like 1.3s;
             t.UseFading = false;
+            // THE MAGNIFIER: Windows draws tips in its own small font, which is
+            // exactly what an operator who needs the factor cannot read. Drawn
+            // here instead, in the program's font at the factor.
+            if (UiScale.Active)
+            {
+                t.OwnerDraw = true;
+                t.Popup += (s, e) =>
+                {
+                    var text = t.GetToolTip(e.AssociatedControl) ?? "";
+                    var size = TextRenderer.MeasureText(text, TipFont, new Size(UiScale.Px(520), int.MaxValue), TextFormatFlags.WordBreak);
+                    e.ToolTipSize = new Size(size.Width + UiScale.Px(12), size.Height + UiScale.Px(8));
+                };
+                t.Draw += (s, e) =>
+                {
+                    e.Graphics.FillRectangle(SystemBrushes.Info, e.Bounds);
+                    using (var pen = new Pen(Color.FromArgb(118, 118, 118)))
+                        e.Graphics.DrawRectangle(pen, 0, 0, e.Bounds.Width - 1, e.Bounds.Height - 1);
+                    var r = Rectangle.Inflate(e.Bounds, -UiScale.Px(6), -UiScale.Px(4));
+                    TextRenderer.DrawText(e.Graphics, e.ToolTipText, TipFont, r, SystemColors.InfoText, TextFormatFlags.WordBreak | TextFormatFlags.Left | TextFormatFlags.Top);
+                };
+            }
         }
+
+        /// <summary>The tooltips' font when the magnifier is on.</summary>
+        private static readonly Font TipFont = UiScale.NewFont("Segoe UI", 9F);
 
         /// <summary>
         /// Forces a tooltip DOWN the moment the pointer leaves the control.
@@ -1231,7 +1270,22 @@ namespace Kaban.UI.Controls
         {
             var b = ToolButton("", tip, tips, onClick);
             b.AccessibleName = name;
-            b.Paint += (s, e) => draw(e.Graphics, b.ClientRectangle, b.Enabled);
+            b.Paint += (s, e) =>
+            {
+                // Drawn for factor 1, at the magnifying factor.
+                var g = e.Graphics;
+                var state = g.Save();
+                var r = b.ClientRectangle;
+                if (UiScale.Active)
+                {
+                    float cx = r.Width / 2f, cy = r.Height / 2f;
+                    g.TranslateTransform(cx, cy);
+                    g.ScaleTransform(UiScale.Factor, UiScale.Factor);
+                    g.TranslateTransform(-cx, -cy);
+                }
+                draw(g, r, b.Enabled);
+                g.Restore(state);
+            };
             return b;
         }
 

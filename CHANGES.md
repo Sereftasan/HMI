@@ -3838,3 +3838,29 @@ and `UnitLookAndErrors` extended.
   toolbar overflows); Find's 360 x 220, its columns re-orderable.
 - `MainForm.ShowSimulationMonitor` places the monitor only when it has no kept place.
 - Tests: `PlcMonitor.cs` 110 checks.
+
+## 2026-09-25 (evening) - Side panel, Inputs / Outputs, machine side pages, magnifying factor
+
+- `MainForm.SidePanel.cs` *(new)*: the right-hand side bar (`_sideBar`, fold to a 14 px edge), the side
+  panel docked between the caption and the menu with its `Splitter`, `ShowSidePage` / `ToggleSidePage` /
+  `CloseSidePanel`, pop-out into `SidePageWindow` and back, `SidePanel.cfg` (width at factor 1,
+  bar folded, pages kept in a window). Pages are built once and hidden, never closed.
+- `SidePages` *(new)*: registry of side pages; built-ins `IoMonitor` (Maintenance) and `PlcMonitor`
+  (Admin); machine pages via `ScreenRoles.SidePage` (excluded from `NavigationGroups`,
+  `MachineRegistry.SidePages()`).
+- `SimulationMonitorForm(bool embedded)`: a non-top-level form in the panel or a side window; Find embedded
+  as a pane (`DeviceFindForm(..., embedded, close)`), dialogs owned by the window it is in, no reading
+  while hidden, `SaveLists()`. `MainForm.ShowSimulationMonitor()` returns it; F12 toggles.
+- `ControlHighlight`: four bars on the target's container instead of a layered top-most window.
+- `PlcScanner.AddTarget / RemoveTarget`: the side panel and side windows are read with the page.
+- `IoMonitorPage`, `IoListHMI` (one control, many points, `IPlcExtraAddresses`), `IoList` *(new)*;
+  `Kaban.Machines.FA2010/IoList.csv` from `tools/build_io_list.py` *(new)*.
+- Magnifier: `DisplaySettings` (Core, `Display.cfg`: Panel, Start, User=<name>;<factor>), `UiScale`
+  (Apply once per tree: `Control.Scale`, own fonts, grid/list columns, toolbar items; watches later
+  additions; re-runs resize handlers; keeps windows on screen), `UiScale.ApplyOnLoad` in the forms,
+  `UiStyle` fonts and tooltips at the factor, `UiStyle.IconButton` glyphs scaled, runtime sizes in
+  `MainForm` / `MachineSelectorStrip` through `UiScale.For`, nav width kept at factor 1.
+  `LoginHandoff` (DPAPI, one minute, one use) and `MainForm.RestartWithFactor`; offer at sign-in
+  (`MagnifierToOffer`); User Settings: panel factor and a factor per user (removed with the user).
+- `LanguageManager`: `\r\n` / `\n` written in a translation become line breaks.
+- Tests: `tools/ui_test/SidePanel.cs`, `tools/ui_test/Magnifier.cs`.

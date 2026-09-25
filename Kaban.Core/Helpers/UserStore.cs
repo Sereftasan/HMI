@@ -94,7 +94,11 @@ namespace Kaban.Core.Helpers
             // connections or imports on this machine again.
             if (WouldRemoveLastAdmin(username, null)) return false;
             bool ok = _users.Remove(username);
-            if (ok) Persist();
+            if (ok)
+            {
+                Persist();
+                DisplaySettings.SetUserFactor(username, null);    // their magnifying factor goes with them
+            }
             return ok;
         }
 

@@ -36,11 +36,22 @@ namespace Kaban.UI.Forms
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private List<DeviceCollector.Use> _found = new List<DeviceCollector.Use>();
 
+        private readonly bool _embedded;
+        private readonly Action _close;
+
+        /// <summary>The controller searched.</summary>
+        public int Station { get { return _station; } }
+
         /// <param name="open">Opens a use's page; returns "" or why it could not.</param>
-        public DeviceFindForm(int station, string caption, string query, Func<DeviceCollector.Use, string> open)
+        /// <param name="embedded">Shown inside the PLC Monitor's side page, not as a window of its own.</param>
+        /// <param name="close">What its close button (and Esc) does when embedded.</param>
+        public DeviceFindForm(int station, string caption, string query, Func<DeviceCollector.Use, string> open,
+                              bool embedded = false, Action close = null)
         {
             _station = station;
             _open = open;
+            _embedded = embedded;
+            _close = close;
             Text = T("Ttl_Find", "Find where a device is used") + " - " + caption;
             Size = new Size(820, 440);
             // As narrow as the user likes: the search box gives way, the list scrolls.
@@ -52,6 +63,14 @@ namespace Kaban.UI.Forms
             Font = UiStyle.Body;
             KeyPreview = true;
 
+            if (embedded)
+            {
+                TopLevel = false;
+                FormBorderStyle = FormBorderStyle.None;
+                MinimumSize = Size.Empty;
+            }
+            else UiScale.ApplyOnLoad(this);
+
             var top = new Panel { Dock = DockStyle.Top, Height = 44, Padding = new Padding(10, 8, 10, 4) };
             var caption1 = new Label { Text = T("Lbl_FindWhat", "Address, label or name:"), AutoSize = true, Location = new Point(10, 12) };
             top.Controls.Add(caption1);
@@ -62,11 +81,24 @@ namespace Kaban.UI.Forms
             top.Controls.Add(_query);
             var go = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F50E), T("Tip_FindGo", "Find (Enter)"), _tips, (s, e) => Search());
             top.Controls.Add(go);
+            Button closeButton = null;
+            if (embedded)
+            {
+                // Inside the monitor: its own close, as there is no window frame.
+                closeButton = new Button { Size = new Size(30, 30), FlatStyle = FlatStyle.Flat, Text = "", TabStop = false, Cursor = Cursors.Hand, AccessibleName = "Close" };
+                closeButton.FlatAppearance.BorderSize = 0;
+                closeButton.Paint += (s, e) => MainForm.DrawCloseGlyph(e.Graphics, closeButton.ClientRectangle, Color.FromArgb(50, 56, 66));
+                closeButton.Click += (s, e) => CloseEmbedded();
+                _tips.SetToolTip(closeButton, T("Tip_FindClose", "Close Find (Esc)"));
+                top.Controls.Add(closeButton);
+            }
             top.Layout += (s, e) =>
             {
+                int right = top.ClientSize.Width - (closeButton != null ? closeButton.Width + 8 : 0);
+                if (closeButton != null) closeButton.Location = new Point(top.ClientSize.Width - closeButton.Width - 6, (top.ClientSize.Height - closeButton.Height) / 2);
                 _query.Left = caption1.Right + 8;
-                _query.Width = Math.Max(80, Math.Min(260, top.ClientSize.Width - _query.Left - go.Width - 16));
-                go.Location = new Point(_query.Right + 6, 5);
+                _query.Width = Math.Max(80, Math.Min(UiScale.For(_query, 260), right - _query.Left - go.Width - 16));
+                go.Location = new Point(_query.Right + 6, (top.ClientSize.Height - go.Height) / 2);
             };
 
             _list.Dock = DockStyle.Fill;
@@ -81,9 +113,9 @@ namespace Kaban.UI.Forms
             _list.Columns.Add(T("Col_Address", "Address"), 80);
             _list.Columns.Add(T("Col_DataType", "DataType"), 150);
 
-            // As it was closed last time.
+            // As it was closed last time (the place and size only as a window).
             var kept = WindowLayout.Read(SimulationMonitorForm.WindowsPath);
-            WindowLayout.Apply(this, LayoutName, kept);
+            if (!embedded) WindowLayout.Apply(this, LayoutName, kept);
             string columns;
             if (kept.TryGetValue(LayoutName + ".Columns", out columns)) WindowLayout.ApplyColumns(_list, columns);
 
@@ -118,15 +150,34 @@ namespace Kaban.UI.Forms
                     e.Handled = true;
                 }
             };
-            KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) Close(); };
-
-            Shown += (s, e) =>
+            KeyDown += (s, e) =>
             {
-                _query.Focus();
-                _query.SelectAll();
-                if (_query.Text.Trim().Length > 0) Search();
-                else _status.Text = T("Msg_FindHint", "Type an address (M604), a label, or part of a unit's name, then Enter.");
+                if (e.KeyCode != Keys.Escape) return;
+                if (_embedded) CloseEmbedded(); else Close();
             };
+
+            if (!embedded) Shown += (s, e) => Begin(null);
+        }
+
+        /// <summary>Focus in the box - and the search, when there is something to find (a new query replaces the text).</summary>
+        public void Begin(string query)
+        {
+            if (query != null) _query.Text = query;
+            _query.Focus();
+            _query.SelectAll();
+            if (_query.Text.Trim().Length > 0) Search();
+            else _status.Text = T("Msg_FindHint", "Type an address (M604), a label, or part of a unit's name, then Enter.");
+        }
+
+        private void CloseEmbedded()
+        {
+            SaveColumns();
+            if (_close != null) _close();
+        }
+
+        private void SaveColumns()
+        {
+            WindowLayout.Write(SimulationMonitorForm.WindowsPath, new Dictionary<string, string> { { LayoutName + ".Columns", WindowLayout.ColumnsOf(_list) } });
         }
 
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
@@ -139,7 +190,7 @@ namespace Kaban.UI.Forms
             base.OnFormClosing(e);
             if (e.Cancel) return;
             var values = new Dictionary<string, string>();
-            WindowLayout.Store(this, LayoutName, values);
+            if (!_embedded) WindowLayout.Store(this, LayoutName, values);
             values[LayoutName + ".Columns"] = WindowLayout.ColumnsOf(_list);
             WindowLayout.Write(SimulationMonitorForm.WindowsPath, values);
         }

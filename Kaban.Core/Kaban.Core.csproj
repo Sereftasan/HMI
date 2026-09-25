@@ -85,6 +85,7 @@
     <Compile Include="Helpers\HmiInternalVariables.cs" />
     <Compile Include="Helpers\HmiUtilities.cs" />
     <Compile Include="Helpers\SafeFile.cs" />
+    <Compile Include="Helpers\DisplaySettings.cs" />
     <Compile Include="Helpers\InputLimitsCalculation.cs" />
     <Compile Include="Helpers\LanguageManager.cs" />
     <Compile Include="Helpers\MachineConditionMap.cs" />

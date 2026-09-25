@@ -186,6 +186,18 @@ namespace Kaban.UI.Forms
                 return null;
             }
 
+            // A machine's SIDE PAGE opens in the side panel, beside the page on display.
+            if (string.Equals(use.Screen.Role ?? "", Kaban.Core.Machines.ScreenRoles.SidePage, StringComparison.OrdinalIgnoreCase))
+            {
+                var side = System.Linq.Enumerable.FirstOrDefault(Helpers.SidePages.All(), p => ReferenceEquals(p.Screen, use.Screen));
+                if (side == null) { why = LanguageManager.GetString("Msg_FindNoScreen", "That page is not in the menu."); return null; }
+                if (!SecurityManager.HasAccess(side.RequiredLevel)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
+                var sideView = ShowSidePage(side.Key);
+                var found = sideView == null ? null : Helpers.DeviceCollector.Locate(sideView, use.ControlPath);
+                if (found == null) why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again.");
+                return found;
+            }
+
             UserControl nav = null;
             Kaban.Core.Machines.MachineRegistry.RoleGroup group = null;
             int machine = 0;
@@ -398,7 +410,7 @@ namespace Kaban.UI.Forms
             int hidden = 0;
             foreach (var kv in _menuButtons)
                 if (!kv.Key.Visible) hidden++;
-            _navSpacer.Height = MachineStripGap + hidden * NavButtonHeight;
+            _navSpacer.Height = Kaban.UI.Controls.UiScale.For(_navSpacer, MachineStripGap + hidden * NavButtonHeight);
         }
 
         public void AddMenuButton(string translationKey, string defaultText, Image icon, UserControl screenToLoad)
@@ -473,7 +485,10 @@ namespace Kaban.UI.Forms
             BeginInvoke(new Action(() =>
             {
                 if (SecurityManager.CurrentLevel != SecurityLevel.None) return;
+                // Restarted for a user's magnifying factor: that user, signed in again.
+                if (SignInFromHandoff()) return;
                 using (var login = new LoginForm()) login.ShowDialog(this);
+                OfferUserMagnifier();
             }));
 
             try
@@ -496,6 +511,7 @@ namespace Kaban.UI.Forms
                 SetupLoginUi();
                 SetupSimMonitorButton();
                 SetupNavToggle();
+                SetupSidePanel();
 
                 // Color consistency: make the left menu panel the SAME color as the
                 // top panel, so the white content area is the only distinct surface.
@@ -577,6 +593,12 @@ namespace Kaban.UI.Forms
             {
                 MessageBox.Show("Startup Error: " + ex.Message);
             }
+
+            // THE MAGNIFIER: the whole window - caption, menu, side bar, the page on
+            // display - at the factor this run started with, once everything above
+            // is built; pages opened later are scaled as they are added (UiScale).
+            try { Kaban.UI.Controls.UiScale.Apply(this); }
+            catch (Exception ex) { AuditLogger.Log("magnifier: " + ex.Message); }
         }
 
         // ==================================================================
@@ -811,18 +833,20 @@ namespace Kaban.UI.Forms
             _btnLang.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
             _btnLang.Paint += (s, e) =>
             {
-                var flag = new Rectangle(6, (_btnLang.Height - 21) / 2, 30, 21);   // 50% larger
+                // Sizes at factor 1, drawn at the magnifying factor (UiScale.Px).
+                Func<int, int> px = Kaban.UI.Controls.UiScale.Px;
+                var flag = new Rectangle(px(6), (_btnLang.Height - px(21)) / 2, px(30), px(21));   // 50% larger
                 DrawFlag(e.Graphics, flag, LanguageManager.CurrentLanguage);
                 TextRenderer.DrawText(e.Graphics, LanguageManager.CurrentLanguage.ToUpperInvariant(), _btnLang.Font,
-                    new Rectangle(flag.Right + 5, 0, 26, _btnLang.Height),
-                    Color.White, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+                    new Rectangle(flag.Right + px(5), 0, _btnLang.Width - flag.Right - px(20), _btnLang.Height),
+                    Color.White, TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.SingleLine);
                 // caret so it still reads as a chooser without the system combo arrow
                 using (var caret = new SolidBrush(Color.White))
                     e.Graphics.FillPolygon(caret, new[]
                     {
-                        new PointF(_btnLang.Width - 14, _btnLang.Height / 2f - 2),
-                        new PointF(_btnLang.Width - 6,  _btnLang.Height / 2f - 2),
-                        new PointF(_btnLang.Width - 10, _btnLang.Height / 2f + 3)
+                        new PointF(_btnLang.Width - px(14), _btnLang.Height / 2f - px(2)),
+                        new PointF(_btnLang.Width - px(6),  _btnLang.Height / 2f - px(2)),
+                        new PointF(_btnLang.Width - px(10), _btnLang.Height / 2f + px(3))
                     });
             };
             _btnLang.Click += (s, e) => ShowLanguageMenu();
@@ -882,6 +906,7 @@ namespace Kaban.UI.Forms
                 {
                     login.ShowDialog(this);
                 }
+                OfferUserMagnifier();
             }
             else
             {
@@ -1051,7 +1076,10 @@ namespace Kaban.UI.Forms
         /// setting look like it had not applied at all, while closing and starting
         /// again by hand worked.
         /// </summary>
-        public void RestartApplication()
+        public void RestartApplication() { RestartApplication(null); }
+
+        /// <param name="extraArguments">More for the new instance's command line (the sign-in hand-over).</param>
+        public void RestartApplication(string extraArguments)
         {
             try
             {
@@ -1061,7 +1089,8 @@ namespace Kaban.UI.Forms
                 {
                     FileName = Application.ExecutablePath,
                     Arguments = Kaban.UI.AppBootstrap.AwaitExitSwitch + " " +
-                                System.Diagnostics.Process.GetCurrentProcess().Id,
+                                System.Diagnostics.Process.GetCurrentProcess().Id +
+                                (string.IsNullOrEmpty(extraArguments) ? "" : " " + extraArguments),
                     // Started from the exe's own folder: the machine's
                     // Translations.csv, PlcLabels.csv and Alarms.json are all resolved
                     // relative to it.
@@ -1318,6 +1347,7 @@ namespace Kaban.UI.Forms
                 SecurityManager.Logout();
                 // The list opens straight away: picking another name is the point.
                 using (var login = new LoginForm(chooseUser: true)) login.ShowDialog(this);
+                OfferUserMagnifier();
             };
 
             menu.Items.Add(logout);
@@ -1363,7 +1393,7 @@ namespace Kaban.UI.Forms
         private static void DrawMonitorGlyph(Graphics g, Rectangle area, Color colour)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            float cx = area.Width / 2f, cy = area.Height / 2f;
+            float cx = area.X + area.Width / 2f, cy = area.Y + area.Height / 2f;
             var screen = new RectangleF(cx - 10, cy - 8, 20, 14);
             using (var pen = new Pen(colour, 1.8f))
             {
@@ -2207,6 +2237,7 @@ namespace Kaban.UI.Forms
         {
             AuditLogger.Log(_closeConfirmed ? "HMI closed by the operator."
                                             : "HMI closed (" + e.CloseReason + ").");
+            try { SaveAllSideViews(); } catch { }
 
             // Stop scanning FIRST, then close every station - not just station 1.
             // A scan in flight would otherwise re-open a station we just closed, and
@@ -2290,29 +2321,20 @@ namespace Kaban.UI.Forms
         // is a bench tool, and a shortcut to it on a production machine's title
         // bar would be noise. The menu entry and F12 work everywhere.
         // ==================================================================
-        private SimulationMonitorForm _simMonitor;
-
-        /// <summary>Opens (or focuses) the live PLC memory monitor.</summary>
-        public void ShowSimulationMonitor()
+        /// <summary>
+        /// Opens the live PLC memory monitor - a SIDE PAGE: beside the page on
+        /// display, which narrows to make room (or in its own window, if it was
+        /// taken out into one). Returns it.
+        /// </summary>
+        public SimulationMonitorForm ShowSimulationMonitor()
         {
-            if (_simMonitor == null || _simMonitor.IsDisposed)
-            {
-                _simMonitor = new SimulationMonitorForm();
-                // The first time beside the main window's right edge; after that
-                // where the user left it.
-                if (!_simMonitor.PlacementRestored)
-                {
-                    _simMonitor.StartPosition = FormStartPosition.Manual;
-                    _simMonitor.Location = new System.Drawing.Point(
-                        this.Right - _simMonitor.Width - 20, this.Top + 60);
-                }
-                _simMonitor.Show(this);
-            }
-            else
-            {
-                _simMonitor.BringToFront();
-                _simMonitor.Focus();
-            }
+            return ShowSidePage(PlcMonitorKey) as SimulationMonitorForm;
+        }
+
+        /// <summary>F12: the monitor opens, or closes when it is open in the panel.</summary>
+        private void ToggleSimulationMonitor()
+        {
+            ToggleSidePage(PlcMonitorKey);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -2324,7 +2346,7 @@ namespace Kaban.UI.Forms
                 // interlock conditions; F12 opened it for whoever stood at the panel.
                 // (The caption-bar button stays: it only appears on bench builds
                 // with simulated stations.)
-                if (SecurityManager.HasAccess(SecurityLevel.Admin)) ShowSimulationMonitor();
+                if (SecurityManager.HasAccess(SecurityLevel.Admin)) ToggleSimulationMonitor();
                 else AuditLogger.Log("F12 (PLC monitor) refused: admin level required.");
                 return true;
             }
@@ -2390,8 +2412,9 @@ namespace Kaban.UI.Forms
                 if (int.TryParse(System.IO.File.ReadAllText(NavWidthPath).Trim(), out w) &&
                     w >= MenuWidthCompact + 40 && w <= 600)
                 {
+                    // Kept at factor 1 (see UiScale); the menu is scaled with the window.
                     MenuWidthFull = w;
-                    if (!_navCollapsed) pnlMenu.Width = w;
+                    if (!_navCollapsed) pnlMenu.Width = Kaban.UI.Controls.UiScale.For(pnlMenu, w);
                 }
             }
             catch { }
@@ -2432,8 +2455,9 @@ namespace Kaban.UI.Forms
             hist.Controls.Add(_btnHistFwd);
             hist.Resize += (s, e) =>
             {
-                _btnHistBack.SetBounds(4, 2, hist.Width / 2 - 6, 32);
-                _btnHistFwd.SetBounds(hist.Width / 2 + 2, 2, hist.Width / 2 - 6, 32);
+                Func<int, int> px = v => Kaban.UI.Controls.UiScale.For(hist, v);
+                _btnHistBack.SetBounds(px(4), px(2), hist.Width / 2 - px(6), hist.Height - px(4));
+                _btnHistFwd.SetBounds(hist.Width / 2 + px(2), px(2), hist.Width / 2 - px(6), hist.Height - px(4));
             };
 
             // A splitter on the menu's right edge: the operator sets how wide the
@@ -2450,7 +2474,7 @@ namespace Kaban.UI.Forms
             _navSplitter.SplitterMoved += (s, e) =>
             {
                 if (_navCollapsed) return;
-                MenuWidthFull = Math.Max(MenuWidthCompact + 40, pnlMenu.Width);
+                MenuWidthFull = Math.Max(MenuWidthCompact + 40, Kaban.UI.Controls.UiScale.Logical(pnlMenu.Width));
                 SaveNavWidth();
             };
 
@@ -2487,15 +2511,16 @@ namespace Kaban.UI.Forms
         private void LayoutNavToggle()
         {
             if (_btnNavToggle == null || _toggleStrip == null) return;
+            Func<int, int> px = v => Kaban.UI.Controls.UiScale.For(_toggleStrip, v);
             if (_navCollapsed)
             {
                 _btnNavToggle.Text = "\u2630";                        // hamburger: "open me"
-                _btnNavToggle.SetBounds(4, 2, _toggleStrip.Width - 8, 27);
+                _btnNavToggle.SetBounds(px(4), px(2), _toggleStrip.Width - px(8), _toggleStrip.Height - px(3));
             }
             else
             {
                 _btnNavToggle.Text = "\u00AB";                        // <<  : "collapse me"
-                _btnNavToggle.SetBounds(_toggleStrip.Width - 44, 2, 40, 27);   // right end
+                _btnNavToggle.SetBounds(_toggleStrip.Width - px(44), px(2), px(40), _toggleStrip.Height - px(3));   // right end
             }
         }
 
@@ -2538,7 +2563,7 @@ namespace Kaban.UI.Forms
         public void SetNavCollapsed(bool collapsed)
         {
             _navCollapsed = collapsed;
-            pnlMenu.Width = collapsed ? MenuWidthCompact : MenuWidthFull;
+            pnlMenu.Width = Kaban.UI.Controls.UiScale.For(pnlMenu, collapsed ? MenuWidthCompact : MenuWidthFull);
             LayoutNavToggle();
 
             foreach (var kv in _menuButtons)
@@ -2548,10 +2573,11 @@ namespace Kaban.UI.Forms
                 // way to do this; it now assigns the caption, so a blank asked for
                 // the key's translation and the label reappeared.
                 b.ShowCaption = !collapsed;
-                b.Padding = collapsed
+                var pad = collapsed
                     ? new Padding(12, 0, 0, 0)
                     : (b.Image != null ? new Padding(12, 0, 4, 0)
                                        : new Padding(42, 0, 4, 0));
+                b.Padding = Kaban.UI.Controls.UiScale.IsScaled(b) ? Kaban.UI.Controls.UiScale.Px(pad) : pad;
             }
 
             if (_machineStrip != null) _machineStrip.ApplyCollapsed(collapsed);
@@ -2574,7 +2600,7 @@ namespace Kaban.UI.Forms
             _btnSimMonitor.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
             _btnSimMonitor.Paint += (s, e) => DrawMonitorGlyph(e.Graphics, _btnSimMonitor.ClientRectangle, Color.White);
             _topTips.SetToolTip(_btnSimMonitor, "Simulation Monitor (F12)");
-            _btnSimMonitor.Click += (s, e) => ShowSimulationMonitor();
+            _btnSimMonitor.Click += (s, e) => ToggleSimulationMonitor();
             pnlTop.Controls.Add(_btnSimMonitor);
             LayoutTopBar();
         }

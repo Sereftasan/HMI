@@ -38,6 +38,7 @@ namespace Kaban.UI.Forms
         // Existing Constructor
         public InputForm(string title, string prompt, string defaultValue)
         {
+            Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             this.Text = title;
             this.Size = new Size(300, 180); // Slightly taller for error messages
             this.StartPosition = FormStartPosition.CenterParent;

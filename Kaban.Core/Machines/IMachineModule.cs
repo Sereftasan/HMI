@@ -101,6 +101,16 @@ namespace Kaban.Core.Machines
         /// same units, users and station connections serve all of them.
         /// </summary>
         public const string HmiSettings = "HmiSettings";
+
+        /// <summary>
+        /// A SIDE PAGE: not a button of the left menu but an icon on the bar at the
+        /// right edge of the window. It opens BESIDE the page on display - the page
+        /// narrows to make room, nothing is covered - for what is watched or done
+        /// alongside the machine's own pages: inputs and outputs, axis positions,
+        /// power, the order being run, second-level operations. Designed in Visual
+        /// Studio like any page; its HMI controls are read like a page's.
+        /// </summary>
+        public const string SidePage = "SidePage";
     }
 
     /// <summary>

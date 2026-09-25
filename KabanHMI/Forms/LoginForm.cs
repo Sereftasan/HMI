@@ -42,6 +42,7 @@ namespace Kaban.UI.Forms
         /// <param name="chooseUser">Open with the user list dropped down (Change user).</param>
         public LoginForm(bool chooseUser)
         {
+            Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             this.Text = LanguageManager.GetString("Ttl_Login", "HMI Login");
             this.Size = new Size(360, 260);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;

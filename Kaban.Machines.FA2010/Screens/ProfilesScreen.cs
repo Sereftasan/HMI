@@ -407,6 +407,7 @@ namespace Kaban.Machines.FA2010.Screens
             { Text = "Save arrangement", Width = 320, Height = 150, FormBorderStyle = FormBorderStyle.FixedDialog,
               StartPosition = FormStartPosition.CenterParent, MinimizeBox = false, MaximizeBox = false })
             {
+                Kaban.UI.Controls.UiScale.ApplyOnLoad(dlg);
                 var tb = new TextBox { Left = 12, Top = 16, Width = 280, Font = new Font("Segoe UI", 10F) };
                 var ok = new Button { Text = "OK", Left = 212, Top = 56, Width = 80, DialogResult = DialogResult.OK };
                 dlg.Controls.Add(tb);
@@ -826,6 +827,7 @@ namespace Kaban.Machines.FA2010.Screens
                 MinimizeBox = false, MaximizeBox = false
             })
             {
+                Kaban.UI.Controls.UiScale.ApplyOnLoad(dlg);
                 int y = 14;
                 Func<string, decimal, decimal, NumericUpDown> num = (caption, val, min) =>
                 {

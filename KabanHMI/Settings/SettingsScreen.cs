@@ -297,7 +297,7 @@ namespace Kaban.UI.Settings
             }
         }
 
-        private static readonly Font TabFont = new Font("Segoe UI", 10F);
+        private static readonly Font TabFont = Kaban.UI.Controls.UiScale.NewFont("Segoe UI", 10F);
 
         /// <summary>
         /// Applies active/inactive colours OUTSIDE of any paint cycle. Doing this

@@ -134,8 +134,10 @@ namespace Kaban.Core.Helpers
                     string key = columns[0].Trim();
                     if (string.IsNullOrEmpty(key)) continue;
 
+                    // A line break is written "\r\n" in the file (one row per key);
+                    // shown as a line break, not as the four characters.
                     for (int c = 1; c < columns.Length && c - 1 < langs.Count; c++)
-                        target[langs[c - 1]][key] = columns[c].Trim();
+                        target[langs[c - 1]][key] = columns[c].Trim().Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
                 }
             }
             catch (Exception ex)

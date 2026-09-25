@@ -45,6 +45,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -77,6 +78,8 @@
     <Compile Include="Helpers\DeviceCollector.cs" />
     <Compile Include="Helpers\ControlHighlight.cs" />
     <Compile Include="Helpers\WindowLayout.cs" />
+    <Compile Include="Helpers\SidePages.cs" />
+    <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
       <SubType>Component</SubType>
@@ -157,6 +160,7 @@
     </Compile>
     <Compile Include="Controls\UiStyle.cs" />
     <Compile Include="Controls\ToolGlyphs.cs" />
+    <Compile Include="Controls\UiScale.cs" />
     <Compile Include="Controls\CheckListHMI.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -177,6 +181,9 @@
     </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
+    <Compile Include="Screens\IoMonitorPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineHomeScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -206,6 +213,14 @@
     </Compile>
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.SidePanel.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Magnifier.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\UnitSettingsForm.cs">
       <SubType>Form</SubType>

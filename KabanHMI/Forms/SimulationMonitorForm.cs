@@ -227,14 +227,31 @@ namespace Kaban.UI.Forms
         // CONSTRUCTION
         // ==================================================================
 
-        public SimulationMonitorForm()
+        /// <summary>
+        /// True when the monitor is a SIDE PAGE of the main window (or of a side
+        /// page's own window) rather than a window of its own.
+        /// </summary>
+        public bool Embedded { get; private set; }
+
+        public SimulationMonitorForm() : this(false) { }
+
+        /// <param name="embedded">A side page (see MainForm.SidePanel): no frame, no window place of its own.</param>
+        public SimulationMonitorForm(bool embedded)
         {
+            Embedded = embedded;
             Text = LanguageManager.GetString("Ttl_SimMonitor", "PLC Monitor - live device memory");
             Size = new Size(820, 700);
             // As narrow as the user likes: the buttons that do not fit go under
             // the toolbar's chevron (>>), as on the Profiles page.
-            MinimumSize = new Size(300, 260);
+            MinimumSize = embedded ? Size.Empty : new Size(300, 260);
             StartPosition = FormStartPosition.Manual;
+            if (embedded)
+            {
+                TopLevel = false;
+                FormBorderStyle = FormBorderStyle.None;
+                ShowInTaskbar = false;
+            }
+            else UiScale.ApplyOnLoad(this);
             MinimizeBox = true;
             ShowInTaskbar = true;
             BackColor = Color.White;
@@ -261,7 +278,7 @@ namespace Kaban.UI.Forms
             UpdateToolbar();
 
             // Where it was closed, as big as it was.
-            PlacementRestored = WindowLayout.Apply(this, LayoutName, WindowLayout.Read(WindowsPath));
+            if (!embedded) PlacementRestored = WindowLayout.Apply(this, LayoutName, WindowLayout.Read(WindowsPath));
 
             _refresh.Interval = 250;
             _refresh.Tick += (s, e) => RefreshValues();
@@ -492,7 +509,7 @@ namespace Kaban.UI.Forms
                 ? string.Format(T("Msg_DelAllTabs", "Delete all {0} tab(s) of {1}, with their {2} row(s)?"), tabs, PlcEndpointNaming.Caption(mons[0].Endpoint), rows)
                 : string.Format(T("Msg_DelEverything", "Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?"), tabs, mons.Length, rows);
             question += "\r\n\r\n" + T("Msg_UndoHint", "Undo (Ctrl+Z) brings them back.");
-            if (ask && MessageBox.Show(this, question, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (ask && MessageBox.Show(DialogOwner, question, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             Remember(mons.Length == 1 ? T("Undo_DelAllTabs", "delete every tab") : T("Undo_DelEverything", "delete every tab of every controller"), mons);
             foreach (var m in mons)
                 foreach (var sh in m.Sheets.ToList()) RemoveSheet(m, sh, remember: false);
@@ -1189,10 +1206,55 @@ namespace Kaban.UI.Forms
                 var sel = SelectedIndices(mon.Current);
                 if (sel.Count > 0 && mon.Current.Rows[sel[0]].IsDevice) query = mon.Current.Rows[sel[0]].Address;
             }
+            if (Embedded) return OpenFindInside(mon, query);
             if (_find != null && !_find.IsDisposed) _find.Close();
             _find = new DeviceFindForm(mon.Station, PlcEndpointNaming.CaptionWithStation(mon.Endpoint), query, OpenUse);
             _find.Show(this);
             return _find;
+        }
+
+        // In the side panel Find is part of the monitor - a pane under the lists -
+        // not a window over the page it is about to open.
+        private Panel _findHost;
+        private Splitter _findSplit;
+
+        private DeviceFindForm OpenFindInside(MonitorTab mon, string query)
+        {
+            if (_find != null && !_find.IsDisposed && _find.Station != mon.Station)
+            {
+                _findHost.Controls.Remove(_find);
+                _find.Dispose();
+                _find = null;
+            }
+            if (_findHost == null)
+            {
+                _findHost = new Panel { Dock = DockStyle.Bottom, Height = 260, BackColor = Color.White };
+                _findSplit = new Splitter { Dock = DockStyle.Bottom, Height = 6, BackColor = Color.FromArgb(214, 218, 224), MinSize = 120, MinExtra = 120 };
+                // Docked above the status line, below the lists (the higher the index, the earlier it docks).
+                int under = Controls.GetChildIndex(_status);
+                Controls.Add(_findHost);
+                Controls.SetChildIndex(_findHost, under);
+                Controls.Add(_findSplit);
+                Controls.SetChildIndex(_findSplit, Controls.GetChildIndex(_findHost));
+            }
+            if (_find == null || _find.IsDisposed)
+            {
+                _find = new DeviceFindForm(mon.Station, PlcEndpointNaming.CaptionWithStation(mon.Endpoint), query, OpenUse,
+                                           embedded: true, close: CloseFindInside);
+                _find.Dock = DockStyle.Fill;
+                _findHost.Controls.Add(_find);
+                _find.Visible = true;
+            }
+            _findHost.Visible = _findSplit.Visible = true;
+            _find.Begin(query);
+            return _find;
+        }
+
+        private void CloseFindInside()
+        {
+            if (_findHost != null) _findHost.Visible = _findSplit.Visible = false;
+            var mon = CurrentMonitor;
+            if (mon != null && mon.Current != null) mon.Current.Grid.Focus();
         }
 
         /// <summary>Opens a use's page in the main window and frames the unit; "" or why not.</summary>
@@ -1379,7 +1441,7 @@ namespace Kaban.UI.Forms
                        row.IsComment ? row.Comment : row.EffectiveLabel, row.EffectiveDataType, row.Address, valueText,
                        focusField, isNew: false, isComment: row.IsComment))
             {
-                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(T("Undo_Edit", "edit a row"), mon);
 
                 if (row.IsComment) row.Comment = dlg.RowLabel;
@@ -1436,7 +1498,7 @@ namespace Kaban.UI.Forms
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint), "", suggestType, suggestAddress, "",
                                                   comment ? "Label" : "Address", isNew: true, isComment: comment))
             {
-                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(dlg.IsComment ? T("Undo_AddComment", "add a comment line") : T("Undo_AddDevice", "add a device"), mon);
                 if (sh == null) { sh = EnsureSheet(mon); at = InsertPoint(sh, true); }
 
@@ -1877,7 +1939,7 @@ namespace Kaban.UI.Forms
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
             int n = sh.Rows.Count(r => !r.IsBlank);
-            if (n > 0 && MessageBox.Show(this,
+            if (n > 0 && MessageBox.Show(DialogOwner,
                     string.Format(T("Msg_SheetDelete", "Delete the tab '{0}' and its {1} row(s)?"), sh.Name, n),
                     Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             RemoveSheet(mon, sh);
@@ -1913,6 +1975,7 @@ namespace Kaban.UI.Forms
                 Font = UiStyle.Body, ClientSize = new Size(380, 118)
             })
             {
+                UiScale.ApplyOnLoad(f);
                 var lbl = new Label { Text = caption, AutoSize = true, Location = new Point(16, 14) };
                 var box = new TextBox { Text = initial ?? "", Location = new Point(16, 38), Width = 348 };
                 var ok = UiStyle.Round(new Button { Text = T("Btn_Ok", "OK"), DialogResult = DialogResult.OK, Width = 96, Height = 30, Location = new Point(164, 76) });
@@ -1931,7 +1994,7 @@ namespace Kaban.UI.Forms
                     MessageBox.Show(f, problem, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                 };
-                return f.ShowDialog(this) == DialogResult.OK ? box.Text.Trim() : null;
+                return f.ShowDialog(DialogOwner) == DialogResult.OK ? box.Text.Trim() : null;
             }
         }
 
@@ -1965,7 +2028,7 @@ namespace Kaban.UI.Forms
 
         private void Report(int added, int offered)
         {
-            MessageBox.Show(this,
+            MessageBox.Show(DialogOwner,
                 string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added),
                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -1981,7 +2044,7 @@ namespace Kaban.UI.Forms
             var devices = DeviceCollector.FromControl(page, mon.Station);
             if (devices.Count == 0)
             {
-                MessageBox.Show(this, string.Format(T("Msg_MonScreenNone", "The screen on display uses no device of {0}."),
+                MessageBox.Show(DialogOwner, string.Format(T("Msg_MonScreenNone", "The screen on display uses no device of {0}."),
                                 PlcEndpointNaming.Caption(mon.Endpoint)), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -2034,7 +2097,7 @@ namespace Kaban.UI.Forms
             SaveWatchList(mon);
             foreach (var s in mon.Sheets) Render(mon, s);
             if (pages.Count == 0)
-                MessageBox.Show(this, string.Format(T("Msg_MonProgramNone", "No page of the program uses a device of {0}."),
+                MessageBox.Show(DialogOwner, string.Format(T("Msg_MonProgramNone", "No page of the program uses a device of {0}."),
                                 PlcEndpointNaming.Caption(mon.Endpoint)), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
             else Report(added, offered);
         }
@@ -2046,7 +2109,7 @@ namespace Kaban.UI.Forms
             var devices = DeviceCollector.FromLabelList(mon.Station);
             if (devices.Count == 0)
             {
-                MessageBox.Show(this, T("Msg_MonLabelsNone", "This controller has no PLC label list (PlcLabels.csv)."),
+                MessageBox.Show(DialogOwner, T("Msg_MonLabelsNone", "This controller has no PLC label list (PlcLabels.csv)."),
                                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -2089,7 +2152,7 @@ namespace Kaban.UI.Forms
             var driver = mon.WriteDriver;
             if (driver == null)
             {
-                MessageBox.Show(this, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(DialogOwner, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -2142,6 +2205,8 @@ namespace Kaban.UI.Forms
         /// </summary>
         private void RefreshValues()
         {
+            // A side page out of sight reads nothing (the panel closed, not the page).
+            if (Embedded && !Visible) return;
             var mon = CurrentMonitor;
             if (mon == null) return;
             var sh = mon.Current;
@@ -2365,7 +2430,7 @@ namespace Kaban.UI.Forms
                 dlg.Title = T("Ttl_ExportCsv", "Export this tab's list");
                 dlg.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
                 dlg.FileName = SafeFileName(PlcEndpointNaming.Caption(mon.Endpoint) + " - " + sh.Name) + ".csv";
-                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 try
                 {
                     var lines = new List<string>
@@ -2387,7 +2452,7 @@ namespace Kaban.UI.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, T("Msg_ExportFailed", "Could not write the file:") + "\r\n" + ex.Message,
+                    MessageBox.Show(DialogOwner, T("Msg_ExportFailed", "Could not write the file:") + "\r\n" + ex.Message,
                                     Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -2401,20 +2466,20 @@ namespace Kaban.UI.Forms
             {
                 dlg.Title = T("Ttl_ImportCsv", "Add devices from a CSV");
                 dlg.Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*";
-                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
 
                 List<WatchRow> parsed;
                 Dictionary<string, int> values;
                 try { parsed = ParseCsv(dlg.FileName, out values); }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, T("Msg_ImportFailed", "Could not read the file:") + "\r\n" + ex.Message,
+                    MessageBox.Show(DialogOwner, T("Msg_ImportFailed", "Could not read the file:") + "\r\n" + ex.Message,
                                     Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 if (parsed.Count(r => r.IsDevice) == 0)
                 {
-                    MessageBox.Show(this, T("Msg_ImportNothing", "No usable rows found. Expected Label / DataType / Address and optionally a Value column."),
+                    MessageBox.Show(DialogOwner, T("Msg_ImportNothing", "No usable rows found. Expected Label / DataType / Address and optionally a Value column."),
                                     Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
@@ -2440,13 +2505,13 @@ namespace Kaban.UI.Forms
                 // Importing must never command the machine as a SIDE EFFECT of "add
                 // these to my list": the file's values are written only when asked.
                 int applied = 0;
-                if (values.Count > 0 && MessageBox.Show(this,
+                if (values.Count > 0 && MessageBox.Show(DialogOwner,
                         string.Format(T("Msg_ImportApplyValues", "The file also carries {0} values. Write them to this controller as well?"), values.Count),
                         Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     var driver = mon.WriteDriver;
                     if (driver == null)
-                        MessageBox.Show(this, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(DialogOwner, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     else
                     {
                         foreach (var kv in values) { driver.Write(kv.Key, kv.Value); mon.Values[kv.Key] = kv.Value; applied++; }
@@ -2458,7 +2523,7 @@ namespace Kaban.UI.Forms
                 SaveWatchList(mon);
                 Render(mon, sh);
                 AuditLogger.Log("imported " + added + " monitor rows for " + PlcEndpointNaming.Caption(mon.Endpoint) + " from " + Path.GetFileName(dlg.FileName) + ".");
-                MessageBox.Show(this,
+                MessageBox.Show(DialogOwner,
                     string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added) +
                     (applied > 0 ? "\r\n" + string.Format(T("Msg_ImportWrote", "Wrote {0} value(s)."), applied) : ""),
                     Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2628,6 +2693,22 @@ namespace Kaban.UI.Forms
                 if (File.Exists(path)) Deserialize(mon, File.ReadAllLines(path));
             }
             catch (Exception ex) { AuditLogger.Log("could not read the monitor watch list: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// The window that owns this monitor's questions and dialogs: the monitor
+        /// itself, or - as a side page - the window it is in (a dialog owned by a
+        /// control inside a window is not something Windows does reliably).
+        /// </summary>
+        private IWin32Window DialogOwner
+        {
+            get { return TopLevel ? (IWin32Window)this : (IWin32Window)(TopLevelControl as Form ?? FindForm() ?? (Control)this); }
+        }
+
+        /// <summary>Keeps every controller's lists now (a side page is hidden, never closed).</summary>
+        public void SaveLists()
+        {
+            foreach (var mon in _monitors) SaveWatchList(mon);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

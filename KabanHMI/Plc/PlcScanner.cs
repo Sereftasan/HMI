@@ -86,6 +86,23 @@ namespace Kaban.UI.Plc
 
         private readonly EventHandler _contentChanged;
 
+        /// <summary>
+        /// Other places whose controls are read with the page's: the side panel
+        /// and a side page's own window. Read only while they are on show, like
+        /// the page; the page's alarms and banner stay the page scanner's.
+        /// </summary>
+        private readonly List<Control> _extraTargets = new List<Control>();
+
+        public void AddTarget(Control target)
+        {
+            if (target != null && !_extraTargets.Contains(target)) _extraTargets.Add(target);
+        }
+
+        public void RemoveTarget(Control target)
+        {
+            _extraTargets.Remove(target);
+        }
+
         public void SetInterval(int interval) { if (interval > 0) _timer.Interval = interval; }
 
         /// <summary>
@@ -113,6 +130,9 @@ namespace Kaban.UI.Plc
             _plcIndexMap.Clear();
 
             FindControls(_targetControl);
+            _extraTargets.RemoveAll(t => t == null || t.IsDisposed);
+            foreach (var t in _extraTargets)
+                if (t.Visible) FindControls(t);
 
             // Addresses are collected PER STATION: curPlc is set to each control's
             // PlcNumber before its addresses are added, so every station gets its

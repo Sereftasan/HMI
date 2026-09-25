@@ -149,7 +149,8 @@ namespace Kaban.UI.Screens
 
             Controls.Add(_gap);
 
-            Height = SeparatorHeight + group.Pages.Count * (ButtonHeight + ButtonMarginY * 2);
+            // Sized on screen: through the magnifier once the strip is scaled (the buttons are scaled as they are added).
+            Height = Kaban.UI.Controls.UiScale.For(this, SeparatorHeight + group.Pages.Count * (ButtonHeight + ButtonMarginY * 2));
             Visible = true;
             // Children are Dock.Top INSIDE this panel; the panel itself is sized here.
             PerformLayout();

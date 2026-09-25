@@ -134,7 +134,7 @@ namespace Kaban.UI.Controls
             if (!string.IsNullOrEmpty(_emoji)) caption = _emoji + " " + caption;
 
             // Normal font by default; bold only when an emoji marks it important.
-            using (var font = new Font("Segoe UI", 9.5F,
+            using (var font = new Font("Segoe UI", UiScale.Pt(9.5F),
                        string.IsNullOrEmpty(_emoji) ? FontStyle.Regular : FontStyle.Bold))
             {
                 SizeF ts = g.MeasureString(caption, font);
