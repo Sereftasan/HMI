@@ -69,16 +69,16 @@ namespace Kaban.UI.Controls
         public string AxisName { get { return AxisNameKey; } set { AxisNameKey = value; } }
 
         // ---- movement ----
-        [Category("Movement"), Description("Jog back / minus.")]
+        [Category(" Movement"), Description("Jog back / minus.")]
         public string CommandBackAddress { get; set; }
 
-        [Category("Movement"), Description("Jog forward / plus.")]
+        [Category(" Movement"), Description("Jog forward / plus.")]
         public string CommandForwardAddress { get; set; }
 
-        [Category("Movement"), Description("Live axis position.")]
+        [Category(" Movement"), Description("Live axis position.")]
         public string PositionAddress { get; set; }
 
-        [Category("Movement")]
+        [Category(" Movement")]
         public DataTypeEnum PositionDataType { get; set; }
 
         // Position, min, max, reference and calibration are all the SAME physical
@@ -88,16 +88,16 @@ namespace Kaban.UI.Controls
         // and the position is a limit that does not mean what the position means.
 
         // ---- settings ----
-        [Category("Settings"), Description("Minimum travel limit.")]
+        [Category(" Settings"), Description("Minimum travel limit.")]
         public string MinLimitAddress { get; set; }
 
-        [Category("Settings"), Description("Maximum travel limit.")]
+        [Category(" Settings"), Description("Maximum travel limit.")]
         public string MaxLimitAddress { get; set; }
 
-        [Category("Settings"), Description("Reference (home) value.")]
+        [Category(" Settings"), Description("Reference (home) value.")]
         public string ReferenceAddress { get; set; }
 
-        [Category("Settings"), Description("Calibration value.")]
+        [Category(" Settings"), Description("Calibration value.")]
         public string CalibrationAddress { get; set; }
 
         [Category(" Value"), Description("Raw-to-display divisor for EVERY value on the row.")]
@@ -182,7 +182,7 @@ namespace Kaban.UI.Controls
         /// The axis's error bit. An alarm on this device is this axis's servo
         /// fault, and its help opens the servo drive manual named for this axis.
         /// </summary>
-        [Category("Help"), DefaultValue(""), Description("Error bit set when this axis faults.")]
+        [Category(" Help"), DefaultValue(""), Description("Error bit set when this axis faults.")]
         public string ErrorAddress { get; set; }
 
         /// <summary>This axis's error bit, for AlarmHelpLinks (null when none).</summary>
@@ -219,7 +219,7 @@ namespace Kaban.UI.Controls
         public bool IsAngle { get { return Suffix == "\u00B0"; } }
 
         // ---- commands ----
-        [Category("Commands"), Description("Applies the calibration value to the axis.")]
+        [Category(" Commands"), Description("Applies the calibration value to the axis.")]
         public string CalibrateAddress { get; set; }
 
         /// <summary>
@@ -227,46 +227,46 @@ namespace Kaban.UI.Controls
         /// leaves armed, not a momentary press, so it is shown as a checkbox -
         /// a button that stays pressed is a button that looks broken.
         /// </summary>
-        [Category("Commands"), Description("Reference activation selection (latched).")]
+        [Category(" Commands"), Description("Reference activation selection (latched).")]
         public string GoToReferenceAddress { get; set; }
 
         // ---- meters ----
         // MOTOR CURRENT is a servo load percentage read from a status word - a
         // different register family from the setting block and a different scale.
-        [Category("Meters"), Description("Servo load / motor current. Empty hides the bar.")]
+        [Category(" Meters"), Description("Servo load / motor current. Empty hides the bar.")]
         public string CurrentAddress { get; set; }
 
-        [Category("Meters")]
+        [Category(" Meters")]
         public double CurrentDivisor { get; set; }
 
-        [Category("Meters"), Description("Reading that counts as 100% on the bar.")]
+        [Category(" Meters"), Description("Reading that counts as 100% on the bar.")]
         public double CurrentFullScale { get; set; }
 
         // REFERENCE Z SIGNAL DISTANCE is a millimetre offset, not a percentage:
         // how far past the Z pulse the axis stopped. Shown as a bar against one
         // motor revolution so a marginal reference is visible at a glance.
-        [Category("Meters"), Description("Reference Z signal distance. Empty hides the bar.")]
+        [Category(" Meters"), Description("Reference Z signal distance. Empty hides the bar.")]
         public string ZDistanceAddress { get; set; }
 
         // ---- drive diagnostics --------------------------------------------
         // Three separate codes because the drive reports three separate things,
         // and which one is non-zero is the first question in any servo fault.
-        [Category("Diagnostics"), Description("Axis alarm code word (hexadecimal).")]
+        [Category(" Diagnostics"), Description("Axis alarm code word (hexadecimal).")]
         public string AxisAlarmAddress { get; set; }
 
-        [Category("Diagnostics"), Description("Axis warning code word (hexadecimal).")]
+        [Category(" Diagnostics"), Description("Axis warning code word (hexadecimal).")]
         public string AxisWarningAddress { get; set; }
 
-        [Category("Diagnostics"), Description("Servo amplifier alarm code word (hexadecimal).")]
+        [Category(" Diagnostics"), Description("Servo amplifier alarm code word (hexadecimal).")]
         public string ServoAlarmAddress { get; set; }
 
-        [Category("Meters")]
+        [Category(" Meters")]
         public double ZDistanceDivisor { get; set; }
 
-        [Category("Meters"), Description("Distance that counts as 100% on the bar.")]
+        [Category(" Meters"), Description("Distance that counts as 100% on the bar.")]
         public double ZDistanceFullScale { get; set; }
 
-        [Category("Security")]
+        [Category(" Security")]
         public SecurityLevel RequiredSecurity { get; set; }
 
         // ==================================================================
@@ -517,7 +517,7 @@ namespace Kaban.UI.Controls
             return n;
         }
 
-        [Category("Movement"), Description("Vertical axis: the jog arrows become up/down.")]
+        [Category(" Movement"), Description("Vertical axis: the jog arrows become up/down.")]
         public bool VerticalMovement { get; set; }
 
         private ButtonHMI AddJog(string address, string glyph, ref int x)

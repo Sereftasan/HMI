@@ -24,9 +24,9 @@ namespace Kaban.UI.Controls
         [System.ComponentModel.Description("Optional description attached to the control's left edge. Enter a TRANSLATION KEY (rendered in the active language) or plain text (shown as-is when the key is not in the translation file). Empty = no label.")]
         public string DescriptionText { get { return _descr?.Text ?? ""; } set { Descr.Text = value; } }
 
-        [Category("System")] public int PlcNumber { get; set; } = 1;
-        [Category("System")] public string Address { get; set; }
-        [Category("System")] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
+        [Category(" System")] public int PlcNumber { get; set; } = 1;
+        [Category(" System")] public string Address { get; set; }
+        [Category(" System")] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
 
         [Category(" Visuals")] public Image ImageActive { get; set; }
         [Category(" Visuals")] public Image ImagePassive { get; set; }

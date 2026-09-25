@@ -709,8 +709,10 @@ namespace Kaban.UI.Controls
                 }
                 if (!condOk)
                 {
-                    sb.Append("\n").Append(LanguageManager.GetString("Sys_ReqState", "Required Machine State:"))
-                      .Append(" ").Append(EnableConditions);
+                    // Only the conditions NOT met, one per line.
+                    sb.Append("\n").Append(LanguageManager.GetString("Sys_ReqState", "Required Machine State:"));
+                    foreach (var name in MachineConditionMap.Unmet(EnableConditions, checkGlobal))
+                        sb.Append("\n  \u2022 ").Append(name);
                 }
                 if (!trigOk && EnableTrigger != null && !string.IsNullOrEmpty(EnableTrigger.MonitorAddress))
                 {

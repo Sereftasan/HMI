@@ -87,6 +87,8 @@ namespace Kaban.UI.Controls
         /// greyed out; it should not show them.
         /// </summary>
         [Category("  Conditions")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition VisibilityConditions { get; set; }
 
         /// <summary>
@@ -95,6 +97,8 @@ namespace Kaban.UI.Controls
         /// must not be changed yet, such as while the machine is running.
         /// </summary>
         [Category("  Conditions")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition EnableConditions { get; set; }
 
         /// <summary>Bit that must be ON for the group to be enabled. Optional.</summary>

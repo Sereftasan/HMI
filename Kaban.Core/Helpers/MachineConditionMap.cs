@@ -82,5 +82,39 @@ namespace Kaban.Core.Helpers
         }
 
         public static IEnumerable<KeyValuePair<long, ConditionDefinition>> GetAllMachineBits() => _machineBits;
+
+        /// <summary>The single conditions a set is made of.</summary>
+        public static IEnumerable<SystemCondition> Parts(SystemCondition set)
+        {
+            long v = (long)set;
+            for (int i = 0; i < 64; i++)
+            {
+                long bit = 1L << i;
+                if ((v & bit) != 0) yield return (SystemCondition)bit;
+            }
+        }
+
+        /// <summary>A condition's name: its description, or a machine condition's own name.</summary>
+        public static string NameOf(SystemCondition condition)
+        {
+            if (Enum.IsDefined(typeof(SystemCondition), condition)) return EnumHelper.GetDescription(condition);
+            ConditionDefinition def;
+            return _machineBits.TryGetValue((long)condition, out def) && !string.IsNullOrEmpty(def.Name)
+                ? def.Name : "Condition " + (long)condition;
+        }
+
+        /// <summary>
+        /// The names of the conditions of a set that are NOT met - what a disabled
+        /// control says when it is hovered. The whole set used to be printed, met
+        /// and unmet alike, which left the operator to work out which one mattered.
+        /// </summary>
+        public static List<string> Unmet(SystemCondition set, Func<SystemCondition, bool> check)
+        {
+            var names = new List<string>();
+            if (check == null) return names;
+            foreach (var part in Parts(set))
+                if (!check(part)) names.Add(NameOf(part));
+            return names;
+        }
     }
 }

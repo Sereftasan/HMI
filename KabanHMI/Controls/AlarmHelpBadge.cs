@@ -310,9 +310,13 @@ namespace Kaban.UI.Controls
     /// beside it while an error bit was set - two small circles side by side
     /// that read as the same thing. Now one: BLUE while there is help to offer
     /// (the unit's own files, the cylinder manual for its valve and feedback),
-    /// RED and blinking while an error is set (AMBER for an axis showing only
-    /// warnings), hidden when there is nothing to open. One document opens
-    /// straight away; several offer the list used everywhere else.
+    /// RED while an error is set (AMBER for an axis showing only warnings),
+    /// hidden when there is nothing to open. One document opens straight away;
+    /// several offer the list used everywhere else.
+    ///
+    /// It does NOT BLINK: the border of what failed blinks already, and a second
+    /// blinking mark beside it was restless rather than helpful. Red and filled
+    /// is enough to say "the help for this fault is here".
     /// </summary>
     [System.ComponentModel.ToolboxItem(false)]
     public class UnitHelpBadge : Control, UiStyle.IDrawsOwnHoverBorder
@@ -328,10 +332,6 @@ namespace Kaban.UI.Controls
         private bool _hover;
         private Font _font;
 
-        // One timer for every blinking "?": a page of twenty units must not run twenty.
-        private static readonly List<UnitHelpBadge> _blinking = new List<UnitHelpBadge>();
-        private static Timer _blink;
-        private static bool _phase;
 
         public UnitHelpBadge()
         {
@@ -351,12 +351,8 @@ namespace Kaban.UI.Controls
             set
             {
                 if (value == _state) return;
-                bool blinking = value == BadgeState.Error || value == BadgeState.Warning;
-                bool wasBlinking = _state == BadgeState.Error || _state == BadgeState.Warning;
                 _state = value;
                 Visible = value != BadgeState.Hidden;
-                if (blinking && !wasBlinking) StartBlinking(this);
-                else if (!blinking && wasBlinking) StopBlinking(this);
                 Invalidate();
             }
         }
@@ -371,38 +367,9 @@ namespace Kaban.UI.Controls
             get { return _state == BadgeState.Error ? Red : _state == BadgeState.Warning ? Amber : Blue; }
         }
 
-        private static void StartBlinking(UnitHelpBadge b)
-        {
-            if (!_blinking.Contains(b)) _blinking.Add(b);
-            if (_blink == null)
-            {
-                _blink = new Timer { Interval = 500 };
-                _blink.Tick += (s, e) =>
-                {
-                    _phase = !_phase;
-                    foreach (var x in _blinking.ToArray())
-                    {
-                        if (x.IsDisposed) { _blinking.Remove(x); continue; }
-                        x.Invalidate();
-                    }
-                };
-            }
-            _blink.Start();
-        }
-
-        private static void StopBlinking(UnitHelpBadge b)
-        {
-            _blinking.Remove(b);
-            if (_blinking.Count == 0 && _blink != null) _blink.Stop();
-        }
-
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                StopBlinking(this);
-                if (_font != null) { _font.Dispose(); _font = null; }
-            }
+            if (disposing && _font != null) { _font.Dispose(); _font = null; }
             base.Dispose(disposing);
         }
 
@@ -418,9 +385,8 @@ namespace Kaban.UI.Controls
             var mark = MarkColor;
 
             // Blue: white with a blue "?" (it covers the frame line under it),
-            // filled on hover. Red/amber: ALTERNATING with white, as the caption
-            // bar's alarm mark does.
-            bool filled = _state == BadgeState.Info ? _hover : _phase;
+            // filled on hover. Red / amber: filled, steady.
+            bool filled = _state != BadgeState.Info || _hover;
             using (var fill = new SolidBrush(filled ? mark : Color.White))
                 g.FillEllipse(fill, r);
             using (var pen = new Pen(mark, _state == BadgeState.Info ? 1.4f : 1.6f))

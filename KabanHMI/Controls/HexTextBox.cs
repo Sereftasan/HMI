@@ -15,7 +15,7 @@ namespace Kaban.UI.Controls
         private string _prefix = "X";
         private IOTypeDef _inputOutput = IOTypeDef.INPUT;
 
-        [Category("PLC Settings")]
+        [Category(" PLC Settings")]
         public IOTypeDef InputOutput
         {
             get { return _inputOutput; }

@@ -72,19 +72,19 @@ namespace Kaban.UI.Controls
             Window
         }
 
-        [Category("Bands"), Description("Which way the value is judged.")]
+        [Category(" Bands"), Description("Which way the value is judged.")]
         public BandShape Bands { get; set; }
 
-        [Category("Bands"), Description("Window/Falling: at or below this it is RED.")]
+        [Category(" Bands"), Description("Window/Falling: at or below this it is RED.")]
         public double LowAlarm { get; set; }
 
-        [Category("Bands"), Description("Window/Falling: at or below this it is AMBER.")]
+        [Category(" Bands"), Description("Window/Falling: at or below this it is AMBER.")]
         public double LowWarning { get; set; }
 
-        [Category("Bands"), Description("Window/Rising: at or above this it is AMBER.")]
+        [Category(" Bands"), Description("Window/Rising: at or above this it is AMBER.")]
         public double HighWarning { get; set; }
 
-        [Category("Bands"), Description("Window/Rising: at or above this it is RED.")]
+        [Category(" Bands"), Description("Window/Rising: at or above this it is RED.")]
         public double HighAlarm { get; set; }
 
         /// <summary>Servo current / load: green to 60, amber to 80, red beyond.</summary>
@@ -367,8 +367,8 @@ namespace Kaban.UI.Controls
         [Category(" Limits"), Description("How much one arrow press moves the value.")]
         public double Step { get; set; }
 
-        [Category("Security")] public SecurityLevel RequiredSecurity { get; set; }
-        [Category("Security")] public bool LogAction { get; set; }
+        [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; }
+        [Category(" Security")] public bool LogAction { get; set; }
 
         private const int ArrowW = 26;
         private Rectangle _up, _down;

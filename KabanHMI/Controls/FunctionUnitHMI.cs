@@ -616,11 +616,17 @@ namespace Kaban.UI.Controls
         public bool LogAction { get { return _logAction; } set { _logAction = value; ApplySettings(); } }
 
         private SystemCondition _visibilityConditions = SystemCondition.None;
+        // A SET of conditions, ticked in a list, like the buttons' own - it was
+        // the plain enum drop-down here, which picks only one.
         [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition VisibilityConditions { get { return _visibilityConditions; } set { _visibilityConditions = value; ApplySettings(); } }
 
         private SystemCondition _enableConditions = SystemCondition.None;
         [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition EnableConditions { get { return _enableConditions; } set { _enableConditions = value; ApplySettings(); } }
 
         // --- Back-compat aliases (old property names without the Key suffix) ---
@@ -701,18 +707,20 @@ namespace Kaban.UI.Controls
         private CylinderValve _valve = CylinderValve.Unspecified;
         private CylinderFeedback _feedback = CylinderFeedback.Unspecified;
 
-        [Category("Help"), DefaultValue(""),
+        [Category(" Help"), DefaultValue(""),
          Description("Error bit set when the A (left button) movement fails. Its '?' shows on the top frame line, and button A's border blinks red.")]
         public string ErrorAAddress { get { return _errorAAddress; } set { _errorAAddress = (value ?? "").Trim(); ApplySettings(); } }
 
-        [Category("Help"), DefaultValue(""),
+        [Category(" Help"), DefaultValue(""),
          Description("Error bit set when the B (right button) movement fails. Its '?' shows on the top frame line, and button B's border blinks red.")]
         public string ErrorBAddress { get { return _errorBAddress; } set { _errorBAddress = (value ?? "").Trim(); ApplySettings(); } }
 
-        [Category("Help"), DefaultValue(UnitKind.Cylinder),
-         Description("Cylinder: errors open the cylinder manual for its Valve and Feedback. " +
-                     "Axis: errors open the servo drive manual, and Valve and Feedback are not used - " +
-                     "put the reference sensor on ONE button's lamp (Lamp1A or Lamp1B).")]
+        /// <summary>
+        /// Cylinder, or Axis - set by AxisUnitHMI for the unit inside it. Not in
+        /// the Properties window: an axis on a page is an AxisUnitHMI, so a
+        /// function unit placed by hand is always a cylinder.
+        /// </summary>
+        [Browsable(false), DefaultValue(UnitKind.Cylinder), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public UnitKind Kind { get { return _kind; } set { _kind = value; UpdateErrorBlink(); } }
         private UnitKind _kind = UnitKind.Cylinder;
 
@@ -722,7 +730,7 @@ namespace Kaban.UI.Controls
         /// with the manual when one of its alarms is active. File names in the
         /// machine's Help folder, ";"-separated.
         /// </summary>
-        [Category("Help"), DefaultValue(""),
+        [Category(" Help"), DefaultValue(""),
          Editor(typeof(Kaban.UI.Design.HelpFilesEditor), typeof(System.Drawing.Design.UITypeEditor)),
          Description("Help files about this unit (in the machine's Help folder). Shown as an 'i' on the top frame line.")]
         public string HelpFiles { get { return _helpFiles; } set { _helpFiles = (value ?? "").Trim(); ApplySettings(); } }
@@ -761,12 +769,12 @@ namespace Kaban.UI.Controls
         /// The valve fitted to this cylinder. The "?" opens the cylinder manual with
         /// only this valve's part of detail 1.4 - see TroubleshootingCatalog.Tailor.
         /// </summary>
-        [Category("Help"), DefaultValue(CylinderValve.Unspecified),
+        [Category(" Help"), DefaultValue(CylinderValve.Unspecified),
          Description("Cylinder units: the valve fitted. The '?' opens the cylinder troubleshooting manual with only this valve's part of detail 1.4.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
         /// <summary>The feedback fitted to this cylinder: only its part of detail 1.7 is shown.</summary>
-        [Category("Help"), DefaultValue(CylinderFeedback.Unspecified),
+        [Category(" Help"), DefaultValue(CylinderFeedback.Unspecified),
          Description("Cylinder units: the feedback fitted. The '?' opens the cylinder troubleshooting manual with only this feedback's part of detail 1.7.")]
         public CylinderFeedback FeedbackType { get { return _feedback; } set { _feedback = value; ApplySettings(); } }
 
@@ -1240,16 +1248,13 @@ namespace Kaban.UI.Controls
             else if (hasPos && PositionSlotWidth > 0) posW = Math.Min(PositionSlotWidth, areaW - 2 * gap - 20);
             else if (hasPos)
             {
-                // Build a representative widest string: all digits + optional decimal
-                // point + decimals + suffix, so the measured width covers everything
-                // that will actually be shown (fixes the clipped "12.35 mm").
-                int intDigits = Math.Max(1, _positionDigits);
-                string sample = new string('0', intDigits);
-                if (_positionDecimalPlaces > 0)
-                    sample += "." + new string('0', _positionDecimalPlaces);
-                if (!string.IsNullOrEmpty(_positionSuffix))
-                    sample += " " + _positionSuffix; // matches the " suffix" the display now appends
-
+                // ONE WIDTH FOR EVERY UNIT: the display fits "000000.0 mm" in its
+                // font, whatever this unit's own digits, decimals or unit. Sized
+                // to its own digits, a unit with one decimal and one with none -
+                // or an axis with three - came out a little different each, and
+                // so did the buttons beside them, down a page of units that should
+                // line up. A reading rarely fills every digit; this fits them all.
+                const string sample = "000000.0 mm";
                 int textW = 0;
                 try
                 {
@@ -1260,13 +1265,11 @@ namespace Kaban.UI.Controls
                     }
                 }
                 catch { textW = 0; }
-
                 if (textW <= 0)
                     textW = (int)(sample.Length * _numPosition.Font.Size * 0.62f); // fallback estimate
 
                 int wanted = textW + 14; // small padding
-                // Never let the readout dominate: cap it so the two button slots
-                // keep a fair share of the row (buttons were getting squeezed).
+                // Never let the readout dominate: the two buttons keep a fair share.
                 int maxPos = (int)(areaW * 0.42f);
                 posW = Math.Min(wanted, maxPos);
                 posW = Math.Min(posW, areaW - 2 * gap - 60); // hard floor for buttons

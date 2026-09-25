@@ -452,11 +452,45 @@ namespace Kaban.UI.Helpers
             return docs;
         }
 
+        /// <summary>
+        /// A document from the program's own Help folder is opened from a COPY in
+        /// the temp folder. A PDF viewer keeps the file it shows locked, and the
+        /// one it locked was the program's: building the program again while a
+        /// manual was open failed ("could not copy MR_J4_TroubleShooting.pdf ...
+        /// locked by Adobe Acrobat"), and so could an update. The copy is made
+        /// once and refreshed only when the manual changes. The HTML pages the
+        /// program writes are in the temp folder already.
+        /// </summary>
+        internal static string ViewerCopy(string path)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return path;
+                var help = Path.GetFullPath(TC.HelpFolder).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+                var full = Path.GetFullPath(path);
+                if (!full.StartsWith(help, StringComparison.OrdinalIgnoreCase)) return path;
+                if (full.EndsWith(".html", StringComparison.OrdinalIgnoreCase) || full.EndsWith(".htm", StringComparison.OrdinalIgnoreCase))
+                    return path;          // a page may link files beside it by name: opened where it is
+                var dir = Path.Combine(Path.GetTempPath(), "KabanHMI_Help");
+                Directory.CreateDirectory(dir);
+                var copy = Path.Combine(dir, Path.GetFileName(full));
+                var src = new FileInfo(full);
+                var dst = new FileInfo(copy);
+                if (!dst.Exists || dst.Length != src.Length || dst.LastWriteTimeUtc < src.LastWriteTimeUtc)
+                {
+                    try { File.Copy(full, copy, true); }
+                    catch (IOException) { if (!dst.Exists) return path; }   // the old copy is open: show it
+                }
+                return copy;
+            }
+            catch { return path; }
+        }
+
         /// <summary>Opens a document - tailored or sectioned where that applies.</summary>
         public static void Open(IWin32Window owner, TC.HelpDocument doc)
         {
             if (doc == null) return;
-            string target = TC.ExtractSection(doc);
+            string target = ViewerCopy(TC.ExtractSection(doc));
             try
             {
                 AuditLogger.Log("opened help document " + doc.FileName + ".");

@@ -3806,3 +3806,19 @@ and `UnitLookAndErrors` extended.
   window its first control was on, and did not show on the main window.
 - Demo `ValveType` / `FeedbackType` on nine FA2010 units (see REVIEW 4f).
 - Tests: `AxisCodeHelpUi` (blinking, titles), `CylinderHelpAndLogin` (titles, demo types).
+
+## 2026-09-25 - Unit widths, steady "?", designer Help properties, condition sets, PDF copies
+
+- `AxisUnitHMI` no longer sets slot widths; `FunctionUnitHMI` sizes every position
+  display to "000000.0 mm" (one width for all units, axis units included).
+- `UnitHelpBadge`: no blinking (red / amber steady).
+- `FunctionUnitHMI.Kind`: hidden, not serialized. Categories: " Help" and the other
+  custom categories take the leading space.
+- `HelpFilesEditor`: a list dialog (add several, remove, reorder); language suffix dropped
+  from stored names.
+- `FunctionUnitHMI` / `GroupBoxHMI` Visibility/EnableConditions use
+  `UnifiedConditionEditor` + `ConditionTextConverter`. `MachineConditionMap.Parts /
+  NameOf / Unmet`; ButtonHMI and NumericInputHMI name only the unmet conditions.
+- `AlarmHelpLinks.ViewerCopy`: help PDFs opened from `%TEMP%\KabanHMI_Help`.
+- Tests: `tools/ui_test/UnitsAndDesigner.cs`; `MonitorFind` checks the real Robot Top
+  Clamping's tailored manual.

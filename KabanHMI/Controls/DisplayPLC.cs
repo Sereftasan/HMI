@@ -18,21 +18,21 @@ namespace Kaban.UI.Controls
         private string _address;
         private int _currentValue = 0;
 
-        [Category("PLC Settings")]
+        [Category(" PLC Settings")]
         public DisplayType Presentation
         {
             get { return _presentation; }
             set { _presentation = value; }
         }
 
-        [Category("PLC Settings")]
+        [Category(" PLC Settings")]
         public string Address
         {
             get { return _address; }
             set { _address = value; }
         }
 
-        [Category("PLC Data")]
+        [Category(" PLC Data")]
         public int CurrentValue
         {
             get { return _currentValue; }

@@ -85,6 +85,22 @@ class MF {
             Check("an alarm definition's bit is listed but has no page to open", form.ShowDeviceUse(alarm, out why) == null && why.Length > 0, why);
         }
 
+        Console.WriteLine("--- the real Robot Top Clamping: its manual is ONE chart for its valve and feedback ---");
+        var m854 = DeviceFindForm.Match(uses, 1, "M854").FirstOrDefault(u => !u.IsAlarm);
+        var rtc = m854 == null ? null : form.ShowDeviceUse(m854, out why) as FunctionUnitHMI;
+        Check("found on the Exit page", rtc != null && rtc.Name == "unitRobot_Top_Clamping", why);
+        if (rtc != null) {
+            var docs = rtc.HelpDocuments();
+            var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html");
+            Check("  its '?' offers the manual for DoubleSolenoid_5_2 + MagneticPlusPressureSwitch",
+                  manual != null && manual.Valve == 1 && manual.Feedback == 5, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
+            var html = System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual));
+            int heads = System.Text.RegularExpressions.Regex.Matches(html, "<thead>").Count;
+            int d14 = System.Text.RegularExpressions.Regex.Matches(html, "data-detail=\"1.4\"").Count;
+            int d17 = System.Text.RegularExpressions.Regex.Matches(html, "data-detail=\"1.7\"").Count;
+            Check("  opened: one heading row, 1.4 once, 1.7 once", heads == 1 && d14 == 1 && d17 == 1, heads + " headings, 1.4 x" + d14 + ", 1.7 x" + d17);
+        }
+
         form.Close();
         Console.WriteLine(fail == 0 ? "\nMONITOR FIND ALL PASS" : "\nMONITOR FIND " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

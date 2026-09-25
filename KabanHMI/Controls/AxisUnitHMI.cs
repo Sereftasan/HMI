@@ -126,9 +126,10 @@ namespace Kaban.UI.Controls
             _unit.CommandBAddress = a.Forward;
             _unit.CommandBAction = BitActionType.Momentary;
 
-            // The axis row's own widths, so every axis control looks the same.
-            _unit.ButtonSlotWidth = AxisSettingHMI.WJog;
-            _unit.PositionSlotWidth = AxisSettingHMI.WPosition;
+            // NO slot widths of its own: the function units' layout, so an axis
+            // unit's buttons and position are the same widths as a cylinder
+            // unit's beside it. (It used the axis row's widths scaled up, and its
+            // position display came out a third wider than every unit around it.)
 
             _unit.PositionAddress = a.Position;
             _unit.PositionDataType = a.PositionType;

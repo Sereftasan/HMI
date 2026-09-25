@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
@@ -168,7 +169,9 @@ namespace Kaban.UI.Controls
             else if (!secOk)
                 _disableReason = LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + RequiredSecurity;
             else if (!condOk)
-                _disableReason = LanguageManager.GetString("Sys_ReqState", "Required Machine State:") + " " + EnableConditions;
+                // Only the conditions NOT met, one per line.
+                _disableReason = LanguageManager.GetString("Sys_ReqState", "Required Machine State:") +
+                                 string.Concat(MachineConditionMap.Unmet(EnableConditions, checkGlobal).Select(n => "\n  \u2022 " + n));
             else
             {
                 string trigName = (EnableTrigger != null && !string.IsNullOrWhiteSpace(EnableTrigger.DescriptionKey))
