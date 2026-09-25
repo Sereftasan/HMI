@@ -3822,3 +3822,19 @@ and `UnitLookAndErrors` extended.
 - `AlarmHelpLinks.ViewerCopy`: help PDFs opened from `%TEMP%\KabanHMI_Help`.
 - Tests: `tools/ui_test/UnitsAndDesigner.cs`; `MonitorFind` checks the real Robot Top
   Clamping's tailored manual.
+
+## 2026-09-25 (afternoon) - PLC Monitor: "+" tab, redo, drawn pictures, window places
+
+- `SimulationMonitorForm`: a "+" button after the last sheet tab (`PlaceAddTab`, follows
+  renames, scrolling and the empty state); `TabPlace` Before / After / End and
+  `AddSheetAt`; tab menu items "after this one" and "at the end".
+- Redo: `_redo` stack filled by Undo, emptied by any new change (`Remember`); button beside
+  Undo; Ctrl+Y and Ctrl+Shift+Z.
+- `ToolGlyphs` *(new)*: drawn undo, redo, move up / down (arrow to a bar), copy, paste;
+  `UiStyle.IconButton` gives them the emoji buttons' size, frame and hover. Find uses
+  U+1F50E.
+- `WindowLayout` *(new)*: window bounds (checked against the screens) and ListView column
+  widths / order in `Monitor\Windows.cfg`. The monitor's minimum size is 300 x 260 (the
+  toolbar overflows); Find's 360 x 220, its columns re-orderable.
+- `MainForm.ShowSimulationMonitor` places the monitor only when it has no kept place.
+- Tests: `PlcMonitor.cs` 110 checks.

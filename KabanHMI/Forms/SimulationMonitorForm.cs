@@ -57,7 +57,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private ToolStripItem _restoreItem;
-        private Button _btnUndo;
+        private Button _btnUndo, _btnRedo;
 
         /// <summary>Copied rows - shared by every controller, so a list can be copied from one PLC to another.</summary>
         private static readonly List<WatchRow> _clip = new List<WatchRow>();
@@ -148,6 +148,9 @@ namespace Kaban.UI.Forms
             public TabControl SheetTabs;
             public readonly List<Sheet> Sheets = new List<Sheet>();
 
+            /// <summary>The "+" after the last tab: a new tab at the end.</summary>
+            public Button AddTabButton;
+
             /// <summary>
             /// Simulator addresses taken OFF the lists. The simulator shows every
             /// device it holds, appending new ones as screens touch them; one the
@@ -228,7 +231,9 @@ namespace Kaban.UI.Forms
         {
             Text = LanguageManager.GetString("Ttl_SimMonitor", "PLC Monitor - live device memory");
             Size = new Size(820, 700);
-            MinimumSize = new Size(620, 420);
+            // As narrow as the user likes: the buttons that do not fit go under
+            // the toolbar's chevron (>>), as on the Profiles page.
+            MinimumSize = new Size(300, 260);
             StartPosition = FormStartPosition.Manual;
             MinimizeBox = true;
             ShowInTaskbar = true;
@@ -255,10 +260,21 @@ namespace Kaban.UI.Forms
             BuildTabs();
             UpdateToolbar();
 
+            // Where it was closed, as big as it was.
+            PlacementRestored = WindowLayout.Apply(this, LayoutName, WindowLayout.Read(WindowsPath));
+
             _refresh.Interval = 250;
             _refresh.Tick += (s, e) => RefreshValues();
             _refresh.Start();
         }
+
+        private const string LayoutName = "Monitor";
+
+        /// <summary>The window opens where it was closed (false: first time, or that place is off every screen).</summary>
+        public bool PlacementRestored { get; private set; }
+
+        /// <summary>The tool windows' places and sizes: this one and Find (see WindowLayout).</summary>
+        internal static string WindowsPath { get { return Path.Combine(WatchFolder, "Windows.cfg"); } }
 
         /// <summary>True when there is any controller worth opening the monitor for.</summary>
         public static bool HasMonitorableStations()
@@ -313,9 +329,12 @@ namespace Kaban.UI.Forms
             btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line (Insert)"), _tips,
                 (s, e) => ShowMenu(btnAdd, AddMenu()));
             add(btnAdd);
-            add(UiStyle.ToolButton(E(0x1F4CB), T("Tip_MonCopy", "Copy the selected rows (Ctrl+C)"), _tips, (s, e) => CopySelected()));
+            // Copy, paste, the moves and undo/redo are DRAWN (ToolGlyphs): the
+            // pictures every office program uses, short heavy arrows - their
+            // characters and emoji read as thin sticks or as something else.
+            add(UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_MonCopy", "Copy the selected rows (Ctrl+C)"), _tips, (s, e) => CopySelected()));
             Button btnPaste = null;
-            btnPaste = UiStyle.ToolButton(E(0x1F4CC), T("Tip_MonPaste", "Paste the copied rows (Ctrl+V: above the selected row)"), _tips,
+            btnPaste = UiStyle.IconButton(ToolGlyphs.Paste, "Paste", T("Tip_MonPaste", "Paste the copied rows (Ctrl+V: above the selected row)"), _tips,
                 (s, e) => ShowMenu(btnPaste, PasteMenu()));
             add(btnPaste);
             Button btnDelete = null;
@@ -323,17 +342,18 @@ namespace Kaban.UI.Forms
                 "Delete: the selected rows (Del), this tab, every tab of this controller or of every controller"), _tips,
                 (s, e) => ShowMenu(btnDelete, DeleteMenu()));
             add(btnDelete);
-            // Up / down BUTTONS, not arrows: the thin arrows read as two sticks.
-            add(UiStyle.ToolButton(E(0x1F53C), T("Tip_MonUp", "Move the selected rows up (Ctrl+Up)"), _tips, (s, e) => MoveSelected(-1)));
-            add(UiStyle.ToolButton(E(0x1F53D), T("Tip_MonDown", "Move the selected rows down (Ctrl+Down)"), _tips, (s, e) => MoveSelected(+1)));
-            _btnUndo = UiStyle.ToolButton(E(0x21A9), T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"), _tips, (s, e) => Undo());
+            add(UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonUp", "Move the selected rows up (Ctrl+Up)"), _tips, (s, e) => MoveSelected(-1)));
+            add(UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonDown", "Move the selected rows down (Ctrl+Down)"), _tips, (s, e) => MoveSelected(+1)));
+            _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"), _tips, (s, e) => Undo());
             add(_btnUndo);
+            _btnRedo = UiStyle.IconButton(ToolGlyphs.Redo, "Redo", T("Tip_MonRedo", "Redo the change undone last (Ctrl+Y)"), _tips, (s, e) => Redo());
+            add(_btnRedo);
             gap();
             Button btnFrom = null;
             btnFrom = UiStyle.ToolButton(E(0x1F5C3), T("Tip_MonCollect", "Add the devices of this screen, of the whole program or of the PLC label list"), _tips,
                 (s, e) => ShowMenu(btnFrom, CollectMenu()));
             add(btnFrom);
-            add(UiStyle.ToolButton(E(0x1F50D), T("Tip_MonFind", "Find where a device is used in the program, and open that page (Ctrl+F)"), _tips,
+            add(UiStyle.ToolButton(E(0x1F50E), T("Tip_MonFind", "Find where a device is used in the program, and open that page (Ctrl+F)"), _tips,
                 (s, e) => OpenFind(null)));
             Button btnTabs = null;
             btnTabs = UiStyle.ToolButton(E(0x1F4D1), T("Tip_MonTabs", "Tabs: new, rename, delete"), _tips,
@@ -429,7 +449,9 @@ namespace Kaban.UI.Forms
         {
             var m = NewMenu();
             var mon = CurrentMonitor;
-            m.Items.Add(Item(T("Mnu_SheetNew", "New tab (before this one)..."), (s, e) => NewSheet(), mon != null, keyText: "Ins"));
+            m.Items.Add(Item(T("Mnu_SheetNew", "New tab (before this one)..."), (s, e) => NewSheet(TabPlace.Before), mon != null, keyText: "Ins"));
+            m.Items.Add(Item(T("Mnu_SheetNewAfter", "New tab (after this one)..."), (s, e) => NewSheet(TabPlace.After), mon != null && mon.Current != null));
+            m.Items.Add(Item(T("Mnu_SheetNewEnd", "New tab at the end (+)..."), (s, e) => NewSheet(TabPlace.End), mon != null));
             m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null, keyText: "F2"));
             m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null, keyText: "Del"));
             m.Items.Add(new ToolStripSeparator());
@@ -488,6 +510,13 @@ namespace Kaban.UI.Forms
                     ? string.Format(T("Tip_MonUndoWhat", "Undo: {0} (Ctrl+Z)"), _undo[_undo.Count - 1].What)
                     : T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"));
             }
+            if (_btnRedo != null)
+            {
+                _btnRedo.Enabled = _redo.Count > 0;
+                _tips.SetToolTip(_btnRedo, _redo.Count > 0
+                    ? string.Format(T("Tip_MonRedoWhat", "Redo: {0} (Ctrl+Y)"), _redo[_redo.Count - 1].What)
+                    : T("Tip_MonRedo", "Redo the change undone last (Ctrl+Y)"));
+            }
         }
 
         // ==================================================================
@@ -500,6 +529,10 @@ namespace Kaban.UI.Forms
         // can, since the order a list was built in is not a column.
         //
         // Writing a VALUE to the PLC is not undone: that went to the machine.
+        //
+        // REDO takes back an undo: Undo keeps the state it replaces, Redo puts
+        // that back. A new change after an undo ends what can be redone, as in
+        // every editor.
         // ==================================================================
 
         private sealed class UndoStep
@@ -509,7 +542,15 @@ namespace Kaban.UI.Forms
         }
 
         private readonly List<UndoStep> _undo = new List<UndoStep>();
+        private readonly List<UndoStep> _redo = new List<UndoStep>();
         private const int UndoDepth = 50;
+
+        private static UndoStep Snapshot(UndoStep of)
+        {
+            var now = new UndoStep { What = of.What };
+            foreach (var kv in of.States) now.States.Add(new KeyValuePair<MonitorTab, List<string>>(kv.Key, Serialize(kv.Key)));
+            return now;
+        }
 
         /// <summary>Keeps the state of the controllers about to change (the one on show by default).</summary>
         private void Remember(string what, params MonitorTab[] mons)
@@ -521,6 +562,7 @@ namespace Kaban.UI.Forms
             if (step.States.Count == 0) return;
             _undo.Add(step);
             if (_undo.Count > UndoDepth) _undo.RemoveAt(0);
+            _redo.Clear();
             UpdateToolbar();
         }
 
@@ -532,9 +574,25 @@ namespace Kaban.UI.Forms
             if (mon != null && mon.Current != null && mon.Current.Grid.IsCurrentCellInEditMode) return;
             var step = _undo[_undo.Count - 1];
             _undo.RemoveAt(_undo.Count - 1);
+            _redo.Add(Snapshot(step));
             foreach (var kv in step.States) RestoreState(kv.Key, kv.Value);
             UpdateToolbar();
             SetStatus(string.Format(T("Msg_Undone", "Undone: {0}."), step.What));
+        }
+
+        /// <summary>Puts back what the last undo took away.</summary>
+        internal void Redo()
+        {
+            if (_redo.Count == 0) return;
+            var mon = CurrentMonitor;
+            if (mon != null && mon.Current != null && mon.Current.Grid.IsCurrentCellInEditMode) return;
+            var step = _redo[_redo.Count - 1];
+            _redo.RemoveAt(_redo.Count - 1);
+            _undo.Add(Snapshot(step));
+            if (_undo.Count > UndoDepth) _undo.RemoveAt(0);
+            foreach (var kv in step.States) RestoreState(kv.Key, kv.Value);
+            UpdateToolbar();
+            SetStatus(string.Format(T("Msg_Redone", "Redone: {0}."), step.What));
         }
 
         private void RestoreState(MonitorTab mon, List<string> lines)
@@ -598,7 +656,13 @@ namespace Kaban.UI.Forms
                 Padding = new Point(16, 5),
                 Font = UiStyle.Body
             };
-            mon.SheetTabs.DrawItem += (s, e) => DrawSheetTab(mon, e);
+            mon.SheetTabs.DrawItem += (s, e) =>
+            {
+                DrawSheetTab(mon, e);
+                // The strip has laid out its tabs (a rename, a scroll): the "+" follows the last.
+                if (e.Index == mon.SheetTabs.TabCount - 1 && mon.AddTabButton != null && mon.SheetTabs.IsHandleCreated)
+                    mon.SheetTabs.BeginInvoke((MethodInvoker)(() => PlaceAddTab(mon)));
+            };
             mon.SheetTabs.SelectedIndexChanged += (s, e) => { UpdateToolbar(); RefreshValues(); };
             mon.SheetTabs.MouseDoubleClick += (s, e) =>
             {
@@ -629,14 +693,21 @@ namespace Kaban.UI.Forms
                 TextAlign = ContentAlignment.MiddleCenter,
                 ForeColor = Color.FromArgb(120, 126, 136),
                 Font = UiStyle.Body,
-                Text = T("Msg_MonNoTabs", "No tabs. Add one with the tabs button (" + E(0x1F4D1) + "), or add a device and a tab 'Main' is made for it."),
+                Text = T("Msg_MonNoTabs", "No tabs. Add one with + (top left) or the tabs button (" + E(0x1F4D1) + "), or add a device and a tab 'Main' is made for it."),
                 Visible = false
             };
             page.Controls.Add(mon.EmptyHint);
-            UpdateEmptyState(mon);
-
 
             page.Controls.Add(mon.SheetTabs);
+
+            // The "+" after the last tab, as in a browser: a new tab at the end.
+            mon.AddTabButton = NewTabButton(mon);
+            page.Controls.Add(mon.AddTabButton);
+            mon.AddTabButton.BringToFront();
+            mon.SheetTabs.SizeChanged += (s, e) => PlaceAddTab(mon);
+            mon.SheetTabs.HandleCreated += (s, e) => PlaceAddTab(mon);
+            mon.SheetTabs.SelectedIndexChanged += (s, e) => PlaceAddTab(mon);
+            UpdateEmptyState(mon);
 
             _monitors.Add(mon);
             return page;
@@ -702,6 +773,65 @@ namespace Kaban.UI.Forms
             bool none = mon.SheetTabs.TabPages.Count == 0;
             mon.SheetTabs.Visible = !none;
             if (mon.EmptyHint != null) mon.EmptyHint.Visible = none;
+            PlaceAddTab(mon);
+        }
+
+        private Button NewTabButton(MonitorTab mon)
+        {
+            var b = new Button
+            {
+                Text = "",
+                Size = new Size(30, 24),
+                BackColor = Color.FromArgb(238, 240, 243),
+                Cursor = Cursors.Hand,
+                TabStop = false,
+                AccessibleName = "New tab"
+            };
+            UiStyle.Round(b);
+            // The plus DRAWN: a character this small is clipped by the button's
+            // own text margins on some fonts and sizes.
+            b.Paint += (s, e) =>
+            {
+                float cx = b.Width / 2f, cy = b.Height / 2f, arm = Math.Min(b.Width, b.Height) * 0.26f;
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                using (var ink = new SolidBrush(Color.FromArgb(40, 46, 56)))
+                {
+                    e.Graphics.FillRectangle(ink, cx - arm, cy - 1.2f, 2 * arm, 2.4f);
+                    e.Graphics.FillRectangle(ink, cx - 1.2f, cy - arm, 2.4f, 2 * arm);
+                }
+            };
+            _tips.SetToolTip(b, T("Tip_MonNewTab", "New tab at the end"));
+            b.Click += (s, e) => NewSheet(TabPlace.End, mon);
+            return b;
+        }
+
+        /// <summary>
+        /// Puts the "+" just after the last tab. With more tabs than the strip
+        /// shows, it stays at the strip's right end, beside the scroll arrows;
+        /// with no tabs at all, top left, where the first would be.
+        /// </summary>
+        internal static void PlaceAddTab(MonitorTab mon)
+        {
+            var b = mon.AddTabButton;
+            var tabs = mon.SheetTabs;
+            if (b == null || tabs == null) return;
+            if (!tabs.Visible || tabs.TabCount == 0)
+            {
+                b.Location = new Point(6, 5);
+                return;
+            }
+            if (!tabs.IsHandleCreated) return;             // placed once the strip has its window
+            var first = tabs.GetTabRect(0);
+            var last = tabs.GetTabRect(tabs.TabCount - 1);
+            int h = Math.Max(18, last.Height - 4);
+            if (b.Height != h || b.Width != h + 8) b.Size = new Size(h + 8, h);
+            int x = last.Right + 4;
+            const int arrows = 44;                          // the strip's own scroll arrows
+            if (last.Right - first.Left > tabs.Width - 4 || x + b.Width > tabs.Width - 2)
+                x = Math.Max(0, tabs.Width - arrows - b.Width - 2);
+            var at = new Point(tabs.Left + x, tabs.Top + last.Top + Math.Max(0, (last.Height - h) / 2));
+            if (b.Location != at) b.Location = at;
+            if (b.Parent != null && b.Parent.Controls.GetChildIndex(b) != 0) b.BringToFront();
         }
 
         /// <summary>
@@ -757,6 +887,7 @@ namespace Kaban.UI.Forms
             tabs.SelectedTab = sh.Page;
             tabs.ResumeLayout();
             mon.SyncOrder();
+            PlaceAddTab(mon);
         }
 
         // ---- drag a tab along the strip -------------------------------------------
@@ -1086,6 +1217,7 @@ namespace Kaban.UI.Forms
             if (!editing)
             {
                 if (keyData == (Keys.Control | Keys.Z)) { Undo(); return true; }
+                if (keyData == (Keys.Control | Keys.Y) || keyData == (Keys.Control | Keys.Shift | Keys.Z)) { Redo(); return true; }
                 if (keyData == (Keys.Control | Keys.F)) { OpenFind(null); return true; }
             }
             // The tab strip of the controller's tabs, when it has the focus.
@@ -1095,7 +1227,7 @@ namespace Kaban.UI.Forms
                 {
                     case Keys.Delete: DeleteSheet(); return true;
                     case Keys.F2: RenameSheet(); return true;
-                    case Keys.Insert: NewSheet(); return true;
+                    case Keys.Insert: NewSheet(TabPlace.Before); return true;
                     case Keys.Control | Keys.Left: MoveSheet(-1); return true;
                     case Keys.Control | Keys.Right: MoveSheet(+1); return true;
                 }
@@ -1699,16 +1831,29 @@ namespace Kaban.UI.Forms
 
         // ---- the engineer's tabs ----------------------------------------------------
 
-        private void NewSheet()
+        /// <summary>Where a new tab goes: before or after the one on display, or at the end (the "+").</summary>
+        internal enum TabPlace { Before, After, End }
+
+        private void NewSheet(TabPlace place, MonitorTab mon = null)
         {
-            var mon = CurrentMonitor;
+            mon = mon ?? CurrentMonitor;
             if (mon == null) return;
             string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
                                   UniqueName(mon, T("Tab_MonNew", "Tab") + " " + (mon.Sheets.Count + 1)), mon, null);
             if (name == null) return;
+            AddSheetAt(mon, name, place);
+        }
+
+        /// <summary>A new tab named so, placed so - undoable.</summary>
+        internal Sheet AddSheetAt(MonitorTab mon, string name, TabPlace place)
+        {
             Remember(string.Format(T("Undo_NewTab", "new tab '{0}'"), name), mon);
-            // BEFORE the tab on display, as asked; at the start when there is none.
-            AddSheet(mon, name, Math.Max(0, mon.SheetTabs.SelectedIndex));
+            int selected = mon.SheetTabs.SelectedIndex, count = mon.SheetTabs.TabPages.Count;
+            // At the start when there is none on display.
+            int at = place == TabPlace.End ? count
+                   : place == TabPlace.After ? (selected < 0 ? count : selected + 1)
+                   : Math.Max(0, selected);
+            return AddSheet(mon, name, at);
         }
 
         private void RenameSheet()
@@ -1722,6 +1867,7 @@ namespace Kaban.UI.Forms
             sh.Name = name;
             sh.Page.Text = name;
             mon.SheetTabs.Invalidate();
+            PlaceAddTab(mon);
             SaveWatchList(mon);
         }
 
@@ -2488,6 +2634,9 @@ namespace Kaban.UI.Forms
         {
             _refresh.Stop();
             foreach (var mon in _monitors) SaveWatchList(mon);
+            var place = new Dictionary<string, string>();
+            WindowLayout.Store(this, LayoutName, place);
+            WindowLayout.Write(WindowsPath, place);
             base.OnFormClosing(e);
         }
 

@@ -2298,9 +2298,14 @@ namespace Kaban.UI.Forms
             if (_simMonitor == null || _simMonitor.IsDisposed)
             {
                 _simMonitor = new SimulationMonitorForm();
-                _simMonitor.StartPosition = FormStartPosition.Manual;
-                _simMonitor.Location = new System.Drawing.Point(
-                    this.Right - _simMonitor.Width - 20, this.Top + 60);
+                // The first time beside the main window's right edge; after that
+                // where the user left it.
+                if (!_simMonitor.PlacementRestored)
+                {
+                    _simMonitor.StartPosition = FormStartPosition.Manual;
+                    _simMonitor.Location = new System.Drawing.Point(
+                        this.Right - _simMonitor.Width - 20, this.Top + 60);
+                }
                 _simMonitor.Show(this);
             }
             else

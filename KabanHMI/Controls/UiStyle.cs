@@ -1222,6 +1222,20 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
+        /// A toolbar button with a DRAWN picture (see ToolGlyphs): the size, the
+        /// rounded frame and the hover of the emoji buttons beside it. The name is
+        /// what a screen reader - and a test - knows it by.
+        /// </summary>
+        public static Button IconButton(Action<Graphics, Rectangle, bool> draw, string name, string tip, ToolTip tips,
+                                        System.EventHandler onClick = null)
+        {
+            var b = ToolButton("", tip, tips, onClick);
+            b.AccessibleName = name;
+            b.Paint += (s, e) => draw(e.Graphics, b.ClientRectangle, b.Enabled);
+            return b;
+        }
+
+        /// <summary>
         /// Draws the "you are here" mark under a caption: a rule spanning the TEXT
         /// (not the whole row), sitting clear of the deepest descender the FONT can
         /// produce - not the deepest descender this one string happens to use, so

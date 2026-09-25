@@ -306,6 +306,8 @@ Tip_MonRestore;Show the removed devices again. The simulator lists every device 
 Tip_MonDelete;Delete: the selected rows (Del), this tab, every tab of this controller or of every controller;Sil: seçili satırlar (Del), bu sekme, bu kontrol ünitesinin veya tüm kontrol ünitelerinin tüm sekmeleri;;;;
 Tip_MonUndo;Undo the last change (Ctrl+Z);Son değişikliği geri al (Ctrl+Z);;;;
 Tip_MonUndoWhat;Undo: {0} (Ctrl+Z);Geri al: {0} (Ctrl+Z);;;;
+Tip_MonRedo;Redo the change undone last (Ctrl+Y);Son geri alınan değişikliği yinele (Ctrl+Y);;;;
+Tip_MonRedoWhat;Redo: {0} (Ctrl+Y);Yinele: {0} (Ctrl+Y);;;;
 Tip_MonFind;Find where a device is used in the program, and open that page (Ctrl+F);Bir cihazın programda nerede kullanıldığını bul ve o sayfayı aç (Ctrl+F);;;;
 Mnu_MonFromProgramList;the whole program - into this tab, one list (each device once, no headings);tüm program - bu sekmeye, tek liste (her cihaz bir kez, başlıksız);;;;
 Tip_MonFromLabels;PlcLabels.csv beside the program: the PLC programmer's names for its devices (Label / DataType / Address, from GX Works). It names the devices on the monitor and adds devices the pages do not show.;Programın yanındaki PlcLabels.csv: PLC programcısının cihaz adları (Etiket / Veri tipi / Adres, GX Works'ten). Monitördeki cihazları adlandırır ve sayfalarda görünmeyen cihazları ekler.;;;;
@@ -319,6 +321,7 @@ Msg_DelAllTabs;Delete all {0} tab(s) of {1}, with their {2} row(s)?;{1} için {0
 Msg_DelEverything;Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?;{1} kontrol ünitesinin {0} sekmesinin tümü, {2} satırıyla birlikte silinsin mi?;;;;
 Msg_UndoHint;Undo (Ctrl+Z) brings them back.;Geri al (Ctrl+Z) hepsini geri getirir.;;;;
 Msg_Undone;Undone: {0}.;Geri alındı: {0}.;;;;
+Msg_Redone;Redone: {0}.;Yinelendi: {0}.;;;;
 Undo_DelAllTabs;delete every tab;tüm sekmeleri silme;;;;
 Undo_DelEverything;delete every tab of every controller;tüm kontrol ünitelerinin tüm sekmelerini silme;;;;
 Undo_DelTab;delete the tab '{0}';'{0}' sekmesini silme;;;;
@@ -366,6 +369,9 @@ Mnu_MonFromProgram;the whole program - into this tab, a heading line per page;t�
 Mnu_MonFromProgramTabs;the whole program - one tab per page;tüm program - her sayfa için bir sekme;;;;
 Mnu_MonFromLabels;every device named in the PLC label list (PlcLabels.csv) - into this tab;PLC etiket listesindeki (PlcLabels.csv) her cihaz - bu sekmeye;;;;
 Mnu_SheetNew;New tab (before this one)...;Yeni sekme (bunun önüne)...;;;;
+Mnu_SheetNewAfter;New tab (after this one)...;Yeni sekme (bunun arkasına)...;;;;
+Mnu_SheetNewEnd;New tab at the end (+)...;En sona yeni sekme (+)...;;;;
+Tip_MonNewTab;New tab at the end;En sona yeni sekme;;;;
 Mnu_SheetRename;Rename this tab...;Bu sekmeyi yeniden adlandır...;;;;
 Mnu_SheetDelete;Delete this tab;Bu sekmeyi sil;;;;
 Mnu_SheetLeft;Move this tab left;Bu sekmeyi sola taşı;;;;
@@ -389,7 +395,7 @@ Msg_MonLabelsNone;This controller has no PLC label list (PlcLabels.csv).;Bu kont
 Msg_MonNotNumber;Not a whole number - nothing written.;Tam sayı değil - hiçbir şey yazılmadı.;;;;
 Msg_MonOutOfRange;Out of range for this data type - nothing written.;Bu veri tipi için aralık dışında - hiçbir şey yazılmadı.;;;;
 Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2};{0} cihaz, {1} açıklama satırı  ·  {2};;;;
-Msg_MonNoTabs;No tabs. Add one with the tabs button (📑), or add a device and a tab 'Main' is made for it.;Sekme yok. Sekmeler düğmesiyle (📑) ekleyin ya da bir cihaz ekleyin, onun için 'Main' sekmesi açılır.;;;;
+Msg_MonNoTabs;No tabs. Add one with + (top left) or the tabs button (📑), or add a device and a tab 'Main' is made for it.;Sekme yok. + (sol üstte) ya da sekmeler düğmesiyle (📑) ekleyin ya da bir cihaz ekleyin, onun için 'Main' sekmesi açılır.;;;;
 Msg_MonNoTabsShort;No tabs;Sekme yok;;;;
 Lbl_Simulated;simulated;simülasyon;;;;
 Lbl_CommentLine;Comment line (no address, no value);Açıklama satırı (adres ve değer yok);;;;

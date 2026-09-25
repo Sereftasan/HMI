@@ -21,6 +21,10 @@ namespace Kaban.UI.Forms
     /// Searching is instant after the first time: the pages are built once per
     /// controller to find the uses (DeviceCollector.UsesOf), which takes a moment
     /// on a big machine, and kept.
+    ///
+    /// It opens as it was closed: the same place and size, the columns as wide
+    /// and in the order they were dragged to (WindowLayout, "Find.*" in the
+    /// monitor's Windows.cfg).
     /// </summary>
     public class DeviceFindForm : Form
     {
@@ -39,7 +43,8 @@ namespace Kaban.UI.Forms
             _open = open;
             Text = T("Ttl_Find", "Find where a device is used") + " - " + caption;
             Size = new Size(820, 440);
-            MinimumSize = new Size(520, 260);
+            // As narrow as the user likes: the search box gives way, the list scrolls.
+            MinimumSize = new Size(360, 220);
             StartPosition = FormStartPosition.CenterParent;
             ShowInTaskbar = false;
             MinimizeBox = false;
@@ -55,11 +60,12 @@ namespace Kaban.UI.Forms
             _query.Width = 260;
             _query.Font = UiStyle.Body;
             top.Controls.Add(_query);
-            var go = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F50D), T("Tip_FindGo", "Find (Enter)"), _tips, (s, e) => Search());
+            var go = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F50E), T("Tip_FindGo", "Find (Enter)"), _tips, (s, e) => Search());
             top.Controls.Add(go);
             top.Layout += (s, e) =>
             {
                 _query.Left = caption1.Right + 8;
+                _query.Width = Math.Max(80, Math.Min(260, top.ClientSize.Width - _query.Left - go.Width - 16));
                 go.Location = new Point(_query.Right + 6, 5);
             };
 
@@ -69,10 +75,17 @@ namespace Kaban.UI.Forms
             _list.HideSelection = false;
             _list.MultiSelect = false;
             _list.BorderStyle = BorderStyle.None;
+            _list.AllowColumnReorder = true;               // the headings drag, as on the monitor
             _list.Columns.Add(T("Col_FindPage", "Page"), 300);
             _list.Columns.Add(T("Col_FindWhere", "Used by"), 250);
             _list.Columns.Add(T("Col_Address", "Address"), 80);
             _list.Columns.Add(T("Col_DataType", "DataType"), 150);
+
+            // As it was closed last time.
+            var kept = WindowLayout.Read(SimulationMonitorForm.WindowsPath);
+            WindowLayout.Apply(this, LayoutName, kept);
+            string columns;
+            if (kept.TryGetValue(LayoutName + ".Columns", out columns)) WindowLayout.ApplyColumns(_list, columns);
 
             _status.Dock = DockStyle.Bottom;
             _status.Height = 24;
@@ -117,6 +130,19 @@ namespace Kaban.UI.Forms
         }
 
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
+
+        private const string LayoutName = "Find";
+
+        /// <summary>Keeps the place, the size and the columns for next time.</summary>
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            if (e.Cancel) return;
+            var values = new Dictionary<string, string>();
+            WindowLayout.Store(this, LayoutName, values);
+            values[LayoutName + ".Columns"] = WindowLayout.ColumnsOf(_list);
+            WindowLayout.Write(SimulationMonitorForm.WindowsPath, values);
+        }
 
         /// <summary>The uses matching the text typed (public for tests).</summary>
         public List<DeviceCollector.Use> Search()

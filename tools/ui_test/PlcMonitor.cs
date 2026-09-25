@@ -305,6 +305,27 @@ class PM {
         Check("  nothing left to undo past the start... the button says what is next",
               ((Button)Get(form, "_btnUndo")).Enabled == (((System.Collections.IList)Get(form, "_undo")).Count > 0));
 
+        Console.WriteLine("--- redo: takes back an undo ---");
+        var btnRedo = (Button)Get(form, "_btnRedo");
+        var tipsR = (ToolTip)Get(form, "_tips");
+        Check("after the undo, Redo is offered and says what it redoes", btnRedo.Enabled && tipsR.GetToolTip(btnRedo).StartsWith("Redo: ") &&
+              tipsR.GetToolTip(btnRedo).Contains("Ctrl+Y"), tipsR.GetToolTip(btnRedo));
+        Call(form, "Redo");
+        Check("Redo: the two rows are removed again", seq() == "M30,M17", seq());
+        Check("  and that can be undone once more", ((Button)Get(form, "_btnUndo")).Enabled && !btnRedo.Enabled);
+        Call(form, "Undo");
+        Check("  undo", seq() == "M30,M4,D9,M17", seq());
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Control | Keys.Y });
+        Check("Ctrl+Y redoes", seq() == "M30,M17", seq());
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Control | Keys.Z });
+        typeof(Form).GetMethod("ProcessCmdKey", Any).Invoke(form, new object[] { new Message(), Keys.Control | Keys.Shift | Keys.Z });
+        Check("Ctrl+Shift+Z too", seq() == "M30,M17", seq());
+        Call(form, "Undo");
+        Call(form, "SortSheet", mon, current(), "Address");
+        Check("a new change after an undo ends what can be redone", !btnRedo.Enabled && ((IList)Get(form, "_redo")).Count == 0);
+        Call(form, "Undo");
+        Check("  (the sort undone: the list as it was)", seq() == "M30,M4,D9,M17", seq());
+
         Console.WriteLine("--- the delete button's menu ---");
         grid = (DataGridView)Get(current(), "Grid");
         grid.ClearSelection(); grid.Rows[0].Selected = true;
@@ -353,15 +374,68 @@ class PM {
         grid.CancelEdit(); grid.EndEdit();
 
         Console.WriteLine("--- the toolbar ---");
-        var texts = buttons.Select(b => b.Text).ToList();
-        Check("up and down are buttons with a clear arrow, not thin sticks",
-              texts.Contains(char.ConvertFromUtf32(0x1F53C)) && texts.Contains(char.ConvertFromUtf32(0x1F53D)) &&
-              !texts.Contains(char.ConvertFromUtf32(0x2B06)));
-        Check("  undo and find are there", buttons.Any(b => tips.GetToolTip(b).Contains("Ctrl+Z")) && buttons.Any(b => tips.GetToolTip(b).Contains("Ctrl+F")));
+        var drawn = buttons.Where(b => b.Text == "" && !string.IsNullOrEmpty(b.AccessibleName)).Select(b => b.AccessibleName).ToList();
+        Check("copy, paste, move up, move down, undo and redo are DRAWN pictures, not characters",
+              new[] { "Copy", "Paste", "Move up", "Move down", "Undo", "Redo" }.All(drawn.Contains), string.Join(",", drawn));
+        var bUndo = buttons.First(b => b.AccessibleName == "Undo"); var bRedo = buttons.First(b => b.AccessibleName == "Redo");
+        Check("  redo right after undo", buttons.IndexOf(bRedo) == buttons.IndexOf(bUndo) + 1);
+        Check("  no emoji of the old up/down, undo, copy or paste left",
+              !buttons.Any(b => new[] { 0x1F53C, 0x1F53D, 0x21A9, 0x1F4CB, 0x1F4CC }.Any(cp => b.Text == char.ConvertFromUtf32(cp))));
+        Check("  find is the magnifier leaning right", buttons.Any(b => b.Text == char.ConvertFromUtf32(0x1F50E) && tips.GetToolTip(b).Contains("Ctrl+F")));
+        using (var bmp = new System.Drawing.Bitmap(44, 32))
+        {
+            using (var g = System.Drawing.Graphics.FromImage(bmp)) { g.Clear(System.Drawing.Color.White); ToolGlyphs.MoveUp(g, new System.Drawing.Rectangle(0, 0, 44, 32), true); }
+            int blue = 0, dark = 0;
+            for (int x = 0; x < 44; x++) for (int y = 0; y < 32; y++)
+            { var px = bmp.GetPixel(x, y); if (px.B > 150 && px.R < 80) blue++; else if (px.R < 90 && px.G < 90 && px.B < 110) dark++; }
+            Check("  the move-up picture: a heavy blue arrow and a dark bar", blue > 60 && dark > 25, blue + " blue, " + dark + " dark pixels");
+        }
         var cm = (ContextMenuStrip)Call(form, "CollectMenu");
         var cmTexts = cm.Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
         Check("the whole program: with a heading per page, or as one list",
               cmTexts.Any(t => t.Contains("heading line per page")) && cmTexts.Any(t => t.Contains("one list")), string.Join(" | ", cmTexts));
+
+        Console.WriteLine("--- the '+' after the last tab, and 'after this one' ---");
+        var plus = (Button)Get(mon, "AddTabButton");
+        strip = (TabControl)Get(mon, "SheetTabs");
+        int selBefore = strip.SelectedIndex;
+        Call(MonType, "PlaceAddTab", mon); Application.DoEvents();
+        var lastRect = strip.GetTabRect(strip.TabCount - 1);
+        Check("a '+' sits just after the last tab", plus != null && plus.Visible && plus.AccessibleName == "New tab" &&
+              plus.Left >= strip.Left + lastRect.Right && plus.Left <= strip.Left + lastRect.Right + 12 &&
+              plus.Top >= strip.Top && plus.Bottom <= strip.Top + lastRect.Bottom + 2,
+              plus == null ? "none" : plus.Bounds + " / last tab " + lastRect);
+        Check("  on top of the strip, with its tooltip", plus.Parent.Controls.GetChildIndex(plus) == 0 && tips.GetToolTip(plus) == "New tab at the end");
+        var placeType = MonType.GetNestedType("TabPlace", Any);
+        strip.SelectedIndex = 0;
+        string firstName = (string)Get(current(), "Name");
+        Call(form, "AddSheetAt", mon, "End", Enum.Parse(placeType, "End"));
+        Check("'+': the new tab is the LAST, and on display", pages().EndsWith(",End") && (string)Get(current(), "Name") == "End", pages());
+        Call(MonType, "PlaceAddTab", mon);
+        var lastNow = strip.GetTabRect(strip.TabCount - 1);
+        Check("  the '+' moved along after it", plus.Left >= strip.Left + lastNow.Right && plus.Left <= strip.Left + lastNow.Right + 12, plus.Left + " vs " + lastNow.Right);
+        strip.SelectedIndex = 0;
+        Call(form, "AddSheetAt", mon, "After", Enum.Parse(placeType, "After"));
+        Check("'after this one': right after the tab on display", pages().StartsWith(firstName + ",After,"), pages());
+        Call(form, "Undo");
+        Check("  undone like any other change", !pages().Contains("After"), pages());
+        var menuTexts = ((ContextMenuStrip)Call(form, "SheetMenu")).Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
+        Check("the tab menu offers before, after and at the end",
+              menuTexts.Contains("New tab (before this one)...") && menuTexts.Contains("New tab (after this one)...") && menuTexts.Any(t => t.StartsWith("New tab at the end")),
+              string.Join(" | ", menuTexts));
+        strip.SelectedIndex = selBefore;
+
+        Console.WriteLine("--- narrow the window as far as you like: the toolbar folds under its chevron ---");
+        var bar = form.Controls.OfType<ToolStrip>().First();
+        Check("the window's minimum width is small", form.MinimumSize.Width <= 320, form.MinimumSize.ToString());
+        form.WindowState = FormWindowState.Normal;
+        form.Size = new System.Drawing.Size(330, 500); Application.DoEvents();
+        bar.PerformLayout(); Application.DoEvents();
+        int folded = bar.Items.Cast<ToolStripItem>().Count(i => i.IsOnOverflow);
+        Check("  at 330 pixels it is 330 wide", form.Width <= 340, form.Width.ToString());
+        Check("  the buttons that do not fit are under the chevron", bar.CanOverflow && bar.OverflowButton.Visible && folded > 3, folded + " folded");
+        form.Size = new System.Drawing.Size(900, 700); Application.DoEvents(); bar.PerformLayout();
+        Check("  wide again: all on the bar", bar.Items.Cast<ToolStripItem>().Count(i => i.IsOnOverflow) == 0);
 
         Console.WriteLine("--- removing from the simulator's list keeps it removed ---");
         sh = current(); grid = (DataGridView)Get(sh, "Grid");
@@ -376,7 +450,46 @@ class PM {
         Call(form, "RestoreHidden"); Call(form, "RefreshValues");
         Check("  and brings it back", Rows(sh).Cast<object>().Any(x => Addr(x) == "M5"));
 
-        form.Close();
+        Console.WriteLine("--- the window opens where it was closed ---");
+        form.Bounds = new System.Drawing.Rectangle(37, 41, 700, 520); Application.DoEvents();
+        var closedAt = form.Bounds;
+        form.Close(); Application.DoEvents();
+        string windows = Path.Combine(dir, "Windows.cfg");
+        Check("its place and size are kept", File.Exists(windows) && File.ReadAllText(windows).Contains("Monitor.Bounds=" + closedAt.X + "," + closedAt.Y + "," + closedAt.Width + "," + closedAt.Height),
+              File.Exists(windows) ? File.ReadAllText(windows).Replace("\r\n", " | ") : "no file");
+        var again = new SimulationMonitorForm();
+        Check("  and used next time", again.PlacementRestored && again.Bounds == closedAt, again.Bounds + " vs " + closedAt);
+        again.Dispose();
+        var saved2 = File.ReadAllText(windows);
+        File.WriteAllText(windows, "Monitor.Bounds=-9000,-9000,700,520\r\n");
+        var lost = new SimulationMonitorForm();
+        Check("a place on no screen (a monitor unplugged) is not used", !lost.PlacementRestored);
+        lost.Dispose();
+        File.WriteAllText(windows, saved2);
+
+        Console.WriteLine("--- Find: columns dragged, the window as it was closed ---");
+        var find = new DeviceFindForm(21, "Bench", "", u => "");
+        var list = (ListView)Get(find, "_list");
+        Check("the headings can be dragged to re-order", list.AllowColumnReorder);
+        Check("  and it narrows further than before", find.MinimumSize.Width <= 380, find.MinimumSize.ToString());
+        find.Show(); Application.DoEvents();
+        find.Bounds = new System.Drawing.Rectangle(60, 70, 640, 360); Application.DoEvents();
+        var findAt = find.Bounds;
+        list.Columns[0].Width = 222; list.Columns[3].Width = 99;
+        list.Columns[2].DisplayIndex = 0; Application.DoEvents();
+        string order0 = string.Join(",", list.Columns.Cast<ColumnHeader>().Select(h => h.DisplayIndex));
+        find.Close(); Application.DoEvents();
+        var findCfg = File.ReadAllText(windows);
+        Check("kept: place, size, widths and order", findCfg.Contains("Find.Bounds=" + findAt.X + "," + findAt.Y + "," + findAt.Width + "," + findAt.Height) &&
+              findCfg.Contains("Find.Columns=222:"), findCfg.Replace("\r\n", " | "));
+        Check("  beside the monitor's own line", findCfg.Contains("Monitor.Bounds="));
+        var find2 = new DeviceFindForm(21, "Bench", "", u => "");
+        var list2 = (ListView)Get(find2, "_list");
+        Check("opened again: as it was closed", find2.Bounds == findAt && list2.Columns[0].Width == 222 && list2.Columns[3].Width == 99, find2.Bounds + ", " + list2.Columns[0].Width + "/" + list2.Columns[3].Width);
+        Check("  the columns in the order they were dragged to", string.Join(",", list2.Columns.Cast<ColumnHeader>().Select(h => h.DisplayIndex)) == order0,
+              order0 + " vs " + string.Join(",", list2.Columns.Cast<ColumnHeader>().Select(h => h.DisplayIndex)));
+        find2.Dispose();
+
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "\nPLC MONITOR ALL PASS" : "\nPLC MONITOR " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

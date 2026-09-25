@@ -76,6 +76,7 @@
     <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\DeviceCollector.cs" />
     <Compile Include="Helpers\ControlHighlight.cs" />
+    <Compile Include="Helpers\WindowLayout.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
       <SubType>Component</SubType>
@@ -155,6 +156,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\UiStyle.cs" />
+    <Compile Include="Controls\ToolGlyphs.cs" />
     <Compile Include="Controls\CheckListHMI.cs">
       <SubType>Component</SubType>
     </Compile>
