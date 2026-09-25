@@ -177,6 +177,17 @@ class AX {
         Check("  and OFF again after the pulse", m102() == 0);
         Check("H500's station is not pulsed at all", !AlarmReset.Pulse(3, "H500", out why) && why.Length > 0, why);
 
+        Console.WriteLine("--- a reset the PLC switches off itself: SET, not a pulse ---");
+        Check("a pulse unless the module says otherwise", PlcManager.Instance.AlarmResetAction(7) == BitActionType.Momentary);
+        PlcManager.Instance.SetAlarmResetDevice(7, "M102", BitActionType.SET);   // as FA2010Module does
+        Check("  declared SET", PlcManager.Instance.AlarmResetAction(7) == BitActionType.SET);
+        Check("  sent", AlarmReset.Pulse(7, "test", out why), why);
+        until = DateTime.Now.AddMilliseconds(900);
+        while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); }
+        Check("  and LEFT ON for the PLC to switch off", m102() == 1);
+        PlcManager.Instance.SetAlarmResetDevice(7, "M102");
+        Check("  a later plain declaration is a pulse again", PlcManager.Instance.AlarmResetAction(7) == BitActionType.Momentary);
+
         try { Directory.Delete(dir, true); } catch { }
         host.Close();
         Console.WriteLine(fail == 0 ? "\nAXIS CODE HELP ALL PASS" : "\nAXIS CODE HELP " + fail + " FAILED");

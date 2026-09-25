@@ -276,6 +276,9 @@ or the position reading (axis). A controller that is not answering shows no <b>?
 <ul>
  <li>Touch a value field: the keypad opens beside it and the field is outlined in blue so you can see which one you are changing.</li>
  <li>The line at the top gives the allowed range. A value outside it is refused (the entry flashes red) &ndash; nothing is sent.</li>
+ <li><b>Angles</b> (the angle axes' settings) are always <b>0 &ndash; 360&deg;</b>. A minimum <b>above</b> the maximum is a range through zero:
+     minimum 270, maximum 45 allows 270&hellip;360 and 0&hellip;45, and the line reads <i>270.000 &le; &hellip; or &hellip; &le; 45.000</i>.
+     A minimum below the maximum is an ordinary range. The field blinks when its value is outside, as any limited field does.</li>
  <li>The first key replaces the whole value; &#9664; &#9654; move into it to change one digit.</li>
  <li>Use the keypad's <b>.</b> key for decimals &ndash; on any Windows language setting. On a keyboard both <kbd>.</kbd> and <kbd>,</kbd> type the decimal point.</li>
  <li>Values are typed in the unit shown on screen (mm or inch, &deg;C or &deg;F); the HMI converts them for the PLC.</li>
@@ -287,10 +290,12 @@ or the position reading (axis). A controller that is not answering shows no <b>?
 <ul>
  <li>While a machine reports an error, the <b>Alarms</b> page button pulses red and the red alarm button appears on the caption bar.</li>
  <li>The caption-bar alarm button lists the machines in alarm and how many alarms each has. <b>Reset (n) Active Alarms</b> resets that machine:
-     it pulses the machine's alarm reset on its own controller, like the <b>Reset</b> button on the Alarms page, and clears its list.
+     it sends the machine's alarm reset on its own controller, like the <b>Reset</b> button on the Alarms page, and clears its list.
      An alarm whose cause is still there comes straight back. <span class="lvl l1">Operator</span> If the reset cannot be sent &ndash; nobody signed in,
      controller not answering &ndash; the list is still cleared and a message says the machine itself was <b>not</b> reset.</li>
- <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button is momentary, like a physical reset button.</li>
+ <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button drives the machine's reset device
+     as the machine's program says: a short pulse, or &ndash; on the Processing Center (FA2010, <code>M102</code>) &ndash; <b>SET</b>: the HMI switches the device on
+     and the PLC switches it off itself once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
@@ -326,9 +331,11 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>User Settings</td><td><span class="lvl l3">Admin</span></td><td>Users, passwords and levels. The last Admin cannot be removed or lowered.
   The <b>magnifying factor</b> of the panel and of each user (below).</td></tr>
 <tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
-<tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log on screen, how long it is kept, export of today's file.</td></tr>
+<tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log, searchable by time, words, user and kind (see <a href="#diag">11</a>).
+  Switching the log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Connection</td><td><span class="lvl l3">Admin</span></td><td>Driver, address and station of each controller; live status of each.</td></tr>
-<tr><td>PLC Diagnostics</td><td><span class="lvl l3">Admin</span></td><td>Checks the Mitsubishi MX Component set-up and can scan logical stations.</td></tr>
+<tr><td>PLC Diagnostics</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller's state, last answer, last error and drops today; the connection events;
+  and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
 <tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>Builds a description of the machine's set-up to ask an assistant for help.</td></tr>
 <tr><td>About</td><td><span class="lvl l0">None</span></td><td>Program version, machines mounted, and this manual.</td></tr>
 </table>
@@ -364,6 +371,25 @@ Windows' own message boxes keep Windows' size.</p>
 <ul>
  <li>Every change made from the HMI is written to the <b>audit log</b> with the time and the user: one file per day, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
  <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
+ <li><b>Log Settings</b> <span class="lvl l2">Maintenance</span> shows the log as a table, newest first (click <i>Time</i> to turn it round):
+  <ul>
+   <li><b>Period</b>: last hour, today, yesterday, 7 or 30 days, everything kept &ndash; or any <b>From</b>/<b>To</b> (changing either picks <i>From - to</i>).</li>
+   <li>&#128269; <b>Search</b>: every word typed must appear, in any case &ndash; <i>D210 admin</i> finds admin's entries about D210.
+       <b>User</b> and <b>Kind</b> (sign-in, connection, PLC writes, problems, settings, other) narrow it further; &#10006; clears them.</li>
+   <li><b>Live</b>: while the period runs up to now, new entries appear as they are written; the row you are reading stays put.</li>
+   <li>The selected entry is shown in full under the table (a station scan is a report of several lines). &#128190; exports the entries shown, as a log file or a CSV table.</li>
+   <li><span class="lvl l3">Admin</span> only: switching the log <b>off</b> (it asks first, and writes who switched it off; while it is off the page says so in red)
+       and how many days are kept. &#128194; opens the log folder.</li>
+  </ul></li>
+ <li><b>PLC Diagnostics</b> <span class="lvl l2">Maintenance</span>:
+  <ul>
+   <li><b>Controllers</b>: each controller with its driver and connection as running now, whether it answers, when it last did, the last error in words,
+       and <b>drops today</b> &ndash; a link that drops many times a day points at a cable, a switch or a network, not the program.</li>
+   <li><b>Connection events</b>: the log's connection entries, with the same filters.</li>
+   <li><b>MX Component</b> <span class="lvl l3">Admin</span>: the MX Component environment (where the driver is registered, which logical stations are stored);
+       &#9654; <b>tests</b> one logical station and &#128269; <b>scans</b> a range, in the background (&#9632; stops). A logical station the machine is connected through
+       is not opened a second time &ndash; its live state is shown instead.</li>
+  </ul></li>
  <li><b>PLC Monitor</b> <span class="lvl l3">Admin</span>: a side page (<a href="#side">3a</a>) &ndash; its icon on the side bar, <kbd>F12</kbd> (again to close) or the user menu.
      Reads and <b>writes</b> any device of any controller &ndash; it bypasses every control's own checks, so use it with care.
   <ul>

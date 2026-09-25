@@ -3864,3 +3864,28 @@ and `UnitLookAndErrors` extended.
   (`MagnifierToOffer`); User Settings: panel factor and a factor per user (removed with the user).
 - `LanguageManager`: `\r\n` / `\n` written in a translation become line breaks.
 - Tests: `tools/ui_test/SidePanel.cs`, `tools/ui_test/Magnifier.cs`.
+
+## 2026-09-25 (night) - SET alarm reset, log viewer, PLC diagnostics, content spacing, angle limits
+
+- `PlcManager.SetAlarmResetDevice(station, address, action)` + `AlarmResetAction(station)`; FA2010 declares
+  M102 as `SET` (the ladder switches it off). `AlarmReset.Pulse` leaves a SET device on; the Alarms page's
+  button takes the declared action and keeps its own tooltip (the admin block shows the device).
+- `NumericLimits` *(new, Core)*: `Wraps`, `Allows`, `Describe` - 0-360 for angles, min > max = through zero.
+  `NumericInputHMI.IsAngle` (warning, bar, keypad: `NumpadForm.Angle`, no minus key); `AxisSettingHMI`
+  angle rows: every setting `IsAngle`, MIN/MAX not bounding each other, reference/calibration bounded by the
+  MIN/MAX words. Translation `Lbl_Or`.
+- `SettingsScreen`: the content inset counts only outer strips that are shown (`_stripShown`), re-applied
+  when a strip is hidden and when the handle is created; in pixels under the magnifier. `ProfilesScreen`
+  has its own margin.
+- `AuditLogReader` *(new, Core)*: `Read(from, to)` across daily files (shared read, incremental on the
+  growing file, report lines joined to their entry), `Classify` (AuditKind), `Matches`, `OldestDay`.
+  `AuditLogger.LogDirectory` settable (tests), `FileFor(day)`, `FilePrefix`.
+- `LogViewerControl` *(new)*: period / from-to / search / user / kind / live, virtual grid, detail pane,
+  export (.txt / .csv). `LogSettingsControl`: switches Admin-only, confirmation and log entry for "off",
+  red banner while off, retention change logged once.
+- `PlcDiagnosticsControl`: tabs Controllers (`ControllerStatusView`), Connection events (log viewer),
+  MX Component (`MxToolsView`: background test/scan with Stop, in-use logical stations not reopened).
+  Page level Maintenance, MX tab Admin. Driver: `MxDiagnostics.TestStation(station, timeoutMs, out timedOut)`,
+  `MitsubishiActUtl.LogicalStation`.
+- Manual: keypad (angles), alarms (SET reset), HMI Settings table, section 11 (log viewer, diagnostics).
+- Tests: `tools/ui_test/AngleLimits.cs`, `tools/ui_test/LogAndDiagnostics.cs`; `AxisCodeHelpUi.cs` (SET).

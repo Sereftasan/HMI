@@ -173,6 +173,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Settings\LogSettingsControl.cs" />
+    <Compile Include="Settings\LogViewerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\PlcDiagnosticsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

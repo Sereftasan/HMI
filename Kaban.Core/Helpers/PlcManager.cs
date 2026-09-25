@@ -75,12 +75,28 @@ namespace Kaban.Core.Helpers
         // pulsed H500's M102, which there is MAN_Lubrication.
 
         private readonly Dictionary<int, string> _alarmReset = new Dictionary<int, string>();
+        private readonly Dictionary<int, BitActionType> _alarmResetAction = new Dictionary<int, BitActionType>();
 
-        /// <summary>Declares the bit a station's PLC resets its alarms on (pulsed: on, then off).</summary>
-        public void SetAlarmResetDevice(int stationId, string address)
+        /// <summary>
+        /// Declares the bit a station's PLC resets its alarms on, and how it is
+        /// driven: Momentary (on, then off - a push button) or SET (on only - the
+        /// PLC switches it off itself once every device is reset, as FA2010's does).
+        /// </summary>
+        public void SetAlarmResetDevice(int stationId, string address, BitActionType action = BitActionType.Momentary)
         {
-            if (string.IsNullOrWhiteSpace(address)) _alarmReset.Remove(stationId);
-            else _alarmReset[stationId] = address.Trim().ToUpperInvariant();
+            if (string.IsNullOrWhiteSpace(address)) { _alarmReset.Remove(stationId); _alarmResetAction.Remove(stationId); }
+            else
+            {
+                _alarmReset[stationId] = address.Trim().ToUpperInvariant();
+                _alarmResetAction[stationId] = action == BitActionType.SET ? BitActionType.SET : BitActionType.Momentary;
+            }
+        }
+
+        /// <summary>How the station's reset bit is driven (Momentary unless declared SET).</summary>
+        public BitActionType AlarmResetAction(int stationId)
+        {
+            BitActionType a;
+            return _alarmResetAction.TryGetValue(stationId, out a) ? a : BitActionType.Momentary;
         }
 
         /// <summary>The station's alarm reset bit, or null when the machine has not declared one.</summary>

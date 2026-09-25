@@ -75,19 +75,36 @@ namespace Kaban.UI.Settings
         }
 
         /// <summary>
-        /// True when this strip is itself a page of an OUTER strip. The outer one
-        /// has already inset the content; adding our own would compound at every
+        /// True when this strip is itself a page of an OUTER strip that has
+        /// already inset the content; adding our own would compound at every
         /// level.
+        ///
+        /// Only an outer strip that is SHOWN counts. A machine's pages are wrapped
+        /// in a SettingsScreen whose tabs are hidden (the left bar picks the
+        /// machine) and which therefore insets nothing - counting it left Machine
+        /// Parameters with no inset at all, its tables welded to the navigation
+        /// bar and to the tab line.
         /// </summary>
         private bool IsNestedInsideAnotherStrip
         {
             get
             {
                 for (Control p = Parent; p != null; p = p.Parent)
-                    if (p is SettingsScreen) return true;
+                {
+                    var outer = p as SettingsScreen;
+                    if (outer != null && outer._stripShown) return true;
+                }
                 return false;
             }
         }
+
+        /// <summary>
+        /// Whether this strip's tabs are meant to be seen. Kept here rather than
+        /// read from _tabStrip.Visible, which is false for every control of a page
+        /// that is not on screen yet - and would have called every strip hidden
+        /// while the pages were being built.
+        /// </summary>
+        private bool _stripShown = true;
 
         /// <summary>
         /// Content inset, decided by DEPTH. Called again from OnParentChanged
@@ -103,14 +120,41 @@ namespace Kaban.UI.Settings
             // wrapped one down and the two would start at different heights - which
             // is exactly the gap that was left behind when machine selection moved
             // to the left bar.
-            _host.Padding = (IsNestedInsideAnotherStrip || !_tabStrip.Visible)
+            //
+            // A strip INSIDE a hidden one is the first level that shows tabs, so it
+            // insets its content as a top-level strip would - Machine Parameters >
+            // Alarm Settings is such a page.
+            // In pixels once this page has been magnified (UiScale).
+            var want = (IsNestedInsideAnotherStrip || !_stripShown)
                 ? new Padding(0)
-                : new Padding(8, 6, 8, 8);
+                : new Padding(Kaban.UI.Controls.UiScale.For(this, 8), Kaban.UI.Controls.UiScale.For(this, 6),
+                              Kaban.UI.Controls.UiScale.For(this, 8), Kaban.UI.Controls.UiScale.For(this, 8));
+            if (_host.Padding != want) _host.Padding = want;
+        }
+
+        private static IEnumerable<SettingsScreen> NestedStrips(Control root)
+        {
+            foreach (Control c in root.Controls)
+            {
+                var ss = c as SettingsScreen;
+                if (ss != null) yield return ss;
+                foreach (var deeper in NestedStrips(c)) yield return deeper;
+            }
         }
 
         protected override void OnParentChanged(EventArgs e)
         {
             base.OnParentChanged(e);
+            ApplyContentPadding();
+        }
+
+        /// <summary>
+        /// Again once on a form: a strip built inside a page that is attached to
+        /// the outer strip only later saw no outer strip when its parent was set.
+        /// </summary>
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
             ApplyContentPadding();
         }
 
@@ -124,8 +168,15 @@ namespace Kaban.UI.Settings
         /// </summary>
         public bool TabStripHidden
         {
-            get { return !_tabStrip.Visible; }
-            set { _tabStrip.Visible = !value; ApplyContentPadding(); }
+            get { return !_stripShown; }
+            set
+            {
+                _stripShown = !value;
+                _tabStrip.Visible = !value;
+                ApplyContentPadding();
+                // Strips inside decide their inset by this one: tell them.
+                foreach (var inner in NestedStrips(_host)) inner.ApplyContentPadding();
+            }
         }
 
         /// <summary>

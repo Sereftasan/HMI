@@ -431,3 +431,69 @@ Msg_FactorNote;0.75 to 2. Text, buttons, fields and pages are drawn this much la
 Msg_FactorRange;The magnifying factor is a number from 0.75 to 2 (1.25, 1.5 ...).;Büyütme oranı 0.75 ile 2 arasında bir sayıdır (1.25, 1.5 ...).;;;;
 Msg_PanelFactorSaved;Kept. It takes effect when the HMI restarts.;Saklandı. HMI yeniden başladığında geçerli olur.;;;;
 Msg_FactorRestartNow;Restart the HMI now with the magnifying factor {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in.;HMI şimdi {0} büyütme oranıyla yeniden başlatılsın mı? Makine çalışmaya devam eder, ekran birkaç saniyede geri gelir ve oturumunuz açık kalır.;;;;
+Lbl_Or;or;veya;или;oder;o;o
+Log_Period;Period;Dönem;Период;Zeitraum;Periodo;Periodo
+Log_PeriodHour;Last hour;Son bir saat;Последний час;Letzte Stunde;Ultima ora;Última hora
+Log_PeriodToday;Today;Bugün;Сегодня;Heute;Oggi;Hoy
+Log_PeriodYesterday;Yesterday;Dün;Вчера;Gestern;Ieri;Ayer
+Log_Period7;Last 7 days;Son 7 gün;Последние 7 дней;Letzte 7 Tage;Ultimi 7 giorni;Últimos 7 días
+Log_Period30;Last 30 days;Son 30 gün;Последние 30 дней;Letzte 30 Tage;Ultimi 30 giorni;Últimos 30 días
+Log_PeriodAll;Everything kept;Saklanan tümü;Всё сохранённое;Alles Gespeicherte;Tutto il conservato;Todo lo guardado
+Log_PeriodCustom;From - to;Başlangıç - bitiş;С - по;Von - bis;Da - a;Desde - hasta
+Log_From;From;Başlangıç;С;Von;Da;Desde
+Log_To;To;Bitiş;По;Bis;A;Hasta
+Log_SearchTip;Every word must appear, in any case: 'D210 admin' finds admin's entries about D210.;Her kelime geçmeli, büyük/küçük harf fark etmez: 'D210 admin' admin'in D210 ile ilgili kayıtlarını bulur.;Должно встречаться каждое слово, регистр не важен: 'D210 admin' находит записи admin о D210.;Jedes Wort muss vorkommen, Groß-/Kleinschreibung egal: 'D210 admin' findet die Einträge von admin zu D210.;Ogni parola deve comparire, maiuscole o minuscole: 'D210 admin' trova le voci di admin su D210.;Cada palabra debe aparecer, sin importar mayúsculas: 'D210 admin' encuentra las entradas de admin sobre D210.
+Log_User;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
+Log_AllUsers;All users;Tüm kullanıcılar;Все пользователи;Alle Benutzer;Tutti gli utenti;Todos los usuarios
+Log_Kind;Kind;Tür;Тип;Art;Tipo;Tipo
+Log_KindAll;All kinds;Tüm türler;Все типы;Alle Arten;Tutti i tipi;Todos los tipos
+Log_KindSignIn;Sign-in, users;Giriş, kullanıcılar;Вход, пользователи;Anmeldung, Benutzer;Accesso, utenti;Inicio de sesión, usuarios
+Log_KindConnection;Connection;Bağlantı;Связь;Verbindung;Connessione;Conexión
+Log_KindPlcWrite;PLC writes;PLC yazmaları;Запись в ПЛК;SPS-Schreibvorgänge;Scritture PLC;Escrituras en PLC
+Log_KindProblem;Problems;Sorunlar;Проблемы;Probleme;Problemi;Problemas
+Log_KindSettings;Settings;Ayarlar;Настройки;Einstellungen;Impostazioni;Ajustes
+Log_KindOther;Other;Diğer;Прочее;Sonstiges;Altro;Otros
+Log_Live;Live;Canlı;В реальном времени;Live;Live;En vivo
+Log_LiveTip;Adds new entries as they are written, while the period runs up to now.;Dönem şu ana kadar uzanıyorsa yeni kayıtları yazıldıkça ekler.;Добавляет новые записи по мере их появления, если период доходит до текущего момента.;Fügt neue Einträge hinzu, sobald sie geschrieben werden, solange der Zeitraum bis jetzt reicht.;Aggiunge le nuove voci appena scritte, se il periodo arriva a adesso.;Añade las entradas nuevas a medida que se escriben, si el periodo llega hasta ahora.
+Log_ClearTip;Clear the search, user and kind;Aramayı, kullanıcıyı ve türü temizle;Сбросить поиск, пользователя и тип;Suche, Benutzer und Art zurücksetzen;Azzera ricerca, utente e tipo;Borrar búsqueda, usuario y tipo
+Log_ExportTip;Export the entries shown;Gösterilen kayıtları dışa aktar;Экспортировать показанные записи;Angezeigte Einträge exportieren;Esporta le voci mostrate;Exportar las entradas mostradas
+Log_ColTime;Time;Zaman;Время;Zeit;Ora;Hora
+Log_ColUser;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
+Log_ColKind;Kind;Tür;Тип;Art;Tipo;Tipo
+Log_ColEntry;Entry;Kayıt;Запись;Eintrag;Voce;Entrada
+Log_Status;{0} entries shown, {1} in the period;{0} kayıt gösteriliyor, dönemde {1};Показано записей: {0}, за период: {1};{0} Einträge angezeigt, {1} im Zeitraum;{0} voci mostrate, {1} nel periodo;{0} entradas mostradas, {1} en el periodo
+Log_StatusCapped;the newest {0} are listed: narrow the period or the search;en yeni {0} kayıt listelendi: dönemi veya aramayı daraltın;показаны последние {0}: сузьте период или поиск;die neuesten {0} werden gelistet: Zeitraum oder Suche eingrenzen;sono elencate le {0} più recenti: restringi il periodo o la ricerca;se listan las {0} más recientes: acote el periodo o la búsqueda
+Log_NothingToExport;Nothing to export: no entry passes the filters.;Dışa aktarılacak bir şey yok: filtrelere uyan kayıt yok.;Нечего экспортировать: ни одна запись не проходит фильтры.;Nichts zu exportieren: kein Eintrag passt zu den Filtern.;Niente da esportare: nessuna voce supera i filtri.;Nada que exportar: ninguna entrada pasa los filtros.
+Log_FilterTxt;Log file;Kayıt dosyası;Файл журнала;Protokolldatei;File di registro;Archivo de registro
+Log_Exported;Exported {0} entries: {1};{0} kayıt dışa aktarıldı: {1};Экспортировано записей: {0}: {1};{0} Einträge exportiert: {1};Esportate {0} voci: {1};Exportadas {0} entradas: {1}
+Log_ExportFailed;Export failed: {0};Dışa aktarma başarısız: {0};Ошибка экспорта: {0};Export fehlgeschlagen: {0};Esportazione non riuscita: {0};Error al exportar: {0}
+Log_OpenFolder;Open the log folder;Kayıt klasörünü aç;Открыть папку журналов;Protokollordner öffnen;Apri la cartella dei registri;Abrir la carpeta de registros
+Log_AdminOnly;Only an Admin can change the log settings.;Kayıt ayarlarını yalnızca Admin değiştirebilir.;Изменять настройки журнала может только администратор.;Nur ein Admin kann die Protokolleinstellungen ändern.;Solo un Admin può modificare le impostazioni dei registri.;Solo un Admin puede cambiar los ajustes de registro.
+Log_Off;Audit logging is OFF - nothing is being recorded.;Denetim kaydı KAPALI - hiçbir şey kaydedilmiyor.;Журнал аудита ВЫКЛЮЧЕН - ничего не записывается.;Audit-Protokoll ist AUS - nichts wird aufgezeichnet.;Il registro di audit è SPENTO - non viene registrato nulla.;El registro de auditoría está APAGADO - no se registra nada.
+Log_ConfirmOff;Switch audit logging off?\r\n\r\nNothing will be recorded - sign-ins, values written to the controllers, connection losses - until an Admin switches it on again.;Denetim kaydı kapatılsın mı?\r\n\r\nBir Admin tekrar açana kadar hiçbir şey kaydedilmez - girişler, kontrolörlere yazılan değerler, bağlantı kopmaları.;Выключить журнал аудита?\r\n\r\nНичего не будет записываться - входы, значения, записанные в контроллеры, потери связи - пока администратор снова его не включит.;Audit-Protokoll ausschalten?\r\n\r\nNichts wird aufgezeichnet - Anmeldungen, in die Steuerungen geschriebene Werte, Verbindungsverluste - bis ein Admin es wieder einschaltet.;Spegnere il registro di audit?\r\n\r\nNon verrà registrato nulla - accessi, valori scritti nei controllori, perdite di connessione - finché un Admin non lo riaccende.;¿Apagar el registro de auditoría?\r\n\r\nNo se registrará nada - inicios de sesión, valores escritos en los controladores, pérdidas de conexión - hasta que un Admin lo vuelva a encender.
+Diag_TabControllers;Controllers;Kontrolörler;Контроллеры;Steuerungen;Controllori;Controladores
+Diag_TabEvents;Connection events;Bağlantı olayları;События связи;Verbindungsereignisse;Eventi di connessione;Eventos de conexión
+Diag_TabMx;MX Component;MX Component;MX Component;MX Component;MX Component;MX Component
+Diag_ColPlc;PLC;PLC;ПЛК;SPS;PLC;PLC
+Diag_ColMachine;Machine;Makine;Станок;Maschine;Macchina;Máquina
+Diag_ColDriver;Driver;Sürücü;Драйвер;Treiber;Driver;Controlador
+Diag_ColAddress;Connection;Bağlantı;Подключение;Verbindung;Connessione;Conexión
+Diag_ColState;State;Durum;Состояние;Zustand;Stato;Estado
+Diag_ColLast;Last answer;Son yanıt;Последний ответ;Letzte Antwort;Ultima risposta;Última respuesta
+Diag_ColDrops;Drops today;Bugünkü kopmalar;Обрывов сегодня;Abbrüche heute;Cadute oggi;Caídas hoy
+Diag_ColError;Last error;Son hata;Последняя ошибка;Letzter Fehler;Ultimo errore;Último error
+Diag_ColVersion;Program;Program;Программа;Programm;Programma;Programa
+Diag_ControllersNote;Drivers and addresses as running now - a change on the PLC Connection page takes effect after a restart. Drops today: how often the link was lost since midnight (see Connection events).;Sürücüler ve adresler şu an çalıştığı hâliyle - PLC Bağlantı sayfasındaki bir değişiklik yeniden başlatmadan sonra geçerli olur. Bugünkü kopmalar: gece yarısından beri bağlantının kaç kez koptuğu (bkz. Bağlantı olayları).;Драйверы и адреса в том виде, как работают сейчас - изменение на странице подключения ПЛК действует после перезапуска. Обрывов сегодня: сколько раз связь терялась с полуночи (см. События связи).;Treiber und Adressen wie sie jetzt laufen - eine Änderung auf der Seite SPS-Verbindung wirkt nach einem Neustart. Abbrüche heute: wie oft die Verbindung seit Mitternacht verloren ging (siehe Verbindungsereignisse).;Driver e indirizzi come funzionano ora - una modifica nella pagina Connessione PLC vale dopo un riavvio. Cadute oggi: quante volte il collegamento si è perso da mezzanotte (vedi Eventi di connessione).;Controladores y direcciones tal como funcionan ahora - un cambio en la página Conexión PLC se aplica tras reiniciar. Caídas hoy: cuántas veces se perdió el enlace desde medianoche (ver Eventos de conexión).
+Diag_NotConnected;not connected (none set);bağlı değil (ayarlanmamış);не подключён (не задан);nicht verbunden (keine eingestellt);non collegato (nessuno impostato);no conectado (ninguno configurado)
+Diag_NeverAnswered;has not answered since the start;başlangıçtan beri yanıt vermedi;не отвечал с момента запуска;hat seit dem Start nicht geantwortet;non ha risposto dall'avvio;no ha respondido desde el inicio
+Diag_NoAnswerFor;no answer for {0};{0} süredir yanıt yok;нет ответа {0};seit {0} keine Antwort;nessuna risposta da {0};sin respuesta desde hace {0}
+Diag_LogicalStation;logical station;mantıksal istasyon;логическая станция;logische Station;stazione logica;estación lógica
+Diag_LogicalStationLbl;Logical station;Mantıksal istasyon;Логическая станция;Logische Station;Stazione logica;Estación lógica
+Diag_TestTip;Open this logical station once and report the answer;Bu mantıksal istasyonu bir kez aç ve yanıtı bildir;Открыть эту логическую станцию один раз и сообщить ответ;Diese logische Station einmal öffnen und die Antwort melden;Apri una volta questa stazione logica e riporta la risposta;Abrir esta estación lógica una vez e informar la respuesta
+Diag_Scan;Scan;Tara;Сканировать;Suchen;Scansione;Escanear
+Diag_ScanTip;Try every logical station in the range and list the ones that open;Aralıktaki her mantıksal istasyonu dene ve açılanları listele;Проверить каждую логическую станцию диапазона и перечислить открывающиеся;Jede logische Station im Bereich probieren und die öffnenden auflisten;Prova ogni stazione logica dell'intervallo ed elenca quelle che si aprono;Probar cada estación lógica del rango y listar las que abren
+Diag_StopTip;Stop after the station being tried;Denenen istasyondan sonra dur;Остановиться после проверяемой станции;Nach der gerade geprüften Station anhalten;Fermati dopo la stazione in prova;Detenerse tras la estación en prueba
+Diag_EnvTip;Show the MX Component environment report again;MX Component ortam raporunu yeniden göster;Показать отчёт о среде MX Component снова;MX-Component-Umgebungsbericht erneut anzeigen;Mostra di nuovo il rapporto sull'ambiente MX Component;Mostrar de nuevo el informe del entorno MX Component
+Diag_CopyTip;Copy this report to the clipboard;Bu raporu panoya kopyala;Скопировать этот отчёт в буфер обмена;Diesen Bericht in die Zwischenablage kopieren;Copia questo rapporto negli appunti;Copiar este informe al portapapeles
+Diag_NoMx;(the MX Component driver is not part of this program);(MX Component sürücüsü bu programda yok);(драйвер MX Component не входит в эту программу);(der MX-Component-Treiber ist nicht Teil dieses Programms);(il driver MX Component non fa parte di questo programma);(el controlador MX Component no forma parte de este programa)
+Diag_Trying;trying logical station {0} ({1} of {2})...;mantıksal istasyon {0} deneniyor ({2} içinde {1})...;проверка логической станции {0} ({1} из {2})...;logische Station {0} wird probiert ({1} von {2})...;prova della stazione logica {0} ({1} di {2})...;probando la estación lógica {0} ({1} de {2})...

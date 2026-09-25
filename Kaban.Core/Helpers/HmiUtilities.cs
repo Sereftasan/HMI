@@ -10,8 +10,20 @@ namespace Kaban.Core.Helpers
         // Anchored to a fixed per-machine location, NOT a relative filename: a
         // relative path makes the log land wherever the process was started from,
         // which on a panel PC means nobody can find it. Daily files, auto-pruned.
-        public static string LogDirectory { get; } =
+        //
+        // Settable so a test can log into a folder of its own; the HMI never
+        // changes it.
+        public static string LogDirectory { get; set; } =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "AuditLogs");
+
+        /// <summary>The daily files are named for their day: HmiAudit_yyyy-MM-dd.txt.</summary>
+        public const string FilePrefix = "HmiAudit_";
+
+        /// <summary>The file of a given day (it may not exist).</summary>
+        public static string FileFor(DateTime day)
+        {
+            return Path.Combine(LogDirectory, FilePrefix + day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".txt");
+        }
 
         // Keep this many days of daily log files before deleting the oldest.
         // Settable from the Log Settings page (persisted there).
@@ -28,7 +40,7 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static string TodayFile
         {
-            get { return Path.Combine(LogDirectory, "HmiAudit_" + DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) + ".txt"); }
+            get { return FileFor(DateTime.Now); }
         }
 
         /// <summary>Last N lines of today's log (for the on-screen viewer).</summary>

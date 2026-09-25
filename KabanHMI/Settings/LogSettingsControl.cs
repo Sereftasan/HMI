@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 
 namespace Kaban.UI.Settings
@@ -42,116 +43,163 @@ namespace Kaban.UI.Settings
     }
 
     /// <summary>
-    /// LOG SETTINGS: what an HMI audit log needs day to day -
-    ///   - ON/OFF master switch (commissioning sometimes needs silence),
-    ///   - retention in days (old daily files are deleted automatically),
-    ///   - where the files live + one-click open,
-    ///   - export of today's file for support/e-mail,
-    ///   - a LIVE viewer of the latest entries so [PLC DIAG] lines and user
-    ///     actions can be read on the machine without hunting for files.
-    /// Settings persist across restarts.
+    /// LOG SETTINGS: the audit log's switches, and the log itself to read.
+    ///
+    ///   * On/off and how many days are kept - ADMIN ONLY. This is the record of
+    ///     who did what on the machine; a page open to Maintenance let the people
+    ///     it records switch it off, silently and for good (the choice is saved).
+    ///     Now only an Admin can, after a confirmation, and the switching itself
+    ///     is written to the log; while it is off the page says so in red.
+    ///   * The log folder, one press away.
+    ///   * The log, in a table that can be narrowed by time, words, user and kind
+    ///     (LogViewerControl) - it was the last 200 raw lines of today's file.
+    /// Settings persist across restarts (LogSettingsStore).
     /// </summary>
     public class LogSettingsControl : UserControl
     {
         private readonly CheckBox _chkEnabled = new CheckBox();
         private readonly NumericUpDown _numRetain = new NumericUpDown();
-        private readonly TextBox _txtView = new TextBox();
-        private readonly Timer _refresh = new Timer { Interval = 2000 };
-        private readonly Label _lblStatus = new Label();
+        private readonly Label _off = new Label();
+        private readonly Label _adminNote = new Label();
+        private readonly Timer _retainLog = new Timer { Interval = 1500 };
+        private readonly LogViewerControl _viewer;
+        private readonly EventHandler _onUserChanged;
+        private bool _setting;
 
         public LogSettingsControl()
         {
             Dock = DockStyle.Fill;
             BackColor = Color.White;
-            var pn = new Panel { Dock = DockStyle.Top, Height = 118, Padding = new Padding(16) };
+            var tips = Kaban.UI.Controls.UiStyle.Tips();
+
+            var pn = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                WrapContents = true,
+                Padding = new Padding(0, 0, 0, 4),
+                BackColor = Color.White
+            };
 
             _chkEnabled.Text = LanguageManager.GetString("Log_Enabled", "Audit logging enabled");
-            _chkEnabled.Left = 16; _chkEnabled.Top = 12; _chkEnabled.Width = 260;
+            _chkEnabled.AutoSize = true;
+            _chkEnabled.Margin = new Padding(2, 9, 16, 3);
+            _chkEnabled.Font = new Font("Segoe UI", 9.5F);
             _chkEnabled.Checked = AuditLogger.Enabled;
-            _chkEnabled.CheckedChanged += (s, e) => { AuditLogger.Enabled = _chkEnabled.Checked; LogSettingsStore.Save(); };
+            _chkEnabled.CheckedChanged += (s, e) => OnEnabledChanged();
             pn.Controls.Add(_chkEnabled);
 
-            pn.Controls.Add(new Label { Text = LanguageManager.GetString("Log_Retain", "Keep logs (days)") + ":", Left = 16, Top = 44, Width = 160, Font = new Font("Segoe UI", 9F) });
-            _numRetain.Left = 180; _numRetain.Top = 42; _numRetain.Width = 70;
-            _numRetain.Minimum = 1; _numRetain.Maximum = 3650; _numRetain.Value = Math.Min(3650, Math.Max(1, AuditLogger.RetainDays));
-            _numRetain.ValueChanged += (s, e) => { AuditLogger.RetainDays = (int)_numRetain.Value; LogSettingsStore.Save(); };
+            pn.Controls.Add(new Label
+            {
+                Text = LanguageManager.GetString("Log_Retain", "Keep logs (days)") + ":",
+                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = new Font("Segoe UI", 9.5F)
+            });
+            _numRetain.Width = 70;
+            _numRetain.Margin = new Padding(2, 6, 12, 3);
+            _numRetain.Minimum = 1; _numRetain.Maximum = 3650;
+            _numRetain.Value = Math.Min(3650, Math.Max(1, AuditLogger.RetainDays));
+            _numRetain.ValueChanged += (s, e) =>
+            {
+                if (_setting) return;
+                AuditLogger.RetainDays = (int)_numRetain.Value;
+                LogSettingsStore.Save();
+                // Written once the value has settled - not once per arrow press.
+                _retainLog.Stop(); _retainLog.Start();
+            };
+            _retainLog.Tick += (s, e) =>
+            {
+                _retainLog.Stop();
+                AuditLogger.Log("set the audit log to keep " + AuditLogger.RetainDays + " days.");
+            };
             pn.Controls.Add(_numRetain);
 
-            var tips = Kaban.UI.Controls.UiStyle.Tips();
-            Func<string, string, int, Button> tool = (emoji, tip, left) =>
-            {
-                var b = new Button { Text = emoji, Left = left, Top = 74, Width = 44, Height = 32, FlatStyle = FlatStyle.Flat, Font = new Font("Segoe UI", 12F) };
-                b.FlatAppearance.BorderColor = Color.FromArgb(180, 186, 194);
-                tips.SetToolTip(b, tip);
-                pn.Controls.Add(b);
-                return b;
-            };
-            tool("\uD83D\uDCC2", "Open the log folder", 16).Click += (s, e) =>
-            { try { Process.Start("explorer.exe", AuditLogger.LogDirectory); } catch { } };
-            tool("\uD83D\uDCBE", "Export today's log file", 66).Click += (s, e) => ExportToday();
-            tool("\uD83D\uDD04", "Refresh the view now", 116).Click += (s, e) => RefreshView();
+            var folder = Kaban.UI.Controls.UiStyle.ToolButton("\uD83D\uDCC2",
+                LanguageManager.GetString("Log_OpenFolder", "Open the log folder") + "\n" + AuditLogger.LogDirectory, tips,
+                (s, e) => { try { Process.Start("explorer.exe", AuditLogger.LogDirectory); } catch { } });
+            folder.Margin = new Padding(2, 1, 8, 1);
+            pn.Controls.Add(folder);
 
-            _txtView.Dock = DockStyle.Fill;
-            _txtView.Multiline = true;
-            _txtView.ReadOnly = true;
-            _txtView.ScrollBars = ScrollBars.Both;
-            _txtView.WordWrap = false;
-            _txtView.Font = new Font("Consolas", 8.5F);
-            _txtView.BackColor = Color.FromArgb(28, 30, 34);
-            _txtView.ForeColor = Color.FromArgb(190, 230, 190);
+            _adminNote.AutoSize = true;
+            _adminNote.Margin = new Padding(4, 10, 3, 3);
+            _adminNote.ForeColor = Color.FromArgb(120, 128, 138);
+            _adminNote.Text = LanguageManager.GetString("Log_AdminOnly", "Only an Admin can change the log settings.");
+            pn.Controls.Add(_adminNote);
 
-            _lblStatus.Dock = DockStyle.Bottom;
-            _lblStatus.Height = 24;
-            _lblStatus.Font = new Font("Segoe UI", 9F);
-            _lblStatus.Padding = new Padding(8, 2, 0, 0);
-            _lblStatus.Text = AuditLogger.LogDirectory;
+            _off.Dock = DockStyle.Top;
+            _off.Height = 30;
+            _off.TextAlign = ContentAlignment.MiddleLeft;
+            _off.Padding = new Padding(8, 0, 0, 0);
+            _off.BackColor = Color.FromArgb(253, 226, 226);
+            _off.ForeColor = Color.FromArgb(160, 20, 20);
+            _off.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            _off.Text = LanguageManager.GetString("Log_Off", "Audit logging is OFF - nothing is being recorded.");
 
-            Controls.Add(_txtView);
-            Controls.Add(_lblStatus);
+            _viewer = new LogViewerControl(null, LogViewerControl.Period.Today);
+
+            var gap = new Panel { Dock = DockStyle.Top, Height = 6, BackColor = Color.White };
+            Controls.Add(_viewer);
+            Controls.Add(gap);
+            Controls.Add(_off);
             Controls.Add(pn);
 
-            _refresh.Tick += (s, e) => RefreshView();
-            VisibleChanged += (s, e) => { _refresh.Enabled = Visible; if (Visible) RefreshView(); };
-            RefreshView();
+            _onUserChanged = (s, e) => ApplyAccess();
+            SecurityManager.UserChanged += _onUserChanged;
+            ApplyAccess();
         }
 
-        private void RefreshView()
+        /// <summary>The switches are an Admin's; everyone who may open the page may read the log.</summary>
+        private void ApplyAccess()
         {
-            var lines = AuditLogger.Tail(200);
-            string text = string.Join(Environment.NewLine, lines);
-            if (_txtView.Text != text)
-            {
-                _txtView.Text = text;
-                _txtView.SelectionStart = _txtView.TextLength;
-                _txtView.ScrollToCaret();
-            }
+            bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
+            _chkEnabled.Enabled = admin;
+            _numRetain.Enabled = admin;
+            _adminNote.Visible = !admin;
+            _off.Visible = !AuditLogger.Enabled;
         }
 
-        private void ExportToday()
+        private void OnEnabledChanged()
         {
-            // AuditLogger.TodayFile: this used to build "yyyy-MM-dd.txt", a name the
-            // logger never writes, so export always reported "no log file".
-            string src = AuditLogger.TodayFile;
-            if (!File.Exists(src)) { _lblStatus.Text = "No log file for today yet."; return; }
-            using (var dlg = new SaveFileDialog { Filter = "Log file (*.txt)|*.txt", FileName = "KabanHMI-" + DateTime.Now.ToString("yyyy-MM-dd") + ".txt" })
+            if (_setting) return;
+            if (!SecurityManager.HasAccess(SecurityLevel.Admin)) { Revert(); return; }
+
+            if (!_chkEnabled.Checked)
             {
-                if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
-                // The logger may be appending at this instant, and the target may be
-                // read-only or on a removed USB stick: report it, don't crash the HMI.
-                try
-                {
-                    File.Copy(src, dlg.FileName, true);
-                    _lblStatus.Text = "Exported: " + dlg.FileName;
-                }
-                catch (Exception ex) { _lblStatus.Text = "Export failed: " + ex.Message; }
+                var answer = MessageBox.Show(FindForm(),
+                    LanguageManager.GetString("Log_ConfirmOff",
+                        "Switch audit logging off?\r\n\r\nNothing will be recorded - sign-ins, values written to the " +
+                        "controllers, connection losses - until an Admin switches it on again."),
+                    LanguageManager.GetString("Set_Logs", "Log Settings"),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (answer != DialogResult.Yes) { Revert(); return; }
+                // Written BEFORE it goes quiet: the last entry says who silenced it.
+                AuditLogger.Log("switched audit logging OFF.");
+                AuditLogger.Enabled = false;
             }
+            else
+            {
+                AuditLogger.Enabled = true;
+                AuditLogger.Log("switched audit logging ON.");
+            }
+            LogSettingsStore.Save();
+            ApplyAccess();
+        }
+
+        private void Revert()
+        {
+            _setting = true;
+            try { _chkEnabled.Checked = AuditLogger.Enabled; }
+            finally { _setting = false; }
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing) { _refresh.Stop(); _refresh.Dispose(); }
+            if (disposing)
+            {
+                SecurityManager.UserChanged -= _onUserChanged;
+                _retainLog.Stop(); _retainLog.Dispose();
+            }
             base.Dispose(disposing);
         }
     }
 }
-

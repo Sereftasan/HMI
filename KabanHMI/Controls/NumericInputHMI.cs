@@ -22,6 +22,22 @@ namespace Kaban.UI.Controls
         [Category("   Limits")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue MinLimit { get; set; } = new DynamicValue();
         [Category("   Limits")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue MaxLimit { get; set; } = new DynamicValue();
 
+        /// <summary>
+        /// The value is an ANGLE in degrees (see NumericLimits): never below 0 or
+        /// above 360, and a MinLimit above the MaxLimit is a range THROUGH zero -
+        /// 270 ... 360 / 0 ... 45.
+        ///
+        /// Set, not guessed from a "°" suffix: some pages carry that suffix on
+        /// fields that are no angle at all (an encoder's pulses per turn, a
+        /// profile length), and holding those to 0 - 360 would refuse their
+        /// settings. AxisSettingHMI sets it on the rows of an angle axis.
+        /// </summary>
+        [Category("   Limits")]
+        [DefaultValue(false)]
+        [Description("An angle in degrees: 0 - 360 always, and a MinLimit above the MaxLimit is a range through 0 " +
+                     "(270 ... 360 / 0 ... 45).")]
+        public bool IsAngle { get; set; }
+
         // --- RESTORED: formula-driven read/write engine (was stripped out) ---
         [Category("   Math")]
         [Description("Formula applied to a Tag-based MinLimit/MaxLimit's raw PLC value before comparing " +
@@ -110,6 +126,8 @@ namespace Kaban.UI.Controls
                 sb.Append("\nMinimum Value:\t\t").Append(MinLimit);
             if (MaxLimit != null && MaxLimit.Type != LimitSourceType.None)
                 sb.Append("\nMaximum Value:\t\t").Append(MaxLimit);
+            if (IsAngle)
+                sb.Append("\nAngle:\t\t\t0 - 360 (a minimum above the maximum: through 0)");
             if (!string.IsNullOrWhiteSpace(WriteFormula))
                 sb.Append("\nWrite Formula:\t\t").Append(WriteFormula);
 
@@ -189,17 +207,25 @@ namespace Kaban.UI.Controls
             bool hasLimit = (MinLimit != null && MinLimit.Type != LimitSourceType.None)
                          || (MaxLimit != null && MaxLimit.Type != LimitSourceType.None);
 
-            if (OutOfLimitsWarning || hasLimit)
+            bool angle = IsAngle;
+            if (OutOfLimitsWarning || hasLimit || angle)
             {
                 double min = ResolveLimit(MinLimit, readPlc, double.MinValue);
                 double max = ResolveLimit(MaxLimit, readPlc, double.MaxValue);
+                double? minN = min == double.MinValue ? (double?)null : min;
+                double? maxN = max == double.MaxValue ? (double?)null : max;
 
                 // The bar spans exactly these limits - one set of bounds for the
-                // keypad, the warning and the slider alike.
-                _barLow = min == double.MinValue ? 0 : min;
-                _barHigh = max == double.MaxValue ? 100 : max;
+                // keypad, the warning and the slider alike. An angle through zero
+                // spans min ... max + 360 (see DrawBarView).
+                _barWraps = NumericLimits.Wraps(minN, maxN, angle);
+                _barLow = minN ?? 0;
+                _barHigh = _barWraps ? maxN.Value + NumericLimits.FullTurn : (maxN ?? (angle ? NumericLimits.FullTurn : 100));
 
-                if (_lastNumericValue < min || _lastNumericValue > max)
+                // ONE RULE with the keypad (NumericLimits): an angle is 0 - 360, and
+                // a minimum above the maximum is a range through zero - not a
+                // range nothing can be in.
+                if (!NumericLimits.Allows(_lastNumericValue, minN, maxN, angle))
                 {
                     // The BORDER and the DIGITS blink, not the whole background.
                     // A field flooding red drowns the value it is complaining
@@ -264,7 +290,9 @@ namespace Kaban.UI.Controls
             double lo = _barLow, hi = _barHigh;
             if (hi > lo)
             {
-                double f = Math.Max(0, Math.Min(1, (_lastNumericValue - lo) / (hi - lo)));
+                // Through zero: 10 degrees on a 270 ... 45 range is 370 on the bar.
+                double at = _barWraps && _lastNumericValue < lo ? _lastNumericValue + NumericLimits.FullTurn : _lastNumericValue;
+                double f = Math.Max(0, Math.Min(1, (at - lo) / (hi - lo)));
                 int w = (int)(v.Width * f);
                 if (w > 0)
                     using (var b = new SolidBrush(Color.FromArgb(206, 228, 246)))
@@ -297,6 +325,7 @@ namespace Kaban.UI.Controls
 
         /// <summary>The resolved limits, refreshed on every scan.</summary>
         private double _barLow, _barHigh = 100;
+        private bool _barWraps;
 
         /// <summary>Decimal places actually shown, including the unit's extra ones.</summary>
         private int EffectiveDecimals
@@ -407,11 +436,14 @@ namespace Kaban.UI.Controls
 
             double kMin = effectiveLimits.Min;
             double kMax = effectiveLimits.Max;
+            bool angle = IsAngle;
             if (UnitType != UnitType.None)
             {
                 kMin = UnitManager.ToDisplay(UnitType, effectiveLimits.Min);
                 kMax = UnitManager.ToDisplay(UnitType, effectiveLimits.Max);
-                if (kMin > kMax) { double t = kMin; kMin = kMax; kMax = t; } // guard inverted scales
+                // Guard inverted scales - but not an angle's range through zero,
+                // where a minimum above the maximum is the point.
+                if (kMin > kMax && !angle) { double t = kMin; kMin = kMax; kMax = t; }
             }
 
 
@@ -440,8 +472,9 @@ namespace Kaban.UI.Controls
                        // missed it and the pad printed -70775320270169900000000.
                        hasRealMin ? (double?)kMin : null,
                        hasRealMax ? (double?)kMax : null,
-                       allowNegative: (DataFormat == DisplayFormatEnum.Signed_Decimal) ||
-                                      (DataFormat == DisplayFormatEnum.Real),
+                       // An angle is 0 - 360: no minus sign to offer.
+                       allowNegative: !angle && ((DataFormat == DisplayFormatEnum.Signed_Decimal) ||
+                                                 (DataFormat == DisplayFormatEnum.Real)),
                        allowDecimal: EffectiveDecimals > 0,
                        hex: DataFormat == DisplayFormatEnum.Hexadecimal))
             {
@@ -449,6 +482,7 @@ namespace Kaban.UI.Controls
                 // control could never display.
                 keypad.MaxDigits = Digits;
                 keypad.DecimalPlaces = EffectiveDecimals;
+                keypad.Angle = angle;
                 keypad.PlaceBeside(this);
 
                 // THE FIELD SHOWS IT IS THE ONE BEING EDITED.

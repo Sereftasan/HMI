@@ -195,6 +195,33 @@ namespace Kaban.Drivers.MitsubishiActUtl
             AuditLogger.Log(sb.ToString());
         }
 
+        /// <summary>
+        /// THE PLC DIAGNOSTICS PAGE'S TEST: opens one logical station on a
+        /// throwaway control, on a thread of its own, and returns the code.
+        ///
+        /// The page used to build a whole driver per station for this - each with
+        /// a message-loop thread that was never ended, and a connect it waited
+        /// only 150 ms for, so a station that needed longer to open was reported
+        /// as failing while it was still opening. Here the control lives exactly
+        /// as long as the test, and the wait is the caller's to choose. Called
+        /// from a background thread; blocks for at most timeoutMs.
+        /// </summary>
+        /// <param name="timedOut">True when Open() had not returned in time (it
+        /// carries on in the background and its control is released when it does).</param>
+        public static int TestStation(int station, int timeoutMs, out bool timedOut)
+        {
+            int code = unchecked((int)0x80040154);
+            var t = new System.Threading.Thread(() => { code = TryOpenStation(station); })
+            {
+                IsBackground = true,
+                Name = "MX Component test of logical station " + station
+            };
+            t.SetApartmentState(System.Threading.ApartmentState.STA);
+            t.Start();
+            timedOut = !t.Join(Math.Max(100, timeoutMs));
+            return code;
+        }
+
         /// <summary>Opens one station on a throwaway control and returns its code.</summary>
         private static int TryOpenStation(int station)
         {

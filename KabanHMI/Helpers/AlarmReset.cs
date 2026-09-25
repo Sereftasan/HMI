@@ -26,12 +26,15 @@ namespace Kaban.UI.Helpers
     /// the menu and the Alarms page say so. It used to be M102 everywhere, and
     /// on a mounted H500 that is MAN_Lubrication.
     ///
-    /// THE PULSE
-    /// ---------
-    /// On, then off 300 ms later - a press of a physical reset button. The OFF
-    /// goes to the same driver the ON went to, whatever happens meanwhile (a
-    /// logout, a page change), and is retried: a reset bit left on would hold
-    /// the machine in reset.
+    /// THE PULSE - OR SET
+    /// ------------------
+    /// As the module declares it (PlcManager.AlarmResetAction). Momentary: on,
+    /// then off 300 ms later - a press of a physical reset button; the OFF goes
+    /// to the same driver the ON went to, whatever happens meanwhile (a logout,
+    /// a page change), and is retried: a reset bit left on would hold the
+    /// machine in reset. SET: on only - the PLC switches the bit off itself
+    /// once every device is reset (FA2010's M102); switching it off from here
+    /// could cut that short.
     /// </summary>
     public static class AlarmReset
     {
@@ -82,6 +85,11 @@ namespace Kaban.UI.Helpers
                     why = LanguageManager.GetString("Msg_ResetRefused", "the controller did not accept the write");
                 AuditLogger.Log("alarm reset NOT sent to " + machine + " (" + address + "): " + why);
                 return false;
+            }
+            if (PlcManager.Instance.AlarmResetAction(station) == BitActionType.SET)
+            {
+                AuditLogger.Log("alarm reset SET from the alarm menu: " + machine + ", station " + station + ", " + address + " (the PLC switches it off).");
+                return true;
             }
             AuditLogger.Log("alarm reset pulsed from the alarm menu: " + machine + ", station " + station + ", " + address + ".");
             Release(driver, address, machine, ReleaseAttempts);

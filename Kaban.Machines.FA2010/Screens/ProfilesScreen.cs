@@ -93,6 +93,9 @@ namespace Kaban.Machines.FA2010.Screens
         {
             Dock = DockStyle.Fill;
             BackColor = Color.White;
+            // Air between the panes and the navigation bar: this page is shown on
+            // its own, with no tab strip around it to inset it (see SettingsScreen).
+            Padding = new Padding(8, 0, 8, 8);
 
             foreach (var c in new[] { "profile_code", "company_name", "serial", "profile_type", "dxf_file", "gcode" })
                 _table.Columns.Add(c, typeof(string));

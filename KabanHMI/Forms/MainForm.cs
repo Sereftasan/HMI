@@ -1444,12 +1444,6 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// Machine-error handling on the caption: while PLC 1's M800 is set, the
-        /// Alarms menu entry pulses red and a pulsing RESET button appears next to
-        /// the user control. The reset is MOMENTARY - it pulses M102 and releases it
-        /// again, exactly like a physical reset button.
-        /// </summary>
-        /// <summary>
         /// The connection warning, beside the alarm bell.
         ///
         /// Only visible while something is actually down - a light that is always

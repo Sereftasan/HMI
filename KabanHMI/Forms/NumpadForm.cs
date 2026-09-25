@@ -68,6 +68,18 @@ namespace Kaban.UI.Forms
 
         public double? Minimum { get; set; }
         public double? Maximum { get; set; }
+
+        /// <summary>
+        /// The value is an ANGLE (see NumericLimits): 0 - 360 whatever the limits,
+        /// and a minimum above the maximum is a range through zero - "270 &lt;= ...
+        /// or ... &lt;= 45". Setting it redraws the limit line.
+        /// </summary>
+        public bool Angle
+        {
+            get { return _angle; }
+            set { if (_angle == value) return; _angle = value; Refresh_(); }
+        }
+        private bool _angle;
         public bool AllowNegative { get; set; }
         public bool AllowDecimal { get; set; }
 
@@ -358,8 +370,9 @@ namespace Kaban.UI.Forms
             else if (!double.TryParse(_text, NumberStyles.Float, CultureInfo.InvariantCulture, out v))
             { Flash(); return; }
 
-            if ((Minimum.HasValue && v < Minimum.Value) ||
-                (Maximum.HasValue && v > Maximum.Value)) { Flash(); return; }
+            // One rule for the keypad, the field's warning and the write (NumericLimits):
+            // an angle through zero is allowed on either side of it.
+            if (!NumericLimits.Allows(v, Minimum, Maximum, Angle)) { Flash(); return; }
 
             DialogResult = DialogResult.OK;
             Close();
@@ -468,7 +481,11 @@ namespace Kaban.UI.Forms
             // It reads the same in every language, needs no translation, and costs
             // three characters instead of the five-to-nine a translated "value"
             // would take.
-            if (Minimum.HasValue && Maximum.HasValue)
+            // AN ANGLE: 0 - 360 always, and a minimum above the maximum reads
+            // "270.0 <= ... or ... <= 45.0" - the two sides of zero.
+            if (Angle)
+                _range.Text = NumericLimits.Describe(Minimum, Maximum, true, DecimalPlaces);
+            else if (Minimum.HasValue && Maximum.HasValue)
                 _range.Text = Minimum.Value.ToString(fmt) + " \u2264 \u2026 \u2264 " +
                               Maximum.Value.ToString(fmt);
             // THE PLACEHOLDER STAYS on a one-sided limit too. "<= 1700.00" alone

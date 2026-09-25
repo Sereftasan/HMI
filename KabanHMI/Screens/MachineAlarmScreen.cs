@@ -83,13 +83,17 @@ namespace Kaban.UI.Screens
                     RequiredSecurity = SecurityLevel.Operator,
                     LogAction = true
                 };
+                // As the machine's module declares it: FA2010's M102 is SET (the
+                // PLC switches it off when the reset is done), others a pulse.
                 _btnReset.BitActions.Add(new Kaban.Core.Models.BitAction
                 {
                     Address = resetBit,
-                    Action = Kaban.Core.Enums.BitActionType.Momentary
+                    Action = PlcManager.Instance.AlarmResetAction(station)
                 });
                 _btnReset.ApplyTranslation();
-                tips.SetToolTip(_btnReset, LanguageManager.GetString("Btn_AlarmReset", "Reset alarms"));
+                // The button's OWN tooltip: "Reset alarms" - and, for an admin, the
+                // device it drives and how (a tooltip set over it hid that).
+                _btnReset.ToolTipText = "Btn_AlarmReset";
                 add(_btnReset);
             }
             else

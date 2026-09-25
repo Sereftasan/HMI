@@ -205,15 +205,17 @@ namespace Kaban.UI.Controls
         /// <summary>
         /// True when this row is an ANGLE, where limits do not behave like travel.
         ///
-        /// An angle wraps: 350 degrees is 10 degrees before zero, so "minimum 350,
-        /// maximum 10" is a perfectly ordinary range that every min &lt;= max test
-        /// rejects. Comparing the two numbers is simply the wrong question.
+        /// An angle wraps: an axis that travels from 270 degrees through 360 (= 0)
+        /// on to 45 has the minimum 270 and the maximum 45 - a minimum ABOVE the
+        /// maximum, which every plain min &lt;= max test rejects. Its limits used
+        /// to be switched off for that reason, which left the reference and the
+        /// calibration of an angle axis with no bound at all.
         ///
-        /// Rather than invent a wrap-aware comparison that would be wrong in its
-        /// own quiet way, limit CHECKING is switched off for angles and the entry
-        /// is bounded by the full turn instead. A limit that cannot be stated
-        /// correctly is worse than no limit: it refuses valid values and teaches
-        /// the operator that the warning means nothing.
+        /// Now its fields are NumericInputHMI.IsAngle (see NumericLimits): every
+        /// setting is 0 - 360; the minimum and maximum do not bound each other
+        /// (a minimum above the maximum is the range through zero); and the
+        /// reference and calibration are held to the travel between them, through
+        /// zero when it runs through zero.
         /// </summary>
         [Browsable(false)]
         public bool IsAngle { get { return Suffix == "\u00B0"; } }
@@ -472,13 +474,24 @@ namespace Kaban.UI.Controls
 
                 if (IsAngle)
                 {
-                    // NO LIMITS on an angle. See IsAngle for why a min/max cannot be
-                    // stated correctly for a value that wraps; +/-360 was the same
-                    // kind of invented bound as 99999 and just as unhelpful. The
-                    // digit count still stops an over-long entry.
-                    n.MinLimit = new Kaban.Core.Models.DynamicValue();
-                    n.MaxLimit = new Kaban.Core.Models.DynamicValue();
-                    n.OutOfLimitsWarning = false;
+                    // AN ANGLE: 0 - 360, wrap-aware (see IsAngle).
+                    n.IsAngle = true;
+                    if (clampToTravel && !string.IsNullOrEmpty(MinLimitAddress)
+                                      && !string.IsNullOrEmpty(MaxLimitAddress))
+                    {
+                        // Reference and calibration within the travel - through
+                        // zero when the minimum is above the maximum.
+                        n.MinLimit = new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, MinLimitAddress);
+                        n.MaxLimit = new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, MaxLimitAddress);
+                    }
+                    else
+                    {
+                        // The minimum and maximum themselves: anywhere on the
+                        // turn, and NOT bounded by each other - 270 above 45 is
+                        // how a range through zero is written.
+                        n.MinLimit = new Kaban.Core.Models.DynamicValue();
+                        n.MaxLimit = new Kaban.Core.Models.DynamicValue();
+                    }
                 }
                 else if (clampToTravel && !string.IsNullOrEmpty(MinLimitAddress)
                                        && !string.IsNullOrEmpty(MaxLimitAddress))

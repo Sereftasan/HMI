@@ -202,6 +202,13 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
         // --- INTERFACE PROPERTIES ---
         public bool IsConnected => _isConnected;
+
+        /// <summary>
+        /// The MX Component logical station this driver opens - for the PLC
+        /// Diagnostics page, which must not open a second control on a station
+        /// the live connection is using.
+        /// </summary>
+        public int LogicalStation => _stationNumber;
         public bool IsHealthy => _isConnected && _lastOpOk;
 
         /// <summary>
