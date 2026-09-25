@@ -26,7 +26,9 @@ namespace Kaban.UI.Controls
 
         [Category(" System")] public int PlcNumber { get; set; } = 1;
         [Category(" System")] public string Address { get; set; }
-        [Category(" System")] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
+        // Written into the page's code as its parts (Type, TagAddress, StaticValue),
+        // like a unit's PositionOffset - not into a .resx as a serialized object.
+        [Category(" System")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
 
         [Category(" Visuals")] public Image ImageActive { get; set; }
         [Category(" Visuals")] public Image ImagePassive { get; set; }

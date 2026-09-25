@@ -19,8 +19,8 @@ namespace Kaban.UI.Controls
     [TypeConverter(typeof(NumericInputSorter))]
     public class NumericInputHMI : BaseNumericHMI
     {
-        [Category("   Limits")] public DynamicValue MinLimit { get; set; } = new DynamicValue();
-        [Category("   Limits")] public DynamicValue MaxLimit { get; set; } = new DynamicValue();
+        [Category("   Limits")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue MinLimit { get; set; } = new DynamicValue();
+        [Category("   Limits")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue MaxLimit { get; set; } = new DynamicValue();
 
         // --- RESTORED: formula-driven read/write engine (was stripped out) ---
         [Category("   Math")]

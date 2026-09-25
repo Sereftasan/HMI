@@ -50,7 +50,7 @@ namespace Kaban.UI.Controls
         public List<WordAction> WordActions { get; } = new List<WordAction>();
 
         [Category("  Display")] public string DisplayAddress { get; set; }
-        [Category("  Display")] public DynamicValue DisplayOffset { get; set; } = new DynamicValue();
+        [Category("  Display")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue DisplayOffset { get; set; } = new DynamicValue();
         [Category("  Display")] public string TranslationKey { get; set; } = "";
         [Category("  Display")] public Image ImageActive { get; set; }
         [Category("  Display")] public Image ImagePassive { get; set; }

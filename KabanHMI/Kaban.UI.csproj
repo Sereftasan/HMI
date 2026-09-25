@@ -77,10 +77,18 @@
     <Compile Include="Helpers\DeviceCollector.cs" />
     <Compile Include="Helpers\ControlHighlight.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
-    <Compile Include="Controls\AlarmHelpBadge.cs" />
-    <Compile Include="Controls\MeterHMI.cs" />
-    <Compile Include="Controls\AxisSettingHMI.cs" />
-    <Compile Include="Controls\AxisUnitHMI.cs" />
+    <Compile Include="Controls\AlarmHelpBadge.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\MeterHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\AxisSettingHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AxisUnitHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ButtonGlyphs.cs" />
     <Compile Include="Controls\IHmiControl.cs" />
     <Compile Include="Controls\LabelHMI.cs">
@@ -111,40 +119,86 @@
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\NumpadForm.cs" />
-    <Compile Include="Forms\SimulationMonitorForm.cs" />
-    <Compile Include="Forms\PlcRowEditorForm.cs" />
-    <Compile Include="Forms\DeviceFindForm.cs" />
-    <Compile Include="Settings\ImportSettingsControl.cs" />
-    <Compile Include="Settings\StationConnectionControl.cs" />
+    <Compile Include="Forms\NumpadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SimulationMonitorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlcRowEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DeviceFindForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\ImportSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\StationConnectionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\PlcEndpointNaming.cs" />
-        <Compile Include="Controls\GroupBoxHMI.cs" />
+    <Compile Include="Controls\GroupBoxHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\AttachedDescription.cs" />
-    <Compile Include="Controls\CheckBoxHMI.cs" />
-    <Compile Include="Controls\ComboBoxHMI.cs" />
-    <Compile Include="Controls\FloatingPaneHMI.cs" />
-    <Compile Include="Controls\PaneHostControl.cs" />
+    <Compile Include="Controls\CheckBoxHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ComboBoxHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\FloatingPaneHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\PaneHostControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\UiStyle.cs" />
-    <Compile Include="Controls\CheckListHMI.cs" />
+    <Compile Include="Controls\CheckListHMI.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Dxf\DxfDocument.cs" />
-    <Compile Include="Dxf\DxfViewerControl.cs" />
-<Compile Include="Helpers\NavigationHistory.cs" />
-    <Compile Include="Settings\UserSettingsControl.cs" />
+    <Compile Include="Dxf\DxfViewerControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\NavigationHistory.cs" />
+    <Compile Include="Settings\UserSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\LogSettingsControl.cs" />
-    <Compile Include="Settings\PlcDiagnosticsControl.cs" />
-    <Compile Include="Screens\MachineAlarmScreen.cs" />
+    <Compile Include="Settings\PlcDiagnosticsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\MachineAlarmScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
-    <Compile Include="Screens\MachineHomeScreen.cs" />
-    <Compile Include="Screens\MachineSelectorStrip.cs" />
-    <Compile Include="Settings\AlarmSettingsControl.cs" />
-    <Compile Include="Settings\AiPromptControl.cs" />
+    <Compile Include="Screens\MachineHomeScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\MachineSelectorStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Settings\AlarmSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\AiPromptControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\HmiSettingsPage.cs" />
     <Compile Include="Settings\ISettingsPage.cs" />
-    <Compile Include="Settings\SettingsScreen.cs" />
+    <Compile Include="Settings\SettingsScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\UnitSettingsPage.cs" />
-    <Compile Include="Settings\PlaceholderPages.cs" />
-    <Compile Include="Settings\AboutControl.cs" />
+    <Compile Include="Settings\PlaceholderPages.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\AboutControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

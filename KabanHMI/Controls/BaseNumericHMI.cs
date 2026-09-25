@@ -157,7 +157,7 @@ namespace Kaban.UI.Controls
         [Category("   Device")] public int PlcNumber { get; set; } = 1;
         [Category("   Device")] public string Address { get; set; }
         [Category("   Device")] public DataTypeEnum DataType { get; set; } = DataTypeEnum.Bin_16;
-        [Category("   Device")] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
+        [Category("   Device")] [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] public DynamicValue AddressOffset { get; set; } = new DynamicValue();
 
         [Category("   Formatting")] public DisplayFormatEnum DataFormat { get; set; } = DisplayFormatEnum.Signed_Decimal;
         [Category("   Formatting")] public double Divisor { get; set; } = 1.0;

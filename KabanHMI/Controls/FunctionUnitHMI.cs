@@ -758,11 +758,11 @@ namespace Kaban.UI.Controls
         private readonly UnitHelpBadge _help = new UnitHelpBadge();
 
         /// <summary>Exact button width (0 = share the width). An axis unit sets the axis row's.</summary>
-        [Browsable(false)]
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonSlotWidth { get; set; }
 
         /// <summary>Exact position display width (0 = fit the number).</summary>
-        [Browsable(false)]
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PositionSlotWidth { get; set; }
 
         /// <summary>
