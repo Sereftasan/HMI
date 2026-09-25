@@ -32,8 +32,8 @@ class CH {
         Console.WriteLine("--- ValveType and FeedbackType on the unit ---");
         var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
         Check("ValveType and FeedbackType are in the Properties window, under Help",
-              props["ValveType"] != null && props["ValveType"].IsBrowsable && props["ValveType"].Category == "Help" &&
-              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == "Help");
+              props["ValveType"] != null && props["ValveType"].IsBrowsable && props["ValveType"].Category == " Help" &&
+              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == " Help");
         Check("  the old names are hidden aliases (not listed, not written by the designer)",
               !props["Valve"].IsBrowsable && !props["Feedback"].IsBrowsable &&
               props["Valve"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
