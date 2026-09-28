@@ -23,7 +23,19 @@ namespace Kaban.UI.Settings
     public class SettingsScreen : UserControl
     {
         private readonly List<ISettingsPage> _pages;
-        private readonly FlowLayoutPanel _tabStrip = new FlowLayoutPanel();
+        private readonly TabRowStrip _tabStrip = new TabRowStrip();
+
+        /// <summary>The tab strip: tells when it has placed its tabs, so it can be made as tall as their rows.</summary>
+        private sealed class TabRowStrip : FlowLayoutPanel
+        {
+            public Action Placed;
+            protected override void OnLayout(LayoutEventArgs levent)
+            {
+                base.OnLayout(levent);
+                var placed = Placed;
+                if (placed != null) placed();
+            }
+        }
         private readonly Panel _host = new Panel();
         private readonly Dictionary<ISettingsPage, Button> _tabButtons = new Dictionary<ISettingsPage, Button>();
         private readonly Dictionary<ISettingsPage, UserControl> _instances = new Dictionary<ISettingsPage, UserControl>();
@@ -48,7 +60,13 @@ namespace Kaban.UI.Settings
             _tabStrip.Dock = DockStyle.Top;
             _tabStrip.Height = 32;   // label + descenders + the active rule beneath them
             _tabStrip.BackColor = ColStrip;
-            _tabStrip.WrapContents = false;
+            // EVERY TAB NAME IN SIGHT: tabs that do not fit on one line go on to a
+            // second, and the strip grows to hold them (FitTabRows). On one line,
+            // the tabs past the page's right edge were simply cut off - at a larger
+            // magnifying factor, or beside a side page, their names could not be
+            // read or reached.
+            _tabStrip.WrapContents = true;
+            _tabStrip.Placed = FitTabRows;
             _tabStrip.FlowDirection = FlowDirection.LeftToRight;
             _tabStrip.Padding = new Padding(8, 2, 8, 0);   // tight: a nested strip must not drift away
 
@@ -337,6 +355,36 @@ namespace Kaban.UI.Settings
             // add history steps (it added one per parented settings screen).
             if (_active != null) Activate(_active, record: false);
             else { _host.Controls.Clear(); RaiseActivePageChanged(); }
+        }
+
+        private bool _fittingRows;
+
+        /// <summary>The strip as tall as its rows of tabs: one row at its usual height, more when they wrap.</summary>
+        private void FitTabRows()
+        {
+            if (_fittingRows || _tabStrip.Controls.Count == 0) return;
+            _fittingRows = true;
+            try
+            {
+                int bottom = 0;
+                foreach (Control c in _tabStrip.Controls)
+                    if (c.Visible) bottom = Math.Max(bottom, c.Bottom + c.Margin.Bottom);
+                int oneRow = Kaban.UI.Controls.UiScale.For(_tabStrip, 32);
+                int want = Math.Max(oneRow, bottom + _tabStrip.Padding.Bottom);
+                if (_tabStrip.Height != want) _tabStrip.Height = want;
+            }
+            finally { _fittingRows = false; }
+        }
+
+        /// <summary>The number of rows the tabs take - 1 when they fit on one line.</summary>
+        public int TabRows
+        {
+            get
+            {
+                var tops = new HashSet<int>();
+                foreach (Control c in _tabStrip.Controls) if (c.Visible) tops.Add(c.Top);
+                return Math.Max(1, tops.Count);
+            }
         }
 
         /// <summary>Rounded-TOP region (square bottom merges into the white page).</summary>

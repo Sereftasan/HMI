@@ -150,7 +150,7 @@ class CP {
               ((Label)Get(first, "Last")).Text.Contains(":"), state == null ? "no row" : state.Text + " / " + ((Label)Get(first, "Last")).Text);
         Kaban.Core.Helpers.ConnectionMonitor.ReportVersion(1, 102);
         var stRow = Kaban.UI.Settings.ControllerStatus.RowFor(1, "", null, null);
-        Check("  connected: the program version beside it", stRow.State.Contains("Connected") && stRow.State.Contains("program 1.02"), stRow.State);
+        Check("  connected: the program version beside it - 'Connected (Version: 1.02)'", stRow.State.EndsWith("Connected (Version: 1.02)"), stRow.State);
         var driverBox = first == null ? null : (ComboBox)Get(first, "Driver");
         var save = ctl == null ? null : (Button)Get(ctl, "_btnSave");
         Check("  an Admin can change the connections", driverBox != null && driverBox.Enabled && save.Visible);

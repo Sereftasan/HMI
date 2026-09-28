@@ -22,12 +22,32 @@ namespace Kaban.UI.Helpers
     /// </summary>
     public static class PageScroll
     {
-        /// <summary>Lets a page scroll. Forms and tab hosts are left as they are.</summary>
-        public static void Enable(Control view)
+        /// <summary>
+        /// The least room a page made of DOCKED parts is given before it scrolls,
+        /// at factor 1. Docked parts never reach past the page's edge, so such a
+        /// page never scrolled: squeezed by a side page or enlarged by the
+        /// magnifier, its table lost its last columns and its bar its last
+        /// buttons with no scroll bar to reach them. Below this it scrolls.
+        /// </summary>
+        public const int MinDockedWidth = 900, MinDockedHeight = 450;
+
+        /// <summary>
+        /// Lets a page scroll. Forms and tab hosts are left as they are. A page
+        /// laid out by docking gets a least size (MinDockedWidth x MinDockedHeight)
+        /// - <paramref name="minimum"/> false leaves it out (the side panel, whose
+        /// pages are made for its narrow width).
+        /// </summary>
+        public static void Enable(Control view, bool minimum = true)
         {
             var sc = view as ScrollableControl;
             if (sc == null || view is Form || view is Kaban.UI.Settings.SettingsScreen) return;
             if (!sc.AutoScroll) sc.AutoScroll = true;
+            if (!minimum || !sc.AutoScrollMinSize.IsEmpty) return;
+            bool docked = false;
+            foreach (Control c in view.Controls)
+                if (c.Dock != DockStyle.None && c.Visible) { docked = true; break; }
+            if (docked)
+                sc.AutoScrollMinSize = new Size(Kaban.UI.Controls.UiScale.Px(MinDockedWidth), Kaban.UI.Controls.UiScale.Px(MinDockedHeight));
         }
 
         /// <summary>

@@ -317,7 +317,7 @@ namespace Kaban.UI.Forms
             if (_sideWantsWindow.Contains(page.Key) && page.CanPopOut) { PopOut(page, view); return view; }
 
             foreach (Control other in _sideHost.Controls) if (!ReferenceEquals(other, view)) other.Visible = false;
-            if (view.Parent != _sideHost) { view.Dock = DockStyle.Fill; PageScroll.Enable(view); _sideHost.Controls.Add(view); }
+            if (view.Parent != _sideHost) { view.Dock = DockStyle.Fill; PageScroll.Enable(view, minimum: false); _sideHost.Controls.Add(view); }
             view.Visible = true;
 
             _sideOpen = page;

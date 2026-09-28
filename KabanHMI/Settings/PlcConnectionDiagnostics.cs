@@ -129,13 +129,14 @@ namespace Kaban.UI.Settings
             r.Version = state.Version;
             var identity = drv as Kaban.Core.Interfaces.IPlcIdentity;
             try { r.Identity = identity != null ? (identity.Identity ?? "").Trim() : ""; } catch { r.Identity = ""; }
-            // CONNECTED TO WHAT: the CPU's model and the program version, once
-            // the connection is up - beside "Connected", where the eye already is.
+            // CONNECTED TO WHAT: "Connected - FX5UCPU (Version: 1.41)" - the CPU's
+            // model and the program version, once the connection is up, beside
+            // "Connected", where the eye already is.
             if (r.Live)
             {
-                if (r.Identity.Length > 0) r.State += "  \u00B7  " + r.Identity;
+                if (r.Identity.Length > 0) r.State += " - " + r.Identity;
                 if (!string.IsNullOrEmpty(r.Version))
-                    r.State += "  \u00B7  " + string.Format(LanguageManager.GetString("Diag_ProgramVersion", "program {0}"), r.Version);
+                    r.State += " (" + string.Format(LanguageManager.GetString("Diag_ProgramVersion", "Version: {0}"), r.Version) + ")";
             }
             return r;
         }

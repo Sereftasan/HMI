@@ -68,6 +68,11 @@ namespace Kaban.UI.Settings
         private void RefreshAllStatus()
         {
             if (IsDisposed || !Visible) return;
+            // NOT WHILE A DRIVER LIST IS OPEN. The live cells change every second
+            // ("last answer"), the table lays itself out again, and a list moved
+            // by as much as a pixel is closed by Windows - the Driver box closed
+            // the moment it was opened, before a driver could be picked.
+            if (_rows.Any(r => r.Driver.DroppedDown)) return;
             // Drops are counted from the log: read at most every 30 s.
             if ((DateTime.Now - _dropsRead).TotalSeconds >= 30)
             {
@@ -141,7 +146,13 @@ namespace Kaban.UI.Settings
             // ---- scrolling body ----
             var body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(8, 4, 8, 8) };
 
-            _table.Dock = DockStyle.Top;
+            // NOT DOCKED: as wide as its columns, so the page scrolls sideways when
+            // it is wider than the room (a side page open, a larger magnifying
+            // factor). Docked, it was squeezed to the page's width - the last
+            // columns cut off with no way to reach them, and its columns moving
+            // under an open list.
+            _table.Dock = DockStyle.None;
+            _table.Location = new Point(8, 4);
             _table.AutoSize = true;
             _table.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             // EVERY COLUMN AS WIDE AS WHAT IT HOLDS. The first four had fixed
@@ -395,11 +406,17 @@ namespace Kaban.UI.Settings
             Set(row.Version, st.Version, ColDim);
         }
 
-        /// <summary>The width of a text in the page's font - the boxes are sized by it.</summary>
-        private int TextWidth(string text)
+        /// <summary>
+        /// The width of a text - the boxes are sized by it. Measured in a font a
+        /// little larger than the page's (it is scaled with the page later), so
+        /// the longest driver name is never cut.
+        /// </summary>
+        private static int TextWidth(string text)
         {
-            return TextRenderer.MeasureText(text ?? "", Font).Width;
+            return TextRenderer.MeasureText(text ?? "", MeasureFont).Width;
         }
+
+        private static readonly Font MeasureFont = new Font("Segoe UI", 10F);
 
         private static void Set(Label l, string text, Color colour)
         {
