@@ -561,9 +561,6 @@ namespace Kaban.UI.Forms
                 SecurityManager.Logout();
                 SetupLoginUi();
                 SetupSimMonitorButton();
-                SetupNavToggle();
-                SetupSidePanel();
-
                 // Color consistency: make the left menu panel the SAME color as the
                 // top panel, so the white content area is the only distinct surface.
                 // Lighter than the old 243: the bar sat close enough to the white
@@ -571,7 +568,12 @@ namespace Kaban.UI.Forms
                 // and an INACTIVE nav row (ColorPassive, 235) barely showed against
                 // it at all. 249 keeps the bar distinct from white while letting the
                 // rows read as objects on it.
+                // Set BEFORE the toggle and history strips are made: they take the
+                // bar's colour when created, and were left in the old grey.
                 pnlMenu.BackColor = Color.FromArgb(249, 249, 250);
+
+                SetupNavToggle();
+                SetupSidePanel();
 
                 // The panels are DOCKED (Top / Left / Fill), so the menu's right edge
                 // already meets the content area exactly - no manual gap-closing is
@@ -2472,11 +2474,18 @@ namespace Kaban.UI.Forms
             // the labels are shown ("collapse me" affordance) and fill the compact
             // strip when collapsed.
             _toggleStrip = new Panel { Dock = DockStyle.Top, Height = 30, BackColor = pnlMenu.BackColor };
+            // THE SAME CHEVRON AS THE SIDE BAR'S. The two do the same thing - fold
+            // a bar away and bring it back - and used to look like two different
+            // controls: "«" and a hamburger in a font here, a drawn chevron
+            // there. Now both draw DrawChevron, same size and colour, pointing the
+            // way the bar will go.
             _btnNavToggle = new Button
             {
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 12F),
+                Text = "",
                 Cursor = Cursors.Hand,
+                TabStop = false,
+                AccessibleName = "Navigation bar",
                 BackColor = pnlMenu.BackColor
             };
             _btnNavToggle.FlatAppearance.BorderSize = 0;
@@ -2484,6 +2493,7 @@ namespace Kaban.UI.Forms
             var toggleHover = Kaban.UI.Controls.UiStyle.HoverBorder(_btnNavToggle);
             _btnNavToggle.Paint += (s, e) =>
             {
+                DrawChevron(e.Graphics, _btnNavToggle.ClientRectangle, _navCollapsed, Color.FromArgb(60, 66, 76));
                 if (!toggleHover()) return;
                 using (var pen = new Pen(Kaban.UI.Controls.UiStyle.HoverBorderColor, 1.6f))
                     e.Graphics.DrawRectangle(pen, 1, 1, _btnNavToggle.Width - 3, _btnNavToggle.Height - 3);
@@ -2564,12 +2574,12 @@ namespace Kaban.UI.Forms
             Func<int, int> px = v => Kaban.UI.Controls.UiScale.For(_toggleStrip, v);
             if (_navCollapsed)
             {
-                _btnNavToggle.Text = "\u2630";                        // hamburger: "open me"
+                _btnNavToggle.Invalidate();                            // >> : "open me"
                 _btnNavToggle.SetBounds(px(4), px(2), _toggleStrip.Width - px(8), _toggleStrip.Height - px(3));
             }
             else
             {
-                _btnNavToggle.Text = "\u00AB";                        // <<  : "collapse me"
+                _btnNavToggle.Invalidate();                            // <<  : "collapse me"
                 _btnNavToggle.SetBounds(_toggleStrip.Width - px(44), px(2), px(40), _toggleStrip.Height - px(3));   // right end
             }
         }

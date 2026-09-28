@@ -117,11 +117,11 @@ namespace Kaban.UI.Screens
                 TitleKey = "Btn_MachineParameters",
                 TitleFallback = "Machine Parameters",
                 Role = ScreenRoles.MachineParameters,
-                // Sliders, not the gear: "parameters" means adjustable VALUES, and a
-                // slider glyph says that even alone. It also had to look nothing like
-                // HMI Settings' gear once the bar collapses to icons only - the two
-                // used to share this exact icon.
-                Icon = () => Properties.Resources.parameters_24,
+                // THE GEAR: the Machine Parameters picture in every other Kaban
+                // HMI, so an operator who knows those finds it here at once. (It
+                // was HMI Settings' picture, with sliders here - the two were
+                // swapped against what the operators were used to.)
+                Icon = () => Properties.Resources.settings_24,
                 SortOrder = 900,
                 RequiredLevel = SecurityLevel.Maintenance,
                 CreateView = () => BuildMachineParameters(ctx, machineSettings)
@@ -144,10 +144,10 @@ namespace Kaban.UI.Screens
                     TitleKey = "Btn_HmiSettings",
                     TitleFallback = "HMI Settings",
                     Role = ScreenRoles.HmiSettings,
-                    // The gear: the universal "settings" mark, and this is the one
-                    // page that is actually general program configuration rather
-                    // than machine parameters.
-                    Icon = () => Properties.Resources.settings_24,
+                    // A screen with a small gear: the settings of the program on
+                    // this panel, not of a machine. The gear alone is Machine
+                    // Parameters' picture (as in the other Kaban HMIs).
+                    Icon = () => Kaban.UI.Controls.NavGlyphs.HmiSettings(),
                     SortOrder = 910,
                     CreateView = () => new HmiSettingsPage().GetControl()
                 };

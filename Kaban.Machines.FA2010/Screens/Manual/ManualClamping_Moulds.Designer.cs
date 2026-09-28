@@ -49,7 +49,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorBAddress = "M916";
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorAAddress = "M915";
-            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_3;
+            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 16);
             this.unitLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(360, 64);

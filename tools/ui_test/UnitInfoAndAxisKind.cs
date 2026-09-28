@@ -35,7 +35,7 @@ class U {
         Console.WriteLine("--- with an alarm active: manual, then unit help, then alarm files ---");
         AlarmHelpLinks.Clear();
         var clamp = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", ErrorBAddress = "M900",
-                                          Valve = CylinderValve.DoubleSolenoid_5_2, Feedback = CylinderFeedback.TwoEndMagnetic,
+                                          Valve = CylinderValve.DoubleSolenoid, Feedback = CylinderFeedback.TwoEndMagnetic,
                                           HelpFiles = "Clamp_Photo.png;Clamp_Drawing.pdf" };
         AlarmHelpLinks.Harvest(clamp);
         var docs = AlarmHelpLinks.DocumentsFor(5, "M900", new[] { "MR_J4_TroubleShooting.pdf;Clamp_Photo.png" });
@@ -49,7 +49,7 @@ class U {
         Console.WriteLine("--- an AXIS unit on a manual page ---");
         AlarmHelpLinks.Clear();
         var x1 = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot X", Kind = UnitKind.Axis, ErrorAAddress = "M901",
-                                       Valve = CylinderValve.DoubleSolenoid_5_2, HelpFiles = "Clamp_Drawing.pdf" };
+                                       Valve = CylinderValve.DoubleSolenoid, HelpFiles = "Clamp_Drawing.pdf" };
         var link = x1.HelpLinks().Single();
         Check("its error is a servo fault", link.Kind == TC.ErrorType.ServoFault);
         Check("  and a stray valve setting is ignored", link.Valve == 0 && link.Feedback == 0);

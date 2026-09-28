@@ -92,7 +92,7 @@ class MF {
         if (rtc != null) {
             var docs = rtc.HelpDocuments();
             var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html");
-            Check("  its '?' offers the manual for DoubleSolenoid_5_2 + MagneticPlusPressureSwitch",
+            Check("  its '?' offers the manual for DoubleSolenoid + MagneticPlusPressureSwitch",
                   manual != null && manual.Valve == 1 && manual.Feedback == 5, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
             var html = System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual));
             int heads = System.Text.RegularExpressions.Regex.Matches(html, "<thead>").Count;

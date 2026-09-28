@@ -108,7 +108,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Small_Clamping.TitleTextKey = "Left Top Small Clamping";
             this.unitLeft_Top_Small_Clamping.ErrorAAddress = "M892";
             this.unitLeft_Top_Small_Clamping.ErrorBAddress = "M891";
-            this.unitLeft_Top_Small_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_2;
+            this.unitLeft_Top_Small_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitLeft_Top_Small_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
             this.unitLeft_Top_Small_Clamping.Location = new System.Drawing.Point(1036, 164);
             this.unitLeft_Top_Small_Clamping.Size = new System.Drawing.Size(360, 64);
@@ -129,7 +129,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Clamping.TitleTextKey = "Right Front Clamping";
             this.unitRight_Front_Clamping.ErrorAAddress = "M852";
             this.unitRight_Front_Clamping.ErrorBAddress = "M851";
-            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_3;
+            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitRight_Front_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
             this.unitRight_Front_Clamping.Location = new System.Drawing.Point(526, 238);
             this.unitRight_Front_Clamping.Size = new System.Drawing.Size(360, 64);
@@ -310,7 +310,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Press_Roller_Up.PlcNumber = 1;
             this.unitProfile_Press_Roller_Up.TitleTextKey = "Profile Press Roller Up";
             this.unitProfile_Press_Roller_Up.ErrorBAddress = "M897";
-            this.unitProfile_Press_Roller_Up.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid_5_2;
+            this.unitProfile_Press_Roller_Up.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitProfile_Press_Roller_Up.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
             this.unitProfile_Press_Roller_Up.Location = new System.Drawing.Point(1036, 238);
             this.unitProfile_Press_Roller_Up.Size = new System.Drawing.Size(360, 64);

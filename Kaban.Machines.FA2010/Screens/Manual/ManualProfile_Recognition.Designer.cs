@@ -74,7 +74,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.TitleTextKey = "Front Clamping";
             this.unitFront_Clamping.ErrorAAddress = "M845";
             this.unitFront_Clamping.ErrorBAddress = "M844";
-            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid_5_2;
+            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
             this.unitFront_Clamping.Location = new System.Drawing.Point(16, 164);
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);

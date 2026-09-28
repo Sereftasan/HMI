@@ -74,7 +74,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.ErrorAAddress = "M854";
             this.unitRobot_Top_Clamping.ErrorBAddress = "M840";
             this.unitRobot_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
-            this.unitRobot_Top_Clamping.HelpFiles = "c# learning structure.png";
+            this.unitRobot_Top_Clamping.HelpAFiles = "c# learning structure.png";
+            this.unitRobot_Top_Clamping.HelpBFiles = "c# learning structure.png";
             this.unitRobot_Top_Clamping.Lamp1AAddress = "M233";
             this.unitRobot_Top_Clamping.Lamp1ATipKey = "";
             this.unitRobot_Top_Clamping.Lamp1BAddress = "";
@@ -108,7 +109,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.TabIndex = 0;
             this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
             this.unitRobot_Top_Clamping.TitleTipKey = "";
-            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_5_2;
+            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitRobot_Top_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             // 
             // unitRobot_Top_Small_Clamping
@@ -405,7 +406,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.TabIndex = 5;
             this.unitShort_Profile_Support.TitleTextKey = "Short Profile Support";
             this.unitShort_Profile_Support.TitleTipKey = "";
-            this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid_5_2;
+            this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitShort_Profile_Support.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // unitConveyor_Motor

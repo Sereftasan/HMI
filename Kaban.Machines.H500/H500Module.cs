@@ -13,10 +13,16 @@ namespace Kaban.Machines.H500
     /// the settings structure all come from Kaban.UI, so this machine cannot end
     /// up with a different or partial menu from any other.
     /// </summary>
-    public class H500Module : IMachineModule, IMachineDisplayName
+    public class H500Module : IMachineModule, IMachineDisplayName, IMachineIcon
     {
         public string ModuleId { get { return "H500"; } }
         public string DisplayNameKey { get { return "Machine_H500"; } }
+
+        /// <summary>What the machine does, on its tile: a screw.</summary>
+        public System.Drawing.Image Icon
+        {
+            get { return Kaban.UI.Controls.NavGlyphs.ScrewingHoling(MachineIcon.ColourFor(ModuleId)); }
+        }
 
         public string DisplayName
         {

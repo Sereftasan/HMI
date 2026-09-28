@@ -25,26 +25,38 @@ namespace Kaban.UI.Controls
 
     /// <summary>
     /// The valve fitted to a cylinder - detail 1.4 of the cylinder manual. The
-    /// numbers are the manual's variant numbers and must not be changed.
+    /// numbers are the manual's variant numbers and must not be changed (a new
+    /// valve gets a new number; Unspecified stays 0).
+    ///
+    /// THE VALVE DECIDES THE ACTIONS: a single solenoid drives ONE movement (its
+    /// spring makes the other), so the unit has one action - A or B; a double
+    /// solenoid drives both, so it has both. See FunctionUnitHMI.TypeProblems.
     /// </summary>
     public enum CylinderValve
     {
         Unspecified = 0,
-        DoubleSolenoid_5_2 = 1,        // (1) double solenoid 5/2, impulse / memory
-        SingleSolenoid_5_2 = 2,        // (2) single solenoid 5/2, spring return
-        DoubleSolenoid_5_3 = 3         // (3) double solenoid 5/3, centre position
+        DoubleSolenoid = 1,            // (1) double solenoid 5/2, impulse / memory: both actions
+        SingleSolenoid = 2,            // (2) single solenoid 5/2, spring return: ONE action
+        DoubleSolenoid_3Way = 3        // (3) double solenoid 5/3, centre position: both actions
     }
 
-    /// <summary>The cylinder's feedback - detail 1.7 of the cylinder manual.</summary>
+    /// <summary>
+    /// The cylinder's feedback - detail 1.7 of the cylinder manual. The numbers
+    /// are the manual's variant numbers (Unspecified stays 0).
+    ///
+    /// THE FEEDBACK DECIDES THE LAMPS AND THE POSITION: one sensor is one lamp,
+    /// a sensor at each end is a lamp on each action, an analogue sensor is a
+    /// position and no lamp, an encoder is a position and its reference lamp.
+    /// </summary>
     public enum CylinderFeedback
     {
         Unspecified = 0,
-        SingleMagnetic = 1,            // single magnetic sensor, short stroke
-        TwoEndMagnetic = 2,            // magnetic sensor at each end
-        SingleInductive = 3,           // single inductive sensor, short stroke
-        AnalogueMagnetic = 4,          // 4-20 mA position
-        MagneticPlusPressureSwitch = 5,// back-end sensor + pressure switch (clamping)
-        EncoderPlusReference = 6       // incremental encoder + reference sensor
+        SingleMagnetic = 1,            // single magnetic sensor, short stroke: one lamp
+        TwoEndMagnetic = 2,            // magnetic sensor at each end: a lamp on each action
+        SingleInductive = 3,           // single inductive sensor, short stroke: one lamp
+        AnalogueMagnetic = 4,          // 4-20 mA position: no lamp, the Position
+        MagneticPlusPressureSwitch = 5,// back-end sensor + pressure switch (clamping): a lamp on each action
+        EncoderPlusReference = 6       // incremental encoder + reference sensor: one lamp and the Position
     }
 
     /// <summary>How a unit's position reading is drawn.</summary>
@@ -707,12 +719,16 @@ namespace Kaban.UI.Controls
         private CylinderValve _valve = CylinderValve.Unspecified;
         private CylinderFeedback _feedback = CylinderFeedback.Unspecified;
 
-        [Category(" Help"), DefaultValue(""),
-         Description("Error bit set when the A (left button) movement fails. Its '?' shows on the top frame line, and button A's border blinks red.")]
+        // THE ERROR OF A MOVEMENT BELONGS WITH THE MOVEMENT: under its action, next
+        // to its command, output and lamps - not in a Help group of its own.
+        [Category(" Action A"), DefaultValue(""),
+         Description("Error bit set when the A (left button) movement fails. Its '?' shows on the top frame line, and button A's border blinks red. " +
+                     "A single solenoid's spring-return movement can fail too: it may have an error with no command.")]
         public string ErrorAAddress { get { return _errorAAddress; } set { _errorAAddress = (value ?? "").Trim(); ApplySettings(); } }
 
-        [Category(" Help"), DefaultValue(""),
-         Description("Error bit set when the B (right button) movement fails. Its '?' shows on the top frame line, and button B's border blinks red.")]
+        [Category(" Action B"), DefaultValue(""),
+         Description("Error bit set when the B (right button) movement fails. Its '?' shows on the top frame line, and button B's border blinks red. " +
+                     "A single solenoid's spring-return movement can fail too: it may have an error with no command.")]
         public string ErrorBAddress { get { return _errorBAddress; } set { _errorBAddress = (value ?? "").Trim(); ApplySettings(); } }
 
         /// <summary>
@@ -725,34 +741,76 @@ namespace Kaban.UI.Controls
         private UnitKind _kind = UnitKind.Cylinder;
 
         /// <summary>
-        /// This unit's own help - photos of the real mechanism, its drawing -
-        /// available at any time through the "i" on the top frame line, and listed
-        /// with the manual when one of its alarms is active. File names in the
-        /// machine's Help folder, ";"-separated.
+        /// This unit's own help - photos of the real mechanism, its drawing - for
+        /// EACH MOVEMENT: the two directions of a unit can be different movements
+        /// with their own valve coil, sensor and error, so what to check when one
+        /// fails is not what to check when the other does. Listed with the manual
+        /// when that movement's error is set, and all of them behind the "?" at
+        /// any time. File names in the machine's Help folder, ";"-separated.
         /// </summary>
-        [Category(" Help"), DefaultValue(""),
+        [Category(" Action A"), DefaultValue(""),
          Editor(typeof(Kaban.UI.Design.HelpFilesEditor), typeof(System.Drawing.Design.UITypeEditor)),
-         Description("Help files about this unit (in the machine's Help folder). Shown as an 'i' on the top frame line.")]
-        public string HelpFiles { get { return _helpFiles; } set { _helpFiles = (value ?? "").Trim(); ApplySettings(); } }
-        private string _helpFiles = "";
+         Description("Help files for the A movement (in the machine's Help folder): shown with the manual when ErrorA is set, and behind the unit's '?' at any time.")]
+        public string HelpAFiles { get { return _helpAFiles; } set { _helpAFiles = (value ?? "").Trim(); ApplySettings(); } }
+        private string _helpAFiles = "";
 
-        /// <summary>The unit's help files, split, as the names were entered.</summary>
-        public List<string> HelpFileNames()
+        [Category(" Action B"), DefaultValue(""),
+         Editor(typeof(Kaban.UI.Design.HelpFilesEditor), typeof(System.Drawing.Design.UITypeEditor)),
+         Description("Help files for the B movement (in the machine's Help folder): shown with the manual when ErrorB is set, and behind the unit's '?' at any time.")]
+        public string HelpBFiles { get { return _helpBFiles; } set { _helpBFiles = (value ?? "").Trim(); ApplySettings(); } }
+        private string _helpBFiles = "";
+
+        /// <summary>
+        /// The former single list, kept so pages that set it still load: it gives
+        /// its files to BOTH movements. Read, it is every file of the unit.
+        /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never),
+         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string HelpFiles
         {
-            return _helpFiles.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                             .Select(f => f.Trim()).Where(f => f.Length > 0).ToList();
+            get { return string.Join(";", HelpFileNames()); }
+            set { _helpAFiles = _helpBFiles = (value ?? "").Trim(); ApplySettings(); }
         }
 
-        /// <summary>The unit's help files that are actually present.</summary>
-        public List<TroubleshootingCatalog.HelpDocument> UnitHelpDocuments()
+        private static List<string> SplitFiles(string files)
         {
-            return HelpFileNames()
+            return (files ?? "").Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                .Select(f => f.Trim()).Where(f => f.Length > 0).ToList();
+        }
+
+        /// <summary>One movement's help files ("A" or "B"), split, as the names were entered.</summary>
+        public List<string> HelpFileNames(string side)
+        {
+            return SplitFiles(side == "A" ? _helpAFiles : _helpBFiles);
+        }
+
+        /// <summary>Every help file of the unit - A's, then B's not already listed.</summary>
+        public List<string> HelpFileNames()
+        {
+            return HelpFileNames("A").Concat(HelpFileNames("B")).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        private static List<TroubleshootingCatalog.HelpDocument> Present(IEnumerable<string> files)
+        {
+            return files
                 .Select(f => new TroubleshootingCatalog.HelpDocument
                 {
                     FileName = f,
                     Title = System.IO.Path.GetFileNameWithoutExtension(f)
                 })
                 .Where(d => d.Exists).ToList();
+        }
+
+        /// <summary>The unit's help files that are actually present.</summary>
+        public List<TroubleshootingCatalog.HelpDocument> UnitHelpDocuments()
+        {
+            return Present(HelpFileNames());
+        }
+
+        /// <summary>One movement's help files that are actually present.</summary>
+        public List<TroubleshootingCatalog.HelpDocument> UnitHelpDocuments(string side)
+        {
+            return Present(HelpFileNames(side));
         }
 
         private readonly UnitHelpBadge _help = new UnitHelpBadge();
@@ -765,18 +823,139 @@ namespace Kaban.UI.Controls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PositionSlotWidth { get; set; }
 
+        // ==================================================================
+        // THE VALVE AND THE FEEDBACK: WHAT EVERYTHING ELSE DEPENDS ON
+        // ------------------------------------------------------------------
+        // The valve decides the ACTIONS - how many buttons, commands, relays and
+        // outputs the unit has; the feedback decides the LAMPS and the POSITION.
+        // They head the Properties window, and TypeCheck says what the rest of
+        // the unit does not match. Nothing is hidden or changed for a mismatch:
+        // the page keeps working exactly as wired, and the designer is told.
+        // ==================================================================
+
         /// <summary>
         /// The valve fitted to this cylinder. The "?" opens the cylinder manual with
         /// only this valve's part of detail 1.4 - see TroubleshootingCatalog.Tailor.
         /// </summary>
-        [Category(" Help"), DefaultValue(CylinderValve.Unspecified),
-         Description("Cylinder units: the valve fitted. The '?' opens the cylinder troubleshooting manual with only this valve's part of detail 1.4.")]
+        [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified), RefreshProperties(RefreshProperties.All),
+         Description("The valve: it decides the ACTIONS. SingleSolenoid - one coil, one action (A or B; the spring makes the other movement). " +
+                     "DoubleSolenoid / DoubleSolenoid_3Way - a coil for each movement, both actions. " +
+                     "The '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
         /// <summary>The feedback fitted to this cylinder: only its part of detail 1.7 is shown.</summary>
-        [Category(" Help"), DefaultValue(CylinderFeedback.Unspecified),
-         Description("Cylinder units: the feedback fitted. The '?' opens the cylinder troubleshooting manual with only this feedback's part of detail 1.7.")]
+        [Category("  Valve & Feedback"), DefaultValue(CylinderFeedback.Unspecified), RefreshProperties(RefreshProperties.All),
+         Description("The feedback: it decides the LAMPS and the POSITION. SingleMagnetic / SingleInductive - one lamp (A or B). " +
+                     "TwoEndMagnetic / MagneticPlusPressureSwitch - a lamp on each action. AnalogueMagnetic - no lamp, the Position. " +
+                     "EncoderPlusReference - one lamp (the reference) and the Position. " +
+                     "The '?' opens the cylinder manual with only this feedback's part.")]
         public CylinderFeedback FeedbackType { get { return _feedback; } set { _feedback = value; ApplySettings(); } }
+
+        /// <summary>What the unit's actions, lamps and position do not match of its valve and feedback - "OK" when all do.</summary>
+        [Category("  Valve & Feedback"), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden),
+         Description("The unit checked against its ValveType and FeedbackType: the actions the valve drives, the lamps and position the feedback gives.")]
+        public string TypeCheck
+        {
+            get
+            {
+                var p = TypeProblems();
+                return p.Count == 0 ? "OK" : string.Join("  |  ", p);
+            }
+        }
+
+        private static bool Has(string address) { return !string.IsNullOrWhiteSpace(address); }
+
+        /// <summary>
+        /// The unit against its valve and feedback, in plain words - empty when it
+        /// matches (or when neither is set: a motor, a blower, a unit not yet typed).
+        ///
+        /// Valve: a single solenoid drives one movement - one command, one output;
+        /// a double solenoid (5/2 or 5/3) drives both - a command on each action.
+        /// Feedback: one sensor is one lamp; a sensor at each end (or a sensor and
+        /// the pressure switch) is a lamp on each action; an analogue sensor is the
+        /// position and no lamp; an encoder is the position and its reference lamp.
+        /// A position belongs only to the last two.
+        ///
+        /// A type added to the enums later has no rule here yet - it is reported
+        /// as such, so it is not taken as checked.
+        /// </summary>
+        public List<string> TypeProblems()
+        {
+            var p = new List<string>();
+            if (_kind == UnitKind.Axis) return p;
+            bool cmdA = Has(_commandAAddress), cmdB = Has(_commandBAddress);
+            int lampsA = (Has(_lamp1AAddress) ? 1 : 0) + (Has(_lamp2AAddress) ? 1 : 0);
+            int lampsB = (Has(_lamp1BAddress) ? 1 : 0) + (Has(_lamp2BAddress) ? 1 : 0);
+            int lamps = lampsA + lampsB;
+            bool pos = Has(_positionAddress);
+
+            switch (_valve)
+            {
+                case CylinderValve.Unspecified:
+                    if (_feedback != CylinderFeedback.Unspecified)
+                        p.Add("ValveType is not set: choose the valve - it decides the actions (and the manual shows every valve).");
+                    break;
+                case CylinderValve.SingleSolenoid:
+                    if (cmdA && cmdB)
+                        p.Add("SingleSolenoid: one coil drives ONE movement, the spring the other - keep one action: clear CommandAAddress or CommandBAddress.");
+                    else if (!cmdA && !cmdB)
+                        p.Add("SingleSolenoid: set the command of the driven movement - CommandAAddress or CommandBAddress.");
+                    if (Has(_outputAAddress) && Has(_outputBAddress))
+                        p.Add("SingleSolenoid: one coil is one output - set OutputAAddress or OutputBAddress, not both.");
+                    if (cmdA != cmdB)
+                    {
+                        string idle = cmdA ? "B" : "A";
+                        if (Has(cmdA ? _outputBAddress : _outputAAddress) || Has(cmdA ? _relayBAddress : _relayAAddress))
+                            p.Add("SingleSolenoid: Action " + idle + " has no command, so its output and relay are not used - clear them.");
+                    }
+                    break;
+                case CylinderValve.DoubleSolenoid:
+                case CylinderValve.DoubleSolenoid_3Way:
+                    if (!cmdA || !cmdB)
+                        p.Add(_valve + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
+                              (!cmdA && !cmdB ? "." : " (" + (cmdA ? "B" : "A") + " is missing)."));
+                    break;
+                default:
+                    p.Add("ValveType " + (int)_valve + " has no check yet - check the actions by hand.");
+                    break;
+            }
+
+            string noPosition = ": no position is read - PositionAddress is for AnalogueMagnetic and EncoderPlusReference feedback.";
+            switch (_feedback)
+            {
+                case CylinderFeedback.Unspecified:
+                    if (_valve != CylinderValve.Unspecified)
+                        p.Add("FeedbackType is not set: choose the feedback - it decides the lamps and the position.");
+                    break;
+                case CylinderFeedback.SingleMagnetic:
+                case CylinderFeedback.SingleInductive:
+                    if (lamps != 1)
+                        p.Add(_feedback + ": one sensor at one end - one lamp, on Action A or B" + (lamps == 0 ? " (none set)." : " (" + lamps + " set)."));
+                    if (pos) p.Add(_feedback + noPosition);
+                    break;
+                case CylinderFeedback.TwoEndMagnetic:
+                case CylinderFeedback.MagneticPlusPressureSwitch:
+                    if (lampsA != 1 || lampsB != 1)
+                        p.Add(_feedback + (_feedback == CylinderFeedback.TwoEndMagnetic
+                                  ? ": a sensor at each end - one lamp on Action A and one on Action B"
+                                  : ": the end sensor and the pressure switch - one lamp on Action A and one on Action B") +
+                              " (A has " + lampsA + ", B has " + lampsB + ").");
+                    if (pos) p.Add(_feedback + noPosition);
+                    break;
+                case CylinderFeedback.AnalogueMagnetic:
+                    if (lamps > 0) p.Add("AnalogueMagnetic: the position is the feedback - no lamps (" + lamps + " set).");
+                    if (!pos) p.Add("AnalogueMagnetic: set PositionAddress - the analogue position.");
+                    break;
+                case CylinderFeedback.EncoderPlusReference:
+                    if (lamps != 1) p.Add("EncoderPlusReference: one lamp - the reference sensor" + (lamps == 0 ? " (none set)." : " (" + lamps + " set)."));
+                    if (!pos) p.Add("EncoderPlusReference: set PositionAddress - the encoder position.");
+                    break;
+                default:
+                    p.Add("FeedbackType " + (int)_feedback + " has no check yet - check the lamps and position by hand.");
+                    break;
+            }
+            return p;
+        }
 
         /// <summary>The former name of ValveType, kept for code that uses it.</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -819,7 +998,8 @@ namespace Kaban.UI.Controls
                         Valve = _kind == UnitKind.Axis ? 0 : (int)_valve,
                         Feedback = _kind == UnitKind.Axis ? 0 : (int)_feedback,
                         Unit = name,
-                        HelpFiles = HelpFileNames(),
+                        // That movement's own files: the other direction's are about another movement.
+                        HelpFiles = HelpFileNames(address == _errorAAddress ? "A" : "B"),
                         ServoAlarm = _kind == UnitKind.Axis ? _codeWords[0] : "",
                         AxisAlarm = _kind == UnitKind.Axis ? _codeWords[1] : "",
                         AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : "",
@@ -918,6 +1098,8 @@ namespace Kaban.UI.Controls
                     if (side == null) continue;
                     var d = CylinderDocument(side);
                     if (d != null) docs.Add(d);
+                    // The failed movement's own files, then the alarm's.
+                    docs.AddRange(UnitHelpDocuments(side));
                     // The alarm's own helper files, as the alarm list shows them.
                     var bit = side == "A" ? _errorAAddress : _errorBAddress;
                     var def = AlarmManager.FindByStationAndAddress(_plcNumber, bit);
@@ -954,7 +1136,7 @@ namespace Kaban.UI.Controls
                 state = (!errA || _helpA.IsWarningOnly) && (!errB || _helpB.IsWarningOnly)
                         ? UnitHelpBadge.BadgeState.Warning : UnitHelpBadge.BadgeState.Error;
             else if (DesignMode)
-                state = _helpFiles.Length > 0 || OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0
+                state = _helpAFiles.Length > 0 || _helpBFiles.Length > 0 || OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0
                         ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
             else
                 state = UnitHelpDocuments().Count > 0 || (OffersManual && CylinderManualExists())
@@ -1029,11 +1211,21 @@ namespace Kaban.UI.Controls
 
             ApplyTranslation();
             LayoutChildren();
+            // IN THE DESIGNER, a unit that does not match its valve and feedback is
+            // framed amber - seen on the page, not only in its TypeCheck line.
+            if (DesignMode)
+            {
+                var frame = TypeProblems().Count > 0 ? TypeMismatchFrame : RoundedGroupBox.NormalBorder;
+                if (_grp.BorderColor != frame) { _grp.BorderColor = frame; _grp.Invalidate(); }
+            }
             // Not while the page is being built: every property the designer code
             // sets runs this, and the "?" looks its files up on disk. Done once the
             // unit has a window (OnHandleCreated), and on every change after that.
             if (IsHandleCreated || DesignMode) UpdateHelpBadge();
         }
+
+        /// <summary>The designer's frame for a unit whose wiring does not match its types.</summary>
+        internal static readonly Color TypeMismatchFrame = Color.FromArgb(230, 150, 30);
 
         private void ConfigureButton(ButtonHMI btn, string cmdAddress, BitActionType action,
             string relay, string output, string lamp1, string lamp1Tip, string lamp2, string lamp2Tip, string btnTip,
@@ -1368,7 +1560,8 @@ namespace Kaban.UI.Controls
     internal class RoundedGroupBox : Panel
     {
         public int CornerRadius { get; set; } = 4;
-        public Color BorderColor { get; set; } = System.Drawing.Color.FromArgb(180, 180, 180);
+        public static readonly Color NormalBorder = System.Drawing.Color.FromArgb(180, 180, 180);
+        public Color BorderColor { get; set; } = NormalBorder;
 
         public RoundedGroupBox()
         {

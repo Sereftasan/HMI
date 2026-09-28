@@ -13,10 +13,16 @@ namespace Kaban.Machines.H800
     /// the settings structure all come from Kaban.UI, so this machine cannot end
     /// up with a different or partial menu from any other.
     /// </summary>
-    public class H800Module : IMachineModule, IMachineDisplayName
+    public class H800Module : IMachineModule, IMachineDisplayName, IMachineIcon
     {
         public string ModuleId { get { return "H800"; } }
         public string DisplayNameKey { get { return "Machine_H800"; } }
+
+        /// <summary>What the machine does, on its tile: a drill bit over its hole.</summary>
+        public System.Drawing.Image Icon
+        {
+            get { return Kaban.UI.Controls.NavGlyphs.HingeDrilling(MachineIcon.ColourFor(ModuleId)); }
+        }
 
         public string DisplayName
         {

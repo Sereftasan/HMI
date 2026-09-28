@@ -89,6 +89,7 @@
     <Compile Include="Helpers\NumericLimits.cs" />
     <Compile Include="Helpers\AuditLogReader.cs" />
     <Compile Include="Helpers\InputLimitsCalculation.cs" />
+    <Compile Include="Helpers\NumericFormula.cs" />
     <Compile Include="Helpers\LanguageManager.cs" />
     <Compile Include="Helpers\MachineConditionMap.cs" />
     <Compile Include="Helpers\PlcAddressHelper.cs" />

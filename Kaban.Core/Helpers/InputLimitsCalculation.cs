@@ -47,9 +47,8 @@ namespace Kaban.Core.Helpers
         /// </summary>
         private static bool IsIdentityFormula(string formula)
         {
-            if (string.IsNullOrWhiteSpace(formula)) return true;
-            string f = formula.Trim().ToLowerInvariant();
-            return f == "val" || f == "value" || f == "x";
+            // "A" too: it is the value's own name in the formulas (NumericFormula).
+            return NumericFormula.IsIdentity(formula);
         }
 
         private static double ResolveOne(

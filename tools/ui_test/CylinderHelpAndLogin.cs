@@ -31,21 +31,25 @@ class CH {
 
         Console.WriteLine("--- ValveType and FeedbackType on the unit ---");
         var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
-        Check("ValveType and FeedbackType are in the Properties window, under Help",
-              props["ValveType"] != null && props["ValveType"].IsBrowsable && props["ValveType"].Category == " Help" &&
-              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == " Help");
+        Check("ValveType and FeedbackType head the Properties window (Valve & Feedback, first category)",
+              props["ValveType"] != null && props["ValveType"].IsBrowsable && props["ValveType"].Category == "  Valve & Feedback" &&
+              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == "  Valve & Feedback" &&
+              props.Cast<PropertyDescriptor>().Where(p => p.IsBrowsable).All(p => string.CompareOrdinal(p.Category, "  Valve & Feedback") >= 0),
+              props["ValveType"].Category);
         Check("  the old names are hidden aliases (not listed, not written by the designer)",
               !props["Valve"].IsBrowsable && !props["Feedback"].IsBrowsable &&
               props["Valve"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
         Check("  the valve names read as the manual's", Enum.GetNames(typeof(CylinderValve)).SequenceEqual(
-              new[] { "Unspecified", "DoubleSolenoid_5_2", "SingleSolenoid_5_2", "DoubleSolenoid_5_3" }));
+              new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "DoubleSolenoid_3Way" }));
+        Check("  with the manual's numbers kept", (int)CylinderValve.DoubleSolenoid == 1 && (int)CylinderValve.SingleSolenoid == 2 &&
+              (int)CylinderValve.DoubleSolenoid_3Way == 3 && (int)CylinderFeedback.EncoderPlusReference == 6);
 
         var unit = new FunctionUnitHMI {
             PlcNumber = 4, TitleTextKey = "Left Top Clamping",
             CommandAAddress = "M604", ButtonATextKey = "Clamp", OutputAAddress = "Y24", Lamp1AAddress = "X30", Lamp1ATipKey = "Clamp closed",
             CommandBAddress = "M605", ButtonBTextKey = "Release", OutputBAddress = "Y25", Lamp1BAddress = "X31", Lamp1BTipKey = "Clamp open",
             ErrorAAddress = "M810", ErrorBAddress = "M811",
-            ValveType = CylinderValve.SingleSolenoid_5_2, FeedbackType = CylinderFeedback.TwoEndMagnetic };
+            ValveType = CylinderValve.SingleSolenoid, FeedbackType = CylinderFeedback.TwoEndMagnetic };
         unit.SetBounds(10, 10, 360, 64);
         host.Controls.Add(unit); host.Show(); Application.DoEvents();
         var mark = Field<UnitHelpBadge>(unit, "_help");

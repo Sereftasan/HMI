@@ -38,7 +38,7 @@ class L {
 
     [STAThread] static void Main(){
         Console.WriteLine("--- a unit and an axis describe their own errors ---");
-        var clamp = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
+        var clamp = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
         var links = clamp.HelpLinks().ToList();
         Check("two error bits, one per side", links.Count == 2);
         Check("  carrying the unit's valve and feedback", links.All(l => l.Valve == 1 && l.Feedback == 2 && l.Station == 3));
@@ -50,7 +50,7 @@ class L {
         var page = new UserControl();
         page.Controls.Add(clamp); page.Controls.Add(axis);
         var tabs = new SettingsScreen(new ISettingsPage[] {
-            new OnePage(() => { var p = new UserControl(); p.Controls.Add(Clamp(3, "M820", "", CylinderValve.SingleSolenoid_5_2, CylinderFeedback.SingleMagnetic, "Conveyor Stop")); return p; })
+            new OnePage(() => { var p = new UserControl(); p.Controls.Add(Clamp(3, "M820", "", CylinderValve.SingleSolenoid, CylinderFeedback.SingleMagnetic, "Conveyor Stop")); return p; })
         });
         page.Controls.Add(tabs);
         AlarmHelpLinks.Harvest(page);
@@ -59,10 +59,10 @@ class L {
         Check("station AND address must match", AlarmHelpLinks.Find(1, "M810") == null);
 
         Console.WriteLine("--- the same bit described two ways is reported, not guessed ---");
-        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_5_3, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
+        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
         Check("one conflict logged", AlarmHelpLinks.Conflicts.Count == 1, AlarmHelpLinks.Conflicts.FirstOrDefault() ?? "");
         Check("  the first description kept", AlarmHelpLinks.Find(3, "M810").Valve == 1);
-        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Same unit, 2nd page").HelpLinks().First());
+        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic, "Same unit, 2nd page").HelpLinks().First());
         Check("the same unit on a second page is NOT a conflict", AlarmHelpLinks.Conflicts.Count == 1);
 
         Console.WriteLine("--- an alarm finds its unit's help, then its own files ---");
@@ -84,7 +84,7 @@ class L {
 
         Console.WriteLine("--- the '?' on the unit's TOP frame line ---");
         var host = new Form { ClientSize = new System.Drawing.Size(420, 120) };
-        var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid_5_2, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
+        var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
         unit.CommandAAddress = "M700"; unit.CommandBAddress = "M701";     // two movements, two buttons
         unit.SetBounds(10, 10, 360, 64);
         var plain = new FunctionUnitHMI { PlcNumber = 3 }; plain.SetBounds(10, 80, 360, 64);

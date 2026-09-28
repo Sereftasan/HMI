@@ -38,22 +38,57 @@ namespace Kaban.UI.Controls
                      "(270 ... 360 / 0 ... 45).")]
         public bool IsAngle { get; set; }
 
-        // --- RESTORED: formula-driven read/write engine (was stripped out) ---
+        // THE FORMULAS ARE THE TWO DIRECTIONS OF ONE SCALING.
+        //
+        // ReadFormula turns the PLC's raw value into the number shown, WriteFormula
+        // turns the number typed into the raw value written - "(A - 1) / B" and its
+        // inverse "(A * B) + 1". Either one set REPLACES the Divisor for its
+        // direction. ReadFormula used to touch only a Tag-based limit, so a field
+        // given one still showed raw / Divisor, and WriteFormula's result was then
+        // multiplied by the Divisor as well - two scalings where one was meant.
         [Category("   Math")]
-        [Description("Formula applied to a Tag-based MinLimit/MaxLimit's raw PLC value before comparing " +
-                      "it against the entered value, e.g. 'val / 10'. Supports NCalc syntax. Default 'val' = no change.")]
+        [DefaultValue("val")]
+        [RefreshProperties(RefreshProperties.All)]
+        [Description("How the PLC's raw value becomes the number shown, e.g. '(A - 1) / B'. A (or val, x) is the raw value; " +
+                     "B, C ... are MathVariables. Set, it replaces the Divisor for the value AND for Tag-based limits - " +
+                     "give WriteFormula the inverse. NCalc syntax. Default 'val' = raw / Divisor.")]
         public string ReadFormula { get; set; } = "val";
 
         [Category("   Math")]
-        [Description("Formula applied to the value the operator types before it is written to the PLC, " +
-                      "e.g. 'val * 10' or 'A + B'. Supports NCalc syntax. Default 'val' = write as-is.")]
+        [DefaultValue("val")]
+        [RefreshProperties(RefreshProperties.All)]
+        [Description("How the number typed becomes the raw value written to the PLC, e.g. '(A * B) + 1'. A (or val, x) is " +
+                     "the number typed (in the reference unit); B, C ... are MathVariables. Set, it replaces the Divisor: " +
+                     "the result is written as it is. NCalc syntax. Default 'val' = typed x Divisor.")]
         public string WriteFormula { get; set; } = "val";
 
         [Category("   Math")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [Description("Extra named variables (B, C, ...) usable inside ReadFormula/WriteFormula. " +
-                      "'val'/'A' (the entered value) is always available automatically.")]
+        [RefreshProperties(RefreshProperties.All)]
+        [Description("The other names the formulas use - B, C ... - each a constant or a PLC device to read. " +
+                     "A (val, x) is the value itself and needs no variable.")]
         public List<MathVariable> MathVariables { get; } = new List<MathVariable>();
+
+        /// <summary>
+        /// What is wrong with the formulas, checked as they are typed - "B is not
+        /// defined: add a MathVariable named B". NCalc only finds a missing name
+        /// when the formula runs: at the operator's ENT, as "Parameter was not
+        /// defined".
+        /// </summary>
+        [Category("   Math")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Description("The formulas checked: every name defined, each formula readable, the two the inverse of each other.")]
+        public string FormulaCheck
+        {
+            get
+            {
+                var p = FormulaProblems();
+                return p.Count == 0 ? "OK" : string.Join("  |  ", p);
+            }
+        }
+
+        /// <summary>The last read-formula failure, for the admin tooltip (empty when it worked).</summary>
+        private string _readFormulaError = "";
 
         [Category("   Triggers")]
         [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
@@ -128,8 +163,18 @@ namespace Kaban.UI.Controls
                 sb.Append("\nMaximum Value:\t\t").Append(MaxLimit);
             if (IsAngle)
                 sb.Append("\nAngle:\t\t\t0 - 360 (a minimum above the maximum: through 0)");
-            if (!string.IsNullOrWhiteSpace(WriteFormula))
+            if (!NumericFormula.IsIdentity(ReadFormula))
+                sb.Append("\nRead Formula:\t\t").Append(ReadFormula);
+            if (!NumericFormula.IsIdentity(WriteFormula))
                 sb.Append("\nWrite Formula:\t\t").Append(WriteFormula);
+            if (MathVariables.Count > 0)
+                sb.Append("\nMath Variables:\t\t").Append(string.Join(", ", MathVariables.Where(v => v != null)));
+            var problems = FormulaProblems();
+            // What went wrong at the last scan - unless the check above already says it.
+            if (_readFormulaError.Length > 0 && !problems.Any(p => p.StartsWith("ReadFormula")))
+                problems.Insert(0, _readFormulaError);
+            foreach (var p in problems)
+                sb.Append("\nFormula problem:\t\t").Append(p);
 
             if (!_softEnabled && !string.IsNullOrEmpty(_disableReason))
                 sb.Append("\n\n").Append(_disableReason);
@@ -367,9 +412,10 @@ namespace Kaban.UI.Controls
                            ? readPlc(PlcAddressHelper.GetNextAddress(limit.TagAddress))
                            : 0;
                 double raw = PlcValueConverter.ConvertToDouble(low, high, DataType, DataFormat, 0);
-                bool identity = string.IsNullOrWhiteSpace(ReadFormula) ||
-                                ReadFormula.Trim().ToLowerInvariant() == "val";
-                return (Divisor != 0 && identity) ? raw / Divisor : raw;
+                // A limit word holds a raw value like the field's own: read the same way.
+                try { return ToShownValue(raw, readPlc); }
+                catch { return defaultVal; }   // the tooltip says why; the keypad refuses
+
             }
             if (limit.Type == LimitSourceType.HmiVariable) return HmiInternalVariables.Get(limit.TagAddress);
             return defaultVal;
@@ -411,10 +457,28 @@ namespace Kaban.UI.Controls
 
             Func<string, double, double> formulaEvaluator = (formula, rawValue) => EvaluateFormula(formula, rawValue, liveTagReader);
 
-            var effectiveLimits = InputLimitsCalculation.GetEffectiveLimits(
-                this.DataType, this.DataFormat, this.MinLimit, this.MaxLimit, this.ReadFormula,
-                liveTagReader, formulaEvaluator,
-                this.Divisor);
+            // A formula that cannot work is found BEFORE the keypad opens, not
+            // after the operator has typed a value it can then not write.
+            var formulaProblem = FormulaProblems(errorsOnly: true).FirstOrDefault();
+            if (formulaProblem != null)
+            {
+                ShowFormulaError(formulaProblem);
+                return;
+            }
+
+            InputLimitsCalculation.EffectiveLimits effectiveLimits;
+            try
+            {
+                effectiveLimits = InputLimitsCalculation.GetEffectiveLimits(
+                    this.DataType, this.DataFormat, this.MinLimit, this.MaxLimit, this.ReadFormula,
+                    liveTagReader, formulaEvaluator,
+                    this.Divisor);
+            }
+            catch (Exception ex)
+            {
+                ShowFormulaError("Read formula (for a limit): " + ex.Message);
+                return;
+            }
 
             if (!commsOk)
             {
@@ -538,20 +602,27 @@ namespace Kaban.UI.Controls
                 val = UnitManager.ToReference(UnitType, val);
             }
 
+            // THE RAW VALUE TO WRITE. Reading is  shown = raw / Divisor  (the
+            // decimals are a DISPLAY format, not a second scaling), so writing is
+            // the single inverse  raw = typed * Divisor. A WriteFormula replaces
+            // that: its result IS the raw value - multiplying it by the Divisor as
+            // well scaled it twice.
+            //
+            // (With Divisor 100 and 2 decimals, typing 2500 once wrote 25 - the
+            // decimals removed instead of the divisor undone - and later
+            // 25,000,000, which wrapped inside a 16-bit word to 30784.)
+            bool custom = !NumericFormula.IsIdentity(WriteFormula);
+            double rawValue;
             try
             {
-                // Apply the write formula (default "val" = no change).
-                if (!string.IsNullOrWhiteSpace(WriteFormula) && WriteFormula.Trim() != "val")
-                {
-                    val = EvaluateFormula(WriteFormula, val, liveTagReader);
-                }
+                rawValue = custom ? EvaluateFormula(WriteFormula, val, liveTagReader)
+                                  : (Divisor != 0 ? val * Divisor : val);
+                if (double.IsNaN(rawValue) || double.IsInfinity(rawValue))
+                    throw new FormulaException("It gives no number for " + val + " (a division by 0?)" + VariableValues(liveTagReader) + ".");
             }
             catch (Exception ex)
             {
-                string formulaMsg = SecurityManager.HasAccess(SecurityLevel.Admin)
-                    ? $"Write formula error.\nFormula: {WriteFormula}\n{ex.Message}"
-                    : LanguageManager.GetString("Sys_WriteError", "The value could not be written.");
-                MessageBox.Show(formulaMsg, LanguageManager.GetString("Sys_WriteErrorTitle", "Write Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowFormulaError("Write formula: " + ex.Message);
                 return;
             }
 
@@ -583,19 +654,6 @@ namespace Kaban.UI.Controls
 
             try
             {
-                // THE DIVISOR MUST BE UNDONE HERE.
-                // Reading does  raw / Divisor  then shows DecimalPlaces digits, but
-                // writing only ever removed the decimal point - so with Divisor 100
-                // and 2 decimals, typing 2500 wrote 2500*100/10000 = 25 to the PLC.
-                // Multiply by the divisor first, then let the converter strip the
-                // decimals, and the two directions agree.
-                // Reading is exactly  displayed = raw / Divisor  (the decimals are a
-                // DISPLAY format, not a second scaling), so writing is the single
-                // inverse: raw = typed * Divisor. Passing DecimalPlaces on as well
-                // scaled a second time - typing 2500 with Divisor 100 produced
-                // 25,000,000, which then wrapped inside a 16-bit word to 30784.
-                double rawValue = Divisor != 0 ? val * Divisor : val;
-
                 short low, high;
                 PlcValueConverter.ConvertFromDouble(rawValue, DataType, DataFormat, 0, out low, out high);
 
@@ -624,7 +682,7 @@ namespace Kaban.UI.Controls
 
                 if (LogAction)
                 {
-                    AuditLogger.Log($"wrote {val} to {effAddr} (PLC {PlcNumber}, control address '{Address}').");
+                    AuditLogger.Log($"wrote {val}{(custom ? " (raw " + rawValue.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")" : "")} to {effAddr} (PLC {PlcNumber}, control address '{Address}').");
                 }
             }
             catch (Exception ex)
@@ -637,35 +695,147 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
-        /// Evaluates an NCalc formula with "val"/"A" bound to rawValue, plus any configured
-        /// MathVariables (B, C, ... - constants or live PLC tags read via tagReader).
+        /// Works out a formula for one value: A (val, x, value) is the value, every
+        /// other name one of the MathVariables - a constant, or a PLC device read
+        /// through <paramref name="tagReader"/>. Names are matched in any case and
+        /// bound as written (NCalc matches them exactly). A name that is neither
+        /// is reported by name, not as NCalc's "Parameter was not defined".
         /// </summary>
-        private double EvaluateFormula(string formula, double rawValue, Func<string, int> tagReader)
+        internal double EvaluateFormula(string formula, double value, Func<string, int> tagReader)
         {
-            if (string.IsNullOrWhiteSpace(formula) || formula.Trim() == "val") return rawValue;
+            if (NumericFormula.IsIdentity(formula)) return value;
+
+            var missing = NumericFormula.UndefinedMessage(formula, MathVariables);
+            if (missing != null) throw new FormulaException(missing);
 
             var exp = new Expression(formula, EvaluateOptions.IgnoreCase);
-            exp.Parameters["val"] = rawValue;
-            exp.Parameters["A"] = rawValue;
-            exp.Parameters["x"] = rawValue;
-
-            if (MathVariables != null)
+            foreach (var name in NumericFormula.Names(formula))
             {
-                foreach (var v in MathVariables)
-                {
-                    if (v == null || string.IsNullOrEmpty(v.Name)) continue;
-                    if (string.Equals(v.Name, "A", StringComparison.OrdinalIgnoreCase)) continue;
-
-                    double paramVal = v.IsConstant
-                        ? v.GetConstantValue()
-                        : (string.IsNullOrEmpty(v.AddressOrValue) ? 0 : tagReader(v.AddressOrValue));
-
-                    exp.Parameters[v.Name] = paramVal;
-                }
+                if (NumericFormula.IsValueName(name)) { exp.Parameters[name] = value; continue; }
+                var v = NumericFormula.Find(MathVariables, name);
+                exp.Parameters[name] = v.IsConstant
+                    ? v.GetConstantValue()
+                    : (string.IsNullOrWhiteSpace(v.AddressOrValue) || tagReader == null ? 0 : (double)tagReader(v.AddressOrValue.Trim()));
             }
 
-            object result = exp.Evaluate();
-            return Convert.ToDouble(result);
+            object result;
+            try { result = exp.Evaluate(); }
+            catch (Exception ex) { throw new FormulaException("'" + formula + "' cannot be worked out: " + ex.Message, ex); }
+            try { return Convert.ToDouble(result, System.Globalization.CultureInfo.InvariantCulture); }
+            catch (Exception ex) { throw new FormulaException("'" + formula + "' does not give a number (" + result + ").", ex); }
+        }
+
+        /// <summary>The raw value as shown: ReadFormula when there is one, raw / Divisor otherwise.</summary>
+        protected override double ToShownValue(double raw, Func<string, int> readPlc)
+        {
+            if (NumericFormula.IsIdentity(ReadFormula))
+            {
+                _readFormulaError = "";
+                return base.ToShownValue(raw, readPlc);
+            }
+            try
+            {
+                double v = EvaluateFormula(ReadFormula, raw, readPlc);
+                if (double.IsNaN(v) || double.IsInfinity(v))
+                    throw new FormulaException("It gives no number for " + raw + " (a division by 0?)" + VariableValues(readPlc) + ".");
+                _readFormulaError = "";
+                return v;
+            }
+            catch (Exception ex)
+            {
+                // The field shows "Err"; the admin tooltip says why.
+                string msg = "Read formula: " + ex.Message;
+                if (msg != _readFormulaError) { _readFormulaError = msg; InvalidateTooltip(); }
+                throw;
+            }
+        }
+
+        /// <summary>" with B = 0" - the variables' values, for a message.</summary>
+        private string VariableValues(Func<string, int> tagReader)
+        {
+            var parts = MathVariables.Where(v => v != null && !string.IsNullOrWhiteSpace(v.Name)).Select(v =>
+            {
+                double x = v.IsConstant ? v.GetConstantValue()
+                         : (string.IsNullOrWhiteSpace(v.AddressOrValue) || tagReader == null ? 0 : tagReader(v.AddressOrValue.Trim()));
+                return v.Name.Trim() + " = " + x.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }).ToList();
+            return parts.Count == 0 ? "" : " with " + string.Join(", ", parts);
+        }
+
+        /// <summary>
+        /// Everything wrong with the formulas, in plain words - what FormulaCheck
+        /// shows in the designer, the admin tooltip lists, and the keypad refuses
+        /// to open over. Empty when both work.
+        ///
+        /// Tried with each variable at its constant (a device's at 1): a name not
+        /// defined, a formula NCalc cannot read, one that gives no number (B still
+        /// at its default 0 under a division), and a pair that is not each other's
+        /// inverse - what is written would not read back as what was typed.
+        ///
+        /// <paramref name="errorsOnly"/>: only what makes a formula fail - the
+        /// keypad refuses to open over those. A pair that does not match is a
+        /// mistake to fix, but the value can still be written.
+        /// </summary>
+        public List<string> FormulaProblems(bool errorsOnly = false)
+        {
+            var problems = new List<string>(NumericFormula.VariableProblems(MathVariables));
+            Func<string, int> sample = a => 1;
+            bool readSet = !NumericFormula.IsIdentity(ReadFormula);
+            bool writeSet = !NumericFormula.IsIdentity(WriteFormula);
+            bool readOk = true, writeOk = true;
+
+            Action<string, string, Action> check = (label, formula, failed) =>
+            {
+                string missing = NumericFormula.UndefinedMessage(formula, MathVariables);
+                if (missing != null) { problems.Add(label + ": " + missing); failed(); return; }
+                try
+                {
+                    double r = EvaluateFormula(formula, 10, sample);
+                    if (double.IsNaN(r) || double.IsInfinity(r))
+                    {
+                        problems.Add(label + ": it gives no number (a division by 0?)" + VariableValues(sample) + ".");
+                        failed();
+                    }
+                }
+                catch (Exception ex) { problems.Add(label + ": " + ex.Message); failed(); }
+            };
+            if (readSet) check("ReadFormula", ReadFormula, () => readOk = false);
+            if (writeSet) check("WriteFormula", WriteFormula, () => writeOk = false);
+
+            if (errorsOnly) return problems;
+            if (readSet != writeSet)
+                problems.Add(readSet
+                    ? "ReadFormula is set but WriteFormula is not: a value typed would be written as typed x Divisor. Give WriteFormula the inverse of ReadFormula."
+                    : "WriteFormula is set but ReadFormula is not: the value would be shown as raw / Divisor. Give ReadFormula the inverse of WriteFormula.");
+            else if (readSet && readOk && writeOk)
+            {
+                // Typed, written, read back: the number the operator typed again?
+                foreach (double typed in new[] { 0.0, 1.0, 10.0, 123.0 })
+                {
+                    double raw, back;
+                    try { raw = EvaluateFormula(WriteFormula, typed, sample); back = EvaluateFormula(ReadFormula, raw, sample); }
+                    catch { continue; }
+                    if (Math.Abs(back - typed) > 1e-6 * Math.Max(1.0, Math.Abs(typed)))
+                    {
+                        problems.Add("The formulas are not each other's inverse: " + typed + " typed is written as " + raw +
+                                     " and read back as " + back + VariableValues(sample) + ".");
+                        break;
+                    }
+                }
+            }
+            return problems;
+        }
+
+        /// <summary>A formula that failed: the reason for an Admin, the plain "could not be written" for others.</summary>
+        private void ShowFormulaError(string detail)
+        {
+            AuditLogger.Log($"could not write {Address} (PLC {PlcNumber}): formula problem - {detail}");
+            string msg = SecurityManager.HasAccess(SecurityLevel.Admin)
+                ? "Formula problem.\n\n" + detail + "\n\nRead formula:\t" + (ReadFormula ?? "") +
+                  "\nWrite formula:\t" + (WriteFormula ?? "") +
+                  (MathVariables.Count > 0 ? "\nVariables:\t" + string.Join(", ", MathVariables.Where(v => v != null)) : "")
+                : LanguageManager.GetString("Sys_WriteError", "The value could not be written.");
+            MessageBox.Show(msg, LanguageManager.GetString("Sys_WriteErrorTitle", "Write Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -678,7 +848,7 @@ namespace Kaban.UI.Controls
             string[] list = {
                 "PlcNumber", "Address", "DataType", "AddressOffset",
                 "Divisor", "Digits", "DecimalPlaces", "FillZero", "DataFormat", "Suffix", "UnitType", "TranslationKey",
-                "MinLimit", "MaxLimit", "OutOfLimitsWarning", "ReadFormula", "WriteFormula", "MathVariables",
+                "MinLimit", "MaxLimit", "OutOfLimitsWarning", "ReadFormula", "WriteFormula", "MathVariables", "FormulaCheck",
                 "VisibilityConditions", "EnableConditions", "EnableTrigger",
                 "ConfirmWrite"
             };

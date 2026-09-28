@@ -17,10 +17,14 @@ namespace Kaban.Machines.FA2010
     ///
     /// Program.cs still exists so FA2010 can also run standalone as its own exe.
     /// </summary>
-    public class FA2010Module : IMachineModule, Kaban.UI.Screens.IMachineDisplayName
+    public class FA2010Module : IMachineModule, Kaban.UI.Screens.IMachineDisplayName, Kaban.UI.Screens.IMachineIcon
     {
         public string ModuleId => "FA2010";
         public string DisplayNameKey => "Machine_FA2010";
+
+        /// <summary>What the machine does, on its tile: a saw blade and a milling cutter.</summary>
+        public System.Drawing.Image Icon =>
+            Kaban.UI.Controls.NavGlyphs.ProcessingCenter(Kaban.UI.Screens.MachineIcon.ColourFor(ModuleId));
 
         /// <summary>
         /// The name the operator reads on tabs, on the Station Connection page and

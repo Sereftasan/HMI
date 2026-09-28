@@ -338,8 +338,7 @@ namespace Kaban.UI.Controls
                 // Perform conversion and store it for child classes.
                 // _lastNumericValue stays in the PLC's REFERENCE unit (mm, gr, C...)
                 // so limit checks and formulas keep working in one consistent unit.
-                double val = PlcValueConverter.ConvertToDouble(low, high, DataType, DataFormat, 0);
-                if (Divisor != 0) val /= Divisor;
+                double val = ToShownValue(PlcValueConverter.ConvertToDouble(low, high, DataType, DataFormat, 0), readPlc);
                 _lastNumericValue = val;
 
                 // UNIT CONVERSION: when a UnitType is set, the value is shown in the
@@ -363,6 +362,15 @@ namespace Kaban.UI.Controls
                 this.Text = formatted;
             }
             catch { this.Text = "Err"; }
+        }
+
+        /// <summary>
+        /// The raw PLC value as the number shown (still in the reference unit):
+        /// raw / Divisor. NumericInputHMI's ReadFormula replaces this.
+        /// </summary>
+        protected virtual double ToShownValue(double raw, Func<string, int> readPlc)
+        {
+            return Divisor != 0 ? raw / Divisor : raw;
         }
 
         protected override void Dispose(bool disposing)

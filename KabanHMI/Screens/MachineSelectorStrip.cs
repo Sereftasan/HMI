@@ -215,7 +215,8 @@ namespace Kaban.UI.Screens
     /// <summary>
     /// Picks the glyph for a machine in the selector strip.
     ///
-    /// A machine may supply its own via IMachineIcon. Otherwise it gets a drawn
+    /// A machine may supply its own via IMachineIcon - the machines here draw what
+    /// they do on their tile (NavGlyphs). Otherwise it gets a drawn
     /// INITIAL - the first letter of its display name in a rounded tile - rather
     /// than a shared generic icon: in collapsed mode a generic icon would make
     /// every machine look identical, which is exactly the state the strip exists
@@ -269,17 +270,26 @@ namespace Kaban.UI.Screens
             return img;
         }
 
+        /// <summary>
+        /// The machine's tile colour. Stable per module: the same machine keeps the
+        /// same tile between runs, so the operator can learn it as a shape rather
+        /// than re-reading it - and a machine that draws its own picture
+        /// (IMachineIcon) puts it on this same colour.
+        /// </summary>
+        public static Color ColourFor(string moduleId)
+        {
+            int hash = 0;
+            foreach (char c in moduleId ?? "") hash = (hash * 31 + c) & 0x7FFFFFFF;
+            return Palette[hash % Palette.Length];
+        }
+
         private static Image DrawInitial(string name, string moduleId)
         {
             string letter = "?";
             string source = !string.IsNullOrWhiteSpace(name) ? name : moduleId;
             if (!string.IsNullOrWhiteSpace(source)) letter = source.Substring(0, 1).ToUpperInvariant();
 
-            // Stable colour per module: the same machine keeps the same tile between
-            // runs, so the operator can learn it as a shape rather than re-reading it.
-            int hash = 0;
-            foreach (char c in moduleId ?? "") hash = (hash * 31 + c) & 0x7FFFFFFF;
-            var colour = Palette[hash % Palette.Length];
+            var colour = ColourFor(moduleId);
 
             var bmp = new Bitmap(24, 24);
             using (var g = Graphics.FromImage(bmp))

@@ -64,9 +64,14 @@ class UD {
         var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
         Check("'Kind' is not offered: an axis on a page is an AxisUnitHMI", !props["Kind"].IsBrowsable &&
               props["Kind"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
-        Check("the Help properties are under ' Help' (leading space, like the program's other categories)",
-              new[] { "HelpFiles", "ValveType", "FeedbackType", "ErrorAAddress", "ErrorBAddress" }.All(n => props[n].Category == " Help"),
-              props["HelpFiles"].Category);
+        Check("each movement's error and help files are under its action; valve and feedback head the list",
+              props["ErrorAAddress"].Category == " Action A" && props["HelpAFiles"].Category == " Action A" &&
+              props["ErrorBAddress"].Category == " Action B" && props["HelpBFiles"].Category == " Action B" &&
+              props["ValveType"].Category == "  Valve & Feedback" && props["FeedbackType"].Category == "  Valve & Feedback",
+              props["HelpAFiles"].Category + " / " + props["ValveType"].Category);
+        Check("  the single HelpFiles of old pages is kept hidden (not written again)",
+              !props["HelpFiles"].IsBrowsable && props["HelpFiles"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
+        Check("  no ' Help' category left", props.Cast<PropertyDescriptor>().All(p => !p.IsBrowsable || p.Category != " Help"));
         var ax = TypeDescriptor.GetProperties(typeof(AxisSettingHMI));
         Check("  and on the axis row", ax.Cast<PropertyDescriptor>().Where(p => p.Category.Trim() == "Help").All(p => p.Category == " Help"));
 
