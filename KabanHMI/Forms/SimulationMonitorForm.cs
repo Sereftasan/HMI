@@ -968,6 +968,43 @@ namespace Kaban.UI.Forms
             tabs.MouseCaptureChanged += (s, e) => { if (_draggingSheet && Control.MouseButtons == MouseButtons.None) end(s, null); };
         }
 
+        /// <summary>
+        /// THE MONITOR'S TABLE LOOK - its lists and Find's list alike, so the two
+        /// read as one tool: fonts, heading, row height, lines, selection.
+        ///
+        /// The HEADING SIZES ITSELF to its font. It was a fixed height (the
+        /// resizable mode keeps whatever height the grid was born with), shorter
+        /// than the bold heading font with its padding, so on the panel the
+        /// captions were cut through the middle.
+        /// </summary>
+        internal static void StyleGrid(DataGridView grid)
+        {
+            grid.AllowUserToAddRows = false;
+            grid.AllowUserToDeleteRows = false;
+            grid.AllowUserToResizeRows = false;
+            grid.RowHeadersVisible = false;
+            grid.BackgroundColor = Color.White;
+            grid.BorderStyle = BorderStyle.None;
+            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            grid.GridColor = Color.FromArgb(228, 231, 235);
+            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grid.Font = UiStyle.Body;
+            grid.RowTemplate.Height = 26;
+            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(218, 232, 250);
+            grid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
+            grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
+            grid.EnableHeadersVisualStyles = false;
+            grid.ColumnHeadersDefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 248);
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(25, 28, 34);
+            grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 246, 248);
+            grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        }
+
         private static DataGridView BuildGrid()
         {
             var grid = new DataGridView
@@ -975,24 +1012,11 @@ namespace Kaban.UI.Forms
                 Dock = DockStyle.Fill,
                 // The blank line at the end is a row we own, not the DataGridView's
                 // own "new row", whose placeholder fights a 250ms refresh.
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                AllowUserToResizeRows = false,
-                RowHeadersVisible = false,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.None,
-                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
-                GridColor = Color.FromArgb(228, 231, 235),
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                MultiSelect = true,
-                Font = UiStyle.Body
+                MultiSelect = true
             };
-            grid.RowTemplate.Height = 26;
-            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(218, 232, 250);
-            grid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
-            grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
+            StyleGrid(grid);
 
             // Label first: an engineer thinks in names, not addresses.
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Label", HeaderText = T("Col_Label", "Label") });
@@ -1012,11 +1036,6 @@ namespace Kaban.UI.Forms
             grid.AllowUserToOrderColumns = true;
             foreach (DataGridViewColumn c in grid.Columns) c.SortMode = DataGridViewColumnSortMode.Programmatic;
             ApplyColumnLayout(grid);
-            grid.EnableHeadersVisualStyles = false;
-            grid.ColumnHeadersDefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 248);
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
-            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             return grid;
         }
 

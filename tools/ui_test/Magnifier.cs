@@ -174,6 +174,33 @@ class MG {
         Pump(50);
         Check("  shown, left and shown again: still 540 (scaled once)", unit.Width == 540, unit.Width.ToString());
 
+        Console.WriteLine("--- everything reachable at 1.5 ---");
+        var aBtn = (Control)Get(unit, "_btnA");
+        Check("the unit's buttons grow with it (36 at factor 1: a thin row in a tall frame before)", aBtn.Height > 40, aBtn.Height.ToString());
+        shell.WindowState = FormWindowState.Normal;
+        shell.Bounds = new Rectangle(0, 0, 1200, 740);
+        Pump(150);
+        var menuPanel = (Panel)Get(shell, "pnlMenu");
+        var navBody = (Panel)Get(shell, "_navBody");
+        var histRow = ((Control)Get(shell, "_btnHistBack")).Parent;
+        Check("Back / Forward stay at the bottom of the menu, in sight", histRow.Visible && histRow.Top > 0 && histRow.Bottom <= menuPanel.ClientSize.Height,
+              histRow.Bounds + " in " + menuPanel.ClientSize);
+        var mstrip = navBody.Controls.OfType<Kaban.UI.Screens.MachineSelectorStrip>().First();
+        Check("the machine list is in sight - or the menu scrolls to it", mstrip.Visible && (mstrip.Bottom <= navBody.ClientSize.Height || navBody.VerticalScroll.Visible),
+              mstrip.Bounds + " in " + navBody.ClientSize + " scroll=" + navBody.VerticalScroll.Visible);
+        var gap = (Panel)Get(shell, "_navSpacer");
+        Check("  the gap above it gave way first (3 buttons' height at most)", gap.Height < UiScale.Px(135), gap.Height.ToString());
+        var groupsOf = (System.Collections.IDictionary)Get(shell, "_screenGroups");
+        var homePage = groupsOf.Keys.Cast<UserControl>().First(k => ((MachineRegistry.RoleGroup)groupsOf[k]).Role == ScreenRoles.Home);
+        shell.LoadScreen(homePage);
+        Pump(150);
+        home = homePage;
+        Func<Control, IEnumerable<Control>> all = null;
+        all = c => new[] { c }.Concat(c.Controls.Cast<Control>().SelectMany(x => all(x)));
+        var scrolling = all(home).OfType<ScrollableControl>().FirstOrDefault(c => c.AutoScroll && c.HorizontalScroll.Visible);
+        Check("the page larger than its room scrolls (it was cut off, with no scroll bar)", scrolling != null,
+              string.Join(",", all(home).OfType<ScrollableControl>().Where(c => c.AutoScroll).Select(c => c.GetType().Name)));
+
         var monitor = shell.ShowSimulationMonitor();
         Pump(100);
         var bar = monitor.Controls.OfType<ToolStrip>().First();

@@ -466,6 +466,9 @@ namespace Kaban.UI.Settings
             _host.Controls.Clear();
             if (view != null)
             {
+                // The page scrolls when it does not fit (a side page beside it,
+                // the magnifying factor) - see PageScroll.
+                Kaban.UI.Helpers.PageScroll.Enable(view);
                 _host.Controls.Add(view);
                 // Tab pages are built on FIRST SELECTION, so they are not on screen
                 // when MainForm walks the page - they have to be given the cues here.

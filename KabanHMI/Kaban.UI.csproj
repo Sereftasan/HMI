@@ -80,6 +80,7 @@
     <Compile Include="Helpers\WindowLayout.cs" />
     <Compile Include="Helpers\SidePages.cs" />
     <Compile Include="Helpers\LoginHandoff.cs" />
+    <Compile Include="Helpers\PageScroll.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
       <SubType>Component</SubType>

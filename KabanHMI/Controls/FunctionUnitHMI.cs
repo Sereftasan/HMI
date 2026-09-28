@@ -1180,7 +1180,13 @@ namespace Kaban.UI.Controls
             _inLayout = true;
             try
             {
-            int gap = 6;
+            // AT THE MAGNIFYING FACTOR: the unit is scaled with its page, so its
+            // gaps and its button height are too (UiScale.For - factor 1 before
+            // the page is scaled). Fixed at factor 1 they left, at 2, a thin row of
+            // buttons in a tall frame and a readout too short for its enlarged
+            // digits, which then showed nothing at all.
+            Func<int, int> px = v => UiScale.For(this, v);
+            int gap = px(6);
 
             // ROOT-CAUSE FIX: _grp is Dock.Fill but during the initial
             // OnHandleCreated/OnParentChanged pass it has NOT been resized to the
@@ -1188,15 +1194,15 @@ namespace Kaban.UI.Controls
             // then made the buttons overflow the unit. Compute from the UNIT's own
             // client area instead - _grp fills it exactly, so this is correct and
             // available immediately.
-            int leftPad = 8;
-            int rightPad = 8;
+            int leftPad = px(8);
+            int rightPad = px(8);
             // SYMMETRIC spacing: the caption is DRAWN inside the panel (no reserved
             // band), so the visual gap under the caption and above the bottom border
             // must both equal the side gap (6). topPad therefore clears the caption
             // height plus one side-gap; the button row is anchored, not centred.
             int capH = (int)Math.Ceiling(_grp.Font.GetHeight());
-            int topPad = capH + 6;
-            int botPad = 6;
+            int topPad = capH + px(6);
+            int botPad = px(6);
 
             int areaX = leftPad;
             int areaY = topPad;
@@ -1206,7 +1212,7 @@ namespace Kaban.UI.Controls
 
             LayoutTrace($"unit={this.Width}x{this.Height} unitClient={this.ClientSize.Width}x{this.ClientSize.Height} grpClient={_grp.ClientSize.Width}x{_grp.ClientSize.Height} area={areaW}x{areaH}");
 
-            if (areaW < 30 || areaH < 8)
+            if (areaW < px(30) || areaH < px(8))
             {
                 LayoutTrace($"EARLY-RETURN area too small ({areaW}x{areaH})");
                 // Too small to lay out yet - make sure the readout isn't left
@@ -1221,7 +1227,7 @@ namespace Kaban.UI.Controls
 
             // Cap button height so tall frames don't produce oversized buttons;
             // center the row vertically in the available area.
-            int maxBtnH = 36;   // uniform standard height (matches every standalone control)
+            int maxBtnH = px(36);   // uniform standard height (matches every standalone control)
             int btnH = Math.Min(areaH, maxBtnH);
             int rowY = areaY;                       // anchored: top gap == side gap
 
@@ -1245,7 +1251,7 @@ namespace Kaban.UI.Controls
 
             int posW = 0;
             if (hasPos && slotPos > 0) posW = slotPos;
-            else if (hasPos && PositionSlotWidth > 0) posW = Math.Min(PositionSlotWidth, areaW - 2 * gap - 20);
+            else if (hasPos && PositionSlotWidth > 0) posW = Math.Min(px(PositionSlotWidth), areaW - 2 * gap - px(20));
             else if (hasPos)
             {
                 // ONE WIDTH FOR EVERY UNIT: the display fits "000000.0 mm" in its
@@ -1268,11 +1274,11 @@ namespace Kaban.UI.Controls
                 if (textW <= 0)
                     textW = (int)(sample.Length * _numPosition.Font.Size * 0.62f); // fallback estimate
 
-                int wanted = textW + 14; // small padding
+                int wanted = textW + px(14); // small padding
                 // Never let the readout dominate: the two buttons keep a fair share.
                 int maxPos = (int)(areaW * 0.42f);
                 posW = Math.Min(wanted, maxPos);
-                posW = Math.Min(posW, areaW - 2 * gap - 60); // hard floor for buttons
+                posW = Math.Min(posW, areaW - 2 * gap - px(60)); // hard floor for buttons
                 if (posW < 0) posW = 0;
             }
 
@@ -1299,7 +1305,7 @@ namespace Kaban.UI.Controls
                 // Font scales to the row height so the digits fill the box nicely
                 // (about 55% of height as point size works well for a 7-seg look).
                 // The Standard style keeps the axis rows' fixed font instead.
-                float fontSize = Math.Max(9f, btnH * 0.36f);
+                float fontSize = Math.Max(UiScale.Pt(9f), btnH * 0.36f);
                 if (_positionStyle == UnitPositionStyle.Readout &&
                     Math.Abs(_numPosition.Font.Size - fontSize) > 0.5f)
                     _numPosition.Font = PositionFontFor(fontSize);
@@ -1320,8 +1326,8 @@ namespace Kaban.UI.Controls
         {
             if (_grp == null) return;
             int frameTop = (int)(_grp.Font.GetHeight() / 2f);
-            _help.Location = new Point(this.ClientSize.Width - 12 - UnitHelpBadge.BadgeSize,
-                                       Math.Max(0, frameTop - UnitHelpBadge.BadgeSize / 2));
+            _help.Location = new Point(this.ClientSize.Width - UiScale.For(this, 12) - _help.Width,
+                                       Math.Max(0, frameTop - _help.Height / 2));
         }
 
         /// <summary>

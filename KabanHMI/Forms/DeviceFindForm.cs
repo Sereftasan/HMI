@@ -25,13 +25,17 @@ namespace Kaban.UI.Forms
     /// It opens as it was closed: the same place and size, the columns as wide
     /// and in the order they were dragged to (WindowLayout, "Find.*" in the
     /// monitor's Windows.cfg).
+    ///
+    /// The list is a table in THE MONITOR'S LOOK (SimulationMonitorForm.StyleGrid):
+    /// the same heading, fonts and rows as the lists above it. It was a Windows
+    /// list view, whose own heading and font sat oddly under the monitor's.
     /// </summary>
     public class DeviceFindForm : Form
     {
         private readonly int _station;
         private readonly Func<DeviceCollector.Use, string> _open;
         private readonly TextBox _query = new TextBox();
-        private readonly ListView _list = new ListView();
+        private readonly DataGridView _list = new DataGridView();
         private readonly Label _status = new Label();
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private List<DeviceCollector.Use> _found = new List<DeviceCollector.Use>();
@@ -102,16 +106,23 @@ namespace Kaban.UI.Forms
             };
 
             _list.Dock = DockStyle.Fill;
-            _list.View = View.Details;
-            _list.FullRowSelect = true;
-            _list.HideSelection = false;
+            SimulationMonitorForm.StyleGrid(_list);
+            _list.ReadOnly = true;
             _list.MultiSelect = false;
-            _list.BorderStyle = BorderStyle.None;
-            _list.AllowColumnReorder = true;               // the headings drag, as on the monitor
-            _list.Columns.Add(T("Col_FindPage", "Page"), 300);
-            _list.Columns.Add(T("Col_FindWhere", "Used by"), 250);
-            _list.Columns.Add(T("Col_Address", "Address"), 80);
-            _list.Columns.Add(T("Col_DataType", "DataType"), 150);
+            _list.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            _list.AllowUserToResizeColumns = true;
+            _list.AllowUserToOrderColumns = true;          // the headings drag, as on the monitor
+            _list.StandardTab = true;
+            Action<string, string, int> column = (name, header, width) =>
+                _list.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = name, HeaderText = header, Width = width,
+                    SortMode = DataGridViewColumnSortMode.Automatic      // a click on a heading sorts
+                });
+            column("Page", T("Col_FindPage", "Page"), 300);
+            column("Where", T("Col_FindWhere", "Used by"), 250);
+            column("Address", T("Col_Address", "Address"), 80);
+            column("DataType", T("Col_DataType", "DataType"), 150);
 
             // As it was closed last time (the place and size only as a window).
             var kept = WindowLayout.Read(SimulationMonitorForm.WindowsPath);
@@ -130,23 +141,24 @@ namespace Kaban.UI.Forms
             Controls.Add(_status);
 
             // A CLICK opens the page: the list is there to be clicked.
-            _list.MouseClick += (s, e) =>
+            _list.CellMouseClick += (s, e) =>
             {
-                var item = _list.GetItemAt(e.X, e.Y);
-                if (e.Button == MouseButtons.Left && item != null) OpenItem(item);
+                if (e.Button == MouseButtons.Left && e.RowIndex >= 0) OpenItem(_list.Rows[e.RowIndex]);
             };
             _list.KeyDown += (s, e) =>
             {
-                if (e.KeyCode == Keys.Enter && _list.SelectedItems.Count > 0) { OpenItem(_list.SelectedItems[0]); e.Handled = true; }
-                else if (e.KeyCode == Keys.Up && _list.SelectedIndices.Count > 0 && _list.SelectedIndices[0] == 0) { _query.Focus(); e.Handled = true; }
+                var row = _list.CurrentRow;
+                if (e.KeyCode == Keys.Enter && row != null) { OpenItem(row); e.Handled = e.SuppressKeyPress = true; }
+                else if (e.KeyCode == Keys.Up && row != null && row.Index == 0) { _query.Focus(); e.Handled = true; }
             };
             _query.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter) { Search(); e.Handled = e.SuppressKeyPress = true; }
-                else if (e.KeyCode == Keys.Down && _list.Items.Count > 0)
+                else if (e.KeyCode == Keys.Down && _list.Rows.Count > 0)
                 {
                     _list.Focus();
-                    _list.Items[0].Selected = _list.Items[0].Focused = true;
+                    _list.CurrentCell = _list.Rows[0].Cells[_list.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).First().Index];
+                    _list.Rows[0].Selected = true;
                     e.Handled = true;
                 }
             };
@@ -199,7 +211,7 @@ namespace Kaban.UI.Forms
         public List<DeviceCollector.Use> Search()
         {
             var q = _query.Text.Trim();
-            _list.Items.Clear();
+            _list.Rows.Clear();
             _found = new List<DeviceCollector.Use>();
             if (q.Length == 0) { _status.Text = T("Msg_FindHint", "Type an address (M604), a label, or part of a unit's name, then Enter."); return _found; }
 
@@ -212,10 +224,14 @@ namespace Kaban.UI.Forms
             _found = Match(uses, _station, q);
             foreach (var u in _found)
             {
-                var item = new ListViewItem(new[] { u.PageTitle, u.UsedAs, u.Address, u.DataType }) { Tag = u };
-                if (u.IsAlarm) item.ForeColor = Color.FromArgb(120, 126, 136);
-                _list.Items.Add(item);
+                int i = _list.Rows.Add(u.PageTitle, u.UsedAs, u.Address, u.DataType);
+                _list.Rows[i].Tag = u;
+                if (u.IsAlarm) _list.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(120, 126, 136);
             }
+            // Nothing chosen until the user chooses: a selected first line read
+            // as "this one was opened".
+            _list.ClearSelection();
+            try { _list.CurrentCell = null; } catch (InvalidOperationException) { }
             int pages = _found.Select(u => u.PageTitle).Distinct().Count();
             _status.Text = _found.Count == 0
                 ? string.Format(T("Msg_FindNone", "'{0}' is used nowhere on this controller's pages."), q)
@@ -254,7 +270,10 @@ namespace Kaban.UI.Forms
                         .ThenBy(u => u.UsedAs, StringComparer.CurrentCultureIgnoreCase).ToList();
         }
 
-        private void OpenItem(ListViewItem item)
+        /// <summary>The lines listed, as shown (tests).</summary>
+        public int RowCount { get { return _list.Rows.Count; } }
+
+        private void OpenItem(DataGridViewRow item)
         {
             var use = item.Tag as DeviceCollector.Use;
             if (use == null) return;

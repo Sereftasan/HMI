@@ -28,6 +28,7 @@ class SP {
         var f = t.GetField(n, Any); if (f != null) return f.GetValue(o is Type ? null : o);
         return t.GetProperty(n, Any).GetValue(o is Type ? null : o, null);
     }
+    static IEnumerable<Control> AllOf(Control r) { foreach (Control c in r.Controls) { yield return c; foreach (var d in AllOf(c)) yield return d; } }
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); } }
 
     // A machine with a side page of its own (an order's details, say).
@@ -103,6 +104,40 @@ class SP {
         Check("  and the bar stays at the edge", panel.Right == bar.Left, panel.Right + " vs " + bar.Left);
         Check("  the border can be dragged", split.Visible && split.Dock == DockStyle.Right);
         Check("  its button is marked", form.OpenSidePage != null && form.OpenSidePage.Key == "PlcMonitor");
+        var header = (Panel)Get(form, "_sideHeader");
+        Check("  its header carries the page's own picture (the side bar's) before its name",
+              header.Controls.Cast<Control>().Any(c => c.GetType().Name == "SidePageIcon" && c.Visible && c.Width > 0));
+        var sheetGrid = AllOf(monitor).OfType<DataGridView>().First();
+        int needed = (int)Math.Ceiling(sheetGrid.ColumnHeadersDefaultCellStyle.Font.GetHeight()) + sheetGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical;
+        Check("  the lists' heading is tall enough for its captions (they were cut through)",
+              sheetGrid.ColumnHeadersHeightSizeMode == DataGridViewColumnHeadersHeightSizeMode.AutoSize && sheetGrid.ColumnHeadersHeight >= needed,
+              sheetGrid.ColumnHeadersHeight + " for " + needed);
+
+        Console.WriteLine("--- the page beside it scrolls; Find brings a unit into sight ---");
+        var groupsOf = (System.Collections.IDictionary)Get(form, "_screenGroups");
+        var homePage = groupsOf.Keys.Cast<UserControl>().First(k => ((MachineRegistry.RoleGroup)groupsOf[k]).Role == ScreenRoles.Home);
+        var sizeBefore = form.Bounds;
+        form.WindowState = FormWindowState.Normal;
+        form.Bounds = new Rectangle(0, 0, 1180, 820);
+        form.LoadScreen(homePage);
+        Pump(150);
+        var leaf = AllOf(homePage).OfType<ScrollableControl>().FirstOrDefault(c => c.AutoScroll && !(c is Kaban.UI.Settings.SettingsScreen));
+        Check("the page scrolls when the panel narrows it (it was cut off, no scroll bar)", leaf != null && leaf.HorizontalScroll.Visible,
+              leaf == null ? "no scrolling page" : leaf.GetType().Name + " scroll=" + leaf.HorizontalScroll.Visible);
+        var d110 = DeviceFindForm.Match(DeviceCollector.UsesOf(2), 2, "D110").FirstOrDefault();
+        string why0;
+        var far = d110 == null ? null : form.ShowDeviceUse(d110, out why0);
+        Pump(100);
+        if (far != null && leaf != null)
+        {
+            var seen = leaf.RectangleToScreen(leaf.ClientRectangle);
+            var at = far.Parent.RectangleToScreen(far.Bounds);
+            Check("  a unit at the far side found by Find: scrolled into sight, beside the panel", seen.Contains(at) && -leaf.AutoScrollPosition.X > 0,
+                  at + " in " + seen + ", scrolled " + leaf.AutoScrollPosition);
+        }
+        else Check("  a unit at the far side found by Find", false, d110 == null ? "D110 not found" : "not shown");
+        form.Bounds = sizeBefore;
+        Pump(50);
 
         Console.WriteLine("--- Find inside the monitor, the unit framed on the page ---");
         var find = (DeviceFindForm)monitor.GetType().GetMethod("OpenFind", Any).Invoke(monitor, new object[] { "M672" });
@@ -148,6 +183,20 @@ class SP {
         var win = windows.Contains("PlcMonitor") ? (SidePageWindow)windows["PlcMonitor"] : null;
         Check("pop out: in a window of its own, the panel closed", win != null && win.Visible && win.View == monitor && monitor.Parent == win && !panel.Visible);
         Check("  opening it again brings that window forward, not a second monitor", form.ShowSidePage("PlcMonitor") == monitor && windows.Count == 1);
+        Pump(50);
+        var titles = AllOf(win).Where(c => c.GetType().Name == "HeaderTitle").ToList();
+        Check("  ONE title: no Windows frame over the header, the page's name once", win.FormBorderStyle == FormBorderStyle.None &&
+              titles.Count == 1 && titles[0].Text == SidePages.Find("PlcMonitor").Title,
+              titles.Count + " titles");
+        // On the title bar itself (Find's pane inside the monitor has a "Close" of its own).
+        var captionBar = win.Controls.Cast<Control>().FirstOrDefault(c => c != win.View);
+        Func<string, Control> capBtn = n => captionBar == null ? null : captionBar.Controls.Cast<Control>().FirstOrDefault(c => c is Button && c.AccessibleName == n);
+        var dockB = capBtn("Dock back"); var minB = capBtn("Minimize"); var maxB = capBtn("Maximize"); var closeB = capBtn("Close");
+        Check("  its buttons on the title bar: back into the panel, minimise, maximise, close - in that order",
+              dockB != null && minB != null && maxB != null && closeB != null && dockB.Parent == closeB.Parent &&
+              dockB.Left < minB.Left && minB.Left < maxB.Left && maxB.Left < closeB.Left && closeB.Right == closeB.Parent.ClientSize.Width,
+              dockB == null ? "no dock button" : dockB.Left + "," + (minB == null ? -1 : minB.Left) + "," + (maxB == null ? -1 : maxB.Left) + "," + (closeB == null ? -1 : closeB.Left));
+        Check("  the page's picture on the title bar, and as the window's icon", AllOf(win).Any(c => c.GetType().Name == "SidePageIcon") && win.Icon != null);
         var cfg = File.ReadAllText(Path.Combine(dir, "SidePanel.cfg"));
         Check("  remembered: it opens in a window next time", cfg.Contains("InWindow=PlcMonitor"), cfg.Replace("\r\n", " | "));
         win.GetType().GetField("DockBack", Any);

@@ -3889,3 +3889,20 @@ and `UnitLookAndErrors` extended.
   `MitsubishiActUtl.LogicalStation`.
 - Manual: keypad (angles), alarms (SET reset), HMI Settings table, section 11 (log viewer, diagnostics).
 - Tests: `tools/ui_test/AngleLimits.cs`, `tools/ui_test/LogAndDiagnostics.cs`; `AxisCodeHelpUi.cs` (SET).
+
+## 2026-09-28 - Side window title bar, pages scroll, Find table, magnifier fixes
+
+- `SidePageWindow`: borderless, its own caption (`SidePageIcon`, title, dock back / minimise / maximise /
+  close caption buttons), drag by `WM_NCLBUTTONDOWN`/`HTCAPTION`, edge sizing by `WM_NCHITTEST` on a 5 px
+  frame, `MaximizedBounds` per monitor, `WS_MINIMIZEBOX|WS_MAXIMIZEBOX`, `CS_DROPSHADOW`, taskbar icon from
+  the page's glyph (`SidePageArt.IconFor`). The docked header shows `SidePageIcon` too.
+- `PageScroll` *(new)*: `Enable` (AutoScroll on a page when shown: `MainForm.LoadScreen`,
+  `SettingsScreen.ShowPage`, side panel) and `Reveal` (scroll ancestors so a control is in view);
+  `MainForm.ShowDeviceUse` lays out, then reveals.
+- Navigation: `_navBody` (scrolling middle of `pnlMenu`: page buttons, gap, machine strip); `SizeNavSpacer`
+  shrinks the gap to the room left (min 12 px).
+- `SimulationMonitorForm.StyleGrid` (shared table look; heading `AutoSize`); `DeviceFindForm` list is a
+  `DataGridView` with it (sortable); `WindowLayout.ColumnsOf/ApplyColumns(DataGridView)`.
+- `FunctionUnitHMI.LayoutChildren`: gaps, pads, button height, badge offset through `UiScale.For`.
+- Translations `Tip_WinMinimize`, `Tip_WinMaximize`. Manual: 3a, magnifier note, Find.
+- Tests: `SidePanel.cs`, `Magnifier.cs`, `PlcMonitor.cs` extended.

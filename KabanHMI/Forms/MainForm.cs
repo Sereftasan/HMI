@@ -22,6 +22,34 @@ namespace Kaban.UI.Forms
             = new System.Collections.Generic.Dictionary<UserControl, Kaban.Core.Machines.MachineRegistry.RoleGroup>();
         private Screens.MachineSelectorStrip _machineStrip;
         private Panel _navSpacer;
+
+        /// <summary>
+        /// THE MIDDLE OF THE NAVIGATION COLUMN: the page buttons, the gap and the
+        /// machine list, between the fold button (top) and Back / Forward (bottom).
+        ///
+        /// It SCROLLS when they do not fit - a short screen, or a large magnifying
+        /// factor: the buttons are laid out at their full size and the column simply
+        /// scrolls, while the fold button and Back / Forward stay where they are.
+        /// They used to sit on the menu panel itself, which cannot scroll a list
+        /// with Back / Forward docked into its bottom edge - at 1.5 the machine list
+        /// ran off the bottom and took Back / Forward with it.
+        /// </summary>
+        private Panel NavBody
+        {
+            get
+            {
+                if (_navBody == null)
+                {
+                    _navBody = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = pnlMenu.BackColor };
+                    pnlMenu.Controls.Add(_navBody);
+                    _navBody.BringToFront();            // docked last: the room the strips leave
+                    pnlMenu.BackColorChanged += (s, e) => _navBody.BackColor = pnlMenu.BackColor;
+                    _navBody.Resize += (s, e) => SizeNavSpacer();
+                }
+                return _navBody;
+            }
+        }
+        private Panel _navBody;
         // Minimum security level required to open each page (SecurityLevel.None = anyone).
         //
         // PER PAGE INSTANCE, not per Type. Every multi-machine page is a
@@ -82,6 +110,9 @@ namespace Kaban.UI.Forms
 
             _currentScreen = newScreen;
             _currentScreen.Dock = DockStyle.Fill;
+            // Scrolls when it does not fit: a docked page is never larger than its
+            // room, so the content area's own scroll bars could never appear.
+            Helpers.PageScroll.Enable(_currentScreen);
             pnlContent.Controls.Add(_currentScreen);
 
             // The two shared interaction cues - blue border under the pointer, hand
@@ -195,6 +226,7 @@ namespace Kaban.UI.Forms
                 var sideView = ShowSidePage(side.Key);
                 var found = sideView == null ? null : Helpers.DeviceCollector.Locate(sideView, use.ControlPath);
                 if (found == null) why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again.");
+                else { sideView.PerformLayout(); Helpers.PageScroll.Reveal(found, sideView.Parent); }
                 return found;
             }
 
@@ -230,13 +262,13 @@ namespace Kaban.UI.Forms
             var target = Helpers.DeviceCollector.Locate(view, use.ControlPath);
             if (target == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
 
-            // Scrolled into view when the page scrolls.
-            for (Control p = target.Parent; p != null && p != pnlContent; p = p.Parent)
-            {
-                var sc = p as ScrollableControl;
-                if (sc != null && sc.AutoScroll) { sc.ScrollControlIntoView(target); break; }
-            }
+            // IN SIGHT: laid out first (a page just shown has not been yet), then
+            // every scrolling container round it scrolled so the unit is in view -
+            // centred when it was off it, as it is when a side page narrows the
+            // page or the magnifying factor enlarges it.
             RelayoutFunctionUnits(_currentScreen);
+            _currentScreen.PerformLayout();
+            Helpers.PageScroll.Reveal(target, pnlContent);
             Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
             return target;
         }
@@ -311,11 +343,12 @@ namespace Kaban.UI.Forms
             // them below every one of those buttons, without touching a single
             // button's own position, spacing or order.
             EnsureMachineStrip();
-            if (!pnlMenu.Controls.Contains(_machineStrip)) pnlMenu.Controls.Add(_machineStrip);
-            if (!pnlMenu.Controls.Contains(_navSpacer)) pnlMenu.Controls.Add(_navSpacer);
+            if (!NavBody.Controls.Contains(_machineStrip)) NavBody.Controls.Add(_machineStrip);
+            if (!NavBody.Controls.Contains(_navSpacer)) NavBody.Controls.Add(_navSpacer);
 
-            pnlMenu.Controls.SetChildIndex(_machineStrip, 0);   // docks last -> lowest
-            pnlMenu.Controls.SetChildIndex(_navSpacer, 1);      // the gap, just above it
+            NavBody.Controls.SetChildIndex(_machineStrip, 0);   // docks last -> lowest
+            NavBody.Controls.SetChildIndex(_navSpacer, 1);      // the gap, just above it
+            SizeNavSpacer();
 
             if (first != null) LoadScreen(first);
         }
@@ -357,6 +390,10 @@ namespace Kaban.UI.Forms
             if (_machineStrip == null)
             {
                 _machineStrip = new Screens.MachineSelectorStrip();
+                // Its height changes with the machines of the page: the gap above
+                // it is worked out again.
+                _machineStrip.SizeChanged += (s, e) => SizeNavSpacer();
+                _machineStrip.VisibleChanged += (s, e) => SizeNavSpacer();
                 _machineStrip.MachineSelected += (s, index) =>
                 {
                     // The page for a multi-machine role IS a SettingsScreen holding
@@ -410,7 +447,21 @@ namespace Kaban.UI.Forms
             int hidden = 0;
             foreach (var kv in _menuButtons)
                 if (!kv.Key.Visible) hidden++;
-            _navSpacer.Height = Kaban.UI.Controls.UiScale.For(_navSpacer, MachineStripGap + hidden * NavButtonHeight);
+            int want = Kaban.UI.Controls.UiScale.For(_navSpacer, MachineStripGap + hidden * NavButtonHeight);
+
+            // THE GAP GIVES WAY FIRST. On a short screen or at a large magnifying
+            // factor the three-button gap is what pushed the machine list off the
+            // bottom; it now shrinks to what is left (never below a small break),
+            // and only when even that does not fit does the column scroll.
+            if (_navBody != null && _navBody.ClientSize.Height > 0 && _navBody.Visible)
+            {
+                int used = 0;
+                foreach (Control c in _navBody.Controls)
+                    if (c != _navSpacer && c.Visible && c.Dock == DockStyle.Top) used += c.Height;
+                int least = Kaban.UI.Controls.UiScale.For(_navSpacer, 12);
+                want = Math.Max(least, Math.Min(want, _navBody.ClientSize.Height - used));
+            }
+            if (_navSpacer.Height != want) _navSpacer.Height = want;
         }
 
         public void AddMenuButton(string translationKey, string defaultText, Image icon, UserControl screenToLoad)
@@ -458,7 +509,7 @@ namespace Kaban.UI.Forms
             btn.Click += (s, e) => LoadScreen(screenToLoad);
 
             _menuButtons[btn] = screenToLoad;
-            pnlMenu.Controls.Add(btn);
+            NavBody.Controls.Add(btn);
             btn.ApplyTranslation();
         }
 
@@ -2485,6 +2536,10 @@ namespace Kaban.UI.Forms
             pnlMenu.Controls.Add(_toggleStrip);
             pnlMenu.Controls.Add(hist);
             _toggleStrip.SendToBack();   // dock-first = TOP (WinForms docks last-added first)
+            NavBody.BringToFront();      // the scrolling middle takes what the two leave
+            // Shown: the buttons' visibility is known only now (hidden ones count as
+            // gap), and the column has its final height.
+            Shown += (s, e) => SizeNavSpacer();
 
             // ButtonHMI re-applies its own translation when the language changes,
             // which used to re-fill the captions of a COLLAPSED menu (clipped text

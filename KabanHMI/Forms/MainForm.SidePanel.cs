@@ -34,6 +34,7 @@ namespace Kaban.UI.Forms
         private Panel _sideBar, _sideBarList, _sidePanel, _sideHeader, _sideHost;
         private Button _sideBarToggle, _sidePopOut, _sideClose;
         private HeaderTitle _sideTitle;
+        private SidePageIcon _sideIcon;
         private Splitter _sideSplitter;
         private readonly Dictionary<string, Control> _sideViews = new Dictionary<string, Control>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, SidePageWindow> _sideWindows = new Dictionary<string, SidePageWindow>(StringComparer.OrdinalIgnoreCase);
@@ -120,14 +121,18 @@ namespace Kaban.UI.Forms
             _sideHeader = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = Color.FromArgb(238, 240, 243) };
             _sideTitle = new HeaderTitle
             {
-                Dock = DockStyle.Fill, Padding = new Padding(8, 0, 0, 0), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold),
+                Dock = DockStyle.Fill, Padding = new Padding(2, 0, 0, 0), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold),
                 ForeColor = Color.FromArgb(40, 46, 56)
             };
+            // The page's own picture before its name - the side bar's, so the
+            // header says which button it came from (and the same in its window).
+            _sideIcon = new SidePageIcon { Dock = DockStyle.Left, Width = 34 };
             _sidePopOut = HeaderButton(DrawPopOutGlyph, "Pop out", T("Tip_SidePopOut", "Open in a window of its own (for a second screen)"),
                                        (s, e) => PopOutSidePage());
             _sideClose = HeaderButton(DrawCloseGlyph, "Close", T("Tip_SideClose", "Close (the page stays as you left it)"),
                                       (s, e) => CloseSidePanel());
             _sideHeader.Controls.Add(_sideTitle);
+            _sideHeader.Controls.Add(_sideIcon);
             _sideHeader.Controls.Add(_sidePopOut);
             _sideHeader.Controls.Add(_sideClose);
             _sideHost = new Panel { Dock = DockStyle.Fill, BackColor = Color.White };
@@ -233,14 +238,7 @@ namespace Kaban.UI.Forms
                 using (var fill = new SolidBrush(UiStyle.AccentBack)) g.FillRectangle(fill, r);
                 using (var bar = new SolidBrush(Color.FromArgb(40, 90, 170))) g.FillRectangle(bar, r.Right - UiScale.Px(3), r.Top + 4, UiScale.Px(3), r.Height - 8);
             }
-            var img = page.Icon != null ? page.Icon() as Image : null;
-            if (img != null)
-            {
-                int s = Math.Min(r.Width, r.Height) * 3 / 5;
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(img, r.X + (r.Width - s) / 2, r.Y + (r.Height - s) / 2, s, s);
-            }
-            else if (page.Glyph != null) DrawScaled(g, r, rr => page.Glyph(g, rr, Color.FromArgb(40, 90, 170)));
+            SidePageArt.Draw(g, r, page);
             if (hover)
                 using (var pen = new Pen(UiStyle.HoverBorderColor, 1.6f))
                     g.DrawRectangle(pen, 1, 1, r.Width - 3, r.Height - 3);
@@ -319,11 +317,12 @@ namespace Kaban.UI.Forms
             if (_sideWantsWindow.Contains(page.Key) && page.CanPopOut) { PopOut(page, view); return view; }
 
             foreach (Control other in _sideHost.Controls) if (!ReferenceEquals(other, view)) other.Visible = false;
-            if (view.Parent != _sideHost) { view.Dock = DockStyle.Fill; _sideHost.Controls.Add(view); }
+            if (view.Parent != _sideHost) { view.Dock = DockStyle.Fill; PageScroll.Enable(view); _sideHost.Controls.Add(view); }
             view.Visible = true;
 
             _sideOpen = page;
             _sideTitle.Text = page.Title;
+            _sideIcon.Page = page;
             _sidePopOut.Visible = page.CanPopOut;
             // Never wider than leaves the page a working width.
             _sideSplitter.MinSize = UiScale.For(_sideSplitter, 240);
@@ -552,72 +551,342 @@ namespace Kaban.UI.Forms
     /// <summary>
     /// A side page taken out of the panel into a window of its own - for a second
     /// screen, or to see it beside a page it would otherwise narrow. It opens
-    /// where it was last closed; its header's button puts it back in the panel.
-    /// Closing the window hides the page, as closing the panel does.
+    /// where it was last closed. Closing the window hides the page, as closing the
+    /// panel does.
+    ///
+    /// ONE TITLE BAR. The window had Windows' title bar and, under it, the panel's
+    /// header - the page's name twice, and the button that puts it back in the
+    /// panel under the one that minimises it. Now the header IS the title bar,
+    /// drawn by the program like the main window's caption: the page's own icon
+    /// (the side bar's), its name, then [back into the panel] [minimise]
+    /// [maximise] [close]. It is dragged by the title (double-click maximises, a
+    /// drag to a screen edge snaps as any window does) and sized at its edges.
+    /// The taskbar shows the page's icon too.
     /// </summary>
     public sealed class SidePageWindow : Form
     {
         private readonly SidePage _page;
+        private readonly Panel _caption;
+        private readonly Button _btnDock, _btnMin, _btnMax, _btnClose;
+        private readonly ToolTip _tips = UiStyle.CreateTips();
         public Control View { get; private set; }
         public event EventHandler DockBack;
+
+        internal static readonly Color CaptionBack = Color.FromArgb(238, 240, 243);
+        private static readonly Color FrameLine = Color.FromArgb(168, 174, 184);
+        private static readonly Color Ink = Color.FromArgb(40, 46, 56);
+
+        /// <summary>The frame round the page, at factor 1: where the window is sized from.</summary>
+        private const int Frame = 5;
 
         public SidePageWindow(SidePage page, Control view, Form owner)
         {
             _page = page;
             View = view;
             Text = page.Title;
+            FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = true;
-            MinimizeBox = true;
-            BackColor = Color.White;
+            BackColor = CaptionBack;
+            Padding = new Padding(Frame);
             Font = UiStyle.Body;
             Size = new Size(760, 680);
-            MinimumSize = new Size(300, 240);
+            MinimumSize = new Size(320, 240);
             StartPosition = FormStartPosition.Manual;
             if (owner != null) Location = new Point(Math.Max(0, owner.Right - Width - 40), owner.Top + 60);
+            try { Icon = SidePageArt.IconFor(page); } catch { if (owner != null) Icon = owner.Icon; }
 
-            var header = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = Color.FromArgb(238, 240, 243) };
+            _caption = new Panel { Dock = DockStyle.Top, Height = 32, BackColor = CaptionBack };
+            var icon = new SidePageIcon { Dock = DockStyle.Left, Width = 34, Page = page };
             var title = new HeaderTitle
             {
-                Dock = DockStyle.Fill, Padding = new Padding(8, 0, 0, 0),
-                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56), Text = page.Title
+                Dock = DockStyle.Fill, Padding = new Padding(2, 0, 0, 0),
+                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Ink, Text = page.Title
             };
-            var back = new Button
-            {
-                Dock = DockStyle.Right, Width = 34, FlatStyle = FlatStyle.Flat, Text = "", TabStop = false,
-                BackColor = header.BackColor, Cursor = Cursors.Hand, AccessibleName = "Dock back"
-            };
-            back.FlatAppearance.BorderSize = 0;
-            back.FlatAppearance.MouseOverBackColor = Color.White;
-            back.Paint += (s, e) => MainForm.DrawDockGlyph(e.Graphics, back.ClientRectangle, Color.FromArgb(50, 56, 66));
-            back.Click += (s, e) => { if (DockBack != null) DockBack(this, EventArgs.Empty); };
-            UiStyle.CreateTips().SetToolTip(back, LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"));
-            header.Controls.Add(title);
-            header.Controls.Add(back);
+            _btnDock = CaptionButton(MainForm.DrawDockGlyph, "Dock back",
+                LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"),
+                (s, e) => { if (DockBack != null) DockBack(this, EventArgs.Empty); });
+            _btnMin = CaptionButton(DrawMinimize, "Minimize", LanguageManager.GetString("Tip_WinMinimize", "Minimize"),
+                (s, e) => WindowState = FormWindowState.Minimized);
+            _btnMax = CaptionButton((g, r, c) => { if (WindowState == FormWindowState.Maximized) DrawRestore(g, r, c); else DrawMaximize(g, r, c); },
+                "Maximize", LanguageManager.GetString("Tip_WinMaximize", "Maximize / Restore"), (s, e) => ToggleMaximize());
+            _btnClose = CaptionButton(MainForm.DrawCloseGlyph, "Close", LanguageManager.GetString("Tip_SideClose", "Close (the page stays as you left it)"),
+                (s, e) => Close(), closing: true);
+
+            // Docked right in turn - the last added is the rightmost: [dock][-][o][x].
+            _caption.Controls.Add(title);
+            _caption.Controls.Add(icon);
+            _caption.Controls.Add(_btnDock);
+            _caption.Controls.Add(_btnMin);
+            _caption.Controls.Add(_btnMax);
+            _caption.Controls.Add(_btnClose);
+
+            // Dragged by the title and the icon, like any window's title bar.
+            foreach (var c in new Control[] { _caption, title, icon }) c.MouseDown += OnCaptionMouseDown;
 
             view.Dock = DockStyle.Fill;
             view.Visible = true;
             Controls.Add(view);
-            Controls.Add(header);
+            Controls.Add(_caption);
+
+            Move += (s, e) => { if (WindowState == FormWindowState.Normal) FitMaximizedBounds(); };
+            SizeChanged += (s, e) => { _btnMax.Invalidate(); Invalidate(); };
 
             // Scaled first, then placed where it was: a kept size is not scaled again.
             UiScale.ApplyOnLoad(this);
             WindowLayout.Apply(this, LayoutName, WindowLayout.Read(Kaban.UI.Forms.SimulationMonitorForm.WindowsPath));
+            FitMaximizedBounds();
+        }
+
+        private Button CaptionButton(Action<Graphics, Rectangle, Color> glyph, string name, string tip, EventHandler click, bool closing = false)
+        {
+            var b = new Button
+            {
+                Dock = DockStyle.Right, Width = 46, FlatStyle = FlatStyle.Flat, Text = "", TabStop = false,
+                BackColor = CaptionBack, AccessibleName = name
+            };
+            b.FlatAppearance.BorderSize = 0;
+            // Windows' own caption colours: grey under the pointer, red for close.
+            b.FlatAppearance.MouseOverBackColor = closing ? Color.FromArgb(232, 17, 35) : Color.FromArgb(218, 222, 228);
+            b.FlatAppearance.MouseDownBackColor = closing ? Color.FromArgb(241, 112, 122) : Color.FromArgb(204, 209, 216);
+            bool hover = false;
+            b.MouseEnter += (s, e) => { hover = true; b.Invalidate(); };
+            b.MouseLeave += (s, e) => { hover = false; b.Invalidate(); };
+            b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, closing && hover ? Color.White : Ink);
+            b.Click += click;
+            _tips.SetToolTip(b, tip);
+            return b;
         }
 
         private string LayoutName { get { return "Side." + _page.Key; } }
+
+        // ---- the window's behaviour without Windows' frame ------------------
+
+        private void ToggleMaximize()
+        {
+            FitMaximizedBounds();
+            WindowState = WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
+        }
+
+        /// <summary>Maximised onto the working area of its own monitor (the taskbar stays in sight).</summary>
+        private void FitMaximizedBounds()
+        {
+            try
+            {
+                var scr = Screen.FromControl(this);
+                var wa = scr.WorkingArea;
+                MaximizedBounds = new Rectangle(wa.X - scr.Bounds.X, wa.Y - scr.Bounds.Y, wa.Width, wa.Height);
+            }
+            catch { }
+        }
+
+        private static bool _noUser32;
+
+        private void OnCaptionMouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            // The double-click is caught here: once Windows has the mouse for the
+            // drag, it keeps the second click (as on the main window's caption).
+            if (e.Clicks >= 2) { ToggleMaximize(); return; }
+            if (_noUser32) return;
+            try
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, (IntPtr)HTCAPTION, IntPtr.Zero);
+            }
+            catch (DllNotFoundException) { _noUser32 = true; }          // not on Windows (the test bench)
+            catch (EntryPointNotFoundException) { _noUser32 = true; }
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+        private const int WM_NCLBUTTONDOWN = 0xA1, HTCAPTION = 0x2, WM_NCHITTEST = 0x84;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                // Minimise and restore from the taskbar, Win+arrow keys - which a
+                // window without Windows' frame does not get by itself - and a shadow.
+                cp.Style |= 0x00020000 | 0x00010000;   // WS_MINIMIZEBOX | WS_MAXIMIZEBOX
+                cp.ClassStyle |= 0x00020000;           // CS_DROPSHADOW
+                return cp;
+            }
+        }
+
+        /// <summary>Sized from its edges: the frame round the page answers as a window border does.</summary>
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if (m.Msg != WM_NCHITTEST || WindowState == FormWindowState.Maximized) return;
+            int grip = Math.Max(Padding.Left, UiScale.Px(Frame));
+            int corner = grip * 3;
+            long lp = m.LParam.ToInt64();
+            var p = PointToClient(new Point((short)(lp & 0xFFFF), (short)((lp >> 16) & 0xFFFF)));
+            bool left = p.X < grip, right = p.X >= ClientSize.Width - grip;
+            bool top = p.Y < grip, bottom = p.Y >= ClientSize.Height - grip;
+            bool nearLeft = p.X < corner, nearRight = p.X >= ClientSize.Width - corner;
+            bool nearTop = p.Y < corner, nearBottom = p.Y >= ClientSize.Height - corner;
+            int hit = 0;
+            if ((left && nearTop) || (top && nearLeft)) hit = 13;            // HTTOPLEFT
+            else if ((right && nearTop) || (top && nearRight)) hit = 14;     // HTTOPRIGHT
+            else if ((left && nearBottom) || (bottom && nearLeft)) hit = 16; // HTBOTTOMLEFT
+            else if ((right && nearBottom) || (bottom && nearRight)) hit = 17; // HTBOTTOMRIGHT
+            else if (left) hit = 10; else if (right) hit = 11;
+            else if (top) hit = 12; else if (bottom) hit = 15;
+            if (hit != 0) m.Result = (IntPtr)hit;
+        }
+
+        /// <summary>A thin line round the window, as Windows draws round its own.</summary>
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            if (WindowState == FormWindowState.Maximized) return;
+            using (var pen = new Pen(FrameLine))
+                e.Graphics.DrawRectangle(pen, 0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            // Maximised: no frame to size from, and none to draw.
+            var want = WindowState == FormWindowState.Maximized ? new Padding(0) : new Padding(UiScale.For(this, Frame));
+            if (Padding != want) Padding = want;
+            base.OnResize(e);
+        }
+
+        // ---- the caption's pictures, in Windows' shapes ------------------------
+
+        private static void DrawMinimize(Graphics g, Rectangle r, Color c)
+        {
+            MainForm.DrawScaled(g, r, rr =>
+            {
+                float cx = rr.X + rr.Width / 2f, cy = rr.Y + rr.Height / 2f;
+                using (var pen = new Pen(c, 1.2f)) g.DrawLine(pen, cx - 5, cy, cx + 5, cy);
+            });
+        }
+
+        private static void DrawMaximize(Graphics g, Rectangle r, Color c)
+        {
+            MainForm.DrawScaled(g, r, rr =>
+            {
+                float cx = rr.X + rr.Width / 2f, cy = rr.Y + rr.Height / 2f;
+                using (var pen = new Pen(c, 1.2f)) g.DrawRectangle(pen, cx - 5, cy - 5, 10, 10);
+            });
+        }
+
+        private static void DrawRestore(Graphics g, Rectangle r, Color c)
+        {
+            MainForm.DrawScaled(g, r, rr =>
+            {
+                float cx = rr.X + rr.Width / 2f, cy = rr.Y + rr.Height / 2f;
+                using (var pen = new Pen(c, 1.2f))
+                {
+                    g.DrawRectangle(pen, cx - 5, cy - 3, 8, 8);
+                    g.DrawLines(pen, new[] { new PointF(cx - 3, cy - 3), new PointF(cx - 3, cy - 5), new PointF(cx + 5, cy - 5),
+                                             new PointF(cx + 5, cy + 3), new PointF(cx + 3, cy + 3) });
+                }
+            });
+        }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
             if (e.Cancel) return;
             var values = new Dictionary<string, string>();
-            WindowLayout.Store(this, LayoutName, values);
+            if (WindowState == FormWindowState.Normal) WindowLayout.Store(this, LayoutName, values);
             WindowLayout.Write(Kaban.UI.Forms.SimulationMonitorForm.WindowsPath, values);
             // The page is not closed with the window: it is kept, as it was left.
             var monitor = View as SimulationMonitorForm;
             if (monitor != null) monitor.SaveLists();
             Controls.Remove(View);
             View.Visible = false;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) _tips.Dispose();
+            base.Dispose(disposing);
+        }
+    }
+
+    /// <summary>A side page's picture - the side bar's - for a title bar or a header.</summary>
+    internal sealed class SidePageIcon : Control
+    {
+        private SidePage _page;
+
+        public SidePageIcon()
+        {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint |
+                     ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
+            BackColor = Color.Transparent;
+            TabStop = false;
+        }
+
+        public SidePage Page { get { return _page; } set { _page = value; Invalidate(); } }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (_page == null) return;
+            int s = Math.Min(Width, Height);
+            SidePageArt.Draw(e.Graphics, new Rectangle((Width - s) / 2, (Height - s) / 2, s, s), _page);
+        }
+    }
+
+    /// <summary>How a side page's picture is drawn - on the bar, in a title, as the taskbar icon.</summary>
+    internal static class SidePageArt
+    {
+        internal static readonly Color Blue = Color.FromArgb(40, 90, 170);
+
+        public static void Draw(Graphics g, Rectangle r, SidePage page)
+        {
+            var img = page.Icon != null ? page.Icon() as Image : null;
+            if (img != null)
+            {
+                int s = Math.Min(r.Width, r.Height) * 3 / 5;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(img, r.X + (r.Width - s) / 2, r.Y + (r.Height - s) / 2, s, s);
+            }
+            else if (page.Glyph != null) MainForm.DrawScaled(g, r, rr => page.Glyph(g, rr, Blue));
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool DestroyIcon(IntPtr handle);
+
+        /// <summary>The page's picture as a window icon: on a white tile, so it shows on a dark taskbar too.</summary>
+        public static Icon IconFor(SidePage page)
+        {
+            using (var bmp = new Bitmap(32, 32))
+            {
+                using (var g = Graphics.FromImage(bmp))
+                {
+                    g.SmoothingMode = SmoothingMode.AntiAlias;
+                    g.Clear(Color.Transparent);
+                    using (var path = new GraphicsPath())
+                    {
+                        path.AddArc(0, 0, 10, 10, 180, 90);
+                        path.AddArc(21, 0, 10, 10, 270, 90);
+                        path.AddArc(21, 21, 10, 10, 0, 90);
+                        path.AddArc(0, 21, 10, 10, 90, 90);
+                        path.CloseFigure();
+                        using (var fill = new SolidBrush(Color.White)) g.FillPath(fill, path);
+                        using (var pen = new Pen(Color.FromArgb(190, 196, 206))) g.DrawPath(pen, path);
+                    }
+                    // Drawn for the side bar's 40 px button: the same picture, a little smaller.
+                    var state = g.Save();
+                    g.TranslateTransform(16, 16);
+                    g.ScaleTransform(0.8f, 0.8f);
+                    g.TranslateTransform(-20, -20);
+                    var img = page.Icon != null ? page.Icon() as Image : null;
+                    if (img != null) g.DrawImage(img, 6, 6, 28, 28);
+                    else if (page.Glyph != null) page.Glyph(g, new Rectangle(0, 0, 40, 40), Blue);
+                    g.Restore(state);
+                }
+                var h = bmp.GetHicon();
+                try { return (Icon)Icon.FromHandle(h).Clone(); }
+                finally { try { DestroyIcon(h); } catch { } }
+            }
         }
     }
 

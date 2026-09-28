@@ -190,13 +190,14 @@ still need a higher one &ndash; the control's tooltip says so.</p>
 <p>The bar at the right edge, from under the caption to the bottom, opens <b>side pages</b> &ndash; for what you watch or do
 <i>alongside</i> a page: the machine's inputs and outputs while you move a cylinder, the PLC Monitor while you test a unit, a machine's
 own monitoring or order pages. A side page opens <b>beside</b> the page on display, which narrows to make room (and scrolls when it
-no longer fits): nothing is ever covered.</p>
+no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever covered.</p>
 <ul>
- <li><b>Open / close:</b> its icon on the bar (the open one is marked), or the &#10005; on the page's header. Closing only hides it:
+ <li><b>Open / close:</b> its icon on the bar (the open one is marked), or the &#10005; on the page's header, which shows the same icon before the page's name. Closing only hides it:
      it opens again exactly as you left it.</li>
  <li><b>Share the screen:</b> drag the border between the page and the side page. The width is remembered.</li>
- <li><b>A window of its own</b> (for a second screen): the button beside the &#10005;. The button on that window's header puts it back.
-     It opens where it was last &ndash; in the panel or in its window.</li>
+ <li><b>A window of its own</b> (for a second screen): the button beside the &#10005;. The window has one title bar &ndash; the page's
+     icon and name, then <b>back into the side panel</b>, minimise, maximise and close. Drag it by its title (double-click maximises), size it at its edges;
+     the taskbar shows the page's icon. It opens where it was last &ndash; in the panel or in its window.</li>
  <li><b>Fold the bar</b> to a thin edge with its top button, and back.</li>
  <li>The bar shows only the pages your level may open, and is not there when there are none.</li>
 </ul>
@@ -294,8 +295,8 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      An alarm whose cause is still there comes straight back. <span class="lvl l1">Operator</span> If the reset cannot be sent &ndash; nobody signed in,
      controller not answering &ndash; the list is still cleared and a message says the machine itself was <b>not</b> reset.</li>
  <li>The <b>Alarms</b> page shows the alarms of the machine selected in the machine list. The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button drives the machine's reset device
-     as the machine's program says: a short pulse, or &ndash; on the Processing Center (FA2010, <code>M102</code>) &ndash; <b>SET</b>: the HMI switches the device on
-     and the PLC switches it off itself once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
+     as the machine's program says: a short pulse, or <b>SET</b> &ndash; the HMI switches the device on and the PLC switches it off itself
+     once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
@@ -350,8 +351,9 @@ to <b>2</b> (twice the size). On <i>User Settings</i>:</p>
      whether to restart with theirs. The machine keeps running meanwhile, the screen is back in a few seconds, and the user stays signed in.
      The program then keeps starting with that factor until another is chosen, so the same operator after a power cut is not asked again.</li>
 </ul>
-<p class="note">Pages are designed for the panel's screen at factor 1: at a larger factor they no longer fit and <b>scroll</b>; at 1.5 or 2
-on a small screen that means scrolling to reach a page's far side. Pictures (icons, drawings) are drawn larger but not sharper.
+<p class="note">Pages are designed for the panel's screen at factor 1: at a larger factor they no longer fit and <b>scroll</b> (scroll bars
+under and beside the page); at 1.5 or 2 on a small screen that means scrolling to reach a page's far side. The menu on the left scrolls too
+when its buttons no longer fit, with <b>Back / Forward</b> always at its bottom. Find scrolls the page to the unit it opens. Pictures (icons, drawings) are drawn larger but not sharper.
 Windows' own message boxes keep Windows' size.</p>
 
 <!-- ================================================================== -->
@@ -405,8 +407,8 @@ Windows' own message boxes keep Windows' size.</p>
        the devices on the monitor and include devices no page shows.</li>
    <li>&#128270; <b>Find</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>, or right-click a row: <i>Where is it used?</i>): type an address, a label or part of a unit's name.
        Every use is listed &ndash; twice if a page uses it twice &ndash; with its page, in a pane under the lists (&#10005; or <kbd>Esc</kbd> closes it).
-       <b>Click a line</b>: the page opens beside the monitor and the unit is framed in blinking blue. Drag its headings into another order and
-       its borders to size them: kept for next time.</li>
+       <b>Click a line</b>: the page opens beside the monitor, scrolls until the unit is in sight, and the unit is framed in blinking blue.
+       The list looks like the monitor's; a click on a heading sorts it, drag its headings into another order and its borders to size them: kept for next time.</li>
    <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>M100, 10 of them</i> adds M100&hellip;M109; a double word counts in twos (D200, D202&hellip;). A <b>comment line</b> has only text: a heading for the rows under it.</li>
    <li><b>Copy</b> (two pages) copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), <b>Paste</b> (the clipboard) pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end;
        the arrows to a bar (&#10514; &#10515;) or dragging re-order (<kbd>Ctrl</kbd>+<kbd>&uarr;</kbd>/<kbd>&darr;</kbd>).
