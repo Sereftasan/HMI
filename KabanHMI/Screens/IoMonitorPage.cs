@@ -388,6 +388,15 @@ namespace Kaban.UI.Screens
             string tip = p.Address + "  " + p.Label;
             if (!string.Equals(p.Read, p.Address, StringComparison.OrdinalIgnoreCase))
                 tip += "\n" + string.Format(LanguageManager.GetString("Tip_IoRead", "read at {0}, the relay the PLC copies it into"), p.Read);
+            // Where it is on the drawings: the sensor's tag and wire, the output's
+            // relay and valve coil, the valve and cylinder (Wiring.csv).
+            var w = WiringTable.Find(p.Station, p.Address);
+            if (w != null)
+            {
+                tip += "\n" + LanguageManager.GetString("Tip_IoDrawing", "On the drawing:") + " " + w.Electrical();
+                if (!string.IsNullOrEmpty(w.Text)) tip += "\n" + w.Text;
+                if (w.Pneumatic().Length > 0) tip += "\n" + w.Pneumatic();
+            }
             _tips.SetToolTip(this, tip);
         }
 

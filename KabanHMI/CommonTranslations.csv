@@ -413,6 +413,7 @@ Hdr_IoInputs;Inputs ({0});Girişler ({0});;;;
 Hdr_IoOutputs;Outputs ({0});Çıkışlar ({0});;;;
 Msg_IoNone;No inputs and outputs are listed for this machine.\r\n\r\nThey come from IoList.csv beside the program (Label, Kind, Address, Read, Plc) - tools/build_io_list.py writes it from the device list and the PLC's I/O interface block.;Bu makine için giriş ve çıkış listesi yok.\r\n\r\nListe programın yanındaki IoList.csv dosyasından gelir (Label, Kind, Address, Read, Plc) - tools/build_io_list.py onu cihaz listesinden ve PLC'nin G/Ç arayüz bloğundan yazar.;;;;
 Tip_IoRead;read at {0}, the relay the PLC copies it into;{0} üzerinden okunur - PLC'nin onu kopyaladığı röle;;;;
+Tip_IoDrawing;On the drawing:;Çizimde:;На схеме:;In der Zeichnung:;Nello schema:;En el esquema:
 Tip_SidePopOut;Open in a window of its own (for a second screen);Kendi penceresinde aç (ikinci ekran için);;;;
 Tip_SideClose;Close (the page stays as you left it);Kapat (sayfa bıraktığınız gibi kalır);;;;
 Tip_SideDockBack;Back into the main window's side panel;Ana pencerenin yan paneline geri al;;;;

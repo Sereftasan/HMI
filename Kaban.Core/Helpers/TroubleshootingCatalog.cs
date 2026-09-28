@@ -595,7 +595,8 @@ namespace Kaban.Core.Helpers
             " table.movement{width:auto;margin:.3em 0 .2em}" +
             " table.movement td{border:none;padding:.15em .8em .15em 0;vertical-align:top}" +
             " table.movement td:first-child{font-weight:bold;white-space:nowrap}" +
-            " table.movement code{font-size:1.05em;font-weight:bold;color:#1f4e79}\n";
+            " table.movement code{font-size:1.05em;font-weight:bold;color:#1f4e79}" +
+            " .tailored .ref{color:#555;font-size:.92em}\n";
 
         /// <summary>
         /// The detail tables joined into one: the first table's column widths and
@@ -633,9 +634,23 @@ namespace Kaban.Core.Helpers
             return html.Substring(0, from) + sb + html.Substring(to);
         }
 
-        /// <summary>The failed movement's devices, as a small table in the note at the top.</summary>
+        /// <summary>
+        /// The failed movement's devices, as a small table in the note at the top -
+        /// and, for each, WHERE IT IS ON THE DRAWINGS (WiringTable): the sensor's
+        /// tag, wire and sheet; the output's wire, relay and valve coil; the
+        /// pneumatic valve, its hoses and the cylinder. The output is found from
+        /// the command bit when the unit names none - the command is what every
+        /// unit has, the output is rarely set.
+        /// </summary>
         private static string MovementBox(MovementInfo mv, ValveType valve)
         {
+            bool anyRef = false;
+            Func<string, string> refLine = text =>
+            {
+                if (string.IsNullOrEmpty(text)) return "";
+                anyRef = true;
+                return "<br><span class=\"ref\">" + WebUtility.HtmlEncode(text) + "</span>";
+            };
             Func<MovementInfo.Device, string> dev = d =>
             {
                 if (d == null || string.IsNullOrWhiteSpace(d.Address)) return "";
@@ -644,8 +659,30 @@ namespace Kaban.Core.Helpers
                 return "<code>" + WebUtility.HtmlEncode(d.Address.Trim()) + "</code>" +
                        (text.Length > 0 ? " " + WebUtility.HtmlEncode(text) : "");
             };
+            // A sensor or an output with its place on the electrical drawing.
+            Func<MovementInfo.Device, string> devRef = d =>
+            {
+                var shown = dev(d);
+                if (shown.Length == 0) return "";
+                var w = WiringTable.Find(mv.Station, d.Address);
+                return shown + (w == null ? "" : refLine(w.Electrical() + (string.IsNullOrEmpty(w.Text) ? "" : " - " + w.Text)));
+            };
             Func<IEnumerable<MovementInfo.Device>, string> list = ds =>
-                string.Join("<br>", ds.Select(dev).Where(t => t.Length > 0));
+                string.Join("<br>", ds.Select(devRef).Where(t => t.Length > 0));
+            // The output a side drives: its own, or the one its command bit drives.
+            Func<MovementInfo.Device, MovementInfo.Device, WiringTable.Point> driven = (output, command) =>
+            {
+                var w = output != null && !string.IsNullOrWhiteSpace(output.Address) ? WiringTable.Find(mv.Station, output.Address) : null;
+                return w ?? (command != null ? WiringTable.OutputFor(mv.Station, command.Address) : null);
+            };
+            Func<MovementInfo.Device, MovementInfo.Device, string> outputCell = (output, command) =>
+            {
+                if (output != null && !string.IsNullOrWhiteSpace(output.Address)) return devRef(output);
+                var w = driven(output, command);
+                return w == null ? "" : "<code>" + WebUtility.HtmlEncode(w.Address) + "</code>" +
+                                        (string.IsNullOrEmpty(w.Text) ? "" : " " + WebUtility.HtmlEncode(w.Text)) +
+                                        refLine(w.Electrical());
+            };
 
             var rows = new List<string>();
             Action<string, string> row = (caption, value) =>
@@ -656,13 +693,23 @@ namespace Kaban.Core.Helpers
             row("Movement that failed:", WebUtility.HtmlEncode((mv.Name ?? "").Trim()) +
                                          (side.Length > 0 ? (string.IsNullOrWhiteSpace(mv.Name) ? "" : " &mdash; ") + "movement " + side : ""));
             row("Command (PLC bit):", dev(mv.Command));
-            row("Valve output:", dev(mv.Output));
+            row("Valve output:", outputCell(mv.Output, mv.Command));
+            var air = driven(mv.Output, mv.Command);
+            if (air != null && air.Pneumatic().Length > 0)
+            {
+                anyRef = true;
+                row("Valve and cylinder:", WebUtility.HtmlEncode(air.Pneumatic()));
+            }
             if (valve == ValveType.DoubleSolenoid || valve == ValveType.ClosedCentre || valve == ValveType.OpenCentre)
-                row("Other coil (must be OFF):", string.Join("<br>", new[] { dev(mv.OtherOutput), dev(mv.OtherCommand) }.Where(t => t.Length > 0).Take(1)));
+            {
+                var other = outputCell(mv.OtherOutput, mv.OtherCommand);
+                row("Other coil (must be OFF):", other.Length > 0 ? other : dev(mv.OtherCommand));
+            }
             row("Must turn ON (feedback):", list(mv.Feedback));
             row("Must turn OFF (other end):", list(mv.OppositeFeedback));
             return "<p><b>This alarm" + (string.IsNullOrWhiteSpace(mv.Unit) ? "" : " - " + WebUtility.HtmlEncode(mv.Unit)) + "</b></p>" +
                    "<table class=\"movement\">" + string.Join("", rows) + "</table>" +
+                   (anyRef ? "<p class=\"ref\">Sheet 12.6 is page 12, column 6 of the electrical drawing; pneumatic sheet 2 E3 is page 2, zone E3 of the pneumatic drawing.</p>" : "") +
                    "<p>The details below speak of &quot;the output&quot; and &quot;the target feedback&quot;: for this movement they are the devices above.</p>";
         }
 
