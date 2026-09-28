@@ -390,6 +390,7 @@ namespace Kaban.UI.Forms
             PerformLayout();
             if (_currentScreen != null) RelayoutFunctionUnits(_currentScreen);
             if (_scanner != null) _scanner.RefreshTags();
+            PlaceChangedByOperator();
         }
 
         /// <summary>Keeps what the side pages hold (the monitor's lists) - on closing the program.</summary>

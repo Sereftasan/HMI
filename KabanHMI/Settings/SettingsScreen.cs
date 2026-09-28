@@ -257,6 +257,12 @@ namespace Kaban.UI.Settings
             return chain;
         }
 
+        /// <summary>The tab strip a view is, or the first one inside it; null when it has none.</summary>
+        internal static SettingsScreen TabsIn(Control c)
+        {
+            return c == null ? null : c as SettingsScreen ?? FindFirstIn(c);
+        }
+
         private static SettingsScreen FindFirstIn(Control root)
         {
             var queue = new Queue<Control>();

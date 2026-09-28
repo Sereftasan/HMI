@@ -418,6 +418,11 @@ namespace Kaban.UI.Forms
             // now have more (or fewer) machines this user can see.
             if (_currentScreen != null) SyncMachineStrip();
             SizeNavSpacer();
+
+            // The page left last time was above the level of whoever was signed in
+            // at the start: it opens now, for the first sign-in that may open it.
+            if (_pendingPlace != null && SecurityManager.CurrentLevel != SecurityLevel.None && IsHandleCreated)
+                BeginInvoke((Action)RestorePendingPlace);
         }
 
         /// <summary>
@@ -535,12 +540,17 @@ namespace Kaban.UI.Forms
             // close it and carry on unauthenticated.
             BeginInvoke(new Action(() =>
             {
-                if (SecurityManager.CurrentLevel != SecurityLevel.None) return;
+                // Back on the page of the last run once the sign-in step is over:
+                // the page may need the level of the user who signs in.
+                if (SecurityManager.CurrentLevel != SecurityLevel.None) { RestoreLastPlace(); return; }
                 // Restarted for a user's magnifying factor: that user, signed in again.
-                if (SignInFromHandoff()) return;
+                if (SignInFromHandoff()) { RestoreLastPlace(); return; }
                 using (var login = new LoginForm()) login.ShowDialog(this);
+                RestoreLastPlace();
                 OfferUserMagnifier();
             }));
+            Helpers.NavigationHistory.Changed += OnHistoryChanged;
+            FormClosed += (s3, e3) => Helpers.NavigationHistory.Changed -= OnHistoryChanged;
 
             try
             {
@@ -2286,6 +2296,7 @@ namespace Kaban.UI.Forms
             AuditLogger.Log(_closeConfirmed ? "HMI closed by the operator."
                                             : "HMI closed (" + e.CloseReason + ").");
             try { SaveAllSideViews(); } catch { }
+            SavePlace();
 
             // Stop scanning FIRST, then close every station - not just station 1.
             // A scan in flight would otherwise re-open a station we just closed, and
