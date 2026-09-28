@@ -60,43 +60,69 @@ class ZM {
 
         Console.WriteLine("--- signed in as Admin ---");
         var menu = Menu(form);
-        var factors = menu.Items.OfType<ToolStripMenuItem>().Where(i => i.Tag is double).Select(i => i.Text).ToList();
-        Check("0.80 to 1.50 offered", string.Join(" ", factors) == "0.80 0.90 1.00 1.10 1.20 1.25 1.30 1.40 1.50", string.Join(" ", factors));
-        Check("  the screen's factor ticked (no own one yet)", Checked(menu.Items) == "1.00", Checked(menu.Items));
-        var everyone = menu.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.DropDownItems.Count > 0);
-        Check("  an Admin also has 'For everyone on this panel'", everyone != null && everyone.Text == "For everyone on this panel" && everyone.DropDownItems.Count == 9);
+        var heading = menu.Items.OfType<ToolStripLabel>().Select(l => l.Text).ToList();
+        Check("one heading, the size on screen at its end: 'Magnifying factor (100%)'", heading.Count == 1 && heading[0] == "Magnifying factor (100%)",
+              string.Join(" | ", heading));
+        var factors = menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
+        Check("percentages 80% to 150% - and nothing else in the list", string.Join(" ", factors) == "80% 90% 100% 110% 120% 125% 130% 140% 150%", string.Join(" ", factors));
+        Check("  the screen's size ticked (no own one yet)", Checked(menu.Items) == "100%", Checked(menu.Items));
+        Check("  no 'For everyone', no 'The panel's', no 'Your own' line",
+              !menu.Items.OfType<ToolStripItem>().Any(i => (i.Text ?? "").Contains("everyone") || (i.Text ?? "").Contains("panel's") || (i.Text ?? "").StartsWith("Your own")));
+        var host = menu.Items.OfType<ToolStripControlHost>().FirstOrDefault();
+        var stepper = host == null ? null : host.Control;
+        Check("a row to set any percent: - 100% + and a tick", stepper != null && stepper.Controls.OfType<Button>().Count() == 3 &&
+              stepper.Controls.OfType<Label>().Any(l => l.Text == "100%"));
+        if (stepper != null) {
+            var step = stepper.GetType().GetMethod("Step");
+            for (int i = 0; i < 37; i++) step.Invoke(stepper, new object[] { 1 });
+            Check("  1% at a time: 137%", stepper.Controls.OfType<Label>().First().Text == "137%");
+            for (int i = 0; i < 40; i++) step.Invoke(stepper, new object[] { 1 });
+            Check("  never above 150%", stepper.Controls.OfType<Label>().First().Text == "150%");
+            for (int i = 0; i < 20; i++) step.Invoke(stepper, new object[] { -1 });
+            menu.Show(form, 0, 0); Pump(50);
+            stepper.Controls.OfType<Button>().First(b => b.AccessibleName == "Apply").PerformClick();
+            Pump(50);
+            Check("  the tick keeps 130% as admin's own", DisplaySettings.UserFactor("admin") == 1.30, "" + DisplaySettings.UserFactor("admin"));
+            menu.Close(); menu.Dispose(); Pump(50);
+        }
 
-        form.ChooseFactor(1.25, false);
-        Check("choosing 1.25 keeps it as admin's own, and as the start factor",
-              DisplaySettings.UserFactor("admin") == 1.25 && DisplaySettings.StartFactor == 1.25);
-        Check("  and offers the restart (declined here: nothing restarts)", asked != null && asked.Contains("1.25") && !form.IsDisposed, asked ?? "not asked");
+        form.ChooseFactor(1.37);
+        Check("choosing 137% keeps it as admin's own, and as the start factor",
+              DisplaySettings.UserFactor("admin") == 1.37 && DisplaySettings.StartFactor == 1.37);
+        Check("  and offers the restart in percent (declined here: nothing restarts)", asked != null && asked.Contains("137%") && !form.IsDisposed, asked ?? "not asked");
+        Check("  the file keeps the factor: 1.37", File.ReadAllText(Path.Combine(dir, "Display.cfg")).Contains("User=admin;1.37"));
         menu = Menu(form);
-        Check("  ticked now; 'The panel's (1.00)' offered to drop it", Checked(menu.Items) == "1.25" &&
-              menu.Items.OfType<ToolStripMenuItem>().Any(i => i.Text == "The panel's (1.00)"), Checked(menu.Items));
-        form.ChooseFactor(null, false);
-        Check("'The panel's' drops the own factor", !DisplaySettings.UserFactor("admin").HasValue && DisplaySettings.StartFactor == 1.00);
+        Check("  no preset ticked for 137% (the row shows it)", Checked(menu.Items) == "" &&
+              menu.Items.OfType<ToolStripControlHost>().First().Control.Controls.OfType<Label>().First().Text == "137%");
+        Check("percent typed: '137%', '137' and '1.37' are all 1.37", DisplaySettings.Parse("137%") == 1.37 && DisplaySettings.Parse("137") == 1.37 &&
+              DisplaySettings.Parse("1.37") == 1.37 && DisplaySettings.Parse("160%") == null);
 
-        asked = null;
-        form.ChooseFactor(1.10, true);
-        Check("for everyone: the panel's factor is 1.10", DisplaySettings.PanelFactor == 1.10 && asked != null, "panel " + DisplaySettings.PanelFactor);
-
-        Console.WriteLine("--- an operator, nobody ---");
-        SecurityManager.Login("op", SecurityLevel.Operator);
-        menu = Menu(form);
-        Check("an operator: no 'For everyone'", !menu.Items.OfType<ToolStripMenuItem>().Any(i => i.DropDownItems.Count > 0));
+        Console.WriteLine("--- nobody signed in: the panel's ---");
         SecurityManager.Logout();
-        menu = Menu(form);
-        Check("nobody signed in: the list says it is this panel's start", menu.Items.OfType<ToolStripLabel>().Any(l => l.Text.StartsWith("This panel")));
-        form.ChooseFactor(0.9, false);
-        Check("  and choosing sets only the start factor", DisplaySettings.StartFactor == 0.9 && DisplaySettings.PanelFactor == 1.10 &&
-              !DisplaySettings.UserFactor("op").HasValue);
+        form.ChooseFactor(0.9);
+        Check("choosing sets the panel's factor (and the start)", DisplaySettings.PanelFactor == 0.9 && DisplaySettings.StartFactor == 0.9 &&
+              DisplaySettings.UserFactor("admin") == 1.37);
+
+        Console.WriteLine("--- every restart keeps the user signed in ---");
+        typeof(Kaban.UI.Helpers.LoginHandoff).GetField("Folder", Any).SetValue(null, Path.Combine(dir, "handoff"));
+        var args = (string)typeof(MainForm).GetMethod("RestartArguments", Any).Invoke(form, new object[] { null });
+        Check("signed out: no hand-over", !args.Contains("--handoff") && args.StartsWith("--await-exit "), args);
+        SecurityManager.Login("maint", SecurityLevel.Maintenance);
+        args = (string)typeof(MainForm).GetMethod("RestartArguments", Any).Invoke(form, new object[] { null });
+        string user;
+        Check("signed in: the close menu's Restart hands the user over", args.Contains("--handoff") &&
+              Kaban.UI.Helpers.LoginHandoff.TryConsume(args.Split(' '), out user) && user == "maint", args);
+        Check("  a note lives two minutes", Kaban.UI.Helpers.LoginHandoff.Lifetime == TimeSpan.FromMinutes(2));
 
         Console.WriteLine("--- User Settings: the user's own factor only ---");
         var users = new UserSettingsControl();
         var texts = All(users).OfType<Label>().Select(l => l.Text).ToList();
         Check("no 'Magnifying factor of this panel' block", !texts.Any(t => t.Contains("of this panel") || t.StartsWith("For everyone") || t.StartsWith("0.8 to 1.5")),
               string.Join(" | ", texts));
-        Check("  the user's own factor is still there", texts.Any(t => t.StartsWith("Magnifying factor")));
+        Check("  the user's own factor is still there, with what it does under it", texts.Any(t => t.StartsWith("Magnifying factor")) &&
+              texts.Any(t => t.StartsWith("The user's own size of the screen")));
+        var combo = All(users).OfType<ComboBox>().First(c => c.Items.Contains("150%"));
+        Check("  its choices in percent", combo.Items.Cast<object>().Skip(1).First().ToString() == "80%");
 
         form.Close();
         try { Directory.Delete(dir, true); } catch { }

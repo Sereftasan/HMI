@@ -26,7 +26,7 @@ namespace Kaban.UI.Settings
         private readonly Label _lblStatus = new Label();
 
         private static readonly string[] FactorChoices =
-            Kaban.UI.Forms.MainForm.FactorChoices.Select(f => DisplaySettings.Format(f)).ToArray();
+            Kaban.UI.Forms.MainForm.FactorChoices.Select(f => DisplaySettings.Percent(f)).ToArray();
 
         public UserSettingsControl()
         {
@@ -84,6 +84,18 @@ namespace Kaban.UI.Settings
             _cmbFactor.Items.Add("");
             _cmbFactor.Items.AddRange(FactorChoices);
             row(LanguageManager.GetString("Usr_FactorOwn", "Magnifying factor") + ":", _cmbFactor);
+            // What the factor does, where it is set - said once here rather than
+            // in every line of the caption bar's menu.
+            pn.Controls.Add(new Label
+            {
+                Text = LanguageManager.GetString("Msg_UsrFactorNote",
+                    "The user's own size of the screen, 80% to 150% (any percent). Empty: the panel's. Whenever they sign in " +
+                    "and the screen is at another size, the HMI offers to restart with theirs. They set it themselves under the " +
+                    "magnifying glass on the caption bar - with nobody signed in, the glass sets the panel's."),
+                Left = 16, Top = y - 2, Width = 304, Height = 78, ForeColor = Color.FromArgb(90, 96, 106),
+                Font = new Font("Segoe UI", 8.5F)
+            });
+            y += 80;
 
             var tips = Kaban.UI.Controls.UiStyle.Tips();
             Func<string, string, int, Button> tool = (emoji, tip, left) =>
@@ -124,7 +136,7 @@ namespace Kaban.UI.Settings
             foreach (var u in UserStore.GetAllUsers().OrderBy(u => u.Username))
             {
                 var f = DisplaySettings.UserFactor(u.Username);
-                _grid.Rows.Add(u.Username, u.Level.ToString(), f.HasValue ? DisplaySettings.Format(f.Value) : "");
+                _grid.Rows.Add(u.Username, u.Level.ToString(), f.HasValue ? DisplaySettings.Percent(f.Value) : "");
             }
         }
 
@@ -175,7 +187,7 @@ namespace Kaban.UI.Settings
             var before = DisplaySettings.UserFactor(name);
             DisplaySettings.SetUserFactor(name, factor);
             if (before != factor)
-                AuditLogger.Log($"magnifying factor of user '{name}': {(factor.HasValue ? DisplaySettings.Format(factor.Value) : "the panel's")}.");
+                AuditLogger.Log($"magnifying factor of user '{name}': {(factor.HasValue ? DisplaySettings.Percent(factor.Value) : "the panel's")}.");
             _txtPass.Text = "";
             RefreshList();
             _lblStatus.Text = $"User '{name}' saved.";
@@ -196,7 +208,7 @@ namespace Kaban.UI.Settings
             var shell = FindForm() as Kaban.UI.Forms.MainForm;
             string question = string.Format(LanguageManager.GetString("Msg_FactorRestartNow",
                 "Restart the HMI now with the magnifying factor {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
-                DisplaySettings.Format(factor));
+                DisplaySettings.Percent(factor));
             if (shell == null ||
                 MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Magnifying factor"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;

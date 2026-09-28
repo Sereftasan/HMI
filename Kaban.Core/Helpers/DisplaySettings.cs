@@ -45,19 +45,28 @@ namespace Kaban.Core.Helpers
         private static readonly Dictionary<string, double> _users = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         private static bool _loaded;
 
-        /// <summary>Within 0.8 .. 1.5, in steps of 0.05; anything unreadable is 1. A factor kept
-        /// from before (up to 2) is brought within it.</summary>
+        /// <summary>Within 0.8 .. 1.5, in steps of 0.01 (1%); anything unreadable is 1. A factor kept
+        /// from before (up to 2) is brought within it.
+        ///
+        /// 1% steps: 5% (and 10% in the menu) moved a page by more than an
+        /// operator wanted - a column that fitted at 1.37 did not at 1.40.</summary>
         public static double Clamp(double factor)
         {
             if (double.IsNaN(factor) || double.IsInfinity(factor) || factor <= 0) return Default;
-            factor = Math.Round(factor * 20.0, MidpointRounding.AwayFromZero) / 20.0;
+            factor = Math.Round(factor * 100.0, MidpointRounding.AwayFromZero) / 100.0;
             return Math.Max(Min, Math.Min(Max, factor));
+        }
+
+        /// <summary>"137%" - how the factor is SHOWN (the file keeps "1.37").</summary>
+        public static string Percent(double factor)
+        {
+            return ((int)Math.Round(Clamp(factor) * 100.0, MidpointRounding.AwayFromZero)).ToString(CultureInfo.InvariantCulture) + "%";
         }
 
         /// <summary>"1.25" - the way it is written and shown (invariant, two decimals).</summary>
         public static string Format(double factor) { return Clamp(factor).ToString("0.00", CultureInfo.InvariantCulture); }
 
-        /// <summary>A factor typed in: "1.5", "1,5", "150%" - or null when it is not one.</summary>
+        /// <summary>A factor typed in: "1.5", "1,5", "150%", "150" - or null when it is not one.</summary>
         public static double? Parse(string text)
         {
             var t = (text ?? "").Trim().Replace(',', '.');
@@ -65,7 +74,8 @@ namespace Kaban.Core.Helpers
             if (percent) t = t.TrimEnd('%').Trim();
             double v;
             if (!double.TryParse(t, NumberStyles.Float, CultureInfo.InvariantCulture, out v)) return null;
-            if (percent) v /= 100.0;
+            // "137%" and a bare "137" are percentages; "1.37" is the factor.
+            if (percent || v >= 10) v /= 100.0;
             if (v < Min - 0.001 || v > Max + 0.001) return null;
             return Clamp(v);
         }

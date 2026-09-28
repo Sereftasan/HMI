@@ -35,7 +35,7 @@ class MG {
         DisplaySettings.SettingsPath = Path.Combine(dir, "Display.cfg");
 
         Console.WriteLine("--- the factor, kept ---");
-        Check("0.8 .. 1.5 in steps of 0.05", DisplaySettings.Clamp(0.5) == 0.8 && DisplaySettings.Clamp(3) == 1.5 && DisplaySettings.Clamp(1.23) == 1.25 && DisplaySettings.Clamp(double.NaN) == 1);
+        Check("0.8 .. 1.5 in steps of 0.01 (1%)", DisplaySettings.Clamp(0.5) == 0.8 && DisplaySettings.Clamp(3) == 1.5 && DisplaySettings.Clamp(1.234) == 1.23 && DisplaySettings.Clamp(double.NaN) == 1);
         Check("  a factor kept from before the range narrowed (2, 0.75) is brought within it", DisplaySettings.Clamp(2) == 1.5 && DisplaySettings.Clamp(0.75) == 0.8);
         Check("  typed outside it: refused (0.75, 1.75, 2)", DisplaySettings.Parse("0.75") == null && DisplaySettings.Parse("1.75") == null && DisplaySettings.Parse("2") == null);
         Check("typed: 1.5, 1,5, 150% - and not 3 or 'big'", DisplaySettings.Parse("1.5") == 1.5 && DisplaySettings.Parse("1,5") == 1.5 &&

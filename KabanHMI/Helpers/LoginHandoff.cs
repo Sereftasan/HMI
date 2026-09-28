@@ -8,17 +8,17 @@ using Kaban.Core.Helpers;
 namespace Kaban.UI.Helpers
 {
     /// <summary>
-    /// Keeps a user signed in across ONE restart - the restart the program offers
-    /// when a user with a magnifying factor of their own signs in (see
-    /// DisplaySettings). Without it they would sign in, see the program restart,
-    /// and have to sign in again.
+    /// Keeps a user signed in across ONE restart - every restart the program
+    /// makes: from the close menu, after a setting, for the magnifying factor
+    /// (MainForm.RestartApplication). Without it they would see the program
+    /// restart and have to sign in again.
     ///
     /// What makes it safe to hand over a sign-in at all:
     ///   * the note names the user and nothing else - no password, not even a
     ///     hash; the level comes from the account as it is at the new start;
     ///   * it is encrypted for THIS Windows account on THIS PC (DPAPI): another
     ///     account, another PC, or a copy of the file cannot read it;
-    ///   * it is valid for one minute, once: read, it is deleted - and a note
+    ///   * it is valid for two minutes, once: read, it is deleted - and a note
     ///     that does not match the number the old program passed on its command
     ///     line is refused;
     ///   * every use is written to the audit log.
@@ -30,7 +30,9 @@ namespace Kaban.UI.Helpers
 
         /// <summary>How long a note is good for.</summary>
         public static TimeSpan Lifetime { get { return _lifetime; } internal set { _lifetime = value; } }
-        private static TimeSpan _lifetime = TimeSpan.FromSeconds(60);
+        // Two minutes: the old program may take a few seconds to let its
+        // controllers go, and the new one waits for it before it starts.
+        private static TimeSpan _lifetime = TimeSpan.FromSeconds(120);
 
         /// <summary>Where notes are kept (the Windows user's temp folder). Replaceable for tests.</summary>
         internal static string Folder = Path.Combine(Path.GetTempPath(), "KabanHMI_Handoff");

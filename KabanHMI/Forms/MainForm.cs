@@ -1174,7 +1174,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         public void RestartApplication() { RestartApplication(null); }
 
-        /// <param name="extraArguments">More for the new instance's command line (the sign-in hand-over).</param>
+        /// <param name="extraArguments">More for the new instance's command line.</param>
         public void RestartApplication(string extraArguments)
         {
             try
@@ -1184,9 +1184,7 @@ namespace Kaban.UI.Forms
                 var psi = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = Application.ExecutablePath,
-                    Arguments = Kaban.UI.AppBootstrap.AwaitExitSwitch + " " +
-                                System.Diagnostics.Process.GetCurrentProcess().Id +
-                                (string.IsNullOrEmpty(extraArguments) ? "" : " " + extraArguments),
+                    Arguments = RestartArguments(extraArguments),
                     // Started from the exe's own folder: the machine's
                     // Translations.csv, PlcLabels.csv and Alarms.json are all resolved
                     // relative to it.
@@ -1207,6 +1205,26 @@ namespace Kaban.UI.Forms
                     LanguageManager.GetString("Btn_Restart", "Restart the program"),
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        /// <summary>
+        /// The new instance's command line: this process's id to wait for, and -
+        /// EVERY RESTART KEEPS THE USER SIGNED IN (the close menu's, after a
+        /// setting, for the magnifying factor) - the sign-in hand-over. Only the
+        /// magnifier's restart handed it over, so "Restart" from the close menu
+        /// came back signed out.
+        /// </summary>
+        internal string RestartArguments(string extraArguments)
+        {
+            string extra = extraArguments ?? "";
+            if (SecurityManager.CurrentLevel != SecurityLevel.None &&
+                extra.IndexOf(Helpers.LoginHandoff.Switch, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                try { extra = (extra + " " + Helpers.LoginHandoff.Switch + " " + Helpers.LoginHandoff.Write(SecurityManager.CurrentUser)).Trim(); }
+                catch (Exception ex) { AuditLogger.Log("[RESTART] sign-in hand-over not written (" + ex.Message + "): sign in again after the restart."); }
+            }
+            return Kaban.UI.AppBootstrap.AwaitExitSwitch + " " + System.Diagnostics.Process.GetCurrentProcess().Id +
+                   (extra.Length == 0 ? "" : " " + extra);
         }
 
         /// <summary>
