@@ -4,7 +4,7 @@ using ActUtlTypeLib;
 
 namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 {
-    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, IDisposable
+    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, Kaban.Core.Interfaces.IPlcIdentity, IDisposable
     {
         // The actual MX Component Object
         private ActUtlType _plc;              // touched ONLY on _worker's thread
@@ -263,6 +263,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                     _isConnected = true;
                     _lastOpOk = true;
                     LastConnectError = "";
+                    ReadCpuType();
                     return true;
                 }
 
@@ -294,6 +295,36 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                     $"[PLC DIAG] Mitsubishi station {_stationNumber} connect exception: {ex.Message} (process is {(Environment.Is64BitProcess ? "64" : "32")}-bit).");
                 return false;
             }
+        }
+
+        /// <summary>The CPU's model, as MX Component reports it once the station is open ("FX5U-64MT/ES").</summary>
+        public string Identity { get { return _cpuName; } }
+        private volatile string _cpuName = "";
+
+        /// <summary>
+        /// Asks the open station what CPU it is (ActUtlType.GetCpuType) - on this
+        /// worker thread, right after Open. Called by name: an MX Component
+        /// installation whose interop lacks it simply leaves the model unknown.
+        /// </summary>
+        private void ReadCpuType()
+        {
+            try
+            {
+                var method = _plc.GetType().GetMethod("GetCpuType");
+                if (method == null) return;
+                var args = new object[] { null, 0 };
+                object rc = method.Invoke(_plc, args);
+                if (rc is int && (int)rc == 0 && args[0] is string)
+                {
+                    var name = ((string)args[0]).Trim().TrimEnd('\0').Trim();
+                    if (name.Length > 0 && name != _cpuName)
+                    {
+                        _cpuName = name;
+                        Kaban.Core.Helpers.AuditLogger.Log($"[PLC DIAG] Mitsubishi station {_stationNumber}: CPU {name} (code 0x{Convert.ToInt32(args[1]):X}).");
+                    }
+                }
+            }
+            catch { /* the model is a courtesy: the connection is what matters */ }
         }
 
         private void DisconnectDirect()

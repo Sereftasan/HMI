@@ -138,14 +138,19 @@ class CP {
         Pump(1200);
         var table = ctl == null ? null : (TableLayoutPanel)Get(ctl, "_table");
         var header = table == null ? new List<string>() : Enumerable.Range(0, table.ColumnCount).Select(c => table.GetControlFromPosition(c, 0)).Where(c => c != null).Select(c => c.Text).ToList();
-        Check("the Controllers table: the connection and, beside it, how it is doing",
-              header.Count == 9 && header[4] == "State" && header[5] == "Last answer" && header[6] == "Drops today" && header[7] == "Last error" && header[8] == "Program",
+        Check("the Controllers table: the connection and, beside it, how it is doing (the program version in the State)",
+              header.Count == 8 && header[4] == "State" && header[5] == "Last answer" && header[6] == "Drops today" && header[7] == "Last error",
               string.Join(" | ", header));
+        Check("  every column as wide as what it holds (no fixed widths)",
+              table != null && table.ColumnStyles.Cast<ColumnStyle>().All(cs => cs.SizeType == SizeType.AutoSize));
         var rows = ctl == null ? null : (System.Collections.IList)Get(ctl, "_rows");
         var first = rows != null && rows.Count > 0 ? rows[0] : null;
         var state = first == null ? null : (Label)Get(first, "Status");
         Check("  a simulated controller that answers: Connected, with its last answer", state != null && state.Text.Contains("Connected") &&
               ((Label)Get(first, "Last")).Text.Contains(":"), state == null ? "no row" : state.Text + " / " + ((Label)Get(first, "Last")).Text);
+        Kaban.Core.Helpers.ConnectionMonitor.ReportVersion(1, 102);
+        var stRow = Kaban.UI.Settings.ControllerStatus.RowFor(1, "", null, null);
+        Check("  connected: the program version beside it", stRow.State.Contains("Connected") && stRow.State.Contains("program 1.02"), stRow.State);
         var driverBox = first == null ? null : (ComboBox)Get(first, "Driver");
         var save = ctl == null ? null : (Button)Get(ctl, "_btnSave");
         Check("  an Admin can change the connections", driverBox != null && driverBox.Enabled && save.Visible);

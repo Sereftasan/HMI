@@ -39,5 +39,15 @@ namespace Kaban.Core.Interfaces
     /// from the UI thread.
     /// </summary>
     public interface INonBlockingDriver { }
+
+    /// <summary>
+    /// A driver that can say WHAT it is connected to - the CPU's model as the
+    /// controller reports it ("FX5U-64MT/ES"). Read once when the connection
+    /// opens; empty until then, or when the controller does not say.
+    /// </summary>
+    public interface IPlcIdentity
+    {
+        string Identity { get; }
+    }
 }
 

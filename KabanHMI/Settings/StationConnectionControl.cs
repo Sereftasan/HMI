@@ -144,16 +144,14 @@ namespace Kaban.UI.Settings
             _table.Dock = DockStyle.Top;
             _table.AutoSize = true;
             _table.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            _table.ColumnCount = 9;
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200));  // controller
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220));  // driver
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));  // station number
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190));  // network address
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // state
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // last answer
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // drops today
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // last error
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // program version
+            // EVERY COLUMN AS WIDE AS WHAT IT HOLDS. The first four had fixed
+            // widths chosen for the longest thing that might ever be typed, which
+            // left gaps down the table - before the controller names, right of a
+            // one-digit station, after a short address - and pushed the last
+            // column off the page. The boxes are sized to their content instead
+            // (see AddRow), and the program version moved beside "Connected".
+            _table.ColumnCount = 8;
+            for (int i = 0; i < 8; i++) _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             body.Controls.Add(_table);
 
             _footer.Dock = DockStyle.Bottom;
@@ -209,7 +207,7 @@ namespace Kaban.UI.Settings
                     ForeColor = ColDim,
                     Padding = new Padding(4, 10, 4, 4)
                 }, 0, _table.RowCount);
-                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 9);
+                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 8);
                 _table.RowCount++;
                 return;
             }
@@ -232,7 +230,6 @@ namespace Kaban.UI.Settings
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
-            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColVersion", "Program")), 8, r);
             _table.RowCount = r + 1;
         }
 
@@ -259,13 +256,16 @@ namespace Kaban.UI.Settings
                 UseMnemonic = false,   // "Screwing & Holing", not "Screwing  Holing"
                 Text = PlcEndpointNaming.Caption(endpoint),
                 AutoSize = true,
-                Padding = new Padding(16, 8, 6, 6)
+                Padding = new Padding(6, 8, 6, 6)
             };
 
+            // Sized to what they hold: the longest driver name, a four-digit
+            // station, the longest address shape ("192.168.100.200:502:1").
             var driver = new ComboBox
             {
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Width = 210,
+                Width = TextWidth(PlcDriverCatalog.Kinds.Select(k => k.DisplayName).DefaultIfEmpty("Simulation (in-memory)")
+                                                          .OrderByDescending(n => n.Length).First()) + 34,
                 Margin = new Padding(3, 4, 3, 4)
             };
 
@@ -273,14 +273,14 @@ namespace Kaban.UI.Settings
             {
                 Minimum = 0,
                 Maximum = 1023,
-                Width = 84,
+                Width = TextWidth("0000") + 30,
                 TextAlign = HorizontalAlignment.Right,
                 Margin = new Padding(3, 4, 3, 4)
             };
 
             var address = new TextBox
             {
-                Width = 180,
+                Width = TextWidth("192.168.100.200:502:1") + 10,
                 Margin = new Padding(3, 4, 3, 4),
                 Text = saved.Endpoint ?? ""
             };
@@ -305,11 +305,10 @@ namespace Kaban.UI.Settings
             // The meaning of an error code can be long: it wraps rather than
             // pushing the version off the page.
             error.MaximumSize = new Size(320, 0);
-            var version = cell();
+            var version = cell();        // kept for the row; shown in the State cell now
             _table.Controls.Add(last, 5, r);
             _table.Controls.Add(drops, 6, r);
             _table.Controls.Add(error, 7, r);
-            _table.Controls.Add(version, 8, r);
             _table.RowCount = r + 1;
 
             // Items are populated and the selection made AFTER the combo is in its
@@ -394,6 +393,12 @@ namespace Kaban.UI.Settings
             Set(row.Drops, st.Drops.ToString(System.Globalization.CultureInfo.InvariantCulture), st.Drops > 0 ? ColBad : ColDim);
             Set(row.Error, st.Error, st.Live ? ColDim : ColBad);
             Set(row.Version, st.Version, ColDim);
+        }
+
+        /// <summary>The width of a text in the page's font - the boxes are sized by it.</summary>
+        private int TextWidth(string text)
+        {
+            return TextRenderer.MeasureText(text ?? "", Font).Width;
         }
 
         private static void Set(Label l, string text, Color colour)
