@@ -8,31 +8,22 @@
  body{font-family:"Segoe UI",Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.5em;color:#23262c;line-height:1.45;font-size:14px}
  h1{font-size:1.45em;border-bottom:2px solid #1e78dc;padding-bottom:.3em}
  h2{font-size:1.2em;margin:1.6em 0 .5em;background:#f2f5f9;padding:.45em .7em;border-left:4px solid #1e78dc}
+ header.alarm{margin:1.6em 0 .5em;background:#f2f5f9;padding:.45em .7em;border-left:4px solid #1e78dc}
+ header.alarm h2{margin:0;padding:0;background:none;border:0}
+ header.alarm ul{margin:.2em 0 0 1.2em;padding:0}
+ h3{font-size:1.08em;margin:.9em 0 .4em}
  table{border-collapse:collapse;width:100%;margin:.5em 0 .8em}
  th,td{border:1px solid #9aa1ab;padding:.35em .5em;vertical-align:top;text-align:left}
  th{background:#e3e8ef;font-weight:600}
  td ul{margin:.1em 0 .1em 1.1em;padding:0} td li{margin:.05em 0}
- .alarm{background:#fafbfc;border:1px solid #d5d9df;padding:.5em .8em;margin:.4em 0}
- .alarm ul{margin:.2em 0 0 1.2em;padding:0}
- .cls{color:#5b6270;margin:.2em 0 .4em}
  .src{color:#5b6270;font-size:.9em} .fn{font-size:.92em;color:#3b4250}
- .safety{background:#fdecec;border-left:4px solid #d62424;padding:.6em .9em;margin:.8em 0}
- .note{background:#fff8e1;border-left:4px solid #e0a800;padding:.6em .9em;margin:.8em 0}
- .how{background:#e9f3fd;border-left:4px solid #1e78dc;padding:.6em .9em;margin:.8em 0}
  .missing{background:#fff3cd;border-left:4px solid #d7a528;padding:.7em 1em;margin:1em 0}
  @media print{h2{break-after:avoid}section{break-inside:avoid-page}}
 </style>
 </head><body>
 <h1>Axis warnings (Simple Motion module)</h1>
-<p>The code in the <b>Axis warning</b> column of Axis Settings is the Simple Motion module's warning
-number ([Md.24] Axis warning No.). A warning does not stop the axis, but the operation it refers to is not carried out.
-This page is the part of the module's manual for that code.</p><div class="how"><b>Clearing it.</b> Remove the cause first, then reset. The module clears the code when
-the PLC sets <b>[Cd.5] Axis error reset</b> for the axis; which button does that on this machine is set by its PLC
-program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in this list: they are in the
-<b>Servo alarm</b> column and have their own help.</p>
 <section class="code" data-code="0900" data-group="0900" data-kind="warning" data-name="Start during operation" data-page="9">
 <h2 id="C0900">0900H &mdash; Start during operation</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The start request is issued while the axis is BUSY.</li><li>Positioning was started during speed control mode/ torque control mode.</li></ul><div>[Operation status at warning occurrence]</div><div>Position control mode: The operation continues.</div><div>Speed control mode/torque control mode: The operation continues. (Positioning start is not executed.)</div></td><td><ul><li>Normalize the start request ON timing.</li><li>When in speed control mode/torque control mode, start positioning after switching to the position control mode.</li></ul></td></tr>
@@ -41,7 +32,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0902" data-group="0902" data-kind="warning" data-name="Restart not possible" data-page="9">
 <h2 id="C0902">0902H &mdash; Restart not possible</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The restart command is issued when the axis operation status is not &quot;Stopped&quot;.</div><div>[Operation status at warning occurrence]</div><div>Continues the operation.</div></td><td><div>Normalize the start request ON timing.</div><div>(Do not issue the restart command when the axis operation status is not stopped.)</div></td></tr>
@@ -50,7 +40,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0903" data-group="0903" data-kind="warning" data-name="Teaching in BUSY" data-page="9">
 <h2 id="C0903">0903H &mdash; Teaching in BUSY</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The teaching request is issued while the axis is BUSY.</div><div>[Operation status at warning occurrence]</div><div>The warning is issued for the axis designated at the time of the teaching request.</div></td><td><div>Carry out the teaching request when the axis is not BUSY.</div></td></tr>
@@ -59,7 +48,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0904" data-group="0904" data-kind="warning" data-name="Less than minimum speed" data-page="9">
 <h2 id="C0904">0904H &mdash; Less than minimum speed</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The overridden speed becomes &quot;0&quot;.</div><div>[Operation status at warning occurrence]</div><div>The system is controlled with the currently executing unit of 1.</div></td><td><div>Prevent the overridden speed from being reduced to 0.</div></td></tr>
@@ -68,7 +56,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0905" data-group="0905" data-kind="warning" data-name="In PLC READY" data-page="9">
 <h2 id="C0905">0905H &mdash; In PLC READY</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The request for writing to the flash ROM is issued when the PLC READY is turned ON.</div><div>[Operation status at warning occurrence]</div><div>The warning for axis 1 is issued.</div></td><td><div>Request to write when the &quot;[Cd.190] PLC READY signal&quot; is OFF.</div></td></tr>
@@ -77,7 +64,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0906" data-group="0906" data-kind="warning" data-name="Illegal override value" data-page="9">
 <h2 id="C0906">0906H &mdash; Illegal override value</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>A value other than 1 to 300 is set for the override value.</div><div>[Operation status at warning occurrence]</div><div>When a setting value is 0: Controlled at 100.</div><div>When a setting value is 301 or more: Controlled at 300.</div></td><td><div>Set a value within the setting range.</div></td></tr>
@@ -86,7 +72,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0907" data-group="0907" data-kind="warning" data-name="Outside new torque value range/outside forward new torque value range" data-page="9">
 <h2 id="C0907">0907H &mdash; Outside new torque value range/outside forward new torque value range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>A new torque value/forward new torque value exceeds the torque limit setting value.<sup>*1</sup></div><div>[Operation status at warning occurrence]</div><div>The torque change is not carried out.</div></td><td><div>Set a new torque value/forward new torque value equal to or less than the torque limit setting value.</div></td></tr>
@@ -96,7 +81,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0908" data-group="0908" data-kind="warning" data-name="Below bias speed" data-page="9">
 <h2 id="C0908">0908H &mdash; Below bias speed</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The command speed is below the bias speed at start.</div><div>[Operation status at warning occurrence]</div><div>Operates by the bias speed at start.</div></td><td><div>Re-set the command speed/bias speed at start so that the command speed is equal to or larger than the bias speed at start.</div></td></tr>
@@ -105,7 +89,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0932" data-group="0932" data-kind="warning" data-name="Outside reverse new torque value range" data-page="9">
 <h2 id="C0932">0932H &mdash; Outside reverse new torque value range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>A reverse new torque value exceeds the torque limit setting value.</div><div>[Operation status at warning occurrence]</div><div>The torque change is not carried out.</div></td><td><div>Set a value which does not exceed the torque limit setting value as the reverse new torque value.</div></td></tr>
@@ -114,7 +97,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0933" data-group="0933" data-kind="warning" data-name="Optional data monitor data type setting error" data-page="9">
 <h2 id="C0933">0933H &mdash; Optional data monitor data type setting error</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>In the optional data monitor, 2-word data is not set correctly.</div><div>[Operation status at warning occurrence]</div><div>Monitoring is not carried out. &quot;0&quot; is stored in [Md.109] to [Md.112] (Optional data monitor output 1 to 4).</div></td><td><div>Set the 2-word data to &quot;[Pr.91] Optional data monitor:</div><div>Data type setting 1&quot; or &quot;[Pr.93] Optional data monitor:</div><div>Data type setting 3&quot; and 0 to &quot;[Pr.92] Optional data monitor: Data type setting 2&quot; or &quot;[Pr.94] Optional data monitor: Data type setting 4&quot;.</div></td></tr>
@@ -123,7 +105,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0936" data-group="0936" data-kind="warning" data-name="Outside mark detection signal setting range" data-page="9">
 <h2 id="C0936">0936H &mdash; Outside mark detection signal setting range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The mark detection signal setting is outside the range.</div><div>[Operation status at warning occurrence]</div><div>The setting number of which the mark detection setting parameter is outside the range is invalid.</div></td><td><div>Set a value within the setting range.</div></td></tr>
@@ -132,7 +113,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0937" data-group="0937" data-kind="warning" data-name="Outside mark detection data type setting range" data-page="9">
 <h2 id="C0937">0937H &mdash; Outside mark detection data type setting range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The mark detection data type setting is outside the range.</div><div>[Operation status at warning occurrence]</div><div>The setting number of which the mark detection setting parameter is outside the range is invalid.</div></td><td><div>Set a value within the setting range.</div></td></tr>
@@ -141,7 +121,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0938" data-group="0938" data-kind="warning" data-name="Outside mark detection data axis No. setting range" data-page="9">
 <h2 id="C0938">0938H &mdash; Outside mark detection data axis No. setting range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>When the mark detection data type setting is not &quot;Optional 2 word buffer memory&quot;, the mark detection data type setting is outside the range.</div><div>[Operation status at warning occurrence]</div><div>The setting number of which the mark detection setting parameter is outside the range is invalid.</div></td><td><div>Set a value within the setting range.</div></td></tr>
@@ -150,7 +129,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0939" data-group="0939" data-kind="warning" data-name="Outside mark detection data buffer memory No. setting range" data-page="10">
 <h2 id="C0939">0939H &mdash; Outside mark detection data buffer memory No. setting range</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>When the mark detection data type setting is &quot;Optional 2 word buffer memory&quot;, the mark detection data buffer memory No. is outside the range or odd number.</div><div>[Operation status at warning occurrence]</div><div>The setting number of which the mark detection setting parameter is outside the range is invalid.</div></td><td><div>Set a value with an even number within the setting range.</div></td></tr>
@@ -159,7 +137,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="093C" data-group="093C" data-kind="warning" data-name="Home position return data incorrect" data-page="10">
 <h2 id="C093C">093CH &mdash; Home position return data incorrect</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The backup data for absolute position restoration is illegal.</li><li>The home position return has never been executed after the system start.</li><li>The home position return is started, but not completed correctly.</li><li>&quot;Absolute position erased&quot; in the driver is detected.</li><li>&quot;Rotation direction selection (PA14)&quot; of the servo parameter has been changed.</li></ul><div>[Operation status at warning occurrence]</div><div>The operation continues.</div></td><td><div>Execute home position return.</div></td></tr>
@@ -168,7 +145,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="093E" data-group="093E" data-kind="warning" data-name="SSCNET communication error" data-page="10">
 <h2 id="C093E">093EH &mdash; SSCNET communication error</h2>
-<p class="cls">Positioning control common warnings (0900H&ndash;093FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Data received from servo amplifier is in error.</div><div>[Operation status at warning occurrence]</div><div>The operation continues.</div></td><td><ul><li>Check the SSCNETIII cable.</li><li>Check the servomotor and encoder cable.</li><li>Take measures against noise.</li><li>Check whether the rotation direction selection/travel direction selection (PA14) is set &quot;0 → 1&quot; or &quot;1 → 0&quot; in the program or the engineering tool.</li></ul></td></tr>
@@ -177,7 +153,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0980" data-group="0980" data-kind="warning" data-name="Speed change during deceleration" data-page="10">
 <h2 id="C0980">0980H &mdash; Speed change during deceleration</h2>
-<p class="cls">JOG, inching and manual pulse generator operation warnings (0980H&ndash;098FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The speed change request is issued during deceleration stop with JOG start signal OFF.</div><div>[Operation status at warning occurrence]</div><div>The speed change is not carried out.</div></td><td><div>Do not carry out the JOG speed change during deceleration with the JOG start signal OFF.</div></td></tr>
@@ -186,7 +161,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0981" data-group="0981" data-kind="warning" data-name="JOG speed limit value" data-page="10">
 <h2 id="C0981">0981H &mdash; JOG speed limit value</h2>
-<p class="cls">JOG, inching and manual pulse generator operation warnings (0980H&ndash;098FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The JOG speed<sup>*2</sup> exceeds the JOG speed limit value at start.</li><li>The new speed value<sup>*2</sup> exceeds the JOG speed limit value when the speed is changed during operation.</li></ul><div>[Operation status at warning occurrence]</div><ul><li>When the speed exceeds the JOG speed limit, the JOG operation is carried out with the JOG speed limit value.</li><li>While the speed is limited by the JOG speed limit value, the &quot;[Md.39] In speed limit flag&quot; is turned ON.</li></ul></td><td><div>Set a value within the setting range.</div></td></tr>
@@ -196,7 +170,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0988" data-group="0988" data-kind="warning" data-name="Outside manual pulse generator input magnification range" data-page="10">
 <h2 id="C0988">0988H &mdash; Outside manual pulse generator input magnification range</h2>
-<p class="cls">JOG, inching and manual pulse generator operation warnings (0980H&ndash;098FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The manual pulse generator 1 pulse input magnification is set to 0, 10001 or more, or negative value.</div><div>[Operation status at warning occurrence]</div><ul><li>When input magnification is set at 10001 or more, or negative value: Re-set to 10000.</li><li>When input magnification is set at 0: Re-set to 1.</li></ul></td><td><div>Set the manual pulse generator 1 pulse input magnification to within the setting range.</div></td></tr>
@@ -205,7 +178,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0990" data-group="0990" data-kind="warning" data-name="Deceleration/stop speed change" data-page="10">
 <h2 id="C0990">0990H &mdash; Deceleration/stop speed change</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The speed change request is issued during deceleration stop.</div><div>[Operation status at warning occurrence]</div><div>The speed change is not carried out.</div></td><td><div>Do not carry out the speed change during deceleration with a stop command, during stoppage, or during automatic deceleration with position control.</div></td></tr>
@@ -214,7 +186,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0991" data-group="0991" data-kind="warning" data-name="Speed limit value over" data-page="11">
 <h2 id="C0991">0991H &mdash; Speed limit value over</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>Setting speeds<sup>*2</sup> exceed the speed limit value when starting/restarting the positioning or when changing the speed at the positioning<sup>*3</sup>. (At the interpolation control, either of reference axes or interpolation axes exceeds the speed limit value.)</li><li>&quot;[Cd.140] Command speed at speed control mode&quot; exceeds &quot;[Pr.8] Speed limit value&quot; during the speed control mode.</li><li>&quot;[Cd.146] Speed limit value at torque control mode&quot; exceeds &quot;[Pr.8] Speed limit value&quot; during the torque control mode.</li><li>&quot;[Cd.147] Speed limit value at continuous operation to torque control mode&quot; exceeds &quot;[Pr.8] Speed limit value&quot; during the continuous operation to torque control mode.</li></ul><div>[Operation status at warning occurrence]</div><div>[Position control mode]</div><ul><li>The speed is controlled with the speed limit value.</li><li>The &quot;[Md.39] In speed limit flag&quot; is turned ON.</li></ul><div>[Speed control mode/Torque control mode/Continuous operation to torque control]</div><ul><li>The speed is controlled with the speed limit value.</li></ul><div>(The &quot;[Md.39] In speed limit flag&quot; is not turned ON.)</div></td><td><div>Review each speed so that setting speeds do not exceed the speed limit value.</div></td></tr>
@@ -225,7 +196,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0992" data-group="0992" data-kind="warning" data-name="M code ON signal ON" data-page="11">
 <h2 id="C0992">0992H &mdash; M code ON signal ON</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The M code ON signal is turned ON when the positioning data is executed.</div><div>[Operation status at warning occurrence]</div><div>Continues executing the positioning data.</div></td><td><div>Normalize the ON and OFF timings of the &quot;M code OFF request&quot;.</div></td></tr>
@@ -234,7 +204,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0993" data-group="0993" data-kind="warning" data-name="Speed-position switching (during acceleration) signal ON" data-page="11">
 <h2 id="C0993">0993H &mdash; Speed-position switching (during acceleration) signal ON</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The switching signal for speed-position switching control (INC mode) is turned ON during acceleration.</div><div>[Operation status at warning occurrence]</div><div>The operation is continued.</div></td><td><div>Do not turn ON the speed-position switching signal during acceleration.</div></td></tr>
@@ -243,7 +212,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0994" data-group="0994" data-kind="warning" data-name="Insufficient remaining distance" data-page="11">
 <h2 id="C0994">0994H &mdash; Insufficient remaining distance</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>At a continuous operation interrupt request, the distance required deceleration stop is not long enough.</li><li>At a speed change request, the remaining distance is shorter than the distance required for speed change.</li></ul><div>[Operation status at warning occurrence]</div><ul><li>When a command speed is changed: Change to a value as near a new speed value as possible.</li><li>When a target position is changed: Adjust the speed to a value as near the command speed as possible, and then change to a target position.</li></ul><div>(When the operation pattern is a continuous path control, ignore the operations stated above.)</div></td><td><div>Give a request at the position where there is an enough remaining distance.</div></td></tr>
@@ -252,7 +220,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0996" data-group="0996" data-kind="warning" data-name="Step not possible" data-page="11">
 <h2 id="C0996">0996H &mdash; Step not possible</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Code 1 is set for the step start information when the step is outside standby.</div><div>[Operation status at warning occurrence]</div><div>The step will not start.</div></td><td><div>Do not set a &quot;1&quot; to the step start information when the step is not in standby state.</div></td></tr>
@@ -261,7 +228,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0997" data-group="0997" data-kind="warning" data-name="Illegal external command function" data-page="11">
 <h2 id="C0997">0997H &mdash; Illegal external command function</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The detailed parameter 2 &quot;External command function selection&quot; setting range is exceeded.</div><div>[Operation status at warning occurrence]</div><div>Even if the external command signal is turned ON, the system will not perform anything.</div></td><td><div>Set the detailed parameter 2 &quot;External command function selection&quot; to within the setting range.</div></td></tr>
@@ -270,7 +236,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0998" data-group="0998" data-kind="warning" data-name="Insufficient movement amount" data-page="11">
 <h2 id="C0998">0998H &mdash; Insufficient movement amount</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The movement amount is not large enough for automatic deceleration.</div><div>[Operation status at warning occurrence]</div><div>The system stops immediately after it reaches the positioning address.</div></td><td><div>Set a decelerating address or a movement amount to the positioning data.</div></td></tr>
@@ -279,7 +244,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0999" data-group="0999" data-kind="warning" data-name="Illegal teaching data No." data-page="11">
 <h2 id="C0999">0999H &mdash; Illegal teaching data No.</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The positioning data No. is set outside the setting range.</div><div>[Operation status at warning occurrence]</div><div>Teaching is not carried out when the setting value is 0 or 601 or more.</div><div>(The setting value is automatically reset to &quot;0&quot; by the Simple Motion module even when a &quot;0&quot; or &quot;601&quot; or more is set.)</div></td><td><div>Set the positioning data No. to within the setting range.</div></td></tr>
@@ -288,7 +252,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="099A" data-group="099A" data-kind="warning" data-name="Illegal teaching data selection" data-page="12">
 <h2 id="C099A">099AH &mdash; Illegal teaching data selection</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The teaching data selection set value is outside the setting range.</div><div>[Operation status at warning occurrence]</div><div>Teaching is not carried out.</div></td><td><div>Set the teaching data selection set value to within the setting range.</div></td></tr>
@@ -297,7 +260,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="099B" data-group="099B" data-kind="warning" data-name="Target position change not possible" data-page="12">
 <h2 id="C099B">099BH &mdash; Target position change not possible</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>A target position change request was given for the &quot;[Da.2] Control system&quot; other than ABS1 and INC1.</li><li>A target position change request is turned ON during continuous path control.</li><li>A new target position address is outside the software stroke limit range.</li><li>A target position change request was given during deceleration to a stop.</li><li>A target position change request was issued when speed change 0 flag (&quot;[Md.31] Status&quot;: b10) was ON.</li><li>A target position change request was given during speed control mode, torque control mode or continuous operation to torque control mode.</li><li>&quot;[Cd.27] Target position change value (New address)&quot; is out of range (0 to 359.99999 [degree]).</li></ul><div>[Operation status at warning occurrence]</div><div>The target position change is not carried out.</div></td><td><ul><li>Do not turn ON the target position change request in the following cases.</li></ul><div>An operating pattern &quot;continuous path control&quot; is used.</div><div>A control system other than ABS1 and INC1 is used.</div><div>During deceleration stop</div><div>When the speed change 0 flag (&quot;[Md.31] Status&quot;: b10) ON</div><div>During speed control mode</div><div>During torque control mode</div><div>During continuous operation to torque control mode</div><ul><li>When the target position change address is outside the software stroke limit range, correct the target position change address.</li></ul></td></tr>
@@ -306,7 +268,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E4" data-group="09E4" data-kind="warning" data-name="Torque limit value over" data-page="12">
 <h2 id="C09E4">09E4H &mdash; Torque limit value over</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>A value exceeding &quot;[Pr.17] Torque limit setting value&quot; is set to &quot;[Cd.143] Command torque at torque control mode&quot; at torque control mode.</li><li>A value exceeding &quot;[Pr.17] Torque limit setting value&quot; is set to &quot;[Cd.150] Target torque at continuous operation to torque control mode&quot; at continuous operation to torque control mode.</li></ul><div>[Operation status at warning occurrence]</div><div>The torque is controlled with the torque limit setting value.</div></td><td><div>Review the setting value so that the setting torque is not exceeded the torque limit setting value.</div></td></tr>
@@ -315,7 +276,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E5" data-group="09E5" data-kind="warning" data-name="Torque initial value selection invalid" data-page="12">
 <h2 id="C09E5">09E5H &mdash; Torque initial value selection invalid</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>At switching the control mode, the servo parameter &quot;Function selection C-B POL reflection selection at torque control (PC29)&quot; is &quot;0: Enabled&quot; on the axis that set feedback torque into the torque initial value selection.</div><div>[Operation status at warning occurrence]</div><div>The initial value selection is controlled as the command torque.</div></td><td><ul><li>Use a servo amplifier which supports the servo parameter &quot;Function selection C-B POL reflection selection at torque control (PC29)&quot; and set (PC29) to &quot;1: Disabled&quot;.</li><li>At switching the control mode, set the torque initial value selection to command torque.</li></ul></td></tr>
@@ -324,7 +284,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E6" data-group="09E6" data-kind="warning" data-name="Control mode switching during BUSY" data-page="12">
 <h2 id="C09E6">09E6H &mdash; Control mode switching during BUSY</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Control mode switching was executed from the position control mode to the speed control mode/torque control mode while BUSY was turned ON.</div><div>[Operation status at warning occurrence]</div><div>The control mode is not switched. (Positioning during operation continues.)</div></td><td><div>Switch the control mode after turning BUSY OFF.</div></td></tr>
@@ -333,7 +292,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E7" data-group="09E7" data-kind="warning" data-name="Control mode switching during zero speed OFF" data-page="12">
 <h2 id="C09E7">09E7H &mdash; Control mode switching during zero speed OFF</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Control mode was changed when &quot;Zero speed&quot; ([Md.119] Servo status2) was turned OFF.</div><div>[Operation status at warning occurrence]</div><div>The control mode is not switched. (Current operation continues.)</div></td><td><div>Switch the control mode after turning &quot;Zero speed&quot; ([Md.119] Servo status2) ON.</div></td></tr>
@@ -342,7 +300,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E8" data-group="09E8" data-kind="warning" data-name="Outside control mode range" data-page="12">
 <h2 id="C09E8">09E8H &mdash; Outside control mode range</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Control mode switching request was performed by specifying a value outside the range for &quot;[Cd.139] Control mode setting&quot;.</div><div>[Operation status at warning occurrence]</div><div>The control mode is not switched. (Current operation continues.)</div></td><td><div>Switch the control mode after setting a value within the range for &quot;[Cd.139] Control mode setting&quot;.</div></td></tr>
@@ -351,7 +308,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09E9" data-group="09E9" data-kind="warning" data-name="Control mode switching" data-page="12">
 <h2 id="C09E9">09E9H &mdash; Control mode switching</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Control mode switching request was performed during the control mode switching.</div><div>[Operation status at warning occurrence]</div><div>Control mode switching request is not accepted.</div></td><td><div>Carry out the control mode switching request after completing the control mode switching.</div></td></tr>
@@ -360,7 +316,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09EB" data-group="09EB" data-kind="warning" data-name="Control mode switching not possible" data-page="13">
 <h2 id="C09EB">09EBH &mdash; Control mode switching not possible</h2>
-<p class="cls">Positioning operation warnings (0990H&ndash;09EFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>Control mode switching was performed from the position control mode to the continuous operation to torque control mode and then from the continuous operation to torque control mode to the speed control mode.</li><li>Control mode switching was performed from the speed control mode to the continuous operation to torque control mode and then from the continuous operation to torque control mode to the position control mode.</li><li>Control mode switching was performed between the torque control mode and continuous operation to torque control mode.</li></ul><div>[Operation status at warning occurrence]</div><div>The control mode is not switched. (Current operation continues.)</div></td><td><div>Review so that control mode switching is performed between the position control mode and continuous operation to torque control mode or between the speed control mode and continuous operation to torque control mode.</div></td></tr>
@@ -369,7 +324,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09F0" data-group="09F0" data-kind="warning" data-name="No operation termination setting" data-page="13">
 <h2 id="C09F0">09F0H &mdash; No operation termination setting</h2>
-<p class="cls">Block start data warnings (09F0H&ndash;09FFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>In the positioning by block starting, the 50th point of the positioning start data is set to CONTINUE.</div><div>[Operation status at warning occurrence]</div><div>The operation is terminated.</div></td><td><div>Set the operation termination to the 50th point.</div></td></tr>
@@ -378,7 +332,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="09F1" data-group="09F1" data-kind="warning" data-name="FOR to NEXT nest construction" data-page="13">
 <h2 id="C09F1">09F1H &mdash; FOR to NEXT nest construction</h2>
-<p class="cls">Block start data warnings (09F0H&ndash;09FFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>FOR to NEXT is nested.</div><div>[Operation status at warning occurrence]</div><div>The operation is continued.</div></td><td><div>Make 1 nest construction for FOR to NEXT.</div></td></tr>
@@ -387,7 +340,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0A10" data-group="0A10" data-kind="warning" data-name="Outside command speed range" data-page="13">
 <h2 id="C0A10">0A10H &mdash; Outside command speed range</h2>
-<p class="cls">Positioning data warnings (0A10H&ndash;0A5FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The speed change value is outside the setting range when changing the speed during operation<sup>*4</sup></li><li>&quot;[Cd.140] Command speed at speed control mode&quot; is outside the setting range during the speed control mode.</li><li>&quot;[Cd.146] Speed limit value at torque control mode&quot; is outside the setting range during the torque control mode.</li></ul><div>[Operation status at warning occurrence]</div><ul><li>The speed change value is controlled as the &quot;maximum value within the setting range&quot;.</li><li>The &quot;[Md.39] In speed limit flag&quot; is turned ON.</li></ul></td><td><ul><li>Set the speed change value to within the setting range.</li><li>Set &quot;[Cd.140] Command speed at speed control mode&quot; to within the setting range during the speed control mode.</li><li>Set &quot;[Cd.146] Speed limit value at torque control mode&quot; to within the setting range during the torque control mode.</li></ul></td></tr>
@@ -397,7 +349,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C80" data-group="0C80" data-kind="warning" data-name="Driver warning" data-page="13">
 <h2 id="C0C80">0C80H &mdash; Driver warning</h2>
-<p class="cls">Servo amplifier warnings (0C80H&ndash;0C8FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Warnings occur in the driver.</div><div>[Operation status at warning occurrence]</div><div>The operation continues.</div></td><td><div>Confirm the warning code by &quot;[Md.114] Servo alarm&quot; and refer to the driver instruction manual for details.</div></td></tr>
@@ -406,7 +357,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BD0" data-group="0BD0" data-kind="warning" data-name="Input axis phase compensation amount over" data-page="14">
 <h2 id="C0BD0">0BD0H &mdash; Input axis phase compensation amount over</h2>
-<p class="cls">Synchronous control input axis warnings (0BA0H&ndash;0BDFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Phase compensation amount of input axis is equal or lower than the minimum value (-2147483648), or exceeding the maximum value (2147483647).</div><div>[Operation status at warning occurrence]</div><div>The input axis operation continues. It is controlled with the minimum or maximum value.</div></td><td><ul><li>Set a smaller phase compensation advance time.</li><li>Decrease the input axis speed.</li></ul></td></tr>
@@ -415,7 +365,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BD1" data-group="0BD1" data-kind="warning" data-name="Input axis rotation direction restriction amount over" data-page="14">
 <h2 id="C0BD1">0BD1H &mdash; Input axis rotation direction restriction amount over</h2>
-<p class="cls">Synchronous control input axis warnings (0BA0H&ndash;0BDFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Rotation direction restriction amount of input axis is equal or lower than the minimum value (-2147483648), or exceeding the maximum value (2147483647).</div><div>[Operation status at warning occurrence]</div><div>The input axis operation continues. It is controlled with the minimum or maximum value.</div></td><td><ul><li>Confirm the enabled direction of the rotation direction restriction setting. (The setting may be reversed.)</li><li>Check if the input axis moves to the reverse direction of the enabled direction.</li></ul></td></tr>
@@ -424,7 +373,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BD2" data-group="0BD2" data-kind="warning" data-name="Input axis speed display over" data-page="14">
 <h2 id="C0BD2">0BD2H &mdash; Input axis speed display over</h2>
-<p class="cls">Synchronous control input axis warnings (0BA0H&ndash;0BDFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Monitor speed display of input axis is equal or lower than the minimum value (-2147483648), or exceeding the maximum value (2147483647).</div><div>[Operation status at warning occurrence]</div><div>The input axis operation continues. The minimum or maximum value is displayed as the speed display of monitor data.</div></td><td><ul><li>Set a lower value if the number of decimal places for speed command setting is available in the input axis setting.</li><li>Switch the units from minute to second if the speed command time unit setting is available in the input axis setting.</li><li>Decrease the input axis speed.</li></ul></td></tr>
@@ -433,7 +381,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BD3" data-group="0BD3" data-kind="warning" data-name="Synchronous encoder via servo amplifier battery warning" data-page="14">
 <h2 id="C0BD3">0BD3H &mdash; Synchronous encoder via servo amplifier battery warning</h2>
-<p class="cls">Synchronous control input axis warnings (0BA0H&ndash;0BDFH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Voltage of the servo amplifier battery connected with a synchronous encoder decreased to 3.2 V or less.</div><div>[Operation status at warning occurrence]</div><div>The synchronous encoder control continues.</div></td><td><div>Replace the battery.</div></td></tr>
@@ -442,7 +389,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BE4" data-group="0BE4" data-kind="warning" data-name="Outside main shaft clutch control setting range" data-page="14">
 <h2 id="C0BE4">0BE4H &mdash; Outside main shaft clutch control setting range</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The synchronous parameter &quot;[Pr.405] Main shaft clutch control setting&quot; was set to outside the setting range during the synchronous control.</li><li>The synchronous parameter &quot;[Pr.405] Main shaft clutch control setting&quot; was set from a setting other than &quot;No Clutch&quot; to &quot;No Clutch&quot; during the synchronous control.</li></ul><div>[Operation status at warning occurrence]</div><div>Synchronous control continues by the previous main shaft clutch control setting.</div></td><td><ul><li>Set a value within the range.</li><li>Do not change the settings other than &quot;No Clutch&quot; to &quot;No Clutch&quot;.</li></ul></td></tr>
@@ -451,7 +397,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0BF4" data-group="0BF4" data-kind="warning" data-name="Outside auxiliary shaft clutch control setting range" data-page="14">
 <h2 id="C0BF4">0BF4H &mdash; Outside auxiliary shaft clutch control setting range</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The synchronous parameter &quot;[Pr.422] Auxiliary shaft clutch control setting&quot; was set to outside the setting range during the synchronous control.</li><li>The synchronous parameter &quot;[Pr.422] Auxiliary shaft clutch control setting&quot; was set from a setting other than &quot;No Clutch&quot; to &quot;No Clutch&quot; during the synchronous control.</li></ul><div>[Operation status at warning occurrence]</div><div>Synchronous control continues by the previous auxiliary shaft clutch control setting.</div></td><td><ul><li>Set a value within the range.</li><li>Do not change the settings other than &quot;No Clutch&quot; to &quot;No Clutch&quot;.</li></ul></td></tr>
@@ -460,7 +405,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C01" data-group="0C01" data-kind="warning" data-name="Outside speed change ratio denominator range" data-page="14">
 <h2 id="C0C01">0C01H &mdash; Outside speed change ratio denominator range</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The synchronous parameter &quot;[Pr.437] Speed change ratio: Denominator&quot; is set to 0 or lower during synchronous control.</div><div>[Operation status at warning occurrence]</div><div>Synchronous control continues by the previous speed change ratio (Denominator).</div></td><td><div>Set a value within the range of 1 to 2147483647.</div></td></tr>
@@ -469,7 +413,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C10" data-group="0C10" data-kind="warning" data-name="Outside cam No. range" data-page="14">
 <h2 id="C0C10">0C10H &mdash; Outside cam No. range</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>The synchronous parameter &quot;[Pr.440] Cam No.&quot; is set to other than 0 to 256 during synchronous control.</div><div>[Operation status at warning occurrence]</div><div>Synchronous control continues by the previous cam No.</div></td><td><div>Set a value within the range of 0 to 256.</div></td></tr>
@@ -478,7 +421,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C11" data-group="0C11" data-kind="warning" data-name="Cam not registered" data-page="14">
 <h2 id="C0C11">0C11H &mdash; Cam not registered</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>When changing the synchronous parameter &quot;[Pr.440] Cam No.&quot;, the cam data of the changed cam No. does not exist on the Cam open area during synchronous control.</div><div>[Operation status at warning occurrence]</div><div>Synchronous control continues by the previous cam No.</div></td><td><div>Specify the cam No. of an existing cam data.</div></td></tr>
@@ -487,7 +429,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C14" data-group="0C14" data-kind="warning" data-name="Cam axis phase compensation amount over" data-page="14">
 <h2 id="C0C14">0C14H &mdash; Cam axis phase compensation amount over</h2>
-<p class="cls">Synchronous control output axis warnings (0BE0H&ndash;0C3FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Phase compensation amount of cam axis is equal or lower than the minimum value (-2147483648), or exceeding the maximum value (2147483647).</div><div>[Operation status at warning occurrence]</div><div>Synchronous control continues. The operation is controlled with the minimum or maximum value.</div></td><td><ul><li>Set a smaller cam axis phase compensation advance time.</li><li>Decrease the cam axis input value speed.</li></ul></td></tr>
@@ -496,7 +437,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C40" data-group="0C40" data-kind="warning" data-name="Outside operation cam No. range" data-page="15">
 <h2 id="C0C40">0C40H &mdash; Outside operation cam No. range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.601] Operation cam No.&quot; is other than 1 to 256.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><div>Set a value within the range of 1 to 256.</div></td></tr>
@@ -505,7 +445,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C41" data-group="0C41" data-kind="warning" data-name="Read cam not registered" data-page="15">
 <h2 id="C0C41">0C41H &mdash; Read cam not registered</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Cam data of the specified cam No. does not exist on the cam open area during the cam data reading operation.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Specify the cam No. of an existing cam data.</li><li>When writing the cam data from a programming tool, turn the PLC ready signal from OFF to ON and open the cam data on the cam open area.</li></ul></td></tr>
@@ -514,7 +453,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C42" data-group="0C42" data-kind="warning" data-name="Outside cam data first position range" data-page="15">
 <h2 id="C0C42">0C42H &mdash; Outside cam data first position range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>&quot;[Cd.602] Cam data first position&quot; is outside the range of &quot;1 to Cam resolution&quot; for the stroke ratio data format cam.</li><li>&quot;[Cd.602] Cam data first position&quot; is outside the range of &quot;0 to (Coordinate number - 1)&quot; for the coordinate data format cam.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Set a value within the range of &quot;1 to Cam resolution&quot; for the stroke ratio data format cam.</li><li>Set a value within the range of &quot;0 to (Coordinate number - 1)&quot; for the coordinate data format cam.</li></ul></td></tr>
@@ -523,7 +461,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C43" data-group="0C43" data-kind="warning" data-name="Outside number of cam data operation points range" data-page="15">
 <h2 id="C0C43">0C43H &mdash; Outside number of cam data operation points range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>&quot;[Cd.603] Number of cam data operation points&quot; is outside the range of 1 to 4096 for the stroke ratio data format cam.</li><li>&quot;[Cd.603] Number of cam data operation points&quot; is outside the range of 1 to 2048 for the coordinate data format cam.</li><li>First position and number of operation points which exceed the cam resolution or coordinate number are set during the cam data writing operation.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Set a value within the range of 1 to 4096 for the stroke ratio data format cam.</li><li>Set a value within the range of 1 to 2048 for the coordinate data format cam.</li><li>Set &quot;Cam data first position + (Number of cam data operation points - 1)&quot; not to exceed the cam resolution.</li><li>Set &quot;Cam data first position + (Number of cam data operation points - 1)&quot; not to exceed the number of coordinates.</li></ul></td></tr>
@@ -532,7 +469,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C44" data-group="0C44" data-kind="warning" data-name="Outside cam data format range" data-page="15">
 <h2 id="C0C44">0C44H &mdash; Outside cam data format range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.604] Cam data format&quot; is other than 1 or 2 during the cam data writing operation.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><div>Set 1 or 2.</div></td></tr>
@@ -541,7 +477,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C45" data-group="0C45" data-kind="warning" data-name="Outside cam resolution/coordinate number range" data-page="15">
 <h2 id="C0C45">0C45H &mdash; Outside cam resolution/coordinate number range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>&quot;[Cd.605] Cam resolution/coordinate number&quot; is other than &quot;256/512/1024/2048/4096/8192/16384/ 32768&quot; for the stroke ratio data format cam during the cam data writing operation.</li><li>&quot;[Cd.605] Cam resolution/coordinate number&quot; is outside the range of &quot;2 to 16384&quot; for the coordinate data format cam during the cam data writing operation.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Set a value within the range of &quot;256/512/1024/ 2048/ 4096/8192/16384/32768&quot; for the stroke ratio data format cam.</li><li>Set a value within the range of 2 to 16384 for the coordinate data format cam.</li></ul></td></tr>
@@ -550,7 +485,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C46" data-group="0C46" data-kind="warning" data-name="Outside cam data starting position range" data-page="15">
 <h2 id="C0C46">0C46H &mdash; Outside cam data starting position range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.606] Cam data starting point&quot; is outside the range from &quot;0 to (Cam resolution - 1)&quot; during the cam data writing operation.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><div>Set a value within the range of &quot;0 to (Cam resolution - 1)&quot;.</div></td></tr>
@@ -559,7 +493,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C47" data-group="0C47" data-kind="warning" data-name="Cam storage area capacity over" data-page="15">
 <h2 id="C0C47">0C47H &mdash; Cam storage area capacity over</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The free area in the cam storage area is insufficient during the cam data writing operation.</li><li>The writable area is insufficient due to the decoupling of free area.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Decrease the number of cam data (number of cams, cam resolution, and coordinate number).</li><li>Erase the cam data and rewrite it.</li></ul></td></tr>
@@ -568,7 +501,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C48" data-group="0C48" data-kind="warning" data-name="Cam open area capacity over" data-page="15">
 <h2 id="C0C48">0C48H &mdash; Cam open area capacity over</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The free area in the cam open area is insufficient during the cam data writing operation.</li><li>The writable area is insufficient due to the decoupling of free area.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Decrease the number of cam data (number of cams, cam resolution, and coordinate number).</li><li>Erase the cam data and rewrite it.</li></ul></td></tr>
@@ -577,7 +509,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C49" data-group="0C49" data-kind="warning" data-name="Coordinate data error" data-page="15">
 <h2 id="C0C49">0C49H &mdash; Coordinate data error</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>Input value of coordinate data is a negative value during the cam data writing operation.</li><li>Input value of coordinate data is not &quot;X &lt; X &quot; <sup>n</sup><sup>n+1</sup> during the cam data writing operation.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><ul><li>Set the Input value of coordinate data to 0 or more.</li><li>Set the Input value of coordinate data to &quot;X &lt; X &quot;. <sup>n</sup><sup>n+1</sup></li></ul></td></tr>
@@ -586,7 +517,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C4A" data-group="0C4A" data-kind="warning" data-name="Cam data reading operation inhibit" data-page="15">
 <h2 id="C0C4A">0C4AH &mdash; Cam data reading operation inhibit</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Cam data reading operation is executed with the cam data read password set.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><div>Delete the cam data read password with a programming tool.</div></td></tr>
@@ -595,7 +525,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C4B" data-group="0C4B" data-kind="warning" data-name="Cam data writing operation inhibit" data-page="16">
 <h2 id="C0C4B">0C4BH &mdash; Cam data writing operation inhibit</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Cam data writing operation is executed with the cam data write password set.</div><div>[Operation status at warning occurrence]</div><div>Cam data writing/reading is not executed.</div></td><td><div>Delete the cam data write password with a programming tool.</div></td></tr>
@@ -604,7 +533,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C50" data-group="0C50" data-kind="warning" data-name="Outside cam auto-generation cam No. range" data-page="16">
 <h2 id="C0C50">0C50H &mdash; Outside cam auto-generation cam No. range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.609] Cam auto-generation cam No.&quot; is outside the range of 1 to 256.</div><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><div>Set a value within the range of 1 to 256.</div></td></tr>
@@ -613,7 +541,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C51" data-group="0C51" data-kind="warning" data-name="Outside cam auto-generation type range" data-page="16">
 <h2 id="C0C51">0C51H &mdash; Outside cam auto-generation type range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.610] Cam auto-generation type&quot; is other than 1.</div><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><div>Set 1.</div></td></tr>
@@ -622,7 +549,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C52" data-group="0C52" data-kind="warning" data-name="Cam auto-generation cam storage area capacity over" data-page="16">
 <h2 id="C0C52">0C52H &mdash; Cam auto-generation cam storage area capacity over</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The free area in the cam storage area is insufficient.</li><li>The writable area is insufficient due to the decoupling of free area.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><ul><li>Decrease the number of cam data (number of cams, cam resolution, and coordinate number).</li><li>Erase the cam data and rewrite it.</li></ul></td></tr>
@@ -631,7 +557,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C53" data-group="0C53" data-kind="warning" data-name="Cam auto-generation cam open area capacity over" data-page="16">
 <h2 id="C0C53">0C53H &mdash; Cam auto-generation cam open area capacity over</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><ul><li>The free area in the cam open area is insufficient.</li><li>The writable area is insufficient due to the decoupling of free area.</li></ul><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><ul><li>Decrease the number of cam data (number of cams, cam resolution, and coordinate number).</li><li>Erase the cam data and rewrite it.</li></ul></td></tr>
@@ -640,7 +565,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C54" data-group="0C54" data-kind="warning" data-name="Outside cam auto-generation data range" data-page="16">
 <h2 id="C0C54">0C54H &mdash; Outside cam auto-generation data range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.611] Cam auto-generation data&quot; is outside the setting range.</div><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><div>Set a value within the setting range for the cam auto-generation.</div></td></tr>
@@ -649,7 +573,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C55" data-group="0C55" data-kind="warning" data-name="Cam auto-generation calculation disable" data-page="16">
 <h2 id="C0C55">0C55H &mdash; Cam auto-generation calculation disable</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.611] Cam auto-generation data&quot; is set to the value that the cam pattern cannot be generated. (Such as when the sheet synchronization width is larger than the sheet length in the cam for a rotary cutter)</div><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><div>Review the setting value of the cam auto-generation data.</div></td></tr>
@@ -658,7 +581,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C56" data-group="0C56" data-kind="warning" data-name="Cam auto-generation data write inhibit" data-page="16">
 <h2 id="C0C56">0C56H &mdash; Cam auto-generation data write inhibit</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Cam auto-generation is executed with the cam data write password set.</div><div>[Operation status at warning occurrence]</div><div>Cam auto-generation is not executed.</div></td><td><div>Delete the cam data write password with a programming tool.</div></td></tr>
@@ -667,7 +589,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C60" data-group="0C60" data-kind="warning" data-name="Outside cam position calculation cam No. range" data-page="16">
 <h2 id="C0C60">0C60H &mdash; Outside cam position calculation cam No. range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.613] Cam position calculation: Cam No.&quot; is outside the range of 0 to 256.</div><div>[Operation status at warning occurrence]</div><div>Cam position calculation is not executed.</div></td><td><div>Set a value within the range of 0 to 256.</div></td></tr>
@@ -676,7 +597,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C61" data-group="0C61" data-kind="warning" data-name="Cam position calculation cam not registered" data-page="16">
 <h2 id="C0C61">0C61H &mdash; Cam position calculation cam not registered</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Cam data of the specified cam No. does not exist on the cam open area during the cam position calculation.</div><div>[Operation status at warning occurrence]</div><div>Cam position calculation is not executed.</div></td><td><ul><li>Specify the cam No. of an existing cam data.</li><li>When writing the cam data from a peripheral software, turn the PLC ready signal from OFF to ON and open the cam data ON the cam open area.</li></ul></td></tr>
@@ -685,7 +605,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C62" data-group="0C62" data-kind="warning" data-name="Outside cam position calculation cam axis length per cycle range" data-page="16">
 <h2 id="C0C62">0C62H &mdash; Outside cam position calculation cam axis length per cycle range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.615] Cam position calculation: Cam axis length per cycle&quot; is set to 0 or lower.</div><div>[Operation status at warning occurrence]</div><div>Cam position calculation is not executed.</div></td><td><div>Set a value within the range of 1 to 2147483647.</div></td></tr>
@@ -694,7 +613,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C63" data-group="0C63" data-kind="warning" data-name="Outside cam position calculation cam axis current value per cycle range" data-page="16">
 <h2 id="C0C63">0C63H &mdash; Outside cam position calculation cam axis current value per cycle range</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>&quot;[Cd.617] Cam position calculation: Cam axis current value per cycle&quot; is outside the range of 0 to &quot;Cam axis length per cycle&quot;.</div><div>[Operation status at warning occurrence]</div><div>Cam position calculation is not executed.</div></td><td><div>Set a value within the range of 0 to &quot;Cam axis length per cycle&quot;.</div></td></tr>
@@ -703,7 +621,6 @@ program.</div><p class="note">Codes from the <b>servo amplifier</b> are not in t
 </section>
 <section class="code" data-code="0C64" data-group="0C64" data-kind="warning" data-name="Cam position calculation cam axis 1 cycle current value calculation disable" data-page="16">
 <h2 id="C0C64">0C64H &mdash; Cam position calculation cam axis 1 cycle current value calculation disable</h2>
-<p class="cls">Cam data operation warnings (0C40H&ndash;0C7FH)</p>
 <table>
 <tr><th>Warning details and causes</th><th>Remedy</th></tr>
 <tr><td><div>Corresponding cam axis current value per cycle could not be calculated during cam axis current value per cycle calculation. (Occurs in reciprocated cam pattern) [Operation status at warning occurrence]</div><div>Cam position calculation is not executed.</div></td><td><div>Set &quot;[Cd.614] Cam position calculation: Stroke amount&quot;, &quot;[Cd.616] Cam position calculation: Cam reference position&quot;, and &quot;[Cd.618] Cam position calculation: Cam axis feed current value&quot; within the range of reciprocated cam pattern stroke.</div></td></tr>

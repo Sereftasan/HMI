@@ -27,6 +27,14 @@ data-kind "alarm" or "warning" (a warning draws the "?" amber), data-name the
 text of the menu entry, data-alarm the servo alarm's own name (what an unlisted
 detail is called), data-page the PDF page the section came from.
 
+A section is only what the operator needs for that code: the caption and the
+table of causes and remedies (then the link to the manual's page). No general
+notes above it. A servo section starts with its ALARM (the group, "Alarm 52:
+Error excessive" and what it means), then the detail ("AL. 52.1 - Excess droop
+pulse 1"), then ONE table: where the manual's table runs over a page end, its
+parts are joined again without the repeated heading row. The detail's number
+and name are not table columns - the caption above the table already says them.
+
 Run it again when a manual is replaced by a newer revision. It needs
 pdfplumber (pip install pdfplumber). The output is plain HTML: a translator can
 copy a file as .tr.html and translate it, like every other help document.
@@ -282,7 +290,11 @@ def build_mrj4():
             tcol = next((c["c0"] for c in cells if c["r0"] == hdr and plain(page, c["bbox"]) == "Target"), None)
             if tcol is not None:
                 cells = [dict(c, c1=min(c["c1"], tcol)) for c in cells if c["c0"] < tcol or c["r0"] < hdr]
-            header = rows_html(page, cells, hdr, hdr + 1, header=True)
+            # NO "Detail No." / "Detail name" columns either: every row of a
+            # section is the same detail, and its caption says which.
+            dcols = set(c["c0"] for c in cells if c["r0"] == hdr and plain(page, c["bbox"]).startswith("Detail"))
+            shown = [c for c in cells if c["r0"] < hdr or c["c0"] not in dcols]
+            header = rows_html(page, shown, hdr, hdr + 1, header=True)
             starts = []
             for c in cells:
                 if c["c0"] == 0 and c["r0"] > hdr:
@@ -298,7 +310,7 @@ def build_mrj4():
                     if c["r0"] == r0 and c["c0"] == 1:
                         dname = plain(page, c["bbox"])
                 d = a["details"].setdefault(code, {"name": dname, "parts": [], "page": pn})
-                d["parts"].append((header, rows_html(page, cells, r0, r_end)))
+                d["parts"].append((header, rows_html(page, shown, r0, r_end)))
     return alarms
 
 
@@ -317,27 +329,18 @@ def write_mrj4(alarms):
             body.append('<section class="code" data-code="%s" data-group="%s" data-kind="%s" data-alarm="%s" data-name="%s" data-page="%d">'
                         % (code, no, "warning" if warning else "alarm", html.escape(a["name"], quote=True),
                            html.escape(d["name"] or a["name"], quote=True), d["page"]))
-            body.append('<h2 id="AL%s">%s</h2>' % (code, title))
-            body.append('<div class="alarm"><b>%s %s: %s</b>%s</div>'
+            # the alarm (the group) first, then its detail
+            body.append('<header class="alarm"><h2>%s %s: %s</h2>%s</header>'
                         % ("Warning" if warning else "Alarm", no, html.escape(a["name"]), a["content"]))
-            for header, rows in d["parts"]:
-                body.append('<table>\n%s\n%s\n</table>' % (header, rows))
+            body.append('<h3 id="AL%s">%s</h3>' % (code, title))
+            # one table: the parts a page end cut it into, joined under one heading row
+            body.append('<table>\n%s\n%s\n</table>' % (d["parts"][0][0], "\n".join(rows for _, rows in d["parts"])))
             body.append('<p class="src">MR-J4 Troubleshooting (SH-030109-L), page %s &middot; '
                         '<a href="%s#page=%d">open the manual at this page</a></p>'
                         % (printed_mrj4(d["page"]), MRJ4_PDF, d["page"]))
             body.append('</section>')
             n += 1
-    intro = """<p>The code in the <b>Servo alarm</b> column of Axis Settings is the number on the servo amplifier's display:
-<b>16.3</b> is alarm 16, detail 3. This page is the part of the MR-J4 troubleshooting manual for that code.</p>
-<div class="safety"><b>CAUTION (from the manual).</b> When any alarm has occurred, eliminate its cause, ensure safety, and
-deactivate the alarm before restarting operation. If [AL. 25 Absolute position erased] occurs, always make home position
-setting again. As soon as an alarm occurs, make the Servo-off status and interrupt the main circuit power.</div>
-<div class="note"><b>Do not cycle the power repeatedly</b> after [AL. 30 Regenerative error], [AL. 45 Main circuit device
-overheat], [AL. 46 Servo motor overheat], [AL. 50 Overload 1] or [AL. 51 Overload 2]. Remove the cause and allow about
-30 minutes for cooling before resuming the operation.</div>
-<p class="how">Work down the table: check each <b>Cause</b> in order with its <b>Check method</b>; the <b>Check result</b>
-tells you the <b>Action</b>, or which cause to check next.</p>"""
-    write("Servo_Alarm_Codes.en.html", "Servo amplifier alarms and warnings (MR-J4)", intro, "\n".join(body))
+    write("Servo_Alarm_Codes.en.html", "Servo amplifier alarms and warnings (MR-J4)", "\n".join(body))
     return n
 
 
@@ -345,35 +348,6 @@ tells you the <b>Action</b>, or which cause to check next.</p>"""
 # FX5-40SSC-S: one section per error / warning code (1904H)
 # ---------------------------------------------------------------------------
 HEX_RE = re.compile(r"^([0-9A-F]{4})H$")
-
-ERROR_CLASSES = [
-    (0x1080, 0x1080, "IF (interface) errors"), (0x18B0, 0x18B1, "IF (interface) errors"),
-    (0x1900, 0x193F, "Positioning control common errors"), (0x1940, 0x197F, "Home position return errors"),
-    (0x1980, 0x198F, "JOG, inching and manual pulse generator operation errors"),
-    (0x1990, 0x19EF, "Positioning operation errors"), (0x19F0, 0x19FF, "Block start data errors"),
-    (0x1A00, 0x1A0F, "Condition data errors"), (0x1A10, 0x1A5F, "Positioning data errors"),
-    (0x1A60, 0x1A9F, "Basic parameter errors"), (0x1AA0, 0x1AFF, "Detailed parameter errors"),
-    (0x1B00, 0x1B3F, "Home position return parameter errors"), (0x1B40, 0x1B9F, "Expansion/Common parameter errors"),
-    (0x1BA0, 0x1BDF, "Synchronous control input axis errors"), (0x1BE0, 0x1C3F, "Synchronous control output axis errors"),
-    (0x1C80, 0x1C8F, "Servo amplifier errors"), (0x3000, 0x30FF, "Initial process errors (moderate)"),
-]
-WARNING_CLASSES = [
-    (0x0900, 0x093F, "Positioning control common warnings"),
-    (0x0980, 0x098F, "JOG, inching and manual pulse generator operation warnings"),
-    (0x0990, 0x09EF, "Positioning operation warnings"), (0x09F0, 0x09FF, "Block start data warnings"),
-    (0x0A10, 0x0A5F, "Positioning data warnings"), (0x0BA0, 0x0BDF, "Synchronous control input axis warnings"),
-    (0x0BE0, 0x0C3F, "Synchronous control output axis warnings"), (0x0C40, 0x0C7F, "Cam data operation warnings"),
-    (0x0C80, 0x0C8F, "Servo amplifier warnings"),
-]
-
-
-def classify(code, classes):
-    v = int(code, 16)
-    for lo, hi, name in classes:
-        if lo <= v <= hi:
-            return "%s (%04XH&ndash;%04XH)" % (name, lo, hi) if lo != hi else name
-    return ""
-
 
 def columns(page):
     """The table's column lines: the long verticals, plus the rules' two ends."""
@@ -436,16 +410,13 @@ def build_ssc(pages):
     return codes, notes
 
 
-def write_ssc(codes, notes, file_name, title, what, classes, intro):
+def write_ssc(codes, notes, file_name, title, what):
     kind = "warning" if what == "Warning" else "alarm"
     body = []
     for code, c in codes.items():
-        cls = classify(code, classes)
         body.append('<section class="code" data-code="%s" data-group="%s" data-kind="%s" data-name="%s" data-page="%d">'
                     % (code, code, kind, html.escape(c["name"], quote=True), c["page"]))
         body.append('<h2 id="C%s">%sH &mdash; %s</h2>' % (code, code, html.escape(c["name"])))
-        if cls:
-            body.append('<p class="cls">%s</p>' % cls)
         body.append('<table>\n<tr><th>%s details and causes</th><th>Remedy</th></tr>' % what)
         for det, rem in c["rows"]:
             body.append('<tr><td>%s</td><td>%s</td></tr>' % (det, rem))
@@ -458,7 +429,7 @@ def write_ssc(codes, notes, file_name, title, what, classes, intro):
                     'page %d &middot; <a href="%s#page=%d">open the manual at this page</a></p>'
                     % (c["page"] + SSC_PRINTED_OFFSET, SSC_PDF, c["page"]))
         body.append('</section>')
-    write(file_name, title, intro, "\n".join(body))
+    write(file_name, title, "\n".join(body))
     return len(codes)
 
 
@@ -467,23 +438,21 @@ STYLE = """<style>
  body{font-family:"Segoe UI",Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.5em;color:#23262c;line-height:1.45;font-size:14px}
  h1{font-size:1.45em;border-bottom:2px solid #1e78dc;padding-bottom:.3em}
  h2{font-size:1.2em;margin:1.6em 0 .5em;background:#f2f5f9;padding:.45em .7em;border-left:4px solid #1e78dc}
+ header.alarm{margin:1.6em 0 .5em;background:#f2f5f9;padding:.45em .7em;border-left:4px solid #1e78dc}
+ header.alarm h2{margin:0;padding:0;background:none;border:0}
+ header.alarm ul{margin:.2em 0 0 1.2em;padding:0}
+ h3{font-size:1.08em;margin:.9em 0 .4em}
  table{border-collapse:collapse;width:100%;margin:.5em 0 .8em}
  th,td{border:1px solid #9aa1ab;padding:.35em .5em;vertical-align:top;text-align:left}
  th{background:#e3e8ef;font-weight:600}
  td ul{margin:.1em 0 .1em 1.1em;padding:0} td li{margin:.05em 0}
- .alarm{background:#fafbfc;border:1px solid #d5d9df;padding:.5em .8em;margin:.4em 0}
- .alarm ul{margin:.2em 0 0 1.2em;padding:0}
- .cls{color:#5b6270;margin:.2em 0 .4em}
  .src{color:#5b6270;font-size:.9em} .fn{font-size:.92em;color:#3b4250}
- .safety{background:#fdecec;border-left:4px solid #d62424;padding:.6em .9em;margin:.8em 0}
- .note{background:#fff8e1;border-left:4px solid #e0a800;padding:.6em .9em;margin:.8em 0}
- .how{background:#e9f3fd;border-left:4px solid #1e78dc;padding:.6em .9em;margin:.8em 0}
  .missing{background:#fff3cd;border-left:4px solid #d7a528;padding:.7em 1em;margin:1em 0}
  @media print{h2{break-after:avoid}section{break-inside:avoid-page}}
 </style>"""
 
 
-def write(name, title, intro, body):
+def write(name, title, body):
     page = """<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>%s</title>
@@ -494,9 +463,8 @@ def write(name, title, intro, body):
 </head><body>
 <h1>%s</h1>
 %s
-%s
 </body></html>
-""" % (html.escape(title), STYLE, html.escape(title), intro, body)
+""" % (html.escape(title), STYLE, html.escape(title), body)
     with open(os.path.join(HELP, name), "w", encoding="utf-8", newline="\r\n") as f:
         f.write(page)
 
@@ -507,20 +475,8 @@ def main():
 
     w, wn = build_ssc(SSC_WARNING_PAGES)
     e, en = build_ssc(SSC_ERROR_PAGES)
-    clear = """<div class="how"><b>Clearing it.</b> Remove the cause first, then reset. The module clears the code when
-the PLC sets <b>[Cd.5] Axis error reset</b> for the axis; which button does that on this machine is set by its PLC
-program.</div>"""
-    n2 = write_ssc(w, wn, "Axis_Warning_Codes.en.html", "Axis warnings (Simple Motion module)", "Warning", WARNING_CLASSES,
-                   """<p>The code in the <b>Axis warning</b> column of Axis Settings is the Simple Motion module's warning
-number ([Md.24] Axis warning No.). A warning does not stop the axis, but the operation it refers to is not carried out.
-This page is the part of the module's manual for that code.</p>""" + clear +
-                   """<p class="note">Codes from the <b>servo amplifier</b> are not in this list: they are in the
-<b>Servo alarm</b> column and have their own help.</p>""")
-    n3 = write_ssc(e, en, "Axis_Error_Codes.en.html", "Axis errors (Simple Motion module)", "Error", ERROR_CLASSES,
-                   """<p>The code in the <b>Axis alarm</b> column of Axis Settings is the Simple Motion module's error
-number ([Md.23] Axis error No.). This page is the part of the module's manual for that code.</p>""" + clear +
-                   """<p class="note"><b>1C80H</b> means the servo amplifier itself raised an alarm: see the
-<b>Servo alarm</b> column for its code.</p>""")
+    n2 = write_ssc(w, wn, "Axis_Warning_Codes.en.html", "Axis warnings (Simple Motion module)", "Warning")
+    n3 = write_ssc(e, en, "Axis_Error_Codes.en.html", "Axis errors (Simple Motion module)", "Error")
     print("servo alarm details: %d, axis warnings: %d, axis errors: %d" % (n1, n2, n3))
 
 

@@ -62,7 +62,18 @@ class AC {
         string html = File.Exists(page) ? File.ReadAllText(page) : "";
         Check("written to its own page", page.StartsWith(Path.GetTempPath()) && html.Length > 0, page);
         Check("  holding only 16.3", Sections(html) == 1 && html.Contains("data-code=\"16.3\""), Sections(html) + " sections");
-        Check("  with the manual's caution", html.Contains("CAUTION"));
+        Check("  nothing above it: no title, no general notes (no CAUTION, no 'Work down the table')",
+              !html.Contains("CAUTION") && !html.Contains("Work down") && !html.Contains("<h1") &&
+              html.IndexOf("<body>") < html.IndexOf("<section") && !Regex.IsMatch(html.Substring(html.IndexOf("<body>"), html.IndexOf("<section") - html.IndexOf("<body>")), "<(p|div|h\\d)"));
+        Check("  the alarm first ('Alarm 16: ...'), then the detail ('AL. 16.3 - ...')",
+              html.IndexOf("<h2>Alarm 16:") > 0 && html.IndexOf("<h2>Alarm 16:") < html.IndexOf("<h3 id=\"AL16.3\">AL. 16.3"));
+        Check("  one table, one heading row, no Detail No./Detail name columns",
+              Regex.Matches(html, "<table>").Count == 1 && Regex.Matches(html, "<tr><th").Count == 1 && !html.Contains("<div>Detail"));
+        var split = AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, 0x521);
+        var s52 = File.ReadAllText(TroubleshootingCatalog.ExtractSection(split));
+        Check("52.1, two pages of the manual: ONE table all the same, causes (1) to (14) in it",
+              Regex.Matches(s52, "<table>").Count == 1 && Regex.Matches(s52, "<tr><th").Count == 1 &&
+              s52.Contains("<div>(1)</div>") && s52.Contains("<div>(12)</div>") && s52.Contains("<div>(14)</div>"));
         Check("  and a base pointing at the Help folder (the link to the PDF works from the copy)",
               html.Contains("<base href=\"file:") && html.Contains("MR_J4_TroubleShooting.pdf#page="));
 
@@ -72,6 +83,8 @@ class AC {
                                       "data-group=\"16\"").Count;
         Check("an unlisted detail shows every detail of its alarm, and says so",
               Sections(html) == details16 && html.Contains("has no entry for"), Sections(html) + " of " + details16);
+        Check("  the alarm's caption once, above the first of them",
+              Regex.Matches(html, "<h2>Alarm 16:").Count == 1 && Regex.Matches(html, "<h3 id=\"AL16\\.").Count == details16);
 
         doc = AxisCodeHelp.Document(AxisCodeKind.AxisError, 0x1904);
         html = File.ReadAllText(TroubleshootingCatalog.ExtractSection(doc));

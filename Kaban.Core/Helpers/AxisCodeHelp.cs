@@ -37,8 +37,8 @@ namespace Kaban.Core.Helpers
     /// tools/build_code_help.py reads the manuals' code tables once into HTML,
     /// one &lt;section class="code" data-code="16.3" data-group="16"
     /// data-kind="alarm" data-alarm="..." data-name="..."&gt; per code. Extract() copies the
-    /// matching sections - with the document's own introduction and its safety
-    /// notes - into a page of their own. Each section links back to its page of
+    /// matching sections - the code's caption and its table of causes and
+    /// remedies, nothing else - into a page of their own. Each section links back to its page of
     /// the original PDF, so the whole manual stays one click away.
     ///
     /// A servo DETAIL the manual does not list ("16.0") falls back to every
@@ -251,7 +251,9 @@ namespace Kaban.Core.Helpers
 
         /// <summary>
         /// Writes a page holding only the code's sections, and returns its path;
-        /// the whole document when it cannot.
+        /// the whole document when it cannot. Nothing of the document above its
+        /// first section is copied but its head: the page is the code's caption
+        /// and its table of causes and remedies, nothing else to read first.
         ///
         /// A &lt;base&gt; pointing at the Help folder goes into the copy: it is
         /// written to the temp folder, and without it the link to the PDF and any
@@ -276,7 +278,11 @@ namespace Kaban.Core.Helpers
                     fallback = chosen.Count > 0;
                 }
 
-                var page = new StringBuilder(html.Substring(0, first));
+                // Just the code: the document's head (its style) and the sections -
+                // not its title or anything else above the first section.
+                int body = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
+                body = body < 0 ? first : Math.Min(first, html.IndexOf('>', body) + 1);
+                var page = new StringBuilder(html.Substring(0, body)).Append("\r\n");
                 if (fallback)
                     page.Append("<div class=\"missing\">The manual has no entry for <b>" + WebUtility.HtmlEncode(doc.Code) +
                                 "</b>. These are the entries of alarm <b>" + WebUtility.HtmlEncode(doc.CodeGroup) +
@@ -285,7 +291,16 @@ namespace Kaban.Core.Helpers
                     page.Append("<div class=\"missing\">Code <b>" + WebUtility.HtmlEncode(doc.Code) +
                                 "</b> is not listed in this document. Look it up in the manual itself: " +
                                 ManualLinks(html) + "</div>\r\n");
-                foreach (var s in chosen) page.Append(s.Value).Append("\r\n");
+                // Several details of one alarm: the alarm's caption once, above the first.
+                string shownGroup = null;
+                foreach (var s in chosen)
+                {
+                    var section = s.Value;
+                    var group = GroupCaption.Match(section);
+                    if (group.Success && group.Value == shownGroup) section = section.Remove(group.Index, group.Length);
+                    else if (group.Success) shownGroup = group.Value;
+                    page.Append(section).Append("\r\n");
+                }
                 page.Append("</body></html>\r\n");
 
                 string result = page.ToString();
@@ -305,6 +320,10 @@ namespace Kaban.Core.Helpers
                 return full;
             }
         }
+
+        /// <summary>A servo section's alarm caption: &lt;header class="alarm"&gt;...&lt;/header&gt;.</summary>
+        private static readonly Regex GroupCaption = new Regex("<header\\s+class=\"alarm\"[^>]*>.*?</header>",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
         private static readonly Regex SectionBlock = new Regex("<section\\s+class=\"code\"[^>]*>.*?</section>",
             RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
