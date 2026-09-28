@@ -23,7 +23,8 @@ namespace Kaban.UI.Settings
     ///   * Period: the last hour, today, yesterday, 7 or 30 days, everything
     ///     kept - or any From/To (changing either picks "From - to").
     ///   * Search: every word must appear, in any case - "D210 admin".
-    ///   * User and Kind (sign-in, connection, PLC writes, problems, settings).
+    ///   * User, controller (PLC) and Kind (sign-in, connection, PLC writes,
+    ///     problems, settings).
     ///   * Live: a period that runs up to now follows new entries; the row being
     ///     read stays where it is.
     ///   * Newest first; click the Time heading to turn it round.
@@ -42,6 +43,7 @@ namespace Kaban.UI.Settings
         private readonly DateTimePicker _to = new DateTimePicker();
         private readonly TextBox _search = new TextBox();
         private readonly ComboBox _user = new ComboBox();
+        private readonly ComboBox _plc = new ComboBox();
         private readonly ComboBox _kind = new ComboBox();
         private readonly CheckBox _live = new CheckBox();
         private readonly DataGridView _grid = new DataGridView();
@@ -118,6 +120,17 @@ namespace Kaban.UI.Settings
             _user.SelectedIndex = 0;
             _user.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
 
+            // THE CONTROLLER an entry is about: a write names its PLC, a connection
+            // entry its station (AuditLogReader.StationOf). Entries about no
+            // controller (a sign-in, a setting) are left out once one is chosen.
+            _plc.DropDownStyle = ComboBoxStyle.DropDownList;
+            _plc.Width = 190;
+            _plc.Items.Add(new Choice(null, LanguageManager.GetString("Log_AllPlcs", "All controllers")));
+            _plc.SelectedIndex = 0;
+            _tips.SetToolTip(_plc, LanguageManager.GetString("Log_PlcTip",
+                "Only the entries about this controller: its writes, its connection losses and returns."));
+            _plc.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
+
             _kind.DropDownStyle = ComboBoxStyle.DropDownList;
             _kind.Width = 150;
             _kind.Items.Add(new Choice(null, LanguageManager.GetString("Log_KindAll", "All kinds")));
@@ -150,6 +163,7 @@ namespace Kaban.UI.Settings
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_To", "To")), _to));
             bar.Controls.Add(Pair(caption("\uD83D\uDD0D"), _search));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_User", "User")), _user));
+            bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Plc", "PLC")), _plc));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Kind", "Kind")), _kind));
             bar.Controls.Add(_live);
             var clear = UiStyle.ToolButton("✖", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and kind"),
@@ -184,6 +198,7 @@ namespace Kaban.UI.Settings
             _grid.DefaultCellStyle.SelectionForeColor = Color.Black;
             _grid.Columns.Add(Column("Time", LanguageManager.GetString("Log_ColTime", "Time") + "  ▼", 160));
             _grid.Columns.Add(Column("User", LanguageManager.GetString("Log_ColUser", "User"), 110));
+            _grid.Columns.Add(Column("Plc", LanguageManager.GetString("Log_ColPlc", "PLC"), 50));
             _grid.Columns.Add(Column("Kind", LanguageManager.GetString("Log_ColKind", "Kind"), 120));
             var entry = Column("Entry", LanguageManager.GetString("Log_ColEntry", "Entry"), 400);
             entry.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -358,6 +373,7 @@ namespace Kaban.UI.Settings
                         (read.Count == 0 || ReferenceEquals(read[read.Count - 1], _inPeriod[_inPeriod.Count - 1]));
             _inPeriod = read;
             RefreshUsers();
+            RefreshPlcs();
             if (!same) ApplyFilter(false);
             else UpdateStatus();
         }
@@ -386,15 +402,59 @@ namespace Kaban.UI.Settings
             finally { _setting = false; }
         }
 
-        /// <summary>The entries of the period that pass the search, user and kind.</summary>
+        /// <summary>The controllers of this program - and any other the period's entries name.</summary>
+        private void RefreshPlcs()
+        {
+            var names = new SortedDictionary<int, string>();
+            try
+            {
+                foreach (var ep in PlcConnectionSettings.Endpoints())
+                    if (!names.ContainsKey(ep.StationId)) names[ep.StationId] = Kaban.UI.Helpers.PlcEndpointNaming.Caption(ep);
+            }
+            catch { }
+            foreach (var st in _inPeriod.Where(e => e.Station.HasValue).Select(e => e.Station.Value).Distinct())
+                if (!names.ContainsKey(st)) names[st] = "";
+            var chosen = CurrentStation;
+            if (chosen.HasValue && !names.ContainsKey(chosen.Value)) names[chosen.Value] = "";
+            var want = names.Select(kv => "PLC " + kv.Key + (kv.Value.Length > 0 ? " - " + kv.Value : "")).ToList();
+            var now = _plc.Items.Cast<object>().Skip(1).Select(Convert.ToString).ToList();
+            if (now.SequenceEqual(want)) return;
+            _setting = true;
+            try
+            {
+                _plc.BeginUpdate();
+                while (_plc.Items.Count > 1) _plc.Items.RemoveAt(1);
+                int i = 0;
+                foreach (var kv in names) _plc.Items.Add(new Choice(kv.Key, want[i++]));
+                _plc.SelectedIndex = 0;
+                if (chosen.HasValue)
+                    for (int k = 1; k < _plc.Items.Count; k++)
+                        if ((int)((Choice)_plc.Items[k]).Value == chosen.Value) _plc.SelectedIndex = k;
+                _plc.EndUpdate();
+            }
+            finally { _setting = false; }
+        }
+
+        private int? CurrentStation
+        {
+            get
+            {
+                var c = _plc.SelectedItem as Choice;
+                return c == null || c.Value == null ? (int?)null : (int)c.Value;
+            }
+        }
+
+        /// <summary>The entries of the period that pass the search, user, controller and kind.</summary>
         public List<AuditEntry> Filtered()
         {
             string search = _search.Text;
             string user = _user.SelectedIndex > 0 ? Convert.ToString(_user.SelectedItem) : null;
             var kindChoice = _kind.SelectedItem as Choice;
             AuditKind? kind = kindChoice == null || kindChoice.Value == null ? (AuditKind?)null : (AuditKind)kindChoice.Value;
+            int? station = CurrentStation;
             return _inPeriod.Where(e =>
                     (user == null || string.Equals(e.User, user, StringComparison.OrdinalIgnoreCase)) &&
+                    (!station.HasValue || e.Station == station) &&
                     (!kind.HasValue || e.Kind == kind.Value) &&
                     AuditLogReader.Matches(e, search)).ToList();
         }
@@ -483,7 +543,7 @@ namespace Kaban.UI.Settings
             var e = Selected();
             _detail.Text = e == null ? "" :
                 (e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "   " + e.User + "   " +
-                 KindName(e.Kind) + Environment.NewLine + e.Text.Replace("\n", Environment.NewLine));
+                 (e.Station.HasValue ? "PLC " + e.Station.Value + "   " : "") + KindName(e.Kind) + Environment.NewLine + e.Text.Replace("\n", Environment.NewLine));
         }
 
         private void OnCellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
@@ -494,7 +554,8 @@ namespace Kaban.UI.Settings
             {
                 case 0: e.Value = entry.Time.ToString("yyyy-MM-dd  HH:mm:ss", CultureInfo.InvariantCulture); break;
                 case 1: e.Value = entry.User; break;
-                case 2: e.Value = KindName(entry.Kind); break;
+                case 2: e.Value = entry.Station.HasValue ? entry.Station.Value.ToString(CultureInfo.InvariantCulture) : ""; break;
+                case 3: e.Value = KindName(entry.Kind); break;
                 default:
                     int nl = entry.Text.IndexOf('\n');
                     e.Value = nl < 0 ? entry.Text : entry.Text.Substring(0, nl) + "  …";
@@ -508,7 +569,7 @@ namespace Kaban.UI.Settings
             if (entry == null) return;
             if (entry.Kind == AuditKind.Problem) e.CellStyle.ForeColor = Color.FromArgb(170, 30, 30);
             else if (entry.Kind == AuditKind.Connection) e.CellStyle.ForeColor = Color.FromArgb(20, 80, 150);
-            else if (e.ColumnIndex == 2) e.CellStyle.ForeColor = Color.FromArgb(90, 96, 106);
+            else if (e.ColumnIndex == 3) e.CellStyle.ForeColor = Color.FromArgb(90, 96, 106);
         }
 
         private void ClearFilters()
@@ -518,6 +579,7 @@ namespace Kaban.UI.Settings
             {
                 _search.Text = "";
                 _user.SelectedIndex = 0;
+                _plc.SelectedIndex = 0;
                 _kind.SelectedIndex = 0;
             }
             finally { _setting = false; }
@@ -563,12 +625,14 @@ namespace Kaban.UI.Settings
         public static string ExportText(IEnumerable<AuditEntry> entries, bool csv)
         {
             var sb = new StringBuilder();
-            if (csv) sb.Append("Time;User;Kind;Entry\r\n");
+            if (csv) sb.Append("Time;User;PLC;Kind;Entry\r\n");
             foreach (var e in entries)
             {
                 if (csv)
                     sb.Append(e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)).Append(';')
-                      .Append(Csv(e.User)).Append(';').Append(Csv(KindName(e.Kind))).Append(';')
+                      .Append(Csv(e.User)).Append(';')
+                      .Append(e.Station.HasValue ? e.Station.Value.ToString(CultureInfo.InvariantCulture) : "").Append(';')
+                      .Append(Csv(KindName(e.Kind))).Append(';')
                       .Append(Csv(e.Text)).Append("\r\n");
                 else
                     sb.Append(e.ToLogLine().Replace("\n", "\r\n")).Append("\r\n");
@@ -599,6 +663,15 @@ namespace Kaban.UI.Settings
                 if ((v == null && !k.HasValue) || (v != null && k.HasValue && (AuditKind)v == k.Value)) _kind.SelectedIndex = i;
             }
         }
+        public void SetStation(int? station)
+        {
+            _plc.SelectedIndex = 0;
+            if (station.HasValue)
+                for (int k = 1; k < _plc.Items.Count; k++)
+                    if ((int)((Choice)_plc.Items[k]).Value == station.Value) _plc.SelectedIndex = k;
+        }
+        public List<string> PlcChoices { get { return _plc.Items.Cast<object>().Select(Convert.ToString).ToList(); } }
+
         public void SetUser(string user)
         {
             int i = user == null ? 0 : _user.Items.IndexOf(user);

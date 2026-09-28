@@ -35,7 +35,9 @@ class MG {
         DisplaySettings.SettingsPath = Path.Combine(dir, "Display.cfg");
 
         Console.WriteLine("--- the factor, kept ---");
-        Check("0.75 .. 2 in steps of 0.05", DisplaySettings.Clamp(0.5) == 0.75 && DisplaySettings.Clamp(3) == 2 && DisplaySettings.Clamp(1.23) == 1.25 && DisplaySettings.Clamp(double.NaN) == 1);
+        Check("0.8 .. 1.5 in steps of 0.05", DisplaySettings.Clamp(0.5) == 0.8 && DisplaySettings.Clamp(3) == 1.5 && DisplaySettings.Clamp(1.23) == 1.25 && DisplaySettings.Clamp(double.NaN) == 1);
+        Check("  a factor kept from before the range narrowed (2, 0.75) is brought within it", DisplaySettings.Clamp(2) == 1.5 && DisplaySettings.Clamp(0.75) == 0.8);
+        Check("  typed outside it: refused (0.75, 1.75, 2)", DisplaySettings.Parse("0.75") == null && DisplaySettings.Parse("1.75") == null && DisplaySettings.Parse("2") == null);
         Check("typed: 1.5, 1,5, 150% - and not 3 or 'big'", DisplaySettings.Parse("1.5") == 1.5 && DisplaySettings.Parse("1,5") == 1.5 &&
               DisplaySettings.Parse("150%") == 1.5 && DisplaySettings.Parse("3") == null && DisplaySettings.Parse("big") == null);
         Check("nothing kept yet: 1 everywhere", DisplaySettings.PanelFactor == 1 && DisplaySettings.StartFactor == 1 && DisplaySettings.UserFactor("ayse") == null);
@@ -226,7 +228,7 @@ class MG {
         SecurityManager.Logout();
         Check("signed out: nothing", MainForm.MagnifierToOffer() == null);
         UserStore.AddOrUpdateUser("temp_mag", "pw", SecurityLevel.Operator);
-        DisplaySettings.SetUserFactor("temp_mag", 1.75);
+        DisplaySettings.SetUserFactor("temp_mag", 1.4);
         UserStore.RemoveUser("temp_mag");
         Check("a user deleted takes their factor along", DisplaySettings.UserFactor("temp_mag") == null);
 

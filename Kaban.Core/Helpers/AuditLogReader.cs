@@ -33,6 +33,9 @@ namespace Kaban.Core.Helpers
         public string Text = "";
         public AuditKind Kind;
 
+        /// <summary>The controller (HMI station number) the entry is about, when it names one.</summary>
+        public int? Station;
+
         /// <summary>The line as the log file holds it (the first line for a report).</summary>
         public string ToLogLine()
         {
@@ -179,7 +182,8 @@ namespace Kaban.Core.Helpers
                                 Time = t,
                                 User = m.Groups[2].Value,
                                 Text = m.Groups[3].Value,
-                                Kind = Classify(m.Groups[3].Value)
+                                Kind = Classify(m.Groups[3].Value),
+                                Station = StationOf(m.Groups[3].Value)
                             });
                         }
                         else if (c.Entries.Count > 0)
@@ -230,6 +234,35 @@ namespace Kaban.Core.Helpers
                 t.Contains("audit logging") || t.StartsWith("kept the"))
                 return AuditKind.Settings;
             return AuditKind.Other;
+        }
+
+        // "(PLC 2)", "(PLC 2, control tag ...)", "PLC station 3", "station 1 lost",
+        // "(station 2)" - and the same word in the other languages, as a controller's
+        // caption writes it. Not "logical station" / "Mitsubishi station": those
+        // are MX Component's numbers, not the HMI's.
+        private static readonly Regex[] StationRx =
+        {
+            new Regex(@"\(PLC (\d+)[,)]", RegexOptions.Compiled),
+            new Regex(@"\bPLC (?:station )?(\d+)\b", RegexOptions.Compiled | RegexOptions.IgnoreCase),
+            new Regex(@"(?<!logical |Mitsubishi |logischen |mantıksal )\b(?:station|istasyon|станция|stazione|estación) (\d+)\b",
+                      RegexOptions.Compiled | RegexOptions.IgnoreCase)
+        };
+
+        /// <summary>
+        /// The controller an entry is about, from its wording - "(PLC 2)" as a
+        /// write writes it, "station 3 lost", "(station 2)" in a controller's
+        /// caption; null when it names none (a sign-in, a setting).
+        /// </summary>
+        public static int? StationOf(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return null;
+            foreach (var rx in StationRx)
+            {
+                var m = rx.Match(text);
+                int n;
+                if (m.Success && int.TryParse(m.Groups[1].Value, out n)) return n;
+            }
+            return null;
         }
 
         /// <summary>

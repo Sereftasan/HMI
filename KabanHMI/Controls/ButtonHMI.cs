@@ -1392,7 +1392,7 @@ namespace Kaban.UI.Controls
             foreach (var h in held)
             {
                 try { WriteBit(driver, h.Key, false, h.Value); }
-                catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " failed: " + ex.Message); }
+                catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " (PLC " + PlcNumber + ") failed: " + ex.Message); }
             }
         }
 
@@ -1432,7 +1432,8 @@ namespace Kaban.UI.Controls
 
             if (ok && LogAction)
             {
-                AuditLogger.Log($"set bit {effectiveAddress} (control tag '{originalAddress}') to {(setOn ? 1 : 0)}.");
+                // "(PLC n)": the log viewer's controller filter reads it.
+                AuditLogger.Log($"set bit {effectiveAddress} (PLC {PlcNumber}, control tag '{originalAddress}') to {(setOn ? 1 : 0)}.");
             }
             return ok;
         }
@@ -1449,7 +1450,7 @@ namespace Kaban.UI.Controls
 
             if (ok && LogAction)
             {
-                AuditLogger.Log($"wrote {value} to {effAddr} (control tag '{action.Address}').");
+                AuditLogger.Log($"wrote {value} to {effAddr} (PLC {PlcNumber}, control tag '{action.Address}').");
             }
             return ok;
         }

@@ -325,24 +325,43 @@ namespace Kaban.Core.Helpers
         /// correctly for the old PROCESS, but the old process had not necessarily let
         /// go of the other stations by the time it exited, and MX Component refuses a
         /// second opener on a station it still considers held.
+        ///
+        /// ALL AT ONCE, and waited for: each station closes on its own thread (an MX
+        /// station may first have to wait for an Open() still running), so four
+        /// stations take as long as the slowest, not the sum - and the program does
+        /// not exit until they are closed and released, or a ceiling is reached.
         /// </summary>
         public void DisconnectAll()
         {
-            foreach (var id in new List<int>(_drivers.Keys))
+            var ids = new List<int>(_drivers.Keys);
+            var closing = new List<System.Threading.Tasks.Task>();
+            foreach (var id in ids)
             {
-                try
+                var driver = _drivers[id];
+                int station = id;
+                closing.Add(System.Threading.Tasks.Task.Run(() =>
                 {
-                    _drivers[id].Disconnect();
-                    var disposable = _drivers[id] as IDisposable;
-                    if (disposable != null) disposable.Dispose();   // sockets, COM handles
-                }
-                catch (Exception ex)
-                {
-                    AuditLogger.Log("[PLC DIAG] station " + id + " did not close cleanly: " + ex.Message);
-                }
+                    try
+                    {
+                        driver.Disconnect();
+                        var disposable = driver as IDisposable;
+                        if (disposable != null) disposable.Dispose();   // sockets, COM controls and their threads
+                    }
+                    catch (Exception ex)
+                    {
+                        AuditLogger.Log("[PLC DIAG] station " + station + " did not close cleanly: " + ex.Message);
+                    }
+                }));
             }
-            AuditLogger.Log("[PLC DIAG] all " + _drivers.Count + " station(s) closed.");
+            bool all = true;
+            try { all = System.Threading.Tasks.Task.WaitAll(closing.ToArray(), DisconnectAllCeilingMs); }
+            catch (Exception ex) { AuditLogger.Log("[PLC DIAG] closing the stations: " + ex.Message); }
+            AuditLogger.Log(all ? "[PLC DIAG] all " + ids.Count + " station(s) closed."
+                                : "[PLC DIAG] not every station closed within " + DisconnectAllCeilingMs / 1000 + " s.");
         }
+
+        /// <summary>How long shutdown waits for every station to close.</summary>
+        public const int DisconnectAllCeilingMs = 8000;
 
         public void Disconnect(int id)
         {

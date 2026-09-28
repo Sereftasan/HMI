@@ -4,7 +4,7 @@ using ActUtlTypeLib;
 
 namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 {
-    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver
+    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, IDisposable
     {
         // The actual MX Component Object
         private ActUtlType _plc;              // touched ONLY on _worker's thread
@@ -21,6 +21,16 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
         /// <summary>How long the UI waits for a read or write.</summary>
         private const int CallWaitMs = 1000;
+
+        /// <summary>
+        /// How long shutdown waits for the control to be closed and released - longer
+        /// than a read: an Open() still running (a reconnect attempt) has to finish
+        /// before its connection can be closed at all.
+        /// </summary>
+        public const int ShutdownWaitMs = 4000;
+
+        private volatile bool _opened;     // Open() succeeded and Close() has not been called since
+        private bool _disposed;
         private int _stationNumber;
         private volatile bool _isConnected = false;
         private volatile bool _needsFreshControl;
@@ -249,6 +259,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
                 if (returnCode == 0)
                 {
+                    _opened = true;
                     _isConnected = true;
                     _lastOpOk = true;
                     LastConnectError = "";
@@ -289,13 +300,57 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         {
             try
             {
-                _plc.Close();
+                if (_plc != null) _plc.Close();
             }
             catch { } // Ignore close errors
             finally
             {
+                _opened = false;
                 _isConnected = false;
             }
+        }
+
+        /// <summary>
+        /// SHUTDOWN, PROPERLY: the connection closed, the control RELEASED and its
+        /// thread ended - before the program exits.
+        ///
+        /// Closing was all the program did, and only if the MX thread was free
+        /// within a second; the control itself was never released and its thread
+        /// was simply killed with the process. With GX Works' simulator that is
+        /// what left the next start unable to connect until the simulator itself
+        /// was restarted: MX Component was never told the program had gone. Now an
+        /// Open() still running is waited for (a reconnect attempt), the connection
+        /// is closed, the control released on its own thread, and the thread's
+        /// message loop ended so COM is shut down for it.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            bool done;
+            if (_worker.IsWorkerThread) { ShutdownDirect(); done = true; }
+            else if (!_worker.TryRun(() => { ShutdownDirect(); return true; }, ShutdownWaitMs, out done)) done = false;
+            if (!done)
+                Kaban.Core.Helpers.AuditLogger.Log(
+                    $"[PLC DIAG] Mitsubishi station {_stationNumber}: a call to the controller was still running after " +
+                    $"{ShutdownWaitMs / 1000} s - the connection could not be closed before exit.");
+            _worker.Stop(1000);
+        }
+
+        private void ShutdownDirect()
+        {
+            var plc = _plc;
+            _plc = null;
+            bool wasOpen = _opened;
+            _opened = false;
+            _isConnected = false;
+            if (plc == null) return;
+            int rc = 0;
+            try { if (wasOpen) rc = plc.Close(); } catch (Exception ex) { rc = -1; LastConnectError = ex.Message; }
+            try { System.Runtime.InteropServices.Marshal.FinalReleaseComObject(plc); } catch { }
+            Kaban.Core.Helpers.AuditLogger.Log(
+                $"[PLC DIAG] Mitsubishi station {_stationNumber}: " +
+                (wasOpen ? $"connection closed (Close returned 0x{rc:X8}) and " : "") + "MX Component control released.");
         }
 
         public int Read(string address)

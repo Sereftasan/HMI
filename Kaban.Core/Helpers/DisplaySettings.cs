@@ -9,8 +9,13 @@ namespace Kaban.Core.Helpers
 {
     /// <summary>
     /// The MAGNIFYING FACTOR: how large the HMI draws its pages - text, buttons,
-    /// fields, the menus - from 0.75 (smaller, more on the screen) to 2 (twice
-    /// the size, for eyes that need it).
+    /// fields, the menus - from 0.8 (smaller, more on the screen) to 1.5 (half
+    /// as large again, for eyes that need it).
+    ///
+    /// 0.8 - 1.5, not 0.75 - 2: beyond these the pages - designed for the panel
+    /// at 1 - no longer draw well (at 2 a page is mostly scrolling, and below 0.8
+    /// the touch targets get too small), and this range covers the eyesight it
+    /// is for.
     ///
     /// Three values, kept in Display.cfg beside the other HMI settings:
     ///   Panel  - the factor for everyone who has none of their own (HMI Settings >
@@ -28,8 +33,8 @@ namespace Kaban.Core.Helpers
     /// </summary>
     public static class DisplaySettings
     {
-        public const double Min = 0.75;
-        public const double Max = 2.0;
+        public const double Min = 0.8;
+        public const double Max = 1.5;
         public const double Default = 1.0;
 
         /// <summary>Where the values are kept. Replaceable so a test can use its own file.</summary>
@@ -40,7 +45,8 @@ namespace Kaban.Core.Helpers
         private static readonly Dictionary<string, double> _users = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         private static bool _loaded;
 
-        /// <summary>Within 0.75 .. 2, in steps of 0.05; anything unreadable is 1.</summary>
+        /// <summary>Within 0.8 .. 1.5, in steps of 0.05; anything unreadable is 1. A factor kept
+        /// from before (up to 2) is brought within it.</summary>
         public static double Clamp(double factor)
         {
             if (double.IsNaN(factor) || double.IsInfinity(factor) || factor <= 0) return Default;
@@ -142,7 +148,7 @@ namespace Kaban.Core.Helpers
             {
                 var lines = new List<string>
                 {
-                    "# Kaban HMI magnifying factor (0.75 - 2). Panel: everyone's; Start: what the program starts with; User=<name>;<factor>",
+                    "# Kaban HMI magnifying factor (0.8 - 1.5). Panel: everyone's; Start: what the program starts with; User=<name>;<factor>",
                     "Panel=" + Format(_panel),
                     "Start=" + Format(_start)
                 };

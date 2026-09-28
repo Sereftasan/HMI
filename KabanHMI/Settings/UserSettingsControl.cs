@@ -25,7 +25,7 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _cmbPanelFactor = new ComboBox();
         private readonly Label _lblStatus = new Label();
 
-        private static readonly string[] FactorChoices = { "0.75", "0.90", "1.00", "1.10", "1.25", "1.50", "1.75", "2.00" };
+        private static readonly string[] FactorChoices = { "0.80", "0.90", "1.00", "1.10", "1.20", "1.25", "1.30", "1.40", "1.50" };
 
         public UserSettingsControl()
         {
@@ -99,7 +99,7 @@ namespace Kaban.UI.Settings
             btnSave.Click += (s, e) => SaveUser();
             btnDelete.Click += (s, e) => DeleteUser();
             tips.SetToolTip(_cmbFactor, LanguageManager.GetString("Tip_UsrFactor",
-                "The user's own magnifying factor, 0.75 to 2 (1.25 = a quarter larger). Empty: the panel's. " +
+                "The user's own magnifying factor, 0.8 to 1.5 (1.25 = a quarter larger). Empty: the panel's. " +
                 "When they sign in and the screen is at another factor, the HMI offers to restart with theirs."));
 
             // ---- the panel's factor, for everyone without one of their own ----
@@ -121,7 +121,7 @@ namespace Kaban.UI.Settings
             pn.Controls.Add(new Label
             {
                 Text = LanguageManager.GetString("Msg_FactorNote",
-                    "0.75 to 2. Text, buttons, fields and pages are drawn this much larger (or smaller). " +
+                    "0.8 to 1.5. Text, buttons, fields and pages are drawn this much larger (or smaller). " +
                     "Applied when the HMI starts: pages larger than the screen scroll."),
                 Left = 16, Top = y + 44, Width = 304, Height = 64, ForeColor = Color.FromArgb(90, 96, 106),
                 Font = new Font("Segoe UI", 9F)
@@ -208,7 +208,7 @@ namespace Kaban.UI.Settings
 
         private static string FactorHint
         {
-            get { return LanguageManager.GetString("Msg_FactorRange", "The magnifying factor is a number from 0.75 to 2 (1.25, 1.5 ...)."); }
+            get { return LanguageManager.GetString("Msg_FactorRange", "The magnifying factor is a number from 0.8 to 1.5 (1.1, 1.25 ...)."); }
         }
 
         private void SavePanelFactor()

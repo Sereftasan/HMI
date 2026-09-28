@@ -624,7 +624,7 @@ namespace Kaban.UI.Controls
 
                 if (LogAction)
                 {
-                    AuditLogger.Log($"wrote {val} to {effAddr} (control address '{Address}').");
+                    AuditLogger.Log($"wrote {val} to {effAddr} (PLC {PlcNumber}, control address '{Address}').");
                 }
             }
             catch (Exception ex)

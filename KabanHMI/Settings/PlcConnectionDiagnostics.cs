@@ -15,128 +15,48 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// PLC DIAGNOSTICS: "why is this controller not answering, and since when?"
-    /// answered on the machine, without a laptop. Three tabs:
+    /// PLC CONNECTION: one page for everything about the controllers - it was two
+    /// tabs, "PLC Connection" (what each controller is connected through) and
+    /// "PLC Diagnostics" (whether it answers), with a table each and the same
+    /// controllers in both. Now:
     ///
-    ///   * CONTROLLERS - every controller, its driver and address, whether it
-    ///     answers now, when it last did, the last error in words, and how often
-    ///     it dropped today (a link that drops forty times a day is a cable or a
-    ///     switch, not a program).
-    ///   * CONNECTION EVENTS - the audit log's connection entries (lost, back,
-    ///     driver reports), with the log viewer's time and text filters.
+    ///   * CONTROLLERS - one row per controller: its driver, logical station and
+    ///     address (edited by an Admin, used from the next start), and beside them
+    ///     how it is doing now - state, last answer, drops today, the last error in
+    ///     words, the program version (StationConnectionControl).
+    ///   * CONNECTION EVENTS - the audit log's connection entries, with the log
+    ///     viewer's time, text, user and controller filters.
     ///   * MX COMPONENT (Admin) - the environment report and the logical-station
-    ///     test and scan, for when the Communication Setting Utility and the HMI
-    ///     disagree.
+    ///     test and scan.
     ///
-    /// The page was the MX tools alone, and they misled: the test built a whole
-    /// driver per station (each leaving a thread behind), gave it 150 ms to open
-    /// and called a slower station "failed"; the scan froze the screen while it
-    /// ran; it opened a second control on the station the machine was using;
-    /// and it took its driver from station 1 - with the simulator there, every
-    /// station "answered".
+    /// Opens for Maintenance: reading the state and the events is for them too.
     /// </summary>
-    public class PlcDiagnosticsControl : UserControl
+    public static class PlcConnectionScreen
     {
-        public PlcDiagnosticsControl()
+        public static UserControl Build()
         {
-            Dock = DockStyle.Fill;
-            BackColor = Color.White;
             var tabs = new SettingsScreen(new ISettingsPage[]
             {
                 new SimplePage("Diag_TabControllers", "Controllers", SecurityLevel.Maintenance,
-                               () => new ControllerStatusView()),
+                               () => new StationConnectionControl()),
                 new SimplePage("Diag_TabEvents", "Connection events", SecurityLevel.Maintenance,
                                () => new LogViewerControl(AuditKind.Connection, LogViewerControl.Period.Today)),
                 new SimplePage("Diag_TabMx", "MX Component", SecurityLevel.Admin,
                                () => new MxToolsView())
             });
             tabs.Dock = DockStyle.Fill;
-            Controls.Add(tabs);
+            return tabs;
         }
     }
 
     /// <summary>
-    /// One row per controller, refreshed every second - the live state from
-    /// ConnectionMonitor, the connection from the drivers actually registered
-    /// (not from the settings file, which only takes effect after a restart).
+    /// How each controller is doing - for the Controllers table (and the tests):
+    /// the live state from ConnectionMonitor, the connection from the drivers
+    /// actually running (not from the settings file, which takes effect at the
+    /// next start), and how often it dropped today, counted from the log.
     /// </summary>
-    public class ControllerStatusView : UserControl
+    public static class ControllerStatus
     {
-        private readonly DataGridView _grid = new DataGridView();
-        private readonly System.Windows.Forms.Timer _timer = new System.Windows.Forms.Timer { Interval = ConnectionMonitor.BeatMs };
-        private readonly Label _note = new Label();
-        private Dictionary<int, int> _drops = new Dictionary<int, int>();
-        private DateTime _dropsRead = DateTime.MinValue;
-
-        private static readonly Color Ok = Color.FromArgb(0, 120, 40);
-        private static readonly Color Bad = Color.FromArgb(180, 40, 20);
-        private static readonly Color Dim = Color.FromArgb(120, 128, 138);
-
-        public ControllerStatusView()
-        {
-            Dock = DockStyle.Fill;
-            BackColor = Color.White;
-            Font = new Font("Segoe UI", 9.5F);
-
-            _grid.Dock = DockStyle.Fill;
-            _grid.ReadOnly = true;
-            _grid.AllowUserToAddRows = false;
-            _grid.AllowUserToDeleteRows = false;
-            _grid.AllowUserToResizeRows = false;
-            _grid.RowHeadersVisible = false;
-            _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _grid.BackgroundColor = Color.White;
-            _grid.BorderStyle = BorderStyle.FixedSingle;
-            _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            _grid.GridColor = Color.FromArgb(228, 231, 236);
-            _grid.RowTemplate.Height = 30;
-            _grid.EnableHeadersVisualStyles = false;
-            _grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(242, 244, 247);
-            _grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
-            _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(214, 228, 248);
-            _grid.DefaultCellStyle.SelectionForeColor = Color.Black;
-            Add("Plc", "Diag_ColPlc", "PLC", 45);
-            Add("Machine", "Diag_ColMachine", "Machine", 150);
-            Add("Driver", "Diag_ColDriver", "Driver", 150);
-            Add("Address", "Diag_ColAddress", "Connection", 130);
-            Add("State", "Diag_ColState", "State", 170);
-            Add("Last", "Diag_ColLast", "Last answer", 110);
-            Add("Drops", "Diag_ColDrops", "Drops today", 90);
-            var err = Add("Error", "Diag_ColError", "Last error", 200);
-            err.MinimumWidth = 120;
-            err.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Add("Version", "Diag_ColVersion", "Program", 70);
-
-            _note.Dock = DockStyle.Bottom;
-            _note.Height = 40;
-            _note.Padding = new Padding(2, 6, 0, 0);
-            _note.ForeColor = Dim;
-            _note.Text = LanguageManager.GetString("Diag_ControllersNote",
-                "Drivers and addresses as running now - a change on the PLC Connection page takes effect after a restart. " +
-                "Drops today: how often the link was lost since midnight (see Connection events).");
-
-            Controls.Add(_grid);
-            Controls.Add(_note);
-
-            _timer.Tick += (s, e) => RefreshRows();
-            VisibleChanged += (s, e) => { _timer.Enabled = Visible; if (Visible) RefreshRows(); };
-            RefreshRows();
-        }
-
-        private DataGridViewTextBoxColumn Add(string name, string key, string fallback, int width)
-        {
-            var c = new DataGridViewTextBoxColumn
-            {
-                Name = name,
-                HeaderText = LanguageManager.GetString(key, fallback),
-                Width = width,
-                SortMode = DataGridViewColumnSortMode.NotSortable
-            };
-            _grid.Columns.Add(c);
-            return c;
-        }
-
         /// <summary>A controller's row: what the page shows for it.</summary>
         public sealed class Row
         {
@@ -166,7 +86,7 @@ namespace Kaban.UI.Settings
             return rows.OrderBy(r => r.Station).ToList();
         }
 
-        private static Row RowFor(int station, string name, PlcConnectionSettings.Endpoint ep, IDictionary<int, int> drops)
+        public static Row RowFor(int station, string name, PlcConnectionSettings.Endpoint ep, IDictionary<int, int> drops)
         {
             var r = new Row { Station = station };
             var state = ConnectionMonitor.Get(station);
@@ -268,48 +188,6 @@ namespace Kaban.UI.Settings
                 }
             }
             return result;
-        }
-
-        private void RefreshRows()
-        {
-            if ((DateTime.Now - _dropsRead).TotalSeconds >= 30)
-            {
-                _drops = DropsToday();
-                _dropsRead = DateTime.Now;
-            }
-            var rows = BuildRows(_drops);
-            if (_grid.Rows.Count != rows.Count)
-            {
-                _grid.Rows.Clear();
-                foreach (var r in rows) _grid.Rows.Add();
-            }
-            for (int i = 0; i < rows.Count; i++)
-            {
-                var r = rows[i];
-                var cells = _grid.Rows[i].Cells;
-                Set(cells["Plc"], r.Station.ToString(CultureInfo.InvariantCulture));
-                Set(cells["Machine"], r.Machine);
-                Set(cells["Driver"], r.Driver);
-                Set(cells["Address"], r.Address);
-                Set(cells["State"], r.State);
-                cells["State"].Style.ForeColor = !r.Registered ? Dim : r.Live ? Ok : Bad;
-                Set(cells["Last"], r.Last);
-                Set(cells["Drops"], r.Drops == 0 ? "0" : r.Drops.ToString(CultureInfo.InvariantCulture));
-                cells["Drops"].Style.ForeColor = r.Drops > 0 ? Bad : Dim;
-                Set(cells["Error"], r.Error);
-                Set(cells["Version"], r.Version);
-            }
-        }
-
-        private static void Set(DataGridViewCell c, string v)
-        {
-            if (!Equals(c.Value, v)) c.Value = v;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing) { _timer.Stop(); _timer.Dispose(); }
-            base.Dispose(disposing);
         }
     }
 
@@ -446,7 +324,7 @@ namespace Kaban.UI.Settings
             try { foreach (var ep in PlcConnectionSettings.Endpoints()) ids.Add(ep.StationId); } catch { }
             foreach (int id in ids)
             {
-                var drv = ControllerStatusView.Unwrapped(PlcManager.Instance.GetDriverForMonitoring(id));
+                var drv = ControllerStatus.Unwrapped(PlcManager.Instance.GetDriverForMonitoring(id));
                 var p = drv == null ? null : drv.GetType().GetProperty("LogicalStation");
                 if (p == null) continue;
                 try { int n = Convert.ToInt32(p.GetValue(drv, null)); if (!used.ContainsKey(n)) used[n] = id; } catch { }
@@ -551,15 +429,5 @@ namespace Kaban.UI.Settings
             _stop = true;       // a running scan ends after the station being tried
             base.Dispose(disposing);
         }
-    }
-
-    public class PlcDiagnosticsPage : ISettingsPage
-    {
-        public string TitleKey => "Set_PlcDiag";
-        public string TitleFallback => "PLC Diagnostics";
-        // Reading the controllers' state and the connection events is for
-        // Maintenance too; the MX tools inside stay Admin.
-        public SecurityLevel RequiredLevel => SecurityLevel.Maintenance;
-        public UserControl GetControl() => new PlcDiagnosticsControl();
     }
 }

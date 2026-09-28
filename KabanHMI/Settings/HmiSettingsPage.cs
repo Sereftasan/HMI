@@ -24,8 +24,9 @@ namespace Kaban.UI.Settings
                 new UserSettingsPage(),
                 new ImportSettingsPage(),
                 new LogSettingsPage(),
+                // One tab for the controllers: connections, their state, the
+                // connection events and the MX Component tools (it was two).
                 new StationConnectionPage(),
-                new PlcDiagnosticsPage(),
                 new AiPromptPage(),
                 // No "Manual" tab: the manual is an HTML file opened from About.
                 new AboutPage()

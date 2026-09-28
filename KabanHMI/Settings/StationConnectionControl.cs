@@ -11,8 +11,12 @@ using Kaban.UI.Helpers;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// PLC CONNECTION (admin): which driver each machine controller talks
-    /// through, and on which station number.
+    /// PLC CONNECTION - CONTROLLERS: which driver each machine controller talks
+    /// through, and on which station number - and, beside it, how it is doing
+    /// now: state, last answer, drops today, the last error in words, the program
+    /// version. (The live columns were a second table on a PLC Diagnostics tab,
+    /// the same controllers twice; see PlcConnectionScreen.) Everyone from
+    /// Maintenance reads it; only an Admin changes a connection.
     ///
     /// One row per controller, named as the engineer names it - "FA2010 PLC1",
     /// "FA2010 PLC2", "Screwing PLC1" - so this page and the monitor's tabs read
@@ -28,7 +32,7 @@ namespace Kaban.UI.Settings
     /// Communication Setting Utility stores, which ActUtlType.ActLogicalStationNumber
     /// wants. It is NOT the HMI's own station id (the PlcNumber on a control): that
     /// belongs to the machine module and is shown greyed beside each row so the two
-    /// are never confused. PLC Diagnostics on the neighbouring tab will scan for the
+    /// are never confused. The MX Component tab beside this one scans for the
     /// number that actually answers.
     ///
     /// Changes take effect at the NEXT START. Swapping a driver under screens that
@@ -44,7 +48,18 @@ namespace Kaban.UI.Settings
             public NumericUpDown Station;
             public TextBox Address;
             public Label Status;
+            public Label Last, Drops, Error, Version;
         }
+
+        private Dictionary<int, int> _drops = new Dictionary<int, int>();
+        private DateTime _dropsRead = DateTime.MinValue;
+        private bool _canEdit;
+        private Button _btnReload;
+        private Label _adminNote;
+        private readonly EventHandler _onUserChanged;
+
+        private static readonly Color ColOk = Color.FromArgb(0, 120, 40);
+        private static readonly Color ColBad = Color.FromArgb(180, 40, 20);
 
         private readonly List<Row> _rows = new List<Row>();
         private readonly Timer _statusTimer;
@@ -53,6 +68,12 @@ namespace Kaban.UI.Settings
         private void RefreshAllStatus()
         {
             if (IsDisposed || !Visible) return;
+            // Drops are counted from the log: read at most every 30 s.
+            if ((DateTime.Now - _dropsRead).TotalSeconds >= 30)
+            {
+                _drops = ControllerStatus.DropsToday();
+                _dropsRead = DateTime.Now;
+            }
             foreach (var r in _rows) RefreshStatus(r);
         }
         private Button _btnSave;
@@ -77,11 +98,14 @@ namespace Kaban.UI.Settings
                 if (InvokeRequired) BeginInvoke((Action)RefreshAllStatus); else RefreshAllStatus();
             };
             ConnectionMonitor.ConnectionChanged += _onConnChanged;
+            _onUserChanged = (s, e) => { if (!IsDisposed) ApplyAccess(); };
+            SecurityManager.UserChanged += _onUserChanged;
             Disposed += (s, e) =>
             {
                 _statusTimer.Stop();
                 _statusTimer.Dispose();
                 ConnectionMonitor.ConnectionChanged -= _onConnChanged;
+                SecurityManager.UserChanged -= _onUserChanged;
             };
 
             Dock = DockStyle.Fill;
@@ -104,8 +128,15 @@ namespace Kaban.UI.Settings
             // operator was offered a restart for having looked at the page.
             _btnSave.Enabled = false;
             bar.Controls.Add(_btnSave);
-            bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString(
-                "Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload()));
+            _btnReload = UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString(
+                "Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload());
+            bar.Controls.Add(_btnReload);
+            _adminNote = new Label
+            {
+                AutoSize = true, Margin = new Padding(10, 9, 3, 3), ForeColor = ColDim,
+                Text = LanguageManager.GetString("Msg_ConnAdminOnly", "Only an Admin can change the connections.")
+            };
+            bar.Controls.Add(_adminNote);
 
             // ---- scrolling body ----
             var body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Padding = new Padding(8, 4, 8, 8) };
@@ -113,27 +144,42 @@ namespace Kaban.UI.Settings
             _table.Dock = DockStyle.Top;
             _table.AutoSize = true;
             _table.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            _table.ColumnCount = 5;
+            _table.ColumnCount = 9;
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 200));  // controller
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 220));  // driver
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 100));  // station number
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 190));  // network address
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // status
+            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // state
+            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // last answer
+            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // drops today
+            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // last error
+            _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));       // program version
             body.Controls.Add(_table);
 
             _footer.Dock = DockStyle.Bottom;
             _footer.Height = 40;
             _footer.Padding = new Padding(10, 6, 10, 6);
             _footer.ForeColor = ColDim;
-            _footer.Text = LanguageManager.GetString("Msg_ConnRestart",
-                "Changes take effect the next time the HMI starts. "
-              + "Use PLC Diagnostics to find which logical station actually answers.");
+            _footer.Text = LanguageManager.GetString("Msg_ConnFooter",
+                "Driver, station and address: as saved - a change takes effect the next time the HMI starts. "
+              + "State, last answer and errors: the connection running now. The MX Component tab finds the logical station that answers.");
 
             Controls.Add(body);
             Controls.Add(_footer);
             Controls.Add(bar);
 
             Build();
+            ApplyAccess();
+        }
+
+        /// <summary>Everyone may read the page; only an Admin may change a connection.</summary>
+        private void ApplyAccess()
+        {
+            _canEdit = SecurityManager.HasAccess(SecurityLevel.Admin);
+            if (_btnSave != null) _btnSave.Visible = _canEdit;
+            if (_btnReload != null) _btnReload.Visible = _canEdit;
+            if (_adminNote != null) _adminNote.Visible = !_canEdit;
+            foreach (var r in _rows) UpdateRowState(r);
         }
 
         private void Build()
@@ -163,7 +209,7 @@ namespace Kaban.UI.Settings
                     ForeColor = ColDim,
                     Padding = new Padding(4, 10, 4, 4)
                 }, 0, _table.RowCount);
-                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 5);
+                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 9);
                 _table.RowCount++;
                 return;
             }
@@ -182,7 +228,11 @@ namespace Kaban.UI.Settings
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_Driver", "Driver")), 1, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_StationNo", "Station no.")), 2, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_NetAddress", "Address")), 3, r);
-            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_ConnState", "Connection State")), 4, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColState", "State")), 4, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColVersion", "Program")), 8, r);
             _table.RowCount = r + 1;
         }
 
@@ -248,6 +298,18 @@ namespace Kaban.UI.Settings
 
             _table.Controls.Add(address, 3, r);
             _table.Controls.Add(status, 4, r);
+            Func<Label> cell = () => new Label { AutoSize = true, ForeColor = ColDim, Padding = new Padding(8, 8, 6, 6), UseMnemonic = false };
+            var last = cell();
+            var drops = cell();
+            var error = cell();
+            // The meaning of an error code can be long: it wraps rather than
+            // pushing the version off the page.
+            error.MaximumSize = new Size(320, 0);
+            var version = cell();
+            _table.Controls.Add(last, 5, r);
+            _table.Controls.Add(drops, 6, r);
+            _table.Controls.Add(error, 7, r);
+            _table.Controls.Add(version, 8, r);
             _table.RowCount = r + 1;
 
             // Items are populated and the selection made AFTER the combo is in its
@@ -270,7 +332,11 @@ namespace Kaban.UI.Settings
                 Driver = driver,
                 Station = station,
                 Address = address,
-                Status = status
+                Status = status,
+                Last = last,
+                Drops = drops,
+                Error = error,
+                Version = version
             };
             _rows.Add(row);
 
@@ -300,8 +366,9 @@ namespace Kaban.UI.Settings
         private void UpdateRowState(Row row)
         {
             var kind = row.Driver.SelectedItem as PlcDriverCatalog.DriverKind;
-            row.Station.Enabled = kind == null || kind.UsesLogicalStation;
-            row.Address.Enabled = kind != null && kind.UsesNetworkEndpoint;
+            row.Driver.Enabled = _canEdit;
+            row.Station.Enabled = _canEdit && (kind == null || kind.UsesLogicalStation);
+            row.Address.Enabled = _canEdit && kind != null && kind.UsesNetworkEndpoint;
 
             // An empty address box on a network driver is the commonest way to get a
             // silent no-connect, so it offers the shape rather than staying blank.
@@ -319,42 +386,21 @@ namespace Kaban.UI.Settings
         /// </summary>
         private void RefreshStatus(Row row)
         {
-            var live = PlcManager.Instance.GetDriverForMonitoring(row.Endpoint.StationId);
-            if (live == null)
-            {
-                row.Status.Text = LanguageManager.GetString("Sta_NotRegistered", "not registered");
-                row.Status.ForeColor = ColDim;
-                return;
-            }
+            // The same reading as the rest of the program (ControllerStatus): the
+            // running driver, ConnectionMonitor's state, the log's drops.
+            var st = ControllerStatus.RowFor(row.Endpoint.StationId, row.Endpoint.StationName, row.Endpoint, _drops);
+            Set(row.Status, st.State, !st.Registered ? ColDim : st.Live ? ColOk : ColBad);
+            Set(row.Last, st.Last, ColDim);
+            Set(row.Drops, st.Drops.ToString(System.Globalization.CultureInfo.InvariantCulture), st.Drops > 0 ? ColBad : ColDim);
+            Set(row.Error, st.Error, st.Live ? ColDim : ColBad);
+            Set(row.Version, st.Version, ColDim);
+        }
 
-            bool connected = false;
-            try { connected = live.IsConnected; } catch { }
-
-            // THE VERSION, NOT THE DRIVER CLASS NAME. The driver is chosen two
-            // columns to the left, so repeating it here says nothing; what an
-            // engineer cannot otherwise see is which ladder is running.
-            var state = ConnectionMonitor.Get(row.Endpoint.StationId);
-            bool live_ = connected && state.IsLive;
-
-            // ONE SENTENCE, and the bracket only when it has something to say.
-            // "Connection failed ()" is worse than "Connection failed".
-            string text;
-            if (live_)
-            {
-                text = LanguageManager.GetString("Sta_Connected", "Connected");
-                if (!string.IsNullOrEmpty(state.Version))
-                    text += " (" + LanguageManager.GetString("Sta_Ver", "Ver.:") + " " + state.Version + ")";
-            }
-            else
-            {
-                text = LanguageManager.GetString("Sta_Failed", "Connection failed");
-                if (!string.IsNullOrEmpty(state.ErrorCode))
-                    text += " (" + LanguageManager.GetString("Conn_ErrorCode", "Error Code") +
-                            ": " + state.ErrorCode + ")";
-            }
-
-            row.Status.Text = text;
-            row.Status.ForeColor = live_ ? Color.FromArgb(0, 120, 40) : Color.FromArgb(170, 70, 0);
+        private static void Set(Label l, string text, Color colour)
+        {
+            text = text ?? "";
+            if (l.Text != text) l.Text = text;
+            if (l.ForeColor != colour) l.ForeColor = colour;
         }
 
         /// <summary>
@@ -428,8 +474,10 @@ namespace Kaban.UI.Settings
     {
         public string TitleKey { get { return "Set_StationConn"; } }
         public string TitleFallback { get { return "PLC Connection"; } }
-        public SecurityLevel RequiredLevel { get { return SecurityLevel.Admin; } }
-        public UserControl GetControl() { return new StationConnectionControl(); }
+        // Maintenance reads it (state, events); an Admin changes connections and
+        // uses the MX Component tools - see PlcConnectionScreen.
+        public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
+        public UserControl GetControl() { return PlcConnectionScreen.Build(); }
     }
 }
 

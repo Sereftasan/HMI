@@ -66,6 +66,38 @@ namespace Kaban.Drivers.MitsubishiActUtl
             ready.WaitOne(10000);
         }
 
+        private volatile bool _stopped;
+
+        /// <summary>
+        /// ENDS THE THREAD - at shutdown, after the driver has closed and released
+        /// its control on it. Its message loop is left, so the thread ends the way
+        /// a thread should: COM is uninitialised for its apartment. A background
+        /// thread otherwise simply vanishes with the process, and MX Component
+        /// never hears that the program has gone. Calls after this do nothing.
+        /// </summary>
+        public void Stop(int waitMs)
+        {
+            if (_stopped) return;
+            _stopped = true;
+            var invoker = _invoker;
+            if (invoker != null)
+            {
+                try
+                {
+                    invoker.BeginInvoke((MethodInvoker)(() =>
+                    {
+                        try { invoker.Dispose(); } catch { }
+                        Application.ExitThread();
+                    }));
+                }
+                catch { }
+            }
+            if (!IsWorkerThread && waitMs > 0)
+            {
+                try { _thread.Join(waitMs); } catch { }
+            }
+        }
+
         /// <summary>True while a call is queued or running on the worker.</summary>
         public bool IsBusy { get { return Volatile.Read(ref _busy) != 0; } }
 
@@ -89,7 +121,7 @@ namespace Kaban.Drivers.MitsubishiActUtl
             result = default(T);
 
             if (IsWorkerThread) { result = work(); return true; }
-            if (_invoker == null) return false;
+            if (_invoker == null || _stopped) return false;
 
             // WAIT FOR THE SLOT, within the same deadline, instead of refusing.
             //

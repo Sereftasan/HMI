@@ -3906,3 +3906,21 @@ and `UnitLookAndErrors` extended.
 - `FunctionUnitHMI.LayoutChildren`: gaps, pads, button height, badge offset through `UiScale.For`.
 - Translations `Tip_WinMinimize`, `Tip_WinMaximize`. Manual: 3a, magnifier note, Find.
 - Tests: `SidePanel.cs`, `Magnifier.cs`, `PlcMonitor.cs` extended.
+
+## 2026-09-28 (later) - Banner room, factor 0.8-1.5, one PLC Connection tab, PLC filter, MX shutdown
+
+- `MainForm.DockCommIndicator`: the communication banner docked before `pnlContent` (index 1), not over it;
+  text `Sys_CommLostBanner`.
+- `DisplaySettings.Min/Max` 0.8 / 1.5 (clamped on read); User Settings choices and texts; manual.
+- User menu: Simulation Monitor entry and `MonitorIcon` removed.
+- `PlcConnectionDiagnostics.cs` (was `PlcDiagnosticsControl.cs`): `PlcConnectionScreen` (Controllers /
+  Connection events / MX Component), `ControllerStatus` (row, drops today, span, unwrap), `MxToolsView`.
+  `StationConnectionControl`: live columns (state, last answer, drops today, last error, program),
+  Admin-only editing; `StationConnectionPage` level Maintenance; `PlcDiagnosticsPage` removed.
+- `AuditEntry.Station`, `AuditLogReader.StationOf`; `LogViewerControl` PLC column and filter, CSV
+  `Time;User;PLC;Kind;Entry`; ButtonHMI / NumericInputHMI write entries name "(PLC n)".
+- `MitsubishiActUtl : IDisposable` (close, `FinalReleaseComObject`, worker stopped), `StaWorker.Stop`,
+  `PlcManager.DisconnectAll` closes all stations in parallel (8 s ceiling).
+- Translations: `Sys_CommLostBanner`, `Msg_ConnFooter`, `Msg_ConnAdminOnly`, `Log_Plc`, `Log_ColPlc`,
+  `Log_AllPlcs`, `Log_PlcTip`; factor texts.
+- Tests: `tools/ui_test/ConnectionPageAndShutdown.cs`; `LogAndDiagnostics.cs`, `Magnifier.cs` updated.

@@ -32,7 +32,7 @@ namespace Kaban.Drivers.MitsubishiActUtl
             AuditLogger.Log(BuildReport());
         }
 
-        /// <summary>The same report as text, for the on-screen PLC Diagnostics page.</summary>
+        /// <summary>The same report as text, for PLC Connection > MX Component on screen.</summary>
         public static string BuildReport()
         {
             var sb = new StringBuilder();
@@ -52,8 +52,8 @@ namespace Kaban.Drivers.MitsubishiActUtl
                     any |= DumpStations(sb, hive, view);
             if (!any)
                 sb.AppendLine("    (no Mitsubishi/MELSOFT vendor keys visible to this process at all)");
-            sb.AppendLine("  NOTE: if no station entries appear above, use the PLC Diagnostics page's");
-            sb.AppendLine("        station SCAN - it opens each logical station number directly and");
+            sb.AppendLine("  NOTE: if no station entries appear above, use the station SCAN on");
+            sb.AppendLine("        PLC Connection > MX Component - it opens each logical station number directly and");
             sb.AppendLine("        reports which one answers, regardless of where settings are stored.");
 
             return sb.ToString();

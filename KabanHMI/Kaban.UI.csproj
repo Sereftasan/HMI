@@ -177,7 +177,7 @@
     <Compile Include="Settings\LogViewerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\PlcDiagnosticsControl.cs">
+    <Compile Include="Settings\PlcConnectionDiagnostics.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\MachineAlarmScreen.cs">

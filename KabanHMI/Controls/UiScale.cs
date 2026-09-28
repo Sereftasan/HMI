@@ -11,7 +11,7 @@ namespace Kaban.UI.Controls
     /// <summary>
     /// The MAGNIFIER: draws the whole HMI larger or smaller - pages, text,
     /// buttons, fields, menus - by the magnifying factor this run was started
-    /// with (DisplaySettings: 0.75 .. 2).
+    /// with (DisplaySettings: 0.8 .. 1.5).
     ///
     /// HOW. Every window and every page is scaled ONCE, when it first appears,
     /// the way Windows itself scales a program for a large-text display: the

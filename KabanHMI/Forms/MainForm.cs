@@ -669,10 +669,33 @@ namespace Kaban.UI.Forms
                 Visible = false,
                 BackColor = Color.Firebrick,
                 ForeColor = Color.White,
-                Text = "PLC COMMUNICATION LOST - displayed values are the last known good data"
+                UseMnemonic = false,
+                Text = LanguageManager.GetString("Sys_CommLostBanner",
+                    "PLC COMMUNICATION LOST - displayed values are the last known good data")
             };
             this.Controls.Add(_lblComm);
-            _lblComm.BringToFront();
+            DockCommIndicator();
+            LanguageManager.LanguageChanged += (s, e) =>
+                _lblComm.Text = LanguageManager.GetString("Sys_CommLostBanner",
+                    "PLC COMMUNICATION LOST - displayed values are the last known good data");
+        }
+
+        /// <summary>
+        /// THE BANNER TAKES ITS OWN ROOM under the page instead of lying over it.
+        ///
+        /// It was docked LAST (BringToFront), i.e. into space the page already
+        /// filled, so it covered the bottom of the page - and with it the page's
+        /// scroll bar. Docked just BEFORE the page it takes a strip of the content
+        /// column and the page shrinks by its height while it shows: scroll bar,
+        /// last row and all stay in sight.
+        /// </summary>
+        private void DockCommIndicator()
+        {
+            if (_lblComm == null || pnlContent == null) return;
+            // The page fills what is left, so it docks last (index 0); the banner
+            // just before it (index 1): the bottom of the content column.
+            Controls.SetChildIndex(pnlContent, 0);
+            Controls.SetChildIndex(_lblComm, 1);
         }
 
         private void UpdateCommIndicator()
@@ -683,7 +706,9 @@ namespace Kaban.UI.Forms
                 _lblComm.BeginInvoke((Action)UpdateCommIndicator);
                 return;
             }
-            _lblComm.Visible = !_scanner.CommunicationHealthy;
+            bool show = !_scanner.CommunicationHealthy;
+            if (show && Controls.GetChildIndex(_lblComm) != 1) DockCommIndicator();
+            _lblComm.Visible = show;
         }
 
         // ==================================================================
@@ -1404,19 +1429,9 @@ namespace Kaban.UI.Forms
             menu.Items.Add(logout);
             menu.Items.Add(change);
 
-            // The simulation monitor is an ADMIN tool, so it belongs with the user
-            // menu rather than as a lone button on the caption - where it looked
-            // unrelated to anything, especially once the alarm reset appears.
-            if (SecurityManager.HasAccess(SecurityLevel.Admin) &&
-                SimulationMonitorForm.HasMonitorableStations())
-            {
-                menu.Items.Add(new ToolStripSeparator());
-                var sim = new ToolStripMenuItem(
-                    LanguageManager.GetString("Btn_SimMonitor", "Simulation Monitor (F12)"),
-                    MonitorIcon(22));
-                sim.Click += (s, e) => ShowSimulationMonitor();
-                menu.Items.Add(sim);
-            }
+            // No monitor entry here any more: the PLC Monitor has its own button
+            // on the side bar (and F12), so a second way in from the user menu
+            // was only one more item to read past.
             return menu;
         }
 
@@ -1817,8 +1832,7 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// For an admin: a way from the warning straight to the page that fixes it,
-        /// like the Simulation Monitor entry in the user menu.
+        /// For an admin: a way from the warning straight to the page that fixes it.
         /// </summary>
         private void AddStationConnectionItem(ContextMenuStrip menu)
         {
@@ -2004,19 +2018,6 @@ namespace Kaban.UI.Forms
                 // Clear of the bar: at 34px a dot placed any closer merged with
                 // it and the mark read as a solid stroke rather than an exclamation.
                 g.DrawEllipse(pen, cx - dot / 2f, cy + h * 0.20f, dot, dot);
-        }
-
-        /// <summary>Small screen-with-trace icon for the user menu.</summary>
-        private static Image MonitorIcon(int size)
-        {
-            var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
-                // Blue, matching the Restart icon: both are "go and do something
-                // elsewhere" actions, where Logout and Change user are about this
-                // session. Colour grouping the entries is quicker to read than
-                // three greys that all look the same.
-                DrawMonitorGlyph(g, new Rectangle(0, 0, size, size), Color.FromArgb(40, 110, 190));
-            return bmp;
         }
 
         private static Image MenuIcon(string resource)
