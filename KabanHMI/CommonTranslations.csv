@@ -431,6 +431,11 @@ Tip_PanelFactorSave;Keep this factor for everyone without their own - it takes e
 Msg_FactorNote;0.8 to 1.5. Text, buttons, fields and pages are drawn this much larger (or smaller). Applied when the HMI starts: pages larger than the screen scroll.;0.8 - 1.5. Yazılar, düğmeler, alanlar ve sayfalar bu oranda büyük (ya da küçük) çizilir. HMI açılırken uygulanır: ekrandan büyük sayfalar kaydırılır.;;;;
 Msg_FactorRange;The magnifying factor is a number from 0.8 to 1.5 (1.1, 1.25 ...).;Büyütme oranı 0.8 ile 1.5 arasında bir sayıdır (1.1, 1.25 ...).;;;;
 Msg_PanelFactorSaved;Kept. It takes effect when the HMI restarts.;Saklandı. HMI yeniden başladığında geçerli olur.;;;;
+Tip_Zoom;Magnifying factor: how large the screen is drawn (0.8 - 1.5);Büyütme oranı: ekranın ne kadar büyük çizildiği (0.8 - 1.5);Коэффициент увеличения: насколько крупно отображается экран (0.8 - 1.5);Vergrößerung: wie groß der Bildschirm gezeichnet wird (0.8 - 1.5);Fattore di ingrandimento: quanto grande viene disegnato lo schermo (0.8 - 1.5);Factor de ampliación: el tamaño con que se dibuja la pantalla (0.8 - 1.5)
+Zoom_ForUser;Your own, whenever you sign in ({0});Size ait, her girişinizde ({0});Ваш собственный, при каждом входе ({0});Ihre eigene, bei jeder Anmeldung ({0});Il suo, a ogni accesso ({0});El suyo, cada vez que inicie sesión ({0})
+Zoom_ForStart;This panel, until someone with their own signs in;Bu panel, kendi oranı olan biri giriş yapana dek;Эта панель, пока не войдёт пользователь со своим;Dieses Panel, bis sich jemand mit eigener anmeldet;Questo pannello, finché non accede qualcuno con il proprio;Este panel, hasta que inicie sesión alguien con el suyo
+Zoom_PanelOne;The panel's ({0});Panelinki ({0});Панели ({0});Die des Panels ({0});Quello del pannello ({0});La del panel ({0})
+Zoom_ForEveryone;For everyone on this panel;Bu paneldeki herkes için;Для всех на этой панели;Für alle an diesem Panel;Per tutti su questo pannello;Para todos en este panel
 Msg_FactorRestartNow;Restart the HMI now with the magnifying factor {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in.;HMI şimdi {0} büyütme oranıyla yeniden başlatılsın mı? Makine çalışmaya devam eder, ekran birkaç saniyede geri gelir ve oturumunuz açık kalır.;;;;
 Lbl_Or;or;veya;или;oder;o;o
 Log_Period;Period;Dönem;Период;Zeitraum;Periodo;Periodo

@@ -12,8 +12,9 @@ namespace Kaban.UI.Settings
     /// and password reset. The last Admin account cannot be deleted (the machine
     /// must never lock everyone out) and accounts persist across restarts.
     ///
-    /// Also the MAGNIFYING FACTOR (see DisplaySettings): the panel's, for everyone,
-    /// and optionally a user's own - offered as a restart when they sign in.
+    /// Also a user's own MAGNIFYING FACTOR (see DisplaySettings) - offered as a
+    /// restart when they sign in. The panel's, for everyone, is set under the
+    /// magnifying glass on the caption bar.
     /// </summary>
     public class UserSettingsControl : UserControl
     {
@@ -22,10 +23,10 @@ namespace Kaban.UI.Settings
         private readonly TextBox _txtPass = new TextBox();
         private readonly ComboBox _cmbLevel = new ComboBox();
         private readonly ComboBox _cmbFactor = new ComboBox();
-        private readonly ComboBox _cmbPanelFactor = new ComboBox();
         private readonly Label _lblStatus = new Label();
 
-        private static readonly string[] FactorChoices = { "0.80", "0.90", "1.00", "1.10", "1.20", "1.25", "1.30", "1.40", "1.50" };
+        private static readonly string[] FactorChoices =
+            Kaban.UI.Forms.MainForm.FactorChoices.Select(f => DisplaySettings.Format(f)).ToArray();
 
         public UserSettingsControl()
         {
@@ -102,30 +103,9 @@ namespace Kaban.UI.Settings
                 "The user's own magnifying factor, 0.8 to 1.5 (1.25 = a quarter larger). Empty: the panel's. " +
                 "When they sign in and the screen is at another factor, the HMI offers to restart with theirs."));
 
-            // ---- the panel's factor, for everyone without one of their own ----
-            y += 50;
-            pn.Controls.Add(new Label
-            {
-                Text = LanguageManager.GetString("Hdr_PanelFactor", "Magnifying factor of this panel"),
-                Left = 16, Top = y, Width = 304, Height = 22,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
-            });
-            y += 28;
-            _cmbPanelFactor.DropDownStyle = ComboBoxStyle.DropDown;
-            _cmbPanelFactor.Items.AddRange(FactorChoices);
-            _cmbPanelFactor.Text = DisplaySettings.Format(DisplaySettings.PanelFactor);
-            row(LanguageManager.GetString("Usr_FactorPanel", "For everyone") + ":", _cmbPanelFactor);
-            var btnPanel = tool("\uD83D\uDCBE", LanguageManager.GetString("Tip_PanelFactorSave",
-                "Keep this factor for everyone without their own - it takes effect when the HMI restarts"), 150);
-            btnPanel.Click += (s, e) => SavePanelFactor();
-            pn.Controls.Add(new Label
-            {
-                Text = LanguageManager.GetString("Msg_FactorNote",
-                    "0.8 to 1.5. Text, buttons, fields and pages are drawn this much larger (or smaller). " +
-                    "Applied when the HMI starts: pages larger than the screen scroll."),
-                Left = 16, Top = y + 44, Width = 304, Height = 64, ForeColor = Color.FromArgb(90, 96, 106),
-                Font = new Font("Segoe UI", 9F)
-            });
+            // The panel's factor - for everyone without their own - is set under
+            // the magnifying glass on the caption bar (Admin: "For everyone on
+            // this panel"), where every factor is now chosen.
 
             _lblStatus.Dock = DockStyle.Bottom;
             _lblStatus.Height = 26;
@@ -209,20 +189,6 @@ namespace Kaban.UI.Settings
         private static string FactorHint
         {
             get { return LanguageManager.GetString("Msg_FactorRange", "The magnifying factor is a number from 0.8 to 1.5 (1.1, 1.25 ...)."); }
-        }
-
-        private void SavePanelFactor()
-        {
-            var f = DisplaySettings.Parse(_cmbPanelFactor.Text);
-            if (!f.HasValue) { _lblStatus.Text = FactorHint; return; }
-            DisplaySettings.PanelFactor = f.Value;
-            // The next start is at the panel's factor (a user with their own is
-            // offered theirs when they sign in).
-            DisplaySettings.StartFactor = f.Value;
-            _cmbPanelFactor.Text = DisplaySettings.Format(f.Value);
-            AuditLogger.Log("magnifying factor of the panel: " + DisplaySettings.Format(f.Value) + ".");
-            _lblStatus.Text = LanguageManager.GetString("Msg_PanelFactorSaved", "Kept. It takes effect when the HMI restarts.");
-            if (Math.Abs(f.Value - Kaban.UI.Controls.UiScale.Factor) > 0.001) OfferRestart(f.Value, keepSignedIn: true);
         }
 
         private void OfferRestart(double factor, bool keepSignedIn)

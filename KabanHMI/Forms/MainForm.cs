@@ -779,6 +779,13 @@ namespace Kaban.UI.Forms
                 _btnLang.Left = right - _btnLang.Width;
                 right = _btnLang.Left - gap;
             }
+            // the magnifying factor, between the language and the user
+            if (_btnZoom != null)
+            {
+                _btnZoom.Top = midY - _btnZoom.Height / 2;
+                _btnZoom.Left = right - _btnZoom.Width;
+                right = _btnZoom.Left - gap;
+            }
             // login / logout
             if (_btnLogin != null)
             {
@@ -940,6 +947,7 @@ namespace Kaban.UI.Forms
             _btnLang.Click += (s, e) => ShowLanguageMenu();
             _topTips.SetToolTip(_btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
             pnlTop.Controls.Add(_btnLang);
+            SetupZoomButton();
 
             if (UseCustomCaption) SetupCaptionBar();
             SetupAlarmIndicator();
