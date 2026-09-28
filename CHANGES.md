@@ -3924,3 +3924,28 @@ and `UnitLookAndErrors` extended.
 - Translations: `Sys_CommLostBanner`, `Msg_ConnFooter`, `Msg_ConnAdminOnly`, `Log_Plc`, `Log_ColPlc`,
   `Log_AllPlcs`, `Log_PlcTip`; factor texts.
 - Tests: `tools/ui_test/ConnectionPageAndShutdown.cs`; `LogAndDiagnostics.cs`, `Magnifier.cs` updated.
+
+## 2026-09-28 (evening) - Formulas, pictures, valve/feedback-typed units, drawing references, last page, magnifier glass
+
+- `NumericFormula` *(new, Core)*: names a formula uses, identity, undefined names, variable problems;
+  `FormulaException`. `NumericInputHMI`: ReadFormula maps raw -> shown (`BaseNumericHMI.ToShownValue`),
+  WriteFormula's result is written raw, `FormulaCheck`, `FormulaProblems`, names bound in any case,
+  keypad refused over a failing formula, admin tooltip lists formulas and problems.
+  `InputLimitsCalculation`: "A" counts as identity.
+- `NavGlyphs` *(new)*: HMI Settings picture, machine pictures; Machine Parameters uses `settings_24`;
+  FA2010/H500/H800 modules implement `IMachineIcon`; `MachineIcon.ColourFor`. Nav toggle drawn with
+  `DrawChevron`; menu colour set before the toggle strip is made.
+- `FunctionUnitHMI`: `CylinderValve` DoubleSolenoid / SingleSolenoid / DoubleSolenoid_3Way; category
+  "  Valve & Feedback" with `TypeCheck` / `TypeProblems`; amber frame in the designer; Error A/B under the
+  actions; `HelpAFiles` / `HelpBFiles` (HelpFiles hidden, maps to both); FA2010 designers updated.
+- `WiringTable` *(new, Core)*, `Wiring.csv` (FA2010, from `tools/build_wiring.py`); `TroubleshootingCatalog.MovementBox`
+  shows drawing references; Inputs / Outputs tooltips (`Tip_IoDrawing`).
+- `MainForm.LastPlace.cs` *(new)*: `LastPage.cfg`, restore after the start-up sign-in, pending until a
+  sign-in; `SettingsScreen.TabsIn`.
+- `MainForm.Magnifier.cs`: `_btnZoom`, `BuildZoomMenu`, `ChooseFactor`; User Settings panel-factor block removed.
+- `StationConnectionControl`: AutoSize columns, boxes sized to content, 8 columns; `ControllerStatus` state
+  with CPU model (`IPlcIdentity`, `MitsubishiActUtl.ReadCpuType`) and program version.
+- Translations: `Tip_IoDrawing`, `Tip_Zoom`, `Zoom_ForUser`, `Zoom_ForStart`, `Zoom_PanelOne`,
+  `Zoom_ForEveryone`, `Diag_ProgramVersion`. Manual: caption bar, menu pictures, reopening, the "?" with
+  drawing references, magnifier, PLC Connection, files.
+- Tests: `NumericFormulas.cs`, `UnitTypes.cs`, `WiringHelp.cs`, `ZoomMenu.cs`, `NavIcons.cs`, `LastPlace.cs`.
