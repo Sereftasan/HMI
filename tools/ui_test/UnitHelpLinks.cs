@@ -101,7 +101,8 @@ class L {
         Check("  the watchers never show themselves", !helpA.Visible && !helpB.Visible);
         Check("  a unit with nothing to open has none", !Field<UnitHelpBadge>(plain, "_help").Visible);
         helpB.UpdateState(a => a == "M811" ? 1 : 0, c => true);
-        Check("B's error turns the '?' RED", mark.State == UnitHelpBadge.BadgeState.Error && helpB.IsActive && !helpB.Visible);
+        Check("B's error: the '?' offers its help, still BLUE", mark.State == UnitHelpBadge.BadgeState.Error && helpB.IsActive && !helpB.Visible &&
+              mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
         Check("  at its RIGHT end", mark.Right >= unit.ClientSize.Width - 16 && mark.Right <= unit.ClientSize.Width,
               "right=" + mark.Right + " of " + unit.ClientSize.Width);

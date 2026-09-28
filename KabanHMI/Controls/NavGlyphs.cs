@@ -12,11 +12,11 @@ namespace Kaban.UI.Controls
     /// moved there, and HMI Settings - the settings of the PROGRAM on this panel,
     /// not of a machine - became a screen with a small gear on it.
     ///
-    /// A machine used to be the first letter of its name on a coloured tile. The
-    /// tile stays (the colour tells the machines apart at a glance, the bar
-    /// collapsed to pictures only) and the letter became what the machine does:
-    /// a saw blade and a milling cutter for the processing centre, a screw for
-    /// screwing and holing, a drill bit for hinge drilling.
+    /// A machine used to be the first letter of its name on a coloured tile; now
+    /// it is what the machine does, drawn in the plain ink of the other bar
+    /// pictures - no tile, no colour: an end mill throwing chips in front of a
+    /// circular saw blade for the processing centre, a countersunk cross-head
+    /// screw for screwing, a twist drill bit for 3D (hinge) drilling.
     ///
     /// Drawn four times larger and reduced, so the small picture is smooth; each
     /// is made once and kept.
@@ -112,125 +112,137 @@ namespace Kaban.UI.Controls
         }
 
         // ------------------------------------------------------------------
-        // THE MACHINES: a white picture on the machine's coloured tile.
+        // THE MACHINES: plain ink pictures, like every other picture in the bar.
+        // No tile and no colour: the shape alone tells the machines apart.
         // ------------------------------------------------------------------
 
-        /// <summary>The processing centre: a circular saw blade, and a milling cutter above it.</summary>
-        public static Image ProcessingCenter(Color tile, int size = 24)
+        /// <summary>
+        /// Draws with "no ink": clears what is under the shape back to
+        /// transparent. The gaps between the parts of a picture (the flutes of a
+        /// cutter, the cross in a screw's head, the air round a tool in front of
+        /// a blade) are cut this way, so the picture stays one colour on any
+        /// background.
+        /// </summary>
+        private static void Cut(Graphics g, Action<Graphics, Brush, Pen> draw, float width)
         {
-            return Make("pc" + tile.ToArgb(), size, (g, _) =>
-            {
-                Tile(g, tile);
-                // saw blade, lower left: teeth all round, the arbor hole
-                var teeth = new List<PointF>();
-                float cx = 8.6f, cy = 14.6f, ro = 6.4f, ri = 5.0f;
-                int n = 14;
-                for (int i = 0; i < n; i++)
-                {
-                    double a = 2 * Math.PI * i / n;
-                    double b = a + 2 * Math.PI / n * 0.72;
-                    teeth.Add(new PointF(cx + (float)(ri * Math.Cos(a)), cy + (float)(ri * Math.Sin(a))));
-                    teeth.Add(new PointF(cx + (float)(ro * Math.Cos(b)), cy + (float)(ro * Math.Sin(b))));
-                }
-                using (var path = new GraphicsPath { FillMode = FillMode.Alternate })
-                {
-                    path.AddPolygon(teeth.ToArray());
-                    path.AddEllipse(cx - 1.6f, cy - 1.6f, 3.2f, 3.2f);
-                    g.FillPath(Brushes.White, path);
-                }
-                // milling cutter, right: shank, fluted body, flat end
-                using (var b = new SolidBrush(Color.White))
-                {
-                    g.FillRectangle(b, 16.4f, 2.8f, 2.8f, 4.4f);                 // shank
-                    g.FillRectangle(b, 15.4f, 7.0f, 4.8f, 9.4f);                 // cutting body
-                }
-                using (var flute = new Pen(tile, 1.0f))
-                {
-                    g.DrawLine(flute, 15.4f, 9.6f, 20.2f, 8.0f);
-                    g.DrawLine(flute, 15.4f, 12.4f, 20.2f, 10.8f);
-                    g.DrawLine(flute, 15.4f, 15.2f, 20.2f, 13.6f);
-                }
-            });
+            var mode = g.CompositingMode;
+            g.CompositingMode = CompositingMode.SourceCopy;
+            using (var b = new SolidBrush(Color.Transparent))
+            using (var p = new Pen(Color.Transparent, width) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+                draw(g, b, p);
+            g.CompositingMode = mode;
         }
 
-        /// <summary>Screwing and holing: a screw, head up, the thread down to its point.</summary>
-        public static Image ScrewingHoling(Color tile, int size = 24)
+        /// <summary>
+        /// The processing centre: an end mill in its holder with the chips it
+        /// throws, in front of a circular saw blade.
+        /// </summary>
+        public static Image ProcessingCenter(int size = 24)
         {
-            return Make("sh" + tile.ToArgb(), size, (g, _) =>
+            return Make("pc", size, (g, _) =>
             {
-                Tile(g, tile);
-                var state = g.Save();
-                g.TranslateTransform(12f, 12f);
-                g.RotateTransform(35f);
-                using (var b = new SolidBrush(Color.White))
+                using (var ink = new SolidBrush(Ink))
+                using (var mill = new GraphicsPath())
                 {
-                    // head: a wide dome
-                    using (var head = new GraphicsPath())
+                    // the saw blade, right: teeth all round, the arbor hole
+                    float cx = 15.2f, cy = 11.8f, ro = 8.4f, ri = 6.8f;
+                    var teeth = new List<PointF>();
+                    int n = 18;
+                    for (int i = 0; i < n; i++)
                     {
-                        head.AddArc(-5f, -10.5f, 10f, 6f, 180, 180);
-                        head.AddLine(5f, -7.5f, 5f, -6.4f);
-                        head.AddLine(5f, -6.4f, -5f, -6.4f);
-                        head.CloseFigure();
-                        g.FillPath(b, head);
+                        double a0 = 2 * Math.PI * i / n;
+                        double a1 = a0 + 2 * Math.PI / n * 0.78;
+                        teeth.Add(new PointF(cx + (float)(ri * Math.Cos(a0)), cy + (float)(ri * Math.Sin(a0))));
+                        teeth.Add(new PointF(cx + (float)(ro * Math.Cos(a1)), cy + (float)(ro * Math.Sin(a1))));
                     }
-                    // shank
-                    g.FillRectangle(b, -1.7f, -6.6f, 3.4f, 12f);
-                    // point
-                    g.FillPolygon(b, new[] { new PointF(-1.7f, 5.3f), new PointF(1.7f, 5.3f), new PointF(0f, 9.4f) });
-                }
-                // the slot in the head
-                using (var slot = new Pen(tile, 1.2f)) g.DrawLine(slot, 0f, -10.2f, 0f, -7.2f);
-                // the thread: slanted ridges beyond the shank
-                using (var th = new Pen(Color.White, 1.1f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
-                    for (float y = -4.6f; y <= 4.6f; y += 2.3f)
-                        g.DrawLine(th, -3.3f, y + 0.8f, 3.3f, y - 0.8f);
-                g.Restore(state);
-            });
-        }
-
-        /// <summary>Hinge drilling: a twist drill bit, point down, over the hole it makes.</summary>
-        public static Image HingeDrilling(Color tile, int size = 24)
-        {
-            return Make("hd" + tile.ToArgb(), size, (g, _) =>
-            {
-                Tile(g, tile);
-                using (var b = new SolidBrush(Color.White))
-                {
-                    g.FillRectangle(b, 10.3f, 2.6f, 3.4f, 5.2f);                           // shank
-                    g.FillRectangle(b, 9.6f, 7.4f, 4.8f, 7.6f);                            // fluted part
-                    g.FillPolygon(b, new[] { new PointF(9.6f, 15f), new PointF(14.4f, 15f), new PointF(12f, 18.2f) }); // point
-                }
-                using (var flute = new Pen(tile, 1f))
-                {
-                    g.DrawLine(flute, 9.6f, 9.4f, 14.4f, 7.8f);
-                    g.DrawLine(flute, 9.6f, 12.2f, 14.4f, 10.6f);
-                    g.DrawLine(flute, 9.6f, 15f, 14.4f, 13.4f);
-                }
-                // the hole: a shallow cup under the point
-                using (var hole = new Pen(Color.White, 1.4f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
-                {
-                    g.DrawLine(hole, 4.6f, 19.6f, 8.2f, 19.6f);
-                    g.DrawLine(hole, 15.8f, 19.6f, 19.4f, 19.6f);
-                    g.DrawArc(hole, 8.2f, 17.4f, 7.6f, 4.4f, 0, 180);
+                    using (var blade = new GraphicsPath { FillMode = FillMode.Alternate })
+                    {
+                        blade.AddPolygon(teeth.ToArray());
+                        blade.AddEllipse(cx - 2.0f, cy - 2.0f, 4.0f, 4.0f);
+                        g.FillPath(ink, blade);
+                    }
+                    // the end mill in front of it: holder, collet, fluted cutter
+                    mill.AddRectangle(new RectangleF(2.0f, 1.0f, 7.8f, 3.0f));
+                    mill.AddPolygon(new[] { new PointF(2.6f, 4.0f), new PointF(9.2f, 4.0f), new PointF(7.9f, 6.6f), new PointF(3.9f, 6.6f) });
+                    mill.AddRectangle(new RectangleF(3.9f, 6.6f, 4.0f, 8.8f));
+                    // the air round it, so it stands clear of the blade
+                    Cut(g, (c, b, p) => { c.FillPath(b, mill); c.DrawPath(p, mill); }, 2.6f);
+                    g.FillPath(ink, mill);
+                    Cut(g, (c, b, p) =>
+                    {
+                        c.DrawLine(p, 2.0f, 4.0f, 9.8f, 4.0f);                                  // holder | collet
+                        for (float y = 8.6f; y <= 15.0f; y += 2.4f) c.DrawLine(p, 3.6f, y + 1.0f, 8.2f, y - 1.0f);   // flutes
+                    }, 0.8f);
+                    // the chips flying off, and the work under them
+                    using (var pen = new Pen(Ink, 1.3f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+                    {
+                        g.DrawLine(pen, 2.8f, 17.0f, 1.4f, 18.8f);
+                        g.DrawLine(pen, 5.9f, 17.4f, 5.9f, 19.2f);
+                        g.DrawLine(pen, 9.0f, 17.0f, 10.4f, 18.8f);
+                        g.DrawLine(pen, 1.0f, 21.8f, 10.8f, 21.8f);
+                    }
                 }
             });
         }
 
-        /// <summary>The machine's rounded tile - the same shape and size the initial had.</summary>
-        private static void Tile(Graphics g, Color colour)
+        /// <summary>Screwing: a countersunk screw with a cross (Phillips) head, point down.</summary>
+        public static Image ScrewingHoling(int size = 24)
         {
-            using (var brush = new SolidBrush(colour))
-            using (var path = new GraphicsPath())
+            return Make("sh", size, (g, _) =>
             {
-                var r = new RectangleF(1, 1, 22, 22);
-                float d = 8;
-                path.AddArc(r.X, r.Y, d, d, 180, 90);
-                path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
-                path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
-                path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
-                path.CloseFigure();
-                g.FillPath(brush, path);
-            }
+                using (var ink = new SolidBrush(Ink))
+                {
+                    // the countersunk head: its top seen a little from above, the cone under it
+                    g.FillPolygon(ink, new[] { new PointF(4.6f, 4.4f), new PointF(19.4f, 4.4f), new PointF(14.0f, 9.6f), new PointF(10.0f, 9.6f) });
+                    g.FillEllipse(ink, 4.6f, 1.4f, 14.8f, 6.0f);
+                    // the rim between the top and the cone, and the cross in the top
+                    Cut(g, (c, b, p) => c.DrawArc(p, 4.9f, 1.9f, 14.2f, 5.4f, 20, 140), 0.8f);
+                    Cut(g, (c, b, p) =>
+                    {
+                        c.DrawLine(p, 8.6f, 4.3f, 15.4f, 4.3f);
+                        c.DrawLine(p, 12.0f, 2.8f, 12.0f, 5.8f);
+                    }, 1.1f);
+                    // the shank with its thread, down to the point
+                    var edge = new List<PointF> { new PointF(10.6f, 9.4f) };
+                    float y = 10.2f;
+                    for (int i = 0; i < 4; i++, y += 2.6f)
+                    {
+                        edge.Add(new PointF(8.4f, y + 1.1f));
+                        edge.Add(new PointF(10.6f, y + 1.9f));
+                    }
+                    edge.Add(new PointF(12.0f, 23.0f));
+                    y = 10.2f;
+                    var right = new List<PointF>();
+                    for (int i = 0; i < 4; i++, y += 2.6f)
+                    {
+                        right.Add(new PointF(13.4f, y + 0.6f));
+                        right.Add(new PointF(15.6f, y + 1.4f));
+                    }
+                    right.Reverse();
+                    edge.AddRange(right);
+                    edge.Add(new PointF(13.4f, 9.4f));
+                    g.FillPolygon(ink, edge.ToArray());
+                }
+            });
+        }
+
+        /// <summary>3D (hinge) drilling: a twist drill bit, shank up, point down.</summary>
+        public static Image HingeDrilling(int size = 24)
+        {
+            return Make("hd", size, (g, _) =>
+            {
+                using (var ink = new SolidBrush(Ink))
+                {
+                    g.FillRectangle(ink, 9.0f, 0.8f, 6.0f, 6.2f);                                   // shank
+                    g.FillRectangle(ink, 9.0f, 7.8f, 6.0f, 11.4f);                                  // fluted part
+                    g.FillPolygon(ink, new[] { new PointF(9.0f, 19.1f), new PointF(15.0f, 19.1f), new PointF(12f, 23.2f) }); // point
+                    // the helical flutes, running on into the point
+                    Cut(g, (c, b, p) =>
+                    {
+                        for (float y = 9.6f; y <= 20.0f; y += 2.8f) c.DrawLine(p, 8.6f, y + 1.8f, 15.4f, y - 1.8f);
+                    }, 1.1f);
+                }
+            });
         }
     }
 }

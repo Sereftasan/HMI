@@ -51,13 +51,15 @@ class UD {
         Check("a unit with no decimals too - one width for every unit", fu0.PositionDisplay.Width == fu.PositionDisplay.Width,
               fu0.PositionDisplay.Width + " vs " + fu.PositionDisplay.Width);
 
-        Console.WriteLine("--- the red '?' stays put ---");
+        Console.WriteLine("--- the '?' stays put, and blue ---");
         Check("the unit's '?' has no blink timer of its own", typeof(UnitHelpBadge).GetField("_blink", BindingFlags.NonPublic | BindingFlags.Static) == null);
         var cyl = new FunctionUnitHMI { CommandAAddress = "M5", ErrorAAddress = "M890" };
         cyl.SetBounds(400, 10, 360, 64); host.Controls.Add(cyl); Application.DoEvents();
         Field<AlarmHelpBadge>(cyl, "_helpA").UpdateState(a => a == "M890" ? 1 : 0, c => true);
         var mark = Field<UnitHelpBadge>(cyl, "_help");
-        Check("  red while the error is set", mark.Visible && mark.State == UnitHelpBadge.BadgeState.Error && mark.MarkColor.ToArgb() == UnitHelpBadge.Red.ToArgb());
+        Check("  while the error is set it offers the fault's help - BLUE, never red (the button shows the error)",
+              mark.Visible && mark.State == UnitHelpBadge.BadgeState.Error && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
+        Check("  UnitHelpBadge has no red or amber any more", typeof(UnitHelpBadge).GetField("Red") == null && typeof(UnitHelpBadge).GetField("Amber") == null);
         Check("  and the button of the movement still blinks", cyl.ButtonA.AlertBlink);
 
         Console.WriteLine("--- the designer: Help properties ---");

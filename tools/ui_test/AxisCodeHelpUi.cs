@@ -44,7 +44,7 @@ class AX {
 
         w0b = 0x163; badge.UpdateState(plc, c => true);
         Check("servo alarm 16.3: the '?' shows", badge.IsActive && mark.Visible && mark.State == UnitHelpBadge.BadgeState.Error);
-        Check("  red", mark.MarkColor.ToArgb() == Color.FromArgb(214, 36, 36).ToArgb());
+        Check("  blue, not red - the position display shows the error", mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         Check("  the watcher itself stays hidden", !badge.Visible);
         var docs = badge.Documents();
         Check("  one menu entry: the 16.3 entry of the servo manual",
@@ -67,15 +67,15 @@ class AX {
 
         m890 = 0; w0b = 0; w4 = 0; badge.UpdateState(plc, c => true);
         Check("only a warning: the '?' stays", badge.IsActive && mark.Visible);
-        Check("  drawn AMBER - the axis has not been stopped", mark.State == UnitHelpBadge.BadgeState.Warning &&
-              mark.MarkColor.ToArgb() == Color.FromArgb(214, 150, 20).ToArgb(), mark.State.ToString());
+        Check("  a warning (the axis has not been stopped) - blue as well, never amber", mark.State == UnitHelpBadge.BadgeState.Warning &&
+              mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb(), mark.State.ToString());
         Check("  and the position does not blink (no error bit)", !axis.PositionDisplay.AlertBlink);
 
         w5 = 0; badge.UpdateState(plc, c => true);
         Check("all three back to 0: the '?' goes", !badge.IsActive && !mark.Visible);
 
         w0b = 0xE61; badge.UpdateState(plc, c => true);
-        Check("a servo WARNING code (E6.1 forced stop) is amber too", badge.IsActive && badge.MarkColor.ToArgb() == Color.FromArgb(214, 150, 20).ToArgb());
+        Check("a servo WARNING code (E6.1 forced stop) counts as a warning too", badge.IsActive && mark.State == UnitHelpBadge.BadgeState.Warning);
         w0b = 0; badge.UpdateState(plc, c => true);
 
         Console.WriteLine("--- a cylinder's '?' is unchanged: the error bit ---");
@@ -84,7 +84,7 @@ class AX {
         var cb = Field<AlarmHelpBadge>(cyl, "_helpA");
         var cm = Field<UnitHelpBadge>(cyl, "_help");
         cb.UpdateState(a => a == "M892" ? 1 : 0, c => true);
-        Check("shown (red) while the error bit is set, button A blinks", cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Error && cyl.ButtonA.AlertBlink);
+        Check("shown while the error bit is set, button A blinks", cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Error && cyl.ButtonA.AlertBlink);
         cb.UpdateState(a => 0, c => true);
         Check("gone with it", !cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Hidden && !cyl.ButtonA.AlertBlink);
 

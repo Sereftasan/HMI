@@ -22,9 +22,9 @@ namespace Kaban.Machines.FA2010
         public string ModuleId => "FA2010";
         public string DisplayNameKey => "Machine_FA2010";
 
-        /// <summary>What the machine does, on its tile: a saw blade and a milling cutter.</summary>
+        /// <summary>What the machine does, in plain ink: an end mill in front of a saw blade.</summary>
         public System.Drawing.Image Icon =>
-            Kaban.UI.Controls.NavGlyphs.ProcessingCenter(Kaban.UI.Screens.MachineIcon.ColourFor(ModuleId));
+            Kaban.UI.Controls.NavGlyphs.ProcessingCenter();
 
         /// <summary>
         /// The name the operator reads on tabs, on the Station Connection page and

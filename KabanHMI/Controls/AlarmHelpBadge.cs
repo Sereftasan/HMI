@@ -308,15 +308,16 @@ namespace Kaban.UI.Controls
     ///
     /// It used to be two marks: an "i" for the unit's own help and a red "?"
     /// beside it while an error bit was set - two small circles side by side
-    /// that read as the same thing. Now one: BLUE while there is help to offer
-    /// (the unit's own files, the cylinder manual for its valve and feedback),
-    /// RED while an error is set (AMBER for an axis showing only warnings),
-    /// hidden when there is nothing to open. One document opens straight away;
-    /// several offer the list used everywhere else.
+    /// that read as the same thing. Now one, and always BLUE: shown while there
+    /// is help to offer (the unit's own files, the cylinder manual for its valve
+    /// and feedback, the fault's own entries while an error is set), hidden when
+    /// there is nothing to open. One document opens straight away; several offer
+    /// the list used everywhere else.
     ///
-    /// It does NOT BLINK: the border of what failed blinks already, and a second
-    /// blinking mark beside it was restless rather than helpful. Red and filled
-    /// is enough to say "the help for this fault is here".
+    /// It never turns RED (or amber) and never blinks: the buttons and the
+    /// position display of what failed show the error already - a second red
+    /// mark beside them said nothing new. The State still tells an error from
+    /// plain help (the tooltip and the list follow it); only the colour does not.
     /// </summary>
     [System.ComponentModel.ToolboxItem(false)]
     public class UnitHelpBadge : Control, UiStyle.IDrawsOwnHoverBorder
@@ -358,13 +359,11 @@ namespace Kaban.UI.Controls
         }
 
         public static readonly Color Blue = Color.FromArgb(40, 110, 190);
-        public static readonly Color Red = Color.FromArgb(214, 36, 36);
-        public static readonly Color Amber = Color.FromArgb(214, 150, 20);
 
-        /// <summary>The colour of the mark in its present state.</summary>
+        /// <summary>The colour of the mark: blue in every state.</summary>
         public Color MarkColor
         {
-            get { return _state == BadgeState.Error ? Red : _state == BadgeState.Warning ? Amber : Blue; }
+            get { return Blue; }
         }
 
         protected override void Dispose(bool disposing)
@@ -384,12 +383,12 @@ namespace Kaban.UI.Controls
             var r = new Rectangle(1, 1, Width - 3, Height - 3);
             var mark = MarkColor;
 
-            // Blue: white with a blue "?" (it covers the frame line under it),
-            // filled on hover. Red / amber: filled, steady.
-            bool filled = _state != BadgeState.Info || _hover;
+            // White with a blue "?" (it covers the frame line under it), filled on
+            // hover - the same in every state.
+            bool filled = _hover;
             using (var fill = new SolidBrush(filled ? mark : Color.White))
                 g.FillEllipse(fill, r);
-            using (var pen = new Pen(mark, _state == BadgeState.Info ? 1.4f : 1.6f))
+            using (var pen = new Pen(mark, 1.4f))
                 g.DrawEllipse(pen, r);
 
             if (_font == null || Math.Abs(_font.Size - Math.Max(7f, Height * 0.5f)) > 0.1f)

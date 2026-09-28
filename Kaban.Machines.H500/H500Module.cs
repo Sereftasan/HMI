@@ -18,10 +18,10 @@ namespace Kaban.Machines.H500
         public string ModuleId { get { return "H500"; } }
         public string DisplayNameKey { get { return "Machine_H500"; } }
 
-        /// <summary>What the machine does, on its tile: a screw.</summary>
+        /// <summary>What the machine does, in plain ink: a countersunk cross-head screw.</summary>
         public System.Drawing.Image Icon
         {
-            get { return Kaban.UI.Controls.NavGlyphs.ScrewingHoling(MachineIcon.ColourFor(ModuleId)); }
+            get { return Kaban.UI.Controls.NavGlyphs.ScrewingHoling(); }
         }
 
         public string DisplayName

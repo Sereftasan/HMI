@@ -62,7 +62,7 @@ class CH {
 
         Console.WriteLine("--- movement A fails ---");
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
-        Check("the '?' turns red", mark.State == UnitHelpBadge.BadgeState.Error);
+        Check("the '?' offers the fault's help - and stays blue", mark.State == UnitHelpBadge.BadgeState.Error && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         var docs = unit.HelpDocuments();
         var doc = docs.FirstOrDefault(d => d.Movement != null);
         Check("its help names movement A", doc != null && doc.Movement.Side == "A" && doc.Movement.Name == "Clamp" &&

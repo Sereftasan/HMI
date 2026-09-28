@@ -1123,10 +1123,11 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
-        /// The "?"'s look: red and blinking while an error bit is set (amber when an
-        /// axis shows only warnings), blue while there is help to offer - the
-        /// unit's own files, or the manual for its valve and feedback - and hidden
-        /// otherwise: a mark that opens nothing teaches the operator to ignore it.
+        /// The "?"'s state: Error while an error bit is set (Warning when an axis
+        /// shows only warnings), Info while there is help to offer - the unit's own
+        /// files, or the manual for its valve and feedback - and hidden otherwise:
+        /// a mark that opens nothing teaches the operator to ignore it. It is blue
+        /// in every state (UnitHelpBadge); the state picks its tooltip.
         /// </summary>
         private void UpdateHelpBadge()
         {

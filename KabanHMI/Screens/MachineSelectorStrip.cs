@@ -216,7 +216,7 @@ namespace Kaban.UI.Screens
     /// Picks the glyph for a machine in the selector strip.
     ///
     /// A machine may supply its own via IMachineIcon - the machines here draw what
-    /// they do on their tile (NavGlyphs). Otherwise it gets a drawn
+    /// they do, in plain ink (NavGlyphs). Otherwise it gets a drawn
     /// INITIAL - the first letter of its display name in a rounded tile - rather
     /// than a shared generic icon: in collapsed mode a generic icon would make
     /// every machine look identical, which is exactly the state the strip exists
@@ -273,8 +273,8 @@ namespace Kaban.UI.Screens
         /// <summary>
         /// The machine's tile colour. Stable per module: the same machine keeps the
         /// same tile between runs, so the operator can learn it as a shape rather
-        /// than re-reading it - and a machine that draws its own picture
-        /// (IMachineIcon) puts it on this same colour.
+        /// than re-reading it. (A machine that draws its own picture - IMachineIcon -
+        /// has no tile: its shape tells it apart.)
         /// </summary>
         public static Color ColourFor(string moduleId)
         {

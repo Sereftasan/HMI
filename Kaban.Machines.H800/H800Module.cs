@@ -18,10 +18,10 @@ namespace Kaban.Machines.H800
         public string ModuleId { get { return "H800"; } }
         public string DisplayNameKey { get { return "Machine_H800"; } }
 
-        /// <summary>What the machine does, on its tile: a drill bit over its hole.</summary>
+        /// <summary>What the machine does, in plain ink: a twist drill bit.</summary>
         public System.Drawing.Image Icon
         {
-            get { return Kaban.UI.Controls.NavGlyphs.HingeDrilling(MachineIcon.ColourFor(ModuleId)); }
+            get { return Kaban.UI.Controls.NavGlyphs.HingeDrilling(); }
         }
 
         public string DisplayName

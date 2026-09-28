@@ -85,10 +85,22 @@ class NI {
             Check(id + " draws its own picture", mods.ContainsKey(id) && mods[id].Module is IMachineIcon && ((IMachineIcon)mods[id].Module).Icon != null);
         var pics = new[] { "FA2010", "H500", "H800" }.Where(mods.ContainsKey).Select(id => MachineIcon.For(mods[id])).ToList();
         Check("  three different pictures", pics.Count == 3 && !Same(pics[0], pics[1]) && !Same(pics[1], pics[2]) && !Same(pics[0], pics[2]));
-        var tile = new Bitmap(pics[0]).GetPixel(20, 20);
-        var colour = MachineIcon.ColourFor("FA2010");
-        Check("  on the machine's own tile colour (as the letter was)",
-              Math.Abs(tile.R - colour.R) < 12 && Math.Abs(tile.G - colour.G) < 12 && Math.Abs(tile.B - colour.B) < 12, tile + " vs " + colour);
+        foreach (var pic in pics.Select((p, i) => new { p, i }))
+        {
+            var bmp = new Bitmap(pic.p);
+            int inked = 0, coloured = 0;
+            for (int x = 0; x < bmp.Width; x++)
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    var c = bmp.GetPixel(x, y);
+                    if (c.A < 40) continue;
+                    inked++;
+                    if (Math.Max(c.R, Math.Max(c.G, c.B)) > 60 || Math.Max(c.R, Math.Max(c.G, c.B)) - Math.Min(c.R, Math.Min(c.G, c.B)) > 8) coloured++;
+                }
+            Check("  " + new[] { "FA2010", "H500", "H800" }[pic.i] + ": plain black ink on nothing - no tile, no colour",
+                  inked > 40 && coloured == 0 && bmp.GetPixel(0, 0).A == 0 && bmp.GetPixel(23, 23).A == 0 && bmp.GetPixel(0, 23).A == 0,
+                  inked + " inked, " + coloured + " coloured");
+        }
 
         Console.WriteLine("--- the two bar toggles draw the same chevron ---");
         foreach (int st in new[] { 1, 2, 3, 4 })
