@@ -104,7 +104,7 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
  <rect x="440" y="16" width="30" height="24" rx="4" fill="#c81e1e"/><text class="n" x="450" y="33">!</text>
  <rect x="480" y="16" width="30" height="24" rx="4" fill="#333"/><text class="w" x="486" y="33">&#128279;</text>
  <circle cx="535" cy="28" r="10" fill="none" stroke="#fff" stroke-width="2"/>
- <circle cx="572" cy="26" r="6" fill="none" stroke="#fff" stroke-width="2"/><line x1="576" y1="30" x2="581" y2="35" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text class="w" x="586" y="33">1.00 &#9662;</text>
+ <circle cx="572" cy="26" r="6" fill="none" stroke="#fff" stroke-width="2"/><line x1="576" y1="30" x2="581" y2="35" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text class="w" x="586" y="33">100% &#9662;</text>
  <rect x="640" y="16" width="70" height="24" rx="3" fill="#333"/><text class="w" x="650" y="33">EN &#9662;</text>
  <text class="w" x="760" y="33">&#9472;</text><text class="w" x="800" y="33">&#9744;</text><text class="w" x="840" y="33">&#10005;</text>
  <!-- nav bar -->
@@ -145,12 +145,13 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
 <tr><td>1</td><td>Alarms (red, blinking)</td><td>Only there while a machine reports an error. Click it for the list of machines in alarm. See <a href="#alarms">6</a>.</td></tr>
 <tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
 <tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
-<tr><td>4</td><td>Magnifying factor</td><td>The glass and the factor on screen. Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
+<tr><td>4</td><td>Magnifying factor</td><td>The glass and the size on screen, in percent (<b>100%</b>). Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
 <tr><td>5</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
 <tr><td>6</td><td>Minimise, maximise, close</td><td>The &#10005; asks first: <b>Close</b> or <b>Restart the program</b>, so a stray tap never ends a shift.
+Every restart keeps whoever is signed in signed in.
 Closing from the Windows taskbar or with <kbd>Alt</kbd>+<kbd>F4</kbd> closes at once. Maximise fills the screen the window is on.</td></tr>
 <tr><td>7</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown. The gear is <b>Machine Parameters</b>, the screen with a gear <b>HMI Settings</b>.</td></tr>
-<tr><td>8</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. Each machine has its own picture on its own colour. The highlighted one is the machine on screen.</td></tr>
+<tr><td>8</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. Each machine has its own picture, drawn in black like the others: what it does (a milling cutter and a saw blade, a screw, a drill bit). The highlighted one is the machine on screen.</td></tr>
 <tr><td>9</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
 <tr><td>10</td><td>Side bar</td><td>Pages that open <b>beside</b> the page on display: Inputs / Outputs, the PLC Monitor, the machine's own. See <a href="#side">3a</a>.</td></tr>
 </table>
@@ -182,7 +183,8 @@ still need a higher one &ndash; the control's tooltip says so.</p>
  <li><b>Page menu (left):</b> Home, Manual Movement, Alarms, Machine Parameters, HMI Settings &ndash; plus the machine's own pages (see <a href="#machine">13</a>).</li>
  <li><b>Machine list (under it):</b> when sub-machines are mounted, each page exists once per machine. Pick the machine here.
      The highlighted machine is always the one whose page is on screen.</li>
- <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages).</li>
+ <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages). Tabs that do not fit on one
+     line go on to a second row, so every tab's name is always in sight &ndash; at any magnifying factor, with a side page open or not.</li>
  <li><b>&#9664; Back / &#9654; Forward:</b> return to where you were &ndash; the same page, the same machine and the same tab.
      Choosing the page you are already on does not add a step.</li>
  <li><b>Collapse the menu</b> with the button at its top (&laquo;, the same as the side bar's &raquo;) to icons only; drag its right edge to set its width. Both are remembered.</li>
@@ -266,16 +268,17 @@ and every position reads the same way: black bold figures on grey, as on the Axi
 emergency stop and the PLC program remain the protection &ndash; never rely on the screen to stop a movement.</div>
 
 <h3>The unit's <b>?</b></h3>
-<p>One mark at the right end of the unit's top line. Its colour says what it offers:</p>
+<p>One mark at the right end of the unit's top line, always <b style="color:#2870be">blue</b> &ndash; it never turns red: the buttons and the
+position reading already show a fault. What it offers depends on the moment:</p>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
-<tr><td><b style="color:#2870be">?</b> blue</td><td>The unit has help to offer: its own files, or &ndash; a cylinder whose valve and feedback are set &ndash; its troubleshooting manual</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8; then the unit's own sheets (photos, drawing, settings).</td></tr>
-<tr><td><b style="color:#d62424">?</b> red</td><td>Cylinder: while one of its error bits is set</td><td>The same manual, headed with <b>the movement that failed</b> &ndash; which button, its PLC bit and valve output, the sensor that should have come on and the one that should have gone off &ndash; and, where the machine's drawings are known, <b>where each is on them</b>: the sensor's tag, wire and sheet, the output's wire, relay and valve coil, the air valve, its hoses and the cylinder on the pneumatic drawing. Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
-<tr><td><b style="color:#d62424">?</b> red or <b style="color:#d69614">amber</b></td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning. Amber when every code set is a warning &ndash; the axis has not been stopped by it.</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>The unit has help to offer: its own files, or &ndash; a cylinder whose valve and feedback are set &ndash; its troubleshooting manual</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8; then the unit's own sheets (photos, drawing, settings).</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set</td><td>The same manual, headed with <b>the movement that failed</b> &ndash; which button, its PLC bit and valve output, the sensor that should have come on and the one that should have gone off &ndash; and, where the machine's drawings are known, <b>where each is on them</b>: the sensor's tag, wire and sheet, the output's wire, relay and valve coil, the air valve, its hoses and the cylinder on the pneumatic drawing. Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning.</td></tr>
 </table>
 <p class="note">&ldquo;Sheet 12.6&rdquo; is page 12, column 6 of the electrical drawing, the way the drawing's own cross-references write it;
 &ldquo;pneumatic sheet 2 E3&rdquo; is page 2, zone E3 of the pneumatic drawing. The <i>Inputs / Outputs</i> side page shows the same when you rest the pointer on a point.</p>
-<p>The <b>?</b> does not blink &ndash; the part that failed does. One document opens straight away; several are offered as a list. A unit with nothing to open shows no mark until something fails.
+<p>The <b>?</b> does not blink or change colour &ndash; the part that failed does. One document opens straight away; several are offered as a list. A unit with nothing to open shows no mark until something fails.
 While an error bit is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
 or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
 
@@ -342,26 +345,27 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log, searchable by time, words, user, controller and kind (see <a href="#diag">11</a>).
   Switching the log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Connection</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller: its driver, station and address (changed by an <span class="lvl l3">Admin</span>),
-  and its state &ndash; once connected, with the CPU's model and the program version &ndash; last answer, drops today and last error; the connection events;
+  and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
 <tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>Builds a description of the machine's set-up to ask an assistant for help.</td></tr>
 <tr><td>About</td><td><span class="lvl l0">None</span></td><td>Program version, machines mounted, and this manual.</td></tr>
 </table>
 
 <h3 id="magnifier">The magnifying factor</h3>
-<p>Draws the whole program larger or smaller &ndash; text, buttons, fields, menus, pages &ndash; from <b>0.8</b> (more on the screen)
-to <b>1.5</b> (half as large again). Click the <b>glass</b> on the caption bar, between the user and the language:</p>
+<p>Draws the whole program larger or smaller &ndash; text, buttons, fields, menus, pages &ndash; from <b>80%</b> (more on the screen)
+to <b>150%</b> (half as large again). Click the <b>glass</b> on the caption bar, between the user and the language. The menu shows the size
+on screen in its heading (<i>Magnifying factor (100%)</i>), a list of sizes, and a row to set any size in between:
+<b>&minus;</b> and <b>+</b> change it by <b>1%</b> (hold for more), <b>&#10003;</b> takes it.</p>
 <ul>
- <li><b>Signed in</b>, the factor you choose is <b>your own</b>: when you sign in and the screen is at another factor, the program asks
-     whether to restart with yours. <b>The panel's</b> drops your own. The machine keeps running meanwhile, the screen is back in a few
-     seconds, and you stay signed in. The program then keeps starting with that factor until another is chosen, so the same operator
-     after a power cut is not asked again.</li>
- <li><span class="lvl l3">Admin</span> <b>For everyone on this panel</b>: the panel's factor, for every user with none of their own.</li>
- <li><b>Nobody signed in</b>: the factor the panel starts with, until someone with their own signs in.</li>
+ <li><b>Signed in</b>, the size you choose is <b>your own</b>: when you sign in and the screen is at another size, the program asks
+     whether to restart with yours. The machine keeps running meanwhile, the screen is back in a few seconds, and you stay signed in.
+     The program then keeps starting with that size until another is chosen, so the same operator after a power cut is not asked again.</li>
+ <li><b>Nobody signed in</b>: the panel's size &ndash; the one the program starts with, and the one for everyone with no size of their own.</li>
 </ul>
-<p>An Admin also sets a user's own factor on <i>User Settings</i>.</p>
-<p class="note">Pages are designed for the panel's screen at factor 1: at a larger factor they no longer fit and <b>scroll</b> (scroll bars
-under and beside the page); at 1.5 on a small screen that means scrolling to reach a page's far side. The menu on the left scrolls too
+<p>An Admin also sets a user's own size on <i>User Settings</i> (<i>Magnifying factor</i>; left empty, the user has none and gets the panel's).</p>
+<p class="note">Pages are designed for the panel's screen at 100%: at a larger size, or beside a side page, they no longer fit and
+<b>scroll</b> (scroll bars under and beside the page) &ndash; every page does, so its far side can always be reached; at 150% on a small
+screen that means scrolling to reach it. The menu on the left scrolls too
 when its buttons no longer fit, with <b>Back / Forward</b> always at its bottom. Find scrolls the page to the unit it opens. Pictures (icons, drawings) are drawn larger but not sharper.
 Windows' own message boxes keep Windows' size.</p>
 
@@ -372,7 +376,8 @@ Windows' own message boxes keep Windows' size.</p>
  <li><b>Axis Settings:</b> one row per axis &ndash; jog, position, limits, reference, calibration, drive codes. The axis units on the Manual Movement pages take everything from these rows.</li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link
-     (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; its causes, how to check each, and what to do.
+     (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; the alarm and what it means, the code,
+     and one table of its causes, how to check each, and what to do.
      Warnings are amber, alarms red; a blank cell means no code.</li>
  <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper link</b> (a document, drawing or page opened from the alarm). Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
 </ul>

@@ -14,7 +14,7 @@ namespace Kaban.UI.Settings
     ///
     /// Also a user's own MAGNIFYING FACTOR (see DisplaySettings) - offered as a
     /// restart when they sign in. The panel's, for everyone, is set under the
-    /// magnifying glass on the caption bar.
+    /// magnifying glass on the caption bar with nobody signed in.
     /// </summary>
     public class UserSettingsControl : UserControl
     {
@@ -112,12 +112,11 @@ namespace Kaban.UI.Settings
             btnSave.Click += (s, e) => SaveUser();
             btnDelete.Click += (s, e) => DeleteUser();
             tips.SetToolTip(_cmbFactor, LanguageManager.GetString("Tip_UsrFactor",
-                "The user's own magnifying factor, 0.8 to 1.5 (1.25 = a quarter larger). Empty: the panel's. " +
+                "The user's own magnifying factor, 80% to 150% (125% = a quarter larger). Empty: the panel's. " +
                 "When they sign in and the screen is at another factor, the HMI offers to restart with theirs."));
 
             // The panel's factor - for everyone without their own - is set under
-            // the magnifying glass on the caption bar (Admin: "For everyone on
-            // this panel"), where every factor is now chosen.
+            // the magnifying glass on the caption bar with nobody signed in.
 
             _lblStatus.Dock = DockStyle.Bottom;
             _lblStatus.Height = 26;

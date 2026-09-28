@@ -3949,3 +3949,27 @@ and `UnitLookAndErrors` extended.
   `Zoom_ForEveryone`, `Diag_ProgramVersion`. Manual: caption bar, menu pictures, reopening, the "?" with
   drawing references, magnifier, PLC Connection, files.
 - Tests: `NumericFormulas.cs`, `UnitTypes.cs`, `WiringHelp.cs`, `ZoomMenu.cs`, `NavIcons.cs`, `LastPlace.cs`.
+
+## 2026-09-28 (night) - Magnifier in percent, restarts keep the user, PLC Connection, scrolling, tab rows, axis help, pictures
+
+- `DisplaySettings`: `Clamp` to 1% (0.01), `Percent(factor)`, `Parse` reads "137%" / "137" / "1.37".
+- `MainForm.Magnifier.cs`: `_btnZoom` shows the percent; `BuildZoomMenu` - heading with the percent, presets
+  80%-150%, `ZoomStepper` (−, +, ✓; 1% a step, hold to repeat); `ChooseFactor` (signed in: own, else the panel's);
+  panel/user sub-items removed. `MainForm.RestartArguments` hands the signed-in user over on every restart;
+  `LoginHandoff.Lifetime` 2 min.
+- `UserSettingsControl`: factor choices in percent, `Msg_UsrFactorNote` under the factor.
+- `StationConnectionControl`: no status refresh while a Driver list is open; table undocked (AutoSize, scrolls);
+  boxes measured in a fixed font. `PlcConnectionDiagnostics`: state "Connected - CPU (Version: x)".
+- `PageScroll.Enable(view, minimum)`: a least size (`MinDockedWidth` x `MinDockedHeight`) for pages of docked parts;
+  side pages without it. `SettingsScreen`: `TabRowStrip` wraps, `FitTabRows` sizes the strip, `TabRows`.
+- `tools/build_code_help.py`: no introduction, no class line; servo sections `<header class="alarm">` (h2) before the
+  detail (h3), one table per detail across page ends, no Detail No. / Detail name columns. `Help/*_Codes.en.html`
+  regenerated. `AxisCodeHelp.Extract`: only the sections (no title), the alarm caption once.
+- `NavGlyphs`: `ProcessingCenter()`, `ScrewingHoling()`, `HingeDrilling()` in `Ink`, no tile (`Cut` for gaps).
+- `UnitHelpBadge`: blue in every state (`Red`, `Amber` removed).
+- Translations: `Msg_UsrFactorNote`, `Diag_ProgramVersion` (Version / Versiyon ...); removed `Zoom_ForUser`,
+  `Zoom_ForStart`, `Zoom_PanelOne`, `Zoom_ForEveryone`; factor texts in percent. Manual: caption bar, restart,
+  pictures, tabs, the "?", PLC Connection state, magnifier, scrolling, drive code help.
+- Tests: `ZoomMenu.cs` rewritten, `tools/ui_test/PageScrollAndTabs.cs` (new), `AxisCodes.cs`, `NavIcons.cs`,
+  `ConnectionPageAndShutdown.cs`, `Magnifier.cs`, `UnitsAndDesigner.cs`, `CylinderHelpAndLogin.cs`,
+  `UnitHelpLinks.cs`, `AxisCodeHelpUi.cs` updated.
