@@ -75,7 +75,7 @@ class CH {
         string path = TC.ExtractSection(doc);
         string html = File.ReadAllText(path);
         Console.WriteLine("      " + path);
-        var details = Regex.Matches(html, "<tbody data-detail=\"([^\"]*)\"").Cast<Match>().Select(m => m.Groups[1].Value).ToList();
+        var details = Regex.Matches(html, "<tbody class=\"block\" data-detail=\"([^\"]*)\"").Cast<Match>().Select(m => m.Groups[1].Value).ToList();
         Check("ONE chart: one heading row, details 1.1 to 1.8 once each, in order",
               Regex.Matches(html, "<thead>").Count == 1 && string.Join(",", details) == "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8",
               Regex.Matches(html, "<thead>").Count + " headings; " + string.Join(",", details));
@@ -100,8 +100,17 @@ class CH {
         Console.WriteLine("--- the full manual when the types are not set ---");
         var raw = new TC.HelpDocument { FileName = "Cylinder_Troubleshooting.html", Movement = unit.MovementFor("A") };
         var full = File.ReadAllText(TC.ExtractSection(raw));
-        Check("every variant is kept, as separate tables (they are alternatives)",
-              Regex.Matches(full, "<section class=\"block\"").Count == 15 && full.Contains("Movement that failed"));
+        Check("every variant is kept - in ONE chart, one heading row (no heading between the details)",
+              Regex.Matches(full, "<tbody class=\"block\"").Count == 15 && Regex.Matches(full, "<thead>").Count == 1 &&
+              Regex.Matches(full, "<table class=\"detail\"").Count == 1 && full.Contains("Movement that failed"));
+        var manualFile = File.ReadAllText(Path.Combine(TC.HelpFolder, "Cylinder_Troubleshooting.html"));
+        Check("  the manual itself is one chart too, its heading row fixed at the top while it scrolls",
+              Regex.Matches(manualFile, "<thead>").Count == 1 && Regex.Matches(manualFile, "<tbody class=\"block\"").Count == 15 &&
+              manualFile.Contains("thead th{position:sticky;top:0"));
+        Check("  an old copy made of a table per detail is joined into one",
+              Regex.Matches(TC.JoinBlocks("<section class=\"block\" data-detail=\"1.1\"><table><thead><tr><th>h</th></tr></thead><tbody><tr><td>a</td></tr></tbody></table></section>" +
+                                          "<section class=\"block\" data-detail=\"1.2\"><table><thead><tr><th>h</th></tr></thead><tbody><tr><td>b</td></tr></tbody></table></section>"),
+                            "<thead>").Count == 1);
         var untyped = new FunctionUnitHMI { ErrorAAddress = "M900", CommandAAddress = "M1" };
         untyped.SetBounds(10, 90, 360, 64); host.Controls.Add(untyped); Application.DoEvents();
         Check("a unit with no types and no files shows no '?' until an error", !Field<UnitHelpBadge>(untyped, "_help").Visible);

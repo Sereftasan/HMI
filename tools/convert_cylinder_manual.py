@@ -12,8 +12,14 @@ troubleshooting code - so the program can do that selection for the operator.
 
 That cannot be done to the PDF: the variant blocks share pages with other
 details, so removing pages removes unrelated content with them. An HTML copy
-with one tagged table per block can be filtered exactly, and it keeps the
+with one tagged part per block can be filtered exactly, and it keeps the
 tables, the formatting and the valve symbols.
+
+ONE CHART: the details are ONE table under ONE heading row, each block its own
+<tbody class="block" data-detail="1.4" data-variant="valve:2">. The PDF repeats
+the heading row at every page end and between the details; read on screen that
+split the chart into pieces. The heading row stays at the top of the window
+while the chart scrolls (position: sticky), like frozen rows in a spreadsheet.
 
 RE-RUN THIS whenever the PDF is revised; the PDF stays the source of truth.
 
@@ -193,13 +199,7 @@ def render_block(rows, header):
             elif cell is not None:
                 owner = (r, c)
                 span[owner] = 1
-    # The PDF's own column proportions, on every block: the blocks are one table
-    # split for filtering, and should read as one.
-    out = ['<table class="detail"><colgroup>' + "".join(
-        '<col style="width:%s%%">' % w for w in (5.3, 18.0, 20.0, 19.3, 14.7, 22.7)) + "</colgroup>"]
-    if header:
-        out.append("<thead><tr>" + "".join("<th>%s</th>" % h for h in header) + "</tr></thead>")
-    out.append("<tbody>")
+    out = []
     for r, row in enumerate(rows):
         out.append("<tr>")
         for c in range(ncol):
@@ -210,7 +210,15 @@ def render_block(rows, header):
             cls = ' class="no"' if c == 0 else (' class="name"' if c == 1 else "")
             out.append("<td%s%s>%s</td>" % (cls, ' rowspan="%d"' % rs if rs > 1 else "", cell))
         out.append("</tr>")
-    out.append("</tbody></table>")
+    return "".join(out)
+
+
+def chart_head(header):
+    """The one table's start: the PDF's own column proportions and its heading row."""
+    out = ['<table class="detail"><colgroup>' + "".join(
+        '<col style="width:%s%%">' % w for w in (5.3, 18.0, 20.0, 19.3, 14.7, 22.7)) + "</colgroup>"]
+    if header:
+        out.append("<thead><tr>" + "".join("<th>%s</th>" % h for h in header) + "</tr></thead>")
     return "".join(out)
 
 
@@ -265,8 +273,7 @@ def convert(pdf_path, out_path):
         if var:
             attrs += ' data-variant="%s"' % var
             stats["variants"].append(var)
-        blocks.append("<section class=\"block\"%s>%s</section>"
-                      % (attrs, render_block(current["rows"], header)))
+        blocks.append({"tbody": "<tbody class=\"block\"%s>%s</tbody>" % (attrs, render_block(current["rows"], header))})
         stats["blocks"] += 1
         current = None
 
@@ -309,7 +316,7 @@ def convert(pdf_path, out_path):
                         blocks.append("<h2>%s</h2>" % re.sub(r"</?strong[^>]*>", "", text))
                     else:
                         # merge wrapped body lines into the previous paragraph
-                        if blocks and blocks[-1].startswith("<p>"):
+                        if blocks and isinstance(blocks[-1], str) and blocks[-1].startswith("<p>"):
                             blocks[-1] = "<p>" + join_lines([blocks[-1][3:-4], text]) + "</p>"
                         else:
                             blocks.append("<p>%s</p>" % text)
@@ -352,7 +359,20 @@ def convert(pdf_path, out_path):
                         for row in grid) + "</table>")
         close_block()
 
-    page = PAGE_TEMPLATE.replace("{BODY}", "\n".join(blocks))
+    # Consecutive blocks become ONE table: one colgroup, one heading row.
+    body, run = [], []
+    def flush_run():
+        if run:
+            body.append('<section class="chart">' + chart_head(header) + "\n" + "\n".join(run) + "\n</table></section>")
+            del run[:]
+    for b in blocks:
+        if isinstance(b, dict):
+            run.append(b["tbody"])
+        else:
+            flush_run()
+            body.append(b)
+    flush_run()
+    page = PAGE_TEMPLATE.replace("{BODY}", "\n".join(body))
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(page)
     return stats
@@ -370,6 +390,7 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
  table.detail{table-layout:fixed}
  td,th{border:1px solid #444;padding:.35em .5em;vertical-align:middle;text-align:left}
  th{background:#dcdcdc;text-align:center}
+ table.detail thead th{position:sticky;top:0;z-index:2;background-clip:padding-box;box-shadow:inset 0 1px 0 #444,inset 0 -1px 0 #444}
  table.caution td:first-child{background:#f4b6bf;font-weight:bold;text-align:center;width:14%}
  table.point td:first-child{background:#eeeeee;font-weight:bold;text-align:center;width:14%}
  table.info td:first-child{font-weight:bold;width:20%}

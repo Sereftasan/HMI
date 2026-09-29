@@ -27,6 +27,9 @@ data-kind "alarm" or "warning" (a warning draws the "?" amber), data-name the
 text of the menu entry, data-alarm the servo alarm's own name (what an unlisted
 detail is called), data-page the PDF page the section came from.
 
+The table's heading row stays at the top of the window while the table
+scrolls (position: sticky), like frozen rows in a spreadsheet.
+
 A section is only what the operator needs for that code: the caption and the
 table of causes and remedies (then the link to the manual's page). No general
 notes above it. A servo section starts with its ALARM (the group, "Alarm 52:
@@ -445,6 +448,7 @@ STYLE = """<style>
  table{border-collapse:collapse;width:100%;margin:.5em 0 .8em}
  th,td{border:1px solid #9aa1ab;padding:.35em .5em;vertical-align:top;text-align:left}
  th{background:#e3e8ef;font-weight:600}
+ th{position:sticky;top:0;z-index:2;background-clip:padding-box;box-shadow:inset 0 1px 0 #9aa1ab,inset 0 -1px 0 #9aa1ab}
  td ul{margin:.1em 0 .1em 1.1em;padding:0} td li{margin:.05em 0}
  .src{color:#5b6270;font-size:.9em} .fn{font-size:.92em;color:#3b4250}
  .missing{background:#fff3cd;border-left:4px solid #d7a528;padding:.7em 1em;margin:1em 0}

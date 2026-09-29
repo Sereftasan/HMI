@@ -538,13 +538,15 @@ namespace Kaban.Core.Helpers
         {
             try
             {
-                var html = File.ReadAllText(doc.FullPath);
+                // One chart: a manual still made of a table per block (an older
+                // copy, a translation made from one) is joined first.
+                var html = JoinBlocks(File.ReadAllText(doc.FullPath));
                 bool byValve = doc.Valve != 0 && html.Contains("data-variant=\"valve:" + doc.Valve + "\"");
                 bool byFeedback = doc.Feedback != 0 && html.Contains("data-variant=\"feedback:" + doc.Feedback + "\"");
                 if (!byValve && !byFeedback && doc.Movement == null) return doc.FullPath;
 
                 html = Regex.Replace(html,
-                    "<section class=\"block\"[^>]*data-variant=\"(valve|feedback):(\\d+)\"[^>]*>.*?</section>\\s*",
+                    "<tbody class=\"block\"[^>]*data-variant=\"(valve|feedback):(\\d+)\"[^>]*>.*?</tbody>\\s*",
                     m =>
                     {
                         int n = int.Parse(m.Groups[2].Value);
@@ -556,7 +558,6 @@ namespace Kaban.Core.Helpers
 
                 if (byValve || byFeedback)
                 {
-                    html = JoinBlocks(html);
                     // "(2) Single solenoid 5/2": the number told the alternatives
                     // apart; with one left it only reads like a step number.
                     html = Regex.Replace(html, "(<strong class=\"vt\">)\\(\\d\\)\\s*", "$1");
@@ -601,11 +602,14 @@ namespace Kaban.Core.Helpers
         /// <summary>
         /// The detail tables joined into one: the first table's column widths and
         /// heading row, then every detail's rows in order - each detail its own
-        /// tbody, so it can still be told apart (data-detail). The per-detail
-        /// sections were one table each, and the repeated heading between them
-        /// broke the chart into pieces.
+        /// &lt;tbody class="block"&gt;, so it can still be told apart (data-detail,
+        /// data-variant). The per-detail sections were one table each, and the
+        /// repeated heading between them broke the chart into pieces. The manual
+        /// is written as one chart now (tools/convert_cylinder_manual.py); this
+        /// joins a copy still in the old shape, and leaves one already joined as
+        /// it is.
         /// </summary>
-        internal static string JoinBlocks(string html)
+        public static string JoinBlocks(string html)
         {
             var blocks = Regex.Matches(html, "<section class=\"block\"([^>]*)>(.*?)</section>\\s*", RegexOptions.Singleline);
             if (blocks.Count < 2) return html;
@@ -624,7 +628,7 @@ namespace Kaban.Core.Helpers
                 var attributes = b.Groups[1].Value.Trim();
                 var body = Regex.Match(b.Groups[2].Value, "<tbody>(.*?)</tbody>", RegexOptions.Singleline);
                 if (!body.Success) return html;              // not the shape expected: leave the manual as it is
-                sb.Append("<tbody ").Append(attributes).Append(">").Append(body.Groups[1].Value).Append("</tbody>");
+                sb.Append("<tbody class=\"block\" ").Append(attributes).Append(">").Append(body.Groups[1].Value).Append("</tbody>\n");
             }
             sb.Append("</table></section>\n");
 
