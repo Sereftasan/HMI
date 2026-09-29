@@ -484,7 +484,8 @@ namespace Kaban.UI.Forms
             btn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             if (icon != null)
             {
-                btn.Image = icon;
+                // At the screen scale: the button is scaled, its picture is not.
+                btn.Image = Kaban.UI.Controls.UiScale.Picture(icon);
                 btn.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
                 btn.Padding = new System.Windows.Forms.Padding(12, 0, 4, 0);
             }
@@ -1119,7 +1120,7 @@ namespace Kaban.UI.Forms
         {
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
-            menu.ImageScalingSize = new Size(22, 22);
+            menu.ImageScalingSize = Kaban.UI.Controls.UiScale.Px(new Size(22, 22));
 
             // A heading, like the other three. This menu had none, so it was the
             // one that looked different when you moved along the caption bar.
@@ -1427,7 +1428,7 @@ namespace Kaban.UI.Forms
         {
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
-            menu.ImageScalingSize = new Size(22, 22);
+            menu.ImageScalingSize = Kaban.UI.Controls.UiScale.Px(new Size(22, 22));
 
             // Header: who is signed in, with the same person icon as the caption -
             // the bare two-entry list read as an unlabelled menu.
@@ -1719,7 +1720,7 @@ namespace Kaban.UI.Forms
             // and the operator has to re-learn where to aim.
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
-            menu.ImageScalingSize = new Size(22, 22);
+            menu.ImageScalingSize = Kaban.UI.Controls.UiScale.Px(new Size(22, 22));
 
             var header = new ToolStripLabel(
                 LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"))
@@ -1819,7 +1820,7 @@ namespace Kaban.UI.Forms
         {
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
-            menu.ImageScalingSize = new Size(22, 22);
+            menu.ImageScalingSize = Kaban.UI.Controls.UiScale.Px(new Size(22, 22));
 
             menu.Items.Add(new ToolStripLabel(
                 LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"))
@@ -2081,7 +2082,7 @@ namespace Kaban.UI.Forms
             // the caption bar produced three menus that looked like three programs.
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = Kaban.UI.Controls.UiStyle.MenuFont };
             menu.Renderer = new Kaban.UI.Controls.HmiMenuRenderer();
-            menu.ImageScalingSize = new Size(22, 22);
+            menu.ImageScalingSize = Kaban.UI.Controls.UiScale.Px(new Size(22, 22));
 
             menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Language", "Language"))
             {

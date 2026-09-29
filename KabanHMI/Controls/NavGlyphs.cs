@@ -30,8 +30,14 @@ namespace Kaban.UI.Controls
 
         private const int Super = 4;   // drawn at 4x, reduced
 
+        /// <summary>
+        /// Size 0 (the default): the bar's 24 px at the screen scale, drawn at that
+        /// size - sharp, not an enlarged 24 px picture - and marked as at the factor.
+        /// </summary>
         private static Image Make(string key, int size, Action<Graphics, float> draw)
         {
+            bool atFactor = size <= 0;
+            if (atFactor) size = UiScale.Px(24);
             string k = key + "|" + size;
             Image img;
             if (_cache.TryGetValue(k, out img)) return img;
@@ -59,13 +65,13 @@ namespace Kaban.UI.Controls
                 img = small;
             }
             _cache[k] = img;
-            return img;
+            return atFactor ? UiScale.MarkedPicture(img) : img;
         }
 
         // ------------------------------------------------------------------
         // HMI SETTINGS: a screen on its stand, a gear on its lower right corner.
         // ------------------------------------------------------------------
-        public static Image HmiSettings(int size = 24)
+        public static Image HmiSettings(int size = 0)
         {
             return Make("hmi", size, (g, _) =>
             {
@@ -137,7 +143,7 @@ namespace Kaban.UI.Controls
         /// The processing centre: an end mill in its holder with the chips it
         /// throws, in front of a circular saw blade.
         /// </summary>
-        public static Image ProcessingCenter(int size = 24)
+        public static Image ProcessingCenter(int size = 0)
         {
             return Make("pc", size, (g, _) =>
             {
@@ -186,7 +192,7 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>Screwing: a countersunk screw with a cross (Phillips) head, point down.</summary>
-        public static Image ScrewingHoling(int size = 24)
+        public static Image ScrewingHoling(int size = 0)
         {
             return Make("sh", size, (g, _) =>
             {
@@ -227,7 +233,7 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>3D (hinge) drilling: a twist drill bit, shank up, point down.</summary>
-        public static Image HingeDrilling(int size = 24)
+        public static Image HingeDrilling(int size = 0)
         {
             return Make("hd", size, (g, _) =>
             {

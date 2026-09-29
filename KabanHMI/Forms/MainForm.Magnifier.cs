@@ -55,10 +55,10 @@ namespace Kaban.UI.Forms
             if (!mine.HasValue) return;
 
             string question = string.Format(LanguageManager.GetString("Msg_MagnifierRestart",
-                "Your magnifying factor is {0}; the screen is at {1}.\r\n\r\n" +
+                "Your screen scale is {0}; the screen is at {1}.\r\n\r\n" +
                 "Restart the HMI with {0} now? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
                 DisplaySettings.Percent(mine.Value), DisplaySettings.Percent(UiScale.Factor));
-            if (MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Magnifying factor"),
+            if (MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 AuditLogger.Log("kept the magnifying factor " + DisplaySettings.Percent(UiScale.Factor) + " (own: " + DisplaySettings.Percent(mine.Value) + ").");
@@ -75,15 +75,18 @@ namespace Kaban.UI.Forms
         // their own eyes, so it sits with the other two things about "me" - who
         // I am and my language - not three levels down in HMI Settings.
         //
-        // As simple as the language menu: the size on screen in the heading, the
-        // usual sizes, and a row to set it to the percent (- 137% + OK) - 10%
+        // As simple as the language menu: "Screen scale (100%)" in the heading,
+        // the usual sizes, and a row to set it to the percent (- 137% + OK) - 10%
         // at a time moved a page by more than an operator wanted.
         //
-        // Signed in, the size chosen is the user's OWN (DisplaySettings.User):
-        // they get it at every sign-in (an Admin also sets it for a user on User
-        // Settings). Nobody signed in, it is the panel's - everyone's who has
-        // none of their own. The size is applied at start-up, so a change
-        // offers the restart (the machine keeps running, the user stays signed in).
+        // IT IS THE PANEL'S SCALE, whoever is signed in. A user's own request is
+        // a PARAMETER of that user, set on User Settings (the same menu, with "No
+        // specific request"), and only there: choosing here used to overwrite the
+        // signed-in user's parameter, so User Settings showed whatever was last
+        // chosen on the caption bar instead of what the user had asked for. The
+        // size is applied at start-up, so a change offers the restart (the
+        // machine keeps running, the user stays signed in and is not asked about
+        // their own scale on the way back).
         // ==================================================================
 
         private Button _btnZoom;
@@ -104,7 +107,7 @@ namespace Kaban.UI.Forms
                 Text = "",
                 Cursor = Cursors.Hand,
                 TabStop = false,
-                AccessibleName = "Magnifying factor"
+                AccessibleName = "Screen scale"
             };
             _btnZoom.FlatAppearance.BorderSize = 0;
             _btnZoom.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(48, 48, 48);
@@ -126,7 +129,7 @@ namespace Kaban.UI.Forms
             };
             _btnZoom.Click += (s, e) => ShowZoomMenu();
             _topTips.SetToolTip(_btnZoom, LanguageManager.GetString("Tip_Zoom",
-                "Magnifying factor: how large the screen is drawn (80% - 150%)"));
+                "Screen scale: how large the screen is drawn (80% - 150%)"));
             pnlTop.Controls.Add(_btnZoom);
         }
 
@@ -147,49 +150,73 @@ namespace Kaban.UI.Forms
             finally { g.Restore(state); }
         }
 
-        /// <summary>The size the menu marks: the user's own, or the one on screen.</summary>
+        /// <summary>The size the menu marks: the one the program starts with (normally the one on screen).</summary>
         private static double ChosenFactor()
         {
-            var own = SecurityManager.CurrentLevel != SecurityLevel.None ? DisplaySettings.UserFactor(SecurityManager.CurrentUser) : null;
-            return own ?? UiScale.Factor;
+            return DisplaySettings.StartFactor;
         }
 
         /// <summary>The menu under the glass.</summary>
         internal ContextMenuStrip BuildZoomMenu()
         {
+            return BuildScaleMenu(LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + " (" + DisplaySettings.Percent(UiScale.Factor) + ")",
+                                  ChosenFactor(), false, f => { if (f.HasValue) ChooseFactor(f.Value); });
+        }
+
+        /// <summary>
+        /// THE SCALE MENU - the caption bar's and User Settings': an optional
+        /// heading, "No specific request" when a choice may be none, the usual
+        /// sizes, and the row that sets any percent 1% at a time.
+        /// </summary>
+        internal static ContextMenuStrip BuildScaleMenu(string heading, double? chosen, bool offerNone, Action<double?> choose)
+        {
             var menu = new ContextMenuStrip { ShowImageMargin = true, Font = UiStyle.MenuFont };
             menu.Renderer = new HmiMenuRenderer();
-            menu.ImageScalingSize = new System.Drawing.Size(22, 22);
-            double chosen = ChosenFactor();
+            menu.ImageScalingSize = UiScale.Px(new System.Drawing.Size(22, 22));
 
-            menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Magnifier", "Magnifying factor") +
-                                              " (" + DisplaySettings.Percent(UiScale.Factor) + ")")
+            if (!string.IsNullOrEmpty(heading))
             {
-                Font = MenuHeaderFont(),
-                ForeColor = System.Drawing.Color.FromArgb(40, 46, 56),
-                Margin = new Padding(-34, 2, 2, 2)
-            });
-            menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(new ToolStripLabel(heading)
+                {
+                    Font = MenuHeaderFont(),
+                    ForeColor = System.Drawing.Color.FromArgb(40, 46, 56),
+                    Margin = new Padding(-34, 2, 2, 2)
+                });
+                menu.Items.Add(new ToolStripSeparator());
+            }
+            if (offerNone)
+            {
+                var none = new ToolStripMenuItem(NoScaleRequest) { Checked = !chosen.HasValue, Tag = null };
+                none.Click += (s, e) => choose(null);
+                menu.Items.Add(none);
+                menu.Items.Add(new ToolStripSeparator());
+            }
 
             foreach (var f in FactorChoices)
             {
                 double factor = f;
                 var item = new ToolStripMenuItem(DisplaySettings.Percent(factor))
                 {
-                    Checked = Math.Abs(factor - chosen) < 0.001,
+                    Checked = chosen.HasValue && Math.Abs(factor - chosen.Value) < 0.001,
                     Tag = factor
                 };
-                item.Click += (s, e) => ChooseFactor(factor);
+                item.Click += (s, e) => choose(factor);
                 menu.Items.Add(item);
             }
             menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(new ToolStripControlHost(new ZoomStepper(chosen, f => { menu.Close(); ChooseFactor(f); }))
+            menu.Items.Add(new ToolStripControlHost(new ZoomStepper(chosen ?? UiScale.Factor, f => { menu.Close(); choose(f); }))
             {
                 AutoSize = false,
                 Size = new System.Drawing.Size(UiScale.Px(196), UiScale.Px(36)),
                 Margin = new Padding(UiScale.Px(4), 2, 2, 2)
             });
             return menu;
+        }
+
+        /// <summary>"No specific request": a user who asks for no scale of their own gets the panel's.</summary>
+        internal static string NoScaleRequest
+        {
+            get { return LanguageManager.GetString("Usr_NoScaleRequest", "No specific request"); }
         }
 
         private void ShowZoomMenu()
@@ -265,35 +292,26 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// Keeps a size chosen under the glass - the user's own when someone is
-        /// signed in, the panel's when nobody is - and offers the restart that
-        /// applies it.
+        /// Keeps a size chosen under the glass as the PANEL'S screen scale - the
+        /// one the program starts with, and everyone's who asks for none of their
+        /// own - and offers the restart that applies it. A user's own request is
+        /// not touched (see above).
         /// </summary>
         public void ChooseFactor(double factor)
         {
             factor = DisplaySettings.Clamp(factor);
-            bool signedIn = SecurityManager.CurrentLevel != SecurityLevel.None;
-            string user = SecurityManager.CurrentUser;
-            if (signedIn)
-            {
-                DisplaySettings.SetUserFactor(user, factor);
-                AuditLogger.Log("magnifying factor of user '" + user + "': " + DisplaySettings.Percent(factor) + ".");
-            }
-            else
-            {
-                DisplaySettings.PanelFactor = factor;
-                AuditLogger.Log("magnifying factor of the panel: " + DisplaySettings.Percent(factor) + ".");
-            }
-            // The next start is at this size either way: a power cut brings it back.
+            DisplaySettings.PanelFactor = factor;
+            AuditLogger.Log("screen scale of the panel: " + DisplaySettings.Percent(factor) + ".");
+            // The next start is at this size: a power cut brings it back.
             DisplaySettings.StartFactor = factor;
             if (_btnZoom != null) _btnZoom.Invalidate();
             if (Math.Abs(factor - UiScale.Factor) < 0.001) return;
 
             string question = string.Format(LanguageManager.GetString("Msg_FactorRestartNow",
-                "Restart the HMI now with the magnifying factor {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
+                "Restart the HMI now with the screen scale {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
                 DisplaySettings.Percent(factor));
             Func<string, bool> ask = ConfirmZoomRestart ?? (q =>
-                MessageBox.Show(this, q, LanguageManager.GetString("Ttl_Magnifier", "Magnifying factor"),
+                MessageBox.Show(this, q, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
             if (ask(question)) RestartWithFactor(factor, keepSignedIn: true);
         }
@@ -305,7 +323,7 @@ namespace Kaban.UI.Forms
         public void RestartWithFactor(double factor, bool keepSignedIn)
         {
             DisplaySettings.StartFactor = factor;
-            AuditLogger.Log("restart for the magnifying factor " + DisplaySettings.Percent(factor) + ".");
+            AuditLogger.Log("restart for the screen scale " + DisplaySettings.Percent(factor) + ".");
             // The sign-in is handed over by every restart (RestartApplication).
             RestartApplication(null);
         }

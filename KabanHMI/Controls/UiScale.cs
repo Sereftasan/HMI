@@ -125,6 +125,47 @@ namespace Kaban.UI.Controls
             return c != null && _done.TryGetValue(c, out unused);
         }
 
+        // ---- pictures ------------------------------------------------------
+        //
+        // A button's picture is NOT scaled with the button (Control.Scale leaves
+        // images alone): at 150% the menu's pictures stayed their 24 px in
+        // buttons half as large again, and at 80% they crowded smaller buttons.
+
+        private static readonly ConditionalWeakTable<Image, object> _pictureAtFactor = new ConditionalWeakTable<Image, object>();
+        private static readonly ConditionalWeakTable<Image, Image> _pictureScaled = new ConditionalWeakTable<Image, Image>();
+
+        /// <summary>Records a picture as made at this factor already (drawn at its size - see NavGlyphs).</summary>
+        public static Image MarkedPicture(Image img)
+        {
+            object unused;
+            if (img != null && !_pictureAtFactor.TryGetValue(img, out unused)) _pictureAtFactor.Add(img, Mark);
+            return img;
+        }
+
+        /// <summary>
+        /// A picture at this factor: smoothly enlarged or reduced, once per
+        /// picture; one made at the factor already is returned as it is.
+        /// </summary>
+        public static Image Picture(Image img)
+        {
+            if (img == null || !Active) return img;
+            object unused;
+            if (_pictureAtFactor.TryGetValue(img, out unused)) return img;
+            Image done;
+            if (_pictureScaled.TryGetValue(img, out done)) return done;
+            var bmp = new Bitmap(Math.Max(1, Px(img.Width)), Math.Max(1, Px(img.Height)));
+            using (var g = Graphics.FromImage(bmp))
+            {
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                g.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height));
+            }
+            MarkedPicture(bmp);
+            _pictureScaled.Add(img, bmp);
+            return bmp;
+        }
+
         /// <summary>
         /// A form scaled as it loads - before it is seen. Called from the forms'
         /// constructors; a form that does not is scaled on the next idle moment

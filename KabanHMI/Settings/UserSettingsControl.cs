@@ -12,9 +12,10 @@ namespace Kaban.UI.Settings
     /// and password reset. The last Admin account cannot be deleted (the machine
     /// must never lock everyone out) and accounts persist across restarts.
     ///
-    /// Also a user's own MAGNIFYING FACTOR (see DisplaySettings) - offered as a
-    /// restart when they sign in. The panel's, for everyone, is set under the
-    /// magnifying glass on the caption bar with nobody signed in.
+    /// Also a user's own SCREEN SCALE (see DisplaySettings) - a parameter of the
+    /// user, offered as a restart when they sign in; "No specific request" leaves
+    /// them the panel's, which is set under the glass on the caption bar. Chosen
+    /// with the caption bar's menu (the usual sizes, and any percent 1% at a time).
     /// </summary>
     public class UserSettingsControl : UserControl
     {
@@ -22,11 +23,9 @@ namespace Kaban.UI.Settings
         private readonly TextBox _txtUser = new TextBox();
         private readonly TextBox _txtPass = new TextBox();
         private readonly ComboBox _cmbLevel = new ComboBox();
-        private readonly ComboBox _cmbFactor = new ComboBox();
+        private readonly ScaleChooser _scale = new ScaleChooser();
         private readonly Label _lblStatus = new Label();
 
-        private static readonly string[] FactorChoices =
-            Kaban.UI.Forms.MainForm.FactorChoices.Select(f => DisplaySettings.Percent(f)).ToArray();
 
         public UserSettingsControl()
         {
@@ -43,7 +42,7 @@ namespace Kaban.UI.Settings
             _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             _grid.Columns.Add("user", LanguageManager.GetString("Usr_Name", "User"));
             _grid.Columns.Add("level", LanguageManager.GetString("Usr_Level", "Level"));
-            _grid.Columns.Add("factor", LanguageManager.GetString("Usr_Factor", "Magnifier"));
+            _grid.Columns.Add("factor", LanguageManager.GetString("Usr_Factor", "Screen scale"));
             Kaban.UI.Controls.UiStyle.EnableAutoFit(_grid);
             Kaban.UI.Controls.UiStyle.EnableTableTools(_grid, "Users");
             _grid.SelectionChanged += (s, e) =>
@@ -53,8 +52,11 @@ namespace Kaban.UI.Settings
                 var lvl = Convert.ToString(_grid.SelectedRows[0].Cells[1].Value);
                 _cmbLevel.SelectedItem = lvl;
                 _txtPass.Text = "";
-                _cmbFactor.Text = Convert.ToString(_grid.SelectedRows[0].Cells[2].Value);
+                // The user's OWN request, from where it is kept - never the scale on screen.
+                _scale.Value = DisplaySettings.UserFactor(_txtUser.Text);
             };
+            // Shown again after a change elsewhere: the list as it is now.
+            VisibleChanged += (s, e) => { if (Visible) RefreshList(); };
 
             var pn = new Panel { Dock = DockStyle.Fill, Padding = new Padding(16), AutoScroll = true };
             int y = 16;
@@ -80,22 +82,7 @@ namespace Kaban.UI.Settings
             _cmbLevel.Items.AddRange(new object[] { "Operator", "Maintenance", "Admin" });
             _cmbLevel.SelectedIndex = 0;
             row(LanguageManager.GetString("Usr_Level", "Level") + ":", _cmbLevel);
-            _cmbFactor.DropDownStyle = ComboBoxStyle.DropDown;
-            _cmbFactor.Items.Add("");
-            _cmbFactor.Items.AddRange(FactorChoices);
-            row(LanguageManager.GetString("Usr_FactorOwn", "Magnifying factor") + ":", _cmbFactor);
-            // What the factor does, where it is set - said once here rather than
-            // in every line of the caption bar's menu.
-            pn.Controls.Add(new Label
-            {
-                Text = LanguageManager.GetString("Msg_UsrFactorNote",
-                    "The user's own size of the screen, 80% to 150% (any percent). Empty: the panel's. Whenever they sign in " +
-                    "and the screen is at another size, the HMI offers to restart with theirs. They set it themselves under the " +
-                    "magnifying glass on the caption bar - with nobody signed in, the glass sets the panel's."),
-                Left = 16, Top = y - 2, Width = 304, Height = 78, ForeColor = Color.FromArgb(90, 96, 106),
-                Font = new Font("Segoe UI", 8.5F)
-            });
-            y += 80;
+            row(LanguageManager.GetString("Usr_FactorOwn", "Screen scale") + ":", _scale);
 
             var tips = Kaban.UI.Controls.UiStyle.Tips();
             Func<string, string, int, Button> tool = (emoji, tip, left) =>
@@ -111,12 +98,8 @@ namespace Kaban.UI.Settings
 
             btnSave.Click += (s, e) => SaveUser();
             btnDelete.Click += (s, e) => DeleteUser();
-            tips.SetToolTip(_cmbFactor, LanguageManager.GetString("Tip_UsrFactor",
-                "The user's own magnifying factor, 80% to 150% (125% = a quarter larger). Empty: the panel's. " +
-                "When they sign in and the screen is at another factor, the HMI offers to restart with theirs."));
-
-            // The panel's factor - for everyone without their own - is set under
-            // the magnifying glass on the caption bar with nobody signed in.
+            tips.SetToolTip(_scale, LanguageManager.GetString("Tip_UsrFactor",
+                "The screen scale this user asks for - offered when they sign in."));
 
             _lblStatus.Dock = DockStyle.Bottom;
             _lblStatus.Height = 26;
@@ -157,12 +140,7 @@ namespace Kaban.UI.Settings
             { _lblStatus.Text = "A user name may not contain ';'."; return; }
             if (UserStore.WouldRemoveLastAdmin(name, level))
             { _lblStatus.Text = "The LAST admin account cannot be given a lower level."; return; }
-            double? factor = null;
-            if (_cmbFactor.Text.Trim().Length > 0)
-            {
-                factor = DisplaySettings.Parse(_cmbFactor.Text);
-                if (!factor.HasValue) { _lblStatus.Text = FactorHint; return; }
-            }
+            double? factor = _scale.Value;
 
             try
             {
@@ -186,7 +164,7 @@ namespace Kaban.UI.Settings
             var before = DisplaySettings.UserFactor(name);
             DisplaySettings.SetUserFactor(name, factor);
             if (before != factor)
-                AuditLogger.Log($"magnifying factor of user '{name}': {(factor.HasValue ? DisplaySettings.Percent(factor.Value) : "the panel's")}.");
+                AuditLogger.Log($"screen scale of user '{name}': {(factor.HasValue ? DisplaySettings.Percent(factor.Value) : "no specific request")}.");
             _txtPass.Text = "";
             RefreshList();
             _lblStatus.Text = $"User '{name}' saved.";
@@ -197,19 +175,14 @@ namespace Kaban.UI.Settings
                 OfferRestart(factor.Value, keepSignedIn: true);
         }
 
-        private static string FactorHint
-        {
-            get { return LanguageManager.GetString("Msg_FactorRange", "The magnifying factor is a number from 0.8 to 1.5 (1.1, 1.25 ...)."); }
-        }
-
         private void OfferRestart(double factor, bool keepSignedIn)
         {
             var shell = FindForm() as Kaban.UI.Forms.MainForm;
             string question = string.Format(LanguageManager.GetString("Msg_FactorRestartNow",
-                "Restart the HMI now with the magnifying factor {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
+                "Restart the HMI now with the screen scale {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
                 DisplaySettings.Percent(factor));
             if (shell == null ||
-                MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Magnifying factor"),
+                MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             shell.RestartWithFactor(factor, keepSignedIn);
         }
@@ -235,5 +208,65 @@ namespace Kaban.UI.Settings
             _lblStatus.Text = $"User '{name}' deleted.";
         }
     }
-}
 
+    /// <summary>
+    /// A user's screen scale, chosen as on the caption bar: looks like the other
+    /// fields' boxes; a click opens the same menu - "No specific request", the
+    /// usual sizes, and the row that sets any percent 1% at a time.
+    /// </summary>
+    internal sealed class ScaleChooser : Button
+    {
+        private double? _value;
+
+        public ScaleChooser()
+        {
+            FlatStyle = FlatStyle.Flat;
+            BackColor = Color.White;
+            TextAlign = ContentAlignment.MiddleLeft;
+            Height = 26;
+            Cursor = Cursors.Hand;
+            AccessibleName = "Screen scale";
+            FlatAppearance.BorderColor = Color.FromArgb(160, 166, 176);
+            Text = Caption;
+        }
+
+        /// <summary>The user's request; null: no specific request (the panel's).</summary>
+        public double? Value
+        {
+            get { return _value; }
+            set
+            {
+                _value = value.HasValue ? DisplaySettings.Clamp(value.Value) : (double?)null;
+                Text = Caption;
+                Invalidate();
+            }
+        }
+
+        public string Caption
+        {
+            get { return _value.HasValue ? DisplaySettings.Percent(_value.Value) : Kaban.UI.Forms.MainForm.NoScaleRequest; }
+        }
+
+        /// <summary>The menu a click opens (tests use it as the operator would).</summary>
+        internal ContextMenuStrip BuildMenu()
+        {
+            return Kaban.UI.Forms.MainForm.BuildScaleMenu(null, _value, true, v => Value = v);
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            Kaban.UI.Controls.UiStyle.ShowPopup(BuildMenu(), this, new Point(0, Height));
+        }
+
+        protected override void OnPaint(PaintEventArgs pevent)
+        {
+            base.OnPaint(pevent);
+            // The drop-down caret, as on a combo box.
+            float cx = Width - Kaban.UI.Controls.UiScale.For(this, 12), cy = Height / 2f;
+            float d = Kaban.UI.Controls.UiScale.For(this, 4);
+            using (var b = new SolidBrush(Color.FromArgb(60, 66, 76)))
+                pevent.Graphics.FillPolygon(b, new[] { new PointF(cx - d, cy - d / 2), new PointF(cx + d, cy - d / 2), new PointF(cx, cy + d / 2 + 1) });
+        }
+    }
+}

@@ -137,7 +137,7 @@ namespace Kaban.UI.Screens
                     Cursor = Cursors.Hand,
                     FallbackText = MachineTabScreen.DisplayNameOf(mounted),
                     TranslationKey = mounted.Module.DisplayNameKey ?? "",
-                    Image = MachineIcon.For(mounted)
+                    Image = UiScale.Picture(MachineIcon.For(mounted))
                 };
                 btn.FlatAppearance.BorderSize = 0;
                 btn.Click += (s, e) => Select(index, notify: true);
