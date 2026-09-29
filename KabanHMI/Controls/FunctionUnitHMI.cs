@@ -940,7 +940,11 @@ namespace Kaban.UI.Controls
                                   ? ": a sensor at each end - one lamp on Action A and one on Action B"
                                   : ": the end sensor and the pressure switch - one lamp on Action A and one on Action B") +
                               " (A has " + lampsA + ", B has " + lampsB + ").");
-                    if (pos) p.Add(_feedback + noPosition);
+                    // A CLAMP MAY MEASURE: the pressure switch says it has clamped,
+                    // and an encoder on it may show where - the profile's width on
+                    // FA2010's profile recognition. That position is a reading, not
+                    // the movement's feedback, so it is not a mismatch here.
+                    if (pos && _feedback == CylinderFeedback.TwoEndMagnetic) p.Add(_feedback + noPosition);
                     break;
                 case CylinderFeedback.AnalogueMagnetic:
                     if (lamps > 0) p.Add("AnalogueMagnetic: the position is the feedback - no lamps (" + lamps + " set).");

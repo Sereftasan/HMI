@@ -109,7 +109,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Small_Clamping.ErrorAAddress = "M892";
             this.unitLeft_Top_Small_Clamping.ErrorBAddress = "M891";
             this.unitLeft_Top_Small_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitLeft_Top_Small_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            // Drawings: Y3/Y4 5/2 double solenoid (P1); one sensor, the up sensor SN64 (X56).
+            this.unitLeft_Top_Small_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
             this.unitLeft_Top_Small_Clamping.Location = new System.Drawing.Point(1036, 164);
             this.unitLeft_Top_Small_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_Small_Clamping.LogAction = true;
@@ -130,7 +131,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Clamping.ErrorAAddress = "M852";
             this.unitRight_Front_Clamping.ErrorBAddress = "M851";
             this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
-            this.unitRight_Front_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            // Drawings: Y43/Y44 5/3 closed centre (P22); back sensor SN76 (X60) + encoder X14/X15.
+            this.unitRight_Front_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitRight_Front_Clamping.Location = new System.Drawing.Point(526, 238);
             this.unitRight_Front_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRight_Front_Clamping.LogAction = true;

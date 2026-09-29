@@ -134,17 +134,38 @@ class CH {
         Check("  none overlapping", !overlap);
         Check("  rows 74 apart as on the other pages", cu.All(c => (c.Top - 16) % 74 == 0));
 
-        Console.WriteLine("--- demo valve and sensor types on the FA2010 pages ---");
-        var valves = new HashSet<CylinderValve>(); var feedbacks = new HashSet<CylinderFeedback>(); int typed = 0;
+        Console.WriteLine("--- valve and sensor types on the FA2010 pages ---");
+        var valves = new HashSet<CylinderValve>(); int typed = 0;
+        var byName = new Dictionary<string, FunctionUnitHMI>();
+        var pagesBuilt = new List<Control>();
         foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition" })
         {
             var pg = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + name));
+            pagesBuilt.Add(pg);
             foreach (var u in pg.Controls.OfType<FunctionUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
-            { typed++; valves.Add(u.ValveType); feedbacks.Add(u.FeedbackType); }
-            pg.Dispose();
+            { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }
-        Check("nine units carry a valve and a feedback type, every valve and every feedback among them",
-              typed == 9 && valves.Count == 3 && feedbacks.Count == 6, typed + " units, " + valves.Count + " valves, " + feedbacks.Count + " feedbacks");
+        Check("nine units carry a valve and a feedback type, every valve among them", typed == 9 && valves.Count == 3, typed + " units, " + valves.Count + " valves");
+        Func<string, CylinderValve, CylinderFeedback, bool> asDrawn = (key, v, f) =>
+            byName.ContainsKey(key) && byName[key].ValveType == v && byName[key].FeedbackType == f && byName[key].TypeCheck == "OK";
+        Check("Milling Top Clamping as drawn: 5/3 (Y33/Y34), up sensor + encoder",
+              asDrawn("ManualMilling/Top Clamping", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.EncoderPlusReference),
+              byName.ContainsKey("ManualMilling/Top Clamping") ? byName["ManualMilling/Top Clamping"].TypeCheck : "missing");
+        Check("Exit Robot Top Clamping as drawn: 5/3 (Y45/Y46), up sensor + encoder",
+              asDrawn("ManualExit/Robot Top Clamping", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.EncoderPlusReference));
+        Check("Exit Short Profile Support as drawn: 5/2 double solenoid (Y71/Y72), a sensor at each end",
+              asDrawn("ManualExit/Short Profile Support", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic));
+        Check("Profile Recognition Front Clamping as drawn: 5/3 (Y28/Y29), back sensor + pressure switch (and its measuring position)",
+              asDrawn("ManualProfile_Recognition/Front Clamping", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.MagneticPlusPressureSwitch));
+        Check("Cutting Left Top Small Clamping: one up sensor (SN64); Right Front Clamping: back sensor + encoder",
+              asDrawn("ManualCutting/Left Top Small Clamping", CylinderValve.DoubleSolenoid, CylinderFeedback.SingleMagnetic) &&
+              asDrawn("ManualCutting/Right Front Clamping", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.EncoderPlusReference));
+        // Left Profile Recognition Front Vertical: its "lamps" are D750 / D150, words the
+        // drawings do not show - its feedback is for the machine's builder to say.
+        var open = byName.Where(kv => kv.Value.TypeCheck != "OK").Select(kv => kv.Key).ToList();
+        Check("every other typed unit's wiring suits its types (one left open: Left Profile Recognition Front Vertical)",
+              open.Count == 1 && open[0] == "ManualClamping_Moulds/Left Profile Recognition Front Vertical", string.Join(" | ", open));
+        foreach (var pg in pagesBuilt) pg.Dispose();
 
         Console.WriteLine("--- the login: pick the user, type the password ---");
         string dir = Path.Combine(Path.GetTempPath(), "lg_" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(dir);

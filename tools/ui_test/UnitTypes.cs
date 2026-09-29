@@ -74,6 +74,11 @@ class UT {
             Check(f + " with both lamps on A: one on each action", t.TypeProblems().Any(p => p.StartsWith(f.ToString()) && p.Contains("A has 2, B has 0")), P(t));
             t.Lamp2AAddress = ""; t.Lamp1BAddress = "X2";
             Check("  one on each: OK", t.TypeCheck == "OK", t.TypeCheck);
+            t.PositionAddress = "D10";
+            if (f == CylinderFeedback.TwoEndMagnetic)
+                Check("  a position is pointed out (not this feedback's)", t.TypeProblems().Any(p => p.Contains("no position is read")), P(t));
+            else
+                Check("  a clamp with a pressure switch may also measure (a position): OK", t.TypeCheck == "OK", t.TypeCheck);
         }
         var an = Unit(CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.AnalogueMagnetic, "M1", "M2", "X1");
         Check("AnalogueMagnetic with a lamp and no position: both said",

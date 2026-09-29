@@ -73,7 +73,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             this.unitRobot_Top_Clamping.ErrorAAddress = "M854";
             this.unitRobot_Top_Clamping.ErrorBAddress = "M840";
-            this.unitRobot_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+            // Up sensor SN77 (X61) + encoder X16/X17 (Cutting Right Top Clamping).
+            this.unitRobot_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitRobot_Top_Clamping.HelpAFiles = "c# learning structure.png";
             this.unitRobot_Top_Clamping.HelpBFiles = "c# learning structure.png";
             this.unitRobot_Top_Clamping.Lamp1AAddress = "M233";
@@ -109,7 +110,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.TabIndex = 0;
             this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
             this.unitRobot_Top_Clamping.TitleTipKey = "";
-            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            // Pneumatic drawing: Y45/Y46, 5/3 closed centre (P23).
+            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitRobot_Top_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             // 
             // unitRobot_Top_Small_Clamping
@@ -372,7 +374,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.ConfirmationNeeded = false;
             this.unitShort_Profile_Support.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitShort_Profile_Support.ErrorAAddress = "M861";
-            this.unitShort_Profile_Support.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            // Back sensor SN38 (X24) and forward sensor SN39 (X25): one at each end.
+            this.unitShort_Profile_Support.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
             this.unitShort_Profile_Support.Lamp1AAddress = "M204";
             this.unitShort_Profile_Support.Lamp1ATipKey = "";
             this.unitShort_Profile_Support.Lamp1BAddress = "M205";
@@ -406,7 +409,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.TabIndex = 5;
             this.unitShort_Profile_Support.TitleTextKey = "Short Profile Support";
             this.unitShort_Profile_Support.TitleTipKey = "";
-            this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
+            // Pneumatic drawing: Y71/Y72, 5/2 double solenoid (P36).
+            this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitShort_Profile_Support.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // unitConveyor_Motor

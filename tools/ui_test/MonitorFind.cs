@@ -92,8 +92,8 @@ class MF {
         if (rtc != null) {
             var docs = rtc.HelpDocuments();
             var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html");
-            Check("  its '?' offers the manual for DoubleSolenoid + MagneticPlusPressureSwitch",
-                  manual != null && manual.Valve == 1 && manual.Feedback == 5, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
+            Check("  its '?' offers the manual for its drawn types: 5/3 valve + encoder and reference sensor",
+                  manual != null && manual.Valve == 3 && manual.Feedback == 6, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
             var html = System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual));
             int heads = System.Text.RegularExpressions.Regex.Matches(html, "<thead>").Count;
             int d14 = System.Text.RegularExpressions.Regex.Matches(html, "data-detail=\"1.4\"").Count;
