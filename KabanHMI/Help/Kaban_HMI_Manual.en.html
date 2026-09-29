@@ -145,7 +145,7 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
 <tr><td>1</td><td>Alarms (red, blinking)</td><td>Only there while a machine reports an error. Click it for the list of machines in alarm. See <a href="#alarms">6</a>.</td></tr>
 <tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
 <tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
-<tr><td>4</td><td>Magnifying factor</td><td>The glass and the size on screen, in percent (<b>100%</b>). Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
+<tr><td>4</td><td>Screen scale</td><td>The glass and the size on screen, in percent (<b>100%</b>). Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
 <tr><td>5</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
 <tr><td>6</td><td>Minimise, maximise, close</td><td>The &#10005; asks first: <b>Close</b> or <b>Restart the program</b>, so a stray tap never ends a shift.
 Every restart keeps whoever is signed in signed in.
@@ -153,11 +153,12 @@ Closing from the Windows taskbar or with <kbd>Alt</kbd>+<kbd>F4</kbd> closes at 
 <tr><td>7</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown. The gear is <b>Machine Parameters</b>, the screen with a gear <b>HMI Settings</b>.</td></tr>
 <tr><td>8</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. Each machine has its own picture, drawn in black like the others: what it does (a milling cutter and a saw blade, a screw, a drill bit). The highlighted one is the machine on screen.</td></tr>
 <tr><td>9</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
-<tr><td>10</td><td>Side bar</td><td>Pages that open <b>beside</b> the page on display: Inputs / Outputs, the PLC Monitor, the machine's own. See <a href="#side">3a</a>.</td></tr>
+<tr><td>10</td><td>Side bar</td><td>Pages that open <b>beside</b> the page on display: Inputs / Outputs, the Axis Monitor, the PLC Monitor, the machine's own. See <a href="#side">3a</a>.</td></tr>
 </table>
 
 <p>Everything you can click shows a <b>hand</b> pointer; anything that cannot be used right now shows the plain arrow and,
-when you rest the pointer on it, says <b>why</b> (not signed in, level too low, machine not in manual, controller not answering).</p>
+when you rest the pointer on it, says <b>why</b> (not signed in, level too low, machine not in manual, controller not answering). Rest the pointer on a <b>value field</b> for what may be typed in it (<i>Allowed: 0.00 - 6500.00 mm</i>);
+on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the pointer, like every control's border. An Admin also sees how each is wired.</p>
 
 <!-- ================================================================== -->
 <h2 id="signin">2. Signing in and levels</h2>
@@ -184,10 +185,11 @@ still need a higher one &ndash; the control's tooltip says so.</p>
  <li><b>Machine list (under it):</b> when sub-machines are mounted, each page exists once per machine. Pick the machine here.
      The highlighted machine is always the one whose page is on screen.</li>
  <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages). Tabs that do not fit on one
-     line go on to a second row, so every tab's name is always in sight &ndash; at any magnifying factor, with a side page open or not.</li>
+     line go on to a second row, so every tab's name is always in sight &ndash; at any screen scale, with a side page open or not.</li>
  <li><b>&#9664; Back / &#9654; Forward:</b> return to where you were &ndash; the same page, the same machine and the same tab.
      Choosing the page you are already on does not add a step.</li>
- <li><b>Collapse the menu</b> with the button at its top (&laquo;, the same as the side bar's &raquo;) to icons only; drag its right edge to set its width. Both are remembered.</li>
+ <li><b>Collapse the menu</b> with the button at its top (&laquo;, the same as the side bar's &raquo;) to icons only; drag its right edge to set its width. Both are remembered.
+     Folded to its icons, the menu's buttons say their names when you rest the pointer on them; open, with the names in sight, they have no tooltip.</li>
  <li><b>Back where you left it:</b> the program reopens on the page it was on &ndash; the same machine and tabs, with the side page and
      side windows that were open &ndash; after a restart or a power cut. A page above the level of whoever signs in at the start opens at the
      first sign-in that may open it, unless you have gone somewhere else by then.</li>
@@ -213,6 +215,9 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
 <tr><td>Inputs / Outputs</td><td><span class="lvl l2">Maintenance</span></td><td>Every physical input (X) and output (Y), lit while it is on:
   inputs green, outputs amber. <i>Find</i> keeps the ones whose address or name contains what you type; <i>Only the ones on</i> hides the rest.
   Read only. The list comes from <code>IoList.csv</code> beside the program.</td></tr>
+<tr><td>Axis Monitor</td><td><span class="lvl l0">None</span></td><td>Every axis's <b>position</b> and <b>motor current</b>, drawn as on the
+  <i>Axis Settings</i> rows, grouped by machine. Nothing is added to it by hand: the axes are the rows of the machines' Axis Settings pages,
+  each listed while its row's visibility conditions are met. Watching only.</td></tr>
 <tr><td>PLC Monitor</td><td><span class="lvl l3">Admin</span></td><td>Any device of any controller, read and written. See <a href="#diag">11</a>.</td></tr>
 <tr><td>A machine's own</td><td>its own</td><td>Designed with the machine: axis positions, power, the order being run, second-level operations.</td></tr>
 </table>
@@ -272,7 +277,7 @@ emergency stop and the PLC program remain the protection &ndash; never rely on t
 position reading already show a fault. What it offers depends on the moment:</p>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
-<tr><td><b style="color:#2870be">?</b></td><td>The unit has help to offer: its own files, or &ndash; a cylinder whose valve and feedback are set &ndash; its troubleshooting manual</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8; then the unit's own sheets (photos, drawing, settings).</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>The unit has help to offer: its own files, or &ndash; a cylinder whose valve and feedback are set &ndash; its troubleshooting manual</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8 whose heading row stays at the top while you scroll; then the unit's own sheets (photos, drawing, settings).</td></tr>
 <tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set</td><td>The same manual, headed with <b>the movement that failed</b> &ndash; which button, its PLC bit and valve output, the sensor that should have come on and the one that should have gone off &ndash; and, where the machine's drawings are known, <b>where each is on them</b>: the sensor's tag, wire and sheet, the output's wire, relay and valve coil, the air valve, its hoses and the cylinder on the pneumatic drawing. Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
 <tr><td><b style="color:#2870be">?</b></td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning.</td></tr>
 </table>
@@ -340,7 +345,7 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><th>Tab</th><th>Level</th><th>For</th></tr>
 <tr><td>Unit Settings</td><td><span class="lvl l1">Operator</span></td><td>Units of measure (see 8).</td></tr>
 <tr><td>User Settings</td><td><span class="lvl l3">Admin</span></td><td>Users, passwords and levels. The last Admin cannot be removed or lowered.
-  The <b>magnifying factor</b> of each user (below).</td></tr>
+  The <b>screen scale</b> each user asks for (below).</td></tr>
 <tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
 <tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log, searchable by time, words, user, controller and kind (see <a href="#diag">11</a>).
   Switching the log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
@@ -351,29 +356,40 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>About</td><td><span class="lvl l0">None</span></td><td>Program version, machines mounted, and this manual.</td></tr>
 </table>
 
-<h3 id="magnifier">The magnifying factor</h3>
-<p>Draws the whole program larger or smaller &ndash; text, buttons, fields, menus, pages &ndash; from <b>80%</b> (more on the screen)
+<h3 id="magnifier">The screen scale</h3>
+<p>Draws the whole program larger or smaller &ndash; text, buttons, fields, menus, pictures, pages &ndash; from <b>80%</b> (more on the screen)
 to <b>150%</b> (half as large again). Click the <b>glass</b> on the caption bar, between the user and the language. The menu shows the size
-on screen in its heading (<i>Magnifying factor (100%)</i>), a list of sizes, and a row to set any size in between:
+on screen in its heading (<i>Screen scale (100%)</i>), a list of sizes, and a row to set any size in between:
 <b>&minus;</b> and <b>+</b> change it by <b>1%</b> (hold for more), <b>&#10003;</b> takes it.</p>
 <ul>
- <li><b>Signed in</b>, the size you choose is <b>your own</b>: when you sign in and the screen is at another size, the program asks
-     whether to restart with yours. The machine keeps running meanwhile, the screen is back in a few seconds, and you stay signed in.
-     The program then keeps starting with that size until another is chosen, so the same operator after a power cut is not asked again.</li>
- <li><b>Nobody signed in</b>: the panel's size &ndash; the one the program starts with, and the one for everyone with no size of their own.</li>
+ <li>The glass sets the <b>panel's</b> scale, whoever is signed in: the one the program starts with, and everyone's who asks for none of their own.
+     A change offers the restart: the machine keeps running, the screen is back in a few seconds, and whoever was signed in stays signed in.</li>
+ <li>A user who needs another size has it as a <b>parameter</b> on <i>User Settings</i> (<i>Screen scale</i>: the same menu, with
+     <i>No specific request</i> first). When they sign in and the screen is at another size, the program asks whether to restart with theirs.
+     The glass never changes a user's parameter.</li>
 </ul>
-<p>An Admin also sets a user's own size on <i>User Settings</i> (<i>Magnifying factor</i>; left empty, the user has none and gets the panel's).</p>
 <p class="note">Pages are designed for the panel's screen at 100%: at a larger size, or beside a side page, they no longer fit and
 <b>scroll</b> (scroll bars under and beside the page) &ndash; every page does, so its far side can always be reached; at 150% on a small
 screen that means scrolling to reach it. The menu on the left scrolls too
-when its buttons no longer fit, with <b>Back / Forward</b> always at its bottom. Find scrolls the page to the unit it opens. Pictures (icons, drawings) are drawn larger but not sharper.
+when its buttons no longer fit, with <b>Back / Forward</b> always at its bottom. Find scrolls the page to the unit it opens. The pictures on the
+buttons grow and shrink with the screen; the program's own drawings (the machines, HMI Settings) are drawn at the size, the others enlarged.
 Windows' own message boxes keep Windows' size.</p>
 
 <!-- ================================================================== -->
 <h2 id="params">10. Machine Parameters</h2>
 <p><span class="lvl l2">Maintenance</span> One tab per machine.</p>
 <ul>
- <li><b>Axis Settings:</b> one row per axis &ndash; jog, position, limits, reference, calibration, drive codes. The axis units on the Manual Movement pages take everything from these rows.</li>
+ <li><b>Axis Settings:</b> one row per axis &ndash; &#9664; position <b>current</b> &#9654;, min, max, reference, calibration, calibrate, the reference
+     selection with the <b>Z distance</b> beside it, the drive codes. The current sits by the position (both change while the axis moves), the
+     Z distance by the reference (it says how good the reference is). A column is there when any axis on the page has it; the headings follow the columns.
+     The axis units on the Manual Movement pages take everything from these rows.
+     <ul>
+      <li>With a <b>real position</b> (<code>RealPositionAddress</code>, the encoder's), the position's tooltip starts with it and with the
+          <b>difference</b> in raw units (without the divisor &ndash; it is a few counts).</li>
+      <li><b>Travel per revolution</b> and <b>backlash</b>, when given (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>), are the
+          last columns, entered in the PLC's own small units (no divisor, no decimals).</li>
+      <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
+     </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link
      (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; the alarm and what it means, the code,
@@ -450,7 +466,7 @@ Windows' own message boxes keep Windows' size.</p>
 <tr><td>Users, units, PLC connections, audit logs, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>)</td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>PLC Monitor lists, column layout, where side pages' own windows were (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
-<tr><td>The magnifying factor (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>
+<tr><td>The screen scale (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>
 <tr><td>The side panel's width, the bar folded, the pages kept in a window</td><td><code>C:\ProgramData\KabanHMI\SidePanel.cfg</code></td></tr>
 <tr><td>The page the program was on (reopened at the next start)</td><td><code>C:\ProgramData\KabanHMI\LastPage.cfg</code></td></tr>
 <tr><td>Inputs and outputs for the side page</td><td><code>IoList.csv</code> beside each machine's program (sub-machines in their own folder)</td></tr>

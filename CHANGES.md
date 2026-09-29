@@ -3973,3 +3973,32 @@ and `UnitLookAndErrors` extended.
 - Tests: `ZoomMenu.cs` rewritten, `tools/ui_test/PageScrollAndTabs.cs` (new), `AxisCodes.cs`, `NavIcons.cs`,
   `ConnectionPageAndShutdown.cs`, `Magnifier.cs`, `UnitsAndDesigner.cs`, `CylinderHelpAndLogin.cs`,
   `UnitHelpLinks.cs`, `AxisCodeHelpUi.cs` updated.
+
+## 2026-09-29 - One-chart cylinder manual, axis row and Axis Monitor, Screen Scale, tooltips, FA2010 types
+
+- `tools/convert_cylinder_manual.py`: one table, one heading row, a `<tbody class="block" data-detail data-variant>` per block;
+  sticky heading row. `Help/Cylinder_Troubleshooting.html` regenerated. `TroubleshootingCatalog.Tailor` filters tbody blocks;
+  `JoinBlocks` (public) joins an old sectioned copy. `tools/build_code_help.py`: sticky heading row; code pages regenerated.
+- `AxisSettingHMI`: layout name | back | position | current | forward | min max reference calibration | cal | ref | Z distance |
+  codes | travel/rev backlash; `WMeter` 76, meters 32 high; columns only where the page has them (`PageHas`); `Columns`;
+  `AlignHeaders` (heading labels found by text, placed, translated, hidden, created for new columns); `RealPositionAddress`,
+  `TravelPerRevolutionAddress`, `BacklashAddress` (raw fields), `VisibilityConditions` (IConditionalControl), language refresh.
+- `BaseNumericHMI`: `ComparedAddress` (read by the scanner, collected by DeviceCollector), tooltip lead (value and raw
+  difference), `FormatValue`; tips via `UiStyle.HoverTip` on every visit. `NumericInputHMI`: operator tip "Allowed: min - max".
+  `LampHMI`: `HoverTip`, blue ring on hover, caption/state tip. `UiStyle.HoverTip` *(new)*.
+- `ButtonHMI.BuildMainTooltip`: the label only when the caption is not drawn (`ShowCaption`, `_caption`).
+- `IConditionalControl` *(new)*; `PlcScanner` reads its conditions and updates it on its own station.
+- `AxisMonitorPage`, `AxisMonitorRow` *(new, side page "AxisMonitor", level None)*; `AlarmHelpLinks.AllAxes`, `AxisInfo`
+  current/visibility/real position; `MainForm.DrawAxisGlyph`.
+- Screen Scale: `MainForm.BuildScaleMenu` (shared), `ChooseFactor` sets the panel's scale only, `NoScaleRequest`;
+  `UserSettingsControl.ScaleChooser` *(new)*, no note, refresh on show. `UiScale.Picture` / `MarkedPicture` *(new)*;
+  `NavGlyphs` draw at the factor by default; nav buttons, machine strip, menus' `ImageScalingSize` at the factor.
+- FA2010 designers: Milling Top Clamping, Exit Robot Top Clamping, Exit Short Profile Support, Profile Recognition Front
+  Clamping, Cutting Left Top Small Clamping, Cutting Right Front Clamping - valve/feedback types from the drawings.
+  `FunctionUnitHMI.TypeProblems`: a position is allowed with MagneticPlusPressureSwitch.
+- Translations: `Col_AxisAlarm`, `Col_AxisWarning`, `Col_ServoAlarm`, `Col_TravelPerRev`, `Tip_TravelPerRev`, `Tip_Backlash`,
+  `Tip_RealPosition`, `Tip_PositionDifference`, `Tip_NotReadYet`, `Tip_Allowed`, `Tip_LampOn`, `Tip_LampOff`, `Ttl_AxisMonitor`,
+  `Msg_NoAxes`, `Usr_NoScaleRequest`; Screen scale texts; `Msg_UsrFactorNote` removed. Manual: caption bar, menu tooltips,
+  Axis Monitor, screen scale, pictures, axis row, value and lamp tips, one-chart manual.
+- Tests: `tools/ui_test/AxisRowLayout.cs`, `tools/nav_test/AxisMonitor.cs` (new); `ZoomMenu.cs`, `NavIcons.cs`, `SidePanel.cs`,
+  `CylinderHelpAndLogin.cs`, `UnitTypes.cs`, `MonitorFind.cs` updated.
