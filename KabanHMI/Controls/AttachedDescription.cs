@@ -54,6 +54,17 @@ namespace Kaban.UI.Controls
         /// </summary>
         public string Text { get { return _text; } set { _text = value ?? ""; Sync(); } }
 
+        /// <summary>
+        /// Hidden while the owner shows the text itself - a numeric field in bar
+        /// view carries its name in its own heading strip.
+        /// </summary>
+        public bool Suppressed
+        {
+            get { return _suppressed; }
+            set { if (_suppressed == value) return; _suppressed = value; Sync(); }
+        }
+        private bool _suppressed;
+
         private bool _appendColon = true;
 
         /// <summary>Appends " :" to the caption unless it already ends with one.</summary>
@@ -67,7 +78,7 @@ namespace Kaban.UI.Controls
 
         private void Sync()
         {
-            bool wanted = !string.IsNullOrEmpty(_text);
+            bool wanted = !string.IsNullOrEmpty(_text) && !_suppressed;
             if (!wanted || _owner.Parent == null)
             {
                 if (_label != null && _label.Parent != null) _label.Parent.Controls.Remove(_label);

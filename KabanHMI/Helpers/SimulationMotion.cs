@@ -13,7 +13,7 @@ namespace Kaban.UI.Helpers
     ///
     /// The simulation driver only stores numbers: it has no idea that one bit is a
     /// jog command and another is the sensor that should answer it. The units and
-    /// axis rows do know - a FunctionUnitHMI carries its two commands and their
+    /// axis rows do know - a CylinderUnitHMI carries its two commands and their
     /// lamps, an axis row its jog bits and its position - so that knowledge is
     /// collected with everything else at start-up and replayed here.
     ///
@@ -70,7 +70,7 @@ namespace Kaban.UI.Helpers
             _axes.Clear();
         }
 
-        public static void Register(FunctionUnitHMI unit)
+        public static void Register(CylinderUnitHMI unit)
         {
             if (unit == null) return;
             if (string.IsNullOrWhiteSpace(unit.CommandAAddress) && string.IsNullOrWhiteSpace(unit.CommandBAddress)) return;

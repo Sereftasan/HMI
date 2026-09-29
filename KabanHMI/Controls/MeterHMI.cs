@@ -27,6 +27,9 @@ namespace Kaban.UI.Controls
     /// drawing. They look identical because they should; they differ where it
     /// matters, which is whether they can move anything.
     /// </summary>
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public abstract class MeterBaseHMI : Control, IPlcBoundControl, UiStyle.IDrawsOwnHoverBorder
     {
         [Category("  PLC")] public int PlcNumber { get; set; }
@@ -507,6 +510,8 @@ namespace Kaban.UI.Controls
     /// and should not draw the eye across a page of sixteen axes.
     /// </summary>
     [ToolboxItem(true)]
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class HexCodeHMI : Control, IPlcBoundControl, UiStyle.IDisplayOnly, UiStyle.IManagesOwnCursor, UiStyle.IDrawsOwnHoverBorder
     {
         [Category("  PLC")] public int PlcNumber { get; set; }

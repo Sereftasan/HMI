@@ -166,7 +166,7 @@ class MG {
 
         var uses = DeviceCollector.UsesOf(1);
         string why;
-        var unit = shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(), out why) as FunctionUnitHMI;
+        var unit = shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(), out why) as CylinderUnitHMI;
         Pump(100);
         Check("a page opened after start: its unit at 1.5 (360 x 64 -> 540 x 96)", unit != null && unit.Width == 540 && unit.Height == 96,
               unit == null ? why : unit.Size.ToString());

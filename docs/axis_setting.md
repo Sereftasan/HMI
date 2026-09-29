@@ -30,7 +30,7 @@ proportion — an engineer needs the number; the bar is only the picture.
 words**, read live. Raise a travel limit and the reference range widens with it.
 A reference outside travel is a machine that homes into a hard stop.
 
-Empty address = field not drawn, exactly like `FunctionUnitHMI`.
+Empty address = field not drawn, exactly like `CylinderUnitHMI`.
 
 ## FA2010 — real devices
 

@@ -21,10 +21,10 @@ namespace Kaban.Machines.H800.Screens
         private void InitializeComponent()
         {
             this.bProfile_Rotation_Test = new Kaban.UI.Controls.ButtonHMI();
-            this.uProfile_Rotation_Unit_1_2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uProfile_Rotation_Unit_3 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uProfile_Rotation_Unit_1_22 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uProfile_Rotation_Unit_32 = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uProfile_Rotation_Unit_1_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uProfile_Rotation_Unit_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uProfile_Rotation_Unit_1_22 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uProfile_Rotation_Unit_32 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bProfile_Rotation_Unit_1_2_0_deg = new Kaban.UI.Controls.ButtonHMI();
             this.bProfile_Rotation_Unit_1_2_90_deg = new Kaban.UI.Controls.ButtonHMI();
             this.bProfile_Rotation_Unit_3_0_deg = new Kaban.UI.Controls.ButtonHMI();
@@ -326,10 +326,10 @@ namespace Kaban.Machines.H800.Screens
         #endregion
 
         private Kaban.UI.Controls.ButtonHMI bProfile_Rotation_Test;
-        private Kaban.UI.Controls.FunctionUnitHMI uProfile_Rotation_Unit_1_2;
-        private Kaban.UI.Controls.FunctionUnitHMI uProfile_Rotation_Unit_3;
-        private Kaban.UI.Controls.FunctionUnitHMI uProfile_Rotation_Unit_1_22;
-        private Kaban.UI.Controls.FunctionUnitHMI uProfile_Rotation_Unit_32;
+        private Kaban.UI.Controls.CylinderUnitHMI uProfile_Rotation_Unit_1_2;
+        private Kaban.UI.Controls.CylinderUnitHMI uProfile_Rotation_Unit_3;
+        private Kaban.UI.Controls.CylinderUnitHMI uProfile_Rotation_Unit_1_22;
+        private Kaban.UI.Controls.CylinderUnitHMI uProfile_Rotation_Unit_32;
         private Kaban.UI.Controls.ButtonHMI bProfile_Rotation_Unit_1_2_0_deg;
         private Kaban.UI.Controls.ButtonHMI bProfile_Rotation_Unit_1_2_90_deg;
         private Kaban.UI.Controls.ButtonHMI bProfile_Rotation_Unit_3_0_deg;

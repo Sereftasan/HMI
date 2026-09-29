@@ -15,7 +15,7 @@ class U {
 
     [STAThread] static void Main(){
         var host = new Form { ClientSize = new System.Drawing.Size(420, 260) };
-        Func<string, FunctionUnitHMI> unit = files => { var u = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", HelpFiles = files }; u.SetBounds(10, 10, 360, 64); host.Controls.Add(u); return u; };
+        Func<string, CylinderUnitHMI> unit = files => { var u = new CylinderUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", HelpFiles = files }; u.SetBounds(10, 10, 360, 64); host.Controls.Add(u); return u; };
         var withHelp = unit("Clamp_Photo.png");
         var missing  = unit("Not_There.png");
         var none     = unit("");
@@ -34,7 +34,7 @@ class U {
 
         Console.WriteLine("--- with an alarm active: manual, then unit help, then alarm files ---");
         AlarmHelpLinks.Clear();
-        var clamp = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", ErrorBAddress = "M900",
+        var clamp = new CylinderUnitHMI { PlcNumber = 5, TitleTextKey = "Robot Clamping", ErrorBAddress = "M900",
                                           Valve = CylinderValve.DoubleSolenoid, Feedback = CylinderFeedback.TwoEndMagnetic,
                                           HelpFiles = "Clamp_Photo.png;Clamp_Drawing.pdf" };
         AlarmHelpLinks.Harvest(clamp);
@@ -48,7 +48,7 @@ class U {
 
         Console.WriteLine("--- an AXIS unit on a manual page ---");
         AlarmHelpLinks.Clear();
-        var x1 = new FunctionUnitHMI { PlcNumber = 5, TitleTextKey = "Robot X", Kind = UnitKind.Axis, ErrorAAddress = "M901",
+        var x1 = new CylinderUnitHMI { PlcNumber = 5, TitleTextKey = "Robot X", Kind = UnitKind.Axis, ErrorAAddress = "M901",
                                        Valve = CylinderValve.DoubleSolenoid, HelpFiles = "Clamp_Drawing.pdf" };
         var link = x1.HelpLinks().Single();
         Check("its error is a servo fault", link.Kind == TC.ErrorType.ServoFault);

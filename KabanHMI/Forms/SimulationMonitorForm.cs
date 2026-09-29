@@ -43,7 +43,7 @@ namespace Kaban.UI.Forms
     /// file each, "#sheet:" lines separating the tabs. A file from before the
     /// tabs is read as a single tab called "Main".
     /// </summary>
-    public class SimulationMonitorForm : Form
+    public partial class SimulationMonitorForm : Form
     {
         private readonly TabControl _tabs = new TabControl();
         private readonly Timer _refresh = new Timer();
@@ -86,6 +86,33 @@ namespace Kaban.UI.Forms
             /// <summary>The text of a comment line.</summary>
             public string Comment = "";
 
+            /// <summary>Decimal (""), Hexadecimal or Binary - how a whole number is shown and typed.</summary>
+            public string DisplayFormat = "";
+            /// <summary>A String's length in characters (when its data type does not say, as "String(32)" does).</summary>
+            public int StringLength = 16;
+            /// <summary>An ARRAY: how many elements (1 = a single device).</summary>
+            public int ArrayCount = 1;
+            /// <summary>An array shown with its elements under it.</summary>
+            public bool Expanded;
+
+            /// <summary>On an element row: its array. Elements are made from the array, never stored.</summary>
+            public WatchRow Head;
+            public int ElementIndex;
+            /// <summary>On an array: its element rows, kept so the same rows stay (and stay selected) between refreshes.</summary>
+            public List<WatchRow> Elements;
+
+            public bool IsArray { get { return Head == null && ArrayCount > 1 && IsDevice; } }
+            public bool IsElement { get { return Head != null; } }
+            public string EffectiveFormat
+            {
+                get
+                {
+                    var f = Head != null ? Head.DisplayFormat : DisplayFormat;
+                    return string.IsNullOrEmpty(f) ? FormatDecimal : f;
+                }
+            }
+            public int EffectiveStringLength { get { return Head != null ? Head.StringLength : StringLength; } }
+
             public bool IsComment { get { return string.IsNullOrWhiteSpace(Address) && !string.IsNullOrWhiteSpace(Comment); } }
 
             /// <summary>True for the trailing empty line.</summary>
@@ -97,6 +124,11 @@ namespace Kaban.UI.Forms
             {
                 get
                 {
+                    if (Head != null)
+                    {
+                        var h = Head.EffectiveLabel;
+                        return (h.Length > 0 ? h : Head.Address) + "[" + ElementIndex + "]";
+                    }
                     if (!string.IsNullOrWhiteSpace(LabelOverride)) return LabelOverride;
                     var e = PlcLabelTable.ByAddress(Station, Address);
                     return e != null && e.Label.Length > 0 ? e.Label : "";
@@ -107,6 +139,7 @@ namespace Kaban.UI.Forms
             {
                 get
                 {
+                    if (Head != null) return Head.EffectiveDataType;
                     if (!string.IsNullOrWhiteSpace(DataTypeOverride)) return DataTypeOverride;
                     var e = PlcLabelTable.ByAddress(Station, Address);
                     return e != null ? e.DataType : "";
@@ -115,13 +148,15 @@ namespace Kaban.UI.Forms
 
             public bool IsUnknownToLabelTable
             {
-                get { return string.IsNullOrWhiteSpace(LabelOverride) && PlcLabelTable.ByAddress(Station, Address) == null; }
+                get { return Head != null ? Head.IsUnknownToLabelTable : string.IsNullOrWhiteSpace(LabelOverride) && PlcLabelTable.ByAddress(Station, Address) == null; }
             }
 
             public WatchRow Clone()
             {
                 return new WatchRow { Address = Address, Station = Station, LabelOverride = LabelOverride,
-                                      DataTypeOverride = DataTypeOverride, Comment = Comment };
+                                      DataTypeOverride = DataTypeOverride, Comment = Comment,
+                                      DisplayFormat = DisplayFormat, StringLength = StringLength,
+                                      ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded };
             }
         }
 
@@ -1021,6 +1056,8 @@ namespace Kaban.UI.Forms
             // Label first: an engineer thinks in names, not addresses.
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Label", HeaderText = T("Col_Label", "Label") });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "DataType", HeaderText = T("Col_DataType", "DataType") });
+            // How the value is shown and typed: decimal, hexadecimal, binary.
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Format", HeaderText = T("Col_DisplayFormat", "Display Format"), ReadOnly = true });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Address", HeaderText = T("Col_Address", "Address") });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value") });
             grid.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
@@ -1057,6 +1094,20 @@ namespace Kaban.UI.Forms
                 var at = grid.CurrentRow != null && grid.CurrentRow.Index < sh.Rows.Count ? sh.Rows[grid.CurrentRow.Index] : null;
                 rowMenu.Items.Add(Item(at != null && at.IsDevice ? string.Format(T("Mnu_FindUses", "Where is {0} used?"), at.Address) : T("Mnu_FindUsesNone", "Where is it used?"),
                                        (s2, e2) => OpenFind(at != null ? at.Address : null), at != null && at.IsDevice, keyText: "Ctrl+F"));
+                var head = at != null ? (at.IsElement ? at.Head : at) : null;
+                if (head != null && head.IsArray)
+                    rowMenu.Items.Add(Item(head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"),
+                                           (s2, e2) => ToggleArray(mon, sh, head)));
+                if (sel)
+                {
+                    var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
+                    foreach (var f in DisplayFormats)
+                    {
+                        var name = f;
+                        fmt.DropDownItems.Add(Item(T("Fmt_" + name, name), (s2, e2) => SetDisplayFormat(mon, sh, name)));
+                    }
+                    rowMenu.Items.Add(fmt);
+                }
                 rowMenu.Items.Add(new ToolStripSeparator());
                 rowMenu.Items.Add(Item(T("Mnu_MonAddAbove", "New device above the selected row..."), (s2, e2) => AddRows(false, false), sel));
                 rowMenu.Items.Add(Item(T("Mnu_MonCommentAbove", "Comment line above the selected row..."), (s2, e2) => AddRows(false, true), sel));
@@ -1104,6 +1155,14 @@ namespace Kaban.UI.Forms
                 if (e.RowIndex < 0 || e.RowIndex >= sh.Rows.Count) return;
                 OpenCell(mon, sh, e.RowIndex, e.ColumnIndex >= 0 ? grid.Columns[e.ColumnIndex].Name : "");
             };
+            // AN ARRAY folds and unfolds on the triangle before its label.
+            grid.CellMouseClick += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Left || e.RowIndex < 0 || e.RowIndex >= sh.Rows.Count || e.ColumnIndex < 0) return;
+                if (grid.Columns[e.ColumnIndex].Name != "Label" || e.X > 24) return;
+                var r = sh.Rows[e.RowIndex];
+                if (r.IsArray) ToggleArray(mon, sh, r);
+            };
             // Tab leaves the table for the next control: stepping cell by cell
             // through a table that selects whole rows shows nothing moving.
             grid.StandardTab = true;
@@ -1126,7 +1185,12 @@ namespace Kaban.UI.Forms
                 if (Math.Abs(e.X - sh.DragStart.X) < d.Width * 2 && Math.Abs(e.Y - sh.DragStart.Y) < d.Height * 2) return;
                 int from = sh.DragFrom;
                 sh.DragFrom = -1;
-                if (from < sh.Rows.Count && !sh.Rows[from].IsBlank) grid.DoDragDrop(from, DragDropEffects.Move);
+                if (from < sh.Rows.Count && !sh.Rows[from].IsBlank)
+                {
+                    // An element moves its whole array.
+                    if (sh.Rows[from].IsElement) from = sh.Rows.IndexOf(sh.Rows[from].Head);
+                    grid.DoDragDrop(from, DragDropEffects.Move);
+                }
             };
             grid.MouseUp += (s, e) => sh.DragFrom = -1;
             grid.DragOver += (s, e) => e.Effect = DragDropEffects.Move;
@@ -1143,9 +1207,16 @@ namespace Kaban.UI.Forms
                 to = Math.Min(to, sh.Rows.Count - 1);
                 Remember(T("Undo_Move", "move rows"), mon);
                 var moved = sh.Rows[from];
-                sh.Rows.RemoveAt(from);
-                sh.Rows.Insert(Math.Min(to, sh.Rows.Count - 1), moved);
+                // Dropped among an array's elements: before that array.
+                var target = sh.Rows[to].IsElement ? sh.Rows[to].Head : sh.Rows[to];
+                var items = Items(sh);
+                int toItem = items.IndexOf(target);
+                items.Remove(moved);
+                items.Insert(Math.Max(0, Math.Min(toItem, items.Count - 1)), moved);
+                sh.Rows.Clear();
+                sh.Rows.AddRange(items);
                 EnsureBlankRow(sh);
+                EnsureElements(sh);
                 SaveWatchList(mon);
                 Render(mon, sh);
                 Select(sh, new[] { sh.Rows.IndexOf(moved) });
@@ -1158,6 +1229,11 @@ namespace Kaban.UI.Forms
                 string col = grid.Columns[e.ColumnIndex].Name;
                 // A comment is only its text; the empty line has no value to write.
                 if (row == null || (row.IsComment && col != "Label") || (row.IsBlank && col == "Value")) { e.Cancel = true; return; }
+                // An element is its array's: only its value is its own. An array's
+                // value is the list of its elements'.
+                if ((row.IsElement && col != "Value") || (row.IsArray && col == "Value") || col == "Format") { e.Cancel = true; return; }
+                // The label without the fold mark and the count shown around it.
+                if (row.IsArray && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
                 sh.Editing = true;
                 // A value goes to the PLC and is not undone; a name or an address is.
                 if (col != "Value") Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1197,7 +1273,9 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
-            if (row.IsComment || (column == "Value" && row.IsDevice))
+            if (column == "Label" && row.IsArray && sh.Grid.PointToClient(Cursor.Position).X -
+                sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= 24) return;   // the fold mark
+            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsArray))
             {
                 // In the table itself: the value is what is changed nine times
                 // out of ten, and a dialog for it is a detour.
@@ -1363,6 +1441,19 @@ namespace Kaban.UI.Forms
 
         private static void Select(Sheet sh, IEnumerable<int> rows)
         {
+            rows = rows.ToList();
+            // An element asked for (Find, a paste) in a folded array: the array unfolds.
+            foreach (var i in rows)
+                if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].IsElement && !sh.Rows[i].Head.Expanded)
+                {
+                    var head = sh.Rows[i].Head;
+                    head.Expanded = true;
+                    foreach (var e in head.Elements ?? new List<WatchRow>())
+                    {
+                        int k = sh.Rows.IndexOf(e);
+                        if (k >= 0 && k < sh.Grid.Rows.Count) sh.Grid.Rows[k].Visible = true;
+                    }
+                }
             sh.Grid.ClearSelection();
             int first = -1;
             foreach (var i in rows)
@@ -1451,14 +1542,15 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(true, false); return; }
+            if (row.IsElement) row = row.Head;           // an element is edited as its array
 
-            int current;
-            string valueText = row.IsDevice && mon.Values.TryGetValue(row.Address, out current)
-                ? current.ToString(CultureInfo.InvariantCulture) : "";
+            bool nz;
+            string valueText = row.IsDevice && !row.IsArray ? (FormatValue(mon, row, out nz) ?? "") : "";
 
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint),
                        row.IsComment ? row.Comment : row.EffectiveLabel, row.EffectiveDataType, row.Address, valueText,
-                       focusField, isNew: false, isComment: row.IsComment))
+                       focusField == "Format" ? "DataType" : focusField, isNew: false, isComment: row.IsComment,
+                       displayFormat: row.DisplayFormat, arrayCount: row.ArrayCount, stringLength: row.StringLength))
             {
                 if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1470,8 +1562,15 @@ namespace Kaban.UI.Forms
                     row.Address = wanted;
                     mon.Hidden.Remove(wanted);
                     ApplyNames(mon, row, dlg.RowLabel, dlg.RowDataType);
-                    if (dlg.RowValue.HasValue && dlg.RowValue.Value.ToString(CultureInfo.InvariantCulture) != valueText)
-                        WriteValue(mon, row, dlg.RowValue.Value.ToString(CultureInfo.InvariantCulture));
+                    row.DisplayFormat = dlg.RowDisplayFormat == FormatDecimal ? "" : dlg.RowDisplayFormat;
+                    row.StringLength = dlg.RowStringLength;
+                    if (dlg.ArrayCount != row.ArrayCount)
+                    {
+                        if (row.ArrayCount <= 1) row.Expanded = true;     // just made an array: show it
+                        row.ArrayCount = dlg.ArrayCount;
+                    }
+                    if (dlg.RowValueText != null && dlg.RowValueText != valueText && !row.IsArray)
+                        WriteValue(mon, row, dlg.RowValueText);
                 }
                 EnsureBlankRow(sh);
                 SaveWatchList(mon);
@@ -1525,24 +1624,26 @@ namespace Kaban.UI.Forms
                 if (dlg.IsComment) added.Add(new WatchRow { Station = mon.Station, Comment = dlg.RowLabel });
                 else
                 {
+                    // ONE ITEM, an array or not: an array expands to its elements under it.
                     int n = dlg.ArrayCount;
-                    for (int i = 0; i < n; i++)
+                    var r = new WatchRow
                     {
-                        var r = new WatchRow { Station = mon.Station, Address = PlcRowEditorForm.ElementAddress(dlg.RowAddress, dlg.RowDataType, i) };
-                        string label = dlg.RowLabel.Length == 0 ? "" : n > 1 ? dlg.RowLabel + "[" + i + "]" : dlg.RowLabel;
-                        ApplyNames(mon, r, label.Length == 0 ? (PlcLabelTable.ByAddress(mon.Station, r.Address) ?? new PlcLabelTable.Entry()).Label : label,
-                                   dlg.RowDataType);
-                        mon.Hidden.Remove(r.Address);
-                        added.Add(r);
-                    }
+                        Station = mon.Station, Address = dlg.RowAddress, ArrayCount = n, Expanded = n > 1,
+                        DisplayFormat = dlg.RowDisplayFormat == FormatDecimal ? "" : dlg.RowDisplayFormat,
+                        StringLength = dlg.RowStringLength
+                    };
+                    ApplyNames(mon, r, dlg.RowLabel.Length == 0 ? (PlcLabelTable.ByAddress(mon.Station, r.Address) ?? new PlcLabelTable.Entry()).Label : dlg.RowLabel,
+                               dlg.RowDataType);
+                    for (int i = 0; i < n; i++) mon.Hidden.Remove(PlcRowEditorForm.ElementAddress(r.Address, dlg.RowDataType, i, r.StringLength));
+                    added.Add(r);
                 }
                 sh.Rows.InsertRange(at, added);
                 EnsureBlankRow(sh);
-                if (dlg.RowValue.HasValue && added.Count == 1 && added[0].IsDevice)
-                    WriteValue(mon, added[0], dlg.RowValue.Value.ToString(CultureInfo.InvariantCulture));
+                if (dlg.RowValueText != null && added.Count == 1 && added[0].IsDevice && !added[0].IsArray)
+                    WriteValue(mon, added[0], dlg.RowValueText);
                 SaveWatchList(mon);
                 Render(mon, sh);
-                Select(sh, Enumerable.Range(at, added.Count));
+                Select(sh, new[] { sh.Rows.IndexOf(added[0]) });
             }
         }
 
@@ -1560,9 +1661,12 @@ namespace Kaban.UI.Forms
 
             _clip.Clear();
             var text = new StringBuilder();
+            var chosen = new HashSet<WatchRow>(sel.Select(i => sh.Rows[i]));
             foreach (var i in sel)
             {
                 var r = sh.Rows[i];
+                // An element of an array copied as well goes with it, not twice.
+                if (r.IsElement && chosen.Contains(r.Head)) continue;
                 var copy = r.Clone();
                 // Keep the names it SHOWS: pasted onto another machine, that
                 // machine's label list does not know them.
@@ -1631,15 +1735,19 @@ namespace Kaban.UI.Forms
             if (sh == null) return;
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
-            Remember(string.Format(T("Undo_Remove", "remove {0} row(s)"), sel.Count), mon);
+            // An element is part of its array: the array is removed as one item.
+            var items = sel.Select(i => sh.Rows[i]).Select(r => r.IsElement ? r.Head : r).Distinct().ToList();
+            Remember(string.Format(T("Undo_Remove", "remove {0} row(s)"), items.Count), mon);
 
-            for (int k = sel.Count - 1; k >= 0; k--)
+            var gone = new List<string>();
+            foreach (var r in items)
             {
-                var r = sh.Rows[sel[k]];
-                sh.Rows.RemoveAt(sel[k]);
-                if (r.IsDevice) HideIfUnlisted(mon, r.Address, null, -1);
+                sh.Rows.Remove(r);
+                if (r.IsDevice) gone.AddRange(r.IsArray && r.Elements != null ? r.Elements.Select(e => e.Address) : new[] { r.Address });
             }
             EnsureBlankRow(sh);
+            EnsureElements(sh);                    // the elements leave with their array - before anything is looked up
+            foreach (var a in gone) HideIfUnlisted(mon, a, null, -1);
             SaveWatchList(mon);
             Render(mon, sh);
             UpdateToolbar();
@@ -1666,29 +1774,36 @@ namespace Kaban.UI.Forms
             if (sh == null) return;
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
-            int last = sh.Rows.Count - 1;                        // the empty line stays last
-            if (direction < 0 && sel[0] == 0) return;
-            if (direction > 0 && sel[sel.Count - 1] >= last - 1) return;
+            // ITEMS move - an array with its elements - past the item next to them.
+            var items = Items(sh);
+            var chosen = sel.Select(i => sh.Rows[i]).Select(r => r.IsElement ? r.Head : r).Distinct().ToList();
+            var at = chosen.Select(r => items.IndexOf(r)).OrderBy(i => i).ToList();
+            int last = items.Count - 1;                          // the empty line stays last
+            if (direction < 0 && at[0] == 0) return;
+            if (direction > 0 && at[at.Count - 1] >= last - 1) return;
             Remember(T("Undo_Move", "move rows"), mon);
 
-            var order = direction < 0 ? sel : Enumerable.Reverse(sel).ToList();
+            var order = direction < 0 ? at : Enumerable.Reverse(at).ToList();
             foreach (var i in order)
             {
-                var r = sh.Rows[i];
-                sh.Rows.RemoveAt(i);
-                sh.Rows.Insert(i + direction, r);
+                var r = items[i];
+                items.RemoveAt(i);
+                items.Insert(i + direction, r);
             }
+            sh.Rows.Clear();
+            sh.Rows.AddRange(items);
+            EnsureElements(sh);
             SaveWatchList(mon);
             Render(mon, sh);
-            Select(sh, sel.Select(i => i + direction));
+            Select(sh, chosen.Select(r => sh.Rows.IndexOf(r)));
         }
 
         // ==================================================================
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Address", "Value" };
-        private static readonly int[] DefaultWidths = { 280, 170, 90, 120 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         private static bool _applyingLayout;
         private bool _layoutPending;
@@ -1812,7 +1927,8 @@ namespace Kaban.UI.Forms
                 result.AddRange(sorted.Select(x => x.r));
                 block.Clear();
             };
-            foreach (var r in sh.Rows.Where(r => !r.IsBlank))
+            // Arrays as one item: their elements follow them (EnsureElements).
+            foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsElement))
             {
                 if (r.IsComment) { flush(); result.Add(r); }
                 else block.Add(r);
@@ -1843,6 +1959,11 @@ namespace Kaban.UI.Forms
                 }
                 case "Address":
                     return CompareAddress(a.Address, b.Address);
+                case "Format":
+                {
+                    int c = string.Compare(a.EffectiveFormat, b.EffectiveFormat, StringComparison.CurrentCultureIgnoreCase);
+                    return c != 0 ? c : CompareAddress(a.Address, b.Address);
+                }
                 case "Value":
                 {
                     long? va = ValueOf(mon, a), vb = ValueOf(mon, b);
@@ -1892,8 +2013,9 @@ namespace Kaban.UI.Forms
         private static long? ValueOf(MonitorTab mon, WatchRow r)
         {
             int v;
-            if (!r.IsDevice || !mon.Values.TryGetValue(r.Address, out v)) return null;
-            if (!IsDoubleWord(r.EffectiveDataType)) return v;
+            if (!r.IsDevice || r.IsArray || !mon.Values.TryGetValue(r.Address, out v)) return null;
+            if (IsFloat(r.EffectiveDataType) || IsString(r.EffectiveDataType)) return null;
+            if (!IsDoubleWord(r.EffectiveDataType)) return IsUnsigned(r.EffectiveDataType) ? (long)(ushort)v : (long)(short)v;
             int high;
             mon.Values.TryGetValue(PlcAddressHelper.GetNextAddress(r.Address), out high);
             return CombineDouble(v, high, IsUnsigned(r.EffectiveDataType));
@@ -2150,23 +2272,19 @@ namespace Kaban.UI.Forms
         /// </summary>
         private void WriteValue(MonitorTab mon, WatchRow row, string text)
         {
-            if (row == null || !row.IsDevice) return;
+            if (row == null || !row.IsDevice || row.IsArray) return;
 
-            long typed;
-            if (!long.TryParse((text ?? "").Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out typed))
+            // In the row's type and display format: a float, a string, a word in
+            // hexadecimal or binary - checked for its range before anything goes.
+            string problem;
+            var words = ParseValue(row, text, out problem);
+            if (words == null)
             {
-                SetStatus(T("Msg_MonNotNumber", "Not a whole number - nothing written."));
+                SetStatus(problem == "Msg_MonOutOfRange" ? T("Msg_MonOutOfRange", "Out of range for this data type - nothing written.")
+                        : problem == "Msg_MonTooLong" ? T("Msg_MonTooLong", "Longer than the string - nothing written.")
+                        : T("Msg_MonNotNumber", "Not a number in this format - nothing written."));
                 return;
             }
-
-            bool dword = IsDoubleWord(row.EffectiveDataType);
-            if ((!dword && (typed < short.MinValue || typed > ushort.MaxValue)) ||
-                (dword && (typed < int.MinValue || typed > uint.MaxValue)))
-            {
-                SetStatus(T("Msg_MonOutOfRange", "Out of range for this data type - nothing written."));
-                return;
-            }
-            int value = (int)typed;
 
             var driver = mon.WriteDriver;
             if (driver == null)
@@ -2175,24 +2293,40 @@ namespace Kaban.UI.Forms
                 return;
             }
 
-            if (dword)
+            // Every word of the value, low first - the low word alone turns a
+            // 32-bit value (or a float, or a string) into nonsense.
+            var addresses = WordsOf(row).ToList();
+            for (int i = 0; i < words.Length && i < addresses.Count; i++)
             {
-                // Both words, low first - the low word alone turns a 32-bit value into nonsense.
-                int low = (int)(typed & 0xFFFF), high = (int)((typed >> 16) & 0xFFFF);
-                var next = PlcAddressHelper.GetNextAddress(row.Address);
-                driver.Write(row.Address, low);
-                driver.Write(next, high);
-                mon.Values[row.Address] = low;
-                mon.Values[next] = high;
-            }
-            else
-            {
-                driver.Write(row.Address, value);
-                mon.Values[row.Address] = value;
+                driver.Write(addresses[i], words[i]);
+                mon.Values[addresses[i]] = words[i];
             }
 
             if (!mon.IsSimulated)
-                AuditLogger.Log("monitor wrote " + typed + " to " + row.Address + " on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
+                AuditLogger.Log("monitor wrote " + (text ?? "").Trim() + " to " + row.Address + " on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
+        }
+
+        /// <summary>An array folded or unfolded - kept with the list.</summary>
+        private void ToggleArray(MonitorTab mon, Sheet sh, WatchRow head)
+        {
+            if (head == null || !head.IsArray) return;
+            head.Expanded = !head.Expanded;
+            SaveWatchList(mon);
+            Render(mon, sh);
+            int at = sh.Rows.IndexOf(head);
+            if (at >= 0) Select(sh, new[] { at });
+        }
+
+        /// <summary>The selected rows (an element: its array) shown in a display format.</summary>
+        private void SetDisplayFormat(MonitorTab mon, Sheet sh, string format)
+        {
+            var items = SelectedIndices(sh).Select(i => sh.Rows[i]).Select(r => r.IsElement ? r.Head : r)
+                                           .Where(r => r.IsDevice).Distinct().ToList();
+            if (items.Count == 0) return;
+            Remember(T("Undo_Format", "display format"), mon);
+            foreach (var r in items) r.DisplayFormat = format == FormatDecimal ? "" : format;
+            SaveWatchList(mon);
+            Render(mon, sh);
         }
 
         // ==================================================================
@@ -2259,11 +2393,14 @@ namespace Kaban.UI.Forms
             foreach (System.Collections.DictionaryEntry kv in dump)
                 mon.Values[Convert.ToString(kv.Key)] = Convert.ToInt32(kv.Value);
 
+            // An array's elements are listed, even one added a moment ago.
+            foreach (var s in mon.Sheets) EnsureElements(s);
+
             // A double word's second device is part of its row, not a device of
             // its own: D101 under a D100 double word is D100's high half.
             var highWords = new HashSet<string>(
-                mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && IsDoubleWord(r.EffectiveDataType))
-                   .Select(r => PlcAddressHelper.GetNextAddress(r.Address)), StringComparer.OrdinalIgnoreCase);
+                mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1)),
+                StringComparer.OrdinalIgnoreCase);
             var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !mon.Listed(a) && !highWords.Contains(a))
                                 .OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToList();
             if (discovered.Count == 0 || mon.Sheets.Count == 0) return;
@@ -2285,11 +2422,8 @@ namespace Kaban.UI.Forms
             if (driver == null) return;
 
             var addresses = new List<string>();
-            foreach (var r in sh.Rows.Where(r => r.IsDevice))
-            {
-                addresses.Add(r.Address);
-                if (IsDoubleWord(r.EffectiveDataType)) addresses.Add(PlcAddressHelper.GetNextAddress(r.Address));
-            }
+            foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsArray))
+                addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words
             var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
             if (batch.Length == 0) return;
 
@@ -2326,6 +2460,7 @@ namespace Kaban.UI.Forms
         private static void Render(MonitorTab mon, Sheet sh)
         {
             foreach (var r in sh.Rows) r.Station = mon.Station;   // before any label is looked up
+            EnsureElements(sh);                                   // the arrays' elements, each under its array
             var grid = sh.Grid;
             bool firstFill = grid.Rows.Count == 0;
 
@@ -2346,11 +2481,20 @@ namespace Kaban.UI.Forms
                 var model = sh.Rows[i];
                 var row = grid.Rows[i];
 
+                // An element shows while its array is unfolded.
+                bool visible = !model.IsElement || model.Head.Expanded;
+                if (row.Visible != visible)
+                {
+                    try { row.Visible = visible; }
+                    catch (InvalidOperationException) { grid.CurrentCell = null; row.Visible = visible; }
+                }
+                if (!visible) continue;
+
                 if (model.IsComment)
                 {
                     // A heading: its text across the label cell, the row tinted.
                     Set(row.Cells["Label"], model.Comment);
-                    Set(row.Cells["DataType"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
                     Style(row, ColCommentBack, ColCommentText, UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic));
                     continue;
                 }
@@ -2359,32 +2503,34 @@ namespace Kaban.UI.Forms
                 Set(row.Cells["Address"], model.Address);
                 if (model.IsBlank)
                 {
-                    Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Value"], "");
                     continue;
                 }
 
                 // An address the label list does not know reads NULL, which is itself
                 // useful: a screen is bound to something outside that list.
                 string label = model.EffectiveLabel;
-                Set(row.Cells["Label"], label.Length == 0 ? "NULL" : label);
+                if (label.Length == 0) label = "NULL";
+                // AN ARRAY: the fold mark and its count; its elements indented under it.
+                if (model.IsArray) label = (model.Expanded ? "\u25BE " : "\u25B8 ") + label + "   [" + model.ArrayCount + "]";
+                else if (model.IsElement) label = "      " + label;
+                if (!(sh.Editing && grid.CurrentCell != null && grid.CurrentCell.RowIndex == i)) Set(row.Cells["Label"], label);
                 var wantLabelColour = model.IsUnknownToLabelTable ? ColLabelUnknown : ColLabelKnown;
                 if (row.Cells["Label"].Style.ForeColor != wantLabelColour) row.Cells["Label"].Style.ForeColor = wantLabelColour;
 
-                Set(row.Cells["DataType"], model.EffectiveDataType);
+                string type = model.EffectiveDataType;
+                Set(row.Cells["DataType"], model.IsElement ? "" : type + (IsString(type) && !type.Contains("(") ? "(" + model.StringLength + ")" : ""));
+                bool whole = !IsBit(type) && !IsFloat(type) && !IsString(type);
+                Set(row.Cells["Format"], whole && !model.IsElement ? T("Fmt_" + model.EffectiveFormat, model.EffectiveFormat) : "");
 
-                int value;
-                if (mon.Values.TryGetValue(model.Address, out value))
+                // One value in the row's type and format: a double word or a float
+                // over two devices, a string over its words, an array its elements.
+                bool nonZero;
+                string shownText = FormatValue(mon, model, out nonZero);
+                if (shownText != null)
                 {
-                    // A DOUBLE WORD IS ONE VALUE over two devices.
-                    long shown = value;
-                    if (IsDoubleWord(model.EffectiveDataType))
-                    {
-                        int high;
-                        mon.Values.TryGetValue(PlcAddressHelper.GetNextAddress(model.Address), out high);
-                        shown = CombineDouble(value, high, IsUnsigned(model.EffectiveDataType));
-                    }
-                    Set(row.Cells["Value"], shown.ToString(CultureInfo.InvariantCulture));
-                    var want = shown != 0 ? ColValueSet : ColValueClear;
+                    Set(row.Cells["Value"], shownText);
+                    var want = nonZero ? ColValueSet : ColValueClear;
                     if (row.Cells["Value"].Style.ForeColor != want) row.Cells["Value"].Style.ForeColor = want;
                 }
                 else
@@ -2428,7 +2574,7 @@ namespace Kaban.UI.Forms
             string text = sh == null
                 ? T("Msg_MonNoTabsShort", "No tabs") + "  \u00B7  " + where
                 : string.Format(T("Msg_MonStatus", "{0} device(s), {1} comment line(s)  \u00B7  {2}"),
-                                sh.Rows.Count(r => r.IsDevice), sh.Rows.Count(r => r.IsComment), where);
+                                sh.Rows.Count(r => r.IsDevice && !r.IsElement), sh.Rows.Count(r => r.IsComment), where);
             if (_statusNote.Length > 0 && DateTime.UtcNow < _statusNoteUntil) text = _statusNote + "     " + text;
             if (_status.Text != text) _status.Text = text;
         }
@@ -2458,7 +2604,7 @@ namespace Kaban.UI.Forms
                         " - exported " + DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
                         CsvHeader
                     };
-                    foreach (var r in sh.Rows.Where(r => !r.IsBlank))
+                    foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsArray))
                     {
                         if (r.IsComment) { lines.Add(Csv(r.Comment) + ";;;"); continue; }
                         int v;
@@ -2651,9 +2797,9 @@ namespace Kaban.UI.Forms
             foreach (var sh in mon.Sheets)
             {
                 lines.Add(SheetPrefix + sh.Name);
-                foreach (var r in sh.Rows.Where(r => !r.IsBlank))
+                foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsElement))
                     lines.Add(r.IsComment ? Csv(r.Comment) + ";;;"
-                                          : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), ""));
+                                          : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", Extras(r)).TrimEnd(';'));
             }
             foreach (var a in mon.Hidden.OrderBy(a => a, StringComparer.OrdinalIgnoreCase)) lines.Add(HiddenPrefix + a);
             return lines;
@@ -2690,7 +2836,41 @@ namespace Kaban.UI.Forms
                     if (f[0].Trim().Length > 0) current.Rows.Add(new WatchRow { Station = mon.Station, Comment = f[0].Trim() });
                     continue;
                 }
-                current.Rows.Add(new WatchRow { Station = mon.Station, Address = address, LabelOverride = f[0].Trim(), DataTypeOverride = f[1].Trim() });
+                var row = new WatchRow { Station = mon.Station, Address = address, LabelOverride = f[0].Trim(), DataTypeOverride = f[1].Trim() };
+                if (f.Length > 4) ReadExtras(row, f[4]);
+                current.Rows.Add(row);
+            }
+        }
+
+        /// <summary>
+        /// The fifth field of a kept row: its display format, an array's count and
+        /// fold, a string's length - "fmt=Hexadecimal|n=10|open=1|len=32", only what
+        /// differs from the default. A list from before reads the same as ever.
+        /// </summary>
+        internal static string Extras(WatchRow r)
+        {
+            var parts = new List<string>();
+            if (!string.IsNullOrEmpty(r.DisplayFormat) && r.DisplayFormat != FormatDecimal) parts.Add("fmt=" + r.DisplayFormat);
+            if (r.ArrayCount > 1) { parts.Add("n=" + r.ArrayCount.ToString(CultureInfo.InvariantCulture)); if (r.Expanded) parts.Add("open=1"); }
+            if (r.StringLength != 16) parts.Add("len=" + r.StringLength.ToString(CultureInfo.InvariantCulture));
+            return string.Join("|", parts);
+        }
+
+        internal static void ReadExtras(WatchRow r, string field)
+        {
+            foreach (var p in (field ?? "").Split('|'))
+            {
+                int eq = p.IndexOf('=');
+                if (eq <= 0) continue;
+                string k = p.Substring(0, eq).Trim(), v = p.Substring(eq + 1).Trim();
+                int n;
+                switch (k)
+                {
+                    case "fmt": r.DisplayFormat = DisplayFormats.Contains(v) ? v : ""; break;
+                    case "n": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.ArrayCount = Math.Max(1, Math.Min(1000, n)); break;
+                    case "open": r.Expanded = v == "1"; break;
+                    case "len": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.StringLength = Math.Max(1, Math.Min(256, n)); break;
+                }
             }
         }
 

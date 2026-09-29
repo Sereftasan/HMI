@@ -146,7 +146,7 @@ namespace Kaban.UI.Settings
             sb.AppendLine("      <DependentUpon>" + page + ".cs</DependentUpon></Compile>");
             sb.AppendLine();
             sb.AppendLine("CONTROLS (namespace Kaban.UI.Controls) - use these, not stock WinForms");
-            sb.AppendLine("  FunctionUnitHMI   a movement: two command buttons, sensor lamps and a");
+            sb.AppendLine("  CylinderUnitHMI   a movement: two command buttons, sensor lamps and a");
             sb.AppendLine("                    position readout. Size 360x64.");
             sb.AppendLine("      CommandAAddress / CommandBAddress   PLC bits for the two buttons");
             sb.AppendLine("      CommandAAction / CommandBAction     BitActionType.Momentary | Alternate");
@@ -193,14 +193,14 @@ namespace Kaban.UI.Settings
                 sb.AppendLine("  PLC copies them into, so you will never see X or Y - and must never");
                 sb.AppendLine("  write one into a control.");
                 sb.AppendLine("  Naming convention in the list:");
-                sb.AppendLine("    MAN_...  a manual command bit  -> FunctionUnitHMI command");
+                sb.AppendLine("    MAN_...  a manual command bit  -> CylinderUnitHMI command");
                 sb.AppendLine("    IN_...   a sensor/input        -> lamp (use its mirror)");
                 sb.AppendLine("    OUT_...  an output             -> lamp or status");
                 sb.AppendLine("    PC_...   a value the HMI sets  -> NumericInputHMI");
                 sb.AppendLine("    Enkoder_/..._Pozisyon          -> position readout");
                 sb.AppendLine("  A movement is usually a PAIR: ..._Ileri / ..._Geri (forward/back) or");
                 sb.AppendLine("  ..._Yukari / ..._Asagi (up/down), plus ..._SIK / ..._AC (clamp/release).");
-                sb.AppendLine("  Pair them onto ONE FunctionUnitHMI (button A = back/down/release).");
+                sb.AppendLine("  Pair them onto ONE CylinderUnitHMI (button A = back/down/release).");
             }
             else
             {
@@ -245,7 +245,7 @@ namespace Kaban.UI.Settings
                     sb.AppendLine("FOR BUILDING FROM THE DEVICE LIST");
                     sb.AppendLine("  Group the devices by unit (conveyor, robot, milling, cutting, exit),");
                     sb.AppendLine("  one page per group, and pair forward/back bits onto one");
-                    sb.AppendLine("  FunctionUnitHMI. A device with a sensor but NO command bit is a");
+                    sb.AppendLine("  CylinderUnitHMI. A device with a sensor but NO command bit is a");
                     sb.AppendLine("  LampHMI, not a unit. Say which devices you could not place.");
                     break;
                 case 3:   // re-layout

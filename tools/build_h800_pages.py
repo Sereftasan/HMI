@@ -74,7 +74,7 @@ def emit(cls, fields, plc=1):
 
         if k == "unit":
             px, py = place(66)
-            decl.append("            this.u{0} = new Kaban.UI.Controls.FunctionUnitHMI();".format(nm))
+            decl.append("            this.u{0} = new Kaban.UI.Controls.CylinderUnitHMI();".format(nm))
             b = ['            this.u{0}.Name = "u{0}";'.format(nm),
                  '            this.u{0}.PlcNumber = {1};'.format(nm, plc),
                  '            this.u{0}.TitleTextKey = "{1}";'.format(nm, cap),

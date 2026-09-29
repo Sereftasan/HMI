@@ -30,12 +30,14 @@ class CH {
         var host = new Form { ClientSize = new Size(900, 400) };
 
         Console.WriteLine("--- ValveType and FeedbackType on the unit ---");
-        var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
+        var props = TypeDescriptor.GetProperties(typeof(CylinderUnitHMI));
+        // The category as shown carries the tabs that order it (Kaban.UI.Design.PropertyOrder).
+        string vf = props["ValveType"] == null ? "" : props["ValveType"].Category;
         Check("ValveType and FeedbackType head the Properties window (Valve & Feedback, first category)",
-              props["ValveType"] != null && props["ValveType"].IsBrowsable && props["ValveType"].Category == "  Valve & Feedback" &&
-              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == "  Valve & Feedback" &&
-              props.Cast<PropertyDescriptor>().Where(p => p.IsBrowsable).All(p => string.CompareOrdinal(p.Category, "  Valve & Feedback") >= 0),
-              props["ValveType"].Category);
+              props["ValveType"] != null && props["ValveType"].IsBrowsable && vf.TrimStart('\t') == "Valve & Feedback" &&
+              props["FeedbackType"] != null && props["FeedbackType"].IsBrowsable && props["FeedbackType"].Category == vf &&
+              props.Cast<PropertyDescriptor>().Where(p => p.IsBrowsable).All(p => string.CompareOrdinal(p.Category, vf) >= 0),
+              vf);
         Check("  the old names are hidden aliases (not listed, not written by the designer)",
               !props["Valve"].IsBrowsable && !props["Feedback"].IsBrowsable &&
               props["Valve"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
@@ -44,7 +46,7 @@ class CH {
         Check("  with the manual's numbers kept", (int)CylinderValve.DoubleSolenoid == 1 && (int)CylinderValve.SingleSolenoid == 2 &&
               (int)CylinderValve.DoubleSolenoid_3Way == 3 && (int)CylinderFeedback.EncoderPlusReference == 6);
 
-        var unit = new FunctionUnitHMI {
+        var unit = new CylinderUnitHMI {
             PlcNumber = 4, TitleTextKey = "Left Top Clamping",
             CommandAAddress = "M604", ButtonATextKey = "Clamp", OutputAAddress = "Y24", Lamp1AAddress = "X30", Lamp1ATipKey = "Clamp closed",
             CommandBAddress = "M605", ButtonBTextKey = "Release", OutputBAddress = "Y25", Lamp1BAddress = "X31", Lamp1BTipKey = "Clamp open",
@@ -111,7 +113,7 @@ class CH {
               Regex.Matches(TC.JoinBlocks("<section class=\"block\" data-detail=\"1.1\"><table><thead><tr><th>h</th></tr></thead><tbody><tr><td>a</td></tr></tbody></table></section>" +
                                           "<section class=\"block\" data-detail=\"1.2\"><table><thead><tr><th>h</th></tr></thead><tbody><tr><td>b</td></tr></tbody></table></section>"),
                             "<thead>").Count == 1);
-        var untyped = new FunctionUnitHMI { ErrorAAddress = "M900", CommandAAddress = "M1" };
+        var untyped = new CylinderUnitHMI { ErrorAAddress = "M900", CommandAAddress = "M1" };
         untyped.SetBounds(10, 90, 360, 64); host.Controls.Add(untyped); Application.DoEvents();
         Check("a unit with no types and no files shows no '?' until an error", !Field<UnitHelpBadge>(untyped, "_help").Visible);
 
@@ -124,25 +126,35 @@ class CH {
                  Assembly.LoadFrom("Kaban.Machines.FA2010.exe");
         var cutting = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualCutting"));
         var milling = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualMilling"));
-        Func<Control, List<Control>> units = p => p.Controls.Cast<Control>().Where(c => c is FunctionUnitHMI || c is AxisUnitHMI).ToList();
+        Func<Control, List<Control>> units = p => p.Controls.Cast<Control>().Where(c => c is CylinderUnitHMI || c is AxisUnitHMI).ToList();
+        // 29 September: a single-function unit became a button or a value (CylinderUnitHMI is
+        // for cylinders) - in the same slot of the page's grid.
+        Func<Control, List<Control>> singles = p => p.Controls.Cast<Control>().Where(c => c is ButtonHMI || c is NumericDisplayHMI).ToList();
         var cu = units(cutting);
-        Check("20 units, every one 360 x 64", cu.Count == 20 && cu.All(c => c.Size == new Size(360, 64)),
-              string.Join(",", cu.Select(c => c.Size).Distinct()));
+        var cs = singles(cutting);
+        Check("20 places: the units every one 360 x 64, the single functions a button or a value",
+              cu.Count + cs.Count == 20 && cu.All(c => c.Size == new Size(360, 64)) && cs.Count > 0,
+              cu.Count + " + " + cs.Count + ": " + string.Join(",", cu.Select(c => c.Size).Distinct()));
         var mx = units(milling).Select(c => c.Left).Distinct().OrderBy(x => x).ToList();
-        Check("  on the Milling page's columns", cu.Select(c => c.Left).Distinct().All(mx.Contains), string.Join(",", mx));
-        bool overlap = cu.Any(a => cu.Any(b => a != b && a.Bounds.IntersectsWith(b.Bounds)));
+        Func<Control, int> column = c => mx.LastOrDefault(x => x <= c.Left);
+        Check("  on the Milling page's columns", cu.Select(c => c.Left).Distinct().All(mx.Contains) &&
+              cs.All(c => mx.Any(x => x <= c.Left && c.Right <= x + 360)), string.Join(",", mx));
+        var all = cu.Concat(cs).ToList();
+        bool overlap = all.Any(a => all.Any(b => a != b && a.Bounds.IntersectsWith(b.Bounds)));
         Check("  none overlapping", !overlap);
-        Check("  rows 74 apart as on the other pages", cu.All(c => (c.Top - 16) % 74 == 0));
+        Check("  rows 74 apart as on the other pages (a button or value inside its row's 64)",
+              cu.All(c => (c.Top - 16) % 74 == 0) && cs.All(c => (c.Top - 16) % 74 + c.Height <= 64),
+              string.Join(",", cs.Select(c => c.Name + "@" + c.Top)));
 
         Console.WriteLine("--- valve and sensor types on the FA2010 pages ---");
         var valves = new HashSet<CylinderValve>(); int typed = 0;
-        var byName = new Dictionary<string, FunctionUnitHMI>();
+        var byName = new Dictionary<string, CylinderUnitHMI>();
         var pagesBuilt = new List<Control>();
         foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition" })
         {
             var pg = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + name));
             pagesBuilt.Add(pg);
-            foreach (var u in pg.Controls.OfType<FunctionUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
+            foreach (var u in pg.Controls.OfType<CylinderUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
             { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }
         Check("nine units carry a valve and a feedback type, every valve among them", typed == 9 && valves.Count == 3, typed + " units, " + valves.Count + " valves");

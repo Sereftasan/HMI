@@ -62,11 +62,12 @@ class PM {
         var edc = new PlcRowEditorForm("test", "", "Bit", "", "", null, isNew: true, isComment: true);
         Check("a comment line needs no address", edc.IsComment && !((TextBox)Get(edc, "_address")).Enabled && edc.ArrayCount == 1);
         var edit = new PlcRowEditorForm("test", "Lamp", "Bit", "M5", "1", "Value");
-        Check("editing an existing row offers no array and no comment switch", edit.ArrayCount == 1 && !((CheckBox)Get(edit, "_comment")).Visible);
+        Check("editing an existing row: no comment switch; its array count (1) can be changed", edit.ArrayCount == 1 && !((CheckBox)Get(edit, "_comment")).Visible &&
+              ((NumericUpDown)Get(edit, "_count")).Enabled);
 
         Console.WriteLine("--- the devices a page uses ---");
         var page = new Panel();
-        var unit = new FunctionUnitHMI { PlcNumber = 21, TitleTextKey = "Left Clamp", CommandAAddress = "M600", Lamp1AAddress = "X20",
+        var unit = new CylinderUnitHMI { PlcNumber = 21, TitleTextKey = "Left Clamp", CommandAAddress = "M600", Lamp1AAddress = "X20",
                                          PositionAddress = "D100", PositionDataType = DataTypeEnum.Bin_32 };
         var input = new NumericInputHMI { PlcNumber = 21, Address = "D300", DataType = DataTypeEnum.Bin_16, Name = "numSpeed" };
         var other = new LampHMI { PlcNumber = 22, Address = "M999" };
@@ -120,7 +121,7 @@ class PM {
 
         Console.WriteLine("--- a double-click on a VALUE edits it in the table ---");
         grid.Focus();
-        typeof(DataGridView).GetMethod("OnCellDoubleClick", Any).Invoke(grid, new object[] { new DataGridViewCellEventArgs(3, 1) });
+        typeof(DataGridView).GetMethod("OnCellDoubleClick", Any).Invoke(grid, new object[] { new DataGridViewCellEventArgs(grid.Columns["Value"].Index, 1) });
         Application.DoEvents();
         Check("the value cell is being edited, no dialog", grid.IsCurrentCellInEditMode && grid.CurrentCell.OwningColumn.Name == "Value" && grid.CurrentCell.RowIndex == 1,
               grid.CurrentCell == null ? "" : grid.CurrentCell.OwningColumn.Name + " edit=" + grid.IsCurrentCellInEditMode);

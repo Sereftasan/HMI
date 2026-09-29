@@ -35,9 +35,9 @@ class UD {
         rowForm.Controls.Add(row);
         AlarmHelpLinks.Harvest(rowForm);
         var axis = new AxisUnitHMI { AxisNumber = 9 };
-        var fu = new FunctionUnitHMI { TitleTextKey = "Left Top Clamping", CommandAAddress = "M672", CommandBAddress = "M673",
+        var fu = new CylinderUnitHMI { TitleTextKey = "Left Top Clamping", CommandAAddress = "M672", CommandBAddress = "M673",
                                        PositionAddress = "D15", PositionDigits = 6, PositionDecimalPlaces = 1, PositionSuffix = "mm" };
-        var fu0 = new FunctionUnitHMI { TitleTextKey = "Saw Inverter", CommandAAddress = "M1", CommandBAddress = "M2",
+        var fu0 = new CylinderUnitHMI { TitleTextKey = "Saw Inverter", CommandAAddress = "M1", CommandBAddress = "M2",
                                         PositionAddress = "D669", PositionDigits = 6, PositionDecimalPlaces = 0, PositionSuffix = "mm" };
         axis.SetBounds(10, 10, 360, 64); fu.SetBounds(10, 90, 360, 64); fu0.SetBounds(10, 170, 360, 64);
         host.Controls.AddRange(new Control[] { axis, fu, fu0 });
@@ -53,7 +53,7 @@ class UD {
 
         Console.WriteLine("--- the '?' stays put, and blue ---");
         Check("the unit's '?' has no blink timer of its own", typeof(UnitHelpBadge).GetField("_blink", BindingFlags.NonPublic | BindingFlags.Static) == null);
-        var cyl = new FunctionUnitHMI { CommandAAddress = "M5", ErrorAAddress = "M890" };
+        var cyl = new CylinderUnitHMI { CommandAAddress = "M5", ErrorAAddress = "M890" };
         cyl.SetBounds(400, 10, 360, 64); host.Controls.Add(cyl); Application.DoEvents();
         Field<AlarmHelpBadge>(cyl, "_helpA").UpdateState(a => a == "M890" ? 1 : 0, c => true);
         var mark = Field<UnitHelpBadge>(cyl, "_help");
@@ -63,13 +63,13 @@ class UD {
         Check("  and the button of the movement still blinks", cyl.ButtonA.AlertBlink);
 
         Console.WriteLine("--- the designer: Help properties ---");
-        var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
+        var props = TypeDescriptor.GetProperties(typeof(CylinderUnitHMI));
         Check("'Kind' is not offered: an axis on a page is an AxisUnitHMI", !props["Kind"].IsBrowsable &&
               props["Kind"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
         Check("each movement's error and help files are under its action; valve and feedback head the list",
-              props["ErrorAAddress"].Category == " Action A" && props["HelpAFiles"].Category == " Action A" &&
-              props["ErrorBAddress"].Category == " Action B" && props["HelpBFiles"].Category == " Action B" &&
-              props["ValveType"].Category == "  Valve & Feedback" && props["FeedbackType"].Category == "  Valve & Feedback",
+              props["ErrorAAddress"].Category.TrimStart('\t') == "Action A" && props["HelpAFiles"].Category.TrimStart('\t') == "Action A" &&
+              props["ErrorBAddress"].Category.TrimStart('\t') == "Action B" && props["HelpBFiles"].Category.TrimStart('\t') == "Action B" &&
+              props["ValveType"].Category.TrimStart('\t') == "Valve & Feedback" && props["FeedbackType"].Category.TrimStart('\t') == "Valve & Feedback",
               props["HelpAFiles"].Category + " / " + props["ValveType"].Category);
         Check("  the single HelpFiles of old pages is kept hidden (not written again)",
               !props["HelpFiles"].IsBrowsable && props["HelpFiles"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
@@ -89,7 +89,7 @@ class UD {
         foreach (var n in new[] { "EnableConditions", "VisibilityConditions" })
         {
             var ed = (EditorAttribute)props[n].Attributes[typeof(EditorAttribute)];
-            Check("FunctionUnitHMI." + n + " is ticked in a list, not one pick from a drop-down",
+            Check("CylinderUnitHMI." + n + " is ticked in a list, not one pick from a drop-down",
                   ed != null && ed.EditorTypeName.Contains("UnifiedConditionEditor"));
         }
         var gb = TypeDescriptor.GetProperties(typeof(GroupBoxHMI));

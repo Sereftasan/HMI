@@ -89,7 +89,7 @@ namespace Kaban.UI.Helpers
         /// <summary>The unit or axis a control belongs to, for the "used as" name.</summary>
         private static string OwnerName(Control c)
         {
-            var fu = c as FunctionUnitHMI;
+            var fu = c as CylinderUnitHMI;
             if (fu != null) return Tr(fu.TitleTextKey);
             var ax = c as AxisSettingHMI;
             if (ax != null) return Tr(ax.AxisNameKey);
@@ -171,7 +171,12 @@ namespace Kaban.UI.Helpers
             }
 
             var cb = c as CheckBoxHMI;
-            if (cb != null) { Add(list, seen, st, cb.Address, Bit, own, "selection"); return; }
+            if (cb != null)
+            {
+                Add(list, seen, st, cb.Address, Bit, own, "selection");
+                if (!string.IsNullOrWhiteSpace(cb.AlertAddress)) Add(list, seen, st, cb.AlertAddress.Trim(), Bit, own, "request");
+                return;
+            }
 
             var cmb = c as ComboBoxHMI;
             if (cmb != null) { Add(list, seen, st, cmb.Address, Word, own, "choice"); return; }
@@ -298,7 +303,7 @@ namespace Kaban.UI.Helpers
         // each USE, so a device on two buttons of one page is listed twice - with
         // the way back to it: the screen, the tab chosen on each tab strip on the
         // way down (PagePath), and the path of controls to the one that uses it
-        // (ControlPath). Recorded to the outermost unit (a FunctionUnitHMI, an
+        // (ControlPath). Recorded to the outermost unit (a CylinderUnitHMI, an
         // axis unit or row) so the page can point at the whole unit.
 
         /// <summary>One use of a device on one page.</summary>
@@ -399,7 +404,7 @@ namespace Kaban.UI.Helpers
             string here = OwnerName(c);
             if (here.Length > 0) owner = here;
             // The OUTERMOST unit around the control is what the page points at.
-            if (unitPath == null && (c is FunctionUnitHMI || c is AxisUnitHMI || c is AxisSettingHMI)) unitPath = path;
+            if (unitPath == null && (c is CylinderUnitHMI || c is AxisUnitHMI || c is AxisSettingHMI)) unitPath = path;
 
             var found = new List<Device>();
             Collect(c, station, found, new HashSet<string>(StringComparer.OrdinalIgnoreCase), owner);

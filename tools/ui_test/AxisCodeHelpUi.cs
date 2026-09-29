@@ -25,7 +25,7 @@ class AX {
         var host = new Form { ClientSize = new Size(900, 300) };
 
         Console.WriteLine("--- the axis '?' follows the drive codes ---");
-        var axis = new FunctionUnitHMI { Kind = UnitKind.Axis, TitleTextKey = "Robot X",
+        var axis = new CylinderUnitHMI { Kind = UnitKind.Axis, TitleTextKey = "Robot X",
                                          CommandAAddress = "M600", CommandBAddress = "M601",
                                          PositionAddress = "D100", ErrorBAddress = "M890" };
         axis.SetAxisCodes("W0B", "W4", "W5");
@@ -79,7 +79,7 @@ class AX {
         w0b = 0; badge.UpdateState(plc, c => true);
 
         Console.WriteLine("--- a cylinder's '?' is unchanged: the error bit ---");
-        var cyl = new FunctionUnitHMI { TitleTextKey = "Clamp", CommandAAddress = "M672", ErrorAAddress = "M892" };
+        var cyl = new CylinderUnitHMI { TitleTextKey = "Clamp", CommandAAddress = "M672", ErrorAAddress = "M892" };
         host.Controls.Add(cyl);
         var cb = Field<AlarmHelpBadge>(cyl, "_helpA");
         var cm = Field<UnitHelpBadge>(cyl, "_help");
@@ -89,7 +89,7 @@ class AX {
         Check("gone with it", !cb.IsActive && cm.State == UnitHelpBadge.BadgeState.Hidden && !cyl.ButtonA.AlertBlink);
 
         Console.WriteLine("--- every function unit reads like the Axis Settings row ---");
-        var fu = new FunctionUnitHMI { PositionAddress = "D15" };
+        var fu = new CylinderUnitHMI { PositionAddress = "D15" };
         Check("default style is Standard", fu.PositionStyle == UnitPositionStyle.Standard);
         Check("  black bold digits on grey (not red on black)",
               fu.PositionDisplay.ForeColor.ToArgb() == Color.Black.ToArgb() &&

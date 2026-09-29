@@ -524,3 +524,15 @@ Tip_LampOff;Off;Kapalı;Выкл;Aus;Spento;Apagado
 Ttl_AxisMonitor;Axis Monitor;Eksen İzleme;Монитор осей;Achsmonitor;Monitor assi;Monitor de ejes
 Msg_NoAxes;No axis is set up on the Axis Settings pages.;Eksen Ayarları sayfalarında tanımlı eksen yok.;На страницах настроек осей нет осей.;Auf den Achseinstellungsseiten ist keine Achse eingerichtet.;Nessun asse è configurato nelle pagine Impostazioni assi.;No hay ejes configurados en las páginas de ajustes de ejes.
 Usr_NoScaleRequest;No specific request;Özel bir istek yok;Без особых пожеланий;Kein besonderer Wunsch;Nessuna richiesta specifica;Sin petición específica
+Tip_AlertBit;Asked for by;İsteyen;Запрошено;Angefordert von;Richiesto da;Solicitado por
+Tip_AlertOn;now;şu an;сейчас;jetzt;ora;ahora
+Col_DisplayFormat;Display Format;Görüntüleme Biçimi;Формат отображения;Anzeigeformat;Formato di visualizzazione;Formato de visualización
+Fmt_Decimal;Decimal;Onluk;Десятичный;Dezimal;Decimale;Decimal
+Fmt_Hexadecimal;Hexadecimal;Onaltılık;Шестнадцатеричный;Hexadezimal;Esadecimale;Hexadecimal
+Fmt_Binary;Binary;İkilik;Двоичный;Binär;Binario;Binario
+Mnu_MonExpand;Expand the array;Diziyi aç;Развернуть массив;Array aufklappen;Espandi l'array;Expandir la matriz
+Mnu_MonCollapse;Collapse the array;Diziyi kapat;Свернуть массив;Array zuklappen;Comprimi l'array;Contraer la matriz
+Undo_Format;display format;görüntüleme biçimi;формат отображения;Anzeigeformat;formato di visualizzazione;formato de visualización
+Msg_MonTooLong;Longer than the string - nothing written.;Metinden uzun - hiçbir şey yazılmadı.;Длиннее строки - ничего не записано.;Länger als der String - nichts geschrieben.;Più lungo della stringa - nulla scritto.;Más largo que la cadena - no se escribió nada.
+Lbl_StringChars;String (characters);Metin (karakter);Строка (символы);String (Zeichen);Stringa (caratteri);Cadena (caracteres)
+Lbl_StepN;every {0}th device;her {0}. cihaz;каждое {0}-е устройство;jedes {0}. Gerät;ogni {0}° dispositivo;cada {0}.º dispositivo

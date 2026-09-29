@@ -12,6 +12,9 @@ namespace Kaban.UI.Controls
     /// security gating, audit logging and attached-description support as the rest
     /// of the family. Ticking is reverted when the user lacks permission.
     /// </summary>
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class CheckBoxHMI : CheckBox
     {
         // ---- optional attached description (label hugging the LEFT edge) ----
@@ -36,6 +39,22 @@ namespace Kaban.UI.Controls
         [Category("   Data")] public string Address { get; set; } = "";
         [Category("   Behavior")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.Operator;
         [Category("   Behavior")] public bool LogAction { get; set; } = true;
+
+        /// <summary>
+        /// A bit that asks for this box: while it is TRUE the box's border blinks
+        /// red. The axis row's Ref box uses it for the PLC's home (reference)
+        /// request - the axis wants referencing, and the box to tick is the one
+        /// blinking.
+        /// </summary>
+        [Category("   Data"), DefaultValue("")]
+        [Description("A bit asking for this box: while it is TRUE the border blinks red (e.g. the PLC's home request on the axis row's Ref box).")]
+        public string AlertAddress { get; set; } = "";
+
+        /// <summary>True while AlertAddress reads TRUE (tests, and the paint).</summary>
+        [Browsable(false)]
+        public bool IsAlerting { get { return _alert; } }
+        private bool _alert;
+        private bool _alertBlinkOn;
 
         private bool _suppress;
 
@@ -136,6 +155,11 @@ namespace Kaban.UI.Controls
             using (var pen = new Pen(Enabled ? Color.FromArgb(120, 128, 140)
                                              : Color.FromArgb(205, 210, 217)))
                 g.DrawRectangle(pen, box);
+            // ASKED FOR: the border blinks red while AlertAddress is TRUE - the
+            // same red and the same 2 px as a numeric field out of its limits.
+            if (_alert && _alertBlinkOn)
+                using (var pen = new Pen(Color.FromArgb(200, 30, 30), 2f))
+                    g.DrawRectangle(pen, box.X + 1, box.Y + 1, box.Width - 2, box.Height - 2);
 
             if (!Checked) return;
 
@@ -188,8 +212,12 @@ namespace Kaban.UI.Controls
             _tipBuilt = true;
             if (string.IsNullOrEmpty(Address)) { _tip.SetToolTip(this, ""); return; }
             // Device only. A caption here repeats the row and the column heading.
-            _tip.SetToolTip(this, PlcAddressHelper.StationHeader(PlcNumber) +
-                                  PlcAddressHelper.Describe(PlcNumber, Address));
+            string tip = PlcAddressHelper.StationHeader(PlcNumber) + PlcAddressHelper.Describe(PlcNumber, Address);
+            if (!string.IsNullOrWhiteSpace(AlertAddress))
+                tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
+                       PlcAddressHelper.Describe(PlcNumber, AlertAddress.Trim()) +
+                       (_alert ? "  (" + LanguageManager.GetString("Tip_AlertOn", "now") + ")" : "");
+            _tip.SetToolTip(this, tip);
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -201,6 +229,14 @@ namespace Kaban.UI.Controls
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             if (!_tipBuilt) RefreshTooltip();
+            bool alert = !string.IsNullOrWhiteSpace(AlertAddress) && readPlc(AlertAddress.Trim()) != 0;
+            bool blinkOn = alert && BlinkHelper.IsBlinkActive;
+            if (alert != _alert || blinkOn != _alertBlinkOn)
+            {
+                if (alert != _alert) { _alert = alert; RefreshTooltip(); }
+                _alertBlinkOn = blinkOn;
+                Invalidate();
+            }
             if (string.IsNullOrWhiteSpace(Address)) return;
             bool on = readPlc(Address) != 0;
             if (Checked != on) { _suppress = true; Checked = on; _suppress = false; }

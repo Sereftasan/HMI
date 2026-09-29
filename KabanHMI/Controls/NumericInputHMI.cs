@@ -65,8 +65,9 @@ namespace Kaban.UI.Controls
         [Category("   Math")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [RefreshProperties(RefreshProperties.All)]
-        [Description("The other names the formulas use - B, C ... - each a constant or a PLC device to read. " +
-                     "A (val, x) is the value itself and needs no variable.")]
+        [Editor(typeof(Kaban.UI.Design.MathVariablesEditor), typeof(UITypeEditor))]
+        [Description("The names the formulas use. A is the value itself (listed first, fixed); add B, C ... - each a " +
+                     "constant or a PLC device to read. New items are named with the next free letter.")]
         public List<MathVariable> MathVariables { get; } = new List<MathVariable>();
 
         /// <summary>
@@ -104,44 +105,97 @@ namespace Kaban.UI.Controls
         [Category("  System")] public bool OutOfLimitsWarning { get; set; } = false;
 
         /// <summary>
-        /// Draws a slider on the left and the value on the right.
+        /// THE BAR VIEW: the field drawn as a card - a heading with its name, then
+        /// a minus button, the value, a slider across the limits and a plus
+        /// button.
         ///
-        /// For the percentages an operator adjusts while watching the machine - a
-        /// speed override, a feed rate. Dragging is one gesture where typing is a
-        /// keypad, a number and a confirm, and the bar also shows at a glance how
-        /// far through its range the value sits, which a number alone never does.
+        /// For the settings an operator adjusts while watching the machine - a
+        /// speed override, a feed rate. A press on minus or plus moves the value
+        /// by BarStep (held, it repeats); dragging the slider moves it anywhere
+        /// between the limits and writes when the finger lifts; a touch on the
+        /// value opens the keypad as on any field. Every one of these writes the
+        /// way the keypad does: the same limits, security, conditions, formula,
+        /// unit, confirmation and log.
         ///
-        /// The numeric part stays exactly what it was: clicking it opens the same
-        /// entry as any other field. The bar is an addition, not a replacement.
+        /// ONE CONTROL, NOT A SECOND ONE. It is the same value, address, limits,
+        /// formulas and rules as a numeric input - only drawn differently - so a
+        /// separate control would be two copies of the same write path to keep in
+        /// step. BarView is the switch.
         /// </summary>
-        [Category("   Appearance"), Description("Show a draggable bar beside the value.")]
+        [Category("   Appearance"), DefaultValue(false),
+         Description("Draw the field as a card: heading, minus, value, slider over MinLimit..MaxLimit, plus.")]
         public bool BarView
         {
             get { return _barView; }
-            set { if (_barView == value) return; _barView = value; Invalidate(); }
+            set { if (_barView == value) return; _barView = value; SyncBarCaption(); Invalidate(); }
         }
         private bool _barView;
 
+        /// <summary>The heading strip with the field's name (DescriptionText) and a gauge.</summary>
+        [Category("   Appearance"), DefaultValue(true),
+         Description("Bar view: a heading strip with the DescriptionText and a gauge picture (the text leaves the left side).")]
+        public bool BarHeader
+        {
+            get { return _barHeader; }
+            set { if (_barHeader == value) return; _barHeader = value; SyncBarCaption(); Invalidate(); }
+        }
+        private bool _barHeader = true;
+
         // No BarMinimum / BarMaximum. The field already has MinLimit and MaxLimit,
         // and a second pair of bounds is a second thing to keep in step - set the
-        // travel in one place and the bar moves between the same ends the keypad
-        // will accept.
+        // travel in one place and the slider moves between the same ends the
+        // keypad will accept.
 
-        /// <summary>How much one arrow press moves the value.</summary>
-        [Category("   Appearance")] public double BarStep { get; set; } = 5;
+        /// <summary>How much one press of minus or plus moves the value (in the value's own unit).</summary>
+        [Category("   Appearance"), DefaultValue(5.0),
+         Description("Bar view: how much one press of minus or plus moves the value, in the value's own unit.")]
+        public double BarStep { get; set; } = 5;
 
+        // ---- the card's parts ------------------------------------------------
+        internal enum BarPart { None, Minus, Value, Track, Plus }
 
-        // A step button at each END with the value between them - the shape used
-        // on the machines already. The previous version put a slider, the number
-        // and two stacked arrows in one row: at any realistic width the number was
-        // unreadable and the arrows were too small to hit with a gloved finger.
-        private int StepW { get { return Math.Max(26, Math.Min(40, Height + 4)); } }
-
-        private Rectangle MinusArea { get { return new Rectangle(1, 1, StepW, Height - 2); } }
-        private Rectangle PlusArea  { get { return new Rectangle(Width - StepW - 1, 1, StepW, Height - 2); } }
-        private Rectangle ValueArea
+        private int HeaderHeight
         {
-            get { return new Rectangle(StepW + 3, 1, Math.Max(10, Width - StepW * 2 - 6), Height - 2); }
+            get
+            {
+                if (!BarHeader || string.IsNullOrWhiteSpace(DescriptionText)) return 0;
+                if (Height < 58) return 0;                  // too low for both: the body wins
+                return Math.Max(22, Math.Min(30, Height * 34 / 100));
+            }
+        }
+        private Rectangle Body { get { int h = HeaderHeight; return new Rectangle(0, h, Width, Height - h); } }
+        private int Pad { get { return Math.Max(4, Math.Min(10, Body.Height / 6)); } }
+        private int Side { get { var b = Body; return Math.Max(18, Math.Min(44, b.Height - 2 * Pad)); } }
+        private int BtnTop { get { var b = Body; return b.Y + (b.Height - Side) / 2; } }
+        internal Rectangle MinusArea { get { return new Rectangle(Pad, BtnTop, Side, Side); } }
+        internal Rectangle PlusArea { get { return new Rectangle(Width - Pad - Side, BtnTop, Side, Side); } }
+        internal Rectangle ValueArea
+        {
+            get
+            {
+                int w = Math.Max(52, Math.Min(120, Width * 22 / 100));
+                return new Rectangle(MinusArea.Right + 8, BtnTop, w, Side);
+            }
+        }
+        /// <summary>The slider's travel: between the value and the plus button.</summary>
+        internal Rectangle TrackArea
+        {
+            get
+            {
+                int x0 = ValueArea.Right + 14, x1 = PlusArea.Left - 14;
+                return new Rectangle(x0, BtnTop, Math.Max(0, x1 - x0), Side);
+            }
+        }
+
+        internal BarPart PartAt(Point p)
+        {
+            if (!_barView) return BarPart.None;
+            if (MinusArea.Contains(p)) return BarPart.Minus;
+            if (PlusArea.Contains(p)) return BarPart.Plus;
+            if (ValueArea.Contains(p)) return BarPart.Value;
+            var t = TrackArea; t.Inflate(10, 0);
+            if (t.Width > 0 && t.Contains(p)) return BarPart.Track;
+            return BarPart.None;
         }
 
         private bool _softEnabled = false; // FAIL-CLOSED until the scanner evaluates it
@@ -235,6 +289,20 @@ namespace Kaban.UI.Controls
             base.UpdateState(readPlc, checkGlobal);
             _lastReadPlc = readPlc; // cache so OnClick can re-resolve tag-based limits/variables on demand
 
+            // A value just written from the card stays on it until the PLC shows
+            // it - no jump back to the old value between the write and the next
+            // reading. The PLC's own value wins as soon as it shows anything but
+            // the old one (it may have held the value somewhere else), and after
+            // a moment in any case.
+            if (_dragValue.HasValue && _dragWritten && _pressedPart == BarPart.None)
+            {
+                double tol = Math.Pow(10, -EffectiveDecimals) / 2;
+                if (Math.Abs(_lastNumericValue - _dragValue.Value) <= tol ||
+                    Math.Abs(_lastNumericValue - _valueBeforeWrite) > tol ||
+                    (DateTime.Now - _dragWrittenAt).TotalMilliseconds > 1500)
+                { _dragValue = null; Invalidate(); }
+            }
+
             if (!this.Visible) return;
 
             bool secOk = SecurityManager.HasAccess(RequiredSecurity);
@@ -287,7 +355,7 @@ namespace Kaban.UI.Controls
 
                 // The bar spans exactly these limits - one set of bounds for the
                 // keypad, the warning and the slider alike. An angle through zero
-                // spans min ... max + 360 (see DrawBarView).
+                // spans min ... max + 360 (see DrawTrack).
                 _barWraps = NumericLimits.Wraps(minN, maxN, angle);
                 _barLow = minN ?? 0;
                 _barHigh = _barWraps ? maxN.Value + NumericLimits.FullTurn : (maxN ?? (angle ? NumericLimits.FullTurn : 100));
@@ -330,72 +398,352 @@ namespace Kaban.UI.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (_barView) { PaintCard(e.Graphics); return; }
             base.OnPaint(e);
-            if (_barView) DrawBarView(e.Graphics);
             if (!_outOfLimits || !BlinkHelper.IsBlinkActive) return;
             using (var pen = new Pen(Color.FromArgb(200, 30, 30), 2f))
                 e.Graphics.DrawRectangle(pen, 1, 1, Width - 3, Height - 3);
         }
 
-        /// <summary>
-        /// The slider, the value and the two nudge arrows.
-        ///
-        /// Drawn rather than composed from child controls: this is one field with
-        /// one value, and three child controls would each want their own focus,
-        /// tab stop and enabled state to keep in step with it.
-        /// </summary>
-        private void DrawBarView(Graphics g)
+        /// <summary>The name leaves the left side while the heading strip shows it.</summary>
+        private void SyncBarCaption() { SuppressDescription(_barView && BarHeader && Height >= 58); }
+
+        protected override void OnResize(EventArgs e)
         {
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-
-            DrawStep(g, MinusArea, "-");
-            DrawStep(g, PlusArea, "+");
-
-            var v = ValueArea;
-            using (var back = new SolidBrush(Color.White)) g.FillRectangle(back, v);
-
-            // A pale fill showing where the value sits between its limits. Behind
-            // the number and light enough to read through - the figure is what the
-            // operator needs, the fill is only the sense of "how far along".
-            double lo = _barLow, hi = _barHigh;
-            if (hi > lo)
-            {
-                // Through zero: 10 degrees on a 270 ... 45 range is 370 on the bar.
-                double at = _barWraps && _lastNumericValue < lo ? _lastNumericValue + NumericLimits.FullTurn : _lastNumericValue;
-                double f = Math.Max(0, Math.Min(1, (at - lo) / (hi - lo)));
-                int w = (int)(v.Width * f);
-                if (w > 0)
-                    using (var b = new SolidBrush(Color.FromArgb(206, 228, 246)))
-                        g.FillRectangle(b, v.X, v.Y, w, v.Height);
-            }
-
-            using (var pen = new Pen(Color.FromArgb(168, 176, 186)))
-                g.DrawRectangle(pen, v.X, v.Y, v.Width - 1, v.Height - 1);
-
-            TextRenderer.DrawText(g, this.Text, this.Font, v, this.ForeColor,
-                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
-                TextFormatFlags.NoPadding);
+            base.OnResize(e);
+            if (_barView) SyncBarCaption();
         }
 
-        private void DrawStep(Graphics g, Rectangle r, string sign)
-        {
-            using (var b = new SolidBrush(Enabled ? Color.FromArgb(240, 241, 243)
-                                                  : Color.FromArgb(248, 249, 250)))
-                g.FillRectangle(b, r);
-            using (var pen = new Pen(Color.FromArgb(168, 176, 186)))
-                g.DrawRectangle(pen, r.X, r.Y, r.Width - 1, r.Height - 1);
+        // ---- the card, drawn ----------------------------------------------------
+        // Drawn rather than composed from child controls: this is one field with
+        // one value, and four child controls would each want their own focus, tab
+        // stop, tooltip and enabled state to keep in step with it.
+        private static readonly Color CardBorder = Color.FromArgb(204, 210, 218);
+        private static readonly Color HeadBack = Color.FromArgb(30, 55, 88);
+        private static readonly Color StepBack = Color.FromArgb(241, 243, 246);
+        private static readonly Color StepBackHot = Color.FromArgb(226, 232, 240);
+        private static readonly Color StepBackDown = Color.FromArgb(206, 216, 230);
+        private static readonly Color TrackBack = Color.FromArgb(221, 226, 232);
+        private static readonly Color TrackFill = Color.FromArgb(31, 111, 224);
+        private static readonly Color Ink = Color.FromArgb(34, 38, 46);
+        private static readonly Color InkPale = Color.FromArgb(170, 176, 186);
 
-            using (var f = new Font(this.Font.FontFamily, Math.Max(10f, r.Height * 0.45f),
-                                    FontStyle.Bold))
-                TextRenderer.DrawText(g, sign, f, r,
-                    Enabled ? Color.FromArgb(40, 44, 52) : Color.FromArgb(176, 182, 190),
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
-                    TextFormatFlags.NoPadding);
+        private static System.Drawing.Drawing2D.GraphicsPath Round(Rectangle r, int radius)
+        {
+            var path = new System.Drawing.Drawing2D.GraphicsPath();
+            int d = Math.Max(2, Math.Min(radius * 2, Math.Min(r.Width, r.Height)));
+            path.AddArc(r.X, r.Y, d, d, 180, 90);
+            path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+            path.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+            path.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+            path.CloseFigure();
+            return path;
+        }
+
+        private void PaintCard(Graphics g)
+        {
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.Clear(Parent != null ? Parent.BackColor : Color.White);
+            bool live = _softEnabled && Enabled;
+            var card = new Rectangle(0, 0, Width - 1, Height - 1);
+            using (var path = Round(card, 7))
+            {
+                using (var b = new SolidBrush(Color.White)) g.FillPath(b, path);
+                int hh = HeaderHeight;
+                if (hh > 0)
+                {
+                    var old = g.Clip;
+                    g.SetClip(path);
+                    using (var b = new SolidBrush(live ? HeadBack : Color.FromArgb(120, 132, 148)))
+                        g.FillRectangle(b, 0, 0, Width, hh);
+                    g.Clip = old;
+                    // The gauge, a thin rule, the name.
+                    int gs = hh - 10;
+                    var gauge = new Rectangle(10, (hh - gs) / 2, gs, gs);
+                    DrawGauge(g, gauge, Color.White);
+                    using (var pen = new Pen(Color.FromArgb(150, 255, 255, 255)))
+                        g.DrawLine(pen, gauge.Right + 7, 6, gauge.Right + 7, hh - 6);
+                    string title = LanguageManager.GetString(DescriptionText ?? "", DescriptionText ?? "");
+                    using (var f = UiScale.NewFont("Segoe UI Semibold", Math.Max(7.5f, hh * 0.30f)))
+                        TextRenderer.DrawText(g, title, f,
+                            new Rectangle(gauge.Right + 14, 0, Width - gauge.Right - 20, hh), Color.White,
+                            TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPadding);
+                }
+                using (var pen = new Pen(_hoveredPart != BarPart.None && live ? UiStyle.HoverBorderColor : CardBorder, 1.2f))
+                    g.DrawPath(pen, path);
+            }
+
+            DrawStep(g, MinusArea, false, live);
+            DrawStep(g, PlusArea, true, live);
+            DrawValueBox(g, live);
+            DrawTrack(g, live);
+        }
+
+        /// <summary>A speedometer: an arc, its ticks and the needle.</summary>
+        private static void DrawGauge(Graphics g, Rectangle r, Color c)
+        {
+            using (var pen = new Pen(c, Math.Max(1.4f, r.Width / 9f)))
+            {
+                pen.StartCap = pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                g.DrawArc(pen, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2, 150, 240);
+                var mid = new PointF(r.X + r.Width / 2f, r.Y + r.Height / 2f);
+                double a = -40 * Math.PI / 180;         // the needle at about three quarters
+                g.DrawLine(pen, mid, new PointF(mid.X + (float)(Math.Cos(a) * r.Width * 0.34), mid.Y + (float)(Math.Sin(a) * r.Height * 0.34)));
+            }
+        }
+
+        private void DrawStep(Graphics g, Rectangle r, bool plus, bool live)
+        {
+            BarPart part = plus ? BarPart.Plus : BarPart.Minus;
+            Color back = !live ? Color.FromArgb(248, 249, 250)
+                       : _pressedPart == part ? StepBackDown
+                       : _hoveredPart == part ? StepBackHot : StepBack;
+            using (var path = Round(r, 5))
+            {
+                using (var b = new SolidBrush(back)) g.FillPath(b, path);
+                using (var pen = new Pen(CardBorder)) g.DrawPath(pen, path);
+            }
+            // A drawn sign, not a font glyph: the same weight at every size.
+            float arm = r.Width * 0.22f, w = Math.Max(1.6f, r.Width / 16f);
+            var c = new PointF(r.X + r.Width / 2f, r.Y + r.Height / 2f);
+            using (var pen = new Pen(live ? Ink : InkPale, w))
+            {
+                g.DrawLine(pen, c.X - arm, c.Y, c.X + arm, c.Y);
+                if (plus) g.DrawLine(pen, c.X, c.Y - arm, c.X, c.Y + arm);
+            }
+        }
+
+        /// <summary>The number in the unit on screen, and the unit apart ("75" and "%").</summary>
+        internal void ValueParts(out string number, out string unit)
+        {
+            unit = UnitType != UnitType.None ? UnitManager.GetActiveSuffix(UnitType) : (Suffix ?? "");
+            if (!ShowSuffix) unit = "";
+            if (_dragValue.HasValue)
+            {
+                double shown = UnitType != UnitType.None ? UnitManager.ToDisplay(UnitType, _dragValue.Value) : _dragValue.Value;
+                number = PlcValueConverter.FormatString(shown, DataType, DataFormat, EffectiveDecimals, Digits, FillZero).Trim();
+                return;
+            }
+            string text = (Text ?? "").Trim();
+            if (unit.Length > 0 && text.EndsWith(" " + unit)) text = text.Substring(0, text.Length - unit.Length - 1).TrimEnd();
+            number = text;
+        }
+
+        private void DrawValueBox(Graphics g, bool live)
+        {
+            var r = ValueArea;
+            using (var path = Round(r, 5))
+            {
+                using (var b = new SolidBrush(Color.White)) g.FillPath(b, path);
+                Color border = IsEditing ? Color.FromArgb(30, 120, 220)
+                             : _outOfLimits && BlinkHelper.IsBlinkActive ? Color.FromArgb(200, 30, 30)
+                             : _hoveredPart == BarPart.Value && live ? UiStyle.HoverBorderColor : CardBorder;
+                using (var pen = new Pen(border, IsEditing || _outOfLimits ? 2f : 1f)) g.DrawPath(pen, path);
+            }
+            string number, unit;
+            ValueParts(out number, out unit);
+            Color ink = !live ? InkPale : _outOfLimits ? ForeColor : Ink;
+            using (var big = UiScale.NewFont("Segoe UI Semibold", Math.Max(8f, r.Height * 0.36f)))
+            using (var small = UiScale.NewFont("Segoe UI", Math.Max(6.5f, r.Height * 0.22f)))
+            {
+                var nb = TextRenderer.MeasureText(g, number, big, Size.Empty, TextFormatFlags.NoPadding);
+                var ub = unit.Length > 0 ? TextRenderer.MeasureText(g, unit, small, Size.Empty, TextFormatFlags.NoPadding) : Size.Empty;
+                int gap = unit.Length > 0 ? 3 : 0;
+                int total = nb.Width + gap + ub.Width;
+                int x = r.X + Math.Max(4, (r.Width - total) / 2);
+                int baseY = r.Y + (r.Height - nb.Height) / 2;
+                TextRenderer.DrawText(g, number, big, new Point(x, baseY), ink, TextFormatFlags.NoPadding);
+                if (unit.Length > 0)
+                    TextRenderer.DrawText(g, unit, small, new Point(x + nb.Width + gap, baseY + nb.Height - ub.Height - 1),
+                                          live ? Color.FromArgb(128, 136, 148) : InkPale, TextFormatFlags.NoPadding);
+            }
+        }
+
+        /// <summary>Where the value sits between the limits, 0 ... 1 (an angle through zero counted on).</summary>
+        internal double BarFraction(double value)
+        {
+            double lo = _barLow, hi = _barHigh;
+            if (hi <= lo) return 0;
+            double at = _barWraps && value < lo ? value + NumericLimits.FullTurn : value;
+            return Math.Max(0, Math.Min(1, (at - lo) / (hi - lo)));
+        }
+
+        private void DrawTrack(Graphics g, bool live)
+        {
+            var t = TrackArea;
+            if (t.Width < 12) return;
+            int th = Math.Max(4, Math.Min(8, t.Height / 5));
+            var bar = new Rectangle(t.X, t.Y + (t.Height - th) / 2, t.Width, th);
+            using (var path = Round(bar, th / 2))
+            using (var b = new SolidBrush(TrackBack)) g.FillPath(b, path);
+
+            double f = BarFraction(_dragValue ?? _lastNumericValue);
+            int x = bar.X + (int)Math.Round(bar.Width * f);
+            if (x > bar.X)
+                using (var path = Round(new Rectangle(bar.X, bar.Y, Math.Max(th, x - bar.X), th), th / 2))
+                using (var b = new SolidBrush(live ? TrackFill : InkPale)) g.FillPath(b, path);
+
+            // The knob: blue with a white ring, a soft shadow under it.
+            int kd = Math.Max(12, Math.Min(22, t.Height * 55 / 100));
+            var knob = new Rectangle(x - kd / 2, bar.Y + th / 2 - kd / 2, kd, kd);
+            using (var shadow = new SolidBrush(Color.FromArgb(40, 0, 0, 0)))
+                g.FillEllipse(shadow, knob.X, knob.Y + 1, kd, kd);
+            using (var b = new SolidBrush(Color.White)) g.FillEllipse(b, knob);
+            var inner = Rectangle.Inflate(knob, -Math.Max(2, kd / 6), -Math.Max(2, kd / 6));
+            using (var b = new SolidBrush(!live ? InkPale : _pressedPart == BarPart.Track ? Color.FromArgb(20, 90, 190) : TrackFill))
+                g.FillEllipse(b, inner);
         }
 
         /// <summary>The resolved limits, refreshed on every scan.</summary>
         private double _barLow, _barHigh = 100;
         private bool _barWraps;
+
+        // ---- the card, used -----------------------------------------------------
+        private BarPart _hoveredPart = BarPart.None, _pressedPart = BarPart.None;
+        /// <summary>The value while the slider is dragged (not written yet), or just written (until the next scan).</summary>
+        private double? _dragValue;
+        private bool _dragWritten;
+        private DateTime _dragWrittenAt;
+        private double _valueBeforeWrite;
+        private Timer _repeat;
+
+        /// <summary>The value (reference unit) at a point on the slider, on BarStep's grid from the minimum.</summary>
+        internal double ValueAtX(int x)
+        {
+            var t = TrackArea;
+            double f = t.Width <= 0 ? 0 : Math.Max(0, Math.Min(1, (x - t.X) / (double)t.Width));
+            double v = _barLow + f * (_barHigh - _barLow);
+            double step = BarStep > 0 ? BarStep : Math.Pow(10, -EffectiveDecimals);
+            v = _barLow + Math.Round((v - _barLow) / step) * step;
+            v = Math.Max(_barLow, Math.Min(_barHigh, v));
+            if (_barWraps && v >= NumericLimits.FullTurn) v -= NumericLimits.FullTurn;
+            return Math.Round(v, Math.Max(0, EffectiveDecimals + 2));
+        }
+
+        /// <summary>The value one step down or up from what is shown, held inside the limits.</summary>
+        internal double Stepped(bool up)
+        {
+            double step = BarStep > 0 ? BarStep : Math.Pow(10, -EffectiveDecimals);
+            double from = _dragValue ?? _lastNumericValue;
+            double v = from + (up ? step : -step);
+            if (!_barWraps) v = Math.Max(_barLow, Math.Min(_barHigh, v));
+            return Math.Round(v, Math.Max(0, EffectiveDecimals + 2));
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (!_barView) return;
+            var part = _pressedPart == BarPart.Track ? BarPart.Track : PartAt(e.Location);
+            if (part != _hoveredPart) { _hoveredPart = part; Invalidate(); }
+            if (_pressedPart == BarPart.Track && e.Button == MouseButtons.Left)
+            {
+                double v = ValueAtX(e.X);
+                if (!_dragValue.HasValue || Math.Abs(_dragValue.Value - v) > 1e-9) { _dragValue = v; Invalidate(); }
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (_barView && _hoveredPart != BarPart.None && _pressedPart != BarPart.Track) { _hoveredPart = BarPart.None; Invalidate(); }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (!_barView || e.Button != MouseButtons.Left) return;
+            _clickPart = PartAt(e.Location);
+            if (!_softEnabled) return;
+            _pressedPart = _clickPart;
+            if (_pressedPart == BarPart.Minus || _pressedPart == BarPart.Plus)
+            {
+                StepOnce(_pressedPart == BarPart.Plus);
+                // HELD, IT REPEATS - unless each write is to be confirmed.
+                if (!ConfirmWrite)
+                {
+                    if (_repeat == null)
+                    {
+                        _repeat = new Timer();
+                        _repeat.Tick += (s, a) =>
+                        {
+                            _repeat.Interval = 140;
+                            if (_pressedPart == BarPart.Minus || _pressedPart == BarPart.Plus) StepOnce(_pressedPart == BarPart.Plus);
+                            else _repeat.Stop();
+                        };
+                    }
+                    _repeat.Interval = 450;
+                    _repeat.Start();
+                }
+            }
+            else if (_pressedPart == BarPart.Track)
+            {
+                _valueBeforeWrite = _lastNumericValue;
+                _dragValue = ValueAtX(e.X);
+                _dragWritten = false;
+            }
+            Invalidate();
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            if (!_barView) return;
+            if (_repeat != null) _repeat.Stop();
+            var was = _pressedPart;
+            _pressedPart = BarPart.None;
+            if (was == BarPart.Track && _dragValue.HasValue && !_dragWritten)
+            {
+                // WRITTEN WHEN THE FINGER LIFTS: one write for one gesture.
+                _dragWritten = true;
+                _dragWrittenAt = DateTime.Now;
+                if (!WriteBarValue(_dragValue.Value)) _dragValue = null;
+            }
+            _hoveredPart = PartAt(e.Location);
+            Invalidate();
+        }
+
+        private BarPart _clickPart = BarPart.None;
+
+        private void StepOnce(bool up)
+        {
+            if (!_dragValue.HasValue) _valueBeforeWrite = _lastNumericValue;
+            double v = Stepped(up);
+            _dragValue = v;
+            _dragWritten = true;
+            _dragWrittenAt = DateTime.Now;
+            if (!WriteBarValue(v)) { _dragValue = null; if (_repeat != null) _repeat.Stop(); }
+            Invalidate();
+        }
+
+        /// <summary>A value from the card, written as if typed on the keypad.</summary>
+        internal bool WriteBarValue(double value)
+        {
+            IPlcDriver driver;
+            Func<string, int> reader;
+            InputLimitsCalculation.EffectiveLimits limits;
+            if (!PrepareWrite(out driver, out reader, out limits)) return false;
+            // Held inside the limits the keypad would enforce - the slider cannot
+            // leave them, and a step at an end stays at the end.
+            bool hasMin = limits.Min != double.MinValue && !double.IsNegativeInfinity(limits.Min);
+            bool hasMax = limits.Max != double.MaxValue && !double.IsPositiveInfinity(limits.Max);
+            if (!NumericLimits.Allows(value, hasMin ? (double?)limits.Min : null, hasMax ? (double?)limits.Max : null, IsAngle))
+            {
+                if (!_barWraps)
+                {
+                    if (hasMin && value < limits.Min) value = limits.Min;
+                    if (hasMax && value > limits.Max) value = limits.Max;
+                }
+                if (!NumericLimits.Allows(value, hasMin ? (double?)limits.Min : null, hasMax ? (double?)limits.Max : null, IsAngle))
+                    return false;
+            }
+            double shown = UnitType != UnitType.None ? UnitManager.ToDisplay(UnitType, value) : value;
+            string input = DataFormat == DisplayFormatEnum.Hexadecimal
+                ? ((long)Math.Round(shown)).ToString("X", System.Globalization.CultureInfo.InvariantCulture)
+                : Math.Round(shown, EffectiveDecimals).ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+            return ProcessWrite(input, driver, reader);
+        }
+
 
         /// <summary>Decimal places actually shown, including the unit's extra ones.</summary>
         private int EffectiveDecimals
@@ -447,24 +795,31 @@ namespace Kaban.UI.Controls
         }
 
         // --- RESTORED: real keypad + limit validation + formula write, going through the PLC driver ---
-        protected override void OnClick(EventArgs e)
+        /// <summary>
+        /// Everything a write needs, checked the same way for the keypad and the
+        /// bar view's minus, plus and slider: enabled, an address, a driver that
+        /// may write, formulas that work, and the limits read live from the PLC.
+        /// False (the operator told why) when any of it is missing.
+        /// </summary>
+        private bool PrepareWrite(out IPlcDriver driver, out Func<string, int> liveTagReader,
+                                  out InputLimitsCalculation.EffectiveLimits effectiveLimits)
         {
-            base.OnClick(e);
-
-            if (!_softEnabled) return;
+            driver = null; liveTagReader = null; effectiveLimits = default(InputLimitsCalculation.EffectiveLimits);
+            if (!_softEnabled) return false;
             if (string.IsNullOrEmpty(Address))
             {
                 MessageBox.Show("This control has no Address configured.", "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                return false;
             }
 
-            var driver = PlcManager.Instance.GetDriverForWrite(PlcNumber);
-            if (driver == null)
+            var drv = PlcManager.Instance.GetDriverForWrite(PlcNumber);
+            if (drv == null)
             {
                 MessageBox.Show(PlcManager.Instance.DescribeAccess(PlcNumber),
                     "PLC Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                return false;
             }
+            driver = drv;
 
             // 1. CALCULATE LIVE LIMITS
             // Reads Min/Max fresh from the PLC at click-time (not the cached scan value),
@@ -473,14 +828,15 @@ namespace Kaban.UI.Controls
             // an unverified value through.
             bool commsOk = true;
 
-            Func<string, int> liveTagReader = (address) =>
+            Func<string, int> reader = (address) =>
             {
                 int val;
-                if (!driver.TryRead(address, out val)) commsOk = false;
+                if (!drv.TryRead(address, out val)) commsOk = false;
                 return val;
             };
+            liveTagReader = reader;
 
-            Func<string, double, double> formulaEvaluator = (formula, rawValue) => EvaluateFormula(formula, rawValue, liveTagReader);
+            Func<string, double, double> formulaEvaluator = (formula, rawValue) => EvaluateFormula(formula, rawValue, reader);
 
             // A formula that cannot work is found BEFORE the keypad opens, not
             // after the operator has typed a value it can then not write.
@@ -488,29 +844,42 @@ namespace Kaban.UI.Controls
             if (formulaProblem != null)
             {
                 ShowFormulaError(formulaProblem);
-                return;
+                return false;
             }
 
-            InputLimitsCalculation.EffectiveLimits effectiveLimits;
             try
             {
                 effectiveLimits = InputLimitsCalculation.GetEffectiveLimits(
                     this.DataType, this.DataFormat, this.MinLimit, this.MaxLimit, this.ReadFormula,
-                    liveTagReader, formulaEvaluator,
+                    reader, formulaEvaluator,
                     this.Divisor);
             }
             catch (Exception ex)
             {
                 ShowFormulaError("Read formula (for a limit): " + ex.Message);
-                return;
+                return false;
             }
 
             if (!commsOk)
             {
                 MessageBox.Show("Could not read a live value from the PLC needed to verify safe limits. Write cancelled.",
                     "PLC Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
+            return true;
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            // In bar view only the value opens the keypad; minus, plus and the
+            // slider did their work on the press.
+            if (_barView && _clickPart != BarPart.Value) return;
+
+            IPlcDriver driver;
+            Func<string, int> liveTagReader;
+            InputLimitsCalculation.EffectiveLimits effectiveLimits;
+            if (!PrepareWrite(out driver, out liveTagReader, out effectiveLimits)) return;
 
             // 2. OPEN KEYPAD
             // Limits are resolved in the PLC's REFERENCE unit, but the operator types
@@ -592,7 +961,7 @@ namespace Kaban.UI.Controls
             }
         }
 
-        private void ProcessWrite(string input, IPlcDriver driver, Func<string, int> liveTagReader)
+        private bool ProcessWrite(string input, IPlcDriver driver, Func<string, int> liveTagReader)
         {
             // THE KEYPAD'S FORMAT, not the panel's. This parsed with the regional
             // settings AND thousands separators allowed: on a Turkish or German
@@ -615,7 +984,7 @@ namespace Kaban.UI.Controls
             if (!parsed)
             {
                 MessageBox.Show("Please enter a valid number.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             // UNIT CONVERSION (safety-relevant): the operator types in the unit
@@ -648,7 +1017,7 @@ namespace Kaban.UI.Controls
             catch (Exception ex)
             {
                 ShowFormulaError("Write formula: " + ex.Message);
-                return;
+                return false;
             }
 
             if (ConfirmWrite)
@@ -674,7 +1043,7 @@ namespace Kaban.UI.Controls
                 var result = MessageBox.Show(prompt,
                     LanguageManager.GetString("Sys_ConfirmTitle", "Confirm"),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result != DialogResult.Yes) return;
+                if (result != DialogResult.Yes) return false;
             }
 
             try
@@ -702,13 +1071,14 @@ namespace Kaban.UI.Controls
                         ? string.Format(LanguageManager.GetString("Sys_WriteRejectedAddr", "The PLC rejected the write to {0}."), effAddr)
                         : LanguageManager.GetString("Sys_WriteRejected", "The PLC rejected the write.");
                     MessageBox.Show(rejMsg, LanguageManager.GetString("Sys_WriteFailedTitle", "Write Failed"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    return false;
                 }
 
                 if (LogAction)
                 {
                     AuditLogger.Log($"wrote {val}{(custom ? " (raw " + rawValue.ToString(System.Globalization.CultureInfo.InvariantCulture) + ")" : "")} to {effAddr} (PLC {PlcNumber}, control address '{Address}').");
                 }
+                return true;
             }
             catch (Exception ex)
             {
@@ -716,6 +1086,7 @@ namespace Kaban.UI.Controls
                     ? $"Write error.\n{ex.Message}"
                     : LanguageManager.GetString("Sys_WriteError", "The value could not be written.");
                 MessageBox.Show(writeErr, LanguageManager.GetString("Sys_WriteErrorTitle", "Write Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
 

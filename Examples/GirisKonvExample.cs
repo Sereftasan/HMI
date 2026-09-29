@@ -1,5 +1,5 @@
 // =============================================================================
-// EXAMPLE: Giriş Konveyör manual page built from FunctionUnitHMI (merged style)
+// EXAMPLE: Giriş Konveyör manual page built from CylinderUnitHMI (merged style)
 // -----------------------------------------------------------------------------
 // Reference snippet (not compiled into any project). Copy CreateSikmaUnits into
 // the screen that hosts the manual controls and call it after
@@ -35,7 +35,7 @@ namespace Kaban.Machines.SB3012.Screens // adapt to your machine project
 
             for (int i = 0; i < 7; i++)
             {
-                var unit = new FunctionUnitHMI
+                var unit = new CylinderUnitHMI
                 {
                     // identity
                     TitleText = $"Sıkma {i + 1}",

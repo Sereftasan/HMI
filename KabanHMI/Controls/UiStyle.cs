@@ -1212,6 +1212,8 @@ namespace Kaban.UI.Controls
                 t.Popup += (s, e) =>
                 {
                     var text = t.GetToolTip(e.AssociatedControl) ?? "";
+                    // A tip shown by the control itself (HoverTip) is not registered.
+                    if (text.Length == 0 && e.AssociatedControl != null && e.AssociatedControl == LastShownOn) text = LastShownTip ?? "";
                     var size = TextRenderer.MeasureText(text, TipFont, new Size(UiScale.Px(520), int.MaxValue), TextFormatFlags.WordBreak);
                     e.ToolTipSize = new Size(size.Width + UiScale.Px(12), size.Height + UiScale.Px(8));
                 };
@@ -1244,40 +1246,81 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
-        /// A control's tooltip, BUILT AND REGISTERED ON EVERY VISIT: on the first
-        /// move of the pointer after it comes in, the text is made (so it says
-        /// what is true now - the value, a block reason, a login since) and set;
-        /// on leaving, the tip is put down.
+        /// A control's tooltip, BUILT AND SHOWN BY THE CONTROL ITSELF: when the
+        /// pointer has rested on it for the tooltip delay, the text is made (so it
+        /// says what is true now - the value, a block reason, a login since) and
+        /// shown beside the pointer; leaving, pressing or hiding the control puts
+        /// it down.
         ///
-        /// WHY EVERY VISIT. The program has ONE tooltip, and WinForms ties it to
-        /// the window of a control it serves. When that window closes - the
-        /// keypad, a dialog, a side window - the tooltip drops the registrations
-        /// it holds. A control that registers once (the numeric fields and the
-        /// lamps did, on their first hover) is silent from then on; ButtonHMI
-        /// re-registered on every hover and was the one control whose tips always
-        /// came. Hide() after setting the text registers the control afresh with
-        /// the tooltip window, whatever happened to it before.
+        /// NOT REGISTERED WITH THE TOOLTIP. The program has one tooltip, and
+        /// WinForms ties it to the window of a control it serves; when that window
+        /// closes - the keypad, a dialog, a side window - the registrations it held
+        /// are dropped. Registering again on every visit (the previous version,
+        /// with a Hide() to register afresh) still left the numeric input fields
+        /// silent on the panel. Shown explicitly (ToolTip.Show), a tip depends on
+        /// nothing but the pointer resting on the control.
         /// </summary>
         public static void HoverTip(ToolTip tips, Control c, Func<string> build)
         {
             if (tips == null || c == null || build == null) return;
-            bool pending = true;
-            c.MouseEnter += (s, e) => pending = true;
+            Timer timer = null;
+            bool inside = false, shown = false;
+            Point at = Point.Empty;
+
+            Action putDown = () =>
+            {
+                if (timer != null) timer.Stop();
+                if (!shown) return;
+                shown = false;
+                try { tips.Hide(c); } catch { }
+            };
+
+            Point nowhere = new Point(int.MinValue, int.MinValue);
+            at = nowhere;
+            // A new visit starts afresh, even when the pointer comes back to the very
+            // point it left from: only a repeated move WITHIN a visit is ignored.
+            c.MouseEnter += (s, e) => { inside = true; at = nowhere; };
             c.MouseMove += (s, e) =>
             {
-                if (!pending) return;
-                pending = false;
-                string text;
-                try { text = build() ?? ""; } catch { text = ""; }
-                try
+                inside = true;
+                if (shown || e.Location == at) return;
+                at = e.Location;
+                if (timer == null)
                 {
-                    tips.SetToolTip(c, text);
-                    if (text.Length > 0) tips.Hide(c);      // registers it afresh (see above)
+                    timer = new Timer { Interval = TooltipInitialDelayMs };
+                    timer.Tick += (s2, e2) =>
+                    {
+                        timer.Stop();
+                        if (!inside || shown || c.IsDisposed || !c.IsHandleCreated || !c.Visible) return;
+                        string text;
+                        try { text = build() ?? ""; } catch { text = ""; }
+                        if (text.Length == 0) return;
+                        try
+                        {
+                            // Set BEFORE Show: the magnified tip measures itself (Popup)
+                            // while Show runs, and takes the text from here when the
+                            // tooltip has none registered for the control.
+                            LastShownTip = text;
+                            LastShownOn = c;
+                            // Below the pointer, as Windows places its own tips.
+                            tips.Show(text, c, at.X + 2, at.Y + (c.Cursor ?? Cursors.Default).Size.Height - 8, TooltipAutoPopMs);
+                            shown = true;
+                        }
+                        catch { LastShownTip = null; LastShownOn = null; }
+                    };
                 }
-                catch { }
+                timer.Stop();
+                timer.Start();          // shown once the pointer RESTS for the delay
             };
-            c.MouseLeave += (s, e) => { pending = true; try { tips.Hide(c); } catch { } };
+            c.MouseLeave += (s, e) => { inside = false; at = nowhere; putDown(); };
+            c.MouseDown += (s, e) => putDown();
+            c.VisibleChanged += (s, e) => { if (!c.Visible) { inside = false; putDown(); } };
+            c.Disposed += (s, e) => { if (timer != null) { timer.Stop(); timer.Dispose(); timer = null; } };
         }
+
+        /// <summary>The last tip HoverTip showed, and on which control (the magnified tip's size; tests).</summary>
+        internal static string LastShownTip;
+        internal static Control LastShownOn;
 
         /// <summary>Standard emoji tool button: 44x32, rounded, tooltip carries the label.</summary>
         public static Button ToolButton(string emoji, string tip, ToolTip tips, System.EventHandler onClick = null)

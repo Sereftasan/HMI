@@ -30,11 +30,11 @@ class UT {
         public object GetService(Type t) { return null; }
     }
 
-    static FunctionUnitHMI Unit(CylinderValve v, CylinderFeedback f, string cmdA, string cmdB, string l1A = "", string l1B = "", string pos = "", string l2A = "") {
-        return new FunctionUnitHMI { ValveType = v, FeedbackType = f, CommandAAddress = cmdA, CommandBAddress = cmdB,
+    static CylinderUnitHMI Unit(CylinderValve v, CylinderFeedback f, string cmdA, string cmdB, string l1A = "", string l1B = "", string pos = "", string l2A = "") {
+        return new CylinderUnitHMI { ValveType = v, FeedbackType = f, CommandAAddress = cmdA, CommandBAddress = cmdB,
                                      Lamp1AAddress = l1A, Lamp1BAddress = l1B, Lamp2AAddress = l2A, PositionAddress = pos };
     }
-    static string P(FunctionUnitHMI u) { return string.Join(" | ", u.TypeProblems()); }
+    static string P(CylinderUnitHMI u) { return string.Join(" | ", u.TypeProblems()); }
 
     [STAThread]
     static void Main() {
@@ -91,7 +91,7 @@ class UT {
         Check("  the position and one lamp: OK", en.TypeCheck == "OK", en.TypeCheck);
 
         Console.WriteLine("--- untyped, half typed, typed later ---");
-        var plain = new FunctionUnitHMI { CommandBAddress = "M660", Lamp1BAddress = "M243" };
+        var plain = new CylinderUnitHMI { CommandBAddress = "M660", Lamp1BAddress = "M243" };
         Check("a motor with neither set is not checked", plain.TypeCheck == "OK", plain.TypeCheck);
         plain.ValveType = CylinderValve.SingleSolenoid;
         Check("  a valve without a feedback asks for it", plain.TypeProblems().Any(p => p.StartsWith("FeedbackType is not set")), P(plain));
@@ -101,14 +101,14 @@ class UT {
         var axis = Unit(CylinderValve.SingleSolenoid, CylinderFeedback.SingleMagnetic, "M1", "M2", "X1", "X2");
         axis.Kind = UnitKind.Axis;
         Check("an axis unit is not a cylinder: not checked", axis.TypeCheck == "OK", axis.TypeCheck);
-        var props = TypeDescriptor.GetProperties(typeof(FunctionUnitHMI));
+        var props = TypeDescriptor.GetProperties(typeof(CylinderUnitHMI));
         Check("TypeCheck sits with the types, read only, never written by the designer",
-              props["TypeCheck"].Category == "  Valve & Feedback" && props["TypeCheck"].IsReadOnly &&
+              props["TypeCheck"].Category.TrimStart('\t') == "Valve & Feedback" && props["TypeCheck"].IsReadOnly &&
               props["TypeCheck"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
 
         Console.WriteLine("--- in the designer, a mismatch is framed ---");
         var host = new Form { ClientSize = new Size(800, 300) };
-        var dz = new FunctionUnitHMI();
+        var dz = new CylinderUnitHMI();
         dz.Site = new DesignSite { Component = dz, Name = "dz" };
         dz.SetBounds(10, 10, 360, 64); host.Controls.Add(dz); host.Show(); Application.DoEvents();
         dz.ValveType = CylinderValve.DoubleSolenoid; dz.FeedbackType = CylinderFeedback.TwoEndMagnetic;
@@ -134,7 +134,7 @@ class UT {
         File.WriteAllText(Path.Combine(help, "Clamp_Both.pdf"), "x");
         TC.HelpFolder = help;
 
-        var legacy = new FunctionUnitHMI { HelpFiles = "Clamp_Both.pdf" };
+        var legacy = new CylinderUnitHMI { HelpFiles = "Clamp_Both.pdf" };
         Check("an old page's HelpFiles goes to both movements", legacy.HelpAFiles == "Clamp_Both.pdf" && legacy.HelpBFiles == "Clamp_Both.pdf" && legacy.HelpFiles == "Clamp_Both.pdf",
               legacy.HelpAFiles + " / " + legacy.HelpBFiles);
 

@@ -299,6 +299,10 @@ or the position reading (axis). A controller that is not answering shows no <b>?
  <li>Use the keypad's <b>.</b> key for decimals &ndash; on any Windows language setting. On a keyboard both <kbd>.</kbd> and <kbd>,</kbd> type the decimal point.</li>
  <li>Values are typed in the unit shown on screen (mm or inch, &deg;C or &deg;F); the HMI converts them for the PLC.</li>
  <li>Some fields ask for confirmation before writing.</li>
+ <li><b>A field drawn as a card</b> (a speed override, a feed rate) has its name at the top and
+     <b>&minus;</b>, the value, a <b>slider</b> and <b>+</b> under it. <b>&minus;</b> and <b>+</b> change the value by one step
+     (held down, they keep stepping); <b>drag the slider</b> to anywhere between the limits &ndash; the value is written when you let go;
+     touch the <b>value</b> for the keypad. Each of them writes exactly as the keypad does: the same limits, security level and confirmation.</li>
 </ul>
 
 <!-- ================================================================== -->
@@ -390,13 +394,18 @@ Windows' own message boxes keep Windows' size.</p>
       <li><b>Travel per revolution</b> and <b>backlash</b>, when given (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>), are the
           last columns, entered in the PLC's own small units (no divisor, no decimals).</li>
       <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
+      <li>When the PLC asks for a reference (the <b>home request</b>, <code>HomeRequestAddress</code>), the <b>Ref</b> box's border <b>blinks red</b>:
+          that is the axis to reference.</li>
      </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link
      (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; the alarm and what it means, the code,
      and one table of its causes, how to check each, and what to do.
      Warnings are amber, alarms red; a blank cell means no code.</li>
- <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper link</b> (a document, drawing or page opened from the alarm). Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
+ <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
+     opened from the alarm. Double-click the cell (or &#9999;&#65039;) for the list: <i>Add files&hellip;</i>, a link typed in, remove, up and down;
+     or type them in the cell with <b>;</b> between them. &#128194; opens one (a menu when there are several).
+     Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
 </ul>
 
 <!-- ================================================================== -->
@@ -442,7 +451,15 @@ Windows' own message boxes keep Windows' size.</p>
        Every use is listed &ndash; twice if a page uses it twice &ndash; with its page, in a pane under the lists (&#10005; or <kbd>Esc</kbd> closes it).
        <b>Click a line</b>: the page opens beside the monitor, scrolls until the unit is in sight, and the unit is framed in blinking blue.
        The list looks like the monitor's; a click on a heading sorts it, drag its headings into another order and its borders to size them: kept for next time.</li>
-   <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>M100, 10 of them</i> adds M100&hellip;M109; a double word counts in twos (D200, D202&hellip;). A <b>comment line</b> has only text: a heading for the rows under it.</li>
+   <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>D100, 10 of them</i> is <b>one item</b>,
+       &#9656; <i>Speeds [10]</i>, with its first values on its line; click the &#9656; (or right-click: <i>Expand the array</i>) and D100&hellip;D109
+       show under it, each with its value &ndash; double-click one to change it. Moved, copied, sorted or deleted, the array goes as one; its count can be
+       changed in its editor. A double word or a float counts in twos (D200, D202&hellip;), a string in the words it needs.
+       A <b>comment line</b> has only text: a heading for the rows under it.</li>
+   <li><b>Data types</b>: Bit, Word and Double Word (signed or unsigned), <b>Float [Single Precision]</b> (two words) and <b>String</b>
+       (two characters a word; its length in its editor). <b>Display Format</b> (a column, the editor, or right-click): <b>Decimal</b>,
+       <b>Hexadecimal</b> (0x00F3) or <b>Binary</b> (0000 0000 1111 0011) &ndash; a value is typed in the same form (<i>1F</i> in a hexadecimal row;
+       <i>0x&hellip;</i> and <i>0b&hellip;</i> work in any row).</li>
    <li><b>Copy</b> (two pages) copies the selected rows (<kbd>Ctrl</kbd>+<kbd>C</kbd>), <b>Paste</b> (the clipboard) pastes them above the selected row (<kbd>Ctrl</kbd>+<kbd>V</kbd>) or at the end;
        the arrows to a bar (&#10514; &#10515;) or dragging re-order (<kbd>Ctrl</kbd>+<kbd>&uarr;</kbd>/<kbd>&darr;</kbd>).
        A right-click on a selection of several rows keeps them all selected, so Copy and Remove take them all.</li>

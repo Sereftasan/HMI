@@ -34,12 +34,12 @@ namespace Kaban.Machines.FA2010.Screens
             this.lampDemo = new Kaban.UI.Controls.LampHMI();
             this.numDisplayDemo = new Kaban.UI.Controls.NumericDisplayHMI();
             this.numInputDemo = new Kaban.UI.Controls.NumericInputHMI();
-            this.funcUnitDemo = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.funcUnitDemo = new Kaban.UI.Controls.CylinderUnitHMI();
             this.btnDemo2 = new Kaban.UI.Controls.ButtonHMI();
             this.lampDemo2 = new Kaban.UI.Controls.LampHMI();
             this.numDisplayDemo2 = new Kaban.UI.Controls.NumericDisplayHMI();
             this.numInputDemo2 = new Kaban.UI.Controls.NumericInputHMI();
-            this.funcUnitDemo2 = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.funcUnitDemo2 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.displayPlcDemo = new Kaban.UI.Controls.DisplayPLC();
             this.hexBoxDemo = new Kaban.UI.Controls.HexTextBox();
             this.txtDemo = new Kaban.UI.Controls.CustomTextBox();
@@ -134,7 +134,7 @@ namespace Kaban.Machines.FA2010.Screens
             this.numInputDemo.MaxLimit.StaticValue = 1000D;
             this.numInputDemo.LogAction = true;
 
-            // FunctionUnitHMI - the composite unit (2 commands + position readout)
+            // CylinderUnitHMI - the composite unit (2 commands + position readout)
             this.funcUnitDemo.Location = new System.Drawing.Point(20, 144);
             this.funcUnitDemo.Size = new System.Drawing.Size(360, 64);
             this.funcUnitDemo.Name = "funcUnitDemo";
@@ -287,12 +287,12 @@ namespace Kaban.Machines.FA2010.Screens
         private Kaban.UI.Controls.LampHMI lampDemo;
         private Kaban.UI.Controls.NumericDisplayHMI numDisplayDemo;
         private Kaban.UI.Controls.NumericInputHMI numInputDemo;
-        private Kaban.UI.Controls.FunctionUnitHMI funcUnitDemo;
+        private Kaban.UI.Controls.CylinderUnitHMI funcUnitDemo;
         private Kaban.UI.Controls.ButtonHMI btnDemo2;
         private Kaban.UI.Controls.LampHMI lampDemo2;
         private Kaban.UI.Controls.NumericDisplayHMI numDisplayDemo2;
         private Kaban.UI.Controls.NumericInputHMI numInputDemo2;
-        private Kaban.UI.Controls.FunctionUnitHMI funcUnitDemo2;
+        private Kaban.UI.Controls.CylinderUnitHMI funcUnitDemo2;
         private Kaban.UI.Controls.DisplayPLC displayPlcDemo;
         private Kaban.UI.Controls.HexTextBox hexBoxDemo;
         private Kaban.UI.Controls.CustomTextBox txtDemo;

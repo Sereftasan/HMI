@@ -9,6 +9,9 @@ using Kaban.Core.Models;
 
 namespace Kaban.UI.Controls
 {
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class LampHMI : Label, IHmiControl, UiStyle.IDrawsOwnHoverBorder
     {
         /// <summary>Uniform standard height with the rest of the control family.</summary>

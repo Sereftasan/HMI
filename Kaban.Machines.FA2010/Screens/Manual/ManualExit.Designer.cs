@@ -22,17 +22,19 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManualExit));
-            this.unitRobot_Top_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitRobot_Top_Small_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitRobot_Top_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitRobot_Top_Small_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitRobot_Movement = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitRoller_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Ejection = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitShort_Profile_Support = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitConveyor_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitConveyor_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Ejection = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitShort_Profile_Support = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitConveyor_Motor = new Kaban.UI.Controls.ButtonHMI();
+            this.unitConveyor_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
             this.lampSawdust_Conveyor_Thermic = new Kaban.UI.Controls.LampHMI();
-            this.unitSawdust_Blowing = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // unitRobot_Top_Clamping
@@ -415,145 +417,32 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitConveyor_Motor
             // 
-            this.unitConveyor_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
-            this.unitConveyor_Motor.BackColor = System.Drawing.Color.White;
-            this.unitConveyor_Motor.BaseOffset = 0;
-            this.unitConveyor_Motor.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.DescriptionKey = "";
-            this.unitConveyor_Motor.ButtonAEnableTrigger.MonitorAddress = "";
-            this.unitConveyor_Motor.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.ValA = 0D;
-            this.unitConveyor_Motor.ButtonAEnableTrigger.ValB = 0D;
-            this.unitConveyor_Motor.ButtonATextKey = "◀";
-            this.unitConveyor_Motor.ButtonATipKey = "";
-            this.unitConveyor_Motor.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Motor.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.DescriptionKey = "";
-            this.unitConveyor_Motor.ButtonBEnableTrigger.MonitorAddress = "";
-            this.unitConveyor_Motor.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.ValA = 0D;
-            this.unitConveyor_Motor.ButtonBEnableTrigger.ValB = 0D;
-            this.unitConveyor_Motor.ButtonBTextKey = "▶";
-            this.unitConveyor_Motor.ButtonBTipKey = "";
-            this.unitConveyor_Motor.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Motor.ButtonSlotWidth = 0;
-            this.unitConveyor_Motor.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Motor.CommandAAddress = "";
-            this.unitConveyor_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Motor.CommandBAddress = "M660";
-            this.unitConveyor_Motor.ConfirmationNeeded = false;
-            this.unitConveyor_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Motor.Lamp1AAddress = "";
-            this.unitConveyor_Motor.Lamp1ATipKey = "";
-            this.unitConveyor_Motor.Lamp1BAddress = "M243";
-            this.unitConveyor_Motor.Lamp1BTipKey = "";
-            this.unitConveyor_Motor.Lamp2AAddress = "";
-            this.unitConveyor_Motor.Lamp2ATipKey = "";
-            this.unitConveyor_Motor.Lamp2BAddress = "";
-            this.unitConveyor_Motor.Lamp2BTipKey = "";
-            this.unitConveyor_Motor.Location = new System.Drawing.Point(16, 460);
-            this.unitConveyor_Motor.LogAction = true;
             this.unitConveyor_Motor.Name = "unitConveyor_Motor";
-            this.unitConveyor_Motor.OutputAAddress = "";
-            this.unitConveyor_Motor.OutputBAddress = "";
             this.unitConveyor_Motor.PlcNumber = 1;
-            this.unitConveyor_Motor.PositionAddress = "";
-            this.unitConveyor_Motor.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Motor.PositionDecimalPlaces = 0;
-            this.unitConveyor_Motor.PositionDigits = 5;
-            this.unitConveyor_Motor.PositionDivisor = 1D;
-            this.unitConveyor_Motor.PositionOffset.StaticValue = 0D;
-            this.unitConveyor_Motor.PositionOffset.TagAddress = "";
-            this.unitConveyor_Motor.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.unitConveyor_Motor.PositionSlotWidth = 0;
-            this.unitConveyor_Motor.PositionSuffix = "";
-            this.unitConveyor_Motor.PositionTipKey = "Current position";
-            this.unitConveyor_Motor.PositionUnitType = Kaban.Core.Enums.UnitType.None;
-            this.unitConveyor_Motor.RelayAAddress = "";
-            this.unitConveyor_Motor.RelayBAddress = "";
+            this.unitConveyor_Motor.TranslationKey = "Conveyor Motor";
+            this.unitConveyor_Motor.FallbackText = "Conveyor Motor";
+            bitAction1.Address = "M660";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitConveyor_Motor.BitActions.Add(bitAction1);
+            this.unitConveyor_Motor.Lamp1Address = "M243";
+            this.unitConveyor_Motor.Location = new System.Drawing.Point(16, 472);
+            this.unitConveyor_Motor.Size = new System.Drawing.Size(360, 40);
             this.unitConveyor_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.unitConveyor_Motor.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Motor.TabIndex = 6;
-            this.unitConveyor_Motor.TitleTextKey = "Conveyor Motor";
-            this.unitConveyor_Motor.TitleTipKey = "";
-            this.unitConveyor_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitConveyor_Motor.LogAction = true;
             // 
             // unitConveyor_Inverter_Error
             // 
-            this.unitConveyor_Inverter_Error.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
-            this.unitConveyor_Inverter_Error.BackColor = System.Drawing.Color.White;
-            this.unitConveyor_Inverter_Error.BaseOffset = 0;
-            this.unitConveyor_Inverter_Error.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.DescriptionKey = "";
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.MonitorAddress = "";
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.ValA = 0D;
-            this.unitConveyor_Inverter_Error.ButtonAEnableTrigger.ValB = 0D;
-            this.unitConveyor_Inverter_Error.ButtonATextKey = "◀";
-            this.unitConveyor_Inverter_Error.ButtonATipKey = "";
-            this.unitConveyor_Inverter_Error.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Inverter_Error.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.DescriptionKey = "";
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.MonitorAddress = "";
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.ValA = 0D;
-            this.unitConveyor_Inverter_Error.ButtonBEnableTrigger.ValB = 0D;
-            this.unitConveyor_Inverter_Error.ButtonBTextKey = "▶";
-            this.unitConveyor_Inverter_Error.ButtonBTipKey = "";
-            this.unitConveyor_Inverter_Error.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Inverter_Error.ButtonSlotWidth = 0;
-            this.unitConveyor_Inverter_Error.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Inverter_Error.CommandAAddress = "";
-            this.unitConveyor_Inverter_Error.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Inverter_Error.CommandBAddress = "";
-            this.unitConveyor_Inverter_Error.ConfirmationNeeded = false;
-            this.unitConveyor_Inverter_Error.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitConveyor_Inverter_Error.Lamp1AAddress = "";
-            this.unitConveyor_Inverter_Error.Lamp1ATipKey = "";
-            this.unitConveyor_Inverter_Error.Lamp1BAddress = "";
-            this.unitConveyor_Inverter_Error.Lamp1BTipKey = "";
-            this.unitConveyor_Inverter_Error.Lamp2AAddress = "";
-            this.unitConveyor_Inverter_Error.Lamp2ATipKey = "";
-            this.unitConveyor_Inverter_Error.Lamp2BAddress = "";
-            this.unitConveyor_Inverter_Error.Lamp2BTipKey = "";
-            this.unitConveyor_Inverter_Error.Location = new System.Drawing.Point(16, 534);
-            this.unitConveyor_Inverter_Error.LogAction = true;
             this.unitConveyor_Inverter_Error.Name = "unitConveyor_Inverter_Error";
-            this.unitConveyor_Inverter_Error.OutputAAddress = "";
-            this.unitConveyor_Inverter_Error.OutputBAddress = "";
             this.unitConveyor_Inverter_Error.PlcNumber = 1;
-            this.unitConveyor_Inverter_Error.PositionAddress = "D671";
-            this.unitConveyor_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitConveyor_Inverter_Error.PositionDigits = 6;
-            this.unitConveyor_Inverter_Error.PositionDivisor = 1D;
-            this.unitConveyor_Inverter_Error.PositionOffset.StaticValue = 0D;
-            this.unitConveyor_Inverter_Error.PositionOffset.TagAddress = "";
-            this.unitConveyor_Inverter_Error.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.unitConveyor_Inverter_Error.PositionSlotWidth = 0;
-            this.unitConveyor_Inverter_Error.PositionSuffix = "mm";
-            this.unitConveyor_Inverter_Error.PositionTipKey = "Current position";
-            this.unitConveyor_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitConveyor_Inverter_Error.RelayAAddress = "";
-            this.unitConveyor_Inverter_Error.RelayBAddress = "";
-            this.unitConveyor_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
-            this.unitConveyor_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Inverter_Error.TabIndex = 7;
-            this.unitConveyor_Inverter_Error.TitleTextKey = "Conveyor Inverter Error";
-            this.unitConveyor_Inverter_Error.TitleTipKey = "";
+            this.unitConveyor_Inverter_Error.Address = "D671";
+            this.unitConveyor_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitConveyor_Inverter_Error.Divisor = 1D;
+            this.unitConveyor_Inverter_Error.DecimalPlaces = 0;
+            this.unitConveyor_Inverter_Error.Digits = 6;
+            this.unitConveyor_Inverter_Error.DescriptionText = "Conveyor Inverter Error";
             this.unitConveyor_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitConveyor_Inverter_Error.Location = new System.Drawing.Point(226, 546);
+            this.unitConveyor_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             // 
             // lampSawdust_Conveyor_Thermic
             // 
@@ -578,74 +467,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitSawdust_Blowing
             // 
-            this.unitSawdust_Blowing.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
-            this.unitSawdust_Blowing.BackColor = System.Drawing.Color.White;
-            this.unitSawdust_Blowing.BaseOffset = 0;
-            this.unitSawdust_Blowing.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.DescriptionKey = "";
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.MonitorAddress = "";
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.ValA = 0D;
-            this.unitSawdust_Blowing.ButtonAEnableTrigger.ValB = 0D;
-            this.unitSawdust_Blowing.ButtonATextKey = "◀";
-            this.unitSawdust_Blowing.ButtonATipKey = "";
-            this.unitSawdust_Blowing.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitSawdust_Blowing.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.DescriptionKey = "";
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.MonitorAddress = "";
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.ValA = 0D;
-            this.unitSawdust_Blowing.ButtonBEnableTrigger.ValB = 0D;
-            this.unitSawdust_Blowing.ButtonBTextKey = "▶";
-            this.unitSawdust_Blowing.ButtonBTipKey = "";
-            this.unitSawdust_Blowing.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitSawdust_Blowing.ButtonSlotWidth = 0;
-            this.unitSawdust_Blowing.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitSawdust_Blowing.CommandAAddress = "";
-            this.unitSawdust_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitSawdust_Blowing.CommandBAddress = "M736";
-            this.unitSawdust_Blowing.ConfirmationNeeded = false;
-            this.unitSawdust_Blowing.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitSawdust_Blowing.Lamp1AAddress = "";
-            this.unitSawdust_Blowing.Lamp1ATipKey = "";
-            this.unitSawdust_Blowing.Lamp1BAddress = "";
-            this.unitSawdust_Blowing.Lamp1BTipKey = "";
-            this.unitSawdust_Blowing.Lamp2AAddress = "";
-            this.unitSawdust_Blowing.Lamp2ATipKey = "";
-            this.unitSawdust_Blowing.Lamp2BAddress = "";
-            this.unitSawdust_Blowing.Lamp2BTipKey = "";
-            this.unitSawdust_Blowing.Location = new System.Drawing.Point(16, 682);
-            this.unitSawdust_Blowing.LogAction = true;
             this.unitSawdust_Blowing.Name = "unitSawdust_Blowing";
-            this.unitSawdust_Blowing.OutputAAddress = "";
-            this.unitSawdust_Blowing.OutputBAddress = "";
             this.unitSawdust_Blowing.PlcNumber = 1;
-            this.unitSawdust_Blowing.PositionAddress = "";
-            this.unitSawdust_Blowing.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitSawdust_Blowing.PositionDecimalPlaces = 0;
-            this.unitSawdust_Blowing.PositionDigits = 5;
-            this.unitSawdust_Blowing.PositionDivisor = 1D;
-            this.unitSawdust_Blowing.PositionOffset.StaticValue = 0D;
-            this.unitSawdust_Blowing.PositionOffset.TagAddress = "";
-            this.unitSawdust_Blowing.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.unitSawdust_Blowing.PositionSlotWidth = 0;
-            this.unitSawdust_Blowing.PositionSuffix = "";
-            this.unitSawdust_Blowing.PositionTipKey = "Current position";
-            this.unitSawdust_Blowing.PositionUnitType = Kaban.Core.Enums.UnitType.None;
-            this.unitSawdust_Blowing.RelayAAddress = "";
-            this.unitSawdust_Blowing.RelayBAddress = "";
+            this.unitSawdust_Blowing.TranslationKey = "Sawdust Blowing";
+            this.unitSawdust_Blowing.FallbackText = "Sawdust Blowing";
+            bitAction2.Address = "M736";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitSawdust_Blowing.BitActions.Add(bitAction2);
+            this.unitSawdust_Blowing.Location = new System.Drawing.Point(16, 694);
+            this.unitSawdust_Blowing.Size = new System.Drawing.Size(360, 40);
             this.unitSawdust_Blowing.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.unitSawdust_Blowing.Size = new System.Drawing.Size(360, 64);
-            this.unitSawdust_Blowing.TabIndex = 10;
-            this.unitSawdust_Blowing.TitleTextKey = "Sawdust Blowing";
-            this.unitSawdust_Blowing.TitleTipKey = "";
-            this.unitSawdust_Blowing.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitSawdust_Blowing.LogAction = true;
             // 
             // ManualExit
             // 
@@ -671,16 +503,16 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitRobot_Top_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRobot_Top_Small_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRobot_Top_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRobot_Top_Small_Clamping;
         private Kaban.UI.Controls.AxisUnitHMI unitRobot_Movement;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRoller_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Ejection;
-        private Kaban.UI.Controls.FunctionUnitHMI unitShort_Profile_Support;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveyor_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveyor_Inverter_Error;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Ejection;
+        private Kaban.UI.Controls.CylinderUnitHMI unitShort_Profile_Support;
+        private Kaban.UI.Controls.ButtonHMI unitConveyor_Motor;
+        private Kaban.UI.Controls.NumericDisplayHMI unitConveyor_Inverter_Error;
         private Kaban.UI.Controls.LampHMI lampSawdust_Conveyor_Thermic;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSawdust_Blowing;
+        private Kaban.UI.Controls.ButtonHMI unitSawdust_Blowing;
     }
 }
 

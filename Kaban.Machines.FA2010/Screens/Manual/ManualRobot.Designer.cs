@@ -25,8 +25,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitAxis_X = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitAxis_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitAxis_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitGripper = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitGripper_Angle = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitGripper = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitGripper_Angle = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lampBar_First_End_Read_SN = new Kaban.UI.Controls.LampHMI();
             this.lampBar_Lasst_End_Read_SN = new Kaban.UI.Controls.LampHMI();
             this.SuspendLayout();
@@ -141,8 +141,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_X;
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_Y;
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_Z;
-        private Kaban.UI.Controls.FunctionUnitHMI unitGripper;
-        private Kaban.UI.Controls.FunctionUnitHMI unitGripper_Angle;
+        private Kaban.UI.Controls.CylinderUnitHMI unitGripper;
+        private Kaban.UI.Controls.CylinderUnitHMI unitGripper_Angle;
         private Kaban.UI.Controls.LampHMI lampBar_First_End_Read_SN;
         private Kaban.UI.Controls.LampHMI lampBar_Lasst_End_Read_SN;
     }

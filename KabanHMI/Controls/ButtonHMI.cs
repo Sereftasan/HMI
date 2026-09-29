@@ -16,6 +16,8 @@ namespace Kaban.UI.Controls
 {
     [ToolboxBitmap(typeof(Button))]
     [TypeConverter(typeof(ButtonHMISorter))]
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public partial class ButtonHMI : Button, IHmiControl, ILocalizable, UiStyle.IDrawsOwnHoverBorder,
                                      UiStyle.IManagesOwnCursor
     {
@@ -117,7 +119,7 @@ namespace Kaban.UI.Controls
         [Description("Tooltip for the button body (translation key or literal text).")]
         public string ToolTipText { get; set; } = "";
 
-        /// <summary>Set by composite parents (FunctionUnitHMI) for an empty reserved
+        /// <summary>Set by composite parents (CylinderUnitHMI) for an empty reserved
         /// slot: forces the button hidden regardless of visibility conditions.</summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

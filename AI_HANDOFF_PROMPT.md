@@ -118,7 +118,7 @@ fills — use weight or a neutral tone.
 - Pages get it automatically: `UiStyle.ApplyInteractionCues(page)` runs from
   `MainForm.LoadScreen` and from `SettingsScreen` when a tab page is built. Do not
   wire hover per control.
-- **Containers never light up.** A `GroupBoxHMI` or a `FunctionUnitHMI` frame is
+- **Containers never light up.** A `GroupBoxHMI` or a `CylinderUnitHMI` frame is
   not clickable; outlining it competes with the control inside.
 - A control that paints its own border implements `UiStyle.IDrawsOwnHoverBorder`
   so the walk does not outline it a second time.
@@ -135,7 +135,7 @@ Use these, never stock WinForms controls, on any machine screen.
 | Control | Default size | Purpose |
 |---|---|---|
 | `ButtonHMI` | 170×36 | command button, optional sensor lamps in a side bar |
-| `FunctionUnitHMI` | 360×64 | a movement: two command buttons + lamps + position readout |
+| `CylinderUnitHMI` | 360×64 | a movement: two command buttons + lamps + position readout |
 | `NumericInputHMI` | 170×36 (115–150×18–26 on generated pages) | editable value |
 | `NumericDisplayHMI` | 170×36 | read-only value |
 | `LampHMI` | 36×36 | indicator, square, caption on the RIGHT |
@@ -153,7 +153,7 @@ Shared properties on anything PLC-bound:
   to its own text. There is no separate key property. `" :"` is appended
   automatically for LEFT-side captions only.
 
-`FunctionUnitHMI` specifics: `CommandAAddress`/`CommandBAddress` with
+`CylinderUnitHMI` specifics: `CommandAAddress`/`CommandBAddress` with
 `CommandAAction`/`CommandBAction` (`BitActionType.Momentary` | `Alternate`),
 `Lamp1AAddress`/`Lamp1BAddress` for the sensors, `PositionAddress` +
 `PositionDataType` + `PositionDivisor` + `PositionDecimalPlaces` +

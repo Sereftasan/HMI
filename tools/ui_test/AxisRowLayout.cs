@@ -12,7 +12,7 @@ using Kaban.UI.Helpers;
 // The axis row: the current beside the position, the Z distance beside the
 // reference selection, narrow tall meters; the real position in the position's
 // tip; travel per revolution and backlash at the end; the page's headings over
-// the columns. And the hover tips of numeric fields and lamps, set on every visit.
+// the columns. And the hover tips of numeric fields and lamps, shown on every visit.
 class AR {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -21,9 +21,18 @@ class AR {
     const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); } }
     static void Raise(Control c, string method, EventArgs e) { typeof(Control).GetMethod(method, Any).Invoke(c, new object[] { e }); }
+    // The tip is SHOWN by the control once the pointer rests (UiStyle.HoverTip);
+    // what it showed, and where, is kept for the tests.
     static void Hover(Control c) {
+        typeof(UiStyle).GetField("LastShownTip", Any).SetValue(null, null);
+        typeof(UiStyle).GetField("LastShownOn", Any).SetValue(null, null);
         Raise(c, "OnMouseEnter", EventArgs.Empty);
         Raise(c, "OnMouseMove", new MouseEventArgs(MouseButtons.None, 0, 3, 3, 0));
+        Pump(UiStyle.TooltipInitialDelayMs + 250);
+    }
+    static string Tip(Control c) {
+        return typeof(UiStyle).GetField("LastShownOn", Any).GetValue(null) == c
+             ? (string)typeof(UiStyle).GetField("LastShownTip", Any).GetValue(null) : null;
     }
     static void Leave(Control c) { Raise(c, "OnMouseLeave", EventArgs.Empty); }
 
@@ -136,21 +145,21 @@ class AR {
         host.Show(); Pump(80);
         var tips = UiStyle.Tips();
         Hover(num);
-        Check("numeric input: its tip is set on the first move", (tips.GetToolTip(num) ?? "").Contains("Address:"), tips.GetToolTip(num));
+        Check("numeric input: its tip shown once the pointer rests", (Tip(num) ?? "").Contains("Address:"), Tip(num));
         Leave(num);
         tips.SetToolTip(num, null);                    // what a closed keypad or dialog did to it
         Hover(num);
-        Check("  lost meanwhile: set again on the next visit", (tips.GetToolTip(num) ?? "").Length > 0);
+        Check("  lost meanwhile: shown again on the next visit", (Tip(num) ?? "").Length > 0);
         Leave(num);
         Hover(disp);
-        Check("numeric display too", (tips.GetToolTip(disp) ?? "").Contains("Address:"));
+        Check("numeric display too", (Tip(disp) ?? "").Contains("Address:"));
         Leave(disp);
         SecurityManager.Login("op", SecurityLevel.Operator);
         Hover(num);
-        Check("an operator sees what may be typed", tips.GetToolTip(num) == "Allowed: 0 - 100", tips.GetToolTip(num));
+        Check("an operator sees what may be typed", Tip(num) == "Allowed: 0 - 100", Tip(num));
         Leave(num);
         Hover(lamp);
-        Check("lamp: its caption and state for an operator", tips.GetToolTip(lamp) == "Door closed: Off", tips.GetToolTip(lamp));
+        Check("lamp: its caption and state for an operator", Tip(lamp) == "Door closed: Off", Tip(lamp));
         using (var bmp = new Bitmap(lamp.Width, lamp.Height)) {
             lamp.DrawToBitmap(bmp, new Rectangle(0, 0, lamp.Width, lamp.Height));
             int blue = 0;
@@ -168,7 +177,7 @@ class AR {
         }
         SecurityManager.Login("admin", SecurityLevel.Admin);
         Hover(lamp);
-        Check("  an admin also sees its wiring", (tips.GetToolTip(lamp) ?? "").Contains("Address:"));
+        Check("  an admin also sees its wiring", (Tip(lamp) ?? "").Contains("Address:"));
         Leave(lamp);
         host.Close();
 

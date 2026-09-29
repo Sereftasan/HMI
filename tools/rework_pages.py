@@ -106,7 +106,7 @@ def convert_axis_units(machine, axes, log, review):
             by_pair[(a["station"], a["forward"].upper(), a["back"].upper())] = (a, True)
     converted = 0
     for page in machine_pages(machine):
-        for var in page.controls("FunctionUnitHMI"):
+        for var in page.controls("CylinderUnitHMI"):
             key = (int(page.prop(var, "PlcNumber") or 1),
                    page.str_prop(var, "CommandAAddress").upper(), page.str_prop(var, "CommandBAddress").upper())
             hit = by_pair.get(key)
@@ -127,7 +127,7 @@ def convert_axis_units(machine, axes, log, review):
                             after="ReferenceSensorAddress")
                 ap.save()
             page.drop_props(var, {"Location", "Size", "Name", "TabIndex", "PlcNumber"})
-            page.retype(var, "FunctionUnitHMI", "AxisUnitHMI")
+            page.retype(var, "CylinderUnitHMI", "AxisUnitHMI")
             page.set_prop(var, "AxisNumber", str(axis["number"]), after="Name")
             converted += 1
             log.append("  %s %s -> axis %d '%s'%s%s" % (os.path.basename(page.path), var, axis["number"], axis["name"],
@@ -152,7 +152,7 @@ def regrid(page, vars_in_order, log, what):
 
 def resize_units(machine, log):
     for page in machine_pages(machine):
-        units = page.controls("FunctionUnitHMI") + page.controls("AxisUnitHMI")
+        units = page.controls("CylinderUnitHMI") + page.controls("AxisUnitHMI")
         if not units: continue
         def pos(v):
             m = re.search(r"this\.%s\.Location = new System\.Drawing\.Point\((\d+), (\d+)\);" % v, page.text)
@@ -221,9 +221,9 @@ def rebuild_h500(log):
             L += ["this.%s.Location = new System.Drawing.Point(%d, %d);" % (var, x, y),
                   "this.%s.Size = new System.Drawing.Size(%d, %d);" % (var, UNIT_SIZE[0], UNIT_SIZE[1]),
                   "this.Controls.Add(this.%s);" % var]
-            news.append(ind + "this.%s = new %sFunctionUnitHMI();" % (var, CTRL))
+            news.append(ind + "this.%s = new %sCylinderUnitHMI();" % (var, CTRL))
             blocks.append("\n".join(ind + l for l in L))
-            decls.append("        private %sFunctionUnitHMI %s;" % (CTRL, var))
+            decls.append("        private %sCylinderUnitHMI %s;" % (CTRL, var))
             log.append("  %-28s %s" % (var, ("A: %s + B: %s" % (a["var"], b["var"])) if a else "B: %s" % b["var"]))
         page.text = page.text.replace("\x01NEW\x01", "\n".join(news) + "\n")
         page.text = page.text.replace("\x01BLK\x01", "\n".join(blocks) + "\n")
@@ -315,7 +315,7 @@ def link_errors(machine, review):
         if page.text != before: page.changed = True; page.save()
     for page in machine_pages(machine):
         pname = re.sub(r"^Manual", "", os.path.basename(page.path).split(".")[0])
-        for v in page.controls("FunctionUnitHMI"):
+        for v in page.controls("CylinderUnitHMI"):
             title = page.str_prop(v, "TitleTextKey")
             has_a, has_b = bool(page.str_prop(v, "CommandAAddress")), bool(page.str_prop(v, "CommandBAddress"))
             units.append({"page": page, "var": v, "title": tr.get(title, title), "plc": int(page.prop(v, "PlcNumber") or 1),

@@ -17,7 +17,7 @@ namespace Kaban.UI.Helpers
     ///
     /// THE MODEL
     /// ---------
-    /// A FunctionUnitHMI IS a cylinder: its valve and its feedback sensor are
+    /// A CylinderUnitHMI IS a cylinder: its valve and its feedback sensor are
     /// facts about that physical unit, and its two error bits are the alarms it
     /// can raise. An AxisSettingHMI IS a servo axis, with one error bit. So the
     /// knowledge lives on the control, set once where the unit is designed,
@@ -224,7 +224,7 @@ namespace Kaban.UI.Helpers
         {
             if (root == null) return;
 
-            var unit = root as FunctionUnitHMI;
+            var unit = root as CylinderUnitHMI;
             if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
 
             var axis = root as AxisSettingHMI;
@@ -242,7 +242,7 @@ namespace Kaban.UI.Helpers
         private static void HarvestControls(Control root)
         {
             if (root == null) return;
-            var unit = root as FunctionUnitHMI;
+            var unit = root as CylinderUnitHMI;
             if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
             var axis = root as AxisSettingHMI;
             if (axis != null) { Register(axis.HelpLink()); RegisterAxis(axis); SimulationMotion.Register(axis); return; }
@@ -434,7 +434,9 @@ namespace Kaban.UI.Helpers
                     {
                         var n = name.Trim();
                         if (n.Length == 0) continue;
-                        docs.Add(new TC.HelpDocument { FileName = n, Title = Path.GetFileNameWithoutExtension(n) });
+                        var d = new TC.HelpDocument { FileName = n };
+                        d.Title = d.IsWebLink ? n : Path.GetFileNameWithoutExtension(n);
+                        docs.Add(d);
                     }
 
             // One entry per file: an alarm helper link that repeats a unit file

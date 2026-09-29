@@ -140,7 +140,7 @@ namespace Kaban.UI.Forms
             // Re-layout every function unit on the freshly shown screen. Re-adding a
             // screen fires no resize/parent event on its children, so without this
             // they keep the bounds they had while detached.
-            RelayoutFunctionUnits(_currentScreen);
+            RelayoutCylinderUnits(_currentScreen);
 
             // TRIGGER THE SCANNER: Only scan the screen we just loaded!
             _scanner.RefreshTags(true);
@@ -266,20 +266,20 @@ namespace Kaban.UI.Forms
             // every scrolling container round it scrolled so the unit is in view -
             // centred when it was off it, as it is when a side page narrows the
             // page or the magnifying factor enlarges it.
-            RelayoutFunctionUnits(_currentScreen);
+            RelayoutCylinderUnits(_currentScreen);
             _currentScreen.PerformLayout();
             Helpers.PageScroll.Reveal(target, pnlContent);
             Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
             return target;
         }
 
-        private static void RelayoutFunctionUnits(Control root)
+        private static void RelayoutCylinderUnits(Control root)
         {
             if (root == null) return;
             foreach (Control c in root.Controls)
             {
-                if (c is Controls.FunctionUnitHMI unit) unit.Relayout();
-                if (c.HasChildren) RelayoutFunctionUnits(c);
+                if (c is Controls.CylinderUnitHMI unit) unit.Relayout();
+                if (c.HasChildren) RelayoutCylinderUnits(c);
             }
         }
 

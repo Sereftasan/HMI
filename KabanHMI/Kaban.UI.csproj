@@ -66,7 +66,7 @@
     <Compile Include="Controls\DisplayPLC.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FunctionUnitHMI.cs">
+    <Compile Include="Controls\CylinderUnitHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\HexTextBox.cs">
@@ -109,8 +109,10 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Design\HelpFilesEditor.cs" />
+    <Compile Include="Design\MathVariablesEditor.cs" />
+    <Compile Include="Design\PropertyOrder.cs" />
     <Compile Include="Design\ConditionTextConverter.cs" />
-    <Compile Include="Design\FunctionUnitChildConverter.cs" />
+    <Compile Include="Design\CylinderUnitChildConverter.cs" />
     <Compile Include="Design\UnifiedConditionEditor.cs" />
     <Compile Include="Forms\BaseScreen.cs">
       <SubType>UserControl</SubType>
@@ -129,6 +131,9 @@
     </Compile>
     <Compile Include="Forms\SimulationMonitorForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SimulationMonitorForm.Values.cs">
+      <DependentUpon>SimulationMonitorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\PlcRowEditorForm.cs">
       <SubType>Form</SubType>

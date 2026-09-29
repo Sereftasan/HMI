@@ -296,14 +296,25 @@ namespace Kaban.Core.Helpers
 
             public string FullPath
             {
-                get { return ResolveLanguageFile(FileName); }
+                get { return IsWebLink ? FileName.Trim() : ResolveLanguageFile(FileName); }
+            }
+
+            /// <summary>An alarm's helper link to a web page (http / https): opened in the browser as it is.</summary>
+            public bool IsWebLink
+            {
+                get
+                {
+                    var f = (FileName ?? "").Trim();
+                    return f.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                           f.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
+                }
             }
 
             public bool Exists
             {
                 get
                 {
-                    try { return !string.IsNullOrEmpty(FileName) && File.Exists(FullPath); }
+                    try { return !string.IsNullOrEmpty(FileName) && (IsWebLink || File.Exists(FullPath)); }
                     catch { return false; }
                 }
             }

@@ -18,10 +18,11 @@ namespace Kaban.UI.Forms
     /// with the field of the cell that was double-clicked already selected -
     /// the one the operator meant to change.
     ///
-    /// A NEW ROW can be an ARRAY: "M100, 10 of them" adds M100..M109, all with the
-    /// same data type; "D200 as double words, 4 of them" adds D200, D202, D204,
-    /// D206 - a double word takes two devices, so the next one starts two further
-    /// on. Addresses count in the device's own number system (X and Y octal, W
+    /// A ROW can be an ARRAY: "M100, 10 of them" is one item that expands to
+    /// M100..M109, all with the same data type; "D200 as double words, 4 of
+    /// them" to D200, D202, D204, D206 - a double word (or a float) takes two
+    /// devices, so the next one starts two further on; a string as many words as
+    /// its characters need. Addresses count in the device's own number system (X and Y octal, W
     /// and B hexadecimal), as everywhere else in the program.
     ///
     /// A COMMENT LINE has no address and no value: a heading in the list
@@ -36,6 +37,8 @@ namespace Kaban.UI.Forms
         private readonly ComboBox _dataType = new ComboBox();
         private readonly TextBox _address = new TextBox();
         private readonly TextBox _value = new TextBox();
+        private readonly ComboBox _format = new ComboBox();
+        private readonly NumericUpDown _chars = new NumericUpDown();
         private readonly NumericUpDown _count = new NumericUpDown();
         private readonly CheckBox _comment = new CheckBox();
         private readonly Label _preview = new Label();
@@ -45,8 +48,15 @@ namespace Kaban.UI.Forms
         /// <summary>The device types the engineer's list uses (see PlcLabels.csv).</summary>
         public static readonly string[] KnownDataTypes =
         {
-            "Bit", "Word [Signed]", "Double Word [Signed]"
+            "Bit", "Word [Signed]", "Word [Unsigned]", "Double Word [Signed]", "Double Word [Unsigned]",
+            "Float [Single Precision]", "String"
         };
+
+        /// <summary>Decimal, Hexadecimal or Binary: how a whole number is shown and typed.</summary>
+        public string RowDisplayFormat { get { return _format.Enabled ? (_format.SelectedItem as string ?? SimulationMonitorForm.FormatDecimal) : ""; } }
+
+        /// <summary>A String's length in characters.</summary>
+        public int RowStringLength { get { return (int)_chars.Value; } }
 
         public string RowLabel { get { return _label.Text.Trim(); } }
         public string RowDataType { get { return _dataType.Text.Trim(); } }
@@ -55,10 +65,13 @@ namespace Kaban.UI.Forms
         /// <summary>True when the row is a comment line (no address, no value).</summary>
         public bool IsComment { get { return _comment.Checked; } }
 
-        /// <summary>How many consecutive devices to add (1 for an edit).</summary>
-        public int ArrayCount { get { return _isNew && !IsComment ? (int)_count.Value : 1; } }
+        /// <summary>How many elements: 1 for a single device, more for an ARRAY (one item that expands).</summary>
+        public int ArrayCount { get { return !IsComment ? (int)_count.Value : 1; } }
 
-        /// <summary>The typed value, or null when the box was left empty.</summary>
+        /// <summary>The value typed (in the data type and display format chosen), or null when the box was left empty.</summary>
+        public string RowValueText { get { return _value.Enabled && _value.Text.Trim().Length > 0 ? _value.Text.Trim() : null; } }
+
+        /// <summary>The typed value as a whole number, or null (kept for callers that write one word).</summary>
         public int? RowValue
         {
             get
@@ -69,22 +82,27 @@ namespace Kaban.UI.Forms
             }
         }
 
-        /// <summary>How far apart consecutive devices of a type are: 2 for a double word.</summary>
-        public static int StepFor(string dataType)
+        /// <summary>How far apart consecutive values of a type are: 2 for a double word or a float, a string's words.</summary>
+        public static int StepFor(string dataType, int stringLength = 16)
         {
-            return Kaban.UI.Forms.SimulationMonitorForm.IsDoubleWord(dataType) ? 2 : 1;
+            if (SimulationMonitorForm.IsBit(dataType)) return 1;
+            return SimulationMonitorForm.WordCount(dataType, stringLength);
         }
 
         /// <summary>The address of element i of an array starting at first.</summary>
-        public static string ElementAddress(string first, string dataType, int i)
+        public static string ElementAddress(string first, string dataType, int i, int stringLength = 16)
         {
-            return PlcAddressHelper.OffsetAddress((first ?? "").Trim().ToUpperInvariant(), i * StepFor(dataType));
+            return PlcAddressHelper.OffsetAddress((first ?? "").Trim().ToUpperInvariant(), i * StepFor(dataType, stringLength));
         }
 
         /// <param name="focusField">"Label", "DataType", "Address" or "Value": the field to start in.</param>
         /// <param name="isNew">A new row: offers the array count and the comment-line choice.</param>
+        /// <param name="displayFormat">Decimal, Hexadecimal or Binary.</param>
+        /// <param name="arrayCount">Elements of an array (1: a single device).</param>
+        /// <param name="stringLength">A String's characters.</param>
         public PlcRowEditorForm(string caption, string label, string dataType, string address,
-                                string value, string focusField = null, bool isNew = false, bool isComment = false)
+                                string value, string focusField = null, bool isNew = false, bool isComment = false,
+                                string displayFormat = "", int arrayCount = 1, int stringLength = 16)
         {
             Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             _isNew = isNew;
@@ -113,18 +131,27 @@ namespace Kaban.UI.Forms
             _dataType.DropDownStyle = ComboBoxStyle.DropDown;   // free text: a machine may use its own wording
             _dataType.Items.AddRange(KnownDataTypes);
             AddRow(LanguageManager.GetString("Col_DataType", "DataType"), _dataType, ref y);
+            _format.DropDownStyle = ComboBoxStyle.DropDownList;
+            foreach (var f in SimulationMonitorForm.DisplayFormats)
+                _format.Items.Add(f);
+            _format.SelectedItem = string.IsNullOrEmpty(displayFormat) ? SimulationMonitorForm.FormatDecimal : displayFormat;
+            if (_format.SelectedIndex < 0) _format.SelectedIndex = 0;
+            AddRow(LanguageManager.GetString("Col_DisplayFormat", "Display Format"), _format, ref y);
+            _format.Width = 160;
+            _chars.Minimum = 1; _chars.Maximum = 256; _chars.Value = Math.Max(1, Math.Min(256, stringLength));
+            AddRow(LanguageManager.GetString("Lbl_StringChars", "String (characters)"), _chars, ref y);
+            _chars.Width = 90;
             AddRow(LanguageManager.GetString("Col_Address", "Address"), _address, ref y);
 
-            if (isNew)
-            {
-                _count.Minimum = 1; _count.Maximum = 1000; _count.Value = 1;
-                AddRow(LanguageManager.GetString("Lbl_ArrayCount", "Array (how many)"), _count, ref y);
-                _count.Width = 90;
-                _preview.AutoSize = false;
-                _preview.ForeColor = Color.FromArgb(90, 96, 106);
-                _preview.SetBounds(214, y - 30, ClientSize.Width - 230, 22);
-                Controls.Add(_preview);
-            }
+            // AN ARRAY is one item of the list, expanded to its elements under it;
+            // its count can be changed later too.
+            _count.Minimum = 1; _count.Maximum = 1000; _count.Value = Math.Max(1, Math.Min(1000, arrayCount));
+            AddRow(LanguageManager.GetString("Lbl_ArrayCount", "Array (how many)"), _count, ref y);
+            _count.Width = 90;
+            _preview.AutoSize = false;
+            _preview.ForeColor = Color.FromArgb(90, 96, 106);
+            _preview.SetBounds(214, y - 30, ClientSize.Width - 230, 22);
+            Controls.Add(_preview);
             AddRow(LanguageManager.GetString("Col_Value", "Value"), _value, ref y);
 
             _label.Text = label ?? "";
@@ -149,6 +176,7 @@ namespace Kaban.UI.Forms
 
             _comment.CheckedChanged += (s, e) => UpdateState();
             _count.ValueChanged += (s, e) => UpdateState();
+            _chars.ValueChanged += (s, e) => UpdateState();
             _dataType.TextChanged += (s, e) => UpdateState();
             _address.TextChanged += (s, e) => UpdateState();
             UpdateState();
@@ -195,18 +223,23 @@ namespace Kaban.UI.Forms
             bool comment = _comment.Checked;
             _dataType.Enabled = _address.Enabled = !comment;
             _count.Enabled = !comment;
+            string type = RowDataType;
+            // A display format for the whole numbers; a length for a string.
+            _format.Enabled = !comment && !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsFloat(type) && !SimulationMonitorForm.IsString(type);
+            _chars.Enabled = !comment && SimulationMonitorForm.IsString(type);
             _labelCaption.Text = (comment ? LanguageManager.GetString("Col_Comment", "Comment")
                                           : LanguageManager.GetString("Col_Label", "Label")) + ":";
             // A value typed for a run of devices would be written to all of them -
             // the kind of side effect that is easy to cause without meaning to.
             _value.Enabled = !comment && ArrayCount == 1;
 
-            if (!_isNew) return;
             int n = ArrayCount;
             string first = RowAddress;
+            int step = StepFor(RowDataType, RowStringLength);
             _preview.Text = comment || n <= 1 || first.Length == 0 ? ""
-                : first + " … " + ElementAddress(first, RowDataType, n - 1) +
-                  (StepFor(RowDataType) == 2 ? "  (" + LanguageManager.GetString("Lbl_Step2", "every 2nd device") + ")" : "");
+                : first + " … " + ElementAddress(first, RowDataType, n - 1, RowStringLength) +
+                  (step == 2 ? "  (" + LanguageManager.GetString("Lbl_Step2", "every 2nd device") + ")"
+                   : step > 2 ? "  (" + string.Format(LanguageManager.GetString("Lbl_StepN", "every {0}th device"), step) + ")" : "");
         }
 
         private void AddRow(string caption, Control field, ref int y)

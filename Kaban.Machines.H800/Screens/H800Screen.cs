@@ -36,7 +36,7 @@ namespace Kaban.Machines.H800.Screens
             };
             Controls.Add(title);
 
-            var unit1 = new FunctionUnitHMI
+            var unit1 = new CylinderUnitHMI
             {
                 TitleTextKey = "Fnc_H800_Unit1",
                 PlcNumber = station,
@@ -55,7 +55,7 @@ namespace Kaban.Machines.H800.Screens
             };
             Controls.Add(unit1);
 
-            var unit2 = new FunctionUnitHMI
+            var unit2 = new CylinderUnitHMI
             {
                 TitleTextKey = "Fnc_H800_Unit2",
                 PlcNumber = station,

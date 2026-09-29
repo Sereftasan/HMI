@@ -22,35 +22,52 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
             this.unitUnit_1_Angle = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitUnit_1_0_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_90_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_180_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_270_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitUnit_1_0_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_1_90_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_1_180_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_1_270_Degree = new Kaban.UI.Controls.ButtonHMI();
             this.unitUnit_1_X = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitUnit_1_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitUnit_1_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitUnit_1_Milling_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_Tool_1_Cooling = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_1_Tool_2_Cooling = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitUnit_1_Milling_Motor = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_1_Milling_Motor_Value = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitUnit_1_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitUnit_1_Tool_1_Cooling = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_1_Tool_2_Cooling = new Kaban.UI.Controls.ButtonHMI();
             this.unitUnit_2_Angle = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitUnit_2_0_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_90_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_180_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_270_Degree = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitUnit_2_0_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_2_90_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_2_180_Degree = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_2_270_Degree = new Kaban.UI.Controls.ButtonHMI();
             this.unitUnit_2_X = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitUnit_2_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitUnit_2_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitUnit_2_Milling_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_Tool_1_Cooling = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitUnit_2_Tool_2_Cooling = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitRoller_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitTop_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitFront_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitFront_Height_Setting = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitUnit_2_Milling_Motor = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_2_Milling_Motor_Value = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitUnit_2_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitUnit_2_Tool_1_Cooling = new Kaban.UI.Controls.ButtonHMI();
+            this.unitUnit_2_Tool_2_Cooling = new Kaban.UI.Controls.ButtonHMI();
+            this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.ButtonHMI();
+            this.unitTop_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitFront_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitFront_Height_Setting = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // unitUnit_1_Angle
@@ -64,58 +81,62 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitUnit_1_0_Degree
             // 
-            this.unitUnit_1_0_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_0_Degree.Name = "unitUnit_1_0_Degree";
             this.unitUnit_1_0_Degree.PlcNumber = 1;
-            this.unitUnit_1_0_Degree.TitleTextKey = "Unit 1 0 Degree";
-            this.unitUnit_1_0_Degree.Location = new System.Drawing.Point(16, 90);
-            this.unitUnit_1_0_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_0_Degree.LogAction = true;
-            this.unitUnit_1_0_Degree.CommandBAddress = "M673";
-            this.unitUnit_1_0_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_0_Degree.TranslationKey = "Unit 1 0 Degree";
+            this.unitUnit_1_0_Degree.FallbackText = "Unit 1 0 Degree";
+            bitAction1.Address = "M673";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_0_Degree.BitActions.Add(bitAction1);
+            this.unitUnit_1_0_Degree.Location = new System.Drawing.Point(16, 102);
+            this.unitUnit_1_0_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_0_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_0_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_1_0_Degree);
             // 
             // unitUnit_1_90_Degree
             // 
-            this.unitUnit_1_90_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_90_Degree.Name = "unitUnit_1_90_Degree";
             this.unitUnit_1_90_Degree.PlcNumber = 1;
-            this.unitUnit_1_90_Degree.TitleTextKey = "Unit 1 90 Degree";
-            this.unitUnit_1_90_Degree.Location = new System.Drawing.Point(16, 164);
-            this.unitUnit_1_90_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_90_Degree.LogAction = true;
-            this.unitUnit_1_90_Degree.CommandBAddress = "M674";
-            this.unitUnit_1_90_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_90_Degree.TranslationKey = "Unit 1 90 Degree";
+            this.unitUnit_1_90_Degree.FallbackText = "Unit 1 90 Degree";
+            bitAction2.Address = "M674";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_90_Degree.BitActions.Add(bitAction2);
+            this.unitUnit_1_90_Degree.Location = new System.Drawing.Point(16, 176);
+            this.unitUnit_1_90_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_90_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_90_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_1_90_Degree);
             // 
             // unitUnit_1_180_Degree
             // 
-            this.unitUnit_1_180_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_180_Degree.Name = "unitUnit_1_180_Degree";
             this.unitUnit_1_180_Degree.PlcNumber = 1;
-            this.unitUnit_1_180_Degree.TitleTextKey = "Unit 1 180 Degree";
-            this.unitUnit_1_180_Degree.Location = new System.Drawing.Point(16, 238);
-            this.unitUnit_1_180_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_180_Degree.LogAction = true;
-            this.unitUnit_1_180_Degree.CommandBAddress = "M675";
-            this.unitUnit_1_180_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_180_Degree.TranslationKey = "Unit 1 180 Degree";
+            this.unitUnit_1_180_Degree.FallbackText = "Unit 1 180 Degree";
+            bitAction3.Address = "M675";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_180_Degree.BitActions.Add(bitAction3);
+            this.unitUnit_1_180_Degree.Location = new System.Drawing.Point(16, 250);
+            this.unitUnit_1_180_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_180_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_180_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_1_180_Degree);
             // 
             // unitUnit_1_270_Degree
             // 
-            this.unitUnit_1_270_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_270_Degree.Name = "unitUnit_1_270_Degree";
             this.unitUnit_1_270_Degree.PlcNumber = 1;
-            this.unitUnit_1_270_Degree.TitleTextKey = "Unit 1 270 Degree";
-            this.unitUnit_1_270_Degree.Location = new System.Drawing.Point(16, 312);
-            this.unitUnit_1_270_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_270_Degree.LogAction = true;
-            this.unitUnit_1_270_Degree.CommandBAddress = "M676";
-            this.unitUnit_1_270_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_270_Degree.TranslationKey = "Unit 1 270 Degree";
+            this.unitUnit_1_270_Degree.FallbackText = "Unit 1 270 Degree";
+            bitAction4.Address = "M676";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_1_270_Degree.BitActions.Add(bitAction4);
+            this.unitUnit_1_270_Degree.Location = new System.Drawing.Point(16, 324);
+            this.unitUnit_1_270_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_270_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_270_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_1_270_Degree);
             // 
             // unitUnit_1_X
@@ -147,70 +168,74 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitUnit_1_Milling_Motor
             // 
-            this.unitUnit_1_Milling_Motor.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_Milling_Motor.Name = "unitUnit_1_Milling_Motor";
             this.unitUnit_1_Milling_Motor.PlcNumber = 1;
-            this.unitUnit_1_Milling_Motor.TitleTextKey = "Unit 1 Milling Motor";
-            this.unitUnit_1_Milling_Motor.Location = new System.Drawing.Point(16, 608);
-            this.unitUnit_1_Milling_Motor.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_Milling_Motor.LogAction = true;
-            this.unitUnit_1_Milling_Motor.CommandBAddress = "M649";
-            this.unitUnit_1_Milling_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
-            this.unitUnit_1_Milling_Motor.Lamp1BAddress = "M230";
-            this.unitUnit_1_Milling_Motor.PositionAddress = "D18";
-            this.unitUnit_1_Milling_Motor.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitUnit_1_Milling_Motor.PositionDecimalPlaces = 1;
-            this.unitUnit_1_Milling_Motor.PositionDigits = 6;
-            this.unitUnit_1_Milling_Motor.PositionSuffix = "mm";
-            this.unitUnit_1_Milling_Motor.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitUnit_1_Milling_Motor.PositionDivisor = 10.0D;
+            this.unitUnit_1_Milling_Motor.TranslationKey = "Unit 1 Milling Motor";
+            this.unitUnit_1_Milling_Motor.FallbackText = "Unit 1 Milling Motor";
+            bitAction5.Address = "M649";
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_1_Milling_Motor.BitActions.Add(bitAction5);
+            this.unitUnit_1_Milling_Motor.Lamp1Address = "M230";
+            this.unitUnit_1_Milling_Motor.Location = new System.Drawing.Point(16, 620);
+            this.unitUnit_1_Milling_Motor.Size = new System.Drawing.Size(230, 40);
             this.unitUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_Milling_Motor.LogAction = true;
             this.Controls.Add(this.unitUnit_1_Milling_Motor);
+            // 
+            // unitUnit_1_Milling_Motor_Value  (was a one-button unit: its value)
+            // 
+            this.unitUnit_1_Milling_Motor_Value.Name = "unitUnit_1_Milling_Motor_Value";
+            this.unitUnit_1_Milling_Motor_Value.PlcNumber = 1;
+            this.unitUnit_1_Milling_Motor_Value.Address = "D18";
+            this.unitUnit_1_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitUnit_1_Milling_Motor_Value.Divisor = 10.0D;
+            this.unitUnit_1_Milling_Motor_Value.DecimalPlaces = 1;
+            this.unitUnit_1_Milling_Motor_Value.Digits = 6;
+            this.unitUnit_1_Milling_Motor_Value.Location = new System.Drawing.Point(256, 620);
+            this.unitUnit_1_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
+            this.Controls.Add(this.unitUnit_1_Milling_Motor_Value);
             // 
             // unitUnit_1_Inverter_Error
             // 
-            this.unitUnit_1_Inverter_Error.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_Inverter_Error.Name = "unitUnit_1_Inverter_Error";
             this.unitUnit_1_Inverter_Error.PlcNumber = 1;
-            this.unitUnit_1_Inverter_Error.TitleTextKey = "Unit 1 Inverter Error";
-            this.unitUnit_1_Inverter_Error.Location = new System.Drawing.Point(16, 682);
-            this.unitUnit_1_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_Inverter_Error.LogAction = true;
-            this.unitUnit_1_Inverter_Error.PositionAddress = "D667";
-            this.unitUnit_1_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitUnit_1_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitUnit_1_Inverter_Error.PositionDigits = 6;
-            this.unitUnit_1_Inverter_Error.PositionSuffix = "mm";
-            this.unitUnit_1_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitUnit_1_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.unitUnit_1_Inverter_Error.Address = "D667";
+            this.unitUnit_1_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitUnit_1_Inverter_Error.DecimalPlaces = 0;
+            this.unitUnit_1_Inverter_Error.Digits = 6;
+            this.unitUnit_1_Inverter_Error.DescriptionText = "Unit 1 Inverter Error";
+            this.unitUnit_1_Inverter_Error.Location = new System.Drawing.Point(226, 694);
+            this.unitUnit_1_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             this.Controls.Add(this.unitUnit_1_Inverter_Error);
             // 
             // unitUnit_1_Tool_1_Cooling
             // 
-            this.unitUnit_1_Tool_1_Cooling.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_Tool_1_Cooling.Name = "unitUnit_1_Tool_1_Cooling";
             this.unitUnit_1_Tool_1_Cooling.PlcNumber = 1;
-            this.unitUnit_1_Tool_1_Cooling.TitleTextKey = "Unit 1 Tool 1 Cooling";
-            this.unitUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(526, 16);
-            this.unitUnit_1_Tool_1_Cooling.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_Tool_1_Cooling.LogAction = true;
-            this.unitUnit_1_Tool_1_Cooling.CommandBAddress = "M710";
-            this.unitUnit_1_Tool_1_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_1_Tool_1_Cooling.TranslationKey = "Unit 1 Tool 1 Cooling";
+            this.unitUnit_1_Tool_1_Cooling.FallbackText = "Unit 1 Tool 1 Cooling";
+            bitAction6.Address = "M710";
+            bitAction6.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_1_Tool_1_Cooling.BitActions.Add(bitAction6);
+            this.unitUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(526, 28);
+            this.unitUnit_1_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_Tool_1_Cooling.LogAction = true;
             this.Controls.Add(this.unitUnit_1_Tool_1_Cooling);
             // 
             // unitUnit_1_Tool_2_Cooling
             // 
-            this.unitUnit_1_Tool_2_Cooling.BackColor = System.Drawing.Color.White;
             this.unitUnit_1_Tool_2_Cooling.Name = "unitUnit_1_Tool_2_Cooling";
             this.unitUnit_1_Tool_2_Cooling.PlcNumber = 1;
-            this.unitUnit_1_Tool_2_Cooling.TitleTextKey = "Unit 1 Tool 2 Cooling";
-            this.unitUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(526, 90);
-            this.unitUnit_1_Tool_2_Cooling.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_1_Tool_2_Cooling.LogAction = true;
-            this.unitUnit_1_Tool_2_Cooling.CommandBAddress = "M711";
-            this.unitUnit_1_Tool_2_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_1_Tool_2_Cooling.TranslationKey = "Unit 1 Tool 2 Cooling";
+            this.unitUnit_1_Tool_2_Cooling.FallbackText = "Unit 1 Tool 2 Cooling";
+            bitAction7.Address = "M711";
+            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_1_Tool_2_Cooling.BitActions.Add(bitAction7);
+            this.unitUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(526, 102);
+            this.unitUnit_1_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_1_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_1_Tool_2_Cooling.LogAction = true;
             this.Controls.Add(this.unitUnit_1_Tool_2_Cooling);
             // 
             // unitUnit_2_Angle
@@ -224,58 +249,62 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitUnit_2_0_Degree
             // 
-            this.unitUnit_2_0_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_0_Degree.Name = "unitUnit_2_0_Degree";
             this.unitUnit_2_0_Degree.PlcNumber = 1;
-            this.unitUnit_2_0_Degree.TitleTextKey = "Unit 2 0 Degree";
-            this.unitUnit_2_0_Degree.Location = new System.Drawing.Point(526, 238);
-            this.unitUnit_2_0_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_0_Degree.LogAction = true;
-            this.unitUnit_2_0_Degree.CommandBAddress = "M677";
-            this.unitUnit_2_0_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_0_Degree.TranslationKey = "Unit 2 0 Degree";
+            this.unitUnit_2_0_Degree.FallbackText = "Unit 2 0 Degree";
+            bitAction8.Address = "M677";
+            bitAction8.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_0_Degree.BitActions.Add(bitAction8);
+            this.unitUnit_2_0_Degree.Location = new System.Drawing.Point(526, 250);
+            this.unitUnit_2_0_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_0_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_0_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_2_0_Degree);
             // 
             // unitUnit_2_90_Degree
             // 
-            this.unitUnit_2_90_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_90_Degree.Name = "unitUnit_2_90_Degree";
             this.unitUnit_2_90_Degree.PlcNumber = 1;
-            this.unitUnit_2_90_Degree.TitleTextKey = "Unit 2 90 Degree";
-            this.unitUnit_2_90_Degree.Location = new System.Drawing.Point(526, 312);
-            this.unitUnit_2_90_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_90_Degree.LogAction = true;
-            this.unitUnit_2_90_Degree.CommandBAddress = "M678";
-            this.unitUnit_2_90_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_90_Degree.TranslationKey = "Unit 2 90 Degree";
+            this.unitUnit_2_90_Degree.FallbackText = "Unit 2 90 Degree";
+            bitAction9.Address = "M678";
+            bitAction9.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_90_Degree.BitActions.Add(bitAction9);
+            this.unitUnit_2_90_Degree.Location = new System.Drawing.Point(526, 324);
+            this.unitUnit_2_90_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_90_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_90_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_2_90_Degree);
             // 
             // unitUnit_2_180_Degree
             // 
-            this.unitUnit_2_180_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_180_Degree.Name = "unitUnit_2_180_Degree";
             this.unitUnit_2_180_Degree.PlcNumber = 1;
-            this.unitUnit_2_180_Degree.TitleTextKey = "Unit 2 180 Degree";
-            this.unitUnit_2_180_Degree.Location = new System.Drawing.Point(526, 386);
-            this.unitUnit_2_180_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_180_Degree.LogAction = true;
-            this.unitUnit_2_180_Degree.CommandBAddress = "M679";
-            this.unitUnit_2_180_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_180_Degree.TranslationKey = "Unit 2 180 Degree";
+            this.unitUnit_2_180_Degree.FallbackText = "Unit 2 180 Degree";
+            bitAction10.Address = "M679";
+            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_180_Degree.BitActions.Add(bitAction10);
+            this.unitUnit_2_180_Degree.Location = new System.Drawing.Point(526, 398);
+            this.unitUnit_2_180_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_180_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_180_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_2_180_Degree);
             // 
             // unitUnit_2_270_Degree
             // 
-            this.unitUnit_2_270_Degree.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_270_Degree.Name = "unitUnit_2_270_Degree";
             this.unitUnit_2_270_Degree.PlcNumber = 1;
-            this.unitUnit_2_270_Degree.TitleTextKey = "Unit 2 270 Degree";
-            this.unitUnit_2_270_Degree.Location = new System.Drawing.Point(526, 460);
-            this.unitUnit_2_270_Degree.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_270_Degree.LogAction = true;
-            this.unitUnit_2_270_Degree.CommandBAddress = "M680";
-            this.unitUnit_2_270_Degree.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_270_Degree.TranslationKey = "Unit 2 270 Degree";
+            this.unitUnit_2_270_Degree.FallbackText = "Unit 2 270 Degree";
+            bitAction11.Address = "M680";
+            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitUnit_2_270_Degree.BitActions.Add(bitAction11);
+            this.unitUnit_2_270_Degree.Location = new System.Drawing.Point(526, 472);
+            this.unitUnit_2_270_Degree.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_270_Degree.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_270_Degree.LogAction = true;
             this.Controls.Add(this.unitUnit_2_270_Degree);
             // 
             // unitUnit_2_X
@@ -307,70 +336,74 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitUnit_2_Milling_Motor
             // 
-            this.unitUnit_2_Milling_Motor.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_Milling_Motor.Name = "unitUnit_2_Milling_Motor";
             this.unitUnit_2_Milling_Motor.PlcNumber = 1;
-            this.unitUnit_2_Milling_Motor.TitleTextKey = "Unit 2 Milling Motor";
-            this.unitUnit_2_Milling_Motor.Location = new System.Drawing.Point(1036, 16);
-            this.unitUnit_2_Milling_Motor.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_Milling_Motor.LogAction = true;
-            this.unitUnit_2_Milling_Motor.CommandBAddress = "M650";
-            this.unitUnit_2_Milling_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
-            this.unitUnit_2_Milling_Motor.Lamp1BAddress = "M231";
-            this.unitUnit_2_Milling_Motor.PositionAddress = "D19";
-            this.unitUnit_2_Milling_Motor.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitUnit_2_Milling_Motor.PositionDecimalPlaces = 1;
-            this.unitUnit_2_Milling_Motor.PositionDigits = 6;
-            this.unitUnit_2_Milling_Motor.PositionSuffix = "mm";
-            this.unitUnit_2_Milling_Motor.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitUnit_2_Milling_Motor.PositionDivisor = 10.0D;
+            this.unitUnit_2_Milling_Motor.TranslationKey = "Unit 2 Milling Motor";
+            this.unitUnit_2_Milling_Motor.FallbackText = "Unit 2 Milling Motor";
+            bitAction12.Address = "M650";
+            bitAction12.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_2_Milling_Motor.BitActions.Add(bitAction12);
+            this.unitUnit_2_Milling_Motor.Lamp1Address = "M231";
+            this.unitUnit_2_Milling_Motor.Location = new System.Drawing.Point(1036, 28);
+            this.unitUnit_2_Milling_Motor.Size = new System.Drawing.Size(230, 40);
             this.unitUnit_2_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_Milling_Motor.LogAction = true;
             this.Controls.Add(this.unitUnit_2_Milling_Motor);
+            // 
+            // unitUnit_2_Milling_Motor_Value  (was a one-button unit: its value)
+            // 
+            this.unitUnit_2_Milling_Motor_Value.Name = "unitUnit_2_Milling_Motor_Value";
+            this.unitUnit_2_Milling_Motor_Value.PlcNumber = 1;
+            this.unitUnit_2_Milling_Motor_Value.Address = "D19";
+            this.unitUnit_2_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitUnit_2_Milling_Motor_Value.Divisor = 10.0D;
+            this.unitUnit_2_Milling_Motor_Value.DecimalPlaces = 1;
+            this.unitUnit_2_Milling_Motor_Value.Digits = 6;
+            this.unitUnit_2_Milling_Motor_Value.Location = new System.Drawing.Point(1276, 28);
+            this.unitUnit_2_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
+            this.Controls.Add(this.unitUnit_2_Milling_Motor_Value);
             // 
             // unitUnit_2_Inverter_Error
             // 
-            this.unitUnit_2_Inverter_Error.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_Inverter_Error.Name = "unitUnit_2_Inverter_Error";
             this.unitUnit_2_Inverter_Error.PlcNumber = 1;
-            this.unitUnit_2_Inverter_Error.TitleTextKey = "Unit 2 Inverter Error";
-            this.unitUnit_2_Inverter_Error.Location = new System.Drawing.Point(1036, 90);
-            this.unitUnit_2_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_Inverter_Error.LogAction = true;
-            this.unitUnit_2_Inverter_Error.PositionAddress = "D668";
-            this.unitUnit_2_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitUnit_2_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitUnit_2_Inverter_Error.PositionDigits = 6;
-            this.unitUnit_2_Inverter_Error.PositionSuffix = "mm";
-            this.unitUnit_2_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitUnit_2_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.unitUnit_2_Inverter_Error.Address = "D668";
+            this.unitUnit_2_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitUnit_2_Inverter_Error.DecimalPlaces = 0;
+            this.unitUnit_2_Inverter_Error.Digits = 6;
+            this.unitUnit_2_Inverter_Error.DescriptionText = "Unit 2 Inverter Error";
+            this.unitUnit_2_Inverter_Error.Location = new System.Drawing.Point(1246, 102);
+            this.unitUnit_2_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             this.Controls.Add(this.unitUnit_2_Inverter_Error);
             // 
             // unitUnit_2_Tool_1_Cooling
             // 
-            this.unitUnit_2_Tool_1_Cooling.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_Tool_1_Cooling.Name = "unitUnit_2_Tool_1_Cooling";
             this.unitUnit_2_Tool_1_Cooling.PlcNumber = 1;
-            this.unitUnit_2_Tool_1_Cooling.TitleTextKey = "Unit 2 Tool 1 Cooling";
-            this.unitUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(1036, 164);
-            this.unitUnit_2_Tool_1_Cooling.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_Tool_1_Cooling.LogAction = true;
-            this.unitUnit_2_Tool_1_Cooling.CommandBAddress = "M712";
-            this.unitUnit_2_Tool_1_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_2_Tool_1_Cooling.TranslationKey = "Unit 2 Tool 1 Cooling";
+            this.unitUnit_2_Tool_1_Cooling.FallbackText = "Unit 2 Tool 1 Cooling";
+            bitAction13.Address = "M712";
+            bitAction13.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_2_Tool_1_Cooling.BitActions.Add(bitAction13);
+            this.unitUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(1036, 176);
+            this.unitUnit_2_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_Tool_1_Cooling.LogAction = true;
             this.Controls.Add(this.unitUnit_2_Tool_1_Cooling);
             // 
             // unitUnit_2_Tool_2_Cooling
             // 
-            this.unitUnit_2_Tool_2_Cooling.BackColor = System.Drawing.Color.White;
             this.unitUnit_2_Tool_2_Cooling.Name = "unitUnit_2_Tool_2_Cooling";
             this.unitUnit_2_Tool_2_Cooling.PlcNumber = 1;
-            this.unitUnit_2_Tool_2_Cooling.TitleTextKey = "Unit 2 Tool 2 Cooling";
-            this.unitUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(1036, 238);
-            this.unitUnit_2_Tool_2_Cooling.Size = new System.Drawing.Size(360, 64);
-            this.unitUnit_2_Tool_2_Cooling.LogAction = true;
-            this.unitUnit_2_Tool_2_Cooling.CommandBAddress = "M713";
-            this.unitUnit_2_Tool_2_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_2_Tool_2_Cooling.TranslationKey = "Unit 2 Tool 2 Cooling";
+            this.unitUnit_2_Tool_2_Cooling.FallbackText = "Unit 2 Tool 2 Cooling";
+            bitAction14.Address = "M713";
+            bitAction14.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitUnit_2_Tool_2_Cooling.BitActions.Add(bitAction14);
+            this.unitUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(1036, 250);
+            this.unitUnit_2_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
             this.unitUnit_2_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitUnit_2_Tool_2_Cooling.LogAction = true;
             this.Controls.Add(this.unitUnit_2_Tool_2_Cooling);
             // 
             // unitRoller_Up_Down
@@ -392,16 +425,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitHigh_Air_Pressure
             // 
-            this.unitHigh_Air_Pressure.BackColor = System.Drawing.Color.White;
             this.unitHigh_Air_Pressure.Name = "unitHigh_Air_Pressure";
             this.unitHigh_Air_Pressure.PlcNumber = 1;
-            this.unitHigh_Air_Pressure.TitleTextKey = "High Air Pressure";
-            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(1036, 386);
-            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 64);
-            this.unitHigh_Air_Pressure.LogAction = true;
-            this.unitHigh_Air_Pressure.CommandBAddress = "M716";
-            this.unitHigh_Air_Pressure.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.TranslationKey = "High Air Pressure";
+            this.unitHigh_Air_Pressure.FallbackText = "High Air Pressure";
+            bitAction15.Address = "M716";
+            bitAction15.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.BitActions.Add(bitAction15);
+            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(1036, 398);
+            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 40);
             this.unitHigh_Air_Pressure.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitHigh_Air_Pressure.LogAction = true;
             this.Controls.Add(this.unitHigh_Air_Pressure);
             // 
             // unitTop_Clamping
@@ -500,34 +534,36 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         #endregion
 
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_1_Angle;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_0_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_90_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_180_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_270_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_0_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_90_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_180_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_270_Degree;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_1_X;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_1_Y;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_1_Z;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_Milling_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_Inverter_Error;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_Tool_1_Cooling;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_1_Tool_2_Cooling;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_Milling_Motor;
+        private Kaban.UI.Controls.NumericDisplayHMI unitUnit_1_Milling_Motor_Value;
+        private Kaban.UI.Controls.NumericDisplayHMI unitUnit_1_Inverter_Error;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_Tool_1_Cooling;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_1_Tool_2_Cooling;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_2_Angle;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_0_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_90_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_180_Degree;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_270_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_0_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_90_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_180_Degree;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_270_Degree;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_2_X;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_2_Y;
         private Kaban.UI.Controls.AxisUnitHMI unitUnit_2_Z;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_Milling_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_Inverter_Error;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_Tool_1_Cooling;
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_2_Tool_2_Cooling;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRoller_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI unitHigh_Air_Pressure;
-        private Kaban.UI.Controls.FunctionUnitHMI unitTop_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitFront_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitFront_Height_Setting;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_Milling_Motor;
+        private Kaban.UI.Controls.NumericDisplayHMI unitUnit_2_Milling_Motor_Value;
+        private Kaban.UI.Controls.NumericDisplayHMI unitUnit_2_Inverter_Error;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_Tool_1_Cooling;
+        private Kaban.UI.Controls.ButtonHMI unitUnit_2_Tool_2_Cooling;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
+        private Kaban.UI.Controls.ButtonHMI unitHigh_Air_Pressure;
+        private Kaban.UI.Controls.CylinderUnitHMI unitTop_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitFront_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitFront_Height_Setting;
     }
 }
 

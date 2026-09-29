@@ -30,7 +30,7 @@ namespace Kaban.UI.Controls
     ///
     /// THE VALVE DECIDES THE ACTIONS: a single solenoid drives ONE movement (its
     /// spring makes the other), so the unit has one action - A or B; a double
-    /// solenoid drives both, so it has both. See FunctionUnitHMI.TypeProblems.
+    /// solenoid drives both, so it has both. See CylinderUnitHMI.TypeProblems.
     /// </summary>
     public enum CylinderValve
     {
@@ -101,7 +101,9 @@ namespace Kaban.UI.Controls
     /// PositionAddress is set.
     /// </summary>
     [ToolboxBitmap(typeof(GroupBox))]
-    public class FunctionUnitHMI : UserControl, ILocalizable
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
+    public class CylinderUnitHMI : UserControl, ILocalizable
     {
         /// <summary>Toolbox-proportioned default (matches a hand-placed unit).</summary>
         protected override Size DefaultSize => new Size(360, 64);
@@ -124,24 +126,24 @@ namespace Kaban.UI.Controls
         [Category(" Buttons")]
         [Description("Left button - full ButtonHMI property set.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [TypeConverter(typeof(Kaban.UI.Design.FunctionUnitChildConverter))]
+        [TypeConverter(typeof(Kaban.UI.Design.CylinderUnitChildConverter))]
         public ButtonHMI ButtonA { get { return _btnA; } }
 
         /// <summary>The RIGHT button. See ButtonA.</summary>
         [Category(" Buttons")]
         [Description("Right button - full ButtonHMI property set.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [TypeConverter(typeof(Kaban.UI.Design.FunctionUnitChildConverter))]
+        [TypeConverter(typeof(Kaban.UI.Design.CylinderUnitChildConverter))]
         public ButtonHMI ButtonB { get { return _btnB; } }
 
         /// <summary>The encoder position display. Exposed for full styling access.</summary>
         [Category(" Buttons")]
         [Description("Position readout - full NumericDisplayHMI property set.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [TypeConverter(typeof(Kaban.UI.Design.FunctionUnitChildConverter))]
+        [TypeConverter(typeof(Kaban.UI.Design.CylinderUnitChildConverter))]
         public NumericDisplayHMI PositionDisplay { get { return _numPosition; } }
 
-        public FunctionUnitHMI()
+        public CylinderUnitHMI()
         {
             this.Size = new Size(360, 64);
             this.BackColor = Color.White;
@@ -1559,7 +1561,7 @@ namespace Kaban.UI.Controls
 
     /// <summary>
     /// GroupBox with rounded corners and a caption drawn on the top border,
-    /// so the FunctionUnitHMI frame actually looks rounded (the stock GroupBox
+    /// so the CylinderUnitHMI frame actually looks rounded (the stock GroupBox
     /// draws square corners that hide any rounded region on the parent).
     /// </summary>
     internal class RoundedGroupBox : Panel
@@ -1571,7 +1573,7 @@ namespace Kaban.UI.Controls
         public RoundedGroupBox()
         {
             this.DoubleBuffered = true;
-            // No Padding: FunctionUnitHMI.LayoutChildren positions children absolutely
+            // No Padding: CylinderUnitHMI.LayoutChildren positions children absolutely
             // using ClientSize, so panel padding would double-offset them.
             this.Padding = new Padding(0);
         }
@@ -1622,5 +1624,16 @@ namespace Kaban.UI.Controls
             }
         }
     }
-}
 
+    /// <summary>
+    /// THE OLD NAME. The cylinder unit was called FunctionUnitHMI until 29
+    /// September, when it became CylinderUnitHMI - it is only for cylinders; a
+    /// one-button function (a motor, a cooling, a horn) is a ButtonHMI. The pages
+    /// shipped with the program use the new name; this keeps a page that still
+    /// says FunctionUnitHMI compiling (with a warning) until it is renamed. Not
+    /// in the toolbox.
+    /// </summary>
+    [ToolboxItem(false), EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete("FunctionUnitHMI is now CylinderUnitHMI: replace the name in the page's Designer.cs.")]
+    public class FunctionUnitHMI : CylinderUnitHMI { }
+}

@@ -22,9 +22,12 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            this.unitLubrication = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitInverters_Reset = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitHorn = new Kaban.UI.Controls.FunctionUnitHMI();
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
+            this.unitLubrication = new Kaban.UI.Controls.ButtonHMI();
+            this.unitInverters_Reset = new Kaban.UI.Controls.ButtonHMI();
+            this.unitHorn = new Kaban.UI.Controls.ButtonHMI();
             this.lampEmergency_Stop = new Kaban.UI.Controls.LampHMI();
             this.lampAir_Pressure = new Kaban.UI.Controls.LampHMI();
             this.lampStart_Button = new Kaban.UI.Controls.LampHMI();
@@ -33,44 +36,47 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitLubrication
             // 
-            this.unitLubrication.BackColor = System.Drawing.Color.White;
             this.unitLubrication.Name = "unitLubrication";
             this.unitLubrication.PlcNumber = 1;
-            this.unitLubrication.TitleTextKey = "Lubrication";
-            this.unitLubrication.Location = new System.Drawing.Point(16, 16);
-            this.unitLubrication.Size = new System.Drawing.Size(360, 64);
-            this.unitLubrication.LogAction = true;
-            this.unitLubrication.CommandBAddress = "M668";
-            this.unitLubrication.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitLubrication.TranslationKey = "Lubrication";
+            this.unitLubrication.FallbackText = "Lubrication";
+            bitAction1.Address = "M668";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitLubrication.BitActions.Add(bitAction1);
+            this.unitLubrication.Location = new System.Drawing.Point(16, 28);
+            this.unitLubrication.Size = new System.Drawing.Size(360, 40);
             this.unitLubrication.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitLubrication.LogAction = true;
             this.Controls.Add(this.unitLubrication);
             // 
             // unitInverters_Reset
             // 
-            this.unitInverters_Reset.BackColor = System.Drawing.Color.White;
             this.unitInverters_Reset.Name = "unitInverters_Reset";
             this.unitInverters_Reset.PlcNumber = 1;
-            this.unitInverters_Reset.TitleTextKey = "Inverters Reset";
-            this.unitInverters_Reset.Location = new System.Drawing.Point(16, 90);
-            this.unitInverters_Reset.Size = new System.Drawing.Size(360, 64);
-            this.unitInverters_Reset.LogAction = true;
-            this.unitInverters_Reset.CommandBAddress = "M670";
-            this.unitInverters_Reset.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitInverters_Reset.TranslationKey = "Inverters Reset";
+            this.unitInverters_Reset.FallbackText = "Inverters Reset";
+            bitAction2.Address = "M670";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitInverters_Reset.BitActions.Add(bitAction2);
+            this.unitInverters_Reset.Location = new System.Drawing.Point(16, 102);
+            this.unitInverters_Reset.Size = new System.Drawing.Size(360, 40);
             this.unitInverters_Reset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitInverters_Reset.LogAction = true;
             this.Controls.Add(this.unitInverters_Reset);
             // 
             // unitHorn
             // 
-            this.unitHorn.BackColor = System.Drawing.Color.White;
             this.unitHorn.Name = "unitHorn";
             this.unitHorn.PlcNumber = 1;
-            this.unitHorn.TitleTextKey = "Horn";
-            this.unitHorn.Location = new System.Drawing.Point(16, 164);
-            this.unitHorn.Size = new System.Drawing.Size(360, 64);
-            this.unitHorn.LogAction = true;
-            this.unitHorn.CommandBAddress = "M638";
-            this.unitHorn.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHorn.TranslationKey = "Horn";
+            this.unitHorn.FallbackText = "Horn";
+            bitAction3.Address = "M638";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitHorn.BitActions.Add(bitAction3);
+            this.unitHorn.Location = new System.Drawing.Point(16, 176);
+            this.unitHorn.Size = new System.Drawing.Size(360, 40);
             this.unitHorn.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitHorn.LogAction = true;
             this.Controls.Add(this.unitHorn);
             // 
             // lampEmergency_Stop  (indicator only)
@@ -131,9 +137,9 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitLubrication;
-        private Kaban.UI.Controls.FunctionUnitHMI unitInverters_Reset;
-        private Kaban.UI.Controls.FunctionUnitHMI unitHorn;
+        private Kaban.UI.Controls.ButtonHMI unitLubrication;
+        private Kaban.UI.Controls.ButtonHMI unitInverters_Reset;
+        private Kaban.UI.Controls.ButtonHMI unitHorn;
         private Kaban.UI.Controls.LampHMI lampEmergency_Stop;
         private Kaban.UI.Controls.LampHMI lampAir_Pressure;
         private Kaban.UI.Controls.LampHMI lampStart_Button;

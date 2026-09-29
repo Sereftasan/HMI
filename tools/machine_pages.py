@@ -7,7 +7,7 @@ THE THREE THINGS THIS GETS RIGHT THAT THE FIRST ATTEMPT DID NOT
 1. A COMMAND AND ITS SENSORS ARE ONE CONTROL.
    MAN_Tahliye1_Kapak_Yukari / _Asagi are the two directions of one cover, and
    IN_Tahliye1_Kapak_YukaridaSN / _AsagidaSN are that cover's end sensors. They
-   belong on one FunctionUnitHMI - button, opposite button, and a lamp per end -
+   belong on one CylinderUnitHMI - button, opposite button, and a lamp per end -
    not scattered across a movement page and a separate status page. Matching is
    by STEM: strip the MAN_/IN_ prefix, strip the direction word and the trailing
    SN, and what remains identifies the mechanism.

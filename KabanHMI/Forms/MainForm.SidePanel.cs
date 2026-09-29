@@ -398,7 +398,7 @@ namespace Kaban.UI.Forms
         {
             foreach (var b in _sideButtons.Values) b.Invalidate();
             PerformLayout();
-            if (_currentScreen != null) RelayoutFunctionUnits(_currentScreen);
+            if (_currentScreen != null) RelayoutCylinderUnits(_currentScreen);
             if (_scanner != null) _scanner.RefreshTags();
             PlaceChangedByOperator();
         }

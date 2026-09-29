@@ -16,15 +16,17 @@ namespace Kaban.UI.Controls
     /// is taken from there. Entering the same addresses and divisors on two pages
     /// is how the two end up disagreeing; now there is nothing to disagree about.
     ///
-    /// It looks exactly like the FunctionUnitHMI units around it, because it IS
+    /// It looks exactly like the CylinderUnitHMI units around it, because it IS
     /// one inside: the same frame, two jog buttons, position display, the
     /// reference sensor lamp on one button, and the "?" on its top frame line
     /// while the drive reports a code (servo alarm, axis alarm, axis warning).
     /// </summary>
     [ToolboxItem(true)]
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class AxisUnitHMI : UserControl
     {
-        private readonly FunctionUnitHMI _unit = new FunctionUnitHMI { Dock = DockStyle.Fill };
+        private readonly CylinderUnitHMI _unit = new CylinderUnitHMI { Dock = DockStyle.Fill };
         private int _axisNumber;
         private int _plcNumber = 1;
 
@@ -33,7 +35,7 @@ namespace Kaban.UI.Controls
             // The axis reading as the Axis Settings rows show it - black bold on
             // the read-only grey (every unit's default now; set here as well so an
             // axis can never be switched to the red readout). An axis error blinks
-            // this display's border red (see FunctionUnitHMI.UpdateErrorBlink).
+            // this display's border red (see CylinderUnitHMI.UpdateErrorBlink).
             _unit.PositionStyle = UnitPositionStyle.Standard;
             _unit.Kind = UnitKind.Axis;
 
@@ -66,7 +68,7 @@ namespace Kaban.UI.Controls
 
         /// <summary>The unit inside, for tests and for code that needs its parts.</summary>
         [Browsable(false)]
-        public FunctionUnitHMI Unit { get { return _unit; } }
+        public CylinderUnitHMI Unit { get { return _unit; } }
 
         /// <summary>True when the axis row was found and applied.</summary>
         [Browsable(false)]

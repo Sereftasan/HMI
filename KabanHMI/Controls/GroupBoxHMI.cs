@@ -9,7 +9,7 @@ using Kaban.Core.Helpers;
 namespace Kaban.UI.Controls
 {
     /// <summary>
-    /// Container for interrelated controls, drawn like FunctionUnitHMI's frame:
+    /// Container for interrelated controls, drawn like CylinderUnitHMI's frame:
     /// a rounded border with the caption straddling the top border line.
     ///
     /// The caption uses a NORMAL font by default (bold looked too prominent).
@@ -17,6 +17,8 @@ namespace Kaban.UI.Controls
     /// caption to bold - the way to make a group deliberately stand out.
     /// </summary>
     [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(System.ComponentModel.Design.IDesigner))]
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class GroupBoxHMI : Panel, IHmiControl
     {
         private string _titleText = "Group";

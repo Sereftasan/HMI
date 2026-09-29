@@ -41,7 +41,7 @@ class WH {
         Check("a point the drawings do not show: none", WiringTable.Find(1, "X31") == null);
 
         Console.WriteLine("--- the help of a failed movement ---");
-        var unit = new FunctionUnitHMI {
+        var unit = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Front Clamping",
             CommandAAddress = "M646", ButtonATextKey = "Release", Lamp1AAddress = "M225", Lamp1ATipKey = "Clamping back",
             CommandBAddress = "M645", ButtonBTextKey = "Clamp", Lamp1BAddress = "M240", Lamp1BTipKey = "Pressure switch",

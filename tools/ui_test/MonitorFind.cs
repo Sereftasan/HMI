@@ -87,7 +87,7 @@ class MF {
 
         Console.WriteLine("--- the real Robot Top Clamping: its manual is ONE chart for its valve and feedback ---");
         var m854 = DeviceFindForm.Match(uses, 1, "M854").FirstOrDefault(u => !u.IsAlarm);
-        var rtc = m854 == null ? null : form.ShowDeviceUse(m854, out why) as FunctionUnitHMI;
+        var rtc = m854 == null ? null : form.ShowDeviceUse(m854, out why) as CylinderUnitHMI;
         Check("found on the Exit page", rtc != null && rtc.Name == "unitRobot_Top_Clamping", why);
         if (rtc != null) {
             var docs = rtc.HelpDocuments();

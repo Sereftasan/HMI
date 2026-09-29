@@ -78,7 +78,7 @@ class Emitter:
             if k == "unit":
                 nm = name_for(cap, "u")
                 px, py = place(66)
-                decl.append("            this.%s = new Kaban.UI.Controls.FunctionUnitHMI();" % nm)
+                decl.append("            this.%s = new Kaban.UI.Controls.CylinderUnitHMI();" % nm)
                 ut, sfx, dec = unit_for(f["caption"])
                 b = ['this.{0}.Name = "{0}";'.format(nm),
                      'this.{0}.PlcNumber = {1};'.format(nm, self.plc),

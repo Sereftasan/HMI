@@ -22,14 +22,14 @@ namespace Kaban.Machines.H800.Screens
         {
             this.bConveyor_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.bScrewing_Conveyor_Discharge_Motor_Run = new Kaban.UI.Controls.ButtonHMI();
-            this.uScrewing_Conveyor_tahliyesikma = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uScrewing_Conveyor_tahliyesikma = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bConveyor_Clamping_Unit_1_2_3_Down = new Kaban.UI.Controls.ButtonHMI();
             this.bConveyor_Clamping_Unit_1_2_Up = new Kaban.UI.Controls.ButtonHMI();
             this.bConveyor_Clamping_Unit_3_Up = new Kaban.UI.Controls.ButtonHMI();
             this.bConveyor_Clamping_1_2_Clamping_SIK = new Kaban.UI.Controls.ButtonHMI();
             this.bConveyor_Clamping_1_2_3_Clamping_AC = new Kaban.UI.Controls.ButtonHMI();
             this.bConveyor_Clamping_3_Clamping_SIK = new Kaban.UI.Controls.ButtonHMI();
-            this.uScrewing_Conveyor_Discharge_unite = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uScrewing_Conveyor_Discharge_unite = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bScrewing_Conveyor_Pause = new Kaban.UI.Controls.ButtonHMI();
             this.lScrewing_Conveyor_Discharge_Unit_Down_SN = new Kaban.UI.Controls.LampHMI();
             this.lConveyor_Inverter_RUN = new Kaban.UI.Controls.LampHMI();
@@ -316,14 +316,14 @@ namespace Kaban.Machines.H800.Screens
 
         private Kaban.UI.Controls.ButtonHMI bConveyor_Forward;
         private Kaban.UI.Controls.ButtonHMI bScrewing_Conveyor_Discharge_Motor_Run;
-        private Kaban.UI.Controls.FunctionUnitHMI uScrewing_Conveyor_tahliyesikma;
+        private Kaban.UI.Controls.CylinderUnitHMI uScrewing_Conveyor_tahliyesikma;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_Unit_1_2_3_Down;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_Unit_1_2_Up;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_Unit_3_Up;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_1_2_Clamping_SIK;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_1_2_3_Clamping_AC;
         private Kaban.UI.Controls.ButtonHMI bConveyor_Clamping_3_Clamping_SIK;
-        private Kaban.UI.Controls.FunctionUnitHMI uScrewing_Conveyor_Discharge_unite;
+        private Kaban.UI.Controls.CylinderUnitHMI uScrewing_Conveyor_Discharge_unite;
         private Kaban.UI.Controls.ButtonHMI bScrewing_Conveyor_Pause;
         private Kaban.UI.Controls.LampHMI lScrewing_Conveyor_Discharge_Unit_Down_SN;
         private Kaban.UI.Controls.LampHMI lConveyor_Inverter_RUN;

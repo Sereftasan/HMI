@@ -20,145 +20,177 @@ namespace Kaban.Machines.H500.Screens
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            this.uReset = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uManual = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uLubrication = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uM_110 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uM_111 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uM_112 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uM_113 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uConveyor_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClampings_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_1 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_3 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_4 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_5 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClamping_6 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uClampings_Release = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uScrewing_ON_OFF = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uScrewing_ON_OFF2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uBolt_Level_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uGO = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uUnit_FW_Back = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uUnit_Back = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uPause = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uCancel = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uAccesories_Position_Shift = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uMagnetic_Proximity_Sensor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uStoppers_Auto_Settings = new Kaban.UI.Controls.FunctionUnitHMI();
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction16 = new Kaban.Core.Models.BitAction();
+            this.uReset = new Kaban.UI.Controls.ButtonHMI();
+            this.uManual = new Kaban.UI.Controls.ButtonHMI();
+            this.uLubrication = new Kaban.UI.Controls.ButtonHMI();
+            this.uM_110 = new Kaban.UI.Controls.ButtonHMI();
+            this.uM_111 = new Kaban.UI.Controls.ButtonHMI();
+            this.uM_112 = new Kaban.UI.Controls.ButtonHMI();
+            this.uM_113 = new Kaban.UI.Controls.ButtonHMI();
+            this.uConveyor_Motor = new Kaban.UI.Controls.ButtonHMI();
+            this.uClampings_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_5 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClamping_6 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uClampings_Release = new Kaban.UI.Controls.ButtonHMI();
+            this.uScrewing_ON_OFF = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uScrewing_ON_OFF2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uBolt_Level_Motor = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uGO = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uUnit_FW_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.uUnit_Back = new Kaban.UI.Controls.ButtonHMI();
+            this.uPause = new Kaban.UI.Controls.ButtonHMI();
+            this.uCancel = new Kaban.UI.Controls.ButtonHMI();
+            this.uAccesories_Position_Shift = new Kaban.UI.Controls.ButtonHMI();
+            this.uMagnetic_Proximity_Sensor = new Kaban.UI.Controls.ButtonHMI();
+            this.uStoppers_Auto_Settings = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // uReset
             // 
             this.uReset.Name = "uReset";
             this.uReset.PlcNumber = 1;
-            this.uReset.TitleTextKey = "Reset";
-            this.uReset.CommandBAddress = "M36";
-            this.uReset.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uReset.Lamp1BAddress = "M36";
+            this.uReset.TranslationKey = "Reset";
+            this.uReset.FallbackText = "Reset";
+            bitAction1.Address = "M36";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uReset.BitActions.Add(bitAction1);
+            this.uReset.Lamp1Address = "M36";
+            this.uReset.Location = new System.Drawing.Point(16, 28);
+            this.uReset.Size = new System.Drawing.Size(360, 40);
             this.uReset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uReset.LogAction = true;
-            this.uReset.Location = new System.Drawing.Point(16, 16);
-            this.uReset.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uReset);
             // 
             // uManual
             // 
             this.uManual.Name = "uManual";
             this.uManual.PlcNumber = 1;
-            this.uManual.TitleTextKey = "Manual";
-            this.uManual.CommandBAddress = "M2";
-            this.uManual.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uManual.Lamp1BAddress = "M2";
+            this.uManual.TranslationKey = "Manual";
+            this.uManual.FallbackText = "Manual";
+            bitAction2.Address = "M2";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uManual.BitActions.Add(bitAction2);
+            this.uManual.Lamp1Address = "M2";
+            this.uManual.Location = new System.Drawing.Point(526, 28);
+            this.uManual.Size = new System.Drawing.Size(360, 40);
             this.uManual.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uManual.LogAction = true;
-            this.uManual.Location = new System.Drawing.Point(526, 16);
-            this.uManual.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uManual);
             // 
             // uLubrication
             // 
             this.uLubrication.Name = "uLubrication";
             this.uLubrication.PlcNumber = 1;
-            this.uLubrication.TitleTextKey = "Lubrication";
-            this.uLubrication.CommandBAddress = "M102";
-            this.uLubrication.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uLubrication.Lamp1BAddress = "M102";
+            this.uLubrication.TranslationKey = "Lubrication";
+            this.uLubrication.FallbackText = "Lubrication";
+            bitAction3.Address = "M102";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uLubrication.BitActions.Add(bitAction3);
+            this.uLubrication.Lamp1Address = "M102";
+            this.uLubrication.Location = new System.Drawing.Point(16, 102);
+            this.uLubrication.Size = new System.Drawing.Size(360, 40);
             this.uLubrication.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uLubrication.LogAction = true;
-            this.uLubrication.Location = new System.Drawing.Point(16, 90);
-            this.uLubrication.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uLubrication);
             // 
             // uM_110
             // 
             this.uM_110.Name = "uM_110";
             this.uM_110.PlcNumber = 1;
-            this.uM_110.TitleTextKey = "M 110";
-            this.uM_110.CommandBAddress = "M110";
-            this.uM_110.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uM_110.Lamp1BAddress = "M110";
+            this.uM_110.TranslationKey = "M 110";
+            this.uM_110.FallbackText = "M 110";
+            bitAction4.Address = "M110";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uM_110.BitActions.Add(bitAction4);
+            this.uM_110.Lamp1Address = "M110";
+            this.uM_110.Location = new System.Drawing.Point(526, 102);
+            this.uM_110.Size = new System.Drawing.Size(360, 40);
             this.uM_110.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uM_110.LogAction = true;
-            this.uM_110.Location = new System.Drawing.Point(526, 90);
-            this.uM_110.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uM_110);
             // 
             // uM_111
             // 
             this.uM_111.Name = "uM_111";
             this.uM_111.PlcNumber = 1;
-            this.uM_111.TitleTextKey = "M 111";
-            this.uM_111.CommandBAddress = "M111";
-            this.uM_111.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uM_111.Lamp1BAddress = "M111";
+            this.uM_111.TranslationKey = "M 111";
+            this.uM_111.FallbackText = "M 111";
+            bitAction5.Address = "M111";
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uM_111.BitActions.Add(bitAction5);
+            this.uM_111.Lamp1Address = "M111";
+            this.uM_111.Location = new System.Drawing.Point(16, 176);
+            this.uM_111.Size = new System.Drawing.Size(360, 40);
             this.uM_111.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uM_111.LogAction = true;
-            this.uM_111.Location = new System.Drawing.Point(16, 164);
-            this.uM_111.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uM_111);
             // 
             // uM_112
             // 
             this.uM_112.Name = "uM_112";
             this.uM_112.PlcNumber = 1;
-            this.uM_112.TitleTextKey = "M 112";
-            this.uM_112.CommandBAddress = "M112";
-            this.uM_112.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uM_112.Lamp1BAddress = "M112";
+            this.uM_112.TranslationKey = "M 112";
+            this.uM_112.FallbackText = "M 112";
+            bitAction6.Address = "M112";
+            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uM_112.BitActions.Add(bitAction6);
+            this.uM_112.Lamp1Address = "M112";
+            this.uM_112.Location = new System.Drawing.Point(526, 176);
+            this.uM_112.Size = new System.Drawing.Size(360, 40);
             this.uM_112.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uM_112.LogAction = true;
-            this.uM_112.Location = new System.Drawing.Point(526, 164);
-            this.uM_112.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uM_112);
             // 
             // uM_113
             // 
             this.uM_113.Name = "uM_113";
             this.uM_113.PlcNumber = 1;
-            this.uM_113.TitleTextKey = "M 113";
-            this.uM_113.CommandBAddress = "M113";
-            this.uM_113.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uM_113.Lamp1BAddress = "M113";
+            this.uM_113.TranslationKey = "M 113";
+            this.uM_113.FallbackText = "M 113";
+            bitAction7.Address = "M113";
+            bitAction7.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uM_113.BitActions.Add(bitAction7);
+            this.uM_113.Lamp1Address = "M113";
+            this.uM_113.Location = new System.Drawing.Point(16, 250);
+            this.uM_113.Size = new System.Drawing.Size(360, 40);
             this.uM_113.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uM_113.LogAction = true;
-            this.uM_113.Location = new System.Drawing.Point(16, 238);
-            this.uM_113.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uM_113);
             // 
             // uConveyor_Motor
             // 
             this.uConveyor_Motor.Name = "uConveyor_Motor";
             this.uConveyor_Motor.PlcNumber = 1;
-            this.uConveyor_Motor.TitleTextKey = "Conveyor Motor";
-            this.uConveyor_Motor.CommandBAddress = "M150";
-            this.uConveyor_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uConveyor_Motor.Lamp1BAddress = "M150";
+            this.uConveyor_Motor.TranslationKey = "Conveyor Motor";
+            this.uConveyor_Motor.FallbackText = "Conveyor Motor";
+            bitAction8.Address = "M150";
+            bitAction8.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uConveyor_Motor.BitActions.Add(bitAction8);
+            this.uConveyor_Motor.Lamp1Address = "M150";
+            this.uConveyor_Motor.Location = new System.Drawing.Point(526, 250);
+            this.uConveyor_Motor.Size = new System.Drawing.Size(360, 40);
             this.uConveyor_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uConveyor_Motor.LogAction = true;
-            this.uConveyor_Motor.Location = new System.Drawing.Point(526, 238);
-            this.uConveyor_Motor.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uConveyor_Motor);
             // 
             // uClampings_Up_Down
@@ -273,14 +305,16 @@ namespace Kaban.Machines.H500.Screens
             // 
             this.uClampings_Release.Name = "uClampings_Release";
             this.uClampings_Release.PlcNumber = 1;
-            this.uClampings_Release.TitleTextKey = "Clampings Release";
-            this.uClampings_Release.CommandBAddress = "M159";
-            this.uClampings_Release.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uClampings_Release.Lamp1BAddress = "M159";
+            this.uClampings_Release.TranslationKey = "Clampings Release";
+            this.uClampings_Release.FallbackText = "Clampings Release";
+            bitAction9.Address = "M159";
+            bitAction9.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uClampings_Release.BitActions.Add(bitAction9);
+            this.uClampings_Release.Lamp1Address = "M159";
+            this.uClampings_Release.Location = new System.Drawing.Point(526, 546);
+            this.uClampings_Release.Size = new System.Drawing.Size(360, 40);
             this.uClampings_Release.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uClampings_Release.LogAction = true;
-            this.uClampings_Release.Location = new System.Drawing.Point(526, 534);
-            this.uClampings_Release.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uClampings_Release);
             // 
             // uScrewing_ON_OFF
@@ -355,98 +389,112 @@ namespace Kaban.Machines.H500.Screens
             // 
             this.uUnit_FW_Back.Name = "uUnit_FW_Back";
             this.uUnit_FW_Back.PlcNumber = 1;
-            this.uUnit_FW_Back.TitleTextKey = "Unit FW Back";
-            this.uUnit_FW_Back.CommandBAddress = "M181";
-            this.uUnit_FW_Back.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uUnit_FW_Back.Lamp1BAddress = "M181";
+            this.uUnit_FW_Back.TranslationKey = "Unit FW Back";
+            this.uUnit_FW_Back.FallbackText = "Unit FW Back";
+            bitAction10.Address = "M181";
+            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uUnit_FW_Back.BitActions.Add(bitAction10);
+            this.uUnit_FW_Back.Lamp1Address = "M181";
+            this.uUnit_FW_Back.Location = new System.Drawing.Point(16, 768);
+            this.uUnit_FW_Back.Size = new System.Drawing.Size(360, 40);
             this.uUnit_FW_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uUnit_FW_Back.LogAction = true;
-            this.uUnit_FW_Back.Location = new System.Drawing.Point(16, 756);
-            this.uUnit_FW_Back.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uUnit_FW_Back);
             // 
             // uUnit_Back
             // 
             this.uUnit_Back.Name = "uUnit_Back";
             this.uUnit_Back.PlcNumber = 1;
-            this.uUnit_Back.TitleTextKey = "Unit Back";
-            this.uUnit_Back.CommandBAddress = "M182";
-            this.uUnit_Back.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uUnit_Back.Lamp1BAddress = "M182";
+            this.uUnit_Back.TranslationKey = "Unit Back";
+            this.uUnit_Back.FallbackText = "Unit Back";
+            bitAction11.Address = "M182";
+            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uUnit_Back.BitActions.Add(bitAction11);
+            this.uUnit_Back.Lamp1Address = "M182";
+            this.uUnit_Back.Location = new System.Drawing.Point(526, 768);
+            this.uUnit_Back.Size = new System.Drawing.Size(360, 40);
             this.uUnit_Back.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uUnit_Back.LogAction = true;
-            this.uUnit_Back.Location = new System.Drawing.Point(526, 756);
-            this.uUnit_Back.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uUnit_Back);
             // 
             // uPause
             // 
             this.uPause.Name = "uPause";
             this.uPause.PlcNumber = 1;
-            this.uPause.TitleTextKey = "Pause";
-            this.uPause.CommandBAddress = "M0";
-            this.uPause.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uPause.Lamp1BAddress = "M0";
+            this.uPause.TranslationKey = "Pause";
+            this.uPause.FallbackText = "Pause";
+            bitAction12.Address = "M0";
+            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uPause.BitActions.Add(bitAction12);
+            this.uPause.Lamp1Address = "M0";
+            this.uPause.Location = new System.Drawing.Point(16, 842);
+            this.uPause.Size = new System.Drawing.Size(360, 40);
             this.uPause.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uPause.LogAction = true;
-            this.uPause.Location = new System.Drawing.Point(16, 830);
-            this.uPause.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uPause);
             // 
             // uCancel
             // 
             this.uCancel.Name = "uCancel";
             this.uCancel.PlcNumber = 1;
-            this.uCancel.TitleTextKey = "Cancel";
-            this.uCancel.CommandBAddress = "M132";
-            this.uCancel.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uCancel.Lamp1BAddress = "M132";
+            this.uCancel.TranslationKey = "Cancel";
+            this.uCancel.FallbackText = "Cancel";
+            bitAction13.Address = "M132";
+            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uCancel.BitActions.Add(bitAction13);
+            this.uCancel.Lamp1Address = "M132";
+            this.uCancel.Location = new System.Drawing.Point(526, 842);
+            this.uCancel.Size = new System.Drawing.Size(360, 40);
             this.uCancel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uCancel.LogAction = true;
-            this.uCancel.Location = new System.Drawing.Point(526, 830);
-            this.uCancel.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uCancel);
             // 
             // uAccesories_Position_Shift
             // 
             this.uAccesories_Position_Shift.Name = "uAccesories_Position_Shift";
             this.uAccesories_Position_Shift.PlcNumber = 1;
-            this.uAccesories_Position_Shift.TitleTextKey = "Accesories Position Shift";
-            this.uAccesories_Position_Shift.CommandBAddress = "M1000";
-            this.uAccesories_Position_Shift.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uAccesories_Position_Shift.Lamp1BAddress = "M1000";
+            this.uAccesories_Position_Shift.TranslationKey = "Accesories Position Shift";
+            this.uAccesories_Position_Shift.FallbackText = "Accesories Position Shift";
+            bitAction14.Address = "M1000";
+            bitAction14.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uAccesories_Position_Shift.BitActions.Add(bitAction14);
+            this.uAccesories_Position_Shift.Lamp1Address = "M1000";
+            this.uAccesories_Position_Shift.Location = new System.Drawing.Point(16, 916);
+            this.uAccesories_Position_Shift.Size = new System.Drawing.Size(360, 40);
             this.uAccesories_Position_Shift.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uAccesories_Position_Shift.LogAction = true;
-            this.uAccesories_Position_Shift.Location = new System.Drawing.Point(16, 904);
-            this.uAccesories_Position_Shift.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uAccesories_Position_Shift);
             // 
             // uMagnetic_Proximity_Sensor
             // 
             this.uMagnetic_Proximity_Sensor.Name = "uMagnetic_Proximity_Sensor";
             this.uMagnetic_Proximity_Sensor.PlcNumber = 1;
-            this.uMagnetic_Proximity_Sensor.TitleTextKey = "Magnetic Proximity Sensor";
-            this.uMagnetic_Proximity_Sensor.CommandBAddress = "M1001";
-            this.uMagnetic_Proximity_Sensor.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uMagnetic_Proximity_Sensor.Lamp1BAddress = "M1001";
+            this.uMagnetic_Proximity_Sensor.TranslationKey = "Magnetic Proximity Sensor";
+            this.uMagnetic_Proximity_Sensor.FallbackText = "Magnetic Proximity Sensor";
+            bitAction15.Address = "M1001";
+            bitAction15.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uMagnetic_Proximity_Sensor.BitActions.Add(bitAction15);
+            this.uMagnetic_Proximity_Sensor.Lamp1Address = "M1001";
+            this.uMagnetic_Proximity_Sensor.Location = new System.Drawing.Point(526, 916);
+            this.uMagnetic_Proximity_Sensor.Size = new System.Drawing.Size(360, 40);
             this.uMagnetic_Proximity_Sensor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uMagnetic_Proximity_Sensor.LogAction = true;
-            this.uMagnetic_Proximity_Sensor.Location = new System.Drawing.Point(526, 904);
-            this.uMagnetic_Proximity_Sensor.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uMagnetic_Proximity_Sensor);
             // 
             // uStoppers_Auto_Settings
             // 
             this.uStoppers_Auto_Settings.Name = "uStoppers_Auto_Settings";
             this.uStoppers_Auto_Settings.PlcNumber = 1;
-            this.uStoppers_Auto_Settings.TitleTextKey = "Stoppers Auto Settings";
-            this.uStoppers_Auto_Settings.CommandBAddress = "M1002";
-            this.uStoppers_Auto_Settings.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.uStoppers_Auto_Settings.Lamp1BAddress = "M1002";
+            this.uStoppers_Auto_Settings.TranslationKey = "Stoppers Auto Settings";
+            this.uStoppers_Auto_Settings.FallbackText = "Stoppers Auto Settings";
+            bitAction16.Address = "M1002";
+            bitAction16.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.uStoppers_Auto_Settings.BitActions.Add(bitAction16);
+            this.uStoppers_Auto_Settings.Lamp1Address = "M1002";
+            this.uStoppers_Auto_Settings.Location = new System.Drawing.Point(16, 990);
+            this.uStoppers_Auto_Settings.Size = new System.Drawing.Size(360, 40);
             this.uStoppers_Auto_Settings.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.uStoppers_Auto_Settings.LogAction = true;
-            this.uStoppers_Auto_Settings.Location = new System.Drawing.Point(16, 978);
-            this.uStoppers_Auto_Settings.Size = new System.Drawing.Size(360, 64);
             this.Controls.Add(this.uStoppers_Auto_Settings);
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
@@ -456,33 +504,33 @@ namespace Kaban.Machines.H500.Screens
         }
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI uReset;
-        private Kaban.UI.Controls.FunctionUnitHMI uManual;
-        private Kaban.UI.Controls.FunctionUnitHMI uLubrication;
-        private Kaban.UI.Controls.FunctionUnitHMI uM_110;
-        private Kaban.UI.Controls.FunctionUnitHMI uM_111;
-        private Kaban.UI.Controls.FunctionUnitHMI uM_112;
-        private Kaban.UI.Controls.FunctionUnitHMI uM_113;
-        private Kaban.UI.Controls.FunctionUnitHMI uConveyor_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI uClampings_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_1;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_2;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_3;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_4;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_5;
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping_6;
-        private Kaban.UI.Controls.FunctionUnitHMI uClampings_Release;
-        private Kaban.UI.Controls.FunctionUnitHMI uScrewing_ON_OFF;
-        private Kaban.UI.Controls.FunctionUnitHMI uScrewing_ON_OFF2;
-        private Kaban.UI.Controls.FunctionUnitHMI uBolt_Level_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI uGO;
-        private Kaban.UI.Controls.FunctionUnitHMI uUnit_FW_Back;
-        private Kaban.UI.Controls.FunctionUnitHMI uUnit_Back;
-        private Kaban.UI.Controls.FunctionUnitHMI uPause;
-        private Kaban.UI.Controls.FunctionUnitHMI uCancel;
-        private Kaban.UI.Controls.FunctionUnitHMI uAccesories_Position_Shift;
-        private Kaban.UI.Controls.FunctionUnitHMI uMagnetic_Proximity_Sensor;
-        private Kaban.UI.Controls.FunctionUnitHMI uStoppers_Auto_Settings;
+        private Kaban.UI.Controls.ButtonHMI uReset;
+        private Kaban.UI.Controls.ButtonHMI uManual;
+        private Kaban.UI.Controls.ButtonHMI uLubrication;
+        private Kaban.UI.Controls.ButtonHMI uM_110;
+        private Kaban.UI.Controls.ButtonHMI uM_111;
+        private Kaban.UI.Controls.ButtonHMI uM_112;
+        private Kaban.UI.Controls.ButtonHMI uM_113;
+        private Kaban.UI.Controls.ButtonHMI uConveyor_Motor;
+        private Kaban.UI.Controls.CylinderUnitHMI uClampings_Up_Down;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_1;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_2;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_3;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_4;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_5;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping_6;
+        private Kaban.UI.Controls.ButtonHMI uClampings_Release;
+        private Kaban.UI.Controls.CylinderUnitHMI uScrewing_ON_OFF;
+        private Kaban.UI.Controls.CylinderUnitHMI uScrewing_ON_OFF2;
+        private Kaban.UI.Controls.CylinderUnitHMI uBolt_Level_Motor;
+        private Kaban.UI.Controls.CylinderUnitHMI uGO;
+        private Kaban.UI.Controls.ButtonHMI uUnit_FW_Back;
+        private Kaban.UI.Controls.ButtonHMI uUnit_Back;
+        private Kaban.UI.Controls.ButtonHMI uPause;
+        private Kaban.UI.Controls.ButtonHMI uCancel;
+        private Kaban.UI.Controls.ButtonHMI uAccesories_Position_Shift;
+        private Kaban.UI.Controls.ButtonHMI uMagnetic_Proximity_Sensor;
+        private Kaban.UI.Controls.ButtonHMI uStoppers_Auto_Settings;
     }
 }
 

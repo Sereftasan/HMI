@@ -14,7 +14,7 @@ with a position readout, so a clamp that is simply open or shut shows a spurious
 
 CONTROL CHOICE, which is the whole point of the rebuild:
 
-    old kabanLambButton  (button + built-in lamp)  -> FunctionUnitHMI when it
+    old kabanLambButton  (button + built-in lamp)  -> CylinderUnitHMI when it
                             pairs with an opposite command, else ButtonHMI with
                             Lamp1Address - the lamp IS the feedback
     old kabanButton      (momentary/alternate)     -> ButtonHMI
@@ -194,7 +194,7 @@ def emit_page(ns, cls, fields, src, plc=1):
         # ---- a MOVEMENT: two opposing commands -------------------------
         elif len(cmds) >= 2:
             nm = "unit" + n
-            decl.append('            this.{0} = new Kaban.UI.Controls.FunctionUnitHMI();'.format(nm))
+            decl.append('            this.{0} = new Kaban.UI.Controls.CylinderUnitHMI();'.format(nm))
             pos = ""
             if words:
                 w = words[0]

@@ -22,26 +22,33 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
             this.unitCutting_Angle = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitCutting_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Top_Small_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitRight_Front_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitFront_Height_Setting = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitRight_Front_Vert_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitSaw_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitSaw_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitSaw_Cooling = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitWaste_Profile_Blowing = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitN45_Waste_Blowing = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitSawdust_Blowing_Robot_Kramier = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Press_Roller_FW_Back = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Press_Roller_Up = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.ButtonHMI();
+            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_Top_Small_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitRight_Front_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitFront_Height_Setting = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitRight_Front_Vert_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitSaw_Motor = new Kaban.UI.Controls.ButtonHMI();
+            this.unitSaw_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitSaw_Cooling = new Kaban.UI.Controls.ButtonHMI();
+            this.unitWaste_Profile_Blowing = new Kaban.UI.Controls.ButtonHMI();
+            this.unitN45_Waste_Blowing = new Kaban.UI.Controls.ButtonHMI();
+            this.unitSawdust_Blowing_Robot_Kramier = new Kaban.UI.Controls.ButtonHMI();
+            this.unitProfile_Press_Roller_FW_Back = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Press_Roller_Up = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitV_Cutting_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitV_Cutting_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitV_Saw_Motors = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitV_Saw_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitV_Saw_Motors = new Kaban.UI.Controls.ButtonHMI();
+            this.unitV_Saw_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
             this.SuspendLayout();
             // 
             // unitCutting_Angle
@@ -64,16 +71,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitHigh_Air_Pressure
             // 
-            this.unitHigh_Air_Pressure.BackColor = System.Drawing.Color.White;
             this.unitHigh_Air_Pressure.Name = "unitHigh_Air_Pressure";
             this.unitHigh_Air_Pressure.PlcNumber = 1;
-            this.unitHigh_Air_Pressure.TitleTextKey = "High Air Pressure";
-            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(526, 90);
-            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 64);
-            this.unitHigh_Air_Pressure.LogAction = true;
-            this.unitHigh_Air_Pressure.CommandBAddress = "M651";
-            this.unitHigh_Air_Pressure.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.TranslationKey = "High Air Pressure";
+            this.unitHigh_Air_Pressure.FallbackText = "High Air Pressure";
+            bitAction1.Address = "M651";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.BitActions.Add(bitAction1);
+            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(526, 102);
+            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 40);
             this.unitHigh_Air_Pressure.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitHigh_Air_Pressure.LogAction = true;
             this.Controls.Add(this.unitHigh_Air_Pressure);
             // 
             // unitLeft_Top_Clamping
@@ -200,91 +208,91 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitSaw_Motor
             // 
-            this.unitSaw_Motor.BackColor = System.Drawing.Color.White;
             this.unitSaw_Motor.Name = "unitSaw_Motor";
             this.unitSaw_Motor.PlcNumber = 1;
-            this.unitSaw_Motor.TitleTextKey = "Saw Motor";
-            this.unitSaw_Motor.Location = new System.Drawing.Point(526, 386);
-            this.unitSaw_Motor.Size = new System.Drawing.Size(360, 64);
-            this.unitSaw_Motor.LogAction = true;
-            this.unitSaw_Motor.CommandBAddress = "M636";
-            this.unitSaw_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
-            this.unitSaw_Motor.Lamp1BAddress = "M235";
+            this.unitSaw_Motor.TranslationKey = "Saw Motor";
+            this.unitSaw_Motor.FallbackText = "Saw Motor";
+            bitAction2.Address = "M636";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitSaw_Motor.BitActions.Add(bitAction2);
+            this.unitSaw_Motor.Lamp1Address = "M235";
+            this.unitSaw_Motor.Location = new System.Drawing.Point(526, 398);
+            this.unitSaw_Motor.Size = new System.Drawing.Size(360, 40);
             this.unitSaw_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitSaw_Motor.LogAction = true;
             this.Controls.Add(this.unitSaw_Motor);
             // 
             // unitSaw_Inverter_Error
             // 
-            this.unitSaw_Inverter_Error.BackColor = System.Drawing.Color.White;
             this.unitSaw_Inverter_Error.Name = "unitSaw_Inverter_Error";
             this.unitSaw_Inverter_Error.PlcNumber = 1;
-            this.unitSaw_Inverter_Error.TitleTextKey = "Saw Inverter Error";
-            this.unitSaw_Inverter_Error.Location = new System.Drawing.Point(16, 460);
-            this.unitSaw_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitSaw_Inverter_Error.LogAction = true;
-            this.unitSaw_Inverter_Error.PositionAddress = "D669";
-            this.unitSaw_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitSaw_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitSaw_Inverter_Error.PositionDigits = 6;
-            this.unitSaw_Inverter_Error.PositionSuffix = "mm";
-            this.unitSaw_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitSaw_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.unitSaw_Inverter_Error.Address = "D669";
+            this.unitSaw_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitSaw_Inverter_Error.DecimalPlaces = 0;
+            this.unitSaw_Inverter_Error.Digits = 6;
+            this.unitSaw_Inverter_Error.DescriptionText = "Saw Inverter Error";
+            this.unitSaw_Inverter_Error.Location = new System.Drawing.Point(226, 472);
+            this.unitSaw_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             this.Controls.Add(this.unitSaw_Inverter_Error);
             // 
             // unitSaw_Cooling
             // 
-            this.unitSaw_Cooling.BackColor = System.Drawing.Color.White;
             this.unitSaw_Cooling.Name = "unitSaw_Cooling";
             this.unitSaw_Cooling.PlcNumber = 1;
-            this.unitSaw_Cooling.TitleTextKey = "Saw Cooling";
-            this.unitSaw_Cooling.Location = new System.Drawing.Point(526, 16);
-            this.unitSaw_Cooling.Size = new System.Drawing.Size(360, 64);
-            this.unitSaw_Cooling.LogAction = true;
-            this.unitSaw_Cooling.CommandBAddress = "M714";
-            this.unitSaw_Cooling.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitSaw_Cooling.TranslationKey = "Saw Cooling";
+            this.unitSaw_Cooling.FallbackText = "Saw Cooling";
+            bitAction3.Address = "M714";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitSaw_Cooling.BitActions.Add(bitAction3);
+            this.unitSaw_Cooling.Location = new System.Drawing.Point(526, 28);
+            this.unitSaw_Cooling.Size = new System.Drawing.Size(360, 40);
             this.unitSaw_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitSaw_Cooling.LogAction = true;
             this.Controls.Add(this.unitSaw_Cooling);
             // 
             // unitWaste_Profile_Blowing
             // 
-            this.unitWaste_Profile_Blowing.BackColor = System.Drawing.Color.White;
             this.unitWaste_Profile_Blowing.Name = "unitWaste_Profile_Blowing";
             this.unitWaste_Profile_Blowing.PlcNumber = 1;
-            this.unitWaste_Profile_Blowing.TitleTextKey = "Waste Profile Blowing";
-            this.unitWaste_Profile_Blowing.Location = new System.Drawing.Point(16, 90);
-            this.unitWaste_Profile_Blowing.Size = new System.Drawing.Size(360, 64);
-            this.unitWaste_Profile_Blowing.LogAction = true;
-            this.unitWaste_Profile_Blowing.CommandBAddress = "M706";
-            this.unitWaste_Profile_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitWaste_Profile_Blowing.TranslationKey = "Waste Profile Blowing";
+            this.unitWaste_Profile_Blowing.FallbackText = "Waste Profile Blowing";
+            bitAction4.Address = "M706";
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitWaste_Profile_Blowing.BitActions.Add(bitAction4);
+            this.unitWaste_Profile_Blowing.Location = new System.Drawing.Point(16, 102);
+            this.unitWaste_Profile_Blowing.Size = new System.Drawing.Size(360, 40);
             this.unitWaste_Profile_Blowing.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitWaste_Profile_Blowing.LogAction = true;
             this.Controls.Add(this.unitWaste_Profile_Blowing);
             // 
             // unitN45_Waste_Blowing
             // 
-            this.unitN45_Waste_Blowing.BackColor = System.Drawing.Color.White;
             this.unitN45_Waste_Blowing.Name = "unitN45_Waste_Blowing";
             this.unitN45_Waste_Blowing.PlcNumber = 1;
-            this.unitN45_Waste_Blowing.TitleTextKey = "45 Waste Blowing";
-            this.unitN45_Waste_Blowing.Location = new System.Drawing.Point(1036, 90);
-            this.unitN45_Waste_Blowing.Size = new System.Drawing.Size(360, 64);
-            this.unitN45_Waste_Blowing.LogAction = true;
-            this.unitN45_Waste_Blowing.CommandBAddress = "M746";
-            this.unitN45_Waste_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitN45_Waste_Blowing.TranslationKey = "45 Waste Blowing";
+            this.unitN45_Waste_Blowing.FallbackText = "45 Waste Blowing";
+            bitAction5.Address = "M746";
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitN45_Waste_Blowing.BitActions.Add(bitAction5);
+            this.unitN45_Waste_Blowing.Location = new System.Drawing.Point(1036, 102);
+            this.unitN45_Waste_Blowing.Size = new System.Drawing.Size(360, 40);
             this.unitN45_Waste_Blowing.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitN45_Waste_Blowing.LogAction = true;
             this.Controls.Add(this.unitN45_Waste_Blowing);
             // 
             // unitSawdust_Blowing_Robot_Kramier
             // 
-            this.unitSawdust_Blowing_Robot_Kramier.BackColor = System.Drawing.Color.White;
             this.unitSawdust_Blowing_Robot_Kramier.Name = "unitSawdust_Blowing_Robot_Kramier";
             this.unitSawdust_Blowing_Robot_Kramier.PlcNumber = 1;
-            this.unitSawdust_Blowing_Robot_Kramier.TitleTextKey = "Sawdust Blowing - Robot Kramier";
-            this.unitSawdust_Blowing_Robot_Kramier.Location = new System.Drawing.Point(526, 164);
-            this.unitSawdust_Blowing_Robot_Kramier.Size = new System.Drawing.Size(360, 64);
-            this.unitSawdust_Blowing_Robot_Kramier.LogAction = true;
-            this.unitSawdust_Blowing_Robot_Kramier.CommandBAddress = "M697";
-            this.unitSawdust_Blowing_Robot_Kramier.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitSawdust_Blowing_Robot_Kramier.TranslationKey = "Sawdust Blowing - Robot Kramier";
+            this.unitSawdust_Blowing_Robot_Kramier.FallbackText = "Sawdust Blowing - Robot Kramier";
+            bitAction6.Address = "M697";
+            bitAction6.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitSawdust_Blowing_Robot_Kramier.BitActions.Add(bitAction6);
+            this.unitSawdust_Blowing_Robot_Kramier.Location = new System.Drawing.Point(526, 176);
+            this.unitSawdust_Blowing_Robot_Kramier.Size = new System.Drawing.Size(360, 40);
             this.unitSawdust_Blowing_Robot_Kramier.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitSawdust_Blowing_Robot_Kramier.LogAction = true;
             this.Controls.Add(this.unitSawdust_Blowing_Robot_Kramier);
             // 
             // unitProfile_Press_Roller_FW_Back
@@ -343,34 +351,30 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitV_Saw_Motors
             // 
-            this.unitV_Saw_Motors.BackColor = System.Drawing.Color.White;
             this.unitV_Saw_Motors.Name = "unitV_Saw_Motors";
             this.unitV_Saw_Motors.PlcNumber = 1;
-            this.unitV_Saw_Motors.TitleTextKey = "V Saw Motors";
-            this.unitV_Saw_Motors.Location = new System.Drawing.Point(1036, 386);
-            this.unitV_Saw_Motors.Size = new System.Drawing.Size(360, 64);
-            this.unitV_Saw_Motors.LogAction = true;
-            this.unitV_Saw_Motors.CommandBAddress = "M637";
-            this.unitV_Saw_Motors.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitV_Saw_Motors.TranslationKey = "V Saw Motors";
+            this.unitV_Saw_Motors.FallbackText = "V Saw Motors";
+            bitAction7.Address = "M637";
+            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitV_Saw_Motors.BitActions.Add(bitAction7);
+            this.unitV_Saw_Motors.Location = new System.Drawing.Point(1036, 398);
+            this.unitV_Saw_Motors.Size = new System.Drawing.Size(360, 40);
             this.unitV_Saw_Motors.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitV_Saw_Motors.LogAction = true;
             this.Controls.Add(this.unitV_Saw_Motors);
             // 
             // unitV_Saw_Inverter_Error
             // 
-            this.unitV_Saw_Inverter_Error.BackColor = System.Drawing.Color.White;
             this.unitV_Saw_Inverter_Error.Name = "unitV_Saw_Inverter_Error";
             this.unitV_Saw_Inverter_Error.PlcNumber = 1;
-            this.unitV_Saw_Inverter_Error.TitleTextKey = "V Saw Inverter Error";
-            this.unitV_Saw_Inverter_Error.Location = new System.Drawing.Point(526, 460);
-            this.unitV_Saw_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitV_Saw_Inverter_Error.LogAction = true;
-            this.unitV_Saw_Inverter_Error.PositionAddress = "D670";
-            this.unitV_Saw_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitV_Saw_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitV_Saw_Inverter_Error.PositionDigits = 6;
-            this.unitV_Saw_Inverter_Error.PositionSuffix = "mm";
-            this.unitV_Saw_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitV_Saw_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.unitV_Saw_Inverter_Error.Address = "D670";
+            this.unitV_Saw_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitV_Saw_Inverter_Error.DecimalPlaces = 0;
+            this.unitV_Saw_Inverter_Error.Digits = 6;
+            this.unitV_Saw_Inverter_Error.DescriptionText = "V Saw Inverter Error";
+            this.unitV_Saw_Inverter_Error.Location = new System.Drawing.Point(736, 472);
+            this.unitV_Saw_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             this.Controls.Add(this.unitV_Saw_Inverter_Error);
             // 
             // ManualCutting
@@ -393,24 +397,24 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private Kaban.UI.Controls.AxisUnitHMI unitCutting_Angle;
         private Kaban.UI.Controls.AxisUnitHMI unitCutting_Z;
-        private Kaban.UI.Controls.FunctionUnitHMI unitHigh_Air_Pressure;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Top_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Top_Small_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRight_Front_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitFront_Height_Setting;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRight_Front_Vert_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSaw_Motor;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSaw_Inverter_Error;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSaw_Cooling;
-        private Kaban.UI.Controls.FunctionUnitHMI unitWaste_Profile_Blowing;
-        private Kaban.UI.Controls.FunctionUnitHMI unitN45_Waste_Blowing;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSawdust_Blowing_Robot_Kramier;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Press_Roller_FW_Back;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Press_Roller_Up;
+        private Kaban.UI.Controls.ButtonHMI unitHigh_Air_Pressure;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_Small_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRight_Front_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitFront_Height_Setting;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRight_Front_Vert_Clamping;
+        private Kaban.UI.Controls.ButtonHMI unitSaw_Motor;
+        private Kaban.UI.Controls.NumericDisplayHMI unitSaw_Inverter_Error;
+        private Kaban.UI.Controls.ButtonHMI unitSaw_Cooling;
+        private Kaban.UI.Controls.ButtonHMI unitWaste_Profile_Blowing;
+        private Kaban.UI.Controls.ButtonHMI unitN45_Waste_Blowing;
+        private Kaban.UI.Controls.ButtonHMI unitSawdust_Blowing_Robot_Kramier;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Press_Roller_FW_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Press_Roller_Up;
         private Kaban.UI.Controls.AxisUnitHMI unitV_Cutting_Y;
         private Kaban.UI.Controls.AxisUnitHMI unitV_Cutting_Z;
-        private Kaban.UI.Controls.FunctionUnitHMI unitV_Saw_Motors;
-        private Kaban.UI.Controls.FunctionUnitHMI unitV_Saw_Inverter_Error;
+        private Kaban.UI.Controls.ButtonHMI unitV_Saw_Motors;
+        private Kaban.UI.Controls.NumericDisplayHMI unitV_Saw_Inverter_Error;
     }
 }
 

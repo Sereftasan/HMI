@@ -82,7 +82,7 @@ class U {
                               FormBorderStyle = FormBorderStyle.None };
 
         // An axis unit as the page builds one once its axis is resolved: a
-        // FunctionUnitHMI of Kind Axis with the axis row's slot widths, a position
+        // CylinderUnitHMI of Kind Axis with the axis row's slot widths, a position
         // and ONE error bit. (AxisUnitHMI itself needs the discovered Axis Settings
         // pages; its constructor settings are checked separately below.)
         var axisHost = new AxisUnitHMI { Location = new Point(10, 10) };      // default size
@@ -93,9 +93,9 @@ class U {
         axis.PositionAddress = "D100"; axis.PositionDecimalPlaces = 2; axis.PositionDigits = 8; axis.PositionSuffix = "mm";
         axis.ErrorBAddress = "M890";
 
-        var fuPlain = new FunctionUnitHMI { Location = new Point(10, 90), TitleTextKey = "Saw Motor",
+        var fuPlain = new CylinderUnitHMI { Location = new Point(10, 90), TitleTextKey = "Saw Motor",
                                             CommandBAddress = "M636" };              // default size, no display
-        var fuPos = new FunctionUnitHMI { Location = new Point(400, 90), TitleTextKey = "Left Top Clamping",
+        var fuPos = new CylinderUnitHMI { Location = new Point(400, 90), TitleTextKey = "Left Top Clamping",
                                           CommandAAddress = "M672", CommandBAddress = "M671",
                                           PositionAddress = "D15", PositionDecimalPlaces = 1, PositionDigits = 6,
                                           ErrorAAddress = "M892", ErrorBAddress = "M891" };

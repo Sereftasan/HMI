@@ -31,7 +31,7 @@ namespace Kaban.Core.Enums
         MillingUnitIsBack = 1L << 6 
     }
 
-    /// <summary>Arrow pair shown on a FunctionUnitHMI's two buttons.</summary>
+    /// <summary>Arrow pair shown on a CylinderUnitHMI's two buttons.</summary>
     public enum ButtonArrowStyle
     {
         LeftRight,

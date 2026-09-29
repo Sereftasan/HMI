@@ -17,6 +17,9 @@ namespace Kaban.UI.Controls
     ///     Md_Auto|Automatic|0
     ///     Md_Manual|Manual|1
     /// </summary>
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class ComboBoxHMI : ComboBox
     {
         private class Opt { public string Key, Fallback; public int Value;

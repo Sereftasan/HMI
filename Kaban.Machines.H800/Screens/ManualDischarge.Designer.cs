@@ -21,11 +21,11 @@ namespace Kaban.Machines.H800.Screens
         private void InitializeComponent()
         {
             this.bDischarge_1_Test = new Kaban.UI.Controls.ButtonHMI();
-            this.uRobot = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uRobot2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.uDischarge_1_Cover = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uRobot = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uRobot2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.uDischarge_1_Cover = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bDischarge_1_Profile_Unload_Forward = new Kaban.UI.Controls.ButtonHMI();
-            this.uDischarge_2_Cover = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uDischarge_2_Cover = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bDischarge_2_Profile_Unload_Forward = new Kaban.UI.Controls.ButtonHMI();
             this.lRobot_Clamping_Back_SN = new Kaban.UI.Controls.LampHMI();
             this.lRobot_Clamping_Forward_Alarm_SN = new Kaban.UI.Controls.LampHMI();
@@ -203,11 +203,11 @@ namespace Kaban.Machines.H800.Screens
         #endregion
 
         private Kaban.UI.Controls.ButtonHMI bDischarge_1_Test;
-        private Kaban.UI.Controls.FunctionUnitHMI uRobot;
-        private Kaban.UI.Controls.FunctionUnitHMI uRobot2;
-        private Kaban.UI.Controls.FunctionUnitHMI uDischarge_1_Cover;
+        private Kaban.UI.Controls.CylinderUnitHMI uRobot;
+        private Kaban.UI.Controls.CylinderUnitHMI uRobot2;
+        private Kaban.UI.Controls.CylinderUnitHMI uDischarge_1_Cover;
         private Kaban.UI.Controls.ButtonHMI bDischarge_1_Profile_Unload_Forward;
-        private Kaban.UI.Controls.FunctionUnitHMI uDischarge_2_Cover;
+        private Kaban.UI.Controls.CylinderUnitHMI uDischarge_2_Cover;
         private Kaban.UI.Controls.ButtonHMI bDischarge_2_Profile_Unload_Forward;
         private Kaban.UI.Controls.LampHMI lRobot_Clamping_Back_SN;
         private Kaban.UI.Controls.LampHMI lRobot_Clamping_Forward_Alarm_SN;

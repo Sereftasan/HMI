@@ -66,8 +66,11 @@ namespace Kaban.UI.Settings
             add(_btnSave);
             _dirty.Guard(_btnSave);
             add(UiStyle.ToolButton("\uD83D\uDD04", "Reload from disk", tips, (s, e) => LoadRows()));
-            add(UiStyle.ToolButton("\uD83D\uDCC2", "Open the helper document of the selected alarm",
-                                   tips, (s, e) => OpenHelper()));
+            add(UiStyle.ToolButton("\u270F\uFE0F", "Edit the helper links of the selected alarm (several documents)",
+                                   tips, (s, e) => { if (_grid.CurrentRow != null) EditHelpers(_grid.CurrentRow.Index); }));
+            _btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", "Open a helper document of the selected alarm",
+                                          tips, (s, e) => OpenHelper());
+            add(_btnOpen);
 
             _grid.Dock = DockStyle.Fill;
             // Column captions need room UNDER the text: a header sized to the
@@ -98,7 +101,9 @@ namespace Kaban.UI.Settings
             _grid.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Helper",
-                HeaderText = "Helper link (file, page or URL)",
+                // SEVERAL: a manual, a drawing, a page - "; " between them. Typed
+                // here or kept as a list (double click).
+                HeaderText = "Helper links (files, pages or URLs; double click for the list)",
                 FillWeight = 31
             });
 
@@ -114,7 +119,7 @@ namespace Kaban.UI.Settings
             // "Severity" opened clipped to an ellipsis and the operator had to drag
             // every column before the grid could be read at all.
             FitColumnsToHeadings(_grid);
-            _grid.CellDoubleClick += (s, e) => { if (e.ColumnIndex == _grid.Columns["Helper"].Index) BrowseHelper(e.RowIndex); };
+            _grid.CellDoubleClick += (s, e) => { if (e.ColumnIndex == _grid.Columns["Helper"].Index) EditHelpers(e.RowIndex); };
 
             // A combo cell does not commit until focus leaves it, which makes the
             // code column look one edit behind. Committing on change fixes that.
@@ -145,8 +150,7 @@ namespace Kaban.UI.Settings
                 // Straight from the definition - the only place these live now
                 // that AlarmSettings.cfg is gone.
                 string sev = def.Severity.ToString();
-                string helper = def.HelperKeys != null && def.HelperKeys.Count > 0
-                              ? string.Join(";", def.HelperKeys) : "";
+                string helper = JoinLinks(SplitLinks(def.HelperKeys));
                 int row = _grid.Rows.Add(def.Address, LanguageManager.Localize(def.TranslationKey), sev, helper);
                 // The DEFINITION rides on the row. Save used to look alarms up by
                 // address, and FA2010, H500 and H800 all use M801...: an edit on one
@@ -185,10 +189,10 @@ namespace Kaban.UI.Settings
                         def.Severity = sev;
 
                     // Helper files only: which unit an alarm belongs to now comes
-                    // from the unit itself (FunctionUnitHMI / AxisSettingHMI).
-                    string helper = Convert.ToString(r.Cells["Helper"].Value);
-                    def.HelperKeys = string.IsNullOrWhiteSpace(helper)
-                        ? new List<string>() : new List<string> { helper.Trim() };
+                    // from the unit itself (CylinderUnitHMI / AxisSettingHMI).
+                    // A LIST: each link its own entry in Alarms.json. It used to be
+                    // stored as ONE entry, so "a.pdf;b.pdf" was a file name nobody had.
+                    def.HelperKeys = SplitLinks(new[] { Convert.ToString(r.Cells["Helper"].Value) });
                 }
 
                 // THIS machine's file only (all files when the page has no machine).
@@ -225,34 +229,180 @@ namespace Kaban.UI.Settings
         }
 
 
-        private void BrowseHelper(int row)
+        private Control _btnOpen;
+
+        /// <summary>The links as a list: split at ";", trimmed, blanks and repeats dropped.</summary>
+        public static List<string> SplitLinks(IEnumerable<string> entries)
         {
-            if (row < 0) return;
-            using (var dlg = new OpenFileDialog
-            { Filter = "Documents (*.pdf;*.png;*.jpg;*.txt;*.html)|*.pdf;*.png;*.jpg;*.txt;*.html|All files (*.*)|*.*" })
+            var list = new List<string>();
+            if (entries == null) return list;
+            foreach (var e in entries)
+                foreach (var part in (e ?? "").Split(';'))
+                {
+                    var t = part.Trim();
+                    if (t.Length > 0 && !list.Contains(t, StringComparer.OrdinalIgnoreCase)) list.Add(t);
+                }
+            return list;
+        }
+
+        /// <summary>The list as the cell shows it: "manual.pdf; drawing.png".</summary>
+        public static string JoinLinks(IEnumerable<string> links) { return string.Join("; ", links ?? new string[0]); }
+
+        /// <summary>A path under the program's folder is stored relative to it (portable); others as chosen.</summary>
+        public static string Portable(string path)
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            return path.StartsWith(baseDir, StringComparison.OrdinalIgnoreCase) ? path.Substring(baseDir.Length) : path;
+        }
+
+        /// <summary>The row's helper links in a list: add files or links, remove, reorder.</summary>
+        private void EditHelpers(int row)
+        {
+            if (row < 0 || row >= _grid.Rows.Count) return;
+            var cell = _grid.Rows[row].Cells["Helper"];
+            using (var dlg = new HelperLinksForm(Convert.ToString(_grid.Rows[row].Cells["Text"].Value),
+                                                 SplitLinks(new[] { Convert.ToString(cell.Value) })))
             {
                 if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string chosen = dlg.FileName;
-                // SEVERAL FILES, joined with ";". The alarm screen splits them
-                // again, so one alarm can offer a manual, a drawing and a note.
-                _grid.Rows[row].Cells["Helper"].Value =
-                    chosen.StartsWith(baseDir, StringComparison.OrdinalIgnoreCase)
-                        ? chosen.Substring(baseDir.Length)      // portable
-                        : chosen;
+                cell.Value = JoinLinks(dlg.Links);
             }
         }
 
         private void OpenHelper()
         {
             if (_grid.SelectedRows.Count == 0) return;
-            string helper = Convert.ToString(_grid.SelectedRows[0].Cells["Helper"].Value);
-            if (string.IsNullOrWhiteSpace(helper)) { _status.Text = "No helper link on that alarm."; return; }
-            string path = Path.IsPathRooted(helper) || helper.StartsWith("http")
+            var links = SplitLinks(new[] { Convert.ToString(_grid.SelectedRows[0].Cells["Helper"].Value) });
+            if (links.Count == 0) { _status.Text = "No helper link on that alarm."; return; }
+            if (links.Count == 1) { Open(links[0]); return; }
+            // SEVERAL: which one.
+            var menu = new ContextMenuStrip { Font = UiStyle.MenuFont };
+            foreach (var l in links) { var link = l; menu.Items.Add(link, null, (s, e) => Open(link)); }
+            menu.Show(_btnOpen, new Point(0, _btnOpen.Height));
+        }
+
+        private void Open(string helper)
+        {
+            string path = Path.IsPathRooted(helper) || helper.StartsWith("http", StringComparison.OrdinalIgnoreCase)
                 ? helper
                 : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, helper);
             try { System.Diagnostics.Process.Start(path); }
             catch (Exception ex) { _status.Text = "Could not open: " + ex.Message; }
+        }
+    }
+
+    /// <summary>
+    /// An alarm's helper links as a list: files (stored relative to the program
+    /// when under it), pages or URLs, in the order the alarm offers them.
+    /// </summary>
+    public sealed class HelperLinksForm : Form
+    {
+        private readonly ListBox _list = new ListBox();
+        private readonly TextBox _link = new TextBox();
+
+        public List<string> Links { get { return _list.Items.Cast<string>().ToList(); } }
+
+        public HelperLinksForm(string alarm, IEnumerable<string> links)
+        {
+            Text = "Helper links" + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            StartPosition = FormStartPosition.CenterParent;
+            ClientSize = new Size(560, 320);
+            MinimumSize = new Size(420, 260);
+            ShowInTaskbar = false;
+            Font = UiStyle.Body;
+
+            var note = new Label
+            {
+                Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 6, 8, 0),
+                Text = "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
+                       "relative to it), pages or web addresses."
+            };
+            _list.Dock = DockStyle.Fill;
+            _list.IntegralHeight = false;
+            _list.SelectionMode = SelectionMode.MultiExtended;
+            foreach (var l in links ?? new string[0]) _list.Items.Add(l);
+
+            var side = new FlowLayoutPanel { Dock = DockStyle.Right, Width = 118, FlowDirection = FlowDirection.TopDown, Padding = new Padding(6) };
+            Func<string, EventHandler, Button> btn = (text, click) =>
+            {
+                var b = new Button { Text = text, Width = 104, Height = 30 };
+                b.Click += click;
+                side.Controls.Add(b);
+                return b;
+            };
+            btn("Add files...", (s, e) => AddFiles());
+            btn("Remove", (s, e) => RemoveSelected());
+            btn("Up", (s, e) => Move(-1));
+            btn("Down", (s, e) => Move(+1));
+
+            var linkRow = new Panel { Dock = DockStyle.Bottom, Height = 38, Padding = new Padding(8, 6, 8, 4) };
+            var addLink = new Button { Text = "Add link", Dock = DockStyle.Right, Width = 104 };
+            _link.Dock = DockStyle.Fill;
+            addLink.Click += (s, e) => AddLink();
+            _link.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { AddLink(); e.SuppressKeyPress = true; } };
+            linkRow.Controls.Add(_link);
+            linkRow.Controls.Add(addLink);
+
+            var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 42, FlowDirection = FlowDirection.RightToLeft, Padding = new Padding(6) };
+            var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, Width = 96, Height = 30 };
+            var ok = new Button { Text = "OK", DialogResult = DialogResult.OK, Width = 96, Height = 30 };
+            bottom.Controls.Add(cancel);
+            bottom.Controls.Add(ok);
+            CancelButton = cancel;
+
+            Controls.Add(_list);
+            Controls.Add(side);
+            Controls.Add(note);
+            Controls.Add(linkRow);
+            Controls.Add(bottom);
+            _list.KeyDown += (s, e) => { if (e.KeyCode == Keys.Delete) RemoveSelected(); };
+        }
+
+        /// <summary>Appends links not listed yet (tests, the file dialog and the link box).</summary>
+        public void Add(IEnumerable<string> links)
+        {
+            foreach (var l in links)
+            {
+                var t = (l ?? "").Trim();
+                if (t.Length > 0 && !_list.Items.Cast<string>().Any(x => string.Equals(x, t, StringComparison.OrdinalIgnoreCase)))
+                    _list.Items.Add(t);
+            }
+        }
+
+        private void AddFiles()
+        {
+            using (var dlg = new OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "Documents (*.pdf;*.png;*.jpg;*.txt;*.html)|*.pdf;*.png;*.jpg;*.txt;*.html|All files (*.*)|*.*"
+            })
+            {
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                Add(dlg.FileNames.Select(AlarmSettingsControl.Portable));
+            }
+        }
+
+        private void AddLink()
+        {
+            // SEVERAL AT ONCE: "a.pdf; b.pdf" adds both.
+            Add(AlarmSettingsControl.SplitLinks(new[] { _link.Text }));
+            _link.Clear();
+        }
+
+        private void RemoveSelected()
+        {
+            foreach (var i in _list.SelectedIndices.Cast<int>().OrderByDescending(i => i).ToList()) _list.Items.RemoveAt(i);
+        }
+
+        private void Move(int d)
+        {
+            if (_list.SelectedIndices.Count != 1) return;
+            int i = _list.SelectedIndex, j = i + d;
+            if (j < 0 || j >= _list.Items.Count) return;
+            var item = _list.Items[i];
+            _list.Items.RemoveAt(i);
+            _list.Items.Insert(j, item);
+            _list.SelectedIndex = j;
         }
     }
 

@@ -6,11 +6,11 @@ using System.Linq;
 namespace Kaban.UI.Design
 {
     /// <summary>
-    /// Property-grid converter for the child controls exposed by FunctionUnitHMI
+    /// Property-grid converter for the child controls exposed by CylinderUnitHMI
     /// (ButtonA / ButtonB / PositionDisplay).
     ///
     /// Two jobs:
-    ///  1. HIDE everything the FunctionUnitHMI owns - PLC station, addresses,
+    ///  1. HIDE everything the CylinderUnitHMI owns - PLC station, addresses,
     ///     actions, conditions, security and geometry. A function unit is one
     ///     family of signals on ONE PLC, so a per-child PlcNumber is meaningless
     ///     and editing a child's address/condition here would silently fight the
@@ -22,9 +22,9 @@ namespace Kaban.UI.Design
     /// The result: the child grids only offer per-button LOOK, while wiring and
     /// conditions live in exactly one place - the unit itself.
     /// </summary>
-    public class FunctionUnitChildConverter : ExpandableObjectConverter
+    public class CylinderUnitChildConverter : ExpandableObjectConverter
     {
-        // Managed by FunctionUnitHMI - must not be edited on the child.
+        // Managed by CylinderUnitHMI - must not be edited on the child.
         private static readonly HashSet<string> Hidden = new HashSet<string>(StringComparer.Ordinal)
         {
             // wiring / behaviour owned by the unit

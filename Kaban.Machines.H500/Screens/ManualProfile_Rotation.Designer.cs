@@ -20,7 +20,7 @@ namespace Kaban.Machines.H500.Screens
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            this.uProfile_Info_List = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uProfile_Info_List = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // uProfile_Info_List
@@ -44,7 +44,7 @@ namespace Kaban.Machines.H500.Screens
         }
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI uProfile_Info_List;
+        private Kaban.UI.Controls.CylinderUnitHMI uProfile_Info_List;
     }
 }
 

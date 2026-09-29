@@ -34,7 +34,7 @@ namespace Kaban.UI.Controls
     /// it does not own, and a visible control bound to nothing is worse than an
     /// absent one - it invites a press that cannot work.
     ///
-    /// The movement half is deliberately identical to FunctionUnitHMI: same
+    /// The movement half is deliberately identical to CylinderUnitHMI: same
     /// glyphs, same momentary behaviour, same position readout. An operator who
     /// has learned the manual page has already learned this.
     /// </summary>
@@ -42,6 +42,8 @@ namespace Kaban.UI.Controls
     /// <summary>Which jog direction's button shows an axis's reference sensor.</summary>
     public enum AxisReferenceSide { Back = 0, Forward = 1 }
 
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class AxisSettingHMI : UserControl, IConditionalControl
     {
         // ==================================================================
@@ -259,6 +261,15 @@ namespace Kaban.UI.Controls
         [Category(" Commands"), Description("Reference activation selection (latched).")]
         public string GoToReferenceAddress { get; set; }
 
+        /// <summary>
+        /// The PLC's HOME (reference) REQUEST for this axis: while it is TRUE the
+        /// Ref box's border blinks red - the axis needs referencing, and the box
+        /// to tick is the one blinking. Read only; the HMI never writes it.
+        /// </summary>
+        [Category(" Commands"), DefaultValue("")]
+        [Description("The PLC's home (reference) request bit: while TRUE the Ref box's border blinks red. Read only.")]
+        public string HomeRequestAddress { get; set; } = "";
+
         // ---- meters ----
         // MOTOR CURRENT is a servo load percentage read from a status word - a
         // different register family from the setting block and a different scale.
@@ -350,6 +361,7 @@ namespace Kaban.UI.Controls
             new System.Collections.Generic.Dictionary<string, Point>();
 
         /// <summary>The columns of this row (for the page's headings and for tests).</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public System.Collections.Generic.IDictionary<string, Point> Columns { get { return _columns; } }
 
         private void Column(string key, int x, int w) { _columns[key] = new Point(x, w); }
@@ -932,7 +944,9 @@ namespace Kaban.UI.Controls
                     // it. The tooltip carries the detail instead.
                     DescriptionText = "",
                     RequiredSecurity = RequiredSecurity,
-                    LogAction = true
+                    LogAction = true,
+                    // The PLC asking for a reference: the box blinks red.
+                    AlertAddress = (HomeRequestAddress ?? "").Trim()
                 };
                 // Exactly the Cal button's footprint: the two sit side by side and
                 // a checkbox even slightly smaller reads as an afterthought.

@@ -21,6 +21,9 @@ namespace Kaban.UI.Controls
     /// Reading follows the scanner like every other control (UpdateState);
     /// clicking writes the bit through PlcManager with the usual permission gate.
     /// </summary>
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class CheckListHMI : Panel
     {
         private class Row { public string Key, Fallback, Address; public CheckBox Box; public Label Lbl; }
@@ -126,6 +129,7 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>Addresses the scanner must poll for this control.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IEnumerable<string> Addresses { get { foreach (var r in _rows) yield return r.Address; } }
 
         protected override void OnSizeChanged(EventArgs e) { base.OnSizeChanged(e); Rebuild(); }

@@ -243,7 +243,7 @@ namespace Kaban.UI.Plc
                 curPlc = cl.PlcNumber;
                 foreach (var a in cl.Addresses) Add(a);
             }
-            foreach (var cb in _checkBoxes) { curPlc = cb.PlcNumber; Add(cb.Address); }
+            foreach (var cb in _checkBoxes) { curPlc = cb.PlcNumber; Add(cb.Address); Add((cb.AlertAddress ?? "").Trim()); }
             foreach (var cmb in _combos) { curPlc = cmb.PlcNumber; Add(cmb.Address); }
             foreach (var b in _buttons)
             {

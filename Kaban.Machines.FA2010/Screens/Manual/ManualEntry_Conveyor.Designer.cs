@@ -22,19 +22,19 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            this.unitConveyor_Motor = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitConveyor_Motor = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lampConveyor_Motor_RUN = new Kaban.UI.Controls.LampHMI();
-            this.unitConveyor_Inverter_Error = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitConveyor_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
             this.lampConveyor_Limit_SN = new Kaban.UI.Controls.LampHMI();
-            this.unitRoller_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clampings = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_1 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_3 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_4 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_5 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_6 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Clamping_7 = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clampings = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_3 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_4 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_5 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_6 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_7 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // unitConveyor_Motor
@@ -66,20 +66,15 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitConveyor_Inverter_Error
             // 
-            this.unitConveyor_Inverter_Error.BackColor = System.Drawing.Color.White;
             this.unitConveyor_Inverter_Error.Name = "unitConveyor_Inverter_Error";
             this.unitConveyor_Inverter_Error.PlcNumber = 1;
-            this.unitConveyor_Inverter_Error.TitleTextKey = "Conveyor Inverter Error";
-            this.unitConveyor_Inverter_Error.Location = new System.Drawing.Point(16, 164);
-            this.unitConveyor_Inverter_Error.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Inverter_Error.LogAction = true;
-            this.unitConveyor_Inverter_Error.PositionAddress = "D666";
-            this.unitConveyor_Inverter_Error.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Inverter_Error.PositionDecimalPlaces = 0;
-            this.unitConveyor_Inverter_Error.PositionDigits = 6;
-            this.unitConveyor_Inverter_Error.PositionSuffix = "mm";
-            this.unitConveyor_Inverter_Error.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitConveyor_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.unitConveyor_Inverter_Error.Address = "D666";
+            this.unitConveyor_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitConveyor_Inverter_Error.DecimalPlaces = 0;
+            this.unitConveyor_Inverter_Error.Digits = 6;
+            this.unitConveyor_Inverter_Error.DescriptionText = "Conveyor Inverter Error";
+            this.unitConveyor_Inverter_Error.Location = new System.Drawing.Point(226, 176);
+            this.unitConveyor_Inverter_Error.Size = new System.Drawing.Size(150, 40);
             this.Controls.Add(this.unitConveyor_Inverter_Error);
             // 
             // lampConveyor_Limit_SN  (indicator only)
@@ -289,19 +284,19 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveyor_Motor;
+        private Kaban.UI.Controls.CylinderUnitHMI unitConveyor_Motor;
         private Kaban.UI.Controls.LampHMI lampConveyor_Motor_RUN;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveyor_Inverter_Error;
+        private Kaban.UI.Controls.NumericDisplayHMI unitConveyor_Inverter_Error;
         private Kaban.UI.Controls.LampHMI lampConveyor_Limit_SN;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRoller_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clampings;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_1;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_2;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_3;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_4;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_5;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_6;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Clamping_7;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clampings;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_3;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_4;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_5;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_6;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_7;
     }
 }
 

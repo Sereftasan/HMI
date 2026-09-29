@@ -34,7 +34,7 @@ engineer's own spelling, which is better than a wrong guess.
 
 ## Control choice — the point of the exercise
 
-- **movement pair** → `FunctionUnitHMI` (two commands, sensor lamp, position)
+- **movement pair** → `CylinderUnitHMI` (two commands, sensor lamp, position)
 - **single command** → `ButtonHMI` with `Lamp1Address` on its own coil, so the
   button lights while the relay is energised
 - **sensor / output** → `LampHMI`

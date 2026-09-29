@@ -6,6 +6,9 @@ using Kaban.Core.Interfaces;
 
 namespace Kaban.UI.Controls
 {
+
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class LabelHMI : Label, ILocalizable
     {
         [Category("  Display")]

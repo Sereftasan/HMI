@@ -20,7 +20,7 @@ namespace Kaban.Machines.MD3020.Screens
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            this.uBicak = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uBicak = new Kaban.UI.Controls.CylinderUnitHMI();
             this.bChip_Cleaning = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
@@ -62,7 +62,7 @@ namespace Kaban.Machines.MD3020.Screens
         }
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI uBicak;
+        private Kaban.UI.Controls.CylinderUnitHMI uBicak;
         private Kaban.UI.Controls.ButtonHMI bChip_Cleaning;
     }
 }

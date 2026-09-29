@@ -4019,3 +4019,38 @@ and `UnitLookAndErrors` extended.
   `SimulationMotion.Register`: a unit or axis already registered is not added again.
 - Log text: "signed in again after the restart". Manual, PLC connection: the pace of reconnect attempts.
 - Tests: `tools/core_test/MxRestart.cs`, `tools/nav_test/RestartOrder.cs` (new).
+
+## 2026-09-29 (evening) - Bar view, formula variables, ordered Properties window, home request, CylinderUnitHMI, helper lists, PLC Monitor arrays
+
+- `NumericInputHMI`: `BarView` draws a card (`PaintCard`: heading with gauge and `DescriptionText`, -, value + unit,
+  slider, +); `BarHeader`, `BarStep`; `PartAt`, held repeat (`_repeat`, 450/140 ms, not with `ConfirmWrite`), slider
+  written on release (`ValueAtX` on BarStep's grid); `WriteBarValue` and the keypad share `PrepareWrite`/`ProcessWrite`
+  (limits, security, formula/Divisor, confirmation, log). `AttachedDescription.Suppressed`, `BaseNumericHMI.SuppressDescription`
+  (the name is in the card's heading).
+- Tips: `UiStyle.HoverTip` shows the tip itself (`ToolTip.Show`) after the rest delay, puts it down on leave, press or hide;
+  used by numeric fields and lamps (their tips were registered and lost when a keypad or dialog closed). The magnified
+  tip sizes itself from the shown text.
+- `KabanHMI/Design/MathVariablesEditor.cs` *(new)*: the variables list opens with A (`ValueVariable`, read only, not
+  stored); new variables named B, C, D ... `NumericInputHMI.MathVariables` uses it.
+- `KabanHMI/Design/PropertyOrder.cs` *(new)*: every HMI control's categories and properties in working order
+  (`[TypeDescriptionProvider(typeof(PropertyOrder.Provider))]` on each; shown text only, tab-prefixed; the Windows
+  properties after ours). `AxisSettingHMI.Columns` and `CheckListHMI.Addresses` hidden (run-time only).
+- `CheckBoxHMI.AlertAddress`: border blinks red while the bit is on (scanned, in the device list as "request").
+  `AxisSettingHMI.HomeRequestAddress` feeds the Ref box's.
+- `FunctionUnitHMI` renamed `CylinderUnitHMI` (and `FunctionUnitChildConverter` -> `CylinderUnitChildConverter`); an
+  obsolete, hidden `FunctionUnitHMI` alias keeps old designer files building. `tools/convert_single_units.py` *(new)*:
+  52 single-function units on FA2010 (Cutting, Entry Conveyor, Exit, Milling, Other, Profile Recognition) and H500
+  (Manual Other) turned into `ButtonHMI` (same bit and action, lamp, relay, output, security, log, conditions) or
+  `NumericDisplayHMI` (the inverters' error codes; the milling motors' values beside their buttons).
+- Alarm Settings: helper links as a list (`HelperLinksForm` *(new)*: add files, add a link, remove, up, down); the cell
+  shows them separated by "; "; open offers a menu for several. `HelpDocument.IsWebLink`: URLs open in the browser.
+- PLC Monitor: arrays as one item that expands (`WatchRow.ArrayCount`, `Expanded`, element rows made by
+  `EnsureElements`, never saved); `Display Format` column (Decimal / Hexadecimal / Binary; typed values in the row's
+  form); data types Word [Unsigned], Double Word [Unsigned], Float [Single Precision], String (`StringLength`).
+  `SimulationMonitorForm.Values.cs` *(new)*: formats, parsing, words of each type. `PlcRowEditorForm`: format, string
+  length, the array count also when editing. Watch files: fifth field (`fmt=`, `n=`, `open=1`, `len=`).
+- Translations: `Tip_AlertBit`, `Tip_AlertOn`, `Col_DisplayFormat`, `Fmt_Decimal`, `Fmt_Hexadecimal`, `Fmt_Binary`,
+  `Mnu_MonExpand`, `Mnu_MonCollapse`, `Undo_Format`, `Msg_MonTooLong`, `Lbl_StringChars`, `Lbl_StepN`. Manual: value
+  cards, home request, helper lists, PLC Monitor arrays, formats and types.
+- Tests: `tools/ui_test/NumericBarView.cs`, `PropertyOrderUi.cs`, `PlcMonitorArrays.cs`, `HoverTips.cs` (new);
+  `AxisRowLayout.cs`, `CylinderHelpAndLogin.cs`, `UnitTypes.cs`, `UnitsAndDesigner.cs`, `PlcMonitor.cs` updated.

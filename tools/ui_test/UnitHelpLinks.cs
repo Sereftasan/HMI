@@ -32,8 +32,8 @@ class L {
     static void Check(string w,bool ok,string d=""){Console.WriteLine((ok?"  PASS  ":"  FAIL  ")+w+(d.Length>0?"   ["+d+"]":""));if(!ok)fail++;}
     static T Field<T>(object o, string n){ return (T)o.GetType().GetField(n, BindingFlags.NonPublic|BindingFlags.Instance).GetValue(o); }
 
-    static FunctionUnitHMI Clamp(int plc, string a, string b, CylinderValve v, CylinderFeedback f, string title){
-        return new FunctionUnitHMI { PlcNumber = plc, ErrorAAddress = a, ErrorBAddress = b, Valve = v, Feedback = f, TitleTextKey = title };
+    static CylinderUnitHMI Clamp(int plc, string a, string b, CylinderValve v, CylinderFeedback f, string title){
+        return new CylinderUnitHMI { PlcNumber = plc, ErrorAAddress = a, ErrorBAddress = b, Valve = v, Feedback = f, TitleTextKey = title };
     }
 
     [STAThread] static void Main(){
@@ -87,7 +87,7 @@ class L {
         var unit = Clamp(3, "M810", "M811", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic, "Robot Clamping");
         unit.CommandAAddress = "M700"; unit.CommandBAddress = "M701";     // two movements, two buttons
         unit.SetBounds(10, 10, 360, 64);
-        var plain = new FunctionUnitHMI { PlcNumber = 3 }; plain.SetBounds(10, 80, 360, 64);
+        var plain = new CylinderUnitHMI { PlcNumber = 3 }; plain.SetBounds(10, 80, 360, 64);
         host.Controls.Add(unit); host.Controls.Add(plain); host.Show(); Application.DoEvents();
         var helpA = Field<AlarmHelpBadge>(unit, "_helpA"); var helpB = Field<AlarmHelpBadge>(unit, "_helpB");
         var mark = Field<UnitHelpBadge>(unit, "_help");
@@ -130,13 +130,13 @@ class L {
         var raw = new OnePage(() => {
             var p = new UserControl();
             p.Controls.Add(new ButtonHMI { PlcNumber = 1 });
-            p.Controls.Add(new FunctionUnitHMI { PlcNumber = 1 });
+            p.Controls.Add(new CylinderUnitHMI { PlcNumber = 1 });
             p.Controls.Add(new NumericInputHMI { PlcNumber = 2 });
             return p;
         });
         var built = new StationMappedPage(raw, ctx).GetControl();
         var btn = built.Controls.OfType<ButtonHMI>().First();
-        var fu = built.Controls.OfType<FunctionUnitHMI>().First();
+        var fu = built.Controls.OfType<CylinderUnitHMI>().First();
         var num = built.Controls.OfType<NumericInputHMI>().First();
         Check("a button on PLC 1 goes to host station 2", btn.PlcNumber == 2, btn.PlcNumber.ToString());
         Check("a field on PLC 2 goes to host station 7", num.PlcNumber == 7, num.PlcNumber.ToString());

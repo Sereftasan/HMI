@@ -22,14 +22,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            this.unitEntry_Conveyor_1 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitEntry_Conveyor_2 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Recognition = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitEntry_Conveyor_1 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitEntry_Conveyor_2 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Recognition = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lampProfile_Recognition_Activation_SN = new Kaban.UI.Controls.LampHMI();
-            this.unitMilling = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Left = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Right = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitExit = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitMilling = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Left = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Right = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitExit = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // unitEntry_Conveyor_1
@@ -182,14 +182,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitEntry_Conveyor_1;
-        private Kaban.UI.Controls.FunctionUnitHMI unitEntry_Conveyor_2;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Recognition;
+        private Kaban.UI.Controls.CylinderUnitHMI unitEntry_Conveyor_1;
+        private Kaban.UI.Controls.CylinderUnitHMI unitEntry_Conveyor_2;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition;
         private Kaban.UI.Controls.LampHMI lampProfile_Recognition_Activation_SN;
-        private Kaban.UI.Controls.FunctionUnitHMI unitMilling;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Left;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Right;
-        private Kaban.UI.Controls.FunctionUnitHMI unitExit;
+        private Kaban.UI.Controls.CylinderUnitHMI unitMilling;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right;
+        private Kaban.UI.Controls.CylinderUnitHMI unitExit;
     }
 }
 

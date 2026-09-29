@@ -22,17 +22,20 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            this.unitUnit_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitFront_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitTop_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitRigth_Top_FW_Back_SA3030 = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_End_Encoders_Active = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Top_FW_Back = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.FunctionUnitHMI();
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
+            this.unitUnit_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitHigh_Air_Pressure = new Kaban.UI.Controls.ButtonHMI();
+            this.unitFront_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitTop_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitRigth_Top_FW_Back_SA3030 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_End_Encoders_Active = new Kaban.UI.Controls.ButtonHMI();
+            this.unitLeft_Top_FW_Back = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
             this.lampLeft_Front_Clampimg_Converyor_Position_SN = new Kaban.UI.Controls.LampHMI();
-            this.unitRoller_Up_Down = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitSawdust_Blowing = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // unitUnit_Up_Down
@@ -54,16 +57,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitHigh_Air_Pressure
             // 
-            this.unitHigh_Air_Pressure.BackColor = System.Drawing.Color.White;
             this.unitHigh_Air_Pressure.Name = "unitHigh_Air_Pressure";
             this.unitHigh_Air_Pressure.PlcNumber = 1;
-            this.unitHigh_Air_Pressure.TitleTextKey = "High Air Pressure";
-            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(16, 90);
-            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 64);
-            this.unitHigh_Air_Pressure.LogAction = true;
-            this.unitHigh_Air_Pressure.CommandBAddress = "M719";
-            this.unitHigh_Air_Pressure.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.TranslationKey = "High Air Pressure";
+            this.unitHigh_Air_Pressure.FallbackText = "High Air Pressure";
+            bitAction1.Address = "M719";
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitHigh_Air_Pressure.BitActions.Add(bitAction1);
+            this.unitHigh_Air_Pressure.Location = new System.Drawing.Point(16, 102);
+            this.unitHigh_Air_Pressure.Size = new System.Drawing.Size(360, 40);
             this.unitHigh_Air_Pressure.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitHigh_Air_Pressure.LogAction = true;
             this.Controls.Add(this.unitHigh_Air_Pressure);
             // 
             // unitFront_Clamping
@@ -142,16 +146,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitLeft_End_Encoders_Active
             // 
-            this.unitLeft_End_Encoders_Active.BackColor = System.Drawing.Color.White;
             this.unitLeft_End_Encoders_Active.Name = "unitLeft_End_Encoders_Active";
             this.unitLeft_End_Encoders_Active.PlcNumber = 1;
-            this.unitLeft_End_Encoders_Active.TitleTextKey = "Left End Encoders Active";
-            this.unitLeft_End_Encoders_Active.Location = new System.Drawing.Point(16, 386);
-            this.unitLeft_End_Encoders_Active.Size = new System.Drawing.Size(360, 64);
-            this.unitLeft_End_Encoders_Active.LogAction = true;
-            this.unitLeft_End_Encoders_Active.CommandBAddress = "M724";
-            this.unitLeft_End_Encoders_Active.CommandBAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitLeft_End_Encoders_Active.TranslationKey = "Left End Encoders Active";
+            this.unitLeft_End_Encoders_Active.FallbackText = "Left End Encoders Active";
+            bitAction2.Address = "M724";
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitLeft_End_Encoders_Active.BitActions.Add(bitAction2);
+            this.unitLeft_End_Encoders_Active.Location = new System.Drawing.Point(16, 398);
+            this.unitLeft_End_Encoders_Active.Size = new System.Drawing.Size(360, 40);
             this.unitLeft_End_Encoders_Active.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitLeft_End_Encoders_Active.LogAction = true;
             this.Controls.Add(this.unitLeft_End_Encoders_Active);
             // 
             // unitLeft_Top_FW_Back
@@ -227,16 +232,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitSawdust_Blowing
             // 
-            this.unitSawdust_Blowing.BackColor = System.Drawing.Color.White;
             this.unitSawdust_Blowing.Name = "unitSawdust_Blowing";
             this.unitSawdust_Blowing.PlcNumber = 1;
-            this.unitSawdust_Blowing.TitleTextKey = "Sawdust Blowing";
-            this.unitSawdust_Blowing.Location = new System.Drawing.Point(526, 16);
-            this.unitSawdust_Blowing.Size = new System.Drawing.Size(360, 64);
-            this.unitSawdust_Blowing.LogAction = true;
-            this.unitSawdust_Blowing.CommandBAddress = "M661";
-            this.unitSawdust_Blowing.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitSawdust_Blowing.TranslationKey = "Sawdust Blowing";
+            this.unitSawdust_Blowing.FallbackText = "Sawdust Blowing";
+            bitAction3.Address = "M661";
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitSawdust_Blowing.BitActions.Add(bitAction3);
+            this.unitSawdust_Blowing.Location = new System.Drawing.Point(526, 28);
+            this.unitSawdust_Blowing.Size = new System.Drawing.Size(360, 40);
             this.unitSawdust_Blowing.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitSawdust_Blowing.LogAction = true;
             this.Controls.Add(this.unitSawdust_Blowing);
             // 
             // ManualProfile_Recognition
@@ -257,17 +263,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitUnit_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI unitHigh_Air_Pressure;
-        private Kaban.UI.Controls.FunctionUnitHMI unitFront_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitTop_Clamping;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRigth_Top_FW_Back_SA3030;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_End_Encoders_Active;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Top_FW_Back;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Top_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitUnit_Up_Down;
+        private Kaban.UI.Controls.ButtonHMI unitHigh_Air_Pressure;
+        private Kaban.UI.Controls.CylinderUnitHMI unitFront_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitTop_Clamping;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRigth_Top_FW_Back_SA3030;
+        private Kaban.UI.Controls.ButtonHMI unitLeft_End_Encoders_Active;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_FW_Back;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_Clamping;
         private Kaban.UI.Controls.LampHMI lampLeft_Front_Clampimg_Converyor_Position_SN;
-        private Kaban.UI.Controls.FunctionUnitHMI unitRoller_Up_Down;
-        private Kaban.UI.Controls.FunctionUnitHMI unitSawdust_Blowing;
+        private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
+        private Kaban.UI.Controls.ButtonHMI unitSawdust_Blowing;
     }
 }
 

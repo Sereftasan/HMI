@@ -22,23 +22,23 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            this.unitLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Profile_Recognition_Back_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitLeft_Profile_Recognition_Back_Horizontal = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitConveryor_Front_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitConveryor_Back_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitConveryor_Back_Horizontal = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Recognition_Front_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Recognition_Back_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitProfile_Recognition_Back_Horizontal = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Left_Front_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Left_Back_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Left_Back_Horizontal = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Right_Front_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Right_Back_Vertical = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Right_Back_Horizontal = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Left_Top_Small_Press = new Kaban.UI.Controls.FunctionUnitHMI();
-            this.unitCutting_Right_Top_Small_Press = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.unitLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_Profile_Recognition_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_Profile_Recognition_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitConveryor_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitConveryor_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitConveryor_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Recognition_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Recognition_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Recognition_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Left_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Left_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Left_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Right_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Right_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Right_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Left_Top_Small_Press = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitCutting_Right_Top_Small_Press = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // unitLeft_Profile_Recognition_Front_Vertical
@@ -475,23 +475,23 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Profile_Recognition_Front_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Profile_Recognition_Back_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitLeft_Profile_Recognition_Back_Horizontal;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveryor_Front_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveryor_Back_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitConveryor_Back_Horizontal;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Recognition_Front_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Recognition_Back_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitProfile_Recognition_Back_Horizontal;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Left_Front_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Left_Back_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Left_Back_Horizontal;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Right_Front_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Right_Back_Vertical;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Right_Back_Horizontal;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Left_Top_Small_Press;
-        private Kaban.UI.Controls.FunctionUnitHMI unitCutting_Right_Top_Small_Press;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Front_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Back_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Back_Horizontal;
+        private Kaban.UI.Controls.CylinderUnitHMI unitConveryor_Front_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitConveryor_Back_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitConveryor_Back_Horizontal;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Front_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Back_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Back_Horizontal;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Front_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Back_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Back_Horizontal;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Front_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Back_Vertical;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Back_Horizontal;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Top_Small_Press;
+        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Top_Small_Press;
     }
 }
 

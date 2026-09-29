@@ -21,10 +21,10 @@ class M2 {
         PlcManager.Instance.RegisterDriver(9, drv);
         SimulationMotion.Clear();
 
-        var clamp = new FunctionUnitHMI { PlcNumber = 9,
+        var clamp = new CylinderUnitHMI { PlcNumber = 9,
             CommandAAddress = "M100", CommandAAction = BitActionType.Momentary, Lamp1AAddress = "M110",
             CommandBAddress = "M101", CommandBAction = BitActionType.Momentary, Lamp1BAddress = "M111" };
-        var latched = new FunctionUnitHMI { PlcNumber = 9,
+        var latched = new CylinderUnitHMI { PlcNumber = 9,
             CommandAAddress = "M200", CommandAAction = BitActionType.SET, Lamp1AAddress = "M210",
             CommandBAddress = "M201", CommandBAction = BitActionType.Alternate, Lamp1BAddress = "M211" };
         var axis = new AxisSettingHMI { PlcNumber = 9, CommandBackAddress = "M300", CommandForwardAddress = "M301",
@@ -69,7 +69,7 @@ class M2 {
 
         Console.WriteLine("--- a real PLC is never moved by this ---");
         SimulationMotion.Clear();
-        var real = new FunctionUnitHMI { PlcNumber = 7, CommandAAddress = "M100", Lamp1AAddress = "M110" };
+        var real = new CylinderUnitHMI { PlcNumber = 7, CommandAAddress = "M100", Lamp1AAddress = "M110" };
         SimulationMotion.Register(real);
         SimulationMotion.Tick(t0.AddSeconds(9));
         Check("a station with no simulated driver is left alone", true);

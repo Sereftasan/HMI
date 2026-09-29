@@ -11,6 +11,8 @@ using System.Drawing.Design;
 namespace Kaban.UI.Controls
 {
     [TypeConverter(typeof(BaseNumericSorter))]
+    // The Properties window in the order of the work (see PropertyOrder).
+    [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public abstract class BaseNumericHMI : Label, IHmiControl, ILocalizable, UiStyle.IDrawsOwnHoverBorder
     {
         /// <summary>Uniform standard height so mixed rows line up (buttons and
@@ -143,6 +145,9 @@ namespace Kaban.UI.Controls
         private AttachedDescription _descr;
         private AttachedDescription Descr { get { return _descr ?? (_descr = new AttachedDescription(this)); } }
 
+        /// <summary>The attached caption hidden (true) while the control draws its name itself.</summary>
+        protected void SuppressDescription(bool hidden) { Descr.Suppressed = hidden; }
+
         [System.ComponentModel.Category("   Appearance")]
         [System.ComponentModel.Description("Optional description attached to the control's left edge. Enter a TRANSLATION KEY (rendered in the active language) or plain text (shown as-is when the key is not in the translation file). Empty = no label.")]
         public string DescriptionText { get { return _descr?.Text ?? ""; } set { Descr.Text = value; } }
@@ -214,8 +219,8 @@ namespace Kaban.UI.Controls
         public BaseNumericHMI()
         {
             _hovering = UiStyle.HoverBorder(this);
-            // The tip is (re)built and registered on EVERY visit, as ButtonHMI's is
-            // - see UiStyle.HoverTip for why once was not enough.
+            // The tip is built on EVERY visit and shown by the field itself once the
+            // pointer rests on it - see UiStyle.HoverTip for why registering it was not enough.
             UiStyle.HoverTip(_toolTip, this, BuildTooltip);
             this.AutoSize = false;
             this.Size = new Size(100, 30);

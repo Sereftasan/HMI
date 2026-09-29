@@ -40,7 +40,7 @@ Rows with nothing to open show no button.
 
 ## A cylinder unit's own manual
 
-A `FunctionUnitHMI` says what it is fitted with: **ValveType** and **FeedbackType**
+A `CylinderUnitHMI` says what it is fitted with: **ValveType** and **FeedbackType**
 (Properties window, *Help*). Its `?` - and the alarm list's help for its error
 bits - then opens a copy of `Cylinder_Troubleshooting.html` with:
 

@@ -20,7 +20,7 @@ namespace Kaban.Machines.MD3020.Screens
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            this.uClamping = new Kaban.UI.Controls.FunctionUnitHMI();
+            this.uClamping = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // uClamping
@@ -48,7 +48,7 @@ namespace Kaban.Machines.MD3020.Screens
         }
         #endregion
 
-        private Kaban.UI.Controls.FunctionUnitHMI uClamping;
+        private Kaban.UI.Controls.CylinderUnitHMI uClamping;
     }
 }
 
