@@ -214,6 +214,8 @@ namespace Kaban.UI.Plc
                 AddEffective(num.Address, num.AddressOffset, num.DataType);
                 AddDynamic(num.AddressOffset, DataTypeEnum.Bin_16);
                 AddConditions(num.VisibilityConditions);
+                // The value it is compared with (an axis's real position), same width.
+                AddEffective((num.ComparedAddress ?? "").Trim(), null, num.DataType);
 
                 var inp = num as NumericInputHMI;
                 if (inp != null)

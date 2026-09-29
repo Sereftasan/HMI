@@ -1,0 +1,178 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
+using System.Windows.Forms;
+using Kaban.Core.Enums;
+using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
+using Kaban.UI.Helpers;
+
+// The axis row: the current beside the position, the Z distance beside the
+// reference selection, narrow tall meters; the real position in the position's
+// tip; travel per revolution and backlash at the end; the page's headings over
+// the columns. And the hover tips of numeric fields and lamps, set on every visit.
+class AR {
+    static int fail = 0;
+    static void Check(string w, bool ok, string d = "") {
+        Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
+    }
+    const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+    static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); } }
+    static void Raise(Control c, string method, EventArgs e) { typeof(Control).GetMethod(method, Any).Invoke(c, new object[] { e }); }
+    static void Hover(Control c) {
+        Raise(c, "OnMouseEnter", EventArgs.Empty);
+        Raise(c, "OnMouseMove", new MouseEventArgs(MouseButtons.None, 0, 3, 3, 0));
+    }
+    static void Leave(Control c) { Raise(c, "OnMouseLeave", EventArgs.Empty); }
+
+    static AxisSettingHMI Full(string name, string extra = "") {
+        var a = new AxisSettingHMI {
+            AxisNameKey = name, CommandBackAddress = "M1", CommandForwardAddress = "M2", PositionAddress = "W0",
+            MinLimitAddress = "D2", MaxLimitAddress = "D4", ReferenceAddress = "D6", CalibrationAddress = "D8",
+            CalibrateAddress = "M3", GoToReferenceAddress = "M4", CurrentAddress = "W0A", ZDistanceAddress = "D73",
+            AxisAlarmAddress = "W4", AxisWarningAddress = "W5", ServoAlarmAddress = "W0B" };
+        if (extra.Contains("real")) a.RealPositionAddress = "W10";
+        if (extra.Contains("travel")) a.TravelPerRevolutionAddress = "D100";
+        if (extra.Contains("backlash")) a.BacklashAddress = "D102";
+        return a;
+    }
+
+    [STAThread]
+    static void Main() {
+        LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
+        UnitManager.EnsureDefaults();
+        SecurityManager.Login("admin", SecurityLevel.Admin);
+
+        Console.WriteLine("--- the row, as asked ---");
+        var row = Full("Axis_RobotX");
+        row.BuildRow();
+        var col = row.Columns;
+        var pos = row.Controls.OfType<NumericDisplayHMI>().Single();
+        var meters = row.Controls.OfType<MeterHMI>().OrderBy(m => m.Left).ToList();
+        var jogs = row.Controls.OfType<ButtonHMI>().Where(b => b.BitActions.Any(x => x.Action == BitActionType.Momentary)).OrderBy(b => b.Left).ToList();
+        var refBox = row.Controls.OfType<CheckBoxHMI>().Single();
+        Check("current right beside the position, before the forward jog",
+              meters.Count == 2 && meters[0].Left == pos.Right + AxisSettingHMI.Gap && meters[0].Right < jogs[1].Left,
+              pos.Bounds + " | " + (meters.Count > 0 ? meters[0].Bounds.ToString() : "-") + " | " + jogs[1].Bounds);
+        Check("Z distance right beside the reference selection",
+              meters.Count == 2 && meters[1].Left == refBox.Right + AxisSettingHMI.Gap,
+              refBox.Bounds + " | " + (meters.Count > 1 ? meters[1].Bounds.ToString() : "-"));
+        Check("meters narrower (76) and as tall as the position and the checkbox",
+              meters.All(m => m.Width == 76 && m.Height == pos.Height && m.Top == pos.Top && m.Height == refBox.Height),
+              string.Join(" ", meters.Select(m => m.Size.ToString())) + " vs " + pos.Size);
+        var order = col.OrderBy(kv => kv.Value.X).Select(kv => kv.Key).ToList();
+        Check("column order", string.Join(",", order) ==
+              "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,Ref,ZDistance,AxisAlarm,AxisWarning,ServoAlarm", string.Join(",", order));
+
+        Console.WriteLine("--- the real position in the position's tip ---");
+        var r2 = Full("Axis_RobotX", "real");
+        r2.BuildRow();
+        var p2 = r2.Controls.OfType<NumericDisplayHMI>().Single();
+        Check("the position compares with RealPositionAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
+        var mem = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 81848988 & 0xFFFF }, { "W11", 81848988 >> 16 } };
+        p2.UpdateState(a => mem.ContainsKey(a) ? mem[a] : 0, c => true);
+        var build = typeof(BaseNumericHMI).GetMethod("BuildTooltip", Any);
+        var tip = (string)build.Invoke(p2, null);
+        var lines = tip.Split('\n');
+        Check("first line: the real position, as the position is shown", lines[0].StartsWith("Real position:") && lines[0].Contains("8184.90") && lines[0].Contains("mm"), lines[0]);
+        Check("second line: the difference in raw units (no divisor): 12", lines.Length > 1 && lines[1].StartsWith("Difference (raw, no divisor):") && lines[1].EndsWith("\t12"),
+              lines.Length > 1 ? lines[1] : "");
+        Check("  then the usual notes", tip.Contains("Address:"), tip.Replace("\n", " | "));
+        Check("no real position, no such lines", !((string)build.Invoke(pos, null)).Contains("Real position"));
+        var devs = DeviceCollector.FromControl(r2, 1);
+        Check("the device list names it", devs.Any(d => d.Address == "W10" && d.UsedAs.Contains("real position")),
+              string.Join(" ", devs.Select(d => d.Address)));
+
+        Console.WriteLine("--- travel per revolution and backlash ---");
+        Check("none given: no fields, no columns", !col.ContainsKey("TravelPerRev") && !col.ContainsKey("Backlash") &&
+              row.Controls.OfType<NumericInputHMI>().Count() == 4);
+        var r3 = Full("Axis_RobotY", "travel backlash");
+        r3.BuildRow();
+        var extra = r3.Controls.OfType<NumericInputHMI>().Where(n => n.Address == "D100" || n.Address == "D102").OrderBy(n => n.Left).ToList();
+        var servo = r3.Controls.OfType<HexCodeHMI>().Max(h => h.Right);
+        Check("both at the end of the row, after the drive codes", extra.Count == 2 && extra.All(n => n.Left > servo), servo + " | " + string.Join(" ", extra.Select(n => n.Left)));
+        Check("  in raw units: no divisor, no decimals, no unit", extra.All(n => n.Divisor == 1 && n.DecimalPlaces == 0 && n.UnitType == UnitType.None && !n.ShowSuffix));
+        Check("  their tips say so", extra[0].ToolTipTextKey.Contains("no divisor") && extra[1].ToolTipTextKey.StartsWith("Backlash"), extra[0].ToolTipTextKey);
+
+        Console.WriteLine("--- a page of rows: the headings follow the columns ---");
+        var page = new UserControl { Size = new Size(1500, 300) };
+        Func<string, int, Label> head = (t, x) => { var l = new Label { Text = t, Location = new Point(x, 10), Size = new Size(60, 18) }; page.Controls.Add(l); return l; };
+        var hAxis = head("Axis", 8); var hPos = head("Position", 200); var hCur = head("Current", 860); var hZ = head("Z distance", 960);
+        var hMin = head("Min", 392); var hBack = head("Backlash", 78);
+        var a1 = Full("Axis_RobotX"); a1.Location = new Point(0, 34);
+        var a2 = Full("Axis_RobotY", "backlash"); a2.Location = new Point(0, 78);
+        page.Controls.Add(a1); page.Controls.Add(a2);
+        var form = new Form { ClientSize = new Size(1500, 300) }; form.Controls.Add(page); form.Show(); Pump(100);
+        if (a1.Controls.Count == 0) a1.BuildRow();
+        if (a2.Controls.Count == 0) a2.BuildRow();
+        a1.AlignHeaders();
+        Func<Label, string, bool> over = (l, key) => a1.Columns.ContainsKey(key) && l.Visible && l.Left == a1.Left + a1.Columns[key].X && l.Width == a1.Columns[key].Y;
+        Check("Current, Z distance, Min, Position: each over its column", over(hCur, "Current") && over(hZ, "ZDistance") && over(hMin, "Min") && over(hPos, "Position"),
+              hCur.Bounds + " / " + (a1.Columns.ContainsKey("Current") ? a1.Columns["Current"].ToString() : "-"));
+        Check("an axis with backlash on the page: every row has its column, the heading over it", a1.Columns.ContainsKey("Backlash") && over(hBack, "Backlash"),
+              hBack.Bounds.ToString());
+        Check("  the row without it has no field there", !a1.Controls.OfType<NumericInputHMI>().Any(n => n.Address == "D102") &&
+              a2.Controls.OfType<NumericInputHMI>().Any(n => n.Address == "D102"));
+        Check("  headings translated: 'Z distance' reads 'Z dist'", hZ.Text == LanguageManager.GetString("Col_ZDistance", "Z distance"), hZ.Text);
+        var none = new UserControl { Size = new Size(1500, 300) };
+        var nCur = new Label { Text = "Current", Location = new Point(860, 10), Size = new Size(60, 18) }; none.Controls.Add(nCur);
+        var b1 = new AxisSettingHMI { AxisNameKey = "X1", CommandBackAddress = "M1", CommandForwardAddress = "M2", PositionAddress = "W0", MinLimitAddress = "D2", Location = new Point(0, 34) };
+        none.Controls.Add(b1); b1.BuildRow();
+        Check("a page with no current (H800): no current column, its heading hidden", !b1.Columns.ContainsKey("Current") && !nCur.Visible);
+        var bj = b1.Controls.OfType<ButtonHMI>().OrderBy(b => b.Left).ToList();
+        var bp = b1.Controls.OfType<NumericDisplayHMI>().Single();
+        Check("  and no gap between the position and the forward jog", bj[1].Left == bp.Right + AxisSettingHMI.Gap, bp.Bounds + " | " + bj[1].Bounds);
+        form.Close();
+
+        Console.WriteLine("--- tips on every visit (numeric fields, lamps) ---");
+        var host = new Form { ClientSize = new Size(400, 200) };
+        var num = new NumericInputHMI { Address = "D10", Divisor = 1, MinLimit = new Kaban.Core.Models.DynamicValue(LimitSourceType.Static, 0, ""),
+                                        MaxLimit = new Kaban.Core.Models.DynamicValue(LimitSourceType.Static, 100, ""), Location = new Point(10, 10) };
+        var disp = new NumericDisplayHMI { Address = "D12", Location = new Point(10, 60) };
+        var lamp = new LampHMI { Address = "X1", DescriptionText = "Door closed", Location = new Point(10, 110) };
+        host.Controls.AddRange(new Control[] { num, disp, lamp });
+        host.Show(); Pump(80);
+        var tips = UiStyle.Tips();
+        Hover(num);
+        Check("numeric input: its tip is set on the first move", (tips.GetToolTip(num) ?? "").Contains("Address:"), tips.GetToolTip(num));
+        Leave(num);
+        tips.SetToolTip(num, null);                    // what a closed keypad or dialog did to it
+        Hover(num);
+        Check("  lost meanwhile: set again on the next visit", (tips.GetToolTip(num) ?? "").Length > 0);
+        Leave(num);
+        Hover(disp);
+        Check("numeric display too", (tips.GetToolTip(disp) ?? "").Contains("Address:"));
+        Leave(disp);
+        SecurityManager.Login("op", SecurityLevel.Operator);
+        Hover(num);
+        Check("an operator sees what may be typed", tips.GetToolTip(num) == "Allowed: 0 - 100", tips.GetToolTip(num));
+        Leave(num);
+        Hover(lamp);
+        Check("lamp: its caption and state for an operator", tips.GetToolTip(lamp) == "Door closed: Off", tips.GetToolTip(lamp));
+        using (var bmp = new Bitmap(lamp.Width, lamp.Height)) {
+            lamp.DrawToBitmap(bmp, new Rectangle(0, 0, lamp.Width, lamp.Height));
+            int blue = 0;
+            for (int x = 0; x < bmp.Width; x++) for (int y = 0; y < bmp.Height; y++) {
+                var c = bmp.GetPixel(x, y); if (c.B > 150 && c.R < 110 && c.G > 80 && c.G < 170) blue++; }
+            Check("  its ring turns blue under the pointer", blue > 8, blue + " blue pixels");
+        }
+        Leave(lamp);
+        using (var bmp = new Bitmap(lamp.Width, lamp.Height)) {
+            lamp.DrawToBitmap(bmp, new Rectangle(0, 0, lamp.Width, lamp.Height));
+            int blue = 0;
+            for (int x = 0; x < bmp.Width; x++) for (int y = 0; y < bmp.Height; y++) {
+                var c = bmp.GetPixel(x, y); if (c.B > 150 && c.R < 110 && c.G > 80 && c.G < 170) blue++; }
+            Check("  and back when it leaves", blue == 0, blue + " blue pixels");
+        }
+        SecurityManager.Login("admin", SecurityLevel.Admin);
+        Hover(lamp);
+        Check("  an admin also sees its wiring", (tips.GetToolTip(lamp) ?? "").Contains("Address:"));
+        Leave(lamp);
+        host.Close();
+
+        Console.WriteLine(fail == 0 ? "\nAXIS ROW ALL PASS" : "\nAXIS ROW " + fail + " FAILED");
+        Environment.Exit(fail == 0 ? 0 : 1);
+    }
+}

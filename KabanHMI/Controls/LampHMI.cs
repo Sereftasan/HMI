@@ -9,7 +9,7 @@ using Kaban.Core.Models;
 
 namespace Kaban.UI.Controls
 {
-    public class LampHMI : Label, IHmiControl
+    public class LampHMI : Label, IHmiControl, UiStyle.IDrawsOwnHoverBorder
     {
         /// <summary>Uniform standard height with the rest of the control family.</summary>
         /// <summary>Square, and exactly as tall as a ButtonHMI, so a lamp lines up
@@ -105,9 +105,11 @@ namespace Kaban.UI.Controls
             using (var fill = new SolidBrush(_isOn ? OnColor : OffColor))
                 g.FillEllipse(fill, ring);
 
-            using (var pen = new Pen(Enabled ? Color.FromArgb(25, 28, 34)
-                                             : Color.FromArgb(175, 181, 190),
-                                     Math.Max(1.5f, side / 12f)))
+            bool hover = Enabled && _hovering != null && _hovering();
+            using (var pen = new Pen(hover ? UiStyle.HoverBorderColor
+                                     : Enabled ? Color.FromArgb(25, 28, 34)
+                                               : Color.FromArgb(175, 181, 190),
+                                     Math.Max(hover ? 2f : 1.5f, side / (hover ? 9f : 12f))))
                 g.DrawEllipse(pen, ring);
 
             if (Image != null)
@@ -136,8 +138,9 @@ namespace Kaban.UI.Controls
         public string ToolTipTextKey { get; set; } = "";
 
         private readonly ToolTip _toolTip = UiStyle.Tips();
-        private bool _ttWasAdmin = false;
-        private bool _ttSet = false;
+
+        /// <summary>Pointer over the lamp: its ring turns blue, like every other control's border.</summary>
+        private readonly Func<bool> _hovering;
 
         public LampHMI()
         {
@@ -163,41 +166,43 @@ namespace Kaban.UI.Controls
             // square back around it, which is the shape this was meant to remove.
             this.BorderStyle = BorderStyle.None;
             this.TextAlign = ContentAlignment.MiddleCenter;
+            // ALIVE UNDER THE POINTER: the ring turns blue and the tip comes, as on
+            // every other control. A lamp that did neither looked dead.
+            _hovering = UiStyle.HoverBorder(this);
+            UiStyle.HoverTip(_toolTip, this, BuildTooltip);
         }
 
         /// <summary>
-        /// ROLE-BASED TOOLTIP. Lamps take no input, so operators just get the
-        /// configured description while admins get the diagnostic wiring detail.
+        /// ROLE-BASED TOOLTIP. Lamps take no input, so operators get the configured
+        /// description - or the lamp's caption and state when there is none -
+        /// while admins get the diagnostic wiring detail as well. Built on every
+        /// visit (UiStyle.HoverTip).
         /// </summary>
-        protected override void OnMouseEnter(EventArgs e)
+        private string BuildTooltip()
         {
-            base.OnMouseEnter(e);
-
             bool isAdmin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            if (_ttSet && isAdmin == _ttWasAdmin) return;
-            _ttWasAdmin = isAdmin;
-            _ttSet = true;
-
-            string tip;
-            if (isAdmin)
+            string text = LanguageManager.Localize(ToolTipTextKey);
+            if (string.IsNullOrWhiteSpace(text))
             {
-                var sb = new System.Text.StringBuilder();
-                if (!string.IsNullOrEmpty(ToolTipTextKey))
-                    sb.Append(LanguageManager.Localize(ToolTipTextKey)).Append("\n\n");
-                sb.Append("Address:\t\t\t").Append(string.IsNullOrWhiteSpace(Address)
-                    ? "None" : PlcAddressHelper.Describe(PlcNumber, Address));
-                if (AddressOffset != null && AddressOffset.Type != LimitSourceType.None)
-                    sb.Append("\nAddress Offset:\t\t").Append(AddressOffset);
-                sb.Append("\nVisibility Condition:\t").Append(VisibilityConditions);
-                tip = sb.ToString();
+                // No description of its own: its caption (when it has one) and what it shows now.
+                string caption = string.IsNullOrWhiteSpace(DescriptionText) ? "" : LanguageManager.GetString(DescriptionText, DescriptionText).TrimEnd(':', ' ');
+                string state = _isOn ? LanguageManager.GetString("Tip_LampOn", "On") : LanguageManager.GetString("Tip_LampOff", "Off");
+                text = caption.Length > 0 ? caption + ": " + state : state;
             }
-            else
-            {
-                tip = LanguageManager.Localize(ToolTipTextKey);
-            }
+            if (!isAdmin) return text;
 
-            _toolTip.SetToolTip(this, tip ?? "");
+            var sb = new System.Text.StringBuilder();
+            sb.Append(text).Append("\n\n");
+            sb.Append("Address:\t\t\t").Append(string.IsNullOrWhiteSpace(Address)
+                ? "None" : PlcAddressHelper.Describe(PlcNumber, Address));
+            if (AddressOffset != null && AddressOffset.Type != LimitSourceType.None)
+                sb.Append("\nAddress Offset:\t\t").Append(AddressOffset);
+            sb.Append("\nVisibility Condition:\t").Append(VisibilityConditions);
+            return sb.ToString();
         }
+
+        /// <summary>For tests: the tip the lamp would show now.</summary>
+        internal string TooltipText() { return BuildTooltip(); }
 
         public void UpdateState(Func<string, int> lookup, Func<SystemCondition, bool> checkGlobal)
         {

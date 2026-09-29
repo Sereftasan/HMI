@@ -139,6 +139,7 @@ namespace Kaban.UI.Helpers
                 Add(list, seen, st, PlcAddressHelper.OffsetAddress(num.Address, StaticOffset(num.AddressOffset)),
                     num.DataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own,
                     c is NumericInputHMI ? "setting" : "value");
+                Add(list, seen, st, num.ComparedAddress, num.DataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own, "real position");
                 return;
             }
 

@@ -191,7 +191,32 @@ namespace Kaban.UI.Controls
                 string reason = LanguageManager.GetString("Sys_Reason", "Reason:");
                 return $"{disabled}\n{reason} {_disableReason}";
             }
-            return base.BuildOperatorTooltip();
+            // What may be typed: the operator's first question at a field with limits.
+            string tip = base.BuildOperatorTooltip() ?? "";
+            string range = AllowedRangeText();
+            if (range.Length > 0) tip = tip.Length > 0 ? tip + "\n" + range : range;
+            return tip;
+        }
+
+        /// <summary>"Allowed: 0.00 - 6500.00 mm" from the limits as they read now; "" when there are none.</summary>
+        internal string AllowedRangeText()
+        {
+            bool hasMin = MinLimit != null && MinLimit.Type != LimitSourceType.None;
+            bool hasMax = MaxLimit != null && MaxLimit.Type != LimitSourceType.None;
+            if (!hasMin && !hasMax) return IsAngle ? LanguageManager.GetString("Tip_Allowed", "Allowed") + ": 0 - 360" : "";
+            var read = _lastReadPlc;
+            if (read == null && ((hasMin && MinLimit.Type == LimitSourceType.Tag) || (hasMax && MaxLimit.Type == LimitSourceType.Tag)))
+                return "";                                    // the limits are devices not read yet
+            try
+            {
+                double min = ResolveLimit(MinLimit, read, double.MinValue);
+                double max = ResolveLimit(MaxLimit, read, double.MaxValue);
+                string lo = min == double.MinValue ? "" : FormatValue(min);
+                string hi = max == double.MaxValue ? "" : FormatValue(max);
+                return LanguageManager.GetString("Tip_Allowed", "Allowed") + ": " +
+                       (lo.Length > 0 ? lo : "...") + " - " + (hi.Length > 0 ? hi : "...");
+            }
+            catch { return ""; }
         }
         private Func<string, int> _lastReadPlc;
 

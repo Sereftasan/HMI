@@ -214,6 +214,9 @@ namespace Kaban.UI.Controls
         public BaseNumericHMI()
         {
             _hovering = UiStyle.HoverBorder(this);
+            // The tip is (re)built and registered on EVERY visit, as ButtonHMI's is
+            // - see UiStyle.HoverTip for why once was not enough.
+            UiStyle.HoverTip(_toolTip, this, BuildTooltip);
             this.AutoSize = false;
             this.Size = new Size(100, 30);
             this.BorderStyle = BorderStyle.Fixed3D;
@@ -270,30 +273,84 @@ namespace Kaban.UI.Controls
         [Description("Tooltip shown to operators (translation key or literal text).")]
         public string ToolTipTextKey { get; set; } = "";
 
-        private bool _ttWasAdmin = false;
-        private bool _ttSet = false;
-
         /// <summary>
         /// ROLE-BASED TOOLTIP. Admins see the full wiring (address, offset,
         /// conditions, security); operators see the description, or - when the
         /// control is blocked - the translated reason. Derived controls override
         /// BuildAdminTooltip/BuildOperatorTooltip to add their own detail.
+        ///
+        /// Built on every visit (UiStyle.HoverTip): it used to be built once, on
+        /// the first MouseEnter, and registered with the program's tooltip only
+        /// then - and that registration is lost whenever the window the shared
+        /// tooltip is tied to closes (the keypad, a dialog, a side window). The
+        /// buttons re-register on every hover and kept their tips; the numeric
+        /// fields (and the lamps) went silent, "sometimes" - after the first
+        /// keypad or dialog.
         /// </summary>
-        protected override void OnMouseEnter(EventArgs e)
+        private string BuildTooltip()
         {
-            base.OnMouseEnter(e);
-
             bool isAdmin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            if (_ttSet && isAdmin == _ttWasAdmin) return;
-            _ttWasAdmin = isAdmin;
-            _ttSet = true;
-
-            string tip = isAdmin ? BuildAdminTooltip() : BuildOperatorTooltip();
-            _toolTip.SetToolTip(this, tip ?? "");
+            string body = isAdmin ? BuildAdminTooltip() : BuildOperatorTooltip();
+            string lead = TooltipLead();
+            if (string.IsNullOrEmpty(lead)) return body ?? "";
+            return string.IsNullOrWhiteSpace(body) ? lead : lead + "\n\n" + body;
         }
 
-        /// <summary>Forces the tooltip to be rebuilt on the next hover (e.g. after login).</summary>
-        protected void InvalidateTooltip() { _ttSet = false; }
+        /// <summary>Kept for callers: the tip is rebuilt on every visit anyway.</summary>
+        protected void InvalidateTooltip() { }
+
+        // ---- a second value compared with this one (an axis's real position) ----
+
+        /// <summary>
+        /// A device holding the value this one should agree with - an axis's REAL
+        /// (encoder) position beside its commanded position. Not a designer
+        /// property: AxisSettingHMI sets it from its RealPositionAddress. The
+        /// scanner reads it (same data type), and the tooltip starts with it and
+        /// the difference, in raw units - the difference is a few counts, which the
+        /// divisor would round away.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ComparedAddress { get; set; } = "";
+
+        /// <summary>Caption of the compared value in the tooltip (a translation key).</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string ComparedCaptionKey { get; set; } = "Tip_RealPosition";
+
+        private double? _lastRaw, _comparedRaw;
+
+        /// <summary>The raw (undivided) value last read, and the compared device's.</summary>
+        internal double? LastRaw { get { return _lastRaw; } }
+        internal double? ComparedRaw { get { return _comparedRaw; } }
+
+        /// <summary>The compared value and the difference - the first lines of the tip.</summary>
+        protected virtual string TooltipLead()
+        {
+            if (string.IsNullOrWhiteSpace(ComparedAddress)) return "";
+            string caption = LanguageManager.GetString(ComparedCaptionKey, "Real position");
+            if (!_comparedRaw.HasValue || !_lastRaw.HasValue)
+                return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
+            string shown = FormatValue(Divisor != 0 ? _comparedRaw.Value / Divisor : _comparedRaw.Value);
+            double diff = _lastRaw.Value - _comparedRaw.Value;
+            return caption + ":\t" + shown + "\n" +
+                   LanguageManager.GetString("Tip_PositionDifference", "Difference (raw, no divisor)") + ":\t" +
+                   diff.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>A value (after the divisor) formatted as this control shows its own.</summary>
+        protected string FormatValue(double val)
+        {
+            double shown = val;
+            int decimals = DecimalPlaces;
+            string suffix = Suffix;
+            if (UnitType != UnitType.None)
+            {
+                shown = UnitManager.ToDisplay(UnitType, val);
+                decimals = DecimalPlaces + UnitManager.GetActiveExtraDecimals(UnitType);
+                suffix = UnitManager.GetActiveSuffix(UnitType);
+            }
+            string formatted = PlcValueConverter.FormatString(shown, DataType, DataFormat, decimals, Digits, FillZero);
+            return string.IsNullOrEmpty(suffix) ? formatted : formatted + " " + suffix;
+        }
 
         protected virtual string BuildAdminTooltip()
         {
@@ -338,8 +395,22 @@ namespace Kaban.UI.Controls
                 // Perform conversion and store it for child classes.
                 // _lastNumericValue stays in the PLC's REFERENCE unit (mm, gr, C...)
                 // so limit checks and formulas keep working in one consistent unit.
-                double val = ToShownValue(PlcValueConverter.ConvertToDouble(low, high, DataType, DataFormat, 0), readPlc);
+                double rawValue = PlcValueConverter.ConvertToDouble(low, high, DataType, DataFormat, 0);
+                _lastRaw = rawValue;
+                double val = ToShownValue(rawValue, readPlc);
                 _lastNumericValue = val;
+
+                if (!string.IsNullOrWhiteSpace(ComparedAddress))
+                {
+                    try
+                    {
+                        string c = ComparedAddress.Trim();
+                        int cl = readPlc(c);
+                        int ch = DataType == DataTypeEnum.Bin_32 ? readPlc(PlcAddressHelper.GetNextAddress(c)) : 0;
+                        _comparedRaw = PlcValueConverter.ConvertToDouble(cl, ch, DataType, DataFormat, 0);
+                    }
+                    catch { _comparedRaw = null; }
+                }
 
                 // UNIT CONVERSION: when a UnitType is set, the value is shown in the
                 // unit currently chosen in Unit Settings, and the suffix follows it.

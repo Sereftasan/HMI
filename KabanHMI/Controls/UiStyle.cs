@@ -1243,6 +1243,42 @@ namespace Kaban.UI.Controls
             c.MouseLeave += (s, e) => { try { tips.Hide(c); } catch { } };
         }
 
+        /// <summary>
+        /// A control's tooltip, BUILT AND REGISTERED ON EVERY VISIT: on the first
+        /// move of the pointer after it comes in, the text is made (so it says
+        /// what is true now - the value, a block reason, a login since) and set;
+        /// on leaving, the tip is put down.
+        ///
+        /// WHY EVERY VISIT. The program has ONE tooltip, and WinForms ties it to
+        /// the window of a control it serves. When that window closes - the
+        /// keypad, a dialog, a side window - the tooltip drops the registrations
+        /// it holds. A control that registers once (the numeric fields and the
+        /// lamps did, on their first hover) is silent from then on; ButtonHMI
+        /// re-registered on every hover and was the one control whose tips always
+        /// came. Hide() after setting the text registers the control afresh with
+        /// the tooltip window, whatever happened to it before.
+        /// </summary>
+        public static void HoverTip(ToolTip tips, Control c, Func<string> build)
+        {
+            if (tips == null || c == null || build == null) return;
+            bool pending = true;
+            c.MouseEnter += (s, e) => pending = true;
+            c.MouseMove += (s, e) =>
+            {
+                if (!pending) return;
+                pending = false;
+                string text;
+                try { text = build() ?? ""; } catch { text = ""; }
+                try
+                {
+                    tips.SetToolTip(c, text);
+                    if (text.Length > 0) tips.Hide(c);      // registers it afresh (see above)
+                }
+                catch { }
+            };
+            c.MouseLeave += (s, e) => { pending = true; try { tips.Hide(c); } catch { } };
+        }
+
         /// <summary>Standard emoji tool button: 44x32, rounded, tooltip carries the label.</summary>
         public static Button ToolButton(string emoji, string tip, ToolTip tips, System.EventHandler onClick = null)
         {

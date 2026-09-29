@@ -510,3 +510,15 @@ Log_Plc;PLC;PLC;ПЛК;SPS;PLC;PLC
 Log_ColPlc;PLC;PLC;ПЛК;SPS;PLC;PLC
 Log_AllPlcs;All controllers;Tüm kontrolörler;Все контроллеры;Alle Steuerungen;Tutti i controllori;Todos los controladores
 Log_PlcTip;Only the entries about this controller: its writes, its connection losses and returns.;Yalnızca bu kontrolörle ilgili kayıtlar: ona yazılanlar, bağlantı kopmaları ve geri gelişleri.;Только записи об этом контроллере: запись в него, потери и восстановления связи.;Nur die Einträge zu dieser Steuerung: Schreibvorgänge, Verbindungsverluste und -wiederkehr.;Solo le voci su questo controllore: scritture, perdite e ritorni della connessione.;Solo las entradas de este controlador: escrituras, pérdidas y regresos de la conexión.
+Col_AxisAlarm;Axis alarm;Eksen alarmı;Авария оси;Achsalarm;Allarme asse;Alarma eje
+Col_AxisWarning;Axis warn;Eksen uyarısı;Предупр. оси;Achswarnung;Avviso asse;Aviso eje
+Col_ServoAlarm;Servo alarm;Servo alarmı;Авария серво;Servoalarm;Allarme servo;Alarma servo
+Col_TravelPerRev;Travel / rev;Tur başı yol;Ход / об;Weg / U;Corsa / giro;Recorrido / rev
+Tip_TravelPerRev;Travel per motor revolution, in the PLC's own units (no divisor, no decimals).;Motor turu başına yol, PLC'nin kendi biriminde (bölen yok, ondalık yok).;Ход на оборот двигателя, в единицах ПЛК (без делителя и десятичных).;Weg pro Motorumdrehung, in den Einheiten der SPS (ohne Teiler, ohne Nachkommastellen).;Corsa per giro motore, nelle unità del PLC (senza divisore né decimali).;Recorrido por revolución del motor, en las unidades del PLC (sin divisor ni decimales).
+Tip_Backlash;Backlash, in the PLC's own units (no divisor, no decimals).;Boşluk, PLC'nin kendi biriminde (bölen yok, ondalık yok).;Люфт, в единицах ПЛК (без делителя и десятичных).;Spiel, in den Einheiten der SPS (ohne Teiler, ohne Nachkommastellen).;Gioco, nelle unità del PLC (senza divisore né decimali).;Holgura, en las unidades del PLC (sin divisor ni decimales).
+Tip_RealPosition;Real position;Gerçek pozisyon;Реальная позиция;Istposition;Posizione reale;Posición real
+Tip_PositionDifference;Difference (raw, no divisor);Fark (ham, bölensiz);Разница (сырая, без делителя);Differenz (roh, ohne Teiler);Differenza (grezza, senza divisore);Diferencia (bruta, sin divisor)
+Tip_NotReadYet;not read yet;henüz okunmadı;ещё не прочитано;noch nicht gelesen;non ancora letto;aún no leído
+Tip_Allowed;Allowed;İzin verilen;Допустимо;Zulässig;Consentito;Permitido
+Tip_LampOn;On;Açık;Вкл;Ein;Acceso;Encendido
+Tip_LampOff;Off;Kapalı;Выкл;Aus;Spento;Apagado

@@ -11,8 +11,14 @@ namespace Kaban.UI.Controls
     /// ONE AXIS, ONE LINE - everything needed to set an axis up, laid out the way
     /// the old program's "Takım Ayarları" page did it.
     ///
-    ///   backlash | ◀ | position | ▶ | min | max | reference | calibration |
-    ///   calibrate | send-to-reference | current bar | Z distance bar
+    ///   name | ◀ | position | current | ▶ | min | max | reference | calibration |
+    ///   calibrate | send-to-reference | Z distance | axis alarm | axis warning |
+    ///   servo alarm | [travel per revolution | backlash]
+    ///
+    /// The CURRENT sits beside the position: both change while the axis moves.
+    /// The Z DISTANCE sits beside the reference selection: it is the reference's
+    /// quality. Travel per revolution and backlash come last, and only on a page
+    /// where some axis has them - they are rarely set from the HMI.
     ///
     /// WHY A COMPOSITE RATHER THAN LOOSE CONTROLS
     /// ------------------------------------------
@@ -81,6 +87,15 @@ namespace Kaban.UI.Controls
         [Category(" Movement")]
         public DataTypeEnum PositionDataType { get; set; }
 
+        /// <summary>
+        /// The axis's REAL (encoder) position, when the PLC keeps it apart from the
+        /// position above. Not shown as a field: the position's tooltip starts with
+        /// it and with the difference, in raw units (without the divisor) - the
+        /// difference is a few counts, which the divisor would round to 0.00.
+        /// </summary>
+        [Category(" Movement"), DefaultValue(""), Description("Real (encoder) position. Shown in the position's tooltip with its difference, in raw units.")]
+        public string RealPositionAddress { get; set; }
+
         // Position, min, max, reference and calibration are all the SAME physical
         // quantity on the same axis, so they share one divisor, one digit count
         // and one decimal place setting. Entering those five times per axis is
@@ -99,6 +114,18 @@ namespace Kaban.UI.Controls
 
         [Category(" Settings"), Description("Calibration value.")]
         public string CalibrationAddress { get; set; }
+
+        /// <summary>
+        /// Travel per motor revolution and backlash - rarely set from the HMI, so
+        /// they are fields only when given, at the END of the row (after the drive
+        /// codes), where an axis without them leaves no gap. Entered in the PLC's
+        /// own small units: no divisor, no decimals.
+        /// </summary>
+        [Category(" Settings"), DefaultValue(""), Description("Travel per motor revolution, in raw units (no divisor). Empty hides the field.")]
+        public string TravelPerRevolutionAddress { get; set; }
+
+        [Category(" Settings"), DefaultValue(""), Description("Backlash, in raw units (no divisor). Empty hides the field.")]
+        public string BacklashAddress { get; set; }
 
         [Category(" Value"), Description("Raw-to-display divisor for EVERY value on the row.")]
         public double Divisor { get; set; }
@@ -278,15 +305,17 @@ namespace Kaban.UI.Controls
         // header can be drawn from the same numbers.
         // WJog widened 25% (40 -> 50) - easier to hit, and the size every
         // manual-page axis unit copies so all axis controls look alike.
+        // Meters narrow (they show "100 %" at most) and as tall as the position
+        // and the checkbox they now sit beside.
         public const int WAxis = 132, WJog = 50,
                          WPosition = 120, WSetting = 86, WCommand = 44,
-                         WCheck = 44, WMeter = 96;
+                         WCheck = 44, WMeter = 76;
         public const int RowHeight = 40, Gap = 4;
 
         /// <summary>
         /// Space between GROUPS of related columns. The row reads as
         ///
-        ///   axis ‖ ◀ pos ▶ ‖ min max reference ‖ calibration cal ref ‖ backlash ‖ current Z
+        ///   axis ‖ ◀ pos current ▶ ‖ min max reference calibration cal ref Z ‖ codes ‖ travel backlash
         ///
         /// because those are the things an engineer sets together. Sixteen evenly
         /// spaced fields is a row nobody can scan; the gaps do the grouping that a
@@ -304,6 +333,16 @@ namespace Kaban.UI.Controls
         private NumericDisplayHMI _position;
         private MeterHMI _current, _zdist;
         private HexCodeHMI _axisAlarm, _axisWarning, _servoAlarm;
+        private NumericInputHMI _travel, _backlash;
+
+        /// <summary>Where each column of this row is, at factor 1: key -> (left, width).</summary>
+        private readonly System.Collections.Generic.Dictionary<string, Point> _columns =
+            new System.Collections.Generic.Dictionary<string, Point>();
+
+        /// <summary>The columns of this row (for the page's headings and for tests).</summary>
+        public System.Collections.Generic.IDictionary<string, Point> Columns { get { return _columns; } }
+
+        private void Column(string key, int x, int w) { _columns[key] = new Point(x, w); }
 
         public AxisSettingHMI()
         {
@@ -319,6 +358,7 @@ namespace Kaban.UI.Controls
             ErrorAddress = "";
             ReferenceSensorAddress = "";
             AxisAlarmAddress = AxisWarningAddress = ServoAlarmAddress = "";
+            RealPositionAddress = TravelPerRevolutionAddress = BacklashAddress = "";
             PositionDataType = DataTypeEnum.Bin_32;
             SettingDataType = DataTypeEnum.Bin_32;
             Divisor = 10000;
@@ -353,6 +393,7 @@ namespace Kaban.UI.Controls
         public void BuildRow()
         {
             Controls.Clear();
+            _columns.Clear();
             int x = 0;
 
             // NO COLON. These read as a column of row headings, not as captions in a
@@ -365,6 +406,7 @@ namespace Kaban.UI.Controls
             _axis.TextAlign = ContentAlignment.MiddleRight;
             _axis.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
             Controls.Add(_axis);
+            Column("Axis", x, WAxis);
             x += WAxis + Gap;
 
             x += GroupGap;
@@ -382,6 +424,8 @@ namespace Kaban.UI.Controls
                     Digits = Digits,
                     Suffix = Suffix,
                     UnitType = PositionUnitType,
+                    // The real (encoder) position, in the tooltip with the difference.
+                    ComparedAddress = (RealPositionAddress ?? "").Trim(),
                     // The position is the number the operator watches while
                     // jogging, so it is the one thing on the row drawn large.
                     Font = new Font("Segoe UI", 12F, FontStyle.Bold)
@@ -389,7 +433,17 @@ namespace Kaban.UI.Controls
                 _position.SetBounds(x, 4, WPosition, RowHeight - 8);
                 Controls.Add(_position);
             }
+            Column("Position", x, WPosition);
             x += WPosition + Gap;
+
+            // THE CURRENT BESIDE THE POSITION: the two numbers that change while
+            // the axis moves, read together. Its column exists when any axis on
+            // the page has a current - an axis without one leaves the space.
+            if (PageHas(a => a.CurrentAddress))
+            {
+                Column("Current", x, WMeter);
+                _current = AddMeter(CurrentAddress, CurrentDivisor, CurrentFullScale, ref x, current: true);
+            }
 
             _forward = AddJog(CommandForwardAddress, ButtonGlyphs.Right, ref x);
             x += GroupGap;
@@ -397,38 +451,241 @@ namespace Kaban.UI.Controls
             // MIN AND MAX BOUND EACH OTHER: the minimum may not be typed above the
             // maximum, nor the maximum below the minimum. They are the two ends of
             // one travel, and a crossed pair is a machine that can reach nothing.
-            _min = AddSetting(MinLimitAddress, ref x, WSetting,
-                              upperTag: MaxLimitAddress);
-            _max = AddSetting(MaxLimitAddress, ref x, WSetting,
-                              lowerTag: MinLimitAddress);
+            // EVERY COLUMN BELOW IS THE PAGE'S: there when any axis row on the
+            // page has it (a row without it leaves the space, so the columns line
+            // up), and not at all when none has - no empty column with a heading.
+            if (PageHas(a => a.MinLimitAddress))
+            {
+                Column("Min", x, WSetting);
+                _min = AddSetting(MinLimitAddress, ref x, WSetting, upperTag: MaxLimitAddress);
+            }
+            if (PageHas(a => a.MaxLimitAddress))
+            {
+                Column("Max", x, WSetting);
+                _max = AddSetting(MaxLimitAddress, ref x, WSetting, lowerTag: MinLimitAddress);
+            }
             // Reference and calibration are bounded by the axis's own travel.
-            _reference   = AddSetting(ReferenceAddress,   ref x, WSetting, clampToTravel: true);
-            _calibration = AddSetting(CalibrationAddress, ref x, WSetting, clampToTravel: true);
+            if (PageHas(a => a.ReferenceAddress))
+            {
+                Column("Reference", x, WSetting);
+                _reference = AddSetting(ReferenceAddress, ref x, WSetting, clampToTravel: true);
+            }
+            if (PageHas(a => a.CalibrationAddress))
+            {
+                Column("Calibration", x, WSetting);
+                _calibration = AddSetting(CalibrationAddress, ref x, WSetting, clampToTravel: true);
+            }
 
-            // Calibrate rewrites the axis's zero, so it is SET rather than
-            // momentary and carries the latched mark - pressing it by accident
-            // while meaning to jog would move every stored position on the axis.
             // Calibrate rewrites the axis's zero, so it is SET and draws the
             // latched mark - it must not look like the jog buttons beside it.
-            _calibrate = AddCommand(CalibrateAddress, BitActionType.SET, ref x);
-            x += 8;                      // air between the button and the checkbox
-            _goRef     = AddRefCheck(ref x);
-            x += GroupGap;
+            if (PageHas(a => a.CalibrateAddress))
+            {
+                Column("Cal", x, WCommand);
+                _calibrate = AddCommand(CalibrateAddress, BitActionType.SET, ref x);
+            }
+            if (PageHas(a => a.GoToReferenceAddress))
+            {
+                x += 8;                  // air between the button and the checkbox
+                Column("Ref", x, WCheck);
+                _goRef = AddRefCheck(ref x);
+            }
 
-            _current = AddMeter(CurrentAddress, CurrentDivisor, CurrentFullScale, ref x, current: true);
-            _zdist   = AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
+            // THE Z DISTANCE BESIDE THE REFERENCE: it says how good the reference
+            // is - how far past the Z pulse the axis stopped.
+            if (PageHas(a => a.ZDistanceAddress))
+            {
+                Column("ZDistance", x, WMeter);
+                _zdist = AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
+            }
             x += GroupGap;
 
             // Each code cell opens ITS code's entry of the manual while it is not
             // zero - the axis alarm and warning in the motion module's manual
             // (printed "1904H", as that manual does), the servo alarm in the
             // drive's ("16.3", as the amplifier's display does).
-            _axisAlarm   = AddCode(AxisAlarmAddress,   AxisCodeKind.AxisError,   ref x);
-            _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
-                                   HexCodeHMI.CodeSeverity.Warning);
-            _servoAlarm  = AddCode(ServoAlarmAddress,  AxisCodeKind.ServoAlarm,  ref x);
+            if (PageHas(a => a.AxisAlarmAddress))
+            {
+                Column("AxisAlarm", x, WCode);
+                _axisAlarm = AddCode(AxisAlarmAddress, AxisCodeKind.AxisError, ref x);
+            }
+            if (PageHas(a => a.AxisWarningAddress))
+            {
+                Column("AxisWarning", x, WCode);
+                _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
+                                       HexCodeHMI.CodeSeverity.Warning);
+            }
+            if (PageHas(a => a.ServoAlarmAddress))
+            {
+                Column("ServoAlarm", x, WCode);
+                _servoAlarm = AddCode(ServoAlarmAddress, AxisCodeKind.ServoAlarm, ref x);
+            }
+
+            // Rarely set from the HMI: last, and only on a page where some axis has them.
+            bool travel = PageHas(a => a.TravelPerRevolutionAddress), backlash = PageHas(a => a.BacklashAddress);
+            if (travel || backlash) x += GroupGap;
+            if (travel)
+            {
+                Column("TravelPerRev", x, WSetting);
+                _travel = AddRawSetting(TravelPerRevolutionAddress, "Tip_TravelPerRev",
+                    "Travel per motor revolution, in the PLC's own units (no divisor, no decimals).", ref x);
+            }
+            if (backlash)
+            {
+                Column("Backlash", x, WSetting);
+                _backlash = AddRawSetting(BacklashAddress, "Tip_Backlash",
+                    "Backlash, in the PLC's own units (no divisor, no decimals).", ref x);
+            }
 
             Width = Math.Max(Width, x);
+            AlignHeaders();
+        }
+
+        /// <summary>
+        /// Whether this axis - or any other axis row on the same page - has the
+        /// address: the page's rows share their columns, so a column exists for
+        /// all of them or for none.
+        /// </summary>
+        private bool PageHas(Func<AxisSettingHMI, string> address)
+        {
+            if (!string.IsNullOrWhiteSpace(address(this))) return true;
+            if (Parent == null) return false;
+            foreach (Control c in Parent.Controls)
+            {
+                var row = c as AxisSettingHMI;
+                if (row != null && !string.IsNullOrWhiteSpace(address(row))) return true;
+            }
+            return false;
+        }
+
+        /// <summary>A setting in the PLC's own units: no divisor, no decimals, no unit conversion.</summary>
+        private NumericInputHMI AddRawSetting(string address, string tipKey, string tipFallback, ref int x)
+        {
+            NumericInputHMI n = null;
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                n = new NumericInputHMI
+                {
+                    PlcNumber = PlcNumber,
+                    Address = address.Trim(),
+                    DataType = SettingDataType,
+                    Divisor = 1,
+                    DecimalPlaces = 0,
+                    Digits = Math.Max(Digits, 6),
+                    Suffix = "",
+                    ShowSuffix = false,
+                    UnitType = UnitType.None,
+                    RequiredSecurity = RequiredSecurity,
+                    LogAction = true,
+                    ToolTipTextKey = LanguageManager.GetString(tipKey, tipFallback)
+                };
+                n.SetBounds(x, 6, WSetting, RowHeight - 12);
+                Controls.Add(n);
+            }
+            x += WSetting + Gap;
+            return n;
+        }
+
+        // ==================================================================
+        // THE PAGE'S COLUMN HEADINGS
+        // ==================================================================
+
+        /// <summary>
+        /// The column headings of a page of axis rows, known by their designer
+        /// text: key, translation key, then the texts a designer may have used.
+        /// </summary>
+        private static readonly string[][] Headings =
+        {
+            new[] { "Axis", "Col_Axis", "Axis" },
+            new[] { "Position", "Col_AxisPosition", "Position" },
+            new[] { "Current", "Col_AxisCurrent", "Current" },
+            new[] { "Min", "Col_MinLimit", "Min" },
+            new[] { "Max", "Col_MaxLimit", "Max" },
+            new[] { "Reference", "Col_Reference", "Reference" },
+            new[] { "Calibration", "Col_Calibration", "Calibration" },
+            new[] { "Cal", "Col_Calibrate", "Cal" },
+            new[] { "Ref", "Col_SendRef", "Ref" },
+            new[] { "ZDistance", "Col_ZDistance", "Z distance", "Z dist" },
+            new[] { "AxisAlarm", "Col_AxisAlarm", "Axis alarm" },
+            new[] { "AxisWarning", "Col_AxisWarning", "Axis warn", "Axis warning" },
+            new[] { "ServoAlarm", "Col_ServoAlarm", "Servo alarm" },
+            new[] { "TravelPerRev", "Col_TravelPerRev", "Travel / rev" },
+            new[] { "Backlash", "Col_Backlash", "Backlash" },
+        };
+
+        private const string HeadingTag = "AxisHeading:";
+
+        /// <summary>
+        /// PUTS THE PAGE'S COLUMN HEADINGS OVER THE COLUMNS, from the top row.
+        ///
+        /// The headings were labels placed by hand in each machine's designer, at
+        /// the x the columns had when the page was drawn - and they stayed there
+        /// when the row changed (H800's and MD3020's still named a "Backlash"
+        /// column the row no longer had). Now each heading label above the first
+        /// row is recognised by its text, moved over its column, translated, and
+        /// hidden when no row has that column; a column with no heading of its own
+        /// (travel per revolution, backlash) gets one in the same style.
+        /// </summary>
+        public void AlignHeaders()
+        {
+            var page = Parent;
+            if (page == null) return;
+            AxisSettingHMI top = null;
+            foreach (Control c in page.Controls)
+            {
+                var row = c as AxisSettingHMI;
+                if (row != null && (top == null || row.Top < top.Top)) top = row;
+            }
+            if (top != this) return;                         // the top row speaks for the page
+
+            var labels = new System.Collections.Generic.List<Label>();
+            foreach (Control c in page.Controls)
+                if (c.GetType() == typeof(Label) && c.Bottom <= Top + 2) labels.Add((Label)c);
+            if (labels.Count == 0) return;                   // a page without headings
+
+            Label style = null;
+            var byKey = new System.Collections.Generic.Dictionary<string, Label>();
+            foreach (var l in labels)
+            {
+                string key = l.Tag is string && ((string)l.Tag).StartsWith(HeadingTag) ? ((string)l.Tag).Substring(HeadingTag.Length) : null;
+                if (key == null)
+                    foreach (var h in Headings)
+                        for (int i = 2; i < h.Length && key == null; i++)
+                            if (string.Equals((l.Text ?? "").Trim(), h[i], StringComparison.OrdinalIgnoreCase)) key = h[0];
+                if (key == null || byKey.ContainsKey(key)) continue;
+                l.Tag = HeadingTag + key;
+                byKey[key] = l;
+                if (style == null) style = l;
+            }
+            if (style == null) return;
+
+            foreach (var h in Headings)
+            {
+                Point col;
+                bool shown = _columns.TryGetValue(h[0], out col);
+                Label l;
+                if (!byKey.TryGetValue(h[0], out l))
+                {
+                    if (!shown || (h[0] != "TravelPerRev" && h[0] != "Backlash" && h[0] != "Current")) continue;
+                    l = new Label
+                    {
+                        Tag = HeadingTag + h[0],
+                        AutoSize = false,
+                        TextAlign = style.TextAlign,
+                        Font = style.Font,
+                        ForeColor = style.ForeColor,
+                        BackColor = style.BackColor,
+                        Top = style.Top,
+                        Height = style.Height
+                    };
+                    page.Controls.Add(l);
+                    byKey[h[0]] = l;
+                }
+                l.Visible = shown;
+                if (!shown) continue;
+                l.Left = Left + UiScale.For(this, col.X);
+                l.Width = UiScale.For(this, col.Y);
+                l.Text = LanguageManager.GetString(h[1], h[2]);
+            }
         }
 
         /// <param name="clampToTravel">
@@ -620,7 +877,8 @@ namespace Kaban.UI.Controls
                 };
                 if (current) m.UseCurrentBands(); else m.UseZDistanceBands();
                 if (fullScale > 0) m.ScaleMaximum = fullScale;
-                m.SetBounds(x, 9, WMeter, RowHeight - 18);
+                // As tall as the position and the checkbox it sits beside.
+                m.SetBounds(x, 4, WMeter, RowHeight - 8);
                 Controls.Add(m);
             }
             x += WMeter + Gap;
@@ -685,6 +943,27 @@ namespace Kaban.UI.Controls
         {
             base.OnHandleCreated(e);
             if (Controls.Count == 0) BuildRow();
+            if (!_languageHooked)
+            {
+                _languageHooked = true;
+                LanguageManager.LanguageChanged += OnLanguageChanged;
+            }
+        }
+
+        private bool _languageHooked;
+
+        /// <summary>The axis name and the page's headings in the new language.</summary>
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            _axis.Text = LanguageManager.GetString(AxisNameKey ?? "", AxisNameKey ?? "");
+            AlignHeaders();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _languageHooked) LanguageManager.LanguageChanged -= OnLanguageChanged;
+            base.Dispose(disposing);
         }
 
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
