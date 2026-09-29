@@ -125,6 +125,20 @@ class NI {
         var folded = Ink(nav, out nl, out nr);
         Check("collapsed: the same chevron pointing right (>>) - no hamburger", nr > nl && Math.Abs(folded.Width - sideInk.Width) <= 1,
               nl + "/" + nr + " " + folded.Size);
+        Console.WriteLine("--- the menu's tooltips: only when folded to its pictures ---");
+        var navButtons = ((System.Collections.IDictionary)typeof(MainForm).GetField("_menuButtons", Any).GetValue(form)).Keys
+                         .Cast<Kaban.UI.Controls.ButtonHMI>().ToList();
+        var tipOf = typeof(Kaban.UI.Controls.ButtonHMI).GetMethod("BuildMainTooltip", Any);
+        form.SetNavCollapsed(false);
+        Check("widened (labels showing): no tooltip on the menu's buttons",
+              navButtons.All(b => ((string)tipOf.Invoke(b, new object[] { true })).Length == 0),
+              string.Join(" | ", navButtons.Select(b => (string)tipOf.Invoke(b, new object[] { true }))));
+        form.SetNavCollapsed(true);
+        Check("narrowed (pictures only): each says what it is",
+              navButtons.All(b => ((string)tipOf.Invoke(b, new object[] { true })).Length > 0) &&
+              navButtons.Any(b => (string)tipOf.Invoke(b, new object[] { true }) == "Home"),
+              string.Join(" | ", navButtons.Select(b => (string)tipOf.Invoke(b, new object[] { true }))));
+        form.SetNavCollapsed(false);
         form.Close();
 
         try { Directory.Delete(dir, true); } catch { }

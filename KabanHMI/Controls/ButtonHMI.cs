@@ -1184,10 +1184,15 @@ namespace Kaban.UI.Controls
             //   3. a blank line, the admin caption, then the wiring - admins only
             var sb = new System.Text.StringBuilder();
 
-            string shownText = (Text ?? "").Trim();
-            string label = shownText.Length > 0 ? shownText
-                                                : LanguageManager.GetString(TranslationKey, FallbackText);
-            if (shownText.Length == 0 && !string.IsNullOrWhiteSpace(label))
+            // Whether the caption is ON SCREEN: this control paints it itself (Text
+            // is always empty), so the test is whether it has one and draws it.
+            // Text alone made every labelled button repeat its label in its tip -
+            // the left menu's "Home" over a button reading "Home" - where the label
+            // belongs only on a button that does not show it: an icon-only one, or
+            // the left menu folded to its pictures.
+            bool captionShown = ShowCaption && !string.IsNullOrWhiteSpace(_caption);
+            string label = LanguageManager.GetString(TranslationKey, FallbackText);
+            if (!captionShown && !string.IsNullOrWhiteSpace(label) && !ButtonGlyphs.IsGlyphOnly(label))
                 sb.Append(label).Append('\n');      // caption not visible on screen
 
             string tip = !_softEnabled ? DisabledReasonOrDefault
