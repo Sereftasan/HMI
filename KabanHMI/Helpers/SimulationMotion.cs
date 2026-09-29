@@ -74,6 +74,9 @@ namespace Kaban.UI.Helpers
         {
             if (unit == null) return;
             if (string.IsNullOrWhiteSpace(unit.CommandAAddress) && string.IsNullOrWhiteSpace(unit.CommandBAddress)) return;
+            // The same unit on a second page, or a page searched twice: once.
+            string a = (unit.CommandAAddress ?? "").Trim(), b = (unit.CommandBAddress ?? "").Trim();
+            if (_units.Exists(u => u.Station == unit.PlcNumber && u.CommandA == a && u.CommandB == b)) return;
             _units.Add(new Unit
             {
                 Station = unit.PlcNumber,
@@ -87,6 +90,9 @@ namespace Kaban.UI.Helpers
         {
             if (axis == null) return;
             if (string.IsNullOrWhiteSpace(axis.PositionAddress)) return;
+            // The same row searched twice would move its axis twice per step.
+            string pos = axis.PositionAddress.Trim();
+            if (_axes.Exists(x => x.Station == axis.PlcNumber && string.Equals(x.Position, pos, StringComparison.OrdinalIgnoreCase))) return;
             _axes.Add(new Axis
             {
                 Station = axis.PlcNumber,

@@ -62,7 +62,9 @@ namespace Kaban.UI
             }
             catch (ArgumentException)
             {
-                // already gone - the normal, fast case
+                // Already gone - the normal case now that the new instance is
+                // started only after the old one has closed its stations.
+                Kaban.Core.Helpers.AuditLogger.Log("[RESTART] the previous instance (pid " + pid + ") had already exited.");
             }
             catch (Exception ex)
             {

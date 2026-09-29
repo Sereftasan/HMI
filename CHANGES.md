@@ -4002,3 +4002,20 @@ and `UnitLookAndErrors` extended.
   Axis Monitor, screen scale, pictures, axis row, value and lamp tips, one-chart manual.
 - Tests: `tools/ui_test/AxisRowLayout.cs`, `tools/nav_test/AxisMonitor.cs` (new); `ZoomMenu.cs`, `NavIcons.cs`, `SidePanel.cs`,
   `CylinderHelpAndLogin.cs`, `UnitTypes.cs`, `MonitorFind.cs` updated.
+
+## 2026-09-29 (afternoon) - MX Component after a restart, one Open per start, paced reconnects
+
+- `MainForm.RestartApplication`: the new instance is prepared (`_pendingRestart`, `UseShellExecute = true`) and started
+  in `FormClosed` - after `DisconnectAll` - by `StartPendingRestart` through `MainForm.StartProcess` (a field, for tests).
+  It was started before closing, inheriting the old process's handles (MX Component's connection among them).
+  `AppBootstrap.AwaitPreviousInstance` logs a predecessor that had already exited.
+- `MitsubishiActUtl`: `Connect`/`ConnectDirect` return at once when open (`IsOpenAndWell`) - no second `Open()`, which
+  MX Component answers 0xF0000003 "already open"; attempts after a failure paced (`AttemptDue`, `RetryDelayMs`:
+  0.5, 1, 2, 4, 5 s); "opened after n failed attempt(s)" logged and the failure count reset on success;
+  `DisconnectDirect` keeps Close()'s answer for the exit log; `RecreateControl` clears `_opened`.
+  `MxDiagnostics.DescribeOpenError`: 0xF0000003 "already open ...", 0x01808301 "no answer from the controller while opening".
+- `PlcManager.Connect(id)`: nothing to do for a connected station.
+- `AlarmHelpLinks.RegisterAxis`: the same row (station, number, position, name) seen twice is not a conflict.
+  `SimulationMotion.Register`: a unit or axis already registered is not added again.
+- Log text: "signed in again after the restart". Manual, PLC connection: the pace of reconnect attempts.
+- Tests: `tools/core_test/MxRestart.cs`, `tools/nav_test/RestartOrder.cs` (new).

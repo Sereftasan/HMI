@@ -36,7 +36,20 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         private volatile bool _needsFreshControl;
         private int _failCount;
         private DateTime _lastFailLog = DateTime.MinValue;
+        private DateTime _firstFailAt;
         private bool _lastOpOk = true;
+
+        // PACED RECONNECTS. After a failed Open the next one waits: half a second,
+        // then 1, 2, 4 and at most 5 s. Every caller - the scanner, the connection
+        // poll - asked on its own schedule, so a controller that refused was asked
+        // again one to two times a second, each time with a brand-new control, for
+        // as long as it refused (44 minutes once). Paced, a controller that is
+        // back is still found within 5 s.
+        private volatile bool _pacing;
+        private int _nextAttemptTick;
+
+        /// <summary>Close()'s answer when the connection was closed (Disconnect), for the exit log.</summary>
+        private int? _closedRc;
 
         public MitsubishiActUtl(int stationNumber)
         {
@@ -93,6 +106,7 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             }
             catch { }
             _plc = null;
+            _opened = false;
 
             try { _plc = new ActUtlType(); }
             catch (Exception ex)
@@ -111,7 +125,17 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
         public bool Connect()
         {
+            // ALREADY OPEN: nothing to do. MX Component answers a second Open() on
+            // an open control with 0xF0000003 ("already open"); this driver took
+            // that for a spent control, reported the link down and rebuilt it -
+            // closing the connection that was working. It happened on every start
+            // (the startup check called Connect again right after the station had
+            // opened) and whenever the scanner and the connection poll reconnected
+            // at the same moment: a second connection, a station scan, a close and
+            // a third Open within three seconds, for nothing.
+            if (IsOpenAndWell) return true;
             if (_worker.IsWorkerThread) return ConnectDirect();
+            if (!AttemptDue) return false;              // paced after a failure
 
             // CONNECT ALONE REFUSES WHEN BUSY. The call in flight is most likely
             // an Open() to a PLC that is not there, which can take seconds; waiting
@@ -228,8 +252,27 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         /// </summary>
         public string LastConnectError { get; private set; } = "";
 
+        /// <summary>Open, not stalled, not waiting to be rebuilt: Connect has nothing to do.</summary>
+        private bool IsOpenAndWell { get { return _isConnected && _opened && !_needsFreshControl; } }
+
+        /// <summary>No failure being paced, or its pause is over.</summary>
+        private bool AttemptDue { get { return !_pacing || unchecked(Environment.TickCount - _nextAttemptTick) >= 0; } }
+
+        /// <summary>The pause after the n-th failure in a row: 0.5, 1, 2, 4, then 5 s.</summary>
+        internal static int RetryDelayMs(int failures)
+        {
+            if (failures <= 1) return 500;
+            if (failures >= 5) return 5000;
+            return 500 << (failures - 1);
+        }
+
         private bool ConnectDirect()
         {
+            // Two callers can queue a connect at the same moment (the scanner's
+            // thread and the connection poll): the second finds it open.
+            if (IsOpenAndWell) return true;
+            if (!AttemptDue) return false;
+
             // CONTRACT: IPlcDriver.Connect() reports failure by returning false -
             // it must NOT throw. The previous version threw, which surfaced as a
             // "Startup Error" popup whenever the PLC/simulator was not reachable at
@@ -263,6 +306,12 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                     _isConnected = true;
                     _lastOpOk = true;
                     LastConnectError = "";
+                    if (_failCount > 0)
+                        Kaban.Core.Helpers.AuditLogger.Log(
+                            $"[PLC DIAG] Mitsubishi station {_stationNumber} opened after {_failCount} failed attempt(s) " +
+                            $"in {(int)(DateTime.Now - _firstFailAt).TotalSeconds} s.");
+                    _failCount = 0;
+                    _pacing = false;
                     ReadCpuType();
                     return true;
                 }
@@ -270,6 +319,9 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                 _isConnected = false;
                 _needsFreshControl = true;         // this control is spent - rebuild it next time
                 LastConnectError = $"0x{returnCode:X8}";
+                if (_failCount == 0) _firstFailAt = DateTime.Now;
+                _pacing = true;
+                _nextAttemptTick = unchecked(Environment.TickCount + RetryDelayMs(_failCount + 1));
                 // Log the first failure in full, then at most once a minute - the
                 // 1 Hz retry was burying everything else in the audit log.
                 if (_failCount++ == 0 || (DateTime.Now - _lastFailLog).TotalSeconds >= 60)
@@ -329,13 +381,19 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
         private void DisconnectDirect()
         {
+            bool wasOpen = _opened;
+            int rc = 0;
             try
             {
-                if (_plc != null) _plc.Close();
+                if (_plc != null) rc = _plc.Close();
             }
-            catch { } // Ignore close errors
+            catch { rc = -1; } // Ignore close errors
             finally
             {
+                // Kept for the exit log: Disconnect runs before Dispose, so the
+                // log only ever said "control released" and never whether the
+                // connection had been closed.
+                if (wasOpen) _closedRc = rc;
                 _opened = false;
                 _isConnected = false;
             }
@@ -379,9 +437,12 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             int rc = 0;
             try { if (wasOpen) rc = plc.Close(); } catch (Exception ex) { rc = -1; LastConnectError = ex.Message; }
             try { System.Runtime.InteropServices.Marshal.FinalReleaseComObject(plc); } catch { }
+            int? closed = wasOpen ? rc : _closedRc;
+            _closedRc = null;
             Kaban.Core.Helpers.AuditLogger.Log(
                 $"[PLC DIAG] Mitsubishi station {_stationNumber}: " +
-                (wasOpen ? $"connection closed (Close returned 0x{rc:X8}) and " : "") + "MX Component control released.");
+                (closed.HasValue ? $"connection closed (Close returned 0x{closed.Value:X8}) and " : "not connected; ") +
+                "MX Component control released.");
         }
 
         public int Read(string address)

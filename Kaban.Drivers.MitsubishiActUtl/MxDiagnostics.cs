@@ -250,8 +250,11 @@ namespace Kaban.Drivers.MitsubishiActUtl
                 // Meanings corrected from the on-site scan: unconfigured stations
                 // answered 0xF0000002, while the CONFIGURED station 1 opened fine on
                 // a fresh control and only returned 0xF0000003 on a control that had
-                // already failed once.
-                case 0xF0000003: return "control unusable after an earlier failed Open - a fresh control is needed";
+                // already failed once. 0xF0000003 is MX Component's "already open":
+                // the logs of 28-29 September show it one second after a SUCCESSFUL
+                // Open, when the same control was opened a second time.
+                case 0xF0000003: return "already open - Open() on a control that is open, or left half-open by a failed Open; a fresh control is needed";
+                case 0x01808301: return "no answer from the controller while opening - not reachable, or still holding an earlier connection";
                 case 0xF0000002: return "no such logical station in the Communication Setting Utility";
                 case 0xF0000001: return "logical station number invalid / not set";
                 case 0x80040154: return "ActUtlType COM class not registered for this process bitness";

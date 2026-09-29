@@ -30,7 +30,7 @@ namespace Kaban.UI.Forms
             if (account == null) { AuditLogger.Log("[RESTART] sign-in hand-over for '" + user + "': no such account now."); return false; }
             SecurityManager.Login(account.Username, account.Level);
             UserStore.RememberLastUser(account.Username);
-            AuditLogger.Log("signed in again after the restart for the magnifying factor (level: " + account.Level + ").");
+            AuditLogger.Log("signed in again after the restart (level: " + account.Level + ").");
             return true;
         }
 

@@ -312,6 +312,9 @@ namespace Kaban.Core.Helpers
                 AuditLogger.Log($"attempted to connect to unregistered PLC station {id}.");
                 return false;
             }
+            // Open already (RegisterDriver opened it): nothing to do. Asking again
+            // made MX Component answer "already open" on every start.
+            if (_drivers[id].IsConnected) return true;
             return _drivers[id].Connect();
         }
 

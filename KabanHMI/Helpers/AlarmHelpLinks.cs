@@ -157,8 +157,18 @@ namespace Kaban.UI.Helpers
 
             if (a.AxisNumber <= 0) return;
             var key = a.PlcNumber + "|" + a.AxisNumber;
-            if (_axes.ContainsKey(key))
+            AxisInfo seen;
+            if (_axes.TryGetValue(key, out seen))
             {
+                // THE SAME ROW TWICE is not a conflict. Built while someone with
+                // the level for Axis Settings is signed in, Machine Parameters
+                // opens on that tab (its first) and shows its rows - and discovery
+                // then builds the tab again on its own. Since a restart keeps the
+                // user signed in, the log listed all 22 axes as "numbered on two
+                // rows" after every restart. Two DIFFERENT rows - another
+                // position - with one number still are.
+                if (string.Equals(seen.Position, info.Position, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(seen.NameKey, info.NameKey, StringComparison.Ordinal)) return;
                 var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.AxisNumber);
                 if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("axis conflict - " + msg); }
                 return;

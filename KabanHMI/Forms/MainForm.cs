@@ -535,6 +535,7 @@ namespace Kaban.UI.Forms
             Kaban.Core.Helpers.HmiLayout.Load();
             Kaban.Core.Helpers.HmiLayout.DetectFrom(Screen.FromControl(this).WorkingArea.Height);
             FormClosing += MainForm_FormClosing;
+            FormClosed += (s4, e4) => StartPendingRestart();
 
             // Offer the login straight away - most shifts start by signing in. It is
             // a normal dialog, so an operator who just wants to watch the machine can
@@ -1172,6 +1173,18 @@ namespace Kaban.UI.Forms
         /// to come back with the connection dead - making a just-changed station
         /// setting look like it had not applied at all, while closing and starting
         /// again by hand worked.
+        ///
+        /// THE NEW INSTANCE IS STARTED LAST, once every station is closed - and
+        /// without inheriting anything from this one. It used to be started FIRST,
+        /// while the connections were still open, with UseShellExecute = false:
+        /// Windows then hands the new process a copy of every inheritable handle
+        /// of the old one, MX Component's connection to the controller included.
+        /// Closing it here did not end it - the new instance still held it without
+        /// knowing - so the controller saw the old connection alive and did not
+        /// answer the new one (0x01808301 after every restart on 29 September,
+        /// while every start by hand opened at once). Now the start waits for
+        /// FormClosed (after PlcManager.DisconnectAll) and goes through the shell,
+        /// which passes no handles.
         /// </summary>
         public void RestartApplication() { RestartApplication(null); }
 
@@ -1182,7 +1195,7 @@ namespace Kaban.UI.Forms
             {
                 AuditLogger.Log("restart requested from the HMI.");
 
-                var psi = new System.Diagnostics.ProcessStartInfo
+                _pendingRestart = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = Application.ExecutablePath,
                     Arguments = RestartArguments(extraArguments),
@@ -1190,17 +1203,54 @@ namespace Kaban.UI.Forms
                     // Translations.csv, PlcLabels.csv and Alarms.json are all resolved
                     // relative to it.
                     WorkingDirectory = System.IO.Path.GetDirectoryName(Application.ExecutablePath),
-                    UseShellExecute = false
+                    // Through the shell: the new process inherits no handle of this one.
+                    UseShellExecute = true
                 };
-                System.Diagnostics.Process.Start(psi);
 
                 _closeConfirmed = true;
                 Close();
+                // Still open (a page refused to close)? Then no restart either.
+                if (!IsDisposed && Visible) _pendingRestart = null;
             }
             catch (Exception ex)
             {
                 AuditLogger.Log("restart failed: " + ex.Message);
                 MessageBox.Show(this,
+                    LanguageManager.GetString("Msg_RestartFailed",
+                        "Could not restart automatically. Please close and start the HMI again."),
+                    LanguageManager.GetString("Btn_Restart", "Restart the program"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>The new instance, started once this one has closed its stations.</summary>
+        private System.Diagnostics.ProcessStartInfo _pendingRestart;
+
+        /// <summary>
+        /// Starts a process - the restart's new instance. A field so a test can see
+        /// what would be started, and when, without starting it.
+        /// </summary>
+        internal static Action<System.Diagnostics.ProcessStartInfo> StartProcess =
+            psi => System.Diagnostics.Process.Start(psi);
+
+        /// <summary>
+        /// FormClosed: the stations are closed (FormClosing ran DisconnectAll), so
+        /// the new instance can be started - it finds nothing of this one open.
+        /// </summary>
+        private void StartPendingRestart()
+        {
+            var psi = _pendingRestart;
+            _pendingRestart = null;
+            if (psi == null) return;
+            try
+            {
+                StartProcess(psi);
+                AuditLogger.Log("[RESTART] new instance started, after the stations were closed.");
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("restart failed: " + ex.Message);
+                MessageBox.Show(
                     LanguageManager.GetString("Msg_RestartFailed",
                         "Could not restart automatically. Please close and start the HMI again."),
                     LanguageManager.GetString("Btn_Restart", "Restart the program"),
