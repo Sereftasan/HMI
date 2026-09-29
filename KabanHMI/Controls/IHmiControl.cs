@@ -35,4 +35,16 @@ namespace Kaban.UI.Controls
     {
         System.Collections.Generic.IEnumerable<string> ExtraAddresses { get; }
     }
+
+    /// <summary>
+    /// A control shown only while its visibility conditions are met, that is
+    /// neither a numeric field, a button nor a lamp (whose conditions the scanner
+    /// already knows): an axis row, a row of the axis monitor. The scanner reads
+    /// the conditions' devices and updates it with its own station's values.
+    /// </summary>
+    public interface IConditionalControl : IHmiControl
+    {
+        int PlcNumber { get; }
+        SystemCondition VisibilityConditions { get; }
+    }
 }

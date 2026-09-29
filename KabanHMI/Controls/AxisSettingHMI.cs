@@ -42,7 +42,7 @@ namespace Kaban.UI.Controls
     /// <summary>Which jog direction's button shows an axis's reference sensor.</summary>
     public enum AxisReferenceSide { Back = 0, Forward = 1 }
 
-    public class AxisSettingHMI : UserControl, IHmiControl
+    public class AxisSettingHMI : UserControl, IConditionalControl
     {
         // ==================================================================
         // BINDING
@@ -297,6 +297,16 @@ namespace Kaban.UI.Controls
 
         [Category(" Security")]
         public SecurityLevel RequiredSecurity { get; set; }
+
+        /// <summary>
+        /// The row is shown only while these are met - an axis a machine may or
+        /// may not have fitted. The Axis Monitor side page follows the same
+        /// conditions: it lists the axes whose conditions are met.
+        /// </summary>
+        [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        public SystemCondition VisibilityConditions { get; set; } = SystemCondition.None;
 
         // ==================================================================
         // LAYOUT
@@ -969,7 +979,9 @@ namespace Kaban.UI.Controls
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             // Children are ordinary HMI controls, so the scanner already drives
-            // them. Nothing to do here - the method exists to satisfy IHmiControl.
+            // them; the row itself only follows its visibility conditions.
+            bool vis = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
+            if (Visible != vis) Visible = vis;
         }
     }
 

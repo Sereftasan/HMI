@@ -186,6 +186,9 @@
     </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
+    <Compile Include="Screens\AxisMonitorPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\IoMonitorPage.cs">
       <SubType>UserControl</SubType>
     </Compile>

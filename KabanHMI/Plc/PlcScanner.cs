@@ -300,6 +300,8 @@ namespace Kaban.UI.Plc
             // harmless where reading one too few silently truncates the value.
             foreach (var o in _others)
             {
+                var conditional = o as IConditionalControl;
+                if (conditional != null) AddConditions(conditional.VisibilityConditions);
                 var bound = o as IPlcBoundControl;
                 if (bound == null) continue;
                 curPlc = bound.PlcNumber;
@@ -787,7 +789,8 @@ namespace Kaban.UI.Plc
             foreach (var other in _others)
             {
                 var bound = other as IPlcBoundControl;
-                int plc = bound != null ? bound.PlcNumber : 1;
+                var conditional = other as IConditionalControl;
+                int plc = bound != null ? bound.PlcNumber : conditional != null ? conditional.PlcNumber : 1;
                 var target = other;
                 withLookup(plc, lk => target.UpdateState(lk, checkGlobal: checkGlobal));
             }

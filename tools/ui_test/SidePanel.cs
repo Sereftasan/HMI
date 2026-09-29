@@ -86,8 +86,8 @@ class SP {
         var buttons = (Dictionary<string, Button>)Get(form, "_sideButtons");
         Check("at the right edge, from under the caption to the bottom", bar.Visible && bar.Right == form.ClientSize.Width && bar.Top == top.Bottom,
               bar.Bounds + " in " + form.ClientSize + ", caption bottom " + top.Bottom);
-        Check("  the admin's pages: Inputs / Outputs, the machine's Order, the PLC Monitor, in that order",
-              string.Join(",", buttons.Keys) == "IoMonitor,TST.Order,PlcMonitor", string.Join(",", buttons.Keys));
+        Check("  the admin's pages: Inputs / Outputs, the Axis Monitor, the machine's Order, the PLC Monitor, in that order",
+              string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,PlcMonitor", string.Join(",", buttons.Keys));
         var tips = (ToolTip)Get(form, "_sideTips");
         Check("  each says what it opens", buttons.All(kv => (tips.GetToolTip(kv.Value) ?? "").Length > 0), tips.GetToolTip(buttons["PlcMonitor"]));
 
@@ -250,12 +250,12 @@ class SP {
         Console.WriteLine("--- the level decides ---");
         SecurityManager.Login("maint", SecurityLevel.Maintenance);
         Pump(50);
-        Check("Maintenance: Inputs / Outputs and Order, no monitor", string.Join(",", buttons.Keys) == "IoMonitor,TST.Order", string.Join(",", buttons.Keys));
+        Check("Maintenance: Inputs / Outputs, Axis Monitor and Order, no PLC monitor", string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order", string.Join(",", buttons.Keys));
         form.ShowSidePage("IoMonitor");
         SecurityManager.Logout();
         Pump(50);
-        Check("signed out: the Order page stays (it asks for no level); Inputs / Outputs is closed",
-              string.Join(",", buttons.Keys) == "TST.Order" && form.OpenSidePage == null && bar.Visible, string.Join(",", buttons.Keys));
+        Check("signed out: the Axis Monitor and the Order page stay (they ask for no level); Inputs / Outputs is closed",
+              string.Join(",", buttons.Keys) == "AxisMonitor,TST.Order" && form.OpenSidePage == null && bar.Visible, string.Join(",", buttons.Keys));
 
         Console.WriteLine("--- the bar folds to the edge ---");
         form.GetType().GetMethod("SetSideBarFolded", Any).Invoke(form, new object[] { true });

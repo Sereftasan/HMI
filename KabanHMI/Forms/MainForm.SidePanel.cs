@@ -46,7 +46,7 @@ namespace Kaban.UI.Forms
         private readonly ToolTip _sideTips = UiStyle.CreateTips();
 
         private const int SideBarWidth = 48, SideBarFoldedWidth = 14, SideButtonSize = 40;
-        private const string PlcMonitorKey = "PlcMonitor", IoMonitorKey = "IoMonitor";
+        private const string PlcMonitorKey = "PlcMonitor", IoMonitorKey = "IoMonitor", AxisMonitorKey = "AxisMonitor";
 
         /// <summary>The side page open in the panel (null when the panel is closed).</summary>
         public SidePage OpenSidePage { get { return _sidePanel != null && _sidePanel.Visible ? _sideOpen : null; } }
@@ -73,6 +73,16 @@ namespace Kaban.UI.Forms
                 Create = () => new Screens.IoMonitorPage(),
                 RequiredLevel = SecurityLevel.Maintenance,
                 SortOrder = 10
+            });
+            // Every axis's position and current, from the Axis Settings rows - watching only.
+            SidePages.Register(new SidePage
+            {
+                Key = AxisMonitorKey,
+                TitleKey = "Ttl_AxisMonitor", TitleFallback = "Axis Monitor",
+                Glyph = DrawAxisGlyph,
+                Create = () => new Screens.AxisMonitorPage(),
+                RequiredLevel = SecurityLevel.None,
+                SortOrder = 20
             });
             SidePages.Register(new SidePage
             {
@@ -480,6 +490,23 @@ namespace Kaban.UI.Forms
                         g.DrawLines(pen, new[] { new PointF(cx + 1 * d, cy - 6), new PointF(cx + 6 * d, cy), new PointF(cx + 1 * d, cy + 6) });
                 }
             });
+        }
+
+        /// <summary>Axis Monitor: a carriage on its rail, arrows both ways.</summary>
+        internal static void DrawAxisGlyph(Graphics g, Rectangle r, Color colour)
+        {
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            float cx = r.X + r.Width / 2f, cy = r.Y + r.Height / 2f;
+            using (var rail = new Pen(colour, 2.2f) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+            {
+                g.DrawLine(rail, cx - 11, cy + 5, cx + 11, cy + 5);
+                g.DrawLines(rail, new[] { new PointF(cx - 8, cy + 2), new PointF(cx - 11, cy + 5), new PointF(cx - 8, cy + 8) });
+                g.DrawLines(rail, new[] { new PointF(cx + 8, cy + 2), new PointF(cx + 11, cy + 5), new PointF(cx + 8, cy + 8) });
+            }
+            using (var carriage = new SolidBrush(Color.FromArgb(40, 46, 56)))
+                g.FillRectangle(carriage, cx - 5, cy - 8, 10, 9);
+            using (var lit = new SolidBrush(Color.FromArgb(76, 175, 80)))
+                g.FillEllipse(lit, cx - 2, cy - 6, 4, 4);
         }
 
         /// <summary>Inputs / Outputs: two lamps, one lit, each with its line.</summary>

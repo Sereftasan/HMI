@@ -81,6 +81,7 @@ namespace Kaban.UI.Helpers
             _links.Clear();
             _conflicts.Clear();
             _axes.Clear();
+            _axisList.Clear();
         }
 
         // ---- axes ------------------------------------------------------------
@@ -99,7 +100,19 @@ namespace Kaban.UI.Helpers
             public Kaban.Core.Enums.DataTypeEnum PositionType;
             public double Divisor;
             public bool Vertical;
+            /// <summary>For the Axis Monitor: the current meter and when the row is shown.</summary>
+            public string Current = "", RealPosition = "";
+            public double CurrentDivisor = 1, CurrentFullScale = 100;
+            public Kaban.Core.Enums.SystemCondition Visibility;
         }
+
+        private static readonly List<AxisInfo> _axisList = new List<AxisInfo>();
+
+        /// <summary>
+        /// Every axis row discovery saw, in page order, numbered or not - the Axis
+        /// Monitor's list. The same row seen twice (a page built twice) once.
+        /// </summary>
+        public static IList<AxisInfo> AllAxes { get { return _axisList.AsReadOnly(); } }
 
         private static readonly Dictionary<string, AxisInfo> _axes = new Dictionary<string, AxisInfo>();
         private static bool _discovered, _discovering;
@@ -124,15 +137,8 @@ namespace Kaban.UI.Helpers
 
         private static void RegisterAxis(AxisSettingHMI a)
         {
-            if (a == null || a.AxisNumber <= 0) return;
-            var key = a.PlcNumber + "|" + a.AxisNumber;
-            if (_axes.ContainsKey(key))
-            {
-                var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.AxisNumber);
-                if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("axis conflict - " + msg); }
-                return;
-            }
-            _axes[key] = new AxisInfo
+            if (a == null) return;
+            var info = new AxisInfo
             {
                 Station = a.PlcNumber, Number = a.AxisNumber, NameKey = a.AxisNameKey ?? "",
                 Back = a.CommandBackAddress ?? "", Forward = a.CommandForwardAddress ?? "",
@@ -141,8 +147,23 @@ namespace Kaban.UI.Helpers
                 ReferenceSensor = a.ReferenceSensorAddress ?? "", ReferenceSide = a.ReferenceSensorSide,
                 Error = a.ErrorAddress ?? "", Vertical = a.VerticalMovement,
                 ServoAlarm = a.ServoAlarmAddress ?? "", AxisAlarm = a.AxisAlarmAddress ?? "",
-                AxisWarning = a.AxisWarningAddress ?? ""
+                AxisWarning = a.AxisWarningAddress ?? "",
+                Current = a.CurrentAddress ?? "", CurrentDivisor = a.CurrentDivisor, CurrentFullScale = a.CurrentFullScale,
+                RealPosition = a.RealPositionAddress ?? "", Visibility = a.VisibilityConditions
             };
+            if (!string.IsNullOrWhiteSpace(info.Position) &&
+                !_axisList.Any(x => x.Station == info.Station && string.Equals(x.Position, info.Position, StringComparison.OrdinalIgnoreCase)))
+                _axisList.Add(info);
+
+            if (a.AxisNumber <= 0) return;
+            var key = a.PlcNumber + "|" + a.AxisNumber;
+            if (_axes.ContainsKey(key))
+            {
+                var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.AxisNumber);
+                if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("axis conflict - " + msg); }
+                return;
+            }
+            _axes[key] = info;
         }
 
         /// <summary>
