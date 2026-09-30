@@ -47,42 +47,20 @@ namespace Kaban.UI.Design
             }
             Log($"Target Namespace: {machineNamespace}");
 
-            // 2. Clear previous data
-            foreach (var field in typeof(MachineConditionMap).GetFields(BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public))
-            {
-                if (typeof(System.Collections.IDictionary).IsAssignableFrom(field.FieldType))
-                {
-                    var dict = (System.Collections.IDictionary)field.GetValue(null);
-                    dict?.Clear();
-                }
-            }
-
-            // 3. Native Project Resolution Logic
+            // 2. + 3. The machine's conditions - loaded again only for another machine,
+            // or when none are there. They used to be cleared at EVERY opening and
+            // loaded again through MachineConfig.Initialize(), which runs once: the
+            // first dropdown opened (VisibilityConditions, say) listed them, every
+            // later one (EnableConditions) found "No logic found".
             if (!string.IsNullOrEmpty(machineNamespace) && typeResSvc != null)
             {
-                string exactClassName = $"{machineNamespace}.MachineConfig";
-                Log($"Attempting to resolve exactly: {exactClassName}");
-
-                try
+                if (MachineConditionMap.IsEmpty || !string.Equals(_loadedNamespace, machineNamespace, StringComparison.Ordinal))
                 {
-                    // Use the native bridge to reach into the user's project
-                    Type configType = typeResSvc.GetType(exactClassName);
-
-                    if (configType != null)
-                    {
-                        var initMethod = configType.GetMethod("Initialize", BindingFlags.Public | BindingFlags.Static);
-                        initMethod?.Invoke(null, null);
-                        Log($"SUCCESS: Initialize() executed via TypeResolutionService. Loaded {MachineConditionMap.GetAllMachineBits().Count()} bits.");
-                    }
-                    else
-                    {
-                        Log($"ERROR: ITypeResolutionService could not find {exactClassName}. Is it compiled?");
-                    }
+                    MachineConditionMap.Clear();
+                    if (LoadMachine(machineNamespace, typeResSvc)) _loadedNamespace = machineNamespace;
+                    else _loadedNamespace = null;
                 }
-                catch (Exception ex)
-                {
-                    Log($"CRITICAL ERROR during Type Resolution: {ex.Message}");
-                }
+                else Log("Conditions of " + machineNamespace + " already loaded.");
             }
             else
             {
@@ -158,12 +136,50 @@ namespace Kaban.UI.Design
             edSvc.DropDownControl(panel);
 
             long result = 0;
-            foreach (var (cb, di) in checkBoxes) if (cb.Checked) result |= di.Bit;
+            foreach (var t in checkBoxes) if (t.cb.Checked) result |= t.di.Bit;
 
             Type enumType = context?.PropertyDescriptor?.PropertyType ?? typeof(SystemCondition);
             return Enum.ToObject(enumType, result);
         }
 
         private class DisplayItem { public long Bit; public string Text; public int Plc; }
+
+        /// <summary>The machine whose conditions are loaded now (its namespace).</summary>
+        private static string _loadedNamespace;
+
+        /// <summary>
+        /// Loads a machine's conditions for the designer: its MachineConfig.Initialize()
+        /// when it has one, else its module (Kaban.Machines.H500 -> H500Module) mounted
+        /// as the main machine, as the running program does.
+        /// </summary>
+        private bool LoadMachine(string machineNamespace, ITypeResolutionService types)
+        {
+            try
+            {
+                Type configType = types.GetType(machineNamespace + ".MachineConfig");
+                if (configType != null)
+                {
+                    var init = configType.GetMethod("Initialize", BindingFlags.Public | BindingFlags.Static);
+                    if (init != null) init.Invoke(null, null);
+                    Log("Initialize() of " + configType.FullName + ": " + MachineConditionMap.GetAllMachineBits().Count() + " machine bits.");
+                    if (!MachineConditionMap.IsEmpty) return true;
+                }
+                string last = machineNamespace.Substring(machineNamespace.LastIndexOf('.') + 1);
+                Type moduleType = types.GetType(machineNamespace + "." + last + "Module");
+                if (moduleType != null && typeof(Kaban.Core.Machines.IMachineModule).IsAssignableFrom(moduleType))
+                {
+                    Kaban.Core.Machines.MachineRegistry.Reset();
+                    Kaban.Core.Machines.MachineRegistry.MountMain((Kaban.Core.Machines.IMachineModule)Activator.CreateInstance(moduleType));
+                    Log("Mounted " + moduleType.FullName + ".");
+                    return true;
+                }
+                Log("ERROR: neither " + machineNamespace + ".MachineConfig nor its module was found. Is it compiled?");
+            }
+            catch (Exception ex)
+            {
+                Log("CRITICAL ERROR while loading the conditions: " + (ex.InnerException ?? ex).Message);
+            }
+            return false;
+        }
     }
 }

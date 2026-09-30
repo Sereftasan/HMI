@@ -83,6 +83,16 @@ namespace Kaban.Core.Helpers
 
         public static IEnumerable<KeyValuePair<long, ConditionDefinition>> GetAllMachineBits() => _machineBits;
 
+        /// <summary>True when nothing is registered (the designer before a machine is loaded).</summary>
+        public static bool IsEmpty { get { return _map.Count == 0 && _machineBits.Count == 0; } }
+
+        /// <summary>Forgets every registration (the designer, before loading another machine's).</summary>
+        public static void Clear()
+        {
+            _map.Clear();
+            _machineBits.Clear();
+        }
+
         /// <summary>The single conditions a set is made of.</summary>
         public static IEnumerable<SystemCondition> Parts(SystemCondition set)
         {

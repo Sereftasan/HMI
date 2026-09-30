@@ -18,7 +18,10 @@ namespace Kaban.Machines.FA2010
 
         public static void Initialize()
         {
-            if (_done) return;   // designer may construct several screens
+            // The designer may construct several screens: once is enough - unless the
+            // conditions were cleared since (the condition dropdown clears them before
+            // loading a machine's, and a second dropdown then found none: "No logic found").
+            if (_done && !Kaban.Core.Helpers.MachineConditionMap.IsEmpty) return;
             _done = true;
 
             // Reset + mount the real module so the design-time condition map matches
