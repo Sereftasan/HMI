@@ -4185,3 +4185,13 @@ and `UnitLookAndErrors` extended.
   `Msg_MonConditionsNone`, `Hdr_MonConditions`). Manual: the PLC Monitor's 🗃.
 - Tests: `tools/ui_test/ConditionDropdown.cs`, `tools/ui_test/MonitorConditions.cs` (new); `NumericBarView.cs`.
 
+## 2026-09-30 - AxisSettingHMI's entry bounds as dynamic values; Shift+Enter on the PLC Monitor
+
+- `AxisSettingHMI`: `Address` removed (never read); `EntryMinimum` / `EntryMaximum` are `DynamicValue`s (a number or a
+  device, serialized as their parts), `EntryMinimumAddress` / `EntryMaximumAddress` removed; `CopyOf` gives each field
+  its own bound. `PropertyOrder` updated. `AxisSettings.Designer.cs` (FA2010) migrated: the empty `Address` and bound
+  lines removed.
+- `SimulationMonitorForm`: `QuickValue` (Shift+Enter: a bit switched over, else the Value cell opened with the value
+  selected); `WriteValue(..., how)` names the action in the write log. `ParseValue`: TRUE / FALSE / ON / OFF for a bit.
+- Manual: Shift+Enter. Tests: `tools/ui_test/AxisEntryBounds.cs`, `tools/ui_test/MonitorShiftEnter.cs` (new).
+

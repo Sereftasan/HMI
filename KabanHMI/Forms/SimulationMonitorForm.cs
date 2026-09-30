@@ -1414,6 +1414,14 @@ namespace Kaban.UI.Forms
                 OpenCell(monK, shK, shK.Grid.CurrentCell.RowIndex, shK.Grid.CurrentCell.OwningColumn.Name);
                 return true;
             }
+            // SHIFT+ENTER: the value, at once - a bit is switched over, anything else
+            // opens its value in the table with the number selected, whichever cell
+            // the row was entered by.
+            if (shK != null && !editing && shK.Grid.ContainsFocus && keyData == (Keys.Shift | Keys.Enter) && shK.Grid.CurrentCell != null)
+            {
+                QuickValue(monK, shK, shK.Grid.CurrentCell.RowIndex);
+                return true;
+            }
 
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
@@ -2352,7 +2360,7 @@ namespace Kaban.UI.Forms
         /// Writes one device, and reports WHY when it cannot - a silently ignored
         /// write on a machine is the kind of thing that gets diagnosed as a broken PLC.
         /// </summary>
-        private void WriteValue(MonitorTab mon, WatchRow row, string text)
+        private void WriteValue(MonitorTab mon, WatchRow row, string text, string how = "typed")
         {
             if (row == null || !row.IsDevice || row.IsArray) return;
 
@@ -2378,7 +2386,7 @@ namespace Kaban.UI.Forms
             // Every word of the value, low first - the low word alone turns a
             // 32-bit value (or a float, or a string) into nonsense.
             var addresses = WordsOf(row).ToList();
-            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: typed " + (text ?? "").Trim() + " into " + row.Address +
+            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: " + how + " " + (text ?? "").Trim() + " into " + row.Address +
                                                     (string.IsNullOrWhiteSpace(row.EffectiveLabel) ? "" : " [" + row.EffectiveLabel.Trim() + "]")))
                 for (int i = 0; i < words.Length && i < addresses.Count; i++)
                 {
@@ -2388,6 +2396,29 @@ namespace Kaban.UI.Forms
 
             if (!mon.IsSimulated)
                 AuditLogger.Log("monitor wrote " + (text ?? "").Trim() + " to " + row.Address + " on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
+        }
+
+        /// <summary>
+        /// Shift+Enter on a row: a Bit is switched over (0 to 1, 1 to 0 - a bit not
+        /// read yet is taken as 0); any other device opens its Value cell for typing,
+        /// the value selected so the new one replaces it. An array's own row has no
+        /// single value: nothing happens.
+        /// </summary>
+        internal void QuickValue(MonitorTab mon, Sheet sh, int rowIndex)
+        {
+            if (mon == null || sh == null || rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
+            var row = sh.Rows[rowIndex];
+            if (!row.IsDevice || row.IsArray) return;
+            if (IsBit(row.EffectiveDataType))
+            {
+                int now;
+                mon.Values.TryGetValue(row.Address, out now);
+                WriteValue(mon, row, now != 0 ? "0" : "1", "switched (Shift+Enter) to");
+                Render(mon, sh);
+                return;
+            }
+            sh.Grid.CurrentCell = sh.Grid.Rows[rowIndex].Cells["Value"];
+            sh.Grid.BeginEdit(true);
         }
 
         /// <summary>An array folded or unfolded - kept with the list.</summary>

@@ -208,6 +208,13 @@ namespace Kaban.UI.Forms
                 return new[] { lo, hi };
             }
 
+            // A bit also takes the words GX Works shows it by.
+            if (IsBit(type))
+            {
+                string u = t.ToUpperInvariant();
+                if (u == "TRUE" || u == "ON") t = "1";
+                else if (u == "FALSE" || u == "OFF") t = "0";
+            }
             long v;
             if (!TryParseInteger(t, format, out v)) { problem = "Msg_MonNotNumber"; return null; }
             bool dword = IsDoubleWord(type);

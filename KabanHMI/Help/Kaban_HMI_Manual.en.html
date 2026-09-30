@@ -496,7 +496,9 @@ Windows' own message boxes keep Windows' size.</p>
        value just before, <b>PLC</b> when it did not (the PLC program, or the machine). The pointer on it tells from what to what, which control or page wrote it
        and the user, or when the HMI last wrote it. A change is known only while the HMI reads the device (a page showing it, or the monitor): before that it shows <b>-</b>.
        Click the heading to sort the latest changes first.</li>
-   <li><b>Double-click a value</b> (or <kbd>Enter</kbd>) to change it right there in the table; on anything else it opens that row with the field selected. <kbd>F2</kbd> edits the cell in place.</li>
+   <li><b>Double-click a value</b> (or <kbd>Enter</kbd>) to change it right there in the table; on anything else it opens that row with the field selected. <kbd>F2</kbd> edits the cell in place.
+       <kbd>Shift</kbd>+<kbd>Enter</kbd>, from any cell of the row: a <b>Bit</b> is switched over (0 to 1, 1 to 0); any other device opens its value
+       with the number selected, so what is typed replaces it. A bit also takes <i>TRUE</i> / <i>FALSE</i> (and <i>ON</i> / <i>OFF</i>) typed.</li>
    <li>Keys on the tab strip: <kbd>Ins</kbd> new tab, <kbd>F2</kbd> rename, <kbd>Del</kbd> delete, <kbd>Ctrl</kbd>+<kbd>&larr;</kbd>/<kbd>&rarr;</kbd> move,
        <kbd>Ctrl</kbd>+<kbd>Tab</kbd> next tab. <kbd>Tab</kbd> moves between the table and the tab strips.</li>
    <li>On a simulated controller every device the simulator holds is listed by itself; one you remove stays off the list until &#128065; <i>Show removed devices again</i>.</li>
