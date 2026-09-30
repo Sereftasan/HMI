@@ -181,7 +181,7 @@ still need a higher one &ndash; the control's tooltip says so.</p>
 <!-- ================================================================== -->
 <h2 id="nav">3. Moving between pages</h2>
 <ul>
- <li><b>Page menu (left):</b> Home, Manual Movement, Alarms, Machine Parameters, HMI Settings &ndash; plus the machine's own pages (see <a href="#machine">13</a>).</li>
+ <li><b>Page menu (left):</b> Home, Alarms, Dashboard (see <a href="#dashboard">11</a>), Manual Movement, Machine Parameters, HMI Settings &ndash; plus the machine's own pages (see <a href="#machine">13</a>).</li>
  <li><b>Machine list (under it):</b> when sub-machines are mounted, each page exists once per machine. Pick the machine here.
      The highlighted machine is always the one whose page is on screen.</li>
  <li><b>Tabs:</b> some pages have their own tabs along the top (HMI Settings, several Manual Movement pages). Tabs that do not fit on one
@@ -500,11 +500,52 @@ Windows' own message boxes keep Windows' size.</p>
   </ul></li>
 </ul>
 
+<h3 id="dashboard">The dashboard</h3>
+<p>The <b>Dashboard</b> page (the gauge in the page menu, on a machine that has one) shows what the machine did over a day, a week, a shift:
+its states, its events, its alarms and its cuts, from the machine's <b>Industry 4 log</b> &ndash; the database the logging service writes
+(<code>main_log</code> and <code>log_details</code>). It replaces the separate dashboard program and makes the same report files. Anyone may look;
+the page only reads the log.</p>
+<ul>
+ <li><b>The range</b>, on the left: <b>Auto-Report History</b> (the times the automatic reports are made, from the first log to the last &ndash;
+     one picked shows the range that report covers), <b>Latest</b> (the last 15 minutes up to a year; &#128260; moves it up to now) or any
+     <b>Start</b> and <b>End</b>. The page opens on the last day.</li>
+ <li><b>Shift</b>: pick one to see only its hours of each day (a shift that ends at or before its start ends the next day; a night shift that began
+     the day before the range still counts). &#9999;&#65039; edits the list <span class="lvl l2">Maintenance</span>; &#9889; shows the <b>shift metrics</b> at the top:
+     for each shift, the share of the time the machine was <i>active</i>, each kind of event and the alarms &ndash; counted by the time of day they began.</li>
+ <li><b>The sections</b> open and close with their heading and stay as you left them:
+  <ul>
+   <li><b>Machine State Time Distribution</b>: a slice per state, in the state's colour (active green, not active blue, pause yellow, error orange,
+       emergency stop red, closed grey); the pointer on a slice gives its minutes and share.</li>
+   <li><b>Machine State Timeline</b>: the states on a time line. The wheel zooms around the pointer, dragging moves along, a double click shows the whole range.</li>
+   <li><b>State Logs</b>: each state, when it began and how many minutes it lasted (cut to the range).</li>
+   <li><b>Event Occurrences</b>: a bar per kind of event, on a logarithmic scale so a kind seen once shows beside one seen a thousand times.</li>
+   <li><b>Cutting Details</b>: the pieces cut, grouped by length and angles, longest first; the heading gives the total length.
+       (With <i>barcoded cutting logs only</i>, a cut without its barcode record is left out of the events.)</li>
+   <li><b>Event Logs</b> and <b>Alarm Logs</b>: every event with its details, every alarm with the errors that were on. &#128270; filters by kind &ndash;
+       each with how many there are; nothing ticked shows everything.</li>
+  </ul>
+  A click on a table heading sorts on it (again to reverse); <kbd>Ctrl</kbd>+<kbd>C</kbd> copies the selected rows.</li>
+ <li>The descriptions are in the HMI's language. The times are the panel's, in the time zone of the settings (the log keeps UTC).</li>
+ <li>&#11015;&#65039; <b>Export Report</b> writes the files of what is shown into the export folder: <code>event_log_&hellip;</code>, <code>alarm_log_&hellip;</code>,
+     <code>state_log_&hellip;</code> (and the database tables, when the settings ask for them), named after the start and end
+     (<code>state_log_20260928_0000_20260928_2359.csv</code>). &#128194; opens the folder <span class="lvl l2">Maintenance</span>.</li>
+ <li><b>Automatic reports</b>: while the program runs, the reports are made at the times of the schedule &ndash; every day at given times, on given weekdays,
+     days of the month or dates of the year &ndash; each covering the time since the one before, in the report language. When the panel was off at
+     a report time, that report is made when it is back on, before the latest one. Each is written in the audit log.</li>
+ <li>&#9881;&#65039; <b>Dashboard settings</b> <span class="lvl l2">Maintenance</span> (also a tab of <a href="#params">Machine Parameters</a>): the database file and
+     the time zone, barcoded cuts only, which sections the page has, the export folder, the report language, the schedule, which files are made,
+     and when the next automatic report is due. &#128190; keeps them.</li>
+ <li>A range of more than 1.5 million log entries is not shown (the panel would run out of memory); the page says so &ndash; choose a shorter one.</li>
+</ul>
+
 <!-- ================================================================== -->
 <h2 id="files">12. Where things are kept</h2>
 <table>
 <tr><th>What</th><th>Where</th></tr>
 <tr><td>Users, units, PLC connections, audit logs, the PLC write log, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>: <code>HmiAudit_yyyy-MM-dd.txt</code>, <code>PlcWrites_yyyy-MM-dd.csv</code>)</td></tr>
+<tr><td>The dashboard's settings (database, schedule, shifts, sections)</td><td><code>C:\ProgramData\KabanHMI\Dashboard\&lt;machine&gt;.json</code> &ndash; made from
+<code>Dashboard\config.json</code> beside the program; the machine's state map and its texts are <code>Dashboard\StateMap.json</code> and
+<code>Dashboard\Translation_JSON.csv</code></td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>PLC Monitor lists, column layout, where side pages' own windows were (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
 <tr><td>The screen scale (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>

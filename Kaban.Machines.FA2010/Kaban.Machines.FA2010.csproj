@@ -330,6 +330,18 @@
     <None Include="Alarms.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- The machine dashboard (the Industry 4 dashboard's files): the default
+         settings, the state map and the texts of its descriptions. Copied to
+         <output>\Dashboard\ and found through ctx.ResolveFile. -->
+    <None Include="Dashboard\config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Dashboard\StateMap.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Dashboard\Translation_JSON.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- H500 and H800 are mounted SUB-machines: MachineRegistry.Mount calls their
          RegisterData(), which resolves "Translations.csv"/"Alarms.json" through
          ctx.ResolveFile - a PER-MODULE SUBFOLDER lookup

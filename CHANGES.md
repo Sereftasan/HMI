@@ -4149,3 +4149,23 @@ and `UnitLookAndErrors` extended.
 - Translations: 293 `Prf_` / `Ref_` rows (FA2010), 161 `Lib_` / `LCol_` / `Tbl_` / `Par_` / `Set_` / `St_`
   rows (common), six languages. Manual: the FA2010 chapter's Profiles section. `Kaban.Profiles/README.md`.
 - Tests: `tools/core_test/ProfileLibrary.cs`, `tools/ui_test/ProfilesPage.cs` (new).
+
+## 2026-09-30 - The machine dashboard (the Industry 4 dashboard as an HMI page)
+
+- `KabanHMI/Dashboard/` *(new)*: `Json` (the settings' JSON, keys in order), `DashboardConfig` (config.json key for key,
+  written back in the old program's layout; shifts, periods, languages; `ReportSchedule` - daily / weekly / monthly /
+  annual, previous, next, history), `StateMap` (sample.json, Translation_JSON.csv, state colours, HMI language ->
+  column; `DashboardTime`: IANA or Windows zone names), `DashboardData` (the log read for a range, read-only, with the
+  state in force at its start; states, events, alarms, cuts, filter counts, shift windows, shift metrics - as
+  DashboardApp3.py; `PyFloat` writes numbers as Python did), `DashboardReports` (the CSV files, the automatic run with
+  its catch-up), `DashboardService` (per machine: settings, state map, the minute clock of the automatic reports),
+  `DashboardCharts` (pie, timeline with zoom, log-scale bars - drawn, no package), `DashboardScreen` (+ `.Sections`),
+  `DashboardSettingsPage` / `DashboardSettingsControl`.
+- `StandardScreens.Options.Dashboard` *(new)*: the Dashboard page (role `Dashboard`, after Alarms) and a Dashboard tab
+  in Machine Parameters. `ScreenRoles.Dashboard`. `NavGlyphs.Dashboard()` (a gauge).
+- `Kaban.Profiles/Data/NativeSqlite.cs`: `Mode=ReadOnly` / `Read Only=True` and `Mode=ReadWrite` (no file made).
+- FA2010: `Dashboard\config.json`, `StateMap.json` (sample.json), `Translation_JSON.csv` shipped beside the program;
+  `FA2010Module` passes `Dashboard = new DashboardDefinition()`.
+- Translations: 116 rows (`Btn_Dashboard`, `Tab_Dashboard`, `Dsh_*`), six languages. Manual: 11, *The dashboard*;
+  the page menu; where the settings are kept.
+- Tests: `tools/ui_test/DashboardPage.cs` (new).

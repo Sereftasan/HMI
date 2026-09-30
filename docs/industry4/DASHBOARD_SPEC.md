@@ -79,7 +79,17 @@ folder are the user's, kept as they came (the Python sources are summarised here
   section switches, export directory, report language, auto-report period and schedule details,
   which report files.
 
-## Where it goes in the HMI
+## In the HMI (done 30 September)
+
+The Dashboard page (`KabanHMI/Dashboard/`, mounted through `StandardScreens.Options.Dashboard`) does all of the
+above: the same settings file keys and layout, the same processing, the same report files (compared byte for byte
+with DashboardApp3.py on a generated log), the automatic reports with their catch-up, and the settings editor as a
+Machine Parameters tab. Differences, on purpose: the page follows the HMI's language; a night shift that began the
+day before the range counts; a detail with neither value shows its name alone; shift editing, the folder and the
+settings need Maintenance; the shift metrics are at the top of the page; ranges over 1.5 million entries are refused.
+Not used: `databases.json` (the other sources). See REVIEW 4u.
+
+## Where it goes next
 
 - The HMI already knows the states, the alarms and most events: it can write the same two tables
   itself (moving the logging off the PLC later), with the alarm texts from its own Alarms.json and

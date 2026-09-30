@@ -1,0 +1,862 @@
+[
+    {
+        "StateCode": 0,
+        "Description": "Machine is closed",
+        "Active": true,
+        "ActiveDevice": "L1000",
+        "PreviousCode": null,
+        "Parameters": []
+    },
+    {
+        "StateCode": 1,
+        "Description": "Operation is not active",
+        "Active": true,
+        "ActiveDevice": "L1001",
+        "PreviousCode": null,
+        "Parameters": []
+    },
+    {
+        "StateCode": 2,
+        "Description": "Operation is active",
+        "Active": true,
+        "ActiveDevice": "L1002",
+        "PreviousCode": null,
+        "Parameters": []
+    },
+    {
+        "StateCode": 3,
+        "Description": "On pause mode",
+        "Active": true,
+        "ActiveDevice": "L1003",
+        "PreviousCode": null,
+        "Parameters": []
+    },
+    {
+        "StateCode": 4,
+        "Description": "There is an error (1)",
+        "Active": true,
+        "ActiveDevice": "L1004",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "First 32 Errors (1)",
+                "Bit32": true,
+                "Bits": [
+                    "Robot X Error",
+                    "Milling 1 X Error",
+                    "Milling 1 Y Error",
+                    "Milling 1 Z Error",
+                    "Milling 2 X Error",
+                    "Milling 2 Y Error",
+                    "Milling 2 Z Error",
+                    "Exit Robot Error",
+                    "Milling 1 Angle Error",
+                    "Milling 2 Angle Error",
+                    "Cutting Angle Error",
+                    "Cutting Z Error",
+                    "Robot Y Error",
+                    "Robot Z Error",
+                    "PC Connection Cut",
+                    "Milling Collision Alarm",
+                    "V Cutting Y Error",
+                    "V Cutting Z Error",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "Entry Conveyor Inverter Alarm",
+                    "Milling 1  Inverter Alarm",
+                    "Milling 2  Inverter Alarm",
+                    "Saw  Inverter Alarm",
+                    "Exit Conveyor Inverter Alarm",
+                    "Saw Dust Conveyor  Inverter Alarm"
+                ]
+            },
+            {
+                "Description": "Following 16 Errors (2)",
+                "Bit32": false,
+                "Bits": [
+                    "Emergency Stop",
+                    "Low Air Pressure",
+                    "Low Cooling Oil Level",
+                    "Entry Conveyor Inverter RUN Failure",
+                    "Milling 1  Inverter RUN Failure",
+                    "Milling 2  Inverter RUN Failure",
+                    "Exit Conveyor Inverter RUN Failure",
+                    "Robot Clamping Alarm",
+                    "Robot Clamp Opening Alarm",
+                    "Profile Recognition Up Movement Alarm",
+                    "Profile Recognition Down Movement Alarm",
+                    "Profile Recognition Front Clamping Alarm",
+                    "Profile Recognition Front Clamp Releasing Alarm",
+                    "Profile Recognition Top Clamping Alarm",
+                    "Profile Recognition Top Clamp Releasing Alarm",
+                    "Profile Reaching Limit Sensor Alarm"
+                ]
+            }
+        ]
+    },
+    {
+        "StateCode": 5,
+        "Description": "Emergency stop",
+        "Active": true,
+        "ActiveDevice": "L1005",
+        "PreviousCode": null,
+        "Parameters": []
+    },
+    {
+        "StateCode": 6,
+        "Description": "Profile changed",
+        "Active": false,
+        "ActiveDevice": "L1006",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Profile Code",
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 7,
+        "Description": "Milling done",
+        "Active": false,
+        "ActiveDevice": "L1007",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Process ID",
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 8,
+        "Description": "Cutting done (Processing Centre)",
+        "Active": true,
+        "ActiveDevice": "L1008",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Process ID",
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 9,
+        "Description": "Cutting done (Cutting Machine)",
+        "Active": false,
+        "ActiveDevice": "L1009",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Length",
+                "Multiplier": 10,
+                "Bit32": false
+            },
+            {
+                "Description": "Left Angle",
+                "Multiplier": 10,
+                "Bit32": false
+            },
+            {
+                "Description": "Right Angle",
+                "Multiplier": 10,
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 10,
+        "Description": "Welding done (1)",
+        "Active": false,
+        "ActiveDevice": "L1010",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Width",
+                "Multiplier": 10,
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 11,
+        "Description": "Welding done (2)",
+        "PreviousCode": 10,
+        "Parameters": [
+            {
+                "Description": "Height",
+                "Multiplier": 10,
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 12,
+        "Description": "Cutting done (Cutting Machine)",
+        "Active": false,
+        "ActiveDevice": "L1012",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Axis ID",
+                "Bit32": false
+            },
+            {
+                "Description": "Axis Position",
+                "Bit32": false
+            },
+            {
+                "Description": "Current value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 13,
+        "Description": "Cylinder operation overtime",
+        "Active": false,
+        "ActiveDevice": "L1013",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Cylinder No",
+                "Bit32": false
+            },
+            {
+                "Description": "Overtime Amount",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 14,
+        "Description": "There is an error (2)",
+        "PreviousCode": 4,
+        "Parameters": [
+            {
+                "Description": "Following 32 Errors (3)",
+                "Bit32": true,
+                "Bits": [
+                    "Cutting Left Front Clamping Alarm",
+                    "Cutting Left Front Clamp Releasing Alarm",
+                    "Cutting Right Front Clamping Alarm",
+                    "Cutting Right Front Clamp Releasing Alarm",
+                    "Exit Robot Top Clamping Alarm",
+                    "Exit Robot Top Clamp Releasing Alarm",
+                    "Bar Lenght is Too Short to Operate",
+                    "Profile Milling Approaching Values are Empty",
+                    "PC is not Online",
+                    "Cutting Left Top Clamping Alarm",
+                    "Cutting Left Top Clamp Releasing Alarm",
+                    "Short Profile Support FW Movement Alarm",
+                    "Short Profile Support Back Movement Alarm",
+                    "Entry Conveyor 1st Clamping Alarm",
+                    "Entry Conveyor 1st Clamp Releasing Alarm",
+                    "Entry Conveyor 2nd Clamping Alarm",
+                    "Entry Conveyor 2nd Clamp Releasing Alarm",
+                    "Entry Conveyor 3rd Clamping Alarm",
+                    "Entry Conveyor 3rd Clamp Releasing Alarm",
+                    "Entry Conveyor 4th Clamping Alarm",
+                    "Entry Conveyor 4th Clamp Releasing Alarm",
+                    "Entry Conveyor 5th Clamping Alarm",
+                    "Entry Conveyor 5th Clamp Releasing Alarm",
+                    "Entry Conveyor 6th Clamping Alarm",
+                    "Entry Conveyor 6th Clamp Releasing Alarm",
+                    "Entry Conveyor 7th Clamping Alarm",
+                    "Entry Conveyor 7th Clamp Releasing Alarm",
+                    "Profile Ejection FW Movement Alarm",
+                    "Exit Roller Up Movement Alarm",
+                    "Exit Roller Down Movement Alarm",
+                    "No Profile Recognised",
+                    "Robot Conveyor Clamps Crushing Alarm"
+                ]
+            },
+            {
+                "Description": "Following 32 Errors (4)",
+                "Bit32": true,
+                "Bits": [
+                    "Conveyor Clamping Alarm",
+                    "Profile Recognition Roller Up Movement Alarm",
+                    "Profile Recognition Roller Down Movement Alarm",
+                    "Milling Roller Up Movement Alarm",
+                    "Milling Roller Down Movement Alarm",
+                    "Milling Top Clamping Alarm",
+                    "Milling Top Clamp Releasing Alarm",
+                    "Profile Ejection Back Movement Alarm",
+                    "Cutting Right Front Vertical Clamping Alarm",
+                    "Cutting Right Front Vertical Clamp Releasing Alarm",
+                    "Cutting Left Top Small Clamping Alarm",
+                    "Cutting Left Top Small Clamp Releasing Alarm",
+                    "Cutting Right Top Small Clamping Alarm",
+                    "Cutting Right Top Small Clamp Releasing Alarm",
+                    "Robot Linear Encoder Position Error",
+                    "Cutting Profile Press Unit FW Movement Alarm",
+                    "Cutting Profile Press Unit Back Movement Alarm",
+                    "Cutting Profile Press Up Movement Alarm",
+                    "Cutting Profile Press Down Movement Alarm",
+                    "Entry Conveyor Roller Up Movement Alarm",
+                    "Entry Conveyor Roller Down Movement Alarm",
+                    "Left Profile Recognition FW Movement Alarm",
+                    "Left Profile Recognition Back Movement Alarm",
+                    "Left Profile Recognition Top Clamping Alarm",
+                    "Left Profile Recognition Top Clamp Releasing Alarm",
+                    "Milling Motor Cooler Error",
+                    "Rigth Profile Recognition FW Movement Alarm",
+                    "Rigth Profile Recognition Back Movement Alarm",
+                    "Cutting Left Front Height FW Movement Alarm",
+                    "Cutting Left Front Height Back Movement Alarm",
+                    "Cutting Right Front Height FW Movement Alarm",
+                    "Cutting Right Front Height Back Movement Alarm"
+                ]
+            },
+            {
+                "Description": "Following 32 Errors (5)",
+                "Bit32": true,
+                "Bits": [
+                    "Gripper 0 degree Movement Alarm",
+                    "Gripper 90 degree Movement Alarm",
+                    "Left Profile Recognition Front Vertical  Moving Up Failure",
+                    "Left Profile Recognition Front Vertical Moving Down Failure",
+                    "Left Profile Recognition Back Vertical  Moving Up Failure",
+                    "Left Profile Recognition Back Vertical Moving Down Failure",
+                    "Left Profile Recognition Back Horizontal Moving FW Failure",
+                    "Left Profile Recognition Back Horizontal Moving Back Failure",
+                    "Conveyor Front Vertical  Moving Up Failure",
+                    "Conveyor Front Vertical Moving Down Failure",
+                    "Conveyor Back Vertical  Moving Up Failure",
+                    "Conveyor Back Vertical Moving Down Failure",
+                    "Conveyor Back Horizontal Moving FW Failure",
+                    "Conveyor Back Horizontal Moving Back Failure",
+                    "Profile Recognition Front Vertical  Moving Up Failure",
+                    "Profile Recognition Front Vertical Moving Down Failure",
+                    "Profile Recognition Back Vertical  Moving Up Failure",
+                    "Profile Recognition Back Vertical Moving Down Failure",
+                    "Profile Recognition Back Horizontal Moving FW Failure",
+                    "Profile Recognition Back Horizontal Moving Back Failure",
+                    "Cutting Left Front Vertical  Moving Up Failure",
+                    "Cutting Left Front Vertical Moving Down Failure",
+                    "Cutting Left Back Vertical  Moving Up Failure",
+                    "Cutting Left Back Vertical Moving Down Failure",
+                    "Cutting Left Back Horizontal Moving FW Failure",
+                    "Cutting Left Back Horizontal Moving Back Failure",
+                    "Exit Front Vertical  Moving Up Failure",
+                    "Exit Front Vertical Moving Down Failure",
+                    "Exit Back Vertical  Moving Up Failure",
+                    "Exit Back Vertical Moving Down Failure",
+                    "Exit Back Horizontal Moving FW Failure",
+                    "Exit Back Horizontal Moving Back Failure"
+                ]
+            },
+            {
+                "Description": "Following 32 Errors (6)",
+                "Bit32": true,
+                "Bits": [
+                    "Cross Roller 1 Moving Down Failure",
+                    "Cross Roller 1 Moving Up Failure",
+                    "Cross Roller 2 Moving Down Failure",
+                    "Cross Roller 2 Moving Up Failure",
+                    "Cross Roller 3 Moving Down Failure",
+                    "Cross Roller 3 Moving Up Failure",
+                    "Cross Roller 4 Moving Down Failure",
+                    "Cross Roller 4 Moving Up Failure",
+                    "Cross Roller 5 Moving Down Failure",
+                    "Cross Roller 5 Moving Up Failure",
+                    "Cross Roller 6 Moving Down Failure",
+                    "Cross Roller 6 Moving Up Failure",
+                    "Cross Roller 7 Moving Down Failure",
+                    "Cross Roller 7 Moving Up Failure",
+                    "Cross Roller 8 Moving Down Failure",
+                    "Cross Roller 8 Moving Up Failure",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "StateCode": 15,
+        "Description": "Waste profile emerged",
+        "Active": false,
+        "ActiveDevice": "L1015",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Waste  Profile Length",
+                "Multiplier": 10,
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 16,
+        "Description": "Bar length meassured",
+        "Active": false,
+        "ActiveDevice": "L1016",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Bar Length",
+                "Multiplier": 10,
+                "Bit32": true
+            }
+        ]
+    },
+    {
+        "StateCode": 22,
+        "Description": "Profile meassured",
+        "Active": false,
+        "ActiveDevice": "L1022",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Profile Width",
+                "Bit32": false
+            },
+            {
+                "Description": "Profile Height",
+                "Bit32": false
+            },
+            {
+                "Description": "Profile conformation",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 100,
+        "Description": "Axis 1 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1100",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 101,
+        "Description": "Axis 2 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1101",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 102,
+        "Description": "Axis 3 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1102",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 103,
+        "Description": "Axis 4 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1103",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 104,
+        "Description": "Axis 5 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1104",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 105,
+        "Description": "Axis 6 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1105",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 106,
+        "Description": "Axis 7 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1106",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 107,
+        "Description": "Axis 8 data (1)",
+        "Active": false,
+        "ActiveDevice": "L1107",
+        "PreviousCode": null,
+        "Parameters": [
+            {
+                "Description": "Feed Current Value (Position)",
+                "Bit32": true
+            },
+            {
+                "Description": "Motor Current Value",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 150,
+        "Description": "Axis 1 data (2)",
+        "PreviousCode": 100,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 151,
+        "Description": "Axis 2 data (2)",
+        "PreviousCode": 101,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 152,
+        "Description": "Axis 3 data (2)",
+        "PreviousCode": 102,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 153,
+        "Description": "Axis 4 data (2)",
+        "PreviousCode": 103,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 154,
+        "Description": "Axis 5 data (2)",
+        "PreviousCode": 104,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 155,
+        "Description": "Axis 6 data (2)",
+        "PreviousCode": 105,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 156,
+        "Description": "Axis 7 data (2)",
+        "PreviousCode": 106,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    },
+    {
+        "StateCode": 157,
+        "Description": "Axis 8 data (2)",
+        "PreviousCode": 107,
+        "Parameters": [
+            {
+                "Description": "Actual Position",
+                "Bit32": true
+            },
+            {
+                "Description": "Current Speed",
+                "Bit32": true
+            },
+            {
+                "Description": "uStatus1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "Servo Status 1_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisErrorNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uAxisWarningNo_D",
+                "Bit32": false
+            },
+            {
+                "Description": "uServoAlarm_D",
+                "Bit32": false
+            }
+        ]
+    }
+]

@@ -177,6 +177,25 @@
     <Compile Include="Dxf\DxfViewerControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Dashboard\DashboardCharts.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Dashboard\DashboardConfig.cs" />
+    <Compile Include="Dashboard\DashboardData.cs" />
+    <Compile Include="Dashboard\DashboardReports.cs" />
+    <Compile Include="Dashboard\DashboardScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dashboard\DashboardScreen.Sections.cs">
+      <DependentUpon>DashboardScreen.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dashboard\DashboardService.cs" />
+    <Compile Include="Dashboard\DashboardSettingsPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Dashboard\Json.cs" />
+    <Compile Include="Dashboard\StateMap.cs" />
     <Compile Include="Profiles\Ask.cs" />
     <Compile Include="Profiles\LibraryEditorForm.cs">
       <SubType>Form</SubType>

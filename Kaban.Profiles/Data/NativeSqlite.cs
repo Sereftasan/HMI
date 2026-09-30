@@ -33,7 +33,13 @@ namespace Kaban.Profiles.Data
 
         public NativeSqliteConnection() { Api = NativeApi.Default(); }
 
-        /// <summary>"Data Source=path" (other keys are accepted and ignored).</summary>
+        /// <summary>
+        /// "Data Source=path" - made when it is missing. "Mode=ReadOnly" (or
+        /// "Read Only=True") opens an existing file for reading only - another
+        /// program's database, which must not be changed or created by mistake;
+        /// "Mode=ReadWrite" opens an existing file without making one. Other keys
+        /// are accepted and ignored.
+        /// </summary>
         public override string ConnectionString
         {
             get { return _connectionString; }
@@ -41,18 +47,31 @@ namespace Kaban.Profiles.Data
             {
                 _connectionString = value ?? "";
                 _file = "";
+                _mode = ReadWrite | Create;
                 foreach (var part in _connectionString.Split(';'))
                 {
                     int eq = part.IndexOf('=');
                     if (eq <= 0) continue;
                     var key = part.Substring(0, eq).Trim();
+                    var val = part.Substring(eq + 1).Trim();
                     if (key.Equals("Data Source", StringComparison.OrdinalIgnoreCase) ||
                         key.Equals("DataSource", StringComparison.OrdinalIgnoreCase) ||
                         key.Equals("Filename", StringComparison.OrdinalIgnoreCase))
-                        _file = part.Substring(eq + 1).Trim();
+                        _file = val;
+                    else if (key.Equals("Mode", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (val.Equals("ReadOnly", StringComparison.OrdinalIgnoreCase)) _mode = ReadOnlyFlag;
+                        else if (val.Equals("ReadWrite", StringComparison.OrdinalIgnoreCase)) _mode = ReadWrite;
+                    }
+                    else if (key.Equals("Read Only", StringComparison.OrdinalIgnoreCase) &&
+                             val.Equals("True", StringComparison.OrdinalIgnoreCase))
+                        _mode = ReadOnlyFlag;
                 }
             }
         }
+
+        private const int ReadOnlyFlag = 0x1, ReadWrite = 0x2, Create = 0x4, FullMutex = 0x10000;
+        private int _mode = ReadWrite | Create;
 
         public override string Database { get { return "main"; } }
         public override string DataSource { get { return _file; } }
@@ -65,8 +84,7 @@ namespace Kaban.Profiles.Data
             if (_state == ConnectionState.Open) return;
             if (string.IsNullOrEmpty(_file)) throw new InvalidOperationException("no Data Source");
             IntPtr db;
-            const int ReadWrite = 0x2, Create = 0x4, FullMutex = 0x10000;
-            int rc = Api.Open(NativeApi.Utf8(_file), out db, ReadWrite | Create | FullMutex, IntPtr.Zero);
+            int rc = Api.Open(NativeApi.Utf8(_file), out db, _mode | FullMutex, IntPtr.Zero);
             if (rc != 0)
             {
                 string msg = db != IntPtr.Zero ? Api.ErrorMessage(db) : "code " + rc;

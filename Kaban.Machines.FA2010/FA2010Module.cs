@@ -159,6 +159,10 @@ namespace Kaban.Machines.FA2010
                     new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot())
                 },
 
+                // The machine dashboard: the Industry 4 log (states, events, alarms,
+                // cuts) and its reports, from the files in Dashboard\.
+                Dashboard = new Kaban.UI.Dashboard.DashboardDefinition(),
+
                 // Machine-specific: Role = "" keeps its own button (the DXF workbench).
                 Extra = new[]
                 {

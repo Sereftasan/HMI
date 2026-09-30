@@ -1,0 +1,578 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
+using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
+
+namespace Kaban.UI.Dashboard
+{
+    /// <summary>The right side of the dashboard: the heading and the sections.</summary>
+    public partial class DashboardScreen
+    {
+        private readonly FlowLayoutPanel _mainScroll = new FlowLayoutPanel();
+        private readonly Label _title = new Label();
+        private readonly Label _interval = new Label();
+        private readonly Label _activeShift = new Label();
+        private readonly Label _info = new Label();
+        private readonly Label _metricsTitle = new Label();
+
+        private readonly PieChart _pieChart = new PieChart();
+        private readonly TimelineChart _timelineChart = new TimelineChart();
+        private readonly BarChart _barChart = new BarChart();
+        private TableGrid _stateGrid, _cutGrid, _eventGrid, _alarmGrid;
+        private FilterButton _eventFilter, _alarmFilter;
+        private readonly Dictionary<string, Section> _sections = new Dictionary<string, Section>();
+
+        private static readonly Color Accent = Color.FromArgb(255, 75, 75);
+
+        private void BuildMain()
+        {
+            _mainScroll.Dock = DockStyle.Fill;
+            _mainScroll.FlowDirection = FlowDirection.TopDown;
+            _mainScroll.WrapContents = false;
+            _mainScroll.AutoScroll = true;
+            _mainScroll.Padding = new Padding(16, 8, 16, 16);
+            _mainScroll.BackColor = Color.White;
+            _mainScroll.Layout += (s, e) => FitWidths();
+            // up and down only: the sections follow the page's width
+            _mainScroll.AutoScroll = false;
+            _mainScroll.HorizontalScroll.Enabled = false;
+            _mainScroll.HorizontalScroll.Visible = false;
+            _mainScroll.HorizontalScroll.Maximum = 0;
+            _mainScroll.AutoScroll = true;
+
+            _title.AutoSize = false;
+            _title.Height = 34;
+            _title.TextAlign = ContentAlignment.MiddleCenter;
+            _title.Font = UiScale.NewFont("Segoe UI", 14F, FontStyle.Bold);
+            _interval.AutoSize = false;
+            _interval.Height = 24;
+            _interval.TextAlign = ContentAlignment.MiddleCenter;
+            _activeShift.AutoSize = false;
+            _activeShift.Height = 24;
+            _activeShift.TextAlign = ContentAlignment.MiddleCenter;
+            _activeShift.ForeColor = Accent;
+            _activeShift.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            _activeShift.Visible = false;
+            _info.AutoSize = false;
+            _info.Height = 48;
+            _info.TextAlign = ContentAlignment.MiddleCenter;
+            _info.BackColor = Color.FromArgb(232, 242, 252);
+            _info.ForeColor = Color.FromArgb(0, 66, 128);
+            _info.Visible = false;
+            _info.Margin = new Padding(0, 6, 0, 10);
+            // the shift metrics (\u26a1 on the left): above the sections, as wide as the page
+            _metricsTitle.AutoSize = false;
+            _metricsTitle.Height = 26;
+            _metricsTitle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            _metricsTitle.TextAlign = ContentAlignment.BottomLeft;
+            _metricsTitle.Visible = false;
+            _metrics.Height = 150;
+            _metrics.Visible = false;
+            _metrics.ReadOnly = true;
+            _metrics.AllowUserToOrderColumns = false;
+            UiStyle.StyleGrid(_metrics);
+            _metrics.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            _metrics.ScrollBars = ScrollBars.Horizontal;
+            _metrics.Margin = new Padding(0, 2, 0, 10);
+            _metricsEmpty.AutoSize = false;
+            _metricsEmpty.Height = 30;
+            _metricsEmpty.Visible = false;
+            _metricsEmpty.ForeColor = Color.DimGray;
+            _mainScroll.Controls.AddRange(new Control[] { _title, _interval, _activeShift, _info, _metricsTitle, _metrics, _metricsEmpty });
+
+            _pieChart.Height = 300;
+            _timelineChart.Height = 300;
+            _barChart.Height = 340;
+
+            _stateGrid = new TableGrid(320);
+            _cutGrid = new TableGrid(300);
+            _eventGrid = new TableGrid(420);
+            _alarmGrid = new TableGrid(380);
+
+            _eventFilter = new FilterButton(_tips);
+            _alarmFilter = new FilterButton(_tips);
+            _eventFilter.Changed += (s, e) => { OpenSection("event_logs"); FillEvents(); };
+            _alarmFilter.Changed += (s, e) => { OpenSection("alarm_logs"); FillAlarms(); };
+
+            AddSection("state_pie", "\u23f1\ufe0f", "Dsh_StatePie", "Machine State Time Distribution", _pieChart, null);
+            AddSection("state_timeline", "\U0001F552", "Dsh_StateTimeline", "Machine State Timeline", _timelineChart, null);
+            AddSection("state_logs", "\U0001F4DC", "Dsh_StateLogs", "State Logs", _stateGrid, null);
+            AddSection("event_quantity", "\U0001F4C8", "Dsh_EventQuantity", "Event Occurrences (log scale)", _barChart, null);
+            AddSection("cutting_details", "\u2699\ufe0f", "Dsh_Cutting", "Cutting Details", _cutGrid, null);
+            AddSection("event_logs", "\U0001F4CB", "Dsh_EventLogs", "Event Logs", _eventGrid, _eventFilter);
+            AddSection("alarm_logs", "\U0001F6A8", "Dsh_AlarmLogs", "Alarm Logs", _alarmGrid, _alarmFilter);
+        }
+
+        private void AddSection(string key, string icon, string titleKey, string title, Control body, Control extra)
+        {
+            var s = new Section(key, icon, titleKey, title, body, extra);
+            s.Toggled += (o, e) =>
+            {
+                _machine.Change(c => c.SetSectionOpen(key, s.Open));
+                FitWidths();
+            };
+            _sections[key] = s;
+            _mainScroll.Controls.Add(s);
+        }
+
+        /// <summary>A section of the page by its settings key (state_pie, event_logs ...), for tests.</summary>
+        public Section SectionOf(string key)
+        {
+            Section s;
+            return _sections.TryGetValue(key, out s) ? s : null;
+        }
+
+        private void OpenSection(string key)
+        {
+            var s = SectionOf(key);
+            if (s != null && !s.Open) s.SetOpen(true, true);
+        }
+
+        /// <summary>Which sections are there (settings) and which are open (as they were left).</summary>
+        private void ApplySections()
+        {
+            var cfg = Config;
+            foreach (var kv in _sections)
+            {
+                kv.Value.Visible = cfg.SectionActive(kv.Key);
+                kv.Value.SetOpen(cfg.SectionOpen(kv.Key), false);
+            }
+            FitWidths();
+        }
+
+        private void FitWidths()
+        {
+            int w = _mainScroll.ClientSize.Width - _mainScroll.Padding.Horizontal - 2;
+            if (w < 50) return;
+            foreach (Control c in _mainScroll.Controls)
+            {
+                int cw = w - c.Margin.Horizontal;
+                if (c.Width != cw) c.Width = cw;
+            }
+        }
+
+        private void RetranslateMain()
+        {
+            _title.Text = "\U0001F9E0 " + T("Dsh_Title", "Local Machine Dashboard");
+            foreach (var s in _sections.Values) s.Retranslate();
+            _stateGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+                                  new TableGrid.Col(T("Dsh_Description", "Description"), 0, null), new TableGrid.Col(T("Dsh_Duration", "Duration (min)"), 140, "0.000"));
+            _cutGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Length", "Length") + " (mm)", 0, "0.0"),
+                                new TableGrid.Col(T("Dsh_LeftAngle", "Left Angle") + " (\u00b0)", 0, "0.0"),
+                                new TableGrid.Col(T("Dsh_RightAngle", "Right Angle") + " (\u00b0)", 0, "0.0"),
+                                new TableGrid.Col(T("Dsh_Quantity", "Quantity"), 0, "0"));
+            _eventGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+                                  new TableGrid.Col(T("Dsh_Description", "Description"), 260, null), new TableGrid.Col(T("Dsh_Details", "Details"), 0, null));
+            _alarmGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+                                  new TableGrid.Col(T("Dsh_Details", "Details"), 0, null));
+            _eventFilter.Placeholder = T("Dsh_FilterEvents", "Select Events to Filter...");
+            _alarmFilter.Placeholder = T("Dsh_FilterAlarms", "Select Alarms to Filter...");
+            _eventFilter.ClearText = T("Dsh_AllEvents", "All Events");
+            _alarmFilter.ClearText = T("Dsh_AllAlarms", "All Alarms");
+            _timelineChart.EmptyText = T("Dsh_NoTimeline", "No state data to show timeline!");
+            _pieChart.EmptyText = T("Dsh_NoPie", "No state data to show pie chart!");
+            _barChart.EmptyText = T("Dsh_NoEvents", "No events to show!");
+            _timelineChart.Hint = T("Dsh_TipTimeline", "Wheel: zoom - drag: move along - double click: the whole range");
+            _pieChart.Unit = " " + T("Dsh_Min", "min");
+            if (_view != null) Show(_view, null);
+        }
+
+        // ==================================================================
+        // SHOWING WHAT WAS READ
+        // ==================================================================
+
+        /// <summary>Shows a range's tables (null: none, with <paramref name="message"/> in their place).</summary>
+        private void Show(DashboardView v, string message)
+        {
+            _view = v;
+            _interval.Text = T("Dsh_Interval", "Logs interval:") + "  " + _from.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) +
+                             "  -  " + _to.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture);
+            var shift = v != null ? v.Shift : SelectedShift;
+            _activeShift.Visible = shift != null;
+            if (shift != null) _activeShift.Text = T("Dsh_ActiveShift", "Active Shift") + ": " + shift.Text;
+            if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
+            _info.Text = message ?? "";
+            _info.Visible = !string.IsNullOrEmpty(message);
+            if (message != null && v == null) SetStatus(message);
+
+            v = v ?? new DashboardView { Start = _from, End = _to };
+            FillStates(v);
+            FillEventChart(v);
+            FillCutting(v);
+            _eventFilter.SetOptions(v.EventCounts);
+            _alarmFilter.SetOptions(v.AlarmCounts);
+            FillEvents();
+            FillAlarms();
+            FillMetrics();
+        }
+
+        private void FillStates(DashboardView v)
+        {
+            // pie: the minutes of each state, in the order they first appear
+            var slices = new List<PieChart.Slice>();
+            foreach (var s in v.States)
+            {
+                var slice = slices.FirstOrDefault(x => x.Label == s.Description);
+                if (slice == null) slices.Add(slice = new PieChart.Slice { Label = s.Description, Color = StateMap.ColorOf(s.Code) });
+                slice.Value += s.Minutes;
+            }
+            _pieChart.Slices = slices;
+
+            string min = T("Dsh_Min", "min");
+            _timelineChart.Bars = v.States.Select(s => new TimelineChart.Bar
+            {
+                Row = s.Description, Start = s.Start, End = s.End, Color = StateMap.ColorOf(s.Code),
+                Tip = s.Description + "\n" + s.Start.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) + " - " +
+                      s.End.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) + "\n" +
+                      s.Minutes.ToString("0.000", CultureInfo.CurrentCulture) + " " + min
+            }).ToList();
+
+            int n = 0;
+            _stateGrid.SetRows(v.States.Select(s => new object[] { ++n, s.Start, s.Description, s.Minutes }).ToList(),
+                               T("Dsh_NoStateLogs", "No machine state logs in selected time range!"));
+        }
+
+        private void FillEventChart(DashboardView v)
+        {
+            _barChart.Items = v.EventCounts.OrderByDescending(kv => kv.Value).ThenBy(kv => kv.Key, StringComparer.Ordinal)
+                               .Select(kv => new BarChart.Item { Label = kv.Key, Value = kv.Value }).ToList();
+        }
+
+        private void FillCutting(DashboardView v)
+        {
+            double m = v.TotalLengthMm / 1000.0;
+            var s = SectionOf("cutting_details");
+            if (s != null)
+                s.Suffix = " (" + T("Dsh_TotalLength", "Total Length") + ": " + m.ToString("0.00", CultureInfo.CurrentCulture) + " m)";
+            int n = 0;
+            _cutGrid.SetRows(v.Cuts.Select(c => new object[] { ++n, c.Length, c.LeftAngle, c.RightAngle, c.Quantity }).ToList(),
+                             m == 0.0 ? T("Dsh_NoCutting", "No cutting logs in selected range!")
+                                      : T("Dsh_NoCuttingFormat", "No valid cutting details found (Check data format)."));
+        }
+
+        private void FillEvents()
+        {
+            var v = _view ?? new DashboardView();
+            var pick = _eventFilter.Selected;
+            var rows = pick.Count == 0 ? v.Events : v.Events.Where(e => pick.Contains(e.Description)).ToList();
+            int n = 0;
+            _eventGrid.SetRows(rows.Select(e => new object[] { ++n, e.Time, e.Description, e.Details }).ToList(),
+                               T("Dsh_NoEventMatch", "No events match the selected filter!"));
+        }
+
+        private void FillAlarms()
+        {
+            var v = _view ?? new DashboardView();
+            var pick = _alarmFilter.Selected;
+            var rows = pick.Count == 0 ? v.Alarms : v.Alarms.Where(a => DashboardData.AlarmNames(a.Details).Any(pick.Contains)).ToList();
+            int n = 0;
+            _alarmGrid.SetRows(rows.Select(a => new object[] { ++n, a.Time, a.Details }).ToList(),
+                               T("Dsh_NoAlarms", "No alarm logs in selected range!"));
+        }
+
+        // ---- for tests
+        public PieChart Pie { get { return _pieChart; } }
+        public TimelineChart Timeline { get { return _timelineChart; } }
+        public BarChart EventBars { get { return _barChart; } }
+        public TableGrid StateGrid { get { return _stateGrid; } }
+        public TableGrid CutGrid { get { return _cutGrid; } }
+        public TableGrid EventGrid { get { return _eventGrid; } }
+        public TableGrid AlarmGrid { get { return _alarmGrid; } }
+        public FilterButton EventFilter { get { return _eventFilter; } }
+        public FilterButton AlarmFilter { get { return _alarmFilter; } }
+        public ComboBox LatestBox { get { return _latest; } }
+        public ComboBox HistoryBox { get { return _history; } }
+        public ComboBox ShiftBox { get { return _shift; } }
+        public DataGridView MetricsGrid { get { return _metrics; } }
+        public string StatusText { get { return _status.Text; } }
+        public string InfoText { get { return _info.Visible ? _info.Text : ""; } }
+        public void ShowMetrics() { if (!_metricsShown) ToggleShiftPanel(false); }
+
+        // ==================================================================
+        // THE PARTS
+        // ==================================================================
+
+        /// <summary>A section: its heading (a button that opens and closes it) and what it shows.</summary>
+        public sealed class Section : Panel
+        {
+            public readonly string Key;
+            private readonly string _icon, _titleKey, _title;
+            private readonly Button _head = new Button();
+            private readonly Panel _headRow = new Panel();
+            private readonly Control _body;
+            public bool Open { get; private set; }
+            public event EventHandler Toggled;
+            private string _suffix = "";
+
+            public Section(string key, string icon, string titleKey, string title, Control body, Control extra)
+            {
+                Key = key;
+                _icon = icon;
+                _titleKey = titleKey;
+                _title = title;
+                _body = body;
+                Margin = new Padding(0, 6, 0, 10);
+                _headRow.Dock = DockStyle.Top;
+                _headRow.Height = 40;
+                _head.Dock = DockStyle.Fill;
+                _head.FlatStyle = FlatStyle.Flat;
+                _head.FlatAppearance.BorderColor = UiStyle.BorderColor;
+                _head.BackColor = Color.White;
+                _head.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+                _head.TextAlign = ContentAlignment.MiddleCenter;
+                _head.Cursor = Cursors.Hand;
+                _head.Click += (s, e) => SetOpen(!Open, true);
+                _headRow.Controls.Add(_head);
+                if (extra != null)
+                {
+                    extra.Dock = DockStyle.Right;
+                    extra.Width = 460;
+                    var gap = new Panel { Dock = DockStyle.Right, Width = 8 };
+                    _headRow.Controls.Add(gap);
+                    _headRow.Controls.Add(extra);
+                }
+                body.Dock = DockStyle.Top;
+                var spacer = new Panel { Dock = DockStyle.Top, Height = 6 };
+                Controls.Add(body);
+                Controls.Add(spacer);
+                Controls.Add(_headRow);
+                Height = _headRow.Height;
+                Retranslate();
+            }
+
+            /// <summary>Written after the title (the cut length's total).</summary>
+            public string Suffix
+            {
+                get { return _suffix; }
+                set { _suffix = value ?? ""; Retranslate(); }
+            }
+
+            public string Title { get { return _head.Text; } }
+
+            public void Retranslate()
+            {
+                _head.Text = _icon + " " + LanguageManager.GetString(_titleKey, _title) + _suffix + "   " + (Open ? "\u25b4" : "\u25be");
+            }
+
+            public void SetOpen(bool open, bool byUser)
+            {
+                Open = open;
+                _body.Visible = open;
+                int spacer = open ? Controls[1].Height : 0;
+                Height = _headRow.Height + (open ? _body.Height + spacer : 0);
+                Retranslate();
+                if (byUser)
+                {
+                    var h = Toggled;
+                    if (h != null) h(this, EventArgs.Empty);
+                }
+            }
+
+            /// <summary>Clicks the heading (tests).</summary>
+            public void ClickHead() { _head.PerformClick(); }
+        }
+
+        /// <summary>
+        /// A read-only table that is filled with thousands of rows at once: the grid
+        /// asks for the cells it shows (virtual mode). A click on a heading sorts by that
+        /// column; the # stays with its row. Empty, it says why.
+        /// </summary>
+        public sealed class TableGrid : Panel
+        {
+            public sealed class Col
+            {
+                public string Text; public int Width; public string Format;
+                public Col(string text, int width, string format) { Text = text; Width = width; Format = format; }
+            }
+
+            public readonly DataGridView Grid = new DataGridView();
+            private readonly Label _empty = new Label();
+            private List<object[]> _rows = new List<object[]>();
+            private int _sortColumn = -1;
+            private bool _descending;
+
+            public TableGrid(int height)
+            {
+                Height = height;
+                Grid.Dock = DockStyle.Fill;
+                Grid.VirtualMode = true;
+                Grid.ReadOnly = true;
+                Grid.AllowUserToOrderColumns = false;
+                Grid.MultiSelect = true;
+                UiStyle.StyleGrid(Grid);
+                Grid.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableAlwaysIncludeHeaderText;
+                Grid.CellValueNeeded += (s, e) =>
+                {
+                    if (e.RowIndex >= 0 && e.RowIndex < _rows.Count && e.ColumnIndex < _rows[e.RowIndex].Length)
+                        e.Value = _rows[e.RowIndex][e.ColumnIndex];
+                };
+                Grid.ColumnHeaderMouseClick += (s, e) => Sort(e.ColumnIndex);
+                _empty.Dock = DockStyle.Fill;
+                _empty.TextAlign = ContentAlignment.MiddleCenter;
+                _empty.BackColor = Color.FromArgb(232, 242, 252);
+                _empty.ForeColor = Color.FromArgb(0, 66, 128);
+                _empty.Visible = false;
+                Controls.Add(Grid);
+                Controls.Add(_empty);
+            }
+
+            public void SetColumns(params Col[] cols)
+            {
+                Grid.Columns.Clear();
+                foreach (var c in cols)
+                {
+                    var col = new DataGridViewTextBoxColumn
+                    {
+                        HeaderText = c.Text, SortMode = DataGridViewColumnSortMode.Programmatic,
+                        AutoSizeMode = c.Width > 0 ? DataGridViewAutoSizeColumnMode.None : DataGridViewAutoSizeColumnMode.Fill
+                    };
+                    if (c.Width > 0) col.Width = UiScale.For(this, c.Width);
+                    if (c.Format != null) col.DefaultCellStyle.Format = c.Format;
+                    if (c.Format != null && c.Format.StartsWith("0", StringComparison.Ordinal))
+                        col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    Grid.Columns.Add(col);
+                }
+                Grid.RowCount = _rows.Count;
+            }
+
+            public void SetRows(List<object[]> rows, string emptyText)
+            {
+                _rows = rows ?? new List<object[]>();
+                _sortColumn = -1;
+                foreach (DataGridViewColumn c in Grid.Columns) c.HeaderCell.SortGlyphDirection = SortOrder.None;
+                Grid.RowCount = 0;
+                Grid.RowCount = _rows.Count;
+                Grid.Invalidate();
+                _empty.Text = emptyText ?? "";
+                _empty.Visible = _rows.Count == 0;
+                Grid.Visible = _rows.Count > 0;
+            }
+
+            public int RowCount { get { return _rows.Count; } }
+            public object Cell(int row, int col) { return _rows[row][col]; }
+            public string EmptyText { get { return _empty.Visible ? _empty.Text : ""; } }
+
+            public void Sort(int column)
+            {
+                if (column < 0 || column >= Grid.Columns.Count) return;
+                _descending = column == _sortColumn ? !_descending : false;
+                _sortColumn = column;
+                var cmp = Comparer<object>.Create((a, b) =>
+                {
+                    if (a == null) return b == null ? 0 : -1;
+                    if (b == null) return 1;
+                    var ca = a as IComparable;
+                    if (ca != null && a.GetType() == b.GetType()) return ca.CompareTo(b);
+                    return string.Compare(Convert.ToString(a, CultureInfo.CurrentCulture), Convert.ToString(b, CultureInfo.CurrentCulture), StringComparison.CurrentCulture);
+                });
+                // stable: rows that compare equal keep their order
+                var keyed = _rows.Select((r, i) => new { r, i }).ToList();
+                keyed.Sort((x, y) =>
+                {
+                    int c = cmp.Compare(x.r[column], y.r[column]);
+                    if (_descending) c = -c;
+                    return c != 0 ? c : x.i.CompareTo(y.i);
+                });
+                _rows = keyed.Select(k => k.r).ToList();
+                foreach (DataGridViewColumn c in Grid.Columns) c.HeaderCell.SortGlyphDirection = SortOrder.None;
+                Grid.Columns[column].HeaderCell.SortGlyphDirection = _descending ? SortOrder.Descending : SortOrder.Ascending;
+                Grid.Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// A filter of kinds: a button that opens a list of the kinds found, each with
+        /// how many there are, to tick; nothing ticked shows everything.
+        /// </summary>
+        public sealed class FilterButton : Button
+        {
+            private readonly ToolTip _tips;
+            private readonly HashSet<string> _selected = new HashSet<string>(StringComparer.Ordinal);
+            private Dictionary<string, int> _counts = new Dictionary<string, int>();
+            public string Placeholder = "";
+            public string ClearText = "";
+            public event EventHandler Changed;
+
+            public FilterButton(ToolTip tips)
+            {
+                _tips = tips;
+                TextAlign = ContentAlignment.MiddleLeft;
+                AutoEllipsis = true;
+                Font = UiStyle.Body;
+                Click += (s, e) => Drop();
+                UiStyle.Round(this);
+            }
+
+            public HashSet<string> Selected { get { return _selected; } }
+
+            /// <summary>The kinds found and their counts; ticks of kinds no longer there are dropped.</summary>
+            public void SetOptions(Dictionary<string, int> counts)
+            {
+                _counts = counts ?? new Dictionary<string, int>();
+                _selected.RemoveWhere(k => !_counts.ContainsKey(k));
+                Caption();
+            }
+
+            /// <summary>The list as the old filter showed it: "name (count)", by name.</summary>
+            public List<string> Options
+            {
+                get { return _counts.Keys.OrderBy(k => k, StringComparer.Ordinal).Select(k => k + " (" + _counts[k] + ")").ToList(); }
+            }
+
+            public void Select(IEnumerable<string> kinds)
+            {
+                _selected.Clear();
+                foreach (var k in kinds ?? new string[0]) if (_counts.ContainsKey(k)) _selected.Add(k);
+                Caption();
+                var h = Changed;
+                if (h != null) h(this, EventArgs.Empty);
+            }
+
+            private void Caption()
+            {
+                Text = "\U0001F50E  " + (_selected.Count == 0 ? Placeholder : string.Join(", ", _selected.OrderBy(k => k, StringComparer.Ordinal))) + "  \u25be";
+                if (_tips != null) _tips.SetToolTip(this, _selected.Count == 0 ? Placeholder : string.Join("\n", _selected.OrderBy(k => k, StringComparer.Ordinal)));
+            }
+
+            private void Drop()
+            {
+                var keys = _counts.Keys.OrderBy(k => k, StringComparer.Ordinal).ToList();
+                var list = new CheckedListBox
+                {
+                    CheckOnClick = true, BorderStyle = BorderStyle.None, Font = UiStyle.Body, IntegralHeight = false,
+                    Width = Math.Max(Width, UiScale.Px(320)),
+                    Height = Math.Min(UiScale.Px(360), Math.Max(UiScale.Px(40), keys.Count * UiScale.Px(22) + UiScale.Px(8)))
+                };
+                foreach (var k in keys) list.Items.Add(k + " (" + _counts[k] + ")", _selected.Contains(k));
+                var clear = new Button { Text = ClearText, Width = list.Width, Height = UiScale.Px(30), Font = UiStyle.Body, FlatStyle = FlatStyle.Flat };
+                var panel = new Panel { Width = list.Width, Height = list.Height + clear.Height, BackColor = Color.White };
+                clear.Dock = DockStyle.Bottom;
+                list.Dock = DockStyle.Fill;
+                panel.Controls.Add(list);
+                panel.Controls.Add(clear);
+                var host = new ToolStripControlHost(panel) { Margin = Padding.Empty, Padding = Padding.Empty, AutoSize = false, Size = panel.Size };
+                var drop = new ToolStripDropDown { Padding = Padding.Empty };
+                drop.Items.Add(host);
+                list.ItemCheck += (s, e) => BeginInvoke(new Action(() =>
+                {
+                    _selected.Clear();
+                    foreach (int i in list.CheckedIndices) _selected.Add(keys[i]);
+                    Caption();
+                    var h = Changed;
+                    if (h != null) h(this, EventArgs.Empty);
+                }));
+                clear.Click += (s, e) =>
+                {
+                    for (int i = 0; i < list.Items.Count; i++) list.SetItemChecked(i, false);
+                    drop.Close();
+                };
+                drop.Closed += (s, e) => BeginInvoke(new Action(() => { drop.Dispose(); }));
+                UiStyle.ShowPopup(drop, this, new Point(0, Height));
+            }
+        }
+    }
+}

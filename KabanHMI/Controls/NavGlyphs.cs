@@ -250,5 +250,34 @@ namespace Kaban.UI.Controls
                 }
             });
         }
+    
+        /// <summary>
+        /// The dashboard: a gauge - its dial as an open arc with a few marks, the
+        /// needle leaning to the right from its hub.
+        /// </summary>
+        public static Image Dashboard(int size = 0)
+        {
+            return Make("dash", size, (g, _) =>
+            {
+                using (var pen = new Pen(Ink, 2f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+                {
+                    // the dial: from lower left over the top to lower right
+                    g.DrawArc(pen, 2.5f, 3.5f, 19f, 19f, 150f, 240f);
+                    // the marks inside it
+                    for (int i = 0; i <= 4; i++)
+                    {
+                        double a = (150 + i * 60) * Math.PI / 180.0;
+                        float cx = 12f, cy = 13f;
+                        g.DrawLine(pen, cx + (float)(Math.Cos(a) * 6.6), cy + (float)(Math.Sin(a) * 6.6),
+                                        cx + (float)(Math.Cos(a) * 7.6), cy + (float)(Math.Sin(a) * 7.6));
+                    }
+                    // the needle
+                    g.DrawLine(pen, 12f, 13f, 16.6f, 7.6f);
+                }
+                using (var ink = new SolidBrush(Ink)) g.FillEllipse(ink, 9.9f, 10.9f, 4.2f, 4.2f);
+                using (var pen = new Pen(Ink, 2f) { StartCap = LineCap.Round, EndCap = LineCap.Round })
+                    g.DrawLine(pen, 7.5f, 20.5f, 16.5f, 20.5f);   // the base
+            });
+        }
     }
 }

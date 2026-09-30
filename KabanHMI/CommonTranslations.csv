@@ -708,3 +708,119 @@ Tbl_Rows;rows;satır;строк;Zeilen;righe;filas
 Tbl_Save;Save the changes;Değişiklikleri kaydet;Сохранить изменения;Änderungen speichern;Salva le modifiche;Guardar los cambios
 Tbl_Saved;Saved.;Kaydedildi.;Сохранено.;Gespeichert.;Salvato.;Guardado.
 Tbl_Unsaved;changed - not saved yet;değişti - henüz kaydedilmedi;изменено - ещё не сохранено;geändert - noch nicht gespeichert;modificato - non ancora salvato;cambiado - aún sin guardar
+Btn_Dashboard;Dashboard;Gösterge Paneli;Панель;Dashboard;Cruscotto;Panel
+Tab_Dashboard;Dashboard;Gösterge Paneli;Панель;Dashboard;Cruscotto;Panel
+Dsh_Title;Local Machine Dashboard;Makine Gösterge Paneli;Панель локального оборудования;Lokales Maschinen-Dashboard;Cruscotto Macchina Locale;Panel de Máquina Local
+Dsh_Interval;Logs interval:;Kayıt aralığı:;Интервал логов:;Log-Intervall:;Intervallo log:;Intervalo de registros:
+Dsh_ActiveShift;Active Shift;Aktif Vardiya;Активная смена;Aktive Schicht;Turno attivo;Turno activo
+Dsh_AutoHistory;Auto-Report History;Otomatik-Rapor Geçmişi;История автоотчётов;Automatische Berichtshistorie;Cronologia report automatici;Historial de informes automáticos
+Dsh_SelectEnd;Select End Date;Bitiş Tarihi Seçiniz;Выберите конечную дату;Enddatum auswählen;Seleziona data finale;Seleccionar fecha de fin
+Dsh_Latest;Latest;Güncel;Недавние;Neueste;Recenti;Recientes
+Dsh_SelectPeriod;Select Period;Periyot Seçiniz;Выберите период;Zeitraum auswählen;Seleziona periodo;Seleccionar periodo
+Dsh_Refresh;Refresh the time interval;Zaman aralığını güncelle;Обновить интервал времени;Zeitintervall aktualisieren;Aggiorna l'intervallo di tempo;Actualizar el intervalo de tiempo
+Dsh_Start;Start Date;Başlangıç Tarihi;Дата начала;Startdatum;Data Inizio;Fecha de inicio
+Dsh_End;End Date;Bitiş Tarihi;Дата окончания;Enddatum;Data Fine;Fecha de finalización
+Dsh_EndAfterStart;End date must be after start date!;Bitiş tarihi başlangıç tarihinden sonra olmalı!;Дата окончания должна быть позже даты начала!;Enddatum muss nach dem Startdatum liegen!;La data di fine deve essere successiva alla data di inizio!;¡La fecha de finalización debe ser posterior a la fecha de inicio!
+Dsh_ShiftSelection;Shift Selection (Optional);Vardiya Seçimi (Opsiyonel);Выбор смены (опционально);Schichtauswahl (optional);Selezione turno (opzionale);Selección de turno (opcional)
+Dsh_AllShifts;All Shifts;Tüm Vardiyalar;Все смены;Alle Schichten;Tutti i turni;Todos los turnos
+Dsh_EditList;Edit the list;Listeyi düzenle;Изменить список;Liste bearbeiten;Modifica l'elenco;Editar la lista
+Dsh_ShiftMetrics;Shift metrics;Vardiya metrikleri;Показатели смены;Schichtkennzahlen;Metriche del turno;Métricas del turno
+Dsh_Delete;Delete from the list;Listeden çıkar;Удалить из списка;Aus der Liste entfernen;Rimuovi dall'elenco;Quitar de la lista
+Dsh_Add;Add to the list;Listeye ekle;Добавить в список;Zur Liste hinzufügen;Aggiungi all'elenco;Añadir a la lista
+Dsh_Shift;Shift;Vardiya;Смена;Schicht;Turno;Turno
+Dsh_Active;Active;Aktif;Активно;Aktiv;Attivo;Activo
+Dsh_Alarm;Alarm;Alarm;Тревога;Alarm;Allarme;Alarma
+Dsh_NoCompare;No data available for comparison;Karşılaştırma için veri yok;Нет данных для сравнения;Keine Daten zum Vergleichen;Nessun dato da confrontare;No hay datos para comparar
+Dsh_Export;Export Report;Seçili Kayıtları Raporla;Экспортировать отчёт;Bericht exportieren;Esporta Report;Exportar Informe
+Dsh_OpenFolder;Open Export Folder;Rapor Klasörünü Aç;Открыть папку экспорта;Exportordner öffnen;Apri cartella esportazione;Abrir carpeta de exportación
+Dsh_Settings;Dashboard settings;Gösterge paneli ayarları;Настройки панели;Dashboard-Einstellungen;Impostazioni del cruscotto;Ajustes del panel
+Dsh_Exported;{0} report files exported!;{0} rapor dosyası dışa aktarıldı!;Экспортировано файлов отчёта: {0}!;{0} Berichtsdateien exportiert!;{0} file di report esportati!;¡{0} archivos de informe exportados!
+Dsh_ExportNone;No report file could be written - check the export folder in the settings.;Rapor dosyası yazılamadı - ayarlardaki rapor klasörünü kontrol edin.;Не удалось записать файл отчёта - проверьте папку экспорта в настройках.;Keine Berichtsdatei konnte geschrieben werden - den Exportordner in den Einstellungen prüfen.;Nessun file di report scritto - controllare la cartella di esportazione nelle impostazioni.;No se pudo escribir ningún archivo de informe - revise la carpeta de exportación en los ajustes.
+Dsh_FolderError;The folder could not be opened:;Klasör açılamadı:;Не удалось открыть папку:;Der Ordner konnte nicht geöffnet werden:;Impossibile aprire la cartella:;No se pudo abrir la carpeta:
+Dsh_P_15Minute;15-Minute;15 Dakikalık;15 минут;15 Minuten;15 minuti;15 minutos
+Dsh_P_30Minute;30-Minute;30 Dakikalık;30 минут;30 Minuten;30 minuti;30 minutos
+Dsh_P_Hourly;Hourly;Saatlik;Почасовой;Stündlich;Orario;Por hora
+Dsh_P_8Hour;8-Hour;8 Saatlik;8 часов;8 Stunden;8 ore;8 horas
+Dsh_P_Daily;Daily;Günlük;Ежедневно;Täglich;Giornaliero;Diario
+Dsh_P_Weekly;Weekly;Haftalık;Еженедельно;Wöchentlich;Settimanale;Semanal
+Dsh_P_Monthly;Monthly;Aylık;Ежемесячно;Monatlich;Mensile;Mensual
+Dsh_P_3Month;3-Month;3 Aylık;3 месяца;3 Monate;3 mesi;3 meses
+Dsh_P_Annual;Annual;Yıllık;Ежегодно;Jährlich;Annuale;Anual
+Dsh_StatePie;Machine State Time Distribution;Makine Durum Süre Dağılımı;Распределение времени по состояниям машины;Zeitverteilung nach Maschinenstatus;Distribuzione Tempo per Stato Macchina;Distribución del Tiempo por Estado de Máquina
+Dsh_StateTimeline;Machine State Timeline;Makine Durum Zaman Çizelgesi;Хронология состояний машины;Zeitachse Maschinenstatus;Cronologia Stato Macchina;Cronología del Estado de la Máquina
+Dsh_StateLogs;State Logs;Makine Durum Kayıtları;Журнал состояний;Zustandsprotokolle;Registri di stato;Registros de estado
+Dsh_EventQuantity;Event Occurrences (log scale);İşlem Sayıları (logaritmik);Частота событий (лог. масштаб);Ereignisvorkommen (logarithmisch);Occorrenze Eventi (scala log);Ocurrencias de Eventos (escala logarítmica)
+Dsh_Cutting;Cutting Details;Kesim Detayları;Детали резки;Schnittdetails;Dettagli di taglio;Detalles de corte
+Dsh_TotalLength;Total Length;Toplam Uzunluk;Общая длина;Gesamtlänge;Lunghezza totale;Longitud total
+Dsh_EventLogs;Event Logs;İşlem Kayıtları;Журнал событий;Protokoll der Ereignisse;Registro Eventi;Registros de Eventos
+Dsh_AlarmLogs;Alarm Logs;Arıza Kayıtları;Журнал ошибок;Fehlerprotokolle;Registri Errori;Registros de Errores
+Dsh_Timestamp;Timestamp;Tarih ve Saat;Метка времени;Zeitstempel;Timestamp;Marca temporal
+Dsh_Description;Description;Açıklama;Описание;Beschreibung;Descrizione;Descripción
+Dsh_Details;Details;Ayrıntılar;Подробности;Details;Dettagli;Detalles
+Dsh_Duration;Duration (min);Süre (dakika);Длительность (мин);Dauer (Min);Durata (min);Duración (min)
+Dsh_Length;Length;Uzunluk;Длина;Länge;Lunghezza;Longitud
+Dsh_LeftAngle;Left Angle;Sol Açı;Левый угол;Linker Winkel;Angolo sinistro;Ángulo izquierdo
+Dsh_RightAngle;Right Angle;Sağ Açı;Правый угол;Rechter Winkel;Angolo destro;Ángulo derecho
+Dsh_Quantity;Quantity;Adet;Количество;Menge;Quantità;Cantidad
+Dsh_NoPie;No state data to show pie chart!;Pasta grafiği için durum kaydı yok!;Нет данных состояний для круговой диаграммы!;Keine Zustandsdaten für das Tortendiagramm!;Nessun dato di stato per il grafico a torta!;¡No hay datos de estado para el gráfico circular!
+Dsh_NoTimeline;No state data to show timeline!;Zaman çizelgesinde gösterilecek durum kaydı yok!;Нет данных состояний для отображения временной шкалы!;Keine Zustandsdaten zur Anzeige der Zeitleiste!;Nessun dato di stato per mostrare la timeline!;¡No hay datos de estado para mostrar la línea de tiempo!
+Dsh_NoStateLogs;No machine state logs in selected time range!;Seçilen zaman aralığında makine durum kaydı yok!;Нет записей о состоянии машины в выбранном диапазоне!;Keine Maschinenstatus-Logs im ausgewählten Zeitraum!;Nessun registro di stato macchina nell'intervallo selezionato!;¡No hay registros de estado de máquina en el rango seleccionado!
+Dsh_NoEvents;No events to show!;Gösterilecek işlem kaydı yok!;Нет событий для отображения!;Keine Ereignisse zum Anzeigen!;Nessun evento da mostrare!;¡No hay eventos para mostrar!
+Dsh_NoCutting;No cutting logs in selected range!;Seçilen aralıkta kesim kaydı yok!;В выбранном диапазоне нет записей о резке!;Keine Schnittprotokolle im ausgewählten Bereich!;Nessun log di taglio nell'intervallo selezionato!;¡No hay registros de corte en el rango seleccionado!
+Dsh_NoCuttingFormat;No valid cutting details found (Check data format).;Geçerli kesim detayı bulunamadı (veri biçimini kontrol edin).;Не найдено корректных данных о резке (проверьте формат данных).;Keine gültigen Schnittdetails gefunden (Datenformat prüfen).;Nessun dettaglio di taglio valido (controllare il formato dei dati).;No se encontraron detalles de corte válidos (revise el formato de datos).
+Dsh_NoEventMatch;No events match the selected filter!;Seçilen filtreye uygun işlem kaydı yok!;Нет событий, соответствующих выбранному фильтру!;Keine Ereignisse entsprechen dem ausgewählten Filter!;Nessun evento corrisponde al filtro selezionato!;¡No hay eventos que coincidan con el filtro seleccionado!
+Dsh_NoAlarms;No alarm logs in selected range!;Seçilen aralıkta arıza kaydı yok!;Нет записей об ошибках в выбранном диапазоне!;Keine Fehlerprotokolle im ausgewählten Bereich!;Nessun registro errore nell'intervallo selezionato!;¡No hay registros de error en el rango seleccionado!
+Dsh_NoLogs;No logs in selected range!;Seçilen aralıkta kayıt yok!;Нет логов в выбранном диапазоне!;Keine Logs im ausgewählten Bereich!;Nessun log nell'intervallo selezionato!;¡No hay registros en el rango seleccionado!
+Dsh_FilterEvents;Select Events to Filter...;Filtrelemek İstediğiniz İşlemleri Seçiniz...;Выберите события для фильтрации...;Ereignisse zum Filtern auswählen...;Seleziona eventi da filtrare...;Seleccionar eventos para filtrar...
+Dsh_FilterAlarms;Select Alarms to Filter...;Filtrelemek İstediğiniz Alarmları Seçiniz...;Выберите тревоги для фильтрации...;Alarme zum Filtern auswählen...;Seleziona allarmi da filtrare...;Seleccionar alarmas para filtrar...
+Dsh_AllEvents;All Events;Tüm İşlemler;Все события;Alle Ereignisse;Tutti gli Eventi;Todos los Eventos
+Dsh_AllAlarms;All Alarms;Tüm Arızalar;Все ошибки;Alle Fehler;Tutti gli Errori;Todos los Errores
+Dsh_Loading;Loading data...;Veriler yükleniyor...;Загрузка данных...;Daten werden geladen...;Caricamento dati...;Cargando datos...
+Dsh_NoDatabase;The database is not found:;Veritabanı bulunamadı:;База данных не найдена:;Die Datenbank wurde nicht gefunden:;Database non trovato:;No se encuentra la base de datos:
+Dsh_SetDatabase;Choose it in the dashboard settings (⚙).;Gösterge paneli ayarlarından seçin (⚙).;Выберите её в настройках панели (⚙).;In den Dashboard-Einstellungen wählen (⚙).;Sceglierlo nelle impostazioni del cruscotto (⚙).;Elíjala en los ajustes del panel (⚙).
+Dsh_DatabaseError;The database could not be read:;Veritabanı okunamadı:;Не удалось прочитать базу данных:;Die Datenbank konnte nicht gelesen werden:;Impossibile leggere il database:;No se pudo leer la base de datos:
+Dsh_TooMany;The range holds {0:#,0} records - too many to show at once. Choose a shorter range.;Aralıkta {0:#,0} kayıt var - bir kerede gösterilemeyecek kadar çok. Daha kısa bir aralık seçin.;В диапазоне {0:#,0} записей - слишком много для показа. Выберите более короткий диапазон.;Der Bereich enthält {0:#,0} Einträge - zu viele für eine Anzeige. Einen kürzeren Bereich wählen.;L'intervallo contiene {0:#,0} record - troppi da mostrare. Scegliere un intervallo più breve.;El rango contiene {0:#,0} registros - demasiados para mostrar. Elija un rango más corto.
+Dsh_Records;{0:#,0} records read in {1:0.0} s;{0:#,0} kayıt {1:0.0} sn'de okundu;Прочитано записей: {0:#,0} за {1:0.0} с;{0:#,0} Einträge in {1:0.0} s gelesen;{0:#,0} record letti in {1:0.0} s;{0:#,0} registros leídos en {1:0.0} s
+Dsh_Min;min;dk;мин;Min;min;min
+Dsh_TipTimeline;Wheel: zoom - drag: move along - double click: the whole range;Tekerlek: yakınlaştır - sürükle: kaydır - çift tık: tüm aralık;Колесо: масштаб - перетаскивание: сдвиг - двойной щелчок: весь диапазон;Mausrad: Zoom - Ziehen: verschieben - Doppelklick: ganzer Bereich;Rotella: zoom - trascina: sposta - doppio clic: intervallo intero;Rueda: zoom - arrastrar: desplazar - doble clic: todo el rango
+Dsh_SetDatabaseHead;Database;Veritabanı;База данных;Datenbank;Database;Base de datos
+Dsh_SetDatabasePath;Database file;Veritabanı dosyası;Файл базы данных;Datenbankdatei;File del database;Archivo de base de datos
+Dsh_Browse;Browse...;Gözat...;Обзор...;Durchsuchen...;Sfoglia...;Examinar...
+Dsh_SetTimeZone;Time zone of the panel;Panelin saat dilimi;Часовой пояс панели;Zeitzone des Panels;Fuso orario del pannello;Zona horaria del panel
+Dsh_SetTimeZoneNote;The database keeps UTC. The dashboard shows the times of this zone.;Veritabanı UTC saklar. Gösterge paneli saatleri bu dilimde gösterir.;База данных хранит UTC. Панель показывает время этого пояса.;Die Datenbank speichert UTC. Das Dashboard zeigt die Zeiten dieser Zone.;Il database conserva l'UTC. Il cruscotto mostra gli orari di questo fuso.;La base de datos guarda UTC. El panel muestra las horas de esta zona.
+Dsh_SetLogicHead;Data logic;Veri mantığı;Логика данных;Datenlogik;Logica dei dati;Lógica de datos
+Dsh_SetBarcoded;Use only barcoded cutting logs;Yalnızca barkodlu kesim kayıtlarını kullan;Использовать только резки со штрихкодом;Nur Schnittprotokolle mit Barcode verwenden;Usa solo i log di taglio con codice a barre;Usar solo registros de corte con código de barras
+Dsh_SetSectionsHead;Dashboard sections;Gösterge paneli bölümleri;Разделы панели;Dashboard-Bereiche;Sezioni del cruscotto;Secciones del panel
+Dsh_SetShowPie;Show state pie chart;Durum pasta grafiğini göster;Показать круговую диаграмму состояний;Tortendiagramm der Zustände zeigen;Mostra il grafico a torta degli stati;Mostrar el gráfico circular de estados
+Dsh_SetShowTimeline;Show state timeline;Durum zaman çizelgesini göster;Показать хронологию состояний;Zeitachse der Zustände zeigen;Mostra la cronologia degli stati;Mostrar la cronología de estados
+Dsh_SetShowStateLogs;Show state logs table;Durum kayıtları tablosunu göster;Показать таблицу состояний;Tabelle der Zustandsprotokolle zeigen;Mostra la tabella dei registri di stato;Mostrar la tabla de registros de estado
+Dsh_SetShowEventChart;Show event frequency chart;İşlem sıklığı grafiğini göster;Показать диаграмму частоты событий;Diagramm der Ereignishäufigkeit zeigen;Mostra il grafico della frequenza degli eventi;Mostrar el gráfico de frecuencia de eventos
+Dsh_SetShowCutting;Show cutting details;Kesim detaylarını göster;Показать детали резки;Schnittdetails zeigen;Mostra i dettagli di taglio;Mostrar los detalles de corte
+Dsh_SetShowEventLogs;Show event logs table;İşlem kayıtları tablosunu göster;Показать таблицу событий;Tabelle der Ereignisprotokolle zeigen;Mostra la tabella del registro eventi;Mostrar la tabla de registros de eventos
+Dsh_SetShowAlarmLogs;Show alarm logs table;Arıza kayıtları tablosunu göster;Показать таблицу ошибок;Tabelle der Fehlerprotokolle zeigen;Mostra la tabella dei registri errori;Mostrar la tabla de registros de errores
+Dsh_SetReportsHead;Exported reports;Dışa aktarılan raporlar;Экспортируемые отчёты;Exportierte Berichte;Report esportati;Informes exportados
+Dsh_SetExportDir;Export folder;Rapor klasörü;Папка экспорта;Exportordner;Cartella di esportazione;Carpeta de exportación
+Dsh_SetReportLanguage;Report language;Rapor dili;Язык отчёта;Berichtssprache;Lingua del report;Idioma del informe
+Dsh_SetPeriod;Auto-report period;Otomatik rapor periyodu;Период автоотчёта;Zeitraum der automatischen Berichte;Periodo dei report automatici;Período del informe automático
+Dsh_SetTimes;Times (HH:MM, HH:MM ...);Saatler (SS:DD, SS:DD ...);Время (ЧЧ:ММ, ЧЧ:ММ ...);Uhrzeiten (HH:MM, HH:MM ...);Orari (HH:MM, HH:MM ...);Horas (HH:MM, HH:MM ...)
+Dsh_SetWeekdays;Weekdays;Haftanın günleri;Дни недели;Wochentage;Giorni della settimana;Días de la semana
+Dsh_SetMonthDays;Days of the month (1, 11, 21 ...);Ayın günleri (1, 11, 21 ...);Дни месяца (1, 11, 21 ...);Tage des Monats (1, 11, 21 ...);Giorni del mese (1, 11, 21 ...);Días del mes (1, 11, 21 ...)
+Dsh_SetAnnualDates;Dates (MM-DD, MM-DD ...);Tarihler (AA-GG, AA-GG ...);Даты (ММ-ДД, ММ-ДД ...);Daten (MM-TT, MM-TT ...);Date (MM-GG, MM-GG ...);Fechas (MM-DD, MM-DD ...)
+Dsh_SetTime;Time (HH:MM);Saat (SS:DD);Время (ЧЧ:ММ);Uhrzeit (HH:MM);Ora (HH:MM);Hora (HH:MM)
+Dsh_SetHistoryDays;History: days;Geçmiş: gün;История: дней;Historie: Tage;Cronologia: giorni;Historial: días
+Dsh_SetHistoryLimit;History: most reports listed;Geçmiş: listelenecek en fazla rapor;История: макс. число отчётов;Historie: höchstens gelistete Berichte;Cronologia: numero massimo di report;Historial: máximo de informes listados
+Dsh_SetAuto;Create the reports automatically;Raporları otomatik oluştur;Создавать отчёты автоматически;Berichte automatisch erstellen;Crea i report automaticamente;Crear los informes automáticamente
+Dsh_SetEventReport;Create event logs;İşlem kayıtlarını oluştur;Создавать журнал событий;Ereignisprotokolle erstellen;Crea i registri eventi;Crear registros de eventos
+Dsh_SetAlarmReport;Create alarm logs;Arıza kayıtlarını oluştur;Создавать журнал ошибок;Fehlerprotokolle erstellen;Crea i registri errori;Crear registros de errores
+Dsh_SetStateReport;Create state logs;Durum kayıtlarını oluştur;Создавать журнал состояний;Zustandsprotokolle erstellen;Crea i registri di stato;Crear registros de estado
+Dsh_SetTableReport;Create database tables;Veritabanı tablolarını oluştur;Создавать таблицы базы данных;Datenbanktabellen erstellen;Crea le tabelle del database;Crear tablas de la base de datos
+Dsh_SetNext;Next automatic report:;Sonraki otomatik rapor:;Следующий автоотчёт:;Nächster automatischer Bericht:;Prossimo report automatico:;Próximo informe automático:
+Dsh_SetSave;Keep the settings;Ayarları kaydet;Сохранить настройки;Einstellungen speichern;Salva le impostazioni;Guardar los ajustes
+Dsh_SetRevert;Put back what is kept;Kaydedilmiş olanı geri getir;Вернуть сохранённое;Gespeichertes wiederherstellen;Ripristina quanto salvato;Restaurar lo guardado
+Dsh_SetBadZone;This PC does not know the time zone;Bu bilgisayar şu saat dilimini tanımıyor:;Этот компьютер не знает часовой пояс;Dieser PC kennt die Zeitzone nicht;Questo PC non conosce il fuso orario;Este PC no conoce la zona horaria
+Dsh_SetBadTimes;The times cannot be read (HH:MM, HH:MM ...).;Saatler okunamadı (SS:DD, SS:DD ...).;Не удаётся прочитать время (ЧЧ:ММ, ЧЧ:ММ ...).;Die Uhrzeiten sind nicht lesbar (HH:MM, HH:MM ...).;Gli orari non sono leggibili (HH:MM, HH:MM ...).;No se pueden leer las horas (HH:MM, HH:MM ...).
+Dsh_SetBadTime;The time cannot be read (HH:MM).;Saat okunamadı (SS:DD).;Не удаётся прочитать время (ЧЧ:ММ).;Die Uhrzeit ist nicht lesbar (HH:MM).;L'ora non è leggibile (HH:MM).;No se puede leer la hora (HH:MM).
+Dsh_SetBadWeekdays;Choose at least one weekday.;En az bir gün seçin.;Выберите хотя бы один день недели.;Mindestens einen Wochentag wählen.;Scegliere almeno un giorno della settimana.;Elija al menos un día de la semana.
+Dsh_SetBadMonthDays;The days of the month cannot be read (1 to 31).;Ayın günleri okunamadı (1 ile 31 arası).;Не удаётся прочитать дни месяца (от 1 до 31).;Die Tage des Monats sind nicht lesbar (1 bis 31).;I giorni del mese non sono leggibili (da 1 a 31).;No se pueden leer los días del mes (de 1 a 31).
+Dsh_SetBadDates;The dates cannot be read (MM-DD, MM-DD ...).;Tarihler okunamadı (AA-GG, AA-GG ...).;Не удаётся прочитать даты (ММ-ДД, ММ-ДД ...).;Die Daten sind nicht lesbar (MM-TT, MM-TT ...).;Le date non sono leggibili (MM-GG, MM-GG ...).;No se pueden leer las fechas (MM-DD, MM-DD ...).
+Dsh_SetNotWritten;The settings could not be written:;Ayarlar yazılamadı:;Не удалось записать настройки:;Die Einstellungen konnten nicht geschrieben werden:;Impossibile scrivere le impostazioni:;No se pudieron escribir los ajustes:

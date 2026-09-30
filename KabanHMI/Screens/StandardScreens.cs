@@ -40,6 +40,14 @@ namespace Kaban.UI.Screens
 
             /// <summary>Set false on a sub-machine mounted inside a host.</summary>
             public bool IncludeHmiSettings = true;
+
+            /// <summary>
+            /// The machine's DASHBOARD (the Industry 4 dashboard's files it ships:
+            /// Dashboard\config.json, StateMap.json, Translation_JSON.csv). Given, the
+            /// machine gets a Dashboard page and a Dashboard tab in Machine
+            /// Parameters, and its automatic reports are made. Optional.
+            /// </summary>
+            public Kaban.UI.Dashboard.DashboardDefinition Dashboard;
         }
 
         /// <summary>
@@ -103,6 +111,27 @@ namespace Kaban.UI.Screens
                 };
             }
 
+            // ---------------- DASHBOARD ----------------
+            // What the machine did over a day, a week, a shift: from the Industry 4
+            // log. Anyone may look; its settings are a Machine Parameters tab.
+            Kaban.UI.Dashboard.MachineDashboard dashboard = null;
+            if (options.Dashboard != null)
+            {
+                var def = options.Dashboard;
+                dashboard = Kaban.UI.Dashboard.DashboardService.Register(ctx.ModuleId,
+                    ctx.ResolveFile(def.ConfigFile), ctx.ResolveFile(def.StateMapFile), ctx.ResolveFile(def.TranslationFile));
+                var board = dashboard;
+                yield return new MachineScreen
+                {
+                    TitleKey = "Btn_Dashboard",
+                    TitleFallback = "Dashboard",
+                    Role = ScreenRoles.Dashboard,
+                    Icon = () => Kaban.UI.Controls.NavGlyphs.Dashboard(),
+                    SortOrder = 25,
+                    CreateView = () => new Kaban.UI.Dashboard.DashboardScreen(board)
+                };
+            }
+
             // ---------------- machine-specific entries ----------------
             if (options.Extra != null)
                 foreach (var extra in options.Extra)
@@ -112,6 +141,8 @@ namespace Kaban.UI.Screens
             // Role-grouped like Home and Alarms, so mounting a sub-machine adds a
             // TAB here (named after the machine) rather than another left-bar button.
             var machineSettings = MapPages(ctx, options.MachineSettings ?? new ISettingsPage[0]);
+            if (dashboard != null)
+                machineSettings = Combine(machineSettings, new Kaban.UI.Dashboard.DashboardSettingsPage(dashboard));
             yield return new MachineScreen
             {
                 TitleKey = "Btn_MachineParameters",

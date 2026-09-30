@@ -92,6 +92,9 @@ namespace Kaban.Core.Machines
         public const string Manual = "Manual";
         public const string Alarms = "Alarms";
 
+        /// <summary>The machine dashboard (the Industry 4 log): a tab per machine that has one.</summary>
+        public const string Dashboard = "Dashboard";
+
         /// <summary>Per-machine parameters: becomes a tab per mounted machine.</summary>
         public const string MachineParameters = "MachineParameters";
 
