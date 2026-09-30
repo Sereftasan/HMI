@@ -465,7 +465,10 @@ Windows' own message boxes keep Windows' size.</p>
    <li>&#128451; adds every device used by: the screen on display; the whole program &ndash; with a heading line per page, or as <b>one list</b>
        (each device once, so a click on <i>Address</i> sorts every device the HMI uses); the whole program as one tab per page; or every device
        named in the <b>PLC label list</b> &ndash; <code>PlcLabels.csv</code> beside the program: the PLC programmer's names for its devices, which name
-       the devices on the monitor and include devices no page shows.</li>
+       the devices on the monitor and include devices no page shows; or the <b>machine conditions</b> read from this controller (manual mode,
+       robot at a safe position ... &ndash; what a greyed control's <i>Required Machine State</i> refers to): a heading, then each condition's device,
+       named after it, and a <b>Condition</b> column &ndash; <b>&#10004; met</b> or <b>&#10006; not met</b> now; the pointer on it says what the condition
+       asks (<i>D300 &le; 3</i>) and what is read. The column is there on a tab that has a condition.</li>
    <li>&#128270; <b>Find</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>, or right-click a row: <i>Where is it used?</i>): type an address, a label or part of a unit's name.
        Every use is listed &ndash; twice if a page uses it twice &ndash; with its page, in a pane under the lists (&#10005; or <kbd>Esc</kbd> closes it).
        <b>Click a line</b>: the page opens beside the monitor, scrolls until the unit is in sight, and the unit is framed in blinking blue.

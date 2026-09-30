@@ -83,6 +83,90 @@ namespace Kaban.Core.Helpers
 
         public static IEnumerable<KeyValuePair<long, ConditionDefinition>> GetAllMachineBits() => _machineBits;
 
+        /// <summary>One registered condition, as the PLC Monitor lists it.</summary>
+        public sealed class Entry
+        {
+            /// <summary>"S:ManualMode" for a system condition, "B:FA2010.RobotIsOutside" for a machine's own.</summary>
+            public string Key = "";
+            public string Name = "";
+            public ConditionRule Rule;
+        }
+
+        /// <summary>
+        /// Every registered condition that reads a device: the system ones in their
+        /// order, then the machines' own by bit.
+        /// </summary>
+        public static List<Entry> All()
+        {
+            var list = new List<Entry>();
+            foreach (SystemCondition c in Enum.GetValues(typeof(SystemCondition)))
+            {
+                ConditionRule r;
+                if (c == SystemCondition.None || !_map.TryGetValue(c, out r) || r == null || string.IsNullOrWhiteSpace(r.Address)) continue;
+                list.Add(new Entry { Key = "S:" + c, Name = EnumHelper.GetDescription(c), Rule = r });
+            }
+            var bits = new List<long>(_machineBits.Keys);
+            bits.Sort();
+            foreach (var b in bits)
+            {
+                var d = _machineBits[b];
+                if (d == null || string.IsNullOrWhiteSpace(d.Address)) continue;
+                string tag = string.IsNullOrWhiteSpace(d.TagName) ? b.ToString(System.Globalization.CultureInfo.InvariantCulture) : d.TagName;
+                list.Add(new Entry { Key = "B:" + tag, Name = string.IsNullOrWhiteSpace(d.Name) ? tag : d.Name, Rule = d });
+            }
+            return list;
+        }
+
+        /// <summary>A condition by its key (null when it is not registered - another machine's, or renamed).</summary>
+        public static Entry Find(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key)) return null;
+            foreach (var e in All())
+                if (string.Equals(e.Key, key.Trim(), StringComparison.OrdinalIgnoreCase)) return e;
+            return null;
+        }
+
+        /// <summary>
+        /// Whether a rule is met, from the values read (null: a device it needs is not
+        /// read yet). The same test the running program makes: a 32-bit rule reads the
+        /// device after its address as the high word.
+        /// </summary>
+        public static bool? Evaluate(ConditionRule rule, Func<string, int?> lookup, out double value)
+        {
+            value = 0;
+            if (rule == null || string.IsNullOrWhiteSpace(rule.Address) || lookup == null) return null;
+            int? low = lookup(rule.Address);
+            if (!low.HasValue) return null;
+            double current = low.Value;
+            if (rule.DataType == DataTypeEnum.Bin_32)
+            {
+                int? high = lookup(PlcAddressHelper.GetNextAddress(rule.Address));
+                if (!high.HasValue) return null;
+                current = PlcValueConverter.ConvertToDouble(low.Value, high.Value, rule.DataType, DisplayFormatEnum.Signed_Decimal, 0);
+            }
+            value = current;
+            return ComparisonHelper.Compare(current, rule.Operator, rule.RequiredValue);
+        }
+
+        /// <summary>"M100 = 0", "D200 (32-bit) > 0" - what a rule asks.</summary>
+        public static string RuleText(ConditionRule rule)
+        {
+            if (rule == null) return "";
+            string op;
+            switch (rule.Operator)
+            {
+                case ComparisonOperator.Equal: op = "="; break;
+                case ComparisonOperator.NotEqual: op = "\u2260"; break;
+                case ComparisonOperator.Greater: op = ">"; break;
+                case ComparisonOperator.GreaterOrEqual: op = "\u2265"; break;
+                case ComparisonOperator.Less: op = "<"; break;
+                case ComparisonOperator.LessOrEqual: op = "\u2264"; break;
+                default: op = rule.Operator.ToString(); break;
+            }
+            return (rule.Address ?? "") + (rule.DataType == DataTypeEnum.Bin_32 ? " (32-bit)" : "") + " " + op + " " +
+                   rule.RequiredValue.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         /// <summary>True when nothing is registered (the designer before a machine is loaded).</summary>
         public static bool IsEmpty { get { return _map.Count == 0 && _machineBits.Count == 0; } }
 

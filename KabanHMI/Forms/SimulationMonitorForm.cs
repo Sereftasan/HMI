@@ -86,6 +86,13 @@ namespace Kaban.UI.Forms
             /// <summary>The text of a comment line.</summary>
             public string Comment = "";
 
+            /// <summary>
+            /// A MACHINE CONDITION's row (MachineConditionMap: "S:ManualMode",
+            /// "B:FA2010.RobotIsOutside"): its device, and in the Condition column
+            /// whether the condition is met now.
+            /// </summary>
+            public string ConditionKey = "";
+
             /// <summary>Decimal (""), Hexadecimal or Binary - how a whole number is shown and typed.</summary>
             public string DisplayFormat = "";
             /// <summary>A String's length in characters (when its data type does not say, as "String(32)" does).</summary>
@@ -156,7 +163,8 @@ namespace Kaban.UI.Forms
                 return new WatchRow { Address = Address, Station = Station, LabelOverride = LabelOverride,
                                       DataTypeOverride = DataTypeOverride, Comment = Comment,
                                       DisplayFormat = DisplayFormat, StringLength = StringLength,
-                                      ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded };
+                                      ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded,
+                                      ConditionKey = Head == null ? ConditionKey : "" };
             }
         }
 
@@ -494,6 +502,10 @@ namespace Kaban.UI.Forms
                 "It names the devices on the monitor and adds devices the pages do not show.");
             m.ShowItemToolTips = true;
             m.Items.Add(labels);
+            var conditions = Item(T("Mnu_MonFromConditions", "the machine conditions (MachineConditionMap) - into this tab"), (s, e) => CollectConditions());
+            conditions.ToolTipText = T("Tip_MonFromConditions",
+                "The conditions the machines register (manual mode, robot at safe position ...): each one's device, and whether it is met now.");
+            m.Items.Add(conditions);
             return m;
         }
 
@@ -1064,6 +1076,8 @@ namespace Kaban.UI.Forms
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
             // value just before) or the PLC program. See DeviceHistory.
+            // A MACHINE CONDITION's row: met or not, now (shown on a tab that has one).
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Condition", HeaderText = T("Col_Condition", "Condition"), ReadOnly = true, Visible = false });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Last change"), ReadOnly = true });
             grid.ShowCellToolTips = true;
 
@@ -1806,8 +1820,8 @@ namespace Kaban.UI.Forms
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Changed" };
-        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Condition", "Changed" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 130, 150 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         private static bool _applyingLayout;
         private bool _layoutPending;
@@ -1973,6 +1987,17 @@ namespace Kaban.UI.Forms
                     long? va = ValueOf(mon, a), vb = ValueOf(mon, b);
                     if (va == null || vb == null) return va == null ? (vb == null ? 0 : 1) : -1;   // unread last
                     return va.Value.CompareTo(vb.Value);
+                }
+                case "Condition":
+                {
+                    // met first, then not met, then rows that are no condition
+                    Func<WatchRow, int> rank = r =>
+                    {
+                        var met = ConditionState(mon, r);
+                        return met == true ? 0 : met == false ? 1 : string.IsNullOrEmpty(r.ConditionKey) ? 3 : 2;
+                    };
+                    int c = rank(a).CompareTo(rank(b));
+                    return c != 0 ? c : CompareAddress(a.Address, b.Address);
                 }
                 case "Changed":
                 {
@@ -2273,6 +2298,52 @@ namespace Kaban.UI.Forms
             Report(added, devices.Count);
         }
 
+        /// <summary>
+        /// THE MACHINE CONDITIONS of this controller into the tab on display: a
+        /// heading, then a row per condition - its device, named after the
+        /// condition, in its data type - with the Condition column saying whether it
+        /// is met. What a control's "Required Machine State" tooltip refers to, seen
+        /// working (or not) while the machine runs.
+        /// </summary>
+        internal void CollectConditions()
+        {
+            var mon = CurrentMonitor;
+            if (mon == null) return;
+            var entries = MachineConditionMap.All().Where(e => AlarmManager.StationOf(e.Rule) == mon.Station).ToList();
+            if (entries.Count == 0)
+            {
+                MessageBox.Show(DialogOwner, string.Format(T("Msg_MonConditionsNone", "No machine condition is read from {0}."),
+                                PlcEndpointNaming.Caption(mon.Endpoint)), Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Remember(T("Undo_Collect", "add the devices"), mon);
+            var sh = EnsureSheet(mon);
+            var have = new HashSet<string>(sh.Rows.Where(r => !string.IsNullOrEmpty(r.ConditionKey)).Select(r => r.ConditionKey), StringComparer.OrdinalIgnoreCase);
+            var rows = new List<WatchRow>();
+            foreach (var e in entries)
+            {
+                if (!have.Add(e.Key)) continue;
+                string type = e.Rule.DataType == Kaban.Core.Enums.DataTypeEnum.Bin_32 ? DeviceCollector.DoubleWord
+                            : DeviceCollector.IsBitDevice(e.Rule.Address) ? DeviceCollector.Bit : DeviceCollector.Word;
+                rows.Add(new WatchRow
+                {
+                    Station = mon.Station, Address = e.Rule.Address.Trim().ToUpperInvariant(),
+                    LabelOverride = e.Name, DataTypeOverride = type, ConditionKey = e.Key
+                });
+                mon.Hidden.Remove(e.Rule.Address);
+            }
+            if (rows.Count > 0)
+            {
+                rows.Insert(0, new WatchRow { Station = mon.Station, Comment = T("Hdr_MonConditions", "Machine conditions") });
+                int at = InsertPoint(sh, true);
+                sh.Rows.InsertRange(at, rows);
+                EnsureBlankRow(sh);
+                SaveWatchList(mon);
+                Render(mon, sh);
+            }
+            Report(rows.Count(r => r.IsDevice), entries.Count);
+        }
+
         // ==================================================================
         // WRITE
         // ==================================================================
@@ -2522,6 +2593,7 @@ namespace Kaban.UI.Forms
                     Set(row.Cells["Label"], model.Comment);
                     Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
+                    Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
                     Style(row, ColCommentBack, ColCommentText, UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic));
                     continue;
                 }
@@ -2532,6 +2604,7 @@ namespace Kaban.UI.Forms
                 {
                     Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Value"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
+                    Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
                     continue;
                 }
 
@@ -2569,7 +2642,47 @@ namespace Kaban.UI.Forms
                 }
 
                 RenderLastChange(mon, model, row.Cells["Changed"]);
+                RenderCondition(mon, model, row.Cells["Condition"]);
             }
+
+            // The Condition column is there on a tab that has a machine condition.
+            bool conditions = sh.Rows.Any(r => !string.IsNullOrEmpty(r.ConditionKey));
+            if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
+        }
+
+        private static readonly Color ColConditionMet = Color.FromArgb(0, 130, 50);
+        private static readonly Color ColConditionNotMet = Color.FromArgb(200, 40, 40);
+
+        /// <summary>A condition row's state now: true met, false not met, null not read (or no condition).</summary>
+        internal static bool? ConditionState(MonitorTab mon, WatchRow model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.ConditionKey)) return null;
+            var entry = MachineConditionMap.Find(model.ConditionKey);
+            if (entry == null) return null;
+            double value;
+            return MachineConditionMap.Evaluate(entry.Rule, a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; }, out value);
+        }
+
+        /// <summary>"\u2714 met" / "\u2716 not met" - the tooltip says what the condition asks and what is read.</summary>
+        private static void RenderCondition(MonitorTab mon, WatchRow model, DataGridViewCell cell)
+        {
+            if (string.IsNullOrEmpty(model.ConditionKey)) { Set(cell, ""); Tip(cell, ""); return; }
+            var entry = MachineConditionMap.Find(model.ConditionKey);
+            if (entry == null)
+            {
+                Set(cell, "?");
+                Tip(cell, T("Cond_NotRegistered", "This condition is not registered by the machines of this program."));
+                if (cell.Style.ForeColor != ColLabelUnknown) cell.Style.ForeColor = ColLabelUnknown;
+                return;
+            }
+            double value;
+            var met = MachineConditionMap.Evaluate(entry.Rule, a => { int v; return mon.Values.TryGetValue(a, out v) ? v : (int?)null; }, out value);
+            string text = met == true ? "\u2714 " + T("Cond_Met", "met") : met == false ? "\u2716 " + T("Cond_NotMet", "not met") : "-";
+            Set(cell, text);
+            var colour = met == true ? ColConditionMet : met == false ? ColConditionNotMet : ColLabelUnknown;
+            if (cell.Style.ForeColor != colour) cell.Style.ForeColor = colour;
+            Tip(cell, entry.Name + "\n" + T("Cond_Asks", "Met when") + ": " + MachineConditionMap.RuleText(entry.Rule) +
+                      (met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : ""));
         }
 
         private static readonly Color ColChangedByHmi = Color.FromArgb(20, 90, 190);
@@ -2949,6 +3062,7 @@ namespace Kaban.UI.Forms
             if (!string.IsNullOrEmpty(r.DisplayFormat) && r.DisplayFormat != FormatDecimal) parts.Add("fmt=" + r.DisplayFormat);
             if (r.ArrayCount > 1) { parts.Add("n=" + r.ArrayCount.ToString(CultureInfo.InvariantCulture)); if (r.Expanded) parts.Add("open=1"); }
             if (r.StringLength != 16) parts.Add("len=" + r.StringLength.ToString(CultureInfo.InvariantCulture));
+            if (!string.IsNullOrEmpty(r.ConditionKey)) parts.Add("cond=" + r.ConditionKey);
             return string.Join("|", parts);
         }
 
@@ -2966,6 +3080,7 @@ namespace Kaban.UI.Forms
                     case "n": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.ArrayCount = Math.Max(1, Math.Min(1000, n)); break;
                     case "open": r.Expanded = v == "1"; break;
                     case "len": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.StringLength = Math.Max(1, Math.Min(256, n)); break;
+                    case "cond": r.ConditionKey = v; break;
                 }
             }
         }
