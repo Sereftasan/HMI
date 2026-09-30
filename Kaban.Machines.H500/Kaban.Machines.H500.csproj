@@ -90,21 +90,29 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Screens\MachineParameters.cs" />
+    <Compile Include="Screens\MachineParameters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineParameters.Designer.cs">
       <DependentUpon>MachineParameters.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualOther.cs" />
+    <Compile Include="Screens\ManualOther.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualOther.Designer.cs">
       <DependentUpon>ManualOther.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualProfile_Rotation.cs" />
+    <Compile Include="Screens\ManualProfile_Rotation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualProfile_Rotation.Designer.cs">
       <DependentUpon>ManualProfile_Rotation.cs</DependentUpon>
     </Compile>
     <Compile Include="H500Module.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Screens\H500Screen.cs" />
+    <Compile Include="Screens\H500Screen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -154,9 +162,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
-
-
-
     <None Include="..\KabanHMI\CommonTranslations.csv">
       <Link>CommonTranslations.csv</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -175,8 +180,7 @@
        server is registered in the 32-BIT view only, so this HMI must run as a
        32-bit process. Fail the build if that is ever switched off. -->
   <Target Name="KabanAssert32Bit" BeforeTargets="Build">
-    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'"
-           Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
+    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'" Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
   </Target>
   <!-- This machine's own files, shown at the project root where they really
        are, copied into bin\Debug\H500\ - the same place FA2010 puts them when

@@ -256,6 +256,12 @@
     <EmbeddedResource Include="Screens\Manual\ManualExit.resx">
       <DependentUpon>ManualExit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\AxisSettings.resx">
+      <DependentUpon>AxisSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamCutting.resx">
+      <DependentUpon>ParamCutting.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\KabanHMI\Help\Connection_Troubleshooting.html">

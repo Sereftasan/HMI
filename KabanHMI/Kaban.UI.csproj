@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="Forms\SimulationMonitorForm.Values.cs">
       <DependentUpon>SimulationMonitorForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\PlcRowEditorForm.cs">
       <SubType>Form</SubType>

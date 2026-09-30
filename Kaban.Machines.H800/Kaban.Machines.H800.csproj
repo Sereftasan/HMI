@@ -90,53 +90,77 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Screens\Parameters\AxisSettings.cs" />
+    <Compile Include="Screens\Parameters\AxisSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\Parameters\AxisSettings.Designer.cs">
       <DependentUpon>AxisSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineOptions.cs" />
+    <Compile Include="Screens\MachineOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineOptions.Designer.cs">
       <DependentUpon>MachineOptions.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineParameters.cs" />
+    <Compile Include="Screens\MachineParameters.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineParameters.Designer.cs">
       <DependentUpon>MachineParameters.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineParameters2.cs" />
+    <Compile Include="Screens\MachineParameters2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineParameters2.Designer.cs">
       <DependentUpon>MachineParameters2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\MachineStatus.cs" />
+    <Compile Include="Screens\MachineStatus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\MachineStatus.Designer.cs">
       <DependentUpon>MachineStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualAxes.cs" />
+    <Compile Include="Screens\ManualAxes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualAxes.Designer.cs">
       <DependentUpon>ManualAxes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualConveyor.cs" />
+    <Compile Include="Screens\ManualConveyor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualConveyor.Designer.cs">
       <DependentUpon>ManualConveyor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualDischarge.cs" />
+    <Compile Include="Screens\ManualDischarge.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualDischarge.Designer.cs">
       <DependentUpon>ManualDischarge.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualDrilling.cs" />
+    <Compile Include="Screens\ManualDrilling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualDrilling.Designer.cs">
       <DependentUpon>ManualDrilling.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualOther.cs" />
+    <Compile Include="Screens\ManualOther.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualOther.Designer.cs">
       <DependentUpon>ManualOther.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualProfile_Rotation.cs" />
+    <Compile Include="Screens\ManualProfile_Rotation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\ManualProfile_Rotation.Designer.cs">
       <DependentUpon>ManualProfile_Rotation.cs</DependentUpon>
     </Compile>
     <Compile Include="H800Module.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Screens\H800Screen.cs" />
+    <Compile Include="Screens\H800Screen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -186,9 +210,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
-
-
-
     <None Include="..\KabanHMI\CommonTranslations.csv">
       <Link>CommonTranslations.csv</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -207,8 +228,7 @@
        server is registered in the 32-BIT view only, so this HMI must run as a
        32-bit process. Fail the build if that is ever switched off. -->
   <Target Name="KabanAssert32Bit" BeforeTargets="Build">
-    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'"
-           Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
+    <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'" Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
   </Target>
   <!-- This machine's own files, shown at the project root where they really
        are, copied into bin\Debug\H800\ - the same place FA2010 puts them when
