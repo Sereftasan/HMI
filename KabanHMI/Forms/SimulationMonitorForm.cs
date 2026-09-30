@@ -1076,9 +1076,9 @@ namespace Kaban.UI.Forms
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
             // value just before) or the PLC program. See DeviceHistory.
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Last change"), ReadOnly = true });
             // A MACHINE CONDITION's row: met or not, now (shown on a tab that has one).
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Condition", HeaderText = T("Col_Condition", "Condition"), ReadOnly = true, Visible = false });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Last change"), ReadOnly = true });
             grid.ShowCellToolTips = true;
 
             // EXPLICIT WIDTHS, each column its own: narrowing the last column
@@ -1820,8 +1820,8 @@ namespace Kaban.UI.Forms
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Condition", "Changed" };
-        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 130, 150 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Changed", "Condition" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 130 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         private static bool _applyingLayout;
         private bool _layoutPending;
