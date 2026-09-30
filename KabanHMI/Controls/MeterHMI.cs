@@ -199,7 +199,21 @@ namespace Kaban.UI.Controls
         /// </summary>
         protected void RefreshTip()
         {
-            if (string.IsNullOrEmpty(Address)) { _tip.SetToolTip(this, ""); return; }
+            // SHOWN BY THE METER ITSELF, built as it shows (UiStyle.HoverTip): a
+            // tip registered with the program's one tooltip is dropped when the
+            // window that tooltip belongs to closes - after a keypad or a message
+            // box the meters had none.
+            if (_tipWired) return;
+            _tipWired = true;
+            UiStyle.HoverTip(_tip, this, TooltipText);
+        }
+
+        private bool _tipWired;
+
+        /// <summary>The tip as it is now (tests).</summary>
+        internal string TooltipText()
+        {
+            if (string.IsNullOrEmpty(Address)) return "";
             // DEVICE AND VALUE, nothing else. The row already names the axis and
             // the column heading already says what the reading is; repeating both
             // in the tooltip is text to read past before reaching the one thing
@@ -212,7 +226,7 @@ namespace Kaban.UI.Controls
             // A stale reading says so first: the address alone would suggest the
             // number beside it is current.
             if (IsStale) text = ConnectionMonitor.ReasonFor(PlcNumber) + "\r\n" + text;
-            _tip.SetToolTip(this, text);
+            return text;
         }
 
         protected string Text_Value()
@@ -586,6 +600,17 @@ namespace Kaban.UI.Controls
 
         private void RefreshTip()
         {
+            // Shown by the cell itself, built as it shows - see MeterBaseHMI.
+            if (_tipWired) return;
+            _tipWired = true;
+            UiStyle.HoverTip(_tip, this, TooltipText);
+        }
+
+        private bool _tipWired;
+
+        /// <summary>The tip as it is now (tests).</summary>
+        internal string TooltipText()
+        {
             // ADDRESS ONLY. The code is printed in the cell already. When the PLC
             // is not answering, the reason comes first - see MeterBaseHMI.
             var text = PlcAddressHelper.StationHeader(PlcNumber) +
@@ -595,7 +620,7 @@ namespace Kaban.UI.Controls
             if (HasHelp)
                 text = _help.Title + "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help") + "\r\n\r\n" + text;
             if (IsStale) text = ConnectionMonitor.ReasonFor(PlcNumber) + "\r\n" + text;
-            _tip.SetToolTip(this, text);
+            return text;
         }
 
         public HexCodeHMI()

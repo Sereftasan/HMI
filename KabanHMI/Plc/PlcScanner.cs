@@ -377,10 +377,10 @@ namespace Kaban.UI.Plc
         /// </summary>
         private void ApplyConnectionState()
         {
-            // Buttons and numeric fields are NOT handled here. They grey through
-            // their own soft enable, which reads ConnectionMonitor directly - so it
-            // keeps their hover tooltip working, which a real Enabled = false
-            // would switch off.
+            // Buttons, numeric fields and checkboxes are NOT handled here. They grey
+            // through their own soft enable, which reads ConnectionMonitor directly
+            // - so it keeps their hover tooltip working, which a real
+            // Enabled = false would switch off (the checkboxes had no tip at all).
             var real = new List<Control>();
             real.AddRange(_checkBoxes.Cast<Control>());
             real.AddRange(_combos.Cast<Control>());
@@ -392,6 +392,7 @@ namespace Kaban.UI.Plc
             foreach (var c in real)
             {
                 if (c is ButtonHMI || c is NumericInputHMI) continue;
+                if (c is CheckBoxHMI) continue;
 
                 var bound = c as IPlcBoundControl;
                 int plc = bound != null ? bound.PlcNumber : PlcNumberOf(c);

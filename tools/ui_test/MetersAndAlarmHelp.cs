@@ -18,6 +18,14 @@ class M {
         }
         return null;
     }
+    // The tip as the control shows it when the pointer rests on it (UiStyle.HoverTip - not registered with the tooltip).
+    sealed class TipReader { public string GetToolTip(Control c) {
+        for (var t = c.GetType(); t != null; t = t.BaseType) {
+            var m = t.GetMethod("TooltipText", BindingFlags.NonPublic|BindingFlags.Public|BindingFlags.Instance);
+            if (m != null) return (string)m.Invoke(c, null);
+        }
+        return "";
+    } }
     static void Enter(Control c, bool on){
         var m = typeof(Control).GetMethod(on ? "OnMouseEnter" : "OnMouseLeave", BindingFlags.NonPublic|BindingFlags.Instance);
         m.Invoke(c, new object[]{ EventArgs.Empty });
@@ -44,7 +52,7 @@ class M {
         var host = new Form { ClientSize = new Size(300, 120) };
         host.Controls.Add(meter); host.Controls.Add(code);
         host.Show(); Application.DoEvents();
-        var tips = UiStyle.Tips();
+        var tips = new TipReader();
 
         Check("meter tooltip shows its device", tips.GetToolTip(meter).Contains("D200"), tips.GetToolTip(meter));
 

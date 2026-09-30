@@ -152,8 +152,9 @@ namespace Kaban.UI.Controls
 
             using (var back = new SolidBrush(Color.White))
                 g.FillRectangle(back, box);
-            using (var pen = new Pen(Enabled ? Color.FromArgb(120, 128, 140)
-                                             : Color.FromArgb(205, 210, 217)))
+            bool live = Enabled && !IsStale;
+            using (var pen = new Pen(live ? Color.FromArgb(120, 128, 140)
+                                          : Color.FromArgb(205, 210, 217)))
                 g.DrawRectangle(pen, box);
             // ASKED FOR: the border blinks red while AlertAddress is TRUE - the
             // same red and the same 2 px as a numeric field out of its limits.
@@ -167,7 +168,7 @@ namespace Kaban.UI.Controls
             using (var f = new Font("Segoe UI Symbol", side * 0.62f, FontStyle.Bold,
                                     GraphicsUnit.Pixel))
                 TextRenderer.DrawText(g, "\u2714", f, box,
-                    Enabled ? Color.FromArgb(25, 28, 34) : Color.FromArgb(170, 176, 184),
+                    live ? Color.FromArgb(25, 28, 34) : Color.FromArgb(170, 176, 184),
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter |
                     TextFormatFlags.NoPadding);
         }
@@ -176,6 +177,34 @@ namespace Kaban.UI.Controls
         {
             base.OnResize(e);
             ApplyCornerRegion();
+        }
+
+        /// <summary>
+        /// True while this box's PLC is known not to be answering: it is drawn
+        /// grey and a click does nothing - but it stays ENABLED, so the pointer
+        /// still gets its tooltip (which then says why). The scanner used to set
+        /// Enabled = false, and a disabled control has no tooltip at all.
+        /// </summary>
+        [Browsable(false)]
+        public bool IsStale { get { return !string.IsNullOrWhiteSpace(Address) && ConnectionMonitor.IsKnownDown(PlcNumber); } }
+
+        protected override void OnClick(EventArgs e)
+        {
+            if (IsStale) return;          // not ticked: nothing can be written
+            base.OnClick(e);
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            ConnectionMonitor.ConnectionChanged -= OnConnectionChanged;
+            base.OnHandleDestroyed(e);
+        }
+
+        private void OnConnectionChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired) { BeginInvoke((Action)(() => OnConnectionChanged(sender, e))); return; }
+            Invalidate();
         }
 
         protected override void OnCheckedChanged(EventArgs e)
@@ -195,35 +224,49 @@ namespace Kaban.UI.Controls
                 AuditLogger.Log($"set bit {Address} (PLC {PlcNumber}) to {(Checked ? 1 : 0)} via checkbox.");
         }
 
-        /// <summary>Scanner hook - reflects the PLC bit without writing back.</summary>
         private readonly ToolTip _tip = UiStyle.Tips();
-        private bool _tipBuilt;
+        private bool _tipBuilt, _tipWired;
 
         /// <summary>
         /// The device and what it is, on hover.
         ///
         /// A bare checkbox in a column says nothing about which bit it drives, and
         /// "which device is that?" is the first question anyone asks of a control
-        /// that looks wrong. Built once the address is known rather than only when
-        /// the value changes, so it is there before the first scan arrives.
+        /// that looks wrong.
+        ///
+        /// SHOWN BY THE CONTROL ITSELF (UiStyle.HoverTip), built as it shows: it
+        /// was registered with the program's one tooltip, and a registration is
+        /// dropped when the window the tooltip belongs to closes - after a keypad
+        /// or a message box the checkboxes had no tip at all.
         /// </summary>
         public void RefreshTooltip()
         {
             _tipBuilt = true;
-            if (string.IsNullOrEmpty(Address)) { _tip.SetToolTip(this, ""); return; }
+            if (_tipWired) return;
+            _tipWired = true;
+            UiStyle.HoverTip(_tip, this, TooltipText);
+        }
+
+        /// <summary>The tip as it is now (tests).</summary>
+        internal string TooltipText()
+        {
+            if (string.IsNullOrEmpty(Address)) return "";
             // Device only. A caption here repeats the row and the column heading.
             string tip = PlcAddressHelper.StationHeader(PlcNumber) + PlcAddressHelper.Describe(PlcNumber, Address);
+            // Not answering: why, first (the box is grey and does nothing).
+            if (IsStale) tip = ConnectionMonitor.ReasonFor(PlcNumber) + "\r\n" + tip;
             if (!string.IsNullOrWhiteSpace(AlertAddress))
                 tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
                        PlcAddressHelper.Describe(PlcNumber, AlertAddress.Trim()) +
                        (_alert ? "  (" + LanguageManager.GetString("Tip_AlertOn", "now") + ")" : "");
-            _tip.SetToolTip(this, tip);
+            return tip;
         }
 
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             if (!_tipBuilt) RefreshTooltip();
+            ConnectionMonitor.ConnectionChanged += OnConnectionChanged;
         }
 
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
