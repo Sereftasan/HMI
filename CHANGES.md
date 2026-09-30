@@ -4169,3 +4169,19 @@ and `UnitLookAndErrors` extended.
 - Translations: 116 rows (`Btn_Dashboard`, `Tab_Dashboard`, `Dsh_*`), six languages. Manual: 11, *The dashboard*;
   the page menu; where the settings are kept.
 - Tests: `tools/ui_test/DashboardPage.cs` (new).
+
+## 2026-09-30 - Bar view at every size, the condition dropdowns, machine conditions on the PLC Monitor
+
+- `NumericInputHMI`: the card's parts laid out for its size (`BarShape` Wide / Tall / Small - a thin slider under the
+  value on a small field); `GrowToCard()` - BarView switched on in the designer (host not loading) sets Size to
+  `CardSize` (380 x 72) through the property.
+- `UnifiedConditionEditor`: the conditions loaded once per machine (`_loadedNamespace`), again only when cleared;
+  `LoadMachine` - `MachineConfig.Initialize()` or the machine's module mounted. `MachineConfig.Initialize` runs again
+  when the conditions were cleared. `MachineConditionMap.IsEmpty`, `Clear()`.
+- `MachineConditionMap`: `Entry`, `All()`, `Find(key)`, `Evaluate(rule, lookup, out value)`, `RuleText(rule)`.
+- `SimulationMonitorForm`: `WatchRow.ConditionKey` (kept as `cond=`), the Condition column, `CollectConditions()`
+  (🗃 menu), sorting on Condition.
+- Translations: 10 rows (`Col_Condition`, `Cond_*`, `Mnu_MonFromConditions`, `Tip_MonFromConditions`,
+  `Msg_MonConditionsNone`, `Hdr_MonConditions`). Manual: the PLC Monitor's 🗃.
+- Tests: `tools/ui_test/ConditionDropdown.cs`, `tools/ui_test/MonitorConditions.cs` (new); `NumericBarView.cs`.
+
