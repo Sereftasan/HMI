@@ -21,14 +21,15 @@ namespace Kaban.Profiles.Data
         /// older program meeting a newer file says so instead of failing on a
         /// column it does not know about.
         /// </summary>
-        public const int SchemaVersion = 1;
+        public const int SchemaVersion = 2;
 
         private static string ReadResource(string name)
         {
             var asm = Assembly.GetExecutingAssembly();
             foreach (var res in asm.GetManifestResourceNames())
             {
-                if (!res.EndsWith(name, StringComparison.OrdinalIgnoreCase)) continue;
+                // ".upgrade_2.sql", not just "upgrade_2.sql": upgrade_12.sql ends with that too
+                if (!res.EndsWith("." + name, StringComparison.OrdinalIgnoreCase)) continue;
                 using (var s = asm.GetManifestResourceStream(res))
                 using (var r = new StreamReader(s))
                     return r.ReadToEnd();
@@ -65,16 +66,34 @@ namespace Kaban.Profiles.Data
         /// </summary>
         public static void EnsureCreated(IDbConnection conn, bool withSeed = false)
         {
-            if (IsInstalled(conn)) return;
+            if (IsInstalled(conn)) { Upgrade(conn); return; }
 
             RunScript(conn, ReadResource("schema_v2.sql"));
             RunScript(conn, ReadResource("schema_machines.sql"));
 
             Db.Execute(conn, "CREATE TABLE schema_info (version INTEGER NOT NULL, applied_at TEXT NOT NULL)");
-            Db.Execute(conn, "INSERT INTO schema_info (version, applied_at) VALUES (@p0, @p1)",
-                       SchemaVersion, Db.Now());
+            Db.Execute(conn, "INSERT INTO schema_info (version, applied_at) VALUES (@p0, @p1)", 1, Db.Now());
+            Upgrade(conn);
 
             if (withSeed) RunScript(conn, ReadResource("seed_data.sql"));
+        }
+
+        /// <summary>
+        /// Brings a library made by an older program up to SchemaVersion, one step
+        /// at a time (upgrade_2.sql, ...). A library NEWER than this program is
+        /// refused - reading it could silently drop what the newer one stored.
+        /// </summary>
+        public static void Upgrade(IDbConnection conn)
+        {
+            int v = InstalledVersion(conn);
+            if (v > SchemaVersion)
+                throw new InvalidOperationException("The profile library was made by a newer program (schema " + v +
+                                                    ", this program knows " + SchemaVersion + "). Update the program.");
+            for (int next = v + 1; next <= SchemaVersion; next++)
+            {
+                RunScript(conn, ReadResource("upgrade_" + next + ".sql"));
+                Db.Execute(conn, "INSERT INTO schema_info (version, applied_at) VALUES (@p0, @p1)", next, Db.Now());
+            }
         }
 
         public static int InstalledVersion(IDbConnection conn)

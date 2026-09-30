@@ -6,10 +6,15 @@ using System.IO;
 namespace Kaban.UI.Dxf
 {
     /// <summary>
-    /// Lightweight DXF reader for profile drawings (AC1015 era): LINE, LWPOLYLINE,
-    /// ARC and CIRCLE - what profile exports like the supplied sample use. All
-    /// geometry is reduced to polylines (arcs tessellated ~10deg) so measuring,
-    /// transforming and route extraction work on one type.
+    /// A profile drawing as the Drawing pane edits it: every entity as a polyline
+    /// (arcs in steps of 10 degrees), each with its LAYER, plus the points and texts
+    /// on it (Markers). Read by the profile library's DXF reader
+    /// (Kaban.Profiles.Geometry.DxfReader): lines, arcs, circles, ellipses, both
+    /// kinds of polyline with their bulges, splines, inserted blocks.
+    ///
+    /// Paths on reference layers (REF_...), annotation layers (dimensions, texts,
+    /// hatching) and the profile's ignored layers are drawn but are not MATERIAL:
+    /// the drawing's extent - and so its origin - is the material's.
     /// </summary>
     public class DxfDocument
     {
@@ -17,160 +22,81 @@ namespace Kaban.UI.Dxf
 
         public struct PointD { public double X, Y; public PointD(double x, double y) { X = x; Y = y; } }
 
+        /// <summary>A point or text on the drawing (a reference can be written on it).</summary>
+        public sealed class Marker
+        {
+            public string Kind = "", Text = "", Layer = "0";
+            public double X, Y;
+        }
+
+        public List<Marker> Markers { get; private set; } = new List<Marker>();
+
         public static DxfDocument Load(string path) { using (var r = new StreamReader(path)) return Parse(r); }
 
         public static DxfDocument Parse(TextReader reader)
         {
+            var d = Kaban.Profiles.Geometry.DxfReader.Read(reader);
             var doc = new DxfDocument();
-            var pairs = ReadPairs(reader);
-            for (int i = 0; i < pairs.Count; i++)
+            foreach (var p in d.Paths)
             {
-                if (pairs[i].Code != 0) continue;
-                switch (pairs[i].Value)
+                if (p.Points.Count < 2) continue;
+                var pts = new List<PointD>();
+                foreach (var q in p.Points) pts.Add(new PointD(q.X, q.Y));
+                doc.Polylines.Add(pts);
+                doc.Meta.Add(new ElementMeta
                 {
-                    case "LINE": i = ParseLine(pairs, i, doc); break;
-                    case "LWPOLYLINE": i = ParseLwPolyline(pairs, i, doc); break;
-                    case "ARC": i = ParseArc(pairs, i, doc); break;
-                    case "CIRCLE": i = ParseCircle(pairs, i, doc); break;
-                }
+                    Layer = p.Layer,
+                    Material = !Kaban.Profiles.Geometry.Section.IsReferenceLayer(p.Layer) &&
+                               !Kaban.Profiles.Geometry.Section.LooksLikeAnnotation(p.Layer)
+                });
             }
+            foreach (var m in d.Markers) doc.Markers.Add(new Marker { Kind = m.Kind, Text = m.Text, Layer = m.Layer, X = m.X, Y = m.Y });
             return doc;
         }
 
-        private struct Pair { public int Code; public string Value; }
-
-        private static List<Pair> ReadPairs(TextReader r)
+        /// <summary>
+        /// The drawing of a profile SECTION as the library sees it - turned, placed
+        /// at 0,0, ignored layers marked - with X across (the section's Y) and Y up
+        /// (its Z), so what is drawn is what the references and the rays measure.
+        /// </summary>
+        public static DxfDocument FromSection(Kaban.Profiles.Geometry.Section section)
         {
-            var list = new List<Pair>();
-            string codeLine;
-            while ((codeLine = r.ReadLine()) != null)
+            var doc = new DxfDocument();
+            if (section == null) return doc;
+            foreach (var p in section.Paths)
             {
-                string valLine = r.ReadLine();
-                if (valLine == null) break;
-                int code;
-                if (int.TryParse(codeLine.Trim(), out code))
-                    list.Add(new Pair { Code = code, Value = valLine.Trim() });
+                var pts = new List<PointD>();
+                foreach (var q in p.Points) pts.Add(new PointD(q.Y, q.Z));
+                doc.Polylines.Add(pts);
+                doc.Meta.Add(new ElementMeta { Layer = p.Layer, Material = p.IsMaterial });
             }
-            return list;
+            foreach (var m in section.Markers) doc.Markers.Add(new Marker { Kind = m.Kind, Text = m.Text, Layer = m.Layer, X = m.Y, Y = m.Z });
+            return doc;
         }
 
-        private static double D(string s) => double.Parse(s, NumberStyles.Float, CultureInfo.InvariantCulture);
-
-        private static int ParseLine(List<Pair> p, int i, DxfDocument doc)
+        /// <summary>Is the element part of the profile (not a reference, a dimension or an ignored layer)?</summary>
+        public bool IsMaterial(int i)
         {
-            double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-            for (i++; i < p.Count && p[i].Code != 0; i++)
-                switch (p[i].Code)
-                {
-                    case 10: x1 = D(p[i].Value); break;
-                    case 20: y1 = D(p[i].Value); break;
-                    case 11: x2 = D(p[i].Value); break;
-                    case 21: y2 = D(p[i].Value); break;
-                }
-            doc.Polylines.Add(new List<PointD> { new PointD(x1, y1), new PointD(x2, y2) });
-            return i - 1;
+            EnsureMeta();
+            return i >= 0 && i < Meta.Count && Meta[i].Material;
         }
 
-        private static int ParseLwPolyline(List<Pair> p, int i, DxfDocument doc)
+        public string LayerOf(int i)
         {
-            var pts = new List<PointD>(); var bulges = new List<double>();
-            bool closed = false; double pendingX = 0; bool haveX = false;
-            for (i++; i < p.Count && p[i].Code != 0; i++)
-                switch (p[i].Code)
-                {
-                    case 70: closed = (int.Parse(p[i].Value) & 1) != 0; break;
-                    case 10: pendingX = D(p[i].Value); haveX = true; break;
-                    case 20: if (haveX) { pts.Add(new PointD(pendingX, D(p[i].Value))); bulges.Add(0); haveX = false; } break;
-                    case 42: if (bulges.Count > 0) bulges[bulges.Count - 1] = D(p[i].Value); break;
-                }
-
-            var outPts = new List<PointD>();
-            int n = pts.Count;
-            for (int k = 0; k < n; k++)
-            {
-                outPts.Add(pts[k]);
-                bool last = k == n - 1;
-                if (last && !closed) break;
-                double bulge = bulges[k];
-                if (Math.Abs(bulge) > 1e-9) AppendBulgeArc(outPts, pts[k], pts[(k + 1) % n], bulge);
-            }
-            if (closed && outPts.Count > 0) outPts.Add(outPts[0]);
-            doc.Polylines.Add(outPts);
-            return i - 1;
-        }
-
-        private static void AppendBulgeArc(List<PointD> outPts, PointD a, PointD b, double bulge)
-        {
-            double theta = 4 * Math.Atan(bulge);
-            double dx = b.X - a.X, dy = b.Y - a.Y;
-            double chord = Math.Sqrt(dx * dx + dy * dy);
-            if (chord < 1e-12) return;
-            double radius = Math.Abs(chord / (2 * Math.Sin(theta / 2)));
-            double mx = (a.X + b.X) / 2, my = (a.Y + b.Y) / 2;
-            double h = Math.Sqrt(Math.Max(0, radius * radius - chord * chord / 4));
-            double ux = -dy / chord, uy = dx / chord;
-            // centre is on the side the bulge sign dictates
-            double cx = mx - Math.Sign(theta) * h * ux;
-            double cy = my - Math.Sign(theta) * h * uy;
-            double a0 = Math.Atan2(a.Y - cy, a.X - cx);
-            int steps = Math.Max(4, (int)(Math.Abs(theta) / (Math.PI / 18)));
-            for (int s = 1; s < steps; s++)
-            {
-                double t = a0 + theta * s / steps;
-                outPts.Add(new PointD(cx + radius * Math.Cos(t), cy + radius * Math.Sin(t)));
-            }
-        }
-
-        private static int ParseArc(List<Pair> p, int i, DxfDocument doc)
-        {
-            double cx = 0, cy = 0, r = 0, a0 = 0, a1 = 0;
-            for (i++; i < p.Count && p[i].Code != 0; i++)
-                switch (p[i].Code)
-                {
-                    case 10: cx = D(p[i].Value); break;
-                    case 20: cy = D(p[i].Value); break;
-                    case 40: r = D(p[i].Value); break;
-                    case 50: a0 = D(p[i].Value) * Math.PI / 180; break;
-                    case 51: a1 = D(p[i].Value) * Math.PI / 180; break;
-                }
-            if (a1 < a0) a1 += 2 * Math.PI;
-            var pts = new List<PointD>();
-            int steps = Math.Max(4, (int)((a1 - a0) / (Math.PI / 18)));
-            for (int s = 0; s <= steps; s++)
-            {
-                double t = a0 + (a1 - a0) * s / steps;
-                pts.Add(new PointD(cx + r * Math.Cos(t), cy + r * Math.Sin(t)));
-            }
-            doc.Polylines.Add(pts);
-            return i - 1;
-        }
-
-        private static int ParseCircle(List<Pair> p, int i, DxfDocument doc)
-        {
-            double cx = 0, cy = 0, r = 0;
-            for (i++; i < p.Count && p[i].Code != 0; i++)
-                switch (p[i].Code)
-                {
-                    case 10: cx = D(p[i].Value); break;
-                    case 20: cy = D(p[i].Value); break;
-                    case 40: r = D(p[i].Value); break;
-                }
-            var pts = new List<PointD>();
-            for (int s = 0; s <= 36; s++)
-            {
-                double t = 2 * Math.PI * s / 36;
-                pts.Add(new PointD(cx + r * Math.Cos(t), cy + r * Math.Sin(t)));
-            }
-            doc.Polylines.Add(pts);
-            return i - 1;
+            EnsureMeta();
+            return i >= 0 && i < Meta.Count ? Meta[i].Layer : "0";
         }
 
         public void GetBounds(out double minX, out double minY, out double maxX, out double maxY)
         {
             minX = minY = double.MaxValue; maxX = maxY = double.MinValue;
-            foreach (var pl in Polylines)
-                foreach (var pt in pl)
+            EnsureMeta();
+            bool anyMaterial = Meta.Exists(m => m.Material);
+            for (int i = 0; i < Polylines.Count; i++)
+                foreach (var pt in Polylines[i])
                 {
+                    if (anyMaterial && !Meta[i].Material) continue;     // the profile's extent, not its dimensions'
+
                     if (pt.X < minX) minX = pt.X; if (pt.X > maxX) maxX = pt.X;
                     if (pt.Y < minY) minY = pt.Y; if (pt.Y > maxY) maxY = pt.Y;
                 }
@@ -183,6 +109,7 @@ namespace Kaban.UI.Dxf
             for (int i = 0; i < Polylines.Count; i++)
                 for (int j = 0; j < Polylines[i].Count; j++)
                 { var pt = Polylines[i][j]; Polylines[i][j] = new PointD(pt.Y, -pt.X); }
+            foreach (var m in Markers) { var pt = new PointD(m.X, m.Y); var q = new PointD(pt.Y, -pt.X); m.X = q.X; m.Y = q.Y; }
         }
 
         /// <summary>Rotate all geometry 90 deg CCW about the origin.</summary>
@@ -191,6 +118,7 @@ namespace Kaban.UI.Dxf
             for (int i = 0; i < Polylines.Count; i++)
                 for (int j = 0; j < Polylines[i].Count; j++)
                 { var pt = Polylines[i][j]; Polylines[i][j] = new PointD(-pt.Y, pt.X); }
+            foreach (var m in Markers) { var pt = new PointD(m.X, m.Y); var q = new PointD(-pt.Y, pt.X); m.X = q.X; m.Y = q.Y; }
         }
 
         /// <summary>Mirror all geometry over the Y axis.</summary>
@@ -199,6 +127,7 @@ namespace Kaban.UI.Dxf
             for (int i = 0; i < Polylines.Count; i++)
                 for (int j = 0; j < Polylines[i].Count; j++)
                 { var pt = Polylines[i][j]; Polylines[i][j] = new PointD(-pt.X, pt.Y); }
+            foreach (var m in Markers) { var pt = new PointD(m.X, m.Y); var q = new PointD(-pt.X, pt.Y); m.X = q.X; m.Y = q.Y; }
         }
 
         public static double Distance(PointD a, PointD b)
@@ -238,13 +167,20 @@ namespace Kaban.UI.Dxf
             public double StartOffset;
             public double EndOffset;
 
+            /// <summary>The DXF layer it was drawn on.</summary>
+            public string Layer = "0";
+
+            /// <summary>Part of the profile (false: a reference, a dimension, an ignored layer).</summary>
+            public bool Material = true;
+
             public ElementMeta Copy()
             {
                 return new ElementMeta
                 {
                     Added = Added, Deleted = Deleted, Included = Included,
                     Depth = Depth, DepthEnd = DepthEnd,
-                    StartOffset = StartOffset, EndOffset = EndOffset
+                    StartOffset = StartOffset, EndOffset = EndOffset,
+                    Layer = Layer, Material = Material
                 };
             }
         }
@@ -265,7 +201,7 @@ namespace Kaban.UI.Dxf
         public bool IsActive(int i)
         {
             EnsureMeta();
-            return i >= 0 && i < Meta.Count && !Meta[i].Deleted && Meta[i].Included;
+            return i >= 0 && i < Meta.Count && !Meta[i].Deleted && Meta[i].Included && Meta[i].Material;
         }
 
         /// <summary>Sets (or clears with null) the cutting depth of one element.</summary>
@@ -284,6 +220,7 @@ namespace Kaban.UI.Dxf
             d.Meta = new List<ElementMeta>();
             foreach (var m in Meta) d.Meta.Add(m.Copy());
             if (ExplicitBorder != null) d.ExplicitBorder = new List<PointD>(ExplicitBorder);
+            foreach (var m in Markers) d.Markers.Add(new Marker { Kind = m.Kind, Text = m.Text, Layer = m.Layer, X = m.X, Y = m.Y });
             return d;
         }
 
@@ -303,6 +240,7 @@ namespace Kaban.UI.Dxf
                     var p = Polylines[i][j];
                     Polylines[i][j] = new PointD(p.X - minX, p.Y - minY);
                 }
+            foreach (var m in Markers) { m.X -= minX; m.Y -= minY; }
         }
 
         /// <summary>Removes several elements at once (region cleanup).</summary>

@@ -176,6 +176,13 @@
     <Compile Include="Dxf\DxfViewerControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Profiles\Ask.cs" />
+    <Compile Include="Profiles\LibraryEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Profiles\TableEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\NavigationHistory.cs" />
     <Compile Include="Settings\UserSettingsControl.cs">
       <SubType>UserControl</SubType>
@@ -378,6 +385,10 @@
     <None Include="Resources\undo_24.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Kaban.Profiles\Kaban.Profiles.csproj">
+      <Project>{4e7b2c19-8a5d-4f3e-b6c1-2d9a7f0e5b34}</Project>
+      <Name>Kaban.Profiles</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Kaban.Core\Kaban.Core.csproj">
       <Project>{d8f9c31a-d5b2-48a0-8338-c417fb105b49}</Project>
       <Name>Kaban.Core</Name>

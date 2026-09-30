@@ -633,6 +633,8 @@ namespace Kaban.UI.Controls
         // ==================================================================
         // GRIDS
         // ==================================================================
+        /// <summary>The program's table look (the PLC Monitor's): white, thin rules, bold headings, full-row selection.</summary>
+        public static void StyleGrid(DataGridView grid) { Kaban.UI.Forms.SimulationMonitorForm.StyleGrid(grid); }
 
         /// <summary>
         /// Raises every column's MinimumWidth to fit its own HEADING.

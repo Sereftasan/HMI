@@ -19,9 +19,24 @@ swap plus a review of one folder.
 | File | Role |
 |---|---|
 | `Data/Db.cs` | The only file that knows which engine is in use. Connection, parameters, type conversion. |
-| `Data/Repositories.cs` | `SchemaInstaller`, `ProfileRepository`, `AccessoryRepository`, row types. |
+| `Data/NativeSqlite.cs` | An ADO.NET provider over the operating system's own SQLite (`winsqlite3.dll` on Windows 10 and later, `sqlite3.dll`, `libsqlite3.so.0`): no package to install. |
+| `Data/Repositories.cs` | `SchemaInstaller` (and its upgrades, `sql/upgrade_N.sql`), `ProfileRepository`, `AccessoryRepository`, row types. |
 | `Data/ProfileResolver.cs` | Placement resolution, corrections, confirm/review. |
+| `Data/Library.cs` | What the Profiles page asks of the library: profiles, references, placements, corrections, the machine's tools, faces, feeds and settings. |
+| `Geometry/DxfReader.cs`, `Section.cs` | The DXF read into a profile section (turned, mirrored, layers left out), and the RAYS through it: material and air from a face. |
+| `Geometry/ReferenceFinder.cs`, `Fingerprint.cs` | Reference points found on a drawing (layers, texts, outline, groove, a similar profile), and how alike two sections are. |
+| `Machining/SideProgram.cs` | The side machining program: positions along the bar, the tool chosen, depth passes, feeds per wall. |
 | `sql/*.sql` | Schema and seed, embedded at build. |
+
+**Which SQLite.** `Db.SqliteChoice` (`Auto` by default) takes System.Data.SQLite when it
+is installed, else the operating system's own library through `NativeSqlite.cs`, else
+Mono.Data.Sqlite. The library file is `ProgramData\KabanHMI\Kaban.db`.
+
+**Schema 2** (`sql/upgrade_2.sql`, applied in place to a library made by the first
+version): the face an operation is machined from (`entry_side`) and how deep it goes
+(`depth_mode`), how a profile's drawing is read (`dxf_rotation`, `dxf_mirror`,
+`ignored_layers`), the milling unit of a mounted tool, and three machine tables -
+`machine_face`, `end_mill_program`, `machine_setting`.
 
 Switching provider:
 
@@ -66,6 +81,10 @@ the provider never has to guess.
    ('CONFIRMED','REJECTED')` clause, not a convention.
 
 ## Running the tests
+
+The full check of the library - the native provider, the DXF reader, rays, references,
+placements, corrections, tool choice and programs - is `tools/core_test/ProfileLibrary.cs`;
+the Profiles page on it is `tools/ui_test/ProfilesPage.cs`. The older data-layer test:
 
 ```
 mcs -target:library -out:Kaban.Profiles.dll -r:System.Data.dll $(find Data -name '*.cs')

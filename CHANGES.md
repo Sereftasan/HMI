@@ -4111,3 +4111,41 @@ and `UnitLookAndErrors` extended.
   `Tip_MonChangedByHmi`, `Tip_MonChangedByPlc`, `Tip_MonLastWrite`, `Tip_MonWriteLog`, `Log_KindDeviceWrite`.
   Manual: the PLC write log, the kind, the Last change column, where the file is kept.
 - Tests: `tools/core_test/WriteLog.cs`, `tools/ui_test/WriteLogUi.cs` (new); `DriverFreeze.cs` updated.
+
+## 2026-09-30 - Industry 4 dashboard: its configuration and a written spec (docs only)
+
+- `docs/industry4/` *(new)*: `config.json`, `databases.json`, `sample.json` (34 states), `Translation.csv`,
+  `Translation_JSON.csv` as received, and `DASHBOARD_SPEC.md` - the dashboard program's data model, states,
+  periods, shifts, sections, reports and settings, and the plan for a Dashboard page in the HMI.
+
+## 2026-09-30 - The Profiles page on the profile library
+
+- `Kaban.Profiles` *(in the solution, referenced by Kaban.UI and FA2010)*:
+  - `Data/NativeSqlite.cs` *(new)*: ADO.NET over the system's SQLite (`winsqlite3.dll` StdCall, `sqlite3.dll`,
+    `libsqlite3.so.0`); `Db.SqliteChoice` / `ProviderName` / `UseNative`; foreign keys on per connection.
+  - `sql/upgrade_2.sql` *(new)*, `SchemaVersion = 2`, `SchemaInstaller.Upgrade`: `accessory_operation.entry_side`,
+    `depth_mode`; `profile.dxf_rotation`, `dxf_mirror`, `ignored_layers`, `note`; `mounted_tool.unit_no`, `note`;
+    tables `machine_face`, `end_mill_program`, `machine_setting`. Seed: DECEUNINCK Elegant / TecnoCorr2 with the
+    page's three profiles; drainage from the outside face.
+  - `Data/Library.cs` *(new)*: profiles (list, save, based on, out of use), references (own and inherited, set,
+    confirm, remove), drawing (`DxfFile` with either path separator, `SectionOf`, fingerprints, `Closest`,
+    `TemplateFor`), placements (`Resolve` drops stale ones, confirm, reject, reopen, history), corrections at
+    SERIES / GROUP / PROFILE (adding or removing one reopens the confirmed placements it moves and resolves every
+    profile of its scope), group accessories, the machine layer (`EnsureMachine`, tools, faces, feeds, settings,
+    `ProgramSettings`), end milling program per profile and machine.
+  - `Geometry/DxfReader.cs`, `Section.cs` (rays: material and air from a face), `ReferenceFinder.cs`,
+    `Fingerprint.cs`; `Machining/FlatJson.cs`, `SideProgram.cs` (`Positions`, `Choose`, `Depths` *(new: the cut's
+    surface, bottom and walls, shared by the program and the page)*, `Generate`).
+- `KabanHMI/Profiles/` *(new)*: `LibraryEditorForm` (every library table, the macros' shape by type, program
+  settings, the review queue), `TableEditor` (a table's rows edited in place and saved in one transaction; lookups,
+  choices, ticks; editing starts with the user), `Ask` (text, yes/no, message - hookable).
+  `UiStyle.StyleGrid` *(new, public)*.
+- `KabanHMI/Dxf/DxfDocument.cs`: parsing through `DxfReader`; `FromSection`, markers, material / layer per
+  element (bounds and cuts on the profile only). `DxfViewerControl`: `PaintOverlay`, `PickMode` / `PointPicked`,
+  `AxisNames`, `ShowMarkers`, `ScreenOf` / `DrawingOf`, non-material elements dotted grey.
+- `Kaban.Machines.FA2010/Screens/ProfilesScreen*.cs`: the page rewritten as five panes (table, drawing, details
+  with reference points, accessories with trial and tune, programs); partial files `.Details`, `.Drawing`,
+  `.Accessories`, `.Program`. Arrangements carry a version (`#v=4`); older ones fall back to the default tiling.
+- Translations: 293 `Prf_` / `Ref_` rows (FA2010), 161 `Lib_` / `LCol_` / `Tbl_` / `Par_` / `Set_` / `St_`
+  rows (common), six languages. Manual: the FA2010 chapter's Profiles section. `Kaban.Profiles/README.md`.
+- Tests: `tools/core_test/ProfileLibrary.cs`, `tools/ui_test/ProfilesPage.cs` (new).

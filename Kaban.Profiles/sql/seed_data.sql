@@ -270,3 +270,34 @@ INSERT INTO group_accessory_assignment (profile_group_id, accessory_id, is_enabl
 -- of a machine, a tool and a material - not of a Reynaers frame. An earlier
 -- draft of this file seeded them and the load failed with "no such table:
 -- milling_class", which is the boundary working exactly as intended.
+
+-- ---------------------------------------------------------------------
+-- PVC PROFILES THE MACHINE PROGRAM SHIPPED WITH
+--
+-- The three sample rows of the old Profiles page (DECEUNINCK Elegant frame
+-- and sash, TecnoCorr2 door sash) and its sample drawing, so the page opens
+-- with the profiles it always had. Same rule as above: no datum, nothing
+-- confirmed, nothing cuttable.
+-- ---------------------------------------------------------------------
+INSERT INTO profile_vendor (id, code, name) VALUES (5, 'DEC', 'DECEUNINCK');
+INSERT INTO profile_series (id, vendor_id, code, name, material, system_depth_mm) VALUES
+ (6, 5, 'ELEGANT', 'Elegant',    'PVC', 72),
+ (7, 5, 'TC2',     'TecnoCorr2', 'PVC', 82);
+INSERT INTO profile_variant (id, series_id, code, name) VALUES
+ ( 9, 6, 'STD', 'Standard'),
+ (10, 7, 'STD', 'Standard');
+INSERT INTO profile_group
+ (id, variant_id, name, profile_type, hardware_interface_id, default_width_mm, default_height_mm) VALUES
+ (19,  9, 'Elegant - Frame (KASA)',  'FRAME',     2, 72,  76.5),
+ (20,  9, 'Elegant - Sash (KANAT)',  'SASH',      2, 70,  78),
+ (21, 10, 'TecnoCorr2 - Door sash',  'DOOR_LEAF', 2, 82, 115);
+INSERT INTO profile (id, group_id, machining_family_id, code, description, width_mm, height_mm, dxf_path, dxf_status, is_active, created_at) VALUES
+ (21, 19, 3, '0001000007', 'Elegant frame (KASA)',          72,  76.5, NULL,                        'NONE', 1, '2026-01-01T00:00:00Z'),
+ (22, 20, 4, '0001000104', 'Elegant sash (KANAT)',          70,  78,   NULL,                        'NONE', 1, '2026-01-01T00:00:00Z'),
+ (23, 21, 4, '0001020307', 'TecnoCorr2 door sash (Hoja Puerta)', 82, 115, 'Profiles\82_Disa_Kapi.dxf', 'NONE', 1, '2026-01-01T00:00:00Z');
+INSERT INTO group_accessory_assignment (profile_group_id, accessory_id, is_enabled) VALUES
+ (19, 13, 1), (20, 5, 1), (21, 5, 1);
+
+-- Drainage is slotted through the OUTSIDE face (schema 2's entry side): the
+-- point is on that face, at a height. Example height, like every number here.
+UPDATE accessory_operation SET entry_side = 'OUTSIDE', offset_y_mm = 0, offset_z_mm = 5 WHERE id IN (22, 23);

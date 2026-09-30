@@ -547,3 +547,164 @@ Tip_MonChangedByPlc;The HMI did not write this value just before: the PLC progra
 Tip_MonLastWrite;The HMI last wrote it at {0} ({1}).;HMI en son {0} anında yazdı ({1}).;Последняя запись HMI: {0} ({1}).;Zuletzt von der HMI geschrieben um {0} ({1}).;Ultima scrittura dell'HMI alle {0} ({1}).;La HMI lo escribió por última vez a las {0} ({1}).
 Tip_MonWriteLog;Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.;HMI'nin her yazması PLC yazma kaydındadır: HMI Ayarları > Kayıt Ayarları, tür PLC cihaz yazmaları.;Каждая запись HMI есть в журнале записей ПЛК: Настройки HMI > Журналы, тип «Запись устройств ПЛК».;Jeder HMI-Schreibvorgang steht im SPS-Schreibprotokoll: HMI-Einstellungen > Protokolle, Art SPS-Geräteschreibvorgänge.;Ogni scrittura dell'HMI è nel registro scritture PLC: Impostazioni HMI > Registri, tipo Scritture dispositivi PLC.;Cada escritura de la HMI está en el registro de escrituras del PLC: Ajustes HMI > Registros, tipo Escrituras de dispositivos PLC.
 Log_KindDeviceWrite;PLC device writes;PLC cihaz yazmaları;Запись устройств ПЛК;SPS-Geräteschreibvorgänge;Scritture dispositivi PLC;Escrituras de dispositivos PLC
+LCol_AccType;Accessory type;Aksesuar tipi;Тип фурнитуры;Beschlagtyp;Tipo di accessorio;Tipo de accesorio
+LCol_Accessory;Accessory;Aksesuar;Фурнитура;Beschlag;Accessorio;Accesorio
+LCol_Active;In use;Kullanımda;Используется;In Gebrauch;In uso;En uso
+LCol_Angle;Angle (°);Açı (°);Угол (°);Winkel (°);Angolo (°);Ángulo (°)
+LCol_BasedOn;Based on;Temel alınan;На основе;Basiert auf;Basato su;Basado en
+LCol_Code;Code;Kod;Код;Code;Codice;Código
+LCol_Confidence;Confidence;Güven;Уверенность;Sicherheit;Affidabilità;Confianza
+LCol_DefHeight;Height (mm);Yükseklik (mm);Высота (мм);Höhe (mm);Altezza (mm);Altura (mm)
+LCol_DefWidth;Width (mm);Genişlik (mm);Ширина (мм);Breite (mm);Larghezza (mm);Anchura (mm)
+LCol_Depth;Depth;Derinlik;Глубина;Tiefe;Profondità;Profundidad
+LCol_Description;Description;Açıklama;Описание;Beschreibung;Descrizione;Descripción
+LCol_Deviation;Off the reference profile;Referans profilden fark;Отклонение от эталонного профиля;Abweichung vom Referenzprofil;Scostamento dal profilo di riferimento;Desviación del perfil de referencia
+LCol_Diameter;Diameter (mm);Çap (mm);Диаметр (мм);Durchmesser (mm);Diametro (mm);Diámetro (mm)
+LCol_Enabled;Enabled;Etkin;Включено;Aktiv;Abilitato;Activado
+LCol_Entry;Entry (mm/min);Giriş (mm/dk);Врезание (мм/мин);Eintauchen (mm/min);Ingresso (mm/min);Entrada (mm/min)
+LCol_Face;Face;Yüzey;Сторона;Seite;Lato;Cara
+LCol_Feed;Feed (mm/min);İlerleme (mm/dk);Подача (мм/мин);Vorschub (mm/min);Avanzamento (mm/min);Avance (mm/min)
+LCol_Flutes;Flutes;Ağız sayısı;Число зубьев;Schneiden;Taglienti;Filos
+LCol_Group;Group;Grup;Группа;Gruppe;Gruppo;Grupo
+LCol_HwSeries;Hardware series;Aksesuar serisi;Серия фурнитуры;Beschlagserie;Serie accessori;Serie de herrajes
+LCol_Interface;Hardware interface;Aksesuar arayüzü;Интерфейс фурнитуры;Beschlagschnittstelle;Interfaccia accessori;Interfaz de herrajes
+LCol_Layer;Layer;Katman;Слой;Layer;Layer;Capa
+LCol_Macro;Macro;Makro;Макрос;Makro;Macro;Macro
+LCol_Material;Material;Malzeme;Материал;Material;Materiale;Material
+LCol_MaxRpm;Max rpm;Maks. devir;Макс. об/мин;Max. Drehzahl;Giri max;Rpm máx.
+LCol_MillingClass;Material class;Malzeme sınıfı;Класс материала;Materialklasse;Classe di materiale;Clase de material
+LCol_Mirror;Mirror;Ayna;Зеркально;Gespiegelt;Speculare;Espejo
+LCol_Name;Name;Ad;Название;Name;Nome;Nombre
+LCol_Note;Note;Not;Примечание;Notiz;Nota;Nota
+LCol_OffsetY;Offset Y;Kaydırma Y;Смещение Y;Versatz Y;Offset Y;Desplazamiento Y
+LCol_OffsetZ;Offset Z;Kaydırma Z;Смещение Z;Versatz Z;Offset Z;Desplazamiento Z
+LCol_Params;Shape;Şekil;Форма;Form;Forma;Forma
+LCol_Plunge;Drill plunge;Delme dalışı;Врезание сверла;Bohrvorschub;Affondo foratura;Penetración de taladro
+LCol_Position;Place;Yer;Место;Platz;Posizione;Posición
+LCol_PositionMode;Measured;Ölçüm şekli;Способ измерения;Bemaßung;Misurato;Medido
+LCol_Profile;Profile;Profil;Профиль;Profil;Profilo;Perfil
+LCol_ProfileType;Profile type;Profil tipi;Тип профиля;Profiltyp;Tipo di profilo;Tipo de perfil
+LCol_Ratio;Ratio;Oran;Коэффициент;Verhältnis;Rapporto;Proporción
+LCol_RefProfile;Reference profile;Referans profil;Эталонный профиль;Referenzprofil;Profilo di riferimento;Perfil de referencia
+LCol_Reference;Reference;Referans;Опорная точка;Bezug;Riferimento;Referencia
+LCol_Rotation;Turn (°);Dönüş (°);Поворот (°);Drehung (°);Rotazione (°);Giro (°)
+LCol_Rpm;Spindle rpm;İş mili devri;Об/мин шпинделя;Spindeldrehzahl;Giri mandrino;Rpm del husillo
+LCol_Series;Series;Seri;Серия;Serie;Serie;Serie
+LCol_Source;Found by;Bulan;Найдено по;Gefunden durch;Trovato da;Encontrado por
+LCol_Status;Status;Durum;Состояние;Status;Stato;Estado
+LCol_SystemDepth;System depth (mm);Sistem derinliği (mm);Монтажная глубина (мм);Bautiefe (mm);Profondità del sistema (mm);Profundidad del sistema (mm)
+LCol_ThinFactor;Thin wall x;İnce duvar x;Тонкая стенка x;Dünne Wand x;Parete sottile x;Pared fina x
+LCol_ThinMm;Thin below (mm);İnce sayılan (mm);Тонкая ниже (мм);Dünn unter (mm);Sottile sotto (mm);Fina por debajo de (mm)
+LCol_Through;Through;Boydan boya;Насквозь;Durch;Passante;Pasante
+LCol_ToolCode;Tool;Takım;Инструмент;Werkzeug;Utensile;Herramienta
+LCol_ToolType;Kind;Tür;Вид;Art;Tipo;Tipo
+LCol_Type;Type;Tip;Тип;Typ;Tipo;Tipo
+LCol_Unit;Unit;Ünite;Узел;Einheit;Unità;Unidad
+LCol_Updated;Changed;Değişti;Изменено;Geändert;Modificato;Modificado
+LCol_UsableLength;Usable length (mm);Kullanılabilir boy (mm);Рабочая длина (мм);Nutzlänge (mm);Lunghezza utile (mm);Longitud útil (mm)
+LCol_Variant;Series / variant;Seri / varyant;Серия / вариант;Serie / Variante;Serie / variante;Serie / variante
+LCol_Vendor;Vendor;Üretici;Производитель;Hersteller;Produttore;Fabricante
+LCol_XBase;X (mm);X (mm);X (мм);X (mm);X (mm);X (mm)
+LCol_XCount;Count;Adet;Количество;Anzahl;Numero;Cantidad
+LCol_XPitch;Pitch (mm);Aralık (mm);Шаг (мм);Abstand (mm);Passo (mm);Paso (mm)
+LCol_XStrategy;Along the bar;Profil boyunca;Вдоль профиля;Entlang des Stabs;Lungo la barra;A lo largo de la barra
+Lib_AccGroups;Accessory groups;Aksesuar grupları;Группы фурнитуры;Beschlaggruppen;Gruppi di accessori;Grupos de accesorios
+Lib_AccSeries;Hardware series;Aksesuar serileri;Серии фурнитуры;Beschlagserien;Serie di accessori;Series de herrajes
+Lib_AccVendors;Hardware vendors;Aksesuar üreticileri;Производители фурнитуры;Beschlaghersteller;Produttori di accessori;Fabricantes de herrajes
+Lib_Accessories;Accessories;Aksesuarlar;Фурнитура;Beschläge;Accessori;Accesorios
+Lib_AccessoriesOps;Accessories and operations;Aksesuarlar ve işlemleri;Фурнитура и операции;Beschläge und Bearbeitungen;Accessori e lavorazioni;Accesorios y operaciones
+Lib_ApplyShape;Use these;Bunları kullan;Применить;Übernehmen;Usa questi;Usar estos
+Lib_Classes;Material classes;Malzeme sınıfları;Классы материалов;Materialklassen;Classi di materiale;Clases de material
+Lib_DepthMacro;the macro's depth;makronun derinliği;глубина макроса;Tiefe des Makros;profondità della macro;profundidad de la macro
+Lib_DepthWall;through the first wall;ilk duvarı delerek;через первую стенку;durch die erste Wand;attraverso la prima parete;a través de la primera pared
+Lib_DepthWhole;through the whole profile;tüm profili delerek;через весь профиль;durch das ganze Profil;attraverso tutto il profilo;a través de todo el perfil
+Lib_Drill;drill;matkap;сверло;Bohrer;punta;broca
+Lib_EndMill;end mill;parmak freze;концевая фреза;Schaftfräser;fresa a candela;fresa de mango
+Lib_Faces;Machine faces;Makine yüzeyleri;Стороны обработки;Maschinenseiten;Lati della macchina;Caras de la máquina
+Lib_Families;Machining families;İşleme aileleri;Семейства обработки;Bearbeitungsfamilien;Famiglie di lavorazione;Familias de mecanizado
+Lib_Feeds;Feeds;İlerlemeler;Подачи;Vorschübe;Avanzamenti;Avances
+Lib_Groups;Groups;Gruplar;Группы;Gruppen;Gruppi;Grupos
+Lib_HintAccGroups;Hinge, handle, drainage ...;Menteşe, kol, drenaj ...;Петля, ручка, дренаж ...;Band, Griff, Entwässerung ...;Cerniera, maniglia, drenaggio ...;Bisagra, manilla, drenaje ...
+Lib_HintAccSeries;A hardware vendor's range, and the interface it fits.;Bir aksesuar üreticisinin ürün serisi ve uyduğu arayüz.;Линейка производителя фурнитуры и интерфейс, к которому она подходит.;Das Programm eines Beschlagherstellers und die Schnittstelle, zu der es passt.;La gamma di un produttore di accessori e l'interfaccia a cui si adatta.;La gama de un fabricante de herrajes y la interfaz a la que se ajusta.
+Lib_HintAccVendors;Who makes the hardware.;Aksesuarı kim üretiyor.;Кто производит фурнитуру.;Wer die Beschläge herstellt.;Chi produce gli accessori.;Quién fabrica los herrajes.
+Lib_HintAccessories;An accessory is one or more operations: a macro, the reference point it is measured from, the offset, the face it is cut from and where along the bar.;Bir aksesuar bir veya birkaç işlemdir: bir makro, ölçüldüğü referans noktası, kaydırma, işlendiği yüzey ve profil boyunca yeri.;Фурнитура - это одна или несколько операций: макрос, опорная точка, от которой он измеряется, смещение, сторона обработки и место вдоль профиля.;Ein Beschlag ist eine oder mehrere Bearbeitungen: ein Makro, der Bezugspunkt, von dem aus es bemaßt wird, der Versatz, die Seite, von der aus gefräst wird, und die Lage entlang des Stabs.;Un accessorio è una o più lavorazioni: una macro, il punto di riferimento da cui è misurata, l'offset, il lato da cui è lavorata e la posizione lungo la barra.;Un accesorio es una o varias operaciones: una macro, el punto de referencia desde el que se mide, el desplazamiento, la cara desde la que se mecaniza y su lugar a lo largo de la barra.
+Lib_HintClasses;PVC outer wall, PVC chamber, steel reinforcement ... - what a wall is made of, for its feeds.;PVC dış duvar, PVC hazne, çelik takviye ... - ilerlemeleri için duvarın neyden yapıldığı.;Наружная стенка ПВХ, камера ПВХ, стальное армирование ... - из чего стенка, для её подач.;PVC-Außenwand, PVC-Kammer, Stahlarmierung ... - woraus eine Wand ist, für ihre Vorschübe.;Parete esterna PVC, camera PVC, rinforzo in acciaio ... - di cosa è fatta una parete, per i suoi avanzamenti.;Pared exterior de PVC, cámara de PVC, refuerzo de acero ... - de qué es una pared, para sus avances.
+Lib_HintFaces;Which unit, at which angle, machines which face of the profile. Check these on the machine before the first program runs.;Hangi ünite, hangi açıda, profilin hangi yüzeyini işler. İlk program çalışmadan önce bunları makinede kontrol edin.;Какой узел под каким углом обрабатывает какую сторону профиля. Проверьте это на станке до запуска первой программы.;Welche Einheit in welchem Winkel welche Seite des Profils bearbeitet. Vor dem ersten Programm an der Maschine prüfen.;Quale unità, a quale angolo, lavora quale lato del profilo. Controllarlo sulla macchina prima del primo programma.;Qué unidad, en qué ángulo, mecaniza qué cara del perfil. Compruébelo en la máquina antes del primer programa.
+Lib_HintFamilies;How profiles are machined, across vendors and groups.;Profillerin nasıl işlendiği, üreticiler ve gruplar arası.;Как обрабатываются профили, независимо от производителя и группы.;Wie Profile bearbeitet werden, über Hersteller und Gruppen hinweg.;Come vengono lavorati i profili, tra produttori e gruppi.;Cómo se mecanizan los perfiles, entre fabricantes y grupos.
+Lib_HintFeeds;Per material class and tool kind: the entry speed through a wall, the cutting feed, and how much slower a thin wall is entered.;Malzeme sınıfı ve takım türüne göre: duvara giriş hızı, kesme ilerlemesi ve ince bir duvara ne kadar yavaş girildiği.;По классу материала и виду инструмента: скорость врезания в стенку, подача резания и насколько медленнее врезаться в тонкую стенку.;Je Materialklasse und Werkzeugart: die Eintauchgeschwindigkeit durch eine Wand, der Schnittvorschub und wie viel langsamer eine dünne Wand angefahren wird.;Per classe di materiale e tipo di utensile: la velocità di ingresso in una parete, l'avanzamento di taglio e quanto più lentamente si entra in una parete sottile.;Por clase de material y tipo de herramienta: la velocidad de entrada en una pared, el avance de corte y cuánto más despacio se entra en una pared fina.
+Lib_HintGroups;What a profile IS (frame, sash, door leaf): accessories are given to a group, and every profile of it takes them.;Bir profilin NE olduğu (kasa, kanat, kapı kanadı): aksesuarlar gruba verilir ve grubun her profili onları alır.;Что такое профиль (рама, створка, дверная створка): фурнитура назначается группе, и её получает каждый профиль группы.;Was ein Profil IST (Rahmen, Flügel, Türflügel): Beschläge werden einer Gruppe gegeben, und jedes ihrer Profile erhält sie.;Che cosa È un profilo (telaio, anta, anta porta): gli accessori si assegnano a un gruppo e ogni suo profilo li riceve.;Qué ES un perfil (marco, hoja, hoja de puerta): los accesorios se asignan a un grupo y cada perfil del grupo los recibe.
+Lib_HintInterfaces;The groove a profile offers the hardware (Euro groove 16, 13 ...).;Profilin aksesuara sunduğu kanal (Euro kanal 16, 13 ...).;Паз, который профиль предоставляет фурнитуре (европаз 16, 13 ...).;Die Nut, die ein Profil dem Beschlag bietet (Euronut 16, 13 ...).;La scanalatura che un profilo offre agli accessori (canalino europeo 16, 13 ...).;La ranura que un perfil ofrece al herraje (canal europeo 16, 13 ...).
+Lib_HintLayers;A DXF layer that is not the series' ordinary wall (a steel reinforcement drawn on layer STEEL): its material class. Other walls are the outer wall (the first) or a chamber wall.;Serinin normal duvarı olmayan bir DXF katmanı (STEEL katmanında çizilmiş çelik takviye): malzeme sınıfı. Diğer duvarlar dış duvar (ilk) veya hazne duvarıdır.;Слой DXF, который не обычная стенка серии (стальное армирование на слое STEEL): его класс материала. Остальные стенки - наружная (первая) или стенка камеры.;Ein DXF-Layer, der nicht die normale Wand der Serie ist (eine Stahlarmierung auf dem Layer STEEL): seine Materialklasse. Andere Wände sind die Außenwand (die erste) oder eine Kammerwand.;Un layer DXF che non è la parete normale della serie (un rinforzo in acciaio sul layer STEEL): la sua classe di materiale. Le altre pareti sono la parete esterna (la prima) o una parete di camera.;Una capa DXF que no es la pared normal de la serie (un refuerzo de acero en la capa STEEL): su clase de material. Las demás paredes son la exterior (la primera) o una pared de cámara.
+Lib_HintMacros;The SHAPE of a cut (a 5 x 30 slot, 6 deep) - no tool, no feed: the machine chooses its own tool and feeds from its tools and the profile's walls.;Bir kesimin ŞEKLİ (5 x 30 kanal, 6 derin) - takım yok, ilerleme yok: makine takımını ve ilerlemelerini kendi takımlarından ve profilin duvarlarından seçer.;ФОРМА реза (паз 5 x 30, глубина 6) - без инструмента и подачи: станок сам выбирает инструмент и подачи по своим инструментам и стенкам профиля.;Die FORM eines Schnitts (Schlitz 5 x 30, 6 tief) - kein Werkzeug, kein Vorschub: die Maschine wählt Werkzeug und Vorschübe selbst aus ihren Werkzeugen und den Wänden des Profils.;La FORMA di un taglio (asola 5 x 30, profonda 6) - nessun utensile, nessun avanzamento: la macchina sceglie utensile e avanzamenti dai propri utensili e dalle pareti del profilo.;La FORMA de un corte (ranura 5 x 30, 6 de profundidad) - sin herramienta ni avance: la máquina elige su herramienta y avances a partir de sus herramientas y las paredes del perfil.
+Lib_HintReview;Reference points and placements nobody has confirmed, the least trusted first. Double-click one to open its profile.;Kimsenin onaylamadığı referans noktaları ve yerleşimler, en az güvenilenler önce. Profilini açmak için birine çift tıklayın.;Опорные точки и размещения, которые никто не подтвердил, сначала наименее надёжные. Двойной щелчок открывает профиль.;Bezugspunkte und Platzierungen, die niemand bestätigt hat, die unsichersten zuerst. Doppelklick öffnet das Profil.;Punti di riferimento e posizionamenti non ancora confermati, prima i meno affidabili. Doppio clic per aprire il profilo.;Puntos de referencia y colocaciones que nadie ha confirmado, primero los menos fiables. Doble clic para abrir su perfil.
+Lib_HintSeries;A vendor's system (Elegant, TecnoCorr2): its material decides the feeds.;Bir üreticinin sistemi (Elegant, TecnoCorr2): malzemesi ilerlemeleri belirler.;Система производителя (Elegant, TecnoCorr2): её материал определяет подачи.;Das System eines Herstellers (Elegant, TecnoCorr2): sein Material bestimmt die Vorschübe.;Il sistema di un produttore (Elegant, TecnoCorr2): il suo materiale decide gli avanzamenti.;El sistema de un fabricante (Elegant, TecnoCorr2): su material decide los avances.
+Lib_HintSettings;How the side machining program moves: safe height, the feed through air, peck depth, and the program's form.;Yan işleme programının hareketi: güvenli yükseklik, boşluktaki ilerleme, kademe derinliği ve programın biçimi.;Как движется программа боковой обработки: безопасная высота, подача по воздуху, глубина прохода и форма программы.;Wie das Seitenbearbeitungsprogramm fährt: Sicherheitshöhe, Vorschub durch Luft, Zustelltiefe und die Form des Programms.;Come si muove il programma di lavorazione laterale: altezza di sicurezza, avanzamento in aria, profondità di passata e forma del programma.;Cómo se mueve el programa de mecanizado lateral: altura de seguridad, avance en vacío, profundidad de pasada y forma del programa.
+Lib_HintTools;The tools mounted on the milling units, with their measured size: the program chooses among these. A tool with no diameter is never chosen.;Freze ünitelerine takılı takımlar, ölçülmüş boyutlarıyla: program bunlar arasından seçer. Çapı girilmemiş bir takım asla seçilmez.;Инструменты на фрезерных узлах с измеренным размером: программа выбирает из них. Инструмент без диаметра не выбирается никогда.;Die Werkzeuge auf den Fräseinheiten, mit ihrer gemessenen Größe: das Programm wählt unter ihnen. Ein Werkzeug ohne Durchmesser wird nie gewählt.;Gli utensili montati sulle unità di fresatura, con la misura rilevata: il programma sceglie tra questi. Un utensile senza diametro non viene mai scelto.;Las herramientas montadas en las unidades de fresado, con su tamaño medido: el programa elige entre ellas. Una herramienta sin diámetro nunca se elige.
+Lib_HintTypeDefaults;Where an accessory type goes on a profile type when nothing more is known.;Başka bilgi yokken bir aksesuar tipinin bir profil tipinde nereye geldiği.;Куда ставится тип фурнитуры на тип профиля, когда больше ничего не известно.;Wohin ein Beschlagtyp auf einem Profiltyp kommt, wenn nichts weiter bekannt ist.;Dove va un tipo di accessorio su un tipo di profilo quando non si sa altro.;Dónde va un tipo de accesorio en un tipo de perfil cuando no se sabe nada más.
+Lib_HintVariants;A series' variants (standard, hidden vent). A series without any has one, 'Standard'.;Bir serinin varyantları (standart, gizli havalandırma). Varyantı olmayan bir serinin tek bir varyantı vardır, 'Standart'.;Варианты серии (стандарт, скрытое проветривание). У серии без вариантов есть один - 'Стандарт'.;Die Varianten einer Serie (Standard, verdeckte Lüftung). Eine Serie ohne Varianten hat eine, 'Standard'.;Le varianti di una serie (standard, ventilazione nascosta). Una serie senza varianti ne ha una, 'Standard'.;Las variantes de una serie (estándar, ventilación oculta). Una serie sin variantes tiene una, 'Estándar'.
+Lib_HintVendors;Who makes the profiles.;Profilleri kim üretiyor.;Кто производит профили.;Wer die Profile herstellt.;Chi produce i profili.;Quién fabrica los perfiles.
+Lib_Interfaces;Hardware interfaces;Aksesuar arayüzleri;Интерфейсы фурнитуры;Beschlagschnittstellen;Interfacce accessori;Interfaces de herrajes
+Lib_Layers;Drawing layers;Çizim katmanları;Слои чертежа;Zeichnungslayer;Layer del disegno;Capas del dibujo
+Lib_Machine;This machine;Bu makine;Этот станок;Diese Maschine;Questa macchina;Esta máquina
+Lib_Macros;Macros;Makrolar;Макросы;Makros;Macro;Macros
+Lib_Operations;Operations of the selected accessory;Seçili aksesuarın işlemleri;Операции выбранной фурнитуры;Bearbeitungen des gewählten Beschlags;Lavorazioni dell'accessorio selezionato;Operaciones del accesorio seleccionado
+Lib_PlacementsToCheck;Placements to confirm;Onaylanacak yerleşimler;Размещения для подтверждения;Zu bestätigende Platzierungen;Posizionamenti da confermare;Colocaciones por confirmar
+Lib_Profiles;Profiles;Profiller;Профили;Profile;Profili;Perfiles
+Lib_ReadOnly;Read only: changing the library needs the Maintenance level.;Salt okunur: kütüphaneyi değiştirmek Bakım seviyesi gerektirir.;Только чтение: для изменения библиотеки нужен уровень «Обслуживание».;Nur lesen: Änderungen an der Bibliothek erfordern die Stufe Wartung.;Sola lettura: modificare la libreria richiede il livello Manutenzione.;Solo lectura: cambiar la biblioteca requiere el nivel Mantenimiento.
+Lib_RefsToCheck;Reference points to check;Kontrol edilecek referans noktaları;Опорные точки для проверки;Zu prüfende Bezugspunkte;Punti di riferimento da controllare;Puntos de referencia por comprobar
+Lib_Review;Not confirmed yet;Henüz onaylanmamış;Ещё не подтверждено;Noch nicht bestätigt;Non ancora confermato;Aún sin confirmar
+Lib_ReviewHead;Review;İnceleme;Проверка;Prüfung;Revisione;Revisión
+Lib_SaveOps;Save the changed operations first?;Önce değişen işlemler kaydedilsin mi?;Сначала сохранить изменённые операции?;Zuerst die geänderten Bearbeitungen speichern?;Salvare prima le lavorazioni modificate?;¿Guardar primero las operaciones modificadas?
+Lib_Series;Series;Seriler;Серии;Serien;Serie;Series
+Lib_Settings;Program settings;Program ayarları;Настройки программы;Programmeinstellungen;Impostazioni del programma;Ajustes del programa
+Lib_Shape;Shape of;Şekli:;Форма;Form von;Forma di;Forma de
+Lib_SideBottom;bottom (up);alt (yukarı);снизу (вверх);unten (nach oben);sotto (verso l'alto);abajo (hacia arriba)
+Lib_SideInside;inside face (out);iç yüzey (dışarı);внутренняя сторона (наружу);Innenseite (nach außen);lato interno (verso l'esterno);cara interior (hacia fuera)
+Lib_SideOutside;outside face (in);dış yüzey (içeri);наружная сторона (внутрь);Außenseite (nach innen);lato esterno (verso l'interno);cara exterior (hacia dentro)
+Lib_SideTop;top (down);üst (aşağı);сверху (вниз);oben (nach unten);sopra (verso il basso);arriba (hacia abajo)
+Lib_SrcGeometry;the outline;dış hat;контур;die Kontur;il contorno;el contorno
+Lib_SrcLayer;a layer of the drawing;çizimin bir katmanı;слой чертежа;ein Layer der Zeichnung;un layer del disegno;una capa del dibujo
+Lib_SrcManual;set by hand;elle girildi;задано вручную;von Hand gesetzt;impostato a mano;fijado a mano
+Lib_SrcMarker;a text on the drawing;çizimdeki bir yazı;надпись на чертеже;ein Text auf der Zeichnung;un testo sul disegno;un texto en el dibujo
+Lib_SrcSimilar;like a similar profile;benzer bir profildeki gibi;как у похожего профиля;wie bei einem ähnlichen Profil;come su un profilo simile;como en un perfil similar
+Lib_TipEntrySide;The face the tool comes in by. The operation's point is where it meets the profile.;Takımın girdiği yüzey. İşlemin noktası takımın profile değdiği yerdir.;Сторона, с которой входит инструмент. Точка операции - место, где он встречает профиль.;Die Seite, von der das Werkzeug kommt. Der Punkt der Bearbeitung ist, wo es das Profil trifft.;Il lato da cui entra l'utensile. Il punto della lavorazione è dove incontra il profilo.;La cara por la que entra la herramienta. El punto de la operación es donde toca el perfil.
+Lib_TipInterface;The groove the hardware fits. Accessories of the same interface are offered first.;Aksesuarın oturduğu kanal. Aynı arayüzün aksesuarları önce sunulur.;Паз, в который входит фурнитура. Фурнитура того же интерфейса предлагается первой.;Die Nut, in die der Beschlag passt. Beschläge derselben Schnittstelle werden zuerst angeboten.;La scanalatura in cui si inserisce l'accessorio. Gli accessori della stessa interfaccia sono proposti per primi.;La ranura donde encaja el herraje. Los accesorios de la misma interfaz se ofrecen primero.
+Lib_TipRefProfile;The measured, confirmed member: a new profile of the group takes its reference points as proposals.;Ölçülmüş, onaylanmış üye: grubun yeni bir profili referans noktalarını öneri olarak alır.;Измеренный, подтверждённый профиль группы: новый профиль группы получает его опорные точки как предложения.;Das vermessene, bestätigte Mitglied: ein neues Profil der Gruppe erhält seine Bezugspunkte als Vorschläge.;Il membro misurato e confermato: un nuovo profilo del gruppo ne prende i punti di riferimento come proposte.;El miembro medido y confirmado: un perfil nuevo del grupo toma sus puntos de referencia como propuestas.
+Lib_Title;Profile library;Profil kütüphanesi;Библиотека профилей;Profilbibliothek;Libreria profili;Biblioteca de perfiles
+Lib_Tools;Machine tools;Makine takımları;Инструменты станка;Maschinenwerkzeuge;Utensili della macchina;Herramientas de la máquina
+Lib_TypeDefaults;Type defaults;Tip varsayılanları;Значения по типу;Typvorgaben;Valori per tipo;Valores por tipo
+Lib_Unsaved;Some tables have changes that are not saved. Save them now?;Bazı tablolarda kaydedilmemiş değişiklikler var. Şimdi kaydedilsin mi?;В некоторых таблицах есть несохранённые изменения. Сохранить их сейчас?;Einige Tabellen haben ungespeicherte Änderungen. Jetzt speichern?;Alcune tabelle hanno modifiche non salvate. Salvarle ora?;Algunas tablas tienen cambios sin guardar. ¿Guardarlos ahora?
+Lib_Variants;Variants;Varyantlar;Варианты;Varianten;Varianti;Variantes
+Lib_Vendors;Vendors;Üreticiler;Производители;Hersteller;Produttori;Fabricantes
+Par_Angle;Angle;Açı;Угол;Winkel;Angolo;Ángulo
+Par_Corner;Corner radius;Köşe yarıçapı;Радиус угла;Eckradius;Raggio d'angolo;Radio de esquina
+Par_Depth;Depth;Derinlik;Глубина;Tiefe;Profondità;Profundidad
+Par_Diameter;Diameter;Çap;Диаметр;Durchmesser;Diametro;Diámetro
+Par_Length;Length (along the bar);Uzunluk (profil boyunca);Длина (вдоль профиля);Länge (entlang des Stabs);Lunghezza (lungo la barra);Longitud (a lo largo de la barra)
+Par_Path;Path (LINE, CONTOUR);Yol (LINE, CONTOUR);Путь (LINE, CONTOUR);Bahn (LINE, CONTOUR);Percorso (LINE, CONTOUR);Trayectoria (LINE, CONTOUR)
+Par_Width;Width;Genişlik;Ширина;Breite;Larghezza;Anchura
+Set_Approach;Feed through air inside the profile (mm/min);Profil içinde boşluktaki ilerleme (mm/dk);Подача по воздуху внутри профиля (мм/мин);Vorschub durch Luft im Profil (mm/min);Avanzamento in aria dentro il profilo (mm/min);Avance en vacío dentro del perfil (mm/min)
+Set_Breakthrough;Past the wall when cutting through (mm);Delip geçerken duvarın ötesi (mm);Выход за стенку при сквозном резе (мм);Über die Wand hinaus beim Durchschneiden (mm);Oltre la parete nel taglio passante (mm);Más allá de la pared al atravesarla (mm)
+Set_Folder;Folder for program files;Program dosyaları klasörü;Папка для файлов программ;Ordner für Programmdateien;Cartella dei file di programma;Carpeta de archivos de programa
+Set_Incremental;Incremental moves (G91);Artımsal hareketler (G91);Инкрементальные перемещения (G91);Inkrementelle Bewegungen (G91);Movimenti incrementali (G91);Movimientos incrementales (G91)
+Set_Peck;Most a tool goes down in one pass (mm);Bir pasoda en fazla dalış (mm);Наибольшее врезание за проход (мм);Größte Zustellung je Durchgang (mm);Massimo affondo per passata (mm);Máxima bajada por pasada (mm)
+Set_SafeZ;Safe height above the face (mm);Yüzeyin üstünde güvenli yükseklik (mm);Безопасная высота над стороной (мм);Sicherheitshöhe über der Seite (mm);Altezza di sicurezza sopra il lato (mm);Altura de seguridad sobre la cara (mm)
+St_Auto;worked out;hesaplandı;рассчитано;berechnet;calcolato;calculado
+St_Confirmed;confirmed;onaylandı;подтверждено;bestätigt;confermato;confirmado
+St_Overridden;confirmed (set by hand);onaylandı (elle girildi);подтверждено (задано вручную);bestätigt (von Hand gesetzt);confermato (impostato a mano);confirmado (fijado a mano)
+St_Proposed;proposed;önerildi;предложено;vorgeschlagen;proposto;propuesto
+St_Rejected;not on this profile;bu profilde yok;нет на этом профиле;nicht an diesem Profil;non su questo profilo;no está en este perfil
+Tbl_Add;Add a row;Satır ekle;Добавить строку;Zeile hinzufügen;Aggiungi riga;Añadir fila
+Tbl_ConfirmDelete;{0} row(s) will be removed, with what belongs only to them. Save?;{0} satır, yalnızca onlara ait olanlarla birlikte silinecek. Kaydedilsin mi?;Будет удалено строк: {0}, вместе с тем, что принадлежит только им. Сохранить?;{0} Zeile(n) werden entfernt, mit allem, was nur zu ihnen gehört. Speichern?;Verranno rimosse {0} righe, con ciò che appartiene solo a loro. Salvare?;Se quitarán {0} fila(s), con lo que solo les pertenece a ellas. ¿Guardar?
+Tbl_Delete;Remove the selected rows (saved with the rest);Seçili satırları sil (diğerleriyle birlikte kaydedilir);Удалить выбранные строки (сохраняется вместе с остальным);Gewählte Zeilen entfernen (wird mit dem Rest gespeichert);Rimuovi le righe selezionate (salvato con il resto);Quitar las filas seleccionadas (se guarda con lo demás)
+Tbl_InUse;Not saved: a row is still used elsewhere (or refers to a row that does not exist).;Kaydedilmedi: bir satır hâlâ başka yerde kullanılıyor (veya olmayan bir satıra başvuruyor).;Не сохранено: строка ещё используется в другом месте (или ссылается на несуществующую строку).;Nicht gespeichert: eine Zeile wird noch anderswo verwendet (oder verweist auf eine nicht vorhandene Zeile).;Non salvato: una riga è ancora usata altrove (o si riferisce a una riga che non esiste).;No guardado: una fila todavía se usa en otro lugar (o se refiere a una fila que no existe).
+Tbl_NotNumber;is not a number;bir sayı değil;не число;ist keine Zahl;non è un numero;no es un número
+Tbl_NotWhole;is not a whole number;bir tam sayı değil;не целое число;ist keine ganze Zahl;non è un numero intero;no es un número entero
+Tbl_Reload;Throw the changes away and read the table again;Değişiklikleri at ve tabloyu yeniden oku;Отменить изменения и перечитать таблицу;Änderungen verwerfen und die Tabelle neu lesen;Scarta le modifiche e rileggi la tabella;Descartar los cambios y volver a leer la tabla
+Tbl_Remove;Remove;Sil;Удалить;Entfernen;Rimuovi;Quitar
+Tbl_Required;needs a value;bir değer gerekli;нужно значение;braucht einen Wert;richiede un valore;necesita un valor
+Tbl_Row;row;satır;строка;Zeile;riga;fila
+Tbl_Rows;rows;satır;строк;Zeilen;righe;filas
+Tbl_Save;Save the changes;Değişiklikleri kaydet;Сохранить изменения;Änderungen speichern;Salva le modifiche;Guardar los cambios
+Tbl_Saved;Saved.;Kaydedildi.;Сохранено.;Gespeichert.;Salvato.;Guardado.
+Tbl_Unsaved;changed - not saved yet;değişti - henüz kaydedilmedi;изменено - ещё не сохранено;geändert - noch nicht gespeichert;modificato - non ancora salvato;cambiado - aún sin guardar

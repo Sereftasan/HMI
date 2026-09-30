@@ -67,6 +67,13 @@ namespace Kaban.Profiles.Data
             // load without its full strong name.
             string[] candidates = Engine == Provider.PostgreSql
                 ? new[] { "Npgsql.NpgsqlConnection, Npgsql" }
+                : SqliteChoice == SqliteLibrary.MonoDataSqlite
+                ? new[]
+                  {
+                      "Mono.Data.Sqlite.SqliteConnection, Mono.Data.Sqlite",
+                      "Mono.Data.Sqlite.SqliteConnection, Mono.Data.Sqlite, " +
+                          "Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"
+                  }
                 : new[]
                   {
                       "System.Data.SQLite.SQLiteConnection, System.Data.SQLite",
@@ -131,8 +138,72 @@ namespace Kaban.Profiles.Data
             return "Data Source=" + ConnectionTarget + ";Version=3;Foreign Keys=True;";
         }
 
+        /// <summary>Which SQLite library: the first that is there (Auto), or one forced (a test).</summary>
+        public enum SqliteLibrary { Auto, SystemDataSqlite, Native, MonoDataSqlite }
+        public static SqliteLibrary SqliteChoice = SqliteLibrary.Auto;
+
+        /// <summary>What Open() uses - for the page's status line and the log.</summary>
+        public static string ProviderName
+        {
+            get
+            {
+                try
+                {
+                    if (Engine == Provider.PostgreSql) return "PostgreSQL (Npgsql)";
+                    if (UseNative()) return "SQLite (" + NativeApi.Default().Name + " " + NativeApi.Default().Version() + ")";
+                    return ResolveConnectionType().FullName;
+                }
+                catch (Exception ex) { return "none (" + ex.Message + ")"; }
+            }
+        }
+
+        /// <summary>
+        /// SQLite through the operating system's own library (NativeSqlite)? In
+        /// Auto: when System.Data.SQLite is not installed beside the program - the
+        /// panel PC then needs nothing extra. Mono.Data.Sqlite comes last (tests).
+        /// </summary>
+        private static bool UseNative()
+        {
+            if (Engine != Provider.Sqlite) return false;
+            switch (SqliteChoice)
+            {
+                case SqliteLibrary.Native: return true;
+                case SqliteLibrary.SystemDataSqlite:
+                case SqliteLibrary.MonoDataSqlite: return false;
+            }
+            if (_nativeDecided.HasValue) return _nativeDecided.Value;
+            bool sds = false;
+            try { sds = TryType("System.Data.SQLite.SQLiteConnection, System.Data.SQLite") != null; } catch { }
+            _nativeDecided = !sds && NativeApi.Available;
+            return _nativeDecided.Value;
+        }
+        private static bool? _nativeDecided;
+
+        private static Type TryType(string name)
+        {
+            int comma = name.IndexOf(',');
+            var t = Type.GetType(name, false);
+            if (t == null && comma > 0)
+            {
+                try
+                {
+                    var asm = Assembly.Load(name.Substring(comma + 1).Trim());
+                    if (asm != null) t = asm.GetType(name.Substring(0, comma).Trim(), false);
+                }
+                catch (Exception) { }
+            }
+            return t;
+        }
+
         public static IDbConnection Open()
         {
+            if (UseNative())
+            {
+                var native = new NativeSqliteConnection { ConnectionString = BuildConnectionString() };
+                native.Open();
+                Execute(native, "PRAGMA foreign_keys = ON");
+                return native;
+            }
             var conn = (IDbConnection)Activator.CreateInstance(ResolveConnectionType());
             conn.ConnectionString = BuildConnectionString();
             conn.Open();

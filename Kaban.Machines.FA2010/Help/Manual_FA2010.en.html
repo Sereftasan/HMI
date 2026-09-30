@@ -13,11 +13,79 @@
 </head><body>
 
 <h4 id="profiles">Profiles</h4>
+<p>The <b>Profiles</b> page keeps every profile the machine processes, with its drawing, the points its hardware is measured
+from, the accessories it takes and the programs made from them. It is a library: <b>nothing on this page is sent to the
+PLC</b> - it makes data and program files. Changing the library needs the <b>Maintenance</b> level; below it the page shows
+everything and changes nothing.</p>
+
+<p><b>The panes.</b> The table of profiles, the drawing, the details, the accessories and the programs are separate panes:
+drag them by the caption, resize from any edge, minimise with <b>&ndash;</b>. Save an arrangement by name and pick it from
+the <b>Layout</b> box; <b>Default</b> restores the built-in one, and your last arrangement returns by itself. 📚 opens the
+library's own tables.</p>
+
+<p><b>How the library is filed.</b> Vendor &rsaquo; series &rsaquo; variant &rsaquo; group &rsaquo; profile. The <b>group</b>
+says what a profile is (frame, sash, door leaf ...): accessories are given to a group once, and every profile of the group
+takes them. The <b>series</b> gives the material (PVC, aluminium), which chooses the feeds. A profile can be <b>based on</b>
+another (📑 in the table): it takes the other's group, sizes and reference points, and only what differs is entered.</p>
+
+<p><b>The drawing.</b> Each profile has its section as a DXF file (<b>Details &rsaquo; Profile &rsaquo; File</b>). It is read in
+profile coordinates: <b>Y across</b>, 0 at the outside face on the left, and <b>Z up</b>, 0 at the bed. A drawing made the
+other way round is <b>turned</b> or <b>mirrored</b> (Details, or ⟳ ⟲ ⇋ on the drawing) - the page says when the drawing's size
+disagrees with the profile's and offers <b>Turn it</b>. Layers that are not the profile (dimensions, a gasket drawn beside it)
+are listed under <b>Not the profile</b>: they are drawn grey and never cut through. Press 💾 to keep the details.</p>
+
+<p><b>Reference points</b> (Details &rsaquo; Reference points): the outside and inside face, the centre, the bed, the hardware
+axis, the glazing reference ... 🔍 finds them on the drawing, in this order of trust:</p>
 <ul>
- <li>The table, details, drawing and G-code are separate <b>panes</b>: drag them by the caption, resize from any edge, minimise with <b>&ndash;</b>.</li>
- <li>Save an arrangement by name and pick it from the <b>Layout</b> box; <b>Default</b> restores the built-in one. Your last arrangement returns by itself.</li>
- <li>Drawing: click to select, drag a box to select many (right-to-left catches anything it touches), <kbd>Del</kbd> removes, <kbd>Esc</kbd> clears. The wheel zooms, the middle button pans.</li>
- <li>The green band is the tool at its real width; clicking it selects the matching G-code line, and the other way round.</li>
+ <li>a <b>layer</b> named after the point (<code>REF_HARDWARE_AXIS</code>) - its point, circle or line;</li>
+ <li>a <b>text</b> naming it: <code>HARDWARE_AXIS 22 35</code> gives the coordinates, several in one text count
+     (<code>OUTSIDE_SURFACE 0 0 INSIDE_SURFACE 70 0</code>);</li>
+ <li>the <b>outline</b>: the faces, the centre and the bed;</li>
+ <li>the <b>hardware groove</b> seen from above, as wide as the group's hardware interface;</li>
+ <li>a <b>similar profile's</b> point, at the same distance from the nearer face (a proposal).</li>
 </ul>
+<p>A point can also be typed (double-click Y or Z) or picked on the drawing (🎯, then click; it snaps to the nearest line end).
+<b>✔ confirms</b> the selected points. Points confirmed or set by hand are never replaced by a new search.</p>
+
+<p class="note"><b>Nothing unconfirmed is cut in production.</b> A placement measured from a point nobody has confirmed stays
+<i>proposed</i>; one measured from confirmed points is <i>worked out</i>, fine for a trial piece. Only a placement a person
+confirmed goes into a production program.</p>
+
+<p><b>Accessories.</b> The upper table lists the accessories of the profile's group (➕ gives one to the group - those that fit
+its hardware interface come first; the tick switches one off without removing it). The lower table lists where each operation
+lands on this profile: the cut, the face the tool comes in by, Y and Z, the correction, where along the bar, and the depth with
+the walls the tool goes through. The selected one is drawn on the section: the arrow the tool comes in by, the cut in red and
+the walls in yellow.</p>
+
+<p><b>Trial and tune.</b> Move the selected placement with the <b>Y</b> and <b>Z</b> buttons (&plusmn;0.1, 0.5, 1 mm) - the
+drawing shows where it would go. <b>Keep the move for</b> this profile, every profile of its group, or every profile of its
+series, for this operation or <i>all its operations</i>, and press 💾: the move is kept as a <b>correction</b> with its reason,
+and the accessory's own definition is not touched. A moved placement is to be confirmed again. ✖ marks an operation that is not
+on this profile, ↺ reopens a decision, 🕘 shows the history and 🧮 lists the corrections that reach the profile (and takes one
+away).</p>
+
+<p><b>Programs.</b></p>
+<ul>
+ <li><b>Accessories</b>: the side machining of one bar of the given length. ⚙ makes it with the confirmed placements - tick
+     <b>trial</b> to include the unconfirmed ones for a test piece. Each operation takes the best mounted tool (a drill of the
+     hole's size, else the largest end mill that fits), goes down in passes, enters each wall at its entry speed (slower still
+     through a thin wall) and each chamber at the approach feed, and cuts at the wall's feed. What could not be made is listed
+     in red under the program, with why. 💾 saves it as a file.</li>
+ <li><b>End milling</b>: the contour milled around the profile's end, from the drawing. The drawing's tools choose and edit the
+     border; the green band is the tool at its real width, and clicking it selects the matching line (and the other way
+     round). 💾 keeps the program with the profile; 📤 saves it as a file.</li>
+</ul>
+
+<p><b>The library's tables</b> (📚): vendors, series, variants, groups, machining families and hardware interfaces; accessories
+with their operations (a macro, the face, the depth - the macro's, through the first wall or through the whole profile - the
+reference point, the offset and where along the bar), accessory groups, hardware vendors and series; <b>macros</b>, the shape of
+a cut only (no tool, no feed); and this machine's <b>tools</b> (their measured diameter and usable length - a tool with no
+diameter is never chosen), <b>faces</b> (which milling unit at which angle machines which face), <b>feeds</b> per material
+class, <b>drawing layers</b> that are another material (a steel reinforcement) and the <b>program settings</b>. <b>Not confirmed
+yet</b> lists every reference point and placement still to be checked; double-click one to open its profile.</p>
+
+<p class="safety">The example catalogue offered when the library is new holds EXAMPLE positions, not a hardware maker's
+figures, and the machine faces are assumed (0&deg; from above, 90&deg; the outside face, 180&deg; from below, 270&deg; the
+inside face). Check both on the machine before the first program is run.</p>
 
 </body></html>

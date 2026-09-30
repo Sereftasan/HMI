@@ -71,6 +71,30 @@ namespace Kaban.UI.Dxf
         public event EventHandler GeometryChanged;
         public event EventHandler SelectionChanged;
 
+        /// <summary>Drawn over the drawing, after it: the profile library's references, operations and rays.</summary>
+        public event PaintEventHandler PaintOverlay;
+
+        /// <summary>The next left click picks a POINT (PointPicked) instead of selecting.</summary>
+        public bool PickMode { get; set; }
+
+        /// <summary>A point picked in PickMode, in drawing units - snapped to an element's end when one is close.</summary>
+        public event EventHandler<DxfDocument.PointD> PointPicked;
+
+        /// <summary>The names of the horizontal and vertical axes ("X", "Z"; a profile section is "Y", "Z").</summary>
+        public string[] AxisNames { get; set; } = { "X", "Z" };
+
+        /// <summary>Draws the points and texts of the drawing.</summary>
+        public bool ShowMarkers { get; set; } = true;
+
+        /// <summary>Screen point of a drawing point (for an overlay).</summary>
+        public PointF ScreenOf(double x, double y) { return ToScreen(new DxfDocument.PointD(x, y)); }
+
+        /// <summary>Drawing point under a screen point.</summary>
+        public DxfDocument.PointD DrawingOf(Point p) { return ToDrawing(p); }
+
+        /// <summary>Pixels per drawing unit.</summary>
+        public float Scale { get { return _scale; } }
+
         public bool CanUndo => _undo.Count > 0;
         public bool CanRedo => _redo.Count > 0;
         public int SelectionCount => _selected.Count;
@@ -401,6 +425,17 @@ namespace Kaban.UI.Dxf
             if (_doc == null) return;
             var p = ToDrawing(e.Location);
 
+            if (PickMode && e.Button == MouseButtons.Left)
+            {
+                DxfDocument.PointD snapped;
+                var picked = _doc.TrySnapToEndpoint(p, HitTolerance, out snapped) ? snapped : p;
+                PickMode = false;
+                Cursor = Cursors.Default;
+                if (PointPicked != null) PointPicked(this, picked);
+                Invalidate();
+                return;
+            }
+
             if (SplitMode && e.Button == MouseButtons.Left)
             {
                 int idx = _doc.FindNearestElement(p, HitTolerance);
@@ -526,6 +561,7 @@ namespace Kaban.UI.Dxf
             using (var addedPen = new Pen(Color.FromArgb(0, 230, 255), 2.2f))
             using (var deletedPen = new Pen(Color.FromArgb(70, 74, 80), 1f))
             using (var skippedPen = new Pen(Color.FromArgb(140, 110, 40), 1.6f) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
+            using (var otherPen = new Pen(Color.FromArgb(95, 105, 120), 1f) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dot })
             using (var hoverPen = new Pen(Color.FromArgb(255, 230, 120), 2f))
             using (var selPen = new Pen(Color.FromArgb(255, 140, 40), 2.5f))
             {
@@ -537,6 +573,7 @@ namespace Kaban.UI.Dxf
                     if (_selected.Contains(i)) use = selPen;
                     else if (i == _hoverIndex) use = hoverPen;
                     else if (_doc.IsDeleted(i)) use = deletedPen;
+                    else if (!_doc.IsMaterial(i)) use = otherPen;          // a reference, a dimension, an ignored layer
                     else if (!_doc.IsActive(i)) use = skippedPen;   // in the drawing, out of the cut
                     else if (_doc.IsAdded(i)) use = addedPen;
                     else use = pen;
@@ -632,6 +669,20 @@ namespace Kaban.UI.Dxf
                 }
             }
 
+            if (ShowMarkers && _doc.Markers.Count > 0)
+                using (var br = new SolidBrush(Color.FromArgb(150, 160, 175)))
+                using (var pen = new Pen(Color.FromArgb(150, 160, 175), 1f))
+                using (var small = new Font(Font.FontFamily, Math.Max(6f, Font.Size - 1f)))
+                    foreach (var m in _doc.Markers)
+                    {
+                        var sp = ToScreen(new DxfDocument.PointD(m.X, m.Y));
+                        if (m.Kind == "TEXT") g.DrawString(m.Text, small, br, sp.X, sp.Y - small.Height);
+                        else { g.DrawLine(pen, sp.X - 3, sp.Y - 3, sp.X + 3, sp.Y + 3); g.DrawLine(pen, sp.X - 3, sp.Y + 3, sp.X + 3, sp.Y - 3); }
+                    }
+
+            var overlay = PaintOverlay;
+            if (overlay != null) overlay(this, e);
+
             DrawStatusOverlay(g);
         }
 
@@ -666,8 +717,8 @@ namespace Kaban.UI.Dxf
                             g.DrawString(v.ToString("0"), Font, br, origin.X + 5, pz.Y - 7);
                     }
                 }
-                g.DrawString("X", Font, br, Width - 16, origin.Y + 5);
-                g.DrawString("Z", Font, br, origin.X + 5, 4);
+                g.DrawString(AxisNames[0], Font, br, Width - 16, origin.Y + 5);
+                g.DrawString(AxisNames[1], Font, br, origin.X + 5, 4);
             }
         }
 
@@ -676,7 +727,7 @@ namespace Kaban.UI.Dxf
             using (var br = new SolidBrush(Color.FromArgb(0, 220, 120)))
             {
                 if (_hover != null)
-                    g.DrawString("X: " + _hover.Value.X.ToString("F2") + "   Z: " + _hover.Value.Y.ToString("F2"),
+                    g.DrawString(AxisNames[0] + ": " + _hover.Value.X.ToString("F2") + "   " + AxisNames[1] + ": " + _hover.Value.Y.ToString("F2"),
                                  Font, br, 6, 6);
                 string info = "zoom " + (_scale < 1 ? _scale.ToString("F2") : _scale.ToString("F1")) + "x";
                 if (_selected.Count > 0) info += "   |   " + _selected.Count + " selected";
