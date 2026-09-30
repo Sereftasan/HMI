@@ -61,8 +61,11 @@ namespace Kaban.UI.Forms
                     .Select(step => step.Key.AllPages.IndexOf(step.Value) + ":" + PageKey(step.Value)));
             }
             if (_sidePanel != null && _sidePanel.Visible && _sideOpen != null) v["Side"] = _sideOpen.Key;
-            var windows = _sideWindows.Where(kv => kv.Value != null && !kv.Value.IsDisposed && kv.Value.Visible).Select(kv => kv.Key).ToList();
-            if (windows.Count > 0) v["Windows"] = string.Join(",", windows);
+            var windows = _sideWindows.Where(kv => kv.Value != null && !kv.Value.IsDisposed && kv.Value.Visible).ToList();
+            if (windows.Count > 0) v["Windows"] = string.Join(",", windows.Select(kv => kv.Key));
+            // The ones down on the taskbar open there again.
+            var down = windows.Where(kv => IsMinimized(kv.Value)).Select(kv => kv.Key).ToList();
+            if (down.Count > 0) v["WindowsMin"] = string.Join(",", down);
             return v;
         }
 
@@ -79,8 +82,9 @@ namespace Kaban.UI.Forms
         /// <summary>Writes the place now (once the start-up place is settled).</summary>
         internal void SavePlace()
         {
-            if (!RememberPlace || !_placeSettled || IsDisposed) return;
-            try { WindowLayout.Write(LastPlacePath, CapturePlace()); }
+            if (!RememberPlace || !_placeSettled || _placeFrozen || IsDisposed) return;
+            // The whole file: a side page closed since must not stay in it.
+            try { WindowLayout.Write(LastPlacePath, CapturePlace(), replace: true); }
             catch { /* a place not kept is only a place not kept */ }
         }
 
@@ -136,22 +140,44 @@ namespace Kaban.UI.Forms
                     }
                 }
             }
-            if (v.TryGetValue("Side", out text) && text.Length > 0 && (_sideOpen == null || _sideOpen.Key != text))
-                TryShowSide(text);
+            // A side page above the user's level waits for the sign-in, as the page does.
+            if (v.TryGetValue("Side", out text) && text.Length > 0 && (_sideOpen == null || _sideOpen.Key != text || !_sidePanel.Visible))
+                if (!TryShowSide(text)) reached = false;
+            string minimizedText;
+            var minimized = new HashSet<string>((v.TryGetValue("WindowsMin", out minimizedText) ? minimizedText : "")
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(k => k.Trim()), StringComparer.OrdinalIgnoreCase);
             if (v.TryGetValue("Windows", out text))
-                foreach (var key in text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                    if (!_sideWindows.ContainsKey(key.Trim()) || _sideWindows[key.Trim()].IsDisposed || !_sideWindows[key.Trim()].Visible)
-                        TryShowSide(key.Trim());
+                foreach (var key in text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(k => k.Trim()))
+                {
+                    SidePageWindow open;
+                    if (_sideWindows.TryGetValue(key, out open) && !open.IsDisposed && open.Visible) continue;
+                    if (!TryShowSide(key)) { reached = false; continue; }
+                    if (minimized.Contains(key) && _sideWindows.TryGetValue(key, out open) && !open.IsDisposed)
+                        Minimize(open);
+                }
             return reached;
         }
 
-        private void TryShowSide(string key)
+        /// <summary>Reopens a side page; false when the user may not open it (yet) - a page no longer there counts as done.</summary>
+        private bool TryShowSide(string key)
         {
             var page = SidePages.All().FirstOrDefault(p => string.Equals(p.Key, key, StringComparison.OrdinalIgnoreCase));
-            if (page == null || !SecurityManager.HasAccess(page.RequiredLevel)) return;
+            if (page == null) return true;
+            if (!SecurityManager.HasAccess(page.RequiredLevel)) return false;
             try { ShowSidePage(page.Key); }
             catch (Exception ex) { AuditLogger.Log("side page '" + key + "' not reopened: " + ex.Message); }
+            return true;
         }
+
+        /// <summary>A window down on the taskbar - and putting one there (replaceable for the tests: Mono without a window manager cannot).</summary>
+        internal static Func<Form, bool> IsMinimized = f => f.WindowState == FormWindowState.Minimized;
+        internal static Action<Form> Minimize = f => f.WindowState = FormWindowState.Minimized;
+
+        /// <summary>
+        /// Set once the program is closing and its place is written: the side
+        /// windows closing after it would otherwise write a place without them.
+        /// </summary>
+        private bool _placeFrozen;
 
         /// <summary>The tab path "2:Set_StationConn|0:Controllers" - by position, checked by name.</summary>
         private static void RestoreTabs(Control top, string path)

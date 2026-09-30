@@ -414,8 +414,9 @@ Hdr_IoOutputs;Outputs ({0});Çıkışlar ({0});;;;
 Msg_IoNone;No inputs and outputs are listed for this machine.\r\n\r\nThey come from IoList.csv beside the program (Label, Kind, Address, Read, Plc) - tools/build_io_list.py writes it from the device list and the PLC's I/O interface block.;Bu makine için giriş ve çıkış listesi yok.\r\n\r\nListe programın yanındaki IoList.csv dosyasından gelir (Label, Kind, Address, Read, Plc) - tools/build_io_list.py onu cihaz listesinden ve PLC'nin G/Ç arayüz bloğundan yazar.;;;;
 Tip_IoRead;read at {0}, the relay the PLC copies it into;{0} üzerinden okunur - PLC'nin onu kopyaladığı röle;;;;
 Tip_IoDrawing;On the drawing:;Çizimde:;На схеме:;In der Zeichnung:;Nello schema:;En el esquema:
-Tip_SidePopOut;Open in a window of its own (for a second screen);Kendi penceresinde aç (ikinci ekran için);;;;
-Tip_SideClose;Close (the page stays as you left it);Kapat (sayfa bıraktığınız gibi kalır);;;;
+Tip_SidePopOut;Open in a window of its own (for a second screen);Kendi penceresinde aç (ikinci ekran için);Открыть в отдельном окне (для второго экрана);In einem eigenen Fenster öffnen (für einen zweiten Bildschirm);Apri in una finestra propria (per un secondo schermo);Abrir en una ventana propia (para una segunda pantalla)
+Tip_SideClose;Close (the page stays as you left it);Kapat (sayfa bıraktığınız gibi kalır);Закрыть (страница останется как была);Schließen (die Seite bleibt, wie Sie sie verlassen haben);Chiudi (la pagina resta come l'hai lasciata);Cerrar (la página queda como la dejó)
+Tip_SideSplitter;Drag to size the side page. Double-click: just wide enough for all of it.;Yan sayfayı boyutlandırmak için sürükleyin. Çift tıklama: tamamı görünecek kadar genişlet.;Перетащите, чтобы изменить ширину боковой страницы. Двойной щелчок: ровно по ширине всей страницы.;Ziehen, um die Seitenleiste zu verbreitern. Doppelklick: gerade breit genug für alles.;Trascina per ridimensionare la pagina laterale. Doppio clic: larga quanto basta per mostrarla tutta.;Arrastre para ajustar la página lateral. Doble clic: justo el ancho para verla entera.
 Tip_SideDockBack;Back into the main window's side panel;Ana pencerenin yan paneline geri al;;;;
 Tip_SideBarShow;Show the side bar;Yan çubuğu göster;;;;
 Tip_SideBarHide;Fold the side bar to the edge;Yan çubuğu kenara katla;;;;

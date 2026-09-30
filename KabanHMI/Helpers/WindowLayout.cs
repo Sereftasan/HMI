@@ -40,12 +40,12 @@ namespace Kaban.UI.Helpers
             return values;
         }
 
-        /// <summary>Writes these values into the file, keeping the other windows' lines.</summary>
-        public static void Write(string path, IDictionary<string, string> changes)
+        /// <summary>Writes these values into the file, keeping the other windows' lines (<paramref name="replace"/>: these values only).</summary>
+        public static void Write(string path, IDictionary<string, string> changes, bool replace = false)
         {
             try
             {
-                var values = Read(path);
+                var values = replace ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) : Read(path);
                 foreach (var kv in changes) values[kv.Key] = kv.Value;
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
                 var lines = new List<string> { "# Kaban HMI tool windows: <window>.<what>=<value>" };

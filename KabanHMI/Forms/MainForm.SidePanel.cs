@@ -152,13 +152,28 @@ namespace Kaban.UI.Forms
             _sideSplitter = new Splitter
             {
                 Dock = DockStyle.Right, Width = 6, BackColor = Color.FromArgb(214, 218, 224),
-                MinSize = 240, MinExtra = 320, Visible = false
+                MinSize = 240, MinExtra = PageSliver, Visible = false
             };
             _sideSplitter.SplitterMoved += (s, e) =>
             {
                 _sideWidthLogical = UiScale.Logical(_sidePanel.Width);
                 SaveSidePanelState();
             };
+            // A DOUBLE-CLICK on the border: just wide enough for the whole side page
+            // (a sliver of the page left to take the border back). Done once the
+            // splitter has finished with the click - it would put its own place back.
+            bool fitOnRelease = false;
+            _sideSplitter.MouseDown += (s, e) => { if (e.Button == MouseButtons.Left && e.Clicks >= 2) fitOnRelease = true; };
+            _sideSplitter.MouseUp += (s, e) =>
+            {
+                if (!fitOnRelease) return;
+                fitOnRelease = false;
+                BeginInvoke(new Action(FitSidePanel));
+            };
+            _sideTips.SetToolTip(_sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
+            // The width kept: back to it when the window has room again (it opens
+            // narrower before the window is maximised).
+            SizeChanged += (s, e) => KeepSideWidth();
 
             // Dock order: the caption first (full width), then the bar, the panel
             // and its border - each placed just under the caption in the order
@@ -334,17 +349,103 @@ namespace Kaban.UI.Forms
             _sideTitle.Text = page.Title;
             _sideIcon.Page = page;
             _sidePopOut.Visible = page.CanPopOut;
-            // Never wider than leaves the page a working width.
+            // Never wider than leaves a sliver of the page, to take the border back by.
             _sideSplitter.MinSize = UiScale.For(_sideSplitter, 240);
-            _sideSplitter.MinExtra = UiScale.For(_sideSplitter, 320);
-            int room = ClientSize.Width - pnlMenu.Width - (_sideBar.Visible ? _sideBar.Width : 0) - _sideSplitter.MinExtra;
-            _sidePanel.Width = Math.Max(_sideSplitter.MinSize, Math.Min(UiScale.For(_sidePanel, _sideWidthLogical), room));
+            _sideSplitter.MinExtra = UiScale.For(_sideSplitter, PageSliver);
+            _sidePanel.Width = Math.Max(_sideSplitter.MinSize, Math.Min(UiScale.For(_sidePanel, _sideWidthLogical), SideRoom()));
             _sideSplitter.Visible = true;
             _sidePanel.Visible = true;
             RestoreDockOrder();
             view.Focus();
             SideStateChanged();
             return view;
+        }
+
+        /// <summary>What is left of the page beside the widest side panel (at factor 1).</summary>
+        internal const int PageSliver = 120;
+
+        /// <summary>The most the side panel may be: the window less the menu, the bar, the border and a sliver of the page.</summary>
+        private int SideRoom()
+        {
+            return ClientSize.Width - pnlMenu.Width - (_sideBar != null && _sideBar.Visible ? _sideBar.Width : 0)
+                   - (_sideSplitter != null ? _sideSplitter.Width : 0) - UiScale.For(_sidePanel, PageSliver);
+        }
+
+        /// <summary>The panel back at its kept width when the window grows (never past the room it has).</summary>
+        private void KeepSideWidth()
+        {
+            if (_sidePanel == null || !_sidePanel.Visible || WindowState == FormWindowState.Minimized) return;
+            int want = Math.Max(UiScale.For(_sideSplitter, 240), Math.Min(UiScale.For(_sidePanel, _sideWidthLogical), SideRoom()));
+            if (want > 0 && _sidePanel.Width != want) { _sidePanel.Width = want; PerformLayout(); }
+        }
+
+        /// <summary>
+        /// The panel just wide enough for all of the side page on show - its own
+        /// idea (ISidePageWidth) or the extent of its controls - short of a sliver
+        /// of the page. The width is kept, as a dragged one is.
+        /// </summary>
+        public void FitSidePanel()
+        {
+            if (_sidePanel == null || !_sidePanel.Visible || _sideOpen == null) return;
+            var view = SidePageView(_sideOpen.Key);
+            if (view == null) return;
+            int chrome = _sidePanel.Width - _sideHost.ClientSize.Width;
+            int room = SideRoom();
+            var own = view as ISidePageWidth;
+            int need = own != null ? own.PreferredWidth(room - chrome) : ContentWidth(view);
+            int width = Math.Max(UiScale.For(_sideSplitter, 240), Math.Min(need + chrome, room));
+            _sidePanel.Width = width;
+            _sideWidthLogical = UiScale.Logical(width);
+            SaveSidePanelState();
+            SideStateChanged();
+        }
+
+        /// <summary>
+        /// How wide a control's content is: a table's columns, a strip's buttons,
+        /// the right edge of what is placed in it, what is docked beside what fills -
+        /// the width at which nothing of it is cut off.
+        /// </summary>
+        internal static int ContentWidth(Control c)
+        {
+            if (c == null || !c.Visible) return 0;
+            var own = c as ISidePageWidth;
+            if (own != null) return own.PreferredWidth(int.MaxValue / 4);
+            var grid = c as DataGridView;
+            if (grid != null)
+                return grid.Columns.Cast<DataGridViewColumn>().Where(col => col.Visible).Sum(col => col.Width) +
+                       (grid.RowHeadersVisible ? grid.RowHeadersWidth : 0) + SystemInformation.VerticalScrollBarWidth + 4;
+            var strip = c as ToolStrip;
+            if (strip != null)
+                return strip.Items.Cast<ToolStripItem>().Where(i => i.Available).Sum(i => i.Width + i.Margin.Horizontal) + strip.Padding.Horizontal + 8;
+            if (c.Controls.Count == 0) return c is Label && ((Label)c).AutoSize ? c.PreferredSize.Width : c.Width;
+
+            int sides = 0, filled = 0, placed = 0, anchoredRight = 0;
+            var scroll = c as ScrollableControl;
+            int offset = scroll != null && scroll.AutoScroll ? -scroll.AutoScrollPosition.X : 0;
+            foreach (Control ch in c.Controls)
+            {
+                if (!ch.Visible) continue;
+                switch (ch.Dock)
+                {
+                    case DockStyle.Left:
+                    case DockStyle.Right:
+                        sides += ch.Width;
+                        break;
+                    case DockStyle.Fill:
+                    case DockStyle.Top:
+                    case DockStyle.Bottom:
+                        filled = Math.Max(filled, ContentWidth(ch));
+                        break;
+                    default:
+                        bool right = (ch.Anchor & AnchorStyles.Right) != 0 && (ch.Anchor & AnchorStyles.Left) == 0;
+                        if (right) anchoredRight = Math.Max(anchoredRight, ch.Width + ch.Margin.Horizontal);
+                        else placed = Math.Max(placed, ch.Right + offset + ch.Margin.Right);
+                        break;
+                }
+            }
+            int inner = Math.Max(sides + filled, placed + anchoredRight);
+            bool vertical = scroll != null && scroll.AutoScroll && scroll.VerticalScroll.Visible;
+            return inner + c.Padding.Horizontal + (vertical ? SystemInformation.VerticalScrollBarWidth : 0);
         }
 
         /// <summary>Closes the panel; the page stays built, as it was left.</summary>
@@ -823,7 +924,10 @@ namespace Kaban.UI.Forms
             base.OnFormClosing(e);
             if (e.Cancel) return;
             var values = new Dictionary<string, string>();
-            if (WindowState == FormWindowState.Normal) WindowLayout.Store(this, LayoutName, values);
+            // Its normal place and size whatever its state (a maximised one opens
+            // maximised again; one on the taskbar keeps whether it was maximised).
+            WindowLayout.Store(this, LayoutName, values);
+            if (WindowState == FormWindowState.Minimized) values.Remove(LayoutName + ".Maximized");
             WindowLayout.Write(Kaban.UI.Forms.SimulationMonitorForm.WindowsPath, values);
             // The page is not closed with the window: it is kept, as it was left.
             var monitor = View as SimulationMonitorForm;

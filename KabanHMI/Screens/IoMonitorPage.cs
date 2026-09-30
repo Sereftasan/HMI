@@ -24,13 +24,14 @@ namespace Kaban.UI.Screens
     /// Read-only, and read by the page scanner like any page's lamps: nothing
     /// here writes to the PLC.
     /// </summary>
-    public class IoMonitorPage : UserControl
+    public class IoMonitorPage : UserControl, Kaban.UI.Helpers.ISidePageWidth
     {
         private readonly TextBox _filter = new TextBox();
         private readonly CheckBox _onlyOn = new CheckBox();
         private readonly Panel _body = new Panel();
         private readonly Label _empty = new Label();
         private readonly List<Section> _sections = new List<Section>();
+        private Panel _top;
 
         private sealed class Section
         {
@@ -45,7 +46,7 @@ namespace Kaban.UI.Screens
             Font = UiStyle.Body;
             Dock = DockStyle.Fill;
 
-            var top = new Panel { Dock = DockStyle.Top, Height = 38, Padding = new Padding(8, 7, 8, 4), BackColor = Color.White };
+            var top = _top = new Panel { Dock = DockStyle.Top, Height = 38, Padding = new Padding(8, 7, 8, 4), BackColor = Color.White };
             var find = new Label { Text = T("Lbl_IoFilter", "Find:"), AutoSize = true, Location = new Point(8, 11) };
             _filter.Location = new Point(56, 7);
             _filter.Width = 170;
@@ -153,6 +154,28 @@ namespace Kaban.UI.Screens
         {
             foreach (var l in Lists) l.SetFilter(_filter.Text, _onlyOn.Checked);
             LayoutSections();
+        }
+
+        /// <summary>
+        /// The width that shows all of the page (the side panel's border
+        /// double-clicked): the inputs and the outputs side by side, every name
+        /// whole, when that fits in <paramref name="available"/> - else one list
+        /// under the other, as wide as the longest name.
+        /// </summary>
+        public int PreferredWidth(int available)
+        {
+            int gap = Math.Max(6, Font.Height / 2);
+            int bar = _top != null ? _top.Controls.Cast<Control>().Where(c => c.Visible).Select(c => c.Right).DefaultIfEmpty(0).Max() + _top.Padding.Right + 8 : 0;
+            if (_sections.Count == 0) return Math.Max(bar, Font.Height * 20);
+            int col = Lists.Select(l => l.PreferredWidth).DefaultIfEmpty(0).Max();
+            int scroll = SystemInformation.VerticalScrollBarWidth;
+            int chrome = Math.Max(0, Width - _body.ClientSize.Width);
+            // as LayoutSections decides: two columns from Font.Height * 26 on
+            int two = Math.Max(2 * col + gap, Font.Height * 26) + 2 * gap + scroll + chrome;
+            int one = col + 2 * gap + scroll + chrome;
+            bool bothKinds = _sections.Any(sec => sec.Inputs != null && sec.Outputs != null);
+            int need = bothKinds && two <= available ? two : one;
+            return Math.Max(bar, need);
         }
 
         /// <summary>
@@ -305,6 +328,19 @@ namespace Kaban.UI.Screens
         }
 
         public int RowHeight { get { return Font.Height + Math.Max(4, Font.Height * 2 / 5); } }
+
+        /// <summary>As wide as the lamp, the address and the longest name of the list (every row, shown or not).</summary>
+        public int PreferredWidth
+        {
+            get
+            {
+                int lamp = Math.Max(8, Font.Height * 3 / 5);
+                int addrWidth = TextRenderer.MeasureText("Y2000", Font).Width;
+                int label = _points.Select(p => TextRenderer.MeasureText(p.Label ?? "", Font, Size.Empty, TextFormatFlags.NoPrefix).Width)
+                                   .DefaultIfEmpty(0).Max();
+                return lamp / 2 + lamp + lamp / 2 + 2 + addrWidth + 4 + label + 6;
+            }
+        }
         public int PreferredHeight { get { return Math.Max(RowHeight, _shown.Count * RowHeight); } }
 
         public void SetFilter(string text, bool onlyOn)

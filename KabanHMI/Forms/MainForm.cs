@@ -2374,6 +2374,9 @@ namespace Kaban.UI.Forms
                                             : "HMI closed (" + e.CloseReason + ").");
             try { SaveAllSideViews(); } catch { }
             SavePlace();
+            // The side windows close after this (their owner is closing): the place
+            // written now, with them, is the one to open with next time.
+            _placeFrozen = true;
 
             // Stop scanning FIRST, then close every station - not just station 1.
             // A scan in flight would otherwise re-open a station we just closed, and

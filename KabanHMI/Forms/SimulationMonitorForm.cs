@@ -43,7 +43,7 @@ namespace Kaban.UI.Forms
     /// file each, "#sheet:" lines separating the tabs. A file from before the
     /// tabs is read as a single tab called "Main".
     /// </summary>
-    public partial class SimulationMonitorForm : Form
+    public partial class SimulationMonitorForm : Form, ISidePageWidth
     {
         private readonly TabControl _tabs = new TabControl();
         private readonly Timer _refresh = new Timer();
@@ -57,6 +57,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private ToolStripItem _restoreItem;
+        private ToolStrip _bar;
         private Button _btnUndo, _btnRedo;
 
         /// <summary>Copied rows - shared by every controller, so a list can be copied from one PLC to another.</summary>
@@ -301,7 +302,7 @@ namespace Kaban.UI.Forms
             Font = UiStyle.Body;
             KeyPreview = true;
 
-            var bar = BuildToolbar();
+            var bar = _bar = BuildToolbar();
 
             _status.Dock = DockStyle.Bottom;
             _status.Height = 24;
@@ -435,6 +436,30 @@ namespace Kaban.UI.Forms
         }
 
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
+
+        /// <summary>
+        /// The width that shows all of the monitor (the side panel's border
+        /// double-clicked): every button of the toolbar, and every column of the
+        /// tab on display with room for its scroll bar.
+        /// </summary>
+        public int PreferredWidth(int available)
+        {
+            int toolbar = _bar == null ? 0 : _bar.Items.Cast<ToolStripItem>().Where(i => i.Available)
+                                              .Sum(i => i.Width + i.Margin.Horizontal) + _bar.Padding.Horizontal + 12;
+            int table = 0;
+            var mon = CurrentMonitor;
+            var sh = mon != null ? mon.Current : null;
+            if (sh != null && sh.Grid != null)
+            {
+                var grid = sh.Grid;
+                int columns = grid.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible).Sum(c => c.Width) +
+                              (grid.RowHeadersVisible ? grid.RowHeadersWidth : 0) + SystemInformation.VerticalScrollBarWidth + 4;
+                // what is round the table: the tab strips' frames
+                int chrome = Math.Max(0, ClientSize.Width - grid.ClientSize.Width);
+                table = columns + chrome;
+            }
+            return Math.Max(toolbar, table);
+        }
 
         private void ShowMenu(Control owner, ContextMenuStrip menu)
         {

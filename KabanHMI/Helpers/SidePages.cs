@@ -50,6 +50,17 @@ namespace Kaban.UI.Helpers
     /// Inputs / Outputs) and each mounted machine's (a MachineScreen with
     /// Role = ScreenRoles.SidePage, designed in Visual Studio like any page).
     /// </summary>
+    /// <summary>
+    /// A side page that knows how wide it has to be for all of it to show - the
+    /// width a double-click on the side panel's border gives it (MainForm).
+    /// A page without it is measured from its controls.
+    /// </summary>
+    public interface ISidePageWidth
+    {
+        /// <summary>The width (pixels) that shows the whole page; <paramref name="available"/> is the most it can have.</summary>
+        int PreferredWidth(int available);
+    }
+
     public static class SidePages
     {
         private static readonly List<SidePage> _registered = new List<SidePage>();
