@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -349,7 +349,7 @@ namespace Kaban.UI.Forms
         /// <summary>The UI layer must not reference the Simulation driver assembly, so the simulator is recognised by type name.</summary>
         private static bool IsSimulatedStation(int station)
         {
-            var drv = PlcManager.Instance.GetDriverForMonitoring(station);
+            var drv = PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(station));
             return drv != null && drv.GetType().Name == "SimulationDriver";
         }
 
@@ -1062,6 +1062,10 @@ namespace Kaban.UI.Forms
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value") });
             grid.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
+            // value just before) or the PLC program. See DeviceHistory.
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Last change"), ReadOnly = true });
+            grid.ShowCellToolTips = true;
 
             // EXPLICIT WIDTHS, each column its own: narrowing the last column
             // leaves space at the right instead of widening the one before it (a
@@ -1231,7 +1235,7 @@ namespace Kaban.UI.Forms
                 if (row == null || (row.IsComment && col != "Label") || (row.IsBlank && col == "Value")) { e.Cancel = true; return; }
                 // An element is its array's: only its value is its own. An array's
                 // value is the list of its elements'.
-                if ((row.IsElement && col != "Value") || (row.IsArray && col == "Value") || col == "Format") { e.Cancel = true; return; }
+                if ((row.IsElement && col != "Value") || (row.IsArray && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
                 if (row.IsArray && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
                 sh.Editing = true;
@@ -1802,8 +1806,8 @@ namespace Kaban.UI.Forms
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value" };
-        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Changed" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         private static bool _applyingLayout;
         private bool _layoutPending;
@@ -1969,6 +1973,13 @@ namespace Kaban.UI.Forms
                     long? va = ValueOf(mon, a), vb = ValueOf(mon, b);
                     if (va == null || vb == null) return va == null ? (vb == null ? 0 : 1) : -1;   // unread last
                     return va.Value.CompareTo(vb.Value);
+                }
+                case "Changed":
+                {
+                    var ca = LastChangeOf(mon, a); var cb = LastChangeOf(mon, b);
+                    DateTime? ta = ca != null ? ca.Changed : null, tb = cb != null ? cb.Changed : null;
+                    if (ta == null || tb == null) return ta == null ? (tb == null ? 0 : 1) : -1;   // never changed last
+                    return tb.Value.CompareTo(ta.Value);                                        // the latest first
                 }
             }
             return 0;
@@ -2296,11 +2307,13 @@ namespace Kaban.UI.Forms
             // Every word of the value, low first - the low word alone turns a
             // 32-bit value (or a float, or a string) into nonsense.
             var addresses = WordsOf(row).ToList();
-            for (int i = 0; i < words.Length && i < addresses.Count; i++)
-            {
-                driver.Write(addresses[i], words[i]);
-                mon.Values[addresses[i]] = words[i];
-            }
+            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: typed " + (text ?? "").Trim() + " into " + row.Address +
+                                                    (string.IsNullOrWhiteSpace(row.EffectiveLabel) ? "" : " [" + row.EffectiveLabel.Trim() + "]")))
+                for (int i = 0; i < words.Length && i < addresses.Count; i++)
+                {
+                    driver.Write(addresses[i], words[i]);
+                    mon.Values[addresses[i]] = words[i];
+                }
 
             if (!mon.IsSimulated)
                 AuditLogger.Log("monitor wrote " + (text ?? "").Trim() + " to " + row.Address + " on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
@@ -2382,7 +2395,8 @@ namespace Kaban.UI.Forms
         /// </summary>
         private void ReadSimulated(MonitorTab mon)
         {
-            var driver = mon.ReadDriver;
+            // The simulator's own class (the registered driver is the logging one around it).
+            var driver = PlcManager.Unwrap(mon.ReadDriver);
             if (driver == null) return;
             var dumpMethod = driver.GetType().GetMethod("Dump");
             if (dumpMethod == null) return;
@@ -2392,6 +2406,14 @@ namespace Kaban.UI.Forms
             mon.Values.Clear();
             foreach (System.Collections.DictionaryEntry kv in dump)
                 mon.Values[Convert.ToString(kv.Key)] = Convert.ToInt32(kv.Value);
+            // The Last change column. A device the simulator has never held reads 0
+            // there: seen as 0, so the first write to it is a change.
+            var now = DateTime.Now;
+            var seenNames = mon.Values.Keys.ToList();
+            var seenValues = mon.Values.Values.ToList();
+            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsArray).SelectMany(WordsOf))
+                if (!mon.Values.ContainsKey(w)) { seenNames.Add(w); seenValues.Add(0); }
+            DeviceHistory.Observe(mon.Station, seenNames, seenValues, now, now);
 
             // An array's elements are listed, even one added a moment ago.
             foreach (var s in mon.Sheets) EnsureElements(s);
@@ -2432,8 +2454,12 @@ namespace Kaban.UI.Forms
             {
                 int[] values = null;
                 bool ok = false;
+                var started = DateTime.Now;
                 try { ok = driver.TryReadMulti(batch, out values); }
                 catch (Exception ex) { AuditLogger.Log("monitor read failed: " + ex.Message); }
+                // The Last change column: when each device changed, and whether the HMI did it.
+                if (ok && values != null && values.Length == batch.Length)
+                    DeviceHistory.Observe(mon.Station, batch, values, started, DateTime.Now);
 
                 try
                 {
@@ -2495,6 +2521,7 @@ namespace Kaban.UI.Forms
                     // A heading: its text across the label cell, the row tinted.
                     Set(row.Cells["Label"], model.Comment);
                     Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     Style(row, ColCommentBack, ColCommentText, UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic));
                     continue;
                 }
@@ -2504,6 +2531,7 @@ namespace Kaban.UI.Forms
                 if (model.IsBlank)
                 {
                     Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     continue;
                 }
 
@@ -2539,7 +2567,74 @@ namespace Kaban.UI.Forms
                     Set(row.Cells["Value"], "-");
                     if (row.Cells["Value"].Style.ForeColor != ColLabelUnknown) row.Cells["Value"].Style.ForeColor = ColLabelUnknown;
                 }
+
+                RenderLastChange(mon, model, row.Cells["Changed"]);
             }
+        }
+
+        private static readonly Color ColChangedByHmi = Color.FromArgb(20, 90, 190);
+        private static readonly Color ColChangedByPlc = Color.FromArgb(35, 40, 48);
+
+        /// <summary>
+        /// The latest change of a row's devices (a double word is two, a string
+        /// several): null when none was seen since the monitor or a page started
+        /// reading it. An array's row has none - its elements do.
+        /// </summary>
+        internal static DeviceHistory.Info LastChangeOf(MonitorTab mon, WatchRow model)
+        {
+            if (model == null || !model.IsDevice || model.IsArray) return null;
+            DeviceHistory.Info latest = null;
+            foreach (var w in WordsOf(model))
+            {
+                var i = DeviceHistory.Get(mon.Station, w);
+                if (i == null || i.Changed == null) continue;
+                if (latest == null || i.Changed.Value > latest.Changed.Value) latest = i;
+            }
+            return latest;
+        }
+
+        /// <summary>"14:32:05.1  HMI" - the tooltip says from what, to what, and what wrote it.</summary>
+        private static void RenderLastChange(MonitorTab mon, WatchRow model, DataGridViewCell cell)
+        {
+            var c = LastChangeOf(mon, model);
+            if (c == null)
+            {
+                Set(cell, model.IsDevice && !model.IsArray ? "-" : "");
+                if (cell.Style.ForeColor != ColLabelUnknown) cell.Style.ForeColor = ColLabelUnknown;
+                Tip(cell, model.IsDevice && !model.IsArray
+                    ? T("Tip_MonNoChange", "No change seen since the HMI started reading this device. Changes before that are not known.")
+                    : "");
+                return;
+            }
+            var t = c.Changed.Value;
+            string when = (t.Date == DateTime.Today ? "" : t.ToString("dd.MM ", CultureInfo.InvariantCulture)) +
+                          t.ToString("HH:mm:ss.f", CultureInfo.InvariantCulture);
+            string who = c.ByHmi ? T("Mon_ByHmi", "HMI") : T("Mon_ByPlc", "PLC");
+            Set(cell, when + "  " + who);
+            var want = c.ByHmi ? ColChangedByHmi : ColChangedByPlc;
+            if (cell.Style.ForeColor != want) cell.Style.ForeColor = want;
+
+            string tip = string.Format(T("Tip_MonChanged", "Changed from {0} to {1} at {2}."),
+                c.From.HasValue ? c.From.Value.ToString(CultureInfo.InvariantCulture) : "?",
+                c.Value.HasValue ? c.Value.Value.ToString(CultureInfo.InvariantCulture) : "?",
+                t.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+            if (c.ByHmi)
+                tip += "\r\n" + string.Format(T("Tip_MonChangedByHmi", "Written by the HMI at {0}, user {1}: {2}"),
+                    c.WriteTime.HasValue ? c.WriteTime.Value.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture) : "?",
+                    c.WriteUser, c.WriteSource);
+            else
+                tip += "\r\n" + T("Tip_MonChangedByPlc", "The HMI did not write this value just before: the PLC program (or the machine) changed it.");
+            if (c.LastWrite.HasValue && !(c.ByHmi && c.WriteTime == c.LastWrite))
+                tip += "\r\n" + string.Format(T("Tip_MonLastWrite", "The HMI last wrote it at {0} ({1})."),
+                    c.LastWrite.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                    c.LastWriteValue.HasValue ? c.LastWriteValue.Value.ToString(CultureInfo.InvariantCulture) : T("Mon_PartWrite", "a bit of it"));
+            tip += "\r\n" + T("Tip_MonWriteLog", "Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.");
+            Tip(cell, tip);
+        }
+
+        private static void Tip(DataGridViewCell cell, string text)
+        {
+            if (cell.ToolTipText != text) cell.ToolTipText = text;
         }
 
         private static void Style(DataGridViewRow row, Color back, Color fore, Font font)
@@ -2679,7 +2774,8 @@ namespace Kaban.UI.Forms
                         MessageBox.Show(DialogOwner, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     else
                     {
-                        foreach (var kv in values) { driver.Write(kv.Key, kv.Value); mon.Values[kv.Key] = kv.Value; applied++; }
+                        using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: values imported from " + Path.GetFileName(dlg.FileName)))
+                            foreach (var kv in values) { driver.Write(kv.Key, kv.Value); mon.Values[kv.Key] = kv.Value; applied++; }
                         if (!mon.IsSimulated)
                             AuditLogger.Log("monitor imported and WROTE " + applied + " values to " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
                     }

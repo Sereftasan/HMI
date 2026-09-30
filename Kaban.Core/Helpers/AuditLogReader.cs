@@ -21,7 +21,13 @@ namespace Kaban.Core.Helpers
         /// <summary>Something that went wrong: failed, refused, could not.</summary>
         Problem,
         /// <summary>Settings, files, layouts and restarts.</summary>
-        Settings
+        Settings,
+        /// <summary>
+        /// One device written to a controller, as the driver was asked for it - the
+        /// PLC write log (PlcWriteLog), not the audit log: every write, from every
+        /// screen, with the value before it and what wrote it.
+        /// </summary>
+        DeviceWrite
     }
 
     /// <summary>One entry of the audit log.</summary>
@@ -76,6 +82,57 @@ namespace Kaban.Core.Helpers
         /// (both included), oldest first.
         /// </summary>
         public static List<AuditEntry> Read(DateTime from, DateTime to)
+        {
+            return Read(from, to, false);
+        }
+
+        /// <summary>
+        /// The same, with the PLC write log's device writes among them when
+        /// <paramref name="withDeviceWrites"/> (the log viewer): each one an entry of
+        /// kind DeviceWrite, in time order with the rest.
+        /// </summary>
+        public static List<AuditEntry> Read(DateTime from, DateTime to, bool withDeviceWrites)
+        {
+            var result = ReadAudit(from, to);
+            if (!withDeviceWrites) return result;
+            var writes = PlcWriteLog.Read(from, to).Select(ToEntry).ToList();
+            if (writes.Count == 0) return result;
+            // The audit log keeps whole seconds, the write log milliseconds: an entry
+            // of the same second as a write goes first (it is usually the action
+            // that made it: "set bit M645 ...").
+            var merged = new List<AuditEntry>(result.Count + writes.Count);
+            int i = 0, j = 0;
+            while (i < result.Count || j < writes.Count)
+            {
+                if (j >= writes.Count || (i < result.Count && result[i].Time <= writes[j].Time)) merged.Add(result[i++]);
+                else merged.Add(writes[j++]);
+            }
+            return merged;
+        }
+
+        /// <summary>A device write as a log entry: "M645 = 1 (was 0) (PLC 1) - ManualCutting.btnSaw [Saw]: SET".</summary>
+        public static AuditEntry ToEntry(PlcWriteLog.Entry w)
+        {
+            // The same entry every time it is read (the write log keeps its entries):
+            // the viewer tells "nothing new" by the last entry being the same one.
+            return _asEntry.GetValue(w, MakeEntry);
+        }
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<PlcWriteLog.Entry, AuditEntry> _asEntry =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<PlcWriteLog.Entry, AuditEntry>();
+
+        private static AuditEntry MakeEntry(PlcWriteLog.Entry w)
+        {
+            string text = w.Device + " = " + (w.Value.HasValue ? w.Value.Value.ToString(CultureInfo.InvariantCulture) : "?") +
+                          (w.Value > 9 || w.Value < 0 ? " (" + w.Hex + ")" : "") +
+                          ", " + (w.Before.HasValue ? "was " + w.Before.Value.ToString(CultureInfo.InvariantCulture) : "not read before") +
+                          " (PLC " + w.Station.ToString(CultureInfo.InvariantCulture) + ")" +
+                          (w.Ok ? "" : " " + w.ResultText) +
+                          (string.IsNullOrEmpty(w.Source) ? "" : " - " + w.Source);
+            return new AuditEntry { Time = w.Time, User = w.User, Text = text, Kind = AuditKind.DeviceWrite, Station = w.Station };
+        }
+
+        private static List<AuditEntry> ReadAudit(DateTime from, DateTime to)
         {
             var result = new List<AuditEntry>();
             if (to < from) return result;

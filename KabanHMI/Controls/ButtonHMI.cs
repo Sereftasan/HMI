@@ -1347,7 +1347,7 @@ namespace Kaban.UI.Controls
                 // reached the PLC, so its release must be sent regardless.
                 _heldMomentary.Add(new KeyValuePair<string, string>(eff, action.Address));
                 _heldStation = PlcNumber;
-                WriteBit(driver, eff, true, action.Address);
+                WriteBit(driver, eff, true, action.Address, "momentary press");
             }
         }
 
@@ -1398,7 +1398,7 @@ namespace Kaban.UI.Controls
             if (driver == null) return;
             foreach (var h in held)
             {
-                try { WriteBit(driver, h.Key, false, h.Value); }
+                try { WriteBit(driver, h.Key, false, h.Value, "momentary release"); }
                 catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " (PLC " + PlcNumber + ") failed: " + ex.Message); }
             }
         }
@@ -1411,10 +1411,10 @@ namespace Kaban.UI.Controls
             switch (action.Action)
             {
                 case BitActionType.SET:
-                    return WriteBit(driver, effAddr, true, action.Address);
+                    return WriteBit(driver, effAddr, true, action.Address, "SET");
 
                 case BitActionType.RESET:
-                    return WriteBit(driver, effAddr, false, action.Address);
+                    return WriteBit(driver, effAddr, false, action.Address, "RESET");
 
                 case BitActionType.Alternate:
                     int current;
@@ -1422,7 +1422,7 @@ namespace Kaban.UI.Controls
                     {
                         return false; // can't safely toggle without knowing the current state
                     }
-                    return WriteBit(driver, effAddr, current == 0, action.Address);
+                    return WriteBit(driver, effAddr, current == 0, action.Address, "toggle");
 
                 case BitActionType.Momentary:
                     return true; // handled in OnMouseDown/OnMouseUp
@@ -1432,9 +1432,10 @@ namespace Kaban.UI.Controls
             }
         }
 
-        private bool WriteBit(IPlcDriver driver, string effectiveAddress, bool setOn, string originalAddress)
+        private bool WriteBit(IPlcDriver driver, string effectiveAddress, bool setOn, string originalAddress, string how)
         {
-            int result = driver.Write(effectiveAddress, setOn ? 1 : 0);
+            int result;
+            using (Kaban.UI.Helpers.WriteSource.For(this, how)) result = driver.Write(effectiveAddress, setOn ? 1 : 0);
             bool ok = (result == 0);
 
             if (ok && LogAction)
@@ -1452,7 +1453,8 @@ namespace Kaban.UI.Controls
 
             int value = ResolveWordValue(driver, action.Value);
 
-            int result = driver.Write(effAddr, value);
+            int result;
+            using (Kaban.UI.Helpers.WriteSource.For(this, "word action")) result = driver.Write(effAddr, value);
             bool ok = (result == 0);
 
             if (ok && LogAction)

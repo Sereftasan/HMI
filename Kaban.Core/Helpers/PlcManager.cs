@@ -212,6 +212,10 @@ namespace Kaban.Core.Helpers
             // get their own thread and bounded waits, exactly as MX Component has.
             if (driver != null && !(driver is INonBlockingDriver)) driver = new BoundedDriver(driver);
 
+            // EVERY WRITE IS LOGGED, device by device (PlcWriteLog): the driver
+            // handed out is the logging one, so no screen can write around it.
+            if (driver != null && !(driver is LoggedDriver)) driver = new LoggedDriver(id, driver);
+
             if (_drivers.ContainsKey(id)) _drivers[id] = driver;
             else _drivers.Add(id, driver);
 
@@ -244,6 +248,26 @@ namespace Kaban.Core.Helpers
             // B. Return Driver
             if (_drivers.ContainsKey(id)) return _drivers[id];
             return null;
+        }
+
+        /// <summary>
+        /// The controller's own driver inside the wrappers RegisterDriver puts
+        /// around it (LoggedDriver, BoundedDriver) - for code that needs its class
+        /// (the simulator's memory, MX Component's logical station). Writes through
+        /// it are NOT in the PLC write log: only the bench simulation's movement,
+        /// standing in for the PLC program, should write through it.
+        /// </summary>
+        public static IPlcDriver Unwrap(IPlcDriver driver)
+        {
+            for (int i = 0; i < 8 && driver != null; i++)
+            {
+                var logged = driver as LoggedDriver;
+                if (logged != null) { driver = logged.Inner; continue; }
+                var bounded = driver as BoundedDriver;
+                if (bounded != null && bounded.Inner != null) { driver = bounded.Inner; continue; }
+                break;
+            }
+            return driver;
         }
 
         /// <summary>

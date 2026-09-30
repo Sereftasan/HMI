@@ -18,7 +18,7 @@ class Z {
         Console.WriteLine("--- the same driver, registered as the program registers it ---");
         PlcManager.Instance.RegisterDriver(41, new SiemensS7(dead));
         var drv = PlcManager.Instance.GetDriverForMonitoring(41);
-        Check("wrapped on registration", drv is BoundedDriver);
+        Check("wrapped on registration", drv is LoggedDriver && ((LoggedDriver)drv).Inner is BoundedDriver);
         ConnectionMonitor.Start(PlcManager.Instance.GetDriverForMonitoring, new List<int> { 41 });
 
         var worst = 0L; var total = Stopwatch.StartNew();

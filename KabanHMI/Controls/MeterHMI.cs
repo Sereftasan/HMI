@@ -488,7 +488,7 @@ namespace Kaban.UI.Controls
             }
 
             int raw = (int)Math.Round(v * (Divisor <= 0 ? 1 : Divisor));
-            drv.Write(Address, raw);
+            using (Kaban.UI.Helpers.WriteSource.For(this, "set to " + v.ToString(System.Globalization.CultureInfo.InvariantCulture))) drv.Write(Address, raw);
             _display = v; _hasValue = true;
             Invalidate();
 

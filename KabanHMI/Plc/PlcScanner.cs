@@ -638,9 +638,14 @@ namespace Kaban.UI.Plc
                 int[] values = null;
                 bool ok = false;
                 bool answered = false;
+                var readStarted = DateTime.Now;
                 try
                 {
                     ok = driver.IsConnected && driver.TryReadMulti(batch, out values);
+                    // WHEN EACH DEVICE CHANGED, AND WHETHER THE HMI DID IT (the PLC
+                    // Monitor's Last change column). A complete reading only: a batch
+                    // with a failed address gives 0 for it, which is not a change.
+                    if (ok && values != null) DeviceHistory.Observe(plc, batch, values, readStarted, DateTime.Now);
                     // TryReadMulti returns false if ANY single address failed, and a
                     // page can easily contain one address that does not exist in the
                     // current ladder. Judging the STATION by that condemned a

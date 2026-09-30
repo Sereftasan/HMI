@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Kaban.Core.Enums;
@@ -178,7 +178,10 @@ namespace Kaban.UI.Helpers
 
         private static IPlcDriver Simulated(int station)
         {
-            var drv = PlcManager.Instance.GetDriverForMonitoring(station);
+            // The simulator's own driver, not the logging one PlcManager hands out:
+            // this movement plays the PLC program's part, and its writes are the
+            // PLC's, not the HMI's - they must not appear in the PLC write log.
+            var drv = PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(station));
             // Only a simulated station is moved by this: a real PLC moves itself.
             return drv != null && drv.GetType().Name == "SimulationDriver" && drv.IsConnected ? drv : null;
         }

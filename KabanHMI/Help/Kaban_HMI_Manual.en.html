@@ -423,12 +423,21 @@ Windows' own message boxes keep Windows' size.</p>
 <ul>
  <li>Every change made from the HMI is written to the <b>audit log</b> with the time and the user: one file per day, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
  <li>Lines starting <code>[PLC DIAG]</code> record communication changes (a station lost, a station back).</li>
+ <li>The <b>PLC write log</b> records <b>every write the HMI makes to a controller</b>, device by device, from every page, dialog and the PLC Monitor &ndash;
+     so the PLC programmer can tell a value the HMI set from one the PLC program set. One file per day beside the audit log,
+     <code>PlcWrites_yyyy-MM-dd.csv</code> (Excel opens it as it is), one line per device:
+     <i>Time</i> (to the millisecond), <i>Station</i>, <i>Controller</i>, <i>Device</i>, <i>Value</i>, <i>Hex</i>, <i>Before</i> (the value the HMI last read there,
+     empty when nothing was reading it), <i>Result</i> (OK, or FAILED with the controller's code), <i>User</i> and <i>Source</i> &ndash; the page, the control's name
+     as the designer knows it, its caption and what was done: <i>ManualCutting.btnSaw [Saw]: momentary press</i>, <i>PLC Monitor: typed 42 into D100 [Speed]</i>.
+     A double word is its two words; a digit-specified device (<i>K4M100</i>) is each of its bits; a bit of a word (<i>D100.3</i>) is the bit and the word.
+     A write the controller refused is logged too. The log is kept as long as the audit log and is <b>not</b> switched off with it.
+     The bench simulation's own movements (it plays the PLC program's part) are not HMI writes and are not in it.</li>
  <li><b>Log Settings</b> <span class="lvl l2">Maintenance</span> shows the log as a table, newest first (click <i>Time</i> to turn it round):
   <ul>
    <li><b>Period</b>: last hour, today, yesterday, 7 or 30 days, everything kept &ndash; or any <b>From</b>/<b>To</b> (changing either picks <i>From - to</i>).</li>
    <li>&#128269; <b>Search</b>: every word typed must appear, in any case &ndash; <i>D210 admin</i> finds admin's entries about D210.
        <b>User</b>, <b>PLC</b> (the controller an entry is about &ndash; its number is in the <i>PLC</i> column) and <b>Kind</b>
-       (sign-in, connection, PLC writes, problems, settings, other) narrow it further; &#10006; clears them.</li>
+       (sign-in, connection, PLC writes, <b>PLC device writes</b> &ndash; the PLC write log's lines &ndash;, problems, settings, other) narrow it further; &#10006; clears them.</li>
    <li><b>Live</b>: while the period runs up to now, new entries appear as they are written; the row you are reading stays put.</li>
    <li>The selected entry is shown in full under the table (a station scan is a report of several lines). &#128190; exports the entries shown, as a log file or a CSV table.</li>
    <li><span class="lvl l3">Admin</span> only: switching the log <b>off</b> (it asks first, and writes who switched it off; while it is off the page says so in red)
@@ -480,6 +489,10 @@ Windows' own message boxes keep Windows' size.</p>
    <li>&#128228; exports the tab to a CSV file, &#128229; imports devices from one (a <code>PlcLabels.csv</code> works as it is).</li>
    <li><b>Columns</b>: drag a heading to put the column elsewhere, drag its border to size it &ndash; the others keep their widths, and every tab uses the same layout.
        <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).</li>
+   <li><b>Last change</b> (a column after <i>Value</i>): when the device last changed and <b>who changed it</b> &ndash; <b>HMI</b> (blue) when the HMI wrote that very
+       value just before, <b>PLC</b> when it did not (the PLC program, or the machine). The pointer on it tells from what to what, which control or page wrote it
+       and the user, or when the HMI last wrote it. A change is known only while the HMI reads the device (a page showing it, or the monitor): before that it shows <b>-</b>.
+       Click the heading to sort the latest changes first.</li>
    <li><b>Double-click a value</b> (or <kbd>Enter</kbd>) to change it right there in the table; on anything else it opens that row with the field selected. <kbd>F2</kbd> edits the cell in place.</li>
    <li>Keys on the tab strip: <kbd>Ins</kbd> new tab, <kbd>F2</kbd> rename, <kbd>Del</kbd> delete, <kbd>Ctrl</kbd>+<kbd>&larr;</kbd>/<kbd>&rarr;</kbd> move,
        <kbd>Ctrl</kbd>+<kbd>Tab</kbd> next tab. <kbd>Tab</kbd> moves between the table and the tab strips.</li>
@@ -491,7 +504,7 @@ Windows' own message boxes keep Windows' size.</p>
 <h2 id="files">12. Where things are kept</h2>
 <table>
 <tr><th>What</th><th>Where</th></tr>
-<tr><td>Users, units, PLC connections, audit logs, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>)</td></tr>
+<tr><td>Users, units, PLC connections, audit logs, the PLC write log, layouts</td><td><code>C:\ProgramData\KabanHMI\</code> (the logs in <code>AuditLogs</code>: <code>HmiAudit_yyyy-MM-dd.txt</code>, <code>PlcWrites_yyyy-MM-dd.csv</code>)</td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>PLC Monitor lists, column layout, where side pages' own windows were (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
 <tr><td>The screen scale (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>

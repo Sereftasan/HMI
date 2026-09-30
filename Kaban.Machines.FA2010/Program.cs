@@ -215,7 +215,7 @@ namespace Kaban.Machines.FA2010
         {
             foreach (var endpoint in PlcConnectionSettings.Endpoints())
             {
-                var sim = PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId) as SimulationDriver;
+                var sim = PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId)) as SimulationDriver;
                 if (sim == null) continue;
 
                 // Optional per-station seed file, e.g. "SimSeed.Station2.txt" next to

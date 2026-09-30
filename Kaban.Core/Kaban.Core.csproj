@@ -77,6 +77,9 @@
     <Compile Include="Enums\SystemCondition.cs" />
     <Compile Include="Helpers\ConnectionMonitor.cs" />
     <Compile Include="Helpers\BoundedDriver.cs" />
+    <Compile Include="Helpers\DeviceHistory.cs" />
+    <Compile Include="Helpers\LoggedDriver.cs" />
+    <Compile Include="Helpers\PlcWriteLog.cs" />
     <Compile Include="Helpers\SettingsMigration.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.Movement.cs">

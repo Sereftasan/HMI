@@ -72,7 +72,7 @@ class SP {
         Check("  and listed as a side page, named by its machine", SidePages.All().Any(p => p.Key == "TST.Order" && p.Title.EndsWith("Order")),
               string.Join(", ", SidePages.All().Select(p => p.Key + "=" + p.Title)));
 
-        var sim = (Kaban.Drivers.Simulation.SimulationDriver)PlcManager.Instance.GetDriverForMonitoring(1);
+        var sim = (Kaban.Drivers.Simulation.SimulationDriver)PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(1));
         var form = new MainForm();
         form.BuildNavigation();
         form.Load += (s, e) => SecurityManager.Login("admin", SecurityLevel.Admin);

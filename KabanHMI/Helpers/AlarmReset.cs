@@ -77,7 +77,7 @@ namespace Kaban.UI.Helpers
             }
 
             int result;
-            try { result = driver.Write(address, 1); }
+            try { using (WriteSource.For("Alarm reset (" + machine + "): press")) result = driver.Write(address, 1); }
             catch (Exception ex) { result = -1; why = ex.Message; }
             if (result != 0)
             {
@@ -104,7 +104,7 @@ namespace Kaban.UI.Helpers
                 t.Stop();
                 t.Dispose();
                 bool ok;
-                try { ok = driver.Write(address, 0) == 0; }
+                try { using (WriteSource.For("Alarm reset (" + machine + "): release")) ok = driver.Write(address, 0) == 0; }
                 catch { ok = false; }
                 if (ok) return;
                 if (attemptsLeft > 1) { Release(driver, address, machine, attemptsLeft - 1); return; }

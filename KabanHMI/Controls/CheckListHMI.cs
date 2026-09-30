@@ -108,7 +108,7 @@ namespace Kaban.UI.Controls
             }
             var drv = PlcManager.Instance.GetDriver(PlcNumber);
             if (drv == null) return;
-            drv.Write(row.Address, row.Box.Checked ? 1 : 0);
+            using (Kaban.UI.Helpers.WriteSource.For(row.Box, row.Box.Checked ? "ticked" : "unticked")) drv.Write(row.Address, row.Box.Checked ? 1 : 0);
             if (LogAction)
                 AuditLogger.Log($"set option {row.Address} (PLC {PlcNumber}) = {(row.Box.Checked ? 1 : 0)}");
         }

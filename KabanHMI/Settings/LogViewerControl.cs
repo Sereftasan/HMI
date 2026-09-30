@@ -134,7 +134,7 @@ namespace Kaban.UI.Settings
             _kind.DropDownStyle = ComboBoxStyle.DropDownList;
             _kind.Width = 150;
             _kind.Items.Add(new Choice(null, LanguageManager.GetString("Log_KindAll", "All kinds")));
-            foreach (AuditKind k in new[] { AuditKind.SignIn, AuditKind.Connection, AuditKind.PlcWrite,
+            foreach (AuditKind k in new[] { AuditKind.SignIn, AuditKind.Connection, AuditKind.PlcWrite, AuditKind.DeviceWrite,
                                             AuditKind.Problem, AuditKind.Settings, AuditKind.Other })
                 _kind.Items.Add(new Choice(k, KindName(k)));
             _kind.SelectedIndex = 0;
@@ -259,6 +259,7 @@ namespace Kaban.UI.Settings
                 case AuditKind.SignIn: return LanguageManager.GetString("Log_KindSignIn", "Sign-in, users");
                 case AuditKind.Connection: return LanguageManager.GetString("Log_KindConnection", "Connection");
                 case AuditKind.PlcWrite: return LanguageManager.GetString("Log_KindPlcWrite", "PLC writes");
+                case AuditKind.DeviceWrite: return LanguageManager.GetString("Log_KindDeviceWrite", "PLC device writes");
                 case AuditKind.Problem: return LanguageManager.GetString("Log_KindProblem", "Problems");
                 case AuditKind.Settings: return LanguageManager.GetString("Log_KindSettings", "Settings");
                 default: return LanguageManager.GetString("Log_KindOther", "Other");
@@ -368,7 +369,9 @@ namespace Kaban.UI.Settings
                 finally { _setting = false; }
             }
 
-            var read = AuditLogReader.Read(from, to);
+            // With the PLC write log's device writes (PlcWriteLog): every device the
+            // HMI wrote, with the value before it and what wrote it.
+            var read = AuditLogReader.Read(from, to, true);
             bool same = read.Count == _inPeriod.Count &&
                         (read.Count == 0 || ReferenceEquals(read[read.Count - 1], _inPeriod[_inPeriod.Count - 1]));
             _inPeriod = read;
@@ -567,7 +570,8 @@ namespace Kaban.UI.Settings
         {
             var entry = EntryAt(e.RowIndex);
             if (entry == null) return;
-            if (entry.Kind == AuditKind.Problem) e.CellStyle.ForeColor = Color.FromArgb(170, 30, 30);
+            if (entry.Kind == AuditKind.Problem || (entry.Kind == AuditKind.DeviceWrite && entry.Text.Contains(" FAILED")))
+                e.CellStyle.ForeColor = Color.FromArgb(170, 30, 30);
             else if (entry.Kind == AuditKind.Connection) e.CellStyle.ForeColor = Color.FromArgb(20, 80, 150);
             else if (e.ColumnIndex == 3) e.CellStyle.ForeColor = Color.FromArgb(90, 96, 106);
         }

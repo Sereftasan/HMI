@@ -4081,3 +4081,33 @@ and `UnitLookAndErrors` extended.
 - Manual: the unit's "?" (fault only, states, where to start, on this machine), axis row decimals.
 - Tests: `tools/ui_test/CylinderSteps.cs` (new); `AxisRowLayout.cs`, `WiringHelp.cs`, `CylinderHelpAndLogin.cs`,
   `UnitTypes.cs`, `UnitHelpLinks.cs`, `MonitorFind.cs` updated.
+
+## 2026-09-30 - Every PLC write in a log, device by device; the PLC Monitor's Last change
+
+- `Kaban.Core/Helpers/LoggedDriver.cs` *(new)*: forwards everything; `Write` records time and result in the write log
+  (a throwing write too). `PlcManager.RegisterDriver` puts it around every driver (outside `BoundedDriver`);
+  `PlcManager.Unwrap` *(new)* peels both - used by the simulator's memory dump, `SimulationMotion.Simulated` (its
+  writes are the PLC's, not logged), the four machines' `Program.cs` simulator seeding and
+  `PlcConnectionDiagnostics.Unwrapped`. `LoggedDriver` forwards `IPlcIdentity`.
+- `Kaban.Core/Helpers/PlcWriteLog.cs` *(new)*: `PlcWrites_yyyy-MM-dd.csv` in the audit folder (UTF-8 BOM, ";",
+  header), one line per device (`Devices`: K-digit bits, bit of a word and its word), value before from
+  `DeviceHistory`, result, user, source (`Source(text)` scopes per thread; the calling method otherwise), pruned
+  after `AuditLogger.RetainDays`, not paused by `AuditLogger.Enabled`; appended by its own thread (`Flush`, at
+  exit and on an unhandled exception too); `Warm` at registration; `Written` event; `Read(from, to)` with a
+  per-file cache.
+- `Kaban.Core/Helpers/DeviceHistory.cs` *(new)*: `Observe` (readings, with their start and end; K-digit words as
+  their bits; late readings ignored), `RecordWrite`, `Get` -> `Info` (Changed, From, ByHmi, write time / user /
+  source, last write).
+- `KabanHMI/Helpers/WriteSource.cs` *(new)*: "Page.control [Caption]: action" for a control. Scopes at every
+  write: `ButtonHMI` (momentary press / release, SET, RESET, toggle, word action), `NumericInputHMI` (entered ...,
+  both words), `ComboBoxHMI`, `CheckBoxHMI`, `CheckListHMI`, `MeterHMI`, `AlarmReset` (press / release),
+  `MachineHomeScreen` (speed override), `SimulationMonitorForm` (typed, imported).
+- `PlcScanner.ReadAllStations` and the monitor's reads (`BeginReadReal`, `ReadSimulated`) feed `DeviceHistory`.
+- PLC Monitor: `Changed` column (`Col_LastChange`), `LastChangeOf`, `RenderLastChange` (time, HMI / PLC, tooltip),
+  sort latest first, not editable.
+- `AuditKind.DeviceWrite`, `AuditLogReader.Read(from, to, withDeviceWrites)` / `ToEntry`; the log viewer reads
+  them, lists the kind (`Log_KindDeviceWrite`) and shows failed ones red.
+- Translations: `Col_LastChange`, `Mon_ByHmi`, `Mon_ByPlc`, `Mon_PartWrite`, `Tip_MonNoChange`, `Tip_MonChanged`,
+  `Tip_MonChangedByHmi`, `Tip_MonChangedByPlc`, `Tip_MonLastWrite`, `Tip_MonWriteLog`, `Log_KindDeviceWrite`.
+  Manual: the PLC write log, the kind, the Last change column, where the file is kept.
+- Tests: `tools/core_test/WriteLog.cs`, `tools/ui_test/WriteLogUi.cs` (new); `DriverFreeze.cs` updated.

@@ -254,7 +254,8 @@ namespace Kaban.UI.Screens
                                             "Override", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
-                        drv.Write(_spec.OverrideAddress, (int)(value * _spec.OverrideDivisor));
+                        using (Kaban.UI.Helpers.WriteSource.For(b, "speed override " + value + "%"))
+                            drv.Write(_spec.OverrideAddress, (int)(value * _spec.OverrideDivisor));
                         AuditLogger.Log("speed override set to " + value + "%.");
                     };
                     ovr.Controls.Add(b);

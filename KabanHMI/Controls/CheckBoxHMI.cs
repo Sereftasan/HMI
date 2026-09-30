@@ -190,7 +190,7 @@ namespace Kaban.UI.Controls
             }
             var drv = PlcManager.Instance.GetDriverForWrite(PlcNumber);
             if (drv == null) return;
-            drv.Write(Address, Checked ? 1 : 0);
+            using (Kaban.UI.Helpers.WriteSource.For(this, Checked ? "ticked" : "unticked")) drv.Write(Address, Checked ? 1 : 0);
             if (LogAction)
                 AuditLogger.Log($"set bit {Address} (PLC {PlcNumber}) to {(Checked ? 1 : 0)} via checkbox.");
         }

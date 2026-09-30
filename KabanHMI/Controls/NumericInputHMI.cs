@@ -1056,13 +1056,17 @@ namespace Kaban.UI.Controls
                 // which could silently disagree with what was on screen when an offset was set.
                 string effAddr = GetEffectiveAddress(_lastReadPlc ?? liveTagReader);
 
-                int writeResult = driver.Write(effAddr, low);
-                bool ok = (writeResult == 0);
-
-                if (DataType == DataTypeEnum.Bin_32)
+                bool ok;
+                using (Kaban.UI.Helpers.WriteSource.For(this, "entered " + input.Trim()))
                 {
-                    int writeResult2 = driver.Write(PlcAddressHelper.GetNextAddress(effAddr), high);
-                    ok &= (writeResult2 == 0);
+                    int writeResult = driver.Write(effAddr, low);
+                    ok = (writeResult == 0);
+
+                    if (DataType == DataTypeEnum.Bin_32)
+                    {
+                        int writeResult2 = driver.Write(PlcAddressHelper.GetNextAddress(effAddr), high);
+                        ok &= (writeResult2 == 0);
+                    }
                 }
 
                 if (!ok)

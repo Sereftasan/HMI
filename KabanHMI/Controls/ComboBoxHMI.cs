@@ -93,7 +93,7 @@ namespace Kaban.UI.Controls
             var drv = PlcManager.Instance.GetDriverForWrite(PlcNumber);
             if (drv == null) return;
             int val = _opts[SelectedIndex].Value;
-            drv.Write(Address, val);
+            using (Kaban.UI.Helpers.WriteSource.For(this, "chose '" + Text + "'")) drv.Write(Address, val);
             if (LogAction)
                 AuditLogger.Log($"wrote {val} to {Address} (PLC {PlcNumber}) via combobox.");
         }

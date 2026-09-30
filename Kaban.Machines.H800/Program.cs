@@ -135,7 +135,7 @@ namespace Kaban.Machines.H800
         {
             foreach (var endpoint in PlcConnectionSettings.Endpoints())
             {
-                var sim = PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId) as SimulationDriver;
+                var sim = PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId)) as SimulationDriver;
                 if (sim == null) continue;
 
                 sim.LoadSeedFile(Path.Combine(Application.StartupPath,

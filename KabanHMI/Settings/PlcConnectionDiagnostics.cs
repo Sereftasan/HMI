@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -148,8 +148,7 @@ namespace Kaban.UI.Settings
         /// </summary>
         public static IPlcDriver Unwrapped(IPlcDriver drv)
         {
-            var b = drv as BoundedDriver;
-            return b != null && b.Inner != null ? b.Inner : drv;
+            return PlcManager.Unwrap(drv);      // the logging and the bounding wrappers
         }
 
         /// <summary>"12 s", "4 min", "2 h 5 min" - how long a controller has been silent.</summary>
