@@ -23,7 +23,11 @@ Point numbers are the PLC's: the extension modules continue the base unit's
 X/Y numbering in their order on the bus (sheet 36): U7 X40, U8 X60, U9 X100,
 U10 X120; U11 Y40, U12 Y60, U13 Y100, U14 Y120, U15 Y140.
 
-Output: Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc
+Output: Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc;
+        Card;Via;Measure;Pressure
+  Card: the PLC card and its own terminal name. Via: a sensor read through a
+  module (keyed by the relay the program copies it into). Measure / Pressure:
+  a cylinder's position measurement and clamping pressure, on its outputs.
 
 Usage:
     python3 tools/build_wiring.py
@@ -274,8 +278,87 @@ PNEUMATIC = [
     (('Y127', 'Y130'), 'Y117/Y118 (1/8 5/2 double solenoid)', 'P62 Gripper Angle Cylinder', '154 (A) / 155 (B)', '9 E3'),
 ]
 
+# ------------------------------------------------ read through a module ----
+# Sensors the drawing wires to the simple motion modules' DI terminals (sheet
+# 17), not to an X input. The PLC program copies them into relays - the ones
+# its manual screens use as those cylinders' sensors (the device list's
+# ManualMovement sheet: Left Top Clamping M345, Roller Up/Down M346): keyed by
+# that relay. point (relay), tag, wire, sheet, via, text
+MODULE_INPUTS = [
+    ('M345', 'SN93', '175', '17.7', 'DI1 of the 2nd simple motion module (2/FX5-80SSC-S)',
+     'Left Profile Recognition Unit Up Sensor'),
+    ('M346', '2SN.94 / 2SN.95', '173 / 174', '17.6 - 17.7', 'DI2 / DI3 of the 2nd simple motion module (2/FX5-80SSC-S)',
+     'Input Conveyor Roll Down Sensors (left / right)'),
+]
+
+# ------------------------------------------------------ what a cylinder has --
+# Beside its valve: how its position is measured, and the pressure it clamps
+# with. Keyed, like PNEUMATIC, by the outputs that drive it.
+MEASURE = [
+    (('Y23', 'Y24'), 'encoder X2/X3 (wires 70/71, sheet 11.1) - Profile Start Measurement (Gripper) encoder'),
+    (('Y46', 'Y47'), 'encoder X4/X5 (wires 76/77, sheet 11.2) - Milling Left Top Clamping encoder'),
+    (('Y52', 'Y53'), 'encoder X6/X7 (wires 78/79, sheet 11.3) - Cutting Left Top Clamping encoder'),
+    (('Y54', 'Y55'), 'encoder X14/X15 (wires 84/85, sheet 11.8) - Cutting Right Front Clamping encoder'),
+    (('Y56', 'Y57'), 'encoder X16/X17 (wires 86/87, sheet 11.9) - Cutting Right Top Clamping encoder'),
+    (('Y32', 'Y33'), 'width encoder (wires 102/103) through relay K77 to X10/X11 (wires 80/81, sheet 11.5); '
+                     'Y120 switches K77 to the left unit'),
+    (('Y34', 'Y35'), 'height encoder (wires 106/107) through relay K78 to X12/X13 (wires 82/83, sheet 11.7); '
+                     'Y120 switches K78 to the left unit'),
+    (('Y121', 'Y122'), 'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), '
+                       'while Y120 selects the left unit'),
+    (('Y123', 'Y124'), 'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), '
+                       'while Y120 selects the left unit'),
+    (('Y131', 'Y132'), 'analogue sensor SN110 (SDAT-MHS-M100, 4-20 mA), wire 700 to U19 FX5-8AD channel 1 (sheet 34.4)'),
+    (('Y133', 'Y134'), 'analogue sensor SN111 (SDAT-MHS-M100, 4-20 mA), wire 701 to U19 FX5-8AD channel 2 (sheet 34.5)'),
+    (('Y135', 'Y136'), 'analogue sensor SN112 (SDAT-MHS-M50, 4-20 mA), wire 702 to U19 FX5-8AD channel 3 (sheet 34.7)'),
+    (('Y137', 'Y140'), 'analogue sensor SN113 (SDAT-MHS-M100, 4-20 mA), wire 703 to U19 FX5-8AD channel 4 (sheet 34.8)'),
+    (('Y141', 'Y142'), 'analogue sensor SN114 (SDAT-MHS-M100, 4-20 mA), wire 704 to U19 FX5-8AD channel 5 (sheet 34.4)'),
+    (('Y151', 'Y152'), 'analogue sensor SN115 (SDAT-MHS-M100, 4-20 mA), wire 705 to U19 FX5-8AD channel 6 (sheet 34.5)'),
+]
+PRESSURE = [
+    (('Y32', 'Y33'), 'clamping pressure 6 / 2 bar: valve Y30 (hose 22, pneumatic sheet 3 B7) switched by Y67 - relay K54 (sheet 21.4); '
+                     'pressure switch SW1 (0.2 bar, pneumatic sheet 3 F8) = SN83 on X70 (wire 147, sheet 14.4)'),
+    (('Y34', 'Y35'), 'clamping pressure 6 / 2 bar: valve Y30 (hose 22, pneumatic sheet 3 B7) switched by Y67 - relay K54 (sheet 21.4)'),
+    (('Y46', 'Y47'), 'clamping pressure 6 / 2 bar: valve Y37 (hose 29, pneumatic sheet 3 B4) switched by Y70 - relay K55 (sheet 21.5)'),
+    (('Y44', 'Y45'), 'clamping pressure 6 / 2 bar: valve Y37 (hose 29, pneumatic sheet 3 B4) switched by Y70 - relay K55 (sheet 21.5); '
+                     'pressure switches SW2 / SW3 (0.2 bar, pneumatic sheet 3 F5) - on the electrical drawing SN84 on X73 '
+                     '(wire 150, sheet 14.6) and SN112 on X136 (wire 197, sheet 16.8)'),
+    (('Y52', 'Y53'), 'clamping pressure 6 / 2 bar: valve Y37 (hose 29, pneumatic sheet 3 B4) switched by Y70 - relay K55 (sheet 21.5)'),
+    (('Y54', 'Y55'), 'clamping pressure 6 / 2 bar: valve Y42 (hose 34, pneumatic sheet 3 B1) switched by Y71 - relay K56 (sheet 21.5)'),
+    (('Y56', 'Y57'), 'clamping pressure 6 / 2 bar: valve Y42 (hose 34, pneumatic sheet 3 B1) switched by Y71 - relay K56 (sheet 21.5)'),
+]
+
+# ------------------------------------------------------ the PLC's cards ----
+# Sheet 36: the base unit, then the extension modules in their order on the bus.
+CARDS = [
+    ('X', 0o0,   0o37,  'U4 FX5U-64MT-ESS'),
+    ('X', 0o40,  0o57,  'U7 FX5-16EX/ES'),
+    ('X', 0o60,  0o77,  'U8 FX5-16EX/ES'),
+    ('X', 0o100, 0o117, 'U9 FX5-16EX/ES'),
+    ('X', 0o120, 0o137, 'U10 FX5-16EX/ES'),
+    ('Y', 0o0,   0o37,  'U4 FX5U-64MT-ESS'),
+    ('Y', 0o40,  0o57,  'U11 FX5-16EYT-ESS'),
+    ('Y', 0o60,  0o77,  'U12 FX5-16EYT-ESS'),
+    ('Y', 0o100, 0o117, 'U13 FX5-16EYT-ESS'),
+    ('Y', 0o120, 0o137, 'U14 FX5-16EYT-ESS'),
+    ('Y', 0o140, 0o157, 'U15 FX5-16EYT-ESS'),
+]
+
+
+def card(point):
+    """'U11 FX5-16EYT-ESS, terminal Y2' - the card and ITS terminal name, as the drawing labels it."""
+    kind, n = point[0], int(point[1:], 8)
+    for k, lo, hi, name in CARDS:
+        if k == kind and lo <= n <= hi:
+            if lo == 0:
+                return '%s, terminal %s' % (name, point)
+            local = n - lo
+            return '%s, terminal %s' % (name, ('X%02o' if kind == 'X' else 'Y%o') % local)
+    return ''
+
+
 COLUMNS = ['Point', 'Read', 'Commands', 'Tag', 'Wire', 'Sheet', 'Relay', 'RelaySheet', 'Coil', 'CoilWire',
-           'CoilSheet', 'Valve', 'Cylinder', 'Hoses', 'PnSheet', 'Text', 'Plc']
+           'CoilSheet', 'Valve', 'Cylinder', 'Hoses', 'PnSheet', 'Text', 'Plc', 'Card', 'Via', 'Measure', 'Pressure']
 
 
 def octal_key(point):
@@ -325,17 +408,27 @@ def build():
         for p in points:
             row = rows.setdefault(p, dict(Point=p, Text=cylinder))
             row.update(Valve=valve, Cylinder=cylinder, Hoses=hoses, PnSheet=pn_sheet)
+    for points, text in MEASURE:
+        for p in points:
+            rows.setdefault(p, dict(Point=p))['Measure'] = text
+    for points, text in PRESSURE:
+        for p in points:
+            rows.setdefault(p, dict(Point=p))['Pressure'] = text
     for p, row in rows.items():
         row['Read'] = read.get(p, '')
         row['Commands'] = ' '.join(cmds.get(p, []))
         row['Plc'] = '1'
+        row['Card'] = card(p)
+    for relay, tag, wire, sheet, via, text in MODULE_INPUTS:
+        rows[relay] = dict(Point=relay, Tag=tag, Wire=wire, Sheet=sheet, Via=via, Text=text, Plc='1')
     out = io.StringIO()
     out.write('# Kaban HMI wiring references - generated by tools/build_wiring.py from the machine\'s\n')
     out.write('# electrical drawing (134581 rev. 9: Sheet 12.6 = page 12, column 6) and pneumatic\n')
     out.write('# drawing (134628 rev. 9: PnSheet 2 E3 = page 2, zone E3). Point: the PLC address.\n')
     out.write('# Read: the relay the HMI reads it at. Commands: manual command bits that drive it.\n')
+    out.write('# Card: PLC card and terminal. Via: read through a module. Measure / Pressure: the cylinder\'s.\n')
     out.write(';'.join(COLUMNS) + '\n')
-    for p in sorted(rows, key=octal_key):
+    for p in sorted(rows, key=lambda q: (1, q) if q.startswith('M') else (0,) + octal_key(q)):
         r = rows[p]
         out.write(';'.join(r.get(c, '').replace(';', ',') for c in COLUMNS) + '\n')
     path = os.path.join(MACHINE, 'Wiring.csv')

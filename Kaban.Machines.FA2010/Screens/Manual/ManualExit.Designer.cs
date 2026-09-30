@@ -184,6 +184,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Small_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRobot_Top_Small_Clamping.TabIndex = 1;
             this.unitRobot_Top_Small_Clamping.TitleTextKey = "Robot Top Small Clamping";
+            this.unitRobot_Top_Small_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitRobot_Top_Small_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitRobot_Top_Small_Clamping.TitleTipKey = "";
             this.unitRobot_Top_Small_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
@@ -336,6 +338,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Ejection.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Ejection.TabIndex = 4;
             this.unitProfile_Ejection.TitleTextKey = "Profile Ejection";
+            this.unitProfile_Ejection.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitProfile_Ejection.ValveType = Kaban.UI.Controls.CylinderValve.SingleSolenoid;
             this.unitProfile_Ejection.TitleTipKey = "";
             this.unitProfile_Ejection.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 

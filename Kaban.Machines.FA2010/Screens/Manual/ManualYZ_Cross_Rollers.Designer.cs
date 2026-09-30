@@ -43,7 +43,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitEntry_Conveyor_1.LogAction = true;
             this.unitEntry_Conveyor_1.CommandAAddress = "M570";
             this.unitEntry_Conveyor_1.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitEntry_Conveyor_1.Lamp1AAddress = "M266";
             this.unitEntry_Conveyor_1.CommandBAddress = "M571";
             this.unitEntry_Conveyor_1.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitEntry_Conveyor_1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -60,7 +59,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitEntry_Conveyor_2.LogAction = true;
             this.unitEntry_Conveyor_2.CommandAAddress = "M572";
             this.unitEntry_Conveyor_2.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitEntry_Conveyor_2.Lamp1AAddress = "M267";
             this.unitEntry_Conveyor_2.CommandBAddress = "M573";
             this.unitEntry_Conveyor_2.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitEntry_Conveyor_2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -72,6 +70,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition.Name = "unitProfile_Recognition";
             this.unitProfile_Recognition.PlcNumber = 1;
             this.unitProfile_Recognition.TitleTextKey = "Profile Recognition";
+            this.unitProfile_Recognition.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitProfile_Recognition.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitProfile_Recognition.ErrorBAddress = "M843";
             this.unitProfile_Recognition.ErrorAAddress = "M842";
             this.unitProfile_Recognition.Location = new System.Drawing.Point(16, 164);
@@ -79,7 +79,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition.LogAction = true;
             this.unitProfile_Recognition.CommandAAddress = "M574";
             this.unitProfile_Recognition.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition.Lamp1AAddress = "M268";
+            this.unitProfile_Recognition.Lamp1AAddress = "M266";
             this.unitProfile_Recognition.CommandBAddress = "M575";
             this.unitProfile_Recognition.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitProfile_Recognition.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -101,12 +101,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitMilling.Name = "unitMilling";
             this.unitMilling.PlcNumber = 1;
             this.unitMilling.TitleTextKey = "Milling";
+            this.unitMilling.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitMilling.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitMilling.Location = new System.Drawing.Point(16, 312);
             this.unitMilling.Size = new System.Drawing.Size(360, 64);
             this.unitMilling.LogAction = true;
             this.unitMilling.CommandAAddress = "M576";
             this.unitMilling.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitMilling.Lamp1AAddress = "M269";
+            this.unitMilling.Lamp1AAddress = "M267";
             this.unitMilling.CommandBAddress = "M577";
             this.unitMilling.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitMilling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -123,7 +125,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left.LogAction = true;
             this.unitCutting_Left.CommandAAddress = "M578";
             this.unitCutting_Left.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left.Lamp1AAddress = "M270";
             this.unitCutting_Left.CommandBAddress = "M579";
             this.unitCutting_Left.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitCutting_Left.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -135,12 +136,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right.Name = "unitCutting_Right";
             this.unitCutting_Right.PlcNumber = 1;
             this.unitCutting_Right.TitleTextKey = "Cutting Right";
+            this.unitCutting_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitCutting_Right.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitCutting_Right.Location = new System.Drawing.Point(16, 460);
             this.unitCutting_Right.Size = new System.Drawing.Size(360, 64);
             this.unitCutting_Right.LogAction = true;
             this.unitCutting_Right.CommandAAddress = "M580";
             this.unitCutting_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right.Lamp1AAddress = "M271";
+            this.unitCutting_Right.Lamp1AAddress = "M268";
             this.unitCutting_Right.CommandBAddress = "M581";
             this.unitCutting_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitCutting_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -157,10 +160,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitExit.LogAction = true;
             this.unitExit.CommandAAddress = "M582";
             this.unitExit.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitExit.Lamp1AAddress = "M358";
             this.unitExit.CommandBAddress = "M583";
             this.unitExit.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitExit.Lamp1BAddress = "M359";
             this.unitExit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.Controls.Add(this.unitExit);
             // 

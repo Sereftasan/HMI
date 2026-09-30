@@ -394,6 +394,7 @@ namespace Kaban.UI.Screens
             if (w != null)
             {
                 tip += "\n" + LanguageManager.GetString("Tip_IoDrawing", "On the drawing:") + " " + w.Electrical();
+                if (!string.IsNullOrEmpty(w.Card)) tip += "\n" + w.Card;
                 if (!string.IsNullOrEmpty(w.Text)) tip += "\n" + w.Text;
                 if (w.Pneumatic().Length > 0) tip += "\n" + w.Pneumatic();
             }

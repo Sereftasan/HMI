@@ -412,12 +412,13 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
             this.unitRoller_Up_Down.PlcNumber = 1;
             this.unitRoller_Up_Down.TitleTextKey = "Roller Up/Down";
+            this.unitRoller_Up_Down.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+            this.unitRoller_Up_Down.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitRoller_Up_Down.Location = new System.Drawing.Point(1036, 312);
             this.unitRoller_Up_Down.Size = new System.Drawing.Size(360, 64);
             this.unitRoller_Up_Down.LogAction = true;
             this.unitRoller_Up_Down.CommandAAddress = "M705";
             this.unitRoller_Up_Down.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRoller_Up_Down.Lamp1AAddress = "M229";
             this.unitRoller_Up_Down.CommandBAddress = "M704";
             this.unitRoller_Up_Down.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitRoller_Up_Down.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -473,6 +474,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.Name = "unitFront_Clamping";
             this.unitFront_Clamping.PlcNumber = 1;
             this.unitFront_Clamping.TitleTextKey = "Front Clamping";
+            this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitFront_Clamping.Location = new System.Drawing.Point(1036, 534);
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitFront_Clamping.LogAction = true;
@@ -481,7 +484,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.Lamp1AAddress = "M227";
             this.unitFront_Clamping.CommandBAddress = "M652";
             this.unitFront_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitFront_Clamping.Lamp1BAddress = "M349";
+            this.unitFront_Clamping.Lamp1BAddress = "M243";
             this.unitFront_Clamping.PositionAddress = "D20";
             this.unitFront_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.unitFront_Clamping.PositionDecimalPlaces = 1;

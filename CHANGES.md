@@ -4054,3 +4054,30 @@ and `UnitLookAndErrors` extended.
   cards, home request, helper lists, PLC Monitor arrays, formats and types.
 - Tests: `tools/ui_test/NumericBarView.cs`, `PropertyOrderUi.cs`, `PlcMonitorArrays.cs`, `HoverTips.cs` (new);
   `AxisRowLayout.cs`, `CylinderHelpAndLogin.cs`, `UnitTypes.cs`, `UnitsAndDesigner.cs`, `PlcMonitor.cs` updated.
+
+## 2026-09-30 - FA2010 cylinders from the drawings, fault-only troubleshooting with the missing signal, step-by-step checks, axis values in mm
+
+- `tools/set_cylinder_types.py` *(new)*: every FA2010 CylinderUnitHMI given the valve and feedback of the cylinder its
+  command bits drive on the drawings; lamps set to that cylinder's sensors (molds' D75x / D15x words cleared, gripper
+  angle lamps swapped, cross rollers' own sensors, pressure switches M240 / M243, entry roll-down sensor on the Down
+  side, undrawn rollers' lamps cleared). `CylinderFeedback.NoSensor` *(new)* and its TypeProblems rules.
+- `tools/build_wiring.py` / `Wiring.csv`: new columns Card (PLC card and terminal), Via (sensors read through the
+  simple motion module: M345, M346), Measure (encoder / analogue sensor of a cylinder), Pressure (clamping pressure
+  selection and pressure switches). `WiringTable.Point.Card/Via/Measure/Pressure`, `WiringTable.Points(station)`.
+- `AlarmHelpBadge.Signals` / `AtAlarm` / `LiveSignals`: a watcher reads its movement's devices (ExtraAddresses) and
+  keeps their states from the scan before the error bit came on. `CylinderUnitHMI.SignalsFor`, `DrivenOutput`;
+  `MovementFor` fills the states, the error bit, the position, the driven outputs. `AlarmHelpLinks.Link.MovementNow`:
+  the alarm list asks the unit when the help is opened.
+- `CylinderUnitHMI.HelpDocuments` / `UpdateHelpBadge`: the cylinder manual only while an error bit is set
+  (`OffersManual`, `CylinderManualExists` removed).
+- `TroubleshootingCatalog.Movement.cs` *(new; the class is partial)*: `Chain`, `MovementBox` (devices with states at
+  the alarm and now, where to start), `StartOrder`, `DecorateChart` / `Here` / `FeedbackLines` ("On this machine" in
+  every check of 1.1 - 1.8, the details to start with marked). `MovementInfo.Device.AtAlarm/Now`,
+  `MovementInfo.Error/Position/AlarmTime/SeenRising`.
+- `BaseNumericHMI.ResolutionDecimals`, `FormatValue(val, decimals, fillZero)`: the real position and the difference
+  in the unit to the last count. `AxisSettingHMI.AddFineSetting` (was AddRawSetting): backlash and travel per
+  revolution with the row's divisor, full-resolution decimals, unit. Translations: Tip_TravelPerRev, Tip_Backlash,
+  Tip_PositionDifference. `IoMonitorPage`: the card in the tips.
+- Manual: the unit's "?" (fault only, states, where to start, on this machine), axis row decimals.
+- Tests: `tools/ui_test/CylinderSteps.cs` (new); `AxisRowLayout.cs`, `WiringHelp.cs`, `CylinderHelpAndLogin.cs`,
+  `UnitTypes.cs`, `UnitHelpLinks.cs`, `MonitorFind.cs` updated.

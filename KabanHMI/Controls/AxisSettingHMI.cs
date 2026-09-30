@@ -92,10 +92,11 @@ namespace Kaban.UI.Controls
         /// <summary>
         /// The axis's REAL (encoder) position, when the PLC keeps it apart from the
         /// position above. Not shown as a field: the position's tooltip starts with
-        /// it and with the difference, in raw units (without the divisor) - the
-        /// difference is a few counts, which the divisor would round to 0.00.
+        /// it and with the difference, in the axis's unit to its last count (4
+        /// decimals for a divisor of 10000) - at the row's 2 decimals a difference
+        /// of a few counts would read 0.00.
         /// </summary>
-        [Category(" Movement"), DefaultValue(""), Description("Real (encoder) position. Shown in the position's tooltip with its difference, in raw units.")]
+        [Category(" Movement"), DefaultValue(""), Description("Real (encoder) position. Shown in the position's tooltip with its difference, in the axis's unit to its last count.")]
         public string RealPositionAddress { get; set; }
 
         // Position, min, max, reference and calibration are all the SAME physical
@@ -120,13 +121,14 @@ namespace Kaban.UI.Controls
         /// <summary>
         /// Travel per motor revolution and backlash - rarely set from the HMI, so
         /// they are fields only when given, at the END of the row (after the drive
-        /// codes), where an axis without them leaves no gap. Entered in the PLC's
-        /// own small units: no divisor, no decimals.
+        /// codes), where an axis without them leaves no gap. In the axis's unit,
+        /// with its divisor, to its last count: 0.0150 mm for 150 counts at a
+        /// divisor of 10000 (30 September - they were shown as the raw 150).
         /// </summary>
-        [Category(" Settings"), DefaultValue(""), Description("Travel per motor revolution, in raw units (no divisor). Empty hides the field.")]
+        [Category(" Settings"), DefaultValue(""), Description("Travel per motor revolution, in the axis's unit (its divisor, to the last count). Empty hides the field.")]
         public string TravelPerRevolutionAddress { get; set; }
 
-        [Category(" Settings"), DefaultValue(""), Description("Backlash, in raw units (no divisor). Empty hides the field.")]
+        [Category(" Settings"), DefaultValue(""), Description("Backlash, in the axis's unit (its divisor, to the last count). Empty hides the field.")]
         public string BacklashAddress { get; set; }
 
         [Category(" Value"), Description("Raw-to-display divisor for EVERY value on the row.")]
@@ -548,14 +550,14 @@ namespace Kaban.UI.Controls
             if (travel)
             {
                 Column("TravelPerRev", x, WSetting);
-                _travel = AddRawSetting(TravelPerRevolutionAddress, "Tip_TravelPerRev",
-                    "Travel per motor revolution, in the PLC's own units (no divisor, no decimals).", ref x);
+                _travel = AddFineSetting(TravelPerRevolutionAddress, "Tip_TravelPerRev",
+                    "Travel per motor revolution, in the axis's unit to its last count.", ref x);
             }
             if (backlash)
             {
                 Column("Backlash", x, WSetting);
-                _backlash = AddRawSetting(BacklashAddress, "Tip_Backlash",
-                    "Backlash, in the PLC's own units (no divisor, no decimals).", ref x);
+                _backlash = AddFineSetting(BacklashAddress, "Tip_Backlash",
+                    "Backlash, in the axis's unit to its last count.", ref x);
             }
 
             Width = Math.Max(Width, x);
@@ -579,23 +581,31 @@ namespace Kaban.UI.Controls
             return false;
         }
 
-        /// <summary>A setting in the PLC's own units: no divisor, no decimals, no unit conversion.</summary>
-        private NumericInputHMI AddRawSetting(string address, string tipKey, string tipFallback, ref int x)
+        /// <summary>
+        /// A small setting of the axis (backlash, travel per revolution): in the
+        /// axis's unit and divisor like its limits, but to the LAST COUNT - a
+        /// backlash of 150 counts at a divisor of 10000 is 0.0150 mm, which the
+        /// row's 2 decimals would show as 0.02 - and with its unit, as it is not
+        /// the position's quantity the column beside it names.
+        /// </summary>
+        private NumericInputHMI AddFineSetting(string address, string tipKey, string tipFallback, ref int x)
         {
             NumericInputHMI n = null;
             if (!string.IsNullOrWhiteSpace(address))
             {
+                int decimals = BaseNumericHMI.ResolutionDecimals(Divisor, DecimalPlaces);
                 n = new NumericInputHMI
                 {
                     PlcNumber = PlcNumber,
                     Address = address.Trim(),
                     DataType = SettingDataType,
-                    Divisor = 1,
-                    DecimalPlaces = 0,
-                    Digits = Math.Max(Digits, 6),
-                    Suffix = "",
-                    ShowSuffix = false,
-                    UnitType = UnitType.None,
+                    Divisor = Divisor,
+                    DecimalPlaces = decimals,
+                    Digits = Math.Max(Digits, decimals + 4),
+                    Suffix = Suffix,
+                    ShowSuffix = true,
+                    // Converted with the position (inch on an inch panel), as the limits are.
+                    UnitType = PositionUnitType,
                     RequiredSecurity = RequiredSecurity,
                     LogAction = true,
                     ToolTipTextKey = LanguageManager.GetString(tipKey, tipFallback)

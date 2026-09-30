@@ -42,7 +42,7 @@ namespace Kaban.Core.Helpers
     /// edit when the manual is revised. The code says what KIND of fault it is;
     /// the catalogue below says which file currently answers that kind.
     /// </summary>
-    public static class TroubleshootingCatalog
+    public static partial class TroubleshootingCatalog
     {
         public enum ErrorType
         {
@@ -241,7 +241,23 @@ namespace Kaban.Core.Helpers
                 public string Address = "";
                 /// <summary>What the page calls it (a lamp's tooltip), or "".</summary>
                 public string Name = "";
+                /// <summary>ON (1) or OFF (0) just before the error bit came on; null when not known.</summary>
+                public int? AtAlarm;
+                /// <summary>ON (1) or OFF (0) at the last scan; null when not known.</summary>
+                public int? Now;
             }
+
+            /// <summary>The error bit that reported the movement, or "".</summary>
+            public string Error = "";
+            /// <summary>The unit's position reading (an encoder's or an analogue sensor's), or "".</summary>
+            public string Position = "";
+            /// <summary>When the error bit came on (the states in AtAlarm are the scan before), or null.</summary>
+            public DateTime? AlarmTime;
+            /// <summary>
+            /// False when the error bit was already on at the page's first scan:
+            /// the states are then from after the fault, not from the moment it happened.
+            /// </summary>
+            public bool SeenRising;
 
             public int Station;
             public string Unit = "";
@@ -539,8 +555,10 @@ namespace Kaban.Core.Helpers
         /// of a table per detail with the heading repeated between them.
         ///
         /// With the MOVEMENT that failed (see MovementInfo) a box at the top names
-        /// its devices: the command, the valve output, the sensors that should
-        /// confirm it and the ones that should go off.
+        /// its devices - the command, the valve output, the sensors that should
+        /// confirm it and the ones that should go off - with their states when it
+        /// failed and where to start because of them, and every check of the
+        /// chart says what it means on this machine (TroubleshootingCatalog.Movement.cs).
         ///
         /// A digit the manual has no block for filters NOTHING: hiding every
         /// variant would leave the operator with less than the full manual.
@@ -583,12 +601,21 @@ namespace Kaban.Core.Helpers
                     note.Append("<p>Prepared for this cylinder - " + string.Join(" &middot; ", chosen) +
                                 ". Other types in details " + (byValve && byFeedback ? "1.4 and 1.7" : byValve ? "1.4" : "1.7") +
                                 " are left out; they do not apply to it.</p>");
-                if (doc.Movement != null) note.Append(MovementBox(doc.Movement, (ValveType)doc.Valve));
+                if (doc.Movement != null)
+                {
+                    // The movement on this machine: its devices, what was missing,
+                    // where to start - and in every check, what to measure.
+                    var chain = Chain.Build(doc.Movement, (ValveType)doc.Valve, (FeedbackType)doc.Feedback);
+                    string why;
+                    var order = StartOrder(chain, out why);
+                    note.Append(MovementBox(chain, order, why));
+                    html = DecorateChart(html, chain, order);
+                }
                 note.Append("</div>");
 
                 int h1 = html.IndexOf("</h1>", StringComparison.OrdinalIgnoreCase);
                 html = h1 >= 0 ? html.Insert(h1 + 5, note.ToString()) : html.Replace("<body>", "<body>" + note);
-                html = html.Replace("</style>", TailoredStyle + "</style>");
+                html = html.Replace("</style>", TailoredStyle + MovementStyle + "</style>");
 
                 var name = Path.GetFileNameWithoutExtension(doc.FullPath) + "_v" + doc.Valve + "_f" + doc.Feedback +
                            (doc.Movement == null ? "" : "_" + SafeName(doc.Movement.Unit) + "_" + doc.Movement.Side) + ".html";
@@ -647,85 +674,6 @@ namespace Kaban.Core.Helpers
             var last = blocks[blocks.Count - 1];
             int to = last.Index + last.Length;
             return html.Substring(0, from) + sb + html.Substring(to);
-        }
-
-        /// <summary>
-        /// The failed movement's devices, as a small table in the note at the top -
-        /// and, for each, WHERE IT IS ON THE DRAWINGS (WiringTable): the sensor's
-        /// tag, wire and sheet; the output's wire, relay and valve coil; the
-        /// pneumatic valve, its hoses and the cylinder. The output is found from
-        /// the command bit when the unit names none - the command is what every
-        /// unit has, the output is rarely set.
-        /// </summary>
-        private static string MovementBox(MovementInfo mv, ValveType valve)
-        {
-            bool anyRef = false;
-            Func<string, string> refLine = text =>
-            {
-                if (string.IsNullOrEmpty(text)) return "";
-                anyRef = true;
-                return "<br><span class=\"ref\">" + WebUtility.HtmlEncode(text) + "</span>";
-            };
-            Func<MovementInfo.Device, string> dev = d =>
-            {
-                if (d == null || string.IsNullOrWhiteSpace(d.Address)) return "";
-                var label = PlcLabelTable.ByAddress(mv.Station, d.Address);
-                var text = !string.IsNullOrWhiteSpace(d.Name) ? d.Name : label != null ? label.Label : "";
-                return "<code>" + WebUtility.HtmlEncode(d.Address.Trim()) + "</code>" +
-                       (text.Length > 0 ? " " + WebUtility.HtmlEncode(text) : "");
-            };
-            // A sensor or an output with its place on the electrical drawing.
-            Func<MovementInfo.Device, string> devRef = d =>
-            {
-                var shown = dev(d);
-                if (shown.Length == 0) return "";
-                var w = WiringTable.Find(mv.Station, d.Address);
-                return shown + (w == null ? "" : refLine(w.Electrical() + (string.IsNullOrEmpty(w.Text) ? "" : " - " + w.Text)));
-            };
-            Func<IEnumerable<MovementInfo.Device>, string> list = ds =>
-                string.Join("<br>", ds.Select(devRef).Where(t => t.Length > 0));
-            // The output a side drives: its own, or the one its command bit drives.
-            Func<MovementInfo.Device, MovementInfo.Device, WiringTable.Point> driven = (output, command) =>
-            {
-                var w = output != null && !string.IsNullOrWhiteSpace(output.Address) ? WiringTable.Find(mv.Station, output.Address) : null;
-                return w ?? (command != null ? WiringTable.OutputFor(mv.Station, command.Address) : null);
-            };
-            Func<MovementInfo.Device, MovementInfo.Device, string> outputCell = (output, command) =>
-            {
-                if (output != null && !string.IsNullOrWhiteSpace(output.Address)) return devRef(output);
-                var w = driven(output, command);
-                return w == null ? "" : "<code>" + WebUtility.HtmlEncode(w.Address) + "</code>" +
-                                        (string.IsNullOrEmpty(w.Text) ? "" : " " + WebUtility.HtmlEncode(w.Text)) +
-                                        refLine(w.Electrical());
-            };
-
-            var rows = new List<string>();
-            Action<string, string> row = (caption, value) =>
-            {
-                if (!string.IsNullOrEmpty(value)) rows.Add("<tr><td>" + caption + "</td><td>" + value + "</td></tr>");
-            };
-            string side = mv.Side == "A" ? "A (left button)" : mv.Side == "B" ? "B (right button)" : mv.Side;
-            row("Movement that failed:", WebUtility.HtmlEncode((mv.Name ?? "").Trim()) +
-                                         (side.Length > 0 ? (string.IsNullOrWhiteSpace(mv.Name) ? "" : " &mdash; ") + "movement " + side : ""));
-            row("Command (PLC bit):", dev(mv.Command));
-            row("Valve output:", outputCell(mv.Output, mv.Command));
-            var air = driven(mv.Output, mv.Command);
-            if (air != null && air.Pneumatic().Length > 0)
-            {
-                anyRef = true;
-                row("Valve and cylinder:", WebUtility.HtmlEncode(air.Pneumatic()));
-            }
-            if (valve == ValveType.DoubleSolenoid || valve == ValveType.ClosedCentre || valve == ValveType.OpenCentre)
-            {
-                var other = outputCell(mv.OtherOutput, mv.OtherCommand);
-                row("Other coil (must be OFF):", other.Length > 0 ? other : dev(mv.OtherCommand));
-            }
-            row("Must turn ON (feedback):", list(mv.Feedback));
-            row("Must turn OFF (other end):", list(mv.OppositeFeedback));
-            return "<p><b>This alarm" + (string.IsNullOrWhiteSpace(mv.Unit) ? "" : " - " + WebUtility.HtmlEncode(mv.Unit)) + "</b></p>" +
-                   "<table class=\"movement\">" + string.Join("", rows) + "</table>" +
-                   (anyRef ? "<p class=\"ref\">Sheet 12.6 is page 12, column 6 of the electrical drawing; pneumatic sheet 2 E3 is page 2, zone E3 of the pneumatic drawing.</p>" : "") +
-                   "<p>The details below speak of &quot;the output&quot; and &quot;the target feedback&quot;: for this movement they are the devices above.</p>";
         }
 
         private static string SafeName(string s)

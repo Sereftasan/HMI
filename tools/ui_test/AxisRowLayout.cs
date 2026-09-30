@@ -85,8 +85,9 @@ class AR {
         var build = typeof(BaseNumericHMI).GetMethod("BuildTooltip", Any);
         var tip = (string)build.Invoke(p2, null);
         var lines = tip.Split('\n');
-        Check("first line: the real position, as the position is shown", lines[0].StartsWith("Real position:") && lines[0].Contains("8184.90") && lines[0].Contains("mm"), lines[0]);
-        Check("second line: the difference in raw units (no divisor): 12", lines.Length > 1 && lines[1].StartsWith("Difference (raw, no divisor):") && lines[1].EndsWith("\t12"),
+        // 30 September: in mm, to the last count (divisor 10000: 4 decimals), not raw counts.
+        Check("first line: the real position in mm, to its last count: 8184.8988 mm", lines[0].StartsWith("Real position:") && lines[0].EndsWith("\t8184.8988 mm"), lines[0]);
+        Check("second line: the difference in mm: +0.0012 mm (12 counts)", lines.Length > 1 && lines[1].StartsWith("Difference:") && lines[1].EndsWith("\t+0.0012 mm"),
               lines.Length > 1 ? lines[1] : "");
         Check("  then the usual notes", tip.Contains("Address:"), tip.Replace("\n", " | "));
         Check("no real position, no such lines", !((string)build.Invoke(pos, null)).Contains("Real position"));
@@ -102,8 +103,14 @@ class AR {
         var extra = r3.Controls.OfType<NumericInputHMI>().Where(n => n.Address == "D100" || n.Address == "D102").OrderBy(n => n.Left).ToList();
         var servo = r3.Controls.OfType<HexCodeHMI>().Max(h => h.Right);
         Check("both at the end of the row, after the drive codes", extra.Count == 2 && extra.All(n => n.Left > servo), servo + " | " + string.Join(" ", extra.Select(n => n.Left)));
-        Check("  in raw units: no divisor, no decimals, no unit", extra.All(n => n.Divisor == 1 && n.DecimalPlaces == 0 && n.UnitType == UnitType.None && !n.ShowSuffix));
-        Check("  their tips say so", extra[0].ToolTipTextKey.Contains("no divisor") && extra[1].ToolTipTextKey.StartsWith("Backlash"), extra[0].ToolTipTextKey);
+        Check("  in the axis's unit to its last count: its divisor, 4 decimals, mm shown",
+              extra.All(n => n.Divisor == r3.Divisor && n.DecimalPlaces == 4 && n.UnitType == r3.PositionUnitType && n.ShowSuffix && n.Suffix == "mm"),
+              string.Join(" ", extra.Select(n => n.Divisor + "/" + n.DecimalPlaces + "/" + n.Suffix)));
+        var bmem = new Dictionary<string, int> { { "D100", 50000 }, { "D102", 150 } };
+        foreach (var n in extra) n.UpdateState(a => bmem.ContainsKey(a) ? bmem[a] : 0, c => true);
+        Check("  a backlash of 150 counts reads 0.0150 mm, a travel of 50000 counts 5.0000 mm",
+              extra[1].Text == "0.0150 mm" && extra[0].Text == "5.0000 mm", extra[0].Text + " | " + extra[1].Text);
+        Check("  their tips say so", extra[0].ToolTipTextKey.Contains("last count") && extra[1].ToolTipTextKey.StartsWith("Backlash"), extra[0].ToolTipTextKey);
 
         Console.WriteLine("--- a page of rows: the headings follow the columns ---");
         var page = new UserControl { Size = new Size(1500, 300) };

@@ -100,7 +100,82 @@ namespace Kaban.UI.Controls
         /// <summary>True when the "?" follows code words (an axis), not the error bit.</summary>
         public bool UsesCodeWords { get { return _codes.Count > 0; } }
 
-        public IEnumerable<string> ExtraAddresses { get { return _codes.Select(c => c.Address); } }
+        public IEnumerable<string> ExtraAddresses
+        {
+            get { return _codes.Select(c => c.Address).Concat(SignalList(true)).ToList(); }
+        }
+
+        /// <summary>The axis's code words alone (the signals are the unit's own devices, listed with it).</summary>
+        public IEnumerable<string> CodeAddresses { get { return _codes.Select(c => c.Address).ToList(); } }
+
+        // ---- the movement's signals ----------------------------------------
+
+        /// <summary>
+        /// The devices of the movement this error bit watches - its command, the
+        /// valve outputs, the sensors of both ends - supplied by the unit. They are
+        /// read on every scan (ExtraAddresses), and their states JUST BEFORE the
+        /// error bit came on are kept (AtAlarm): what was missing when the
+        /// movement failed is what the troubleshooting starts from.
+        /// </summary>
+        public Func<IEnumerable<string>> Signals;
+
+        private List<string> _signals;
+        private Dictionary<string, int> _last;
+        private bool _bitSeen;
+
+        private List<string> SignalList(bool refresh)
+        {
+            if (_signals == null || refresh)
+            {
+                IEnumerable<string> list = null;
+                try { list = Signals != null ? Signals() : null; } catch { list = null; }
+                _signals = (list ?? Enumerable.Empty<string>())
+                           .Where(a => !string.IsNullOrWhiteSpace(a)).Select(a => a.Trim().ToUpperInvariant())
+                           .Distinct().ToList();
+            }
+            return _signals;
+        }
+
+        /// <summary>The signals' states when the error bit came on, or null.</summary>
+        public SignalSnapshot AtAlarm { get; private set; }
+
+        /// <summary>The signals' states at the last scan (1 on, 0 off), or null before one.</summary>
+        public IDictionary<string, int> LiveSignals { get { return _last; } }
+
+        /// <summary>What the movement's devices were doing when its error bit came on.</summary>
+        public sealed class SignalSnapshot
+        {
+            /// <summary>The scan before the error bit was first seen: the movement as it failed.</summary>
+            public Dictionary<string, int> Before;
+            public DateTime Time;
+            /// <summary>
+            /// False when the bit was already set at the first scan of the page (or
+            /// the station): then Before is that first scan, after the fact.
+            /// </summary>
+            public bool SeenRising;
+
+            public int? State(string address)
+            {
+                int v;
+                return Before != null && !string.IsNullOrWhiteSpace(address) &&
+                       Before.TryGetValue(address.Trim().ToUpperInvariant(), out v) ? v : (int?)null;
+            }
+        }
+
+        private void WatchSignals(Func<string, int> lookup, bool error)
+        {
+            var list = SignalList(false);
+            Dictionary<string, int> now = null;
+            if (list.Count > 0)
+            {
+                now = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                foreach (var a in list) now[a] = lookup(a) != 0 ? 1 : 0;
+            }
+            if (error && !_bitSeen)
+                AtAlarm = new SignalSnapshot { Before = _last ?? now, Time = DateTime.Now, SeenRising = _last != null };
+            _bitSeen = error;
+            if (now != null) _last = now;
+        }
 
         // One timer for every badge: a page of twenty units must not run twenty.
         private static readonly List<AlarmHelpBadge> _blinking = new List<AlarmHelpBadge>();
@@ -125,6 +200,7 @@ namespace Kaban.UI.Controls
             // what the code is now: shown as nothing rather than as a stale fault.
             bool live = lookup != null && !ConnectionMonitor.IsKnownDown(PlcNumber);
             bool error = live && !string.IsNullOrWhiteSpace(Address) && lookup(Address) != 0;
+            if (live) WatchSignals(lookup, error);
 
             if (_codes.Count == 0) { Set(error, error, false); return; }
 

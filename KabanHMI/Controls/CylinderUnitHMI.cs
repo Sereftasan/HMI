@@ -56,7 +56,8 @@ namespace Kaban.UI.Controls
         SingleInductive = 3,           // single inductive sensor, short stroke: one lamp
         AnalogueMagnetic = 4,          // 4-20 mA position: no lamp, the Position
         MagneticPlusPressureSwitch = 5,// back-end sensor + pressure switch (clamping): a lamp on each action
-        EncoderPlusReference = 6       // incremental encoder + reference sensor: one lamp and the Position
+        EncoderPlusReference = 6,      // incremental encoder + reference sensor: one lamp and the Position
+        NoSensor = 7                   // no sensor on the drawings: nothing confirms the movement - no lamp, no error bit
     }
 
     /// <summary>How a unit's position reading is drawn.</summary>
@@ -195,6 +196,10 @@ namespace Kaban.UI.Controls
             // The two error bits are watched by badges that never show themselves
             // (the scanner reads them like any bound control); the "?" follows them.
             _helpA.Watcher = _helpB.Watcher = true;
+            // Each watcher also reads its movement's devices, so what was missing
+            // when the movement failed is known (MovementFor, the manual's top).
+            _helpA.Signals = () => SignalsFor("A");
+            _helpB.Signals = () => SignalsFor("B");
             Controls.Add(_helpA);
             Controls.Add(_helpB);
             Controls.Add(_help);
@@ -842,15 +847,15 @@ namespace Kaban.UI.Controls
         [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The valve: it decides the ACTIONS. SingleSolenoid - one coil, one action (A or B; the spring makes the other movement). " +
                      "DoubleSolenoid / DoubleSolenoid_3Way - a coil for each movement, both actions. " +
-                     "The '?' opens the cylinder manual with only this valve's part.")]
+                     "On an error the '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
         /// <summary>The feedback fitted to this cylinder: only its part of detail 1.7 is shown.</summary>
         [Category("  Valve & Feedback"), DefaultValue(CylinderFeedback.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The feedback: it decides the LAMPS and the POSITION. SingleMagnetic / SingleInductive - one lamp (A or B). " +
                      "TwoEndMagnetic / MagneticPlusPressureSwitch - a lamp on each action. AnalogueMagnetic - no lamp, the Position. " +
-                     "EncoderPlusReference - one lamp (the reference) and the Position. " +
-                     "The '?' opens the cylinder manual with only this feedback's part.")]
+                     "EncoderPlusReference - one lamp (the reference) and the Position. NoSensor - none drawn: no lamp, no error bit. " +
+                     "On an error the '?' opens the cylinder manual with only this feedback's part.")]
         public CylinderFeedback FeedbackType { get { return _feedback; } set { _feedback = value; ApplySettings(); } }
 
         /// <summary>What the unit's actions, lamps and position do not match of its valve and feedback - "OK" when all do.</summary>
@@ -956,6 +961,12 @@ namespace Kaban.UI.Controls
                     if (lamps != 1) p.Add("EncoderPlusReference: one lamp - the reference sensor" + (lamps == 0 ? " (none set)." : " (" + lamps + " set)."));
                     if (!pos) p.Add("EncoderPlusReference: set PositionAddress - the encoder position.");
                     break;
+                case CylinderFeedback.NoSensor:
+                    if (lamps > 0) p.Add("NoSensor: the cylinder has no sensor - no lamps (" + lamps + " set).");
+                    if (pos) p.Add("NoSensor" + noPosition);
+                    if (Has(_errorAAddress) || Has(_errorBAddress))
+                        p.Add("NoSensor: nothing confirms the movement, so nothing can fail it - an error bit needs a sensor (choose the feedback).");
+                    break;
                 default:
                     p.Add("FeedbackType " + (int)_feedback + " has no check yet - check the lamps and position by hand.");
                     break;
@@ -1011,20 +1022,69 @@ namespace Kaban.UI.Controls
                         AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : "",
                         // Which side's error bit this is: the alarm list's help names
                         // that movement's devices, like the unit's own "?".
-                        Movement = _kind == UnitKind.Axis ? null : MovementFor(address == _errorAAddress ? "A" : "B")
+                        Movement = _kind == UnitKind.Axis ? null : MovementFor(address == _errorAAddress ? "A" : "B"),
+                        MovementNow = MovementNowFor(_kind == UnitKind.Axis ? null : address == _errorAAddress ? "A" : "B")
                     };
+        }
+
+        private Func<TroubleshootingCatalog.MovementInfo> MovementNowFor(string side)
+        {
+            if (side == null) return null;
+            return () => IsDisposed ? null : MovementFor(side);
+        }
+
+        /// <summary>
+        /// The valve output a side drives: its own OutputAddress, or - as the
+        /// pages rarely set one - the output its command bit drives on the
+        /// machine's drawings (WiringTable: MAN_x on M.. -> OUT_x on Y..).
+        /// </summary>
+        private string DrivenOutput(string side)
+        {
+            bool a = side == "A";
+            var own = a ? _outputAAddress : _outputBAddress;
+            if (!string.IsNullOrWhiteSpace(own)) return Abs(own);
+            var cmd = a ? _commandAAddress : _commandBAddress;
+            if (string.IsNullOrWhiteSpace(cmd) || DesignMode) return "";
+            try
+            {
+                var w = WiringTable.OutputFor(_plcNumber, Abs(cmd));
+                return w != null ? w.Address : "";
+            }
+            catch { return ""; }
+        }
+
+        /// <summary>The devices one side's error bit is judged by: command, both coils, the sensors of both ends.</summary>
+        private IEnumerable<string> SignalsFor(string side)
+        {
+            if (_kind == UnitKind.Axis) return Enumerable.Empty<string>();
+            bool a = side == "A";
+            return new[]
+            {
+                Abs(a ? _commandAAddress : _commandBAddress), DrivenOutput(side), DrivenOutput(a ? "B" : "A"),
+                Abs(_lamp1AAddress), Abs(_lamp2AAddress), Abs(_lamp1BAddress), Abs(_lamp2BAddress)
+            }.Where(x => !string.IsNullOrWhiteSpace(x));
         }
 
         /// <summary>
         /// The devices of one side's movement, for the top of the tailored manual:
-        /// A is the left button's (ErrorA), B the right button's (ErrorB).
+        /// A is the left button's (ErrorA), B the right button's (ErrorB) - each
+        /// with its state just before that side's error bit came on, and now.
         /// </summary>
         public TroubleshootingCatalog.MovementInfo MovementFor(string side)
         {
             bool a = side == "A";
+            var watcher = a ? _helpA : _helpB;
+            var snap = watcher.AtAlarm;
+            var live = watcher.LiveSignals;
             Func<string, string, TroubleshootingCatalog.MovementInfo.Device> dev = (address, name) =>
-                string.IsNullOrWhiteSpace(address) ? null
-                    : new TroubleshootingCatalog.MovementInfo.Device { Address = Abs(address), Name = Tr(name) };
+            {
+                if (string.IsNullOrWhiteSpace(address)) return null;
+                var d = new TroubleshootingCatalog.MovementInfo.Device { Address = Abs(address), Name = Tr(name) };
+                int v;
+                if (snap != null) d.AtAlarm = snap.State(d.Address);
+                if (live != null && live.TryGetValue(d.Address.Trim().ToUpperInvariant(), out v)) d.Now = v;
+                return d;
+            };
             var mv = new TroubleshootingCatalog.MovementInfo
             {
                 Station = _plcNumber,
@@ -1032,9 +1092,13 @@ namespace Kaban.UI.Controls
                 Side = a ? "A" : "B",
                 Name = Tr(a ? _buttonAText : _buttonBText),
                 Command = dev(a ? _commandAAddress : _commandBAddress, a ? _buttonATip : _buttonBTip),
-                Output = dev(a ? _outputAAddress : _outputBAddress, ""),
+                Output = dev(DrivenOutput(side), ""),
                 OtherCommand = dev(a ? _commandBAddress : _commandAAddress, a ? _buttonBTip : _buttonATip),
-                OtherOutput = dev(a ? _outputBAddress : _outputAAddress, "")
+                OtherOutput = dev(DrivenOutput(a ? "B" : "A"), ""),
+                Error = Abs(a ? _errorAAddress : _errorBAddress),
+                Position = Abs(_positionAddress),
+                AlarmTime = snap != null ? snap.Time : (DateTime?)null,
+                SeenRising = snap != null && snap.SeenRising
             };
             foreach (var d in a ? new[] { dev(_lamp1AAddress, _lamp1ATip), dev(_lamp2AAddress, _lamp2ATip) }
                                 : new[] { dev(_lamp1BAddress, _lamp1BTip), dev(_lamp2BAddress, _lamp2BTip) })
@@ -1065,22 +1129,13 @@ namespace Kaban.UI.Controls
             };
         }
 
-        /// <summary>True when the unit's cylinder manual is worth offering before anything has failed.</summary>
-        private bool OffersManual
-        {
-            get
-            {
-                return _kind == UnitKind.Cylinder &&
-                       (_valve != CylinderValve.Unspecified || _feedback != CylinderFeedback.Unspecified);
-            }
-        }
-
         /// <summary>
         /// Everything behind the "?" right now. While an error is set: the help for
         /// what failed first - the manual tailored to this cylinder and to the
         /// movement whose error bit is set (an axis: the entry of each drive code
-        /// it shows) - then the alarm's own files. Otherwise the cylinder manual
-        /// for this valve and feedback. The unit's own files always come last.
+        /// it shows) - then the alarm's own files. With nothing failed there is
+        /// no troubleshooting to offer (30 September). The unit's own files
+        /// always come last.
         /// </summary>
         public List<TroubleshootingCatalog.HelpDocument> HelpDocuments()
         {
@@ -1114,11 +1169,8 @@ namespace Kaban.UI.Controls
                             foreach (var n in entry.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
                                 docs.Add(new TroubleshootingCatalog.HelpDocument { FileName = n.Trim(), Title = System.IO.Path.GetFileNameWithoutExtension(n.Trim()) });
                 }
-                if (!errA && !errB && (OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0))
-                {
-                    var d = CylinderDocument(null);
-                    if (d != null) docs.Add(d);
-                }
+                // THE CYLINDER MANUAL ONLY FOR A FAULT (30 September): with nothing
+                // failed, the "?" offers the unit's own files and no troubleshooting.
             }
             docs.AddRange(UnitHelpDocuments());
 
@@ -1130,8 +1182,8 @@ namespace Kaban.UI.Controls
 
         /// <summary>
         /// The "?"'s state: Error while an error bit is set (Warning when an axis
-        /// shows only warnings), Info while there is help to offer - the unit's own
-        /// files, or the manual for its valve and feedback - and hidden otherwise:
+        /// shows only warnings), Info while the unit has its own files to offer -
+        /// the cylinder manual is offered for a fault only - and hidden otherwise:
         /// a mark that opens nothing teaches the operator to ignore it. It is blue
         /// in every state (UnitHelpBadge); the state picks its tooltip.
         /// </summary>
@@ -1143,11 +1195,10 @@ namespace Kaban.UI.Controls
                 state = (!errA || _helpA.IsWarningOnly) && (!errB || _helpB.IsWarningOnly)
                         ? UnitHelpBadge.BadgeState.Warning : UnitHelpBadge.BadgeState.Error;
             else if (DesignMode)
-                state = _helpAFiles.Length > 0 || _helpBFiles.Length > 0 || OffersManual || _errorAAddress.Length > 0 || _errorBAddress.Length > 0
+                state = _helpAFiles.Length > 0 || _helpBFiles.Length > 0
                         ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
             else
-                state = UnitHelpDocuments().Count > 0 || (OffersManual && CylinderManualExists())
-                        ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
+                state = UnitHelpDocuments().Count > 0 ? UnitHelpBadge.BadgeState.Info : UnitHelpBadge.BadgeState.Hidden;
             _help.State = state;
 
             if (!DesignMode && state != UnitHelpBadge.BadgeState.Hidden)
@@ -1163,13 +1214,6 @@ namespace Kaban.UI.Controls
                 UiStyle.Tips().SetToolTip(_help, tip.Trim());
             }
             LayoutBadges();
-        }
-
-        private static bool CylinderManualExists()
-        {
-            string file;
-            return TroubleshootingCatalog.DocumentForType.TryGetValue(TroubleshootingCatalog.ErrorType.CylinderMovement, out file) &&
-                   new TroubleshootingCatalog.HelpDocument { FileName = file }.Exists;
         }
 
         // NO ROOM IS MADE FOR THE "?" ANY MORE. It used to sit on the side lines,

@@ -95,9 +95,9 @@ class L {
         // error bit, so a unit with error bits drew narrower than one without.
         Check("NO room taken from the sides: error bits do not narrow the frame",
               unit.Padding == Padding.Empty && plain.Padding == Padding.Empty, unit.Padding.ToString());
-        Check("a cylinder with its valve and feedback set: a BLUE '?' - its manual is there to read",
-              mark.Visible && mark.State == UnitHelpBadge.BadgeState.Info && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb(),
-              mark.State.ToString());
+        // 30 September: the cylinder manual is a fault's help only.
+        Check("a cylinder with its valve and feedback set, nothing failed: no '?' - no troubleshooting to offer",
+              !mark.Visible && mark.State == UnitHelpBadge.BadgeState.Hidden, mark.State.ToString());
         Check("  the watchers never show themselves", !helpA.Visible && !helpB.Visible);
         Check("  a unit with nothing to open has none", !Field<UnitHelpBadge>(plain, "_help").Visible);
         helpB.UpdateState(a => a == "M811" ? 1 : 0, c => true);
@@ -118,7 +118,7 @@ class L {
         Check("A clears: its blink stops", !unit.ButtonA.AlertBlink);
         helpB.UpdateState(a => 0, c => true);
         Check("B clears: its blink stops", !unit.ButtonB.AlertBlink);
-        Check("and the '?' is blue again", mark.State == UnitHelpBadge.BadgeState.Info);
+        Check("and the '?' goes again", mark.State == UnitHelpBadge.BadgeState.Hidden);
         ConnectionMonitor.ReportRead(3, false, "not connected");
         ConnectionMonitor.GraceTime = TimeSpan.Zero;
         helpA.UpdateState(a => 1, c => true);

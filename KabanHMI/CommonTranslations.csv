@@ -513,10 +513,10 @@ Col_AxisAlarm;Axis alarm;Eksen alarmı;Авария оси;Achsalarm;Allarme ass
 Col_AxisWarning;Axis warn;Eksen uyarısı;Предупр. оси;Achswarnung;Avviso asse;Aviso eje
 Col_ServoAlarm;Servo alarm;Servo alarmı;Авария серво;Servoalarm;Allarme servo;Alarma servo
 Col_TravelPerRev;Travel / rev;Tur başı yol;Ход / об;Weg / U;Corsa / giro;Recorrido / rev
-Tip_TravelPerRev;Travel per motor revolution, in the PLC's own units (no divisor, no decimals).;Motor turu başına yol, PLC'nin kendi biriminde (bölen yok, ondalık yok).;Ход на оборот двигателя, в единицах ПЛК (без делителя и десятичных).;Weg pro Motorumdrehung, in den Einheiten der SPS (ohne Teiler, ohne Nachkommastellen).;Corsa per giro motore, nelle unità del PLC (senza divisore né decimali).;Recorrido por revolución del motor, en las unidades del PLC (sin divisor ni decimales).
-Tip_Backlash;Backlash, in the PLC's own units (no divisor, no decimals).;Boşluk, PLC'nin kendi biriminde (bölen yok, ondalık yok).;Люфт, в единицах ПЛК (без делителя и десятичных).;Spiel, in den Einheiten der SPS (ohne Teiler, ohne Nachkommastellen).;Gioco, nelle unità del PLC (senza divisore né decimali).;Holgura, en las unidades del PLC (sin divisor ni decimales).
+Tip_TravelPerRev;Travel per motor revolution, in the axis's unit to its last count.;Motor turu başına yol, eksenin biriminde son hanesine kadar.;Ход на оборот двигателя, в единицах оси до последнего знака.;Weg pro Motorumdrehung, in der Einheit der Achse bis zur letzten Stelle.;Corsa per giro motore, nell'unità dell'asse fino all'ultima cifra.;Recorrido por revolución del motor, en la unidad del eje hasta el último dígito.
+Tip_Backlash;Backlash, in the axis's unit to its last count.;Boşluk, eksenin biriminde son hanesine kadar.;Люфт, в единицах оси до последнего знака.;Spiel, in der Einheit der Achse bis zur letzten Stelle.;Gioco, nell'unità dell'asse fino all'ultima cifra.;Holgura, en la unidad del eje hasta el último dígito.
 Tip_RealPosition;Real position;Gerçek pozisyon;Реальная позиция;Istposition;Posizione reale;Posición real
-Tip_PositionDifference;Difference (raw, no divisor);Fark (ham, bölensiz);Разница (сырая, без делителя);Differenz (roh, ohne Teiler);Differenza (grezza, senza divisore);Diferencia (bruta, sin divisor)
+Tip_PositionDifference;Difference;Fark;Разница;Differenz;Differenza;Diferencia
 Tip_NotReadYet;not read yet;henüz okunmadı;ещё не прочитано;noch nicht gelesen;non ancora letto;aún no leído
 Tip_Allowed;Allowed;İzin verilen;Допустимо;Zulässig;Consentito;Permitido
 Tip_LampOn;On;Açık;Вкл;Ein;Acceso;Encendido

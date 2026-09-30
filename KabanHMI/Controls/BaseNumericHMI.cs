@@ -311,8 +311,10 @@ namespace Kaban.UI.Controls
         /// (encoder) position beside its commanded position. Not a designer
         /// property: AxisSettingHMI sets it from its RealPositionAddress. The
         /// scanner reads it (same data type), and the tooltip starts with it and
-        /// the difference, in raw units - the difference is a few counts, which the
-        /// divisor would round away.
+        /// the difference, in the value's unit at FULL RESOLUTION (every count: 4
+        /// decimals for a divisor of 10000) - at the field's own 2 decimals a
+        /// difference of a few counts would read 0.00 (30 September: shown in mm,
+        /// not in raw counts).
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ComparedAddress { get; set; } = "";
@@ -334,26 +336,45 @@ namespace Kaban.UI.Controls
             string caption = LanguageManager.GetString(ComparedCaptionKey, "Real position");
             if (!_comparedRaw.HasValue || !_lastRaw.HasValue)
                 return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
-            string shown = FormatValue(Divisor != 0 ? _comparedRaw.Value / Divisor : _comparedRaw.Value);
-            double diff = _lastRaw.Value - _comparedRaw.Value;
+            double d = Divisor != 0 ? Divisor : 1;
+            int decimals = ResolutionDecimals(Divisor, DecimalPlaces);
+            string shown = FormatValue(_comparedRaw.Value / d, decimals, false);
+            double diff = (_lastRaw.Value - _comparedRaw.Value) / d;
             return caption + ":\t" + shown + "\n" +
-                   LanguageManager.GetString("Tip_PositionDifference", "Difference (raw, no divisor)") + ":\t" +
-                   diff.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+                   LanguageManager.GetString("Tip_PositionDifference", "Difference") + ":\t" +
+                   (diff > 0 ? "+" : "") + FormatValue(diff, decimals, false);
+        }
+
+        /// <summary>
+        /// The decimals that show every count of the PLC's value: 4 for a divisor of
+        /// 10000, 5 for 100000 - never fewer than the field's own.
+        /// </summary>
+        public static int ResolutionDecimals(double divisor, int decimalPlaces)
+        {
+            double d = Math.Abs(divisor);
+            int n = d > 1 ? (int)Math.Ceiling(Math.Log10(d) - 1e-9) : 0;
+            return Math.Max(decimalPlaces, Math.Min(n, 9));
         }
 
         /// <summary>A value (after the divisor) formatted as this control shows its own.</summary>
         protected string FormatValue(double val)
         {
+            return FormatValue(val, DecimalPlaces, FillZero);
+        }
+
+        /// <summary>A value (after the divisor) in this control's unit, with the decimals given.</summary>
+        protected string FormatValue(double val, int decimalPlaces, bool fillZero)
+        {
             double shown = val;
-            int decimals = DecimalPlaces;
+            int decimals = decimalPlaces;
             string suffix = Suffix;
             if (UnitType != UnitType.None)
             {
                 shown = UnitManager.ToDisplay(UnitType, val);
-                decimals = DecimalPlaces + UnitManager.GetActiveExtraDecimals(UnitType);
+                decimals = decimalPlaces + UnitManager.GetActiveExtraDecimals(UnitType);
                 suffix = UnitManager.GetActiveSuffix(UnitType);
             }
-            string formatted = PlcValueConverter.FormatString(shown, DataType, DataFormat, decimals, Digits, FillZero);
+            string formatted = PlcValueConverter.FormatString(shown, DataType, DataFormat, decimals, Digits, fillZero);
             return string.IsNullOrEmpty(suffix) ? formatted : formatted + " " + suffix;
         }
 

@@ -93,6 +93,9 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
             this.unitRoller_Up_Down.PlcNumber = 1;
             this.unitRoller_Up_Down.TitleTextKey = "Roller Up/Down";
+            this.unitRoller_Up_Down.Lamp1AAddress = "M346";
+            this.unitRoller_Up_Down.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitRoller_Up_Down.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitRoller_Up_Down.Location = new System.Drawing.Point(16, 312);
             this.unitRoller_Up_Down.Size = new System.Drawing.Size(360, 64);
             this.unitRoller_Up_Down.LogAction = true;
@@ -100,7 +103,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitRoller_Up_Down.CommandBAddress = "M744";
             this.unitRoller_Up_Down.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRoller_Up_Down.Lamp1BAddress = "M346";
             this.unitRoller_Up_Down.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.Controls.Add(this.unitRoller_Up_Down);
             // 
@@ -225,6 +227,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_6.Name = "unitProfile_Clamping_6";
             this.unitProfile_Clamping_6.PlcNumber = 1;
             this.unitProfile_Clamping_6.TitleTextKey = "Profile Clamping 6";
+            this.unitProfile_Clamping_6.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitProfile_Clamping_6.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitProfile_Clamping_6.ErrorAAddress = "M873";
             this.unitProfile_Clamping_6.ErrorBAddress = "M872";
             this.unitProfile_Clamping_6.Location = new System.Drawing.Point(526, 90);
@@ -245,6 +249,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_7.Name = "unitProfile_Clamping_7";
             this.unitProfile_Clamping_7.PlcNumber = 1;
             this.unitProfile_Clamping_7.TitleTextKey = "Profile Clamping 7";
+            this.unitProfile_Clamping_7.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitProfile_Clamping_7.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitProfile_Clamping_7.ErrorAAddress = "M875";
             this.unitProfile_Clamping_7.ErrorBAddress = "M874";
             this.unitProfile_Clamping_7.Location = new System.Drawing.Point(526, 164);

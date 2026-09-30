@@ -64,6 +64,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitGripper.Name = "unitGripper";
             this.unitGripper.PlcNumber = 1;
             this.unitGripper.TitleTextKey = "Gripper";
+            this.unitGripper.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitGripper.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitGripper.Location = new System.Drawing.Point(16, 238);
             this.unitGripper.Size = new System.Drawing.Size(360, 64);
             this.unitGripper.LogAction = true;
@@ -88,15 +90,17 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitGripper_Angle.Name = "unitGripper_Angle";
             this.unitGripper_Angle.PlcNumber = 1;
             this.unitGripper_Angle.TitleTextKey = "Gripper Angle";
+            this.unitGripper_Angle.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitGripper_Angle.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitGripper_Angle.Location = new System.Drawing.Point(16, 312);
             this.unitGripper_Angle.Size = new System.Drawing.Size(360, 64);
             this.unitGripper_Angle.LogAction = true;
             this.unitGripper_Angle.CommandAAddress = "M752";
             this.unitGripper_Angle.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper_Angle.Lamp1AAddress = "M263";
+            this.unitGripper_Angle.Lamp1AAddress = "M262";
             this.unitGripper_Angle.CommandBAddress = "M751";
             this.unitGripper_Angle.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper_Angle.Lamp1BAddress = "M262";
+            this.unitGripper_Angle.Lamp1BAddress = "M263";
             this.unitGripper_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             this.Controls.Add(this.unitGripper_Angle);
             // 

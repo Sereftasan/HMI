@@ -10,7 +10,7 @@ namespace Kaban.Core.Helpers
     /// Wiring.csv (tools/build_wiring.py transcribes the electrical and
     /// pneumatic drawings into it).
     ///
-    ///     Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc
+    ///     Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc;Card;Via;Measure;Pressure
     ///     X34;M212;;SN46;119;12.6;;;;;;;;;;Input Conveyor 6. Clamping Cylinder Back Sensor;1
     ///     Y12;M362;M688;;210;18.6;K13;18.6;Y.7;308;25.5;Y20/Y21 (...);P12 ...;16 (A) / 96 (B);2 E3;...;1
     ///
@@ -50,8 +50,21 @@ namespace Kaban.Core.Helpers
             public string PnSheet = "";
             /// <summary>The drawing's own words for it.</summary>
             public string Text = "";
+            /// <summary>The PLC card and its own terminal name: "U11 FX5-16EYT-ESS, terminal Y2".</summary>
+            public string Card = "";
+            /// <summary>
+            /// A sensor the drawing wires to a module, not to an X input ("DI1 of the
+            /// 2nd simple motion module"): the point is then the relay the program
+            /// copies it into (M345).
+            /// </summary>
+            public string Via = "";
+            /// <summary>An output's cylinder: how its position is measured (an encoder, an analogue sensor).</summary>
+            public string Measure = "";
+            /// <summary>An output's cylinder: its clamping pressure selection and pressure switches.</summary>
+            public string Pressure = "";
 
-            public bool IsInput { get { return Address.StartsWith("X", StringComparison.OrdinalIgnoreCase); } }
+            public bool IsInput { get { return Address.StartsWith("X", StringComparison.OrdinalIgnoreCase) || Via.Length > 0; } }
+
 
             /// <summary>
             /// The electrical line: "X34 - sensor SN46, wire 119, sheet 12.6" or
@@ -67,6 +80,7 @@ namespace Kaban.Core.Helpers
                                                ? "sensor " : "") + Tag);
                     if (Wire.Length > 0) p.Add("wire " + Wire);
                     if (Sheet.Length > 0) p.Add("sheet " + Sheet);
+                    if (Via.Length > 0) p.Add("read through " + Via);
                     parts.Add(Address + (p.Count > 0 ? " - " + string.Join(", ", p) : ""));
                 }
                 else
@@ -148,7 +162,7 @@ namespace Kaban.Core.Helpers
                         Relay = get("Relay"), RelaySheet = get("RelaySheet"),
                         Coil = get("Coil"), CoilWire = get("CoilWire"), CoilSheet = get("CoilSheet"),
                         Valve = get("Valve"), Cylinder = get("Cylinder"), Hoses = get("Hoses"), PnSheet = get("PnSheet"),
-                        Text = get("Text")
+                        Text = get("Text"), Card = get("Card"), Via = get("Via"), Measure = get("Measure"), Pressure = get("Pressure")
                     };
                     if (p.Address.Length == 0) continue;
                     p.Commands.AddRange(get("Commands").Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => c.ToUpperInvariant()));
@@ -215,6 +229,17 @@ namespace Kaban.Core.Helpers
                 Dictionary<string, Point> t;
                 Point p;
                 return _byAddress.TryGetValue(station, out t) && t.TryGetValue(address.Trim(), out p) ? p : null;
+            }
+        }
+
+        /// <summary>Every point of a station, each once (for a search by the drawing's words).</summary>
+        public static List<Point> Points(int station)
+        {
+            EnsureLoaded();
+            lock (_lock)
+            {
+                Dictionary<string, Point> t;
+                return _byAddress.TryGetValue(station, out t) ? t.Values.Distinct().ToList() : new List<Point>();
             }
         }
 

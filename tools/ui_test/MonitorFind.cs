@@ -90,9 +90,13 @@ class MF {
         var rtc = m854 == null ? null : form.ShowDeviceUse(m854, out why) as CylinderUnitHMI;
         Check("found on the Exit page", rtc != null && rtc.Name == "unitRobot_Top_Clamping", why);
         if (rtc != null) {
+            Check("  nothing failed: its '?' offers no troubleshooting", !rtc.HelpDocuments().Any(d => d.FileName == "Cylinder_Troubleshooting.html"));
+            // Its error bit comes on (the manual is a fault's help only, 30 September).
+            var watch = (AlarmHelpBadge)typeof(CylinderUnitHMI).GetField("_helpA", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(rtc);
+            watch.UpdateState(a => a == "M854" ? 1 : 0, c => true);
             var docs = rtc.HelpDocuments();
             var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html");
-            Check("  its '?' offers the manual for its drawn types: 5/3 valve + encoder and reference sensor",
+            Check("  M854 on: its '?' offers the manual for its drawn types: 5/3 valve + encoder and reference sensor",
                   manual != null && manual.Valve == 3 && manual.Feedback == 6, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
             var html = System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual));
             int heads = System.Text.RegularExpressions.Regex.Matches(html, "<thead>").Count;

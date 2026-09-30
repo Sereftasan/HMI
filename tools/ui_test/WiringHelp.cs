@@ -57,10 +57,10 @@ class WH {
               has("Valve and cylinder:") && has("valve Y28/Y29 (1/8 5/3 open centre)") && has("hoses 23 (A) / 24 (B)") &&
               has("P16 Profile Recognition Front Clamping Cylinder") && has("pneumatic sheet 3 E8"));
         Check("the other coil (Y32, must be off) with its own", has("<code>Y32</code>") && has("relay K29 (sheet 19.6)"));
-        Check("the sensor that must come on: M225 = X51, SN59, wire 132, sheet 13.5",
-              has("<code>M225</code>") && has("X51 - sensor SN59, wire 132, sheet 13.5"));
+        Check("the sensor that must come on: M225 = X51, SN59, wire 132, sheet 13.5, on card U7 terminal X11",
+              has("<code>X51</code> sensor SN59, wire 132, sheet 13.5 (U7 FX5-16EX/ES, terminal X11)") && has("the HMI shows it at <code>M225</code>"));
         Check("the one that must go off: M240 = X70, SN83 (the clamping's empty switch)",
-              has("X70 - sensor SN83, wire 147, sheet 14.4") && has("Profile Recognition Front Clamping Empty Switch"));
+              has("<code>X70</code> sensor SN83, wire 147, sheet 14.4") && has("Profile Recognition Front Clamping Empty Switch"));
         Check("  and what the sheet numbers mean", has("page 12, column 6 of the electrical drawing") && has("zone E3 of the pneumatic drawing"));
 
         Console.WriteLine("--- no drawings: the box as before ---");

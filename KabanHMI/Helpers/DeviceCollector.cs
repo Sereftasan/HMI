@@ -192,7 +192,7 @@ namespace Kaban.UI.Helpers
             if (badge != null)
             {
                 Add(list, seen, st, badge.Address, Bit, own, "error");
-                foreach (var a in badge.ExtraAddresses) Add(list, seen, st, a, Word, own, "drive code");
+                foreach (var a in badge.CodeAddresses) Add(list, seen, st, a, Word, own, "drive code");
                 return;
             }
 

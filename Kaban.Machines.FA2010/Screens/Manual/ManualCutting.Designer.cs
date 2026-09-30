@@ -90,6 +90,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping.Name = "unitLeft_Top_Clamping";
             this.unitLeft_Top_Clamping.PlcNumber = 1;
             this.unitLeft_Top_Clamping.TitleTextKey = "Left Top Clamping";
+            this.unitLeft_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 164);
             this.unitLeft_Top_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_Clamping.LogAction = true;
@@ -188,6 +190,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Vert_Clamping.Name = "unitRight_Front_Vert_Clamping";
             this.unitRight_Front_Vert_Clamping.PlcNumber = 1;
             this.unitRight_Front_Vert_Clamping.TitleTextKey = "Right Front Vert.Clamping";
+            this.unitRight_Front_Vert_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.unitRight_Front_Vert_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitRight_Front_Vert_Clamping.Location = new System.Drawing.Point(1036, 312);
             this.unitRight_Front_Vert_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRight_Front_Vert_Clamping.LogAction = true;
@@ -301,6 +305,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Press_Roller_FW_Back.Name = "unitProfile_Press_Roller_FW_Back";
             this.unitProfile_Press_Roller_FW_Back.PlcNumber = 1;
             this.unitProfile_Press_Roller_FW_Back.TitleTextKey = "Profile Press Roller FW/Back";
+            this.unitProfile_Press_Roller_FW_Back.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitProfile_Press_Roller_FW_Back.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitProfile_Press_Roller_FW_Back.Location = new System.Drawing.Point(16, 238);
             this.unitProfile_Press_Roller_FW_Back.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Press_Roller_FW_Back.LogAction = true;

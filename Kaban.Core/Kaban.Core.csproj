@@ -79,6 +79,9 @@
     <Compile Include="Helpers\BoundedDriver.cs" />
     <Compile Include="Helpers\SettingsMigration.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.cs" />
+    <Compile Include="Helpers\TroubleshootingCatalog.Movement.cs">
+      <DependentUpon>TroubleshootingCatalog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\AxisCodeHelp.cs" />
     <Compile Include="Helpers\ComparisonHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />

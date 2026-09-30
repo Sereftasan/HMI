@@ -56,11 +56,10 @@ class CH {
         host.Controls.Add(unit); host.Show(); Application.DoEvents();
         var mark = Field<UnitHelpBadge>(unit, "_help");
         var helpA = Field<AlarmHelpBadge>(unit, "_helpA");
-        Check("with its types set, the unit shows a blue '?'", mark.Visible && mark.State == UnitHelpBadge.BadgeState.Info);
+        // 30 September: the manual is offered for a fault only.
+        Check("with its types set but nothing failed: no '?' (no troubleshooting to offer)", !mark.Visible && mark.State == UnitHelpBadge.BadgeState.Hidden);
         var calm = unit.HelpDocuments();
-        Check("  which opens the manual for its valve and feedback, no movement named",
-              calm.Count == 1 && calm[0].Valve == 2 && calm[0].Feedback == 2 && calm[0].Movement == null,
-              string.Join(" | ", calm.Select(d => d.Title)));
+        Check("  and no manual behind it", calm.Count == 0, string.Join(" | ", calm.Select(d => d.Title)));
 
         Console.WriteLine("--- movement A fails ---");
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
@@ -97,7 +96,7 @@ class CH {
               listed[0].Movement.Side == "B" && listed[0].Movement.Name == "Release" && listed[0].Valve == 2,
               string.Join(" | ", listed.Select(d => d.Title)));
         helpA.UpdateState(a => 0, c => true);
-        Check("cleared: blue again", mark.State == UnitHelpBadge.BadgeState.Info);
+        Check("cleared: the '?' goes again", mark.State == UnitHelpBadge.BadgeState.Hidden);
 
         Console.WriteLine("--- the full manual when the types are not set ---");
         var raw = new TC.HelpDocument { FileName = "Cylinder_Troubleshooting.html", Movement = unit.MovementFor("A") };
@@ -150,14 +149,16 @@ class CH {
         var valves = new HashSet<CylinderValve>(); int typed = 0;
         var byName = new Dictionary<string, CylinderUnitHMI>();
         var pagesBuilt = new List<Control>();
-        foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition" })
+        foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition",
+                                     "ManualRobot", "ManualYZ_Cross_Rollers" })
         {
             var pg = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + name));
             pagesBuilt.Add(pg);
             foreach (var u in pg.Controls.OfType<CylinderUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
             { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }
-        Check("nine units carry a valve and a feedback type, every valve among them", typed == 9 && valves.Count == 3, typed + " units, " + valves.Count + " valves");
+        // 30 September: every cylinder the drawings show (tools/set_cylinder_types.py).
+        Check("every drawn cylinder carries its valve and feedback type (43 with Profile Clamping 3), every valve among them", typed == 43 && valves.Count == 3, typed + " units, " + valves.Count + " valves");
         Func<string, CylinderValve, CylinderFeedback, bool> asDrawn = (key, v, f) =>
             byName.ContainsKey(key) && byName[key].ValveType == v && byName[key].FeedbackType == f && byName[key].TypeCheck == "OK";
         Check("Milling Top Clamping as drawn: 5/3 (Y33/Y34), up sensor + encoder",
@@ -172,11 +173,16 @@ class CH {
         Check("Cutting Left Top Small Clamping: one up sensor (SN64); Right Front Clamping: back sensor + encoder",
               asDrawn("ManualCutting/Left Top Small Clamping", CylinderValve.DoubleSolenoid, CylinderFeedback.SingleMagnetic) &&
               asDrawn("ManualCutting/Right Front Clamping", CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.EncoderPlusReference));
-        // Left Profile Recognition Front Vertical: its "lamps" are D750 / D150, words the
-        // drawings do not show - its feedback is for the machine's builder to say.
+        // Left open, for a decision (REVIEW 4r): the three back forward-reverse molds'
+        // reference sensors are on the second controller, and four units carry a
+        // position the drawings measure nothing for.
+        var expectedOpen = new[] { "ManualClamping_Moulds/Profile Recognition Back Horizontal", "ManualClamping_Moulds/Cutting Left Back Horizontal",
+                                   "ManualClamping_Moulds/Cutting Right Back Horizontal", "ManualClamping_Moulds/Cutting Left Top Small Press",
+                                   "ManualClamping_Moulds/Cutting Right Top Small Press", "ManualCutting/Right Front Vert.Clamping",
+                                   "ManualEntry_Conveyor/Profile Clamping 7" };
         var open = byName.Where(kv => kv.Value.TypeCheck != "OK").Select(kv => kv.Key).ToList();
-        Check("every other typed unit's wiring suits its types (one left open: Left Profile Recognition Front Vertical)",
-              open.Count == 1 && open[0] == "ManualClamping_Moulds/Left Profile Recognition Front Vertical", string.Join(" | ", open));
+        Check("every other typed unit's wiring suits its types (seven left open for a decision)",
+              open.Count == expectedOpen.Length && expectedOpen.All(open.Contains), string.Join(" | ", open));
         foreach (var pg in pagesBuilt) pg.Dispose();
 
         Console.WriteLine("--- the login: pick the user, type the password ---");

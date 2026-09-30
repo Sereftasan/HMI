@@ -149,8 +149,8 @@ class UT {
               links[1].HelpFiles.SequenceEqual(new[] { "Clamp_B_Switch.png", "Clamp_Both.pdf" }),
               string.Join(" / ", links.Select(l => string.Join(",", l.HelpFiles))));
         var calm = c2.HelpDocuments().Select(d => d.FileName).ToList();
-        Check("nothing failed: the manual, then every file of the unit once",
-              calm.Count == 4 && calm[0] == "Cylinder_Troubleshooting.html" && calm.Skip(1).SequenceEqual(new[] { "Clamp_A_Valve.png", "Clamp_Both.pdf", "Clamp_B_Switch.png" }),
+        Check("nothing failed: every file of the unit once - and no troubleshooting (a fault's only, 30 September)",
+              calm.SequenceEqual(new[] { "Clamp_A_Valve.png", "Clamp_Both.pdf", "Clamp_B_Switch.png" }),
               string.Join(" | ", calm));
         Field<AlarmHelpBadge>(c2, "_helpB").UpdateState(a => a == "M866" ? 1 : 0, c => true);
         var failedB = c2.HelpDocuments().Select(d => d.FileName).ToList();

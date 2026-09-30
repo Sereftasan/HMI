@@ -56,6 +56,20 @@ namespace Kaban.UI.Helpers
             /// </summary>
             public TC.MovementInfo Movement;
 
+            /// <summary>
+            /// The movement as its unit sees it NOW - with the states of its devices
+            /// when the error bit came on - asked when the help is opened; Movement
+            /// when there is no unit (or it is gone).
+            /// </summary>
+            public Func<TC.MovementInfo> MovementNow;
+
+            public TC.MovementInfo CurrentMovement()
+            {
+                if (MovementNow != null)
+                    try { var m = MovementNow(); if (m != null) return m; } catch { }
+                return Movement;
+            }
+
             public bool HasCodes
             {
                 get { return ServoAlarm.Length > 0 || AxisAlarm.Length > 0 || AxisWarning.Length > 0; }
@@ -419,7 +433,7 @@ namespace Kaban.UI.Helpers
                             + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
                     Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
                     Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0,
-                    Movement = cylinder ? link.Movement : null
+                    Movement = cylinder ? link.CurrentMovement() : null
                 });
             }
 

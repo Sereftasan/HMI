@@ -89,7 +89,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.Lamp1AAddress = "M225";
             this.unitFront_Clamping.CommandBAddress = "M645";
             this.unitFront_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitFront_Clamping.Lamp1BAddress = "M348";
+            this.unitFront_Clamping.Lamp1BAddress = "M240";
             this.unitFront_Clamping.PositionAddress = "D4";
             this.unitFront_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.unitFront_Clamping.PositionDecimalPlaces = 1;
@@ -106,6 +106,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitTop_Clamping.Name = "unitTop_Clamping";
             this.unitTop_Clamping.PlcNumber = 1;
             this.unitTop_Clamping.TitleTextKey = "Top Clamping";
+            this.unitTop_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
             this.unitTop_Clamping.ErrorAAddress = "M847";
             this.unitTop_Clamping.ErrorBAddress = "M846";
             this.unitTop_Clamping.Location = new System.Drawing.Point(16, 238);
@@ -165,6 +167,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_FW_Back.Name = "unitLeft_Top_FW_Back";
             this.unitLeft_Top_FW_Back.PlcNumber = 1;
             this.unitLeft_Top_FW_Back.TitleTextKey = "Left Top FW/Back";
+            this.unitLeft_Top_FW_Back.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.unitLeft_Top_FW_Back.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitLeft_Top_FW_Back.Location = new System.Drawing.Point(16, 460);
             this.unitLeft_Top_FW_Back.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_FW_Back.LogAction = true;
@@ -183,6 +187,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping.Name = "unitLeft_Top_Clamping";
             this.unitLeft_Top_Clamping.PlcNumber = 1;
             this.unitLeft_Top_Clamping.TitleTextKey = "Left Top Clamping";
+            this.unitLeft_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitLeft_Top_Clamping.ErrorAAddress = "M905";
             this.unitLeft_Top_Clamping.ErrorBAddress = "M904";
             this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 534);
