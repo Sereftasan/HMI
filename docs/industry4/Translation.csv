@@ -1,0 +1,72 @@
+English;Türkçe;Русский;Deutsch;Italiano;Español
+Local Machine Dashboard;Makine Gösterge Paneli;Панель локального оборудования;Lokales Maschinen-Dashboard;Cruscotto Macchina Locale;Panel de Máquina Local
+Event Logs;İşlem Kayıtları;Журнал событий;Protokoll der Ereignisse;Registro Eventi;Registros de Eventos
+Filter;Filtre;Фильтр;Filter;Filtro;Filtro
+Manual Time Filter;Manuel Period Seçimi;Ручной выбор времени;Manueller Zeitfilter;Filtro orario manuale;Filtro de tiempo manual
+Start Date;Başlangıç Tarihi;Дата начала;Startdatum;Data Inizio;Fecha de inicio
+End Date;Bitiş Tarihi;Дата окончания;Enddatum;Data Fine;Fecha de finalización
+Machine State Timeline;Makine Durum Zaman Çizelgesi;Хронология состояний машины;Zeitachse Maschinenstatus;Cronologia Stato Macchina;Cronología del Estado de la Máquina
+Machine State Time Distribution;Makine Durum Süre Dağılımı;Распределение времени по состояниям машины;Zeitverteilung nach Maschinenstatus;Distribuzione Tempo per Stato Macchina;Distribución del Tiempo por Estado de Máquina
+Event Frequency;İşlem Sıklığı;Частота событий;Ereignishäufigkeit;Frequenza degli Eventi;Frecuencia de Eventos
+No machine state logs in selected time range!;Seçilen zaman aralığında makine durum kaydı yok!;Нет записей о состоянии машины в выбранном диапазоне!;Keine Maschinenstatus-Logs im ausgewählten Zeitraum!;Nessun registro di stato macchina nell'intervallo selezionato!;No hay registros de estado de máquina en el rango seleccionado!
+No state data to show pie chart!;Pasta grafiği için durum kaydı yok!;Нет данных состояний для круговой диаграммы!;Keine Zustandsdaten für das Tortendiagramm!;Nessun dato di stato per il grafico a torta!;No hay datos de estado para el gráfico circular!
+No events to show!;Gösterilecek işlem kaydı yok!;Нет событий для отображения!;Keine Ereignisse zum Anzeigen!;Nessun evento da mostrare!;No hay eventos para mostrar!
+Event Occurrences (log scale);İşlem Sayıları (logaritmik);Частота событий (лог. масштаб);Ereignisvorkommen (logarithmisch);Occorrenze Eventi (scala log);Ocurrencias de Eventos (escala logarítmica)
+Alarm Logs;Arıza Kayıtları;Журнал ошибок;Fehlerprotokolle;Registri Errori;Registros de Errores
+Timestamp;Tarih ve Saat;Метка времени;Zeitstempel;Timestamp;Marca temporal
+Description;Açıklama;Описание;Beschreibung;Descrizione;Descripción
+Details;Ayrıntılar;Подробности;Details;Dettagli;Detalles
+Event;İşlem;Событие;Ereignis;Evento;Evento
+Count;Adet;Количество;Anzahl;Conteggio;Cantidad
+Download Filtered Logs as CSV;Filtrelenmiş Kayıtları CSV olarak İndir;Скачать отфильтрованные логи в CSV;Gefilterte Logs als CSV herunterladen;Scarica Log Filtrati in CSV;Descargar Registros Filtrados como CSV
+Report Period;Rapor Periyodu;Период отчёта;Berichtszeitraum;Periodo Report;Período del Informe
+No logs in selected range!;Seçilen aralıkta kayıt yok!;Нет логов в выбранном диапазоне!;Keine Logs im ausgewählten Bereich!;Nessun log nell'intervallo selezionato!;No hay registros en el rango seleccionado!
+No alarm logs in selected range!;Seçilen aralıkta arıza kaydı yok!;Нет записей об ошибках в выбранном диапазоне!;Keine Fehlerprotokolle im ausgewählten Bereich!;Nessun registro errore nell'intervallo selezionato!;No hay registros de error en el rango seleccionado!
+Logs interval:;Kayıt aralığı:;Интервал логов:;Log-Intervall:;Intervallo log:;Intervalo de registros:
+minutes;dakika;минут;Minuten;minuti;minutos
+Export Report;Seçili Kayıtları Raporla;Экспортировать отчёт;Bericht exportieren;Esporta Report;Exportar Informe
+No report has been exported yet;Henüz rapor dışa aktarılmadı;Отчёты ещё не экспортировались;Es wurde noch kein Bericht exportiert;Nessun report ancora esportato;Aún no se ha exportado ningún informe
+Report files exported successfully!;Rapor dosyaları başarıyla dışa aktarıldı!;Файлы отчёта успешно экспортированы!;Berichtsdateien erfolgreich exportiert!;File di report esportati con successo!;¡Archivos de informe exportados con éxito!
+Period End Date;Periyot Bitiş Tarihi;Дата окончания периода;Enddatum des Zeitraums;Data Fine Periodo;Fecha de Fin del Período
+Hourly;Saatlik;Почасовой;Stündlich;Orario;Por hora
+8-Hour;8 Saatlik;8-часовой;8-Stunden;8 ore;8 horas
+3-Month;3 Aylık;3-месячный;3-Monat;3 mesi;3 meses
+Daily;Günlük;Ежедневно;Täglich;Giornaliero;Diario
+Weekly;Haftalık;Еженедельно;Wöchentlich;Settimanale;Semanal
+Monthly;Aylık;Ежемесячно;Monatlich;Mensile;Mensual
+Annual;Yıllık;Ежегодно;Jährlich;Annuale;Anual
+All Events;Tüm İşlemler;Все события;Alle Ereignisse;Tutti gli Eventi;Todos los Eventos
+All Alarms;Tüm Arızalar;Все ошибки;Alle Fehler;Tutti gli Errori;Todos los Errores
+State Logs;Makine Durum Kayıtları;Журнал состояний;Zustandsprotokolle;Registri di stato;Registros de estado
+Duration (min);Süre (dakika);Длительность (мин);Dauer (Min);Durata (min);Duración (min)
+Open Export Folder;Rapor Klasörünü Aç;Открыть папку экспорта;Exportordner öffnen;Apri cartella esportazione;Abrir carpeta de exportación
+End date must be after start date!;Bitiş tarihi başlangıç tarihinden sonra olmalı!;Дата окончания должна быть позже даты начала!;Enddatum muss nach dem Startdatum liegen!;La data di fine deve essere successiva alla data di inizio!;¡La fecha de finalización debe ser posterior a la fecha de inicio!
+No state data to show timeline!;Zaman çizelgesinde gösterilecek durum kaydı yok!;Нет данных состояний для отображения временной шкалы!;Keine Zustandsdaten zur Anzeige der Zeitleiste!;Nessun dato di stato per mostrare la timeline!;No hay datos de estado para mostrar la línea de tiempo.
+No events match the selected filter!;Seçilen filtreye uygun işlem kaydı yok!;Нет событий, соответствующих выбранному фильтру!;Keine Ereignisse entsprechen dem ausgewählten Filter!;Nessun evento corrisponde al filtro selezionato!;No hay eventos que coincidan con el filtro seleccionado.
+Select Period;Periyod Seçiniz;Выберите период;Zeitraum auswählen;Seleziona periodo;Seleccionar periodo
+Select End Date;Bitiş Tarihi Seçiniz;Выберите конечную дату;Enddatum auswählen;Seleziona data finale;Seleccionar fecha de fin
+Cutting Details;Kesim Detayları;Детали резки;Schnittdetails;Dettagli di taglio;Detalles de corte
+Total Length;Toplam Uzunluk;Общая длина;Gesamtlänge;Lunghezza totale;Longitud total
+meters;metre;метр;Meter;metri;metros
+Length;Uzunluk;Длина;Länge;Lunghezza;Longitud
+Left Angle;Sol Açı;Левый угол;Linker Winkel;Angolo sinistro;Ángulo izquierdo
+Right Angle;Sağ Açı;Правый угол;Rechter Winkel;Angolo destro;Ángulo derecho
+Quantity;Adet;Количество;Menge;Quantità;Cantidad
+Auto-Report History;Otomatik-Rapor Geçmişi;История автоотчетов;Automatische Berichtshistorie;Cronologia report automatici;Historial de informes automáticos
+Latest;Güncel;Недавние;Neueste;Recenti;Recientes
+No cutting logs in selected range!;Seçilen filtreye uygun kesim kaydı yok!;В выбранном диапазоне нет записей о резке!;Keine Schnittprotokolle im ausgewählten Bereich!;Nessun log di taglio nell'intervallo selezionato!;¡No hay registros de corte en el rango seleccionado!
+Select Events to Filter...;Filtrelemek İstediğiniz İşlemleri Seçiniz...;Выберите события для фильтрации...;Ereignisse zum Filtern auswählen...;Seleziona eventi da filtrare...;Seleccionar eventos para filtrar...
+Select Alarms to Filter...;Filtrelemek İstediğiniz Alarmları Seçiniz...;Выберите тревоги для фильтрации...;Alarme zum Filtern auswählen...;Seleziona allarmi da filtrare...;Seleccionar alarmas para filtrar...
+Shift Selection (Optional);Vardiya Seçimi (Opsiyonel);Выбор смены (опционально);Schichtauswahl (optional);Selezione turno (opzionale);Selección de turno (opcional)
+Active Shift;Aktif Vardiya;Активная смена;Aktive Schicht;Turno attivo;Turno activo
+All Shifts;Tüm Vardiyalar;All Shifts;All Shifts;All Shifts;All Shifts
+Delete from the list;Listeden çıkar;Delete from the list;Delete from the list;Delete from the list;Delete from the list
+Add to the list;Listeye ekle;Add to the list;Add to the list;Add to the list;Add to the list
+Refresh the time interval;Zaman aralığını güncelle;Refresh time interval;Refresh time interval;Refresh time interval;Refresh time interval
+Edit the list;Listeyi düzenle;Edit the list;Edit the list;Edit the list;Edit the list
+15-Minute;15 Dakikalık;15-Minute;15-Minute;15-Minute;15-Minute
+30-Minute;30 Dakikalık;30-Minute;30-Minute;30-Minute;30-Minute
+Shift;Vardiya;Смена;Schicht;Turno;Turno
+Active;Aktif;Активно;Aktiv;Attivo;Activo
+Alarm;Alarm;Тревога;Alarm;Allarme;Alarma
+Shift metrics;Vardiya metrikleri;Показатели смены;Schichtkennzahlen;Metriche del turno;Métricas del turno

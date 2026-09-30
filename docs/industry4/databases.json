@@ -1,0 +1,26 @@
+{
+    "templates": {
+        "sqlite_std": {
+            "base_adapter": "sqlite",
+            "settings": {"table_main": "main_log", "table_details": "log_details"},
+            "column_map": {"state_date": "state_date", "state_code": "state_code", "id": "id"}
+        },
+        "csv_kaban_export": {
+            "base_adapter": "csv_folder",
+            "settings": {"filename_pattern": "main_log_", "details_pattern": "log_details_", "datetime_format": "%d.%m.%Y %H:%M:%S"},
+            "column_map": {"state_date": "state_date", "state_code": "state_code", "id": "id"}
+        },
+        "csv_vendor_b": {
+            "base_adapter": "csv_folder",
+            "settings": {"filename_pattern": "event_log_", "datetime_format": "%Y-%m-%d %H:%M:%S"},
+            "column_map": {"Time": "state_date", "EventID": "state_code", "Message": "RawDescription"}
+        }
+    },
+    "instances": [
+        {"name": "Europen FA 2010 SQLite", "template": "sqlite_std", "path": "C:/Kaban Files/_Projects/DashboardApp3/database.sqlite"},
+        {"name": "SQLite Sample", "template": "sqlite_std", "path": "C:/Kaban Files/_Projects/DashboardApp3/Backups/Old/database_.sqlite"},
+        {"name": "Europen FA 2010 Reports", "template": "csv_kaban_export", "path": "C:/Kaban Files/_Projects/DashboardApp3/Backups/reports"},
+        {"name": "Vendor Machine 1", "template": "csv_vendor_b", "path": "D:/Vendor1/Logs"},
+        {"name": "Vendor Machine 2", "template": "csv_vendor_b", "path": "D:/Vendor2/Logs"}
+    ]
+}

@@ -1,0 +1,57 @@
+{
+    "database_path": "C:/Industry4/Service/database.sqlite",
+    "periods": [
+        {"label": "Daily", "delta_days": 1},
+        {"label": "Weekly", "delta_days": 7},
+        {"label": "Monthly", "delta_months": 1},
+        {"label": "Annual", "delta_years": 1}
+    ],
+    "shifts": [
+        {"start": "08:00", "end": "16:00"},
+        {"start": "16:00", "end": "00:00"},
+        {"start": "00:00", "end": "08:00"}
+    ],
+    "languages": [
+        {"name": "English", "translation_column": 1},
+        {"name": "Türkçe", "translation_column": 2},
+        {"name": "Русский", "translation_column": 3},
+        {"name": "Deutsch", "translation_column": 4},
+        {"name": "Italiano", "translation_column": 5},
+        {"name": "Español", "translation_column": 6}
+    ],
+    "dashboard_language": "English",
+    "state_pie_active": true,
+    "state_timeline_active": true,
+    "event_quantity_active": true,
+    "cutting_details_active": true,
+    "state_logs_active": true,
+    "event_logs_active": true,
+    "alarm_logs_active": true,
+    "state_pie_show": true,
+    "state_timeline_show": true,
+    "event_quantity_show": true,
+    "cutting_details_show": true,
+    "state_logs_show": false,
+    "event_logs_show": true,
+    "alarm_logs_show": true,
+    "barcoded_cutting_logs_only": true,
+    "auto_reports": true,
+    "export_directory": "C:/Industry4/reports",
+    "report_language": "English",
+    "time_zone": "Europe/Istanbul",
+    "auto_report_schedule": {
+        "type": "Daily",
+        "times": ["08:00", "18:00"],
+        "weekdays": ["Sunday"],
+        "month_days": [1, 11, 21],
+        "annual_dates": ["01-01", "04-01", "07-01", "10-01"],
+        "time": "00:00",
+        "history_days": 730,
+        "history_limit": 100
+    },
+    "required_report_end_date": "2026-03-01 00:00",
+    "state_logs_report": true,
+    "event_logs_report": true,
+    "alarm_logs_report": true,
+    "database_table_report": false
+}
