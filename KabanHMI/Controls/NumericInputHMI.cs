@@ -127,9 +127,35 @@ namespace Kaban.UI.Controls
         public bool BarView
         {
             get { return _barView; }
-            set { if (_barView == value) return; _barView = value; SyncBarCaption(); Invalidate(); }
+            set
+            {
+                if (_barView == value) return;
+                _barView = value;
+                if (value) GrowToCard();
+                SyncBarCaption();
+                Invalidate();
+            }
         }
         private bool _barView;
+
+        /// <summary>
+        /// Switched on in the DESIGNER (not while a page is being loaded, not in the
+        /// running program): the field grows to the card's size, so what the
+        /// designer shows is the card - a field left at 116 x 26 had room for its
+        /// minus and plus only. Through the property, so it can be undone.
+        /// </summary>
+        private void GrowToCard()
+        {
+            var site = Site;
+            if (site == null || !site.DesignMode) return;
+            var host = site.GetService(typeof(System.ComponentModel.Design.IDesignerHost)) as System.ComponentModel.Design.IDesignerHost;
+            if (host != null && host.Loading) return;
+            var want = new Size(Math.Max(Width, CardSize.Width), Math.Max(Height, CardSize.Height));
+            if (want == Size) return;
+            var prop = TypeDescriptor.GetProperties(this)["Size"];
+            try { if (prop != null) prop.SetValue(this, want); else Size = want; }
+            catch { Size = want; }
+        }
 
         /// <summary>The heading strip with the field's name (DescriptionText) and a gauge.</summary>
         [Category("   Appearance"), DefaultValue(true),
@@ -164,37 +190,93 @@ namespace Kaban.UI.Controls
             }
         }
         private Rectangle Body { get { int h = HeaderHeight; return new Rectangle(0, h, Width, Height - h); } }
-        private int Pad { get { return Math.Max(4, Math.Min(10, Body.Height / 6)); } }
-        private int Side { get { var b = Body; return Math.Max(18, Math.Min(44, b.Height - 2 * Pad)); } }
-        private int BtnTop { get { var b = Body; return b.Y + (b.Height - Side) / 2; } }
-        internal Rectangle MinusArea { get { return new Rectangle(Pad, BtnTop, Side, Side); } }
-        internal Rectangle PlusArea { get { return new Rectangle(Width - Pad - Side, BtnTop, Side, Side); } }
-        internal Rectangle ValueArea
+
+        /// <summary>
+        /// How the card's parts fit the size it has:
+        ///   Wide  - [-] value [=====slider=====] [+] on one line (the card as designed);
+        ///   Tall  - the value on a line of its own, [-] [===slider===] [+] under it;
+        ///   Small - [-] value [+] with a thin slider under the value.
+        /// The slider shows in every one: a field switched to the bar view at its
+        /// old size (116 x 26, say) used to lose it and keep only - and +.
+        /// </summary>
+        internal enum BarShape { Wide, Tall, Small }
+
+        private struct CardParts { public Rectangle Minus, Plus, Value, Track; public BarShape Shape; }
+
+        private CardParts Parts
         {
             get
             {
-                int w = Math.Max(52, Math.Min(120, Width * 22 / 100));
-                return new Rectangle(MinusArea.Right + 8, BtnTop, w, Side);
+                var b = Body;
+                var c = new CardParts();
+                // WIDE: one line, the slider at least 60 wide
+                int pad = Math.Max(4, Math.Min(10, b.Height / 6));
+                int side = Math.Max(18, Math.Min(44, b.Height - 2 * pad));
+                int top = b.Y + (b.Height - side) / 2;
+                int valueW = Math.Max(52, Math.Min(120, Width * 22 / 100));
+                c.Minus = new Rectangle(pad, top, side, side);
+                c.Plus = new Rectangle(Width - pad - side, top, side, side);
+                c.Value = new Rectangle(c.Minus.Right + 8, top, valueW, side);
+                int x0 = c.Value.Right + 14, x1 = c.Plus.Left - 14;
+                c.Track = new Rectangle(x0, top, Math.Max(0, x1 - x0), side);
+                c.Shape = BarShape.Wide;
+                if (c.Track.Width >= 60 && b.Height >= 18) return c;
+
+                // TALL: the value above, minus - slider - plus below
+                const int gap = 4;
+                int side2 = Math.Min(44, (b.Height - 2 * pad - gap) / 2);
+                if (side2 >= 18)
+                {
+                    int t2 = b.Y + (b.Height - (2 * side2 + gap)) / 2;
+                    int vw = Math.Min(Width - 2 * pad, Math.Max(80, Math.Min(200, Width * 60 / 100)));
+                    var tall = new CardParts { Shape = BarShape.Tall };
+                    tall.Value = new Rectangle((Width - vw) / 2, t2, vw, side2);
+                    int y2 = t2 + side2 + gap;
+                    tall.Minus = new Rectangle(pad, y2, side2, side2);
+                    tall.Plus = new Rectangle(Width - pad - side2, y2, side2, side2);
+                    int a = tall.Minus.Right + 12, z = tall.Plus.Left - 12;
+                    tall.Track = new Rectangle(a, y2, Math.Max(0, z - a), side2);
+                    if (tall.Track.Width >= 30) return tall;
+                }
+
+                // SMALL: one low line, the slider a thin strip under the value
+                int p2 = Math.Max(2, Math.Min(6, b.Height / 8));
+                int s2 = Math.Max(14, Math.Min(44, b.Height - 2 * p2));
+                int t3 = b.Y + (b.Height - s2) / 2;
+                int th = Math.Max(4, Math.Min(6, s2 / 5));
+                var small = new CardParts { Shape = BarShape.Small };
+                small.Minus = new Rectangle(p2, t3, s2, s2);
+                small.Plus = new Rectangle(Width - p2 - s2, t3, s2, s2);
+                int vx = small.Minus.Right + 4;
+                small.Value = new Rectangle(vx, t3, Math.Max(10, small.Plus.Left - 4 - vx), Math.Max(10, s2 - th - 2));
+                small.Track = new Rectangle(small.Value.X + 3, small.Value.Bottom + 2, Math.Max(0, small.Value.Width - 6), th);
+                return small;
             }
         }
-        /// <summary>The slider's travel: between the value and the plus button.</summary>
-        internal Rectangle TrackArea
-        {
-            get
-            {
-                int x0 = ValueArea.Right + 14, x1 = PlusArea.Left - 14;
-                return new Rectangle(x0, BtnTop, Math.Max(0, x1 - x0), Side);
-            }
-        }
+
+        internal BarShape Shape { get { return Parts.Shape; } }
+        internal Rectangle MinusArea { get { return Parts.Minus; } }
+        internal Rectangle PlusArea { get { return Parts.Plus; } }
+        internal Rectangle ValueArea { get { return Parts.Value; } }
+        /// <summary>The slider's travel (between the value and plus; under the value on a small card).</summary>
+        internal Rectangle TrackArea { get { return Parts.Track; } }
+
+        /// <summary>
+        /// The size a card is given when the bar view is switched on in the
+        /// designer (a field is kept as it is when it is larger already).
+        /// </summary>
+        public static readonly Size CardSize = new Size(380, 72);
 
         internal BarPart PartAt(Point p)
         {
             if (!_barView) return BarPart.None;
-            if (MinusArea.Contains(p)) return BarPart.Minus;
-            if (PlusArea.Contains(p)) return BarPart.Plus;
-            if (ValueArea.Contains(p)) return BarPart.Value;
-            var t = TrackArea; t.Inflate(10, 0);
-            if (t.Width > 0 && t.Contains(p)) return BarPart.Track;
+            var c = Parts;
+            if (c.Minus.Contains(p)) return BarPart.Minus;
+            if (c.Plus.Contains(p)) return BarPart.Plus;
+            if (c.Value.Contains(p)) return BarPart.Value;
+            var t = c.Track;
+            if (c.Shape == BarShape.Small) t.Inflate(4, 4); else t.Inflate(10, 0);
+            if (c.Track.Width > 0 && t.Contains(p)) return BarPart.Track;
             return BarPart.None;
         }
 
@@ -570,9 +652,11 @@ namespace Kaban.UI.Controls
 
         private void DrawTrack(Graphics g, bool live)
         {
-            var t = TrackArea;
+            var c = Parts;
+            var t = c.Track;
             if (t.Width < 12) return;
-            int th = Math.Max(4, Math.Min(8, t.Height / 5));
+            bool thin = c.Shape == BarShape.Small;
+            int th = thin ? t.Height : Math.Max(4, Math.Min(8, t.Height / 5));
             var bar = new Rectangle(t.X, t.Y + (t.Height - th) / 2, t.Width, th);
             using (var path = Round(bar, th / 2))
             using (var b = new SolidBrush(TrackBack)) g.FillPath(b, path);
@@ -583,8 +667,8 @@ namespace Kaban.UI.Controls
                 using (var path = Round(new Rectangle(bar.X, bar.Y, Math.Max(th, x - bar.X), th), th / 2))
                 using (var b = new SolidBrush(live ? TrackFill : InkPale)) g.FillPath(b, path);
 
-            // The knob: blue with a white ring, a soft shadow under it.
-            int kd = Math.Max(12, Math.Min(22, t.Height * 55 / 100));
+            // The knob: blue with a white ring, a soft shadow under it (small on the thin strip).
+            int kd = thin ? th + 6 : Math.Max(12, Math.Min(22, t.Height * 55 / 100));
             var knob = new Rectangle(x - kd / 2, bar.Y + th / 2 - kd / 2, kd, kd);
             using (var shadow = new SolidBrush(Color.FromArgb(40, 0, 0, 0)))
                 g.FillEllipse(shadow, knob.X, knob.Y + 1, kd, kd);

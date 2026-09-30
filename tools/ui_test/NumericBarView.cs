@@ -34,6 +34,45 @@ class BV {
         public bool TryReadMulti(string[] a, out int[] v) { v = ReadMulti(a); return true; }
     }
 
+    class Host : System.ComponentModel.Design.IDesignerHost {
+        public bool Loading { get; set; }
+        public bool InTransaction { get { return false; } }
+        public System.ComponentModel.IContainer Container { get { return null; } }
+        public System.ComponentModel.IComponent RootComponent { get { return null; } }
+        public string RootComponentClassName { get { return ""; } }
+        public string TransactionDescription { get { return ""; } }
+        public event EventHandler Activated { add { } remove { } }
+        public event EventHandler Deactivated { add { } remove { } }
+        public event EventHandler LoadComplete { add { } remove { } }
+        public event System.ComponentModel.Design.DesignerTransactionCloseEventHandler TransactionClosed { add { } remove { } }
+        public event System.ComponentModel.Design.DesignerTransactionCloseEventHandler TransactionClosing { add { } remove { } }
+        public event EventHandler TransactionOpened { add { } remove { } }
+        public event EventHandler TransactionOpening { add { } remove { } }
+        public void Activate() { }
+        public System.ComponentModel.IComponent CreateComponent(Type t) { return null; }
+        public System.ComponentModel.IComponent CreateComponent(Type t, string n) { return null; }
+        public System.ComponentModel.Design.DesignerTransaction CreateTransaction() { return null; }
+        public System.ComponentModel.Design.DesignerTransaction CreateTransaction(string d) { return null; }
+        public void DestroyComponent(System.ComponentModel.IComponent c) { }
+        public System.ComponentModel.Design.IDesigner GetDesigner(System.ComponentModel.IComponent c) { return null; }
+        public Type GetType(string n) { return null; }
+        public void AddService(Type t, object o) { }
+        public void AddService(Type t, object o, bool p) { }
+        public void AddService(Type t, System.ComponentModel.Design.ServiceCreatorCallback c) { }
+        public void AddService(Type t, System.ComponentModel.Design.ServiceCreatorCallback c, bool p) { }
+        public void RemoveService(Type t) { }
+        public void RemoveService(Type t, bool p) { }
+        public object GetService(Type t) { return null; }
+    }
+    class DesignSite : System.ComponentModel.ISite {
+        public readonly Host Host = new Host();
+        public System.ComponentModel.IComponent Component { get { return null; } }
+        public System.ComponentModel.IContainer Container { get { return null; } }
+        public bool DesignMode { get { return true; } }
+        public string Name { get; set; }
+        public object GetService(Type t) { return t == typeof(System.ComponentModel.Design.IDesignerHost) ? Host : null; }
+    }
+
     static Plc plc = new Plc();
     static void Scan(NumericInputHMI f) { f.UpdateState(plc.Read, c => true); }
     static T Get<T>(object o, string n) {
@@ -170,6 +209,50 @@ class BV {
         descr = form.Controls.OfType<Label>().FirstOrDefault(l => l.Text.StartsWith("Speed Override"));
         Check("the name back on the left", descr != null && descr.Parent == form, descr == null ? "none" : descr.Text);
         Check("  and no part to press", partAt.Invoke(f, new object[] { Mid(plus) }).ToString() == "None");
+
+        Console.WriteLine("--- a field switched to the bar view at its old size (30 September) ---");
+        var small = new NumericInputHMI
+        {
+            PlcNumber = 1, Address = "D200", DescriptionText = "Saw Diameter", Suffix = "mm", BarView = true, BarStep = 1,
+            Location = new Point(40, 120), Size = new Size(116, 26), RequiredSecurity = SecurityLevel.Operator
+        };
+        small.MinLimit.Type = LimitSourceType.Static; small.MinLimit.StaticValue = 500;
+        small.MaxLimit.Type = LimitSourceType.Static; small.MaxLimit.StaticValue = 700;
+        form.ClientSize = new Size(520, 320);
+        form.Controls.Add(small);
+        plc.Mem["D200"] = 600; Scan(small); Pump(50);
+        var sm = Get<Rectangle>(small, "MinusArea"); var sv = Get<Rectangle>(small, "ValueArea");
+        var st = Get<Rectangle>(small, "TrackArea"); var sp = Get<Rectangle>(small, "PlusArea");
+        Check("116 x 26: minus, value, plus - and the slider still there, under the value",
+              Get<object>(small, "Shape").ToString() == "Small" && st.Width >= 50 && st.Top >= sv.Bottom && sm.Right < sv.Left && sv.Right < sp.Left,
+              sm + " " + sv + " " + st + " " + sp);
+        Check("  every part inside the field", new[] { sm, sv, st, sp }.All(r => new Rectangle(0, 0, 116, 26).Contains(r)));
+        plc.Writes.Clear();
+        Mouse(small, "MouseDown", new Point(st.Right + 2, st.Y + st.Height / 2)); Mouse(small, "MouseUp", new Point(st.Right + 2, st.Y + st.Height / 2));
+        Check("  the thin slider drags: past its end writes the maximum (700)", plc.Writes.LastOrDefault() == "D200=700", string.Join(" ", plc.Writes));
+        small.Size = new Size(200, 90);
+        var tv = Get<Rectangle>(small, "ValueArea"); var tt = Get<Rectangle>(small, "TrackArea"); var tm = Get<Rectangle>(small, "MinusArea");
+        Check("200 x 90: the value above, minus - slider - plus under it",
+              Get<object>(small, "Shape").ToString() == "Tall" && tv.Bottom <= tm.Top && tt.Top == tm.Top && tt.Width >= 30, tv + " " + tm + " " + tt);
+        small.Size = new Size(420, 84);
+        Check("420 x 84: the card on one line", Get<object>(small, "Shape").ToString() == "Wide");
+
+        var site = new DesignSite();
+        var designed = new NumericInputHMI { Size = new Size(116, 26) };
+        designed.Site = site;
+        site.Host.Loading = true;
+        designed.BarView = true;
+        Check("in the designer, while the page loads: the size as saved", designed.Size == new Size(116, 26), designed.Size.ToString());
+        designed.BarView = false;
+        site.Host.Loading = false;
+        designed.BarView = true;
+        Check("switched on in the designer: the field grows to the card (380 x 72)", designed.Size == new Size(380, 72), designed.Size.ToString());
+        var big = new NumericInputHMI { Size = new Size(500, 100) };
+        big.Site = new DesignSite();
+        big.BarView = true;
+        Check("  a larger field keeps its size", big.Size == new Size(500, 100), big.Size.ToString());
+        var running = new NumericInputHMI { Size = new Size(116, 26), BarView = true };
+        Check("  in the running program nothing is resized", running.Size == new Size(116, 26));
 
         form.Close();
         Console.WriteLine(fail == 0 ? "\nNUMERIC BAR VIEW ALL PASS" : "\nNUMERIC BAR VIEW " + fail + " FAILED");
