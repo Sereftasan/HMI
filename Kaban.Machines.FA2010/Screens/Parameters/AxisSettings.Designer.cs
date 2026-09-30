@@ -249,7 +249,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axRobot_X.ServoAlarmAddress = "W0B";
             this.axRobot_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_X.Size = new System.Drawing.Size(1316, 40);
+            this.axRobot_X.Size = new System.Drawing.Size(1382, 40);
             this.axRobot_X.Suffix = "mm";
             this.axRobot_X.TabIndex = 13;
             this.axRobot_X.TravelPerRevolutionAddress = "d100";
@@ -296,7 +296,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axRobot_Y.ServoAlarmAddress = "W0BB";
             this.axRobot_Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_Y.Size = new System.Drawing.Size(1316, 40);
+            this.axRobot_Y.Size = new System.Drawing.Size(1382, 40);
             this.axRobot_Y.Suffix = "mm";
             this.axRobot_Y.TabIndex = 14;
             this.axRobot_Y.VerticalMovement = false;
@@ -342,7 +342,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axRobot_Z.ServoAlarmAddress = "W0CB";
             this.axRobot_Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_Z.Size = new System.Drawing.Size(1316, 40);
+            this.axRobot_Z.Size = new System.Drawing.Size(1382, 40);
             this.axRobot_Z.Suffix = "mm";
             this.axRobot_Z.TabIndex = 15;
             this.axRobot_Z.VerticalMovement = true;
@@ -384,11 +384,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.PositionAddress = "W10";
             this.axMilling_1_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_1_Angle.ReferenceAddress = "D322";
-            this.axMilling_1_Angle.ReferenceSensorAddress = "M331";
             this.axMilling_1_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_1_Angle.ServoAlarmAddress = "W1B";
             this.axMilling_1_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1_Angle.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_1_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1_Angle.Suffix = "°";
             this.axMilling_1_Angle.TabIndex = 16;
             this.axMilling_1_Angle.VerticalMovement = true;
@@ -433,7 +432,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_1X.ServoAlarmAddress = "W7B";
             this.axMilling_1X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1X.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_1X.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1X.Suffix = "mm";
             this.axMilling_1X.TabIndex = 17;
             this.axMilling_1X.VerticalMovement = false;
@@ -478,7 +477,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_1Y.ServoAlarmAddress = "W2B";
             this.axMilling_1Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1Y.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_1Y.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1Y.Suffix = "mm";
             this.axMilling_1Y.TabIndex = 18;
             this.axMilling_1Y.VerticalMovement = false;
@@ -523,7 +522,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_1Z.ServoAlarmAddress = "W3B";
             this.axMilling_1Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1Z.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_1Z.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1Z.Suffix = "mm";
             this.axMilling_1Z.TabIndex = 19;
             this.axMilling_1Z.VerticalMovement = true;
@@ -569,7 +568,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_2_Angle.ServoAlarmAddress = "W4B";
             this.axMilling_2_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2_Angle.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_2_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2_Angle.Suffix = "°";
             this.axMilling_2_Angle.TabIndex = 20;
             this.axMilling_2_Angle.VerticalMovement = true;
@@ -614,7 +613,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_2X.ServoAlarmAddress = "W8B";
             this.axMilling_2X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2X.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_2X.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2X.Suffix = "mm";
             this.axMilling_2X.TabIndex = 21;
             this.axMilling_2X.VerticalMovement = false;
@@ -659,7 +658,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_2Y.ServoAlarmAddress = "W5B";
             this.axMilling_2Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2Y.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_2Y.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2Y.Suffix = "mm";
             this.axMilling_2Y.TabIndex = 22;
             this.axMilling_2Y.VerticalMovement = false;
@@ -704,7 +703,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_2Z.ServoAlarmAddress = "W6B";
             this.axMilling_2Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2Z.Size = new System.Drawing.Size(1316, 40);
+            this.axMilling_2Z.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2Z.Suffix = "mm";
             this.axMilling_2Z.TabIndex = 23;
             this.axMilling_2Z.VerticalMovement = true;
@@ -750,7 +749,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axCutting_Angle.ServoAlarmAddress = "W9B";
             this.axCutting_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axCutting_Angle.Size = new System.Drawing.Size(1316, 40);
+            this.axCutting_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axCutting_Angle.Suffix = "°";
             this.axCutting_Angle.TabIndex = 24;
             this.axCutting_Angle.VerticalMovement = true;
@@ -796,7 +795,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axCutting_Z.ServoAlarmAddress = "W0AB";
             this.axCutting_Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axCutting_Z.Size = new System.Drawing.Size(1316, 40);
+            this.axCutting_Z.Size = new System.Drawing.Size(1382, 40);
             this.axCutting_Z.Suffix = "mm";
             this.axCutting_Z.TabIndex = 25;
             this.axCutting_Z.VerticalMovement = true;
@@ -843,7 +842,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axV_Cutting_Y.ServoAlarmAddress = "W0EB";
             this.axV_Cutting_Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axV_Cutting_Y.Size = new System.Drawing.Size(1316, 40);
+            this.axV_Cutting_Y.Size = new System.Drawing.Size(1382, 40);
             this.axV_Cutting_Y.Suffix = "mm";
             this.axV_Cutting_Y.TabIndex = 26;
             this.axV_Cutting_Y.VerticalMovement = false;
@@ -890,7 +889,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axV_Cutting_Z.ServoAlarmAddress = "W0FB";
             this.axV_Cutting_Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axV_Cutting_Z.Size = new System.Drawing.Size(1316, 40);
+            this.axV_Cutting_Z.Size = new System.Drawing.Size(1382, 40);
             this.axV_Cutting_Z.Suffix = "mm";
             this.axV_Cutting_Z.TabIndex = 27;
             this.axV_Cutting_Z.VerticalMovement = true;
@@ -934,7 +933,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axExit_X.ServoAlarmAddress = "W0DB";
             this.axExit_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axExit_X.Size = new System.Drawing.Size(1316, 40);
+            this.axExit_X.Size = new System.Drawing.Size(1382, 40);
             this.axExit_X.Suffix = "mm";
             this.axExit_X.TabIndex = 28;
             this.axExit_X.VerticalMovement = false;
@@ -977,7 +976,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.axV_Cutting_Z);
             this.Controls.Add(this.axExit_X);
             this.Name = "AxisSettings";
-            this.Size = new System.Drawing.Size(1316, 780);
+            this.Size = new System.Drawing.Size(1316, 759);
             this.ResumeLayout(false);
 
         }
