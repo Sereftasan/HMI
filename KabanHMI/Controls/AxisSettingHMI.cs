@@ -52,9 +52,6 @@ namespace Kaban.UI.Controls
         [Category("  PLC"), Description("Station this axis lives on.")]
         public int PlcNumber { get; set; }
 
-        [Category("  PLC"), Description("Not used directly; the fields carry their own addresses.")]
-        public string Address { get; set; }
-
         /// <summary>
         /// TRANSLATION KEY for the axis name - "Axis_Milling1Angle", not "Milling
         /// 1 Angle".
@@ -173,25 +170,21 @@ namespace Kaban.UI.Controls
         /// the machine. An invented number in between is worse than nothing,
         /// because it looks like a decision somebody made.
         /// </summary>
-        [Category(" Value")]
-        public double EntryMinimum { get; set; }
+        [Category(" Value"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
+         Description("The lowest value that may be typed into the row's settings: a number (-500), or the device holding it (D318), " +
+                     "read live. Empty: no bound but the field's digits.")]
+        public Kaban.Core.Models.DynamicValue EntryMinimum { get; set; } = new Kaban.Core.Models.DynamicValue();
 
-        [Category(" Value")]
-        public double EntryMaximum { get; set; }
+        [Category(" Value"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
+         Description("The highest value that may be typed into the row's settings: a number (6500), or the device holding it (D320), " +
+                     "read live. Empty: no bound but the field's digits.")]
+        public Kaban.Core.Models.DynamicValue EntryMaximum { get; set; } = new Kaban.Core.Models.DynamicValue();
 
-        /// <summary>
-        /// Optional PLC words holding the entry bounds, instead of the fixed
-        /// EntryMinimum / EntryMaximum above.
-        ///
-        /// A machine whose travel changes with the fitted tooling cannot have its
-        /// bounds compiled into a page - and a bound that has to be edited in the
-        /// designer is one that will be left wrong.
-        /// </summary>
-        [Category(" Value"), Description("Device holding the entry minimum. Overrides EntryMinimum.")]
-        public string EntryMinimumAddress { get; set; }
-
-        [Category(" Value"), Description("Device holding the entry maximum. Overrides EntryMaximum.")]
-        public string EntryMaximumAddress { get; set; }
+        // ONE PROPERTY EACH, a number or a device (30 September). There were two
+        // for each bound - EntryMinimum (a number) and EntryMinimumAddress (a
+        // device that overrode it) - so a page could say two different things
+        // and only one of them counted. A DynamicValue is either, as a numeric
+        // field's MinLimit / MaxLimit are: type 250 or D318 in the same box.
 
         /// <summary>
         /// This axis's number on its machine. A manual-page AxisUnitHMI with the
@@ -371,14 +364,12 @@ namespace Kaban.UI.Controls
         public AxisSettingHMI()
         {
             PlcNumber = 1;
-            Address = "";
             AxisNameKey = "X";
             CommandBackAddress = CommandForwardAddress = PositionAddress = "";
             MinLimitAddress = MaxLimitAddress = "";
             ReferenceAddress = CalibrationAddress = "";
             CalibrateAddress = GoToReferenceAddress = "";
             CurrentAddress = ZDistanceAddress = "";
-            EntryMinimumAddress = EntryMaximumAddress = "";
             ErrorAddress = "";
             ReferenceSensorAddress = "";
             AxisAlarmAddress = AxisWarningAddress = ServoAlarmAddress = "";
@@ -389,8 +380,8 @@ namespace Kaban.UI.Controls
             DecimalPlaces = 2;
             Digits = 8;
             Suffix = "mm";
-            EntryMinimum = double.NaN;      // no limit unless one is given
-            EntryMaximum = double.NaN;
+            EntryMinimum = new Kaban.Core.Models.DynamicValue();   // no limit unless one is given
+            EntryMaximum = new Kaban.Core.Models.DynamicValue();
             CurrentDivisor = 1;
             CurrentFullScale = 100;
             ZDistanceDivisor = 1000;
@@ -795,28 +786,29 @@ namespace Kaban.UI.Controls
                 }
                 else
                 {
-                    // A device beats a constant: see EntryMinimumAddress.
+                    // The other bound's device first (a minimum is below the maximum), else the row's entry bound.
                     n.MinLimit = !string.IsNullOrEmpty(lowerTag)
                         ? new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, lowerTag)
-                        : !string.IsNullOrEmpty(EntryMinimumAddress)
-                            ? new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, EntryMinimumAddress)
-                            : double.IsNaN(EntryMinimum)
-                                ? new Kaban.Core.Models.DynamicValue()   // none
-                                : new Kaban.Core.Models.DynamicValue(LimitSourceType.Static, EntryMinimum, "");
+                        : CopyOf(EntryMinimum);
 
                     n.MaxLimit = !string.IsNullOrEmpty(upperTag)
                         ? new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, upperTag)
-                        : !string.IsNullOrEmpty(EntryMaximumAddress)
-                            ? new Kaban.Core.Models.DynamicValue(LimitSourceType.Tag, 0, EntryMaximumAddress)
-                            : double.IsNaN(EntryMaximum)
-                                ? new Kaban.Core.Models.DynamicValue()   // none
-                                : new Kaban.Core.Models.DynamicValue(LimitSourceType.Static, EntryMaximum, "");
+                        : CopyOf(EntryMaximum);
                 }
                 n.SetBounds(x, 6, w, RowHeight - 12);
                 Controls.Add(n);
             }
             x += w + Gap;
             return n;
+        }
+
+        /// <summary>A bound for a field: its own copy (none when not set, or a static NaN).</summary>
+        private static Kaban.Core.Models.DynamicValue CopyOf(Kaban.Core.Models.DynamicValue v)
+        {
+            if (v == null || v.Type == LimitSourceType.None) return new Kaban.Core.Models.DynamicValue();
+            if (v.Type == LimitSourceType.Static && double.IsNaN(v.StaticValue)) return new Kaban.Core.Models.DynamicValue();
+            if (v.Type != LimitSourceType.Static && string.IsNullOrWhiteSpace(v.TagAddress)) return new Kaban.Core.Models.DynamicValue();
+            return new Kaban.Core.Models.DynamicValue(v.Type, v.StaticValue, (v.TagAddress ?? "").Trim());
         }
 
         [Category(" Movement"), Description("Vertical axis: the jog arrows become up/down.")]

@@ -212,7 +212,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axRobot_X
             // 
-            this.axRobot_X.Address = "";
             this.axRobot_X.AxisAlarmAddress = "W4";
             this.axRobot_X.AxisName = "Axis_RobotX";
             this.axRobot_X.AxisNameKey = "Axis_RobotX";
@@ -229,10 +228,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.DecimalPlaces = 2;
             this.axRobot_X.Digits = 8;
             this.axRobot_X.Divisor = 10000D;
-            this.axRobot_X.EntryMaximum = double.NaN;
-            this.axRobot_X.EntryMaximumAddress = "";
-            this.axRobot_X.EntryMinimum = double.NaN;
-            this.axRobot_X.EntryMinimumAddress = "";
             this.axRobot_X.ErrorAddress = "M801";
             this.axRobot_X.GoToReferenceAddress = "B0";
             this.axRobot_X.HomeRequestAddress = "m100";
@@ -261,7 +256,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axRobot_Y
             // 
-            this.axRobot_Y.Address = "";
             this.axRobot_Y.AxisAlarmAddress = "W0B4";
             this.axRobot_Y.AxisName = "Axis_RobotY";
             this.axRobot_Y.AxisNameKey = "Axis_RobotY";
@@ -278,10 +272,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.DecimalPlaces = 2;
             this.axRobot_Y.Digits = 8;
             this.axRobot_Y.Divisor = 10000D;
-            this.axRobot_Y.EntryMaximum = double.NaN;
-            this.axRobot_Y.EntryMaximumAddress = "";
-            this.axRobot_Y.EntryMinimum = double.NaN;
-            this.axRobot_Y.EntryMinimumAddress = "";
             this.axRobot_Y.ErrorAddress = "M813";
             this.axRobot_Y.GoToReferenceAddress = "B11";
             this.axRobot_Y.Location = new System.Drawing.Point(0, 78);
@@ -307,7 +297,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axRobot_Z
             // 
-            this.axRobot_Z.Address = "";
             this.axRobot_Z.AxisAlarmAddress = "W0C4";
             this.axRobot_Z.AxisName = "Axis_RobotZ";
             this.axRobot_Z.AxisNameKey = "Axis_RobotZ";
@@ -324,10 +313,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.DecimalPlaces = 2;
             this.axRobot_Z.Digits = 8;
             this.axRobot_Z.Divisor = 10000D;
-            this.axRobot_Z.EntryMaximum = double.NaN;
-            this.axRobot_Z.EntryMaximumAddress = "";
-            this.axRobot_Z.EntryMinimum = double.NaN;
-            this.axRobot_Z.EntryMinimumAddress = "";
             this.axRobot_Z.ErrorAddress = "M814";
             this.axRobot_Z.GoToReferenceAddress = "B12";
             this.axRobot_Z.Location = new System.Drawing.Point(0, 122);
@@ -353,7 +338,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_1_Angle
             // 
-            this.axMilling_1_Angle.Address = "";
             this.axMilling_1_Angle.AxisAlarmAddress = "W14";
             this.axMilling_1_Angle.AxisName = "Axis_Milling1Angle";
             this.axMilling_1_Angle.AxisNameKey = "Axis_Milling1Angle";
@@ -370,10 +354,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.DecimalPlaces = 3;
             this.axMilling_1_Angle.Digits = 8;
             this.axMilling_1_Angle.Divisor = 100000D;
-            this.axMilling_1_Angle.EntryMaximum = double.NaN;
-            this.axMilling_1_Angle.EntryMaximumAddress = "";
-            this.axMilling_1_Angle.EntryMinimum = double.NaN;
-            this.axMilling_1_Angle.EntryMinimumAddress = "";
             this.axMilling_1_Angle.ErrorAddress = "M809";
             this.axMilling_1_Angle.GoToReferenceAddress = "B1";
             this.axMilling_1_Angle.Location = new System.Drawing.Point(0, 166);
@@ -398,7 +378,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_1X
             // 
-            this.axMilling_1X.Address = "";
             this.axMilling_1X.AxisAlarmAddress = "W74";
             this.axMilling_1X.AxisName = "Axis_Milling1X";
             this.axMilling_1X.AxisNameKey = "Axis_Milling1X";
@@ -415,10 +394,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.DecimalPlaces = 2;
             this.axMilling_1X.Digits = 8;
             this.axMilling_1X.Divisor = 10000D;
-            this.axMilling_1X.EntryMaximum = double.NaN;
-            this.axMilling_1X.EntryMaximumAddress = "";
-            this.axMilling_1X.EntryMinimum = double.NaN;
-            this.axMilling_1X.EntryMinimumAddress = "";
             this.axMilling_1X.GoToReferenceAddress = "B7";
             this.axMilling_1X.Location = new System.Drawing.Point(0, 210);
             this.axMilling_1X.MaxLimitAddress = "D354";
@@ -443,7 +418,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_1Y
             // 
-            this.axMilling_1Y.Address = "";
             this.axMilling_1Y.AxisAlarmAddress = "W24";
             this.axMilling_1Y.AxisName = "Axis_Milling1Y";
             this.axMilling_1Y.AxisNameKey = "Axis_Milling1Y";
@@ -460,10 +434,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.DecimalPlaces = 2;
             this.axMilling_1Y.Digits = 8;
             this.axMilling_1Y.Divisor = 10000D;
-            this.axMilling_1Y.EntryMaximum = double.NaN;
-            this.axMilling_1Y.EntryMaximumAddress = "";
-            this.axMilling_1Y.EntryMinimum = double.NaN;
-            this.axMilling_1Y.EntryMinimumAddress = "";
             this.axMilling_1Y.GoToReferenceAddress = "B2";
             this.axMilling_1Y.Location = new System.Drawing.Point(0, 254);
             this.axMilling_1Y.MaxLimitAddress = "D324";
@@ -488,7 +458,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_1Z
             // 
-            this.axMilling_1Z.Address = "";
             this.axMilling_1Z.AxisAlarmAddress = "W34";
             this.axMilling_1Z.AxisName = "Axis_Milling1Z";
             this.axMilling_1Z.AxisNameKey = "Axis_Milling1Z";
@@ -505,10 +474,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.DecimalPlaces = 2;
             this.axMilling_1Z.Digits = 8;
             this.axMilling_1Z.Divisor = 10000D;
-            this.axMilling_1Z.EntryMaximum = double.NaN;
-            this.axMilling_1Z.EntryMaximumAddress = "";
-            this.axMilling_1Z.EntryMinimum = double.NaN;
-            this.axMilling_1Z.EntryMinimumAddress = "";
             this.axMilling_1Z.GoToReferenceAddress = "B3";
             this.axMilling_1Z.Location = new System.Drawing.Point(0, 298);
             this.axMilling_1Z.MaxLimitAddress = "D330";
@@ -533,7 +498,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_2_Angle
             // 
-            this.axMilling_2_Angle.Address = "";
             this.axMilling_2_Angle.AxisAlarmAddress = "W44";
             this.axMilling_2_Angle.AxisName = "Axis_Milling2Angle";
             this.axMilling_2_Angle.AxisNameKey = "Axis_Milling2Angle";
@@ -550,10 +514,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.DecimalPlaces = 3;
             this.axMilling_2_Angle.Digits = 8;
             this.axMilling_2_Angle.Divisor = 100000D;
-            this.axMilling_2_Angle.EntryMaximum = double.NaN;
-            this.axMilling_2_Angle.EntryMaximumAddress = "";
-            this.axMilling_2_Angle.EntryMinimum = double.NaN;
-            this.axMilling_2_Angle.EntryMinimumAddress = "";
             this.axMilling_2_Angle.ErrorAddress = "M810";
             this.axMilling_2_Angle.GoToReferenceAddress = "B4";
             this.axMilling_2_Angle.Location = new System.Drawing.Point(0, 342);
@@ -579,7 +539,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_2X
             // 
-            this.axMilling_2X.Address = "";
             this.axMilling_2X.AxisAlarmAddress = "W84";
             this.axMilling_2X.AxisName = "Axis_Milling2X";
             this.axMilling_2X.AxisNameKey = "Axis_Milling2X";
@@ -596,10 +555,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.DecimalPlaces = 2;
             this.axMilling_2X.Digits = 8;
             this.axMilling_2X.Divisor = 10000D;
-            this.axMilling_2X.EntryMaximum = double.NaN;
-            this.axMilling_2X.EntryMaximumAddress = "";
-            this.axMilling_2X.EntryMinimum = double.NaN;
-            this.axMilling_2X.EntryMinimumAddress = "";
             this.axMilling_2X.GoToReferenceAddress = "B8";
             this.axMilling_2X.Location = new System.Drawing.Point(0, 386);
             this.axMilling_2X.MaxLimitAddress = "D360";
@@ -624,7 +579,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_2Y
             // 
-            this.axMilling_2Y.Address = "";
             this.axMilling_2Y.AxisAlarmAddress = "W54";
             this.axMilling_2Y.AxisName = "Axis_Milling2Y";
             this.axMilling_2Y.AxisNameKey = "Axis_Milling2Y";
@@ -641,10 +595,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.DecimalPlaces = 2;
             this.axMilling_2Y.Digits = 8;
             this.axMilling_2Y.Divisor = 10000D;
-            this.axMilling_2Y.EntryMaximum = double.NaN;
-            this.axMilling_2Y.EntryMaximumAddress = "";
-            this.axMilling_2Y.EntryMinimum = double.NaN;
-            this.axMilling_2Y.EntryMinimumAddress = "";
             this.axMilling_2Y.GoToReferenceAddress = "B5";
             this.axMilling_2Y.Location = new System.Drawing.Point(0, 430);
             this.axMilling_2Y.MaxLimitAddress = "D342";
@@ -669,7 +619,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axMilling_2Z
             // 
-            this.axMilling_2Z.Address = "";
             this.axMilling_2Z.AxisAlarmAddress = "W64";
             this.axMilling_2Z.AxisName = "Axis_Milling2Z";
             this.axMilling_2Z.AxisNameKey = "Axis_Milling2Z";
@@ -686,10 +635,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.DecimalPlaces = 2;
             this.axMilling_2Z.Digits = 8;
             this.axMilling_2Z.Divisor = 10000D;
-            this.axMilling_2Z.EntryMaximum = double.NaN;
-            this.axMilling_2Z.EntryMaximumAddress = "";
-            this.axMilling_2Z.EntryMinimum = double.NaN;
-            this.axMilling_2Z.EntryMinimumAddress = "";
             this.axMilling_2Z.GoToReferenceAddress = "B6";
             this.axMilling_2Z.Location = new System.Drawing.Point(0, 474);
             this.axMilling_2Z.MaxLimitAddress = "D348";
@@ -714,7 +659,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axCutting_Angle
             // 
-            this.axCutting_Angle.Address = "";
             this.axCutting_Angle.AxisAlarmAddress = "W94";
             this.axCutting_Angle.AxisName = "Axis_CuttingAngle";
             this.axCutting_Angle.AxisNameKey = "Axis_CuttingAngle";
@@ -731,10 +675,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.DecimalPlaces = 3;
             this.axCutting_Angle.Digits = 8;
             this.axCutting_Angle.Divisor = 100000D;
-            this.axCutting_Angle.EntryMaximum = double.NaN;
-            this.axCutting_Angle.EntryMaximumAddress = "";
-            this.axCutting_Angle.EntryMinimum = double.NaN;
-            this.axCutting_Angle.EntryMinimumAddress = "";
             this.axCutting_Angle.ErrorAddress = "M811";
             this.axCutting_Angle.GoToReferenceAddress = "B9";
             this.axCutting_Angle.Location = new System.Drawing.Point(0, 518);
@@ -760,7 +700,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axCutting_Z
             // 
-            this.axCutting_Z.Address = "";
             this.axCutting_Z.AxisAlarmAddress = "W0A4";
             this.axCutting_Z.AxisName = "Axis_CuttingZ";
             this.axCutting_Z.AxisNameKey = "Axis_CuttingZ";
@@ -777,10 +716,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.DecimalPlaces = 2;
             this.axCutting_Z.Digits = 8;
             this.axCutting_Z.Divisor = 10000D;
-            this.axCutting_Z.EntryMaximum = double.NaN;
-            this.axCutting_Z.EntryMaximumAddress = "";
-            this.axCutting_Z.EntryMinimum = double.NaN;
-            this.axCutting_Z.EntryMinimumAddress = "";
             this.axCutting_Z.ErrorAddress = "M812";
             this.axCutting_Z.GoToReferenceAddress = "B10";
             this.axCutting_Z.Location = new System.Drawing.Point(0, 562);
@@ -806,7 +741,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axV_Cutting_Y
             // 
-            this.axV_Cutting_Y.Address = "";
             this.axV_Cutting_Y.AxisAlarmAddress = "W0E4";
             this.axV_Cutting_Y.AxisName = "Axis_VCuttingY";
             this.axV_Cutting_Y.AxisNameKey = "Axis_VCuttingY";
@@ -823,10 +757,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.DecimalPlaces = 2;
             this.axV_Cutting_Y.Digits = 8;
             this.axV_Cutting_Y.Divisor = 10000D;
-            this.axV_Cutting_Y.EntryMaximum = double.NaN;
-            this.axV_Cutting_Y.EntryMaximumAddress = "";
-            this.axV_Cutting_Y.EntryMinimum = double.NaN;
-            this.axV_Cutting_Y.EntryMinimumAddress = "";
             this.axV_Cutting_Y.ErrorAddress = "M817";
             this.axV_Cutting_Y.GoToReferenceAddress = "B14";
             this.axV_Cutting_Y.Location = new System.Drawing.Point(0, 606);
@@ -853,7 +783,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axV_Cutting_Z
             // 
-            this.axV_Cutting_Z.Address = "";
             this.axV_Cutting_Z.AxisAlarmAddress = "W0F4";
             this.axV_Cutting_Z.AxisName = "Axis_VCuttingZ";
             this.axV_Cutting_Z.AxisNameKey = "Axis_VCuttingZ";
@@ -870,10 +799,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.DecimalPlaces = 2;
             this.axV_Cutting_Z.Digits = 8;
             this.axV_Cutting_Z.Divisor = 10000D;
-            this.axV_Cutting_Z.EntryMaximum = double.NaN;
-            this.axV_Cutting_Z.EntryMaximumAddress = "";
-            this.axV_Cutting_Z.EntryMinimum = double.NaN;
-            this.axV_Cutting_Z.EntryMinimumAddress = "";
             this.axV_Cutting_Z.ErrorAddress = "M818";
             this.axV_Cutting_Z.GoToReferenceAddress = "B15";
             this.axV_Cutting_Z.Location = new System.Drawing.Point(0, 650);
@@ -900,7 +825,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axExit_X
             // 
-            this.axExit_X.Address = "";
             this.axExit_X.AxisAlarmAddress = "W0D4";
             this.axExit_X.AxisName = "Axis_ExitX";
             this.axExit_X.AxisNameKey = "Axis_ExitX";
@@ -917,10 +841,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.DecimalPlaces = 2;
             this.axExit_X.Digits = 8;
             this.axExit_X.Divisor = 10000D;
-            this.axExit_X.EntryMaximum = double.NaN;
-            this.axExit_X.EntryMaximumAddress = "";
-            this.axExit_X.EntryMinimum = double.NaN;
-            this.axExit_X.EntryMinimumAddress = "";
             this.axExit_X.GoToReferenceAddress = "B13";
             this.axExit_X.Location = new System.Drawing.Point(0, 694);
             this.axExit_X.MaxLimitAddress = "D378";

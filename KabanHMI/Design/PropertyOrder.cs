@@ -130,11 +130,11 @@ namespace Kaban.UI.Design
                 C("Device", "PlcNumber", "AxisNumber")),
 
             ["AxisSettingHMI"] = L(
-                C("Device", "PlcNumber", "AxisNumber", "Address"),
+                C("Device", "PlcNumber", "AxisNumber"),
                 C("Axis", "AxisNameKey", "VerticalMovement", "ReferenceSensorAddress", "ReferenceSensorSide"),
                 C("Movement", "CommandBackAddress", "CommandForwardAddress", "PositionAddress", "PositionDataType", "RealPositionAddress"),
                 C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix",
-                           "EntryMinimum", "EntryMaximum", "EntryMinimumAddress", "EntryMaximumAddress"),
+                           "EntryMinimum", "EntryMaximum"),
                 C("Settings", "MinLimitAddress", "MaxLimitAddress", "ReferenceAddress", "CalibrationAddress",
                               "TravelPerRevolutionAddress", "BacklashAddress"),
                 C("Commands", "CalibrateAddress", "GoToReferenceAddress", "HomeRequestAddress"),
