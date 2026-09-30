@@ -191,8 +191,9 @@ still need a higher one &ndash; the control's tooltip says so.</p>
  <li><b>Collapse the menu</b> with the button at its top (&laquo;, the same as the side bar's &raquo;) to icons only; drag its right edge to set its width. Both are remembered.
      Folded to its icons, the menu's buttons say their names when you rest the pointer on them; open, with the names in sight, they have no tooltip.</li>
  <li><b>Back where you left it:</b> the program reopens on the page it was on &ndash; the same machine and tabs, with the side page and
-     side windows that were open &ndash; after a restart or a power cut. A page above the level of whoever signs in at the start opens at the
-     first sign-in that may open it, unless you have gone somewhere else by then.</li>
+     side windows that were open (at the width it had; a side window that was down on the taskbar goes back there) &ndash; after a restart or a
+     power cut. A page or side page above the level of whoever signs in at the start opens at the first sign-in that may open it, unless you
+     have gone somewhere else by then.</li>
 </ul>
 
 <h3 id="side">3a. The side bar and its pages</h3>
@@ -203,7 +204,10 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
 <ul>
  <li><b>Open / close:</b> its icon on the bar (the open one is marked), or the &#10005; on the page's header, which shows the same icon before the page's name. Closing only hides it:
      it opens again exactly as you left it.</li>
- <li><b>Share the screen:</b> drag the border between the page and the side page. The width is remembered.</li>
+ <li><b>Share the screen:</b> drag the border between the page and the side page. <b>Double-click the border</b>: the side page becomes just wide
+     enough to show all of it &ndash; every button, every column of the PLC Monitor's tab, the inputs and outputs side by side with every name whole &ndash;
+     leaving a strip of the page to take the border back by (the border never goes further than that strip). The width is remembered, and the
+     side page opens at that width next time, once the window is full size.</li>
  <li><b>A window of its own</b> (for a second screen): the button beside the &#10005;. The window has one title bar &ndash; the page's
      icon and name, then <b>back into the side panel</b>, minimise, maximise and close. Drag it by its title (double-click maximises), size it at its edges;
      the taskbar shows the page's icon. It opens where it was last &ndash; in the panel or in its window.</li>
@@ -472,7 +476,10 @@ Windows' own message boxes keep Windows' size.</p>
    <li>&#128270; <b>Find</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>, or right-click a row: <i>Where is it used?</i>): type an address, a label or part of a unit's name.
        Every use is listed &ndash; twice if a page uses it twice &ndash; with its page, in a pane under the lists (&#10005; or <kbd>Esc</kbd> closes it).
        <b>Click a line</b>: the page opens beside the monitor, scrolls until the unit is in sight, and the unit is framed in blinking blue.
-       The list looks like the monitor's; a click on a heading sorts it, drag its headings into another order and its borders to size them: kept for next time.</li>
+       Each line also shows the device's <b>Value</b>, its <b>Display Format</b> (right-click a line to change it; a device on one of the lists starts in that row's format)
+       and when it was last <b>Modified</b>, as the lists do &ndash; the devices found are read with the tab's.
+       The list looks like the monitor's; a click on a heading sorts it, drag its headings into another order and its borders to size them, right-click a heading
+       to take columns off or type their widths: kept for next time.</li>
    <li>&#10133; adds a device at the end or above the selected row &ndash; or an <b>array</b>: <i>D100, 10 of them</i> is <b>one item</b>,
        &#9656; <i>Speeds [10]</i>, with its first values on its line; click the &#9656; (or right-click: <i>Expand the array</i>) and D100&hellip;D109
        show under it, each with its value &ndash; double-click one to change it. Moved, copied, sorted or deleted, the array goes as one; its count can be
@@ -491,8 +498,11 @@ Windows' own message boxes keep Windows' size.</p>
        &#8631; <b>Redo</b> (<kbd>Ctrl</kbd>+<kbd>Y</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>) puts back what Undo took away, until the next change. Both buttons name the step in their tooltip.</li>
    <li>&#128228; exports the tab to a CSV file, &#128229; imports devices from one (a <code>PlcLabels.csv</code> works as it is).</li>
    <li><b>Columns</b>: drag a heading to put the column elsewhere, drag its border to size it &ndash; the others keep their widths, and every tab uses the same layout.
-       <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).</li>
-   <li><b>Last change</b> (a column after <i>Value</i>): when the device last changed and <b>who changed it</b> &ndash; <b>HMI</b> (blue) when the HMI wrote that very
+       <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).
+       <b>Right-click a heading</b>: tick the columns to show (the menu stays open while you tick), <i>Column widths&hellip;</i> to type each column's width &ndash;
+       or <i>The whole table</i>'s width, which the columns shown then share as they share it now &ndash; <i>Fit the widths to the contents</i>, or <i>Default columns</i>.
+       The monitor opens with the columns as they were left.</li>
+   <li><b>Modified</b> (a column after <i>Value</i>): when the device last changed and <b>who changed it</b> &ndash; <b>HMI</b> (blue) when the HMI wrote that very
        value just before, <b>PLC</b> when it did not (the PLC program, or the machine). The pointer on it tells from what to what, which control or page wrote it
        and the user, or when the HMI last wrote it. A change is known only while the HMI reads the device (a page showing it, or the monitor): before that it shows <b>-</b>.
        Click the heading to sort the latest changes first.</li>

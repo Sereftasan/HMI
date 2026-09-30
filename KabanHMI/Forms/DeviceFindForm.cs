@@ -29,6 +29,11 @@ namespace Kaban.UI.Forms
     /// The list is a table in THE MONITOR'S LOOK (SimulationMonitorForm.StyleGrid):
     /// the same heading, fonts and rows as the lists above it. It was a Windows
     /// list view, whose own heading and font sat oddly under the monitor's.
+    ///
+    /// With the device's VALUE, its DISPLAY FORMAT (a right-click on a line
+    /// changes it) and when it was last MODIFIED, as the monitor's lists show
+    /// them - the monitor reads the devices found (see Live). A right-click on a
+    /// heading takes columns off and on, types their widths (ColumnChooser).
     /// </summary>
     public class DeviceFindForm : Form
     {
@@ -39,6 +44,27 @@ namespace Kaban.UI.Forms
         private readonly Label _status = new Label();
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private List<DeviceCollector.Use> _found = new List<DeviceCollector.Use>();
+
+        /// <summary>What the Value and Modified cells show for a device found.</summary>
+        public sealed class LiveCells
+        {
+            public string Value = "", ValueTip = "", Modified = "", ModifiedTip = "";
+            public Color ModifiedColor = Color.Empty;
+        }
+
+        /// <summary>
+        /// The device's value in a display format, and its last change - given by
+        /// the monitor, which reads the devices found (null: the cells stay empty).
+        /// </summary>
+        public Func<DeviceCollector.Use, string, LiveCells> Live;
+
+        /// <summary>A line's display format, by address (Decimal until changed; the monitor's row's own when it lists the device).</summary>
+        private readonly Dictionary<string, string> _formats = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>The format of a device the user has not chosen one for (the monitor's row's, when it lists the device).</summary>
+        public Func<DeviceCollector.Use, string> DefaultFormat;
+
+        /// <summary>The uses listed (the monitor reads their devices).</summary>
+        public IReadOnlyList<DeviceCollector.Use> Found { get { return _found; } }
 
         private readonly bool _embedded;
         private readonly Action _close;
@@ -123,6 +149,54 @@ namespace Kaban.UI.Forms
             column("Where", T("Col_FindWhere", "Used by"), 250);
             column("Address", T("Col_Address", "Address"), 80);
             column("DataType", T("Col_DataType", "DataType"), 150);
+            column("Value", T("Col_Value", "Value"), 120);
+            column("Format", T("Col_DisplayFormat", "Display Format"), 110);
+            column("Modified", T("Col_LastChange", "Modified"), 140);
+            _list.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            _list.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            _list.ShowCellToolTips = true;
+
+            // A right-click on a heading: the columns (ColumnChooser); on a line: its display format.
+            var chooser = ColumnChooser.Attach(_list);
+            chooser.Changed = SaveColumns;
+            chooser.Reset = () =>
+            {
+                var widths = new[] { 300, 250, 80, 150, 120, 110, 140 };
+                for (int i = 0; i < _list.Columns.Count && i < widths.Length; i++)
+                {
+                    _list.Columns[i].Width = UiScale.For(_list, widths[i]);
+                    _list.Columns[i].DisplayIndex = i;
+                    _list.Columns[i].Visible = true;
+                }
+            };
+            var rowMenu = UiStyle.Menu();
+            rowMenu.Opening += (s, e) =>
+            {
+                if (chooser.OnHeadings(_list.PointToClient(Cursor.Position)))
+                {
+                    e.Cancel = true;
+                    UiStyle.ShowPopupAt(chooser.Menu, _list, Cursor.Position);
+                    return;
+                }
+                rowMenu.Items.Clear();
+                var use = _list.CurrentRow != null ? _list.CurrentRow.Tag as DeviceCollector.Use : null;
+                if (use == null || SimulationMonitorForm.IsBit(use.DataType)) { e.Cancel = true; return; }
+                var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
+                foreach (var f in SimulationMonitorForm.DisplayFormats)
+                {
+                    var name = f;
+                    fmt.DropDownItems.Add(new ToolStripMenuItem(T("Fmt_" + name, name), null, (s2, e2) => { _formats[use.Address] = name; RefreshLive(); })
+                                          { Checked = FormatOf(use) == name });
+                }
+                rowMenu.Items.Add(fmt);
+            };
+            _list.ContextMenuStrip = rowMenu;
+            // A right-click chooses the line first (not a page opened: that is a left click).
+            _list.CellMouseDown += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Right || e.RowIndex < 0) return;
+                _list.CurrentCell = _list.Rows[e.RowIndex].Cells[Math.Max(0, e.ColumnIndex)];
+            };
 
             // As it was closed last time (the place and size only as a window).
             var kept = WindowLayout.Read(SimulationMonitorForm.WindowsPath);
@@ -224,10 +298,11 @@ namespace Kaban.UI.Forms
             _found = Match(uses, _station, q);
             foreach (var u in _found)
             {
-                int i = _list.Rows.Add(u.PageTitle, u.UsedAs, u.Address, u.DataType);
+                int i = _list.Rows.Add(u.PageTitle, u.UsedAs, u.Address, u.DataType, "", "", "");
                 _list.Rows[i].Tag = u;
                 if (u.IsAlarm) _list.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(120, 126, 136);
             }
+            RefreshLive();
             // Nothing chosen until the user chooses: a selected first line read
             // as "this one was opened".
             _list.ClearSelection();
@@ -268,6 +343,40 @@ namespace Kaban.UI.Forms
             // Page by page, the alarm definitions last.
             return found.OrderBy(u => u.IsAlarm).ThenBy(u => u.PageTitle, StringComparer.CurrentCultureIgnoreCase)
                         .ThenBy(u => u.UsedAs, StringComparer.CurrentCultureIgnoreCase).ToList();
+        }
+
+        /// <summary>A line's display format: the one chosen here, else the monitor's for that device, else Decimal.</summary>
+        public string FormatOf(DeviceCollector.Use use)
+        {
+            string f;
+            if (_formats.TryGetValue(use.Address, out f)) return f;
+            f = DefaultFormat != null ? DefaultFormat(use) : null;
+            return string.IsNullOrEmpty(f) ? SimulationMonitorForm.FormatDecimal : f;
+        }
+
+        /// <summary>The Value, Display Format and Modified cells brought up to date (the monitor calls it as it reads).</summary>
+        public void RefreshLive()
+        {
+            foreach (DataGridViewRow row in _list.Rows)
+            {
+                var use = row.Tag as DeviceCollector.Use;
+                if (use == null) continue;
+                bool bit = SimulationMonitorForm.IsBit(use.DataType);
+                string format = FormatOf(use);
+                SetCell(row.Cells["Format"], bit ? "" : T("Fmt_" + format, format), "");
+                var live = Live != null ? Live(use, format) : null;
+                if (live == null) { SetCell(row.Cells["Value"], "", ""); SetCell(row.Cells["Modified"], "", ""); continue; }
+                SetCell(row.Cells["Value"], live.Value, live.ValueTip);
+                SetCell(row.Cells["Modified"], live.Modified, live.ModifiedTip);
+                if (!live.ModifiedColor.IsEmpty && row.Cells["Modified"].Style.ForeColor != live.ModifiedColor)
+                    row.Cells["Modified"].Style.ForeColor = live.ModifiedColor;
+            }
+        }
+
+        private static void SetCell(DataGridViewCell cell, string text, string tip)
+        {
+            if (!Equals(cell.Value as string ?? "", text ?? "")) cell.Value = text ?? "";
+            if ((cell.ToolTipText ?? "") != (tip ?? "")) cell.ToolTipText = tip ?? "";
         }
 
         /// <summary>The lines listed, as shown (tests).</summary>

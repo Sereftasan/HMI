@@ -527,7 +527,7 @@ namespace Kaban.UI.Forms
                 "It names the devices on the monitor and adds devices the pages do not show.");
             m.ShowItemToolTips = true;
             m.Items.Add(labels);
-            var conditions = Item(T("Mnu_MonFromConditions", "the machine conditions (MachineConditionMap) - into this tab"), (s, e) => CollectConditions());
+            var conditions = Item(T("Mnu_MonFromConditions", "the machine condition labels - into this tab"), (s, e) => CollectConditions());
             conditions.ToolTipText = T("Tip_MonFromConditions",
                 "The conditions the machines register (manual mode, robot at safe position ...): each one's device, and whether it is met now.");
             m.Items.Add(conditions);
@@ -1101,7 +1101,7 @@ namespace Kaban.UI.Forms
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
             // value just before) or the PLC program. See DeviceHistory.
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Last change"), ReadOnly = true });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Modified"), ReadOnly = true });
             // A MACHINE CONDITION's row: met or not, now (shown on a tab that has one).
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Condition", HeaderText = T("Col_Condition", "Condition"), ReadOnly = true, Visible = false });
             grid.ShowCellToolTips = true;
@@ -1127,9 +1127,17 @@ namespace Kaban.UI.Forms
         {
             var grid = sh.Grid;
 
+            var chooser = AttachColumnChooser(mon, sh);
             var rowMenu = NewMenu();
             rowMenu.Opening += (s, e) =>
             {
+                // On the heading row (beside the last heading too): the columns' menu.
+                if (chooser.OnHeadings(grid.PointToClient(Cursor.Position)))
+                {
+                    e.Cancel = true;
+                    UiStyle.ShowPopupAt(chooser.Menu, grid, Cursor.Position);
+                    return;
+                }
                 rowMenu.Items.Clear();
                 bool sel = SelectedIndices(sh).Count > 0;
                 bool any = _clip.Count > 0 || ClipboardHasText();
@@ -1349,6 +1357,7 @@ namespace Kaban.UI.Forms
             if (Embedded) return OpenFindInside(mon, query);
             if (_find != null && !_find.IsDisposed) _find.Close();
             _find = new DeviceFindForm(mon.Station, PlcEndpointNaming.CaptionWithStation(mon.Endpoint), query, OpenUse);
+            WireFindLive(_find);
             _find.Show(this);
             return _find;
         }
@@ -1381,6 +1390,7 @@ namespace Kaban.UI.Forms
             {
                 _find = new DeviceFindForm(mon.Station, PlcEndpointNaming.CaptionWithStation(mon.Endpoint), query, OpenUse,
                                            embedded: true, close: CloseFindInside);
+                WireFindLive(_find);
                 _find.Dock = DockStyle.Fill;
                 _findHost.Controls.Add(_find);
                 _find.Visible = true;
@@ -1388,6 +1398,62 @@ namespace Kaban.UI.Forms
             _findHost.Visible = _findSplit.Visible = true;
             _find.Begin(query);
             return _find;
+        }
+
+        /// <summary>
+        /// Find's Value and Modified cells: the devices found are read with the
+        /// tab's (see RefreshValues) and shown as a list's row would show them -
+        /// in the display format of that row when the monitor lists the device.
+        /// </summary>
+        private void WireFindLive(DeviceFindForm find)
+        {
+            find.DefaultFormat = use =>
+            {
+                var m = _monitors.FirstOrDefault(x => x.Station == find.Station);
+                var listed = m == null ? null : m.Sheets.SelectMany(x => x.Rows)
+                    .FirstOrDefault(r => r.IsDevice && !r.IsArray && !r.IsElement && string.Equals(r.Address, use.Address, StringComparison.OrdinalIgnoreCase));
+                return listed != null ? listed.EffectiveFormat : null;
+            };
+            find.Live = (use, format) =>
+            {
+                var m = _monitors.FirstOrDefault(x => x.Station == find.Station);
+                if (m == null) return null;
+                var row = FindRow(m, use, format);
+                bool nonZero;
+                var value = FormatValue(m, row, out nonZero);
+                var cells = new DeviceFindForm.LiveCells { Value = value ?? "-" };
+                var probe = new DataGridViewTextBoxCell();
+                RenderLastChange(m, row, probe);
+                cells.Modified = Convert.ToString(probe.Value);
+                cells.ModifiedTip = probe.ToolTipText ?? "";
+                cells.ModifiedColor = probe.Style.ForeColor;
+                return cells;
+            };
+        }
+
+        /// <summary>A device Find found, as a row of the monitor would hold it.</summary>
+        private static WatchRow FindRow(MonitorTab mon, DeviceCollector.Use use, string format)
+        {
+            return new WatchRow { Station = mon.Station, Address = use.Address, DataTypeOverride = use.DataType ?? "", DisplayFormat = format ?? "" };
+        }
+
+        /// <summary>The words of the devices Find lists for this controller (read with the tab's).</summary>
+        private List<string> FindWords(MonitorTab mon)
+        {
+            var list = new List<string>();
+            if (_find == null || _find.IsDisposed || _find.Station != mon.Station || !FindShowing) return list;
+            foreach (var use in _find.Found)
+                if (!string.IsNullOrWhiteSpace(use.Address)) list.AddRange(WordsOf(FindRow(mon, use, "")));
+            return list;
+        }
+
+        private bool FindShowing
+        {
+            get
+            {
+                if (_find == null || _find.IsDisposed) return false;
+                return Embedded ? _findHost != null && _findHost.Visible : _find.Visible;
+            }
         }
 
         private void CloseFindInside()
@@ -1856,6 +1922,10 @@ namespace Kaban.UI.Forms
         private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Changed", "Condition" };
         private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 130 };
         private static Dictionary<string, int> _colWidth, _colOrder;
+        /// <summary>The columns the user took off (right-click on a heading); the Condition column shows only on a tab with conditions anyway.</summary>
+        private static HashSet<string> _colHidden;
+
+        internal static bool IsColumnHidden(string name) { LoadColumnLayout(); return _colHidden.Contains(name); }
         private static bool _applyingLayout;
         private bool _layoutPending;
 
@@ -1866,18 +1936,20 @@ namespace Kaban.UI.Forms
             if (_colWidth != null) return;
             _colWidth = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
             _colOrder = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            _colHidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             try
             {
                 if (!File.Exists(ColumnsPath)) return;
                 foreach (var line in File.ReadAllLines(ColumnsPath))
                 {
-                    // Label=280;0   (width;position)
+                    // Label=280;0;1   (width;position;shown)
                     int eq = line.IndexOf('=');
                     if (eq <= 0 || line.StartsWith("#")) continue;
                     var f = line.Substring(eq + 1).Split(';');
                     int w, o;
                     if (int.TryParse(f[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out w)) _colWidth[line.Substring(0, eq)] = w;
                     if (f.Length > 1 && int.TryParse(f[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out o)) _colOrder[line.Substring(0, eq)] = o;
+                    if (f.Length > 2 && f[2].Trim() == "0") _colHidden.Add(line.Substring(0, eq));
                 }
             }
             catch (Exception ex) { AuditLogger.Log("could not read the monitor's column layout: " + ex.Message); }
@@ -1888,13 +1960,19 @@ namespace Kaban.UI.Forms
             try
             {
                 Directory.CreateDirectory(WatchFolder);
-                var lines = new List<string> { "# PLC Monitor columns: <column>=<width>;<position>" };
-                foreach (var n in ColumnNames)
+                var lines = new List<string> { "# PLC Monitor columns: <column>=<width>;<position>;<shown 1/0>" };
+                for (int i = 0; i < ColumnNames.Length; i++)
                 {
+                    var n = ColumnNames[i];
                     int w, o;
-                    if (!_colWidth.TryGetValue(n, out w)) continue;
-                    _colOrder.TryGetValue(n, out o);
-                    lines.Add(n + "=" + w.ToString(CultureInfo.InvariantCulture) + ";" + o.ToString(CultureInfo.InvariantCulture));
+                    bool hidden = _colHidden.Contains(n);
+                    if (!_colWidth.TryGetValue(n, out w))
+                    {
+                        if (!hidden) continue;
+                        w = DefaultWidths[i];
+                    }
+                    if (!_colOrder.TryGetValue(n, out o)) o = i;
+                    lines.Add(n + "=" + w.ToString(CultureInfo.InvariantCulture) + ";" + o.ToString(CultureInfo.InvariantCulture) + ";" + (hidden ? "0" : "1"));
                 }
                 SafeFile.WriteAllText(ColumnsPath, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(false));
             }
@@ -1920,9 +1998,62 @@ namespace Kaban.UI.Forms
                     return _colOrder.TryGetValue(n, out o) ? o : Array.IndexOf(ColumnNames, n);
                 }).ToList();
                 for (int k = 0; k < ordered.Count; k++) grid.Columns[ordered[k]].DisplayIndex = k;
+                // The ones taken off (Condition also needs a tab with conditions: see Render).
+                foreach (var n in ColumnNames)
+                {
+                    var c = grid.Columns[n];
+                    if (n == "Condition") { if (_colHidden.Contains(n) && c.Visible) c.Visible = false; }
+                    else if (c.Visible == _colHidden.Contains(n)) c.Visible = !_colHidden.Contains(n);
+                }
             }
             catch { }
             finally { _applyingLayout = false; }
+        }
+
+        /// <summary>
+        /// The columns' menu on a tab's headings (ColumnChooser): take a column
+        /// off or back, type the widths or the table's width, fit them to the
+        /// contents, go back to the default columns - kept, and the same on every tab.
+        /// </summary>
+        private ColumnChooser AttachColumnChooser(MonitorTab mon, Sheet sh)
+        {
+            var grid = sh.Grid;
+            var chooser = ColumnChooser.Attach(grid);
+            chooser.IsShown = c => !IsColumnHidden(c.Name);
+            chooser.SetShown = (c, show) =>
+            {
+                LoadColumnLayout();
+                if (show) _colHidden.Remove(c.Name); else _colHidden.Add(c.Name);
+                _applyingLayout = true;
+                try
+                {
+                    if (c.Name == "Condition") c.Visible = show && sh.Rows.Any(r => r.ConditionKey.Length > 0);
+                    else c.Visible = show;
+                }
+                finally { _applyingLayout = false; }
+            };
+            chooser.Changed = () => { TakeColumnLayout(grid); Render(mon, sh); };
+            chooser.Reset = () =>
+            {
+                LoadColumnLayout();
+                _colWidth.Clear(); _colOrder.Clear(); _colHidden.Clear();
+                SaveColumnLayout();
+                foreach (var m in _monitors)
+                    foreach (var other in m.Sheets)
+                        if (other.Grid != null) ApplyColumnLayout(other.Grid);
+            };
+            return chooser;
+        }
+
+        /// <summary>A grid's widths and order kept, and put on every other tab.</summary>
+        private void TakeColumnLayout(DataGridView source)
+        {
+            LoadColumnLayout();
+            foreach (DataGridViewColumn c in source.Columns) { _colWidth[c.Name] = c.Width; _colOrder[c.Name] = c.DisplayIndex; }
+            SaveColumnLayout();
+            foreach (var m in _monitors)
+                foreach (var other in m.Sheets)
+                    if (other.Grid != null && other.Grid != source) ApplyColumnLayout(other.Grid);
         }
 
         /// <summary>
@@ -1936,12 +2067,7 @@ namespace Kaban.UI.Forms
             MethodInvoker take = () =>
             {
                 _layoutPending = false;
-                LoadColumnLayout();
-                foreach (DataGridViewColumn c in source.Columns) { _colWidth[c.Name] = c.Width; _colOrder[c.Name] = c.DisplayIndex; }
-                SaveColumnLayout();
-                foreach (var m in _monitors)
-                    foreach (var other in m.Sheets)
-                        if (other.Grid != null && other.Grid != source) ApplyColumnLayout(other.Grid);
+                TakeColumnLayout(source);
             };
             if (IsHandleCreated) { _layoutPending = true; BeginInvoke(take); }
             else take();
@@ -2513,6 +2639,21 @@ namespace Kaban.UI.Forms
             else BeginReadReal(mon, sh);
             Render(mon, sh);
             UpdateStatus(mon, sh);
+            RefreshFind(mon);
+        }
+
+        /// <summary>Find's values: read with the tab's, or on their own when Find is about another controller.</summary>
+        private void RefreshFind(MonitorTab current)
+        {
+            if (!FindShowing) return;
+            var fmon = _monitors.FirstOrDefault(m => m.Station == _find.Station);
+            if (fmon == null) return;
+            if (fmon != current)
+            {
+                if (fmon.IsSimulated) ReadSimulated(fmon);
+                else BeginReadReal(fmon, null);
+            }
+            _find.RefreshLive();
         }
 
         /// <summary>
@@ -2533,13 +2674,13 @@ namespace Kaban.UI.Forms
             mon.Values.Clear();
             foreach (System.Collections.DictionaryEntry kv in dump)
                 mon.Values[Convert.ToString(kv.Key)] = Convert.ToInt32(kv.Value);
-            // The Last change column. A device the simulator has never held reads 0
+            // The Modified column. A device the simulator has never held reads 0
             // there: seen as 0, so the first write to it is a change.
             var now = DateTime.Now;
             var seenNames = mon.Values.Keys.ToList();
             var seenValues = mon.Values.Values.ToList();
-            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsArray).SelectMany(WordsOf))
-                if (!mon.Values.ContainsKey(w)) { seenNames.Add(w); seenValues.Add(0); }
+            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsArray).SelectMany(WordsOf).Concat(FindWords(mon)))
+                if (!mon.Values.ContainsKey(w) && !seenNames.Contains(w)) { seenNames.Add(w); seenValues.Add(0); }
             DeviceHistory.Observe(mon.Station, seenNames, seenValues, now, now);
 
             // An array's elements are listed, even one added a moment ago.
@@ -2571,8 +2712,10 @@ namespace Kaban.UI.Forms
             if (driver == null) return;
 
             var addresses = new List<string>();
-            foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsArray))
-                addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words
+            if (sh != null)
+                foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsArray))
+                    addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words
+            addresses.AddRange(FindWords(mon));          // and what Find lists
             var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
             if (batch.Length == 0) return;
 
@@ -2584,7 +2727,7 @@ namespace Kaban.UI.Forms
                 var started = DateTime.Now;
                 try { ok = driver.TryReadMulti(batch, out values); }
                 catch (Exception ex) { AuditLogger.Log("monitor read failed: " + ex.Message); }
-                // The Last change column: when each device changed, and whether the HMI did it.
+                // The Modified column: when each device changed, and whether the HMI did it.
                 if (ok && values != null && values.Length == batch.Length)
                     DeviceHistory.Observe(mon.Station, batch, values, started, DateTime.Now);
 
@@ -2703,6 +2846,7 @@ namespace Kaban.UI.Forms
 
             // The Condition column is there on a tab that has a machine condition.
             bool conditions = sh.Rows.Any(r => !string.IsNullOrEmpty(r.ConditionKey));
+            conditions &= !IsColumnHidden("Condition");
             if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
         }
 

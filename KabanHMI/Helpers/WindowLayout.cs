@@ -122,39 +122,55 @@ namespace Kaban.UI.Helpers
                 c.DisplayIndex.ToString(CultureInfo.InvariantCulture)));
         }
 
-        /// <summary>A table's columns, the same way as a list's (Find's list became a table).</summary>
+        /// <summary>A table's columns, the same way as a list's (Find's list became a table) - ":0" after a hidden one.</summary>
         public static string ColumnsOf(DataGridView grid)
         {
             bool scaled = Kaban.UI.Controls.UiScale.IsScaled(grid);
             return string.Join(",", grid.Columns.Cast<DataGridViewColumn>().Select(c =>
                 (scaled ? Kaban.UI.Controls.UiScale.Logical(c.Width) : c.Width).ToString(CultureInfo.InvariantCulture) + ":" +
-                c.DisplayIndex.ToString(CultureInfo.InvariantCulture)));
+                c.DisplayIndex.ToString(CultureInfo.InvariantCulture) + (c.Visible ? "" : ":0")));
         }
 
-        /// <summary>Gives a table the widths and order kept by ColumnsOf.</summary>
+        /// <summary>
+        /// Gives a table the widths, order and hidden columns kept by ColumnsOf.
+        /// Kept for fewer columns (the table has had columns added at its end
+        /// since): those are given theirs, the new ones follow them.
+        /// </summary>
         public static void ApplyColumns(DataGridView grid, string text)
         {
             int[] width, position;
-            if (!ParseColumns(text, grid.Columns.Count, out width, out position)) return;
-            for (int i = 0; i < width.Length; i++) grid.Columns[i].Width = Math.Max(30, width[i]);
-            var order = Enumerable.Range(0, width.Length).OrderBy(i => position[i]).ThenBy(i => i).ToList();
+            bool[] shown;
+            if (!ParseColumns(text, grid.Columns.Count, true, out width, out position, out shown)) return;
+            for (int i = 0; i < width.Length; i++) { grid.Columns[i].Width = Math.Max(30, width[i]); grid.Columns[i].Visible = shown[i]; }
+            var order = Enumerable.Range(0, width.Length).OrderBy(i => position[i]).ThenBy(i => i)
+                                  .Concat(Enumerable.Range(width.Length, grid.Columns.Count - width.Length)).ToList();
             for (int k = 0; k < order.Count; k++) grid.Columns[order[k]].DisplayIndex = k;
+            if (!grid.Columns.Cast<DataGridViewColumn>().Any(c => c.Visible) && grid.Columns.Count > 0) grid.Columns[0].Visible = true;
         }
 
         private static bool ParseColumns(string text, int count, out int[] width, out int[] position)
         {
+            bool[] shown;
+            return ParseColumns(text, count, false, out width, out position, out shown);
+        }
+
+        private static bool ParseColumns(string text, int count, bool fewerAllowed, out int[] width, out int[] position, out bool[] shown)
+        {
             width = position = null;
+            shown = null;
             if (string.IsNullOrEmpty(text)) return false;
             var f = text.Split(',');
-            if (f.Length != count) return false;
+            if (f.Length > count || (f.Length < count && !fewerAllowed)) return false;
             width = new int[f.Length];
             position = new int[f.Length];
+            shown = new bool[f.Length];
             for (int i = 0; i < f.Length; i++)
             {
                 var p = f[i].Split(':');
-                if (p.Length != 2 ||
+                if (p.Length < 2 || p.Length > 3 ||
                     !int.TryParse(p[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out width[i]) ||
                     !int.TryParse(p[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out position[i])) return false;
+                shown[i] = p.Length < 3 || p[2].Trim() != "0";
             }
             return true;
         }
