@@ -154,10 +154,11 @@ class UT {
               string.Join(" | ", calm));
         Field<AlarmHelpBadge>(c2, "_helpB").UpdateState(a => a == "M866" ? 1 : 0, c => true);
         var failedB = c2.HelpDocuments().Select(d => d.FileName).ToList();
-        Check("B failed: B's manual, then B's own files first",
-              failedB.Count >= 3 && failedB[0] == "Cylinder_Troubleshooting.html" && failedB[1] == "Clamp_B_Switch.png" && failedB[2] == "Clamp_Both.pdf",
+        Check("B failed: B's step-by-step page and manual, then B's own files first",
+              failedB.Count >= 4 && failedB[0] == "Cylinder_Troubleshooting.html" && failedB[1] == "Cylinder_Troubleshooting.html" &&
+              failedB[2] == "Clamp_B_Switch.png" && failedB[3] == "Clamp_Both.pdf",
               string.Join(" | ", failedB));
-        Check("  A's file still offered after them", failedB.IndexOf("Clamp_A_Valve.png") > 2, string.Join(" | ", failedB));
+        Check("  A's file still offered after them", failedB.IndexOf("Clamp_A_Valve.png") > 3, string.Join(" | ", failedB));
 
         host.Close();
         try { Directory.Delete(help, true); } catch { }

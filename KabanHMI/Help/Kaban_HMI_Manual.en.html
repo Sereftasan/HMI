@@ -282,22 +282,33 @@ position reading already show a fault. What it offers depends on the moment:</p>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
 <tr><td><b style="color:#2870be">?</b></td><td>The unit has its own files (photos, drawing, settings) and nothing has failed</td><td>Those files. The troubleshooting manual is <b>not</b> offered while nothing has failed.</td></tr>
-<tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set</td><td>The cylinder manual with <b>only this cylinder's valve (1.4) and feedback (1.7)</b>, as one chart 1.1&hellip;1.8 whose heading row stays at the top while you scroll, headed with <b>the movement that failed</b>:
- which button, the alarm bit, its PLC bit and valve output, the other coil, the sensor that should have come on and the one that should have gone off &ndash; each with <b>where it is on the drawings</b>
- (the input or output and its card terminal, the sensor's tag, wire and sheet, the relay and valve coil, the air valve, its hoses and the cylinder, how its position is measured, its clamping pressure)
- and with its state <b>at the alarm</b> (the last reading before the error bit came on) and <b>now</b>; red is not as it should be.
- From what was missing, <b>Where to start</b> names the details to check first, and the chart marks them (<i>start here</i>, <i>2nd</i>&hellip;):
- the valve output never came on &ndash; the output (1.6), relay (1.5), valve (1.3); both coils on &ndash; 1.4; the output on but the cylinder never left its start
- &ndash; relay, valve, air, mechanics; it left but its sensor did not come on &ndash; the sensor (1.7), mechanics, air, time (1.8).
- In <b>every check</b>, <i>On this machine</i> says what to measure or look at: e.g. the coil's wire and 24 V between it and 0 V (wire 21), the relay and its sheet,
- the output's card terminal, the hoses to exhaust, the sensor's wire and the relay the screen shows it at, the encoder's inputs.
- Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set</td><td>First, <b>Step by step &ndash; <i>the movement</i></b>: a page that works through
+ the fault the way you would at the machine, for <b>this</b> cylinder and <b>this</b> movement (its name taken from the drawing: <i>Clamp</i>, <i>Up</i>&hellip;).
+ <ul>
+  <li>At the top: <b>what should happen</b>, as a chain you can click &ndash; the button, the PLC output, the relay, the valve coil, the valve, the air, the cylinder,
+      the sensor that confirms the end &ndash; and <b>what the HMI saw</b>: each device as it should be, <b>at the alarm</b> (the last reading before the error bit came on)
+      and <b>now</b>, red where it is wrong. From that, <b>Where to start</b> sends you to a step: the output never came on &ndash; the output step;
+      both coils on &ndash; the same step, saying so; the output on but the cylinder never left its start &ndash; from the card on; it arrived but too late &ndash; the time.</li>
+  <li><b>Step 1: where is the cylinder?</b> Not moved, stopped on the way, or arrived &ndash; three searches.
+      <b>Not moved</b>: the signal from the PLC to the cylinder, one question at a time &ndash; does the PLC switch the output on (and why not: what the button waits for),
+      does the card's LED light (its own terminal name, 24 V against 0 V), does the relay pull in, does the coil get power, does the valve switch (manual override),
+      is there air, is the cylinder free. <b>Stopped on the way</b>: does the signal stay the whole way (a 5/3 or spring valve needs it), does the pressure hold,
+      is something in the way, is it only slow. <b>Arrived</b>: does the sensor see it (its LED, then the input), has the other end's sensor gone off, the clamp's
+      pressure switch, the position reading, the reference, then the time allowed.</li>
+  <li>Each answer either names the fault and its remedy &ndash; then <i>test again; still failing, go to step n</i> &ndash; or sends you on. Everything is named as on
+      the drawings: addresses, card terminals, wires, sheets, relays, coils, valves, hoses, sensors.</li>
+  <li>The two movements of a cylinder are <b>not mirror images</b> when its valve or feedback is not: a spring valve's return is <i>the coil must switch off</i>
+      (the relay drop out, the coil lose power, the valve spring back &ndash; a locked override holds it), a single sensor's far end is <i>the sensor must go off, and
+      nothing sees the end</i>, a clamp is confirmed by its pressure switch and its release by the back sensor.</li>
+ </ul>
+ Then the <b>cylinder manual</b> &ndash; the general view behind the steps &ndash; with only this cylinder's valve (1.4) and feedback (1.7), as one chart 1.1&hellip;1.8 whose
+ heading row stays at the top while you scroll, and a line at its top back to the step-by-step page. Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
 <tr><td><b style="color:#2870be">?</b></td><td>Axis: while its drive shows a code &ndash; servo alarm, axis alarm or axis warning (the last three columns of its Axis Settings row). None set: no <b>?</b>.</td><td>One entry <b>per code</b>, each opening only that code's entry of its manual: the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning.</td></tr>
 </table>
 <p class="note">&ldquo;Sheet 12.6&rdquo; is page 12, column 6 of the electrical drawing, the way the drawing's own cross-references write it;
 &ldquo;pneumatic sheet 2 E3&rdquo; is page 2, zone E3 of the pneumatic drawing. The <i>Inputs / Outputs</i> side page shows the same when you rest the pointer on a point.</p>
 <p>The <b>?</b> does not blink or change colour &ndash; the part that failed does. One document opens straight away; several are offered as a list. A unit with nothing to open shows no mark until something fails.
-The alarm list's help for the same alarm shows the same movement with the same states.
+The alarm list's help for the same alarm offers the same step-by-step page, with the same states.
 While an error bit is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
 or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
 

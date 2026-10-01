@@ -69,10 +69,10 @@ class L {
         AlarmManager.RegisterDefinition("SUB.Clamp_A", "Alm_Clamp", Kaban.Core.Models.AlarmSeverity.Fault,
             plcNumber: 3, address: "M810", helperKeys: new List<string> { "MR_J4_TroubleShooting.pdf" });
         var docs = AlarmHelpLinks.DocumentsFor(AlarmManager.FindByStationAndAddress(3, "M810"));
-        Check("unit manual first, the helper file after", docs.Count == 2 && docs[0].FileName == "Cylinder_Troubleshooting.html",
-              string.Join(" | ", docs.Select(d => d.Title)));
-        Check("  tailored to that cylinder", docs[0].Valve == 1 && docs[0].Feedback == 2);
-        Check("  and named after the unit", docs[0].Title.Contains("Robot Clamping"), docs[0].Title);
+        Check("the step-by-step page and the unit manual first, the helper file after", docs.Count == 3 && docs[0].StepByStep &&
+              docs[1].FileName == "Cylinder_Troubleshooting.html" && !docs[1].StepByStep, string.Join(" | ", docs.Select(d => d.Title)));
+        Check("  tailored to that cylinder", docs[1].Valve == 1 && docs[1].Feedback == 2);
+        Check("  and named after the unit", docs[1].Title.Contains("Robot Clamping") && docs[0].Title.Contains("Robot Clamping"), docs[1].Title);
         AlarmManager.RegisterDefinition("SUB.Axis_X", "Alm_X", Kaban.Core.Models.AlarmSeverity.Fault, plcNumber: 3, address: "M801");
         var servo = AlarmHelpLinks.DocumentsFor(AlarmManager.FindByStationAndAddress(3, "M801"));
         Check("an axis fault opens the servo manual, named for the axis",
@@ -112,7 +112,7 @@ class L {
               bdocs[0].Valve == 1 && bdocs[0].Feedback == 2, string.Join(" | ", bdocs.Select(d => d.Title)));
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
         Check("A's error too: still ONE '?', both movements in its list", mark.State == UnitHelpBadge.BadgeState.Error &&
-              unit.HelpDocuments().Count(d => d.Movement != null) == 2);
+              unit.HelpDocuments().Count(d => d.Movement != null && !d.StepByStep) == 2 && unit.HelpDocuments().Count(d => d.StepByStep) == 2);
         Check("  and button A blinks too", unit.ButtonA.AlertBlink);
         helpA.UpdateState(a => 0, c => true);
         Check("A clears: its blink stops", !unit.ButtonA.AlertBlink);

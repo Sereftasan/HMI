@@ -275,6 +275,7 @@ Col_ConnState;Connection State;Bağlantı Durumu;Состояние связи;V
 Sta_Failed;Connection failed;Bağlantı başarısız;Нет связи;Verbindung fehlgeschlagen;Connessione non riuscita;Conexión fallida
 Ttl_HelpDocs;Help Documents;Yardım Belgeleri;Справочные документы;Hilfedokumente;Documenti di aiuto;Documentos de ayuda
 Hlp_Cylinder;Cylinder troubleshooting;Silindir arıza giderme;Устранение неисправностей цилиндра;Zylinder-Fehlersuche;Diagnostica cilindri;Diagnóstico de cilindros
+Hlp_CylinderSteps;Step by step;Adım adım;Пошагово;Schritt für Schritt;Passo per passo;Paso a paso
 
 Tip_HelpBadge;Click for help;Yardım için tıklayın;Нажмите для справки;Für Hilfe klicken;Clicca per l'aiuto;Haga clic para obtener ayuda
 Hlp_Servo;Servo drive troubleshooting;Servo sürücü arıza giderme;Устранение неисправностей сервопривода;Servoantrieb-Fehlersuche;Diagnostica azionamento servo;Diagnóstico del servoaccionamiento

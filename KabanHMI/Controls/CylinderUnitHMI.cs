@@ -1091,6 +1091,9 @@ namespace Kaban.UI.Controls
                 Unit = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText),
                 Side = a ? "A" : "B",
                 Name = Tr(a ? _buttonAText : _buttonBText),
+                // a single-command unit has no other button: its other movement is the spring's
+                OtherName = string.IsNullOrWhiteSpace(a ? _commandBAddress : _commandAAddress) && string.IsNullOrWhiteSpace(DrivenOutput(a ? "B" : "A"))
+                            ? "" : Tr(a ? _buttonBText : _buttonAText),
                 Command = dev(a ? _commandAAddress : _commandBAddress, a ? _buttonATip : _buttonBTip),
                 Output = dev(DrivenOutput(side), ""),
                 OtherCommand = dev(a ? _commandBAddress : _commandAAddress, a ? _buttonBTip : _buttonATip),
@@ -1103,10 +1106,41 @@ namespace Kaban.UI.Controls
             foreach (var d in a ? new[] { dev(_lamp1AAddress, _lamp1ATip), dev(_lamp2AAddress, _lamp2ATip) }
                                 : new[] { dev(_lamp1BAddress, _lamp1BTip), dev(_lamp2BAddress, _lamp2BTip) })
                 if (d != null) mv.Feedback.Add(d);
+            // What its button waits for (the unit's and the button's own enable conditions).
+            var set = _enableConditions | (a ? ButtonAEnableConditions : ButtonBEnableConditions);
+            var unmet = (a ? _btnA : _btnB).UnmetConditions;
+            foreach (var part in MachineConditionMap.Parts(set))
+            {
+                var name = MachineConditionMap.NameOf(part);
+                ConditionRule rule = Enum.IsDefined(typeof(SystemCondition), part) ? MachineConditionMap.GetRule(part)
+                    : MachineConditionMap.GetAllMachineBits().Where(kv => kv.Key == (long)part).Select(kv => (ConditionRule)kv.Value).FirstOrDefault();
+                mv.Conditions.Add(new TroubleshootingCatalog.MovementInfo.Condition
+                {
+                    Name = name,
+                    Rule = rule != null ? MachineConditionMap.RuleText(rule) : "",
+                    Met = unmet == null ? (bool?)null : !unmet.Contains(name)
+                });
+            }
             foreach (var d in a ? new[] { dev(_lamp1BAddress, _lamp1BTip), dev(_lamp2BAddress, _lamp2BTip) }
                                 : new[] { dev(_lamp1AAddress, _lamp1ATip), dev(_lamp2AAddress, _lamp2ATip) })
                 if (d != null) mv.OppositeFeedback.Add(d);
             return mv;
+        }
+
+        /// <summary>
+        /// The step-by-step troubleshooter for the movement that failed (the unit's
+        /// devices, its valve and feedback, what was seen at the alarm) - what the
+        /// "?" offers first for a fault; the manual follows as the general view.
+        /// </summary>
+        private TroubleshootingCatalog.HelpDocument StepsDocument(string side)
+        {
+            var manual = CylinderDocument(side);
+            if (manual == null) return null;
+            manual.StepByStep = true;
+            var mv = manual.Movement;
+            manual.Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+                           (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv));
+            return manual;
         }
 
         /// <summary>The cylinder manual for this unit - its valve and feedback, and the movement that failed when given.</summary>
@@ -1122,7 +1156,7 @@ namespace Kaban.UI.Controls
                 // No unit name: the list opens from the unit's own "?". The
                 // movement is named - it is what tells two entries apart.
                 Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
-                        (mv == null ? "" : " - " + (string.IsNullOrEmpty(mv.Name) ? mv.Side : mv.Name)),
+                        (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv)),
                 Valve = TroubleshootingCatalog.CanonicalValve((int)_valve),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)_feedback),
                 Movement = mv
@@ -1157,6 +1191,8 @@ namespace Kaban.UI.Controls
                 foreach (var side in new[] { errA ? "A" : null, errB ? "B" : null })
                 {
                     if (side == null) continue;
+                    var steps = StepsDocument(side);
+                    if (steps != null) docs.Add(steps);
                     var d = CylinderDocument(side);
                     if (d != null) docs.Add(d);
                     // The failed movement's own files, then the alarm's.

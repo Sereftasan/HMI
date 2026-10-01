@@ -265,6 +265,21 @@ namespace Kaban.Core.Helpers
             public string Side = "";
             /// <summary>The button's caption: "Clamp", "Forward"...</summary>
             public string Name = "";
+            /// <summary>The other button's caption: "Release", "Back"... ("" when the unit has one button).</summary>
+            public string OtherName = "";
+
+            /// <summary>One condition the movement's button waits for (the button is grey while one is not met).</summary>
+            public sealed class Condition
+            {
+                public string Name = "";
+                /// <summary>What it asks of the PLC: "M100 = 0", or "".</summary>
+                public string Rule = "";
+                /// <summary>Met at the last scan; null when not known.</summary>
+                public bool? Met;
+            }
+
+            /// <summary>What the button waits for before it may be pressed (its enable conditions).</summary>
+            public readonly List<Condition> Conditions = new List<Condition>();
             public Device Command, Output;
             /// <summary>The other side's command and output - the second coil of a double solenoid valve.</summary>
             public Device OtherCommand, OtherOutput;
@@ -305,10 +320,17 @@ namespace Kaban.Core.Helpers
 
             /// <summary>
             /// For a cylinder fault raised by a unit: WHICH movement failed and the
-            /// devices it involves, shown at the top of the tailored manual. Null
-            /// when no movement is known (the manual opened without an alarm).
+            /// devices it involves. Null when no movement is known (the manual
+            /// opened without an alarm).
             /// </summary>
             public MovementInfo Movement;
+
+            /// <summary>
+            /// The STEP-BY-STEP troubleshooter for the movement (BuildSteps), not the
+            /// manual: what to look at, press and measure on this machine, one step
+            /// after the other. Needs Movement.
+            /// </summary>
+            public bool StepByStep;
 
             public string FullPath
             {
@@ -501,6 +523,10 @@ namespace Kaban.Core.Helpers
             if (doc != null && doc.Exists && !string.IsNullOrEmpty(doc.Code))
                 return AxisCodeHelp.Extract(doc);
 
+            // A movement's step-by-step troubleshooter (TroubleshootingCatalog.Steps.cs).
+            if (doc != null && doc.StepByStep && doc.Movement != null)
+                return WriteSteps(doc);
+
             if (doc != null && doc.Exists && (doc.Valve != 0 || doc.Feedback != 0 || doc.Movement != null) &&
                 doc.FileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
                 return Tailor(doc);
@@ -554,11 +580,12 @@ namespace Kaban.Core.Helpers
         /// under one heading row - 1.1, 1.2 ... 1.8, read top to bottom - instead
         /// of a table per detail with the heading repeated between them.
         ///
-        /// With the MOVEMENT that failed (see MovementInfo) a box at the top names
-        /// its devices - the command, the valve output, the sensors that should
-        /// confirm it and the ones that should go off - with their states when it
-        /// failed and where to start because of them, and every check of the
-        /// chart says what it means on this machine (TroubleshootingCatalog.Movement.cs).
+        /// With the MOVEMENT that failed (see MovementInfo) the manual stays the
+        /// general view; a line at its top leads to the movement's step-by-step
+        /// troubleshooter (TroubleshootingCatalog.Steps.cs), which names the
+        /// devices and says what to do one step after the other. (Notes added to
+        /// every check of the chart, 30 September, made the manual harder to read,
+        /// not easier: they were replaced by that page.)
         ///
         /// A digit the manual has no block for filters NOTHING: hiding every
         /// variant would leave the operator with less than the full manual.
@@ -603,19 +630,22 @@ namespace Kaban.Core.Helpers
                                 " are left out; they do not apply to it.</p>");
                 if (doc.Movement != null)
                 {
-                    // The movement on this machine: its devices, what was missing,
-                    // where to start - and in every check, what to measure.
-                    var chain = Chain.Build(doc.Movement, (ValveType)doc.Valve, (FeedbackType)doc.Feedback);
-                    string why;
-                    var order = StartOrder(chain, out why);
-                    note.Append(MovementBox(chain, order, why));
-                    html = DecorateChart(html, chain, order);
+                    // The movement's own page, written beside this one.
+                    var steps = WriteSteps(new HelpDocument
+                    {
+                        FileName = doc.FileName, StepByStep = true, Valve = doc.Valve, Feedback = doc.Feedback, Movement = doc.Movement
+                    });
+                    if (!string.IsNullOrEmpty(steps))
+                        note.Append("<p class=\"steps\"><b>" + WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(doc.Movement.Unit) ? "This cylinder" : doc.Movement.Unit) +
+                                    "</b>: for the movement that failed, work through <a href=\"" + WebUtility.HtmlEncode(Path.GetFileName(steps)) +
+                                    "\">the step-by-step troubleshooter</a> &ndash; it names this machine's parts and says what to do, one step after the other. " +
+                                    "This manual is the general view behind it.</p>");
                 }
                 note.Append("</div>");
 
                 int h1 = html.IndexOf("</h1>", StringComparison.OrdinalIgnoreCase);
                 html = h1 >= 0 ? html.Insert(h1 + 5, note.ToString()) : html.Replace("<body>", "<body>" + note);
-                html = html.Replace("</style>", TailoredStyle + MovementStyle + "</style>");
+                html = html.Replace("</style>", TailoredStyle + "</style>");
 
                 var name = Path.GetFileNameWithoutExtension(doc.FullPath) + "_v" + doc.Valve + "_f" + doc.Feedback +
                            (doc.Movement == null ? "" : "_" + SafeName(doc.Movement.Unit) + "_" + doc.Movement.Side) + ".html";
@@ -635,7 +665,8 @@ namespace Kaban.Core.Helpers
             " table.movement td{border:none;padding:.15em .8em .15em 0;vertical-align:top}" +
             " table.movement td:first-child{font-weight:bold;white-space:nowrap}" +
             " table.movement code{font-size:1.05em;font-weight:bold;color:#1f4e79}" +
-            " .tailored .ref{color:#555;font-size:.92em}\n";
+            " .tailored .ref{color:#555;font-size:.92em}" +
+            " .tailored .steps{background:#fff7d6;border:1px solid #e0c060;padding:.4em .6em;margin:.4em 0}\n";
 
         /// <summary>
         /// The detail tables joined into one: the first table's column widths and

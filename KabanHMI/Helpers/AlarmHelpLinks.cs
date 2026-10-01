@@ -425,6 +425,19 @@ namespace Kaban.UI.Helpers
             if (link != null && TC.DocumentForType.TryGetValue(link.Kind, out file) && !string.IsNullOrEmpty(file))
             {
                 bool cylinder = link.Kind == TC.ErrorType.CylinderMovement;
+                // A unit's movement: its step-by-step troubleshooter first, the manual after it.
+                var movement = cylinder ? link.CurrentMovement() : null;
+                if (movement != null)
+                    docs.Add(new TC.HelpDocument
+                    {
+                        FileName = file,
+                        StepByStep = true,
+                        Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+                                (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit) + " - " + TC.MovementName(movement),
+                        Valve = TC.CanonicalValve(link.Valve),
+                        Feedback = TC.CanonicalFeedback(link.Feedback),
+                        Movement = movement
+                    });
                 docs.Add(new TC.HelpDocument
                 {
                     FileName = file,
@@ -433,7 +446,7 @@ namespace Kaban.UI.Helpers
                             + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
                     Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
                     Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0,
-                    Movement = cylinder ? link.CurrentMovement() : null
+                    Movement = movement
                 });
             }
 

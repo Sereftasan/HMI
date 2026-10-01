@@ -3,6 +3,9 @@
 # drawing (134628 rev. 9: PnSheet 2 E3 = page 2, zone E3). Point: the PLC address.
 # Read: the relay the HMI reads it at. Commands: manual command bits that drive it.
 # Card: PLC card and terminal. Via: read through a module. Measure / Pressure: the cylinder's.
+# "#!" lines are read: the supply wires a voltage is measured against (the step-by-step help).
+#! ZeroVoltWire=21
+#! SensorSupplyWire=20
 Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc;Card;Via;Measure;Pressure
 X2;;;Encoder;70;11.1;;;;;;;;;;Profile Start Measurement (Gripper) Encoder Input (A Phase);1;U4 FX5U-64MT-ESS, terminal X2;;;
 X3;;;Encoder;71;11.1;;;;;;;;;;Profile Start Measurement (Gripper) Encoder Input (B Phase);1;U4 FX5U-64MT-ESS, terminal X3;;;

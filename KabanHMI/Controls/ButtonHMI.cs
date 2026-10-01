@@ -39,6 +39,16 @@ namespace Kaban.UI.Controls
         // and no enable condition or trigger was ever enforced.
         private bool _softEnabled = false;
 
+        private List<string> _unmet = new List<string>();
+        private bool _conditionsRead;
+
+        /// <summary>
+        /// The names of its enable conditions not met at the last scan (empty when
+        /// all are); null before the first scan.
+        /// </summary>
+        [Browsable(false)]
+        public IReadOnlyList<string> UnmetConditions { get { return _conditionsRead ? _unmet : null; } }
+
         [Category("  Actions")] public int PlcNumber { get; set; } = 1;
 
         [Category("  Actions")]
@@ -681,6 +691,9 @@ namespace Kaban.UI.Controls
 
             bool en = secOk && condOk && trigOk && connOk;
             _softEnabled = en;
+            // What the button waits for, kept for its unit's step-by-step help.
+            _unmet = condOk ? new List<string>() : MachineConditionMap.Unmet(EnableConditions, checkGlobal);
+            _conditionsRead = true;
             // A button that may not be pressed must not stay pressed: the enable
             // condition dropping (manual mode left, logged out, station lost) ends
             // a jog in progress.

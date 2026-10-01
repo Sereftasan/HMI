@@ -15,7 +15,7 @@ using Kaban.UI.Helpers;
 using TC = Kaban.Core.Helpers.TroubleshootingCatalog;
 
 // 25 September: the cylinder manual tailored by the unit's ValveType and
-// FeedbackType as ONE chart, the failed movement's devices at its top, the
+// FeedbackType as ONE chart, a line to the failed movement's step-by-step page at its top, the
 // unit's single "?", the login's user list, the Cutting page's unit sizes and
 // the servo help without its Target column.
 class CH {
@@ -65,7 +65,9 @@ class CH {
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
         Check("the '?' offers the fault's help - and stays blue", mark.State == UnitHelpBadge.BadgeState.Error && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         var docs = unit.HelpDocuments();
-        var doc = docs.FirstOrDefault(d => d.Movement != null);
+        // 1 October: the step-by-step page first (CylinderSteps.cs), the manual after it.
+        Check("the step-by-step page first", docs.Count > 0 && docs[0].StepByStep && docs[0].Title.EndsWith("Clamp"), string.Join(" | ", docs.Select(d => d.Title)));
+        var doc = docs.FirstOrDefault(d => d.Movement != null && !d.StepByStep);
         Check("its help names movement A", doc != null && doc.Movement.Side == "A" && doc.Movement.Name == "Clamp" &&
               doc.Movement.Command.Address == "M604" && doc.Movement.Output.Address == "Y24",
               doc == null ? "none" : doc.Title);
@@ -84,16 +86,16 @@ class CH {
               !html.Contains("Double solenoid 5/2 (impulse") && !html.Contains(">(3) Double solenoid 5/3"));
         Check("  only the two end sensors in 1.7", html.Contains("Two end magnetic sensors") && !html.Contains("Analogue magnetic sensor (4"));
         Check("  the variant number is dropped from the one left", !html.Contains("<strong class=\"vt\">(2)"));
-        Check("  the movement's devices at the top", html.Contains("Movement that failed") && html.Contains("<code>M604</code>") &&
-              html.Contains("<code>Y24</code>") && html.Contains("<code>X30</code> Clamp closed") && html.Contains("<code>X31</code> Clamp open"));
+        Check("  a line at the top leads to the movement's step-by-step page (no box of devices, no notes in the checks)",
+              html.Contains("step-by-step troubleshooter") && !html.Contains("Movement that failed") && !html.Contains("On this machine"));
         Check("  and the safety cautions are still there", html.Contains("CAUTION"));
 
         Console.WriteLine("--- the alarm list's help names the same movement ---");
         AlarmHelpLinks.Clear();
         AlarmHelpLinks.Harvest(unit);
         var listed = AlarmHelpLinks.DocumentsFor(4, "M811", null);
-        Check("the error bit of B: movement B, Release", listed.Count >= 1 && listed[0].Movement != null &&
-              listed[0].Movement.Side == "B" && listed[0].Movement.Name == "Release" && listed[0].Valve == 2,
+        Check("the error bit of B: movement B, Release (its step-by-step page first)", listed.Count >= 2 && listed[0].StepByStep && listed[0].Movement != null &&
+              listed[0].Movement.Side == "B" && listed[0].Movement.Name == "Release" && listed[0].Valve == 2 && !listed[1].StepByStep,
               string.Join(" | ", listed.Select(d => d.Title)));
         helpA.UpdateState(a => 0, c => true);
         Check("cleared: the '?' goes again", mark.State == UnitHelpBadge.BadgeState.Hidden);
@@ -103,7 +105,7 @@ class CH {
         var full = File.ReadAllText(TC.ExtractSection(raw));
         Check("every variant is kept - in ONE chart, one heading row (no heading between the details)",
               Regex.Matches(full, "<tbody class=\"block\"").Count == 15 && Regex.Matches(full, "<thead>").Count == 1 &&
-              Regex.Matches(full, "<table class=\"detail\"").Count == 1 && full.Contains("Movement that failed"));
+              Regex.Matches(full, "<table class=\"detail\"").Count == 1 && full.Contains("step-by-step troubleshooter"));
         var manualFile = File.ReadAllText(Path.Combine(TC.HelpFolder, "Cylinder_Troubleshooting.html"));
         Check("  the manual itself is one chart too, its heading row fixed at the top while it scrolls",
               Regex.Matches(manualFile, "<thead>").Count == 1 && Regex.Matches(manualFile, "<tbody class=\"block\"").Count == 15 &&

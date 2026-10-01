@@ -110,6 +110,30 @@ namespace Kaban.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// The supply wires of a machine's drawing, from its Wiring.csv's directive
+        /// lines ("#! ZeroVoltWire=21", "#! SensorSupplyWire=20"): what a voltage
+        /// is measured against. "" when the file does not say.
+        /// </summary>
+        public sealed class Supply
+        {
+            public string ZeroVoltWire = "";
+            public string SensorSupplyWire = "";
+        }
+
+        private static readonly Dictionary<int, Supply> _supply = new Dictionary<int, Supply>();
+
+        /// <summary>A station's supply wires (never null).</summary>
+        public static Supply SupplyOf(int station)
+        {
+            EnsureLoaded();
+            lock (_lock)
+            {
+                Supply s;
+                return _supply.TryGetValue(station, out s) ? s : new Supply();
+            }
+        }
+
         private static readonly Dictionary<int, Dictionary<string, Point>> _byAddress = new Dictionary<int, Dictionary<string, Point>>();
         private static readonly Dictionary<int, Dictionary<string, Point>> _byCommand = new Dictionary<int, Dictionary<string, Point>>();
         private static readonly object _lock = new object();
@@ -124,7 +148,7 @@ namespace Kaban.Core.Helpers
         /// <summary>Forgets every table (for a test).</summary>
         public static void Clear()
         {
-            lock (_lock) { _byAddress.Clear(); _byCommand.Clear(); _loaded = false; }
+            lock (_lock) { _byAddress.Clear(); _byCommand.Clear(); _supply.Clear(); _loaded = false; }
         }
 
         /// <summary>
@@ -139,9 +163,22 @@ namespace Kaban.Core.Helpers
             {
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) return 0;
                 string[] head = null;
+                var supply = new Supply();
                 foreach (var raw in File.ReadAllLines(path))
                 {
                     var line = raw.Trim();
+                    // "#! ZeroVoltWire=21": a directive, not a comment.
+                    if (line.StartsWith("#!"))
+                    {
+                        var kv = line.Substring(2).Split(new[] { '=' }, 2);
+                        if (kv.Length == 2)
+                        {
+                            var key = kv[0].Trim();
+                            if (key.Equals("ZeroVoltWire", StringComparison.OrdinalIgnoreCase)) supply.ZeroVoltWire = kv[1].Trim();
+                            else if (key.Equals("SensorSupplyWire", StringComparison.OrdinalIgnoreCase)) supply.SensorSupplyWire = kv[1].Trim();
+                        }
+                        continue;
+                    }
                     if (line.Length == 0 || line.StartsWith("#")) continue;
                     var f = line.Split(';');
                     if (head == null && f[0].Trim().Equals("Point", StringComparison.OrdinalIgnoreCase)) { head = f.Select(h => h.Trim()).ToArray(); continue; }
@@ -176,6 +213,12 @@ namespace Kaban.Core.Helpers
                     }
                     n++;
                 }
+                // The file's own controller 1 is where its supply applies; every
+                // station it names shares the drawing.
+                if (supply.ZeroVoltWire.Length > 0 || supply.SensorSupplyWire.Length > 0)
+                    lock (_lock)
+                        foreach (var st in _byAddress.Keys.ToList().Concat(new[] { station != null ? station(1) : 1 }).Distinct())
+                            if (!_supply.ContainsKey(st)) _supply[st] = supply;
             }
             catch (Exception ex) { AuditLogger.Log("could not read the wiring list " + path + ": " + ex.Message); }
             return n;

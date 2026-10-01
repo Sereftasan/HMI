@@ -85,6 +85,9 @@
     <Compile Include="Helpers\TroubleshootingCatalog.Movement.cs">
       <DependentUpon>TroubleshootingCatalog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\TroubleshootingCatalog.Steps.cs">
+      <DependentUpon>TroubleshootingCatalog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\AxisCodeHelp.cs" />
     <Compile Include="Helpers\ComparisonHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />

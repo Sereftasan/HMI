@@ -427,6 +427,9 @@ def build():
     out.write('# drawing (134628 rev. 9: PnSheet 2 E3 = page 2, zone E3). Point: the PLC address.\n')
     out.write('# Read: the relay the HMI reads it at. Commands: manual command bits that drive it.\n')
     out.write('# Card: PLC card and terminal. Via: read through a module. Measure / Pressure: the cylinder\'s.\n')
+    out.write('# "#!" lines are read: the supply wires a voltage is measured against (the step-by-step help).\n')
+    out.write('#! ZeroVoltWire=21\n')
+    out.write('#! SensorSupplyWire=20\n')
     out.write(';'.join(COLUMNS) + '\n')
     for p in sorted(rows, key=lambda q: (1, q) if q.startswith('M') else (0,) + octal_key(q)):
         r = rows[p]
