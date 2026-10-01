@@ -30,6 +30,10 @@ namespace Kaban.UI.Settings
     ///   * Newest first; click the Time heading to turn it round.
     ///   * The selected entry in full below the table (a station scan is a
     ///     report of several lines), and Export writes what is shown.
+    ///   * WITH THE MACHINES' OWN LOGS (Logs and Reports, 2 October): each mounted
+    ///     machine's log database - its states, events and alarms - in the same
+    ///     table, with a Source column and filter (HMI, or a machine), read on a
+    ///     thread of its own (MachineLogFeed).
     /// </summary>
     public class LogViewerControl : UserControl
     {
@@ -45,6 +49,12 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _user = new ComboBox();
         private readonly ComboBox _plc = new ComboBox();
         private readonly ComboBox _kind = new ComboBox();
+        private readonly ComboBox _source = new ComboBox();
+        private readonly bool _machines;
+        private readonly List<Kaban.UI.Dashboard.MachineLogFeed> _feeds = new List<Kaban.UI.Dashboard.MachineLogFeed>();
+        private readonly Dictionary<string, string> _sourceNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly EventHandler _onFeed;
+        private int _feedVersions = -1;
         private readonly CheckBox _live = new CheckBox();
         private readonly DataGridView _grid = new DataGridView();
         private readonly TextBox _detail = new TextBox();
@@ -69,8 +79,10 @@ namespace Kaban.UI.Settings
         public LogViewerControl() : this(null, Period.Today) { }
 
         /// <param name="kind">A kind to start with (PLC Diagnostics: Connection); null for all.</param>
-        public LogViewerControl(AuditKind? kind, Period period)
+        /// <param name="machines">With the mounted machines' own logs (Logs and Reports).</param>
+        public LogViewerControl(AuditKind? kind, Period period, bool machines = false)
         {
+            _machines = machines;
             Dock = DockStyle.Fill;
             BackColor = Color.White;
             Font = new Font("Segoe UI", 9.5F);
@@ -137,11 +149,39 @@ namespace Kaban.UI.Settings
             foreach (AuditKind k in new[] { AuditKind.SignIn, AuditKind.Connection, AuditKind.PlcWrite, AuditKind.DeviceWrite,
                                             AuditKind.Problem, AuditKind.Settings, AuditKind.Other })
                 _kind.Items.Add(new Choice(k, KindName(k)));
+            if (machines)
+                foreach (AuditKind k in new[] { AuditKind.MachineState, AuditKind.MachineEvent, AuditKind.MachineAlarm })
+                    _kind.Items.Add(new Choice(k, KindName(k)));
             _kind.SelectedIndex = 0;
             if (kind.HasValue)
                 for (int i = 1; i < _kind.Items.Count; i++)
                     if ((AuditKind)((Choice)_kind.Items[i]).Value == kind.Value) _kind.SelectedIndex = i;
             _kind.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
+
+            // WHERE an entry comes from: the HMI's own log, or a machine's log database.
+            _source.DropDownStyle = ComboBoxStyle.DropDownList;
+            _source.Width = 170;
+            _source.Items.Add(new Choice(null, LanguageManager.GetString("Log_AllSources", "All sources")));
+            _source.Items.Add(new Choice("", LanguageManager.GetString("Log_SourceHmi", "HMI")));
+            if (machines)
+                foreach (var m in Kaban.UI.Helpers.MachineLinks.WithLogs())
+                {
+                    _sourceNames[m.ModuleId] = m.Name;
+                    _source.Items.Add(new Choice(m.ModuleId, m.Name));
+                    var feed = Kaban.UI.Dashboard.MachineLogFeed.For(m.Dashboard);
+                    feed.Station = m.MainStation;
+                    _feeds.Add(feed);
+                }
+            _source.SelectedIndex = 0;
+            _tips.SetToolTip(_source, LanguageManager.GetString("Log_SourceTip",
+                "HMI: what was done on the HMI. A machine: its own log - its states, events and alarms."));
+            _source.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
+            _onFeed = (s, e) =>
+            {
+                try { if (IsHandleCreated && !IsDisposed) BeginInvoke(new Action(() => { if (!IsDisposed) Reload(); })); }
+                catch { }
+            };
+            foreach (var f in _feeds) f.Changed += _onFeed;
 
             _live.Text = LanguageManager.GetString("Log_Live", "Live");
             _live.AutoSize = true;
@@ -165,6 +205,7 @@ namespace Kaban.UI.Settings
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_User", "User")), _user));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Plc", "PLC")), _plc));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Kind", "Kind")), _kind));
+            if (machines) bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Source", "Source")), _source));
             bar.Controls.Add(_live);
             var clear = UiStyle.ToolButton("✖", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and kind"),
                                            _tips, (s, e) => ClearFilters());
@@ -203,6 +244,11 @@ namespace Kaban.UI.Settings
             var entry = Column("Entry", LanguageManager.GetString("Log_ColEntry", "Entry"), 400);
             entry.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             _grid.Columns.Add(entry);
+            // Last in the table's columns (the others keep their numbers), shown after Time.
+            var source = Column("Source", LanguageManager.GetString("Log_ColSource", "Source"), 130);
+            _grid.Columns.Add(source);
+            source.DisplayIndex = 1;
+            source.Visible = machines;
             _grid.CellValueNeeded += OnCellValueNeeded;
             _grid.CellFormatting += OnCellFormatting;
             _grid.SelectionChanged += (s, e) => ShowDetail();
@@ -262,6 +308,9 @@ namespace Kaban.UI.Settings
                 case AuditKind.DeviceWrite: return LanguageManager.GetString("Log_KindDeviceWrite", "PLC device writes");
                 case AuditKind.Problem: return LanguageManager.GetString("Log_KindProblem", "Problems");
                 case AuditKind.Settings: return LanguageManager.GetString("Log_KindSettings", "Settings");
+                case AuditKind.MachineState: return LanguageManager.GetString("Log_KindMachineState", "Machine state");
+                case AuditKind.MachineEvent: return LanguageManager.GetString("Log_KindMachineEvent", "Machine event");
+                case AuditKind.MachineAlarm: return LanguageManager.GetString("Log_KindMachineAlarm", "Machine alarm");
                 default: return LanguageManager.GetString("Log_KindOther", "Other");
             }
         }
@@ -372,6 +421,22 @@ namespace Kaban.UI.Settings
             // With the PLC write log's device writes (PlcWriteLog): every device the
             // HMI wrote, with the value before it and what wrote it.
             var read = AuditLogReader.Read(from, to, true);
+            if (_feeds.Count > 0)
+            {
+                // The machines' logs: as far as they are read (a read starts on its own
+                // thread when the period is new); merged in time order.
+                int versions = 0;
+                var all = new List<AuditEntry>(read);
+                foreach (var f in _feeds)
+                {
+                    all.AddRange(f.Entries(from, to, FollowsNow));
+                    versions += f.Version;
+                }
+                bool feedsChanged = versions != _feedVersions;
+                _feedVersions = versions;
+                read = all.OrderBy(e => e.Time).ToList();
+                if (feedsChanged) _inPeriod = new List<AuditEntry>();     // filter again
+            }
             bool same = read.Count == _inPeriod.Count &&
                         (read.Count == 0 || ReferenceEquals(read[read.Count - 1], _inPeriod[_inPeriod.Count - 1]));
             _inPeriod = read;
@@ -455,7 +520,10 @@ namespace Kaban.UI.Settings
             var kindChoice = _kind.SelectedItem as Choice;
             AuditKind? kind = kindChoice == null || kindChoice.Value == null ? (AuditKind?)null : (AuditKind)kindChoice.Value;
             int? station = CurrentStation;
+            var sourceChoice = _source.SelectedItem as Choice;
+            string source = sourceChoice == null ? null : (string)sourceChoice.Value;
             return _inPeriod.Where(e =>
+                    (source == null || string.Equals(e.Source ?? "", source, StringComparison.OrdinalIgnoreCase)) &&
                     (user == null || string.Equals(e.User, user, StringComparison.OrdinalIgnoreCase)) &&
                     (!station.HasValue || e.Station == station) &&
                     (!kind.HasValue || e.Kind == kind.Value) &&
@@ -538,14 +606,29 @@ namespace Kaban.UI.Settings
             if (_total > _shown.Count)
                 text += "  -  " + string.Format(LanguageManager.GetString("Log_StatusCapped",
                     "the newest {0} are listed: narrow the period or the search"), _shown.Count);
+            foreach (var f in _feeds)
+            {
+                string name = SourceName(f.ModuleId);
+                if (f.Reading) text += "  -  " + name + ": " + LanguageManager.GetString("Log_MachineReading", "reading its log...");
+                else if (f.Problem.Length > 0) text += "  -  " + name + ": " + f.Problem;
+            }
             _status.Text = text;
+        }
+
+        /// <summary>"HMI", or the machine's name.</summary>
+        public string SourceName(string source)
+        {
+            if (string.IsNullOrEmpty(source)) return LanguageManager.GetString("Log_SourceHmi", "HMI");
+            string n;
+            return _sourceNames.TryGetValue(source, out n) ? n : source;
         }
 
         private void ShowDetail()
         {
             var e = Selected();
             _detail.Text = e == null ? "" :
-                (e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "   " + e.User + "   " +
+                (e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "   " +
+                 (_machines ? SourceName(e.Source) + "   " : "") + e.User + "   " +
                  (e.Station.HasValue ? "PLC " + e.Station.Value + "   " : "") + KindName(e.Kind) + Environment.NewLine + e.Text.Replace("\n", Environment.NewLine));
         }
 
@@ -559,6 +642,7 @@ namespace Kaban.UI.Settings
                 case 1: e.Value = entry.User; break;
                 case 2: e.Value = entry.Station.HasValue ? entry.Station.Value.ToString(CultureInfo.InvariantCulture) : ""; break;
                 case 3: e.Value = KindName(entry.Kind); break;
+                case 5: e.Value = SourceName(entry.Source); break;
                 default:
                     int nl = entry.Text.IndexOf('\n');
                     e.Value = nl < 0 ? entry.Text : entry.Text.Substring(0, nl) + "  …";
@@ -570,8 +654,11 @@ namespace Kaban.UI.Settings
         {
             var entry = EntryAt(e.RowIndex);
             if (entry == null) return;
-            if (entry.Kind == AuditKind.Problem || (entry.Kind == AuditKind.DeviceWrite && entry.Text.Contains(" FAILED")))
+            if (entry.Kind == AuditKind.Problem || entry.Kind == AuditKind.MachineAlarm ||
+                (entry.Kind == AuditKind.DeviceWrite && entry.Text.Contains(" FAILED")))
                 e.CellStyle.ForeColor = Color.FromArgb(170, 30, 30);
+            else if (entry.Kind == AuditKind.MachineState && e.ColumnIndex == 4)
+                e.CellStyle.ForeColor = Color.FromArgb(40, 100, 60);
             else if (entry.Kind == AuditKind.Connection) e.CellStyle.ForeColor = Color.FromArgb(20, 80, 150);
             else if (e.ColumnIndex == 3) e.CellStyle.ForeColor = Color.FromArgb(90, 96, 106);
         }
@@ -585,6 +672,7 @@ namespace Kaban.UI.Settings
                 _user.SelectedIndex = 0;
                 _plc.SelectedIndex = 0;
                 _kind.SelectedIndex = 0;
+                _source.SelectedIndex = 0;
             }
             finally { _setting = false; }
             _typing.Stop();
@@ -612,7 +700,8 @@ namespace Kaban.UI.Settings
                 if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
                 try
                 {
-                    File.WriteAllText(dlg.FileName, ExportText(list, dlg.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)),
+                    File.WriteAllText(dlg.FileName, ExportText(list, dlg.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase),
+                                                               _machines ? (Func<string, string>)SourceName : null),
                                       new UTF8Encoding(true));
                     _status.Text = string.Format(LanguageManager.GetString("Log_Exported", "Exported {0} entries: {1}"),
                                                  list.Count, dlg.FileName);
@@ -626,18 +715,23 @@ namespace Kaban.UI.Settings
         }
 
         /// <summary>The export's content - public for the tests.</summary>
-        public static string ExportText(IEnumerable<AuditEntry> entries, bool csv)
+        /// <param name="source">With the machines' logs: the name of an entry's source (a Source column, a prefix in the text file).</param>
+        public static string ExportText(IEnumerable<AuditEntry> entries, bool csv, Func<string, string> source = null)
         {
             var sb = new StringBuilder();
-            if (csv) sb.Append("Time;User;PLC;Kind;Entry\r\n");
+            if (csv) sb.Append(source != null ? "Time;Source;User;PLC;Kind;Entry\r\n" : "Time;User;PLC;Kind;Entry\r\n");
             foreach (var e in entries)
             {
                 if (csv)
                     sb.Append(e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)).Append(';')
+                      .Append(source != null ? Csv(source(e.Source)) + ";" : "")
                       .Append(Csv(e.User)).Append(';')
                       .Append(e.Station.HasValue ? e.Station.Value.ToString(CultureInfo.InvariantCulture) : "").Append(';')
                       .Append(Csv(KindName(e.Kind))).Append(';')
                       .Append(Csv(e.Text)).Append("\r\n");
+                else if (source != null && !string.IsNullOrEmpty(e.Source))
+                    sb.Append("[" + e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "] - " + source(e.Source) + " - " +
+                              KindName(e.Kind) + ": " + e.Text.Replace("\n", "\r\n")).Append("\r\n");
                 else
                     sb.Append(e.ToLogLine().Replace("\n", "\r\n")).Append("\r\n");
             }
@@ -675,6 +769,16 @@ namespace Kaban.UI.Settings
                     if ((int)((Choice)_plc.Items[k]).Value == station.Value) _plc.SelectedIndex = k;
         }
         public List<string> PlcChoices { get { return _plc.Items.Cast<object>().Select(Convert.ToString).ToList(); } }
+        public List<string> SourceChoices { get { return _source.Items.Cast<object>().Select(Convert.ToString).ToList(); } }
+        public List<string> KindChoices { get { return _kind.Items.Cast<object>().Select(Convert.ToString).ToList(); } }
+        public bool SourceColumnShown { get { return _grid.Columns["Source"].Visible; } }
+        /// <summary>Only one source: null all, "" the HMI, a machine's id.</summary>
+        public void SetSource(string source)
+        {
+            _source.SelectedIndex = 0;
+            for (int k = 1; k < _source.Items.Count; k++)
+                if (string.Equals((string)((Choice)_source.Items[k]).Value, source, StringComparison.OrdinalIgnoreCase)) _source.SelectedIndex = k;
+        }
 
         public void SetUser(string user)
         {
@@ -697,6 +801,7 @@ namespace Kaban.UI.Settings
             {
                 _refresh.Stop(); _refresh.Dispose();
                 _typing.Stop(); _typing.Dispose();
+                foreach (var f in _feeds) f.Changed -= _onFeed;
             }
             base.Dispose(disposing);
         }

@@ -4251,3 +4251,19 @@ and `UnitLookAndErrors` extended.
 - Translations: `Set_AlarmGen*`, `Tip_AlarmGen*`, `Set_AlarmColDelay`, `Set_AlarmDelayBad`, `Tip_AlarmDelay*`,
   `Gen_Sub1`-`Gen_Sub6`. Manual: 6a, the unit's "?", Alarm Settings, where things are kept.
 - Tests: `tools/core_test/AlarmGenerationCore.cs`, `tools/ui_test/AlarmGenerationUi.cs` (new).
+
+## 2026-10-02 - Logs and Reports: the machines' logs beside the HMI's; the dashboard's settings out of Machine Parameters
+
+- `MachineLinks` *(new)*: the mounted machines for the HMI's own pages (name, stations, log database).
+- `MachineLogFeed` *(new)*: a machine's log database as log entries (states with minutes, events, alarms), read on a
+  thread, kept per period, re-read every 15 s for a period up to now, at most 200,000 per period.
+- `AuditKind.MachineState` / `MachineEvent` / `MachineAlarm`, `AuditEntry.Source`.
+- `LogViewerControl(kind, period, machines)`: the machines' entries merged, Source column (last, shown after Time) and
+  filter, the machine kinds, the feeds' status, `ExportText(..., source)`. `LogSettingsControl`: the Machine log row
+  (machine, what its database holds, look again, its settings). Page title "Logs and Reports" (`Set_Logs`).
+- `DashboardData.Check` / `Probe`: what a log database holds or why it cannot be read; the dashboard's empty range says
+  it; `DashboardSettingsControl`: look-into button, `ShowDialog` (used by the dashboard page and Logs and Reports).
+  `DashboardSettingsPage` removed - no Dashboard tab in Machine Parameters (`StandardScreens`); `Tab_Dashboard` removed.
+- Translations: `Log_Kind*Machine*`, `Log_Source*`, `Log_ColSource`, `Log_AllSources`, `Log_Machine*`, `Dsh_Probe*`,
+  `Dsh_DatabaseHolds`, `Dsh_SetTest*`; `Set_Logs` reworded. Manual: HMI Settings, Logs and Reports, the dashboard.
+- Tests: `tools/ui_test/LogsAndReports.cs` (new).

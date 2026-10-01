@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Helpers\StationMap.cs" />
     <Compile Include="Helpers\AlarmHelpLinks.cs" />
+    <Compile Include="Helpers\MachineLinks.cs" />
     <Compile Include="Helpers\WriteSource.cs" />
     <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\DeviceCollector.cs" />
@@ -192,6 +193,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Dashboard\DashboardService.cs" />
+    <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\DashboardSettingsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>

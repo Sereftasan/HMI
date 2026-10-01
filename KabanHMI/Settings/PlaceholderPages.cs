@@ -55,7 +55,7 @@ namespace Kaban.UI.Settings
     public class LogSettingsPage : ISettingsPage
     {
         public string TitleKey => "Set_Logs";
-        public string TitleFallback => "Log Settings";
+        public string TitleFallback => "Logs and Reports";
         public SecurityLevel RequiredLevel => SecurityLevel.Maintenance;
         public UserControl GetControl() => new LogSettingsControl();
     }

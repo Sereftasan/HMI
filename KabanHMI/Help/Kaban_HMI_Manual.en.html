@@ -417,8 +417,9 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>User Settings</td><td><span class="lvl l3">Admin</span></td><td>Users, passwords and levels. The last Admin cannot be removed or lowered.
   The <b>screen scale</b> each user asks for (below).</td></tr>
 <tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
-<tr><td>Log Settings</td><td><span class="lvl l2">Maintenance</span></td><td>The audit log, searchable by time, words, user, controller and kind (see <a href="#diag">11</a>).
-  Switching the log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
+<tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The HMI's log and each machine's own log in one table, searchable by time, words, user, controller, kind and source;
+  each machine's log database and its reports (see <a href="#diag">11</a>).
+  Switching the HMI's log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Connection</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller: its driver, station and address (changed by an <span class="lvl l3">Admin</span>),
   and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
@@ -493,8 +494,18 @@ Windows' own message boxes keep Windows' size.</p>
      A double word is its two words; a digit-specified device (<i>K4M100</i>) is each of its bits; a bit of a word (<i>D100.3</i>) is the bit and the word.
      A write the controller refused is logged too. The log is kept as long as the audit log and is <b>not</b> switched off with it.
      The bench simulation's own movements (it plays the PLC program's part) are not HMI writes and are not in it.</li>
- <li><b>Log Settings</b> <span class="lvl l2">Maintenance</span> shows the log as a table, newest first (click <i>Time</i> to turn it round):
+ <li><b>Logs and Reports</b> (HMI Settings) <span class="lvl l2">Maintenance</span> shows the HMI's log <b>and the machines' own logs</b> as one table,
+     newest first (click <i>Time</i> to turn it round):
   <ul>
+   <li><b>Machine log</b> (under the HMI log's switches): choose a machine; beside it, what its log database holds &ndash; <i>database.sqlite: 12,345 logs,
+       2026-09-01 08:00 - 2026-10-01 09:12</i> &ndash; or, in red, why it cannot be read: not found, not a machine log (no <code>main_log</code> table &ndash;
+       another program's database), no logs yet, dates it cannot read, a file that is no database. &#128269; looks again; &#9881; opens the machine's
+       <b>log database and reports</b> &ndash; the dashboard's settings (<a href="#dashboard">The dashboard</a>).</li>
+   <li><b>The table</b> lists, beside what was done on the HMI, each machine's <b>states</b> (with how many minutes; <i>still</i> for the one it is in),
+       <b>events</b> and <b>alarms</b> (with the errors that were on), with a <b>Source</b> column: <i>HMI</i> or the machine. <b>Source</b> narrows it to
+       the HMI or one machine; <b>Kind</b> has <i>Machine state</i>, <i>Machine event</i> and <i>Machine alarm</i>; a machine's entries are on its first
+       PLC, so <b>PLC</b> shows the HMI's writes to that controller beside what the machine logged. A machine's log is read on its own (the status line says
+       <i>reading its log&hellip;</i>); a period of more than 200,000 machine logs is not listed &ndash; choose a shorter one.</li>
    <li><b>Period</b>: last hour, today, yesterday, 7 or 30 days, everything kept &ndash; or any <b>From</b>/<b>To</b> (changing either picks <i>From - to</i>).</li>
    <li>&#128269; <b>Search</b>: every word typed must appear, in any case &ndash; <i>D210 admin</i> finds admin's entries about D210.
        <b>User</b>, <b>PLC</b> (the controller an entry is about &ndash; its number is in the <i>PLC</i> column) and <b>Kind</b>
@@ -580,7 +591,8 @@ the page only reads the log.</p>
 <ul>
  <li><b>The range</b>, on the left: <b>Auto-Report History</b> (the times the automatic reports are made, from the first log to the last &ndash;
      one picked shows the range that report covers), <b>Latest</b> (the last 15 minutes up to a year; &#128260; moves it up to now) or any
-     <b>Start</b> and <b>End</b>. The page opens on the last day.</li>
+     <b>Start</b> and <b>End</b>. The page opens on the last day. A range with nothing in it says what the database holds
+     (<i>The database holds 12,345 logs, 2026-09-01 08:00 - 2026-10-01 09:12</i>) or why it cannot be read &ndash; a wrong file is seen at once.</li>
  <li><b>Shift</b>: pick one to see only its hours of each day (a shift that ends at or before its start ends the next day; a night shift that began
      the day before the range still counts). &#9999;&#65039; edits the list <span class="lvl l2">Maintenance</span>; &#9889; shows the <b>shift metrics</b> at the top:
      for each shift, the share of the time the machine was <i>active</i>, each kind of event and the alarms &ndash; counted by the time of day they began.</li>
@@ -604,9 +616,9 @@ the page only reads the log.</p>
  <li><b>Automatic reports</b>: while the program runs, the reports are made at the times of the schedule &ndash; every day at given times, on given weekdays,
      days of the month or dates of the year &ndash; each covering the time since the one before, in the report language. When the panel was off at
      a report time, that report is made when it is back on, before the latest one. Each is written in the audit log.</li>
- <li>&#9881;&#65039; <b>Dashboard settings</b> <span class="lvl l2">Maintenance</span> (also a tab of <a href="#params">Machine Parameters</a>): the database file and
-     the time zone, barcoded cuts only, which sections the page has, the export folder, the report language, the schedule, which files are made,
-     and when the next automatic report is due. &#128190; keeps them.</li>
+ <li>&#9881;&#65039; <b>Dashboard settings</b> <span class="lvl l2">Maintenance</span> (also from <b>HMI Settings &rsaquo; Logs and Reports</b>, the machine's &#9881;):
+     the database file &ndash; &#128269; beside it shows what the file holds &ndash; and the time zone, barcoded cuts only, which sections the page has,
+     the export folder, the report language, the schedule, which files are made, and when the next automatic report is due. &#128190; keeps them.</li>
  <li>A range of more than 1.5 million log entries is not shown (the panel would run out of memory); the page says so &ndash; choose a shorter one.</li>
 </ul>
 

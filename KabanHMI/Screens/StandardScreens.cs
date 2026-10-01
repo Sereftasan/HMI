@@ -113,7 +113,9 @@ namespace Kaban.UI.Screens
 
             // ---------------- DASHBOARD ----------------
             // What the machine did over a day, a week, a shift: from the Industry 4
-            // log. Anyone may look; its settings are a Machine Parameters tab.
+            // log. Anyone may look. Its settings are the HMI's (HMI Settings > Logs and
+            // Reports, the machine's \u2699) and the page's own \u2699 - not a Machine
+            // Parameters tab: the machine's log and the HMI's are one subject.
             Kaban.UI.Dashboard.MachineDashboard dashboard = null;
             if (options.Dashboard != null)
             {
@@ -141,8 +143,6 @@ namespace Kaban.UI.Screens
             // Role-grouped like Home and Alarms, so mounting a sub-machine adds a
             // TAB here (named after the machine) rather than another left-bar button.
             var machineSettings = MapPages(ctx, options.MachineSettings ?? new ISettingsPage[0]);
-            if (dashboard != null)
-                machineSettings = Combine(machineSettings, new Kaban.UI.Dashboard.DashboardSettingsPage(dashboard));
             yield return new MachineScreen
             {
                 TitleKey = "Btn_MachineParameters",

@@ -12,22 +12,15 @@ using Kaban.UI.Settings;
 
 namespace Kaban.UI.Dashboard
 {
-    /// <summary>The dashboard's settings as a tab of Machine Parameters.</summary>
-    public sealed class DashboardSettingsPage : ISettingsPage
-    {
-        private readonly MachineDashboard _machine;
-        public DashboardSettingsPage(MachineDashboard machine) { _machine = machine; }
-        public string TitleKey { get { return "Tab_Dashboard"; } }
-        public string TitleFallback { get { return "Dashboard"; } }
-        public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
-        public UserControl GetControl() { return new DashboardSettingsControl(_machine); }
-    }
-
     /// <summary>
     /// THE DASHBOARD'S SETTINGS - what the Industry 4 program's settings editor
     /// set: the database and its time zone, the barcoded cuts only, the sections of
     /// the page, and the reports (folder, language, which files, when). Nothing is
     /// kept until \U0001F4BE; \u21ba puts back what is kept.
+    ///
+    /// Opened from HMI Settings > Logs and Reports (a machine's \u2699) and from the
+    /// dashboard page's own \u2699 - no longer a tab of each machine's Machine
+    /// Parameters (2 October): the machine's log and the HMI's are one subject.
     /// </summary>
     public sealed class DashboardSettingsControl : UserControl
     {
@@ -53,6 +46,7 @@ namespace Kaban.UI.Dashboard
         private readonly Dictionary<string, CheckBox> _reports = new Dictionary<string, CheckBox>();
         private readonly Label _next = new Label();
         private readonly Label _problem = new Label();
+        private readonly Label _probe = new Label();
         private Panel _timesRow, _weekdaysRow, _monthDaysRow, _annualRow, _timeRow;
         private Button _save, _revert;
 
@@ -80,6 +74,13 @@ namespace Kaban.UI.Dashboard
             _db.Width = Field - 50;
             var browseDb = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseDb());
             FieldRow("Dsh_SetDatabasePath", "Database file", _db, browseDb);
+            // What the file holds - the logs it has, or why it cannot be read.
+            var test = UiStyle.ToolButton("\U0001F50D", T("Dsh_SetTest", "Look into the database: its logs, first and last"), _tips, (s, e) => TestDatabase());
+            _probe.AutoSize = false;
+            _probe.Width = Field - 50;
+            _probe.Height = 40;
+            _probe.ForeColor = Color.DimGray;
+            FieldRow("Dsh_SetTestCaption", "What it holds", _probe, test);
             _zone.Width = Field;
             _zone.DropDownStyle = ComboBoxStyle.DropDown;
             foreach (var z in DashboardTime.Zones) _zone.Items.Add(z[0]);
@@ -374,6 +375,48 @@ namespace Kaban.UI.Dashboard
             var h = Saved;
             if (h != null && ok) h(this, EventArgs.Empty);
             return ok;
+        }
+
+        /// <summary>Looks into the file in the box (on a thread; the result under it).</summary>
+        public void TestDatabase()
+        {
+            string path = _db.Text.Trim();
+            var zone = DashboardTime.Find((_zone.Text ?? "").Trim());
+            _probe.ForeColor = Color.DimGray;
+            _probe.Text = T("Dsh_SetTesting", "Looking into the database...");
+            System.Threading.Tasks.Task.Run(() => DashboardData.Check(path, zone)).ContinueWith(t =>
+            {
+                if (IsDisposed || t.IsFaulted) return;
+                ShowProbe(t.Result);
+            }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void ShowProbe(DashboardData.Probe p)
+        {
+            _probe.ForeColor = p.Ok ? Color.FromArgb(30, 110, 50) : Color.Firebrick;
+            _probe.Text = p.Describe();
+            LastProbe = p;
+        }
+
+        /// <summary>The last look into the database (tests).</summary>
+        public DashboardData.Probe LastProbe { get; private set; }
+
+        /// <summary>A machine's dashboard settings in a window of their own.</summary>
+        public static void ShowDialog(IWin32Window owner, MachineDashboard machine, string title = null)
+        {
+            if (machine == null || !SecurityManager.HasAccess(SecurityLevel.Maintenance)) return;
+            using (var f = new Form
+            {
+                Text = title ?? T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 760, StartPosition = FormStartPosition.CenterParent,
+                MinimizeBox = false, ShowInTaskbar = false, Font = UiStyle.Body
+            })
+            {
+                UiScale.ApplyOnLoad(f);
+                var page = new DashboardSettingsControl(machine) { Dock = DockStyle.Fill };
+                page.Saved += (s, e) => f.DialogResult = DialogResult.OK;
+                f.Controls.Add(page);
+                f.ShowDialog(owner);
+            }
         }
 
         private void BrowseDb()

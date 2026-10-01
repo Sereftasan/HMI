@@ -24,7 +24,7 @@ Btn_Logout;Logout;Oturumu kapat;Выйти;Abmelden;Esci;Cerrar sesión
 Sys_NotLoggedIn;No user logged;Oturum açılmadı;Пользователь не вошёл;Nicht angemeldet;Nessun utente;Sin sesión iniciada
 Set_Units;Unit Settings;Birim Ayarları;Настройки единиц;Einheiten;Unità di misura;Unidades
 Set_Users;User Settings;Kullanıcı Ayarları;Пользователи;Benutzer;Utenti;Usuarios
-Set_Logs;Log Settings;Kayıt Ayarları;Журналы;Protokolle;Registri;Registros
+Set_Logs;Logs and Reports;Kayıtlar ve Raporlar;Журналы и отчёты;Protokolle und Berichte;Registri e report;Registros e informes
 Set_About;About;Hakkında;О программе;Über;Informazioni;Acerca de
 Unit_Family_Length;Length;Uzunluk;Длина;Länge;Lunghezza;Longitud
 Unit_Family_Weight;Weight;Ağırlık;Вес;Gewicht;Peso;Peso
@@ -569,6 +569,21 @@ Tip_MonChangedByPlc;The HMI did not write this value just before: the PLC progra
 Tip_MonLastWrite;The HMI last wrote it at {0} ({1}).;HMI en son {0} anında yazdı ({1}).;Последняя запись HMI: {0} ({1}).;Zuletzt von der HMI geschrieben um {0} ({1}).;Ultima scrittura dell'HMI alle {0} ({1}).;La HMI lo escribió por última vez a las {0} ({1}).
 Tip_MonWriteLog;Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.;HMI'nin her yazması PLC yazma kaydındadır: HMI Ayarları > Kayıt Ayarları, tür PLC cihaz yazmaları.;Каждая запись HMI есть в журнале записей ПЛК: Настройки HMI > Журналы, тип «Запись устройств ПЛК».;Jeder HMI-Schreibvorgang steht im SPS-Schreibprotokoll: HMI-Einstellungen > Protokolle, Art SPS-Geräteschreibvorgänge.;Ogni scrittura dell'HMI è nel registro scritture PLC: Impostazioni HMI > Registri, tipo Scritture dispositivi PLC.;Cada escritura de la HMI está en el registro de escrituras del PLC: Ajustes HMI > Registros, tipo Escrituras de dispositivos PLC.
 Log_KindDeviceWrite;PLC device writes;PLC cihaz yazmaları;Запись устройств ПЛК;SPS-Geräteschreibvorgänge;Scritture dispositivi PLC;Escrituras de dispositivos PLC
+Log_KindMachineState;Machine state;Makine durumu;Состояние станка;Maschinenzustand;Stato macchina;Estado de la máquina
+Log_KindMachineEvent;Machine event;Makine olayı;Событие станка;Maschinenereignis;Evento macchina;Evento de la máquina
+Log_KindMachineAlarm;Machine alarm;Makine alarmı;Авария станка;Maschinenalarm;Allarme macchina;Alarma de la máquina
+Log_Source;Source;Kaynak;Источник;Quelle;Origine;Origen
+Log_ColSource;Source;Kaynak;Источник;Quelle;Origine;Origen
+Log_AllSources;All sources;Tüm kaynaklar;Все источники;Alle Quellen;Tutte le origini;Todos los orígenes
+Log_SourceHmi;HMI;HMI;HMI;HMI;HMI;HMI
+Log_SourceTip;HMI: what was done on the HMI. A machine: its own log - its states, events and alarms.;HMI: HMI'da yapılanlar. Bir makine: kendi kaydı - durumları, olayları ve alarmları.;HMI: что было сделано на HMI. Станок: его собственный журнал - состояния, события и аварии.;HMI: was am HMI getan wurde. Eine Maschine: ihr eigenes Protokoll - Zustände, Ereignisse und Alarme.;HMI: ciò che è stato fatto sull'HMI. Una macchina: il suo registro - stati, eventi e allarmi.;HMI: lo que se hizo en el HMI. Una máquina: su propio registro - estados, eventos y alarmas.
+Log_MachineLog;Machine log;Makine kaydı;Журнал станка;Maschinenprotokoll;Registro macchina;Registro de la máquina
+Log_MachineTest;Look into the machine's log database again;Makinenin kayıt veritabanına yeniden bak;Снова проверить базу журнала станка;Die Protokolldatenbank der Maschine erneut prüfen;Controlla di nuovo il database del registro della macchina;Volver a revisar la base de datos del registro de la máquina
+Log_MachineSettings;The machine's log database and reports (the dashboard's settings);Makinenin kayıt veritabanı ve raporları (gösterge panelinin ayarları);База журнала станка и отчёты (настройки панели);Protokolldatenbank und Berichte der Maschine (Einstellungen des Dashboards);Database del registro e report della macchina (impostazioni della dashboard);Base de datos del registro e informes de la máquina (ajustes del panel)
+Log_MachineSettingsTitle;Log database and reports;Kayıt veritabanı ve raporlar;База журнала и отчёты;Protokolldatenbank und Berichte;Database del registro e report;Base de datos del registro e informes
+Log_MachineReading;reading its log...;kaydı okunuyor...;чтение журнала...;Protokoll wird gelesen...;lettura del registro...;leyendo su registro...
+Log_MachineStill;still;sürüyor;продолжается;dauert an;in corso;en curso
+Log_MachineTooMany;{0:#,0} machine logs in this period - too many to list: choose a shorter period.;Bu dönemde {0:#,0} makine kaydı var - listelemek için çok fazla: daha kısa bir dönem seçin.;{0:#,0} записей станка за период - слишком много для списка: выберите более короткий период.;{0:#,0} Maschinenprotokolle in diesem Zeitraum - zu viele für die Liste: einen kürzeren Zeitraum wählen.;{0:#,0} registri macchina in questo periodo - troppi da elencare: scegli un periodo più breve.;{0:#,0} registros de la máquina en este periodo - demasiados para listar: elija un periodo más corto.
 LCol_AccType;Accessory type;Aksesuar tipi;Тип фурнитуры;Beschlagtyp;Tipo di accessorio;Tipo de accesorio
 LCol_Accessory;Accessory;Aksesuar;Фурнитура;Beschlag;Accessorio;Accesorio
 LCol_Active;In use;Kullanımda;Используется;In Gebrauch;In uso;En uso
@@ -731,7 +746,6 @@ Tbl_Save;Save the changes;Değişiklikleri kaydet;Сохранить измен�
 Tbl_Saved;Saved.;Kaydedildi.;Сохранено.;Gespeichert.;Salvato.;Guardado.
 Tbl_Unsaved;changed - not saved yet;değişti - henüz kaydedilmedi;изменено - ещё не сохранено;geändert - noch nicht gespeichert;modificato - non ancora salvato;cambiado - aún sin guardar
 Btn_Dashboard;Dashboard;Gösterge Paneli;Панель;Dashboard;Cruscotto;Panel
-Tab_Dashboard;Dashboard;Gösterge Paneli;Панель;Dashboard;Cruscotto;Panel
 Dsh_Title;Local Machine Dashboard;Makine Gösterge Paneli;Панель локального оборудования;Lokales Maschinen-Dashboard;Cruscotto Macchina Locale;Panel de Máquina Local
 Dsh_Interval;Logs interval:;Kayıt aralığı:;Интервал логов:;Log-Intervall:;Intervallo log:;Intervalo de registros:
 Dsh_ActiveShift;Active Shift;Aktif Vardiya;Активная смена;Aktive Schicht;Turno attivo;Turno activo
@@ -801,6 +815,16 @@ Dsh_Loading;Loading data...;Veriler yükleniyor...;Загрузка данных
 Dsh_NoDatabase;The database is not found:;Veritabanı bulunamadı:;База данных не найдена:;Die Datenbank wurde nicht gefunden:;Database non trovato:;No se encuentra la base de datos:
 Dsh_SetDatabase;Choose it in the dashboard settings (⚙).;Gösterge paneli ayarlarından seçin (⚙).;Выберите её в настройках панели (⚙).;In den Dashboard-Einstellungen wählen (⚙).;Sceglierlo nelle impostazioni del cruscotto (⚙).;Elíjala en los ajustes del panel (⚙).
 Dsh_DatabaseError;The database could not be read:;Veritabanı okunamadı:;Не удалось прочитать базу данных:;Die Datenbank konnte nicht gelesen werden:;Impossibile leggere il database:;No se pudo leer la base de datos:
+Dsh_ProbeLogs;{0:#,0} logs, {1} - {2};{0:#,0} kayıt, {1} - {2};{0:#,0} записей, {1} - {2};{0:#,0} Protokolle, {1} - {2};{0:#,0} registri, {1} - {2};{0:#,0} registros, {1} - {2}
+Dsh_ProbeNoPath;No database is set.;Veritabanı ayarlanmadı.;База данных не задана.;Keine Datenbank eingestellt.;Nessun database impostato.;No hay ninguna base de datos configurada.
+Dsh_ProbeNoMain;The file has no main_log table: it is not a machine log database.;Dosyada main_log tablosu yok: bir makine kayıt veritabanı değil.;В файле нет таблицы main_log: это не база журнала станка.;Die Datei hat keine Tabelle main_log: Sie ist keine Maschinenprotokoll-Datenbank.;Il file non ha la tabella main_log: non è un database del registro macchina.;El archivo no tiene la tabla main_log: no es una base de datos de registro de máquina.
+Dsh_ProbeEmpty;The database holds no logs yet.;Veritabanında henüz kayıt yok.;В базе пока нет записей.;Die Datenbank enthält noch keine Protokolle.;Il database non contiene ancora registri.;La base de datos aún no contiene registros.
+Dsh_ProbeDates;Its dates are written as "{0}": the dashboard reads them only as {1} (UTC).;Tarihleri "{0}" olarak yazılmış: gösterge paneli bunları yalnızca {1} (UTC) olarak okur.;Даты записаны как "{0}": панель читает их только в виде {1} (UTC).;Die Daten sind als "{0}" geschrieben: Das Dashboard liest nur {1} (UTC).;Le date sono scritte come "{0}": la dashboard le legge solo come {1} (UTC).;Las fechas están escritas como "{0}": el panel solo las lee como {1} (UTC).
+Dsh_ProbeOpen;The database could not be opened:;Veritabanı açılamadı:;Не удалось открыть базу данных:;Die Datenbank konnte nicht geöffnet werden:;Impossibile aprire il database:;No se pudo abrir la base de datos:
+Dsh_DatabaseHolds;The database holds;Veritabanında bulunan:;В базе данных:;Die Datenbank enthält;Il database contiene;La base de datos contiene
+Dsh_SetTest;Look into the database: its logs, first and last;Veritabanına bak: kayıtları, ilk ve son;Проверить базу: записи, первая и последняя;Datenbank prüfen: Protokolle, erstes und letztes;Controlla il database: registri, primo e ultimo;Revisar la base de datos: registros, primero y último
+Dsh_SetTestCaption;What it holds;İçeriği;Содержимое;Inhalt;Contenuto;Contenido
+Dsh_SetTesting;Looking into the database...;Veritabanına bakılıyor...;Проверка базы данных...;Datenbank wird geprüft...;Controllo del database...;Revisando la base de datos...
 Dsh_TooMany;The range holds {0:#,0} records - too many to show at once. Choose a shorter range.;Aralıkta {0:#,0} kayıt var - bir kerede gösterilemeyecek kadar çok. Daha kısa bir aralık seçin.;В диапазоне {0:#,0} записей - слишком много для показа. Выберите более короткий диапазон.;Der Bereich enthält {0:#,0} Einträge - zu viele für eine Anzeige. Einen kürzeren Bereich wählen.;L'intervallo contiene {0:#,0} record - troppi da mostrare. Scegliere un intervallo più breve.;El rango contiene {0:#,0} registros - demasiados para mostrar. Elija un rango más corto.
 Dsh_Records;{0:#,0} records read in {1:0.0} s;{0:#,0} kayıt {1:0.0} sn'de okundu;Прочитано записей: {0:#,0} за {1:0.0} с;{0:#,0} Einträge in {1:0.0} s gelesen;{0:#,0} record letti in {1:0.0} s;{0:#,0} registros leídos en {1:0.0} s
 Dsh_Min;min;dk;мин;Min;min;min

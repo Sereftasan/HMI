@@ -658,7 +658,10 @@ namespace Kaban.UI.Dashboard
                 var data = cached ?? DashboardData.Load(path, from, to, zone, map, column, () => gen != _generation);
                 if (data == null) return null;
                 var view = DashboardData.Build(data, barcoded, shift);
-                return new Tuple<DashboardData.Loaded, DashboardView>(data, view);
+                // Nothing in the range: what the file holds says why (its logs end
+                // earlier, it has none, its dates cannot be read).
+                var probe = view.Empty ? DashboardData.Check(path, zone) : null;
+                return new Tuple<DashboardData.Loaded, DashboardView, DashboardData.Probe>(data, view, probe);
             }).ContinueWith(t =>
             {
                 if (IsDisposed || gen != _generation) return;
@@ -673,9 +676,15 @@ namespace Kaban.UI.Dashboard
                     return;
                 }
                 if (t.Result == null) return;
+                var probe = t.Result.Item3;
                 _loaded = t.Result.Item1;
                 _loadedKey = key;
-                Show(t.Result.Item2, null);
+                string empty = null;
+                if (probe != null)
+                    empty = probe.Ok
+                        ? T("Dsh_NoLogs", "No logs in selected range!") + "\n" + T("Dsh_DatabaseHolds", "The database holds") + " " + probe.Describe() + "."
+                        : probe.Problem;
+                Show(t.Result.Item2, empty);
                 SetStatus(string.Format(CultureInfo.CurrentCulture, T("Dsh_Records", "{0:#,0} records read in {1:0.0} s"),
                                         _loaded.Rows.Count, watch.Elapsed.TotalSeconds) + "\n" + path);
             }, TaskScheduler.FromCurrentSynchronizationContext());
@@ -731,19 +740,7 @@ namespace Kaban.UI.Dashboard
 
         private void OpenSettings()
         {
-            if (!SecurityManager.HasAccess(SecurityLevel.Maintenance)) return;
-            using (var f = new Form
-            {
-                Text = T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 720, StartPosition = FormStartPosition.CenterParent,
-                MinimizeBox = false, ShowInTaskbar = false, Font = UiStyle.Body
-            })
-            {
-                UiScale.ApplyOnLoad(f);
-                var page = new DashboardSettingsControl(_machine) { Dock = DockStyle.Fill };
-                page.Saved += (s, e) => f.DialogResult = DialogResult.OK;
-                f.Controls.Add(page);
-                f.ShowDialog(FindForm());
-            }
+            DashboardSettingsControl.ShowDialog(FindForm(), _machine);
         }
     }
 }

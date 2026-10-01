@@ -102,6 +102,97 @@ namespace Kaban.UI.Dashboard
             public Dictionary<long, List<string>> ProfileData = new Dictionary<long, List<string>>();
         }
 
+        // ------------------------------------------------------------------ what the file holds
+
+        /// <summary>
+        /// WHAT A LOG DATABASE HOLDS - for "Test" in the settings, the machine's line on
+        /// Logs and Reports, and the dashboard's empty page: found, opened (by which
+        /// SQLite), the tables, how many logs, the first and the last - or, in words,
+        /// why nothing can be shown. A page that only said "No logs in selected range!"
+        /// could not tell a database whose logs end last month from one it cannot read.
+        /// </summary>
+        public sealed class Probe
+        {
+            public string Path = "";
+            public bool Found, Opened, HasMain, HasDetails;
+            /// <summary>The SQLite library that opened it ("winsqlite3.dll 3.40.1").</summary>
+            public string Library = "";
+            public long Logs;
+            /// <summary>The first and the last log as the database writes them, and in the shown zone.</summary>
+            public string FirstText = "", LastText = "";
+            public DateTime? First, Last;
+            public List<string> Tables = new List<string>();
+            /// <summary>Why the logs cannot be shown - "" when they can.</summary>
+            public string Problem = "";
+            public bool Ok { get { return Problem.Length == 0; } }
+
+            /// <summary>One line: "12,345 logs, 01.09.2026 08:00 - 01.10.2026 09:12", or the problem.</summary>
+            public string Describe()
+            {
+                if (!Ok) return Problem;
+                return string.Format(CultureInfo.CurrentCulture, LanguageText("Dsh_ProbeLogs", "{0:#,0} logs, {1} - {2}"), Logs,
+                                     First.HasValue ? First.Value.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) : "-",
+                                     Last.HasValue ? Last.Value.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) : "-");
+            }
+        }
+
+        private static string LanguageText(string key, string text) { return Kaban.Core.Helpers.LanguageManager.GetString(key, text); }
+
+        /// <summary>Looks into a log database (read-only, quick: the indexes make MIN and MAX cheap).</summary>
+        public static Probe Check(string path, TimeZoneInfo zone)
+        {
+            var p = new Probe { Path = path ?? "" };
+            if (string.IsNullOrWhiteSpace(path)) { p.Problem = LanguageText("Dsh_ProbeNoPath", "No database is set."); return p; }
+            p.Found = File.Exists(path);
+            if (!p.Found) { p.Problem = LanguageText("Dsh_NoDatabase", "The database is not found:") + " " + path; return p; }
+            try
+            {
+                try { var api = NativeApi.Default(); p.Library = api.Name + " " + api.Version(); } catch { }
+                using (var c = Open(path))
+                {
+                    p.Opened = true;
+                    using (var cmd = Command(c, "SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name"))
+                    using (var r = cmd.ExecuteReader())
+                        while (r.Read()) p.Tables.Add(Convert.ToString(r.GetValue(0), CultureInfo.InvariantCulture));
+                    p.HasMain = p.Tables.Any(t => string.Equals(t, "main_log", StringComparison.OrdinalIgnoreCase));
+                    p.HasDetails = p.Tables.Any(t => string.Equals(t, "log_details", StringComparison.OrdinalIgnoreCase));
+                    if (!p.HasMain)
+                    {
+                        p.Problem = LanguageText("Dsh_ProbeNoMain", "The file has no main_log table: it is not a machine log database.") +
+                                    " (" + (p.Tables.Count == 0 ? "-" : string.Join(", ", p.Tables.Take(8))) + ")";
+                        return p;
+                    }
+                    using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log"))
+                        p.Logs = Convert.ToInt64(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
+                    if (p.Logs == 0) { p.Problem = LanguageText("Dsh_ProbeEmpty", "The database holds no logs yet."); return p; }
+                    using (var cmd = Command(c, "SELECT MIN(state_date), MAX(state_date) FROM main_log"))
+                    using (var r = cmd.ExecuteReader())
+                        if (r.Read())
+                        {
+                            p.FirstText = Convert.ToString(r.GetValue(0), CultureInfo.InvariantCulture);
+                            p.LastText = Convert.ToString(r.GetValue(1), CultureInfo.InvariantCulture);
+                        }
+                    var a = ParseDb(p.FirstText);
+                    var b = ParseDb(p.LastText);
+                    if (!a.HasValue || !b.HasValue)
+                    {
+                        p.Problem = string.Format(LanguageText("Dsh_ProbeDates",
+                            "Its dates are written as \"{0}\": the dashboard reads them only as {1} (UTC)."),
+                            !b.HasValue ? p.LastText : p.FirstText, DbFormat);
+                        return p;
+                    }
+                    p.First = DashboardTime.ToLocal(a.Value, zone);
+                    p.Last = DashboardTime.ToLocal(b.Value, zone);
+                }
+            }
+            catch (Exception ex)
+            {
+                p.Problem = LanguageText("Dsh_ProbeOpen", "The database could not be opened:") + " " + ex.Message +
+                            (p.Library.Length > 0 ? " (" + p.Library + ")" : "");
+            }
+            return p;
+        }
+
         // ------------------------------------------------------------------ the file
 
         public static DbConnection Open(string path, bool readOnly = true)

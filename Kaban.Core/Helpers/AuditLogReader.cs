@@ -27,7 +27,13 @@ namespace Kaban.Core.Helpers
         /// PLC write log (PlcWriteLog), not the audit log: every write, from every
         /// screen, with the value before it and what wrote it.
         /// </summary>
-        DeviceWrite
+        DeviceWrite,
+        /// <summary>A machine's own log (its log database, read by the HMI): a state it was in.</summary>
+        MachineState,
+        /// <summary>A machine's own log: an event (a cut, a program, a door...).</summary>
+        MachineEvent,
+        /// <summary>A machine's own log: an alarm it recorded.</summary>
+        MachineAlarm
     }
 
     /// <summary>One entry of the audit log.</summary>
@@ -41,6 +47,12 @@ namespace Kaban.Core.Helpers
 
         /// <summary>The controller (HMI station number) the entry is about, when it names one.</summary>
         public int? Station;
+
+        /// <summary>
+        /// Where the entry comes from: "" for the HMI's own log, a machine's id for
+        /// its log database (MachineState / MachineEvent / MachineAlarm).
+        /// </summary>
+        public string Source = "";
 
         /// <summary>The line as the log file holds it (the first line for a report).</summary>
         public string ToLogLine()
