@@ -528,6 +528,11 @@ Msg_NoAxes;No axis is set up on the Axis Settings pages.;Eksen Ayarları sayfala
 Usr_NoScaleRequest;No specific request;Özel bir istek yok;Без особых пожеланий;Kein besonderer Wunsch;Nessuna richiesta specifica;Sin petición específica
 Tip_AlertBit;Asked for by;İsteyen;Запрошено;Angefordert von;Richiesto da;Solicitado por
 Tip_AlertOn;now;şu an;сейчас;jetzt;ora;ahora
+Tip_AlarmBit;Alarm bit;Alarm biti;Бит аварии;Alarmbit;Bit di allarme;Bit de alarma
+Tip_AlarmOnNow;ON now;şu an AÇIK;сейчас ВКЛ;jetzt EIN;ora ON;ahora ON
+Tip_CodeServoAlarm;Servo alarm;Servo alarmı;Авария сервопривода;Servoalarm;Allarme servo;Alarma del servo
+Tip_CodeAxisAlarm;Axis alarm;Eksen alarmı;Авария оси;Achsalarm;Allarme asse;Alarma del eje
+Tip_CodeAxisWarning;Axis warning;Eksen uyarısı;Предупреждение оси;Achswarnung;Avviso asse;Aviso del eje
 Col_DisplayFormat;Display Format;Görüntüleme Biçimi;Формат отображения;Anzeigeformat;Formato di visualizzazione;Formato de visualización
 Fmt_Decimal;Decimal;Onluk;Десятичный;Dezimal;Decimale;Decimal
 Fmt_Hexadecimal;Hexadecimal;Onaltılık;Шестнадцатеричный;Hexadezimal;Esadecimale;Hexadecimal

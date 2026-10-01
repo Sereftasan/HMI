@@ -994,10 +994,74 @@ namespace Kaban.UI.Controls
             _codeWords = new[] { servoAlarmAddress ?? "", axisAlarmAddress ?? "", axisWarningAddress ?? "" };
             _helpA.SetCodeWords(null, null, null);
             _helpB.SetCodeWords(servoAlarmAddress, axisAlarmAddress, axisWarningAddress);
+            ApplyAlarmTips();
             UpdateHelpBadge();
         }
 
         private string[] _codeWords = { "", "", "" };
+
+        /// <summary>
+        /// Each button's tooltip names its alarm bit - its own side's error bit
+        /// (an axis: the axis's, on both) - and an axis's drive code words.
+        /// </summary>
+        private void ApplyAlarmTips()
+        {
+            if (_kind == UnitKind.Axis)
+            {
+                var error = Abs(!string.IsNullOrWhiteSpace(_errorBAddress) ? _errorBAddress : _errorAAddress);
+                var codes = new List<KeyValuePair<string, string>>();
+                if (!string.IsNullOrWhiteSpace(_codeWords[0])) codes.Add(new KeyValuePair<string, string>(LanguageManager.GetString("Tip_CodeServoAlarm", "Servo alarm"), _codeWords[0]));
+                if (!string.IsNullOrWhiteSpace(_codeWords[1])) codes.Add(new KeyValuePair<string, string>(LanguageManager.GetString("Tip_CodeAxisAlarm", "Axis alarm"), _codeWords[1]));
+                if (!string.IsNullOrWhiteSpace(_codeWords[2])) codes.Add(new KeyValuePair<string, string>(LanguageManager.GetString("Tip_CodeAxisWarning", "Axis warning"), _codeWords[2]));
+                foreach (var b in new[] { _btnA, _btnB })
+                {
+                    b.ErrorAddress = error;
+                    b.AlarmCodeAddresses.Clear();
+                    b.AlarmCodeAddresses.AddRange(codes);
+                }
+            }
+            else
+            {
+                _btnA.ErrorAddress = Abs(_errorAAddress);
+                _btnB.ErrorAddress = Abs(_errorBAddress);
+                _btnA.AlarmCodeAddresses.Clear();
+                _btnB.AlarmCodeAddresses.Clear();
+            }
+        }
+
+        /// <summary>The unit's frame tooltip: its own tip, then its alarm bits (and an axis's code words).</summary>
+        internal string FrameTip()
+        {
+            var lines = new List<string>();
+            var tip = Tr(_titleTip);
+            if (!string.IsNullOrWhiteSpace(tip)) lines.Add(tip);
+            Func<string, string> named = a =>
+            {
+                var def = AlarmManager.FindByStationAndAddress(_plcNumber, Abs(a));
+                var text = ButtonHMI.AlarmText(def);
+                return Abs(a) + (string.IsNullOrWhiteSpace(text) ? "" : " " + text);
+            };
+            string alarm = LanguageManager.GetString("Tip_AlarmBit", "Alarm bit");
+            if (_kind == UnitKind.Axis)
+            {
+                var error = !string.IsNullOrWhiteSpace(_errorBAddress) ? _errorBAddress : _errorAAddress;
+                if (!string.IsNullOrWhiteSpace(error)) lines.Add(alarm + ": " + named(error));
+                foreach (var kv in _btnB.AlarmCodeAddresses) lines.Add(kv.Key + ": " + kv.Value);
+            }
+            else
+            {
+                // each movement by its name ("Clamp"), as the step-by-step help calls it
+                foreach (var side in new[] { "A", "B" })
+                {
+                    var bit = side == "A" ? _errorAAddress : _errorBAddress;
+                    if (string.IsNullOrWhiteSpace(bit)) continue;
+                    string move;
+                    try { move = TroubleshootingCatalog.MovementName(MovementFor(side)); } catch { move = side; }
+                    lines.Add(alarm + " (" + (string.IsNullOrWhiteSpace(move) ? side : move) + "): " + named(bit));
+                }
+            }
+            return string.Join("\r\n", lines);
+        }
 
         /// <summary>This unit's error bits, for AlarmHelpLinks.</summary>
         public IEnumerable<Kaban.UI.Helpers.AlarmHelpLinks.Link> HelpLinks()
@@ -1276,6 +1340,7 @@ namespace Kaban.UI.Controls
             ConfigureButton(_btnB, _commandBAddress, _commandBAction, relayB, _outputBAddress,
                 _lamp1BAddress, _lamp1BTip, _lamp2BAddress, _lamp2BTip, _buttonBTip,
                 _visibilityBExtra, _enableBExtra, _enableTriggerB);
+            ApplyAlarmTips();
 
             bool hasPosition = !string.IsNullOrWhiteSpace(_positionAddress);
             _numPosition.Visible = hasPosition;
@@ -1348,6 +1413,8 @@ namespace Kaban.UI.Controls
             btn.ToolTipText = btnTip;
         }
 
+        private bool _frameTipWired;
+
         public void ApplyTranslation()
         {
             // Uses GetString(key, fallback) - present in every Core build - instead
@@ -1360,7 +1427,8 @@ namespace Kaban.UI.Controls
             _btnA.Text = Tr(_buttonAText);
             _btnB.Text = Tr(_buttonBText);
 
-            _toolTip.SetToolTip(_grp, Tr(_titleTip));
+            // The frame's tip is shown by the frame itself, built as it shows (its alarm bits with it).
+            if (!_frameTipWired && !DesignMode) { _frameTipWired = true; UiStyle.HoverTip(_toolTip, _grp, FrameTip); }
             _toolTip.SetToolTip(_numPosition, Tr(_positionTip));
         }
 

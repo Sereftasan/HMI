@@ -75,7 +75,7 @@ namespace Kaban.UI.Design
                              "ColorDisabled", "ForeDisabled", "ActiveBackColor", "IsActivePage", "CornerRadius",
                              "RoundLeftOnly", "RoundRightOnly", "RestingBorderColor", "OutputBorderColor", "HoverBorderColor"),
                 C("State", "Lamp1Address", "Lamp1Tip", "Lamp2Address", "Lamp2Tip", "LampDirection", "RelayAddress",
-                           "OutputAddress", "BlinkCondition", "AlertBlink"),
+                           "OutputAddress", "ErrorAddress", "BlinkCondition", "AlertBlink"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
                 C("Security", "RequiredSecurity", "ConfirmationNeeded", "LogAction"),
                 C("Help", "ToolTipText")),

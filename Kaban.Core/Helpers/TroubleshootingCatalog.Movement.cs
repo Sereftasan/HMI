@@ -69,7 +69,7 @@ namespace Kaban.Core.Helpers
                 if (!string.IsNullOrWhiteSpace(mv.Error))
                 {
                     var def = AlarmManager.FindByStationAndAddress(mv.Station, mv.Error);
-                    if (def != null) c.ErrorText = LanguageManager.GetString(def.TranslationKey, def.AlarmCode ?? "");
+                    if (def != null) c.ErrorText = !string.IsNullOrWhiteSpace(def.TranslationKey) ? LanguageManager.GetString(def.TranslationKey, def.TranslationKey) : def.AlarmCode ?? "";
                 }
                 return c;
             }

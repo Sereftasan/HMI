@@ -95,6 +95,20 @@ namespace Kaban.UI.Controls
         [Description("Bit of the physical output (Y). ON = button shades darker still and the text turns white.")]
         public string OutputAddress { get; set; } = "";
 
+        /// <summary>
+        /// The ALARM (error) bit that reports a failure of what this button
+        /// drives - shown in its tooltip with the alarm's text, and whether it is
+        /// on, so "which alarm is this button's?" is answered where it is asked.
+        /// A cylinder or axis unit sets it on its buttons from its own error bits.
+        /// </summary>
+        [Category("  State")]
+        [Description("The alarm (error) bit of what this button drives: shown in its tooltip with the alarm's text. A cylinder or axis unit sets it on its buttons.")]
+        public string ErrorAddress { get; set; } = "";
+
+        /// <summary>Further alarm devices of what the button drives, for its tooltip: an axis's drive code words ("Servo alarm", D120).</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<KeyValuePair<string, string>> AlarmCodeAddresses { get; private set; } = new List<KeyValuePair<string, string>>();
+
         [Category("  State")]
         [Description("Bit of input sensor lamp 1 (small square drawn on the button). Empty hides it.")]
         public string Lamp1Address { get; set; } = "";
@@ -1214,6 +1228,10 @@ namespace Kaban.UI.Controls
                                        : LanguageManager.Localize(ToolTipText);
             if (!string.IsNullOrWhiteSpace(tip)) sb.Append(tip).Append('\n');
 
+            // ITS ALARMS, for everyone: the bit that reports its movement failed (and
+            // the drive's code words of an axis) - what to look for in the alarm list.
+            foreach (var line in AlarmTipLines()) sb.Append(line).Append('\n');
+
             if (!isAdmin) return sb.ToString().TrimEnd('\n');
 
             // ADMIN extras are collected FIRST: the "For Admin" caption is only
@@ -1248,6 +1266,46 @@ namespace Kaban.UI.Controls
             if (sb.Length > 0) sb.Append('\n');
             sb.Append(AdminCaption).Append(admin);
             return sb.ToString().TrimEnd('\n');
+        }
+
+        /// <summary>
+        /// "Alarm bit: M844 Front Clamping Clamp failure (ON now)", and an axis's
+        /// "Servo alarm: D120 (16 now)" - the tooltip's alarm lines (tests).
+        /// </summary>
+        /// <summary>An alarm's text as the alarm list shows it: its translation, else the text as written, else its code.</summary>
+        internal static string AlarmText(AlarmDefinition def)
+        {
+            if (def == null) return "";
+            if (!string.IsNullOrWhiteSpace(def.TranslationKey)) return LanguageManager.GetString(def.TranslationKey, def.TranslationKey);
+            return def.AlarmCode ?? "";
+        }
+
+        internal List<string> AlarmTipLines()
+        {
+            var lines = new List<string>();
+            var read = _lastReadPlc;
+            Func<string, int?> now = a =>
+            {
+                if (read == null || string.IsNullOrWhiteSpace(a)) return null;
+                try { return read(a.Trim()); } catch { return null; }
+            };
+            if (!string.IsNullOrWhiteSpace(ErrorAddress))
+            {
+                var address = ErrorAddress.Trim();
+                var def = AlarmManager.FindByStationAndAddress(PlcNumber, address);
+                string text = AlarmText(def);
+                var v = now(address);
+                lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
+                          (string.IsNullOrWhiteSpace(text) ? "" : " " + text) +
+                          (v.HasValue && v.Value != 0 ? "  (" + LanguageManager.GetString("Tip_AlarmOnNow", "ON now") + ")" : ""));
+            }
+            foreach (var kv in AlarmCodeAddresses)
+            {
+                if (string.IsNullOrWhiteSpace(kv.Value)) continue;
+                var v = now(kv.Value);
+                lines.Add(kv.Key + ": " + kv.Value.Trim() + (v.HasValue && v.Value != 0 ? "  (" + v.Value + ")" : ""));
+            }
+            return lines;
         }
 
         protected override void OnMouseLeave(EventArgs eventargs)
