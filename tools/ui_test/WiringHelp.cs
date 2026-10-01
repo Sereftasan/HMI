@@ -40,6 +40,7 @@ class WH {
         Check("another station has none of it", WiringTable.Find(2, "M212") == null && WiringTable.OutputFor(3, "M688") == null);
         Check("a point the drawings do not show: none", WiringTable.Find(1, "X31") == null);
 
+        // 1 October: the movement's step-by-step page names them (the manual is the general view again).
         Console.WriteLine("--- the help of a failed movement ---");
         var unit = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Front Clamping",
@@ -47,28 +48,28 @@ class WH {
             CommandBAddress = "M645", ButtonBTextKey = "Clamp", Lamp1BAddress = "M240", Lamp1BTipKey = "Pressure switch",
             ErrorAAddress = "M845", ErrorBAddress = "M844",
             ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
-        var doc = new TC.HelpDocument { FileName = TC.DocumentForType[TC.ErrorType.CylinderMovement], Valve = 3, Feedback = 5, Movement = unit.MovementFor("A") };
+        var doc = new TC.HelpDocument { FileName = TC.DocumentForType[TC.ErrorType.CylinderMovement], Valve = 3, Feedback = 5, Movement = unit.MovementFor("A"), StepByStep = true };
         Check("the cylinder manual is there", doc.Exists, doc.FullPath);
-        string html = File.ReadAllText(TC.Tailor(doc));
+        string html = File.ReadAllText(TC.ExtractSection(doc));
         Func<string, bool> has = t => html.Contains(t);
         Check("the valve output found from the command (M646 -> Y33), with its relay and coil",
               has("<code>Y33</code>") && has("relay K30 (sheet 19.6)") && has("coil Y.24, wire 325 (sheet 26.7)"));
         Check("the valve and cylinder: Y28/Y29 5/3, hoses 23 / 24, P16, pneumatic sheet 3 E8",
-              has("Valve and cylinder:") && has("valve Y28/Y29 (1/8 5/3 open centre)") && has("hoses 23 (A) / 24 (B)") &&
+              has("Valve, hoses, cylinder") && has("valve Y28/Y29 (1/8 5/3 open centre)") && has("hoses 23 (A) / 24 (B)") &&
               has("P16 Profile Recognition Front Clamping Cylinder") && has("pneumatic sheet 3 E8"));
         Check("the other coil (Y32, must be off) with its own", has("<code>Y32</code>") && has("relay K29 (sheet 19.6)"));
         Check("the sensor that must come on: M225 = X51, SN59, wire 132, sheet 13.5, on card U7 terminal X11",
-              has("<code>X51</code> sensor SN59, wire 132, sheet 13.5 (U7 FX5-16EX/ES, terminal X11)") && has("the HMI shows it at <code>M225</code>"));
+              has("<b>SN59</b> (<code>X51</code>) &ndash; wire 132, sheet 13.5, U7 FX5-16EX/ES, terminal X11") && has("copies it into <code>M225</code>"));
         Check("the one that must go off: M240 = X70, SN83 (the clamping's empty switch)",
-              has("<code>X70</code> sensor SN83, wire 147, sheet 14.4") && has("Profile Recognition Front Clamping Empty Switch"));
+              has("<b>SN83</b> (<code>X70</code>) &ndash; wire 147, sheet 14.4") && has("Profile Recognition Front Clamping Empty Switch"));
         Check("  and what the sheet numbers mean", has("page 12, column 6 of the electrical drawing") && has("zone E3 of the pneumatic drawing"));
 
-        Console.WriteLine("--- no drawings: the box as before ---");
+        Console.WriteLine("--- no drawings: the devices by their addresses ---");
         WiringTable.Clear();
-        var bare = new TC.HelpDocument { FileName = doc.FileName, Valve = 3, Feedback = 5, Movement = unit.MovementFor("B") };
-        string plain = File.ReadAllText(TC.Tailor(bare));
+        var bare = new TC.HelpDocument { FileName = doc.FileName, Valve = 3, Feedback = 5, Movement = unit.MovementFor("B"), StepByStep = true };
+        string plain = File.ReadAllText(TC.ExtractSection(bare));
         Check("the devices still listed, no references, no legend",
-              plain.Contains("<code>M645</code>") && plain.Contains("<code>M240</code>") && !plain.Contains("class=\"ref\"") && !plain.Contains("Valve and cylinder:"));
+              plain.Contains("<code>M645</code>") && plain.Contains("<code>M240</code>") && !plain.Contains("page 12, column 6") && !plain.Contains("Valve, hoses, cylinder"));
 
         Console.WriteLine(fail == 0 ? "\nWIRING HELP ALL PASS" : "\nWIRING HELP " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

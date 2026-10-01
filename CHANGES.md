@@ -4195,3 +4195,33 @@ and `UnitLookAndErrors` extended.
   selected); `WriteValue(..., how)` names the action in the write log. `ParseValue`: TRUE / FALSE / ON / OFF for a bit.
 - Manual: Shift+Enter. Tests: `tools/ui_test/AxisEntryBounds.cs`, `tools/ui_test/MonitorShiftEnter.cs` (new).
 
+## 2026-10-01 - Side panel border fit, PLC Monitor columns, tooltips, the step-by-step cylinder troubleshooter, alarm bits in tooltips
+
+- `MainForm.SidePanel.cs`: a double-click on the border runs `FitSidePanel` (the page's `ISidePageWidth`, else
+  `ContentWidth` of its controls); `PageSliver` 120 (also the splitter's MinExtra, was 320); `KeepSideWidth` on the
+  window's SizeChanged. `ISidePageWidth` (`SidePages.cs`) on `SimulationMonitorForm` and `IoMonitorPage`
+  (`IoListHMI.PreferredWidth`). Side windows: normal bounds stored whatever the state.
+- `MainForm.LastPlace.cs`: the place written whole (`WindowLayout.Write(..., replace: true)`), frozen at closing
+  (`_placeFrozen`); `WindowsMin`; a side page without access makes the place wait for the sign-in; `IsMinimized` /
+  `Minimize` hooks.
+- `ColumnChooser` *(new)*: the headings' menu (columns, widths dialog with the table's width, fit, defaults).
+  `SimulationMonitorForm`: hidden columns (`Columns.cfg` third field), `TakeColumnLayout`, "Modified"; Find's live
+  cells (`WireFindLive`, `FindWords` read with the tab's). `DeviceFindForm`: Value, Display Format, Modified columns,
+  `LiveCells` / `Live` / `DefaultFormat` / `FormatOf` / `RefreshLive`, a line's format menu. `WindowLayout`: grid
+  columns with ':0' for hidden, fewer kept columns applied.
+- `CheckBoxHMI`, `MeterBaseHMI`, `HexCodeHMI`: tips through `UiStyle.HoverTip` (`TooltipText`); `CheckBoxHMI.IsStale`
+  (grey, no click, reason in the tip); `PlcScanner.ApplyConnectionState` no longer disables checkboxes.
+- `TroubleshootingCatalog.Steps.cs` *(new)*: `BuildSteps`, `WriteSteps`, `MovementName`; `HelpDocument.StepByStep`;
+  `MovementInfo.OtherName`, `Conditions`. `Tailor` no longer decorates the chart (`MovementBox`, `DecorateChart`,
+  `Here`, `FeedbackLines`, `StartOrder` removed) - it links the steps page. `CylinderUnitHMI.StepsDocument`;
+  `AlarmHelpLinks.DocumentsFor` offers it first. `ButtonHMI.UnmetConditions`. `WiringTable.Supply` /
+  `SupplyOf` from `#!` lines; `tools/build_wiring.py` and FA2010 `Wiring.csv` carry them.
+- `ButtonHMI.ErrorAddress`, `AlarmCodeAddresses`, `AlarmTipLines`, `AlarmText`; `CylinderUnitHMI.ApplyAlarmTips`,
+  `FrameTip` (the frame's tip shown by itself). `PropertyOrder`: ErrorAddress.
+- Translations: `Tip_SideSplitter`, `Mnu_Col*`, `Ttl_ColWidths`, `Lbl_Col*`, `Tip_ColTable`, `Hlp_CylinderSteps`,
+  `Tip_AlarmBit`, `Tip_AlarmOnNow`, `Tip_Code*`; `Col_LastChange` is "Modified", `Mnu_MonFromConditions` reworded; the
+  125 rows with only EN / TR completed. Manual: the side panel's border, reopening, the monitor's columns, Find's
+  columns, the unit's "?", the alarm in a button's tooltip.
+- Tests: `tools/nav_test/SidePanelFit.cs`, `tools/ui_test/MonitorColumns.cs`, `tools/ui_test/AlarmTips.cs` (new);
+  `CylinderSteps.cs` rewritten; `HoverTips.cs`, `MetersAndAlarmHelp.cs`, `CylinderHelpAndLogin.cs`,
+  `UnitHelpLinks.cs`, `UnitTypes.cs`, `MonitorFind.cs`, `WriteLogUi.cs`, `UnitInfoAndAxisKind.cs` updated.
