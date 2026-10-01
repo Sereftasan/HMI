@@ -296,143 +296,143 @@ Msg_ResetNotSent;The alarms were cleared from the list, but no reset was sent to
 Msg_ResetNeedsLogin;sign in as Operator or higher to reset the machine;makineyi sıfırlamak için Operatör veya üstü olarak giriş yapın;для сброса станка войдите как Оператор или выше;zum Zurücksetzen der Maschine als Bediener oder höher anmelden;accedere come Operatore o superiore per resettare la macchina;inicie sesión como Operador o superior para reiniciar la máquina
 Msg_ResetNoBit;no alarm reset bit is set up for this machine yet;bu makine için henüz alarm sıfırlama biti tanımlanmadı;для этого станка ещё не задан бит сброса аварий;für diese Maschine ist noch kein Alarm-Reset-Bit eingerichtet;per questa macchina non è ancora impostato un bit di reset allarmi;todavía no hay un bit de reinicio de alarmas para esta máquina
 Msg_ResetRefused;the controller did not accept the write;kontrol ünitesi yazmayı kabul etmedi;контроллер не принял запись;die Steuerung hat das Schreiben nicht angenommen;il controllore non ha accettato la scrittura;el controlador no aceptó la escritura
-Tip_MonAdd;Add a device or a comment line (Insert);Cihaz veya açıklama satırı ekle (Insert);;;;
-Tip_MonCopy;Copy the selected rows (Ctrl+C);Seçili satırları kopyala (Ctrl+C);;;;
-Tip_MonPaste;Paste the copied rows (Ctrl+V: above the selected row);Kopyalanan satırları yapıştır (Ctrl+V: seçili satırın üstüne);;;;
-Tip_MonUp;Move the selected rows up (Ctrl+Up);Seçili satırları yukarı taşı (Ctrl+Yukarı);;;;
-Tip_MonDown;Move the selected rows down (Ctrl+Down);Seçili satırları aşağı taşı (Ctrl+Aşağı);;;;
-Tip_MonCollect;Add the devices of this screen, of the whole program or of the PLC label list;Bu ekranın, tüm programın veya PLC etiket listesinin cihazlarını ekle;;;;
-Tip_MonTabs;Tabs: new, rename, delete;Sekmeler: yeni, yeniden adlandır, sil;;;;
-Tip_MonRestore;Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - a device removed from a list is kept off it until this is pressed.;Kaldırılan cihazları tekrar göster. Simülatör tuttuğu her cihazı kendiliğinden listeler - listeden kaldırılan bir cihaz bu düğmeye basılana kadar listeye geri gelmez.;;;;
-Tip_MonDelete;Delete: the selected rows (Del), this tab, every tab of this controller or of every controller;Sil: seçili satırlar (Del), bu sekme, bu kontrol ünitesinin veya tüm kontrol ünitelerinin tüm sekmeleri;;;;
-Tip_MonUndo;Undo the last change (Ctrl+Z);Son değişikliği geri al (Ctrl+Z);;;;
-Tip_MonUndoWhat;Undo: {0} (Ctrl+Z);Geri al: {0} (Ctrl+Z);;;;
-Tip_MonRedo;Redo the change undone last (Ctrl+Y);Son geri alınan değişikliği yinele (Ctrl+Y);;;;
-Tip_MonRedoWhat;Redo: {0} (Ctrl+Y);Yinele: {0} (Ctrl+Y);;;;
-Tip_MonFind;Find where a device is used in the program, and open that page (Ctrl+F);Bir cihazın programda nerede kullanıldığını bul ve o sayfayı aç (Ctrl+F);;;;
-Mnu_MonFromProgramList;the whole program - into this tab, one list (each device once, no headings);tüm program - bu sekmeye, tek liste (her cihaz bir kez, başlıksız);;;;
-Tip_MonFromLabels;PlcLabels.csv beside the program: the PLC programmer's names for its devices (Label / DataType / Address, from GX Works). It names the devices on the monitor and adds devices the pages do not show.;Programın yanındaki PlcLabels.csv: PLC programcısının cihaz adları (Etiket / Veri tipi / Adres, GX Works'ten). Monitördeki cihazları adlandırır ve sayfalarda görünmeyen cihazları ekler.;;;;
-Mnu_DelRows;The {0} selected rows;Seçili {0} satır;;;;
-Mnu_DelRow;The selected row;Seçili satır;;;;
-Mnu_DelTab;The tab '{0}';'{0}' sekmesi;;;;
-Mnu_DelTabNone;This tab;Bu sekme;;;;
-Mnu_DelAllTabs;Every tab of {0}...;{0} için tüm sekmeler...;;;;
-Mnu_DelEverything;Every tab of every controller...;Tüm kontrol ünitelerinin tüm sekmeleri...;;;;
-Msg_DelAllTabs;Delete all {0} tab(s) of {1}, with their {2} row(s)?;{1} için {0} sekmenin tümü, {2} satırıyla birlikte silinsin mi?;;;;
-Msg_DelEverything;Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?;{1} kontrol ünitesinin {0} sekmesinin tümü, {2} satırıyla birlikte silinsin mi?;;;;
-Msg_UndoHint;Undo (Ctrl+Z) brings them back.;Geri al (Ctrl+Z) hepsini geri getirir.;;;;
-Msg_Undone;Undone: {0}.;Geri alındı: {0}.;;;;
-Msg_Redone;Redone: {0}.;Yinelendi: {0}.;;;;
-Undo_DelAllTabs;delete every tab;tüm sekmeleri silme;;;;
-Undo_DelEverything;delete every tab of every controller;tüm kontrol ünitelerinin tüm sekmelerini silme;;;;
-Undo_DelTab;delete the tab '{0}';'{0}' sekmesini silme;;;;
-Undo_MoveTab;move the tab '{0}';'{0}' sekmesini taşıma;;;;
-Undo_Move;move rows;satır taşıma;;;;
-Undo_Edit;edit a row;satır düzenleme;;;;
-Undo_AddComment;add a comment line;açıklama satırı ekleme;;;;
-Undo_AddDevice;add a device;cihaz ekleme;;;;
-Undo_Paste;paste;yapıştırma;;;;
-Undo_Remove;remove {0} row(s);{0} satır kaldırma;;;;
-Undo_Sort;sort by {0};{0} sütununa göre sıralama;;;;
-Undo_Restore;show removed devices again;kaldırılan cihazları geri gösterme;;;;
-Undo_NewTab;new tab '{0}';yeni sekme '{0}';;;;
-Undo_RenameTab;rename the tab '{0}';'{0}' sekmesini yeniden adlandırma;;;;
-Undo_Collect;add the devices;cihazları ekleme;;;;
-Undo_Import;import;içe aktarma;;;;
-Mnu_FindUses;Where is {0} used?;{0} nerede kullanılıyor?;;;;
-Mnu_FindUsesNone;Where is it used?;Nerede kullanılıyor?;;;;
-Msg_FindNoShell;The main window is not open.;Ana pencere açık değil.;;;;
-Ttl_Find;Find where a device is used;Cihazın kullanıldığı yerleri bul;;;;
-Lbl_FindWhat;Address, label or name:;Adres, etiket veya ad:;;;;
-Tip_FindGo;Find (Enter);Bul (Enter);;;;
-Col_FindPage;Page;Sayfa;;;;
-Col_FindWhere;Used by;Kullanan;;;;
-Msg_FindHint;Type an address (M604), a label, or part of a unit's name, then Enter.;Bir adres (M604), etiket veya ünite adının bir kısmını yazıp Enter'a basın.;;;;
-Msg_FindNone;'{0}' is used nowhere on this controller's pages.;'{0}' bu kontrol ünitesinin hiçbir sayfasında kullanılmıyor.;;;;
-Msg_FindCount;{0} use(s) on {1} page(s). Click a line to open its page.;{1} sayfada {0} kullanım. Sayfasını açmak için bir satıra tıklayın.;;;;
-Msg_FindAlarm;An alarm definition's bit - see HMI Settings > Alarm Settings.;Bir alarm tanımının biti - bkz. HMI Ayarları > Alarm Ayarları.;;;;
-Msg_FindOpened;Opened: {0} - {1};Açıldı: {0} - {1};;;;
-Msg_FindNoPage;It is not on a page (an alarm definition).;Bir sayfada değil (alarm tanımı).;;;;
-Msg_FindNoScreen;That page is not in the menu.;Bu sayfa menüde yok.;;;;
-Msg_FindNoAccess;Your level may not open that page.;Seviyeniz bu sayfayı açmaya yetmiyor.;;;;
-Msg_FindGone;The page has changed - find again.;Sayfa değişmiş - yeniden arayın.;;;;
-Tip_MonExport;Export this tab to a CSV file (Label / DataType / Address / Value);Bu sekmeyi CSV dosyasına aktar (Etiket / Veri tipi / Adres / Değer);;;;
-Tip_MonImport;Import devices from a CSV file into this tab (a PlcLabels.csv works as it is);CSV dosyasından bu sekmeye cihaz al (PlcLabels.csv olduğu gibi kullanılabilir);;;;
-Mnu_MonAddEnd;New device at the end...;Sona yeni cihaz...;;;;
-Mnu_MonAddAbove;New device above the selected row...;Seçili satırın üstüne yeni cihaz...;;;;
-Mnu_MonCommentEnd;Comment line at the end...;Sona açıklama satırı...;;;;
-Mnu_MonCommentAbove;Comment line above the selected row...;Seçili satırın üstüne açıklama satırı...;;;;
-Mnu_MonPasteAbove;Paste above the selected row;Seçili satırın üstüne yapıştır;;;;
-Mnu_MonPasteEnd;Paste at the end;Sona yapıştır;;;;
-Hdr_MonCollect;Add every device used by...;Şunun kullandığı tüm cihazları ekle...;;;;
-Mnu_MonFromScreen;the screen on display - into this tab;görüntülenen ekran - bu sekmeye;;;;
-Mnu_MonFromProgram;the whole program - into this tab, a heading line per page;tüm program - bu sekmeye, her sayfa için bir başlık satırı;;;;
-Mnu_MonFromProgramTabs;the whole program - one tab per page;tüm program - her sayfa için bir sekme;;;;
-Mnu_MonFromLabels;every device named in the PLC label list (PlcLabels.csv) - into this tab;PLC etiket listesindeki (PlcLabels.csv) her cihaz - bu sekmeye;;;;
-Mnu_SheetNew;New tab (before this one)...;Yeni sekme (bunun önüne)...;;;;
-Mnu_SheetNewAfter;New tab (after this one)...;Yeni sekme (bunun arkasına)...;;;;
-Mnu_SheetNewEnd;New tab at the end (+)...;En sona yeni sekme (+)...;;;;
-Tip_MonNewTab;New tab at the end;En sona yeni sekme;;;;
-Mnu_SheetRename;Rename this tab...;Bu sekmeyi yeniden adlandır...;;;;
-Mnu_SheetDelete;Delete this tab;Bu sekmeyi sil;;;;
-Mnu_SheetLeft;Move this tab left;Bu sekmeyi sola taşı;;;;
-Mnu_SheetRight;Move this tab right;Bu sekmeyi sağa taşı;;;;
-Tab_MonMain;Main;Ana;;;;
-Mnu_MonCopy;Copy;Kopyala;;;;
-Hint_MonNewRow;Double-click to add a device;Cihaz eklemek için çift tıklayın;;;;
-Msg_MonCopied;{0} row(s) copied.;{0} satır kopyalandı.;;;;
-Msg_MonPasted;{0} row(s) pasted.;{0} satır yapıştırıldı.;;;;
-Ttl_SheetNew;New tab;Yeni sekme;;;;
-Lbl_SheetName;Name of the tab:;Sekmenin adı:;;;;
-Tab_MonNew;Tab;Sekme;;;;
-Ttl_SheetRename;Rename tab;Sekmeyi yeniden adlandır;;;;
-Msg_SheetLast;A controller keeps at least one tab.;Bir kontrol ünitesinde en az bir sekme kalır.;;;;
-Msg_SheetDelete;Delete the tab '{0}' and its {1} row(s)?;'{0}' sekmesi ve {1} satırı silinsin mi?;;;;
-Msg_SheetNameEmpty;Type a name.;Bir ad yazın.;;;;
-Msg_SheetNameTaken;This controller already has a tab with that name.;Bu kontrol ünitesinde bu adda bir sekme zaten var.;;;;
-Msg_MonScreenNone;The screen on display uses no device of {0}.;Görüntülenen ekran {0} cihazı kullanmıyor.;;;;
-Msg_MonProgramNone;No page of the program uses a device of {0}.;Programın hiçbir sayfası {0} cihazı kullanmıyor.;;;;
-Msg_MonLabelsNone;This controller has no PLC label list (PlcLabels.csv).;Bu kontrol ünitesinin PLC etiket listesi (PlcLabels.csv) yok.;;;;
-Msg_MonNotNumber;Not a whole number - nothing written.;Tam sayı değil - hiçbir şey yazılmadı.;;;;
-Msg_MonOutOfRange;Out of range for this data type - nothing written.;Bu veri tipi için aralık dışında - hiçbir şey yazılmadı.;;;;
-Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2};{0} cihaz, {1} açıklama satırı  ·  {2};;;;
-Msg_MonNoTabs;No tabs. Add one with + (top left) or the tabs button (📑), or add a device and a tab 'Main' is made for it.;Sekme yok. + (sol üstte) ya da sekmeler düğmesiyle (📑) ekleyin ya da bir cihaz ekleyin, onun için 'Main' sekmesi açılır.;;;;
-Msg_MonNoTabsShort;No tabs;Sekme yok;;;;
-Lbl_Simulated;simulated;simülasyon;;;;
-Lbl_CommentLine;Comment line (no address, no value);Açıklama satırı (adres ve değer yok);;;;
-Lbl_ArrayCount;Array (how many);Dizi (kaç adet);;;;
-Msg_CommentRequired;Type the comment's text.;Açıklama metnini yazın.;;;;
-Col_Comment;Comment;Açıklama;;;;
-Lbl_Step2;every 2nd device;her 2. cihaz;;;;
-Ttl_AddDevice;Add device;Cihaz ekle;;;;
+Tip_MonAdd;Add a device or a comment line (Insert);Cihaz veya açıklama satırı ekle (Insert);Добавить устройство или строку комментария (Insert);Ein Gerät oder eine Kommentarzeile hinzufügen (Einfg);Aggiungi un dispositivo o una riga di commento (Ins);Añadir un dispositivo o una línea de comentario (Insert)
+Tip_MonCopy;Copy the selected rows (Ctrl+C);Seçili satırları kopyala (Ctrl+C);Копировать выбранные строки (Ctrl+C);Die markierten Zeilen kopieren (Strg+C);Copia le righe selezionate (Ctrl+C);Copiar las filas seleccionadas (Ctrl+C)
+Tip_MonPaste;Paste the copied rows (Ctrl+V: above the selected row);Kopyalanan satırları yapıştır (Ctrl+V: seçili satırın üstüne);Вставить скопированные строки (Ctrl+V: над выбранной строкой);Die kopierten Zeilen einfügen (Strg+V: über der markierten Zeile);Incolla le righe copiate (Ctrl+V: sopra la riga selezionata);Pegar las filas copiadas (Ctrl+V: encima de la fila seleccionada)
+Tip_MonUp;Move the selected rows up (Ctrl+Up);Seçili satırları yukarı taşı (Ctrl+Yukarı);Переместить выбранные строки вверх (Ctrl+Вверх);Die markierten Zeilen nach oben verschieben (Strg+Auf);Sposta in alto le righe selezionate (Ctrl+Su);Subir las filas seleccionadas (Ctrl+Arriba)
+Tip_MonDown;Move the selected rows down (Ctrl+Down);Seçili satırları aşağı taşı (Ctrl+Aşağı);Переместить выбранные строки вниз (Ctrl+Вниз);Die markierten Zeilen nach unten verschieben (Strg+Ab);Sposta in basso le righe selezionate (Ctrl+Giù);Bajar las filas seleccionadas (Ctrl+Abajo)
+Tip_MonCollect;Add the devices of this screen, of the whole program or of the PLC label list;Bu ekranın, tüm programın veya PLC etiket listesinin cihazlarını ekle;Добавить устройства этого экрана, всей программы или списка меток ПЛК;Die Geräte dieser Seite, des ganzen Programms oder der SPS-Bezeichnungsliste hinzufügen;Aggiungi i dispositivi di questa schermata, dell'intero programma o dell'elenco etichette del PLC;Añadir los dispositivos de esta pantalla, de todo el programa o de la lista de etiquetas del PLC
+Tip_MonTabs;Tabs: new, rename, delete;Sekmeler: yeni, yeniden adlandır, sil;Вкладки: новая, переименовать, удалить;Reiter: neu, umbenennen, löschen;Schede: nuova, rinomina, elimina;Pestañas: nueva, renombrar, eliminar
+Tip_MonRestore;Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - a device removed from a list is kept off it until this is pressed.;Kaldırılan cihazları tekrar göster. Simülatör tuttuğu her cihazı kendiliğinden listeler - listeden kaldırılan bir cihaz bu düğmeye basılana kadar listeye geri gelmez.;Снова показать удалённые устройства. Симулятор сам перечисляет все свои устройства и добавляет новые - удалённое из списка устройство не возвращается, пока не нажата эта кнопка.;Die entfernten Geräte wieder anzeigen. Der Simulator listet jedes Gerät, das er hält, und fügt neue selbst hinzu - ein aus einer Liste entferntes Gerät bleibt draußen, bis dies gedrückt wird.;Mostra di nuovo i dispositivi rimossi. Il simulatore elenca ogni dispositivo che contiene e ne aggiunge di nuovi da solo - un dispositivo rimosso da un elenco ne resta fuori finché non si preme questo pulsante.;Volver a mostrar los dispositivos quitados. El simulador lista todos los dispositivos que contiene y añade los nuevos por sí mismo - un dispositivo quitado de una lista no vuelve hasta que se pulsa esto.
+Tip_MonDelete;Delete: the selected rows (Del), this tab, every tab of this controller or of every controller;Sil: seçili satırlar (Del), bu sekme, bu kontrol ünitesinin veya tüm kontrol ünitelerinin tüm sekmeleri;Удалить: выбранные строки (Del), эту вкладку, все вкладки этого контроллера или всех контроллеров;Löschen: die markierten Zeilen (Entf), diesen Reiter, alle Reiter dieser Steuerung oder aller Steuerungen;Elimina: le righe selezionate (Canc), questa scheda, tutte le schede di questo controllore o di tutti i controllori;Eliminar: las filas seleccionadas (Supr), esta pestaña, todas las pestañas de este controlador o de todos los controladores
+Tip_MonUndo;Undo the last change (Ctrl+Z);Son değişikliği geri al (Ctrl+Z);Отменить последнее изменение (Ctrl+Z);Die letzte Änderung rückgängig machen (Strg+Z);Annulla l'ultima modifica (Ctrl+Z);Deshacer el último cambio (Ctrl+Z)
+Tip_MonUndoWhat;Undo: {0} (Ctrl+Z);Geri al: {0} (Ctrl+Z);Отменить: {0} (Ctrl+Z);Rückgängig: {0} (Strg+Z);Annulla: {0} (Ctrl+Z);Deshacer: {0} (Ctrl+Z)
+Tip_MonRedo;Redo the change undone last (Ctrl+Y);Son geri alınan değişikliği yinele (Ctrl+Y);Повторить последнее отменённое изменение (Ctrl+Y);Die zuletzt rückgängig gemachte Änderung wiederholen (Strg+Y);Ripeti l'ultima modifica annullata (Ctrl+Y);Rehacer el último cambio deshecho (Ctrl+Y)
+Tip_MonRedoWhat;Redo: {0} (Ctrl+Y);Yinele: {0} (Ctrl+Y);Повторить: {0} (Ctrl+Y);Wiederholen: {0} (Strg+Y);Ripeti: {0} (Ctrl+Y);Rehacer: {0} (Ctrl+Y)
+Tip_MonFind;Find where a device is used in the program, and open that page (Ctrl+F);Bir cihazın programda nerede kullanıldığını bul ve o sayfayı aç (Ctrl+F);Найти, где в программе используется устройство, и открыть ту страницу (Ctrl+F);Finden, wo ein Gerät im Programm verwendet wird, und diese Seite öffnen (Strg+F);Trova dove un dispositivo è usato nel programma e apri quella pagina (Ctrl+F);Buscar dónde se usa un dispositivo en el programa y abrir esa página (Ctrl+F)
+Mnu_MonFromProgramList;the whole program - into this tab, one list (each device once, no headings);tüm program - bu sekmeye, tek liste (her cihaz bir kez, başlıksız);вся программа - на эту вкладку, одним списком (каждое устройство один раз, без заголовков);das ganze Programm - in diesen Reiter, eine Liste (jedes Gerät einmal, ohne Überschriften);l'intero programma - in questa scheda, un solo elenco (ogni dispositivo una volta, senza intestazioni);todo el programa - en esta pestaña, una sola lista (cada dispositivo una vez, sin encabezados)
+Tip_MonFromLabels;PlcLabels.csv beside the program: the PLC programmer's names for its devices (Label / DataType / Address, from GX Works). It names the devices on the monitor and adds devices the pages do not show.;Programın yanındaki PlcLabels.csv: PLC programcısının cihaz adları (Etiket / Veri tipi / Adres, GX Works'ten). Monitördeki cihazları adlandırır ve sayfalarda görünmeyen cihazları ekler.;PlcLabels.csv рядом с программой: имена устройств от программиста ПЛК (Метка / Тип данных / Адрес, из GX Works). Даёт имена устройствам монитора и добавляет устройства, которых нет на страницах.;PlcLabels.csv neben dem Programm: die Gerätenamen des SPS-Programmierers (Bezeichnung / Datentyp / Adresse, aus GX Works). Sie benennt die Geräte im Monitor und fügt Geräte hinzu, die die Seiten nicht zeigen.;PlcLabels.csv accanto al programma: i nomi dei dispositivi del programmatore PLC (Etichetta / Tipo dati / Indirizzo, da GX Works). Dà il nome ai dispositivi del monitor e aggiunge quelli che le pagine non mostrano.;PlcLabels.csv junto al programa: los nombres de los dispositivos del programador del PLC (Etiqueta / Tipo de dato / Dirección, de GX Works). Da nombre a los dispositivos del monitor y añade los que las páginas no muestran.
+Mnu_DelRows;The {0} selected rows;Seçili {0} satır;Выбранные строки ({0});Die {0} markierten Zeilen;Le {0} righe selezionate;Las {0} filas seleccionadas
+Mnu_DelRow;The selected row;Seçili satır;Выбранная строка;Die markierte Zeile;La riga selezionata;La fila seleccionada
+Mnu_DelTab;The tab '{0}';'{0}' sekmesi;Вкладка '{0}';Der Reiter '{0}';La scheda '{0}';La pestaña '{0}'
+Mnu_DelTabNone;This tab;Bu sekme;Эта вкладка;Dieser Reiter;Questa scheda;Esta pestaña
+Mnu_DelAllTabs;Every tab of {0}...;{0} için tüm sekmeler...;Все вкладки {0}...;Alle Reiter von {0}...;Tutte le schede di {0}...;Todas las pestañas de {0}...
+Mnu_DelEverything;Every tab of every controller...;Tüm kontrol ünitelerinin tüm sekmeleri...;Все вкладки всех контроллеров...;Alle Reiter aller Steuerungen...;Tutte le schede di tutti i controllori...;Todas las pestañas de todos los controladores...
+Msg_DelAllTabs;Delete all {0} tab(s) of {1}, with their {2} row(s)?;{1} için {0} sekmenin tümü, {2} satırıyla birlikte silinsin mi?;Удалить все вкладки {1} ({0}) вместе с их строками ({2})?;Alle {0} Reiter von {1} mit ihren {2} Zeilen löschen?;Eliminare tutte le {0} schede di {1} con le loro {2} righe?;¿Eliminar las {0} pestañas de {1} con sus {2} filas?
+Msg_DelEverything;Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?;{1} kontrol ünitesinin {0} sekmesinin tümü, {2} satırıyla birlikte silinsin mi?;Удалить все вкладки ({0}) всех контроллеров ({1}) вместе с их строками ({2})?;Alle {0} Reiter der {1} Steuerungen mit ihren {2} Zeilen löschen?;Eliminare tutte le {0} schede dei {1} controllori con le loro {2} righe?;¿Eliminar las {0} pestañas de los {1} controladores con sus {2} filas?
+Msg_UndoHint;Undo (Ctrl+Z) brings them back.;Geri al (Ctrl+Z) hepsini geri getirir.;Отмена (Ctrl+Z) вернёт их.;Rückgängig (Strg+Z) bringt sie zurück.;Annulla (Ctrl+Z) le riporta.;Deshacer (Ctrl+Z) las recupera.
+Msg_Undone;Undone: {0}.;Geri alındı: {0}.;Отменено: {0}.;Rückgängig gemacht: {0}.;Annullato: {0}.;Deshecho: {0}.
+Msg_Redone;Redone: {0}.;Yinelendi: {0}.;Повторено: {0}.;Wiederholt: {0}.;Ripetuto: {0}.;Rehecho: {0}.
+Undo_DelAllTabs;delete every tab;tüm sekmeleri silme;удаление всех вкладок;alle Reiter löschen;eliminazione di tutte le schede;eliminar todas las pestañas
+Undo_DelEverything;delete every tab of every controller;tüm kontrol ünitelerinin tüm sekmelerini silme;удаление всех вкладок всех контроллеров;alle Reiter aller Steuerungen löschen;eliminazione di tutte le schede di tutti i controllori;eliminar todas las pestañas de todos los controladores
+Undo_DelTab;delete the tab '{0}';'{0}' sekmesini silme;удаление вкладки '{0}';den Reiter '{0}' löschen;eliminazione della scheda '{0}';eliminar la pestaña '{0}'
+Undo_MoveTab;move the tab '{0}';'{0}' sekmesini taşıma;перемещение вкладки '{0}';den Reiter '{0}' verschieben;spostamento della scheda '{0}';mover la pestaña '{0}'
+Undo_Move;move rows;satır taşıma;перемещение строк;Zeilen verschieben;spostamento di righe;mover filas
+Undo_Edit;edit a row;satır düzenleme;правка строки;eine Zeile bearbeiten;modifica di una riga;editar una fila
+Undo_AddComment;add a comment line;açıklama satırı ekleme;добавление строки комментария;eine Kommentarzeile hinzufügen;aggiunta di una riga di commento;añadir una línea de comentario
+Undo_AddDevice;add a device;cihaz ekleme;добавление устройства;ein Gerät hinzufügen;aggiunta di un dispositivo;añadir un dispositivo
+Undo_Paste;paste;yapıştırma;вставка;einfügen;incolla;pegar
+Undo_Remove;remove {0} row(s);{0} satır kaldırma;удаление строк ({0});{0} Zeile(n) entfernen;rimozione di {0} riga/righe;quitar {0} fila(s)
+Undo_Sort;sort by {0};{0} sütununa göre sıralama;сортировка по {0};nach {0} sortieren;ordinamento per {0};ordenar por {0}
+Undo_Restore;show removed devices again;kaldırılan cihazları geri gösterme;повторный показ удалённых устройств;entfernte Geräte wieder anzeigen;ripristino dei dispositivi rimossi;volver a mostrar los dispositivos quitados
+Undo_NewTab;new tab '{0}';yeni sekme '{0}';новая вкладка '{0}';neuer Reiter '{0}';nuova scheda '{0}';nueva pestaña '{0}'
+Undo_RenameTab;rename the tab '{0}';'{0}' sekmesini yeniden adlandırma;переименование вкладки '{0}';den Reiter '{0}' umbenennen;ridenominazione della scheda '{0}';renombrar la pestaña '{0}'
+Undo_Collect;add the devices;cihazları ekleme;добавление устройств;die Geräte hinzufügen;aggiunta dei dispositivi;añadir los dispositivos
+Undo_Import;import;içe aktarma;импорт;importieren;importazione;importar
+Mnu_FindUses;Where is {0} used?;{0} nerede kullanılıyor?;Где используется {0}?;Wo wird {0} verwendet?;Dove è usato {0}?;¿Dónde se usa {0}?
+Mnu_FindUsesNone;Where is it used?;Nerede kullanılıyor?;Где используется?;Wo wird es verwendet?;Dove è usato?;¿Dónde se usa?
+Msg_FindNoShell;The main window is not open.;Ana pencere açık değil.;Главное окно не открыто.;Das Hauptfenster ist nicht geöffnet.;La finestra principale non è aperta.;La ventana principal no está abierta.
+Ttl_Find;Find where a device is used;Cihazın kullanıldığı yerleri bul;Найти, где используется устройство;Finden, wo ein Gerät verwendet wird;Trova dove è usato un dispositivo;Buscar dónde se usa un dispositivo
+Lbl_FindWhat;Address, label or name:;Adres, etiket veya ad:;Адрес, метка или имя:;Adresse, Bezeichnung oder Name:;Indirizzo, etichetta o nome:;Dirección, etiqueta o nombre:
+Tip_FindGo;Find (Enter);Bul (Enter);Найти (Enter);Suchen (Enter);Trova (Invio);Buscar (Intro)
+Col_FindPage;Page;Sayfa;Страница;Seite;Pagina;Página
+Col_FindWhere;Used by;Kullanan;Где используется;Verwendet von;Usato da;Usado por
+Msg_FindHint;Type an address (M604), a label, or part of a unit's name, then Enter.;Bir adres (M604), etiket veya ünite adının bir kısmını yazıp Enter'a basın.;Введите адрес (M604), метку или часть имени узла, затем Enter.;Eine Adresse (M604), eine Bezeichnung oder einen Teil des Namens einer Einheit eingeben, dann Enter.;Digita un indirizzo (M604), un'etichetta o parte del nome di un'unità, poi Invio.;Escriba una dirección (M604), una etiqueta o parte del nombre de una unidad y pulse Intro.
+Msg_FindNone;'{0}' is used nowhere on this controller's pages.;'{0}' bu kontrol ünitesinin hiçbir sayfasında kullanılmıyor.;'{0}' не используется ни на одной странице этого контроллера.;'{0}' wird auf keiner Seite dieser Steuerung verwendet.;'{0}' non è usato in nessuna pagina di questo controllore.;'{0}' no se usa en ninguna página de este controlador.
+Msg_FindCount;{0} use(s) on {1} page(s). Click a line to open its page.;{1} sayfada {0} kullanım. Sayfasını açmak için bir satıra tıklayın.;Использований: {0} на страницах: {1}. Щёлкните строку, чтобы открыть её страницу.;{0} Verwendung(en) auf {1} Seite(n). Eine Zeile anklicken, um ihre Seite zu öffnen.;{0} uso/i in {1} pagina/e. Fai clic su una riga per aprirne la pagina.;{0} uso(s) en {1} página(s). Haga clic en una línea para abrir su página.
+Msg_FindAlarm;An alarm definition's bit - see HMI Settings > Alarm Settings.;Bir alarm tanımının biti - bkz. HMI Ayarları > Alarm Ayarları.;Бит описания аварии - см. Настройки HMI > Настройки аварий.;Ein Bit einer Alarmdefinition - siehe HMI-Einstellungen > Alarmeinstellungen.;Un bit di una definizione di allarme - vedi Impostazioni HMI > Impostazioni allarmi.;Un bit de una definición de alarma - vea Ajustes HMI > Ajustes de alarmas.
+Msg_FindOpened;Opened: {0} - {1};Açıldı: {0} - {1};Открыто: {0} - {1};Geöffnet: {0} - {1};Aperto: {0} - {1};Abierto: {0} - {1}
+Msg_FindNoPage;It is not on a page (an alarm definition).;Bir sayfada değil (alarm tanımı).;Это не на странице (описание аварии).;Es ist auf keiner Seite (eine Alarmdefinition).;Non è in una pagina (una definizione di allarme).;No está en una página (una definición de alarma).
+Msg_FindNoScreen;That page is not in the menu.;Bu sayfa menüde yok.;Этой страницы нет в меню.;Diese Seite ist nicht im Menü.;Questa pagina non è nel menu.;Esa página no está en el menú.
+Msg_FindNoAccess;Your level may not open that page.;Seviyeniz bu sayfayı açmaya yetmiyor.;Вашего уровня недостаточно, чтобы открыть эту страницу.;Ihre Stufe darf diese Seite nicht öffnen.;Il tuo livello non può aprire questa pagina.;Su nivel no permite abrir esa página.
+Msg_FindGone;The page has changed - find again.;Sayfa değişmiş - yeniden arayın.;Страница изменилась - найдите снова.;Die Seite hat sich geändert - erneut suchen.;La pagina è cambiata - cerca di nuovo.;La página ha cambiado - busque de nuevo.
+Tip_MonExport;Export this tab to a CSV file (Label / DataType / Address / Value);Bu sekmeyi CSV dosyasına aktar (Etiket / Veri tipi / Adres / Değer);Экспортировать эту вкладку в файл CSV (Метка / Тип данных / Адрес / Значение);Diesen Reiter in eine CSV-Datei exportieren (Bezeichnung / Datentyp / Adresse / Wert);Esporta questa scheda in un file CSV (Etichetta / Tipo dati / Indirizzo / Valore);Exportar esta pestaña a un archivo CSV (Etiqueta / Tipo de dato / Dirección / Valor)
+Tip_MonImport;Import devices from a CSV file into this tab (a PlcLabels.csv works as it is);CSV dosyasından bu sekmeye cihaz al (PlcLabels.csv olduğu gibi kullanılabilir);Импортировать устройства из файла CSV в эту вкладку (PlcLabels.csv подходит как есть);Geräte aus einer CSV-Datei in diesen Reiter importieren (eine PlcLabels.csv geht so, wie sie ist);Importa dispositivi da un file CSV in questa scheda (un PlcLabels.csv va bene così com'è);Importar dispositivos de un archivo CSV a esta pestaña (un PlcLabels.csv sirve tal cual)
+Mnu_MonAddEnd;New device at the end...;Sona yeni cihaz...;Новое устройство в конце...;Neues Gerät am Ende...;Nuovo dispositivo alla fine...;Nuevo dispositivo al final...
+Mnu_MonAddAbove;New device above the selected row...;Seçili satırın üstüne yeni cihaz...;Новое устройство над выбранной строкой...;Neues Gerät über der markierten Zeile...;Nuovo dispositivo sopra la riga selezionata...;Nuevo dispositivo encima de la fila seleccionada...
+Mnu_MonCommentEnd;Comment line at the end...;Sona açıklama satırı...;Строка комментария в конце...;Kommentarzeile am Ende...;Riga di commento alla fine...;Línea de comentario al final...
+Mnu_MonCommentAbove;Comment line above the selected row...;Seçili satırın üstüne açıklama satırı...;Строка комментария над выбранной строкой...;Kommentarzeile über der markierten Zeile...;Riga di commento sopra la riga selezionata...;Línea de comentario encima de la fila seleccionada...
+Mnu_MonPasteAbove;Paste above the selected row;Seçili satırın üstüne yapıştır;Вставить над выбранной строкой;Über der markierten Zeile einfügen;Incolla sopra la riga selezionata;Pegar encima de la fila seleccionada
+Mnu_MonPasteEnd;Paste at the end;Sona yapıştır;Вставить в конец;Am Ende einfügen;Incolla alla fine;Pegar al final
+Hdr_MonCollect;Add every device used by...;Şunun kullandığı tüm cihazları ekle...;Добавить все устройства, которые использует...;Alle Geräte hinzufügen, die verwendet werden von...;Aggiungi tutti i dispositivi usati da...;Añadir todos los dispositivos usados por...
+Mnu_MonFromScreen;the screen on display - into this tab;görüntülenen ekran - bu sekmeye;показанный экран - на эту вкладку;die angezeigte Seite - in diesen Reiter;la schermata visualizzata - in questa scheda;la pantalla mostrada - en esta pestaña
+Mnu_MonFromProgram;the whole program - into this tab, a heading line per page;tüm program - bu sekmeye, her sayfa için bir başlık satırı;вся программа - на эту вкладку, строка заголовка для каждой страницы;das ganze Programm - in diesen Reiter, eine Überschriftszeile pro Seite;l'intero programma - in questa scheda, una riga di intestazione per pagina;todo el programa - en esta pestaña, una línea de encabezado por página
+Mnu_MonFromProgramTabs;the whole program - one tab per page;tüm program - her sayfa için bir sekme;вся программа - по вкладке на страницу;das ganze Programm - ein Reiter pro Seite;l'intero programma - una scheda per pagina;todo el programa - una pestaña por página
+Mnu_MonFromLabels;every device named in the PLC label list (PlcLabels.csv) - into this tab;PLC etiket listesindeki (PlcLabels.csv) her cihaz - bu sekmeye;все устройства из списка меток ПЛК (PlcLabels.csv) - на эту вкладку;jedes Gerät der SPS-Bezeichnungsliste (PlcLabels.csv) - in diesen Reiter;ogni dispositivo dell'elenco etichette del PLC (PlcLabels.csv) - in questa scheda;todos los dispositivos de la lista de etiquetas del PLC (PlcLabels.csv) - en esta pestaña
+Mnu_SheetNew;New tab (before this one)...;Yeni sekme (bunun önüne)...;Новая вкладка (перед этой)...;Neuer Reiter (vor diesem)...;Nuova scheda (prima di questa)...;Nueva pestaña (antes de esta)...
+Mnu_SheetNewAfter;New tab (after this one)...;Yeni sekme (bunun arkasına)...;Новая вкладка (после этой)...;Neuer Reiter (nach diesem)...;Nuova scheda (dopo questa)...;Nueva pestaña (después de esta)...
+Mnu_SheetNewEnd;New tab at the end (+)...;En sona yeni sekme (+)...;Новая вкладка в конце (+)...;Neuer Reiter am Ende (+)...;Nuova scheda alla fine (+)...;Nueva pestaña al final (+)...
+Tip_MonNewTab;New tab at the end;En sona yeni sekme;Новая вкладка в конце;Neuer Reiter am Ende;Nuova scheda alla fine;Nueva pestaña al final
+Mnu_SheetRename;Rename this tab...;Bu sekmeyi yeniden adlandır...;Переименовать эту вкладку...;Diesen Reiter umbenennen...;Rinomina questa scheda...;Renombrar esta pestaña...
+Mnu_SheetDelete;Delete this tab;Bu sekmeyi sil;Удалить эту вкладку;Diesen Reiter löschen;Elimina questa scheda;Eliminar esta pestaña
+Mnu_SheetLeft;Move this tab left;Bu sekmeyi sola taşı;Переместить вкладку влево;Diesen Reiter nach links verschieben;Sposta questa scheda a sinistra;Mover esta pestaña a la izquierda
+Mnu_SheetRight;Move this tab right;Bu sekmeyi sağa taşı;Переместить вкладку вправо;Diesen Reiter nach rechts verschieben;Sposta questa scheda a destra;Mover esta pestaña a la derecha
+Tab_MonMain;Main;Ana;Основная;Haupt;Principale;Principal
+Mnu_MonCopy;Copy;Kopyala;Копировать;Kopieren;Copia;Copiar
+Hint_MonNewRow;Double-click to add a device;Cihaz eklemek için çift tıklayın;Двойной щелчок - добавить устройство;Doppelklick, um ein Gerät hinzuzufügen;Doppio clic per aggiungere un dispositivo;Doble clic para añadir un dispositivo
+Msg_MonCopied;{0} row(s) copied.;{0} satır kopyalandı.;Скопировано строк: {0}.;{0} Zeile(n) kopiert.;{0} riga/e copiata/e.;{0} fila(s) copiada(s).
+Msg_MonPasted;{0} row(s) pasted.;{0} satır yapıştırıldı.;Вставлено строк: {0}.;{0} Zeile(n) eingefügt.;{0} riga/e incollata/e.;{0} fila(s) pegada(s).
+Ttl_SheetNew;New tab;Yeni sekme;Новая вкладка;Neuer Reiter;Nuova scheda;Nueva pestaña
+Lbl_SheetName;Name of the tab:;Sekmenin adı:;Имя вкладки:;Name des Reiters:;Nome della scheda:;Nombre de la pestaña:
+Tab_MonNew;Tab;Sekme;Вкладка;Reiter;Scheda;Pestaña
+Ttl_SheetRename;Rename tab;Sekmeyi yeniden adlandır;Переименовать вкладку;Reiter umbenennen;Rinomina scheda;Renombrar pestaña
+Msg_SheetLast;A controller keeps at least one tab.;Bir kontrol ünitesinde en az bir sekme kalır.;У контроллера остаётся хотя бы одна вкладка.;Eine Steuerung behält mindestens einen Reiter.;Un controllore mantiene almeno una scheda.;Un controlador conserva al menos una pestaña.
+Msg_SheetDelete;Delete the tab '{0}' and its {1} row(s)?;'{0}' sekmesi ve {1} satırı silinsin mi?;Удалить вкладку '{0}' и её строки ({1})?;Den Reiter '{0}' und seine {1} Zeile(n) löschen?;Eliminare la scheda '{0}' e le sue {1} righe?;¿Eliminar la pestaña '{0}' y sus {1} filas?
+Msg_SheetNameEmpty;Type a name.;Bir ad yazın.;Введите имя.;Einen Namen eingeben.;Digita un nome.;Escriba un nombre.
+Msg_SheetNameTaken;This controller already has a tab with that name.;Bu kontrol ünitesinde bu adda bir sekme zaten var.;У этого контроллера уже есть вкладка с таким именем.;Diese Steuerung hat schon einen Reiter mit diesem Namen.;Questo controllore ha già una scheda con questo nome.;Este controlador ya tiene una pestaña con ese nombre.
+Msg_MonScreenNone;The screen on display uses no device of {0}.;Görüntülenen ekran {0} cihazı kullanmıyor.;Показанный экран не использует устройств {0}.;Die angezeigte Seite verwendet kein Gerät von {0}.;La schermata visualizzata non usa dispositivi di {0}.;La pantalla mostrada no usa ningún dispositivo de {0}.
+Msg_MonProgramNone;No page of the program uses a device of {0}.;Programın hiçbir sayfası {0} cihazı kullanmıyor.;Ни одна страница программы не использует устройств {0}.;Keine Seite des Programms verwendet ein Gerät von {0}.;Nessuna pagina del programma usa dispositivi di {0}.;Ninguna página del programa usa un dispositivo de {0}.
+Msg_MonLabelsNone;This controller has no PLC label list (PlcLabels.csv).;Bu kontrol ünitesinin PLC etiket listesi (PlcLabels.csv) yok.;У этого контроллера нет списка меток ПЛК (PlcLabels.csv).;Diese Steuerung hat keine SPS-Bezeichnungsliste (PlcLabels.csv).;Questo controllore non ha un elenco etichette PLC (PlcLabels.csv).;Este controlador no tiene lista de etiquetas del PLC (PlcLabels.csv).
+Msg_MonNotNumber;Not a whole number - nothing written.;Tam sayı değil - hiçbir şey yazılmadı.;Не целое число - ничего не записано.;Keine ganze Zahl - nichts geschrieben.;Non è un numero intero - nulla è stato scritto.;No es un número entero - no se escribió nada.
+Msg_MonOutOfRange;Out of range for this data type - nothing written.;Bu veri tipi için aralık dışında - hiçbir şey yazılmadı.;Вне диапазона для этого типа данных - ничего не записано.;Außerhalb des Bereichs dieses Datentyps - nichts geschrieben.;Fuori intervallo per questo tipo di dati - nulla è stato scritto.;Fuera de rango para este tipo de dato - no se escribió nada.
+Msg_MonStatus;{0} device(s), {1} comment line(s)  ·  {2};{0} cihaz, {1} açıklama satırı  ·  {2};Устройств: {0}, строк комментария: {1}  ·  {2};{0} Gerät(e), {1} Kommentarzeile(n)  ·  {2};{0} dispositivo/i, {1} riga/e di commento  ·  {2};{0} dispositivo(s), {1} línea(s) de comentario  ·  {2}
+Msg_MonNoTabs;No tabs. Add one with + (top left) or the tabs button (📑), or add a device and a tab 'Main' is made for it.;Sekme yok. + (sol üstte) ya da sekmeler düğmesiyle (📑) ekleyin ya da bir cihaz ekleyin, onun için 'Main' sekmesi açılır.;Вкладок нет. Добавьте её кнопкой + (слева вверху) или кнопкой вкладок (📑), или добавьте устройство - для него создастся вкладка 'Main'.;Keine Reiter. Mit + (oben links) oder der Reiter-Schaltfläche (📑) einen hinzufügen, oder ein Gerät hinzufügen - dafür entsteht ein Reiter 'Main'.;Nessuna scheda. Aggiungine una con + (in alto a sinistra) o con il pulsante delle schede (📑), oppure aggiungi un dispositivo e per esso si crea la scheda 'Main'.;No hay pestañas. Añada una con + (arriba a la izquierda) o con el botón de pestañas (📑), o añada un dispositivo y se crea para él la pestaña 'Main'.
+Msg_MonNoTabsShort;No tabs;Sekme yok;Вкладок нет;Keine Reiter;Nessuna scheda;No hay pestañas
+Lbl_Simulated;simulated;simülasyon;симуляция;simuliert;simulato;simulado
+Lbl_CommentLine;Comment line (no address, no value);Açıklama satırı (adres ve değer yok);Строка комментария (без адреса и значения);Kommentarzeile (keine Adresse, kein Wert);Riga di commento (nessun indirizzo, nessun valore);Línea de comentario (sin dirección ni valor)
+Lbl_ArrayCount;Array (how many);Dizi (kaç adet);Массив (сколько);Feld (wie viele);Array (quanti);Matriz (cuántos)
+Msg_CommentRequired;Type the comment's text.;Açıklama metnini yazın.;Введите текст комментария.;Den Text des Kommentars eingeben.;Digita il testo del commento.;Escriba el texto del comentario.
+Col_Comment;Comment;Açıklama;Комментарий;Kommentar;Commento;Comentario
+Lbl_Step2;every 2nd device;her 2. cihaz;каждое 2-е устройство;jedes 2. Gerät;ogni 2° dispositivo;cada 2.º dispositivo
+Ttl_AddDevice;Add device;Cihaz ekle;Добавить устройство;Gerät hinzufügen;Aggiungi dispositivo;Añadir dispositivo
 Ttl_SideMonitor;PLC Monitor;PLC Monitörü;Монитор ПЛК;SPS-Monitor;Monitor PLC;Monitor PLC
 Ttl_IoMonitor;Inputs / Outputs;Girişler / Çıkışlar;Входы / Выходы;Eingänge / Ausgänge;Ingressi / Uscite;Entradas / Salidas
-Lbl_IoFilter;Find:;Bul:;;;;
-Chk_IoOnlyOn;Only the ones on;Yalnızca açık olanlar;;;;
-Tip_IoFilter;Part of an address (X20, Y1) or of a name;Adresin (X20, Y1) ya da adın bir parçası;;;;
-Hdr_IoInputs;Inputs ({0});Girişler ({0});;;;
-Hdr_IoOutputs;Outputs ({0});Çıkışlar ({0});;;;
-Msg_IoNone;No inputs and outputs are listed for this machine.\r\n\r\nThey come from IoList.csv beside the program (Label, Kind, Address, Read, Plc) - tools/build_io_list.py writes it from the device list and the PLC's I/O interface block.;Bu makine için giriş ve çıkış listesi yok.\r\n\r\nListe programın yanındaki IoList.csv dosyasından gelir (Label, Kind, Address, Read, Plc) - tools/build_io_list.py onu cihaz listesinden ve PLC'nin G/Ç arayüz bloğundan yazar.;;;;
-Tip_IoRead;read at {0}, the relay the PLC copies it into;{0} üzerinden okunur - PLC'nin onu kopyaladığı röle;;;;
+Lbl_IoFilter;Find:;Bul:;Найти:;Suchen:;Trova:;Buscar:
+Chk_IoOnlyOn;Only the ones on;Yalnızca açık olanlar;Только включённые;Nur die eingeschalteten;Solo quelli accesi;Solo los activos
+Tip_IoFilter;Part of an address (X20, Y1) or of a name;Adresin (X20, Y1) ya da adın bir parçası;Часть адреса (X20, Y1) или имени;Teil einer Adresse (X20, Y1) oder eines Namens;Parte di un indirizzo (X20, Y1) o di un nome;Parte de una dirección (X20, Y1) o de un nombre
+Hdr_IoInputs;Inputs ({0});Girişler ({0});Входы ({0});Eingänge ({0});Ingressi ({0});Entradas ({0})
+Hdr_IoOutputs;Outputs ({0});Çıkışlar ({0});Выходы ({0});Ausgänge ({0});Uscite ({0});Salidas ({0})
+Msg_IoNone;No inputs and outputs are listed for this machine.\r\n\r\nThey come from IoList.csv beside the program (Label, Kind, Address, Read, Plc) - tools/build_io_list.py writes it from the device list and the PLC's I/O interface block.;Bu makine için giriş ve çıkış listesi yok.\r\n\r\nListe programın yanındaki IoList.csv dosyasından gelir (Label, Kind, Address, Read, Plc) - tools/build_io_list.py onu cihaz listesinden ve PLC'nin G/Ç arayüz bloğundan yazar.;Для этой машины не указаны входы и выходы.\r\n\r\nОни берутся из IoList.csv рядом с программой (Label, Kind, Address, Read, Plc) - tools/build_io_list.py пишет его из списка устройств и блока интерфейса входов/выходов ПЛК.;Für diese Maschine sind keine Ein- und Ausgänge aufgeführt.\r\n\r\nSie kommen aus IoList.csv neben dem Programm (Label, Kind, Address, Read, Plc) - tools/build_io_list.py schreibt sie aus der Geräteliste und dem E/A-Schnittstellenbaustein der SPS.;Per questa macchina non sono elencati ingressi e uscite.\r\n\r\nProvengono da IoList.csv accanto al programma (Label, Kind, Address, Read, Plc) - tools/build_io_list.py lo scrive dall'elenco dei dispositivi e dal blocco di interfaccia I/O del PLC.;No hay entradas ni salidas listadas para esta máquina.\r\n\r\nVienen de IoList.csv junto al programa (Label, Kind, Address, Read, Plc) - tools/build_io_list.py lo escribe a partir de la lista de dispositivos y del bloque de interfaz de E/S del PLC.
+Tip_IoRead;read at {0}, the relay the PLC copies it into;{0} üzerinden okunur - PLC'nin onu kopyaladığı röle;читается в {0} - реле, в которое его копирует ПЛК;gelesen über {0}, das Relais, in das die SPS ihn kopiert;letto in {0}, il relè in cui il PLC lo copia;leído en {0}, el relé en el que lo copia el PLC
 Tip_IoDrawing;On the drawing:;Çizimde:;На схеме:;In der Zeichnung:;Nello schema:;En el esquema:
 Tip_SidePopOut;Open in a window of its own (for a second screen);Kendi penceresinde aç (ikinci ekran için);Открыть в отдельном окне (для второго экрана);In einem eigenen Fenster öffnen (für einen zweiten Bildschirm);Apri in una finestra propria (per un secondo schermo);Abrir en una ventana propia (para una segunda pantalla)
 Tip_SideClose;Close (the page stays as you left it);Kapat (sayfa bıraktığınız gibi kalır);Закрыть (страница останется как была);Schließen (die Seite bleibt, wie Sie sie verlassen haben);Chiudi (la pagina resta come l'hai lasciata);Cerrar (la página queda como la dejó)
 Tip_SideSplitter;Drag to size the side page. Double-click: just wide enough for all of it.;Yan sayfayı boyutlandırmak için sürükleyin. Çift tıklama: tamamı görünecek kadar genişlet.;Перетащите, чтобы изменить ширину боковой страницы. Двойной щелчок: ровно по ширине всей страницы.;Ziehen, um die Seitenleiste zu verbreitern. Doppelklick: gerade breit genug für alles.;Trascina per ridimensionare la pagina laterale. Doppio clic: larga quanto basta per mostrarla tutta.;Arrastre para ajustar la página lateral. Doble clic: justo el ancho para verla entera.
-Tip_SideDockBack;Back into the main window's side panel;Ana pencerenin yan paneline geri al;;;;
-Tip_SideBarShow;Show the side bar;Yan çubuğu göster;;;;
-Tip_SideBarHide;Fold the side bar to the edge;Yan çubuğu kenara katla;;;;
-Tip_FindClose;Close Find (Esc);Bul'u kapat (Esc);;;;
+Tip_SideDockBack;Back into the main window's side panel;Ana pencerenin yan paneline geri al;Вернуть в боковую панель главного окна;Zurück in die Seitenleiste des Hauptfensters;Di nuovo nel pannello laterale della finestra principale;Volver al panel lateral de la ventana principal
+Tip_SideBarShow;Show the side bar;Yan çubuğu göster;Показать боковую полосу;Die Seitenleiste anzeigen;Mostra la barra laterale;Mostrar la barra lateral
+Tip_SideBarHide;Fold the side bar to the edge;Yan çubuğu kenara katla;Свернуть боковую полосу к краю;Die Seitenleiste an den Rand einklappen;Ripiega la barra laterale sul bordo;Plegar la barra lateral al borde
+Tip_FindClose;Close Find (Esc);Bul'u kapat (Esc);Закрыть поиск (Esc);Suchen schließen (Esc);Chiudi Trova (Esc);Cerrar Buscar (Esc)
 Ttl_Magnifier;Screen scale;Ekran ölçeği;Масштаб экрана;Bildschirmskalierung;Scala dello schermo;Escala de pantalla
 Msg_MagnifierRestart;Your screen scale is {0}, the screen is at {1}.\r\n\r\nRestart the HMI with {0} now? The machine keeps running, the screen is back in a few seconds, and you stay signed in.;Ekran ölçeğiniz {0}, ekran şu an {1}.\r\n\r\nHMI şimdi {0} ile yeniden başlatılsın mı? Makine çalışmaya devam eder, ekran birkaç saniyede geri gelir ve oturumunuz açık kalır.;Ваш масштаб {0}, экран сейчас {1}.\r\n\r\nПерезапустить HMI с {0}? Станок продолжает работать, экран вернётся через несколько секунд, вы останетесь в системе.;Ihre Skalierung ist {0}, der Bildschirm steht auf {1}.\r\n\r\nHMI jetzt mit {0} neu starten? Die Maschine läuft weiter, der Bildschirm ist in wenigen Sekunden zurück, und Sie bleiben angemeldet.;La tua scala è {0}, lo schermo è a {1}.\r\n\r\nRiavviare ora l'HMI con {0}? La macchina continua a funzionare, lo schermo torna in pochi secondi e resti connesso.;Su escala es {0}, la pantalla está a {1}.\r\n\r\n¿Reiniciar ahora el HMI con {0}? La máquina sigue funcionando, la pantalla vuelve en unos segundos y sigue con la sesión iniciada.
 Usr_Factor;Screen scale;Ekran ölçeği;Масштаб экрана;Skalierung;Scala schermo;Escala
 Usr_FactorOwn;Screen scale;Ekran ölçeği;Масштаб экрана;Bildschirmskalierung;Scala dello schermo;Escala de pantalla
 Tip_UsrFactor;The screen scale this user asks for - offered when they sign in.;Bu kullanıcının istediği ekran ölçeği - oturum açtığında önerilir.;Масштаб экрана этого пользователя - предлагается при входе.;Die Skalierung, die dieser Benutzer wünscht - beim Anmelden angeboten.;La scala richiesta da questo utente - proposta all'accesso.;La escala que pide este usuario - se ofrece al iniciar sesión.
-Hdr_PanelFactor;Magnifying factor of this panel;Bu panelin büyütme oranı;;;;
-Usr_FactorPanel;For everyone;Herkes için;;;;
-Tip_PanelFactorSave;Keep this factor for everyone without their own - it takes effect when the HMI restarts;Bu oranı kendi oranı olmayan herkes için sakla - HMI yeniden başladığında geçerli olur;;;;
-Msg_FactorNote;0.8 to 1.5. Text, buttons, fields and pages are drawn this much larger (or smaller). Applied when the HMI starts: pages larger than the screen scroll.;0.8 - 1.5. Yazılar, düğmeler, alanlar ve sayfalar bu oranda büyük (ya da küçük) çizilir. HMI açılırken uygulanır: ekrandan büyük sayfalar kaydırılır.;;;;
+Hdr_PanelFactor;Magnifying factor of this panel;Bu panelin büyütme oranı;Коэффициент увеличения этой панели;Vergrößerungsfaktor dieses Panels;Fattore di ingrandimento di questo pannello;Factor de ampliación de este panel
+Usr_FactorPanel;For everyone;Herkes için;Для всех;Für alle;Per tutti;Para todos
+Tip_PanelFactorSave;Keep this factor for everyone without their own - it takes effect when the HMI restarts;Bu oranı kendi oranı olmayan herkes için sakla - HMI yeniden başladığında geçerli olur;Сохранить этот коэффициент для всех, у кого нет своего - вступит в силу после перезапуска HMI;Diesen Faktor für alle ohne eigenen behalten - wirkt nach dem Neustart des HMI;Mantieni questo fattore per tutti quelli che non ne hanno uno proprio - vale al riavvio dell'HMI;Guardar este factor para todos los que no tienen uno propio - surte efecto al reiniciar el HMI
+Msg_FactorNote;0.8 to 1.5. Text, buttons, fields and pages are drawn this much larger (or smaller). Applied when the HMI starts: pages larger than the screen scroll.;0.8 - 1.5. Yazılar, düğmeler, alanlar ve sayfalar bu oranda büyük (ya da küçük) çizilir. HMI açılırken uygulanır: ekrandan büyük sayfalar kaydırılır.;От 0,8 до 1,5. Текст, кнопки, поля и страницы рисуются во столько раз крупнее (или мельче). Применяется при запуске HMI: страницы больше экрана прокручиваются.;0,8 bis 1,5. Text, Schaltflächen, Felder und Seiten werden so viel größer (oder kleiner) gezeichnet. Gilt beim Start des HMI: Seiten, die größer als der Bildschirm sind, werden gescrollt.;Da 0,8 a 1,5. Testo, pulsanti, campi e pagine sono disegnati tanto più grandi (o più piccoli). Applicato all'avvio dell'HMI: le pagine più grandi dello schermo scorrono.;De 0,8 a 1,5. Textos, botones, campos y páginas se dibujan tanto más grandes (o más pequeños). Se aplica al iniciar el HMI: las páginas mayores que la pantalla se desplazan.
 Msg_FactorRange;The screen scale is a percent from 80% to 150%.;Ekran ölçeği %80 ile %150 arasında bir yüzdedir.;Масштаб экрана - от 80% до 150%.;Die Skalierung liegt zwischen 80% und 150%.;La scala va dall'80% al 150%.;La escala va del 80% al 150%.
-Msg_PanelFactorSaved;Kept. It takes effect when the HMI restarts.;Saklandı. HMI yeniden başladığında geçerli olur.;;;;
+Msg_PanelFactorSaved;Kept. It takes effect when the HMI restarts.;Saklandı. HMI yeniden başladığında geçerli olur.;Сохранено. Вступит в силу после перезапуска HMI.;Gespeichert. Wirkt nach dem Neustart des HMI.;Salvato. Vale al riavvio dell'HMI.;Guardado. Surte efecto al reiniciar el HMI.
 Tip_Zoom;Screen scale: how large the screen is drawn (80% - 150%);Ekran ölçeği: ekranın ne kadar büyük çizildiği (%80 - %150);Масштаб экрана: насколько крупно отображается экран (80% - 150%);Bildschirmskalierung: wie groß der Bildschirm gezeichnet wird (80% - 150%);Scala dello schermo: quanto grande è disegnato lo schermo (80% - 150%);Escala de pantalla: el tamaño con que se dibuja la pantalla (80% - 150%)
 Msg_FactorRestartNow;Restart the HMI now with the screen scale {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in.;HMI şimdi {0} ekran ölçeğiyle yeniden başlatılsın mı? Makine çalışmaya devam eder, ekran birkaç saniyede geri gelir ve oturumunuz açık kalır.;Перезапустить HMI с масштабом {0}? Станок продолжает работать, экран вернётся через несколько секунд, вы останетесь в системе.;HMI jetzt mit der Skalierung {0} neu starten? Die Maschine läuft weiter, der Bildschirm ist in wenigen Sekunden zurück, und Sie bleiben angemeldet.;Riavviare ora l'HMI con la scala {0}? La macchina continua a funzionare, lo schermo torna in pochi secondi e resti connesso.;¿Reiniciar ahora el HMI con la escala {0}? La máquina sigue funcionando, la pantalla vuelve en unos segundos y sigue con la sesión iniciada.
 Lbl_Or;or;veya;или;oder;o;o
