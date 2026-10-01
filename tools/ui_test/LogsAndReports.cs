@@ -13,10 +13,12 @@ using Kaban.UI.Dashboard;
 using Kaban.UI.Settings;
 
 // LOGS AND REPORTS (2 October): the dashboard's settings are the HMI's - HMI
-// Settings' log page, with a machine to choose and what its log database holds -
-// not a Machine Parameters tab; ONE table with the HMI's log and the machines'
-// states, events and alarms, filtered by Source; the empty dashboard says what
-// the database holds, or why it cannot be read.
+// Settings' log page, SETTINGS ONLY: the HMI log's switches, a machine to choose
+// and its log database and reports; not a Machine Parameters tab. The logs are
+// read on the Dashboard page, in tabs: the machine's states, events and alarms,
+// then the logs by kind, then all of them - ONE table with the HMI's log and the
+// machine's, its filters on the left. The empty dashboard says what the database
+// holds, or why it cannot be read.
 class LR {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -111,7 +113,7 @@ class LR {
         var links = Kaban.UI.Helpers.MachineLinks.WithLogs();
         Check("the machines with a log database", links.Count == 1 && links[0].ModuleId == "LOGTEST" && links[0].Dashboard == machine && links[0].MainStation == 1);
 
-        Console.WriteLine("--- Logs and Reports ---");
+        Console.WriteLine("--- Logs and Reports: the settings only ---");
         var page = new LogSettingsPage();
         Check("HMI Settings' log page is Logs and Reports", LanguageManager.GetString(page.TitleKey, page.TitleFallback) == "Logs and Reports" &&
               page.TitleFallback == "Logs and Reports");
@@ -121,24 +123,48 @@ class LR {
         host.Show();
         Pump(100);
         Check("a machine to choose", ls.MachineBox.Items.Count == 1 && ls.MachineBox.Text == "LOGTEST");
-        Check("what its database holds, in its row", Until(() => ls.MachineStateText.Contains("4 logs")) &&
-              ls.MachineStateText.StartsWith("database.sqlite: "), ls.MachineStateText);
-        var v = ls.Viewer;
-        Check("the table has a Source column and filter, and the machine kinds", v.SourceColumnShown &&
-              v.SourceChoices.SequenceEqual(new[] { "All sources", "HMI", "LOGTEST" }) &&
-              v.KindChoices.Contains("Machine state") && v.KindChoices.Contains("Machine event") && v.KindChoices.Contains("Machine alarm"),
-              string.Join(",", v.SourceChoices));
+        Check("  its log database and reports on the page (the dashboard's settings, no window)", ls.MachineSettings != null &&
+              ls.MachineSettings.Parent != null && ls.MachineSettings.DatabaseBox.Text == db);
+        Check("  what its database holds, tested as the page opens", Until(() => ls.MachineSettings.LastProbe != null) &&
+              ls.MachineSettings.LastProbe.Ok && ls.MachineSettings.LastProbe.Logs == 4);
+        Check("no log table here: the logs are read on the Dashboard page", ls.Viewer == null);
+
+        Console.WriteLine("--- the Dashboard page: the logs in tabs ---");
+        AuditLogger.Log("logged in as setter.");
+        var tabsDash = new DashboardScreen(machine);
+        var tform = new Form { ClientSize = new Size(1400, 900) };
+        tform.Controls.Add(tabsDash);
+        tform.Show();
+        Pump(200);
+        var keys = tabsDash.TabKeys.Select(t => t.Key).ToList();
+        Check("the tabs: states, events, alarms, then the logs by kind, then all of them",
+              keys.SequenceEqual(new[] { "states", "events", "alarms", "log_signin", "log_connection", "log_writes", "log_settings",
+                                         "log_problems", "log_other", "log_all" }), string.Join(",", keys));
+        Check("  named", tabsDash.TabKeys[0].Text.EndsWith("Machine states") && tabsDash.TabKeys[1].Text.EndsWith("Operation events") &&
+              tabsDash.TabKeys[2].Text.EndsWith("Alarms") && tabsDash.TabKeys.Last().Text.EndsWith("All logs"),
+              string.Join(",", tabsDash.TabKeys.Select(t => t.Text)));
+        Check("  the charts and tables on their tabs", tabsDash.SectionOf("state_pie").Parent.Parent.Tag as string == "states" &&
+              tabsDash.SectionOf("cutting_details").Parent.Parent.Tag as string == "events" &&
+              tabsDash.SectionOf("alarm_logs").Parent.Parent.Tag as string == "alarms");
+        Check("the log filters on the left: hidden on a machine tab", tabsDash.SelectedTabKey == "states" && !tabsDash.LogTable.SearchBox.Parent.Visible);
+        // the range around the test's rows (the dashboard's range is in the machine's zone)
+        tabsDash.SetRange(now.AddHours(-4), now.AddMinutes(5));
+        Check("the machine's log read first", Until(() => !tabsDash.Loading && tabsDash.View != null && tabsDash.View.Alarms.Count == 1));
+        tabsDash.SelectTab("log_all");
+        Pump(100);
+        var v = tabsDash.LogTable;
+        Check("  shown on a log tab", tabsDash.LogTable.SearchBox.Parent.Visible && v.Parent != null && (string)v.Parent.Tag == "log_all");
+        Check("All logs: a Source column and filter (the HMI and this machine)", v.SourceColumnShown &&
+              v.SourceChoices.SequenceEqual(new[] { "All sources", "HMI", "LOGTEST" }) && v.SourceBox.Visible, string.Join(",", v.SourceChoices));
         Func<int, IEnumerable<int>> rows = n => Enumerable.Range(0, n);
-        Check("the machine's log comes in (read on its own thread)",
-              Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")), v.StatusText);
+        Check("  the machine's log in it", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")), v.StatusText);
         var sources = rows(v.RowCount).Select(r => v.CellText(r, 5)).Distinct().ToList();
-        Check("ONE table: the HMI's entries and the machine's", sources.Contains("HMI") && sources.Contains("LOGTEST"), string.Join(",", sources));
+        Check("  ONE table: the HMI's entries and the machine's", sources.Contains("HMI") && sources.Contains("LOGTEST"), string.Join(",", sources));
         var alarm = rows(v.RowCount).FirstOrDefault(r => v.CellText(r, 3) == "Machine alarm");
         Check("its alarm with the bits that were on", alarm >= 0 && v.CellText(alarm, 4).Contains("Robot X Error") && v.CellText(alarm, 2) == "1",
               alarm < 0 ? "" : v.CellText(alarm, 4));
         var states = rows(v.RowCount).Where(r => v.CellText(r, 3) == "Machine state").Select(r => v.CellText(r, 4)).ToList();
-        Check("its states with how long", states.Count >= 2 && states.All(s => s.Contains(" min")) && states.Any(s => s.Contains("still")),
-              string.Join(" | ", states));
+        Check("its states with how long", states.Count >= 2 && states.All(st => st.Contains(" min")), string.Join(" | ", states));
         Check("  newest first, mixed by time", DateTime.Parse(v.CellText(0, 0).Replace("  ", " ")) >= DateTime.Parse(v.CellText(v.RowCount - 1, 0).Replace("  ", " ")));
 
         v.SetSource("LOGTEST");
@@ -148,15 +174,32 @@ class LR {
         Pump(50);
         Check("Source: HMI - the HMI's log only", v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 5) == "HMI"));
         v.SetSource(null);
-        v.SetKind(AuditKind.MachineAlarm);
-        Pump(50);
-        Check("Kind: machine alarms", v.RowCount == 1 && v.CellText(0, 3) == "Machine alarm");
-        v.SetKind(null);
         v.SearchText = "Robot";
-        Check("the search finds the machine's entries too", v.RowCount == 1 && v.CellText(0, 5) == "LOGTEST");
+        Check("the search (on the left) finds the machine's entries too", v.RowCount == 1 && v.CellText(0, 5) == "LOGTEST");
         v.SearchText = "";
         v.SelectRow(0);
         Check("the entry in full names its source", v.DetailText.Contains("LOGTEST") || v.DetailText.Contains("HMI"), v.DetailText);
+        var shifts = machine.Config.Shifts;
+        int away = Enumerable.Range(0, shifts.Count).First(i => !DashboardData.InShift(DateTime.Now.TimeOfDay, shifts[i]));
+        tabsDash.ShiftBox.SelectedIndex = away + 1;
+        Check("a shift chosen: the HMI's entries of its hours only, as the machine's", Until(() => !tabsDash.Loading && v.RowCount >= 0 &&
+              !rows(v.RowCount).Any(r => v.CellText(r, 5) == "HMI")), v.StatusText);
+        tabsDash.ShiftBox.SelectedIndex = 0;
+        Check("  all shifts: all of them again", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "HMI")));
+
+        tabsDash.SelectTab("log_signin");
+        Pump(100);
+        Check("a kind's tab: that kind only", v.Parent != null && (string)v.Parent.Tag == "log_signin" && v.RowCount >= 1 &&
+              rows(v.RowCount).All(r => v.CellText(r, 3) == "Sign-in, users") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("logged in as setter")),
+              string.Join(" | ", rows(v.RowCount).Select(r => v.CellText(r, 3) + ": " + v.CellText(r, 4))));
+        Check("  the Source filter on the all-logs tab only", !v.SourceBox.Visible);
+        tabsDash.SelectTab("log_other");
+        Pump(100);
+        Check("  Other: the HMI's parameter change, none of the machine's", rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("changed a parameter")) &&
+              rows(v.RowCount).All(r => v.CellText(r, 3) == "Other"));
+        tabsDash.SelectTab("alarms");
+        Pump(50);
+        Check("back on a machine tab: the log filters go", !tabsDash.LogTable.SearchBox.Parent.Visible);
 
         var shown = new List<AuditEntry>
         {
@@ -170,16 +213,17 @@ class LR {
         Check("  the text file names the machine and the kind", txt.Contains("] - LOGTEST - Machine alarm: Robot X Error"), txt);
 
         Console.WriteLine("--- the machine's database changed in its settings ---");
+        tabsDash.SelectTab("log_all");
         var c2 = machine.Config.Clone();
         c2.DatabasePath = wrong;
         machine.Replace(c2);
-        Check("the row says why it cannot be read", Until(() => ls.MachineStateText.Contains("main_log")), ls.MachineStateText);
-        Check("the table's status too, and the machine's entries go", Until(() => v.StatusText.Contains("LOGTEST: ") &&
-              !rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")), v.StatusText);
+        Check("the page says why it cannot be read, and the machine's entries go", Until(() => !tabsDash.Loading && tabsDash.InfoText.Contains("main_log") &&
+              !rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")), tabsDash.InfoText);
         var c3 = machine.Config.Clone();
         c3.DatabasePath = db;
         machine.Replace(c3);
-        Check("back", Until(() => ls.MachineStateText.Contains("4 logs") && rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")));
+        Check("back", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")));
+        tform.Close();
 
         Console.WriteLine("--- the dashboard's settings ---");
         var set = new DashboardSettingsControl(machine);

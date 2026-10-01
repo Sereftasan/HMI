@@ -802,6 +802,34 @@ namespace Kaban.UI.Controls
                           new System.Collections.Generic.Dictionary<string, bool>());
         }
 
+        /// <summary>
+        /// THE PROGRAM'S TABS, as the PLC Monitor's sheets: the chosen one white with
+        /// a dark rule under its bold name, the others light grey.
+        /// </summary>
+        public static void StyleTabs(TabControl tabs)
+        {
+            if (tabs == null) return;
+            tabs.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabs.SizeMode = TabSizeMode.Normal;
+            tabs.Padding = new Point(16, 5);
+            tabs.Font = Body;
+            tabs.DrawItem += (s, e) =>
+            {
+                if (e.Index < 0 || e.Index >= tabs.TabCount) return;
+                var r = tabs.GetTabRect(e.Index);
+                bool sel = e.Index == tabs.SelectedIndex;
+                using (var back = new SolidBrush(sel ? Color.White : Color.FromArgb(238, 240, 243)))
+                    e.Graphics.FillRectangle(back, r);
+                if (sel)
+                    using (var rule = new Pen(Color.FromArgb(60, 66, 76), 2f))
+                        e.Graphics.DrawLine(rule, r.Left + 4, r.Bottom - 2, r.Right - 4, r.Bottom - 2);
+                var font = sel ? FontVariant(Body, FontStyle.Bold) : Body;
+                TextRenderer.DrawText(e.Graphics, tabs.TabPages[e.Index].Text, font, r,
+                    sel ? GridInk : Color.FromArgb(80, 86, 96),
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            };
+        }
+
         /// <summary>The headings' menu of a table that has the table tools (null when it has none).</summary>
         public static Kaban.UI.Helpers.ColumnChooser ChooserOf(DataGridView grid)
         {

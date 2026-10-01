@@ -822,6 +822,11 @@ Dsh_ProbeEmpty;The database holds no logs yet.;Veritabanında henüz kayıt yok.
 Dsh_ProbeDates;Its dates are written as "{0}": the dashboard reads them only as {1} (UTC).;Tarihleri "{0}" olarak yazılmış: gösterge paneli bunları yalnızca {1} (UTC) olarak okur.;Даты записаны как "{0}": панель читает их только в виде {1} (UTC).;Die Daten sind als "{0}" geschrieben: Das Dashboard liest nur {1} (UTC).;Le date sono scritte come "{0}": la dashboard le legge solo come {1} (UTC).;Las fechas están escritas como "{0}": el panel solo las lee como {1} (UTC).
 Dsh_ProbeOpen;The database could not be opened:;Veritabanı açılamadı:;Не удалось открыть базу данных:;Die Datenbank konnte nicht geöffnet werden:;Impossibile aprire il database:;No se pudo abrir la base de datos:
 Dsh_DatabaseHolds;The database holds;Veritabanında bulunan:;В базе данных:;Die Datenbank enthält;Il database contiene;La base de datos contiene
+Dsh_TabStates;Machine states;Makine durumları;Состояния станка;Maschinenzustände;Stati macchina;Estados de la máquina
+Dsh_TabEvents;Operation events;Çalışma olayları;События работы;Betriebsereignisse;Eventi di lavorazione;Eventos de operación
+Dsh_TabAlarms;Alarms;Alarmlar;Аварии;Alarme;Allarmi;Alarmas
+Dsh_TabAll;All logs;Tüm kayıtlar;Все записи;Alle Protokolle;Tutti i registri;Todos los registros
+Dsh_LogSearch;Search the log;Kayıtlarda ara;Поиск в журнале;Im Protokoll suchen;Cerca nel registro;Buscar en el registro
 Dsh_SetTest;Look into the database: its logs, first and last;Veritabanına bak: kayıtları, ilk ve son;Проверить базу: записи, первая и последняя;Datenbank prüfen: Protokolle, erstes und letztes;Controlla il database: registri, primo e ultimo;Revisar la base de datos: registros, primero y último
 Dsh_SetTestCaption;What it holds;İçeriği;Содержимое;Inhalt;Contenuto;Contenido
 Dsh_SetTesting;Looking into the database...;Veritabanına bakılıyor...;Проверка базы данных...;Datenbank wird geprüft...;Controllo del database...;Revisando la base de datos...

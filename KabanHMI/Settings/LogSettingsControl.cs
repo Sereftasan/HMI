@@ -56,14 +56,12 @@ namespace Kaban.UI.Settings
     ///     (LogViewerControl) - it was the last 200 raw lines of today's file.
     /// Settings persist across restarts (LogSettingsStore).
     ///
-    /// LOGS AND REPORTS (2 October): the machines' own logs are the same subject -
-    /// the HMI's log says what was done on the HMI, a machine's log database what
-    /// the machine did. So the page has both: under the HMI log's switches, a
-    /// machine to choose, what its log database holds (or why it cannot be read),
-    /// \U0001F50D to look again and \u2699 for its database and reports (the dashboard's
-    /// settings, until then a Machine Parameters tab of each machine); and ONE
-    /// table with the HMI's entries and the machines' states, events and alarms,
-    /// with a Source filter. The machines come from MachineLinks.
+    /// LOGS AND REPORTS (2 October): the HMI's log and the machines' log databases
+    /// are one subject, set here - SETTINGS ONLY: the HMI log's switches, then a
+    /// machine to choose (MachineLinks) and its log database and reports (the
+    /// dashboard's settings, once a Machine Parameters tab and then a window). The
+    /// logs themselves are read on the Dashboard page, in its tabs; only a program
+    /// whose machines keep no log database shows the HMI's log here.
     /// </summary>
     public class LogSettingsControl : UserControl
     {
@@ -72,18 +70,14 @@ namespace Kaban.UI.Settings
         private readonly Label _off = new Label();
         private readonly Label _adminNote = new Label();
         private readonly Timer _retainLog = new Timer { Interval = 1500 };
-        private readonly LogViewerControl _viewer;
+        private readonly LogViewerControl _viewer;      // only when no machine keeps a log database
         private readonly EventHandler _onUserChanged;
         private bool _setting;
 
         // ---- the machines' logs
         private readonly FlowLayoutPanel _machineRow = new FlowLayoutPanel();
         private readonly ComboBox _machine = new ComboBox();
-        private readonly Label _dbState = new Label();
-        private Control _btnMachineSettings;
         private readonly List<Kaban.UI.Helpers.MachineLink> _logMachines;
-        private readonly EventHandler _onMachineConfig;
-        private int _probeGeneration;
 
         public LogSettingsControl()
         {
@@ -154,51 +148,50 @@ namespace Kaban.UI.Settings
             _off.Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.Body, FontStyle.Bold);
             _off.Text = LanguageManager.GetString("Log_Off", "Audit logging is OFF - nothing is being recorded.");
 
-            // ---- the machines' logs: choose one, see what its database holds ----
+            // ---- each machine's log database and reports: the dashboard's settings ----
+            // SETTINGS ONLY (2 October): the logs themselves are read on the Dashboard
+            // page (its log tabs); this page sets how they are kept.
             _logMachines = Kaban.UI.Helpers.MachineLinks.WithLogs();
             _machineRow.Dock = DockStyle.Top;
             _machineRow.AutoSize = true;
             _machineRow.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _machineRow.WrapContents = true;
-            _machineRow.Padding = new Padding(0, 0, 0, 4);
-            _machineRow.BackColor = Color.White;
+            _machineRow.Padding = new Padding(0, 6, 0, 2);
+            _machineRow.BackColor = Color.FromArgb(246, 248, 251);
             _machineRow.Controls.Add(new Label
             {
-                Text = LanguageManager.GetString("Log_MachineLog", "Machine log") + ":",
-                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = Kaban.UI.Controls.UiStyle.Body
+                Text = "\U0001F5C4\uFE0F " + LanguageManager.GetString("Log_MachineSettingsTitle", "Log database and reports") + ":",
+                AutoSize = true, Margin = new Padding(6, 8, 6, 3),
+                Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.Body, FontStyle.Bold)
             });
             _machine.DropDownStyle = ComboBoxStyle.DropDownList;
-            _machine.Width = 200;
-            _machine.Margin = new Padding(2, 6, 8, 3);
+            _machine.Width = 220;
+            _machine.Margin = new Padding(2, 4, 8, 3);
             foreach (var m in _logMachines) _machine.Items.Add(m);
-            _machine.SelectedIndexChanged += (s, e) => ProbeMachine();
+            _machine.SelectedIndexChanged += (s, e) => ShowMachineSettings();
             _machineRow.Controls.Add(_machine);
-            _dbState.AutoSize = true;
-            _dbState.MaximumSize = new Size(560, 0);
-            _dbState.Margin = new Padding(2, 10, 8, 3);
-            _dbState.Font = Kaban.UI.Controls.UiStyle.Small;
-            _machineRow.Controls.Add(_dbState);
-            var look = Kaban.UI.Controls.UiStyle.ToolButton("\uD83D\uDD0D",
-                LanguageManager.GetString("Log_MachineTest", "Look into the machine's log database again"), tips, (s, e) => ProbeMachine());
-            look.Margin = new Padding(2, 1, 4, 1);
-            _machineRow.Controls.Add(look);
-            _btnMachineSettings = Kaban.UI.Controls.UiStyle.ToolButton("\u2699",
-                LanguageManager.GetString("Log_MachineSettings", "The machine's log database and reports (the dashboard's settings)"), tips,
-                (s, e) => OpenMachineSettings());
-            _btnMachineSettings.Margin = new Padding(2, 1, 4, 1);
-            _machineRow.Controls.Add(_btnMachineSettings);
             _machineRow.Visible = _logMachines.Count > 0;
-            _onMachineConfig = (s, e) => { try { if (IsHandleCreated) BeginInvoke(new Action(ProbeMachine)); } catch { } };
-            foreach (var m in _logMachines) m.Dashboard.ConfigChanged += _onMachineConfig;
-            if (_machine.Items.Count > 0) _machine.SelectedIndex = 0;
 
-            _viewer = new LogViewerControl(null, LogViewerControl.Period.Today, machines: _logMachines.Count > 0);
+            _machinePanel.Dock = DockStyle.Fill;
+            _machinePanel.BackColor = Color.White;
 
             var gap = new Panel { Dock = DockStyle.Top, Height = 6, BackColor = Color.White };
-            Controls.Add(_viewer);
-            Controls.Add(gap);
+            if (_logMachines.Count > 0)
+            {
+                Controls.Add(_machinePanel);
+                Controls.Add(_machineRow);
+                Controls.Add(gap);
+                if (_machine.Items.Count > 0) _machine.SelectedIndex = 0;
+            }
+            else
+            {
+                // No machine keeps a log database: the HMI's log is read here (there is no
+                // Dashboard page to read it on).
+                _viewer = new LogViewerControl(null, LogViewerControl.Period.Today);
+                Controls.Add(_viewer);
+                Controls.Add(gap);
+            }
             Controls.Add(_off);
-            Controls.Add(_machineRow);
             Controls.Add(pn);
 
             _onUserChanged = (s, e) => ApplyAccess();
@@ -206,51 +199,32 @@ namespace Kaban.UI.Settings
             ApplyAccess();
         }
 
+        private readonly Panel _machinePanel = new Panel();
+        private Kaban.UI.Dashboard.DashboardSettingsControl _machineSettings;
+
         /// <summary>The chosen machine, or null.</summary>
         private Kaban.UI.Helpers.MachineLink ChosenMachine { get { return _machine.SelectedItem as Kaban.UI.Helpers.MachineLink; } }
 
-        /// <summary>What the chosen machine's log database holds - read on a thread, shown in the row.</summary>
-        public void ProbeMachine()
+        /// <summary>The chosen machine's log database and reports (the dashboard's settings), on the page.</summary>
+        private void ShowMachineSettings()
         {
             var m = ChosenMachine;
-            if (m == null || m.Dashboard == null) { _dbState.Text = ""; return; }
-            var cfg = m.Dashboard.Config;
-            string path = cfg.DatabasePath;
-            var zone = Kaban.UI.Dashboard.DashboardTime.Find(cfg.TimeZoneName);
-            int gen = ++_probeGeneration;
-            _dbState.ForeColor = Color.FromArgb(90, 96, 106);
-            _dbState.Text = LanguageManager.GetString("Dsh_SetTesting", "Looking into the database...");
-            System.Threading.Tasks.Task.Run(() => Kaban.UI.Dashboard.DashboardData.Check(path, zone)).ContinueWith(t =>
-            {
-                if (IsDisposed || gen != _probeGeneration || t.IsFaulted) return;
-                var p = t.Result;
-                LastProbe = p;
-                _dbState.ForeColor = p.Ok ? Color.FromArgb(30, 110, 50) : Color.Firebrick;
-                _dbState.Text = (p.Ok ? Path.GetFileName(path) + ": " : "") + p.Describe();
-                _viewer.Reload();
-            }, System.Threading.Tasks.TaskScheduler.FromCurrentSynchronizationContext());
+            if (_machineSettings != null) { _machinePanel.Controls.Remove(_machineSettings); _machineSettings.Dispose(); _machineSettings = null; }
+            if (m == null || m.Dashboard == null) return;
+            _machineSettings = new Kaban.UI.Dashboard.DashboardSettingsControl(m.Dashboard) { Dock = DockStyle.Fill };
+            _machinePanel.Controls.Add(_machineSettings);
         }
 
-        /// <summary>The last look into the chosen machine's database (tests).</summary>
-        public Kaban.UI.Dashboard.DashboardData.Probe LastProbe { get; private set; }
-        public string MachineStateText { get { return _dbState.Text; } }
+        /// <summary>The chosen machine's settings on the page (tests).</summary>
+        public Kaban.UI.Dashboard.DashboardSettingsControl MachineSettings { get { return _machineSettings; } }
         public ComboBox MachineBox { get { return _machine; } }
+        /// <summary>The HMI's log - only on a program whose machines keep no log database.</summary>
         public LogViewerControl Viewer { get { return _viewer; } }
-
-        private void OpenMachineSettings()
-        {
-            var m = ChosenMachine;
-            if (m == null) return;
-            Kaban.UI.Dashboard.DashboardSettingsControl.ShowDialog(FindForm(), m.Dashboard,
-                LanguageManager.GetString("Log_MachineSettingsTitle", "Log database and reports") + " - " + m.Name);
-            ProbeMachine();
-        }
 
         /// <summary>The switches are an Admin's; everyone who may open the page may read the log.</summary>
         private void ApplyAccess()
         {
             bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            if (_btnMachineSettings != null) _btnMachineSettings.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
             _chkEnabled.Enabled = admin;
             _numRetain.Enabled = admin;
             _adminNote.Visible = !admin;
@@ -296,7 +270,6 @@ namespace Kaban.UI.Settings
             if (disposing)
             {
                 SecurityManager.UserChanged -= _onUserChanged;
-                foreach (var m in _logMachines) m.Dashboard.ConfigChanged -= _onMachineConfig;
                 _retainLog.Stop(); _retainLog.Dispose();
             }
             base.Dispose(disposing);

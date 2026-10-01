@@ -352,7 +352,7 @@ class DP {
         Check("kept", set.Save() && set.ProblemText == "");
         Check("the times are cleaned (07:05, 18:00)", machine.Config.Schedule.Times.SequenceEqual(new[] { "07:05", "18:00" }));
         Pump(200);
-        Check("a section switched off leaves the page", !page.SectionOf("event_quantity").Visible && page.SectionOf("event_logs").Visible);
+        Check("a section switched off leaves the page", !page.SectionOf("event_quantity").Shown && page.SectionOf("event_logs").Shown);
         set.PeriodBox.SelectedItem = "Weekly";
         Pump(50);
         Check("weekly: the weekdays and one time are asked, not the day's times",

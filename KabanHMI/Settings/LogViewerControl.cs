@@ -51,6 +51,9 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _kind = new ComboBox();
         private readonly ComboBox _source = new ComboBox();
         private readonly bool _machines;
+
+        /// <summary>Entries come from more than the HMI (the machines, or the host's machine): the Source is shown.</summary>
+        private bool HasSources { get { return _sourceNames.Count > 0; } }
         private readonly List<Kaban.UI.Dashboard.MachineLogFeed> _feeds = new List<Kaban.UI.Dashboard.MachineLogFeed>();
         private readonly Dictionary<string, string> _sourceNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private readonly EventHandler _onFeed;
@@ -79,10 +82,18 @@ namespace Kaban.UI.Settings
         public LogViewerControl() : this(null, Period.Today) { }
 
         /// <param name="kind">A kind to start with (PLC Diagnostics: Connection); null for all.</param>
-        /// <param name="machines">With the mounted machines' own logs (Logs and Reports).</param>
-        public LogViewerControl(AuditKind? kind, Period period, bool machines = false)
+        /// <param name="machines">With the mounted machines' own logs (read from their log databases).</param>
+        /// <param name="embedded">
+        /// In a page that sets the range and holds the filters itself (the Dashboard,
+        /// 2 October): no bar of its own - the host places SearchBox, UserBox, PlcBox,
+        /// SourceBox, ClearButton and ExportButton - not live, the kinds set per tab
+        /// (SetKinds), the range set by the host (SetRange), the host's own entries
+        /// beside the HMI's (ExtraEntries).
+        /// </param>
+        public LogViewerControl(AuditKind? kind, Period period, bool machines = false, bool embedded = false)
         {
             _machines = machines;
+            _embedded = embedded;
             Dock = DockStyle.Fill;
             BackColor = Color.White;
             Font = Kaban.UI.Controls.UiStyle.Body;
@@ -207,14 +218,25 @@ namespace Kaban.UI.Settings
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Kind", "Kind")), _kind));
             if (machines) bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Source", "Source")), _source));
             bar.Controls.Add(_live);
-            var clear = UiStyle.ToolButton("✖", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and kind"),
+            var clear = UiStyle.ToolButton("\u2716", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and kind"),
                                            _tips, (s, e) => ClearFilters());
             clear.Margin = new Padding(8, 1, 3, 1);
-            bar.Controls.Add(clear);
+            ClearButton = clear;
             var export = UiStyle.ToolButton("\uD83D\uDCE4", LanguageManager.GetString("Log_ExportTip", "Export the entries shown"),
                                             _tips, (s, e) => Export());
             export.Margin = new Padding(3, 1, 3, 1);
-            bar.Controls.Add(export);
+            ExportButton = export;
+            if (embedded)
+            {
+                // the host lays the filters out (no Pair panels around them)
+                bar.Controls.Clear();
+                _live.Checked = false;
+            }
+            else
+            {
+                bar.Controls.Add(clear);
+                bar.Controls.Add(export);
+            }
 
             // ---- the table --------------------------------------------------
             _grid.Dock = DockStyle.Fill;
@@ -238,8 +260,8 @@ namespace Kaban.UI.Settings
             _grid.Columns.Add(source);
             source.DisplayIndex = 1;
             // The program's table look and column menu (the PLC Monitor's); kept apart
-            // for the page with the machines' logs and the one without.
-            UiStyle.EnableTableTools(_grid, machines ? "LogsAndReports" : "HmiLog", sorting: false);
+            // for the page with the machines' logs, the Dashboard's log tabs and the HMI's log.
+            UiStyle.EnableTableTools(_grid, machines ? "LogsAndReports" : embedded ? "DashboardLog" : "HmiLog", sorting: false);
             source.Visible = machines;
             _grid.CellValueNeeded += OnCellValueNeeded;
             _grid.CellFormatting += OnCellFormatting;
@@ -272,7 +294,7 @@ namespace Kaban.UI.Settings
             Controls.Add(gap);
             Controls.Add(_detail);
             Controls.Add(_status);
-            Controls.Add(bar);
+            if (!embedded) Controls.Add(bar);
 
             SelectPeriod(period, true);
             _period.SelectedIndexChanged += (s, e) =>
@@ -283,8 +305,62 @@ namespace Kaban.UI.Settings
             };
 
             _refresh.Tick += (s, e) => { if (_live.Checked && FollowsNow) Reload(); };
-            VisibleChanged += (s, e) => { _refresh.Enabled = Visible; if (Visible) Reload(); };
+            VisibleChanged += (s, e) => { _refresh.Enabled = Visible && !_embedded; if (Visible) Reload(); };
             Reload();
+        }
+
+        // ---- in a page of its own (the Dashboard) -------------------------------
+
+        private readonly bool _embedded;
+        private HashSet<AuditKind> _kindSet;
+
+        public Control SearchBox { get { return _search; } }
+        public ComboBox UserBox { get { return _user; } }
+        public ComboBox PlcBox { get { return _plc; } }
+        public ComboBox SourceBox { get { return _source; } }
+        public Control ClearButton { get; private set; }
+        public Control ExportButton { get; private set; }
+
+        /// <summary>The host's own entries for a range (a machine's states, events and alarms as its page has them).</summary>
+        public Func<DateTime, DateTime, List<AuditEntry>> ExtraEntries;
+
+        /// <summary>The host's own condition on an entry (the Dashboard's shift); null: none.</summary>
+        public Func<AuditEntry, bool> ExtraFilter;
+
+        /// <summary>Only these kinds (a tab of the Dashboard); none: every kind.</summary>
+        public void SetKinds(params AuditKind[] kinds)
+        {
+            _kindSet = kinds == null || kinds.Length == 0 ? null : new HashSet<AuditKind>(kinds);
+            ApplyFilter(true);
+        }
+
+        /// <summary>The range to list (the host's), read again.</summary>
+        public void SetRange(DateTime from, DateTime to)
+        {
+            _setting = true;
+            try
+            {
+                for (int i = 0; i < _period.Items.Count; i++)
+                    if ((Period)((Choice)_period.Items[i]).Value == Period.Custom) _period.SelectedIndex = i;
+                _from.Value = Clamp(from);
+                _to.Value = Clamp(to);
+            }
+            finally { _setting = false; }
+            _rangeFrom = from;
+            _rangeTo = to;
+            _inPeriod = new List<AuditEntry>();          // read and filter again
+            Reload();
+        }
+
+        private DateTime? _rangeFrom, _rangeTo;
+
+        /// <summary>A source the host's entries come from (its machine), in the Source filter.</summary>
+        public void AddSource(string id, string name)
+        {
+            if (string.IsNullOrEmpty(id) || _sourceNames.ContainsKey(id)) return;
+            _sourceNames[id] = name ?? id;
+            _source.Items.Add(new Choice(id, name ?? id));
+            _grid.Columns["Source"].Visible = true;
         }
 
         // ------------------------------------------------------------------
@@ -396,7 +472,12 @@ namespace Kaban.UI.Settings
         {
             DateTime from, to;
             var p = CurrentPeriod;
-            if (p == Period.Custom)
+            if (_embedded && _rangeFrom.HasValue)
+            {
+                from = _rangeFrom.Value;                  // exactly the host's range
+                to = _rangeTo.Value;
+            }
+            else if (p == Period.Custom)
             {
                 from = _from.Value;
                 // To is a minute: 14:05 means up to 14:05:59.
@@ -413,6 +494,18 @@ namespace Kaban.UI.Settings
             // With the PLC write log's device writes (PlcWriteLog): every device the
             // HMI wrote, with the value before it and what wrote it.
             var read = AuditLogReader.Read(from, to, true);
+            if (ExtraEntries != null)
+            {
+                // the host's own entries (its machine's log as its page read it)
+                List<AuditEntry> extra = null;
+                try { extra = ExtraEntries(from, to); } catch { extra = null; }
+                if (extra != null && extra.Count > 0)
+                {
+                    var all = new List<AuditEntry>(read);
+                    all.AddRange(extra);
+                    read = all.OrderBy(e => e.Time).ToList();
+                }
+            }
             if (_feeds.Count > 0)
             {
                 // The machines' logs: as far as they are read (a read starts on its own
@@ -519,6 +612,8 @@ namespace Kaban.UI.Settings
                     (user == null || string.Equals(e.User, user, StringComparison.OrdinalIgnoreCase)) &&
                     (!station.HasValue || e.Station == station) &&
                     (!kind.HasValue || e.Kind == kind.Value) &&
+                    (_kindSet == null || _kindSet.Contains(e.Kind)) &&
+                    (ExtraFilter == null || ExtraFilter(e)) &&
                     AuditLogReader.Matches(e, search)).ToList();
         }
 
@@ -620,7 +715,7 @@ namespace Kaban.UI.Settings
             var e = Selected();
             _detail.Text = e == null ? "" :
                 (e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "   " +
-                 (_machines ? SourceName(e.Source) + "   " : "") + e.User + "   " +
+                 (HasSources ? SourceName(e.Source) + "   " : "") + e.User + "   " +
                  (e.Station.HasValue ? "PLC " + e.Station.Value + "   " : "") + KindName(e.Kind) + Environment.NewLine + e.Text.Replace("\n", Environment.NewLine));
         }
 
@@ -693,7 +788,7 @@ namespace Kaban.UI.Settings
                 try
                 {
                     File.WriteAllText(dlg.FileName, ExportText(list, dlg.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase),
-                                                               _machines ? (Func<string, string>)SourceName : null),
+                                                               HasSources ? (Func<string, string>)SourceName : null),
                                       new UTF8Encoding(true));
                     _status.Text = string.Format(LanguageManager.GetString("Log_Exported", "Exported {0} entries: {1}"),
                                                  list.Count, dlg.FileName);

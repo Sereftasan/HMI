@@ -4284,3 +4284,24 @@ and `UnitLookAndErrors` extended.
   `Lbl_HelperLinksNote`, `Btn_AddFiles`, `Btn_AddLink`, `Btn_Remove`, `Btn_Up`, `Btn_Down`, `Tip_UsrSave`, `Tip_UsrDelete`,
   `Tip_AlarmSet*`. Manual: "Tables" (section 1), the PLC Monitor's columns.
 - Tests: `tools/ui_test/TableLook.cs` (new); `MonitorColumns.cs`, `TableTools.cs` updated.
+
+## 2026-10-02 - The Dashboard in tabs with the logs; Logs and Reports holds the settings only; Screen scale's "+"
+
+- `DashboardScreen`: the sections on tabs (`_tabs`, styled by the new `UiStyle.StyleTabs`) - Machine states, Operation
+  events, Alarms (a tab with every section switched off is left out) - then a tab per log kind and *All logs*; the title,
+  range text, info and shift metrics above the tabs (`_head`). One embedded `LogViewerControl` moves to the log tab chosen
+  (`SetKinds`), with the page's range (`SetRange`) and this machine's states / events / alarms from what the page read
+  (`ExtraEntries` -> `MachineLogFeed.ToEntries`); its search, user, PLC, source, clear and export on the left bar while a
+  log tab is chosen, under the shift, which the log follows too (`ExtraFilter`). `SelectedTabKey`, `SelectTab`, `TabKeys`,
+  `LogTable`, `Section.Shown`.
+- `LogViewerControl(kind, period, machines, embedded)`: embedded - no bar, no live refresh, the host's range and kinds;
+  `SearchBox` / `UserBox` / `PlcBox` / `SourceBox` / `ClearButton` / `ExportButton`, `ExtraEntries`, `ExtraFilter`, `SetKinds`,
+  `SetRange`, `AddSource`; the entry in full and the export name the source whenever there is more than the HMI; its own
+  column layout (`DashboardLog`).
+- `LogSettingsControl`: settings only - the HMI log's switches, then a machine and its log database and reports (the
+  `DashboardSettingsControl` on the page, which looks into its database as it opens); the HMI's log here only when no
+  machine keeps a log database. The machine row's probe text, its look-again and settings buttons removed.
+- `MainForm.DrawMagnifierGlyph`: a "+" in the Screen scale button's glass (the plain glass is Find).
+- Translations: `Dsh_TabStates`, `Dsh_TabEvents`, `Dsh_TabAlarms`, `Dsh_TabAll`, `Dsh_LogSearch`. Manual: HMI Settings,
+  Logs and Reports, the log table, the dashboard's tabs, the Screen scale button (row 4 and its picture).
+- Tests: `tools/ui_test/LogsAndReports.cs` rewritten for the settings page and the tabs; `DashboardPage.cs` (`Shown`).

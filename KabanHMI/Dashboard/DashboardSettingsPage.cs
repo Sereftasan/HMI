@@ -175,6 +175,8 @@ namespace Kaban.UI.Dashboard
             _flow.Controls.Add(buttons);
 
             Fill(_machine.Config);
+            // what the database holds, at once
+            HandleCreated += (s, e) => { try { BeginInvoke(new Action(TestDatabase)); } catch { } };
             bool can = SecurityManager.HasAccess(SecurityLevel.Maintenance);
             foreach (Control c in _flow.Controls) if (c != _next) c.Enabled = can;
         }

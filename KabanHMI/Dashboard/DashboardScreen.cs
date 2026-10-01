@@ -38,6 +38,10 @@ namespace Kaban.UI.Dashboard
 
         // ---- the left side
         private readonly FlowLayoutPanel _side = new FlowLayoutPanel();
+        private readonly Panel _main = new Panel();
+        /// <summary>The log tabs' filters on the left: words, user, PLC, source (on show with a log tab).</summary>
+        private readonly FlowLayoutPanel _logFilters = new FlowLayoutPanel();
+        private Control _logSource, _logSourceCaption;
         private readonly ComboBox _history = new ComboBox();
         private readonly ComboBox _latest = new ComboBox();
         private Button _refresh;
@@ -79,7 +83,7 @@ namespace Kaban.UI.Dashboard
 
             BuildMain();
             BuildSide();
-            Controls.Add(_mainScroll);
+            Controls.Add(_main);
             Controls.Add(_side);
 
             // the first range: the last day
@@ -220,6 +224,36 @@ namespace Kaban.UI.Dashboard
             _rangeError.Visible = false;
             _side.Controls.Add(_rangeError);
 
+            // the log tabs' filters - the log table's own boxes, laid out down the side
+            // (put on the side under the shift, below)
+            _logFilters.FlowDirection = FlowDirection.TopDown;
+            _logFilters.WrapContents = false;
+            _logFilters.AutoSize = true;
+            _logFilters.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            _logFilters.Margin = new Padding(0);
+            _logFilters.Padding = new Padding(0);
+            _logFilters.Visible = false;
+            _logFilters.Controls.Add(Rule());
+            _logFilters.Controls.Add(SideCaption("Dsh_LogSearch", "\uD83D\uDD0D", "Search the log"));
+            _log.SearchBox.Width = SideInner;
+            _log.SearchBox.Margin = new Padding(0, 2, 0, 2);
+            _logFilters.Controls.Add(_log.SearchBox);
+            foreach (var f in new[] { new object[] { "Log_User", "User", _log.UserBox }, new object[] { "Log_Plc", "PLC", _log.PlcBox },
+                                      new object[] { "Log_Source", "Source", _log.SourceBox } })
+            {
+                var caption = SideCaption((string)f[0], "", (string)f[1]);
+                caption.Margin = new Padding(0, 6, 0, 2);
+                var box = (ComboBox)f[2];
+                box.Width = SideInner;
+                box.Margin = new Padding(0, 2, 0, 2);
+                _logFilters.Controls.Add(caption);
+                _logFilters.Controls.Add(box);
+                if (box == _log.SourceBox) { _logSource = box; _logSourceCaption = caption; }
+            }
+            _log.ClearButton.Location = new Point(0, 0);
+            _log.ExportButton.Location = new Point(50, 0);
+            _logFilters.Controls.Add(Row(36, _log.ClearButton, _log.ExportButton));
+
             _side.Controls.Add(Rule());
 
             // the shift
@@ -240,6 +274,8 @@ namespace Kaban.UI.Dashboard
             _shiftEditor.BorderStyle = BorderStyle.FixedSingle;
             _shiftEditor.BackColor = Color.White;
             _side.Controls.Add(_shiftEditor);
+            // under the range and the shift, which the log tabs follow too
+            _side.Controls.Add(_logFilters);
 
             _side.Controls.Add(Rule());
 

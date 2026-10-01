@@ -146,6 +146,13 @@ namespace Kaban.UI.Forms
                     g.DrawEllipse(lens, x + 2 * s, y + 2 * s, 11 * s, 11 * s);
                 using (var handle = new System.Drawing.Pen(colour, 3.2f * s) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round })
                     g.DrawLine(handle, x + 12 * s, y + 12 * s, x + 17.5f * s, y + 17.5f * s);
+                // A "+" in the lens (2 October): the screen scale, not the Find glass.
+                float cx = x + 7.5f * s, cy = y + 7.5f * s, arm = 2.8f * s;
+                using (var plus = new System.Drawing.Pen(colour, 1.8f * s) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round })
+                {
+                    g.DrawLine(plus, cx - arm, cy, cx + arm, cy);
+                    g.DrawLine(plus, cx, cy - arm, cx, cy + arm);
+                }
             }
             finally { g.Restore(state); }
         }
