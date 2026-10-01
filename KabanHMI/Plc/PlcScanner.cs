@@ -120,8 +120,17 @@ namespace Kaban.UI.Plc
             if (h != null) h(null, EventArgs.Empty);
         }
 
+        private static int _generationVersion;
+        private int _generationSeen;
+
+        static PlcScanner()
+        {
+            AlarmGeneration.WatchesChanged += (s, e) => System.Threading.Interlocked.Increment(ref _generationVersion);
+        }
+
         public void RefreshTags(bool clearDynamicCache = false)
         {
+            _generationSeen = _generationVersion;
             if (clearDynamicCache) _dynamicAddresses.Clear();
 
             _timer.Stop();
@@ -338,6 +347,9 @@ namespace Kaban.UI.Plc
                 AddTo(st, alarmDef.Address);
                 if (alarmDef.DataType == DataTypeEnum.Bin_32) AddTo(st, PlcAddressHelper.GetNextAddress(alarmDef.Address));
             }
+            // The alarms the HMI raises itself: the outputs, sensors and drive codes
+            // they time and read, whichever page is on show.
+            foreach (var gen in AlarmGeneration.Addresses()) AddTo(gen.Key, gen.Value);
 
             // Fold in the addresses discovered at runtime (see _dynamicAddresses).
             foreach (var kvDyn in _dynamicAddresses)
@@ -564,6 +576,9 @@ namespace Kaban.UI.Plc
             if (_targetControl == null || _targetControl.IsDisposed) { _timer.Stop(); return; }
             if (_plcBatch.Count == 0) return;
             if (_scanBusy) return;              // previous scan still in flight - skip this tick
+            // What the HMI's own alarms read changed (units found, a machine switched
+            // on): once per tick however many changed, not once per unit.
+            if (_generationSeen != _generationVersion) { _generationSeen = _generationVersion; RefreshTags(); }
             _scanBusy = true;
 
             // snapshot the batches so the worker never touches collections the UI edits
@@ -813,7 +828,12 @@ namespace Kaban.UI.Plc
             foreach (var kvFresh in freshValues)
             {
                 Func<string, int> lk;
-                if (lookups.TryGetValue(kvFresh.Key, out lk)) AlarmManager.Evaluate(kvFresh.Key, lk);
+                if (!lookups.TryGetValue(kvFresh.Key, out lk)) continue;
+                // The HMI's own alarms FIRST: the PLC's bit for the same device is then
+                // kept off (or let back on) in the same scan, never shown for a scan.
+                try { AlarmGeneration.Evaluate(kvFresh.Key, lk, DateTime.Now); }
+                catch (Exception ex) { AuditLogger.Log("alarm generation: " + ex.Message); }
+                AlarmManager.Evaluate(kvFresh.Key, lk);
             }
 
             if (station1Fresh && lookups.ContainsKey(1))

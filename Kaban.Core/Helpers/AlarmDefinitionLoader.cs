@@ -40,6 +40,12 @@ namespace Kaban.Core.Helpers
             public List<string> HelperKeys { get; set; }
 
             /// <summary>
+            /// Seconds a cylinder movement may take before the HMI raises this alarm
+            /// itself (AlarmGeneration); absent: the machine's general delay.
+            /// </summary>
+            public double? GenerationDelay { get; set; }
+
+            /// <summary>
             /// The engineer's note ("StateCode 4 / First 32 Errors (1) bit 0").
             /// Every shipped Alarms.json carries one; without this property the
             /// loader dropped it and the first Save erased it from the file.
@@ -111,6 +117,7 @@ namespace Kaban.Core.Helpers
                     entry.Severity = def.Severity.ToString();
                     entry.TroubleshootingKeys = def.TroubleshootingKeys;
                     entry.HelperKeys = def.HelperKeys;
+                    entry.GenerationDelay = def.GenerationDelay;
                 }
 
                 List<AlarmJsonEntry> list;
@@ -237,6 +244,8 @@ namespace Kaban.Core.Helpers
                         // column is that use.
                         troubleshootingKeys: entry.TroubleshootingKeys,
                         helperKeys: entry.HelperKeys);
+                    var registered = AlarmManager.FindByCode(scopedCode);
+                    if (registered != null) registered.GenerationDelay = entry.GenerationDelay;
 
                     _loaded.Add(entry);
                     _loadedModuleIds.Add(moduleId ?? "");

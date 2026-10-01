@@ -34,6 +34,13 @@ namespace Kaban.Core.Helpers
         /// cover - a drawing, a supplier note, a one-off procedure.
         /// </summary>
         public List<string> HelperKeys { get; set; }
+
+        /// <summary>
+        /// How long (seconds) a movement may take before the HMI raises this
+        /// alarm itself (AlarmGeneration) - for a cylinder unit's error bit; null:
+        /// the machine's general delay.
+        /// </summary>
+        public double? GenerationDelay { get; set; }
     }
 
     /// <summary>
@@ -66,6 +73,44 @@ namespace Kaban.Core.Helpers
         private const int MaxHistory = 500;
 
         public static event EventHandler AlarmsChanged;
+
+        /// <summary>
+        /// A PLC-bit alarm kept off the list while the HMI shows its own alarm for
+        /// the same device (AlarmGeneration): one fault, one line - the HMI's names
+        /// which signal failed. Null: nothing kept off.
+        /// </summary>
+        public static Func<AlarmDefinition, bool> Suppressed;
+
+        /// <summary>Adds an alarm the HMI raised itself (AlarmGeneration) to the list and the history.</summary>
+        public static void RaiseGenerated(AlarmItem item)
+        {
+            if (item == null) return;
+            item.Generated = true;
+            for (int i = ActiveAlarms.Count - 1; i >= 0; i--)
+                if (ActiveAlarms[i].AlarmCode == item.AlarmCode) ActiveAlarms.RemoveAt(i);
+            ActiveAlarms.Add(item);
+            AddToHistory(item);
+            AuditLogger.Log("HMI alarm " + item.ShownCode + " raised: " + item.Description);
+            AlarmsChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>Takes a generated alarm off the list (its movement succeeded, its code cleared).</summary>
+        public static void ClearGenerated(AlarmItem item)
+        {
+            if (item == null) return;
+            bool any = false;
+            for (int i = ActiveAlarms.Count - 1; i >= 0; i--)
+                if (ReferenceEquals(ActiveAlarms[i], item)) { ActiveAlarms.RemoveAt(i); any = true; }
+            if (any) AlarmsChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>True while the item is on the active list (an acknowledgement takes it off).</summary>
+        public static bool IsOnList(AlarmItem item)
+        {
+            if (item == null) return false;
+            foreach (var a in ActiveAlarms) if (ReferenceEquals(a, item)) return true;
+            return false;
+        }
 
         public static void RegisterDefinition(string alarmCode, string translationKey, AlarmSeverity severity,
             int plcNumber, string address, DataTypeEnum dataType = DataTypeEnum.Bin_16,
@@ -232,6 +277,15 @@ namespace Kaban.Core.Helpers
                 foreach (var def in _definitions.Values)
                 {
                     if (station.HasValue && StationOf(def) != station.Value) continue;
+
+                    // The HMI's own alarm for this device is on show: this line would repeat it.
+                    bool kept = false;
+                    try { kept = Suppressed != null && Suppressed(def); } catch { kept = false; }
+                    if (kept)
+                    {
+                        if (IsCurrentlyActive(def.AlarmCode)) { RemoveActive(def.AlarmCode); changed = true; }
+                        continue;
+                    }
 
                     bool isActive = false;
                     try

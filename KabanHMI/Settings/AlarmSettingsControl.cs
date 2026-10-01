@@ -19,6 +19,10 @@ namespace Kaban.UI.Settings
     /// Stored next to the machine (AlarmSettings.cfg) rather than in Alarms.json,
     /// so regenerating the alarm list from the customer's workbook never discards
     /// what the engineer has tuned on site.
+    ///
+    /// THE ALARMS THE HMI RAISES ITSELF (1 October): above the table, switched on
+    /// per machine, with the general delay; in the table, a delay of its own for
+    /// a cylinder movement's alarm (blank: the general one). See AlarmGeneration.
     /// </summary>
     public class AlarmSettingsControl : UserControl
     {
@@ -72,6 +76,47 @@ namespace Kaban.UI.Settings
                                           tips, (s, e) => OpenHelper());
             add(_btnOpen);
 
+            // ---- the alarms the HMI raises itself ----
+            var gen = AlarmGeneration.For(GenerationModule);
+            _genPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top, Height = 36, BackColor = Color.FromArgb(246, 248, 251),
+                Padding = new Padding(6, 6, 6, 0), WrapContents = false, AutoScroll = false
+            };
+            _genOn = new CheckBox
+            {
+                Name = "GenerationOn", AutoSize = true, Checked = gen.Enabled, Margin = new Padding(3, 3, 18, 0),
+                Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder and axis alarms itself")
+            };
+            tips.SetToolTip(_genOn, LanguageManager.GetString("Tip_AlarmGenOn",
+                "On: every cylinder unit's movement is timed from its output and must be confirmed by its sensors within its delay, " +
+                "or the HMI raises its alarm with the signal that failed (M840.1, M840.2...). An axis row raises its alarm while its " +
+                "Servo Alarm or Axis Alarm shows a code. The PLC's own alarm for the same device is then not listed twice."));
+            var delayLabel = new Label
+            {
+                AutoSize = true, Margin = new Padding(3, 6, 3, 0),
+                Text = LanguageManager.GetString("Set_AlarmGenDelay", "Delay (s):")
+            };
+            _genDelay = new NumericUpDown
+            {
+                Name = "GenerationDelay", Width = 70, DecimalPlaces = 1, Increment = 0.5M,
+                Minimum = (decimal)AlarmGeneration.MinimumDelaySeconds, Maximum = 600,
+                Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds))
+            };
+            tips.SetToolTip(_genDelay, LanguageManager.GetString("Tip_AlarmGenDelay",
+                "How long a movement may take before the HMI raises its alarm - for every alarm whose Delay cell is blank."));
+            var hint = new Label
+            {
+                AutoSize = true, Margin = new Padding(12, 6, 3, 0), ForeColor = Color.FromArgb(100, 108, 120),
+                Text = LanguageManager.GetString("Set_AlarmGenHint", "An alarm's own delay: the Delay column (blank = this one).")
+            };
+            _genPanel.Controls.Add(_genOn);
+            _genPanel.Controls.Add(delayLabel);
+            _genPanel.Controls.Add(_genDelay);
+            _genPanel.Controls.Add(hint);
+            _genOn.CheckedChanged += (s, e) => { _dirty.MarkDirty(); ShowGeneration(); };
+            _genDelay.ValueChanged += (s, e) => _dirty.MarkDirty();
+
             _grid.Dock = DockStyle.Fill;
             // Column captions need room UNDER the text: a header sized to the
             // cap height slices through g, p and y.
@@ -97,6 +142,16 @@ namespace Kaban.UI.Settings
             sev.Items.AddRange(Enum.GetNames(typeof(AlarmSeverity)));
             _grid.Columns.Add(sev);
 
+            // A cylinder movement's own delay for the alarm the HMI raises (blank:
+            // the general delay above). Only for an alarm a unit's movement reports.
+            _grid.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "Delay",
+                HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Delay (s)"),
+                FillWeight = 8,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight }
+            });
+
 
             _grid.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -120,6 +175,17 @@ namespace Kaban.UI.Settings
             // every column before the grid could be read at all.
             FitColumnsToHeadings(_grid);
             _grid.CellDoubleClick += (s, e) => { if (e.ColumnIndex == _grid.Columns["Helper"].Index) EditHelpers(e.RowIndex); };
+            // A delay is a number of seconds, or nothing.
+            _grid.CellValidating += (s, e) =>
+            {
+                if (e.ColumnIndex != _grid.Columns["Delay"].Index || _grid.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly) return;
+                double d;
+                var text = Convert.ToString(e.FormattedValue).Trim();
+                if (text.Length == 0 || (TryDelay(text, out d) && d >= AlarmGeneration.MinimumDelaySeconds && d <= 600)) { _status.Text = ""; return; }
+                _status.Text = string.Format(LanguageManager.GetString("Set_AlarmDelayBad", "A delay is a number of seconds from {0} to 600, or blank for the general delay."),
+                                             AlarmGeneration.MinimumDelaySeconds.ToString(System.Globalization.CultureInfo.CurrentCulture));
+                e.Cancel = true;
+            };
 
             // A combo cell does not commit until focus leaves it, which makes the
             // code column look one edit behind. Committing on change fixes that.
@@ -136,27 +202,79 @@ namespace Kaban.UI.Settings
 
             Controls.Add(_grid);
             Controls.Add(_status);
+            Controls.Add(_genPanel);
             Controls.Add(bar);
 
             LoadRows();
         }
 
 
+        private readonly FlowLayoutPanel _genPanel;
+        private readonly CheckBox _genOn;
+        private readonly NumericUpDown _genDelay;
+
+        /// <summary>The machine the generation settings are kept for (the main machine's for a page with none).</summary>
+        private string GenerationModule
+        {
+            get { return !string.IsNullOrEmpty(_moduleId) ? _moduleId : AlarmGeneration.ModuleOfStation(1); }
+        }
+
+        private static bool TryDelay(string text, out double d)
+        {
+            return double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.CurrentCulture, out d) ||
+                   double.TryParse(text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out d);
+        }
+
+        /// <summary>A cylinder unit's movement reports this alarm: the HMI can time it.</summary>
+        private static bool Timed(AlarmDefinition def)
+        {
+            if (def == null || string.IsNullOrWhiteSpace(def.Address)) return false;
+            int st = AlarmManager.StationOf(def);
+            return AlarmGeneration.Cylinders.Any(c => c.Station == st &&
+                c.Sides.Any(x => string.Equals(x.ErrorAddress, def.Address.Trim(), StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>The delay cells: editable on a movement's alarm, grey on the others; dimmed while the generation is off.</summary>
+        private void ShowGeneration()
+        {
+            _genDelay.Enabled = true;
+            var col = _grid.Columns["Delay"];
+            if (col == null) return;
+            foreach (DataGridViewRow r in _grid.Rows)
+            {
+                var cell = r.Cells["Delay"];
+                bool timed = Timed(r.Tag as AlarmDefinition);
+                cell.ReadOnly = !timed;
+                cell.Style.BackColor = timed ? (_genOn.Checked ? Color.White : Color.FromArgb(248, 248, 248)) : Color.FromArgb(236, 238, 241);
+                cell.Style.ForeColor = timed && _genOn.Checked ? _grid.DefaultCellStyle.ForeColor : Color.FromArgb(130, 136, 146);
+                cell.ToolTipText = timed
+                    ? LanguageManager.GetString("Tip_AlarmDelayCell", "This movement's delay before the HMI raises the alarm (seconds, blank = the general delay).")
+                    : LanguageManager.GetString("Tip_AlarmDelayNone", "No cylinder unit's movement reports this alarm: the HMI does not time it.");
+            }
+        }
+
         private void LoadRows()
         {
             _grid.Rows.Clear();
+            // Which alarms a unit's movement reports: known once the pages were searched.
+            try { Kaban.UI.Helpers.AlarmHelpLinks.EnsureDiscovered(); } catch { }
             foreach (var def in AlarmManager.GetAllDefinitions().Where(Mine).OrderBy(d => d.Address))
             {
                 // Straight from the definition - the only place these live now
                 // that AlarmSettings.cfg is gone.
                 string sev = def.Severity.ToString();
                 string helper = JoinLinks(SplitLinks(def.HelperKeys));
-                int row = _grid.Rows.Add(def.Address, LanguageManager.Localize(def.TranslationKey), sev, helper);
+                string delay = def.GenerationDelay.HasValue ? def.GenerationDelay.Value.ToString(System.Globalization.CultureInfo.CurrentCulture) : "";
+                int row = _grid.Rows.Add(def.Address, LanguageManager.Localize(def.TranslationKey), sev, delay, helper);
                 // The DEFINITION rides on the row. Save used to look alarms up by
                 // address, and FA2010, H500 and H800 all use M801...: an edit on one
                 // machine's page could land on another machine's alarm.
                 _grid.Rows[row].Tag = def;
             }
+            var gen = AlarmGeneration.For(GenerationModule);
+            _genOn.Checked = gen.Enabled;
+            _genDelay.Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds));
+            ShowGeneration();
             // What discovery found, so a unit whose error bits were set in the designer
             // can be checked without raising an alarm.
             _status.Text = _grid.Rows.Count + " alarms. " + Kaban.UI.Helpers.AlarmHelpLinks.Count +
@@ -193,7 +311,16 @@ namespace Kaban.UI.Settings
                     // A LIST: each link its own entry in Alarms.json. It used to be
                     // stored as ONE entry, so "a.pdf;b.pdf" was a file name nobody had.
                     def.HelperKeys = SplitLinks(new[] { Convert.ToString(r.Cells["Helper"].Value) });
+
+                    // The movement's own delay for the HMI's alarm (blank: the general one).
+                    double d;
+                    var text = Convert.ToString(r.Cells["Delay"].Value ?? "").Trim();
+                    def.GenerationDelay = text.Length > 0 && TryDelay(text, out d) && d > 0 ? Math.Max(AlarmGeneration.MinimumDelaySeconds, d) : (double?)null;
                 }
+
+                // The activation and the general delay, per machine.
+                AlarmGeneration.Save(GenerationModule, new AlarmGeneration.Settings { Enabled = _genOn.Checked, DelaySeconds = (double)_genDelay.Value });
+                AuditLogger.Log("alarm generation for " + GenerationModule + ": " + (_genOn.Checked ? "on" : "off") + ", delay " + _genDelay.Value + " s.");
 
                 // THIS machine's file only (all files when the page has no machine).
                 string path = AlarmDefinitionLoader.SaveLoadedEntries(_moduleId);

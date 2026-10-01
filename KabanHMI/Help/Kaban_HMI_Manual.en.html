@@ -78,6 +78,7 @@
  <a href="#units">4. Manual Movement: the units</a>
  <a href="#keypad">5. Entering a value</a>
  <a href="#alarms">6. Alarms</a>
+ <a href="#genalarms">&nbsp;&nbsp;6a. Alarms the HMI raises itself</a>
  <a href="#conn">7. PLC connection</a>
  <a href="#unitset">8. Units of measure</a>
  <a href="#hmiset">9. HMI Settings</a>
@@ -285,7 +286,7 @@ position reading already show a fault. What it offers depends on the moment:</p>
 <table>
 <tr><th>Mark</th><th>When</th><th>Click it for</th></tr>
 <tr><td><b style="color:#2870be">?</b></td><td>The unit has its own files (photos, drawing, settings) and nothing has failed</td><td>Those files. The troubleshooting manual is <b>not</b> offered while nothing has failed.</td></tr>
-<tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set</td><td>First, <b>Step by step &ndash; <i>the movement</i></b>: a page that works through
+<tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set, or while the HMI's own alarm for one of its movements is on the list (<a href="#genalarms">6a</a>)</td><td>First, <b>Step by step &ndash; <i>the movement</i></b>: a page that works through
  the fault the way you would at the machine, for <b>this</b> cylinder and <b>this</b> movement (its name taken from the drawing: <i>Clamp</i>, <i>Up</i>&hellip;).
  <ul>
   <li>At the top: <b>what should happen</b>, as a chain you can click &ndash; the button, the PLC output, the relay, the valve coil, the valve, the air, the cylinder,
@@ -300,6 +301,11 @@ position reading already show a fault. What it offers depends on the moment:</p>
       pressure switch, the position reading, the reference, then the time allowed.</li>
   <li>Each answer either names the fault and its remedy &ndash; then <i>test again; still failing, go to step n</i> &ndash; or sends you on. Everything is named as on
       the drawings: addresses, card terminals, wires, sheets, relays, coils, valves, hoses, sensors.</li>
+  <li><b>An alarm the HMI raised itself</b> (<code>M844.2</code>, see <a href="#genalarms">6a</a>) knows which signal failed, so its page asks <b>only about that
+      signal</b>: a start sensor that stayed on &ndash; <i>has the cylinder left its start?</i>, then from the card onwards, or that sensor; a target sensor that did
+      not come on &ndash; <i>where is it?</i>, then the way, or that sensor, then the time; both sensors on &ndash; the start sensor only; both coils on &ndash; the two
+      outputs only; a position that did not change, or did not settle &ndash; the valve onwards or the way, and the position reading. <b>What the HMI saw</b> lists
+      just the signals concerned, as they were when its time ran out, and the title carries the alarm's number.</li>
   <li>The two movements of a cylinder are <b>not mirror images</b> when its valve or feedback is not: a spring valve's return is <i>the coil must switch off</i>
       (the relay drop out, the coil lose power, the valve spring back &ndash; a locked override holds it), a single sensor's far end is <i>the sensor must go off, and
       nothing sees the end</i>, a clamp is confirmed by its pressure switch and its release by the back sensor.</li>
@@ -348,6 +354,37 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
  <li>An alarm is only raised or cleared from a fresh reading. When a controller stops answering, its alarms are left as they were rather than cleared.</li>
+</ul>
+
+<h3 id="genalarms">6a. Alarms the HMI raises itself</h3>
+<p>Switched on per machine in <b>Alarm Settings</b> (<a href="#params">10</a>), the HMI does not wait for the PLC to report a cylinder that did not arrive:
+it times every cylinder unit's movements itself, and watches every axis's drive.</p>
+<ul>
+ <li><b>When the time starts:</b> when the output that drives the movement says so &ndash; for a <b>double solenoid</b> valve, that movement's own coil output
+     coming <b>on</b>; for a <b>single solenoid</b> (spring) valve, the coil output coming <b>on</b> for the coil's movement and going <b>off</b> for the spring's.
+     The output is the one the unit's command drives on the drawings (or the unit's own output address); a unit with neither is timed from its command.
+     A movement that was already commanded when the HMI started is not timed.</li>
+ <li><b>What confirms it:</b> its feedback &ndash; the sensor at its end <b>on</b> and the one at its start <b>off</b>; a single sensor going off for the end it
+     does not see; a clamp's pressure switch; a position reading that moved and settled (an analogue sensor, an encoder away from its reference). A unit with
+     no sensor is not timed.</li>
+ <li><b>What is not a failure:</b> a 5/3 valve's output let go of before the end (a button released), a spring valve's output changed back, a movement reversed
+     by the other coil. A 5/2 double solenoid valve keeps going after a short pulse, and is timed on.</li>
+ <li><b>Not confirmed within its delay:</b> the movement's alarm, with a <b>sub-number</b> for the signal that failed &ndash; like a drive's 50.1, 50.2:
+  <table>
+  <tr><th>Code</th><th>What failed</th></tr>
+  <tr><td><code>M840.1</code></td><td>The start sensor stayed on: the cylinder did not leave its start (or that sensor did not go off)</td></tr>
+  <tr><td><code>M840.2</code></td><td>The target sensor did not come on: it stopped on the way, or the sensor does not see it</td></tr>
+  <tr><td><code>M840.3</code></td><td>The target sensor came on, but the start sensor stayed on</td></tr>
+  <tr><td><code>M840.4</code></td><td>Both coils were on: the valve cannot switch</td></tr>
+  <tr><td><code>M840.5</code></td><td>The position reading did not change</td></tr>
+  <tr><td><code>M840.6</code></td><td>The position reading was still changing</td></tr>
+  </table>
+  The number before the point is the movement's error bit (its command bit when it has none); the text is the alarm's, followed by what failed.
+  The alarm goes by itself when the movement is confirmed after all, or when it is acknowledged. Its help is the step-by-step page for that failure (<a href="#units">4</a>).</li>
+ <li><b>An axis</b> (a row of Axis Settings): its alarm while its <b>Servo Alarm</b> or <b>Axis Alarm</b> shows a code, the code as the sub-number
+     (<code>M801.16.3</code>, <code>M801.1904H</code>), at once, until the code clears. An <b>Axis Warning</b> is only a warning: it raises nothing.</li>
+ <li><b>One fault, one line:</b> while the HMI's alarm for a device is listed, the PLC's own alarm bit for the same device is not listed beside it.
+     Acknowledged while the PLC's bit is still on, the PLC's alarm then shows as usual.</li>
 </ul>
 
 <!-- ================================================================== -->
@@ -433,7 +470,13 @@ Windows' own message boxes keep Windows' size.</p>
  <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
      opened from the alarm. Double-click the cell (or &#9999;&#65039;) for the list: <i>Add files&hellip;</i>, a link typed in, remove, up and down;
      or type them in the cell with <b>;</b> between them. &#128194; opens one (a menu when there are several).
-     Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.</li>
+     Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.
+     <ul>
+      <li>Above the table: <b>The HMI raises the cylinder and axis alarms itself</b> &ndash; on or off for this machine &ndash; and the general <b>Delay (s)</b>
+          a movement may take (5 s at first). See <a href="#genalarms">6a</a>.</li>
+      <li>The <b>Delay (s)</b> column: a movement's <b>own</b> delay for its alarm, in seconds; blank uses the general one. Only an alarm a cylinder unit's
+          movement reports can have one: the others are grey.</li>
+     </ul></li>
 </ul>
 
 <!-- ================================================================== -->
@@ -576,6 +619,7 @@ the page only reads the log.</p>
 <code>Dashboard\config.json</code> beside the program; the machine's state map and its texts are <code>Dashboard\StateMap.json</code> and
 <code>Dashboard\Translation_JSON.csv</code></td></tr>
 <tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
+<tr><td>The alarms the HMI raises itself: on or off and the general delay, per machine</td><td><code>C:\ProgramData\KabanHMI\AlarmGeneration.cfg</code></td></tr>
 <tr><td>PLC Monitor lists, column layout, where side pages' own windows were (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
 <tr><td>The screen scale (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>
 <tr><td>The side panel's width, the bar folded, the pages kept in a window</td><td><code>C:\ProgramData\KabanHMI\SidePanel.cfg</code></td></tr>

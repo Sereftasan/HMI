@@ -115,6 +115,7 @@
     <Compile Include="Machines\IMachineModule.cs" />
     <Compile Include="Machines\MachineRegistry.cs" />
     <Compile Include="Helpers\AlarmManager.cs" />
+    <Compile Include="Helpers\AlarmGeneration.cs" />
     <Compile Include="Helpers\HmiLayout.cs" />
     <Compile Include="Helpers\PlcLabelTable.cs" />
     <Compile Include="Helpers\UnitManager.cs" />

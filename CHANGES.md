@@ -4225,3 +4225,29 @@ and `UnitLookAndErrors` extended.
 - Tests: `tools/nav_test/SidePanelFit.cs`, `tools/ui_test/MonitorColumns.cs`, `tools/ui_test/AlarmTips.cs` (new);
   `CylinderSteps.cs` rewritten; `HoverTips.cs`, `MetersAndAlarmHelp.cs`, `CylinderHelpAndLogin.cs`,
   `UnitHelpLinks.cs`, `UnitTypes.cs`, `MonitorFind.cs`, `WriteLogUi.cs`, `UnitInfoAndAxisKind.cs` updated.
+
+## 2026-10-01 - The HMI raises the cylinder and axis alarms itself
+
+- `AlarmGeneration` *(new, Kaban.Core)*: per-machine `Settings` (`Enabled`, `DelaySeconds`, `AlarmGeneration.cfg` in
+  ProgramData), `Cylinder` / `CylinderSide` / `Axis` watches, `Build` (a unit's two `MovementInfo`s, valve and
+  feedback -> what drives each movement, what confirms it), `Evaluate(station, lookup, now)` (the timing state
+  machine, sub-codes 1-6, axis codes), `Addresses()` (read only for machines switched on), `ActiveFor`, `SideOf`,
+  `MovementAt`, `StepsFor`, `CodeDocumentFor`, `FailureOf`; hooks `AlarmManager.Suppressed`.
+- `AlarmItem`: `Generated`, `Station`, `Address`, `SubCode`, `Detail` / `DetailText`, `BaseCode`, `Snapshot`, `Side`,
+  `ShownCode` ("M840.2"); `Description` appends the detail. `AlarmManager`: `RaiseGenerated`, `ClearGenerated`,
+  `IsOnList`, `Suppressed`; `AlarmDefinition.GenerationDelay`. `AlarmDefinitionLoader`: `GenerationDelay` in
+  `Alarms.json`.
+- `TroubleshootingCatalog`: `HelpDocument.Failure`; `BuildSteps(..., failure)`; `StepsBuilder.Focus` / `Relook` /
+  `FocusStart` (only the failed signal's steps, answers sent on to the next step kept), `Step.Role`, `TimeAllowed`;
+  `WhatWasSeen` limited to the signals concerned; the map shows only the branches on the page.
+- `PlcScanner`: the watched devices added to the read list; `AlarmGeneration.Evaluate` before `AlarmManager.Evaluate`
+  on fresh data; tags re-read once per tick when the watches change.
+- `AlarmHelpLinks`: `HarvestUnit` / `HarvestAxis` register the watches; `Clear` clears them; `DocumentsFor(AlarmItem)`.
+  `CylinderUnitHMI.BuildWatch`, `GeneratedFor`; `StepsDocument` sets `Failure`. `AlarmHelpBadge.Generated`,
+  `GeneratedItem` (error, snapshot, tip).
+- `AlarmSettingsControl`: the activation and general delay above the table, the Delay (s) column (editable for a
+  movement's alarm), saved with the rest. `MachineAlarmScreen` (and the machines' `AlarmScreen`s): `ShownCode`, help
+  through `DocumentsFor(item)`. `MainForm`: the Alarms entry pulses for an HMI alarm.
+- Translations: `Set_AlarmGen*`, `Tip_AlarmGen*`, `Set_AlarmColDelay`, `Set_AlarmDelayBad`, `Tip_AlarmDelay*`,
+  `Gen_Sub1`-`Gen_Sub6`. Manual: 6a, the unit's "?", Alarm Settings, where things are kept.
+- Tests: `tools/core_test/AlarmGenerationCore.cs`, `tools/ui_test/AlarmGenerationUi.cs` (new).

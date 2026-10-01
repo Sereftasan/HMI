@@ -1,0 +1,793 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Kaban.Core.Models;
+
+namespace Kaban.Core.Helpers
+{
+    /// <summary>
+    /// ALARMS THE HMI RAISES ITSELF (1 October), without the PLC.
+    ///
+    /// Switched on per machine (Alarm Settings: the activation and the general
+    /// delay; a delay of its own per alarm in the table):
+    ///
+    ///   * every CYLINDER UNIT's movement is timed from the moment the output that
+    ///     drives it says so - a double valve's own coil output going ON; a single
+    ///     (spring) valve's coil output going ON for the coil's movement and going
+    ///     OFF for the spring's - and has to be confirmed by its feedback within its
+    ///     delay: the target sensor ON and the start sensor OFF; a single sensor
+    ///     going OFF for the end it does not see; the clamp's pressure switch; a
+    ///     position reading that moved and settled. Not confirmed in time, the HMI
+    ///     raises the movement's alarm with a SUB-CODE naming the signal that
+    ///     failed - M840.1 the start sensor stayed ON, M840.2 the target sensor did
+    ///     not come ON, M840.3 both came ON, M840.4 both coils were ON, M840.5 the
+    ///     position did not change, M840.6 it was still changing - and the helper
+    ///     page opens on that failure only. A movement let go of before it was
+    ///     confirmed (a 5/3 button released) or reversed is not a failure; one that
+    ///     is confirmed later clears its alarm.
+    ///   * every AXIS ROW raises its alarm while its Servo Alarm or Axis Alarm word
+    ///     is not zero, the code as the sub-code (M801.16.3); an Axis Warning is
+    ///     only a warning and raises nothing.
+    ///
+    /// The PLC's own bit for the same device stays off the list while the HMI's
+    /// alarm for it is on show: one fault, one line.
+    /// </summary>
+    public static class AlarmGeneration
+    {
+        // ---- settings, per machine -------------------------------------------------
+
+        public const double DefaultDelaySeconds = 5.0;
+        /// <summary>The shortest delay used: a scan is 100 ms.</summary>
+        public const double MinimumDelaySeconds = 0.3;
+        /// <summary>A position reading unchanged this long after it moved has arrived.</summary>
+        public const int SettleMs = 400;
+
+        public sealed class Settings
+        {
+            public bool Enabled;
+            public double DelaySeconds = DefaultDelaySeconds;
+        }
+
+        /// <summary>Where the settings are kept (a test sets its own).</summary>
+        public static string SettingsPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "AlarmGeneration.cfg");
+
+        private static Dictionary<string, Settings> _settings;
+        private static string _settingsReadFrom;
+
+        private static void LoadSettings()
+        {
+            if (_settings != null && _settingsReadFrom == SettingsPath) return;
+            _settings = new Dictionary<string, Settings>(StringComparer.OrdinalIgnoreCase);
+            _settingsReadFrom = SettingsPath;
+            try
+            {
+                if (!File.Exists(SettingsPath)) return;
+                foreach (var raw in File.ReadAllLines(SettingsPath))
+                {
+                    var line = raw.Trim();
+                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    int eq = line.IndexOf('='), dot = line.LastIndexOf('.', eq < 0 ? line.Length - 1 : eq);
+                    if (eq <= 0 || dot <= 0) continue;
+                    var module = line.Substring(0, dot).Trim();
+                    var key = line.Substring(dot + 1, eq - dot - 1).Trim();
+                    var value = line.Substring(eq + 1).Trim();
+                    Settings s;
+                    if (!_settings.TryGetValue(module, out s)) _settings[module] = s = new Settings();
+                    if (key.Equals("Enabled", StringComparison.OrdinalIgnoreCase)) s.Enabled = value == "1" || value.Equals("true", StringComparison.OrdinalIgnoreCase);
+                    else if (key.Equals("DelaySeconds", StringComparison.OrdinalIgnoreCase))
+                    {
+                        double d;
+                        if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out d) && d > 0) s.DelaySeconds = d;
+                    }
+                }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the alarm generation settings: " + ex.Message); }
+        }
+
+        /// <summary>A machine's settings (a copy; the defaults when none were saved).</summary>
+        public static Settings For(string moduleId)
+        {
+            LoadSettings();
+            Settings s;
+            return _settings.TryGetValue(moduleId ?? "", out s) ? new Settings { Enabled = s.Enabled, DelaySeconds = s.DelaySeconds } : new Settings();
+        }
+
+        public static bool EnabledFor(string moduleId) { return Peek(moduleId).Enabled; }
+
+        private static readonly Settings _defaults = new Settings();
+
+        /// <summary>The stored settings themselves (not a copy): asked on every scan.</summary>
+        private static Settings Peek(string moduleId)
+        {
+            LoadSettings();
+            Settings s;
+            return _settings.TryGetValue(moduleId ?? "", out s) ? s : _defaults;
+        }
+
+        /// <summary>Keeps a machine's settings; switched off, the alarms it raised go.</summary>
+        public static void Save(string moduleId, Settings settings)
+        {
+            LoadSettings();
+            _settings[moduleId ?? ""] = new Settings { Enabled = settings.Enabled, DelaySeconds = Math.Max(MinimumDelaySeconds, settings.DelaySeconds) };
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath));
+                var lines = new List<string> { "# Kaban HMI: the alarms the HMI raises itself, per machine: <machine>.Enabled=1, <machine>.DelaySeconds=5" };
+                foreach (var kv in _settings.OrderBy(k => k.Key, StringComparer.OrdinalIgnoreCase))
+                {
+                    lines.Add(kv.Key + ".Enabled=" + (kv.Value.Enabled ? "1" : "0"));
+                    lines.Add(kv.Key + ".DelaySeconds=" + kv.Value.DelaySeconds.ToString(CultureInfo.InvariantCulture));
+                }
+                SafeFile.WriteAllText(SettingsPath, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(false));
+            }
+            catch (Exception ex) { AuditLogger.Log("could not save the alarm generation settings: " + ex.Message); }
+            if (!settings.Enabled) ClearRaised(moduleId);
+            OnWatchesChanged();
+        }
+
+        // ---- what is watched -----------------------------------------------------------
+
+        /// <summary>A sensor of a movement.</summary>
+        public sealed class Signal
+        {
+            public string Address = "";
+            /// <summary>As the texts name it: "SN59 (X51)", or the address.</summary>
+            public string Name = "";
+        }
+
+        /// <summary>One movement of a cylinder unit.</summary>
+        public sealed class CylinderSide
+        {
+            /// <summary>"A" (left button) or "B" (right button).</summary>
+            public string Side = "A";
+            /// <summary>The movement in words ("Clamp").</summary>
+            public string Name = "";
+            /// <summary>The device naming its alarm: its error bit, else its command bit.</summary>
+            public string Code = "";
+            public string ErrorAddress = "";
+            /// <summary>The output whose state commands this movement (or the command bit when no output is known).</summary>
+            public string Drive = "";
+            /// <summary>False: a spring return - commanded by Drive (the coil's output) going OFF.</summary>
+            public bool DriveOn = true;
+            /// <summary>A double valve's other coil output: both ON cannot switch the valve.</summary>
+            public string OtherDrive = "";
+            /// <summary>A 5/2 double valve keeps the movement going after a short pulse.</summary>
+            public bool KeepsAfterDrop;
+            /// <summary>Must be ON at the end (the target sensor, a clamp's pressure switch).</summary>
+            public readonly List<Signal> MustOn = new List<Signal>();
+            /// <summary>Must be OFF at the end (the start sensor).</summary>
+            public readonly List<Signal> MustOff = new List<Signal>();
+            /// <summary>Confirmed by the position reading moving and settling (an analogue sensor, an encoder away from its reference).</summary>
+            public bool ByPosition;
+            public string Position = "";
+            /// <summary>The movement's devices for its help page (states filled from the alarm's snapshot).</summary>
+            public TroubleshootingCatalog.MovementInfo Movement;
+
+            // ---- while running ----
+            internal bool Seen, Commanded;
+            internal DateTime? Since;
+            internal int? PositionStart, PositionLast;
+            internal DateTime PositionChanged;
+            internal bool Moved;
+            /// <summary>The alarm this movement raised, while it is on the list.</summary>
+            public AlarmItem Raised { get; internal set; }
+
+            /// <summary>Monitoring is running (tests).</summary>
+            public bool Timing { get { return Since.HasValue; } }
+        }
+
+        public sealed class Cylinder
+        {
+            public int Station = 1;
+            public string ModuleId = "";
+            public string Unit = "";
+            public TroubleshootingCatalog.ValveType Valve;
+            public TroubleshootingCatalog.FeedbackType Feedback;
+            public readonly List<CylinderSide> Sides = new List<CylinderSide>();
+
+            internal string Key
+            {
+                get { return Station + "|" + string.Join("|", Sides.Select(s => s.Side + ":" + s.Code + ":" + s.Drive + ":" + s.DriveOn)); }
+            }
+        }
+
+        public sealed class Axis
+        {
+            public int Station = 1;
+            public string ModuleId = "";
+            public string Name = "";
+            public int Number;
+            public string ErrorAddress = "", ServoAlarm = "", AxisAlarm = "";
+            internal int LastServo, LastAxis;
+            public AlarmItem RaisedServo { get; internal set; }
+            public AlarmItem RaisedAxis { get; internal set; }
+            /// <summary>The device the alarm is named by: the error bit, or "Axis 3".</summary>
+            public string Code { get { return !string.IsNullOrWhiteSpace(ErrorAddress) ? ErrorAddress.Trim() : "Axis " + Number; } }
+        }
+
+        private static readonly List<Cylinder> _cylinders = new List<Cylinder>();
+        private static readonly List<Axis> _axes = new List<Axis>();
+
+        /// <summary>Raised when what is read changes (a watch added, a machine switched on or off): the scanner re-reads its list.</summary>
+        public static event EventHandler WatchesChanged;
+
+        private static void OnWatchesChanged()
+        {
+            var h = WatchesChanged;
+            if (h != null) h(null, EventArgs.Empty);
+        }
+
+        public static IReadOnlyList<Cylinder> Cylinders { get { return _cylinders; } }
+        public static IReadOnlyList<Axis> Axes { get { return _axes; } }
+
+        /// <summary>
+        /// The machine a station belongs to (the module that mapped it), so a unit
+        /// found on any page is switched on and off with its own machine.
+        /// </summary>
+        public static string ModuleOfStation(int station)
+        {
+            try
+            {
+                foreach (var m in Kaban.Core.Machines.MachineRegistry.Modules)
+                    if (m.Context != null && m.Context.MappedStations.Any(kv => kv.Value == station)) return m.Context.ModuleId ?? "";
+                var main = Kaban.Core.Machines.MachineRegistry.Main;
+                return main != null && main.Context != null ? main.Context.ModuleId ?? "" : "";
+            }
+            catch { return ""; }
+        }
+
+        /// <summary>Adds a unit's movements (the same unit on two pages is added once).</summary>
+        public static void Register(Cylinder c)
+        {
+            if (c == null || c.Sides.Count == 0) return;
+            if (string.IsNullOrEmpty(c.ModuleId)) c.ModuleId = ModuleOfStation(c.Station);
+            HookSuppression();
+            var key = c.Key;
+            if (_cylinders.Any(x => x.Key == key)) return;
+            _cylinders.Add(c);
+            OnWatchesChanged();
+        }
+
+        public static void Register(Axis a)
+        {
+            if (a == null || (string.IsNullOrWhiteSpace(a.ServoAlarm) && string.IsNullOrWhiteSpace(a.AxisAlarm))) return;
+            if (string.IsNullOrEmpty(a.ModuleId)) a.ModuleId = ModuleOfStation(a.Station);
+            HookSuppression();
+            if (_axes.Any(x => x.Station == a.Station && string.Equals(x.ServoAlarm, a.ServoAlarm, StringComparison.OrdinalIgnoreCase) &&
+                               string.Equals(x.AxisAlarm, a.AxisAlarm, StringComparison.OrdinalIgnoreCase))) return;
+            _axes.Add(a);
+            OnWatchesChanged();
+        }
+
+        /// <summary>Forgets the watches (a new discovery) and takes the alarms they raised off the list - nothing could clear them any more.</summary>
+        public static void Clear()
+        {
+            foreach (var c in _cylinders) foreach (var s in c.Sides) Drop(s);
+            foreach (var x in _axes) DropAxis(x);
+            _cylinders.Clear();
+            _axes.Clear();
+            OnWatchesChanged();
+        }
+
+        /// <summary>The devices to read, per station - for the machines switched on only.</summary>
+        public static IEnumerable<KeyValuePair<int, string>> Addresses()
+        {
+            foreach (var c in _cylinders)
+            {
+                if (!EnabledFor(c.ModuleId)) continue;
+                foreach (var s in c.Sides)
+                {
+                    foreach (var a in new[] { s.Drive, s.OtherDrive, s.Position }.Concat(s.MustOn.Select(x => x.Address)).Concat(s.MustOff.Select(x => x.Address)))
+                        if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(c.Station, a.Trim());
+                }
+            }
+            foreach (var x in _axes)
+            {
+                if (!EnabledFor(x.ModuleId)) continue;
+                if (!string.IsNullOrWhiteSpace(x.ServoAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.ServoAlarm.Trim());
+                if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
+            }
+        }
+
+        // ---- a unit's movements, from what its help knows of them ----------------------
+
+        /// <summary>
+        /// The watch for a cylinder unit, from its two movements as its help sees
+        /// them (TroubleshootingCatalog.MovementInfo: the command, the output it
+        /// drives, the other coil, the sensors of each end) and its valve and
+        /// feedback (the unit's numbers). Null when nothing confirms a movement
+        /// (no sensor) or nothing commands one.
+        ///
+        ///   valve 1 (5/2 double): each movement by its own coil output going ON; it
+        ///     goes on after a short pulse, until the other coil reverses it.
+        ///   valve 2 (5/2 single): the coil's movement by the output going ON, the
+        ///     spring's by it going OFF; either is given up when the output changes back.
+        ///   valve 3 (5/3): each by its own coil output, given up when it drops.
+        ///   unspecified: each commanded movement by its output, given up when it drops.
+        ///
+        /// With no output known (no OutputAddress, nothing on the drawings) the
+        /// command bit stands in for it - then only the buttons' movements are timed.
+        /// </summary>
+        public static Cylinder Build(int station, string moduleId, string unit, int valve, int feedback,
+                                     TroubleshootingCatalog.MovementInfo a, TroubleshootingCatalog.MovementInfo b)
+        {
+            valve = TroubleshootingCatalog.CanonicalValve(valve);
+            if (feedback == 7) return null;                                      // no sensor: nothing confirms
+            var c = new Cylinder
+            {
+                Station = station, ModuleId = moduleId ?? "", Unit = unit ?? "",
+                Valve = (TroubleshootingCatalog.ValveType)valve, Feedback = (TroubleshootingCatalog.FeedbackType)feedback
+            };
+            foreach (var mv in new[] { a, b })
+            {
+                if (mv == null) continue;
+                var side = SideFrom(c, mv, valve, feedback);
+                if (side != null) c.Sides.Add(side);
+            }
+            return c.Sides.Count == 0 ? null : c;
+        }
+
+        private static string Addr(TroubleshootingCatalog.MovementInfo.Device d)
+        {
+            return d == null || string.IsNullOrWhiteSpace(d.Address) ? "" : d.Address.Trim();
+        }
+
+        private static CylinderSide SideFrom(Cylinder c, TroubleshootingCatalog.MovementInfo mv, int valve, int feedback)
+        {
+            string output = Addr(mv.Output), otherOutput = Addr(mv.OtherOutput), cmd = Addr(mv.Command), otherCmd = Addr(mv.OtherCommand);
+            bool single = valve == (int)TroubleshootingCatalog.ValveType.SingleSolenoidSpring;
+            bool own = output.Length > 0 || cmd.Length > 0;
+            var s = new CylinderSide { Side = string.IsNullOrEmpty(mv.Side) ? "A" : mv.Side, Movement = mv };
+            if (own)
+            {
+                s.Drive = output.Length > 0 ? output : cmd;
+                s.DriveOn = true;
+            }
+            else if (single && (otherOutput.Length > 0 || otherCmd.Length > 0))
+            {
+                // the spring's movement: the coil's output going OFF
+                s.Drive = otherOutput.Length > 0 ? otherOutput : otherCmd;
+                s.DriveOn = false;
+            }
+            else return null;
+
+            if (!single && own)
+            {
+                var other = otherOutput.Length > 0 ? otherOutput : otherCmd;
+                if (other.Length > 0 && !string.Equals(other, s.Drive, StringComparison.OrdinalIgnoreCase)) s.OtherDrive = other;
+            }
+            s.KeepsAfterDrop = valve == (int)TroubleshootingCatalog.ValveType.DoubleSolenoid;
+
+            Func<TroubleshootingCatalog.MovementInfo.Device, Signal> sig = d =>
+            {
+                var p = WiringTable.Find(c.Station, d.Address);
+                return new Signal
+                {
+                    Address = d.Address.Trim(),
+                    Name = p != null && p.Tag.Length > 0 ? p.Tag + " (" + p.Address + ")" : d.Address.Trim()
+                };
+            };
+            foreach (var d in mv.Feedback) if (!string.IsNullOrWhiteSpace(d.Address)) s.MustOn.Add(sig(d));
+            foreach (var d in mv.OppositeFeedback) if (!string.IsNullOrWhiteSpace(d.Address)) s.MustOff.Add(sig(d));
+            s.Position = (mv.Position ?? "").Trim();
+            bool positional = feedback == (int)TroubleshootingCatalog.FeedbackType.AnalogueMagnetic ||
+                              feedback == (int)TroubleshootingCatalog.FeedbackType.EncoderReference ||
+                              (feedback == 0 && s.Position.Length > 0);
+            // A position reading confirms the movement no sensor of its own sees: an
+            // analogue sensor's both, an encoder's away from its reference.
+            s.ByPosition = positional && s.Position.Length > 0 && s.MustOn.Count == 0;
+            if (!s.ByPosition && s.MustOn.Count == 0 && s.MustOff.Count == 0) return null;
+
+            s.ErrorAddress = (mv.Error ?? "").Trim();
+            s.Code = s.ErrorAddress.Length > 0 ? s.ErrorAddress : cmd.Length > 0 ? cmd : s.Drive;
+            try { s.Name = TroubleshootingCatalog.MovementName(mv); } catch { s.Name = mv.Name ?? ""; }
+            return s;
+        }
+
+        // ---- the sub-codes ------------------------------------------------------------------
+
+        public const int StartStayedOn = 1, TargetNotOn = 2, StartStuck = 3, BothCoils = 4, PositionUnchanged = 5, PositionMoving = 6;
+
+        /// <summary>What a sub-code means for a movement, in words (the alarm's detail).</summary>
+        public static string Describe(int sub, CylinderSide s)
+        {
+            Func<IEnumerable<Signal>, string> names = list => string.Join(" / ", list.Select(x => x.Name.Length > 0 ? x.Name : x.Address));
+            switch (sub)
+            {
+                case StartStayedOn:
+                    return string.Format(LanguageManager.GetString("Gen_Sub1", "{0} stayed ON - the cylinder did not leave its start"), names(s.MustOff));
+                case TargetNotOn:
+                    return string.Format(LanguageManager.GetString("Gen_Sub2", "{0} did not come ON - it stopped on the way, or the sensor does not see it"), names(s.MustOn));
+                case StartStuck:
+                    return string.Format(LanguageManager.GetString("Gen_Sub3", "{0} came ON, but {1} at the start stayed ON"), names(s.MustOn), names(s.MustOff));
+                case BothCoils:
+                    return string.Format(LanguageManager.GetString("Gen_Sub4", "both coils were ON ({0} and {1})"), s.Drive, s.OtherDrive);
+                case PositionUnchanged:
+                    return string.Format(LanguageManager.GetString("Gen_Sub5", "the position ({0}) did not change"), s.Position);
+                case PositionMoving:
+                    return string.Format(LanguageManager.GetString("Gen_Sub6", "the position ({0}) was still changing"), s.Position);
+                default:
+                    return "";
+            }
+        }
+
+        // ---- evaluation --------------------------------------------------------------------
+
+        /// <summary>
+        /// One scan of a station: every watched movement and axis on it, with the
+        /// station's fresh values. Called by the page scanner after the PLC alarms.
+        /// </summary>
+        public static void Evaluate(int station, Func<string, int> lookup, DateTime now)
+        {
+            if (lookup == null) return;
+            foreach (var c in _cylinders)
+            {
+                if (c.Station != station) continue;
+                var settings = Peek(c.ModuleId);
+                if (!settings.Enabled) { foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); } continue; }
+                foreach (var s in c.Sides) EvaluateSide(c, s, settings, lookup, now);
+            }
+            foreach (var x in _axes)
+            {
+                if (x.Station != station) continue;
+                if (!EnabledFor(x.ModuleId)) { DropAxis(x); continue; }
+                EvaluateAxis(x, lookup, now);
+            }
+        }
+
+        private static bool On(Func<string, int> lookup, string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) return false;
+            try { return lookup(address.Trim()) != 0; } catch { return false; }
+        }
+
+        private static int Word(Func<string, int> lookup, string address)
+        {
+            if (string.IsNullOrWhiteSpace(address)) return 0;
+            try { return lookup(address.Trim()); } catch { return 0; }
+        }
+
+        /// <summary>The end of the movement as its sensors confirm it (not for one confirmed by position).</summary>
+        private static bool SensorsConfirm(CylinderSide s, Func<string, int> lookup)
+        {
+            if (s.MustOn.Count == 0 && s.MustOff.Count == 0) return false;
+            return s.MustOn.All(x => On(lookup, x.Address)) && s.MustOff.All(x => !On(lookup, x.Address));
+        }
+
+        private static double DelayOf(Cylinder c, CylinderSide s, Settings settings)
+        {
+            var def = string.IsNullOrWhiteSpace(s.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(c.Station, s.ErrorAddress);
+            double d = def != null && def.GenerationDelay.HasValue && def.GenerationDelay.Value > 0 ? def.GenerationDelay.Value : settings.DelaySeconds;
+            return Math.Max(MinimumDelaySeconds, d);
+        }
+
+        private static void Drop(CylinderSide s)
+        {
+            if (s.Raised != null) { AlarmManager.ClearGenerated(s.Raised); s.Raised = null; }
+        }
+
+        private static void EvaluateSide(Cylinder c, CylinderSide s, Settings settings, Func<string, int> lookup, DateTime now)
+        {
+            if (string.IsNullOrWhiteSpace(s.Drive)) return;
+            bool drive = On(lookup, s.Drive);
+            bool commanded = s.DriveOn ? drive : !drive;
+            // NOT FROM THE FIRST SCAN. What is commanded when the HMI starts (or the
+            // generation is switched on) was commanded before it watched - a spring
+            // valve's return all the time - and timing it from here would be wrong.
+            bool rising = s.Seen && commanded && !s.Commanded;
+            s.Seen = true;
+            s.Commanded = commanded;
+
+            // An alarm acknowledged on the list is the operator's: not raised again for it.
+            if (s.Raised != null && !AlarmManager.IsOnList(s.Raised)) s.Raised = null;
+
+            if (rising)
+            {
+                s.Since = now;
+                s.Moved = false;
+                s.PositionStart = s.PositionLast = s.ByPosition ? Word(lookup, s.Position) : (int?)null;
+                s.PositionChanged = now;
+            }
+
+            bool confirmed;
+            if (s.ByPosition)
+            {
+                if (s.Since.HasValue)
+                {
+                    int v = Word(lookup, s.Position);
+                    if (s.PositionLast != v) { s.PositionLast = v; s.PositionChanged = now; if (s.PositionStart != v) s.Moved = true; }
+                }
+                confirmed = s.Since.HasValue && s.Moved && (now - s.PositionChanged).TotalMilliseconds >= SettleMs &&
+                            s.MustOn.All(x => On(lookup, x.Address)) && s.MustOff.All(x => !On(lookup, x.Address));
+            }
+            else confirmed = SensorsConfirm(s, lookup);
+
+            // Confirmed at any time: its alarm has been dealt with.
+            if (confirmed && s.Raised != null && !s.ByPosition) Drop(s);
+
+            if (!s.Since.HasValue) return;
+            if (!commanded)
+            {
+                // Let go of before it arrived (a 5/3 button released, a spring's coil
+                // back ON) or reversed: not a failure. A 5/2 double valve keeps going
+                // after its pulse - unless its other coil reverses it.
+                if (!s.KeepsAfterDrop || On(lookup, s.OtherDrive)) { s.Since = null; return; }
+            }
+            if (confirmed)
+            {
+                s.Since = null;
+                if (s.Raised != null) Drop(s);
+                return;
+            }
+            if ((now - s.Since.Value).TotalSeconds < DelayOf(c, s, settings)) return;
+
+            s.Since = null;
+            int sub = Diagnose(s, lookup, now);
+            Raise(c, s, sub, lookup, now);
+        }
+
+        /// <summary>Which signal failed, from the states when the time ran out.</summary>
+        internal static int Diagnose(CylinderSide s, Func<string, int> lookup, DateTime now)
+        {
+            if (s.DriveOn && !string.IsNullOrWhiteSpace(s.OtherDrive) && On(lookup, s.Drive) && On(lookup, s.OtherDrive)) return BothCoils;
+            if (s.ByPosition)
+            {
+                if (!s.Moved) return PositionUnchanged;
+                if ((now - s.PositionChanged).TotalMilliseconds < SettleMs) return PositionMoving;
+                // moved and settled: a sensor that should have changed did not
+            }
+            bool startOn = s.MustOff.Any(x => On(lookup, x.Address));
+            bool targetOn = s.MustOn.Count > 0 && s.MustOn.All(x => On(lookup, x.Address));
+            if (targetOn && startOn) return StartStuck;
+            if (startOn) return StartStayedOn;
+            if (s.MustOn.Count == 0 && s.ByPosition) return PositionMoving;
+            return TargetNotOn;
+        }
+
+        private static void Raise(Cylinder c, CylinderSide s, int sub, Func<string, int> lookup, DateTime now)
+        {
+            var def = string.IsNullOrWhiteSpace(s.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(c.Station, s.ErrorAddress);
+            string baseCode = def != null ? def.AlarmCode : (string.IsNullOrEmpty(c.ModuleId) ? "" : c.ModuleId + ".") + Safe(c.Unit) + "_" + s.Side;
+            string text = def != null ? def.TranslationKey : (c.Unit + (string.IsNullOrEmpty(s.Name) ? "" : " - " + s.Name));
+            var snapshot = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            foreach (var a in new[] { s.Drive, s.OtherDrive }.Concat(s.MustOn.Select(x => x.Address)).Concat(s.MustOff.Select(x => x.Address)))
+                if (!string.IsNullOrWhiteSpace(a)) snapshot[a.Trim().ToUpperInvariant()] = On(lookup, a) ? 1 : 0;
+            if (s.Movement != null && s.Movement.Command != null && !string.IsNullOrWhiteSpace(s.Movement.Command.Address))
+                snapshot[s.Movement.Command.Address.Trim().ToUpperInvariant()] = On(lookup, s.Movement.Command.Address) ? 1 : 0;
+            var item = new AlarmItem(baseCode + "." + sub, text, def != null ? def.Severity : AlarmSeverity.Fault)
+            {
+                Generated = true,
+                Station = c.Station,
+                Address = s.Code,
+                SubCode = sub.ToString(CultureInfo.InvariantCulture),
+                Detail = Describe(sub, s),
+                DetailText = () => Describe(sub, s),
+                BaseCode = def != null ? def.AlarmCode : "",
+                Snapshot = snapshot,
+                Side = s.Side,
+                TriggerTime = now
+            };
+            if (s.Raised != null) AlarmManager.ClearGenerated(s.Raised);
+            s.Raised = item;
+            AlarmManager.RaiseGenerated(item);
+        }
+
+        private static string Safe(string text)
+        {
+            var t = new string((text ?? "").Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray()).Trim('_');
+            return t.Length == 0 ? "Unit" : t;
+        }
+
+        private static void DropAxis(Axis x)
+        {
+            if (x.RaisedServo != null) { AlarmManager.ClearGenerated(x.RaisedServo); x.RaisedServo = null; }
+            if (x.RaisedAxis != null) { AlarmManager.ClearGenerated(x.RaisedAxis); x.RaisedAxis = null; }
+            x.LastServo = x.LastAxis = 0;
+        }
+
+        private static void EvaluateAxis(Axis x, Func<string, int> lookup, DateTime now)
+        {
+            int servo = string.IsNullOrWhiteSpace(x.ServoAlarm) ? 0 : Word(lookup, x.ServoAlarm) & 0xFFFF;
+            int axis = string.IsNullOrWhiteSpace(x.AxisAlarm) ? 0 : Word(lookup, x.AxisAlarm) & 0xFFFF;
+            // Acknowledged while the drive still shows the code: back on the list, as
+            // a PLC alarm bit that is still on comes back.
+            if (x.RaisedServo != null && !AlarmManager.IsOnList(x.RaisedServo)) { x.RaisedServo = null; x.LastServo = 0; }
+            if (x.RaisedAxis != null && !AlarmManager.IsOnList(x.RaisedAxis)) { x.RaisedAxis = null; x.LastAxis = 0; }
+            if (servo != x.LastServo)
+            {
+                if (x.RaisedServo != null) { AlarmManager.ClearGenerated(x.RaisedServo); x.RaisedServo = null; }
+                if (servo != 0) x.RaisedServo = RaiseAxis(x, AxisCodeKind.ServoAlarm, servo, now);
+                x.LastServo = servo;
+            }
+            if (axis != x.LastAxis)
+            {
+                if (x.RaisedAxis != null) { AlarmManager.ClearGenerated(x.RaisedAxis); x.RaisedAxis = null; }
+                if (axis != 0) x.RaisedAxis = RaiseAxis(x, AxisCodeKind.AxisError, axis, now);
+                x.LastAxis = axis;
+            }
+        }
+
+        private static AlarmItem RaiseAxis(Axis x, AxisCodeKind kind, int value, DateTime now)
+        {
+            var def = string.IsNullOrWhiteSpace(x.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(x.Station, x.ErrorAddress);
+            string sub = AxisCodeHelp.Format(kind, value);
+            string baseCode = def != null ? def.AlarmCode : (string.IsNullOrEmpty(x.ModuleId) ? "" : x.ModuleId + ".") + "Axis_" + x.Number;
+            var item = new AlarmItem(baseCode + "." + (kind == AxisCodeKind.ServoAlarm ? "S" : "A") + sub, def != null ? def.TranslationKey : x.Name,
+                                     def != null ? def.Severity : AlarmSeverity.Fault)
+            {
+                Generated = true,
+                Station = x.Station,
+                Address = x.Code,
+                SubCode = sub,
+                Detail = AxisCodeHelp.Describe(kind, value),
+                DetailText = () => AxisCodeHelp.Describe(kind, value),
+                BaseCode = def != null ? def.AlarmCode : "",
+                TriggerTime = now
+            };
+            AlarmManager.RaiseGenerated(item);
+            return item;
+        }
+
+        // ---- asked by the units, the alarm list and the PLC alarms -------------------------------
+
+        /// <summary>
+        /// The alarm the HMI raised for a movement, while it is on the list: the
+        /// unit's station and side, and the devices it may be named by (its error
+        /// bit, its command, its outputs) - a page's unit is not the one discovery saw.
+        /// </summary>
+        public static AlarmItem ActiveFor(int station, string side, params string[] codes)
+        {
+            if (codes == null || codes.Length == 0) return null;
+            bool any = false;
+            foreach (var a in AlarmManager.ActiveAlarms) if (a.Generated) { any = true; break; }
+            if (!any) return null;                                   // the usual case: nothing to search
+            foreach (var c in _cylinders)
+            {
+                if (c.Station != station) continue;
+                foreach (var s in c.Sides)
+                {
+                    if (s.Raised == null || s.Side != side) continue;
+                    foreach (var code in codes)
+                        if (!string.IsNullOrWhiteSpace(code) && string.Equals(s.Code, code.Trim(), StringComparison.OrdinalIgnoreCase))
+                            return AlarmManager.IsOnList(s.Raised) ? s.Raised : null;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>The help entry for the drive code of a generated axis alarm, or null.</summary>
+        public static TroubleshootingCatalog.HelpDocument CodeDocumentFor(AlarmItem item)
+        {
+            if (item == null || !item.Generated) return null;
+            foreach (var x in _axes)
+            {
+                if (ReferenceEquals(x.RaisedServo, item)) return AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, x.LastServo, x.Name);
+                if (ReferenceEquals(x.RaisedAxis, item)) return AxisCodeHelp.Document(AxisCodeKind.AxisError, x.LastAxis, x.Name);
+            }
+            return null;
+        }
+
+        /// <summary>The watched movement a generated alarm belongs to (its help page), or null.</summary>
+        public static CylinderSide SideOf(AlarmItem item)
+        {
+            if (item == null || !item.Generated) return null;
+            foreach (var c in _cylinders)
+                foreach (var s in c.Sides)
+                    if (ReferenceEquals(s.Raised, item) ||
+                        (c.Station == item.Station && s.Side == item.Side && string.Equals(s.Code, item.Address, StringComparison.OrdinalIgnoreCase)))
+                        return s;
+            return null;
+        }
+
+        /// <summary>
+        /// The movement of a generated alarm as its help page needs it: the devices
+        /// with their states when the time ran out (the alarm's snapshot). A copy -
+        /// the watch's own stays as it was found.
+        /// </summary>
+        public static TroubleshootingCatalog.MovementInfo MovementAt(AlarmItem item)
+        {
+            var side = SideOf(item);
+            if (side == null || side.Movement == null) return null;
+            var src = side.Movement;
+            var snap = item.Snapshot ?? new Dictionary<string, int>();
+            Func<TroubleshootingCatalog.MovementInfo.Device, TroubleshootingCatalog.MovementInfo.Device> copy = d =>
+            {
+                if (d == null) return null;
+                int v;
+                return new TroubleshootingCatalog.MovementInfo.Device
+                {
+                    Address = d.Address, Name = d.Name,
+                    AtAlarm = !string.IsNullOrWhiteSpace(d.Address) && snap.TryGetValue(d.Address.Trim().ToUpperInvariant(), out v) ? v : (int?)null
+                };
+            };
+            var mv = new TroubleshootingCatalog.MovementInfo
+            {
+                Error = src.Error, Position = src.Position, AlarmTime = item.TriggerTime, SeenRising = true,
+                Station = src.Station, Unit = src.Unit, Side = src.Side, Name = src.Name, OtherName = src.OtherName,
+                Command = copy(src.Command), Output = copy(src.Output), OtherCommand = copy(src.OtherCommand), OtherOutput = copy(src.OtherOutput)
+            };
+            foreach (var k in src.Conditions) mv.Conditions.Add(new TroubleshootingCatalog.MovementInfo.Condition { Name = k.Name, Rule = k.Rule });
+            foreach (var d in src.Feedback) mv.Feedback.Add(copy(d));
+            foreach (var d in src.OppositeFeedback) mv.OppositeFeedback.Add(copy(d));
+            return mv;
+        }
+
+        /// <summary>The failure of a generated movement alarm (its sub-code), 0 for any other.</summary>
+        public static int FailureOf(AlarmItem item)
+        {
+            int f;
+            return item != null && item.Generated && SideOf(item) != null && int.TryParse(item.SubCode, out f) ? f : 0;
+        }
+
+        /// <summary>
+        /// The step-by-step page for a generated movement alarm - only about the
+        /// signal that failed - or null (an axis's alarm, a movement no longer watched).
+        /// </summary>
+        public static TroubleshootingCatalog.HelpDocument StepsFor(AlarmItem item)
+        {
+            var mv = MovementAt(item);
+            var side = SideOf(item);
+            var unit = side == null ? null : CylinderOf(side);
+            string file;
+            if (mv == null || unit == null ||
+                !TroubleshootingCatalog.DocumentForType.TryGetValue(TroubleshootingCatalog.ErrorType.CylinderMovement, out file) || string.IsNullOrEmpty(file))
+                return null;
+            return new TroubleshootingCatalog.HelpDocument
+            {
+                FileName = file,
+                StepByStep = true,
+                Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+                        (string.IsNullOrEmpty(unit.Unit) ? "" : " - " + unit.Unit) + " - " + TroubleshootingCatalog.MovementName(mv) +
+                        " (" + item.ShownCode + ")",
+                Valve = TroubleshootingCatalog.CanonicalValve((int)unit.Valve),
+                Feedback = TroubleshootingCatalog.CanonicalFeedback((int)unit.Feedback),
+                Movement = mv,
+                Failure = FailureOf(item)
+            };
+        }
+
+        /// <summary>The unit a watched movement belongs to.</summary>
+        public static Cylinder CylinderOf(CylinderSide side)
+        {
+            return _cylinders.FirstOrDefault(c => c.Sides.Contains(side));
+        }
+
+        private static bool _hooked;
+
+        private static void HookSuppression()
+        {
+            if (_hooked) return;
+            _hooked = true;
+            AlarmManager.Suppressed = def =>
+            {
+                if (def == null || string.IsNullOrEmpty(def.AlarmCode)) return false;
+                foreach (var a in AlarmManager.ActiveAlarms)
+                    if (a.Generated && string.Equals(a.BaseCode, def.AlarmCode, StringComparison.OrdinalIgnoreCase)) return true;
+                return false;
+            };
+        }
+
+        /// <summary>Takes a machine's generated alarms off the list (switched off).</summary>
+        private static void ClearRaised(string moduleId)
+        {
+            foreach (var c in _cylinders.Where(c => string.Equals(c.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase)))
+                foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); }
+            foreach (var x in _axes.Where(x => string.Equals(x.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase))) DropAxis(x);
+        }
+
+        /// <summary>Every watch and setting forgotten (tests).</summary>
+        public static void ResetForTests()
+        {
+            foreach (var c in _cylinders)
+                foreach (var x in c.Sides) { x.Seen = x.Commanded = x.Moved = false; x.Since = null; x.Raised = null; }
+            foreach (var a in _axes) { a.LastServo = a.LastAxis = 0; a.RaisedServo = a.RaisedAxis = null; }
+            _cylinders.Clear();
+            _axes.Clear();
+            _settings = null;
+        }
+    }
+}

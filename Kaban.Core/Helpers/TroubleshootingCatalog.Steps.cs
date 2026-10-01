@@ -45,7 +45,7 @@ namespace Kaban.Core.Helpers
             if (doc == null || doc.Movement == null) return "";
             try
             {
-                var html = BuildSteps(doc.Movement, (ValveType)CanonicalValve(doc.Valve), (FeedbackType)CanonicalFeedback(doc.Feedback));
+                var html = BuildSteps(doc.Movement, (ValveType)CanonicalValve(doc.Valve), (FeedbackType)CanonicalFeedback(doc.Feedback), doc.Failure);
                 var path = Path.Combine(Path.GetTempPath(), StepsFileName(doc));
                 File.WriteAllText(path, html, new UTF8Encoding(true));
                 return path;
@@ -60,7 +60,7 @@ namespace Kaban.Core.Helpers
         private static string StepsFileName(HelpDocument doc)
         {
             var mv = doc.Movement;
-            return "Steps_" + SafeName(mv.Unit) + "_" + (string.IsNullOrEmpty(mv.Side) ? "X" : mv.Side) + ".html";
+            return "Steps_" + SafeName(mv.Unit) + "_" + (string.IsNullOrEmpty(mv.Side) ? "X" : mv.Side) + (doc.Failure > 0 ? "_" + doc.Failure : "") + ".html";
         }
 
         /// <summary>
@@ -75,10 +75,14 @@ namespace Kaban.Core.Helpers
             catch { return mv.Name ?? ""; }
         }
 
-        /// <summary>The page, as HTML (public for tests).</summary>
-        public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback)
+        /// <summary>
+        /// The page, as HTML (public for tests). With a failure (an alarm the HMI
+        /// raised itself, HelpDocument.Failure) only the steps about the signal that
+        /// failed are on it.
+        /// </summary>
+        public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback, int failure = 0)
         {
-            var b = new StepsBuilder(Chain.Build(mv, valve, feedback));
+            var b = new StepsBuilder(Chain.Build(mv, valve, feedback), failure);
             return b.Page();
         }
 
@@ -107,6 +111,8 @@ namespace Kaban.Core.Helpers
             /// <summary>Where the general manual covers it ("1.6 (2)").</summary>
             public string Manual = "";
             public int Number;
+            /// <summary>What a C step checks: "target", "start", "reference", "position", "window", "time", "none" ("" for the others).</summary>
+            public string Role = "";
         }
 
         /// <summary>A sensor of the movement with its drawing point (null when not drawn).</summary>
@@ -135,10 +141,13 @@ namespace Kaban.Core.Helpers
             private readonly Sensor _switch;        // the clamp's pressure switch, when it is one of the lamps
             private readonly bool _endNotSensed;    // the movement ends where no sensor is (a single sensor's far end)
             private readonly bool _position;        // confirmed by a position reading (analogue / encoder)
+            /// <summary>The signal that failed when the HMI raised the alarm itself (AlarmGeneration's sub-code), 0 when not known.</summary>
+            private readonly int _failure;
 
-            public StepsBuilder(Chain chain)
+            public StepsBuilder(Chain chain, int failure = 0)
             {
                 c = chain;
+                _failure = failure;
                 mv = chain.Mv;
                 _supply = WiringTable.SupplyOf(mv.Station);
                 _double = c.DoubleCoil;
@@ -666,8 +675,10 @@ namespace Kaban.Core.Helpers
                 b4.Do.Add("Time the stroke: from " + OutCode + " switching to " +
                           (_mustOn.Count > 0 ? Sensors(_mustOn) + " ON" : _endNotSensed && _mustOff.Count > 0 ? "the end (" + Sensors(_mustOff) + " goes OFF on the way)" : "the end") +
                           ". The PLC Monitor's <i>Modified</i> column shows when each changed.");
-                b4.Do.Add("Compare it with the time the PLC allows" + (string.IsNullOrWhiteSpace(mv.Error) ? "" : " before alarm " + Code(mv.Error)) + " (in the PLC program).");
-                b4.Outcomes.Add(Fix("It needs about as long as allowed, or longer.", "Open the flow controls to the right speed; if the stroke is right and only the time is short, have the monitoring time raised (after checking it is safe)."));
+                b4.Do.Add("Compare it with " + TimeAllowed + (string.IsNullOrWhiteSpace(mv.Error) ? "" : " before alarm " + Code(mv.Error)) +
+                          (_failure > 0 ? "." : " (in the PLC program)."));
+                b4.Outcomes.Add(Fix("It needs about as long as allowed, or longer.", "Open the flow controls to the right speed; if the stroke is right and only the time is short, " +
+                    (_failure > 0 ? "give this alarm a longer delay in Alarm Settings." : "have the monitoring time raised (after checking it is safe).")));
                 b4.Outcomes.Add(Go("It is well within the time.", "end"));
             }
 
@@ -710,6 +721,7 @@ namespace Kaban.Core.Helpers
                     string title = _endNotSensed ? "Has " + Sensors(_mustOff) + " gone OFF?"
                                                  : "Has " + Sensors(_mustOff) + " at the other end gone OFF?";
                     var st = Add(key, "C", title, "1.7 (2)");
+                    st.Role = "start";
                     foreach (var s in _mustOff)
                         st.Do.Add(SensorName(s) + SensorWhere(s) + ": at the end of " + MoveB + " it must be <b>OFF</b> &ndash; its LED off, " + Code(s.Io) + " OFF on the <i>Inputs / Outputs</i> page.");
                     if (_endNotSensed)
@@ -730,6 +742,7 @@ namespace Kaban.Core.Helpers
                 if (_mustOn.Count == 0 && _mustOff.Count == 0)
                 {
                     var st = Add("C1", "C", "What confirms the end?", "1.7");
+                    st.Role = "none";
                     st.Do.Add("The unit has no sensor for " + MoveB + " on the HMI. The PLC confirms it by time" +
                               (c.Feedback == FeedbackType.Unspecified ? " or by a sensor the HMI does not show &ndash; see the electrical drawing" : "") + ".");
                     st.Outcomes.Add(Go("Go on with the time allowed.", time));
@@ -740,6 +753,7 @@ namespace Kaban.Core.Helpers
             private void SensorOn(string key, Sensor s, string next)
             {
                 var st = Add(key, "C", "Does " + SensorName(s) + " see it?", "1.7 (1)");
+                st.Role = "target";
                 st.Do.Add(SensorName(s) + SensorWhere(s) + (s.Point != null && s.Point.Text.Length > 0 ? " &ndash; " + E(s.Point.Text) : "") + ".");
                 st.Do.Add("With the cylinder at the end of " + MoveB + ": the sensor's own <b>LED</b> must be lit, and " + Code(s.Io) +
                           " must be <b>ON</b> on the <i>Inputs / Outputs</i> page (and the lamp on " + Button + ")." +
@@ -759,6 +773,7 @@ namespace Kaban.Core.Helpers
             private void PressureSwitchOn(string key, Sensor s, string next)
             {
                 var st = Add(key, "C", "Does " + SensorName(s) + " switch?", "1.7 (pressure switch)");
+                st.Role = "target";
                 st.Do.Add(SensorName(s) + SensorWhere(s) + (s.Point != null && s.Point.Text.Length > 0 ? " &ndash; " + E(s.Point.Text) : "") +
                           ": when the cylinder has clamped, the pressure in the clamp line switches it <b>ON</b>" +
                           (_mustOff.Count > 0 ? " (and " + Sensors(_mustOff.Where(x => !x.IsPressureSwitch)) + " at the back must be OFF)" : "") + ".");
@@ -774,6 +789,7 @@ namespace Kaban.Core.Helpers
             private void ArrivedAnalogue()
             {
                 var st = Add("C1", "C", "Does the position reading reach the target?", "1.7 (analogue)");
+                st.Role = "position";
                 if (!string.IsNullOrWhiteSpace(mv.Position)) st.Do.Add("The unit shows the position at " + Code(mv.Position) + ".");
                 if (c.Air != null && c.Air.Measure.Length > 0) st.Do.Add("Measured by: " + E(c.Air.Measure) + ".");
                 st.Do.Add("Move the cylinder slowly and watch the number: it must change evenly with the movement, and at the end of " + MoveB +
@@ -790,6 +806,7 @@ namespace Kaban.Core.Helpers
             {
                 var reference = _mustOn.Concat(_mustOff).FirstOrDefault();
                 var c1 = Add("C1", "C", "Is the unit referenced?", "1.7 (encoder) (3)");
+                c1.Role = "reference";
                 c1.Do.Add("After switching on, an encoder's position is valid only after the reference (homing) run" +
                           (reference != null ? ", at " + SensorName(reference) + SensorWhere(reference) : "") + ".");
                 if (reference != null)
@@ -799,6 +816,7 @@ namespace Kaban.Core.Helpers
                 c1.Outcomes.Add(Go("It is referenced.", "C2", good: true));
 
                 var c2 = Add("C2", "C", "Does the position count with the movement?", "1.7 (encoder) (1), (2)");
+                c2.Role = "position";
                 if (!string.IsNullOrWhiteSpace(mv.Position)) c2.Do.Add("The unit shows the position at " + Code(mv.Position) + ".");
                 if (c.Air != null && c.Air.Measure.Length > 0) c2.Do.Add("Measured by: " + E(c.Air.Measure) + ".");
                 c2.Do.Add("Move the cylinder (the button or the override) and watch the number: it must count evenly, up one way and down the other.");
@@ -807,6 +825,7 @@ namespace Kaban.Core.Helpers
                 c2.Outcomes.Add(Go("It counts right.", "C3", good: true));
 
                 var c3 = Add("C3", "C", "Does it stop inside its target window?", "1.7 (encoder) (4)");
+                c3.Role = "window";
                 c3.Do.Add("Compare the position where it stops with the target of " + MoveB + " and the window the PLC allows.");
                 c3.Outcomes.Add(Fix("Close to the target, just outside the window.", "Teach the target again, or widen the window to a sensible value."));
                 c3.Outcomes.Add(Fix("Far from the target.", "It did not really get there: go through the air and the path (steps B2 and B3)."));
@@ -817,14 +836,22 @@ namespace Kaban.Core.Helpers
             private void TimeStep(string key)
             {
                 var st = Add(key, "C", "Did it arrive in time?", "1.8");
-                st.Do.Add("The alarm comes when the end is not confirmed within the time the PLC allows" +
+                st.Role = "time";
+                st.Do.Add("The alarm comes when the end is not confirmed within " + TimeAllowed +
                           (string.IsNullOrWhiteSpace(mv.Error) ? "" : " (alarm " + Code(mv.Error) + (c.ErrorText.Length > 0 ? " " + E(c.ErrorText) : "") + ")") + ".");
                 st.Do.Add("Time the stroke from " + OutCode + " switching to the end being confirmed (the PLC Monitor's <i>Modified</i> column shows when each device changed).");
-                st.Outcomes.Add(Fix("It takes about as long as allowed, or longer.", "Set the flow controls back to the right speed; if the movement is right and only slow by design, have the monitoring time raised (after checking it is safe)."));
+                st.Outcomes.Add(Fix("It takes about as long as allowed, or longer.", "Set the flow controls back to the right speed; if the movement is right and only slow by design, " +
+                    (_failure > 0 ? "give this alarm a longer delay in Alarm Settings." : "have the monitoring time raised (after checking it is safe).")));
                 st.Outcomes.Add(Go("It is well within the time.", "end"));
             }
 
             // ---- helpers -------------------------------------------------------------
+
+            /// <summary>Whose time it is: the HMI's own (its alarm, Alarm Settings) or the PLC's.</summary>
+            private string TimeAllowed
+            {
+                get { return _failure > 0 ? "the time the HMI allows (Alarm Settings: the alarm's delay)" : "the time the PLC allows"; }
+            }
 
             private static bool Relay(WiringTable.Point o) { return o != null && o.Relay.Length > 0; }
 
@@ -846,6 +873,132 @@ namespace Kaban.Core.Helpers
                 if (k.Met == true) sb.Append(" <span class=\"st-on\">met</span>");
                 else if (k.Met == false) sb.Append(" <span class=\"st-bad\">NOT met</span>");
                 return sb.ToString();
+            }
+
+            // ---- only what failed (an alarm the HMI raised itself) ------------------------
+            //
+            // The HMI knows WHICH signal failed (AlarmGeneration's sub-code), so the
+            // page asks only about that signal: a start sensor that stayed ON is
+            // "did it leave? - then the valve, the air, the path, or that sensor";
+            // a target sensor that did not come ON is "did it stop on the way, or
+            // arrive? - then the air and the path, or that sensor"; two coils ON is
+            // the PLC's two outputs. The other steps are left out and the answers
+            // that led to them go on to the next step that is kept.
+
+            private List<Sensor> StartSensors { get { return _mustOff.Where(x => !x.IsPressureSwitch).ToList(); } }
+
+            private void Focus()
+            {
+                if (_failure <= 0) return;
+                var order = _steps.ToList();
+                Func<string, IEnumerable<Step>> role = r => order.Where(x => x.Role == r);
+                var fromA3 = order.Where(x => x.Part == "A" && x.Key != "A1" && x.Key != "A2").ToList();
+                var bPart = order.Where(x => x.Part == "B").ToList();
+                var startSteps = role("start").Concat(role("reference")).ToList();
+                var keep = new List<Step>();
+                var look = order.FirstOrDefault(x => x.Key == "look");
+                Func<IEnumerable<Step>, string> first = list => list.Select(x => x.Key).FirstOrDefault() ?? "end";
+                string startNames = _mustOff.Count > 0 ? Sensors(_mustOff) : "the start sensor";
+
+                switch (_failure)
+                {
+                    case 1:     // the start sensor stayed ON
+                        keep.Add(look); keep.AddRange(fromA3); keep.AddRange(startSteps);
+                        Relook(look, "Has the cylinder left its start?",
+                               startNames + " at the start stayed <b>ON</b>: either the cylinder did not leave, or it left and the sensor did not go OFF.",
+                               Go("No &ndash; it is still at the start.", first(fromA3)),
+                               Go("Yes &ndash; it moved.", first(startSteps), good: true));
+                        break;
+                    case 2:     // the target did not come ON
+                    {
+                        bool unseenStart = StartSensors.Count == 0;
+                        keep.Add(look);
+                        if (unseenStart) keep.AddRange(fromA3);
+                        keep.AddRange(bPart); keep.AddRange(role("target")); keep.AddRange(role("time"));
+                        var outs = new List<Outcome>();
+                        if (unseenStart) outs.Add(Go("It has <b>not moved</b> at all.", first(fromA3)));
+                        outs.Add(Go("It moved but <b>stopped on the way</b>.", first(bPart)));
+                        outs.Add(Go("It <b>arrived</b> at the end of " + MoveB + ".", first(role("target")), good: true));
+                        Relook(look, "Where is the cylinder now?",
+                               (_mustOn.Count > 0 ? Sensors(_mustOn) : "The end") + " did not come <b>ON</b>" +
+                               (unseenStart ? "" : " although " + Sensors(StartSensors) + " went OFF (it left its start)") + ".",
+                               outs.ToArray());
+                        break;
+                    }
+                    case 3:     // the target came ON, the start stayed ON
+                        keep.AddRange(startSteps);
+                        break;
+                    case 4:     // both coils ON
+                        keep.AddRange(order.Where(x => x.Key == "A1" || x.Key == "A2"));
+                        break;
+                    case 5:     // the position did not change
+                        keep.Add(look); keep.AddRange(fromA3); keep.AddRange(role("position"));
+                        Relook(look, "Has the cylinder moved?",
+                               "The position reading" + (string.IsNullOrWhiteSpace(mv.Position) ? "" : " " + Code(mv.Position)) + " did not change.",
+                               Go("It has <b>not moved</b>.", first(fromA3)),
+                               Go("It moved, but the number did not change.", first(role("position")), good: true));
+                        break;
+                    case 6:     // the position was still changing
+                        keep.Add(look); keep.AddRange(bPart); keep.AddRange(role("position")); keep.AddRange(role("window")); keep.AddRange(role("time"));
+                        Relook(look, "Where is the cylinder now?",
+                               "The position reading" + (string.IsNullOrWhiteSpace(mv.Position) ? "" : " " + Code(mv.Position)) + " was still changing when the time ran out.",
+                               Go("It is still creeping, or it stopped on the way.", first(bPart)),
+                               Go("It <b>arrived</b>, the number does not settle.", first(role("position")), good: true));
+                        break;
+                    default:
+                        return;
+                }
+                keep = keep.Where(x => x != null).Distinct().ToList();
+                if (keep.Count == 0) return;
+                var end = order.FirstOrDefault(x => x.Key == "end");
+                if (end != null) keep.Add(end);
+                // an answer leading to a step left out goes on to the next one kept
+                Func<string, string> resolve = key =>
+                {
+                    var target = string.IsNullOrEmpty(key) ? "end" : key;
+                    int i = order.FindIndex(x => x.Key == target);
+                    if (i < 0) return target;
+                    for (int j = i; j < order.Count; j++) if (keep.Contains(order[j])) return order[j].Key;
+                    return "end";
+                };
+                foreach (var st in keep)
+                    foreach (var o in st.Outcomes)
+                        if (o.Next.Length > 0 || o.Fix.Length == 0) o.Next = resolve(o.Next);
+                _steps.Clear();
+                _steps.AddRange(order.Where(keep.Contains));
+                for (int i = 0; i < _steps.Count; i++) _steps[i].Number = i + 1;
+            }
+
+            private void Relook(Step look, string title, string what, params Outcome[] outcomes)
+            {
+                if (look == null) return;
+                look.Title = title;
+                look.Do.Insert(0, what);
+                // the sensors' meaning for the whole movement is not the question any more
+                look.Do.RemoveAll(d => d.StartsWith("Cannot see it?"));
+                look.Outcomes.Clear();
+                look.Outcomes.AddRange(outcomes.Where(o => o.Next != "end" || o.Fix.Length > 0));
+            }
+
+            /// <summary>Where to start for a failure the HMI saw: the first step, and the failure in words.</summary>
+            private string FocusStart(out string why)
+            {
+                var od = OutDev;
+                var start = StartSensors;
+                switch (_failure)
+                {
+                    case 1: why = "The HMI timed " + MoveB + ": " + (_mustOff.Count > 0 ? Sensors(_mustOff) : "the start sensor") + " at the start stayed <b>ON</b>."; break;
+                    case 2: why = "The HMI timed " + MoveB + ": " + (_mustOn.Count > 0 ? Sensors(_mustOn) : "the end") + " did not come <b>ON</b>" +
+                                  (start.Count > 0 ? " although " + Sensors(start) + " went OFF" : "") + "."; break;
+                    case 3: why = "The HMI timed " + MoveB + ": " + Sensors(_mustOn) + " came ON, but " + (_mustOff.Count > 0 ? Sensors(_mustOff) : "the start sensor") +
+                                  " at the start stayed <b>ON</b> &ndash; that sensor did not go OFF."; break;
+                    case 4: why = "Both coils' outputs were <b>ON</b>" + (od != null && c.OtherDevice != null ? " (" + OutCode + " and " + Code(c.OtherDevice.Address) + ")" : "") +
+                                  ": the valve cannot switch."; break;
+                    case 5: why = "The HMI timed " + MoveB + ": the position reading did not change."; break;
+                    case 6: why = "The HMI timed " + MoveB + ": the position reading was still changing when the time ran out."; break;
+                    default: why = ""; break;
+                }
+                return _steps.Count > 0 ? _steps[0].Key : "";
             }
 
             // ---- where to start -----------------------------------------------------
@@ -929,15 +1082,18 @@ namespace Kaban.Core.Helpers
             public string Page()
             {
                 Build();
+                Focus();
                 string why;
-                var start = StartAt(out why);
+                var start = _failure > 0 && _steps.Count > 0 ? FocusStart(out why) : StartAt(out why);
                 var startStep = _steps.FirstOrDefault(s => s.Key == start);
 
                 var sb = new StringBuilder();
                 sb.Append("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>" + E(Unit + " - " + Move) + " - step by step</title><style>" + Style + "</style></head><body>");
                 sb.Append("<h1>" + E(Unit) + " &mdash; &ldquo;" + E(Move) + "&rdquo; did not complete</h1>");
                 var sub = new List<string> { "Step by step, for this movement on this machine" };
-                if (!string.IsNullOrWhiteSpace(mv.Error)) sub.Add("alarm " + Code(mv.Error) + (c.ErrorText.Length > 0 ? " " + E(c.ErrorText) : ""));
+                if (!string.IsNullOrWhiteSpace(mv.Error))
+                    sub.Add("alarm " + Code(mv.Error + (_failure > 0 ? "." + _failure : "")) + (c.ErrorText.Length > 0 ? " " + E(c.ErrorText) : ""));
+                if (_failure > 0) sub.Add("raised by the HMI");
                 if (mv.AlarmTime.HasValue) sub.Add(mv.AlarmTime.Value.ToString("yyyy-MM-dd HH:mm:ss"));
                 sb.Append("<p class=\"sub\">" + string.Join(" &middot; ", sub) + "</p>");
 
@@ -951,12 +1107,13 @@ namespace Kaban.Core.Helpers
                           "and exhaust both sides of the cylinder &ndash; it can move suddenly when air returns, and a closed-centre valve or a clamp keeps air trapped. " +
                           "Never bypass a guard or an emergency stop to clear an alarm. Measuring in the cabinet, changing the PLC program or replacing parts is for trained, authorized people.</div>");
 
-                // the map: three searches after step 1
-                sb.Append("<div class=\"map\"><b>How this page goes:</b> ");
-                sb.Append(Link("look") + " where the cylinder is &rarr; ");
-                sb.Append("<span class=\"branch a\">not moved: " + Range("A") + "</span> ");
-                sb.Append("<span class=\"branch b\">stopped on the way: " + Range("B") + "</span> ");
-                sb.Append("<span class=\"branch c\">arrived, not confirmed: " + Range("C") + "</span></div>");
+                // the map: three searches after step 1 (those that are on the page)
+                var branches = new List<string>();
+                if (Range("A").Length > 0) branches.Add("<span class=\"branch a\">not moved: " + Range("A") + "</span>");
+                if (Range("B").Length > 0) branches.Add("<span class=\"branch b\">stopped on the way: " + Range("B") + "</span>");
+                if (Range("C").Length > 0) branches.Add("<span class=\"branch c\">arrived, not confirmed: " + Range("C") + "</span>");
+                if (branches.Count > 1 && Link("look").Length > 0)
+                    sb.Append("<div class=\"map\"><b>How this page goes:</b> " + Link("look") + " where the cylinder is &rarr; " + string.Join(" ", branches) + "</div>");
 
                 string part = "";
                 foreach (var s in _steps)
@@ -1111,23 +1268,33 @@ namespace Kaban.Core.Helpers
                     if (d == null || string.IsNullOrWhiteSpace(d.Address)) return;
                     rows.Add("<tr><td>" + what + "</td><td>" + (wantOn ? "ON" : "OFF") + "</td><td>" + State(d.AtAlarm, wantOn) + "</td><td>" + State(d.Now, wantOn) + "</td></tr>");
                 };
-                row("Command " + Code(mv.Command != null ? mv.Command.Address : ""), mv.Command, true);
-                if (_spring) row("Coil output " + OutCode + " (" + E(OtherMove) + ")", OutDev, false);
+                // With the failure known, only the signals it is about (the output that
+                // started the time, the sensors that decided it).
+                bool all = _failure <= 0;
+                bool outputs = all || _failure != 3;
+                bool targets = all || _failure == 2 || _failure == 3 || _failure >= 5;
+                bool starts = all || _failure != 4;
+                if (all) row("Command " + Code(mv.Command != null ? mv.Command.Address : ""), mv.Command, true);
+                if (_spring) { if (outputs) row("Coil output " + OutCode + " (" + E(OtherMove) + ")", OutDev, false); }
                 else
                 {
-                    row("Valve output " + OutCode, OutDev, true);
-                    if (_double && c.OtherDevice != null) row("Other coil " + Code(c.OtherDevice.Address) + " (" + E(OtherMove) + ")", c.OtherDevice, false);
+                    if (outputs) row("Valve output " + OutCode, OutDev, true);
+                    if ((all || _failure == 4) && _double && c.OtherDevice != null) row("Other coil " + Code(c.OtherDevice.Address) + " (" + E(OtherMove) + ")", c.OtherDevice, false);
                 }
-                foreach (var s in _mustOn) row(SensorName(s), s.Device, true);
-                foreach (var s in _mustOff) row(SensorName(s), s.Device, false);
+                if (targets) foreach (var s in _mustOn) row(SensorName(s), s.Device, true);
+                if (starts) foreach (var s in _mustOff) row(SensorName(s), s.Device, false);
                 bool known = rows.Count > 0 && (_mustOn.Concat(_mustOff).Any(s => s.Device.AtAlarm.HasValue || s.Device.Now.HasValue) ||
                                                 (OutDev != null && (OutDev.AtAlarm.HasValue || OutDev.Now.HasValue)));
                 if (!known) return "";
                 var sb = new StringBuilder("<div class=\"seen\"><p><b>What the HMI saw</b> (red: not as it should be at the end of the movement)</p>");
                 sb.Append("<table class=\"states\"><tr><th></th><th>should be</th><th>at the alarm</th><th>now</th></tr>" + string.Join("", rows) + "</table>");
-                sb.Append("<p class=\"ref\">&ldquo;At the alarm&rdquo;: the last reading before the error bit came on" +
-                          (mv.AlarmTime.HasValue ? " (" + mv.AlarmTime.Value.ToString("HH:mm:ss") + ")" : "") +
-                          (mv.SeenRising ? "" : " &ndash; the alarm was already on when the page started reading, so these are from just after it") + ".</p></div>");
+                if (_failure > 0)
+                    sb.Append("<p class=\"ref\">&ldquo;At the alarm&rdquo;: when the HMI's time for the movement ran out" +
+                              (mv.AlarmTime.HasValue ? " (" + mv.AlarmTime.Value.ToString("HH:mm:ss") + ")" : "") + ".</p></div>");
+                else
+                    sb.Append("<p class=\"ref\">&ldquo;At the alarm&rdquo;: the last reading before the error bit came on" +
+                              (mv.AlarmTime.HasValue ? " (" + mv.AlarmTime.Value.ToString("HH:mm:ss") + ")" : "") +
+                              (mv.SeenRising ? "" : " &ndash; the alarm was already on when the page started reading, so these are from just after it") + ".</p></div>");
                 return sb.ToString();
             }
 

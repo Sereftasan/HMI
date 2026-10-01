@@ -553,6 +553,10 @@ namespace Kaban.UI.Forms
             }));
             Helpers.NavigationHistory.Changed += OnHistoryChanged;
             FormClosed += (s3, e3) => Helpers.NavigationHistory.Changed -= OnHistoryChanged;
+            // The alarms the HMI raises itself pulse the Alarms entry as the PLC's
+            // machine error does (only that: the reset button stays the PLC's).
+            AlarmManager.AlarmsChanged += OnHmiAlarmsChanged;
+            FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try
             {
@@ -2008,6 +2012,19 @@ namespace Kaban.UI.Forms
         private Timer _alarmTimer;
         private bool _alarmPhase;
         private bool _machineError;
+        /// <summary>An alarm the HMI raised itself (AlarmGeneration) is on the list.</summary>
+        private bool _hmiAlarm;
+
+        private void OnHmiAlarmsChanged(object sender, EventArgs e)
+        {
+            bool any = false;
+            foreach (var a in AlarmManager.ActiveAlarms) if (a.Generated) { any = true; break; }
+            if (any == _hmiAlarm) return;
+            _hmiAlarm = any;
+            if (IsDisposed) return;
+            if (InvokeRequired) { if (IsHandleCreated) BeginInvoke(new Action(UpdateAlarmPulse)); }
+            else UpdateAlarmPulse();
+        }
 
         /// <summary>Address of the machine-error summary bit (same on all machines).</summary>
         public const string MachineErrorAddress = "M800";
@@ -2049,7 +2066,7 @@ namespace Kaban.UI.Forms
                 if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
                     continue;
                 bool onAlarmPage = _currentScreen != null && kv.Value == _currentScreen;
-                kv.Key.AlertBlink = _machineError && !onAlarmPage;
+                kv.Key.AlertBlink = (_machineError || _hmiAlarm) && !onAlarmPage;
             }
         }
 

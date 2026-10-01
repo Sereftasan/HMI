@@ -200,6 +200,9 @@ namespace Kaban.UI.Controls
             // when the movement failed is known (MovementFor, the manual's top).
             _helpA.Signals = () => SignalsFor("A");
             _helpB.Signals = () => SignalsFor("B");
+            // ...and the alarm the HMI raised itself for that movement, if any.
+            _helpA.Generated = () => GeneratedFor("A");
+            _helpB.Generated = () => GeneratedFor("B");
             Controls.Add(_helpA);
             Controls.Add(_helpB);
             Controls.Add(_help);
@@ -1117,6 +1120,35 @@ namespace Kaban.UI.Controls
             catch { return ""; }
         }
 
+        /// <summary>
+        /// The alarm the HMI raised itself for one of this unit's movements
+        /// (AlarmGeneration), while it is on the list - or null. Found by the
+        /// devices the movement is named by: the unit on the page is not the one
+        /// discovery built its watch from.
+        /// </summary>
+        private AlarmItem GeneratedFor(string side)
+        {
+            if (_kind == UnitKind.Axis || DesignMode) return null;
+            bool a = side == "A";
+            return AlarmGeneration.ActiveFor(_plcNumber, side,
+                Abs(a ? _errorAAddress : _errorBAddress), Abs(a ? _commandAAddress : _commandBAddress),
+                DrivenOutput(side), DrivenOutput(a ? "B" : "A"));
+        }
+
+        /// <summary>
+        /// The unit's movements for the alarms the HMI raises itself: what drives
+        /// each one (its output, or the spring's when the coil's output goes OFF),
+        /// what confirms it (its valve and feedback decide), what names its alarm.
+        /// Null for an axis unit (its drive's codes are the axis row's) or a unit
+        /// with nothing to confirm a movement.
+        /// </summary>
+        public AlarmGeneration.Cylinder BuildWatch()
+        {
+            if (_kind == UnitKind.Axis) return null;
+            var name = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText);
+            return AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
+        }
+
         /// <summary>The devices one side's error bit is judged by: command, both coils, the sensors of both ends.</summary>
         private IEnumerable<string> SignalsFor(string side)
         {
@@ -1202,8 +1234,13 @@ namespace Kaban.UI.Controls
             if (manual == null) return null;
             manual.StepByStep = true;
             var mv = manual.Movement;
+            // An alarm the HMI raised itself knows which signal failed: the page
+            // asks only about that one.
+            var gen = (side == "A" ? _helpA : _helpB).GeneratedItem;
+            manual.Failure = AlarmGeneration.FailureOf(gen);
             manual.Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
-                           (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv));
+                           (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv)) +
+                           (manual.Failure > 0 ? " (" + gen.ShownCode + ")" : "");
             return manual;
         }
 

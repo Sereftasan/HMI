@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
 using Kaban.Core.Machines;
+using Kaban.Core.Models;
 using Kaban.UI.Controls;
 using Kaban.UI.Settings;
 using TC = Kaban.Core.Helpers.TroubleshootingCatalog;
@@ -92,6 +93,7 @@ namespace Kaban.UI.Helpers
         public static void Clear()
         {
             SimulationMotion.Clear();      // collected in the same pass over the pages
+            AlarmGeneration.Clear();       // so are the movements the HMI times itself
             _links.Clear();
             _conflicts.Clear();
             _axes.Clear();
@@ -239,10 +241,10 @@ namespace Kaban.UI.Helpers
             if (root == null) return;
 
             var unit = root as CylinderUnitHMI;
-            if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
+            if (unit != null) { HarvestUnit(unit); return; }
 
             var axis = root as AxisSettingHMI;
-            if (axis != null) { Register(axis.HelpLink()); RegisterAxis(axis); SimulationMotion.Register(axis); return; }
+            if (axis != null) { HarvestAxis(axis); return; }
 
             // A settings screen builds its tabs only when they are opened; its
             // pages are built here one at a time instead.
@@ -257,10 +259,36 @@ namespace Kaban.UI.Helpers
         {
             if (root == null) return;
             var unit = root as CylinderUnitHMI;
-            if (unit != null) { foreach (var l in unit.HelpLinks()) Register(l); SimulationMotion.Register(unit); return; }
+            if (unit != null) { HarvestUnit(unit); return; }
             var axis = root as AxisSettingHMI;
-            if (axis != null) { Register(axis.HelpLink()); RegisterAxis(axis); SimulationMotion.Register(axis); return; }
+            if (axis != null) { HarvestAxis(axis); return; }
             foreach (Control c in root.Controls) HarvestControls(c);
+        }
+
+        private static void HarvestUnit(CylinderUnitHMI unit)
+        {
+            foreach (var l in unit.HelpLinks()) Register(l);
+            SimulationMotion.Register(unit);
+            // its movements, for the alarms the HMI raises itself
+            try { AlarmGeneration.Register(unit.BuildWatch()); }
+            catch (Exception ex) { AuditLogger.Log("alarm generation skipped unit '" + unit.Name + "': " + ex.Message); }
+        }
+
+        private static void HarvestAxis(AxisSettingHMI axis)
+        {
+            Register(axis.HelpLink());
+            RegisterAxis(axis);
+            SimulationMotion.Register(axis);
+            // its drive's alarm codes (the Axis Warning is only a warning: not watched)
+            AlarmGeneration.Register(new AlarmGeneration.Axis
+            {
+                Station = axis.PlcNumber,
+                Number = axis.AxisNumber,
+                Name = string.IsNullOrEmpty(axis.AxisNameKey) ? "Axis " + axis.AxisNumber : LanguageManager.GetString(axis.AxisNameKey, axis.AxisNameKey),
+                ErrorAddress = (axis.ErrorAddress ?? "").Trim(),
+                ServoAlarm = (axis.ServoAlarmAddress ?? "").Trim(),
+                AxisAlarm = (axis.AxisAlarmAddress ?? "").Trim()
+            });
         }
 
         private static void HarvestPage(ISettingsPage page)
@@ -408,6 +436,31 @@ namespace Kaban.UI.Helpers
         {
             return def == null ? new List<TC.HelpDocument>()
                                : DocumentsFor(def.PlcNumber, def.Address, def.HelperKeys);
+        }
+
+        /// <summary>
+        /// The documents for an alarm on the list. One the HMI raised itself: the
+        /// step-by-step page about the signal that failed (or the entry for the
+        /// drive's code) first, then what its device's alarm offers - without that
+        /// alarm's own step-by-step page, which is about whatever the PLC's bit saw.
+        /// </summary>
+        public static List<TC.HelpDocument> DocumentsFor(AlarmItem item)
+        {
+            if (item == null) return new List<TC.HelpDocument>();
+            if (!item.Generated) return DocumentsFor(AlarmManager.FindByAddressOrCode(item.AlarmCode));
+            var docs = new List<TC.HelpDocument>();
+            var steps = AlarmGeneration.StepsFor(item);
+            if (steps != null) docs.Add(steps);
+            var code = AlarmGeneration.CodeDocumentFor(item);
+            if (code != null) docs.Add(code);
+            var def = string.IsNullOrEmpty(item.BaseCode) ? null : AlarmManager.FindByCode(item.BaseCode);
+            foreach (var d in DocumentsFor(item.Station, item.Address, def != null ? def.HelperKeys : null))
+            {
+                if (d.StepByStep) continue;                           // the PLC bit's view of the movement
+                if (code != null && !string.IsNullOrEmpty(d.Code)) continue;   // the code's entry is first already
+                docs.Add(d);
+            }
+            return docs.Where(d => d.Exists).ToList();
         }
 
         public static List<TC.HelpDocument> DocumentsFor(int station, string address, IEnumerable<string> helperFiles)

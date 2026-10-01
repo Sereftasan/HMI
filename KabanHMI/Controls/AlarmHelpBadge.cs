@@ -139,6 +139,17 @@ namespace Kaban.UI.Controls
         /// <summary>The signals' states when the error bit came on, or null.</summary>
         public SignalSnapshot AtAlarm { get; private set; }
 
+        /// <summary>
+        /// The alarm the HMI raised itself for this movement (AlarmGeneration), asked
+        /// on every scan; null when there is none. Such an alarm sets the error like
+        /// the PLC's bit, and its states when the time ran out are what the help
+        /// starts from.
+        /// </summary>
+        public Func<AlarmItem> Generated;
+
+        /// <summary>The HMI's own alarm on show for this movement, or null.</summary>
+        public AlarmItem GeneratedItem { get; private set; }
+
         /// <summary>The signals' states at the last scan (1 on, 0 off), or null before one.</summary>
         public IDictionary<string, int> LiveSignals { get { return _last; } }
 
@@ -201,6 +212,20 @@ namespace Kaban.UI.Controls
             bool live = lookup != null && !ConnectionMonitor.IsKnownDown(PlcNumber);
             bool error = live && !string.IsNullOrWhiteSpace(Address) && lookup(Address) != 0;
             if (live) WatchSignals(lookup, error);
+
+            AlarmItem gen = null;
+            if (live && Generated != null && _codes.Count == 0)
+                try { gen = Generated(); } catch { gen = null; }
+            if (!ReferenceEquals(gen, GeneratedItem))
+            {
+                GeneratedItem = gen;
+                // its states when the time ran out (a PLC bit's stay its own)
+                if (gen != null && gen.Snapshot != null)
+                    AtAlarm = new SignalSnapshot { Before = new Dictionary<string, int>(gen.Snapshot, StringComparer.OrdinalIgnoreCase), Time = gen.TriggerTime, SeenRising = true };
+                if (_active) RefreshTip();
+                if (Watcher && _active) { var h0 = ActiveChanged; if (h0 != null) h0(this, EventArgs.Empty); }
+            }
+            if (gen != null) error = true;
 
             if (_codes.Count == 0) { Set(error, error, false); return; }
 
@@ -268,6 +293,10 @@ namespace Kaban.UI.Controls
             if (_codes.Count > 0)
             {
                 text = string.Join("\r\n", _codes.Where(c => c.Value != 0).Select(c => AxisCodeHelp.Describe(c.Kind, c.Value)));
+            }
+            else if (GeneratedItem != null)
+            {
+                text = GeneratedItem.ShownCode + " " + GeneratedItem.Description;
             }
             else
             {

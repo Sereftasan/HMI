@@ -59,7 +59,7 @@ namespace Kaban.Machines.FA2010.Screens // Or wherever your UserControls are loc
             dgvAlarms.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "ColCode",
-                DataPropertyName = "AlarmCode",
+                DataPropertyName = "ShownCode",   // "M840.2" for an alarm the HMI raised itself
                 Width = 100
             });
 

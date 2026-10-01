@@ -332,6 +332,15 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public bool StepByStep;
 
+            /// <summary>
+            /// For a movement alarm the HMI raised itself (AlarmGeneration): WHICH
+            /// signal failed - 1 the start sensor stayed ON, 2 the target sensor did
+            /// not come ON, 3 both came ON, 4 both coils were ON, 5 the position did
+            /// not change, 6 it was still changing. The step-by-step page then asks
+            /// only about that signal. 0: not known (the PLC's alarm bit).
+            /// </summary>
+            public int Failure;
+
             public string FullPath
             {
                 get { return IsWebLink ? FileName.Trim() : ResolveLanguageFile(FileName); }

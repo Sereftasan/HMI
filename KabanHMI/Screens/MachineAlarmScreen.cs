@@ -128,7 +128,9 @@ namespace Kaban.UI.Screens
             // operator had to drag every column before the table could be read -
             // and a table that needs setting up before it can be read is one that
             // gets ignored during the minutes when it matters most.
-            AddColumn("AlarmCode", "Code", 138);
+            // The code as it is shown: "M840.2" for an alarm the HMI raised itself
+            // (its device and which signal failed), the alarm's code otherwise.
+            AddColumn("AlarmCode", "Code", 138, "ShownCode");
             AddColumn("Description", "Alarm", 575);
             AddColumn("Severity", "Severity", 138);
             AddColumn("TriggerTime", "Time", 200);
@@ -231,7 +233,7 @@ namespace Kaban.UI.Screens
                 items.Reverse();                                  // newest first
                 foreach (var a in items)
                     grid.Rows.Add(a.TriggerTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                                  a.AlarmCode, a.Description, a.Severity);
+                                  a.ShownCode, a.Description, a.Severity);
                 empty.Visible = grid.Rows.Count == 0;
                 grid.Visible = grid.Rows.Count > 0;
             };
@@ -363,7 +365,7 @@ namespace Kaban.UI.Screens
             int now = Environment.TickCount;
             if (_helpCache.TryGetValue(key, out hit) && now - hit.Tick < HelpCacheMs) return hit.Docs;
 
-            var docs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(AlarmManager.FindByAddressOrCode(item.AlarmCode));
+            var docs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(item);
             if (_helpCache.Count > 200) _helpCache.Clear();     // bounded
             _helpCache[key] = new CachedHelp { Tick = now, Docs = docs };
             return docs;
@@ -417,12 +419,12 @@ namespace Kaban.UI.Screens
             Kaban.UI.Helpers.AlarmHelpLinks.Open(this, doc);
         }
 
-        private void AddColumn(string prop, string caption, int width)
+        private void AddColumn(string prop, string caption, int width, string dataProperty = null)
         {
             _grid.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = prop,
-                DataPropertyName = prop,
+                DataPropertyName = dataProperty ?? prop,
                 HeaderText = LanguageManager.GetString("Alarm_Col_" + prop, caption),
                 Width = width,
                 SortMode = DataGridViewColumnSortMode.Programmatic
@@ -527,7 +529,7 @@ namespace Kaban.UI.Screens
         {
             switch (column)
             {
-                case "AlarmCode": return string.Compare(a.AlarmCode, b.AlarmCode, StringComparison.OrdinalIgnoreCase);
+                case "AlarmCode": return string.Compare(a.ShownCode, b.ShownCode, StringComparison.OrdinalIgnoreCase);
                 case "Severity": return a.Severity.CompareTo(b.Severity);
                 case "TriggerTime": return a.TriggerTime.CompareTo(b.TriggerTime);
                 default: return string.Compare(a.Description, b.Description, StringComparison.OrdinalIgnoreCase);
