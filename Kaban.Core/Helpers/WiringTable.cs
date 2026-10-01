@@ -63,6 +63,16 @@ namespace Kaban.Core.Helpers
             /// <summary>An output's cylinder: its clamping pressure selection and pressure switches.</summary>
             public string Pressure = "";
 
+            /// <summary>A text column in another language - "Measure.TR" - as the file gives it.</summary>
+            public readonly Dictionary<string, string> Translations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            /// <summary>A column in a language ("Measure", "TR"): its own column when the file has one, else "".</summary>
+            public string Localized(string column, string language)
+            {
+                string v;
+                return Translations.TryGetValue(column + "." + language, out v) ? v : "";
+            }
+
             public bool IsInput { get { return Address.StartsWith("X", StringComparison.OrdinalIgnoreCase) || Via.Length > 0; } }
 
 
@@ -202,6 +212,9 @@ namespace Kaban.Core.Helpers
                         Text = get("Text"), Card = get("Card"), Via = get("Via"), Measure = get("Measure"), Pressure = get("Pressure")
                     };
                     if (p.Address.Length == 0) continue;
+                    // "Measure.TR": a text of the drawings in another language (the step-by-step help's)
+                    for (int i = 0; i < head.Length && i < f.Length; i++)
+                        if (head[i].IndexOf('.') > 0 && f[i].Trim().Length > 0) p.Translations[head[i]] = f[i].Trim();
                     p.Commands.AddRange(get("Commands").Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries).Select(c => c.ToUpperInvariant()));
                     lock (_lock)
                     {

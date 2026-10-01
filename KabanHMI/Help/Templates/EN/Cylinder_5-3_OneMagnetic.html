@@ -1,0 +1,444 @@
+<!--doc
+  KABAN HMI - CYLINDER MOVEMENT, STEP BY STEP - TEMPLATE
+  Valve: 5/3, centre position.  Feedback: one magnetic sensor.
+
+  The HMI fills this file when a cylinder alarm's help is opened: the {{...}} get the
+  unit's own devices and the drawings' numbers (the machine's Wiring.csv).
+  The words may be changed here; the {{...}} marks and the <div class="step" ...> lines
+  must stay as they are. Syntax: tools/cylinder_templates/README.md.
+  tools/build_cylinder_templates.py writes every pair again from
+  tools/cylinder_templates/Cylinder_master.en.html (not over a file changed by hand).
+-->
+<!--def OutCode-->{{#Out}}{{Out}}{{/Out}}{{^Out}}the valve output{{/Out}}<!--/def-->
+<!--def Button-->the <b>{{ButtonSign}}</b> button<!--/def-->
+<!--def ButtonCap-->The <b>{{ButtonSign}}</b> button<!--/def-->
+<!--def PressIt-->{{>Button}}{{#Glyph}} (<b>{{Move}}</b>){{/Glyph}}<!--/def-->
+<!--def OtherButton-->the <b>{{OtherSign}}</b> button{{#OtherGlyph}} (<b>{{OtherMove}}</b>){{/OtherGlyph}}<!--/def-->
+<!--def StartItCap-->{{#HasButton}}Press {{>PressIt}}{{/HasButton}}{{^HasButton}}End {{OtherMove}} (switch off or let go of {{>OtherButton}}){{/HasButton}}<!--/def-->
+<!--def Cyl-->{{#CylName}}cylinder <b>{{CylName}}</b>{{/CylName}}{{^CylName}}the cylinder{{/CylName}}<!--/def-->
+<!--def PnSheetP-->{{#PnSheet}} (pneumatic sheet {{PnSheet}}){{/PnSheet}}<!--/def-->
+<!--def ValveName-->{{#ValveTag}}valve <b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}the valve{{/ValveTag}}<!--/def-->
+<!--def ValveNameCap-->{{#ValveTag}}Valve <b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}The valve{{/ValveTag}}<!--/def-->
+<!--def ValvePlain-->{{#ValveTag}}valve {{ValveTag}}{{/ValveTag}}{{^ValveTag}}the valve{{/ValveTag}}<!--/def-->
+<!--def CoilName-->{{#Coil}}coil <b>{{Coil}}</b>{{/Coil}}{{^Coil}}the valve coil{{/Coil}}<!--/def-->
+<!--def CoilPlain-->{{#Coil}}coil {{Coil}}{{/Coil}}{{^Coil}}the valve coil{{/Coil}}<!--/def-->
+<!--def Hose-->{{#Hoses}}{{#HosesMany}}hoses{{/HosesMany}}{{^HosesMany}}hose{{/HosesMany}} <b>{{Hoses}}</b>{{/Hoses}}<!--/def-->
+<!--def HosePlain-->{{#HosesMany}}hoses{{/HosesMany}}{{^HosesMany}}hose{{/HosesMany}} {{Hoses}}<!--/def-->
+<!--def BothHoses-->{{#Hoses}}both hoses (<b>{{Hoses}}</b>){{/Hoses}}{{^Hoses}}both sides{{/Hoses}}<!--/def-->
+<!--def ZeroVolt-->0 V{{#ZeroWire}} (wire {{ZeroWire}}){{/ZeroWire}}<!--/def-->
+<!--def CardLed-->{{#OutCard}}PLC card <b>{{OutCard}}</b>{{/OutCard}}{{^OutCard}}the PLC's output card{{/OutCard}}{{#OutTerminalOther}}, the LED of its terminal <b>{{OutTerminal}}</b>{{#Out}} ({{Out}}){{/Out}}{{/OutTerminalOther}}{{^OutTerminalOther}}, the LED of {{>OutCode}}{{/OutTerminalOther}}<!--/def-->
+<!--def TimeAllowed-->{{#HmiAlarm}}the time the HMI allows (Alarm Settings: the alarm's delay){{/HmiAlarm}}{{^HmiAlarm}}the time the PLC allows{{/HmiAlarm}}<!--/def-->
+<!--def LongerTime-->{{#HmiAlarm}}give this alarm a longer delay in Alarm Settings.{{/HmiAlarm}}{{^HmiAlarm}}have the monitoring time raised (after checking it is safe).{{/HmiAlarm}}<!--/def-->
+<!--def StartOrSensor-->{{#HasMustOff}}{{OffNames}}{{/HasMustOff}}{{^HasMustOff}}the start sensor{{/HasMustOff}}<!--/def-->
+<!--def LookBySensors-->{{[; }}{{#HasStart}}{{StartSlash}} still ON = not moved{{/HasStart}}{{|}}{{#HasMustOn}}{{OnSlash}} ON = arrived{{/HasMustOn}}{{|}}{{#StartAndOn}}both OFF = on the way (or stopped){{/StartAndOn}}{{|}}{{#EndNotSensed}}{{#HasMustOff}}{{OffSlash}} OFF = it has left; nothing sees the far end{{/HasMustOff}}{{/EndNotSensed}}{{]}}<!--/def-->
+<!--def SensorName-->{{#Switch}}pressure switch {{/Switch}}{{^Switch}}{{#SensorWord}}sensor {{/SensorWord}}{{/Switch}}{{#Tag}}<b>{{Tag}}</b> ({{Io}}){{/Tag}}{{^Tag}}{{Dev}}{{/Tag}}<!--/def-->
+<!--def And--> and <!--/def-->
+<!--def DrawnAs--> &ndash; {{V}}<!--/def-->
+<!--def Wire-->wire {{V}}<!--/def-->
+<!--def Sheet-->sheet {{V}}<!--/def-->
+<!--def SheetParen-->(sheet {{V}})<!--/def-->
+<!--def ReadThrough-->read through {{V}}<!--/def-->
+<!--def SensorTag-->sensor {{V}}<!--/def-->
+<!--def Relay-->relay {{V}}<!--/def-->
+<!--def CoilWord-->coil {{V}}<!--/def-->
+<!--def ContinuesOn-->continues on sheet {{V}}<!--/def-->
+<!--def ValveWord-->valve {{V}}<!--/def-->
+<!--def HoseWord-->hose {{V}}<!--/def-->
+<!--def HosesWord-->hoses {{V}}<!--/def-->
+<!--def PnSheetWord-->pneumatic sheet {{V}}<!--/def-->
+<!--def On-->ON<!--/def-->
+<!--def Off-->OFF<!--/def-->
+<!--def Met-->met<!--/def-->
+<!--def NotMet-->NOT met<!--/def-->
+<!--def StepLink-->Step {{N}}<!--/def-->
+<!--def StepsRange-->steps {{A}}&ndash;{{B}}<!--/def-->
+<!--def StartHere-->start here<!--/def-->
+<!--def ThisUnit-->this unit<!--/def-->
+<!--def LeftMove-->the left button's movement<!--/def-->
+<!--def RightMove-->the right button's movement<!--/def-->
+<!--def GlyphWords-->
+&#9650; = Up
+&#9660; = Down
+&#9664; = Left
+&#9654; = Right
+<!--/def-->
+<!--def MoveWords--><!--/def-->
+<!--def DataWords--><!--/def-->
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>{{Unit}} - {{Move}} - step by step</title><style>body{font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#1e2329;margin:18px 22px;max-width:1020px;line-height:1.4}h1{font-size:1.45em;margin:.1em 0}.sub{color:#5a6270;margin:.1em 0 .9em}h2{font-size:1.15em;margin:1.3em 0 .5em;padding:.25em .5em;border-radius:4px;background:#eef1f5}h2.a{background:#fde9e7}h2.b{background:#fff3d6}h2.c{background:#e5f3e8}code{font-family:Consolas,monospace;font-weight:bold;color:#1f4e79;font-size:1.02em}.what,.seen{border:1px solid #d0d7e2;border-radius:6px;padding:.5em .8em;margin:.6em 0;background:#fafbfd}.what p{margin:.2em 0 .5em}.chain{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:.3em 0}.box{display:inline-flex;flex-direction:column;border:1px solid #9fb3cc;border-radius:5px;padding:.2em .5em;background:#fff;text-decoration:none;color:inherit;min-width:70px}a.box:hover{border-color:#2e75b6;background:#eef5fb}.box .cap{font-size:.78em;color:#5a6270}.box .val{font-size:.95em}.arrow{color:#8a94a3;font-weight:bold}table.states{border-collapse:collapse;margin:.2em 0}table.states td,table.states th{border:1px solid #d0d7e2;padding:.2em .6em;text-align:left}table.states th{background:#eef1f5;font-weight:600}.st-on{color:#1a7f37;font-weight:bold}.st-off{color:#444;font-weight:bold}.st-bad{color:#c00000;font-weight:bold}.hint{background:#fff7d6;border:1px solid #e0c060;border-radius:6px;padding:.5em .8em;margin:.6em 0}.safety{background:#fdecea;border:1px solid #e3a6a0;border-radius:6px;padding:.5em .8em;margin:.6em 0}.map{margin:.8em 0}.branch{display:inline-block;margin:.15em .2em;padding:.1em .5em;border-radius:10px;font-size:.93em}.branch.a{background:#fde9e7}.branch.b{background:#fff3d6}.branch.c{background:#e5f3e8}.step{display:flex;gap:.8em;border:1px solid #d0d7e2;border-radius:8px;padding:.55em .8em;margin:.55em 0;background:#fff}.step.start{border:2px solid #d4a017;box-shadow:0 0 0 3px #fff3c4}.step.end{background:#f6f7f9}.num{flex:0 0 auto;width:2em;height:2em;border-radius:50%;background:#1f4e79;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;margin-top:.1em}.body{flex:1}.body h3{margin:.15em 0 .35em;font-size:1.05em}.body ul{margin:.2em 0 .4em 1.1em;padding:0}.body li{margin:.15em 0}.here{font-size:.72em;background:#ffd966;border-radius:3px;padding:.05em .4em;vertical-align:middle}table.out{border-collapse:collapse;width:100%;margin:.3em 0 .1em}table.out td{border-top:1px solid #e3e7ee;padding:.3em .5em;vertical-align:top}table.out td.when{width:36%}tr.good td.when{border-left:4px solid #1a7f37}tr.fault td.when{border-left:4px solid #c0504d}tr.go td.when{border-left:4px solid #8a94a3}.again{display:block;color:#5a6270;font-size:.9em;margin-top:.15em}.man{margin:.2em 0 0;color:#8a94a3;font-size:.82em;text-align:right}table.parts{border-collapse:collapse}table.parts td{border-top:1px solid #e3e7ee;padding:.25em .7em .25em 0;vertical-align:top}table.parts td:first-child{font-weight:600;white-space:nowrap}.ref{color:#5a6270;font-size:.9em}a{color:#1f5fa8}@media print{.step{break-inside:avoid}}</style></head><body>
+<h1>{{Unit}} &mdash; &ldquo;{{Move}}&rdquo; did not complete</h1>
+<p class="sub">{{[ &middot; }}Step by step, for this movement on this machine{{|}}{{#Error}}alarm {{ErrorShown}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}{{/Error}}{{|}}{{#HmiAlarm}}raised by the HMI{{/HmiAlarm}}{{|}}{{AlarmDate}}{{]}}</p>
+<div class="what"><p><b>What should happen:</b> {{#HasButton}}pressing {{>PressIt}}, {{/HasButton}}{{^HasButton}}when {{OtherMove}} ends ({{>OtherButton}} off), {{/HasButton}}the PLC switches {{>OutCode}} <b>ON</b>{{#Relay}}, relay {{Relay}} pulls in{{/Relay}}{{#Coil}}, coil {{Coil}} gets 24 V{{/Coil}} and {{>ValveName}} switches; air goes{{#Hoses}} through {{>Hose}}{{/Hoses}} into {{>Cyl}}{{>PnSheetP}}, which moves to the end of <b>{{Move}}</b>{{#HasMustOn}}; there {{OnNames}} must come <b>ON</b>{{/HasMustOn}}{{#HasMustOff}}{{#HasMustOn}} and {{/HasMustOn}}{{^HasMustOn}}; {{/HasMustOn}}{{OffNames}} must go <b>OFF</b>{{/HasMustOff}}{{#EndNotSensed}} &ndash; nothing sees that end: the sensor going OFF and the time confirm it{{/EndNotSensed}}.</p>
+<div class="chain">{{[<span class="arrow">&rarr;</span>}}{{#Command}}<a class="box" href="#A1"><span class="cap">HMI command</span><span class="val">{{Command}}</span></a>{{/Command}}{{|}}<a class="box" href="#A1"><span class="cap">PLC output ON</span><span class="val">{{>OutCode}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">relay</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">valve coil</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}coil{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valve switches</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valve{{/ValveTag}}</span></a>{{|}}<a class="box" href="#A7"><span class="cap">air{{#Hoses}} through {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">cylinder moves</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{#MustOn}}{{Name}} ON{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">confirmed</span><span class="val">{{OffNames}} OFF + time</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{]}}</div>
+<p class="ref">{{>ValveNameCap}} is a 5/3 valve: the cylinder moves only while a coil is ON; with both off it stops in the centre position{{#ClosedCentre}}, holding the air in the cylinder (closed centre){{/ClosedCentre}}{{#OpenCentre}}, both sides open to exhaust (open centre){{/OpenCentre}}.</p>
+</div>
+{{#Seen}}
+<div class="seen"><p><b>What the HMI saw</b> (red: not as it should be at the end of the movement)</p>
+<table class="states"><tr><th></th><th>should be</th><th>at the alarm</th><th>now</th></tr>
+{{#SeenRows}}
+<tr><td>{{#IsCommand}}Command {{Code}}{{/IsCommand}}{{#IsSpringCoil}}Coil output {{>OutCode}} ({{OtherMove}}){{/IsSpringCoil}}{{#IsValveOut}}Valve output {{>OutCode}}{{/IsValveOut}}{{#IsOtherCoil}}Other coil {{Code}} ({{OtherMove}}){{/IsOtherCoil}}{{#IsSensor}}{{Name}}{{/IsSensor}}</td><td>{{#WantOn}}ON{{/WantOn}}{{^WantOn}}OFF{{/WantOn}}</td><td>{{AtAlarm}}</td><td>{{Now}}</td></tr>
+{{/SeenRows}}
+</table>
+{{#HmiAlarm}}
+<p class="ref">&ldquo;At the alarm&rdquo;: when the HMI's time for the movement ran out{{#AlarmTime}} ({{AlarmTime}}){{/AlarmTime}}.</p></div>
+{{/HmiAlarm}}
+{{^HmiAlarm}}
+<p class="ref">&ldquo;At the alarm&rdquo;: the last reading before the error bit came on{{#AlarmTime}} ({{AlarmTime}}){{/AlarmTime}}{{^SeenRising}} &ndash; the alarm was already on when the page started reading, so these are from just after it{{/SeenRising}}.</p></div>
+{{/HmiAlarm}}
+{{/Seen}}
+{{#Hint}}
+<div class="hint"><b>Where to start:</b> {{#WhyF1}}The HMI timed <b>{{Move}}</b>: {{>StartOrSensor}} at the start stayed <b>ON</b>.{{/WhyF1}}{{#WhyF2}}The HMI timed <b>{{Move}}</b>: {{#HasMustOn}}{{OnNames}}{{/HasMustOn}}{{^HasMustOn}}the end{{/HasMustOn}} did not come <b>ON</b>{{#HasStart}} although {{StartNames}} went OFF{{/HasStart}}.{{/WhyF2}}{{#WhyF3}}The HMI timed <b>{{Move}}</b>: {{OnNames}} came ON, but {{>StartOrSensor}} at the start stayed <b>ON</b> &ndash; that sensor did not go OFF.{{/WhyF3}}{{#WhyF4}}Both coils' outputs were <b>ON</b>{{#Out}}{{#OtherOut}} ({{>OutCode}} and {{OtherOut}}){{/OtherOut}}{{/Out}}: the valve cannot switch.{{/WhyF4}}{{#WhyF5}}The HMI timed <b>{{Move}}</b>: the position reading did not change.{{/WhyF5}}{{#WhyF6}}The HMI timed <b>{{Move}}</b>: the position reading was still changing when the time ran out.{{/WhyF6}}{{#WhySpringOn}}{{>OutCode}} was still <b>ON</b> when the alarm came: the PLC kept the coil on, so the spring could not switch the valve back.{{/WhySpringOn}}{{#WhyOutOff}}{{>OutCode}} was <b>OFF</b> when the alarm came: the PLC did not drive the valve.{{/WhyOutOff}}{{#WhyBothCoils}}Both coils' outputs were <b>ON</b> ({{>OutCode}} and {{OtherOut}}): the valve cannot switch.{{/WhyBothCoils}}{{#WhyArrived}}{{OnNames}} {{#MustOnMany}}were{{/MustOnMany}}{{^MustOnMany}}was{{/MustOnMany}} <b>ON</b>: it arrived, but too late or not confirmed in time.{{/WhyArrived}}{{#WhyArrivedStuck}}{{OnNames}} was ON, but {{StuckNames}} was <b>still ON</b> as well.{{/WhyArrivedStuck}}{{#WhyStartOutOk}}{{>OutCode}} was ON, but {{StillNames}} at the start was <b>still ON</b>: the cylinder did not leave its start. The PLC did its part &ndash; follow the signal from the card.{{/WhyStartOutOk}}{{#WhyStillAtStart}}{{StillNames}} at the start was <b>still ON</b>: the cylinder did not leave its start.{{/WhyStillAtStart}}{{#WhyLeftStart}}It left its start ({{WhyStartNames}} OFF), but {{OnNames}} did not come on: it stopped on the way, or the sensor does not see it &ndash; step 1 tells which.{{/WhyLeftStart}}{{#WhyLeftUnseen}}It left {{WhyStartNames}}: nothing sees the far end, so the PLC waited for the time &ndash; check it arrived (step 1) and the time.{{/WhyLeftUnseen}} &rarr; <a class="go" href="#{{StartKey}}"></a>{{#StepOneNote}} (step 1 is still worth a look).{{/StepOneNote}}{{^StepOneNote}}.{{/StepOneNote}}</div>
+{{/Hint}}
+<div class="safety"><b>Safety first.</b> Before you touch the cylinder, the valve or anything that moves: <b>lock out</b> the machine (electrical and air) and exhaust both sides of the cylinder &ndash; it can move suddenly when air returns, and a closed-centre valve or a clamp keeps air trapped. Never bypass a guard or an emergency stop to clear an alarm. Measuring in the cabinet, changing the PLC program or replacing parts is for trained, authorized people.</div>
+<div class="map"><b>How this page goes:</b> <a class="go" href="#look"></a> where the cylinder is &rarr; <span class="branch a">not moved: <!--range A--></span> <span class="branch b">stopped on the way: <!--range B--></span> <span class="branch c">arrived, not confirmed: <!--range C--></span></div>
+
+{{! ============================== 1. WHERE IS IT ============================== }}
+<div class="step" id="look" data-part="look"><div class="num"></div><div class="body">
+<h3>{{^LookF}}Where is the cylinder now?{{/LookF}}{{#Failure1}}Has the cylinder left its start?{{/Failure1}}{{#Failure2}}Where is the cylinder now?{{/Failure2}}{{#Failure5}}Has the cylinder moved?{{/Failure5}}{{#Failure6}}Where is the cylinder now?{{/Failure6}}</h3>
+<ul>
+{{#Failure1}}
+<li>{{>StartOrSensor}} at the start stayed <b>ON</b>: either the cylinder did not leave, or it left and the sensor did not go OFF.</li>
+{{/Failure1}}
+{{#Failure2}}
+<li>{{#HasMustOn}}{{OnNames}}{{/HasMustOn}}{{^HasMustOn}}The end{{/HasMustOn}} did not come <b>ON</b>{{#HasStart}} although {{StartNames}} went OFF (it left its start){{/HasStart}}.</li>
+{{/Failure2}}
+{{#Failure5}}
+<li>The position reading{{#Position}} {{Position}}{{/Position}} did not change.</li>
+{{/Failure5}}
+{{#Failure6}}
+<li>The position reading{{#Position}} {{Position}}{{/Position}} was still changing when the time ran out.</li>
+{{/Failure6}}
+<li>Stand clear of it and <b>look</b> at {{>Cyl}}{{>PnSheetP}}. Do not touch anything yet.</li>
+<li>Where it should be: at the end of <b>{{Move}}</b>{{#HasMustOn}} ({{OnNames}} ON{{#HasMustOff}}, {{OffNames}} OFF{{/HasMustOff}}){{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}} (no sensor there: {{OffNames}} must be OFF){{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}. Where it started from: the end of <b>{{OtherMove}}</b>.</li>
+{{^LookF}}
+{{#HasSensors}}
+<li>Cannot see it? The sensors tell (the side bar's <i>Inputs / Outputs</i> page, or the lamps on the unit's buttons): {{>LookBySensors}}.</li>
+{{/HasSensors}}
+{{/LookF}}
+</ul>
+<table class="out">
+{{^LookF}}
+<tr class="go"><td class="when">It has <b>not moved</b> at all &ndash; still where it started.</td><td>&rarr; <a class="go" href="#A1"></a></td></tr>
+<tr class="go"><td class="when">It moved but <b>stopped on the way</b>.</td><td>&rarr; <a class="go" href="#B1"></a></td></tr>
+<tr class="good"><td class="when">It <b>arrived</b> at the end of <b>{{Move}}</b>, yet the alarm came.</td><td>&rarr; <a class="go" href="#C1"></a></td></tr>
+{{/LookF}}
+{{#Failure1}}
+<tr class="go" data-optional><td class="when">No &ndash; it is still at the start.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+<tr class="good" data-optional><td class="when">Yes &ndash; it moved.</td><td>&rarr; <a class="go" href="#@start"></a></td></tr>
+{{/Failure1}}
+{{#Failure2}}
+{{^HasStart}}
+<tr class="go" data-optional><td class="when">It has <b>not moved</b> at all.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+{{/HasStart}}
+<tr class="go" data-optional><td class="when">It moved but <b>stopped on the way</b>.</td><td>&rarr; <a class="go" href="#@B"></a></td></tr>
+<tr class="good" data-optional><td class="when">It <b>arrived</b> at the end of <b>{{Move}}</b>.</td><td>&rarr; <a class="go" href="#@target"></a></td></tr>
+{{/Failure2}}
+{{#Failure5}}
+<tr class="go" data-optional><td class="when">It has <b>not moved</b>.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+<tr class="good" data-optional><td class="when">It moved, but the number did not change.</td><td>&rarr; <a class="go" href="#@position"></a></td></tr>
+{{/Failure5}}
+{{#Failure6}}
+<tr class="go" data-optional><td class="when">It is still creeping, or it stopped on the way.</td><td>&rarr; <a class="go" href="#@B"></a></td></tr>
+<tr class="good" data-optional><td class="when">It <b>arrived</b>, the number does not settle.</td><td>&rarr; <a class="go" href="#@position"></a></td></tr>
+{{/Failure6}}
+</table>
+</div></div>
+
+{{! ============================== A. IT HAS NOT MOVED ============================== }}
+<h2 class="part a">A &mdash; It has not moved: follow the signal from the PLC to the cylinder</h2>
+<div class="step" id="A1" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the PLC switch on {{>OutCode}}?</h3>
+<ul>
+<li>Reset the alarm. In <b>manual mode</b>, open the side bar's <i>Inputs / Outputs</i> page and find {{>OutCode}}{{#OutText}} ({{OutText}}){{/OutText}}.</li>
+<li>Press {{>PressIt}} on {{Unit}} and watch {{>OutCode}}. (A 5/3 valve moves only while its coil is ON: if the cylinder moves only while the button is held, keep holding it.){{#OtherOut}} The other coil's output {{OtherOut}} ({{OtherMove}}) must stay <b>OFF</b>.{{/OtherOut}}</li>
+</ul>
+<table class="out">
+<tr class="go"><td class="when">{{>OutCode}} stays <b>OFF</b> (the button may be grey).</td><td>&rarr; <a class="go" href="#A2"></a></td></tr>
+{{#OtherOut}}
+<tr class="fault"><td class="when">{{>OutCode}} and {{OtherOut}} are <b>both ON</b>.</td><td>With both coils on, the valve cannot switch. Let go of {{>OtherButton}}; if both still come on together, the PLC program commands both (or a wire is crossed) &ndash; ask the PLC programmer to interlock them. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A3"></a>.</span></td></tr>
+{{/OtherOut}}
+<tr class="good"><td class="when">{{>OutCode}} comes <b>ON</b>{{#OtherOut}} and {{OtherOut}} stays OFF{{/OtherOut}}.</td><td>&rarr; <a class="go" href="#A3"></a></td></tr>
+</table>
+<p class="man">manual 1.6 (1), 1.4</p>
+</div></div>
+
+<div class="step" id="A2" data-part="A"><div class="num"></div><div class="body">
+<h3>Why does the PLC not switch it on?</h3>
+<ul>
+<li>Rest the pointer on {{>Button}}: a grey button says what it is waiting for.</li>
+{{#Conditions}}
+<li>It waits for: {{Conditions}}.</li>
+{{/Conditions}}
+<li>Look for what stops a movement: a guard door open, an emergency stop pressed, the air pressure switch, another unit in the way that must move first, the machine not in manual mode.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Something it waits for is <b>not met</b>.</td><td>Make it right (close the guard, release the emergency stop, move the other unit first). <b>Never bypass a safety interlock.</b> Then press {{>Button}} again. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Everything is met, {{>OutCode}} still stays OFF.</td><td>The PLC program holds it: in the PLC (online monitor) watch {{>OutCode}}'s rung while {{>Button}} is pressed{{#Command}} (the HMI's command is {{Command}}){{/Command}} &ndash; the contact that stays open is the reason. This needs the PLC programmer or maintenance. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+</table>
+<p class="man">manual 1.6 (1)</p>
+</div></div>
+
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the output card switch {{>OutCode}}?</h3>
+<ul>
+<li>Keep {{>Button}} pressed. On {{>CardLed}} must be lit.</li>
+{{#OutWire}}
+<li>Measure: <b>24 V DC</b> between the terminal (wire <b>{{OutWire}}</b>{{#OutSheet}}, sheet {{OutSheet}}{{/OutSheet}}) and {{>ZeroVolt}}.</li>
+{{/OutWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The LED is off, or there is no voltage.</td><td>The output channel does not switch: check the card's fuse and its supply (the common terminal); replace the fuse or the card. A fuse that blows again means a short in the wiring or a shorted coil. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A4"></a>.</span></td></tr>
+<tr class="good"><td class="when">The LED is on and 24 V is there.</td><td>&rarr; <a class="go" href="#A4"></a></td></tr>
+</table>
+<p class="man">manual 1.6 (2)</p>
+</div></div>
+
+{{#Relay}}
+<div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
+<h3>Does relay {{Relay}} pull in?</h3>
+<ul>
+<li>Relay <b>{{Relay}}</b>{{#RelaySheet}} (sheet {{RelaySheet}}){{/RelaySheet}}, in the cabinet: with {{>Button}} pressed its LED must light, and it clicks.</li>
+{{#OutWire}}
+<li>Measure its coil: <b>24 V</b> on wire <b>{{OutWire}}</b> against {{>ZeroVolt}}.</li>
+{{/OutWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">No voltage at the relay.</td><td>{{#OutWire}}Wire {{OutWire}} is{{/OutWire}}{{^OutWire}}The wire is{{/OutWire}} broken between the card terminal and the relay (or a terminal on the way): repair it. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A5"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Voltage is there but it does not pull in.</td><td>The relay's coil is open: replace relay {{Relay}}. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A5"></a>.</span></td></tr>
+<tr class="good"><td class="when">It pulls in.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">manual 1.5</p>
+</div></div>
+{{/Relay}}
+
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>Does {{>CoilPlain}} get power?</h3>
+<ul>
+<li>Find {{>CoilName}} on {{>ValveName}}{{>PnSheetP}}. With {{>Button}} pressed its LED must be lit.</li>
+{{#CoilWire}}
+<li>Measure: <b>24 V DC</b> between wire <b>{{CoilWire}}</b>{{#CoilSheet}} (sheet {{CoilSheet}}){{/CoilSheet}} and {{>ZeroVolt}}.</li>
+{{/CoilWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">No voltage on {{#CoilWire}}wire {{CoilWire}}{{/CoilWire}}{{^CoilWire}}the coil{{/CoilWire}}.</td><td>{{#Relay}}The relay's contact does not pass it (burnt) or the wire to the coil is broken: across the closed contact there should be about 0 V; replace relay {{Relay}} or repair the wire.{{/Relay}}{{^Relay}}The wire between the card and the coil is broken: repair it.{{/Relay}} <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A6"></a>.</span></td></tr>
+<tr class="fault"><td class="when">24 V is there but the coil's LED stays off.</td><td>The connector or the coil: seat the connector again; if it still stays off, replace the coil. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A6"></a>.</span></td></tr>
+<tr class="good"><td class="when">24 V and the LED is on.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">manual 1.3 (1){{#Relay}}, 1.5 (2){{/Relay}}</p>
+</div></div>
+
+<div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
+<h3>Does the valve switch?</h3>
+<ul>
+<li>Make sure nobody is near {{>Cyl}}. Press the <b>manual override</b> of {{>CoilName}} on {{>ValveName}}.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">With the override the cylinder <b>moves</b>.</td><td>The valve is fine but the coil does not shift it although it has power: replace {{>CoilPlain}}. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A7"></a>.</span></td></tr>
+<tr class="go"><td class="when">It does not move with the override either.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
+</table>
+<p class="man">manual 1.3 (2)</p>
+</div></div>
+
+<div class="step" id="A7" data-part="A"><div class="num"></div><div class="body">
+<h3>Is there air to move it?</h3>
+<ul>
+<li>Read the pressure gauge at the air unit: it must show the machine's working pressure (at least 5 bar).</li>
+{{#MainAir}}
+<li>The main air switch {{#MainAirTag}}<b>{{MainAirTag}}</b> {{/MainAirTag}}({{MainAirCode}}{{#MainAirText}}, {{MainAirText}}{{/MainAirText}}) must be <b>ON</b> on the <i>Inputs / Outputs</i> page.</li>
+{{/MainAir}}
+{{#Pressure}}
+<li>This cylinder's pressure: {{Pressure}} &ndash; with the low pressure selected it may not have the force.</li>
+{{/Pressure}}
+<li>Command the movement again (or hold the override): air must come out of {{>ValveName}}{{#Hoses}} into {{>Hose}}{{/Hoses}} towards {{>Cyl}}. Listen and feel along the hoses for leaks and kinks; the flow controls at the cylinder's ports must not be closed.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The pressure is low, or there is no air.</td><td>Restore the supply: open the shut-off valve, check the compressor, change a clogged filter, repair leaks. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Air reaches the valve, but none comes out{{#Hoses}} into {{>Hose}}{{/Hoses}}.</td><td>The valve's spool is stuck: clean or replace {{>ValvePlain}}; check the air quality (filter, water, oil). <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="fault"><td class="when">A hose leaks, is kinked or off; a flow control is closed.</td><td>Repair or replace the hose or fitting; open the flow control to its mark. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="go"><td class="when">Air reaches the cylinder, it still does not move.</td><td>&rarr; <a class="go" href="#A8"></a></td></tr>
+</table>
+<p class="man">manual 1.2</p>
+</div></div>
+
+<div class="step" id="A8" data-part="A"><div class="num"></div><div class="body">
+<h3>Is the cylinder free to move?</h3>
+<ul>
+<li><b>Lock out</b> the machine (electrical and air) and exhaust {{>BothHoses}} at {{>ValveName}}: a cylinder can move suddenly when air comes back.</li>
+<li>Look along the whole stroke: a jammed profile, a chip, a fallen part, the tooling. Then move {{>Cyl}} <b>by hand</b> through its stroke.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Something blocks it, or it is stiff / notchy.</td><td>Remove the obstruction; align, lubricate or replace the guide or bearing; look for a bent rod. Check the tooling before starting again. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="fault"><td class="when">It moves freely by hand.</td><td>Then the force is too small: the load grew, the pressure is set too low{{#Pressure}} (see the clamping pressure above){{/Pressure}}, or the cylinder's seals leak (air blows through from one side to the other). Set the regulator within its limit or have the cylinder repaired. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+</table>
+<p class="man">manual 1.1</p>
+</div></div>
+
+{{! ============================== B. IT STOPPED ON THE WAY ============================== }}
+<h2 class="part b">B &mdash; It stopped on the way</h2>
+<div class="step" id="B1" data-part="B"><div class="num"></div><div class="body">
+<h3>Does {{>OutCode}} stay ON the whole way?</h3>
+<ul>
+<li>Watch {{>OutCode}} on the <i>Inputs / Outputs</i> page while <b>{{Move}}</b> is carried out, from the start until the cylinder stops.</li>
+<li>A <b>5/3 valve</b> moves the cylinder only while the coil is ON: when the signal ends early, the valve goes to its centre and the cylinder stops where it is{{#ClosedCentre}} (its closed centre keeps the air trapped in the cylinder){{/ClosedCentre}}{{#OpenCentre}} (its open centre lets the cylinder drift){{/OpenCentre}}.</li>
+<li>Wiggle the coil's connector and the cable while it moves: a loose contact drops the signal.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">It goes OFF too early.</td><td>A loose connector or wire: repair it. If the PLC switches it itself, the program must keep the signal until {{#HasMustOn}}{{OnNames}} confirms the end{{/HasMustOn}}{{^HasMustOn}}the end is reached{{/HasMustOn}} &ndash; ask the PLC programmer. In manual mode, keep {{>Button}} held until the cylinder arrives. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#B2"></a>.</span></td></tr>
+<tr class="good"><td class="when">It stays as it should.</td><td>&rarr; <a class="go" href="#B2"></a></td></tr>
+</table>
+<p class="man">manual 1.4 (3)</p>
+</div></div>
+
+<div class="step" id="B2" data-part="B"><div class="num"></div><div class="body">
+<h3>Does the air pressure hold while it moves?</h3>
+<ul>
+<li>Watch the pressure gauge while the cylinder moves: a large drop means too little air reaches it.</li>
+<li>Check {{#Hoses}}{{>Hose}}{{/Hoses}}{{^Hoses}}the hoses{{/Hoses}} for leaks and kinks, and the flow controls at the cylinder: nearly closed, the cylinder creeps and stops.</li>
+{{#Pressure}}
+<li>Its pressure: {{Pressure}}.</li>
+{{/Pressure}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The pressure drops, a hose leaks, a flow control is closed.</td><td>Repair the supply or the hose; set the flow control to its mark. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#B3"></a>.</span></td></tr>
+<tr class="good"><td class="when">The air is fine.</td><td>&rarr; <a class="go" href="#B3"></a></td></tr>
+</table>
+<p class="man">manual 1.2</p>
+</div></div>
+
+<div class="step" id="B3" data-part="B"><div class="num"></div><div class="body">
+<h3>Is something in its way?</h3>
+<ul>
+<li><b>Lock out</b> and exhaust {{>BothHoses}}. Look where it stopped: a profile, a chip, the tooling, a clamp jaw. Move {{>Cyl}} by hand past that point.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">It is blocked or stiff there.</td><td>Remove the cause; align, lubricate or repair the guide; check the rod. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#B4"></a>.</span></td></tr>
+<tr class="good"><td class="when">It is free.</td><td>&rarr; <a class="go" href="#B4"></a></td></tr>
+</table>
+<p class="man">manual 1.1</p>
+</div></div>
+
+<div class="step" id="B4" data-part="B"><div class="num"></div><div class="body">
+<h3>Is it only too slow?</h3>
+<ul>
+<li>Time the stroke: from {{>OutCode}} switching to {{#HasMustOn}}{{OnNames}} ON{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}the end ({{OffNames}} goes OFF on the way){{/HasMustOff}}{{^HasMustOff}}the end{{/HasMustOff}}{{/EndNotSensed}}{{^EndNotSensed}}the end{{/EndNotSensed}}{{/HasMustOn}}. The PLC Monitor's <i>Modified</i> column shows when each changed.</li>
+<li>Compare it with {{>TimeAllowed}}{{#Error}} before alarm {{Error}}{{/Error}}{{#HmiAlarm}}.{{/HmiAlarm}}{{^HmiAlarm}} (in the PLC program).{{/HmiAlarm}}</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">It needs about as long as allowed, or longer.</td><td>Open the flow controls to the right speed; if the stroke is right and only the time is short, {{>LongerTime}} <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="go"><td class="when">It is well within the time.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
+</table>
+<p class="man">manual 1.8</p>
+</div></div>
+
+{{! ============================== C. IT ARRIVED ============================== }}
+<h2 class="part c">C &mdash; It arrived, but the end was not confirmed</h2>
+{{#MustOn}}
+<div class="step" id="{{Key}}" data-part="C" data-role="target"><div class="num"></div><div class="body">
+<h3>Does {{Name}} see it?</h3>
+<ul>
+<li>{{Name}}{{Where}}{{#Text}} &ndash; {{Text}}{{/Text}}.</li>
+<li>With the cylinder at the end of <b>{{Move}}</b>: the sensor's own <b>LED</b> must be lit, and {{Io}} must be <b>ON</b> on the <i>Inputs / Outputs</i> page (and the lamp on {{>Button}}).{{#CopiedTo}} The PLC copies it into {{Dev}}.{{/CopiedTo}}</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">The sensor's LED is <b>off</b>.</td><td>Loosen its clamp, slide the sensor along the cylinder until its LED lights reliably, tighten it. If it never lights, replace the sensor. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#{{Next}}"></a>.</span></td></tr>
+<tr class="fault"><td class="when">The LED is on, but {{Io}} stays OFF on the HMI.</td><td>The signal does not reach the PLC: the sensor's cable and connector{{#Wire}}, wire {{Wire}}{{/Wire}}{{#Card}}, the input {{Card}} (its LED){{/Card}}{{^Card}}, the input card's LED{{/Card}}{{#SensorWire}}, the sensors' +24 V (wire {{SensorWire}}){{/SensorWire}}{{^SensorWire}}, the input common{{/SensorWire}}. Repair what is broken. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#{{Next}}"></a>.</span></td></tr>
+<tr class="good"><td class="when">It is ON.</td><td>&rarr; <a class="go" href="#{{Next}}"></a></td></tr>
+</table>
+<p class="man">manual 1.7 (1)</p>
+</div></div>
+{{/MustOn}}
+{{#HasMustOff}}
+<div class="step" id="{{OffKey}}" data-part="C" data-role="start"><div class="num"></div><div class="body">
+<h3>Has {{OffNames}}{{^EndNotSensed}} at the other end{{/EndNotSensed}} gone OFF?</h3>
+<ul>
+{{#MustOff}}
+<li>{{Name}}{{Where}}: at the end of <b>{{Move}}</b> it must be <b>OFF</b> &ndash; its LED off, {{Io}} OFF on the <i>Inputs / Outputs</i> page.</li>
+{{/MustOff}}
+{{#EndNotSensed}}
+<li>Nothing sees the end of <b>{{Move}}</b>: the PLC takes the sensor going OFF, and the time, as arrived. Make sure the cylinder really reached its end (step 1).</li>
+{{/EndNotSensed}}
+</ul>
+<table class="out">
+{{#HasStart}}
+<tr class="fault"><td class="when">{{StartNames}} stays ON although the cylinder has left.</td><td>The sensor is stuck (a welded reed contact) or its cable is shorted; on a short cylinder the magnet may reach it from the far end &ndash; move the sensor. Replace the sensor or repair the cable. <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+{{/HasStart}}
+<tr class="good"><td class="when">It is OFF.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
+</table>
+<p class="man">manual 1.7 (2)</p>
+</div></div>
+{{/HasMustOff}}
+{{^HasSensors}}
+<div class="step" id="C1" data-part="C" data-role="none"><div class="num"></div><div class="body">
+<h3>What confirms the end?</h3>
+<ul>
+<li>The unit has no sensor for <b>{{Move}}</b> on the HMI. The PLC confirms it by time.</li>
+</ul>
+<table class="out">
+<tr class="go"><td class="when">Go on with the time allowed.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
+</table>
+<p class="man">manual 1.7</p>
+</div></div>
+{{/HasSensors}}
+
+<div class="step" id="{{TimeKey}}" data-part="C" data-role="time"><div class="num"></div><div class="body">
+<h3>Did it arrive in time?</h3>
+<ul>
+<li>The alarm comes when the end is not confirmed within {{>TimeAllowed}}{{#Error}} (alarm {{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}){{/Error}}.</li>
+<li>Time the stroke from {{>OutCode}} switching to the end being confirmed (the PLC Monitor's <i>Modified</i> column shows when each device changed).</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">It takes about as long as allowed, or longer.</td><td>Set the flow controls back to the right speed; if the movement is right and only slow by design, {{>LongerTime}} <span class="again">Test <b>{{Move}}</b> again. Still failing &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="go"><td class="when">It is well within the time.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
+</table>
+<p class="man">manual 1.8</p>
+</div></div>
+
+{{! ============================== STILL NOT SOLVED ============================== }}
+<div class="step end" id="end" data-part="end"><div class="num"></div><div class="body">
+<h3>Still not solved?</h3>
+<ul>
+<li>Stop here and call maintenance or the Kaban Machine Technical Service. Tell them: <b>{{Unit}}</b>, the movement <b>{{Move}}</b>{{#HasButton}} ({{>Button}}){{/HasButton}}{{#Error}}, alarm {{Error}}{{/Error}}{{#AlarmTime}} at {{AlarmTime}}{{/AlarmTime}}, the step you reached and what you saw. Print or save this page for them.</li>
+<li>After any repair, test the movement slowly in manual mode first.</li>
+</ul>
+</div></div>
+
+{{#HasParts}}
+<h2>The parts of this movement</h2><table class="parts">
+{{#HasButton}}
+<tr><td>HMI command</td><td>{{Command}} &ndash; {{>PressIt}}</td></tr>
+{{/HasButton}}
+{{#OutLine}}
+<tr><td>Valve output</td><td>{{OutLine}}</td></tr>
+{{/OutLine}}
+{{#OtherLine}}
+<tr><td>Other coil ({{OtherMove}})</td><td>{{OtherLine}}</td></tr>
+{{/OtherLine}}
+{{#PneuLine}}
+<tr><td>Valve, hoses, cylinder</td><td>{{PneuLine}}</td></tr>
+{{/PneuLine}}
+{{#PartSensors}}
+<tr><td>Sensor</td><td>{{Name}}{{Where}}{{#Text}} &ndash; {{Text}}{{/Text}}</td></tr>
+{{/PartSensors}}
+{{#Measure}}
+<tr><td>Position measured by</td><td>{{Measure}}{{#Position}} &ndash; shown at {{Position}}{{/Position}}</td></tr>
+{{/Measure}}
+{{^Measure}}
+{{#Position}}
+<tr><td>Position</td><td>shown at {{Position}}</td></tr>
+{{/Position}}
+{{/Measure}}
+{{#Pressure}}
+<tr><td>Pressure</td><td>{{Pressure}}</td></tr>
+{{/Pressure}}
+{{#MainAir}}
+<tr><td>Main air</td><td>{{MainAirLine}}</td></tr>
+{{/MainAir}}
+{{#Error}}
+<tr><td>Alarm</td><td>{{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}</td></tr>
+{{/Error}}
+</table>
+{{#Drawn}}
+<p class="ref">Sheet 12.6 is page 12, column 6 of the electrical drawing; pneumatic sheet 2 E3 is page 2, zone E3 of the pneumatic drawing.{{#ZeroWire}} 0 V is wire {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} The sensors' +24 V is wire {{SensorWire}}.{{/SensorWire}}</p>
+{{/Drawn}}
+{{/HasParts}}
+<p class="ref">The general cylinder manual explains every check in more depth; each step here names its detail (&ldquo;manual 1.6&rdquo;).</p>
+</body></html>

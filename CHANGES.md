@@ -4305,3 +4305,21 @@ and `UnitLookAndErrors` extended.
 - Translations: `Dsh_TabStates`, `Dsh_TabEvents`, `Dsh_TabAlarms`, `Dsh_TabAll`, `Dsh_LogSearch`. Manual: HMI Settings,
   Logs and Reports, the log table, the dashboard's tabs, the Screen scale button (row 4 and its picture).
 - Tests: `tools/ui_test/LogsAndReports.cs` rewritten for the settings page and the tabs; `DashboardPage.cs` (`Shown`).
+
+## 2026-10-02 - The cylinder step-by-step helpers as templates (EN, TR), one per valve and feedback pair
+
+- `StepTemplate` *(new)*: a page template - values, sections, inverted sections, phrases, joins, notes; phrases are
+  also what the program builds its pieces from; names not given are noted (tests).
+- `TroubleshootingCatalog.Steps.cs`: the page's text moved out to `Help\Templates\<language>\Cylinder_<valve>_<feedback>.html`;
+  the builder fills the template (`TemplateName`, `TemplatePath`, `LoadTemplate` - read again when the file changes,
+  `BuildSteps(..., language)`, `BuildSteps(..., StepTemplate)`), then leaves out, numbers and links the steps;
+  `NoSensor` (the unit's feedback 7) is a pair of its own. English pages as before, except: no "(step 1 is still worth
+  a look)" when the start is step 1; the encoder's "steps B2 and B3" are links; no "the LED of" an empty code.
+  `MovementName` in the HMI's language.
+- `WiringTable.Point.Translations` / `Localized(column, language)`: "Measure.TR" columns. `tools/build_wiring.py`
+  writes `Measure.TR`, `Pressure.TR`, `Via.TR` for FA2010.
+- `tools/cylinder_templates/` *(new)*: the masters (EN, TR) and README; `tools/build_cylinder_templates.py` *(new)*
+  writes the 64 templates and the machine projects' lists of them (FA2010, H500, H800, MD3020, Kaban.UI).
+- `tools/review/` *(new)*: every cylinder alarm's page in TR and EN with an index, for a review.
+- Manual: the step-by-step page's words in templates; where they are kept.
+- Tests: `tools/ui_test/CylinderTemplates.cs` (new).

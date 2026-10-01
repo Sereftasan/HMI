@@ -1,0 +1,502 @@
+<!--doc
+  KABAN HMI - SİLİNDİR HAREKETİ, ADIM ADIM - ŞABLON
+  Valf: 5/2 çift bobinli.  Geri bildirim: geri bildirim girilmemiş (ünitenin lambaları ya da hiçbiri).
+
+  Bu dosyayı HMI, bir silindir alarmının yardımı açılınca doldurur: {{...}} yerine
+  ünitenin kendi cihazları ve çizimlerin numaraları (makinenin Wiring.csv dosyası) gelir.
+  Sözcükler burada değiştirilebilir; {{...}} işaretleri ve <div class="step" ...> satırları
+  olduğu gibi kalmalıdır. Sözdizimi: tools/cylinder_templates/README.md.
+  tools/build_cylinder_templates.py tüm çiftleri tools/cylinder_templates/Cylinder_master.tr.html
+  dosyasından yeniden yazar (elle değiştirilmiş bir dosyanın üzerine yazmaz).
+-->
+<!--def OutCode-->{{#Out}}{{Out}}{{/Out}}{{^Out}}valf{{/Out}}<!--/def-->
+<!--def OutBox-->{{#Out}}{{Out}}{{/Out}}{{^Out}}valf çıkışı{{/Out}}<!--/def-->
+<!--def ButtonNom--><b>{{ButtonSign}}</b> butonu<!--/def-->
+<!--def ButtonDat--><b>{{ButtonSign}}</b> butonuna<!--/def-->
+<!--def ButtonAcc--><b>{{ButtonSign}}</b> butonunu<!--/def-->
+<!--def PressIt--><b>{{ButtonSign}}</b>{{#Glyph}} (<b>{{Move}}</b>){{/Glyph}} butonuna<!--/def-->
+<!--def ButtonFull--><b>{{ButtonSign}}</b>{{#Glyph}} (<b>{{Move}}</b>){{/Glyph}} butonu<!--/def-->
+<!--def OtherButtonNom--><b>{{OtherSign}}</b>{{#OtherGlyph}} (<b>{{OtherMove}}</b>){{/OtherGlyph}} butonu<!--/def-->
+<!--def OtherButtonAcc--><b>{{OtherSign}}</b>{{#OtherGlyph}} (<b>{{OtherMove}}</b>){{/OtherGlyph}} butonunu<!--/def-->
+<!--def StartItCap-->{{#HasButton}}{{>PressIt}} basın{{/HasButton}}{{^HasButton}}<b>{{OtherMove}}</b> hareketini bitirin ({{>OtherButtonAcc}} kapatın ya da bırakın){{/HasButton}}<!--/def-->
+<!--def Cyl-->silindir{{#CylName}} (<b>{{CylName}}</b>){{/CylName}}<!--/def-->
+<!--def CylAcc-->silindiri{{#CylName}} (<b>{{CylName}}</b>){{/CylName}}<!--/def-->
+<!--def CylDat-->silindire{{#CylName}} (<b>{{CylName}}</b>){{/CylName}}<!--/def-->
+<!--def CylGen-->silindirin{{#CylName}} (<b>{{CylName}}</b>){{/CylName}}<!--/def-->
+<!--def PnSheetP-->{{#PnSheet}} (pnömatik sayfa {{PnSheet}}){{/PnSheet}}<!--/def-->
+<!--def ValveNom-->{{#ValveTag}}<b>{{ValveTag}}</b> valfi{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}<!--/def-->
+<!--def ValveAcc-->{{#ValveTag}}<b>{{ValveTag}}</b> valfini{{/ValveTag}}{{^ValveTag}}valfi{{/ValveTag}}<!--/def-->
+<!--def ValveGen-->{{#ValveTag}}<b>{{ValveTag}}</b> valfinin{{/ValveTag}}{{^ValveTag}}valfin{{/ValveTag}}<!--/def-->
+<!--def ValveLoc-->{{#ValveTag}}<b>{{ValveTag}}</b> valfinde{{/ValveTag}}{{^ValveTag}}valfte{{/ValveTag}}<!--/def-->
+<!--def ValveAbl-->{{#ValveTag}}<b>{{ValveTag}}</b> valfinden{{/ValveTag}}{{^ValveTag}}valften{{/ValveTag}}<!--/def-->
+<!--def ValveNameCap-->{{#ValveTag}}<b>{{ValveTag}}</b> valfi{{/ValveTag}}{{^ValveTag}}Valf{{/ValveTag}}<!--/def-->
+<!--def ValvePlainAcc-->{{#ValveTag}}{{ValveTag}} valfini{{/ValveTag}}{{^ValveTag}}valfi{{/ValveTag}}<!--/def-->
+<!--def CoilNom-->{{#Coil}}<b>{{Coil}}</b> bobini{{/Coil}}{{^Coil}}valf bobini{{/Coil}}<!--/def-->
+<!--def CoilAcc-->{{#Coil}}<b>{{Coil}}</b> bobinini{{/Coil}}{{^Coil}}bobini{{/Coil}}<!--/def-->
+<!--def CoilGen-->{{#Coil}}<b>{{Coil}}</b> bobininin{{/Coil}}{{^Coil}}bobinin{{/Coil}}<!--/def-->
+<!--def CoilPlainNom-->{{#Coil}}{{Coil}} bobini{{/Coil}}{{^Coil}}valf bobini{{/Coil}}<!--/def-->
+<!--def CoilPlainAcc-->{{#Coil}}{{Coil}} bobinini{{/Coil}}{{^Coil}}valf bobinini{{/Coil}}<!--/def-->
+<!--def Hose--><b>{{Hoses}}</b> {{#HosesMany}}hortumları{{/HosesMany}}{{^HosesMany}}hortumu{{/HosesMany}}<!--/def-->
+<!--def HoseDat--><b>{{Hoses}}</b> {{#HosesMany}}hortumlarına{{/HosesMany}}{{^HosesMany}}hortumuna{{/HosesMany}}<!--/def-->
+<!--def HoseAcc--><b>{{Hoses}}</b> {{#HosesMany}}hortumlarını{{/HosesMany}}{{^HosesMany}}hortumunu{{/HosesMany}}<!--/def-->
+<!--def HosePlain-->{{Hoses}} {{#HosesMany}}hortumları{{/HosesMany}}{{^HosesMany}}hortumu{{/HosesMany}}<!--/def-->
+<!--def BothHoses-->{{#Hoses}}iki hortumun da (<b>{{Hoses}}</b>){{/Hoses}}{{^Hoses}}iki tarafın da{{/Hoses}}<!--/def-->
+<!--def ZeroVolt-->0 V{{#ZeroWire}} (kablo {{ZeroWire}}){{/ZeroWire}}<!--/def-->
+<!--def CardLed-->{{#OutCard}}<b>{{OutCard}}</b> PLC kartında{{/OutCard}}{{^OutCard}}PLC'nin çıkış kartında{{/OutCard}}{{#OutTerminalOther}} <b>{{OutTerminal}}</b> klemensinin{{#Out}} ({{Out}}){{/Out}} LED'i{{/OutTerminalOther}}{{^OutTerminalOther}} {{>OutCode}} çıkışının LED'i{{/OutTerminalOther}}<!--/def-->
+<!--def TimeAllowed-->{{#HmiAlarm}}HMI'nin izin verdiği süre (Alarm Ayarları: alarmın gecikmesi){{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süre{{/HmiAlarm}}<!--/def-->
+<!--def TimeAllowedIn-->{{#HmiAlarm}}HMI'nin izin verdiği süre (Alarm Ayarları: alarmın gecikmesi) içinde{{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süre içinde{{/HmiAlarm}}<!--/def-->
+<!--def TimeAllowedWith-->{{#HmiAlarm}}HMI'nin izin verdiği süreyle (Alarm Ayarları: alarmın gecikmesi){{/HmiAlarm}}{{^HmiAlarm}}PLC'nin izin verdiği süreyle{{/HmiAlarm}}<!--/def-->
+<!--def LongerTime-->{{#HmiAlarm}}Alarm Ayarları'nda bu alarma daha uzun bir gecikme verin.{{/HmiAlarm}}{{^HmiAlarm}}izleme süresini uzattırın (güvenli olduğunu kontrol ettikten sonra).{{/HmiAlarm}}<!--/def-->
+<!--def StartOrSensor-->{{#HasMustOff}}{{OffNames}}{{/HasMustOff}}{{^HasMustOff}}sensör{{/HasMustOff}}<!--/def-->
+<!--def LookBySensors-->{{[; }}{{#HasStart}}{{StartSlash}} hâlâ AÇIK = hareket etmedi{{/HasStart}}{{|}}{{#HasMustOn}}{{OnSlash}} AÇIK = sona ulaştı{{/HasMustOn}}{{|}}{{#StartAndOn}}ikisi de KAPALI = yolda (ya da yolda durdu){{/StartAndOn}}{{|}}{{#EndNotSensed}}{{#HasMustOff}}{{OffSlash}} KAPALI = başlangıçtan ayrıldı; öbür uçta sensör yok{{/HasMustOff}}{{/EndNotSensed}}{{]}}<!--/def-->
+<!--def SensorName-->{{#Tag}}<b>{{Tag}}</b> ({{Io}}){{/Tag}}{{^Tag}}{{Dev}}{{/Tag}}{{#Switch}} basınç anahtarı{{/Switch}}{{^Switch}}{{#SensorWord}} sensörü{{/SensorWord}}{{/Switch}}<!--/def-->
+<!--def And--> ve <!--/def-->
+<!--def DrawnAs--> &ndash; çizimde: {{V}}<!--/def-->
+<!--def Wire-->kablo {{V}}<!--/def-->
+<!--def Sheet-->sayfa {{V}}<!--/def-->
+<!--def SheetParen-->(sayfa {{V}})<!--/def-->
+<!--def ReadThrough-->{{V}} üzerinden okunur<!--/def-->
+<!--def SensorTag-->sensör {{V}}<!--/def-->
+<!--def Relay-->röle {{V}}<!--/def-->
+<!--def CoilWord-->bobin {{V}}<!--/def-->
+<!--def ContinuesOn-->devamı sayfa {{V}}<!--/def-->
+<!--def ValveWord-->valf {{V}}<!--/def-->
+<!--def HoseWord-->hortum {{V}}<!--/def-->
+<!--def HosesWord-->hortumlar {{V}}<!--/def-->
+<!--def PnSheetWord-->pnömatik sayfa {{V}}<!--/def-->
+<!--def On-->AÇIK<!--/def-->
+<!--def Off-->KAPALI<!--/def-->
+<!--def Met-->sağlanıyor<!--/def-->
+<!--def NotMet-->SAĞLANMIYOR<!--/def-->
+<!--def StepLink-->Adım {{N}}<!--/def-->
+<!--def StepsRange-->adım {{A}}&ndash;{{B}}<!--/def-->
+<!--def StartHere-->buradan başlayın<!--/def-->
+<!--def ThisUnit-->bu ünite<!--/def-->
+<!--def LeftMove-->sol buton<!--/def-->
+<!--def RightMove-->sağ buton<!--/def-->
+<!--def GlyphWords-->
+&#9650; = Yukarı
+&#9660; = Aşağı
+&#9664; = Sol
+&#9654; = Sağ
+<!--/def-->
+<!--def MoveWords-->
+Up = Yukarı
+Down = Aşağı
+Forward = İleri
+Backward = Geri
+Back = Geri
+Clamp = Sıkma
+Release = Bırakma
+Open = Açma
+Close = Kapama
+In = İçeri
+Out = Dışarı
+Left = Sol
+Right = Sağ
+Lock = Kilitleme
+Unlock = Kilit açma
+Extend = Dışarı çıkma
+Retract = Geri çekilme
+Push = İtme
+Pull = Çekme
+On = Açma
+Off = Kapama
+Front = Ön
+Run = Çalıştırma
+Change = Değiştirme
+Cylinder = Silindir
+0 Cylinder = 0° silindiri
+90 Cylinder = 90° silindiri
+Top Clamping Clamp = Üst sıkma: sıkma
+Front Clamping Release = Ön sıkma: bırakma
+<!--/def-->
+<!--def DataWords-->
+double solenoid = çift bobinli
+single solenoid = tek bobinli
+open centre = orta konumu açık
+closed centre = orta konumu kapalı
+open center = orta konumu açık
+closed center = orta konumu kapalı
+terminal = klemens
+<!--/def-->
+<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><title>{{Unit}} - {{Move}} - adım adım</title><style>body{font-family:'Segoe UI',Arial,sans-serif;font-size:15px;color:#1e2329;margin:18px 22px;max-width:1020px;line-height:1.4}h1{font-size:1.45em;margin:.1em 0}.sub{color:#5a6270;margin:.1em 0 .9em}h2{font-size:1.15em;margin:1.3em 0 .5em;padding:.25em .5em;border-radius:4px;background:#eef1f5}h2.a{background:#fde9e7}h2.b{background:#fff3d6}h2.c{background:#e5f3e8}code{font-family:Consolas,monospace;font-weight:bold;color:#1f4e79;font-size:1.02em}.what,.seen{border:1px solid #d0d7e2;border-radius:6px;padding:.5em .8em;margin:.6em 0;background:#fafbfd}.what p{margin:.2em 0 .5em}.chain{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:.3em 0}.box{display:inline-flex;flex-direction:column;border:1px solid #9fb3cc;border-radius:5px;padding:.2em .5em;background:#fff;text-decoration:none;color:inherit;min-width:70px}a.box:hover{border-color:#2e75b6;background:#eef5fb}.box .cap{font-size:.78em;color:#5a6270}.box .val{font-size:.95em}.arrow{color:#8a94a3;font-weight:bold}table.states{border-collapse:collapse;margin:.2em 0}table.states td,table.states th{border:1px solid #d0d7e2;padding:.2em .6em;text-align:left}table.states th{background:#eef1f5;font-weight:600}.st-on{color:#1a7f37;font-weight:bold}.st-off{color:#444;font-weight:bold}.st-bad{color:#c00000;font-weight:bold}.hint{background:#fff7d6;border:1px solid #e0c060;border-radius:6px;padding:.5em .8em;margin:.6em 0}.safety{background:#fdecea;border:1px solid #e3a6a0;border-radius:6px;padding:.5em .8em;margin:.6em 0}.map{margin:.8em 0}.branch{display:inline-block;margin:.15em .2em;padding:.1em .5em;border-radius:10px;font-size:.93em}.branch.a{background:#fde9e7}.branch.b{background:#fff3d6}.branch.c{background:#e5f3e8}.step{display:flex;gap:.8em;border:1px solid #d0d7e2;border-radius:8px;padding:.55em .8em;margin:.55em 0;background:#fff}.step.start{border:2px solid #d4a017;box-shadow:0 0 0 3px #fff3c4}.step.end{background:#f6f7f9}.num{flex:0 0 auto;width:2em;height:2em;border-radius:50%;background:#1f4e79;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;margin-top:.1em}.body{flex:1}.body h3{margin:.15em 0 .35em;font-size:1.05em}.body ul{margin:.2em 0 .4em 1.1em;padding:0}.body li{margin:.15em 0}.here{font-size:.72em;background:#ffd966;border-radius:3px;padding:.05em .4em;vertical-align:middle}table.out{border-collapse:collapse;width:100%;margin:.3em 0 .1em}table.out td{border-top:1px solid #e3e7ee;padding:.3em .5em;vertical-align:top}table.out td.when{width:36%}tr.good td.when{border-left:4px solid #1a7f37}tr.fault td.when{border-left:4px solid #c0504d}tr.go td.when{border-left:4px solid #8a94a3}.again{display:block;color:#5a6270;font-size:.9em;margin-top:.15em}.man{margin:.2em 0 0;color:#8a94a3;font-size:.82em;text-align:right}table.parts{border-collapse:collapse}table.parts td{border-top:1px solid #e3e7ee;padding:.25em .7em .25em 0;vertical-align:top}table.parts td:first-child{font-weight:600;white-space:nowrap}.ref{color:#5a6270;font-size:.9em}a{color:#1f5fa8}@media print{.step{break-inside:avoid}}</style></head><body>
+<h1>{{Unit}} &mdash; &ldquo;{{Move}}&rdquo; hareketi tamamlanmadı</h1>
+<p class="sub">{{[ &middot; }}Bu makinedeki bu hareket için adım adım arıza giderme{{|}}{{#Error}}alarm {{ErrorShown}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}{{/Error}}{{|}}{{#HmiAlarm}}HMI tarafından verildi{{/HmiAlarm}}{{|}}{{AlarmDate}}{{]}}</p>
+<div class="what"><p><b>Olması gereken:</b> {{#HasButton}}{{>PressIt}} basılınca{{/HasButton}}{{^HasButton}}<b>{{OtherMove}}</b> hareketi bitince ({{>OtherButtonNom}} bırakılınca){{/HasButton}} PLC {{>OutCode}} çıkışını <b>AÇAR</b>{{#Relay}}, <b>{{Relay}}</b> rölesi çeker{{/Relay}}{{#Coil}}, <b>{{Coil}}</b> bobinine 24 V gelir{{/Coil}} ve {{>ValveNom}} konum değiştirir; hava{{#Hoses}} {{>Hose}} üzerinden{{/Hoses}} {{>CylDat}}{{>PnSheetP}} ulaşır ve silindir <b>{{Move}}</b> hareketinin sonuna gider{{#HasMustOn}}; orada {{OnNames}} <b>AÇIK</b> olmalıdır{{/HasMustOn}}{{#HasMustOff}}{{#HasMustOn}} ve {{/HasMustOn}}{{^HasMustOn}}; {{/HasMustOn}}{{OffNames}} <b>KAPALI</b> olmalıdır{{/HasMustOff}}{{#EndNotSensed}} &ndash; o uçta sensör yok: varışı sensörün KAPANMASI ve sürenin dolması onaylar{{/EndNotSensed}}.</p>
+<div class="chain">{{[<span class="arrow">&rarr;</span>}}{{#Command}}<a class="box" href="#A1"><span class="cap">HMI komutu</span><span class="val">{{Command}}</span></a>{{/Command}}{{|}}<a class="box" href="#A1"><span class="cap">PLC çıkışı AÇIK</span><span class="val">{{>OutBox}}</span></a>{{|}}{{#Relay}}<a class="box" href="#A4"><span class="cap">röle</span><span class="val"><b>{{Relay}}</b></span></a>{{/Relay}}{{|}}<a class="box" href="#A5"><span class="cap">valf bobini</span><span class="val">{{#Coil}}<b>{{Coil}}</b>{{/Coil}}{{^Coil}}bobin{{/Coil}}</span></a>{{|}}<a class="box" href="#A6"><span class="cap">valf konum değiştirir</span><span class="val">{{#ValveTag}}<b>{{ValveTag}}</b>{{/ValveTag}}{{^ValveTag}}valf{{/ValveTag}}</span></a>{{|}}<a class="box" href="#A7"><span class="cap">hava{{#Hoses}}: {{>HosePlain}}{{/Hoses}}</span></a>{{|}}<a class="box" href="#A8"><span class="cap">silindir hareket eder</span>{{#CylName}}<span class="val"><b>{{CylName}}</b></span>{{/CylName}}</a>{{|}}{{#HasMustOn}}<a class="box" href="#C1"><span class="cap">onaylanır</span><span class="val">{{#MustOn}}{{Name}} AÇIK{{^Last}}<br>{{/Last}}{{/MustOn}}</span></a>{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}<a class="box" href="#C1"><span class="cap">onaylanır</span><span class="val">{{OffNames}} KAPALI + süre</span></a>{{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}{{]}}</div>
+<p class="ref">{{>ValveNameCap}} 5/2 çift bobinli bir valftir: kısa bir sinyalle konum değiştirir ve o konumda kalır; iki bobini asla aynı anda AÇIK olmamalıdır.</p>
+</div>
+{{#Seen}}
+<div class="seen"><p><b>HMI'nin gördüğü</b> (kırmızı: hareketin sonunda olması gerektiği gibi değil)</p>
+<table class="states"><tr><th></th><th>olması gereken</th><th>alarm anında</th><th>şimdi</th></tr>
+{{#SeenRows}}
+<tr><td>{{#IsCommand}}Komut {{Code}}{{/IsCommand}}{{#IsSpringCoil}}Bobin çıkışı {{Out}} ({{OtherMove}}){{/IsSpringCoil}}{{#IsValveOut}}Valf çıkışı {{Out}}{{/IsValveOut}}{{#IsOtherCoil}}Diğer bobin {{Code}} ({{OtherMove}}){{/IsOtherCoil}}{{#IsSensor}}{{Name}}{{/IsSensor}}</td><td>{{#WantOn}}AÇIK{{/WantOn}}{{^WantOn}}KAPALI{{/WantOn}}</td><td>{{AtAlarm}}</td><td>{{Now}}</td></tr>
+{{/SeenRows}}
+</table>
+{{#HmiAlarm}}
+<p class="ref">&ldquo;Alarm anında&rdquo;: HMI'nin hareket için izin verdiği süre dolduğunda{{#AlarmTime}} ({{AlarmTime}}){{/AlarmTime}}.</p></div>
+{{/HmiAlarm}}
+{{^HmiAlarm}}
+<p class="ref">&ldquo;Alarm anında&rdquo;: hata biti gelmeden önceki son okuma{{#AlarmTime}} ({{AlarmTime}}){{/AlarmTime}}{{^SeenRising}} &ndash; sayfa okumaya başladığında alarm zaten vardı, yani bu değerler alarmdan hemen sonrasına aittir{{/SeenRising}}.</p></div>
+{{/HmiAlarm}}
+{{/Seen}}
+{{#Hint}}
+<div class="hint"><b>Nereden başlamalı:</b> {{#WhyF1}}HMI, <b>{{Move}}</b> hareketinde süre aşımı alarmı verdi: başlangıçtaki {{>StartOrSensor}} <b>AÇIK</b> kaldı.{{/WhyF1}}{{#WhyF2}}HMI, <b>{{Move}}</b> hareketinde süre aşımı alarmı verdi: {{#HasMustOn}}{{OnNames}}{{/HasMustOn}}{{^HasMustOn}}son konum sinyali{{/HasMustOn}} <b>AÇIK</b> olmadı{{#HasStart}}, oysa {{StartNames}} KAPANDI{{/HasStart}}.{{/WhyF2}}{{#WhyF3}}HMI, <b>{{Move}}</b> hareketinde süre aşımı alarmı verdi: {{OnNames}} AÇIK oldu, ama başlangıçtaki {{>StartOrSensor}} <b>AÇIK</b> kaldı &ndash; o sensör KAPANMADI.{{/WhyF3}}{{#WhyF4}}İki bobinin çıkışı da <b>AÇIK</b> idi{{#Out}}{{#OtherOut}} ({{>OutCode}} ve {{OtherOut}}){{/OtherOut}}{{/Out}}: valf konum değiştiremez.{{/WhyF4}}{{#WhyF5}}HMI, <b>{{Move}}</b> hareketinde süre aşımı alarmı verdi: konum değeri değişmedi.{{/WhyF5}}{{#WhyF6}}HMI, <b>{{Move}}</b> hareketinde süre aşımı alarmı verdi: süre dolduğunda konum değeri hâlâ değişiyordu.{{/WhyF6}}{{#WhySpringOn}}Alarm geldiğinde {{>OutCode}} çıkışı hâlâ <b>AÇIK</b> idi: PLC bobini açık tuttu, bu yüzden valfi yay geri döndüremedi.{{/WhySpringOn}}{{#WhyOutOff}}Alarm geldiğinde {{>OutCode}} çıkışı <b>KAPALI</b> idi: PLC valfi sürmedi.{{/WhyOutOff}}{{#WhyBothCoils}}İki bobinin çıkışı da <b>AÇIK</b> idi ({{>OutCode}} ve {{OtherOut}}): valf konum değiştiremez.{{/WhyBothCoils}}{{#WhyArrived}}{{OnNames}} <b>AÇIK</b> idi: silindir sona ulaştı, ama geç ulaştı ya da zamanında onaylanmadı.{{/WhyArrived}}{{#WhyArrivedStuck}}{{OnNames}} AÇIK idi, ama {{StuckNames}} de <b>hâlâ AÇIK</b> idi.{{/WhyArrivedStuck}}{{#WhyStartOutOk}}{{>OutCode}} çıkışı AÇIK idi, ama başlangıçtaki {{StillNames}} <b>hâlâ AÇIK</b> idi: silindir başlangıç noktasından ayrılmadı. PLC kendi işini yaptı &ndash; sinyali karttan itibaren izleyin.{{/WhyStartOutOk}}{{#WhyStillAtStart}}Başlangıçtaki {{StillNames}} <b>hâlâ AÇIK</b> idi: silindir başlangıç noktasından ayrılmadı.{{/WhyStillAtStart}}{{#WhyLeftStart}}Silindir başlangıç noktasından ayrıldı ({{WhyStartNames}} KAPALI), ama {{OnNames}} AÇIK olmadı: ya yolda durdu ya da sensör onu görmüyor &ndash; hangisi olduğunu 1. adım gösterir.{{/WhyLeftStart}}{{#WhyLeftUnseen}}Silindir başlangıç noktasından ({{WhyStartNames}}) ayrıldı: öbür uçta sensör yok, PLC sürenin dolmasını bekledi &ndash; sona ulaştığını (1. adım) ve süreyi kontrol edin.{{/WhyLeftUnseen}} &rarr; <a class="go" href="#{{StartKey}}"></a>{{#StepOneNote}} (1. adıma da bakmaya değer).{{/StepOneNote}}{{^StepOneNote}}.{{/StepOneNote}}</div>
+{{/Hint}}
+<div class="safety"><b>Önce güvenlik.</b> Silindire, valfe ya da hareket eden herhangi bir şeye dokunmadan önce: makinenin <b>enerjisini kesin ve kilitleyin</b> (elektrik ve hava) ve silindirin iki tarafının da havasını boşaltın &ndash; hava geri geldiğinde silindir aniden hareket edebilir; orta konumu kapalı bir valf ya da bir sıkma silindiri içeride hava tutar. Bir alarmı gidermek için bir koruyucuyu ya da acil stopu asla devre dışı bırakmayın. Pano içinde ölçüm yapmak, PLC programını değiştirmek ya da parça değiştirmek eğitimli ve yetkili kişilerin işidir.</div>
+<div class="map"><b>Bu sayfa nasıl ilerler:</b> <a class="go" href="#look"></a> silindir nerede &rarr; <span class="branch a">hareket etmedi: <!--range A--></span> <span class="branch b">yolda durdu: <!--range B--></span> <span class="branch c">sona ulaştı, onaylanmadı: <!--range C--></span></div>
+
+{{! ============================== 1. NEREDE ============================== }}
+<div class="step" id="look" data-part="look"><div class="num"></div><div class="body">
+<h3>{{^LookF}}Silindir şu anda nerede?{{/LookF}}{{#Failure1}}Silindir başlangıç noktasından ayrıldı mı?{{/Failure1}}{{#Failure2}}Silindir şu anda nerede?{{/Failure2}}{{#Failure5}}Silindir hareket etti mi?{{/Failure5}}{{#Failure6}}Silindir şu anda nerede?{{/Failure6}}</h3>
+<ul>
+{{#Failure1}}
+<li>Başlangıçtaki {{>StartOrSensor}} <b>AÇIK</b> kaldı: ya silindir başlangıç noktasından ayrılmadı ya da ayrıldı ama sensör KAPANMADI.</li>
+{{/Failure1}}
+{{#Failure2}}
+<li>{{#HasMustOn}}{{OnNames}}{{/HasMustOn}}{{^HasMustOn}}Son konum sinyali{{/HasMustOn}} <b>AÇIK</b> olmadı{{#HasStart}}, oysa {{StartNames}} KAPANDI (silindir başlangıç noktasından ayrıldı){{/HasStart}}.</li>
+{{/Failure2}}
+{{#Failure5}}
+<li>Konum değeri{{#Position}} {{Position}}{{/Position}} değişmedi.</li>
+{{/Failure5}}
+{{#Failure6}}
+<li>Süre dolduğunda konum değeri{{#Position}} {{Position}}{{/Position}} hâlâ değişiyordu.</li>
+{{/Failure6}}
+<li>Güvenli bir mesafeden {{>CylDat}}{{>PnSheetP}} <b>bakın</b>. Henüz hiçbir şeye dokunmayın.</li>
+<li>Olması gereken yer: <b>{{Move}}</b> hareketinin sonu{{#HasMustOn}} ({{OnNames}} AÇIK{{#HasMustOff}}, {{OffNames}} KAPALI{{/HasMustOff}}){{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}} (orada sensör yok: {{OffNames}} KAPALI olmalı){{/HasMustOff}}{{/EndNotSensed}}{{/HasMustOn}}. Başladığı yer: <b>{{OtherMove}}</b> hareketinin sonu.</li>
+{{^LookF}}
+{{#HasSensors}}
+<li>Göremiyor musunuz? Sensörlerden anlayın (yan çubuktaki <i>Girişler / Çıkışlar</i> sayfası ya da ünitenin butonlarındaki lambalar): {{>LookBySensors}}.</li>
+{{/HasSensors}}
+{{/LookF}}
+</ul>
+<table class="out">
+{{^LookF}}
+<tr class="go"><td class="when">Hiç <b>hareket etmedi</b> &ndash; hâlâ başladığı yerde.</td><td>&rarr; <a class="go" href="#A1"></a></td></tr>
+<tr class="go"><td class="when">Hareket etti ama <b>yolda durdu</b>.</td><td>&rarr; <a class="go" href="#B1"></a></td></tr>
+<tr class="good"><td class="when"><b>{{Move}}</b> hareketinin sonuna <b>ulaştı</b>, yine de alarm geldi.</td><td>&rarr; <a class="go" href="#C1"></a></td></tr>
+{{/LookF}}
+{{#Failure1}}
+<tr class="go" data-optional><td class="when">Hayır &ndash; hâlâ başlangıçta.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+<tr class="good" data-optional><td class="when">Evet &ndash; hareket etti.</td><td>&rarr; <a class="go" href="#@start"></a></td></tr>
+{{/Failure1}}
+{{#Failure2}}
+{{^HasStart}}
+<tr class="go" data-optional><td class="when">Hiç <b>hareket etmedi</b>.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+{{/HasStart}}
+<tr class="go" data-optional><td class="when">Hareket etti ama <b>yolda durdu</b>.</td><td>&rarr; <a class="go" href="#@B"></a></td></tr>
+<tr class="good" data-optional><td class="when"><b>{{Move}}</b> hareketinin sonuna <b>ulaştı</b>.</td><td>&rarr; <a class="go" href="#@target"></a></td></tr>
+{{/Failure2}}
+{{#Failure5}}
+<tr class="go" data-optional><td class="when"><b>Hareket etmedi</b>.</td><td>&rarr; <a class="go" href="#@A3"></a></td></tr>
+<tr class="good" data-optional><td class="when">Hareket etti, ama sayı değişmedi.</td><td>&rarr; <a class="go" href="#@position"></a></td></tr>
+{{/Failure5}}
+{{#Failure6}}
+<tr class="go" data-optional><td class="when">Hâlâ yavaşça ilerliyor ya da yolda durdu.</td><td>&rarr; <a class="go" href="#@B"></a></td></tr>
+<tr class="good" data-optional><td class="when"><b>Sona ulaştı</b>, ama sayı sabitlenmiyor.</td><td>&rarr; <a class="go" href="#@position"></a></td></tr>
+{{/Failure6}}
+</table>
+</div></div>
+
+{{! ============================== A. HAREKET ETMEDİ ============================== }}
+<h2 class="part a">A &mdash; Hareket etmedi: sinyali PLC'den silindire kadar izleyin</h2>
+<div class="step" id="A1" data-part="A"><div class="num"></div><div class="body">
+<h3>PLC {{>OutCode}} çıkışını açıyor mu?</h3>
+<ul>
+<li>Alarmı resetleyin. <b>Manuel modda</b> yan çubuktaki <i>Girişler / Çıkışlar</i> sayfasını açın ve {{>OutCode}} çıkışını bulun{{#OutText}} (çizimde: {{OutText}}){{/OutText}}.</li>
+<li><b>{{Unit}}</b>: {{>PressIt}} basın ve {{>OutCode}} çıkışını izleyin.{{#OtherOut}} Diğer bobinin çıkışı {{OtherOut}} (<b>{{OtherMove}}</b>) <b>KAPALI</b> kalmalıdır.{{/OtherOut}}</li>
+</ul>
+<table class="out">
+<tr class="go"><td class="when">{{>OutCode}} çıkışı <b>KAPALI</b> kalıyor (buton gri olabilir).</td><td>&rarr; <a class="go" href="#A2"></a></td></tr>
+{{#OtherOut}}
+<tr class="fault"><td class="when">{{>OutCode}} ve {{OtherOut}} çıkışlarının <b>ikisi de AÇIK</b>.</td><td>İki bobin de açıkken valf konum değiştiremez. {{>OtherButtonAcc}} bırakın; ikisi yine birlikte açılıyorsa PLC programı ikisini birden açıyordur (ya da kablolar karışmıştır) &ndash; PLC programcısından iki çıkış arasına karşılıklı kilitleme koymasını isteyin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A3"></a>.</span></td></tr>
+{{/OtherOut}}
+<tr class="good"><td class="when">{{>OutCode}} çıkışı <b>AÇIK</b> oluyor{{#OtherOut}} ve {{OtherOut}} KAPALI kalıyor{{/OtherOut}}.</td><td>&rarr; <a class="go" href="#A3"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.6 (1), 1.4</p>
+</div></div>
+
+<div class="step" id="A2" data-part="A"><div class="num"></div><div class="body">
+<h3>PLC çıkışı neden açmıyor?</h3>
+<ul>
+<li>İmleci {{>ButtonNom}} üzerinde bekletin: gri bir buton neyi beklediğini söyler.</li>
+{{#Conditions}}
+<li>Beklediği koşullar: {{Conditions}}.</li>
+{{/Conditions}}
+<li>Bir hareketi durduran şeylere bakın: açık bir koruma kapısı, basılı bir acil stop, hava basınç anahtarı, önce hareket etmesi gereken ve yolu kapatan başka bir ünite, manuel modda olmayan makine.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Beklediği bir koşul <b>sağlanmıyor</b>.</td><td>Koşulu sağlayın (koruma kapısını kapatın, acil stopu bırakın, önce diğer üniteyi hareket ettirin). <b>Bir güvenlik kilidini asla devre dışı bırakmayın.</b> Sonra yeniden {{>ButtonDat}} basın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Bütün koşullar sağlanıyor, {{>OutCode}} çıkışı yine KAPALI.</td><td>PLC programı çıkışı engelliyor: PLC'de (online izleme) {{>ButtonNom}} basılıyken {{>OutCode}} çıkışının satırını izleyin{{#Command}} (HMI'nin komutu {{Command}}){{/Command}} &ndash; sinyali geçirmeyen kontak sebebi gösterir. Bunu PLC programcısı ya da bakım ekibi yapmalıdır. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+</table>
+<p class="man">kılavuz 1.6 (1)</p>
+</div></div>
+
+<div class="step" id="A3" data-part="A"><div class="num"></div><div class="body">
+<h3>Çıkış kartı {{>OutCode}} çıkışını açıyor mu?</h3>
+<ul>
+<li>{{>ButtonAcc}} basılı tutun. {{>CardLed}} yanmalıdır.</li>
+{{#OutWire}}
+<li>Ölçün: klemens (kablo <b>{{OutWire}}</b>{{#OutSheet}}, sayfa {{OutSheet}}{{/OutSheet}}) ile {{>ZeroVolt}} arasında <b>24 V DC</b> olmalıdır.</li>
+{{/OutWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">LED sönük ya da gerilim yok.</td><td>Çıkış kanalı anahtarlamıyor: kartın sigortasını ve beslemesini (COM ortak ucu) kontrol edin; sigortayı ya da kartı değiştirin. Yeniden atan bir sigorta, kablolamada bir kısa devre ya da kısa devre olmuş bir bobin demektir. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A4"></a>.</span></td></tr>
+<tr class="good"><td class="when">LED yanıyor ve 24 V var.</td><td>&rarr; <a class="go" href="#A4"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.6 (2)</p>
+</div></div>
+
+{{#Relay}}
+<div class="step" id="A4" data-part="A"><div class="num"></div><div class="body">
+<h3><b>{{Relay}}</b> rölesi çekiyor mu?</h3>
+<ul>
+<li>Panodaki <b>{{Relay}}</b> rölesi{{#RelaySheet}} (sayfa {{RelaySheet}}){{/RelaySheet}}: {{>ButtonNom}} basılıyken LED'i yanmalı ve rölenin çektiği duyulmalıdır.</li>
+{{#OutWire}}
+<li>Bobinini ölçün: <b>{{OutWire}}</b> kablosu ile {{>ZeroVolt}} arasında <b>24 V</b> olmalıdır.</li>
+{{/OutWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Rölede gerilim yok.</td><td>{{#OutWire}}{{OutWire}} kablosu{{/OutWire}}{{^OutWire}}Kablo{{/OutWire}} kart klemensi ile röle arasında (ya da aradaki bir klemenste) kopuk: onarın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A5"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Gerilim var ama röle çekmiyor.</td><td>Rölenin bobini kopuk: <b>{{Relay}}</b> rölesini değiştirin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A5"></a>.</span></td></tr>
+<tr class="good"><td class="when">Röle çekiyor.</td><td>&rarr; <a class="go" href="#A5"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.5</p>
+</div></div>
+{{/Relay}}
+
+<div class="step" id="A5" data-part="A"><div class="num"></div><div class="body">
+<h3>{{>CoilPlainNom}} enerji alıyor mu?</h3>
+<ul>
+<li>{{>ValveLoc}}{{>PnSheetP}} {{>CoilAcc}} bulun. {{>ButtonNom}} basılıyken LED'i yanmalıdır.</li>
+{{#CoilWire}}
+<li>Ölçün: <b>{{CoilWire}}</b> kablosu{{#CoilSheet}} (sayfa {{CoilSheet}}){{/CoilSheet}} ile {{>ZeroVolt}} arasında <b>24 V DC</b> olmalıdır.</li>
+{{/CoilWire}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">{{#CoilWire}}{{CoilWire}} kablosunda{{/CoilWire}}{{^CoilWire}}Bobinde{{/CoilWire}} gerilim yok.</td><td>{{#Relay}}Rölenin kontağı gerilimi geçirmiyor (yanmış) ya da bobine giden kablo kopuk: röle çekiliyken kontağın iki ucu arasında yaklaşık 0 V olmalıdır; <b>{{Relay}}</b> rölesini değiştirin ya da kabloyu onarın.{{/Relay}}{{^Relay}}Kart ile bobin arasındaki kablo kopuk: onarın.{{/Relay}} <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A6"></a>.</span></td></tr>
+<tr class="fault"><td class="when">24 V var ama bobinin LED'i yanmıyor.</td><td>Sorun konnektörde ya da bobinde: konnektörü yeniden yerine oturtun; yine yanmıyorsa bobini değiştirin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A6"></a>.</span></td></tr>
+<tr class="good"><td class="when">24 V var ve LED yanıyor.</td><td>&rarr; <a class="go" href="#A6"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.3 (1){{#Relay}}, 1.5 (2){{/Relay}}</p>
+</div></div>
+
+<div class="step" id="A6" data-part="A"><div class="num"></div><div class="body">
+<h3>Valf konum değiştiriyor mu?</h3>
+<ul>
+<li>{{>CylGen}} yakınında kimse olmadığından emin olun. Sonra {{>ValveLoc}} {{>CoilGen}} <b>manuel kumanda butonuna</b> basın.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Manuel kumandayla silindir <b>hareket ediyor</b>.</td><td>Valf sağlam ama bobin enerji aldığı hâlde valfin konumunu değiştiremiyor: {{>CoilPlainAcc}} değiştirin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A7"></a>.</span></td></tr>
+<tr class="go"><td class="when">Manuel kumandayla da hareket etmiyor.</td><td>&rarr; <a class="go" href="#A7"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.3 (2)</p>
+</div></div>
+
+<div class="step" id="A7" data-part="A"><div class="num"></div><div class="body">
+<h3>Silindiri hareket ettirecek hava var mı?</h3>
+<ul>
+<li>Şartlandırıcıdaki manometreyi okuyun: makinenin çalışma basıncını (en az 5 bar) göstermelidir.</li>
+{{#MainAir}}
+<li>Ana hava basınç anahtarı {{#MainAirTag}}<b>{{MainAirTag}}</b> {{/MainAirTag}}({{MainAirCode}}{{#MainAirText}}, çizimde: {{MainAirText}}{{/MainAirText}}) <i>Girişler / Çıkışlar</i> sayfasında <b>AÇIK</b> olmalıdır.</li>
+{{/MainAir}}
+{{#Pressure}}
+<li>Bu silindirin basıncı: {{Pressure}} &ndash; düşük basınç seçiliyken kuvveti yetmeyebilir.</li>
+{{/Pressure}}
+<li>Hareketi yeniden başlatın (ya da manuel kumandayı basılı tutun): hava {{>ValveAbl}} çıkıp{{#Hoses}} {{>Hose}} üzerinden{{/Hoses}} {{>CylDat}} gitmelidir. Kaçak ve ezilme açısından hortumlar boyunca dinleyin ve elinizle yoklayın; silindirin bağlantılarındaki hız ayar (kısma) valfleri kapalı olmamalıdır.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Basınç düşük ya da hava yok.</td><td>Beslemeyi düzeltin: kapama vanasını açın, kompresörü kontrol edin, tıkanmış filtreyi değiştirin, kaçakları onarın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Hava valfe geliyor, ama valf {{#Hoses}}{{>HoseDat}} {{/Hoses}}hiç hava vermiyor.</td><td>Valfin sürgüsü sıkışmış: {{>ValvePlainAcc}} temizleyin ya da değiştirin; havanın kalitesini kontrol edin (filtre, su, yağ). <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Bir hortum kaçırıyor, ezilmiş ya da çıkmış; bir hız ayar valfi kapalı.</td><td>Hortumu ya da rakoru onarın veya değiştirin; hız ayar valfini işaretine kadar açın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#A8"></a>.</span></td></tr>
+<tr class="go"><td class="when">Hava silindire ulaşıyor, silindir yine hareket etmiyor.</td><td>&rarr; <a class="go" href="#A8"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.2</p>
+</div></div>
+
+<div class="step" id="A8" data-part="A"><div class="num"></div><div class="body">
+<h3>Silindir serbestçe hareket edebiliyor mu?</h3>
+<ul>
+<li>Makinenin <b>enerjisini kesin ve kilitleyin</b> (elektrik ve hava) ve {{>ValveLoc}} {{>BothHoses}} havasını boşaltın: hava geri geldiğinde silindir aniden hareket edebilir.</li>
+<li>Strokun tamamı boyunca bakın: sıkışmış bir profil, bir talaş, düşmüş bir parça, takım. Sonra {{>CylAcc}} stroku boyunca <b>elle</b> hareket ettirin.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Bir şey onu engelliyor, ya da sıkı / takılarak gidiyor.</td><td>Engeli kaldırın; kızağı ya da yatağı hizalayın, yağlayın veya değiştirin; piston kolunun eğilip eğilmediğine bakın. Yeniden başlamadan önce takımı kontrol edin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="fault"><td class="when">Elle serbestçe hareket ediyor.</td><td>O zaman kuvvet yetmiyor: yük artmış, basınç çok düşük ayarlanmış{{#Pressure}} (yukarıdaki sıkma basıncına bakın){{/Pressure}}, ya da silindirin contaları kaçırıyor (hava bir taraftan öbür tarafa geçiyor). Regülatörü sınırı içinde ayarlayın ya da silindiri onartın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+</table>
+<p class="man">kılavuz 1.1</p>
+</div></div>
+
+{{! ============================== B. YOLDA DURDU ============================== }}
+<h2 class="part b">B &mdash; Yolda durdu</h2>
+<div class="step" id="B1" data-part="B"><div class="num"></div><div class="body">
+<h3>{{>OutCode}} çıkışı hareket boyunca AÇIK kalıyor mu?</h3>
+<ul>
+<li><b>{{Move}}</b> hareketi yapılırken, başlangıçtan silindir durana kadar {{>OutCode}} çıkışını <i>Girişler / Çıkışlar</i> sayfasında izleyin.</li>
+{{#OtherOut}}
+<li><b>5/2 çift bobinli</b> valf çevrildiği konumda kalır, ama yolda <b>{{OtherMove}}</b> hareketinin çıkışı {{OtherOut}} AÇIK olmamalıdır.</li>
+{{/OtherOut}}
+<li>Silindir hareket ederken bobinin konnektörünü ve kabloyu oynatın: gevşek bir kontak sinyali düşürür.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Çok erken KAPANIYOR{{#OtherOut}}, ya da diğer çıkış AÇIK oluyor{{/OtherOut}}.</td><td>Gevşek bir konnektör ya da kablo: onarın. Sinyali PLC'nin kendisi değiştiriyorsa, program sinyali {{#HasMustOn}}{{OnNames}} hareketin sonunu onaylayana{{/HasMustOn}}{{^HasMustOn}}hareketin sonuna varılana{{/HasMustOn}} kadar tutmalıdır &ndash; PLC programcısına sorun. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#B2"></a>.</span></td></tr>
+<tr class="good"><td class="when">Olması gerektiği gibi kalıyor.</td><td>&rarr; <a class="go" href="#B2"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.4 (1)</p>
+</div></div>
+
+<div class="step" id="B2" data-part="B"><div class="num"></div><div class="body">
+<h3>Silindir hareket ederken hava basıncı korunuyor mu?</h3>
+<ul>
+<li>Silindir hareket ederken manometreyi izleyin: büyük bir düşüş, silindire yeterli hava ulaşmadığını gösterir.</li>
+<li>{{#Hoses}}{{>HoseAcc}}{{/Hoses}}{{^Hoses}}Hortumları{{/Hoses}} kaçak ve ezilme açısından, silindirdeki hız ayar valflerini de kontrol edin: neredeyse kapalıysalar silindir sürünür ve durur.</li>
+{{#Pressure}}
+<li>Bu silindirin basıncı: {{Pressure}}.</li>
+{{/Pressure}}
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Basınç düşüyor, bir hortum kaçırıyor, bir hız ayar valfi kapalı.</td><td>Beslemeyi ya da hortumu onarın; hız ayar valfini işaretine ayarlayın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#B3"></a>.</span></td></tr>
+<tr class="good"><td class="when">Hava normal.</td><td>&rarr; <a class="go" href="#B3"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.2</p>
+</div></div>
+
+<div class="step" id="B3" data-part="B"><div class="num"></div><div class="body">
+<h3>Yolunu kesen bir şey var mı?</h3>
+<ul>
+<li><b>Enerjiyi kesin ve kilitleyin</b> ve {{>BothHoses}} havasını boşaltın. Durduğu yere bakın: bir profil, bir talaş, takım, bir sıkma çenesi. Silindiri{{#CylName}} (<b>{{CylName}}</b>){{/CylName}} elle o noktanın ötesine götürün.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Orada takılıyor ya da sıkı gidiyor.</td><td>Sebebi giderin; kızağı hizalayın, yağlayın ya da onarın; piston kolunu kontrol edin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#B4"></a>.</span></td></tr>
+<tr class="good"><td class="when">Serbest.</td><td>&rarr; <a class="go" href="#B4"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.1</p>
+</div></div>
+
+<div class="step" id="B4" data-part="B"><div class="num"></div><div class="body">
+<h3>Yalnızca çok mu yavaş?</h3>
+<ul>
+<li>Strokun süresini ölçün: {{>OutCode}} çıkışının değişmesinden {{#HasMustOn}}{{OnNames}} AÇIK olana{{/HasMustOn}}{{^HasMustOn}}{{#EndNotSensed}}{{#HasMustOff}}hareketin sonuna ({{OffNames}} yolda KAPANIR){{/HasMustOff}}{{^HasMustOff}}hareketin sonuna{{/HasMustOff}}{{/EndNotSensed}}{{^EndNotSensed}}hareketin sonuna{{/EndNotSensed}}{{/HasMustOn}} kadar. Her birinin ne zaman değiştiğini PLC Monitörü'ndeki <i>Değiştirilme</i> sütunu gösterir.</li>
+<li>Bunu {{>TimeAllowedWith}} karşılaştırın{{#HmiAlarm}}{{/HmiAlarm}}{{^HmiAlarm}} (bu süre PLC programında ayarlıdır){{/HmiAlarm}}{{#Error}}: {{Error}} alarmı bu süre dolunca gelir{{/Error}}.</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun sürüyor.</td><td>Hız ayar valflerini doğru hıza açın; strok doğruysa ve yalnızca süre kısaysa, {{>LongerTime}} <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="go"><td class="when">Süre sınırının rahatça altında.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.8</p>
+</div></div>
+
+{{! ============================== C. VARDI ============================== }}
+<h2 class="part c">C &mdash; Sona ulaştı, ama bu onaylanmadı</h2>
+{{#MustOn}}
+<div class="step" id="{{Key}}" data-part="C" data-role="target"><div class="num"></div><div class="body">
+<h3>{{Name}} silindiri görüyor mu?</h3>
+<ul>
+<li>{{Name}}{{Where}}{{#Text}} &ndash; çizimde: {{Text}}{{/Text}}.</li>
+<li>Silindir <b>{{Move}}</b> hareketinin sonundayken: sensörün kendi <b>LED</b>'i yanmalı, {{Io}} <i>Girişler / Çıkışlar</i> sayfasında (ve {{>ButtonNom}} üzerindeki lambada) <b>AÇIK</b> olmalıdır.{{#CopiedTo}} PLC bu sinyali {{Dev}} adresine kopyalar.{{/CopiedTo}}</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">Sensörün LED'i <b>sönük</b>.</td><td>Kelepçesini gevşetin, sensörü LED'i güvenilir şekilde yanana kadar silindir boyunca kaydırın, sıkın. Hiç yanmıyorsa sensörü değiştirin. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#{{Next}}"></a>.</span></td></tr>
+<tr class="fault"><td class="when">LED yanıyor, ama HMI'da {{Io}} KAPALI kalıyor.</td><td>Sinyal PLC'ye ulaşmıyor: sensörün kablosu ve konnektörü{{#Wire}}, kablo {{Wire}}{{/Wire}}{{#Card}}, giriş kartı {{Card}} (LED'i){{/Card}}{{^Card}}, giriş kartının LED'i{{/Card}}{{#SensorWire}}, sensörlerin +24 V beslemesi (kablo {{SensorWire}}){{/SensorWire}}{{^SensorWire}}, girişlerin ortak ucu{{/SensorWire}}. Kopuk olanı onarın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#{{Next}}"></a>.</span></td></tr>
+<tr class="good"><td class="when">AÇIK.</td><td>&rarr; <a class="go" href="#{{Next}}"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.7 (1)</p>
+</div></div>
+{{/MustOn}}
+{{#HasMustOff}}
+<div class="step" id="{{OffKey}}" data-part="C" data-role="start"><div class="num"></div><div class="body">
+<h3>{{^EndNotSensed}}Öbür uçtaki {{/EndNotSensed}}{{OffNames}} KAPANDI mı?</h3>
+<ul>
+{{#MustOff}}
+<li>{{Name}}{{Where}}: <b>{{Move}}</b> hareketinin sonunda <b>KAPALI</b> olmalıdır &ndash; LED'i sönük, {{Io}} <i>Girişler / Çıkışlar</i> sayfasında KAPALI.</li>
+{{/MustOff}}
+{{#EndNotSensed}}
+<li><b>{{Move}}</b> hareketinin sonunda sensör yok: PLC, sensörün KAPANMASINI ve sürenin dolmasını varış sayar. Silindirin gerçekten sona ulaştığından emin olun (1. adım).</li>
+{{/EndNotSensed}}
+</ul>
+<table class="out">
+{{#HasStart}}
+<tr class="fault"><td class="when">Silindir ayrıldığı hâlde {{StartNames}} AÇIK kalıyor.</td><td>Sensör yapışmış (kaynamış bir reed kontağı) ya da kablosu kısa devre. Sensörü değiştirin ya da kabloyu onarın. <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+{{/HasStart}}
+<tr class="good"><td class="when">KAPALI.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.7 (2)</p>
+</div></div>
+{{/HasMustOff}}
+{{^HasSensors}}
+<div class="step" id="C1" data-part="C" data-role="none"><div class="num"></div><div class="body">
+<h3>Hareketin sonunu ne onaylıyor?</h3>
+<ul>
+<li>Ünitenin HMI'da <b>{{Move}}</b> hareketi için bir sensörü yok. PLC bunu süreyle onaylar ya da HMI'nin göstermediği bir sensörle &ndash; elektrik çizimine bakın.</li>
+</ul>
+<table class="out">
+<tr class="go"><td class="when">Süre kontrolüyle devam edin.</td><td>&rarr; <a class="go" href="#{{TimeKey}}"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.7</p>
+</div></div>
+{{/HasSensors}}
+
+<div class="step" id="{{TimeKey}}" data-part="C" data-role="time"><div class="num"></div><div class="body">
+<h3>Zamanında ulaştı mı?</h3>
+<ul>
+<li>Hareketin sonu {{>TimeAllowedIn}} onaylanmazsa alarm gelir{{#Error}} (alarm {{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}){{/Error}}.</li>
+<li>Strokun süresini {{>OutCode}} çıkışının değişmesinden hareketin sonunun onaylanmasına kadar ölçün (her cihazın ne zaman değiştiğini PLC Monitörü'ndeki <i>Değiştirilme</i> sütunu gösterir).</li>
+</ul>
+<table class="out">
+<tr class="fault"><td class="when">İzin verilen süre kadar ya da daha uzun sürüyor.</td><td>Hız ayar valflerini doğru hıza geri getirin; hareket doğruysa ve yalnızca tasarımı gereği yavaşsa, {{>LongerTime}} <span class="again"><b>{{Move}}</b> hareketini yeniden deneyin. Hâlâ olmuyorsa &rarr; <a class="go" href="#end"></a>.</span></td></tr>
+<tr class="go"><td class="when">Süre sınırının rahatça altında.</td><td>&rarr; <a class="go" href="#end"></a></td></tr>
+</table>
+<p class="man">kılavuz 1.8</p>
+</div></div>
+
+{{! ============================== HÂLÂ ÇÖZÜLMEDİ ============================== }}
+<div class="step end" id="end" data-part="end"><div class="num"></div><div class="body">
+<h3>Hâlâ çözülmedi mi?</h3>
+<ul>
+<li>Burada durun ve bakım ekibini ya da Kaban Makine Teknik Servisi'ni arayın. Onlara şunları söyleyin: <b>{{Unit}}</b>, <b>{{Move}}</b> hareketi{{#HasButton}} ({{>ButtonNom}}){{/HasButton}}{{#Error}}, alarm {{Error}}{{/Error}}{{#AlarmTime}}, saat {{AlarmTime}}{{/AlarmTime}}, vardığınız adım ve gördükleriniz. Bu sayfayı onlar için yazdırın ya da kaydedin.</li>
+<li>Herhangi bir onarımdan sonra hareketi önce manuel modda yavaşça deneyin.</li>
+</ul>
+</div></div>
+
+{{#HasParts}}
+<h2>Bu hareketin parçaları</h2><table class="parts">
+{{#HasButton}}
+<tr><td>HMI komutu</td><td>{{Command}} &ndash; {{>ButtonFull}}</td></tr>
+{{/HasButton}}
+{{#OutLine}}
+<tr><td>Valf çıkışı</td><td>{{OutLine}}</td></tr>
+{{/OutLine}}
+{{#OtherLine}}
+<tr><td>Diğer bobin ({{OtherMove}})</td><td>{{OtherLine}}</td></tr>
+{{/OtherLine}}
+{{#PneuLine}}
+<tr><td>Valf, hortumlar, silindir</td><td>{{PneuLine}}</td></tr>
+{{/PneuLine}}
+{{#PartSensors}}
+<tr><td>Sensör</td><td>{{Name}}{{Where}}{{#Text}} &ndash; çizimde: {{Text}}{{/Text}}</td></tr>
+{{/PartSensors}}
+{{#Measure}}
+<tr><td>Konumu ölçen</td><td>{{Measure}}{{#Position}} &ndash; {{Position}} üzerinde gösterilir{{/Position}}</td></tr>
+{{/Measure}}
+{{^Measure}}
+{{#Position}}
+<tr><td>Konum</td><td>{{Position}} üzerinde gösterilir</td></tr>
+{{/Position}}
+{{/Measure}}
+{{#Pressure}}
+<tr><td>Basınç</td><td>{{Pressure}}</td></tr>
+{{/Pressure}}
+{{#MainAir}}
+<tr><td>Ana hava</td><td>{{MainAirLine}}</td></tr>
+{{/MainAir}}
+{{#Error}}
+<tr><td>Alarm</td><td>{{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}</td></tr>
+{{/Error}}
+</table>
+{{#Drawn}}
+<p class="ref">Sayfa 12.6, elektrik çiziminin 12. sayfasının 6. sütunudur; pnömatik sayfa 2 E3, pnömatik çizimin 2. sayfasının E3 bölgesidir.{{#ZeroWire}} 0 V: kablo {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} Sensörlerin +24 V beslemesi: kablo {{SensorWire}}.{{/SensorWire}}</p>
+{{/Drawn}}
+{{/HasParts}}
+<p class="ref">Genel silindir kılavuzu her kontrolü daha ayrıntılı anlatır; buradaki her adım ilgili bölümünü belirtir (&ldquo;kılavuz 1.6&rdquo;).</p>
+</body></html>

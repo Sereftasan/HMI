@@ -264,6 +264,329 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <!-- templates:begin - the cylinder step-by-step templates, one per valve and feedback pair, per language.
+         Written by tools/build_cylinder_templates.py. -->
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Double_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Spring_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-2-Spring_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-3_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_5-3_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_Analogue.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_Encoder.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_Feedback-NotSet.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_NoSensor.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_OneInductive.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_OneMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_PressureSwitch.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_Valve-NotSet_TwoMagnetic.html">
+      <Link>Help\Templates\EN\Cylinder_Valve-NotSet_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Double_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Double_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-2-Spring_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-2-Spring_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_5-3_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_5-3_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_Analogue.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_Analogue.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_Encoder.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_Encoder.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_Feedback-NotSet.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_Feedback-NotSet.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_NoSensor.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_NoSensor.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_OneInductive.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_OneInductive.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_OneMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_OneMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_PressureSwitch.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_PressureSwitch.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\Templates\TR\Cylinder_Valve-NotSet_TwoMagnetic.html">
+      <Link>Help\Templates\TR\Cylinder_Valve-NotSet_TwoMagnetic.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <!-- templates:end -->
     <None Include="..\KabanHMI\Help\Connection_Troubleshooting.html">
       <Link>Help\Connection_Troubleshooting.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

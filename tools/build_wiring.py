@@ -328,6 +328,69 @@ PRESSURE = [
     (('Y56', 'Y57'), 'clamping pressure 6 / 2 bar: valve Y42 (hose 34, pneumatic sheet 3 B1) switched by Y71 - relay K56 (sheet 21.5)'),
 ]
 
+# ------------------------------------------------- the same texts in Turkish --
+# The step-by-step help reads a text in the HMI's language from a column of its
+# own ("Measure.TR"); the drawings' own names (the encoder's label) stay as drawn.
+TRANSLATED = {
+    'TR': {
+        'encoder X2/X3 (wires 70/71, sheet 11.1) - Profile Start Measurement (Gripper) encoder':
+            'enkoder X2/X3 (kablolar 70/71, sayfa 11.1) - çizimde: Profile Start Measurement (Gripper) encoder',
+        'encoder X4/X5 (wires 76/77, sheet 11.2) - Milling Left Top Clamping encoder':
+            'enkoder X4/X5 (kablolar 76/77, sayfa 11.2) - çizimde: Milling Left Top Clamping encoder',
+        'encoder X6/X7 (wires 78/79, sheet 11.3) - Cutting Left Top Clamping encoder':
+            'enkoder X6/X7 (kablolar 78/79, sayfa 11.3) - çizimde: Cutting Left Top Clamping encoder',
+        'encoder X14/X15 (wires 84/85, sheet 11.8) - Cutting Right Front Clamping encoder':
+            'enkoder X14/X15 (kablolar 84/85, sayfa 11.8) - çizimde: Cutting Right Front Clamping encoder',
+        'encoder X16/X17 (wires 86/87, sheet 11.9) - Cutting Right Top Clamping encoder':
+            'enkoder X16/X17 (kablolar 86/87, sayfa 11.9) - çizimde: Cutting Right Top Clamping encoder',
+        'width encoder (wires 102/103) through relay K77 to X10/X11 (wires 80/81, sheet 11.5); Y120 switches K77 to the left unit':
+            'genişlik enkoderi (kablolar 102/103), K77 rölesi üzerinden X10/X11 girişlerine (kablolar 80/81, sayfa 11.5); '
+            'Y120, K77 rölesini sol üniteye geçirir',
+        'height encoder (wires 106/107) through relay K78 to X12/X13 (wires 82/83, sheet 11.7); Y120 switches K78 to the left unit':
+            'yükseklik enkoderi (kablolar 106/107), K78 rölesi üzerinden X12/X13 girişlerine (kablolar 82/83, sayfa 11.7); '
+            'Y120, K78 rölesini sol üniteye geçirir',
+        'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), while Y120 selects the left unit':
+            'sol ünitenin genişlik enkoderi (kablolar 100/101), K77 rölesi üzerinden X10/X11 girişlerine (kablolar 80/81, sayfa 11.4); '
+            'Y120 sol üniteyi seçtiği sürece',
+        'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), while Y120 selects the left unit':
+            'sol ünitenin yükseklik enkoderi (kablolar 104/105), K78 rölesi üzerinden X12/X13 girişlerine (kablolar 82/83, sayfa 11.6); '
+            'Y120 sol üniteyi seçtiği sürece',
+        'analogue sensor SN110 (SDAT-MHS-M100, 4-20 mA), wire 700 to U19 FX5-8AD channel 1 (sheet 34.4)':
+            'analog sensör SN110 (SDAT-MHS-M100, 4-20 mA), kablo 700 ile U19 FX5-8AD kanal 1 (sayfa 34.4)',
+        'analogue sensor SN111 (SDAT-MHS-M100, 4-20 mA), wire 701 to U19 FX5-8AD channel 2 (sheet 34.5)':
+            'analog sensör SN111 (SDAT-MHS-M100, 4-20 mA), kablo 701 ile U19 FX5-8AD kanal 2 (sayfa 34.5)',
+        'analogue sensor SN112 (SDAT-MHS-M50, 4-20 mA), wire 702 to U19 FX5-8AD channel 3 (sheet 34.7)':
+            'analog sensör SN112 (SDAT-MHS-M50, 4-20 mA), kablo 702 ile U19 FX5-8AD kanal 3 (sayfa 34.7)',
+        'analogue sensor SN113 (SDAT-MHS-M100, 4-20 mA), wire 703 to U19 FX5-8AD channel 4 (sheet 34.8)':
+            'analog sensör SN113 (SDAT-MHS-M100, 4-20 mA), kablo 703 ile U19 FX5-8AD kanal 4 (sayfa 34.8)',
+        'analogue sensor SN114 (SDAT-MHS-M100, 4-20 mA), wire 704 to U19 FX5-8AD channel 5 (sheet 34.4)':
+            'analog sensör SN114 (SDAT-MHS-M100, 4-20 mA), kablo 704 ile U19 FX5-8AD kanal 5 (sayfa 34.4)',
+        'analogue sensor SN115 (SDAT-MHS-M100, 4-20 mA), wire 705 to U19 FX5-8AD channel 6 (sheet 34.5)':
+            'analog sensör SN115 (SDAT-MHS-M100, 4-20 mA), kablo 705 ile U19 FX5-8AD kanal 6 (sayfa 34.5)',
+        'clamping pressure 6 / 2 bar: valve Y30 (hose 22, pneumatic sheet 3 B7) switched by Y67 - relay K54 (sheet 21.4); '
+        'pressure switch SW1 (0.2 bar, pneumatic sheet 3 F8) = SN83 on X70 (wire 147, sheet 14.4)':
+            'sıkma basıncı 6 / 2 bar: Y30 valfi (hortum 22, pnömatik sayfa 3 B7), Y67 ile K54 rölesi (sayfa 21.4) üzerinden çevrilir; '
+            'SW1 basınç anahtarı (0,2 bar, pnömatik sayfa 3 F8) = X70 girişindeki SN83 (kablo 147, sayfa 14.4)',
+        'clamping pressure 6 / 2 bar: valve Y30 (hose 22, pneumatic sheet 3 B7) switched by Y67 - relay K54 (sheet 21.4)':
+            'sıkma basıncı 6 / 2 bar: Y30 valfi (hortum 22, pnömatik sayfa 3 B7), Y67 ile K54 rölesi (sayfa 21.4) üzerinden çevrilir',
+        'clamping pressure 6 / 2 bar: valve Y37 (hose 29, pneumatic sheet 3 B4) switched by Y70 - relay K55 (sheet 21.5)':
+            'sıkma basıncı 6 / 2 bar: Y37 valfi (hortum 29, pnömatik sayfa 3 B4), Y70 ile K55 rölesi (sayfa 21.5) üzerinden çevrilir',
+        'clamping pressure 6 / 2 bar: valve Y37 (hose 29, pneumatic sheet 3 B4) switched by Y70 - relay K55 (sheet 21.5); '
+        'pressure switches SW2 / SW3 (0.2 bar, pneumatic sheet 3 F5) - on the electrical drawing SN84 on X73 '
+        '(wire 150, sheet 14.6) and SN112 on X136 (wire 197, sheet 16.8)':
+            'sıkma basıncı 6 / 2 bar: Y37 valfi (hortum 29, pnömatik sayfa 3 B4), Y70 ile K55 rölesi (sayfa 21.5) üzerinden çevrilir; '
+            'SW2 / SW3 basınç anahtarları (0,2 bar, pnömatik sayfa 3 F5) - elektrik çiziminde X73 girişindeki SN84 '
+            '(kablo 150, sayfa 14.6) ve X136 girişindeki SN112 (kablo 197, sayfa 16.8)',
+        'clamping pressure 6 / 2 bar: valve Y42 (hose 34, pneumatic sheet 3 B1) switched by Y71 - relay K56 (sheet 21.5)':
+            'sıkma basıncı 6 / 2 bar: Y42 valfi (hortum 34, pnömatik sayfa 3 B1), Y71 ile K56 rölesi (sayfa 21.5) üzerinden çevrilir',
+        'DI1 of the 2nd simple motion module (2/FX5-80SSC-S)':
+            '2. simple motion modülünün DI1 girişi (2/FX5-80SSC-S)',
+        'DI2 / DI3 of the 2nd simple motion module (2/FX5-80SSC-S)':
+            '2. simple motion modülünün DI2 / DI3 girişleri (2/FX5-80SSC-S)',
+    }
+}
+TRANSLATED_COLUMNS = ['Measure', 'Pressure', 'Via']
+
 # ------------------------------------------------------ the PLC's cards ----
 # Sheet 36: the base unit, then the extension modules in their order on the bus.
 CARDS = [
@@ -359,6 +422,7 @@ def card(point):
 
 COLUMNS = ['Point', 'Read', 'Commands', 'Tag', 'Wire', 'Sheet', 'Relay', 'RelaySheet', 'Coil', 'CoilWire',
            'CoilSheet', 'Valve', 'Cylinder', 'Hoses', 'PnSheet', 'Text', 'Plc', 'Card', 'Via', 'Measure', 'Pressure']
+COLUMNS += ['%s.%s' % (c, lang) for lang in sorted(TRANSLATED) for c in TRANSLATED_COLUMNS]
 
 
 def octal_key(point):
@@ -421,12 +485,24 @@ def build():
         row['Card'] = card(p)
     for relay, tag, wire, sheet, via, text in MODULE_INPUTS:
         rows[relay] = dict(Point=relay, Tag=tag, Wire=wire, Sheet=sheet, Via=via, Text=text, Plc='1')
+    missing = set()
+    for row in rows.values():
+        for lang, texts in TRANSLATED.items():
+            for c in TRANSLATED_COLUMNS:
+                if row.get(c):
+                    if row[c] in texts:
+                        row['%s.%s' % (c, lang)] = texts[row[c]]
+                    else:
+                        missing.add('%s: %s' % (lang, row[c]))
+    for m in sorted(missing):
+        print('  no translation - ' + m)
     out = io.StringIO()
     out.write('# Kaban HMI wiring references - generated by tools/build_wiring.py from the machine\'s\n')
     out.write('# electrical drawing (134581 rev. 9: Sheet 12.6 = page 12, column 6) and pneumatic\n')
     out.write('# drawing (134628 rev. 9: PnSheet 2 E3 = page 2, zone E3). Point: the PLC address.\n')
     out.write('# Read: the relay the HMI reads it at. Commands: manual command bits that drive it.\n')
     out.write('# Card: PLC card and terminal. Via: read through a module. Measure / Pressure: the cylinder\'s.\n')
+    out.write('# Measure.TR / Pressure.TR / Via.TR: the same in Turkish (the step-by-step help in Turkish).\n')
     out.write('# "#!" lines are read: the supply wires a voltage is measured against (the step-by-step help).\n')
     out.write('#! ZeroVoltWire=21\n')
     out.write('#! SensorSupplyWire=20\n')

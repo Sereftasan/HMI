@@ -322,6 +322,11 @@ position reading already show a fault. What it offers depends on the moment:</p>
   <li>The two movements of a cylinder are <b>not mirror images</b> when its valve or feedback is not: a spring valve's return is <i>the coil must switch off</i>
       (the relay drop out, the coil lose power, the valve spring back &ndash; a locked override holds it), a single sensor's far end is <i>the sensor must go off, and
       nothing sees the end</i>, a clamp is confirmed by its pressure switch and its release by the back sensor.</li>
+  <li>The page's <b>words</b> come from a template for the cylinder's valve and feedback type, in the HMI's language (<code>Help\Templates\EN</code>,
+      <code>Help\Templates\TR</code>; a language without its own templates uses the English ones). A template reads as a page in a browser and its words
+      can be changed in a text editor &ndash; the next page opened uses the change. The <b>numbers</b> &ndash; addresses, card terminals, wires, sheets, relays,
+      coils, valves, hoses, sensors &ndash; are never in a template: they come from the unit and the machine's <code>Wiring.csv</code> (the drawings' own labels
+      stay as drawn).</li>
  </ul>
  Then the <b>cylinder manual</b> &ndash; the general view behind the steps &ndash; with only this cylinder's valve (1.4) and feedback (1.7), as one chart 1.1&hellip;1.8 whose
  heading row stays at the top while you scroll, and a line at its top back to the step-by-step page. Then that movement's own sheets, the alarm's, and the unit's others.</td></tr>
@@ -664,7 +669,10 @@ the page only reads the log.</p>
 <tr><td>The side panel's width, the bar folded, the pages kept in a window</td><td><code>C:\ProgramData\KabanHMI\SidePanel.cfg</code></td></tr>
 <tr><td>The page the program was on (reopened at the next start)</td><td><code>C:\ProgramData\KabanHMI\LastPage.cfg</code></td></tr>
 <tr><td>Inputs and outputs for the side page</td><td><code>IoList.csv</code> beside each machine's program (sub-machines in their own folder)</td></tr>
-<tr><td>Where each point is on the machine's drawings (sensor tag and wire, relay, valve coil, air valve, hoses, cylinder)</td><td><code>Wiring.csv</code> beside the machine's program, built by <code>tools\build_wiring.py</code></td></tr>
+<tr><td>Where each point is on the machine's drawings (sensor tag and wire, relay, valve coil, air valve, hoses, cylinder)</td><td><code>Wiring.csv</code> beside the machine's program, built by <code>tools\build_wiring.py</code>
+(a text of the drawings in another language in a column of its own: <code>Measure.TR</code>)</td></tr>
+<tr><td>The words of the cylinder step-by-step pages: one template per valve and feedback type, per language</td><td><code>Help\Templates\EN</code>, <code>Help\Templates\TR</code> beside the program;
+written from <code>tools\cylinder_templates</code> by <code>tools\build_cylinder_templates.py</code> (its <code>README.md</code> explains the marks in them)</td></tr>
 <tr><td>Help documents and this manual</td><td>The <code>Help</code> folder beside the program</td></tr>
 <tr><td>Drive code help</td><td><code>Help\Servo_Alarm_Codes.en.html</code>, <code>Axis_Error_Codes.en.html</code>, <code>Axis_Warning_Codes.en.html</code>,
 built from the manuals beside them by <code>tools\build_code_help.py</code></td></tr>
