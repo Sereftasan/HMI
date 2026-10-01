@@ -43,7 +43,7 @@ namespace Kaban.UI.Settings
             var title = new Label
             {
                 Text = "Kaban Machines HMI",
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                Font = Kaban.UI.Controls.UiStyle.Title,
                 AutoSize = true,
                 Location = new Point(6, 12)
             };
@@ -62,7 +62,7 @@ namespace Kaban.UI.Settings
             var open = new Button
             {
                 Text = "📖  " + LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"),
-                Font = new Font("Segoe UI", 10.5F),
+                Font = Kaban.UI.Controls.UiStyle.Body,
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 Padding = new Padding(10, 4, 10, 4),

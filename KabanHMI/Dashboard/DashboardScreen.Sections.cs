@@ -88,10 +88,10 @@ namespace Kaban.UI.Dashboard
             _timelineChart.Height = 300;
             _barChart.Height = 340;
 
-            _stateGrid = new TableGrid(320);
-            _cutGrid = new TableGrid(300);
-            _eventGrid = new TableGrid(420);
-            _alarmGrid = new TableGrid(380);
+            _stateGrid = new TableGrid(320, "DashboardStates");
+            _cutGrid = new TableGrid(300, "DashboardCuts");
+            _eventGrid = new TableGrid(420, "DashboardEvents");
+            _alarmGrid = new TableGrid(380, "DashboardAlarms");
 
             _eventFilter = new FilterButton(_tips);
             _alarmFilter = new FilterButton(_tips);
@@ -394,9 +394,13 @@ namespace Kaban.UI.Dashboard
             private List<object[]> _rows = new List<object[]>();
             private int _sortColumn = -1;
             private bool _descending;
+            /// <summary>The name its columns are kept under (the program's column menu); null: none.</summary>
+            private readonly string _key;
+            private bool _tools;
 
-            public TableGrid(int height)
+            public TableGrid(int height, string key = null)
             {
+                _key = key;
                 Height = height;
                 Grid.Dock = DockStyle.Fill;
                 Grid.VirtualMode = true;
@@ -410,7 +414,8 @@ namespace Kaban.UI.Dashboard
                     if (e.RowIndex >= 0 && e.RowIndex < _rows.Count && e.ColumnIndex < _rows[e.RowIndex].Length)
                         e.Value = _rows[e.RowIndex][e.ColumnIndex];
                 };
-                Grid.ColumnHeaderMouseClick += (s, e) => Sort(e.ColumnIndex);
+                // a LEFT click sorts; the right one opens the columns' menu
+                Grid.ColumnHeaderMouseClick += (s, e) => { if (e.Button == MouseButtons.Left) Sort(e.ColumnIndex); };
                 _empty.Dock = DockStyle.Fill;
                 _empty.TextAlign = ContentAlignment.MiddleCenter;
                 _empty.BackColor = Color.FromArgb(232, 242, 252);
@@ -423,11 +428,12 @@ namespace Kaban.UI.Dashboard
             public void SetColumns(params Col[] cols)
             {
                 Grid.Columns.Clear();
+                int n = 0;
                 foreach (var c in cols)
                 {
                     var col = new DataGridViewTextBoxColumn
                     {
-                        HeaderText = c.Text, SortMode = DataGridViewColumnSortMode.Programmatic,
+                        Name = "c" + (n++), HeaderText = c.Text, SortMode = DataGridViewColumnSortMode.Programmatic,
                         AutoSizeMode = c.Width > 0 ? DataGridViewAutoSizeColumnMode.None : DataGridViewAutoSizeColumnMode.Fill
                     };
                     if (c.Width > 0) col.Width = UiScale.For(this, c.Width);
@@ -437,6 +443,9 @@ namespace Kaban.UI.Dashboard
                     Grid.Columns.Add(col);
                 }
                 Grid.RowCount = _rows.Count;
+                // The program's column menu, and the columns as they were left.
+                if (_key != null && !_tools) { UiStyle.EnableTableTools(Grid, _key, sorting: false); _tools = true; }
+                else if (_tools) UiStyle.ReapplyLayout(Grid, _key);
             }
 
             public void SetRows(List<object[]> rows, string emptyText)

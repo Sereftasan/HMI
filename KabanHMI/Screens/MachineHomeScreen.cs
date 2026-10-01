@@ -144,7 +144,7 @@ namespace Kaban.UI.Screens
                     DescriptionText = a.Caption,
                     Location = new Point(14, ay),
                     Size = new Size(330, 32),
-                    Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                    Font = Kaban.UI.Controls.UiStyle.Title
                 };
                 axes.Controls.Add(d);
 
@@ -175,7 +175,7 @@ namespace Kaban.UI.Screens
                 Text = "(no job loaded)",
                 Location = new Point(14, 32),
                 Size = new Size(360, 26),
-                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.MenuFont, FontStyle.Bold),
                 ForeColor = Color.FromArgb(40, 44, 52)
             };
             job.Controls.Add(lblJob);

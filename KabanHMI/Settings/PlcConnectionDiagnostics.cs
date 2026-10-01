@@ -228,7 +228,7 @@ namespace Kaban.UI.Settings
         {
             Dock = DockStyle.Fill;
             BackColor = Color.White;
-            Font = new Font("Segoe UI", 9.5F);
+            Font = Kaban.UI.Controls.UiStyle.Body;
             var tips = UiStyle.Tips();
 
             var bar = new FlowLayoutPanel

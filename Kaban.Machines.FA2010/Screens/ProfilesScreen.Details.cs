@@ -82,8 +82,7 @@ namespace Kaban.Machines.FA2010.Screens
             };
             Func<string, string, Button> small = (text, tip) =>
             {
-                var b = new Button { Text = text, Width = 88, Height = 26, Font = UiStyle.Small, FlatStyle = FlatStyle.Flat };
-                UiStyle.Round(b);
+                var b = UiStyle.TextButton(text, 88);
                 _tips.SetToolTip(b, tip);
                 return b;
             };
@@ -173,8 +172,6 @@ namespace Kaban.Machines.FA2010.Screens
 
             _refGrid = new DataGridView { Dock = DockStyle.Fill, AllowUserToAddRows = false, MultiSelect = true, EditMode = DataGridViewEditMode.EditOnF2 };
             UiStyle.StyleGrid(_refGrid);
-            _refGrid.Font = UiStyle.Small;
-            _refGrid.RowTemplate.Height = 24;
             _refGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "name", HeaderText = T("Prf_RefPoint", "Point"), Width = 150, ReadOnly = true });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "y", HeaderText = "Y (mm)", Width = 70 });
@@ -183,6 +180,7 @@ namespace Kaban.Machines.FA2010.Screens
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "sure", HeaderText = T("Prf_RefSure", "Sure"), Width = 55, ReadOnly = true });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "confirmed", HeaderText = T("Prf_RefConfirmed", "Confirmed"), Width = 150, ReadOnly = true });
             _refGrid.Columns["y"].DefaultCellStyle.Alignment = _refGrid.Columns["z"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            UiStyle.EnableTableTools(_refGrid, "ProfileReferences", sorting: false);
             _refGrid.CellEndEdit += (s, e) => EditReferenceCell(e.RowIndex);
             _refGrid.SelectionChanged += (s, e) => { UpdateRefHow(); _viewer.Invalidate(); };
             _refGrid.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0 && (e.ColumnIndex == 1 || e.ColumnIndex == 2) && CanEdit) _refGrid.BeginEdit(true); };
@@ -477,9 +475,11 @@ namespace Kaban.Machines.FA2010.Screens
                     bool auto = Section.IsReferenceLayer(kv.Key) || Section.LooksLikeAnnotation(kv.Key);
                     list.Items.Add(kv.Key + "   (" + kv.Value + (auto ? ", " + T("Prf_LayerAuto", "left out anyway") : "") + ")", current.Contains(kv.Key));
                 }
-                var ok = new Button { Text = T("Btn_OK", "OK"), Dock = DockStyle.Bottom, Height = 34, DialogResult = DialogResult.OK };
+                var ok = UiStyle.DialogButton(T("Btn_Ok", "OK"), DialogResult.OK);
+                var okRow = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 44, FlowDirection = FlowDirection.RightToLeft, Padding = new Padding(6) };
+                okRow.Controls.Add(ok);
                 dlg.Controls.Add(list);
-                dlg.Controls.Add(ok);
+                dlg.Controls.Add(okRow);
                 dlg.AcceptButton = ok;
                 if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
                 var chosen = list.CheckedItems.Cast<string>().Select(t => t.Substring(0, t.IndexOf("   (", StringComparison.Ordinal))).ToList();

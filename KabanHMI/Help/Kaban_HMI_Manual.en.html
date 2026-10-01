@@ -161,6 +161,19 @@ Closing from the Windows taskbar or with <kbd>Alt</kbd>+<kbd>F4</kbd> closes at 
 when you rest the pointer on it, says <b>why</b> (not signed in, level too low, machine not in manual, controller not answering). Rest the pointer on a <b>value field</b> for what may be typed in it (<i>Allowed: 0.00 - 6500.00 mm</i>);
 on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the pointer, like every control's border. An Admin also sees how each is wired.</p>
 
+<h3 id="tables">Tables</h3>
+<p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue.
+<b>Right-click a heading</b> for the columns' menu:</p>
+<ul>
+ <li>Tick the columns to show (the menu stays open while you tick; the last one cannot be taken off).</li>
+ <li><i>Column widths&hellip;</i>: each column's width typed, or the whole table's width, which the columns shown then share as they share it now.
+     <i>Fit the widths to the contents</i>.</li>
+ <li><b><i>Save as the default</i></b>: the columns shown, their order and their widths are kept as this table's default, for this panel.
+     <b><i>Default column settings</i></b> puts that default back &ndash; or, when none was saved, the table as the program made it.
+     Once a default is saved, <i>Original column settings</i> puts the program's own back (the saved default stays).</li>
+</ul>
+<p>A table opens with its columns as they were left. Drag a heading to move its column, its border to size it; a click on a heading sorts on it where the table can be sorted.</p>
+
 <!-- ================================================================== -->
 <h2 id="signin">2. Signing in and levels</h2>
 
@@ -568,8 +581,8 @@ Windows' own message boxes keep Windows' size.</p>
    <li><b>Columns</b>: drag a heading to put the column elsewhere, drag its border to size it &ndash; the others keep their widths, and every tab uses the same layout.
        <b>Click a heading to sort</b> on it, again to reverse; under comment lines each section is sorted on its own and keeps its heading. Addresses sort in the PLC's order (M2 before M10).
        <b>Right-click a heading</b>: tick the columns to show (the menu stays open while you tick), <i>Column widths&hellip;</i> to type each column's width &ndash;
-       or <i>The whole table</i>'s width, which the columns shown then share as they share it now &ndash; <i>Fit the widths to the contents</i>, or <i>Default columns</i>.
-       The monitor opens with the columns as they were left.</li>
+       or <i>The whole table</i>'s width, which the columns shown then share as they share it now &ndash; <i>Fit the widths to the contents</i>,
+       <i>Save as the default</i> or <i>Default column settings</i> (see <a href="#tables">Tables</a>). The monitor opens with the columns as they were left.</li>
    <li><b>Modified</b> (a column after <i>Value</i>): when the device last changed and <b>who changed it</b> &ndash; <b>HMI</b> (blue) when the HMI wrote that very
        value just before, <b>PLC</b> when it did not (the PLC program, or the machine). The pointer on it tells from what to what, which control or page wrote it
        and the user, or when the HMI last wrote it. A change is known only while the HMI reads the device (a page showing it, or the monitor): before that it shows <b>-</b>.

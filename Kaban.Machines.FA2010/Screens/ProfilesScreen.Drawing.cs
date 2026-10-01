@@ -229,8 +229,8 @@ namespace Kaban.Machines.FA2010.Screens
                 var chkSkip = new CheckBox { Text = T("Prf_CutSkip", "Do not cut this element"), Left = 200, Top = y, Width = 200, Checked = !current.Included };
                 dlg.Controls.Add(chkSkip);
                 y += 30;
-                var ok = new Button { Text = T("Btn_OK", "OK"), Left = 200, Top = y, Width = 110, Height = 30, DialogResult = DialogResult.OK };
-                UiStyle.Round(ok);
+                var ok = UiStyle.DialogButton(T("Btn_Ok", "OK"), DialogResult.OK);
+                ok.Location = new Point(200, y);
                 dlg.Controls.Add(ok);
                 dlg.AcceptButton = ok;
                 if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;

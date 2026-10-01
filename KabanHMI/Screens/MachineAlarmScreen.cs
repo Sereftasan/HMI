@@ -242,7 +242,7 @@ namespace Kaban.UI.Screens
             var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, BackColor = Color.White };
             bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDD04",
                 LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
-            bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDCBE",
+            bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDCE4",
                 LanguageManager.GetString("Btn_Export", "Save the history to a file"), tips, (s, e) =>
                 {
                     using (var dlg = new SaveFileDialog { Filter = "CSV (*.csv)|*.csv", FileName = "alarm_history.csv" })

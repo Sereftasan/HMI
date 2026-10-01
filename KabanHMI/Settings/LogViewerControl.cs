@@ -85,7 +85,7 @@ namespace Kaban.UI.Settings
             _machines = machines;
             Dock = DockStyle.Fill;
             BackColor = Color.White;
-            Font = new Font("Segoe UI", 9.5F);
+            Font = Kaban.UI.Controls.UiStyle.Body;
 
             // ---- the filters ------------------------------------------------
             var bar = new FlowLayoutPanel
@@ -211,7 +211,7 @@ namespace Kaban.UI.Settings
                                            _tips, (s, e) => ClearFilters());
             clear.Margin = new Padding(8, 1, 3, 1);
             bar.Controls.Add(clear);
-            var export = UiStyle.ToolButton("💾", LanguageManager.GetString("Log_ExportTip", "Export the entries shown"),
+            var export = UiStyle.ToolButton("\uD83D\uDCE4", LanguageManager.GetString("Log_ExportTip", "Export the entries shown"),
                                             _tips, (s, e) => Export());
             export.Margin = new Padding(3, 1, 3, 1);
             bar.Controls.Add(export);
@@ -226,17 +226,6 @@ namespace Kaban.UI.Settings
             _grid.RowHeadersVisible = false;
             _grid.MultiSelect = false;
             _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            _grid.BackgroundColor = Color.White;
-            _grid.BorderStyle = BorderStyle.FixedSingle;
-            _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            _grid.GridColor = Color.FromArgb(228, 231, 236);
-            _grid.RowTemplate.Height = 26;
-            _grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
-            _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            _grid.EnableHeadersVisualStyles = false;
-            _grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(242, 244, 247);
-            _grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(214, 228, 248);
-            _grid.DefaultCellStyle.SelectionForeColor = Color.Black;
             _grid.Columns.Add(Column("Time", LanguageManager.GetString("Log_ColTime", "Time") + "  ▼", 160));
             _grid.Columns.Add(Column("User", LanguageManager.GetString("Log_ColUser", "User"), 110));
             _grid.Columns.Add(Column("Plc", LanguageManager.GetString("Log_ColPlc", "PLC"), 50));
@@ -248,13 +237,16 @@ namespace Kaban.UI.Settings
             var source = Column("Source", LanguageManager.GetString("Log_ColSource", "Source"), 130);
             _grid.Columns.Add(source);
             source.DisplayIndex = 1;
+            // The program's table look and column menu (the PLC Monitor's); kept apart
+            // for the page with the machines' logs and the one without.
+            UiStyle.EnableTableTools(_grid, machines ? "LogsAndReports" : "HmiLog", sorting: false);
             source.Visible = machines;
             _grid.CellValueNeeded += OnCellValueNeeded;
             _grid.CellFormatting += OnCellFormatting;
             _grid.SelectionChanged += (s, e) => ShowDetail();
             _grid.ColumnHeaderMouseClick += (s, e) =>
             {
-                if (e.ColumnIndex != 0) return;
+                if (e.ColumnIndex != 0 || e.Button != MouseButtons.Left) return;
                 var keep = Selected();
                 _newestFirst = !_newestFirst;
                 _grid.Columns[0].HeaderText = LanguageManager.GetString("Log_ColTime", "Time") +

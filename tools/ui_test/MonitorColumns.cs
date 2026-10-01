@@ -90,8 +90,10 @@ class MCol {
         var items = chooser.MenuItems();
         var names = items.OfType<ToolStripMenuItem>().Where(i => i.CheckOnClick).Select(i => i.Text).ToList();
         Check("  every column to tick, in the order shown", names.Count == 7 && names[0] == "Label" && names.Contains("Modified") && names.Contains("Display Format"), string.Join(",", names));
-        Check("  then Column widths..., Fit the widths to the contents, Default columns",
-              ItemFor(chooser, "widths") != null && ItemFor(chooser, "fit") != null && ItemFor(chooser, "default") != null);
+        Check("  then Column widths..., Fit the widths to the contents, Save as the default, Default column settings",
+              ItemFor(chooser, "widths") != null && ItemFor(chooser, "fit") != null && ItemFor(chooser, "savedefault") != null &&
+              ItemFor(chooser, "savedefault").Text == "Save as the default" && ItemFor(chooser, "default").Text == "Default column settings" &&
+              chooser.DefaultKey == "PlcMonitor");
         var turkish = LanguageManager.GetString("Col_LastChange", "") ;
         Check("  (\"Modified\" in all six languages)", File.ReadAllLines("CommonTranslations.csv").First(l => l.StartsWith("Col_LastChange;")).Split(';').Skip(1).All(t => t.Trim().Length > 0));
 

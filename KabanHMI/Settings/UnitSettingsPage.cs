@@ -47,7 +47,7 @@ namespace Kaban.UI.Settings
                 var lbl = Kaban.UI.Controls.UiStyle.CaptionLabel(
                     LanguageManager.GetString("Unit_Family_" + type, type.ToString()),
                     8, y + 2, 144);
-                lbl.Font = new Font("Segoe UI", 10F);
+                lbl.Font = Kaban.UI.Controls.UiStyle.Body;
                 Controls.Add(lbl);
 
                 var cmb = new ComboBox
@@ -55,7 +55,7 @@ namespace Kaban.UI.Settings
                     Location = new Point(160, y),
                     Width = 160,
                     DropDownStyle = ComboBoxStyle.DropDownList,
-                    Font = new Font("Segoe UI", 10F),
+                    Font = Kaban.UI.Controls.UiStyle.Body,
                     DisplayMember = "Name"
                 };
                 // Items, NOT DataSource: binding a list installs a CurrencyManager
@@ -81,19 +81,10 @@ namespace Kaban.UI.Settings
             }
 
             // Emoji-only save (label lives in the tooltip), same style as the DXF tools.
-            var btnSave = new Button
-            {
-                Text = "\uD83D\uDCBE",   // floppy disk
-                Font = new Font("Segoe UI", 12F),
-                Width = 44,
-                Height = 32,
-                Left = 160,
-                Top = y + 6,
-                FlatStyle = FlatStyle.Flat
-            };
-            btnSave.FlatAppearance.BorderColor = Color.FromArgb(180, 186, 194);
-            Kaban.UI.Controls.UiStyle.Tips().SetToolTip(btnSave, LanguageManager.GetString("Btn_Save", "Save"));
-            btnSave.Click += (s, e) => ApplyPending();
+            var btnSave = Kaban.UI.Controls.UiStyle.ToolButton("\uD83D\uDCBE", LanguageManager.GetString("Btn_Save", "Save"),
+                                                               Kaban.UI.Controls.UiStyle.Tips(), (s, e) => ApplyPending());
+            btnSave.Left = 160;
+            btnSave.Top = y + 6;
             Controls.Add(btnSave);
         }
 

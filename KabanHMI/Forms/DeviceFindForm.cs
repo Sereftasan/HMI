@@ -158,6 +158,7 @@ namespace Kaban.UI.Forms
 
             // A right-click on a heading: the columns (ColumnChooser); on a line: its display format.
             var chooser = ColumnChooser.Attach(_list);
+            chooser.DefaultKey = "PlcMonitorFind";
             chooser.Changed = SaveColumns;
             chooser.Reset = () =>
             {

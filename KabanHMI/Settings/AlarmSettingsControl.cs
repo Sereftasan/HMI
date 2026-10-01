@@ -66,13 +66,13 @@ namespace Kaban.UI.Settings
             };
             Action<Control> add = c => bar.Items.Add(new ToolStripControlHost(c) { AutoSize = false, Size = c.Size });
             // Greyed until an edit, like the PLC Connection page.
-            _btnSave = UiStyle.ToolButton("\uD83D\uDCBE", "Save the alarm settings", tips, (s, e) => Save());
+            _btnSave = UiStyle.ToolButton("\uD83D\uDCBE", LanguageManager.GetString("Tip_AlarmSetSave", "Save the alarm settings"), tips, (s, e) => Save());
             add(_btnSave);
             _dirty.Guard(_btnSave);
-            add(UiStyle.ToolButton("\uD83D\uDD04", "Reload from disk", tips, (s, e) => LoadRows()));
-            add(UiStyle.ToolButton("\u270F\uFE0F", "Edit the helper links of the selected alarm (several documents)",
+            add(UiStyle.ToolButton("\u21BA", LanguageManager.GetString("Tip_AlarmSetRevert", "Throw the changes away and read the saved settings again"), tips, (s, e) => LoadRows()));
+            add(UiStyle.ToolButton("\u270F\uFE0F", LanguageManager.GetString("Tip_AlarmSetLinks", "Edit the helper links of the selected alarm (several documents)"),
                                    tips, (s, e) => { if (_grid.CurrentRow != null) EditHelpers(_grid.CurrentRow.Index); }));
-            _btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", "Open a helper document of the selected alarm",
+            _btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", LanguageManager.GetString("Tip_AlarmSetOpen", "Open a helper document of the selected alarm"),
                                           tips, (s, e) => OpenHelper());
             add(_btnOpen);
 
@@ -133,12 +133,12 @@ namespace Kaban.UI.Settings
             _grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
 
             _grid.Columns.Add(new DataGridViewTextBoxColumn
-            { Name = "Address", HeaderText = "Address", FillWeight = 12, ReadOnly = true });
+            { Name = "Address", HeaderText = LanguageManager.GetString("Col_Address", "Address"), FillWeight = 12, ReadOnly = true });
             _grid.Columns.Add(new DataGridViewTextBoxColumn
-            { Name = "Text", HeaderText = "Alarm", FillWeight = 42, ReadOnly = true });
+            { Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
 
             var sev = new DataGridViewComboBoxColumn
-            { Name = "Severity", HeaderText = "Severity", FillWeight = 12 };
+            { Name = "Severity", HeaderText = LanguageManager.GetString("Alarm_Col_Severity", "Severity"), FillWeight = 12 };
             sev.Items.AddRange(Enum.GetNames(typeof(AlarmSeverity)));
             _grid.Columns.Add(sev);
 
@@ -158,7 +158,7 @@ namespace Kaban.UI.Settings
                 Name = "Helper",
                 // SEVERAL: a manual, a drawing, a page - "; " between them. Typed
                 // here or kept as a list (double click).
-                HeaderText = "Helper links (files, pages or URLs; double click for the list)",
+                HeaderText = LanguageManager.GetString("Col_HelperLinks", "Helper links (files, pages or URLs, double click for the list)"),
                 FillWeight = 31
             });
 
@@ -198,7 +198,7 @@ namespace Kaban.UI.Settings
             _status.Dock = DockStyle.Bottom;
             _status.Height = 24;
             _status.Padding = new Padding(8, 4, 0, 0);
-            _status.Font = new Font("Segoe UI", 9F);
+            _status.Font = Kaban.UI.Controls.UiStyle.Small;
 
             Controls.Add(_grid);
             Controls.Add(_status);
@@ -402,7 +402,7 @@ namespace Kaban.UI.Settings
             if (links.Count == 0) { _status.Text = "No helper link on that alarm."; return; }
             if (links.Count == 1) { Open(links[0]); return; }
             // SEVERAL: which one.
-            var menu = new ContextMenuStrip { Font = UiStyle.MenuFont };
+            var menu = UiStyle.Menu();
             foreach (var l in links) { var link = l; menu.Items.Add(link, null, (s, e) => Open(link)); }
             menu.Show(_btnOpen, new Point(0, _btnOpen.Height));
         }
@@ -430,7 +430,7 @@ namespace Kaban.UI.Settings
 
         public HelperLinksForm(string alarm, IEnumerable<string> links)
         {
-            Text = "Helper links" + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
+            Text = LanguageManager.GetString("Ttl_HelperLinks", "Helper links") + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
             FormBorderStyle = FormBorderStyle.SizableToolWindow;
             StartPosition = FormStartPosition.CenterParent;
             ClientSize = new Size(560, 320);
@@ -441,8 +441,8 @@ namespace Kaban.UI.Settings
             var note = new Label
             {
                 Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 6, 8, 0),
-                Text = "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
-                       "relative to it), pages or web addresses."
+                Text = LanguageManager.GetString("Lbl_HelperLinksNote", "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
+                       "relative to it), pages or web addresses.")
             };
             _list.Dock = DockStyle.Fill;
             _list.IntegralHeight = false;
@@ -452,18 +452,19 @@ namespace Kaban.UI.Settings
             var side = new FlowLayoutPanel { Dock = DockStyle.Right, Width = 118, FlowDirection = FlowDirection.TopDown, Padding = new Padding(6) };
             Func<string, EventHandler, Button> btn = (text, click) =>
             {
-                var b = new Button { Text = text, Width = 104, Height = 30 };
-                b.Click += click;
+                var b = UiStyle.TextButton(text, 104, click);
+                b.Margin = new Padding(0, 0, 0, 6);
                 side.Controls.Add(b);
                 return b;
             };
-            btn("Add files...", (s, e) => AddFiles());
-            btn("Remove", (s, e) => RemoveSelected());
-            btn("Up", (s, e) => Move(-1));
-            btn("Down", (s, e) => Move(+1));
+            btn(LanguageManager.GetString("Btn_AddFiles", "Add files..."), (s, e) => AddFiles());
+            btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
+            btn(LanguageManager.GetString("Btn_Up", "Up"), (s, e) => Move(-1));
+            btn(LanguageManager.GetString("Btn_Down", "Down"), (s, e) => Move(+1));
 
             var linkRow = new Panel { Dock = DockStyle.Bottom, Height = 38, Padding = new Padding(8, 6, 8, 4) };
-            var addLink = new Button { Text = "Add link", Dock = DockStyle.Right, Width = 104 };
+            var addLink = UiStyle.TextButton(LanguageManager.GetString("Btn_AddLink", "Add link"), 104);
+            addLink.Dock = DockStyle.Right;
             _link.Dock = DockStyle.Fill;
             addLink.Click += (s, e) => AddLink();
             _link.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) { AddLink(); e.SuppressKeyPress = true; } };
@@ -471,8 +472,8 @@ namespace Kaban.UI.Settings
             linkRow.Controls.Add(addLink);
 
             var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 42, FlowDirection = FlowDirection.RightToLeft, Padding = new Padding(6) };
-            var cancel = new Button { Text = "Cancel", DialogResult = DialogResult.Cancel, Width = 96, Height = 30 };
-            var ok = new Button { Text = "OK", DialogResult = DialogResult.OK, Width = 96, Height = 30 };
+            var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+            var ok = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.OK);
             bottom.Controls.Add(cancel);
             bottom.Controls.Add(ok);
             CancelButton = cancel;

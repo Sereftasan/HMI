@@ -104,7 +104,7 @@ namespace Kaban.UI.Settings
             _chkEnabled.Text = LanguageManager.GetString("Log_Enabled", "Audit logging enabled");
             _chkEnabled.AutoSize = true;
             _chkEnabled.Margin = new Padding(2, 9, 16, 3);
-            _chkEnabled.Font = new Font("Segoe UI", 9.5F);
+            _chkEnabled.Font = Kaban.UI.Controls.UiStyle.Body;
             _chkEnabled.Checked = AuditLogger.Enabled;
             _chkEnabled.CheckedChanged += (s, e) => OnEnabledChanged();
             pn.Controls.Add(_chkEnabled);
@@ -112,7 +112,7 @@ namespace Kaban.UI.Settings
             pn.Controls.Add(new Label
             {
                 Text = LanguageManager.GetString("Log_Retain", "Keep logs (days)") + ":",
-                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = new Font("Segoe UI", 9.5F)
+                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = Kaban.UI.Controls.UiStyle.Body
             });
             _numRetain.Width = 70;
             _numRetain.Margin = new Padding(2, 6, 12, 3);
@@ -151,7 +151,7 @@ namespace Kaban.UI.Settings
             _off.Padding = new Padding(8, 0, 0, 0);
             _off.BackColor = Color.FromArgb(253, 226, 226);
             _off.ForeColor = Color.FromArgb(160, 20, 20);
-            _off.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            _off.Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.Body, FontStyle.Bold);
             _off.Text = LanguageManager.GetString("Log_Off", "Audit logging is OFF - nothing is being recorded.");
 
             // ---- the machines' logs: choose one, see what its database holds ----
@@ -165,7 +165,7 @@ namespace Kaban.UI.Settings
             _machineRow.Controls.Add(new Label
             {
                 Text = LanguageManager.GetString("Log_MachineLog", "Machine log") + ":",
-                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = new Font("Segoe UI", 9.5F)
+                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = Kaban.UI.Controls.UiStyle.Body
             });
             _machine.DropDownStyle = ComboBoxStyle.DropDownList;
             _machine.Width = 200;
@@ -176,7 +176,7 @@ namespace Kaban.UI.Settings
             _dbState.AutoSize = true;
             _dbState.MaximumSize = new Size(560, 0);
             _dbState.Margin = new Padding(2, 10, 8, 3);
-            _dbState.Font = new Font("Segoe UI", 9F);
+            _dbState.Font = Kaban.UI.Controls.UiStyle.Small;
             _machineRow.Controls.Add(_dbState);
             var look = Kaban.UI.Controls.UiStyle.ToolButton("\uD83D\uDD0D",
                 LanguageManager.GetString("Log_MachineTest", "Look into the machine's log database again"), tips, (s, e) => ProbeMachine());

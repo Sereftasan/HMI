@@ -133,7 +133,7 @@ namespace Kaban.UI.Settings
             // operator was offered a restart for having looked at the page.
             _btnSave.Enabled = false;
             bar.Controls.Add(_btnSave);
-            _btnReload = UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString(
+            _btnReload = UiStyle.ToolButton("\u21BA", LanguageManager.GetString(
                 "Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload());
             bar.Controls.Add(_btnReload);
             _adminNote = new Label
@@ -250,7 +250,7 @@ namespace Kaban.UI.Settings
             {
                 Text = text,
                 AutoSize = true,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.Small, FontStyle.Bold),
                 BackColor = ColHeader,
                 Padding = new Padding(6, 6, 6, 6),
                 Margin = new Padding(0, 0, 0, 4)

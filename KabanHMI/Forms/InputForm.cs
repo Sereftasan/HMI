@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
 
 namespace Kaban.UI.Forms
 {
@@ -60,19 +62,16 @@ namespace Kaban.UI.Forms
             txtInput.KeyPress += TxtInput_KeyPress;
             this.Controls.Add(txtInput);
 
-            btnOk = new Button();
-            btnOk.Text = "OK";
+            btnOk = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.None);
             // IMPORTANT: Remove DialogResult here. We set it manually after validation.
             // btnOk.DialogResult = DialogResult.OK; 
-            btnOk.Location = new Point(105, 90);
+            btnOk.Location = new Point(72, 90);
             btnOk.Click += BtnOk_Click; // Hook up Click event
             this.Controls.Add(btnOk);
             this.AcceptButton = btnOk;
 
-            btnCancel = new Button();
-            btnCancel.Text = "Cancel";
-            btnCancel.DialogResult = DialogResult.Cancel; // Cancel is always safe
-            btnCancel.Location = new Point(190, 90);
+            btnCancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel); // Cancel is always safe
+            btnCancel.Location = new Point(176, 90);
             this.Controls.Add(btnCancel);
             this.CancelButton = btnCancel;
         }

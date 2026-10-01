@@ -18,8 +18,7 @@ class T {
 
     [STAThread] static void Main(){
         string key = "UnitTestTable";
-        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                                "KabanHMI", "Layouts", key + ".cols");
+        var path = Path.Combine(Kaban.UI.Helpers.ColumnChooser.Folder, key + ".cols");
         if (File.Exists(path)) File.Delete(path);
 
         var data = new BindingList<Row> {
@@ -71,8 +70,7 @@ class T {
         // Start from nothing: a layout saved by an earlier run carries its sort
         // keys back, so the first click would TOGGLE that sort rather than
         // establish one - correct behaviour, but not what this case is testing.
-        var upath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                                 "KabanHMI", "Layouts", "UnitTestUnbound.cols");
+        var upath = Path.Combine(Kaban.UI.Helpers.ColumnChooser.Folder, "UnitTestUnbound.cols");
         if (File.Exists(upath)) File.Delete(upath);
 
         var ug = new DataGridView { Dock = DockStyle.Fill };

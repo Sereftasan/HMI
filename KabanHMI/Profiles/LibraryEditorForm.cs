@@ -373,8 +373,8 @@ namespace Kaban.UI.Profiles
             panel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110));
             panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             var fields = new Dictionary<string, TextBox>();
-            var apply = new Button { Text = T("Lib_ApplyShape", "Use these"), Width = 120, Height = 30, Enabled = _canEdit };
-            UiStyle.Round(apply);
+            var apply = UiStyle.TextButton(T("Lib_ApplyShape", "Use these"), 120);
+            apply.Enabled = _canEdit;
             Action fill = () =>
             {
                 panel.SuspendLayout();
@@ -474,16 +474,17 @@ namespace Kaban.UI.Profiles
                 panel.Controls.Add(box, 1, i);
                 boxes[code] = box;
             }
-            var browse = new Button { Text = "\u2026", Width = 36, Height = 26, Enabled = _canEdit };
-            UiStyle.Round(browse);
+            // the program's "choose a folder" button, as everywhere
+            var browse = UiStyle.ToolButton("\uD83D\uDCC2", T("Dsh_Browse", "Browse..."), UiStyle.Tips());
+            browse.Enabled = _canEdit;
             browse.Click += (s, e) =>
             {
                 using (var dlg = new FolderBrowserDialog { SelectedPath = boxes["program_folder"].Text })
                     if (dlg.ShowDialog(this) == DialogResult.OK) boxes["program_folder"].Text = dlg.SelectedPath;
             };
             panel.Controls.Add(browse, 2, SettingCodes.GetLength(0) - 1);
-            var save = new Button { Text = T("Btn_Save", "Save"), Width = 110, Height = 32, Enabled = _canEdit };
-            UiStyle.Round(save);
+            var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
+            save.Enabled = _canEdit;
             var status = new Label { AutoSize = true, Margin = new Padding(3, 10, 3, 3), Font = UiStyle.Small };
             save.Click += (s, e) =>
             {
@@ -553,6 +554,8 @@ namespace Kaban.UI.Profiles
             };
             refs.CellDoubleClick += open;
             pls.CellDoubleClick += open;
+            UiStyle.EnableTableTools(refs, "ProfileLibraryReviewRefs");
+            UiStyle.EnableTableTools(pls, "ProfileLibraryReviewPlacements");
             var l1 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_RefsToCheck", "Reference points to check") + " (" + refs.Rows.Count + ")" };
             var l2 = new Label { Dock = DockStyle.Top, Height = 24, Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft, Text = T("Lib_PlacementsToCheck", "Placements to confirm") + " (" + pls.Rows.Count + ")" };
             split.Panel1.Controls.Add(refs);

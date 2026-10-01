@@ -78,6 +78,8 @@ namespace Kaban.Machines.SB3015.Screens // Or wherever your UserControls are loc
             // throwaway list - this is what actually connects the screen to
             // real PLC alarm conditions (see AlarmManager / PlcScanner).
             dgvAlarms.DataSource = AlarmManager.ActiveAlarms;
+            // The program's table look and column menu (the PLC Monitor's).
+            Kaban.UI.Controls.UiStyle.EnableTableTools(dgvAlarms, "MachineAlarmList");
 
             ApplyTranslation();
         }

@@ -559,8 +559,8 @@ namespace Kaban.Machines.FA2010.Screens
             tools.Controls.Add(EditTool("\uD83D\uDDD1", T("Prf_TipRemove", "Take the selected profile out of use (it stays in the library, with its history)"), (s, e) => DeactivateProfile()));
 
             // MULTI-LEVEL grouping: tick any combination; the tick ORDER is the grouping order.
-            _btnGroup = new Button { Text = T("Prf_Group", "Group") + " \u25BE", Width = 110, Height = 30, FlatStyle = FlatStyle.Flat, Font = UiStyle.Small };
-            var groupMenu = new ContextMenuStrip();
+            _btnGroup = UiStyle.TextButton(T("Prf_Group", "Group") + " \u25BE", 110);
+            var groupMenu = UiStyle.Menu();
             foreach (var col0 in Columns)
             {
                 if (col0 == "id" || col0 == "code" || col0 == "description") continue;
@@ -604,14 +604,9 @@ namespace Kaban.Machines.FA2010.Screens
             _grid.AllowUserToResizeRows = false;
             _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             _grid.MultiSelect = false;
-            _grid.BackgroundColor = Color.White;
-            _grid.BorderStyle = BorderStyle.None;
-            _grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            _grid.GridColor = Color.FromArgb(228, 231, 235);
-            _grid.Font = UiStyle.Small;
-            _grid.RowTemplate.Height = 24;
-            _grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(218, 232, 250);
-            _grid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
+            // The program's table look (the PLC Monitor's); the heading below keeps
+            // its own height for the filter boxes under the captions.
+            UiStyle.GridLook(_grid);
             // A narrow EMPTY row header indents the rows while grouping is active.
             _grid.RowHeadersVisible = false;
             _grid.RowHeadersWidth = 20;
@@ -619,11 +614,8 @@ namespace Kaban.Machines.FA2010.Screens
             _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             _grid.ColumnHeadersHeight = HeaderTextHeight + FilterRowHeight;
             _grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
-            _grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(2, 3, 0, 0);
-            _grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 248);
-            _grid.ColumnHeadersDefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold);
+            _grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 4, 0, 0);
             _grid.RowHeadersDefaultCellStyle.BackColor = Color.White;
-            _grid.EnableHeadersVisualStyles = false;
             _grid.AutoGenerateColumns = false;
             // EXPLICIT widths, not Fill: a width the operator set comes back exactly.
             _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
@@ -642,6 +634,18 @@ namespace Kaban.Machines.FA2010.Screens
                 _baseHeaders[name] = Caption(name);
             }
             _grid.ColumnHeaderMouseClick += OnHeaderClick;
+            // THE PROGRAM'S COLUMN MENU on the headings (the PLC Monitor's), with the
+            // page's own "Show filters"; the named arrangements keep the columns.
+            var chooser = Kaban.UI.Helpers.ColumnChooser.Attach(_grid);
+            chooser.DefaultKey = "Profiles";
+            chooser.Changed = AlignFilters;
+            chooser.Reset = ResetColumnsToDefault;
+            chooser.ExtraItems = () =>
+            {
+                var fi = new ToolStripMenuItem(T("Prf_ShowFilters", "Show filters")) { Checked = _filtersVisible, CheckOnClick = true };
+                fi.CheckedChanged += (s2, e2) => SetFiltersVisible(fi.Checked);
+                return new ToolStripItem[] { fi };
+            };
             _grid.SelectionChanged += (s, e) =>
             {
                 if (_repopulating) return;          // rows are being rebuilt, not chosen
@@ -717,24 +721,7 @@ namespace Kaban.Machines.FA2010.Screens
 
         private void OnHeaderClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                // column chooser + filter visibility
-                var menu = new ContextMenuStrip();
-                foreach (DataGridViewColumn c in _grid.Columns)
-                {
-                    var captured = c;
-                    var item = new ToolStripMenuItem(_baseHeaders[c.Name]) { Checked = c.Visible, CheckOnClick = true };
-                    item.CheckedChanged += (s2, e2) => { captured.Visible = item.Checked; AlignFilters(); };
-                    menu.Items.Add(item);
-                }
-                menu.Items.Add(new ToolStripSeparator());
-                var fi = new ToolStripMenuItem(T("Prf_ShowFilters", "Show filters")) { Checked = _filtersVisible, CheckOnClick = true };
-                fi.CheckedChanged += (s2, e2) => SetFiltersVisible(fi.Checked);
-                menu.Items.Add(fi);
-                menu.Show(Cursor.Position);
-                return;
-            }
+            if (e.Button != MouseButtons.Left) return;     // the right button: the columns' menu (ColumnChooser)
             if (e.ColumnIndex < 0) return;
             string col = _grid.Columns[e.ColumnIndex].Name;
             bool additive = (ModifierKeys & Keys.Shift) == Keys.Shift;
@@ -883,6 +870,21 @@ namespace Kaban.Machines.FA2010.Screens
                 col.Width = DefaultWidth(name);
                 col.DisplayIndex = order++;
             }
+        }
+
+        /// <summary>The table's columns alone back to their own (the column menu's "Original column settings").</summary>
+        private void ResetColumnsToDefault()
+        {
+            int order = 0;
+            foreach (var name in Columns)
+            {
+                var col = _grid.Columns[name];
+                if (col == null) continue;
+                col.Visible = DefaultVisibleColumns.Contains(name);
+                col.Width = DefaultWidth(name);
+                col.DisplayIndex = order++;
+            }
+            AlignFilters();
         }
 
         /// <summary>The table alone back to its defaults (the panes stay where they are).</summary>

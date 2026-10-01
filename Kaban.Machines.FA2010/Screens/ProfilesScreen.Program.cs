@@ -80,7 +80,7 @@ namespace Kaban.Machines.FA2010.Screens
             _chkTrial.CheckedChanged += (s, e) => { if (_sideResult != null) GenerateSide(); };
             addS(_chkTrial);
             addS(UiStyle.ToolButton("\u2699", T("Prf_TipGenerateSide", "Make the program"), _tips, (s, e) => GenerateSide()));
-            addS(UiStyle.ToolButton("\uD83D\uDCBE", T("Prf_TipExportSide", "Save the program as a file (.nc)"), _tips, (s, e) => ExportProgram(_txtSide.Text, false)));
+            addS(UiStyle.ToolButton("\uD83D\uDCE4", T("Prf_TipExportSide", "Save the program as a file (.nc)"), _tips, (s, e) => ExportProgram(_txtSide.Text, false)));
             addS(UiStyle.ToolButton("\uD83D\uDCCB", T("Prf_TipCopyProgram", "Copy the program"), _tips, (s, e) => CopyText(_txtSide.Text)));
             _txtSide = code(new Font("Consolas", 9F));
             // what the program could not do, in red, and what it did

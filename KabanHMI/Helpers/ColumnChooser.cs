@@ -14,9 +14,15 @@ namespace Kaban.UI.Helpers
     ///   Column widths...           every column's width typed, and the TABLE's
     ///                              width - the columns scaled to it
     ///   Fit the widths to the contents
-    ///   Default columns
-    /// The PLC Monitor's lists and its Find use it; each keeps what is chosen its
-    /// own way (Columns.cfg, Windows.cfg), so a table opens as it was left.
+    ///   Save as the default        the columns shown, their order and widths, kept
+    ///                              (Layouts\&lt;table&gt;.default, for this panel)
+    ///   Default column settings    back to that - or, with none saved, to the
+    ///                              table's own
+    ///   Original column settings   (only once a default is saved) the table's own
+    /// The PLC Monitor's lists and its Find use it, and through
+    /// UiStyle.EnableTableTools every other table of the program (2 October); each
+    /// keeps what is chosen its own way (Columns.cfg, Windows.cfg, Layouts\*.cols),
+    /// so a table opens as it was left.
     /// </summary>
     public sealed class ColumnChooser
     {
@@ -26,8 +32,23 @@ namespace Kaban.UI.Helpers
         public Action<DataGridViewColumn, bool> SetShown;
         /// <summary>Called after anything was changed here (to keep it).</summary>
         public Action Changed;
-        /// <summary>Puts the table's own widths, order and columns back; null: no "Default columns".</summary>
+        /// <summary>Puts the table's own widths, order and columns back; null: the layout the table had when the menu was attached.</summary>
         public Action Reset;
+        /// <summary>The name its saved default is kept under; null: no "Save as the default".</summary>
+        public string DefaultKey;
+        /// <summary>A table's own items, after its columns (the Profiles page's "Show filters").</summary>
+        public Func<IEnumerable<ToolStripItem>> ExtraItems;
+
+        /// <summary>The columns as the table had them when the menu was attached (its own settings, before anything kept was put on).</summary>
+        private List<ColumnState> _builtIn;
+
+        /// <summary>One column's place in a layout.</summary>
+        public sealed class ColumnState
+        {
+            public string Name = "";
+            public int Width, Position;
+            public bool Shown;
+        }
 
         private ColumnChooser(DataGridView grid)
         {
@@ -59,6 +80,7 @@ namespace Kaban.UI.Helpers
             grid.ColumnAdded += (s, e) => e.Column.HeaderCell.ContextMenuStrip = menu;
             chooser.Menu = menu;
             menu.Tag = chooser;
+            chooser._builtIn = chooser.Snapshot();
             return chooser;
         }
 
@@ -91,12 +113,117 @@ namespace Kaban.UI.Helpers
                 };
                 items.Add(item);
             }
+            if (ExtraItems != null)
+            {
+                var extra = ExtraItems().ToList();
+                if (extra.Count > 0) { items.Add(new ToolStripSeparator()); items.AddRange(extra); }
+            }
             items.Add(new ToolStripSeparator());
             items.Add(new ToolStripMenuItem(T("Mnu_ColWidths", "Column widths..."), null, (s, e) => ShowWidths(_grid.FindForm())) { Tag = "widths" });
             items.Add(new ToolStripMenuItem(T("Mnu_ColFit", "Fit the widths to the contents"), null, (s, e) => FitToContents()) { Tag = "fit" });
-            if (Reset != null)
-                items.Add(new ToolStripMenuItem(T("Mnu_ColDefault", "Default columns"), null, (s, e) => { Reset(); if (Changed != null) Changed(); }) { Tag = "default" });
+            items.Add(new ToolStripSeparator());
+            if (!string.IsNullOrEmpty(DefaultKey))
+                items.Add(new ToolStripMenuItem(T("Mnu_ColSaveDefault", "Save as the default"), null, (s, e) => SaveDefault()) { Tag = "savedefault" });
+            items.Add(new ToolStripMenuItem(T("Mnu_ColDefault", "Default column settings"), null, (s, e) => ToDefault()) { Tag = "default" });
+            if (HasSavedDefault)
+                items.Add(new ToolStripMenuItem(T("Mnu_ColOriginal", "Original column settings"), null, (s, e) => ToOriginal()) { Tag = "original" });
             return items;
+        }
+
+        // ---- the default ------------------------------------------------------------
+
+        /// <summary>Where the defaults are kept: for this panel, whoever is signed in.</summary>
+        public static string Folder = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "Layouts");
+
+        private string DefaultPath { get { return System.IO.Path.Combine(Folder, DefaultKey + ".default"); } }
+
+        public bool HasSavedDefault
+        {
+            get { try { return !string.IsNullOrEmpty(DefaultKey) && System.IO.File.Exists(DefaultPath); } catch { return false; } }
+        }
+
+        /// <summary>The columns now: shown (as the user wants them), position and width.</summary>
+        public List<ColumnState> Snapshot()
+        {
+            return _grid.Columns.Cast<DataGridViewColumn>().Select(c => new ColumnState
+            {
+                Name = c.Name, Width = c.Width, Position = c.DisplayIndex, Shown = IsShown(c)
+            }).ToList();
+        }
+
+        /// <summary>Puts a layout on the table (columns it does not name stay as they are).</summary>
+        public void Apply(List<ColumnState> layout)
+        {
+            if (layout == null || layout.Count == 0) return;
+            foreach (var st in layout)
+            {
+                var c = _grid.Columns[st.Name];
+                if (c == null) continue;
+                if (IsShown(c) != st.Shown) SetShown(c, st.Shown);
+                if (st.Width >= 10) c.Width = st.Width;
+            }
+            foreach (var st in layout.OrderBy(x => x.Position))
+            {
+                var c = _grid.Columns[st.Name];
+                if (c != null && st.Position >= 0 && st.Position < _grid.Columns.Count) c.DisplayIndex = st.Position;
+            }
+            // never a table with nothing on it
+            if (!_grid.Columns.Cast<DataGridViewColumn>().Any(c => c.Visible) && _grid.Columns.Count > 0)
+            {
+                SetShown(_grid.Columns[0], true);
+                _grid.Columns[0].Visible = true;
+            }
+            if (Changed != null) Changed();
+        }
+
+        /// <summary>Keeps the columns as they are now as this table's default.</summary>
+        public bool SaveDefault()
+        {
+            if (string.IsNullOrEmpty(DefaultKey)) return false;
+            try
+            {
+                System.IO.Directory.CreateDirectory(Folder);
+                var lines = Snapshot().Select(c => c.Name + "\t" + c.Width + "\t" + c.Position + "\t" + (c.Shown ? "1" : "0"));
+                SafeFile.WriteAllText(DefaultPath, string.Join("\r\n", lines) + "\r\n");
+                AuditLogger.Log("saved the column settings of table '" + DefaultKey + "' as its default.");
+                return true;
+            }
+            catch (Exception ex) { AuditLogger.Log("could not save the default columns of '" + DefaultKey + "': " + ex.Message); return false; }
+        }
+
+        /// <summary>The saved default, or null.</summary>
+        public List<ColumnState> SavedDefault()
+        {
+            if (!HasSavedDefault) return null;
+            try
+            {
+                var list = new List<ColumnState>();
+                foreach (var line in System.IO.File.ReadAllLines(DefaultPath))
+                {
+                    var p = line.Split('\t');
+                    int w, pos;
+                    if (p.Length < 4 || !int.TryParse(p[1], out w) || !int.TryParse(p[2], out pos)) continue;
+                    list.Add(new ColumnState { Name = p[0], Width = w, Position = pos, Shown = p[3] == "1" });
+                }
+                return list;
+            }
+            catch { return null; }
+        }
+
+        /// <summary>"Default column settings": the saved default, else the table's own.</summary>
+        public void ToDefault()
+        {
+            var saved = SavedDefault();
+            if (saved != null && saved.Count > 0) Apply(saved);
+            else ToOriginal();
+        }
+
+        /// <summary>"Original column settings": the table's own, as it was made.</summary>
+        public void ToOriginal()
+        {
+            if (Reset != null) { Reset(); if (Changed != null) Changed(); }
+            else Apply(_builtIn);
         }
 
         /// <summary>Each column shown as wide as what is in it (and its heading).</summary>

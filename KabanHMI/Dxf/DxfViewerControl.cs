@@ -483,7 +483,7 @@ namespace Kaban.UI.Dxf
                 }
                 else if (e.Button == MouseButtons.Left)
                 {
-                    var menu = new ContextMenuStrip();
+                    var menu = Kaban.UI.Controls.UiStyle.Menu();
                     string x = p.X.ToString("F3"), z = p.Y.ToString("F3");
                     menu.Items.Add("Copy X  (" + x + ")", null, (s2, e2) => TrySetClipboard(x));
                     menu.Items.Add("Copy Z  (" + z + ")", null, (s2, e2) => TrySetClipboard(z));

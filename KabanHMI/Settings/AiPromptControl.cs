@@ -40,7 +40,7 @@ namespace Kaban.UI.Settings
                     Text = caption,
                     Left = 8, Top = y + 4, Width = 150,
                     TextAlign = ContentAlignment.MiddleRight,
-                    Font = new Font("Segoe UI", 9F)
+                    Font = Kaban.UI.Controls.UiStyle.Small
                 });
                 ctl.Left = 164; ctl.Top = y; ctl.Width = width;
                 form.Controls.Add(ctl);
@@ -74,7 +74,7 @@ namespace Kaban.UI.Settings
                 LanguageManager.GetString("Ai_Build", "Build the prompt"), tips, (s, e) => Build()));
             bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDCCB",
                 LanguageManager.GetString("Ai_Copy", "Copy the prompt to the clipboard"), tips, (s, e) => Copy()));
-            bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDCBE",
+            bar.Controls.Add(UiStyle.ToolButton("\uD83D\uDCE4",
                 LanguageManager.GetString("Ai_Save", "Save the prompt to a text file"), tips, (s, e) => Save()));
 
             _output.Multiline = true;

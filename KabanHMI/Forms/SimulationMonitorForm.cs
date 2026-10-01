@@ -1055,26 +1055,8 @@ namespace Kaban.UI.Forms
             grid.AllowUserToDeleteRows = false;
             grid.AllowUserToResizeRows = false;
             grid.RowHeadersVisible = false;
-            grid.BackgroundColor = Color.White;
-            grid.BorderStyle = BorderStyle.None;
-            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            grid.GridColor = Color.FromArgb(228, 231, 235);
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grid.Font = UiStyle.Body;
-            grid.RowTemplate.Height = 26;
-            grid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(218, 232, 250);
-            grid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
-            grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
-            grid.EnableHeadersVisualStyles = false;
-            grid.ColumnHeadersDefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-            grid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 246, 248);
-            grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(25, 28, 34);
-            grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 246, 248);
-            grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(25, 28, 34);
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
-            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
-            grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            UiStyle.GridLook(grid);
         }
 
         private static DataGridView BuildGrid()
@@ -2019,6 +2001,7 @@ namespace Kaban.UI.Forms
         {
             var grid = sh.Grid;
             var chooser = ColumnChooser.Attach(grid);
+            chooser.DefaultKey = "PlcMonitor";       // one default for every tab, as the columns are one for every tab
             chooser.IsShown = c => !IsColumnHidden(c.Name);
             chooser.SetShown = (c, show) =>
             {

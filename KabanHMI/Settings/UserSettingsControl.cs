@@ -69,7 +69,7 @@ namespace Kaban.UI.Settings
                 {
                     Text = caption, Left = 16, Top = y + 4, Width = 130,
                     TextAlign = ContentAlignment.MiddleRight,
-                    Font = new Font("Segoe UI", 9F)
+                    Font = Kaban.UI.Controls.UiStyle.Small
                 });
                 ctl.Left = 150; ctl.Top = y; ctl.Width = 170;
                 pn.Controls.Add(ctl);
@@ -87,14 +87,14 @@ namespace Kaban.UI.Settings
             var tips = Kaban.UI.Controls.UiStyle.Tips();
             Func<string, string, int, Button> tool = (emoji, tip, left) =>
             {
-                var b = new Button { Text = emoji, Left = left, Top = y + 4, Width = 44, Height = 32, FlatStyle = FlatStyle.Flat, Font = new Font("Segoe UI", 12F) };
-                b.FlatAppearance.BorderColor = Color.FromArgb(180, 186, 194);
-                tips.SetToolTip(b, tip);
+                var b = Kaban.UI.Controls.UiStyle.ToolButton(emoji, tip, tips);
+                b.Left = left;
+                b.Top = y + 4;
                 pn.Controls.Add(b);
                 return b;
             };
-            var btnSave = tool("\uD83D\uDCBE", "Add the user, or update level/password of an existing one", 150);
-            var btnDelete = tool("\uD83D\uDDD1", "Delete the selected user", 200);
+            var btnSave = tool("\uD83D\uDCBE", LanguageManager.GetString("Tip_UsrSave", "Add the user, or update level/password of an existing one"), 150);
+            var btnDelete = tool("\uD83D\uDDD1", LanguageManager.GetString("Tip_UsrDelete", "Delete the selected user"), 200);
 
             btnSave.Click += (s, e) => SaveUser();
             btnDelete.Click += (s, e) => DeleteUser();
@@ -103,7 +103,7 @@ namespace Kaban.UI.Settings
 
             _lblStatus.Dock = DockStyle.Bottom;
             _lblStatus.Height = 26;
-            _lblStatus.Font = new Font("Segoe UI", 9F);
+            _lblStatus.Font = Kaban.UI.Controls.UiStyle.Small;
             _lblStatus.Padding = new Padding(8, 4, 0, 0);
 
             Controls.Add(pn);

@@ -52,6 +52,8 @@ namespace Kaban.UI.Controls
         public static readonly Font Body = UiScale.NewFont("Segoe UI", 9.5F);
         public static readonly Font Small = UiScale.NewFont("Segoe UI", 9F);
         public static readonly Font Mono = UiScale.NewFont("Consolas", 10F, FontStyle.Bold);
+        /// <summary>A page's own heading (About, a machine's Home).</summary>
+        public static readonly Font Title = UiScale.NewFont("Segoe UI", 12F, FontStyle.Bold);
 
         /// <summary>The font every dropdown menu uses (was a new Font per menu opened).</summary>
         public static readonly Font MenuFont = UiScale.NewFont("Segoe UI", 10F);
@@ -344,7 +346,7 @@ namespace Kaban.UI.Controls
         {
             var m = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
             m.Renderer = new HmiMenuRenderer();
-            m.ImageScalingSize = new Size(22, 22);
+            m.ImageScalingSize = UiScale.Px(new Size(22, 22));
             HandOverMenuItems(m);
             return m;
         }
@@ -636,6 +638,48 @@ namespace Kaban.UI.Controls
         /// <summary>The program's table look (the PLC Monitor's): white, thin rules, bold headings, full-row selection.</summary>
         public static void StyleGrid(DataGridView grid) { Kaban.UI.Forms.SimulationMonitorForm.StyleGrid(grid); }
 
+        // The table colours, one set for the whole program.
+        public static readonly Color GridRule = Color.FromArgb(228, 231, 235);
+        public static readonly Color GridHeadBack = Color.FromArgb(245, 246, 248);
+        public static readonly Color GridInk = Color.FromArgb(25, 28, 34);
+        public static readonly Color GridSelection = Color.FromArgb(218, 232, 250);
+
+        /// <summary>
+        /// THE LOOK of a table, without what it lets the user do (adding rows,
+        /// selecting cells...): the PLC Monitor's - white, thin horizontal rules,
+        /// bold headings on a light grey, rows of 26 px, the pale blue selection.
+        /// Every table of the program has it (EnableTableTools puts it on).
+        /// </summary>
+        public static void GridLook(DataGridView grid)
+        {
+            if (grid == null) return;
+            grid.BackgroundColor = Color.White;
+            grid.BorderStyle = BorderStyle.None;
+            grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            grid.GridColor = GridRule;
+            grid.Font = Body;
+            grid.RowTemplate.Height = 26;
+            grid.DefaultCellStyle.BackColor = Color.White;
+            grid.DefaultCellStyle.ForeColor = GridInk;
+            grid.DefaultCellStyle.SelectionBackColor = GridSelection;
+            grid.DefaultCellStyle.SelectionForeColor = GridInk;
+            grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
+            grid.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            grid.EnableHeadersVisualStyles = false;
+            grid.ColumnHeadersDefaultCellStyle.Font = FontVariant(Body, FontStyle.Bold);
+            grid.ColumnHeadersDefaultCellStyle.BackColor = GridHeadBack;
+            grid.ColumnHeadersDefaultCellStyle.ForeColor = GridInk;
+            grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = GridHeadBack;
+            grid.ColumnHeadersDefaultCellStyle.SelectionForeColor = GridInk;
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grid.RowHeadersDefaultCellStyle.BackColor = GridHeadBack;
+            grid.RowHeadersDefaultCellStyle.SelectionBackColor = GridSelection;
+            foreach (DataGridViewRow r in grid.Rows) if (r.Height < 26 && !r.IsNewRow) r.Height = 26;
+        }
+
         /// <summary>
         /// Raises every column's MinimumWidth to fit its own HEADING.
         ///
@@ -682,83 +726,88 @@ namespace Kaban.UI.Controls
         /// and take the width the alarm text needs. Right-click any heading to pick
         /// what shows; the choice is saved with the widths.
         /// </summary>
-        public static void EnableTableTools(DataGridView grid, string key)
+        public static void EnableTableTools(DataGridView grid, string key, bool sorting = true)
         {
             if (grid == null) return;
+
+            // ONE LOOK AND ONE COLUMN MENU FOR EVERY TABLE (2 October): the PLC
+            // Monitor's - its headings, rows and selection, and its right-click on a
+            // heading (the columns to tick, their widths, fit, save as the default,
+            // the default column settings).
+            GridLook(grid);
+            // the columns are kept by name: a column made without one gets its place
+            foreach (DataGridViewColumn c in grid.Columns)
+                if (string.IsNullOrEmpty(c.Name)) c.Name = "c" + c.Index;
 
             var order = new System.Collections.Generic.List<string>();       // sort keys, most recent first
             var descending = new System.Collections.Generic.Dictionary<string, bool>();
 
             grid.AllowUserToOrderColumns = true;
 
-            foreach (DataGridViewColumn c in grid.Columns)
-                c.SortMode = DataGridViewColumnSortMode.Programmatic;
-
-            grid.ColumnHeaderMouseClick += (s, e) =>
+            if (sorting)
             {
-                if (e.Button != MouseButtons.Left) return;
-                var col = grid.Columns[e.ColumnIndex];
-                if (col == null) return;
-
-                bool desc;
-                descending.TryGetValue(col.Name, out desc);
-                descending[col.Name] = order.Count > 0 && order[0] == col.Name ? !desc : false;
-
-                order.Remove(col.Name);
-                order.Insert(0, col.Name);          // newest key wins, the rest demote
-                if (order.Count > 3) order.RemoveRange(3, order.Count - 3);
-
-                ApplySort(grid, order, descending);
-                SaveLayout(grid, key, order, descending);
-            };
-
-            // Right-click a heading: choose which columns show.
-            grid.ColumnHeaderMouseClick += (s, e) =>
-            {
-                if (e.Button != MouseButtons.Right) return;
-                var menu = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
-
-                // STAYS OPEN while columns are ticked. Choosing what a table shows
-                // is several decisions at once, and a menu that shuts after each
-                // one has to be reopened for every column.
-                menu.Closing += (s2, e2) =>
-                {
-                    if (e2.CloseReason == ToolStripDropDownCloseReason.ItemClicked)
-                        e2.Cancel = true;
-                };
-
                 foreach (DataGridViewColumn c in grid.Columns)
+                    c.SortMode = DataGridViewColumnSortMode.Programmatic;
+
+                grid.ColumnHeaderMouseClick += (s, e) =>
                 {
-                    var col = c;
-                    var item = new ToolStripMenuItem(col.HeaderText) { Checked = col.Visible, CheckOnClick = true };
-                    item.CheckedChanged += (s2, e2) =>
-                    {
-                        // Never let the last column be hidden: an empty table looks
-                        // broken and there is no heading left to right-click.
-                        if (!item.Checked && VisibleCount(grid) <= 1) { item.Checked = true; return; }
-                        col.Visible = item.Checked;
-                        SaveLayout(grid, key, order, descending);
-                    };
-                    menu.Items.Add(item);
-                }
-                ShowPopupAt(menu, grid, Cursor.Position);
-            };
+                    if (e.Button != MouseButtons.Left) return;
+                    var col = grid.Columns[e.ColumnIndex];
+                    if (col == null) return;
+
+                    bool desc;
+                    descending.TryGetValue(col.Name, out desc);
+                    descending[col.Name] = order.Count > 0 && order[0] == col.Name ? !desc : false;
+
+                    order.Remove(col.Name);
+                    order.Insert(0, col.Name);          // newest key wins, the rest demote
+                    if (order.Count > 3) order.RemoveRange(3, order.Count - 3);
+
+                    ApplySort(grid, order, descending);
+                    SaveLayout(grid, key, order, descending);
+                };
+            }
 
             // AUTO-SIZING OFF from here on. EnableAutoFit leaves the grid in
             // DisplayedCells mode, which recomputes every width on each fill - so a
             // width the user set was overwritten by the next refresh and the saved
             // file just recorded whatever the grid had recalculated. The headings
             // have already been fitted by that point; from now on the widths belong
-            // to the user.
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            // to the user. (A table that fills its width keeps doing so.)
+            if (grid.AutoSizeColumnsMode != DataGridViewAutoSizeColumnsMode.Fill)
+                grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
             bool restoring = true;
+            // The headings' menu - its "original" is the table as made here, before
+            // what was kept is put back on it.
+            var chooser = Kaban.UI.Helpers.ColumnChooser.Attach(grid);
+            chooser.DefaultKey = key;
+            chooser.Changed = () => { if (!restoring) SaveLayout(grid, key, order, descending); };
             grid.ColumnDisplayIndexChanged += (s, e) => { if (!restoring) SaveLayout(grid, key, order, descending); };
             grid.ColumnWidthChanged += (s, e) => { if (!restoring) SaveLayout(grid, key, order, descending); };
 
             RestoreLayout(grid, key, order, descending);
             restoring = false;
-            if (order.Count > 0) ApplySort(grid, order, descending);
+            if (sorting && order.Count > 0) ApplySort(grid, order, descending);
+        }
+
+        /// <summary>
+        /// Puts a table's kept columns (widths, order, shown) on it again - for a
+        /// table that builds its columns anew (another language, other contents).
+        /// </summary>
+        public static void ReapplyLayout(DataGridView grid, string key)
+        {
+            if (grid == null || string.IsNullOrEmpty(key)) return;
+            RestoreLayout(grid, key, new System.Collections.Generic.List<string>(),
+                          new System.Collections.Generic.Dictionary<string, bool>());
+        }
+
+        /// <summary>The headings' menu of a table that has the table tools (null when it has none).</summary>
+        public static Kaban.UI.Helpers.ColumnChooser ChooserOf(DataGridView grid)
+        {
+            if (grid == null || grid.Columns.Count == 0) return null;
+            var menu = grid.Columns[0].HeaderCell.ContextMenuStrip;
+            return menu == null ? null : menu.Tag as Kaban.UI.Helpers.ColumnChooser;
         }
 
         /// <summary>
@@ -1030,6 +1079,7 @@ namespace Kaban.UI.Controls
             try
             {
                 var path = LayoutPath(key);
+                if (!File.Exists(path)) path = OldLayoutPath(key);
                 if (!File.Exists(path)) return;
 
                 foreach (var line in File.ReadAllLines(path))
@@ -1059,7 +1109,17 @@ namespace Kaban.UI.Controls
             catch { }
         }
 
-                private static string LayoutPath(string key)
+        /// <summary>
+        /// A table's kept columns: for this panel (beside the defaults, as the PLC
+        /// Monitor's are), whoever is signed in. A layout kept by an earlier version
+        /// under the Windows user's folder is read once from there.
+        /// </summary>
+        private static string LayoutPath(string key)
+        {
+            return Path.Combine(Kaban.UI.Helpers.ColumnChooser.Folder, key + ".cols");
+        }
+
+        private static string OldLayoutPath(string key)
         {
             return Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -1325,6 +1385,35 @@ namespace Kaban.UI.Controls
         internal static Control LastShownOn;
 
         /// <summary>Standard emoji tool button: 44x32, rounded, tooltip carries the label.</summary>
+        /// <summary>
+        /// A BUTTON WITH WORDS, as every one in the program: rounded, 30 px high, the
+        /// body font, as wide as its words (at least 96) unless a width is given.
+        /// </summary>
+        public static Button TextButton(string text, int width = 0, System.EventHandler onClick = null)
+        {
+            var b = new Button
+            {
+                Text = text ?? "",
+                Font = Body,
+                Height = UiScale.Px(30),
+                Cursor = Cursors.Hand,
+                BackColor = Color.White,
+                UseVisualStyleBackColor = false
+            };
+            b.Width = width > 0 ? UiScale.Px(width) : Math.Max(UiScale.Px(96), TextRenderer.MeasureText(b.Text, Body).Width + UiScale.Px(28));
+            Round(b);
+            if (onClick != null) b.Click += onClick;
+            return b;
+        }
+
+        /// <summary>A dialog's OK / Cancel: a TextButton 96 wide that closes it with its answer.</summary>
+        public static Button DialogButton(string text, DialogResult result)
+        {
+            var b = TextButton(text, 96);
+            b.DialogResult = result;
+            return b;
+        }
+
         public static Button ToolButton(string emoji, string tip, ToolTip tips, System.EventHandler onClick = null)
         {
             var b = new Button

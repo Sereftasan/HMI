@@ -4267,3 +4267,20 @@ and `UnitLookAndErrors` extended.
 - Translations: `Log_Kind*Machine*`, `Log_Source*`, `Log_ColSource`, `Log_AllSources`, `Log_Machine*`, `Dsh_Probe*`,
   `Dsh_DatabaseHolds`, `Dsh_SetTest*`; `Set_Logs` reworded. Manual: HMI Settings, Logs and Reports, the dashboard.
 - Tests: `tools/ui_test/LogsAndReports.cs` (new).
+
+## 2026-10-02 - Every table as the PLC Monitor's; buttons, pictures, fonts and menus tidied up
+
+- `ColumnChooser`: `DefaultKey`, `Snapshot`, `Apply`, `SaveDefault`, `SavedDefault`, `ToDefault`, `ToOriginal`,
+  `ExtraItems`, `Folder`; items "Save as the default", "Default column settings", "Original column settings".
+- `UiStyle.GridLook` (the PLC Monitor's look; `SimulationMonitorForm.StyleGrid` uses it), `GridRule` / `GridHeadBack` /
+  `GridInk` / `GridSelection`; `EnableTableTools(grid, key, sorting)` puts the look and `ColumnChooser` on, names
+  unnamed columns, keeps a Fill table filling; `ReapplyLayout`, `ChooserOf`; layouts in ProgramData (old place read once).
+  `TextButton`, `DialogButton`, `Title`; `Menu()` scales its pictures.
+- Tables: `LogViewerControl`, `DashboardScreen.TableGrid` (key, named columns, left-click sort), Profiles page table /
+  accessories / placements / references / history, library review lists, the machines' `AlarmScreen`s.
+- Buttons: LoginForm, InputForm, Ask, HelperLinksForm (translated), Profiles dialogs and pane buttons, LibraryEditorForm,
+  UserSettingsControl, UnitSettingsPage. Pictures: export 📤, revert ↺. Fonts: settings pages, About, Home.
+- Translations: `Mnu_ColSaveDefault`, `Mnu_ColDefault` reworded, `Mnu_ColOriginal`, `Col_HelperLinks`, `Ttl_HelperLinks`,
+  `Lbl_HelperLinksNote`, `Btn_AddFiles`, `Btn_AddLink`, `Btn_Remove`, `Btn_Up`, `Btn_Down`, `Tip_UsrSave`, `Tip_UsrDelete`,
+  `Tip_AlarmSet*`. Manual: "Tables" (section 1), the PLC Monitor's columns.
+- Tests: `tools/ui_test/TableLook.cs` (new); `MonitorColumns.cs`, `TableTools.cs` updated.

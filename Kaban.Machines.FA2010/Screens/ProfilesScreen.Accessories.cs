@@ -52,14 +52,13 @@ namespace Kaban.Machines.FA2010.Screens
 
             _accGrid = new DataGridView { Dock = DockStyle.Fill, AllowUserToAddRows = false, MultiSelect = false, ReadOnly = true, EditMode = DataGridViewEditMode.EditProgrammatically };
             UiStyle.StyleGrid(_accGrid);
-            _accGrid.Font = UiStyle.Small;
-            _accGrid.RowTemplate.Height = 24;
             _accGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             _accGrid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "on", HeaderText = T("Prf_AccOn", "On"), Width = 40, ToolTipText = T("Prf_TipAccOn", "Off: the group keeps the accessory but it is not machined") });
             _accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "type", HeaderText = T("Prf_AccType", "Type"), Width = 120, ReadOnly = true });
             _accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "code", HeaderText = T("Prf_AccCode", "Accessory"), Width = 130, ReadOnly = true });
             _accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "desc", HeaderText = T("Prf_AccDesc", "Description"), Width = 220, ReadOnly = true });
             _accGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "ops", HeaderText = T("Prf_AccOps", "Operations"), Width = 80, ReadOnly = true });
+            UiStyle.EnableTableTools(_accGrid, "ProfileAccessories", sorting: false);
             // A click on the tick switches it: no cell editing (entering a check box cell
             // to edit it could write its value back unasked, and switch an accessory off).
             _accGrid.CellClick += (s, e) =>
@@ -76,8 +75,6 @@ namespace Kaban.Machines.FA2010.Screens
             // ---- the placements on this profile ----------------------------------------------
             _plGrid = new DataGridView { Dock = DockStyle.Fill, AllowUserToAddRows = false, MultiSelect = false, ReadOnly = true };
             UiStyle.StyleGrid(_plGrid);
-            _plGrid.Font = UiStyle.Small;
-            _plGrid.RowTemplate.Height = 24;
             _plGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             foreach (var c in new[]
             {
@@ -88,6 +85,7 @@ namespace Kaban.Machines.FA2010.Screens
             })
                 _plGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = c[0], HeaderText = c[1], Width = int.Parse(c[2]) });
             _plGrid.Columns["y"].DefaultCellStyle.Alignment = _plGrid.Columns["z"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            UiStyle.EnableTableTools(_plGrid, "ProfilePlacements", sorting: false);
             _plGrid.SelectionChanged += (s, e) =>
             {
                 if (_fillingAcc) return;
@@ -113,8 +111,8 @@ namespace Kaban.Machines.FA2010.Screens
                 foreach (var step in new[] { -1.0, -0.5, -0.1, 0.1, 0.5, 1.0 })
                 {
                     var a = axis; var st = step;
-                    var b = new Button { Text = (st > 0 ? "+" : "\u2212") + Math.Abs(st).ToString("0.#", CI), Width = 44, Height = 28, Font = UiStyle.Small, FlatStyle = FlatStyle.Flat, Margin = new Padding(1, 2, 1, 2) };
-                    UiStyle.Round(b);
+                    var b = UiStyle.TextButton((st > 0 ? "+" : "\u2212") + Math.Abs(st).ToString("0.#", CI), 44);
+                    b.Margin = new Padding(1, 2, 1, 2);
                     _tips.SetToolTip(b, a == "Y" ? T("Prf_TipNudgeY", "Move across the profile (+: towards the inside face)") : T("Prf_TipNudgeZ", "Move up or down (+: up, away from the bed)"));
                     b.Click += (s, e) => Nudge(a == "Y" ? st : 0, a == "Z" ? st : 0);
                     nudges.Controls.Add(b);
@@ -419,10 +417,10 @@ namespace Kaban.Machines.FA2010.Screens
                 UiScale.ApplyOnLoad(dlg);
                 var g = new DataGridView { Dock = DockStyle.Fill, ReadOnly = true, AllowUserToAddRows = false };
                 UiStyle.StyleGrid(g);
-                g.Font = UiStyle.Small;
                 foreach (var c in new[] { T("Prf_HWhen", "When"), T("Prf_HWho", "Who"), T("Prf_HStatus", "Status before"), "Y", "Z", T("Prf_HWhy", "Why") })
                     g.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = c, Width = c.Length > 2 ? 130 : 60 });
                 g.Columns[g.Columns.Count - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                UiStyle.EnableTableTools(g, "ProfileHistory");
                 g.Rows.Add(T("Prf_HNow", "now"), p.ConfirmedBy, LibraryEditorForm.StatusText(p.Status), Mm(p.Y), Mm(p.Z), "");
                 foreach (var r in rows)
                     g.Rows.Add(ShortTime(Library.Text(r, "changed_at")), Library.Text(r, "changed_by"), LibraryEditorForm.StatusText(Library.Text(r, "status")),

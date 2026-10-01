@@ -20,7 +20,7 @@ namespace Kaban.UI.Settings
             var body = new Label
             {
                 Text = descr,
-                Font = new Font("Segoe UI", 10F),
+                Font = Kaban.UI.Controls.UiStyle.Body,
                 ForeColor = Color.DimGray,
                 AutoSize = true,
                 Location = new Point(6, 44)

@@ -28,10 +28,10 @@ namespace Kaban.UI.Profiles
                 UiScale.ApplyOnLoad(dlg);
                 var lbl = new Label { Text = prompt, Left = 12, Top = 12, Width = 420, Height = 36, Font = UiStyle.Body };
                 var tb = new TextBox { Left = 12, Top = 52, Width = 420, Font = UiStyle.Body, Text = initial ?? "" };
-                var ok = new Button { Text = LanguageManager.GetString("Btn_OK", "OK"), Left = 256, Top = 88, Width = 84, Height = 30, DialogResult = DialogResult.OK };
-                var cancel = new Button { Text = LanguageManager.GetString("Btn_Cancel", "Cancel"), Left = 348, Top = 88, Width = 84, Height = 30, DialogResult = DialogResult.Cancel };
-                UiStyle.Round(ok);
-                UiStyle.Round(cancel);
+                var ok = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.OK);
+                var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+                ok.Location = new Point(232, 88);
+                cancel.Location = new Point(336, 88);
                 dlg.Controls.AddRange(new Control[] { lbl, tb, ok, cancel });
                 dlg.AcceptButton = ok;
                 dlg.CancelButton = cancel;

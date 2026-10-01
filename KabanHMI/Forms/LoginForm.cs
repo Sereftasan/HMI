@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
 
 namespace Kaban.UI.Forms
 {
@@ -87,8 +88,11 @@ namespace Kaban.UI.Forms
                 Text = ""
             };
 
-            btnOk = new Button { Text = LanguageManager.GetString("Btn_Login", "Login"), Left = 130, Top = 185, Width = 90, Height = 35, DialogResult = DialogResult.None };
-            btnCancel = new Button { Text = LanguageManager.GetString("Btn_Cancel", "Cancel"), Left = 230, Top = 185, Width = 90, Height = 35, DialogResult = DialogResult.Cancel };
+            // The program's dialog buttons (rounded, 96 x 30).
+            btnOk = UiStyle.DialogButton(LanguageManager.GetString("Btn_Login", "Login"), DialogResult.None);
+            btnOk.Location = new Point(124, 187);
+            btnCancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+            btnCancel.Location = new Point(228, 187);
 
             btnOk.Click += BtnOk_Click;
             txtPassword.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) BtnOk_Click(s, e); };
