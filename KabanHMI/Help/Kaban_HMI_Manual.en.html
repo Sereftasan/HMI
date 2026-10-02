@@ -219,7 +219,8 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
  <li><b>Open / close:</b> its icon on the bar (the open one is marked), or the &#10005; on the page's header, which shows the same icon before the page's name. Closing only hides it:
      it opens again exactly as you left it.</li>
  <li><b>Share the screen:</b> drag the border between the page and the side page. <b>Double-click the border</b>: the side page becomes just wide
-     enough to show all of it &ndash; every button, every column of the PLC Monitor's tab, the inputs and outputs side by side with every name whole &ndash;
+     enough to show all of the page on show &ndash; every button, every column of the PLC Monitor's tab (and of <i>Find</i>'s list while Find is open under it),
+     the inputs and outputs side by side with every name whole &ndash;
      leaving a strip of the page to take the border back by (the border never goes further than that strip). The width is remembered, and the
      side page opens at that width next time, once the window is full size.</li>
  <li><b>A window of its own</b> (for a second screen): the button beside the &#10005;. The window has one title bar &ndash; the page's
@@ -306,19 +307,27 @@ position reading already show a fault. What it offers depends on the moment:</p>
       made</b>.</li>
   <li>Down the <b>left side</b>: <b>the path</b>, what should happen, one box under the other &ndash; the PLC output, the relay, the valve coil, the valve, the air,
       the cylinder, the sensor that confirms the end. Each box is numbered and opens the check for that part. The HMI's own buttons are not on the path: the page
-      is about the real movement, the PLC's inputs and outputs and what they drive.</li>
-  <li>Each check has <b>drawings</b> next to it &ndash; the PLC card with its LED rows, the terminal strip, the relay, the coil connector, the valve and its hoses,
-      the cylinder and its sensor &ndash; with the number to look for marked, and a few <b>short lines</b> with a sign for what to do: look, measure, press by hand,
-      listen, run it. The drawings show the idea, the way the parts usually look; they are the same on every page, only the numbers change. To run the movement
-      for a test, the page says to use the cylinder's button in manual mode.</li>
+      is about the real movement, the PLC's inputs and outputs and what they drive. While you scroll, the box of the part you are reading lights up
+      (and blinks once) &ndash; the last box at or before the step on show.</li>
+  <li>Each check has <b>drawings</b> next to it &ndash; the <i>Inputs / Outputs</i> page in the side panel at the right of the screen, the PLC card with its
+      LED rows, the terminal strip, the relay, the coil connector (pulled off and measured: these connectors have no lamp), the valve and its hoses, the
+      cylinder and its sensors, a sensor tried with a magnet (an inductive one with a steel tool) and its plug measured &ndash; with the number to look for
+      marked, and a few <b>short lines</b> with a sign for what to do: look, measure, press by hand, listen, run it. Every meter is drawn with its two leads.
+      The drawings show the idea, the way the parts usually look; they are the same on every page, only the numbers change. To run the movement for a
+      test, the page says to use the cylinder's button in manual mode.</li>
+  <li>The drawings put a movement on its <b>side</b>: the <b>A</b> side pushes the rod out (a clamp clamps) through the <b>black</b> hose, the <b>B</b> side
+      pulls it in (a clamp releases) through the <b>yellow</b> one. The movement's coil sits on its hose's end of the valve, the arrow on the cylinder points
+      the way the rod goes, and the sensor it reaches is lit at that end. Which hose an output fills is in the machine's <code>Wiring.csv</code> (column
+      <i>Hose</i>); without it, the side is taken from the button.</li>
   <li><b>What the HMI saw</b>: each device as it should be, <b>at the alarm</b> (the last reading before the error bit came on)
       and <b>now</b>, red where it is wrong. From that, <b>Where to start</b> sends you to a step: the output never came on &ndash; the output step;
       both coils on &ndash; the same step, saying so; the output on but the cylinder never left its start &ndash; from the card on; it arrived but too late &ndash; the time.</li>
   <li><b>Step 1: where is the cylinder?</b> Not moved, stopped on the way, or arrived &ndash; three searches.
       <b>Not moved</b>: the signal from the PLC to the cylinder, one question at a time &ndash; does the PLC switch the output on (and why not: what the button waits for),
-      does the card's LED light (its own terminal name, 24 V against 0 V), does the relay pull in, does the coil get power, does the valve switch (manual override),
+      does the card's LED light (its own terminal name, 24 V against 0 V), does the relay pull in, does the coil get power (at its connector's pins; the coil itself on ohms), does the valve switch (manual override),
       is there air, is the cylinder free. <b>Stopped on the way</b>: does the signal stay the whole way (a 5/3 or spring valve needs it), does the pressure hold,
-      is something in the way, is it only slow. <b>Arrived</b>: does the sensor see it (its LED, then the input), has the other end's sensor gone off, the clamp's
+      is something in the way, is it only slow. <b>Arrived</b>: does the sensor see it (its LED; dark &ndash; a magnet held on it, the 24 V at its plug; lit &ndash; its plug and cable to the input),
+      has the other end's sensor gone off (its plug pulled tells the sensor from a shorted cable), the clamp's
       pressure switch, the position reading, the reference, then the time allowed.</li>
   <li>Each answer either names the fault and its remedy &ndash; then <i>test again; still failing, go to step n</i> &ndash; or sends you on. Everything is named as on
       the drawings: inputs and outputs, card terminals, wires, sheets, relays, coils, valves, hoses, sensors. The PLC's <b>internal</b> devices (the error bit,
@@ -542,9 +551,9 @@ Windows' own message boxes keep Windows' size.</p>
    <li><b>Period</b> (where the table has its own &ndash; on the Dashboard it is the page's range): last hour, today, yesterday, 7 or 30 days, everything
        kept &ndash; or any <b>From</b>/<b>To</b> (changing either picks <i>From - to</i>).</li>
    <li>&#128269; <b>Search</b>: every word typed must appear, in any case &ndash; <i>D210 admin</i> finds admin's entries about D210.
-       <b>User</b>, <b>PLC</b> (the controller an entry is about &ndash; its number is in the <i>PLC</i> column) and <b>Kind</b>
+       <b>User</b>, <b>PLC</b> (the controller an entry is about &ndash; its number is in the <i>PLC</i> column) and <b>Log Type</b>
        (logins, connection, PLC writes, <b>PLC device writes</b> &ndash; the PLC write log's lines &ndash;, problems, settings, other; on the Dashboard,
-       the <b>Log Type</b> filter) narrow it further; &#10006; clears them.</li>
+       the <b>Log Type</b> filter on the left; the table's column has the same name) narrow it further; &#10006; clears them.</li>
    <li><b>Live</b> (with a period of its own): while the period runs up to now, new entries appear as they are written; the row you are reading stays put.</li>
    <li>The selected entry is shown in full under the table (a station scan is a report of several lines). &#128228; exports the entries shown, as a log file or a CSV table.</li>
   </ul></li>

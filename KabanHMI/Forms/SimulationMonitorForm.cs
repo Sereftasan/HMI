@@ -439,8 +439,9 @@ namespace Kaban.UI.Forms
 
         /// <summary>
         /// The width that shows all of the monitor (the side panel's border
-        /// double-clicked): every button of the toolbar, and every column of the
-        /// tab on display with room for its scroll bar.
+        /// double-clicked): every button of the toolbar, every column of the
+        /// tab on display with room for its scroll bar - and, while Find is open
+        /// under the lists, every column of Find's list too.
         /// </summary>
         public int PreferredWidth(int available)
         {
@@ -458,7 +459,10 @@ namespace Kaban.UI.Forms
                 int chrome = Math.Max(0, ClientSize.Width - grid.ClientSize.Width);
                 table = columns + chrome;
             }
-            return Math.Max(toolbar, table);
+            int find = 0;
+            if (FindShowing && Embedded && _findHost != null)
+                find = _find.PreferredWidth() + Math.Max(0, ClientSize.Width - _findHost.ClientSize.Width);
+            return Math.Max(toolbar, Math.Max(table, find));
         }
 
         private void ShowMenu(Control owner, ContextMenuStrip menu)

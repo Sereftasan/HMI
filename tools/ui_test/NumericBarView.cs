@@ -254,6 +254,59 @@ class BV {
         var running = new NumericInputHMI { Size = new Size(116, 26), BarView = true };
         Check("  in the running program nothing is resized", running.Size == new Size(116, 26));
 
+        Console.WriteLine("--- ParamCutting's Saw Diameter, as the designer sets it (2 October) ---");
+        // "BarView is not working properly still": the page showed "Saw Diameter:"
+        // and nothing beside it. Its VisibilityConditions (auto mode AND the
+        // machine running) hid the field - and left its caption on the page.
+        var page = new Panel { Location = new Point(0, 0), Size = new Size(520, 160) };
+        var saw = new NumericInputHMI();
+        page.Controls.Add(saw);
+        saw.Address = "D524";
+        saw.BarView = true;
+        saw.DataType = DataTypeEnum.Bin_32;
+        saw.DecimalPlaces = 2;
+        saw.DescriptionColon = true;
+        saw.DescriptionText = "Saw Diameter";
+        saw.Divisor = 10000D;
+        saw.Location = new Point(346, 16);
+        saw.MaxLimit.StaticValue = 700D; saw.MaxLimit.Type = LimitSourceType.Static;
+        saw.MinLimit.StaticValue = 500D; saw.MinLimit.Type = LimitSourceType.Static;
+        saw.PlcNumber = 1;
+        saw.ReadFormula = "(a/10000)+1";
+        saw.WriteFormula = "(a-1)*10000";
+        saw.Size = new Size(116, 26);
+        saw.Suffix = "mm";
+        saw.VisibilityConditions = SystemCondition.AutoMode | SystemCondition.MachineIsRunning;
+        form.Controls.Clear();
+        form.Controls.Add(page);
+        Pump(50);
+        plc.Mem["D524"] = 6000000 & 0xFFFF; plc.Mem["D525"] = 6000000 >> 16;   // 6 000 000 over two words
+        Func<Label> caption = () => page.Controls.OfType<Label>().FirstOrDefault(l => l.Text.StartsWith("Saw Diameter"));
+        saw.UpdateState(plc.Read, c => false);
+        Pump(50);
+        Check("conditions not met (not in auto, not running): the field hidden", !saw.Visible);
+        Check("  and its caption with it - no \"Saw Diameter:\" beside nothing", caption() != null && !caption().Visible,
+              caption() == null ? "no caption" : "caption visible=" + caption().Visible);
+        saw.UpdateState(plc.Read, c => true);
+        Pump(50);
+        Check("conditions met: the field and its caption back", saw.Visible && caption() != null && caption().Visible);
+        Check("  the small card: - value + with the thin slider", Get<object>(saw, "Shape").ToString() == "Small" &&
+              Get<Rectangle>(saw, "TrackArea").Width >= 30, Get<object>(saw, "Shape") + " " + Get<Rectangle>(saw, "TrackArea"));
+        var sargs = new object[] { null, null };
+        typeof(NumericInputHMI).GetMethod("ValueParts", Any).Invoke(saw, sargs);
+        Check("  its value read through the formula: 600.00 + 1 = 601.00 mm", (string)sargs[0] == "601.00" && (string)sargs[1] == "mm", sargs[0] + " | " + sargs[1]);
+        using (var bmp = new Bitmap(saw.Width, saw.Height))
+        {
+            saw.DrawToBitmap(bmp, new Rectangle(0, 0, saw.Width, saw.Height));
+            int ink = 0;
+            for (int py = 0; py < bmp.Height; py++) for (int px = 0; px < bmp.Width; px++) { var pc = bmp.GetPixel(px, py); if (pc.GetBrightness() < 0.5f) ink++; }
+            Check("  and it is drawn (not an empty box)", ink > 40, ink + " dark pixels");
+        }
+        page.Visible = false; Pump(20); page.Visible = true; Pump(20);
+        Check("the page hidden and shown again: both still there", saw.Visible && caption().Visible);
+        saw.UpdateState(plc.Read, c => false); page.Visible = false; Pump(20); page.Visible = true; Pump(20);
+        Check("  hidden by its conditions, the page shown again: both still hidden", !saw.Visible && !caption().Visible);
+
         form.Close();
         Console.WriteLine(fail == 0 ? "\nNUMERIC BAR VIEW ALL PASS" : "\nNUMERIC BAR VIEW " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

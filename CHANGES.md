@@ -4388,3 +4388,21 @@ and `UnitLookAndErrors` extended.
 - `Kaban_HMI_Manual.en.html`: the step-by-step page described anew.
 - `tools/review`: pages made for a user below Admin; intro and questions describe the path and the drawings.
 - Tests: `CylinderSteps.cs`, `CylinderTemplates.cs`, `WiringHelp.cs`, `UnitHelpLinks.cs`, `AlarmGenerationCore.cs`.
+
+## 2026-10-02 - Log Type; coloured toolbar pictures; the side panel's fit; a hidden field's caption; the cylinder drawings as the machine is
+
+- Translations: Log_Kind, Log_ColKind "Log Type"; Log_KindAll "All types"; Log_ClearTip. `LogViewerControl.HeaderText` (tests).
+- `KabanHMI/Controls/EmojiArt.cs` (new): `EmojiArt` (Fluent Emoji pictures from `Resources\Emoji`, drawn by the button's
+  font, faint when disabled; undo-like arrows -> `ToolGlyphs.Undo` / `Redo`) and `EmojiButton` (paints the picture,
+  keeps the emoji as its Text). `UiStyle.ToolButton` makes one (a non-emoji sign in `ToolGlyphs.Ink`); `ButtonHMI` draws
+  an emoji caption's picture. `tools/build_emoji_art.py`, `tools/emoji_art/` (SVGs, MIT licence) make the strips.
+- `MainForm.FitSidePanel`: the page on show; `MouseDoubleClick` too. `SimulationMonitorForm.PreferredWidth` counts Find;
+  `DeviceFindForm.PreferredWidth()`.
+- `AttachedDescription`: hidden and shown with its control (`Follow`, the parent's VisibleChanged).
+- Wiring.csv: column `Hose` (`tools/build_wiring.py`); `WiringTable.Point.Hose`.
+- `TroubleshootingCatalog.Steps`: `OnA` / `OnB`, `CoilA` / `CoilB`, `OtherCoil`.
+- `tools/cylinder_templates/Drawings.html`: DrawCylinder, DrawValve, DrawCoil, DrawIoPage redrawn; DrawRelay's black lead;
+  DrawAir's hoses black; DrawMagnet, DrawPlug, Script (new); `.box.now`. Masters: the coil's checks without a lamp, the
+  sensors' checks (magnet, plug, cable), the I/O page beside B1, W_Magnet / W_Steel / W_Signal; 64 templates rebuilt.
+- Manual: the side panel's fit, Log Type, the step-by-step page's drawings and sides.
+- Tests: `EmojiButtons.cs`, `SideFit.cs`, `CylinderDrawings.cs` (new); `NumericBarView.cs`, `LogsAndReports.cs`.

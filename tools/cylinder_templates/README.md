@@ -47,14 +47,29 @@ next page opened.
   again.
 * **The PLC's internal devices** (M, D, ...) are named only when an Admin is
   signed in; its real inputs and outputs (X34, Y21) always.
+* **The path follows the reading** (`Script`): while the page scrolls, the box
+  of the step on show - the last box at or before it - lights orange and blinks.
+
+**As the machine is (2 October, evening).** The coil connectors have no lamp:
+the coil's check pulls the connector and measures its two pins (and the coil on
+ohms). Every meter has two leads, red and black. A movement is drawn on its
+**side**: A pushes the rod out (a clamp clamps) through the **black** hose, B
+pulls it in (a clamp releases) through the **yellow** one - its coil on that end
+of the valve, the cylinder's arrow that way, the sensor it reaches lit at that
+end. The *Inputs / Outputs* page is drawn in the side panel at the right of the
+screen, its button on the bar at the edge. A sensor that does not see the
+cylinder is tried with a magnet (an inductive one with a steel tool), its plug
+measured (+24 V brown against 0 V blue), its plug and cable checked; one that
+does not go off has its plug pulled (the sensor or a shorted cable).
 
 The drawings and the page's look are shared by the languages:
 `tools/cylinder_templates/Drawings.html`, put into each template by the build
 script where a master has its include line. Each drawing is a phrase
 (`DrawIoPage`, `DrawCard`, `DrawTerminal`, `DrawRelay`, `DrawCoil`, `DrawValve`,
-`DrawAir`, `DrawCylinder`, `DrawSensor`; the look is `Style`); their few words
-are each master's `W_IoPage`, `W_Press`, `W_ValveShort`, `W_FlowControl`,
-`W_AirSwitch`. They are drawn after the machine's own parts, but they show where
+`DrawAir`, `DrawCylinder`, `DrawSensor`, `DrawMagnet`, `DrawPlug`; the look is
+`Style`, the path following the page `Script`); their few words are each
+master's `W_IoPage`, `W_Press`, `W_ValveShort`, `W_FlowControl`, `W_AirSwitch`,
+`W_Magnet`, `W_Steel`, `W_Signal`. They are drawn after the machine's own parts, but they show where
 to look - not one machine exactly.
 
 ## Changing the words
@@ -126,7 +141,10 @@ For the drawings: `OutPlain` (Y21), `OutCardTag` (U4), `OutCardModel`, `OutCpu`
 (an FX5U CPU or a module), `OutHasLed`, `OutLed` (21) and the LEDs beside it in
 its row `OutLedL2`, `OutLedL1`, `OutLedR1`, `OutLedR2`, `OutLedTop`;
 `RelayL2` .. `RelayR2` (the relays beside it on the rail); `HoseA`, `HoseB`,
-`HoseANo` (16), `HoseAPort` (A), `HoseBNo`, `HoseBPort`; `OnTag`, `StartTag`,
+`HoseANo` (16), `HoseAPort` (A), `HoseBNo`, `HoseBPort`; `OnA` / `OnB` (the
+movement's side: the hose its output fills, Wiring.csv's `Hose` - a spring's
+return B; without it, the left button's movement B), `CoilA` / `CoilB` (the
+coils on the valve's two ends; a spring valve's on A), `OtherCoil`; `OnTag`, `StartTag`,
 `SwitchTag`; per sensor (in `MustOn`, `MustOff`) `TagPlain`, `IoPlain`, `InCardTag`,
 `InCardModel`, `InCpu`, `InHasLed`, `InLed`, `InLedL2` .. `InLedR2`, `InLedTop`.
 

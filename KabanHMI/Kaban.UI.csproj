@@ -170,6 +170,7 @@
     </Compile>
     <Compile Include="Controls\UiStyle.cs" />
     <Compile Include="Controls\ToolGlyphs.cs" />
+    <Compile Include="Controls\EmojiArt.cs" />
     <Compile Include="Controls\NavGlyphs.cs" />
     <Compile Include="Controls\UiScale.cs" />
     <Compile Include="Controls\CheckListHMI.cs">
@@ -281,6 +282,35 @@
     <Compile Include="AppBootstrap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- emoji art: tools/build_emoji_art.py -->
+    <EmbeddedResource Include="Resources\Emoji\emoji_16.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_20.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_20.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_24.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_24.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_28.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_28.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_32.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_40.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_40.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji_48.png">
+      <LogicalName>Kaban.UI.Emoji.emoji_48.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Emoji\emoji.txt">
+      <LogicalName>Kaban.UI.Emoji.emoji.txt</LogicalName>
+    </EmbeddedResource>
+    <None Include="Resources\Emoji\LICENSE-fluentui-emoji.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- /emoji art -->
     <EmbeddedResource Include="Resources\Flags\EN.png">
       <LogicalName>Kaban.UI.Flag.EN.png</LogicalName>
     </EmbeddedResource>

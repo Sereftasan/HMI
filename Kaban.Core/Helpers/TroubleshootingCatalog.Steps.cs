@@ -736,14 +736,38 @@ namespace Kaban.Core.Helpers
                 m["HosesMany"] = hoses.Contains("/");
                 // the hoses one by one, for the drawings: "16 (A) / 96 (B)" -> 16 / A, 96 / B
                 var hose = hoses.Split('/').Select(h => h.Trim()).ToList();
+                var hoseNo = new string[2];
                 for (int i = 0; i < 2; i++)
                 {
                     var h = i < hose.Count ? hose[i] : "";
                     var hm = Regex.Match(h, @"^(.*?)\s*\((.*?)\)\s*$");
+                    hoseNo[i] = (hm.Success ? hm.Groups[1].Value : h).Trim();
                     m["Hose" + (i == 0 ? "A" : "B")] = e(h);
-                    m["Hose" + (i == 0 ? "A" : "B") + "No"] = e(hm.Success ? hm.Groups[1].Value : h);
+                    m["Hose" + (i == 0 ? "A" : "B") + "No"] = e(hoseNo[i]);
                     m["Hose" + (i == 0 ? "A" : "B") + "Port"] = e(hm.Success ? hm.Groups[2].Value : "");
                 }
+                // WHICH SIDE THIS MOVEMENT IS ON, for the drawings: the hose its output
+                // fills (Wiring.csv's Hose) - a spring's return the other one. The A
+                // side pushes the rod out (a clamp clamps: its hose black), the B side
+                // pulls it in (a clamp releases: its hose yellow). Without the wiring:
+                // a spring valve's coil A and its spring B; else as the machine's units
+                // mostly are - the left button's movement on B.
+                bool onB;
+                string own = o != null ? (o.Hose ?? "").Trim() : "";
+                if (own.Length > 0 && (own == hoseNo[0] || own == hoseNo[1]))
+                    onB = _spring ? own == hoseNo[0] : own == hoseNo[1];
+                else if (c.Valve == ValveType.SingleSolenoidSpring)
+                    onB = _spring;
+                else
+                    onB = string.Equals(mv.Side, "A", StringComparison.OrdinalIgnoreCase);
+                m["OnB"] = onB;
+                m["OnA"] = !onB;
+                // the coils on the valve's two ends (A left, B right); a spring valve's coil on A
+                string coil = o != null ? o.Coil : "", other = c.OtherOut != null ? c.OtherOut.Coil : "";
+                bool spring = c.Valve == ValveType.SingleSolenoidSpring;
+                m["OtherCoil"] = e(other);
+                m["CoilA"] = e(spring ? coil : onB ? other : coil);
+                m["CoilB"] = e(spring ? "" : onB ? coil : other);
                 m["ClosedCentre"] = ClosedCentre == true;
                 m["OpenCentre"] = ClosedCentre == false;
                 m["Pressure"] = air != null ? e(Data(air, "Pressure", air.Pressure)) : "";

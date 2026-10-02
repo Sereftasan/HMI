@@ -23,8 +23,12 @@ Point numbers are the PLC's: the extension modules continue the base unit's
 X/Y numbering in their order on the bus (sheet 36): U7 X40, U8 X60, U9 X100,
 U10 X120; U11 Y40, U12 Y60, U13 Y100, U14 Y120, U15 Y140.
 
-Output: Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc;
+Output: Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;Hose;PnSheet;Text;Plc;
         Card;Via;Measure;Pressure
+  Hose: the hose this output puts air into - the first output of a valve the
+  A hose, the second the B hose (the pneumatic drawing's coil order); a single
+  solenoid's coil the A hose, its spring the B one. The step-by-step help draws
+  the coil and the cylinder's movement on that side.
   Card: the PLC card and its own terminal name. Via: a sensor read through a
   module (keyed by the relay the program copies it into). Measure / Pressure:
   a cylinder's position measurement and clamping pressure, on its outputs.
@@ -421,7 +425,7 @@ def card(point):
 
 
 COLUMNS = ['Point', 'Read', 'Commands', 'Tag', 'Wire', 'Sheet', 'Relay', 'RelaySheet', 'Coil', 'CoilWire',
-           'CoilSheet', 'Valve', 'Cylinder', 'Hoses', 'PnSheet', 'Text', 'Plc', 'Card', 'Via', 'Measure', 'Pressure']
+           'CoilSheet', 'Valve', 'Cylinder', 'Hoses', 'Hose', 'PnSheet', 'Text', 'Plc', 'Card', 'Via', 'Measure', 'Pressure']
 COLUMNS += ['%s.%s' % (c, lang) for lang in sorted(TRANSLATED) for c in TRANSLATED_COLUMNS]
 
 
@@ -469,9 +473,11 @@ def build():
         rows[point] = dict(Point=point, Relay=relay, Wire=wire, Sheet=sheet, Coil=coil, CoilWire=coil_wire,
                            CoilSheet=coil_sheet, RelaySheet=sheet if relay else '', Text=text)
     for points, valve, cylinder, hoses, pn_sheet in PNEUMATIC:
-        for p in points:
+        own = [re.sub(r'\s*\(.*?\)\s*$', '', h).strip() for h in hoses.split('/')]
+        for i, p in enumerate(points):
             row = rows.setdefault(p, dict(Point=p, Text=cylinder))
-            row.update(Valve=valve, Cylinder=cylinder, Hoses=hoses, PnSheet=pn_sheet)
+            row.update(Valve=valve, Cylinder=cylinder, Hoses=hoses, PnSheet=pn_sheet,
+                       Hose=own[i] if i < len(own) else '')
     for points, text in MEASURE:
         for p in points:
             rows.setdefault(p, dict(Point=p))['Measure'] = text

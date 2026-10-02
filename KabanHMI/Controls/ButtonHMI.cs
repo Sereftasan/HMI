@@ -901,6 +901,15 @@ namespace Kaban.UI.Controls
                 return;
             }
 
+            if (!hasGlyph && this.Image == null && Kaban.UI.Controls.EmojiArt.Has(_caption))
+            {
+                // An emoji for the caption (the alarm page's reset): its colour
+                // picture, as on every toolbar button.
+                Kaban.UI.Controls.EmojiArt.Draw(g, area, _caption, _softEnabled || !IsPlcBound,
+                                                Kaban.UI.Controls.EmojiArt.SizeFor(this.Font, area.Height - 2));
+                return;
+            }
+
             if (!hasGlyph)
             {
                 // HONOUR TextAlign. This control paints its own caption now, and it

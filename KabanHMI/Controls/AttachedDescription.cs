@@ -44,9 +44,35 @@ namespace Kaban.UI.Controls
                 if (_owner.IsHandleCreated)
                     _owner.BeginInvoke(new Action(Position));   // after the layout pass
             };
-            _owner.VisibleChanged += (s, e) => Position();
+            _owner.VisibleChanged += (s, e) => { Follow(); Position(); };
+            _owner.ParentChanged += (s, e) => WatchParent();
             LanguageManager.LanguageChanged += OnLanguage;
         }
+
+        /// <summary>
+        /// The caption is hidden with its control. A field hidden by its
+        /// VisibilityConditions (a setting shown only in auto mode while the
+        /// machine runs, say) left its caption on the page - "Saw Diameter:"
+        /// beside nothing, which read as a broken field.
+        ///
+        /// Decided only while the page itself is on show: then Visible is the
+        /// control's own state. A hidden page hides both anyway, and its showing
+        /// again decides once more.
+        /// </summary>
+        private void Follow()
+        {
+            if (_label == null || _label.Parent == null || !_label.Parent.Visible) return;
+            if (_label.Visible != _owner.Visible) _label.Visible = _owner.Visible;
+        }
+
+        private Control _watched;
+        private void WatchParent()
+        {
+            if (_watched != null) _watched.VisibleChanged -= OnParentVisible;
+            _watched = _owner.Parent;
+            if (_watched != null) _watched.VisibleChanged += OnParentVisible;
+        }
+        private void OnParentVisible(object s, EventArgs e) { Follow(); }
 
         /// <summary>
         /// Translation key OR literal text: looked up in the translation files for
@@ -116,6 +142,7 @@ namespace Kaban.UI.Controls
                 if (_label.Parent != null) _label.Parent.Controls.Remove(_label);
                 _owner.Parent.Controls.Add(_label);
             }
+            Follow();
             Position();
         }
 
@@ -208,6 +235,7 @@ namespace Kaban.UI.Controls
         public void Dispose()
         {
             LanguageManager.LanguageChanged -= OnLanguage;
+            if (_watched != null) { _watched.VisibleChanged -= OnParentVisible; _watched = null; }
             if (_label != null) { _label.Dispose(); _label = null; }
         }
     }

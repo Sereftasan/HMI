@@ -10,7 +10,7 @@ namespace Kaban.Core.Helpers
     /// Wiring.csv (tools/build_wiring.py transcribes the electrical and
     /// pneumatic drawings into it).
     ///
-    ///     Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;PnSheet;Text;Plc;Card;Via;Measure;Pressure
+    ///     Point;Read;Commands;Tag;Wire;Sheet;Relay;RelaySheet;Coil;CoilWire;CoilSheet;Valve;Cylinder;Hoses;Hose;PnSheet;Text;Plc;Card;Via;Measure;Pressure
     ///     X34;M212;;SN46;119;12.6;;;;;;;;;;Input Conveyor 6. Clamping Cylinder Back Sensor;1
     ///     Y12;M362;M688;;210;18.6;K13;18.6;Y.7;308;25.5;Y20/Y21 (...);P12 ...;16 (A) / 96 (B);2 E3;...;1
     ///
@@ -46,6 +46,8 @@ namespace Kaban.Core.Helpers
             /// <summary>The pneumatic valve, as the pneumatic drawing names it, with its type.</summary>
             public string Valve = "";
             public string Cylinder = "", Hoses = "";
+            /// <summary>The hose this output puts air into ("96"), or "" - the step-by-step drawings put its coil and movement on that side.</summary>
+            public string Hose = "";
             /// <summary>"2 E3": page 2, zone E3 of the pneumatic drawing.</summary>
             public string PnSheet = "";
             /// <summary>The drawing's own words for it.</summary>
@@ -208,7 +210,7 @@ namespace Kaban.Core.Helpers
                         Tag = get("Tag"), Wire = get("Wire"), Sheet = get("Sheet"),
                         Relay = get("Relay"), RelaySheet = get("RelaySheet"),
                         Coil = get("Coil"), CoilWire = get("CoilWire"), CoilSheet = get("CoilSheet"),
-                        Valve = get("Valve"), Cylinder = get("Cylinder"), Hoses = get("Hoses"), PnSheet = get("PnSheet"),
+                        Valve = get("Valve"), Cylinder = get("Cylinder"), Hoses = get("Hoses"), Hose = get("Hose"), PnSheet = get("PnSheet"),
                         Text = get("Text"), Card = get("Card"), Via = get("Via"), Measure = get("Measure"), Pressure = get("Pressure")
                     };
                     if (p.Address.Length == 0) continue;

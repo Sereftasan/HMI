@@ -154,7 +154,7 @@ namespace Kaban.UI.Settings
 
             _kind.DropDownStyle = ComboBoxStyle.DropDownList;
             _kind.Width = 150;
-            _kind.Items.Add(new Choice(null, LanguageManager.GetString("Log_KindAll", "All kinds")));
+            _kind.Items.Add(new Choice(null, LanguageManager.GetString("Log_KindAll", "All types")));
             foreach (AuditKind k in new[] { AuditKind.SignIn, AuditKind.Connection, AuditKind.PlcWrite, AuditKind.DeviceWrite,
                                             AuditKind.Problem, AuditKind.Settings, AuditKind.Other })
                 _kind.Items.Add(new Choice(k, KindName(k)));
@@ -213,10 +213,10 @@ namespace Kaban.UI.Settings
             bar.Controls.Add(Pair(caption("\uD83D\uDD0D"), _search));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_User", "User")), _user));
             bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Plc", "PLC")), _plc));
-            bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Kind", "Kind")), _kind));
+            bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Kind", "Log Type")), _kind));
             if (machines) bar.Controls.Add(Pair(caption(LanguageManager.GetString("Log_Source", "Source")), _source));
             bar.Controls.Add(_live);
-            var clear = UiStyle.ToolButton("\u2716", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and kind"),
+            var clear = UiStyle.ToolButton("\u2716", LanguageManager.GetString("Log_ClearTip", "Clear the search, user and log type"),
                                            _tips, (s, e) => ClearFilters());
             clear.Margin = new Padding(8, 1, 3, 1);
             ClearButton = clear;
@@ -263,7 +263,7 @@ namespace Kaban.UI.Settings
             _grid.Columns.Add(Column("Time", LanguageManager.GetString("Log_ColTime", "Time") + "  ▼", 160));
             _grid.Columns.Add(Column("User", LanguageManager.GetString("Log_ColUser", "User"), 110));
             _grid.Columns.Add(Column("Plc", LanguageManager.GetString("Log_ColPlc", "PLC"), 50));
-            _grid.Columns.Add(Column("Kind", LanguageManager.GetString("Log_ColKind", "Kind"), 120));
+            _grid.Columns.Add(Column("Kind", LanguageManager.GetString("Log_ColKind", "Log Type"), 120));
             var entry = Column("Entry", LanguageManager.GetString("Log_ColEntry", "Entry"), 400);
             entry.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             _grid.Columns.Add(entry);
@@ -820,6 +820,7 @@ namespace Kaban.UI.Settings
 
         // ---- for the tests ------------------------------------------------
         public int RowCount { get { return _grid.RowCount; } }
+        public string HeaderText(int col) { return _grid.Columns[col].HeaderText; }
         public string CellText(int row, int col)
         {
             var e = new DataGridViewCellValueEventArgs(col, row);

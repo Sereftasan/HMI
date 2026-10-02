@@ -170,6 +170,13 @@ namespace Kaban.UI.Forms
                 fitOnRelease = false;
                 BeginInvoke(new Action(FitSidePanel));
             };
+            // Where the second press of a double-click comes as a double-click
+            // only, not as a press with two clicks: the same.
+            _sideSplitter.MouseDoubleClick += (s, e) =>
+            {
+                if (e.Button != MouseButtons.Left || fitOnRelease) return;
+                BeginInvoke(new Action(FitSidePanel));
+            };
             _sideTips.SetToolTip(_sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
             // The width kept: back to it when the window has room again (it opens
             // narrower before the window is maximised).
@@ -387,7 +394,9 @@ namespace Kaban.UI.Forms
         public void FitSidePanel()
         {
             if (_sidePanel == null || !_sidePanel.Visible || _sideOpen == null) return;
-            var view = SidePageView(_sideOpen.Key);
+            // The page ON SHOW in the panel - the one the border is beside -
+            // whatever page was opened last by name.
+            var view = _sideHost.Controls.Cast<Control>().FirstOrDefault(c => c.Visible) ?? SidePageView(_sideOpen.Key);
             if (view == null) return;
             int chrome = _sidePanel.Width - _sideHost.ClientSize.Width;
             int room = SideRoom();

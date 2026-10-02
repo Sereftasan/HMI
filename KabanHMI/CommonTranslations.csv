@@ -464,8 +464,8 @@ Log_To;To;Bitiş;По;Bis;A;Hasta
 Log_SearchTip;Every word must appear, in any case: 'D210 admin' finds admin's entries about D210.;Her kelime geçmeli, büyük/küçük harf fark etmez: 'D210 admin' admin'in D210 ile ilgili kayıtlarını bulur.;Должно встречаться каждое слово, регистр не важен: 'D210 admin' находит записи admin о D210.;Jedes Wort muss vorkommen, Groß-/Kleinschreibung egal: 'D210 admin' findet die Einträge von admin zu D210.;Ogni parola deve comparire, maiuscole o minuscole: 'D210 admin' trova le voci di admin su D210.;Cada palabra debe aparecer, sin importar mayúsculas: 'D210 admin' encuentra las entradas de admin sobre D210.
 Log_User;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
 Log_AllUsers;All users;Tüm kullanıcılar;Все пользователи;Alle Benutzer;Tutti gli utenti;Todos los usuarios
-Log_Kind;Kind;Tür;Тип;Art;Tipo;Tipo
-Log_KindAll;All kinds;Tüm türler;Все типы;Alle Arten;Tutti i tipi;Todos los tipos
+Log_Kind;Log Type;Kayıt Türü;Тип записи;Protokolltyp;Tipo di registro;Tipo de registro
+Log_KindAll;All types;Tüm türler;Все типы;Alle Typen;Tutti i tipi;Todos los tipos
 Log_KindSignIn;Logins;Kullanıcı girişleri;Входы в систему;Anmeldungen;Accessi;Inicios de sesión
 Log_KindConnection;Connection;Bağlantı;Связь;Verbindung;Connessione;Conexión
 Log_KindPlcWrite;PLC writes;PLC yazmaları;Запись в ПЛК;SPS-Schreibvorgänge;Scritture PLC;Escrituras en PLC
@@ -474,11 +474,11 @@ Log_KindSettings;Settings;Ayarlar;Настройки;Einstellungen;Impostazioni;
 Log_KindOther;Other;Diğer;Прочее;Sonstiges;Altro;Otros
 Log_Live;Live;Canlı;В реальном времени;Live;Live;En vivo
 Log_LiveTip;Adds new entries as they are written, while the period runs up to now.;Dönem şu ana kadar uzanıyorsa yeni kayıtları yazıldıkça ekler.;Добавляет новые записи по мере их появления, если период доходит до текущего момента.;Fügt neue Einträge hinzu, sobald sie geschrieben werden, solange der Zeitraum bis jetzt reicht.;Aggiunge le nuove voci appena scritte, se il periodo arriva a adesso.;Añade las entradas nuevas a medida que se escriben, si el periodo llega hasta ahora.
-Log_ClearTip;Clear the search, user and kind;Aramayı, kullanıcıyı ve türü temizle;Сбросить поиск, пользователя и тип;Suche, Benutzer und Art zurücksetzen;Azzera ricerca, utente e tipo;Borrar búsqueda, usuario y tipo
+Log_ClearTip;Clear the search, user and log type;Aramayı, kullanıcıyı ve kayıt türünü temizle;Сбросить поиск, пользователя и тип записи;Suche, Benutzer und Protokolltyp zurücksetzen;Azzera ricerca, utente e tipo di registro;Borrar búsqueda, usuario y tipo de registro
 Log_ExportTip;Export the entries shown;Gösterilen kayıtları dışa aktar;Экспортировать показанные записи;Angezeigte Einträge exportieren;Esporta le voci mostrate;Exportar las entradas mostradas
 Log_ColTime;Time;Zaman;Время;Zeit;Ora;Hora
 Log_ColUser;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
-Log_ColKind;Kind;Tür;Тип;Art;Tipo;Tipo
+Log_ColKind;Log Type;Kayıt Türü;Тип записи;Protokolltyp;Tipo di registro;Tipo de registro
 Log_ColEntry;Entry;Kayıt;Запись;Eintrag;Voce;Entrada
 Log_Status;{0} entries shown, {1} in the period;{0} kayıt gösteriliyor, dönemde {1};Показано записей: {0}, за период: {1};{0} Einträge angezeigt, {1} im Zeitraum;{0} voci mostrate, {1} nel periodo;{0} entradas mostradas, {1} en el periodo
 Log_StatusCapped;the newest {0} are listed: narrow the period or the search;en yeni {0} kayıt listelendi: dönemi veya aramayı daraltın;показаны последние {0}: сузьте период или поиск;die neuesten {0} werden gelistet: Zeitraum oder Suche eingrenzen;sono elencate le {0} più recenti: restringi il periodo o la ricerca;se listan las {0} más recientes: acote el periodo o la búsqueda

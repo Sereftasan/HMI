@@ -202,6 +202,7 @@ class LR {
         tabsDash.ShiftPick.Select(new string[0]);
         Check("  all shifts: all of them again", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "HMI")));
 
+        Check("the table's column says Log Type, as the filter (it said Kind)", v.HeaderText(3) == "Log Type", v.HeaderText(3));
         tabsDash.TypePick.Select(new[] { ((int)AuditKind.SignIn).ToString() });
         Check("Log Type: Logins - only them", Until(idle) && v.RowCount >= 1 &&
               rows(v.RowCount).All(r => v.CellText(r, 3) == "Logins") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("logged in as setter")),

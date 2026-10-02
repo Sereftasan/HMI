@@ -1,0 +1,33 @@
+# The pictures of emoji_<px>.png, left to right: code points, then other characters drawn with it.
+# sizes 16 20 24 28 32 40 48
+1f4c2
+1f4be
+1f4e4
+270f
+2699
+1f4cb
+25b6
+23f9 25a0
+1f50d
+1f50e
+1f504
+2716
+2714
+2705
+2795
+1f5d1
+1f4da
+1f4c4
+1f4d1
+1f441
+1f9ee
+1f558
+1f3af
+1f4cd
+1f529
+1f4cf
+27b0
+1f7e2
+26d3
+26d4
+2702

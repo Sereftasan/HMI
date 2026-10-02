@@ -41,6 +41,20 @@ namespace Kaban.UI.Forms
         private readonly Func<DeviceCollector.Use, string> _open;
         private readonly TextBox _query = new TextBox();
         private readonly DataGridView _list = new DataGridView();
+        private Func<int> _searchWidth = () => 0;
+
+        /// <summary>
+        /// The width at which nothing of Find is cut off: every column of its
+        /// list with room for the scroll bar, and its search line (the side
+        /// panel's border double-clicked while Find is open in the monitor).
+        /// </summary>
+        public int PreferredWidth()
+        {
+            int columns = _list.Columns.Cast<DataGridViewColumn>().Where(c => c.Visible).Sum(c => c.Width) +
+                          (_list.RowHeadersVisible ? _list.RowHeadersWidth : 0) + SystemInformation.VerticalScrollBarWidth + 4;
+            int chrome = Math.Max(0, ClientSize.Width - _list.ClientSize.Width);
+            return Math.Max(columns + chrome, _searchWidth());
+        }
         private readonly Label _status = new Label();
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private List<DeviceCollector.Use> _found = new List<DeviceCollector.Use>();
@@ -122,6 +136,10 @@ namespace Kaban.UI.Forms
                 _tips.SetToolTip(closeButton, T("Tip_FindClose", "Close Find (Esc)"));
                 top.Controls.Add(closeButton);
             }
+            // The search line's own width: the caption, the box at its usual
+            // width, the button (and the close inside the monitor).
+            _searchWidth = () => caption1.Right + 8 + UiScale.For(_query, 260) + 6 + go.Width + 16 +
+                                 (closeButton != null ? closeButton.Width + 14 : 0) + top.Padding.Horizontal;
             top.Layout += (s, e) =>
             {
                 int right = top.ClientSize.Width - (closeButton != null ? closeButton.Width + 8 : 0);

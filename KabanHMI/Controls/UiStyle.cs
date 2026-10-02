@@ -1459,7 +1459,9 @@ namespace Kaban.UI.Controls
 
         public static Button ToolButton(string emoji, string tip, ToolTip tips, System.EventHandler onClick = null)
         {
-            var b = new Button
+            // In colour (EmojiArt): the emoji's picture, or undo's curl; a sign
+            // that is neither (the turn and mirror arrows) in the toolbar's blue.
+            var b = new EmojiButton
             {
                 Text = emoji,
                 Width = 44,
@@ -1467,6 +1469,7 @@ namespace Kaban.UI.Controls
                 Font = new Font("Segoe UI", 12F),
                 Cursor = Cursors.Hand
             };
+            if (!string.IsNullOrEmpty(emoji) && b.Look == "text") b.ForeColor = ToolGlyphs.Ink;
             Round(b);
             if (tips != null) tips.SetToolTip(b, tip);
             if (onClick != null) b.Click += onClick;
