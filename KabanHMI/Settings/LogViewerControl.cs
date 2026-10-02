@@ -321,8 +321,10 @@ namespace Kaban.UI.Settings
             };
 
             _refresh.Tick += (s, e) => { if (_live.Checked && FollowsNow) Reload(); };
-            VisibleChanged += (s, e) => { _refresh.Enabled = Visible && !_embedded; if (Visible) Reload(); };
-            Reload();
+            // Embedded, the host says when to read (SetRange) - not each time the table
+            // is moved to another tab and so shown again.
+            VisibleChanged += (s, e) => { _refresh.Enabled = Visible && !_embedded; if (Visible && !_embedded) Reload(); };
+            if (!embedded) Reload();
         }
 
         // ---- in a page of its own (the Dashboard) -------------------------------
@@ -619,7 +621,7 @@ namespace Kaban.UI.Settings
         /// <summary>The entries of the period that pass the search, user, controller and kind.</summary>
         public List<AuditEntry> Filtered()
         {
-            string search = _search.Text;
+            var words = AuditLogReader.SearchWords(_search.Text);
             string user = _user.SelectedIndex > 0 ? Convert.ToString(_user.SelectedItem) : null;
             var kindChoice = _kind.SelectedItem as Choice;
             AuditKind? kind = kindChoice == null || kindChoice.Value == null ? (AuditKind?)null : (AuditKind)kindChoice.Value;
@@ -632,8 +634,8 @@ namespace Kaban.UI.Settings
                     (!station.HasValue || e.Station == station) &&
                     (!kind.HasValue || e.Kind == kind.Value) &&
                     (_kindSet == null || _kindSet.Contains(e.Kind)) &&
-                    (ExtraFilter == null || ExtraFilter(e)) &&
-                    AuditLogReader.Matches(e, search)).ToList();
+                    AuditLogReader.Matches(e, words) &&
+                    (ExtraFilter == null || ExtraFilter(e))).ToList();
         }
 
         private void ApplyFilter(bool userAction)
@@ -681,8 +683,8 @@ namespace Kaban.UI.Settings
         /// </summary>
         private void Fill(AuditEntry select, AuditEntry top)
         {
-            _grid.RowCount = 0;
-            _grid.RowCount = _shown.Count;
+            _grid.ClearSelection();
+            Kaban.UI.Controls.UiStyle.SetRowCount(_grid, _shown.Count);
             int sel = RowOf(select);
             _grid.ClearSelection();
             if (sel >= 0)

@@ -70,6 +70,7 @@ namespace Kaban.UI.Dashboard
         private string _loadedKey = "";
         private DashboardView _view;
         private bool _loading;
+        private bool _logReading;            // the log tab's files are being read
 
         private readonly EventHandler _onLanguage, _onUser, _onConfig;
         private readonly EventHandler<DashboardReports.RunResult> _onReports;
@@ -493,7 +494,7 @@ namespace Kaban.UI.Dashboard
         /// </summary>
         private void UpdateBar()
         {
-            if (_loading)
+            if (_loading || _logReading)
             {
                 _barText.ForeColor = Color.FromArgb(200, 30, 30);
                 _barText.Text = T("Dsh_Loading", "Data loading...");

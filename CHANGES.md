@@ -4342,3 +4342,13 @@ and `UnitLookAndErrors` extended.
   `Dsh_TipTimeline`, `Dsh_SetDatabase` reworded; `Dsh_ShowInFolder`, `Dsh_SetShiftsHead`, `Dsh_SetShiftAdd`,
   `Dsh_SetShiftRemove`, `Dsh_SetShiftsNote`, `Dsh_SetBadShift` new. Manual: the dashboard.
 - Tests: `DashboardPage.cs`, `LogsAndReports.cs` updated.
+
+## 2026-10-02 - The Dashboard's tables fast
+
+- `UiStyle.SetRowCount(grid, n)`: clears a virtual table's rows at once instead of setting RowCount to 0 (which removes
+  them one by one - seconds for thousands). Used by `LogViewerControl.Fill` and `DashboardScreen.TableGrid.SetRows`.
+- `LogViewerControl` embedded: no read when built nor when moved to another tab; `Filtered` splits the search once.
+- `AuditLogReader.SearchWords`, `Matches(entry, words)`: no lower-case copy per entry.
+- `DashboardData.ParseDb`: "yyyy-MM-dd HH:mm:ss" read by hand; `Load` turns UTC to the zone once per hour of data.
+- `DashboardScreen`: "Data loading..." while a log tab reads its files.
+- Tests: `tools/ui_test/DashboardSpeed.cs` (new).

@@ -830,6 +830,21 @@ namespace Kaban.UI.Controls
             };
         }
 
+        /// <summary>
+        /// A virtual table's number of rows, set quickly. Lowering RowCount removes
+        /// the rows ONE BY ONE, each with its events - thousands take seconds (the
+        /// Dashboard's log tab took 3 to 28 s to change, a search 3 to 10 s). Clearing
+        /// them at once and setting the new count takes milliseconds. The cells are
+        /// asked for again when they are drawn (CellValueNeeded).
+        /// </summary>
+        public static void SetRowCount(DataGridView grid, int count)
+        {
+            if (grid == null) return;
+            if (count < grid.RowCount) grid.Rows.Clear();
+            if (grid.RowCount != count) grid.RowCount = count;
+            grid.Invalidate();
+        }
+
         /// <summary>The headings' menu of a table that has the table tools (null when it has none).</summary>
         public static Kaban.UI.Helpers.ColumnChooser ChooserOf(DataGridView grid)
         {

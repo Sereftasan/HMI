@@ -248,9 +248,30 @@ namespace Kaban.UI.Dashboard
         public static DateTime? ParseDb(object v)
         {
             if (v == null || v is DBNull) return null;
+            // the usual "yyyy-MM-dd HH:mm:ss" read by hand: a month of logs is 150 000
+            // dates, and the general parser was a large part of reading them
+            var s = v as string;
+            if (s != null && s.Length == 19 && s[4] == '-' && s[7] == '-' && s[10] == ' ' && s[13] == ':' && s[16] == ':')
+            {
+                int y = Digits(s, 0, 4), mo = Digits(s, 5, 2), d = Digits(s, 8, 2), h = Digits(s, 11, 2), mi = Digits(s, 14, 2), se = Digits(s, 17, 2);
+                if (y > 0 && mo >= 1 && mo <= 12 && d >= 1 && d <= DateTime.DaysInMonth(y, mo) && h >= 0 && h < 24 && mi >= 0 && mi < 60 && se >= 0 && se < 60)
+                    return new DateTime(y, mo, d, h, mi, se);
+            }
             DateTime t;
             return DateTime.TryParseExact(Convert.ToString(v, CultureInfo.InvariantCulture).Trim(), DbFormats,
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out t) ? t : (DateTime?)null;
+        }
+
+        private static int Digits(string s, int at, int n)
+        {
+            int v = 0;
+            for (int i = at; i < at + n; i++)
+            {
+                char c = s[i];
+                if (c < '0' || c > '9') return -1;
+                v = v * 10 + (c - '0');
+            }
+            return v;
         }
 
         public static string ToDb(DateTime t) { return t.ToString(DbFormat, CultureInfo.InvariantCulture); }
@@ -348,6 +369,17 @@ namespace Kaban.UI.Dashboard
                 return d;
             };
 
+            // UTC to the zone's time, by the hour (the offset changes on the hour at most)
+            var offsets = new Dictionary<long, TimeSpan>();
+            Func<DateTime, DateTime> toLocal = utc =>
+            {
+                long hour = utc.Ticks / TimeSpan.TicksPerHour;
+                TimeSpan off;
+                if (!offsets.TryGetValue(hour, out off))
+                    offsets[hour] = off = DashboardTime.ToLocal(new DateTime(hour * TimeSpan.TicksPerHour), zone) - new DateTime(hour * TimeSpan.TicksPerHour);
+                return utc + off;
+            };
+
             using (var c = Open(path))
             {
                 long n = Count(c, sUtc, eUtc);
@@ -363,7 +395,7 @@ namespace Kaban.UI.Dashboard
                         {
                             prevId = Convert.ToInt64(r.GetValue(0), CultureInfo.InvariantCulture);
                             int code = Code(r.GetValue(2));
-                            result.Rows.Add(new LogRow { Id = prevId.Value, Time = DashboardTime.ToLocal(t.Value, zone), Code = code, Description = describe(code) });
+                            result.Rows.Add(new LogRow { Id = prevId.Value, Time = toLocal(t.Value), Code = code, Description = describe(code) });
                         }
                     }
 
@@ -378,7 +410,7 @@ namespace Kaban.UI.Dashboard
                         var t = ParseDb(r.GetValue(1));
                         if (!t.HasValue) continue;
                         int code = Code(r.GetValue(2));
-                        var row = new LogRow { Id = Convert.ToInt64(r.GetValue(0), CultureInfo.InvariantCulture), Time = DashboardTime.ToLocal(t.Value, zone), Code = code, Description = describe(code) };
+                        var row = new LogRow { Id = Convert.ToInt64(r.GetValue(0), CultureInfo.InvariantCulture), Time = toLocal(t.Value), Code = code, Description = describe(code) };
                         result.Rows.Add(row);
                         byId[row.Id] = row;
                     }

@@ -265,7 +265,13 @@ namespace Kaban.UI.Dashboard
             if (_log == null) return;
             if (LogTabs.All(t => t.Key != SelectedTabKey)) { _logStale = true; return; }
             _logStale = false;
-            _log.SetRange(_from, _to);
+            // the files are read here (the first time a period is asked for): say so first
+            _logReading = true;
+            UpdateBar();
+            _barText.Refresh();
+            try { _log.SetRange(_from, _to); }
+            finally { _logReading = false; }
+            UpdateBar();
         }
 
         private void RetranslateTabs()
@@ -709,8 +715,8 @@ namespace Kaban.UI.Dashboard
                 _rows = rows ?? new List<object[]>();
                 _sortColumn = -1;
                 foreach (DataGridViewColumn c in Grid.Columns) c.HeaderCell.SortGlyphDirection = SortOrder.None;
-                Grid.RowCount = 0;
-                Grid.RowCount = _rows.Count;
+                Grid.ClearSelection();
+                UiStyle.SetRowCount(Grid, _rows.Count);
                 Grid.Invalidate();
                 _empty.Text = emptyText ?? "";
                 _empty.Visible = _rows.Count == 0;

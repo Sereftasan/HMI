@@ -341,9 +341,26 @@ namespace Kaban.Core.Helpers
         public static bool Matches(AuditEntry e, string search)
         {
             if (string.IsNullOrWhiteSpace(search)) return true;
-            string hay = (e.User + " " + e.Text).ToLowerInvariant();
-            foreach (var w in search.ToLowerInvariant().Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
-                if (!hay.Contains(w)) return false;
+            return Matches(e, SearchWords(search));
+        }
+
+        /// <summary>The search's words, split once for a whole list (Matches(e, words)).</summary>
+        public static string[] SearchWords(string search)
+        {
+            return (search ?? "").Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// The same rule with the words split beforehand: no lower-case copy of every
+        /// entry is made (a search over a month of entries was half a second of it).
+        /// </summary>
+        public static bool Matches(AuditEntry e, string[] words)
+        {
+            if (words == null || words.Length == 0) return true;
+            string text = e.Text ?? "", user = e.User ?? "";
+            foreach (var w in words)
+                if (text.IndexOf(w, StringComparison.OrdinalIgnoreCase) < 0 && user.IndexOf(w, StringComparison.OrdinalIgnoreCase) < 0)
+                    return false;
             return true;
         }
     }
