@@ -913,3 +913,155 @@ Mnu_MonFromConditions;the machine condition labels - into this tab;makine koşul
 Tip_MonFromConditions;The conditions the machines register (manual mode, robot at safe position ...): each one's device, and whether it is met now.;Makinelerin tanımladığı koşullar (manuel mod, robot güvenli konumda ...): her birinin adresi ve şu an sağlanıp sağlanmadığı.;Условия, которые регистрируют машины (ручной режим, робот в безопасном положении ...): адрес каждого и выполнено ли оно сейчас.;Die Bedingungen, die die Maschinen registrieren (Handbetrieb, Roboter in sicherer Position ...): jeweils ihre Adresse und ob sie jetzt erfüllt ist.;Le condizioni registrate dalle macchine (modo manuale, robot in posizione sicura ...): l'indirizzo di ciascuna e se è soddisfatta ora.;Las condiciones que registran las máquinas (modo manual, robot en posición segura ...): la dirección de cada una y si se cumple ahora.
 Msg_MonConditionsNone;No machine condition is read from {0}.;{0} üzerinden okunan makine koşulu yok.;С {0} не читается ни одно условие машины.;Von {0} wird keine Maschinenbedingung gelesen.;Da {0} non viene letta nessuna condizione della macchina.;No se lee ninguna condición de la máquina desde {0}.
 Hdr_MonConditions;Machine conditions;Makine koşulları;Условия машины;Maschinenbedingungen;Condizioni della macchina;Condiciones de la máquina
+Set_ViewPrefs;View Preferences;Görünüm Tercihleri;Настройки вида;Ansichtseinstellungen;Preferenze di visualizzazione;Preferencias de vista
+Tip_ViewSave;Keep these preferences;Bu tercihleri kaydet;Сохранить эти настройки;Diese Einstellungen speichern;Salva queste preferenze;Guardar estas preferencias
+Tip_ViewRevert;Throw the changes away and show the kept preferences;Değişiklikleri at ve kayıtlı tercihleri göster;Отменить изменения и показать сохранённые настройки;Änderungen verwerfen und die gespeicherten Einstellungen zeigen;Annulla le modifiche e mostra le preferenze salvate;Descartar los cambios y mostrar las preferencias guardadas
+VP_Whose;Preferences for;Kimin için;Настройки для;Einstellungen für;Preferenze per;Preferencias para
+VP_SecCaptions;Captions;Başlıklar;Подписи;Beschriftungen;Etichette;Etiquetas
+VP_SecNumbers;Numbers and dates;Sayılar ve tarihler;Числа и даты;Zahlen und Datum;Numeri e date;Números y fechas
+VP_SecTables;Tables;Tablolar;Таблицы;Tabellen;Tabelle;Tablas
+VP_SecSignIn;Sign-in and alerts;Oturum açma ve uyarılar;Вход и оповещения;Anmeldung und Hinweise;Accesso e avvisi;Inicio de sesión y avisos
+VP_CaptionAlign;Field captions;Alan başlıkları;Подписи полей;Feldbeschriftungen;Etichette dei campi;Etiquetas de los campos
+VP_AxisNameAlign;Axis names (Axis Settings);Eksen adları (Eksen Ayarları);Имена осей (настройки осей);Achsnamen (Achseinstellungen);Nomi degli assi (impostazioni assi);Nombres de ejes (ajustes de ejes)
+VP_DecimalSeparator;Decimal separator;Ondalık ayırıcı;Десятичный разделитель;Dezimaltrennzeichen;Separatore decimale;Separador decimal
+VP_DateFormat;Date;Tarih;Дата;Datum;Data;Fecha
+VP_TimeFormat;Time;Saat;Время;Uhrzeit;Ora;Hora
+VP_TableRows;Table rows;Tablo satırları;Строки таблиц;Tabellenzeilen;Righe delle tabelle;Filas de las tablas
+VP_TableFont;Table text;Tablo yazısı;Текст таблиц;Tabellentext;Testo delle tabelle;Texto de las tablas
+VP_StartPage;After sign-in;Oturum açtıktan sonra;После входа;Nach der Anmeldung;Dopo l'accesso;Tras iniciar sesión
+VP_AlarmSound;Sound for a new alarm;Yeni alarmda ses;Звук при новой аварии;Ton bei neuem Alarm;Suono per un nuovo allarme;Sonido para una alarma nueva
+VP_Blinking;Attention marks;Dikkat işaretleri;Знаки внимания;Hinweiszeichen;Segnali di attenzione;Señales de atención
+VP_TooltipDelay;Tooltips appear after;İpuçlarının görünme süresi;Подсказки появляются через;Tooltips erscheinen nach;Suggerimenti visibili dopo;Las ayudas aparecen tras
+VP_CapRight;Right, against the field;Sağda, alanın yanında;Справа, у поля;Rechts, am Feld;A destra, accanto al campo;A la derecha, junto al campo
+VP_CapLeft;Left, in a column;Solda, sütun halinde;Слева, столбцом;Links, in einer Spalte;A sinistra, in colonna;A la izquierda, en columna
+VP_Right;Right;Sağ;Справа;Rechts;Destra;Derecha
+VP_Left;Left;Sol;Слева;Links;Sinistra;Izquierda
+VP_DecWindows;As Windows;Windows'taki gibi;Как в Windows;Wie Windows;Come Windows;Como Windows
+VP_DecPoint;Point;Nokta;Точка;Punkt;Punto;Punto
+VP_DecComma;Comma;Virgül;Запятая;Komma;Virgola;Coma
+VP_H24;24 hours;24 saat;24 часа;24 Stunden;24 ore;24 horas
+VP_H12;12 hours;12 saat;12 часов;12 Stunden;12 ore;12 horas
+VP_Small;Small;Küçük;Мелкий;Klein;Piccolo;Pequeño
+VP_Compact;Compact;Dar;Компактно;Kompakt;Compatto;Compacto
+VP_Normal;Normal;Normal;Обычный;Normal;Normale;Normal
+VP_Large;Large;Büyük;Крупный;Groß;Grande;Grande
+VP_Stay;Stay where the screen is;Ekran olduğu yerde kalsın;Оставить текущий экран;Auf der aktuellen Seite bleiben;Resta sulla pagina attuale;Quedarse en la página actual
+VP_Home;Home;Ana Sayfa;Главная;Startseite;Home;Inicio
+VP_Last;My last page;Son sayfam;Моя последняя страница;Meine letzte Seite;La mia ultima pagina;Mi última página
+VP_Off;Off;Kapalı;Выкл.;Aus;Spento;Apagado
+VP_On;On;Açık;Вкл.;Ein;Acceso;Encendido
+VP_Blink;Blink;Yanıp sönsün;Мигают;Blinken;Lampeggianti;Parpadean
+VP_Steady;Steady;Sabit;Постоянно;Dauerhaft;Fissi;Fijas
+VP_Short;Short;Kısa;Коротко;Kurz;Breve;Corto
+VP_Long;Long;Uzun;Долго;Lang;Lungo;Largo
+VP_Note;Screen scale is set in User Settings. A user's own values are taken when they sign in, 'As for everyone' follows the panel's.;Ekran ölçeği Kullanıcı Ayarları'nda ayarlanır. Kullanıcının kendi değerleri oturum açtığında alınır, 'Herkes için olduğu gibi' panelinkini izler.;Масштаб экрана задаётся в разделе «Пользователи». Собственные значения пользователя применяются при входе, «Как для всех» следует настройкам панели.;Die Bildschirmskalierung wird unter Benutzer eingestellt. Eigene Werte eines Benutzers gelten ab seiner Anmeldung, 'Wie für alle' folgt denen des Panels.;La scala dello schermo si imposta in Utenti. I valori propri di un utente valgono dal suo accesso, 'Come per tutti' segue quelli del pannello.;La escala de pantalla se ajusta en Usuarios. Los valores propios de un usuario se aplican al iniciar sesión, 'Como para todos' sigue los del panel.
+VP_Everyone;Everyone (this panel);Herkes (bu panel);Все (эта панель);Alle (dieses Panel);Tutti (questo pannello);Todos (este panel)
+VP_Me;(me);(ben);(я);(ich);(io);(yo)
+VP_AsEveryone;As for everyone;Herkes için olduğu gibi;Как для всех;Wie für alle;Come per tutti;Como para todos
+Mot_Pick;Simple motion values:;Simple motion değerleri:;Значения Simple Motion:;Simple-Motion-Werte:;Valori Simple Motion:;Valores de Simple Motion:
+Mot_PickNone;None;Hiçbiri;Нет;Keine;Nessuno;Ninguno
+Mot_PickNote;read from the simple motion module (Un\G), read only;simple motion modülünden okunur (Un\G), salt okunur;читаются из модуля Simple Motion (Un\G), только чтение;aus dem Simple-Motion-Modul gelesen (Un\G), nur lesen;letti dal modulo Simple Motion (Un\G), sola lettura;leídos del módulo Simple Motion (Un\G), solo lectura
+Mot_AxisError;Axis error No.;Eksen hata No.;Номер ошибки оси;Achsfehler-Nr.;N. errore asse;N.º de error del eje
+Mot_AxisWarning;Axis warning No.;Eksen uyarı No.;Номер предупреждения оси;Achswarnung-Nr.;N. avviso asse;N.º de aviso del eje
+Mot_ServoAlarm;Servo alarm;Servo alarmı;Авария сервоусилителя;Servoalarm;Allarme servo;Alarma del servo
+Mot_OperationStatus;Axis operation status;Eksen çalışma durumu;Рабочее состояние оси;Achsbetriebszustand;Stato operativo asse;Estado de operación del eje
+Mot_HomeRequest;Home request;Referans isteği;Запрос возврата в исходную точку;Referenzfahrtanforderung;Richiesta di ritorno a zero;Solicitud de origen
+Mot_HomeComplete;Home complete;Referans tamamlandı;Возврат в исходную точку выполнен;Referenzfahrt abgeschlossen;Ritorno a zero completato;Origen completado
+Mot_ErrorDetected;Error detection;Hata algılandı;Обнаружена ошибка;Fehler erkannt;Errore rilevato;Error detectado
+Mot_WarningDetected;Warning detection;Uyarı algılandı;Обнаружено предупреждение;Warnung erkannt;Avviso rilevato;Aviso detectado
+Mot_PositioningComplete;Positioning complete;Konumlama tamamlandı;Позиционирование завершено;Positionierung abgeschlossen;Posizionamento completato;Posicionamiento completado
+Mot_CommandInPosition;Command in-position;Komut konumda;Команда в позиции;Befehl in Position;Comando in posizione;Comando en posición
+Mot_Busy;BUSY;BUSY (meşgul);BUSY (занят);BUSY (belegt);BUSY (occupato);BUSY (ocupado)
+Mot_ServoReady;Servo READY;Servo HAZIR;Серво ГОТОВ;Servo BEREIT;Servo PRONTO;Servo LISTO
+Mot_ServoOn;Servo ON;Servo AÇIK;Серво ВКЛ.;Servo EIN;Servo ON;Servo ON
+Mot_InPosition;In-position;Konumda;В позиции;In Position;In posizione;En posición
+Mot_TorqueLimiting;Torque limit;Tork sınırında;Ограничение момента;Drehmomentbegrenzung;Limite di coppia;Límite de par
+Mot_AbsoluteLost;Absolute position lost;Mutlak konum kayboldu;Абсолютная позиция потеряна;Absolutposition verloren;Posizione assoluta persa;Posición absoluta perdida
+Mot_ServoWarning;Servo warning;Servo uyarısı;Предупреждение сервоусилителя;Servowarnung;Avviso servo;Aviso del servo
+Mot_LowerLimit;Lower limit signal;Alt limit sinyali;Сигнал нижнего предела;Signal untere Grenze;Segnale limite inferiore;Señal de límite inferior
+Mot_UpperLimit;Upper limit signal;Üst limit sinyali;Сигнал верхнего предела;Signal obere Grenze;Segnale limite superiore;Señal de límite superior
+Mot_ProximityDog;Proximity dog signal;Yaklaşım (dog) sinyali;Сигнал датчика приближения (dog);Signal Referenznocken;Segnale camma di prossimità;Señal de leva de proximidad
+Mot_FeedCurrentValue;Feed current value;Komut konumu (feed);Текущее значение подачи;Vorschub-Istwert;Valore attuale di avanzamento;Valor actual de avance
+Mot_RealCurrentValue;Real current value;Gerçek konum;Реальное текущее значение;Realer Istwert;Valore attuale reale;Valor actual real
+Mot_DeviationCounter;Deviation counter;Sapma sayacı;Счётчик рассогласования;Schleppfehlerzähler;Contatore di deviazione;Contador de desviación
+Mot_TargetValue;Target value;Hedef değer;Целевое значение;Zielwert;Valore di destinazione;Valor objetivo
+Mot_Feedrate;Feedrate;İlerleme hızı;Скорость подачи;Vorschubgeschwindigkeit;Velocità di avanzamento;Velocidad de avance
+Mot_CurrentSpeed;Current speed;Anlık hız;Текущая скорость;Aktuelle Geschwindigkeit;Velocità attuale;Velocidad actual
+Mot_MotorSpeed;Motor rotation speed;Motor devri;Скорость вращения двигателя;Motordrehzahl;Velocità di rotazione del motore;Velocidad de giro del motor
+Mot_MotorCurrent;Motor current;Motor akımı;Ток двигателя;Motorstrom;Corrente del motore;Corriente del motor
+Mot_TorqueLimitValue;Torque limit stored value;Kayıtlı tork sınırı;Сохранённое значение ограничения момента;Gespeicherter Drehmomentgrenzwert;Limite di coppia memorizzato;Límite de par guardado
+Mot_RegenerativeLoad;Regenerative load ratio;Rejeneratif yük oranı;Коэффициент рекуперативной нагрузки;Rückspeiselastverhältnis;Rapporto di carico rigenerativo;Relación de carga regenerativa
+Mot_EffectiveLoad;Effective load torque;Efektif yük torku;Эффективный момент нагрузки;Effektives Lastmoment;Coppia di carico effettiva;Par de carga efectivo
+Mot_PeakTorque;Peak torque ratio;Tepe tork oranı;Пиковый момент;Spitzendrehmomentverhältnis;Rapporto di coppia di picco;Relación de par de pico
+Mot_UnitSetting;Unit setting;Birim ayarı;Единица измерения;Einheiteneinstellung;Impostazione unità;Ajuste de unidad
+Mot_PulsesPerRevolution;Pulses per rotation;Tur başına darbe;Импульсов на оборот;Impulse pro Umdrehung;Impulsi per giro;Pulsos por vuelta
+Mot_TravelPerRevolution;Movement amount per rotation;Tur başına hareket;Перемещение на оборот;Weg pro Umdrehung;Spostamento per giro;Desplazamiento por vuelta
+Mot_Backlash;Backlash compensation;Boşluk telafisi;Компенсация люфта;Umkehrspielausgleich;Compensazione del gioco;Compensación de holgura
+Mot_SoftLimitUpper;Software stroke limit, upper;Yazılım strok limiti, üst;Программный предел хода, верхний;Software-Hubgrenze, oben;Limite di corsa software, superiore;Límite de carrera por software, superior
+Mot_SoftLimitLower;Software stroke limit, lower;Yazılım strok limiti, alt;Программный предел хода, нижний;Software-Hubgrenze, unten;Limite di corsa software, inferiore;Límite de carrera por software, inferior
+Mot_SpeedLimit;Speed limit value;Hız sınırı;Предельная скорость;Geschwindigkeitsgrenze;Limite di velocità;Límite de velocidad
+Mot_AccelerationTime;Acceleration time 0;Hızlanma süresi 0;Время разгона 0;Beschleunigungszeit 0;Tempo di accelerazione 0;Tiempo de aceleración 0
+Mot_DecelerationTime;Deceleration time 0;Yavaşlama süresi 0;Время торможения 0;Verzögerungszeit 0;Tempo di decelerazione 0;Tiempo de deceleración 0
+Mot_HomeAddress;Home position address;Referans konum adresi;Адрес исходной точки;Referenzpunktadresse;Indirizzo della posizione di zero;Dirección de la posición de origen
+Mot_HomingSpeed;Home return speed;Referansa dönüş hızı;Скорость возврата в исходную точку;Referenzfahrgeschwindigkeit;Velocità di ritorno a zero;Velocidad de retorno al origen
+MotH_AxisError;Axis error;Eksen hata;Ошибка оси;Achsfehler;Errore asse;Error eje
+MotH_AxisWarning;Axis warn;Eksen uyarı;Предупр. оси;Achswarnung;Avviso asse;Aviso eje
+MotH_ServoAlarm;Servo alarm;Servo alarm;Авария серво;Servoalarm;Allarme servo;Alarma servo
+MotH_OperationStatus;Status;Durum;Состояние;Zustand;Stato;Estado
+MotH_HomeRequest;Home req.;Ref. isteği;Запрос нуля;Ref.-Anf.;Rich. zero;Sol. origen
+MotH_HomeComplete;Homed;Ref. tamam;Нуль найден;Referiert;Azzerato;En origen
+MotH_ErrorDetected;Error;Hata;Ошибка;Fehler;Errore;Error
+MotH_WarningDetected;Warning;Uyarı;Предупр.;Warnung;Avviso;Aviso
+MotH_PositioningComplete;Pos. done;Konum tamam;Поз. готово;Pos. fertig;Pos. fatto;Pos. hecho
+MotH_CommandInPosition;Cmd in-pos;Komut konumda;Ком. в поз.;Bef. in Pos.;Com. in pos.;Com. en pos.
+MotH_Busy;BUSY;BUSY;BUSY;BUSY;BUSY;BUSY
+MotH_ServoReady;Ready;Hazır;Готов;Bereit;Pronto;Listo
+MotH_ServoOn;Servo ON;Servo AÇIK;Серво ВКЛ.;Servo EIN;Servo ON;Servo ON
+MotH_InPosition;In-pos;Konumda;В поз.;In Pos.;In pos.;En pos.
+MotH_TorqueLimiting;Torq. lim.;Tork sın.;Огр. момента;Mom.-Grenze;Lim. coppia;Lím. par
+MotH_AbsoluteLost;Abs. lost;Mutlak kayıp;Абс. потеряна;Abs. verloren;Ass. persa;Abs. perdida
+MotH_ServoWarning;Servo warn;Servo uyarı;Предупр. серво;Servowarnung;Avviso servo;Aviso servo
+MotH_LowerLimit;Limit -;Limit -;Предел -;Grenze -;Limite -;Límite -
+MotH_UpperLimit;Limit +;Limit +;Предел +;Grenze +;Limite +;Límite +
+MotH_ProximityDog;Dog;Dog;Dog;Nocken;Camma;Leva
+MotH_FeedCurrentValue;Feed value;Komut konum;Подача;Vorschub-Ist;Avanzamento;Avance
+MotH_RealCurrentValue;Real value;Gerçek konum;Реальная поз.;Real-Ist;Reale;Real
+MotH_DeviationCounter;Deviation;Sapma;Рассогл.;Schleppfehler;Deviazione;Desviación
+MotH_TargetValue;Target;Hedef;Цель;Ziel;Destinazione;Objetivo
+MotH_Feedrate;Feedrate;İlerleme;Подача, скор.;Vorschub;Avanzamento;Avance
+MotH_CurrentSpeed;Speed;Hız;Скорость;Geschw.;Velocità;Velocidad
+MotH_MotorSpeed;Motor speed;Motor devri;Обороты;Drehzahl;Giri motore;Giro motor
+MotH_MotorCurrent;Current;Akım;Ток;Strom;Corrente;Corriente
+MotH_TorqueLimitValue;Torque lim.;Tork sınırı;Предел момента;Mom.-Grenzw.;Lim. coppia;Lím. par
+MotH_RegenerativeLoad;Regen. load;Rejen. yük;Рекуп. нагр.;Rückspeis.;Carico rig.;Carga reg.
+MotH_EffectiveLoad;Eff. load;Efektif yük;Эфф. нагр.;Eff. Last;Carico eff.;Carga ef.
+MotH_PeakTorque;Peak torque;Tepe tork;Пик момента;Spitzenmom.;Coppia picco;Par pico
+MotH_UnitSetting;Unit;Birim;Единица;Einheit;Unità;Unidad
+MotH_PulsesPerRevolution;Pulses / rev;Darbe / tur;Имп. / об;Impulse / U;Impulsi / giro;Pulsos / vuelta
+MotH_TravelPerRevolution;Travel / rev;Hareket / tur;Ход / об;Weg / U;Corsa / giro;Avance / vuelta
+MotH_Backlash;Backlash;Boşluk;Люфт;Umkehrspiel;Gioco;Holgura
+MotH_SoftLimitUpper;Soft limit +;Yazılım limit +;Прогр. предел +;SW-Grenze +;Lim. SW +;Lím. SW +
+MotH_SoftLimitLower;Soft limit -;Yazılım limit -;Прогр. предел -;SW-Grenze -;Lim. SW -;Lím. SW -
+MotH_SpeedLimit;Speed limit;Hız sınırı;Пред. скорость;Geschw.-Grenze;Lim. velocità;Lím. velocidad
+MotH_AccelerationTime;Acc. time;Hızlanma;Разгон;Beschl.-Zeit;T. acc.;T. acel.
+MotH_DecelerationTime;Dec. time;Yavaşlama;Торможение;Verz.-Zeit;T. dec.;T. decel.
+MotH_HomeAddress;Home addr.;Ref. adres;Адрес нуля;Ref.-Adresse;Ind. zero;Dir. origen
+MotH_HomingSpeed;Home speed;Ref. hızı;Скор. к нулю;Ref.-Geschw.;Vel. zero;Vel. origen
+MotSt_m4;Step error;Adım hatası;Ошибка шага;Schrittfehler;Errore di passo;Error de paso
+MotSt_m3;Step stopped;Adım durdu;Шаг остановлен;Schritt gestoppt;Passo fermato;Paso detenido
+MotSt_m2;Step standby;Adım bekliyor;Шаг в ожидании;Schritt wartet;Passo in attesa;Paso en espera
+MotSt_m1;Error;Hata;Ошибка;Fehler;Errore;Error
+MotSt_0;Standby;Bekliyor;Ожидание;Bereit;In attesa;En espera
+MotSt_1;Stopped;Durdu;Остановлена;Gestoppt;Fermo;Detenido
+MotSt_2;Interpolation;İnterpolasyon;Интерполяция;Interpolation;Interpolazione;Interpolación
+MotSt_3;JOG;JOG;Толчковый режим (JOG);JOG;JOG;JOG
+MotSt_4;Manual pulse;Manuel darbe;Ручной генератор;Handrad;Impulsi manuali;Pulsos manuales
+MotSt_5;Analyzing;Analiz ediliyor;Анализ;Analyse;Analisi;Analizando
+MotSt_6;Special start standby;Özel başlatma bekliyor;Ожидание особого пуска;Wartet auf Sonderstart;Attesa avvio speciale;Espera de inicio especial
+MotSt_7;Home return;Referansa dönüş;Возврат в исходную точку;Referenzfahrt;Ritorno a zero;Retorno al origen
+MotSt_8;Position control;Konum kontrolü;Управление положением;Lageregelung;Controllo di posizione;Control de posición
+MotSt_9;Speed control;Hız kontrolü;Управление скоростью;Drehzahlregelung;Controllo di velocità;Control de velocidad
+MotSt_10;Speed (speed-position);Hız (hız-konum);Скорость (скорость-положение);Geschwindigkeit (Geschw.-Lage);Velocità (velocità-posizione);Velocidad (velocidad-posición)
+MotSt_11;Position (speed-position);Konum (hız-konum);Положение (скорость-положение);Lage (Geschw.-Lage);Posizione (velocità-posizione);Posición (velocidad-posición)
+MotSt_12;Position (position-speed);Konum (konum-hız);Положение (положение-скорость);Lage (Lage-Geschw.);Posizione (posizione-velocità);Posición (posición-velocidad)
+MotSt_13;Speed (position-speed);Hız (konum-hız);Скорость (положение-скорость);Geschwindigkeit (Lage-Geschw.);Velocità (posizione-velocità);Velocidad (posición-velocidad)

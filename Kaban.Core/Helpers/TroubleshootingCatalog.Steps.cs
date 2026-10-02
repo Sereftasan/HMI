@@ -792,11 +792,11 @@ namespace Kaban.Core.Helpers
                 // the page's title: the alarm as the list shows it, else its bit's alarm text
                 m["Title"] = !string.IsNullOrWhiteSpace(AlarmText) ? e(AlarmText.Trim()) : e(c.ErrorText);
                 var when = Occurred ?? mv.AlarmTime;
-                m["AlarmTime"] = when.HasValue ? when.Value.ToString("HH:mm:ss", CultureInfo.InvariantCulture) : "";
-                m["AlarmDate"] = when.HasValue ? when.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) : "";
+                m["AlarmTime"] = when.HasValue ? ViewPreferences.TimeText(when.Value) : "";
+                m["AlarmDate"] = when.HasValue ? ViewPreferences.DateTimeText(when.Value) : "";
                 DateTime now;
                 try { now = Clock(); } catch { now = DateTime.Now; }
-                m["Created"] = now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+                m["Created"] = ViewPreferences.DateTimeText(now, false);
                 m["SeenRising"] = mv.SeenRising;
                 m["HmiAlarm"] = _failure > 0;
                 for (int i = 1; i <= 6; i++) m["Failure" + i] = _failure == i;

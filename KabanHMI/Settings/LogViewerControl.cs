@@ -123,7 +123,7 @@ namespace Kaban.UI.Settings
             foreach (var dp in new[] { _from, _to })
             {
                 dp.Format = DateTimePickerFormat.Custom;
-                dp.CustomFormat = "dd.MM.yyyy  HH:mm";
+                dp.CustomFormat = Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
                 dp.Width = 150;
                 dp.ValueChanged += (s, e) => { if (_setting) return; SelectPeriod(Period.Custom, false); Reload(); };
             }
@@ -701,7 +701,7 @@ namespace Kaban.UI.Settings
         {
             var e = Selected();
             _detail.Text = e == null ? "" :
-                (e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + "   " +
+                (Kaban.Core.Helpers.ViewPreferences.DateTimeText(e.Time) + "   " +
                  (HasSources ? SourceName(e.Source) + "   " : "") + e.User + "   " +
                  (e.Station.HasValue ? "PLC " + e.Station.Value + "   " : "") + KindName(e.Kind) + Environment.NewLine + e.Text.Replace("\n", Environment.NewLine));
         }
@@ -712,7 +712,7 @@ namespace Kaban.UI.Settings
             if (entry == null) return;
             switch (e.ColumnIndex)
             {
-                case 0: e.Value = entry.Time.ToString("yyyy-MM-dd  HH:mm:ss", CultureInfo.InvariantCulture); break;
+                case 0: e.Value = Kaban.Core.Helpers.ViewPreferences.DateText(entry.Time) + "  " + Kaban.Core.Helpers.ViewPreferences.TimeText(entry.Time); break;
                 case 1: e.Value = entry.User; break;
                 case 2: e.Value = entry.Station.HasValue ? entry.Station.Value.ToString(CultureInfo.InvariantCulture) : ""; break;
                 case 3: e.Value = KindName(entry.Kind); break;

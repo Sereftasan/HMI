@@ -251,7 +251,7 @@ namespace Kaban.UI.Controls
                     {
                         _alertTimer.Tick += (s, e) =>
                         {
-                            _alertPhase = !_alertPhase;
+                            _alertPhase = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !_alertPhase;
                             for (int i = _alerting.Count - 1; i >= 0; i--)
                             {
                                 if (_alerting[i].IsDisposed) { _alerting.RemoveAt(i); continue; }

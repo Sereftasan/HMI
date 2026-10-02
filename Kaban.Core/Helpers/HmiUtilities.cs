@@ -108,7 +108,8 @@ namespace Kaban.Core.Helpers
     public static class BlinkHelper
     {
         // Returns true for 500ms, then false for 500ms, synchronized globally.
-        public static bool IsBlinkActive => (Environment.TickCount % 1000) > 500;
+        // Blinking off (View Preferences): always the active half - the mark lit, steady.
+        public static bool IsBlinkActive => !ViewPreferences.BlinkingOn || (Environment.TickCount % 1000) > 500;
     }
 }
 

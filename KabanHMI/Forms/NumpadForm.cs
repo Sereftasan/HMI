@@ -257,7 +257,9 @@ namespace Kaban.UI.Forms
             bool action = label == "DEL" || label == "AC" || label == "ENT";
             var b = new Button
             {
-                Text = label,
+                // The decimal key as the screen writes it (View Preferences): the
+                // keypad itself keeps "." for what it hands back.
+                Text = label == "." ? Kaban.Core.Helpers.ViewPreferences.DecimalMark : label,
                 Location = new Point(x, y),
                 Size = new Size(w, h),
                 FlatStyle = FlatStyle.Flat,
@@ -428,6 +430,7 @@ namespace Kaban.UI.Forms
         {
             g.Clear(Readout);
             string shown = _text.Length == 0 ? "0" : _text;
+            if (!HexMode) shown = shown.Replace(".", Kaban.Core.Helpers.ViewPreferences.DecimalMark);
 
             var size = TextRenderer.MeasureText(g, shown, _entry.Font, Size.Empty,
                                                 TextFormatFlags.NoPadding);
@@ -486,17 +489,17 @@ namespace Kaban.UI.Forms
             if (Angle)
                 _range.Text = NumericLimits.Describe(Minimum, Maximum, true, DecimalPlaces);
             else if (Minimum.HasValue && Maximum.HasValue)
-                _range.Text = Minimum.Value.ToString(fmt) + " \u2264 \u2026 \u2264 " +
-                              Maximum.Value.ToString(fmt);
+                _range.Text = Minimum.Value.ToString(fmt, Kaban.Core.Helpers.ViewPreferences.NumberFormat) + " \u2264 \u2026 \u2264 " +
+                              Maximum.Value.ToString(fmt, Kaban.Core.Helpers.ViewPreferences.NumberFormat);
             // THE PLACEHOLDER STAYS on a one-sided limit too. "<= 1700.00" alone
             // reads as though the limit itself were being shown rather than the
             // bound on what is being typed; keeping the ellipsis in the same
             // position as the two-sided form means both say the same thing the
             // same way.
             else if (Minimum.HasValue)
-                _range.Text = Minimum.Value.ToString(fmt) + " \u2264 \u2026";
+                _range.Text = Minimum.Value.ToString(fmt, Kaban.Core.Helpers.ViewPreferences.NumberFormat) + " \u2264 \u2026";
             else if (Maximum.HasValue)
-                _range.Text = "\u2026 \u2264 " + Maximum.Value.ToString(fmt);
+                _range.Text = "\u2026 \u2264 " + Maximum.Value.ToString(fmt, Kaban.Core.Helpers.ViewPreferences.NumberFormat);
             else
                 _range.Text = HexMode ? "HEX" : "";
 

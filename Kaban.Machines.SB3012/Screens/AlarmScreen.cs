@@ -52,7 +52,7 @@ namespace Kaban.Machines.SB3012.Screens // Or wherever your UserControls are loc
                 Name = "ColTime",
                 DataPropertyName = "TriggerTime",
                 Width = 150,
-                DefaultCellStyle = new DataGridViewCellStyle { Format = "yyyy-MM-dd HH:mm:ss" }
+                DefaultCellStyle = new DataGridViewCellStyle { Format = Kaban.Core.Helpers.ViewPreferences.DateTimePattern() }
             });
 
             // 2. Code Column

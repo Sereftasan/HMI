@@ -215,6 +215,46 @@ namespace Kaban.UI.Forms
         {
             if (!_restoringPlace) _pendingPlace = null;
             SavePlace();
+            KeepUserPlace();
+        }
+
+        /// <summary>Where the signed-in user is, kept for their next sign-in (View Preferences: start on the last page).</summary>
+        private void KeepUserPlace()
+        {
+            var user = ViewPreferences.ActiveUser;
+            // As the panel's own place: not in a test's shell, not before the start is settled.
+            if (user == null || _restoringPlace || !RememberPlace || !_placeSettled || _placeFrozen || IsDisposed) return;
+            try { ViewPreferences.SetUserPlace(user, CapturePlace()); }
+            catch { /* a place not kept is only a place not kept */ }
+        }
+
+        /// <summary>
+        /// A sign-in starts where View Preferences say: HOME (the first page), or the
+        /// user's own LAST page. A page above their level is not opened.
+        /// </summary>
+        internal void ApplyStartPage()
+        {
+            var user = ViewPreferences.ActiveUser;
+            if (user == null || IsDisposed) return;
+            var start = ViewPreferences.Get(ViewPreferences.StartPage);
+            if (start == "Home")
+            {
+                _pendingPlace = null;
+                var home = _screenGroups.FirstOrDefault(kv => kv.Value != null && kv.Value.Role == Core.Machines.ScreenRoles.Home).Key;
+                if (home == null || ReferenceEquals(home, _currentScreen)) return;
+                Kaban.Core.Enums.SecurityLevel needed;
+                if (_screenLevels.TryGetValue(home, out needed) && !SecurityManager.HasAccess(needed)) return;
+                LoadScreen(home);
+                SyncMachineStrip();
+                RecordLocation();
+            }
+            else if (start == "Last")
+            {
+                var place = ViewPreferences.UserPlace(user);
+                if (place.Count == 0) { if (_pendingPlace != null) RestorePendingPlace(); return; }
+                _pendingPlace = null;
+                RestorePlace(new Dictionary<string, string>(place));
+            }
         }
 
         private bool _restoringPlace;

@@ -228,7 +228,7 @@ namespace Kaban.UI.Dashboard
             foreach (var p in new[] { _start, _end })
             {
                 p.Format = DateTimePickerFormat.Custom;
-                p.CustomFormat = "yyyy-MM-dd  HH:mm";
+                p.CustomFormat = Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
                 p.Width = SideInner;
                 p.Font = UiStyle.Body;
                 p.Margin = new Padding(0, 2, 0, 2);
@@ -387,7 +387,7 @@ namespace Kaban.UI.Dashboard
                 DateTime? was = _history.SelectedIndex > 0 && _history.SelectedIndex - 1 < _historyEnds.Count ? _historyEnds[_history.SelectedIndex - 1] : (DateTime?)null;
                 _history.Items.Clear();
                 _history.Items.Add(T("Dsh_SelectEnd", "Select End Date"));
-                foreach (var d in _historyEnds) _history.Items.Add(d.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture));
+                foreach (var d in _historyEnds) _history.Items.Add(Kaban.Core.Helpers.ViewPreferences.DateTimeText(d, false));
                 int i = was.HasValue ? _historyEnds.IndexOf(was.Value) + 1 : 0;
                 _history.SelectedIndex = Math.Max(0, i);
             }
@@ -605,8 +605,8 @@ namespace Kaban.UI.Dashboard
             _barText.Font = UiStyle.Body;
             var parts = new List<string>
             {
-                T("Dsh_Interval", "Log interval:") + "  " + _from.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) +
-                "  -  " + _to.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture)
+                T("Dsh_Interval", "Log interval:") + "  " + Kaban.Core.Helpers.ViewPreferences.DateTimeText(_from, false) +
+                "  -  " + Kaban.Core.Helpers.ViewPreferences.DateTimeText(_to, false)
             };
             if (_filter.Shifts.Count > 0)
                 parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + string.Join(", ", _filter.Shifts.Select(s => s.Text)));

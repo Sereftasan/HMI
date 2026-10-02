@@ -108,12 +108,14 @@ namespace Kaban.Core.Helpers
             }
 
             string fmt = "F" + decimalPlaces;
-            string text = val.ToString(fmt);
+            // The decimal separator the screen uses (View Preferences; Windows' unless chosen).
+            var nf = ViewPreferences.NumberFormat;
+            string text = val.ToString(fmt, nf);
 
             if (fillZero && digits > 0)
             {
                 bool isNeg = val < 0;
-                string absText = Math.Abs(val).ToString(fmt);
+                string absText = Math.Abs(val).ToString(fmt, nf);
                 while (absText.Length < digits) absText = "0" + absText;
                 text = (isNeg ? "-" : "") + absText;
             }

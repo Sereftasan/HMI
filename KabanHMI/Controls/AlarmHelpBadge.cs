@@ -317,7 +317,7 @@ namespace Kaban.UI.Controls
                 _blink = new Timer { Interval = 500 };
                 _blink.Tick += (s, e) =>
                 {
-                    _phase = !_phase;
+                    _phase = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !_phase;     // blinking off: the filled mark, steady
                     foreach (var x in _blinking.ToArray())
                     {
                         // A station that stopped answering cannot say the error has

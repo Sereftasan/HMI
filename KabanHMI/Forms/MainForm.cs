@@ -419,6 +419,15 @@ namespace Kaban.UI.Forms
             if (_currentScreen != null) SyncMachineStrip();
             SizeNavSpacer();
 
+            // WHERE A SIGN-IN STARTS (View Preferences): home, the user's own last
+            // page, or - the default - where the screen already is.
+            if (SecurityManager.CurrentLevel != SecurityLevel.None && IsHandleCreated &&
+                Kaban.Core.Helpers.ViewPreferences.Get(Kaban.Core.Helpers.ViewPreferences.StartPage) != "Stay")
+            {
+                BeginInvoke((Action)ApplyStartPage);
+                return;
+            }
+
             // The page left last time was above the level of whoever was signed in
             // at the start: it opens now, for the first sign-in that may open it.
             if (_pendingPlace != null && SecurityManager.CurrentLevel != SecurityLevel.None && IsHandleCreated)
@@ -556,6 +565,8 @@ namespace Kaban.UI.Forms
             // The alarms the HMI raises itself pulse the Alarms entry as the PLC's
             // machine error does (only that: the reset button stays the PLC's).
             AlarmManager.AlarmsChanged += OnHmiAlarmsChanged;
+            // A sound for a new alarm, when View Preferences ask for one.
+            Kaban.UI.Helpers.AlarmSound.Start();
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try
@@ -988,7 +999,7 @@ namespace Kaban.UI.Forms
             _loginBlink.Tick += (s, e) =>
             {
                 if (SecurityManager.CurrentLevel != SecurityLevel.None) { _loginBlink.Stop(); return; }
-                _loginBlinkOn = !_loginBlinkOn;
+                _loginBlinkOn = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !_loginBlinkOn;   // blinking off: steady blue
                 // pulse the ICON, not the background - a coloured plate on the black
                 // caption looked like a stray white button
                 _btnLoginTint = _loginBlinkOn ? Color.FromArgb(120, 190, 255) : Color.White;

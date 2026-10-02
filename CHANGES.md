@@ -4406,3 +4406,27 @@ and `UnitLookAndErrors` extended.
   sensors' checks (magnet, plug, cable), the I/O page beside B1, W_Magnet / W_Steel / W_Signal; 64 templates rebuilt.
 - Manual: the side panel's fit, Log Type, the step-by-step page's drawings and sides.
 - Tests: `EmojiButtons.cs`, `SideFit.cs`, `CylinderDrawings.cs` (new); `NumericBarView.cs`, `LogsAndReports.cs`.
+
+## 2026-10-02 - View Preferences; the simple motion module's values on Axis Settings
+
+- `Kaban.Core/Helpers/ViewPreferences.cs` (new): everyone's and each user's preferences (`View.cfg`, `Panel.<Key>=`,
+  `User=<name>;<Key>=`), the one in force for the signed-in user (Changed on a change and on a sign-in), and what they
+  mean: `NumberFormat`, `DecimalMark`, `DatePattern`, `TimePattern`, `DateTimeText` ..., `TableRowHeight`, `TableFontSize`,
+  `TooltipDelayMs`, `BlinkingOn`, `AlarmSoundOn`, `CaptionsLeft`, `AxisNamesLeft`, `MotionColumnKeys`, `UserPlace`.
+- `KabanHMI/Settings/ViewPreferencesControl.cs` (new): the HMI Settings tab (`ViewPreferencesPage`, after User Settings).
+- Applied: `PlcValueConverter.FormatString` (separator), `NumpadForm` (the key), the date and time of `LogViewerControl`,
+  `MachineAlarmScreen`, the machines' `AlarmScreen`, `SimulationMonitorForm`, `DashboardScreen` / `.Sections` / `Charts` /
+  `Data`, `PlcConnectionDiagnostics`, `TroubleshootingCatalog.Steps`, `ProfilesScreen.Details`; `UiStyle.GridLook` and
+  `ApplyTablePreferences` (open tables), tooltips' delay (`ApplyDelay`, the hover tip); `BlinkHelper.IsBlinkActive`,
+  `UiStyle.AlertPhase`, `MeterHMI`, `AlarmHelpBadge`, `ButtonHMI`, `MainForm`'s sign-in reminder (steady);
+  `AttachedDescription` (left column, `RepositionAll`); `AxisSettingHMI`'s name; `KabanHMI/Helpers/AlarmSound.cs` (new);
+  `MainForm.ApplyStartPage`, `KeepUserPlace`; `UserStore` removes a deleted user's preferences.
+- `Kaban.Core/Helpers/SimpleMotion.cs` (new): the FX5 simple motion module's buffer memory (Md / Pr items, per axis), devices
+  `Un\Gn`, formats. `PlcAddressHelper.OffsetAddress` moves a module address. `MitsubishiActUtl.TryReadMultiDirect` reads
+  module words in a batch of their own.
+- `AxisSettingHMI`: `MotionModuleNumber`, `ModuleAxisIndex` (category Simple motion, `PropertyOrder`), the page's
+  *Simple motion values* list (`axisMotionBar`), a column per value (`AddMotionColumns`, `RefreshMotionColumns`), their
+  headings; `KabanHMI/Controls/MotionValueHMI.cs` (new).
+- Translations: Set_ViewPrefs, Tip_View*, VP_*, Mot_*, MotH_*, MotSt_* (six languages).
+- Manual: View Preferences, the simple motion values, View.cfg.
+- Tests: `ViewPrefsAndMotion.cs` (new); `LastPlace.cs` (after sign-in).

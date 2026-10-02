@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -193,6 +194,33 @@ namespace Kaban.UI.Controls
         /// </summary>
         [Category(" Axis"), DefaultValue(0), Description("Axis number. An AxisUnitHMI with this number mirrors this row.")]
         public int AxisNumber { get; set; }
+
+        // ==================================================================
+        // THE SIMPLE MOTION MODULE (read straight from its buffer memory)
+        // ==================================================================
+
+        /// <summary>
+        /// The simple motion module this axis is on, numbered as GX Works3 numbers
+        /// it - the n of Un\G (U1 for the first module). 0: none. With
+        /// ModuleAxisIndex, the Axis Settings page can show the module's own values
+        /// of this axis (codes, status, flags, positions, speeds, its parameters)
+        /// - picked at the top of the page, read straight from the module.
+        /// </summary>
+        [Category(" Simple motion"), DefaultValue(0),
+         Description("The simple motion module's number as GX Works3 numbers it (the n of Un\\G; 1 for U1). 0: none.")]
+        public int MotionModuleNumber { get; set; }
+
+        /// <summary>This axis's number on its simple motion module: 1 - 8 (FX5-80SSC-S), 1 - 4 (FX5-40SSC-S). 0: none.</summary>
+        [Category(" Simple motion"), DefaultValue(0),
+         Description("This axis's number on the simple motion module: 1 - 8. 0: none.")]
+        public int ModuleAxisIndex { get; set; }
+
+        /// <summary>True when the module and the axis on it are both set.</summary>
+        [Browsable(false)]
+        public bool HasMotion
+        {
+            get { return MotionModuleNumber > 0 && ModuleAxisIndex >= 1 && ModuleAxisIndex <= SimpleMotion.MaxAxes; }
+        }
 
         /// <summary>The axis's reference (home) sensor.</summary>
         [Category(" Axis"), DefaultValue(""), Description("Reference sensor input. Lit on the jog button of the side below.")]
@@ -418,7 +446,8 @@ namespace Kaban.UI.Controls
             // RIGHT, so the name sits against the controls it labels. Left-aligned
             // it drifted away from its own row on the wider axis names and read as
             // belonging to the column of names rather than to this axis.
-            _axis.TextAlign = ContentAlignment.MiddleRight;
+            // (or LEFT, in a column of names, as View Preferences may say)
+            _axis.TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight;
             _axis.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
             Controls.Add(_axis);
             Column("Axis", x, WAxis);
@@ -551,8 +580,82 @@ namespace Kaban.UI.Controls
                     "Backlash, in the axis's unit to its last count.", ref x);
             }
 
+            AddMotionColumns(ref x);
+
             Width = Math.Max(Width, x);
             AlignHeaders();
+        }
+
+        // ---- the simple motion columns -------------------------------------------
+
+        /// <summary>The values picked at the top of the page (View Preferences), that the module has.</summary>
+        private static System.Collections.Generic.List<SimpleMotion.Item> PickedMotion()
+        {
+            var list = new System.Collections.Generic.List<SimpleMotion.Item>();
+            foreach (var k in ViewPreferences.MotionColumnKeys)
+            {
+                var item = SimpleMotion.Find(k);
+                if (item != null && !list.Contains(item)) list.Add(item);
+            }
+            return list;
+        }
+
+        /// <summary>Whether any axis row of the page is on a simple motion module.</summary>
+        private bool PageHasMotion()
+        {
+            if (HasMotion) return true;
+            if (Parent == null) return false;
+            foreach (Control c in Parent.Controls)
+            {
+                var row = c as AxisSettingHMI;
+                if (row != null && row.HasMotion) return true;
+            }
+            return false;
+        }
+
+        private string _motionBuilt = "";
+
+        /// <summary>
+        /// A column for each value picked, at the end of the row, read from the
+        /// module (Un\G): the codes as the code cells beside them (their help
+        /// behind them), the rest as MotionValueHMI. A row not on a module leaves
+        /// the space, so the columns line up.
+        /// </summary>
+        private void AddMotionColumns(ref int x)
+        {
+            var picked = PageHasMotion() ? PickedMotion() : new System.Collections.Generic.List<SimpleMotion.Item>();
+            _motionBuilt = string.Join(",", picked.Select(i => i.Key));
+            if (picked.Count == 0) return;
+            x += GroupGap;
+            foreach (var item in picked)
+            {
+                int w = item.Kind == SimpleMotion.Kind.Code ? WCode : SimpleMotion.ColumnWidth(item);
+                Column("Mot:" + item.Key, x, w);
+                if (!HasMotion) { x += w + Gap; continue; }
+                string device = SimpleMotion.Device(MotionModuleNumber, SimpleMotion.AddressOf(item, ModuleAxisIndex));
+                if (item.Kind == SimpleMotion.Kind.Code)
+                {
+                    var kind = item.Key == "ServoAlarm" ? AxisCodeKind.ServoAlarm
+                             : item.Key == "AxisWarning" ? AxisCodeKind.AxisWarning : AxisCodeKind.AxisError;
+                    var cell = AddCode(device, kind, ref x, item.Key == "AxisWarning" ? HexCodeHMI.CodeSeverity.Warning : HexCodeHMI.CodeSeverity.Alarm);
+                    cell.Name = "mot" + item.Key;
+                    continue;
+                }
+                var v = new MotionValueHMI(PlcNumber, item, MotionModuleNumber, ModuleAxisIndex, DecimalPlaces) { Name = "mot" + item.Key };
+                v.SetBounds(x, 6, w, RowHeight - 12);
+                Controls.Add(v);
+                x += w + Gap;
+            }
+        }
+
+        /// <summary>The motion columns picked changed: the row again, and the page read anew.</summary>
+        internal void RefreshMotionColumns()
+        {
+            var picked = PageHasMotion() ? string.Join(",", PickedMotion().Select(i => i.Key)) : "";
+            if (picked == _motionBuilt || Controls.Count == 0) { SyncMotionBar(); return; }
+            BuildRow();
+            SyncMotionBar();
+            Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
         }
 
         /// <summary>
@@ -659,6 +762,7 @@ namespace Kaban.UI.Controls
                 if (row != null && (top == null || row.Top < top.Top)) top = row;
             }
             if (top != this) return;                         // the top row speaks for the page
+            EnsureMotionBar(page);
 
             var labels = new System.Collections.Generic.List<Label>();
             foreach (Control c in page.Controls)
@@ -709,6 +813,175 @@ namespace Kaban.UI.Controls
                 l.Width = UiScale.For(this, col.Y);
                 l.Text = LanguageManager.GetString(h[1], h[2]);
             }
+
+            // THE SIMPLE MOTION COLUMNS: a heading each, in the same style - its
+            // short name over the column, the whole name in its tooltip.
+            foreach (Control c in page.Controls)
+            {
+                var tag = c.Tag as string;
+                if (c is Label && tag != null && tag.StartsWith(HeadingTag + "Mot:") && !_columns.ContainsKey(tag.Substring(HeadingTag.Length)))
+                    c.Visible = false;
+            }
+            foreach (var kv in _columns)
+            {
+                if (!kv.Key.StartsWith("Mot:")) continue;
+                var item = SimpleMotion.Find(kv.Key.Substring(4));
+                if (item == null) continue;
+                Label l;
+                if (!byKey.TryGetValue(kv.Key, out l))
+                {
+                    l = new Label
+                    {
+                        Tag = HeadingTag + kv.Key,
+                        AutoSize = false,
+                        AutoEllipsis = true,
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Font = style.Font,
+                        ForeColor = style.ForeColor,
+                        BackColor = style.BackColor
+                    };
+                    page.Controls.Add(l);
+                    byKey[kv.Key] = l;
+                }
+                l.Visible = true;
+                l.SetBounds(Left + UiScale.For(this, kv.Value.X), style.Top, UiScale.For(this, kv.Value.Y), style.Height);
+                l.Text = LanguageManager.GetString("MotH_" + item.Key, ShortHeading(item));
+                UiStyle.Tips().SetToolTip(l, LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")");
+            }
+        }
+
+        /// <summary>A column's heading in English: the name, shortened where it is long.</summary>
+        internal static string ShortHeading(SimpleMotion.Item item)
+        {
+            switch (item.Key)
+            {
+                case "AxisError": return "Axis error";
+                case "AxisWarning": return "Axis warn";
+                case "ServoAlarm": return "Servo alarm";
+                case "OperationStatus": return "Status";
+                case "HomeRequest": return "Home req.";
+                case "HomeComplete": return "Homed";
+                case "ErrorDetected": return "Error";
+                case "WarningDetected": return "Warning";
+                case "PositioningComplete": return "Pos. done";
+                case "CommandInPosition": return "Cmd in-pos";
+                case "Busy": return "BUSY";
+                case "ServoReady": return "Ready";
+                case "ServoOn": return "Servo ON";
+                case "InPosition": return "In-pos";
+                case "TorqueLimiting": return "Torq. lim.";
+                case "AbsoluteLost": return "Abs. lost";
+                case "ServoWarning": return "Servo warn";
+                case "LowerLimit": return "Limit -";
+                case "UpperLimit": return "Limit +";
+                case "ProximityDog": return "Dog";
+                case "FeedCurrentValue": return "Feed value";
+                case "RealCurrentValue": return "Real value";
+                case "DeviationCounter": return "Deviation";
+                case "TargetValue": return "Target";
+                case "Feedrate": return "Feedrate";
+                case "CurrentSpeed": return "Speed";
+                case "MotorSpeed": return "Motor speed";
+                case "MotorCurrent": return "Current";
+                case "TorqueLimitValue": return "Torque lim.";
+                case "RegenerativeLoad": return "Regen. load";
+                case "EffectiveLoad": return "Eff. load";
+                case "PeakTorque": return "Peak torque";
+                case "UnitSetting": return "Unit";
+                case "PulsesPerRevolution": return "Pulses / rev";
+                case "TravelPerRevolution": return "Travel / rev";
+                case "Backlash": return "Backlash";
+                case "SoftLimitUpper": return "Soft limit +";
+                case "SoftLimitLower": return "Soft limit -";
+                case "SpeedLimit": return "Speed limit";
+                case "AccelerationTime": return "Acc. time";
+                case "DecelerationTime": return "Dec. time";
+                case "HomeAddress": return "Home addr.";
+                case "HomingSpeed": return "Home speed";
+                default: return item.Title;
+            }
+        }
+
+        // ---- the bar at the top of the page: which of the module's values to show ----
+
+        internal const string MotionBarName = "axisMotionBar";
+
+        /// <summary>
+        /// THE PICK LIST AT THE TOP OF THE PAGE: the simple motion values to show as
+        /// columns - kept as the signed-in user's own (View Preferences). Only on a
+        /// page with an axis on a module; the page's controls move down to make room
+        /// for it (the designer's page is not changed).
+        /// </summary>
+        private void EnsureMotionBar(Control page)
+        {
+            var bar = page.Controls[MotionBarName];
+            if (!PageHasMotion())
+            {
+                if (bar != null) bar.Visible = false;
+                return;
+            }
+            if (bar != null)
+            {
+                bar.Visible = true;
+                SyncMotionBar();
+                return;
+            }
+            int top = int.MaxValue, left = int.MaxValue;
+            foreach (Control c in page.Controls) { top = Math.Min(top, c.Top); left = Math.Min(left, c.Left); }
+            if (top == int.MaxValue) { top = 0; left = 0; }
+            int shift = UiScale.For(page, 40);
+            foreach (Control c in page.Controls) c.Top += shift;
+
+            var flow = new FlowLayoutPanel
+            {
+                Name = MotionBarName, WrapContents = false, AutoSize = false, BackColor = page.BackColor,
+                Padding = new Padding(0), Margin = new Padding(0)
+            };
+            var caption = new Label
+            {
+                AutoSize = true, Text = LanguageManager.GetString("Mot_Pick", "Simple motion values:"),
+                Font = UiStyle.Body, ForeColor = Color.FromArgb(60, 66, 76), Margin = new Padding(0, 9, 6, 0)
+            };
+            var pick = new Kaban.UI.Dashboard.PickList(UiStyle.Tips())
+            {
+                Name = "motionPick", Size = new Size(460, 28), Margin = new Padding(0, 4, 8, 0),
+                AllText = LanguageManager.GetString("Mot_PickNone", "None")
+            };
+            pick.SetItems(SimpleMotion.Items.Select(i => new Kaban.UI.Dashboard.PickList.Item(
+                i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
+            pick.Select(ViewPreferences.MotionColumnKeys);
+            pick.Changed += (s, e) =>
+            {
+                // In the list's order; nothing to do when it is what is kept (a sync).
+                var chosen = pick.Selected;
+                var keys = SimpleMotion.Items.Where(i => chosen.Contains(i.Key)).Select(i => i.Key).ToList();
+                if (keys.SequenceEqual(ViewPreferences.MotionColumnKeys, StringComparer.OrdinalIgnoreCase)) return;
+                ViewPreferences.SetMotionColumnKeys(keys);
+            };
+            var note = new Label
+            {
+                AutoSize = true, Text = LanguageManager.GetString("Mot_PickNote", "read from the simple motion module (Un\\G), read only"),
+                Font = UiStyle.Body, ForeColor = Color.FromArgb(120, 126, 136), Margin = new Padding(0, 9, 0, 0)
+            };
+            flow.Controls.Add(caption);
+            flow.Controls.Add(pick);
+            flow.Controls.Add(note);
+            page.Controls.Add(flow);
+            flow.SetBounds(Math.Max(0, left), top, UiScale.For(page, 1100), UiScale.For(page, 36));
+        }
+
+        /// <summary>The bar's ticks as kept (another user signed in, the pick changed elsewhere).</summary>
+        private void SyncMotionBar()
+        {
+            var page = Parent;
+            if (page == null) return;
+            var bar = page.Controls[MotionBarName];
+            if (bar == null) return;
+            var pick = bar.Controls["motionPick"] as Kaban.UI.Dashboard.PickList;
+            if (pick == null) return;
+            var keys = ViewPreferences.MotionColumnKeys;
+            if (pick.Selected.SetEquals(keys)) return;
+            pick.Select(keys);
         }
 
         /// <param name="clampToTravel">
@@ -973,6 +1246,7 @@ namespace Kaban.UI.Controls
             {
                 _languageHooked = true;
                 LanguageManager.LanguageChanged += OnLanguageChanged;
+                ViewPreferences.Changed += OnViewPreferencesChanged;
             }
         }
 
@@ -986,9 +1260,18 @@ namespace Kaban.UI.Controls
             AlignHeaders();
         }
 
+        /// <summary>The name to its side, and the simple motion columns picked (View Preferences changed).</summary>
+        private void OnViewPreferencesChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnViewPreferencesChanged), sender, e); } catch { } return; }
+            _axis.TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight;
+            RefreshMotionColumns();
+        }
+
         protected override void Dispose(bool disposing)
         {
-            if (disposing && _languageHooked) LanguageManager.LanguageChanged -= OnLanguageChanged;
+            if (disposing && _languageHooked) { LanguageManager.LanguageChanged -= OnLanguageChanged; ViewPreferences.Changed -= OnViewPreferencesChanged; }
             base.Dispose(disposing);
         }
 

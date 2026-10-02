@@ -303,15 +303,15 @@ namespace Kaban.UI.Dashboard
         {
             foreach (var s in _sections.Values) s.Retranslate();
             RetranslateTabs();
-            _stateGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+            _stateGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, TableGrid.DateTimeFormat),
                                   new TableGrid.Col(T("Dsh_Description", "Description"), 0, null), new TableGrid.Col(T("Dsh_Duration", "Duration (min)"), 140, "0.000"));
             _cutGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Length", "Length") + " (mm)", 0, "0.0"),
                                 new TableGrid.Col(T("Dsh_LeftAngle", "Left Angle") + " (\u00b0)", 0, "0.0"),
                                 new TableGrid.Col(T("Dsh_RightAngle", "Right Angle") + " (\u00b0)", 0, "0.0"),
                                 new TableGrid.Col(T("Dsh_Quantity", "Quantity"), 0, "0"));
-            _eventGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+            _eventGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, TableGrid.DateTimeFormat),
                                   new TableGrid.Col(T("Dsh_Description", "Description"), 260, null), new TableGrid.Col(T("Dsh_Details", "Details"), 0, null));
-            _alarmGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
+            _alarmGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, TableGrid.DateTimeFormat),
                                   new TableGrid.Col(T("Dsh_Details", "Details"), 0, null));
             _eventFilter.Placeholder = T("Dsh_FilterEvents", "Select Events to Filter...");
             _alarmFilter.Placeholder = T("Dsh_FilterAlarms", "Select Alarms to Filter...");
@@ -382,8 +382,8 @@ namespace Kaban.UI.Dashboard
             _timelineChart.Bars = v.States.Select(s => new TimelineChart.Bar
             {
                 Row = s.Description, Start = s.Start, End = s.End, Color = StateMap.ColorOf(s.Code),
-                Tip = s.Description + "\n" + s.Start.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) + " - " +
-                      s.End.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) + "\n" +
+                Tip = s.Description + "\n" + Kaban.Core.Helpers.ViewPreferences.DateTimeText(s.Start, false) + " - " +
+                      Kaban.Core.Helpers.ViewPreferences.DateTimeText(s.End, false) + "\n" +
                       s.Minutes.ToString("0.000", CultureInfo.CurrentCulture) + " " + min
             }).ToList();
 
@@ -664,6 +664,17 @@ namespace Kaban.UI.Dashboard
                 public Col(string text, int width, string format) { Text = text; Width = width; Format = format; }
             }
 
+            /// <summary>A column of date and time, written as View Preferences say (and again when they change).</summary>
+            public const string DateTimeFormat = "{datetime}";
+
+            private readonly List<KeyValuePair<DataGridViewColumn, string>> _formatted = new List<KeyValuePair<DataGridViewColumn, string>>();
+            private EventHandler _prefsChanged;
+
+            private static string Resolve(string format)
+            {
+                return format == DateTimeFormat ? Kaban.Core.Helpers.ViewPreferences.DateTimePattern() : format;
+            }
+
             public readonly DataGridView Grid = new DataGridView();
             private readonly Label _empty = new Label();
             private List<object[]> _rows = new List<object[]>();
@@ -703,6 +714,7 @@ namespace Kaban.UI.Dashboard
             public void SetColumns(params Col[] cols)
             {
                 Grid.Columns.Clear();
+                _formatted.Clear();
                 int n = 0;
                 foreach (var c in cols)
                 {
@@ -712,7 +724,20 @@ namespace Kaban.UI.Dashboard
                         AutoSizeMode = c.Width > 0 ? DataGridViewAutoSizeColumnMode.None : DataGridViewAutoSizeColumnMode.Fill
                     };
                     if (c.Width > 0) col.Width = UiScale.For(this, c.Width);
-                    if (c.Format != null) col.DefaultCellStyle.Format = c.Format;
+                    if (c.Format != null) col.DefaultCellStyle.Format = Resolve(c.Format);
+                    if (c.Format == DateTimeFormat) _formatted.Add(new KeyValuePair<DataGridViewColumn, string>(col, c.Format));
+                    if (_prefsChanged == null)
+                    {
+                        _prefsChanged = (s2, e2) =>
+                        {
+                            if (IsDisposed) return;
+                            if (InvokeRequired) { try { BeginInvoke(_prefsChanged, s2, e2); } catch { } return; }
+                            foreach (var f in _formatted) if (f.Key.DataGridView != null) f.Key.DefaultCellStyle.Format = Resolve(f.Value);
+                            Grid.Invalidate();
+                        };
+                        Kaban.Core.Helpers.ViewPreferences.Changed += _prefsChanged;
+                        Disposed += (s3, e3) => Kaban.Core.Helpers.ViewPreferences.Changed -= _prefsChanged;
+                    }
                     if (c.Format != null && c.Format.StartsWith("0", StringComparison.Ordinal))
                         col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     Grid.Columns.Add(col);

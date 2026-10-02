@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -220,7 +221,8 @@ namespace Kaban.UI.Controls
                     _alertTimer = new Timer { Interval = 500 };
                     _alertTimer.Tick += (s, e) =>
                     {
-                        AlertPhase = !AlertPhase;
+                        // Blinking off (View Preferences): the red half, steady.
+                        AlertPhase = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !AlertPhase;
                         for (int i = _alerting.Count - 1; i >= 0; i--)
                         {
                             if (_alerting[i].IsDisposed) { _alerting.RemoveAt(i); continue; }
@@ -657,8 +659,12 @@ namespace Kaban.UI.Controls
             grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = GridRule;
-            grid.Font = Body;
-            grid.RowTemplate.Height = 26;
+            // The rows and letters as View Preferences say (normal: 26 px, the body font).
+            var font = TableFont;
+            int rowHeight = Kaban.Core.Helpers.ViewPreferences.TableRowHeight;
+            grid.Font = font;
+            grid.RowTemplate.Height = rowHeight;
+            Remember(grid);
             grid.DefaultCellStyle.BackColor = Color.White;
             grid.DefaultCellStyle.ForeColor = GridInk;
             grid.DefaultCellStyle.SelectionBackColor = GridSelection;
@@ -666,7 +672,7 @@ namespace Kaban.UI.Controls
             grid.DefaultCellStyle.Padding = new Padding(4, 0, 4, 0);
             grid.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             grid.EnableHeadersVisualStyles = false;
-            grid.ColumnHeadersDefaultCellStyle.Font = FontVariant(Body, FontStyle.Bold);
+            grid.ColumnHeadersDefaultCellStyle.Font = FontVariant(font, FontStyle.Bold);
             grid.ColumnHeadersDefaultCellStyle.BackColor = GridHeadBack;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = GridInk;
             grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = GridHeadBack;
@@ -677,7 +683,75 @@ namespace Kaban.UI.Controls
             grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             grid.RowHeadersDefaultCellStyle.BackColor = GridHeadBack;
             grid.RowHeadersDefaultCellStyle.SelectionBackColor = GridSelection;
-            foreach (DataGridViewRow r in grid.Rows) if (r.Height < 26 && !r.IsNewRow) r.Height = 26;
+            foreach (DataGridViewRow r in grid.Rows) if (r.Height < rowHeight && !r.IsNewRow) r.Height = rowHeight;
+        }
+
+        // ---- the tables' size, as View Preferences say -------------------------------
+
+        private static readonly Dictionary<float, Font> _tableFonts = new Dictionary<float, Font>();
+
+        /// <summary>A table's font: the body font, or a size smaller or larger (View Preferences).</summary>
+        public static Font TableFont
+        {
+            get
+            {
+                float size = Kaban.Core.Helpers.ViewPreferences.TableFontSize;
+                if (Math.Abs(size - 9.5f) < 0.01f) return Body;
+                Font f;
+                if (!_tableFonts.TryGetValue(size, out f)) _tableFonts[size] = f = UiScale.NewFont("Segoe UI", size);
+                return f;
+            }
+        }
+
+        private static readonly List<WeakReference> _tables = new List<WeakReference>();
+        private static bool _tablesHooked;
+
+        /// <summary>A table with the program's look, kept so a change of size reaches it at once.</summary>
+        private static void Remember(DataGridView grid)
+        {
+            lock (_tables)
+            {
+                _tables.RemoveAll(w => !w.IsAlive || ((DataGridView)w.Target).IsDisposed);
+                if (!_tables.Any(w => ReferenceEquals(w.Target, grid))) _tables.Add(new WeakReference(grid));
+                if (_tablesHooked) return;
+                _tablesHooked = true;
+            }
+            Kaban.Core.Helpers.ViewPreferences.Changed += (s, e) => ApplyTablePreferences();
+        }
+
+        /// <summary>The rows and letters of every open table, again (View Preferences changed).</summary>
+        public static void ApplyTablePreferences()
+        {
+            List<DataGridView> live;
+            lock (_tables) live = _tables.Select(w => w.Target as DataGridView).Where(g => g != null && !g.IsDisposed).ToList();
+            foreach (var grid in live)
+            {
+                var g = grid;
+                Action apply = () =>
+                {
+                    if (g.IsDisposed) return;
+                    var font = TableFont;
+                    if (!ReferenceEquals(g.Font, font)) g.Font = font;
+                    g.ColumnHeadersDefaultCellStyle.Font = FontVariant(font, FontStyle.Bold);
+                    int h = UiScale.For(g, Kaban.Core.Helpers.ViewPreferences.TableRowHeight);
+                    if (g.RowTemplate.Height == h) return;
+                    g.RowTemplate.Height = h;
+                    if (g.VirtualMode)
+                    {
+                        // Rows made from the template: made again (thousands of rows, one call).
+                        int n = g.RowCount;
+                        g.RowCount = 0;
+                        g.RowCount = n;
+                    }
+                    else foreach (DataGridViewRow r in g.Rows) if (!r.IsNewRow) r.Height = h;
+                };
+                try
+                {
+                    if (g.InvokeRequired) g.BeginInvoke(apply);
+                    else apply();
+                }
+                catch { /* a table closing meanwhile */ }
+            }
         }
 
         /// <summary>
@@ -1292,12 +1366,40 @@ namespace Kaban.UI.Controls
             return t;
         }
 
+        /// <summary>How soon a tooltip comes: View Preferences (normal: a second).</summary>
+        public static int TooltipDelayMs { get { return Kaban.Core.Helpers.ViewPreferences.TooltipDelayMs; } }
+
+        private static readonly List<WeakReference> _styledTips = new List<WeakReference>();
+        private static bool _tipsHooked;
+
+        /// <summary>The delay on a tooltip (AutomaticDelay first: setting it resets the others).</summary>
+        private static void ApplyDelay(ToolTip t)
+        {
+            int d = TooltipDelayMs;
+            t.AutomaticDelay = d;
+            t.InitialDelay = d;
+            t.ReshowDelay = d;                       // no instant re-pop moving along a row
+            t.AutoPopDelay = TooltipAutoPopMs;
+        }
+
         private static void Style(ToolTip t)
         {
-            t.InitialDelay = TooltipInitialDelayMs;
-            t.ReshowDelay = TooltipInitialDelayMs;   // no instant re-pop moving along a row;
-            t.AutoPopDelay = TooltipAutoPopMs;
-            t.AutomaticDelay = TooltipInitialDelayMs;
+            lock (_styledTips)
+            {
+                _styledTips.RemoveAll(w => !w.IsAlive);
+                _styledTips.Add(new WeakReference(t));
+                if (!_tipsHooked)
+                {
+                    _tipsHooked = true;
+                    Kaban.Core.Helpers.ViewPreferences.Changed += (s, e) =>
+                    {
+                        List<ToolTip> live;
+                        lock (_styledTips) live = _styledTips.Select(w => w.Target as ToolTip).Where(x => x != null).ToList();
+                        foreach (var x in live) ApplyDelay(x);
+                    };
+                }
+            }
+            ApplyDelay(t);
             // SHOWN WHETHER OR NOT ITS WINDOW IS ACTIVE. With ShowAlways off a tip
             // appears only while the window the tooltip belongs to is the active
             // one - and the program's ONE shared tooltip belongs to whichever
@@ -1392,7 +1494,7 @@ namespace Kaban.UI.Controls
                 at = e.Location;
                 if (timer == null)
                 {
-                    timer = new Timer { Interval = TooltipInitialDelayMs };
+                    timer = new Timer { Interval = TooltipDelayMs };
                     timer.Tick += (s2, e2) =>
                     {
                         timer.Stop();
@@ -1415,6 +1517,7 @@ namespace Kaban.UI.Controls
                     };
                 }
                 timer.Stop();
+                timer.Interval = TooltipDelayMs;     // as View Preferences say now
                 timer.Start();          // shown once the pointer RESTS for the delay
             };
             c.MouseLeave += (s, e) => { inside = false; at = nowhere; putDown(); };

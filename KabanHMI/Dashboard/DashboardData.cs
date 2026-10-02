@@ -150,8 +150,8 @@ namespace Kaban.UI.Dashboard
             {
                 if (!Ok) return Problem;
                 return string.Format(CultureInfo.CurrentCulture, LanguageText("Dsh_ProbeLogs", "{0:#,0} logs, {1} - {2}"), Logs,
-                                     First.HasValue ? First.Value.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) : "-",
-                                     Last.HasValue ? Last.Value.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) : "-");
+                                     First.HasValue ? Kaban.Core.Helpers.ViewPreferences.DateTimeText(First.Value, false) : "-",
+                                     Last.HasValue ? Kaban.Core.Helpers.ViewPreferences.DateTimeText(Last.Value, false) : "-");
             }
         }
 

@@ -452,6 +452,8 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>Unit Settings</td><td><span class="lvl l1">Operator</span></td><td>Units of measure (see 8).</td></tr>
 <tr><td>User Settings</td><td><span class="lvl l3">Admin</span></td><td>Users, passwords and levels. The last Admin cannot be removed or lowered.
   The <b>screen scale</b> each user asks for (below).</td></tr>
+<tr><td>View Preferences</td><td><span class="lvl l1">Operator</span></td><td>How the screen shows things &ndash; captions, numbers, dates, tables, tooltips,
+  the page after sign-in, an alarm's sound &ndash; for everyone or as a user's own (<a href="#viewprefs">below</a>).</td></tr>
 <tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
 <tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The settings of the logs: the HMI's log, and each machine's log database and its reports
   (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page.
@@ -482,6 +484,30 @@ when its buttons no longer fit, with <b>Back / Forward</b> always at its bottom.
 buttons grow and shrink with the screen; the program's own drawings (the machines, HMI Settings) are drawn at the size, the others enlarged.
 Windows' own message boxes keep Windows' size.</p>
 
+<h3 id="viewprefs">View Preferences</h3>
+<p>How the screen shows things. <b>Preferences for</b> at the top chooses whose: <b>Everyone (this panel)</b> &ndash; what is in force while
+nobody, or a user without values of their own, is signed in &ndash; or a <b>user's own</b>, taken the moment they sign in (as their screen scale).
+For a user each preference may be <b>As for everyone</b> (the panel's value is shown beside it) or one of their own.
+&#128190; keeps the page, &#8634; throws the changes away. Everything shown changes at once: no restart.</p>
+<table>
+<tr><th>Section</th><th>Preference</th><th>Choices (the first is how the program has always been)</th></tr>
+<tr><td rowspan="2">Captions</td><td>Field captions</td><td><b>Right</b>, against the field &middot; <b>Left</b>, the captions of the fields above each other starting together in one column
+  (the captions of the combos, number fields and buttons: their <code>DescriptionText</code>)</td></tr>
+<tr><td>Axis names</td><td>Right &middot; Left (the name at the start of each Axis Settings row)</td></tr>
+<tr><td rowspan="3">Numbers and dates</td><td>Decimal separator</td><td><b>As Windows</b> &middot; Point (1234.56) &middot; Comma (1234,56) &ndash; every number shown, the keypad's key
+  (the keypad still takes either)</td></tr>
+<tr><td>Date</td><td>2026-10-02 &middot; 02.10.2026 &middot; 10/02/2026 &ndash; the alarm lists, the logs, the dashboard, the step-by-step pages</td></tr>
+<tr><td>Time</td><td>24 hours (14:31) &middot; 12 hours (2:31 PM)</td></tr>
+<tr><td rowspan="2">Tables</td><td>Table rows</td><td>Normal (26 px) &middot; Compact (22) &middot; Large (32)</td></tr>
+<tr><td>Table text</td><td>Normal &middot; Small &middot; Large &ndash; every table, the open ones too</td></tr>
+<tr><td rowspan="4">Sign-in and alerts</td><td>After sign-in</td><td><b>Stay where the screen is</b> &middot; Home &middot; My last page (where that user was last)</td></tr>
+<tr><td>Sound for a new alarm</td><td><b>Off</b> &middot; On: once for each alarm that comes onto the list, not while it stays</td></tr>
+<tr><td>Attention marks</td><td><b>Blink</b> &middot; Steady (a code, a border or a lamp that blinks is shown steadily)</td></tr>
+<tr><td>Tooltips appear after</td><td>Normal (1 s) &middot; Short (0.4 s) &middot; Long (2 s)</td></tr>
+</table>
+<p>Who may change what: their own, anyone signed in; everyone's, <span class="lvl l2">Maintenance</span>; another user's,
+<span class="lvl l3">Admin</span>. A user removed on <i>User Settings</i> takes their preferences with them. The screen scale stays on <i>User Settings</i>.</p>
+
 <!-- ================================================================== -->
 <h2 id="params">10. Machine Parameters</h2>
 <p><span class="lvl l2">Maintenance</span> One tab per machine.</p>
@@ -498,6 +524,23 @@ Windows' own message boxes keep Windows' size.</p>
       <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
       <li>When the PLC asks for a reference (the <b>home request</b>, <code>HomeRequestAddress</code>), the <b>Ref</b> box's border <b>blinks red</b>:
           that is the axis to reference.</li>
+      <li><b>Simple motion values.</b> An axis driven by a simple motion module has the module's number (<code>MotionModuleNumber</code>: 1 for U1) and its
+          axis on it (<code>ModuleAxisIndex</code>: 1&ndash;8) &ndash; two properties of the row, set in the designer. Then the page has
+          <i>Simple motion values</i> at its top: tick what to see, and each one is a column at the end of every row, read straight from the
+          module's buffer memory (<code>U1\G2406</code> &hellip;). <b>Read only.</b>
+          <ul>
+           <li>Alarms and status: axis error and axis warning (as codes, their help behind them), servo alarm, the axis's operation status in words
+               (<i>Home return (7)</i>).</li>
+           <li>Flags, as lamps: home request, home complete, error and warning detected, positioning complete, command in-position, BUSY,
+               servo READY, servo ON, in-position, torque limit, absolute position lost, servo warning, the limit signals, the proximity dog.</li>
+           <li>Positions and speeds in the axis's unit (the module's unit setting: mm, inch, degree or pulse): feed and real current value,
+               deviation counter, target, feedrate, current speed, motor speed.</li>
+           <li>Loads: motor current, torque limit, regenerative, effective and peak load.</li>
+           <li>The module's parameters as set (read only): unit, pulses and movement per rotation, backlash, the software stroke limits,
+               speed limit, acceleration and deceleration time, home address and speed.</li>
+          </ul>
+          The ticks are the signed-in user's own (nobody signed in: the panel's). A row not on a module leaves the columns empty, so they stay in line;
+          a page with no axis on a module has no list. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
      </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link
@@ -704,6 +747,7 @@ the page only reads the log.</p>
 <tr><td>PLC Monitor lists, column layout, where side pages' own windows were (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
 <tr><td>The screen scale (panel, users, the one the program starts with)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>
 <tr><td>The side panel's width, the bar folded, the pages kept in a window</td><td><code>C:\ProgramData\KabanHMI\SidePanel.cfg</code></td></tr>
+<tr><td>View Preferences (everyone's and each user's, their last page, the simple motion values ticked)</td><td><code>C:\ProgramData\KabanHMI\View.cfg</code></td></tr>
 <tr><td>The page the program was on (reopened at the next start)</td><td><code>C:\ProgramData\KabanHMI\LastPage.cfg</code></td></tr>
 <tr><td>Inputs and outputs for the side page</td><td><code>IoList.csv</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>Where each point is on the machine's drawings (sensor tag and wire, relay, valve coil, air valve, hoses, cylinder)</td><td><code>Wiring.csv</code> beside the machine's program, built by <code>tools\build_wiring.py</code>

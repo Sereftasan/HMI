@@ -140,6 +140,7 @@ namespace Kaban.UI.Design
                 C("Commands", "CalibrateAddress", "GoToReferenceAddress", "HomeRequestAddress"),
                 C("Meters", "CurrentAddress", "CurrentDivisor", "CurrentFullScale", "ZDistanceAddress", "ZDistanceDivisor", "ZDistanceFullScale"),
                 C("Diagnostics", "ErrorAddress", "ServoAlarmAddress", "AxisAlarmAddress", "AxisWarningAddress"),
+                C("Simple motion", "MotionModuleNumber", "ModuleAxisIndex"),
                 C("Conditions", "VisibilityConditions"),
                 C("Security", "RequiredSecurity")),
 

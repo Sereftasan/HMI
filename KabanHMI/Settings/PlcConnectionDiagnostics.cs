@@ -120,8 +120,8 @@ namespace Kaban.UI.Settings
                 r.State = "● " + string.Format(LanguageManager.GetString("Diag_NoAnswerFor", "no answer for {0}"), Span(stale));
 
             r.Last = state.EverConnected && stale != TimeSpan.MaxValue
-                ? DateTime.Now.Subtract(stale).ToString("HH:mm:ss", CultureInfo.InvariantCulture) +
-                  (stale.TotalDays >= 1 ? "  (" + DateTime.Now.Subtract(stale).ToString("dd.MM", CultureInfo.InvariantCulture) + ")" : "")
+                ? Kaban.Core.Helpers.ViewPreferences.TimeText(DateTime.Now.Subtract(stale)) +
+                  (stale.TotalDays >= 1 ? "  (" + Kaban.Core.Helpers.ViewPreferences.ShortDateText(DateTime.Now.Subtract(stale)) + ")" : "")
                 : "—";
             if (!r.Live && !string.IsNullOrEmpty(state.ErrorCode))
                 r.Error = state.ErrorCode + "  " + ConnectionMonitor.DescribeCode(state.ErrorCode);

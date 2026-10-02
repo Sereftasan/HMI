@@ -59,6 +59,8 @@ class LP {
         typeof(SimulationMonitorForm).GetField("WatchFolder", Any).SetValue(null, dir);
         typeof(MainForm).GetField("SidePanelPath", Any).SetValue(null, Path.Combine(dir, "SidePanel.cfg"));
         DisplaySettings.SettingsPath = Path.Combine(dir, "Display.cfg");
+        ViewPreferences.SettingsPath = Path.Combine(dir, "View.cfg");
+        ViewPreferences.Reload();
         var prog = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly.GetType("Kaban.Machines.FA2010.Program");
         Func<string, MethodInfo> m = n => prog.GetMethod(n, BindingFlags.NonPublic | BindingFlags.Static);
         UnitManager.EnsureDefaults();
@@ -119,6 +121,33 @@ class LP {
         Pump(200);
         Check("  but not when the operator has gone elsewhere meanwhile", GroupOf(d).Role == ScreenRoles.Alarms, GroupOf(d).TitleFallback);
         d.Close();
+        Pump(100);
+
+        // View Preferences > Sign-in and alerts > After sign-in.
+        Console.WriteLine("--- where a sign-in starts (View Preferences) ---");
+        ViewPreferences.SetUser("ali", ViewPreferences.StartPage, "Home");
+        var e = Start("veli", SecurityLevel.Operator);
+        e.LoadScreen(Nav(e, ScreenRoles.Alarms));
+        e.RecordLocation();
+        Pump(100);
+        SecurityManager.Login("ali", SecurityLevel.Operator);
+        Pump(300);
+        Check("Home: ali signs in, the first page", GroupOf(e) != null && GroupOf(e).Role == ScreenRoles.Home, GroupOf(e) == null ? "none" : GroupOf(e).TitleFallback);
+        e.LoadScreen(Nav(e, ScreenRoles.HmiSettings));
+        e.RecordLocation();
+        Pump(100);
+        Check("  where he goes, kept as his", ViewPreferences.UserPlace("ali").Count > 0, string.Join(";", ViewPreferences.UserPlace("ali").Select(kv => kv.Key + "=" + kv.Value)));
+        SecurityManager.Login("veli", SecurityLevel.Operator);
+        Pump(300);
+        Check("Stay (the default): veli signs in, the page stays", GroupOf(e).Role == ScreenRoles.HmiSettings, GroupOf(e).TitleFallback);
+        e.LoadScreen(Nav(e, ScreenRoles.Alarms));
+        e.RecordLocation();
+        Pump(100);
+        ViewPreferences.SetUser("ali", ViewPreferences.StartPage, "Last");
+        SecurityManager.Login("ali", SecurityLevel.Operator);
+        Pump(300);
+        Check("My last page: ali back on HMI Settings", GroupOf(e).Role == ScreenRoles.HmiSettings, GroupOf(e).TitleFallback);
+        e.Close();
         Pump(100);
 
         try { Directory.Delete(dir, true); } catch { }

@@ -45,6 +45,10 @@ namespace Kaban.Core.Helpers
         {
             if (string.IsNullOrEmpty(baseAddress) || offset == 0) return baseAddress;
 
+            // A module's buffer memory word, "U1\G2400": the G number moves on.
+            var module = SimpleMotion.OffsetModuleAddress(baseAddress, offset);
+            if (module != null) return module;
+
             // Regex: Separate Letters (Type) from Numbers (Value)
             var match = Regex.Match(baseAddress, @"^([A-Za-z]+)([0-9A-Fa-f]+)$");
             if (!match.Success) return baseAddress;

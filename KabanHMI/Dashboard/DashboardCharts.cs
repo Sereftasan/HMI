@@ -350,8 +350,8 @@ namespace Kaban.UI.Dashboard
                     float x = X(t);
                     if (x < _plot.Left - 1 || x > _plot.Right + 1) continue;
                     g.DrawLine(pen, x, _plot.Top, x, _plot.Bottom);
-                    string top = t.ToString("HH:mm", CultureInfo.InvariantCulture);
-                    string bottom = lastDay == null || lastDay.Value != t.Date ? t.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : "";
+                    string top = Kaban.Core.Helpers.ViewPreferences.TimeText(t, false);
+                    string bottom = lastDay == null || lastDay.Value != t.Date ? Kaban.Core.Helpers.ViewPreferences.DateText(t) : "";
                     lastDay = t.Date;
                     var s1 = TextRenderer.MeasureText(top, Plain);
                     TextRenderer.DrawText(g, top, Plain, new Point(Inside(x - s1.Width / 2f, s1.Width, r), _plot.Bottom + Px(3)), Muted);

@@ -640,7 +640,7 @@ namespace Kaban.Machines.FA2010.Screens
         private static string ShortTime(string iso)
         {
             DateTime t;
-            return DateTime.TryParse(iso, CI, DateTimeStyles.RoundtripKind, out t) ? t.ToLocalTime().ToString("dd.MM.yyyy HH:mm", CI) : iso ?? "";
+            return DateTime.TryParse(iso, CI, DateTimeStyles.RoundtripKind, out t) ? Kaban.Core.Helpers.ViewPreferences.DateTimeText(t.ToLocalTime(), false) : iso ?? "";
         }
 
         internal List<string> SelectedRefCodes()

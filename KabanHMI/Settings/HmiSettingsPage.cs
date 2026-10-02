@@ -22,6 +22,8 @@ namespace Kaban.UI.Settings
             {
                 new UnitSettingsPage(),
                 new UserSettingsPage(),
+                // How the screen shows things - for everyone or per user.
+                new ViewPreferencesPage(),
                 new ImportSettingsPage(),
                 new LogSettingsPage(),
                 // One tab for the controllers: connections, their state, the

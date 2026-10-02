@@ -232,7 +232,7 @@ namespace Kaban.UI.Screens
                 }));
                 items.Reverse();                                  // newest first
                 foreach (var a in items)
-                    grid.Rows.Add(a.TriggerTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                    grid.Rows.Add(Kaban.Core.Helpers.ViewPreferences.DateTimeText(a.TriggerTime),
                                   a.ShownCode, a.Description, a.Severity);
                 empty.Visible = grid.Rows.Count == 0;
                 grid.Visible = grid.Rows.Count > 0;

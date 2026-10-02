@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Kaban.Core.Interfaces;
 using ActUtlTypeLib;
 
@@ -491,6 +492,26 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             if (addresses.Length == 0) return true;
             if (!_isConnected) { _lastOpOk = false; return false; }
 
+            // A MODULE'S BUFFER MEMORY (U1\G2406 - the simple motion values on Axis
+            // Settings) is read in a batch of its own: should this connection not
+            // take it in a random read, only those words fall back to one call
+            // each - the page's other devices keep their single round trip.
+            int modules = 0;
+            for (int i = 0; i < addresses.Length; i++) if (IsModule(addresses[i])) modules++;
+            if (modules > 0 && modules < addresses.Length)
+            {
+                var plainIdx = new System.Collections.Generic.List<int>();
+                var moduleIdx = new System.Collections.Generic.List<int>();
+                for (int i = 0; i < addresses.Length; i++) (IsModule(addresses[i]) ? moduleIdx : plainIdx).Add(i);
+                int[] a, b;
+                bool okA = TryReadMultiDirect(plainIdx.Select(i => addresses[i]).ToArray(), out a);
+                bool okB = TryReadMultiDirect(moduleIdx.Select(i => addresses[i]).ToArray(), out b);
+                for (int k = 0; k < plainIdx.Count; k++) values[plainIdx[k]] = a[k];
+                for (int k = 0; k < moduleIdx.Count; k++) values[moduleIdx[k]] = b[k];
+                _lastOpOk = okA;                  // the connection is judged by the PLC's own devices
+                return okA;
+            }
+
             // ONE COM CALL PER ADDRESS WAS THE PROBLEM.
             // With the real alarm list the batch grew to ~170 devices; at the ~15 ms
             // round trip this PLC reports that is over two seconds per scan, which
@@ -523,6 +544,11 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                 values[i] = v;
             }
             return allOk;
+        }
+
+        private static bool IsModule(string address)
+        {
+            return address != null && address.Length > 3 && (address[0] == 'U' || address[0] == 'u') && address.IndexOf("\\G", StringComparison.OrdinalIgnoreCase) > 0;
         }
 
         private int WriteDirect(string address, int value)

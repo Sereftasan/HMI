@@ -98,6 +98,7 @@ namespace Kaban.Core.Helpers
             {
                 Persist();
                 DisplaySettings.SetUserFactor(username, null);    // their magnifying factor goes with them
+                ViewPreferences.RemoveUser(username);             // and their view preferences
             }
             return ok;
         }

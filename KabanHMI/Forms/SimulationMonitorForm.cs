@@ -2907,8 +2907,8 @@ namespace Kaban.UI.Forms
                 return;
             }
             var t = c.Changed.Value;
-            string when = (t.Date == DateTime.Today ? "" : t.ToString("dd.MM ", CultureInfo.InvariantCulture)) +
-                          t.ToString("HH:mm:ss.f", CultureInfo.InvariantCulture);
+            string when = (t.Date == DateTime.Today ? "" : Kaban.Core.Helpers.ViewPreferences.ShortDateText(t) + " ") +
+                          Kaban.Core.Helpers.ViewPreferences.TimeText(t, true, 1);
             string who = c.ByHmi ? T("Mon_ByHmi", "HMI") : T("Mon_ByPlc", "PLC");
             Set(cell, when + "  " + who);
             var want = c.ByHmi ? ColChangedByHmi : ColChangedByPlc;
@@ -2917,16 +2917,16 @@ namespace Kaban.UI.Forms
             string tip = string.Format(T("Tip_MonChanged", "Changed from {0} to {1} at {2}."),
                 c.From.HasValue ? c.From.Value.ToString(CultureInfo.InvariantCulture) : "?",
                 c.Value.HasValue ? c.Value.Value.ToString(CultureInfo.InvariantCulture) : "?",
-                t.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture));
+                Kaban.Core.Helpers.ViewPreferences.DateTimeText(t, true, 3));
             if (c.ByHmi)
                 tip += "\r\n" + string.Format(T("Tip_MonChangedByHmi", "Written by the HMI at {0}, user {1}: {2}"),
-                    c.WriteTime.HasValue ? c.WriteTime.Value.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture) : "?",
+                    c.WriteTime.HasValue ? Kaban.Core.Helpers.ViewPreferences.TimeText(c.WriteTime.Value, true, 3) : "?",
                     c.WriteUser, c.WriteSource);
             else
                 tip += "\r\n" + T("Tip_MonChangedByPlc", "The HMI did not write this value just before: the PLC program (or the machine) changed it.");
             if (c.LastWrite.HasValue && !(c.ByHmi && c.WriteTime == c.LastWrite))
                 tip += "\r\n" + string.Format(T("Tip_MonLastWrite", "The HMI last wrote it at {0} ({1})."),
-                    c.LastWrite.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                    Kaban.Core.Helpers.ViewPreferences.DateTimeText(c.LastWrite.Value),
                     c.LastWriteValue.HasValue ? c.LastWriteValue.Value.ToString(CultureInfo.InvariantCulture) : T("Mon_PartWrite", "a bit of it"));
             tip += "\r\n" + T("Tip_MonWriteLog", "Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.");
             Tip(cell, tip);
