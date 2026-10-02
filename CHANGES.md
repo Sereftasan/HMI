@@ -4323,3 +4323,22 @@ and `UnitLookAndErrors` extended.
 - `tools/review/` *(new)*: every cylinder alarm's page in TR and EN with an index, for a review.
 - Manual: the step-by-step page's words in templates; where they are kept.
 - Tests: `tools/ui_test/CylinderTemplates.cs` (new).
+
+## 2026-10-02 - The Dashboard tidied up
+
+- `DashboardScreen`: no title; the info bar at the foot (`UpdateBar`, `BarText`, `BarIsRed`, the note `StatusText`): "Data
+  loading..." in red, then the log interval, the active shift and the entries the tab shows. Filter bar 228 px
+  (`_sideHost`: the filters scroll, `_sideFoot` keeps Export Report and the 📂 folder button at the foot); captions without
+  pictures; no refresh beside Latest (the same period again moves it up to now, `ChooseLatestAgain`); Shift Selection a
+  combo only; User / PLC / Source on every tab; no Dashboard settings button, no shift editor, no shift metrics.
+- `DashboardScreen.Sections.cs`: tabs without pictures, "Operations", "Logins"; `Section` with a `SectionHead` (left, as
+  wide as its words, a round sign, no frame), its filter under it, 18 px between sections; a headless section for the
+  Alarms tab; the flows keep room for the scroll bar (no horizontal bar).
+- `LogViewerControl` embedded: the search, clear and export above the table; `StatusChanged`; its own status line hidden.
+- `TimelineChart`: Ctrl + wheel zooms around the pointer (back in, forward out; caught for the chart under the pointer by
+  a message filter), the wheel alone scrolls the page (`WheelAt`); right-drag zooms to an interval (`ZoomTo`).
+- `DashboardSettingsControl`: the shifts (`AddShift`, `RemoveShift`, `ShiftTexts`, `ShiftPickers`), kept with the rest.
+- Translations: `Log_KindSignIn` (Logins), `Dsh_TabEvents` (Operations), `Dsh_ShiftSelection`, `Dsh_Interval`, `Dsh_Loading`,
+  `Dsh_TipTimeline`, `Dsh_SetDatabase` reworded; `Dsh_ShowInFolder`, `Dsh_SetShiftsHead`, `Dsh_SetShiftAdd`,
+  `Dsh_SetShiftRemove`, `Dsh_SetShiftsNote`, `Dsh_SetBadShift` new. Manual: the dashboard.
+- Tests: `DashboardPage.cs`, `LogsAndReports.cs` updated.

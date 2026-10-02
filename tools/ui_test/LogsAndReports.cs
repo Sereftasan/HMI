@@ -140,20 +140,21 @@ class LR {
         Check("the tabs: states, events, alarms, then the logs by kind, then all of them",
               keys.SequenceEqual(new[] { "states", "events", "alarms", "log_signin", "log_connection", "log_writes", "log_settings",
                                          "log_problems", "log_other", "log_all" }), string.Join(",", keys));
-        Check("  named", tabsDash.TabKeys[0].Text.EndsWith("Machine states") && tabsDash.TabKeys[1].Text.EndsWith("Operation events") &&
-              tabsDash.TabKeys[2].Text.EndsWith("Alarms") && tabsDash.TabKeys.Last().Text.EndsWith("All logs"),
+        Check("  named (no pictures; Operations, Logins)", tabsDash.TabKeys.Select(t => t.Text).SequenceEqual(new[] { "Machine states", "Operations", "Alarms",
+              "Logins", "Connection", "PLC writes", "Settings", "Problems", "Other", "All logs" }),
               string.Join(",", tabsDash.TabKeys.Select(t => t.Text)));
         Check("  the charts and tables on their tabs", tabsDash.SectionOf("state_pie").Parent.Parent.Tag as string == "states" &&
               tabsDash.SectionOf("cutting_details").Parent.Parent.Tag as string == "events" &&
               tabsDash.SectionOf("alarm_logs").Parent.Parent.Tag as string == "alarms");
-        Check("the log filters on the left: hidden on a machine tab", tabsDash.SelectedTabKey == "states" && !tabsDash.LogTable.SearchBox.Parent.Visible);
+        Check("user, PLC and source on the left, on a machine tab too", tabsDash.SelectedTabKey == "states" && tabsDash.LogTable.UserBox.Visible &&
+              tabsDash.LogTable.PlcBox.Visible && tabsDash.LogTable.SourceBox.Visible && !tabsDash.LogTable.Contains(tabsDash.LogTable.UserBox));
         // the range around the test's rows (the dashboard's range is in the machine's zone)
         tabsDash.SetRange(now.AddHours(-4), now.AddMinutes(5));
         Check("the machine's log read first", Until(() => !tabsDash.Loading && tabsDash.View != null && tabsDash.View.Alarms.Count == 1));
         tabsDash.SelectTab("log_all");
         Pump(100);
         var v = tabsDash.LogTable;
-        Check("  shown on a log tab", tabsDash.LogTable.SearchBox.Parent.Visible && v.Parent != null && (string)v.Parent.Tag == "log_all");
+        Check("the search with the log's table, above it", v.SearchBox.Visible && v.Contains(v.SearchBox) && v.Parent != null && (string)v.Parent.Tag == "log_all");
         Check("All logs: a Source column and filter (the HMI and this machine)", v.SourceColumnShown &&
               v.SourceChoices.SequenceEqual(new[] { "All sources", "HMI", "LOGTEST" }) && v.SourceBox.Visible, string.Join(",", v.SourceChoices));
         Func<int, IEnumerable<int>> rows = n => Enumerable.Range(0, n);
@@ -190,16 +191,16 @@ class LR {
         tabsDash.SelectTab("log_signin");
         Pump(100);
         Check("a kind's tab: that kind only", v.Parent != null && (string)v.Parent.Tag == "log_signin" && v.RowCount >= 1 &&
-              rows(v.RowCount).All(r => v.CellText(r, 3) == "Sign-in, users") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("logged in as setter")),
+              rows(v.RowCount).All(r => v.CellText(r, 3) == "Logins") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("logged in as setter")),
               string.Join(" | ", rows(v.RowCount).Select(r => v.CellText(r, 3) + ": " + v.CellText(r, 4))));
-        Check("  the Source filter on the all-logs tab only", !v.SourceBox.Visible);
+        Check("  the Source filter stays (on every tab)", v.SourceBox.Visible);
         tabsDash.SelectTab("log_other");
         Pump(100);
         Check("  Other: the HMI's parameter change, none of the machine's", rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("changed a parameter")) &&
               rows(v.RowCount).All(r => v.CellText(r, 3) == "Other"));
         tabsDash.SelectTab("alarms");
         Pump(50);
-        Check("back on a machine tab: the log filters go", !tabsDash.LogTable.SearchBox.Parent.Visible);
+        Check("back on a machine tab: the search goes with the table, the left filters stay", !v.SearchBox.Visible && v.UserBox.Visible);
 
         var shown = new List<AuditEntry>
         {

@@ -36,6 +36,7 @@ class DP {
         }
         throw new MissingMemberException(n);
     }
+    static bool Has(object o, string n) { try { Get(o, n); return true; } catch (MissingMemberException) { return false; } }
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(10); } }
     static void WaitFor(DashboardScreen page) {
         var until = DateTime.Now.AddSeconds(20);
@@ -248,6 +249,54 @@ class DP {
         bool zoomed = Math.Abs((page.Timeline.ViewTo - page.Timeline.ViewFrom).TotalHours - 12) < 0.01;
         page.Timeline.ResetView();
         Check("the time line zooms and comes back", zoomed && page.Timeline.ViewFrom == Day && page.Timeline.ViewTo == Day.AddDays(1));
+        page.SelectTab("states");
+        Pump(100);
+        var tl = page.Timeline;
+        var mid = new Point(tl.Width / 2, tl.Height / 2);
+        tl.WheelAt(mid, -120, false);
+        Check("  the wheel alone does not zoom (the page scrolls)", tl.ViewFrom == Day && tl.ViewTo == Day.AddDays(1));
+        tl.WheelAt(mid, -120, true);
+        double span1 = (tl.ViewTo - tl.ViewFrom).TotalHours;
+        Check("  Ctrl + the wheel turned back: in (0.8 of the span)", Math.Abs(span1 - 24 * 0.8) < 0.01, span1 + " h");
+        tl.WheelAt(mid, -360, true);
+        Check("  three notches at once: three steps", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalHours - 24 * Math.Pow(0.8, 4)) < 0.01);
+        tl.WheelAt(mid, 120, true);
+        Check("  turned forward: out again", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalHours - 24 * Math.Pow(0.8, 3)) < 0.01);
+        tl.ResetView();
+        tl.ZoomTo(Day.AddHours(9), Day.AddHours(9).AddMinutes(30));
+        Check("  an interval marked (right-drag): exactly it", tl.ViewFrom == Day.AddHours(9) && tl.ViewTo == Day.AddHours(9).AddMinutes(30));
+        tl.ZoomTo(Day.AddHours(9), Day.AddHours(9).AddSeconds(10));
+        Check("  never less than a minute", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalSeconds - 60) < 0.5);
+        tl.ResetView();
+
+        Console.WriteLine("-- the page's look (2 October)");
+        Check("no title above the tabs; the tabs' names without pictures", !Has(page, "_title") &&
+              page.TabKeys.Take(3).Select(t => t.Text).SequenceEqual(new[] { "Machine states", "Operations", "Alarms" }) &&
+              page.TabKeys.All(t => t.Text.All(ch => ch < 0x2190)), string.Join(",", page.TabKeys.Select(t => t.Text)));
+        var captions = ((System.Collections.IEnumerable)Get(page, "_sideCaptions")).Cast<Label>().Select(l => l.Text).ToList();
+        Check("the filters' captions without pictures, Shift Selection without (Optional)", captions.All(t => t.All(ch => ch < 0x2190)) &&
+              captions.Contains("Shift Selection") && captions.Contains("User") && captions.Contains("PLC") && captions.Contains("Source"),
+              string.Join(" | ", captions));
+        Check("a narrower filter bar", page.FilterBarWidth <= 240, page.FilterBarWidth + "");
+        Check("no refresh beside Latest, no shift buttons, no settings button", !Has(page, "_refresh") && !Has(page, "_editShifts") &&
+              !Has(page, "_settings") && !Has(page, "_metrics"));
+        var foot = page.ExportButton.Parent;
+        Check("Export Report at the foot of the bar, the folder beside it", foot.Dock == DockStyle.Bottom && page.FolderButton.Parent == foot &&
+              page.FolderButton.Left > page.ExportButton.Right && page.ExportButton.Text == "Export Report" && page.FolderButton.Text == "\U0001F4C2");
+        Check("the info bar: the interval and the entries the tab shows", page.BarText.StartsWith("Log interval:  2026-09-28 00:00  -  2026-09-29 00:00") &&
+              page.BarText.Contains("11 entries shown, 11 in the period") && !page.BarIsRed, page.BarText);
+        page.SelectTab("events");
+        Pump(50);
+        Check("  the events tab: its table's", page.BarText.Contains("6 entries shown, 6 in the period"), page.BarText);
+        var heads = new[] { "state_pie", "state_logs", "event_logs" }.Select(k => page.SectionOf(k).Head).ToList();
+        Check("the sections' headings: on the left, as wide as their words", heads.All(h => h.Left == 0 && h.Width < 500 && h.Width > 100),
+              string.Join(",", heads.Select(h => h.Left + "/" + h.Width)));
+        Check("  space between the sections", page.SectionOf("state_pie").Margin.Bottom >= 12);
+        Check("the event filter under its heading, on the left", page.EventFilter.Left == 0 && page.EventFilter.Parent.Top > page.SectionOf("event_logs").Head.Parent.Top);
+        Check("the alarms tab is its table: no heading, the filter at the left", page.SectionOf("alarm_logs").Head == null && page.SectionOf("alarm_logs").Open &&
+              page.AlarmFilter.Left == 0 && page.SectionOf("alarm_logs").Dock == DockStyle.Fill);
+        page.SelectTab("states");
+        Pump(50);
         Check("the event bars: one per kind", page.EventBars.Items.Count == 3 && page.EventBars.Items[0].Label == en(8) && page.EventBars.Items[0].Value == 4);
         Check("the state log: #, time, description, minutes", page.StateGrid.RowCount == 11 && (int)page.StateGrid.Cell(0, 0) == 1 &&
               (DateTime)page.StateGrid.Cell(0, 1) == Day && (double)page.StateGrid.Cell(0, 3) == 360);
@@ -280,12 +329,11 @@ class DP {
         page.ShiftBox.SelectedIndex = 1;   // 08:00 - 16:00
         WaitFor(page);
         Check("a shift chosen: its states only", page.View.Shift != null && page.View.States.Count == 4 && page.StateGrid.RowCount == 4);
+        Check("  the info bar names it", page.BarText.Contains("Active Shift: 08:00 - 16:00") && page.BarText.Contains("4 entries shown"), page.BarText);
         page.ShiftBox.SelectedIndex = 0;
         WaitFor(page);
-        page.ShowMetrics();
-        Pump(50);
-        Check("shift metrics: a row per shift, a column per event kind", page.MetricsGrid.Rows.Count == 3 && page.MetricsGrid.Columns.Count == 6 &&
-              (string)page.MetricsGrid.Rows[0].Cells[1].Value == 92.6.ToString("0.0", CultureInfo.CurrentCulture) + "%");
+        var shiftRows = DashboardData.Metrics(page.View, machine.Config.Shifts);
+        Check("shift metrics (the reports'): a row per shift", shiftRows.Count == 3 && Math.Abs(shiftRows[0].ActivePercent - 92.6) < 0.05);
 
         Check("the history list: the report times of the log", page.HistoryBox.Items.Count == 3 &&
               (string)page.HistoryBox.Items[1] == "2026-09-28 18:00", string.Join(" | ", page.HistoryBox.Items.Cast<object>()));
@@ -293,8 +341,16 @@ class DP {
         WaitFor(page);
         Check("a report chosen: from the report before it to it", page.RangeStart == Day.AddHours(8) && page.RangeEnd == Day.AddHours(18));
         page.LatestBox.SelectedIndex = page.LatestBox.Items.IndexOf("Hourly");
+        Check("while the log is read the bar says so, in red", page.Loading && page.BarIsRed && page.BarText == "Data loading...", page.BarText);
         WaitFor(page);
         Check("Latest hour: an hour up to now", page.RangeEnd - page.RangeStart == TimeSpan.FromHours(1) && page.HistoryBox.SelectedIndex == 0);
+        Check("  then black again", !page.BarIsRed && page.BarText.StartsWith("Log interval:"), page.BarText);
+        page.SetRange(Day, Day.AddDays(1), latest: "Hourly");
+        WaitFor(page);
+        page.ChooseLatestAgain();
+        WaitFor(page);
+        Check("the same Latest chosen again: up to now (no refresh button needed)", page.RangeEnd - page.RangeStart == TimeSpan.FromHours(1) &&
+              page.RangeEnd > Day.AddDays(2));
 
         page.SetRange(Day, Day.AddDays(1));
         WaitFor(page);
@@ -302,14 +358,15 @@ class DP {
         Check("Export Report writes the files of what is shown", exported.Count == 3 &&
               File.Exists(Path.Combine(dir, "page", "state_log_20260928_0000_20260928_2359.csv")), string.Join(" ", exported.Select(Path.GetFileName)));
         Check("the export is in the audit log", File.ReadAllText(Directory.GetFiles(AuditLogger.LogDirectory).First()).Contains("exported 3 report file"));
+        Check("  and in the info bar's note", page.StatusText.Contains("3 report files exported"), page.StatusText);
 
         Console.WriteLine("-- in Turkish");
         LanguageManager.ChangeLanguage("TR");
         WaitFor(page);
         Check("the descriptions follow the HMI's language", page.View.States.Any(s => s.Description == "\u00c7al\u0131\u015fma Aktif"));
-        Check("the page's texts too", ((Label)Get(page, "_title")).Text.Contains("Makine G\u00f6sterge Paneli") &&
-              page.SectionOf("alarm_logs").Title.Contains("Ar\u0131za Kay\u0131tlar\u0131") && (string)page.LatestBox.Items[5] == "G\u00fcnl\u00fck",
-              ((Label)Get(page, "_title")).Text);
+        Check("the page's texts too", page.TabKeys[1].Text == "\u0130\u015flemler" &&
+              page.SectionOf("alarm_logs").Title.Contains("Ar\u0131za Kay\u0131tlar\u0131") && (string)page.LatestBox.Items[5] == "G\u00fcnl\u00fck" &&
+              page.BarText.StartsWith("Kay\u0131t aral\u0131\u011f\u0131:"), page.TabKeys[1].Text + " / " + page.BarText);
         LanguageManager.ChangeLanguage("EN");
         WaitFor(page);
 
@@ -332,8 +389,7 @@ class DP {
 
         SecurityManager.Login("operator", SecurityLevel.Operator);
         Pump(100);
-        Check("below Maintenance: no settings, no shift editing, no folder", !((Button)Get(page, "_settings")).Enabled &&
-              !((Button)Get(page, "_editShifts")).Enabled && !((Button)Get(page, "_openFolder")).Enabled && ((Button)Get(page, "_export")).Enabled);
+        Check("below Maintenance: no folder; Export Report stays", !page.FolderButton.Enabled && page.ExportButton.Enabled);
         SecurityManager.Login("setter", SecurityLevel.Maintenance);
         Pump(100);
 
@@ -363,6 +419,21 @@ class DP {
               machine.Config.Schedule.Weekdays.SequenceEqual(new[] { "Wednesday" }) && machine.Config.Schedule.Time == "06:30");
         set.ZoneBox.Text = "Mars/Olympus";
         Check("a time zone this PC does not know is refused", !set.Save() && set.ProblemText.Contains("Mars/Olympus"));
+        set.ZoneBox.Text = "Europe/Istanbul";
+
+        Console.WriteLine("-- the shifts, in the settings");
+        Check("the shifts are listed", set.ShiftTexts.SequenceEqual(new[] { "08:00 - 16:00", "16:00 - 00:00", "00:00 - 08:00" }), string.Join(" | ", set.ShiftTexts));
+        set.RemoveShift(2);
+        set.ShiftPickers(1)[1].Value = DateTime.Today.AddHours(23).AddMinutes(30);
+        set.AddShift(TimeSpan.FromHours(23.5), TimeSpan.FromHours(8));
+        Check("taken away, changed, added - and kept", set.Save() &&
+              machine.Config.Shifts.Select(x => x.Text).SequenceEqual(new[] { "08:00 - 16:00", "16:00 - 23:30", "23:30 - 08:00" }),
+              string.Join(" | ", machine.Config.Shifts.Select(x => x.Text)));
+        Pump(300);
+        Check("  the dashboard's Shift Selection follows", page.ShiftBox.Items.Count == 4 && (string)page.ShiftBox.Items[3] == "23:30 - 08:00",
+              string.Join(" | ", page.ShiftBox.Items.Cast<object>()));
+        set.AddShift(TimeSpan.FromHours(10), TimeSpan.FromHours(10));
+        Check("  a shift that starts and ends at once is refused", !set.Save() && set.ProblemText.Contains("10:00 - 10:00"), set.ProblemText);
 
         Console.WriteLine("-- on the machine");
         var ctx = new Ctx();

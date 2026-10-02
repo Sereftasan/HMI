@@ -613,44 +613,50 @@ its states, its events, its alarms and its cuts, from the machine's <b>Industry 
 (<code>main_log</code> and <code>log_details</code>). It replaces the separate dashboard program and makes the same report files. Anyone may look;
 the page only reads the log.</p>
 <ul>
- <li><b>The range</b>, on the left: <b>Auto-Report History</b> (the times the automatic reports are made, from the first log to the last &ndash;
-     one picked shows the range that report covers), <b>Latest</b> (the last 15 minutes up to a year; &#128260; moves it up to now) or any
+ <li><b>The range</b>, on the filter bar at the left: <b>Auto-Report History</b> (the times the automatic reports are made, from the first log to the last &ndash;
+     one picked shows the range that report covers), <b>Latest</b> (the last 15 minutes up to a year; choosing the same one again moves it up to now) or any
      <b>Start</b> and <b>End</b>. The page opens on the last day. A range with nothing in it says what the database holds
      (<i>The database holds 12,345 logs, 2026-09-01 08:00 - 2026-10-01 09:12</i>) or why it cannot be read &ndash; a wrong file is seen at once.</li>
- <li><b>Shift</b>: pick one to see only its hours of each day (a shift that ends at or before its start ends the next day; a night shift that began
-     the day before the range still counts). &#9999;&#65039; edits the list <span class="lvl l2">Maintenance</span>; &#9889; shows the <b>shift metrics</b> at the top:
-     for each shift, the share of the time the machine was <i>active</i>, each kind of event and the alarms &ndash; counted by the time of day they began.</li>
- <li><b>The tabs</b>, beside the bar on the left: &#9201;&#65039; <b>Machine states</b> (the time distribution, the timeline and the state logs),
-     &#128200; <b>Operation events</b> (the occurrences, the cutting details and the event logs), &#128680; <b>Alarms</b> (the alarm logs) &ndash; a tab whose
-     sections are all switched off in the settings is not there &ndash; then the logs by kind: &#128100; <b>Sign-in, users</b>, &#128279; <b>Connection</b>,
-     &#9997;&#65039; <b>PLC writes</b> (with the PLC device writes), &#9881;&#65039; <b>Settings</b>, &#9888;&#65039; <b>Problems</b>, &#128221; <b>Other</b>,
-     and &#128218; <b>All logs</b>: the HMI's log and this machine's states, events and alarms in one table (<a href="#diag">The log table</a>).
-     The range and the shift are the page's for every tab (a shift chosen shows the HMI's entries of its hours too); on a log tab the bar on
-     the left adds the log's filters under them &ndash; &#128269; <b>Search the log</b>,
-     <b>User</b>, <b>PLC</b>, <b>Source</b> (on <i>All logs</i>), &#10006; clear and &#128228; export.</li>
- <li><b>The sections</b>, on their tabs, open and close with their heading and stay as you left them:
+ <li><b>Shift Selection</b>: pick one to see only its hours of each day (a shift that ends at or before its start ends the next day; a night shift that began
+     the day before the range still counts). The list is set in <b>HMI Settings &rsaquo; Logs and Reports</b> <span class="lvl l2">Maintenance</span>.</li>
+ <li><b>User</b>, <b>PLC</b> and <b>Source</b>, under them, are on the bar for every tab; today they narrow the log tabs.</li>
+ <li>At the foot of the bar, wherever the filters end: <b>Export Report</b> and, beside it, &#128194; <b>show in folder</b> <span class="lvl l2">Maintenance</span>.</li>
+ <li><b>The tabs</b>: <b>Machine states</b> (the time distribution, the timeline and the state logs), <b>Operations</b> (the occurrences, the cutting details
+     and the event logs), <b>Alarms</b> (the alarm table, with its filter at the top left) &ndash; a tab whose sections are all switched off in the settings is
+     not there &ndash; then the logs by kind: <b>Logins</b>, <b>Connection</b>, <b>PLC writes</b> (with the PLC device writes), <b>Settings</b>, <b>Problems</b>,
+     <b>Other</b>, and <b>All logs</b>: the HMI's log and this machine's states, events and alarms in one table (<a href="#diag">The log table</a>).
+     The range and the shift are the page's for every tab (a shift chosen shows the HMI's entries of its hours too). A log tab has its
+     <b>Search the log</b> above its table, with &#10006; clear and &#128228; export.</li>
+ <li><b>The info bar</b> at the foot of the page: <i>Data loading&hellip;</i> in red while the log is read, then the <b>log interval</b>, the <b>active shift</b>
+     (when one is chosen) and how many entries the tab on show lists; on its right, how many records were read and how long it took, or the last report written.</li>
+ <li><b>The sections</b>, on the Machine states and Operations tabs, open and close with their heading &ndash; the round sign shows which way &ndash; and stay
+     as you left them:
   <ul>
    <li><b>Machine State Time Distribution</b>: a slice per state, in the state's colour (active green, not active blue, pause yellow, error orange,
        emergency stop red, closed grey); the pointer on a slice gives its minutes and share.</li>
-   <li><b>Machine State Timeline</b>: the states on a time line. The wheel zooms around the pointer, dragging moves along, a double click shows the whole range.</li>
+   <li><b>Machine State Timeline</b>: the states on a time line. <kbd>Ctrl</kbd> + the wheel zooms around the pointer &ndash; turned back (towards you) in,
+       forward out; dragging with the <b>right</b> button marks an interval and zooms to it; dragging moves along; a double click shows the whole range.
+       The wheel alone scrolls the page.</li>
    <li><b>State Logs</b>: each state, when it began and how many minutes it lasted (cut to the range).</li>
    <li><b>Event Occurrences</b>: a bar per kind of event, on a logarithmic scale so a kind seen once shows beside one seen a thousand times.</li>
    <li><b>Cutting Details</b>: the pieces cut, grouped by length and angles, longest first; the heading gives the total length.
        (With <i>barcoded cutting logs only</i>, a cut without its barcode record is left out of the events.)</li>
-   <li><b>Event Logs</b> and <b>Alarm Logs</b>: every event with its details, every alarm with the errors that were on. &#128270; filters by kind &ndash;
-       each with how many there are; nothing ticked shows everything.</li>
+   <li><b>Event Logs</b>, and the <b>Alarms</b> tab: every event with its details, every alarm with the errors that were on. The filter above the table
+       (<i>Select Events to Filter&hellip;</i>, <i>Select Alarms to Filter&hellip;</i>) filters by kind &ndash; each with how many there are; nothing ticked
+       shows everything.</li>
   </ul>
   A click on a table heading sorts on it (again to reverse); <kbd>Ctrl</kbd>+<kbd>C</kbd> copies the selected rows.</li>
  <li>The descriptions are in the HMI's language. The times are the panel's, in the time zone of the settings (the log keeps UTC).</li>
- <li>&#11015;&#65039; <b>Export Report</b> writes the files of what is shown into the export folder: <code>event_log_&hellip;</code>, <code>alarm_log_&hellip;</code>,
+ <li><b>Export Report</b> writes the files of what is shown into the export folder: <code>event_log_&hellip;</code>, <code>alarm_log_&hellip;</code>,
      <code>state_log_&hellip;</code> (and the database tables, when the settings ask for them), named after the start and end
-     (<code>state_log_20260928_0000_20260928_2359.csv</code>). &#128194; opens the folder <span class="lvl l2">Maintenance</span>.</li>
+     (<code>state_log_20260928_0000_20260928_2359.csv</code>). &#128194; beside it opens the folder <span class="lvl l2">Maintenance</span>.</li>
  <li><b>Automatic reports</b>: while the program runs, the reports are made at the times of the schedule &ndash; every day at given times, on given weekdays,
      days of the month or dates of the year &ndash; each covering the time since the one before, in the report language. When the panel was off at
      a report time, that report is made when it is back on, before the latest one. Each is written in the audit log.</li>
- <li>&#9881;&#65039; <b>Dashboard settings</b> <span class="lvl l2">Maintenance</span> (also on <b>HMI Settings &rsaquo; Logs and Reports</b>, the machine chosen there):
-     the database file &ndash; &#128269; beside it shows what the file holds &ndash; and the time zone, barcoded cuts only, which sections the page has,
-     the export folder, the report language, the schedule, which files are made, and when the next automatic report is due. &#128190; keeps them.</li>
+ <li><b>The dashboard's settings</b> <span class="lvl l2">Maintenance</span> are on <b>HMI Settings &rsaquo; Logs and Reports</b> (the machine chosen there):
+     the database file &ndash; &#128269; beside it shows what the file holds &ndash; and the time zone, barcoded cuts only, the <b>shifts</b> (a start and an end
+     each, <i>Add a shift</i>, &#10006; takes one away), which sections the page has, the export folder, the report language, the schedule, which files are
+     made, and when the next automatic report is due. &#128190; keeps them.</li>
  <li>A range of more than 1.5 million log entries is not shown (the panel would run out of memory); the page says so &ndash; choose a shorter one.</li>
 </ul>
 

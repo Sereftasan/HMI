@@ -18,9 +18,10 @@ namespace Kaban.UI.Dashboard
     /// the page, and the reports (folder, language, which files, when). Nothing is
     /// kept until \U0001F4BE; \u21ba puts back what is kept.
     ///
-    /// Opened from HMI Settings > Logs and Reports (a machine's \u2699) and from the
-    /// dashboard page's own \u2699 - no longer a tab of each machine's Machine
-    /// Parameters (2 October): the machine's log and the HMI's are one subject.
+    /// On HMI Settings > Logs and Reports (the machine chosen there) - no longer a
+    /// tab of each machine's Machine Parameters, nor a window of the dashboard page
+    /// (2 October): the machine's log and the HMI's are one subject. The SHIFTS the
+    /// dashboard's Shift Selection lists are set here too.
     /// </summary>
     public sealed class DashboardSettingsControl : UserControl
     {
@@ -48,6 +49,8 @@ namespace Kaban.UI.Dashboard
         private readonly Label _problem = new Label();
         private readonly Label _probe = new Label();
         private Panel _timesRow, _weekdaysRow, _monthDaysRow, _annualRow, _timeRow;
+        private readonly FlowLayoutPanel _shiftRows = new FlowLayoutPanel();
+        private readonly List<DateTimePicker[]> _shiftPickers = new List<DateTimePicker[]>();
         private Button _save, _revert;
 
         /// <summary>Raised after the settings were kept.</summary>
@@ -89,6 +92,19 @@ namespace Kaban.UI.Dashboard
 
             Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
             CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");
+
+            // the shifts: each a start and an end; the dashboard's Shift Selection lists them
+            Heading("Dsh_SetShiftsHead", "\u23f1\ufe0f", "Shifts");
+            _shiftRows.FlowDirection = FlowDirection.TopDown;
+            _shiftRows.WrapContents = false;
+            _shiftRows.AutoSize = true;
+            _shiftRows.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            _shiftRows.Margin = new Padding(Caption + 8, 0, 0, 0);
+            _flow.Controls.Add(_shiftRows);
+            var addShift = UiStyle.TextButton(T("Dsh_SetShiftAdd", "Add a shift"), 0, (s, e) => AddShift(NextShiftStart(), NextShiftStart().Add(TimeSpan.FromHours(8))));
+            addShift.Margin = new Padding(Caption + 8, 4, 0, 2);
+            _flow.Controls.Add(addShift);
+            Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
 
             Heading("Dsh_SetSectionsHead", "\U0001F6E0\ufe0f", "Dashboard sections");
             var sectionTexts = new Dictionary<string, string[]>
@@ -250,6 +266,9 @@ namespace Kaban.UI.Dashboard
             _db.Text = c.DatabasePath;
             _zone.Text = c.TimeZoneName;
             _barcoded.Checked = c.BarcodedCuttingOnly;
+            foreach (var row in _shiftRows.Controls.Cast<Control>().ToList()) { _shiftRows.Controls.Remove(row); row.Dispose(); }
+            _shiftPickers.Clear();
+            foreach (var sh in c.Shifts) AddShift(sh.Start, sh.End);
             foreach (var kv in _sections) kv.Value.Checked = c.SectionActive(kv.Key);
             _exportDir.Text = c.ExportDirectory;
 
@@ -323,6 +342,14 @@ namespace Kaban.UI.Dashboard
             if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
             c.TimeZoneName = zone;
             c.BarcodedCuttingOnly = _barcoded.Checked;
+            var shifts = new List<DashboardConfig.Shift>();
+            foreach (var pair in _shiftPickers)
+            {
+                var sh = new DashboardConfig.Shift { Start = Hm(pair[0].Value), End = Hm(pair[1].Value) };
+                if (sh.Start == sh.End) problems.Add(T("Dsh_SetBadShift", "A shift cannot start and end at the same time:") + " " + sh.Text);
+                shifts.Add(sh);
+            }
+            c.Shifts = shifts;
             foreach (var kv in _sections) c.Set(kv.Key + "_active", kv.Value.Checked);
             c.ExportDirectory = _exportDir.Text.Trim();
             if (_reportLanguage.SelectedItem != null) c.ReportLanguage = (string)_reportLanguage.SelectedItem;
@@ -377,6 +404,64 @@ namespace Kaban.UI.Dashboard
             var h = Saved;
             if (h != null && ok) h(this, EventArgs.Empty);
             return ok;
+        }
+
+        private static TimeSpan Hm(DateTime t) { return new TimeSpan(t.Hour, t.Minute, 0); }
+
+        /// <summary>A new shift starts where the last one ends (08:00 when there is none).</summary>
+        private TimeSpan NextShiftStart()
+        {
+            if (_shiftPickers.Count == 0) return TimeSpan.FromHours(8);
+            return Hm(_shiftPickers[_shiftPickers.Count - 1][1].Value);
+        }
+
+        /// <summary>A shift's row: its start, its end, and a button that takes it away (kept with \U0001F4BE).</summary>
+        public void AddShift(TimeSpan start, TimeSpan end)
+        {
+            start = TimeSpan.FromMinutes(((long)start.TotalMinutes % 1440 + 1440) % 1440);
+            end = TimeSpan.FromMinutes(((long)end.TotalMinutes % 1440 + 1440) % 1440);
+            Func<TimeSpan, DateTimePicker> picker = t => new DateTimePicker
+            {
+                Format = DateTimePickerFormat.Custom, CustomFormat = "HH:mm", ShowUpDown = true, Width = 90, Font = UiStyle.Body,
+                Value = DateTime.Today + t
+            };
+            var a = picker(start);
+            var b = picker(end);
+            var pair = new[] { a, b };
+            var row = new Panel { Width = 300, Height = 38, Margin = new Padding(0, 1, 0, 1) };
+            a.Location = new Point(0, 5);
+            var dash = new Label { Text = "\u2013", AutoSize = true, Location = new Point(98, 8) };
+            b.Location = new Point(116, 5);
+            var remove = UiStyle.ToolButton("\u2716", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
+            {
+                _shiftPickers.Remove(pair);
+                _shiftRows.Controls.Remove(row);
+                row.Dispose();
+            });
+            remove.Location = new Point(216, 2);
+            row.Controls.AddRange(new Control[] { a, dash, b, remove });
+            row.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
+            _shiftPickers.Add(pair);
+            _shiftRows.Controls.Add(row);
+        }
+
+        /// <summary>The shifts on the page, "08:00 - 16:00" (tests).</summary>
+        public List<string> ShiftTexts
+        {
+            get { return _shiftPickers.Select(p => new DashboardConfig.Shift { Start = Hm(p[0].Value), End = Hm(p[1].Value) }.Text).ToList(); }
+        }
+
+        /// <summary>A shift's start and end pickers (tests).</summary>
+        public DateTimePicker[] ShiftPickers(int i) { return _shiftPickers[i]; }
+
+        /// <summary>Takes a shift away (tests: as its button does).</summary>
+        public void RemoveShift(int i)
+        {
+            var pair = _shiftPickers[i];
+            var row = pair[0].Parent;
+            _shiftPickers.RemoveAt(i);
+            _shiftRows.Controls.Remove(row);
+            row.Dispose();
         }
 
         /// <summary>Looks into the file in the box (on a thread; the result under it).</summary>

@@ -18,15 +18,18 @@ namespace Kaban.UI.Dashboard
     /// no second program is needed beside it: what the machine did over a range of
     /// time, from the log the logging service keeps (main_log / log_details).
     ///
-    /// On the left, the range: an automatic report's (Auto-Report History), the
-    /// latest 15 minutes to a year (Latest, \U0001F504 moves it up to now) or any
-    /// start and end; a shift to look at alone (\u270f edits the list, \u26a1 compares
-    /// them); the report files (\u2b07) and their folder (\U0001F4C2); the settings (\u2699).
+    /// On the left, the filters (2 October: no pictures on their captions, a
+    /// narrower bar): the range - an automatic report's (Auto-Report History), the
+    /// latest 15 minutes to a year (Latest; choosing it again moves it up to now)
+    /// or any start and end -, the shift, then the user, the controller and the
+    /// source of the log tabs. At the foot of the bar, wherever the filters end:
+    /// Export Report and, beside it, the folder the reports go to.
     ///
-    /// On the right, sections that open and close with their heading (and stay as
-    /// they were left): the time in each state (pie), the states on a time line,
-    /// the state log, the events by kind, the cuts, the events and the alarms -
-    /// the last two with a filter of their kinds.
+    /// On the right, the tabs (DashboardScreen.Sections.cs) and, at the foot of
+    /// the page, the info bar: "Data loading..." in red while the log is read,
+    /// then the log interval, the shift and the entries the tab on show lists.
+    /// The shifts and the rest of the settings are set in HMI Settings > Logs and
+    /// Reports.
     ///
     /// The log is read on a thread of its own; the page stays usable meanwhile.
     /// Descriptions are in the HMI's language (the machine's Translation_JSON.csv).
@@ -36,26 +39,25 @@ namespace Kaban.UI.Dashboard
         private readonly MachineDashboard _machine;
         private readonly ToolTip _tips = UiStyle.Tips();
 
-        // ---- the left side
+        // ---- the left side: the filters, the report at its foot
+        private readonly Panel _sideHost = new Panel();
         private readonly FlowLayoutPanel _side = new FlowLayoutPanel();
+        private readonly Panel _sideFoot = new Panel();
         private readonly Panel _main = new Panel();
-        /// <summary>The log tabs' filters on the left: words, user, PLC, source (on show with a log tab).</summary>
-        private readonly FlowLayoutPanel _logFilters = new FlowLayoutPanel();
-        private Control _logSource, _logSourceCaption;
         private readonly ComboBox _history = new ComboBox();
         private readonly ComboBox _latest = new ComboBox();
-        private Button _refresh;
+        private int _latestOpenedAt = -1;
         private readonly DateTimePicker _start = new DateTimePicker();
         private readonly DateTimePicker _end = new DateTimePicker();
         private readonly Label _rangeError = new Label();
         private readonly ComboBox _shift = new ComboBox();
-        private Button _editShifts, _compareShifts;
-        private readonly Panel _shiftEditor = new Panel();
-        private readonly DataGridView _metrics = new DataGridView();
-        private readonly Label _metricsEmpty = new Label();
-        private Button _export, _openFolder, _settings;
-        private readonly Label _status = new Label();
+        private Button _export, _openFolder;
         private readonly List<Label> _sideCaptions = new List<Label>();
+
+        // ---- the info bar at the foot of the page
+        private readonly Panel _bar = new Panel();
+        private readonly Label _barText = new Label();
+        private readonly Label _barNote = new Label();
 
         // ---- the range shown
         private DateTime _from, _to;
@@ -83,8 +85,9 @@ namespace Kaban.UI.Dashboard
 
             BuildMain();
             BuildSide();
+            BuildBar();
             Controls.Add(_main);
-            Controls.Add(_side);
+            Controls.Add(_sideHost);
 
             // the first range: the last day
             var now = Now();
@@ -146,15 +149,15 @@ namespace Kaban.UI.Dashboard
         // THE LEFT SIDE
         // ==================================================================
 
-        private const int SideWidth = 310;
-        private const int SideInner = SideWidth - 28;
+        private const int SideWidth = 228;
+        private const int SideInner = SideWidth - 22;
 
-        /// <summary>A caption of the left side: its picture, then its text in the HMI's language.</summary>
-        private Label SideCaption(string key, string icon, string text)
+        /// <summary>A caption of the left side, in the HMI's language (no picture: none of them has one).</summary>
+        private Label SideCaption(string key, string text)
         {
             var l = new Label
             {
-                AutoSize = false, Width = SideInner, Height = 22, Tag = new[] { key, text, icon },
+                AutoSize = false, Width = SideInner, Height = 22, Tag = new[] { key, text },
                 Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), Margin = new Padding(0, 10, 0, 2),
                 TextAlign = ContentAlignment.BottomLeft
             };
@@ -167,142 +170,128 @@ namespace Kaban.UI.Dashboard
             return new Label { AutoSize = false, Width = SideInner, Height = 1, BackColor = UiStyle.BorderColor, Margin = new Padding(0, 12, 0, 4) };
         }
 
-        private static Panel Row(int height, params Control[] items)
+        private ComboBox SideBox(ComboBox box)
         {
-            var p = new Panel { Width = SideInner, Height = height, Margin = new Padding(0, 2, 0, 2) };
-            p.Controls.AddRange(items);
-            return p;
+            box.DropDownStyle = ComboBoxStyle.DropDownList;
+            box.Width = SideInner;
+            box.Font = UiStyle.Body;
+            box.Margin = new Padding(0, 2, 0, 2);
+            return box;
         }
 
         private void BuildSide()
         {
-            _side.Dock = DockStyle.Left;
-            _side.Width = SideWidth;
+            var back = Color.FromArgb(240, 242, 246);
+            _sideHost.Dock = DockStyle.Left;
+            _sideHost.Width = SideWidth;
+            _sideHost.BackColor = back;
+
+            _side.Dock = DockStyle.Fill;
             _side.FlowDirection = FlowDirection.TopDown;
             _side.WrapContents = false;
             _side.AutoScroll = true;
-            _side.Padding = new Padding(12, 8, 8, 8);
-            _side.BackColor = Color.FromArgb(240, 242, 246);
+            _side.Padding = new Padding(10, 6, 6, 8);
+            _side.BackColor = back;
 
-            // auto-report history
-            _history.DropDownStyle = ComboBoxStyle.DropDownList;
-            _history.Width = SideInner;
-            _history.Font = UiStyle.Body;
-            _history.SelectedIndexChanged += (s, e) => { if (!_setting) FromHistory(); };
-            _side.Controls.Add(SideCaption("Dsh_AutoHistory", "\u23f3", "Auto-Report History"));
+            // the range: an automatic report's, the latest, or any start and end
+            SideBox(_history).SelectedIndexChanged += (s, e) => { if (!_setting) FromHistory(); };
+            _side.Controls.Add(SideCaption("Dsh_AutoHistory", "Auto-Report History"));
             _side.Controls.Add(_history);
 
-            // latest
-            _latest.DropDownStyle = ComboBoxStyle.DropDownList;
-            _latest.Width = SideInner - 50;
-            _latest.Font = UiStyle.Body;
-            _latest.Location = new Point(0, 0);
-            _latest.SelectedIndexChanged += (s, e) => { if (!_setting) FromLatest(); };
-            _refresh = UiStyle.ToolButton("\U0001F504", T("Dsh_Refresh", "Refresh the time interval"), _tips, (s, e) => FromLatest());
-            _refresh.Location = new Point(SideInner - 44, -3);
-            _refresh.Height = 30;
-            _side.Controls.Add(SideCaption("Dsh_Latest", "\U0001F4C5", "Latest"));
-            _side.Controls.Add(Row(28, _latest, _refresh));
+            SideBox(_latest).SelectedIndexChanged += (s, e) => { if (!_setting) FromLatest(); };
+            // the same period chosen again: up to now (there is no refresh button beside it)
+            _latest.DropDown += (s, e) => _latestOpenedAt = _latest.SelectedIndex;
+            _latest.DropDownClosed += (s, e) =>
+            {
+                if (_latest.SelectedIndex > 0 && _latest.SelectedIndex == _latestOpenedAt) BeginInvoke(new Action(FromLatest));
+                _latestOpenedAt = -1;
+            };
+            _side.Controls.Add(SideCaption("Dsh_Latest", "Latest"));
+            _side.Controls.Add(_latest);
 
-            // start and end
             foreach (var p in new[] { _start, _end })
             {
                 p.Format = DateTimePickerFormat.Custom;
-                p.CustomFormat = "yyyy-MM-dd   HH:mm";
+                p.CustomFormat = "yyyy-MM-dd  HH:mm";
                 p.Width = SideInner;
                 p.Font = UiStyle.Body;
+                p.Margin = new Padding(0, 2, 0, 2);
                 p.ValueChanged += (s, e) => { if (!_setting) FromPickers(); };
             }
-            _side.Controls.Add(SideCaption("Dsh_Start", "", "Start Date"));
+            _side.Controls.Add(SideCaption("Dsh_Start", "Start Date"));
             _side.Controls.Add(_start);
-            _side.Controls.Add(SideCaption("Dsh_End", "", "End Date"));
+            _side.Controls.Add(SideCaption("Dsh_End", "End Date"));
             _side.Controls.Add(_end);
             _rangeError.AutoSize = false;
             _rangeError.Width = SideInner;
-            _rangeError.Height = 22;
+            _rangeError.Height = 36;
             _rangeError.ForeColor = Color.Firebrick;
             _rangeError.Visible = false;
             _side.Controls.Add(_rangeError);
 
-            // the log tabs' filters - the log table's own boxes, laid out down the side
-            // (put on the side under the shift, below)
-            _logFilters.FlowDirection = FlowDirection.TopDown;
-            _logFilters.WrapContents = false;
-            _logFilters.AutoSize = true;
-            _logFilters.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            _logFilters.Margin = new Padding(0);
-            _logFilters.Padding = new Padding(0);
-            _logFilters.Visible = false;
-            _logFilters.Controls.Add(Rule());
-            _logFilters.Controls.Add(SideCaption("Dsh_LogSearch", "\uD83D\uDD0D", "Search the log"));
-            _log.SearchBox.Width = SideInner;
-            _log.SearchBox.Margin = new Padding(0, 2, 0, 2);
-            _logFilters.Controls.Add(_log.SearchBox);
+            // the shift: one combo (the list is set in HMI Settings > Logs and Reports)
+            SideBox(_shift).SelectedIndexChanged += (s, e) => { if (!_setting) Reload(false); };
+            _side.Controls.Add(SideCaption("Dsh_ShiftSelection", "Shift Selection"));
+            _side.Controls.Add(_shift);
+
+            // who and where: on every tab (the log tabs filter by them)
+            _side.Controls.Add(Rule());
             foreach (var f in new[] { new object[] { "Log_User", "User", _log.UserBox }, new object[] { "Log_Plc", "PLC", _log.PlcBox },
                                       new object[] { "Log_Source", "Source", _log.SourceBox } })
             {
-                var caption = SideCaption((string)f[0], "", (string)f[1]);
+                var caption = SideCaption((string)f[0], (string)f[1]);
                 caption.Margin = new Padding(0, 6, 0, 2);
-                var box = (ComboBox)f[2];
-                box.Width = SideInner;
-                box.Margin = new Padding(0, 2, 0, 2);
-                _logFilters.Controls.Add(caption);
-                _logFilters.Controls.Add(box);
-                if (box == _log.SourceBox) { _logSource = box; _logSourceCaption = caption; }
+                _side.Controls.Add(caption);
+                _side.Controls.Add(SideBox((ComboBox)f[2]));
             }
-            _log.ClearButton.Location = new Point(0, 0);
-            _log.ExportButton.Location = new Point(50, 0);
-            _logFilters.Controls.Add(Row(36, _log.ClearButton, _log.ExportButton));
 
-            _side.Controls.Add(Rule());
-
-            // the shift
-            _shift.DropDownStyle = ComboBoxStyle.DropDownList;
-            _shift.Width = SideInner - 100;
-            _shift.Font = UiStyle.Body;
-            _shift.SelectedIndexChanged += (s, e) => { if (!_setting) Reload(false); };
-            _editShifts = UiStyle.ToolButton("\u270f\ufe0f", T("Dsh_EditList", "Edit the list"), _tips, (s, e) => ToggleShiftPanel(true));
-            _compareShifts = UiStyle.ToolButton("\u26a1", T("Dsh_ShiftMetrics", "Shift metrics"), _tips, (s, e) => ToggleShiftPanel(false));
-            _editShifts.Location = new Point(SideInner - 94, -3);
-            _compareShifts.Location = new Point(SideInner - 46, -3);
-            _editShifts.Height = _compareShifts.Height = 30;
-            _side.Controls.Add(SideCaption("Dsh_ShiftSelection", "\u23f1\ufe0f", "Shift Selection (Optional)"));
-            _side.Controls.Add(Row(28, _shift, _editShifts, _compareShifts));
-
-            _shiftEditor.Width = SideInner;
-            _shiftEditor.Visible = false;
-            _shiftEditor.BorderStyle = BorderStyle.FixedSingle;
-            _shiftEditor.BackColor = Color.White;
-            _side.Controls.Add(_shiftEditor);
-            // under the range and the shift, which the log tabs follow too
-            _side.Controls.Add(_logFilters);
-
-            _side.Controls.Add(Rule());
-
-            // the reports
-            _export = new Button { Width = SideInner, Height = 36, Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), Margin = new Padding(0, 8, 0, 4),
-                                   BackColor = Color.FromArgb(255, 75, 75), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+            // the foot of the bar: Export Report and its folder, wherever the filters end
+            _sideFoot.Dock = DockStyle.Bottom;
+            _sideFoot.Height = 52;
+            _sideFoot.BackColor = back;
+            _openFolder = UiStyle.ToolButton("\U0001F4C2", T("Dsh_ShowInFolder", "Show in folder"), _tips, (s, e) => OpenFolder());
+            _openFolder.Height = 34;
+            _export = new Button
+            {
+                Height = 34, Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold),
+                BackColor = Color.FromArgb(255, 75, 75), ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand
+            };
             _export.FlatAppearance.BorderSize = 0;
             _export.Click += (s, e) => ExportNow();
             UiStyle.Round(_export);
-            _openFolder = new Button { Width = SideInner, Height = 34, Margin = new Padding(0, 4, 0, 4) };
-            _openFolder.Click += (s, e) => OpenFolder();
-            UiStyle.Round(_openFolder);
-            _settings = new Button { Width = SideInner, Height = 34, Margin = new Padding(0, 4, 0, 4) };
-            _settings.Click += (s, e) => OpenSettings();
-            UiStyle.Round(_settings);
-            _side.Controls.Add(_export);
-            _side.Controls.Add(_openFolder);
-            _side.Controls.Add(_settings);
+            _export.Location = new Point(10, 9);
+            _export.Width = SideInner - _openFolder.Width - 6;
+            _openFolder.Location = new Point(_export.Right + 6, 9);
+            _sideFoot.Controls.Add(_export);
+            _sideFoot.Controls.Add(_openFolder);
+            _sideFoot.Paint += (s, e) => { using (var pen = new Pen(UiStyle.BorderColor)) e.Graphics.DrawLine(pen, 10, 0, _sideFoot.Width - 8, 0); };
 
-            _status.AutoSize = false;
-            _status.Width = SideInner;
-            _status.Height = 90;
-            _status.ForeColor = Color.DimGray;
-            _status.Margin = new Padding(0, 10, 0, 0);
-            _side.Controls.Add(_status);
+            _sideHost.Controls.Add(_side);
+            _sideHost.Controls.Add(_sideFoot);
 
             FillShifts();
+        }
+
+        /// <summary>The info bar at the foot of the page: what is shown, or that it is being read.</summary>
+        private void BuildBar()
+        {
+            _bar.Dock = DockStyle.Bottom;
+            _bar.Height = 28;
+            _bar.BackColor = Color.FromArgb(248, 249, 251);
+            _bar.Padding = new Padding(12, 0, 12, 0);
+            _bar.Paint += (s, e) => { using (var pen = new Pen(UiStyle.GridRule)) e.Graphics.DrawLine(pen, 0, 0, _bar.Width, 0); };
+            _barText.Dock = DockStyle.Fill;
+            _barText.TextAlign = ContentAlignment.MiddleLeft;
+            _barText.AutoEllipsis = true;
+            _barText.ForeColor = UiStyle.GridInk;
+            _barNote.Dock = DockStyle.Right;
+            _barNote.AutoSize = true;
+            _barNote.TextAlign = ContentAlignment.MiddleRight;
+            _barNote.ForeColor = Color.FromArgb(110, 116, 126);
+            _barNote.Padding = new Padding(0, 6, 0, 0);
+            _bar.Controls.Add(_barText);
+            _bar.Controls.Add(_barNote);
+            _main.Controls.Add(_bar);
         }
 
         private void Retranslate()
@@ -310,30 +299,21 @@ namespace Kaban.UI.Dashboard
             foreach (var l in _sideCaptions)
             {
                 var k = (string[])l.Tag;
-                l.Text = (k[2].Length > 0 ? k[2] + " " : "") + T(k[0], k[1]);
+                l.Text = T(k[0], k[1]);
             }
             _rangeError.Text = T("Dsh_EndAfterStart", "End date must be after start date!");
-            _export.Text = "\u2b07\ufe0f " + T("Dsh_Export", "Export Report");
-            _openFolder.Text = "\U0001F4C2 " + T("Dsh_OpenFolder", "Open Export Folder");
-            _settings.Text = "\u2699\ufe0f " + T("Dsh_Settings", "Dashboard settings");
-            _tips.SetToolTip(_refresh, T("Dsh_Refresh", "Refresh the time interval"));
-            _tips.SetToolTip(_editShifts, T("Dsh_EditList", "Edit the list"));
-            _tips.SetToolTip(_compareShifts, T("Dsh_ShiftMetrics", "Shift metrics"));
-            _metricsEmpty.Text = T("Dsh_NoCompare", "No data available for comparison");
-            _metricsTitle.Text = "\u26a1 " + T("Dsh_ShiftMetrics", "Shift metrics");
+            _export.Text = T("Dsh_Export", "Export Report");
+            _tips.SetToolTip(_openFolder, T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory);
             FillLatest();
             FillHistoryItems();
             FillShifts();
             RetranslateMain();
+            UpdateBar();
         }
 
         private void ApplyAccess()
         {
-            bool maint = SecurityManager.HasAccess(SecurityLevel.Maintenance);
-            _editShifts.Enabled = maint;
-            _openFolder.Enabled = maint;
-            _settings.Enabled = maint;
-            if (!maint && _shiftEditor.Visible) ToggleShiftPanel(true);
+            _openFolder.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
         }
 
         // ---- the period lists
@@ -360,7 +340,6 @@ namespace Kaban.UI.Dashboard
                 foreach (var p in _periods) _latest.Items.Add(PeriodText(p.Label));
                 int i = was == null ? 0 : _periods.FindIndex(p => p.Label == was) + 1;
                 _latest.SelectedIndex = Math.Max(0, i);
-                _refresh.Enabled = _latest.SelectedIndex > 0;
             }
             finally { _setting = false; }
         }
@@ -420,7 +399,6 @@ namespace Kaban.UI.Dashboard
                 _shift.SelectedIndex = Math.Max(0, i);
             }
             finally { _setting = false; }
-            if (_shiftEditor.Visible) BuildShiftEditor();
         }
 
         /// <summary>The shift chosen (null: all).</summary>
@@ -448,11 +426,13 @@ namespace Kaban.UI.Dashboard
         private void FromLatest()
         {
             int i = _latest.SelectedIndex - 1;
-            _refresh.Enabled = i >= 0;
             if (i < 0 || i >= _periods.Count) return;
             var end = DashboardConfig.Minute(Now());
             SetRange(_periods[i].StartBefore(end), end, latest: _periods[i].Label);
         }
+
+        /// <summary>The Latest period chosen again: moved up to now (tests).</summary>
+        public void ChooseLatestAgain() { FromLatest(); }
 
         private void FromPickers()
         {
@@ -464,7 +444,6 @@ namespace Kaban.UI.Dashboard
             {
                 _history.SelectedIndex = 0;
                 _latest.SelectedIndex = 0;
-                _refresh.Enabled = false;
             }
             finally { _setting = false; }
             if (e > s) SetRange(s, e);
@@ -485,7 +464,6 @@ namespace Kaban.UI.Dashboard
                     int i = _periods.FindIndex(p => p.Label == latest);
                     _latest.SelectedIndex = i + 1;
                 }
-                _refresh.Enabled = _latest.SelectedIndex > 0;
                 _start.Value = Clamp(from);
                 _end.Value = Clamp(to);
                 _rangeError.Visible = false;
@@ -505,152 +483,57 @@ namespace Kaban.UI.Dashboard
         public DateTime RangeStart { get { return _from; } }
         public DateTime RangeEnd { get { return _to; } }
 
-        // ---- the shift editor and the shift metrics
+        // ==================================================================
+        // THE INFO BAR
+        // ==================================================================
 
         /// <summary>
-        /// \u270f opens the shift list under the shift choice; \u26a1 shows the shift metrics
-        /// at the top of the page (a table wider than the left side).
+        /// "Data loading..." in red while the log is read; then, in black, the log
+        /// interval, the shift chosen and the entries the tab on show lists.
         /// </summary>
-        private void ToggleShiftPanel(bool editor)
+        private void UpdateBar()
         {
-            if (editor)
+            if (_loading)
             {
-                bool show = !_shiftEditor.Visible;
-                _shiftEditor.Visible = show;
-                if (show) BuildShiftEditor();
-                _editShifts.Text = show ? "\u270f\ufe0f\u25b4" : "\u270f\ufe0f";
-            }
-            else
-            {
-                _metricsShown = !_metricsShown;
-                _compareShifts.Text = _metricsShown ? "\u26a1\u25b4" : "\u26a1";
-                FillMetrics();
-                FitWidths();
-            }
-        }
-
-        private bool _metricsShown;
-
-        private void BuildShiftEditor()
-        {
-            _shiftEditor.SuspendLayout();
-            foreach (Control c in _shiftEditor.Controls.Cast<Control>().ToList()) { _shiftEditor.Controls.Remove(c); c.Dispose(); }
-            int y = UiScale.Px(6), rowH = UiScale.Px(34);
-            int w = _shiftEditor.ClientSize.Width;
-            int pickW = (w - UiScale.Px(70)) / 2;
-            var shifts = Config.Shifts;
-            Func<TimeSpan, DateTimePicker> picker = t => new DateTimePicker
-            {
-                Format = DateTimePickerFormat.Custom, CustomFormat = "HH:mm", ShowUpDown = true, Width = pickW, Font = UiStyle.Body,
-                Value = DateTime.Today + t
-            };
-            for (int i = 0; i < shifts.Count; i++)
-            {
-                int index = i;
-                var a = picker(shifts[i].Start);
-                var b = picker(shifts[i].End);
-                a.Location = new Point(UiScale.Px(6), y);
-                b.Location = new Point(UiScale.Px(12) + pickW, y);
-                EventHandler changed = (s, e) =>
-                {
-                    var list = Config.Shifts;
-                    if (index >= list.Count) return;
-                    list[index] = new DashboardConfig.Shift { Start = a.Value.TimeOfDay, End = b.Value.TimeOfDay };
-                    list[index].Start = new TimeSpan(list[index].Start.Hours, list[index].Start.Minutes, 0);
-                    list[index].End = new TimeSpan(list[index].End.Hours, list[index].End.Minutes, 0);
-                    _machine.Change(c => c.Shifts = list);
-                    FillShiftsKeepEditor();
-                };
-                a.ValueChanged += changed;
-                b.ValueChanged += changed;
-                var del = new Button { Text = "\u274c", Width = UiScale.Px(40), Height = a.Height, Location = new Point(w - UiScale.Px(46), y) };
-                _tips.SetToolTip(del, T("Dsh_Delete", "Delete from the list"));
-                del.Click += (s, e) =>
-                {
-                    var list = Config.Shifts;
-                    if (index < list.Count) list.RemoveAt(index);
-                    _machine.Change(c => c.Shifts = list);
-                    FillShifts();
-                    Reload(false);
-                };
-                _shiftEditor.Controls.AddRange(new Control[] { a, b, del });
-                y += rowH;
-            }
-            var na = picker(TimeSpan.Zero);
-            var nb = picker(TimeSpan.Zero);
-            y += UiScale.Px(8);
-            na.Location = new Point(UiScale.Px(6), y);
-            nb.Location = new Point(UiScale.Px(12) + pickW, y);
-            var add = new Button { Text = "\u2795", Width = UiScale.Px(40), Height = na.Height, Location = new Point(w - UiScale.Px(46), y) };
-            _tips.SetToolTip(add, T("Dsh_Add", "Add to the list"));
-            add.Click += (s, e) =>
-            {
-                var list = Config.Shifts;
-                list.Add(new DashboardConfig.Shift
-                {
-                    Start = new TimeSpan(na.Value.Hour, na.Value.Minute, 0),
-                    End = new TimeSpan(nb.Value.Hour, nb.Value.Minute, 0)
-                });
-                _machine.Change(c => c.Shifts = list);
-                FillShifts();
-            };
-            _shiftEditor.Controls.AddRange(new Control[] { na, nb, add });
-            _shiftEditor.Height = y + rowH + UiScale.Px(4);
-            _shiftEditor.ResumeLayout();
-        }
-
-        /// <summary>The shift list changed from the editor: the choices follow, the editor stays as it is.</summary>
-        private void FillShiftsKeepEditor()
-        {
-            _setting = true;
-            try
-            {
-                int was = _shift.SelectedIndex;
-                _shifts = Config.Shifts;
-                _shift.Items.Clear();
-                _shift.Items.Add(T("Dsh_AllShifts", "All Shifts"));
-                foreach (var s in _shifts) _shift.Items.Add(s.Text);
-                _shift.SelectedIndex = Math.Min(Math.Max(0, was), _shift.Items.Count - 1);
-            }
-            finally { _setting = false; }
-            if (_shift.SelectedIndex > 0) Reload(false);
-        }
-
-        private void FillMetrics()
-        {
-            _metricsTitle.Visible = _metricsShown;
-            if (!_metricsShown) { _metrics.Visible = _metricsEmpty.Visible = false; return; }
-            var v = _view;
-            var shifts = Config.Shifts;
-            if (v == null || shifts.Count == 0 || v.Empty)
-            {
-                _metrics.Visible = false;
-                _metricsEmpty.Visible = true;
+                _barText.ForeColor = Color.FromArgb(200, 30, 30);
+                _barText.Text = T("Dsh_Loading", "Data loading...");
                 return;
             }
-            var rows = DashboardData.Metrics(v, shifts);
-            var kinds = v.Events.Select(e => e.Description).Distinct().OrderBy(x => x, StringComparer.Ordinal).ToList();
-            _metrics.Columns.Clear();
-            _metrics.Columns.Add("shift", T("Dsh_Shift", "Shift"));
-            _metrics.Columns.Add("active", T("Dsh_Active", "Active"));
-            foreach (var k in kinds) _metrics.Columns.Add("", k);
-            _metrics.Columns.Add("alarm", T("Dsh_Alarm", "Alarm"));
-            foreach (DataGridViewColumn c in _metrics.Columns) c.SortMode = DataGridViewColumnSortMode.NotSortable;
-            foreach (var m in rows)
+            var parts = new List<string>
             {
-                var cells = new List<object> { DashboardConfig.Hm(m.Shift.Start) + "-" + DashboardConfig.Hm(m.Shift.End),
-                                               m.ActivePercent.ToString("0.0", CultureInfo.CurrentCulture) + "%" };
-                foreach (var k in kinds)
-                {
-                    int n;
-                    cells.Add(m.Events.TryGetValue(k, out n) ? n : 0);
-                }
-                cells.Add(m.Alarms);
-                _metrics.Rows.Add(cells.ToArray());
+                T("Dsh_Interval", "Log interval:") + "  " + _from.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) +
+                "  -  " + _to.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture)
+            };
+            var shift = SelectedShift;
+            if (shift != null) parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + shift.Text);
+            var shown = ShownText();
+            if (shown.Length > 0) parts.Add(shown);
+            _barText.ForeColor = UiStyle.GridInk;
+            _barText.Text = string.Join("     \u00b7     ", parts);
+        }
+
+        /// <summary>What the tab on show lists: "12 entries shown, 40 in the period".</summary>
+        private string ShownText()
+        {
+            var key = SelectedTabKey;
+            if (LogTabs.Any(t => t.Key == key)) return _log != null ? _log.StatusText : "";
+            var v = _view;
+            if (v == null) return "";
+            string format = T("Log_Status", "{0} entries shown, {1} in the period");
+            switch (key)
+            {
+                case "states": return string.Format(CultureInfo.CurrentCulture, format, _stateGrid.RowCount, v.States.Count);
+                case "events": return string.Format(CultureInfo.CurrentCulture, format, _eventGrid.RowCount, v.Events.Count);
+                case "alarms": return string.Format(CultureInfo.CurrentCulture, format, _alarmGrid.RowCount, v.Alarms.Count);
             }
-            _metrics.Height = _metrics.ColumnHeadersHeight + _metrics.Rows.Count * _metrics.RowTemplate.Height + UiScale.Px(22);
-            _metrics.Visible = true;
-            _metricsEmpty.Visible = false;
+            return "";
+        }
+
+        /// <summary>A note at the right of the info bar: how long the read took, a report written, a problem (red).</summary>
+        private void SetStatus(string text, bool problem = false)
+        {
+            _barNote.Text = (text ?? "").Replace("\n", "  -  ");
+            _barNote.ForeColor = problem ? Color.Firebrick : Color.FromArgb(110, 116, 126);
         }
 
         // ==================================================================
@@ -681,13 +564,14 @@ namespace Kaban.UI.Dashboard
                 _loaded = null;
                 _loadedKey = "";
                 Show(null, T("Dsh_NoDatabase", "The database is not found:") + " " + (string.IsNullOrWhiteSpace(path) ? "-" : path) +
-                           (SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in the dashboard settings (\u2699).") : ""));
+                           (SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in HMI Settings > Logs and Reports.") : ""));
                 return;
             }
 
             var cached = !fromDatabase && _loaded != null && _loadedKey == key ? _loaded : null;
             _loading = true;
-            SetStatus(T("Dsh_Loading", "Loading data..."));
+            SetStatus("");
+            UpdateBar();
             var watch = Stopwatch.StartNew();
             Task.Run(() =>
             {
@@ -702,6 +586,7 @@ namespace Kaban.UI.Dashboard
             {
                 if (IsDisposed || gen != _generation) return;
                 _loading = false;
+                UpdateBar();
                 if (t.IsFaulted)
                 {
                     var ex = t.Exception.GetBaseException();
@@ -722,7 +607,7 @@ namespace Kaban.UI.Dashboard
                         : probe.Problem;
                 Show(t.Result.Item2, empty);
                 SetStatus(string.Format(CultureInfo.CurrentCulture, T("Dsh_Records", "{0:#,0} records read in {1:0.0} s"),
-                                        _loaded.Rows.Count, watch.Elapsed.TotalSeconds) + "\n" + path);
+                                        _loaded.Rows.Count, watch.Elapsed.TotalSeconds));
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
@@ -732,27 +617,31 @@ namespace Kaban.UI.Dashboard
         /// <summary>What the page shows now (tests).</summary>
         public DashboardView View { get { return _view; } }
 
-        private void SetStatus(string text) { _status.Text = text ?? ""; }
+        /// <summary>The info bar's text (tests).</summary>
+        public string BarText { get { return _barText.Text; } }
+        public bool BarIsRed { get { return _barText.ForeColor.R > 150 && _barText.ForeColor.G < 100; } }
+        /// <summary>The note at the right of the info bar (tests).</summary>
+        public string StatusText { get { return _barNote.Text; } }
 
         // ==================================================================
-        // THE REPORT FILES, THE FOLDER, THE SETTINGS
+        // THE REPORT FILES AND THEIR FOLDER
         // ==================================================================
 
         /// <summary>Writes the report files of what is shown; the files made.</summary>
         public List<string> ExportNow()
         {
             var v = _view;
-            if (v == null) { SetStatus(T("Dsh_NoLogs", "No logs in selected range!")); return new List<string>(); }
+            if (v == null) { SetStatus(T("Dsh_NoLogs", "No logs in selected range!"), true); return new List<string>(); }
             List<string> files;
             try
             {
                 files = DashboardReports.Save(Config, v, DashboardReports.Stamp(v.Start), DashboardReports.ManualEndStamp(v.End),
                                               _machine.Map, Config.DatabasePath, Zone);
             }
-            catch (Exception ex) { SetStatus(ex.Message); return new List<string>(); }
+            catch (Exception ex) { SetStatus(ex.Message, true); return new List<string>(); }
             SetStatus(files.Count > 0
-                ? "\u2705 " + string.Format(CultureInfo.CurrentCulture, T("Dsh_Exported", "{0} report files exported!"), files.Count) + "\n" + Config.ExportDirectory
-                : "\u26a0\ufe0f " + T("Dsh_ExportNone", "No report file could be written - check the export folder in the settings."));
+                ? string.Format(CultureInfo.CurrentCulture, T("Dsh_Exported", "{0} report files exported!"), files.Count) + "\n" + Config.ExportDirectory
+                : T("Dsh_ExportNone", "No report file could be written - check the export folder in the settings."), files.Count == 0);
             try
             {
                 AuditLogger.Log("Dashboard (" + _machine.ModuleId + "): exported " + files.Count + " report file(s) for " +
@@ -771,12 +660,7 @@ namespace Kaban.UI.Dashboard
                 Directory.CreateDirectory(dir);
                 Process.Start(new ProcessStartInfo { FileName = Path.GetFullPath(dir), UseShellExecute = true });
             }
-            catch (Exception ex) { SetStatus(T("Dsh_FolderError", "The folder could not be opened:") + " " + ex.Message); }
-        }
-
-        private void OpenSettings()
-        {
-            DashboardSettingsControl.ShowDialog(FindForm(), _machine);
+            catch (Exception ex) { SetStatus(T("Dsh_FolderError", "The folder could not be opened:") + " " + ex.Message, true); }
         }
     }
 }

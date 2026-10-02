@@ -232,6 +232,48 @@ namespace Kaban.UI.Dashboard
         private Rectangle _plot;
         private Point? _drag;
         private DateTime _dragFrom, _dragTo;
+        private int? _pickFrom, _pickTo;    // a right-drag marking an interval to zoom to
+
+        public TimelineChart()
+        {
+            // Ctrl + the wheel over the chart zooms it, wherever the focus is (WinForms
+            // gives the wheel to the focused control - the page around it scrolled instead).
+            lock (_charts)
+            {
+                _charts.RemoveAll(w => !w.IsAlive);
+                _charts.Add(new WeakReference(this));
+                if (!_filterAdded)
+                {
+                    _filterAdded = true;
+                    try { Application.AddMessageFilter(new CtrlWheel()); } catch { }
+                }
+            }
+        }
+
+        private static readonly List<WeakReference> _charts = new List<WeakReference>();
+        private static bool _filterAdded;
+
+        /// <summary>WM_MOUSEWHEEL with Ctrl over a time line on show: that time line zooms; nothing else sees it.</summary>
+        private sealed class CtrlWheel : IMessageFilter
+        {
+            public bool PreFilterMessage(ref Message m)
+            {
+                if (m.Msg != 0x020A || (Control.ModifierKeys & Keys.Control) == 0) return false;
+                var at = Control.MousePosition;
+                TimelineChart hit = null;
+                lock (_charts)
+                    foreach (var w in _charts)
+                    {
+                        var c = w.Target as TimelineChart;
+                        if (c == null || c.IsDisposed || !c.IsHandleCreated || !c.Visible) continue;
+                        if (c.RectangleToScreen(c.ClientRectangle).Contains(at)) { hit = c; break; }
+                    }
+                if (hit == null) return false;
+                int delta = (short)((m.WParam.ToInt64() >> 16) & 0xFFFF);
+                hit.WheelAt(hit.PointToClient(at), delta, true);
+                return true;
+            }
+        }
 
         public List<Bar> Bars
         {
@@ -332,6 +374,13 @@ namespace Kaban.UI.Dashboard
                 float x1 = X(b.Start), x2 = X(b.End);
                 using (var br = new SolidBrush(b.Color)) g.FillRectangle(br, x1, y, Math.Max(1f, x2 - x1), rowH * 0.64f);
             }
+            // the interval being marked (right-drag)
+            if (_pickFrom.HasValue && _pickTo.HasValue && _pickFrom != _pickTo)
+            {
+                int a = Math.Min(_pickFrom.Value, _pickTo.Value), w = Math.Abs(_pickTo.Value - _pickFrom.Value);
+                using (var br = new SolidBrush(Color.FromArgb(60, 31, 95, 168))) g.FillRectangle(br, a, _plot.Top, w, _plot.Height);
+                using (var pen = new Pen(Color.FromArgb(31, 95, 168))) g.DrawRectangle(pen, a, _plot.Top, w, _plot.Height - 1);
+            }
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.Clip = clip;
             using (var pen = new Pen(Color.FromArgb(200, 204, 211))) g.DrawRectangle(pen, _plot);
@@ -377,8 +426,51 @@ namespace Kaban.UI.Dashboard
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (!HasData || !_plot.Contains(e.Location)) return;
-            Zoom(TimeAt(e.X), e.Delta > 0 ? 0.8 : 1.25);
+            WheelAt(e.Location, e.Delta, (ModifierKeys & Keys.Control) != 0);
+        }
+
+        /// <summary>
+        /// The wheel over the chart. With Ctrl: zooms around the pointer - turned
+        /// back (towards you) in, forward out. Without: the page scrolls on, as
+        /// anywhere else.
+        /// </summary>
+        public void WheelAt(Point p, int delta, bool ctrl)
+        {
+            if (ctrl)
+            {
+                if (!HasData || delta == 0) return;
+                if (!_plot.Contains(p)) p = new Point(Math.Max(_plot.Left, Math.Min(_plot.Right, p.X)), _plot.Top + 1);
+                Zoom(TimeAt(p.X), Math.Pow(1.25, delta / 120.0));
+                return;
+            }
+            for (var c = Parent; c != null; c = c.Parent)
+            {
+                var sc = c as ScrollableControl;
+                if (sc == null || !sc.AutoScroll || !sc.VerticalScroll.Visible) continue;
+                int y = -sc.AutoScrollPosition.Y - delta;
+                sc.AutoScrollPosition = new Point(-sc.AutoScrollPosition.X, Math.Max(0, y));
+                return;
+            }
+        }
+
+        /// <summary>Shows an interval (at least a minute, inside the range).</summary>
+        public void ZoomTo(DateTime from, DateTime to)
+        {
+            if (!HasData) return;
+            if (to < from) { var t = from; from = to; to = t; }
+            if (from < _from) from = _from;
+            if (to > _to) to = _to;
+            if ((to - from).TotalSeconds < 60)
+            {
+                var mid = from.AddSeconds((to - from).TotalSeconds / 2);
+                from = mid.AddSeconds(-30);
+                to = mid.AddSeconds(30);
+                if (from < _from) { to = to.Add(_from - from); from = _from; }
+                if (to > _to) { from = from.Add(-(to - _to)); to = _to; }
+            }
+            _viewFrom = from;
+            _viewTo = to;
+            Invalidate();
         }
 
         /// <summary>Zooms around a time (a factor below 1 zooms in); never beyond the range, never below a minute.</summary>
@@ -407,10 +499,21 @@ namespace Kaban.UI.Dashboard
                 _dragTo = _viewTo;
                 Focus();
             }
+            else if (e.Button == MouseButtons.Right && _plot.Contains(e.Location) && HasData)
+            {
+                _pickFrom = _pickTo = e.X;
+                Invalidate();
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (_pickFrom.HasValue && e.Button == MouseButtons.Right)
+            {
+                _pickTo = Math.Max(_plot.Left, Math.Min(_plot.Right, e.X));
+                Invalidate();
+                return;
+            }
             if (_drag.HasValue && e.Button == MouseButtons.Left)
             {
                 double secPerPx = (_dragTo - _dragFrom).TotalSeconds / Math.Max(1, _plot.Width);
@@ -431,6 +534,13 @@ namespace Kaban.UI.Dashboard
         {
             base.OnMouseUp(e);
             _drag = null;
+            if (_pickFrom.HasValue && e.Button == MouseButtons.Right)
+            {
+                int a = _pickFrom.Value, b = _pickTo ?? a;
+                _pickFrom = _pickTo = null;
+                if (Math.Abs(b - a) >= Px(6)) ZoomTo(TimeAt(Math.Min(a, b)), TimeAt(Math.Max(a, b)));
+                else Invalidate();
+            }
         }
 
         protected override void OnDoubleClick(EventArgs e)

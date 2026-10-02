@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,28 +11,26 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Dashboard
 {
     /// <summary>
-    /// The right side of the dashboard: the heading, then THE TABS (2 October) -
+    /// The right side of the dashboard: THE TABS (2 October) -
     ///   Machine states      the time distribution, the timeline, the state log
-    ///   Operation events    the occurrences, the cuts, the event log
-    ///   Alarms              the alarm log
-    ///   the HMI's own log, a tab per kind (sign-ins, connections, PLC writes,
+    ///   Operations          the occurrences, the cuts, the event log
+    ///   Alarms              the alarm log (the tab is the table: no heading)
+    ///   the HMI's own log, a tab per kind (logins, connections, PLC writes,
     ///   settings, problems, other)
     ///   All logs            every entry of the range in one table: the HMI's and
     ///                       this machine's states, events and alarms
-    /// The left side holds every filter: the range and the shift for all of them,
-    /// the log filters (words, user, PLC, source) while a log tab is chosen.
+    /// The tabs' names carry no picture (as the other pages' tabs). A section's
+    /// heading is a button as wide as its words, on the left, with a round sign
+    /// that says it opens and closes; its filter is under it. The log tabs carry
+    /// their search above the table; the user, controller and source are on the
+    /// left with the range and the shift.
     /// </summary>
     public partial class DashboardScreen
     {
-        private readonly FlowLayoutPanel _head = new FlowLayoutPanel();
         private readonly TabControl _tabs = new TabControl();
-        private readonly Dictionary<string, FlowLayoutPanel> _flows = new Dictionary<string, FlowLayoutPanel>();
+        private readonly Dictionary<string, Panel> _flows = new Dictionary<string, Panel>();
         private readonly Dictionary<string, TabPage> _pages = new Dictionary<string, TabPage>();
-        private readonly Label _title = new Label();
-        private readonly Label _interval = new Label();
-        private readonly Label _activeShift = new Label();
         private readonly Label _info = new Label();
-        private readonly Label _metricsTitle = new Label();
 
         private readonly PieChart _pieChart = new PieChart();
         private readonly TimelineChart _timelineChart = new TimelineChart();
@@ -43,42 +42,41 @@ namespace Kaban.UI.Dashboard
         /// <summary>The log tabs: their key, their caption and the kinds they list (none: every one).</summary>
         private sealed class LogTab
         {
-            public string Key, TitleKey, Title, Icon;
+            public string Key, TitleKey, Title;
             public Kaban.Core.Helpers.AuditKind[] Kinds;
         }
 
         private static readonly LogTab[] LogTabs =
         {
-            new LogTab { Key = "log_signin", TitleKey = "Log_KindSignIn", Title = "Sign-in, users", Icon = "\U0001F464", Kinds = new[] { Kaban.Core.Helpers.AuditKind.SignIn } },
-            new LogTab { Key = "log_connection", TitleKey = "Log_KindConnection", Title = "Connection", Icon = "\U0001F517", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Connection } },
-            new LogTab { Key = "log_writes", TitleKey = "Log_KindPlcWrite", Title = "PLC writes", Icon = "\u270D\uFE0F",
+            new LogTab { Key = "log_signin", TitleKey = "Log_KindSignIn", Title = "Logins", Kinds = new[] { Kaban.Core.Helpers.AuditKind.SignIn } },
+            new LogTab { Key = "log_connection", TitleKey = "Log_KindConnection", Title = "Connection", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Connection } },
+            new LogTab { Key = "log_writes", TitleKey = "Log_KindPlcWrite", Title = "PLC writes",
                          Kinds = new[] { Kaban.Core.Helpers.AuditKind.PlcWrite, Kaban.Core.Helpers.AuditKind.DeviceWrite } },
-            new LogTab { Key = "log_settings", TitleKey = "Log_KindSettings", Title = "Settings", Icon = "\u2699\uFE0F", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Settings } },
-            new LogTab { Key = "log_problems", TitleKey = "Log_KindProblem", Title = "Problems", Icon = "\u26A0\uFE0F", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Problem } },
-            new LogTab { Key = "log_other", TitleKey = "Log_KindOther", Title = "Other", Icon = "\U0001F4DD", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Other } },
-            new LogTab { Key = "log_all", TitleKey = "Dsh_TabAll", Title = "All logs", Icon = "\U0001F4DA", Kinds = null }
+            new LogTab { Key = "log_settings", TitleKey = "Log_KindSettings", Title = "Settings", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Settings } },
+            new LogTab { Key = "log_problems", TitleKey = "Log_KindProblem", Title = "Problems", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Problem } },
+            new LogTab { Key = "log_other", TitleKey = "Log_KindOther", Title = "Other", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Other } },
+            new LogTab { Key = "log_all", TitleKey = "Dsh_TabAll", Title = "All logs", Kinds = null }
         };
 
         /// <summary>The three tabs of the machine's own log, and the sections each holds.</summary>
         private static readonly string[][] MachineTabs =
         {
-            new[] { "states", "Dsh_TabStates", "Machine states", "\u23F1\uFE0F", "state_pie", "state_timeline", "state_logs" },
-            new[] { "events", "Dsh_TabEvents", "Operation events", "\U0001F4C8", "event_quantity", "cutting_details", "event_logs" },
-            new[] { "alarms", "Dsh_TabAlarms", "Alarms", "\U0001F6A8", "alarm_logs" }
+            new[] { "states", "Dsh_TabStates", "Machine states", "state_pie", "state_timeline", "state_logs" },
+            new[] { "events", "Dsh_TabEvents", "Operations", "event_quantity", "cutting_details", "event_logs" },
+            new[] { "alarms", "Dsh_TabAlarms", "Alarms", "alarm_logs" }
         };
 
         /// <summary>One table for every log tab: moved to the tab chosen, its kinds set by it.</summary>
         private Kaban.UI.Settings.LogViewerControl _log;
         private bool _logStale = true;
 
-        private static readonly Color Accent = Color.FromArgb(255, 75, 75);
-
+        /// <summary>A tab of sections, one under the other, scrolling up and down.</summary>
         private FlowLayoutPanel NewFlow()
         {
             var f = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false,
-                Padding = new Padding(16, 8, 16, 16), BackColor = Color.White
+                Padding = new Padding(16, 10, 16, 16), BackColor = Color.White
             };
             // up and down only: the sections follow the page's width
             f.AutoScroll = false;
@@ -95,54 +93,14 @@ namespace Kaban.UI.Dashboard
             _main.Dock = DockStyle.Fill;
             _main.BackColor = Color.White;
 
-            _head.Dock = DockStyle.Top;
-            _head.FlowDirection = FlowDirection.TopDown;
-            _head.WrapContents = false;
-            _head.AutoSize = true;
-            _head.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            _head.Padding = new Padding(16, 6, 16, 4);
-            _head.BackColor = Color.White;
-
-            _title.AutoSize = false;
-            _title.Height = 34;
-            _title.TextAlign = ContentAlignment.MiddleCenter;
-            _title.Font = UiScale.NewFont("Segoe UI", 14F, FontStyle.Bold);
-            _interval.AutoSize = false;
-            _interval.Height = 24;
-            _interval.TextAlign = ContentAlignment.MiddleCenter;
-            _activeShift.AutoSize = false;
-            _activeShift.Height = 24;
-            _activeShift.TextAlign = ContentAlignment.MiddleCenter;
-            _activeShift.ForeColor = Accent;
-            _activeShift.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-            _activeShift.Visible = false;
+            // what the range holds when there is nothing to show: above the tabs
+            _info.Dock = DockStyle.Top;
             _info.AutoSize = false;
             _info.Height = 48;
             _info.TextAlign = ContentAlignment.MiddleCenter;
             _info.BackColor = Color.FromArgb(232, 242, 252);
             _info.ForeColor = Color.FromArgb(0, 66, 128);
             _info.Visible = false;
-            _info.Margin = new Padding(0, 6, 0, 6);
-            // the shift metrics (\u26a1 on the left): above the tabs, as wide as the page
-            _metricsTitle.AutoSize = false;
-            _metricsTitle.Height = 26;
-            _metricsTitle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-            _metricsTitle.TextAlign = ContentAlignment.BottomLeft;
-            _metricsTitle.Visible = false;
-            _metrics.Height = 150;
-            _metrics.Visible = false;
-            _metrics.ReadOnly = true;
-            _metrics.AllowUserToOrderColumns = false;
-            UiStyle.StyleGrid(_metrics);
-            _metrics.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-            _metrics.ScrollBars = ScrollBars.Horizontal;
-            _metrics.Margin = new Padding(0, 2, 0, 10);
-            _metricsEmpty.AutoSize = false;
-            _metricsEmpty.Height = 30;
-            _metricsEmpty.Visible = false;
-            _metricsEmpty.ForeColor = Color.DimGray;
-            _head.Controls.AddRange(new Control[] { _title, _interval, _activeShift, _info, _metricsTitle, _metrics, _metricsEmpty });
-            _head.Layout += (s, e) => FitWidths();
 
             _tabs.Dock = DockStyle.Fill;
             UiStyle.StyleTabs(_tabs);
@@ -160,14 +118,16 @@ namespace Kaban.UI.Dashboard
             _eventFilter = new FilterButton(_tips);
             _alarmFilter = new FilterButton(_tips);
             _eventFilter.Changed += (s, e) => { OpenSection("event_logs"); FillEvents(); };
-            _alarmFilter.Changed += (s, e) => { OpenSection("alarm_logs"); FillAlarms(); };
+            _alarmFilter.Changed += (s, e) => FillAlarms();
 
             foreach (var t in MachineTabs)
             {
-                var flow = NewFlow();
-                _flows[t[0]] = flow;
+                // the alarms tab is its table: no headings to open, nothing to scroll
+                Panel body = t[0] == "alarms" ? new Panel { Dock = DockStyle.Fill, Padding = new Padding(16, 10, 16, 10), BackColor = Color.White }
+                                              : (Panel)NewFlow();
+                _flows[t[0]] = body;
                 var page = new TabPage { BackColor = Color.White, Tag = t[0] };
-                page.Controls.Add(flow);
+                page.Controls.Add(body);
                 _pages[t[0]] = page;
             }
             AddSection("states", "state_pie", "\u23f1\ufe0f", "Dsh_StatePie", "Machine State Time Distribution", _pieChart, null);
@@ -176,10 +136,10 @@ namespace Kaban.UI.Dashboard
             AddSection("events", "event_quantity", "\U0001F4C8", "Dsh_EventQuantity", "Event Occurrences (log scale)", _barChart, null);
             AddSection("events", "cutting_details", "\u2699\ufe0f", "Dsh_Cutting", "Cutting Details", _cutGrid, null);
             AddSection("events", "event_logs", "\U0001F4CB", "Dsh_EventLogs", "Event Logs", _eventGrid, _eventFilter);
-            AddSection("alarms", "alarm_logs", "\U0001F6A8", "Dsh_AlarmLogs", "Alarm Logs", _alarmGrid, _alarmFilter);
+            AddSection("alarms", "alarm_logs", "\U0001F6A8", "Dsh_AlarmLogs", "Alarm Logs", _alarmGrid, _alarmFilter, headless: true);
 
             foreach (var t in LogTabs)
-                _pages[t.Key] = new TabPage { BackColor = Color.White, Tag = t.Key };
+                _pages[t.Key] = new TabPage { BackColor = Color.White, Tag = t.Key, Padding = new Padding(12, 8, 12, 6) };
 
             // the log tabs' one table: the HMI's log and this machine's
             _log = new Kaban.UI.Settings.LogViewerControl(null, Kaban.UI.Settings.LogViewerControl.Period.Today, machines: false, embedded: true);
@@ -192,9 +152,10 @@ namespace Kaban.UI.Dashboard
                 var shift = SelectedShift;
                 return shift == null || !string.IsNullOrEmpty(e.Source) || DashboardData.InShift(e.Time.TimeOfDay, shift);
             };
+            _log.StatusChanged += (s, e) => { if (LogTabs.Any(t => t.Key == SelectedTabKey)) UpdateBar(); };
 
             _main.Controls.Add(_tabs);
-            _main.Controls.Add(_head);
+            _main.Controls.Add(_info);
             RebuildTabs();
         }
 
@@ -217,9 +178,9 @@ namespace Kaban.UI.Dashboard
             return MachineLogFeed.ToEntries(v, from, to, l != null ? l.MainStation : 1, _machine.ModuleId);
         }
 
-        private void AddSection(string tab, string key, string icon, string titleKey, string title, Control body, Control extra)
+        private void AddSection(string tab, string key, string icon, string titleKey, string title, Control body, Control extra, bool headless = false)
         {
-            var s = new Section(key, icon, titleKey, title, body, extra);
+            var s = new Section(key, icon, titleKey, title, body, extra, headless);
             s.Toggled += (o, e) =>
             {
                 _machine.Change(c => c.SetSectionOpen(key, s.Open));
@@ -236,7 +197,7 @@ namespace Kaban.UI.Dashboard
             return _sections.TryGetValue(key, out s) ? s : null;
         }
 
-        /// <summary>The tab a section is on, chosen, and the section opened.</summary>
+        /// <summary>The section opened (a filter ticked in it).</summary>
         private void OpenSection(string key)
         {
             var s = SectionOf(key);
@@ -249,7 +210,7 @@ namespace Kaban.UI.Dashboard
             var chosen = SelectedTabKey;
             var want = new List<TabPage>();
             foreach (var t in MachineTabs)
-                if (t.Skip(4).Any(k => _sections.ContainsKey(k) && _sections[k].Shown)) want.Add(_pages[t[0]]);
+                if (t.Skip(3).Any(k => _sections.ContainsKey(k) && _sections[k].Shown)) want.Add(_pages[t[0]]);
             foreach (var t in LogTabs) want.Add(_pages[t.Key]);
             if (_tabs.TabPages.Cast<TabPage>().SequenceEqual(want)) return;
             _settingTabs = true;
@@ -270,7 +231,7 @@ namespace Kaban.UI.Dashboard
         /// <summary>The chosen tab's key (states, events, alarms, log_signin ... log_all).</summary>
         public string SelectedTabKey { get { return _tabs.SelectedTab != null ? (string)_tabs.SelectedTab.Tag : ""; } }
 
-        /// <summary>Chooses a tab by its key (tests, and a filter ticked on another tab).</summary>
+        /// <summary>Chooses a tab by its key (tests).</summary>
         public void SelectTab(string key)
         {
             TabPage p;
@@ -288,20 +249,14 @@ namespace Kaban.UI.Dashboard
             if (_settingTabs) return;
             var key = SelectedTabKey;
             var tab = LogTabs.FirstOrDefault(t => t.Key == key);
-            bool isLog = tab != null;
-            if (isLog)
+            if (tab != null)
             {
-                if (_log.Parent != _pages[key])
-                {
-                    _pages[key].Controls.Add(_log);
-                }
+                if (_log.Parent != _pages[key]) _pages[key].Controls.Add(_log);
                 _log.SetKinds(tab.Kinds);
-                if (_logSource != null) _logSource.Visible = _logSourceCaption.Visible = tab.Kinds == null;
-                if (tab.Kinds != null) _log.SourceBox.SelectedIndex = 0;
                 if (_logStale) RefreshLog();
             }
-            _logFilters.Visible = isLog;
             FitWidths();
+            UpdateBar();
         }
 
         /// <summary>The log table read again for the page's range (when a log tab is on show; else when one is chosen).</summary>
@@ -315,8 +270,8 @@ namespace Kaban.UI.Dashboard
 
         private void RetranslateTabs()
         {
-            foreach (var t in MachineTabs) _pages[t[0]].Text = t[3] + " " + T(t[1], t[2]);
-            foreach (var t in LogTabs) _pages[t.Key].Text = t.Icon + " " + T(t.TitleKey, t.Title);
+            foreach (var t in MachineTabs) _pages[t[0]].Text = T(t[1], t[2]);
+            foreach (var t in LogTabs) _pages[t.Key].Text = T(t.TitleKey, t.Title);
             _tabs.Invalidate();
         }
 
@@ -336,24 +291,22 @@ namespace Kaban.UI.Dashboard
 
         private void FitWidths()
         {
-            FitWidthsOf(_head);
-            foreach (var f in _flows.Values) FitWidthsOf(f);
-        }
-
-        private static void FitWidthsOf(Panel flow)
-        {
-            int w = flow.ClientSize.Width - flow.Padding.Horizontal - 2;
-            if (w < 50) return;
-            foreach (Control c in flow.Controls)
+            foreach (var f in _flows.Values)
             {
-                int cw = w - c.Margin.Horizontal;
-                if (c.Width != cw) c.Width = cw;
+                if (!(f is FlowLayoutPanel)) continue;
+                // room for the scroll bar kept, so it never pushes the sections under a horizontal one
+                int w = f.ClientSize.Width - f.Padding.Horizontal - 2 - (f.VerticalScroll.Visible ? 0 : SystemInformation.VerticalScrollBarWidth);
+                if (w < 50) continue;
+                foreach (Control c in f.Controls)
+                {
+                    int cw = w - c.Margin.Horizontal;
+                    if (c.Width != cw) c.Width = cw;
+                }
             }
         }
 
         private void RetranslateMain()
         {
-            _title.Text = "\U0001F9E0 " + T("Dsh_Title", "Local Machine Dashboard");
             foreach (var s in _sections.Values) s.Retranslate();
             RetranslateTabs();
             _stateGrid.SetColumns(new TableGrid.Col("#", 50, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, "yyyy-MM-dd HH:mm:ss"),
@@ -373,7 +326,7 @@ namespace Kaban.UI.Dashboard
             _timelineChart.EmptyText = T("Dsh_NoTimeline", "No state data to show timeline!");
             _pieChart.EmptyText = T("Dsh_NoPie", "No state data to show pie chart!");
             _barChart.EmptyText = T("Dsh_NoEvents", "No events to show!");
-            _timelineChart.Hint = T("Dsh_TipTimeline", "Wheel: zoom - drag: move along - double click: the whole range");
+            _timelineChart.Hint = T("Dsh_TipTimeline", "Ctrl + wheel: zoom around the pointer - right-drag: zoom to an interval - drag: move along - double click: the whole range");
             _pieChart.Unit = " " + T("Dsh_Min", "min");
             if (_view != null) Show(_view, null);
         }
@@ -386,15 +339,9 @@ namespace Kaban.UI.Dashboard
         private void Show(DashboardView v, string message)
         {
             _view = v;
-            _interval.Text = T("Dsh_Interval", "Logs interval:") + "  " + _from.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) +
-                             "  -  " + _to.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture);
-            var shift = v != null ? v.Shift : SelectedShift;
-            _activeShift.Visible = shift != null;
-            if (shift != null) _activeShift.Text = T("Dsh_ActiveShift", "Active Shift") + ": " + shift.Text;
             if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
             _info.Text = message ?? "";
             _info.Visible = !string.IsNullOrEmpty(message);
-            if (message != null && v == null) SetStatus(message);
 
             v = v ?? new DashboardView { Start = _from, End = _to };
             FillStates(v);
@@ -404,9 +351,9 @@ namespace Kaban.UI.Dashboard
             _alarmFilter.SetOptions(v.AlarmCounts);
             FillEvents();
             FillAlarms();
-            FillMetrics();
             // the log tabs: the same range, this machine's entries as just read
             RefreshLog();
+            UpdateBar();
         }
 
         private void FillStates(DashboardView v)
@@ -461,6 +408,7 @@ namespace Kaban.UI.Dashboard
             int n = 0;
             _eventGrid.SetRows(rows.Select(e => new object[] { ++n, e.Time, e.Description, e.Details }).ToList(),
                                T("Dsh_NoEventMatch", "No events match the selected filter!"));
+            UpdateBar();
         }
 
         private void FillAlarms()
@@ -471,6 +419,7 @@ namespace Kaban.UI.Dashboard
             int n = 0;
             _alarmGrid.SetRows(rows.Select(a => new object[] { ++n, a.Time, a.Details }).ToList(),
                                T("Dsh_NoAlarms", "No alarm logs in selected range!"));
+            UpdateBar();
         }
 
         // ---- for tests
@@ -486,60 +435,72 @@ namespace Kaban.UI.Dashboard
         public ComboBox LatestBox { get { return _latest; } }
         public ComboBox HistoryBox { get { return _history; } }
         public ComboBox ShiftBox { get { return _shift; } }
-        public DataGridView MetricsGrid { get { return _metrics; } }
-        public string StatusText { get { return _status.Text; } }
         public string InfoText { get { return _info.Visible ? _info.Text : ""; } }
-        public void ShowMetrics() { if (!_metricsShown) ToggleShiftPanel(false); }
+        /// <summary>The left bar's width and where Export Report is (tests).</summary>
+        public int FilterBarWidth { get { return _sideHost.Width; } }
+        public Control ExportButton { get { return _export; } }
+        public Control FolderButton { get { return _openFolder; } }
 
         // ==================================================================
         // THE PARTS
         // ==================================================================
 
-        /// <summary>A section: its heading (a button that opens and closes it) and what it shows.</summary>
+        /// <summary>
+        /// A section: its heading - a button as wide as its words, on the left, with a
+        /// round sign that opens and closes it - its filter under it (when it has one),
+        /// then what it shows. A HEADLESS section is a tab on its own (the alarms): no
+        /// heading, always open, its filter at the top left, its table filling the tab.
+        /// </summary>
         public sealed class Section : Panel
         {
             public readonly string Key;
             private readonly string _icon, _titleKey, _title;
-            private readonly Button _head = new Button();
-            private readonly Panel _headRow = new Panel();
+            private readonly SectionHead _head;
+            private readonly Panel _headRow, _extraRow, _spacer;
             private readonly Control _body;
+            public readonly bool Headless;
             public bool Open { get; private set; }
             /// <summary>Switched on in the settings (Visible also needs its tab on show).</summary>
             public bool Shown { get; set; } = true;
             public event EventHandler Toggled;
             private string _suffix = "";
 
-            public Section(string key, string icon, string titleKey, string title, Control body, Control extra)
+            public Section(string key, string icon, string titleKey, string title, Control body, Control extra, bool headless = false)
             {
                 Key = key;
                 _icon = icon;
                 _titleKey = titleKey;
                 _title = title;
                 _body = body;
-                Margin = new Padding(0, 6, 0, 10);
-                _headRow.Dock = DockStyle.Top;
-                _headRow.Height = 40;
-                _head.Dock = DockStyle.Fill;
-                _head.FlatStyle = FlatStyle.Flat;
-                _head.FlatAppearance.BorderColor = UiStyle.BorderColor;
-                _head.BackColor = Color.White;
-                _head.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-                _head.TextAlign = ContentAlignment.MiddleCenter;
-                _head.Cursor = Cursors.Hand;
-                _head.Click += (s, e) => SetOpen(!Open, true);
-                _headRow.Controls.Add(_head);
+                Headless = headless;
+                BackColor = Color.White;
                 if (extra != null)
                 {
-                    extra.Dock = DockStyle.Right;
-                    extra.Width = 460;
-                    var gap = new Panel { Dock = DockStyle.Right, Width = 8 };
-                    _headRow.Controls.Add(gap);
-                    _headRow.Controls.Add(extra);
+                    _extraRow = new Panel { Dock = DockStyle.Top, Height = UiScale.Px(40), BackColor = Color.White };
+                    extra.Location = new Point(0, UiScale.Px(3));
+                    extra.Width = UiScale.Px(420);
+                    extra.Height = UiScale.Px(32);
+                    _extraRow.Controls.Add(extra);
                 }
+                if (headless)
+                {
+                    Dock = DockStyle.Fill;
+                    Open = true;
+                    body.Dock = DockStyle.Fill;
+                    Controls.Add(body);
+                    if (_extraRow != null) Controls.Add(_extraRow);
+                    return;
+                }
+                Margin = new Padding(0, 2, 0, UiScale.Px(18));
+                _headRow = new Panel { Dock = DockStyle.Top, Height = UiScale.Px(36), BackColor = Color.White };
+                _head = new SectionHead { Location = new Point(0, UiScale.Px(2)) };
+                _head.Click += (s, e) => SetOpen(!Open, true);
+                _headRow.Controls.Add(_head);
+                _spacer = new Panel { Dock = DockStyle.Top, Height = UiScale.Px(4), BackColor = Color.White };
                 body.Dock = DockStyle.Top;
-                var spacer = new Panel { Dock = DockStyle.Top, Height = 6 };
                 Controls.Add(body);
-                Controls.Add(spacer);
+                Controls.Add(_spacer);
+                if (_extraRow != null) Controls.Add(_extraRow);
                 Controls.Add(_headRow);
                 Height = _headRow.Height;
                 Retranslate();
@@ -552,19 +513,23 @@ namespace Kaban.UI.Dashboard
                 set { _suffix = value ?? ""; Retranslate(); }
             }
 
-            public string Title { get { return _head.Text; } }
+            /// <summary>The heading's words (the picture, the title, the suffix).</summary>
+            public string Title { get { return _icon + " " + LanguageManager.GetString(_titleKey, _title) + _suffix; } }
 
             public void Retranslate()
             {
-                _head.Text = _icon + " " + LanguageManager.GetString(_titleKey, _title) + _suffix + "   " + (Open ? "\u25b4" : "\u25be");
+                if (_head == null) return;
+                _head.Caption = Title;
+                _head.Open = Open;
             }
 
             public void SetOpen(bool open, bool byUser)
             {
+                if (Headless) return;
                 Open = open;
                 _body.Visible = open;
-                int spacer = open ? Controls[1].Height : 0;
-                Height = _headRow.Height + (open ? _body.Height + spacer : 0);
+                if (_extraRow != null) _extraRow.Visible = open;
+                Height = _headRow.Height + (open ? _body.Height + _spacer.Height + (_extraRow != null ? _extraRow.Height : 0) : 0);
                 Retranslate();
                 if (byUser)
                 {
@@ -574,7 +539,97 @@ namespace Kaban.UI.Dashboard
             }
 
             /// <summary>Clicks the heading (tests).</summary>
-            public void ClickHead() { _head.PerformClick(); }
+            public void ClickHead() { if (!Headless) SetOpen(!Open, true); }
+
+            /// <summary>The heading's control (tests: as wide as its words, on the left).</summary>
+            public Control Head { get { return _head; } }
+        }
+
+        /// <summary>
+        /// A section's heading: its words in bold after a round blue sign with a white
+        /// arrow - right when closed, down when open - so it reads as a button; no
+        /// frame; a light background under the pointer. As wide as its words.
+        /// </summary>
+        public sealed class SectionHead : Control
+        {
+            private string _caption = "";
+            private bool _open, _hover;
+
+            public SectionHead()
+            {
+                SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
+                         ControlStyles.ResizeRedraw | ControlStyles.Selectable, true);
+                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+                BackColor = Color.White;
+                Cursor = Cursors.Hand;
+                TabStop = true;
+            }
+
+            public string Caption
+            {
+                get { return _caption; }
+                set { _caption = value ?? ""; Text = _caption; Fit(); Invalidate(); }
+            }
+
+            public bool Open
+            {
+                get { return _open; }
+                set { if (_open != value) { _open = value; Invalidate(); } }
+            }
+
+            private int Sign { get { return UiScale.Px(20); } }
+
+            private void Fit()
+            {
+                var size = TextRenderer.MeasureText(_caption, Font);
+                Width = UiScale.Px(8) + Sign + UiScale.Px(8) + size.Width + UiScale.Px(10);
+                Height = Math.Max(size.Height + UiScale.Px(10), UiScale.Px(32));
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                var g = e.Graphics;
+                g.Clear(BackColor);
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                if (_hover || Focused)
+                    using (var b = new SolidBrush(Color.FromArgb(236, 242, 250)))
+                    using (var path = Rounded(new Rectangle(0, 0, Width - 1, Height - 1), UiScale.Px(5)))
+                        g.FillPath(b, path);
+                int d = Sign, x = UiScale.Px(8), y = (Height - d) / 2;
+                using (var b = new SolidBrush(_hover ? Color.FromArgb(20, 70, 135) : Color.FromArgb(31, 95, 168)))
+                    g.FillEllipse(b, x, y, d, d);
+                float cx = x + d / 2f, cy = y + d / 2f, a = d * 0.2f;
+                using (var pen = new Pen(Color.White, Math.Max(2f, d / 9f)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+                {
+                    if (_open) g.DrawLines(pen, new[] { new PointF(cx - a, cy - a / 2), new PointF(cx, cy + a / 2), new PointF(cx + a, cy - a / 2) });
+                    else g.DrawLines(pen, new[] { new PointF(cx - a / 2, cy - a), new PointF(cx + a / 2, cy), new PointF(cx - a / 2, cy + a) });
+                }
+                var text = new Rectangle(x + d + UiScale.Px(8), 0, Width - (x + d + UiScale.Px(8)), Height);
+                TextRenderer.DrawText(g, _caption, Font, text, UiStyle.GridInk, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            }
+
+            private static GraphicsPath Rounded(Rectangle r, int radius)
+            {
+                var p = new GraphicsPath();
+                int d = radius * 2;
+                p.AddArc(r.Left, r.Top, d, d, 180, 90);
+                p.AddArc(r.Right - d, r.Top, d, d, 270, 90);
+                p.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+                p.AddArc(r.Left, r.Bottom - d, d, d, 90, 90);
+                p.CloseFigure();
+                return p;
+            }
+
+            protected override void OnMouseEnter(EventArgs e) { base.OnMouseEnter(e); _hover = true; Invalidate(); }
+            protected override void OnMouseLeave(EventArgs e) { base.OnMouseLeave(e); _hover = false; Invalidate(); }
+            protected override void OnGotFocus(EventArgs e) { base.OnGotFocus(e); Invalidate(); }
+            protected override void OnLostFocus(EventArgs e) { base.OnLostFocus(e); Invalidate(); }
+
+            protected override void OnKeyDown(KeyEventArgs e)
+            {
+                base.OnKeyDown(e);
+                if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter) { OnClick(EventArgs.Empty); e.Handled = true; }
+            }
         }
 
         /// <summary>
@@ -744,7 +799,7 @@ namespace Kaban.UI.Dashboard
 
             private void Caption()
             {
-                Text = "\U0001F50E  " + (_selected.Count == 0 ? Placeholder : string.Join(", ", _selected.OrderBy(k => k, StringComparer.Ordinal))) + "  \u25be";
+                Text = (_selected.Count == 0 ? Placeholder : string.Join(", ", _selected.OrderBy(k => k, StringComparer.Ordinal))) + "  \u25be";
                 if (_tips != null) _tips.SetToolTip(this, _selected.Count == 0 ? Placeholder : string.Join("\n", _selected.OrderBy(k => k, StringComparer.Ordinal)));
             }
 

@@ -228,9 +228,23 @@ namespace Kaban.UI.Settings
             ExportButton = export;
             if (embedded)
             {
-                // the host lays the filters out (no Pair panels around them)
+                // The host lays the user, PLC and source out (the Dashboard's left bar);
+                // the search, clear and export stay with the table, above it.
                 bar.Controls.Clear();
                 _live.Checked = false;
+                var searchCaption = new Label
+                {
+                    Text = LanguageManager.GetString("Dsh_LogSearch", "Search the log"), AutoSize = true,
+                    Margin = new Padding(0, 8, 6, 3), Font = Kaban.UI.Controls.UiStyle.FontVariant(Kaban.UI.Controls.UiStyle.Body, FontStyle.Bold)
+                };
+                _search.Width = 300;
+                _search.Margin = new Padding(0, 5, 6, 3);
+                clear.Margin = new Padding(2, 1, 3, 1);
+                bar.Padding = new Padding(0, 0, 0, 6);
+                bar.Controls.Add(searchCaption);
+                bar.Controls.Add(_search);
+                bar.Controls.Add(clear);
+                bar.Controls.Add(export);
             }
             else
             {
@@ -294,7 +308,9 @@ namespace Kaban.UI.Settings
             Controls.Add(gap);
             Controls.Add(_detail);
             Controls.Add(_status);
-            if (!embedded) Controls.Add(bar);
+            // embedded: the host's info bar says how many are shown (StatusChanged)
+            _status.Visible = !embedded;
+            Controls.Add(bar);
 
             SelectPeriod(period, true);
             _period.SelectedIndexChanged += (s, e) =>
@@ -320,6 +336,9 @@ namespace Kaban.UI.Settings
         public ComboBox SourceBox { get { return _source; } }
         public Control ClearButton { get; private set; }
         public Control ExportButton { get; private set; }
+
+        /// <summary>Raised when the status line changes (an embedded table's host shows it in its own bar).</summary>
+        public event EventHandler StatusChanged;
 
         /// <summary>The host's own entries for a range (a machine's states, events and alarms as its page has them).</summary>
         public Func<DateTime, DateTime, List<AuditEntry>> ExtraEntries;
@@ -699,7 +718,15 @@ namespace Kaban.UI.Settings
                 if (f.Reading) text += "  -  " + name + ": " + LanguageManager.GetString("Log_MachineReading", "reading its log...");
                 else if (f.Problem.Length > 0) text += "  -  " + name + ": " + f.Problem;
             }
+            SetStatusText(text);
+        }
+
+        private void SetStatusText(string text)
+        {
+            if (_status.Text == text) return;
             _status.Text = text;
+            var h = StatusChanged;
+            if (h != null) h(this, EventArgs.Empty);
         }
 
         /// <summary>"HMI", or the machine's name.</summary>
@@ -775,7 +802,7 @@ namespace Kaban.UI.Settings
             var list = Filtered();
             if (list.Count == 0)
             {
-                _status.Text = LanguageManager.GetString("Log_NothingToExport", "Nothing to export: no entry passes the filters.");
+                SetStatusText(LanguageManager.GetString("Log_NothingToExport", "Nothing to export: no entry passes the filters."));
                 return;
             }
             using (var dlg = new SaveFileDialog
@@ -790,13 +817,13 @@ namespace Kaban.UI.Settings
                     File.WriteAllText(dlg.FileName, ExportText(list, dlg.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase),
                                                                HasSources ? (Func<string, string>)SourceName : null),
                                       new UTF8Encoding(true));
-                    _status.Text = string.Format(LanguageManager.GetString("Log_Exported", "Exported {0} entries: {1}"),
-                                                 list.Count, dlg.FileName);
+                    SetStatusText(string.Format(LanguageManager.GetString("Log_Exported", "Exported {0} entries: {1}"),
+                                                 list.Count, dlg.FileName));
                     AuditLogger.Log("exported " + list.Count + " log entries to '" + dlg.FileName + "'.");
                 }
                 catch (Exception ex)
                 {
-                    _status.Text = string.Format(LanguageManager.GetString("Log_ExportFailed", "Export failed: {0}"), ex.Message);
+                    SetStatusText(string.Format(LanguageManager.GetString("Log_ExportFailed", "Export failed: {0}"), ex.Message));
                 }
             }
         }
