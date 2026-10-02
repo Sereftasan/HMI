@@ -47,6 +47,8 @@ class CylinderHelpReview {
         WiringTable.Load(Path.Combine(own, "Wiring.csv"), plc => plc);
         AlarmDefinitionLoader.Load(Path.Combine(own, "Alarms.json"), true, "");
         LanguageManager.ChangeLanguage(lang);
+        // as an operator reads them: the PLC's internal devices not named
+        TroubleshootingCatalog.AdminView = () => false;
 
         var asm = Assembly.LoadFrom(Path.Combine(baseDir, "Kaban.Machines." + machine + ".exe"));
         var dir = Path.Combine(outDir, lang, machine);

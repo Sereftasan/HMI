@@ -4370,3 +4370,21 @@ and `UnitLookAndErrors` extended.
   Dsh_EventLogs, Dsh_AlarmLogs, Log_KindMachineEvent changed; Dsh_LogType, Dsh_AllTypes, Dsh_FilteredOut,
   Dsh_FolderAccess new; Dsh_SetShow* removed.
 - Tests: `tools/ui_test/DashboardFilters.cs` (new); `DashboardPage.cs`, `LogsAndReports.cs`, `DashboardSpeed.cs`.
+
+## 2026-10-02 - The cylinder step-by-step page redrawn
+
+- `tools/cylinder_templates/Drawings.html` (new): the page's style and the drawings (the Inputs / Outputs page, the PLC
+  card with its LED rows, the terminal strip, the relay, the coil connector, the valve, the air, the cylinder, the
+  sensor) as phrases, put into every template by `tools/build_cylinder_templates.py` (`<!--include Drawings.html-->`).
+- `Cylinder_master.en.html`, `Cylinder_master.tr.html` rewritten: the alarm as the title with the alarm's and the page's
+  dates; the path down the left without the HMI command; drawings and short lines with a sign per check; the yes / no
+  answers shortened; "run it with its button in manual mode". The 64 templates in `Help\Templates\EN|TR` rebuilt.
+- `TroubleshootingCatalog.Steps`: `AdminView`, `Clock`, `IsPhysicalIo`; internal devices (error bit, M / D, copies,
+  the conditions' rule) only for Admin, the command never; `Title`, `AlarmTime`, `AlarmDate`, `Created`; the LED's
+  card, row and neighbours (`LedOf`), the relay's neighbours, the hoses' numbers and ports; `BuildSteps(..., occurred,
+  alarmText)`. `HelpDocument.AlarmTime`, `.AlarmText`, set by `AlarmHelpLinks.DocumentsFor(AlarmItem)`.
+- `AlarmGeneration.StepsFor`: the alarm's number in the menu item for Admin only. `StepTemplate.Cap` skips tags and
+  entities.
+- `Kaban_HMI_Manual.en.html`: the step-by-step page described anew.
+- `tools/review`: pages made for a user below Admin; intro and questions describe the path and the drawings.
+- Tests: `CylinderSteps.cs`, `CylinderTemplates.cs`, `WiringHelp.cs`, `UnitHelpLinks.cs`, `AlarmGenerationCore.cs`.

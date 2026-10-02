@@ -28,10 +28,13 @@ TEXT = {
         title='Silindir alarmları - adım adım yardım sayfaları',
         intro='Her silindir alarmı için HMI\'ın açtığı adım adım yardım sayfası, alarm listesinden açıldığı gibi '
               '(alarm anındaki sinyal durumları olmadan). Sayfalar, ünitenin valf ve geri bildirim tipine ait şablondan '
-              '(Help/Templates/TR) ve makinenin çizim numaralarından (Wiring.csv) doldurulur.',
+              '(Help/Templates/TR) ve makinenin çizim numaralarından (Wiring.csv) doldurulur. Solda sinyalin yolu '
+              '(PLC çıkışı, röle, bobin, valf, hava, silindir, sensör) yukarıdan aşağı; her kontrolün yanında nereye bakılacağını '
+              've nasıl kontrol edileceğini gösteren bir çizim var. Sayfalar operatörün göreceği gibidir: PLC\'nin iç cihazları '
+              '(M, D) yalnızca Admin girişinde görünür.',
         ask='İncelerken lütfen şunlara bakın: adımlar doğru sırada mı, her adımda ne yapılacağı açık mı, '
             'numaralar (çıkış, röle, bobin, sensör, kablo, sayfa) çizimlerle uyuşuyor mu, eksik ya da gereksiz bir adım var mı, '
-            'Türkçe anlaşılır mı. Notlarınızı alarm numarasıyla birlikte yazın.',
+            'Türkçe anlaşılır mı, çizimler doğru yeri gösteriyor ve işe yarıyor mu. Notlarınızı alarm numarasıyla birlikte yazın.',
         machine='Makine', alarm='Alarm', text='Alarm metni', unit='Ünite', move='Hareket', template='Şablon (valf / geri bildirim)',
         page='Sayfa', open='aç', by_template='Şablonlara göre', count='alarm',
         notes='Notlar',
@@ -49,10 +52,13 @@ TEXT = {
         title='Cylinder alarms - step-by-step help pages',
         intro='For every cylinder alarm, the step-by-step help page the HMI opens, as it opens from the alarm list '
               '(without the signal states at the alarm). Each page is filled from the template of the unit\'s valve and '
-              'feedback type (Help/Templates/EN) and the machine\'s drawing numbers (Wiring.csv).',
+              'feedback type (Help/Templates/EN) and the machine\'s drawing numbers (Wiring.csv). On the left, the signal path '
+              '(PLC output, relay, coil, valve, air, cylinder, sensor) from top to bottom; beside each check a drawing of where to '
+              'look and how to check it. The pages are as an operator sees them: the PLC\'s internal devices (M, D) show only '
+              'when an Admin is signed in.',
         ask='When reviewing, please look at: are the steps in the right order, is it clear what to do in each, do the '
-            'numbers (output, relay, coil, sensor, wire, sheet) match the drawings, is a step missing or not needed. '
-            'Write your notes with the alarm number.',
+            'numbers (output, relay, coil, sensor, wire, sheet) match the drawings, is a step missing or not needed, do the '
+            'pictures show the right place and help. Write your notes with the alarm number.',
         machine='Machine', alarm='Alarm', text='Alarm text', unit='Unit', move='Movement', template='Template (valve / feedback)',
         page='Page', open='open', by_template='By template', count='alarms',
         notes='Notes',

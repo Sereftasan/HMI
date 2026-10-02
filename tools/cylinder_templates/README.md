@@ -29,6 +29,34 @@ The HMI uses the template of the HMI's language and falls back to English when
 a language has none. A template changed while the program runs is used for the
 next page opened.
 
+## The page (2 October)
+
+* **The title is the alarm** as the alarm list shows it; under it, small and in
+  italics, when the alarm came and when the page was made. An Admin also sees
+  the alarm's bit after the title - `(M873)`.
+* **On the left, the signal path** from the PLC's output down to the sensor that
+  confirms the end - PLC output, relay, coil, valve, air, cylinder, sensor - each
+  box a link to its check, with its step number. The HMI's command (the button's
+  bit) is not on it, nor anywhere on the page: the help is for the real
+  operation, which that bit has no part in.
+* **Each check has a drawing** of where the number is on the machine and how it
+  is checked (the card's LED row, the terminal and the meter, the relay on its
+  rail, the coil connector, the 5/2 valve and its override, the air unit, the
+  cylinder and its sensors, the input's LED), and a few short lines with a
+  picture for what to do: look, measure, by hand, listen, make the movement
+  again.
+* **The PLC's internal devices** (M, D, ...) are named only when an Admin is
+  signed in; its real inputs and outputs (X34, Y21) always.
+
+The drawings and the page's look are shared by the languages:
+`tools/cylinder_templates/Drawings.html`, put into each template by the build
+script where a master has its include line. Each drawing is a phrase
+(`DrawIoPage`, `DrawCard`, `DrawTerminal`, `DrawRelay`, `DrawCoil`, `DrawValve`,
+`DrawAir`, `DrawCylinder`, `DrawSensor`; the look is `Style`); their few words
+are each master's `W_IoPage`, `W_Press`, `W_ValveShort`, `W_FlowControl`,
+`W_AirSwitch`. They are drawn after the machine's own parts, but they show where
+to look - not one machine exactly.
+
 ## Changing the words
 
 Open the pair's file in a text editor (it reads as a page in a browser, with
@@ -76,9 +104,10 @@ checks it).
 ## The fields
 
 The movement: `Unit`, `Move`, `OtherMove`, `Glyph` / `ButtonSign` (the button's
-arrow, or its word), `OtherGlyph` / `OtherSign`, `HasButton`, `Command`,
-`OtherCommand`, `Spring` (a spring valve's return: its coil must switch OFF),
-`Conditions` (what the button waits for).
+arrow, or its word), `OtherGlyph` / `OtherSign`, `HasButton`, `Spring` (a spring
+valve's return: its coil must switch OFF), `Conditions` (what the movement waits
+for; their rules only for an Admin). `Command` and `OtherCommand` are always
+empty since 2 October (kept so an older template still reads).
 
 The output and the valve: `Out`, `OutText`, `OutWire`, `OutSheet`, `OutCard`,
 `OutTerminal`, `OutTerminalOther`, `OtherOut`, `Relay`, `RelaySheet`, `Coil`,
@@ -93,7 +122,17 @@ with `Name`, `Where`, `Text`, `Io`, `Dev`, `CopiedTo`, `IsSwitch`, `Wire`,
 `OffNames`, `OffSlash`, `StartNames`, `StartSlash`, `OffSwitch`, `OffKey`,
 `TimeKey`, `HasRef`, `RefName`, `RefWhere`, `RefIo`.
 
-The alarm: `Error`, `ErrorShown`, `ErrorText`, `AlarmTime`, `AlarmDate`,
+For the drawings: `OutPlain` (Y21), `OutCardTag` (U4), `OutCardModel`, `OutCpu`
+(an FX5U CPU or a module), `OutHasLed`, `OutLed` (21) and the LEDs beside it in
+its row `OutLedL2`, `OutLedL1`, `OutLedR1`, `OutLedR2`, `OutLedTop`;
+`RelayL2` .. `RelayR2` (the relays beside it on the rail); `HoseA`, `HoseB`,
+`HoseANo` (16), `HoseAPort` (A), `HoseBNo`, `HoseBPort`; `OnTag`, `StartTag`,
+`SwitchTag`; per sensor (in `MustOn`, `MustOff`) `TagPlain`, `IoPlain`, `InCardTag`,
+`InCardModel`, `InCpu`, `InHasLed`, `InLed`, `InLedL2` .. `InLedR2`, `InLedTop`.
+
+The alarm: `Title` (the alarm's text), `Admin`, `HasError`, `Error` and
+`ErrorShown` (the alarm's bit - empty below Admin), `ErrorText`, `AlarmTime`,
+`AlarmDate`, `Created` (when the page was made),
 `HmiAlarm` (raised by the HMI itself), `Failure1` .. `Failure6` (which signal it
 saw fail), `LookF`, `SeenRising`, `Seen` / `SeenRows` (the states at the alarm
 and now), `Hint`, `StartKey`, `StepOneNote`, `Why...` (where to start, and why).

@@ -172,6 +172,15 @@ def update_projects():
             print('  ' + os.path.relpath(path, ROOT) + ': %d templates' % len(files))
 
 
+def include(text):
+    """<!--include Drawings.html--> -> that file of the masters' folder, without its own note."""
+    def one(m):
+        part = io.open(os.path.join(SRC, m.group(1)), encoding='utf-8').read().replace('\r\n', '\n')
+        part = re.sub(r'<!--doc.*?-->\n?', '', part, count=1, flags=re.S)
+        return part.rstrip('\n')
+    return re.sub(r'<!--include ([A-Za-z0-9_.-]+)-->', one, text)
+
+
 def sha(text):
     return hashlib.sha1(text.encode('utf-8')).hexdigest()
 
@@ -189,6 +198,7 @@ def main():
             continue
         text = io.open(master, encoding='utf-8').read().replace('\r\n', '\n')
         text = re.sub(r'<!--doc.*?-->\n?', '', text, count=1, flags=re.S)
+        text = include(text)
         folder = os.path.join(OUT, lang.upper())
         os.makedirs(folder, exist_ok=True)
         for v in VALVES:

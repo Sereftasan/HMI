@@ -447,6 +447,19 @@ namespace Kaban.UI.Helpers
         public static List<TC.HelpDocument> DocumentsFor(AlarmItem item)
         {
             if (item == null) return new List<TC.HelpDocument>();
+            var list = DocumentsOf(item);
+            // the step-by-step page is titled with the alarm and dated with its time
+            foreach (var d in list)
+                if (d.StepByStep)
+                {
+                    d.AlarmTime = item.TriggerTime;
+                    d.AlarmText = item.Description ?? "";
+                }
+            return list;
+        }
+
+        private static List<TC.HelpDocument> DocumentsOf(AlarmItem item)
+        {
             if (!item.Generated) return DocumentsFor(AlarmManager.FindByAddressOrCode(item.AlarmCode));
             var docs = new List<TC.HelpDocument>();
             var steps = AlarmGeneration.StepsFor(item);

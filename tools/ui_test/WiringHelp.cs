@@ -17,6 +17,7 @@ class WH {
     [STAThread]
     static void Main() {
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
+        TC.AdminView = () => false;          // the pages as an operator reads them
 
         Console.WriteLine("--- Wiring.csv, beside the program ---");
         WiringTable.Clear();
@@ -59,7 +60,7 @@ class WH {
               has("P16 Profile Recognition Front Clamping Cylinder") && has("pneumatic sheet 3 E8"));
         Check("the other coil (Y32, must be off) with its own", has("<code>Y32</code>") && has("relay K29 (sheet 19.6)"));
         Check("the sensor that must come on: M225 = X51, SN59, wire 132, sheet 13.5, on card U7 terminal X11",
-              has("<b>SN59</b> (<code>X51</code>) &ndash; wire 132, sheet 13.5, U7 FX5-16EX/ES, terminal X11") && has("copies it into <code>M225</code>"));
+              has("<b>SN59</b> (<code>X51</code>) &ndash; wire 132, sheet 13.5, U7 FX5-16EX/ES, terminal X11") && !has("M225"));
         Check("the one that must go off: M240 = X70, SN83 (the clamping's empty switch)",
               has("<b>SN83</b> (<code>X70</code>) &ndash; wire 147, sheet 14.4") && has("Profile Recognition Front Clamping Empty Switch"));
         Check("  and what the sheet numbers mean", has("page 12, column 6 of the electrical drawing") && has("zone E3 of the pneumatic drawing"));
@@ -68,8 +69,12 @@ class WH {
         WiringTable.Clear();
         var bare = new TC.HelpDocument { FileName = doc.FileName, Valve = 3, Feedback = 5, Movement = unit.MovementFor("B"), StepByStep = true };
         string plain = File.ReadAllText(TC.ExtractSection(bare));
-        Check("the devices still listed, no references, no legend",
-              plain.Contains("<code>M645</code>") && plain.Contains("<code>M240</code>") && !plain.Contains("page 12, column 6") && !plain.Contains("Valve, hoses, cylinder"));
+        Check("no references, no legend; the internal devices (the command M645, the lamp M240) not named below Admin",
+              !plain.Contains("M645") && !plain.Contains("M240") && !plain.Contains("page 12, column 6") && !plain.Contains("Valve, hoses, cylinder"));
+        TC.AdminView = () => true;
+        string plainAdmin = File.ReadAllText(TC.ExtractSection(bare));
+        TC.AdminView = () => false;
+        Check("  for an Admin the lamp M240 is named; the command never", plainAdmin.Contains("<code>M240</code>") && !plainAdmin.Contains("M645"));
 
         Console.WriteLine(fail == 0 ? "\nWIRING HELP ALL PASS" : "\nWIRING HELP " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

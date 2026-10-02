@@ -107,12 +107,22 @@ namespace Kaban.Core.Helpers
             return sb.ToString();
         }
 
-        /// <summary>The first letter made capital, after any tags it starts with (in the template's language).</summary>
+        /// <summary>
+        /// The first letter made capital, after any tags, spaces and character
+        /// references it starts with - a line may begin with a picture
+        /// (&lt;span class="ic"&gt;&amp;#128065;&lt;/span&gt;) - in the template's language.
+        /// </summary>
         public string Cap(string html)
         {
             if (string.IsNullOrEmpty(html)) return html;
             int i = 0;
-            while (i < html.Length && html[i] == '<') { int close = html.IndexOf('>', i); if (close < 0) break; i = close + 1; }
+            while (i < html.Length)
+            {
+                if (html[i] == '<') { int close = html.IndexOf('>', i); if (close < 0) break; i = close + 1; }
+                else if (html[i] == '&') { int semi = html.IndexOf(';', i); if (semi < 0 || semi - i > 10) break; i = semi + 1; }
+                else if (char.IsWhiteSpace(html[i])) i++;
+                else break;
+            }
             return i < html.Length && char.IsLower(html[i]) ? html.Substring(0, i) + char.ToUpper(html[i], Culture) + html.Substring(i + 1) : html;
         }
 

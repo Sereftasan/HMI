@@ -326,6 +326,14 @@ namespace Kaban.Core.Helpers
             public MovementInfo Movement;
 
             /// <summary>
+            /// The alarm the help was opened from: when it came and its text as the
+            /// alarm list shows it - the step-by-step page's title and date line.
+            /// Null / "" when the help was opened from the unit itself.
+            /// </summary>
+            public DateTime? AlarmTime;
+            public string AlarmText = "";
+
+            /// <summary>
             /// The STEP-BY-STEP troubleshooter for the movement (BuildSteps), not the
             /// manual: what to look at, press and measure on this machine, one step
             /// after the other. Needs Movement.

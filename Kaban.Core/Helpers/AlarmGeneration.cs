@@ -742,7 +742,8 @@ namespace Kaban.Core.Helpers
                 StepByStep = true,
                 Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
                         (string.IsNullOrEmpty(unit.Unit) ? "" : " - " + unit.Unit) + " - " + TroubleshootingCatalog.MovementName(mv) +
-                        " (" + item.ShownCode + ")",
+                        // the alarm's bit is an internal device: named for an Admin only
+                        (TroubleshootingCatalog.AdminView() ? " (" + item.ShownCode + ")" : ""),
                 Valve = TroubleshootingCatalog.CanonicalValve((int)unit.Valve),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)unit.Feedback),
                 Movement = mv,

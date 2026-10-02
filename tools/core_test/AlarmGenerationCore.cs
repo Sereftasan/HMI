@@ -52,6 +52,7 @@ class AG {
     }
 
     static void Main() {
+        TC.AdminView = () => false;          // the pages as an operator reads them
         var dir = Path.Combine(Path.GetTempPath(), "AlarmGenTest"); Directory.CreateDirectory(dir);
         AlarmGeneration.SettingsPath = Path.Combine(dir, "AlarmGeneration.cfg");
         if (File.Exists(AlarmGeneration.SettingsPath)) File.Delete(AlarmGeneration.SettingsPath);
@@ -206,8 +207,12 @@ class AG {
               t1.Any(x => x.StartsWith("Does the output card")) && t1.Any(x => x.Contains("at the other end gone OFF")) &&
               !t1.Any(x => x.Contains("stay ON the whole way")) && !t1.Any(x => x.Contains("see it?")) && titles(all).Count > t1.Count,
               string.Join(" | ", t1));
-        Check("  'raised by the HMI', its code, where to start", page1.Contains("M840.1") && page1.Contains("raised by the HMI") && page1.Contains("X2</code>") &&
+        Check("  where to start (the HMI timed it); its code not named below Admin", !page1.Contains("M840") && page1.Contains("X2</code>") &&
               Regex.IsMatch(page1, "Where to start:</b> The HMI timed"));
+        TC.AdminView = () => true;
+        var page1Admin = TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.TwoMagnetic, 1);
+        TC.AdminView = () => false;
+        Check("  for an Admin: its code, M840.1, after the title", Regex.IsMatch(page1Admin, "<h1>.*\\(<code>M840\\.1</code>\\)</span></h1>"));
         var t4 = titles(TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.TwoMagnetic, 4));
         Check("4: the two outputs only", t4.Count == 3 && t4[0].StartsWith("Does the PLC switch on") && t4[1].StartsWith("Why does the PLC"), string.Join(" | ", t4));
         var t2 = titles(TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.TwoMagnetic, 2));

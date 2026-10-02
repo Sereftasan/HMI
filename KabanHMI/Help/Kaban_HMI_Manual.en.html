@@ -302,8 +302,16 @@ position reading already show a fault. What it offers depends on the moment:</p>
 <tr><td><b style="color:#2870be">?</b></td><td>Cylinder: while one of its error bits is set, or while the HMI's own alarm for one of its movements is on the list (<a href="#genalarms">6a</a>)</td><td>First, <b>Step by step &ndash; <i>the movement</i></b>: a page that works through
  the fault the way you would at the machine, for <b>this</b> cylinder and <b>this</b> movement (its name taken from the drawing: <i>Clamp</i>, <i>Up</i>&hellip;).
  <ul>
-  <li>At the top: <b>what should happen</b>, as a chain you can click &ndash; the button, the PLC output, the relay, the valve coil, the valve, the air, the cylinder,
-      the sensor that confirms the end &ndash; and <b>what the HMI saw</b>: each device as it should be, <b>at the alarm</b> (the last reading before the error bit came on)
+  <li>The page's title is <b>the alarm itself</b>, as the alarm list shows it; the small line under it gives <b>when the alarm came</b> and <b>when the page was
+      made</b>.</li>
+  <li>Down the <b>left side</b>: <b>the path</b>, what should happen, one box under the other &ndash; the PLC output, the relay, the valve coil, the valve, the air,
+      the cylinder, the sensor that confirms the end. Each box is numbered and opens the check for that part. The HMI's own buttons are not on the path: the page
+      is about the real movement, the PLC's inputs and outputs and what they drive.</li>
+  <li>Each check has <b>drawings</b> next to it &ndash; the PLC card with its LED rows, the terminal strip, the relay, the coil connector, the valve and its hoses,
+      the cylinder and its sensor &ndash; with the number to look for marked, and a few <b>short lines</b> with a sign for what to do: look, measure, press by hand,
+      listen, run it. The drawings show the idea, the way the parts usually look; they are the same on every page, only the numbers change. To run the movement
+      for a test, the page says to use the cylinder's button in manual mode.</li>
+  <li><b>What the HMI saw</b>: each device as it should be, <b>at the alarm</b> (the last reading before the error bit came on)
       and <b>now</b>, red where it is wrong. From that, <b>Where to start</b> sends you to a step: the output never came on &ndash; the output step;
       both coils on &ndash; the same step, saying so; the output on but the cylinder never left its start &ndash; from the card on; it arrived but too late &ndash; the time.</li>
   <li><b>Step 1: where is the cylinder?</b> Not moved, stopped on the way, or arrived &ndash; three searches.
@@ -313,12 +321,13 @@ position reading already show a fault. What it offers depends on the moment:</p>
       is something in the way, is it only slow. <b>Arrived</b>: does the sensor see it (its LED, then the input), has the other end's sensor gone off, the clamp's
       pressure switch, the position reading, the reference, then the time allowed.</li>
   <li>Each answer either names the fault and its remedy &ndash; then <i>test again; still failing, go to step n</i> &ndash; or sends you on. Everything is named as on
-      the drawings: addresses, card terminals, wires, sheets, relays, coils, valves, hoses, sensors.</li>
+      the drawings: inputs and outputs, card terminals, wires, sheets, relays, coils, valves, hoses, sensors. The PLC's <b>internal</b> devices (the error bit,
+      the command, the position register) and the alarm's number in the title are shown to the <b>Admin</b> level only.</li>
   <li><b>An alarm the HMI raised itself</b> (<code>M844.2</code>, see <a href="#genalarms">6a</a>) knows which signal failed, so its page asks <b>only about that
       signal</b>: a start sensor that stayed on &ndash; <i>has the cylinder left its start?</i>, then from the card onwards, or that sensor; a target sensor that did
       not come on &ndash; <i>where is it?</i>, then the way, or that sensor, then the time; both sensors on &ndash; the start sensor only; both coils on &ndash; the two
       outputs only; a position that did not change, or did not settle &ndash; the valve onwards or the way, and the position reading. <b>What the HMI saw</b> lists
-      just the signals concerned, as they were when its time ran out, and the title carries the alarm's number.</li>
+      just the signals concerned, as they were when its time ran out.</li>
   <li>The two movements of a cylinder are <b>not mirror images</b> when its valve or feedback is not: a spring valve's return is <i>the coil must switch off</i>
       (the relay drop out, the coil lose power, the valve spring back &ndash; a locked override holds it), a single sensor's far end is <i>the sensor must go off, and
       nothing sees the end</i>, a clamp is confirmed by its pressure switch and its release by the back sensor.</li>

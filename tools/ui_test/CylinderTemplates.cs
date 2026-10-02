@@ -28,6 +28,11 @@ class CT {
         return Regex.Replace(System.Net.WebUtility.HtmlDecode(Regex.Replace(t, "<[^>]+>", "")), "\\s+", " ");
     }
     static string Norm(string html) { return Regex.Replace(Regex.Replace(html, ">\\s+<", "><"), "\\s+", " ").Trim(); }
+    static string StepTr(string html, string title) {
+        foreach (Match m in Regex.Matches(html, "<div class=\"step.*?</table>", RegexOptions.Singleline))
+            if (Text(m.Value).Contains(title)) return Text(m.Value);
+        return "";
+    }
     static List<string> Steps(string html) { return Regex.Matches(html, "<div class=\"step[^\"]*\" id=\"([^\"]+)\">").Cast<Match>().Select(m => m.Groups[1].Value).ToList(); }
 
     [STAThread]
@@ -63,6 +68,18 @@ class CT {
                 foreach (var rq in required) if (!t.HasPhrase(rq)) lacking.Add(lang + "/" + n + ":" + rq);
             }
         Check("  each has the phrases the program builds its pieces from", lacking.Count == 0, string.Join(", ", lacking.Take(5)));
+        // 2 October: the drawings and the page's look, shared by the languages (Drawings.html), and each language's words in them
+        var drawn = new[] { "Style", "DrawIoPage", "DrawCard", "DrawTerminal", "DrawRelay", "DrawCoil", "DrawValve", "DrawAir", "DrawCylinder", "DrawSensor",
+                            "W_IoPage", "W_Press", "W_ValveShort", "W_FlowControl", "W_AirSwitch" };
+        var noDrawing = new List<string>();
+        foreach (var lang in new[] { "EN", "TR" })
+            foreach (var n in names) {
+                var p = Path.Combine(TC.TemplateFolder, lang, n);
+                if (!File.Exists(p)) continue;
+                var t = TC.LoadTemplate(p);
+                foreach (var rq in drawn) if (!t.HasPhrase(rq)) noDrawing.Add(lang + "/" + n + ":" + rq);
+            }
+        Check("  each carries the drawings, the page's look and its language's words in the drawings", noDrawing.Count == 0, string.Join(", ", noDrawing.Take(5)));
 
         Console.WriteLine("--- the FA2010 units, filled in ---");
         var fa = Assembly.LoadFrom("Kaban.Machines.FA2010.exe");
@@ -87,6 +104,16 @@ class CT {
         Check("  the drawings' texts in Turkish where Wiring.csv has them (Pressure.TR)", tTr.Contains("s\u0131kma bas\u0131nc\u0131 6 / 2 bar") && tEn.Contains("clamping pressure 6 / 2 bar"));
         Check("  the drawings' own labels kept, marked as the drawing's", tTr.Contains("\u00e7izimde: Profile Recognition Front Clamping Empty Switch"));
         Check("  the valve type in Turkish (DataWords)", tTr.Contains("5/3 orta konumu a\u00e7\u0131k") && tEn.Contains("5/3 open centre"));
+        Func<string, string> nav = h => Text(Regex.Match(h, "<nav class=\"path\">.*?</nav>", RegexOptions.Singleline).Value);
+        Check("the signal path on the left in both, without the HMI's command", nav(en).Contains("PLC output ON") && !nav(en).Contains("HMI command") &&
+              nav(tr).Contains("PLC \u00e7\u0131k\u0131\u015f\u0131 A\u00c7IK") && !nav(tr).Contains("HMI komutu") && !tEn.Contains("M645") && !tTr.Contains("M645"), nav(tr));
+        Check("  the date line in Turkish", Regex.IsMatch(tr, "<p class=\"dates\">Sayfa tarihi: \\d{4}-\\d\\d-\\d\\d \\d\\d:\\d\\d</p>"),
+              Regex.Match(tr, "<p class=\"dates\">.*?</p>").Value);
+        Check("  the card's LED in Turkish: 'U4 kart\u0131nda OUT s\u0131ras\u0131ndaki 32 numaral\u0131 LED'", tTr.Contains("U4 kart\u0131nda OUT s\u0131ras\u0131ndaki 32 numaral\u0131 LED"),
+              StepTr(tr, "\u00c7\u0131k\u0131\u015f kart\u0131"));
+        Check("  the same drawings in both, their few words in the page's language", Regex.Matches(en, "<svg class=\"pic\"").Count == Regex.Matches(tr, "<svg class=\"pic\"").Count &&
+              Regex.Matches(en, "<svg class=\"pic\"").Count >= 8 && tr.Contains(">bas\u0131n</text>") && en.Contains(">press</text>") &&
+              tr.Contains("Giri\u015fler / \u00c7\u0131k\u0131\u015flar</text>"), Regex.Matches(en, "<svg class=\"pic\"").Count + " / " + Regex.Matches(tr, "<svg class=\"pic\"").Count);
 
         LanguageManager.ChangeLanguage("DE");
         var de = TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.PressureSwitch);

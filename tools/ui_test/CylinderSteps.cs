@@ -63,6 +63,7 @@ class CS {
 
     [STAThread]
     static void Main() {
+        TC.AdminView = () => false;          // the pages as an operator reads them
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
         WiringTable.Clear();
         WiringTable.Load(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Wiring.csv"), plc => plc);
@@ -143,9 +144,11 @@ class CS {
         var text = Text(html);
         Check("the page: the unit and the movement, named from the drawing (Clamp, not the button's sign)",
               text.Contains("Front Clamping") && text.Contains("\u201CClamp\u201D did not complete"), Text(Regex.Match(html, "<h1>.*?</h1>").Value));
-        Check("  what should happen, along the chain: M645, Y32, relay K29, coil Y.23, valve Y28/Y29, P16, pressure switch SN83 (X70)",
-              Regex.IsMatch(text, "M645.*Y32.*K29.*Y\\.23.*Y28/Y29.*P16.*SN83") , Text(Regex.Match(html, "<div class=\"chain\">.*?</div>", RegexOptions.Singleline).Value));
-        Check("  a 5/3 valve, its open centre from the drawing", text.Contains("is a 5/3 valve") && text.Contains("(open centre)"));
+        var path = Text(Regex.Match(html, "<nav class=\"path\">.*?</nav>", RegexOptions.Singleline).Value);
+        Check("  the signal path down the left side: Y32, relay K29, coil Y.23, valve Y28/Y29, P16, pressure switch SN83 (X70) - no HMI command",
+              Regex.IsMatch(path, "Y32.*K29.*Y\\.23.*Y28/Y29.*P16.*SN83") && !path.Contains("HMI command"), path);
+        Check("  the HMI's command (M645) named nowhere on the page", !text.Contains("M645"));
+        Check("  a 5/3 valve, its open centre from the drawing", text.Contains("5/3 valve: it moves only while") && text.Contains("(open centre)"));
         Check("  what the HMI saw: Y32 OFF at the alarm, in red", Regex.IsMatch(html, "Valve output <code>Y32</code></td><td>ON</td><td><span class=\"st-bad\">OFF"));
         Check("  where to start: Y32 was OFF - the step that asks whether the PLC switches it on",
               Hint(html).Contains("Y32 was OFF") && Hint(html).Contains("Step " + StepNo(html, "Does the PLC switch on Y32?")), Hint(html));
@@ -161,15 +164,20 @@ class CS {
               string.Join(",", numbers));
         var a1 = StepText(html, "Does the PLC switch on Y32?");
         Check("  the output: press the button (Clamp), watch Y32; Y33 (Release) must stay OFF; both ON is the double-coil fault",
-              a1.Contains("Clamp") && a1.Contains("Y33 (Release) must stay OFF") && a1.Contains("both ON"), a1);
+              a1.Contains("Clamp") && a1.Contains("Y33 (Release) stays OFF") && a1.Contains("both ON"), a1);
         var a2 = StepText(html, "Why does the PLC not switch it on?");
         Check("  why not: what the button waits for (Manual Mode)", a2.Contains("Manual Mode") && a2.Contains("Never bypass"), a2);
         var a3 = StepText(html, "Does the output card switch Y32?");
-        Check("  the card: U4, the LED; 24 V between wire 226 and 0 V (wire 21)", a3.Contains("U4 FX5U-64MT-ESS") && a3.Contains("wire 226") && a3.Contains("0 V (wire 21)"), a3);
+        Check("  the card: LED 32 in the OUT row of card U4; 24 V between wire 226 and 0 V (wire 21)", a3.Contains("LED 32 in the OUT row of card U4") &&
+              a3.Contains("Wire 226") && a3.Contains("0 V (wire 21)"), a3);
+        var a3html = Regex.Match(html, "<div class=\"step[^\"]*\" id=\"A3\".*?</table>", RegexOptions.Singleline).Value;
+        Check("  with its drawings: the card's OUT row around LED 32 (30, 31 | 33, 34), the terminal with wire 226 and the meter",
+              Regex.Matches(a3html, "<svg class=\"pic\"").Count == 2 && Regex.IsMatch(Text(a3html), "30\\s*31\\s*33\\s*34") && a3html.Contains(">226<") && a3html.Contains("24 V DC"),
+              Regex.Matches(a3html, "<svg class=\"pic\"").Count + "");
         var a5 = StepText(html, "Does coil Y.23 get power?");
         Check("  the coil: on Y28/Y29, wire 324 (sheet 26.7)", a5.Contains("Y28/Y29") && a5.Contains("wire 324") && a5.Contains("26.7"), a5);
         var b1 = StepText(html, "stay ON the whole way?");
-        Check("stopped on the way: a 5/3 needs the signal the whole way", b1.Contains("5/3 valve moves the cylinder only while the coil is ON"), b1);
+        Check("stopped on the way: a 5/3 needs the signal the whole way", b1.Contains("5/3 valve: when the signal ends early it stops where it is"), b1);
         var c1 = StepText(html, "Does pressure switch SN83");
         Check("arrived: the clamp's pressure switch (SN83 on X70, U8 terminal X10), the gauge, the setpoint", c1.Contains("X70") && c1.Contains("terminal X10") &&
               c1.Contains("setpoint") && c1.Contains("gauge"), c1);
@@ -207,7 +215,9 @@ class CS {
         mem["M646"] = 1; mem["Y33"] = 1; mem["M240"] = 1; Scan(u1);
         mem["M845"] = 1; Scan(u1);
         html = Steps(u1, "A");
-        Check("Release: the back sensor SN59 must come ON", StepText(html, "Does sensor SN59").Contains("must be ON"), StepText(html, "Does sensor SN59"));
+        Check("Release: the back sensor SN59 must come ON - its LED, LED 11 in the IN row of module U7, X51 ON", StepText(html, "Does sensor SN59").Contains("LED 11 in the IN row of card U7") &&
+              StepText(html, "Does sensor SN59").Contains("X51 ON"), StepText(html, "Does sensor SN59"));
+        Check("  the copy the PLC makes of it (M240) is not named", !Text(html).Contains("M240"));
         var off = StepText(html, "gone OFF?");
         Check("  the pressure switch must go OFF: one stuck ON means the line keeps its pressure", off.Contains("SN83") && off.Contains("keeps its pressure"), off);
 
@@ -225,8 +235,8 @@ class CS {
         Check("Up (the coil): named from the drawing, Y116 must come ON", text.Contains("\u201CUp\u201D did not complete") && StepNo(html, "Does the PLC switch on Y116?") != "?");
         Check("  away from the only sensor: SN91 must go OFF and nothing sees the far end", StepText(html, "Has sensor SN91").Contains("Nothing sees the end of Up"),
               StepText(html, "Has sensor SN91"));
-        Check("  a spring valve needs its coil the whole stroke", StepText(html, "stay ON the whole way?").Contains("spring valve"));
-        Check("  the card's own terminal name: U13, terminal Y16 for Y116", StepText(html, "Does the output card switch Y116?").Contains("terminal Y16 (Y116)"),
+        Check("  a spring valve needs its coil the whole stroke", StepText(html, "stay ON the whole way?").Contains("Spring valve"));
+        Check("  the card's own terminal name: LED 16 in the OUT row of module U13 for Y116", StepText(html, "Does the output card switch Y116?").Contains("LED 16 in the OUT row of card U13"),
               StepText(html, "Does the output card switch Y116?"));
         mem.Clear(); Scan(foil);
         mem["Y116"] = 1; mem["M237"] = 0; Scan(foil);
@@ -239,7 +249,7 @@ class CS {
         Check("  the relay must drop out, the coil lose its power, the valve spring back (a locked override)",
               StepNo(html, "Does relay K75 drop out?") != "?" && StepNo(html, "Is coil Y.91 without power?") != "?" &&
               StepText(html, "Does the valve spring back?").Contains("locked"));
-        Check("  towards the sensor: SN91 must come ON", StepText(html, "Does sensor SN91").Contains("must be ON"));
+        Check("  towards the sensor: SN91 must come ON", StepText(html, "Does sensor SN91").Contains("LED lit"));
 
         Console.WriteLine("--- an encoder; an analogue sensor ---");
         var u2 = new CylinderUnitHMI {
@@ -250,8 +260,13 @@ class CS {
         mem.Clear(); mem["M847"] = 1; mem["Y35"] = 0; Scan(u2);
         html = Steps(u2, "A");
         Check("referenced first: the reference sensor SN60 on X52", StepText(html, "Is the unit referenced?").Contains("SN60") && StepText(html, "Is the unit referenced?").Contains("X52"));
-        Check("  the count (D6, the encoder through K78), the window", StepText(html, "Does the position count").Contains("D6") &&
+        Check("  the count (the encoder through K78; its register D6 is internal: not named), the window", !StepText(html, "Does the position count").Contains("D6") &&
               StepText(html, "Does the position count").Contains("K78") && StepNo(html, "target window") != "?");
+        TC.AdminView = () => true;
+        var adminHtml = Steps(u2, "A");
+        TC.AdminView = () => false;
+        Check("  for an Admin: the register D6 and the alarm's bit (M847) named", StepText(adminHtml, "Does the position count").Contains("D6") &&
+              Text(Regex.Match(adminHtml, "<h1>.*?</h1>").Value).Contains("M847"), Text(Regex.Match(adminHtml, "<h1>.*?</h1>").Value));
         Check("  already on when the page started reading: said so", Text(html).Contains("already on when the page started reading"));
         var mold = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Mold", CommandAAddress = "M541", CommandBAddress = "M540", ErrorAAddress = "M915", PositionAddress = "D110",
@@ -259,7 +274,7 @@ class CS {
         mold.SetBounds(10, 250, 360, 64); host.Controls.Add(mold); Application.DoEvents();
         mem.Clear(); mem["M915"] = 1; Scan(mold);
         html = Steps(mold, "A");
-        Check("an analogue sensor: the position reading (D110), below 4 mA / above 20 mA", StepText(html, "position reading reach the target").Contains("D110") &&
+        Check("an analogue sensor: the position reading (D110 not named below Admin), below 4 mA / above 20 mA", !StepText(html, "position reading reach the target").Contains("D110") &&
               StepText(html, "position reading reach the target").Contains("4 mA"));
 
         Console.WriteLine("--- from the alarm list: the same page ---");
@@ -270,6 +285,23 @@ class CS {
         Check("the alarm list's help: the step-by-step page first, with the movement and its states", listDocs.Count >= 2 && listDocs[0].StepByStep &&
               listDocs[0].Movement != null && listDocs[0].Movement.Output != null && listDocs[0].Movement.Output.AtAlarm == 1,
               string.Join(" | ", listDocs.Select(d => d.Title)));
+        TC.Clock = () => new DateTime(2026, 10, 2, 10, 20, 0);
+        var titled = TC.BuildSteps(listDocs[0].Movement, (TC.ValveType)listDocs[0].Valve, (TC.FeedbackType)listDocs[0].Feedback, 0, "EN",
+                                   new DateTime(2026, 10, 2, 10, 14, 5), "Front Clamping Clamp Alarm");
+        var h1 = Text(Regex.Match(titled, "<h1>.*?</h1>").Value);
+        var dates = Regex.Match(titled, "<p class=\"dates\">.*?</p>").Value;
+        Check("opened from an alarm: the alarm is the title; its time and the page's under it (small, italic)", h1 == "Front Clamping Clamp Alarm" &&
+              Text(dates) == "Alarm: 2026-10-02 10:14:05 \u00b7 Helper made: 2026-10-02 10:20" && titled.Contains(".dates{") &&
+              Regex.IsMatch(titled, "\\.dates\\{[^}]*font-style:italic"), h1 + " / " + Text(dates));
+        Check("  its bit (M844) and the HMI's command (M645) named nowhere below Admin", !Text(titled).Contains("M844") && !Text(titled).Contains("M645"));
+        TC.AdminView = () => true;
+        var titledAdmin = TC.BuildSteps(listDocs[0].Movement, (TC.ValveType)listDocs[0].Valve, (TC.FeedbackType)listDocs[0].Feedback, 0, "EN",
+                                        new DateTime(2026, 10, 2, 10, 14, 5), "Front Clamping Clamp Alarm");
+        TC.AdminView = () => false;
+        Check("  an Admin: the bit after the title, \"(M844)\"; the command still not", Text(Regex.Match(titledAdmin, "<h1>.*?</h1>").Value) == "Front Clamping Clamp Alarm (M844)" &&
+              !Text(titledAdmin).Contains("M645"), Text(Regex.Match(titledAdmin, "<h1>.*?</h1>").Value));
+        var drawings = Regex.Matches(titled, "<svg class=\"pic\"").Count;
+        Check("  the checks are drawn: where the cylinder is, the I/O page, the card and the terminal, relay, coil, valve, air, the sensor ...", drawings >= 10, drawings + "");
 
         Console.WriteLine("--- a machine without drawings ---");
         WiringTable.Clear();

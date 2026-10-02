@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Kaban.Core.Enums;
 
 namespace Kaban.Core.Helpers
 {
@@ -129,7 +130,8 @@ namespace Kaban.Core.Helpers
             if (doc == null || doc.Movement == null) return "";
             try
             {
-                var html = BuildSteps(doc.Movement, (ValveType)CanonicalValve(doc.Valve), (FeedbackType)CanonicalFeedback(doc.Feedback), doc.Failure);
+                var html = BuildSteps(doc.Movement, (ValveType)CanonicalValve(doc.Valve), (FeedbackType)CanonicalFeedback(doc.Feedback), doc.Failure,
+                                      LanguageManager.CurrentLanguage, doc.AlarmTime, doc.AlarmText);
                 var path = Path.Combine(Path.GetTempPath(), StepsFileName(doc));
                 File.WriteAllText(path, html, new UTF8Encoding(true));
                 return path;
@@ -176,16 +178,51 @@ namespace Kaban.Core.Helpers
 
         public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback, int failure, string language)
         {
+            return BuildSteps(mv, valve, feedback, failure, language, null, null);
+        }
+
+        /// <param name="occurred">When the alarm the help was opened from came (the alarm list's time); null: the unit's own record of it, if any.</param>
+        /// <param name="alarmText">That alarm as the list shows it - the page's title; null: the movement's error bit's alarm text.</param>
+        public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback, int failure, string language,
+                                        DateTime? occurred, string alarmText)
+        {
             var path = TemplatePath(valve, feedback, language);
             if (path.Length == 0) return MissingTemplatePage(valve, feedback);
-            return BuildSteps(mv, valve, feedback, failure, LoadTemplate(path));
+            return BuildSteps(mv, valve, feedback, failure, LoadTemplate(path), occurred, alarmText);
         }
 
         /// <summary>The page from a given template (the tests render the master and each pair's file with it).</summary>
         public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback, int failure, StepTemplate template)
         {
-            var b = new StepsBuilder(Chain.Build(mv, (ValveType)CanonicalValve((int)valve), (FeedbackType)CanonicalFeedback((int)feedback)), template, failure);
+            return BuildSteps(mv, valve, feedback, failure, template, null, null);
+        }
+
+        public static string BuildSteps(MovementInfo mv, ValveType valve, FeedbackType feedback, int failure, StepTemplate template,
+                                        DateTime? occurred, string alarmText)
+        {
+            var b = new StepsBuilder(Chain.Build(mv, (ValveType)CanonicalValve((int)valve), (FeedbackType)CanonicalFeedback((int)feedback)), template, failure)
+            {
+                Occurred = occurred, AlarmText = alarmText ?? ""
+            };
             return b.Page();
+        }
+
+        /// <summary>
+        /// WHO READS THE PAGE (2 October): the PLC's internal devices - an alarm's
+        /// bit (M873), a command (M695), a data register (D100) - are named on the
+        /// step-by-step page only for an Admin; everyone sees the controller's real
+        /// inputs and outputs (X34, Y21), which are what is checked at the machine.
+        /// The tests and the review pages set it.
+        /// </summary>
+        public static Func<bool> AdminView = () => SecurityManager.HasAccess(SecurityLevel.Admin);
+
+        /// <summary>The time the page is made at (the tests set it).</summary>
+        public static Func<DateTime> Clock = () => DateTime.Now;
+
+        /// <summary>A controller's real input or output (X34, Y21) - not an internal device.</summary>
+        public static bool IsPhysicalIo(string address)
+        {
+            return Regex.IsMatch((address ?? "").Trim(), "^[XYxy][0-9A-Fa-f]+$");
         }
 
         private static string MissingTemplatePage(ValveType valve, FeedbackType feedback)
@@ -234,12 +271,20 @@ namespace Kaban.Core.Helpers
             private readonly bool _position;        // confirmed by a position reading (analogue / encoder)
             /// <summary>The signal that failed when the HMI raised the alarm itself (AlarmGeneration's sub-code), 0 when not known.</summary>
             private readonly int _failure;
+            /// <summary>The reader is an Admin: the internal devices are named (AdminView).</summary>
+            private readonly bool _admin;
+
+            /// <summary>When the alarm came (the alarm list's time); null: the unit's own record.</summary>
+            public DateTime? Occurred;
+            /// <summary>The alarm as the list shows it - the title; "": the error bit's alarm text.</summary>
+            public string AlarmText = "";
 
             public StepsBuilder(Chain chain, StepTemplate template, int failure)
             {
                 c = chain;
                 t = template;
                 _failure = failure;
+                try { _admin = AdminView != null && AdminView(); } catch { _admin = false; }
                 mv = chain.Mv;
                 _lang = template != null && template.Path.Length > 0 ? (Path.GetFileName(Path.GetDirectoryName(template.Path)) ?? "") : "";
                 _supply = WiringTable.SupplyOf(mv.Station);
@@ -441,8 +486,8 @@ namespace Kaban.Core.Helpers
                     "Switch", s.IsPressureSwitch,
                     "SensorWord", tag && !p.Tag.StartsWith("SW", StringComparison.OrdinalIgnoreCase),
                     "Tag", tag ? E(p.Tag) : "",
-                    "Io", tag ? Code(p.Address) : "",
-                    "Dev", Code(s.Device.Address));
+                    "Io", tag ? Dev(p.Address) : "",
+                    "Dev", Dev(s.Device.Address));
             }
 
             /// <summary>Where a sensor is: its wire, sheet and card terminal; the module it is read through.</summary>
@@ -514,7 +559,8 @@ namespace Kaban.Core.Helpers
             private string ConditionText(MovementInfo.Condition k)
             {
                 var sb = new StringBuilder("<b>" + E(k.Name) + "</b>");
-                if (!string.IsNullOrEmpty(k.Rule)) sb.Append(" (" + E(k.Rule) + ")");
+                // the rule names the PLC's devices: for an Admin only
+                if (_admin && !string.IsNullOrEmpty(k.Rule)) sb.Append(" (" + E(k.Rule) + ")");
                 if (k.Met == true) sb.Append(" <span class=\"st-on\">" + Phrase("Met") + "</span>");
                 else if (k.Met == false) sb.Append(" <span class=\"st-bad\">" + Phrase("NotMet") + "</span>");
                 return sb.ToString();
@@ -522,24 +568,105 @@ namespace Kaban.Core.Helpers
 
             private static string Code(string address) { return "<code>" + E((address ?? "").Trim()) + "</code>"; }
 
+            /// <summary>A device as the page names it: a real input or output for everyone, an internal one (M, D...) for an Admin only; "" when not named.</summary>
+            private string Dev(string address)
+            {
+                if (string.IsNullOrWhiteSpace(address)) return "";
+                return _admin || IsPhysicalIo(address) ? Code(address) : "";
+            }
+
+            /// <summary>
+            /// An LED of a PLC card, as the drawings show it: the card's tag (U4) and
+            /// model, the LED's label (21) and the labels beside it in its row - an
+            /// FX5U CPU's LEDs run 0-7, 20-27 on the upper row and 10-17, 30-37 on
+            /// the lower one; a module's 0-7 and 10-17.
+            /// </summary>
+            private sealed class Led
+            {
+                public string Tag = "", Model = "", Label = "", L2 = "", L1 = "", R1 = "", R2 = "";
+                public bool Cpu, Top = true, Known;
+            }
+
+            private static Led LedOf(WiringTable.Point p, string address)
+            {
+                var led = new Led();
+                string card, terminal;
+                CardParts(p, out card, out terminal);
+                var cm = Regex.Match(card, @"^(\S+)\s+(.+)$");
+                if (cm.Success) { led.Tag = cm.Groups[1].Value; led.Model = cm.Groups[2].Value.Trim(); }
+                else led.Tag = card;
+                led.Cpu = led.Model.IndexOf("FX5U", StringComparison.OrdinalIgnoreCase) >= 0;
+                var dm = Regex.Match((terminal.Length > 0 ? terminal : address) ?? "", @"([0-9]+)$");
+                if (!dm.Success || card.Length == 0) return led;
+                int n = int.Parse(dm.Groups[1].Value, CultureInfo.InvariantCulture), tens = n / 10, digit = n % 10;
+                if (digit > 7) return led;
+                var row = new List<int>();
+                if (led.Cpu)
+                {
+                    for (int g = tens % 2; g <= Math.Max(3, tens); g += 2)
+                        for (int i = 0; i < 8; i++) row.Add(g * 10 + i);
+                    led.Top = tens % 2 == 0;
+                }
+                else
+                {
+                    for (int i = 0; i < 8; i++) row.Add(tens * 10 + i);
+                    led.Top = tens == 0;
+                }
+                int at = row.IndexOf(n);
+                Func<int, string> label = k => at + k >= 0 && at + k < row.Count ? row[at + k].ToString(CultureInfo.InvariantCulture) : "";
+                led.Label = n.ToString(CultureInfo.InvariantCulture);
+                led.L2 = label(-2); led.L1 = label(-1); led.R1 = label(1); led.R2 = label(2);
+                led.Known = true;
+                return led;
+            }
+
+            private static void PutLed(IDictionary<string, object> m, string prefix, Led led)
+            {
+                m[prefix + "CardTag"] = E(led.Tag);
+                m[prefix + "CardModel"] = E(led.Model);
+                m[prefix + "Cpu"] = led.Cpu;
+                m[prefix + "HasLed"] = led.Known;
+                m[prefix + "Led"] = led.Label;
+                m[prefix + "LedL2"] = led.L2;
+                m[prefix + "LedL1"] = led.L1;
+                m[prefix + "LedR1"] = led.R1;
+                m[prefix + "LedR2"] = led.R2;
+                m[prefix + "LedTop"] = led.Top;
+            }
+
+            /// <summary>"K20" -> the relays beside it on the rail (K18, K19 | K21, K22), as the drawing shows a row of them.</summary>
+            private static void PutRelays(IDictionary<string, object> m, string relay)
+            {
+                var rm = Regex.Match(relay ?? "", @"^([A-Za-z]+)([0-9]+)$");
+                int n = rm.Success ? int.Parse(rm.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
+                Func<int, string> k = d => n >= 0 && n + d > 0 ? E(rm.Groups[1].Value + (n + d).ToString(CultureInfo.InvariantCulture)) : "";
+                m["RelayL2"] = k(-2); m["RelayL1"] = k(-1); m["RelayR1"] = k(1); m["RelayR2"] = k(2);
+            }
+
             // ---- what the template is filled with -----------------------------------------
 
             private Dictionary<string, object> SensorItem(Sensor s)
             {
                 var p = s.Point;
-                return new Dictionary<string, object>(StringComparer.Ordinal)
+                var item = new Dictionary<string, object>(StringComparer.Ordinal)
                 {
                     { "Name", SensorName(s) },
                     { "Where", SensorWhere(s) },
                     { "Text", p != null ? E(p.Text) : "" },
-                    { "Io", Code(s.Io) },
-                    { "Dev", Code(s.Device.Address) },
-                    { "CopiedTo", p != null && !string.Equals(p.Address, s.Device.Address, StringComparison.OrdinalIgnoreCase) },
+                    { "Io", Dev(s.Io) },
+                    { "Dev", Dev(s.Device.Address) },
+                    // the PLC copies it into an internal device: worth saying to an Admin only
+                    { "CopiedTo", _admin && p != null && !string.Equals(p.Address, s.Device.Address, StringComparison.OrdinalIgnoreCase) },
                     { "IsSwitch", s.IsPressureSwitch },
                     { "Wire", p != null ? E(p.Wire) : "" },
                     { "Card", p != null ? E(Words(p.Card)) : "" },
+                    // for the drawings: the sensor's own tag and the input's LED on its card
+                    { "TagPlain", p != null ? E(p.Tag) : "" },
+                    { "IoPlain", IsPhysicalIo(s.Io) || _admin ? E(s.Io) : "" },
                     { "Key", "" }, { "Next", "" }, { "Last", false }
                 };
+                PutLed(item, "In", LedOf(p, s.Io));
+                return item;
             }
 
             private Dictionary<string, object> Model()
@@ -573,13 +700,15 @@ namespace Kaban.Core.Helpers
                 m["OtherGlyph"] = otherGlyph;
                 m["OtherSign"] = otherGlyph.Length > 0 ? otherGlyph : OtherMove;
                 m["HasButton"] = mv.Command != null && !string.IsNullOrWhiteSpace(mv.Command.Address);
-                m["Command"] = mv.Command != null ? Code(mv.Command.Address) : "";
-                m["OtherCommand"] = mv.OtherCommand != null ? Code(mv.OtherCommand.Address) : "";
+                // The HMI's command bit is not part of the real operation's signal path -
+                // the page never names it (2 October); kept empty for old templates.
+                m["Command"] = "";
+                m["OtherCommand"] = "";
                 m["Spring"] = _spring;
                 m["Conditions"] = string.Join("; ", mv.Conditions.Select(ConditionText));
 
                 // the output, the card, the relay, the coil
-                m["Out"] = od != null ? Code(od.Address) : "";
+                m["Out"] = od != null ? Dev(od.Address) : "";
                 m["OutText"] = o != null ? e(o.Text) : "";
                 m["OutWire"] = o != null ? e(o.Wire) : "";
                 m["OutSheet"] = o != null ? e(o.Sheet) : "";
@@ -588,8 +717,11 @@ namespace Kaban.Core.Helpers
                 m["OutCard"] = e(Words(card));
                 m["OutTerminal"] = e(terminal);
                 m["OutTerminalOther"] = terminal.Length > 0 && !string.Equals(terminal, od != null ? od.Address : "", StringComparison.OrdinalIgnoreCase);
-                m["OtherOut"] = c.OtherDevice != null ? Code(c.OtherDevice.Address) : "";
+                m["OtherOut"] = c.OtherDevice != null ? Dev(c.OtherDevice.Address) : "";
+                PutLed(m, "Out", LedOf(o, od != null ? od.Address : ""));
+                m["OutPlain"] = od != null && (_admin || IsPhysicalIo(od.Address)) ? e(od.Address) : "";
                 m["Relay"] = o != null ? e(o.Relay) : "";
+                PutRelays(m, o != null ? o.Relay : "");
                 m["RelaySheet"] = o != null ? e(o.RelaySheet) : "";
                 m["Coil"] = o != null ? e(o.Coil) : "";
                 m["CoilWire"] = o != null ? e(o.CoilWire) : "";
@@ -602,26 +734,45 @@ namespace Kaban.Core.Helpers
                 var hoses = air != null ? air.Hoses : "";
                 m["Hoses"] = e(hoses);
                 m["HosesMany"] = hoses.Contains("/");
+                // the hoses one by one, for the drawings: "16 (A) / 96 (B)" -> 16 / A, 96 / B
+                var hose = hoses.Split('/').Select(h => h.Trim()).ToList();
+                for (int i = 0; i < 2; i++)
+                {
+                    var h = i < hose.Count ? hose[i] : "";
+                    var hm = Regex.Match(h, @"^(.*?)\s*\((.*?)\)\s*$");
+                    m["Hose" + (i == 0 ? "A" : "B")] = e(h);
+                    m["Hose" + (i == 0 ? "A" : "B") + "No"] = e(hm.Success ? hm.Groups[1].Value : h);
+                    m["Hose" + (i == 0 ? "A" : "B") + "Port"] = e(hm.Success ? hm.Groups[2].Value : "");
+                }
                 m["ClosedCentre"] = ClosedCentre == true;
                 m["OpenCentre"] = ClosedCentre == false;
                 m["Pressure"] = air != null ? e(Data(air, "Pressure", air.Pressure)) : "";
                 m["Measure"] = air != null ? e(Data(air, "Measure", air.Measure)) : "";
-                m["Position"] = !string.IsNullOrWhiteSpace(mv.Position) ? Code(mv.Position) : "";
+                m["Position"] = Dev(mv.Position);
                 m["ZeroWire"] = e(_supply.ZeroVoltWire);
                 m["SensorWire"] = e(_supply.SensorSupplyWire);
                 m["MainAir"] = c.MainAir != null;
                 m["MainAirTag"] = c.MainAir != null ? e(c.MainAir.Tag) : "";
-                m["MainAirCode"] = c.MainAir != null ? Code(c.MainAir.Address) : "";
+                m["MainAirCode"] = c.MainAir != null ? Dev(c.MainAir.Address) : "";
                 m["MainAirText"] = c.MainAir != null ? e(c.MainAir.Text) : "";
                 m["MainAirLine"] = c.MainAir != null ? Electrical(c.MainAir) + (c.MainAir.Text.Length > 0 ? Phrase("DrawnAs", "V", e(c.MainAir.Text)) : "") : "";
 
                 // the alarm
+                // (the alarm's bit is an internal device: named for an Admin only)
                 bool error = !string.IsNullOrWhiteSpace(mv.Error);
-                m["Error"] = error ? Code(mv.Error) : "";
-                m["ErrorShown"] = error ? Code(mv.Error + (_failure > 0 ? "." + _failure : "")) : "";
+                m["HasError"] = error;
+                m["Admin"] = _admin;
+                m["Error"] = error && _admin ? Code(mv.Error) : "";
+                m["ErrorShown"] = error && _admin ? Code(mv.Error + (_failure > 0 ? "." + _failure : "")) : "";
                 m["ErrorText"] = e(c.ErrorText);
-                m["AlarmTime"] = mv.AlarmTime.HasValue ? mv.AlarmTime.Value.ToString("HH:mm:ss", CultureInfo.InvariantCulture) : "";
-                m["AlarmDate"] = mv.AlarmTime.HasValue ? mv.AlarmTime.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) : "";
+                // the page's title: the alarm as the list shows it, else its bit's alarm text
+                m["Title"] = !string.IsNullOrWhiteSpace(AlarmText) ? e(AlarmText.Trim()) : e(c.ErrorText);
+                var when = Occurred ?? mv.AlarmTime;
+                m["AlarmTime"] = when.HasValue ? when.Value.ToString("HH:mm:ss", CultureInfo.InvariantCulture) : "";
+                m["AlarmDate"] = when.HasValue ? when.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) : "";
+                DateTime now;
+                try { now = Clock(); } catch { now = DateTime.Now; }
+                m["Created"] = now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
                 m["SeenRising"] = mv.SeenRising;
                 m["HmiAlarm"] = _failure > 0;
                 for (int i = 1; i <= 6; i++) m["Failure" + i] = _failure == i;
@@ -666,17 +817,22 @@ namespace Kaban.Core.Helpers
                 m["HasRef"] = reference != null;
                 m["RefName"] = reference != null ? SensorName(reference) : "";
                 m["RefWhere"] = reference != null ? SensorWhere(reference) : "";
-                m["RefIo"] = reference != null ? Code(reference.Io) : "";
+                m["RefIo"] = reference != null ? Dev(reference.Io) : "";
+                // for the cylinder's drawing: the sensor at the end it moves to, the one at its start
+                Func<Sensor, string> tagOf = x => x == null ? "" : x.Point != null && x.Point.Tag.Length > 0 ? e(x.Point.Tag) : (_admin || IsPhysicalIo(x.Io) ? e(x.Io) : "");
+                m["OnTag"] = tagOf(_mustOn.FirstOrDefault(x => !x.IsPressureSwitch));
+                m["StartTag"] = tagOf(start.FirstOrDefault());
+                m["SwitchTag"] = tagOf(_mustOn.Concat(_mustOff).FirstOrDefault(x => x.IsPressureSwitch));
 
                 // what the HMI saw
                 SeenModel(m);
 
                 // the parts list
                 string outLine = o != null ? Electrical(o) + (o.Card.Length > 0 ? " &ndash; " + e(Words(o.Card)) : "") + (o.Text.Length > 0 ? Phrase("DrawnAs", "V", e(o.Text)) : "")
-                               : od != null ? Code(od.Address) : "";
+                               : od != null ? Dev(od.Address) : "";
                 var oo = c.OtherOut;
                 string otherLine = oo != null ? Electrical(oo) + (oo.Card.Length > 0 ? " &ndash; " + e(Words(oo.Card)) : "") + (oo.Text.Length > 0 ? Phrase("DrawnAs", "V", e(oo.Text)) : "")
-                                 : c.OtherDevice != null ? Code(c.OtherDevice.Address) : "";
+                                 : c.OtherDevice != null ? Dev(c.OtherDevice.Address) : "";
                 string pneu = air != null ? Pneumatic(air) : "";
                 m["OutLine"] = outLine;
                 m["OtherLine"] = otherLine;
@@ -723,12 +879,12 @@ namespace Kaban.Core.Helpers
                 bool outputs = all || _failure != 3;
                 bool targets = all || _failure == 2 || _failure == 3 || _failure >= 5;
                 bool starts = all || _failure != 4;
-                if (all) row("command", mv.Command, true, Code(mv.Command != null ? mv.Command.Address : ""), "");
+                // (the HMI's command is not listed: it is not part of the real operation)
                 if (_spring) { if (outputs) row("springcoil", OutDev, false, "", ""); }
                 else
                 {
                     if (outputs) row("valve", OutDev, true, "", "");
-                    if ((all || _failure == 4) && _double && c.OtherDevice != null) row("other", c.OtherDevice, false, Code(c.OtherDevice.Address), "");
+                    if ((all || _failure == 4) && _double && c.OtherDevice != null) row("other", c.OtherDevice, false, Dev(c.OtherDevice.Address), "");
                 }
                 if (targets) foreach (var s in _mustOn) row("sensor", s.Device, true, "", SensorName(s));
                 if (starts) foreach (var s in _mustOff) row("sensor", s.Device, false, "", SensorName(s));
@@ -967,12 +1123,13 @@ namespace Kaban.Core.Helpers
                     return Regex.Replace(Regex.Replace(map, " {2,}", " "), "\\s+</div>", "</div>");
                 }, RegexOptions.Singleline);
 
-                // the boxes of the chain: a link to their step, or plain when it is left out
+                // the boxes of the signal path: a link to their step, with its number, or plain when it is left out
                 html = Regex.Replace(html, "<a class=\"box\" href=\"#([A-Za-z0-9]+)\">(.*?)</a>", mt =>
                 {
                     var k = mt.Groups[1].Value;
                     return keptKeys.Contains(k)
-                        ? "<a class=\"box\" href=\"#" + k + "\" title=\"" + t.Phrase("StepLink", new Dictionary<string, object> { { "N", number[k].ToString(CultureInfo.InvariantCulture) } }) + "\">" + mt.Groups[2].Value + "</a>"
+                        ? "<a class=\"box\" href=\"#" + k + "\" title=\"" + t.Phrase("StepLink", new Dictionary<string, object> { { "N", number[k].ToString(CultureInfo.InvariantCulture) } }) + "\">" +
+                          "<span class=\"sn\">" + number[k].ToString(CultureInfo.InvariantCulture) + "</span>" + mt.Groups[2].Value + "</a>"
                         : "<span class=\"box\">" + mt.Groups[2].Value + "</span>";
                 }, RegexOptions.Singleline);
 

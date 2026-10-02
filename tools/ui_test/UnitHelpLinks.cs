@@ -73,6 +73,12 @@ class L {
               docs[1].FileName == "Cylinder_Troubleshooting.html" && !docs[1].StepByStep, string.Join(" | ", docs.Select(d => d.Title)));
         Check("  tailored to that cylinder", docs[1].Valve == 1 && docs[1].Feedback == 2);
         Check("  and named after the unit", docs[1].Title.Contains("Robot Clamping") && docs[0].Title.Contains("Robot Clamping"), docs[1].Title);
+        // from the alarm list: the step-by-step page is titled with the alarm and dated with its time (2 October)
+        var item = new Kaban.Core.Models.AlarmItem("SUB.Clamp_A", "Alm_Clamp", Kaban.Core.Models.AlarmSeverity.Fault) { TriggerTime = new DateTime(2026, 10, 2, 9, 41, 7) };
+        var fromList = AlarmHelpLinks.DocumentsFor(item);
+        Check("  opened from the alarm list: the page gets the alarm's text and time", fromList.Count > 0 && fromList[0].StepByStep &&
+              fromList[0].AlarmTime == item.TriggerTime && fromList[0].AlarmText == item.Description && !fromList.Skip(1).Any(d => d.AlarmTime.HasValue),
+              fromList.Count > 0 ? fromList[0].AlarmText + " " + fromList[0].AlarmTime : "none");
         AlarmManager.RegisterDefinition("SUB.Axis_X", "Alm_X", Kaban.Core.Models.AlarmSeverity.Fault, plcNumber: 3, address: "M801");
         var servo = AlarmHelpLinks.DocumentsFor(AlarmManager.FindByStationAndAddress(3, "M801"));
         Check("an axis fault opens the servo manual, named for the axis",
