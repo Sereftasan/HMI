@@ -68,6 +68,14 @@ namespace Kaban.UI.Dashboard
         public int Station = 1;
 
         /// <summary>
+        /// The user a machine's log entries are put on. The log database does not
+        /// record who was signed in yet; until it does, its entries count as the
+        /// administrator's, so the User filter takes them in or leaves them out
+        /// like any other entry (2 October).
+        /// </summary>
+        public const string MachineUser = "admin";
+
+        /// <summary>
         /// The entries of a period as far as they are read; starts a read when the
         /// period is new, or - when it runs up to now - when the last read is older
         /// than RefreshSeconds.
@@ -157,7 +165,7 @@ namespace Kaban.UI.Dashboard
                 double minutes = Math.Max(0, (end - s.Start).TotalSeconds / 60.0);
                 list.Add(new AuditEntry
                 {
-                    Time = s.Start, Kind = AuditKind.MachineState, Station = station, Source = source,
+                    Time = s.Start, Kind = AuditKind.MachineState, Station = station, Source = source, User = MachineUser,
                     Text = s.Description + "  (" + minutes.ToString("0.0", CultureInfo.CurrentCulture) + " " + min +
                            (still ? ", " + LanguageManager.GetString("Log_MachineStill", "still") : "") + ")"
                 });
@@ -165,13 +173,13 @@ namespace Kaban.UI.Dashboard
             foreach (var e in v.Events)
                 list.Add(new AuditEntry
                 {
-                    Time = e.Time, Kind = AuditKind.MachineEvent, Station = station, Source = source,
+                    Time = e.Time, Kind = AuditKind.MachineEvent, Station = station, Source = source, User = MachineUser,
                     Text = e.Description + (string.IsNullOrEmpty(e.Details) ? "" : " - " + e.Details)
                 });
             foreach (var a in v.Alarms)
                 list.Add(new AuditEntry
                 {
-                    Time = a.Time, Kind = AuditKind.MachineAlarm, Station = station, Source = source,
+                    Time = a.Time, Kind = AuditKind.MachineAlarm, Station = station, Source = source, User = MachineUser,
                     Text = (string.IsNullOrEmpty(a.Details) ? a.Description : a.Details)
                 });
             return list.OrderBy(e => e.Time).ToList();

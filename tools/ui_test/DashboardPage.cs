@@ -270,21 +270,28 @@ class DP {
         tl.ResetView();
 
         Console.WriteLine("-- the page's look (2 October)");
-        Check("no title above the tabs; the tabs' names without pictures", !Has(page, "_title") &&
-              page.TabKeys.Take(3).Select(t => t.Text).SequenceEqual(new[] { "Machine states", "Operations", "Alarms" }) &&
+        Check("no title above the tabs; the tabs' names without pictures (Machine Performance, Production Events, Alarms, All logs)", !Has(page, "_title") &&
+              page.TabKeys.Select(t => t.Text).SequenceEqual(new[] { "Machine Performance", "Production Events", "Alarms", "All logs" }) &&
               page.TabKeys.All(t => t.Text.All(ch => ch < 0x2190)), string.Join(",", page.TabKeys.Select(t => t.Text)));
         var captions = ((System.Collections.IEnumerable)Get(page, "_sideCaptions")).Cast<Label>().Select(l => l.Text).ToList();
-        Check("the filters' captions without pictures, Shift Selection without (Optional)", captions.All(t => t.All(ch => ch < 0x2190)) &&
-              captions.Contains("Shift Selection") && captions.Contains("User") && captions.Contains("PLC") && captions.Contains("Source"),
+        Check("the filters' captions without pictures; Log Type between Shift Selection and User", captions.All(t => t.All(ch => ch < 0x2190)) &&
+              captions.Skip(4).SequenceEqual(new[] { "Shift Selection", "Log Type", "User", "PLC", "Source" }),
               string.Join(" | ", captions));
+        Check("  the sections' headings: Time Distribution, Timeline, Logs - Quantities, Cutting Details, Logs",
+              new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "event_logs" }.Select(k => page.SectionOf(k).Title)
+              .SequenceEqual(new[] { "\u23f1\ufe0f Time Distribution", "\U0001F552 Timeline", "\U0001F4DC Logs", "\U0001F4C8 Quantities", "\U0001F4CB Logs" }),
+              string.Join(" | ", new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "event_logs" }.Select(k => page.SectionOf(k).Title)));
         Check("a narrower filter bar", page.FilterBarWidth <= 240, page.FilterBarWidth + "");
         Check("no refresh beside Latest, no shift buttons, no settings button", !Has(page, "_refresh") && !Has(page, "_editShifts") &&
               !Has(page, "_settings") && !Has(page, "_metrics"));
         var foot = page.ExportButton.Parent;
         Check("Export Report at the foot of the bar, the folder beside it", foot.Dock == DockStyle.Bottom && page.FolderButton.Parent == foot &&
               page.FolderButton.Left > page.ExportButton.Right && page.ExportButton.Text == "Export Report" && page.FolderButton.Text == "\U0001F4C2");
+        Check("  Export Report in the usual button colours (not red)", page.ExportButton.BackColor == Color.White && page.ExportButton.ForeColor != Color.White &&
+              !page.ExportButton.Font.Bold, page.ExportButton.BackColor + " / " + page.ExportButton.ForeColor);
+        Check("  the folder button usable (Maintenance)", page.FolderButton.Enabled);
         Check("the info bar: the interval and the entries the tab shows", page.BarText.StartsWith("Log interval:  2026-09-28 00:00  -  2026-09-29 00:00") &&
-              page.BarText.Contains("11 entries shown, 11 in the period") && !page.BarIsRed, page.BarText);
+              page.BarText.Contains("11 entries shown, 11 in the period") && !page.BarIsRed && !page.BarIsBold, page.BarText);
         page.SelectTab("events");
         Pump(50);
         Check("  the events tab: its table's", page.BarText.Contains("6 entries shown, 6 in the period"), page.BarText);
@@ -326,11 +333,16 @@ class DP {
         Check("a section opened or closed stays so (written to the settings)", stateLogs.Open != wasOpen &&
               saved.Contains("\"state_logs_show\": " + (stateLogs.Open ? "true" : "false")));
 
-        page.ShiftBox.SelectedIndex = 1;   // 08:00 - 16:00
+        page.ShiftPick.Select(new[] { "08:00 - 16:00" });
         WaitFor(page);
         Check("a shift chosen: its states only", page.View.Shift != null && page.View.States.Count == 4 && page.StateGrid.RowCount == 4);
         Check("  the info bar names it", page.BarText.Contains("Active Shift: 08:00 - 16:00") && page.BarText.Contains("4 entries shown"), page.BarText);
-        page.ShiftBox.SelectedIndex = 0;
+        page.ShiftPick.Select(new[] { "08:00 - 16:00", "16:00 - 00:00" });
+        WaitFor(page);
+        Check("two shifts chosen: the states of both (08:00 - 00:00, joined)", page.View.States.Sum(s => s.Minutes) == 960 &&
+              page.View.States.First().Start == Day.AddHours(8) && page.BarText.Contains("Active Shift: 08:00 - 16:00, 16:00 - 00:00"),
+              page.View.States.Sum(s => s.Minutes) + " / " + page.BarText);
+        page.ShiftPick.Select(new string[0]);
         WaitFor(page);
         var shiftRows = DashboardData.Metrics(page.View, machine.Config.Shifts);
         Check("shift metrics (the reports'): a row per shift", shiftRows.Count == 3 && Math.Abs(shiftRows[0].ActivePercent - 92.6) < 0.05);
@@ -341,10 +353,10 @@ class DP {
         WaitFor(page);
         Check("a report chosen: from the report before it to it", page.RangeStart == Day.AddHours(8) && page.RangeEnd == Day.AddHours(18));
         page.LatestBox.SelectedIndex = page.LatestBox.Items.IndexOf("Hourly");
-        Check("while the log is read the bar says so, in red", page.Loading && page.BarIsRed && page.BarText == "Data loading...", page.BarText);
+        Check("while the log is read the bar says so, in bold black (not red)", page.Loading && !page.BarIsRed && page.BarIsBold && page.BarText == "Data loading...", page.BarText);
         WaitFor(page);
         Check("Latest hour: an hour up to now", page.RangeEnd - page.RangeStart == TimeSpan.FromHours(1) && page.HistoryBox.SelectedIndex == 0);
-        Check("  then black again", !page.BarIsRed && page.BarText.StartsWith("Log interval:"), page.BarText);
+        Check("  then plain again", !page.BarIsBold && page.BarText.StartsWith("Log interval:"), page.BarText);
         page.SetRange(Day, Day.AddDays(1), latest: "Hourly");
         WaitFor(page);
         page.ChooseLatestAgain();
@@ -364,8 +376,9 @@ class DP {
         LanguageManager.ChangeLanguage("TR");
         WaitFor(page);
         Check("the descriptions follow the HMI's language", page.View.States.Any(s => s.Description == "\u00c7al\u0131\u015fma Aktif"));
-        Check("the page's texts too", page.TabKeys[1].Text == "\u0130\u015flemler" &&
-              page.SectionOf("alarm_logs").Title.Contains("Ar\u0131za Kay\u0131tlar\u0131") && (string)page.LatestBox.Items[5] == "G\u00fcnl\u00fck" &&
+        Check("the page's texts too", page.TabKeys[1].Text == "\u00dcretim Olaylar\u0131" && page.TabKeys[0].Text == "Makine Performans\u0131" &&
+              page.SectionOf("state_pie").Title.Contains("S\u00fcre Da\u011f\u0131l\u0131m\u0131") && page.TypePick.Shown == "T\u00fcm t\u00fcrler" &&
+              page.SectionOf("alarm_logs").Title.Contains("Kay\u0131tlar") && (string)page.LatestBox.Items[5] == "G\u00fcnl\u00fck" &&
               page.BarText.StartsWith("Kay\u0131t aral\u0131\u011f\u0131:"), page.TabKeys[1].Text + " / " + page.BarText);
         LanguageManager.ChangeLanguage("EN");
         WaitFor(page);
@@ -392,6 +405,17 @@ class DP {
         Check("below Maintenance: no folder; Export Report stays", !page.FolderButton.Enabled && page.ExportButton.Enabled);
         SecurityManager.Login("setter", SecurityLevel.Maintenance);
         Pump(100);
+        Check("  signed in again: the folder again", page.FolderButton.Enabled);
+        // the page made while nobody was signed in, the sign-in before it is first on screen
+        SecurityManager.Login("operator", SecurityLevel.Operator);
+        var early = new DashboardScreen(machine);
+        SecurityManager.Login("setter", SecurityLevel.Maintenance);
+        var earlyForm = new Form { ClientSize = new Size(1200, 800) };
+        earlyForm.Controls.Add(early);
+        earlyForm.Show();
+        Pump(100);
+        Check("  a page made before the sign-in: the folder usable once it is on screen", early.FolderButton.Enabled);
+        earlyForm.Close();
 
         Console.WriteLine("-- the settings");
         var set = new DashboardSettingsControl(machine);
@@ -404,6 +428,13 @@ class DP {
         set.TimesBox.Text = "25:00";
         Check("times that cannot be read are refused", !set.Save() && set.ProblemText.Contains("times"), set.ProblemText);
         set.TimesBox.Text = "7:5, 18:00";
+        Check("the sections listed as the page has them: under their tab, with their titles",
+              set.SectionBox("state_pie").Text == "Time Distribution" && set.SectionBox("state_pie").Parent is Panel &&
+              set.SectionBox("event_quantity").Text == "Quantities" && set.SectionBox("event_logs").Text == "Logs" && set.SectionBox("alarm_logs").Text == "Logs" &&
+              ((Panel)set.SectionBox("state_pie").Parent).Controls.Cast<Control>().Any(c => c.Text == "Machine Performance:") &&
+              ((Panel)set.SectionBox("event_quantity").Parent).Controls.Cast<Control>().Any(c => c.Text == "Production Events:") &&
+              ((Panel)set.SectionBox("alarm_logs").Parent).Controls.Cast<Control>().Any(c => c.Text == "Alarms:"),
+              string.Join(" | ", ((Panel)set.SectionBox("state_pie").Parent).Controls.Cast<Control>().Select(c => c.Text)));
         set.SectionBox("event_quantity").Checked = false;
         Check("kept", set.Save() && set.ProblemText == "");
         Check("the times are cleaned (07:05, 18:00)", machine.Config.Schedule.Times.SequenceEqual(new[] { "07:05", "18:00" }));
@@ -430,8 +461,8 @@ class DP {
               machine.Config.Shifts.Select(x => x.Text).SequenceEqual(new[] { "08:00 - 16:00", "16:00 - 23:30", "23:30 - 08:00" }),
               string.Join(" | ", machine.Config.Shifts.Select(x => x.Text)));
         Pump(300);
-        Check("  the dashboard's Shift Selection follows", page.ShiftBox.Items.Count == 4 && (string)page.ShiftBox.Items[3] == "23:30 - 08:00",
-              string.Join(" | ", page.ShiftBox.Items.Cast<object>()));
+        Check("  the dashboard's Shift Selection follows", page.ShiftPick.Items.Count == 3 && page.ShiftPick.Items[2].Text == "23:30 - 08:00",
+              string.Join(" | ", page.ShiftPick.Items.Select(i => i.Text)));
         set.AddShift(TimeSpan.FromHours(10), TimeSpan.FromHours(10));
         Check("  a shift that starts and ends at once is refused", !set.Save() && set.ProblemText.Contains("10:00 - 10:00"), set.ProblemText);
 

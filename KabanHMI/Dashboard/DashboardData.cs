@@ -48,7 +48,11 @@ namespace Kaban.UI.Dashboard
     public sealed class DashboardView
     {
         public DateTime Start, End;
+        /// <summary>The first shift chosen (null: the whole day); <see cref="Shifts"/> all of them.</summary>
         public DashboardConfig.Shift Shift;
+        public List<DashboardConfig.Shift> Shifts = new List<DashboardConfig.Shift>();
+        /// <summary>What was asked for: the states, the events (and cuts), the alarms.</summary>
+        public DashboardData.Parts Parts = DashboardData.Parts.All;
         public List<StateSpan> States = new List<StateSpan>();
         public List<LogRow> Events = new List<LogRow>();
         public List<LogRow> Alarms = new List<LogRow>();
@@ -91,10 +95,25 @@ namespace Kaban.UI.Dashboard
             public TooManyRowsException(long rows) : base("the range holds " + rows + " records") { Rows = rows; }
         }
 
+        /// <summary>
+        /// WHAT TO READ (2 October): the dashboard's Log Type filter asks for some of
+        /// them only, and only those rows are read - the states alone need no details.
+        /// </summary>
+        [Flags]
+        public enum Parts { None = 0, States = 1, Events = 2, Alarms = 4, All = 7 }
+
         /// <summary>The raw rows of a range, before they are sorted into states, events and alarms.</summary>
         public sealed class Loaded
         {
             public DateTime Start, End;
+            /// <summary>What was read (a read of more serves a page that asks for less).</summary>
+            public Parts Parts = Parts.All;
+            /// <summary>
+            /// The codes that are alarms: the error (4) and its CONTINUATION records -
+            /// a code whose PreviousCode is 4 ("There is an error (2)": the next 32
+            /// error bits). They were listed as events by mistake.
+            /// </summary>
+            public HashSet<int> AlarmCodes = new HashSet<int> { StateMap.Error };
             public List<LogRow> Rows = new List<LogRow>();
             /// <summary>main_log ids with a "Profile Data" detail (the barcoded cuts).</summary>
             public HashSet<long> Barcoded = new HashSet<long>();
@@ -300,11 +319,37 @@ namespace Kaban.UI.Dashboard
             }
         }
 
-        /// <summary>How many main_log rows a range holds.</summary>
-        public static long Count(DbConnection c, DateTime startUtc, DateTime endUtc)
+        /// <summary>How many main_log rows a range holds (of the codes <paramref name="codes"/> lets in: "" every code).</summary>
+        public static long Count(DbConnection c, DateTime startUtc, DateTime endUtc, string codes = "")
         {
-            using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log WHERE state_date >= @p0 AND state_date < @p1", ToDb(startUtc), ToDb(endUtc)))
+            using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log WHERE state_date >= @p0 AND state_date < @p1" + codes, ToDb(startUtc), ToDb(endUtc)))
                 return Convert.ToInt64(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>The alarm codes of a map: the error and the codes that continue it.</summary>
+        public static HashSet<int> AlarmCodesOf(StateMap map)
+        {
+            var set = new HashSet<int> { StateMap.Error };
+            if (map != null)
+                foreach (var e in map.Entries)
+                    if (e.PreviousCode == StateMap.Error) set.Add(e.Code);
+            return set;
+        }
+
+        /// <summary>
+        /// The SQL condition (" AND (...)") on <paramref name="column"/> for the parts
+        /// asked for; "" for all of them.
+        /// </summary>
+        public static string CodeCondition(Parts parts, HashSet<int> alarmCodes, string column = "state_code")
+        {
+            if ((parts & Parts.All) == Parts.All) return "";
+            Func<IEnumerable<int>, string> list = codes => string.Join(",", codes.Distinct().OrderBy(x => x).Select(x => x.ToString(CultureInfo.InvariantCulture)));
+            var states = new[] { 0, 1, 2, 3, 4, 5 };
+            var or = new List<string>();
+            if ((parts & Parts.States) != 0) or.Add(column + " IN (" + list(states) + ")");
+            if ((parts & Parts.Alarms) != 0) or.Add(column + " IN (" + list(alarmCodes) + ")");
+            if ((parts & Parts.Events) != 0) or.Add(column + " NOT IN (" + list(states.Concat(alarmCodes)) + ")");
+            return or.Count == 0 ? " AND 0" : " AND (" + string.Join(" OR ", or) + ")";
         }
 
         /// <summary>
@@ -350,10 +395,12 @@ namespace Kaban.UI.Dashboard
         /// <paramref name="stop"/> is asked now and then; true abandons the read (null).
         /// </summary>
         public static Loaded Load(string path, DateTime startLocal, DateTime endLocal, TimeZoneInfo zone,
-                                  StateMap map, string column, Func<bool> stop = null)
+                                  StateMap map, string column, Func<bool> stop = null, Parts parts = Parts.All)
         {
             EnsureIndexes(path);
-            var result = new Loaded { Start = startLocal, End = endLocal };
+            var result = new Loaded { Start = startLocal, End = endLocal, Parts = parts, AlarmCodes = AlarmCodesOf(map) };
+            string codes = CodeCondition(parts, result.AlarmCodes);
+            string mCodes = CodeCondition(parts, result.AlarmCodes, "m.state_code");
             var sUtc = DashboardTime.ToUtc(startLocal, zone);
             var eUtc = DashboardTime.ToUtc(endLocal, zone);
             var tr = map.TableOf(column);
@@ -382,10 +429,12 @@ namespace Kaban.UI.Dashboard
 
             using (var c = Open(path))
             {
-                long n = Count(c, sUtc, eUtc);
+                long n = Count(c, sUtc, eUtc, codes);
                 if (n > MaxRows) throw new TooManyRowsException(n);
 
                 long? prevId = null;
+                // the state in force at the start: only when the states are asked for
+                if ((parts & Parts.States) != 0)
                 using (var cmd = Command(c, "SELECT id, state_date, state_code FROM main_log WHERE state_date < @p0 AND state_code IN (0,1,2,3,4,5) ORDER BY state_date DESC LIMIT 1", ToDb(sUtc)))
                 using (var r = cmd.ExecuteReader())
                     if (r.Read())
@@ -400,7 +449,7 @@ namespace Kaban.UI.Dashboard
                     }
 
                 var byId = new Dictionary<long, LogRow>();
-                using (var cmd = Command(c, "SELECT id, state_date, state_code FROM main_log WHERE state_date >= @p0 AND state_date < @p1 ORDER BY state_date", ToDb(sUtc), ToDb(eUtc)))
+                using (var cmd = Command(c, "SELECT id, state_date, state_code FROM main_log WHERE state_date >= @p0 AND state_date < @p1" + codes + " ORDER BY state_date", ToDb(sUtc), ToDb(eUtc)))
                 using (var r = cmd.ExecuteReader())
                 {
                     int k = 0;
@@ -458,11 +507,15 @@ namespace Kaban.UI.Dashboard
                         }
                     }
                 };
-                using (var cmd = Command(c, "SELECT d.main_log_id, d.log_description, d.deger, d.str_deger FROM log_details d " +
-                                            "INNER JOIN main_log m ON d.main_log_id = m.id WHERE m.state_date >= @p0 AND m.state_date < @p1 " +
-                                            "ORDER BY d.main_log_id, d.id", ToDb(sUtc), ToDb(eUtc)))
-                    readDetails(cmd);
-                flush();
+                // the details: the events' and the alarms' (the states have none the page shows)
+                if ((parts & (Parts.Events | Parts.Alarms)) != 0)
+                {
+                    using (var cmd = Command(c, "SELECT d.main_log_id, d.log_description, d.deger, d.str_deger FROM log_details d " +
+                                                "INNER JOIN main_log m ON d.main_log_id = m.id WHERE m.state_date >= @p0 AND m.state_date < @p1" + mCodes + " " +
+                                                "ORDER BY d.main_log_id, d.id", ToDb(sUtc), ToDb(eUtc)))
+                        readDetails(cmd);
+                    flush();
+                }
                 if (stop != null && stop()) return null;
                 if (prevId.HasValue)
                 {
@@ -484,11 +537,26 @@ namespace Kaban.UI.Dashboard
         /// </summary>
         public static DashboardView Build(Loaded data, bool barcodedOnly, DashboardConfig.Shift shift)
         {
-            var v = new DashboardView { Start = data.Start, End = data.End, Shift = shift };
+            return Build(data, barcodedOnly, shift == null ? null : new[] { shift }, Parts.All);
+        }
+
+        /// <summary>
+        /// The same for several shifts (each day's windows of all of them, joined where
+        /// they meet or overlap; none: the whole range) and only the parts asked for
+        /// (and read).
+        /// </summary>
+        public static DashboardView Build(Loaded data, bool barcodedOnly, IList<DashboardConfig.Shift> shifts, Parts parts)
+        {
+            shifts = shifts == null ? new List<DashboardConfig.Shift>() : shifts.Where(s => s != null).ToList();
+            parts &= data.Parts;
+            var shift = shifts.Count > 0 ? shifts[0] : null;
+            var v = new DashboardView { Start = data.Start, End = data.End, Shift = shift, Shifts = shifts.ToList(), Parts = parts };
             if (data.Rows.Count == 0) return v;
+            bool wantStates = (parts & Parts.States) != 0, wantEvents = (parts & Parts.Events) != 0, wantAlarms = (parts & Parts.Alarms) != 0;
+            var alarmCodes = data.AlarmCodes ?? new HashSet<int> { StateMap.Error };
 
             // states: consecutive repeats dropped, each lasting until the next (the last a year past the range)
-            var stateRows = data.Rows.Where(r => StateMap.IsState(r.Code)).OrderBy(r => r.Time).ToList();
+            var stateRows = wantStates ? data.Rows.Where(r => StateMap.IsState(r.Code)).OrderBy(r => r.Time).ToList() : new List<LogRow>();
             var spans = new List<StateSpan>();
             foreach (var r in stateRows)
             {
@@ -497,24 +565,33 @@ namespace Kaban.UI.Dashboard
                 spans.Add(new StateSpan { Start = r.Time, End = data.End.AddDays(365), Code = r.Code, Description = r.Description });
             }
 
-            var events = data.Rows.Where(r => !StateMap.IsState(r.Code) &&
+            var events = !wantEvents ? new List<LogRow>() :
+                         data.Rows.Where(r => !StateMap.IsState(r.Code) && !alarmCodes.Contains(r.Code) &&
                                               (!barcodedOnly || r.Code != StateMap.CuttingDone || data.Barcoded.Contains(r.Id))).ToList();
             var alarms = new List<LogRow>();
-            foreach (var r in data.Rows.Where(r => r.Code == StateMap.Error))
-                alarms.Add(new LogRow { Id = r.Id, Time = r.Time, Code = r.Code, Description = r.Description, Details = AlarmText(r.Details) });
-
-            var windows = new List<KeyValuePair<DateTime, DateTime>>();
-            if (shift == null) windows.Add(new KeyValuePair<DateTime, DateTime>(data.Start, data.End));
-            else
-                // from the day before: a night shift that began before the range still reaches into it
-                for (var day = data.Start.Date.AddDays(-1); day <= data.End.Date; day = day.AddDays(1))
+            if (wantAlarms)
+            {
+                // A continuation record joins the error it continues (written with it,
+                // a few seconds at most later); alone, it is an alarm of its own.
+                LogRow last = null;
+                foreach (var r in data.Rows.Where(r => alarmCodes.Contains(r.Code)).OrderBy(r => r.Time))
                 {
-                    var s = day + shift.Start;
-                    var e = (shift.End <= shift.Start ? day.AddDays(1) : day) + shift.End;
-                    var a = s > data.Start ? s : data.Start;
-                    var b = e < data.End ? e : data.End;
-                    if (a < b) windows.Add(new KeyValuePair<DateTime, DateTime>(a, b));
+                    string details = AlarmText(r.Details);
+                    if (r.Code == StateMap.Error)
+                    {
+                        last = new LogRow { Id = r.Id, Time = r.Time, Code = r.Code, Description = r.Description, Details = details };
+                        alarms.Add(last);
+                    }
+                    else if (last != null && (r.Time - last.Time).TotalSeconds <= ContinuationSeconds)
+                    {
+                        if (details.Length > 0) last.Details = last.Details.Length > 0 ? last.Details + "; " + details : details;
+                    }
+                    else if (details.Length > 0)
+                        alarms.Add(new LogRow { Id = r.Id, Time = r.Time, Code = r.Code, Description = r.Description, Details = details });
                 }
+            }
+
+            var windows = Windows(data.Start, data.End, shifts);
 
             var cutIds = new List<long>();
             foreach (var w in windows)
@@ -533,22 +610,66 @@ namespace Kaban.UI.Dashboard
                 }
                 v.Events.AddRange(events.Where(r => r.Time >= w.Key && r.Time < w.Value));
                 v.Alarms.AddRange(alarms.Where(r => r.Time >= w.Key && r.Time < w.Value));
-                if (shift != null)
+                if (shifts.Count > 0)
                 {
                     var inWindow = data.Rows.Where(r => r.Time >= w.Key && r.Time < w.Value).ToList();
                     v.Main.AddRange(inWindow);
                     cutIds.AddRange(inWindow.Where(r => r.Code == StateMap.CuttingDone).Select(r => r.Id));
                 }
             }
-            if (shift == null)
+            if (shifts.Count == 0)
             {
                 v.Main.AddRange(data.Rows);
                 cutIds.AddRange(data.Rows.Where(r => r.Code == StateMap.CuttingDone).Select(r => r.Id));
             }
 
-            Cutting(data, cutIds, v);
+            if (wantEvents) Cutting(data, cutIds, v);
             Counts(v);
             return v;
+        }
+
+        /// <summary>A continuation record this close to its error joins it.</summary>
+        public const int ContinuationSeconds = 5;
+
+        /// <summary>
+        /// The windows of a range the shifts cover: each day's start to end of each
+        /// shift (from the day before: a night shift that began before the range still
+        /// reaches into it), cut to the range, joined where they meet or overlap. No
+        /// shift: the range itself.
+        /// </summary>
+        public static List<KeyValuePair<DateTime, DateTime>> Windows(DateTime start, DateTime end, IList<DashboardConfig.Shift> shifts)
+        {
+            var list = new List<KeyValuePair<DateTime, DateTime>>();
+            if (shifts == null || shifts.Count == 0) { list.Add(new KeyValuePair<DateTime, DateTime>(start, end)); return list; }
+            foreach (var shift in shifts)
+                for (var day = start.Date.AddDays(-1); day <= end.Date; day = day.AddDays(1))
+                {
+                    var s = day + shift.Start;
+                    var e = (shift.End <= shift.Start ? day.AddDays(1) : day) + shift.End;
+                    var a = s > start ? s : start;
+                    var b = e < end ? e : end;
+                    if (a < b) list.Add(new KeyValuePair<DateTime, DateTime>(a, b));
+                }
+            list.Sort((x, y) => x.Key.CompareTo(y.Key));
+            var joined = new List<KeyValuePair<DateTime, DateTime>>();
+            foreach (var w in list)
+            {
+                if (joined.Count > 0 && w.Key <= joined[joined.Count - 1].Value)
+                {
+                    var last = joined[joined.Count - 1];
+                    if (w.Value > last.Value) joined[joined.Count - 1] = new KeyValuePair<DateTime, DateTime>(last.Key, w.Value);
+                }
+                else joined.Add(w);
+            }
+            return joined;
+        }
+
+        /// <summary>True when the time of day is in one of the shifts (none: always).</summary>
+        public static bool InShifts(TimeSpan t, IList<DashboardConfig.Shift> shifts)
+        {
+            if (shifts == null || shifts.Count == 0) return true;
+            foreach (var s in shifts) if (InShift(t, s)) return true;
+            return false;
         }
 
         /// <summary>An alarm's details: each bit's name, without its ": 1".</summary>

@@ -21,17 +21,21 @@ namespace Kaban.UI.Dashboard
     /// On the left, the filters (2 October: no pictures on their captions, a
     /// narrower bar): the range - an automatic report's (Auto-Report History), the
     /// latest 15 minutes to a year (Latest; choosing it again moves it up to now)
-    /// or any start and end -, the shift, then the user, the controller and the
-    /// source of the log tabs. At the foot of the bar, wherever the filters end:
-    /// Export Report and, beside it, the folder the reports go to.
+    /// or any start and end -, then the shifts, the log types, the users, the
+    /// controllers and the sources: each several at once (PickList), for every
+    /// table of the page (DashboardFilter). At the foot of the bar, wherever the
+    /// filters end: Export Report and, beside it, the folder the reports go to.
     ///
     /// On the right, the tabs (DashboardScreen.Sections.cs) and, at the foot of
-    /// the page, the info bar: "Data loading..." in red while the log is read,
-    /// then the log interval, the shift and the entries the tab on show lists.
+    /// the page, the info bar: "Data loading..." in bold while the logs are read,
+    /// then the log interval, the shifts and the entries the tab on show lists.
     /// The shifts and the rest of the settings are set in HMI Settings > Logs and
     /// Reports.
     ///
-    /// The log is read on a thread of its own; the page stays usable meanwhile.
+    /// The logs are read on a thread of its own - only what the filters let
+    /// through: the machine's database not at all when they leave it out, its
+    /// states alone without their details, the HMI's files only for its types -
+    /// and the page stays usable meanwhile.
     /// Descriptions are in the HMI's language (the machine's Translation_JSON.csv).
     /// </summary>
     public partial class DashboardScreen : UserControl
@@ -50,7 +54,7 @@ namespace Kaban.UI.Dashboard
         private readonly DateTimePicker _start = new DateTimePicker();
         private readonly DateTimePicker _end = new DateTimePicker();
         private readonly Label _rangeError = new Label();
-        private readonly ComboBox _shift = new ComboBox();
+        private PickList _shiftPick, _typePick, _userPick, _plcPick, _sourcePick;
         private Button _export, _openFolder;
         private readonly List<Label> _sideCaptions = new List<Label>();
 
@@ -58,6 +62,7 @@ namespace Kaban.UI.Dashboard
         private readonly Panel _bar = new Panel();
         private readonly Label _barText = new Label();
         private readonly Label _barNote = new Label();
+        private readonly Font _barBold = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
 
         // ---- the range shown
         private DateTime _from, _to;
@@ -70,7 +75,10 @@ namespace Kaban.UI.Dashboard
         private string _loadedKey = "";
         private DashboardView _view;
         private bool _loading;
-        private bool _logReading;            // the log tab's files are being read
+        /// <summary>What the filters let through when the shown data was read; the HMI's entries that passed.</summary>
+        private DashboardFilter _filter = new DashboardFilter();
+        private List<AuditEntry> _hmiEntries = new List<AuditEntry>();
+        private int _hmiRead;
 
         private readonly EventHandler _onLanguage, _onUser, _onConfig;
         private readonly EventHandler<DashboardReports.RunResult> _onReports;
@@ -96,8 +104,14 @@ namespace Kaban.UI.Dashboard
             _from = _to.AddDays(-1);
 
             _onLanguage = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(() => { Retranslate(); Reload(true); })); };
-            _onUser = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(ApplyAccess)); };
-            _onConfig = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(() => { FillShifts(); ApplySections(); Reload(true); })); };
+            // a sign-in while the page is not built on screen yet counts too (ApplyAccess when shown)
+            _onUser = (s, e) =>
+            {
+                if (IsDisposed) return;
+                if (IsHandleCreated) BeginInvoke(new Action(ApplyAccess));
+                else ApplyAccess();
+            };
+            _onConfig = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(() => { FillShifts(); FillSources(); ApplySections(); Reload(true); })); };
             _onReports = (s, r) => { if (IsHandleCreated) BeginInvoke(new Action(RefreshHistory)); };
             LanguageManager.LanguageChanged += _onLanguage;
             SecurityManager.UserChanged += _onUser;
@@ -121,6 +135,7 @@ namespace Kaban.UI.Dashboard
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
+            if (Visible) ApplyAccess();
             if (!Visible || _shown || !IsHandleCreated) return;
             _shown = true;
             SetRange(_from, _to, latest: "Daily");
@@ -230,21 +245,15 @@ namespace Kaban.UI.Dashboard
             _rangeError.Visible = false;
             _side.Controls.Add(_rangeError);
 
-            // the shift: one combo (the list is set in HMI Settings > Logs and Reports)
-            SideBox(_shift).SelectedIndexChanged += (s, e) => { if (!_setting) Reload(false); };
-            _side.Controls.Add(SideCaption("Dsh_ShiftSelection", "Shift Selection"));
-            _side.Controls.Add(_shift);
-
-            // who and where: on every tab (the log tabs filter by them)
+            // what of the range: the shifts (set in HMI Settings > Logs and Reports),
+            // the log types, who, which controller, where from - several of each at
+            // once, for every tab
             _side.Controls.Add(Rule());
-            foreach (var f in new[] { new object[] { "Log_User", "User", _log.UserBox }, new object[] { "Log_Plc", "PLC", _log.PlcBox },
-                                      new object[] { "Log_Source", "Source", _log.SourceBox } })
-            {
-                var caption = SideCaption((string)f[0], (string)f[1]);
-                caption.Margin = new Padding(0, 6, 0, 2);
-                _side.Controls.Add(caption);
-                _side.Controls.Add(SideBox((ComboBox)f[2]));
-            }
+            _shiftPick = SidePick("Dsh_ShiftSelection", "Shift Selection", true);
+            _typePick = SidePick("Dsh_LogType", "Log Type", false);
+            _userPick = SidePick("Log_User", "User", false);
+            _plcPick = SidePick("Log_Plc", "PLC", false);
+            _sourcePick = SidePick("Log_Source", "Source", false);
 
             // the foot of the bar: Export Report and its folder, wherever the filters end
             _sideFoot.Dock = DockStyle.Bottom;
@@ -252,14 +261,9 @@ namespace Kaban.UI.Dashboard
             _sideFoot.BackColor = back;
             _openFolder = UiStyle.ToolButton("\U0001F4C2", T("Dsh_ShowInFolder", "Show in folder"), _tips, (s, e) => OpenFolder());
             _openFolder.Height = 34;
-            _export = new Button
-            {
-                Height = 34, Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold),
-                BackColor = Color.FromArgb(255, 75, 75), ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Cursor = Cursors.Hand
-            };
-            _export.FlatAppearance.BorderSize = 0;
-            _export.Click += (s, e) => ExportNow();
-            UiStyle.Round(_export);
+            // the program's usual button, as the folder's beside it (2 October: not red)
+            _export = UiStyle.TextButton(T("Dsh_Export", "Export Report"), 0, (s, e) => ExportNow());
+            _export.Height = 34;
             _export.Location = new Point(10, 9);
             _export.Width = SideInner - _openFolder.Width - 6;
             _openFolder.Location = new Point(_export.Right + 6, 9);
@@ -271,6 +275,22 @@ namespace Kaban.UI.Dashboard
             _sideHost.Controls.Add(_sideFoot);
 
             FillShifts();
+            FillTypes();
+            FillSources();
+            FillUsers(null);
+            FillPlcs(null);
+        }
+
+        /// <summary>A filter of the left bar taking several values, under its caption.</summary>
+        private PickList SidePick(string key, string text, bool first)
+        {
+            var caption = SideCaption(key, text);
+            if (!first) caption.Margin = new Padding(0, 6, 0, 2);
+            _side.Controls.Add(caption);
+            var pick = new PickList(_tips) { Width = SideInner, Height = _latest.Height, Margin = new Padding(0, 2, 0, 2) };
+            pick.Changed += (s, e) => { if (!_setting) Reload(false); };
+            _side.Controls.Add(pick);
+            return pick;
         }
 
         /// <summary>The info bar at the foot of the page: what is shown, or that it is being read.</summary>
@@ -304,17 +324,29 @@ namespace Kaban.UI.Dashboard
             }
             _rangeError.Text = T("Dsh_EndAfterStart", "End date must be after start date!");
             _export.Text = T("Dsh_Export", "Export Report");
-            _tips.SetToolTip(_openFolder, T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory);
+            _export.Width = SideInner - _openFolder.Width - 6;
+            ApplyAccess();
             FillLatest();
             FillHistoryItems();
+            _shiftPick.AllText = T("Dsh_AllShifts", "All Shifts");
+            _typePick.AllText = T("Dsh_AllTypes", "All types");
+            _userPick.AllText = T("Log_AllUsers", "All users");
+            _plcPick.AllText = T("Log_AllPlcs", "All controllers");
+            _sourcePick.AllText = T("Log_AllSources", "All sources");
             FillShifts();
+            FillTypes();
+            FillSources();
             RetranslateMain();
             UpdateBar();
         }
 
+        /// <summary>The report folder is opened from Maintenance up (it opens the file explorer on the panel).</summary>
         private void ApplyAccess()
         {
+            if (IsDisposed) return;
             _openFolder.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
+            _tips.SetToolTip(_openFolder, T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory +
+                             (_openFolder.Enabled ? "" : "\n" + T("Dsh_FolderAccess", "Sign in as Maintenance or Admin to open it.")));
         }
 
         // ---- the period lists
@@ -386,30 +418,99 @@ namespace Kaban.UI.Dashboard
 
         private List<DashboardConfig.Shift> _shifts = new List<DashboardConfig.Shift>();
 
+        /// <summary>The shifts of the settings (a shift taken out of them loses its tick).</summary>
         private void FillShifts()
         {
-            _setting = true;
-            try
-            {
-                string was = _shift.SelectedIndex > 0 ? _shift.SelectedItem as string : null;
-                _shifts = Config.Shifts;
-                _shift.Items.Clear();
-                _shift.Items.Add(T("Dsh_AllShifts", "All Shifts"));
-                foreach (var s in _shifts) _shift.Items.Add(s.Text);
-                int i = was == null ? 0 : _shift.Items.IndexOf(was);
-                _shift.SelectedIndex = Math.Max(0, i);
-            }
-            finally { _setting = false; }
+            _shifts = Config.Shifts;
+            _shiftPick.SetItems(_shifts.Select(s => new PickList.Item(s.Text, s.Text)), false);
         }
 
-        /// <summary>The shift chosen (null: all).</summary>
-        private DashboardConfig.Shift SelectedShift
+        /// <summary>The log types: the Kind column's values, the machine's first.</summary>
+        private void FillTypes()
+        {
+            _typePick.SetItems(DashboardFilter.AllKinds.Select(k => new PickList.Item(((int)k).ToString(CultureInfo.InvariantCulture),
+                                                                                      Kaban.UI.Settings.LogViewerControl.KindName(k))), false);
+        }
+
+        /// <summary>The HMI's own log and this machine's.</summary>
+        private void FillSources()
+        {
+            _sourcePick.SetItems(new[]
+            {
+                new PickList.Item("", T("Log_SourceHmi", "HMI")),
+                new PickList.Item(_machine.ModuleId ?? "", MachineName)
+            }, false);
+        }
+
+        /// <summary>The users of the range's entries, the machine's (admin) and any chosen.</summary>
+        private void FillUsers(IEnumerable<string> found)
+        {
+            var users = new List<string> { MachineLogFeed.MachineUser };
+            foreach (var u in found ?? new string[0])
+                if (!string.IsNullOrEmpty(u) && !users.Contains(u, StringComparer.OrdinalIgnoreCase)) users.Add(u);
+            users = users.OrderBy(u => u, StringComparer.OrdinalIgnoreCase).ToList();
+            _userPick.SetItems(users.Select(u => new PickList.Item(u, u)), true);
+        }
+
+        /// <summary>The controllers of this program, the machine's first and any the range's entries name.</summary>
+        private void FillPlcs(IEnumerable<int> found)
+        {
+            var names = new SortedDictionary<int, string>();
+            try
+            {
+                foreach (var ep in PlcConnectionSettings.Endpoints())
+                    if (!names.ContainsKey(ep.StationId)) names[ep.StationId] = Kaban.UI.Helpers.PlcEndpointNaming.Caption(ep);
+            }
+            catch { }
+            if (!names.ContainsKey(MainStation)) names[MainStation] = "";
+            foreach (var st in found ?? new int[0])
+                if (!names.ContainsKey(st)) names[st] = "";
+            _plcPick.SetItems(names.Select(kv => new PickList.Item(kv.Key.ToString(CultureInfo.InvariantCulture),
+                                                                   "PLC " + kv.Key + (kv.Value.Length > 0 ? " - " + kv.Value : ""))), true);
+        }
+
+        /// <summary>The machine's first PLC: its log's entries are put on it.</summary>
+        private int MainStation
         {
             get
             {
-                int i = _shift.SelectedIndex - 1;
-                return i >= 0 && i < _shifts.Count ? _shifts[i] : null;
+                var l = Kaban.UI.Helpers.MachineLinks.Find(_machine.ModuleId);
+                return l != null ? l.MainStation : 1;
             }
+        }
+
+        /// <summary>The shifts chosen (none: the whole day).</summary>
+        private List<DashboardConfig.Shift> SelectedShifts
+        {
+            get
+            {
+                var keys = _shiftPick.Selected;
+                return _shifts.Where(s => keys.Contains(s.Text)).ToList();
+            }
+        }
+
+        /// <summary>What the filters on the left let through now.</summary>
+        public DashboardFilter CurrentFilter()
+        {
+            var f = new DashboardFilter
+            {
+                Shifts = SelectedShifts,
+                MachineSource = _machine.ModuleId ?? "",
+                MainStation = MainStation
+            };
+            foreach (var k in _typePick.Selected)
+            {
+                int n;
+                if (int.TryParse(k, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) f.Kinds.Add((AuditKind)n);
+            }
+            foreach (var u in _userPick.Selected) f.Users.Add(u);
+            foreach (var k in _plcPick.Selected)
+            {
+                int n;
+                if (int.TryParse(k, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) f.Stations.Add(n);
+            }
+            foreach (var s in _sourcePick.Selected) f.Sources.Add(s);
+            return f;
         }
 
         // ---- the three ways to choose the range
@@ -489,27 +590,28 @@ namespace Kaban.UI.Dashboard
         // ==================================================================
 
         /// <summary>
-        /// "Data loading..." in red while the log is read; then, in black, the log
-        /// interval, the shift chosen and the entries the tab on show lists.
+        /// "Data loading..." in bold while the log is read (2 October: black, not
+        /// red); then the log interval, the shifts chosen and the entries the tab on
+        /// show lists.
         /// </summary>
         private void UpdateBar()
         {
-            if (_loading || _logReading)
+            if (_loading)
             {
-                _barText.ForeColor = Color.FromArgb(200, 30, 30);
+                _barText.Font = _barBold;
                 _barText.Text = T("Dsh_Loading", "Data loading...");
                 return;
             }
+            _barText.Font = UiStyle.Body;
             var parts = new List<string>
             {
                 T("Dsh_Interval", "Log interval:") + "  " + _from.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) +
                 "  -  " + _to.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture)
             };
-            var shift = SelectedShift;
-            if (shift != null) parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + shift.Text);
+            if (_filter.Shifts.Count > 0)
+                parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + string.Join(", ", _filter.Shifts.Select(s => s.Text)));
             var shown = ShownText();
             if (shown.Length > 0) parts.Add(shown);
-            _barText.ForeColor = UiStyle.GridInk;
             _barText.Text = string.Join("     \u00b7     ", parts);
         }
 
@@ -517,9 +619,8 @@ namespace Kaban.UI.Dashboard
         private string ShownText()
         {
             var key = SelectedTabKey;
-            if (LogTabs.Any(t => t.Key == key)) return _log != null ? _log.StatusText : "";
-            var v = _view;
-            if (v == null) return "";
+            if (key == AllLogsKey) return _log != null ? _log.StatusText : "";
+            var v = _view ?? new DashboardView();
             string format = T("Log_Status", "{0} entries shown, {1} in the period");
             switch (key)
             {
@@ -541,9 +642,25 @@ namespace Kaban.UI.Dashboard
         // READING
         // ==================================================================
 
+        /// <summary>What a read brought: the machine's log and view, the HMI's entries.</summary>
+        private sealed class ReadResult
+        {
+            public DashboardData.Loaded Data;
+            public DashboardView View;
+            public DashboardData.Probe Probe;
+            public Exception Error;
+            public List<AuditEntry> Hmi = new List<AuditEntry>();
+            public int HmiRead;
+            public List<string> Users = new List<string>();
+            public List<int> Stations = new List<int>();
+        }
+
         /// <summary>
-        /// Reads the range again (<paramref name="fromDatabase"/>), or only sorts what was
-        /// read into the tables again (the shift or the barcode filter changed).
+        /// Reads the range again (<paramref name="fromDatabase"/>), or only what the
+        /// filters now ask for more (a log type added) and sorts what was read into
+        /// the tables again. Only what the filters let through is read: the machine's
+        /// rows of the types chosen (none when the user, PLC or source leave it out),
+        /// the HMI's files when one of its types and its source are in.
         /// </summary>
         public void Reload(bool fromDatabase)
         {
@@ -555,60 +672,90 @@ namespace Kaban.UI.Dashboard
             string column = Column;
             var from = _from;
             var to = _to;
-            var shift = SelectedShift;
+            var filter = CurrentFilter();
+            var parts = filter.MachineParts;
+            bool hmi = filter.HmiWanted;
             bool barcoded = cfg.BarcodedCuttingOnly;
+            bool dbThere = !string.IsNullOrWhiteSpace(path) && File.Exists(path);
             string key = path + "|" + from.Ticks + "|" + to.Ticks + "|" + column + "|" + cfg.TimeZoneName;
             int gen = ++_generation;
 
-            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-            {
-                _loaded = null;
-                _loadedKey = "";
-                Show(null, T("Dsh_NoDatabase", "The database is not found:") + " " + (string.IsNullOrWhiteSpace(path) ? "-" : path) +
-                           (SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in HMI Settings > Logs and Reports.") : ""));
-                return;
-            }
-
-            var cached = !fromDatabase && _loaded != null && _loadedKey == key ? _loaded : null;
+            // what was read before serves when it holds all that is asked for now
+            var cached = !fromDatabase && _loaded != null && _loadedKey == key && (_loaded.Parts & parts) == parts ? _loaded : null;
             _loading = true;
             SetStatus("");
             UpdateBar();
             var watch = Stopwatch.StartNew();
             Task.Run(() =>
             {
-                var data = cached ?? DashboardData.Load(path, from, to, zone, map, column, () => gen != _generation);
-                if (data == null) return null;
-                var view = DashboardData.Build(data, barcoded, shift);
-                // Nothing in the range: what the file holds says why (its logs end
-                // earlier, it has none, its dates cannot be read).
-                var probe = view.Empty ? DashboardData.Check(path, zone) : null;
-                return new Tuple<DashboardData.Loaded, DashboardView, DashboardData.Probe>(data, view, probe);
+                var r = new ReadResult();
+                if (parts != DashboardData.Parts.None && dbThere)
+                {
+                    try
+                    {
+                        var data = cached ?? DashboardData.Load(path, from, to, zone, map, column, () => gen != _generation, parts);
+                        if (data == null) return null;
+                        r.Data = data;
+                        r.View = DashboardData.Build(data, barcoded, filter.Shifts, parts);
+                        // Nothing in the range: what the file holds says why (its logs end
+                        // earlier, it has none, its dates cannot be read).
+                        if (r.View.Empty) r.Probe = DashboardData.Check(path, zone);
+                    }
+                    catch (Exception ex) { r.Error = ex; }
+                }
+                if (gen != _generation) return null;
+                if (hmi)
+                {
+                    // with the PLC write log's device writes, as Logs and Reports lists them
+                    var all = AuditLogReader.Read(from, to, true);
+                    r.HmiRead = all.Count;
+                    r.Users = all.Select(e => e.User).Where(u => !string.IsNullOrEmpty(u)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                    r.Stations = all.Where(e => e.Station.HasValue).Select(e => e.Station.Value).Distinct().ToList();
+                    r.Hmi = all.Where(filter.Passes).ToList();
+                }
+                return r;
             }).ContinueWith(t =>
             {
                 if (IsDisposed || gen != _generation) return;
                 _loading = false;
-                UpdateBar();
-                if (t.IsFaulted)
+                if (t.IsFaulted || t.Result == null)
                 {
-                    var ex = t.Exception.GetBaseException();
-                    var many = ex as DashboardData.TooManyRowsException;
-                    Show(null, many != null
-                        ? string.Format(CultureInfo.CurrentCulture, T("Dsh_TooMany", "The range holds {0:#,0} records - too many to show at once. Choose a shorter range."), many.Rows)
-                        : T("Dsh_DatabaseError", "The database could not be read:") + " " + ex.Message);
+                    UpdateBar();
+                    if (t.IsFaulted) SetStatus(t.Exception.GetBaseException().Message, true);
                     return;
                 }
-                if (t.Result == null) return;
-                var probe = t.Result.Item3;
-                _loaded = t.Result.Item1;
-                _loadedKey = key;
-                string empty = null;
-                if (probe != null)
-                    empty = probe.Ok
-                        ? T("Dsh_NoLogs", "No logs in selected range!") + "\n" + T("Dsh_DatabaseHolds", "The database holds") + " " + probe.Describe() + "."
-                        : probe.Problem;
-                Show(t.Result.Item2, empty);
+                var r = t.Result;
+                if (r.Data != null) { _loaded = r.Data; _loadedKey = key; }
+                string message = null;
+                if (parts != DashboardData.Parts.None)
+                {
+                    var many = r.Error as DashboardData.TooManyRowsException;
+                    if (!dbThere)
+                        message = T("Dsh_NoDatabase", "The database is not found:") + " " + (string.IsNullOrWhiteSpace(path) ? "-" : path) +
+                                  (SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in HMI Settings > Logs and Reports.") : "");
+                    else if (many != null)
+                        message = string.Format(CultureInfo.CurrentCulture, T("Dsh_TooMany", "The range holds {0:#,0} records - too many to show at once. Choose a shorter range."), many.Rows);
+                    else if (r.Error != null)
+                        message = T("Dsh_DatabaseError", "The database could not be read:") + " " + r.Error.Message;
+                    else if (r.Probe != null)
+                        message = r.Probe.Ok
+                            ? T("Dsh_NoLogs", "No logs in selected range!") + "\n" + T("Dsh_DatabaseHolds", "The database holds") + " " + r.Probe.Describe() + "."
+                            : r.Probe.Problem;
+                }
+                _setting = true;
+                try
+                {
+                    FillUsers(r.Users);
+                    FillPlcs(r.Stations);
+                }
+                finally { _setting = false; }
+                _filter = filter;
+                _hmiEntries = r.Hmi;
+                _hmiRead = r.HmiRead;
+                Show(r.View, message);
+                int records = (r.Data != null ? r.Data.Rows.Count : 0) + r.HmiRead;
                 SetStatus(string.Format(CultureInfo.CurrentCulture, T("Dsh_Records", "{0:#,0} records read in {1:0.0} s"),
-                                        _loaded.Rows.Count, watch.Elapsed.TotalSeconds));
+                                        records, watch.Elapsed.TotalSeconds));
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
@@ -621,6 +768,7 @@ namespace Kaban.UI.Dashboard
         /// <summary>The info bar's text (tests).</summary>
         public string BarText { get { return _barText.Text; } }
         public bool BarIsRed { get { return _barText.ForeColor.R > 150 && _barText.ForeColor.G < 100; } }
+        public bool BarIsBold { get { return _barText.Font.Bold; } }
         /// <summary>The note at the right of the info bar (tests).</summary>
         public string StatusText { get { return _barNote.Text; } }
 

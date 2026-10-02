@@ -85,10 +85,8 @@ namespace Kaban.UI.Settings
         /// <param name="machines">With the mounted machines' own logs (read from their log databases).</param>
         /// <param name="embedded">
         /// In a page that sets the range and holds the filters itself (the Dashboard,
-        /// 2 October): no bar of its own - the host places SearchBox, UserBox, PlcBox,
-        /// SourceBox, ClearButton and ExportButton - not live, the kinds set per tab
-        /// (SetKinds), the range set by the host (SetRange), the host's own entries
-        /// beside the HMI's (ExtraEntries).
+        /// 2 October): only the search, clear and export above the table, not live;
+        /// the host reads and filters the entries and gives them (SetEntries).
         /// </param>
         public LogViewerControl(AuditKind? kind, Period period, bool machines = false, bool embedded = false)
         {
@@ -321,8 +319,8 @@ namespace Kaban.UI.Settings
             };
 
             _refresh.Tick += (s, e) => { if (_live.Checked && FollowsNow) Reload(); };
-            // Embedded, the host says when to read (SetRange) - not each time the table
-            // is moved to another tab and so shown again.
+            // Embedded, the host gives the entries (SetEntries) - nothing is read when
+            // the table is shown.
             VisibleChanged += (s, e) => { _refresh.Enabled = Visible && !_embedded; if (Visible && !_embedded) Reload(); };
             if (!embedded) Reload();
         }
@@ -330,7 +328,6 @@ namespace Kaban.UI.Settings
         // ---- in a page of its own (the Dashboard) -------------------------------
 
         private readonly bool _embedded;
-        private HashSet<AuditKind> _kindSet;
 
         public Control SearchBox { get { return _search; } }
         public ComboBox UserBox { get { return _user; } }
@@ -342,38 +339,16 @@ namespace Kaban.UI.Settings
         /// <summary>Raised when the status line changes (an embedded table's host shows it in its own bar).</summary>
         public event EventHandler StatusChanged;
 
-        /// <summary>The host's own entries for a range (a machine's states, events and alarms as its page has them).</summary>
-        public Func<DateTime, DateTime, List<AuditEntry>> ExtraEntries;
-
-        /// <summary>The host's own condition on an entry (the Dashboard's shift); null: none.</summary>
-        public Func<AuditEntry, bool> ExtraFilter;
-
-        /// <summary>Only these kinds (a tab of the Dashboard); none: every kind.</summary>
-        public void SetKinds(params AuditKind[] kinds)
+        /// <summary>
+        /// The entries to list, given by the host - read and filtered by it (the
+        /// Dashboard's All logs, 2 October: its filters on the left hold for every
+        /// table, the table only searches): nothing is read here.
+        /// </summary>
+        public void SetEntries(List<AuditEntry> entries)
         {
-            _kindSet = kinds == null || kinds.Length == 0 ? null : new HashSet<AuditKind>(kinds);
-            ApplyFilter(true);
+            _inPeriod = entries ?? new List<AuditEntry>();
+            ApplyFilter(false);
         }
-
-        /// <summary>The range to list (the host's), read again.</summary>
-        public void SetRange(DateTime from, DateTime to)
-        {
-            _setting = true;
-            try
-            {
-                for (int i = 0; i < _period.Items.Count; i++)
-                    if ((Period)((Choice)_period.Items[i]).Value == Period.Custom) _period.SelectedIndex = i;
-                _from.Value = Clamp(from);
-                _to.Value = Clamp(to);
-            }
-            finally { _setting = false; }
-            _rangeFrom = from;
-            _rangeTo = to;
-            _inPeriod = new List<AuditEntry>();          // read and filter again
-            Reload();
-        }
-
-        private DateTime? _rangeFrom, _rangeTo;
 
         /// <summary>A source the host's entries come from (its machine), in the Source filter.</summary>
         public void AddSource(string id, string name)
@@ -491,14 +466,11 @@ namespace Kaban.UI.Settings
         /// <summary>Reads the period again and filters it.</summary>
         public void Reload()
         {
+            // embedded, the host gives the entries (SetEntries): nothing to read
+            if (_embedded) { ApplyFilter(false); return; }
             DateTime from, to;
             var p = CurrentPeriod;
-            if (_embedded && _rangeFrom.HasValue)
-            {
-                from = _rangeFrom.Value;                  // exactly the host's range
-                to = _rangeTo.Value;
-            }
-            else if (p == Period.Custom)
+            if (p == Period.Custom)
             {
                 from = _from.Value;
                 // To is a minute: 14:05 means up to 14:05:59.
@@ -515,18 +487,6 @@ namespace Kaban.UI.Settings
             // With the PLC write log's device writes (PlcWriteLog): every device the
             // HMI wrote, with the value before it and what wrote it.
             var read = AuditLogReader.Read(from, to, true);
-            if (ExtraEntries != null)
-            {
-                // the host's own entries (its machine's log as its page read it)
-                List<AuditEntry> extra = null;
-                try { extra = ExtraEntries(from, to); } catch { extra = null; }
-                if (extra != null && extra.Count > 0)
-                {
-                    var all = new List<AuditEntry>(read);
-                    all.AddRange(extra);
-                    read = all.OrderBy(e => e.Time).ToList();
-                }
-            }
             if (_feeds.Count > 0)
             {
                 // The machines' logs: as far as they are read (a read starts on its own
@@ -633,9 +593,7 @@ namespace Kaban.UI.Settings
                     (user == null || string.Equals(e.User, user, StringComparison.OrdinalIgnoreCase)) &&
                     (!station.HasValue || e.Station == station) &&
                     (!kind.HasValue || e.Kind == kind.Value) &&
-                    (_kindSet == null || _kindSet.Contains(e.Kind)) &&
-                    AuditLogReader.Matches(e, words) &&
-                    (ExtraFilter == null || ExtraFilter(e))).ToList();
+                    AuditLogReader.Matches(e, words)).ToList();
         }
 
         private void ApplyFilter(bool userAction)

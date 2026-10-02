@@ -106,22 +106,20 @@ namespace Kaban.UI.Dashboard
             _flow.Controls.Add(addShift);
             Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
 
+            // the sections as the page has them (2 October): under their tab's name,
+            // with the section's own title - a tab with none ticked is not shown
             Heading("Dsh_SetSectionsHead", "\U0001F6E0\ufe0f", "Dashboard sections");
-            var sectionTexts = new Dictionary<string, string[]>
+            foreach (var tab in DashboardScreen.MachineTabs)
             {
-                { "state_pie", new[] { "Dsh_SetShowPie", "Show state pie chart" } },
-                { "state_timeline", new[] { "Dsh_SetShowTimeline", "Show state timeline" } },
-                { "state_logs", new[] { "Dsh_SetShowStateLogs", "Show state logs table" } },
-                { "event_quantity", new[] { "Dsh_SetShowEventChart", "Show event frequency chart" } },
-                { "cutting_details", new[] { "Dsh_SetShowCutting", "Show cutting details" } },
-                { "event_logs", new[] { "Dsh_SetShowEventLogs", "Show event logs table" } },
-                { "alarm_logs", new[] { "Dsh_SetShowAlarmLogs", "Show alarm logs table" } }
-            };
-            foreach (var key in DashboardConfig.Sections)
-            {
-                var cb = new CheckBox();
-                _sections[key] = cb;
-                CheckRow(cb, sectionTexts[key][0], sectionTexts[key][1]);
+                bool first = true;
+                foreach (var key in tab.Skip(3))
+                {
+                    var cb = new CheckBox();
+                    _sections[key] = cb;
+                    var title = DashboardScreen.SectionTitles[key];
+                    CheckRow(cb, title[0], title[1], first ? T(tab[1], tab[2]) : null);
+                    first = false;
+                }
             }
 
             Heading("Dsh_SetReportsHead", "\U0001F4C4", "Exported reports");
@@ -232,14 +230,26 @@ namespace Kaban.UI.Dashboard
             return row;
         }
 
-        private void CheckRow(CheckBox cb, string key, string text)
+        /// <param name="group">A caption on the row's left (the tab the dashboard sections are on); null: none.</param>
+        private void CheckRow(CheckBox cb, string key, string text, string group = null)
         {
             cb.Text = T(key, text);
             cb.AutoSize = false;
             cb.Width = RowW - Caption - 8;
             cb.Height = 26;
-            cb.Margin = new Padding(Caption + 8, 1, 0, 1);
-            _flow.Controls.Add(cb);
+            if (group == null)
+            {
+                cb.Margin = new Padding(Caption + 8, 1, 0, 1);
+                _flow.Controls.Add(cb);
+                return;
+            }
+            // a group's first row: its caption, then the box where the others are
+            var row = new Panel { Width = RowW, Height = 26, Margin = new Padding(0, 8, 0, 1) };
+            row.Controls.Add(UiStyle.CaptionLabel(group, 0, 1, Caption));
+            cb.Location = new Point(Caption + 8, 0);
+            cb.Margin = Padding.Empty;
+            row.Controls.Add(cb);
+            _flow.Controls.Add(row);
         }
 
         private void ShowScheduleRows()

@@ -129,78 +129,112 @@ class LR {
               ls.MachineSettings.LastProbe.Ok && ls.MachineSettings.LastProbe.Logs == 4);
         Check("no log table here: the logs are read on the Dashboard page", ls.Viewer == null);
 
-        Console.WriteLine("--- the Dashboard page: the logs in tabs ---");
+        Console.WriteLine("--- the Dashboard page: its tabs and its filters (2 October) ---");
         AuditLogger.Log("logged in as setter.");
+        AuditLogger.Log("wrote 5 to D100 (PLC 1)");
         var tabsDash = new DashboardScreen(machine);
         var tform = new Form { ClientSize = new Size(1400, 900) };
         tform.Controls.Add(tabsDash);
         tform.Show();
         Pump(200);
         var keys = tabsDash.TabKeys.Select(t => t.Key).ToList();
-        Check("the tabs: states, events, alarms, then the logs by kind, then all of them",
-              keys.SequenceEqual(new[] { "states", "events", "alarms", "log_signin", "log_connection", "log_writes", "log_settings",
-                                         "log_problems", "log_other", "log_all" }), string.Join(",", keys));
-        Check("  named (no pictures; Operations, Logins)", tabsDash.TabKeys.Select(t => t.Text).SequenceEqual(new[] { "Machine states", "Operations", "Alarms",
-              "Logins", "Connection", "PLC writes", "Settings", "Problems", "Other", "All logs" }),
+        Check("the tabs: the machine's three, then All logs - no tab per kind of log any more",
+              keys.SequenceEqual(new[] { "states", "events", "alarms", "log_all" }), string.Join(",", keys));
+        Check("  named (no pictures)", tabsDash.TabKeys.Select(t => t.Text).SequenceEqual(new[] { "Machine Performance", "Production Events", "Alarms", "All logs" }),
               string.Join(",", tabsDash.TabKeys.Select(t => t.Text)));
         Check("  the charts and tables on their tabs", tabsDash.SectionOf("state_pie").Parent.Parent.Tag as string == "states" &&
               tabsDash.SectionOf("cutting_details").Parent.Parent.Tag as string == "events" &&
               tabsDash.SectionOf("alarm_logs").Parent.Parent.Tag as string == "alarms");
-        Check("user, PLC and source on the left, on a machine tab too", tabsDash.SelectedTabKey == "states" && tabsDash.LogTable.UserBox.Visible &&
-              tabsDash.LogTable.PlcBox.Visible && tabsDash.LogTable.SourceBox.Visible && !tabsDash.LogTable.Contains(tabsDash.LogTable.UserBox));
+        var picks = new[] { tabsDash.ShiftPick, tabsDash.TypePick, tabsDash.UserPick, tabsDash.PlcPick, tabsDash.SourcePick };
+        Check("shift, log type, user, PLC and source on the left, in that order, on a machine tab too", tabsDash.SelectedTabKey == "states" &&
+              picks.All(x => x.Visible) && picks.Select(x => tabsDash.SideControls.IndexOf(x)).SequenceEqual(picks.Select(x => tabsDash.SideControls.IndexOf(x)).OrderBy(i => i)) &&
+              picks.All(x => x.Shown.StartsWith("All ")), string.Join(" | ", picks.Select(x => x.Shown)));
+        Check("the log types: the Kind column's, the machine's first", tabsDash.TypePick.Items.Select(i => i.Text).SequenceEqual(new[] {
+              "Machine state", "Production event", "Machine alarm", "Logins", "Connection", "PLC writes", "PLC device writes", "Settings", "Problems", "Other" }),
+              string.Join(",", tabsDash.TypePick.Items.Select(i => i.Text)));
         // the range around the test's rows (the dashboard's range is in the machine's zone)
         tabsDash.SetRange(now.AddHours(-4), now.AddMinutes(5));
+        Func<bool> idle = () => !tabsDash.Loading;
         Check("the machine's log read first", Until(() => !tabsDash.Loading && tabsDash.View != null && tabsDash.View.Alarms.Count == 1));
         tabsDash.SelectTab("log_all");
         Pump(100);
         var v = tabsDash.LogTable;
         Check("the search with the log's table, above it", v.SearchBox.Visible && v.Contains(v.SearchBox) && v.Parent != null && (string)v.Parent.Tag == "log_all");
-        Check("All logs: a Source column and filter (the HMI and this machine)", v.SourceColumnShown &&
-              v.SourceChoices.SequenceEqual(new[] { "All sources", "HMI", "LOGTEST" }) && v.SourceBox.Visible, string.Join(",", v.SourceChoices));
+        Check("All logs: a Source column; the Source filter offers the HMI and this machine", v.SourceColumnShown &&
+              tabsDash.SourcePick.Items.Select(i => i.Text).SequenceEqual(new[] { "HMI", "LOGTEST" }), string.Join(",", tabsDash.SourcePick.Items.Select(i => i.Text)));
         Func<int, IEnumerable<int>> rows = n => Enumerable.Range(0, n);
         Check("  the machine's log in it", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST")), v.StatusText);
         var sources = rows(v.RowCount).Select(r => v.CellText(r, 5)).Distinct().ToList();
         Check("  ONE table: the HMI's entries and the machine's", sources.Contains("HMI") && sources.Contains("LOGTEST"), string.Join(",", sources));
+        Check("  the machine's entries are admin's, on its first PLC (until the database records them)",
+              rows(v.RowCount).Where(r => v.CellText(r, 5) == "LOGTEST").All(r => v.CellText(r, 1) == "admin" && v.CellText(r, 2) == "1"));
         var alarm = rows(v.RowCount).FirstOrDefault(r => v.CellText(r, 3) == "Machine alarm");
         Check("its alarm with the bits that were on", alarm >= 0 && v.CellText(alarm, 4).Contains("Robot X Error") && v.CellText(alarm, 2) == "1",
               alarm < 0 ? "" : v.CellText(alarm, 4));
         var states = rows(v.RowCount).Where(r => v.CellText(r, 3) == "Machine state").Select(r => v.CellText(r, 4)).ToList();
         Check("its states with how long", states.Count >= 2 && states.All(st => st.Contains(" min")), string.Join(" | ", states));
         Check("  newest first, mixed by time", DateTime.Parse(v.CellText(0, 0).Replace("  ", " ")) >= DateTime.Parse(v.CellText(v.RowCount - 1, 0).Replace("  ", " ")));
+        Check("the users to choose: the HMI's and the machine's (admin)", tabsDash.UserPick.Items.Select(i => i.Key).Contains("setter") &&
+              tabsDash.UserPick.Items.Select(i => i.Key).Contains("admin"), string.Join(",", tabsDash.UserPick.Items.Select(i => i.Key)));
 
-        v.SetSource("LOGTEST");
-        Pump(50);
-        Check("Source: the machine - its log only", v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 5) == "LOGTEST"));
-        v.SetSource("");
-        Pump(50);
-        Check("Source: HMI - the HMI's log only", v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 5) == "HMI"));
-        v.SetSource(null);
+        tabsDash.SourcePick.Select(new[] { "LOGTEST" });
+        Check("Source: the machine - its log only", Until(idle) && v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 5) == "LOGTEST"));
+        tabsDash.SourcePick.Select(new[] { "" });
+        Check("Source: HMI - the HMI's log only", Until(idle) && v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 5) == "HMI"));
+        Check("  and the machine's tabs say the filters leave their logs out (nothing of it read)", tabsDash.View == null &&
+              tabsDash.StateGrid.EmptyText.Contains("filters on the left") && tabsDash.AlarmGrid.EmptyText.Contains("filters on the left") &&
+              tabsDash.Pie.EmptyText.Contains("filters on the left") && tabsDash.InfoText == "", tabsDash.StateGrid.EmptyText);
+        tabsDash.SourcePick.Select(new[] { "", "LOGTEST" });
+        Check("  both ticked: both", Until(idle) && rows(v.RowCount).Select(r => v.CellText(r, 5)).Distinct().Count() == 2 && tabsDash.View != null);
+        tabsDash.SourcePick.Select(new string[0]);
+        Until(idle);
         v.SearchText = "Robot";
-        Check("the search (on the left) finds the machine's entries too", v.RowCount == 1 && v.CellText(0, 5) == "LOGTEST");
+        Check("the search (above the table) finds the machine's entries too", v.RowCount == 1 && v.CellText(0, 5) == "LOGTEST");
         v.SearchText = "";
         v.SelectRow(0);
         Check("the entry in full names its source", v.DetailText.Contains("LOGTEST") || v.DetailText.Contains("HMI"), v.DetailText);
+
         var shifts = machine.Config.Shifts;
         int away = Enumerable.Range(0, shifts.Count).First(i => !DashboardData.InShift(DateTime.Now.TimeOfDay, shifts[i]));
-        tabsDash.ShiftBox.SelectedIndex = away + 1;
-        Check("a shift chosen: the HMI's entries of its hours only, as the machine's", Until(() => !tabsDash.Loading && v.RowCount >= 0 &&
+        tabsDash.ShiftPick.Select(new[] { shifts[away].Text });
+        Check("a shift chosen: the HMI's entries of its hours only, as the machine's", Until(() => !tabsDash.Loading &&
               !rows(v.RowCount).Any(r => v.CellText(r, 5) == "HMI")), v.StatusText);
-        tabsDash.ShiftBox.SelectedIndex = 0;
+        tabsDash.ShiftPick.Select(new string[0]);
         Check("  all shifts: all of them again", Until(() => rows(v.RowCount).Any(r => v.CellText(r, 5) == "HMI")));
 
-        tabsDash.SelectTab("log_signin");
-        Pump(100);
-        Check("a kind's tab: that kind only", v.Parent != null && (string)v.Parent.Tag == "log_signin" && v.RowCount >= 1 &&
+        tabsDash.TypePick.Select(new[] { ((int)AuditKind.SignIn).ToString() });
+        Check("Log Type: Logins - only them", Until(idle) && v.RowCount >= 1 &&
               rows(v.RowCount).All(r => v.CellText(r, 3) == "Logins") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("logged in as setter")),
               string.Join(" | ", rows(v.RowCount).Select(r => v.CellText(r, 3) + ": " + v.CellText(r, 4))));
-        Check("  the Source filter stays (on every tab)", v.SourceBox.Visible);
-        tabsDash.SelectTab("log_other");
-        Pump(100);
-        Check("  Other: the HMI's parameter change, none of the machine's", rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("changed a parameter")) &&
-              rows(v.RowCount).All(r => v.CellText(r, 3) == "Other"));
+        Check("  the machine's log not read at all; its tabs say why they are empty", tabsDash.View == null && tabsDash.StateGrid.EmptyText.Contains("filters on the left"));
+        tabsDash.TypePick.Select(new[] { ((int)AuditKind.MachineAlarm).ToString(), ((int)AuditKind.Other).ToString() });
+        Check("Log Type: Machine alarm and Other - both, nothing else", Until(idle) &&
+              rows(v.RowCount).Select(r => v.CellText(r, 3)).Distinct().OrderBy(x => x).SequenceEqual(new[] { "Machine alarm", "Other" }),
+              string.Join(" | ", rows(v.RowCount).Select(r => v.CellText(r, 3)).Distinct()));
+        Check("  only the alarms read of the machine's log: the alarm tab has it, the states' and events' tabs say why not",
+              tabsDash.View != null && tabsDash.View.Parts == DashboardData.Parts.Alarms && tabsDash.AlarmGrid.RowCount == 1 &&
+              tabsDash.View.States.Count == 0 && tabsDash.StateGrid.EmptyText.Contains("filters on the left") &&
+              tabsDash.EventGrid.EmptyText.Contains("filters on the left") && !tabsDash.AlarmGrid.EmptyText.Contains("filters"));
+        tabsDash.TypePick.Select(new string[0]);
+        Until(idle);
+
+        tabsDash.UserPick.Select(new[] { "setter" });
+        Check("User: setter - the HMI's entries of setter; the machine's (admin's) left out", Until(idle) && v.RowCount > 0 &&
+              rows(v.RowCount).All(r => v.CellText(r, 1) == "setter") && tabsDash.View == null && tabsDash.AlarmGrid.EmptyText.Contains("filters on the left"));
+        tabsDash.UserPick.Select(new[] { "admin" });
+        Check("User: admin - the machine's log", Until(idle) && v.RowCount > 0 && rows(v.RowCount).All(r => v.CellText(r, 1) == "admin") &&
+              tabsDash.View != null && tabsDash.View.Alarms.Count == 1);
+        tabsDash.UserPick.Select(new string[0]);
+        Until(idle);
+        tabsDash.PlcPick.Select(new[] { "1" });
+        Check("PLC 1: the entries about it - its write, the machine's log - not a login", Until(idle) && v.RowCount > 0 &&
+              rows(v.RowCount).All(r => v.CellText(r, 2) == "1") && rows(v.RowCount).Any(r => v.CellText(r, 4).Contains("D100")) &&
+              rows(v.RowCount).Any(r => v.CellText(r, 5) == "LOGTEST"));
+        tabsDash.PlcPick.Select(new string[0]);
+        Until(idle);
         tabsDash.SelectTab("alarms");
         Pump(50);
-        Check("back on a machine tab: the search goes with the table, the left filters stay", !v.SearchBox.Visible && v.UserBox.Visible);
+        Check("back on a machine tab: the search goes with the table, the left filters stay", !v.SearchBox.Visible && tabsDash.UserPick.Visible);
 
         var shown = new List<AuditEntry>
         {

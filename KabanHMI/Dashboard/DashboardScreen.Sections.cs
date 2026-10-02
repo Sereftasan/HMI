@@ -12,18 +12,16 @@ namespace Kaban.UI.Dashboard
 {
     /// <summary>
     /// The right side of the dashboard: THE TABS (2 October) -
-    ///   Machine states      the time distribution, the timeline, the state log
-    ///   Operations          the occurrences, the cuts, the event log
-    ///   Alarms              the alarm log (the tab is the table: no heading)
-    ///   the HMI's own log, a tab per kind (logins, connections, PLC writes,
-    ///   settings, problems, other)
-    ///   All logs            every entry of the range in one table: the HMI's and
-    ///                       this machine's states, events and alarms
-    /// The tabs' names carry no picture (as the other pages' tabs). A section's
-    /// heading is a button as wide as its words, on the left, with a round sign
-    /// that says it opens and closes; its filter is under it. The log tabs carry
-    /// their search above the table; the user, controller and source are on the
-    /// left with the range and the shift.
+    ///   Machine Performance  the time distribution, the timeline, the logs
+    ///   Production Events    the quantities, the cuts, the logs
+    ///   Alarms               the alarm log (the tab is the table: no heading)
+    ///   All logs             every entry of the range in one table: the HMI's and
+    ///                        this machine's states, events and alarms
+    /// (A tab per kind of the HMI's log is gone: the Log Type filter on the left
+    /// chooses them, for every tab.) The tabs' names carry no picture (as the
+    /// other pages' tabs). A section's heading is a button as wide as its words,
+    /// on the left, with a round sign that says it opens and closes; its filter is
+    /// under it. All logs carries its search above the table.
     /// </summary>
     public partial class DashboardScreen
     {
@@ -39,34 +37,30 @@ namespace Kaban.UI.Dashboard
         private FilterButton _eventFilter, _alarmFilter;
         private readonly Dictionary<string, Section> _sections = new Dictionary<string, Section>();
 
-        /// <summary>The log tabs: their key, their caption and the kinds they list (none: every one).</summary>
-        private sealed class LogTab
-        {
-            public string Key, TitleKey, Title;
-            public Kaban.Core.Helpers.AuditKind[] Kinds;
-        }
+        /// <summary>The last tab: every entry of the range that passes the filters.</summary>
+        public const string AllLogsKey = "log_all";
 
-        private static readonly LogTab[] LogTabs =
+        /// <summary>The three tabs of the machine's own log, and the sections each holds (the settings list them so too).</summary>
+        public static readonly string[][] MachineTabs =
         {
-            new LogTab { Key = "log_signin", TitleKey = "Log_KindSignIn", Title = "Logins", Kinds = new[] { Kaban.Core.Helpers.AuditKind.SignIn } },
-            new LogTab { Key = "log_connection", TitleKey = "Log_KindConnection", Title = "Connection", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Connection } },
-            new LogTab { Key = "log_writes", TitleKey = "Log_KindPlcWrite", Title = "PLC writes",
-                         Kinds = new[] { Kaban.Core.Helpers.AuditKind.PlcWrite, Kaban.Core.Helpers.AuditKind.DeviceWrite } },
-            new LogTab { Key = "log_settings", TitleKey = "Log_KindSettings", Title = "Settings", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Settings } },
-            new LogTab { Key = "log_problems", TitleKey = "Log_KindProblem", Title = "Problems", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Problem } },
-            new LogTab { Key = "log_other", TitleKey = "Log_KindOther", Title = "Other", Kinds = new[] { Kaban.Core.Helpers.AuditKind.Other } },
-            new LogTab { Key = "log_all", TitleKey = "Dsh_TabAll", Title = "All logs", Kinds = null }
-        };
-
-        /// <summary>The three tabs of the machine's own log, and the sections each holds.</summary>
-        private static readonly string[][] MachineTabs =
-        {
-            new[] { "states", "Dsh_TabStates", "Machine states", "state_pie", "state_timeline", "state_logs" },
-            new[] { "events", "Dsh_TabEvents", "Operations", "event_quantity", "cutting_details", "event_logs" },
+            new[] { "states", "Dsh_TabStates", "Machine Performance", "state_pie", "state_timeline", "state_logs" },
+            new[] { "events", "Dsh_TabEvents", "Production Events", "event_quantity", "cutting_details", "event_logs" },
             new[] { "alarms", "Dsh_TabAlarms", "Alarms", "alarm_logs" }
         };
 
-        /// <summary>One table for every log tab: moved to the tab chosen, its kinds set by it.</summary>
+        /// <summary>The sections' titles: key -> translation key, English (the settings use them too).</summary>
+        public static readonly Dictionary<string, string[]> SectionTitles = new Dictionary<string, string[]>
+        {
+            { "state_pie", new[] { "Dsh_StatePie", "Time Distribution" } },
+            { "state_timeline", new[] { "Dsh_StateTimeline", "Timeline" } },
+            { "state_logs", new[] { "Dsh_StateLogs", "Logs" } },
+            { "event_quantity", new[] { "Dsh_EventQuantity", "Quantities" } },
+            { "cutting_details", new[] { "Dsh_Cutting", "Cutting Details" } },
+            { "event_logs", new[] { "Dsh_EventLogs", "Logs" } },
+            { "alarm_logs", new[] { "Dsh_AlarmLogs", "Logs" } }
+        };
+
+        /// <summary>The All logs table: the HMI's entries and this machine's that pass the filters.</summary>
         private Kaban.UI.Settings.LogViewerControl _log;
         private bool _logStale = true;
 
@@ -130,29 +124,23 @@ namespace Kaban.UI.Dashboard
                 page.Controls.Add(body);
                 _pages[t[0]] = page;
             }
-            AddSection("states", "state_pie", "\u23f1\ufe0f", "Dsh_StatePie", "Machine State Time Distribution", _pieChart, null);
-            AddSection("states", "state_timeline", "\U0001F552", "Dsh_StateTimeline", "Machine State Timeline", _timelineChart, null);
-            AddSection("states", "state_logs", "\U0001F4DC", "Dsh_StateLogs", "State Logs", _stateGrid, null);
-            AddSection("events", "event_quantity", "\U0001F4C8", "Dsh_EventQuantity", "Event Occurrences (log scale)", _barChart, null);
-            AddSection("events", "cutting_details", "\u2699\ufe0f", "Dsh_Cutting", "Cutting Details", _cutGrid, null);
-            AddSection("events", "event_logs", "\U0001F4CB", "Dsh_EventLogs", "Event Logs", _eventGrid, _eventFilter);
-            AddSection("alarms", "alarm_logs", "\U0001F6A8", "Dsh_AlarmLogs", "Alarm Logs", _alarmGrid, _alarmFilter, headless: true);
+            AddSection("states", "state_pie", "\u23f1\ufe0f", _pieChart, null);
+            AddSection("states", "state_timeline", "\U0001F552", _timelineChart, null);
+            AddSection("states", "state_logs", "\U0001F4DC", _stateGrid, null);
+            AddSection("events", "event_quantity", "\U0001F4C8", _barChart, null);
+            AddSection("events", "cutting_details", "\u2699\ufe0f", _cutGrid, null);
+            AddSection("events", "event_logs", "\U0001F4CB", _eventGrid, _eventFilter);
+            AddSection("alarms", "alarm_logs", "\U0001F6A8", _alarmGrid, _alarmFilter, headless: true);
 
-            foreach (var t in LogTabs)
-                _pages[t.Key] = new TabPage { BackColor = Color.White, Tag = t.Key, Padding = new Padding(12, 8, 12, 6) };
+            _pages[AllLogsKey] = new TabPage { BackColor = Color.White, Tag = AllLogsKey, Padding = new Padding(12, 8, 12, 6) };
 
-            // the log tabs' one table: the HMI's log and this machine's
+            // All logs: the entries the page read and filtered - the table lists them
+            // and searches them; it reads nothing itself
             _log = new Kaban.UI.Settings.LogViewerControl(null, Kaban.UI.Settings.LogViewerControl.Period.Today, machines: false, embedded: true);
             _log.Dock = DockStyle.Fill;
             _log.AddSource(_machine.ModuleId, MachineName);
-            _log.ExtraEntries = MachineEntries;
-            // the shift chosen: the HMI's entries of its hours too (the machine's are read for it already)
-            _log.ExtraFilter = e =>
-            {
-                var shift = SelectedShift;
-                return shift == null || !string.IsNullOrEmpty(e.Source) || DashboardData.InShift(e.Time.TimeOfDay, shift);
-            };
-            _log.StatusChanged += (s, e) => { if (LogTabs.Any(t => t.Key == SelectedTabKey)) UpdateBar(); };
+            _log.StatusChanged += (s, e) => { if (SelectedTabKey == AllLogsKey) UpdateBar(); };
+            _pages[AllLogsKey].Controls.Add(_log);
 
             _main.Controls.Add(_tabs);
             _main.Controls.Add(_info);
@@ -169,18 +157,31 @@ namespace Kaban.UI.Dashboard
             }
         }
 
-        /// <summary>This machine's states, events and alarms of the range, as log entries - from what the page read.</summary>
-        private List<Kaban.Core.Helpers.AuditEntry> MachineEntries(DateTime from, DateTime to)
+        /// <summary>
+        /// Every entry of the range that passes the filters, oldest first: the HMI's
+        /// (filtered when read) and this machine's states, events and alarms of
+        /// what the page shows (read for the types, shifts and the rest chosen).
+        /// </summary>
+        private List<Kaban.Core.Helpers.AuditEntry> AllEntries()
         {
+            var hmi = _hmiEntries ?? new List<Kaban.Core.Helpers.AuditEntry>();
             var v = _view;
-            if (v == null) return new List<Kaban.Core.Helpers.AuditEntry>();
-            var l = Kaban.UI.Helpers.MachineLinks.Find(_machine.ModuleId);
-            return MachineLogFeed.ToEntries(v, from, to, l != null ? l.MainStation : 1, _machine.ModuleId);
+            if (v == null) return new List<Kaban.Core.Helpers.AuditEntry>(hmi);
+            var machine = MachineLogFeed.ToEntries(v, _from, _to, _filter.MainStation, _machine.ModuleId);
+            var all = new List<Kaban.Core.Helpers.AuditEntry>(hmi.Count + machine.Count);
+            int i = 0, j = 0;
+            while (i < hmi.Count || j < machine.Count)
+            {
+                if (j >= machine.Count || (i < hmi.Count && hmi[i].Time <= machine[j].Time)) all.Add(hmi[i++]);
+                else all.Add(machine[j++]);
+            }
+            return all;
         }
 
-        private void AddSection(string tab, string key, string icon, string titleKey, string title, Control body, Control extra, bool headless = false)
+        private void AddSection(string tab, string key, string icon, Control body, Control extra, bool headless = false)
         {
-            var s = new Section(key, icon, titleKey, title, body, extra, headless);
+            var title = SectionTitles[key];
+            var s = new Section(key, icon, title[0], title[1], body, extra, headless);
             s.Toggled += (o, e) =>
             {
                 _machine.Change(c => c.SetSectionOpen(key, s.Open));
@@ -211,7 +212,7 @@ namespace Kaban.UI.Dashboard
             var want = new List<TabPage>();
             foreach (var t in MachineTabs)
                 if (t.Skip(3).Any(k => _sections.ContainsKey(k) && _sections[k].Shown)) want.Add(_pages[t[0]]);
-            foreach (var t in LogTabs) want.Add(_pages[t.Key]);
+            want.Add(_pages[AllLogsKey]);
             if (_tabs.TabPages.Cast<TabPage>().SequenceEqual(want)) return;
             _settingTabs = true;
             try
@@ -228,7 +229,7 @@ namespace Kaban.UI.Dashboard
 
         private bool _settingTabs;
 
-        /// <summary>The chosen tab's key (states, events, alarms, log_signin ... log_all).</summary>
+        /// <summary>The chosen tab's key (states, events, alarms, log_all).</summary>
         public string SelectedTabKey { get { return _tabs.SelectedTab != null ? (string)_tabs.SelectedTab.Tag : ""; } }
 
         /// <summary>Chooses a tab by its key (tests).</summary>
@@ -247,37 +248,24 @@ namespace Kaban.UI.Dashboard
         private void TabChosen()
         {
             if (_settingTabs) return;
-            var key = SelectedTabKey;
-            var tab = LogTabs.FirstOrDefault(t => t.Key == key);
-            if (tab != null)
-            {
-                if (_log.Parent != _pages[key]) _pages[key].Controls.Add(_log);
-                _log.SetKinds(tab.Kinds);
-                if (_logStale) RefreshLog();
-            }
+            if (SelectedTabKey == AllLogsKey && _logStale) RefreshLog();
             FitWidths();
             UpdateBar();
         }
 
-        /// <summary>The log table read again for the page's range (when a log tab is on show; else when one is chosen).</summary>
+        /// <summary>The All logs table filled again with what the page read (now when it is on show; else when it is chosen).</summary>
         private void RefreshLog()
         {
             if (_log == null) return;
-            if (LogTabs.All(t => t.Key != SelectedTabKey)) { _logStale = true; return; }
+            if (SelectedTabKey != AllLogsKey) { _logStale = true; return; }
             _logStale = false;
-            // the files are read here (the first time a period is asked for): say so first
-            _logReading = true;
-            UpdateBar();
-            _barText.Refresh();
-            try { _log.SetRange(_from, _to); }
-            finally { _logReading = false; }
-            UpdateBar();
+            _log.SetEntries(AllEntries());
         }
 
         private void RetranslateTabs()
         {
             foreach (var t in MachineTabs) _pages[t[0]].Text = T(t[1], t[2]);
-            foreach (var t in LogTabs) _pages[t.Key].Text = T(t.TitleKey, t.Title);
+            _pages[AllLogsKey].Text = T("Dsh_TabAll", "All logs");
             _tabs.Invalidate();
         }
 
@@ -329,9 +317,9 @@ namespace Kaban.UI.Dashboard
             _alarmFilter.Placeholder = T("Dsh_FilterAlarms", "Select Alarms to Filter...");
             _eventFilter.ClearText = T("Dsh_AllEvents", "All Events");
             _alarmFilter.ClearText = T("Dsh_AllAlarms", "All Alarms");
-            _timelineChart.EmptyText = T("Dsh_NoTimeline", "No state data to show timeline!");
-            _pieChart.EmptyText = T("Dsh_NoPie", "No state data to show pie chart!");
-            _barChart.EmptyText = T("Dsh_NoEvents", "No events to show!");
+            _timelineChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoTimeline", "No state data to show timeline!"));
+            _pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
+            _barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
             _timelineChart.Hint = T("Dsh_TipTimeline", "Ctrl + wheel: zoom around the pointer - right-drag: zoom to an interval - drag: move along - double click: the whole range");
             _pieChart.Unit = " " + T("Dsh_Min", "min");
             if (_view != null) Show(_view, null);
@@ -345,11 +333,17 @@ namespace Kaban.UI.Dashboard
         private void Show(DashboardView v, string message)
         {
             _view = v;
-            if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
+            // the machine's log left out by the filters: nothing to say about it above the tabs
+            if (_filter.MachineParts == DashboardData.Parts.None) message = null;
+            else if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
             _info.Text = message ?? "";
             _info.Visible = !string.IsNullOrEmpty(message);
 
             v = v ?? new DashboardView { Start = _from, End = _to };
+            _timelineChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoTimeline", "No state data to show timeline!"));
+            _pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
+            _barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
+            _logStale = true;
             FillStates(v);
             FillEventChart(v);
             FillCutting(v);
@@ -357,9 +351,19 @@ namespace Kaban.UI.Dashboard
             _alarmFilter.SetOptions(v.AlarmCounts);
             FillEvents();
             FillAlarms();
-            // the log tabs: the same range, this machine's entries as just read
+            // All logs: the same range, the entries as just read
             RefreshLog();
             UpdateBar();
+        }
+
+        /// <summary>
+        /// What an empty table or chart says: why it is empty when its rows are
+        /// there - or that the filters on the left leave them out.
+        /// </summary>
+        private string Wanted(DashboardData.Parts part, string empty)
+        {
+            return (_filter.MachineParts & part) != 0 ? empty
+                : T("Dsh_FilteredOut", "Not shown: the filters on the left leave these logs out.");
         }
 
         private void FillStates(DashboardView v)
@@ -385,7 +389,7 @@ namespace Kaban.UI.Dashboard
 
             int n = 0;
             _stateGrid.SetRows(v.States.Select(s => new object[] { ++n, s.Start, s.Description, s.Minutes }).ToList(),
-                               T("Dsh_NoStateLogs", "No machine state logs in selected time range!"));
+                               Wanted(DashboardData.Parts.States, T("Dsh_NoStateLogs", "No machine state logs in selected time range!")));
         }
 
         private void FillEventChart(DashboardView v)
@@ -402,8 +406,9 @@ namespace Kaban.UI.Dashboard
                 s.Suffix = " (" + T("Dsh_TotalLength", "Total Length") + ": " + m.ToString("0.00", CultureInfo.CurrentCulture) + " m)";
             int n = 0;
             _cutGrid.SetRows(v.Cuts.Select(c => new object[] { ++n, c.Length, c.LeftAngle, c.RightAngle, c.Quantity }).ToList(),
-                             m == 0.0 ? T("Dsh_NoCutting", "No cutting logs in selected range!")
-                                      : T("Dsh_NoCuttingFormat", "No valid cutting details found (Check data format)."));
+                             Wanted(DashboardData.Parts.Events,
+                                    m == 0.0 ? T("Dsh_NoCutting", "No cutting logs in selected range!")
+                                             : T("Dsh_NoCuttingFormat", "No valid cutting details found (Check data format).")));
         }
 
         private void FillEvents()
@@ -413,7 +418,7 @@ namespace Kaban.UI.Dashboard
             var rows = pick.Count == 0 ? v.Events : v.Events.Where(e => pick.Contains(e.Description)).ToList();
             int n = 0;
             _eventGrid.SetRows(rows.Select(e => new object[] { ++n, e.Time, e.Description, e.Details }).ToList(),
-                               T("Dsh_NoEventMatch", "No events match the selected filter!"));
+                               Wanted(DashboardData.Parts.Events, T("Dsh_NoEventMatch", "No events match the selected filter!")));
             UpdateBar();
         }
 
@@ -424,7 +429,7 @@ namespace Kaban.UI.Dashboard
             var rows = pick.Count == 0 ? v.Alarms : v.Alarms.Where(a => DashboardData.AlarmNames(a.Details).Any(pick.Contains)).ToList();
             int n = 0;
             _alarmGrid.SetRows(rows.Select(a => new object[] { ++n, a.Time, a.Details }).ToList(),
-                               T("Dsh_NoAlarms", "No alarm logs in selected range!"));
+                               Wanted(DashboardData.Parts.Alarms, T("Dsh_NoAlarms", "No alarm logs in selected range!")));
             UpdateBar();
         }
 
@@ -440,7 +445,15 @@ namespace Kaban.UI.Dashboard
         public FilterButton AlarmFilter { get { return _alarmFilter; } }
         public ComboBox LatestBox { get { return _latest; } }
         public ComboBox HistoryBox { get { return _history; } }
-        public ComboBox ShiftBox { get { return _shift; } }
+        public PickList ShiftPick { get { return _shiftPick; } }
+        public PickList TypePick { get { return _typePick; } }
+        public PickList UserPick { get { return _userPick; } }
+        public PickList PlcPick { get { return _plcPick; } }
+        public PickList SourcePick { get { return _sourcePick; } }
+        /// <summary>The captions of the left bar, top to bottom (tests).</summary>
+        public List<string> SideCaptions { get { return _sideCaptions.Select(l => l.Text).ToList(); } }
+        /// <summary>The left bar's filters, top to bottom (tests).</summary>
+        public List<Control> SideControls { get { return _side.Controls.Cast<Control>().ToList(); } }
         public string InfoText { get { return _info.Visible ? _info.Text : ""; } }
         /// <summary>The left bar's width and where Export Report is (tests).</summary>
         public int FilterBarWidth { get { return _sideHost.Width; } }
@@ -725,7 +738,8 @@ namespace Kaban.UI.Dashboard
 
             public int RowCount { get { return _rows.Count; } }
             public object Cell(int row, int col) { return _rows[row][col]; }
-            public string EmptyText { get { return _empty.Visible ? _empty.Text : ""; } }
+            /// <summary>What the empty table says ("" with rows) - also while its tab is not on show.</summary>
+            public string EmptyText { get { return _rows.Count == 0 ? _empty.Text : ""; } }
 
             public void Sort(int column)
             {

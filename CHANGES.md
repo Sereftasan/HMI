@@ -4352,3 +4352,21 @@ and `UnitLookAndErrors` extended.
 - `DashboardData.ParseDb`: "yyyy-MM-dd HH:mm:ss" read by hand; `Load` turns UTC to the zone once per hour of data.
 - `DashboardScreen`: "Data loading..." while a log tab reads its files.
 - Tests: `tools/ui_test/DashboardSpeed.cs` (new).
+
+## 2026-10-02 - The Dashboard's filters for every table
+
+- `DashboardFilters.cs` (new): `DashboardFilter` (shifts, kinds, users, stations, sources; the machine's entries as
+  `MachineLogFeed.MachineUser` "admin", its main station, its id; `MachineParts`, `HmiWanted`, `Passes`) and `PickList`
+  (a combo-looking multi-select with "All ..."; drawn by the theme on Windows).
+- `DashboardScreen`: Shift Selection, Log Type, User, PLC, Source as pick lists; one read (machine parts + HMI log) on a
+  thread; the log-kind tabs removed (`AllLogsKey`); "Not shown: the filters ..." empty texts; Export Report a TextButton;
+  folder access applied when shown; "Data loading..." bold; `MachineTabs` / `SectionTitles` public (the settings use them).
+- `DashboardData`: `Parts`, `CodeCondition`, `Load(..., parts)` (states without details), `AlarmCodesOf` (code 4 and
+  its continuations - code 14 an alarm, joined within `ContinuationSeconds`), `Build(data, barcoded, shifts, parts)`,
+  `Windows` (joined), `InShifts`. `DashboardView.Shifts`, `.Parts`.
+- `LogViewerControl.SetEntries`; `TableGrid.EmptyText` while hidden.
+- `DashboardSettingsControl`: sections under their tab's name. `AuditLogReader` / `PlcWriteLog`: read under the lock.
+- Translations: Dsh_TabStates, Dsh_TabEvents, Dsh_StatePie, Dsh_StateTimeline, Dsh_StateLogs, Dsh_EventQuantity,
+  Dsh_EventLogs, Dsh_AlarmLogs, Log_KindMachineEvent changed; Dsh_LogType, Dsh_AllTypes, Dsh_FilteredOut,
+  Dsh_FolderAccess new; Dsh_SetShow* removed.
+- Tests: `tools/ui_test/DashboardFilters.cs` (new); `DashboardPage.cs`, `LogsAndReports.cs`, `DashboardSpeed.cs`.

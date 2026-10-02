@@ -153,8 +153,11 @@ namespace Kaban.Core.Helpers
             {
                 string file = AuditLogger.FileFor(day);
                 used.Add(file);
-                foreach (var e in EntriesOf(file))
-                    if (e.Time >= from && e.Time <= to) result.Add(e);
+                // under the lock: the Dashboard reads on a thread of its own while a
+                // page's live view may read on (and add to) today's entries
+                lock (_lock)
+                    foreach (var e in EntriesOf(file))
+                        if (e.Time >= from && e.Time <= to) result.Add(e);
             }
             // Only the files of the range asked for are kept: months of a busy
             // log held for a period nobody is looking at any more is memory the

@@ -570,7 +570,7 @@ Tip_MonLastWrite;The HMI last wrote it at {0} ({1}).;HMI en son {0} anında yazd
 Tip_MonWriteLog;Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.;HMI'nin her yazması PLC yazma kaydındadır: HMI Ayarları > Kayıt Ayarları, tür PLC cihaz yazmaları.;Каждая запись HMI есть в журнале записей ПЛК: Настройки HMI > Журналы, тип «Запись устройств ПЛК».;Jeder HMI-Schreibvorgang steht im SPS-Schreibprotokoll: HMI-Einstellungen > Protokolle, Art SPS-Geräteschreibvorgänge.;Ogni scrittura dell'HMI è nel registro scritture PLC: Impostazioni HMI > Registri, tipo Scritture dispositivi PLC.;Cada escritura de la HMI está en el registro de escrituras del PLC: Ajustes HMI > Registros, tipo Escrituras de dispositivos PLC.
 Log_KindDeviceWrite;PLC device writes;PLC cihaz yazmaları;Запись устройств ПЛК;SPS-Geräteschreibvorgänge;Scritture dispositivi PLC;Escrituras de dispositivos PLC
 Log_KindMachineState;Machine state;Makine durumu;Состояние станка;Maschinenzustand;Stato macchina;Estado de la máquina
-Log_KindMachineEvent;Machine event;Makine olayı;Событие станка;Maschinenereignis;Evento macchina;Evento de la máquina
+Log_KindMachineEvent;Production event;Üretim olayı;Производственное событие;Produktionsereignis;Evento di produzione;Evento de producción
 Log_KindMachineAlarm;Machine alarm;Makine alarmı;Авария станка;Maschinenalarm;Allarme macchina;Alarma de la máquina
 Log_Source;Source;Kaynak;Источник;Quelle;Origine;Origen
 Log_ColSource;Source;Kaynak;Источник;Quelle;Origine;Origen
@@ -758,6 +758,10 @@ Dsh_Start;Start Date;Başlangıç Tarihi;Дата начала;Startdatum;Data I
 Dsh_End;End Date;Bitiş Tarihi;Дата окончания;Enddatum;Data Fine;Fecha de finalización
 Dsh_EndAfterStart;End date must be after start date!;Bitiş tarihi başlangıç tarihinden sonra olmalı!;Дата окончания должна быть позже даты начала!;Enddatum muss nach dem Startdatum liegen!;La data di fine deve essere successiva alla data di inizio!;¡La fecha de finalización debe ser posterior a la fecha de inicio!
 Dsh_ShiftSelection;Shift Selection;Vardiya Seçimi;Выбор смены;Schichtauswahl;Selezione turno;Selección de turno
+Dsh_LogType;Log Type;Kayıt Türü;Тип записи;Protokolltyp;Tipo di registro;Tipo de registro
+Dsh_AllTypes;All types;Tüm türler;Все типы;Alle Typen;Tutti i tipi;Todos los tipos
+Dsh_FilteredOut;Not shown: the filters on the left leave these logs out.;Gösterilmiyor: soldaki filtreler bu kayıtları dışarıda bırakıyor.;Не показано: фильтры слева исключают эти записи.;Nicht angezeigt: Die Filter links schließen diese Protokolle aus.;Non mostrato: i filtri a sinistra escludono questi registri.;No se muestra: los filtros de la izquierda excluyen estos registros.
+Dsh_FolderAccess;Opening it needs the Maintenance level.;Açmak Bakım seviyesi gerektirir.;Чтобы открыть, нужен уровень «Обслуживание».;Zum Öffnen ist die Stufe Wartung nötig.;Per aprirla serve il livello Manutenzione.;Abrirla requiere el nivel Mantenimiento.
 Dsh_AllShifts;All Shifts;Tüm Vardiyalar;Все смены;Alle Schichten;Tutti i turni;Todos los turnos
 Dsh_EditList;Edit the list;Listeyi düzenle;Изменить список;Liste bearbeiten;Modifica l'elenco;Editar la lista
 Dsh_ShiftMetrics;Shift metrics;Vardiya metrikleri;Показатели смены;Schichtkennzahlen;Metriche del turno;Métricas del turno
@@ -782,14 +786,14 @@ Dsh_P_Weekly;Weekly;Haftalık;Еженедельно;Wöchentlich;Settimanale;Se
 Dsh_P_Monthly;Monthly;Aylık;Ежемесячно;Monatlich;Mensile;Mensual
 Dsh_P_3Month;3-Month;3 Aylık;3 месяца;3 Monate;3 mesi;3 meses
 Dsh_P_Annual;Annual;Yıllık;Ежегодно;Jährlich;Annuale;Anual
-Dsh_StatePie;Machine State Time Distribution;Makine Durum Süre Dağılımı;Распределение времени по состояниям машины;Zeitverteilung nach Maschinenstatus;Distribuzione Tempo per Stato Macchina;Distribución del Tiempo por Estado de Máquina
-Dsh_StateTimeline;Machine State Timeline;Makine Durum Zaman Çizelgesi;Хронология состояний машины;Zeitachse Maschinenstatus;Cronologia Stato Macchina;Cronología del Estado de la Máquina
-Dsh_StateLogs;State Logs;Makine Durum Kayıtları;Журнал состояний;Zustandsprotokolle;Registri di stato;Registros de estado
-Dsh_EventQuantity;Event Occurrences (log scale);İşlem Sayıları (logaritmik);Частота событий (лог. масштаб);Ereignisvorkommen (logarithmisch);Occorrenze Eventi (scala log);Ocurrencias de Eventos (escala logarítmica)
+Dsh_StatePie;Time Distribution;Süre Dağılımı;Распределение времени;Zeitverteilung;Distribuzione del tempo;Distribución del tiempo
+Dsh_StateTimeline;Timeline;Zaman Çizelgesi;Хронология;Zeitachse;Cronologia;Cronología
+Dsh_StateLogs;Logs;Kayıtlar;Журнал;Protokolle;Registri;Registros
+Dsh_EventQuantity;Quantities;Adetler;Количество;Anzahl;Quantità;Cantidades
 Dsh_Cutting;Cutting Details;Kesim Detayları;Детали резки;Schnittdetails;Dettagli di taglio;Detalles de corte
 Dsh_TotalLength;Total Length;Toplam Uzunluk;Общая длина;Gesamtlänge;Lunghezza totale;Longitud total
-Dsh_EventLogs;Event Logs;İşlem Kayıtları;Журнал событий;Protokoll der Ereignisse;Registro Eventi;Registros de Eventos
-Dsh_AlarmLogs;Alarm Logs;Arıza Kayıtları;Журнал ошибок;Fehlerprotokolle;Registri Errori;Registros de Errores
+Dsh_EventLogs;Logs;Kayıtlar;Журнал;Protokolle;Registri;Registros
+Dsh_AlarmLogs;Logs;Kayıtlar;Журнал;Protokolle;Registri;Registros
 Dsh_Timestamp;Timestamp;Tarih ve Saat;Метка времени;Zeitstempel;Timestamp;Marca temporal
 Dsh_Description;Description;Açıklama;Описание;Beschreibung;Descrizione;Descripción
 Dsh_Details;Details;Ayrıntılar;Подробности;Details;Dettagli;Detalles
@@ -822,8 +826,8 @@ Dsh_ProbeEmpty;The database holds no logs yet.;Veritabanında henüz kayıt yok.
 Dsh_ProbeDates;Its dates are written as "{0}": the dashboard reads them only as {1} (UTC).;Tarihleri "{0}" olarak yazılmış: gösterge paneli bunları yalnızca {1} (UTC) olarak okur.;Даты записаны как "{0}": панель читает их только в виде {1} (UTC).;Die Daten sind als "{0}" geschrieben: Das Dashboard liest nur {1} (UTC).;Le date sono scritte come "{0}": la dashboard le legge solo come {1} (UTC).;Las fechas están escritas como "{0}": el panel solo las lee como {1} (UTC).
 Dsh_ProbeOpen;The database could not be opened:;Veritabanı açılamadı:;Не удалось открыть базу данных:;Die Datenbank konnte nicht geöffnet werden:;Impossibile aprire il database:;No se pudo abrir la base de datos:
 Dsh_DatabaseHolds;The database holds;Veritabanında bulunan:;В базе данных:;Die Datenbank enthält;Il database contiene;La base de datos contiene
-Dsh_TabStates;Machine states;Makine durumları;Состояния станка;Maschinenzustände;Stati macchina;Estados de la máquina
-Dsh_TabEvents;Operations;İşlemler;Операции;Vorgänge;Operazioni;Operaciones
+Dsh_TabStates;Machine Performance;Makine Performansı;Производительность станка;Maschinenleistung;Prestazioni macchina;Rendimiento de la máquina
+Dsh_TabEvents;Production Events;Üretim Olayları;Производственные события;Produktionsereignisse;Eventi di produzione;Eventos de producción
 Dsh_TabAlarms;Alarms;Alarmlar;Аварии;Alarme;Allarmi;Alarmas
 Dsh_TabAll;All logs;Tüm kayıtlar;Все записи;Alle Protokolle;Tutti i registri;Todos los registros
 Dsh_LogSearch;Search the log;Kayıtlarda ara;Поиск в журнале;Im Protokoll suchen;Cerca nel registro;Buscar en el registro
@@ -848,13 +852,6 @@ Dsh_SetTimeZoneNote;The database keeps UTC. The dashboard shows the times of thi
 Dsh_SetLogicHead;Data logic;Veri mantığı;Логика данных;Datenlogik;Logica dei dati;Lógica de datos
 Dsh_SetBarcoded;Use only barcoded cutting logs;Yalnızca barkodlu kesim kayıtlarını kullan;Использовать только резки со штрихкодом;Nur Schnittprotokolle mit Barcode verwenden;Usa solo i log di taglio con codice a barre;Usar solo registros de corte con código de barras
 Dsh_SetSectionsHead;Dashboard sections;Gösterge paneli bölümleri;Разделы панели;Dashboard-Bereiche;Sezioni del cruscotto;Secciones del panel
-Dsh_SetShowPie;Show state pie chart;Durum pasta grafiğini göster;Показать круговую диаграмму состояний;Tortendiagramm der Zustände zeigen;Mostra il grafico a torta degli stati;Mostrar el gráfico circular de estados
-Dsh_SetShowTimeline;Show state timeline;Durum zaman çizelgesini göster;Показать хронологию состояний;Zeitachse der Zustände zeigen;Mostra la cronologia degli stati;Mostrar la cronología de estados
-Dsh_SetShowStateLogs;Show state logs table;Durum kayıtları tablosunu göster;Показать таблицу состояний;Tabelle der Zustandsprotokolle zeigen;Mostra la tabella dei registri di stato;Mostrar la tabla de registros de estado
-Dsh_SetShowEventChart;Show event frequency chart;İşlem sıklığı grafiğini göster;Показать диаграмму частоты событий;Diagramm der Ereignishäufigkeit zeigen;Mostra il grafico della frequenza degli eventi;Mostrar el gráfico de frecuencia de eventos
-Dsh_SetShowCutting;Show cutting details;Kesim detaylarını göster;Показать детали резки;Schnittdetails zeigen;Mostra i dettagli di taglio;Mostrar los detalles de corte
-Dsh_SetShowEventLogs;Show event logs table;İşlem kayıtları tablosunu göster;Показать таблицу событий;Tabelle der Ereignisprotokolle zeigen;Mostra la tabella del registro eventi;Mostrar la tabla de registros de eventos
-Dsh_SetShowAlarmLogs;Show alarm logs table;Arıza kayıtları tablosunu göster;Показать таблицу ошибок;Tabelle der Fehlerprotokolle zeigen;Mostra la tabella dei registri errori;Mostrar la tabla de registros de errores
 Dsh_SetReportsHead;Exported reports;Dışa aktarılan raporlar;Экспортируемые отчёты;Exportierte Berichte;Report esportati;Informes exportados
 Dsh_SetExportDir;Export folder;Rapor klasörü;Папка экспорта;Exportordner;Cartella di esportazione;Carpeta de exportación
 Dsh_SetReportLanguage;Report language;Rapor dili;Язык отчёта;Berichtssprache;Lingua del report;Idioma del informe

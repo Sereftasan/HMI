@@ -184,6 +184,7 @@
     </Compile>
     <Compile Include="Dashboard\DashboardConfig.cs" />
     <Compile Include="Dashboard\DashboardData.cs" />
+    <Compile Include="Dashboard\DashboardFilters.cs" />
     <Compile Include="Dashboard\DashboardReports.cs" />
     <Compile Include="Dashboard\DashboardScreen.cs">
       <SubType>UserControl</SubType>

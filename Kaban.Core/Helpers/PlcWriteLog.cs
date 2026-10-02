@@ -430,8 +430,10 @@ namespace Kaban.Core.Helpers
             {
                 string file = FileFor(day);
                 used.Add(file);
-                foreach (var e in EntriesOf(file))
-                    if (e.Time >= from && e.Time <= to) result.Add(e);
+                // under the lock: read from more than one thread (the Dashboard's own)
+                lock (_cache)
+                    foreach (var e in EntriesOf(file))
+                        if (e.Time >= from && e.Time <= to) result.Add(e);
             }
             lock (_cache)
                 foreach (var stale in _cache.Keys.Where(k => !used.Contains(k)).ToList()) _cache.Remove(stale);

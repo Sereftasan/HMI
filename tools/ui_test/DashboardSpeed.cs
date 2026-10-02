@@ -117,17 +117,17 @@ class DS {
         double all = Ms(() => dash.SelectTab("log_all"));
         var log = dash.LogTable;
         Check("All logs: the HMI's day and the machine's, listed", log.RowCount == 20000 && all < 8000, log.RowCount + " rows, " + all.ToString("0") + " ms");
-        double logins = Ms(() => dash.SelectTab("log_signin"));
-        Check("  to Logins (20 000 rows down to 400)", log.RowCount == 400 && logins < 2000, log.RowCount + " rows, " + logins.ToString("0") + " ms");
-        double back = Ms(() => dash.SelectTab("log_all"));
-        Check("  back to All logs", log.RowCount == 20000 && back < 2000, back.ToString("0") + " ms");
+        double logins = Ms(() => { dash.TypePick.Select(new[] { ((int)AuditKind.SignIn).ToString() }); Until(() => !dash.Loading); });
+        Check("  Log Type: Logins (20 000 rows down to 400)", log.RowCount == 400 && logins < 2000, log.RowCount + " rows, " + logins.ToString("0") + " ms");
+        double back = Ms(() => { dash.TypePick.Select(new string[0]); Until(() => !dash.Loading); });
+        Check("  every type again (the machine's log as read before)", log.RowCount == 20000 && back < 3000, back.ToString("0") + " ms");
         double search = Ms(() => log.SearchText = "D100");
         Check("  a search (20 000 rows down to 4 000)", log.RowCount == 4000 && search < 2000, log.RowCount + " rows, " + search.ToString("0") + " ms");
         double none = Ms(() => log.SearchText = "");
         Check("  the search cleared", log.RowCount == 20000 && none < 2000, none.ToString("0") + " ms");
-        log.SetUser("admin");
-        double user = Ms(() => log.SetUser(null));
-        Check("  a user chosen and cleared", user < 2000, user.ToString("0") + " ms");
+        double user = Ms(() => { dash.UserPick.Select(new[] { "admin" }); Until(() => !dash.Loading); });
+        double noUser = Ms(() => { dash.UserPick.Select(new string[0]); Until(() => !dash.Loading); });
+        Check("  a user chosen and cleared", user < 3000 && noUser < 3000 && log.RowCount == 20000, user.ToString("0") + " / " + noUser.ToString("0") + " ms");
 
         dash.SelectTab("events");
         Pump(50);
