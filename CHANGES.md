@@ -4465,3 +4465,14 @@ and `UnitLookAndErrors` extended.
 - Translations: AxIt_* (pick and items), Tip_LoadEncoder, Mot_Pick "Motion monitor:"; Mot_PickNote removed.
 - Manual: PLC axis items, Motion monitor, the Device properties, the Axis Monitor for an Admin.
 - Tests: `AxisItems.cs` (new); `ViewPrefsAndMotion.cs`, `AxisRowLayout.cs`, `AxisCodeHelpUi.cs`, `UnitsAndDesigner.cs`; `tools/rework_pages.py`.
+
+
+## 2026-10-05 - The Axis Monitor's values as displays; only the Motion monitor pinned; window handles no longer leaked by axis rows
+
+- `AxisSettingHMI`: in MonitorMode the settings are `NumericDisplayHMI` (`AddDisplay`), Ref `CheckBoxHMI.DisplayOnly`, no
+  Calibrate. `BuildRow` disposes the old fields (they kept their windows: "Error creating window handle"); `NameFont`,
+  `PositionFont` shared. Two bars on a page: `axisItemsBar` (scrolls) and `axisMotionBar` (pinned).
+- `AxisPickBar`: items / motion parts, `NaturalWidth`. `CheckBoxHMI.DisplayOnly`; `UiStyle.IsDisplayOnly`.
+- `StationConnectionControl.BuildCore` disposes its old rows.
+- Manual: the Motion monitor alone stays in sight; the monitor's values shown, not entered.
+- Tests: `AxisItems.cs`, `ViewPrefsAndMotion.cs`.

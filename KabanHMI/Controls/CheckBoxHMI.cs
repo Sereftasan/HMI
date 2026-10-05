@@ -188,9 +188,21 @@ namespace Kaban.UI.Controls
         [Browsable(false)]
         public bool IsStale { get { return !string.IsNullOrWhiteSpace(Address) && ConnectionMonitor.IsKnownDown(PlcNumber); } }
 
+        /// <summary>
+        /// Shown, never ticked: the box follows its bit and writes nothing (the
+        /// Axis Monitor's reference activation - it watches).
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DisplayOnly
+        {
+            get { return _displayOnly; }
+            set { _displayOnly = value; if (value) Cursor = Cursors.Default; }
+        }
+        private bool _displayOnly;
+
         protected override void OnClick(EventArgs e)
         {
-            if (IsStale) return;          // not ticked: nothing can be written
+            if (IsStale || DisplayOnly) return;          // not ticked: nothing can be written
             base.OnClick(e);
         }
 

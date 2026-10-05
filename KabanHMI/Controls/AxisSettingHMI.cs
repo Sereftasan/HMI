@@ -392,13 +392,13 @@ namespace Kaban.UI.Controls
         public const int WCode = 72;
 
         private readonly Label _axis = new Label();
-        private NumericInputHMI _min, _max, _reference, _calibration;
+        private BaseNumericHMI _min, _max, _reference, _calibration;
         private ButtonHMI _back, _forward, _calibrate;
         private CheckBoxHMI _goRef;
         private NumericDisplayHMI _position;
         private MeterHMI _current, _zdist;
         private HexCodeHMI _axisAlarm, _axisWarning, _servoAlarm;
-        private NumericInputHMI _travel, _backlash;
+        private BaseNumericHMI _travel, _backlash;
 
         /// <summary>Where each column of this row is, at factor 1: key -> (left, width).</summary>
         private readonly System.Collections.Generic.Dictionary<string, Point> _columns =
@@ -456,7 +456,16 @@ namespace Kaban.UI.Controls
         /// </summary>
         public void BuildRow()
         {
-            Controls.Clear();
+            // THE OLD ROW DISPOSED, not just taken off: a control taken off a form
+            // keeps its window (parked) and its subscriptions until it is disposed,
+            // and the row is built again whenever its picks change - ticking through
+            // the lists on a page of 16 axes ran Windows out of window handles
+            // ("Error creating window handle").
+            foreach (Control old in Controls.Cast<Control>().ToList())
+            {
+                Controls.Remove(old);
+                if (!ReferenceEquals(old, _axis)) old.Dispose();
+            }
             _columns.Clear();
             _back = _forward = _calibrate = null;
             _position = null;
@@ -478,7 +487,7 @@ namespace Kaban.UI.Controls
             // belonging to the column of names rather than to this axis.
             // (or LEFT, in a column of names, as View Preferences may say)
             _axis.TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight;
-            _axis.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
+            _axis.Font = NameFont;
             Controls.Add(_axis);
             Column("Axis", x, WAxis);
             x += WAxis + Gap;
@@ -513,7 +522,7 @@ namespace Kaban.UI.Controls
                         ComparedCaptionKey = "Tip_LoadEncoder",
                         // The position is the number the operator watches while
                         // jogging, so it is the one thing on the row drawn large.
-                        Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                        Font = PositionFont
                     };
                     _position.SetBounds(x, 4, WPosition, RowHeight - 8);
                     Controls.Add(_position);
@@ -566,7 +575,8 @@ namespace Kaban.UI.Controls
 
                 // Calibrate rewrites the axis's zero, so it is SET and draws the
                 // latched mark - it must not look like the jog buttons beside it.
-                if (PageHas(a => a.CalibrateAddress))
+                // Not on the Axis Monitor: it watches, and Calibrate is a command.
+                if (!MonitorMode && PageHas(a => a.CalibrateAddress))
                 {
                     Column("Cal", x, WCommand);
                     _calibrate = AddCommand(CalibrateAddress, BitActionType.SET, ref x);
@@ -661,6 +671,40 @@ namespace Kaban.UI.Controls
                 case "Backlash": return LanguageManager.GetString("AxIt_Backlash", "Backlash");
                 default: return key;
             }
+        }
+
+        // One font each for every row (they were made again on every build).
+        private static readonly Font NameFont = UiScale.NewFont("Segoe UI", 10F);
+        private static readonly Font PositionFont = UiScale.NewFont("Segoe UI", 12F, FontStyle.Bold);
+
+        /// <summary>
+        /// A value of the row on the AXIS MONITOR: shown, not entered - the
+        /// monitor watches. In the row's unit, divisor and decimals, as the field
+        /// on the page is.
+        /// </summary>
+        private BaseNumericHMI AddDisplay(string address, ref int x, int w, int decimals, int digits, bool suffix, string tip)
+        {
+            NumericDisplayHMI n = null;
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                n = new NumericDisplayHMI
+                {
+                    PlcNumber = PlcNumber,
+                    Address = address.Trim(),
+                    DataType = SettingDataType,
+                    Divisor = Divisor,
+                    DecimalPlaces = decimals,
+                    Digits = digits,
+                    Suffix = suffix ? Suffix : "",
+                    ShowSuffix = suffix,
+                    UnitType = PositionUnitType,
+                    ToolTipTextKey = tip ?? ""
+                };
+                n.SetBounds(x, 6, w, RowHeight - 12);
+                Controls.Add(n);
+            }
+            x += w + Gap;
+            return n;
         }
 
         /// <summary>
@@ -864,8 +908,13 @@ namespace Kaban.UI.Controls
         /// row's 2 decimals would show as 0.02 - and with its unit, as it is not
         /// the position's quantity the column beside it names.
         /// </summary>
-        private NumericInputHMI AddFineSetting(string address, string tipKey, string tipFallback, ref int x)
+        private BaseNumericHMI AddFineSetting(string address, string tipKey, string tipFallback, ref int x)
         {
+            if (MonitorMode)
+            {
+                int d = BaseNumericHMI.ResolutionDecimals(Divisor, DecimalPlaces);
+                return AddDisplay(address, ref x, WSetting, d, Math.Max(Digits, d + 4), true, LanguageManager.GetString(tipKey, tipFallback));
+            }
             NumericInputHMI n = null;
             if (!string.IsNullOrWhiteSpace(address))
             {
@@ -1087,7 +1136,7 @@ namespace Kaban.UI.Controls
 
         // ---- the bar at the top of the page: which of the module's values to show ----
 
-        internal const string MotionBarName = "axisMotionBar";
+        internal const string MotionBarName = "axisMotionBar", ItemsBarName = "axisItemsBar";
 
         /// <summary>
         /// THE BAR AT THE TOP OF THE PAGE (AxisPickBar): PLC axis items - which of
@@ -1100,27 +1149,38 @@ namespace Kaban.UI.Controls
         /// </summary>
         private void EnsureMotionBar(Control page)
         {
-            var bar = page.Controls[MotionBarName] as AxisPickBar;
-            if (bar != null)
+            var items = page.Controls[ItemsBarName] as AxisPickBar;
+            var motion = page.Controls[MotionBarName] as AxisPickBar;
+            if (items == null || motion == null)
             {
-                bar.Visible = true;
-                bar.Offer(PageItems(), PageHasMotion());
-                return;
-            }
-            int top = int.MaxValue, left = int.MaxValue;
-            foreach (Control c in page.Controls) { top = Math.Min(top, c.Top); left = Math.Min(left, c.Left); }
-            if (top == int.MaxValue) { top = 0; left = 0; }
-            int shift = UiScale.For(page, 40);
-            foreach (Control c in page.Controls) c.Top += shift;
+                int top = int.MaxValue, left = int.MaxValue;
+                foreach (Control c in page.Controls) { top = Math.Min(top, c.Top); left = Math.Min(left, c.Left); }
+                if (top == int.MaxValue) { top = 0; left = 0; }
+                int shift = UiScale.For(page, 40);
+                foreach (Control c in page.Controls) c.Top += shift;
 
-            bar = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns) { Name = MotionBarName, BackColor = page.BackColor };
-            page.Controls.Add(bar);
-            // Kept where the page's content starts, in the page's own (unscrolled) terms.
-            var scroll = page as ScrollableControl;
-            int x = Math.Max(0, left - (scroll != null ? scroll.AutoScrollPosition.X : 0));
-            bar.SetBounds(x, top, UiScale.For(page, 1100), UiScale.For(page, 36));
-            bar.Pin(page, x);
-            bar.Offer(PageItems(), PageHasMotion());
+                // PLC axis items: an ordinary part of the page, scrolling with it.
+                items = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: true, motion: false)
+                        { Name = ItemsBarName, BackColor = page.BackColor };
+                page.Controls.Add(items);
+                items.SetBounds(Math.Max(0, left), top, UiScale.For(page, 460), UiScale.For(page, 36));
+                items.Width = items.NaturalWidth;
+
+                // The Motion monitor beside it, kept where it starts on screen while
+                // the page scrolls sideways (in the page's own, unscrolled terms).
+                motion = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: false, motion: true)
+                         { Name = MotionBarName, BackColor = page.BackColor };
+                page.Controls.Add(motion);
+                var scroll = page as ScrollableControl;
+                int x = Math.Max(0, items.Right - (scroll != null ? scroll.AutoScrollPosition.X : 0));
+                motion.SetBounds(x, top, UiScale.For(page, 640), UiScale.For(page, 36));
+                motion.Pin(page, x);
+            }
+            items.Visible = true;
+            items.Offer(PageItems(), false);
+            bool hasMotion = PageHasMotion();
+            motion.Visible = hasMotion;
+            motion.Offer(PageItems(), hasMotion);
         }
 
         /// <summary>The bar's ticks as kept (another user signed in, the pick changed elsewhere).</summary>
@@ -1128,8 +1188,11 @@ namespace Kaban.UI.Controls
         {
             var page = Parent;
             if (page == null || MonitorMode) return;
-            var bar = page.Controls[MotionBarName] as AxisPickBar;
-            if (bar != null) bar.Sync();
+            foreach (var name in new[] { ItemsBarName, MotionBarName })
+            {
+                var bar = page.Controls[name] as AxisPickBar;
+                if (bar != null) bar.Sync();
+            }
         }
 
         /// <param name="clampToTravel">
@@ -1138,10 +1201,12 @@ namespace Kaban.UI.Controls
         /// is work that can only introduce a disagreement, and a reference value
         /// outside the travel limits is a machine that homes into a hard stop.
         /// </param>
-        private NumericInputHMI AddSetting(string address, ref int x, int w,
-                                           bool clampToTravel = false,
-                                           string lowerTag = null, string upperTag = null)
+        private BaseNumericHMI AddSetting(string address, ref int x, int w,
+                                          bool clampToTravel = false,
+                                          string lowerTag = null, string upperTag = null)
         {
+            // The Axis Monitor shows the settings; they are entered on the page.
+            if (MonitorMode) return AddDisplay(address, ref x, w, DecimalPlaces, Digits, false, null);
             NumericInputHMI n = null;
             if (!string.IsNullOrEmpty(address))
             {
@@ -1369,7 +1434,9 @@ namespace Kaban.UI.Controls
                     RequiredSecurity = RequiredSecurity,
                     LogAction = true,
                     // The PLC asking for a reference: the box blinks red.
-                    AlertAddress = (HomeRequestAddress ?? "").Trim()
+                    AlertAddress = (HomeRequestAddress ?? "").Trim(),
+                    // On the Axis Monitor: shown, not ticked.
+                    DisplayOnly = MonitorMode
                 };
                 // Exactly the Cal button's footprint: the two sit side by side and
                 // a checkbox even slightly smaller reads as an afterthought.

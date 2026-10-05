@@ -314,9 +314,10 @@ class VPM {
         var p1 = Row("Axis_Z", 10, 0, 0);
         plain.Controls.Add(p1);
         Pump(100);
-        var plainBar = plain.Controls["axisMotionBar"] as AxisPickBar;
-        Check("a page without a module: the PLC axis items only, no Motion monitor, no columns", plainBar != null && plainBar.ItemsPick.Visible &&
-              !plainBar.MotionPick.Visible && p1.Controls["motAxisError"] == null && p1.Top == 50, plainBar == null ? "no bar" : p1.Top.ToString());
+        var plainItems = plain.Controls["axisItemsBar"] as AxisPickBar;
+        var plainMotion = plain.Controls["axisMotionBar"] as AxisPickBar;
+        Check("a page without a module: the PLC axis items only, no Motion monitor, no columns", plainItems != null && plainItems.Visible &&
+              (plainMotion == null || !plainMotion.Visible) && p1.Controls["motAxisError"] == null && p1.Top == 50, plainItems == null ? "no bar" : p1.Top.ToString());
         form.Controls.Remove(page); form.Controls.Remove(plain);
         SecurityManager.Logout();
 

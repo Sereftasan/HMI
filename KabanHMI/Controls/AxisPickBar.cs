@@ -21,8 +21,10 @@ namespace Kaban.UI.Controls
     /// columns - "None" (nothing ticked) adds none. Both kept as the signed-in
     /// user's own (View Preferences); the rows follow at once.
     ///
-    /// On a page it STAYS IN SIGHT while the page is scrolled sideways (Pin): the
-    /// monitor values are ticked where their columns are, at the right end.
+    /// On a page the two are two bars: PLC axis items scrolls away with the
+    /// columns it hides (they are at the left); the Motion monitor STAYS IN SIGHT
+    /// while the page is scrolled sideways (Pin) - its values are ticked where
+    /// their columns are, at the right end. On the Axis Monitor one bar has both.
     /// </summary>
     public class AxisPickBar : FlowLayoutPanel
     {
@@ -30,15 +32,20 @@ namespace Kaban.UI.Controls
 
         private readonly string _itemsKey, _motionKey;
         private readonly Label _itemsCaption, _motionCaption;
+        private readonly bool _hasItems, _hasMotion;
         private bool _syncing;
 
         public PickList ItemsPick { get; private set; }
         public PickList MotionPick { get; private set; }
 
-        public AxisPickBar(string itemsKey, string motionKey)
+        /// <param name="items">With the PLC axis items list.</param>
+        /// <param name="motion">With the Motion monitor list.</param>
+        public AxisPickBar(string itemsKey, string motionKey, bool items = true, bool motion = true)
         {
             _itemsKey = itemsKey;
             _motionKey = motionKey;
+            _hasItems = items;
+            _hasMotion = motion;
             WrapContents = false;
             AutoSize = false;
             Padding = new Padding(0);
@@ -63,11 +70,12 @@ namespace Kaban.UI.Controls
                 i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
             MotionPick.Changed += (s, e) => { if (!_syncing) KeepMotion(); };
 
-            Controls.Add(_itemsCaption);
-            Controls.Add(ItemsPick);
-            Controls.Add(_motionCaption);
-            Controls.Add(MotionPick);
+            if (items) { Controls.Add(_itemsCaption); Controls.Add(ItemsPick); }
+            if (motion) { Controls.Add(_motionCaption); Controls.Add(MotionPick); }
         }
+
+        /// <summary>As wide as its lists (a bar of one list beside another).</summary>
+        public int NaturalWidth { get { return GetPreferredSize(Size.Empty).Width; } }
 
         private static Label Caption(string text)
         {
@@ -84,7 +92,8 @@ namespace Kaban.UI.Controls
             try
             {
                 ItemsPick.SetItems(AxisSettingHMI.ItemKeys.Where(items.Contains).Select(k => new PickList.Item(k, AxisSettingHMI.ItemText(k))), false);
-                _motionCaption.Visible = MotionPick.Visible = motion;
+                _motionCaption.Visible = MotionPick.Visible = motion && _hasMotion;
+                _itemsCaption.Visible = ItemsPick.Visible = _hasItems;
             }
             finally { _syncing = false; }
             Sync();
@@ -162,7 +171,7 @@ namespace Kaban.UI.Controls
         private void FitWidth()
         {
             if (_page == null) return;
-            int want = UiScale.For(_page, 1100);
+            int want = Math.Max(NaturalWidth, UiScale.For(_page, 200));
             int room = _page.ClientSize.Width - _pinX - UiScale.For(_page, 4);
             Width = Math.Max(UiScale.For(_page, 200), Math.Min(want, room));
         }

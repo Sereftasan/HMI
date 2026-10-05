@@ -151,7 +151,7 @@ namespace Kaban.UI.Controls
             if (ts != null) { HandOverMenuItems(ts); return; }
 
             if (!(c is ButtonBase || c is ComboBox)) return;
-            if (c is IManagesOwnCursor || c is IDisplayOnly) return;          // they decide for themselves
+            if (c is IManagesOwnCursor || IsDisplayOnly(c)) return;           // they decide for themselves
             // A cursor somebody chose on purpose (a drag handle, say) is kept.
             if (c.Cursor != Cursors.Default && c.Cursor != Cursors.Hand) return;
             if (_cued.Contains(c) || !_handCued.Add(c)) return;               // already following Enabled
@@ -372,6 +372,13 @@ namespace Kaban.UI.Controls
         /// </summary>
         public interface IDisplayOnly { }
 
+        /// <summary>A display (IDisplayOnly), or a checkbox that only shows its bit.</summary>
+        public static bool IsDisplayOnly(Control c)
+        {
+            var box = c as CheckBoxHMI;
+            return c is IDisplayOnly || (box != null && box.DisplayOnly);
+        }
+
         /// <summary>
         /// A control that sets its own cursor from its own state (a button that
         /// greys itself through soft enable). The sweep leaves its cursor alone.
@@ -509,7 +516,7 @@ namespace Kaban.UI.Controls
             // FIRST: a display that turns into a link while it has something to
             // open (an axis code cell) sets its own cursor as that changes.
             if (c is IManagesOwnCursor) return;
-            if (c is IDisplayOnly || c is DataGridView) { c.Cursor = Cursors.Default; return; }
+            if (IsDisplayOnly(c) || c is DataGridView) { c.Cursor = Cursors.Default; return; }
             CursorFollowsEnabled(c);
         }
 

@@ -239,7 +239,8 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
   each listed while its row's visibility conditions are met. Watching only.
   An <span class="lvl l3">Admin</span> has the Axis Settings page's two lists above it (<i>PLC axis items</i>, <i>Motion monitor</i>, his own choice
   for the monitor): with anything but <i>Torque monitor</i> ticked, each axis is shown as its Axis Settings row with what is ticked &ndash; the position always,
-  <i>Manual movement</i> adds the jog buttons &ndash; the headings above the rows. Everyone else sees the monitor as above.</td></tr>
+  <i>Manual movement</i> adds the jog buttons &ndash; the headings above the rows. The settings are <b>shown, not entered</b> (they are entered on the page),
+  the reference activation is shown, not ticked, and there is no Calibrate button. Everyone else sees the monitor as above.</td></tr>
 <tr><td>PLC Monitor</td><td><span class="lvl l3">Admin</span></td><td>Any device of any controller, read and written. See <a href="#diag">11</a>.</td></tr>
 <tr><td>A machine's own</td><td>its own</td><td>Designed with the machine: axis positions, power, the order being run, second-level operations.</td></tr>
 </table>
@@ -556,8 +557,8 @@ cannot change are grey. On the right of the list the one chosen:</p>
           axis on it (<code>MotionAxisIndex</code>: 1&ndash;8) &ndash; with <code>PlcNumber</code> and <code>HMIAxisIndex</code> (the number the manual pages'
           axis units use), the row's <i>Device</i> properties, set in the designer. Then the page has <i>Motion monitor</i> beside <i>PLC axis items</i>:
           tick what to see (<i>None</i>, the last line, for none), and each one is a column at the end of every row, read straight from the
-          module's buffer memory (<code>U1\G2406</code> &hellip;). The two lists <b>stay in sight</b> while the page is scrolled sideways, so the module's
-          values can be ticked where their columns are.
+          module's buffer memory (<code>U1\G2406</code> &hellip;). The Motion monitor list <b>stays in sight</b> while the page is scrolled sideways,
+          so the module's values can be ticked where their columns are (<i>PLC axis items</i> scrolls away with the columns it hides).
           <ul>
            <li>Alarms and status: axis error and axis warning (as codes, their help behind them), servo alarm, the axis's operation status in words
                (<i>Home return (7)</i>).</li>

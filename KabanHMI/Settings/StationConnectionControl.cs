@@ -201,6 +201,8 @@ namespace Kaban.UI.Settings
 
         private void BuildCore()
         {
+            // Disposed, not just taken off: a control taken off keeps its window until it is.
+            foreach (Control old in _table.Controls.Cast<Control>().ToList()) { _table.Controls.Remove(old); old.Dispose(); }
             _table.Controls.Clear();
             _table.RowStyles.Clear();
             _rows.Clear();

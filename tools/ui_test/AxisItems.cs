@@ -89,26 +89,29 @@ class AXI {
         var r2 = Full("Robot Y", 34 + AxisSettingHMI.RowHeight, "W20", 0, 0);
         page.Controls.Add(r1); page.Controls.Add(r2);
         form.Show(); Pump(250);
-        var bar = page.Controls["axisMotionBar"] as AxisPickBar;
-        Check("a bar at the top of the page", bar != null && bar.Visible);
+        var bar = page.Controls["axisItemsBar"] as AxisPickBar;
+        var mot = page.Controls["axisMotionBar"] as AxisPickBar;
+        Check("two lists at the top of the page", bar != null && bar.Visible && mot != null && mot.Visible);
         var offered = bar.ItemsPick.Items.Select(i => i.Key).ToList();
         Check("  PLC axis items: what the rows have, in the row's order",
               string.Join(",", offered) == "Manual,Torque,Settings,RefActivation,ZDistance,Codes,Travel", string.Join(",", offered));
         Check("  their names", bar.ItemsPick.Items.Select(i => i.Text).SequenceEqual(new[] { "Manual movement", "Torque monitor", "Axis setting parameters",
               "Reference activation", "Reference sensor - encoder Z pulse distance", "Alarm codes", "Travel per revolution" }));
         Check("  'All' when nothing is ticked (the last line of the list)", bar.ItemsPick.AllText == "All" && bar.ItemsPick.Shown == "All");
-        Check("  left of 'Motion monitor:' ('None' its last line)", bar.ItemsPick.Left < bar.MotionPick.Left && bar.MotionPick.AllText == "None" &&
-              bar.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor:") && bar.Controls.OfType<Label>().Any(l => l.Text == "PLC axis items:") &&
-              !bar.Controls.OfType<Label>().Any(l => l.Text.Contains("read only")));
+        Check("  left of 'Motion monitor:' ('None' its last line)", bar.Right <= mot.Left && mot.MotionPick.AllText == "None" &&
+              mot.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor:") && bar.Controls.OfType<Label>().Any(l => l.Text == "PLC axis items:") &&
+              !mot.Controls.OfType<Label>().Any(l => l.Text.Contains("read only")), bar.Bounds + " " + mot.Bounds);
         string all = Keys(r1);
         Check("All: the whole row", all == "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,Ref,ZDistance,AxisAlarm,AxisWarning,ServoAlarm,TravelPerRev", all);
 
         SecurityManager.Login("boss", SecurityLevel.Admin);
         Pump(50);
+        var before = r1.Controls.OfType<NumericInputHMI>().First();
         bar.ItemsPick.Select(new[] { "Codes" });
         Pump(150);
         Check("Alarm codes only: the name and the codes", Keys(r1) == "Axis,AxisAlarm,AxisWarning,ServoAlarm" && Keys(r2) == Keys(r1), Keys(r1));
         Check("  kept as his own", ViewPreferences.UserValue("boss", ViewPreferences.AxisItems) == "Codes");
+        Check("  the row's old fields disposed, not left holding their windows", before.IsDisposed && before.Parent == null);
         Check("  no jog buttons, no position", !r1.Controls.OfType<ButtonHMI>().Any() && !r1.Controls.OfType<NumericDisplayHMI>().Any());
         Func<string, Label> head = t => page.Controls.OfType<Label>().FirstOrDefault(l => l.Text == t);
         Check("  the headings follow: Min hidden, Axis alarm over its column", !head("Min").Visible && head("Axis alarm").Visible &&
@@ -128,26 +131,27 @@ class AXI {
         Pump(150);
         Check("All again: the whole row, kept as '*'", Keys(r1) == all && ViewPreferences.UserValue("boss", ViewPreferences.AxisItems) == "*" &&
               ViewPreferences.PickOf(ViewPreferences.AxisItems) == null);
-        Check("the Motion monitor on a page with a module", bar.MotionPick.Visible);
+        Check("the Motion monitor on a page with a module", mot.MotionPick.Visible);
         ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "RealCurrentValue" });
         Pump(150);
         Check("  its columns after the PLC's", Keys(r1).EndsWith("TravelPerRev,Mot:Busy,Mot:RealCurrentValue"), Keys(r1));
 
         Console.WriteLine("--- in sight while the page scrolls sideways ---");
-        int pinned = bar.PinnedX, widthBefore = page.DisplayRectangle.Width;
+        int pinned = mot.PinnedX, itemsLeft = bar.Left, widthBefore = page.DisplayRectangle.Width;
         Check("the page is wider than its window", r1.Width > page.ClientSize.Width, r1.Width + " > " + page.ClientSize.Width);
         page.AutoScrollPosition = new Point(500, 0);
         Pump(100);
-        Check("scrolled: the rows moved, the bar did not", r1.Left < 0 && bar.Left == pinned, "row " + r1.Left + ", bar " + bar.Left + " / " + pinned);
+        Check("scrolled: the rows and PLC axis items moved, the Motion monitor did not", r1.Left < 0 && bar.Left < itemsLeft && mot.Left == pinned,
+              "row " + r1.Left + ", items " + bar.Left + ", motion " + mot.Left + " / " + pinned);
         Check("  and the page grew no wider for it", page.DisplayRectangle.Width == widthBefore, widthBefore + " -> " + page.DisplayRectangle.Width);
-        Check("  the bar no wider than the window", bar.Right <= page.ClientSize.Width, bar.Right + " <= " + page.ClientSize.Width);
+        Check("  the Motion monitor no wider than the window", mot.Right <= page.ClientSize.Width, mot.Right + " <= " + page.ClientSize.Width);
         page.AutoScrollPosition = new Point(int.MaxValue / 2, 0);
         Pump(100);
-        Check("  at the far right too", bar.Left == pinned && page.DisplayRectangle.Width == widthBefore);
+        Check("  at the far right too", mot.Left == pinned && page.DisplayRectangle.Width == widthBefore);
         Snap(page, page.ClientSize.Width, page.ClientSize.Height, "/tmp/axis_items_scrolled.png");
         page.AutoScrollPosition = new Point(0, 0);
         Pump(100);
-        Check("back at the left", bar.Left == pinned && r1.Left == 10, bar.Left + " " + r1.Left);
+        Check("back at the left", mot.Left == pinned && bar.Left == itemsLeft && r1.Left == 10, mot.Left + " " + bar.Left + " " + r1.Left);
         bar.ItemsPick.Select(new[] { "Manual", "Torque", "Codes" });
         Pump(150);
         Snap(page, page.ClientSize.Width, r2.Bottom + 8, "/tmp/axis_items_page.png");
@@ -185,8 +189,11 @@ class AXI {
         var srows = settingRows();
         Check("his picks: each axis as its Axis Settings row", srows.Count == 2 && srows.All(r => r.MonitorMode), srows.Count.ToString());
         Check("  the position always, then what he ticked, then the module's", srows.Count == 2 &&
-              Keys(srows[0]) == "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,AxisAlarm,AxisWarning,ServoAlarm,Mot:OperationStatus,Mot:Busy",
+              Keys(srows[0]) == "Axis,Position,Current,Min,Max,Reference,Calibration,AxisAlarm,AxisWarning,ServoAlarm,Mot:OperationStatus,Mot:Busy",
               srows.Count > 0 ? Keys(srows[0]) : "");
+        Check("  the settings shown, not entered; no Calibrate command", srows.Count == 2 && !srows[0].Controls.OfType<NumericInputHMI>().Any() &&
+              srows[0].Controls.OfType<NumericDisplayHMI>().Count() == 5 && !srows[0].Controls.OfType<ButtonHMI>().Any(),
+              srows.Count > 0 ? srows[0].Controls.OfType<NumericDisplayHMI>().Count() + " displays" : "");
         Check("  the module's values on the axis on a module: U1\\G2609 (axis 3)", srows.Count == 2 &&
               ((IPlcBoundControl)srows[0].Controls["motOperationStatus"]).Address == @"U1\G2609" && srows[1].Controls["motBusy"] == null);
         var heads = monitor.Controls.Find("monitorHeadings", true).FirstOrDefault();
@@ -195,6 +202,15 @@ class AXI {
         Check("kept apart from the page's", ViewPreferences.PickOf(ViewPreferences.MonitorItems).SetEquals(new[] { "Torque", "Settings", "Codes" }) &&
               ViewPreferences.PickOf(ViewPreferences.AxisItems) == null && ViewPreferences.ListOf(ViewPreferences.MotionColumns).Count == 0);
         Snap(side, side.Width, side.Height, "/tmp/axis_items_monitor.png");
+        mbar.ItemsPick.Select(new[] { "RefActivation", "Travel" });
+        Pump(300);
+        srows = settingRows();
+        var refBox = srows.Count > 0 ? srows[0].Controls.OfType<CheckBoxHMI>().FirstOrDefault() : null;
+        Check("reference activation and travel on the monitor: shown only", refBox != null && refBox.DisplayOnly && refBox.Cursor == Cursors.Default &&
+              srows[0].Controls.OfType<NumericDisplayHMI>().Any(n => n.Address == "D100") && !srows[0].Controls.OfType<NumericInputHMI>().Any());
+        bool was = refBox != null && refBox.Checked;
+        if (refBox != null) typeof(CheckBox).GetMethod("OnClick", Any).Invoke(refBox, new object[] { EventArgs.Empty });
+        Check("  a click ticks nothing", refBox != null && refBox.Checked == was);
         mbar.ItemsPick.Select(new[] { "Manual" });
         mbar.MotionPick.Select(new string[0]);
         Pump(300);
