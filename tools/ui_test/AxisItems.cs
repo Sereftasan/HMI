@@ -28,6 +28,10 @@ using Kaban.UI.Screens;
 // - "The numerical motion monitor items on grey, not white - and not bold."
 // - "The page loads the selected members while the PLC axis items / Motion monitor members
 //   are being ticked, so the list gets unresponsive: load nothing while either is open."
+// 5 October (night):
+// - "The Motion monitor combo should stay still [with the page] until the scroll gets to its
+//   original X, then the difference added to it, so it gets aligned to the page's left side."
+// - "The simple motion values have a unit setting as well, but the pages show all of them in mm."
 class AXI {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -143,21 +147,34 @@ class AXI {
         Check("  its columns after the PLC's", Keys(r1).EndsWith("TravelPerRev,Mot:Busy,Mot:RealCurrentValue"), Keys(r1));
 
         Console.WriteLine("--- in sight while the page scrolls sideways ---");
-        int pinned = mot.PinnedX, itemsLeft = bar.Left, widthBefore = page.DisplayRectangle.Width;
+        int home = mot.HomeX, stick = mot.StickX, itemsLeft = bar.Left, widthBefore = page.DisplayRectangle.Width;
+        Check("the Motion monitor right of PLC axis items, sticking where the page's content starts", home == mot.Left && home >= bar.Right &&
+              stick == bar.Left && stick == 10, home + " / " + stick + " / items " + bar.Left + "-" + bar.Right);
         Check("the page is wider than its window", r1.Width > page.ClientSize.Width, r1.Width + " > " + page.ClientSize.Width);
-        page.AutoScrollPosition = new Point(500, 0);
+        page.AutoScrollPosition = new Point(100, 0);
         Pump(100);
-        Check("scrolled: the rows and PLC axis items moved, the Motion monitor did not", r1.Left < 0 && bar.Left < itemsLeft && mot.Left == pinned,
-              "row " + r1.Left + ", items " + bar.Left + ", motion " + mot.Left + " / " + pinned);
+        Check("scrolled less than its place: it moves with the page", r1.Left == 10 - 100 && mot.Left == home - 100,
+              "row " + r1.Left + ", motion " + mot.Left + " (home " + home + ")");
+        page.AutoScrollPosition = new Point(home - stick, 0);
+        Pump(100);
+        Check("  to the page's left side", mot.Left == stick, mot.Left.ToString());
+        page.AutoScrollPosition = new Point(home - stick + 150, 0);
+        Pump(100);
+        Check("scrolled further: it stays at the left side (its place plus the scroll beyond it), the rows and PLC axis items go on",
+              mot.Left == stick && -page.AutoScrollPosition.X > home - stick && r1.Left == 10 + page.AutoScrollPosition.X && bar.Left < itemsLeft,
+              "scroll " + (-page.AutoScrollPosition.X) + ", row " + r1.Left + ", items " + bar.Left + ", motion " + mot.Left);
         Check("  and the page grew no wider for it", page.DisplayRectangle.Width == widthBefore, widthBefore + " -> " + page.DisplayRectangle.Width);
         Check("  the Motion monitor no wider than the window", mot.Right <= page.ClientSize.Width, mot.Right + " <= " + page.ClientSize.Width);
         page.AutoScrollPosition = new Point(int.MaxValue / 2, 0);
         Pump(100);
-        Check("  at the far right too", mot.Left == pinned && page.DisplayRectangle.Width == widthBefore);
+        Check("  at the far right too", mot.Left == stick && page.DisplayRectangle.Width == widthBefore);
         Snap(page, page.ClientSize.Width, page.ClientSize.Height, "/tmp/axis_items_scrolled.png");
+        page.AutoScrollPosition = new Point(150, 0);
+        Pump(100);
+        Check("  back to a small scroll: with the page again", mot.Left == home - 150, mot.Left.ToString());
         page.AutoScrollPosition = new Point(0, 0);
         Pump(100);
-        Check("back at the left", mot.Left == pinned && bar.Left == itemsLeft && r1.Left == 10, mot.Left + " " + bar.Left + " " + r1.Left);
+        Check("back at the left", mot.Left == home && bar.Left == itemsLeft && r1.Left == 10, mot.Left + " " + bar.Left + " " + r1.Left);
         Func<int> contentRight = () => page.Controls.Cast<Control>().Where(c => c.Visible).Max(c => c.Right - page.AutoScrollPosition.X);
         int lastCol = r1.Columns.Values.Max(c => c.X + c.Y);   // (left, width)
         Check("the page scrolls as far as its columns, no further", page.DisplayRectangle.Width <= contentRight() + page.AutoScrollMargin.Width + 2 &&
@@ -237,8 +254,55 @@ class AXI {
         uc.AutoScrollPosition = new Point(600, 0);
         Pump(200);
         Check("scrolled sideways it stays scrolled (the Motion monitor kept in sight without laying the page out)",
-              -uc.AutoScrollPosition.X > 0 && umot != null && umot.Left == umot.PinnedX, (-uc.AutoScrollPosition.X) + " " + (umot == null ? "" : umot.Left + "/" + umot.PinnedX));
+              -uc.AutoScrollPosition.X > 0 && umot != null && umot.Left == umot.PlaceX && umot.Left < umot.HomeX,
+              (-uc.AutoScrollPosition.X) + " " + (umot == null ? "" : umot.Left + "/" + umot.PlaceX));
         form.Controls.Remove(uc);
+
+        Console.WriteLine("--- the module's values in the row's unit ---");
+        Func<string, SimpleMotion.Item> itemOf = k => SimpleMotion.Find(k);
+        int raw = 1234567;                          // 123.4567 in the module's mm (0.1 um)
+        Check("a length row: mm as the HMI's length unit is mm",
+              SimpleMotion.Format(itemOf("RealCurrentValue"), raw & 0xFFFF, raw >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length) == "123.46 mm");
+        Check("an angle row, the module set to mm (its figures the degrees): degrees",
+              SimpleMotion.Format(itemOf("RealCurrentValue"), raw & 0xFFFF, raw >> 16, 0, 1, 3, SimpleMotion.RowUnit.Angle) == "123.457 \u00B0",
+              SimpleMotion.Format(itemOf("RealCurrentValue"), raw & 0xFFFF, raw >> 16, 0, 1, 3, SimpleMotion.RowUnit.Angle));
+        Check("  set to degree: degrees (0.00001 each)",
+              SimpleMotion.Format(itemOf("SoftLimitUpper"), 36000000 & 0xFFFF, 36000000 >> 16, 2, 1, 3, SimpleMotion.RowUnit.Angle) == "360.000 \u00B0");
+        Check("  a speed: degrees a minute", SimpleMotion.Format(itemOf("CurrentSpeed"), 150000 & 0xFFFF, 150000 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Angle) == "1500.00 \u00B0/min");
+        Check("  pulses stay pulses", SimpleMotion.Format(itemOf("RealCurrentValue"), 1500, 0, 3, 1, 2, SimpleMotion.RowUnit.Angle) == "1500 pulse");
+        UnitManager.SetActive(UnitType.Length, "inch");
+        Check("a length row with inch chosen: 25.4 mm is 1.0000 inch", SimpleMotion.Format(itemOf("RealCurrentValue"), 254000 & 0xFFFF, 254000 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length) == "1.0000 inch",
+              SimpleMotion.Format(itemOf("RealCurrentValue"), 254000 & 0xFFFF, 254000 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length));
+        Check("  a speed: inch a minute", SimpleMotion.Format(itemOf("CurrentSpeed"), 254000 & 0xFFFF, 254000 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length) == "100.0000 inch/min",
+              SimpleMotion.Format(itemOf("CurrentSpeed"), 254000 & 0xFFFF, 254000 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length));
+        Check("  travel per rotation to its last count", SimpleMotion.Format(itemOf("TravelPerRevolution"), 1399880 & 0xFFFF, 1399880 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length) == "5.511339 inch",
+              SimpleMotion.Format(itemOf("TravelPerRevolution"), 1399880 & 0xFFFF, 1399880 >> 16, 0, 1, 2, SimpleMotion.RowUnit.Length));
+        UnitManager.SetActive(UnitType.Length, "mm");
+        var lenRow = Full("Robot X", 34, "W0", 1, 1);
+        var angRow = Full("Milling 1 Angle", 34 + AxisSettingHMI.RowHeight, "W20", 2, 1);
+        angRow.Suffix = "\u00B0";
+        angRow.DecimalPlaces = 3;
+        var unitPage = new Panel { Bounds = new Rectangle(0, 0, 1000, 260), AutoScroll = true };
+        form.Controls.Add(unitPage);
+        ViewPreferences.SetMotionColumnKeys(new[] { "RealCurrentValue", "SoftLimitUpper", "CurrentSpeed" });
+        unitPage.Controls.Add(lenRow); unitPage.Controls.Add(angRow);
+        Pump(250);
+        Func<AxisSettingHMI, string, MotionValueHMI> cell = (r, k) => r.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == k);
+        Check("on the page: the length row's values as lengths, the angle row's as angles",
+              cell(lenRow, "RealCurrentValue") != null && cell(lenRow, "RealCurrentValue").RowUnit == SimpleMotion.RowUnit.Length &&
+              cell(angRow, "SoftLimitUpper") != null && cell(angRow, "SoftLimitUpper").RowUnit == SimpleMotion.RowUnit.Angle);
+        Func<string, int> words = a => a.EndsWith("\\G2450") ? (raw & 0xFFFF) : a.EndsWith("\\G2451") ? (raw >> 16) : 0;   // the module set to mm
+        foreach (var v in lenRow.Controls.OfType<MotionValueHMI>().Concat(angRow.Controls.OfType<MotionValueHMI>())) v.UpdateState(words, c => true);
+        Check("  the module set to mm: 123.46 mm, and the angle 123.457 degrees", cell(lenRow, "RealCurrentValue").ShownText == "123.46 mm" &&
+              cell(angRow, "RealCurrentValue").ShownText == "123.457 \u00B0", cell(lenRow, "RealCurrentValue").ShownText + " / " + cell(angRow, "RealCurrentValue").ShownText);
+        UnitManager.SetActive(UnitType.Length, "inch");
+        Pump(50);
+        Check("  inch chosen: the length row's in inch at once, the angle's as it was", cell(lenRow, "RealCurrentValue").ShownText == "4.8605 inch" &&
+              cell(angRow, "RealCurrentValue").ShownText == "123.457 \u00B0", cell(lenRow, "RealCurrentValue").ShownText);
+        UnitManager.SetActive(UnitType.Length, "mm");
+        Check("  back to mm", cell(lenRow, "RealCurrentValue").ShownText == "123.46 mm");
+        form.Controls.Remove(unitPage);
+        ViewPreferences.SetMotionColumnKeys(new string[0]);
 
         Console.WriteLine("--- the Axis Monitor (servo monitor) ---");
         AlarmHelpLinks.EnsureDiscovered();

@@ -18,6 +18,8 @@ namespace Kaban.UI.Controls
     public class MotionValueHMI : Control, IPlcExtraAddresses, UiStyle.IDisplayOnly
     {
         private readonly SimpleMotion.Item _item;
+        private readonly SimpleMotion.RowUnit _rowUnit;
+        private int _low, _high, _unitSetting;        // the last words read (shown again in another unit)
         private readonly int _module, _axis, _decimals;
         private readonly string _first, _unit;
         private string _text = "";
@@ -28,9 +30,17 @@ namespace Kaban.UI.Controls
         public static readonly Color DisplayBack = Color.FromArgb(234, 236, 239);
 
         public MotionValueHMI(int plcNumber, SimpleMotion.Item item, int module, int axis, int decimals)
+            : this(plcNumber, item, module, axis, decimals, SimpleMotion.RowUnit.Module) { }
+
+        /// <param name="rowUnit">
+        /// How the row shows its position: a length row's positions and speeds in the
+        /// HMI's length unit (they follow Users and Preferences), an angle row's in degrees.
+        /// </param>
+        public MotionValueHMI(int plcNumber, SimpleMotion.Item item, int module, int axis, int decimals, SimpleMotion.RowUnit rowUnit)
         {
             PlcNumber = plcNumber;
             _item = item;
+            _rowUnit = rowUnit;
             _module = module;
             _axis = axis;
             _decimals = Math.Max(0, decimals);
@@ -41,6 +51,23 @@ namespace Kaban.UI.Controls
             Font = UiStyle.Body;
             Cursor = Cursors.Default;
             RefreshTip();
+            if (rowUnit == SimpleMotion.RowUnit.Length && SimpleMotion.NeedsUnit(item))
+                UnitManager.UnitChanged += OnUnitChanged;
+        }
+
+        /// <summary>Another length unit (a sign-in, Users and Preferences): the last reading in it.</summary>
+        private void OnUnitChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !_known) return;
+            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnUnitChanged), sender, e); } catch { } return; }
+            _text = SimpleMotion.Format(_item, _low, _high, _unitSetting, _axis, _decimals, _rowUnit);
+            if (IsHandleCreated) Invalidate();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) UnitManager.UnitChanged -= OnUnitChanged;
+            base.Dispose(disposing);
         }
 
         public int PlcNumber { get; private set; }
@@ -50,6 +77,8 @@ namespace Kaban.UI.Controls
         public IEnumerable<string> ExtraAddresses { get { return _unit != null ? new[] { _unit } : new string[0]; } }
 
         public SimpleMotion.Item Item { get { return _item; } }
+        /// <summary>How the row shows its positions (tests).</summary>
+        public SimpleMotion.RowUnit RowUnit { get { return _rowUnit; } }
         /// <summary>What it shows ("123.46 mm", "ON") - for the tests.</summary>
         public string ShownText { get { return _text; } }
         public bool IsOn { get { return _on; } }
@@ -59,7 +88,8 @@ namespace Kaban.UI.Controls
             int low = lookup(_first);
             int high = _item.Double ? lookup(SimpleMotion.Device(_module, SimpleMotion.AddressOf(_item, _axis) + 1)) : 0;
             int unit = _unit != null ? lookup(_unit) : 0;
-            string text = SimpleMotion.Format(_item, low, high, unit, _axis, _decimals);
+            _low = low; _high = high; _unitSetting = unit;
+            string text = SimpleMotion.Format(_item, low, high, unit, _axis, _decimals, _rowUnit);
             bool on = _item.Kind == SimpleMotion.Kind.Flag && SimpleMotion.FlagOn(_item, low, _axis);
             if (text == _text && on == _on && _known) return;
             _text = text;

@@ -569,15 +569,19 @@ cannot change are grey. Just under the list the chosen one's <b>account</b>; on 
           axis on it (<code>MotionAxisIndex</code>: 1&ndash;8) &ndash; with <code>PlcNumber</code> and <code>HMIAxisIndex</code> (the number the manual pages'
           axis units use), the row's <i>Device</i> properties, set in the designer. Then the page has <i>Motion monitor</i> beside <i>PLC axis items</i>:
           tick what to see (<i>None</i>, the last line, for none), and each one is a column at the end of every row, read straight from the
-          module's buffer memory (<code>U1\G2406</code> &hellip;). The Motion monitor list <b>stays in sight</b> while the page is scrolled sideways,
-          so the module's values can be ticked where their columns are (<i>PLC axis items</i> scrolls away with the columns it hides).
+          module's buffer memory (<code>U1\G2406</code> &hellip;). The Motion monitor list <b>stays in sight</b> while the page is scrolled sideways:
+          it scrolls with the page until it reaches the page's left side, and stays there while the page scrolls on - so the module's values can
+          be ticked where their columns are (<i>PLC axis items</i> scrolls away with the columns it hides).
           <ul>
            <li>Alarms and status: axis error and axis warning (as codes, their help behind them), servo alarm, the axis's operation status in words
                (<i>Home return (7)</i>).</li>
            <li>Flags, as lamps: home request, home complete, error and warning detected, positioning complete, command in-position, BUSY,
                servo READY, servo ON, in-position, torque limit, absolute position lost, servo warning, the limit signals, the proximity dog.</li>
-           <li>Positions and speeds in the axis's unit (the module's unit setting: mm, inch, degree or pulse): feed and real current value,
-               deviation counter, target, feedrate, current speed, motor speed.</li>
+           <li>Positions and speeds as the row's own position: on a length row in the length unit of
+               <a href="#unitset">Users and Preferences</a> (mm, cm, inch ... - they change with it), on an angle row in degrees. They are read
+               in the module's unit setting (mm, inch or degree; an angle axis set to mm in the module has its degrees as the figures);
+               an axis set to pulses is shown in pulses: feed and real current value, deviation counter, target, feedrate, current speed, motor speed,
+               and the parameters below.</li>
            <li>Loads: motor current, torque limit, regenerative, effective and peak load.</li>
            <li>The module's parameters as set (read only): unit, pulses and movement per rotation, backlash, the software stroke limits,
                speed limit, acceleration and deceleration time, home address and speed.</li>

@@ -870,7 +870,11 @@ namespace Kaban.UI.Controls
                     cell.Name = "mot" + item.Key;
                     continue;
                 }
-                var v = new MotionValueHMI(PlcNumber, item, MotionNumber, MotionAxisIndex, DecimalPlaces) { Name = "mot" + item.Key };
+                // positions and speeds as the row's position: degrees on an angle row,
+                // the HMI's length unit on a length row
+                var rowUnit = IsAngle ? SimpleMotion.RowUnit.Angle
+                            : PositionUnitType == UnitType.Length ? SimpleMotion.RowUnit.Length : SimpleMotion.RowUnit.Module;
+                var v = new MotionValueHMI(PlcNumber, item, MotionNumber, MotionAxisIndex, DecimalPlaces, rowUnit) { Name = "mot" + item.Key };
                 v.SetBounds(x, 6, w, RowHeight - 12);
                 Controls.Add(v);
                 x += w + Gap;
@@ -1171,15 +1175,17 @@ namespace Kaban.UI.Controls
                 items.SetBounds(Math.Max(0, left), top, UiScale.For(page, 460), UiScale.For(page, 36));
                 items.Width = items.NaturalWidth;
 
-                // The Motion monitor beside it, kept where it starts on screen while
-                // the page scrolls sideways (in the page's own, unscrolled terms).
+                // The Motion monitor beside it: scrolling with the page until it
+                // reaches the page's left side, then staying there (in the page's
+                // own, unscrolled terms: where it stands and where the content starts).
                 motion = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: false, motion: true)
                          { Name = MotionBarName, BackColor = page.BackColor };
                 page.Controls.Add(motion);
                 var scroll = page as ScrollableControl;
-                int x = Math.Max(0, items.Right - (scroll != null ? scroll.AutoScrollPosition.X : 0));
-                motion.SetBounds(x, top, UiScale.For(page, 640), UiScale.For(page, 36));
-                motion.Pin(page, x);
+                int offset = scroll != null ? scroll.AutoScrollPosition.X : 0;
+                int x = Math.Max(0, items.Right - offset);
+                motion.SetBounds(x + offset, top, UiScale.For(page, 640), UiScale.For(page, 36));
+                motion.Pin(page, x, Math.Max(0, items.Left - offset));
             }
             items.Visible = true;
             items.Offer(PageItems(), false);

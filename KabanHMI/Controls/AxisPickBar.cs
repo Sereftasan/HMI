@@ -22,9 +22,10 @@ namespace Kaban.UI.Controls
     /// user's own (View Preferences); the rows follow at once.
     ///
     /// On a page the two are two bars: PLC axis items scrolls away with the
-    /// columns it hides (they are at the left); the Motion monitor STAYS IN SIGHT
-    /// while the page is scrolled sideways (Pin) - its values are ticked where
-    /// their columns are, at the right end. On the Axis Monitor one bar has both.
+    /// columns it hides (they are at the left); the Motion monitor scrolls with
+    /// the page until it reaches the page's left side and STAYS THERE while the
+    /// page scrolls on (Pin) - its values are ticked where their columns are, at
+    /// the right end. On the Axis Monitor one bar has both.
     /// </summary>
     public class AxisPickBar : FlowLayoutPanel
     {
@@ -143,44 +144,62 @@ namespace Kaban.UI.Controls
         // ---- in sight while the page scrolls sideways --------------------------------
 
         private Control _page;
-        private int _pinX;
+        private int _homeX, _stickX;
         private bool _pinning;
 
         /// <summary>
-        /// Keeps the bar at <paramref name="clientX"/> of the page while the page
-        /// scrolls sideways (a scroll moves every child: the bar is put back), and
-        /// as wide as the page shows - so pinning it never stretches the page.
+        /// Keeps the bar in sight while the page scrolls sideways, as a heading
+        /// that sticks: it scrolls with the page from where it stands
+        /// (<paramref name="homeX"/>, in the page's unscrolled terms) until it
+        /// reaches the page's left side (<paramref name="stickX"/>, where the
+        /// page's content starts) and stays there while the page scrolls on -
+        /// at <paramref name="homeX"/> plus the scroll beyond that point. No
+        /// wider than the page shows from where it is, so it never stretches
+        /// the page.
         /// </summary>
-        public void Pin(Control page, int clientX)
+        public void Pin(Control page, int homeX, int stickX)
         {
             _page = page;
-            _pinX = clientX;
-            LocationChanged += (s, e) => KeepPinned();
-            page.Resize += (s, e) => FitWidth();
-            FitWidth();
+            _homeX = homeX;
+            _stickX = Math.Min(stickX, homeX);
+            // a scroll moves every child (the bar too): it is put where it belongs
+            LocationChanged += (s, e) => Place();
+            var scroll = page as ScrollableControl;
+            if (scroll != null) scroll.Scroll += (s, e) => Place();
+            page.Resize += (s, e) => Place();
+            Place();
         }
 
-        /// <summary>Where the bar is kept (tests).</summary>
-        public int PinnedX { get { return _pinX; } }
+        /// <summary>Where the bar stands with the page unscrolled, and where it sticks (tests).</summary>
+        public int HomeX { get { return _homeX; } }
+        public int StickX { get { return _stickX; } }
 
-        private void KeepPinned()
+        /// <summary>Where the bar belongs now, in the page's window: with the page until the left side, then there.</summary>
+        public int PlaceX
         {
-            if (_pinning || _page == null || Left == _pinX) return;
+            get
+            {
+                var scroll = _page as ScrollableControl;
+                int scrolled = scroll != null ? -scroll.AutoScrollPosition.X : 0;
+                return Math.Max(_stickX, _homeX - scrolled);
+            }
+        }
+
+        private void Place()
+        {
+            if (_pinning || _page == null) return;
+            int x = PlaceX;
+            int want = Math.Max(NaturalWidth, UiScale.For(_page, 200));
+            int room = _page.ClientSize.Width - x - UiScale.For(_page, 4);
+            int w = Math.Max(UiScale.For(_page, 200), Math.Min(want, room));
+            if (Left == x && Width == w) return;
             _pinning = true;
             // Without laying the page out again: a layout scrolls a page back to
             // the field that has the focus (seen in Mono), and the bar, inside the
             // window, changes nothing of the page's extent.
             _page.SuspendLayout();
-            try { Left = _pinX; }
+            try { SetBounds(x, Top, w, Height, BoundsSpecified.X | BoundsSpecified.Width); }
             finally { _page.ResumeLayout(false); _pinning = false; }
-        }
-
-        private void FitWidth()
-        {
-            if (_page == null) return;
-            int want = Math.Max(NaturalWidth, UiScale.For(_page, 200));
-            int room = _page.ClientSize.Width - _pinX - UiScale.For(_page, 4);
-            Width = Math.Max(UiScale.For(_page, 200), Math.Min(want, room));
         }
     }
 }

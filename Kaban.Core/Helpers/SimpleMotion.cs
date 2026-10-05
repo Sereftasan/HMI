@@ -277,11 +277,33 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
+        /// How a row shows the module's positions and speeds: as the module's unit
+        /// setting names them (Module); as a LENGTH, in the HMI's length unit
+        /// (Users and Preferences - mm, cm, inch ...), as the row's own position;
+        /// as an ANGLE, in degrees - a rotary axis is often set to mm in the module,
+        /// the figures being its degrees.
+        /// </summary>
+        public enum RowUnit { Module, Length, Angle }
+
+        /// <summary>
         /// An item's value as text, from its words and the axis's unit setting
         /// (for positions and speeds): "123.46 mm", "1A18", "Standby (0)", "ON".
         /// <paramref name="decimals"/>: a position's decimals (the row's own).
         /// </summary>
         public static string Format(Item item, int low, int high, int unit, int axis, int decimals = 2)
+        {
+            return Format(item, low, high, unit, axis, decimals, RowUnit.Module);
+        }
+
+        /// <summary>
+        /// As <see cref="Format(Item,int,int,int,int,int)"/>, positions and speeds
+        /// shown in the row's unit (<paramref name="row"/>): the module's figures
+        /// read in its unit setting (0.1 um per mm, 0.00001 inch / degree), then
+        /// named - and for a length converted - as the row's position is.
+        /// A module set to pulses, or to a unit the row cannot take (degrees on a
+        /// length row, inches on an angle row), is shown as the module says.
+        /// </summary>
+        public static string Format(Item item, int low, int high, int unit, int axis, int decimals, RowUnit row)
         {
             var nf = ViewPreferences.NumberFormat;
             long raw = Raw(item, low, high);
@@ -298,13 +320,30 @@ namespace Kaban.Core.Helpers
                         if (unit == 3) return raw.ToString(CultureInfo.InvariantCulture) + " pulse";
                         double v = raw / PositionScale(unit);
                         int d = item.Key == "Backlash" || item.Key == "TravelPerRevolution" ? Math.Max(decimals, unit == 0 ? 4 : 5) : decimals;
-                        return v.ToString("F" + d, nf) + " " + UnitName(unit);
+                        string name = UnitName(unit);
+                        if (row == RowUnit.Angle && unit != 1) name = UnitName(2);
+                        else if (row == RowUnit.Length && unit != 2)
+                        {
+                            v = UnitManager.ToDisplay(Enums.UnitType.Length, unit == 1 ? v * 25.4 : v);
+                            name = UnitManager.GetActiveSuffix(Enums.UnitType.Length);
+                            d += UnitManager.GetActiveExtraDecimals(Enums.UnitType.Length);
+                        }
+                        return v.ToString("F" + Math.Min(9, d), nf) + " " + name;
                     }
                 case Kind.Speed:
                     {
                         if (unit == 3) return raw.ToString(CultureInfo.InvariantCulture) + " pulse/s";
                         double v = raw / SpeedScale(unit);
-                        return v.ToString("F" + (unit == 0 ? 2 : 3), nf) + " " + SpeedUnit(unit);
+                        int d = unit == 0 ? 2 : 3;
+                        string name = SpeedUnit(unit);
+                        if (row == RowUnit.Angle && unit != 1) name = SpeedUnit(2);
+                        else if (row == RowUnit.Length && unit != 2)
+                        {
+                            v = UnitManager.ToDisplay(Enums.UnitType.Length, unit == 1 ? v * 25.4 : v);
+                            name = UnitManager.GetActiveSuffix(Enums.UnitType.Length) + "/min";
+                            d = 2 + UnitManager.GetActiveExtraDecimals(Enums.UnitType.Length);
+                        }
+                        return v.ToString("F" + Math.Min(9, d), nf) + " " + name;
                     }
                 case Kind.Pulses:
                     return raw.ToString(CultureInfo.InvariantCulture) + " pulse";

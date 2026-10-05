@@ -4496,3 +4496,12 @@ and `UnitLookAndErrors` extended.
 - Manual: 8 (units on Users and Preferences), 9 (no Unit Settings), Users and Preferences (layout, Everyone, the preview, units),
   PLC axis items (applied on close, the page's width), the Motion monitor's values.
 - Tests: `UsersAndPreferences.cs`, `AxisItems.cs`.
+
+## 2026-10-05 - The Motion monitor sticks at the page's left side; the module's values in the row's unit
+
+- `AxisPickBar.Pin(page, homeX, stickX)`: scrolls with the page until the left side, then stays; `HomeX`, `StickX`, `PlaceX`.
+  `AxisSettingHMI.EnsureMotionBar` passes where the bar stands and where the content starts.
+- `SimpleMotion.RowUnit` (Module, Length, Angle) and `Format(..., RowUnit)`: angle rows in degrees, length rows in the HMI's
+  length unit. `MotionValueHMI(..., RowUnit)`, follows `UnitManager.UnitChanged`; `AxisSettingHMI` passes the row's unit.
+- Manual: the Motion monitor's place while scrolling; positions and speeds in the row's unit.
+- Tests: `AxisItems.cs`.
