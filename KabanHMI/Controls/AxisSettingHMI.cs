@@ -88,14 +88,21 @@ namespace Kaban.UI.Controls
         public DataTypeEnum PositionDataType { get; set; }
 
         /// <summary>
-        /// The axis's REAL (encoder) position, when the PLC keeps it apart from the
-        /// position above. Not shown as a field: the position's tooltip starts with
-        /// it and with the difference, in the axis's unit to its last count (4
-        /// decimals for a divisor of 10000) - at the row's 2 decimals a difference
-        /// of a few counts would read 0.00.
+        /// The LOAD-SIDE ENCODER's value (a linear scale on the axis), when the PLC
+        /// keeps it apart from the position above. Not shown as a field: the
+        /// position's tooltip starts with it and with the difference, in the axis's
+        /// unit to its last count (4 decimals for a divisor of 10000) - at the row's
+        /// 2 decimals a difference of a few counts would read 0.00. (It was
+        /// RealPositionAddress: the servo motor's own encoder position is the
+        /// simple motion module's "Real current value", Md.101, on the Motion monitor.)
         /// </summary>
-        [Category(" Movement"), DefaultValue(""), Description("Real (encoder) position. Shown in the position's tooltip with its difference, in the axis's unit to its last count.")]
-        public string RealPositionAddress { get; set; }
+        [Category(" Movement"), DefaultValue(""), Description("Load-side encoder value. Shown in the position's tooltip with its difference, in the axis's unit to its last count.")]
+        public string LoadEncoderValueAddress { get; set; }
+
+        /// <summary>Kept so older designer files compile; forwards to LoadEncoderValueAddress.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public string RealPositionAddress { get { return LoadEncoderValueAddress; } set { LoadEncoderValueAddress = value; } }
 
         // Position, min, max, reference and calibration are all the SAME physical
         // quantity on the same axis, so they share one divisor, one digit count
@@ -192,8 +199,13 @@ namespace Kaban.UI.Controls
         /// same number takes everything else from this row - addresses, scaling,
         /// name, error bit, reference sensor - so none of it is entered twice.
         /// </summary>
-        [Category(" Axis"), DefaultValue(0), Description("Axis number. An AxisUnitHMI with this number mirrors this row.")]
-        public int AxisNumber { get; set; }
+        [Category(" Device"), DefaultValue(0), Description("The axis's index on the HMI. An AxisUnitHMI with this number (its AxisNumber) mirrors this row.")]
+        public int HMIAxisIndex { get; set; }
+
+        /// <summary>Kept so older designer files compile; forwards to HMIAxisIndex.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public int AxisNumber { get { return HMIAxisIndex; } set { HMIAxisIndex = value; } }
 
         // ==================================================================
         // THE SIMPLE MOTION MODULE (read straight from its buffer memory)
@@ -202,24 +214,33 @@ namespace Kaban.UI.Controls
         /// <summary>
         /// The simple motion module this axis is on, numbered as GX Works3 numbers
         /// it - the n of Un\G (U1 for the first module). 0: none. With
-        /// ModuleAxisIndex, the Axis Settings page can show the module's own values
+        /// MotionAxisIndex, the Axis Settings page can show the module's own values
         /// of this axis (codes, status, flags, positions, speeds, its parameters)
-        /// - picked at the top of the page, read straight from the module.
+        /// - picked on the page's Motion monitor, read straight from the module.
         /// </summary>
-        [Category(" Simple motion"), DefaultValue(0),
+        [Category(" Device"), DefaultValue(0),
          Description("The simple motion module's number as GX Works3 numbers it (the n of Un\\G; 1 for U1). 0: none.")]
-        public int MotionModuleNumber { get; set; }
+        public int MotionNumber { get; set; }
 
         /// <summary>This axis's number on its simple motion module: 1 - 8 (FX5-80SSC-S), 1 - 4 (FX5-40SSC-S). 0: none.</summary>
-        [Category(" Simple motion"), DefaultValue(0),
+        [Category(" Device"), DefaultValue(0),
          Description("This axis's number on the simple motion module: 1 - 8. 0: none.")]
-        public int ModuleAxisIndex { get; set; }
+        public int MotionAxisIndex { get; set; }
+
+        /// <summary>Kept so the designer files of 5 October compile; forward to MotionNumber / MotionAxisIndex.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public int MotionModuleNumber { get { return MotionNumber; } set { MotionNumber = value; } }
+
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public int ModuleAxisIndex { get { return MotionAxisIndex; } set { MotionAxisIndex = value; } }
 
         /// <summary>True when the module and the axis on it are both set.</summary>
         [Browsable(false)]
         public bool HasMotion
         {
-            get { return MotionModuleNumber > 0 && ModuleAxisIndex >= 1 && ModuleAxisIndex <= SimpleMotion.MaxAxes; }
+            get { return MotionNumber > 0 && MotionAxisIndex >= 1 && MotionAxisIndex <= SimpleMotion.MaxAxes; }
         }
 
         /// <summary>The axis's reference (home) sensor.</summary>
@@ -401,7 +422,7 @@ namespace Kaban.UI.Controls
             ErrorAddress = "";
             ReferenceSensorAddress = "";
             AxisAlarmAddress = AxisWarningAddress = ServoAlarmAddress = "";
-            RealPositionAddress = TravelPerRevolutionAddress = BacklashAddress = "";
+            LoadEncoderValueAddress = TravelPerRevolutionAddress = BacklashAddress = "";
             PositionDataType = DataTypeEnum.Bin_32;
             SettingDataType = DataTypeEnum.Bin_32;
             Divisor = 10000;
@@ -437,6 +458,15 @@ namespace Kaban.UI.Controls
         {
             Controls.Clear();
             _columns.Clear();
+            _back = _forward = _calibrate = null;
+            _position = null;
+            _current = _zdist = null;
+            _min = _max = _reference = _calibration = _travel = _backlash = null;
+            _goRef = null;
+            _axisAlarm = _axisWarning = _servoAlarm = null;
+            var items = PickedItems();
+            _itemsBuilt = items == null ? "*" : string.Join(",", ItemKeys.Where(items.Contains));
+            Func<string, bool> on = k => items == null || items.Contains(k);
             int x = 0;
 
             // NO COLON. These read as a column of row headings, not as captions in a
@@ -453,43 +483,55 @@ namespace Kaban.UI.Controls
             Column("Axis", x, WAxis);
             x += WAxis + Gap;
 
+            // THE PLC AXIS ITEMS (picked at the top of the page): each group of
+            // columns is laid out only when it is ticked - nothing ticked is all.
+            // Hiding is the screen's only: the machine, the manual pages' axis
+            // units and the HMI's own alarms keep every address.
+            bool manual = on("Manual");
+            // On the Axis Monitor the position is always there (it is what the
+            // monitor is for); Manual movement adds the jog buttons around it.
+            bool position = manual || MonitorMode;
             x += GroupGap;
-            _back = AddJog(CommandBackAddress, ButtonGlyphs.Left, ref x);
+            if (manual) _back = AddJog(CommandBackAddress, ButtonGlyphs.Left, ref x);
 
-            if (!string.IsNullOrEmpty(PositionAddress))
+            if (position)
             {
-                _position = new NumericDisplayHMI
+                if (!string.IsNullOrEmpty(PositionAddress))
                 {
-                    PlcNumber = PlcNumber,
-                    Address = PositionAddress,
-                    DataType = PositionDataType,
-                    Divisor = Divisor,
-                    DecimalPlaces = DecimalPlaces,
-                    Digits = Digits,
-                    Suffix = Suffix,
-                    UnitType = PositionUnitType,
-                    // The real (encoder) position, in the tooltip with the difference.
-                    ComparedAddress = (RealPositionAddress ?? "").Trim(),
-                    // The position is the number the operator watches while
-                    // jogging, so it is the one thing on the row drawn large.
-                    Font = new Font("Segoe UI", 12F, FontStyle.Bold)
-                };
-                _position.SetBounds(x, 4, WPosition, RowHeight - 8);
-                Controls.Add(_position);
+                    _position = new NumericDisplayHMI
+                    {
+                        PlcNumber = PlcNumber,
+                        Address = PositionAddress,
+                        DataType = PositionDataType,
+                        Divisor = Divisor,
+                        DecimalPlaces = DecimalPlaces,
+                        Digits = Digits,
+                        Suffix = Suffix,
+                        UnitType = PositionUnitType,
+                        // The load-side encoder's value, in the tooltip with the difference.
+                        ComparedAddress = (LoadEncoderValueAddress ?? "").Trim(),
+                        ComparedCaptionKey = "Tip_LoadEncoder",
+                        // The position is the number the operator watches while
+                        // jogging, so it is the one thing on the row drawn large.
+                        Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                    };
+                    _position.SetBounds(x, 4, WPosition, RowHeight - 8);
+                    Controls.Add(_position);
+                }
+                Column("Position", x, WPosition);
+                x += WPosition + Gap;
             }
-            Column("Position", x, WPosition);
-            x += WPosition + Gap;
 
             // THE CURRENT BESIDE THE POSITION: the two numbers that change while
             // the axis moves, read together. Its column exists when any axis on
             // the page has a current - an axis without one leaves the space.
-            if (PageHas(a => a.CurrentAddress))
+            if (on("Torque") && PageHas(a => a.CurrentAddress))
             {
                 Column("Current", x, WMeter);
                 _current = AddMeter(CurrentAddress, CurrentDivisor, CurrentFullScale, ref x, current: true);
             }
 
-            _forward = AddJog(CommandForwardAddress, ButtonGlyphs.Right, ref x);
+            if (manual) _forward = AddJog(CommandForwardAddress, ButtonGlyphs.Right, ref x);
             x += GroupGap;
 
             // MIN AND MAX BOUND EACH OTHER: the minimum may not be typed above the
@@ -498,36 +540,39 @@ namespace Kaban.UI.Controls
             // EVERY COLUMN BELOW IS THE PAGE'S: there when any axis row on the
             // page has it (a row without it leaves the space, so the columns line
             // up), and not at all when none has - no empty column with a heading.
-            if (PageHas(a => a.MinLimitAddress))
+            if (on("Settings"))
             {
-                Column("Min", x, WSetting);
-                _min = AddSetting(MinLimitAddress, ref x, WSetting, upperTag: MaxLimitAddress);
-            }
-            if (PageHas(a => a.MaxLimitAddress))
-            {
-                Column("Max", x, WSetting);
-                _max = AddSetting(MaxLimitAddress, ref x, WSetting, lowerTag: MinLimitAddress);
-            }
-            // Reference and calibration are bounded by the axis's own travel.
-            if (PageHas(a => a.ReferenceAddress))
-            {
-                Column("Reference", x, WSetting);
-                _reference = AddSetting(ReferenceAddress, ref x, WSetting, clampToTravel: true);
-            }
-            if (PageHas(a => a.CalibrationAddress))
-            {
-                Column("Calibration", x, WSetting);
-                _calibration = AddSetting(CalibrationAddress, ref x, WSetting, clampToTravel: true);
-            }
+                if (PageHas(a => a.MinLimitAddress))
+                {
+                    Column("Min", x, WSetting);
+                    _min = AddSetting(MinLimitAddress, ref x, WSetting, upperTag: MaxLimitAddress);
+                }
+                if (PageHas(a => a.MaxLimitAddress))
+                {
+                    Column("Max", x, WSetting);
+                    _max = AddSetting(MaxLimitAddress, ref x, WSetting, lowerTag: MinLimitAddress);
+                }
+                // Reference and calibration are bounded by the axis's own travel.
+                if (PageHas(a => a.ReferenceAddress))
+                {
+                    Column("Reference", x, WSetting);
+                    _reference = AddSetting(ReferenceAddress, ref x, WSetting, clampToTravel: true);
+                }
+                if (PageHas(a => a.CalibrationAddress))
+                {
+                    Column("Calibration", x, WSetting);
+                    _calibration = AddSetting(CalibrationAddress, ref x, WSetting, clampToTravel: true);
+                }
 
-            // Calibrate rewrites the axis's zero, so it is SET and draws the
-            // latched mark - it must not look like the jog buttons beside it.
-            if (PageHas(a => a.CalibrateAddress))
-            {
-                Column("Cal", x, WCommand);
-                _calibrate = AddCommand(CalibrateAddress, BitActionType.SET, ref x);
+                // Calibrate rewrites the axis's zero, so it is SET and draws the
+                // latched mark - it must not look like the jog buttons beside it.
+                if (PageHas(a => a.CalibrateAddress))
+                {
+                    Column("Cal", x, WCommand);
+                    _calibrate = AddCommand(CalibrateAddress, BitActionType.SET, ref x);
+                }
             }
-            if (PageHas(a => a.GoToReferenceAddress))
+            if (on("RefActivation") && PageHas(a => a.GoToReferenceAddress))
             {
                 x += 8;                  // air between the button and the checkbox
                 Column("Ref", x, WCheck);
@@ -536,7 +581,7 @@ namespace Kaban.UI.Controls
 
             // THE Z DISTANCE BESIDE THE REFERENCE: it says how good the reference
             // is - how far past the Z pulse the axis stopped.
-            if (PageHas(a => a.ZDistanceAddress))
+            if (on("ZDistance") && PageHas(a => a.ZDistanceAddress))
             {
                 Column("ZDistance", x, WMeter);
                 _zdist = AddMeter(ZDistanceAddress, ZDistanceDivisor, ZDistanceFullScale, ref x, current: false);
@@ -547,25 +592,29 @@ namespace Kaban.UI.Controls
             // zero - the axis alarm and warning in the motion module's manual
             // (printed "1904H", as that manual does), the servo alarm in the
             // drive's ("16.3", as the amplifier's display does).
-            if (PageHas(a => a.AxisAlarmAddress))
+            if (on("Codes"))
             {
-                Column("AxisAlarm", x, WCode);
-                _axisAlarm = AddCode(AxisAlarmAddress, AxisCodeKind.AxisError, ref x);
-            }
-            if (PageHas(a => a.AxisWarningAddress))
-            {
-                Column("AxisWarning", x, WCode);
-                _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
-                                       HexCodeHMI.CodeSeverity.Warning);
-            }
-            if (PageHas(a => a.ServoAlarmAddress))
-            {
-                Column("ServoAlarm", x, WCode);
-                _servoAlarm = AddCode(ServoAlarmAddress, AxisCodeKind.ServoAlarm, ref x);
+                if (PageHas(a => a.AxisAlarmAddress))
+                {
+                    Column("AxisAlarm", x, WCode);
+                    _axisAlarm = AddCode(AxisAlarmAddress, AxisCodeKind.AxisError, ref x);
+                }
+                if (PageHas(a => a.AxisWarningAddress))
+                {
+                    Column("AxisWarning", x, WCode);
+                    _axisWarning = AddCode(AxisWarningAddress, AxisCodeKind.AxisWarning, ref x,
+                                           HexCodeHMI.CodeSeverity.Warning);
+                }
+                if (PageHas(a => a.ServoAlarmAddress))
+                {
+                    Column("ServoAlarm", x, WCode);
+                    _servoAlarm = AddCode(ServoAlarmAddress, AxisCodeKind.ServoAlarm, ref x);
+                }
             }
 
             // Rarely set from the HMI: last, and only on a page where some axis has them.
-            bool travel = PageHas(a => a.TravelPerRevolutionAddress), backlash = PageHas(a => a.BacklashAddress);
+            bool travel = on("Travel") && PageHas(a => a.TravelPerRevolutionAddress),
+                 backlash = on("Backlash") && PageHas(a => a.BacklashAddress);
             if (travel || backlash) x += GroupGap;
             if (travel)
             {
@@ -582,17 +631,148 @@ namespace Kaban.UI.Controls
 
             AddMotionColumns(ref x);
 
-            Width = Math.Max(Width, x);
+            Width = MonitorMode ? x : Math.Max(Width, x);
             AlignHeaders();
+        }
+
+        // ---- the PLC axis items ----------------------------------------------------
+
+        /// <summary>
+        /// The row's groups of columns, as the page's PLC axis items pick them
+        /// (the order of the row): Manual movement (the jogs and the position),
+        /// Torque monitor, Axis setting parameters (min, max, reference,
+        /// calibration, calibrate), Reference activation, the Z distance, Alarm
+        /// codes, Travel per revolution, Backlash.
+        /// </summary>
+        public static readonly string[] ItemKeys = { "Manual", "Torque", "Settings", "RefActivation", "ZDistance", "Codes", "Travel", "Backlash" };
+
+        /// <summary>An item's name in the pick list.</summary>
+        public static string ItemText(string key)
+        {
+            switch (key)
+            {
+                case "Manual": return LanguageManager.GetString("AxIt_Manual", "Manual movement");
+                case "Torque": return LanguageManager.GetString("AxIt_Torque", "Torque monitor");
+                case "Settings": return LanguageManager.GetString("AxIt_Settings", "Axis setting parameters");
+                case "RefActivation": return LanguageManager.GetString("AxIt_RefActivation", "Reference activation");
+                case "ZDistance": return LanguageManager.GetString("AxIt_ZDistance", "Reference sensor - encoder Z pulse distance");
+                case "Codes": return LanguageManager.GetString("AxIt_Codes", "Alarm codes");
+                case "Travel": return LanguageManager.GetString("AxIt_Travel", "Travel per revolution");
+                case "Backlash": return LanguageManager.GetString("AxIt_Backlash", "Backlash");
+                default: return key;
+            }
+        }
+
+        /// <summary>
+        /// On the AXIS MONITOR (the side page) rather than an Axis Settings page:
+        /// its own picks (an Admin's), no headings or bar of the page's own - the
+        /// monitor draws them - and the position always.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool MonitorMode { get; set; }
+
+        private string _itemsBuilt = "*";
+
+        /// <summary>The items in force here: null for all.</summary>
+        private System.Collections.Generic.ISet<string> PickedItems()
+        {
+            if (MonitorMode)
+            {
+                // The monitor's choices are an Admin's: everyone else sees it as it was.
+                if (!SecurityManager.HasAccess(SecurityLevel.Admin))
+                    return new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Torque" };
+                return ViewPreferences.PickOf(ViewPreferences.MonitorItems);
+            }
+            return ViewPreferences.PickOf(ViewPreferences.AxisItems);
+        }
+
+        /// <summary>The items some row of the page has (the pick list offers these).</summary>
+        internal System.Collections.Generic.List<string> PageItems()
+        {
+            var rows = new System.Collections.Generic.List<AxisSettingHMI> { this };
+            if (Parent != null) rows.AddRange(Parent.Controls.OfType<AxisSettingHMI>().Where(r => r != this));
+            return ItemsOf(rows, MonitorMode);
+        }
+
+        /// <summary>The items these rows have between them (on the monitor the position is always there, so Manual means the jogs).</summary>
+        public static System.Collections.Generic.List<string> ItemsOf(System.Collections.Generic.IEnumerable<AxisSettingHMI> rows, bool monitor = false)
+        {
+            var all = rows.ToList();
+            Func<Func<AxisSettingHMI, string>, bool> has = f => all.Any(r => !string.IsNullOrWhiteSpace(f(r)));
+            var list = new System.Collections.Generic.List<string>();
+            if (has(a => a.CommandBackAddress) || has(a => a.CommandForwardAddress) || (!monitor && has(a => a.PositionAddress))) list.Add("Manual");
+            if (has(a => a.CurrentAddress)) list.Add("Torque");
+            if (has(a => a.MinLimitAddress) || has(a => a.MaxLimitAddress) || has(a => a.ReferenceAddress) ||
+                has(a => a.CalibrationAddress) || has(a => a.CalibrateAddress)) list.Add("Settings");
+            if (has(a => a.GoToReferenceAddress)) list.Add("RefActivation");
+            if (has(a => a.ZDistanceAddress)) list.Add("ZDistance");
+            if (has(a => a.AxisAlarmAddress) || has(a => a.AxisWarningAddress) || has(a => a.ServoAlarmAddress)) list.Add("Codes");
+            if (has(a => a.TravelPerRevolutionAddress)) list.Add("Travel");
+            if (has(a => a.BacklashAddress)) list.Add("Backlash");
+            return list;
+        }
+
+        // ---- a copy of the row (the Axis Monitor) ------------------------------------
+
+        private static readonly string[] NotCopied = { "MonitorMode", "AxisName", "AxisNumber", "RealPositionAddress", "MotionModuleNumber", "ModuleAxisIndex" };
+
+        /// <summary>The row's settings (every property of its own), to make it again elsewhere.</summary>
+        public System.Collections.Generic.Dictionary<string, object> Snapshot()
+        {
+            var d = new System.Collections.Generic.Dictionary<string, object>();
+            foreach (var p in typeof(AxisSettingHMI).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance |
+                                                                   System.Reflection.BindingFlags.DeclaredOnly))
+            {
+                if (!p.CanRead || !p.CanWrite || p.GetIndexParameters().Length > 0 || NotCopied.Contains(p.Name)) continue;
+                try { d[p.Name] = p.GetValue(this, null); } catch { }
+            }
+            return d;
+        }
+
+        /// <summary>A row made from a Snapshot.</summary>
+        public static AxisSettingHMI FromSnapshot(System.Collections.Generic.IDictionary<string, object> settings)
+        {
+            var row = new AxisSettingHMI();
+            if (settings == null) return row;
+            foreach (var kv in settings)
+            {
+                var p = typeof(AxisSettingHMI).GetProperty(kv.Key);
+                if (p == null || !p.CanWrite) continue;
+                try { p.SetValue(row, kv.Value, null); } catch { }
+            }
+            return row;
+        }
+
+        /// <summary>A column's heading (the Axis Monitor draws its own): the page's words, the Motion monitor's short names.</summary>
+        public static string HeadingText(string columnKey)
+        {
+            if (columnKey != null && columnKey.StartsWith("Mot:"))
+            {
+                var item = SimpleMotion.Find(columnKey.Substring(4));
+                return item == null ? columnKey : LanguageManager.GetString("MotH_" + item.Key, ShortHeading(item));
+            }
+            foreach (var h in Headings)
+                if (h[0] == columnKey) return LanguageManager.GetString(h[1], h[2]);
+            return columnKey ?? "";
+        }
+
+        /// <summary>A column's full name for the heading's tooltip (Motion monitor columns), or null.</summary>
+        public static string HeadingTip(string columnKey)
+        {
+            if (columnKey == null || !columnKey.StartsWith("Mot:")) return null;
+            var item = SimpleMotion.Find(columnKey.Substring(4));
+            return item == null ? null : LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")";
         }
 
         // ---- the simple motion columns -------------------------------------------
 
         /// <summary>The values picked at the top of the page (View Preferences), that the module has.</summary>
-        private static System.Collections.Generic.List<SimpleMotion.Item> PickedMotion()
+        private System.Collections.Generic.List<SimpleMotion.Item> PickedMotion()
         {
             var list = new System.Collections.Generic.List<SimpleMotion.Item>();
-            foreach (var k in ViewPreferences.MotionColumnKeys)
+            // The monitor's are an Admin's choice; the page's the signed-in user's.
+            if (MonitorMode && !SecurityManager.HasAccess(SecurityLevel.Admin)) return list;
+            foreach (var k in ViewPreferences.ListOf(MonitorMode ? ViewPreferences.MonitorMotion : ViewPreferences.MotionColumns))
             {
                 var item = SimpleMotion.Find(k);
                 if (item != null && !list.Contains(item)) list.Add(item);
@@ -632,7 +812,7 @@ namespace Kaban.UI.Controls
                 int w = item.Kind == SimpleMotion.Kind.Code ? WCode : SimpleMotion.ColumnWidth(item);
                 Column("Mot:" + item.Key, x, w);
                 if (!HasMotion) { x += w + Gap; continue; }
-                string device = SimpleMotion.Device(MotionModuleNumber, SimpleMotion.AddressOf(item, ModuleAxisIndex));
+                string device = SimpleMotion.Device(MotionNumber, SimpleMotion.AddressOf(item, MotionAxisIndex));
                 if (item.Kind == SimpleMotion.Kind.Code)
                 {
                     var kind = item.Key == "ServoAlarm" ? AxisCodeKind.ServoAlarm
@@ -641,7 +821,7 @@ namespace Kaban.UI.Controls
                     cell.Name = "mot" + item.Key;
                     continue;
                 }
-                var v = new MotionValueHMI(PlcNumber, item, MotionModuleNumber, ModuleAxisIndex, DecimalPlaces) { Name = "mot" + item.Key };
+                var v = new MotionValueHMI(PlcNumber, item, MotionNumber, MotionAxisIndex, DecimalPlaces) { Name = "mot" + item.Key };
                 v.SetBounds(x, 6, w, RowHeight - 12);
                 Controls.Add(v);
                 x += w + Gap;
@@ -652,7 +832,9 @@ namespace Kaban.UI.Controls
         internal void RefreshMotionColumns()
         {
             var picked = PageHasMotion() ? string.Join(",", PickedMotion().Select(i => i.Key)) : "";
-            if (picked == _motionBuilt || Controls.Count == 0) { SyncMotionBar(); return; }
+            var items = PickedItems();
+            string itemsNow = items == null ? "*" : string.Join(",", ItemKeys.Where(items.Contains));
+            if ((picked == _motionBuilt && itemsNow == _itemsBuilt) || Controls.Count == 0) { SyncMotionBar(); return; }
             BuildRow();
             SyncMotionBar();
             Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
@@ -761,6 +943,7 @@ namespace Kaban.UI.Controls
                 var row = c as AxisSettingHMI;
                 if (row != null && (top == null || row.Top < top.Top)) top = row;
             }
+            if (MonitorMode) return;                         // the Axis Monitor draws its own
             if (top != this) return;                         // the top row speaks for the page
             EnsureMotionBar(page);
 
@@ -907,23 +1090,21 @@ namespace Kaban.UI.Controls
         internal const string MotionBarName = "axisMotionBar";
 
         /// <summary>
-        /// THE PICK LIST AT THE TOP OF THE PAGE: the simple motion values to show as
-        /// columns - kept as the signed-in user's own (View Preferences). Only on a
-        /// page with an axis on a module; the page's controls move down to make room
-        /// for it (the designer's page is not changed).
+        /// THE BAR AT THE TOP OF THE PAGE (AxisPickBar): PLC axis items - which of
+        /// the row's groups of columns to show - and, on a page with an axis on a
+        /// simple motion module, the Motion monitor - which of the module's values
+        /// to add as columns. Kept as the signed-in user's own (View Preferences).
+        /// The page's controls move down to make room for it (the designer's page
+        /// is not changed), and the bar stays in sight while the page is scrolled
+        /// sideways.
         /// </summary>
         private void EnsureMotionBar(Control page)
         {
-            var bar = page.Controls[MotionBarName];
-            if (!PageHasMotion())
-            {
-                if (bar != null) bar.Visible = false;
-                return;
-            }
+            var bar = page.Controls[MotionBarName] as AxisPickBar;
             if (bar != null)
             {
                 bar.Visible = true;
-                SyncMotionBar();
+                bar.Offer(PageItems(), PageHasMotion());
                 return;
             }
             int top = int.MaxValue, left = int.MaxValue;
@@ -932,56 +1113,23 @@ namespace Kaban.UI.Controls
             int shift = UiScale.For(page, 40);
             foreach (Control c in page.Controls) c.Top += shift;
 
-            var flow = new FlowLayoutPanel
-            {
-                Name = MotionBarName, WrapContents = false, AutoSize = false, BackColor = page.BackColor,
-                Padding = new Padding(0), Margin = new Padding(0)
-            };
-            var caption = new Label
-            {
-                AutoSize = true, Text = LanguageManager.GetString("Mot_Pick", "Simple motion values:"),
-                Font = UiStyle.Body, ForeColor = Color.FromArgb(60, 66, 76), Margin = new Padding(0, 9, 6, 0)
-            };
-            var pick = new Kaban.UI.Dashboard.PickList(UiStyle.Tips())
-            {
-                Name = "motionPick", Size = new Size(460, 28), Margin = new Padding(0, 4, 8, 0),
-                AllText = LanguageManager.GetString("Mot_PickNone", "None")
-            };
-            pick.SetItems(SimpleMotion.Items.Select(i => new Kaban.UI.Dashboard.PickList.Item(
-                i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
-            pick.Select(ViewPreferences.MotionColumnKeys);
-            pick.Changed += (s, e) =>
-            {
-                // In the list's order; nothing to do when it is what is kept (a sync).
-                var chosen = pick.Selected;
-                var keys = SimpleMotion.Items.Where(i => chosen.Contains(i.Key)).Select(i => i.Key).ToList();
-                if (keys.SequenceEqual(ViewPreferences.MotionColumnKeys, StringComparer.OrdinalIgnoreCase)) return;
-                ViewPreferences.SetMotionColumnKeys(keys);
-            };
-            var note = new Label
-            {
-                AutoSize = true, Text = LanguageManager.GetString("Mot_PickNote", "read from the simple motion module (Un\\G), read only"),
-                Font = UiStyle.Body, ForeColor = Color.FromArgb(120, 126, 136), Margin = new Padding(0, 9, 0, 0)
-            };
-            flow.Controls.Add(caption);
-            flow.Controls.Add(pick);
-            flow.Controls.Add(note);
-            page.Controls.Add(flow);
-            flow.SetBounds(Math.Max(0, left), top, UiScale.For(page, 1100), UiScale.For(page, 36));
+            bar = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns) { Name = MotionBarName, BackColor = page.BackColor };
+            page.Controls.Add(bar);
+            // Kept where the page's content starts, in the page's own (unscrolled) terms.
+            var scroll = page as ScrollableControl;
+            int x = Math.Max(0, left - (scroll != null ? scroll.AutoScrollPosition.X : 0));
+            bar.SetBounds(x, top, UiScale.For(page, 1100), UiScale.For(page, 36));
+            bar.Pin(page, x);
+            bar.Offer(PageItems(), PageHasMotion());
         }
 
         /// <summary>The bar's ticks as kept (another user signed in, the pick changed elsewhere).</summary>
         private void SyncMotionBar()
         {
             var page = Parent;
-            if (page == null) return;
-            var bar = page.Controls[MotionBarName];
-            if (bar == null) return;
-            var pick = bar.Controls["motionPick"] as Kaban.UI.Dashboard.PickList;
-            if (pick == null) return;
-            var keys = ViewPreferences.MotionColumnKeys;
-            if (pick.Selected.SetEquals(keys)) return;
-            pick.Select(keys);
+            if (page == null || MonitorMode) return;
+            var bar = page.Controls[MotionBarName] as AxisPickBar;
+            if (bar != null) bar.Sync();
         }
 
         /// <param name="clampToTravel">
@@ -1266,7 +1414,7 @@ namespace Kaban.UI.Controls
             if (IsDisposed || !IsHandleCreated) return;
             if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnViewPreferencesChanged), sender, e); } catch { } return; }
             _axis.TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight;
-            RefreshMotionColumns();
+            if (!MonitorMode) RefreshMotionColumns();        // the Axis Monitor builds its rows again itself
         }
 
         protected override void Dispose(bool disposing)

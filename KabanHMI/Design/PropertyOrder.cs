@@ -130,9 +130,9 @@ namespace Kaban.UI.Design
                 C("Device", "PlcNumber", "AxisNumber")),
 
             ["AxisSettingHMI"] = L(
-                C("Device", "PlcNumber", "AxisNumber"),
+                C("Device", "PlcNumber", "HMIAxisIndex", "MotionNumber", "MotionAxisIndex"),
                 C("Axis", "AxisNameKey", "VerticalMovement", "ReferenceSensorAddress", "ReferenceSensorSide"),
-                C("Movement", "CommandBackAddress", "CommandForwardAddress", "PositionAddress", "PositionDataType", "RealPositionAddress"),
+                C("Movement", "CommandBackAddress", "CommandForwardAddress", "PositionAddress", "PositionDataType", "LoadEncoderValueAddress"),
                 C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix",
                            "EntryMinimum", "EntryMaximum"),
                 C("Settings", "MinLimitAddress", "MaxLimitAddress", "ReferenceAddress", "CalibrationAddress",
@@ -140,7 +140,6 @@ namespace Kaban.UI.Design
                 C("Commands", "CalibrateAddress", "GoToReferenceAddress", "HomeRequestAddress"),
                 C("Meters", "CurrentAddress", "CurrentDivisor", "CurrentFullScale", "ZDistanceAddress", "ZDistanceDivisor", "ZDistanceFullScale"),
                 C("Diagnostics", "ErrorAddress", "ServoAlarmAddress", "AxisAlarmAddress", "AxisWarningAddress"),
-                C("Simple motion", "MotionModuleNumber", "ModuleAxisIndex"),
                 C("Conditions", "VisibilityConditions"),
                 C("Security", "RequiredSecurity")),
 

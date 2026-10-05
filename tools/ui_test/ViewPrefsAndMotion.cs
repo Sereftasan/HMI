@@ -17,7 +17,7 @@ using Kaban.UI.Settings;
 // according to the user's wish (Left / Right alignment of the Description text,
 // the axis name ...). Some preferences in the user settings, set automatically
 // when the user signs in, just like the screen scale."
-// "If MotionModuleNumber and ModuleAxisIndex are entered on the axis, we read
+// "If MotionModuleNumber and ModuleAxisIndex (since: MotionNumber, MotionAxisIndex) are entered on the axis, we read
 // the related buffer addresses (Un\G) - a multiple selection on top of the axis
 // setting page for the values to show (axis alarm, warning codes, home request,
 // real position, ready / busy flags ...)."
@@ -43,7 +43,7 @@ class VPM {
         var a = new AxisSettingHMI {
             AxisNameKey = name, CommandBackAddress = "M1", CommandForwardAddress = "M2", PositionAddress = "W0",
             MinLimitAddress = "D2", MaxLimitAddress = "D4", DecimalPlaces = 2,
-            MotionModuleNumber = module, ModuleAxisIndex = axis };
+            MotionNumber = module, MotionAxisIndex = axis };
         a.Location = new Point(10, top);
         return a;
     }
@@ -314,11 +314,13 @@ class VPM {
         var p1 = Row("Axis_Z", 10, 0, 0);
         plain.Controls.Add(p1);
         Pump(100);
-        Check("a page without a module: no pick, no columns", plain.Controls["axisMotionBar"] == null && p1.Controls["motAxisError"] == null && p1.Top == 10);
+        var plainBar = plain.Controls["axisMotionBar"] as AxisPickBar;
+        Check("a page without a module: the PLC axis items only, no Motion monitor, no columns", plainBar != null && plainBar.ItemsPick.Visible &&
+              !plainBar.MotionPick.Visible && p1.Controls["motAxisError"] == null && p1.Top == 50, plainBar == null ? "no bar" : p1.Top.ToString());
         form.Controls.Remove(page); form.Controls.Remove(plain);
         SecurityManager.Logout();
 
-        Check("the simple motion texts translated", new[] { "Mot_Pick", "Mot_PickNone", "Mot_PickNote" }.All(Has));
+        Check("the simple motion texts translated", new[] { "Mot_Pick", "Mot_PickNone" }.All(Has));
         SecurityManager.Logout();
         form.Close();
 

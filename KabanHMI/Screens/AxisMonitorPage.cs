@@ -25,6 +25,10 @@ namespace Kaban.UI.Screens
     {
         private readonly FlowLayoutPanel _list = new FlowLayoutPanel();
         private readonly Label _empty = new Label();
+        private readonly Panel _head = new Panel { Dock = DockStyle.Top, Height = 26, BackColor = Color.White };
+        /// <summary>An Admin's PLC axis items and Motion monitor for the monitor (5 October).</summary>
+        private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion) { Dock = DockStyle.Top, WrapContents = true };
+        private string _built;
 
         /// <summary>Column widths: the Axis Settings row's own.</summary>
         internal const int WName = AxisSettingHMI.WAxis, WPosition = AxisSettingHMI.WPosition, WMeter = AxisSettingHMI.WMeter,
@@ -36,13 +40,12 @@ namespace Kaban.UI.Screens
             Font = UiStyle.Body;
             Dock = DockStyle.Fill;
 
-            var head = new Panel { Dock = DockStyle.Top, Height = 26, BackColor = Color.White };
             int x = Left0;
-            head.Controls.Add(Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName));
+            _head.Controls.Add(Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName));
             x += WName + Gap + Gap;
-            head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisPosition", "Position"), x, WPosition));
+            _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisPosition", "Position"), x, WPosition));
             x += WPosition + Gap;
-            head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter));
+            _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter));
 
             _list.Dock = DockStyle.Fill;
             _list.FlowDirection = FlowDirection.TopDown;
@@ -58,10 +61,25 @@ namespace Kaban.UI.Screens
             _empty.Visible = false;
             _empty.Text = LanguageManager.GetString("Msg_NoAxes", "No axis is set up on the Axis Settings pages.");
 
+            _bar.Padding = new Padding(4, 0, 0, 2);
+            _bar.Resize += (s, e) => FitBar();
+
             Controls.Add(_list);
             Controls.Add(_empty);
-            Controls.Add(head);
+            Controls.Add(_head);
+            Controls.Add(_bar);
             Build();
+
+            // A sign-in (an Admin's picks, or none) and a pick changed: the rows again.
+            EventHandler again = (s, e) =>
+            {
+                if (IsDisposed) return;
+                if (IsHandleCreated) { try { BeginInvoke(new Action(RebuildIfChanged)); } catch { } }
+                else RebuildIfChanged();
+            };
+            ViewPreferences.Changed += again;
+            SecurityManager.UserChanged += again;
+            Disposed += (s, e) => { ViewPreferences.Changed -= again; SecurityManager.UserChanged -= again; };
         }
 
         private static Label Heading(string text, int x, int w)
@@ -73,40 +91,130 @@ namespace Kaban.UI.Screens
             };
         }
 
-        /// <summary>The rows listed (tests).</summary>
+        /// <summary>The rows listed (tests): the classic rows.</summary>
         internal IList<AxisMonitorRow> Rows { get { return _list.Controls.OfType<AxisMonitorRow>().ToList(); } }
 
-        /// <summary>The axes, grouped by machine when more than one machine has axes.</summary>
+        /// <summary>The rows listed as Axis Settings rows (an Admin's picks; tests).</summary>
+        internal IList<AxisSettingHMI> SettingRows { get { return _list.Controls.OfType<AxisSettingHMI>().ToList(); } }
+
+        /// <summary>The Admin's bar (tests).</summary>
+        internal AxisPickBar Bar { get { return _bar; } }
+
+        /// <summary>What the rows were built for: an Admin or not, the items, the module values.</summary>
+        private static string Signature()
+        {
+            bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
+            if (!admin) return "user";
+            var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
+            return "admin|" + (items == null ? "*" : string.Join(",", AxisSettingHMI.ItemKeys.Where(items.Contains))) + "|" +
+                   string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorMotion));
+        }
+
+        private void RebuildIfChanged()
+        {
+            if (IsDisposed || Signature() == _built) return;
+            Build();
+            Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
+        }
+
+        /// <summary>
+        /// The axes, grouped by machine when more than one machine has axes. As it
+        /// was - name, position, current - unless an Admin has picked other PLC
+        /// axis items or Motion monitor values: then each axis is its Axis Settings
+        /// row again with what was picked (the position always), headings above.
+        /// </summary>
         private void Build()
         {
-            AlarmHelpLinks.EnsureDiscovered();
-            var axes = AlarmHelpLinks.AllAxes.ToList();
-            _empty.Visible = axes.Count == 0;
-            _list.Visible = axes.Count > 0;
+            _built = Signature();
+            _list.SuspendLayout();
+            try
+            {
+                foreach (Control c in _list.Controls.Cast<Control>().ToList()) { _list.Controls.Remove(c); c.Dispose(); }
+                AlarmHelpLinks.EnsureDiscovered();
+                var axes = AlarmHelpLinks.AllAxes.ToList();
+                _empty.Visible = axes.Count == 0;
+                _list.Visible = axes.Count > 0;
 
-            Func<AlarmHelpLinks.AxisInfo, string> machineOf = a =>
-            {
-                var st = PlcManager.Instance.GetStation(a.Station);
-                string id = st != null ? st.OwnerModuleId : "";
-                return string.IsNullOrEmpty(id) ? "" : LanguageManager.GetString("Machine_" + id, id);
-            };
-            var machines = axes.Select(machineOf).Distinct().ToList();
-            string current = null;
-            foreach (var a in axes)
-            {
-                string m = machineOf(a);
-                if (machines.Count > 1 && m != current)
+                bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
+                var copies = axes.Select(a => AxisSettingHMI.FromSnapshot(a.Row)).ToList();
+                _bar.Visible = admin && axes.Count > 0;
+                if (admin) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
+                var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
+                bool classic = !admin || (items != null && items.Count == 1 && items.Contains("Torque") &&
+                                          ViewPreferences.ListOf(ViewPreferences.MonitorMotion).Count == 0);
+                _head.Visible = classic;
+                foreach (var c in copies) c.Dispose();
+
+                Func<AlarmHelpLinks.AxisInfo, string> machineOf = a =>
                 {
-                    current = m;
-                    _list.Controls.Add(new Label
+                    var st = PlcManager.Instance.GetStation(a.Station);
+                    string id = st != null ? st.OwnerModuleId : "";
+                    return string.IsNullOrEmpty(id) ? "" : LanguageManager.GetString("Machine_" + id, id);
+                };
+                var machines = axes.Select(machineOf).Distinct().ToList();
+                var rows = new List<AxisSettingHMI>();
+                string current = null;
+                foreach (var a in axes)
+                {
+                    string m = machineOf(a);
+                    if (machines.Count > 1 && m != current)
                     {
-                        Text = m, AutoSize = false, Size = new Size(WName + WPosition + WMeter + 3 * Gap, 24),
-                        Margin = new Padding(Left0, 8, 0, 0), TextAlign = ContentAlignment.BottomLeft,
-                        Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
-                    });
+                        current = m;
+                        _list.Controls.Add(new Label
+                        {
+                            Text = m, AutoSize = false, Size = new Size(WName + WPosition + WMeter + 3 * Gap, 24),
+                            Margin = new Padding(Left0, 8, 0, 0), TextAlign = ContentAlignment.BottomLeft,
+                            Font = new Font("Segoe UI", 9F, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
+                        });
+                    }
+                    if (classic)
+                    {
+                        _list.Controls.Add(new AxisMonitorRow(a) { Margin = new Padding(0, 0, 0, 0) });
+                        continue;
+                    }
+                    var row = AxisSettingHMI.FromSnapshot(a.Row);
+                    row.MonitorMode = true;
+                    row.Margin = new Padding(0);
+                    _list.Controls.Add(row);
+                    rows.Add(row);
                 }
-                _list.Controls.Add(new AxisMonitorRow(a) { Margin = new Padding(0, 0, 0, 0) });
+                // Laid out once they are all there: a column is there when any axis has it.
+                foreach (var r in rows) r.BuildRow();
+                if (rows.Count > 0) AddHeadings(rows[0]);
             }
+            finally { _list.ResumeLayout(); }
+            FitBar();
+        }
+
+        /// <summary>The columns' headings, as the first row of the list (they scroll sideways with the rows).</summary>
+        private void AddHeadings(AxisSettingHMI first)
+        {
+            var head = new Panel { Name = "monitorHeadings", Margin = new Padding(0), BackColor = Color.White };
+            _list.Controls.Add(head);
+            _list.Controls.SetChildIndex(head, 0);
+            head.Size = new Size(first.Width, UiScale.For(first, 22));
+            var font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            foreach (var kv in first.Columns.OrderBy(c => c.Value.X))
+            {
+                var l = new Label
+                {
+                    AutoSize = false, AutoEllipsis = true, TextAlign = ContentAlignment.MiddleCenter, Font = font,
+                    ForeColor = Color.FromArgb(110, 116, 124), Tag = "AxisHeading:" + kv.Key
+                };
+                head.Controls.Add(l);
+                l.SetBounds(UiScale.For(first, kv.Value.X), 0, UiScale.For(first, kv.Value.Y), head.Height);
+                l.Text = AxisSettingHMI.HeadingText(kv.Key);
+                var tip = AxisSettingHMI.HeadingTip(kv.Key);
+                if (tip != null) UiStyle.Tips().SetToolTip(l, tip);
+            }
+        }
+
+        /// <summary>The bar as tall as its lists need in the panel's width (they wrap in a narrow panel).</summary>
+        private void FitBar()
+        {
+            if (!_bar.Visible || _bar.Width <= 0) return;
+            int h = _bar.GetPreferredSize(new Size(_bar.Width, 0)).Height;
+            if (h > 0 && _bar.Height != h) _bar.Height = h;
         }
     }
 

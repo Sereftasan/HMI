@@ -118,7 +118,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axX.Name = "axX";
             this.axX.PlcNumber = 1;
             this.axX.AxisNameKey = "Axis_X";
-            this.axX.AxisNumber = 1;
+            this.axX.HMIAxisIndex = 1;
             this.axX.CommandBackAddress = "M701";
             this.axX.CommandForwardAddress = "M700";
             this.axX.PositionAddress = "W0";
@@ -146,7 +146,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axY.Name = "axY";
             this.axY.PlcNumber = 1;
             this.axY.AxisNameKey = "Axis_Y";
-            this.axY.AxisNumber = 2;
+            this.axY.HMIAxisIndex = 2;
             this.axY.CommandBackAddress = "M703";
             this.axY.CommandForwardAddress = "M702";
             this.axY.PositionAddress = "W10";
@@ -174,7 +174,7 @@ namespace Kaban.Machines.MD3020.Screens.Parameters
             this.axZ.Name = "axZ";
             this.axZ.PlcNumber = 1;
             this.axZ.AxisNameKey = "Axis_Z";
-            this.axZ.AxisNumber = 3;
+            this.axZ.HMIAxisIndex = 3;
             this.axZ.CommandBackAddress = "M705";
             this.axZ.CommandForwardAddress = "M704";
             this.axZ.PositionAddress = "W20";

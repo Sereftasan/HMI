@@ -120,6 +120,8 @@ namespace Kaban.UI.Helpers
             public string Current = "", RealPosition = "";
             public double CurrentDivisor = 1, CurrentFullScale = 100;
             public Kaban.Core.Enums.SystemCondition Visibility;
+            /// <summary>Every setting of the row, so the Axis Monitor can show it again (an Admin's PLC axis items).</summary>
+            public Dictionary<string, object> Row;
         }
 
         private static readonly List<AxisInfo> _axisList = new List<AxisInfo>();
@@ -156,7 +158,7 @@ namespace Kaban.UI.Helpers
             if (a == null) return;
             var info = new AxisInfo
             {
-                Station = a.PlcNumber, Number = a.AxisNumber, NameKey = a.AxisNameKey ?? "",
+                Station = a.PlcNumber, Number = a.HMIAxisIndex, NameKey = a.AxisNameKey ?? "",
                 Back = a.CommandBackAddress ?? "", Forward = a.CommandForwardAddress ?? "",
                 Position = a.PositionAddress ?? "", PositionType = a.PositionDataType,
                 Divisor = a.Divisor, Decimals = a.DecimalPlaces, Digits = a.Digits, Suffix = a.Suffix ?? "",
@@ -165,14 +167,15 @@ namespace Kaban.UI.Helpers
                 ServoAlarm = a.ServoAlarmAddress ?? "", AxisAlarm = a.AxisAlarmAddress ?? "",
                 AxisWarning = a.AxisWarningAddress ?? "",
                 Current = a.CurrentAddress ?? "", CurrentDivisor = a.CurrentDivisor, CurrentFullScale = a.CurrentFullScale,
-                RealPosition = a.RealPositionAddress ?? "", Visibility = a.VisibilityConditions
+                RealPosition = a.LoadEncoderValueAddress ?? "", Visibility = a.VisibilityConditions,
+                Row = a.Snapshot()
             };
             if (!string.IsNullOrWhiteSpace(info.Position) &&
                 !_axisList.Any(x => x.Station == info.Station && string.Equals(x.Position, info.Position, StringComparison.OrdinalIgnoreCase)))
                 _axisList.Add(info);
 
-            if (a.AxisNumber <= 0) return;
-            var key = a.PlcNumber + "|" + a.AxisNumber;
+            if (a.HMIAxisIndex <= 0) return;
+            var key = a.PlcNumber + "|" + a.HMIAxisIndex;
             AxisInfo seen;
             if (_axes.TryGetValue(key, out seen))
             {
@@ -185,7 +188,7 @@ namespace Kaban.UI.Helpers
                 // position - with one number still are.
                 if (string.Equals(seen.Position, info.Position, StringComparison.OrdinalIgnoreCase) &&
                     string.Equals(seen.NameKey, info.NameKey, StringComparison.Ordinal)) return;
-                var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.AxisNumber);
+                var msg = string.Format("PLC {0} axis {1} is numbered on two rows", a.PlcNumber, a.HMIAxisIndex);
                 if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("axis conflict - " + msg); }
                 return;
             }
@@ -283,8 +286,8 @@ namespace Kaban.UI.Helpers
             AlarmGeneration.Register(new AlarmGeneration.Axis
             {
                 Station = axis.PlcNumber,
-                Number = axis.AxisNumber,
-                Name = string.IsNullOrEmpty(axis.AxisNameKey) ? "Axis " + axis.AxisNumber : LanguageManager.GetString(axis.AxisNameKey, axis.AxisNameKey),
+                Number = axis.HMIAxisIndex,
+                Name = string.IsNullOrEmpty(axis.AxisNameKey) ? "Axis " + axis.HMIAxisIndex : LanguageManager.GetString(axis.AxisNameKey, axis.AxisNameKey),
                 ErrorAddress = (axis.ErrorAddress ?? "").Trim(),
                 ServoAlarm = (axis.ServoAlarmAddress ?? "").Trim(),
                 AxisAlarm = (axis.AxisAlarmAddress ?? "").Trim()

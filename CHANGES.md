@@ -4451,3 +4451,17 @@ and `UnitLookAndErrors` extended.
   PV_*; VP_CaptionAlign renamed; removed Set_ViewPrefs, Tip_ViewSave, VP_Whose, VP_Note, VP_AxisNameAlign, VP_Right, VP_Left.
 - Manual: Users and Preferences, the rights, where the dates reach, UserCreators.cfg.
 - Tests: `UsersAndPreferences.cs` (new); `ViewPrefsAndMotion.cs`, `ZoomMenu.cs`, `TableLook.cs`.
+
+
+## 2026-10-05 - Axis Settings: Device properties renamed; PLC axis items; Motion monitor pinned; the Axis Monitor's lists for an Admin
+
+- `AxisSettingHMI`: HMIAxisIndex, MotionNumber, MotionAxisIndex (Device), LoadEncoderValueAddress (Movement); AxisNumber,
+  MotionModuleNumber, ModuleAxisIndex, RealPositionAddress kept hidden. `ItemKeys`, `ItemText`, `ItemsOf`, `PageItems`,
+  `MonitorMode`, `Snapshot` / `FromSnapshot`, `HeadingText` / `HeadingTip`; BuildRow lays out the ticked items only.
+  `PropertyOrder`: no Simple motion category. Designer files of FA2010, H800, MD3020 Axis Settings renamed.
+- `KabanHMI/Controls/AxisPickBar.cs` (new): PLC axis items and Motion monitor, kept per user, pinned while scrolling sideways.
+- `ViewPreferences`: AxisItems, MonitorItems (default Torque), MonitorMotion; `PickOf` / `SetPick`, `ListOf` / `SetList`.
+- `AxisMonitorPage`: the Admin's bar, Axis Settings rows in MonitorMode with headings; `AlarmHelpLinks.AxisInfo.Row`.
+- Translations: AxIt_* (pick and items), Tip_LoadEncoder, Mot_Pick "Motion monitor:"; Mot_PickNote removed.
+- Manual: PLC axis items, Motion monitor, the Device properties, the Axis Monitor for an Admin.
+- Tests: `AxisItems.cs` (new); `ViewPrefsAndMotion.cs`, `AxisRowLayout.cs`, `AxisCodeHelpUi.cs`, `UnitsAndDesigner.cs`; `tools/rework_pages.py`.

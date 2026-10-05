@@ -101,7 +101,7 @@ class AX {
         Console.WriteLine("--- the manual-page axis unit takes the codes from its Axis Settings row ---");
         AlarmHelpLinks.DiscoverAll();
         var rowForm = new Form();
-        var row = new AxisSettingHMI { PlcNumber = 1, AxisNumber = 7, AxisNameKey = "Robot X",
+        var row = new AxisSettingHMI { PlcNumber = 1, HMIAxisIndex = 7, AxisNameKey = "Robot X",
                                        CommandBackAddress = "M600", CommandForwardAddress = "M601", PositionAddress = "D100",
                                        ErrorAddress = "M890", AxisAlarmAddress = "W4", AxisWarningAddress = "W5", ServoAlarmAddress = "W0B" };
         rowForm.Controls.Add(row);

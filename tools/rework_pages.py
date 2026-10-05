@@ -86,7 +86,7 @@ def number_axes(machine, log):
     for page in machine_pages(machine):
         for var in page.controls("AxisSettingHMI"):
             n = len(axes) + 1
-            page.set_prop(var, "AxisNumber", str(n), after="AxisNameKey")
+            page.set_prop(var, "HMIAxisIndex", str(n), after="AxisNameKey")   # the row's (it was AxisNumber)
             axes.append({"page": page, "var": var, "number": n,
                          "station": int(page.prop(var, "PlcNumber") or 1),
                          "name": page.str_prop(var, "AxisNameKey"),
@@ -122,7 +122,7 @@ def convert_axis_units(machine, axes, log, review):
                               % (machine, var, lamp_a, lamp_b))
             if ref:
                 ap = axis["page"]; ap.__init__(ap.path)   # re-read: it may have been saved since
-                ap.set_prop(axis["var"], "ReferenceSensorAddress", '"%s"' % ref, after="AxisNumber")
+                ap.set_prop(axis["var"], "ReferenceSensorAddress", '"%s"' % ref, after="HMIAxisIndex")
                 ap.set_prop(axis["var"], "ReferenceSensorSide", "Kaban.UI.Controls.AxisReferenceSide." + side,
                             after="ReferenceSensorAddress")
                 ap.save()
@@ -386,7 +386,7 @@ def link_errors(machine, review):
     # ---- write, and report
     for al, target, side, why in linked:
         pg = target["page"]
-        if side == "axis": pg.set_prop(target["var"], "ErrorAddress", '"%s"' % al["addr"], after="AxisNumber")
+        if side == "axis": pg.set_prop(target["var"], "ErrorAddress", '"%s"' % al["addr"], after="HMIAxisIndex")
         else: pg.set_prop(target["var"], "Error%sAddress" % side, '"%s"' % al["addr"], after="TitleTextKey")
     for pg in {id(x["page"]): x["page"] for x in units + axes}.values(): pg.save()
     review.append("\n## %s - %d linked, %d for you to decide, %d not unit alarms (inverter, e-stop, pressure...)\n" % (machine, len(linked), len(unsure), skipped))

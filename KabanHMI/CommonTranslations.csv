@@ -951,9 +951,8 @@ VP_Long;Long;Uzun;Долго;Lang;Lungo;Largo
 VP_Everyone;Everyone (this panel);Herkes (bu panel);Все (эта панель);Alle (dieses Panel);Tutti (questo pannello);Todos (este panel)
 VP_Me;(me);(ben);(я);(ich);(io);(yo)
 VP_AsEveryone;As for everyone;Herkes için olduğu gibi;Как для всех;Wie für alle;Come per tutti;Como para todos
-Mot_Pick;Simple motion values:;Simple motion değerleri:;Значения Simple Motion:;Simple-Motion-Werte:;Valori Simple Motion:;Valores de Simple Motion:
+Mot_Pick;Motion monitor:;Hareket izleme:;Монитор движения:;Bewegungsmonitor:;Monitor movimento:;Monitor de movimiento:
 Mot_PickNone;None;Hiçbiri;Нет;Keine;Nessuno;Ninguno
-Mot_PickNote;read from the simple motion module (Un\G), read only;simple motion modülünden okunur (Un\G), salt okunur;читаются из модуля Simple Motion (Un\G), только чтение;aus dem Simple-Motion-Modul gelesen (Un\G), nur lesen;letti dal modulo Simple Motion (Un\G), sola lettura;leídos del módulo Simple Motion (Un\G), solo lectura
 Mot_AxisError;Axis error No.;Eksen hata No.;Номер ошибки оси;Achsfehler-Nr.;N. errore asse;N.º de error del eje
 Mot_AxisWarning;Axis warning No.;Eksen uyarı No.;Номер предупреждения оси;Achswarnung-Nr.;N. avviso asse;N.º de aviso del eje
 Mot_ServoAlarm;Servo alarm;Servo alarmı;Авария сервоусилителя;Servoalarm;Allarme servo;Alarma del servo
@@ -1126,3 +1125,14 @@ PV_LastNote;Kept for each user as they move about, a page above their level is n
 PV_HomeNote;The first page of the menu.;Menünün ilk sayfası.;Первая страница меню.;Die erste Seite des Menüs.;La prima pagina del menu.;La primera página del menú.
 PV_StayNote;Nothing moves: as the program has always been.;Hiçbir şey değişmez: programın her zamanki hali.;Ничего не меняется: как программа работала всегда.;Nichts bewegt sich: wie das Programm immer war.;Non cambia nulla: come il programma è sempre stato.;Nada se mueve: como el programa ha sido siempre.
 PV_TopBar;the top bar;üst çubuk;верхняя панель;die obere Leiste;la barra superiore;la barra superior
+AxIt_Pick;PLC axis items:;PLC eksen öğeleri:;Элементы оси PLC:;PLC-Achselemente:;Elementi asse PLC:;Elementos de eje PLC:
+AxIt_All;All;Tümü;Все;Alle;Tutti;Todos
+AxIt_Manual;Manual movement;Manuel hareket;Ручное перемещение;Handverfahren;Movimento manuale;Movimiento manual
+AxIt_Torque;Torque monitor;Tork izleme;Контроль момента;Drehmomentanzeige;Monitor coppia;Monitor de par
+AxIt_Settings;Axis setting parameters;Eksen ayar parametreleri;Параметры настройки оси;Achseinstellparameter;Parametri di impostazione asse;Parámetros de ajuste del eje
+AxIt_RefActivation;Reference activation;Referans etkinleştirme;Активация реферирования;Referenzaktivierung;Attivazione riferimento;Activación de referencia
+AxIt_ZDistance;Reference sensor - encoder Z pulse distance;Referans sensörü - enkoder Z darbesi mesafesi;Датчик референции - расстояние до Z-импульса энкодера;Referenzsensor - Abstand zum Geber-Z-Impuls;Sensore di riferimento - distanza dall'impulso Z dell'encoder;Sensor de referencia - distancia al pulso Z del encoder
+AxIt_Codes;Alarm codes;Alarm kodları;Коды аварий;Alarmcodes;Codici di allarme;Códigos de alarma
+AxIt_Travel;Travel per revolution;Tur başına hareket;Перемещение на оборот;Weg pro Umdrehung;Spostamento per giro;Desplazamiento por vuelta
+AxIt_Backlash;Backlash;Boşluk;Люфт;Umkehrspiel;Gioco;Holgura
+Tip_LoadEncoder;Load encoder value;Yük enkoderi değeri;Значение энкодера нагрузки;Wert des Lastgebers;Valore encoder di carico;Valor del encoder de carga

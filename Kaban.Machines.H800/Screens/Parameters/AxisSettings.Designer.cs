@@ -121,7 +121,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axX1.Name = "axX1";
             this.axX1.PlcNumber = 1;
             this.axX1.AxisNameKey = "Axis_X1";
-            this.axX1.AxisNumber = 1;
+            this.axX1.HMIAxisIndex = 1;
             this.axX1.CommandBackAddress = "M601";
             this.axX1.CommandForwardAddress = "M600";
             this.axX1.PositionAddress = "W0";
@@ -149,7 +149,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axY1.Name = "axY1";
             this.axY1.PlcNumber = 1;
             this.axY1.AxisNameKey = "Axis_Y1";
-            this.axY1.AxisNumber = 2;
+            this.axY1.HMIAxisIndex = 2;
             this.axY1.CommandBackAddress = "M603";
             this.axY1.CommandForwardAddress = "M602";
             this.axY1.PositionAddress = "W10";
@@ -177,7 +177,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axZ1.Name = "axZ1";
             this.axZ1.PlcNumber = 1;
             this.axZ1.AxisNameKey = "Axis_Z1";
-            this.axZ1.AxisNumber = 3;
+            this.axZ1.HMIAxisIndex = 3;
             this.axZ1.CommandBackAddress = "M605";
             this.axZ1.CommandForwardAddress = "M604";
             this.axZ1.PositionAddress = "W20";
@@ -205,7 +205,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axX2.Name = "axX2";
             this.axX2.PlcNumber = 1;
             this.axX2.AxisNameKey = "Axis_X2";
-            this.axX2.AxisNumber = 4;
+            this.axX2.HMIAxisIndex = 4;
             this.axX2.CommandBackAddress = "M607";
             this.axX2.CommandForwardAddress = "M606";
             this.axX2.PositionAddress = "W30";
@@ -233,7 +233,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axY2.Name = "axY2";
             this.axY2.PlcNumber = 1;
             this.axY2.AxisNameKey = "Axis_Y2";
-            this.axY2.AxisNumber = 5;
+            this.axY2.HMIAxisIndex = 5;
             this.axY2.CommandBackAddress = "M609";
             this.axY2.CommandForwardAddress = "M608";
             this.axY2.PositionAddress = "W40";
@@ -261,7 +261,7 @@ namespace Kaban.Machines.H800.Screens.Parameters
             this.axZ2.Name = "axZ2";
             this.axZ2.PlcNumber = 1;
             this.axZ2.AxisNameKey = "Axis_Z2";
-            this.axZ2.AxisNumber = 6;
+            this.axZ2.HMIAxisIndex = 6;
             this.axZ2.CommandBackAddress = "M611";
             this.axZ2.CommandForwardAddress = "M610";
             this.axZ2.PositionAddress = "W50";

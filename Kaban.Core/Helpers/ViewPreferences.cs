@@ -52,6 +52,12 @@ namespace Kaban.Core.Helpers
         public const string MotionColumns = "MotionColumns";
         /// <summary>Where a user was last (for StartPage = Last): key=value pairs, tab separated.</summary>
         public const string LastPlace = "LastPlace";
+        /// <summary>The Axis Settings page's PLC axis items (comma list; "*" or empty: all).</summary>
+        public const string AxisItems = "AxisItems";
+        /// <summary>The Axis Monitor's PLC axis items (an Admin's choice; default: the torque beside the position).</summary>
+        public const string MonitorItems = "MonitorItems";
+        /// <summary>The Axis Monitor's Motion monitor values (comma list of keys).</summary>
+        public const string MonitorMotion = "MonitorMotion";
 
         public static readonly IList<Preference> All = new List<Preference>
         {
@@ -66,7 +72,10 @@ namespace Kaban.Core.Helpers
             P(Blinking, "SignIn", "On", "Off"),
             P(TooltipDelay, "SignIn", "Normal", "Short", "Long"),
             new Preference { Key = MotionColumns, Group = "", Hidden = true },
-            new Preference { Key = LastPlace, Group = "", Hidden = true }
+            new Preference { Key = LastPlace, Group = "", Hidden = true },
+            new Preference { Key = AxisItems, Group = "", Hidden = true },
+            new Preference { Key = MonitorItems, Group = "", Hidden = true, Default = "Torque" },
+            new Preference { Key = MonitorMotion, Group = "", Hidden = true }
         }.AsReadOnly();
 
         private static Preference P(string key, string group, params string[] values)
@@ -334,21 +343,44 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>The simple motion values picked on the Axis Settings page (their keys).</summary>
-        public static IList<string> MotionColumnKeys
-        {
-            get
-            {
-                return Get(MotionColumns).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                         .Select(k => k.Trim()).Where(k => k.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-            }
-        }
+        public static IList<string> MotionColumnKeys { get { return ListOf(MotionColumns); } }
 
         /// <summary>Keeps the pick: as the signed-in user's own, or everyone's when nobody is signed in.</summary>
-        public static void SetMotionColumnKeys(IEnumerable<string> keys)
+        public static void SetMotionColumnKeys(IEnumerable<string> keys) { SetList(MotionColumns, keys); }
+
+        /// <summary>A kept list of keys (the Motion monitor's values).</summary>
+        public static IList<string> ListOf(string key)
+        {
+            return (Get(key) ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                   .Select(k => k.Trim()).Where(k => k.Length > 0 && k != "*").Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        /// <summary>Keeps a list of keys: the signed-in user's own, or everyone's when nobody is signed in.</summary>
+        public static void SetList(string key, IEnumerable<string> keys)
         {
             var text = string.Join(",", (keys ?? new string[0]).Where(k => !string.IsNullOrWhiteSpace(k)).Select(k => k.Trim()));
-            if (ActiveUser != null) SetUser(ActiveUser, MotionColumns, text);       // "" = their own: none
-            else SetPanel(MotionColumns, text.Length > 0 ? text : null);
+            if (ActiveUser != null) SetUser(ActiveUser, key, text);       // "" = their own: none
+            else SetPanel(key, text.Length > 0 ? text : null);
+        }
+
+        /// <summary>
+        /// A pick of items where nothing ticked means ALL (the PLC axis items):
+        /// null for all, else the keys ticked.
+        /// </summary>
+        public static ISet<string> PickOf(string key)
+        {
+            var v = (Get(key) ?? "").Trim();
+            if (v.Length == 0 || v == "*") return null;
+            return new HashSet<string>(ListOf(key), StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>Keeps such a pick ("*": all - none ticked).</summary>
+        public static void SetPick(string key, IEnumerable<string> keys)
+        {
+            var text = string.Join(",", (keys ?? new string[0]).Where(k => !string.IsNullOrWhiteSpace(k)).Select(k => k.Trim()));
+            if (text.Length == 0) text = "*";
+            if (ActiveUser != null) SetUser(ActiveUser, key, text);
+            else SetPanel(key, text);
         }
 
         /// <summary>Where a user was last (page, tabs, side page), or an empty set.</summary>

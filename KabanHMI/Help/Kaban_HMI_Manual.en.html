@@ -236,7 +236,10 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
   Read only. The list comes from <code>IoList.csv</code> beside the program.</td></tr>
 <tr><td>Axis Monitor</td><td><span class="lvl l0">None</span></td><td>Every axis's <b>position</b> and <b>motor current</b>, drawn as on the
   <i>Axis Settings</i> rows, grouped by machine. Nothing is added to it by hand: the axes are the rows of the machines' Axis Settings pages,
-  each listed while its row's visibility conditions are met. Watching only.</td></tr>
+  each listed while its row's visibility conditions are met. Watching only.
+  An <span class="lvl l3">Admin</span> has the Axis Settings page's two lists above it (<i>PLC axis items</i>, <i>Motion monitor</i>, his own choice
+  for the monitor): with anything but <i>Torque monitor</i> ticked, each axis is shown as its Axis Settings row with what is ticked &ndash; the position always,
+  <i>Manual movement</i> adds the jog buttons &ndash; the headings above the rows. Everyone else sees the monitor as above.</td></tr>
 <tr><td>PLC Monitor</td><td><span class="lvl l3">Admin</span></td><td>Any device of any controller, read and written. See <a href="#diag">11</a>.</td></tr>
 <tr><td>A machine's own</td><td>its own</td><td>Designed with the machine: axis positions, power, the order being run, second-level operations.</td></tr>
 </table>
@@ -536,17 +539,25 @@ cannot change are grey. On the right of the list the one chosen:</p>
      Z distance by the reference (it says how good the reference is). A column is there when any axis on the page has it; the headings follow the columns.
      The axis units on the Manual Movement pages take everything from these rows.
      <ul>
-      <li>With a <b>real position</b> (<code>RealPositionAddress</code>, the encoder's), the position's tooltip starts with it and with the
-          <b>difference</b>, in the axis's unit to its last count (<i>+0.0012 mm</i> for 12 counts at a divisor of 10000).</li>
+      <li>With a <b>load encoder value</b> (<code>LoadEncoderValueAddress</code>, a load-side encoder such as a linear scale), the position's tooltip
+          starts with it and with the <b>difference</b>, in the axis's unit to its last count (<i>+0.0012 mm</i> for 12 counts at a divisor of 10000).
+          The servo motor's own encoder position is the module's <i>Real current value</i> on the Motion monitor (below).</li>
+      <li><b>PLC axis items</b>, the list at the top of the page: which groups of the row to show &ndash; <i>Manual movement</i> (the jog buttons and the position),
+          <i>Torque monitor</i> (the current), <i>Axis setting parameters</i> (min, max, reference, calibration, calibrate), <i>Reference activation</i> (Ref),
+          <i>Reference sensor - encoder Z pulse distance</i>, <i>Alarm codes</i>, <i>Travel per revolution</i>, <i>Backlash</i> &ndash; only those some row of the
+          page has. <i>All</i>, the last line of the list (nothing ticked), is the whole row. The ticks are the signed-in user's own; hiding is the screen's
+          only &ndash; the machine, the manual pages' axis units and the HMI's own alarms keep every address.</li>
       <li><b>Travel per revolution</b> and <b>backlash</b>, when given (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>), are the
           last columns, in the axis's unit to its last count (<i>0.0150 mm</i>), entered the same way.</li>
       <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
       <li>When the PLC asks for a reference (the <b>home request</b>, <code>HomeRequestAddress</code>), the <b>Ref</b> box's border <b>blinks red</b>:
           that is the axis to reference.</li>
-      <li><b>Simple motion values.</b> An axis driven by a simple motion module has the module's number (<code>MotionModuleNumber</code>: 1 for U1) and its
-          axis on it (<code>ModuleAxisIndex</code>: 1&ndash;8) &ndash; two properties of the row, set in the designer. Then the page has
-          <i>Simple motion values</i> at its top: tick what to see, and each one is a column at the end of every row, read straight from the
-          module's buffer memory (<code>U1\G2406</code> &hellip;). <b>Read only.</b>
+      <li><b>Motion monitor.</b> An axis driven by a simple motion module has the module's number (<code>MotionNumber</code>: 1 for U1) and its
+          axis on it (<code>MotionAxisIndex</code>: 1&ndash;8) &ndash; with <code>PlcNumber</code> and <code>HMIAxisIndex</code> (the number the manual pages'
+          axis units use), the row's <i>Device</i> properties, set in the designer. Then the page has <i>Motion monitor</i> beside <i>PLC axis items</i>:
+          tick what to see (<i>None</i>, the last line, for none), and each one is a column at the end of every row, read straight from the
+          module's buffer memory (<code>U1\G2406</code> &hellip;). The two lists <b>stay in sight</b> while the page is scrolled sideways, so the module's
+          values can be ticked where their columns are.
           <ul>
            <li>Alarms and status: axis error and axis warning (as codes, their help behind them), servo alarm, the axis's operation status in words
                (<i>Home return (7)</i>).</li>
@@ -559,7 +570,7 @@ cannot change are grey. On the right of the list the one chosen:</p>
                speed limit, acceleration and deceleration time, home address and speed.</li>
           </ul>
           The ticks are the signed-in user's own (nobody signed in: the panel's). A row not on a module leaves the columns empty, so they stay in line;
-          a page with no axis on a module has no list. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
+          a page with no axis on a module has no Motion monitor. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
      </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link

@@ -42,7 +42,7 @@ class AR {
             MinLimitAddress = "D2", MaxLimitAddress = "D4", ReferenceAddress = "D6", CalibrationAddress = "D8",
             CalibrateAddress = "M3", GoToReferenceAddress = "M4", CurrentAddress = "W0A", ZDistanceAddress = "D73",
             AxisAlarmAddress = "W4", AxisWarningAddress = "W5", ServoAlarmAddress = "W0B" };
-        if (extra.Contains("real")) a.RealPositionAddress = "W10";
+        if (extra.Contains("real")) a.LoadEncoderValueAddress = "W10";
         if (extra.Contains("travel")) a.TravelPerRevolutionAddress = "D100";
         if (extra.Contains("backlash")) a.BacklashAddress = "D102";
         return a;
@@ -79,18 +79,18 @@ class AR {
         var r2 = Full("Axis_RobotX", "real");
         r2.BuildRow();
         var p2 = r2.Controls.OfType<NumericDisplayHMI>().Single();
-        Check("the position compares with RealPositionAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
+        Check("the position compares with LoadEncoderValueAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
         var mem = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 81848988 & 0xFFFF }, { "W11", 81848988 >> 16 } };
         p2.UpdateState(a => mem.ContainsKey(a) ? mem[a] : 0, c => true);
         var build = typeof(BaseNumericHMI).GetMethod("BuildTooltip", Any);
         var tip = (string)build.Invoke(p2, null);
         var lines = tip.Split('\n');
         // 30 September: in mm, to the last count (divisor 10000: 4 decimals), not raw counts.
-        Check("first line: the real position in mm, to its last count: 8184.8988 mm", lines[0].StartsWith("Real position:") && lines[0].EndsWith("\t8184.8988 mm"), lines[0]);
+        Check("first line: the load encoder value in mm, to its last count: 8184.8988 mm", lines[0].StartsWith("Load encoder value:") && lines[0].EndsWith("\t8184.8988 mm"), lines[0]);
         Check("second line: the difference in mm: +0.0012 mm (12 counts)", lines.Length > 1 && lines[1].StartsWith("Difference:") && lines[1].EndsWith("\t+0.0012 mm"),
               lines.Length > 1 ? lines[1] : "");
         Check("  then the usual notes", tip.Contains("Address:"), tip.Replace("\n", " | "));
-        Check("no real position, no such lines", !((string)build.Invoke(pos, null)).Contains("Real position"));
+        Check("no load encoder, no such lines", !((string)build.Invoke(pos, null)).Contains("Load encoder"));
         var devs = DeviceCollector.FromControl(r2, 1);
         Check("the device list names it", devs.Any(d => d.Address == "W10" && d.UsedAs.Contains("real position")),
               string.Join(" ", devs.Select(d => d.Address)));

@@ -29,7 +29,7 @@ class UD {
         Console.WriteLine("--- an axis unit's parts are as wide as a function unit's ---");
         AlarmHelpLinks.DiscoverAll();
         var rowForm = new Form();
-        var row = new AxisSettingHMI { PlcNumber = 1, AxisNumber = 9, AxisNameKey = "Cutting Angle",
+        var row = new AxisSettingHMI { PlcNumber = 1, HMIAxisIndex = 9, AxisNameKey = "Cutting Angle",
                                        CommandBackAddress = "M620", CommandForwardAddress = "M621", PositionAddress = "D300",
                                        Digits = 5, DecimalPlaces = 3, Suffix = "\u00B0" };
         rowForm.Controls.Add(row);
