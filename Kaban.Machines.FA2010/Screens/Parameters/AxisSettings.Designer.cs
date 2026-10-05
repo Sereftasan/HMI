@@ -215,6 +215,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.AxisAlarmAddress = "W4";
             this.axRobot_X.AxisName = "Axis_RobotX";
             this.axRobot_X.AxisNameKey = "Axis_RobotX";
+            this.axRobot_X.ModuleAxisIndex = 1;
+            this.axRobot_X.MotionModuleNumber = 1;
             this.axRobot_X.AxisNumber = 1;
             this.axRobot_X.AxisWarningAddress = "W5";
             this.axRobot_X.BackColor = System.Drawing.Color.White;
@@ -259,6 +261,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.AxisAlarmAddress = "W0B4";
             this.axRobot_Y.AxisName = "Axis_RobotY";
             this.axRobot_Y.AxisNameKey = "Axis_RobotY";
+            this.axRobot_Y.ModuleAxisIndex = 5;
+            this.axRobot_Y.MotionModuleNumber = 2;
             this.axRobot_Y.AxisNumber = 2;
             this.axRobot_Y.AxisWarningAddress = "W0B5";
             this.axRobot_Y.BackColor = System.Drawing.Color.White;
@@ -300,6 +304,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.AxisAlarmAddress = "W0C4";
             this.axRobot_Z.AxisName = "Axis_RobotZ";
             this.axRobot_Z.AxisNameKey = "Axis_RobotZ";
+            this.axRobot_Z.ModuleAxisIndex = 6;
+            this.axRobot_Z.MotionModuleNumber = 2;
             this.axRobot_Z.AxisNumber = 3;
             this.axRobot_Z.AxisWarningAddress = "W0C5";
             this.axRobot_Z.BackColor = System.Drawing.Color.White;
@@ -341,6 +347,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.AxisAlarmAddress = "W14";
             this.axMilling_1_Angle.AxisName = "Axis_Milling1Angle";
             this.axMilling_1_Angle.AxisNameKey = "Axis_Milling1Angle";
+            this.axMilling_1_Angle.ModuleAxisIndex = 1;
+            this.axMilling_1_Angle.MotionModuleNumber = 2;
             this.axMilling_1_Angle.AxisNumber = 4;
             this.axMilling_1_Angle.AxisWarningAddress = "W15";
             this.axMilling_1_Angle.BackColor = System.Drawing.Color.White;
@@ -381,6 +389,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.AxisAlarmAddress = "W74";
             this.axMilling_1X.AxisName = "Axis_Milling1X";
             this.axMilling_1X.AxisNameKey = "Axis_Milling1X";
+            this.axMilling_1X.ModuleAxisIndex = 2;
+            this.axMilling_1X.MotionModuleNumber = 1;
             this.axMilling_1X.AxisNumber = 5;
             this.axMilling_1X.AxisWarningAddress = "W75";
             this.axMilling_1X.BackColor = System.Drawing.Color.White;
@@ -421,6 +431,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.AxisAlarmAddress = "W24";
             this.axMilling_1Y.AxisName = "Axis_Milling1Y";
             this.axMilling_1Y.AxisNameKey = "Axis_Milling1Y";
+            this.axMilling_1Y.ModuleAxisIndex = 3;
+            this.axMilling_1Y.MotionModuleNumber = 1;
             this.axMilling_1Y.AxisNumber = 6;
             this.axMilling_1Y.AxisWarningAddress = "W25";
             this.axMilling_1Y.BackColor = System.Drawing.Color.White;
@@ -461,6 +473,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.AxisAlarmAddress = "W34";
             this.axMilling_1Z.AxisName = "Axis_Milling1Z";
             this.axMilling_1Z.AxisNameKey = "Axis_Milling1Z";
+            this.axMilling_1Z.ModuleAxisIndex = 4;
+            this.axMilling_1Z.MotionModuleNumber = 1;
             this.axMilling_1Z.AxisNumber = 7;
             this.axMilling_1Z.AxisWarningAddress = "W35";
             this.axMilling_1Z.BackColor = System.Drawing.Color.White;
@@ -501,6 +515,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.AxisAlarmAddress = "W44";
             this.axMilling_2_Angle.AxisName = "Axis_Milling2Angle";
             this.axMilling_2_Angle.AxisNameKey = "Axis_Milling2Angle";
+            this.axMilling_2_Angle.ModuleAxisIndex = 2;
+            this.axMilling_2_Angle.MotionModuleNumber = 2;
             this.axMilling_2_Angle.AxisNumber = 8;
             this.axMilling_2_Angle.AxisWarningAddress = "W45";
             this.axMilling_2_Angle.BackColor = System.Drawing.Color.White;
@@ -542,6 +558,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.AxisAlarmAddress = "W84";
             this.axMilling_2X.AxisName = "Axis_Milling2X";
             this.axMilling_2X.AxisNameKey = "Axis_Milling2X";
+            this.axMilling_2X.ModuleAxisIndex = 5;
+            this.axMilling_2X.MotionModuleNumber = 1;
             this.axMilling_2X.AxisNumber = 9;
             this.axMilling_2X.AxisWarningAddress = "W85";
             this.axMilling_2X.BackColor = System.Drawing.Color.White;
@@ -582,6 +600,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.AxisAlarmAddress = "W54";
             this.axMilling_2Y.AxisName = "Axis_Milling2Y";
             this.axMilling_2Y.AxisNameKey = "Axis_Milling2Y";
+            this.axMilling_2Y.ModuleAxisIndex = 6;
+            this.axMilling_2Y.MotionModuleNumber = 1;
             this.axMilling_2Y.AxisNumber = 10;
             this.axMilling_2Y.AxisWarningAddress = "W55";
             this.axMilling_2Y.BackColor = System.Drawing.Color.White;
@@ -622,6 +642,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.AxisAlarmAddress = "W64";
             this.axMilling_2Z.AxisName = "Axis_Milling2Z";
             this.axMilling_2Z.AxisNameKey = "Axis_Milling2Z";
+            this.axMilling_2Z.ModuleAxisIndex = 7;
+            this.axMilling_2Z.MotionModuleNumber = 1;
             this.axMilling_2Z.AxisNumber = 11;
             this.axMilling_2Z.AxisWarningAddress = "W65";
             this.axMilling_2Z.BackColor = System.Drawing.Color.White;
@@ -662,6 +684,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.AxisAlarmAddress = "W94";
             this.axCutting_Angle.AxisName = "Axis_CuttingAngle";
             this.axCutting_Angle.AxisNameKey = "Axis_CuttingAngle";
+            this.axCutting_Angle.ModuleAxisIndex = 3;
+            this.axCutting_Angle.MotionModuleNumber = 2;
             this.axCutting_Angle.AxisNumber = 12;
             this.axCutting_Angle.AxisWarningAddress = "W95";
             this.axCutting_Angle.BackColor = System.Drawing.Color.White;
@@ -703,6 +727,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.AxisAlarmAddress = "W0A4";
             this.axCutting_Z.AxisName = "Axis_CuttingZ";
             this.axCutting_Z.AxisNameKey = "Axis_CuttingZ";
+            this.axCutting_Z.ModuleAxisIndex = 4;
+            this.axCutting_Z.MotionModuleNumber = 2;
             this.axCutting_Z.AxisNumber = 13;
             this.axCutting_Z.AxisWarningAddress = "W0A5";
             this.axCutting_Z.BackColor = System.Drawing.Color.White;
@@ -744,6 +770,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.AxisAlarmAddress = "W0E4";
             this.axV_Cutting_Y.AxisName = "Axis_VCuttingY";
             this.axV_Cutting_Y.AxisNameKey = "Axis_VCuttingY";
+            this.axV_Cutting_Y.ModuleAxisIndex = 7;
+            this.axV_Cutting_Y.MotionModuleNumber = 2;
             this.axV_Cutting_Y.AxisNumber = 14;
             this.axV_Cutting_Y.AxisWarningAddress = "W0E5";
             this.axV_Cutting_Y.BackColor = System.Drawing.Color.White;
@@ -786,6 +814,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.AxisAlarmAddress = "W0F4";
             this.axV_Cutting_Z.AxisName = "Axis_VCuttingZ";
             this.axV_Cutting_Z.AxisNameKey = "Axis_VCuttingZ";
+            this.axV_Cutting_Z.ModuleAxisIndex = 8;
+            this.axV_Cutting_Z.MotionModuleNumber = 2;
             this.axV_Cutting_Z.AxisNumber = 15;
             this.axV_Cutting_Z.AxisWarningAddress = "W0F5";
             this.axV_Cutting_Z.BackColor = System.Drawing.Color.White;
@@ -828,6 +858,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.AxisAlarmAddress = "W0D4";
             this.axExit_X.AxisName = "Axis_ExitX";
             this.axExit_X.AxisNameKey = "Axis_ExitX";
+            this.axExit_X.ModuleAxisIndex = 8;
+            this.axExit_X.MotionModuleNumber = 1;
             this.axExit_X.AxisNumber = 16;
             this.axExit_X.AxisWarningAddress = "W0D5";
             this.axExit_X.BackColor = System.Drawing.Color.White;

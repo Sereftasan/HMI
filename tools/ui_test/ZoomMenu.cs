@@ -120,9 +120,9 @@ class ZM {
               Kaban.UI.Helpers.LoginHandoff.TryConsume(args.Split(' '), out user) && user == "maint", args);
         Check("  a note lives two minutes", Kaban.UI.Helpers.LoginHandoff.Lifetime == TimeSpan.FromMinutes(2));
 
-        Console.WriteLine("--- User Settings: the user's own request ---");
+        Console.WriteLine("--- Users and Preferences: the user's own request ---");
         SecurityManager.Login("admin", SecurityLevel.Admin);
-        var users = new UserSettingsControl();
+        var users = new UsersPreferencesControl();
         var texts = All(users).OfType<Label>().Select(l => l.Text).ToList();
         Check("no explanation on the page (no panel block, no note)", !texts.Any(t => t.Contains("of this panel") || t.StartsWith("For everyone") ||
               t.StartsWith("The user's own size") || t.StartsWith("0.8 to 1.5")), string.Join(" | ", texts));
@@ -135,7 +135,7 @@ class ZM {
             return chooser.Text;
         };
         UserStore.AddOrUpdateUser("oper2", "1234", SecurityLevel.Operator);
-        typeof(UserSettingsControl).GetMethod("RefreshList", Any).Invoke(users, null);
+        typeof(UsersPreferencesControl).GetMethod("RefreshList", Any).Invoke(users, null);
         Check("a user with no request: 'No specific request'", select("oper2") == "No specific request", chooser.Text);
         Check("admin: their own 120% - not the 90% the caption bar chose", select("admin") == "120%", chooser.Text);
         var cmenu = (ContextMenuStrip)chooser.GetType().GetMethod("BuildMenu", Any).Invoke(chooser, null);

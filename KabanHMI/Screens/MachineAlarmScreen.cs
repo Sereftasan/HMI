@@ -134,6 +134,8 @@ namespace Kaban.UI.Screens
             AddColumn("Description", "Alarm", 575);
             AddColumn("Severity", "Severity", 138);
             AddColumn("TriggerTime", "Time", 200);
+            // The date and time as View Preferences say (it was Windows' own), and again when they change.
+            UiStyle.DateColumn(_grid.Columns["TriggerTime"]);
             AddHelpColumn();
 
             // Fitted AFTER every column exists, and on the grid that has them. The
@@ -262,6 +264,8 @@ namespace Kaban.UI.Screens
             host.Controls.Add(empty);
             host.Controls.Add(bar);
             fill();
+            // Written again in the new date and time format when View Preferences change.
+            UiStyle.OnViewPreferences(host, fill);
             return host;
         }
 

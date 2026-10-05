@@ -121,6 +121,28 @@ namespace Kaban.UI.Dashboard
             Retranslate();
             ApplySections();
             ApplyAccess();
+            // View Preferences changed: the pickers, the shifts, the history and the bar in the new date and time.
+            UiStyle.OnViewPreferences(this, ApplyViewPreferences);
+        }
+
+        private void ApplyViewPreferences()
+        {
+            _setting = true;
+            try
+            {
+                foreach (var p in new[] { _start, _end }) p.CustomFormat = PickerFormat;
+            }
+            finally { _setting = false; }
+            FillShifts(true);
+            FillHistoryItems();
+            UpdateBar();
+            Invalidate(true);
+        }
+
+        /// <summary>The pickers' format: the date and the time as View Preferences say, no seconds.</summary>
+        private static string PickerFormat
+        {
+            get { return Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false); }
         }
 
         private DashboardConfig Config { get { return _machine.Config; } }
@@ -228,7 +250,7 @@ namespace Kaban.UI.Dashboard
             foreach (var p in new[] { _start, _end })
             {
                 p.Format = DateTimePickerFormat.Custom;
-                p.CustomFormat = Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
+                p.CustomFormat = PickerFormat;
                 p.Width = SideInner;
                 p.Font = UiStyle.Body;
                 p.Margin = new Padding(0, 2, 0, 2);
@@ -419,10 +441,11 @@ namespace Kaban.UI.Dashboard
         private List<DashboardConfig.Shift> _shifts = new List<DashboardConfig.Shift>();
 
         /// <summary>The shifts of the settings (a shift taken out of them loses its tick).</summary>
-        private void FillShifts()
+        private void FillShifts(bool keepTicks = false)
         {
             _shifts = Config.Shifts;
-            _shiftPick.SetItems(_shifts.Select(s => new PickList.Item(s.Text, s.Text)), false);
+            // Keyed by the stored "06:00 - 14:00"; shown as the screen writes times.
+            _shiftPick.SetItems(_shifts.Select(s => new PickList.Item(s.Text, s.Shown)), keepTicks);
         }
 
         /// <summary>The log types: the Kind column's values, the machine's first.</summary>
@@ -609,7 +632,7 @@ namespace Kaban.UI.Dashboard
                 "  -  " + Kaban.Core.Helpers.ViewPreferences.DateTimeText(_to, false)
             };
             if (_filter.Shifts.Count > 0)
-                parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + string.Join(", ", _filter.Shifts.Select(s => s.Text)));
+                parts.Add(T("Dsh_ActiveShift", "Active Shift") + ": " + string.Join(", ", _filter.Shifts.Select(s => s.Shown)));
             var shown = ShownText();
             if (shown.Length > 0) parts.Add(shown);
             _barText.Text = string.Join("     \u00b7     ", parts);

@@ -719,6 +719,81 @@ namespace Kaban.UI.Controls
             Kaban.Core.Helpers.ViewPreferences.Changed += (s, e) => ApplyTablePreferences();
         }
 
+        // ---- dates and times, as View Preferences say --------------------------------
+
+        private sealed class DateCol { public WeakReference Column; public bool Seconds; public int Fraction; }
+        private static readonly List<DateCol> _dateColumns = new List<DateCol>();
+        private static bool _datesHooked;
+
+        /// <summary>
+        /// A table column bound to a DateTime (an alarm's time): written as View
+        /// Preferences say - and again, in the open table, when they change.
+        /// </summary>
+        public static void DateColumn(DataGridViewColumn column, bool seconds = true, int fraction = 0)
+        {
+            if (column == null) return;
+            ApplyDateFormat(column, seconds, fraction);
+            lock (_dateColumns)
+            {
+                _dateColumns.RemoveAll(d => !d.Column.IsAlive);
+                _dateColumns.Add(new DateCol { Column = new WeakReference(column), Seconds = seconds, Fraction = fraction });
+                if (_datesHooked) return;
+                _datesHooked = true;
+            }
+            Kaban.Core.Helpers.ViewPreferences.Changed += (s, e) =>
+            {
+                List<DateCol> live;
+                lock (_dateColumns) live = _dateColumns.Where(d => d.Column.IsAlive).ToList();
+                foreach (var d in live)
+                {
+                    var col = d.Column.Target as DataGridViewColumn;
+                    if (col == null) continue;
+                    var dc = d;
+                    var grid = col.DataGridView;
+                    Action apply = () => ApplyDateFormat(col, dc.Seconds, dc.Fraction);
+                    try
+                    {
+                        if (grid != null && !grid.IsDisposed && grid.InvokeRequired) grid.BeginInvoke(apply);
+                        else apply();
+                    }
+                    catch { /* a table closing meanwhile */ }
+                }
+            };
+        }
+
+        private static void ApplyDateFormat(DataGridViewColumn col, bool seconds, int fraction)
+        {
+            col.DefaultCellStyle.Format = Kaban.Core.Helpers.ViewPreferences.DateTimePattern(seconds, fraction);
+            // "PM", not the Windows language's designator: as every other time on screen.
+            col.DefaultCellStyle.FormatProvider = System.Globalization.CultureInfo.InvariantCulture;
+            var grid = col.DataGridView;
+            if (grid != null && !grid.IsDisposed && col.Index >= 0) grid.InvalidateColumn(col.Index);
+        }
+
+        /// <summary>
+        /// Runs <paramref name="apply"/> whenever View Preferences change, on the
+        /// control's thread, until the control is disposed - for a page that writes
+        /// dates or numbers itself (pickers, lists, a bar of text).
+        /// </summary>
+        public static void OnViewPreferences(Control owner, Action apply)
+        {
+            if (owner == null || apply == null) return;
+            EventHandler h = null;
+            h = (s, e) =>
+            {
+                if (owner.IsDisposed) { Kaban.Core.Helpers.ViewPreferences.Changed -= h; return; }
+                Action run = () => { if (!owner.IsDisposed) apply(); };
+                try
+                {
+                    if (owner.IsHandleCreated && owner.InvokeRequired) owner.BeginInvoke(run);
+                    else run();
+                }
+                catch { /* closing meanwhile */ }
+            };
+            Kaban.Core.Helpers.ViewPreferences.Changed += h;
+            owner.Disposed += (s, e) => Kaban.Core.Helpers.ViewPreferences.Changed -= h;
+        }
+
         /// <summary>The rows and letters of every open table, again (View Preferences changed).</summary>
         public static void ApplyTablePreferences()
         {

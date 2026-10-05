@@ -181,6 +181,16 @@ namespace Kaban.UI.Dashboard
         {
             public TimeSpan Start, End;
             public string Text { get { return Hm(Start) + " - " + Hm(End); } }
+            /// <summary>As the screen writes times (View Preferences: "6:00 AM - 2:00 PM" on 12 hours); Text stays the key.</summary>
+            public string Shown
+            {
+                get
+                {
+                    string p = Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
+                    return (DateTime.Today + Start).ToString(p, CultureInfo.InvariantCulture) + " - " +
+                           (DateTime.Today + End).ToString(p, CultureInfo.InvariantCulture);
+                }
+            }
             public override string ToString() { return Text; }
         }
 

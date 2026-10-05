@@ -211,7 +211,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Helpers\NavigationHistory.cs" />
-    <Compile Include="Settings\UserSettingsControl.cs">
+    <Compile Include="Settings\UsersPreferencesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Settings\LogSettingsControl.cs" />
@@ -245,7 +245,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Settings\HmiSettingsPage.cs" />
-    <Compile Include="Settings\ViewPreferencesControl.cs" />
+    <Compile Include="Settings\PreferencePreview.cs" />
     <Compile Include="Settings\ISettingsPage.cs" />
     <Compile Include="Settings\SettingsScreen.cs">
       <SubType>UserControl</SubType>

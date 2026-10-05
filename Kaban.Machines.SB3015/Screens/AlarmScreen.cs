@@ -54,6 +54,8 @@ namespace Kaban.Machines.SB3015.Screens // Or wherever your UserControls are loc
                 Width = 150,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = Kaban.Core.Helpers.ViewPreferences.DateTimePattern() }
             });
+            // As View Preferences say, and again when they change.
+            Kaban.UI.Controls.UiStyle.DateColumn(dgvAlarms.Columns["ColTime"]);
 
             // 2. Code Column
             dgvAlarms.Columns.Add(new DataGridViewTextBoxColumn

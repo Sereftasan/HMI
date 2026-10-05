@@ -29,14 +29,6 @@ namespace Kaban.UI.Settings
         }
     }
 
-    public class UserSettingsPage : ISettingsPage
-    {
-        public string TitleKey => "Set_Users";
-        public string TitleFallback => "User Settings";
-        public SecurityLevel RequiredLevel => SecurityLevel.Admin;   // account management is admin-only
-        public UserControl GetControl() => new UserSettingsControl();
-    }
-
     /// <summary>
     /// Carrying a machine's settings onto an upgraded build.
     ///

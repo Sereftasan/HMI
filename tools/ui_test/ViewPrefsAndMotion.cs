@@ -137,10 +137,10 @@ class VPM {
         host.Controls.Add(single); Pump(100);
         var axisName = (Label)typeof(AxisSettingHMI).GetField("_axis", Any).GetValue(single);
         Check("axis name: right by default", axisName.TextAlign == ContentAlignment.MiddleRight);
-        ViewPreferences.SetPanel(ViewPreferences.AxisNameAlign, "Left");
+        ViewPreferences.SetPanel(ViewPreferences.CaptionAlign, "Left");
         Pump(100);
-        Check("  left when asked", axisName.TextAlign == ContentAlignment.MiddleLeft);
-        ViewPreferences.SetPanel(ViewPreferences.AxisNameAlign, null);
+        Check("  left with the captions (one preference)", axisName.TextAlign == ContentAlignment.MiddleLeft);
+        ViewPreferences.SetPanel(ViewPreferences.CaptionAlign, null);
         Pump(50);
         host.Controls.Remove(single);
 
@@ -318,44 +318,7 @@ class VPM {
         form.Controls.Remove(page); form.Controls.Remove(plain);
         SecurityManager.Logout();
 
-        Console.WriteLine("--- the View Preferences page ---");
-        var vpPage = new ViewPreferencesPage();
-        Check("a tab of HMI Settings for anyone signed in", vpPage.TitleKey == "Set_ViewPrefs" && vpPage.RequiredLevel == SecurityLevel.Operator && Has("Set_ViewPrefs"));
-        SecurityManager.Login("boss", SecurityLevel.Admin);
-        var vp = new ViewPreferencesControl { Dock = DockStyle.Fill };
-        form.Controls.Add(vp);
-        Pump(150);
-        Func<List<string>> whose = () => vp.Whose.Items.Cast<object>().Select(o => o.ToString()).ToList();
-        Check("an Admin: everyone's, his own", whose().Count >= 2 && whose()[0].StartsWith("Everyone") && whose().Any(w => w.StartsWith("boss")), string.Join(" | ", whose()));
-        Check("  his own shown first", vp.Whose.SelectedItem.ToString().StartsWith("boss"));
-        var date = vp.ComboOf(ViewPreferences.DateFormat);
-        Check("  each may follow everyone's", date.Items[0].ToString().StartsWith("As for everyone") && date.SelectedIndex == 0, date.Items[0].ToString());
-        Check("  Save waits for a change", !vp.SaveButton.Enabled);
-        date.SelectedIndex = date.Items.Cast<object>().ToList().FindIndex(o => o.ToString() == "02.10.2026");
-        Check("  a change: Save", vp.SaveButton.Enabled);
-        vp.SaveButton.PerformClick();
-        Pump(50);
-        Check("  saved as his own, in force at once", ViewPreferences.UserValue("boss", ViewPreferences.DateFormat) == "European" &&
-              ViewPreferences.DateText(t) == "02.10.2026" && !vp.SaveButton.Enabled);
-        vp.Whose.SelectedIndex = 0;
-        Pump(50);
-        var dec = vp.ComboOf(ViewPreferences.DecimalSeparator);
-        Check("everyone's: no 'as for everyone', the combos his to change", !dec.Items[0].ToString().StartsWith("As for") && dec.Enabled);
-        dec.SelectedIndex = 2;
-        vp.SaveButton.PerformClick();
-        Pump(50);
-        Check("  saved for everyone", ViewPreferences.PanelValue(ViewPreferences.DecimalSeparator) == "Comma", ViewPreferences.PanelValue(ViewPreferences.DecimalSeparator));
-        Snap(vp, vp.Height, "/tmp/view_prefs.png");
-        SecurityManager.Login("op", SecurityLevel.Operator);
-        Pump(100);
-        Check("an Operator: only his own", whose().Count == 1 && whose()[0].StartsWith("op"), string.Join(" | ", whose()));
-        Check("  his to change", vp.ComboOf(ViewPreferences.TimeFormat).Enabled);
-        SecurityManager.Login("mt", SecurityLevel.Maintenance);
-        Pump(100);
-        Check("Maintenance: everyone's and his own", whose().Count == 2 && whose()[0].StartsWith("Everyone"), string.Join(" | ", whose()));
-        Check("every caption of the page translated", new[] { "VP_Whose", "VP_SecCaptions", "VP_SecNumbers", "VP_SecTables", "VP_SecSignIn", "VP_CaptionAlign",
-              "VP_AxisNameAlign", "VP_DecimalSeparator", "VP_DateFormat", "VP_TimeFormat", "VP_TableRows", "VP_TableFont", "VP_StartPage", "VP_AlarmSound",
-              "VP_Blinking", "VP_TooltipDelay", "VP_Note", "VP_Everyone", "VP_AsEveryone", "Mot_Pick", "Mot_PickNone", "Mot_PickNote" }.All(Has));
+        Check("the simple motion texts translated", new[] { "Mot_Pick", "Mot_PickNone", "Mot_PickNote" }.All(Has));
         SecurityManager.Logout();
         form.Close();
 

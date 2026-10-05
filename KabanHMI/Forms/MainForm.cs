@@ -1661,7 +1661,7 @@ namespace Kaban.UI.Forms
                 LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
             pnlTop.Controls.Add(_btnConnection);
 
-            var blink = new Timer { Interval = 500 };
+            var blink = _connTimer = new Timer { Interval = 500 };
             blink.Tick += (s, e) =>
             {
                 bool any = ConnectionMonitor.AnyDown;
@@ -1671,7 +1671,8 @@ namespace Kaban.UI.Forms
                     LayoutTopBar();
                 }
                 if (!any) return;
-                _connPhase = !_connPhase;
+                // View Preferences > Attention marks: Steady - the mark stays red.
+                _connPhase = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !_connPhase;
                 _btnConnection.Invalidate();
             };
             blink.Start();
@@ -1747,7 +1748,8 @@ namespace Kaban.UI.Forms
             _alarmTimer = new Timer { Interval = 220 };   // twice the old rate - it read as sluggish
             _alarmTimer.Tick += (s, e) =>
             {
-                _alarmPhase = !_alarmPhase;
+                // View Preferences > Attention marks: Steady - the mark stays red.
+                _alarmPhase = !Kaban.Core.Helpers.ViewPreferences.BlinkingOn || !_alarmPhase;
                 if (_btnAlarmReset.Visible) _btnAlarmReset.Invalidate();
             };
             _alarmTimer.Start();
@@ -2021,6 +2023,8 @@ namespace Kaban.UI.Forms
 
         private Button _btnAlarmReset;
         private Timer _alarmTimer;
+        /// <summary>The connection mark's blink (a field so the tests can tick it).</summary>
+        private Timer _connTimer;
         private bool _alarmPhase;
         private bool _machineError;
         /// <summary>An alarm the HMI raised itself (AlarmGeneration) is on the list.</summary>

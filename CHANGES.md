@@ -4430,3 +4430,24 @@ and `UnitLookAndErrors` extended.
 - Translations: Set_ViewPrefs, Tip_View*, VP_*, Mot_*, MotH_*, MotSt_* (six languages).
 - Manual: View Preferences, the simple motion values, View.cfg.
 - Tests: `ViewPrefsAndMotion.cs` (new); `LastPlace.cs` (after sign-in).
+
+
+## 2026-10-05 - Users and Preferences in one tab; Read from; the preview; user rights; dates and steady marks; FA2010 motion modules
+
+- `KabanHMI/Settings/UsersPreferencesControl.cs` (new; replaces `UserSettingsControl.cs` and `ViewPreferencesControl.cs`):
+  `UsersPreferencesPage` (Set_UsersPrefs, Operator), the accounts, Read from, the screen scale (`ScaleChooser` moved here,
+  `OfferNone`, `ValueChanged`), the preferences, `PrefTexts`. `KabanHMI/Settings/PreferencePreview.cs` (new).
+- `Kaban.Core/Helpers/UserRights.cs` (new); `UserStore.CreatedBy` / `SetCreatedBy` / `CreatorsPath` (UserCreators.cfg),
+  forgotten with the account.
+- `ViewPreferences`: `AxisNameAlign` removed (`AxisNamesLeft` = `CaptionsLeft`); `DatePatternOf`, `TimePatternOf`,
+  `RowHeightOf`, `FontSizeOf`, `DelayOf`. `AxisMonitorRow.NameLabel` follows it.
+- `UiStyle.DateColumn`, `UiStyle.OnViewPreferences`; used by `MachineAlarmScreen` (list and history), the machines'
+  `AlarmScreen`, `DashboardScreen` (pickers, shifts, history, bar), `DashboardSettingsControl` (shift pickers, next report;
+  the shift's 🗑), `LogViewerControl` (pickers, table). `DashboardConfig.Shift.Shown`.
+- `MainForm`: the top bar's alarm and connection marks steady when Attention marks say so (`_connTimer`).
+- FA2010 `AxisSettings.Designer.cs`: MotionModuleNumber / ModuleAxisIndex on the 16 axes.
+- Translations: Set_UsersPrefs, Tip_UsrPrefSave, Tip_UsrNew, Tip_UsrPass, Usr_Sec*, Usr_Msg*, Usr_Note*, Usr_CreatedBy,
+  Usr_ReadDone, Usr_NewUser, Usr_NewHint, Usr_PageNote, Usr_TtlDelete, VP_ReadFrom, Tip_ReadFrom, VP_SecScreen, Lvl_*,
+  PV_*; VP_CaptionAlign renamed; removed Set_ViewPrefs, Tip_ViewSave, VP_Whose, VP_Note, VP_AxisNameAlign, VP_Right, VP_Left.
+- Manual: Users and Preferences, the rights, where the dates reach, UserCreators.cfg.
+- Tests: `UsersAndPreferences.cs` (new); `ViewPrefsAndMotion.cs`, `ZoomMenu.cs`, `TableLook.cs`.

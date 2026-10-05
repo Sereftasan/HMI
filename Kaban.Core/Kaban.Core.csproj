@@ -113,6 +113,7 @@
     <Compile Include="Helpers\SecurityManager.cs" />
     <Compile Include="Helpers\UserAccount.cs" />
     <Compile Include="Helpers\UserStore.cs" />
+    <Compile Include="Helpers\UserRights.cs" />
     <Compile Include="Helpers\AlarmDefinitionLoader.cs" />
     <Compile Include="Data\HmiDatabase.cs" />
     <Compile Include="Machines\IMachineModule.cs" />

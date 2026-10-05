@@ -123,6 +123,8 @@ namespace Kaban.UI.Screens
 
         internal readonly NumericDisplayHMI Position;
         internal readonly MeterHMI Current;
+        /// <summary>The axis's name - to the side View Preferences' Captions say, as on the Axis Settings row.</summary>
+        public readonly Label NameLabel;
 
         public AxisMonitorRow(AlarmHelpLinks.AxisInfo a)
         {
@@ -138,9 +140,12 @@ namespace Kaban.UI.Screens
             {
                 Text = LanguageManager.GetString(a.NameKey ?? "", a.NameKey ?? ""),
                 Location = new Point(x, 8), Size = new Size(AxisMonitorPage.WName, 24),
-                TextAlign = ContentAlignment.MiddleRight, Font = new Font("Segoe UI", 10F, FontStyle.Regular)
+                TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight,
+                Font = new Font("Segoe UI", 10F, FontStyle.Regular)
             };
             Controls.Add(name);
+            NameLabel = name;
+            ViewPreferences.Changed += OnViewPreferencesChanged;
             x += AxisMonitorPage.WName + AxisMonitorPage.Gap + AxisMonitorPage.Gap;
 
             Position = new NumericDisplayHMI
@@ -180,6 +185,19 @@ namespace Kaban.UI.Screens
         {
             bool vis = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
             if (Visible != vis) Visible = vis;
+        }
+
+        private void OnViewPreferencesChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnViewPreferencesChanged), sender, e); } catch { } return; }
+            NameLabel.TextAlign = ViewPreferences.AxisNamesLeft ? ContentAlignment.MiddleLeft : ContentAlignment.MiddleRight;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) ViewPreferences.Changed -= OnViewPreferencesChanged;
+            base.Dispose(disposing);
         }
     }
 }

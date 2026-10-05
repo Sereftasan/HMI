@@ -124,9 +124,16 @@ namespace Kaban.UI.Settings
             {
                 dp.Format = DateTimePickerFormat.Custom;
                 dp.CustomFormat = Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
-                dp.Width = 150;
+                dp.Width = 172;      // "10/02/2026  12:31 PM"
                 dp.ValueChanged += (s, e) => { if (_setting) return; SelectPeriod(Period.Custom, false); Reload(); };
             }
+            // View Preferences changed: the pickers and the open table in the new date and time.
+            Kaban.UI.Controls.UiStyle.OnViewPreferences(this, () =>
+            {
+                foreach (var dp in new[] { _from, _to })
+                    dp.CustomFormat = Kaban.Core.Helpers.ViewPreferences.DatePattern + "  " + Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
+                _grid.Invalidate();
+            });
 
             _search.Width = 190;
             _tips.SetToolTip(_search, LanguageManager.GetString("Log_SearchTip",

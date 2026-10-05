@@ -21,9 +21,9 @@ namespace Kaban.UI.Settings
             return new SettingsScreen(new ISettingsPage[]
             {
                 new UnitSettingsPage(),
-                new UserSettingsPage(),
-                // How the screen shows things - for everyone or per user.
-                new ViewPreferencesPage(),
+                // The accounts and how the screen shows things, for everyone or per user
+                // (it was two tabs: User Settings and View Preferences).
+                new UsersPreferencesPage(),
                 new ImportSettingsPage(),
                 new LogSettingsPage(),
                 // One tab for the controllers: connections, their state, the

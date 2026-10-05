@@ -193,6 +193,20 @@ namespace Kaban.UI.Dashboard
             HandleCreated += (s, e) => { try { BeginInvoke(new Action(TestDatabase)); } catch { } };
             bool can = SecurityManager.HasAccess(SecurityLevel.Maintenance);
             foreach (Control c in _flow.Controls) if (c != _next) c.Enabled = can;
+            // View Preferences changed: the shifts' times and the next report in the new format.
+            UiStyle.OnViewPreferences(this, () =>
+            {
+                foreach (var pair in _shiftPickers) foreach (var p in pair) p.CustomFormat = Kaban.Core.Helpers.ViewPreferences.TimePattern(false);
+                ShowNext();
+            });
+        }
+
+        private DateTime? _nextDue;
+
+        private void ShowNext()
+        {
+            _next.Text = T("Dsh_SetNext", "Next automatic report:") + " " +
+                         (_nextDue.HasValue ? Kaban.Core.Helpers.ViewPreferences.DateTimeText(_nextDue.Value, false) : "-");
         }
 
         // ---- building
@@ -308,8 +322,8 @@ namespace Kaban.UI.Dashboard
             _auto.Checked = c.AutoReports;
             foreach (var kv in _reports) kv.Value.Checked = c.Get(kv.Key, kv.Key != "database_table_report");
             var due = c.RequiredReportEnd;
-            _next.Text = T("Dsh_SetNext", "Next automatic report:") + " " +
-                         (due.HasValue ? due.Value.ToString(DashboardConfig.DateFormatUi, CultureInfo.InvariantCulture) : "-");
+            _nextDue = due;
+            ShowNext();
             ShowScheduleRows();
         }
 
@@ -432,23 +446,25 @@ namespace Kaban.UI.Dashboard
             end = TimeSpan.FromMinutes(((long)end.TotalMinutes % 1440 + 1440) % 1440);
             Func<TimeSpan, DateTimePicker> picker = t => new DateTimePicker
             {
-                Format = DateTimePickerFormat.Custom, CustomFormat = "HH:mm", ShowUpDown = true, Width = 90, Font = UiStyle.Body,
+                // As the screen writes times (View Preferences): "14:00" or "2:00 PM".
+                Format = DateTimePickerFormat.Custom, CustomFormat = Kaban.Core.Helpers.ViewPreferences.TimePattern(false), ShowUpDown = true, Width = 104, Font = UiStyle.Body,
                 Value = DateTime.Today + t
             };
             var a = picker(start);
             var b = picker(end);
             var pair = new[] { a, b };
-            var row = new Panel { Width = 300, Height = 38, Margin = new Padding(0, 1, 0, 1) };
+            var row = new Panel { Width = 320, Height = 38, Margin = new Padding(0, 1, 0, 1) };
             a.Location = new Point(0, 5);
-            var dash = new Label { Text = "\u2013", AutoSize = true, Location = new Point(98, 8) };
-            b.Location = new Point(116, 5);
-            var remove = UiStyle.ToolButton("\u2716", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
+            var dash = new Label { Text = "\u2013", AutoSize = true, Location = new Point(110, 8) };
+            b.Location = new Point(128, 5);
+            // The program's delete button (it was a cross).
+            var remove = UiStyle.ToolButton("\uD83D\uDDD1", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
             {
                 _shiftPickers.Remove(pair);
                 _shiftRows.Controls.Remove(row);
                 row.Dispose();
             });
-            remove.Location = new Point(216, 2);
+            remove.Location = new Point(242, 2);
             row.Controls.AddRange(new Control[] { a, dash, b, remove });
             row.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
             _shiftPickers.Add(pair);

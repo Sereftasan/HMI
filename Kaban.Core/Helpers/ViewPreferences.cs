@@ -37,8 +37,8 @@ namespace Kaban.Core.Helpers
         }
 
         // ---- the keys -----------------------------------------------------------
+        /// <summary>Field captions AND axis names (Axis Settings, the Axis Monitor): one preference, the same look.</summary>
         public const string CaptionAlign = "CaptionAlign";          // Right | Left
-        public const string AxisNameAlign = "AxisNameAlign";        // Right | Left
         public const string DecimalSeparator = "DecimalSeparator";  // Windows | Point | Comma
         public const string DateFormat = "DateFormat";              // Iso | European | Us
         public const string TimeFormat = "TimeFormat";              // H24 | H12
@@ -56,7 +56,6 @@ namespace Kaban.Core.Helpers
         public static readonly IList<Preference> All = new List<Preference>
         {
             P(CaptionAlign, "Captions", "Right", "Left"),
-            P(AxisNameAlign, "Captions", "Right", "Left"),
             P(DecimalSeparator, "Numbers", "Windows", "Point", "Comma"),
             P(DateFormat, "Numbers", "Iso", "European", "Us"),
             P(TimeFormat, "Numbers", "H24", "H12"),
@@ -231,7 +230,8 @@ namespace Kaban.Core.Helpers
         // ---- what they mean ---------------------------------------------------------
 
         public static bool CaptionsLeft { get { return Get(CaptionAlign) == "Left"; } }
-        public static bool AxisNamesLeft { get { return Get(AxisNameAlign) == "Left"; } }
+        /// <summary>The axis names follow the captions (one preference since 5 October).</summary>
+        public static bool AxisNamesLeft { get { return CaptionsLeft; } }
         public static bool BlinkingOn { get { return Get(Blinking) != "Off"; } }
         public static bool AlarmSoundOn { get { return Get(AlarmSound) == "On"; } }
 
@@ -262,16 +262,16 @@ namespace Kaban.Core.Helpers
         public static string DecimalMark { get { return NumberFormat.NumberDecimalSeparator; } }
 
         /// <summary>"2026-10-02", "02.10.2026" or "10/02/2026".</summary>
-        public static string DatePattern
+        public static string DatePattern { get { return DatePatternOf(Get(DateFormat)); } }
+
+        /// <summary>The pattern of a Date value (Iso, European, Us) - the page's preview draws a value not yet in force.</summary>
+        public static string DatePatternOf(string value)
         {
-            get
+            switch (value)
             {
-                switch (Get(DateFormat))
-                {
-                    case "European": return "dd.MM.yyyy";
-                    case "Us": return "MM'/'dd'/'yyyy";
-                    default: return "yyyy-MM-dd";
-                }
+                case "European": return "dd.MM.yyyy";
+                case "Us": return "MM'/'dd'/'yyyy";
+                default: return "yyyy-MM-dd";
             }
         }
 
@@ -293,9 +293,12 @@ namespace Kaban.Core.Helpers
         /// "HH:mm:ss" or "h:mm:ss tt" - without the seconds when not wanted, with
         /// <paramref name="fraction"/> digits of the second after them.
         /// </summary>
-        public static string TimePattern(bool seconds = true, int fraction = 0)
+        public static string TimePattern(bool seconds = true, int fraction = 0) { return TimePatternOf(Get(TimeFormat), seconds, fraction); }
+
+        /// <summary>The pattern of a Time value (H24, H12).</summary>
+        public static string TimePatternOf(string value, bool seconds = true, int fraction = 0)
         {
-            bool h12 = Get(TimeFormat) == "H12";
+            bool h12 = value == "H12";
             return (h12 ? "h:mm" : "HH:mm") + (seconds ? ":ss" + (fraction > 0 ? "." + new string('f', Math.Min(fraction, 7)) : "") : "") + (h12 ? " tt" : "");
         }
 
@@ -307,30 +310,27 @@ namespace Kaban.Core.Helpers
         public static string DateTimeText(DateTime t, bool seconds = true, int fraction = 0) { return t.ToString(DateTimePattern(seconds, fraction), CultureInfo.InvariantCulture); }
 
         /// <summary>A table's row height at factor 1: 22, 26 or 32 pixels.</summary>
-        public static int TableRowHeight
+        public static int TableRowHeight { get { return RowHeightOf(Get(TableRows)); } }
+
+        public static int RowHeightOf(string value)
         {
-            get
-            {
-                switch (Get(TableRows)) { case "Compact": return 22; case "Large": return 32; default: return 26; }
-            }
+            switch (value) { case "Compact": return 22; case "Large": return 32; default: return 26; }
         }
 
         /// <summary>A table's letters, in points: 8.5, 9.5 (the program's body) or 11.</summary>
-        public static float TableFontSize
+        public static float TableFontSize { get { return FontSizeOf(Get(TableFont)); } }
+
+        public static float FontSizeOf(string value)
         {
-            get
-            {
-                switch (Get(TableFont)) { case "Small": return 8.5f; case "Large": return 11f; default: return 9.5f; }
-            }
+            switch (value) { case "Small": return 8.5f; case "Large": return 11f; default: return 9.5f; }
         }
 
         /// <summary>How soon a tooltip comes, in milliseconds: 400, 1000 or 2000.</summary>
-        public static int TooltipDelayMs
+        public static int TooltipDelayMs { get { return DelayOf(Get(TooltipDelay)); } }
+
+        public static int DelayOf(string value)
         {
-            get
-            {
-                switch (Get(TooltipDelay)) { case "Short": return 400; case "Long": return 2000; default: return 1000; }
-            }
+            switch (value) { case "Short": return 400; case "Long": return 2000; default: return 1000; }
         }
 
         /// <summary>The simple motion values picked on the Axis Settings page (their keys).</summary>

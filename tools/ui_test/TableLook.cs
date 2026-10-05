@@ -88,7 +88,7 @@ class TL {
         var logs = new Kaban.UI.Settings.LogViewerControl(null, Kaban.UI.Settings.LogViewerControl.Period.Today);
         var lGrid = Field<DataGridView>(logs, "_grid");
         Check("the log", Looks(lGrid) && UiStyle.ChooserOf(lGrid) != null);
-        var users = new Kaban.UI.Settings.UserSettingsControl();
+        var users = new Kaban.UI.Settings.UsersPreferencesControl();
         var uGrid = Field<DataGridView>(users, "_grid");
         Check("the users", Looks(uGrid) && UiStyle.ChooserOf(uGrid) != null);
         var import = new Kaban.UI.Settings.ImportSettingsControl();

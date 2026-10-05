@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Kaban.Core.Enums;
@@ -97,13 +98,85 @@ namespace Kaban.Core.Helpers
             if (ok)
             {
                 Persist();
+                ForgetCreator(username);                          // and who created it, and what it created
                 DisplaySettings.SetUserFactor(username, null);    // their magnifying factor goes with them
                 ViewPreferences.RemoveUser(username);             // and their view preferences
             }
             return ok;
         }
 
-        /// <summary>All accounts (for the User Settings page).</summary>
+        // ------------------------------------------------------------------
+        // WHO CREATED EACH ACCOUNT (UserRights: a user may change an account of
+        // their own level only when they created it). Kept beside Users.dat, NOT
+        // in it: Users.dat keeps its four fields, so an older program version
+        // still reads every account.
+        // ------------------------------------------------------------------
+        public static string CreatorsPath = System.IO.Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "UserCreators.cfg");
+        private static Dictionary<string, string> _creators;
+
+        private static Dictionary<string, string> Creators
+        {
+            get
+            {
+                if (_creators != null) return _creators;
+                _creators = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                try
+                {
+                    if (System.IO.File.Exists(CreatorsPath))
+                        foreach (var line in System.IO.File.ReadAllLines(CreatorsPath, Encoding.UTF8))
+                        {
+                            var p = line.Split(';');
+                            if (p.Length == 2 && p[0].Trim().Length > 0 && p[1].Trim().Length > 0) _creators[p[0].Trim()] = p[1].Trim();
+                        }
+                }
+                catch { /* nobody's creator known: only higher levels manage */ }
+                return _creators;
+            }
+        }
+
+        /// <summary>Who created the account ("" when not known: a seeded or older account).</summary>
+        public static string CreatedBy(string username)
+        {
+            string c;
+            return !string.IsNullOrWhiteSpace(username) && Creators.TryGetValue(username.Trim(), out c) ? c : "";
+        }
+
+        /// <summary>Keeps who created the account (null or "": none).</summary>
+        public static void SetCreatedBy(string username, string creator)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return;
+            if (string.IsNullOrWhiteSpace(creator)) Creators.Remove(username.Trim());
+            else Creators[username.Trim()] = creator.Trim();
+            SaveCreators();
+        }
+
+        /// <summary>Reads the creators again (tests).</summary>
+        public static void ReloadCreators() { _creators = null; }
+
+        private static void ForgetCreator(string username)
+        {
+            bool changed = Creators.Remove(username);
+            foreach (var k in Creators.Where(kv => string.Equals(kv.Value, username, StringComparison.OrdinalIgnoreCase)).Select(kv => kv.Key).ToList())
+            {
+                Creators.Remove(k);        // a new account of the same name must not inherit them
+                changed = true;
+            }
+            if (changed) SaveCreators();
+        }
+
+        private static void SaveCreators()
+        {
+            try
+            {
+                var sb = new StringBuilder();
+                foreach (var kv in Creators) sb.AppendLine(kv.Key + ";" + kv.Value);
+                SafeFile.WriteAllText(CreatorsPath, sb.ToString(), new UTF8Encoding(false));
+            }
+            catch { /* kept in memory for this run */ }
+        }
+
+        /// <summary>All accounts (for the Users and Preferences page).</summary>
         public static IEnumerable<UserAccount> GetAllUsers() => _users.Values;
 
         /// <summary>Change only the level of an existing account (keeps the password).</summary>

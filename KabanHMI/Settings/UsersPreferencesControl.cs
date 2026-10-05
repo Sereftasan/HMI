@@ -1,0 +1,853 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+using Kaban.Core.Enums;
+using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
+
+namespace Kaban.UI.Settings
+{
+    /// <summary>HMI Settings > Users and Preferences (it was two tabs: User Settings and View Preferences).</summary>
+    public class UsersPreferencesPage : ISettingsPage
+    {
+        public string TitleKey => "Set_UsersPrefs";
+        public string TitleFallback => "Users and Preferences";
+        // Anyone signed in: their own password, scale and preferences; more by level (UserRights).
+        public SecurityLevel RequiredLevel => SecurityLevel.Operator;
+        public UserControl GetControl() => new UsersPreferencesControl();
+    }
+
+    /// <summary>
+    /// USERS AND THEIR PREFERENCES, ON ONE PAGE.
+    ///
+    /// On the left the accounts, "Everyone (this panel)" first. On the right of
+    /// it the one chosen: its account (name, password, level, who created it),
+    /// then its screen scale and view preferences - for a user each may stay
+    /// "As for everyone"; "Read from" copies another user's (or everyone's) into
+    /// the page, kept with the save. At the right edge, the PREVIEW of the
+    /// preference being chosen: what it changes, drawn.
+    ///
+    /// Who may change what: UserRights (their own; below their level; their
+    /// level when they created it; everyone's from Maintenance).
+    /// </summary>
+    public class UsersPreferencesControl : UserControl
+    {
+        private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
+
+        public const string Everyone = "\u0001everyone";
+        public const string ScaleKey = "ScreenScale";
+
+        private readonly DataGridView _grid = new DataGridView();
+        private readonly Panel _body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White };
+        private readonly PreferencePreview _preview = new PreferencePreview { Dock = DockStyle.Right, Width = 300 };
+        private readonly Label _who = new Label { AutoSize = false, Height = 28 };
+        private readonly Label _note = new Label { AutoSize = false, ForeColor = Color.FromArgb(150, 60, 20) };
+        private readonly Label _status = new Label { AutoSize = true, ForeColor = Color.FromArgb(60, 66, 76) };
+        private readonly TextBox _name = new TextBox();
+        private readonly TextBox _pass = new TextBox { UseSystemPasswordChar = true };
+        private readonly ComboBox _level = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
+        private readonly Label _createdBy = new Label { AutoSize = true, ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small };
+        private readonly ComboBox _readFrom = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Name = "readFrom" };
+        private readonly ScaleChooser _scale = new ScaleChooser();
+        private readonly Dictionary<string, ComboBox> _combos = new Dictionary<string, ComboBox>();
+        private readonly List<Control[]> _rows = new List<Control[]>();        // caption, field, the row's section
+        private readonly DirtyTracker _dirty = new DirtyTracker();
+        private Button _save, _revert, _new, _delete;
+        private Label _accountHead, _prefsHead, _readFromCaption, _pageNote;
+        private string _selected;          // a user, Everyone, or null while a new one is made
+        private bool _creating, _filling;
+        private string _activeKey = ViewPreferences.CaptionAlign;
+
+        /// <summary>Asks before a delete (tests answer instead).</summary>
+        public Func<string, bool> Confirm;
+        /// <summary>Offers the restart for a new scale of one's own (tests answer instead).</summary>
+        public Action<double> OfferRestart;
+
+        // ---- for the tests ----------------------------------------------------------
+        public ComboBox ComboOf(string key) { ComboBox c; return _combos.TryGetValue(key, out c) ? c : null; }
+        public DataGridView Users { get { return _grid; } }
+        public ComboBox ReadFrom { get { return _readFrom; } }
+        public Button SaveButton { get { return _save; } }
+        public Button NewButton { get { return _new; } }
+        public Button DeleteButton { get { return _delete; } }
+        public TextBox NameBox { get { return _name; } }
+        public TextBox PasswordBox { get { return _pass; } }
+        public ComboBox LevelBox { get { return _level; } }
+        public ScaleChooser ScaleBox { get { return _scale; } }
+        public PreferencePreview Preview { get { return _preview; } }
+        public string StatusText { get { return _status.Text; } }
+        public string NoteText { get { return _note.Visible ? _note.Text : ""; } }
+        public string Selected { get { return _creating ? null : _selected; } }
+
+        public UsersPreferencesControl()
+        {
+            Dock = DockStyle.Fill;
+            BackColor = Color.White;
+            Font = UiStyle.Body;
+            var tips = UiStyle.Tips();
+
+            // ---- the bar ----
+            var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 42, BackColor = Color.White, WrapContents = false, Padding = new Padding(4, 4, 0, 0) };
+            _save = UiStyle.ToolButton("\uD83D\uDCBE", T("Tip_UsrPrefSave", "Keep the account, its screen scale and its preferences"), tips, (s, e) => Save());
+            _revert = UiStyle.ToolButton("\u21BA", T("Tip_ViewRevert", "Throw the changes away and show the kept preferences"), tips, (s, e) => Fill());
+            _new = UiStyle.ToolButton("\u2795", T("Tip_UsrNew", "A new user: at your level or lower"), tips, (s, e) => StartNew());
+            _delete = UiStyle.ToolButton("\uD83D\uDDD1", T("Tip_UsrDelete", "Delete the selected user"), tips, (s, e) => DeleteUser());
+            foreach (var b in new[] { _save, _revert, _new, _delete }) { b.Margin = new Padding(2, 0, 2, 0); bar.Controls.Add(b); }
+            _status.Margin = new Padding(14, 9, 0, 0);
+            bar.Controls.Add(_status);
+            _dirty.Guard(_save);
+
+            // ---- the accounts ----
+            _grid.Dock = DockStyle.Left;
+            _grid.Width = 330;
+            _grid.ReadOnly = true;
+            _grid.AllowUserToAddRows = false;
+            _grid.AllowUserToDeleteRows = false;
+            _grid.RowHeadersVisible = false;
+            _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _grid.MultiSelect = false;
+            _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            _grid.Columns.Add("user", T("Usr_Name", "User"));
+            _grid.Columns.Add("level", T("Usr_Level", "Level"));
+            _grid.Columns.Add("factor", T("Usr_Factor", "Screen scale"));
+            UiStyle.EnableAutoFit(_grid);
+            UiStyle.EnableTableTools(_grid, "Users", sorting: false);
+            // "Everyone (this panel)" whole in the first column.
+            int[] widths = { 150, 86, 74 };
+            for (int i = 0; i < widths.Length; i++) _grid.Columns[i].Width = Math.Max(_grid.Columns[i].MinimumWidth, widths[i]);
+            _grid.Width = Math.Max(330, _grid.Columns.Cast<DataGridViewColumn>().Sum(c => c.Width) + 4);
+            // THE GRID PICKS ITS FIRST ROW when it is first shown (Everyone): that is
+            // not the operator choosing - the one chosen is put back once it settles.
+            _grid.HandleCreated += (s, e) =>
+            {
+                _gridSettled = false;
+                try { _grid.BeginInvoke(new Action(() => { Reselect(); _gridSettled = true; })); } catch { _gridSettled = true; }
+            };
+            _grid.SelectionChanged += (s, e) =>
+            {
+                if (_filling || _grid.SelectedRows.Count == 0) return;
+                if (!_gridSettled && _grid.IsHandleCreated) { Reselect(); return; }
+                var name = _grid.SelectedRows[0].Tag as string;
+                if (name == null || (!_creating && name == _selected)) return;
+                _creating = false;
+                _selected = name;
+                Fill();
+            };
+
+            BuildBody();
+
+            var line = new Panel { Dock = DockStyle.Right, Width = 1, BackColor = UiStyle.GridRule };
+            Controls.Add(_body);
+            Controls.Add(line);
+            Controls.Add(_preview);
+            Controls.Add(_grid);
+            Controls.Add(bar);
+
+            _selected = UserRights.Actor ?? Everyone;
+            RefreshList();
+            Fill();
+            SecurityManager.UserChanged += OnUserChanged;
+            Disposed += (s, e) => SecurityManager.UserChanged -= OnUserChanged;
+        }
+
+        private void OnUserChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired) { BeginInvoke(new EventHandler(OnUserChanged), sender, e); return; }
+            _creating = false;
+            _selected = UserRights.Actor ?? Everyone;
+            RefreshList();
+            Fill();
+        }
+
+        // ==================================================================
+        // THE PAGE
+        // ==================================================================
+
+        private const int CapX = 12, CapW = 210, FieldX = 228, FieldW = 300;
+
+        private Label Head(string text)
+        {
+            var l = new Label
+            {
+                Text = text, AutoSize = false, Size = new Size(FieldX + FieldW - CapX, 24),
+                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
+            };
+            _body.Controls.Add(l);
+            return l;
+        }
+
+        private void Row(string section, string key, string caption, Control field)
+        {
+            var cap = UiStyle.CaptionLabel(caption, CapX, 0, CapW);
+            field.Left = FieldX;
+            field.Width = FieldW;
+            _body.Controls.Add(cap);
+            _body.Controls.Add(field);
+            _rows.Add(new Control[] { cap, field, new Label { Tag = section } });
+            if (key == null) return;
+            EventHandler show = (s, e) => ShowPreview(key);
+            cap.MouseEnter += show;
+            field.MouseEnter += show;
+            field.Enter += show;
+        }
+
+        private void BuildBody()
+        {
+            _who.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            _who.ForeColor = Color.FromArgb(25, 28, 34);
+            _body.Controls.Add(_who);
+            _body.Controls.Add(_note);
+
+            _accountHead = Head(T("Usr_SecAccount", "Account"));
+            Row("Account", null, T("Usr_Name", "User"), _name);
+            Row("Account", null, T("Usr_Pass", "Password"), _pass);
+            Row("Account", null, T("Usr_Level", "Level"), _level);
+            _body.Controls.Add(_createdBy);
+            _name.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            _pass.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            _level.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            UiStyle.Tips().SetToolTip(_pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
+
+            _prefsHead = Head(T("Usr_SecPrefs", "Screen and view preferences"));
+            Row("Prefs", null, T("VP_ReadFrom", "Read from"), _readFrom);
+            _readFromCaption = (Label)_rows[_rows.Count - 1][0];
+            _readFrom.SelectedIndexChanged += (s, e) => { if (!_filling) ReadFromChosen(); };
+            UiStyle.Tips().SetToolTip(_readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE keeps them"));
+
+            Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
+            _scale.ValueChanged += (s, e) => { if (_filling) return; _dirty.MarkDirty(); ShowPreview(ScaleKey); };
+            _scale.Enter += (s, e) => ShowPreview(ScaleKey);
+
+            foreach (var group in new[] { "Captions", "Numbers", "Tables", "SignIn" })
+                foreach (var p in ViewPreferences.All.Where(x => x.Group == group && !x.Hidden))
+                {
+                    var combo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Name = "vp" + p.Key };
+                    string key = p.Key;
+                    combo.SelectedIndexChanged += (s, e) => { if (_filling) return; _dirty.MarkDirty(); ShowPreview(key); };
+                    combo.DropDown += (s, e) => ShowPreview(key);
+                    Row(group, key, PrefTexts.NameOf(p.Key), combo);
+                    _combos[p.Key] = combo;
+                }
+
+            _pageNote = new Label
+            {
+                AutoSize = false, Size = new Size(FieldX + FieldW - CapX, 62), ForeColor = Color.FromArgb(110, 116, 124),
+                Text = T("Usr_PageNote", "A user's own values are taken when they sign in, 'As for everyone' follows the panel's. A new screen scale needs a restart (offered at once for your own).")
+            };
+            _body.Controls.Add(_pageNote);
+        }
+
+        private static readonly Dictionary<string, string[]> SectionHeads = new Dictionary<string, string[]>
+        {
+            { "Screen", new[] { "VP_SecScreen", "Screen" } },
+            { "Captions", new[] { "VP_SecCaptions", "Captions" } },
+            { "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
+            { "Tables", new[] { "VP_SecTables", "Tables" } },
+            { "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } }
+        };
+        private readonly Dictionary<string, Label> _sectionLabels = new Dictionary<string, Label>();
+
+        /// <summary>The rows from the top: the account only for a user, the sections' headings in light grey.</summary>
+        private void LayoutBody(bool account)
+        {
+            _body.SuspendLayout();
+            int y = 10;
+            _who.SetBounds(CapX, y, FieldX + FieldW - CapX, 28);
+            y += 30;
+            if (_note.Visible)
+            {
+                _note.SetBounds(CapX, y, FieldX + FieldW - CapX, 36);
+                y += 40;
+            }
+            _accountHead.Visible = account;
+            _createdBy.Visible = account && _createdBy.Text.Length > 0;
+            string section = null;
+            foreach (var r in _rows)
+            {
+                string sec = (string)r[2].Tag;
+                bool shown = sec != "Account" || account;
+                r[0].Visible = r[1].Visible = shown;
+                if (!shown) continue;
+                if (sec != section)
+                {
+                    section = sec;
+                    y += 6;
+                    if (sec == "Account") { _accountHead.Top = y; _accountHead.Left = CapX; y += 28; }
+                    else if (sec == "Prefs") { y += 8; _prefsHead.Top = y; _prefsHead.Left = CapX; y += 28; }
+                    else
+                    {
+                        Label h;
+                        if (!_sectionLabels.TryGetValue(sec, out h))
+                        {
+                            h = new Label
+                            {
+                                Text = T(SectionHeads[sec][0], SectionHeads[sec][1]), AutoSize = false, Size = new Size(FieldX + FieldW - CapX, 20),
+                                ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small
+                            };
+                            _body.Controls.Add(h);
+                            _sectionLabels[sec] = h;
+                        }
+                        h.SetBounds(CapX, y, h.Width, 20);
+                        y += 22;
+                    }
+                }
+                r[0].Top = y + 2;
+                r[1].Top = y;
+                y += UiStyle.RowPitch;
+                // "created by mt1" under the level, in the field's column.
+                if (r[1] == _level && _createdBy.Visible) { _createdBy.Location = new Point(FieldX + 2, y - 6); y += 14; }
+            }
+            _pageNote.Top = y + 8;
+            _pageNote.Left = CapX;
+            _body.ResumeLayout();
+        }
+
+        // ==================================================================
+        // THE LIST
+        // ==================================================================
+
+        private void RefreshList()
+        {
+            _filling = true;
+            try
+            {
+                _grid.Rows.Clear();
+                int i = _grid.Rows.Add(T("VP_Everyone", "Everyone (this panel)"), "", DisplaySettings.Percent(DisplaySettings.PanelFactor));
+                _grid.Rows[i].Tag = Everyone;
+                _grid.Rows[i].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Italic);
+                if (!UserRights.CanEditEveryone) _grid.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(130, 136, 146);
+                foreach (var u in UserStore.GetAllUsers().OrderByDescending(u => u.Level).ThenBy(u => u.Username, StringComparer.OrdinalIgnoreCase))
+                {
+                    var f = DisplaySettings.UserFactor(u.Username);
+                    i = _grid.Rows.Add(u.Username, PrefTexts.LevelText(u.Level), f.HasValue ? DisplaySettings.Percent(f.Value) : "");
+                    _grid.Rows[i].Tag = u.Username;
+                    // The ones this user cannot change, in grey: seen, not changed.
+                    if (!UserRights.CanManage(u.Username)) _grid.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(130, 136, 146);
+                }
+                SelectRow(_creating ? null : _selected);
+            }
+            finally { _filling = false; }
+        }
+
+        private bool _gridSettled = true;
+
+        private void Reselect()
+        {
+            _filling = true;
+            try
+            {
+                // From the top, Everyone in sight (the grid had scrolled to its first pick).
+                if (_grid.IsHandleCreated && _grid.Rows.Count > 0) try { _grid.FirstDisplayedScrollingRowIndex = 0; } catch { }
+                SelectRow(_creating ? null : _selected);
+            }
+            finally { _filling = false; }
+        }
+
+        private void SelectRow(string name)
+        {
+            _grid.ClearSelection();
+            if (name == null) return;
+            foreach (DataGridViewRow r in _grid.Rows)
+                if (string.Equals(r.Tag as string, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    r.Selected = true;
+                    try
+                    {
+                        // Not before the grid exists on screen: set then, Mono's grid scrolled a row down.
+                        if (_grid.IsHandleCreated) _grid.CurrentCell = r.Cells[0];
+                    }
+                    catch { }
+                    return;
+                }
+        }
+
+        // ==================================================================
+        // THE ONE CHOSEN
+        // ==================================================================
+
+        private sealed class Choice
+        {
+            public string Value, Text;
+            public SecurityLevel Level;
+            public override string ToString() { return Text; }
+        }
+
+        private bool IsEveryone { get { return !_creating && _selected == Everyone; } }
+        private string EditedUser { get { return _creating || _selected == Everyone ? null : _selected; } }
+
+        /// <summary>May the one signed in change what the page shows?</summary>
+        private bool CanEdit
+        {
+            get
+            {
+                if (_creating) return UserRights.LevelsToGive().Count > 0;
+                if (_selected == Everyone) return UserRights.CanEditEveryone;
+                return UserRights.CanManage(_selected);
+            }
+        }
+
+        private UserAccount AccountOf(string name)
+        {
+            return name == null ? null : UserStore.GetAllUsers().FirstOrDefault(u => string.Equals(u.Username, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>The page from what is kept for the one chosen.</summary>
+        public void Fill()
+        {
+            _filling = true;
+            try
+            {
+                if (!_creating && _selected != Everyone && AccountOf(_selected) == null) _selected = UserRights.Actor ?? Everyone;
+                bool edit = CanEdit;
+                string user = EditedUser;
+                var account = AccountOf(user);
+                bool self = UserRights.IsSelf(UserRights.Actor, user);
+
+                // ---- who ----
+                _who.Text = _creating ? T("Usr_NewUser", "New user")
+                          : _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
+                          : user + "  \u00B7  " + PrefTexts.LevelText(account.Level) + (self ? "  " + T("VP_Me", "(me)") : "");
+                _note.Text = edit ? "" : _selected == Everyone
+                    ? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
+                    : string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
+                _note.Visible = _note.Text.Length > 0;
+
+                // ---- the account ----
+                _name.Text = _creating ? "" : user ?? "";
+                _name.ReadOnly = !_creating;
+                _name.Enabled = _creating || account != null;
+                _pass.Text = "";
+                _pass.Enabled = edit && !IsEveryone;
+                _level.Items.Clear();
+                var levels = _creating ? UserRights.LevelsToGive()
+                           : account != null && edit && !self ? UserRights.LevelsToGive().Where(l => UserRights.CanSetLevel(user, l) || l == account.Level).ToList()
+                           : account != null ? new List<SecurityLevel> { account.Level } : new List<SecurityLevel>();
+                if (account != null && !levels.Contains(account.Level)) levels.Insert(0, account.Level);
+                foreach (var l in levels) _level.Items.Add(new Choice { Level = l, Text = PrefTexts.LevelText(l) });
+                int li = 0;
+                for (int i = 0; i < _level.Items.Count; i++) if (account != null && ((Choice)_level.Items[i]).Level == account.Level) li = i;
+                if (_level.Items.Count > 0) _level.SelectedIndex = li;
+                _level.Enabled = edit && _level.Items.Count > 1;
+                string creator = account != null ? UserStore.CreatedBy(account.Username) : "";
+                _createdBy.Text = creator.Length > 0 ? string.Format(T("Usr_CreatedBy", "created by {0}"), creator) : "";
+
+                // ---- read from ----
+                _readFrom.Items.Clear();
+                _readFrom.Items.Add(new Choice { Value = null, Text = "\u2013" });
+                if (_selected != Everyone || _creating) _readFrom.Items.Add(new Choice { Value = Everyone, Text = T("VP_Everyone", "Everyone (this panel)") });
+                foreach (var u in UserStore.GetAllUsers().Select(a => a.Username).OrderBy(n => n, StringComparer.OrdinalIgnoreCase))
+                    if (_creating || !string.Equals(u, _selected, StringComparison.OrdinalIgnoreCase))
+                        _readFrom.Items.Add(new Choice { Value = u, Text = u });
+                _readFrom.SelectedIndex = 0;
+                _readFrom.Enabled = edit;
+
+                // ---- the screen scale ----
+                _scale.OfferNone = !IsEveryone;
+                _scale.Value = IsEveryone ? DisplaySettings.PanelFactor : user != null ? DisplaySettings.UserFactor(user) : (double?)null;
+                _scale.Enabled = edit;
+
+                // ---- the preferences ----
+                foreach (var p in ViewPreferences.All.Where(x => !x.Hidden))
+                {
+                    var combo = _combos[p.Key];
+                    combo.Items.Clear();
+                    if (!IsEveryone)
+                        combo.Items.Add(new Choice
+                        {
+                            Value = null,
+                            Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(p.Key, ViewPreferences.PanelValue(p.Key)) + ")"
+                        });
+                    foreach (var v in p.Values) combo.Items.Add(new Choice { Value = v, Text = PrefTexts.ValueText(p.Key, v) });
+                    string current = IsEveryone ? ViewPreferences.PanelValue(p.Key) : user != null ? ViewPreferences.UserValue(user, p.Key) : null;
+                    SelectValue(combo, current);
+                    combo.Enabled = edit;
+                }
+
+                _delete.Enabled = !_creating && user != null && UserRights.CanDelete(user);
+                _new.Enabled = UserRights.LevelsToGive().Count > 0;
+                LayoutBody(!IsEveryone);
+                _dirty.Reset();
+            }
+            finally { _filling = false; }
+            ShowPreview(_activeKey);
+        }
+
+        private static void SelectValue(ComboBox combo, string value)
+        {
+            int at = 0;
+            for (int i = 0; i < combo.Items.Count; i++)
+                if (((Choice)combo.Items[i]).Value == value) at = i;
+            if (combo.Items.Count > 0) combo.SelectedIndex = at;
+        }
+
+        /// <summary>The value a combo shows, "As for everyone" read as everyone's.</summary>
+        internal string ShownValue(string key)
+        {
+            ComboBox c;
+            if (!_combos.TryGetValue(key, out c)) return ViewPreferences.PanelValue(key);
+            var ch = c.SelectedItem as Choice;
+            return ch != null && ch.Value != null ? ch.Value : ViewPreferences.PanelValue(key);
+        }
+
+        private void ShowPreview(string key)
+        {
+            _activeKey = key;
+            if (key == ScaleKey)
+            {
+                double panel = DisplaySettings.PanelFactor;
+                _preview.ShowScale(_scale.Value, panel);
+                return;
+            }
+            _preview.ShowPreference(key, ShownValue, _combos.ContainsKey(key) && _combos[key].SelectedItem is Choice && ((Choice)_combos[key].SelectedItem).Value == null);
+        }
+
+        /// <summary>The preview's subject (tests).</summary>
+        internal string ActiveKey { get { return _activeKey; } }
+
+        // ==================================================================
+        // READ FROM
+        // ==================================================================
+
+        /// <summary>
+        /// Another's scale and preferences into the page. From a user into a user:
+        /// their own values (theirs "As for everyone" stays so); from everyone into
+        /// a user: "As for everyone"; from a user into everyone: what is in force
+        /// for them. Nothing is kept until the save.
+        /// </summary>
+        private void ReadFromChosen()
+        {
+            var src = _readFrom.SelectedItem as Choice;
+            if (src == null || src.Value == null || !CanEdit) return;
+            bool fromEveryone = src.Value == Everyone;
+            _filling = true;
+            try
+            {
+                foreach (var kv in _combos)
+                {
+                    string v = fromEveryone ? null : ViewPreferences.UserValue(src.Value, kv.Key);
+                    if (IsEveryone && v == null) v = ViewPreferences.PanelValue(kv.Key);
+                    SelectValue(kv.Value, v);
+                }
+                double? f = fromEveryone ? (double?)null : DisplaySettings.UserFactor(src.Value);
+                if (IsEveryone && !f.HasValue) f = DisplaySettings.PanelFactor;
+                _scale.Value = f;
+            }
+            finally { _filling = false; }
+            _dirty.MarkDirty();
+            Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
+            ShowPreview(_activeKey);
+        }
+
+        // ==================================================================
+        // NEW, SAVE, DELETE
+        // ==================================================================
+
+        private void StartNew()
+        {
+            if (UserRights.LevelsToGive().Count == 0) return;
+            _creating = true;
+            _filling = true;
+            try { _grid.ClearSelection(); } finally { _filling = false; }
+            Fill();
+            Say(T("Usr_NewHint", "Name, password and level, then \uD83D\uDCBE."));
+            _name.Focus();
+        }
+
+        private Dictionary<string, string> CollectPreferences()
+        {
+            var values = new Dictionary<string, string>();
+            foreach (var kv in _combos)
+            {
+                var c = kv.Value.SelectedItem as Choice;
+                values[kv.Key] = c != null ? c.Value : null;
+            }
+            return values;
+        }
+
+        private static string Shown(Dictionary<string, string> values)
+        {
+            return string.Join(", ", values.Select(kv => kv.Key + "=" + (kv.Value ?? "everyone's")));
+        }
+
+        /// <summary>Keeps the page: the account (new, password, level), the screen scale, the preferences.</summary>
+        internal bool Save()
+        {
+            if (!CanEdit) return false;
+            var prefs = CollectPreferences();
+            var levelChoice = _level.SelectedItem as Choice;
+
+            if (_creating)
+            {
+                string name = _name.Text.Trim();
+                if (name.Length == 0) return Fail(T("Usr_MsgName", "Enter a user name."));
+                if (!UserStore.IsValidUsername(name)) return Fail(T("Usr_MsgSemicolon", "A user name may not contain a semicolon."));
+                if (AccountOf(name) != null) return Fail(string.Format(T("Usr_MsgExists", "There is already a user '{0}'."), name));
+                if (_pass.Text.Length == 0) return Fail(T("Usr_MsgPassword", "A new user needs a password."));
+                if (levelChoice == null || !UserRights.CanCreate(levelChoice.Level)) return Fail(T("Usr_MsgLevel", "You cannot give that level."));
+                try { UserStore.AddOrUpdateUser(name, _pass.Text, levelChoice.Level); }
+                catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException) { return Fail(ex.Message); }
+                UserStore.SetCreatedBy(name, UserRights.Actor);
+                AuditLogger.Log("created user '" + name + "' (" + levelChoice.Level + ").");
+                DisplaySettings.SetUserFactor(name, _scale.Value);
+                if (prefs.Values.Any(v => v != null)) ViewPreferences.SetMany(name, prefs);
+                _creating = false;
+                _selected = name;
+                RefreshList();
+                Fill();
+                Say(string.Format(T("Usr_MsgCreated", "User '{0}' created."), name));
+                return true;
+            }
+
+            if (IsEveryone)
+            {
+                ViewPreferences.SetMany(null, prefs);
+                AuditLogger.Log("view preferences for everyone kept: " + Shown(prefs));
+                double before = DisplaySettings.PanelFactor;
+                bool scaleChanged = _scale.Value.HasValue && Math.Abs(_scale.Value.Value - before) > 0.0005;
+                RefreshList();
+                Fill();
+                Say(T("Usr_MsgEveryoneSaved", "Everyone's preferences kept."));
+                if (scaleChanged)
+                {
+                    // As the glass on the caption bar: the panel's scale, offered as a restart.
+                    var shell = FindForm() as Kaban.UI.Forms.MainForm;
+                    if (shell != null) shell.ChooseFactor(_scale.Value.Value);
+                    else { DisplaySettings.PanelFactor = _scale.Value.Value; DisplaySettings.StartFactor = _scale.Value.Value; }
+                    RefreshList();
+                    Fill();
+                }
+                return true;
+            }
+
+            string user = _selected;
+            var account = AccountOf(user);
+            if (account == null) return Fail(string.Format(T("Usr_MsgNoUser", "No user '{0}'."), user));
+            var level = levelChoice != null ? levelChoice.Level : account.Level;
+            if (level != account.Level && !UserRights.CanSetLevel(user, level))
+                return Fail(UserStore.WouldRemoveLastAdmin(user, level) ? T("Usr_MsgLastAdmin", "The last Admin account cannot be given a lower level.")
+                                                                       : T("Usr_MsgLevel", "You cannot give that level."));
+            try
+            {
+                if (_pass.Text.Length > 0)
+                {
+                    UserStore.AddOrUpdateUser(account.Username, _pass.Text, level);
+                    AuditLogger.Log("password of user '" + account.Username + "' changed" + (level != account.Level ? ", level " + level : "") + ".");
+                }
+                else if (level != account.Level)
+                {
+                    UserStore.SetLevel(account.Username, level);
+                    AuditLogger.Log("changed level of user '" + account.Username + "' to " + level + ".");
+                }
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is InvalidOperationException) { return Fail(ex.Message); }
+
+            var beforeScale = DisplaySettings.UserFactor(account.Username);
+            DisplaySettings.SetUserFactor(account.Username, _scale.Value);
+            if (beforeScale != _scale.Value)
+                AuditLogger.Log("screen scale of user '" + account.Username + "': " +
+                                (_scale.Value.HasValue ? DisplaySettings.Percent(_scale.Value.Value) : "no specific request") + ".");
+            ViewPreferences.SetMany(account.Username, prefs);
+            AuditLogger.Log("view preferences of " + account.Username + " kept: " + Shown(prefs));
+            RefreshList();
+            Fill();
+            Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
+
+            // Your own scale changed: offered at once, not at the next sign-in.
+            var f = _scale.Value;
+            if (f.HasValue && UserRights.IsSelf(UserRights.Actor, account.Username) && beforeScale != f &&
+                Math.Abs(f.Value - UiScale.Factor) > 0.001)
+            {
+                if (OfferRestart != null) OfferRestart(f.Value);
+                else AskRestart(f.Value);
+            }
+            return true;
+        }
+
+        private void Say(string message)
+        {
+            _status.ForeColor = Color.FromArgb(60, 66, 76);
+            _status.Text = message;
+        }
+
+        private bool Fail(string message)
+        {
+            _status.Text = message;
+            _status.ForeColor = Color.Firebrick;
+            var t = new Timer { Interval = 4000 };
+            t.Tick += (s, e) => { t.Dispose(); if (!IsDisposed) _status.ForeColor = Color.FromArgb(60, 66, 76); };
+            t.Start();
+            return false;
+        }
+
+        private void AskRestart(double factor)
+        {
+            var shell = FindForm() as Kaban.UI.Forms.MainForm;
+            string question = string.Format(T("Msg_FactorRestartNow",
+                "Restart the HMI now with the screen scale {0}? The machine keeps running, the screen is back in a few seconds, and you stay signed in."),
+                DisplaySettings.Percent(factor));
+            if (shell == null ||
+                MessageBox.Show(this, question, T("Ttl_Magnifier", "Screen scale"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            shell.RestartWithFactor(factor, keepSignedIn: true);
+        }
+
+        internal bool DeleteUser()
+        {
+            string user = EditedUser;
+            if (user == null) return false;
+            if (UserRights.IsSelf(UserRights.Actor, user)) return Fail(T("Usr_MsgSelf", "You cannot delete the account you are signed in with."));
+            if (UserStore.WouldRemoveLastAdmin(user, null)) return Fail(T("Usr_MsgLastAdminDelete", "The last Admin account cannot be deleted."));
+            if (!UserRights.CanDelete(user)) return Fail(T("Usr_MsgCannotDelete", "Only a higher level, or the one who created it, can delete this user."));
+            string q = string.Format(T("Usr_MsgConfirmDelete", "Delete user '{0}'?"), user);
+            bool yes = Confirm != null ? Confirm(q)
+                     : MessageBox.Show(this, q, T("Usr_TtlDelete", "Delete user"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+            if (!yes) return false;
+            UserStore.RemoveUser(user);
+            AuditLogger.Log("deleted user '" + user + "'.");
+            _selected = UserRights.Actor ?? Everyone;
+            RefreshList();
+            Fill();
+            Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
+            return true;
+        }
+    }
+
+    /// <summary>The names on the page and in the preview.</summary>
+    internal static class PrefTexts
+    {
+        private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
+
+        public static string LevelText(SecurityLevel level)
+        {
+            switch (level)
+            {
+                case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
+                case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
+                case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
+                default: return level.ToString();
+            }
+        }
+
+        public static string NameOf(string key)
+        {
+            switch (key)
+            {
+                case ViewPreferences.CaptionAlign: return T("VP_CaptionAlign", "Captions and axis names");
+                case ViewPreferences.DecimalSeparator: return T("VP_DecimalSeparator", "Decimal separator");
+                case ViewPreferences.DateFormat: return T("VP_DateFormat", "Date");
+                case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
+                case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
+                case ViewPreferences.TableFont: return T("VP_TableFont", "Table text");
+                case ViewPreferences.StartPage: return T("VP_StartPage", "After sign-in");
+                case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
+                case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
+                case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
+                case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
+                default: return key;
+            }
+        }
+
+        public static string ValueText(string key, string value)
+        {
+            switch (key + "." + value)
+            {
+                case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");
+                case "CaptionAlign.Left": return T("VP_CapLeft", "Left, in a column");
+                case "DecimalSeparator.Windows": return T("VP_DecWindows", "As Windows");
+                case "DecimalSeparator.Point": return T("VP_DecPoint", "Point") + "  (1234.56)";
+                case "DecimalSeparator.Comma": return T("VP_DecComma", "Comma") + "  (1234,56)";
+                case "DateFormat.Iso": return "2026-10-02";
+                case "DateFormat.European": return "02.10.2026";
+                case "DateFormat.Us": return "10/02/2026";
+                case "TimeFormat.H24": return T("VP_H24", "24 hours") + "  (14:31)";
+                case "TimeFormat.H12": return T("VP_H12", "12 hours") + "  (2:31 PM)";
+                case "TableRows.Compact": return T("VP_Compact", "Compact");
+                case "TableFont.Small": return T("VP_Small", "Small");
+                case "TableRows.Normal": case "TableFont.Normal": return T("VP_Normal", "Normal");
+                case "TableRows.Large": case "TableFont.Large": return T("VP_Large", "Large");
+                case "StartPage.Stay": return T("VP_Stay", "Stay where the screen is");
+                case "StartPage.Home": return T("VP_Home", "Home");
+                case "StartPage.Last": return T("VP_Last", "My last page");
+                case "AlarmSound.Off": return T("VP_Off", "Off");
+                case "AlarmSound.On": return T("VP_On", "On");
+                case "Blinking.On": return T("VP_Blink", "Blink");
+                case "Blinking.Off": return T("VP_Steady", "Steady");
+                case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
+                case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
+                case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
+                default: return value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// A user's screen scale, chosen as on the caption bar: looks like the other
+    /// fields' boxes; a click opens the same menu - "No specific request" (when
+    /// offered), the usual sizes, and the row that sets any percent 1% at a time.
+    /// </summary>
+    public sealed class ScaleChooser : Button
+    {
+        private double? _value;
+
+        public ScaleChooser()
+        {
+            FlatStyle = FlatStyle.Flat;
+            BackColor = Color.White;
+            TextAlign = ContentAlignment.MiddleLeft;
+            Height = 26;
+            Cursor = Cursors.Hand;
+            AccessibleName = "Screen scale";
+            FlatAppearance.BorderColor = Color.FromArgb(160, 166, 176);
+            Text = Caption;
+        }
+
+        /// <summary>"No specific request" in the menu (not for everyone's: the panel always has one).</summary>
+        public bool OfferNone = true;
+
+        public event EventHandler ValueChanged;
+
+        /// <summary>The request; null: no specific request (the panel's).</summary>
+        public double? Value
+        {
+            get { return _value; }
+            set
+            {
+                var v = value.HasValue ? DisplaySettings.Clamp(value.Value) : (double?)null;
+                bool changed = v != _value;
+                _value = v;
+                Text = Caption;
+                Invalidate();
+                if (changed) { var h = ValueChanged; if (h != null) h(this, EventArgs.Empty); }
+            }
+        }
+
+        public string Caption
+        {
+            get { return _value.HasValue ? DisplaySettings.Percent(_value.Value) : Kaban.UI.Forms.MainForm.NoScaleRequest; }
+        }
+
+        /// <summary>The menu a click opens (tests use it as the operator would).</summary>
+        internal ContextMenuStrip BuildMenu()
+        {
+            return Kaban.UI.Forms.MainForm.BuildScaleMenu(null, _value, OfferNone, v => Value = v);
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            UiStyle.ShowPopup(BuildMenu(), this, new Point(0, Height));
+        }
+
+        protected override void OnPaint(PaintEventArgs pevent)
+        {
+            base.OnPaint(pevent);
+            // The drop-down caret, as on a combo box.
+            float cx = Width - UiScale.For(this, 12), cy = Height / 2f;
+            float d = UiScale.For(this, 4);
+            using (var b = new SolidBrush(Color.FromArgb(60, 66, 76)))
+                pevent.Graphics.FillPolygon(b, new[] { new PointF(cx - d, cy - d / 2), new PointF(cx + d, cy - d / 2), new PointF(cx, cy + d / 2 + 1) });
+        }
+    }
+}
