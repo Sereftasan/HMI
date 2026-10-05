@@ -1,22 +1,27 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Windows.Forms;
+using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.UI.Controls;
 
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// THE PREVIEW at the right of Users and Preferences: the preference being
-    /// chosen - its name, the value on show, a small drawing of what it changes
-    /// (fields with their captions, an alarm row with its date and time, a
-    /// table at its rows and letters, a blinking or steady mark ...) and where
-    /// in the program it acts. The value drawn is the one in the combo, not the
-    /// one in force: the point is to see it before keeping it. Two of them can
-    /// be tried for real: the tooltip delay (rest the pointer on its box) and
-    /// the alarm sound (play it).
+    /// THE PREVIEW of Users and Preferences, shown beside a list while it is open
+    /// (50 px to its right), for the entry under the pointer, and gone when the
+    /// list closes: the preference's name, the value, a small drawing of what it
+    /// changes (fields with their captions, an alarm row with its date and time,
+    /// a table at its rows and letters, a blinking or steady mark, a value in a
+    /// unit ...) and where in the program it acts. The value drawn is the one
+    /// under the pointer, not the one in force: the point is to see it before
+    /// choosing it. The tooltip delay is played out (the pointer rests, the time
+    /// runs, the tip shows); the alarm sound is heard as the pointer comes onto
+    /// "On" (the page plays it). For "Read from" it
+    /// is the user's preferences, line by line (ShowSummary).
     /// </summary>
     public class PreferencePreview : Control
     {
@@ -27,23 +32,38 @@ namespace Kaban.UI.Settings
         private bool _asEveryone;
         private double? _scale;
         private double _panelScale = 1.0;
+        private string _title;
+        private IList<Line> _lines = new Line[0];
         private bool _phase = true;
         private readonly Timer _blink = new Timer { Interval = 500 };
-        private readonly Label _tryTip = new Label
-        {
-            Text = "", AutoSize = false, TextAlign = ContentAlignment.MiddleCenter, BorderStyle = BorderStyle.FixedSingle,
-            BackColor = Color.FromArgb(245, 247, 250), Cursor = Cursors.Help, Visible = false
-        };
-        private readonly ToolTip _tryTips = new ToolTip { ShowAlways = true };
-        private readonly Button _play;
+        // the tooltip's delay played out: the pointer rests, the time runs, the tip shows
+        private readonly Timer _tipClock = new Timer { Interval = 100 };
+        private DateTime _tipStart = DateTime.Now;
+        private string _tipValue;
 
         /// <summary>What is shown (tests): the preference's key and the value drawn.</summary>
         public string Key { get { return _key; } }
         public string Value { get { return _key == UsersPreferencesControl.ScaleKey ? (_scale.HasValue ? DisplaySettings.Percent(_scale.Value) : "") : _valueOf(_key); } }
-        /// <summary>The try-it box's tooltip delay (tests).</summary>
-        public int TryDelay { get { return _tryTips.InitialDelay; } }
+        /// <summary>The tooltip delay played out in the drawing (tests); 0 for another preference.</summary>
+        public int TryDelay { get { return _key == ViewPreferences.TooltipDelay ? ViewPreferences.DelayOf(_valueOf(_key)) : 0; } }
         /// <summary>The "where it acts" text on show (tests).</summary>
         public string Description { get { return Describe(); } }
+        /// <summary>A summary's lines on show (tests).</summary>
+        public IList<Line> Lines { get { return _lines; } }
+
+        /// <summary>The key of a summary (Read from).</summary>
+        public const string SummaryKey = "Summary";
+
+        /// <summary>A line of a summary: a preference, its value, the user's own or "As for everyone".</summary>
+        public sealed class Line
+        {
+            public string Name;
+            public string Value;
+            public bool Own;
+        }
+
+        /// <summary>How tall the preview wants to be, unscaled.</summary>
+        public int WantedHeight { get { return _key == SummaryKey ? Math.Max(200, 70 + _lines.Count * 18 + 52) : 360; } }
 
         public PreferencePreview()
         {
@@ -51,14 +71,11 @@ namespace Kaban.UI.Settings
             BackColor = Color.FromArgb(250, 251, 252);
             Font = UiStyle.Body;
             _blink.Tick += (s, e) => { _phase = !_phase; Invalidate(); };
-            _play = UiStyle.ToolButton("\u25B6", T("PV_Play", "Play the sound"), UiStyle.Tips(), (s, e) =>
-            {
-                try { Kaban.UI.Helpers.AlarmSound.Play(); } catch { }
-            });
-            _play.Visible = false;
-            Controls.Add(_play);
-            Controls.Add(_tryTip);
-            Disposed += (s, e) => { _blink.Dispose(); _tryTips.Dispose(); };
+            _tipClock.Tick += (s, e) => { if (Visible) Invalidate(Area); };
+            // Nothing in it to click or rest the pointer on: it is there only while a list is
+            // open, and a click outside an open list closes it. The tooltip delay is played out
+            // in the drawing; the sound is heard as the pointer comes onto "On" (the page).
+            Disposed += (s, e) => { _blink.Dispose(); _tipClock.Dispose(); };
         }
 
         /// <summary>A view preference, as the page's combos have it now.</summary>
@@ -80,24 +97,25 @@ namespace Kaban.UI.Settings
             Changed();
         }
 
+        /// <summary>A user's preferences, line by line (Read from).</summary>
+        public void ShowSummary(string title, IList<Line> lines)
+        {
+            _key = SummaryKey;
+            _title = title;
+            _lines = lines ?? new Line[0];
+            _asEveryone = false;
+            Changed();
+        }
+
         private void Changed()
         {
             bool blink = _key == ViewPreferences.Blinking && _valueOf(_key) != "Off";
             _blink.Enabled = blink;
             if (!blink) _phase = true;
-            _play.Visible = _key == ViewPreferences.AlarmSound;
-            _tryTip.Visible = _key == ViewPreferences.TooltipDelay;
-            if (_tryTip.Visible)
-            {
-                int d = ViewPreferences.DelayOf(_valueOf(_key));
-                _tryTips.AutomaticDelay = d;
-                _tryTips.InitialDelay = d;
-                _tryTips.ReshowDelay = d;
-                _tryTips.AutoPopDelay = 8000;
-                _tryTip.Text = T("PV_TryTip", "Rest the pointer here");
-                _tryTips.SetToolTip(_tryTip, string.Format(T("PV_TipShown", "A tooltip, after {0}"), Seconds(d)));
-            }
-            PlaceChildren();
+            if (_key != ViewPreferences.TooltipDelay) _tipValue = null;
+            _tipClock.Enabled = _key == ViewPreferences.TooltipDelay;
+            // played from the start for each value shown
+            if (_tipClock.Enabled && _tipValue != _valueOf(_key)) { _tipValue = _valueOf(_key); _tipStart = DateTime.Now; }
             Invalidate();
         }
 
@@ -108,20 +126,13 @@ namespace Kaban.UI.Settings
 
         private Rectangle Area { get { return new Rectangle(S(14), S(92), Math.Max(S(120), Width - S(28)), S(178)); } }
 
-        private void PlaceChildren()
-        {
-            var a = Area;
-            _play.Location = new Point(a.Left + S(150), a.Top + S(54));
-            _tryTip.SetBounds(a.Left, a.Top + S(118), Math.Min(a.Width, S(220)), S(44));
-        }
-
-        protected override void OnResize(EventArgs e) { base.OnResize(e); PlaceChildren(); }
 
         // ---- what it says ---------------------------------------------------------
 
         private string ValueLine()
         {
             string v;
+            if (_key == SummaryKey) return T("PV_SummaryHint", "Choose to take these into the page - nothing is kept until Save.");
             if (_key == UsersPreferencesControl.ScaleKey)
                 v = _scale.HasValue ? DisplaySettings.Percent(_scale.Value)
                                     : Kaban.UI.Forms.MainForm.NoScaleRequest + "  (" + DisplaySettings.Percent(_panelScale) + ")";
@@ -156,8 +167,12 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking:
                     return T("PV_Blink", "Codes, lamps, borders, the alarm and connection marks on the top bar, the sign-in reminder.");
                 case ViewPreferences.TooltipDelay:
-                    return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows. Try it on the box.");
+                    return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
+                case SummaryKey:
+                    return "";
                 default:
+                    if (UnitOfKey(_key) != UnitType.None)
+                        return T("PV_Unit", "Every value of this kind on screen, and what is typed into it - the PLC keeps its own unit, converted both ways.");
                     return "";
             }
         }
@@ -178,6 +193,8 @@ namespace Kaban.UI.Settings
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             int x = S(14), w = Width - S(28);
+            using (var pen = new Pen(Rule)) g.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
+            if (_key == SummaryKey) { PaintSummary(g, x, w); return; }
             using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_Title", "Preview"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
             using (var f = F(10.5f, FontStyle.Bold))
                 TextRenderer.DrawText(g, PrefTexts.NameOf(_key), f, new Rectangle(x, S(30), w, S(24)), Ink, TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
@@ -198,8 +215,78 @@ namespace Kaban.UI.Settings
                                       TextFormatFlags.Left | TextFormatFlags.WordBreak);
         }
 
+        /// <summary>Read from: the user's name, then each preference and its value (theirs in ink, "As for everyone" grey).</summary>
+        private void PaintSummary(Graphics g, int x, int w)
+        {
+            using (var f = F(8.5f)) TextRenderer.DrawText(g, T("PV_SummaryTitle", "Their preferences"), f, new Rectangle(x, S(10), w, S(18)), Grey, TextFormatFlags.Left);
+            using (var f = F(10.5f, FontStyle.Bold))
+                TextRenderer.DrawText(g, _title ?? "", f, new Rectangle(x, S(30), w, S(24)), Ink, TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
+            int y = S(60);
+            using (var pen = new Pen(Rule)) g.DrawLine(pen, x, y, x + w, y);
+            y += S(6);
+            int nameW = w / 2;
+            using (var f = F(8f))
+            using (var own = F(8f, FontStyle.Bold))
+                foreach (var line in _lines)
+                {
+                    TextRenderer.DrawText(g, line.Name ?? "", f, new Rectangle(x, y, nameW - S(4), S(18)), Grey,
+                                          TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+                    TextRenderer.DrawText(g, line.Value ?? "", line.Own ? own : f, new Rectangle(x + nameW, y, w - nameW, S(18)), line.Own ? Ink : Grey,
+                                          TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+                    y += S(18);
+                }
+            using (var f = F(8.5f))
+                TextRenderer.DrawText(g, ValueLine(), f, new Rectangle(x, y + S(6), w, Math.Max(S(20), Height - y - S(8))), Blue,
+                                      TextFormatFlags.Left | TextFormatFlags.WordBreak);
+        }
+
+        /// <summary>"Unit_Length" -> Length; anything else -> None.</summary>
+        private static UnitType UnitOfKey(string key)
+        {
+            UnitType t;
+            return key != null && key.StartsWith("Unit_") && Enum.TryParse(key.Substring(5), out t) ? t : UnitType.None;
+        }
+
+        // A value of each family as the PLC keeps it (the reference unit).
+        private static double SampleOf(UnitType t)
+        {
+            switch (t)
+            {
+                case UnitType.Length: return 1234.5;
+                case UnitType.Weight: return 2500;
+                case UnitType.Temperature: return 65;
+                case UnitType.Pressure: return 6.5;
+                case UnitType.Time: return 90;
+                default: return 100;
+            }
+        }
+
+        /// <summary>A unit: a field with a value in it, and what the PLC keeps for it.</summary>
+        private void DrawUnit(Graphics g, Rectangle r)
+        {
+            var type = UnitOfKey(_key);
+            var unit = UnitManager.Find(type, _valueOf(_key));
+            double reference = SampleOf(type);
+            double shown = unit == null || unit.Factor == 0 ? reference : (reference - unit.Offset) / unit.Factor;
+            int decimals = Math.Min(4, 1 + (unit != null ? unit.ExtraDecimals : 0));
+            var nf = ViewPreferences.NumberFormat;
+            string name = unit != null ? unit.Name : UnitManager.GetReferenceSuffix(type);
+            string refText = reference.ToString("F1", nf) + " " + UnitManager.GetReferenceSuffix(type);
+            using (var f = F(9f))
+            using (var bf = F(12f, FontStyle.Bold))
+            {
+                TextRenderer.DrawText(g, PrefTexts.NameOf(_key) + ":", f, new Rectangle(r.Left, r.Top, r.Width, S(20)), Ink, TextFormatFlags.Left);
+                var b = new Rectangle(r.Left, r.Top + S(24), S(150), S(34));
+                Box(g, b, shown.ToString("F" + decimals, nf), bf);
+                TextRenderer.DrawText(g, name, f, new Rectangle(b.Right + S(8), b.Top, r.Right - b.Right - S(8), b.Height), Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+                using (var pen = new Pen(Rule)) g.DrawLine(pen, r.Left, r.Top + S(74), r.Right, r.Top + S(74));
+                TextRenderer.DrawText(g, T("PV_UnitPlc", "The PLC keeps") + ":  " + refText, f, new Rectangle(r.Left, r.Top + S(82), r.Width, S(20)), Grey, TextFormatFlags.Left);
+            }
+        }
+
         private void Draw(Graphics g, Rectangle r)
         {
+            if (UnitOfKey(_key) != UnitType.None) { DrawUnit(g, r); return; }
             switch (_key)
             {
                 case UsersPreferencesControl.ScaleKey: DrawScale(g, r); break;
@@ -396,7 +483,8 @@ namespace Kaban.UI.Settings
                 }
             }
             using (var f = F(8.5f))
-                TextRenderer.DrawText(g, T("PV_PlayHint", "Hear it:"), f, new Rectangle(r.Left + S(96), r.Top + S(60), S(56), S(24)), Grey, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+                TextRenderer.DrawText(g, on ? T("PV_SoundHeard", "Heard once as the pointer comes onto On.") : "", f,
+                                      new Rectangle(r.Left, r.Top + S(100), r.Width, S(44)), Grey, TextFormatFlags.Left | TextFormatFlags.WordBreak);
         }
 
         private void DrawBlink(Graphics g, Rectangle r)
@@ -441,10 +529,19 @@ namespace Kaban.UI.Settings
                     float px = r.Left + S(70), py = r.Top + S(26);
                     g.FillPolygon(b, new[] { new PointF(px, py), new PointF(px, py + S(16)), new PointF(px + S(4), py + S(12)), new PointF(px + S(10), py + S(12)) });
                 }
+                // played out again and again: the pointer rests for the delay (the bar fills), the tip shows for a while
+                double t = (DateTime.Now - _tipStart).TotalMilliseconds % (d + 1800);
+                bool shown = t >= d;
                 var tip = new Rectangle(r.Left + S(86), r.Top + S(44), Math.Min(r.Width - S(86), S(150)), S(26));
-                using (var b = new SolidBrush(Color.FromArgb(255, 255, 225))) g.FillRectangle(b, tip);
-                using (var pen = new Pen(Grey)) g.DrawRectangle(pen, tip);
-                TextRenderer.DrawText(g, T("PV_TipText", "Speed of the saw"), f, tip, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
+                if (shown)
+                {
+                    using (var b = new SolidBrush(Color.FromArgb(255, 255, 225))) g.FillRectangle(b, tip);
+                    using (var pen = new Pen(Grey)) g.DrawRectangle(pen, tip);
+                    TextRenderer.DrawText(g, T("PV_TipText", "Speed of the saw"), f, tip, Ink, TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
+                }
+                var run = new Rectangle(r.Left + S(10), r.Top + S(72), S(66), S(5));
+                using (var b = new SolidBrush(Rule)) g.FillRectangle(b, run);
+                using (var b = new SolidBrush(Blue)) g.FillRectangle(b, run.Left, run.Top, (int)(run.Width * Math.Min(1.0, t / Math.Max(1, d))), run.Height);
                 using (var bf = F(9f, FontStyle.Bold))
                     TextRenderer.DrawText(g, Seconds(d), bf, new Rectangle(r.Left + S(10), r.Top + S(48), S(70), S(20)), Blue, TextFormatFlags.Left);
             }

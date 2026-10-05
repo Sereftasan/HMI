@@ -446,17 +446,19 @@ it times every cylinder unit's movements itself, and watches every axis's drive.
 
 <!-- ================================================================== -->
 <h2 id="unitset">8. Units of measure</h2>
-<p><b>HMI Settings &rsaquo; Unit Settings</b> <span class="lvl l1">Operator</span> chooses the units for the whole program (length, speed, temperature...).
+<p><b>HMI Settings &rsaquo; Users and Preferences</b>, section <i>Units of measure</i>: the unit of each kind of value &ndash; length, weight,
+temperature, pressure, time &ndash; for every number field and display of the program, and for what is typed into them.
+<b>Everyone</b>'s are the panel's (changed by <span class="lvl l2">Maintenance</span> and <span class="lvl l3">Admin</span>); a user may have
+units of their own, taken the moment they sign in &ndash; the open pages follow at once (see <a href="#viewprefs">Users and Preferences</a>).
 Values are always <b>stored</b> in the machine's units and only <b>shown</b> in yours, so switching never changes a machine setting.</p>
 
 <!-- ================================================================== -->
 <h2 id="hmiset">9. HMI Settings</h2>
 <table>
 <tr><th>Tab</th><th>Level</th><th>For</th></tr>
-<tr><td>Unit Settings</td><td><span class="lvl l1">Operator</span></td><td>Units of measure (see 8).</td></tr>
 <tr><td>Users and Preferences</td><td><span class="lvl l1">Operator</span></td><td>The accounts &ndash; names, passwords, levels, by level (<a href="#viewprefs">below</a>) &ndash;
-  and how the screen shows things for everyone or as a user's own: the <b>screen scale</b>, captions, numbers, dates, tables, tooltips,
-  the page after sign-in, an alarm's sound.</td></tr>
+  and how the screen shows things for everyone or as a user's own: the <b>screen scale</b>, captions, numbers, dates, the <b>units of measure</b> (see 8),
+  tables, tooltips, the page after sign-in, an alarm's sound.</td></tr>
 <tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
 <tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The settings of the logs: the HMI's log, and each machine's log database and its reports
   (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page.
@@ -488,20 +490,26 @@ buttons grow and shrink with the screen; the program's own drawings (the machine
 Windows' own message boxes keep Windows' size.</p>
 
 <h3 id="viewprefs">Users and Preferences</h3>
-<p>The accounts and how the screen shows things, on one tab. On the left the accounts, <b>Everyone (this panel)</b> first; the ones you
-cannot change are grey. On the right of the list the one chosen:</p>
+<p>The accounts and how the screen shows things, on one tab. At the top left the accounts, <b>Everyone (this panel)</b> first; the ones you
+cannot change are grey. Just under the list the chosen one's <b>account</b>; on the right, from the top down, its <b>preferences</b>:</p>
 <ul>
+ <li><b>Everyone (this panel)</b> is not &quot;the settings now in force&quot;: it is what is in force while <b>nobody</b> is signed in, and what every
+     user's <i>As for everyone</i> follows. Changing it changes the screen of everyone who has no value of their own; the screen scale
+     shown for it is the glass's.</li>
  <li><b>Account</b> (not for Everyone): the name, a new password (empty keeps the one it has), the level, and who created it.
      &#10133; starts a new account, &#128465; deletes the one chosen (asked first), &#128190; keeps the page, &#8634; throws the changes away.</li>
  <li><b>Read from</b>: copies another user's screen scale and preferences &ndash; or Everyone's &ndash; into the page; &#128190; keeps them.
-     Read from Everyone, a user follows everyone's again.</li>
+     Read from Everyone, a user follows everyone's again. With its list open, the user under the pointer has their preferences in the preview,
+     line by line: their own in bold, <i>As for everyone</i> in grey.</li>
  <li><b>Screen scale</b> and the <b>view preferences</b> below. For a user each may be <b>As for everyone</b> (the panel's value shown beside it,
      <i>No specific request</i> for the scale) or one of their own, taken the moment they sign in. Everyone's are what is in force while
      nobody, or a user without values of their own, is signed in. Everything changes at once &ndash; except the screen scale, which needs the restart
      (offered at once for your own, and when you sign in; Everyone's is the glass's).</li>
- <li><b>Preview</b>, at the right edge: the preference being chosen, drawn &ndash; the fields with their captions, an alarm row with its date and time,
-     a table at its rows and letters, the top bar's marks blinking or steady &ndash; and where in the program it acts. The tooltip delay can be tried on its
-     box, the alarm sound played.</li>
+ <li><b>Preview</b>: while a list is open, beside it (50 px to its right, level with its box), the entry <b>under the pointer</b> drawn &ndash;
+     the fields with their captions, an alarm row with its date and time, a value in the unit, a table at its rows and letters, the top bar's marks
+     blinking or steady &ndash; and where in the program it acts; nothing is chosen until it is clicked. It goes when the list closes.
+     The screen scale's menu has it too. The tooltip delay is played out in the drawing (the pointer rests, the time runs, the tip shows);
+     the alarm sound is heard once as the pointer comes onto <i>On</i>.</li>
 </ul>
 <table>
 <tr><th>Section</th><th>Preference</th><th>Choices (the first is how the program has always been)</th></tr>
@@ -513,6 +521,8 @@ cannot change are grey. On the right of the list the one chosen:</p>
 <tr><td>Date</td><td>2026-10-02 &middot; 02.10.2026 &middot; 10/02/2026 &ndash; the alarm lists and history, the logs, the Dashboard (pickers, shifts, timeline, the bar),
   the shifts in Logs and Reports, the step-by-step pages; an open page follows at once</td></tr>
 <tr><td>Time</td><td>24 hours (14:31) &middot; 12 hours (2:31 PM)</td></tr>
+<tr><td>Units of measure</td><td>Length &middot; Weight &middot; Temperature &middot; Pressure &middot; Time</td><td>Length: <b>mm</b> &middot; cm &middot; m &middot; inch &middot; ft;
+  Weight: <b>gr</b> &middot; kg &middot; lbs; Temperature: <b>C</b> &middot; F; Pressure: <b>bar</b> &middot; psi; Time: <b>sec</b> &middot; min (see <a href="#unitset">8</a>)</td></tr>
 <tr><td rowspan="2">Tables</td><td>Table rows</td><td>Normal (26 px) &middot; Compact (22) &middot; Large (32)</td></tr>
 <tr><td>Table text</td><td>Normal &middot; Small &middot; Large &ndash; every table, the open ones too</td></tr>
 <tr><td rowspan="4">Sign-in and alerts</td><td>After sign-in</td><td><b>Stay where the screen is</b> &middot; Home &middot; My last page (where that user was last)</td></tr>
@@ -547,7 +557,9 @@ cannot change are grey. On the right of the list the one chosen:</p>
           <i>Torque monitor</i> (the current), <i>Axis setting parameters</i> (min, max, reference, calibration, calibrate), <i>Reference activation</i> (Ref),
           <i>Reference sensor - encoder Z pulse distance</i>, <i>Alarm codes</i>, <i>Travel per revolution</i>, <i>Backlash</i> &ndash; only those some row of the
           page has. <i>All</i>, the last line of the list (nothing ticked), is the whole row. The ticks are the signed-in user's own; hiding is the screen's
-          only &ndash; the machine, the manual pages' axis units and the HMI's own alarms keep every address.</li>
+          only &ndash; the machine, the manual pages' axis units and the HMI's own alarms keep every address. The page is laid out again <b>once, when
+          the list closes</b> (as for the Motion monitor's list), not at every tick; with fewer items the rows are narrower and the page scrolls only as
+          far as its last column.</li>
       <li><b>Travel per revolution</b> and <b>backlash</b>, when given (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>), are the
           last columns, in the axis's unit to its last count (<i>0.0150 mm</i>), entered the same way.</li>
       <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
@@ -570,7 +582,7 @@ cannot change are grey. On the right of the list the one chosen:</p>
            <li>The module's parameters as set (read only): unit, pulses and movement per rotation, backlash, the software stroke limits,
                speed limit, acceleration and deceleration time, home address and speed.</li>
           </ul>
-          The ticks are the signed-in user's own (nobody signed in: the panel's). A row not on a module leaves the columns empty, so they stay in line;
+          The ticks are the signed-in user's own (nobody signed in: the panel's). The values are displays, on light grey. A row not on a module leaves the columns empty, so they stay in line;
           a page with no axis on a module has no Motion monitor. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
      </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),

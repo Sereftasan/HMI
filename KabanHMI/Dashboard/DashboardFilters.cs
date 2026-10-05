@@ -127,6 +127,20 @@ namespace Kaban.UI.Dashboard
             TabStop = true;
         }
 
+        /// <summary>
+        /// Ticks taken while the list is open are told (Changed) ONCE, when it closes -
+        /// for a list whose change costs a page laid out again (the axis rows): ticking
+        /// three values no longer builds the page three times while the list waits.
+        /// </summary>
+        public bool ApplyOnClose { get; set; }
+
+        /// <summary>True while its list is open (tests).</summary>
+        public bool IsOpen { get; private set; }
+
+        /// <summary>The open list and its drop-down (tests: ticked and closed as the user would).</summary>
+        public CheckedListBox OpenList { get; private set; }
+        public ToolStripDropDown OpenDrop { get; private set; }
+
         /// <summary>What it reads with nothing ticked ("All users"), and the button that unticks all.</summary>
         public string AllText
         {
@@ -282,23 +296,37 @@ namespace Kaban.UI.Dashboard
             var host = new ToolStripControlHost(panel) { Margin = Padding.Empty, Padding = Padding.Empty, AutoSize = false, Size = panel.Size };
             var drop = new ToolStripDropDown { Padding = Padding.Empty };
             drop.Items.Add(host);
+            bool pending = false;
             list.ItemCheck += (s, e) => BeginInvoke(new Action(() =>
             {
                 _selected.Clear();
                 foreach (int i in list.CheckedIndices) _selected.Add(items[i].Key);
                 Caption();
-                Raise();
+                if (ApplyOnClose) pending = true;
+                else Raise();
             }));
             // everything let through again: one change, not one per tick taken off
             clear.Click += (s, e) =>
             {
+                if (_selected.Count > 0)
+                {
+                    _selected.Clear();
+                    Caption();
+                    pending = false;
+                    Raise();
+                }
                 drop.Close();
-                if (_selected.Count == 0) return;
-                _selected.Clear();
-                Caption();
-                Raise();
             };
-            drop.Closed += (s, e) => BeginInvoke(new Action(() => { drop.Dispose(); }));
+            drop.Closed += (s, e) => BeginInvoke(new Action(() =>
+            {
+                IsOpen = false;
+                OpenList = null; OpenDrop = null;
+                drop.Dispose();
+                // the ticks of an ApplyOnClose list, told once now
+                if (pending) { pending = false; Raise(); }
+            }));
+            IsOpen = true;
+            OpenList = list; OpenDrop = drop;
             UiStyle.ShowPopup(drop, this, new Point(0, Height));
         }
     }

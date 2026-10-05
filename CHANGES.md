@@ -4476,3 +4476,23 @@ and `UnitLookAndErrors` extended.
 - `StationConnectionControl.BuildCore` disposes its old rows.
 - Manual: the Motion monitor alone stays in sight; the monitor's values shown, not entered.
 - Tests: `AxisItems.cs`, `ViewPrefsAndMotion.cs`.
+
+## 2026-10-05 - The axis page's width; grey motion values; pick lists apply on close; units in Users and Preferences; hover preview
+
+- `AxisSettingHMI.BuildRow`: at run time the row's width is its columns' (the designer's width only grows in the designer).
+- `AxisPickBar`: both lists `ApplyOnClose`; `KeepPinned` without a layout of the page. `PickList` (`DashboardFilters.cs`):
+  `ApplyOnClose`, `IsOpen`, `OpenList`, `OpenDrop`. `MotionValueHMI`: `DisplayBack` light grey, regular font.
+- `UnitManager`: the panel's units (`_panelUnits`, Units.cfg) apart from those in force; a user's own (`Unit_Length` ... in
+  View Preferences) taken at sign-in; `UnitKey`, `Families`, `PanelUnitName`, `Find`, `UserUnitName`. `ViewPreferences`: hidden
+  `Unit_*` preferences.
+- `UsersPreferencesControl` rebuilt: table top left (fitted to its rows), account under it, preferences on the right incl.
+  Units of measure; the preview floats beside the open list (`OpenList` / `HoverItem` / `CloseList`), Read from's summary;
+  `ScaleChooser.Hovered` / `MenuClosed`; `StartUser` (a sign-in without an account opens on Everyone, no exception).
+  `PreferencePreview`: `ShowSummary`, `Line`, the unit drawing, `WantedHeight`; the tooltip delay played out (no try box),
+  the sound heard on hovering On (no play button).
+- Removed `KabanHMI/Settings/UnitSettingsPage.cs` and its tab.
+- Translations: VP_SecUnits, Usr_InfoEveryone, PV_Unit, PV_UnitPlc, PV_UnitOf, PV_SummaryTitle, PV_SummaryHint, PV_SoundHeard;
+  PV_Tooltip changed; Set_Units, PV_Play, PV_PlayHint, PV_TryTip, PV_TipShown removed.
+- Manual: 8 (units on Users and Preferences), 9 (no Unit Settings), Users and Preferences (layout, Everyone, the preview, units),
+  PLC axis items (applied on close, the page's width), the Motion monitor's values.
+- Tests: `UsersAndPreferences.cs`, `AxisItems.cs`.

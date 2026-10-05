@@ -56,7 +56,9 @@ namespace Kaban.UI.Controls
             ItemsPick = new PickList(UiStyle.Tips())
             {
                 Name = "itemsPick", Size = new Size(300, 28), Margin = new Padding(0, 4, 18, 0),
-                AllText = T("AxIt_All", "All")
+                AllText = T("AxIt_All", "All"),
+                // The rows are laid out again once, when the list closes - not at every tick.
+                ApplyOnClose = true
             };
             ItemsPick.Changed += (s, e) => { if (!_syncing) KeepItems(); };
 
@@ -64,7 +66,8 @@ namespace Kaban.UI.Controls
             MotionPick = new PickList(UiStyle.Tips())
             {
                 Name = "motionPick", Size = new Size(420, 28), Margin = new Padding(0, 4, 8, 0),
-                AllText = T("Mot_PickNone", "None")
+                AllText = T("Mot_PickNone", "None"),
+                ApplyOnClose = true
             };
             MotionPick.SetItems(SimpleMotion.Items.Select(i => new PickList.Item(
                 i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
@@ -164,8 +167,12 @@ namespace Kaban.UI.Controls
         {
             if (_pinning || _page == null || Left == _pinX) return;
             _pinning = true;
+            // Without laying the page out again: a layout scrolls a page back to
+            // the field that has the focus (seen in Mono), and the bar, inside the
+            // window, changes nothing of the page's extent.
+            _page.SuspendLayout();
             try { Left = _pinX; }
-            finally { _pinning = false; }
+            finally { _page.ResumeLayout(false); _pinning = false; }
         }
 
         private void FitWidth()

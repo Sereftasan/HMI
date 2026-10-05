@@ -126,19 +126,87 @@ namespace Kaban.Core.Helpers
             }
         }
 
-        // Call this to change units (e.g. from ComboBox or Config Load)
+        /// <summary>
+        /// THE PANEL'S UNIT for a family (HMI Settings > Users and Preferences >
+        /// Everyone): kept in Units.cfg, and in force unless the signed-in user has
+        /// a unit of their own (View Preferences "Unit_Length" ...), taken at sign-in.
+        /// </summary>
         public static void SetActive(UnitType type, string name)
         {
             if (!_availableUnits.ContainsKey(type)) return;
 
             EnsureLoaded();
             var unit = _availableUnits[type].FirstOrDefault(u => u.Name == name);
-            if (unit != null)
+            if (unit == null) return;
+            _panelUnits[type] = unit.Name;
+            if (_loadingUnits) return;
+            PersistUnits();
+            ApplyInForce(always: true);
+        }
+
+        // The panel's units (Units.cfg) - apart from the ones in force, which may be a user's.
+        private static readonly Dictionary<UnitType, string> _panelUnits = new Dictionary<UnitType, string>();
+
+        /// <summary>The View Preferences key of a user's own unit: "Unit_Length".</summary>
+        public static string UnitKey(UnitType type) { return "Unit_" + type; }
+
+        /// <summary>The families that have units to choose from (Length, Weight ...).</summary>
+        public static IList<UnitType> Families
+        {
+            get { return _availableUnits.Where(kv => kv.Key != UnitType.None && kv.Value != null && kv.Value.Count > 0).Select(kv => kv.Key).ToList(); }
+        }
+
+        /// <summary>The panel's unit of a family (everyone's), by name.</summary>
+        public static string PanelUnitName(UnitType type)
+        {
+            EnsureLoaded();
+            string n;
+            if (_panelUnits.TryGetValue(type, out n) && !string.IsNullOrEmpty(n)) return n;
+            List<UnitDefinition> options;
+            return _availableUnits.TryGetValue(type, out options) && options.Count > 0 ? options[0].Name : "";
+        }
+
+        /// <summary>A unit of a family by name, or null.</summary>
+        public static UnitDefinition Find(UnitType type, string name)
+        {
+            List<UnitDefinition> options;
+            return name != null && _availableUnits.TryGetValue(type, out options) ? options.FirstOrDefault(u => u.Name == name) : null;
+        }
+
+        /// <summary>The signed-in user's own unit of a family, or null.</summary>
+        public static string UserUnitName(UnitType type)
+        {
+            var user = ViewPreferences.ActiveUser;
+            if (user == null) return null;
+            var own = ViewPreferences.UserValue(user, UnitKey(type));
+            return Find(type, own) != null ? own : null;
+        }
+
+        private static bool _followsPreferences;
+
+        /// <summary>
+        /// The units in force: the signed-in user's own, else the panel's. Told
+        /// (UnitChanged) only when one changed - View Preferences change often.
+        /// </summary>
+        private static void ApplyInForce(bool always = false)
+        {
+            bool changed = false;
+            foreach (var type in Families)
             {
+                string want = UserUnitName(type);
+                if (want == null)
+                {
+                    string panel;
+                    if (!_panelUnits.TryGetValue(type, out panel)) continue;     // none kept: as it is
+                    want = panel;
+                }
+                var unit = Find(type, want);
+                UnitDefinition now;
+                if (unit == null || (_activeUnits.TryGetValue(type, out now) && now != null && now.Name == unit.Name)) continue;
                 _activeUnits[type] = unit;
-                UnitChanged?.Invoke(null, EventArgs.Empty);
-                PersistUnits();
+                changed = true;
             }
+            if (changed || always) UnitChanged?.Invoke(null, EventArgs.Empty);
         }
 
 
@@ -173,17 +241,26 @@ namespace Kaban.Core.Helpers
             _unitsLoaded = true;
             try
             {
-                if (!System.IO.File.Exists(UnitStorePath)) return;
-                _loadingUnits = true;
-                foreach (var line in System.IO.File.ReadAllLines(UnitStorePath))
+                if (System.IO.File.Exists(UnitStorePath))
                 {
-                    var p = line.Split(';');
-                    UnitType type;
-                    if (p.Length == 2 && Enum.TryParse(p[0], out type)) SetActive(type, p[1]);
+                    _loadingUnits = true;
+                    foreach (var line in System.IO.File.ReadAllLines(UnitStorePath))
+                    {
+                        var p = line.Split(';');
+                        UnitType type;
+                        if (p.Length == 2 && Enum.TryParse(p[0], out type)) SetActive(type, p[1]);
+                    }
                 }
             }
             catch { }
             finally { _loadingUnits = false; }
+            // A sign-in brings the user's own units, a sign-out the panel's.
+            if (!_followsPreferences)
+            {
+                _followsPreferences = true;
+                ViewPreferences.Changed += (s, e) => ApplyInForce();
+            }
+            ApplyInForce();
         }
 
         private static void PersistUnits()
@@ -193,9 +270,11 @@ namespace Kaban.Core.Helpers
             {
                 // All-or-nothing (SafeFile): a power cut mid-write must not leave
                 // the units file empty, which silently reverted every unit choice.
-                var lines = _activeUnits
-                    .Where(kv => kv.Value != null && !string.IsNullOrEmpty(kv.Value.Name))
-                    .Select(kv => kv.Key + ";" + kv.Value.Name + Environment.NewLine);
+                // The PANEL's units: a user's own (in force while they are signed in)
+                // are theirs, kept in View.cfg.
+                var lines = _panelUnits
+                    .Where(kv => !string.IsNullOrEmpty(kv.Value))
+                    .Select(kv => kv.Key + ";" + kv.Value + Environment.NewLine);
                 SafeFile.WriteAllText(UnitStorePath, string.Concat(lines), new System.Text.UTF8Encoding(false));
             }
             catch { /* keep running even if the store is unwritable */ }

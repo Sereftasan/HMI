@@ -22,6 +22,12 @@ using Kaban.UI.Screens;
 //   travel per revolution) - the last selection ALL, as NONE in Motion monitor."
 // - "Motion monitor should move with the page's bottom scroll bar."
 // - "These selections on the Servo Monitor as well, for the admin user."
+// 5 October (later):
+// - "The screen area is not calculated properly: the scroll goes far too far (the Motion
+//   monitor combo with it)."
+// - "The numerical motion monitor items on grey, not white - and not bold."
+// - "The page loads the selected members while the PLC axis items / Motion monitor members
+//   are being ticked, so the list gets unresponsive: load nothing while either is open."
 class AXI {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -152,12 +158,87 @@ class AXI {
         page.AutoScrollPosition = new Point(0, 0);
         Pump(100);
         Check("back at the left", mot.Left == pinned && bar.Left == itemsLeft && r1.Left == 10, mot.Left + " " + bar.Left + " " + r1.Left);
+        Func<int> contentRight = () => page.Controls.Cast<Control>().Where(c => c.Visible).Max(c => c.Right - page.AutoScrollPosition.X);
+        int lastCol = r1.Columns.Values.Max(c => c.X + c.Y);   // (left, width)
+        Check("the page scrolls as far as its columns, no further", page.DisplayRectangle.Width <= contentRight() + page.AutoScrollMargin.Width + 2 &&
+              r1.Width - lastCol >= 0 && r1.Width - lastCol < 40, page.DisplayRectangle.Width + " vs " + contentRight() + ", row " + r1.Width + " last column " + lastCol);
+        var motValue = r1.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == "RealCurrentValue");
+        Check("the motion monitor's numbers on light grey, not bold", motValue != null && MotionValueHMI.DisplayBack.R < 245 && MotionValueHMI.DisplayBack.R > 220 &&
+              !motValue.Font.Bold, motValue == null ? "none" : MotionValueHMI.DisplayBack + " " + motValue.Font);
+        int wideAll = r1.Width;
+        bar.ItemsPick.Select(new[] { "Codes" });
+        Pump(150);
+        Check("fewer items: the rows narrower, the page no wider than they are", r1.Width < wideAll && page.DisplayRectangle.Width <= Math.Max(page.ClientSize.Width, contentRight() + 2),
+              r1.Width + " < " + wideAll + ", page " + page.DisplayRectangle.Width + " / content " + contentRight());
+        var wide = Full("Robot Z", 34 + 2 * AxisSettingHMI.RowHeight, "W40", 1, 2);
+        wide.Width = 3000;                          // as a designer may have left it
+        page.Controls.Add(wide);
+        Pump(150);
+        Check("a row the designer left 3000 wide: as wide as its columns at run time", wide.Width == r1.Width && wide.Width < 3000, wide.Width.ToString());
+        page.Controls.Remove(wide); wide.Dispose();
+        bar.ItemsPick.Select(new string[0]);
+        Pump(150);
+
+        Console.WriteLine("--- the lists apply when they close ---");
+        Check("both lists apply on close", bar.ItemsPick.ApplyOnClose && mot.MotionPick.ApplyOnClose);
+        var onClick = typeof(Control).GetMethod("OnClick", Any);
+        onClick.Invoke(bar.ItemsPick, new object[] { EventArgs.Empty });
+        Pump(100);
+        var list = bar.ItemsPick.OpenList;
+        string rowBefore = Keys(r1);
+        int builds = 0;
+        var firstField = r1.Controls.OfType<NumericInputHMI>().FirstOrDefault();
+        Check("PLC axis items open", bar.ItemsPick.IsOpen && list != null);
+        if (list != null)
+        {
+            for (int i = 0; i < list.Items.Count; i++) if ((string)list.Items[i] == "Alarm codes" || (string)list.Items[i] == "Manual movement") list.SetItemChecked(i, true);
+            Pump(150);
+            Check("  two ticks: the rows untouched while it is open", Keys(r1) == rowBefore && firstField != null && !firstField.IsDisposed &&
+                  ViewPreferences.PickOf(ViewPreferences.AxisItems) == null && bar.ItemsPick.Selected.Count == 2, Keys(r1));
+            bar.ItemsPick.OpenDrop.Close();
+            Pump(200);
+            Check("  closed: laid out once, with both", !bar.ItemsPick.IsOpen && Keys(r1) == "Axis,Position,AxisAlarm,AxisWarning,ServoAlarm,Mot:Busy,Mot:RealCurrentValue" &&
+                  ViewPreferences.PickOf(ViewPreferences.AxisItems).SetEquals(new[] { "Manual", "Codes" }), Keys(r1));
+        }
+        onClick.Invoke(mot.MotionPick, new object[] { EventArgs.Empty });
+        Pump(100);
+        var mlist = mot.MotionPick.OpenList;
+        if (mlist != null)
+        {
+            mlist.SetItemChecked(0, !mlist.GetItemChecked(0));
+            Pump(150);
+            Check("Motion monitor: a tick while open, nothing yet", ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "RealCurrentValue" }));
+            mot.MotionPick.OpenDrop.Close();
+            Pump(200);
+            Check("  closed: taken", !ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "RealCurrentValue" }),
+                  string.Join(",", ViewPreferences.ListOf(ViewPreferences.MotionColumns)));
+        }
+        else Check("Motion monitor open", false);
+        ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "RealCurrentValue" });
+        ViewPreferences.SetPick(ViewPreferences.AxisItems, new string[0]);
+        Pump(150);
         bar.ItemsPick.Select(new[] { "Manual", "Torque", "Codes" });
         Pump(150);
         Snap(page, page.ClientSize.Width, r2.Bottom + 8, "/tmp/axis_items_page.png");
         ViewPreferences.SetPick(ViewPreferences.AxisItems, new string[0]);
         ViewPreferences.SetMotionColumnKeys(new string[0]);
         form.Controls.Remove(page);
+
+        Console.WriteLine("--- a page that holds the focus ---");
+        var uc = new UserControl { Bounds = new Rectangle(0, 0, 1000, 260), AutoScroll = true, BackColor = Color.White };
+        form.Controls.Add(uc);
+        var u1 = Full("Robot X", 34, "W0", 1, 1);
+        uc.Controls.Add(u1);
+        Pump(250);
+        var focused = u1.Controls.OfType<NumericInputHMI>().First();
+        focused.Focus();
+        Pump(50);
+        var umot = uc.Controls["axisMotionBar"] as AxisPickBar;
+        uc.AutoScrollPosition = new Point(600, 0);
+        Pump(200);
+        Check("scrolled sideways it stays scrolled (the Motion monitor kept in sight without laying the page out)",
+              -uc.AutoScrollPosition.X > 0 && umot != null && umot.Left == umot.PinnedX, (-uc.AutoScrollPosition.X) + " " + (umot == null ? "" : umot.Left + "/" + umot.PinnedX));
+        form.Controls.Remove(uc);
 
         Console.WriteLine("--- the Axis Monitor (servo monitor) ---");
         AlarmHelpLinks.EnsureDiscovered();

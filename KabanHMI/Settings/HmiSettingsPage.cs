@@ -6,7 +6,7 @@ namespace Kaban.UI.Settings
 {
     /// <summary>
     /// The settings that belong to the HMI PROGRAM rather than to a machine -
-    /// units, users, logging, diagnostics, about. Grouped so the Settings entry can
+    /// users and their preferences, logging, diagnostics, about. Grouped so the Settings entry can
     /// read "HMI Settings | Machine Settings | Screwing Settings ...", the same
     /// shape as Home and Alarms.
     /// </summary>
@@ -20,9 +20,9 @@ namespace Kaban.UI.Settings
         {
             return new SettingsScreen(new ISettingsPage[]
             {
-                new UnitSettingsPage(),
-                // The accounts and how the screen shows things, for everyone or per user
-                // (it was two tabs: User Settings and View Preferences).
+                // The accounts and how the screen shows things - units of measure
+                // included - for everyone or per user (it was three tabs: Unit
+                // Settings, User Settings and View Preferences).
                 new UsersPreferencesPage(),
                 new ImportSettingsPage(),
                 new LogSettingsPage(),

@@ -24,6 +24,9 @@ namespace Kaban.UI.Controls
         private bool _on, _known;
         private readonly ToolTip _tips = UiStyle.Tips();
 
+        /// <summary>The value box's background: a light grey (a display, not a field).</summary>
+        public static readonly Color DisplayBack = Color.FromArgb(234, 236, 239);
+
         public MotionValueHMI(int plcNumber, SimpleMotion.Item item, int module, int axis, int decimals)
         {
             PlcNumber = plcNumber;
@@ -97,8 +100,11 @@ namespace Kaban.UI.Controls
                 return;
             }
             var box = new Rectangle(0, 0, Width - 1, Height - 1);
+            // A value to read, not to type: on light grey like the other displays
+            // (lighter than the position's, so the plain figures stay crisp).
+            using (var fill = new SolidBrush(DisplayBack)) g.FillRectangle(fill, box);
             using (var pen = new Pen(Color.FromArgb(205, 210, 217))) g.DrawRectangle(pen, box);
-            var ink = stale || !_known ? Color.FromArgb(150, 156, 166)
+            var ink = stale || !_known ? Color.FromArgb(130, 136, 146)
                     : _item.Kind == SimpleMotion.Kind.Code && _text != "0" ? Color.FromArgb(200, 30, 30)
                     : UiStyle.GridInk;
             var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix |

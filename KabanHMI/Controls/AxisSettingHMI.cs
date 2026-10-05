@@ -641,7 +641,12 @@ namespace Kaban.UI.Controls
 
             AddMotionColumns(ref x);
 
-            Width = MonitorMode ? x : Math.Max(Width, x);
+            // As wide as what it shows - at run time the row is narrower when items
+            // are hidden, so the page scrolls no further than its columns (it kept
+            // the widest it had ever been, and the Motion monitor ran off into an
+            // empty page). In the designer it only grows, so a page is not changed.
+            bool design = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
+            Width = design ? Math.Max(Width, x) : x;
             AlignHeaders();
         }
 

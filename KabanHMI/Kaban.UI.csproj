@@ -251,7 +251,6 @@
     <Compile Include="Settings\SettingsScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\UnitSettingsPage.cs" />
     <Compile Include="Settings\PlaceholderPages.cs">
       <SubType>UserControl</SubType>
     </Compile>

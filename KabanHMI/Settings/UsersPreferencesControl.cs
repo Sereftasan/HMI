@@ -22,12 +22,20 @@ namespace Kaban.UI.Settings
     /// <summary>
     /// USERS AND THEIR PREFERENCES, ON ONE PAGE.
     ///
-    /// On the left the accounts, "Everyone (this panel)" first. On the right of
-    /// it the one chosen: its account (name, password, level, who created it),
-    /// then its screen scale and view preferences - for a user each may stay
-    /// "As for everyone"; "Read from" copies another user's (or everyone's) into
-    /// the page, kept with the save. At the right edge, the PREVIEW of the
-    /// preference being chosen: what it changes, drawn.
+    /// At the top left the accounts, "Everyone (this panel)" first, and under them
+    /// the account chosen (name, password, level, who created it). On the right,
+    /// top to bottom, its screen scale, view preferences and units of measure -
+    /// for a user each may stay "As for everyone"; "Read from" copies another
+    /// user's (or everyone's) into the page, kept with the save.
+    ///
+    /// THE PREVIEW comes only while a list is open: beside it (50 px to its
+    /// right), for the entry under the pointer - what that value would look like
+    /// - and goes when the list closes. Read from's list previews the hovered
+    /// user's preferences; the screen scale's menu its sizes.
+    ///
+    /// "Everyone (this panel)" is not "what is on screen now": it is what is in
+    /// force while nobody is signed in, and what each user's "As for everyone"
+    /// follows. A user sees everyone's value, or their own.
     ///
     /// Who may change what: UserRights (their own; below their level; their
     /// level when they created it; everyone's from Maintenance).
@@ -40,9 +48,12 @@ namespace Kaban.UI.Settings
         public const string ScaleKey = "ScreenScale";
 
         private readonly DataGridView _grid = new DataGridView();
+        private readonly Panel _left = new Panel { Dock = DockStyle.Left, BackColor = Color.White };
+        private readonly Panel _account = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White };
         private readonly Panel _body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White };
-        private readonly PreferencePreview _preview = new PreferencePreview { Dock = DockStyle.Right, Width = 300 };
+        private readonly PreferencePreview _preview = new PreferencePreview { Visible = false, Size = new Size(300, 360) };
         private readonly Label _who = new Label { AutoSize = false, Height = 28 };
+        private readonly Label _info = new Label { AutoSize = false, ForeColor = Color.FromArgb(110, 116, 124) };
         private readonly Label _note = new Label { AutoSize = false, ForeColor = Color.FromArgb(150, 60, 20) };
         private readonly Label _status = new Label { AutoSize = true, ForeColor = Color.FromArgb(60, 66, 76) };
         private readonly TextBox _name = new TextBox();
@@ -55,10 +66,11 @@ namespace Kaban.UI.Settings
         private readonly List<Control[]> _rows = new List<Control[]>();        // caption, field, the row's section
         private readonly DirtyTracker _dirty = new DirtyTracker();
         private Button _save, _revert, _new, _delete;
-        private Label _accountHead, _prefsHead, _readFromCaption, _pageNote;
+        private Label _accountHead, _pageNote;
         private string _selected;          // a user, Everyone, or null while a new one is made
         private bool _creating, _filling;
-        private string _activeKey = ViewPreferences.CaptionAlign;
+        private ComboBox _openList;        // the list open now (its preview beside it)
+        private int _hovered = -1;         // its entry previewed (a list is drawn again and again)
 
         /// <summary>Asks before a delete (tests answer instead).</summary>
         public Func<string, bool> Confirm;
@@ -79,7 +91,11 @@ namespace Kaban.UI.Settings
         public PreferencePreview Preview { get { return _preview; } }
         public string StatusText { get { return _status.Text; } }
         public string NoteText { get { return _note.Visible ? _note.Text : ""; } }
+        public string InfoText { get { return _info.Visible ? _info.Text : ""; } }
         public string Selected { get { return _creating ? null : _selected; } }
+        /// <summary>The left column (the accounts and the account) and the right one (the preferences) - tests.</summary>
+        public Control AccountColumn { get { return _left; } }
+        public Control PreferencesColumn { get { return _body; } }
 
         public UsersPreferencesControl()
         {
@@ -99,9 +115,9 @@ namespace Kaban.UI.Settings
             bar.Controls.Add(_status);
             _dirty.Guard(_save);
 
-            // ---- the accounts ----
-            _grid.Dock = DockStyle.Left;
-            _grid.Width = 330;
+            // ---- the accounts, top left ----
+            _grid.Dock = DockStyle.Top;
+            _grid.Height = 300;
             _grid.ReadOnly = true;
             _grid.AllowUserToAddRows = false;
             _grid.AllowUserToDeleteRows = false;
@@ -114,10 +130,13 @@ namespace Kaban.UI.Settings
             _grid.Columns.Add("factor", T("Usr_Factor", "Screen scale"));
             UiStyle.EnableAutoFit(_grid);
             UiStyle.EnableTableTools(_grid, "Users", sorting: false);
+            // rows taller or lower (Table rows): the list follows, the account with it
+            _grid.RowHeightChanged += (s, e) => FitGrid();
+            _grid.ColumnHeadersHeightChanged += (s, e) => FitGrid();
             // "Everyone (this panel)" whole in the first column.
             int[] widths = { 150, 86, 74 };
             for (int i = 0; i < widths.Length; i++) _grid.Columns[i].Width = Math.Max(_grid.Columns[i].MinimumWidth, widths[i]);
-            _grid.Width = Math.Max(330, _grid.Columns.Cast<DataGridViewColumn>().Sum(c => c.Width) + 4);
+            _left.Width = Math.Max(360, _grid.Columns.Cast<DataGridViewColumn>().Sum(c => c.Width) + 8);
             // THE GRID PICKS ITS FIRST ROW when it is first shown (Everyone): that is
             // not the operator choosing - the one chosen is put back once it settles.
             _grid.HandleCreated += (s, e) =>
@@ -136,20 +155,32 @@ namespace Kaban.UI.Settings
                 Fill();
             };
 
+            BuildAccount();
             BuildBody();
 
-            var line = new Panel { Dock = DockStyle.Right, Width = 1, BackColor = UiStyle.GridRule };
+            _left.Controls.Add(_account);
+            _left.Controls.Add(new Panel { Dock = DockStyle.Top, Height = 1, BackColor = UiStyle.GridRule });
+            _left.Controls.Add(_grid);
+            var line = new Panel { Dock = DockStyle.Left, Width = 1, BackColor = UiStyle.GridRule };
             Controls.Add(_body);
             Controls.Add(line);
-            Controls.Add(_preview);
-            Controls.Add(_grid);
+            Controls.Add(_left);
             Controls.Add(bar);
+            Controls.Add(_preview);          // floats over the page, beside the list open
+            _preview.BringToFront();
 
-            _selected = UserRights.Actor ?? Everyone;
+            _selected = StartUser();
             RefreshList();
             Fill();
             SecurityManager.UserChanged += OnUserChanged;
             Disposed += (s, e) => SecurityManager.UserChanged -= OnUserChanged;
+        }
+
+        /// <summary>The one shown first: the one signed in - if they have an account here (a trusted sign-in may not) - else Everyone.</summary>
+        private static string StartUser()
+        {
+            var actor = UserRights.Actor;
+            return actor != null && AccountOf(actor) != null ? actor : Everyone;
         }
 
         private void OnUserChanged(object sender, EventArgs e)
@@ -157,7 +188,7 @@ namespace Kaban.UI.Settings
             if (IsDisposed) return;
             if (InvokeRequired) { BeginInvoke(new EventHandler(OnUserChanged), sender, e); return; }
             _creating = false;
-            _selected = UserRights.Actor ?? Everyone;
+            _selected = StartUser();
             RefreshList();
             Fill();
         }
@@ -166,17 +197,42 @@ namespace Kaban.UI.Settings
         // THE PAGE
         // ==================================================================
 
+        // The account, under the list (narrow); the preferences, on the right.
+        private const int ACapX = 8, ACapW = 96, AFieldX = 110, AFieldW = 230;
         private const int CapX = 12, CapW = 210, FieldX = 228, FieldW = 300;
 
-        private Label Head(string text)
+        private Label Head(Control parent, string text, int width)
         {
             var l = new Label
             {
-                Text = text, AutoSize = false, Size = new Size(FieldX + FieldW - CapX, 24),
+                Text = text, AutoSize = false, Size = new Size(width, 24),
                 Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
             };
-            _body.Controls.Add(l);
+            parent.Controls.Add(l);
             return l;
+        }
+
+        private void BuildAccount()
+        {
+            _accountHead = Head(_account, T("Usr_SecAccount", "Account"), AFieldX + AFieldW - ACapX);
+            _accountHead.Location = new Point(ACapX, 10);
+            int y = 40;
+            foreach (var pair in new[] { new { Caption = T("Usr_Name", "User"), Field = (Control)_name },
+                                         new { Caption = T("Usr_Pass", "Password"), Field = (Control)_pass },
+                                         new { Caption = T("Usr_Level", "Level"), Field = (Control)_level } })
+            {
+                var cap = UiStyle.CaptionLabel(pair.Caption, ACapX, y + 2, ACapW);
+                _account.Controls.Add(cap);
+                pair.Field.SetBounds(AFieldX, y, AFieldW, pair.Field.Height);
+                _account.Controls.Add(pair.Field);
+                y += UiStyle.RowPitch;
+            }
+            _createdBy.Location = new Point(AFieldX + 2, y - 6);
+            _account.Controls.Add(_createdBy);
+            _name.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            _pass.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            _level.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            UiStyle.Tips().SetToolTip(_pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
         }
 
         private void Row(string section, string key, string caption, Control field)
@@ -187,11 +243,21 @@ namespace Kaban.UI.Settings
             _body.Controls.Add(cap);
             _body.Controls.Add(field);
             _rows.Add(new Control[] { cap, field, new Label { Tag = section } });
-            if (key == null) return;
-            EventHandler show = (s, e) => ShowPreview(key);
-            cap.MouseEnter += show;
-            field.MouseEnter += show;
-            field.Enter += show;
+        }
+
+        /// <summary>A preference's list: drawn by the page, so the entry under the pointer is known (the preview).</summary>
+        private ComboBox PrefCombo(string key)
+        {
+            var combo = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList, Name = "vp" + key,
+                DrawMode = DrawMode.OwnerDrawFixed, ItemHeight = UiScale.For(this, 20)
+            };
+            combo.DrawItem += (s, e) => DrawEntry(combo, key, e);
+            combo.DropDown += (s, e) => OpenList(combo, key);
+            combo.DropDownClosed += (s, e) => CloseList(combo);
+            combo.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            return combo;
         }
 
         private void BuildBody()
@@ -199,38 +265,45 @@ namespace Kaban.UI.Settings
             _who.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             _who.ForeColor = Color.FromArgb(25, 28, 34);
             _body.Controls.Add(_who);
+            _body.Controls.Add(_info);
             _body.Controls.Add(_note);
 
-            _accountHead = Head(T("Usr_SecAccount", "Account"));
-            Row("Account", null, T("Usr_Name", "User"), _name);
-            Row("Account", null, T("Usr_Pass", "Password"), _pass);
-            Row("Account", null, T("Usr_Level", "Level"), _level);
-            _body.Controls.Add(_createdBy);
-            _name.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
-            _pass.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
-            _level.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
-            UiStyle.Tips().SetToolTip(_pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
-
-            _prefsHead = Head(T("Usr_SecPrefs", "Screen and view preferences"));
             Row("Prefs", null, T("VP_ReadFrom", "Read from"), _readFrom);
-            _readFromCaption = (Label)_rows[_rows.Count - 1][0];
+            _readFrom.DrawMode = DrawMode.OwnerDrawFixed;
+            _readFrom.ItemHeight = UiScale.For(this, 20);
+            _readFrom.DrawItem += (s, e) => DrawEntry(_readFrom, null, e);
+            _readFrom.DropDown += (s, e) => OpenList(_readFrom, null);
+            _readFrom.DropDownClosed += (s, e) => CloseList(_readFrom);
             _readFrom.SelectedIndexChanged += (s, e) => { if (!_filling) ReadFromChosen(); };
             UiStyle.Tips().SetToolTip(_readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE keeps them"));
 
             Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
-            _scale.ValueChanged += (s, e) => { if (_filling) return; _dirty.MarkDirty(); ShowPreview(ScaleKey); };
-            _scale.Enter += (s, e) => ShowPreview(ScaleKey);
+            _scale.ValueChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
+            // its menu's sizes previewed as the pointer moves over them
+            _scale.Hovered += (s, f) => ShowScaleBeside(_scale.OpenMenu, f);
+            _scale.MenuClosed += (s, e) => HidePreview();
 
-            foreach (var group in new[] { "Captions", "Numbers", "Tables", "SignIn" })
+            foreach (var group in new[] { "Captions", "Numbers", "Units", "Tables", "SignIn" })
+            {
+                if (group == "Units")
+                {
+                    // The units of measure (they had a tab of their own: Unit Settings).
+                    foreach (var type in UnitManager.Families)
+                    {
+                        string key = UnitManager.UnitKey(type);
+                        var combo = PrefCombo(key);
+                        Row(group, key, PrefTexts.NameOf(key), combo);
+                        _combos[key] = combo;
+                    }
+                    continue;
+                }
                 foreach (var p in ViewPreferences.All.Where(x => x.Group == group && !x.Hidden))
                 {
-                    var combo = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Name = "vp" + p.Key };
-                    string key = p.Key;
-                    combo.SelectedIndexChanged += (s, e) => { if (_filling) return; _dirty.MarkDirty(); ShowPreview(key); };
-                    combo.DropDown += (s, e) => ShowPreview(key);
-                    Row(group, key, PrefTexts.NameOf(p.Key), combo);
+                    var combo = PrefCombo(p.Key);
+                    Row(group, p.Key, PrefTexts.NameOf(p.Key), combo);
                     _combos[p.Key] = combo;
                 }
+            }
 
             _pageNote = new Label
             {
@@ -242,63 +315,54 @@ namespace Kaban.UI.Settings
 
         private static readonly Dictionary<string, string[]> SectionHeads = new Dictionary<string, string[]>
         {
+            { "Prefs", new[] { "Usr_SecPrefs", "Screen and view preferences" } },
             { "Screen", new[] { "VP_SecScreen", "Screen" } },
             { "Captions", new[] { "VP_SecCaptions", "Captions" } },
             { "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
+            { "Units", new[] { "VP_SecUnits", "Units of measure" } },
             { "Tables", new[] { "VP_SecTables", "Tables" } },
             { "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } }
         };
         private readonly Dictionary<string, Label> _sectionLabels = new Dictionary<string, Label>();
 
-        /// <summary>The rows from the top: the account only for a user, the sections' headings in light grey.</summary>
+        /// <summary>The preferences from the top, the sections' headings in light grey; the account shown for a user only.</summary>
         private void LayoutBody(bool account)
         {
+            _account.Visible = account;
+            _createdBy.Visible = account && _createdBy.Text.Length > 0;
             _body.SuspendLayout();
             int y = 10;
             _who.SetBounds(CapX, y, FieldX + FieldW - CapX, 28);
             y += 30;
-            if (_note.Visible)
-            {
-                _note.SetBounds(CapX, y, FieldX + FieldW - CapX, 36);
-                y += 40;
-            }
-            _accountHead.Visible = account;
-            _createdBy.Visible = account && _createdBy.Text.Length > 0;
+            if (_info.Visible) { _info.SetBounds(CapX, y, FieldX + FieldW - CapX, 36); y += 40; }
+            if (_note.Visible) { _note.SetBounds(CapX, y, FieldX + FieldW - CapX, 36); y += 40; }
             string section = null;
             foreach (var r in _rows)
             {
                 string sec = (string)r[2].Tag;
-                bool shown = sec != "Account" || account;
-                r[0].Visible = r[1].Visible = shown;
-                if (!shown) continue;
                 if (sec != section)
                 {
                     section = sec;
                     y += 6;
-                    if (sec == "Account") { _accountHead.Top = y; _accountHead.Left = CapX; y += 28; }
-                    else if (sec == "Prefs") { y += 8; _prefsHead.Top = y; _prefsHead.Left = CapX; y += 28; }
-                    else
+                    Label h;
+                    if (!_sectionLabels.TryGetValue(sec, out h))
                     {
-                        Label h;
-                        if (!_sectionLabels.TryGetValue(sec, out h))
+                        bool main = sec == "Prefs";
+                        h = new Label
                         {
-                            h = new Label
-                            {
-                                Text = T(SectionHeads[sec][0], SectionHeads[sec][1]), AutoSize = false, Size = new Size(FieldX + FieldW - CapX, 20),
-                                ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small
-                            };
-                            _body.Controls.Add(h);
-                            _sectionLabels[sec] = h;
-                        }
-                        h.SetBounds(CapX, y, h.Width, 20);
-                        y += 22;
+                            Text = T(SectionHeads[sec][0], SectionHeads[sec][1]), AutoSize = false, Size = new Size(FieldX + FieldW - CapX, main ? 24 : 20),
+                            ForeColor = main ? Color.FromArgb(40, 46, 56) : Color.FromArgb(110, 116, 124),
+                            Font = main ? UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold) : UiStyle.Small
+                        };
+                        _body.Controls.Add(h);
+                        _sectionLabels[sec] = h;
                     }
+                    h.SetBounds(CapX, y, h.Width, h.Height);
+                    y += h.Height + 2;
                 }
                 r[0].Top = y + 2;
                 r[1].Top = y;
                 y += UiStyle.RowPitch;
-                // "created by mt1" under the level, in the field's column.
-                if (r[1] == _level && _createdBy.Visible) { _createdBy.Location = new Point(FieldX + 2, y - 6); y += 14; }
             }
             _pageNote.Top = y + 8;
             _pageNote.Left = CapX;
@@ -330,6 +394,18 @@ namespace Kaban.UI.Settings
                 SelectRow(_creating ? null : _selected);
             }
             finally { _filling = false; }
+            FitGrid();
+        }
+
+        /// <summary>The list as tall as its rows (at most 300): the account right under it.</summary>
+        private void FitGrid()
+        {
+            int rows = _grid.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+            int want = (_grid.ColumnHeadersVisible ? _grid.ColumnHeadersHeight : 0) + rows + 3;
+            if (_grid.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) > _grid.ClientSize.Width)
+                want += SystemInformation.HorizontalScrollBarHeight;
+            int h = Math.Max(UiScale.For(this, 120), Math.Min(UiScale.For(this, 300), want));
+            if (_grid.Height != h) _grid.Height = h;
         }
 
         private bool _gridSettled = true;
@@ -389,18 +465,42 @@ namespace Kaban.UI.Settings
             }
         }
 
-        private UserAccount AccountOf(string name)
+        private static UserAccount AccountOf(string name)
         {
             return name == null ? null : UserStore.GetAllUsers().FirstOrDefault(u => string.Equals(u.Username, name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>A unit family's key, or None.</summary>
+        private static UnitType UnitOf(string key)
+        {
+            foreach (var t in UnitManager.Families) if (UnitManager.UnitKey(t) == key) return t;
+            return UnitType.None;
+        }
+
+        /// <summary>Everyone's value of a preference (the units: UnitManager's own).</summary>
+        internal static string PanelOf(string key)
+        {
+            var unit = UnitOf(key);
+            return unit != UnitType.None ? UnitManager.PanelUnitName(unit) : ViewPreferences.PanelValue(key);
+        }
+
+        /// <summary>A preference's values (the units: the family's).</summary>
+        private static IEnumerable<string> ValuesOf(string key)
+        {
+            var unit = UnitOf(key);
+            if (unit != UnitType.None) return UnitManager.GetAvailable(unit).Select(u => u.Name);
+            var p = ViewPreferences.Find(key);
+            return p != null ? p.Values : new string[0];
         }
 
         /// <summary>The page from what is kept for the one chosen.</summary>
         public void Fill()
         {
+            HidePreview();
             _filling = true;
             try
             {
-                if (!_creating && _selected != Everyone && AccountOf(_selected) == null) _selected = UserRights.Actor ?? Everyone;
+                if (!_creating && _selected != Everyone && AccountOf(_selected) == null) _selected = StartUser();
                 bool edit = CanEdit;
                 string user = EditedUser;
                 var account = AccountOf(user);
@@ -409,7 +509,9 @@ namespace Kaban.UI.Settings
                 // ---- who ----
                 _who.Text = _creating ? T("Usr_NewUser", "New user")
                           : _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
-                          : user + "  \u00B7  " + PrefTexts.LevelText(account.Level) + (self ? "  " + T("VP_Me", "(me)") : "");
+                          : user + (account != null ? "  \u00B7  " + PrefTexts.LevelText(account.Level) : "") + (self ? "  " + T("VP_Me", "(me)") : "");
+                _info.Text = IsEveryone ? T("Usr_InfoEveryone", "In force while nobody is signed in, and followed by every user's 'As for everyone'.") : "";
+                _info.Visible = _info.Text.Length > 0;
                 _note.Text = edit ? "" : _selected == Everyone
                     ? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
                     : string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
@@ -449,19 +551,19 @@ namespace Kaban.UI.Settings
                 _scale.Value = IsEveryone ? DisplaySettings.PanelFactor : user != null ? DisplaySettings.UserFactor(user) : (double?)null;
                 _scale.Enabled = edit;
 
-                // ---- the preferences ----
-                foreach (var p in ViewPreferences.All.Where(x => !x.Hidden))
+                // ---- the preferences and the units ----
+                foreach (var kv in _combos)
                 {
-                    var combo = _combos[p.Key];
+                    var combo = kv.Value;
                     combo.Items.Clear();
                     if (!IsEveryone)
                         combo.Items.Add(new Choice
                         {
                             Value = null,
-                            Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(p.Key, ViewPreferences.PanelValue(p.Key)) + ")"
+                            Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(kv.Key, PanelOf(kv.Key)) + ")"
                         });
-                    foreach (var v in p.Values) combo.Items.Add(new Choice { Value = v, Text = PrefTexts.ValueText(p.Key, v) });
-                    string current = IsEveryone ? ViewPreferences.PanelValue(p.Key) : user != null ? ViewPreferences.UserValue(user, p.Key) : null;
+                    foreach (var v in ValuesOf(kv.Key)) combo.Items.Add(new Choice { Value = v, Text = PrefTexts.ValueText(kv.Key, v) });
+                    string current = IsEveryone ? PanelOf(kv.Key) : user != null ? ViewPreferences.UserValue(user, kv.Key) : null;
                     SelectValue(combo, current);
                     combo.Enabled = edit;
                 }
@@ -472,7 +574,6 @@ namespace Kaban.UI.Settings
                 _dirty.Reset();
             }
             finally { _filling = false; }
-            ShowPreview(_activeKey);
         }
 
         private static void SelectValue(ComboBox combo, string value)
@@ -487,25 +588,145 @@ namespace Kaban.UI.Settings
         internal string ShownValue(string key)
         {
             ComboBox c;
-            if (!_combos.TryGetValue(key, out c)) return ViewPreferences.PanelValue(key);
+            if (!_combos.TryGetValue(key, out c)) return PanelOf(key);
             var ch = c.SelectedItem as Choice;
-            return ch != null && ch.Value != null ? ch.Value : ViewPreferences.PanelValue(key);
+            return ch != null && ch.Value != null ? ch.Value : PanelOf(key);
         }
 
-        private void ShowPreview(string key)
-        {
-            _activeKey = key;
-            if (key == ScaleKey)
-            {
-                double panel = DisplaySettings.PanelFactor;
-                _preview.ShowScale(_scale.Value, panel);
-                return;
-            }
-            _preview.ShowPreference(key, ShownValue, _combos.ContainsKey(key) && _combos[key].SelectedItem is Choice && ((Choice)_combos[key].SelectedItem).Value == null);
-        }
+        // ==================================================================
+        // THE PREVIEW: beside the list open, for the entry under the pointer
+        // ==================================================================
 
         /// <summary>The preview's subject (tests).</summary>
-        internal string ActiveKey { get { return _activeKey; } }
+        internal string ActiveKey { get { return _preview.Visible ? _preview.Key : null; } }
+
+        /// <summary>A list's entry, drawn by the page; the one under the pointer of an open list is previewed.</summary>
+        private void DrawEntry(ComboBox combo, string key, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            if (e.Index >= 0 && e.Index < combo.Items.Count)
+            {
+                bool selected = (e.State & DrawItemState.Selected) != 0;
+                var ink = !combo.Enabled ? SystemColors.GrayText : selected ? SystemColors.HighlightText : SystemColors.WindowText;
+                TextRenderer.DrawText(e.Graphics, combo.Items[e.Index].ToString(), e.Font ?? combo.Font, e.Bounds, ink,
+                                      TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+                // the edit part of the box is drawn too (ComboBoxEdit): only the open list counts
+                if (selected && combo.DroppedDown && (e.State & DrawItemState.ComboBoxEdit) == 0) HoverItem(combo, key, e.Index);
+            }
+            e.DrawFocusRectangle();
+        }
+
+        /// <summary>A list opened: the preview of what it shows now, beside it.</summary>
+        internal void OpenList(ComboBox combo, string key)
+        {
+            _openList = combo;
+            _hovered = -1;
+            HoverItem(combo, key, combo.SelectedIndex);
+        }
+
+        /// <summary>The list closed: the preview goes.</summary>
+        internal void CloseList(ComboBox combo)
+        {
+            if (_openList == combo) _openList = null;
+            _hovered = -1;
+            HidePreview();
+        }
+
+        /// <summary>The entry <paramref name="index"/> of an open list is under the pointer (or the keys).</summary>
+        internal void HoverItem(ComboBox combo, string key, int index)
+        {
+            if (index < 0 || index >= combo.Items.Count) return;
+            if (combo == _openList && index == _hovered && _preview.Visible) return;
+            var choice = combo.Items[index] as Choice;
+            if (choice == null) return;
+            bool moved = combo == _openList && _hovered >= 0;      // the pointer onto another entry (not the list opening)
+            if (combo == _openList) _hovered = index;
+            if (combo == _readFrom)
+            {
+                if (choice.Value == null) { HidePreview(); return; }
+                _preview.ShowSummary(choice.Text, SummaryOf(choice.Value));
+            }
+            else
+            {
+                string hovered = choice.Value ?? PanelOf(key);
+                _preview.ShowPreference(key, k => k == key ? hovered : ShownValue(k), choice.Value == null);
+                // the alarm sound heard as the pointer comes onto "On" (a button could not be
+                // clicked while the list is open: a click outside it closes it)
+                if (moved && key == ViewPreferences.AlarmSound && hovered == "On")
+                    try { Kaban.UI.Helpers.AlarmSound.Play(); } catch { }
+            }
+            PlaceBeside(ListBounds(combo), combo.PointToScreen(Point.Empty).Y);
+        }
+
+        /// <summary>Where an open list is on the screen (below its box, as tall as its entries).</summary>
+        private static Rectangle ListBounds(ComboBox combo)
+        {
+            var at = combo.PointToScreen(new Point(0, combo.Height));
+            int rows = Math.Max(1, Math.Min(combo.Items.Count, combo.MaxDropDownItems));
+            return new Rectangle(at.X, at.Y, Math.Max(combo.DropDownWidth, combo.Width), rows * combo.ItemHeight + 2);
+        }
+
+        /// <summary>
+        /// The preview 50 px to the right of the list (on screen), level with its
+        /// box; on the left of it when the page has no room on the right; inside
+        /// the page always.
+        /// </summary>
+        private void PlaceBeside(Rectangle list, int topScreen)
+        {
+            int gap = UiScale.For(this, 50);
+            var size = new Size(UiScale.For(this, 300), UiScale.For(this, _preview.WantedHeight));
+            var tl = PointToClient(new Point(list.Right + gap, topScreen));
+            var listLeft = PointToClient(new Point(list.Left, topScreen)).X;
+            int x = tl.X;
+            if (x + size.Width > ClientSize.Width) x = listLeft - gap - size.Width;
+            if (x < 0) x = Math.Max(0, ClientSize.Width - size.Width);
+            int y = Math.Max(0, Math.Min(tl.Y, ClientSize.Height - size.Height));
+            _preview.SetBounds(x, y, size.Width, size.Height);
+            _preview.Visible = true;
+            _preview.BringToFront();
+        }
+
+        private void HidePreview()
+        {
+            if (_preview.Visible) _preview.Visible = false;
+        }
+
+        /// <summary>The screen scale's menu: the size under the pointer, beside the menu.</summary>
+        private void ShowScaleBeside(ToolStripDropDown menu, double? factor)
+        {
+            _preview.ShowScale(factor, DisplaySettings.PanelFactor);
+            var bounds = menu != null && menu.Visible ? menu.Bounds : ListBounds(_readFrom);
+            PlaceBeside(bounds, _scale.PointToScreen(Point.Empty).Y);
+        }
+
+        /// <summary>Test hook: a size of the scale menu under the pointer.</summary>
+        internal void HoverScale(double? factor) { ShowScaleBeside(null, factor); }
+
+        /// <summary>A user's (or everyone's) preferences, line by line: the name, the value, their own or not.</summary>
+        private List<PreferencePreview.Line> SummaryOf(string who)
+        {
+            var lines = new List<PreferencePreview.Line>();
+            bool everyone = who == Everyone;
+            double? f = everyone ? DisplaySettings.PanelFactor : DisplaySettings.UserFactor(who);
+            lines.Add(new PreferencePreview.Line
+            {
+                Name = PrefTexts.NameOf(ScaleKey), Own = everyone || f.HasValue,
+                Value = f.HasValue ? DisplaySettings.Percent(f.Value) : Kaban.UI.Forms.MainForm.NoScaleRequest
+            });
+            foreach (var kv in _combos)
+            {
+                string own = everyone ? PanelOf(kv.Key) : ViewPreferences.UserValue(who, kv.Key);
+                // "Time" twice (the clock and the unit): the units say so
+                string name = PrefTexts.NameOf(kv.Key);
+                if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
+                lines.Add(new PreferencePreview.Line
+                {
+                    Name = name, Own = own != null,
+                    Value = own != null ? PrefTexts.ValueText(kv.Key, own) : T("VP_AsEveryone", "As for everyone")
+                });
+            }
+            return lines;
+        }
 
         // ==================================================================
         // READ FROM
@@ -528,7 +749,7 @@ namespace Kaban.UI.Settings
                 foreach (var kv in _combos)
                 {
                     string v = fromEveryone ? null : ViewPreferences.UserValue(src.Value, kv.Key);
-                    if (IsEveryone && v == null) v = ViewPreferences.PanelValue(kv.Key);
+                    if (IsEveryone && v == null) v = PanelOf(kv.Key);
                     SelectValue(kv.Value, v);
                 }
                 double? f = fromEveryone ? (double?)null : DisplaySettings.UserFactor(src.Value);
@@ -538,7 +759,6 @@ namespace Kaban.UI.Settings
             finally { _filling = false; }
             _dirty.MarkDirty();
             Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
-            ShowPreview(_activeKey);
         }
 
         // ==================================================================
@@ -572,7 +792,7 @@ namespace Kaban.UI.Settings
             return string.Join(", ", values.Select(kv => kv.Key + "=" + (kv.Value ?? "everyone's")));
         }
 
-        /// <summary>Keeps the page: the account (new, password, level), the screen scale, the preferences.</summary>
+        /// <summary>Keeps the page: the account (new, password, level), the screen scale, the preferences, the units.</summary>
         internal bool Save()
         {
             if (!CanEdit) return false;
@@ -603,7 +823,11 @@ namespace Kaban.UI.Settings
 
             if (IsEveryone)
             {
-                ViewPreferences.SetMany(null, prefs);
+                // The units are the panel's (UnitManager, Units.cfg); the rest View.cfg's.
+                foreach (var kv in prefs.Where(p => UnitOf(p.Key) != UnitType.None && p.Value != null).ToList())
+                    if (kv.Value != UnitManager.PanelUnitName(UnitOf(kv.Key))) UnitManager.SetActive(UnitOf(kv.Key), kv.Value);
+                var rest = prefs.Where(p => UnitOf(p.Key) == UnitType.None).ToDictionary(p => p.Key, p => p.Value);
+                ViewPreferences.SetMany(null, rest);
                 AuditLogger.Log("view preferences for everyone kept: " + Shown(prefs));
                 double before = DisplaySettings.PanelFactor;
                 bool scaleChanged = _scale.Value.HasValue && Math.Abs(_scale.Value.Value - before) > 0.0005;
@@ -706,7 +930,7 @@ namespace Kaban.UI.Settings
             if (!yes) return false;
             UserStore.RemoveUser(user);
             AuditLogger.Log("deleted user '" + user + "'.");
-            _selected = UserRights.Actor ?? Everyone;
+            _selected = StartUser();
             RefreshList();
             Fill();
             Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
@@ -745,7 +969,14 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
                 case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
-                default: return key;
+                default:
+                    // a unit family: "Unit_Length" -> Length
+                    if (key != null && key.StartsWith("Unit_"))
+                    {
+                        string fam = key.Substring(5);
+                        return T("Unit_Family_" + fam, fam);
+                    }
+                    return key;
             }
         }
 
@@ -828,16 +1059,41 @@ namespace Kaban.UI.Settings
             get { return _value.HasValue ? DisplaySettings.Percent(_value.Value) : Kaban.UI.Forms.MainForm.NoScaleRequest; }
         }
 
+        /// <summary>A size of the open menu under the pointer (null: "No specific request") - the page previews it.</summary>
+        public event Action<object, double?> Hovered;
+        /// <summary>The menu closed.</summary>
+        public event EventHandler MenuClosed;
+        /// <summary>The menu open now, or null.</summary>
+        public ToolStripDropDown OpenMenu { get; private set; }
+
         /// <summary>The menu a click opens (tests use it as the operator would).</summary>
         internal ContextMenuStrip BuildMenu()
         {
-            return Kaban.UI.Forms.MainForm.BuildScaleMenu(null, _value, OfferNone, v => Value = v);
+            var menu = Kaban.UI.Forms.MainForm.BuildScaleMenu(null, _value, OfferNone, v => Value = v);
+            foreach (var item in menu.Items.OfType<ToolStripMenuItem>())
+            {
+                var it = item;
+                it.MouseEnter += (s, e) =>
+                {
+                    var h = Hovered;
+                    if (h != null) h(this, it.Tag is double ? (double?)(double)it.Tag : null);
+                };
+            }
+            menu.Closed += (s, e) =>
+            {
+                OpenMenu = null;
+                var h = MenuClosed;
+                if (h != null) h(this, EventArgs.Empty);
+            };
+            return menu;
         }
 
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
-            UiStyle.ShowPopup(BuildMenu(), this, new Point(0, Height));
+            var menu = BuildMenu();
+            OpenMenu = menu;
+            UiStyle.ShowPopup(menu, this, new Point(0, Height));
         }
 
         protected override void OnPaint(PaintEventArgs pevent)

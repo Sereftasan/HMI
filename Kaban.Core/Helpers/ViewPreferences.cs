@@ -75,7 +75,14 @@ namespace Kaban.Core.Helpers
             new Preference { Key = LastPlace, Group = "", Hidden = true },
             new Preference { Key = AxisItems, Group = "", Hidden = true },
             new Preference { Key = MonitorItems, Group = "", Hidden = true, Default = "Torque" },
-            new Preference { Key = MonitorMotion, Group = "", Hidden = true }
+            new Preference { Key = MonitorMotion, Group = "", Hidden = true },
+            // A user's own units of measure ("Unit_Length" = inch): taken at sign-in by
+            // UnitManager. Everyone's are UnitManager's own (Units.cfg), not kept here.
+            new Preference { Key = "Unit_" + Enums.UnitType.Length, Group = "Units", Hidden = true },
+            new Preference { Key = "Unit_" + Enums.UnitType.Weight, Group = "Units", Hidden = true },
+            new Preference { Key = "Unit_" + Enums.UnitType.Temperature, Group = "Units", Hidden = true },
+            new Preference { Key = "Unit_" + Enums.UnitType.Pressure, Group = "Units", Hidden = true },
+            new Preference { Key = "Unit_" + Enums.UnitType.Time, Group = "Units", Hidden = true }
         }.AsReadOnly();
 
         private static Preference P(string key, string group, params string[] values)
