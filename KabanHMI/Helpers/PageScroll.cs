@@ -20,6 +20,13 @@ namespace Kaban.UI.Helpers
     /// docked parts (a table filling the page) are unaffected - a docked part never
     /// reaches past the edge.
     /// </summary>
+    /// <summary>
+    /// A part of a page that scrolls itself (a page of axis rows, whose heading
+    /// stays while its rows scroll): the page around it is left unscrolled -
+    /// two scroll bars for one thing would be one too many.
+    /// </summary>
+    public interface IScrollsItself { }
+
     public static class PageScroll
     {
         /// <summary>
@@ -41,6 +48,13 @@ namespace Kaban.UI.Helpers
         {
             var sc = view as ScrollableControl;
             if (sc == null || view is Form || view is Kaban.UI.Settings.SettingsScreen) return;
+            foreach (Control c in view.Controls)
+                if (c is IScrollsItself)
+                {
+                    sc.AutoScroll = false;
+                    sc.AutoScrollMinSize = Size.Empty;
+                    return;
+                }
             if (!sc.AutoScroll) sc.AutoScroll = true;
             if (!minimum || !sc.AutoScrollMinSize.IsEmpty) return;
             bool docked = false;

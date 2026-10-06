@@ -57,6 +57,7 @@ class AXI {
         a.Location = new Point(10, top);
         return a;
     }
+    static IEnumerable<Control> Tree(Control c) { foreach (Control k in c.Controls) { yield return k; foreach (var d in Tree(k)) yield return d; } }
     static string Keys(AxisSettingHMI r) { return string.Join(",", r.Columns.OrderBy(c => c.Value.X).Select(c => c.Key)); }
 
     [STAThread]
@@ -99,8 +100,13 @@ class AXI {
         var r2 = Full("Robot Y", 34 + AxisSettingHMI.RowHeight, "W20", 0, 0);
         page.Controls.Add(r1); page.Controls.Add(r2);
         form.Show(); Pump(250);
-        var bar = page.Controls["axisItemsBar"] as AxisPickBar;
-        var mot = page.Controls["axisMotionBar"] as AxisPickBar;
+        var bar = page.Controls.Find("axisItemsBar", true).FirstOrDefault() as AxisPickBar;
+        var mot = page.Controls.Find("axisMotionBar", true).FirstOrDefault() as AxisPickBar;
+        var frame = AxisPageFrame.Of(page);
+        var body = frame != null ? frame.Body : page;
+        Check("the page as a table: the lists and the column names in its heading, the rows in its body", frame != null && bar.Parent == frame.HeadContent &&
+              mot.Parent == frame.Head && r1.Parent == frame.Body && Tree(page).OfType<Label>().Where(l => l.Text == "Position").All(l => l.Parent == frame.HeadContent) &&
+              !page.AutoScroll && frame.Head.Height == 34 + 40 && r1.Top == 0, frame == null ? "no frame" : frame.Head.Height + " " + r1.Top);
         Check("two lists at the top of the page", bar != null && bar.Visible && mot != null && mot.Visible);
         var offered = bar.ItemsPick.Items.Select(i => i.Key).ToList();
         Check("  PLC axis items: what the rows have, in the row's order",
@@ -123,7 +129,7 @@ class AXI {
         Check("  kept as his own", ViewPreferences.UserValue("boss", ViewPreferences.AxisItems) == "Codes");
         Check("  the row's old fields disposed, not left holding their windows", before.IsDisposed && before.Parent == null);
         Check("  no jog buttons, no position", !r1.Controls.OfType<ButtonHMI>().Any() && !r1.Controls.OfType<NumericDisplayHMI>().Any());
-        Func<string, Label> head = t => page.Controls.OfType<Label>().FirstOrDefault(l => l.Text == t);
+        Func<string, Label> head = t => Tree(page).OfType<Label>().FirstOrDefault(l => l.Text == t && !(l.Parent is AxisPickBar));
         Check("  the headings follow: Min hidden, Axis alarm over its column", !head("Min").Visible && head("Axis alarm").Visible &&
               head("Axis alarm").Left == r1.Left + r1.Columns["AxisAlarm"].X, head("Axis alarm").Left + " vs " + (r1.Left + r1.Columns["AxisAlarm"].X));
         bar.ItemsPick.Select(new[] { "Manual", "Torque" });
@@ -147,52 +153,53 @@ class AXI {
         Check("  its columns after the PLC's", Keys(r1).EndsWith("TravelPerRev,Mot:Busy,Mot:RealCurrentValue"), Keys(r1));
 
         Console.WriteLine("--- in sight while the page scrolls sideways ---");
-        int home = mot.HomeX, stick = mot.StickX, itemsLeft = bar.Left, widthBefore = page.DisplayRectangle.Width;
+        int home = mot.HomeX, stick = mot.StickX, itemsLeft = bar.Left, widthBefore = body.DisplayRectangle.Width;
         Check("the Motion monitor right of PLC axis items, sticking where the page's content starts", home == mot.Left && home >= bar.Right &&
               stick == bar.Left && stick == 10, home + " / " + stick + " / items " + bar.Left + "-" + bar.Right);
-        Check("the page is wider than its window", r1.Width > page.ClientSize.Width, r1.Width + " > " + page.ClientSize.Width);
-        page.AutoScrollPosition = new Point(100, 0);
+        Check("the page is wider than its window", r1.Width > body.ClientSize.Width, r1.Width + " > " + body.ClientSize.Width);
+        body.AutoScrollPosition = new Point(100, 0);
         Pump(100);
         Check("scrolled less than its place: it moves with the page", r1.Left == 10 - 100 && mot.Left == home - 100,
               "row " + r1.Left + ", motion " + mot.Left + " (home " + home + ")");
-        page.AutoScrollPosition = new Point(home - stick, 0);
+        body.AutoScrollPosition = new Point(home - stick, 0);
         Pump(100);
         Check("  to the page's left side", mot.Left == stick, mot.Left.ToString());
-        page.AutoScrollPosition = new Point(home - stick + 150, 0);
+        body.AutoScrollPosition = new Point(home - stick + 150, 0);
         Pump(100);
         Check("scrolled further: it stays at the left side (its place plus the scroll beyond it), the rows and PLC axis items go on",
-              mot.Left == stick && -page.AutoScrollPosition.X > home - stick && r1.Left == 10 + page.AutoScrollPosition.X && bar.Left < itemsLeft,
-              "scroll " + (-page.AutoScrollPosition.X) + ", row " + r1.Left + ", items " + bar.Left + ", motion " + mot.Left);
-        Check("  and the page grew no wider for it", page.DisplayRectangle.Width == widthBefore, widthBefore + " -> " + page.DisplayRectangle.Width);
-        Check("  the Motion monitor no wider than the window", mot.Right <= page.ClientSize.Width, mot.Right + " <= " + page.ClientSize.Width);
-        page.AutoScrollPosition = new Point(int.MaxValue / 2, 0);
+              mot.Left == stick && -body.AutoScrollPosition.X > home - stick && r1.Left == 10 + body.AutoScrollPosition.X &&
+              bar.Left + frame.HeadContent.Left < itemsLeft,
+              "scroll " + (-body.AutoScrollPosition.X) + ", row " + r1.Left + ", items " + (bar.Left + frame.HeadContent.Left) + ", motion " + mot.Left);
+        Check("  and the page grew no wider for it", body.DisplayRectangle.Width == widthBefore, widthBefore + " -> " + body.DisplayRectangle.Width);
+        Check("  the Motion monitor no wider than the window", mot.Right <= frame.Head.ClientSize.Width, mot.Right + " <= " + frame.Head.ClientSize.Width);
+        body.AutoScrollPosition = new Point(int.MaxValue / 2, 0);
         Pump(100);
-        Check("  at the far right too", mot.Left == stick && page.DisplayRectangle.Width == widthBefore);
+        Check("  at the far right too", mot.Left == stick && body.DisplayRectangle.Width == widthBefore);
         Snap(page, page.ClientSize.Width, page.ClientSize.Height, "/tmp/axis_items_scrolled.png");
-        page.AutoScrollPosition = new Point(150, 0);
+        body.AutoScrollPosition = new Point(150, 0);
         Pump(100);
         Check("  back to a small scroll: with the page again", mot.Left == home - 150, mot.Left.ToString());
-        page.AutoScrollPosition = new Point(0, 0);
+        body.AutoScrollPosition = new Point(0, 0);
         Pump(100);
         Check("back at the left", mot.Left == home && bar.Left == itemsLeft && r1.Left == 10, mot.Left + " " + bar.Left + " " + r1.Left);
-        Func<int> contentRight = () => page.Controls.Cast<Control>().Where(c => c.Visible).Max(c => c.Right - page.AutoScrollPosition.X);
+        Func<int> contentRight = () => body.Controls.Cast<Control>().Where(c => c.Visible).Max(c => c.Right - body.AutoScrollPosition.X);
         int lastCol = r1.Columns.Values.Max(c => c.X + c.Y);   // (left, width)
-        Check("the page scrolls as far as its columns, no further", page.DisplayRectangle.Width <= contentRight() + page.AutoScrollMargin.Width + 2 &&
-              r1.Width - lastCol >= 0 && r1.Width - lastCol < 40, page.DisplayRectangle.Width + " vs " + contentRight() + ", row " + r1.Width + " last column " + lastCol);
+        Check("the page scrolls as far as its columns, no further", body.DisplayRectangle.Width <= contentRight() + body.AutoScrollMargin.Width + 2 &&
+              r1.Width - lastCol >= 0 && r1.Width - lastCol < 40, body.DisplayRectangle.Width + " vs " + contentRight() + ", row " + r1.Width + " last column " + lastCol);
         var motValue = r1.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == "RealCurrentValue");
         Check("the motion monitor's numbers on light grey, not bold", motValue != null && MotionValueHMI.DisplayBack.R < 245 && MotionValueHMI.DisplayBack.R > 220 &&
               !motValue.Font.Bold, motValue == null ? "none" : MotionValueHMI.DisplayBack + " " + motValue.Font);
         int wideAll = r1.Width;
         bar.ItemsPick.Select(new[] { "Codes" });
         Pump(150);
-        Check("fewer items: the rows narrower, the page no wider than they are", r1.Width < wideAll && page.DisplayRectangle.Width <= Math.Max(page.ClientSize.Width, contentRight() + 2),
-              r1.Width + " < " + wideAll + ", page " + page.DisplayRectangle.Width + " / content " + contentRight());
-        var wide = Full("Robot Z", 34 + 2 * AxisSettingHMI.RowHeight, "W40", 1, 2);
+        Check("fewer items: the rows narrower, the page no wider than they are", r1.Width < wideAll && body.DisplayRectangle.Width <= Math.Max(body.ClientSize.Width, contentRight() + 2),
+              r1.Width + " < " + wideAll + ", page " + body.DisplayRectangle.Width + " / content " + contentRight());
+        var wide = Full("Robot Z", 2 * AxisSettingHMI.RowHeight, "W40", 1, 2);
         wide.Width = 3000;                          // as a designer may have left it
-        page.Controls.Add(wide);
+        body.Controls.Add(wide);
         Pump(150);
         Check("a row the designer left 3000 wide: as wide as its columns at run time", wide.Width == r1.Width && wide.Width < 3000, wide.Width.ToString());
-        page.Controls.Remove(wide); wide.Dispose();
+        body.Controls.Remove(wide); wide.Dispose();
         bar.ItemsPick.Select(new string[0]);
         Pump(150);
 
@@ -250,13 +257,43 @@ class AXI {
         var focused = u1.Controls.OfType<NumericInputHMI>().First();
         focused.Focus();
         Pump(50);
-        var umot = uc.Controls["axisMotionBar"] as AxisPickBar;
-        uc.AutoScrollPosition = new Point(600, 0);
+        var umot = uc.Controls.Find("axisMotionBar", true).FirstOrDefault() as AxisPickBar;
+        var ubody = AxisPageFrame.Of(uc) != null ? (ScrollableControl)AxisPageFrame.Of(uc).Body : uc;
+        ubody.AutoScrollPosition = new Point(600, 0);
         Pump(200);
         Check("scrolled sideways it stays scrolled (the Motion monitor kept in sight without laying the page out)",
-              -uc.AutoScrollPosition.X > 0 && umot != null && umot.Left == umot.PlaceX && umot.Left < umot.HomeX,
-              (-uc.AutoScrollPosition.X) + " " + (umot == null ? "" : umot.Left + "/" + umot.PlaceX));
+              -ubody.AutoScrollPosition.X > 0 && umot != null && umot.Left == umot.PlaceX && umot.Left < umot.HomeX,
+              (-ubody.AutoScrollPosition.X) + " " + (umot == null ? "" : umot.Left + "/" + umot.PlaceX));
         form.Controls.Remove(uc);
+
+        Console.WriteLine("--- more axes than the page shows: the heading stays, the rows scroll under it ---");
+        var tall = new UserControl { Bounds = new Rectangle(0, 0, 900, 260), AutoScroll = true, BackColor = Color.White };
+        form.Controls.Add(tall);
+        foreach (var h in new[] { new[] { "Axis", "10" }, new[] { "Position", "200" }, new[] { "Axis alarm", "900" } })
+            tall.Controls.Add(new Label { Text = h[0], Location = new Point(int.Parse(h[1]), 8), Size = new Size(80, 22) });
+        var tallRows = Enumerable.Range(0, 6).Select(i => Full("Axis " + i, 34 + i * AxisSettingHMI.RowHeight, "W" + (i * 20), 1, i + 1)).ToList();
+        foreach (var r in tallRows) tall.Controls.Add(r);
+        Pump(300);
+        Kaban.UI.Helpers.PageScroll.Enable(tall);
+        var tf = AxisPageFrame.Of(tall);
+        Check("framed; the page itself does not scroll (PageScroll leaves it so)", tf != null && !tall.AutoScroll && tf.Body.VerticalScroll.Visible);
+        Func<string, Label> tallHead = t => Tree(tall).OfType<Label>().FirstOrDefault(l => l.Text == t && !(l.Parent is AxisPickBar));
+        int headY = tallHead("Position").PointToScreen(Point.Empty).Y, rowY = tallRows[0].PointToScreen(Point.Empty).Y;
+        var tbar = tall.Controls.Find("axisItemsBar", true).FirstOrDefault();
+        int barY = tbar.PointToScreen(Point.Empty).Y;
+        tf.Body.AutoScrollPosition = new Point(0, 120);
+        Pump(150);
+        Check("scrolled down: the rows went up, the column names and the lists did not", tallRows[0].PointToScreen(Point.Empty).Y < rowY &&
+              tallHead("Position").PointToScreen(Point.Empty).Y == headY && tbar.PointToScreen(Point.Empty).Y == barY,
+              "row " + rowY + " -> " + tallRows[0].PointToScreen(Point.Empty).Y + ", heading " + headY + " -> " + tallHead("Position").PointToScreen(Point.Empty).Y);
+        Check("  a row scrolled under the heading is hidden by it (the body starts under it)", tf.Body.PointToScreen(Point.Empty).Y >= tallHead("Position").PointToScreen(Point.Empty).Y + tallHead("Position").Height);
+        tf.Body.AutoScrollPosition = new Point(300, 120);
+        Pump(150);
+        int colX = tallRows[1].PointToScreen(Point.Empty).X + tallRows[1].Columns["AxisAlarm"].X;
+        Check("  and sideways: the column names stay over their columns", tf.HeadContent.Left == tf.Body.AutoScrollPosition.X && tf.Body.AutoScrollPosition.X < 0 &&
+              tallHead("Axis alarm").PointToScreen(Point.Empty).X == colX, tallHead("Axis alarm").PointToScreen(Point.Empty).X + " vs " + colX);
+        Snap(tall, tall.Width, tall.Height, "/tmp/axis_items_frozen.png");
+        form.Controls.Remove(tall);
 
         Console.WriteLine("--- the module's values in the row's unit ---");
         Func<string, SimpleMotion.Item> itemOf = k => SimpleMotion.Find(k);
@@ -342,7 +379,8 @@ class AXI {
         Check("  the module's values on the axis on a module: U1\\G2609 (axis 3)", srows.Count == 2 &&
               ((IPlcBoundControl)srows[0].Controls["motOperationStatus"]).Address == @"U1\G2609" && srows[1].Controls["motBusy"] == null);
         var heads = monitor.Controls.Find("monitorHeadings", true).FirstOrDefault();
-        Check("  headings above, scrolling sideways with the rows", heads != null && heads.Parent == srows[0].Parent &&
+        Check("  headings above, out of the list (they stay while it scrolls), in line with the rows", heads != null && heads.Parent.Name == "monitorRowsHead" &&
+              heads.Parent.Visible && heads.Left == srows[0].Left && heads.Parent.Bottom <= srows[0].Parent.Top + 1 &&
               heads.Controls.OfType<Label>().Any(l => l.Text == "BUSY") && heads.Controls.OfType<Label>().Any(l => l.Text == "Min"));
         Check("kept apart from the page's", ViewPreferences.PickOf(ViewPreferences.MonitorItems).SetEquals(new[] { "Torque", "Settings", "Codes" }) &&
               ViewPreferences.PickOf(ViewPreferences.AxisItems) == null && ViewPreferences.ListOf(ViewPreferences.MotionColumns).Count == 0);

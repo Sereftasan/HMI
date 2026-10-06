@@ -28,6 +28,7 @@ class VPM {
     }
     const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(15); } }
+    static IEnumerable<Control> Tree(Control c) { foreach (Control k in c.Controls) { yield return k; foreach (var d in Tree(k)) yield return d; } }
     static string Missing = "##missing##";
     // A picture of what is on the (virtual) screen - DrawToBitmap leaves Mono's children out.
     static void Snap(Control c, int height, string path) {
@@ -255,9 +256,11 @@ class VPM {
         var r2 = Row("Axis_Y", 34 + AxisSettingHMI.RowHeight, 0, 0);
         page.Controls.Add(r1); page.Controls.Add(r2);
         Pump(200);
-        var bar = page.Controls["axisMotionBar"];
+        var bar = page.Controls.Find("axisMotionBar", true).FirstOrDefault();
+        var frame = AxisPageFrame.Of(page);
         Check("a page with an axis on a module: the pick at the top", bar != null && bar.Visible && bar.Top == 8, bar == null ? "none" : bar.Bounds.ToString());
-        Check("  the page moved down to make room for it", hAxis.Top == 48 && r1.Top == 74, hAxis.Top + " " + r1.Top);
+        Check("  the page moved down to make room for it - a heading over the rows now", frame != null && hAxis.Top == 48 && frame.Head.Height == 74 &&
+              r1.Parent == frame.Body && r1.Top == 0 && hAxis.Parent == frame.HeadContent, hAxis.Top + " " + r1.Top + " " + (frame == null ? "no frame" : frame.Head.Height.ToString()));
         var pick = bar != null ? bar.Controls["motionPick"] as Kaban.UI.Dashboard.PickList : null;
         Check("  every value of the module in it", pick != null && pick.Items.Count == SimpleMotion.Items.Count);
         Check("  nothing picked: no columns", r1.Controls["motAxisError"] == null && !r1.Columns.Keys.Any(k => k.StartsWith("Mot:")));
@@ -286,7 +289,7 @@ class VPM {
               ((MotionValueHMI)r1.Controls["motOperationStatus"]).ShownText == "Home return (7)" && ((MotionValueHMI)r1.Controls["motBusy"]).IsOn &&
               ((MotionValueHMI)r1.Controls["motHomeRequest"]).IsOn && real.ShownText == "123.46 mm",
               ((MotionValueHMI)r1.Controls["motOperationStatus"]).ShownText + " | " + real.ShownText);
-        Func<string, Label> head = k => page.Controls.OfType<Label>().FirstOrDefault(l => l.Tag as string == "AxisHeading:Mot:" + k);
+        Func<string, Label> head = k => Tree(page).OfType<Label>().FirstOrDefault(l => l.Tag as string == "AxisHeading:Mot:" + k);
         Check("a heading over each column, short", head("Busy") != null && head("Busy").Visible && head("Busy").Text == "BUSY" &&
               head("Busy").Left == r1.Left + r1.Columns["Mot:Busy"].X && head("OperationStatus").Text == "Status",
               head("Busy") == null ? "none" : head("Busy").Bounds + " " + head("Busy").Text);
@@ -314,10 +317,12 @@ class VPM {
         var p1 = Row("Axis_Z", 10, 0, 0);
         plain.Controls.Add(p1);
         Pump(100);
-        var plainItems = plain.Controls["axisItemsBar"] as AxisPickBar;
-        var plainMotion = plain.Controls["axisMotionBar"] as AxisPickBar;
+        var plainItems = plain.Controls.Find("axisItemsBar", true).FirstOrDefault() as AxisPickBar;
+        var plainMotion = plain.Controls.Find("axisMotionBar", true).FirstOrDefault() as AxisPickBar;
+        var plainFrame = AxisPageFrame.Of(plain);
         Check("a page without a module: the PLC axis items only, no Motion monitor, no columns", plainItems != null && plainItems.Visible &&
-              (plainMotion == null || !plainMotion.Visible) && p1.Controls["motAxisError"] == null && p1.Top == 50, plainItems == null ? "no bar" : p1.Top.ToString());
+              (plainMotion == null || !plainMotion.Visible) && p1.Controls["motAxisError"] == null && plainFrame != null && plainFrame.Head.Height == 50 && p1.Top == 0,
+              plainItems == null ? "no bar" : p1.Top.ToString());
         form.Controls.Remove(page); form.Controls.Remove(plain);
         SecurityManager.Logout();
 

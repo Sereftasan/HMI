@@ -47,6 +47,7 @@ namespace Kaban.UI.Profiles
         {
             _instance = machineInstance;
             _canEdit = SecurityManager.HasAccess(SecurityLevel.Maintenance);
+            Kaban.UI.Helpers.Shortcuts.Attach(this);     // the tables' buttons from the keyboard
             Text = T("Lib_Title", "Profile library");
             StartPosition = FormStartPosition.CenterParent;
             Size = new Size(1280, 780);

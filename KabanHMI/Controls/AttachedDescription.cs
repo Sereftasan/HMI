@@ -56,6 +56,17 @@ namespace Kaban.UI.Controls
             }
         }
 
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, Control> _owners =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Label, Control>();
+
+        /// <summary>The control a caption belongs to (a tap on the caption is a tap on its control), or null.</summary>
+        public static Control OwnerOf(Control caption)
+        {
+            var l = caption as Label;
+            Control owner;
+            return l != null && _owners.TryGetValue(l, out owner) ? owner : null;
+        }
+
         public AttachedDescription(Control owner)
         {
             _owner = owner;
@@ -154,6 +165,7 @@ namespace Kaban.UI.Controls
                     BackColor = Color.Transparent
                 };
                 _label.SizeChanged += (s, e) => Position();   // AutoSize settled -> re-anchor
+                _owners.Add(_label, _owner);
             }
             // Key first, literal fallback - so DescriptionText is BOTH the key and
             // the text shown when no translation exists; there is no second property

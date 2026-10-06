@@ -663,7 +663,9 @@ namespace Kaban.UI.Controls
         {
             if (grid == null) return;
             grid.BackgroundColor = Color.White;
-            grid.BorderStyle = BorderStyle.None;
+            // A thin frame all round, in the headings' grey: a table no longer
+            // ends in nothing at its sides and foot.
+            FrameGrid(grid);
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = GridRule;
             // The rows and letters as View Preferences say (normal: 26 px, the body font).
@@ -691,6 +693,86 @@ namespace Kaban.UI.Controls
             grid.RowHeadersDefaultCellStyle.BackColor = GridHeadBack;
             grid.RowHeadersDefaultCellStyle.SelectionBackColor = GridSelection;
             foreach (DataGridViewRow r in grid.Rows) if (r.Height < rowHeight && !r.IsNewRow) r.Height = rowHeight;
+        }
+
+        // ---- the frame round a table --------------------------------------------------
+
+        /// <summary>The colour of a table's frame: its headings' background.</summary>
+        public static Color GridFrame { get { return GridHeadBack; } }
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<DataGridView, GridFrameWindow> _frames =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<DataGridView, GridFrameWindow>();
+
+        /// <summary>True when the table has the program's frame (tests).</summary>
+        public static bool HasGridFrame(DataGridView grid)
+        {
+            GridFrameWindow w;
+            return grid != null && _frames.TryGetValue(grid, out w);
+        }
+
+        private static bool OnWindows { get { return Environment.OSVersion.Platform == PlatformID.Win32NT; } }
+
+        /// <summary>
+        /// A one-pixel frame round the table, outside its scroll bars, in the
+        /// headings' colour: Windows' single border (FixedSingle), drawn over in that
+        /// colour whenever Windows draws it (WM_NCPAINT).
+        /// </summary>
+        private static void FrameGrid(DataGridView grid)
+        {
+            // Elsewhere than Windows (Mono, the tests) the single border is drawn
+            // black and not through WM_NCPAINT: there the frame is painted inside.
+            grid.BorderStyle = OnWindows ? BorderStyle.FixedSingle : BorderStyle.None;
+            GridFrameWindow w;
+            if (_frames.TryGetValue(grid, out w)) return;
+            w = new GridFrameWindow(grid);
+            _frames.Add(grid, w);
+            if (!OnWindows)
+                grid.Paint += (s, e) =>
+                {
+                    using (var pen = new Pen(GridFrame)) e.Graphics.DrawRectangle(pen, 0, 0, grid.Width - 1, grid.Height - 1);
+                };
+        }
+
+        private sealed class GridFrameWindow : NativeWindow
+        {
+            private const int WM_NCPAINT = 0x0085;
+            private readonly DataGridView _grid;
+
+            public GridFrameWindow(DataGridView grid)
+            {
+                _grid = grid;
+                // Windows draws the border in WM_NCPAINT; elsewhere (Mono) its own way
+                if (!OnWindows) return;
+                if (grid.IsHandleCreated) AssignHandle(grid.Handle);
+                grid.HandleCreated += (s, e) => { if (Handle == IntPtr.Zero) AssignHandle(grid.Handle); };
+                grid.HandleDestroyed += (s, e) => ReleaseHandle();
+            }
+
+            protected override void WndProc(ref Message m)
+            {
+                base.WndProc(ref m);
+                if (m.Msg == WM_NCPAINT && _grid.BorderStyle == BorderStyle.FixedSingle) Draw();
+            }
+
+            private void Draw()
+            {
+                IntPtr dc = IntPtr.Zero;
+                try
+                {
+                    dc = GetWindowDC(Handle);
+                    if (dc == IntPtr.Zero) return;
+                    using (var g = Graphics.FromHdc(dc))
+                    using (var pen = new Pen(GridFrame))
+                        g.DrawRectangle(pen, 0, 0, _grid.Width - 1, _grid.Height - 1);
+                }
+                catch { }
+                finally { if (dc != IntPtr.Zero) ReleaseDC(Handle, dc); }
+            }
+
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            private static extern IntPtr GetWindowDC(IntPtr hWnd);
+            [System.Runtime.InteropServices.DllImport("user32.dll")]
+            private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
         }
 
         // ---- the tables' size, as View Preferences say -------------------------------
@@ -1517,6 +1599,33 @@ namespace Kaban.UI.Controls
             }
         }
 
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, Func<string>> _hoverBuilders =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, Func<string>>();
+
+        /// <summary>
+        /// The tooltip a control shows, as it would show it now: the one it builds
+        /// itself (HoverTip), else the one any of the program's tooltips has for it.
+        /// "" when it has none (the notes page shows it for the control picked).
+        /// </summary>
+        public static string TipOf(Control c)
+        {
+            if (c == null) return "";
+            Func<string> build;
+            if (_hoverBuilders.TryGetValue(c, out build))
+            {
+                try { var s = build(); if (!string.IsNullOrEmpty(s)) return s; } catch { }
+            }
+            List<ToolTip> live;
+            lock (_styledTips) live = _styledTips.Select(w => w.Target as ToolTip).Where(x => x != null).ToList();
+            foreach (var t in live)
+            {
+                string s;
+                try { s = t.GetToolTip(c); } catch { s = null; }
+                if (!string.IsNullOrEmpty(s)) return s;
+            }
+            return "";
+        }
+
         /// <summary>The tooltips' font when the magnifier is on.</summary>
         private static readonly Font TipFont = UiScale.NewFont("Segoe UI", 9F);
 
@@ -1552,6 +1661,8 @@ namespace Kaban.UI.Controls
         public static void HoverTip(ToolTip tips, Control c, Func<string> build)
         {
             if (tips == null || c == null || build == null) return;
+            _hoverBuilders.Remove(c);
+            _hoverBuilders.Add(c, build);
             Timer timer = null;
             bool inside = false, shown = false;
             Point at = Point.Empty;
@@ -1656,7 +1767,10 @@ namespace Kaban.UI.Controls
             };
             if (!string.IsNullOrEmpty(emoji) && b.Look == "text") b.ForeColor = ToolGlyphs.Ink;
             Round(b);
-            if (tips != null) tips.SetToolTip(b, tip);
+            // its usual key (the bin Delete, the floppy Ctrl+S ...), first in its tooltip
+            var keys = Kaban.UI.Helpers.Shortcuts.Usual(emoji);
+            if (keys != Keys.None) Kaban.UI.Helpers.Shortcuts.Set(b, keys, tips, tip);
+            else if (tips != null) tips.SetToolTip(b, tip);
             if (onClick != null) b.Click += onClick;
             return b;
         }

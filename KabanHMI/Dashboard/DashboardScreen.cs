@@ -367,8 +367,9 @@ namespace Kaban.UI.Dashboard
         {
             if (IsDisposed) return;
             _openFolder.Enabled = SecurityManager.HasAccess(SecurityLevel.Maintenance);
-            _tips.SetToolTip(_openFolder, T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory +
-                             (_openFolder.Enabled ? "" : "\n" + T("Dsh_FolderAccess", "Sign in as Maintenance or Admin to open it.")));
+            _tips.SetToolTip(_openFolder, Kaban.UI.Helpers.Shortcuts.With(Kaban.UI.Helpers.Shortcuts.Of(_openFolder),
+                             T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory +
+                             (_openFolder.Enabled ? "" : "\n" + T("Dsh_FolderAccess", "Sign in as Maintenance or Admin to open it."))));
         }
 
         // ---- the period lists

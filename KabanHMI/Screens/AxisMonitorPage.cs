@@ -26,6 +26,9 @@ namespace Kaban.UI.Screens
         private readonly FlowLayoutPanel _list = new FlowLayoutPanel();
         private readonly Label _empty = new Label();
         private readonly Panel _head = new Panel { Dock = DockStyle.Top, Height = 26, BackColor = Color.White };
+        // An Admin's rows' headings: above the list, not in it - they stay while the
+        // rows scroll up and down, and follow them sideways.
+        private readonly Panel _rowsHead = new Panel { Dock = DockStyle.Top, Height = 22, BackColor = Color.White, Visible = false, Name = "monitorRowsHead" };
         /// <summary>An Admin's PLC axis items and Motion monitor for the monitor (5 October).</summary>
         private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion) { Dock = DockStyle.Top, WrapContents = true };
         private string _built;
@@ -66,7 +69,9 @@ namespace Kaban.UI.Screens
 
             Controls.Add(_list);
             Controls.Add(_empty);
+            Controls.Add(_rowsHead);
             Controls.Add(_head);
+            ScrollFollow.Follow(_list, FollowRows);
             Controls.Add(_bar);
             Build();
 
@@ -130,6 +135,8 @@ namespace Kaban.UI.Screens
             try
             {
                 foreach (Control c in _list.Controls.Cast<Control>().ToList()) { _list.Controls.Remove(c); c.Dispose(); }
+                foreach (Control c in _rowsHead.Controls.Cast<Control>().ToList()) { _rowsHead.Controls.Remove(c); c.Dispose(); }
+                _rowsHead.Visible = false;
                 AlarmHelpLinks.EnsureDiscovered();
                 var axes = AlarmHelpLinks.AllAxes.ToList();
                 _empty.Visible = axes.Count == 0;
@@ -186,12 +193,13 @@ namespace Kaban.UI.Screens
             FitBar();
         }
 
-        /// <summary>The columns' headings, as the first row of the list (they scroll sideways with the rows).</summary>
+        /// <summary>The columns' headings, above the list: staying while the rows scroll up and down, following them sideways.</summary>
         private void AddHeadings(AxisSettingHMI first)
         {
             var head = new Panel { Name = "monitorHeadings", Margin = new Padding(0), BackColor = Color.White };
-            _list.Controls.Add(head);
-            _list.Controls.SetChildIndex(head, 0);
+            _rowsHead.Controls.Add(head);
+            _rowsHead.Height = UiScale.For(first, 22) + 1;
+            _rowsHead.Visible = true;
             head.Size = new Size(first.Width, UiScale.For(first, 22));
             var font = new Font("Segoe UI", 8F, FontStyle.Bold);
             foreach (var kv in first.Columns.OrderBy(c => c.Value.X))
@@ -207,6 +215,16 @@ namespace Kaban.UI.Screens
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
                 if (tip != null) UiStyle.Tips().SetToolTip(l, tip);
             }
+            FollowRows();
+        }
+
+        /// <summary>The headings where the rows are: sideways with them (the first row's left, in the list's scroll).</summary>
+        private void FollowRows()
+        {
+            var head = _rowsHead.Controls.Count > 0 ? _rowsHead.Controls[0] : null;
+            var first = _list.Controls.OfType<AxisSettingHMI>().FirstOrDefault();
+            if (head == null || first == null) return;
+            if (head.Left != first.Left) head.Left = first.Left;
         }
 
         /// <summary>The bar as tall as its lists need in the panel's width (they wrap in a narrow panel).</summary>

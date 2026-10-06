@@ -85,6 +85,8 @@
     <Compile Include="Helpers\SidePages.cs" />
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
+    <Compile Include="Helpers\Shortcuts.cs" />
+    <Compile Include="Helpers\NoteTarget.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
       <SubType>Component</SubType>
@@ -174,6 +176,7 @@
     <Compile Include="Controls\EmojiArt.cs" />
     <Compile Include="Controls\MotionValueHMI.cs" />
     <Compile Include="Controls\AxisPickBar.cs" />
+    <Compile Include="Controls\AxisPageFrame.cs" />
     <Compile Include="Controls\NavGlyphs.cs" />
     <Compile Include="Controls\UiScale.cs" />
     <Compile Include="Controls\CheckListHMI.cs">
@@ -227,6 +230,9 @@
     </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
+    <Compile Include="Screens\NotesPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Screens\AxisMonitorPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -268,6 +274,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Magnifier.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Notes.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>

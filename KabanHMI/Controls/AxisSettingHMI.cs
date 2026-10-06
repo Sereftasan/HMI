@@ -793,6 +793,32 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>A column's heading (the Axis Monitor draws its own): the page's words, the Motion monitor's short names.</summary>
+        /// <summary>A column heading's translation key ("Col_MinLimit", "MotH_Busy"), or null.</summary>
+        public static string HeadingKey(string columnKey)
+        {
+            if (columnKey != null && columnKey.StartsWith("Mot:"))
+            {
+                var item = SimpleMotion.Find(columnKey.Substring(4));
+                return item == null ? null : "MotH_" + item.Key;
+            }
+            foreach (var h in Headings)
+                if (h[0] == columnKey) return h[1];
+            return null;
+        }
+
+        /// <summary>The column a control of this row is in ("Min", "Mot:Busy"), or null.</summary>
+        public string ColumnOf(Control child)
+        {
+            if (child == null || child.Parent != this) return null;
+            int x = child.Left + child.Width / 2;
+            foreach (var kv in _columns)
+            {
+                int left = UiScale.For(this, kv.Value.X), right = left + UiScale.For(this, kv.Value.Y);
+                if (x >= left && x < right) return kv.Key;
+            }
+            return null;
+        }
+
         public static string HeadingText(string columnKey)
         {
             if (columnKey != null && columnKey.StartsWith("Mot:"))
@@ -1005,9 +1031,15 @@ namespace Kaban.UI.Controls
             if (top != this) return;                         // the top row speaks for the page
             EnsureMotionBar(page);
 
+            // The headings: above the first row on the page - or, the page framed
+            // (AxisPageFrame: its heading stays while the rows scroll), in its heading.
+            var frame = AxisPageFrame.OfBody(page);
+            var host = frame != null ? (Control)frame.HeadContent : page;
+            // the rows' x in the heading's terms (the frame's heading follows the scroll itself)
+            int rowX = frame != null ? Left - frame.Body.AutoScrollPosition.X : Left;
             var labels = new System.Collections.Generic.List<Label>();
-            foreach (Control c in page.Controls)
-                if (c.GetType() == typeof(Label) && c.Bottom <= Top + 2) labels.Add((Label)c);
+            foreach (Control c in host.Controls)
+                if (c.GetType() == typeof(Label) && (frame != null || c.Bottom <= Top + 2)) labels.Add((Label)c);
             if (labels.Count == 0) return;                   // a page without headings
 
             Label style = null;
@@ -1045,19 +1077,19 @@ namespace Kaban.UI.Controls
                         Top = style.Top,
                         Height = style.Height
                     };
-                    page.Controls.Add(l);
+                    host.Controls.Add(l);
                     byKey[h[0]] = l;
                 }
                 l.Visible = shown;
                 if (!shown) continue;
-                l.Left = Left + UiScale.For(this, col.X);
+                l.Left = rowX + UiScale.For(this, col.X);
                 l.Width = UiScale.For(this, col.Y);
                 l.Text = LanguageManager.GetString(h[1], h[2]);
             }
 
             // THE SIMPLE MOTION COLUMNS: a heading each, in the same style - its
             // short name over the column, the whole name in its tooltip.
-            foreach (Control c in page.Controls)
+            foreach (Control c in host.Controls)
             {
                 var tag = c.Tag as string;
                 if (c is Label && tag != null && tag.StartsWith(HeadingTag + "Mot:") && !_columns.ContainsKey(tag.Substring(HeadingTag.Length)))
@@ -1081,11 +1113,11 @@ namespace Kaban.UI.Controls
                         ForeColor = style.ForeColor,
                         BackColor = style.BackColor
                     };
-                    page.Controls.Add(l);
+                    host.Controls.Add(l);
                     byKey[kv.Key] = l;
                 }
                 l.Visible = true;
-                l.SetBounds(Left + UiScale.For(this, kv.Value.X), style.Top, UiScale.For(this, kv.Value.Y), style.Height);
+                l.SetBounds(rowX + UiScale.For(this, kv.Value.X), style.Top, UiScale.For(this, kv.Value.Y), style.Height);
                 l.Text = LanguageManager.GetString("MotH_" + item.Key, ShortHeading(item));
                 UiStyle.Tips().SetToolTip(l, LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")");
             }
@@ -1158,8 +1190,10 @@ namespace Kaban.UI.Controls
         /// </summary>
         private void EnsureMotionBar(Control page)
         {
-            var items = page.Controls[ItemsBarName] as AxisPickBar;
-            var motion = page.Controls[MotionBarName] as AxisPickBar;
+            var frame = AxisPageFrame.OfBody(page);
+            var items = BarOf(page, ItemsBarName);
+            var motion = BarOf(page, MotionBarName);
+            if (frame != null && (items == null || motion == null)) return;
             if (items == null || motion == null)
             {
                 int top = int.MaxValue, left = int.MaxValue;
@@ -1186,6 +1220,10 @@ namespace Kaban.UI.Controls
                 int x = Math.Max(0, items.Right - offset);
                 motion.SetBounds(x + offset, top, UiScale.For(page, 640), UiScale.For(page, 36));
                 motion.Pin(page, x, Math.Max(0, items.Left - offset));
+
+                // The page as a table: once it is shown, its heading (these lists and
+                // the column names) stays while the rows scroll under it.
+                ScheduleFreeze(page);
             }
             items.Visible = true;
             items.Offer(PageItems(), false);
@@ -1201,9 +1239,46 @@ namespace Kaban.UI.Controls
             if (page == null || MonitorMode) return;
             foreach (var name in new[] { ItemsBarName, MotionBarName })
             {
-                var bar = page.Controls[name] as AxisPickBar;
+                var bar = BarOf(page, name);
                 if (bar != null) bar.Sync();
             }
+        }
+
+        /// <summary>A list of the page's heading: on the page, or in its frame's heading.</summary>
+        private static AxisPickBar BarOf(Control page, string name)
+        {
+            var frame = AxisPageFrame.OfBody(page);
+            if (frame == null) return page.Controls[name] as AxisPickBar;
+            return (frame.HeadContent.Controls[name] ?? frame.Head.Controls[name]) as AxisPickBar;
+        }
+
+        /// <summary>The page framed (AxisPageFrame.Freeze) once it is shown and laid out - not while its handles are made.</summary>
+        private void ScheduleFreeze(Control page)
+        {
+            if (DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime || !(page is ScrollableControl)) return;
+            Action freeze = () =>
+            {
+                if (page.IsDisposed) return;
+                var frame = AxisPageFrame.Freeze(page);
+                if (frame == null) return;
+                var motion = frame.Head.Controls[MotionBarName] as AxisPickBar;
+                if (motion != null)
+                {
+                    motion.Pin(frame.Head, frame.Body, motion.HomeX, motion.StickX);
+                    frame.Scrolled += (s, e) => motion.Place();
+                }
+                // the top row lays the headings out in their new place
+                var top = frame.Body.Controls.OfType<AxisSettingHMI>().OrderBy(r => r.Top).FirstOrDefault();
+                if (top != null) top.AlignHeaders();
+            };
+            EventHandler later = null;
+            later = (s, e) =>
+            {
+                page.HandleCreated -= later;
+                try { page.BeginInvoke(freeze); } catch { }
+            };
+            if (page.IsHandleCreated) { try { page.BeginInvoke(freeze); } catch { } }
+            else page.HandleCreated += later;
         }
 
         /// <param name="clampToTravel">

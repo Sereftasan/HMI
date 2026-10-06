@@ -74,6 +74,8 @@ namespace Kaban.UI.Forms
             // The hand over everything clickable, in every window - the caption
             // bar, its dropdown menus and the dialogs included (see UiStyle).
             Kaban.UI.Controls.UiStyle.EnableHandCursorsEverywhere();
+            // The program's buttons from the keyboard (Delete for a bin, Ctrl+S ...).
+            Helpers.Shortcuts.Attach(this);
         }
 
         public void LoadScreen(UserControl newScreen)
@@ -643,6 +645,8 @@ namespace Kaban.UI.Forms
                 // clears them anymore, in case a future change reintroduces a
                 // clearing reload somewhere in this chain.
                 AlarmDefinitionLoader.ReapplyTranslations();
+                // The texts put on the screen from the notes page (Maintenance, Admin).
+                NotesStore.ApplyTranslations();
 
                 // Visible PLC communication status. Without it a comm failure renders as
                 // a screen full of zeros with nothing to say anything is wrong.
@@ -2353,7 +2357,7 @@ namespace Kaban.UI.Forms
                 userPart = LanguageManager.GetString("Sys_NotLoggedIn", "No user logged");
                 _btnLogin.BackColor = Color.Black;
                 if (_loginBlink != null && !_loginBlink.Enabled) _loginBlink.Start();
-                _topTips.SetToolTip(_btnLogin, LanguageManager.GetString("Btn_Login", "Login"));
+                Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Login", "Login"));
             }
             else
             {
@@ -2361,7 +2365,7 @@ namespace Kaban.UI.Forms
                 if (_loginBlink != null) _loginBlink.Stop();                  // logged in: stop pulsing
                 _btnLoginTint = Color.White;
                 _btnLogin.BackColor = Color.Black;                            // signed in: quiet
-                _topTips.SetToolTip(_btnLogin, LanguageManager.GetString("Btn_Logout", "Logout"));
+                Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
             }
 
             // TITLE: "FA2010 - V1.0.0.0 - admin (Admin)"
@@ -2630,6 +2634,9 @@ namespace Kaban.UI.Forms
             var hist = new Panel { Dock = DockStyle.Bottom, Height = 36, BackColor = pnlMenu.BackColor };
             _btnHistBack = MakeHistButton("\u25C0", () => Helpers.NavigationHistory.Back());
             _btnHistFwd = MakeHistButton("\u25B6", () => Helpers.NavigationHistory.Forward());
+            // As a browser's: Alt+Left, Alt+Right
+            Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
+            Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
             hist.Controls.Add(_btnHistBack);
             hist.Controls.Add(_btnHistFwd);
             hist.Resize += (s, e) =>

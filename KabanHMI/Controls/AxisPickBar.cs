@@ -143,9 +143,12 @@ namespace Kaban.UI.Controls
 
         // ---- in sight while the page scrolls sideways --------------------------------
 
-        private Control _page;
+        private Control _page;                // where the bar is (its width: the room it shows)
+        private ScrollableControl _scroller;  // what scrolls (the page, or a frame's body)
         private int _homeX, _stickX;
-        private bool _pinning;
+        private bool _pinning, _hooked;
+        private EventHandler _onScroll, _onResize;
+        private ScrollEventHandler _onScrollBar;
 
         /// <summary>
         /// Keeps the bar in sight while the page scrolls sideways, as a heading
@@ -159,14 +162,35 @@ namespace Kaban.UI.Controls
         /// </summary>
         public void Pin(Control page, int homeX, int stickX)
         {
-            _page = page;
+            Pin(page, page as ScrollableControl, homeX, stickX);
+        }
+
+        /// <summary>
+        /// As Pin(page ...), the bar being on <paramref name="host"/> and the scroll
+        /// that of <paramref name="scroller"/> - a page in a frame (AxisPageFrame):
+        /// the bar in the heading, which does not scroll, the rows in the body,
+        /// which does (the frame calls Place as it scrolls). Pinned again, it
+        /// leaves what it followed before.
+        /// </summary>
+        public void Pin(Control host, ScrollableControl scroller, int homeX, int stickX)
+        {
+            if (_page != null && _onResize != null) _page.Resize -= _onResize;
+            if (_scroller != null && _onScrollBar != null) _scroller.Scroll -= _onScrollBar;
+            _page = host;
+            _scroller = scroller;
             _homeX = homeX;
             _stickX = Math.Min(stickX, homeX);
-            // a scroll moves every child (the bar too): it is put where it belongs
-            LocationChanged += (s, e) => Place();
-            var scroll = page as ScrollableControl;
-            if (scroll != null) scroll.Scroll += (s, e) => Place();
-            page.Resize += (s, e) => Place();
+            if (!_hooked)
+            {
+                _hooked = true;
+                // a scroll moves every child (the bar too, on a page): it is put where it belongs
+                _onScroll = (s, e) => Place();
+                LocationChanged += _onScroll;
+            }
+            _onResize = (s, e) => Place();
+            _onScrollBar = (s, e) => Place();
+            host.Resize += _onResize;
+            if (scroller != null) scroller.Scroll += _onScrollBar;
             Place();
         }
 
@@ -179,15 +203,15 @@ namespace Kaban.UI.Controls
         {
             get
             {
-                var scroll = _page as ScrollableControl;
-                int scrolled = scroll != null ? -scroll.AutoScrollPosition.X : 0;
+                int scrolled = _scroller != null ? -_scroller.AutoScrollPosition.X : 0;
                 return Math.Max(_stickX, _homeX - scrolled);
             }
         }
 
-        private void Place()
+        /// <summary>The bar where it belongs now (the page scrolled, or was laid out).</summary>
+        public void Place()
         {
-            if (_pinning || _page == null) return;
+            if (_pinning || _page == null || _page.IsDisposed) return;
             int x = PlaceX;
             int want = Math.Max(NaturalWidth, UiScale.For(_page, 200));
             int room = _page.ClientSize.Width - x - UiScale.For(_page, 4);

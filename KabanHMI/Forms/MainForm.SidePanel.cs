@@ -93,6 +93,8 @@ namespace Kaban.UI.Forms
                 RequiredLevel = SecurityLevel.Admin,
                 SortOrder = 1000
             });
+            // Comments, translations and helpers on any control; the feedback file.
+            RegisterNotesPage();
         }
 
         /// <summary>Builds the bar, the panel and the border between it and the page. Called from Load.</summary>
@@ -722,6 +724,7 @@ namespace Kaban.UI.Forms
             _page = page;
             View = view;
             Text = page.Title;
+            Helpers.Shortcuts.Attach(this);          // its page's buttons from the keyboard, as on the main window
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = true;
             BackColor = CaptionBack;

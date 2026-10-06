@@ -14,6 +14,7 @@ using Kaban.UI.Helpers;
 // the headings - the columns, their widths, fit, "Save as the default", "Default
 // column settings" (the saved default, else the table's own) and, once a default
 // is saved, "Original column settings".
+// 6 October: "All the tables should have a thin outside border line in their heading's background colour."
 class TL {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -47,6 +48,8 @@ class TL {
         host.Controls.Add(g); host.Show(); Application.DoEvents();
         UiStyle.EnableTableTools(g, "TestTable");
         Check("the PLC Monitor's look", Looks(g));
+        Check("  a thin frame all round, in the headings' colour", UiStyle.HasGridFrame(g) && UiStyle.GridFrame == g.ColumnHeadersDefaultCellStyle.BackColor &&
+              (Environment.OSVersion.Platform == PlatformID.Win32NT ? g.BorderStyle == BorderStyle.FixedSingle : g.BorderStyle == BorderStyle.None));
         var c = UiStyle.ChooserOf(g);
         Check("the PLC Monitor's menu on its headings", c != null && g.Columns.Cast<DataGridViewColumn>().All(x => x.HeaderCell.ContextMenuStrip == c.Menu));
         Check("  the columns, widths, fit, save as the default, default column settings", Tags(c).SequenceEqual(new[] { "Code", "Text", "Time", "widths", "fit", "savedefault", "default" }),

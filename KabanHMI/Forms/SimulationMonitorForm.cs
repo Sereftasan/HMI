@@ -387,35 +387,51 @@ namespace Kaban.UI.Forms
             Action gap = () => bar.Items.Add(new ToolStripSeparator { Margin = new Padding(6, 0, 6, 0) });
 
             Button btnAdd = null;
-            btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line (Insert)"), _tips,
+            btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line"), _tips,
                 (s, e) => ShowMenu(btnAdd, AddMenu()));
             add(btnAdd);
+            // The monitor's keys are its window's own (ProcessCmdKey: in the table,
+            // on the tab strip): its buttons show them, first in their tooltips.
+            Action<Control, Keys, string> keyed = (b, k, tip) => Kaban.UI.Helpers.Shortcuts.Set(b, k, _tips, tip, dispatch: false);
+            keyed(btnAdd, Keys.Insert, T("Tip_MonAdd", "Add a device or a comment line"));
             // Copy, paste, the moves and undo/redo are DRAWN (ToolGlyphs): the
             // pictures every office program uses, short heavy arrows - their
             // characters and emoji read as thin sticks or as something else.
-            add(UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_MonCopy", "Copy the selected rows (Ctrl+C)"), _tips, (s, e) => CopySelected()));
+            var btnCopy = UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_MonCopy", "Copy the selected rows"), _tips, (s, e) => CopySelected());
+            keyed(btnCopy, Keys.Control | Keys.C, T("Tip_MonCopy", "Copy the selected rows"));
+            add(btnCopy);
             Button btnPaste = null;
-            btnPaste = UiStyle.IconButton(ToolGlyphs.Paste, "Paste", T("Tip_MonPaste", "Paste the copied rows (Ctrl+V: above the selected row)"), _tips,
+            btnPaste = UiStyle.IconButton(ToolGlyphs.Paste, "Paste", T("Tip_MonPaste", "Paste the copied rows (with the keys: above the selected row)"), _tips,
                 (s, e) => ShowMenu(btnPaste, PasteMenu()));
+            keyed(btnPaste, Keys.Control | Keys.V, T("Tip_MonPaste", "Paste the copied rows (with the keys: above the selected row)"));
             add(btnPaste);
             Button btnDelete = null;
             btnDelete = UiStyle.ToolButton(E(0x1F5D1), T("Tip_MonDelete",
-                "Delete: the selected rows (Del), this tab, every tab of this controller or of every controller"), _tips,
+                "Delete: the selected rows (with the key), this tab, every tab of this controller or of every controller"), _tips,
                 (s, e) => ShowMenu(btnDelete, DeleteMenu()));
+            keyed(btnDelete, Keys.Delete, T("Tip_MonDelete", "Delete: the selected rows (with the key), this tab, every tab of this controller or of every controller"));
             add(btnDelete);
-            add(UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonUp", "Move the selected rows up (Ctrl+Up)"), _tips, (s, e) => MoveSelected(-1)));
-            add(UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonDown", "Move the selected rows down (Ctrl+Down)"), _tips, (s, e) => MoveSelected(+1)));
-            _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"), _tips, (s, e) => Undo());
+            var btnUp = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonUp", "Move the selected rows up"), _tips, (s, e) => MoveSelected(-1));
+            keyed(btnUp, Keys.Control | Keys.Up, T("Tip_MonUp", "Move the selected rows up"));
+            add(btnUp);
+            var btnDown = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonDown", "Move the selected rows down"), _tips, (s, e) => MoveSelected(+1));
+            keyed(btnDown, Keys.Control | Keys.Down, T("Tip_MonDown", "Move the selected rows down"));
+            add(btnDown);
+            _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_MonUndo", "Undo the last change"), _tips, (s, e) => Undo());
+            keyed(_btnUndo, Keys.Control | Keys.Z, T("Tip_MonUndo", "Undo the last change"));
             add(_btnUndo);
-            _btnRedo = UiStyle.IconButton(ToolGlyphs.Redo, "Redo", T("Tip_MonRedo", "Redo the change undone last (Ctrl+Y)"), _tips, (s, e) => Redo());
+            _btnRedo = UiStyle.IconButton(ToolGlyphs.Redo, "Redo", T("Tip_MonRedo", "Redo the change undone last"), _tips, (s, e) => Redo());
+            keyed(_btnRedo, Keys.Control | Keys.Y, T("Tip_MonRedo", "Redo the change undone last"));
             add(_btnRedo);
             gap();
             Button btnFrom = null;
             btnFrom = UiStyle.ToolButton(E(0x1F5C3), T("Tip_MonCollect", "Add the devices of this screen, of the whole program or of the PLC label list"), _tips,
                 (s, e) => ShowMenu(btnFrom, CollectMenu()));
             add(btnFrom);
-            add(UiStyle.ToolButton(E(0x1F50E), T("Tip_MonFind", "Find where a device is used in the program, and open that page (Ctrl+F)"), _tips,
-                (s, e) => OpenFind(null)));
+            var btnFind = UiStyle.ToolButton(E(0x1F50E), T("Tip_MonFind", "Find where a device is used in the program, and open that page"), _tips,
+                (s, e) => OpenFind(null));
+            keyed(btnFind, Keys.Control | Keys.F, T("Tip_MonFind", "Find where a device is used in the program, and open that page"));
+            add(btnFind);
             Button btnTabs = null;
             btnTabs = UiStyle.ToolButton(E(0x1F4D1), T("Tip_MonTabs", "Tabs: new, rename, delete"), _tips,
                 (s, e) => ShowMenu(btnTabs, SheetMenu()));

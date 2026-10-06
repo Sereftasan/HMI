@@ -123,7 +123,9 @@ namespace Kaban.UI.Forms
             _query.Width = 260;
             _query.Font = UiStyle.Body;
             top.Controls.Add(_query);
-            var go = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F50E), T("Tip_FindGo", "Find (Enter)"), _tips, (s, e) => Search());
+            var go = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F50E), T("Tip_FindGo", "Find"), _tips, (s, e) => Search());
+            // Enter in the box finds (the window's own): shown first in the tooltip
+            Kaban.UI.Helpers.Shortcuts.Set(go, Keys.Enter, _tips, T("Tip_FindGo", "Find"), dispatch: false);
             top.Controls.Add(go);
             Button closeButton = null;
             if (embedded)

@@ -176,7 +176,8 @@ class PM {
             foreach (var h in ts.Items.OfType<ToolStripControlHost>()) buttons.Add(h.Control);
         Check("a tooltip on every toolbar button", tips != null && buttons.Count >= 10 && buttons.All(b => (tips.GetToolTip(b) ?? "").Length > 0),
               buttons.Count + " buttons");
-        Check("  export and import are there", buttons.Any(b => tips.GetToolTip(b).StartsWith("Export")) && buttons.Any(b => tips.GetToolTip(b).StartsWith("Import")));
+        // (the key first in the tooltip: "Ctrl+E" then what the button does)
+        Check("  export and import are there", buttons.Any(b => tips.GetToolTip(b).StartsWith("Ctrl+E\nExport")) && buttons.Any(b => tips.GetToolTip(b).StartsWith("Ctrl+I\nImport")));
         Check("  the status line has no LIVE PLC warning", !((Label)Get(form, "_status")).Text.Contains("LIVE"), ((Label)Get(form, "_status")).Text);
 
         Console.WriteLine("--- tabs: the one on display is the one worked on ---");

@@ -4505,3 +4505,19 @@ and `UnitLookAndErrors` extended.
   length unit. `MotionValueHMI(..., RowUnit)`, follows `UnitManager.UnitChanged`; `AxisSettingHMI` passes the row's unit.
 - Manual: the Motion monitor's place while scrolling; positions and speeds in the row's unit.
 - Tests: `AxisItems.cs`.
+
+## 2026-10-06 - The axis page as a table; tables framed; keys for the buttons; Notes and feedback
+
+- `KabanHMI/Controls/AxisPageFrame.cs` (new): `AxisPageFrame.Freeze(page)` (heading / body), `ScrollFollow`; `IScrollsItself`
+  (`PageScroll.Enable` leaves such a page unscrolled). `AxisSettingHMI`: headings and bars found in the frame, `ScheduleFreeze`,
+  `HeadingKey`, `ColumnOf`. `AxisPickBar.Pin(host, scroller, ...)`, public `Place`. `AxisMonitorPage`: the Admin rows' headings above the list.
+- `UiStyle.GridLook`: a frame in the headings' colour (`FrameGrid`, WM_NCPAINT on Windows); `GridFrame`, `HasGridFrame`.
+- `KabanHMI/Helpers/Shortcuts.cs` (new): `Usual`, `Set`, `With`, `Text`, `Attach`, `Press`. `UiStyle.ToolButton` takes the usual key;
+  MainForm, side windows and the profile library attached; Back/Forward, sign-in keys; the PLC Monitor's keys shown (not dispatched).
+- Notes: `Kaban.Core/Helpers/NotesStore.cs` (new: Note, NoteKind, NoteState, Add, Accept, Remove, ApplyTranslations, KeepFile,
+  Export, EntriesOf, TextIn), `KabanHMI/Screens/NotesPage.cs` (new), `KabanHMI/Helpers/NoteTarget.cs` (new), `KabanHMI/Forms/MainForm.Notes.cs`
+  (new: the side page, IsPickable, PlaceOf). `LanguageManager.GetStringIn`, `RaiseLanguageChanged`; `UiStyle.TipOf`;
+  `AttachedDescription.OwnerOf`. Kaban.Core references System.IO.Compression.
+- Translations: Key_*, Tip_NavBack, Tip_NavForward, Ttl_Notes, Nts_*; Tip_Mon* and Tip_FindGo without their keys.
+- Manual: Keys, 3b Notes and feedback, the side pages' table, the axis page as a table, the tables' frame, where the notes are kept.
+- Tests: `AxisItems.cs`, `ViewPrefsAndMotion.cs`, `TableLook.cs`, `KeyShortcuts.cs` (new), `NotesFeedback.cs` (new).

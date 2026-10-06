@@ -159,6 +159,12 @@ namespace Kaban.Core.Helpers
             _machine[langCode][key] = text;
         }
 
+        /// <summary>Tells every page the texts changed (a translation put in force while the program runs).</summary>
+        public static void RaiseLanguageChanged()
+        {
+            LanguageChanged?.Invoke(null, EventArgs.Empty);
+        }
+
         public static void ChangeLanguage(string langCode)
         {
             langCode = langCode.ToUpper();
@@ -196,6 +202,13 @@ namespace Kaban.Core.Helpers
                 !string.IsNullOrWhiteSpace(value)) return true;
             value = null;
             return false;
+        }
+
+        /// <summary>A key's text in one language (machine, then common), or null - no English in its place.</summary>
+        public static string GetStringIn(string langCode, string key)
+        {
+            string value;
+            return !string.IsNullOrEmpty(langCode) && TryLookupIn(langCode.Trim().ToUpper(), key, out value) ? value : null;
         }
 
         public static string GetString(string key, string fallbackText = "")
