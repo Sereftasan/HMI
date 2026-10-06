@@ -845,7 +845,7 @@ namespace Kaban.UI.Dashboard
             private void Caption()
             {
                 Text = (_selected.Count == 0 ? Placeholder : string.Join(", ", _selected.OrderBy(k => k, StringComparer.Ordinal))) + "  \u25be";
-                if (_tips != null) _tips.SetToolTip(this, _selected.Count == 0 ? Placeholder : string.Join("\n", _selected.OrderBy(k => k, StringComparer.Ordinal)));
+                if (_tips != null) Kaban.UI.Controls.UiStyle.SetTip(_tips, this, _selected.Count == 0 ? Placeholder : string.Join("\n", _selected.OrderBy(k => k, StringComparer.Ordinal)));
             }
 
             private void Drop()

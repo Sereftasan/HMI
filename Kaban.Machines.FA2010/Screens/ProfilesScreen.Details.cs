@@ -83,7 +83,7 @@ namespace Kaban.Machines.FA2010.Screens
             Func<string, string, Button> small = (text, tip) =>
             {
                 var b = UiStyle.TextButton(text, 88);
-                _tips.SetToolTip(b, tip);
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, b, tip);
                 return b;
             };
             EventHandler dirty = (s, e) => { if (!_filling) { _detailsDirty = true; UpdateDetailButtons(); } };
@@ -103,14 +103,14 @@ namespace Kaban.Machines.FA2010.Screens
             _txtCode = (TextBox)line(T("Prf_Code", "Code :"), new TextBox { Font = UiStyle.Small }, null);
             _txtDescription = (TextBox)line(T("Prf_Description", "Description :"), new TextBox { Font = UiStyle.Small }, null);
             _cmbBase = (ComboBox)line(T("Prf_BasedOn", "Based on :"), new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UiStyle.Small }, null);
-            _tips.SetToolTip(_cmbBase, T("Prf_TipBasedOn", "Another profile this one is a variant of: every reference point this profile does not set itself is that one's."));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _cmbBase, T("Prf_TipBasedOn", "Another profile this one is a variant of: every reference point this profile does not set itself is that one's."));
             _cmbFamily = (ComboBox)line(T("Prf_Family", "Machining family :"), new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UiStyle.Small }, null);
             _lblWidthCue = new Label { AutoSize = false, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, Font = UiStyle.Small, ForeColor = Color.DimGray };
             _txtWidth = (TextBox)line(T("Prf_Width", "Width (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblWidthCue);
             _lblHeightCue = new Label { AutoSize = false, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, Font = UiStyle.Small, ForeColor = Color.DimGray };
             _txtHeight = (TextBox)line(T("Prf_Height", "Height (mm) :"), new TextBox { Font = UiStyle.Small, TextAlign = HorizontalAlignment.Right }, _lblHeightCue);
-            _tips.SetToolTip(_txtWidth, T("Prf_TipSize", "Empty: the group's size. Across the profile (width, Y) and up from the bed (height, Z)."));
-            _tips.SetToolTip(_txtHeight, T("Prf_TipSize", "Empty: the group's size. Across the profile (width, Y) and up from the bed (height, Z)."));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _txtWidth, T("Prf_TipSize", "Empty: the group's size. Across the profile (width, Y) and up from the bed (height, Z)."));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _txtHeight, T("Prf_TipSize", "Empty: the group's size. Across the profile (width, Y) and up from the bed (height, Z)."));
             _txtNote = (TextBox)line(T("Prf_Note", "Note :"), new TextBox { Font = UiStyle.Small }, null);
 
             heading(T("Prf_HeadDrawing", "The drawing (DXF)"));
@@ -119,12 +119,12 @@ namespace Kaban.Machines.FA2010.Screens
             _txtDxf = (TextBox)line(T("Prf_DxfFile", "File :"), new TextBox { Font = UiStyle.Small }, _btnBrowse);
             _cmbTurn = (ComboBox)line(T("Prf_Turned", "Turned :"), new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Font = UiStyle.Small }, null);
             _cmbTurn.Items.AddRange(new object[] { T("Prf_Turn0", "as drawn"), T("Prf_Turn90", "90\u00B0 clockwise"), T("Prf_Turn180", "180\u00B0"), T("Prf_Turn270", "90\u00B0 counter-clockwise") });
-            _tips.SetToolTip(_cmbTurn, T("Prf_TipTurned", "How the drawing is turned to read in profile coordinates: the outside face on the left (Y = 0), the bed below (Z = 0)."));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _cmbTurn, T("Prf_TipTurned", "How the drawing is turned to read in profile coordinates: the outside face on the left (Y = 0), the bed below (Z = 0)."));
             _chkMirror = (CheckBox)line(T("Prf_Mirrored", "Mirrored :"), new CheckBox { Font = UiStyle.Small, Text = T("Prf_MirrorText", "left and right swapped") }, null);
             _btnLayers = small("\u2026", T("Prf_TipLayers", "Choose from the drawing's layers"));
             _btnLayers.Click += (s, e) => ChooseIgnoredLayers();
             _txtIgnored = (TextBox)line(T("Prf_Ignored", "Not the profile :"), new TextBox { Font = UiStyle.Small }, _btnLayers);
-            _tips.SetToolTip(_txtIgnored, T("Prf_TipIgnored", "Layers of the drawing that are not the profile (dimensions, a gasket drawn beside it), comma separated: drawn grey, never cut through. Dimension and hatch layers are left out by themselves."));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _txtIgnored, T("Prf_TipIgnored", "Layers of the drawing that are not the profile (dimensions, a gasket drawn beside it), comma separated: drawn grey, never cut through. Dimension and hatch layers are left out by themselves."));
             _lblSize = new Label { AutoSize = false, Dock = DockStyle.Fill, Font = UiStyle.Small, TextAlign = ContentAlignment.MiddleLeft };
             _btnSizeFix = small("", "");
             _btnSizeFix.Width = 90;

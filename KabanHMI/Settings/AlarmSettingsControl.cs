@@ -88,7 +88,7 @@ namespace Kaban.UI.Settings
                 Name = "GenerationOn", AutoSize = true, Checked = gen.Enabled, Margin = new Padding(3, 3, 18, 0),
                 Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder and axis alarms itself")
             };
-            tips.SetToolTip(_genOn, LanguageManager.GetString("Tip_AlarmGenOn",
+            Kaban.UI.Controls.UiStyle.SetTip(tips, _genOn, LanguageManager.GetString("Tip_AlarmGenOn",
                 "On: every cylinder unit's movement is timed from its output and must be confirmed by its sensors within its delay, " +
                 "or the HMI raises its alarm with the signal that failed (M840.1, M840.2...). An axis row raises its alarm while its " +
                 "Servo Alarm or Axis Alarm shows a code. The PLC's own alarm for the same device is then not listed twice."));
@@ -103,7 +103,7 @@ namespace Kaban.UI.Settings
                 Minimum = (decimal)AlarmGeneration.MinimumDelaySeconds, Maximum = 600,
                 Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds))
             };
-            tips.SetToolTip(_genDelay, LanguageManager.GetString("Tip_AlarmGenDelay",
+            Kaban.UI.Controls.UiStyle.SetTip(tips, _genDelay, LanguageManager.GetString("Tip_AlarmGenDelay",
                 "How long a movement may take before the HMI raises its alarm - for every alarm whose Delay cell is blank."));
             var hint = new Label
             {

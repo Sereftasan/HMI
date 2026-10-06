@@ -72,11 +72,11 @@ namespace Kaban.Machines.FA2010.Screens
             var sbar = newBar();
             Action<Control> addS = c => sbar.Items.Add(new ToolStripControlHost(c) { AutoSize = false, Size = c.Size });
             _numBar = new NumericUpDown { DecimalPlaces = 0, Minimum = 100, Maximum = 12000, Value = 1500, Increment = 100, Width = 70, TextAlign = HorizontalAlignment.Right };
-            _tips.SetToolTip(_numBar, T("Prf_TipBar", "The bar's length: where the operations land along it (from the start, the end, centred, spread)"));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _numBar, T("Prf_TipBar", "The bar's length: where the operations land along it (from the start, the end, centred, spread)"));
             _numBar.ValueChanged += (s, e) => { if (_sideResult != null) GenerateSide(); };
             addS(field(T("Prf_BarLength", "Bar (mm) :"), _numBar, 150));
             _chkTrial = new CheckBox { Text = T("Prf_Trial", "trial"), AutoSize = false, Width = 70, Height = 24, Font = UiStyle.Small };
-            _tips.SetToolTip(_chkTrial, T("Prf_TipTrial", "A TRIAL program: every placement not rejected, confirmed or not - for a test piece, to check the positions before confirming them"));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _chkTrial, T("Prf_TipTrial", "A TRIAL program: every placement not rejected, confirmed or not - for a test piece, to check the positions before confirming them"));
             _chkTrial.CheckedChanged += (s, e) => { if (_sideResult != null) GenerateSide(); };
             addS(_chkTrial);
             addS(UiStyle.ToolButton("\u2699", T("Prf_TipGenerateSide", "Make the program"), _tips, (s, e) => GenerateSide()));

@@ -105,7 +105,7 @@ class SF {
         Check("  the width is kept, as a dragged one is", cfg.ContainsKey("Width") && cfg["Width"] == UiScale.Logical(panel.Width).ToString(),
               (cfg.ContainsKey("Width") ? cfg["Width"] : "-") + " vs " + UiScale.Logical(panel.Width));
         var tips = (ToolTip)Get(a, "_sideTips");
-        Check("  the border says so in its tooltip", (tips.GetToolTip(split) ?? "").Contains("Double-click"), tips.GetToolTip(split));
+        Check("  the border says so in its tooltip", (Kaban.UI.Controls.UiStyle.TipOf(split) ?? "").Contains("Double-click"), Kaban.UI.Controls.UiStyle.TipOf(split));
 
         Console.WriteLine("--- more than there is room for: a sliver of the page left ---");
         foreach (DataGridViewColumn c in grid.Columns) if (c.Visible) c.Width = 400;

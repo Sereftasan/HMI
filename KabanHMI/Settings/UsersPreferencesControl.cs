@@ -232,7 +232,7 @@ namespace Kaban.UI.Settings
             _name.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
             _pass.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
             _level.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
-            UiStyle.Tips().SetToolTip(_pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
         }
 
         private void Row(string section, string key, string caption, Control field)
@@ -275,7 +275,7 @@ namespace Kaban.UI.Settings
             _readFrom.DropDown += (s, e) => OpenList(_readFrom, null);
             _readFrom.DropDownClosed += (s, e) => CloseList(_readFrom);
             _readFrom.SelectedIndexChanged += (s, e) => { if (!_filling) ReadFromChosen(); };
-            UiStyle.Tips().SetToolTip(_readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE keeps them"));
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE keeps them"));
 
             Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
             _scale.ValueChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };

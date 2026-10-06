@@ -174,10 +174,10 @@ class PM {
         var buttons = new List<Control>();
         foreach (var ts in form.Controls.OfType<ToolStrip>())
             foreach (var h in ts.Items.OfType<ToolStripControlHost>()) buttons.Add(h.Control);
-        Check("a tooltip on every toolbar button", tips != null && buttons.Count >= 10 && buttons.All(b => (tips.GetToolTip(b) ?? "").Length > 0),
+        Check("a tooltip on every toolbar button", tips != null && buttons.Count >= 10 && buttons.All(b => (Kaban.UI.Controls.UiStyle.TipOf(b) ?? "").Length > 0),
               buttons.Count + " buttons");
         // (the key first in the tooltip: "Ctrl+E" then what the button does)
-        Check("  export and import are there", buttons.Any(b => tips.GetToolTip(b).StartsWith("Ctrl+E\nExport")) && buttons.Any(b => tips.GetToolTip(b).StartsWith("Ctrl+I\nImport")));
+        Check("  export and import are there", buttons.Any(b => Kaban.UI.Controls.UiStyle.TipOf(b).StartsWith("Ctrl+E\nExport")) && buttons.Any(b => Kaban.UI.Controls.UiStyle.TipOf(b).StartsWith("Ctrl+I\nImport")));
         Check("  the status line has no LIVE PLC warning", !((Label)Get(form, "_status")).Text.Contains("LIVE"), ((Label)Get(form, "_status")).Text);
 
         Console.WriteLine("--- tabs: the one on display is the one worked on ---");
@@ -310,8 +310,8 @@ class PM {
         Console.WriteLine("--- redo: takes back an undo ---");
         var btnRedo = (Button)Get(form, "_btnRedo");
         var tipsR = (ToolTip)Get(form, "_tips");
-        Check("after the undo, Redo is offered and says what it redoes", btnRedo.Enabled && tipsR.GetToolTip(btnRedo).StartsWith("Redo: ") &&
-              tipsR.GetToolTip(btnRedo).Contains("Ctrl+Y"), tipsR.GetToolTip(btnRedo));
+        Check("after the undo, Redo is offered and says what it redoes", btnRedo.Enabled && Kaban.UI.Controls.UiStyle.TipOf(btnRedo).StartsWith("Redo: ") &&
+              Kaban.UI.Controls.UiStyle.TipOf(btnRedo).Contains("Ctrl+Y"), Kaban.UI.Controls.UiStyle.TipOf(btnRedo));
         Call(form, "Redo");
         Check("Redo: the two rows are removed again", seq() == "M30,M17", seq());
         Check("  and that can be undone once more", ((Button)Get(form, "_btnUndo")).Enabled && !btnRedo.Enabled);
@@ -383,7 +383,7 @@ class PM {
         Check("  redo right after undo", buttons.IndexOf(bRedo) == buttons.IndexOf(bUndo) + 1);
         Check("  no emoji of the old up/down, undo, copy or paste left",
               !buttons.Any(b => new[] { 0x1F53C, 0x1F53D, 0x21A9, 0x1F4CB, 0x1F4CC }.Any(cp => b.Text == char.ConvertFromUtf32(cp))));
-        Check("  find is the magnifier leaning right", buttons.Any(b => b.Text == char.ConvertFromUtf32(0x1F50E) && tips.GetToolTip(b).Contains("Ctrl+F")));
+        Check("  find is the magnifier leaning right", buttons.Any(b => b.Text == char.ConvertFromUtf32(0x1F50E) && Kaban.UI.Controls.UiStyle.TipOf(b).Contains("Ctrl+F")));
         using (var bmp = new System.Drawing.Bitmap(44, 32))
         {
             using (var g = System.Drawing.Graphics.FromImage(bmp)) { g.Clear(System.Drawing.Color.White); ToolGlyphs.MoveUp(g, new System.Drawing.Rectangle(0, 0, 44, 32), true); }
@@ -407,7 +407,7 @@ class PM {
               plus.Left >= strip.Left + lastRect.Right && plus.Left <= strip.Left + lastRect.Right + 12 &&
               plus.Top >= strip.Top && plus.Bottom <= strip.Top + lastRect.Bottom + 2,
               plus == null ? "none" : plus.Bounds + " / last tab " + lastRect);
-        Check("  on top of the strip, with its tooltip", plus.Parent.Controls.GetChildIndex(plus) == 0 && tips.GetToolTip(plus) == "New tab at the end");
+        Check("  on top of the strip, with its tooltip", plus.Parent.Controls.GetChildIndex(plus) == 0 && Kaban.UI.Controls.UiStyle.TipOf(plus) == "New tab at the end");
         var placeType = MonType.GetNestedType("TabPlace", Any);
         strip.SelectedIndex = 0;
         string firstName = (string)Get(current(), "Name");

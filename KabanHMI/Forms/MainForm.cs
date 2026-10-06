@@ -966,7 +966,7 @@ namespace Kaban.UI.Forms
                     });
             };
             _btnLang.Click += (s, e) => ShowLanguageMenu();
-            _topTips.SetToolTip(_btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
             pnlTop.Controls.Add(_btnLang);
             SetupZoomButton();
 
@@ -1100,7 +1100,7 @@ namespace Kaban.UI.Forms
                 b.FlatAppearance.BorderSize = 0;
                 b.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
                 b.Click += click;
-                _topTips.SetToolTip(b, tip);
+                Kaban.UI.Controls.UiStyle.SetTip(_topTips, b, tip);
                 pnlTop.Controls.Add(b);
                 return b;
             };
@@ -1661,7 +1661,7 @@ namespace Kaban.UI.Forms
                 Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnConnection, new Point(0, _btnConnection.Height));
             };
 
-            _topTips.SetToolTip(_btnConnection,
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnConnection,
                 LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
             pnlTop.Controls.Add(_btnConnection);
 
@@ -1746,7 +1746,7 @@ namespace Kaban.UI.Forms
                 var menu = BuildAlarmMenu();
                 Kaban.UI.Controls.UiStyle.ShowPopup(menu, _btnAlarmReset, new Point(0, _btnAlarmReset.Height));
             };
-            _topTips.SetToolTip(_btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
             pnlTop.Controls.Add(_btnAlarmReset);
 
             _alarmTimer = new Timer { Interval = 220 };   // twice the old rate - it read as sluggish
@@ -2789,7 +2789,7 @@ namespace Kaban.UI.Forms
             _btnSimMonitor.FlatAppearance.BorderSize = 0;
             _btnSimMonitor.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
             _btnSimMonitor.Paint += (s, e) => DrawMonitorGlyph(e.Graphics, _btnSimMonitor.ClientRectangle, Color.White);
-            _topTips.SetToolTip(_btnSimMonitor, "Simulation Monitor (F12)");
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, "Simulation Monitor (F12)");
             _btnSimMonitor.Click += (s, e) => ToggleSimulationMonitor();
             pnlTop.Controls.Add(_btnSimMonitor);
             LayoutTopBar();

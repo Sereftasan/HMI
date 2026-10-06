@@ -358,13 +358,13 @@ namespace Kaban.UI.Settings
             UpdateRowState(row);
 
             var tips = Kaban.UI.Controls.UiStyle.Tips();
-            tips.SetToolTip(name, PlcEndpointNaming.CaptionWithStation(endpoint) +
+            Kaban.UI.Controls.UiStyle.SetTip(tips, name, PlcEndpointNaming.CaptionWithStation(endpoint) +
                 "\r\n" + LanguageManager.GetString("Tip_HmiStationId",
                     "Controls bind to this machine with PlcNumber ") + endpoint.StationId + ".");
-            tips.SetToolTip(station, LanguageManager.GetString("Tip_LogicalStation",
+            Kaban.UI.Controls.UiStyle.SetTip(tips, station, LanguageManager.GetString("Tip_LogicalStation",
                 "MX Component LOGICAL station number - what the Communication Setting Utility stores. "
               + "Not the same as the HMI's own station id."));
-            tips.SetToolTip(address, LanguageManager.GetString("Tip_NetAddress",
+            Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
                 "Where the CPU is, for the drivers that reach it over the network.\r\n"
               + "Siemens:  host:rack:slot   e.g. 192.168.0.1:0:1\r\n"
               + "Delta:    host:port:unit   e.g. 192.168.1.5:502:1"));

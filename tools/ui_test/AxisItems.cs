@@ -114,8 +114,8 @@ class AXI {
         Check("  their names", bar.ItemsPick.Items.Select(i => i.Text).SequenceEqual(new[] { "Manual movement", "Torque monitor", "Axis setting parameters",
               "Reference activation", "Reference sensor - encoder Z pulse distance", "Alarm codes", "Travel per revolution" }));
         Check("  'All' when nothing is ticked (the last line of the list)", bar.ItemsPick.AllText == "All" && bar.ItemsPick.Shown == "All");
-        Check("  left of 'Motion monitor:' ('None' its last line)", bar.Right <= mot.Left && mot.MotionPick.AllText == "None" &&
-              mot.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor:") && bar.Controls.OfType<Label>().Any(l => l.Text == "PLC axis items:") &&
+        Check("  left of 'Motion monitor items:' ('None' its last line)", bar.Right <= mot.Left && mot.MotionPick.AllText == "None" &&
+              mot.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor items:") && bar.Controls.OfType<Label>().Any(l => l.Text == "PLC axis items:") &&
               !mot.Controls.OfType<Label>().Any(l => l.Text.Contains("read only")), bar.Bounds + " " + mot.Bounds);
         string all = Keys(r1);
         Check("All: the whole row", all == "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,Ref,ZDistance,AxisAlarm,AxisWarning,ServoAlarm,TravelPerRev", all);
@@ -156,6 +156,9 @@ class AXI {
         int home = mot.HomeX, stick = mot.StickX, itemsLeft = bar.Left, widthBefore = body.DisplayRectangle.Width;
         Check("the Motion monitor right of PLC axis items, sticking where the page's content starts", home == mot.Left && home >= bar.Right &&
               stick == bar.Left && stick == 10, home + " / " + stick + " / items " + bar.Left + "-" + bar.Right);
+        // 6 October: "leave some distance in between 'PLC axis items' and 'Motion monitor'"
+        Check("  with room between the two lists", mot.Left - (bar.Right + frame.HeadContent.Left) >= AxisPickBar.GapAfterItems &&
+              AxisPickBar.GapAfterItems >= 24, (mot.Left - (bar.Right + frame.HeadContent.Left)) + " px");
         Check("the page is wider than its window", r1.Width > body.ClientSize.Width, r1.Width + " > " + body.ClientSize.Width);
         body.AutoScrollPosition = new Point(100, 0);
         Pump(100);
@@ -287,12 +290,39 @@ class AXI {
               tallHead("Position").PointToScreen(Point.Empty).Y == headY && tbar.PointToScreen(Point.Empty).Y == barY,
               "row " + rowY + " -> " + tallRows[0].PointToScreen(Point.Empty).Y + ", heading " + headY + " -> " + tallHead("Position").PointToScreen(Point.Empty).Y);
         Check("  a row scrolled under the heading is hidden by it (the body starts under it)", tf.Body.PointToScreen(Point.Empty).Y >= tallHead("Position").PointToScreen(Point.Empty).Y + tallHead("Position").Height);
+        // 6 October: "keep the axis name column on the left side as well so we can see it even when
+        // the bottom scroll moved to right, for the user could see the parameters owned by whom"
+        Func<AxisSettingHMI, Label> nameOf = r => (Label)typeof(AxisSettingHMI).GetProperty("NameLabel", Any).GetValue(r, null);
+        Func<Label, int> textRight = l => l.PointToScreen(Point.Empty).X + l.Width - l.Padding.Right;
+        int nameRight0 = textRight(nameOf(tallRows[3])), headRight0 = textRight(tallHead("Axis"));
+        int nameY0 = nameOf(tallRows[3]).PointToScreen(new Point(0, nameOf(tallRows[3]).Height / 2)).Y - tallRows[3].PointToScreen(Point.Empty).Y;
+        Check("  unscrolled: the names as built", tallRows.All(r => !AxisSettingHMI.IsStuck(nameOf(r)) && nameOf(r).Left == 0 && nameOf(r).Padding.Left == 0));
         tf.Body.AutoScrollPosition = new Point(300, 120);
         Pump(150);
+        var seen = tallRows.Where(r => r.Bottom > 0 && r.Top < tf.Body.ClientSize.Height).ToList();
+        int bodyX = tf.Body.PointToScreen(Point.Empty).X;
+        Check("scrolled sideways: every axis's name where it was, the columns passing under it",
+              seen.Count >= 3 && seen.All(r => textRight(nameOf(r)) == nameRight0 && AxisSettingHMI.IsStuck(nameOf(r)) &&
+                                         r.Controls.GetChildIndex(nameOf(r)) == 0),
+              string.Join(",", seen.Select(r => textRight(nameOf(r)) + (AxisSettingHMI.IsStuck(nameOf(r)) ? "s" : ""))) + " vs " + nameRight0);
+        Check("  covering from the page's left edge over the whole row (nothing scrolled shows beside it)",
+              seen.All(r => nameOf(r).PointToScreen(Point.Empty).X <= bodyX && nameOf(r).Top == 0 && nameOf(r).Height == r.Height &&
+                            nameOf(r).BackColor.A == 255),
+              nameOf(seen[0]).PointToScreen(Point.Empty).X + " <= " + bodyX + ", " + nameOf(seen[0]).Bounds);
+        Check("  its text at the same height in the row", nameOf(tallRows[3]).PointToScreen(new Point(0, nameOf(tallRows[3]).Height / 2)).Y -
+              tallRows[3].PointToScreen(Point.Empty).Y == nameY0);
+        Check("  the Axis heading stays over the names", textRight(tallHead("Axis")) == headRight0 && AxisSettingHMI.IsStuck(tallHead("Axis")) &&
+              tallHead("Axis").PointToScreen(Point.Empty).X <= tf.Head.PointToScreen(Point.Empty).X,
+              textRight(tallHead("Axis")) + " vs " + headRight0);
+        Check("  the name still 'Axis' for the notes page", tallRows[3].ColumnOf(nameOf(tallRows[3])) == "Axis");
         int colX = tallRows[1].PointToScreen(Point.Empty).X + tallRows[1].Columns["AxisAlarm"].X;
         Check("  and sideways: the column names stay over their columns", tf.HeadContent.Left == tf.Body.AutoScrollPosition.X && tf.Body.AutoScrollPosition.X < 0 &&
               tallHead("Axis alarm").PointToScreen(Point.Empty).X == colX, tallHead("Axis alarm").PointToScreen(Point.Empty).X + " vs " + colX);
         Snap(tall, tall.Width, tall.Height, "/tmp/axis_items_frozen.png");
+        tf.Body.AutoScrollPosition = new Point(0, 120);
+        Pump(150);
+        Check("back at the left: the names and the heading as built", tallRows.All(r => !AxisSettingHMI.IsStuck(nameOf(r)) && nameOf(r).Left == 0 &&
+              nameOf(r).Padding.Left == 0 && nameOf(r).Padding.Right == 0) && !AxisSettingHMI.IsStuck(tallHead("Axis")) && textRight(tallHead("Axis")) == headRight0);
         form.Controls.Remove(tall);
 
         Console.WriteLine("--- the module's values in the row's unit ---");
@@ -385,6 +415,22 @@ class AXI {
         Check("kept apart from the page's", ViewPreferences.PickOf(ViewPreferences.MonitorItems).SetEquals(new[] { "Torque", "Settings", "Codes" }) &&
               ViewPreferences.PickOf(ViewPreferences.AxisItems) == null && ViewPreferences.ListOf(ViewPreferences.MotionColumns).Count == 0);
         Snap(side, side.Width, side.Height, "/tmp/axis_items_monitor.png");
+        side.Width = 700;
+        Pump(200);
+        var monList = (ScrollableControl)srows[0].Parent;
+        Func<AxisSettingHMI, Label> mname = r => (Label)typeof(AxisSettingHMI).GetProperty("NameLabel", Any).GetValue(r, null);
+        var mAxisHead = heads.Controls.OfType<Label>().FirstOrDefault(l => l.Text == "Axis");
+        int mRight0 = mname(srows[0]).PointToScreen(Point.Empty).X + mname(srows[0]).Width;
+        monList.AutoScrollPosition = new Point(250, 0);
+        Pump(200);
+        Check("the monitor scrolled sideways: the names stay at the left too, the Axis heading over them",
+              -monList.AutoScrollPosition.X > 0 && srows.All(r => AxisSettingHMI.IsStuck(mname(r)) && mname(r).PointToScreen(Point.Empty).X <= monList.PointToScreen(Point.Empty).X &&
+                                                               mname(r).PointToScreen(Point.Empty).X + mname(r).Width - mname(r).Padding.Right == mRight0) &&
+              mAxisHead != null && AxisSettingHMI.IsStuck(mAxisHead),
+              (-monList.AutoScrollPosition.X) + ": " + string.Join(",", srows.Select(r => mname(r).PointToScreen(Point.Empty).X + "/" + mname(r).Width)) + " vs " + mRight0);
+        monList.AutoScrollPosition = Point.Empty;
+        side.Width = 1000;
+        Pump(200);
         mbar.ItemsPick.Select(new[] { "RefActivation", "Travel" });
         Pump(300);
         srows = settingRows();
@@ -409,7 +455,7 @@ class AXI {
         var keys = new[] { "AxIt_Pick", "AxIt_All", "AxIt_Manual", "AxIt_Torque", "AxIt_Settings", "AxIt_RefActivation", "AxIt_ZDistance",
                            "AxIt_Codes", "AxIt_Travel", "AxIt_Backlash", "Tip_LoadEncoder", "Mot_Pick", "Mot_PickNone" };
         Check("every text in the file", keys.All(k => LanguageManager.GetString(k, "##") != "##"));
-        Check("  'Motion monitor:'", LanguageManager.GetString("Mot_Pick", "") == "Motion monitor:");
+        Check("  'Motion monitor items:'", LanguageManager.GetString("Mot_Pick", "") == "Motion monitor items:");
 
         SecurityManager.Logout();
         form.Close();

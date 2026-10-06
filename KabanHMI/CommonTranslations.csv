@@ -950,7 +950,7 @@ VP_Long;Long;Uzun;Долго;Lang;Lungo;Largo
 VP_Everyone;Everyone (this panel);Herkes (bu panel);Все (эта панель);Alle (dieses Panel);Tutti (questo pannello);Todos (este panel)
 VP_Me;(me);(ben);(я);(ich);(io);(yo)
 VP_AsEveryone;As for everyone;Herkes için olduğu gibi;Как для всех;Wie für alle;Come per tutti;Como para todos
-Mot_Pick;Motion monitor:;Hareket izleme:;Монитор движения:;Bewegungsmonitor:;Monitor movimento:;Monitor de movimiento:
+Mot_Pick;Motion monitor items:;Hareket izleme öğeleri:;Элементы монитора движения:;Bewegungsmonitor-Elemente:;Elementi monitor movimento:;Elementos del monitor de movimiento:
 Mot_PickNone;None;Hiçbiri;Нет;Keine;Nessuno;Ninguno
 Mot_AxisError;Axis error No.;Eksen hata No.;Номер ошибки оси;Achsfehler-Nr.;N. errore asse;N.º de error del eje
 Mot_AxisWarning;Axis warning No.;Eksen uyarı No.;Номер предупреждения оси;Achswarnung-Nr.;N. avviso asse;N.º de aviso del eje

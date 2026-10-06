@@ -203,7 +203,7 @@ namespace Kaban.UI.Dashboard
         private void Caption()
         {
             Text = Shown;
-            if (_tips != null) _tips.SetToolTip(this, _selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts));
+            if (_tips != null) Kaban.UI.Controls.UiStyle.SetTip(_tips, this, _selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts));
             Invalidate();
         }
 

@@ -307,7 +307,7 @@ namespace Kaban.UI.Helpers
                 table.Controls.Add(totalLabel, 1, r);
                 table.Controls.Add(_total, 2, r);
                 _total.ValueChanged += (s, e) => ScaleToTotal();
-                _tips.SetToolTip(_total, T("Tip_ColTable", "Type the table's width: the columns shown share it as they share it now."));
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, _total, T("Tip_ColTable", "Type the table's width: the columns shown share it as they share it now."));
 
                 var buttons = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, Height = 48, Padding = new Padding(8) };
                 var cancel = UiStyle.Round(new Button { Text = T("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30 });

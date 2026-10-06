@@ -114,7 +114,7 @@ namespace Kaban.UI.Settings
                 "Choose the folder of the previous version, then look for settings.");
             Controls.Add(_status);
 
-            tips.SetToolTip(_source, LanguageManager.GetString("Imp_SourceTip",
+            Kaban.UI.Controls.UiStyle.SetTip(tips, _source, LanguageManager.GetString("Imp_SourceTip",
                 "The folder the old program ran from - its own folder or the install root."));
         }
 

@@ -128,7 +128,7 @@ namespace Kaban.UI.Forms
                     });
             };
             _btnZoom.Click += (s, e) => ShowZoomMenu();
-            _topTips.SetToolTip(_btnZoom, LanguageManager.GetString("Tip_Zoom",
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnZoom, LanguageManager.GetString("Tip_Zoom",
                 "Screen scale: how large the screen is drawn (80% - 150%)"));
             pnlTop.Controls.Add(_btnZoom);
         }

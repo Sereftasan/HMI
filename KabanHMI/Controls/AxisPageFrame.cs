@@ -59,8 +59,28 @@ namespace Kaban.UI.Controls
             int w = Math.Max(Body.DisplayRectangle.Width, Head.ClientSize.Width);
             int h = Math.Max(0, Head.ClientSize.Height - 1);
             if (HeadContent.Left != x || HeadContent.Width != w || HeadContent.Height != h) HeadContent.SetBounds(x, 0, w, h);
+            StickNames();
             var handler = Scrolled;
             if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// THE AXIS NAMES STAY AT THE LEFT while the rows are scrolled sideways, and
+        /// the Axis heading over them (6 October): which axis a parameter is of is
+        /// always in sight.
+        /// </summary>
+        public void StickNames()
+        {
+            if (IsDisposed) return;
+            int s = -Body.AutoScrollPosition.X;
+            AxisSettingHMI top = null;
+            foreach (var row in Body.Controls.OfType<AxisSettingHMI>())
+            {
+                if (row.MonitorMode) continue;
+                row.StickName(s, row.Left + s);
+                if (top == null || row.Top < top.Top) top = row;
+            }
+            if (top != null) top.StickHeading(HeadContent, s, top.Left + s);
         }
 
         /// <summary>The frame a page of rows is in - from the page, the body or a row - or null.</summary>
@@ -104,17 +124,23 @@ namespace Kaban.UI.Controls
             int line = rows.Min(r => r.Top);
 
             var frame = new AxisPageFrame { BackColor = page.BackColor };
-            frame.Head.Height = line;
+            var originals = page.Controls.Cast<Control>().ToList();
             page.SuspendLayout();
-            frame.SuspendLayout();
             try
             {
                 // the page stops scrolling FIRST: taking its rows away must not
                 // scroll what is left of it (Mono did, moving the lists up)
-                var at0 = page.Controls.Cast<Control>().ToDictionary(c => c, c => c.Location);
+                var at0 = originals.ToDictionary(c => c, c => c.Location);
                 sc.AutoScroll = false;
                 sc.AutoScrollMinSize = Size.Empty;
-                foreach (var c in page.Controls.Cast<Control>().ToList())
+                // The frame added EMPTY, its heading's height set after: on a page
+                // at a larger screen scale a control added is scaled, and a heading
+                // measured on the scaled page was scaled once more - a band of white
+                // between the column names and the rows (6 October).
+                page.Controls.Add(frame);
+                frame.Head.Height = line;
+                frame.SuspendLayout();
+                foreach (var c in originals)
                 {
                     var was = at0[c];
                     if (c is AxisSettingHMI || was.Y >= line - 2)
@@ -129,7 +155,6 @@ namespace Kaban.UI.Controls
                     }
                 }
                 frame.HeadContent.SendToBack();
-                page.Controls.Add(frame);
             }
             finally
             {

@@ -213,7 +213,7 @@ namespace Kaban.UI.Screens
                 l.SetBounds(UiScale.For(first, kv.Value.X), 0, UiScale.For(first, kv.Value.Y), head.Height);
                 l.Text = AxisSettingHMI.HeadingText(kv.Key);
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
-                if (tip != null) UiStyle.Tips().SetToolTip(l, tip);
+                if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
             }
             FollowRows();
         }
@@ -225,6 +225,11 @@ namespace Kaban.UI.Screens
             var first = _list.Controls.OfType<AxisSettingHMI>().FirstOrDefault();
             if (head == null || first == null) return;
             if (head.Left != first.Left) head.Left = first.Left;
+            // the axis names stay at the left as on the axis page, the Axis heading over them
+            int s = -_list.AutoScrollPosition.X;
+            foreach (var r in _list.Controls.OfType<AxisSettingHMI>()) r.StickName(s, r.Left + s);
+            var axisHead = head.Controls.OfType<Label>().FirstOrDefault(l => (l.Tag as string) == "AxisHeading:Axis");
+            if (axisHead != null) first.Stick(axisHead, s, first.Left + s, head.BackColor);
         }
 
         /// <summary>The bar as tall as its lists need in the panel's width (they wrap in a narrow panel).</summary>

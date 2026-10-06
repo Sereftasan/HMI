@@ -4521,3 +4521,16 @@ and `UnitLookAndErrors` extended.
 - Translations: Key_*, Tip_NavBack, Tip_NavForward, Ttl_Notes, Nts_*; Tip_Mon* and Tip_FindGo without their keys.
 - Manual: Keys, 3b Notes and feedback, the side pages' table, the axis page as a table, the tables' frame, where the notes are kept.
 - Tests: `AxisItems.cs`, `ViewPrefsAndMotion.cs`, `TableLook.cs`, `KeyShortcuts.cs` (new), `NotesFeedback.cs` (new).
+
+## 2026-10-06 (later) - Axis names kept at the left; lists apart at any scale; tables' frame taken back; tooltips shown
+
+- `AxisSettingHMI.StickName`, `Stick`, `StickHeading`, `IsStuck`, `NameStuck`; `AxisPageFrame.StickNames` (in `Sync`); the Axis Monitor's
+  `FollowRows` sticks its names and Axis heading. `ColumnOf` names the name label *Axis* wherever it is.
+- `AxisPickBar.StandRightOf`, `GapAfterItems` (28): the Motion list placed from the items list at every Place (was kept in factor-1 pixels);
+  the items list its natural width; the Motion list narrowed to the window. `AxisPageFrame.Freeze` adds the frame before setting the heading's height.
+  `Mot_Pick`: *Motion monitor items:*.
+- `UiStyle.GridLook`: the frame removed (`FrameGrid`, `GridFrame`, `HasGridFrame` gone).
+- `UiStyle.SetTip`, `HasOwnTip`: a tip shown by the control itself (HoverTip) with a changeable text; `ToolButton`, `IconButton`, `Shortcuts.Set`
+  and 53 `SetToolTip` calls use it. A disabled one's tip shown by its parent (`DisabledTips`); `LastShownFor`.
+- Manual: the names at the left, Motion monitor items, the tables' frame gone, rest the pointer for a key's tooltip.
+- Tests: `KeyShortcuts.cs`, `AxisItems.cs`, `AxisPageScale.cs` (new), `TableLook.cs`, `PlcMonitor.cs`, `SidePanel.cs`, `SidePanelFit.cs`, `ViewPrefsAndMotion.cs`.

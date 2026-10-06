@@ -293,7 +293,7 @@ class VPM {
         Check("a heading over each column, short", head("Busy") != null && head("Busy").Visible && head("Busy").Text == "BUSY" &&
               head("Busy").Left == r1.Left + r1.Columns["Mot:Busy"].X && head("OperationStatus").Text == "Status",
               head("Busy") == null ? "none" : head("Busy").Bounds + " " + head("Busy").Text);
-        Check("  the whole name in its tooltip", UiStyle.Tips().GetToolTip(head("HomeRequest")).StartsWith("Home request (Md.31 b3)"), UiStyle.Tips().GetToolTip(head("HomeRequest")));
+        Check("  the whole name in its tooltip", Kaban.UI.Controls.UiStyle.TipOf(head("HomeRequest")).StartsWith("Home request (Md.31 b3)"), Kaban.UI.Controls.UiStyle.TipOf(head("HomeRequest")));
         Check("the pick shows what is kept", pick.Selected.SetEquals(picked));
 
         // A picture for the review.

@@ -48,8 +48,8 @@ class TL {
         host.Controls.Add(g); host.Show(); Application.DoEvents();
         UiStyle.EnableTableTools(g, "TestTable");
         Check("the PLC Monitor's look", Looks(g));
-        Check("  a thin frame all round, in the headings' colour", UiStyle.HasGridFrame(g) && UiStyle.GridFrame == g.ColumnHeadersDefaultCellStyle.BackColor &&
-              (Environment.OSVersion.Platform == PlatformID.Win32NT ? g.BorderStyle == BorderStyle.FixedSingle : g.BorderStyle == BorderStyle.None));
+        // 6 October: the frame of the same day taken back ("the previous one was much better")
+        Check("  no frame round it, as before", g.BorderStyle == BorderStyle.None);
         var c = UiStyle.ChooserOf(g);
         Check("the PLC Monitor's menu on its headings", c != null && g.Columns.Cast<DataGridViewColumn>().All(x => x.HeaderCell.ContextMenuStrip == c.Menu));
         Check("  the columns, widths, fit, save as the default, default column settings", Tags(c).SequenceEqual(new[] { "Code", "Text", "Time", "widths", "fit", "savedefault", "default" }),

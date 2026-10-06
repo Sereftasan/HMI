@@ -113,7 +113,7 @@ namespace Kaban.Machines.FA2010.Screens
                     var a = axis; var st = step;
                     var b = UiStyle.TextButton((st > 0 ? "+" : "\u2212") + Math.Abs(st).ToString("0.#", CI), 44);
                     b.Margin = new Padding(1, 2, 1, 2);
-                    _tips.SetToolTip(b, a == "Y" ? T("Prf_TipNudgeY", "Move across the profile (+: towards the inside face)") : T("Prf_TipNudgeZ", "Move up or down (+: up, away from the bed)"));
+                    Kaban.UI.Controls.UiStyle.SetTip(_tips, b, a == "Y" ? T("Prf_TipNudgeY", "Move across the profile (+: towards the inside face)") : T("Prf_TipNudgeZ", "Move up or down (+: up, away from the bed)"));
                     b.Click += (s, e) => Nudge(a == "Y" ? st : 0, a == "Z" ? st : 0);
                     nudges.Controls.Add(b);
                     _nudgeButtons.Add(b);
@@ -128,7 +128,7 @@ namespace Kaban.Machines.FA2010.Screens
             keep.Controls.Add(new Label { Text = T("Prf_KeepFor", "Keep the move for"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(3, 8, 3, 3) });
             _cmbScope = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 230, Font = UiStyle.Small, Margin = new Padding(3, 3, 3, 3) };
             _chkWholeAccessory = new CheckBox { Text = T("Prf_WholeAccessory", "all its operations"), AutoSize = true, Font = UiStyle.Small, Margin = new Padding(6, 6, 3, 3) };
-            _tips.SetToolTip(_chkWholeAccessory, T("Prf_TipWholeAccessory", "The whole accessory moves (a hinge's slot and its holes together), not just this operation"));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _chkWholeAccessory, T("Prf_TipWholeAccessory", "The whole accessory moves (a hinge's slot and its holes together), not just this operation"));
             _btnSaveMove = EditTool("\uD83D\uDCBE", T("Prf_TipSaveMove", "Keep the move as a correction (the reason is asked) - the position is then to be confirmed again"), (s, e) => SaveMove(null));
             _btnCancelMove = UiStyle.ToolButton("\u21A9", T("Prf_TipCancelMove", "Forget the move"), _tips, (s, e) => { _pendingDy = _pendingDz = 0; UpdateTune(); _viewer.Invalidate(); });
             keep.Controls.AddRange(new Control[] { _cmbScope, _chkWholeAccessory, _btnSaveMove, _btnCancelMove });

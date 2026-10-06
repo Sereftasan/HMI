@@ -59,7 +59,7 @@ namespace Kaban.UI.Screens
                 _filter.Left = find.Right + 6;
                 _onlyOn.Left = _filter.Right + 12;
             };
-            UiStyle.Tips().SetToolTip(_filter, T("Tip_IoFilter", "Part of an address (X20, Y1) or of a name"));
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _filter, T("Tip_IoFilter", "Part of an address (X20, Y1) or of a name"));
 
             _body.Dock = DockStyle.Fill;
             // Up and down only: the lists are as wide as the panel.

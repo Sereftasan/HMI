@@ -49,7 +49,8 @@ namespace Kaban.UI.Helpers
                 _entries.RemoveAll(e => !e.Button.IsAlive || ReferenceEquals(e.Button.Target, button) || ((Control)e.Button.Target).IsDisposed);
                 if (keys != Keys.None) _entries.Add(new Entry { Button = new WeakReference(button), Keys = keys, Dispatch = dispatch });
             }
-            if (tips != null && tip != null) tips.SetToolTip(button, With(keys, tip));
+            // shown by the button itself (UiStyle.SetTip): a registered tip went silent on the panel
+            if (tips != null && tip != null) Kaban.UI.Controls.UiStyle.SetTip(tips, button, With(keys, tip));
         }
 
         /// <summary>The key of a button, or None.</summary>

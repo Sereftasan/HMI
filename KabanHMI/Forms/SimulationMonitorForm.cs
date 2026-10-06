@@ -615,14 +615,14 @@ namespace Kaban.UI.Forms
             if (_btnUndo != null)
             {
                 _btnUndo.Enabled = _undo.Count > 0;
-                _tips.SetToolTip(_btnUndo, _undo.Count > 0
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, _btnUndo, _undo.Count > 0
                     ? string.Format(T("Tip_MonUndoWhat", "Undo: {0} (Ctrl+Z)"), _undo[_undo.Count - 1].What)
                     : T("Tip_MonUndo", "Undo the last change (Ctrl+Z)"));
             }
             if (_btnRedo != null)
             {
                 _btnRedo.Enabled = _redo.Count > 0;
-                _tips.SetToolTip(_btnRedo, _redo.Count > 0
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, _btnRedo, _redo.Count > 0
                     ? string.Format(T("Tip_MonRedoWhat", "Redo: {0} (Ctrl+Y)"), _redo[_redo.Count - 1].What)
                     : T("Tip_MonRedo", "Redo the change undone last (Ctrl+Y)"));
             }
@@ -909,7 +909,7 @@ namespace Kaban.UI.Forms
                     e.Graphics.FillRectangle(ink, cx - 1.2f, cy - arm, 2.4f, 2 * arm);
                 }
             };
-            _tips.SetToolTip(b, T("Tip_MonNewTab", "New tab at the end"));
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, b, T("Tip_MonNewTab", "New tab at the end"));
             b.Click += (s, e) => NewSheet(TabPlace.End, mon);
             return b;
         }

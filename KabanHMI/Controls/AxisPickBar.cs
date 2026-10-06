@@ -63,7 +63,7 @@ namespace Kaban.UI.Controls
             };
             ItemsPick.Changed += (s, e) => { if (!_syncing) KeepItems(); };
 
-            _motionCaption = Caption(T("Mot_Pick", "Motion monitor:"));
+            _motionCaption = Caption(T("Mot_Pick", "Motion monitor items:"));
             MotionPick = new PickList(UiStyle.Tips())
             {
                 Name = "motionPick", Size = new Size(420, 28), Margin = new Padding(0, 4, 8, 0),
@@ -74,6 +74,8 @@ namespace Kaban.UI.Controls
                 i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
             MotionPick.Changed += (s, e) => { if (!_syncing) KeepMotion(); };
 
+            // both in one bar (the Axis Monitor): the same room between them as on a page
+            if (items && motion) _motionCaption.Margin = new Padding(GapAfterItems, 9, 6, 0);
             if (items) { Controls.Add(_itemsCaption); Controls.Add(ItemsPick); }
             if (motion) { Controls.Add(_motionCaption); Controls.Add(MotionPick); }
         }
@@ -194,8 +196,44 @@ namespace Kaban.UI.Controls
             Place();
         }
 
+        private AxisPickBar _follow;
+
+        /// <summary>The room between the PLC axis items list and the Motion monitor items list (factor 1).</summary>
+        public const int GapAfterItems = 28;
+
+        /// <summary>
+        /// Stands right of <paramref name="left"/> (the PLC axis items list), with
+        /// room between (GapAfterItems): its place is taken from that list
+        /// whenever it is placed - not kept in pixels, which at a larger screen
+        /// scale were the unscaled ones and put it over that list (6 October).
+        /// </summary>
+        public void StandRightOf(AxisPickBar left)
+        {
+            _follow = left;
+            Place();
+        }
+
+        /// <summary>Where the list it stands right of ends, in the page's unscrolled terms, and the room after it.</summary>
+        private bool FollowHome(out int home)
+        {
+            home = 0;
+            if (_follow == null || _follow.IsDisposed || _page == null || !_follow.Visible) return false;
+            // as wide as what it holds: a bar measured before it was scaled was left too wide
+            int natural = _follow.NaturalWidth;
+            if (natural > 0 && _follow.Width != natural) _follow.Width = natural;
+            int x = 0;
+            Control c = _follow;
+            for (; c != null && c != _page; c = c.Parent) x += c.Left;
+            if (c == null) return false;
+            // where it is shown now, plus the scroll: on the page and in a frame's
+            // heading (whose content follows the rows) alike, the unscrolled place
+            int scrolled = _scroller != null ? -_scroller.AutoScrollPosition.X : 0;
+            home = x + natural + scrolled + UiScale.For(_page, GapAfterItems);
+            return true;
+        }
+
         /// <summary>Where the bar stands with the page unscrolled, and where it sticks (tests).</summary>
-        public int HomeX { get { return _homeX; } }
+        public int HomeX { get { int h; return FollowHome(out h) ? h : _homeX; } }
         public int StickX { get { return _stickX; } }
 
         /// <summary>Where the bar belongs now, in the page's window: with the page until the left side, then there.</summary>
@@ -204,7 +242,9 @@ namespace Kaban.UI.Controls
             get
             {
                 int scrolled = _scroller != null ? -_scroller.AutoScrollPosition.X : 0;
-                return Math.Max(_stickX, _homeX - scrolled);
+                int home;
+                if (!FollowHome(out home)) home = _homeX;
+                return Math.Max(Math.Min(_stickX, home), home - scrolled);
             }
         }
 
@@ -213,9 +253,19 @@ namespace Kaban.UI.Controls
         {
             if (_pinning || _page == null || _page.IsDisposed) return;
             int x = PlaceX;
-            int want = Math.Max(NaturalWidth, UiScale.For(_page, 200));
+            // the list as designed, narrowed when the window shows less (a larger
+            // screen scale): its arrow stays in sight rather than cut off at the edge
+            int design = UiScale.For(this, 420);
+            bool narrowable = _hasMotion && MotionPick.Visible;
+            int full = narrowable ? NaturalWidth - MotionPick.Width + design : NaturalWidth;
+            int want = Math.Max(full, UiScale.For(_page, 200));
             int room = _page.ClientSize.Width - x - UiScale.For(_page, 4);
             int w = Math.Max(UiScale.For(_page, 200), Math.Min(want, room));
+            if (narrowable)
+            {
+                int pick = Math.Max(UiScale.For(this, 160), design - Math.Max(0, full - w));
+                if (MotionPick.Width != pick) MotionPick.Width = pick;
+            }
             if (Left == x && Width == w) return;
             _pinning = true;
             // Without laying the page out again: a layout scrolls a page back to

@@ -648,7 +648,113 @@ namespace Kaban.UI.Controls
             bool design = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
             Width = design ? Math.Max(Width, x) : x;
             AlignHeaders();
+            // in a frame scrolled sideways: the name where the frame keeps it
+            var frame = AxisPageFrame.OfBody(Parent);
+            if (frame != null) frame.StickNames();
         }
+
+        // ---- the axis name stays at the left -----------------------------------------
+
+        /// <summary>
+        /// THE AXIS NAME STAYS AT THE LEFT while the rows are scrolled sideways (6
+        /// October: "so the user could see the parameters owned by whom"): it is
+        /// moved along its row by as much as the rows are scrolled, and drawn over
+        /// the columns passing under it - and over the margin left of it, so no
+        /// scrolled column shows beside it. <paramref name="scrolled"/>: how far the
+        /// rows are scrolled (0: as built); <paramref name="margin"/>: where the row
+        /// starts, unscrolled, in what scrolls.
+        /// </summary>
+        public void StickName(int scrolled, int margin)
+        {
+            if (_axis.Parent != this) return;
+            Stick(_axis, scrolled, margin, BackColor.A == 255 ? BackColor : (Parent != null ? Parent.BackColor : Color.White), fullHeight: true);
+        }
+
+        /// <summary>
+        /// A label of the Axis column on this row's terms - its name, or a heading in
+        /// a panel placed as the row is (the Axis Monitor's) - kept at the left as
+        /// the name is.
+        /// </summary>
+        public void Stick(Label l, int scrolled, int margin, Color back, bool fullHeight = false)
+        {
+            Point col;
+            if (l == null || !_columns.TryGetValue("Axis", out col)) return;
+            int home = UiScale.For(this, col.X), w = UiScale.For(this, col.Y);
+            scrolled = Math.Max(0, scrolled);
+            int left = scrolled == 0 ? home : Math.Max(0, scrolled - margin);
+            // into the room before the next column: the name not against the field passing under
+            int after = scrolled > 0 ? UiScale.For(this, Gap + GroupGap / 2) : 0;
+            int right = home + scrolled + w + after;
+            // The row's name over the whole height of the row while it covers the
+            // columns (a field is taller than the name), as built when not.
+            int top = l.Top, height = l.Height;
+            if (fullHeight)
+            {
+                if (scrolled > 0) { top = 0; height = Height; }
+                else { top = UiScale.For(this, 8); height = UiScale.For(this, 24); }
+            }
+            SetStuck(l, left, right, top, height, home + scrolled - left, after, back, scrolled > 0);
+        }
+
+        /// <summary>
+        /// The Axis heading in the frame's heading (whose content follows the rows
+        /// sideways): kept over the names. <paramref name="margin"/>: where the top
+        /// row starts, unscrolled.
+        /// </summary>
+        internal void StickHeading(Control host, int scrolled, int margin)
+        {
+            Point col;
+            if (host == null || !_columns.TryGetValue("Axis", out col)) return;
+            var l = host.Controls.OfType<Label>().FirstOrDefault(x => (x.Tag as string) == HeadingTag + "Axis");
+            if (l == null || !l.Visible) return;
+            int home = margin + UiScale.For(this, col.X), w = UiScale.For(this, col.Y);
+            scrolled = Math.Max(0, scrolled);
+            int left = scrolled == 0 ? home : scrolled;
+            int after = scrolled > 0 ? UiScale.For(this, Gap + GroupGap / 2) : 0;
+            SetStuck(l, left, home + scrolled + w + after, l.Top, l.Height, home + scrolled - left, after, host.BackColor, scrolled > 0);
+        }
+
+        private sealed class StuckState { public bool On; }
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, StuckState> _stuck =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Label, StuckState>();
+
+        private static void SetStuck(Label l, int left, int right, int top, int height, int pad, int padRight, Color back, bool stuck)
+        {
+            StuckState st;
+            if (!_stuck.TryGetValue(l, out st))
+            {
+                st = new StuckState();
+                _stuck.Add(l, st);
+                // a thin rule at its right while the columns pass under it, as a table's frozen column
+                l.Paint += (s, e) =>
+                {
+                    if (!st.On) return;
+                    using (var pen = new Pen(UiStyle.GridRule)) e.Graphics.DrawLine(pen, l.Width - 1, 0, l.Width - 1, l.Height);
+                };
+            }
+            bool changed = st.On != stuck;
+            st.On = stuck;
+            var padding = new Padding(Math.Max(0, pad), l.Padding.Top, Math.Max(0, padRight), l.Padding.Bottom);
+            if (l.Padding != padding) l.Padding = padding;
+            int width = Math.Max(1, right - left);
+            if (l.Left != left || l.Width != width || l.Top != top || l.Height != height) l.SetBounds(left, top, width, height);
+            // opaque over what passes under it
+            if (stuck && back.A == 255 && l.BackColor != back) l.BackColor = back;
+            if (stuck && l.Parent != null && l.Parent.Controls.GetChildIndex(l) != 0) l.BringToFront();
+            if (changed) l.Invalidate();
+        }
+
+        /// <summary>True while a label of the Axis column draws its rule (the rows scrolled sideways, tests).</summary>
+        public static bool IsStuck(Label l)
+        {
+            StuckState st;
+            return l != null && _stuck.TryGetValue(l, out st) && st.On;
+        }
+
+        /// <summary>True when the name is moved along its row - the rows scrolled sideways (tests).</summary>
+        internal bool NameStuck { get { return _axis.Padding.Left > 0 || _axis.Left > 0; } }
+        /// <summary>The name's label (tests).</summary>
+        internal Label NameLabel { get { return _axis; } }
 
         // ---- the PLC axis items ----------------------------------------------------
 
@@ -810,6 +916,7 @@ namespace Kaban.UI.Controls
         public string ColumnOf(Control child)
         {
             if (child == null || child.Parent != this) return null;
+            if (child == _axis) return _columns.ContainsKey("Axis") ? "Axis" : null;   // moved along when scrolled
             int x = child.Left + child.Width / 2;
             foreach (var kv in _columns)
             {
@@ -1119,8 +1226,10 @@ namespace Kaban.UI.Controls
                 l.Visible = true;
                 l.SetBounds(rowX + UiScale.For(this, kv.Value.X), style.Top, UiScale.For(this, kv.Value.Y), style.Height);
                 l.Text = LanguageManager.GetString("MotH_" + item.Key, ShortHeading(item));
-                UiStyle.Tips().SetToolTip(l, LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")");
+                Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, LanguageManager.GetString(item.TitleKey, item.Title) + " (" + item.Ref + ")");
             }
+            // laid out afresh: the Axis heading where the frame keeps it, if scrolled
+            if (frame != null) frame.StickNames();
         }
 
         /// <summary>A column's heading in English: the name, shortened where it is long.</summary>
@@ -1220,6 +1329,8 @@ namespace Kaban.UI.Controls
                 int x = Math.Max(0, items.Right - offset);
                 motion.SetBounds(x + offset, top, UiScale.For(page, 640), UiScale.For(page, 36));
                 motion.Pin(page, x, Math.Max(0, items.Left - offset));
+                // its place taken from the items list, with room between (at any screen scale)
+                motion.StandRightOf(items);
 
                 // The page as a table: once it is shown, its heading (these lists and
                 // the column names) stays while the rows scroll under it.

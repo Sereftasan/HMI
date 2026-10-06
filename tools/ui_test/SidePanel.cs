@@ -89,7 +89,7 @@ class SP {
         Check("  the admin's pages: Inputs / Outputs, the Axis Monitor, the machine's Order, Notes and feedback, the PLC Monitor, in that order",
               string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,PlcMonitor", string.Join(",", buttons.Keys));
         var tips = (ToolTip)Get(form, "_sideTips");
-        Check("  each says what it opens", buttons.All(kv => (tips.GetToolTip(kv.Value) ?? "").Length > 0), tips.GetToolTip(buttons["PlcMonitor"]));
+        Check("  each says what it opens", buttons.All(kv => (Kaban.UI.Controls.UiStyle.TipOf(kv.Value) ?? "").Length > 0), Kaban.UI.Controls.UiStyle.TipOf(buttons["PlcMonitor"]));
 
         Console.WriteLine("--- the PLC Monitor beside the page, not over it ---");
         int pageWidth = content.Width;

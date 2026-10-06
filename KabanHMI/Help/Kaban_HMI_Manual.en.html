@@ -163,8 +163,7 @@ when you rest the pointer on it, says <b>why</b> (not signed in, level too low, 
 on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the pointer, like every control's border. An Admin also sees how each is wired.</p>
 
 <h3 id="tables">Tables</h3>
-<p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue,
-and a thin frame all round in the headings' grey.
+<p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue.
 <b>Right-click a heading</b> for the columns' menu:</p>
 <ul>
  <li>Tick the columns to show (the menu stays open while you tick; the last one cannot be taken off).</li>
@@ -177,7 +176,8 @@ and a thin frame all round in the headings' grey.
 <p>A table opens with its columns as they were left. Drag a heading to move its column, its border to size it; a click on a heading sorts on it where the table can be sorted.</p>
 
 <h3 id="keys">Keys</h3>
-<p>The program's buttons can be pressed from the keyboard. A button's tooltip says its key on its <b>first line</b>, what it does on the second.</p>
+<p>The program's buttons can be pressed from the keyboard. A button's tooltip says its key on its <b>first line</b>, what it does on the second
+(rest the pointer on the button for a moment).</p>
 <table>
 <tr><th>Key</th><th>Button</th></tr>
 <tr><td><kbd>Del</kbd></td><td>&#128465; delete (the user, the row, the shift...) &ndash; asked first where it always was</td></tr>
@@ -263,9 +263,9 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
 <tr><td>Axis Monitor</td><td><span class="lvl l0">None</span></td><td>Every axis's <b>position</b> and <b>motor current</b>, drawn as on the
   <i>Axis Settings</i> rows, grouped by machine. Nothing is added to it by hand: the axes are the rows of the machines' Axis Settings pages,
   each listed while its row's visibility conditions are met. Watching only.
-  An <span class="lvl l3">Admin</span> has the Axis Settings page's two lists above it (<i>PLC axis items</i>, <i>Motion monitor</i>, his own choice
+  An <span class="lvl l3">Admin</span> has the Axis Settings page's two lists above it (<i>PLC axis items</i>, <i>Motion monitor items</i>, his own choice
   for the monitor): with anything but <i>Torque monitor</i> ticked, each axis is shown as its Axis Settings row with what is ticked &ndash; the position always,
-  <i>Manual movement</i> adds the jog buttons &ndash; the headings above the rows, staying there while the rows scroll. The settings are <b>shown, not entered</b> (they are entered on the page),
+  <i>Manual movement</i> adds the jog buttons &ndash; the headings above the rows, staying there while the rows scroll, the axis names at the left while they scroll sideways. The settings are <b>shown, not entered</b> (they are entered on the page),
   the reference activation is shown, not ticked, and there is no Calibrate button. Everyone else sees the monitor as above.</td></tr>
 <tr><td>Notes and feedback</td><td><span class="lvl l0">None</span> (writing: signed in)</td><td>Comments, translations and helpers on any control, and the
   feedback file (<a href="#notes">3b</a>).</td></tr>
@@ -605,25 +605,26 @@ cannot change are grey. Just under the list the chosen one's <b>account</b>; on 
      <ul>
       <li>With a <b>load encoder value</b> (<code>LoadEncoderValueAddress</code>, a load-side encoder such as a linear scale), the position's tooltip
           starts with it and with the <b>difference</b>, in the axis's unit to its last count (<i>+0.0012 mm</i> for 12 counts at a divisor of 10000).
-          The servo motor's own encoder position is the module's <i>Real current value</i> on the Motion monitor (below).</li>
+          The servo motor's own encoder position is the module's <i>Real current value</i> in Motion monitor items (below).</li>
       <li><b>PLC axis items</b>, the list at the top of the page: which groups of the row to show &ndash; <i>Manual movement</i> (the jog buttons and the position),
           <i>Torque monitor</i> (the current), <i>Axis setting parameters</i> (min, max, reference, calibration, calibrate), <i>Reference activation</i> (Ref),
           <i>Reference sensor - encoder Z pulse distance</i>, <i>Alarm codes</i>, <i>Travel per revolution</i>, <i>Backlash</i> &ndash; only those some row of the
           page has. <i>All</i>, the last line of the list (nothing ticked), is the whole row. The page is a <b>table</b>: the two lists and the column
-          names stay at the top while the rows scroll up and down under them (a page with more axes than the screen shows), and follow the rows sideways. The ticks are the signed-in user's own; hiding is the screen's
+          names stay at the top while the rows scroll up and down under them (a page with more axes than the screen shows), and follow the rows sideways;
+          the <b>axis names stay at the left</b> while the rows scroll sideways (the columns pass under them), so a value's axis is always in sight. The ticks are the signed-in user's own; hiding is the screen's
           only &ndash; the machine, the manual pages' axis units and the HMI's own alarms keep every address. The page is laid out again <b>once, when
-          the list closes</b> (as for the Motion monitor's list), not at every tick; with fewer items the rows are narrower and the page scrolls only as
+          the list closes</b> (as for Motion monitor items), not at every tick; with fewer items the rows are narrower and the page scrolls only as
           far as its last column.</li>
       <li><b>Travel per revolution</b> and <b>backlash</b>, when given (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>), are the
           last columns, in the axis's unit to its last count (<i>0.0150 mm</i>), entered the same way.</li>
       <li>A row may have <b>visibility conditions</b> (an axis a machine may not have fitted): hidden while they are not met, here and on the Axis Monitor.</li>
       <li>When the PLC asks for a reference (the <b>home request</b>, <code>HomeRequestAddress</code>), the <b>Ref</b> box's border <b>blinks red</b>:
           that is the axis to reference.</li>
-      <li><b>Motion monitor.</b> An axis driven by a simple motion module has the module's number (<code>MotionNumber</code>: 1 for U1) and its
+      <li><b>Motion monitor items.</b> An axis driven by a simple motion module has the module's number (<code>MotionNumber</code>: 1 for U1) and its
           axis on it (<code>MotionAxisIndex</code>: 1&ndash;8) &ndash; with <code>PlcNumber</code> and <code>HMIAxisIndex</code> (the number the manual pages'
-          axis units use), the row's <i>Device</i> properties, set in the designer. Then the page has <i>Motion monitor</i> beside <i>PLC axis items</i>:
+          axis units use), the row's <i>Device</i> properties, set in the designer. Then the page has <i>Motion monitor items</i> beside <i>PLC axis items</i>, with room between them:
           tick what to see (<i>None</i>, the last line, for none), and each one is a column at the end of every row, read straight from the
-          module's buffer memory (<code>U1\G2406</code> &hellip;). The Motion monitor list <b>stays in sight</b> while the page is scrolled sideways:
+          module's buffer memory (<code>U1\G2406</code> &hellip;). The Motion monitor items list <b>stays in sight</b> while the page is scrolled sideways:
           it scrolls with the page until it reaches the page's left side, and stays there while the page scrolls on - so the module's values can
           be ticked where their columns are (<i>PLC axis items</i> scrolls away with the columns it hides).
           <ul>
@@ -641,7 +642,7 @@ cannot change are grey. Just under the list the chosen one's <b>account</b>; on 
                speed limit, acceleration and deceleration time, home address and speed.</li>
           </ul>
           The ticks are the signed-in user's own (nobody signed in: the panel's). The values are displays, on light grey. A row not on a module leaves the columns empty, so they stay in line;
-          a page with no axis on a module has no Motion monitor. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
+          a page with no axis on a module has no Motion monitor items. Each heading's tooltip gives the whole name and its number in the module's manual (<i>Md.31 b3</i>).</li>
      </ul></li>
  <li><b>Drive codes</b> (the last three columns): <b>axis alarm</b> and <b>axis warning</b> as the motion module's manual prints them (<code>1904H</code>),
      <b>servo alarm</b> as the amplifier's display shows it (<code>16.3</code> = alarm 16, detail 3). A code that is not zero <b>blinks</b> and is a link

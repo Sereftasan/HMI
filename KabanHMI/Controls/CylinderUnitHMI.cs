@@ -1348,7 +1348,7 @@ namespace Kaban.UI.Controls
                     tip = string.Join("\r\n", new[] { errA ? _helpA.TipText : "", errB ? _helpB.TipText : "" }
                                                    .Where(t => !string.IsNullOrEmpty(t))) +
                           "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help");
-                UiStyle.Tips().SetToolTip(_help, tip.Trim());
+                Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _help, tip.Trim());
             }
             LayoutBadges();
         }

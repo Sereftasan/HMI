@@ -136,7 +136,7 @@ namespace Kaban.UI.Settings
             });
 
             _search.Width = 190;
-            _tips.SetToolTip(_search, LanguageManager.GetString("Log_SearchTip",
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _search, LanguageManager.GetString("Log_SearchTip",
                 "Every word must appear, in any case: 'D210 admin' finds admin's entries about D210."));
             _search.TextChanged += (s, e) => { _typing.Stop(); _typing.Start(); };
             _typing.Tick += (s, e) => { _typing.Stop(); ApplyFilter(true); };
@@ -155,7 +155,7 @@ namespace Kaban.UI.Settings
             _plc.Width = 190;
             _plc.Items.Add(new Choice(null, LanguageManager.GetString("Log_AllPlcs", "All controllers")));
             _plc.SelectedIndex = 0;
-            _tips.SetToolTip(_plc, LanguageManager.GetString("Log_PlcTip",
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _plc, LanguageManager.GetString("Log_PlcTip",
                 "Only the entries about this controller: its writes, its connection losses and returns."));
             _plc.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
 
@@ -189,7 +189,7 @@ namespace Kaban.UI.Settings
                     _feeds.Add(feed);
                 }
             _source.SelectedIndex = 0;
-            _tips.SetToolTip(_source, LanguageManager.GetString("Log_SourceTip",
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _source, LanguageManager.GetString("Log_SourceTip",
                 "HMI: what was done on the HMI. A machine: its own log - its states, events and alarms."));
             _source.SelectedIndexChanged += (s, e) => { if (!_setting) ApplyFilter(true); };
             _onFeed = (s, e) =>
@@ -203,7 +203,7 @@ namespace Kaban.UI.Settings
             _live.AutoSize = true;
             _live.Checked = true;
             _live.Margin = new Padding(10, 8, 3, 3);
-            _tips.SetToolTip(_live, LanguageManager.GetString("Log_LiveTip",
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _live, LanguageManager.GetString("Log_LiveTip",
                 "Adds new entries as they are written, while the period runs up to now."));
             _live.CheckedChanged += (s, e) => { if (_live.Checked) Reload(); };
 

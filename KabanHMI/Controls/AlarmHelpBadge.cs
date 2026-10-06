@@ -305,7 +305,7 @@ namespace Kaban.UI.Controls
             }
             TipText = text;
             if (Watcher) return;
-            UiStyle.Tips().SetToolTip(this, (text.Length > 0 ? text + "\r\n" : "") +
+            UiStyle.SetTip(UiStyle.Tips(), this, (text.Length > 0 ? text + "\r\n" : "") +
                                             LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
         }
 

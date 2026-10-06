@@ -138,7 +138,7 @@ namespace Kaban.UI.Screens
             _picking = on;
             _pick.Text = on ? "\uD83D\uDC46  " + T("Nts_PickOn", "Picking: on") : "\u270B  " + T("Nts_PickOff", "Picking: off");
             _pick.BackColor = on ? Color.FromArgb(218, 232, 250) : Color.White;
-            _tips.SetToolTip(_pick, on
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, _pick, on
                 ? T("Nts_TipPickOn", "A tap or a click on a control of the page shows it here - it does not operate it. Tap here to use the page again.")
                 : T("Nts_TipPickOff", "The page works as usual. Tap here to pick controls again."));
             _status.Text = on ? T("Nts_StatusPick", "Tap or click a control of the page.") : T("Nts_StatusOff", "The page works as usual.");
@@ -320,7 +320,7 @@ namespace Kaban.UI.Screens
             };
             b.FlatAppearance.BorderColor = Color.FromArgb(160, 166, 176);
             if (click != null) b.Click += click;
-            if (!string.IsNullOrEmpty(tip)) _tips.SetToolTip(b, tip);
+            if (!string.IsNullOrEmpty(tip)) Kaban.UI.Controls.UiStyle.SetTip(_tips, b, tip);
             row.Controls.Add(b);
             return b;
         }
@@ -582,7 +582,7 @@ namespace Kaban.UI.Screens
             {
                 _lastExport = NotesStore.Export(FeedbackFolder, _panelName());
                 _status.Text = T("Nts_Exported", "Feedback file made") + ": " + _lastExport;
-                _tips.SetToolTip(_status, _lastExport);
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, _status, _lastExport);
             }
             catch (Exception ex)
             {

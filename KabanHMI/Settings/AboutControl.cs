@@ -87,7 +87,7 @@ namespace Kaban.UI.Settings
                 _status.Location = new Point(10, open.Bottom + 8);
             };
 
-            UiStyle.Tips().SetToolTip(open, LanguageManager.GetString("Tip_OpenManual",
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), open, LanguageManager.GetString("Tip_OpenManual",
                 "Opens the operator and engineer manual in the browser, in the language on screen."));
         }
 

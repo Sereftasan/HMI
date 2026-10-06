@@ -179,7 +179,7 @@ namespace Kaban.UI.Forms
                 if (e.Button != MouseButtons.Left || fitOnRelease) return;
                 BeginInvoke(new Action(FitSidePanel));
             };
-            _sideTips.SetToolTip(_sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
+            Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
             // The width kept: back to it when the window has room again (it opens
             // narrower before the window is maximised).
             SizeChanged += (s, e) => KeepSideWidth();
@@ -212,7 +212,7 @@ namespace Kaban.UI.Forms
             b.FlatAppearance.MouseOverBackColor = Color.White;
             b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, Color.FromArgb(50, 56, 66));
             b.Click += click;
-            _sideTips.SetToolTip(b, tip);
+            Kaban.UI.Controls.UiStyle.SetTip(_sideTips, b, tip);
             return b;
         }
 
@@ -250,7 +250,7 @@ namespace Kaban.UI.Forms
                 var hover = UiStyle.HoverBorder(b);
                 b.Paint += (s, e) => PaintSideButton(e.Graphics, b, page, hover());
                 b.Click += (s, e) => ToggleSidePage(page.Key);
-                _sideTips.SetToolTip(b, page.Title);
+                Kaban.UI.Controls.UiStyle.SetTip(_sideTips, b, page.Title);
                 // Placed at factor 1 and scaled as it is added (see UiScale).
                 b.Location = new Point((SideBarWidth - SideButtonSize) / 2, y);
                 y += SideButtonSize + 6;
@@ -312,7 +312,7 @@ namespace Kaban.UI.Forms
             if (_sideBar == null) return;
             _sideBar.Width = UiScale.For(_sideBar, _sideBarFolded ? SideBarFoldedWidth : SideBarWidth);
             _sideBarList.Visible = !_sideBarFolded;
-            _sideTips.SetToolTip(_sideBarToggle, _sideBarFolded ? T("Tip_SideBarShow", "Show the side bar")
+            Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideBarToggle, _sideBarFolded ? T("Tip_SideBarShow", "Show the side bar")
                                                                : T("Tip_SideBarHide", "Fold the side bar to the edge"));
             _sideBarToggle.Invalidate();
         }
@@ -794,7 +794,7 @@ namespace Kaban.UI.Forms
             b.MouseLeave += (s, e) => { hover = false; b.Invalidate(); };
             b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, closing && hover ? Color.White : Ink);
             b.Click += click;
-            _tips.SetToolTip(b, tip);
+            Kaban.UI.Controls.UiStyle.SetTip(_tips, b, tip);
             return b;
         }
 

@@ -663,9 +663,7 @@ namespace Kaban.UI.Controls
         {
             if (grid == null) return;
             grid.BackgroundColor = Color.White;
-            // A thin frame all round, in the headings' grey: a table no longer
-            // ends in nothing at its sides and foot.
-            FrameGrid(grid);
+            grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             grid.GridColor = GridRule;
             // The rows and letters as View Preferences say (normal: 26 px, the body font).
@@ -693,86 +691,6 @@ namespace Kaban.UI.Controls
             grid.RowHeadersDefaultCellStyle.BackColor = GridHeadBack;
             grid.RowHeadersDefaultCellStyle.SelectionBackColor = GridSelection;
             foreach (DataGridViewRow r in grid.Rows) if (r.Height < rowHeight && !r.IsNewRow) r.Height = rowHeight;
-        }
-
-        // ---- the frame round a table --------------------------------------------------
-
-        /// <summary>The colour of a table's frame: its headings' background.</summary>
-        public static Color GridFrame { get { return GridHeadBack; } }
-
-        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<DataGridView, GridFrameWindow> _frames =
-            new System.Runtime.CompilerServices.ConditionalWeakTable<DataGridView, GridFrameWindow>();
-
-        /// <summary>True when the table has the program's frame (tests).</summary>
-        public static bool HasGridFrame(DataGridView grid)
-        {
-            GridFrameWindow w;
-            return grid != null && _frames.TryGetValue(grid, out w);
-        }
-
-        private static bool OnWindows { get { return Environment.OSVersion.Platform == PlatformID.Win32NT; } }
-
-        /// <summary>
-        /// A one-pixel frame round the table, outside its scroll bars, in the
-        /// headings' colour: Windows' single border (FixedSingle), drawn over in that
-        /// colour whenever Windows draws it (WM_NCPAINT).
-        /// </summary>
-        private static void FrameGrid(DataGridView grid)
-        {
-            // Elsewhere than Windows (Mono, the tests) the single border is drawn
-            // black and not through WM_NCPAINT: there the frame is painted inside.
-            grid.BorderStyle = OnWindows ? BorderStyle.FixedSingle : BorderStyle.None;
-            GridFrameWindow w;
-            if (_frames.TryGetValue(grid, out w)) return;
-            w = new GridFrameWindow(grid);
-            _frames.Add(grid, w);
-            if (!OnWindows)
-                grid.Paint += (s, e) =>
-                {
-                    using (var pen = new Pen(GridFrame)) e.Graphics.DrawRectangle(pen, 0, 0, grid.Width - 1, grid.Height - 1);
-                };
-        }
-
-        private sealed class GridFrameWindow : NativeWindow
-        {
-            private const int WM_NCPAINT = 0x0085;
-            private readonly DataGridView _grid;
-
-            public GridFrameWindow(DataGridView grid)
-            {
-                _grid = grid;
-                // Windows draws the border in WM_NCPAINT; elsewhere (Mono) its own way
-                if (!OnWindows) return;
-                if (grid.IsHandleCreated) AssignHandle(grid.Handle);
-                grid.HandleCreated += (s, e) => { if (Handle == IntPtr.Zero) AssignHandle(grid.Handle); };
-                grid.HandleDestroyed += (s, e) => ReleaseHandle();
-            }
-
-            protected override void WndProc(ref Message m)
-            {
-                base.WndProc(ref m);
-                if (m.Msg == WM_NCPAINT && _grid.BorderStyle == BorderStyle.FixedSingle) Draw();
-            }
-
-            private void Draw()
-            {
-                IntPtr dc = IntPtr.Zero;
-                try
-                {
-                    dc = GetWindowDC(Handle);
-                    if (dc == IntPtr.Zero) return;
-                    using (var g = Graphics.FromHdc(dc))
-                    using (var pen = new Pen(GridFrame))
-                        g.DrawRectangle(pen, 0, 0, _grid.Width - 1, _grid.Height - 1);
-                }
-                catch { }
-                finally { if (dc != IntPtr.Zero) ReleaseDC(Handle, dc); }
-            }
-
-            [System.Runtime.InteropServices.DllImport("user32.dll")]
-            private static extern IntPtr GetWindowDC(IntPtr hWnd);
-            [System.Runtime.InteropServices.DllImport("user32.dll")]
-            private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
         }
 
         // ---- the tables' size, as View Preferences say -------------------------------
@@ -1658,6 +1576,118 @@ namespace Kaban.UI.Controls
         /// silent on the panel. Shown explicitly (ToolTip.Show), a tip depends on
         /// nothing but the pointer resting on the control.
         /// </summary>
+        private sealed class OwnTip { public string Text = ""; }
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, OwnTip> _ownTips =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, OwnTip>();
+
+        /// <summary>
+        /// A control's tooltip, in place of <c>tips.SetToolTip(c, text)</c>: SHOWN BY
+        /// THE CONTROL ITSELF (HoverTip) once the pointer rests on it, with a text
+        /// that may be set again at any time (a language change, a state).
+        ///
+        /// WHY NOT SetToolTip: a registration lives in the tooltip's own window,
+        /// which WinForms ties to one of the program's windows; when that window
+        /// closes - the keypad, a dialog, a side window - the registrations go
+        /// with it. The numeric fields, lamps and checkboxes were moved off it for
+        /// that; the toolbar buttons (and the caption bar's, the side bar's) still
+        /// used it and were silent on the panel (6 October): no tooltip, so no key
+        /// to learn from it either.
+        /// </summary>
+        public static void SetTip(ToolTip tips, Control c, string text)
+        {
+            if (c == null) return;
+            OwnTip own;
+            if (!_ownTips.TryGetValue(c, out own))
+            {
+                own = new OwnTip();
+                _ownTips.Add(c, own);
+                var t = tips ?? Tips();
+                // never registered as well: two of them would fight over one window
+                try { if (!string.IsNullOrEmpty(t.GetToolTip(c))) t.SetToolTip(c, null); } catch { }
+                HoverTip(t, c, () => own.Text);
+                // greyed out it gets no pointer: its parent shows the tip for it
+                EventHandler toParent = (s, e) => { if (c.Parent != null) DisabledTips(t, c.Parent); };
+                c.ParentChanged += toParent;
+                toParent(c, EventArgs.Empty);
+            }
+            own.Text = text ?? "";
+        }
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, object> _disabledTipHosts =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, object>();
+
+        /// <summary>
+        /// THE TIP OF A GREYED-OUT BUTTON: a disabled control gets no pointer at all
+        /// (Windows gives it to the window under it), so its own HoverTip never
+        /// starts - the floppy before anything was changed, the bin on your own
+        /// account. Its parent watches the pointer instead and, once it rests on
+        /// such a child, shows the child's tip: what the button does and its key
+        /// are worth knowing before it can be pressed.
+        /// </summary>
+        private static void DisabledTips(ToolTip tips, Control host)
+        {
+            object unused;
+            if (host == null || _disabledTipHosts.TryGetValue(host, out unused)) return;
+            _disabledTipHosts.Add(host, host);
+            Timer timer = null;
+            Control over = null;
+            bool shown = false;
+            Point nowhere = new Point(int.MinValue, int.MinValue), at = nowhere;
+            Action putDown = () =>
+            {
+                if (timer != null) timer.Stop();
+                if (!shown) return;
+                shown = false;
+                try { tips.Hide(host); } catch { }
+            };
+            host.MouseMove += (s, e) =>
+            {
+                Control child;
+                try { child = host.GetChildAtPoint(e.Location, GetChildAtPointSkip.Invisible); } catch { child = null; }
+                bool greyed = child != null && !child.Enabled && HasOwnTip(child);
+                if (!greyed) { if (over != null) { putDown(); over = null; at = nowhere; } return; }
+                if (child != over) { putDown(); over = child; at = nowhere; }
+                if (shown || e.Location == at) return;
+                at = e.Location;
+                if (timer == null)
+                {
+                    timer = new Timer();
+                    timer.Tick += (s2, e2) =>
+                    {
+                        timer.Stop();
+                        var c = over;
+                        if (c == null || shown || c.Enabled || c.IsDisposed || host.IsDisposed || !host.IsHandleCreated || !c.Visible) return;
+                        OwnTip own;
+                        string text = _ownTips.TryGetValue(c, out own) ? own.Text : "";
+                        if (string.IsNullOrEmpty(text)) return;
+                        try
+                        {
+                            LastShownTip = text;
+                            LastShownOn = host;          // the window it is shown on (the magnified tip's size)
+                            LastShownFor = c;
+                            tips.Show(text, host, at.X + 2, at.Y + (host.Cursor ?? Cursors.Default).Size.Height - 8, TooltipAutoPopMs);
+                            shown = true;
+                        }
+                        catch { LastShownTip = null; LastShownOn = null; LastShownFor = null; }
+                    };
+                }
+                timer.Stop();
+                timer.Interval = TooltipDelayMs;
+                timer.Start();
+            };
+            host.MouseLeave += (s, e) => { putDown(); over = null; at = nowhere; };
+            host.MouseDown += (s, e) => putDown();
+            host.VisibleChanged += (s, e) => { if (!host.Visible) putDown(); };
+            host.Disposed += (s, e) => { if (timer != null) { timer.Stop(); timer.Dispose(); timer = null; } };
+        }
+
+        /// <summary>True when the control's tip is its own (SetTip).</summary>
+        public static bool HasOwnTip(Control c)
+        {
+            OwnTip own;
+            return c != null && _ownTips.TryGetValue(c, out own);
+        }
+
         public static void HoverTip(ToolTip tips, Control c, Func<string> build)
         {
             if (tips == null || c == null || build == null) return;
@@ -1702,6 +1732,7 @@ namespace Kaban.UI.Controls
                             // tooltip has none registered for the control.
                             LastShownTip = text;
                             LastShownOn = c;
+                            LastShownFor = c;
                             // Below the pointer, as Windows places its own tips.
                             tips.Show(text, c, at.X + 2, at.Y + (c.Cursor ?? Cursors.Default).Size.Height - 8, TooltipAutoPopMs);
                             shown = true;
@@ -1722,6 +1753,8 @@ namespace Kaban.UI.Controls
         /// <summary>The last tip HoverTip showed, and on which control (the magnified tip's size; tests).</summary>
         internal static string LastShownTip;
         internal static Control LastShownOn;
+        /// <summary>Whose tip it was: the control itself, or a greyed-out button its parent showed it for.</summary>
+        internal static Control LastShownFor;
 
         /// <summary>Standard emoji tool button: 44x32, rounded, tooltip carries the label.</summary>
         /// <summary>
@@ -1770,7 +1803,7 @@ namespace Kaban.UI.Controls
             // its usual key (the bin Delete, the floppy Ctrl+S ...), first in its tooltip
             var keys = Kaban.UI.Helpers.Shortcuts.Usual(emoji);
             if (keys != Keys.None) Kaban.UI.Helpers.Shortcuts.Set(b, keys, tips, tip);
-            else if (tips != null) tips.SetToolTip(b, tip);
+            else if (tips != null) SetTip(tips, b, tip);
             if (onClick != null) b.Click += onClick;
             return b;
         }
@@ -1984,7 +2017,7 @@ namespace Kaban.UI.Controls
             b.FlatAppearance.BorderColor = Color.FromArgb(205, 210, 217);
             b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, colour);
             if (onClick != null) b.Click += onClick;
-            if (tips != null && !string.IsNullOrEmpty(tip)) tips.SetToolTip(b, tip);
+            if (tips != null && !string.IsNullOrEmpty(tip)) UiStyle.SetTip(tips, b, tip);
             return b;
         }
     }

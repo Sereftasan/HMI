@@ -43,12 +43,12 @@ class KS {
         Console.WriteLine("--- the tooltip: the key first, then what it does ---");
         var tips = UiStyle.Tips();
         var bin = UiStyle.ToolButton("\uD83D\uDDD1", "Delete the selected user", tips);
-        Check("a bin button: \"Del\" on the first line", tips.GetToolTip(bin) == "Del\nDelete the selected user" && Shortcuts.Of(bin) == Keys.Delete,
-              tips.GetToolTip(bin).Replace("\n", " | "));
+        Check("a bin button: \"Del\" on the first line", Kaban.UI.Controls.UiStyle.TipOf(bin) == "Del\nDelete the selected user" && Shortcuts.Of(bin) == Keys.Delete,
+              Kaban.UI.Controls.UiStyle.TipOf(bin).Replace("\n", " | "));
         var save = UiStyle.ToolButton("\uD83D\uDCBE", "Save the settings", tips);
-        Check("  the floppy: Ctrl+S", tips.GetToolTip(save) == "Ctrl+S\nSave the settings");
+        Check("  the floppy: Ctrl+S", Kaban.UI.Controls.UiStyle.TipOf(save) == "Ctrl+S\nSave the settings");
         var plain = UiStyle.ToolButton("\u2699", "Make the program", tips);
-        Check("  a button without a usual key: as before", tips.GetToolTip(plain) == "Make the program" && Shortcuts.Of(plain) == Keys.None);
+        Check("  a button without a usual key: as before", Kaban.UI.Controls.UiStyle.TipOf(plain) == "Make the program" && Shortcuts.Of(plain) == Keys.None);
         Check("  the arrows as on the keys", Shortcuts.Text(Keys.Alt | Keys.Left) == "Alt+\u2190" && Shortcuts.Text(Keys.Control | Keys.Shift | Keys.C) == "Ctrl+Shift+C");
         LanguageManager.ChangeLanguage("DE");
         Check("  in German as German keyboards say: Strg+S, Entf", Shortcuts.Text(Keys.Control | Keys.S) == "Strg+S" && Shortcuts.Text(Keys.Delete) == "Entf",
@@ -98,28 +98,72 @@ class KS {
         Shortcuts.Set(shown, Keys.Control | Keys.F, tips, "Find", dispatch: false);
         gridA.Focus(); Pump(30);
         Check("a key the window handles itself: shown, not pressed here", !KeyDown(form, Keys.Control | Keys.F) && offPress == 0 &&
-              tips.GetToolTip(shown) == "Ctrl+F\nFind");
+              Kaban.UI.Controls.UiStyle.TipOf(shown) == "Ctrl+F\nFind");
         var editable = new DataGridView { Bounds = new Rectangle(10, 230, 300, 120), AllowUserToDeleteRows = true, AllowUserToAddRows = false };
         editable.Columns.Add("b", "B"); editable.Rows.Add("y");
         pageA.Controls.Add(editable);
         editable.Focus(); Pump(30);
         Check("Delete in a table whose rows the user deletes: the table's", !KeyDown(form, Keys.Delete) && deleted == 1);
 
+        Console.WriteLine("--- the tooltip ON THE SCREEN (6 October: \"there is no tooltip on them still\") ---");
+        Check("the bin's tip is its own, not registered with the shared tooltip (those went silent after a keypad or a dialog)",
+              UiStyle.HasOwnTip(del) && string.IsNullOrEmpty(tips.GetToolTip(del)), "registered: '" + tips.GetToolTip(del) + "'");
+        Func<Control, string> rest = c =>
+        {
+            Reset();
+            typeof(Control).GetMethod("OnMouseEnter", Any).Invoke(c, new object[] { EventArgs.Empty });
+            typeof(Control).GetMethod("OnMouseMove", Any).Invoke(c, new object[] { new MouseEventArgs(MouseButtons.None, 0, 12, 9, 0) });
+            Pump(1300);
+            var shownOn = (Control)typeof(UiStyle).GetField("LastShownOn", Any).GetValue(null);
+            var text = (string)typeof(UiStyle).GetField("LastShownTip", Any).GetValue(null);
+            typeof(Control).GetMethod("OnMouseLeave", Any).Invoke(c, new object[] { EventArgs.Empty });
+            return shownOn == c ? text : null;
+        };
+        var onScreen = rest(del);
+        Check("  the pointer rests on the bin: the tip comes, the key on its first line", onScreen == "Del\nDelete", (onScreen ?? "none").Replace("\n", " | "));
+        using (var dlg = new Form()) { dlg.Show(); Pump(30); dlg.Close(); }
+        Pump(30);
+        onScreen = rest(saveA);
+        Check("  after a dialog came and went: the floppy's still comes", onScreen == "Ctrl+S\nSave A", (onScreen ?? "none").Replace("\n", " | "));
+        Shortcuts.Set(saveA, Keys.Control | Keys.S, tips, "Save A, changed");
+        onScreen = rest(saveA);
+        Check("  a tip set again (a language, a state): the new text, still shown", onScreen == "Ctrl+S\nSave A, changed" && string.IsNullOrEmpty(tips.GetToolTip(saveA)),
+              (onScreen ?? "none").Replace("\n", " | "));
+        // greyed out (the floppy before a change, the bin on your own account): Windows gives the
+        // pointer to the window under it - the page shows the button's tip for it
+        saveB.Enabled = false;
+        Reset();
+        typeof(Control).GetMethod("OnMouseMove", Any).Invoke(pageB, new object[] { new MouseEventArgs(MouseButtons.None, 0, saveB.Left + 12, saveB.Top + 9, 0) });
+        Pump(1300);
+        var forB = (Control)typeof(UiStyle).GetField("LastShownFor", Any).GetValue(null);
+        var tipB = (string)typeof(UiStyle).GetField("LastShownTip", Any).GetValue(null);
+        Check("  a greyed-out button: its tip all the same, shown by its page", forB == saveB && tipB == "Ctrl+S\nSave B", (tipB ?? "none").Replace("\n", " | "));
+        typeof(Control).GetMethod("OnMouseLeave", Any).Invoke(pageB, new object[] { EventArgs.Empty });
+        Reset();
+        typeof(Control).GetMethod("OnMouseMove", Any).Invoke(pageB, new object[] { new MouseEventArgs(MouseButtons.None, 0, 300, 300, 0) });
+        Pump(1300);
+        Check("  the page's empty part: no tip", typeof(UiStyle).GetField("LastShownTip", Any).GetValue(null) == null);
+        saveB.Enabled = true;
+        var glyphButton = UiStyle.IconButton((g, r, en) => { }, "Copy", "Copy the rows", tips);
+        Check("  a drawn button and a button set by hand: their own tips too",
+              UiStyle.HasOwnTip(glyphButton) && UiStyle.HasOwnTip(shown) && string.IsNullOrEmpty(tips.GetToolTip(shown)));
+
         Console.WriteLine("--- on the program's pages ---");
         SecurityManager.Login("admin", SecurityLevel.Admin);
         var users = new UsersPreferencesControl();
         Check("Users and Preferences: the bin Del, the floppy Ctrl+S, + Insert, the curl F5",
-              tips.GetToolTip(users.DeleteButton).StartsWith("Del\n") && tips.GetToolTip(users.SaveButton).StartsWith("Ctrl+S\n") &&
-              tips.GetToolTip(users.NewButton).StartsWith("Insert\n"), tips.GetToolTip(users.DeleteButton).Replace("\n", " | "));
+              Kaban.UI.Controls.UiStyle.TipOf(users.DeleteButton).StartsWith("Del\n") && Kaban.UI.Controls.UiStyle.TipOf(users.SaveButton).StartsWith("Ctrl+S\n") &&
+              Kaban.UI.Controls.UiStyle.TipOf(users.NewButton).StartsWith("Insert\n") && UiStyle.HasOwnTip(users.DeleteButton),
+              Kaban.UI.Controls.UiStyle.TipOf(users.DeleteButton).Replace("\n", " | "));
         users.Dispose();
         var monitor = new Kaban.UI.Forms.SimulationMonitorForm();
         var monTips = (ToolTip)typeof(Kaban.UI.Forms.SimulationMonitorForm).GetField("_tips", Any).GetValue(monitor);
-        Func<string, Control> monByTip = start => Tree(monitor).FirstOrDefault(c => c is Button && (monTips.GetToolTip(c) ?? "").Contains(start));
+        Func<string, Control> monByTip = start => Tree(monitor).FirstOrDefault(c => c is Button && (Kaban.UI.Controls.UiStyle.TipOf(c) ?? "").Contains(start));
         var copy = monByTip("Copy the selected rows");
-        Check("the PLC Monitor: Ctrl+C on the first line, the text without it", copy != null && monTips.GetToolTip(copy) == "Ctrl+C\nCopy the selected rows",
-              copy == null ? "none" : monTips.GetToolTip(copy).Replace("\n", " | "));
+        Check("the PLC Monitor: Ctrl+C on the first line, the text without it", copy != null && Kaban.UI.Controls.UiStyle.TipOf(copy) == "Ctrl+C\nCopy the selected rows",
+              copy == null ? "none" : Kaban.UI.Controls.UiStyle.TipOf(copy).Replace("\n", " | "));
         var monDel = monByTip("Delete: the selected rows");
-        Check("  its bin: Del (pressed by the monitor itself, in its table)", monDel != null && monTips.GetToolTip(monDel).StartsWith("Del\n"));
+        Check("  its bin: Del (pressed by the monitor itself, in its table)", monDel != null && Kaban.UI.Controls.UiStyle.TipOf(monDel).StartsWith("Del\n"));
         monitor.Dispose();
 
         Console.WriteLine("--- translations ---");
@@ -132,6 +176,8 @@ class KS {
         Console.WriteLine(fail == 0 ? "\nKEY SHORTCUTS ALL PASS" : "\nKEY SHORTCUTS " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }
+
+    static void Reset() { foreach (var f in new[] { "LastShownTip", "LastShownOn", "LastShownFor" }) typeof(UiStyle).GetField(f, Any).SetValue(null, null); }
 
     static System.Collections.Generic.IEnumerable<Control> Tree(Control c) {
         foreach (Control k in c.Controls) { yield return k; foreach (var d in Tree(k)) yield return d; }

@@ -135,7 +135,7 @@ namespace Kaban.UI.Forms
                 closeButton.FlatAppearance.BorderSize = 0;
                 closeButton.Paint += (s, e) => MainForm.DrawCloseGlyph(e.Graphics, closeButton.ClientRectangle, Color.FromArgb(50, 56, 66));
                 closeButton.Click += (s, e) => CloseEmbedded();
-                _tips.SetToolTip(closeButton, T("Tip_FindClose", "Close Find (Esc)"));
+                Kaban.UI.Controls.UiStyle.SetTip(_tips, closeButton, T("Tip_FindClose", "Close Find (Esc)"));
                 top.Controls.Add(closeButton);
             }
             // The search line's own width: the caption, the box at its usual
