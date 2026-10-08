@@ -130,13 +130,10 @@ namespace Kaban.UI.Screens
             // gets ignored during the minutes when it matters most.
             // The code as it is shown: "M840.2" for an alarm the HMI raised itself
             // (its device and which signal failed), the alarm's code otherwise.
-            AddColumn("AlarmCode", "Code", 138, "ShownCode");
-            AddColumn("Description", "Alarm", 575);
-            AddColumn("Severity", "Severity", 138);
-            AddColumn("TriggerTime", "Time", 200);
-            // The date and time as View Preferences say (it was Windows' own), and again when they change.
-            UiStyle.DateColumn(_grid.Columns["TriggerTime"]);
-            AddHelpColumn();
+            // THE SAME COLUMNS AS THE HISTORY (8 October): the alarm's code, its own text,
+            // what failed (Cause), severity, time, the PLC device (Admin), its help.
+            AddAlarmColumns(_grid, _baseHeaders);
+            AddHelpColumnTo(_grid);
 
             // Fitted AFTER every column exists, and on the grid that has them. The
             // earlier call sat in the history-grid builder, so the main table was
@@ -188,11 +185,13 @@ namespace Kaban.UI.Screens
 
         /// <summary>
         /// Everything that HAS been active, newest first, with the time it appeared.
-        /// Read-only: history is a record, not something to edit.
+        /// Read-only: history is a record, not something to edit. The same columns
+        /// as the list of active alarms, its help too (8 October).
         /// </summary>
-        private static UserControl BuildHistory(string moduleId)
+        private UserControl BuildHistory(string moduleId)
         {
             var host = new UserControl { Dock = DockStyle.Fill, BackColor = Color.White };
+            var list = new System.ComponentModel.BindingList<AlarmItem>();
             var grid = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -201,17 +200,19 @@ namespace Kaban.UI.Screens
                 RowHeadersVisible = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
-                AllowUserToResizeColumns = true
+                AllowUserToResizeColumns = true,
+                AutoGenerateColumns = false,
+                Name = "historyGrid"
             };
             grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 5);
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Time", HeaderText = "Time", Width = 160 });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Code", HeaderText = "Code", Width = 110 });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Alarm", HeaderText = "Alarm", Width = 460 });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Severity", HeaderText = "Severity", Width = 138 });
+            var headers = new Dictionary<string, string>();
+            AddAlarmColumns(grid, headers);
+            AddHelpColumnTo(grid);
             Kaban.UI.Controls.UiStyle.EnableAutoFit(grid);
             // The history table was left out: it is the one people scroll through
             // looking for a pattern, so sorting and hiding matter there most.
             Kaban.UI.Controls.UiStyle.EnableTableTools(grid, "AlarmHistory");
+            grid.DataSource = list;
 
             var empty = new Label
             {
@@ -222,9 +223,10 @@ namespace Kaban.UI.Screens
                 Text = LanguageManager.GetString("Alarm_NoHistory", "No alarms have been recorded yet.")
             };
 
+            // newest first, or as a heading click sorts it
+            var sortKeys = new List<KeyValuePair<string, bool>>();
             Action fill = () =>
             {
-                grid.Rows.Clear();
                 // This machine's history only - the same rule as the active list.
                 var items = new List<AlarmItem>(AlarmManager.History.Where(a =>
                 {
@@ -233,11 +235,46 @@ namespace Kaban.UI.Screens
                     return dot <= 0 || string.Equals(a.AlarmCode.Substring(0, dot), moduleId, StringComparison.OrdinalIgnoreCase);
                 }));
                 items.Reverse();                                  // newest first
-                foreach (var a in items)
-                    grid.Rows.Add(Kaban.Core.Helpers.ViewPreferences.DateTimeText(a.TriggerTime),
-                                  a.ShownCode, a.Description, a.Severity);
-                empty.Visible = grid.Rows.Count == 0;
-                grid.Visible = grid.Rows.Count > 0;
+                if (sortKeys.Count > 0)
+                {
+                    // stable: equal ones stay newest first
+                    var order = items.Select((x, i) => new KeyValuePair<AlarmItem, int>(x, i)).ToList();
+                    order.Sort((p1, p2) =>
+                    {
+                        foreach (var key in sortKeys)
+                        {
+                            int r = CompareBy(key.Key, p1.Key, p2.Key);
+                            if (!key.Value) r = -r;
+                            if (r != 0) return r;
+                        }
+                        return p1.Value.CompareTo(p2.Value);
+                    });
+                    items = order.Select(p => p.Key).ToList();
+                }
+                list.RaiseListChangedEvents = false;
+                list.Clear();
+                foreach (var it in items) list.Add(it);
+                list.RaiseListChangedEvents = true;
+                list.ResetBindings();
+                empty.Visible = list.Count == 0;
+                grid.Visible = list.Count > 0;
+            };
+            grid.ColumnHeaderMouseClick += (s, e) =>
+            {
+                var column = grid.Columns[e.ColumnIndex].Name;
+                if (column == "Help") return;
+                int existing = sortKeys.FindIndex(k => k.Key == column);
+                bool ascending = existing == 0 ? !sortKeys[0].Value : (existing > 0 ? sortKeys[existing].Value : true);
+                if (existing >= 0) sortKeys.RemoveAt(existing);
+                sortKeys.Insert(0, new KeyValuePair<string, bool>(column, ascending));
+                if (sortKeys.Count > 4) sortKeys.RemoveRange(4, sortKeys.Count - 4);
+                fill();
+                foreach (DataGridViewColumn c in grid.Columns)
+                {
+                    string plain;
+                    if (!headers.TryGetValue(c.Name, out plain)) continue;
+                    c.HeaderText = c.Name == column ? plain + (ascending ? "  \u25B2" : "  \u25BC") : plain;
+                }
             };
 
             var tips = Kaban.UI.Controls.UiStyle.Tips();
@@ -249,14 +286,7 @@ namespace Kaban.UI.Screens
                 {
                     using (var dlg = new SaveFileDialog { Filter = "CSV (*.csv)|*.csv", FileName = "alarm_history.csv" })
                         if (dlg.ShowDialog(host.FindForm()) == DialogResult.OK)
-                            try
-                            {
-                                var sb = new System.Text.StringBuilder("Time;Code;Alarm;Severity\r\n");
-                                foreach (DataGridViewRow r in grid.Rows)
-                                    sb.AppendFormat("{0};{1};{2};{3}\r\n", r.Cells[0].Value, r.Cells[1].Value,
-                                                    r.Cells[2].Value, r.Cells[3].Value);
-                                System.IO.File.WriteAllText(dlg.FileName, sb.ToString());
-                            }
+                            try { System.IO.File.WriteAllText(dlg.FileName, HistoryCsv(list)); }
                             catch { }
                 }));
 
@@ -269,15 +299,80 @@ namespace Kaban.UI.Screens
             return host;
         }
 
+        /// <summary>The history as a file: the table's columns (the Address for an Admin only).</summary>
+        public static string HistoryCsv(IEnumerable<AlarmItem> items)
+        {
+            bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
+            Func<string, string> c = v => (v ?? "").Replace(";", ",").Replace("\r", " ").Replace("\n", " ");
+            var sb = new System.Text.StringBuilder("Time;Code;Alarm;Cause;Severity" + (admin ? ";Address" : "") + "\r\n");
+            foreach (var a in items)
+                sb.Append(c(Kaban.Core.Helpers.ViewPreferences.DateTimeText(a.TriggerTime))).Append(';')
+                  .Append(c(a.ListCode)).Append(';').Append(c(a.Text)).Append(';').Append(c(a.Cause)).Append(';')
+                  .Append(a.Severity).Append(admin ? ";" + c(a.AddressShown) : "").Append("\r\n");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// THE ALARM COLUMNS, the list's and its history's alike (8 October: they had
+        /// drifted apart): Code - the alarm's code, the same kind for every alarm;
+        /// Alarm - its own text; Cause - what failed, for an alarm the HMI raised
+        /// itself (it was put after the text); Severity; Time; Address - the PLC
+        /// device and, for a generated alarm, which failure (M840.2) - for an Admin only.
+        /// </summary>
+        private static void AddAlarmColumns(DataGridView grid, Dictionary<string, string> headers)
+        {
+            Action<string, string, int, string> add = (name, caption, width, prop) =>
+            {
+                var text = LanguageManager.GetString("Alarm_Col_" + name, caption);
+                grid.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = name, DataPropertyName = prop, HeaderText = text, Width = width,
+                    SortMode = DataGridViewColumnSortMode.Programmatic
+                });
+                headers[name] = text;
+            };
+            add("AlarmCode", "Code", 190, "ListCode");
+            add("Description", "Alarm", 420, "Text");
+            add("Cause", "Cause", 320, "Cause");
+            add("Severity", "Severity", 110, "Severity");
+            add("TriggerTime", "Time", 170, "TriggerTime");
+            add("Address", "Address", 110, "AddressShown");
+            // The date and time as View Preferences say (it was Windows' own), and again when they change.
+            UiStyle.DateColumn(grid.Columns["TriggerTime"]);
+            // the PLC device: an internal device, for an Admin only - and again at every sign-in
+            Action admin = () =>
+            {
+                var col = grid.Columns["Address"];
+                if (col != null && !grid.IsDisposed) col.Visible = SecurityManager.HasAccess(SecurityLevel.Admin);
+            };
+            admin();
+            EventHandler onUser = (s, e) =>
+            {
+                if (grid.IsDisposed) return;
+                if (grid.InvokeRequired) { try { grid.BeginInvoke(admin); } catch { } return; }
+                admin();
+            };
+            SecurityManager.UserChanged += onUser;
+            grid.Disposed += (s, e) => SecurityManager.UserChanged -= onUser;
+            // after the table's kept layout is put back (it would show it again)
+            grid.HandleCreated += (s, e) => { try { grid.BeginInvoke(admin); } catch { } };
+        }
+
+        /// <summary>The alarm on a row of either grid.</summary>
+        private static AlarmItem ItemAt(DataGridView grid, int rowIndex)
+        {
+            return rowIndex >= 0 && rowIndex < grid.Rows.Count ? grid.Rows[rowIndex].DataBoundItem as AlarmItem : null;
+        }
+
         /// <summary>
         /// A button per row that opens the documents for that alarm.
         ///
         /// A column rather than a menu or a detail pane: the operator is standing
         /// at a stopped machine, and the shortest path from "this alarm" to "what
-        /// do I do" is a button on the same line. Rows with no document show
-        /// nothing, so the column does not promise help that is not there.
+        /// do I do" is a button on the same line. Every alarm has one since 8
+        /// October: its AI prompt is the list's last entry.
         /// </summary>
-        private void AddHelpColumn()
+        private void AddHelpColumnTo(DataGridView grid)
         {
             // A TEXT CELL THAT OPENS A LIST, not a grid combo.
             //
@@ -297,27 +392,27 @@ namespace Kaban.UI.Screens
                 SortMode = DataGridViewColumnSortMode.NotSortable
             };
             col.DefaultCellStyle.Padding = new Padding(0, 0, 18, 0);   // room for the arrow
-            _grid.Columns.Add(col);
-            _baseHeaders["Help"] = col.HeaderText;
+            grid.Columns.Add(col);
+            if (grid == _grid) _baseHeaders["Help"] = col.HeaderText;
 
             // What the cell shows: the first document, and how many more there are.
-            _grid.CellFormatting += (s, e) =>
+            grid.CellFormatting += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
-                if (_grid.Columns[e.ColumnIndex].Name != "Help") return;
-                var docs = HelpDocumentsFor(e.RowIndex);
+                if (grid.Columns[e.ColumnIndex].Name != "Help") return;
+                var docs = HelpDocumentsFor(ItemAt(grid, e.RowIndex));
                 // every alarm has at least its AI prompt (the list's last entry)
                 e.Value = docs.Count == 0 ? AiPromptCaption :
                           docs[0].Title + (docs.Count > 1 ? "  (+" + (docs.Count - 1) + ")" : "");
                 e.FormattingApplied = true;
             };
 
-            // The dropdown arrow - only on rows that actually have something to open.
-            _grid.CellPainting += (s, e) =>
+            // The dropdown arrow.
+            grid.CellPainting += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
-                if (_grid.Columns[e.ColumnIndex].Name != "Help") return;
-                if (!(_grid.Rows[e.RowIndex].DataBoundItem is AlarmItem)) return;
+                if (grid.Columns[e.ColumnIndex].Name != "Help") return;
+                if (ItemAt(grid, e.RowIndex) == null) return;
 
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All);
                 var r = e.CellBounds;
@@ -331,33 +426,29 @@ namespace Kaban.UI.Screens
             };
 
             // CellClick fires in a read-only grid; editing never did.
-            _grid.CellClick += (s, e) =>
+            grid.CellClick += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
-                if (_grid.Columns[e.ColumnIndex].Name != "Help") return;
-                ShowHelpFor(e.RowIndex, e.ColumnIndex);
+                if (grid.Columns[e.ColumnIndex].Name != "Help") return;
+                ShowHelpFor(grid, e.RowIndex, e.ColumnIndex);
             };
 
             // A hand over a cell that opens something, an arrow everywhere else.
-            _grid.CellMouseEnter += (s, e) =>
+            grid.CellMouseEnter += (s, e) =>
             {
                 bool clickable = e.RowIndex >= 0 && e.ColumnIndex >= 0 &&
-                                 _grid.Columns[e.ColumnIndex].Name == "Help" &&
-                                 _grid.Rows[e.RowIndex].DataBoundItem is AlarmItem;
-                _grid.Cursor = clickable ? Cursors.Hand : Cursors.Default;
+                                 grid.Columns[e.ColumnIndex].Name == "Help" && ItemAt(grid, e.RowIndex) != null;
+                grid.Cursor = clickable ? Cursors.Hand : Cursors.Default;
             };
-            _grid.MouseLeave += (s, e) => _grid.Cursor = Cursors.Default;
+            grid.MouseLeave += (s, e) => grid.Cursor = Cursors.Default;
         }
 
-        /// <summary>Every document configured for the alarm on a row.</summary>
-        private List<TroubleshootingCatalog.HelpDocument> HelpDocumentsFor(int rowIndex)
+        /// <summary>Every document configured for an alarm (of either list).</summary>
+        private List<TroubleshootingCatalog.HelpDocument> HelpDocumentsFor(AlarmItem item)
         {
-            if (rowIndex < 0 || rowIndex >= _grid.Rows.Count) return new List<TroubleshootingCatalog.HelpDocument>();
-
             // The grid holds RAISED alarms (AlarmItem); what the alarm is linked to
             // lives on its DEFINITION. Its unit's manual comes from the unit on the
             // machine's pages, found at start-up; its own helper files follow.
-            var item = _grid.Rows[rowIndex].DataBoundItem as AlarmItem;
             if (item == null) return new List<TroubleshootingCatalog.HelpDocument>();
 
             // CACHED BRIEFLY. This is asked by CellFormatting, CellPainting and
@@ -365,31 +456,30 @@ namespace Kaban.UI.Screens
             // probes the disk several times per document (language variants).
             // Two seconds is short enough that a document copied in by hand shows
             // up almost at once, and long enough that painting never touches disk.
-            string key = (item.AlarmCode ?? "") + "|" + LanguageManager.CurrentLanguage;
+            // Per alarm (the history has the same code many times, each its own time).
             CachedHelp hit;
             int now = Environment.TickCount;
-            if (_helpCache.TryGetValue(key, out hit) && now - hit.Tick < HelpCacheMs) return hit.Docs;
+            if (_helpCache.TryGetValue(item, out hit) && hit.Language == LanguageManager.CurrentLanguage && now - hit.Tick < HelpCacheMs) return hit.Docs;
 
             var docs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(item);
-            if (_helpCache.Count > 200) _helpCache.Clear();     // bounded
-            _helpCache[key] = new CachedHelp { Tick = now, Docs = docs };
+            if (_helpCache.Count > 400) _helpCache.Clear();     // bounded
+            _helpCache[item] = new CachedHelp { Tick = now, Docs = docs, Language = LanguageManager.CurrentLanguage };
             return docs;
         }
 
         private const int HelpCacheMs = 2000;
-        private sealed class CachedHelp { public int Tick; public List<TroubleshootingCatalog.HelpDocument> Docs; }
-        private readonly Dictionary<string, CachedHelp> _helpCache = new Dictionary<string, CachedHelp>();
+        private sealed class CachedHelp { public int Tick; public string Language; public List<TroubleshootingCatalog.HelpDocument> Docs; }
+        private readonly Dictionary<AlarmItem, CachedHelp> _helpCache = new Dictionary<AlarmItem, CachedHelp>();
 
         /// <summary>Opens the document list under the cell, like a combo.</summary>
-        private void ShowHelpFor(int rowIndex, int columnIndex)
+        private void ShowHelpFor(DataGridView grid, int rowIndex, int columnIndex)
         {
-            var docs = HelpDocumentsFor(rowIndex);
-            var alarm = rowIndex >= 0 && rowIndex < _grid.Rows.Count ? _grid.Rows[rowIndex].DataBoundItem as AlarmItem : null;
+            var alarm = ItemAt(grid, rowIndex);
             if (alarm == null) return;
-
+            var docs = HelpDocumentsFor(alarm);
             var menu = BuildHelpMenu(docs, OpenDocument, () => Kaban.UI.Helpers.AlarmAiPrompt.Build(alarm, null, docs), this);
-            var cell = _grid.GetCellDisplayRectangle(columnIndex, rowIndex, false);
-            UiStyle.ShowPopup(menu, _grid, new Point(cell.Left, cell.Bottom));
+            var cell = grid.GetCellDisplayRectangle(columnIndex, rowIndex, false);
+            UiStyle.ShowPopup(menu, grid, new Point(cell.Left, cell.Bottom));
         }
 
         /// <summary>
@@ -445,19 +535,6 @@ namespace Kaban.UI.Screens
         {
             // One way to open help, shared with the "?" on the units.
             Kaban.UI.Helpers.AlarmHelpLinks.Open(this, doc);
-        }
-
-        private void AddColumn(string prop, string caption, int width, string dataProperty = null)
-        {
-            _grid.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = prop,
-                DataPropertyName = dataProperty ?? prop,
-                HeaderText = LanguageManager.GetString("Alarm_Col_" + prop, caption),
-                Width = width,
-                SortMode = DataGridViewColumnSortMode.Programmatic
-            });
-            _baseHeaders[prop] = LanguageManager.GetString("Alarm_Col_" + prop, caption);
         }
 
         /// <summary>Click a header to sort; click again to reverse.</summary>
@@ -553,14 +630,16 @@ namespace Kaban.UI.Screens
             UpdateEmpty();
         }
 
-        private static int CompareBy(string column, AlarmItem a, AlarmItem b)
+        internal static int CompareBy(string column, AlarmItem a, AlarmItem b)
         {
             switch (column)
             {
-                case "AlarmCode": return string.Compare(a.ShownCode, b.ShownCode, StringComparison.OrdinalIgnoreCase);
+                case "AlarmCode": return string.Compare(a.ListCode, b.ListCode, StringComparison.OrdinalIgnoreCase);
+                case "Cause": return string.Compare(a.Cause, b.Cause, StringComparison.OrdinalIgnoreCase);
+                case "Address": return string.Compare(a.AddressShown, b.AddressShown, StringComparison.OrdinalIgnoreCase);
                 case "Severity": return a.Severity.CompareTo(b.Severity);
                 case "TriggerTime": return a.TriggerTime.CompareTo(b.TriggerTime);
-                default: return string.Compare(a.Description, b.Description, StringComparison.OrdinalIgnoreCase);
+                default: return string.Compare(a.Text, b.Text, StringComparison.OrdinalIgnoreCase);
             }
         }
 

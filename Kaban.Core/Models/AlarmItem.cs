@@ -38,6 +38,46 @@ namespace Kaban.Core.Models
         /// <summary>The cylinder side ("A" / "B") a generated movement alarm is about, or "".</summary>
         public string Side { get; set; } = "";
 
+        /// <summary>A generated alarm's code without what failed - its device's alarm code, else the unit's or axis's ("FA2010.Axis_16").</summary>
+        public string GroupCode { get; set; } = "";
+
+        // ---- the alarm lists' columns (8 October: the list and its history alike) ----
+
+        /// <summary>
+        /// The Code column: the alarm's code, the same kind for every alarm - a PLC
+        /// bit's (FA2010.Robot_X_Error), and a generated one's device's or unit's
+        /// (what failed is the Cause, its device and sub-number the Address).
+        /// </summary>
+        public string ListCode
+        {
+            get
+            {
+                if (!Generated) return AlarmCode;
+                if (!string.IsNullOrEmpty(BaseCode)) return BaseCode;
+                return !string.IsNullOrEmpty(GroupCode) ? GroupCode : AlarmCode;
+            }
+        }
+
+        /// <summary>The Alarm column: the alarm's own text, without what failed.</summary>
+        public string Text { get { return Kaban.Core.Helpers.LanguageManager.GetString(TranslationKey, TranslationKey); } }
+
+        /// <summary>The Cause column: what failed, in the language on show ("" for a PLC bit's alarm).</summary>
+        public string Cause
+        {
+            get
+            {
+                string detail = Detail;
+                if (DetailText != null) try { detail = DetailText() ?? Detail; } catch { detail = Detail; }
+                return detail ?? "";
+            }
+        }
+
+        /// <summary>The Address column (Admin): the PLC device, and for a generated alarm which failure (M840.2, M801.16.3).</summary>
+        public string AddressShown
+        {
+            get { return Generated ? ShownCode : (Address ?? ""); }
+        }
+
         /// <summary>The code the lists show: "M840.2" for a generated alarm, the alarm's code otherwise.</summary>
         public string ShownCode
         {

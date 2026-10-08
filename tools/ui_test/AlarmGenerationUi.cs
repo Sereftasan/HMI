@@ -139,16 +139,37 @@ class AGU {
         var screen = new Kaban.UI.Screens.MachineAlarmScreen(null) { Dock = DockStyle.None, Bounds = new Rectangle(0, 100, 1000, 480) };
         host.Controls.Add(screen); Application.DoEvents();
         var ag = Field<DataGridView>(screen, "_grid");
-        Check("its code: M844.2", ag.Rows.Count == 1 && Convert.ToString(ag.Rows[0].Cells["AlarmCode"].FormattedValue) == "M844.2",
-              ag.Rows.Count == 0 ? "" : Convert.ToString(ag.Rows[0].Cells["AlarmCode"].FormattedValue));
-        var listDocs = (List<TC.HelpDocument>)screen.GetType().GetMethod("HelpDocumentsFor", Any).Invoke(screen, new object[] { 0 });
+        // 8 October: "Alarm and alarm history pages have different columns ... both table show same values. Then we
+        // add 'Address' value to both of the tables ... (seen by just admin level users). Also the new HMI created alarms
+        // has extra info after the alarm ... another column to keep and show this data ... 'Cause' or something"
+        Func<DataGridView, int, string, string> cell = (gr, r, c) => Convert.ToString(gr.Rows[r].Cells[c].FormattedValue);
+        Check("its code: the alarm's own (T.Clamp, as its PLC bit's), the text alone, what failed in Cause",
+              ag.Rows.Count == 1 && cell(ag, 0, "AlarmCode") == "T.Clamp" && cell(ag, 0, "Description") == "Front clamping did not clamp" &&
+              cell(ag, 0, "Cause").Length > 0 && !cell(ag, 0, "Description").Contains(cell(ag, 0, "Cause")),
+              ag.Rows.Count == 0 ? "" : cell(ag, 0, "AlarmCode") + " | " + cell(ag, 0, "Description") + " | " + cell(ag, 0, "Cause"));
+        Check("  the columns: Code, Alarm, Cause, Severity, Time, Address, Help",
+              string.Join(",", ag.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Select(c => c.Name)) ==
+              "AlarmCode,Description,Cause,Severity,TriggerTime,Address,Help");
+        Check("  the Address (M844.2) for an Admin only: Maintenance does not see it", !ag.Columns["Address"].Visible && cell(ag, 0, "Address") == "M844.2");
+        SecurityManager.Login("boss", SecurityLevel.Admin); Application.DoEvents();
+        Check("  an Admin does", ag.Columns["Address"].Visible);
+        SecurityManager.Login("m", SecurityLevel.Maintenance); Application.DoEvents();
+        var listDocs = (List<TC.HelpDocument>)screen.GetType().GetMethod("HelpDocumentsFor", Any).Invoke(screen, new object[] { ag.Rows[0].DataBoundItem });
         Check("  its help: that failure's step-by-step page first, then the manual (not the PLC bit's step-by-step)",
               listDocs.Count >= 2 && listDocs[0].StepByStep && listDocs[0].Failure == 2 && listDocs[0].Title.Contains("Front Clamping") &&
               !listDocs.Skip(1).Any(d => d.StepByStep) && listDocs[1].Valve != 0,
               string.Join(" | ", listDocs.Select(d => d.Title)));
-        var hist = (UserControl)screen.GetType().GetMethod("BuildHistory", Any).Invoke(null, new object[] { null });
+        var hist = (UserControl)screen.GetType().GetMethod("BuildHistory", Any).Invoke(screen, new object[] { null });
+        host.Controls.Add(hist); hist.Bounds = new Rectangle(0, 100, 1000, 300); Application.DoEvents();
         var hg = All(hist).OfType<DataGridView>().First();
-        Check("  the history too", hg.Rows.Cast<DataGridViewRow>().Any(r => Convert.ToString(r.Cells["Code"].Value) == "M844.2"));
+        int hr = hg.Rows.Cast<DataGridViewRow>().Select(r => r.Index).FirstOrDefault(i => cell(hg, i, "Address") == "M844.2");
+        Check("  the history: the same columns, the same values", string.Join(",", hg.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Select(c => c.Name)) ==
+              "AlarmCode,Description,Cause,Severity,TriggerTime,Address,Help" && cell(hg, hr, "AlarmCode") == "T.Clamp" &&
+              cell(hg, hr, "Cause") == cell(ag, 0, "Cause") && !hg.Columns["Address"].Visible && cell(hg, hr, "Help").StartsWith("Step by step"),
+              cell(hg, hr, "AlarmCode") + " | " + cell(hg, hr, "Help"));
+        var csv = Kaban.UI.Screens.MachineAlarmScreen.HistoryCsv(new[] { (AlarmItem)hg.Rows[hr].DataBoundItem });
+        Check("  its file the same (no Address below Admin)", csv.StartsWith("Time;Code;Alarm;Cause;Severity\r\n") && csv.Contains(";T.Clamp;Front clamping did not clamp;"), csv);
+        hist.Dispose();
 
         Console.WriteLine("--- it clamps after all ---");
         mem["M844"] = 0; mem["M240"] = 1; Scan(); Application.DoEvents();

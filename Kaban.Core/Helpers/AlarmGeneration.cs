@@ -582,6 +582,7 @@ namespace Kaban.Core.Helpers
                 Detail = Describe(sub, s),
                 DetailText = () => Describe(sub, s),
                 BaseCode = def != null ? def.AlarmCode : "",
+                GroupCode = baseCode,
                 Snapshot = snapshot,
                 Side = s.Side,
                 TriggerTime = now
@@ -641,6 +642,7 @@ namespace Kaban.Core.Helpers
                 Detail = AxisCodeHelp.Describe(kind, value),
                 DetailText = () => AxisCodeHelp.Describe(kind, value),
                 BaseCode = def != null ? def.AlarmCode : "",
+                GroupCode = baseCode,
                 TriggerTime = now
             };
             AlarmManager.RaiseGenerated(item);

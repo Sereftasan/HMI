@@ -403,13 +403,17 @@ class UAP {
               aGrid.Columns["TriggerTime"].DefaultCellStyle.Format);
         var item = new AlarmItem("T_HIST", "x", AlarmSeverity.Fault) { TriggerTime = new DateTime(2026, 10, 2, 14, 31, 7) };
         AlarmManager.RaiseGenerated(item);
-        var history = (UserControl)typeof(Kaban.UI.Screens.MachineAlarmScreen).GetMethod("BuildHistory", Any).Invoke(null, new object[] { null });
+        var history = (UserControl)typeof(Kaban.UI.Screens.MachineAlarmScreen).GetMethod("BuildHistory", Any).Invoke(alarms, new object[] { null });
+        var hForm = new Form { ClientSize = new Size(900, 300) };
+        hForm.Controls.Add(history); history.Dock = DockStyle.Fill; hForm.Show(); Pump(50);
         var hGrid = history.Controls.OfType<DataGridView>().First();
-        Func<string> first = () => hGrid.Rows.Cast<DataGridViewRow>().Select(r => (string)r.Cells[0].Value).FirstOrDefault(v => v != null && v.Contains("2026"));
+        // (the history is the alarm list's table since 8 October: its Time column formatted as the list's)
+        Func<string> first = () => hGrid.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells["TriggerTime"].FormattedValue)).FirstOrDefault(v => v != null && v.Contains("2026"));
         Check("the history: 02.10.2026 2:31:07 PM", first() == "02.10.2026 2:31:07 PM", first());
         ViewPreferences.SetMany(null, new Dictionary<string, string> { { ViewPreferences.DateFormat, null }, { ViewPreferences.TimeFormat, null } });
         Check("  written again when they change", first() == "2026-10-02 14:31:07", first());
         AlarmManager.ClearGenerated(item);
+        hForm.Close();
         history.Dispose();
         ViewPreferences.SetPanel(ViewPreferences.TimeFormat, "H12");
         var shift = new Kaban.UI.Dashboard.DashboardConfig.Shift { Start = TimeSpan.FromHours(6), End = TimeSpan.FromHours(14) };
