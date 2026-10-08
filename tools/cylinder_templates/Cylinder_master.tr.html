@@ -448,7 +448,8 @@ terminal = klemens
 <table class="out">
 <tr class="fault"><td class="when">Basınç düşük ya da hava yok.</td><td>Kapama vanasını açın, kompresörü kontrol edin, tıkanmış filtreyi değiştirin, kaçakları onarın. {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">Hava valfe geliyor, {{#Hoses}}{{>HoseDat}} {{/Hoses}}hiç çıkmıyor.</td><td>Sürgü sıkışmış: {{>ValvePlainAcc}} temizleyin ya da değiştirin; havayı kontrol edin (filtre, su, yağ). {{>AgainA8}}</td></tr>
-<tr class="fault"><td class="when">Hortum kaçırıyor, ezilmiş, çıkmış ya da hız ayar valfi kapalı.</td><td>Hortumu ya da rakoru onarın; hız ayar valfini işaretine kadar açın. {{>AgainA8}}</td></tr>
+<tr class="fault"><td class="when">Hortum kaçırıyor, ezilmiş ya da yerinden çıkmış.</td><td>Hortumu ya da rakorunu onarın ya da değiştirin. {{>AgainA8}}</td></tr>
+<tr class="fault"><td class="when">Hız ayar valfi kapalı (içinden az hava geçiyor ya da hiç geçmiyor).</td><td>Hız ayar valfini işaretine kadar açın. {{>AgainA8}}</td></tr>
 <tr class="go"><td class="when">Hava silindire ulaşıyor, silindir yine hareket etmiyor.</td><td>&rarr; <a class="go" href="#A8"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.2</p>
@@ -512,7 +513,9 @@ terminal = klemens
 {{/Pressure}}
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">Basınç düşüyor, hortum kaçırıyor ya da hız ayar valfi kapalı.</td><td>Beslemeyi ya da hortumu onarın; hız ayar valfini işaretine ayarlayın. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">Hareket sırasında basınç düşüyor.</td><td>Besleme hareket için yetersiz (tıkanmış filtre, regülatör, uzun ince hat): beslemeyi onarın. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">Hortum kaçırıyor.</td><td>Hortumu ya da rakorunu onarın ya da değiştirin. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">Hız ayar valfi kapalı.</td><td>Hız ayar valfini işaretine ayarlayın. {{>AgainB3}}</td></tr>
 <tr class="good"><td class="when">Hava normal.</td><td>&rarr; <a class="go" href="#B3"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.2</p>
@@ -648,13 +651,19 @@ terminal = klemens
 {{#Measure}}
 <li>Konumu ölçen: {{Measure}}.</li>
 {{/Measure}}
+{{#PosReader}}
+<li>Okuyan modül: <b>{{PosReader}}</b>.</li>
+{{/PosReader}}
 <li>{{>Look}} Yavaşça hareket ettirin: sayı düzgünce değişmeli ve <b>{{Move}}</b> hareketinin sonunda hedef penceresinin içinde durmalı.</li>
 </ul>
+<div class="pics">{{>DrawCylinder}}</div>
 <table class="out">
-<tr class="fault"><td class="when">Değişmiyor, ya da sıfır / en düşük değeri gösteriyor.</td><td>Sinyal kaybolmuş (4 mA'in altında): kopuk kablo ya da arızalı sensör &ndash; onarın ya da değiştirin. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Sıfır ya da en düşük değeri gösteriyor.</td><td>Sinyal kaybolmuş (4 mA'in altında): kopuk kablo, arızalı sensör ya da sensörün beslemesi yok &ndash; akımı ölçün{{#PosModule}} ({{PosModule}}{{#PosInput}} {{PosInput}}{{/PosInput}}){{/PosModule}}; onarın ya da değiştirin. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Silindir hareket ederken tek bir değerde duruyor.</td><td>Sensör pistonun mıknatısını görmüyor: kanalında kaymış ya da strokun dışında kalmış &ndash; strokun üzerine geri getirip sabitleyin. {{>AgainEnd}}</td></tr>
 <tr class="fault"><td class="when">En yüksek değerde kalıyor.</td><td>20 mA'in üstünde: kablolamada kısa devre &ndash; onarın. {{>AgainEnd}}</td></tr>
 <tr class="fault"><td class="when">Değişiyor, uç değerler yanlış.</td><td>Ölçekleme artık uymuyor: iki ucu yeniden öğretin, pencereyi kontrol edin. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">Zıplıyor ya da ters sayıyor.</td><td>Parazit (kablo güç kablolarının yanında, ekran topraklanmamış) ya da ters yön: kabloyu güç kablolarından ayrı döşeyin, ekranını topraklayın; ölçeklemeyi düzeltin. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Zıplıyor ya da titriyor.</td><td>Parazit: kablo güç kablolarının yanında ya da ekranı topraklanmamış &ndash; kabloyu ayrı döşeyin, ekranı bir uçtan topraklayın. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Ters sayıyor (azalması gerekirken artıyor).</td><td>İki uç ters sırayla öğretilmiş ya da sensör ters takılmış: iki ucu doğru sırayla yeniden öğretin. {{>AgainEnd}}</td></tr>
 <tr class="good"><td class="when">Hedefe ulaşıyor.</td><td>&rarr; <a class="go" href="#C2"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.7 (analog)</p>
@@ -685,11 +694,16 @@ terminal = klemens
 {{#Measure}}
 <li>Konumu ölçen: {{Measure}}.</li>
 {{/Measure}}
+{{#PosReader}}
+<li>Sayan: <b>{{PosReader}}</b>.</li>
+{{/PosReader}}
 <li>{{>Look}} Hareket ettirin (buton ya da manuel kumanda): değer düzgünce değişmeli: bir yönde artmalı, öbür yönde azalmalı.</li>
 </ul>
+<div class="pics">{{>DrawCylinder}}</div>
 <table class="out">
 <tr class="fault"><td class="when">Değişmiyor.</td><td>Enkoderin kablosu ya da konnektörü, enkoder, ya da kaplini: onarın, sabitleyin ya da değiştirin, sonra yeniden referanslayın. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">Ters sayıyor ya da kayıyor.</td><td>A/B kanalları yer değiştirmiş, kaplin kayıyor ya da parazit: kablolamayı ya da yönü düzeltin; ekranı topraklayın; kaplini sıkın. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Ters sayıyor (artması gerekirken azalıyor).</td><td>A ve B fazları yer değiştirmiş{{#PosInput}} ({{PosInput}}){{/PosInput}} ya da sayma yönü ters ayarlı: A ile B'yi değiştirin ya da yönü ayarlayın, sonra yeniden referanslayın. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">Kayıyor: dururken sayı değişiyor ya da birkaç hareketten sonra konum sapıyor.</td><td>Kaplin kayıyor ya da enkoderin bağlantısı gevşek: sıkın, sonra yeniden referanslayın. Kablodaki parazit de darbe kaybettirir ya da ekler &ndash; kabloyu güç kablolarından ayrı döşeyin, ekranını topraklayın. {{>AgainEnd}}</td></tr>
 <tr class="good"><td class="when">Doğru sayıyor.</td><td>&rarr; <a class="go" href="#C3"></a></td></tr>
 </table>
 <p class="man">kılavuz 1.7 (enkoder) (1), (2)</p>

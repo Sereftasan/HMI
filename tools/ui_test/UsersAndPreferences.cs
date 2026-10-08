@@ -144,13 +144,39 @@ class UAP {
         var grid = OnScreen(page.Users);
         var acc = OnScreen(page.AccountColumn);
         var prefs = OnScreen(page.PreferencesColumn);
-        Check("the user table top left, the account just under it", grid.Left == acc.Left && OnScreen(page.NameBox).Top > grid.Bottom &&
-              OnScreen(page.NameBox).Top - grid.Bottom < 70 && OnScreen(page.LevelBox).Bottom < acc.Bottom &&
-              OnScreen(page.NameBox).Right <= grid.Right + 2, grid + " " + OnScreen(page.NameBox));
+        // 8 October: "'Account' capture should be removed; 'User', 'Password' and 'Level' entries should move down
+        // until the end of maximum user list table end (and 40 pixels space in between them)"
+        Check("the user table top left, the account under where the table at its tallest (300) ends, 40 px below",
+              grid.Left == acc.Left && Math.Abs(OnScreen(page.NameBox).Top - (grid.Top + 300 + 1 + 40)) <= 2 &&
+              grid.Height < 300 && OnScreen(page.LevelBox).Bottom < acc.Bottom && OnScreen(page.NameBox).Right <= grid.Right + 2,
+              grid + " " + OnScreen(page.NameBox));
+        Check("  no 'Account' heading", !page.AccountColumn.Controls.Cast<Control>().SelectMany(c => c.Controls.Cast<Control>().Concat(new[] { c }))
+                                          .Any(c => c is Label && c.Visible && c.Text == "Account"));
+        var firstHead = page.PreferencesColumn.Controls.OfType<Label>().Where(l => l.Visible && l.Text.Length > 0).OrderBy(l => l.Top).FirstOrDefault();
+        Check("  the preferences from the very top: 'Preferences' first, no line naming the user above it",
+              firstHead != null && firstHead.Text == "Preferences" && firstHead.Top <= 10 &&
+              !page.PreferencesColumn.Controls.OfType<Label>().Any(l => l.Visible && l.Text.Contains("(me)")),
+              firstHead == null ? "none" : "'" + firstHead.Text + "' at " + firstHead.Top);
         Check("  the preferences on the right, from the top", prefs.Left >= acc.Right && prefs.Top <= grid.Top + 2 &&
               OnScreen(page.ReadFrom).Left > grid.Right && OnScreen(page.ReadFrom).Top < OnScreen(page.ComboOf(ViewPreferences.CaptionAlign)).Top,
               prefs + " " + acc);
         Check("no preview while no list is open", !page.Preview.Visible);
+        // scrolled down, another user picked, scrolled back: no band of white above the preferences
+        var body = (ScrollableControl)page.PreferencesColumn;
+        form.ClientSize = new Size(1260, 480);
+        Pump(80);
+        body.AutoScrollPosition = new Point(0, 400);
+        Pump(50);
+        bool wasScrolled = -body.AutoScrollPosition.Y > 100;
+        Pick(page, "op1");
+        body.AutoScrollPosition = new Point(0, 0);
+        Pump(50);
+        var head2 = page.PreferencesColumn.Controls.OfType<Label>().Where(l => l.Visible && l.Text.Length > 0).OrderBy(l => l.Top).First();
+        Check("scrolled down when another user is picked: scrolled back, the preferences still from the top", wasScrolled && head2.Top <= 10,
+              "'" + head2.Text + "' at " + head2.Top + " (scrolled " + wasScrolled + ")");
+        form.ClientSize = new Size(1260, 900);
+        Pump(80);
+        Pick(page, "admin");
         Pick(page, "ad3");
         Check("another Admin: seen, not changed (grey in the list, a note)",
               !page.ComboOf(ViewPreferences.DateFormat).Enabled && !page.PasswordBox.Enabled && !page.DeleteButton.Enabled &&

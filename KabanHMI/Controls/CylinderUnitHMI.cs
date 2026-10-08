@@ -37,7 +37,13 @@ namespace Kaban.UI.Controls
         Unspecified = 0,
         DoubleSolenoid = 1,            // (1) double solenoid 5/2, impulse / memory: both actions
         SingleSolenoid = 2,            // (2) single solenoid 5/2, spring return: ONE action
-        DoubleSolenoid_3Way = 3        // (3) double solenoid 5/3, centre position: both actions
+        // (3) / (4) double solenoid 5/3 - "3 way" - both actions. Two kinds since 8
+        // October: the CLOSED centre (both coils off: every port blocked, the cylinder
+        // stops and holds its air - most of the machines' valves) and the OPEN centre
+        // (both off: both sides to exhaust, the cylinder can drift). The help says
+        // what each does when the button is let go of early.
+        DoubleSolenoid_3WayClosedCenter = 3,
+        DoubleSolenoid_3WayOpenCenter = 4
     }
 
     /// <summary>
@@ -849,7 +855,7 @@ namespace Kaban.UI.Controls
         /// </summary>
         [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The valve: it decides the ACTIONS. SingleSolenoid - one coil, one action (A or B; the spring makes the other movement). " +
-                     "DoubleSolenoid / DoubleSolenoid_3Way - a coil for each movement, both actions. " +
+                     "DoubleSolenoid / DoubleSolenoid_3WayClosedCenter / DoubleSolenoid_3WayOpenCenter (5/3) - a coil for each movement, both actions. " +
                      "On an error the '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
@@ -920,7 +926,8 @@ namespace Kaban.UI.Controls
                     }
                     break;
                 case CylinderValve.DoubleSolenoid:
-                case CylinderValve.DoubleSolenoid_3Way:
+                case CylinderValve.DoubleSolenoid_3WayClosedCenter:
+                case CylinderValve.DoubleSolenoid_3WayOpenCenter:
                     if (!cmdA || !cmdB)
                         p.Add(_valve + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
                               (!cmdA && !cmdB ? "." : " (" + (cmdA ? "B" : "A") + " is missing)."));

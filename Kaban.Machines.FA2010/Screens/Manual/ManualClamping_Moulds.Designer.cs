@@ -49,7 +49,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorBAddress = "M916";
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorAAddress = "M915";
-            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
             this.unitLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 16);
             this.unitLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(360, 64);
@@ -74,7 +74,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Back_Vertical.PlcNumber = 1;
             this.unitLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
             this.unitLeft_Profile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitLeft_Profile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 90);
             this.unitLeft_Profile_Recognition_Back_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Profile_Recognition_Back_Vertical.LogAction = true;
@@ -98,7 +98,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Back_Horizontal.PlcNumber = 1;
             this.unitLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
             this.unitLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitLeft_Profile_Recognition_Back_Horizontal.ErrorAAddress = "M919";
             this.unitLeft_Profile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 164);
             this.unitLeft_Profile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
@@ -123,7 +123,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveryor_Front_Vertical.PlcNumber = 1;
             this.unitConveryor_Front_Vertical.TitleTextKey = "Converyor Front Vertical";
             this.unitConveryor_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveryor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitConveryor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitConveryor_Front_Vertical.Location = new System.Drawing.Point(16, 238);
             this.unitConveryor_Front_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitConveryor_Front_Vertical.LogAction = true;
@@ -147,7 +147,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveryor_Back_Vertical.PlcNumber = 1;
             this.unitConveryor_Back_Vertical.TitleTextKey = "Converyor Back Vertical";
             this.unitConveryor_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveryor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitConveryor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitConveryor_Back_Vertical.Location = new System.Drawing.Point(16, 312);
             this.unitConveryor_Back_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitConveryor_Back_Vertical.LogAction = true;
@@ -171,7 +171,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveryor_Back_Horizontal.PlcNumber = 1;
             this.unitConveryor_Back_Horizontal.TitleTextKey = "Converyor Back Horizontal";
             this.unitConveryor_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveryor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitConveryor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitConveryor_Back_Horizontal.Location = new System.Drawing.Point(16, 386);
             this.unitConveryor_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
             this.unitConveryor_Back_Horizontal.LogAction = true;
@@ -195,7 +195,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Front_Vertical.PlcNumber = 1;
             this.unitProfile_Recognition_Front_Vertical.TitleTextKey = "Profile Recognition Front Vertical";
             this.unitProfile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitProfile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 460);
             this.unitProfile_Recognition_Front_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Recognition_Front_Vertical.LogAction = true;
@@ -219,7 +219,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Back_Vertical.PlcNumber = 1;
             this.unitProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
             this.unitProfile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitProfile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 534);
             this.unitProfile_Recognition_Back_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Recognition_Back_Vertical.LogAction = true;
@@ -243,7 +243,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Back_Horizontal.PlcNumber = 1;
             this.unitProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
             this.unitProfile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitProfile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 608);
             this.unitProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
             this.unitProfile_Recognition_Back_Horizontal.LogAction = true;
@@ -267,7 +267,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Front_Vertical.PlcNumber = 1;
             this.unitCutting_Left_Front_Vertical.TitleTextKey = "Cutting Left Front Vertical";
             this.unitCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Left_Front_Vertical.ErrorBAddress = "M934";
             this.unitCutting_Left_Front_Vertical.ErrorAAddress = "M933";
             this.unitCutting_Left_Front_Vertical.Location = new System.Drawing.Point(16, 682);
@@ -293,7 +293,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Back_Vertical.PlcNumber = 1;
             this.unitCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
             this.unitCutting_Left_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Left_Back_Vertical.Location = new System.Drawing.Point(526, 16);
             this.unitCutting_Left_Back_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitCutting_Left_Back_Vertical.LogAction = true;
@@ -317,7 +317,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Back_Horizontal.PlcNumber = 1;
             this.unitCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
             this.unitCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Left_Back_Horizontal.ErrorAAddress = "M937";
             this.unitCutting_Left_Back_Horizontal.Location = new System.Drawing.Point(526, 90);
             this.unitCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
@@ -342,7 +342,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Front_Vertical.PlcNumber = 1;
             this.unitCutting_Right_Front_Vertical.TitleTextKey = "Cutting Right Front Vertical";
             this.unitCutting_Right_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Right_Front_Vertical.Location = new System.Drawing.Point(526, 164);
             this.unitCutting_Right_Front_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitCutting_Right_Front_Vertical.LogAction = true;
@@ -366,7 +366,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Back_Vertical.PlcNumber = 1;
             this.unitCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
             this.unitCutting_Right_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Right_Back_Vertical.Location = new System.Drawing.Point(526, 238);
             this.unitCutting_Right_Back_Vertical.Size = new System.Drawing.Size(360, 64);
             this.unitCutting_Right_Back_Vertical.LogAction = true;
@@ -390,7 +390,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Back_Horizontal.PlcNumber = 1;
             this.unitCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
             this.unitCutting_Right_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitCutting_Right_Back_Horizontal.Location = new System.Drawing.Point(526, 312);
             this.unitCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
             this.unitCutting_Right_Back_Horizontal.LogAction = true;

@@ -53,7 +53,7 @@ class UT {
         u.CommandBAddress = "";
         Check("  no command at all: set the driven one", u.TypeProblems().Any(p => p.Contains("set the command")), P(u));
 
-        foreach (var v in new[] { CylinderValve.DoubleSolenoid, CylinderValve.DoubleSolenoid_3Way }) {
+        foreach (var v in new[] { CylinderValve.DoubleSolenoid, CylinderValve.DoubleSolenoid_3WayClosedCenter }) {
             var d = Unit(v, CylinderFeedback.TwoEndMagnetic, "M1", "", "X1", "X2");
             Check(v + " with one command: both needed (B missing)", d.TypeProblems().Any(p => p.StartsWith(v.ToString()) && p.Contains("B is missing")), P(d));
             d.CommandBAddress = "M2";
@@ -80,7 +80,7 @@ class UT {
             else
                 Check("  a clamp with a pressure switch may also measure (a position): OK", t.TypeCheck == "OK", t.TypeCheck);
         }
-        var an = Unit(CylinderValve.DoubleSolenoid_3Way, CylinderFeedback.AnalogueMagnetic, "M1", "M2", "X1");
+        var an = Unit(CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.AnalogueMagnetic, "M1", "M2", "X1");
         Check("AnalogueMagnetic with a lamp and no position: both said",
               an.TypeProblems().Any(p => p.Contains("no lamps")) && an.TypeProblems().Any(p => p.Contains("set PositionAddress")), P(an));
         an.Lamp1AAddress = ""; an.PositionAddress = "D16";

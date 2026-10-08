@@ -402,7 +402,8 @@
 <table class="out">
 <tr class="fault"><td class="when">Low pressure, or no air.</td><td>Open the shut-off valve, check the compressor, change a clogged filter, repair leaks. {{>AgainA8}}</td></tr>
 <tr class="fault"><td class="when">Air at the valve, none comes out{{#Hoses}} into {{>Hose}}{{/Hoses}}.</td><td>The spool is stuck: clean or replace {{>ValvePlain}}; check the air (filter, water, oil). {{>AgainA8}}</td></tr>
-<tr class="fault"><td class="when">A hose leaks, is kinked or off; a flow control is closed.</td><td>Repair the hose or fitting; open the flow control to its mark. {{>AgainA8}}</td></tr>
+<tr class="fault"><td class="when">A hose leaks, is kinked or has come off.</td><td>Repair or replace the hose or its fitting. {{>AgainA8}}</td></tr>
+<tr class="fault"><td class="when">A flow control is closed (little or no air through it).</td><td>Open the flow control to its mark. {{>AgainA8}}</td></tr>
 <tr class="go"><td class="when">Air reaches the cylinder, it still does not move.</td><td>&rarr; <a class="go" href="#A8"></a></td></tr>
 </table>
 <p class="man">manual 1.2</p>
@@ -466,7 +467,9 @@
 {{/Pressure}}
 </ul>
 <table class="out">
-<tr class="fault"><td class="when">The pressure drops, a hose leaks, a flow control is closed.</td><td>Repair the supply or the hose; set the flow control to its mark. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">The pressure drops while it moves.</td><td>The supply is too small for the movement (a clogged filter, the regulator, a long thin line): repair the supply. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">A hose leaks.</td><td>Repair or replace the hose or its fitting. {{>AgainB3}}</td></tr>
+<tr class="fault"><td class="when">A flow control is closed.</td><td>Set the flow control to its mark. {{>AgainB3}}</td></tr>
 <tr class="good"><td class="when">The air is fine.</td><td>&rarr; <a class="go" href="#B3"></a></td></tr>
 </table>
 <p class="man">manual 1.2</p>
@@ -602,13 +605,19 @@
 {{#Measure}}
 <li>Measured by: {{Measure}}.</li>
 {{/Measure}}
+{{#PosReader}}
+<li>Read by the module <b>{{PosReader}}</b>.</li>
+{{/PosReader}}
 <li>{{>Look}} Move it slowly: the number changes evenly and, at the end of <b>{{Move}}</b>, stands at its target within the window.</li>
 </ul>
+<div class="pics">{{>DrawCylinder}}</div>
 <table class="out">
-<tr class="fault"><td class="when">It does not change, or reads zero / the lowest value.</td><td>The signal is lost (below 4 mA): a broken cable or a failed sensor &ndash; repair or replace. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It reads zero or the lowest value.</td><td>The signal is lost (below 4 mA): a broken cable, a failed sensor or no supply to it &ndash; measure the current{{#PosModule}} at {{PosModule}}{{#PosInput}} {{PosInput}}{{/PosInput}}{{/PosModule}}; repair or replace. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It stands at one value while the cylinder moves.</td><td>The sensor does not see the piston&#39;s magnet: it has slid along its groove or is outside the stroke &ndash; set it back over the stroke and fix it. {{>AgainEnd}}</td></tr>
 <tr class="fault"><td class="when">It stays at the highest value.</td><td>Above 20 mA: a short in the wiring &ndash; repair it. {{>AgainEnd}}</td></tr>
 <tr class="fault"><td class="when">It changes, the end values are wrong.</td><td>The scaling does not fit any more: teach the two ends again, check the window. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">It jumps, or counts the wrong way.</td><td>Noise (cable beside power cables, shield not grounded) or a reversed direction: route and ground the cable; correct the scaling. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It jumps or flickers.</td><td>Noise: the cable runs beside power cables or its shield is not grounded &ndash; route it apart, ground the shield at one end. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It counts the wrong way (up where it should go down).</td><td>The two ends are taught the wrong way round, or the sensor is mounted reversed: teach the two ends again in the right order. {{>AgainEnd}}</td></tr>
 <tr class="good"><td class="when">It reaches the target.</td><td>&rarr; <a class="go" href="#C2"></a></td></tr>
 </table>
 <p class="man">manual 1.7 (analogue)</p>
@@ -639,11 +648,16 @@
 {{#Measure}}
 <li>Measured by: {{Measure}}.</li>
 {{/Measure}}
+{{#PosReader}}
+<li>Counted by <b>{{PosReader}}</b>.</li>
+{{/PosReader}}
 <li>{{>Look}} Move it (the button or the override): the number counts evenly, up one way and down the other.</li>
 </ul>
+<div class="pics">{{>DrawCylinder}}</div>
 <table class="out">
 <tr class="fault"><td class="when">It does not change.</td><td>The encoder's cable or connector, the encoder, or its coupling: repair, fix or replace it, then reference again. {{>AgainEnd}}</td></tr>
-<tr class="fault"><td class="when">It counts the wrong way, or drifts.</td><td>A/B swapped, the coupling slips, or noise: correct the wiring or direction; ground the shield; tighten the coupling. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It counts the wrong way (down where it should count up).</td><td>The A and B phases are swapped{{#PosInput}} at {{PosInput}}{{/PosInput}}, or the counting direction is set the other way: swap A and B or set the direction, then reference again. {{>AgainEnd}}</td></tr>
+<tr class="fault"><td class="when">It drifts: the number creeps while it stands, or the position is off after some movements.</td><td>The coupling slips or the encoder&#39;s mounting is loose: tighten it, then reference again. Noise on the cable also loses or adds counts &ndash; route it apart from power cables, ground the shield. {{>AgainEnd}}</td></tr>
 <tr class="good"><td class="when">It counts right.</td><td>&rarr; <a class="go" href="#C3"></a></td></tr>
 </table>
 <p class="man">manual 1.7 (encoder) (1), (2)</p>

@@ -66,7 +66,8 @@ namespace Kaban.UI.Settings
         private readonly List<Control[]> _rows = new List<Control[]>();        // caption, field, the row's section
         private readonly DirtyTracker _dirty = new DirtyTracker();
         private Button _save, _revert, _new, _delete;
-        private Label _accountHead, _pageNote;
+        private Label _pageNote;
+        private readonly List<Control[]> _accountRows = new List<Control[]>();   // caption, field
         private string _selected;          // a user, Everyone, or null while a new one is made
         private bool _creating, _filling;
         private ComboBox _openList;        // the list open now (its preview beside it)
@@ -212,23 +213,26 @@ namespace Kaban.UI.Settings
             return l;
         }
 
+        /// <summary>The list's tallest (its rows beyond scroll in it).</summary>
+        private int GridMax { get { return UiScale.For(this, 300); } }
+
         private void BuildAccount()
         {
-            _accountHead = Head(_account, T("Usr_SecAccount", "Account"), AFieldX + AFieldW - ACapX);
-            _accountHead.Location = new Point(ACapX, 10);
-            int y = 40;
+            // No heading: the user, the password and the level stand under the list
+            // where its tallest would end, 40 px below (8 October) - not moving up and
+            // down with the number of accounts.
             foreach (var pair in new[] { new { Caption = T("Usr_Name", "User"), Field = (Control)_name },
                                          new { Caption = T("Usr_Pass", "Password"), Field = (Control)_pass },
                                          new { Caption = T("Usr_Level", "Level"), Field = (Control)_level } })
             {
-                var cap = UiStyle.CaptionLabel(pair.Caption, ACapX, y + 2, ACapW);
+                var cap = UiStyle.CaptionLabel(pair.Caption, ACapX, 0, ACapW);
                 _account.Controls.Add(cap);
-                pair.Field.SetBounds(AFieldX, y, AFieldW, pair.Field.Height);
+                pair.Field.SetBounds(AFieldX, 0, AFieldW, pair.Field.Height);
                 _account.Controls.Add(pair.Field);
-                y += UiStyle.RowPitch;
+                _accountRows.Add(new[] { cap, pair.Field });
             }
-            _createdBy.Location = new Point(AFieldX + 2, y - 6);
             _account.Controls.Add(_createdBy);
+            LayoutAccount();
             _name.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
             _pass.TextChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
             _level.SelectedIndexChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
@@ -262,9 +266,7 @@ namespace Kaban.UI.Settings
 
         private void BuildBody()
         {
-            _who.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
-            _who.ForeColor = Color.FromArgb(25, 28, 34);
-            _body.Controls.Add(_who);
+            // (no line naming the user above the preferences: the list shows who is chosen - 8 October)
             _body.Controls.Add(_info);
             _body.Controls.Add(_note);
 
@@ -315,7 +317,7 @@ namespace Kaban.UI.Settings
 
         private static readonly Dictionary<string, string[]> SectionHeads = new Dictionary<string, string[]>
         {
-            { "Prefs", new[] { "Usr_SecPrefs", "Screen and view preferences" } },
+            { "Prefs", new[] { "Usr_SecPrefs", "Preferences" } },
             { "Screen", new[] { "VP_SecScreen", "Screen" } },
             { "Captions", new[] { "VP_SecCaptions", "Captions" } },
             { "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
@@ -331,11 +333,16 @@ namespace Kaban.UI.Settings
             _account.Visible = account;
             _createdBy.Visible = account && _createdBy.Text.Length > 0;
             _body.SuspendLayout();
-            int y = 10;
-            _who.SetBounds(CapX, y, FieldX + FieldW - CapX, 28);
-            y += 30;
-            if (_info.Visible) { _info.SetBounds(CapX, y, FieldX + FieldW - CapX, 36); y += 40; }
-            if (_note.Visible) { _note.SetBounds(CapX, y, FieldX + FieldW - CapX, 36); y += 40; }
+            // IN THE PANEL'S UNSCROLLED TERMS: laid out while it was scrolled down (another
+            // user picked lower on the page), every place was off by the scroll - a band of
+            // white above the preferences once scrolled back (8 October). And at the
+            // screen scale: the page may be laid out again after it was scaled.
+            Func<int, int> px = v => UiScale.For(this, v);
+            int oy = _body.AutoScrollPosition.Y;
+            int x = px(CapX), w = px(FieldX + FieldW - CapX);
+            int y = px(4);
+            if (_info.Visible) { _info.SetBounds(x, y + oy, w, px(36)); y += px(40); }
+            if (_note.Visible) { _note.SetBounds(x, y + oy, w, px(36)); y += px(40); }
             string section = null;
             foreach (var r in _rows)
             {
@@ -343,29 +350,30 @@ namespace Kaban.UI.Settings
                 if (sec != section)
                 {
                     section = sec;
-                    y += 6;
+                    if (section != _rows[0][2].Tag as string || _info.Visible || _note.Visible) y += px(6);
                     Label h;
+                    bool main = sec == "Prefs";
                     if (!_sectionLabels.TryGetValue(sec, out h))
                     {
-                        bool main = sec == "Prefs";
                         h = new Label
                         {
-                            Text = T(SectionHeads[sec][0], SectionHeads[sec][1]), AutoSize = false, Size = new Size(FieldX + FieldW - CapX, main ? 24 : 20),
+                            Text = T(SectionHeads[sec][0], SectionHeads[sec][1]), AutoSize = false,
                             ForeColor = main ? Color.FromArgb(40, 46, 56) : Color.FromArgb(110, 116, 124),
                             Font = main ? UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold) : UiStyle.Small
                         };
                         _body.Controls.Add(h);
                         _sectionLabels[sec] = h;
                     }
-                    h.SetBounds(CapX, y, h.Width, h.Height);
-                    y += h.Height + 2;
+                    int hh = px(main ? 24 : 20);
+                    h.SetBounds(x, y + oy, w, hh);
+                    y += hh + px(2);
                 }
-                r[0].Top = y + 2;
-                r[1].Top = y;
-                y += UiStyle.RowPitch;
+                r[0].Top = y + px(2) + oy;
+                r[1].Top = y + oy;
+                y += px(UiStyle.RowPitch);
             }
-            _pageNote.Top = y + 8;
-            _pageNote.Left = CapX;
+            _pageNote.Top = y + px(8) + oy;
+            _pageNote.Left = x;
             _body.ResumeLayout();
         }
 
@@ -397,15 +405,31 @@ namespace Kaban.UI.Settings
             FitGrid();
         }
 
-        /// <summary>The list as tall as its rows (at most 300): the account right under it.</summary>
+        /// <summary>The list as tall as its rows (at most 300); the account where its tallest would end.</summary>
         private void FitGrid()
         {
             int rows = _grid.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
             int want = (_grid.ColumnHeadersVisible ? _grid.ColumnHeadersHeight : 0) + rows + 3;
             if (_grid.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) > _grid.ClientSize.Width)
                 want += SystemInformation.HorizontalScrollBarHeight;
-            int h = Math.Max(UiScale.For(this, 120), Math.Min(UiScale.For(this, 300), want));
+            int h = Math.Max(UiScale.For(this, 120), Math.Min(GridMax, want));
             if (_grid.Height != h) _grid.Height = h;
+            LayoutAccount();
+        }
+
+        /// <summary>The user, the password and the level: 40 px under where the list at its tallest ends.</summary>
+        private void LayoutAccount()
+        {
+            if (_accountRows.Count == 0) return;
+            // the account panel starts under the list (and its rule): the rest of the list's room, then 40
+            int y = Math.Max(0, GridMax - _grid.Height - 1) + UiScale.For(this, 40) + _account.AutoScrollPosition.Y;
+            foreach (var r in _accountRows)
+            {
+                if (r[1].Top != y) r[1].Top = y;
+                if (r[0].Top != y + UiScale.For(this, 2)) r[0].Top = y + UiScale.For(this, 2);
+                y += UiScale.For(this, UiStyle.RowPitch);
+            }
+            _createdBy.Location = new Point(_name.Left + UiScale.For(this, 2), y - UiScale.For(this, 6));
         }
 
         private bool _gridSettled = true;

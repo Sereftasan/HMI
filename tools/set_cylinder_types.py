@@ -12,7 +12,8 @@ pages came from an older machine and were never fully tested.
     and the output is on the electrical drawing (134581 rev. 9) with its valve
     on the pneumatic drawing (134628 rev. 9).
   * Valve: 5/2 double solenoid -> DoubleSolenoid, 5/2 single -> SingleSolenoid,
-    5/3 (open or closed centre) -> DoubleSolenoid_3Way.
+    5/3 -> DoubleSolenoid_3WayClosedCenter (8 October: the machine's 5/3 valves are
+    closed centre; DoubleSolenoid_3WayOpenCenter for an open-centre one).
   * Feedback: the sensors the electrical drawing wires for that cylinder; an
     encoder (sheet 11) or an analogue sensor (sheets 34, 35) for its position.
   * Lamps: a sensor is read at the relay the PLC copies it into (IoList.csv:
@@ -30,7 +31,7 @@ import re, sys
 CTL = 'Kaban.UI.Controls.'
 PAGES = 'Kaban.Machines.FA2010/Screens/Manual/'
 
-D, S, T3 = 'DoubleSolenoid', 'SingleSolenoid', 'DoubleSolenoid_3Way'
+D, S, T3 = 'DoubleSolenoid', 'SingleSolenoid', 'DoubleSolenoid_3WayClosedCenter'
 SM, SI, TWO, PSW, ANA, ENC, NONE = ('SingleMagnetic', 'SingleInductive', 'TwoEndMagnetic', 'MagneticPlusPressureSwitch',
                                     'AnalogueMagnetic', 'EncoderPlusReference', 'NoSensor')
 CLEAR = None
@@ -126,12 +127,12 @@ UNITS = [
     # (M243, the program's KesimSolOn_BasincSW) and SN112 on X136. M349 is not
     # an input.
     ('ManualMilling', 'unitFront_Clamping', T3, PSW, {'Lamp1AAddress': 'M227', 'Lamp1BAddress': 'M243'},
-     'P19, Y35/Y36 5/3 open centre; SN61 on X53, pressure switch SN84 on X73'),
+     'P19, Y35/Y36 5/3 closed centre; SN61 on X53, pressure switch SN84 on X73'),
     # --------------------------------------------------- profile recognition --
     # P16: back sensor SN59 on X51, pressure switch SW1 = SN83 on X70 (M240,
     # ProfilTanimaOn_BasincSW), width encoder through K77. M348 is not an input.
     ('ManualProfile_Recognition', 'unitFront_Clamping', T3, PSW, {'Lamp1AAddress': 'M225', 'Lamp1BAddress': 'M240'},
-     'P16, Y28/Y29 5/3 open centre; SN59 on X51, pressure switch SN83 on X70'),
+     'P16, Y28/Y29 5/3 closed centre; SN59 on X51, pressure switch SN83 on X70'),
     ('ManualProfile_Recognition', 'unitTop_Clamping', T3, ENC, {'Lamp1AAddress': 'M226'},
      'P17, Y31/Y32 5/3 closed centre; height encoder through K78, back sensor SN60 on X52'),
     ('ManualProfile_Recognition', 'unitLeft_Top_FW_Back', D, TWO, {'Lamp1AAddress': 'M203', 'Lamp1BAddress': 'M206'},

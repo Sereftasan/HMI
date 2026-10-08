@@ -12,7 +12,7 @@ program: they are in a **template per valve and feedback pair, per language**.
 | `Valve-NotSet`  | not set                               | `Feedback-NotSet`  | not set (the unit's lamps are used)          |
 | `5-2-Double`    | 5/2 double solenoid                   | `OneMagnetic`      | one magnetic sensor                          |
 | `5-2-Spring`    | 5/2 single solenoid, spring return    | `TwoMagnetic`      | a magnetic sensor at each end                |
-| `5-3`           | 5/3, centre position                  | `OneInductive`     | one inductive sensor                         |
+| `5-3`           | 5/3, closed or open centre            | `OneInductive`     | one inductive sensor                         |
 |                 |                                       | `Analogue`         | analogue position sensor (4-20 mA)           |
 |                 |                                       | `PressureSwitch`   | magnetic sensor + pressure switch (clamping) |
 |                 |                                       | `Encoder`          | encoder + reference sensor                   |
@@ -127,7 +127,9 @@ empty since 2 October (kept so an older template still reads).
 The output and the valve: `Out`, `OutText`, `OutWire`, `OutSheet`, `OutCard`,
 `OutTerminal`, `OutTerminalOther`, `OtherOut`, `Relay`, `RelaySheet`, `Coil`,
 `CoilWire`, `CoilSheet`, `ValveTag`, `PnSheet`, `CylName`, `Hoses`, `HosesMany`,
-`ClosedCentre`, `OpenCentre`, `Pressure`, `Measure`, `Position`, `ZeroWire`,
+`ClosedCentre`, `OpenCentre` (the unit's valve: 3WayClosedCenter / 3WayOpenCenter; else the drawing's words),
+`Pressure`, `Measure`, `PosReader` (the module reading the position: `U19 FX5-8AD, CH1`, `U4 FX5U-64MT-ESS, X6/X7`),
+`PosModule`, `PosModel`, `PosInput`, `PosSensor` (for the drawings), `Position`, `ZeroWire`,
 `SensorWire`, `MainAir`, `MainAirTag`, `MainAirCode`, `MainAirText`.
 
 The sensors: `HasMustOn` / `MustOn` (the sensors that must come ON - a list

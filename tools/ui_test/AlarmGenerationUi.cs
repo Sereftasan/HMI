@@ -61,7 +61,7 @@ class AGU {
             PlcNumber = 1, TitleTextKey = "Front Clamping", Name = "unitFC", ButtonBText = "Clamp", ButtonAText = "Release",
             CommandAAddress = "M646", Lamp1AAddress = "M225", CommandBAddress = "M645", Lamp1BAddress = "M240",
             ErrorAAddress = "M845", ErrorBAddress = "M844",
-            ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         u.SetBounds(10, 10, 360, 64); host.Controls.Add(u); host.Show(); Application.DoEvents();
         var w = u.BuildWatch();
         Check("its watch: each movement by the output its command drives on the drawings, confirmed by its end's sensor, the other end's OFF",
@@ -83,9 +83,13 @@ class AGU {
         var on = All(set).OfType<CheckBox>().FirstOrDefault(c => c.Name == "GenerationOn");
         var delay = All(set).OfType<NumericUpDown>().FirstOrDefault(c => c.Name == "GenerationDelay");
         var grid = All(set).OfType<DataGridView>().First();
-        Check("the activation (off) and the general delay (5 s) above the table", on != null && !on.Checked && delay != null && delay.Value == 5 &&
-              on.Text == "The HMI raises the cylinder and axis alarms itself");
-        Check("  a Delay column", grid.Columns.Contains("Delay") && grid.Columns["Delay"].HeaderText == "Delay (s)" &&
+        var axesOn = All(set).OfType<CheckBox>().FirstOrDefault(c => c.Name == "GenerationAxes");
+        var delayCaption = All(set).OfType<Label>().FirstOrDefault(l => l.Text.EndsWith("delay (s):"));
+        Check("the cylinders' activation (off) and their delay (5 s) above the table", on != null && !on.Checked && delay != null && delay.Value == 5 &&
+              on.Text == "The HMI raises the cylinder alarms itself" && delayCaption != null && delayCaption.Text == "Cylinder alarm delay (s):",
+              (on == null ? "" : on.Text) + " / " + (delayCaption == null ? "no caption" : delayCaption.Text));
+        Check("  the axes' own switch, on unless switched off", axesOn != null && axesOn.Checked && axesOn.Text == "The HMI raises the axis alarms itself");
+        Check("  a Cylinder delay column", grid.Columns.Contains("Delay") && grid.Columns["Delay"].HeaderText == "Cylinder delay (s)" &&
               grid.Columns["Delay"].Index == grid.Columns["Severity"].Index + 1);
         Func<string, DataGridViewRow> row = a => grid.Rows.Cast<DataGridViewRow>().First(r => Convert.ToString(r.Cells["Address"].Value) == a);
         Check("  editable for a movement's alarm (M844, M845), grey for any other (M900)",

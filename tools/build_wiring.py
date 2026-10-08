@@ -241,15 +241,17 @@ ELECTRICAL_OUTPUTS = [
 # (A and B port), sheet and zone. Matched to the electrical drawing by what
 # the two call the movement; the pneumatic drawing numbers its valves apart
 # (Y20/Y21 there is Y.7/Y.14 on the electrical one).
+# The 5/3 valves are CLOSED centre (8 October, from the machine's maker: the
+# drawing's reading had some open).
 PNEUMATIC = [
     (('Y3', 'Y4'),     'Y71/Y72 (1/8 5/2 double solenoid)', 'P36 Output Conveyor Small Profile Cylinder', '83 (A) / 84 (B)', '5 D1'),
     (('Y12', 'Y21'),   'Y20/Y21 (1/8 5/2 double solenoid)', 'P12 Input Conveyor 6. Clamping Cylinder', '16 (A) / 96 (B)', '2 E3'),
     (('Y13', 'Y22'),   'Y22/Y23 (1/8 5/2 double solenoid)', 'P13 Input Conveyor 7. Clamping Cylinder', '17 (A) / 97 (B)', '2 E2'),
     (('Y23', 'Y24'),   'Y24/Y25 (1/8 5/2 double solenoid)', 'P14 Input Robot Gripper Clamping Cylinder', '18 (A) / 19 (B)', '2 E1'),
-    (('Y32', 'Y33'),   'Y28/Y29 (1/8 5/3 open centre)', 'P16 Profile Recognition Front Clamping Cylinder (pressure switch SW1)', '23 (A) / 24 (B)', '3 E8'),
+    (('Y32', 'Y33'),   'Y28/Y29 (1/8 5/3 closed centre)', 'P16 Profile Recognition Front Clamping Cylinder (pressure switch SW1)', '23 (A) / 24 (B)', '3 E8'),
     (('Y34', 'Y35'),   'Y31/Y32 (1/8 5/3 closed centre)', 'P17 Profile Recognition Top Clamping Cylinder', '25 (A) / 26 (B)', '3 E7'),
     (('Y46', 'Y47'),   'Y33/Y34 (1/8 5/3 closed centre)', 'P18 Milling Top Clamping Cylinder', '27 (A) / 28 (B)', '3 E6'),
-    (('Y44', 'Y45'),   'Y35/Y36 (1/8 5/3 open centre)', 'P19 Milling / Cutting Front Clamping Cylinder (pressure switches SW2, SW3)', '30 (A) / 31 (B)', '3 E5'),
+    (('Y44', 'Y45'),   'Y35/Y36 (1/8 5/3 closed centre)', 'P19 Milling / Cutting Front Clamping Cylinder (pressure switches SW2, SW3)', '30 (A) / 31 (B)', '3 E5'),
     (('Y52', 'Y53'),   'Y38/Y39 (1/8 5/3 closed centre)', 'P20 Cutting Left Top Clamping Cylinder', '37 (A) / 38 (B)', '3 E4'),
     (('Y50', 'Y51'),   'Y40/Y41 (1/8 5/2 double solenoid)', 'P21 Milling Roll Cylinder', '32 (A) / 33 (B)', '3 E3'),
     (('Y54', 'Y55'),   'Y43/Y44 (1/8 5/3 closed centre)', 'P22 Cutting / Output Front Clamping Cylinder', '35 (A) / 36 (B)', '3 E2'),
@@ -268,12 +270,12 @@ PNEUMATIC = [
     (('Y123', 'Y124'), 'Y65/Y66 (1/8 5/2 double solenoid)', 'P30 Left Profile Recognition Unit Up / Down Cylinder', '76 (A) / 77 (B)', '5 D4'),
     (('Y121', 'Y122'), 'Y67/Y68 (1/8 5/2 double solenoid)', 'P31 Left Profile Recognition Unit Forward/Back Cylinder', '78 (A) / 79 (B)', '5 D3'),
     (('Y42', 'Y74'),   'Y69/Y70 (1/8 5/2 double solenoid)', 'P32 - P35 Entry Conveyor Roll Cylinders 1 - 4', '80 (A) / 81 (B)', '5 C2'),
-    (('Y131', 'Y132'), 'Y73/Y74 (1/8 5/3 open centre)', 'P37 Left Profile Recognition Front Up-Down Mold Cylinder', '101 (A) / 102 (B)', '6 D9'),
-    (('Y133', 'Y134'), 'Y79/Y80 (1/8 5/3 open centre)', 'P40 Input Conveyor Front Up-Down Mold Cylinder', '108 (A) / 109 (B)', '6 D4'),
-    (('Y135', 'Y136'), 'Y85/Y86 (1/8 5/3 open centre)', 'P40 Profile Recognition Front Up-Down Mold Cylinder', '115 (A) / 116 (B)', '7 D9'),
-    (('Y137', 'Y140'), 'Y91/Y92 (1/8 5/3 open centre)', 'P40 Milling / Cutting Front Up-Down Mold Cylinder', '122 (A) / 123 (B)', '7 D4'),
-    (('Y141', 'Y142'), 'Y97/Y98 (1/8 5/3 open centre)', 'P40 Cutting / Output Front Up-Down Mold Cylinder', '129 (A) / 130 (B)', '8 D9'),
-    (('Y151', 'Y152'), 'Y120/Y121 (1/8 5/3 open centre)', 'P57 Output Front Up-Down Mold Cylinder', '160 (A) / 161 (B)', '8 D4'),
+    (('Y131', 'Y132'), 'Y73/Y74 (1/8 5/3 closed centre)', 'P37 Left Profile Recognition Front Up-Down Mold Cylinder', '101 (A) / 102 (B)', '6 D9'),
+    (('Y133', 'Y134'), 'Y79/Y80 (1/8 5/3 closed centre)', 'P40 Input Conveyor Front Up-Down Mold Cylinder', '108 (A) / 109 (B)', '6 D4'),
+    (('Y135', 'Y136'), 'Y85/Y86 (1/8 5/3 closed centre)', 'P40 Profile Recognition Front Up-Down Mold Cylinder', '115 (A) / 116 (B)', '7 D9'),
+    (('Y137', 'Y140'), 'Y91/Y92 (1/8 5/3 closed centre)', 'P40 Milling / Cutting Front Up-Down Mold Cylinder', '122 (A) / 123 (B)', '7 D4'),
+    (('Y141', 'Y142'), 'Y97/Y98 (1/8 5/3 closed centre)', 'P40 Cutting / Output Front Up-Down Mold Cylinder', '129 (A) / 130 (B)', '8 D9'),
+    (('Y151', 'Y152'), 'Y120/Y121 (1/8 5/3 closed centre)', 'P57 Output Front Up-Down Mold Cylinder', '160 (A) / 161 (B)', '8 D4'),
     (('Y153', 'Y154'), 'Y122/Y123 (1/8 5/2 double solenoid)', 'P58 Mullion Milling Unit Cylinder', '162 (A) / 163 (B)', '8 D3'),
     (('Y155',),        'Y124 (1/8 5/2 single solenoid)', 'P60 Blade Change Cylinder', '164 (A) / 165 (B)', '8 D1'),
     (('Y143', 'Y144'), 'Y107/Y108 (1/8 5/2 double solenoid)', 'P54 1. Cross Roller Cylinder', '140 (A) / 141 (B)', '9 E9'),

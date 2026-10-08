@@ -61,8 +61,8 @@ namespace Kaban.Core.Helpers
             Unspecified = 0,
             DoubleSolenoid = 1,          // 5/2, two coils, stays where it was left
             SingleSolenoidSpring = 2,    // 5/2, one coil, springs back
-            ClosedCentre = 3,            // 5/3 double solenoid, centre position
-            OpenCentre = 4               // LEGACY: read as 3 - the manual has one 5/3 variant
+            ClosedCentre = 3,            // 5/3 double solenoid, closed centre (3WayClosedCenter): stops and holds
+            OpenCentre = 4               // 5/3 double solenoid, open centre (3WayOpenCenter): both sides exhaust - 8 October
         }
 
         /// <summary>Third digit when the error type is CylinderMovement.</summary>
@@ -113,9 +113,9 @@ namespace Kaban.Core.Helpers
             switch (type)
             {
                 case ErrorType.CylinderMovement:
-                    // The three valve variants of detail 1.4, in the manual's order.
+                    // The valve variants of detail 1.4, in the manual's order; the 5/3's two centres.
                     return Spec("Valve", new[] { ValveType.Unspecified, ValveType.DoubleSolenoid,
-                                                 ValveType.SingleSolenoidSpring, ValveType.ClosedCentre },
+                                                 ValveType.SingleSolenoidSpring, ValveType.ClosedCentre, ValveType.OpenCentre },
                                 v => (int)v, v => Describe(v));
                 case ErrorType.ServoFault:
                     return new ParameterSpec { Caption = "Axis" };   // free number
@@ -153,11 +153,15 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
-        /// A stored digit as the manual knows it. Old codes stay valid: "5/3 open
-        /// centre" (4) is the manual's one 5/3 variant (3), and "no feedback" (9)
-        /// has no variant at all, so it filters nothing.
+        /// A stored digit as the manual knows it. "No feedback" (9) has no variant
+        /// at all, so it filters nothing. The 5/3's open centre (4) is its own
+        /// valve again since 8 October (it was read as the closed one, 3); both
+        /// use the manual's one 5/3 part and the same step-by-step template.
         /// </summary>
-        public static int CanonicalValve(int v) { return v == (int)ValveType.OpenCentre ? (int)ValveType.ClosedCentre : v; }
+        public static int CanonicalValve(int v) { return v >= 0 && v <= (int)ValveType.OpenCentre ? v : 0; }
+
+        /// <summary>The digit of the manual's part and of the template: a 5/3 is a 5/3, whatever its centre.</summary>
+        public static int ManualValve(int v) { v = CanonicalValve(v); return v == (int)ValveType.OpenCentre ? (int)ValveType.ClosedCentre : v; }
         public static int CanonicalFeedback(int f) { return f == (int)FeedbackType.None ? 0 : f; }
 
         /// <summary>Which option in the list stands for a stored digit (0 if none).</summary>
@@ -614,7 +618,8 @@ namespace Kaban.Core.Helpers
                 // One chart: a manual still made of a table per block (an older
                 // copy, a translation made from one) is joined first.
                 var html = JoinBlocks(File.ReadAllText(doc.FullPath));
-                bool byValve = doc.Valve != 0 && html.Contains("data-variant=\"valve:" + doc.Valve + "\"");
+                int manualValve = ManualValve(doc.Valve);          // the manual's one 5/3 part for both centres
+                bool byValve = manualValve != 0 && html.Contains("data-variant=\"valve:" + manualValve + "\"");
                 bool byFeedback = doc.Feedback != 0 && html.Contains("data-variant=\"feedback:" + doc.Feedback + "\"");
                 if (!byValve && !byFeedback && doc.Movement == null) return doc.FullPath;
 
@@ -623,7 +628,7 @@ namespace Kaban.Core.Helpers
                     m =>
                     {
                         int n = int.Parse(m.Groups[2].Value);
-                        if (m.Groups[1].Value == "valve" && byValve && n != doc.Valve) return "";
+                        if (m.Groups[1].Value == "valve" && byValve && n != manualValve) return "";
                         if (m.Groups[1].Value == "feedback" && byFeedback && n != doc.Feedback) return "";
                         return m.Value;
                     },
@@ -738,8 +743,8 @@ namespace Kaban.Core.Helpers
                 // the operator is handed all say the same thing.
                 case ValveType.DoubleSolenoid:       return "Double solenoid 5/2 (impulse / memory)";
                 case ValveType.SingleSolenoidSpring: return "Single solenoid 5/2 (spring return)";
-                case ValveType.ClosedCentre:
-                case ValveType.OpenCentre:           return "Double solenoid 5/3 (center position)";
+                case ValveType.ClosedCentre:         return "Double solenoid 5/3, closed center (3WayClosedCenter)";
+                case ValveType.OpenCentre:           return "Double solenoid 5/3, open center (3WayOpenCenter)";
                 default:                             return "unspecified";
             }
         }

@@ -113,7 +113,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
             this.unitRobot_Top_Clamping.TitleTipKey = "";
             // Pneumatic drawing: Y45/Y46, 5/3 closed centre (P23).
-            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitRobot_Top_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             // 
             // unitRobot_Top_Small_Clamping

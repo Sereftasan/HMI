@@ -110,7 +110,7 @@ class CS {
         Check("the milling front clamping shows its pressure switch (X73 = M243), not M349",
               unit("ManualMilling.unitFront_Clamping").Lamp1BAddress == "M243");
         Check("a mold: 5/3 and its analogue sensor, no lamps",
-              unit("unitConveryor_Front_Vertical").ValveType == CylinderValve.DoubleSolenoid_3Way &&
+              unit("unitConveryor_Front_Vertical").ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter &&
               unit("unitConveryor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("unitConveryor_Front_Vertical")).Any());
         Check("the milling roller: no sensor on the drawings (X55 free), no lamp", unit("ManualMilling.unitRoller_Up_Down").FeedbackType == CylinderFeedback.NoSensor &&
               !lamps(unit("ManualMilling.unitRoller_Up_Down")).Any());
@@ -125,7 +125,7 @@ class CS {
             CommandBAddress = "M645", Lamp1BAddress = "M240",
             ErrorAAddress = "M845", ErrorBAddress = "M844", PositionAddress = "D4",
             ButtonBEnableConditions = SystemCondition.ManualMode,
-            ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         u1.SetBounds(10, 10, 360, 64); host.Controls.Add(u1); host.Show(); Application.DoEvents();
         var extra = Field<AlarmHelpBadge>(u1, "_helpB").ExtraAddresses.ToList();
         Check("each side's watcher reads the movement's devices: command, both coils (from the drawings), both ends' sensors",
@@ -148,7 +148,15 @@ class CS {
         Check("  the signal path down the left side: Y32, relay K29, coil Y.23, valve Y28/Y29, P16, pressure switch SN83 (X70) - no HMI command",
               Regex.IsMatch(path, "Y32.*K29.*Y\\.23.*Y28/Y29.*P16.*SN83") && !path.Contains("HMI command"), path);
         Check("  the HMI's command (M645) named nowhere on the page", !text.Contains("M645"));
-        Check("  a 5/3 valve, its open centre from the drawing", text.Contains("5/3 valve: it moves only while") && text.Contains("(open centre)"));
+        // 8 October: "most of the 3 way valves we use are closed center valves but you assumed they were
+        // open centered before" - two kinds, the unit's own (3WayClosedCenter for every one there is)
+        Check("  a 5/3 valve, its closed centre as the unit says (3WayClosedCenter)", text.Contains("5/3 valve: it moves only while") &&
+              text.Contains("(closed centre)") && !text.Contains("(open centre)") && u1.ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter);
+        var openPage = Text(TC.BuildSteps(u1.MovementFor("B"), TC.ValveType.OpenCentre, (TC.FeedbackType)TC.CanonicalFeedback((int)u1.FeedbackType), 0, "EN"));
+        Check("  an open-centre one (3WayOpenCenter): its own words, the same 5/3 page", openPage.Contains("(open centre)") && !openPage.Contains("(closed centre)") &&
+              openPage.Contains("5/3 valve: it moves only while") && TC.TemplateName(TC.ValveType.OpenCentre, TC.FeedbackType.PressureSwitch) == "Cylinder_5-3_PressureSwitch.html");
+        Check("  the two kinds named apart", TC.Describe(TC.ValveType.ClosedCentre).Contains("closed center") && TC.Describe(TC.ValveType.OpenCentre).Contains("open center") &&
+              TC.CanonicalValve(4) == 4 && TC.ManualValve(4) == 3 && TC.Parameter1(TC.ErrorType.CylinderMovement).Values.Contains(4));
         Check("  what the HMI saw: Y32 OFF at the alarm, in red", Regex.IsMatch(html, "Valve output <code>Y32</code></td><td>ON</td><td><span class=\"st-bad\">OFF"));
         Check("  where to start: Y32 was OFF - the step that asks whether the PLC switches it on",
               Hint(html).Contains("Y32 was OFF") && Hint(html).Contains("Step " + StepNo(html, "Does the PLC switch on Y32?")), Hint(html));
@@ -255,7 +263,7 @@ class CS {
         var u2 = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Top Clamping", CommandAAddress = "M648", Lamp1AAddress = "M226", CommandBAddress = "M647",
             ErrorAAddress = "M847", ErrorBAddress = "M846", PositionAddress = "D6",
-            ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.EncoderPlusReference };
+            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.EncoderPlusReference };
         u2.SetBounds(10, 170, 360, 64); host.Controls.Add(u2); Application.DoEvents();
         mem.Clear(); mem["M847"] = 1; mem["Y35"] = 0; Scan(u2);
         html = Steps(u2, "A");
@@ -270,7 +278,7 @@ class CS {
         Check("  already on when the page started reading: said so", Text(html).Contains("already on when the page started reading"));
         var mold = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Mold", CommandAAddress = "M541", CommandBAddress = "M540", ErrorAAddress = "M915", PositionAddress = "D110",
-            ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.AnalogueMagnetic };
+            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.AnalogueMagnetic };
         mold.SetBounds(10, 250, 360, 64); host.Controls.Add(mold); Application.DoEvents();
         mem.Clear(); mem["M915"] = 1; Scan(mold);
         html = Steps(mold, "A");

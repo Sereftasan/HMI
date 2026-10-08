@@ -30,7 +30,10 @@ namespace Kaban.Core.Helpers
     ///     is confirmed later clears its alarm.
     ///   * every AXIS ROW raises its alarm while its Servo Alarm or Axis Alarm word
     ///     is not zero, the code as the sub-code (M801.16.3); an Axis Warning is
-    ///     only a warning and raises nothing.
+    ///     only a warning and raises nothing. AT ONCE, and ON BY ITSELF (8 October:
+    ///     the PLC raises its cylinder alarms, so the HMI's were left off - and the
+    ///     axis alarms with them): its own switch per machine, on unless switched
+    ///     off; the delay is the cylinders' only.
     ///
     /// The PLC's own bit for the same device stays off the list while the HMI's
     /// alarm for it is on show: one fault, one line.
@@ -47,8 +50,12 @@ namespace Kaban.Core.Helpers
 
         public sealed class Settings
         {
+            /// <summary>The cylinder alarms (timed movements): off unless switched on.</summary>
             public bool Enabled;
+            /// <summary>The cylinder movements' delay.</summary>
             public double DelaySeconds = DefaultDelaySeconds;
+            /// <summary>The axis alarms (an Axis Alarm / Servo Alarm code, at once): on unless switched off.</summary>
+            public bool AxisAlarms = true;
         }
 
         /// <summary>Where the settings are kept (a test sets its own).</summary>
@@ -78,6 +85,7 @@ namespace Kaban.Core.Helpers
                     Settings s;
                     if (!_settings.TryGetValue(module, out s)) _settings[module] = s = new Settings();
                     if (key.Equals("Enabled", StringComparison.OrdinalIgnoreCase)) s.Enabled = value == "1" || value.Equals("true", StringComparison.OrdinalIgnoreCase);
+                    else if (key.Equals("AxisAlarms", StringComparison.OrdinalIgnoreCase)) s.AxisAlarms = value == "1" || value.Equals("true", StringComparison.OrdinalIgnoreCase);
                     else if (key.Equals("DelaySeconds", StringComparison.OrdinalIgnoreCase))
                     {
                         double d;
@@ -93,10 +101,14 @@ namespace Kaban.Core.Helpers
         {
             LoadSettings();
             Settings s;
-            return _settings.TryGetValue(moduleId ?? "", out s) ? new Settings { Enabled = s.Enabled, DelaySeconds = s.DelaySeconds } : new Settings();
+            return _settings.TryGetValue(moduleId ?? "", out s) ? new Settings { Enabled = s.Enabled, DelaySeconds = s.DelaySeconds, AxisAlarms = s.AxisAlarms } : new Settings();
         }
 
+        /// <summary>The cylinder alarms switched on for a machine.</summary>
         public static bool EnabledFor(string moduleId) { return Peek(moduleId).Enabled; }
+
+        /// <summary>The axis alarms on for a machine (unless switched off).</summary>
+        public static bool AxisAlarmsFor(string moduleId) { return Peek(moduleId).AxisAlarms; }
 
         private static readonly Settings _defaults = new Settings();
 
@@ -112,20 +124,23 @@ namespace Kaban.Core.Helpers
         public static void Save(string moduleId, Settings settings)
         {
             LoadSettings();
-            _settings[moduleId ?? ""] = new Settings { Enabled = settings.Enabled, DelaySeconds = Math.Max(MinimumDelaySeconds, settings.DelaySeconds) };
+            _settings[moduleId ?? ""] = new Settings { Enabled = settings.Enabled, DelaySeconds = Math.Max(MinimumDelaySeconds, settings.DelaySeconds),
+                                                       AxisAlarms = settings.AxisAlarms };
             try
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath));
-                var lines = new List<string> { "# Kaban HMI: the alarms the HMI raises itself, per machine: <machine>.Enabled=1, <machine>.DelaySeconds=5" };
+                var lines = new List<string> { "# Kaban HMI: the alarms the HMI raises itself, per machine: <machine>.Enabled=1 (cylinders), " +
+                                               "<machine>.DelaySeconds=5 (cylinders), <machine>.AxisAlarms=1 (axes, at once)" };
                 foreach (var kv in _settings.OrderBy(k => k.Key, StringComparer.OrdinalIgnoreCase))
                 {
                     lines.Add(kv.Key + ".Enabled=" + (kv.Value.Enabled ? "1" : "0"));
                     lines.Add(kv.Key + ".DelaySeconds=" + kv.Value.DelaySeconds.ToString(CultureInfo.InvariantCulture));
+                    lines.Add(kv.Key + ".AxisAlarms=" + (kv.Value.AxisAlarms ? "1" : "0"));
                 }
                 SafeFile.WriteAllText(SettingsPath, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(false));
             }
             catch (Exception ex) { AuditLogger.Log("could not save the alarm generation settings: " + ex.Message); }
-            if (!settings.Enabled) ClearRaised(moduleId);
+            ClearRaised(moduleId, !settings.Enabled, !settings.AxisAlarms);
             OnWatchesChanged();
         }
 
@@ -287,7 +302,7 @@ namespace Kaban.Core.Helpers
             }
             foreach (var x in _axes)
             {
-                if (!EnabledFor(x.ModuleId)) continue;
+                if (!AxisAlarmsFor(x.ModuleId)) continue;
                 if (!string.IsNullOrWhiteSpace(x.ServoAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.ServoAlarm.Trim());
                 if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
             }
@@ -434,7 +449,7 @@ namespace Kaban.Core.Helpers
             foreach (var x in _axes)
             {
                 if (x.Station != station) continue;
-                if (!EnabledFor(x.ModuleId)) { DropAxis(x); continue; }
+                if (!AxisAlarmsFor(x.ModuleId)) { DropAxis(x); continue; }
                 EvaluateAxis(x, lookup, now);
             }
         }
@@ -773,11 +788,13 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>Takes a machine's generated alarms off the list (switched off).</summary>
-        private static void ClearRaised(string moduleId)
+        private static void ClearRaised(string moduleId, bool cylinders, bool axes)
         {
-            foreach (var c in _cylinders.Where(c => string.Equals(c.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase)))
-                foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); }
-            foreach (var x in _axes.Where(x => string.Equals(x.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase))) DropAxis(x);
+            if (cylinders)
+                foreach (var c in _cylinders.Where(c => string.Equals(c.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase)))
+                    foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); }
+            if (axes)
+                foreach (var x in _axes.Where(x => string.Equals(x.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase))) DropAxis(x);
         }
 
         /// <summary>Every watch and setting forgotten (tests).</summary>

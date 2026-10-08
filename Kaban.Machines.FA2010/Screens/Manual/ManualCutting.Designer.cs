@@ -91,7 +91,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping.PlcNumber = 1;
             this.unitLeft_Top_Clamping.TitleTextKey = "Left Top Clamping";
             this.unitLeft_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 164);
             this.unitLeft_Top_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitLeft_Top_Clamping.LogAction = true;
@@ -140,7 +140,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Clamping.TitleTextKey = "Right Front Clamping";
             this.unitRight_Front_Clamping.ErrorAAddress = "M852";
             this.unitRight_Front_Clamping.ErrorBAddress = "M851";
-            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             // Drawings: Y43/Y44 5/3 closed centre (P22); back sensor SN76 (X60) + encoder X14/X15.
             this.unitRight_Front_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitRight_Front_Clamping.Location = new System.Drawing.Point(526, 238);

@@ -244,9 +244,23 @@ class AG {
               Gen().Count == 2 && AlarmManager.ActiveAlarms.Count == 2, Codes());
         mem["D100"] = 0; mem["D101"] = 0; Scan();
         Check("the codes clear: the lines go (the PLC bit shows on its own)", Gen().Count == 0 && Codes() == "T.Axis", Codes());
+        // 8 October: "axis alarms should be generated as soon as 'Axis Alarm' or 'Servo Alarm' column has a value
+        // other than 0" - the cylinders' activation and delay are the cylinders' only; the axes have their own switch
         AlarmGeneration.Save("T", new AlarmGeneration.Settings { Enabled = false, DelaySeconds = 5 });
         mem["D100"] = 0x163; Scan();
-        Check("switched off: nothing raised", Gen().Count == 0);
+        Check("the cylinder alarms switched off: the axis alarm all the same, at once (on by itself)",
+              AlarmGeneration.AxisAlarmsFor("T") && Gen().Count == 1 && Gen()[0].ShownCode == "M801.16.3", Codes());
+        mem["D100"] = 0; Scan();
+        AlarmGeneration.Save("T", new AlarmGeneration.Settings { Enabled = false, DelaySeconds = 60 });
+        mem["D101"] = 0x1904; Scan();
+        Check("  a long cylinder delay does not hold it", Gen().Count == 1 && Gen()[0].ShownCode == "M801.1904H", Codes());
+        AlarmGeneration.Save("T", new AlarmGeneration.Settings { Enabled = true, DelaySeconds = 5, AxisAlarms = false });
+        Check("the axis alarms switched off: its line goes, its words not read", Gen().Count == 0 &&
+              !AlarmGeneration.Addresses().Any(k => k.Value == "D100" || k.Value == "D101"), Codes());
+        mem["D100"] = 0x163; Scan();
+        Check("  and nothing raised", Gen().Count == 0);
+        var kept = File.ReadAllText(AlarmGeneration.SettingsPath);
+        Check("  kept with the machine's settings (T.AxisAlarms=0)", kept.Contains("T.AxisAlarms=0") && kept.Contains("T.Enabled=1"), kept.Replace("\r\n", " | "));
 
         Console.WriteLine(fail == 0 ? "\nALARM GENERATION ALL PASS" : "\nALARM GENERATION " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

@@ -103,7 +103,7 @@ class CT {
         Check("  the movement's word translated (the button shows only an arrow)", tTr.Contains("\u201cS\u0131kma\u201d") && Regex.IsMatch(tEn, "\u201cClamp\u201d"));
         Check("  the drawings' texts in Turkish where Wiring.csv has them (Pressure.TR)", tTr.Contains("s\u0131kma bas\u0131nc\u0131 6 / 2 bar") && tEn.Contains("clamping pressure 6 / 2 bar"));
         Check("  the drawings' own labels kept, marked as the drawing's", tTr.Contains("\u00e7izimde: Profile Recognition Front Clamping Empty Switch"));
-        Check("  the valve type in Turkish (DataWords)", tTr.Contains("5/3 orta konumu a\u00e7\u0131k") && tEn.Contains("5/3 open centre"));
+        Check("  the valve type in Turkish (DataWords)", tTr.Contains("5/3 orta konumu kapal\u0131") && tEn.Contains("5/3 closed centre"));
         Func<string, string> nav = h => Text(Regex.Match(h, "<nav class=\"path\">.*?</nav>", RegexOptions.Singleline).Value);
         Check("the signal path on the left in both, without the HMI's command", nav(en).Contains("PLC output ON") && !nav(en).Contains("HMI command") &&
               nav(tr).Contains("PLC \u00e7\u0131k\u0131\u015f\u0131 A\u00c7IK") && !nav(tr).Contains("HMI komutu") && !tEn.Contains("M645") && !tTr.Contains("M645"), nav(tr));

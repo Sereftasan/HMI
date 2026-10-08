@@ -80,22 +80,32 @@ namespace Kaban.UI.Settings
             var gen = AlarmGeneration.For(GenerationModule);
             _genPanel = new FlowLayoutPanel
             {
-                Dock = DockStyle.Top, Height = 36, BackColor = Color.FromArgb(246, 248, 251),
-                Padding = new Padding(6, 6, 6, 0), WrapContents = false, AutoScroll = false
+                Dock = DockStyle.Top, BackColor = Color.FromArgb(246, 248, 251),
+                Padding = new Padding(6, 6, 6, 4), WrapContents = true, AutoScroll = false,
+                AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink
             };
             _genOn = new CheckBox
             {
                 Name = "GenerationOn", AutoSize = true, Checked = gen.Enabled, Margin = new Padding(3, 3, 18, 0),
-                Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder and axis alarms itself")
+                Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder alarms itself")
             };
             Kaban.UI.Controls.UiStyle.SetTip(tips, _genOn, LanguageManager.GetString("Tip_AlarmGenOn",
                 "On: every cylinder unit's movement is timed from its output and must be confirmed by its sensors within its delay, " +
-                "or the HMI raises its alarm with the signal that failed (M840.1, M840.2...). An axis row raises its alarm while its " +
-                "Servo Alarm or Axis Alarm shows a code. The PLC's own alarm for the same device is then not listed twice."));
+                "or the HMI raises its alarm with the signal that failed (M840.1, M840.2...). The PLC's own alarm for the same device " +
+                "is then not listed twice."));
+            // The axis alarms: their own switch, on unless switched off; at once, no delay (8 October)
+            _genAxes = new CheckBox
+            {
+                Name = "GenerationAxes", AutoSize = true, Checked = gen.AxisAlarms, Margin = new Padding(3, 3, 18, 0),
+                Text = LanguageManager.GetString("Set_AlarmGenAxes", "The HMI raises the axis alarms itself")
+            };
+            Kaban.UI.Controls.UiStyle.SetTip(tips, _genAxes, LanguageManager.GetString("Tip_AlarmGenAxes",
+                "On: an axis row raises its alarm as soon as its Axis Alarm or Servo Alarm shows a code other than 0 (no delay) - " +
+                "its Axis Warning is only a warning. The PLC's own alarm for the same axis is then not listed twice."));
             var delayLabel = new Label
             {
                 AutoSize = true, Margin = new Padding(3, 6, 3, 0),
-                Text = LanguageManager.GetString("Set_AlarmGenDelay", "Delay (s):")
+                Text = LanguageManager.GetString("Set_AlarmGenDelay", "Cylinder alarm delay (s):")
             };
             _genDelay = new NumericUpDown
             {
@@ -108,13 +118,15 @@ namespace Kaban.UI.Settings
             var hint = new Label
             {
                 AutoSize = true, Margin = new Padding(12, 6, 3, 0), ForeColor = Color.FromArgb(100, 108, 120),
-                Text = LanguageManager.GetString("Set_AlarmGenHint", "An alarm's own delay: the Delay column (blank = this one).")
+                Text = LanguageManager.GetString("Set_AlarmGenHint", "A cylinder alarm's own delay: the Cylinder delay column (blank = this one).")
             };
+            _genPanel.Controls.Add(_genAxes);
             _genPanel.Controls.Add(_genOn);
             _genPanel.Controls.Add(delayLabel);
             _genPanel.Controls.Add(_genDelay);
             _genPanel.Controls.Add(hint);
             _genOn.CheckedChanged += (s, e) => { _dirty.MarkDirty(); ShowGeneration(); };
+            _genAxes.CheckedChanged += (s, e) => _dirty.MarkDirty();
             _genDelay.ValueChanged += (s, e) => _dirty.MarkDirty();
 
             _grid.Dock = DockStyle.Fill;
@@ -147,7 +159,7 @@ namespace Kaban.UI.Settings
             _grid.Columns.Add(new DataGridViewTextBoxColumn
             {
                 Name = "Delay",
-                HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Delay (s)"),
+                HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Cylinder delay (s)"),
                 FillWeight = 8,
                 DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight }
             });
@@ -210,7 +222,7 @@ namespace Kaban.UI.Settings
 
 
         private readonly FlowLayoutPanel _genPanel;
-        private readonly CheckBox _genOn;
+        private readonly CheckBox _genOn, _genAxes;
         private readonly NumericUpDown _genDelay;
 
         /// <summary>The machine the generation settings are kept for (the main machine's for a page with none).</summary>
@@ -273,6 +285,7 @@ namespace Kaban.UI.Settings
             }
             var gen = AlarmGeneration.For(GenerationModule);
             _genOn.Checked = gen.Enabled;
+            _genAxes.Checked = gen.AxisAlarms;
             _genDelay.Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds));
             ShowGeneration();
             // What discovery found, so a unit whose error bits were set in the designer
@@ -319,8 +332,12 @@ namespace Kaban.UI.Settings
                 }
 
                 // The activation and the general delay, per machine.
-                AlarmGeneration.Save(GenerationModule, new AlarmGeneration.Settings { Enabled = _genOn.Checked, DelaySeconds = (double)_genDelay.Value });
-                AuditLogger.Log("alarm generation for " + GenerationModule + ": " + (_genOn.Checked ? "on" : "off") + ", delay " + _genDelay.Value + " s.");
+                AlarmGeneration.Save(GenerationModule, new AlarmGeneration.Settings
+                {
+                    Enabled = _genOn.Checked, DelaySeconds = (double)_genDelay.Value, AxisAlarms = _genAxes.Checked
+                });
+                AuditLogger.Log("alarm generation for " + GenerationModule + ": cylinders " + (_genOn.Checked ? "on" : "off") + ", delay " + _genDelay.Value +
+                                " s, axes " + (_genAxes.Checked ? "on" : "off") + ".");
 
                 // THIS machine's file only (all files when the page has no machine).
                 string path = AlarmDefinitionLoader.SaveLoadedEntries(_moduleId);

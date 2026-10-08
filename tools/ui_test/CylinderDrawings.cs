@@ -165,6 +165,48 @@ class CD {
         Check("an inductive sensor is tried with a steel tool, not a magnet", Text(Step(ip, "C1")).Contains("Hold a steel tool a few millimetres in front of its face") &&
               Step(ip, "C1").Contains(">steel tool</text>") && !Step(ip, "C1").Contains(">magnet</text>"));
 
+        // 8 October: "draw load side encoder and analog magnetic sensor on this helper cylinder drawing as well ...
+        // and show their reader modules ('U..' module number taken from Wiring.csv) where it is mentioned"
+        Console.WriteLine("--- the position's sensor and its reader drawn ---");
+        WiringTable.Clear();
+        WiringTable.Load(Path.Combine(dir, "Wiring.csv"), plc => plc);
+        var moulds = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualClamping_Moulds"));
+        var analog = moulds.Controls.Find("unitLeft_Profile_Recognition_Front_Vertical", true).OfType<CylinderUnitHMI>().First();
+        var aPage = page(analog, "B", "EN");
+        var aSvg = Svg(aPage, "C1");
+        Check("analogue (SN110 to U19 FX5-8AD channel 1): the step names its module", Text(Step(aPage, "C1")).Contains("Read by the module U19 FX5-8AD, CH1"),
+              Text(Step(aPage, "C1")).Replace("\n", " ").Substring(0, Math.Min(400, Text(Step(aPage, "C1")).Length)));
+        Check("  the cylinder drawn with the sensor along it (4 mA .. 20 mA, SN110) and its module (U19, FX5-8AD, CH1)",
+              aSvg.Contains(">4 mA<") && aSvg.Contains(">20 mA<") && aSvg.Contains(">SN110<") && aSvg.Contains(">U19<") && aSvg.Contains(">FX5-8AD<") && aSvg.Contains(">CH1<"));
+        Check("  the same on the cylinder's own step (the movement)", Svg(aPage, "look").Contains(">U19<"));
+        var cuttingPage = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualCutting"));
+        var enc = cuttingPage.Controls.Find("unitLeft_Top_Clamping", true).OfType<CylinderUnitHMI>().First();
+        var ePage = page(enc, "B", "EN");
+        var eSvg = Svg(ePage, "C2");
+        Check("encoder (X6/X7 on the CPU card U4): the step names who counts it", Text(Step(ePage, "C2")).Contains("Counted by U4 FX5U-64MT-ESS, X6/X7"));
+        Check("  the cylinder drawn with the encoder on the load, its scale, and U4 / X6/X7", eSvg.Contains(">U4<") && eSvg.Contains(">FX5U-64MT-ESS<") &&
+              eSvg.Contains(">X6/X7<") && eSvg.Contains("<rect x=\"270\" y=\"40\""));
+        Check("  a magnetic cylinder's drawing as before: no module, no scale", !Svg(release, "look").Contains("PosCard") && !Svg(release, "look").Contains(">4 mA<") &&
+              !Svg(release, "look").Contains("<rect x=\"270\" y=\"40\""));
+        var eTr = page(enc, "B", "TR");
+        Check("  in Turkish too", Text(Step(eTr, "C2")).Contains("Sayan: U4 FX5U-64MT-ESS, X6/X7") && Svg(eTr, "C2").Contains(">X6/X7<"));
+
+        // "'It counts the wrong way, or drifts' ... we should distinguish them ... check the other templates for the
+        // similar situations as well"
+        Console.WriteLine("--- one symptom a line ---");
+        var encC2 = Text(Step(ePage, "C2"));
+        Check("encoder: counting the wrong way and drifting are two lines, each with its own remedy",
+              encC2.Contains("It counts the wrong way (down where it should count up).") && encC2.Contains("A and B phases are swapped at X6/X7") &&
+              encC2.Contains("It drifts: the number creeps while it stands") && encC2.Contains("The coupling slips") && !encC2.Contains("It counts the wrong way, or drifts"));
+        var anC1 = Text(Step(aPage, "C1"));
+        Check("analogue: zero / standing still, jumping / counting the wrong way apart", anC1.Contains("It reads zero or the lowest value.") &&
+              anC1.Contains("It stands at one value while the cylinder moves.") && anC1.Contains("It jumps or flickers.") &&
+              anC1.Contains("It counts the wrong way (up where it should go down).") && !anC1.Contains("It jumps, or counts the wrong way"));
+        var full = Text(aPage);
+        Check("the air: a leaking hose and a closed flow control apart; the pressure drop apart from both",
+              full.Contains("A hose leaks, is kinked or has come off.") && full.Contains("A flow control is closed (little or no air through it).") &&
+              !full.Contains("a flow control is closed.</td>") && !full.Contains("The pressure drops, a hose leaks"));
+
         Console.WriteLine(fail == 0 ? "\nCYLINDER DRAWINGS ALL PASS" : "\nCYLINDER DRAWINGS " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

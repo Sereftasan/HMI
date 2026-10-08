@@ -448,7 +448,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitTop_Clamping.ErrorAAddress = "M887";
             this.unitTop_Clamping.ErrorBAddress = "M886";
             // Pneumatic drawing: Y33/Y34, 5/3 closed centre (P18); up sensor SN62 (X54) + encoder X4/X5.
-            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitTop_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitTop_Clamping.Location = new System.Drawing.Point(1036, 460);
             this.unitTop_Clamping.Size = new System.Drawing.Size(360, 64);
@@ -475,7 +475,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.PlcNumber = 1;
             this.unitFront_Clamping.TitleTextKey = "Front Clamping";
             this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
-            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3Way;
+            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
             this.unitFront_Clamping.Location = new System.Drawing.Point(1036, 534);
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitFront_Clamping.LogAction = true;

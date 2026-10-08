@@ -48,7 +48,7 @@ class WH {
             CommandAAddress = "M646", ButtonATextKey = "Release", Lamp1AAddress = "M225", Lamp1ATipKey = "Clamping back",
             CommandBAddress = "M645", ButtonBTextKey = "Clamp", Lamp1BAddress = "M240", Lamp1BTipKey = "Pressure switch",
             ErrorAAddress = "M845", ErrorBAddress = "M844",
-            ValveType = CylinderValve.DoubleSolenoid_3Way, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         var doc = new TC.HelpDocument { FileName = TC.DocumentForType[TC.ErrorType.CylinderMovement], Valve = 3, Feedback = 5, Movement = unit.MovementFor("A"), StepByStep = true };
         Check("the cylinder manual is there", doc.Exists, doc.FullPath);
         string html = File.ReadAllText(TC.ExtractSection(doc));
@@ -56,7 +56,7 @@ class WH {
         Check("the valve output found from the command (M646 -> Y33), with its relay and coil",
               has("<code>Y33</code>") && has("relay K30 (sheet 19.6)") && has("coil Y.24, wire 325 (sheet 26.7)"));
         Check("the valve and cylinder: Y28/Y29 5/3, hoses 23 / 24, P16, pneumatic sheet 3 E8",
-              has("Valve, hoses, cylinder") && has("valve Y28/Y29 (1/8 5/3 open centre)") && has("hoses 23 (A) / 24 (B)") &&
+              has("Valve, hoses, cylinder") && has("valve Y28/Y29 (1/8 5/3 closed centre)") && has("hoses 23 (A) / 24 (B)") &&
               has("P16 Profile Recognition Front Clamping Cylinder") && has("pneumatic sheet 3 E8"));
         Check("the other coil (Y32, must be off) with its own", has("<code>Y32</code>") && has("relay K29 (sheet 19.6)"));
         Check("the sensor that must come on: M225 = X51, SN59, wire 132, sheet 13.5, on card U7 terminal X11",

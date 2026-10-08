@@ -65,7 +65,7 @@ namespace Kaban.Core.Helpers
         public static string TemplateName(ValveType valve, FeedbackType feedback)
         {
             string v, f;
-            switch ((ValveType)CanonicalValve((int)valve))
+            switch ((ValveType)ManualValve((int)valve))
             {
                 case ValveType.DoubleSolenoid: v = "5-2-Double"; break;
                 case ValveType.SingleSolenoidSpring: v = "5-2-Spring"; break;
@@ -449,16 +449,61 @@ namespace Kaban.Core.Helpers
                 get { return Regex.Replace(CylinderName(c.Air), "\\s*\\(.*?\\)", "").Trim(); }
             }
 
-            /// <summary>A 5/3 valve's centre as the drawing names it: true closed, false open, null not said.</summary>
+            /// <summary>
+            /// A 5/3 valve's centre: as the unit's valve says (3WayClosedCenter /
+            /// 3WayOpenCenter - 8 October: the drawings' reading had most of them open,
+            /// they are closed), else as the drawing names it; null not said.
+            /// </summary>
             private bool? ClosedCentre
             {
                 get
                 {
+                    if (c.Valve == ValveType.ClosedCentre) return true;
+                    if (c.Valve == ValveType.OpenCentre) return false;
                     var v = (c.Air != null ? c.Air.Valve : "").ToLowerInvariant();
                     if (v.Contains("closed centre") || v.Contains("closed center")) return true;
                     if (v.Contains("open centre") || v.Contains("open center")) return false;
                     return null;
                 }
+            }
+
+            /// <summary>
+            /// THE POSITION'S READER (8 October): the module the analogue sensor or the
+            /// encoder is wired to, from Wiring.csv's Measure - "... wire 700 to U19
+            /// FX5-8AD channel 1" (an analogue sensor: U19, FX5-8AD, CH1) or "encoder
+            /// X2/X3 ..." (the high-speed counter inputs: the card they are on, U4
+            /// FX5U-64MT-ESS) - for the cylinder's drawing and the steps that name it.
+            /// </summary>
+            private void PutPositionReader(Dictionary<string, object> m, WiringTable.Point air)
+            {
+                string module = "", model = "", input = "", sensor = "";
+                var text = air != null ? air.Measure ?? "" : "";
+                var an = Regex.Match(text, @"\b(U\d+)\s+([A-Z0-9][\w\-/]*)\s+channel\s+(\d+)", RegexOptions.IgnoreCase);
+                if (an.Success)
+                {
+                    module = an.Groups[1].Value;
+                    model = an.Groups[2].Value;
+                    input = "CH" + an.Groups[3].Value;
+                }
+                else
+                {
+                    var enc = Regex.Match(text, @"\b(X\d+)\s*/\s*(X\d+)\b", RegexOptions.IgnoreCase);
+                    if (enc.Success)
+                    {
+                        input = enc.Groups[1].Value.ToUpperInvariant() + "/" + enc.Groups[2].Value.ToUpperInvariant();
+                        string card, terminal;
+                        CardParts(WiringTable.Find(mv.Station, enc.Groups[1].Value), out card, out terminal);
+                        var cm = Regex.Match(card, @"^(U\d+)\s+(\S+)");
+                        if (cm.Success) { module = cm.Groups[1].Value; model = cm.Groups[2].Value; }
+                    }
+                }
+                var sn = Regex.Match(text, @"\b(SN\d+)\b");
+                if (sn.Success) sensor = sn.Groups[1].Value;
+                m["PosModule"] = E(module);
+                m["PosModel"] = E(model);
+                m["PosInput"] = E(input);
+                m["PosSensor"] = E(sensor);
+                m["PosReader"] = module.Length == 0 ? "" : E(module + (model.Length > 0 ? " " + model : "") + (input.Length > 0 ? ", " + input : ""));
             }
 
             /// <summary>"U11 FX5-16EYT-ESS, terminal Y4" -> the card and its own terminal name (the LED is labelled with it).</summary>
@@ -680,6 +725,7 @@ namespace Kaban.Core.Helpers
                 // the template's own valve and feedback (a pair's file has them written in)
                 int v = (int)c.Valve, f = (int)c.Feedback;
                 for (int i = 0; i <= 3; i++) m["V" + i] = v == i;
+                if (v == (int)ValveType.OpenCentre) m["V3"] = true;      // the 5/3's template for both centres
                 for (int i = 0; i <= 7; i++) m["F" + i] = f == i;
                 m["Double"] = _double;
                 m["FiveThree"] = _fiveThree;
@@ -772,6 +818,7 @@ namespace Kaban.Core.Helpers
                 m["OpenCentre"] = ClosedCentre == false;
                 m["Pressure"] = air != null ? e(Data(air, "Pressure", air.Pressure)) : "";
                 m["Measure"] = air != null ? e(Data(air, "Measure", air.Measure)) : "";
+                PutPositionReader(m, air);
                 m["Position"] = Dev(mv.Position);
                 m["ZeroWire"] = e(_supply.ZeroVoltWire);
                 m["SensorWire"] = e(_supply.SensorSupplyWire);
