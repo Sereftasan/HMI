@@ -36,7 +36,7 @@ class AT {
         var u = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Front Clamping", CommandAAddress = "M646", Lamp1AAddress = "M225",
             CommandBAddress = "M645", Lamp1BAddress = "M240", ErrorAAddress = "M845", ErrorBAddress = "M844",
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         u.SetBounds(10, 10, 360, 64); host.Controls.Add(u); host.Show(); Application.DoEvents();
         Check("each button carries its own side's error bit", u.ButtonA.ErrorAddress == "M845" && u.ButtonB.ErrorAddress == "M844",
               u.ButtonA.ErrorAddress + " / " + u.ButtonB.ErrorAddress);

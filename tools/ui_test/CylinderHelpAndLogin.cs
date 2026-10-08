@@ -42,10 +42,22 @@ class CH {
               !props["Valve"].IsBrowsable && !props["Feedback"].IsBrowsable &&
               props["Valve"].SerializationVisibility == DesignerSerializationVisibility.Hidden);
         Check("  the valve names read as the manual's", Enum.GetNames(typeof(CylinderValve)).SequenceEqual(
-              new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "DoubleSolenoid_3WayClosedCenter", "DoubleSolenoid_3WayOpenCenter" }));
+              new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "ThreeWayClosedCenter", "ThreeWayOpenCenter" }));
         Check("  with the manual's numbers kept", (int)CylinderValve.DoubleSolenoid == 1 && (int)CylinderValve.SingleSolenoid == 2 &&
-              (int)CylinderValve.DoubleSolenoid_3WayClosedCenter == 3 && (int)CylinderValve.DoubleSolenoid_3WayOpenCenter == 4 &&
+              (int)CylinderValve.ThreeWayClosedCenter == 3 && (int)CylinderValve.ThreeWayOpenCenter == 4 &&
               (int)CylinderFeedback.EncoderPlusReference == 6);
+        // 8 October (evening): "The 3 way valve types still have the DoubleSolenoid_ prefix, we don't need it".
+        var valveConv = TypeDescriptor.GetConverter(typeof(CylinderValve));
+        var shown = valveConv.GetStandardValues().Cast<object>().Select(v => valveConv.ConvertToString(v)).ToList();
+        Check("  shown in the Properties window as 3WayClosedCenter and 3WayOpenCenter, no prefix",
+              shown.SequenceEqual(new[] { "Unspecified", "DoubleSolenoid", "SingleSolenoid", "3WayClosedCenter", "3WayOpenCenter" }), string.Join(",", shown));
+        Check("  typed or read back by any of their names, the earlier ones too",
+              (CylinderValve)valveConv.ConvertFromString("3WayOpenCenter") == CylinderValve.ThreeWayOpenCenter &&
+              (CylinderValve)valveConv.ConvertFromString("DoubleSolenoid_3WayClosedCenter") == CylinderValve.ThreeWayClosedCenter &&
+              (CylinderValve)valveConv.ConvertFromString("DoubleSolenoid_3Way") == CylinderValve.ThreeWayClosedCenter &&
+              (CylinderValve)valveConv.ConvertFromString("ThreeWayOpenCenter") == CylinderValve.ThreeWayOpenCenter);
+        var oneCoil = new CylinderUnitHMI { ValveType = CylinderValve.ThreeWayClosedCenter, CommandAAddress = "M1" };
+        Check("  the type check says it so", oneCoil.TypeCheck.StartsWith("3WayClosedCenter: a coil for each movement"), oneCoil.TypeCheck);
 
         var unit = new CylinderUnitHMI {
             PlcNumber = 4, TitleTextKey = "Left Top Clamping",
@@ -167,17 +179,17 @@ class CH {
         Func<string, CylinderValve, CylinderFeedback, bool> asDrawn = (key, v, f) =>
             byName.ContainsKey(key) && byName[key].ValveType == v && byName[key].FeedbackType == f && byName[key].TypeCheck == "OK";
         Check("Milling Top Clamping as drawn: 5/3 (Y33/Y34), up sensor + encoder",
-              asDrawn("ManualMilling/Top Clamping", CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.EncoderPlusReference),
+              asDrawn("ManualMilling/Top Clamping", CylinderValve.ThreeWayClosedCenter, CylinderFeedback.EncoderPlusReference),
               byName.ContainsKey("ManualMilling/Top Clamping") ? byName["ManualMilling/Top Clamping"].TypeCheck : "missing");
         Check("Exit Robot Top Clamping as drawn: 5/3 (Y45/Y46), up sensor + encoder",
-              asDrawn("ManualExit/Robot Top Clamping", CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.EncoderPlusReference));
+              asDrawn("ManualExit/Robot Top Clamping", CylinderValve.ThreeWayClosedCenter, CylinderFeedback.EncoderPlusReference));
         Check("Exit Short Profile Support as drawn: 5/2 double solenoid (Y71/Y72), a sensor at each end",
               asDrawn("ManualExit/Short Profile Support", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic));
         Check("Profile Recognition Front Clamping as drawn: 5/3 (Y28/Y29), back sensor + pressure switch (and its measuring position)",
-              asDrawn("ManualProfile_Recognition/Front Clamping", CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.MagneticPlusPressureSwitch));
+              asDrawn("ManualProfile_Recognition/Front Clamping", CylinderValve.ThreeWayClosedCenter, CylinderFeedback.MagneticPlusPressureSwitch));
         Check("Cutting Left Top Small Clamping: one up sensor (SN64); Right Front Clamping: back sensor + encoder",
               asDrawn("ManualCutting/Left Top Small Clamping", CylinderValve.DoubleSolenoid, CylinderFeedback.SingleMagnetic) &&
-              asDrawn("ManualCutting/Right Front Clamping", CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.EncoderPlusReference));
+              asDrawn("ManualCutting/Right Front Clamping", CylinderValve.ThreeWayClosedCenter, CylinderFeedback.EncoderPlusReference));
         // Left open, for a decision (REVIEW 4r): the three back forward-reverse molds'
         // reference sensors are on the second controller, and four units carry a
         // position the drawings measure nothing for.

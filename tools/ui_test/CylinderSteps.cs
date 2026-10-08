@@ -109,7 +109,7 @@ class CS {
         Check("the milling front clamping shows its pressure switch (X73 = M243), not M349",
               unit("ManualMilling.unitFront_Clamping").Lamp1BAddress == "M243");
         Check("a mold: 5/3 and its analogue sensor, no lamps",
-              unit("unitConveyor_Front_Vertical").ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter &&
+              unit("unitConveyor_Front_Vertical").ValveType == CylinderValve.ThreeWayClosedCenter &&
               unit("unitConveyor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("unitConveyor_Front_Vertical")).Any());
         Check("the milling roller: no sensor on the drawings (X55 free), no lamp", unit("ManualMilling.unitRoller_Up_Down").FeedbackType == CylinderFeedback.NoSensor &&
               !lamps(unit("ManualMilling.unitRoller_Up_Down")).Any());
@@ -124,7 +124,7 @@ class CS {
             CommandBAddress = "M645", Lamp1BAddress = "M240",
             ErrorAAddress = "M845", ErrorBAddress = "M844", PositionAddress = "D4",
             ButtonBEnableConditions = SystemCondition.ManualMode,
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         u1.SetBounds(10, 10, 360, 64); host.Controls.Add(u1); host.Show(); Application.DoEvents();
         var extra = Field<AlarmHelpBadge>(u1, "_helpB").ExtraAddresses.ToList();
         Check("each side's watcher reads the movement's devices: command, both coils (from the drawings), both ends' sensors",
@@ -150,7 +150,7 @@ class CS {
         // 8 October: "most of the 3 way valves we use are closed center valves but you assumed they were
         // open centered before" - two kinds, the unit's own (3WayClosedCenter for every one there is)
         Check("  a 5/3 valve, its closed centre as the unit says (3WayClosedCenter)", text.Contains("5/3 valve: it moves only while") &&
-              text.Contains("(closed centre)") && !text.Contains("(open centre)") && u1.ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter);
+              text.Contains("(closed centre)") && !text.Contains("(open centre)") && u1.ValveType == CylinderValve.ThreeWayClosedCenter);
         var openPage = Text(TC.BuildSteps(u1.MovementFor("B"), TC.ValveType.OpenCentre, (TC.FeedbackType)TC.CanonicalFeedback((int)u1.FeedbackType), 0, "EN"));
         Check("  an open-centre one (3WayOpenCenter): its own words, the same 5/3 page", openPage.Contains("(open centre)") && !openPage.Contains("(closed centre)") &&
               openPage.Contains("5/3 valve: it moves only while") && TC.TemplateName(TC.ValveType.OpenCentre, TC.FeedbackType.PressureSwitch) == "Cylinder_5-3_PressureSwitch.html");
@@ -262,7 +262,7 @@ class CS {
         var u2 = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Top Clamping", CommandAAddress = "M648", Lamp1AAddress = "M226", CommandBAddress = "M647",
             ErrorAAddress = "M847", ErrorBAddress = "M846", PositionAddress = "D6",
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.EncoderPlusReference };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.EncoderPlusReference };
         u2.SetBounds(10, 170, 360, 64); host.Controls.Add(u2); Application.DoEvents();
         mem.Clear(); mem["M847"] = 1; mem["Y35"] = 0; Scan(u2);
         html = Steps(u2, "A");
@@ -277,7 +277,7 @@ class CS {
         Check("  already on when the page started reading: said so", Text(html).Contains("already on when the page started reading"));
         var mold = new CylinderUnitHMI {
             PlcNumber = 1, TitleTextKey = "Mold", CommandAAddress = "M541", CommandBAddress = "M540", ErrorAAddress = "M915", PositionAddress = "D110",
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.AnalogueMagnetic };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.AnalogueMagnetic };
         mold.SetBounds(10, 250, 360, 64); host.Controls.Add(mold); Application.DoEvents();
         mem.Clear(); mem["M915"] = 1; Scan(mold);
         html = Steps(mold, "A");

@@ -248,7 +248,8 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
      it opens again exactly as you left it.</li>
  <li><b>Share the screen:</b> drag the border between the page and the side page. <b>Double-click the border</b>: the side page becomes just wide
      enough to show all of the page on show &ndash; every button, every column of the PLC Monitor's tab (and of <i>Find</i>'s list while Find is open under it),
-     the inputs and outputs side by side with every name whole &ndash;
+     the inputs and outputs side by side with every name whole, an axis page's rows with the columns its lists tick (the lists themselves
+     take the width they are given) &ndash;
      leaving a strip of the page to take the border back by (the border never goes further than that strip). The width is remembered, and the
      side page opens at that width next time, once the window is full size.</li>
  <li><b>A window of its own</b> (for a second screen): the button beside the &#10005;. The window has one title bar &ndash; the page's
@@ -258,7 +259,8 @@ no longer fits &ndash; a scroll bar appears under or beside it): nothing is ever
  <li><b>A main page beside the page:</b> a machine's <b>Home</b>, <b>Manual Movement</b>, <b>Machine Parameters</b>, <b>Alarms</b> or <b>Dashboard</b>
      can be opened as a side page. <b>Right-click its button</b> in the page menu &ndash; <i>Open in the side panel</i>, then the machine when the page is
      there once per machine &ndash; or click the side bar's <b>+</b> for a list of these pages (the ones already on the bar are ticked).
-     It gets a button of its own on the side bar, named with its machine (<i>&lt;machine&gt; - Manual Movement</i>), and opens, closes, shares
+     It gets a button of its own on the side bar, <b>under the +</b> (the program's own side pages stay above it), named with its machine
+     (<i>&lt;machine&gt; - Manual Movement</i>), and opens, closes, shares
      the screen and goes into a window of its own as any side page. It <b>works as the page itself</b>: its buttons move the machine with their own
      levels, conditions and log, and it needs the page's level. <b>Right-click its button on the side bar</b>: <i>Take it off the side bar</i>.
      The pages put there are still there at the next start. HMI Settings and pages that edit a library (the profiles) cannot be opened there.</li>
@@ -293,6 +295,8 @@ there is no right-click to it. Open it from the side bar. While it is open (<b>P
 controller (to sign in or change the language, turn Picking off first). The side bar and the scroll bars work as ever. <b>The page menu's buttons and a page's tabs</b> work as ever too, so any page can be
 reached &ndash; and each one used is noted, with the page it opened. In a <b>table</b>, a tap on a <b>heading</b> picks the heading; a tap on a cell
 that only shows a value picks that value (named by its row: <i>Position (X)</i>); a cell you type in is typed in as usual.
+A tap on a cylinder unit's <b>frame</b> (its name, its border) picks the <b>unit</b>, with its title to translate. The notes page's own fields,
+tables and tabs work as usual while picking &ndash; a tap on them is never taken as a pick.
 <b>Picking: off</b> (a tap on it) lets the page work as usual with the notes page still open; closing the notes page does the same.</p>
 <p>For what was picked the page shows:</p>
 <ul>
@@ -300,14 +304,15 @@ that only shows a value picks that value (named by its row: <i>Position (X)</i>)
  <li><b>Its tooltip</b> &ndash; on a touch screen the one way to read it, since there is no pointer to rest on a control.</li>
  <li><b>Its value</b>, for a value shown (a display, a lamp, a table's cell): <i>Shown now</i>, then <i>What it should be</i> and a comment (why);
      &#128190; <i>Keep the note</i>. It goes to the machine's builder in the feedback file &ndash; nothing is changed on the screen.</li>
- <li><b>Its texts</b>, in a table: <i>Language</i>, <i>Now</i>, <i>Required</i>, <i>Comment</i>. Type what the text should be under <i>Required</i>;
-     its <i>Comment</i> (why) opens once something is required. <i>Languages:</i> chooses the languages listed &ndash; kept as yours; none chosen,
+ <li><b>Its texts</b>, in a table: <i>Language</i>, <i>Now</i>, <i>Request</i>, <i>Comment</i>. Type what the text should be under <i>Request</i>;
+     its <i>Comment</i> (why) opens once something is requested. A unit's title is offered with the unit (a tap on its frame or its name)
+     and with each of its buttons and lamps (<i>Unit title</i>). <i>Languages:</i> chooses the languages listed &ndash; kept as yours; none chosen,
      the screen's language and English. A value has no texts of its own (its column's heading is translated on the heading).
      <span class="lvl l2">Maintenance</span> and <span class="lvl l3">Admin</span>: <i>Keep the texts</i> puts them <b>on the screen at once</b>,
      for everyone on this panel (and at every start). An <span class="lvl l1">Operator</span>: <i>Propose the texts</i> &ndash; a proposal, which
      Maintenance or an Admin <b>accepts</b> on the same page.</li>
  <li><span class="lvl l3">Admin</span> <b>Its settings</b>: the control's own settings in a table &ndash; its text key, its PLC, its addresses &hellip;
-     (and its unit's, for a field of a unit) &ndash; with <i>Now</i>, <i>Required</i> and <i>Comment</i>; &#128190; <i>Keep the settings asked for</i>.
+     (and its unit's, for a field of a unit) &ndash; with <i>Now</i>, <i>Request</i> and <i>Comment</i>; &#128190; <i>Keep the settings asked for</i>.
      They are for the builder, in the feedback file: <b>the program is not changed</b>.</li>
  <li><b>Its helpers</b>: a text and a file (a document, a picture, a video) for this control. Maintenance's and an Admin's are offered
      <b>with the control at once</b>: in a unit's <b>?</b>, or as a small blue <b>?</b> on the corner of any other control &ndash; a click opens it
@@ -420,7 +425,8 @@ position reading already show a fault. What it offers depends on the moment:</p>
       (4 mA &hellip; 20 mA), the encoder on the load with its scale &ndash; and with the <b>module that reads it</b>, as the drawings name it
       (<i>U19 FX5-8AD, CH1</i>; <i>U4 FX5U-64MT-ESS, X6/X7</i>). The steps name it too, and say where to measure.</li>
   <li>A <b>5/3 valve</b> is described as its unit's valve type says: <b>closed centre</b> (both coils off: it stops and holds its air) or
-      <b>open centre</b> (both sides open: it can drift).</li>
+      <b>open centre</b> (both sides open: it can drift). In the designer they are the <i>ValveType</i>s <b>3WayClosedCenter</b> and
+      <b>3WayOpenCenter</b> (a 3 way valve always has two coils).</li>
   <li>The drawings put a movement on its <b>side</b>: the <b>A</b> side pushes the rod out (a clamp clamps) through the <b>black</b> hose, the <b>B</b> side
       pulls it in (a clamp releases) through the <b>yellow</b> one. The movement's coil sits on its hose's end of the valve, the arrow on the cylinder points
       the way the rod goes, and the sensor it reaches is lit at that end. Which hose an output fills is in the machine's <code>Wiring.csv</code> (column
@@ -499,10 +505,17 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      as the machine's program says: a short pulse, or <b>SET</b> &ndash; the HMI switches the device on and the PLC switches it off itself
      once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
  <li><b>AI prompt</b>: the last entry of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers it
-     too) and in a unit's <b>?</b> while it shows a fault. A click puts on the clipboard a prompt with everything about the alarm, its unit and the
-     machine: the drawings' numbers, what the HMI saw, the notes left on the unit, the HMI's own help for it. Open any AI chat (Claude, ChatGPT,
-     Gemini, Grok&hellip;) and paste it (<kbd>Ctrl</kbd>+<kbd>V</kbd>): the AI is asked to write a helper for this alarm on this machine, in the HMI's
-     language, in three levels &ndash; operator, maintenance, automation engineer. You can go on asking it questions there.</li>
+     too) and in a unit's <b>?</b> while it shows a fault. A click puts on the clipboard a prompt with <b>everything the HMI knows</b> about the alarm:
+     the machine, its PLC and cards, how its alarms are raised; the alarm, its code and device, what the HMI saw fail and the states before it came;
+     the unit with <b>both</b> its movements (command, output, sensors, error bit and alarm, delay); <b>every device involved</b> with its PLC label,
+     its line on the electrical drawing (wire, relay, coil, card terminal), its air line (valve, hoses, cylinder), where it is on the HMI and its state
+     at the alarm and now; the other alarms on the list and the station's recent ones; the notes left on the unit; the HMI's own help &ndash; and its
+     <b>step-by-step page whole (HTML)</b>, as the format to follow. The AI is asked for <b>three HTML pages like it</b>, one for the operator, one
+     for the maintenance technician, one for the automation engineer, in the HMI's language &ndash; and then to stay on and explain any part you
+     do not understand, asking what you see at the machine. Open any AI chat (Claude, ChatGPT, Gemini, Grok&hellip;) and paste it
+     (<kbd>Ctrl</kbd>+<kbd>V</kbd>). The first prompt takes a moment (the HMI looks through every page for where the devices are).
+     The prompt is long: it is also <b>saved as a text file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept) &ndash; when a chat
+     says the text is too long, attach that file instead; the message after copying names it.</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
@@ -539,6 +552,10 @@ switched off &ndash; watch every axis's drive.</p>
  <li><b>An axis</b> (a row of Axis Settings), with the axis alarms on: its alarm <b>as soon as</b> its <b>Servo Alarm</b> or <b>Axis Alarm</b> shows
      a code other than 0 &ndash; no delay &ndash; with the code as the sub-number (<code>M801.16.3</code>, <code>M801.1904H</code>), until the code clears.
      An <b>Axis Warning</b> is only a warning: it raises nothing.</li>
+ <li><b>The PLC is told:</b> when the HMI raises an alarm it <b>SETs its device</b> &ndash; the movement's or the axis' error bit (<code>M840</code>,
+     <code>M801</code>) &ndash; so the PLC program knows of it; the PLC's alarm reset clears it, as for its own alarms. The <b>Address</b> column shows
+     that device alone (<code>M801</code>); the sub-number is part of the code (<code>M801.16.3</code>), not of the address. A movement or an axis with
+     no error bit is not written to. Each write is in the PLC write log (<i>HMI alarm M801.16.3: its error bit set</i>).</li>
  <li><b>One fault, one line:</b> while the HMI's alarm for a device is listed, the PLC's own alarm bit for the same device is not listed beside it.
      Acknowledged while the PLC's bit is still on, the PLC's alarm then shows as usual.</li>
 </ul>
@@ -691,7 +708,9 @@ cannot change are grey. Under the list &ndash; always at the same place, however
       <li>With a <b>load encoder value</b> (<code>LoadEncoderValueAddress</code>, a load-side encoder such as a linear scale), the position's tooltip
           starts with it and with the <b>difference</b>, in the axis's unit to its last count (<i>+0.0012 mm</i> for 12 counts at a divisor of 10000).
           The servo motor's own encoder position is the module's <i>Real current value</i> in Motion monitor items (below).</li>
-      <li><b>PLC axis items</b>, the list at the top of the page: which groups of the row to show &ndash; <i>Manual movement</i> (the jog buttons and the position),
+      <li><b>PLC axis items</b>, the list at the top of the page (it names itself: no caption beside it; at its right how many are ticked, <i>3/8</i>,
+          or <i>All</i>; open, its name is its first line, not one to tick &ndash; Motion monitor items the same, <i>None</i> when nothing is ticked):
+          which groups of the row to show &ndash; <i>Manual movement</i> (the jog buttons and the position),
           <i>Torque monitor</i> (the current), <i>Axis setting parameters</i> (min, max, reference, calibration, calibrate), <i>Reference activation</i> (Ref),
           <i>Reference sensor - encoder Z pulse distance</i>, <i>Alarm codes</i>, <i>Travel per revolution</i>, <i>Backlash</i> &ndash; only those some row of the
           page has. <i>All</i>, the last line of the list (nothing ticked), is the whole row. The page is a <b>table</b>: the two lists and the column

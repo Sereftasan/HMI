@@ -24,6 +24,7 @@ class NF {
         Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
     }
     const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
+    static bool Pump0() { Pump(150); return true; }
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(15); } }
     static IEnumerable<Control> Tree(Control c) { foreach (Control k in c.Controls) { yield return k; foreach (var d in Tree(k)) yield return d; } }
     static void Snap(Control c, string path) {
@@ -121,7 +122,8 @@ class NF {
         machine.Controls.Add(nav);
         var host = new Panel { Bounds = new Rectangle(660, 0, 540, 760) };
         form.Controls.Add(host);
-        var notes = new NotesPage(c => c != null && (machine.Contains(c)), c => c == nav ? "Opens: Manual Movement" : "Test machine / Page", () => "TEST", c => c == nav);
+        // passed through: the menu's button, and every tab strip (as the main window's rule: a page's tabs)
+        var notes = new NotesPage(c => c != null && (machine.Contains(c)), c => c == nav ? "Opens: Manual Movement" : "Test machine / Page", () => "TEST", c => c == nav || c is TabControl);
         host.Controls.Add(notes);
         form.Show(); Pump(400);
         Check("open and in sight: picking", notes.Picking);
@@ -135,8 +137,8 @@ class NF {
         Func<string, Control> named = n => Tree(body).FirstOrDefault(c => c.Name == n);
         Func<DataGridView> texts = () => (DataGridView)named("notesTexts");
         Func<DataGridView, string> langs = g => string.Join(",", g.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells[0].Value)));
-        Check("its texts in a table: language, now, required, comment - the screen's language and English when none is chosen",
-              texts() != null && texts().Columns.Count == 4 && langs(texts()) == "EN" && Convert.ToString(texts().Rows[0].Cells[1].Value) == "Start",
+        Check("its texts in a table: language, now, request, comment - the screen's language and English when none is chosen",
+              texts() != null && texts().Columns.Count == 4 && texts().Columns[2].HeaderText == "Request" && langs(texts()) == "EN" && Convert.ToString(texts().Rows[0].Cells[1].Value) == "Start",
               texts() == null ? "none" : langs(texts()));
         ViewPreferences.SetList(ViewPreferences.NoteLanguages, new[] { "EN", "TR", "IT" });
         Pump(100);
@@ -256,6 +258,18 @@ class NF {
         Pump(100);
         Check("a helper on a unit's button: in the unit's \"?\"", unit.UnitHelpDocuments().Any(d => d.Title.StartsWith("Clamp: the valve")),
               string.Join(" | ", unit.UnitHelpDocuments().Select(d => d.Title)));
+        // 8 October: "it doesn't find TitleTextKey for the cylinder unit (e.g. 'Profile Clamping 6')"
+        var frame = unit.Controls.Cast<Control>().First(c => c.GetType().Name == "RoundedGroupBox");
+        Check("a tap on a unit's frame (its title, its border): the unit", NoteTarget.Notable(frame) == unit, NoteTarget.Notable(frame) == null ? "none" : NoteTarget.Notable(frame).GetType().Name);
+        Check("  picked: named by its title, the title its first text", Tap(notes, frame, 0x0201) && Tap(notes, frame, 0x0202) && notes.PickedName == "Clamp" &&
+              named("notesTexts") != null && body.Controls.Cast<Control>().Any(c => c.Text.StartsWith("Title   (Clamp)")), notes.PickedName);
+        Check("  its buttons offer the unit's title too", NoteTarget.KeysOf(unitField).Any(k => k.What == "Unit title" && k.Key == "Clamp") &&
+              NoteTarget.KeysOf(unitField).All(k => k.Key.Any(char.IsLetter)), string.Join(", ", NoteTarget.KeysOf(unitField).Select(k => k.What + "=" + k.Key)));
+        // 8 October: "any click on the page shakes it for a few seconds and it turns to something else"
+        var own = Tree(body).OfType<Label>().First(l => l.Visible);
+        string before = notes.PickedKey;
+        Check("a tap on the notes page itself is its own: not noted as one of its tabs", !Tap(notes, own, 0x0201) && !Tap(notes, own, 0x0202) & Pump0() && notes.PickedKey == before,
+              notes.PickedName);
         SecurityManager.Login("op1", SecurityLevel.Operator);
         Pump(50);
 

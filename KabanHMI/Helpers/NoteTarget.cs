@@ -35,12 +35,22 @@ namespace Kaban.UI.Helpers
             for (var c = hit; c != null; c = c.Parent)
             {
                 if (c is Form) break;
+                // A UNIT'S FRAME (its title and border) is the unit: its title is what
+                // a tap there is about (8 October: "it doesn't find TitleTextKey for the
+                // cylinder unit, e.g. 'Profile Clamping 6'")
+                if (first == null && IsUnitFrame(c)) return c.Parent;
                 var owner = AttachedDescription.OwnerOf(c);
                 if (owner != null) return owner;
                 if (c is IHmiControl && !(c is AxisSettingHMI) && !(c is CylinderUnitHMI)) return c;
                 if (first == null && IsNotable(c)) first = c;
             }
             return first;
+        }
+
+        /// <summary>The frame a cylinder unit draws its title and border with.</summary>
+        internal static bool IsUnitFrame(Control c)
+        {
+            return c != null && c.Parent is CylinderUnitHMI && c is RoundedGroupBox;
         }
 
         private static bool IsNotable(Control c)
@@ -178,7 +188,8 @@ namespace Kaban.UI.Helpers
             if (c == null) return list;
             Action<string, string> add = (what, key) =>
             {
-                if (string.IsNullOrWhiteSpace(key) || list.Any(k => k.Key == key)) return;
+                // a glyph (◀ ▶ ▲) is no text to translate
+                if (string.IsNullOrWhiteSpace(key) || !key.Any(char.IsLetter) || list.Any(k => k.Key == key)) return;
                 list.Add(new TextKey { What = what, Key = key.Trim() });
             };
             var tag = c.Tag as string;
@@ -190,7 +201,8 @@ namespace Kaban.UI.Helpers
             add(T("Nts_KeyCaption", "Caption"), Str(c, "DescriptionText"));
             foreach (var p in c.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                 .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key") && p.Name != "Key" && p.GetIndexParameters().Length == 0)
-                                .OrderBy(p => p.Name))
+                                // its name first (a unit's title, a button's text), then the rest
+                                .OrderBy(p => p.Name == "TitleTextKey" || p.Name == "TranslationKey" || p.Name == "AxisNameKey" ? 0 : 1).ThenBy(p => p.Name))
             {
                 string v;
                 try { v = p.GetValue(c, null) as string; } catch { v = null; }
@@ -200,6 +212,9 @@ namespace Kaban.UI.Helpers
             }
             if (list.Count == 0 && (c is Label || c is ButtonBase) && !string.IsNullOrWhiteSpace(c.Text) && !IsNumber(c.Text))
                 add(T("Nts_KeyText", "Its text (no key of its own)"), c.Text);
+            // a button or a lamp of a cylinder unit: the unit's title too - it names them
+            var unit = UnitOf(c) as CylinderUnitHMI;
+            if (unit != null) add(T("Nts_KeyUnitTitle", "Unit title"), unit.TitleTextKey);
             return list;
         }
 

@@ -12,8 +12,8 @@ pages came from an older machine and were never fully tested.
     and the output is on the electrical drawing (134581 rev. 9) with its valve
     on the pneumatic drawing (134628 rev. 9).
   * Valve: 5/2 double solenoid -> DoubleSolenoid, 5/2 single -> SingleSolenoid,
-    5/3 -> DoubleSolenoid_3WayClosedCenter (8 October: the machine's 5/3 valves are
-    closed centre; DoubleSolenoid_3WayOpenCenter for an open-centre one).
+    5/3 -> ThreeWayClosedCenter (8 October: the machine's 5/3 valves are
+    closed centre; ThreeWayOpenCenter for an open-centre one).
   * Feedback: the sensors the electrical drawing wires for that cylinder; an
     encoder (sheet 11) or an analogue sensor (sheets 34, 35) for its position.
   * Lamps: a sensor is read at the relay the PLC copies it into (IoList.csv:
@@ -31,7 +31,7 @@ import re, sys
 CTL = 'Kaban.UI.Controls.'
 PAGES = 'Kaban.Machines.FA2010/Screens/Manual/'
 
-D, S, T3 = 'DoubleSolenoid', 'SingleSolenoid', 'DoubleSolenoid_3WayClosedCenter'
+D, S, T3 = 'DoubleSolenoid', 'SingleSolenoid', 'ThreeWayClosedCenter'
 SM, SI, TWO, PSW, ANA, ENC, NONE = ('SingleMagnetic', 'SingleInductive', 'TwoEndMagnetic', 'MagneticPlusPressureSwitch',
                                     'AnalogueMagnetic', 'EncoderPlusReference', 'NoSensor')
 CLEAR = None

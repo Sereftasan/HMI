@@ -152,7 +152,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping.PositionSuffix = "mm";
             this.unitLeft_Top_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitLeft_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitLeft_Top_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitRight_Front_Clamping
@@ -178,7 +178,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitRight_Front_Clamping.ErrorAAddress = "M852";
             this.unitRight_Front_Clamping.ErrorBAddress = "M851";
-            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitRight_Front_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // Drawings: Y43/Y44 5/3 closed centre (P22); back sensor SN76 (X60) + encoder X14/X15.
             this.unitRight_Front_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitRight_Front_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;

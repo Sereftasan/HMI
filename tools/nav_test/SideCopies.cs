@@ -77,6 +77,13 @@ class SC {
         Check("  nothing registered twice (alarms, axes)", AlarmGeneration.Cylinders.Count == cylinders && AlarmHelpLinks.AllAxes.Count == axes);
         var buttons = (Dictionary<string, Button>)Get(form, "_sideButtons");
         Check("its button on the side bar, and the + button", buttons.ContainsKey(key) && buttons.ContainsKey("+"), string.Join(",", buttons.Keys));
+        // 8 October: "the added pages' buttons should be located under the 'Open a main page in the side panel'
+        // button so the user can see them separated from the naturally existing ones"
+        var plus = buttons["+"];
+        var nativeKeys = buttons.Keys.Where(k => k != "+" && k != key && !k.StartsWith("Main:")).ToList();
+        Check("  under the + button; the program's own pages above it", buttons[key].Top > plus.Top &&
+              nativeKeys.Count > 0 && nativeKeys.All(k => buttons[k].Top < plus.Top),
+              "+ at " + plus.Top + ", " + key + " at " + buttons[key].Top + "; " + string.Join(", ", nativeKeys.Select(k => k + "@" + buttons[k].Top)));
         Check("  kept for the next run", File.ReadAllText(cfg).Contains("MainPages=" + key), File.ReadAllText(cfg).Replace("\n", " "));
         Check("the + button lists the pages, this one ticked", form.SidePagesMenu().Items.OfType<ToolStripMenuItem>().Any(i => i.Name == "side:" + key && i.Checked) &&
               form.SidePagesMenu().Items.OfType<ToolStripMenuItem>().Any(i => i.Name.StartsWith("side:Main:Home")));

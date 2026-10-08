@@ -113,10 +113,21 @@ class AXI {
               string.Join(",", offered) == "Manual,Torque,Settings,RefActivation,ZDistance,Codes,Travel", string.Join(",", offered));
         Check("  their names", bar.ItemsPick.Items.Select(i => i.Text).SequenceEqual(new[] { "Manual movement", "Torque monitor", "Axis setting parameters",
               "Reference activation", "Reference sensor - encoder Z pulse distance", "Alarm codes", "Travel per revolution" }));
-        Check("  'All' when nothing is ticked (the last line of the list)", bar.ItemsPick.AllText == "All" && bar.ItemsPick.Shown == "All");
-        Check("  left of 'Motion monitor items:' ('None' its last line)", bar.Right <= mot.Left && mot.MotionPick.AllText == "None" &&
-              mot.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor items:") && bar.Controls.OfType<Label>().Any(l => l.Text == "PLC axis items:") &&
-              !mot.Controls.OfType<Label>().Any(l => l.Text.Contains("read only")), bar.Bounds + " " + mot.Bounds);
+        Check("  'All' when nothing is ticked (the last line of the list)", bar.ItemsPick.AllText == "All" && bar.ItemsPick.State == "All");
+        // 8 October: "remove these two controls' descriptions ... show them as the combo's first member
+        // (not to select, just for the user to see when the combo is both open or closed)"
+        Check("  no captions beside the lists: each names itself, closed", !bar.Controls.OfType<Label>().Any() && !mot.Controls.OfType<Label>().Any() &&
+              bar.ItemsPick.Shown == "PLC axis items" && mot.MotionPick.Shown == "Motion monitor items", bar.ItemsPick.Shown + " / " + mot.MotionPick.Shown);
+        Check("  left of Motion monitor items ('None' its last line)", bar.Right <= mot.Left && mot.MotionPick.AllText == "None" && mot.MotionPick.State == "None",
+              bar.Bounds + " " + mot.Bounds);
+        bar.ItemsPick.DropUnder(bar.ItemsPick);
+        Pump(150);
+        var openHead = bar.ItemsPick.OpenHeading;
+        Check("  open: its name the first line, not one to tick", bar.ItemsPick.IsOpen && openHead != null && openHead.Text == "PLC axis items" &&
+              openHead.Bottom <= bar.ItemsPick.OpenList.Top && bar.ItemsPick.OpenList.Items.Count == offered.Count,
+              openHead == null ? "no heading" : openHead.Text + " " + openHead.Bounds + " / " + bar.ItemsPick.OpenList.Bounds);
+        bar.ItemsPick.OpenDrop.Close();
+        Pump(150);
         string all = Keys(r1);
         Check("All: the whole row", all == "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,Ref,ZDistance,AxisAlarm,AxisWarning,ServoAlarm,TravelPerRev", all);
 
@@ -455,7 +466,7 @@ class AXI {
         var keys = new[] { "AxIt_Pick", "AxIt_All", "AxIt_Manual", "AxIt_Torque", "AxIt_Settings", "AxIt_RefActivation", "AxIt_ZDistance",
                            "AxIt_Codes", "AxIt_Travel", "AxIt_Backlash", "Tip_LoadEncoder", "Mot_Pick", "Mot_PickNone" };
         Check("every text in the file", keys.All(k => LanguageManager.GetString(k, "##") != "##"));
-        Check("  'Motion monitor items:'", LanguageManager.GetString("Mot_Pick", "") == "Motion monitor items:");
+        Check("  'Motion monitor items'", LanguageManager.GetString("Mot_Pick", "") == "Motion monitor items");
 
         SecurityManager.Logout();
         form.Close();

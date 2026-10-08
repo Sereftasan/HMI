@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Kaban.Core.Interfaces;
 using Kaban.Core.Models;
 
 namespace Kaban.Core.Helpers
@@ -589,7 +590,47 @@ namespace Kaban.Core.Helpers
             };
             if (s.Raised != null) AlarmManager.ClearGenerated(s.Raised);
             s.Raised = item;
+            item.Device = s.ErrorAddress;
             AlarmManager.RaiseGenerated(item);
+            SetDevice(item);
+        }
+
+        // ---- the error bit SET in the PLC ------------------------------------------------
+
+        /// <summary>
+        /// The driver an alarm's error bit is written through (a test sets its own);
+        /// null - a station known to be down - writes nothing.
+        /// </summary>
+        public static Func<int, IPlcDriver> DriverForWrite = station => PlcManager.Instance.GetDriverForWrite(station);
+
+        /// <summary>
+        /// 8 October: "the M801 device should be SET so the PLC knows about the alarm
+        /// (the same for the cylinder movement controls)". Written once, as the alarm
+        /// is raised. The HMI does not reset it: the PLC's alarm reset clears its
+        /// alarm bits as it clears those it sets itself. Only an error bit is ever
+        /// written - a unit or axis without one has nothing set, and its command bit
+        /// is never touched.
+        /// </summary>
+        private static void SetDevice(AlarmItem item)
+        {
+            if (item == null || string.IsNullOrWhiteSpace(item.Device)) return;
+            string device = item.Device.Trim();
+            IPlcDriver driver = null;
+            try { driver = DriverForWrite == null ? null : DriverForWrite(item.Station); } catch { driver = null; }
+            if (driver == null)
+            {
+                AuditLogger.Log("HMI alarm " + item.ShownCode + ": " + device + " not set - station " + item.Station + " does not answer.");
+                return;
+            }
+            try
+            {
+                int rc;
+                using (PlcWriteLog.Source("HMI alarm " + item.ShownCode + ": its error bit set"))
+                    rc = driver.Write(device, 1);
+                AuditLogger.Log(rc == 0 ? "HMI alarm " + item.ShownCode + ": " + device + " set on station " + item.Station + "."
+                                        : "HMI alarm " + item.ShownCode + ": " + device + " could not be set (" + rc + ").");
+            }
+            catch (Exception ex) { AuditLogger.Log("HMI alarm " + item.ShownCode + ": " + device + " could not be set - " + ex.Message); }
         }
 
         private static string Safe(string text)
@@ -643,9 +684,11 @@ namespace Kaban.Core.Helpers
                 DetailText = () => AxisCodeHelp.Describe(kind, value),
                 BaseCode = def != null ? def.AlarmCode : "",
                 GroupCode = baseCode,
+                Device = (x.ErrorAddress ?? "").Trim(),
                 TriggerTime = now
             };
             AlarmManager.RaiseGenerated(item);
+            SetDevice(item);
             return item;
         }
 

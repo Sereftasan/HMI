@@ -61,7 +61,7 @@ class AGU {
             PlcNumber = 1, TitleTextKey = "Front Clamping", Name = "unitFC", ButtonBText = "Clamp", ButtonAText = "Release",
             CommandAAddress = "M646", Lamp1AAddress = "M225", CommandBAddress = "M645", Lamp1BAddress = "M240",
             ErrorAAddress = "M845", ErrorBAddress = "M844",
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         u.SetBounds(10, 10, 360, 64); host.Controls.Add(u); host.Show(); Application.DoEvents();
         var w = u.BuildWatch();
         Check("its watch: each movement by the output its command drives on the drawings, confirmed by its end's sensor, the other end's OFF",
@@ -150,7 +150,9 @@ class AGU {
         Check("  the columns: Code, Alarm, Cause, Severity, Time, Address, Help",
               string.Join(",", ag.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Select(c => c.Name)) ==
               "AlarmCode,Description,Cause,Severity,TriggerTime,Address,Help");
-        Check("  the Address (M844.2) for an Admin only: Maintenance does not see it", !ag.Columns["Address"].Visible && cell(ag, 0, "Address") == "M844.2");
+        // 8 October (evening): the device alone - "the .2 is the alarm's code, nothing to do with the device address"
+        Check("  the Address (M844, the device alone) for an Admin only: Maintenance does not see it", !ag.Columns["Address"].Visible && cell(ag, 0, "Address") == "M844",
+              cell(ag, 0, "Address"));
         SecurityManager.Login("boss", SecurityLevel.Admin); Application.DoEvents();
         Check("  an Admin does", ag.Columns["Address"].Visible);
         SecurityManager.Login("m", SecurityLevel.Maintenance); Application.DoEvents();
@@ -162,7 +164,7 @@ class AGU {
         var hist = (UserControl)screen.GetType().GetMethod("BuildHistory", Any).Invoke(screen, new object[] { null });
         host.Controls.Add(hist); hist.Bounds = new Rectangle(0, 100, 1000, 300); Application.DoEvents();
         var hg = All(hist).OfType<DataGridView>().First();
-        int hr = hg.Rows.Cast<DataGridViewRow>().Select(r => r.Index).FirstOrDefault(i => cell(hg, i, "Address") == "M844.2");
+        int hr = hg.Rows.Cast<DataGridViewRow>().Select(r => r.Index).FirstOrDefault(i => cell(hg, i, "Address") == "M844");
         Check("  the history: the same columns, the same values", string.Join(",", hg.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Select(c => c.Name)) ==
               "AlarmCode,Description,Cause,Severity,TriggerTime,Address,Help" && cell(hg, hr, "AlarmCode") == "T.Clamp" &&
               cell(hg, hr, "Cause") == cell(ag, 0, "Cause") && !hg.Columns["Address"].Visible && cell(hg, hr, "Help").StartsWith("Step by step"),

@@ -144,7 +144,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitTop_Clamping.ErrorAAddress = "M887";
             this.unitTop_Clamping.ErrorBAddress = "M886";
             // Pneumatic drawing: Y33/Y34, 5/3 closed centre (P18); up sensor SN62 (X54) + encoder X4/X5.
-            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitTop_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.unitTop_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
@@ -171,7 +171,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.PositionSuffix = "mm";
             this.unitFront_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
-            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitFront_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // grpDrills_to_Changing_Pos

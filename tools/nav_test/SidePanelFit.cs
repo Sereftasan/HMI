@@ -149,6 +149,36 @@ class SF {
         int w = (int)typeof(MainForm).GetMethod("ContentWidth", Any).Invoke(null, new object[] { sample });
         Check("the furthest right of what is placed: 480 (a strip on top), + the button kept at the right", w >= 480 && w <= 480 + 130 + 10, w.ToString());
 
+        // 8 October: "the required second page width should be calculated with the selected items as well,
+        // not these selection combos' width - 'Motion monitor items' is still there with no member selected"
+        Console.WriteLine("--- the Axis Monitor: as wide as its rows, not its pick lists ---");
+        var axm = a.ShowSidePage("AxisMonitor") as AxisMonitorPage;
+        Pump(400);
+        var axBar = axm == null ? null : (AxisPickBar)Get(axm, "_bar");
+        Check("open, with its lists (an Admin)", axm != null && axBar != null && axBar.Visible && axBar.MotionPick.Visible);
+        if (axBar != null)
+        {
+            ViewPreferences.SetList(ViewPreferences.MonitorMotion, new string[0]);
+            Pump(300);
+            a.FitSidePanel(); Pump(200);
+            int withLists = panel.Width;
+            int lists2 = (int)typeof(MainForm).GetMethod("ContentWidth", Any).Invoke(null, new object[] { axBar });
+            axBar.Visible = false; Pump(100);
+            a.FitSidePanel(); Pump(200);
+            int withoutLists = panel.Width;
+            axBar.Visible = true; Pump(100);
+            Check("  nothing ticked in Motion monitor items: fitted to the rows - the lists add nothing", withLists == withoutLists && lists2 == 0,
+                  withLists + " / " + withoutLists);
+            var axRows = All(axm).Where(c => (c is AxisMonitorRow || c is AxisSettingHMI) && c.Visible).ToList();
+            int rightmost = axRows.Count == 0 ? 0 : axRows.Max(c => axm.PointToClient(c.PointToScreen(new Point(c.Width, 0))).X);
+            Check("  every row whole in it", axRows.Count > 0 && rightmost <= axm.ClientSize.Width + 2, axRows.Count + " rows, " + rightmost + " <= " + axm.ClientSize.Width);
+        }
+        // Inputs / Outputs as it was, for the next start's checks
+        a.ShowSidePage("IoMonitor");
+        Pump(200);
+        a.FitSidePanel();
+        Pump(200);
+
         a.Close();
         Pump(200);
 

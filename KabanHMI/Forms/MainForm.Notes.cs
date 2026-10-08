@@ -79,6 +79,8 @@ namespace Kaban.UI.Forms
         internal bool IsPassedThrough(Control c)
         {
             if (c == null || c.IsDisposed) return false;
+            // the notes page's own tabs and fields are the notes page's
+            for (var p = c; p != null; p = p.Parent) if (p is Screens.NotesPage) return false;
             if (Kaban.UI.Settings.SettingsScreen.IsTab(c)) return true;
             var tabs = c as TabControl;
             if (tabs != null && !(tabs.FindForm() is SidePageWindow) && IsInPage(tabs)) return true;

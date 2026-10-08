@@ -33,8 +33,8 @@ namespace Kaban.UI.Screens
     ///    shown only picks its value; a cell to type in is typed in, not picked;
     ///  - the menu's page buttons and a page's tabs work as ever and are noted
     ///    with the page they open; the caption bar is picked as the page is;
-    ///  - texts in a table: now / required / comment (the comment once something
-    ///    is required), in the user's chosen languages only;
+    ///  - texts in a table: now / request / comment (the comment once something
+    ///    is requested), in the user's chosen languages only;
     ///  - an Admin's table of the control's settings (addresses ...): now /
     ///    required / comment, for the builder;
     ///  - general notes, on no control, with a file.
@@ -448,13 +448,19 @@ namespace Kaban.UI.Screens
                 return true;
             }
 
+            /// <summary>
+            /// The page button or tab a tap is on, or null. Never one of the notes
+            /// page's own (8 October: "any click on the page shakes it for a few
+            /// seconds and it turns to something else" - a tap on the notes page's
+            /// own fields met its own tab strip first, on its way up, and was noted
+            /// as a tab of the page: the page filled again and showed that tab).
+            /// </summary>
             private Control PassedOf(Control hit)
             {
                 for (var c = hit; c != null; c = c.Parent)
-                {
                     if (c is NotesPage) return null;
+                for (var c = hit; c != null; c = c.Parent)
                     if (_page._passThrough(c)) return c;
-                }
                 return null;
             }
         }
@@ -613,7 +619,7 @@ namespace Kaban.UI.Screens
             FitWidths();
         }
 
-        // ---- a table: now / required / comment ---------------------------------------------
+        // ---- a table: now / request / comment ----------------------------------------------
 
         /// <summary>
         /// A small table of entries - texts, settings - with what they are now, what
@@ -630,7 +636,7 @@ namespace Kaban.UI.Screens
             };
             grid.Columns.Add("what", firstHeading);
             grid.Columns.Add("now", T("Nts_ColNow", "Now"));
-            grid.Columns.Add("required", T("Nts_ColRequired", "Required"));
+            grid.Columns.Add("required", T("Nts_ColRequired", "Request"));
             grid.Columns.Add("comment", T("Nts_ColComment", "Comment"));
             grid.Columns[0].FillWeight = 22; grid.Columns[1].FillWeight = 30; grid.Columns[2].FillWeight = 30; grid.Columns[3].FillWeight = 30;
             grid.Columns[0].ReadOnly = true;

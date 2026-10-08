@@ -48,7 +48,7 @@ class WH {
             CommandAAddress = "M646", ButtonATextKey = "Release", Lamp1AAddress = "M225", Lamp1ATipKey = "Clamping back",
             CommandBAddress = "M645", ButtonBTextKey = "Clamp", Lamp1BAddress = "M240", Lamp1BTipKey = "Pressure switch",
             ErrorAAddress = "M845", ErrorBAddress = "M844",
-            ValveType = CylinderValve.DoubleSolenoid_3WayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
+            ValveType = CylinderValve.ThreeWayClosedCenter, FeedbackType = CylinderFeedback.MagneticPlusPressureSwitch };
         var doc = new TC.HelpDocument { FileName = TC.DocumentForType[TC.ErrorType.CylinderMovement], Valve = 3, Feedback = 5, Movement = unit.MovementFor("A"), StepByStep = true };
         Check("the cylinder manual is there", doc.Exists, doc.FullPath);
         string html = File.ReadAllText(TC.ExtractSection(doc));

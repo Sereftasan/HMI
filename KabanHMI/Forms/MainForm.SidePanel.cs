@@ -239,26 +239,13 @@ namespace Kaban.UI.Forms
             foreach (var b in _sideButtons.Values) { _sideBarList.Controls.Remove(b); b.Dispose(); }
             _sideButtons.Clear();
             int y = 6;
-            foreach (var p in pages)
-            {
-                var page = p;
-                var b = new Button
-                {
-                    Size = new Size(SideButtonSize, SideButtonSize), FlatStyle = FlatStyle.Flat, Text = "",
-                    BackColor = _sideBar.BackColor, Cursor = Cursors.Hand, TabStop = false, AccessibleName = page.Title
-                };
-                b.FlatAppearance.BorderSize = 0;
-                var hover = UiStyle.HoverBorder(b);
-                b.Paint += (s, e) => PaintSideButton(e.Graphics, b, page, hover());
-                b.Click += (s, e) => ToggleSidePage(page.Key);
-                Kaban.UI.Controls.UiStyle.SetTip(_sideTips, b, page.Title);
-                OfferRemove(b, page);             // a main page put here: taken off by a right-click
-                // Placed at factor 1 and scaled as it is added (see UiScale).
-                b.Location = new Point((SideBarWidth - SideButtonSize) / 2, y);
-                y += SideButtonSize + 6;
-                _sideBarList.Controls.Add(b);
-                _sideButtons[page.Key] = b;
-            }
+            // THE PROGRAM'S OWN PAGES FIRST, then the "+" button, then the main pages put
+            // here under it (8 October: "the added pages' buttons should be located under
+            // the 'Open a main page in the side panel' button, so the user can see them
+            // separated from the naturally existing ones")
+            var own = pages.Where(p => !IsMainPageInSide(p.Key)).ToList();
+            var added = pages.Where(p => IsMainPageInSide(p.Key)).ToList();
+            foreach (var p in own) y = AddSideButton(p, y);
             // + : a main page in the side panel (the menu's page buttons offer it on a right-click)
             if (pages.Count > 0 && Kaban.Core.Machines.MachineRegistry.NavigationGroups().Any(CanOpenInSide))
             {
@@ -280,13 +267,43 @@ namespace Kaban.UI.Forms
                 add.Click += (s, e) => UiStyle.ShowPopup(SidePagesMenu(), add, new Point(0, add.Height));
                 Kaban.UI.Controls.UiStyle.SetTip(_sideTips, add, LanguageManager.GetString("Tip_SideAddPage",
                     "Open a main page in the side panel (Home, Manual Movement, Machine Parameters, Alarms, Dashboard) - a right-click on a page button of the menu does the same."));
-                add.Location = new Point((SideBarWidth - SideButtonSize) / 2, y + 6);
+                y += 6;
+                add.Location = new Point((SideBarWidth - SideButtonSize) / 2, y);
+                y += SideButtonSize + 6;
                 _sideBarList.Controls.Add(add);
                 _sideButtons["+"] = add;
             }
+            foreach (var p in added) y = AddSideButton(p, y);
             _sideBarList.ResumeLayout(true);
             _sideBar.Visible = pages.Count > 0;
             ApplySideBarFolded();
+        }
+
+        /// <summary>A side page's button on the side bar, at <paramref name="y"/> (factor 1); where the next one goes.</summary>
+        private int AddSideButton(SidePage page, int y)
+        {
+            var b = new Button
+            {
+                Size = new Size(SideButtonSize, SideButtonSize), FlatStyle = FlatStyle.Flat, Text = "",
+                BackColor = _sideBar.BackColor, Cursor = Cursors.Hand, TabStop = false, AccessibleName = page.Title
+            };
+            b.FlatAppearance.BorderSize = 0;
+            var hover = UiStyle.HoverBorder(b);
+            b.Paint += (s, e) => PaintSideButton(e.Graphics, b, page, hover());
+            b.Click += (s, e) => ToggleSidePage(page.Key);
+            Kaban.UI.Controls.UiStyle.SetTip(_sideTips, b, page.Title);
+            OfferRemove(b, page);             // a main page put here: taken off by a right-click
+            // Placed at factor 1 and scaled as it is added (see UiScale).
+            b.Location = new Point((SideBarWidth - SideButtonSize) / 2, y);
+            _sideBarList.Controls.Add(b);
+            _sideButtons[page.Key] = b;
+            return y + SideButtonSize + 6;
+        }
+
+        /// <summary>True for a main page put on the side bar (not one of the program's own side pages).</summary>
+        private bool IsMainPageInSide(string key)
+        {
+            return _mainPagesInSide.Contains(key ?? "", StringComparer.OrdinalIgnoreCase);
         }
 
         private void PaintSideButton(Graphics g, Button b, SidePage page, bool hover)
@@ -447,6 +464,12 @@ namespace Kaban.UI.Forms
         internal static int ContentWidth(Control c)
         {
             if (c == null || !c.Visible) return 0;
+            // AN AXIS PAGE'S PICK LISTS take the width they are given: the width
+            // needed is the rows' - with the columns their ticks show - not the lists'
+            // (8 October: "the required width should be calculated with the selected
+            // items, not these selection combos' width: 'Motion monitor items' is still
+            // there with no member selected, so the required width gets too big")
+            if (c is Controls.AxisPickBar) return 0;
             var own = c as ISidePageWidth;
             if (own != null) return own.PreferredWidth(int.MaxValue / 4);
             var grid = c as DataGridView;
@@ -476,6 +499,7 @@ namespace Kaban.UI.Forms
                         filled = Math.Max(filled, ContentWidth(ch));
                         break;
                     default:
+                        if (ch is Controls.AxisPickBar) break;
                         bool right = (ch.Anchor & AnchorStyles.Right) != 0 && (ch.Anchor & AnchorStyles.Left) == 0;
                         if (right) anchoredRight = Math.Max(anchoredRight, ch.Width + ch.Margin.Horizontal);
                         else placed = Math.Max(placed, ch.Right + offset + ch.Margin.Right);

@@ -143,7 +143,7 @@ class LP {
         var top = Find<CylinderUnitHMI>(exit, "unitRobot_Top_Clamping");
         Check("what was set on Robot Top Clamping in the designer is kept (error bits, help, valve, conditions)",
               top.ErrorAAddress == "M854" && top.ErrorBAddress == "M840" && top.HelpAFiles == "c# learning structure.png" &&
-              top.ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter && top.VisibilityConditions == SystemCondition.ManualMode &&
+              top.ValveType == CylinderValve.ThreeWayClosedCenter && top.VisibilityConditions == SystemCondition.ManualMode &&
               top.PositionAddress == "D17" && top.PositionDivisor == 10);
 
         Console.WriteLine("--- Clamping Moulds: the old page's columns ---");

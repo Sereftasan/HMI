@@ -517,7 +517,11 @@ namespace Kaban.UI.Screens
                 ai.Click += (s, e) =>
                 {
                     string text = null;
+                    // the first one reads every page for where its devices are: a moment
+                    var was = Cursor.Current;
+                    Cursor.Current = Cursors.WaitCursor;
                     try { text = aiPrompt(); } catch (Exception ex) { AuditLogger.Log("AI prompt failed: " + ex.Message); }
+                    finally { Cursor.Current = was; }
                     if (!string.IsNullOrEmpty(text)) Kaban.UI.Helpers.AlarmAiPrompt.Copy(owner, text);
                 };
                 menu.Items.Add(ai);

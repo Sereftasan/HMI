@@ -93,7 +93,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitFront_Clamping.ErrorAAddress = "M845";
             this.unitFront_Clamping.ErrorBAddress = "M844";
             // Pneumatic drawing: Y28/Y29, 5/3 open centre (P16); back sensor SN59 (X51) + pressure switch SW1.
-            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             this.unitFront_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
@@ -119,7 +119,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitTop_Clamping.PositionSuffix = "mm";
             this.unitTop_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitTop_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitTop_Clamping.ErrorAAddress = "M847";
             this.unitTop_Clamping.ErrorBAddress = "M846";
             this.unitTop_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;

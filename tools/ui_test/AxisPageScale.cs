@@ -50,7 +50,8 @@ class APS {
         Check("  with the room between them at the scale (28 at factor 1)", motion.Left - itemsRight >= UiScale.Px(AxisPickBar.GapAfterItems) - 1,
               (motion.Left - itemsRight) + " px");
         Check("  PLC axis items no wider than what it holds", items.Width == items.NaturalWidth, items.Width + " / " + items.NaturalWidth);
-        Check("  named 'Motion monitor items:'", motion.Controls.OfType<Label>().Any(l => l.Text == "Motion monitor items:"));
+        Check("  named 'Motion monitor items' - by its own first line, no caption beside it",
+              motion.MotionPick.Shown == "Motion monitor items" && !motion.Controls.OfType<Label>().Any() && !items.Controls.OfType<Label>().Any());
         Check("  its list's arrow in sight (narrowed to the window)", motion.Right <= frame.Head.ClientSize.Width &&
               motion.MotionPick.Right <= motion.ClientSize.Width, motion.MotionPick.Right + " <= " + motion.ClientSize.Width + ", bar " + motion.Right);
 

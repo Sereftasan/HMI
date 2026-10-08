@@ -4643,3 +4643,35 @@ and `UnitLookAndErrors` extended.
   Monitor's axes), 3b (Notes and feedback), 4 (coupled units; the "?"'s AI prompt and step-by-step page), the Alarms page, 6a (the two
   switches), 6b Messages from the PLC (new), Users and Preferences, the axes shown, Alarm Settings, the PLC Monitor's tooltips, chapter 12's
   table; FA2010's chapter: Manual Movement, Machine Parameters, Messages from the PLC.
+
+## 2026-10-08 (evening) - The AI prompt with everything; HMI alarms SET their device; 3-way valve names; the notes page's taps; axis lists name themselves; the side bar's added pages
+
+- **`CylinderValve` names:** new `Kaban.UI.Design.CylinderValveConverter` (the enum's `TypeConverter`): `ThreeWayClosedCenter` /
+  `ThreeWayOpenCenter` shown and written as `3WayClosedCenter` / `3WayOpenCenter`; it still reads the old `DoubleSolenoid_3Way...`
+  names, numbers and the C# names. `CylinderUnitHMI.TypeProblems` and the `ValveType` description use it.
+- **HMI alarms' device:** `AlarmItem.Device` (the error bit alone); `AddressShown` shows it for a generated alarm (`M801`, not `M801.52.1`).
+  `AlarmGeneration.Raise` / `RaiseAxis` set it and **SET** it in the PLC once (`SetDevice`, through `DriverForWrite`, logged in the PLC write
+  log as "HMI alarm <code>: its error bit set"); nothing is written for a movement without an error bit.
+- **`AlarmAiPrompt`** rewritten: the machine (cards, supply wires, the HMI), how the alarms are raised (the delay, the SET, the sub-codes),
+  the alarm, the unit with both movements from `AlarmGeneration.Cylinders`, every device involved (PLC label from `PlcLabelTable` or
+  `IoList`, `WiringTable` line / card / air / measure / pressure, `DeviceCollector.UsesOf` pages, states at the alarm and read now through
+  `ReadNow`), servo / axis code words read now, the other alarms (list, the station's last 15 in 7 days), notes, the documents (other HTML as
+  text, 30 000 characters each, 50 000 in all), the step-by-step page (or the first HTML help) **whole** as the format, the request last
+  (three HTML files - operator, maintenance technician, automation engineer - then explain on request). `Copy` also saves the prompt
+  (`SaveFolder`: Documents\Kaban HMI\AI prompts, newest 50); `CopiedMessage` names the file. Wait cursor while it is built.
+- **Notes page:** `NotesPage.Picker.PassedOf` and `MainForm.IsPassedThrough` ignore the notes page's own controls (a tap on them was taken as
+  one of its tabs: the page filled again and showed "Tab: ..."). `NoteTarget.Notable`: a cylinder unit's frame is the unit; `KeysOf`: the
+  title first, a unit's buttons and lamps add *Unit title*, glyph keys left out. `Nts_ColRequired` reads *Request*; new `Nts_KeyUnitTitle`.
+- **`PickList.Heading`** (with `State`, `NaturalWidth`, `OpenHeading`): a list that names itself - closed its name and 3/8 / All / None, open
+  its name as a grey first line. `AxisPickBar`: no caption labels, the lists' widths from their headings, translated on a language change.
+  `AxIt_Pick` / `Mot_Pick` without the colon.
+- **Side panel:** `MainForm.ContentWidth` leaves out an `AxisPickBar` (the fit width is the rows'); `RefreshSideBar`: the program's side
+  pages, then +, then the main pages put on the bar (`AddSideButton`, `IsMainPageInSide`).
+- Translations: `Tip_AiPrompt`, `Msg_AiPromptCopied`, `Msg_AiPromptSaved` (new), `Nts_ColRequired`, `Nts_KeyUnitTitle` (new), `AxIt_Pick`,
+  `Mot_Pick` - six languages.
+- Tests: `AlarmAiPrompt.cs` (rewritten checks: the data, the HTML page whole, the request last, the file, the HMI's own alarm),
+  `NotesFeedback.cs` (the unit's frame and title, a tap on the notes page itself, *Request*), `AxisItems.cs`, `AxisPageScale.cs`,
+  `SidePanelFit.cs` (the Axis Monitor fitted to its rows), `SideCopies.cs` (under the +), `AlarmGenerationCore.cs` (the SET),
+  `AlarmGenerationUi.cs`, `CylinderHelpAndLogin.cs`, `UnitTypes.cs` (the valve names).
+- Manual: the AI prompt, the HMI alarms' device and SET, the notes page's unit frame and own fields, *Request*, the axis lists, the side bar's
+  order, the fit width; the 3-way valves' names.

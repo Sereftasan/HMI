@@ -148,6 +148,37 @@ namespace Kaban.UI.Dashboard
             set { _allText = value ?? ""; Caption(); }
         }
 
+        private string _heading = "";
+
+        /// <summary>
+        /// A list named by its own first line instead of a caption beside it (8
+        /// October: "remove these two controls' descriptions ... and show them as the
+        /// combo's first member - not to select, just for the user to see when the
+        /// combo is both open or closed"): closed, it reads its heading, with how many
+        /// are ticked ("3/8") or what nothing ticked means ("All", "None") at its
+        /// right; open, the heading is the list's first line, greyed, not ticked.
+        /// </summary>
+        public string Heading
+        {
+            get { return _heading; }
+            set { _heading = (value ?? "").Trim().TrimEnd(':').Trim(); Caption(); }
+        }
+
+        /// <summary>At the right of a list with a heading: how many are ticked, or what none ticked means.</summary>
+        public string State { get { return _selected.Count == 0 ? _allText : _selected.Count + "/" + _items.Count; } }
+
+        /// <summary>As wide as a list with a heading needs: its heading, its state, its arrow.</summary>
+        public int NaturalWidth
+        {
+            get
+            {
+                string widest = _items.Count > 0 ? _items.Count + "/" + _items.Count : "";
+                if (TextRenderer.MeasureText(_allText, UiStyle.Small).Width > TextRenderer.MeasureText(widest, UiStyle.Small).Width) widest = _allText;
+                return TextRenderer.MeasureText(_heading.Length > 0 ? _heading : Shown, Font).Width + TextRenderer.MeasureText(widest, UiStyle.Small).Width +
+                       UiScale.Px(18) + UiScale.Px(22);
+            }
+        }
+
         public List<Item> Items { get { return _items.ToList(); } }
 
         /// <summary>The keys ticked (a copy).</summary>
@@ -191,8 +222,8 @@ namespace Kaban.UI.Dashboard
             Raise();
         }
 
-        /// <summary>What the box reads.</summary>
-        public string Shown { get { return _selected.Count == 0 ? _allText : string.Join(", ", SelectedTexts); } }
+        /// <summary>What the box reads: its heading, else what is ticked (nothing ticked: AllText).</summary>
+        public string Shown { get { return _heading.Length > 0 ? _heading : _selected.Count == 0 ? _allText : string.Join(", ", SelectedTexts); } }
 
         private void Raise()
         {
@@ -203,7 +234,8 @@ namespace Kaban.UI.Dashboard
         private void Caption()
         {
             Text = Shown;
-            if (_tips != null) Kaban.UI.Controls.UiStyle.SetTip(_tips, this, _selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts));
+            if (_tips != null) Kaban.UI.Controls.UiStyle.SetTip(_tips, this, (_heading.Length > 0 ? _heading + "\n" : "") +
+                                                                       (_selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts)));
             Invalidate();
         }
 
@@ -217,6 +249,7 @@ namespace Kaban.UI.Dashboard
                 g.DrawRectangle(pen, r);
             int arrow = UiScale.Px(18);
             var text = new Rectangle(UiScale.Px(4), 0, Width - arrow - UiScale.Px(6), Height);
+            text.Width -= PaintState(g, text.Right);
             TextRenderer.DrawText(g, Shown, Font, text, Enabled ? UiStyle.GridInk : SystemColors.GrayText,
                                   TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
             // the arrow of a combo box
@@ -245,6 +278,7 @@ namespace Kaban.UI.Dashboard
                 int w = SystemInformation.VerticalScrollBarWidth;
                 new VisualStyleRenderer(arrow).DrawBackground(g, new Rectangle(Width - w - 1, 1, w, Height - 2));
                 var text = new Rectangle(UiScale.Px(4), 0, Width - w - UiScale.Px(6), Height);
+                text.Width -= PaintState(g, text.Right);
                 TextRenderer.DrawText(g, Shown, Font, text, Enabled ? SystemColors.WindowText : SystemColors.GrayText,
                                       TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
                 if (Focused) ControlPaint.DrawFocusRectangle(g, new Rectangle(2, 2, Width - w - 4, Height - 4));
@@ -252,6 +286,22 @@ namespace Kaban.UI.Dashboard
             }
             catch { return false; }
         }
+
+        /// <summary>A list with a heading: its state at the right, ending at <paramref name="right"/>; the room it took.</summary>
+        private int PaintState(Graphics g, int right)
+        {
+            if (_heading.Length == 0) return 0;
+            var state = State;
+            if (state.Length == 0) return 0;
+            var size = TextRenderer.MeasureText(state, UiStyle.Small);
+            var colour = !Enabled ? SystemColors.GrayText : _selected.Count > 0 ? Color.FromArgb(0, 120, 215) : Color.FromArgb(120, 126, 134);
+            TextRenderer.DrawText(g, state, UiStyle.Small, new Rectangle(right - size.Width, 0, size.Width, Height), colour,
+                                  TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding);
+            return size.Width + UiScale.Px(6);
+        }
+
+        /// <summary>The heading line of the open list (tests).</summary>
+        public Label OpenHeading { get; private set; }
 
         protected override void OnMouseEnter(EventArgs e) { base.OnMouseEnter(e); _hover = true; Invalidate(); }
         protected override void OnMouseLeave(EventArgs e) { base.OnMouseLeave(e); _hover = false; Invalidate(); }
@@ -296,11 +346,26 @@ namespace Kaban.UI.Dashboard
             };
             foreach (var i in items) list.Items.Add(i.Text, _selected.Contains(i.Key));
             var clear = new Button { Text = _allText, Width = list.Width, Height = UiScale.Px(30), Font = Font, FlatStyle = FlatStyle.Flat };
-            var panel = new Panel { Width = list.Width, Height = list.Height + clear.Height, BackColor = Color.White };
+            // a heading: the list's first line, greyed - read, not ticked
+            Label heading = null;
+            if (_heading.Length > 0)
+            {
+                list.Width = Math.Max(list.Width, Math.Min(UiScale.Px(420), TextRenderer.MeasureText(_heading, Font).Width + UiScale.Px(24)));
+                clear.Width = list.Width;
+                heading = new Label
+                {
+                    Name = "pickHeading", Text = _heading, Dock = DockStyle.Top, Height = UiScale.Px(26), Font = new Font(Font, FontStyle.Bold),
+                    BackColor = Color.FromArgb(238, 241, 245), ForeColor = Color.FromArgb(90, 96, 106), TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                    Padding = new Padding(UiScale.Px(6), 0, 0, 0), AutoEllipsis = true
+                };
+            }
+            var panel = new Panel { Width = list.Width, Height = list.Height + clear.Height + (heading != null ? heading.Height : 0), BackColor = Color.White };
             clear.Dock = DockStyle.Bottom;
             list.Dock = DockStyle.Fill;
             panel.Controls.Add(list);
+            if (heading != null) panel.Controls.Add(heading);
             panel.Controls.Add(clear);
+            OpenHeading = heading;
             var host = new ToolStripControlHost(panel) { Margin = Padding.Empty, Padding = Padding.Empty, AutoSize = false, Size = panel.Size };
             var drop = new ToolStripDropDown { Padding = Padding.Empty };
             drop.Items.Add(host);
@@ -328,7 +393,7 @@ namespace Kaban.UI.Dashboard
             drop.Closed += (s, e) => anchor.BeginInvoke(new Action(() =>
             {
                 IsOpen = false;
-                OpenList = null; OpenDrop = null;
+                OpenList = null; OpenDrop = null; OpenHeading = null;
                 drop.Dispose();
                 // the ticks of an ApplyOnClose list, told once now
                 if (pending) { pending = false; Raise(); }

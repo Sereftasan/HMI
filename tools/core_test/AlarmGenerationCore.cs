@@ -17,6 +17,19 @@ class AG {
         Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
     }
     static Dictionary<string, int> mem = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+    // The PLC the HMI writes an alarm's error bit to (8 October: SET, so the PLC knows).
+    static readonly List<string> writes = new List<string>();
+    sealed class Plc : Kaban.Core.Interfaces.IPlcDriver {
+        public bool IsConnected { get { return true; } }
+        public bool IsHealthy { get { return true; } }
+        public bool Connect() { return true; }
+        public void Disconnect() { }
+        public int Read(string a) { int v; return mem.TryGetValue(a, out v) ? v : 0; }
+        public int[] ReadMulti(string[] a) { return a.Select(Read).ToArray(); }
+        public int Write(string a, int v) { writes.Add(a + "=" + v); mem[a] = v; return 0; }
+        public bool TryRead(string a, out int v) { v = Read(a); return true; }
+        public bool TryReadMulti(string[] a, out int[] v) { v = ReadMulti(a); return true; }
+    }
     static int Read(string a) { int v; return mem.TryGetValue(a, out v) ? v : 0; }
     static DateTime t0 = new DateTime(2026, 10, 1, 8, 0, 0);
     static DateTime now = t0;
@@ -57,6 +70,8 @@ class AG {
         AlarmGeneration.SettingsPath = Path.Combine(dir, "AlarmGeneration.cfg");
         if (File.Exists(AlarmGeneration.SettingsPath)) File.Delete(AlarmGeneration.SettingsPath);
         SecurityManager.Login("m", Kaban.Core.Enums.SecurityLevel.Maintenance);
+        var plc = new Plc();
+        AlarmGeneration.DriverForWrite = st => st == 1 ? plc : null;
         AlarmManager.RegisterDefinition("T.Back", "Unit did not go back", AlarmSeverity.Warning, plcNumber: 1, address: "M840");
         AlarmManager.RegisterDefinition("T.Fwd", "Unit did not go forward", AlarmSeverity.Fault, plcNumber: 1, address: "M841");
         AlarmManager.RegisterDefinition("T.Axis", "Axis 1 error", AlarmSeverity.Critical, plcNumber: 1, address: "M801");
@@ -84,9 +99,13 @@ class AG {
         Check("the output going ON starts the time", c.Sides[0].Timing);
         Run(4.7);
         Check("  nothing before the delay", Gen().Count == 0, Codes());
+        writes.Clear();
         Run(0.4);
         var g = Gen().FirstOrDefault();
         Check("after it: the movement's alarm, by its error bit and the failed signal: M840.1", g != null && g.ShownCode == "M840.1" && g.Address == "M840" && g.SubCode == "1", Codes());
+        // 8 October (evening): "the device address should be just M840, and the device SET so the PLC knows about the alarm"
+        Check("  its Address is the error bit alone (M840), and the HMI SET it in the PLC - once", g != null && g.AddressShown == "M840" && g.Device == "M840" &&
+              string.Join(",", writes) == "M840=1", string.Join(",", writes));
         Check("  its text and what failed", g != null && g.Description.StartsWith("Unit did not go back - ") && g.Description.Contains("X2 stayed ON"), g == null ? "" : g.Description);
         Check("  the alarm's severity, its machine (for the filters) and the states when the time ran out",
               g != null && g.Severity == AlarmSeverity.Warning && g.AlarmCode.StartsWith("T.") && g.Snapshot["Y10"] == 1 && g.Snapshot["X2"] == 1 && g.Snapshot["X1"] == 0);
@@ -180,6 +199,12 @@ class AG {
         Check("no sensor: nothing to watch", Unit(3, 7, "M840", "M841", new string[0], new string[0]) == null);
         var noErr = Unit(3, 2, "", "", new[] { "X1" }, new[] { "X2" });
         Check("no error bit: named by the command", noErr.Sides.Single(s => s.Side == "A").Code == "M10");
+        Fresh(noErr);
+        writes.Clear();
+        mem["X2"] = 1; Scan(); mem["Y10"] = 1; Run(5.2);
+        Check("  its alarm raised, and NOTHING written - its command bit is never set for an alarm",
+              Gen().Count == 1 && writes.Count == 0 && Gen()[0].Device == "" && Gen()[0].AddressShown == "M10", string.Join(",", writes) + " / " + Codes());
+        AlarmManager.AcknowledgeAll();
 
         Console.WriteLine("--- each alarm's own delay ---");
         AlarmManager.FindByCode("T.Back").GenerationDelay = 2;
@@ -230,9 +255,11 @@ class AG {
         Check("its servo alarm and axis alarm words are read (not the warning)", addrs.Contains("D100") && addrs.Contains("D101") && addrs.Count == 2, string.Join(",", addrs));
         Scan();
         Check("  zero: nothing", Gen().Count == 0);
+        writes.Clear();
         mem["D100"] = 0x163; Scan();
         g = Gen().SingleOrDefault();
         Check("a servo alarm: its alarm at once, the code as the sub-number (M801.16.3)", g != null && g.ShownCode == "M801.16.3" && g.Severity == AlarmSeverity.Critical, Codes());
+        Check("  its Address M801, not M801.16.3; M801 SET in the PLC", g != null && g.AddressShown == "M801" && writes.Contains("M801=1"), string.Join(",", writes));
         mem["M801"] = 1; Scan();
         Check("  the PLC's bit is not listed beside it", AlarmManager.ActiveAlarms.Count == 1, Codes());
         mem["D101"] = 0x1904; Scan();

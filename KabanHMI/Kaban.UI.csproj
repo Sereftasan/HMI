@@ -131,6 +131,7 @@
     <Compile Include="Design\PropertyOrder.cs" />
     <Compile Include="Design\ConditionTextConverter.cs" />
     <Compile Include="Design\CylinderUnitChildConverter.cs" />
+    <Compile Include="Design\CylinderValveConverter.cs" />
     <Compile Include="Design\UnifiedConditionEditor.cs" />
     <Compile Include="Forms\BaseScreen.cs">
       <SubType>UserControl</SubType>

@@ -266,7 +266,7 @@ page('ManualClamping_Moulds', 'Manual', 'ucClampingMoulds', 'Clamping Moulds', [
     M('Right Front Vertical Clamping', 'M585', 'M584', 'D128', 'D167', 'M67', 'D147', 'M47', 'D846', 'D807',
       # P57 Output Front Up-Down Mold (Y151 up M584 / Y152 down M585): 5/3 closed
       # centre with an analogue sensor, as the drawings show it.
-      valve='DoubleSolenoid_3WayClosedCenter', feedback='AnalogueMagnetic'))],
+      valve='ThreeWayClosedCenter', feedback='AnalogueMagnetic'))],
     table=True)
 
 page('ManualYZ_Cross_Rollers', 'Manual', None, 'YZ Cross Rollers', [Col(None,

@@ -59,7 +59,7 @@ class L {
         Check("station AND address must match", AlarmHelpLinks.Find(1, "M810") == null);
 
         Console.WriteLine("--- the same bit described two ways is reported, not guessed ---");
-        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid_3WayClosedCenter, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
+        AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.ThreeWayClosedCenter, CylinderFeedback.TwoEndMagnetic, "Elsewhere").HelpLinks().First());
         Check("one conflict logged", AlarmHelpLinks.Conflicts.Count == 1, AlarmHelpLinks.Conflicts.FirstOrDefault() ?? "");
         Check("  the first description kept", AlarmHelpLinks.Find(3, "M810").Valve == 1);
         AlarmHelpLinks.Register(Clamp(3, "M810", "", CylinderValve.DoubleSolenoid, CylinderFeedback.TwoEndMagnetic, "Same unit, 2nd page").HelpLinks().First());

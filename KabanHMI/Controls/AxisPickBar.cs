@@ -100,7 +100,6 @@ namespace Kaban.UI.Controls
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
         private readonly string _itemsKey, _motionKey, _axesKey;
-        private readonly Label _itemsCaption, _motionCaption;
         private readonly bool _hasItems, _hasMotion;
         private bool _syncing, _listsHidden;
 
@@ -133,29 +132,33 @@ namespace Kaban.UI.Controls
             Margin = new Padding(0);
             BackColor = Color.White;
 
-            _itemsCaption = Caption(T("AxIt_Pick", "PLC axis items:"));
+            // No caption beside the lists (8 October: "they get detached from their titles
+            // when the bottom scroll bar is moved ... show these descriptions as the
+            // combo's first member"): each list names itself (PickList.Heading).
             ItemsPick = new PickList(UiStyle.Tips())
             {
-                Name = "itemsPick", Size = new Size(300, 28), Margin = new Padding(0, 4, 18, 0),
+                Name = "itemsPick", Size = new Size(240, 28), Margin = new Padding(0, 4, 18, 0),
                 AllText = T("AxIt_All", "All"),
+                Heading = T("AxIt_Pick", "PLC axis items"),
                 // The rows are laid out again once, when the list closes - not at every tick.
                 ApplyOnClose = true
             };
             ItemsPick.Changed += (s, e) => { if (!_syncing) KeepItems(); };
 
-            _motionCaption = Caption(T("Mot_Pick", "Motion monitor items:"));
             MotionPick = new PickList(UiStyle.Tips())
             {
-                Name = "motionPick", Size = new Size(420, 28), Margin = new Padding(0, 4, 8, 0),
+                Name = "motionPick", Size = new Size(260, 28), Margin = new Padding(0, 4, 8, 0),
                 AllText = T("Mot_PickNone", "None"),
+                Heading = T("Mot_Pick", "Motion monitor items"),
                 ApplyOnClose = true
             };
             MotionPick.SetItems(SimpleMotion.Items.Select(i => new PickList.Item(
                 i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
             MotionPick.Changed += (s, e) => { if (!_syncing) KeepMotion(); };
+            FitLists();
 
             // both in one bar (the Axis Monitor): the same room between them as on a page
-            if (items && motion) _motionCaption.Margin = new Padding(GapAfterItems, 9, 6, 0);
+            if (items && motion) MotionPick.Margin = new Padding(GapAfterItems, 4, 8, 0);
             if (axesKey != null)
             {
                 AxesPick = new PickList(null)
@@ -173,20 +176,43 @@ namespace Kaban.UI.Controls
                 };
                 Disposed += (s, e) => AxesPick.Dispose();
             }
-            if (items) { Controls.Add(_itemsCaption); Controls.Add(ItemsPick); }
-            if (motion) { Controls.Add(_motionCaption); Controls.Add(MotionPick); }
+            if (items) Controls.Add(ItemsPick);
+            if (motion) Controls.Add(MotionPick);
+            LanguageManager.LanguageChanged += OnLanguageChanged;
+            Disposed += (s, e) => LanguageManager.LanguageChanged -= OnLanguageChanged;
+        }
+
+        /// <summary>The lists' headings and words in the language now shown.</summary>
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnLanguageChanged), sender, e); } catch { } return; }
+            _syncing = true;
+            try
+            {
+                ItemsPick.Heading = T("AxIt_Pick", "PLC axis items");
+                ItemsPick.AllText = T("AxIt_All", "All");
+                ItemsPick.SetItems(ItemsPick.Items.Select(i => new PickList.Item(i.Key, AxisSettingHMI.ItemText(i.Key))), true);
+                MotionPick.Heading = T("Mot_Pick", "Motion monitor items");
+                MotionPick.AllText = T("Mot_PickNone", "None");
+                MotionPick.SetItems(SimpleMotion.Items.Select(i => new PickList.Item(
+                    i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), true);
+                if (AxesPick != null) AxesPick.AllText = T("AxShow_All", "All axes");
+            }
+            finally { _syncing = false; }
+            FitLists();
+            Place();
+        }
+
+        /// <summary>Each list as wide as its heading and its state need (at this screen scale).</summary>
+        private void FitLists()
+        {
+            ItemsPick.Width = Math.Max(UiScale.Px(140), ItemsPick.NaturalWidth);
+            MotionPick.Width = Math.Max(UiScale.Px(140), MotionPick.NaturalWidth);
         }
 
         /// <summary>As wide as its lists (a bar of one list beside another).</summary>
         public int NaturalWidth { get { return GetPreferredSize(Size.Empty).Width; } }
-
-        private static Label Caption(string text)
-        {
-            return new Label
-            {
-                AutoSize = true, Text = text, Font = UiStyle.Body, ForeColor = Color.FromArgb(60, 66, 76), Margin = new Padding(0, 9, 6, 0)
-            };
-        }
 
         /// <summary>What the rows have to offer: their items, and whether any is on a module (the Motion monitor).</summary>
         public void Offer(IList<string> items, bool motion)
@@ -195,8 +221,9 @@ namespace Kaban.UI.Controls
             try
             {
                 ItemsPick.SetItems(AxisSettingHMI.ItemKeys.Where(items.Contains).Select(k => new PickList.Item(k, AxisSettingHMI.ItemText(k))), false);
-                _motionCaption.Visible = MotionPick.Visible = motion && _hasMotion && !_listsHidden;
-                _itemsCaption.Visible = ItemsPick.Visible = _hasItems && !_listsHidden;
+                MotionPick.Visible = motion && _hasMotion && !_listsHidden;
+                ItemsPick.Visible = _hasItems && !_listsHidden;
+                FitLists();
             }
             finally { _syncing = false; }
             Sync();
@@ -210,7 +237,7 @@ namespace Kaban.UI.Controls
         public void HideLists(bool hide)
         {
             _listsHidden = hide;
-            if (hide) _itemsCaption.Visible = ItemsPick.Visible = _motionCaption.Visible = MotionPick.Visible = false;
+            if (hide) ItemsPick.Visible = MotionPick.Visible = false;
         }
 
         /// <summary>The rows the Axes list offers (key: name@station, text: the name).</summary>
@@ -381,9 +408,9 @@ namespace Kaban.UI.Controls
         {
             if (_pinning || _page == null || _page.IsDisposed) return;
             int x = PlaceX;
-            // the list as designed, narrowed when the window shows less (a larger
-            // screen scale): its arrow stays in sight rather than cut off at the edge
-            int design = UiScale.For(this, 420);
+            // the list as wide as it needs, narrowed when the window shows less (a
+            // larger screen scale): its arrow stays in sight rather than cut off
+            int design = Math.Max(UiScale.Px(140), MotionPick.NaturalWidth);
             bool narrowable = _hasMotion && MotionPick.Visible;
             int full = narrowable ? NaturalWidth - MotionPick.Width + design : NaturalWidth;
             int want = Math.Max(full, UiScale.For(_page, 200));

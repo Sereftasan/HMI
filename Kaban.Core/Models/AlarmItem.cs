@@ -27,6 +27,12 @@ namespace Kaban.Core.Models
         public string Address { get; set; } = "";
         /// <summary>WHICH failure: "1", "2"... for a cylinder movement, the drive's code ("16.3", "1904") for an axis.</summary>
         public string SubCode { get; set; } = "";
+        /// <summary>
+        /// The PLC device the HMI SETs when it raises the alarm - the movement's or
+        /// the axis's error bit (M844, M801) - so the PLC knows about it; "" when the
+        /// unit or axis has none (its command bit is never written for an alarm).
+        /// </summary>
+        public string Device { get; set; } = "";
         /// <summary>What failed, in words, after the alarm's own text (as it was raised).</summary>
         public string Detail { get; set; } = "";
         /// <summary>The same in the language on show now, when the raiser can say it again; else Detail.</summary>
@@ -72,10 +78,14 @@ namespace Kaban.Core.Models
             }
         }
 
-        /// <summary>The Address column (Admin): the PLC device, and for a generated alarm which failure (M840.2, M801.16.3).</summary>
+        /// <summary>
+        /// The Address column (Admin): the PLC device - for a generated alarm its
+        /// error bit alone (M801), not the code of what failed (8 October: "52.1 is
+        /// just the alarm code, it is nothing to do with the device address").
+        /// </summary>
         public string AddressShown
         {
-            get { return Generated ? ShownCode : (Address ?? ""); }
+            get { return Generated ? (!string.IsNullOrEmpty(Device) ? Device : (Address ?? "")) : (Address ?? ""); }
         }
 
         /// <summary>The code the lists show: "M840.2" for a generated alarm, the alarm's code otherwise.</summary>

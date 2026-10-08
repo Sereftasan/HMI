@@ -264,7 +264,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorBAddress = "M916";
             this.unitLeft_Profile_Recognition_Front_Vertical.ErrorAAddress = "M915";
-            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
             this.unitLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
@@ -397,7 +397,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Back_Vertical.PositionSuffix = "mm";
             this.unitLeft_Profile_Recognition_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitLeft_Profile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitLeft_Profile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numLeft_Profile_Recognition_Back_Vertical_Target  (D151)
@@ -529,7 +529,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Profile_Recognition_Back_Horizontal.PositionSuffix = "mm";
             this.unitLeft_Profile_Recognition_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitLeft_Profile_Recognition_Back_Horizontal.ErrorAAddress = "M919";
             this.unitLeft_Profile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
@@ -662,7 +662,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Front_Vertical.PositionSuffix = "mm";
             this.unitConveyor_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitConveyor_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitConveyor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitConveyor_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numConveyor_Front_Vertical_Target  (D153)
@@ -794,7 +794,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Back_Vertical.PositionSuffix = "mm";
             this.unitConveyor_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitConveyor_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitConveyor_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numConveyor_Back_Vertical_Target  (D154)
@@ -926,7 +926,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Back_Horizontal.PositionSuffix = "mm";
             this.unitConveyor_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitConveyor_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitConveyor_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numConveyor_Back_Horizontal_Target  (D155)
@@ -1058,7 +1058,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Front_Vertical.PositionSuffix = "mm";
             this.unitProfile_Recognition_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitProfile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitProfile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numProfile_Recognition_Front_Vertical_Target  (D156)
@@ -1190,7 +1190,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Back_Vertical.PositionSuffix = "mm";
             this.unitProfile_Recognition_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitProfile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitProfile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numProfile_Recognition_Back_Vertical_Target  (D157)
@@ -1322,7 +1322,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Recognition_Back_Horizontal.PositionSuffix = "mm";
             this.unitProfile_Recognition_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitProfile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitProfile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numProfile_Recognition_Back_Horizontal_Target  (D158)
@@ -1454,7 +1454,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Front_Vertical.PositionSuffix = "mm";
             this.unitCutting_Left_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Left_Front_Vertical.ErrorBAddress = "M934";
             this.unitCutting_Left_Front_Vertical.ErrorAAddress = "M933";
             this.unitCutting_Left_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
@@ -1588,7 +1588,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Back_Vertical.PositionSuffix = "mm";
             this.unitCutting_Left_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Left_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Left_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numCutting_Left_Back_Vertical_Target  (D160)
@@ -1720,7 +1720,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Left_Back_Horizontal.PositionSuffix = "mm";
             this.unitCutting_Left_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Left_Back_Horizontal.ErrorAAddress = "M937";
             this.unitCutting_Left_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
@@ -1853,7 +1853,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Front_Vertical.PositionSuffix = "mm";
             this.unitCutting_Right_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Right_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Right_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numCutting_Right_Front_Vertical_Target  (D162)
@@ -1985,7 +1985,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Back_Vertical.PositionSuffix = "mm";
             this.unitCutting_Right_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Right_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Right_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numCutting_Right_Back_Vertical_Target  (D163)
@@ -2117,7 +2117,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitCutting_Right_Back_Horizontal.PositionSuffix = "mm";
             this.unitCutting_Right_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitCutting_Right_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitCutting_Right_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // numCutting_Right_Back_Horizontal_Target  (D164)
@@ -2249,7 +2249,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Vertical_Clamping.PositionSuffix = "mm";
             this.unitRight_Front_Vertical_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
             this.unitRight_Front_Vertical_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.unitRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid_3WayClosedCenter;
+            this.unitRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitRight_Front_Vertical_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
             // 
             // numRight_Front_Vertical_Clamping_Target  (D167)

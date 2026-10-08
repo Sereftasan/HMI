@@ -33,6 +33,7 @@ namespace Kaban.UI.Controls
     /// spring makes the other), so the unit has one action - A or B; a double
     /// solenoid drives both, so it has both. See CylinderUnitHMI.TypeProblems.
     /// </summary>
+    [TypeConverter(typeof(Kaban.UI.Design.CylinderValveConverter))]
     public enum CylinderValve
     {
         Unspecified = 0,
@@ -43,8 +44,10 @@ namespace Kaban.UI.Controls
         // stops and holds its air - most of the machines' valves) and the OPEN centre
         // (both off: both sides to exhaust, the cylinder can drift). The help says
         // what each does when the button is let go of early.
-        DoubleSolenoid_3WayClosedCenter = 3,
-        DoubleSolenoid_3WayOpenCenter = 4
+        // Shown as "3WayClosedCenter" / "3WayOpenCenter" (CylinderValveConverter):
+        // every 3 way valve is a double solenoid, so the name does not say it.
+        ThreeWayClosedCenter = 3,
+        ThreeWayOpenCenter = 4
     }
 
     /// <summary>
@@ -965,7 +968,7 @@ namespace Kaban.UI.Controls
         /// </summary>
         [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The valve: it decides the ACTIONS. SingleSolenoid - one coil, one action (A or B; the spring makes the other movement). " +
-                     "DoubleSolenoid / DoubleSolenoid_3WayClosedCenter / DoubleSolenoid_3WayOpenCenter (5/3) - a coil for each movement, both actions. " +
+                     "DoubleSolenoid (5/2), 3WayClosedCenter / 3WayOpenCenter (5/3, double solenoid) - a coil for each movement, both actions. " +
                      "On an error the '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
@@ -1036,10 +1039,10 @@ namespace Kaban.UI.Controls
                     }
                     break;
                 case CylinderValve.DoubleSolenoid:
-                case CylinderValve.DoubleSolenoid_3WayClosedCenter:
-                case CylinderValve.DoubleSolenoid_3WayOpenCenter:
+                case CylinderValve.ThreeWayClosedCenter:
+                case CylinderValve.ThreeWayOpenCenter:
                     if (!cmdA || !cmdB)
-                        p.Add(_valve + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
+                        p.Add(Kaban.UI.Design.CylinderValveConverter.Name(_valve) + ": a coil for each movement - set both CommandAAddress and CommandBAddress" +
                               (!cmdA && !cmdB ? "." : " (" + (cmdA ? "B" : "A") + " is missing)."));
                     break;
                 default:
