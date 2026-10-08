@@ -87,7 +87,7 @@ class SP {
         Check("at the right edge, from under the caption to the bottom", bar.Visible && bar.Right == form.ClientSize.Width && bar.Top == top.Bottom,
               bar.Bounds + " in " + form.ClientSize + ", caption bottom " + top.Bottom);
         Check("  the admin's pages: Inputs / Outputs, the Axis Monitor, the machine's Order, Notes and feedback, the PLC Monitor, in that order",
-              string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,PlcMonitor", string.Join(",", buttons.Keys));
+              string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,PlcMonitor,+", string.Join(",", buttons.Keys));
         var tips = (ToolTip)Get(form, "_sideTips");
         Check("  each says what it opens", buttons.All(kv => (Kaban.UI.Controls.UiStyle.TipOf(kv.Value) ?? "").Length > 0), Kaban.UI.Controls.UiStyle.TipOf(buttons["PlcMonitor"]));
 
@@ -250,12 +250,12 @@ class SP {
         Console.WriteLine("--- the level decides ---");
         SecurityManager.Login("maint", SecurityLevel.Maintenance);
         Pump(50);
-        Check("Maintenance: Inputs / Outputs, Axis Monitor, Order and Notes, no PLC monitor", string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes", string.Join(",", buttons.Keys));
+        Check("Maintenance: Inputs / Outputs, Axis Monitor, Order and Notes, no PLC monitor", string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,+", string.Join(",", buttons.Keys));
         form.ShowSidePage("IoMonitor");
         SecurityManager.Logout();
         Pump(50);
         Check("signed out: the Axis Monitor, the Order page and Notes stay (they ask for no level); Inputs / Outputs is closed",
-              string.Join(",", buttons.Keys) == "AxisMonitor,TST.Order,Notes" && form.OpenSidePage == null && bar.Visible, string.Join(",", buttons.Keys));
+              string.Join(",", buttons.Keys) == "AxisMonitor,TST.Order,Notes,+" && form.OpenSidePage == null && bar.Visible, string.Join(",", buttons.Keys));
 
         Console.WriteLine("--- the bar folds to the edge ---");
         form.GetType().GetMethod("SetSideBarFolded", Any).Invoke(form, new object[] { true });

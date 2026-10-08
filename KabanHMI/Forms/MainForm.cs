@@ -524,6 +524,8 @@ namespace Kaban.UI.Forms
             btn.Cursor = System.Windows.Forms.Cursors.Hand;
 
             btn.Click += (s, e) => LoadScreen(screenToLoad);
+            // a right-click: the page in the side panel (MainForm.SideCopies)
+            OfferSideMenu(btn, screenToLoad);
 
             _menuButtons[btn] = screenToLoad;
             NavBody.Controls.Add(btn);

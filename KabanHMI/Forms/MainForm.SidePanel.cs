@@ -102,6 +102,7 @@ namespace Kaban.UI.Forms
         {
             RegisterBuiltInSidePages();
             LoadSidePanelState();
+            RegisterKeptMainPages(_keptMainPages);
 
             var back = Color.FromArgb(249, 249, 250);
             _sideBar = new Panel { Dock = DockStyle.Right, Width = _sideBarFolded ? SideBarFoldedWidth : SideBarWidth, BackColor = back };
@@ -251,11 +252,37 @@ namespace Kaban.UI.Forms
                 b.Paint += (s, e) => PaintSideButton(e.Graphics, b, page, hover());
                 b.Click += (s, e) => ToggleSidePage(page.Key);
                 Kaban.UI.Controls.UiStyle.SetTip(_sideTips, b, page.Title);
+                OfferRemove(b, page);             // a main page put here: taken off by a right-click
                 // Placed at factor 1 and scaled as it is added (see UiScale).
                 b.Location = new Point((SideBarWidth - SideButtonSize) / 2, y);
                 y += SideButtonSize + 6;
                 _sideBarList.Controls.Add(b);
                 _sideButtons[page.Key] = b;
+            }
+            // + : a main page in the side panel (the menu's page buttons offer it on a right-click)
+            if (pages.Count > 0 && Kaban.Core.Machines.MachineRegistry.NavigationGroups().Any(CanOpenInSide))
+            {
+                var add = new Button
+                {
+                    Size = new Size(SideButtonSize, SideButtonSize), FlatStyle = FlatStyle.Flat, Text = "", Name = "sideAddPage",
+                    BackColor = _sideBar.BackColor, Cursor = Cursors.Hand, TabStop = false,
+                    AccessibleName = LanguageManager.GetString("Side_OpenHere", "Open in the side panel")
+                };
+                add.FlatAppearance.BorderSize = 0;
+                var addHover = UiStyle.HoverBorder(add);
+                add.Paint += (s, e) =>
+                {
+                    DrawScaled(e.Graphics, add.ClientRectangle, rr => DrawAddGlyph(e.Graphics, rr, Color.FromArgb(110, 116, 124)));
+                    if (addHover())
+                        using (var pen = new Pen(UiStyle.HoverBorderColor, 1.6f))
+                            e.Graphics.DrawRectangle(pen, 1, 1, add.Width - 3, add.Height - 3);
+                };
+                add.Click += (s, e) => UiStyle.ShowPopup(SidePagesMenu(), add, new Point(0, add.Height));
+                Kaban.UI.Controls.UiStyle.SetTip(_sideTips, add, LanguageManager.GetString("Tip_SideAddPage",
+                    "Open a main page in the side panel (Home, Manual Movement, Machine Parameters, Alarms, Dashboard) - a right-click on a page button of the menu does the same."));
+                add.Location = new Point((SideBarWidth - SideButtonSize) / 2, y + 6);
+                _sideBarList.Controls.Add(add);
+                _sideButtons["+"] = add;
             }
             _sideBarList.ResumeLayout(true);
             _sideBar.Visible = pages.Count > 0;
@@ -575,7 +602,13 @@ namespace Kaban.UI.Forms
             _sideWantsWindow.Clear();
             if (v.TryGetValue("InWindow", out text))
                 foreach (var key in text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) _sideWantsWindow.Add(key.Trim());
+            _keptMainPages.Clear();
+            if (v.TryGetValue("MainPages", out text))
+                foreach (var key in text.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)) _keptMainPages.Add(key.Trim());
         }
+
+        /// <summary>The main pages on the side bar at the last run (registered once the panel is set up).</summary>
+        private readonly List<string> _keptMainPages = new List<string>();
 
         private void SaveSidePanelState()
         {
@@ -583,7 +616,8 @@ namespace Kaban.UI.Forms
             {
                 { "Width", _sideWidthLogical.ToString(System.Globalization.CultureInfo.InvariantCulture) },
                 { "BarFolded", _sideBarFolded ? "1" : "0" },
-                { "InWindow", string.Join(",", _sideWantsWindow) }
+                { "InWindow", string.Join(",", _sideWantsWindow) },
+                { "MainPages", string.Join(",", _mainPagesInSide) }
             });
         }
 
