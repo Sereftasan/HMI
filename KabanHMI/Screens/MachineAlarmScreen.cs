@@ -306,7 +306,8 @@ namespace Kaban.UI.Screens
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
                 if (_grid.Columns[e.ColumnIndex].Name != "Help") return;
                 var docs = HelpDocumentsFor(e.RowIndex);
-                e.Value = docs.Count == 0 ? "" :
+                // every alarm has at least its AI prompt (the list's last entry)
+                e.Value = docs.Count == 0 ? AiPromptCaption :
                           docs[0].Title + (docs.Count > 1 ? "  (+" + (docs.Count - 1) + ")" : "");
                 e.FormattingApplied = true;
             };
@@ -316,7 +317,7 @@ namespace Kaban.UI.Screens
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
                 if (_grid.Columns[e.ColumnIndex].Name != "Help") return;
-                if (HelpDocumentsFor(e.RowIndex).Count == 0) return;
+                if (!(_grid.Rows[e.RowIndex].DataBoundItem is AlarmItem)) return;
 
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All);
                 var r = e.CellBounds;
@@ -342,7 +343,7 @@ namespace Kaban.UI.Screens
             {
                 bool clickable = e.RowIndex >= 0 && e.ColumnIndex >= 0 &&
                                  _grid.Columns[e.ColumnIndex].Name == "Help" &&
-                                 HelpDocumentsFor(e.RowIndex).Count > 0;
+                                 _grid.Rows[e.RowIndex].DataBoundItem is AlarmItem;
                 _grid.Cursor = clickable ? Cursors.Hand : Cursors.Default;
             };
             _grid.MouseLeave += (s, e) => _grid.Cursor = Cursors.Default;
@@ -383,9 +384,10 @@ namespace Kaban.UI.Screens
         private void ShowHelpFor(int rowIndex, int columnIndex)
         {
             var docs = HelpDocumentsFor(rowIndex);
-            if (docs.Count == 0) return;
+            var alarm = rowIndex >= 0 && rowIndex < _grid.Rows.Count ? _grid.Rows[rowIndex].DataBoundItem as AlarmItem : null;
+            if (alarm == null) return;
 
-            var menu = BuildHelpMenu(docs, OpenDocument);
+            var menu = BuildHelpMenu(docs, OpenDocument, () => Kaban.UI.Helpers.AlarmAiPrompt.Build(alarm, null, docs), this);
             var cell = _grid.GetCellDisplayRectangle(columnIndex, rowIndex, false);
             UiStyle.ShowPopup(menu, _grid, new Point(cell.Left, cell.Bottom));
         }
@@ -400,7 +402,8 @@ namespace Kaban.UI.Screens
         /// entry, telling the operator where to turn.
         /// </summary>
         public static ContextMenuStrip BuildHelpMenu(IList<TroubleshootingCatalog.HelpDocument> docs,
-                                                     Action<TroubleshootingCatalog.HelpDocument> open)
+                                                     Action<TroubleshootingCatalog.HelpDocument> open,
+                                                     Func<string> aiPrompt = null, IWin32Window owner = null)
         {
             var menu = UiStyle.Menu();
             menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_HelpDocs", "Help Documents")));
@@ -414,7 +417,28 @@ namespace Kaban.UI.Screens
                 item.Click += (s, e) => open(d);
                 menu.Items.Add(item);
             }
+            // THE LAST ENTRY: an AI prompt for this alarm, put on the clipboard (8 October)
+            if (aiPrompt != null)
+            {
+                if (docs.Count > 0) menu.Items.Add(new ToolStripSeparator());
+                var ai = new ToolStripMenuItem(AiPromptCaption) { Name = "aiPrompt" };
+                ai.ToolTipText = LanguageManager.GetString("Tip_AiPrompt",
+                    "Copies a prompt for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit and the machine: paste it there, the AI writes you a helper for it.");
+                ai.Click += (s, e) =>
+                {
+                    string text = null;
+                    try { text = aiPrompt(); } catch (Exception ex) { AuditLogger.Log("AI prompt failed: " + ex.Message); }
+                    if (!string.IsNullOrEmpty(text)) Kaban.UI.Helpers.AlarmAiPrompt.Copy(owner, text);
+                };
+                menu.Items.Add(ai);
+            }
             return menu;
+        }
+
+        /// <summary>The help list's last entry.</summary>
+        public static string AiPromptCaption
+        {
+            get { return LanguageManager.GetString("Hlp_AiPromptItem", "AI prompt - copy it for an AI chat"); }
         }
 
         private void OpenDocument(TroubleshootingCatalog.HelpDocument doc)

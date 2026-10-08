@@ -86,6 +86,7 @@
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
+    <Compile Include="Helpers\AlarmAiPrompt.cs" />
     <Compile Include="Helpers\NoteTarget.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">

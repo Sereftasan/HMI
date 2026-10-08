@@ -214,6 +214,7 @@ namespace Kaban.UI.Controls
             Controls.Add(_help);
             _help.BringToFront();
             _help.Documents = HelpDocuments;
+            _help.AiPrompt = AiPromptText;
             _grp.Resize += (s2, e2) => LayoutChildren();
 
             // An error coming or going turns the "?" red and blinks the border of
@@ -1279,6 +1280,18 @@ namespace Kaban.UI.Controls
         /// no troubleshooting to offer (30 September). The unit's own files
         /// always come last.
         /// </summary>
+        /// <summary>The AI prompt for the unit's fault (8 October): the alarm on the list for its error bit, its documents; null without a fault.</summary>
+        public string AiPromptText()
+        {
+            foreach (var side in new[] { "A", "B" })
+            {
+                var badge = side == "A" ? _helpA : _helpB;
+                if (badge == null || !badge.IsActive) continue;
+                return badge.AiPromptText(HelpDocuments());
+            }
+            return null;
+        }
+
         public List<TroubleshootingCatalog.HelpDocument> HelpDocuments()
         {
             var docs = new List<TroubleshootingCatalog.HelpDocument>();

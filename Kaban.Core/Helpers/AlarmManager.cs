@@ -313,7 +313,12 @@ namespace Kaban.Core.Helpers
 
                     if (isActive && !currentlyShown)
                     {
-                        var item = new AlarmItem(def.AlarmCode, def.TranslationKey, def.Severity);
+                        // its station and device on the item too (8 October): the lists' Address
+                        // column, the AI prompt and the "?" find their alarm by them
+                        var item = new AlarmItem(def.AlarmCode, def.TranslationKey, def.Severity)
+                        {
+                            Station = StationOf(def), Address = (def.Address ?? "").Trim()
+                        };
                         ActiveAlarms.Add(item);
                         AddToHistory(item);
                         changed = true;

@@ -397,11 +397,23 @@ namespace Kaban.UI.Controls
         {
             base.OnClick(e);
             var docs = Documents();
-            if (docs.Count == 0) return;
+            if (docs.Count == 0 && !IsActive) return;
 
-            // The SAME list the alarm grid shows, so the two routes to help agree.
-            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d));
+            // The SAME list the alarm grid shows, so the two routes to help agree - the
+            // alarm's AI prompt last while it is on (8 October).
+            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d),
+                IsActive ? (Func<string>)(() => AiPromptText(docs)) : null, FindForm());
             UiStyle.ShowPopup(menu, this, new Point(0, Height));
+        }
+
+        /// <summary>The AI prompt for the alarm this badge shows (the one on the list for its device, else its definition).</summary>
+        public string AiPromptText(IList<TroubleshootingCatalog.HelpDocument> docs)
+        {
+            var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
+            var item = AlarmManager.ActiveAlarms.FirstOrDefault(a => a.Station == PlcNumber &&
+                           string.Equals((a.Address ?? "").Trim(), (Address ?? "").Trim(), StringComparison.OrdinalIgnoreCase)) ??
+                       (def != null ? AlarmManager.ActiveAlarms.FirstOrDefault(a => a.AlarmCode == def.AlarmCode) : null);
+            return AlarmAiPrompt.Build(item, def, docs ?? Documents());
         }
     }
 }
@@ -433,6 +445,8 @@ namespace Kaban.UI.Controls
 
         /// <summary>Supplied by the unit that owns the badge.</summary>
         public Func<List<TroubleshootingCatalog.HelpDocument>> Documents;
+        /// <summary>The AI prompt for the unit's fault (null when there is none) - the list's last entry.</summary>
+        public Func<string> AiPrompt;
 
         private BadgeState _state = BadgeState.Hidden;
         private bool _hover;
@@ -509,12 +523,15 @@ namespace Kaban.UI.Controls
         {
             base.OnClick(e);
             var docs = Documents != null ? Documents() : null;
-            if (docs == null || docs.Count == 0) return;
+            if (docs == null) docs = new List<TroubleshootingCatalog.HelpDocument>();
+            // A fault: its AI prompt is the list's last entry (8 October), so the list is shown even for one document.
+            Func<string> ai = State == BadgeState.Error || State == BadgeState.Warning ? AiPrompt : null;
+            if (docs.Count == 0 && ai == null) return;
 
-            if (docs.Count == 1) { AlarmHelpLinks.Open(FindForm(), docs[0]); return; }
+            if (docs.Count == 1 && ai == null) { AlarmHelpLinks.Open(FindForm(), docs[0]); return; }
 
             // The SAME list the alarm grid shows, so the two routes to help agree.
-            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d));
+            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d), ai, FindForm());
             UiStyle.ShowPopup(menu, this, new Point(0, Height));
         }
     }
