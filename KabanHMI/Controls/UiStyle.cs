@@ -291,7 +291,9 @@ namespace Kaban.UI.Controls
             }
             var old = slot[0];
             slot[0] = menu;
-            if (old != null && old != menu && !old.IsDisposed) old.Dispose();
+            // a menu made for one showing goes; a table's headings menu is kept (it is
+            // the headings' own, shown again on the next right-click)
+            if (old != null && old != menu && !old.IsDisposed && !(old.Tag is Kaban.UI.Helpers.ColumnChooser)) old.Dispose();
         }
 
         /// <summary>
@@ -1632,13 +1634,14 @@ namespace Kaban.UI.Controls
             Timer timer = null;
             Control over = null;
             bool shown = false;
+            IWin32Window shownOn = null;
             Point nowhere = new Point(int.MinValue, int.MinValue), at = nowhere;
             Action putDown = () =>
             {
                 if (timer != null) timer.Stop();
                 if (!shown) return;
                 shown = false;
-                try { tips.Hide(host); } catch { }
+                try { tips.Hide(shownOn ?? host); } catch { }
             };
             host.MouseMove += (s, e) =>
             {
@@ -1662,10 +1665,11 @@ namespace Kaban.UI.Controls
                         if (string.IsNullOrEmpty(text)) return;
                         try
                         {
+                            var p = new Point(at.X + 2, at.Y + (host.Cursor ?? Cursors.Default).Size.Height - 8);
                             LastShownTip = text;
-                            LastShownOn = host;          // the window it is shown on (the magnified tip's size)
                             LastShownFor = c;
-                            tips.Show(text, host, at.X + 2, at.Y + (host.Cursor ?? Cursors.Default).Size.Height - 8, TooltipAutoPopMs);
+                            // the window it is shown on (the magnified tip's size)
+                            shownOn = ShowTip(tips, text, host, p);
                             shown = true;
                         }
                         catch { LastShownTip = null; LastShownOn = null; LastShownFor = null; }
@@ -1696,13 +1700,14 @@ namespace Kaban.UI.Controls
             Timer timer = null;
             bool inside = false, shown = false;
             Point at = Point.Empty;
+            IWin32Window shownOn = null;
 
             Action putDown = () =>
             {
                 if (timer != null) timer.Stop();
                 if (!shown) return;
                 shown = false;
-                try { tips.Hide(c); } catch { }
+                try { tips.Hide(shownOn ?? c); } catch { }
             };
 
             Point nowhere = new Point(int.MinValue, int.MinValue);
@@ -1730,11 +1735,11 @@ namespace Kaban.UI.Controls
                             // Set BEFORE Show: the magnified tip measures itself (Popup)
                             // while Show runs, and takes the text from here when the
                             // tooltip has none registered for the control.
-                            LastShownTip = text;
-                            LastShownOn = c;
-                            LastShownFor = c;
                             // Below the pointer, as Windows places its own tips.
-                            tips.Show(text, c, at.X + 2, at.Y + (c.Cursor ?? Cursors.Default).Size.Height - 8, TooltipAutoPopMs);
+                            var p = new Point(at.X + 2, at.Y + (c.Cursor ?? Cursors.Default).Size.Height - 8);
+                            LastShownTip = text;
+                            LastShownFor = c;
+                            shownOn = ShowTip(tips, text, c, p);
                             shown = true;
                         }
                         catch { LastShownTip = null; LastShownOn = null; }
@@ -1749,6 +1754,53 @@ namespace Kaban.UI.Controls
             c.VisibleChanged += (s, e) => { if (!c.Visible) { inside = false; putDown(); } };
             c.Disposed += (s, e) => { if (timer != null) { timer.Stop(); timer.Dispose(); timer = null; } };
         }
+
+        /// <summary>
+        /// THE WINDOW A TIP IS SHOWN ON (8 October: "the extended toolbar buttons -
+        /// shown at the additional toolbar which appears with the down arrow -
+        /// don't show tooltips"). ToolTip.Show shows nothing unless the control's
+        /// top window is the ACTIVE one - and a toolbar's overflow (any dropdown) is
+        /// a window of its own that never becomes active: the buttons moved into it
+        /// were silent. Shown on the dropdown itself, which ToolTip lets through
+        /// (it opens without taking the focus), at the same point.
+        /// </summary>
+        internal static Control TipWindowFor(Control c, ref Point at)
+        {
+            Control root = c;
+            while (root.Parent != null) root = root.Parent;
+            var dropDown = root as ToolStripDropDown;
+            if (dropDown == null || dropDown == c || !dropDown.IsHandleCreated) return c;
+            try { at = dropDown.PointToClient(c.PointToScreen(at)); } catch { return c; }
+            return dropDown;
+        }
+
+        /// <summary>
+        /// Shows a control's tip at a point of its own: on the dropdown it is in, when
+        /// it is in one (TipWindowFor), else - or when that fails - on the control.
+        /// The window it went on (for Hide). Throws when it could not be shown at all.
+        /// </summary>
+        private static Control ShowTip(ToolTip tips, string text, Control c, Point p)
+        {
+            var q = p;
+            var on = TipWindowFor(c, ref q);
+            LastTipWindow = on;
+            if (on != c)
+            {
+                try
+                {
+                    LastShownOn = on;
+                    tips.Show(text, on, q.X, q.Y, TooltipAutoPopMs);
+                    return on;
+                }
+                catch { }       // (Mono's ToolTip takes a form's window only)
+            }
+            LastShownOn = c;
+            tips.Show(text, c, p.X, p.Y, TooltipAutoPopMs);
+            return c;
+        }
+
+        /// <summary>The window the last tip was meant for (tests: a dropdown for a button under a toolbar's arrow).</summary>
+        internal static Control LastTipWindow;
 
         /// <summary>The last tip HoverTip showed, and on which control (the magnified tip's size; tests).</summary>
         internal static string LastShownTip;

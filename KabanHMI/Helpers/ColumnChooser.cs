@@ -68,6 +68,12 @@ namespace Kaban.UI.Helpers
                 menu.Items.Clear();
                 foreach (var item in chooser.MenuItems()) menu.Items.Add(item);
                 foreach (DataGridViewColumn c in grid.Columns) c.HeaderCell.ContextMenuStrip = menu;
+                // THE FIRST RIGHT-CLICK (8 October: "doesn't open at the first right-click,
+                // it works after the first one"): a menu that opens EMPTY - its items are
+                // made here, as it opens - arrives with Cancel already set (WinForms: no
+                // items, nothing to show); it was left so, and only the second click,
+                // with the first click's items still on it, opened it.
+                e.Cancel = menu.Items.Count == 0;
             };
             // Ticking columns is several choices at once: the menu stays open for it.
             menu.ItemClicked += (s, e) => { var mi = e.ClickedItem as ToolStripMenuItem; keepOpen = mi != null && mi.CheckOnClick; };

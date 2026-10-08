@@ -487,10 +487,49 @@ namespace Kaban.UI.Settings
                     "PLC connections saved."));
         }
 
+        /// <summary>
+        /// DISCARD AND RE-READ (8 October: "it flutters for a few seconds until
+        /// reloading the previous parameters"). It built the whole table anew - every
+        /// box disposed, made again, scaled for the magnifier and laid out one by one
+        /// while on screen. The rows are the same PLCs as before: only their saved
+        /// values are put back in them, in one go. (Other PLCs in the file - a
+        /// machine added meanwhile - build the table anew, out of sight.)
+        /// </summary>
         private void Reload()
         {
             PlcConnectionSettings.Load();
-            Build();
+            var endpoints = PlcConnectionSettings.Endpoints();
+            bool same = endpoints.Count == _rows.Count && _rows.Count > 0 &&
+                        endpoints.Select(e => e.StationId).SequenceEqual(_rows.Select(r => r.Endpoint.StationId));
+            if (!same)
+            {
+                _table.SuspendLayout();
+                try { Build(); }
+                finally { _table.ResumeLayout(true); }
+                ApplyAccess();
+                return;
+            }
+            _building = true;
+            try
+            {
+                for (int i = 0; i < _rows.Count; i++)
+                {
+                    var row = _rows[i];
+                    row.Endpoint = endpoints[i];
+                    var saved = PlcConnectionSettings.For(row.Endpoint);
+                    var kind = PlcDriverCatalog.Kinds.FirstOrDefault(k => string.Equals(k.Id, saved.DriverId, StringComparison.OrdinalIgnoreCase));
+                    if (kind != null) { if (row.Driver.SelectedItem != kind) row.Driver.SelectedItem = kind; }
+                    else if (row.Driver.Items.Count > 0 && row.Driver.SelectedIndex != 0) row.Driver.SelectedIndex = 0;
+                    var value = Math.Max(row.Station.Minimum, Math.Min(row.Station.Maximum, saved.LogicalStation));
+                    if (row.Station.Value != value) row.Station.Value = value;
+                    var text = saved.Endpoint ?? "";
+                    if (row.Address.Text != text) row.Address.Text = text;
+                    UpdateRowState(row);
+                }
+            }
+            finally { _building = false; }
+            if (_btnSave != null) _btnSave.Enabled = false;   // as saved == unchanged
+            AuditLogger.Log("PLC Connection: changes discarded, the saved connections read again.");
         }
     }
 

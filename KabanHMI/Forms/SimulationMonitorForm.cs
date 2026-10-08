@@ -1172,6 +1172,7 @@ namespace Kaban.UI.Forms
                 rowMenu.Items.Add(Item(T("Mnu_RemoveRow", "Remove from this list"), (s2, e2) => RemoveSelected(), sel, Keys.Delete));
                 if (mon.IsSimulated && mon.Hidden.Count > 0)
                     rowMenu.Items.Add(Item(T("Mnu_RestoreRows", "Show removed devices again"), (s2, e2) => RestoreHidden()));
+                e.Cancel = false;           // it opened empty: WinForms had set Cancel (the first right-click)
             };
             grid.ContextMenuStrip = rowMenu;
 

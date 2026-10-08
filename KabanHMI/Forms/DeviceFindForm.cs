@@ -210,6 +210,7 @@ namespace Kaban.UI.Forms
                                           { Checked = FormatOf(use) == name });
                 }
                 rowMenu.Items.Add(fmt);
+                e.Cancel = false;           // it opened empty: WinForms had set Cancel (the first right-click)
             };
             _list.ContextMenuStrip = rowMenu;
             // A right-click chooses the line first (not a page opened: that is a left click).
