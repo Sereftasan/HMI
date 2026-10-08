@@ -1,0 +1,614 @@
+{
+  "_about": "FA2010's PLC messages (8 October). The PLC writes a message's Code to the machine's PopupTriggerAddress (D71); the HMI shows it; a button writes its answer to PopupResponseAddress (D72) and 0 to D71. Answers: Cancel / No = 0, OK / Yes / Continue = 1, Restart = 2 (a button's own \"Code\" overrides). No button: shown until the PLC writes 0. Codes 17-19 are the other machines', 24-25 unused.",
+  "Popups": [
+    {
+      "Code": 1,
+      "Icon": "Info",
+      "Title": {
+        "EN": "Referencing",
+        "TR": "Referansa Gidiyor",
+        "RU": "Реферирование",
+        "DE": "Referenzfahrt",
+        "IT": "Ricerca riferimento",
+        "ES": "Referenciando"
+      },
+      "Text": {
+        "EN": "Attention!\nThe axes are referencing...",
+        "TR": "Dikkat!\nEksenler referansa gidiyor...",
+        "RU": "Внимание!\nОси выполняют реферирование...",
+        "DE": "Achtung!\nDie Achsen fahren die Referenz an...",
+        "IT": "Attenzione!\nGli assi stanno eseguendo la ricerca del riferimento...",
+        "ES": "¡Atención!\nLos ejes están referenciando..."
+      },
+      "Buttons": [],
+      "Comment": "Old code 13. No button: shown while D71 = 1, closed when the PLC writes 0."
+    },
+    {
+      "Code": 2,
+      "Icon": "Question",
+      "Title": {
+        "EN": "Entry conveyor empty",
+        "TR": "Konveyör Boş Uyarı",
+        "RU": "Входной конвейер пуст",
+        "DE": "Einlaufförderer leer",
+        "IT": "Trasportatore d'ingresso vuoto",
+        "ES": "Transportador de entrada vacío"
+      },
+      "Text": {
+        "EN": "No profile has reached the profile recognition unit!\nYou need to load a profile on the conveyor to continue the operation.\n\nDo you want to continue?",
+        "TR": "Giriş konveyöründe profil algılanamadı!\nİşleme devam etmek için konveyöre profil yükleyiniz veya profil algılama sensörünü kontrol ediniz.\n\nDevam etmek istiyor musunuz?",
+        "RU": "Ни один профиль не дошёл до узла распознавания профиля!\nЧтобы продолжить работу, загрузите профиль на конвейер.\n\nПродолжить?",
+        "DE": "Kein Profil hat die Profilerkennung erreicht!\nLegen Sie ein Profil auf den Förderer, um den Betrieb fortzusetzen.\n\nMöchten Sie fortfahren?",
+        "IT": "Nessun profilo ha raggiunto l'unità di riconoscimento profilo!\nCaricare un profilo sul trasportatore per continuare il lavoro.\n\nVuoi continuare?",
+        "ES": "¡Ningún perfil ha llegado a la unidad de reconocimiento de perfil!\nCargue un perfil en el transportador para continuar la operación.\n\n¿Desea continuar?"
+      },
+      "Buttons": [
+        {
+          "Kind": "Yes"
+        },
+        {
+          "Kind": "No"
+        }
+      ],
+      "Comment": "Old code 20."
+    },
+    {
+      "Code": 3,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "Remove the profile",
+        "TR": "Profil Çıkar",
+        "RU": "Извлеките профиль",
+        "DE": "Profil entnehmen",
+        "IT": "Rimuovere il profilo",
+        "ES": "Retire el perfil"
+      },
+      "Text": {
+        "EN": "A profile is detected inside the machine!\nPlease unload it.",
+        "TR": "Makine içerisinde profil algılandı!\nLütfen profili çıkarınız.",
+        "RU": "В машине обнаружен профиль!\nПожалуйста, извлеките его.",
+        "DE": "Im Inneren der Maschine wurde ein Profil erkannt!\nBitte entnehmen Sie es.",
+        "IT": "È stato rilevato un profilo all'interno della macchina!\nSi prega di scaricarlo.",
+        "ES": "¡Se ha detectado un perfil dentro de la máquina!\nPor favor, descárguelo."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ],
+      "Comment": "Old code 12."
+    },
+    {
+      "Code": 4,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "Start warning",
+        "TR": "Start Uyarı",
+        "RU": "Предупреждение при пуске",
+        "DE": "Startwarnung",
+        "IT": "Avviso di avvio",
+        "ES": "Aviso de arranque"
+      },
+      "Text": {
+        "EN": "There is an alarm in the machine.\nPlease reset the alarms first in order to start the operation.",
+        "TR": "Makinada alarm var.\nÇalışmaya başlamadan önce alarmları resetleyiniz.",
+        "RU": "В машине есть авария.\nСначала сбросьте аварии, чтобы начать работу.",
+        "DE": "In der Maschine liegt ein Alarm an.\nBitte setzen Sie zuerst die Alarme zurück, um den Betrieb zu starten.",
+        "IT": "C'è un allarme nella macchina.\nResettare prima gli allarmi per avviare il lavoro.",
+        "ES": "Hay una alarma en la máquina.\nRestablezca primero las alarmas para iniciar la operación."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ],
+      "Comment": "Old code 53."
+    },
+    {
+      "Code": 5,
+      "Icon": "Error",
+      "Title": {
+        "EN": "Servo out of limits",
+        "TR": "Servo Limit Dışında Arıza",
+        "RU": "Сервоось вне пределов",
+        "DE": "Servo außerhalb der Grenzen",
+        "IT": "Servo fuori limiti",
+        "ES": "Servo fuera de límites"
+      },
+      "Text": {
+        "EN": "Some servo axes are out of their operation limits\nor need referencing!\n\nThe operation is cancelled.",
+        "TR": "Servolar limit dışında\nveya referanslama gerekiyor!\n\nÇalışma iptal edildi.",
+        "RU": "Некоторые сервооси вне рабочих пределов\nили требуют реферирования!\n\nРабота отменена.",
+        "DE": "Einige Servoachsen sind außerhalb ihrer Arbeitsgrenzen\noder benötigen eine Referenzfahrt!\n\nDer Betrieb wurde abgebrochen.",
+        "IT": "Alcuni assi servo sono fuori dai limiti di lavoro\no richiedono la ricerca del riferimento!\n\nIl lavoro è stato annullato.",
+        "ES": "¡Algunos ejes servo están fuera de sus límites de operación\no necesitan referenciarse!\n\nLa operación se ha cancelado."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ],
+      "Fields": [
+        {
+          "Kind": "Axes"
+        }
+      ],
+      "FieldHeads": {
+        "EN": "Needs reference / Fault",
+        "TR": "Referans gerekli / Arıza",
+        "RU": "Нужен реферанс / Ошибка",
+        "DE": "Referenz nötig / Fehler",
+        "IT": "Riferimento / Guasto",
+        "ES": "Referencia / Fallo"
+      },
+      "Comment": "Old code 52. The axes: their home request (reference needed) and error bits, as on the Axis Settings rows."
+    },
+    {
+      "Code": 6,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "No job order",
+        "TR": "İş emri yok",
+        "RU": "Нет задания",
+        "DE": "Kein Auftrag",
+        "IT": "Nessun ordine di lavoro",
+        "ES": "Sin orden de trabajo"
+      },
+      "Text": {
+        "EN": "No job order is sent to operate.",
+        "TR": "Çalışmak için gönderilmiş iş emri yok.",
+        "RU": "Задание для работы не отправлено.",
+        "DE": "Es wurde kein Auftrag zum Bearbeiten gesendet.",
+        "IT": "Nessun ordine di lavoro è stato inviato.",
+        "ES": "No se ha enviado ninguna orden de trabajo."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 7,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "Conveyor back not allowed",
+        "TR": "Konveyör Geri İzin Uyarı",
+        "RU": "Конвейер назад запрещён",
+        "DE": "Förderer rückwärts nicht erlaubt",
+        "IT": "Trasportatore indietro non consentito",
+        "ES": "Transportador atrás no permitido"
+      },
+      "Text": {
+        "EN": "The profile recognition unit must be down and the top clamping open when there is a profile in the machine, in order to move the conveyor.",
+        "TR": "Makinede profil varken konveyörü hareket ettirmek için profil tanıma ünitesi aşağıda ve üst sıkma açık olmalıdır.",
+        "RU": "Чтобы двигать конвейер, когда в машине есть профиль, узел распознавания профиля должен быть внизу, а верхний прижим открыт.",
+        "DE": "Um den Förderer zu bewegen, während sich ein Profil in der Maschine befindet, muss die Profilerkennung unten und die obere Spannung offen sein.",
+        "IT": "Per muovere il trasportatore quando c'è un profilo nella macchina, l'unità di riconoscimento profilo deve essere in basso e il bloccaggio superiore aperto.",
+        "ES": "Para mover el transportador con un perfil en la máquina, la unidad de reconocimiento de perfil debe estar abajo y la sujeción superior abierta."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ],
+      "Comment": "Old code 37."
+    },
+    {
+      "Code": 8,
+      "Icon": "Error",
+      "Title": {
+        "EN": "Wrong profile",
+        "TR": "Yanlış Profil",
+        "RU": "Неверный профиль",
+        "DE": "Falsches Profil",
+        "IT": "Profilo errato",
+        "ES": "Perfil incorrecto"
+      },
+      "Text": {
+        "EN": "The profile measures are not suitable!",
+        "TR": "Ölçülen profil uygun değil!",
+        "RU": "Размеры профиля не подходят!",
+        "DE": "Die Profilmaße passen nicht!",
+        "IT": "Le misure del profilo non sono adatte!",
+        "ES": "¡Las medidas del perfil no son adecuadas!"
+      },
+      "Buttons": [
+        {
+          "Kind": "Restart"
+        },
+        {
+          "Kind": "Cancel"
+        }
+      ],
+      "Fields": [
+        {
+          "Kind": "Value",
+          "Label": {
+            "EN": "Width",
+            "TR": "Genişlik",
+            "RU": "Ширина",
+            "DE": "Breite",
+            "IT": "Larghezza",
+            "ES": "Ancho"
+          },
+          "Address": "D8",
+          "Address2": "D481",
+          "Unit": "mm"
+        },
+        {
+          "Kind": "Value",
+          "Label": {
+            "EN": "Height",
+            "TR": "Yükseklik",
+            "RU": "Высота",
+            "DE": "Höhe",
+            "IT": "Altezza",
+            "ES": "Alto"
+          },
+          "Address": "D9",
+          "Address2": "D482",
+          "Unit": "mm"
+        }
+      ],
+      "FieldHeads": {
+        "EN": "Defined / Measured",
+        "TR": "Tanımlanan / Ölçülen",
+        "RU": "Задано / Измерено",
+        "DE": "Definiert / Gemessen",
+        "IT": "Definito / Misurato",
+        "ES": "Definido / Medido"
+      },
+      "Comment": "Old code 5. Defined D8 / D9, measured D481 / D482."
+    },
+    {
+      "Code": 9,
+      "Icon": "Error",
+      "Title": {
+        "EN": "Profile too small",
+        "TR": "Profil çok küçük",
+        "RU": "Профиль слишком мал",
+        "DE": "Profil zu klein",
+        "IT": "Profilo troppo piccolo",
+        "ES": "Perfil demasiado pequeño"
+      },
+      "Text": {
+        "EN": "The measured profile is too small for the machine to operate, or it is not measured properly.",
+        "TR": "Ölçülen profil makinenin çalışması için çok küçük ya da düzgün ölçülemedi.",
+        "RU": "Измеренный профиль слишком мал для работы машины, или он измерен неправильно.",
+        "DE": "Das gemessene Profil ist für die Maschine zu klein oder wurde nicht richtig gemessen.",
+        "IT": "Il profilo misurato è troppo piccolo per la macchina, oppure non è stato misurato correttamente.",
+        "ES": "El perfil medido es demasiado pequeño para la máquina, o no se ha medido correctamente."
+      },
+      "Buttons": [
+        {
+          "Kind": "Restart"
+        },
+        {
+          "Kind": "Cancel"
+        }
+      ],
+      "Fields": [
+        {
+          "Kind": "Value",
+          "Label": {
+            "EN": "Width",
+            "TR": "Genişlik",
+            "RU": "Ширина",
+            "DE": "Breite",
+            "IT": "Larghezza",
+            "ES": "Ancho"
+          },
+          "Address": "D8",
+          "Address2": "D481",
+          "Unit": "mm"
+        },
+        {
+          "Kind": "Value",
+          "Label": {
+            "EN": "Height",
+            "TR": "Yükseklik",
+            "RU": "Высота",
+            "DE": "Höhe",
+            "IT": "Altezza",
+            "ES": "Alto"
+          },
+          "Address": "D9",
+          "Address2": "D482",
+          "Unit": "mm"
+        }
+      ],
+      "FieldHeads": {
+        "EN": "Defined / Measured",
+        "TR": "Tanımlanan / Ölçülen",
+        "RU": "Задано / Измерено",
+        "DE": "Definiert / Gemessen",
+        "IT": "Definito / Misurato",
+        "ES": "Definido / Medido"
+      },
+      "Comment": "Old code 9."
+    },
+    {
+      "Code": 10,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "Profile bar too short",
+        "TR": "Profil boyu çok kısa",
+        "RU": "Профиль слишком короткий",
+        "DE": "Profilstange zu kurz",
+        "IT": "Barra profilo troppo corta",
+        "ES": "Barra de perfil demasiado corta"
+      },
+      "Text": {
+        "EN": "The profile bar is too short to operate.",
+        "TR": "Profil boyu işlemek için çok kısa.",
+        "RU": "Профиль слишком короткий для обработки.",
+        "DE": "Die Profilstange ist für die Bearbeitung zu kurz.",
+        "IT": "La barra del profilo è troppo corta per la lavorazione.",
+        "ES": "La barra de perfil es demasiado corta para operar."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 11,
+      "Icon": "Question",
+      "Title": {
+        "EN": "No profile detected",
+        "TR": "Profil algılanmadı",
+        "RU": "Профиль не обнаружен",
+        "DE": "Kein Profil erkannt",
+        "IT": "Nessun profilo rilevato",
+        "ES": "No se detecta perfil"
+      },
+      "Text": {
+        "EN": "No profile detected.\nPress \"Continue\" if the profile bar is too short to detect, or \"Cancel\" to finish the operation.",
+        "TR": "Profil algılanmadı.\nProfil algılanamayacak kadar kısaysa \"Devam\", işlemi bitirmek için \"İptal\" butonuna basınız.",
+        "RU": "Профиль не обнаружен.\nНажмите «Продолжить», если профиль слишком короткий для обнаружения, или «Отмена», чтобы завершить работу.",
+        "DE": "Kein Profil erkannt.\nDrücken Sie „Weiter“, wenn die Profilstange zu kurz zum Erkennen ist, oder „Abbrechen“, um den Betrieb zu beenden.",
+        "IT": "Nessun profilo rilevato.\nPremere \"Continua\" se la barra è troppo corta per essere rilevata, oppure \"Annulla\" per terminare il lavoro.",
+        "ES": "No se detecta perfil.\nPulse \"Continuar\" si la barra es demasiado corta para detectarse, o \"Cancelar\" para terminar la operación."
+      },
+      "Buttons": [
+        {
+          "Kind": "Continue"
+        },
+        {
+          "Kind": "Cancel"
+        }
+      ]
+    },
+    {
+      "Code": 12,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "No profile detected",
+        "TR": "Profil algılanmadı",
+        "RU": "Профиль не обнаружен",
+        "DE": "Kein Profil erkannt",
+        "IT": "Nessun profilo rilevato",
+        "ES": "No se detecta perfil"
+      },
+      "Text": {
+        "EN": "No profile detected.\nCheck the gripper positions for the loaded profiles.",
+        "TR": "Profil algılanmadı.\nYüklenen profiller için tutucu (gripper) pozisyonlarını kontrol ediniz.",
+        "RU": "Профиль не обнаружен.\nПроверьте положения захватов для загруженных профилей.",
+        "DE": "Kein Profil erkannt.\nPrüfen Sie die Greiferpositionen für die geladenen Profile.",
+        "IT": "Nessun profilo rilevato.\nControllare le posizioni delle pinze per i profili caricati.",
+        "ES": "No se detecta perfil.\nCompruebe las posiciones de las pinzas para los perfiles cargados."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 13,
+      "Icon": "Error",
+      "Title": {
+        "EN": "Profile detection error",
+        "TR": "Profil algılama hatası",
+        "RU": "Ошибка обнаружения профиля",
+        "DE": "Profilerkennungsfehler",
+        "IT": "Errore di rilevamento profilo",
+        "ES": "Error de detección de perfil"
+      },
+      "Text": {
+        "EN": "Profile detection error.\nCheck the profile length measurement sensor and the conveyor profile clampings.",
+        "TR": "Profil algılama hatası.\nProfil boy ölçme sensörünü ve konveyör profil sıkmalarını kontrol ediniz.",
+        "RU": "Ошибка обнаружения профиля.\nПроверьте датчик измерения длины профиля и прижимы профиля на конвейере.",
+        "DE": "Profilerkennungsfehler.\nPrüfen Sie den Sensor der Profillängenmessung und die Profilspannungen des Förderers.",
+        "IT": "Errore di rilevamento profilo.\nControllare il sensore di misura della lunghezza del profilo e i bloccaggi del trasportatore.",
+        "ES": "Error de detección de perfil.\nCompruebe el sensor de medición de longitud del perfil y las sujeciones del transportador."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 14,
+      "Icon": "Question",
+      "Title": {
+        "EN": "Profile bar length",
+        "TR": "Profil boyu",
+        "RU": "Длина профиля",
+        "DE": "Profillänge",
+        "IT": "Lunghezza barra",
+        "ES": "Longitud de barra"
+      },
+      "Text": {
+        "EN": "The profile bar is not long enough for cutting all the pieces on it.\n\nDo you want to continue?",
+        "TR": "Profil boyu üzerindeki tüm parçaları kesmeye yetmiyor.\n\nDevam etmek istiyor musunuz?",
+        "RU": "Длины профиля недостаточно, чтобы отрезать все детали.\n\nПродолжить?",
+        "DE": "Die Profillänge reicht nicht für alle Teile darauf.\n\nMöchten Sie fortfahren?",
+        "IT": "La lunghezza della barra non basta per tagliare tutti i pezzi.\n\nVuoi continuare?",
+        "ES": "La longitud de la barra no alcanza para cortar todas las piezas.\n\n¿Desea continuar?"
+      },
+      "Buttons": [
+        {
+          "Kind": "Yes"
+        },
+        {
+          "Kind": "No"
+        }
+      ]
+    },
+    {
+      "Code": 15,
+      "Icon": "Info",
+      "Title": {
+        "EN": "Manual feeding",
+        "TR": "Elle besleme",
+        "RU": "Ручная подача",
+        "DE": "Manuelle Zuführung",
+        "IT": "Alimentazione manuale",
+        "ES": "Alimentación manual"
+      },
+      "Text": {
+        "EN": "Please feed the profile manually.",
+        "TR": "Lütfen profili elle besleyiniz.",
+        "RU": "Пожалуйста, подайте профиль вручную.",
+        "DE": "Bitte führen Sie das Profil manuell zu.",
+        "IT": "Si prega di alimentare il profilo manualmente.",
+        "ES": "Por favor, alimente el perfil manualmente."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 16,
+      "Icon": "Info",
+      "Title": {
+        "EN": "Front clampings",
+        "TR": "Ön sıkmalar",
+        "RU": "Передние прижимы",
+        "DE": "Vordere Spannungen",
+        "IT": "Bloccaggi anteriori",
+        "ES": "Sujeciones delanteras"
+      },
+      "Text": {
+        "EN": "Please set the front clampings according to the following parameters.",
+        "TR": "Lütfen ön sıkmaları aşağıdaki parametrelere göre ayarlayınız.",
+        "RU": "Пожалуйста, установите передние прижимы по следующим параметрам.",
+        "DE": "Bitte stellen Sie die vorderen Spannungen nach den folgenden Parametern ein.",
+        "IT": "Impostare i bloccaggi anteriori secondo i parametri seguenti.",
+        "ES": "Ajuste las sujeciones delanteras según los parámetros siguientes."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ],
+      "Comment": "The parameters to show are not given yet: add them as Fields (a label and its D device) once known."
+    },
+    {
+      "Code": 20,
+      "Icon": "Info",
+      "Title": {
+        "EN": "Calibration",
+        "TR": "Kalibrasyon",
+        "RU": "Калибровка",
+        "DE": "Kalibrierung",
+        "IT": "Calibrazione",
+        "ES": "Calibración"
+      },
+      "Text": {
+        "EN": "Please move the cylinder to another position, measure it, write the new calibration value and click the calibrate button again to complete the calibration.",
+        "TR": "Lütfen silindiri başka bir pozisyona götürün, ölçün, yeni kalibrasyon değerini yazın ve kalibrasyonu tamamlamak için kalibre butonuna tekrar basın.",
+        "RU": "Переместите цилиндр в другое положение, измерьте его, введите новое значение калибровки и снова нажмите кнопку калибровки, чтобы завершить калибровку.",
+        "DE": "Bitte fahren Sie den Zylinder in eine andere Position, messen Sie, geben Sie den neuen Kalibrierwert ein und drücken Sie erneut die Kalibriertaste, um die Kalibrierung abzuschließen.",
+        "IT": "Spostare il cilindro in un'altra posizione, misurarla, scrivere il nuovo valore di calibrazione e premere di nuovo il pulsante di calibrazione per completarla.",
+        "ES": "Mueva el cilindro a otra posición, mídala, escriba el nuevo valor de calibración y pulse de nuevo el botón de calibrar para completar la calibración."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 21,
+      "Icon": "Info",
+      "Title": {
+        "EN": "Calibrated",
+        "TR": "Kalibre edildi",
+        "RU": "Откалибровано",
+        "DE": "Kalibriert",
+        "IT": "Calibrato",
+        "ES": "Calibrado"
+      },
+      "Text": {
+        "EN": "Calibrated successfully.",
+        "TR": "Başarıyla kalibre edildi.",
+        "RU": "Калибровка выполнена успешно.",
+        "DE": "Erfolgreich kalibriert.",
+        "IT": "Calibrato con successo.",
+        "ES": "Calibrado correctamente."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 22,
+      "Icon": "Error",
+      "Title": {
+        "EN": "Conveyor back sensor",
+        "TR": "Konveyör arka sensörü",
+        "RU": "Задний датчик конвейера",
+        "DE": "Förderer-Rücksensor",
+        "IT": "Sensore posteriore trasportatore",
+        "ES": "Sensor trasero del transportador"
+      },
+      "Text": {
+        "EN": "Conveyor back sensor detection error.\nPlease check the sensor, unload the profile and restart.",
+        "TR": "Konveyör arka sensörü algılama hatası.\nLütfen sensörü kontrol edin, profili boşaltın ve yeniden başlatın.",
+        "RU": "Ошибка срабатывания заднего датчика конвейера.\nПроверьте датчик, выгрузите профиль и перезапустите.",
+        "DE": "Erkennungsfehler des Förderer-Rücksensors.\nBitte prüfen Sie den Sensor, entladen Sie das Profil und starten Sie neu.",
+        "IT": "Errore di rilevamento del sensore posteriore del trasportatore.\nControllare il sensore, scaricare il profilo e riavviare.",
+        "ES": "Error de detección del sensor trasero del transportador.\nCompruebe el sensor, descargue el perfil y reinicie."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    },
+    {
+      "Code": 23,
+      "Icon": "Warning",
+      "Title": {
+        "EN": "Calibration",
+        "TR": "Kalibrasyon",
+        "RU": "Калибровка",
+        "DE": "Kalibrierung",
+        "IT": "Calibrazione",
+        "ES": "Calibración"
+      },
+      "Text": {
+        "EN": "The cylinder has not been to its back position yet.\nPlease move it there first, before the calibration.",
+        "TR": "Silindir henüz geri pozisyonuna gitmedi.\nLütfen kalibrasyondan önce önce oraya götürün.",
+        "RU": "Цилиндр ещё не был в заднем положении.\nСначала переместите его туда, затем калибруйте.",
+        "DE": "Der Zylinder war noch nicht in seiner hinteren Position.\nBitte fahren Sie ihn vor der Kalibrierung zuerst dorthin.",
+        "IT": "Il cilindro non è ancora stato nella posizione posteriore.\nPortarlo prima lì, prima della calibrazione.",
+        "ES": "El cilindro aún no ha estado en su posición trasera.\nMuévalo primero allí, antes de la calibración."
+      },
+      "Buttons": [
+        {
+          "Kind": "OK"
+        }
+      ]
+    }
+  ]
+}

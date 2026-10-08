@@ -66,6 +66,12 @@ namespace Kaban.Machines.FA2010
             // own. SET, not a pulse: the ladder switches M102 off itself once every
             // device is reset. Like the version device, a fact of the ladder.
             PlcManager.Instance.SetAlarmResetDevice(ctx.Station(1), "M102", Kaban.Core.Enums.BitActionType.SET);
+
+            // THE PLC'S MESSAGES (8 October): PopupTriggerAddress - the PLC writes a
+            // message's number there (D71, "Pop-up Ekran" in the device list) -
+            // and PopupResponseAddress - the HMI writes the operator's answer there
+            // (D72, "Pop-up Seçilen Buton"), then 0 to D71. The messages: Popups.json.
+            PlcPopups.SetDevices(ctx.Station(1), PopupTriggerAddress, PopupResponseAddress, ctx.ModuleId);
             PlcManager.Instance.RegisterStation(ctx.Station(2), "FA2010 Aux PLC",
                 SecurityLevel.Operator, ctx.ModuleId, 2);
 
@@ -98,6 +104,11 @@ namespace Kaban.Machines.FA2010
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
         }
 
+        /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>
+        public const string PopupTriggerAddress = "D71";
+        /// <summary>Where the HMI writes the operator's answer (Cancel / No 0, OK / Yes / Continue 1, Restart 2).</summary>
+        public const string PopupResponseAddress = "D72";
+
         public void RegisterData(IMachineMountContext ctx)
         {
             // Additive: a mounted sub-machine's alarms/translations must not wipe
@@ -106,6 +117,9 @@ namespace Kaban.Machines.FA2010
             // machine, but correct if FA2010 is ever itself mounted as a sub).
             AlarmDefinitionLoader.Load(ctx.ResolveFile("Alarms.json"),
                 replaceExisting: ctx.IsMainMachine, moduleId: ctx.ModuleId, stationRemap: ctx.Station);
+
+            // the PLC's messages, in every language (the station 1 PLC asks them)
+            PlcPopups.Load(ctx.ResolveFile("Popups.json"), ctx.Station(1), ctx.ModuleId);
 
             string csv = ctx.ResolveFile("Translations.csv");
             if (ctx.IsMainMachine) LanguageManager.LoadMachineTranslations(csv);

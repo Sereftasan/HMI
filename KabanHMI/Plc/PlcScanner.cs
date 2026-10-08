@@ -350,6 +350,8 @@ namespace Kaban.UI.Plc
             // The alarms the HMI raises itself: the outputs, sensors and drive codes
             // they time and read, whichever page is on show.
             foreach (var gen in AlarmGeneration.Addresses()) AddTo(gen.Key, gen.Value);
+            // The PLC's messages to the operator: each machine's trigger (FA2010: D71).
+            foreach (var pop in PlcPopups.Addresses()) AddTo(pop.Key, pop.Value);
 
             // Fold in the addresses discovered at runtime (see _dynamicAddresses).
             foreach (var kvDyn in _dynamicAddresses)
@@ -834,6 +836,8 @@ namespace Kaban.UI.Plc
                 try { AlarmGeneration.Evaluate(kvFresh.Key, lk, DateTime.Now); }
                 catch (Exception ex) { AuditLogger.Log("alarm generation: " + ex.Message); }
                 AlarmManager.Evaluate(kvFresh.Key, lk);
+                try { PlcPopups.Evaluate(kvFresh.Key, lk, DateTime.Now); }
+                catch (Exception ex) { AuditLogger.Log("PLC messages: " + ex.Message); }
             }
 
             if (station1Fresh && lookups.ContainsKey(1))

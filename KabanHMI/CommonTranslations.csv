@@ -1235,3 +1235,17 @@ Msg_AiPromptCopied;The AI prompt is on the clipboard. Open any AI chat (Claude, 
 Msg_AiPromptFailed;The prompt could not be put on the clipboard - try again.;İstem panoya kopyalanamadı - yeniden deneyin.;Не удалось скопировать запрос в буфер обмена - попробуйте ещё раз.;Der Prompt konnte nicht in die Zwischenablage gelegt werden - erneut versuchen.;Impossibile copiare il prompt negli appunti - riprova.;No se pudo copiar el prompt al portapapeles - inténtalo de nuevo.
 Alarm_Col_Cause;Cause;Neden;Причина;Ursache;Causa;Causa
 Alarm_Col_Address;Address;Adres;Адрес;Adresse;Indirizzo;Dirección
+Pop_OK;OK;Tamam;ОК;OK;OK;Aceptar
+Pop_Cancel;Cancel;İptal;Отмена;Abbrechen;Annulla;Cancelar
+Pop_Yes;Yes;Evet;Да;Ja;Sì;Sí
+Pop_No;No;Hayır;Нет;Nein;No;No
+Pop_Continue;Continue;Devam;Продолжить;Weiter;Continua;Continuar
+Pop_Restart;Restart;Yeniden başlat;Перезапуск;Neu starten;Riavvia;Reiniciar
+Pop_Retry;Retry;Tekrar dene;Повторить;Wiederholen;Riprova;Reintentar
+Pop_Hide;Hide;Gizle;Скрыть;Ausblenden;Nascondi;Ocultar
+Pop_Number;PLC message;PLC mesajı;Сообщение ПЛК;SPS-Meldung;Messaggio PLC;Mensaje del PLC
+Pop_NotSent;The answer did not reach the PLC;Cevap PLC'ye ulaşmadı;Ответ не дошёл до ПЛК;Die Antwort hat die SPS nicht erreicht;La risposta non è arrivata al PLC;La respuesta no llegó al PLC
+Pop_SignIn;Sign in to answer the machine.;Makineye cevap vermek için giriş yapın.;Войдите, чтобы ответить машине.;Melden Sie sich an, um der Maschine zu antworten.;Accedi per rispondere alla macchina.;Inicie sesión para responder a la máquina.
+Pop_Reference;Reference;Referans;Референс;Referenz;Riferimento;Referencia
+Pop_Fault;Fault;Hata;Ошибка;Fehler;Guasto;Fallo
+Pop_Unknown;The PLC shows message {0}, which this HMI does not know yet (not in the machine's Popups.json).;PLC {0} numaralı mesajı gösteriyor, bu HMI onu henüz tanımıyor (makinenin Popups.json dosyasında yok).;ПЛК показывает сообщение {0}, которое этот HMI ещё не знает (нет в Popups.json машины).;Die SPS zeigt Meldung {0}, die dieses HMI noch nicht kennt (nicht in der Popups.json der Maschine).;Il PLC mostra il messaggio {0}, che questo HMI non conosce ancora (non è nel Popups.json della macchina).;El PLC muestra el mensaje {0}, que este HMI aún no conoce (no está en el Popups.json de la máquina).

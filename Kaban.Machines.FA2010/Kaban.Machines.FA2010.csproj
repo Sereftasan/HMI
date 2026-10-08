@@ -653,6 +653,9 @@
     <None Include="Alarms.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Popups.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- The machine dashboard (the Industry 4 dashboard's files): the default
          settings, the state map and the texts of its descriptions. Copied to
          <output>\Dashboard\ and found through ctx.ResolveFile. -->

@@ -87,6 +87,7 @@
     <Compile Include="Helpers\PageScroll.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
+    <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\NoteTarget.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
@@ -128,6 +129,9 @@
       <DependentUpon>BaseScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\InputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PlcPopupForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\LoginForm.cs">

@@ -569,6 +569,12 @@ namespace Kaban.UI.Forms
             AlarmManager.AlarmsChanged += OnHmiAlarmsChanged;
             // A sound for a new alarm, when View Preferences ask for one.
             Kaban.UI.Helpers.AlarmSound.Start();
+            // The PLC's messages to the operator (each machine's PopupTriggerAddress).
+            Kaban.UI.Helpers.PlcPopupHost.SignIn = owner =>
+            {
+                using (var login = new LoginForm()) login.ShowDialog(owner);
+            };
+            Kaban.UI.Helpers.PlcPopupHost.Attach(this);
             FormClosed += (s5, e5) => AlarmManager.AlarmsChanged -= OnHmiAlarmsChanged;
 
             try
