@@ -266,6 +266,8 @@ namespace Kaban.UI.Dashboard
             Drop();
         }
 
+        private void Drop() { DropUnder(this); }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -276,14 +278,20 @@ namespace Kaban.UI.Dashboard
             }
         }
 
-        private void Drop()
+        /// <summary>
+        /// Opens the list to tick under <paramref name="anchor"/> - itself, or another
+        /// control standing for it (a table's column heading: the Axis heading of an
+        /// axis page opens its Axes list).
+        /// </summary>
+        public void DropUnder(Control anchor)
         {
+            if (anchor == null || anchor.IsDisposed) return;
             var items = _items.ToList();
             int widest = items.Count == 0 ? 0 : items.Max(i => TextRenderer.MeasureText(i.Text, Font).Width);
             var list = new CheckedListBox
             {
                 CheckOnClick = true, BorderStyle = BorderStyle.None, Font = Font, IntegralHeight = false,
-                Width = Math.Max(Width, Math.Min(UiScale.Px(420), widest + UiScale.Px(48))),
+                Width = Math.Max(Math.Max(anchor.Width, UiScale.Px(160)), Math.Min(UiScale.Px(420), widest + UiScale.Px(48))),
                 Height = Math.Min(UiScale.Px(360), Math.Max(UiScale.Px(40), items.Count * UiScale.Px(22) + UiScale.Px(8)))
             };
             foreach (var i in items) list.Items.Add(i.Text, _selected.Contains(i.Key));
@@ -297,7 +305,7 @@ namespace Kaban.UI.Dashboard
             var drop = new ToolStripDropDown { Padding = Padding.Empty };
             drop.Items.Add(host);
             bool pending = false;
-            list.ItemCheck += (s, e) => BeginInvoke(new Action(() =>
+            list.ItemCheck += (s, e) => anchor.BeginInvoke(new Action(() =>
             {
                 _selected.Clear();
                 foreach (int i in list.CheckedIndices) _selected.Add(items[i].Key);
@@ -317,7 +325,7 @@ namespace Kaban.UI.Dashboard
                 }
                 drop.Close();
             };
-            drop.Closed += (s, e) => BeginInvoke(new Action(() =>
+            drop.Closed += (s, e) => anchor.BeginInvoke(new Action(() =>
             {
                 IsOpen = false;
                 OpenList = null; OpenDrop = null;
@@ -327,7 +335,7 @@ namespace Kaban.UI.Dashboard
             }));
             IsOpen = true;
             OpenList = list; OpenDrop = drop;
-            UiStyle.ShowPopup(drop, this, new Point(0, Height));
+            UiStyle.ShowPopup(drop, anchor, new Point(0, anchor.Height));
         }
     }
 }

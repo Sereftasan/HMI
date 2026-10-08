@@ -58,6 +58,12 @@ namespace Kaban.Core.Helpers
         public const string MonitorItems = "MonitorItems";
         /// <summary>The Axis Monitor's Motion monitor values (comma list of keys).</summary>
         public const string MonitorMotion = "MonitorMotion";
+        /// <summary>The axes shown on the Axis Settings pages (comma list of "name@station"; "*" or empty: all).</summary>
+        public const string AxesShown = "AxesShown";
+        /// <summary>The axes shown on the Axis Monitor (same form).</summary>
+        public const string MonitorAxes = "MonitorAxes";
+        /// <summary>The lists shown on the Inputs / Outputs side page ("station:I" / "station:O"; "*" or empty: all).</summary>
+        public const string IoShown = "IoShown";
 
         public static readonly IList<Preference> All = new List<Preference>
         {
@@ -76,6 +82,9 @@ namespace Kaban.Core.Helpers
             new Preference { Key = AxisItems, Group = "", Hidden = true },
             new Preference { Key = MonitorItems, Group = "", Hidden = true, Default = "Torque" },
             new Preference { Key = MonitorMotion, Group = "", Hidden = true },
+            new Preference { Key = AxesShown, Group = "", Hidden = true },
+            new Preference { Key = MonitorAxes, Group = "", Hidden = true },
+            new Preference { Key = IoShown, Group = "", Hidden = true },
             // A user's own units of measure ("Unit_Length" = inch): taken at sign-in by
             // UnitManager. Everyone's are UnitManager's own (Units.cfg), not kept here.
             new Preference { Key = "Unit_" + Enums.UnitType.Length, Group = "Units", Hidden = true },

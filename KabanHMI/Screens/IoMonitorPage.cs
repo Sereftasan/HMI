@@ -28,6 +28,10 @@ namespace Kaban.UI.Screens
     {
         private readonly TextBox _filter = new TextBox();
         private readonly CheckBox _onlyOn = new CheckBox();
+        /// <summary>The lists shown (8 October: hide / show, as on the axis pages): nothing ticked, all.</summary>
+        private readonly Kaban.UI.Dashboard.PickList _show = new Kaban.UI.Dashboard.PickList(UiStyle.Tips()) { Name = "ioShow", ApplyOnClose = true };
+        private readonly Label _showCaption = new Label { AutoSize = true };
+        private bool _syncing;
         private readonly Panel _body = new Panel();
         private readonly Label _empty = new Label();
         private readonly List<Section> _sections = new List<Section>();
@@ -38,6 +42,8 @@ namespace Kaban.UI.Screens
             public Label Heading;
             public Label InputsCaption, OutputsCaption;
             public IoListHMI Inputs, Outputs;
+            public int Station;
+            public bool InputsShown = true, OutputsShown = true, Shown = true;
         }
 
         public IoMonitorPage()
@@ -53,12 +59,48 @@ namespace Kaban.UI.Screens
             _onlyOn.Text = T("Chk_IoOnlyOn", "Only the ones on");
             _onlyOn.AutoSize = true;
             _onlyOn.Location = new Point(240, 9);
-            top.Controls.AddRange(new Control[] { find, _filter, _onlyOn });
+            _showCaption.Text = T("Lbl_IoShow", "Lists:");
+            _showCaption.Location = new Point(240, 11);
+            _show.Size = new Size(200, 24);
+            _show.Location = new Point(240, 7);
+            _show.AllText = T("IoShow_All", "All lists");
+            top.Controls.AddRange(new Control[] { find, _filter, _onlyOn, _showCaption, _show });
             top.Layout += (s, e) =>
             {
                 _filter.Left = find.Right + 6;
                 _onlyOn.Left = _filter.Right + 12;
+                _show.Height = _filter.Height;
+                // beside the others while they fit in the panel's width, else on a line of its own
+                int one = _filter.Bottom + top.Padding.Bottom + 3;
+                bool beside = !_show.Visible || _onlyOn.Right + 16 + _showCaption.Width + 6 + _show.Width <= top.ClientSize.Width - top.Padding.Right;
+                if (beside)
+                {
+                    _showCaption.SetBounds(_onlyOn.Right + 16, find.Top, _showCaption.Width, _showCaption.Height);
+                    _show.Top = _filter.Top;
+                }
+                else
+                {
+                    _showCaption.SetBounds(find.Left, _filter.Bottom + 6 + (find.Top - _filter.Top), _showCaption.Width, _showCaption.Height);
+                    _show.Top = _filter.Bottom + 6;
+                }
+                _show.Left = _showCaption.Right + 6;
+                int want = beside ? one : _show.Bottom + top.Padding.Bottom + 3;
+                if (top.Height != want) top.Height = want;
             };
+            _show.Changed += (s, e) =>
+            {
+                if (_syncing) return;
+                Kaban.UI.Helpers.ShownPick.KeepFrom(_show, ViewPreferences.IoShown);
+                ApplyShown();
+            };
+            EventHandler again = (s, e) =>
+            {
+                if (IsDisposed) return;
+                Action sync = () => { OfferShown(); ApplyShown(); };
+                if (IsHandleCreated) { try { BeginInvoke(sync); } catch { } } else sync();
+            };
+            ViewPreferences.Changed += again;
+            Disposed += (s, e) => ViewPreferences.Changed -= again;
             Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _filter, T("Tip_IoFilter", "Part of an address (X20, Y1) or of a name"));
 
             _body.Dock = DockStyle.Fill;
@@ -102,6 +144,7 @@ namespace Kaban.UI.Screens
                 var ep = PlcConnectionSettings.Endpoints().FirstOrDefault(e => e.StationId == group.Key);
                 var sec = new Section
                 {
+                    Station = group.Key,
                     Heading = new Label
                     {
                         Text = ep != null ? Kaban.UI.Helpers.PlcEndpointNaming.CaptionWithStation(ep) : "Station " + group.Key,
@@ -129,6 +172,8 @@ namespace Kaban.UI.Screens
                 _sections.Add(sec);
             }
 
+            OfferShown();
+            ApplyShown(layout: false);
             if (_sections.Count == 0)
             {
                 _empty.Text = T("Msg_IoNone",
@@ -140,6 +185,38 @@ namespace Kaban.UI.Screens
             }
             LayoutSections();
         }
+
+        /// <summary>The Lists list: each controller's inputs and outputs, ticked as kept.</summary>
+        private void OfferShown()
+        {
+            var items = new List<Kaban.UI.Dashboard.PickList.Item>();
+            foreach (var sec in _sections)
+            {
+                if (sec.Inputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":I", sec.Heading.Text + " - " + T("IoShow_Inputs", "inputs")));
+                if (sec.Outputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":O", sec.Heading.Text + " - " + T("IoShow_Outputs", "outputs")));
+            }
+            Kaban.UI.Helpers.ShownPick.Offer(_show, ViewPreferences.IoShown, items, ref _syncing);
+            _show.Visible = _showCaption.Visible = items.Count > 1;
+        }
+
+        /// <summary>The lists ticked shown, the others out of sight - the ones shown moved up together.</summary>
+        private void ApplyShown(bool layout = true)
+        {
+            var ticked = _show.Selected;
+            foreach (var sec in _sections)
+            {
+                sec.InputsShown = ticked.Count == 0 || ticked.Contains(sec.Station + ":I");
+                sec.OutputsShown = ticked.Count == 0 || ticked.Contains(sec.Station + ":O");
+                if (sec.Inputs != null) sec.Inputs.Visible = sec.InputsCaption.Visible = sec.InputsShown;
+                if (sec.Outputs != null) sec.Outputs.Visible = sec.OutputsCaption.Visible = sec.OutputsShown;
+                sec.Shown = (sec.Inputs != null && sec.InputsShown) || (sec.Outputs != null && sec.OutputsShown);
+                sec.Heading.Visible = sec.Shown;
+            }
+            if (layout) LayoutSections();
+        }
+
+        /// <summary>The lists shown (tests).</summary>
+        internal Kaban.UI.Dashboard.PickList ShowPick { get { return _show; } }
 
         private static Label Caption(string text)
         {
@@ -165,7 +242,7 @@ namespace Kaban.UI.Screens
         public int PreferredWidth(int available)
         {
             int gap = Math.Max(6, Font.Height / 2);
-            int bar = _top != null ? _top.Controls.Cast<Control>().Where(c => c.Visible).Select(c => c.Right).DefaultIfEmpty(0).Max() + _top.Padding.Right + 8 : 0;
+            int bar = _top != null ? _top.Controls.Cast<Control>().Where(c => c.Visible && c != _show && c != _showCaption).Select(c => c.Right).DefaultIfEmpty(0).Max() + _top.Padding.Right + 8 : 0;
             if (_sections.Count == 0) return Math.Max(bar, Font.Height * 20);
             int col = Lists.Select(l => l.PreferredWidth).DefaultIfEmpty(0).Max();
             int scroll = SystemInformation.VerticalScrollBarWidth;
@@ -194,25 +271,29 @@ namespace Kaban.UI.Screens
             _body.SuspendLayout();
             foreach (var sec in _sections)
             {
+                if (!sec.Shown) continue;                    // both its lists hidden (Lists)
                 sec.Heading.SetBounds(gap, y, width, Font.Height + gap);
                 y = sec.Heading.Bottom + 2;
                 int yIn = y, yOut = y;
-                if (sec.Inputs != null)
+                bool both = sec.Inputs != null && sec.InputsShown && sec.Outputs != null && sec.OutputsShown;
+                if (sec.Inputs != null && sec.InputsShown)
                 {
-                    sec.InputsCaption.SetBounds(gap, yIn, colWidth, Font.Height + 6);
-                    sec.Inputs.SetBounds(gap, sec.InputsCaption.Bottom, colWidth, sec.Inputs.PreferredHeight);
+                    int w = both ? colWidth : width;      // alone: the whole width
+                    sec.InputsCaption.SetBounds(gap, yIn, w, Font.Height + 6);
+                    sec.Inputs.SetBounds(gap, sec.InputsCaption.Bottom, w, sec.Inputs.PreferredHeight);
                     yIn = sec.Inputs.Bottom + gap;
                 }
-                if (sec.Outputs != null)
+                if (sec.Outputs != null && sec.OutputsShown)
                 {
-                    int x = twoColumns ? gap + colWidth + gap : gap;
-                    int top = twoColumns ? yOut : yIn;
-                    sec.OutputsCaption.SetBounds(x, top, colWidth, Font.Height + 6);
-                    sec.Outputs.SetBounds(x, sec.OutputsCaption.Bottom, colWidth, sec.Outputs.PreferredHeight);
+                    int x = twoColumns && both ? gap + colWidth + gap : gap;
+                    int top = twoColumns && both ? yOut : yIn;
+                    int w = both ? colWidth : width;
+                    sec.OutputsCaption.SetBounds(x, top, w, Font.Height + 6);
+                    sec.Outputs.SetBounds(x, sec.OutputsCaption.Bottom, w, sec.Outputs.PreferredHeight);
                     yOut = sec.Outputs.Bottom + gap;
                 }
                 y = Math.Max(yIn, twoColumns ? yOut : yIn);
-                if (!twoColumns && sec.Outputs != null) y = yOut;
+                if ((!twoColumns || !both) && sec.Outputs != null && sec.OutputsShown) y = yOut;
             }
             _body.ResumeLayout(true);
         }

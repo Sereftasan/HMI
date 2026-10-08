@@ -1194,6 +1194,12 @@ namespace Kaban.UI.Controls
                 l.Text = LanguageManager.GetString(h[1], h[2]);
             }
 
+            // The Axis heading opens the Axes list (which rows the page shows).
+            Label axisHead;
+            var axesBar = BarOf(page, ItemsBarName);
+            if (byKey.TryGetValue("Axis", out axisHead) && axesBar != null && axesBar.AxesPick != null)
+                AxisHeadingFilter.Attach(axisHead, axesBar.AxesPick);
+
             // THE SIMPLE MOTION COLUMNS: a heading each, in the same style - its
             // short name over the column, the whole name in its tooltip.
             foreach (Control c in host.Controls)
@@ -1311,9 +1317,18 @@ namespace Kaban.UI.Controls
                 int shift = UiScale.For(page, 40);
                 foreach (Control c in page.Controls) c.Top += shift;
 
-                // PLC axis items: an ordinary part of the page, scrolling with it.
-                items = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: true, motion: false)
+                // PLC axis items: an ordinary part of the page, scrolling with it - and
+                // before it the Axes list: which rows the page shows.
+                items = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: true, motion: false,
+                                        axesKey: ViewPreferences.AxesShown)
                         { Name = ItemsBarName, BackColor = page.BackColor };
+                var anyRow = this;
+                var bar = items;
+                items.AxesChanged += (s, e) =>
+                {
+                    var host = anyRow.Parent;
+                    if (host != null) ApplyAxisFilter(host, bar);
+                };
                 page.Controls.Add(items);
                 items.SetBounds(Math.Max(0, left), top, UiScale.For(page, 460), UiScale.For(page, 36));
                 items.Width = items.NaturalWidth;
@@ -1337,7 +1352,9 @@ namespace Kaban.UI.Controls
                 ScheduleFreeze(page);
             }
             items.Visible = true;
+            items.OfferAxes(PageAxes(page));
             items.Offer(PageItems(), false);
+            ApplyAxisFilter(page, items);
             bool hasMotion = PageHasMotion();
             motion.Visible = hasMotion;
             motion.Offer(PageItems(), hasMotion);
@@ -1353,6 +1370,81 @@ namespace Kaban.UI.Controls
                 var bar = BarOf(page, name);
                 if (bar != null) bar.Sync();
             }
+            // another user signed in, the pick changed elsewhere: the rows they want
+            var items = BarOf(page, ItemsBarName);
+            if (items != null) ApplyAxisFilter(page, items);
+        }
+
+        // ---- the axes shown (8 October) -------------------------------------------------
+
+        private bool _conditionsMet = true;
+        /// <summary>Hidden by the page's Axes list (its conditions met or not).</summary>
+        internal bool FilteredOut { get; private set; }
+        private int _rank = -1;
+        [ThreadStatic] private static bool _restacking;
+
+        /// <summary>The row's key in the Axes list: its name and station ("Axis_RobotX@1").</summary>
+        internal string FilterKey { get { return (string.IsNullOrEmpty(AxisNameKey) ? Name : AxisNameKey) + "@" + PlcNumber; } }
+
+        /// <summary>The row as the page wants it: its conditions met and not hidden by the Axes list.</summary>
+        internal bool Wanted { get { return _conditionsMet && !FilteredOut; } }
+
+        /// <summary>The page's rows for its Axes list, in the page's order.</summary>
+        private static System.Collections.Generic.List<Kaban.UI.Dashboard.PickList.Item> PageAxes(Control host)
+        {
+            return RowsOf(host).Select(r => new Kaban.UI.Dashboard.PickList.Item(r.FilterKey,
+                LanguageManager.GetString(r.AxisNameKey ?? "", r.AxisNameKey ?? r.Name))).ToList();
+        }
+
+        /// <summary>A page's rows (not the Axis Monitor's), in the designer's order.</summary>
+        private static System.Collections.Generic.List<AxisSettingHMI> RowsOf(Control host)
+        {
+            var rows = host.Controls.OfType<AxisSettingHMI>().Where(r => !r.MonitorMode).ToList();
+            // the designer's order, kept the first time: the rows move up and down later
+            if (rows.Any(r => r._rank < 0))
+            {
+                int next = rows.Where(r => r._rank >= 0).Select(r => r._rank + 1).DefaultIfEmpty(0).Max();
+                foreach (var r in rows.Where(r => r._rank < 0).OrderBy(r => r.Top).ThenBy(r => r.Left)) r._rank = next++;
+            }
+            return rows.OrderBy(r => r._rank).ToList();
+        }
+
+        /// <summary>The Axes list's ticks on the page's rows: the ones it hides out of sight, the rest moved up together.</summary>
+        internal static void ApplyAxisFilter(Control host, AxisPickBar bar)
+        {
+            if (host == null || bar == null || _restacking) return;
+            foreach (var r in RowsOf(host))
+            {
+                bool hide = !bar.ShowsAxis(r.FilterKey);
+                if (r.FilteredOut == hide) continue;
+                r.FilteredOut = hide;
+                r.Visible = r.Wanted;
+            }
+            Restack(host);
+        }
+
+        /// <summary>
+        /// THE ROWS SHOWN MOVED UP TOGETHER: the places the designer gave the rows
+        /// are kept, and taken in the designer's order by the rows shown first,
+        /// then by the hidden ones - so no gap is left where an axis was hidden (by
+        /// the Axes list, or by its conditions: an option the machine has not got).
+        /// </summary>
+        internal static void Restack(Control host)
+        {
+            if (host == null || _restacking) return;
+            var rows = RowsOf(host);
+            if (rows.Count < 2) return;
+            var places = rows.Select(r => r.Location).OrderBy(p => p.Y).ThenBy(p => p.X).ToList();
+            var order = rows.Where(r => r.Wanted).Concat(rows.Where(r => !r.Wanted)).ToList();
+            bool moves = false;
+            for (int i = 0; i < order.Count; i++) if (order[i].Location != places[i]) { moves = true; break; }
+            if (!moves) return;
+            _restacking = true;
+            host.SuspendLayout();
+            try { for (int i = 0; i < order.Count; i++) if (order[i].Location != places[i]) order[i].Location = places[i]; }
+            finally { host.ResumeLayout(true); _restacking = false; }
+            var frame = AxisPageFrame.OfBody(host);
+            if (frame != null) frame.StickNames();
         }
 
         /// <summary>A list of the page's heading: on the page, or in its frame's heading.</summary>
@@ -1690,9 +1782,14 @@ namespace Kaban.UI.Controls
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             // Children are ordinary HMI controls, so the scanner already drives
-            // them; the row itself only follows its visibility conditions.
-            bool vis = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
+            // them; the row itself only follows its visibility conditions - and the
+            // page's Axes list.
+            bool met = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
+            bool changed = met != _conditionsMet;
+            _conditionsMet = met;
+            bool vis = Wanted;
             if (Visible != vis) Visible = vis;
+            if (changed && !MonitorMode && Parent != null) Restack(Parent);
         }
     }
 

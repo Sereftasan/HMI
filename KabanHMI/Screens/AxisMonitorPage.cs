@@ -23,14 +23,22 @@ namespace Kaban.UI.Screens
     /// </summary>
     public class AxisMonitorPage : UserControl
     {
-        private readonly FlowLayoutPanel _list = new FlowLayoutPanel();
+        /// <summary>
+        /// The rows - the one thing on the page that scrolls (IScrollsItself). In the
+        /// side panel the page around it was made to scroll as well (PageScroll), and
+        /// two scrolls for one list hid its right end under the outer one's edge
+        /// (8 October: "the scroll doesn't move to right as much as needed").
+        /// </summary>
+        private sealed class RowList : FlowLayoutPanel, IScrollsItself { }
+        private readonly FlowLayoutPanel _list = new RowList();
         private readonly Label _empty = new Label();
         private readonly Panel _head = new Panel { Dock = DockStyle.Top, Height = 26, BackColor = Color.White };
         // An Admin's rows' headings: above the list, not in it - they stay while the
         // rows scroll up and down, and follow them sideways.
         private readonly Panel _rowsHead = new Panel { Dock = DockStyle.Top, Height = 22, BackColor = Color.White, Visible = false, Name = "monitorRowsHead" };
         /// <summary>An Admin's PLC axis items and Motion monitor for the monitor (5 October).</summary>
-        private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion) { Dock = DockStyle.Top, WrapContents = true };
+        private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion, axesKey: ViewPreferences.MonitorAxes)
+                                            { Dock = DockStyle.Top, WrapContents = true };
         private string _built;
 
         /// <summary>Column widths: the Axis Settings row's own.</summary>
@@ -44,7 +52,10 @@ namespace Kaban.UI.Screens
             Dock = DockStyle.Fill;
 
             int x = Left0;
-            _head.Controls.Add(Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName));
+            var axisHead = Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName);
+            _head.Controls.Add(axisHead);
+            // the Axis heading opens the Axes list (which axes the monitor shows)
+            AxisHeadingFilter.Attach(axisHead, _bar.AxesPick);
             x += WName + Gap + Gap;
             _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisPosition", "Position"), x, WPosition));
             x += WPosition + Gap;
@@ -66,6 +77,8 @@ namespace Kaban.UI.Screens
 
             _bar.Padding = new Padding(4, 0, 0, 2);
             _bar.Resize += (s, e) => FitBar();
+            // the axes shown: the list again with them only (moved up together)
+            _bar.AxesChanged += (s, e) => { if (!IsDisposed) { Build(); Kaban.UI.Plc.PlcScanner.NotifyContentChanged(); } };
 
             Controls.Add(_list);
             Controls.Add(_empty);
@@ -109,11 +122,15 @@ namespace Kaban.UI.Screens
         private static string Signature()
         {
             bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            if (!admin) return "user";
+            string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "");
+            if (!admin) return "user" + axes;
             var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
             return "admin|" + (items == null ? "*" : string.Join(",", AxisSettingHMI.ItemKeys.Where(items.Contains))) + "|" +
-                   string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorMotion));
+                   string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorMotion)) + axes;
         }
+
+        /// <summary>An axis's key in the Axes list: its name and station.</summary>
+        internal static string AxisKey(AlarmHelpLinks.AxisInfo a) { return (a.NameKey ?? "") + "@" + a.Station; }
 
         private void RebuildIfChanged()
         {
@@ -144,13 +161,6 @@ namespace Kaban.UI.Screens
 
                 bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
                 var copies = axes.Select(a => AxisSettingHMI.FromSnapshot(a.Row)).ToList();
-                _bar.Visible = admin && axes.Count > 0;
-                if (admin) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
-                var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
-                bool classic = !admin || (items != null && items.Count == 1 && items.Contains("Torque") &&
-                                          ViewPreferences.ListOf(ViewPreferences.MonitorMotion).Count == 0);
-                _head.Visible = classic;
-                foreach (var c in copies) c.Dispose();
 
                 Func<AlarmHelpLinks.AxisInfo, string> machineOf = a =>
                 {
@@ -159,6 +169,27 @@ namespace Kaban.UI.Screens
                     return string.IsNullOrEmpty(id) ? "" : LanguageManager.GetString("Machine_" + id, id);
                 };
                 var machines = axes.Select(machineOf).Distinct().ToList();
+
+                // The Axes list (everyone, from the Axis heading): which axes - the
+                // machine before the name when more than one machine has axes. The PLC
+                // axis items and the Motion monitor: an Admin's.
+                _bar.HideLists(!admin);
+                _bar.OfferAxes(axes.Select(a =>
+                {
+                    string name = LanguageManager.GetString(a.NameKey ?? "", a.NameKey ?? "");
+                    string m = machineOf(a);
+                    return new Kaban.UI.Dashboard.PickList.Item(AxisKey(a), machines.Count > 1 && m.Length > 0 ? m + " \u00B7 " + name : name);
+                }));
+                if (admin) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
+                _bar.Visible = admin && axes.Count > 0;
+                axes = axes.Where(a => _bar.ShowsAxis(AxisKey(a))).ToList();
+                machines = axes.Select(machineOf).Distinct().ToList();
+                var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
+                bool classic = !admin || (items != null && items.Count == 1 && items.Contains("Torque") &&
+                                          ViewPreferences.ListOf(ViewPreferences.MonitorMotion).Count == 0);
+                _head.Visible = classic;
+                foreach (var c in copies) c.Dispose();
+
                 var rows = new List<AxisSettingHMI>();
                 string current = null;
                 foreach (var a in axes)
@@ -213,7 +244,8 @@ namespace Kaban.UI.Screens
                 l.SetBounds(UiScale.For(first, kv.Value.X), 0, UiScale.For(first, kv.Value.Y), head.Height);
                 l.Text = AxisSettingHMI.HeadingText(kv.Key);
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
-                if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
+                if (kv.Key == "Axis") AxisHeadingFilter.Attach(l, _bar.AxesPick);
+                else if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
             }
             FollowRows();
         }

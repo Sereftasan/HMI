@@ -27,24 +27,104 @@ namespace Kaban.UI.Controls
     /// page scrolls on (Pin) - its values are ticked where their columns are, at
     /// the right end. On the Axis Monitor one bar has both.
     /// </summary>
+    /// <summary>
+    /// THE AXIS COLUMN'S HEADING AS THE AXES FILTER (8 October: "a multiple
+    /// selection combo ... to hide/show the axis ... just like filtered tables
+    /// do"): a click on "Axis" opens the list of the page's axes to tick; the
+    /// heading shows a drop-down arrow, and - while some axes are hidden - how many
+    /// of them are shown, in the colour of a filter that is on.
+    /// </summary>
+    public static class AxisHeadingFilter
+    {
+        private sealed class Hook { public PickList Pick; }
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook> _hooks =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook>();
+
+        /// <summary>The list the heading opens (tests).</summary>
+        public static PickList PickOf(Label heading)
+        {
+            Hook h;
+            return heading != null && _hooks.TryGetValue(heading, out h) ? h.Pick : null;
+        }
+
+        /// <summary>Makes <paramref name="heading"/> open <paramref name="pick"/> (again: the list it opens now).</summary>
+        public static void Attach(Label heading, PickList pick)
+        {
+            if (heading == null || pick == null) return;
+            Hook hook;
+            if (_hooks.TryGetValue(heading, out hook))
+            {
+                if (hook.Pick != pick) { hook.Pick = pick; pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); }; }
+                heading.Invalidate();
+                return;
+            }
+            hook = new Hook { Pick = pick };
+            _hooks.Add(heading, hook);
+            pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); };
+            heading.Cursor = Cursors.Hand;
+            heading.Click += (s, e) => { var p = hook.Pick; if (p != null && p.Items.Count > 0) p.DropUnder(heading); };
+            UiStyle.HoverTip(UiStyle.Tips(), heading, () =>
+            {
+                var p = hook.Pick;
+                if (p == null) return "";
+                var shown = p.Selected.Count == 0 ? p.AllText : string.Join("\n", p.SelectedTexts);
+                return LanguageManager.GetString("Tip_AxShow", "The axes shown - a click: tick the ones to show (nothing ticked: all of them). The ones shown move up together.") +
+                       "\n\n" + shown;
+            });
+            heading.Paint += (s, e) =>
+            {
+                var p = hook.Pick;
+                if (p == null || p.Items.Count == 0) return;
+                bool on = p.Selected.Count > 0;
+                var g = e.Graphics;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                int a = Math.Max(3, UiScale.For(heading, 4));
+                float cx = heading.ClientSize.Width - heading.Padding.Right - a - UiScale.For(heading, 4), cy = heading.ClientSize.Height / 2f;
+                var colour = on ? Color.FromArgb(0, 120, 215) : Color.FromArgb(110, 116, 124);
+                using (var pen = new Pen(colour, Math.Max(1.5f, a / 2f)) { LineJoin = System.Drawing.Drawing2D.LineJoin.Round })
+                    g.DrawLines(pen, new[] { new PointF(cx - a, cy - a / 2f), new PointF(cx, cy + a / 2f), new PointF(cx + a, cy - a / 2f) });
+                if (!on) return;
+                // some hidden: how many shown, before the arrow
+                var count = p.Selected.Count + "/" + p.Items.Count;
+                var f = UiStyle.Small;
+                var size = TextRenderer.MeasureText(count, f);
+                TextRenderer.DrawText(g, count, f, new Point((int)(cx - a - UiScale.For(heading, 4) - size.Width), (int)(cy - size.Height / 2f)), colour,
+                                      TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix);
+            };
+            heading.Invalidate();
+        }
+    }
+
     public class AxisPickBar : FlowLayoutPanel
     {
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
-        private readonly string _itemsKey, _motionKey;
+        private readonly string _itemsKey, _motionKey, _axesKey;
         private readonly Label _itemsCaption, _motionCaption;
         private readonly bool _hasItems, _hasMotion;
-        private bool _syncing;
+        private bool _syncing, _listsHidden;
 
         public PickList ItemsPick { get; private set; }
         public PickList MotionPick { get; private set; }
+        /// <summary>
+        /// The axes shown (8 October): nothing ticked, all; null on a bar without it.
+        /// Not on the bar - three lists in one line did not fit a page at a larger
+        /// screen scale - but opened from the Axis column's heading, as a filtered
+        /// table's column (AxisHeadingFilter).
+        /// </summary>
+        public PickList AxesPick { get; private set; }
+
+        /// <summary>The axes shown were changed by the user (once, when the list closes).</summary>
+        public event EventHandler AxesChanged;
 
         /// <param name="items">With the PLC axis items list.</param>
         /// <param name="motion">With the Motion monitor list.</param>
-        public AxisPickBar(string itemsKey, string motionKey, bool items = true, bool motion = true)
+        /// <param name="axesKey">With the Axes list, kept under this View Preferences key (null: none).</param>
+        public AxisPickBar(string itemsKey, string motionKey, bool items = true, bool motion = true, string axesKey = null)
         {
             _itemsKey = itemsKey;
             _motionKey = motionKey;
+            _axesKey = axesKey;
             _hasItems = items;
             _hasMotion = motion;
             WrapContents = false;
@@ -76,6 +156,23 @@ namespace Kaban.UI.Controls
 
             // both in one bar (the Axis Monitor): the same room between them as on a page
             if (items && motion) _motionCaption.Margin = new Padding(GapAfterItems, 9, 6, 0);
+            if (axesKey != null)
+            {
+                AxesPick = new PickList(null)
+                {
+                    Name = "axesPick", Size = new Size(220, 28),
+                    AllText = T("AxShow_All", "All axes"),
+                    ApplyOnClose = true
+                };
+                AxesPick.Changed += (s, e) =>
+                {
+                    if (_syncing) return;
+                    Kaban.UI.Helpers.ShownPick.KeepFrom(AxesPick, _axesKey);
+                    var h = AxesChanged;
+                    if (h != null) h(this, EventArgs.Empty);
+                };
+                Disposed += (s, e) => AxesPick.Dispose();
+            }
             if (items) { Controls.Add(_itemsCaption); Controls.Add(ItemsPick); }
             if (motion) { Controls.Add(_motionCaption); Controls.Add(MotionPick); }
         }
@@ -98,11 +195,37 @@ namespace Kaban.UI.Controls
             try
             {
                 ItemsPick.SetItems(AxisSettingHMI.ItemKeys.Where(items.Contains).Select(k => new PickList.Item(k, AxisSettingHMI.ItemText(k))), false);
-                _motionCaption.Visible = MotionPick.Visible = motion && _hasMotion;
-                _itemsCaption.Visible = ItemsPick.Visible = _hasItems;
+                _motionCaption.Visible = MotionPick.Visible = motion && _hasMotion && !_listsHidden;
+                _itemsCaption.Visible = ItemsPick.Visible = _hasItems && !_listsHidden;
             }
             finally { _syncing = false; }
             Sync();
+        }
+
+        /// <summary>
+        /// The PLC axis items and the Motion monitor hidden (the Axis Monitor for
+        /// someone below Admin: what the rows show is an Admin's choice), the Axes
+        /// list left.
+        /// </summary>
+        public void HideLists(bool hide)
+        {
+            _listsHidden = hide;
+            if (hide) _itemsCaption.Visible = ItemsPick.Visible = _motionCaption.Visible = MotionPick.Visible = false;
+        }
+
+        /// <summary>The rows the Axes list offers (key: name@station, text: the name).</summary>
+        public void OfferAxes(IEnumerable<PickList.Item> axes)
+        {
+            if (AxesPick == null) return;
+            Kaban.UI.Helpers.ShownPick.Offer(AxesPick, _axesKey, axes, ref _syncing);
+        }
+
+        /// <summary>True when the row <paramref name="key"/> is shown (nothing ticked: all are).</summary>
+        public bool ShowsAxis(string key)
+        {
+            if (AxesPick == null) return true;
+            var ticked = AxesPick.Selected;
+            return ticked.Count == 0 || ticked.Contains(key ?? "");
         }
 
         /// <summary>The ticks as kept (another user signed in, a pick changed elsewhere).</summary>
@@ -117,6 +240,11 @@ namespace Kaban.UI.Controls
                 if (!ItemsPick.Selected.SetEquals(want)) ItemsPick.Select(want);
                 var motion = ViewPreferences.ListOf(_motionKey);
                 if (!MotionPick.Selected.SetEquals(motion)) MotionPick.Select(motion);
+                if (AxesPick != null)
+                {
+                    var axes = Kaban.UI.Helpers.ShownPick.Ticked(_axesKey, AxesPick.Items.Select(i => i.Key));
+                    if (!AxesPick.Selected.SetEquals(axes)) AxesPick.Select(axes);
+                }
             }
             finally { _syncing = false; }
         }

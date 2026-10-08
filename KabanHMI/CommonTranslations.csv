@@ -1249,3 +1249,9 @@ Pop_SignIn;Sign in to answer the machine.;Makineye cevap vermek için giriş yap
 Pop_Reference;Reference;Referans;Референс;Referenz;Riferimento;Referencia
 Pop_Fault;Fault;Hata;Ошибка;Fehler;Guasto;Fallo
 Pop_Unknown;The PLC shows message {0}, which this HMI does not know yet (not in the machine's Popups.json).;PLC {0} numaralı mesajı gösteriyor, bu HMI onu henüz tanımıyor (makinenin Popups.json dosyasında yok).;ПЛК показывает сообщение {0}, которое этот HMI ещё не знает (нет в Popups.json машины).;Die SPS zeigt Meldung {0}, die dieses HMI noch nicht kennt (nicht in der Popups.json der Maschine).;Il PLC mostra il messaggio {0}, che questo HMI non conosce ancora (non è nel Popups.json della macchina).;El PLC muestra el mensaje {0}, que este HMI aún no conoce (no está en el Popups.json de la máquina).
+AxShow_All;All axes;Tüm eksenler;Все оси;Alle Achsen;Tutti gli assi;Todos los ejes
+Tip_AxShow;The axes shown - a click: tick the ones to show (nothing ticked: all of them). The ones shown move up together.;Gösterilen eksenler - tıklayın: gösterilecekleri işaretleyin (hiçbiri işaretli değilse hepsi). Gösterilenler birlikte yukarı kayar.;Показанные оси - щелчок: отметьте нужные (ничего не отмечено: все). Показанные сдвигаются вверх вместе.;Die gezeigten Achsen - ein Klick: die zu zeigenden anhaken (nichts angehakt: alle). Die gezeigten rücken zusammen nach oben.;Gli assi mostrati - un clic: spunta quelli da mostrare (nulla spuntato: tutti). Quelli mostrati salgono insieme.;Los ejes mostrados - un clic: marque los que mostrar (nada marcado: todos). Los mostrados suben juntos.
+Lbl_IoShow;Lists:;Listeler:;Списки:;Listen:;Elenchi:;Listas:
+IoShow_All;All lists;Tüm listeler;Все списки;Alle Listen;Tutti gli elenchi;Todas las listas
+IoShow_Inputs;inputs;girişler;входы;Eingänge;ingressi;entradas
+IoShow_Outputs;outputs;çıkışlar;выходы;Ausgänge;uscite;salidas

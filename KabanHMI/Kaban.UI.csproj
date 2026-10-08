@@ -88,6 +88,7 @@
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
+    <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\NoteTarget.cs" />
     <Compile Include="Helpers\SimulationMotion.cs" />
     <Compile Include="Controls\AlarmHelpBadge.cs">
