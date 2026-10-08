@@ -134,19 +134,21 @@ class CH {
         Func<Control, List<Control>> singles = p => p.Controls.Cast<Control>().Where(c => c is ButtonHMI || c is NumericDisplayHMI).ToList();
         var cu = units(cutting);
         var cs = singles(cutting);
-        Check("20 places: the units every one 360 x 64, the single functions a button or a value",
-              cu.Count + cs.Count == 20 && cu.All(c => c.Size == new Size(360, 64)) && cs.Count > 0,
+        // 8 October: the pages laid out as the old program's (tools/legacy_fa2010_pages.py) -
+        // its sections in columns 390 apart, every row as tall as it needs.
+        Check("the old page's rows: 12 units every one 360 x 64, 9 single functions (a button or a value), the Change Degree group",
+              cu.Count == 12 && cs.Count == 9 && cu.All(c => c.Size == new Size(360, 64)) && cutting.Controls.OfType<GroupBoxHMI>().Count() == 1,
               cu.Count + " + " + cs.Count + ": " + string.Join(",", cu.Select(c => c.Size).Distinct()));
         var mx = units(milling).Select(c => c.Left).Distinct().OrderBy(x => x).ToList();
-        Func<Control, int> column = c => mx.LastOrDefault(x => x <= c.Left);
-        Check("  on the Milling page's columns", cu.Select(c => c.Left).Distinct().All(mx.Contains) &&
-              cs.All(c => mx.Any(x => x <= c.Left && c.Right <= x + 360)), string.Join(",", mx));
-        var all = cu.Concat(cs).ToList();
+        Check("  on the same columns as the Milling page (16 + 390 n), each inside its column",
+              cu.Select(c => c.Left).Distinct().All(mx.Contains) && mx.All(x => (x - 16) % 390 == 0) &&
+              cs.All(c => mx.Any(x => x <= c.Left && c.Right <= x + 360)) || cs.All(c => (c.Left - 16) / 390 == (c.Right - 17) / 390), string.Join(",", mx));
+        var all = cu.Concat(cs).Concat(cutting.Controls.OfType<GroupBoxHMI>()).ToList();
         bool overlap = all.Any(a => all.Any(b => a != b && a.Bounds.IntersectsWith(b.Bounds)));
         Check("  none overlapping", !overlap);
-        Check("  rows 74 apart as on the other pages (a button or value inside its row's 64)",
-              cu.All(c => (c.Top - 16) % 74 == 0) && cs.All(c => (c.Top - 16) % 74 + c.Height <= 64),
-              string.Join(",", cs.Select(c => c.Name + "@" + c.Top)));
+        Check("  a column's rows 10 apart, top to bottom",
+              all.GroupBy(c => (c.Left - 16) / 390).All(g => g.OrderBy(c => c.Top).Zip(g.OrderBy(c => c.Top).Skip(1), (a, b) => b.Top - a.Bottom).All(d => d == 10)),
+              string.Join(",", all.OrderBy(c => c.Left).ThenBy(c => c.Top).Select(c => c.Name + "@" + c.Top)));
 
         Console.WriteLine("--- valve and sensor types on the FA2010 pages ---");
         var valves = new HashSet<CylinderValve>(); int typed = 0;
@@ -179,12 +181,13 @@ class CH {
         // Left open, for a decision (REVIEW 4r): the three back forward-reverse molds'
         // reference sensors are on the second controller, and four units carry a
         // position the drawings measure nothing for.
+        // 8 October: the two small presses are not on the old program's Clamping Moulds
+        // page (they are Cutting's and the Exit's top small clampings) - five now.
         var expectedOpen = new[] { "ManualClamping_Moulds/Profile Recognition Back Horizontal", "ManualClamping_Moulds/Cutting Left Back Horizontal",
-                                   "ManualClamping_Moulds/Cutting Right Back Horizontal", "ManualClamping_Moulds/Cutting Left Top Small Press",
-                                   "ManualClamping_Moulds/Cutting Right Top Small Press", "ManualCutting/Right Front Vert.Clamping",
+                                   "ManualClamping_Moulds/Cutting Right Back Horizontal", "ManualCutting/Right Front Vert. Clamping",
                                    "ManualEntry_Conveyor/Profile Clamping 7" };
         var open = byName.Where(kv => kv.Value.TypeCheck != "OK").Select(kv => kv.Key).ToList();
-        Check("every other typed unit's wiring suits its types (seven left open for a decision)",
+        Check("every other typed unit's wiring suits its types (five left open for a decision)",
               open.Count == expectedOpen.Length && expectedOpen.All(open.Contains), string.Join(" | ", open));
         foreach (var pg in pagesBuilt) pg.Dispose();
 

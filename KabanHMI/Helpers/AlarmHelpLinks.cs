@@ -161,7 +161,7 @@ namespace Kaban.UI.Helpers
                 Station = a.PlcNumber, Number = a.HMIAxisIndex, NameKey = a.AxisNameKey ?? "",
                 Back = a.CommandBackAddress ?? "", Forward = a.CommandForwardAddress ?? "",
                 Position = a.PositionAddress ?? "", PositionType = a.PositionDataType,
-                Divisor = a.Divisor, Decimals = a.DecimalPlaces, Digits = a.Digits, Suffix = a.Suffix ?? "",
+                Divisor = a.PositionScale, Decimals = a.DecimalPlaces, Digits = a.Digits, Suffix = a.Suffix ?? "",
                 ReferenceSensor = a.ReferenceSensorAddress ?? "", ReferenceSide = a.ReferenceSensorSide,
                 Error = a.ErrorAddress ?? "", Vertical = a.VerticalMovement,
                 ServoAlarm = a.ServoAlarmAddress ?? "", AxisAlarm = a.AxisAlarmAddress ?? "",

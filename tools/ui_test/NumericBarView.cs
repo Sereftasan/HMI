@@ -254,7 +254,7 @@ class BV {
         var running = new NumericInputHMI { Size = new Size(116, 26), BarView = true };
         Check("  in the running program nothing is resized", running.Size == new Size(116, 26));
 
-        Console.WriteLine("--- ParamCutting's Saw Diameter, as the designer sets it (2 October) ---");
+        Console.WriteLine("--- Saw Diameter (ParamCutting then, Process Parameters now), as the designer sets it (2 October) ---");
         // "BarView is not working properly still": the page showed "Saw Diameter:"
         // and nothing beside it. Its VisibilityConditions (auto mode AND the
         // machine running) hid the field - and left its caption on the page.

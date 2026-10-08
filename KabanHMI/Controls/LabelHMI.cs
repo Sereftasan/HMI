@@ -29,6 +29,16 @@ namespace Kaban.UI.Controls
             base.Dispose(disposing);
         }
 
+        /// <summary>
+        /// Translated when it is shown, too: it used to wait for the language to
+        /// CHANGE, so a page opened in Turkish showed its headings in English.
+        /// </summary>
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyTranslation();
+        }
+
         public void ApplyTranslation() 
         { 
             if (!string.IsNullOrEmpty(TranslationKey)) 

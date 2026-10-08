@@ -39,16 +39,19 @@ class F {
         Console.WriteLine("--- the picker offers exactly the manual's variants ---");
         var v = TC.Parameter1(TC.ErrorType.CylinderMovement);
         var fb = TC.Parameter2(TC.ErrorType.CylinderMovement);
-        Check("three valves (+ unspecified)", v.Options.Length == 4, string.Join(" | ", v.Options));
+        // 8 October: "most of the 3 way valves we use are closed center valves" - the 5/3's two
+        // kinds are offered apart (the manual's part for both is its 5/3).
+        Check("four valves (+ unspecified): 5/2 double, 5/2 single, 5/3 closed and 5/3 open centre", v.Options.Length == 5 &&
+              v.Options.Count(o => o.Contains("5/3")) == 2, string.Join(" | ", v.Options));
         Check("six feedbacks (+ unspecified), encoder included",
               fb.Options.Length == 7 && fb.Options.Any(o => o.Contains("encoder")), string.Join(" | ", fb.Options.Skip(1)));
-        Check("no 'open centre' or 'timed' - the manual has neither",
-              !v.Options.Any(o => o.Contains("open")) && !fb.Options.Any(o => o.Contains("timed")));
+        Check("no 'timed' feedback - the manual has none", !fb.Options.Any(o => o.Contains("timed")));
         Check("digits are explicit: 'Two end' is 2 though listed first",
               TC.ValueOf(fb, TC.Describe(TC.FeedbackType.TwoMagnetic)) == 2);
         Check("  and a stored 1 finds 'Single magnetic' at its own place",
               fb.Options[TC.IndexOfValue(fb, 1)] == TC.Describe(TC.FeedbackType.SingleMagnetic));
-        Check("an old 'open centre' code reads as the manual's 5/3", TC.Resolve("1.4.0").Single().Valve == 3);
+        Check("an 'open centre' code is the open-centre 5/3, read from the manual's 5/3 part", TC.Resolve("1.4.0").Single().Valve == 4 &&
+              TC.ManualValve(4) == 3, TC.Resolve("1.4.0").Single().Valve.ToString());
 
         Console.WriteLine("--- a double word is one value ---");
         var sim = typeof(Kaban.UI.Forms.SimulationMonitorForm);

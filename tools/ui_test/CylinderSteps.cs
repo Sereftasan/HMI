@@ -82,15 +82,14 @@ class CS {
         Func<string, CylinderUnitHMI> unit = n => units.First(k => k.Key.EndsWith("." + n) || k.Key == n).Value;
         Func<CylinderUnitHMI, IEnumerable<string>> lamps = u => new[] { u.Lamp1AAddress, u.Lamp2AAddress, u.Lamp1BAddress, u.Lamp2BAddress }.Where(a => !string.IsNullOrEmpty(a));
 
-        // Left for a decision (REVIEW 4r): their titles are not what their command
-        // bits drive on this machine (the mullion milling unit, its blade change).
-        var undecided = new[] { "ManualCutting.unitFront_Height_Setting", "ManualMilling.unitFront_Height_Setting",
-                                "ManualProfile_Recognition.unitRigth_Top_FW_Back_SA3030" };
-        Check("the units left for a decision are the ones whose titles do not match their bits (mullion milling)",
-              undecided.All(n => units.Any(k => k.Key == n) &&
-                                 new[] { WiringTable.OutputFor(1, units.First(k => k.Key == n).Value.CommandAAddress),
-                                         WiringTable.OutputFor(1, units.First(k => k.Key == n).Value.CommandBAddress) }
-                                 .Any(o => o != null && o.Text.StartsWith("Mullion Milling"))));
+        // Left for a decision (REVIEW 4r) until 8 October: three units whose titles were not
+        // what their bits drive. The old program's pages settled it - one unit, the
+        // Mullion End Milling Unit on Cutting, drives the mullion milling unit.
+        var undecided = new string[0];
+        var mullion = units.Where(k => new[] { WiringTable.OutputFor(1, k.Value.CommandAAddress), WiringTable.OutputFor(1, k.Value.CommandBAddress) }
+                                           .Any(o => o != null && o.Text.StartsWith("Mullion Milling Unit"))).Select(k => k.Key).ToList();
+        Check("one unit drives the mullion milling unit, titled so (Cutting's Mullion End Milling Unit)",
+              mullion.Count == 1 && mullion[0] == "ManualCutting.unitMullion_End_Milling_Unit", string.Join(",", mullion));
         var drawn = units.Where(k => !undecided.Contains(k.Key) &&
                                      (WiringTable.OutputFor(1, k.Value.CommandAAddress) != null || WiringTable.OutputFor(1, k.Value.CommandBAddress) != null)).ToList();
         Check("every unit whose command drives a drawn output has its valve and feedback",
@@ -101,7 +100,7 @@ class CS {
         // A lamp on a drawn unit is a sensor on the drawings (or read through a module).
         var stray = drawn.SelectMany(k => lamps(k.Value).Where(a => WiringTable.Find(1, a) == null).Select(a => k.Key + ":" + a)).ToList();
         Check("  every lamp of a drawn unit is a sensor the drawings show", stray.Count == 0, string.Join(", ", stray));
-        var ga = unit("unitGripper_Angle");
+        var ga = unit("unitGripper_Angle");   // the drawings' pairs, kept against the old page (8 October)
         Check("the gripper's 0 degree button shows the 0 degree sensor (SN95, X122 = M262), 90 the 90 (M263)",
               ga.Lamp1AAddress == "M262" && ga.Lamp1BAddress == "M263" && WiringTable.Find(1, "M262").Address == "X122");
         var pr = unit("ManualYZ_Cross_Rollers.unitProfile_Recognition");
@@ -110,8 +109,8 @@ class CS {
         Check("the milling front clamping shows its pressure switch (X73 = M243), not M349",
               unit("ManualMilling.unitFront_Clamping").Lamp1BAddress == "M243");
         Check("a mold: 5/3 and its analogue sensor, no lamps",
-              unit("unitConveryor_Front_Vertical").ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter &&
-              unit("unitConveryor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("unitConveryor_Front_Vertical")).Any());
+              unit("unitConveyor_Front_Vertical").ValveType == CylinderValve.DoubleSolenoid_3WayClosedCenter &&
+              unit("unitConveyor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("unitConveyor_Front_Vertical")).Any());
         Check("the milling roller: no sensor on the drawings (X55 free), no lamp", unit("ManualMilling.unitRoller_Up_Down").FeedbackType == CylinderFeedback.NoSensor &&
               !lamps(unit("ManualMilling.unitRoller_Up_Down")).Any());
         Console.WriteLine("  what TypeCheck still says (for the review):");

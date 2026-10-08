@@ -16,30 +16,235 @@ Tip_Demo_Display;Demo read-only value;Demo salt-okunur değer;Демо-знач�
 Tip_Demo_Fwd;Forward sensor;İleri sensörü;Вперёд sensor;Vorwärts sensor;Avanti sensor;Adelante sensor
 Tip_Demo_Rev;Reverse sensor;Geri sensörü;Датчик заднего положения;Sensor Rückwärts;Sensore di ritorno;Sensor de retroceso
 Tip_Demo_Position;Current position;Mevcut konum;Ток position;Strom position;Corrente position;Corriente position
-Tab_ManualEntry_Conveyor;Entry Conveyor;Entry Conveyor;Entry Конвейер;Entry Förderer;Entry Trasportatore;Entry Transportador
+Tab_ManualEntry_Conveyor;Entry Conveyor;Giriş Konveyörü;Входной конвейер;Einlaufförderer;Trasportatore d'ingresso;Transportador de entrada
 Tab_ManualRobot;Robot;Robot;Робот;Roboter;Robot;Robot
-Tab_ManualProfile_Recognition;Profile Recognition;Profile Recognition;Распознавание профиля;Profilerkennung;Riconoscimento profilo;Reconocimiento de perfil
-Tab_ManualMilling;Milling;Milling;Фрезерование;Fräsen;Fresatura;Fresado
-Tab_ManualCutting;Cutting;Cutting;Резка;Schneiden;Taglio;Corte
-Tab_ManualExit;Exit;Exit;Выход;Ausgang;Uscita;Salida
-Tab_ManualClamping_Moulds;Clamping Moulds;Clamping Moulds;Зажим Moulds;Spannen Moulds;Bloccaggio Moulds;Amarre Moulds
-Tab_ManualYZ_Cross_Rollers;YZ Cross Rollers;YZ Cross Rollers;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
-Tab_ManualOther;Other;Other;Прочее;Sonstige;Altro;Otros
-Tab_ParamEntry_Conveyor_Giris_Konveyoru;Entry Conveyor;Giriş Konveyörü;Входной конвейер;Einlaufförderer;Trasportatore d'ingresso;Transportador de entrada
-Tab_ParamRobot;Robot;Robot;Робот;Roboter;Robot;Robot
-Tab_ParamMilling_Freze;Milling;Freze;Фрезеровка;Fräsen;Fresatura;Fresado
-Tab_ParamCutting_Kesim;Cutting;Kesim;Резка;Schnitt;Taglio;Corte
-Tab_ParamKesim_Boy_Ofseti;Kesim Boy Ofseti;Kesim Boy Ofseti;Смещение длины реза;Schnittlängen-Offset;Offset lunghezza di taglio;Desfase de longitud de corte
-Tab_ParamExit_Conveyor_Cikis_Konveyoru;Exit Conveyor;Çıkış Konveyörü;Выходной конвейер;Auslaufförderer;Trasportatore d'uscita;Transportador de salida
-Tab_ParamDistances_Beetwen_Units_Uniteler_Arasi_Mesafeler;Distances Beetwen Units;Üniteler Arası Mesafeler;Расстояния между узлами;Abstände zwischen Einheiten;Distanze tra le unità;Distancias entre unidades
-Tab_ParamMachine_Lubrication_Makine_Yaglama;Machine Lubrication;Makine Yağlama;Смазка станка;Maschinenschmierung;Lubrificazione macchina;Lubricación de la máquina
-Tab_ParamEntry_Conveyor;Entry Conveyor;Giriş Konveyörü;Entry Конвейер;Entry Förderer;Entry Trasportatore;Entry Transportador
-Tab_ParamMilling;Milling;Freze;Фрезерование;Fräsen;Fresatura;Fresado
-Tab_ParamCutting;Cutting;Kesim;Резка;Schneiden;Taglio;Corte
-Tab_ParamExit_Conveyor;Exit Conveyor;Çıkış Konveyörü;Exit Конвейер;Exit Förderer;Exit Trasportatore;Exit Transportador
-Tab_ParamDistances_Beetwen_Units;Distances Beetwen Units;Üniteler Arası Mesafeler;Расстояния между узлами;Abstände zwischen Einheiten;Distanze tra le unità;Distancias entre unidades
-Tab_ParamMachine_Lubrication;Machine Lubrication;Makine Yağlama;Станок Смазка;Maschine Schmierung;Macchina Lubrificazione;Máquina Lubricación
-Tab_ParamCut_Length_Offset;Cut Length Offset;Kesim Boy Ofseti;Смещение длины реза;Schnittlängen-Offset;Offset lunghezza di taglio;Desfase de longitud de corte
+Tab_ManualProfile_Recognition;Profile Recognition;Profil Tanıma;Распознавание профиля;Profilerkennung;Riconoscimento profilo;Reconocimiento de perfil
+Tab_ManualMilling;Milling;Freze;Фрезерование;Fräsen;Fresatura;Fresado
+Tab_ManualCutting;Cutting;Kesim;Резка;Schneiden;Taglio;Corte
+Tab_ManualExit;Exit;Çıkış;Выход;Ausgang;Uscita;Salida
+Tab_ManualOther;Other;Diğer;Прочее;Sonstiges;Altro;Otros
+Tab_ManualClamping_Moulds;Clamping Moulds;Kalıplı Sıkmalar;Прижимы с шаблонами;Spannformen;Bloccaggi a stampo;Sujeciones con molde
+Tab_ManualYZ_Cross_Rollers;YZ Cross Rollers;YZ Çapraz Rulolar;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
+Tab_AxisSettings;Axis Parameters;Eksen Parametreleri;Параметры осей;Achsparameter;Parametri assi;Parámetros de ejes
+Tab_ParamEntry;Entry Parameters;Giriş Parametreleri;Параметры входа;Einlaufparameter;Parametri d'ingresso;Parámetros de entrada
+Tab_ParamProcess;Process Parameters;Operasyon Parametreleri;Параметры обработки;Bearbeitungsparameter;Parametri di lavorazione;Parámetros de proceso
+Tab_ParamEncoders;Encoders Parameters;Enkoder Parametreleri;Параметры энкодеров;Encoderparameter;Parametri encoder;Parámetros de encoders
+Tab_ParamOther;Other Parameters;Diğer Parametreler;Прочие параметры;Sonstige Parameter;Altri parametri;Otros parámetros
+Entry Conveyor;Entry Conveyor;Giriş Konveyörü;Входной конвейер;Einlaufförderer;Trasportatore d'ingresso;Transportador de entrada
+Conveyor Motor;Conveyor Motor;Konveyör Motoru;Двигатель конвейера;Fördermotor;Motore trasportatore;Motor del transportador
+Conveyor Motor Run;Conveyor Motor Run;Konveyör Motoru Çalışıyor;Двигатель конвейера работает;Fördermotor läuft;Motore trasportatore in marcia;Motor del transportador en marcha
+Conveyor Inverter Error;Conveyor Inverter Error;Konveyör İnvertör Hatası;Ошибка инвертора конвейера;Umrichterfehler Förderer;Errore inverter trasportatore;Error del variador del transportador
+Conveyor Limit SN;Conveyor Limit SN;Konveyör Limit SN;Концевой датчик конвейера;Förderer-Endschalter;Finecorsa trasportatore;Final de carrera del transportador
+Profile Clampings;Profile Clampings;Profil Sıkmaları;Зажимы профиля;Profilspanner;Bloccaggi profilo;Sujeciones del perfil
+Profile Clamping 1;Profile Clamping 1;Profil Sıkma 1;Зажим профиля 1;Profilspanner 1;Bloccaggio profilo 1;Sujeción del perfil 1
+Profile Clamping 2;Profile Clamping 2;Profil Sıkma 2;Зажим профиля 2;Profilspanner 2;Bloccaggio profilo 2;Sujeción del perfil 2
+Profile Clamping 3;Profile Clamping 3;Profil Sıkma 3;Зажим профиля 3;Profilspanner 3;Bloccaggio profilo 3;Sujeción del perfil 3
+Profile Clamping 4;Profile Clamping 4;Profil Sıkma 4;Зажим профиля 4;Profilspanner 4;Bloccaggio profilo 4;Sujeción del perfil 4
+Profile Clamping 5;Profile Clamping 5;Profil Sıkma 5;Зажим профиля 5;Profilspanner 5;Bloccaggio profilo 5;Sujeción del perfil 5
+Profile Clamping 6;Profile Clamping 6;Profil Sıkma 6;Зажим профиля 6;Profilspanner 6;Bloccaggio profilo 6;Sujeción del perfil 6
+Profile Clamping 7;Profile Clamping 7;Profil Sıkma 7;Зажим профиля 7;Profilspanner 7;Bloccaggio profilo 7;Sujeción del perfil 7
+Rollers Up/Down;Rollers Up/Down;Rulolar Yukarı/Aşağı;Ролики вверх/вниз;Rollen auf/ab;Rulli su/giù;Rodillos arriba/abajo
+Robot;Robot;Robot;Робот;Roboter;Robot;Robot
+Gripper;Gripper;Gripper;Захват;Greifer;Pinza;Pinza
+Sawdust Blowing;Sawdust Blowing;Talaş Üfleme;Обдув стружки;Späne ausblasen;Soffiaggio trucioli;Soplado de virutas
+Bar First End Read SN;Bar First End Read SN;Bar İlk Uç Okuma SN;Датчик начала хлыста;Sensor Stangenanfang;Sensore inizio barra;Sensor inicio de barra
+Bar Last End Read SN;Bar Last End Read SN;Bar Son Uç Okuma SN;Датчик конца хлыста;Sensor Stangenende;Sensore fine barra;Sensor fin de barra
+Gripper Angle;Gripper Angle;Gripper Açısı;Угол захвата;Greiferwinkel;Angolo pinza;Ángulo de la pinza
+Profile Recognition;Profile Recognition;Profil Tanıma;Распознавание профиля;Profilerkennung;Riconoscimento profilo;Reconocimiento de perfil
+Unit Up/Down;Unit Up/Down;Ünite Yukarı/Aşağı;Узел вверх/вниз;Einheit auf/ab;Unità su/giù;Unidad arriba/abajo
+High Air Pressure;High Air Pressure;Yüksek Hava Basıncı;Высокое давление воздуха;Hoher Luftdruck;Alta pressione aria;Alta presión de aire
+Front Clamping;Front Clamping;Ön Sıkma;Передний зажим;Vorderer Spanner;Bloccaggio anteriore;Sujeción delantera
+Top Clamping;Top Clamping;Üst Sıkma;Верхний зажим;Oberer Spanner;Bloccaggio superiore;Sujeción superior
+Roller Up/Down;Roller Up/Down;Rulo Yukarı/Aşağı;Ролик вверх/вниз;Rolle auf/ab;Rullo su/giù;Rodillo arriba/abajo
+Left End Encoders Active;Left End Encoders Active;Sol Uç Enkoderleri Aktif;Левые энкодеры включены;Linke Encoder aktiv;Encoder lato sinistro attivi;Encoders del extremo izquierdo activos
+Left Top FW/Back;Left Top FW/Back;Sol Üst İleri/Geri;Левый верхний вперёд/назад;Links oben vor/zurück;Sinistro superiore avanti/indietro;Izquierdo superior adelante/atrás
+Left Top Clamping;Left Top Clamping;Sol Üst Sıkma;Левый верхний зажим;Spanner links oben;Bloccaggio superiore sinistro;Sujeción superior izquierda
+Milling;Milling;Freze;Фрезерование;Fräsen;Fresatura;Fresado
+Drills to Changing Pos.;Drills to Changing Pos.;Takımlar Değiştirme Poz.;Фрезы в позицию замены;Werkzeuge in Wechselposition;Utensili in pos. di cambio;Herramientas a pos. de cambio
+Machine Cleaning Pos.;Machine Cleaning Pos.;Makine Temizleme Poz.;Позиция очистки станка;Maschinenreinigungsposition;Pos. pulizia macchina;Pos. de limpieza de la máquina
+Unit 1;Unit 1;Ünite 1;Узел 1;Einheit 1;Unità 1;Unidad 1
+Unit 2;Unit 2;Ünite 2;Узел 2;Einheit 2;Unità 2;Unidad 2
+Milling Motor;Milling Motor;Freze Motoru;Двигатель фрезы;Fräsmotor;Motore fresa;Motor de fresado
+Inverter Error;Inverter Error;İnvertör Hatası;Ошибка инвертора;Umrichterfehler;Errore inverter;Error del variador
+1st Tool Cooling;1st Tool Cooling;1. Takım Soğutma;Охлаждение 1-го инструмента;Kühlung Werkzeug 1;Raffreddamento utensile 1;Refrigeración herramienta 1
+2nd Tool Cooling;2nd Tool Cooling;2. Takım Soğutma;Охлаждение 2-го инструмента;Kühlung Werkzeug 2;Raffreddamento utensile 2;Refrigeración herramienta 2
+Change Degree;Change Degree;Açı Değiştir;Смена угла;Winkel wechseln;Cambio angolo;Cambiar ángulo
+Cutting;Cutting;Kesim;Резка;Schneiden;Taglio;Corte
+Left Top Small Clamping;Left Top Small Clamping;Sol Üst Küçük Sıkma;Левый верхний малый зажим;Kleiner Spanner links oben;Piccolo bloccaggio superiore sinistro;Sujeción pequeña superior izquierda
+Right Front Clamping;Right Front Clamping;Sağ Ön Sıkma;Правый передний зажим;Spanner rechts vorn;Bloccaggio anteriore destro;Sujeción delantera derecha
+Right Front Vert. Clamping;Right Front Vert. Clamping;Sağ Ön Dikey Sıkma;Правый передний верт. зажим;Vertikalspanner rechts vorn;Bloccaggio vert. anteriore destro;Sujeción vert. delantera derecha
+Saw Motor;Saw Motor;Testere Motoru;Двигатель пилы;Sägemotor;Motore lama;Motor de la sierra
+Saw Inverter Error;Saw Inverter Error;Testere İnvertör Hatası;Ошибка инвертора пилы;Umrichterfehler Säge;Errore inverter lama;Error del variador de la sierra
+Saw Cooling;Saw Cooling;Testere Soğutma;Охлаждение пилы;Sägekühlung;Raffreddamento lama;Refrigeración de la sierra
+LeftOver Ejection;LeftOver Ejection;Artık Parça Atma;Выброс остатка;Restauswurf;Espulsione sfrido;Expulsión de restos
+Blowing;Blowing;Üfleme;Обдув;Ausblasen;Soffiaggio;Soplado
+Profile Press Roller FW/Back;Profile Press Roller FW/Back;Profil Baskı Rulosu İleri/Geri;Прижимной ролик вперёд/назад;Profil-Andruckrolle vor/zurück;Rullo pressore avanti/indietro;Rodillo prensador adelante/atrás
+Profile Press Roller Up;Profile Press Roller Up;Profil Baskı Rulosu Yukarı;Прижимной ролик вверх;Profil-Andruckrolle auf;Rullo pressore su;Rodillo prensador arriba
+V Cutting;V Cutting;V Kesim;V-резка;V-Schnitt;Taglio a V;Corte en V
+Mullion End Milling Unit;Mullion End Milling Unit;Ortakayıt Uç Freze Ünitesi;Узел торцевого фрезерования импоста;Pfostenendfräseinheit;Unità fresatura testa montante;Unidad de fresado de testa de montante
+Mullion Blade Change;Mullion Blade Change;Ortakayıt Bıçak Değiştirme;Замена диска импоста;Pfostensägeblatt wechseln;Cambio lama montante;Cambio de disco de montante
+Exit;Exit;Çıkış;Выход;Ausgang;Uscita;Salida
+Robot Top Clamping;Robot Top Clamping;Robot Üst Sıkma;Верхний зажим робота;Oberer Roboterspanner;Bloccaggio superiore robot;Sujeción superior del robot
+Robot Top Small Clamping;Robot Top Small Clamping;Robot Üst Küçük Sıkma;Малый верхний зажим робота;Kleiner oberer Roboterspanner;Piccolo bloccaggio superiore robot;Sujeción pequeña superior del robot
+Profile Ejection;Profile Ejection;Profil İtme;Выталкивание профиля;Profilauswurf;Espulsione profilo;Expulsión del perfil
+Short Profile Support;Short Profile Support;Kısa Profil Desteği;Опора короткого профиля;Kurzprofilstütze;Supporto profilo corto;Soporte de perfil corto
+Sawdust Conveyor Thermic;Sawdust Conveyor Thermic;Talaş Konveyörü Termik;Тепловое реле конвейера стружки;Motorschutz Späneförderer;Termico trasportatore trucioli;Térmico del transportador de virutas
+Other;Other;Diğer;Прочее;Sonstiges;Altro;Otros
+Lubrication;Lubrication;Yağlama;Смазка;Schmierung;Lubrificazione;Lubricación
+Inverters Reset;Inverters Reset;İnvertörleri Resetle;Сброс инверторов;Umrichter zurücksetzen;Reset inverter;Reiniciar variadores
+Horn;Horn;Korna;Сирена;Hupe;Avvisatore acustico;Bocina
+Emergency Stop;Emergency Stop;Acil Stop;Аварийная остановка;Not-Halt;Arresto di emergenza;Parada de emergencia
+Air Pressure;Air Pressure;Hava Basıncı;Давление воздуха;Luftdruck;Pressione aria;Presión de aire
+Start Button;Start Button;Start Butonu;Кнопка пуска;Starttaster;Pulsante di avvio;Botón de inicio
+Cooler Alarm;Cooler Alarm;Soğutucu Alarmı;Авария охладителя;Kühleralarm;Allarme refrigeratore;Alarma del enfriador
+Clamping Moulds;Clamping Moulds;Kalıplı Sıkmalar;Прижимы с шаблонами;Spannformen;Bloccaggi a stampo;Sujeciones con molde
+Left Profile Recognition Front Vertical;Left Profile Recognition Front Vertical;Sol Profil Tanıma Ön Dikey;Левое распознавание профиля передний вертикальный;Linke Profilerkennung vorn vertikal;Riconoscimento profilo sinistro anteriore verticale;Reconocimiento de perfil izquierdo delantero vertical
+Left Profile Recognition Back Vertical;Left Profile Recognition Back Vertical;Sol Profil Tanıma Arka Dikey;Левое распознавание профиля задний вертикальный;Linke Profilerkennung hinten vertikal;Riconoscimento profilo sinistro posteriore verticale;Reconocimiento de perfil izquierdo trasero vertical
+Left Profile Recognition Back Horizontal;Left Profile Recognition Back Horizontal;Sol Profil Tanıma Arka Yatay;Левое распознавание профиля задний горизонтальный;Linke Profilerkennung hinten horizontal;Riconoscimento profilo sinistro posteriore orizzontale;Reconocimiento de perfil izquierdo trasero horizontal
+Conveyor Front Vertical;Conveyor Front Vertical;Konveyör Ön Dikey;Конвейер передний вертикальный;Förderer vorn vertikal;Trasportatore anteriore verticale;Transportador delantero vertical
+Conveyor Back Vertical;Conveyor Back Vertical;Konveyör Arka Dikey;Конвейер задний вертикальный;Förderer hinten vertikal;Trasportatore posteriore verticale;Transportador trasero vertical
+Conveyor Back Horizontal;Conveyor Back Horizontal;Konveyör Arka Yatay;Конвейер задний горизонтальный;Förderer hinten horizontal;Trasportatore posteriore orizzontale;Transportador trasero horizontal
+Profile Recognition Front Vertical;Profile Recognition Front Vertical;Profil Tanıma Ön Dikey;Распознавание профиля передний вертикальный;Profilerkennung vorn vertikal;Riconoscimento profilo anteriore verticale;Reconocimiento de perfil delantero vertical
+Profile Recognition Back Vertical;Profile Recognition Back Vertical;Profil Tanıma Arka Dikey;Распознавание профиля задний вертикальный;Profilerkennung hinten vertikal;Riconoscimento profilo posteriore verticale;Reconocimiento de perfil trasero vertical
+Profile Recognition Back Horizontal;Profile Recognition Back Horizontal;Profil Tanıma Arka Yatay;Распознавание профиля задний горизонтальный;Profilerkennung hinten horizontal;Riconoscimento profilo posteriore orizzontale;Reconocimiento de perfil trasero horizontal
+Cutting Left Front Vertical;Cutting Left Front Vertical;Kesim Sol Ön Dikey;Резка левый передний вертикальный;Schnitt links vorn vertikal;Taglio sinistro anteriore verticale;Corte izquierdo delantero vertical
+Cutting Left Back Vertical;Cutting Left Back Vertical;Kesim Sol Arka Dikey;Резка левый задний вертикальный;Schnitt links hinten vertikal;Taglio sinistro posteriore verticale;Corte izquierdo trasero vertical
+Cutting Left Back Horizontal;Cutting Left Back Horizontal;Kesim Sol Arka Yatay;Резка левый задний горизонтальный;Schnitt links hinten horizontal;Taglio sinistro posteriore orizzontale;Corte izquierdo trasero horizontal
+Cutting Right Front Vertical;Cutting Right Front Vertical;Kesim Sağ Ön Dikey;Резка правый передний вертикальный;Schnitt rechts vorn vertikal;Taglio destro anteriore verticale;Corte derecho delantero vertical
+Cutting Right Back Vertical;Cutting Right Back Vertical;Kesim Sağ Arka Dikey;Резка правый задний вертикальный;Schnitt rechts hinten vertikal;Taglio destro posteriore verticale;Corte derecho trasero vertical
+Cutting Right Back Horizontal;Cutting Right Back Horizontal;Kesim Sağ Arka Yatay;Резка правый задний горизонтальный;Schnitt rechts hinten horizontal;Taglio destro posteriore orizzontale;Corte derecho trasero horizontal
+Right Front Vertical Clamping;Right Front Vertical Clamping;Sağ Ön Dikey Sıkma;Правый передний вертикальный зажим;Vertikalspanner rechts vorn;Bloccaggio verticale anteriore destro;Sujeción vertical delantera derecha
+YZ Cross Rollers;YZ Cross Rollers;YZ Çapraz Rulolar;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
+Profile Recognition Activation SN;Profile Recognition Activation SN;Profil Tanıma Aktivasyon SN;Датчик включения распознавания профиля;Sensor Profilerkennung aktiv;Sensore attivazione riconoscimento profilo;Sensor de activación del reconocimiento de perfil
+Cutting Right;Cutting Right;Kesim Sağ;Резка справа;Schnitt rechts;Taglio destro;Corte derecho
+Entry Parameters;Entry Parameters;Giriş Parametreleri;Параметры входа;Einlaufparameter;Parametri d'ingresso;Parámetros de entrada
+Conveyor;Conveyor;Konveyör;Конвейер;Förderer;Trasportatore;Transportador
+Minimum Bar Length;Minimum Bar Length;Minimum Bar Uzunluğu;Минимальная длина хлыста;Minimale Stangenlänge;Lunghezza minima barra;Longitud mínima de barra
+1st Clamping Position;1st Clamping Position;1. Sıkma Pozisyonu;Позиция 1-го зажима;Position Spanner 1;Posizione bloccaggio 1;Posición de sujeción 1
+2nd Clamping Position;2nd Clamping Position;2. Sıkma Pozisyonu;Позиция 2-го зажима;Position Spanner 2;Posizione bloccaggio 2;Posición de sujeción 2
+3rd Clamping Position;3rd Clamping Position;3. Sıkma Pozisyonu;Позиция 3-го зажима;Position Spanner 3;Posizione bloccaggio 3;Posición de sujeción 3
+4th Clamping Position;4th Clamping Position;4. Sıkma Pozisyonu;Позиция 4-го зажима;Position Spanner 4;Posizione bloccaggio 4;Posición de sujeción 4
+5th Clamping Position;5th Clamping Position;5. Sıkma Pozisyonu;Позиция 5-го зажима;Position Spanner 5;Posizione bloccaggio 5;Posición de sujeción 5
+6th Clamping Position;6th Clamping Position;6. Sıkma Pozisyonu;Позиция 6-го зажима;Position Spanner 6;Posizione bloccaggio 6;Posición de sujeción 6
+7th Clamping Position;7th Clamping Position;7. Sıkma Pozisyonu;Позиция 7-го зажима;Position Spanner 7;Posizione bloccaggio 7;Posición de sujeción 7
+Gripper Length;Gripper Length;Gripper Boyu;Длина захвата;Greiferlänge;Lunghezza pinza;Longitud de la pinza
+Encoder Reference;Encoder Reference;Enkoder Referansı;Референс энкодера;Encoder-Referenz;Riferimento encoder;Referencia del encoder
+Length Measuring Dist.;Length Measuring Dist.;Boy Ölçüm Mesafesi;Расстояние до датчика длины;Abstand Längenmessung;Distanza misura lunghezza;Distancia de medición de longitud
+Z Profile Lifting Amount;Z Profile Lifting Amount;Z Profil Kaldırma Miktarı;Подъём профиля по Z;Profilanhebung Z;Sollevamento profilo Z;Elevación del perfil Z
+Y Profile Back Clearing Amount;Y Profile Back Clearing Amount;Y Profil Arka Kurtarma Miktarı;Отвод профиля назад по Y;Profil-Rückzug Y;Arretramento profilo Y;Retroceso del perfil Y
+1st Clamp Releasing Distance;1st Clamp Releasing Distance;1. Sıkma Açma Mesafesi;Расстояние разжима 1-го зажима;Löseabstand Spanner 1;Distanza di rilascio bloccaggio 1;Distancia de liberación sujeción 1
+Recognition Extrication Pos.;Recognition Extrication Pos.;Profil Tanımadan Kurtarma Poz.;Позиция выхода из распознавания;Freifahrposition Profilerkennung;Pos. di disimpegno riconoscimento;Pos. de liberación del reconocimiento
+Y Profile Clearing Pos.;Y Profile Clearing Pos.;Y Profil Kurtarma Poz.;Позиция отвода профиля Y;Freifahrposition Profil Y;Pos. di disimpegno profilo Y;Pos. de despeje del perfil Y
+Z Profile Clearing Pos.;Z Profile Clearing Pos.;Z Profil Kurtarma Poz.;Позиция отвода профиля Z;Freifahrposition Profil Z;Pos. di disimpegno profilo Z;Pos. de despeje del perfil Z
+Cross Rollers Robot Y Offset;Cross Rollers Robot Y Offset;Çapraz Rulo Robot Y Ofseti;Смещение робота Y для поперечных роликов;Querrollen Roboter-Y-Versatz;Offset Y robot rulli trasversali;Desfase Y del robot rodillos transversales
+Robot Height;Robot Height;Robot Şase Yüksekliği;Высота робота;Roboterhöhe;Altezza robot;Altura del robot
+Left Front Extrication Pos.;Left Front Extrication Pos.;Sol Ön Sıkmadan Kurtarma Poz.;Позиция выхода из левого переднего зажима;Freifahrposition links vorn;Pos. di disimpegno anteriore sinistro;Pos. de liberación delantera izquierda
+Conveyor Extrication Position;Conveyor Extrication Position;Konveyörden Kurtarma Pozisyonu;Позиция выхода из конвейера;Freifahrposition Förderer;Posizione di disimpegno trasportatore;Posición de liberación del transportador
+Acceleration Time;Acceleration Time;Hızlanma Rampası;Время разгона;Beschleunigungszeit;Tempo di accelerazione;Tiempo de aceleración
+Deceleration Time;Deceleration Time;Durma Rampası;Время торможения;Verzögerungszeit;Tempo di decelerazione;Tiempo de deceleración
+R. Movement Amount / Rotation;R. Movement Amount / Rotation;R. Hatve (Hareket / Tur);Перемещение робота за оборот;Roboterweg pro Umdrehung;Spostamento robot per giro;Desplazamiento del robot por vuelta
+Linear Encoder Tolerance;Linear Encoder Tolerance;Lineer Enkoder Toleransı;Допуск линейного энкодера;Toleranz Linearencoder;Tolleranza encoder lineare;Tolerancia del encoder lineal
+90 Degree Gripper Y Offset;90 Degree Gripper Y Offset;90 Derece Gripper Y Ofseti;Смещение Y захвата 90°;Greifer 90° Y-Versatz;Offset Y pinza 90°;Desfase Y pinza 90°
+90 Degree Gripper Z Offset;90 Degree Gripper Z Offset;90 Derece Gripper Z Ofseti;Смещение Z захвата 90°;Greifer 90° Z-Versatz;Offset Z pinza 90°;Desfase Z pinza 90°
+Cross Rollers Robot Z Offset;Cross Rollers Robot Z Offset;Çapraz Rulo Robot Z Ofseti;Смещение робота Z для поперечных роликов;Querrollen Roboter-Z-Versatz;Offset Z robot rulli trasversali;Desfase Z del robot rodillos transversales
+Process Parameters;Process Parameters;Operasyon Parametreleri;Параметры обработки;Bearbeitungsparameter;Parametri di lavorazione;Parámetros de proceso
+X Top Clamping Clearing Pos.;X Top Clamping Clearing Pos.;X Üst Sıkmadan Kurtarma Poz.;Позиция X отвода от верхнего зажима;X-Freifahrposition oberer Spanner;Pos. X disimpegno bloccaggio superiore;Pos. X de despeje de la sujeción superior
+X Top Clamping Distance;X Top Clamping Distance;X Üst Sıkma Mesafesi;Расстояние X до верхнего зажима;X-Abstand oberer Spanner;Distanza X bloccaggio superiore;Distancia X a la sujeción superior
+Max. Milling Length w/o Clamp;Max. Milling Length w/o Clamp;Sıkmasız Maks. Freze Uzunluğu;Макс. длина фрезерования без зажима;Max. Fräslänge ohne Spanner;Lungh. max fresatura senza bloccaggio;Long. máx. de fresado sin sujeción
+Clampless Speed Override;Clampless Speed Override;Sıkmasız Freze Hız Yüzdesi;Скорость без зажима;Geschwindigkeit ohne Spanner;Velocità senza bloccaggio;Velocidad sin sujeción
+1st Tool Length;1st Tool Length;1. Takım Boyu;Длина 1-го инструмента;Länge Werkzeug 1;Lunghezza utensile 1;Longitud herramienta 1
+2nd Tool Length;2nd Tool Length;2. Takım Boyu;Длина 2-го инструмента;Länge Werkzeug 2;Lunghezza utensile 2;Longitud herramienta 2
+3rd Tool Length;3rd Tool Length;3. Takım Boyu;Длина 3-го инструмента;Länge Werkzeug 3;Lunghezza utensile 3;Longitud herramienta 3
+4th Tool Length;4th Tool Length;4. Takım Boyu;Длина 4-го инструмента;Länge Werkzeug 4;Lunghezza utensile 4;Longitud herramienta 4
+Tool Cooling Time;Tool Cooling Time;Takım Soğutma Süresi;Время охлаждения инструмента;Werkzeugkühlzeit;Tempo raffreddamento utensile;Tiempo de refrigeración de herramienta
+Tool Cooling Period;Tool Cooling Period;Takım Soğutma Periyodu;Период охлаждения инструмента;Werkzeugkühlintervall;Periodo raffreddamento utensile;Período de refrigeración de herramienta
+Motor Cooling Stopping Delay;Motor Cooling Stopping Delay;Motor Soğutma Durdurma Gecikmesi;Задержка остановки охлаждения двигателя;Nachlaufzeit Motorkühlung;Ritardo arresto raffreddamento motore;Retardo de parada de refrigeración del motor
+1st Milling Unit Motor Center Dislocation;1st Milling Unit Motor Center Dislocation;1. Freze Motor Merkezi Kaçıklık;Смещение центра двигателя фрезы 1;Motormittenversatz Fräseinheit 1;Disassamento centro motore fresa 1;Desplazamiento del centro del motor fresa 1
+2nd Milling Unit Motor Center Dislocation;2nd Milling Unit Motor Center Dislocation;2. Freze Motor Merkezi Kaçıklık;Смещение центра двигателя фрезы 2;Motormittenversatz Fräseinheit 2;Disassamento centro motore fresa 2;Desplazamiento del centro del motor fresa 2
+Saw Diameter;Saw Diameter;Testere Çapı;Диаметр пилы;Sägeblattdurchmesser;Diametro lama;Diámetro de la sierra
+Min. Cut Length to Conveyor;Min. Cut Length to Conveyor;Konveyöre Min. Kesim Boyu;Мин. длина реза на конвейер;Min. Schnittlänge zum Förderer;Lungh. min. taglio al trasportatore;Long. mín. de corte al transportador
+Min. Waste Profile to Conveyor;Min. Waste Profile to Conveyor;Konveyöre Min. Fire Boyu;Мин. длина отхода на конвейер;Min. Abfalllänge zum Förderer;Lungh. min. sfrido al trasportatore;Long. mín. de desperdicio al transportador
+45° Target Position;45° Target Position;45° Hedef Pozisyon;Целевая позиция 45°;Zielposition 45°;Posizione target 45°;Posición objetivo 45°
+90° Target Position;90° Target Position;90° Hedef Pozisyon;Целевая позиция 90°;Zielposition 90°;Posizione target 90°;Posición objetivo 90°
+135° Target Position;135° Target Position;135° Hedef Pozisyon;Целевая позиция 135°;Zielposition 135°;Posizione target 135°;Posición objetivo 135°
+Last Piece Cutting Offset;Last Piece Cutting Offset;Son Parça Kesim Ofseti;Смещение реза последней детали;Schnittversatz letztes Teil;Offset taglio ultimo pezzo;Desfase de corte de la última pieza
+Right Front Clamp Min. Length;Right Front Clamp Min. Length;Sağ Ön Sıkma Min. Boy;Мин. длина правого переднего зажима;Min. Länge Spanner rechts vorn;Lungh. min. bloccaggio anteriore destro;Long. mín. sujeción delantera derecha
+Milling X - Cutting Front Vertical Clamping Distance;Milling X - Cutting Front Vertical Clamping Distance;Freze X - Kesim Ön Dikey Sıkma Mesafesi;Расстояние фреза X - передний верт. зажим резки;Abstand Fräse X - Vertikalspanner Schnitt vorn;Distanza fresa X - bloccaggio verticale anteriore taglio;Distancia fresa X - sujeción vertical delantera de corte
+Long Profile Ejection Min Length;Long Profile Ejection Min Length;Uzun Profil Tahliye Min. Boy;Мин. длина выталкивания длинного профиля;Min. Länge Langprofilauswurf;Lungh. min. espulsione profilo lungo;Long. mín. de expulsión de perfil largo
+Saw Right Top Clamp Clearing Position;Saw Right Top Clamp Clearing Position;Testere Sağ Üst Sıkmadan Kurtarma Poz.;Позиция отвода правого верхнего зажима пилы;Freifahrposition Säge rechts oben;Pos. disimpegno bloccaggio sup. destro lama;Pos. de despeje sujeción sup. derecha de sierra
+Saw Cooling Time;Saw Cooling Time;Testere Soğutma Süresi;Время охлаждения пилы;Sägekühlzeit;Tempo raffreddamento lama;Tiempo de refrigeración de la sierra
+Saw Cooling Period;Saw Cooling Period;Testere Soğutma Periyodu;Период охлаждения пилы;Sägekühlintervall;Periodo raffreddamento lama;Período de refrigeración de la sierra
+Encoders Parameters;Encoders Parameters;Enkoder Parametreleri;Параметры энкодеров;Encoderparameter;Parametri encoder;Parámetros de encoders
+Encoders;Encoders;Enkoderler;Энкодеры;Encoder;Encoder;Encoders
+Robot Position;Robot Position;Robot Pozisyon;Позиция робота;Roboterposition;Posizione robot;Posición del robot
+Robot Gripper;Robot Gripper;Robot Gripper;Захват робота;Robotergreifer;Pinza robot;Pinza del robot
+Profile Recognition Front;Profile Recognition Front;Profil Tanıma Ön;Распознавание профиля передний;Profilerkennung vorn;Riconoscimento profilo anteriore;Reconocimiento de perfil delantero
+Profile Recognition Top;Profile Recognition Top;Profil Tanıma Üst;Распознавание профиля верхний;Profilerkennung oben;Riconoscimento profilo superiore;Reconocimiento de perfil superior
+Milling Top;Milling Top;Freze Üst;Фрезерование верхний;Fräsen oben;Fresatura superiore;Fresado superior
+Milling-Cutting Left Front;Milling-Cutting Left Front;Freze-Kesim Sol Ön;Фрезерование-резка левый передний;Fräsen-Schnitt links vorn;Fresatura-taglio anteriore sinistro;Fresado-corte delantero izquierdo
+Cutting Left Top;Cutting Left Top;Kesim Sol Üst;Резка левый верхний;Schnitt links oben;Taglio superiore sinistro;Corte superior izquierdo
+Cutting Right Front;Cutting Right Front;Kesim Sağ Ön;Резка правый передний;Schnitt rechts vorn;Taglio anteriore destro;Corte delantero derecho
+Exit Carrying Top;Exit Carrying Top;Çıkış Taşıma Üst;Выходной перенос верхний;Ausgangstransport oben;Trasporto uscita superiore;Transporte de salida superior
+Cutting Front Right Vertical;Cutting Front Right Vertical;Kesim Sağ Ön Dikey;Резка правый передний вертикальный;Schnitt rechts vorn vertikal;Taglio anteriore destro verticale;Corte delantero derecho vertical
+Left Encoders;Left Encoders;Sol Enkoderler;Левые энкодеры;Linke Encoder;Encoder sinistri;Encoders izquierdos
+Other Parameters;Other Parameters;Diğer Parametreler;Прочие параметры;Sonstige Parameter;Altri parametri;Otros parámetros
+Exit Conveyor;Exit Conveyor;Çıkış Konveyörü;Выходной конвейер;Auslaufförderer;Trasportatore d'uscita;Transportador de salida
+Conveyor Length;Conveyor Length;Konveyör Uzunluğu;Длина конвейера;Förderlänge;Lunghezza trasportatore;Longitud del transportador
+Discharging Plate Height;Discharging Plate Height;Profil İttirme Plakası Yüksekliği;Высота плиты выталкивания;Höhe der Abschiebeplatte;Altezza piastra di scarico;Altura de la placa de descarga
+Cut Piece Releasing Position;Cut Piece Releasing Position;Kesim Parçası Bırakma Pozisyonu;Позиция сброса детали;Ablageposition Schnittteil;Posizione di rilascio pezzo;Posición de liberación de la pieza
+Waste Profile Releasing Pos.;Waste Profile Releasing Pos.;Fire Profil Bırakma Poz.;Позиция сброса отхода;Ablageposition Abfall;Pos. di rilascio sfrido;Pos. de liberación del desperdicio
+Min. Cutting Short Profile Pos.;Min. Cutting Short Profile Pos.;Min. Kısa Profil Kesim Poz.;Мин. позиция реза короткого профиля;Min. Position Kurzprofilschnitt;Pos. min. taglio profilo corto;Pos. mín. de corte de perfil corto
+Distances Between Units;Distances Between Units;Üniteler Arası Mesafeler;Расстояния между узлами;Abstände zwischen Einheiten;Distanze tra le unità;Distancias entre unidades
+Length Meas. Sensor - Milling;Length Meas. Sensor - Milling;Boy Ölçüm Sensörü - Freze;Датчик длины - фреза;Längenmesssensor - Fräse;Sensore misura lunghezza - fresa;Sensor de longitud - fresa
+Milling - Cutting Center;Milling - Cutting Center;Freze - Kesim Merkezi;Фреза - центр резки;Fräse - Schnittmitte;Fresa - centro di taglio;Fresa - centro de corte
+Milling - V Cutting Center;Milling - V Cutting Center;Freze - V Kesim Merkezi;Фреза - центр V-резки;Fräse - V-Schnittmitte;Fresa - centro taglio a V;Fresa - centro de corte en V
+Machine Lubrication;Machine Lubrication;Makine Yağlama;Смазка станка;Maschinenschmierung;Lubrificazione macchina;Lubricación de la máquina
+Lubrication Period;Lubrication Period;Yağlama Periyodu;Период смазки;Schmierintervall;Periodo di lubrificazione;Período de lubricación
+Pulse Number;Pulse Number;Yağ Basma Sayısı;Число импульсов;Anzahl Impulse;Numero di impulsi;Número de impulsos
+Tank Pulse Capacity;Tank Pulse Capacity;Tank Kapasitesi;Ёмкость бака в импульсах;Tankinhalt in Impulsen;Capacità serbatoio in impulsi;Capacidad del depósito en impulsos
+Robot Lubrication Ratio;Robot Lubrication Ratio;Robot Yağlama Oranı;Коэффициент смазки робота;Roboter-Schmierverhältnis;Rapporto lubrificazione robot;Relación de lubricación del robot
+Machine Options;Machine Options;Makine Seçenekleri;Опции станка;Maschinenoptionen;Opzioni macchina;Opciones de la máquina
+Mullion Notching;Mullion Notching;Ortakayıt Kertme;Надрезка импоста;Pfostenausklinkung;Intaglio montante;Entalladura de montante
+Cooling;Cooling;Soğutma;Охлаждение;Kühlung;Raffreddamento;Refrigeración
+Profile Carrying Roller Sensor;Profile Carrying Roller Sensor;Profil Taşıma Rulo Kontrolü;Датчик ролика переноса профиля;Sensor Profiltragrolle;Sensore rullo trasporto profilo;Sensor del rodillo de transporte
+Profile Recog. Carrying Roller;Profile Recog. Carrying Roller;Profil Tanıma Kaldırma Rulosu;Ролик переноса распознавания профиля;Tragrolle Profilerkennung;Rullo trasporto riconoscimento profilo;Rodillo de transporte reconocimiento
+Milling Carrying Roller;Milling Carrying Roller;Freze Kaldırma Rulosu;Ролик переноса фрезы;Tragrolle Fräsen;Rullo trasporto fresatura;Rodillo de transporte fresado
+Exit Carrying Roller;Exit Carrying Roller;Çıkış Kaldırma Rulosu;Ролик переноса выхода;Tragrolle Ausgang;Rullo trasporto uscita;Rodillo de transporte salida
+Left Profile Recognition;Left Profile Recognition;Sol Profil Tanıma;Левое распознавание профиля;Linke Profilerkennung;Riconoscimento profilo sinistro;Reconocimiento de perfil izquierdo
+Sliding Conveyor Rollers;Sliding Conveyor Rollers;Hareketli Giriş Konveyörü Ruloları;Подвижные ролики конвейера;Verschiebbare Förderrollen;Rulli trasportatore scorrevoli;Rodillos deslizantes del transportador
+Reverse Machine;Reverse Machine;Ters Makine;Станок обратного исполнения;Spiegelmaschine;Macchina invertita;Máquina invertida
+Special Reverse Machine;Special Reverse Machine;Özel Ters Makine;Специальный станок обратного исполнения;Spezielle Spiegelmaschine;Macchina invertita speciale;Máquina invertida especial
+Cutting Right Top Clamping Long;Cutting Right Top Clamping Long;Kesim Sağ Üst Sıkma Uzun;Длинный правый верхний зажим резки;Langer Spanner Schnitt rechts oben;Bloccaggio sup. destro taglio lungo;Sujeción sup. derecha de corte larga
+Major Profile Ejection Tray Operates Individually;Major Profile Ejection Tray Operates Individually;Profil İtme Küçük/Büyük Ayrı Çalışır;Лотки выталкивания работают раздельно;Auswurfschalen arbeiten einzeln;Vassoi di espulsione indipendenti;Bandejas de expulsión independientes
+Top Clamping Reclamp;Top Clamping Reclamp;Üst Sıkma Aç/Kapa;Повторный верхний зажим;Oberer Spanner nachspannen;Ribloccaggio superiore;Resujeción superior
+Gripper 0/90 Degree Turn;Gripper 0/90 Degree Turn;Gripper 0/90 Derece Dönüş;Поворот захвата 0/90°;Greiferdrehung 0/90°;Rotazione pinza 0/90°;Giro de la pinza 0/90°
+Clamping Mould;Clamping Mould;Kalıplı Sıkma;Прижим с шаблоном;Spannform;Bloccaggio a stampo;Sujeción con molde
+Cross Roller;Cross Roller;Çapraz Rulo;Поперечный ролик;Querrolle;Rullo trasversale;Rodillo transversal
+Middle Register Notch Parameters;Middle Register Notch Parameters;Ortakayıt Kertme Parametreleri;Параметры надрезки импоста;Parameter Pfostenausklinkung;Parametri intaglio montante;Parámetros de entalladura de montante
+Mullion X Left Cut Offset;Mullion X Left Cut Offset;Ortakayıt X Sol Kesim Ofseti;Смещение левого реза импоста X;Pfosten X Versatz linker Schnitt;Offset taglio sinistro montante X;Desfase de corte izquierdo montante X
+Mullion X Right Cut Offset;Mullion X Right Cut Offset;Ortakayıt X Sağ Kesim Ofseti;Смещение правого реза импоста X;Pfosten X Versatz rechter Schnitt;Offset taglio destro montante X;Desfase de corte derecho montante X
+Mullion X Right Cut Robot 1 Retraction Amount;Mullion X Right Cut Robot 1 Retraction Amount;Ortakayıt X Sağ Kesim Robot 1 Geri Çekme;Отвод робота 1 при правом резе импоста X;Pfosten X rechter Schnitt Rückzug Roboter 1;Arretramento robot 1 taglio destro montante X;Retroceso del robot 1 en corte derecho montante X
+Mullion X Right Cut Outfeed Robot Start Position;Mullion X Right Cut Outfeed Robot Start Position;Ortakayıt X Sağ Kesim Çıkış Robotu Başlangıç Poz.;Начальная позиция выходного робота при правом резе импоста X;Pfosten X rechter Schnitt Startposition Auslaufroboter;Posizione iniziale robot d'uscita taglio destro montante X;Posición inicial del robot de salida corte derecho montante X
+Main Saw Blade Thickness;Main Saw Blade Thickness;Ana Testere Kalınlığı;Толщина основной пилы;Hauptsägeblattdicke;Spessore lama principale;Espesor del disco principal
+Mullion Notching Saw Blade Thickness;Mullion Notching Saw Blade Thickness;Ortakayıt Kertme Testere Kalınlığı;Толщина пилы надрезки импоста;Sägeblattdicke Pfostenausklinkung;Spessore lama intaglio montante;Espesor del disco de entalladura
+Mullion Notching Saw Blade Diameter;Mullion Notching Saw Blade Diameter;Ortakayıt Kertme Testere Çapı;Диаметр пилы надрезки импоста;Sägeblattdurchmesser Pfostenausklinkung;Diametro lama intaglio montante;Diámetro del disco de entalladura
+Mullion Notching Single Cut Speed;Mullion Notching Single Cut Speed;Ortakayıt Kertme Tek Kesim Hızı;Скорость одиночного реза надрезки импоста;Einzelschnittgeschwindigkeit Pfostenausklinkung;Velocità taglio singolo intaglio montante;Velocidad de corte único de entalladura
+Milling X Zero - Cross Roller Distance;Milling X Zero - Cross Roller Distance;Freze X Sıfır - Çapraz Rulo Mesafesi;Расстояние от нуля X фрезы до поперечных роликов;Abstand Fräse X-Null - Querrolle;Distanza zero X fresa - rullo trasversale;Distancia cero X fresa - rodillo transversal
+Entry Conveyor 1;Entry Conveyor 1;Giriş Konveyörü 1;Входной конвейер 1;Einlaufförderer 1;Trasportatore d'ingresso 1;Transportador de entrada 1
+Entry Conveyor 2;Entry Conveyor 2;Giriş Konveyörü 2;Входной конвейер 2;Einlaufförderer 2;Trasportatore d'ingresso 2;Transportador de entrada 2
+Cutting Left;Cutting Left;Kesim Sol;Резка слева;Schnitt links;Taglio sinistro;Corte izquierdo
+Target Position;Target Position;Hedef Pozisyon;Целевая позиция;Zielposition;Posizione target;Posición objetivo
+Send To Position;Send To Position;Pozisyona Gönder;Отправить в позицию;Auf Position fahren;Invia in posizione;Enviar a posición
+Calibration Pos.;Calibration Pos.;Kalibrasyon Poz.;Позиция калибровки;Kalibrierposition;Pos. di calibrazione;Pos. de calibración
+Calibrate;Calibrate;Kalibre Et;Калибровать;Kalibrieren;Calibra;Calibrar
+Tolerance;Tolerance;Tolerans;Допуск;Toleranz;Tolleranza;Tolerancia
+Stopping Offset;Stopping Offset;Durma Ofseti;Смещение остановки;Stoppversatz;Offset di arresto;Desfase de parada
+Send;Send;Gönder;Отправить;Fahren;Invia;Enviar
+Reference;Reference;Referans;Референс;Referenz;Riferimento;Referencia
+Start Limit;Start Limit;Başlangıç Limiti;Начальный предел;Startgrenze;Limite iniziale;Límite inicial
+Unclamping Interval;Unclamping Interval;Açma Aralığı;Интервал разжима;Löseabstand;Intervallo di sbloccaggio;Intervalo de liberación
+Send Axes to Reference;Send Axes to Reference;Eksenleri Referansa Gönder;Отправить оси в референс;Achsen referenzieren;Invia assi al riferimento;Enviar ejes a referencia
+Axis Parameters;Axis Parameters;Eksen Parametreleri;Параметры осей;Achsparameter;Parametri assi;Parámetros de ejes
 
 Prf_AccAdded;{0} is on every profile of the group {1}: its placements are worked out - check and confirm them.;{0}, {1} grubunun her profilinde: yerleşimleri hesaplandı - kontrol edip onaylayın.;{0} теперь на каждом профиле группы {1}: размещения рассчитаны - проверьте и подтвердите их.;{0} ist an jedem Profil der Gruppe {1}: die Platzierungen sind berechnet - prüfen und bestätigen.;{0} è su ogni profilo del gruppo {1}: i posizionamenti sono calcolati - controllateli e confermateli.;{0} está en cada perfil del grupo {1}: sus colocaciones están calculadas - compruébelas y confírmelas.
 Prf_AccCode;Accessory;Aksesuar;Фурнитура;Beschlag;Accessorio;Accesorio

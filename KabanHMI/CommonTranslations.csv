@@ -213,6 +213,7 @@ Axis_CuttingAngle;Cutting Angle;Kesim Açı;Рез угол;Schnitt Winkel;Tagli
 Axis_CuttingZ;Cutting Z;Kesim Z;Рез Z;Schnitt Z;Taglio Z;Corte Z
 Axis_VCuttingY;V Cutting Y;V Kesim Y;V-рез Y;V-Schnitt Y;V taglio Y;V corte Y
 Axis_VCuttingZ;V Cutting Z;V Kesim Z;V-рез Z;V-Schnitt Z;V taglio Z;V corte Z
+Axis_VCuttingX;V Cutting X;V Kesim X;V-рез X;V-Schnitt X;V taglio X;V corte X
 Axis_ExitX;Exit X;Çıkış X;Выход X;Ausgang X;Uscita X;Salida X
 Axis_X;X;X;X;X;X;X
 Axis_Y;Y;Y;Y;Y;Y;Y

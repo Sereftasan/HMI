@@ -1,0 +1,30 @@
+Controls of the earlier generated pages that the pages in use do not have
+(left out by tools/legacy_fa2010_pages.py, 8 October):
+
+  ManualClamping_Moulds      unitCutting_Left_Top_Small_Press                   CylinderUnitHMI    M698, M699
+  ManualClamping_Moulds      unitCutting_Right_Top_Small_Press                  CylinderUnitHMI    M700, M701
+  ManualCutting              unitFront_Height_Setting                           CylinderUnitHMI    M749, M750
+  ManualMilling              unitUnit_1_0_Degree                                ButtonHMI          M673
+  ManualMilling              unitUnit_1_180_Degree                              ButtonHMI          M675
+  ManualMilling              unitUnit_1_270_Degree                              ButtonHMI          M676
+  ManualMilling              unitUnit_1_90_Degree                               ButtonHMI          M674
+  ManualMilling              unitUnit_1_Milling_Motor_Value                     NumericDisplayHMI  D18
+  ManualMilling              unitUnit_2_0_Degree                                ButtonHMI          M677
+  ManualMilling              unitUnit_2_180_Degree                              ButtonHMI          M679
+  ManualMilling              unitUnit_2_270_Degree                              ButtonHMI          M680
+  ManualMilling              unitUnit_2_90_Degree                               ButtonHMI          M678
+  ManualMilling              unitUnit_2_Milling_Motor_Value                     NumericDisplayHMI  D19
+  ManualProfile_Recognition  lampLeft_Front_Clampimg_Converyor_Position_SN      LampHMI            M264
+  ManualProfile_Recognition  unitRigth_Top_FW_Back_SA3030                       CylinderUnitHMI    M747, M748
+  ManualYZ_Cross_Rollers     unitCutting_Left                                   CylinderUnitHMI    M578, M579
+  ManualYZ_Cross_Rollers     unitEntry_Conveyor_1                               CylinderUnitHMI    M570, M571
+  ManualYZ_Cross_Rollers     unitEntry_Conveyor_2                               CylinderUnitHMI    M572, M573
+  ManualYZ_Cross_Rollers     unitExit                                           CylinderUnitHMI    M582, M583
+  ParamCutting               numV_Cut_Z_Speed                                   NumericInputHMI    D618
+  ParamMilling               numFR1_0_180_FR2_90_Isolated_Operation_Max_Y_Start_Pos NumericInputHMI    D700
+  ParamMilling               numFR2_90_FR1_0_180_Isolated_Operation_Max_Z_Start_Pos NumericInputHMI    D698
+  ParamMilling               numFR2_90_FR1_0_180_Isolated_Operation_Min_Z_Start_Pos NumericInputHMI    D696
+  ParamMilling               numMilling_Tool_Cooling_Period                     NumericInputHMI    D63
+  ParamMilling               numMilling_Tool_Cooling_Time                       NumericInputHMI    D62
+  ParamMilling               numThe_Last_Cut_Piece_Length_Offset                NumericInputHMI    D448
+  ParamRobot                 numFront_Clamping_Profile_Guidance_Tolerance       NumericInputHMI    D548

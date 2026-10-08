@@ -98,7 +98,7 @@ namespace Kaban.UI.Helpers
                 Station = axis.PlcNumber,
                 Back = (axis.CommandBackAddress ?? "").Trim(), Forward = (axis.CommandForwardAddress ?? "").Trim(),
                 Position = (axis.PositionAddress ?? "").Trim(), PositionType = axis.PositionDataType,
-                Divisor = axis.Divisor <= 0 ? 1 : axis.Divisor
+                Divisor = axis.PositionScale
             });
         }
 

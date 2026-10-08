@@ -38,7 +38,10 @@ class MF {
         var uses = DeviceCollector.UsesOf(1);
         Console.WriteLine("      {0} uses on station 1, {1} ms", uses.Count, (int)(DateTime.Now - t0).TotalMilliseconds);
         var m672 = DeviceFindForm.Match(uses, 1, "m672");
-        Check("M672 (typed in lower case) is found on the Cutting page", m672.Count >= 1 && m672.All(u => u.PageTitle.Contains("Cutting")),
+        // 8 October: the Encoders Parameters page jogs the same clamping (Cutting Left Top), as the old program's did.
+        Check("M672 (typed in lower case) is found on the Cutting page and on Encoders Parameters",
+              m672.Any(u => u.PageTitle.EndsWith("Cutting")) && m672.Any(u => u.PageTitle.Contains("Encoders Parameters")) &&
+              m672.All(u => u.PageTitle.EndsWith("Cutting") || u.PageTitle.Contains("Encoders Parameters")),
               string.Join(" | ", m672.Select(u => u.PageTitle + ": " + u.UsedAs)));
         Check("  named by its unit", m672.Any(u => u.UsedAs.StartsWith("Left Top Clamping")));
         Check("  with the way to it: the unit's path on the page", m672.All(u => u.ControlPath.Count > 0 && u.Screen != null),
@@ -62,7 +65,7 @@ class MF {
         SecurityManager.Login("admin", SecurityLevel.Admin);
         Application.DoEvents();
         string why;
-        var target = form.ShowDeviceUse(m672.First(), out why);
+        var target = form.ShowDeviceUse(m672.First(u => u.PageTitle.EndsWith("Cutting")), out why);
         Application.DoEvents();
         Check("the page opens and the unit is found", target != null && target.Name == "unitLeft_Top_Clamping", why);
         Check("  it is on show", target != null && target.Visible && target.FindForm() == form);

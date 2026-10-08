@@ -7,6 +7,13 @@
 //   Divisors follow the machine convention: 10000 for a millimetre axis, 100000
 //   for an angle. The four setting words share the POSITION's unit, so switching
 //   the HMI to inches converts them with it.
+//
+//   8 October, from the old HMI's Axis Parameters page (ucAxisParameters): the
+//   rows in its order; the live positions divided as it divides them (1000 for
+//   a millimetre axis, 10000 for an angle - PositionDivisor); Robot X and the
+//   Exit Robot jog the other way round (Back M604 / M731); the reference
+//   sensors of Milling 1 Angle (M331), Exit Robot (M343) and V Cutting Z (M259);
+//   the V Cutting X row and the "Send Axes to Reference" button (M22) added.
 // </auto-generated>
 
 namespace Kaban.Machines.FA2010.Screens.Parameters
@@ -23,6 +30,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         #region Component Designer generated code
         private void InitializeComponent()
         {
+            Kaban.Core.Models.BitAction bitActionRef = new Kaban.Core.Models.BitAction();
             this.lblHead0 = new System.Windows.Forms.Label();
             this.lblHead1 = new System.Windows.Forms.Label();
             this.lblHead2 = new System.Windows.Forms.Label();
@@ -52,6 +60,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y = new Kaban.UI.Controls.AxisSettingHMI();
             this.axV_Cutting_Z = new Kaban.UI.Controls.AxisSettingHMI();
             this.axExit_X = new Kaban.UI.Controls.AxisSettingHMI();
+            this.axV_Cutting_X = new Kaban.UI.Controls.AxisSettingHMI();
+            this.btnSend_Axes_To_Reference = new Kaban.UI.Controls.ButtonHMI();
             this.SuspendLayout();
             // 
             // lblHead0
@@ -222,8 +232,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.BackColor = System.Drawing.Color.White;
             this.axRobot_X.CalibrateAddress = "M140";
             this.axRobot_X.CalibrationAddress = "D580";
-            this.axRobot_X.CommandBackAddress = "M605";
-            this.axRobot_X.CommandForwardAddress = "M604";
+            this.axRobot_X.CommandBackAddress = "M604";
+            this.axRobot_X.CommandForwardAddress = "M605";
             this.axRobot_X.CurrentAddress = "W0A";
             this.axRobot_X.CurrentDivisor = 1D;
             this.axRobot_X.CurrentFullScale = 100D;
@@ -240,9 +250,11 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.PlcNumber = 1;
             this.axRobot_X.PositionAddress = "W0";
             this.axRobot_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axRobot_X.PositionDivisor = 1000D;
             this.axRobot_X.LoadEncoderValueAddress = "d100";
             this.axRobot_X.ReferenceAddress = "D316";
             this.axRobot_X.ReferenceSensorAddress = "M330";
+            this.axRobot_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axRobot_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axRobot_X.ServoAlarmAddress = "W0B";
             this.axRobot_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
@@ -285,6 +297,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.PlcNumber = 1;
             this.axRobot_Y.PositionAddress = "WB0";
             this.axRobot_Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axRobot_Y.PositionDivisor = 1000D;
             this.axRobot_Y.ReferenceAddress = "D310";
             this.axRobot_Y.ReferenceSensorAddress = "M341";
             this.axRobot_Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -328,6 +341,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.PlcNumber = 1;
             this.axRobot_Z.PositionAddress = "WC0";
             this.axRobot_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axRobot_Z.PositionDivisor = 1000D;
             this.axRobot_Z.ReferenceAddress = "D304";
             this.axRobot_Z.ReferenceSensorAddress = "M342";
             this.axRobot_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -364,20 +378,22 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.Divisor = 100000D;
             this.axMilling_1_Angle.ErrorAddress = "M809";
             this.axMilling_1_Angle.GoToReferenceAddress = "B1";
-            this.axMilling_1_Angle.Location = new System.Drawing.Point(0, 166);
+            this.axMilling_1_Angle.Location = new System.Drawing.Point(0, 298);
             this.axMilling_1_Angle.MaxLimitAddress = "D318";
             this.axMilling_1_Angle.MinLimitAddress = "D320";
             this.axMilling_1_Angle.Name = "axMilling_1_Angle";
             this.axMilling_1_Angle.PlcNumber = 1;
             this.axMilling_1_Angle.PositionAddress = "W10";
             this.axMilling_1_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_1_Angle.PositionDivisor = 10000D;
             this.axMilling_1_Angle.ReferenceAddress = "D322";
+            this.axMilling_1_Angle.ReferenceSensorAddress = "M331";
             this.axMilling_1_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axMilling_1_Angle.ServoAlarmAddress = "W1B";
             this.axMilling_1_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_1_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1_Angle.Suffix = "°";
-            this.axMilling_1_Angle.TabIndex = 16;
+            this.axMilling_1_Angle.TabIndex = 19;
             this.axMilling_1_Angle.VerticalMovement = true;
             this.axMilling_1_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_1_Angle.ZDistanceAddress = "D81";
@@ -405,13 +421,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.Digits = 8;
             this.axMilling_1X.Divisor = 10000D;
             this.axMilling_1X.GoToReferenceAddress = "B7";
-            this.axMilling_1X.Location = new System.Drawing.Point(0, 210);
+            this.axMilling_1X.Location = new System.Drawing.Point(0, 166);
             this.axMilling_1X.MaxLimitAddress = "D354";
             this.axMilling_1X.MinLimitAddress = "D356";
             this.axMilling_1X.Name = "axMilling_1X";
             this.axMilling_1X.PlcNumber = 1;
             this.axMilling_1X.PositionAddress = "W70";
             this.axMilling_1X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_1X.PositionDivisor = 1000D;
             this.axMilling_1X.ReferenceAddress = "D358";
             this.axMilling_1X.ReferenceSensorAddress = "M337";
             this.axMilling_1X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -419,7 +436,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_1X.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1X.Suffix = "mm";
-            this.axMilling_1X.TabIndex = 17;
+            this.axMilling_1X.TabIndex = 16;
             this.axMilling_1X.VerticalMovement = false;
             this.axMilling_1X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_1X.ZDistanceAddress = "D74";
@@ -447,13 +464,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.Digits = 8;
             this.axMilling_1Y.Divisor = 10000D;
             this.axMilling_1Y.GoToReferenceAddress = "B2";
-            this.axMilling_1Y.Location = new System.Drawing.Point(0, 254);
+            this.axMilling_1Y.Location = new System.Drawing.Point(0, 210);
             this.axMilling_1Y.MaxLimitAddress = "D324";
             this.axMilling_1Y.MinLimitAddress = "D326";
             this.axMilling_1Y.Name = "axMilling_1Y";
             this.axMilling_1Y.PlcNumber = 1;
             this.axMilling_1Y.PositionAddress = "W20";
             this.axMilling_1Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_1Y.PositionDivisor = 1000D;
             this.axMilling_1Y.ReferenceAddress = "D328";
             this.axMilling_1Y.ReferenceSensorAddress = "M332";
             this.axMilling_1Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -461,7 +479,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_1Y.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1Y.Suffix = "mm";
-            this.axMilling_1Y.TabIndex = 18;
+            this.axMilling_1Y.TabIndex = 17;
             this.axMilling_1Y.VerticalMovement = false;
             this.axMilling_1Y.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_1Y.ZDistanceAddress = "D75";
@@ -489,13 +507,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.Digits = 8;
             this.axMilling_1Z.Divisor = 10000D;
             this.axMilling_1Z.GoToReferenceAddress = "B3";
-            this.axMilling_1Z.Location = new System.Drawing.Point(0, 298);
+            this.axMilling_1Z.Location = new System.Drawing.Point(0, 254);
             this.axMilling_1Z.MaxLimitAddress = "D330";
             this.axMilling_1Z.MinLimitAddress = "D332";
             this.axMilling_1Z.Name = "axMilling_1Z";
             this.axMilling_1Z.PlcNumber = 1;
             this.axMilling_1Z.PositionAddress = "W30";
             this.axMilling_1Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_1Z.PositionDivisor = 1000D;
             this.axMilling_1Z.ReferenceAddress = "D334";
             this.axMilling_1Z.ReferenceSensorAddress = "M333";
             this.axMilling_1Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -503,7 +522,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_1Z.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1Z.Suffix = "mm";
-            this.axMilling_1Z.TabIndex = 19;
+            this.axMilling_1Z.TabIndex = 18;
             this.axMilling_1Z.VerticalMovement = true;
             this.axMilling_1Z.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_1Z.ZDistanceAddress = "D76";
@@ -532,13 +551,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.Divisor = 100000D;
             this.axMilling_2_Angle.ErrorAddress = "M810";
             this.axMilling_2_Angle.GoToReferenceAddress = "B4";
-            this.axMilling_2_Angle.Location = new System.Drawing.Point(0, 342);
+            this.axMilling_2_Angle.Location = new System.Drawing.Point(0, 474);
             this.axMilling_2_Angle.MaxLimitAddress = "D336";
             this.axMilling_2_Angle.MinLimitAddress = "D338";
             this.axMilling_2_Angle.Name = "axMilling_2_Angle";
             this.axMilling_2_Angle.PlcNumber = 1;
             this.axMilling_2_Angle.PositionAddress = "W40";
             this.axMilling_2_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_2_Angle.PositionDivisor = 10000D;
             this.axMilling_2_Angle.ReferenceAddress = "D340";
             this.axMilling_2_Angle.ReferenceSensorAddress = "M334";
             this.axMilling_2_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -546,7 +566,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_2_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2_Angle.Suffix = "°";
-            this.axMilling_2_Angle.TabIndex = 20;
+            this.axMilling_2_Angle.TabIndex = 23;
             this.axMilling_2_Angle.VerticalMovement = true;
             this.axMilling_2_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_2_Angle.ZDistanceAddress = "D82";
@@ -574,13 +594,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.Digits = 8;
             this.axMilling_2X.Divisor = 10000D;
             this.axMilling_2X.GoToReferenceAddress = "B8";
-            this.axMilling_2X.Location = new System.Drawing.Point(0, 386);
+            this.axMilling_2X.Location = new System.Drawing.Point(0, 342);
             this.axMilling_2X.MaxLimitAddress = "D360";
             this.axMilling_2X.MinLimitAddress = "D362";
             this.axMilling_2X.Name = "axMilling_2X";
             this.axMilling_2X.PlcNumber = 1;
             this.axMilling_2X.PositionAddress = "W80";
             this.axMilling_2X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_2X.PositionDivisor = 1000D;
             this.axMilling_2X.ReferenceAddress = "D364";
             this.axMilling_2X.ReferenceSensorAddress = "M338";
             this.axMilling_2X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -588,7 +609,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_2X.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2X.Suffix = "mm";
-            this.axMilling_2X.TabIndex = 21;
+            this.axMilling_2X.TabIndex = 20;
             this.axMilling_2X.VerticalMovement = false;
             this.axMilling_2X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_2X.ZDistanceAddress = "D77";
@@ -616,13 +637,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.Digits = 8;
             this.axMilling_2Y.Divisor = 10000D;
             this.axMilling_2Y.GoToReferenceAddress = "B5";
-            this.axMilling_2Y.Location = new System.Drawing.Point(0, 430);
+            this.axMilling_2Y.Location = new System.Drawing.Point(0, 386);
             this.axMilling_2Y.MaxLimitAddress = "D342";
             this.axMilling_2Y.MinLimitAddress = "D344";
             this.axMilling_2Y.Name = "axMilling_2Y";
             this.axMilling_2Y.PlcNumber = 1;
             this.axMilling_2Y.PositionAddress = "W50";
             this.axMilling_2Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_2Y.PositionDivisor = 1000D;
             this.axMilling_2Y.ReferenceAddress = "D346";
             this.axMilling_2Y.ReferenceSensorAddress = "M335";
             this.axMilling_2Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -630,7 +652,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_2Y.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2Y.Suffix = "mm";
-            this.axMilling_2Y.TabIndex = 22;
+            this.axMilling_2Y.TabIndex = 21;
             this.axMilling_2Y.VerticalMovement = false;
             this.axMilling_2Y.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_2Y.ZDistanceAddress = "D78";
@@ -658,13 +680,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.Digits = 8;
             this.axMilling_2Z.Divisor = 10000D;
             this.axMilling_2Z.GoToReferenceAddress = "B6";
-            this.axMilling_2Z.Location = new System.Drawing.Point(0, 474);
+            this.axMilling_2Z.Location = new System.Drawing.Point(0, 430);
             this.axMilling_2Z.MaxLimitAddress = "D348";
             this.axMilling_2Z.MinLimitAddress = "D350";
             this.axMilling_2Z.Name = "axMilling_2Z";
             this.axMilling_2Z.PlcNumber = 1;
             this.axMilling_2Z.PositionAddress = "W60";
             this.axMilling_2Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axMilling_2Z.PositionDivisor = 1000D;
             this.axMilling_2Z.ReferenceAddress = "D352";
             this.axMilling_2Z.ReferenceSensorAddress = "M336";
             this.axMilling_2Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -672,7 +695,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axMilling_2Z.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2Z.Suffix = "mm";
-            this.axMilling_2Z.TabIndex = 23;
+            this.axMilling_2Z.TabIndex = 22;
             this.axMilling_2Z.VerticalMovement = true;
             this.axMilling_2Z.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_2Z.ZDistanceAddress = "D79";
@@ -701,13 +724,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.Divisor = 100000D;
             this.axCutting_Angle.ErrorAddress = "M811";
             this.axCutting_Angle.GoToReferenceAddress = "B9";
-            this.axCutting_Angle.Location = new System.Drawing.Point(0, 518);
+            this.axCutting_Angle.Location = new System.Drawing.Point(0, 562);
             this.axCutting_Angle.MaxLimitAddress = "D366";
             this.axCutting_Angle.MinLimitAddress = "D368";
             this.axCutting_Angle.Name = "axCutting_Angle";
             this.axCutting_Angle.PlcNumber = 1;
             this.axCutting_Angle.PositionAddress = "W90";
             this.axCutting_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axCutting_Angle.PositionDivisor = 10000D;
             this.axCutting_Angle.ReferenceAddress = "D370";
             this.axCutting_Angle.ReferenceSensorAddress = "M339";
             this.axCutting_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -715,7 +739,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axCutting_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axCutting_Angle.Suffix = "°";
-            this.axCutting_Angle.TabIndex = 24;
+            this.axCutting_Angle.TabIndex = 25;
             this.axCutting_Angle.VerticalMovement = true;
             this.axCutting_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axCutting_Angle.ZDistanceAddress = "D83";
@@ -744,13 +768,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.Divisor = 10000D;
             this.axCutting_Z.ErrorAddress = "M812";
             this.axCutting_Z.GoToReferenceAddress = "B10";
-            this.axCutting_Z.Location = new System.Drawing.Point(0, 562);
+            this.axCutting_Z.Location = new System.Drawing.Point(0, 518);
             this.axCutting_Z.MaxLimitAddress = "D372";
             this.axCutting_Z.MinLimitAddress = "D374";
             this.axCutting_Z.Name = "axCutting_Z";
             this.axCutting_Z.PlcNumber = 1;
             this.axCutting_Z.PositionAddress = "WA0";
             this.axCutting_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axCutting_Z.PositionDivisor = 1000D;
             this.axCutting_Z.ReferenceAddress = "D376";
             this.axCutting_Z.ReferenceSensorAddress = "M340";
             this.axCutting_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -758,7 +783,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axCutting_Z.Size = new System.Drawing.Size(1382, 40);
             this.axCutting_Z.Suffix = "mm";
-            this.axCutting_Z.TabIndex = 25;
+            this.axCutting_Z.TabIndex = 24;
             this.axCutting_Z.VerticalMovement = true;
             this.axCutting_Z.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axCutting_Z.ZDistanceAddress = "D84";
@@ -787,13 +812,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.Divisor = 10000D;
             this.axV_Cutting_Y.ErrorAddress = "M817";
             this.axV_Cutting_Y.GoToReferenceAddress = "B14";
-            this.axV_Cutting_Y.Location = new System.Drawing.Point(0, 606);
+            this.axV_Cutting_Y.Location = new System.Drawing.Point(0, 650);
             this.axV_Cutting_Y.MaxLimitAddress = "D492";
             this.axV_Cutting_Y.MinLimitAddress = "D494";
             this.axV_Cutting_Y.Name = "axV_Cutting_Y";
             this.axV_Cutting_Y.PlcNumber = 1;
             this.axV_Cutting_Y.PositionAddress = "WE0";
             this.axV_Cutting_Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axV_Cutting_Y.PositionDivisor = 1000D;
             this.axV_Cutting_Y.ReferenceAddress = "D490";
             this.axV_Cutting_Y.ReferenceSensorAddress = "M257";
             this.axV_Cutting_Y.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
@@ -802,7 +828,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axV_Cutting_Y.Size = new System.Drawing.Size(1382, 40);
             this.axV_Cutting_Y.Suffix = "mm";
-            this.axV_Cutting_Y.TabIndex = 26;
+            this.axV_Cutting_Y.TabIndex = 27;
             this.axV_Cutting_Y.VerticalMovement = false;
             this.axV_Cutting_Y.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axV_Cutting_Y.ZDistanceAddress = "D87";
@@ -831,22 +857,23 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.Divisor = 10000D;
             this.axV_Cutting_Z.ErrorAddress = "M818";
             this.axV_Cutting_Z.GoToReferenceAddress = "B15";
-            this.axV_Cutting_Z.Location = new System.Drawing.Point(0, 650);
+            this.axV_Cutting_Z.Location = new System.Drawing.Point(0, 694);
             this.axV_Cutting_Z.MaxLimitAddress = "D610";
             this.axV_Cutting_Z.MinLimitAddress = "D612";
             this.axV_Cutting_Z.Name = "axV_Cutting_Z";
             this.axV_Cutting_Z.PlcNumber = 1;
             this.axV_Cutting_Z.PositionAddress = "WF0";
             this.axV_Cutting_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axV_Cutting_Z.PositionDivisor = 1000D;
             this.axV_Cutting_Z.ReferenceAddress = "D608";
-            this.axV_Cutting_Z.ReferenceSensorAddress = "M258";
+            this.axV_Cutting_Z.ReferenceSensorAddress = "M259";
             this.axV_Cutting_Z.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axV_Cutting_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axV_Cutting_Z.ServoAlarmAddress = "W0FB";
             this.axV_Cutting_Z.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axV_Cutting_Z.Size = new System.Drawing.Size(1382, 40);
             this.axV_Cutting_Z.Suffix = "mm";
-            this.axV_Cutting_Z.TabIndex = 27;
+            this.axV_Cutting_Z.TabIndex = 28;
             this.axV_Cutting_Z.VerticalMovement = true;
             this.axV_Cutting_Z.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axV_Cutting_Z.ZDistanceAddress = "D88";
@@ -865,8 +892,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.BackColor = System.Drawing.Color.White;
             this.axExit_X.CalibrateAddress = "M153";
             this.axExit_X.CalibrationAddress = "D606";
-            this.axExit_X.CommandBackAddress = "M732";
-            this.axExit_X.CommandForwardAddress = "M731";
+            this.axExit_X.CommandBackAddress = "M731";
+            this.axExit_X.CommandForwardAddress = "M732";
             this.axExit_X.CurrentAddress = "W0DA";
             this.axExit_X.CurrentDivisor = 1D;
             this.axExit_X.CurrentFullScale = 100D;
@@ -874,25 +901,82 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.Digits = 8;
             this.axExit_X.Divisor = 10000D;
             this.axExit_X.GoToReferenceAddress = "B13";
-            this.axExit_X.Location = new System.Drawing.Point(0, 694);
+            this.axExit_X.Location = new System.Drawing.Point(0, 606);
             this.axExit_X.MaxLimitAddress = "D378";
             this.axExit_X.MinLimitAddress = "D380";
             this.axExit_X.Name = "axExit_X";
             this.axExit_X.PlcNumber = 1;
             this.axExit_X.PositionAddress = "WD0";
             this.axExit_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axExit_X.PositionDivisor = 1000D;
             this.axExit_X.ReferenceAddress = "D382";
+            this.axExit_X.ReferenceSensorAddress = "M343";
+            this.axExit_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axExit_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.axExit_X.ServoAlarmAddress = "W0DB";
             this.axExit_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axExit_X.Size = new System.Drawing.Size(1382, 40);
             this.axExit_X.Suffix = "mm";
-            this.axExit_X.TabIndex = 28;
+            this.axExit_X.TabIndex = 26;
             this.axExit_X.VerticalMovement = false;
             this.axExit_X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axExit_X.ZDistanceAddress = "D80";
             this.axExit_X.ZDistanceDivisor = 1D;
             this.axExit_X.ZDistanceFullScale = 100D;
+            // 
+            // axV_Cutting_X
+            // 
+            // From the old HMI's Axis Parameters page (8 October): start limit D830,
+            // finish limit D828, position D838 (0.0001 mm, so no position divisor
+            // of its own), reference activation B16. Its reference sensor is the
+            // Mullion Milling X Axis Reference Sensor M269 (Wiring.csv, X131) - the
+            // old page's lamp said M259, the V Cutting Z sensor. The reference and
+            // calibration words, the servo codes and the meters are not on the old
+            // page: fill them in when known.
+            this.axV_Cutting_X.AxisName = "Axis_VCuttingX";
+            this.axV_Cutting_X.AxisNameKey = "Axis_VCuttingX";
+            this.axV_Cutting_X.HMIAxisIndex = 17;
+            this.axV_Cutting_X.BackColor = System.Drawing.Color.White;
+            this.axV_Cutting_X.CommandBackAddress = "M631";
+            this.axV_Cutting_X.CommandForwardAddress = "M630";
+            this.axV_Cutting_X.DecimalPlaces = 2;
+            this.axV_Cutting_X.Digits = 8;
+            this.axV_Cutting_X.Divisor = 10000D;
+            this.axV_Cutting_X.GoToReferenceAddress = "B16";
+            this.axV_Cutting_X.Location = new System.Drawing.Point(0, 738);
+            this.axV_Cutting_X.MaxLimitAddress = "D828";
+            this.axV_Cutting_X.MinLimitAddress = "D830";
+            this.axV_Cutting_X.Name = "axV_Cutting_X";
+            this.axV_Cutting_X.PlcNumber = 1;
+            this.axV_Cutting_X.PositionAddress = "D838";
+            this.axV_Cutting_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axV_Cutting_X.ReferenceSensorAddress = "M269";
+            this.axV_Cutting_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
+            this.axV_Cutting_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.axV_Cutting_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axV_Cutting_X.Size = new System.Drawing.Size(1382, 40);
+            this.axV_Cutting_X.Suffix = "mm";
+            this.axV_Cutting_X.TabIndex = 29;
+            this.axV_Cutting_X.VerticalMovement = false;
+            this.axV_Cutting_X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnSend_Axes_To_Reference
+            // 
+            // The old Axis Parameters page's "Send to Referance" (M22, SET; the
+            // device list's "Eksen Referansa Git"): sends the axes ticked in the
+            // Ref column to their references.
+            this.btnSend_Axes_To_Reference.Name = "btnSend_Axes_To_Reference";
+            this.btnSend_Axes_To_Reference.PlcNumber = 1;
+            this.btnSend_Axes_To_Reference.TranslationKey = "Send Axes to Reference";
+            this.btnSend_Axes_To_Reference.FallbackText = "Send Axes to Reference";
+            bitActionRef.Address = "M22";
+            bitActionRef.Action = Kaban.Core.Enums.BitActionType.SET;
+            this.btnSend_Axes_To_Reference.BitActions.Add(bitActionRef);
+            this.btnSend_Axes_To_Reference.Location = new System.Drawing.Point(8, 792);
+            this.btnSend_Axes_To_Reference.Size = new System.Drawing.Size(260, 40);
+            this.btnSend_Axes_To_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.btnSend_Axes_To_Reference.LogAction = true;
+            this.btnSend_Axes_To_Reference.TabIndex = 30;
             // 
             // AxisSettings
             // 
@@ -914,21 +998,23 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.axRobot_X);
             this.Controls.Add(this.axRobot_Y);
             this.Controls.Add(this.axRobot_Z);
-            this.Controls.Add(this.axMilling_1_Angle);
             this.Controls.Add(this.axMilling_1X);
             this.Controls.Add(this.axMilling_1Y);
             this.Controls.Add(this.axMilling_1Z);
-            this.Controls.Add(this.axMilling_2_Angle);
+            this.Controls.Add(this.axMilling_1_Angle);
             this.Controls.Add(this.axMilling_2X);
             this.Controls.Add(this.axMilling_2Y);
             this.Controls.Add(this.axMilling_2Z);
-            this.Controls.Add(this.axCutting_Angle);
+            this.Controls.Add(this.axMilling_2_Angle);
             this.Controls.Add(this.axCutting_Z);
+            this.Controls.Add(this.axCutting_Angle);
+            this.Controls.Add(this.axExit_X);
             this.Controls.Add(this.axV_Cutting_Y);
             this.Controls.Add(this.axV_Cutting_Z);
-            this.Controls.Add(this.axExit_X);
+            this.Controls.Add(this.axV_Cutting_X);
+            this.Controls.Add(this.btnSend_Axes_To_Reference);
             this.Name = "AxisSettings";
-            this.Size = new System.Drawing.Size(1316, 759);
+            this.Size = new System.Drawing.Size(1316, 850);
             this.ResumeLayout(false);
 
         }
@@ -963,6 +1049,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         private Kaban.UI.Controls.AxisSettingHMI axV_Cutting_Y;
         private Kaban.UI.Controls.AxisSettingHMI axV_Cutting_Z;
         private Kaban.UI.Controls.AxisSettingHMI axExit_X;
+        private Kaban.UI.Controls.AxisSettingHMI axV_Cutting_X;
+        private Kaban.UI.Controls.ButtonHMI btnSend_Axes_To_Reference;
     }
 }
 

@@ -56,15 +56,15 @@ class ASP {
         Check("  the heading's lists no wider for it (three in a line did not fit at 1.5)", !items.Controls.Contains(pick));
         typeof(Control).GetMethod("OnClick", Any).Invoke(axisHead, new object[] { EventArgs.Empty });
         Pump(200);
-        Check("  a click on the heading: the list opens under it", pick.IsOpen && pick.OpenList != null && pick.OpenList.Items.Count == 16);
+        Check("  a click on the heading: the list opens under it", pick.IsOpen && pick.OpenList != null && pick.OpenList.Items.Count == 17);
         if (pick.OpenDrop != null) pick.OpenDrop.Close();
         Pump(200);
-        Check("  the page's 16 axes, in the page's order, by their names", pick.Items.Count == 16 && pick.Items[0].Text == "Robot X" && pick.Items[1].Text == "Robot Y" &&
-              pick.Items.Last().Text == "Exit X", string.Join(", ", pick.Items.Take(4).Select(i => i.Text)));
+        Check("  the page's 17 axes, in the page's order, by their names", pick.Items.Count == 17 && pick.Items[0].Text == "Robot X" && pick.Items[1].Text == "Robot Y" &&
+              pick.Items.Last().Text == "V Cutting X", string.Join(", ", pick.Items.Take(4).Select(i => i.Text)));
         Check("  the Motion monitor list still right of the items list", motion.Left >= items.Right + items.Parent.Left, motion.Left + " >= " + (items.Right + items.Parent.Left));
 
         Console.WriteLine("--- two axes ticked ---");
-        var keep = new[] { pick.Items[1].Key, pick.Items[13].Key };       // Robot Y, V Cutting Y
+        var keep = new[] { pick.Items[1].Key, pick.Items[13].Key };       // Robot Y, Exit X (the old program's order since 8 October)
         pick.Select(keep);
         Pump(200);
         var shown = rows.Where(r => r.Visible).OrderBy(r => r.Top).ToList();

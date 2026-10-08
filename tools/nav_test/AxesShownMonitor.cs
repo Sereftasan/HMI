@@ -58,7 +58,7 @@ class ASM {
         var adminHead = rowsHead.Controls.Count > 0 ? rowsHead.Controls[0].Controls.OfType<Label>().FirstOrDefault(l => (l.Tag as string) == "AxisHeading:Axis") : null;
         var classicHead = ((Panel)typeof(AxisMonitorPage).GetField("_head", Any).GetValue(view)).Controls.OfType<Label>().First();
         Check("the Axis heading opens it", AxisHeadingFilter.PickOf(adminHead ?? classicHead) == pick);
-        Check("the Axes list: the 22 axes, the machine before the name", pick != null && pick.Items.Count == 22 &&
+        Check("the Axes list: the 23 axes, the machine before the name", pick != null && pick.Items.Count == 23 &&
               pick.Items[0].Text == "Processing Center · Robot X" && pick.Items.Last().Text.StartsWith("3D Hinge Drilling · "),
               pick == null ? "none" : pick.Items.Count + ": " + pick.Items[0].Text + " ... " + pick.Items.Last().Text);
         Func<List<string>> listed = () => P<IList<AxisMonitorRow>>(view, "Rows").Select(r => r.NameKey + "@" + r.PlcNumber).Concat(P<IList<AxisSettingHMI>>(view, "SettingRows").Select(r => r.AxisNameKey + "@" + r.PlcNumber)).ToList();
@@ -67,7 +67,7 @@ class ASM {
         pick.Select(h800);
         Pump(300);
         var now = listed();
-        Check("two of H800's ticked: only they, moved up", before == 22 && now.SequenceEqual(h800), string.Join(",", now));
+        Check("two of H800's ticked: only they, moved up", before == 23 && now.SequenceEqual(h800), string.Join(",", now));
         var list = (FlowLayoutPanel)typeof(AxisMonitorPage).GetField("_list", Any).GetValue(view);
         Check("  no machine heading for one machine", !list.Controls.OfType<Label>().Any(l => l.Visible && l.Text == "3D Hinge Drilling"));
         Check("  kept as the admin's", ViewPreferences.PickOf(ViewPreferences.MonitorAxes).SetEquals(h800));
@@ -80,7 +80,7 @@ class ASM {
         var axisHead = head.Controls.OfType<Label>().First();
         Check("as it was (no Admin lists), the Axes list from the Axis heading", !P<AxisPickBar>(view, "Bar").Visible && head.Visible &&
               axisHead.Text == "Axis" && AxisHeadingFilter.PickOf(axisHead) == pick);
-        Check("  his own view: all the axes", listed().Count == 22 && pick.Selected.Count == 0, listed().Count.ToString());
+        Check("  his own view: all the axes", listed().Count == 23 && pick.Selected.Count == 0, listed().Count.ToString());
         var robot = pick.Items.First(i => i.Text.EndsWith("Robot Z")).Key;
         pick.Select(new[] { robot });
         Pump(300);
@@ -90,7 +90,7 @@ class ASM {
         Check("the admin back: his two", listed().SequenceEqual(h800), string.Join(",", listed()));
         P<AxisPickBar>(view, "Bar").AxesPick.Select(new string[0]);
         Pump(300);
-        Check("  nothing ticked: all again", listed().Count == 22);
+        Check("  nothing ticked: all again", listed().Count == 23);
 
         Console.WriteLine("--- Inputs / Outputs ---");
         var io = form.ShowSidePage("IoMonitor") as IoMonitorPage;

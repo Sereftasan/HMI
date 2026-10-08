@@ -138,9 +138,10 @@ namespace Kaban.Machines.FA2010
         /// It used to hand-build all five entries here, which is how the Settings
         /// entry ended up defined twice with two different shapes.
         ///
-        /// The generated Manual and Parameter pages come from the engineering
-        /// device list (tools/generate_pages.py); each family is one nav entry with
-        /// its groups as tabs, built lazily on first use.
+        /// The Manual and Parameter pages are made by tools/legacy_fa2010_pages.py
+        /// from the pages of the HMI the machine runs today (they were first made
+        /// from the older engineering device list); each family is one nav entry
+        /// with its groups as tabs, built lazily on first use.
         /// </summary>
         public IEnumerable<MachineScreen> GetScreens(IMachineMountContext ctx)
         {
@@ -148,29 +149,28 @@ namespace Kaban.Machines.FA2010
             {
                 Home = () => new Screens.HomeScreen(),
 
+                // The tabs in the order of the HMI the machine runs today (8 October);
+                // its pages are the specification of these (tools/legacy_fa2010_pages.py).
                 ManualPages = new Kaban.UI.Settings.ISettingsPage[]
                 {
-                    new Screens.GeneratedPage("Tab_ManualClamping_Moulds", "Clamping Moulds", SecurityLevel.Operator, () => new Screens.Manual.ManualClamping_Moulds()),
-                    new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
                     new Screens.GeneratedPage("Tab_ManualEntry_Conveyor", "Entry Conveyor", SecurityLevel.Operator, () => new Screens.Manual.ManualEntry_Conveyor()),
-                    new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
-                    new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
-                    new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
-                    new Screens.GeneratedPage("Tab_ManualProfile_Recognition", "Profile Recognition", SecurityLevel.Operator, () => new Screens.Manual.ManualProfile_Recognition()),
                     new Screens.GeneratedPage("Tab_ManualRobot", "Robot", SecurityLevel.Operator, () => new Screens.Manual.ManualRobot()),
+                    new Screens.GeneratedPage("Tab_ManualProfile_Recognition", "Profile Recognition", SecurityLevel.Operator, () => new Screens.Manual.ManualProfile_Recognition()),
+                    new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
+                    new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
+                    new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
+                    new Screens.GeneratedPage("Tab_ManualOther", "Other", SecurityLevel.Operator, () => new Screens.Manual.ManualOther()),
+                    new Screens.GeneratedPage("Tab_ManualClamping_Moulds", "Clamping Moulds", SecurityLevel.Operator, () => new Screens.Manual.ManualClamping_Moulds()),
                     new Screens.GeneratedPage("Tab_ManualYZ_Cross_Rollers", "YZ Cross Rollers", SecurityLevel.Operator, () => new Screens.Manual.ManualYZ_Cross_Rollers())
                 },
 
                 MachineSettings = new Kaban.UI.Settings.ISettingsPage[]
                 {
-                    new Screens.GeneratedPage("Tab_AxisSettings", "Axis Settings", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
-                    new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
-                    new Screens.GeneratedPage("Tab_ParamDistances_Beetwen_Units", "Distances Beetwen Units", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamDistances_Beetwen_Units()),
-                    new Screens.GeneratedPage("Tab_ParamEntry_Conveyor", "Entry Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEntry_Conveyor()),
-                    new Screens.GeneratedPage("Tab_ParamExit_Conveyor", "Exit Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamExit_Conveyor()),
-                    new Screens.GeneratedPage("Tab_ParamMachine_Lubrication", "Machine Lubrication", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMachine_Lubrication()),
-                    new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
-                    new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot())
+                    new Screens.GeneratedPage("Tab_AxisSettings", "Axis Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
+                    new Screens.GeneratedPage("Tab_ParamEntry", "Entry Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEntry()),
+                    new Screens.GeneratedPage("Tab_ParamProcess", "Process Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamProcess()),
+                    new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
+                    new Screens.GeneratedPage("Tab_ParamOther", "Other Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
                 },
 
                 // The machine dashboard: the Industry 4 log (states, events, alarms,

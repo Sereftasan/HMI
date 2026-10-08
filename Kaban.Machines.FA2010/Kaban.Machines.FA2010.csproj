@@ -126,47 +126,29 @@
     <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
       <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamCutting.cs">
+    <Compile Include="Screens\Parameters\ParamEntry.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamCutting.Designer.cs">
-      <DependentUpon>ParamCutting.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamEntry.Designer.cs">
+      <DependentUpon>ParamEntry.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamDistances_Beetwen_Units.cs">
+    <Compile Include="Screens\Parameters\ParamProcess.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamDistances_Beetwen_Units.Designer.cs">
-      <DependentUpon>ParamDistances_Beetwen_Units.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamProcess.Designer.cs">
+      <DependentUpon>ParamProcess.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamEntry_Conveyor.cs">
+    <Compile Include="Screens\Parameters\ParamEncoders.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamEntry_Conveyor.Designer.cs">
-      <DependentUpon>ParamEntry_Conveyor.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamEncoders.Designer.cs">
+      <DependentUpon>ParamEncoders.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamExit_Conveyor.cs">
+    <Compile Include="Screens\Parameters\ParamOther.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamExit_Conveyor.Designer.cs">
-      <DependentUpon>ParamExit_Conveyor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamMachine_Lubrication.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamMachine_Lubrication.Designer.cs">
-      <DependentUpon>ParamMachine_Lubrication.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamMilling.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamMilling.Designer.cs">
-      <DependentUpon>ParamMilling.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamRobot.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Screens\Parameters\ParamRobot.Designer.cs">
-      <DependentUpon>ParamRobot.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamOther.Designer.cs">
+      <DependentUpon>ParamOther.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\Parameters\AxisSettings.cs">
       <SubType>UserControl</SubType>
@@ -258,9 +240,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Screens\Parameters\AxisSettings.resx">
       <DependentUpon>AxisSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Screens\Parameters\ParamCutting.resx">
-      <DependentUpon>ParamCutting.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

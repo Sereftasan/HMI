@@ -88,6 +88,20 @@ namespace Kaban.UI.Controls
         public DataTypeEnum PositionDataType { get; set; }
 
         /// <summary>
+        /// The POSITION's own divisor, when the PLC keeps the position in a finer or
+        /// coarser count than the settings: FA2010's live positions are in 0.001 mm
+        /// (0.0001 degree) while its limits, reference and calibration are in
+        /// 0.0001 mm (0.00001 degree) - its old HMI divided them by 1000 and 10000
+        /// (8 October). 0 (the default): the row's Divisor, as before.
+        /// </summary>
+        [Category(" Movement"), DefaultValue(0D), Description("Raw-to-display divisor of the position only. 0: the row's Divisor.")]
+        public double PositionDivisor { get; set; }
+
+        /// <summary>What the position is divided by: PositionDivisor, or the row's Divisor.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public double PositionScale { get { return PositionDivisor > 0 ? PositionDivisor : (Divisor > 0 ? Divisor : 1); } }
+
+        /// <summary>
         /// The LOAD-SIDE ENCODER's value (a linear scale on the axis), when the PLC
         /// keeps it apart from the position above. Not shown as a field: the
         /// position's tooltip starts with it and with the difference, in the axis's
@@ -512,7 +526,7 @@ namespace Kaban.UI.Controls
                         PlcNumber = PlcNumber,
                         Address = PositionAddress,
                         DataType = PositionDataType,
-                        Divisor = Divisor,
+                        Divisor = PositionScale,
                         DecimalPlaces = DecimalPlaces,
                         Digits = Digits,
                         Suffix = Suffix,
@@ -1436,6 +1450,7 @@ namespace Kaban.UI.Controls
             if (rows.Count < 2) return;
             var places = rows.Select(r => r.Location).OrderBy(p => p.Y).ThenBy(p => p.X).ToList();
             var order = rows.Where(r => r.Wanted).Concat(rows.Where(r => !r.Wanted)).ToList();
+            FollowRows(host, rows, places, order.Count(r => r.Wanted));
             bool moves = false;
             for (int i = 0; i < order.Count; i++) if (order[i].Location != places[i]) { moves = true; break; }
             if (!moves) return;
@@ -1445,6 +1460,35 @@ namespace Kaban.UI.Controls
             finally { host.ResumeLayout(true); _restacking = false; }
             var frame = AxisPageFrame.OfBody(host);
             if (frame != null) frame.StickNames();
+        }
+
+        /// <summary>
+        /// What stands BELOW the rows (FA2010's "Send Axes to Reference", 8 October)
+        /// follows the last row shown, the same distance under it - with a few axes
+        /// shown it stood where the last of all the rows ends, and the page scrolled
+        /// down to it past nothing.
+        /// </summary>
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, object> _followers =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Control, object>();
+
+        private static void FollowRows(Control host, System.Collections.Generic.List<AxisSettingHMI> rows, System.Collections.Generic.List<Point> places, int shown)
+        {
+            int h = rows.Max(r => r.Height);
+            int slotsBottom = places[places.Count - 1].Y + h;
+            int shownBottom = shown > 0 ? places[shown - 1].Y + h : places[0].Y;
+            foreach (Control c in host.Controls)
+            {
+                if (c is AxisSettingHMI) continue;
+                object gap;
+                if (!_followers.TryGetValue(c, out gap))
+                {
+                    if (c.Top < slotsBottom) continue;          // above or beside the rows: not a follower
+                    gap = c.Top - slotsBottom;
+                    _followers.Add(c, gap);
+                }
+                int top = shownBottom + (int)gap;
+                if (c.Top != top) c.Top = top;
+            }
         }
 
         /// <summary>A list of the page's heading: on the page, or in its frame's heading.</summary>

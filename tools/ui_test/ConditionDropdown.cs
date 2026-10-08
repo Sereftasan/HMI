@@ -102,7 +102,7 @@ class CD {
     static void Main() {
         // the FA2010 assembly has to be in the domain for the type lookups
         var fa = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly;
-        const string page = "Kaban.Machines.FA2010.Screens.Parameters.ParamCutting";
+        const string page = "Kaban.Machines.FA2010.Screens.Parameters.ParamProcess";
         var field = new NumericInputHMI();
 
         var visibility = Open(field, "VisibilityConditions", page);
