@@ -222,8 +222,17 @@ namespace Kaban.UI.Controls
             try { UiStyle.Tips().Show(text, _couple, 0, _couple.Height + 2, 5000); } catch { }
         }
 
+        private void OnNotesChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnNotesChanged), sender, e); } catch { } return; }
+            UpdateHelpBadge();          // a helper put on it (the notes page): in its "?"
+        }
+
         private void WireCoupling()
         {
+            NotesStore.Changed += OnNotesChanged;
+            Disposed += (s, e) => NotesStore.Changed -= OnNotesChanged;
             lock (_live) _live.Add(new WeakReference(this));
             _couple.Click += (s, e) =>
             {
@@ -915,10 +924,13 @@ namespace Kaban.UI.Controls
                 .Where(d => d.Exists).ToList();
         }
 
-        /// <summary>The unit's help files that are actually present.</summary>
+        /// <summary>The unit's help files that are actually present - and the helpers the notes page put on it (or on its fields).</summary>
         public List<TroubleshootingCatalog.HelpDocument> UnitHelpDocuments()
         {
-            return Present(HelpFileNames());
+            var docs = Present(HelpFileNames());
+            if (!DesignMode && Parent != null)
+                try { docs.AddRange(NoteHelpers.DocumentsFor(this)); } catch { }
+            return docs;
         }
 
         /// <summary>One movement's help files that are actually present.</summary>

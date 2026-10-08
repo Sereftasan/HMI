@@ -29,7 +29,7 @@ namespace Kaban.UI.Forms
                 Key = NotesKey,
                 TitleKey = "Ttl_Notes", TitleFallback = "Notes and feedback",
                 Glyph = DrawNotesGlyph,
-                Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName),
+                Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName, IsPassedThrough),
                 RequiredLevel = SecurityLevel.None,
                 SortOrder = 900
             });
@@ -61,14 +61,69 @@ namespace Kaban.UI.Forms
                 if (p == pnlContent) return true;
                 if (p == _sideHost) return true;
                 if (p is SidePageWindow) return true;
+                // THE CAPTION BAR as the page (8 October: "the top line should work just
+                // like page controls as well, according to Picking")
+                if (p == pnlTop) return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// True for what works as ever while the notes page picks - and is noted
+        /// with the page it opened (8 October: "the navigation window should work
+        /// normal but should also create a note page about the navigation button
+        /// and the selected page; the tabs click should behave just like the
+        /// navigation button click"): the menu's page buttons and machine list, a
+        /// page's tabs.
+        /// </summary>
+        internal bool IsPassedThrough(Control c)
+        {
+            if (c == null || c.IsDisposed) return false;
+            if (Kaban.UI.Settings.SettingsScreen.IsTab(c)) return true;
+            var tabs = c as TabControl;
+            if (tabs != null && !(tabs.FindForm() is SidePageWindow) && IsInPage(tabs)) return true;
+            var button = c as Controls.ButtonHMI;
+            if (button != null && (_menuButtons.ContainsKey(button) || (_machineStrip != null && _machineStrip.Contains(button)))) return true;
+            return false;
+        }
+
+        private bool IsInPage(Control c)
+        {
+            for (var p = c; p != null; p = p.Parent)
+                if (p == pnlContent || p == _sideHost) return true;
+            return false;
+        }
+
+        /// <summary>The page on show, as the operator went there (a page button noted with the page it opened).</summary>
+        private string CurrentPlace()
+        {
+            Control deepest = _currentScreen;
+            for (int guard = 0; deepest != null && guard < 6; guard++)
+            {
+                var tabs = deepest as Kaban.UI.Settings.SettingsScreen ?? FirstStrip(deepest);
+                if (tabs == null || tabs.ActiveView == null) break;
+                deepest = tabs.ActiveView;
+            }
+            return deepest != null ? PlaceOf(deepest) : "";
+        }
+
+        private static Kaban.UI.Settings.SettingsScreen FirstStrip(Control c)
+        {
+            foreach (Control k in c.Controls)
+            {
+                var s = k as Kaban.UI.Settings.SettingsScreen;
+                if (s != null && s.Visible) return s;
+            }
+            return null;
         }
 
         /// <summary>Where a control is, as the operator went there: "FA2010 / Machine Parameters / Axis Settings".</summary>
         internal string PlaceOf(Control c)
         {
             if (c == null) return "";
+            // the menu: the page it opened; the caption bar: itself
+            if (pnlMenu.Contains(c)) return LanguageManager.GetString("Nts_Opens", "Opens") + ": " + CurrentPlace();
+            if (c == pnlTop || pnlTop.Contains(c)) return LanguageManager.GetString("Nts_CaptionBar", "Caption bar");
             var parts = new List<string>();
             for (var p = c; p != null; p = p.Parent)
             {
@@ -93,7 +148,9 @@ namespace Kaban.UI.Forms
         internal static void DrawNotesGlyph(Graphics g, Rectangle r, Color colour)
         {
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            float s = Math.Min(r.Width, r.Height) / 24f;
+            // a fifth smaller than its button (8 October: it filled the whole button
+            // and looked strange beside the other pages' pictures)
+            float s = Math.Min(r.Width, r.Height) / 24f * 0.8f;
             float x = r.Left + (r.Width - 24 * s) / 2, y = r.Top + (r.Height - 24 * s) / 2;
             using (var pen = new Pen(colour, 1.8f * s) { LineJoin = LineJoin.Round, StartCap = LineCap.Round, EndCap = LineCap.Round })
             {

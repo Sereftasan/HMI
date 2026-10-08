@@ -223,6 +223,28 @@ namespace Kaban.UI.Settings
         /// <summary>The page on show.</summary>
         public ISettingsPage ActivePage { get { return _active; } }
 
+        /// <summary>The page a tab of a strip opens (the notes page: a tab tapped is noted with its page), or null.</summary>
+        public static ISettingsPage PageOfTab(Control tab)
+        {
+            for (var p = tab != null ? tab.Parent : null; p != null; p = p.Parent)
+            {
+                var screen = p as SettingsScreen;
+                if (screen == null) continue;
+                foreach (var kv in screen._tabButtons) if (ReferenceEquals(kv.Value, tab)) return kv.Key;
+                return null;
+            }
+            return null;
+        }
+
+        /// <summary>The page on show (its view), or null.</summary>
+        public Control ActiveView
+        {
+            get { UserControl v; return _active != null && _instances.TryGetValue(_active, out v) ? v : null; }
+        }
+
+        /// <summary>True for a tab of a strip (a button of the row of tabs).</summary>
+        public static bool IsTab(Control c) { return c != null && c.Parent is TabRowStrip; }
+
         /// <summary>Index of the page on show among ALL pages (see ActivateByIndex), or -1.</summary>
         public int ActiveIndex { get { return _active == null ? -1 : _pages.IndexOf(_active); } }
 

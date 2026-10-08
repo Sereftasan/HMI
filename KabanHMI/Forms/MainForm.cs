@@ -147,6 +147,36 @@ namespace Kaban.UI.Forms
             // TRIGGER THE SCANNER: Only scan the screen we just loaded!
             _scanner.RefreshTags(true);
             UpdateAlarmPulse();       // opening the alarm page stops the pulse
+            // the helpers the notes page put on its controls: their "?" marks
+            RefreshNoteHelpers();
+        }
+
+        private bool _noteHelpersHooked;
+
+        /// <summary>The notes' helpers marked on the page and the side page on show (after they are laid out).</summary>
+        internal void RefreshNoteHelpers()
+        {
+            if (!_noteHelpersHooked)
+            {
+                _noteHelpersHooked = true;
+                EventHandler again = (s, e) =>
+                {
+                    if (IsDisposed || !IsHandleCreated) return;
+                    try { BeginInvoke(new Action(RefreshNoteHelpers)); } catch { }
+                };
+                NotesStore.Changed += again;
+                FormClosed += (s, e) => NotesStore.Changed -= again;
+            }
+            Action mark = () =>
+            {
+                try
+                {
+                    if (_currentScreen != null && !_currentScreen.IsDisposed) Helpers.NoteHelpers.Refresh(_currentScreen);
+                    if (_sideHost != null) Helpers.NoteHelpers.Refresh(_sideHost);
+                }
+                catch (Exception ex) { AuditLogger.Log("note helpers: " + ex.Message); }
+            };
+            if (IsHandleCreated) { try { BeginInvoke(mark); } catch { } } else mark();
         }
 
         /// <summary>

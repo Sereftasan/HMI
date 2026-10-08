@@ -204,6 +204,35 @@ namespace Kaban.Core.Helpers
             return false;
         }
 
+        /// <summary>True when the key has a text in some language.</summary>
+        public static bool HasKey(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return false;
+            foreach (var d in _machine.Values) if (d.ContainsKey(key)) return true;
+            foreach (var d in _common.Values) if (d.ContainsKey(key)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// The key whose text on the screen (the language shown, else English) is
+        /// <paramref name="text"/> - a table's heading made from a key, found again
+        /// by its words (the notes page). Null when none; the machine's keys first.
+        /// </summary>
+        public static string KeyOfText(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text)) return null;
+            text = text.Trim();
+            foreach (var lang in new[] { CurrentLanguage, "EN" })
+                foreach (var source in new[] { _machine, _common })
+                {
+                    Dictionary<string, string> dict;
+                    if (!source.TryGetValue(lang ?? "EN", out dict)) continue;
+                    foreach (var kv in dict)
+                        if (string.Equals((kv.Value ?? "").Trim(), text, StringComparison.Ordinal)) return kv.Key;
+                }
+            return null;
+        }
+
         /// <summary>A key's text in one language (machine, then common), or null - no English in its place.</summary>
         public static string GetStringIn(string langCode, string key)
         {

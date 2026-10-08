@@ -184,12 +184,9 @@ namespace Kaban.UI.Helpers
             var tag = c.Tag as string;
             if (c is Label && tag != null && tag.StartsWith("AxisHeading:"))
                 add(T("Nts_KeyHeading", "Column heading"), AxisSettingHMI.HeadingKey(tag.Substring("AxisHeading:".Length)));
-            var axis = c.Parent as AxisSettingHMI;
-            if (axis != null)
-            {
-                var col = axis.ColumnOf(c);
-                if (col != null) add(T("Nts_KeyHeading", "Column heading"), AxisSettingHMI.HeadingKey(col));
-            }
+            // (a field of an axis row: no texts of its own - its column's heading is
+            // translated on the heading; 8 October: "the current one opens translation
+            // lists for numerical values")
             add(T("Nts_KeyCaption", "Caption"), Str(c, "DescriptionText"));
             foreach (var p in c.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                 .Where(p => p.PropertyType == typeof(string) && p.Name.EndsWith("Key") && p.Name != "Key" && p.GetIndexParameters().Length == 0)
@@ -201,9 +198,17 @@ namespace Kaban.UI.Helpers
                 if (p.Name == "ComparedCaptionKey" && string.IsNullOrWhiteSpace(Str(c, "ComparedAddress"))) continue;
                 add(Describe(p.Name), v);
             }
-            if (list.Count == 0 && (c is Label || c is ButtonBase) && !string.IsNullOrWhiteSpace(c.Text))
+            if (list.Count == 0 && (c is Label || c is ButtonBase) && !string.IsNullOrWhiteSpace(c.Text) && !IsNumber(c.Text))
                 add(T("Nts_KeyText", "Its text (no key of its own)"), c.Text);
             return list;
+        }
+
+        /// <summary>A text that is a value, not words: "12.5", "-3", "0 mm", "%40".</summary>
+        private static bool IsNumber(string text)
+        {
+            var t = (text ?? "").Trim();
+            int digits = t.Count(char.IsDigit), letters = t.Count(char.IsLetter);
+            return digits > 0 && letters <= 3 && digits >= letters;
         }
 
         private static string Describe(string property)

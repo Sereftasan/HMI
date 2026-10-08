@@ -394,6 +394,7 @@ namespace Kaban.UI.Forms
             RestoreDockOrder();
             view.Focus();
             SideStateChanged();
+            RefreshNoteHelpers();
             return view;
         }
 

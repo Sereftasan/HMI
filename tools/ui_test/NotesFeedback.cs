@@ -46,6 +46,7 @@ class NF {
         var dir = Path.Combine(Path.GetTempPath(), "nf_" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dir);
         NotesStore.Folder = Path.Combine(dir, "Notes");
+        ViewPreferences.SettingsPath = Path.Combine(dir, "View.cfg");
         NotesPage.FeedbackFolder = Path.Combine(dir, "Feedback");
         AuditLogger.LogDirectory = dir;
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
@@ -107,9 +108,20 @@ class NF {
         var rowHost = new Panel { Bounds = new Rectangle(0, 300, 660, 200), AutoScroll = true, Name = "axisPage" };
         rowHost.Controls.Add(row);
         machine.Controls.Add(rowHost);
+        // a table: a heading, a cell shown, a cell typed in
+        var table = new DataGridView { Bounds = new Rectangle(340, 20, 300, 120), Name = "gridTest", AllowUserToAddRows = false, RowHeadersVisible = false };
+        table.Columns.Add("axis", "Axis"); table.Columns.Add("pos", "Position"); table.Columns.Add("set", "Set value");
+        table.Columns[0].ReadOnly = true; table.Columns[1].ReadOnly = true;
+        table.Rows.Add("X", "12.5", "10"); table.Rows.Add("Y", "3.0", "4");
+        machine.Controls.Add(table);
+        // a page button of the menu (worked as ever, and noted)
+        var nav = new Button { Bounds = new Rectangle(30, 600, 140, 40), Text = "Manual", Name = "navManual" };
+        int navClicks = 0;
+        nav.Click += (s, e) => navClicks++;
+        machine.Controls.Add(nav);
         var host = new Panel { Bounds = new Rectangle(660, 0, 540, 760) };
         form.Controls.Add(host);
-        var notes = new NotesPage(c => c != null && (machine.Contains(c)), c => "Test machine / Page", () => "TEST");
+        var notes = new NotesPage(c => c != null && (machine.Contains(c)), c => c == nav ? "Opens: Manual Movement" : "Test machine / Page", () => "TEST", c => c == nav);
         host.Controls.Add(notes);
         form.Show(); Pump(400);
         Check("open and in sight: picking", notes.Picking);
@@ -121,8 +133,17 @@ class NF {
               !Tap(notes, start, 0x0100, (int)Keys.A));
         var body = (Control)typeof(NotesPage).GetProperty("Body", Any).GetValue(notes, null);
         Func<string, Control> named = n => Tree(body).FirstOrDefault(c => c.Name == n);
-        Check("the page: its texts in every language, from the files", named("txtEN") != null && named("txtEN").Text == "Start" &&
-              named("txtTR") != null && named("txtTR").Text == "\u00C7al\u0131\u015Ft\u0131r" && named("txtES") != null);
+        Func<DataGridView> texts = () => (DataGridView)named("notesTexts");
+        Func<DataGridView, string> langs = g => string.Join(",", g.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells[0].Value)));
+        Check("its texts in a table: language, now, required, comment - the screen's language and English when none is chosen",
+              texts() != null && texts().Columns.Count == 4 && langs(texts()) == "EN" && Convert.ToString(texts().Rows[0].Cells[1].Value) == "Start",
+              texts() == null ? "none" : langs(texts()));
+        ViewPreferences.SetList(ViewPreferences.NoteLanguages, new[] { "EN", "TR", "IT" });
+        Pump(100);
+        Check("  his chosen languages only (kept as his)", texts() != null && langs(texts()) == "EN,TR,IT" &&
+              Convert.ToString(texts().Rows[1].Cells[1].Value) == "\u00C7al\u0131\u015Ft\u0131r" && ViewPreferences.UserValue("op1", ViewPreferences.NoteLanguages) == "EN,TR,IT",
+              texts() == null ? "none" : langs(texts()));
+        Check("  the comment closed until something is required", texts().Rows.Cast<DataGridViewRow>().All(r => r.Cells[3].ReadOnly) && !texts().Rows[0].Cells[2].ReadOnly);
         var caption = Tree(machine).OfType<Label>().FirstOrDefault(l => l.Text.StartsWith("Speed"));
         Check("a tap on a caption: its field", caption != null && NoteTarget.Notable(caption) == speed, caption == null ? "no caption" : NoteTarget.Notable(caption).GetType().Name);
         Pump(200);
@@ -131,20 +152,28 @@ class NF {
               minField == null ? "none" : NoteTarget.NameOf(minField));
         Check("  its place by the column (the same whatever the PLC axis items)", minField != null && NoteTarget.KeyOf(minField).EndsWith("axRobotX/col:Min:" + minField.GetType().Name),
               minField == null ? "" : NoteTarget.KeyOf(minField));
-        Check("  its texts: the column heading's key", minField != null && NoteTarget.KeysOf(minField).Any(k => k.Key == "Col_MinLimit"));
+        Check("  no texts of its own (a value: its heading is translated on the heading)", minField != null && NoteTarget.KeysOf(minField).Count == 0,
+              minField == null ? "" : string.Join(",", NoteTarget.KeysOf(minField).Select(k => k.Key)));
         Check("the notes page itself is not picked", !Tap(notes, notes, 0x0202));
 
         Console.WriteLine("--- writing on the page ---");
         Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
-        ((TextBox)named("txtIT")).Text = "Avvia";
+        var tg = texts();
+        tg.Rows[2].Cells[2].Value = "Avvia";
+        Check("  required written: its comment opens", !tg.Rows[2].Cells[3].ReadOnly);
+        tg.Rows[2].Cells[3].Value = "the Italian panel says Avvia";
         ((Button)named("notesKeepTexts")).PerformClick(); Pump(50);
         var mine = NotesStore.Of(notes.PickedKey).Where(n => n.Kind == NoteKind.Translation && n.Author == "op1").ToList();
-        Check("an Operator's texts: proposed, only the one changed", mine.Count == 1 && mine[0].Texts.Count == 1 && mine[0].TextIn("IT") == "Avvia" &&
+        Check("an Operator's texts: proposed, only the one changed, with what it was and why", mine.Count == 1 && mine[0].Texts.Count == 1 && mine[0].TextIn("IT") == "Avvia" &&
+              mine[0].Texts[0].Comment == "the Italian panel says Avvia" && mine[0].Texts[0].Now == "" &&
               mine[0].State == NoteState.Proposed && LanguageManager.GetStringIn("IT", "Btn_TestStart") == null, string.Join(",", mine.Select(n => n.Texts.Count)));
+        Check("  the control's type and designer path on the note (for the builder)", mine[0].ControlType == typeof(ButtonHMI).FullName && mine[0].ControlPath.EndsWith("btnStart"),
+              mine[0].ControlType + " / " + mine[0].ControlPath);
+        Check("  an Operator sees no settings table", named("notesProps") == null);
         var helperFile = Path.Combine(dir, "start_button.txt");
         File.WriteAllText(helperFile, "the start button");
         notes.ChooseFile(helperFile);
-        typeof(NotesPage).GetMethod("KeepHelper", Any).Invoke(notes, new object[] { "Hold it for a second" });
+        typeof(NotesPage).GetMethod("KeepHelper", Any, null, new[] { typeof(string) }, null).Invoke(notes, new object[] { "Hold it for a second" });
         var helper = NotesStore.Of(notes.PickedKey).LastOrDefault(n => n.Kind == NoteKind.Helper);
         Check("a helper with a file: its file kept in the notes", helper != null && helper.Text == "Hold it for a second" && NotesStore.PathOf(helper) != null &&
               helper.FileName == "start_button.txt");
@@ -154,9 +183,79 @@ class NF {
               Tree(body).OfType<Label>().Any(l => l.Text == "Works well"));
         Check("  the Operator's proposal there, no Accept for him", Tree(body).OfType<Label>().Any(l => l.Text.Contains("proposed")) && named("notesAccept") == null);
         Snap(form, "/tmp/notes_page.png");
+
+        Console.WriteLine("--- a table: its heading, a cell shown, a cell typed in ---");
+        var headAt = table.GetCellDisplayRectangle(1, -1, true);
+        Func<int, int, IntPtr> lp = (x, y) => new IntPtr((y << 16) | (x & 0xFFFF));
+        var picker = typeof(NotesPage).GetField("_picker", Any).GetValue(notes) as IMessageFilter;
+        Func<int, Point, bool> tapAt = (msg, pt) => { var m = Message.Create(table.Handle, msg, IntPtr.Zero, lp(pt.X, pt.Y)); return picker.PreFilterMessage(ref m); };
+        var hp = new Point(headAt.X + 5, headAt.Y + 5);
+        Check("a heading: picked (the tap kept from the table)", tapAt(0x0201, hp) && tapAt(0x0202, hp) && notes.PickedKind == NotesPage.PickKind.Heading &&
+              notes.PickedName.StartsWith("Column heading: Position"), notes.PickedName ?? "");
+        var shownAt = table.GetCellDisplayRectangle(1, 0, true);
+        var sp = new Point(shownAt.X + 5, shownAt.Y + 5);
+        Check("a cell shown: picked as a value", tapAt(0x0201, sp) && tapAt(0x0202, sp) && notes.PickedKind == NotesPage.PickKind.Cell &&
+              notes.PickedName.Contains("Position") && notes.PickedName.Contains("(X)"), notes.PickedName ?? "");
+        Check("  its value: now, what it should be, why", named("notesValueRequired") != null && Tree(body).OfType<Label>().Any(l => l.Text.EndsWith(": 12.5")));
+        typeof(NotesPage).GetMethod("KeepValue", Any).Invoke(notes, new object[] { "12.0", "the sensor is offset" });
+        var value = NotesStore.Of(notes.PickedKey).LastOrDefault(n => n.Kind == NoteKind.Value);
+        Check("  kept: now 12.5, required 12.0, why", value != null && value.Values.Count == 1 && value.Values[0].Now == "12.5" && value.Values[0].Required == "12.0" &&
+              value.Values[0].Comment == "the sensor is offset");
+        var entryAt = table.GetCellDisplayRectangle(2, 0, true);
+        var ep = new Point(entryAt.X + 5, entryAt.Y + 5);
+        Check("a cell typed in: the table's own (not picked)", !tapAt(0x0201, ep) && !tapAt(0x0202, ep) && notes.PickedKind == NotesPage.PickKind.Cell);
+
+        Console.WriteLine("--- a page button of the menu: as ever, and noted ---");
+        Check("its press and release let through", !Tap(notes, nav, 0x0201) && !Tap(notes, nav, 0x0202));
+        Pump(150);
+        Check("  noted with the page it opened", notes.PickedKind == NotesPage.PickKind.Menu && notes.PickedName.StartsWith("Menu button") &&
+              notes.PickedPlace == "Opens: Manual Movement", notes.PickedName + " / " + notes.PickedPlace);
+
+        Console.WriteLine("--- a general note, with a file ---");
+        ((Button)Tree(notes).First(c => c.Name == "notesGeneral")).PerformClick();
+        Pump(50);
+        Check("the general note's page", notes.PickedKind == NotesPage.PickKind.General && named("notesGeneralText") != null);
+        var drawing = Path.Combine(dir, "layout_idea.txt");
+        File.WriteAllText(drawing, "a sketch");
+        notes.ChooseFile(drawing);
+        typeof(NotesPage).GetMethod("KeepGeneral", Any).Invoke(notes, new object[] { "A second start button at the exit would help." });
+        var general = NotesStore.All.LastOrDefault(n => n.IsGeneral);
+        Check("  kept on no control, its file with it", general != null && general.Text.StartsWith("A second start") && NotesStore.PathOf(general) != null);
+        Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
         SecurityManager.Login("mt1", SecurityLevel.Maintenance);
         Pump(100);
         Check("Maintenance sees Accept on it", named("notesAccept") != null);
+
+        Console.WriteLine("--- an Admin: the control's settings, the helpers on the screen ---");
+        SecurityManager.Login("admin", SecurityLevel.Admin);
+        Pump(100);
+        var props = (DataGridView)named("notesProps");
+        var rows = props == null ? new List<DataGridViewRow>() : props.Rows.Cast<DataGridViewRow>().ToList();
+        Func<string, DataGridViewRow> prop = n => rows.FirstOrDefault(r => Convert.ToString(r.Tag) == n);
+        Check("its settings in a table: the program's own (the key, the PLC ...), now", props != null && prop("TranslationKey") != null &&
+              Convert.ToString(prop("TranslationKey").Cells[1].Value) == "Btn_TestStart" && prop("PlcNumber") != null && prop("BackColor") == null,
+              props == null ? "none" : string.Join(",", rows.Take(12).Select(r => r.Tag)));
+        prop("PlcNumber").Cells[2].Value = "2";
+        prop("PlcNumber").Cells[3].Value = "the start is on the second PLC";
+        ((Button)named("notesKeepProps")).PerformClick(); Pump(50);
+        var asked = NotesStore.Of(notes.PickedKey).LastOrDefault(n => n.Kind == NoteKind.Property);
+        Check("  asked for: kept for the builder (the program not changed)", asked != null && asked.Values.Count == 1 && asked.Values[0].Name == "PlcNumber" &&
+              asked.Values[0].Now == "1" && asked.Values[0].Required == "2" && start.PlcNumber == 1);
+        typeof(NotesPage).GetMethod("KeepHelper", Any, null, new[] { typeof(string), typeof(string) }, null).Invoke(notes, new object[] { "Press it once the guard is closed.", "operators asked" });
+        Pump(50);
+        NoteHelpers.Refresh(machine);
+        var mark = NoteHelpers.MarkOf(start);
+        Check("an Admin's helper: on the screen at once - a \"?\" on the button's corner", mark != null && mark.Visible && mark.Parent == machine &&
+              mark.Left >= start.Right - mark.Width && mark.Top <= start.Top, mark == null ? "no mark" : mark.Bounds + " / " + start.Bounds);
+        Check("  it opens the helper (a page of its words)", NoteHelpers.DocumentsFor(start).Count >= 1 &&
+              NoteHelpers.DocumentsFor(start).All(d => File.Exists(d.FileName)), string.Join(" | ", NoteHelpers.DocumentsFor(start).Select(d => d.Title)));
+        var unit = new CylinderUnitHMI { Name = "unitClamp", Location = new Point(30, 520), CommandAAddress = "M10", CommandBAddress = "M11", TitleText = "Clamp" };
+        machine.Controls.Add(unit); Pump(100);
+        var unitField = Tree(unit).First(c => c is ButtonHMI);
+        NotesStore.Add(new Note { Kind = NoteKind.Helper, Text = "Clamp: the valve is under the cover", ControlKey = NoteTarget.KeyOf(unitField), ControlName = "Clamp" });
+        Pump(100);
+        Check("a helper on a unit's button: in the unit's \"?\"", unit.UnitHelpDocuments().Any(d => d.Title.StartsWith("Clamp: the valve")),
+              string.Join(" | ", unit.UnitHelpDocuments().Select(d => d.Title)));
         SecurityManager.Login("op1", SecurityLevel.Operator);
         Pump(50);
 
@@ -178,6 +277,16 @@ class NF {
             var names = NotesStore.EntriesOf(zip);
             Check("  Notes.html to read, Notes.csv, Notes.xml, the helpers' files", names.Contains("Notes.html") && names.Contains("Notes.csv") &&
                   names.Contains("Notes.xml") && names.Any(n => n.StartsWith("Files/") && n.EndsWith("start_button.txt")), string.Join(", ", names));
+            Check("  for the builder: README, Translations.csv in the translation file's form, Properties.csv, Values.csv, the general note's file",
+                  names.Contains("README.txt") && names.Contains("Translations.csv") && names.Contains("Properties.csv") && names.Contains("Values.csv") &&
+                  names.Any(n => n.EndsWith("layout_idea.txt")), string.Join(", ", names));
+            var tcsv = NotesStore.TextIn(zip, "Translations.csv") ?? "";
+            Check("  Translations.csv: Key;EN;TR;RU;DE;IT;ES then why and who - the row of Btn_TestStart with its IT and DE",
+                  tcsv.StartsWith("Key;EN;TR;RU;DE;IT;ES;State;Comment;Who") && tcsv.Contains("Btn_TestStart;;") && tcsv.Contains(";Starten;Avvia;") && tcsv.Contains("IT: the Italian panel says Avvia"),
+                  tcsv.Replace("\r\n", " / "));
+            var pcsv = NotesStore.TextIn(zip, "Properties.csv") ?? "";
+            Check("  Properties.csv: the control, its type and path, now -> required, why", pcsv.Contains("\"PlcNumber\";\"1\";\"2\";\"the start is on the second PLC\"") &&
+                  pcsv.Contains(typeof(ButtonHMI).FullName), pcsv.Replace("\r\n", " / "));
             string html = NotesStore.TextIn(zip, "Notes.html") ?? "";
             Check("  the page and the control in it, every note", html.Contains("Test machine / Page") && html.Contains("Works well") && html.Contains("Avvia") &&
                   html.Contains("proposed"));
