@@ -8,6 +8,7 @@ using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.Core.Interfaces;
 using Kaban.Core.Models;
+using Kaban.UI.Helpers;
 
 namespace Kaban.UI.Controls
 {
@@ -150,6 +151,99 @@ namespace Kaban.UI.Controls
         [TypeConverter(typeof(Kaban.UI.Design.CylinderUnitChildConverter))]
         public NumericDisplayHMI PositionDisplay { get { return _numPosition; } }
 
+        // ---- coupled with others (UnitCoupling, 8 October) ------------------------------
+
+        private readonly CoupleBadge _couple = new CoupleBadge();
+        private static readonly List<WeakReference> _live = new List<WeakReference>();
+
+        /// <summary>The units on screens now (the coupling's look follows them).</summary>
+        internal static IEnumerable<CylinderUnitHMI> Live
+        {
+            get
+            {
+                lock (_live)
+                {
+                    _live.RemoveAll(w => !(w.Target is CylinderUnitHMI) || ((CylinderUnitHMI)w.Target).IsDisposed);
+                    return _live.Select(w => (CylinderUnitHMI)w.Target).Where(u => u != null).ToList();
+                }
+            }
+        }
+
+        static CylinderUnitHMI()
+        {
+            UnitCoupling.Notice += (unit, text) => { if (unit != null && !unit.IsDisposed) unit.ShowCouplingNotice(text); };
+        }
+
+        internal CoupleBadge CoupleChain { get { return _couple; } }
+
+        /// <summary>A movement to couple: a command on either side.</summary>
+        internal bool HasCommands { get { return !string.IsNullOrWhiteSpace(_commandAAddress) || !string.IsNullOrWhiteSpace(_commandBAddress); } }
+
+        /// <summary>A sensor at each end (a cylinder whose end is known from them).</summary>
+        internal bool HasEndSensors { get { return !string.IsNullOrWhiteSpace(_lamp1AAddress) && !string.IsNullOrWhiteSpace(_lamp1BAddress); } }
+
+        /// <summary>The position read, in its display unit (null: none, or not read yet).</summary>
+        internal double? PositionValue
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_positionAddress)) return null;
+                var raw = _numPosition.LastRaw;
+                if (!raw.HasValue) return null;
+                double d = _positionDivisor == 0 ? 1 : _positionDivisor;
+                return raw.Value / d;
+            }
+        }
+
+        /// <summary>A side's button text, as shown (coupling messages).</summary>
+        internal string SideText(bool a) { var t = a ? _buttonAText : _buttonBText; return string.IsNullOrEmpty(t) ? (a ? "A" : "B") : Tr(t); }
+
+        /// <summary>The unit's name in coupling messages and the log.</summary>
+        internal string CouplingName { get { return string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText); } }
+
+        /// <summary>Shown coupled: the chain closed, the frame blue.</summary>
+        internal void ShowCoupled(bool on)
+        {
+            _couple.On = on;
+            var frame = on ? CoupledFrame : RoundedGroupBox.NormalBorder;
+            if (_grp.BorderColor != frame) { _grp.BorderColor = frame; _grp.Invalidate(); }
+        }
+
+        /// <summary>The frame of a coupled unit.</summary>
+        internal static readonly Color CoupledFrame = Color.FromArgb(0, 120, 215);
+
+        /// <summary>The last coupling message shown (tests).</summary>
+        internal string LastCouplingNotice { get; private set; }
+
+        /// <summary>A coupling refused or let go, said beside the chain.</summary>
+        internal void ShowCouplingNotice(string text)
+        {
+            LastCouplingNotice = text;
+            try { UiStyle.Tips().Show(text, _couple, 0, _couple.Height + 2, 5000); } catch { }
+        }
+
+        private void WireCoupling()
+        {
+            lock (_live) _live.Add(new WeakReference(this));
+            _couple.Click += (s, e) =>
+            {
+                var why = UnitCoupling.Toggle(this);
+                if (why != null) ShowCouplingNotice(why);
+            };
+            UiStyle.HoverTip(UiStyle.Tips(), _couple, () => UnitCoupling.IsCoupled(this)
+                ? LanguageManager.GetString("Tip_Coupled", "Coupled: a button pressed here presses the same button of every coupled unit. Click to uncouple.")
+                : LanguageManager.GetString("Tip_Couple", "Couple for manual movement: units coupled (at the same position) move together - a button pressed on one presses the same button of all."));
+            _btnA.UserActed += (b, a) => UnitCoupling.Acted(this, true, b, a);
+            _btnB.UserActed += (b, a) => UnitCoupling.Acted(this, false, b, a);
+            // only units in sight move together: one leaving the screen leaves the coupling
+            VisibleChanged += (s, e) =>
+            {
+                if (!Visible && UnitCoupling.IsCoupled(this))
+                    UnitCoupling.Remove(this, LanguageManager.GetString("Cpl_LeftScreen", "it left the screen"));
+            };
+            Disposed += (s, e) => { if (UnitCoupling.IsCoupled(this)) UnitCoupling.Remove(this, "closed"); };
+        }
+
         public CylinderUnitHMI()
         {
             this.Size = new Size(360, 64);
@@ -213,6 +307,9 @@ namespace Kaban.UI.Controls
             Controls.Add(_helpB);
             Controls.Add(_help);
             _help.BringToFront();
+            Controls.Add(_couple);
+            _couple.BringToFront();
+            WireCoupling();
             _help.Documents = HelpDocuments;
             _help.AiPrompt = AiPromptText;
             _grp.Resize += (s2, e2) => LayoutChildren();
@@ -1732,6 +1829,16 @@ namespace Kaban.UI.Controls
             int frameTop = (int)(_grp.Font.GetHeight() / 2f);
             _help.Location = new Point(this.ClientSize.Width - UiScale.For(this, 12) - _help.Width,
                                        Math.Max(0, frameTop - _help.Height / 2));
+            // the chain left of the "?" (in its place when there is none)
+            bool chain = !DesignMode && HasCommands;
+            if (_couple.Visible != chain) _couple.Visible = chain;
+            if (chain)
+            {
+                int size = UiScale.For(this, CoupleBadge.BadgeSize);
+                if (_couple.Width != size) _couple.Size = new Size(size, size);
+                int right = _help.Visible ? _help.Left - UiScale.For(this, 4) : this.ClientSize.Width - UiScale.For(this, 12);
+                _couple.Location = new Point(right - _couple.Width, Math.Max(0, frameTop - _couple.Height / 2));
+            }
         }
 
         /// <summary>

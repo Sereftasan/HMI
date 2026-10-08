@@ -1333,6 +1333,54 @@ namespace Kaban.UI.Controls
         }
 
         // --- RESTORED: actually write to the PLC instead of just logging to the console ---
+        // ---- coupled units (UnitCoupling, 8 October) ------------------------------------
+
+        /// <summary>What a user did with the button: a press began, it ended, a click.</summary>
+        public enum UserAction { Press, Release, Click }
+
+        /// <summary>
+        /// A user's press (before the button writes), its release (after the button
+        /// let go) and click (confirmed, before the button writes) - units coupled
+        /// with this one's follow them (UnitCoupling). Not raised for what the
+        /// coupling itself does (PressAsCoupled ...).
+        /// </summary>
+        public event Action<ButtonHMI, UserAction> UserActed;
+
+        private bool _userHeld;
+
+        private void RaiseUserActed(UserAction a)
+        {
+            var h = UserActed;
+            if (h == null) return;
+            try { h(this, a); } catch (Exception ex) { AuditLogger.Log("coupled units: " + ex.Message); }
+        }
+
+        /// <summary>True when the button would act on a press now (its conditions, its rights, shown).</summary>
+        internal bool CanAct { get { return _softEnabled && Visible && !SlotDisabled && (BitActions.Count > 0 || WordActions.Count > 0); } }
+
+        /// <summary>Its first sensor lamp lit (a cylinder's end position reached).</summary>
+        internal bool Lamp1On { get { return _lamp1On; } }
+
+        /// <summary>True when the button's movement runs only while it is held (a jog).</summary>
+        internal bool IsMomentary { get { return BitActions.Any(a => a != null && a.Action == BitActionType.Momentary); } }
+
+        /// <summary>Pressed as a coupled unit's button was: its momentary bits on, as a press of its own.</summary>
+        public void PressAsCoupled()
+        {
+            if (!CanAct || _heldMomentary.Count > 0) return;
+            PressMomentary();
+        }
+
+        /// <summary>Released as a coupled unit's button was.</summary>
+        public void ReleaseAsCoupled() { ReleaseMomentary(); }
+
+        /// <summary>Clicked as a coupled unit's button was (its own confirmation is the coupled click's).</summary>
+        public void ClickAsCoupled()
+        {
+            if (!CanAct) return;
+            RunClickActions();
+        }
+
         protected override void OnClick(EventArgs e)
         {
             base.OnClick(e);
@@ -1352,6 +1400,14 @@ namespace Kaban.UI.Controls
                 var result = MessageBox.Show("Are you sure you want to execute this action?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result != DialogResult.Yes) return;
             }
+            // coupled units follow (they check where they are first)
+            RaiseUserActed(UserAction.Click);
+            RunClickActions();
+        }
+
+        /// <summary>The click's bit and word actions (not the momentary ones).</summary>
+        private void RunClickActions()
+        {
 
             var driver = PlcManager.Instance.GetDriverForWrite(PlcNumber);
             if (driver == null)
@@ -1414,7 +1470,15 @@ namespace Kaban.UI.Controls
             // lose its release to a context menu.
             if (mevent.Button != MouseButtons.Left) return;
             if (_heldMomentary.Count > 0) return;   // already held
+            if (PlcManager.Instance.GetDriver(PlcNumber) == null) return;
+            // coupled units follow (they check where they are first); then this one
+            if (IsMomentary) { _userHeld = true; RaiseUserActed(UserAction.Press); }
+            PressMomentary();
+        }
 
+        /// <summary>The momentary bits on (a press).</summary>
+        private void PressMomentary()
+        {
             var driver = PlcManager.Instance.GetDriver(PlcNumber);
             if (driver == null) return;
 
@@ -1470,16 +1534,26 @@ namespace Kaban.UI.Controls
         /// <summary>Writes 0 to every momentary bit this button is holding ON.</summary>
         private void ReleaseMomentary()
         {
-            if (_heldMomentary.Count == 0) return;
-            var held = _heldMomentary.ToArray();
-            _heldMomentary.Clear();
-
-            var driver = PlcManager.Instance.GetDriverForMonitoring(_heldStation);
-            if (driver == null) return;
-            foreach (var h in held)
+            bool user = _userHeld;
+            _userHeld = false;
+            try
             {
-                try { WriteBit(driver, h.Key, false, h.Value, "momentary release"); }
-                catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " (PLC " + PlcNumber + ") failed: " + ex.Message); }
+                if (_heldMomentary.Count == 0) return;
+                var held = _heldMomentary.ToArray();
+                _heldMomentary.Clear();
+
+                var driver = PlcManager.Instance.GetDriverForMonitoring(_heldStation);
+                if (driver == null) return;
+                foreach (var h in held)
+                {
+                    try { WriteBit(driver, h.Key, false, h.Value, "momentary release"); }
+                    catch (Exception ex) { AuditLogger.Log("momentary release of " + h.Key + " (PLC " + PlcNumber + ") failed: " + ex.Message); }
+                }
+            }
+            finally
+            {
+                // the units coupled with it let go too - however this press ended
+                if (user) RaiseUserActed(UserAction.Release);
             }
         }
 
