@@ -12,6 +12,39 @@
 -->
 </head><body>
 
+<h4 id="fa-manual">Manual Movement</h4>
+<p>The tabs and their rows are those of the HMI program the machine ran before: <b>Entry Conveyor, Robot, Profile Recognition,
+Milling, Cutting, Exit, Other, Clamping Moulds, YZ Cross Rollers</b>. Each page reads top to bottom as the old table did, in
+columns; its sections are headings (Milling: <i>Unit 1</i> and <i>Unit 2</i> side by side; Cutting: <i>Cutting</i> and
+<i>V Cutting</i>). The old <i>Back</i> column is a unit's &#9664; button, <i>Forward</i> its &#9654;, <i>Positions</i> the value
+beside them. A row with one button is a button; <i>Change Degree</i> and <i>Drills to Changing Pos.</i> are a group of small
+buttons. The inverters' error codes are shown in hexadecimal.</p>
+<p><b>Clamping Moulds</b> is a table: each mould's unit (Back, Forward, its position), then <b>Target Position</b> and
+<b>Send To Position</b> (for the operator), <b>Calibration Pos.</b>, <b>Calibrate</b>, <b>Tolerance</b> and
+<b>Stopping Offset</b> (Maintenance). Type a target, then press Send: the mould goes there.</p>
+<p>An axis unit (Robot X, Unit 1 X ...) takes its buttons, position and reference lamp from its row on
+<b>Machine Parameters &rsaquo; Axis Parameters</b>; change them there, not on the page.</p>
+<p class="note">Not here yet: the old screen's top bar (JOG and the 10 / 1 / 0.1 / 0.01 mm steps, Reset, the speed in %).</p>
+
+<h4 id="fa-params">Machine Parameters</h4>
+<p>As on the old program: <b>Axis Parameters</b> (the axes' limits, reference, calibration and reference activation, in the old
+order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting; <b>Send Axes to Reference</b> under them sends the axes
+ticked in the <i>Ref</i> column to their references), <b>Entry Parameters</b> (Conveyor, Robot), <b>Process Parameters</b>
+(Milling, Cutting), <b>Encoders Parameters</b> and <b>Other Parameters</b>. Every value is in the unit shown beside it (mm,
+s, &deg;, %), divided as the old pages divided it. They need the <b>Maintenance</b> level.</p>
+<p><b>Encoders Parameters</b>: each encoder's unit (Back, its position, Forward - to move it while setting it up) with its
+<b>Reference</b>, <b>Tolerance</b>, <b>Start Limit</b> and <b>Unclamping Interval</b>.</p>
+<p><b>Other Parameters</b>: the exit conveyor, the distances between the units, the lubrication, the <b>Machine Options</b>
+(a tick box per option the machine has: mullion notching, cooling, the carrying rollers, a reverse machine ...), the
+<b>Middle Register Notch Parameters</b> and the cross rollers' distances from the milling's X zero.</p>
+<div class="safety"><b>Safety.</b> A machine option tells the PLC program what the machine has. Change one only when the machine was built or
+changed that way.</div>
+
+<h4 id="fa-messages">Messages from the PLC</h4>
+<p>The PLC asks for a message by writing its number to <code>D71</code>; the answer is written to <code>D72</code>
+(Cancel / No 0, OK / Yes / Continue 1, Restart 2) and <code>D71</code> set back to 0. The messages, in every language, are in
+<code>Popups.json</code> beside the program.</p>
+
 <h4 id="profiles">Profiles</h4>
 <p>The <b>Profiles</b> page keeps every profile the machine processes, with its drawing, the points its hardware is measured
 from, the accessories it takes and the programs made from them. It is a library: <b>nothing on this page is sent to the

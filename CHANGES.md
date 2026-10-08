@@ -4534,3 +4534,112 @@ and `UnitLookAndErrors` extended.
   and 53 `SetToolTip` calls use it. A disabled one's tip shown by its parent (`DisabledTips`); `LastShownFor`.
 - Manual: the names at the left, Motion monitor items, the tables' frame gone, rest the pointer for a key's tooltip.
 - Tests: `KeyShortcuts.cs`, `AxisItems.cs`, `AxisPageScale.cs` (new), `TableLook.cs`, `PlcMonitor.cs`, `SidePanel.cs`, `SidePanelFit.cs`, `ViewPrefsAndMotion.cs`.
+
+## 2026-10-08 - Users and Preferences layout; 5/3 closed / open centre; position readers drawn; one symptom a line; axis alarms on their own switch
+
+- **Users and Preferences** (`UsersPreferencesControl`): the *Account* heading is gone, and so is the line naming the user above the preferences. User / Password / Level stand 40 px under where the user table would end at its tallest, 300 px (`GridMax`, `LayoutAccount`). The preferences are laid out in unscrolled, scaled terms, so there is no white band after picking a user while scrolled down. `Usr_SecPrefs` now reads *Preferences*.
+- **5/3 valve centre:** `CylinderValve.DoubleSolenoid_3Way` is replaced by `DoubleSolenoid_3WayClosedCenter` (3) and `DoubleSolenoid_3WayOpenCenter` (4). The 22 FA2010 manual-page units are now closed centre, and 8 valves are closed centre in `tools/build_wiring.py` / `Wiring.csv` (rewritten whole) and `tools/set_cylinder_types.py`.
+  - `TroubleshootingCatalog`: `OpenCentre` is a valve of its own again (`CanonicalValve` keeps 4). The new `ManualValve` maps both centres to the manual's one 5/3 part and template. The step-by-step page's `ClosedCentre` / `OpenCentre` come from the unit's valve.
+- **The position's reader drawn:** the new `PutPositionReader` (`PosReader`, `PosModule`, `PosModel`, `PosInput`, `PosSensor`) reads from `Wiring.csv`'s Measure text the card that reads an analogue sensor (`U19 FX5-8AD, CH1`) or counts an encoder (`U4 FX5U-64MT-ESS, X6/X7`). `Drawings.html` has a `PosCard`, and `DrawCylinder` draws the analogue sensor (F4) or the encoder on the load (F6) with that card.
+- **One symptom a line:** the master templates (EN, TR) split the encoder's wrong way / drift, the analogue sensor's zero / standing still and jumping / wrong way, and the air's hose / flow control / pressure drop. The 64 `Help\Templates` files were written again.
+- **Axis alarms on their own switch:** `AlarmGeneration.Settings.AxisAlarms` is on by default, with `AxisAlarmsFor` and `<machine>.AxisAlarms` in `AlarmGeneration.cfg`. Axis alarms are raised at once; the delay is the cylinders' only. `ClearRaised(cylinders, axes)`. `AlarmSettingsControl` has the new *GenerationAxes* checkbox, and its panel wraps.
+- Translations:
+  - changed: Set_AlarmGenOn, Tip_AlarmGenOn, Set_AlarmGenDelay, Set_AlarmGenHint, Set_AlarmColDelay, Usr_SecPrefs
+  - new: Set_AlarmGenAxes, Tip_AlarmGenAxes
+- Tests: `CylinderDrawings.cs`, `CylinderSteps.cs`, `AlarmGenerationCore.cs`, `AlarmGenerationUi.cs`, `UsersAndPreferences.cs`; the 5/3 names in `CylinderHelpAndLogin.cs`, `UnitTypes.cs`, `AlarmTips.cs`, `UnitHelpLinks.cs`, `WiringHelp.cs`, `CylinderTemplates.cs`.
+
+## 2026-10-08 - An AI prompt for every alarm; the alarm list and history with the same columns
+
+- **AI prompt:** new `KabanHMI/Helpers/AlarmAiPrompt.cs` (`Build`, `Copy`, `CopiedNotice`; 9 000 characters per document, 24 000 in all).
+  - The prompt holds the request (three levels: operator, maintenance, automation engineer), the machine, the alarm, the unit, the users' notes and the help documents' text, in the HMI's language.
+  - `MachineAlarmScreen.BuildHelpMenu(docs, open, aiPrompt, owner)` adds it as the last entry, so every alarm's Help cell offers it. `AlarmHelpBadge.AiPromptText`, `UnitHelpBadge.AiPrompt` and `CylinderUnitHMI.AiPromptText` put it on a unit's "?" while the unit shows a fault.
+  - `AlarmManager` puts the station and address on the alarm it raises.
+- **Same columns:** the alarm list and its history share Code, Alarm, Cause, Severity, Time, Address (Admin only), Help (`AddAlarmColumns`, `AddHelpColumnTo`).
+  - `AlarmItem` gains `GroupCode`, `ListCode`, `Text`, `Cause` and `AddressShown`.
+  - The history is a bound table with the Help list and multi-heading sort. Its file comes from `HistoryCsv` (Time;Code;Alarm;Cause;Severity, plus Address for an Admin).
+- Translations: Hlp_AiPromptItem, Hlp_AiPrompt, Tip_AiPrompt, Msg_AiPromptCopied, Msg_AiPromptFailed, Alarm_Col_Cause, Alarm_Col_Address.
+- Tests: `AlarmAiPrompt.cs` (new), `AlarmGenerationUi.cs`, `UsersAndPreferences.cs`.
+
+## 2026-10-08 - PLC messages (PopupTriggerAddress / PopupResponseAddress)
+
+- **The devices and messages:** new `Kaban.Core/Helpers/PlcPopups.cs` (`SetDevices`, `Addresses`, `Load`, `Find`, `Evaluate`, `Answer`, `DefaultCode`, `AnswerGrace`). The PLC writes a message number to the trigger; an answer writes its code to the response device and 0 to the trigger. Codes: Cancel / No 0, OK / Yes / Continue 1, Restart / Retry 2, or a button's own `Code`.
+- **FA2010:** `FA2010Module.PopupTriggerAddress` = D71, `PopupResponseAddress` = D72. New `Popups.json` (messages 1-16 and 20-23 in six languages, values D8 / D9 / D481 / D482, the axes' lamps), copied to the output folder.
+- **The window:** new `KabanHMI/Forms/PlcPopupForm.cs` (not modal; Enter / Esc; Hide for a message without buttons; sign-in to answer; values read every 0.4 s) and new `KabanHMI/Helpers/PlcPopupHost.cs` (one per station; a number not in the file shown with OK). `MainForm` attaches the host, and `PlcScanner` reads and evaluates the triggers.
+- Translations: Pop_OK, Pop_Cancel, Pop_Yes, Pop_No, Pop_Continue, Pop_Restart, Pop_Retry, Pop_Hide, Pop_Number, Pop_NotSent, Pop_SignIn, Pop_Reference, Pop_Fault, Pop_Unknown.
+- Tests: `PlcPopupsUi.cs` (new).
+
+## 2026-10-08 - Tips under a toolbar's arrow; headings menu on the first right-click; PLC Connection re-read without rebuilding
+
+- **Tips under a toolbar's arrow:** `UiStyle.TipWindowFor` / `ShowTip` show a hover tip on the dropdown a control is in (a toolbar's overflow), since WinForms shows nothing on a window that is not active.
+- **First right-click:** a menu that opens empty and is filled as it opens no longer stays cancelled. This covers `ColumnChooser`, Find's and the PLC Monitor's row menus. `UiStyle.ShowPopup` no longer disposes a table's headings menu.
+- **PLC Connection re-read:** `StationConnectionControl.Reload` puts the saved values back into the same rows and turns Save off. The table is built again, out of sight, only when the PLCs differ.
+- Tests: `OverflowTipsMenusReload.cs` (new).
+
+## 2026-10-08 - Axes shown from the Axis heading; Lists on Inputs / Outputs; the Axis Monitor scrolls once
+
+- **Axes shown:** `AxisHeadingFilter` (in `AxisPickBar.cs`) makes the Axis heading open `AxisPickBar.AxesPick` (`PickList.DropUnder`), with a drop-down arrow and a shown/total count. The list is kept per user in `ViewPreferences.AxesShown` / `MonitorAxes` through the new `KabanHMI/Helpers/ShownPick.cs`, and a page changes only its own rows' ticks.
+- **Rows moved up:** `AxisSettingHMI.ApplyAxisFilter` / `Restack` move the shown rows up into the designer's places, also when a row's visibility conditions hide it.
+- **Axis Monitor:** the Axes list is there for everyone (`AxisPickBar.HideLists` for non-Admins), keyed by name@station, with the machine before the name. Only its row list scrolls (`RowList : IScrollsItself`).
+- **Inputs / Outputs:** `IoMonitorPage` has a *Lists* pick (each controller's inputs / outputs, `ViewPreferences.IoShown`); the lists shown move up.
+- Translations: AxShow_All, Tip_AxShow, Lbl_IoShow, IoShow_All, IoShow_Inputs, IoShow_Outputs.
+- Tests: `AxesShownPage.cs` (new), `AxesShownMonitor.cs` (new).
+
+## 2026-10-08 - Main pages in the side panel
+
+- New `KabanHMI/Forms/MainForm.SideCopies.cs`: a machine's Home, Manual Movement, Machine Parameters, Alarms or Dashboard can be opened as a side page. It opens from a right-click on its page button (`SideMenuFor`) or from the side bar's new + (`SidePagesMenu`), and is taken off with a right-click on its side-bar button (`RemoveMainPageFromSide`).
+  - HMI Settings and pages without a role (FA2010 Profiles) are not offered.
+  - The pages are kept in `SidePanel.cfg` (`MainPages`).
+- Translations: Side_OpenHere, Side_Remove, Tip_SideAddPage.
+- Tests: `SideCopies.cs` (new), `SidePanel.cs`.
+
+## 2026-10-08 - Coupled units for manual movement
+
+- **Coupling:** new `KabanHMI/Helpers/UnitCoupling.cs` and `KabanHMI/Controls/CoupleBadge.cs`. The chain on a unit's frame couples cylinders at the same end, or axes / position-read units within `AxisTolerance` (0.5). There is one group per kind.
+- **Following presses:** a press, release or click on one unit follows on the same side of the others. Before every movement the others are checked again (on screen, same place, `CanAct`); if one fails, the coupling is let go and only the pressed unit moves. A unit leaving the screen leaves the coupling, and a change of user clears it.
+- **ButtonHMI:** `UserActed` (Press, Release, Click), `CanAct`, `PressAsCoupled`, `ReleaseAsCoupled`, `ClickAsCoupled`.
+- **CylinderUnitHMI:** the chain; `HasCommands`, `HasEndSensors`, `PositionValue`, `ShowCoupled` (blue frame), `ShowCouplingNotice`.
+- Translations: Tip_Couple, Tip_Coupled, Cpl_NoCommands, Cpl_NoPosition, Cpl_NoEnd, Cpl_NotSame, Cpl_LetGo, Cpl_Between, Cpl_Gone, Cpl_Moved, Cpl_CannotAct, Cpl_OnlyThis, Cpl_LeftScreen.
+- Tests: `CoupledUnits.cs` (new).
+
+## 2026-10-08 - Notes and feedback reworked
+
+- **Picking:** `NotesPage.PickKind` adds Heading, Cell, Menu, Tab and General. A table's heading or shown cell is picked; a cell being typed in is not. The menu's page buttons and a page's tabs work as usual and are noted with the page they open (`MainForm.IsPassedThrough`, `CurrentPlace`, `SettingsScreen.PageOfTab` / `ActiveView` / `IsTab`). The caption bar is pickable.
+- **Texts:** a Now / Required / Comment table in the user's chosen languages (`ViewPreferences.NoteLanguages`). Axis-row fields and numbers have no texts (`NoteTarget`). New `LanguageManager.HasKey` and `KeyOfText`.
+- **Values, settings and general notes:** a value shown can be asked for (`NoteKind.Value`), and an Admin can ask for a control's own settings (`NoteKind.Property`; the program is not changed). General notes with a file sit on no control (`Note.IsGeneral`). Notes carry `ControlType` / `ControlPath`, and `NoteText` carries `Now` / `Comment`.
+- **Helpers on the screen:** new `KabanHMI/Helpers/NoteHelpers.cs` shows a helper in force as a "?" on its control, or in a unit's "?" (`CylinderUnitHMI.UnitHelpDocuments`). `NotesStore` adds `HelpersOn` and `DocumentOf`, and `MainForm.RefreshNoteHelpers` refreshes the marks.
+- **Feedback file:** it adds `README.txt`, `Translations.csv` (CommonTranslations form), `Properties.csv` and `Values.csv`. The notes page's side-bar picture is drawn a fifth smaller.
+- Translations:
+  - new: Nts_CaptionBar, Nts_Col*, Nts_General*, Nts_Keep*, Nts_Kind*, Nts_Languages, Nts_MenuButton, Nts_NoGeneral, Nts_NoProps, Nts_Opens, Nts_Props*, Nts_Row, Nts_SecGeneral, Nts_SecProps, Nts_SecValue, Nts_Tab, Nts_Tip*, Nts_Value*, Nts_Why, Nts_HowMore, Nts_HelpersShown, Tip_NoteHelper
+  - changed: Nts_SecTexts
+- Tests: `NotesFeedback.cs`.
+
+## 2026-10-08 - FA2010's Manual Movement and Machine Parameters pages from the old program's pages
+
+- **Generator:** new `tools/legacy_fa2010_pages.py` writes the nine Manual Movement pages and the four parameter pages from a row-by-row
+  specification of the old HMI's designers (`tools/legacy/FA2010/uc*.Designer.cs`, kept in the repository; ucYZCrossRollers and ucOther came as
+  text). It keeps every property of an existing control that is not the page's own (types, error bits, help, conditions, triggers, tips,
+  comments), finds the control by name, addresses or title, and lists what it leaves out (`tools/legacy/FA2010/left_out.txt`). `--check`
+  compares the specification with the old designers device by device, with the button side, button type, divisor and decimals.
+- **Manual pages:** the old rows, order and sections (`LabelHMI` headings, columns 390 px apart); one-button rows as `ButtonHMI`, lamps as
+  `LampHMI`, inverter errors as hexadecimal `NumericDisplayHMI`, Change Degree / Drills to Changing Pos. as a `GroupBoxHMI` of buttons;
+  Clamping Moulds with Target Position, Send To Position, Calibration Pos., Calibrate, Tolerance and Stopping Offset; Sawdust Blowing on Robot;
+  the Mullion End Milling Unit and Mullion Blade Change; the 16th mould; the gone rows in `left_out.txt`. The lamps the drawings review placed
+  (REVIEW 4r) stay as they were.
+- **Parameter pages:** new `ParamEntry`, `ParamProcess`, `ParamEncoders`, `ParamOther` (`Screens/Parameters`) replace `ParamCutting`,
+  `ParamDistances_Beetwen_Units`, `ParamEntry_Conveyor`, `ParamExit_Conveyor`, `ParamMachine_Lubrication`, `ParamMilling`, `ParamRobot`;
+  divisors and decimals from the old pages' masks; Machine Options as `CheckBoxHMI` (L bits, Maintenance); Encoders as units with their four
+  settings. `FA2010Module`: the tabs in the old order, *Axis Parameters*.
+- **Axis Parameters (`AxisSettings.Designer.cs`, by hand):** the rows in the old order; Robot X / Exit X Back and Forward swapped; reference
+  sensors (Milling 1 Angle M331, Exit X M343, V Cutting Z M259) and sides; the V Cutting X row (HMIAxisIndex 17); `btnSend_Axes_To_Reference` (M22, SET).
+- **`AxisSettingHMI.PositionDivisor`** (and `PositionScale`): the position's own divisor (0: the row's); used by the row's position display,
+  `AlarmHelpLinks.RegisterAxis` (manual pages' axis units, the Axis Monitor) and `SimulationMotion`. `PropertyOrder`: after PositionDataType.
+  `AxisSettingHMI.FollowRows`: controls below an axis page's rows follow the last row shown.
+- **`LabelHMI`** applies its translation when its handle is made (it waited for a language change).
+- Translations: the pages' 215 captions (FA2010 `Translations.csv`), `Tab_ParamEntry`, `Tab_ParamProcess`, `Tab_ParamEncoders`, `Tab_ParamOther`,
+  `Tab_AxisSettings`, the Manual tabs' Turkish; `Axis_VCuttingX` (common). The old `Tab_Param...` rows removed.
+- Tests: `LegacyPages.cs` (new); `CylinderSteps.cs`, `CylinderHelpAndLogin.cs`, `AxesShownPage.cs`, `AxesShownMonitor.cs`, `AxisMonitor.cs`,
+  `MonitorFind.cs`, `ConditionDropdown.cs`, `NumericBarView.cs`, `HelpCursorsDwordStations.cs` (the open-centre 5/3) updated.
+- Manual (8 October, all of the day's work): the screen's side bar (main pages), 3a (main pages, Lists on Inputs / Outputs, the Axis
+  Monitor's axes), 3b (Notes and feedback), 4 (coupled units; the "?"'s AI prompt and step-by-step page), the Alarms page, 6a (the two
+  switches), 6b Messages from the PLC (new), Users and Preferences, the axes shown, Alarm Settings, the PLC Monitor's tooltips, chapter 12's
+  table; FA2010's chapter: Manual Movement, Machine Parameters, Messages from the PLC.
