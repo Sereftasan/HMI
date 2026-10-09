@@ -48,7 +48,7 @@ namespace Kaban.UI.Helpers
             string language = AlarmAiPrompt.LanguageName(lang);
             var level = SecurityManager.CurrentLevel;
             string levelName = level == SecurityLevel.None ? "nobody signed in" : level.ToString();
-            var machines = Safe(() => Kaban.UI.Settings.AboutControl.RunningMachines(), new List<Kaban.UI.Settings.AboutControl.ManualMachine>());
+            var machines = Safe(() => Kaban.UI.Settings.HmiManual.RunningMachines(), new List<Kaban.UI.Settings.HmiManual.ManualMachine>());
             string manual = ManualHtml();
             var sb = new StringBuilder();
 
@@ -159,7 +159,7 @@ namespace Kaban.UI.Helpers
         {
             try
             {
-                var path = Kaban.UI.Settings.AboutControl.PrepareManual();
+                var path = Kaban.UI.Settings.HmiManual.PrepareManual();
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) return "";
                 var html = File.ReadAllText(path).TrimStart('﻿').Trim();
                 html = Regex.Replace(html, @"<base\b[^>]*>", "", RegexOptions.IgnoreCase);

@@ -21,17 +21,17 @@ class AM {
         // 9 October: About is the caption bar's "?" now ("not a setting thing at all")
         Check("About is no tab of HMI Settings any more", !keys.Contains("Set_About"), string.Join(",", keys));
 
-        var about = new AboutControl();
-        var btn = All(about).OfType<Button>().FirstOrDefault(b => b.Text.Contains("manual"));
-        Check("About has the button that opens the manual", btn != null, btn == null ? "" : btn.Text);
+        // 9 October: "just a clean message box is enough" - the text alone
+        var about = HmiManual.AboutText();
+        Check("About's text: the program, its version, the HMI library", about.StartsWith("Program: ") && about.Contains("HMI library: "), about);
 
-        string path = AboutControl.ManualPath();
+        string path = HmiManual.ManualPath();
         Check("the manual resolves to the English file", path.EndsWith("Kaban_HMI_Manual.en.html"), path);
         Check("  which the build put in the Help folder", File.Exists(path), path);
         Check("  and is HTML", File.Exists(path) && File.ReadAllText(path).Contains("<html"));
 
         LanguageManager.ChangeLanguage("TR");
-        string tr = AboutControl.ManualPath();
+        string tr = HmiManual.ManualPath();
         Check("Turkish, with no Turkish file yet: falls back to English", File.Exists(tr) && tr.EndsWith(".en.html"), tr);
 
         LanguageManager.ChangeLanguage("EN");
@@ -45,15 +45,15 @@ class AM {
 
         string chapterFile = TroubleshootingCatalog.ResolveLanguageFile("Manual_FA2010.html");
         Check("FA2010's own chapter is in the Help folder", File.Exists(chapterFile), chapterFile);
-        var body = AboutControl.ChapterBody(chapterFile);
+        var body = HmiManual.ChapterBody(chapterFile);
         Check("  its body is the chapter, not its notes", body.TrimStart().StartsWith("<h4") && !body.Contains("-->"), body.Substring(0, Math.Min(40, body.Length)));
 
-        var fa = new System.Collections.Generic.List<AboutControl.ManualMachine> {
-            new AboutControl.ManualMachine { Id = "FA2010", Name = "Processing Center", Station = 1, IsMain = true, Chapter = body,
+        var fa = new System.Collections.Generic.List<HmiManual.ManualMachine> {
+            new HmiManual.ManualMachine { Id = "FA2010", Name = "Processing Center", Station = 1, IsMain = true, Chapter = body,
                                              Pages = { "Home", "Manual Movement", "Profiles" } },
-            new AboutControl.ManualMachine { Id = "H500", Name = "Screwing_Holing", Station = 3, Pages = { "Home" } },
-            new AboutControl.ManualMachine { Id = "H800", Name = "3D_HingeDrilling", Station = 4, Pages = { "Home" } } };
-        string forFa = AboutControl.ComposeManual(template, fa);
+            new HmiManual.ManualMachine { Id = "H500", Name = "Screwing_Holing", Station = 3, Pages = { "Home" } },
+            new HmiManual.ManualMachine { Id = "H800", Name = "3D_HingeDrilling", Station = 4, Pages = { "Home" } } };
+        string forFa = HmiManual.ComposeManual(template, fa);
         Check("FA2010's manual names FA2010 and its sub-machines",
               forFa.Contains("FA2010") && forFa.Contains("H500") && forFa.Contains("H800"));
         Check("  with FA2010's own chapter (Profiles)", forFa.Contains("id=\"profiles\""));
@@ -64,15 +64,15 @@ class AM {
         Check("  everything filled in is in the BODY (the head's note about the markers untouched)",
               forFa.IndexOf("For <b>FA2010") > forFa.IndexOf("<body") && forFa.Substring(0, forFa.IndexOf("<body")) == template.Substring(0, template.IndexOf("<body")));
 
-        var md = new System.Collections.Generic.List<AboutControl.ManualMachine> {
-            new AboutControl.ManualMachine { Id = "MD3020", Name = "MD3020", Station = 1, IsMain = true, Pages = { "Home" } } };
-        string forMd = AboutControl.ComposeManual(template, md);
+        var md = new System.Collections.Generic.List<HmiManual.ManualMachine> {
+            new HmiManual.ManualMachine { Id = "MD3020", Name = "MD3020", Station = 1, IsMain = true, Pages = { "Home" } } };
+        string forMd = HmiManual.ComposeManual(template, md);
         var foreign = new[] { "FA2010", "H500", "H800", "SB3012", "SB3015", "Profiles", "Processing" }.Where(i => forMd.Contains(i)).ToList();
         Check("MD3020's manual names MD3020", forMd.Contains("For <b>MD3020</b>"));
         Check("  and nothing of FA2010 or the others", foreign.Count == 0, string.Join(",", foreign));
         Check("  and no sub-machine sentence", !forMd.Contains("sub-machine "));
 
-        Check("with no machine mounted (a test), the plain manual is opened", AboutControl.PrepareManual() == path, AboutControl.PrepareManual());
+        Check("with no machine mounted (a test), the plain manual is opened", HmiManual.PrepareManual() == path, HmiManual.PrepareManual());
 
         Console.WriteLine(fail == 0 ? "\nABOUT ALL PASS" : "\nABOUT " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

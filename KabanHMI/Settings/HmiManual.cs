@@ -1,24 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Kaban.Core.Helpers;
 using Kaban.Core.Machines;
-using Kaban.UI.Controls;
 
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// About (the caption bar's "?" since 9 October - it was a tab of HMI Settings,
-    /// where nobody looked for it): what this program is, which machines it is
-    /// running, and the button that opens the HMI MANUAL.
+    /// THE HMI MANUAL AND "ABOUT" (9 October: About is a plain message box from the
+    /// caption bar's "?", not a page - it was a tab of HMI Settings, where nobody
+    /// looked for it, then a window with a title and buttons: "just a clean
+    /// message box is enough").
     ///
     /// THE MANUAL IS AN HTML FILE, Help\Kaban_HMI_Manual.&lt;language&gt;.html, opened
     /// in the browser. It used to be a plain-text tab of its own ("Manual"),
@@ -28,80 +26,20 @@ namespace Kaban.UI.Settings
     /// the program, and is picked in the language on screen like every other
     /// help document (TroubleshootingCatalog.ResolveLanguageFile).
     /// </summary>
-    public class AboutControl : UserControl
+    public static class HmiManual
     {
         /// <summary>The manual's name as help documents are named: the language is added when found.</summary>
         public const string ManualFile = "Kaban_HMI_Manual.html";
 
-        private readonly Label _status = new Label();
-
-        public AboutControl()
-        {
-            Dock = DockStyle.Fill;
-            BackColor = Color.White;
-            Padding = new Padding(6, 10, 6, 6);
-
-            var title = new Label
-            {
-                Text = "Kaban Machines HMI",
-                Font = Kaban.UI.Controls.UiStyle.Title,
-                AutoSize = true,
-                Location = new Point(6, 12)
-            };
-            Controls.Add(title);
-
-            var info = new Label
-            {
-                Text = DescribeProgram(),
-                UseMnemonic = false,          // "Screwing & Holing", not "Screwing _Holing"
-                Font = UiStyle.Body,
-                ForeColor = Color.FromArgb(70, 76, 86),
-                AutoSize = true,
-                Location = new Point(8, 46)
-            };
-            Controls.Add(info);
-
-            var open = new Button
-            {
-                Text = "📖  " + LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"),
-                Font = Kaban.UI.Controls.UiStyle.Body,
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                Padding = new Padding(10, 4, 10, 4),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = Color.FromArgb(245, 246, 248),
-                Cursor = Cursors.Hand
-            };
-            open.FlatAppearance.BorderColor = UiStyle.BorderColor;
-            UiStyle.Round(open);
-            open.Click += (s, e) => OpenManual();
-            Controls.Add(open);
-
-            _status.AutoSize = true;
-            _status.Font = UiStyle.Small;
-            _status.ForeColor = Color.FromArgb(160, 40, 40);
-            Controls.Add(_status);
-
-            // Below the text, whatever its height in this language.
-            Layout += (s, e) =>
-            {
-                open.Location = new Point(8, info.Bottom + 18);
-                _status.Location = new Point(10, open.Bottom + 8);
-            };
-
-            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), open, LanguageManager.GetString("Tip_OpenManual",
-                "Opens the operator and engineer manual in the browser, in the language on screen."));
-        }
-
-        /// <summary>The program, its version and the machines it is running.</summary>
-        private static string DescribeProgram()
+        /// <summary>About: the program, its version and the machines it is running.</summary>
+        public static string AboutText()
         {
             var sb = new System.Text.StringBuilder();
-            var exe = Assembly.GetEntryAssembly() ?? typeof(AboutControl).Assembly;
+            var exe = Assembly.GetEntryAssembly() ?? typeof(HmiManual).Assembly;
             sb.AppendLine(LanguageManager.GetString("About_Program", "Program") + ": " +
                           Path.GetFileNameWithoutExtension(exe.Location) + "  " + exe.GetName().Version);
             sb.AppendLine(LanguageManager.GetString("About_Library", "HMI library") + ": " +
-                          typeof(AboutControl).Assembly.GetName().Version);
+                          typeof(HmiManual).Assembly.GetName().Version);
 
             string machines = "";
             try
@@ -291,11 +229,6 @@ namespace Kaban.UI.Settings
                 AuditLogger.Log("could not prepare the manual for this machine: " + ex.Message);
                 return template;
             }
-        }
-
-        private void OpenManual()
-        {
-            _status.Text = TryOpenManual();
         }
 
         /// <summary>Opens the manual for this program in the browser; "" when it opened, else why not (the caption bar's "?" too).</summary>

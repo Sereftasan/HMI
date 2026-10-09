@@ -7,7 +7,7 @@ namespace Kaban.UI.Settings
 {
     /// <summary>
     /// Body for a page that has no content of its own - a machine with no
-    /// parameter pages (StandardScreens). About is the caption bar's "?" (AboutControl in a dialog).
+    /// parameter pages (StandardScreens). About is the caption bar's "?" (HmiManual.AboutText in a message box).
     /// </summary>
     internal class PlaceholderControl : UserControl
     {

@@ -169,21 +169,22 @@ on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the po
 <h3 id="help">The <b>?</b>: about, the manual, an AI to ask</h3>
 <p>The <b>?</b> on the caption bar, between the screen scale and the language (<kbd>F1</kbd>), for everyone:</p>
 <ul>
- <li><b>About Kaban HMI</b>: the program, its version, the machines it runs &ndash; and the manual's button.</li>
+ <li><b>About Kaban HMI</b>: the program, its version and the machines it runs, in a message box.</li>
  <li><b>Open the HMI manual</b>: this manual, in the browser, in the language on screen, with this panel's machines in chapter 13.</li>
  <li><b>Create AI prompt</b>: puts on the clipboard a prompt for an AI chat (Claude, ChatGPT, Gemini, Grok&hellip;) with the program, its machines
      and controllers, who is signed in and at what level, the page on screen and the side page beside it, the alarms on the list, and <b>this manual whole</b>.
      Paste it into the chat (<kbd>Ctrl</kbd>+<kbd>V</kbd>): it says in a few lines what it can help with on this panel at your level, then answers your
      questions from the manual, step by step and in the screen's language; it can write a short helper page for a task, and explains again whatever
      is not clear. The prompt is also saved as a text file (<i>Documents\Kaban HMI\AI prompts</i>) &ndash; attach it when a chat says the text is too long.</li>
- <li><b>Ask AI for help (&lt;your AI&gt;)</b>: the same prompt, and <b>your AI chat opened</b> in the browser &ndash; paste it there and send it.
+ <li><b>Ask &lt;your AI&gt;</b> (<i>Ask Claude</i>): the same prompt, and <b>your AI chat opened</b> in the browser &ndash; paste it there and send it.
      Your AI is your <i>Preferred AI</i> (Users and Preferences, <i>Help and AI</i>); none chosen, the first of the list. <b>Ask another AI</b> offers
      the others. The prompt is far too long to travel in the chat's web address, so it is pasted, never sent by the HMI; with no browser or no
      internet on the panel the HMI says so, and the prompt is still on the clipboard and in its file to use on another computer or a phone.</li>
- <li><span class="lvl l3">Admin</span> <b>AI chats and their links&hellip;</b>: the chats offered, a name and a web address each, in their order
-     (<i>The usual list</i>: Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity). Only web addresses (<code>https://</code>) are taken.</li>
+ <li>The chats offered are the panel's list: <span class="lvl l3">Admin</span> <b>HMI Settings &rsaquo; AI Prompt</b>, the table <i>AI chats</i> at its top
+     &ndash; a name and a web address each, in their order; &#10133; adds one, &#128465; removes the one selected, &#9650; &#9660; move it, &#8635; puts
+     <i>the usual list</i> back (Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity), &#128190; keeps it. Only web addresses (<code>https://</code>) are taken.</li>
 </ul>
-<p>An alarm's help list (its <b>Help</b> column, a unit's <b>?</b>) ends with the same <b>Create AI prompt</b> and <b>Ask AI for help</b>, for that alarm (see <a href="#alarms">6</a>).</p>
+<p>An alarm's help list (its <b>Help</b> column, a unit's <b>?</b>) ends with the same <b>Create AI prompt</b> and <b>Ask &lt;your AI&gt;</b>, for that alarm (see <a href="#alarms">6</a>).</p>
 
 <h3 id="tables">Tables</h3>
 <p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue.
@@ -525,7 +526,7 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button drives the machine's reset device
      as the machine's program says: a short pulse, or <b>SET</b> &ndash; the HMI switches the device on and the PLC switches it off itself
      once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
- <li><b>Create AI prompt</b> and <b>Ask AI for help</b>: the last entries of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers them
+ <li><b>Create AI prompt</b> and <b>Ask &lt;your AI&gt;</b>: the last entries of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers them
      too) and in a unit's <b>?</b> while it shows a fault. <i>Create AI prompt</i> puts on the clipboard a prompt with <b>everything the HMI knows</b> about the alarm:
      the machine, its PLC and cards, how its alarms are raised; the alarm, its code and device, what the HMI saw fail and the states before it came;
      the unit with <b>both</b> its movements (command, output, sensors, error bit and alarm, delay); <b>every device involved</b> with its PLC label,
@@ -537,7 +538,7 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      (<kbd>Ctrl</kbd>+<kbd>V</kbd>). The first prompt takes a moment (the HMI looks through every page for where the devices are).
      The prompt is long: it is also <b>saved as a text file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept) &ndash; when a chat
      says the text is too long, attach that file instead; the message after copying names it.
-     <i>Ask AI for help (&lt;your AI&gt;)</i> does the same and opens your AI chat in the browser to paste it into; <i>Ask another AI</i> the others
+     <i>Ask &lt;your AI&gt;</i> (<i>Ask Claude</i>) does the same and opens your AI chat in the browser to paste it into; <i>Ask another AI</i> the others
      (see <a href="#help">1</a>).</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
@@ -643,7 +644,8 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>PLC Connection</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller: its driver, station and address (changed by an <span class="lvl l3">Admin</span>),
   and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
-<tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>Builds a description of the machine's set-up to ask an assistant for help.</td></tr>
+<tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>At its top the <b>AI chats</b> the <b>?</b> offers (a table: add, remove, order, the usual list &ndash;
+  see <a href="#help">1</a>); under it a prompt for a page's designer file, to ask an assistant to build or check a page.</td></tr>
 </table>
 
 <h3 id="magnifier">The screen scale</h3>
@@ -707,7 +709,7 @@ cannot change are grey. Under the list &ndash; always at the same place, however
 <tr><td>Attention marks</td><td><b>Blink</b> &middot; Steady: codes, lamps, borders, the top bar's alarm and connection marks and the sign-in reminder shown steadily</td></tr>
 <tr><td>Tooltips appear after</td><td>Normal (1 s) &middot; Short (0.4 s) &middot; Long (2 s)</td></tr>
 <tr><td>Help and AI</td><td>Preferred AI</td><td>The panel's AI chats (an Admin keeps the list: the <b>?</b>); everyone's not chosen: the first of the list &ndash; the chat
-  <i>Ask AI for help</i> opens (see <a href="#help">1</a>)</td></tr>
+  <i>Ask &lt;your AI&gt;</i> opens (see <a href="#help">1</a>)</td></tr>
 </table>
 <p><b>Who may change what</b>:</p>
 <ul>

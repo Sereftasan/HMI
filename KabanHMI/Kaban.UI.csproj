@@ -278,11 +278,9 @@
     <Compile Include="Settings\PlaceholderPages.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Settings\AboutControl.cs">
+    <Compile Include="Settings\HmiManual.cs" />
+    <Compile Include="Settings\AiChatsEditor.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Settings\AiChatsForm.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>

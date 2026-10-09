@@ -47,7 +47,7 @@ class HM {
         var opened = new List<string>();
         AiChats.OpenLink = link => { opened.Add(link); return true; };
         string openedFile = null;
-        AboutControl.OpenFile = path => { openedFile = path; return true; };
+        HmiManual.OpenFile = path => { openedFile = path; return true; };
         string noticed = null;
         AlarmAiPrompt.CopiedNotice = w => noticed = AlarmAiPrompt.LastMessage;
         var prog = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly.GetType("Kaban.Machines.FA2010.Program");
@@ -74,24 +74,25 @@ class HM {
         Check("  F1 opens it, said in its tooltip", Shortcuts.Of(help) == Keys.F1 && (UiStyle.TipOf(help) ?? "").StartsWith("F1\nHelp"), UiStyle.TipOf(help));
         var menu = form.BuildHelpMenu();
         var names = menu.Items.Cast<ToolStripItem>().Select(i => i.Name).Where(n => !string.IsNullOrEmpty(n)).ToList();
-        Check("the menu: About, the manual, then Create AI prompt, Ask AI for help, Ask another AI - and the chats' links for an Admin",
-              string.Join(",", names) == "helpAbout,helpManual,aiPrompt,aiAsk,aiAskOther,helpAiChats", string.Join(",", names));
+        Check("the menu: About, the manual, then Create AI prompt, Ask <AI>, Ask another AI (the chats' list is on HMI Settings > AI Prompt)",
+              string.Join(",", names) == "helpAbout,helpManual,aiPrompt,aiAsk,aiAskOther", string.Join(",", names));
         Check("  their words", Item(menu, "helpAbout").Text.EndsWith("About Kaban HMI") && Item(menu, "helpManual").Text.EndsWith("Open the HMI manual") &&
-              Item(menu, "aiPrompt").Text.EndsWith("Create AI prompt") && Item(menu, "aiAsk").Text.EndsWith("Ask AI for help (Claude)") &&
+              Item(menu, "aiPrompt").Text.EndsWith("Create AI prompt") && Item(menu, "aiAsk").Text.EndsWith("Ask Claude") &&
               Item(menu, "aiAskOther").Text == "Ask another AI" && Item(menu, "aiAskOther").DropDownItems.Count == AiChats.Defaults.Count - 1,
               string.Join(" | ", menu.Items.Cast<ToolStripItem>().Select(i => i.Text)));
         var hmi = (Kaban.UI.Settings.SettingsScreen)new HmiSettingsPage().GetControl();
         Check("HMI Settings has no About tab any more", !hmi.AllPages.Any(x => x.TitleKey == "Set_About"), string.Join(",", hmi.AllPages.Select(x => x.TitleFallback)));
 
         Console.WriteLine("--- About ---");
-        var about = form.ShowAbout(false);
-        Pump(300);
-        var info = about == null ? null : All(about).OfType<Label>().FirstOrDefault(l => l.Text.StartsWith("Program"));
-        Check("a window with the program, its version and its machines, and the manual's button", about != null && about.Visible && info != null &&
-              info.Text.Contains("HMI library") && info.Text.Contains("FA2010") && All(about).OfType<Button>().Any(b => b.Text.Contains("Open the HMI manual")),
-              info == null ? "no text" : info.Text);
-        if (about != null) about.Close();
+        // 9 October: "remove the title, 'Open the HMI manual' and 'Close' - just a clean message box is enough"
+        string aboutText = null;
+        MainForm.AboutNotice = t => aboutText = t;
+        Item(menu, "helpAbout").PerformClick();
         Pump(100);
+        MainForm.AboutNotice = null;
+        Check("a plain message box: the program, its version, its machines - no title line, no buttons of its own",
+              aboutText != null && aboutText.StartsWith("About Kaban HMI\nProgram: ") && aboutText.Contains("HMI library") && aboutText.Contains("FA2010") &&
+              !aboutText.Contains("Kaban Machines HMI") && !aboutText.Contains("Open the HMI manual"), aboutText ?? "nothing");
 
         Console.WriteLine("--- the manual ---");
         Item(menu, "helpManual").PerformClick();
@@ -136,7 +137,7 @@ class HM {
         Console.WriteLine("--- Ask AI for help: the user's AI opened ---");
         ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, "ChatGPT");
         menu = form.BuildHelpMenu();
-        Check("his preferred AI in the entry", Item(menu, "aiAsk").Text.EndsWith("Ask AI for help (ChatGPT)") &&
+        Check("his preferred AI in the entry", Item(menu, "aiAsk").Text.EndsWith("Ask ChatGPT") &&
               Item(menu, "aiAskOther").DropDownItems.Cast<ToolStripItem>().All(i => i.Text != "ChatGPT"), Item(menu, "aiAsk").Text);
         noticed = null;
         Item(menu, "aiAsk").PerformClick();
@@ -159,24 +160,51 @@ class HM {
 
         Console.WriteLine("--- the AI chats: the panel's, an Admin's ---");
         Check("no file: the usual list, Claude first", AiChats.All.Select(c => c.Name).SequenceEqual(AiChats.Defaults.Select(c => c.Name)) && AiChats.All[0].Name == "Claude");
-        using (var edit = new AiChatsForm())
-        {
-            edit.Show(); Pump(100);
-            var g = (DataGridView)typeof(AiChatsForm).GetProperty("Grid", Any).GetValue(edit, null);
-            Check("the editor: a name and a web address a row", g.Rows.Cast<DataGridViewRow>().Count(r => !r.IsNewRow) == AiChats.Defaults.Count &&
-                  g.Columns[0].HeaderText == "Name" && g.Columns[1].HeaderText == "Web address");
-            g.Rows.Add("Our AI", "file:///C:/Windows/notepad.exe");
-            bool kept = (bool)typeof(AiChatsForm).GetMethod("Keep", Any).Invoke(edit, null);
-            Check("  only web addresses: a file is refused", !kept && !File.Exists(AiChats.SettingsPath));
-            g.Rows.Cast<DataGridViewRow>().First(r => Convert.ToString(r.Cells[0].Value) == "Our AI").Cells[1].Value = "https://ai.example.com/chat";
-            g.Rows.RemoveAt(0);   // Claude out
-            kept = (bool)typeof(AiChatsForm).GetMethod("Keep", Any).Invoke(edit, null);
-            var why = ((Label)typeof(AiChatsForm).GetField("_status", Any).GetValue(edit)).Text;
-            Check("  kept: the panel's list (AiChats.cfg)", kept && AiChats.All.Count == AiChats.Defaults.Count && AiChats.All[0].Name == "ChatGPT" &&
-                  AiChats.All.Last().Name == "Our AI" && AiChats.Find("our ai").Link == "https://ai.example.com/chat" && AiChats.Find("Claude") == null,
-                  why + " / " + string.Join(",", AiChats.All.Select(c => c.Name)));
-            edit.Close();
-        }
+        // 9 October: "move this part on top of the HMI Settings / AI Prompt page as a table, formatted the same as
+        // the other tables (the buttons' style as well), and add 'Add' and 'Remove' buttons"
+        var hmiTabs = (Kaban.UI.Settings.SettingsScreen)new HmiSettingsPage().GetControl();
+        var aiTab = hmiTabs.AllPages.First(x => x.TitleKey == "Set_AiPrompt");
+        Check("the chats are on HMI Settings > AI Prompt (an Admin's)", aiTab.RequiredLevel == SecurityLevel.Admin);
+        var aiPage = (AiPromptControl)aiTab.GetControl();
+        var holder = new Form { ClientSize = new System.Drawing.Size(1100, 800) };
+        holder.Controls.Add(aiPage);
+        holder.Show(); Pump(200);
+        var ed = aiPage.Chats;
+        var g = ed.Grid;
+        Check("  at the top of the page, above the designer prompt", ed.Parent == aiPage && ed.Top == 0 &&
+              aiPage.Controls.Find("aiDesignHead", false).First().Top >= ed.Bottom, ed.Bounds.ToString());
+        Check("  a table as the others: a name and a web address a row, the usual list", g.Rows.Count == AiChats.Defaults.Count &&
+              g.Columns[0].HeaderText == "Name" && g.Columns[1].HeaderText == "Web address" && !g.RowHeadersVisible && !g.AllowUserToAddRows &&
+              Convert.ToString(g.Rows[0].Cells[0].Value) == "Claude");
+        var barButtons = ed.Controls.OfType<FlowLayoutPanel>().First().Controls.OfType<Button>().ToList();
+        Check("  its bar as every settings page's: keep, throw away, add, remove, up, down, the usual list",
+              barButtons.Count == 7 && barButtons[0] == ed.SaveButton && barButtons[2] == ed.AddButton && barButtons[3] == ed.RemoveButton &&
+              barButtons.All(b => b.Width == barButtons[0].Width) && !ed.SaveButton.Enabled && ed.AddButton.Enabled &&
+              (UiStyle.TipOf(ed.AddButton) ?? "").Contains("Add an AI chat") && (UiStyle.TipOf(ed.RemoveButton) ?? "").Contains("Remove the selected"),
+              string.Join(",", barButtons.Select(b => b.Text + "/" + b.Width)));
+        ed.AddButton.PerformClick();
+        Pump(50);
+        g.EndEdit();
+        int added = g.Rows.Count - 1;
+        Check("Add: a new row at the end, 💾 ready", g.Rows.Count == AiChats.Defaults.Count + 1 && ed.SaveButton.Enabled &&
+              Convert.ToString(g.Rows[added].Cells[1].Value) == "https://");
+        g.Rows[added].Cells[0].Value = "Our AI";
+        g.Rows[added].Cells[1].Value = "file:///C:/Windows/notepad.exe";
+        ed.SaveButton.PerformClick();
+        Pump(50);
+        Check("  only web addresses: a file is refused, said why", !File.Exists(AiChats.SettingsPath) && ed.Status.Contains("Our AI: its web address must start with https://"), ed.Status);
+        g.Rows[added].Cells[1].Value = "https://ai.example.com/chat";
+        g.CurrentCell = g.Rows[0].Cells[0];
+        ed.RemoveButton.PerformClick();      // Claude out
+        Pump(50);
+        Check("Remove: the selected row out", g.Rows.Count == AiChats.Defaults.Count && Convert.ToString(g.Rows[0].Cells[0].Value) == "ChatGPT");
+        ed.SaveButton.PerformClick();
+        Pump(50);
+        Check("  kept: the panel's list (AiChats.cfg)", File.Exists(AiChats.SettingsPath) && AiChats.All.Count == AiChats.Defaults.Count && AiChats.All[0].Name == "ChatGPT" &&
+              AiChats.All.Last().Name == "Our AI" && AiChats.Find("our ai").Link == "https://ai.example.com/chat" && AiChats.Find("Claude") == null &&
+              !ed.SaveButton.Enabled && ed.Status == "The list is kept.",
+              ed.Status + " / " + string.Join(",", AiChats.All.Select(c => c.Name)));
+        holder.Close();
         ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, "Claude");
         Check("a preferred AI no longer in the list: the first of it", AiChats.Preferred.Name == "ChatGPT", AiChats.Preferred.Name);
         ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, null);
@@ -197,23 +225,23 @@ class HM {
         Pump(50);
         bool savedPrefs = (bool)typeof(UsersPreferencesControl).GetMethod("Save", Any).Invoke(page, null);
         Check("  chosen and kept as his own: the menu asks Our AI", savedPrefs && ViewPreferences.UserValue("admin", ViewPreferences.PreferredAi) == "Our AI" &&
-              Item(form.BuildHelpMenu(), "aiAsk").Text.EndsWith("Ask AI for help (Our AI)"), ViewPreferences.UserValue("admin", ViewPreferences.PreferredAi) ?? "none");
+              Item(form.BuildHelpMenu(), "aiAsk").Text.EndsWith("Ask Our AI"), ViewPreferences.UserValue("admin", ViewPreferences.PreferredAi) ?? "none");
         host.Close();
 
         Console.WriteLine("--- an Operator ---");
         SecurityManager.Login("op", SecurityLevel.Operator);
         Pump(100);
         menu = form.BuildHelpMenu();
-        Check("the same menu, without the chats' links", Item(menu, "helpAbout") != null && Item(menu, "aiAsk") != null && Item(menu, "helpAiChats") == null);
-        Check("  his AI: everyone's (none chosen: the first of the list)", Item(menu, "aiAsk").Text.EndsWith("Ask AI for help (ChatGPT)"), Item(menu, "aiAsk").Text);
+        Check("the same menu", Item(menu, "helpAbout") != null && Item(menu, "aiAsk") != null);
+        Check("  his AI: everyone's (none chosen: the first of the list)", Item(menu, "aiAsk").Text.EndsWith("Ask ChatGPT"), Item(menu, "aiAsk").Text);
         Item(menu, "aiPrompt").PerformClick();
         Pump(100);
         try { clip = Clipboard.GetText(); } catch { }
         Check("  his prompt: his level, the helper at it", clip != null && clip.Contains("level Operator") && clip.Contains("at my level (Operator)"));
 
         Check("the texts in every language", new[] { "Ttl_Help", "Tip_Help", "Hlp_About", "Hlp_AiPromptItem", "Hlp_AiAskItem", "Hlp_AiAskOther", "Tip_AiAsk",
-              "Tip_HmiPrompt", "Msg_HmiPromptCopied", "Msg_AiAsked", "Msg_AiAskFailed", "Hlp_AiChats", "Tip_AiChats", "AiC_Note", "AiC_Name", "AiC_Link",
-              "AiC_Save", "AiC_Usual", "AiC_BadLink", "VP_SecHelp", "VP_PreferredAi", "PV_Ai" }
+              "Tip_HmiPrompt", "Msg_HmiPromptCopied", "Msg_AiAsked", "Msg_AiAskFailed", "AiC_Head", "AiC_Note", "AiC_Name", "AiC_Link",
+              "AiC_Save", "AiC_Revert", "AiC_Add", "AiC_Remove", "AiC_Kept", "AiC_Usual", "AiC_BadLink", "Ai_DesignHead", "VP_SecHelp", "VP_PreferredAi", "PV_Ai" }
               .All(k => new[] { "EN", "TR", "RU", "DE", "IT", "ES" }.All(l => !string.IsNullOrEmpty(LanguageManager.GetStringIn(l, k)))));
         form.Close();
         Console.WriteLine(fail == 0 ? "\nHELP MENU ALL PASS" : "\nHELP MENU " + fail + " FAILED");

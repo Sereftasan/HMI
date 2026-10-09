@@ -4696,3 +4696,14 @@ and `UnitLookAndErrors` extended.
 - Tests: `HelpMenu.cs` (new), `AlarmAiPrompt.cs`, `NotesFeedback.cs`, `AboutManual.cs`.
 - Manual: the screen's drawing and table (the "?" as 5), *The ?: about, the manual, an AI to ask* (new), the alarm list's AI entries, the
   preferences table (*Help and AI*), HMI Settings without About, the notes page's columns.
+
+## 2026-10-09 (later) - About as a message box; "Ask <AI>"; the AI chats on HMI Settings > AI Prompt
+
+- `AboutControl` (UserControl) became `HmiManual` (static: `AboutText`, `ManualPath`, `RunningMachines`, `ComposeManual`, `PrepareManual`,
+  `TryOpenManual`, `OpenFile`); `MainForm.ShowAbout` shows `AboutText` in a message box (`AboutNotice` for tests).
+- `AiMenu.AskCaption`: *Ask {0}* (`Hlp_AiAskItem`, six languages).
+- `AiChatsForm` replaced by `AiChatsEditor` (UserControl) at the top of `AiPromptControl` (`Chats`): table with `EnableTableTools`, the settings
+  bar (`UiStyle.ToolButton`: keep, revert, add, remove, up, down, the usual list), `DirtyTracker`. The "?" loses *AI chats and their links...*.
+- Translations: `AiC_Head`, `AiC_Revert`, `AiC_Add`, `AiC_Remove`, `AiC_Kept`, `Ai_DesignHead` new; `AiC_Note`, `PV_Ai`, `Hlp_AiAskItem` changed;
+  `Hlp_AiChats`, `Tip_AiChats` removed.
+- Tests: `HelpMenu.cs`, `AlarmAiPrompt.cs`, `AboutManual.cs`. Manual: the "?" section, the alarm list's entries, HMI Settings' AI Prompt row.

@@ -9,8 +9,9 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// Builds a ready-to-paste AI prompt for generating or upgrading a page's
-    /// .Designer.cs file.
+    /// HMI Settings > AI Prompt (Admin): at the top the panel's AI CHATS - the list
+    /// "Ask &lt;AI&gt;" offers (AiChatsEditor) - and under it a ready-to-paste AI prompt
+    /// for generating or upgrading a page's .Designer.cs file.
     ///
     /// The point is that an assistant cannot guess this program's conventions - the
     /// control names, which property carries a PLC address, how a raw value is
@@ -20,6 +21,9 @@ namespace Kaban.UI.Settings
     /// </summary>
     public class AiPromptControl : UserControl
     {
+        /// <summary>The panel's AI chats, at the top of the page (tests).</summary>
+        public AiChatsEditor Chats { get; private set; }
+
         private readonly ComboBox _task = new ComboBox();
         private readonly TextBox _pageName = new TextBox();
         private readonly TextBox _project = new TextBox();
@@ -89,6 +93,16 @@ namespace Kaban.UI.Settings
             Controls.Add(_output);
             Controls.Add(bar);
             Controls.Add(form);
+            // THE AI CHATS first (9 October: moved here from the caption bar's "?" -
+            // the list "Ask <AI>" offers), then the page-designer prompt under its heading
+            Controls.Add(new Label
+            {
+                Dock = DockStyle.Top, Height = 30, Padding = new Padding(8, 10, 0, 0), Name = "aiDesignHead",
+                Text = LanguageManager.GetString("Ai_DesignHead", "A prompt for a page's designer file"),
+                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
+            });
+            Chats = new AiChatsEditor();
+            Controls.Add(Chats);
 
             Build();
         }

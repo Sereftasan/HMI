@@ -149,9 +149,9 @@ class AAP {
         var aiNames = menu.Items.OfType<ToolStripMenuItem>().Skip(docs.Count).Select(i => i.Name).ToList();
         var last = menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiPrompt");
         // 9 October: "another member as 'Ask AI for help' to open an AI automatically as well as 'Create AI prompt'"
-        Check("after the documents: Create AI prompt, Ask AI for help (the user's AI), Ask another AI",
+        Check("after the documents: Create AI prompt, Ask <the user's AI>, Ask another AI",
               string.Join(",", aiNames) == "aiPrompt,aiAsk,aiAskOther" && last.Text.EndsWith("Create AI prompt") &&
-              menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiAsk").Text.EndsWith("Ask AI for help (Claude)"),
+              menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiAsk").Text.EndsWith("Ask Claude"),
               string.Join(" | ", menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text)));
         string noticed = null;
         AlarmAiPrompt.CopiedNotice = w => noticed = "copied";

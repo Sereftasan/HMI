@@ -10,7 +10,7 @@ namespace Kaban.UI.Helpers
     /// THE AI ENTRIES OF A HELP LIST (9 October) - an alarm's help list (the Alarms
     /// page's Help column, a unit's "?") and the caption bar's "?":
     ///   Create AI prompt          - on the clipboard and in a file, to paste anywhere
-    ///   Ask AI for help (Claude)  - the same, and the user's preferred AI chat opened
+    ///   Ask Claude                - the same, and the user's preferred AI chat opened
     ///   Ask another AI  >         - the panel's other chats
     /// The prompt is made when an entry is clicked (the first alarm prompt looks
     /// through every page: the pointer waits).
@@ -22,10 +22,10 @@ namespace Kaban.UI.Helpers
         /// <summary>"Create AI prompt".</summary>
         public static string CreateCaption { get { return T("Hlp_AiPromptItem", "Create AI prompt"); } }
 
-        /// <summary>"Ask AI for help (Claude)" - the user's chat; null when the panel has none.</summary>
+        /// <summary>"Ask Claude" - the user's chat (9 October: "just 'Ask Claude', the rest is too much").</summary>
         public static string AskCaption(AiChats.Chat chat)
         {
-            return string.Format(T("Hlp_AiAskItem", "Ask AI for help ({0})"), chat != null ? chat.Name : "-");
+            return string.Format(T("Hlp_AiAskItem", "Ask {0}"), chat != null ? chat.Name : "AI");
         }
 
         /// <summary>The entries, to add to a menu after its documents.</summary>
@@ -45,6 +45,7 @@ namespace Kaban.UI.Helpers
             var mine = AiChats.Preferred;
             var ask = new ToolStripMenuItem("🤖  " + AskCaption(mine)) { Name = "aiAsk", Enabled = mine != null };
             ask.ToolTipText = T("Tip_AiAsk", "Copies the prompt and opens your AI chat in the browser: paste it there (Ctrl+V). Your AI: Users and Preferences > Help and AI.");
+            // the other chats, each its own "Ask ..." under "Ask another AI"
             ask.Click += (s, e) => Run(prompt, subject, owner, AiChats.Preferred);
             items.Add(ask);
             var others = chats.Where(c => mine == null || !string.Equals(c.Name, mine.Name, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -54,7 +55,7 @@ namespace Kaban.UI.Helpers
                 foreach (var c in others)
                 {
                     var chat = c;
-                    var one = new ToolStripMenuItem(chat.Name) { ToolTipText = chat.Link };
+                    var one = new ToolStripMenuItem(chat.Name) { ToolTipText = chat.Link, Name = "aiAsk:" + chat.Name };
                     one.Click += (s, e) => Run(prompt, subject, owner, chat);
                     other.DropDownItems.Add(one);
                 }

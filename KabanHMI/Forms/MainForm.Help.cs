@@ -15,13 +15,12 @@ namespace Kaban.UI.Forms
     /// the screen scale for the HMI helper ... and move HMI Settings / About here,
     /// because it is not a setting thing at all and the user's eyes don't catch it
     /// up there"):
-    ///   About Kaban HMI         - the program, its version, its machines (a dialog)
+    ///   About Kaban HMI         - the program, its version, its machines (a message box)
     ///   Open the HMI manual     - in the browser, with this panel's machines
     ///   Create AI prompt        - the HMI explained and its manual, for any AI chat
-    ///   Ask AI for help (...)   - the same, the user's preferred AI chat opened
+    ///   Ask Claude              - the same, the user's preferred AI chat opened
     ///   Ask another AI  >
-    ///   AI chats and links...   - an Admin's list of the chats (AiChats)
-    /// F1 opens it.
+    /// F1 opens it. The chats are an Admin's list: HMI Settings > AI Prompt.
     /// </summary>
     public partial class MainForm
     {
@@ -128,14 +127,6 @@ namespace Kaban.UI.Forms
             foreach (var item in AiMenu.Items(() => HmiAiPrompt.Build(HelpContext()), AlarmAiPrompt.Subject.Hmi, this))
                 menu.Items.Add(item);
 
-            // the chats and their links: an Admin's
-            if (SecurityManager.HasAccess(SecurityLevel.Admin))
-            {
-                var chats = new ToolStripMenuItem("🔗  " + LanguageManager.GetString("Hlp_AiChats", "AI chats and their links...")) { Name = "helpAiChats" };
-                chats.ToolTipText = LanguageManager.GetString("Tip_AiChats", "The AI chats 'Ask AI for help' offers on this panel, and their web addresses (Admin)");
-                chats.Click += (s, e) => EditAiChats();
-                menu.Items.Add(chats);
-            }
             return menu;
         }
 
@@ -144,46 +135,27 @@ namespace Kaban.UI.Forms
             Kaban.UI.Controls.UiStyle.ShowPopup(BuildHelpMenu(), _btnHelp, new Point(0, _btnHelp.Height));
         }
 
-        /// <summary>About: the program, its version, its machines, and the manual's button - in a window of its own.</summary>
-        public Form ShowAbout(bool modal = true)
+        /// <summary>
+        /// About: the program, its version, its machines - a plain message box (9
+        /// October: "remove the title, Open the HMI manual and Close - just a clean
+        /// message box is enough"). The text goes to AboutNotice instead when set (tests).
+        /// </summary>
+        public void ShowAbout()
         {
-            var dlg = new Form
-            {
-                Text = LanguageManager.GetString("Hlp_About", "About Kaban HMI"),
-                StartPosition = FormStartPosition.CenterParent,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                MinimizeBox = false, MaximizeBox = false, ShowInTaskbar = false,
-                ClientSize = UiScale.Px(new Size(560, 250)),
-                BackColor = Color.White,
-                Name = "aboutWindow"
-            };
-            var aboutView = new Kaban.UI.Settings.AboutControl();
-            dlg.Controls.Add(aboutView);
-            // as wide as its longest line (the machines)
-            int wide = aboutView.Controls.OfType<Label>().Select(l => l.Left + l.PreferredSize.Width).DefaultIfEmpty(0).Max() + UiScale.Px(24);
-            if (wide > dlg.ClientSize.Width) dlg.ClientSize = new Size(Math.Min(wide, Screen.FromControl(this).WorkingArea.Width - UiScale.Px(80)), dlg.ClientSize.Height);
-            var close = new Button { Text = LanguageManager.GetString("Btn_Close", "Close"), DialogResult = DialogResult.OK, AutoSize = true,
-                                     Anchor = AnchorStyles.Bottom | AnchorStyles.Right };
-            dlg.Controls.Add(close);
-            close.BringToFront();
-            close.Location = new Point(dlg.ClientSize.Width - close.PreferredSize.Width - UiScale.Px(12), dlg.ClientSize.Height - close.PreferredSize.Height - UiScale.Px(10));
-            dlg.AcceptButton = close;
-            dlg.CancelButton = close;
-            if (!modal) { dlg.Show(this); return dlg; }
-            using (dlg) dlg.ShowDialog(this);
-            return null;
+            string text = Kaban.UI.Settings.HmiManual.AboutText();
+            string title = LanguageManager.GetString("Hlp_About", "About Kaban HMI");
+            if (AboutNotice != null) { AboutNotice(title + "\n" + text); return; }
+            MessageBox.Show(this, text, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        /// <summary>Replaces About's message box (tests).</summary>
+        public static Action<string> AboutNotice;
 
         private void OpenManualFromHelp()
         {
-            var why = Kaban.UI.Settings.AboutControl.TryOpenManual();
+            var why = Kaban.UI.Settings.HmiManual.TryOpenManual();
             if (!string.IsNullOrEmpty(why))
                 MessageBox.Show(this, why, LanguageManager.GetString("Ttl_Help", "Help"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-
-        private void EditAiChats()
-        {
-            using (var dlg = new Kaban.UI.Settings.AiChatsForm()) dlg.ShowDialog(this);
         }
     }
 }
