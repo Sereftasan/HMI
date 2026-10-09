@@ -93,8 +93,8 @@ namespace Kaban.UI.Helpers
             if (fu != null) return Tr(fu.TitleTextKey);
             var ax = c as AxisSettingHMI;
             if (ax != null) return Tr(ax.AxisNameKey);
-            var pp = c as PneumaticPositioningHMI;
-            if (pp != null) return Tr(pp.TitleTextKey);
+            var row = c as CylinderRowHMI;
+            if (row != null) return Tr(row.TitleTextKey);
             return "";
         }
 
@@ -406,7 +406,7 @@ namespace Kaban.UI.Helpers
             string here = OwnerName(c);
             if (here.Length > 0) owner = here;
             // The OUTERMOST unit around the control is what the page points at.
-            if (unitPath == null && (c is CylinderUnitHMI || c is AxisUnitHMI || c is AxisSettingHMI || c is PneumaticPositioningHMI)) unitPath = path;
+            if (unitPath == null && (c is CylinderUnitHMI || c is AxisUnitHMI || c is AxisSettingHMI || c is CylinderRowHMI || c is CylinderEncoderUnitHMI)) unitPath = path;
 
             var found = new List<Device>();
             Collect(c, station, found, new HashSet<string>(StringComparer.OrdinalIgnoreCase), owner);

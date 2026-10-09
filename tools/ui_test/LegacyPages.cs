@@ -31,6 +31,11 @@ class LP {
         foreach (Control k in c.Controls) { yield return k; foreach (var g in All(k)) yield return g; }
     }
     static string Bits(ButtonHMI b) { return string.Join(",", b.BitActions.Select(a => a.Address + ":" + a.Action)); }
+    /// <summary>A unit by name: a cylinder unit, or the unit inside a cylinder with an encoder (9 October).</summary>
+    static CylinderUnitHMI Unit(Control page, string name) {
+        var c = page.Controls.Find(name, true).FirstOrDefault();
+        return c is CylinderEncoderUnitHMI ? ((CylinderEncoderUnitHMI)c).Unit : c as CylinderUnitHMI;
+    }
 
     [STAThread]
     static void Main() {
@@ -44,13 +49,15 @@ class LP {
         fa = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly;
         AlarmHelpLinks.EnsureDiscovered();
         AlarmHelpLinks.Harvest(Page("AxisSettings"));
+        AlarmHelpLinks.Harvest(Page("ParamEncoders"));
 
         Console.WriteLine("--- the pages ---");
         var manual = new[] { "ManualEntry_Conveyor", "ManualRobot", "ManualProfile_Recognition", "ManualMilling", "ManualCutting", "ManualExit", "ManualOther", "ManualClamping_Moulds", "ManualYZ_Cross_Rollers" };
-        var settings = new[] { "AxisSettings", "ParamEntry", "ParamProcess", "ParamEncoders", "ParamOther" };
+        // 9 October: the old Entry and Process pages two tabs each (Conveyor, Robot; Milling, Cutting)
+        var settings = new[] { "AxisSettings", "ParamConveyor", "ParamRobot", "ParamMilling", "ParamCutting", "ParamEncoders", "ParamOther" };
         Check("every page of the old program is a page here", manual.Concat(settings).All(n => fa.GetTypes().Any(t => t.Name == n)));
-        Check("the device-list pages it replaces are gone",
-              new[] { "ParamCutting", "ParamMilling", "ParamRobot", "ParamEntry_Conveyor", "ParamExit_Conveyor", "ParamMachine_Lubrication", "ParamDistances_Beetwen_Units" }.All(n => !fa.GetTypes().Any(t => t.Name == n)));
+        Check("the device-list pages it replaced are gone, and Entry and Process as one page each",
+              new[] { "ParamEntry", "ParamProcess", "ParamEntry_Conveyor", "ParamExit_Conveyor", "ParamMachine_Lubrication", "ParamDistances_Beetwen_Units" }.All(n => !fa.GetTypes().Any(t => t.Name == n)));
 
         Console.WriteLine("--- every page: nothing on top of anything else ---");
         foreach (var n in manual.Concat(settings.Skip(1))) {
@@ -65,6 +72,11 @@ class LP {
             Check("  every unit moves something", unbound.Count == 0, string.Join(",", unbound));
             var lost = All(page).OfType<AxisUnitHMI>().Where(a => !a.IsResolved).Select(a => a.Name + " #" + a.AxisNumber).ToList();
             Check("  every axis unit finds its row on Axis Parameters", lost.Count == 0, string.Join(",", lost));
+            var lostEnc = All(page).OfType<CylinderEncoderUnitHMI>().Where(a => !a.IsResolved).Select(a => a.Name + " #" + a.EncoderNumber).ToList();
+            Check("  every encoder unit finds its row on Encoders", lostEnc.Count == 0, string.Join(",", lostEnc));
+            var stray = All(page).OfType<CylinderUnitHMI>().Where(u => !(u.Parent is AxisUnitHMI) && !(u.Parent is CylinderEncoderUnitHMI) && !(u.Parent is CylinderRowHMI) &&
+                                                                        !string.IsNullOrEmpty(u.PositionAddress)).Select(u => u.Name).ToList();
+            Check("  no cylinder unit reads a position itself (an encoder's, a pneumatic positioning's)", stray.Count == 0, string.Join(",", stray));
         }
 
         Console.WriteLine("--- Entry Conveyor ---");
@@ -74,8 +86,11 @@ class LP {
               rollers.CommandAAddress == "M745" && rollers.CommandBAddress == "M744" && rollers.Lamp1AAddress == "M346" && string.IsNullOrEmpty(rollers.Lamp1BAddress),
               rollers.Lamp1AAddress + "/" + rollers.Lamp1BAddress);
         Check("  and its valve and feedback, added by hand, kept", rollers.ValveType == CylinderValve.DoubleSolenoid && rollers.FeedbackType == CylinderFeedback.SingleInductive);
-        var pc7 = Find<CylinderUnitHMI>(entry, "unitProfile_Clamping_7");
-        Check("Profile Clamping 7: its encoder D4 in 0.1 mm (the divisor was 0)", pc7.PositionAddress == "D4" && pc7.PositionDivisor == 10 && pc7.PositionDecimalPlaces == 1);
+        var pc7e = Find<CylinderEncoderUnitHMI>(entry, "unitProfile_Clamping_7");
+        var pc7 = pc7e.Unit;
+        Check("Profile Clamping 7: encoder 10 (Left Profile Recognition Front) - its encoder D4 in 0.1 mm, release M696, clamp M689, its title kept",
+              pc7e.EncoderNumber == 10 && pc7.PositionAddress == "D4" && pc7.PositionDivisor == 10 && pc7.PositionDecimalPlaces == 1 &&
+              pc7.CommandAAddress == "M696" && pc7.CommandBAddress == "M689" && pc7.TitleTextKey == "Profile Clamping 7");
         var inv = Find<NumericDisplayHMI>(entry, "dispConveyor_Inverter_Error");
         Check("the inverter's error in hexadecimal, as the old page showed it", inv != null && inv.Address == "D666" && inv.DataFormat == DisplayFormatEnum.Hexadecimal);
         Check("the rows in the old page's order", entry.Controls.Cast<Control>().Where(c => c.Left < 380 && c.Name.Length > 0).OrderBy(c => c.Top).Select(c => c.Name).Take(5).SequenceEqual(
@@ -95,13 +110,13 @@ class LP {
         var angle = Find<CylinderUnitHMI>(robot, "unitGripper_Angle");
         Check("Gripper Angle: 0 degrees (M752) with its sensor M262, 90 (M751) with M263 - the drawings' pairs", angle.Lamp1AAddress == "M262" && angle.Lamp1BAddress == "M263");
 
-        var prFront = Find<CylinderUnitHMI>(Page("ManualProfile_Recognition"), "unitFront_Clamping");
+        var prFront = Unit(Page("ManualProfile_Recognition"), "unitFront_Clamping");
         Check("Profile Recognition Front Clamping, Forward: the pressure switch M240 the drawings wire (the old page: M348, no input)",
               prFront.Lamp1BAddress == "M240" && string.IsNullOrEmpty(prFront.Lamp2BAddress) && prFront.Lamp1AAddress == "M225" && prFront.TypeCheck == "OK", prFront.TypeCheck);
 
         Console.WriteLine("--- Milling ---");
         var milling = Page("ManualMilling");
-        var mFront = Find<CylinderUnitHMI>(milling, "unitFront_Clamping");
+        var mFront = Unit(milling, "unitFront_Clamping");
         Check("Milling Front Clamping, Forward: the pressure switch M243 (the old page: M349)", mFront.Lamp1BAddress == "M243" && string.IsNullOrEmpty(mFront.Lamp2BAddress));
         var mRoller = Find<CylinderUnitHMI>(milling, "unitRoller_Up_Down");
         Check("the milling roller: no lamp (the old page's M229 reads X55, wired to nothing)", string.IsNullOrEmpty(mRoller.Lamp1AAddress) && string.IsNullOrEmpty(mRoller.Lamp1BAddress) &&
@@ -140,8 +155,8 @@ class LP {
         var exit = Page("ManualExit");
         var ex = Find<AxisUnitHMI>(exit, "unitRobot_Movement");
         Check("Exit Robot: Back M731, Forward M732 (they were the other way round), sensor M343", ex.Unit.CommandAAddress == "M731" && ex.Unit.CommandBAddress == "M732" && ex.Unit.Lamp1BAddress == "M343");
-        var top = Find<CylinderUnitHMI>(exit, "unitRobot_Top_Clamping");
-        Check("what was set on Robot Top Clamping in the designer is kept (error bits, help, valve, conditions)",
+        var top = Unit(exit, "unitRobot_Top_Clamping");
+        Check("what was set on Robot Top Clamping in the designer is kept (error bits, help, valve, conditions) - from its encoder's row and itself",
               top.ErrorAAddress == "M854" && top.ErrorBAddress == "M840" && top.HelpAFiles == "c# learning structure.png" &&
               top.ValveType == CylinderValve.ThreeWayClosedCenter && top.VisibilityConditions == SystemCondition.ManualMode &&
               top.PositionAddress == "D17" && top.PositionDivisor == 10);
@@ -170,32 +185,52 @@ class LP {
               All(yz).OfType<LampHMI>().Single().Address == "M265");
 
         Console.WriteLine("--- Machine Parameters ---");
-        var process = Page("ParamProcess");
+        var process = Page("ParamMilling");
+        var cuttingP = Page("ParamCutting");
         Func<Control, string, NumericInputHMI> at = (p, a) => All(p).OfType<NumericInputHMI>().FirstOrDefault(n => n.Address == a);
-        var d62 = at(process, "D62"); var d63 = at(process, "D63"); var d68 = at(process, "D68"); var d69 = at(process, "D69");
+        var d62 = at(process, "D62"); var d63 = at(process, "D63"); var d68 = at(cuttingP, "D68"); var d69 = at(cuttingP, "D69");
+        Func<Control, bool> oneColumn = pg => All(pg).OfType<NumericInputHMI>().Select(n => n.Left).Distinct().Count() == 1 && !All(pg).OfType<LabelHMI>().Any();
+        Check("Milling (11 + 2) and Cutting (9 + 4): one column each, no heading - the tab names it", oneColumn(process) && oneColumn(cuttingP) &&
+              All(process).OfType<NumericInputHMI>().Count() == 13 && All(cuttingP).OfType<NumericInputHMI>().Count() == 13 &&
+              at(process, "D674") != null && at(cuttingP, "D686") != null);
         Check("Tool Cooling Time D62 and Period D63, in seconds to 0.1", d62.DescriptionText == "Tool Cooling Time" && d63.DescriptionText == "Tool Cooling Period" && d62.Divisor == 10 && d62.Suffix == "s");
         Check("Saw Cooling Time D68 and Period D69 (they were swapped)", d68.DescriptionText == "Saw Cooling Time" && d69.DescriptionText == "Saw Cooling Period" && d69.Divisor == 10);
-        Check("the cutting angles' targets in 0.00001 degree", at(process, "D620").Divisor == 100000 && at(process, "D622").Suffix == "°");
-        var sawd = at(process, "D524");
+        Check("the cutting angles' targets in 0.00001 degree", at(cuttingP, "D620").Divisor == 100000 && at(cuttingP, "D622").Suffix == "°");
+        var sawd = at(cuttingP, "D524");
         Check("Saw Diameter keeps what was set on it in the designer (formulas, limits, bar view)", sawd.ReadFormula == "(a/10000)+1" && sawd.MaxLimit.StaticValue == 700 && sawd.BarView,
               sawd.ReadFormula);
         Check("  and gets the old page's divisor and decimals", sawd.Divisor == 10000 && sawd.DecimalPlaces == 1);
         Check("Clampless Speed Override: one word, in %", at(process, "D510").DataType == DataTypeEnum.Bin_16 && at(process, "D510").Divisor == 1 && at(process, "D510").Suffix == "%");
-        var entryP = Page("ParamEntry");
-        Check("Entry: the clamping positions in 0.0001 mm (they were divided by 100)", at(entryP, "D452").Divisor == 10000 && at(entryP, "D464").Divisor == 10000);
-        Check("  the encoder reference D516 one word / 10", at(entryP, "D516").DataType == DataTypeEnum.Bin_16 && at(entryP, "D516").Divisor == 10);
+        var entryP = Page("ParamConveyor");
+        var robotP = Page("ParamRobot");
+        Check("Conveyor: the clamping positions in 0.0001 mm (they were divided by 100)", at(entryP, "D452").Divisor == 10000 && at(entryP, "D464").Divisor == 10000);
+        Check("  the encoder reference D516 one word / 10 (Robot)", at(robotP, "D516").DataType == DataTypeEnum.Bin_16 && at(robotP, "D516").Divisor == 10);
+        Check("Conveyor (8) and Robot (10 + 10, the right column under the left): one column each, no heading", oneColumn(entryP) && oneColumn(robotP) &&
+              All(entryP).OfType<NumericInputHMI>().Count() == 8 && All(robotP).OfType<NumericInputHMI>().Count() == 20 &&
+              All(robotP).OfType<NumericInputHMI>().OrderBy(n => n.Top).Last().Address == "D784");
         var other = Page("ParamOther");
         var opts = All(other).OfType<CheckBoxHMI>().ToList();
         Check("Machine Options: 16 switches, Mullion Notching L5 the first", opts.Count == 16 && opts.OrderBy(o => o.Top).First().Address == "L5" && opts.All(o => o.RequiredSecurity == SecurityLevel.Maintenance));
         Check("Middle Register Notch Parameters (D840...)", at(other, "D840") != null && at(other, "D850") != null);
         Check("Lubrication Period in minutes (/60)", at(other, "D485").Divisor == 60);
-        Check("the parameters the machine no longer has are gone (D696, D698, D700, D548, D618)", new[] { "D696", "D698", "D700", "D548", "D618" }.All(a => at(process, a) == null && at(entryP, a) == null && at(other, a) == null));
+        Check("the parameters the machine no longer has are gone (D696, D698, D700, D548, D618)", new[] { "D696", "D698", "D700", "D548", "D618" }.All(a =>
+              new[] { process, cuttingP, entryP, robotP, other }.All(pg => at(pg, a) == null)));
         var enc = Page("ParamEncoders");
-        var grip = Find<CylinderUnitHMI>(enc, "encRobot_Gripper");
-        Check("Encoders: the Robot Gripper jogs the gripper (M642/M641; the old page had the Exit's M657/M656)", grip.CommandAAddress == "M642" && grip.CommandBAddress == "M641" && grip.PositionAddress == "D21");
-        var prf = Find<CylinderUnitHMI>(enc, "encProfile_Recognition_Front");
-        Check("  Profile Recognition Front: reference D477, tolerance D479, start limit D483, unclamping D51",
-              new[] { "Reference", "Tolerance", "Start_Limit", "Unclamping_Interval" }.Select(c => Find<NumericInputHMI>(enc, "numProfile_Recognition_Front_" + c).Address).SequenceEqual(new[] { "D477", "D479", "D483", "D51" }));
+        var encRows = CylinderEncoderSettingHMI.RowsOf(enc);
+        Check("Encoders: 11 rows (CylinderEncoderSettingHMI), numbered 1-11; no Robot Position (Robot X's axis unit)", encRows.Count == 11 &&
+              encRows.Select(r => r.EncoderNumber).SequenceEqual(Enumerable.Range(1, 11)) && !encRows.Any(r => r.CommandBackAddress == "M604"), string.Join(",", encRows.Select(r => r.TitleTextKey)));
+        var grip = Find<CylinderEncoderSettingHMI>(enc, "encRobot_Gripper");
+        Check("  the Robot Gripper jogs the gripper (M642/M641; the old page had the Exit's M657/M656)", grip.CommandBackAddress == "M642" && grip.CommandForwardAddress == "M641" && grip.PositionAddress == "D21");
+        var prf = Find<CylinderEncoderSettingHMI>(enc, "encProfile_Recognition_Front");
+        Check("  Profile Recognition Front: reference D477, measuring tolerance D479, minimum limit D483 (Start Limit), unclamping interval D51",
+              prf.ReferenceAddress == "D477" && prf.MeasuringToleranceAddress == "D479" && prf.MinimumLimitAddress == "D483" && prf.UnclampingIntervalAddress == "D51" &&
+              prf.ReferenceField.Divisor == 10 && prf.ReferenceField.DecimalPlaces == 1);
+        Check("  its movement as the manual page had it: lamps M225 / M240, error bits M845 / M844, 5/3, back sensor + pressure switch",
+              prf.BackSensorAddress == "M225" && prf.ForwardSensorAddress == "M240" && prf.ErrorBackAddress == "M845" && prf.ErrorForwardAddress == "M844" &&
+              prf.ValveType == CylinderValve.ThreeWayClosedCenter && prf.FeedbackType == CylinderFeedback.MagneticPlusPressureSwitch && prf.TypeCheck == "OK", prf.TypeCheck);
+        var leftTop = Find<CylinderEncoderSettingHMI>(enc, "encLeft_Profile_Recognition_Top");
+        Check("  the left encoders' buttons as the manual pages have them: up M741 (with M345), down M740", leftTop.TitleTextKey == "Left Profile Recognition Top" &&
+              leftTop.CommandBackAddress == "M741" && leftTop.BackSensorAddress == "M345" && leftTop.CommandForwardAddress == "M740");
 
         Console.WriteLine("--- Axis Parameters ---");
         var axes = Page("AxisSettings");
@@ -220,7 +255,8 @@ class LP {
         var m2 = Page("ManualMilling"); m2.Dock = DockStyle.Fill; form.Controls.Add(m2); form.Show(); Application.DoEvents();
         Check("a heading shown in Turkish as the page opens (Unit 1: Ünite 1)", Find<LabelHMI>(m2, "lblUnit_1").Text == "Ünite 1", Find<LabelHMI>(m2, "lblUnit_1").Text);
         Check("a unit's title (Top Clamping: Üst Sıkma)", LanguageManager.GetString("Top Clamping", "") == "Üst Sıkma");
-        Check("the new tabs (Process Parameters: Operasyon Parametreleri)", LanguageManager.GetString("Tab_ParamProcess", "") == "Operasyon Parametreleri");
+        Check("the tabs without 'Parameters' (Milling: Freze, Others: Diğerleri)", LanguageManager.GetString("Tab_ParamMilling", "") == "Freze" &&
+              LanguageManager.GetString("Tab_ParamOther", "") == "Diğerleri");
         LanguageManager.ChangeLanguage("DE");
         Application.DoEvents();
         Check("and again when the language changes (Einheit 1)", Find<LabelHMI>(m2, "lblUnit_1").Text == "Einheit 1");

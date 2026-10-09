@@ -35,7 +35,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_4 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitProfile_Clamping_5 = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitProfile_Clamping_6 = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.unitProfile_Clamping_7 = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitProfile_Clamping_7 = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
@@ -218,31 +218,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitProfile_Clamping_7
             // 
+            // Profile Clamping 7: encoder 10 of Machine Parameters - Encoders (Left Profile Recognition Front): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitProfile_Clamping_7.BackColor = System.Drawing.Color.White;
             this.unitProfile_Clamping_7.Name = "unitProfile_Clamping_7";
+            this.unitProfile_Clamping_7.EncoderNumber = 10;
             this.unitProfile_Clamping_7.PlcNumber = 1;
             this.unitProfile_Clamping_7.TitleTextKey = "Profile Clamping 7";
             this.unitProfile_Clamping_7.Location = new System.Drawing.Point(406, 164);
             this.unitProfile_Clamping_7.Size = new System.Drawing.Size(360, 64);
-            this.unitProfile_Clamping_7.LogAction = true;
-            this.unitProfile_Clamping_7.CommandAAddress = "M696";
-            this.unitProfile_Clamping_7.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Clamping_7.Lamp1AAddress = "M213";
-            this.unitProfile_Clamping_7.CommandBAddress = "M689";
-            this.unitProfile_Clamping_7.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Clamping_7.Lamp1BAddress = "M220";
-            this.unitProfile_Clamping_7.PositionAddress = "D4";
-            this.unitProfile_Clamping_7.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitProfile_Clamping_7.PositionDivisor = 10D;
-            this.unitProfile_Clamping_7.PositionDecimalPlaces = 1;
-            this.unitProfile_Clamping_7.PositionDigits = 6;
-            this.unitProfile_Clamping_7.PositionSuffix = "mm";
-            this.unitProfile_Clamping_7.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitProfile_Clamping_7.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
-            this.unitProfile_Clamping_7.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitProfile_Clamping_7.ErrorAAddress = "M875";
-            this.unitProfile_Clamping_7.ErrorBAddress = "M874";
-            this.unitProfile_Clamping_7.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitRoller_Up_Down
             // 
@@ -302,7 +285,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_4;
         private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_5;
         private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_6;
-        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Clamping_7;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitProfile_Clamping_7;
         private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
     }
 }

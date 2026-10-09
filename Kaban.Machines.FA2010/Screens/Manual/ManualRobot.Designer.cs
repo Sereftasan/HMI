@@ -28,7 +28,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitAxis_X = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitAxis_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitAxis_Z = new Kaban.UI.Controls.AxisUnitHMI();
-            this.unitGripper = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitGripper = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.btnSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
             this.lampBar_First_End_Read_SN = new Kaban.UI.Controls.LampHMI();
             this.lampBar_Last_End_Read_SN = new Kaban.UI.Controls.LampHMI();
@@ -67,28 +67,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitGripper
             // 
+            // Gripper: encoder 1 of Machine Parameters - Encoders (Robot Gripper): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitGripper.BackColor = System.Drawing.Color.White;
             this.unitGripper.Name = "unitGripper";
+            this.unitGripper.EncoderNumber = 1;
             this.unitGripper.PlcNumber = 1;
             this.unitGripper.TitleTextKey = "Gripper";
             this.unitGripper.Location = new System.Drawing.Point(16, 238);
             this.unitGripper.Size = new System.Drawing.Size(360, 64);
-            this.unitGripper.LogAction = true;
-            this.unitGripper.CommandAAddress = "M642";
-            this.unitGripper.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper.Lamp1AAddress = "M222";
-            this.unitGripper.CommandBAddress = "M641";
-            this.unitGripper.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper.PositionAddress = "D21";
-            this.unitGripper.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitGripper.PositionDivisor = 10D;
-            this.unitGripper.PositionDecimalPlaces = 2;
-            this.unitGripper.PositionDigits = 6;
-            this.unitGripper.PositionSuffix = "mm";
-            this.unitGripper.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitGripper.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitGripper.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitGripper.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // btnSawdust_Blowing
             // 
@@ -168,7 +154,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_X;
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_Y;
         private Kaban.UI.Controls.AxisUnitHMI unitAxis_Z;
-        private Kaban.UI.Controls.CylinderUnitHMI unitGripper;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitGripper;
         private Kaban.UI.Controls.ButtonHMI btnSawdust_Blowing;
         private Kaban.UI.Controls.LampHMI lampBar_First_End_Read_SN;
         private Kaban.UI.Controls.LampHMI lampBar_Last_End_Read_SN;

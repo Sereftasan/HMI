@@ -38,10 +38,11 @@ class MF {
         var uses = DeviceCollector.UsesOf(1);
         Console.WriteLine("      {0} uses on station 1, {1} ms", uses.Count, (int)(DateTime.Now - t0).TotalMilliseconds);
         var m672 = DeviceFindForm.Match(uses, 1, "m672");
-        // 8 October: the Encoders Parameters page jogs the same clamping (Cutting Left Top), as the old program's did.
-        Check("M672 (typed in lower case) is found on the Cutting page and on Encoders Parameters",
-              m672.Any(u => u.PageTitle.EndsWith("Cutting")) && m672.Any(u => u.PageTitle.Contains("Encoders Parameters")) &&
-              m672.All(u => u.PageTitle.EndsWith("Cutting") || u.PageTitle.Contains("Encoders Parameters")),
+        // 8 October: the Encoders page jogs the same clamping (Cutting Left Top), as the old program's did;
+        // 9 October: the Cutting page's unit is its encoder's (the row on Machine Parameters > Encoders).
+        Check("M672 (typed in lower case) is found on the Cutting page and on Encoders",
+              m672.Any(u => u.PageTitle.EndsWith("Cutting")) && m672.Any(u => u.PageTitle.EndsWith("Encoders")) &&
+              m672.All(u => u.PageTitle.EndsWith("Cutting") || u.PageTitle.EndsWith("Encoders")),
               string.Join(" | ", m672.Select(u => u.PageTitle + ": " + u.UsedAs)));
         Check("  named by its unit", m672.Any(u => u.UsedAs.StartsWith("Left Top Clamping")));
         Check("  with the way to it: the unit's path on the page", m672.All(u => u.ControlPath.Count > 0 && u.Screen != null),
@@ -89,9 +90,15 @@ class MF {
         }
 
         Console.WriteLine("--- the real Robot Top Clamping: its manual is ONE chart for its valve and feedback ---");
-        var m854 = DeviceFindForm.Match(uses, 1, "M854").FirstOrDefault(u => !u.IsAlarm);
-        var rtc = m854 == null ? null : form.ShowDeviceUse(m854, out why) as CylinderUnitHMI;
-        Check("found on the Exit page", rtc != null && rtc.Name == "unitRobot_Top_Clamping", why);
+        // 9 October: its error bit is its encoder's (Exit Carrying Top on Encoders); the Exit page's unit takes it from there
+        var m854s = DeviceFindForm.Match(uses, 1, "M854").Where(u => !u.IsAlarm).ToList();
+        Check("M854 is on the Exit page and on Encoders", m854s.Any(u => u.PageTitle.EndsWith("Exit")) && m854s.Any(u => u.PageTitle.EndsWith("Encoders")),
+              string.Join(" | ", m854s.Select(u => u.PageTitle)));
+        var m854 = m854s.FirstOrDefault(u => u.PageTitle.EndsWith("Exit"));
+        var shown854 = m854 == null ? null : form.ShowDeviceUse(m854, out why);
+        var owner = shown854 as CylinderEncoderUnitHMI;
+        var rtc = owner != null ? owner.Unit : shown854 as CylinderUnitHMI;
+        Check("found on the Exit page (its encoder's unit)", owner != null && owner.Name == "unitRobot_Top_Clamping" && owner.IsResolved, why);
         if (rtc != null) {
             Check("  nothing failed: its '?' offers no troubleshooting", !rtc.HelpDocuments().Any(d => d.FileName == "Cylinder_Troubleshooting.html"));
             // Its error bit comes on (the manual is a fault's help only, 30 September).

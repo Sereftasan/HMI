@@ -732,7 +732,12 @@ namespace Kaban.UI.Controls
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, StuckState> _stuck =
             new System.Runtime.CompilerServices.ConditionalWeakTable<Label, StuckState>();
 
-        private static void SetStuck(Label l, int left, int right, int top, int height, int pad, int padRight, Color back, bool stuck)
+        /// <summary>
+        /// A label of a frozen column put where it stays (the rows scrolled sideways
+        /// by <paramref name="stuck"/>), opaque over what passes under it, with a
+        /// thin rule at its right - an axis row's name, a cylinder row's (CylinderRowHMI).
+        /// </summary>
+        internal static void SetStuck(Label l, int left, int right, int top, int height, int pad, int padRight, Color back, bool stuck)
         {
             StuckState st;
             if (!_stuck.TryGetValue(l, out st))

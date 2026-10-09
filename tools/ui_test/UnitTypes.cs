@@ -82,8 +82,15 @@ class UT {
                 Check("  a clamp with a pressure switch may also measure (a position): OK", t.TypeCheck == "OK", t.TypeCheck);
         }
         var an = Unit(CylinderValve.ThreeWayClosedCenter, CylinderFeedback.AnalogueMagnetic, "M1", "M2", "X1");
-        Check("AnalogueMagnetic with a lamp and no position: both said",
-              an.TypeProblems().Any(p => p.Contains("no lamps")) && an.TypeProblems().Any(p => p.Contains("set PositionAddress")), P(an));
+        // 9 October: a cylinder unit placed by hand has no position of its own any more - the check
+        // names the control a position belongs to; the unit inside one says to set it.
+        Check("AnalogueMagnetic with a lamp and no position: both said (the position: a PneumaticPositioningHMI's)",
+              an.TypeProblems().Any(p => p.Contains("no lamps")) && an.TypeProblems().Any(p => p.Contains("PneumaticPositioningHMI")), P(an));
+        an.PartOfComposite = true;
+        Check("  inside a control that owns its position: set PositionAddress", an.TypeProblems().Any(p => p.Contains("set PositionAddress")), P(an));
+        an.PartOfComposite = false;
+        var en0 = Unit(CylinderValve.DoubleSolenoid, CylinderFeedback.EncoderPlusReference, "M1", "M2", "X1", "", "");
+        Check("EncoderPlusReference with no position: a CylinderEncoderUnitHMI's", en0.TypeProblems().Any(p => p.Contains("CylinderEncoderUnitHMI")), P(en0));
         an.Lamp1AAddress = ""; an.PositionAddress = "D16";
         Check("  the position alone: OK", an.TypeCheck == "OK", an.TypeCheck);
         var en = Unit(CylinderValve.DoubleSolenoid, CylinderFeedback.EncoderPlusReference, "M1", "M2", "", "", "D110");

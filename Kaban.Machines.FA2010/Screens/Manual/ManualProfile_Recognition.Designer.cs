@@ -29,13 +29,13 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
             this.unitUnit_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
             this.btnHigh_Air_Pressure = new Kaban.UI.Controls.ButtonHMI();
-            this.unitFront_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.unitTop_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitFront_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
+            this.unitTop_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
             this.btnSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
             this.btnLeft_End_Encoders_Active = new Kaban.UI.Controls.ButtonHMI();
             this.unitLeft_Top_FW_Back = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitLeft_Top_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.SuspendLayout();
             // 
             // unitUnit_Up_Down
@@ -70,59 +70,25 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitFront_Clamping
             // 
+            // Front Clamping: encoder 2 of Machine Parameters - Encoders (Profile Recognition Front): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitFront_Clamping.BackColor = System.Drawing.Color.White;
             this.unitFront_Clamping.Name = "unitFront_Clamping";
+            this.unitFront_Clamping.EncoderNumber = 2;
             this.unitFront_Clamping.PlcNumber = 1;
             this.unitFront_Clamping.TitleTextKey = "Front Clamping";
             this.unitFront_Clamping.Location = new System.Drawing.Point(16, 140);
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);
-            this.unitFront_Clamping.LogAction = true;
-            this.unitFront_Clamping.CommandAAddress = "M646";
-            this.unitFront_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitFront_Clamping.Lamp1AAddress = "M225";
-            this.unitFront_Clamping.CommandBAddress = "M645";
-            this.unitFront_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitFront_Clamping.Lamp1BAddress = "M240";
-            this.unitFront_Clamping.PositionAddress = "D4";
-            this.unitFront_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitFront_Clamping.PositionDivisor = 10D;
-            this.unitFront_Clamping.PositionDecimalPlaces = 1;
-            this.unitFront_Clamping.PositionDigits = 6;
-            this.unitFront_Clamping.PositionSuffix = "mm";
-            this.unitFront_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitFront_Clamping.ErrorAAddress = "M845";
-            this.unitFront_Clamping.ErrorBAddress = "M844";
-            // Pneumatic drawing: Y28/Y29, 5/3 open centre (P16); back sensor SN59 (X51) + pressure switch SW1.
-            this.unitFront_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitFront_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
-            this.unitFront_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitTop_Clamping
             // 
+            // Top Clamping: encoder 3 of Machine Parameters - Encoders (Profile Recognition Top): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitTop_Clamping.BackColor = System.Drawing.Color.White;
             this.unitTop_Clamping.Name = "unitTop_Clamping";
+            this.unitTop_Clamping.EncoderNumber = 3;
             this.unitTop_Clamping.PlcNumber = 1;
             this.unitTop_Clamping.TitleTextKey = "Top Clamping";
             this.unitTop_Clamping.Location = new System.Drawing.Point(16, 214);
             this.unitTop_Clamping.Size = new System.Drawing.Size(360, 64);
-            this.unitTop_Clamping.LogAction = true;
-            this.unitTop_Clamping.CommandAAddress = "M648";
-            this.unitTop_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitTop_Clamping.Lamp1AAddress = "M226";
-            this.unitTop_Clamping.CommandBAddress = "M647";
-            this.unitTop_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitTop_Clamping.PositionAddress = "D6";
-            this.unitTop_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitTop_Clamping.PositionDivisor = 10D;
-            this.unitTop_Clamping.PositionDecimalPlaces = 1;
-            this.unitTop_Clamping.PositionDigits = 6;
-            this.unitTop_Clamping.PositionSuffix = "mm";
-            this.unitTop_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitTop_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitTop_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitTop_Clamping.ErrorAAddress = "M847";
-            this.unitTop_Clamping.ErrorBAddress = "M846";
-            this.unitTop_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // unitRoller_Up_Down
             // 
@@ -190,30 +156,14 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitLeft_Top_Clamping
             // 
+            // Left Top Clamping: encoder 11 of Machine Parameters - Encoders (Left Profile Recognition Top): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitLeft_Top_Clamping.BackColor = System.Drawing.Color.White;
             this.unitLeft_Top_Clamping.Name = "unitLeft_Top_Clamping";
+            this.unitLeft_Top_Clamping.EncoderNumber = 11;
             this.unitLeft_Top_Clamping.PlcNumber = 1;
             this.unitLeft_Top_Clamping.TitleTextKey = "Left Top Clamping";
             this.unitLeft_Top_Clamping.Location = new System.Drawing.Point(16, 536);
             this.unitLeft_Top_Clamping.Size = new System.Drawing.Size(360, 64);
-            this.unitLeft_Top_Clamping.LogAction = true;
-            this.unitLeft_Top_Clamping.CommandAAddress = "M741";
-            this.unitLeft_Top_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Top_Clamping.Lamp1AAddress = "M345";
-            this.unitLeft_Top_Clamping.CommandBAddress = "M740";
-            this.unitLeft_Top_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Top_Clamping.PositionAddress = "D6";
-            this.unitLeft_Top_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitLeft_Top_Clamping.PositionDivisor = 10D;
-            this.unitLeft_Top_Clamping.PositionDecimalPlaces = 1;
-            this.unitLeft_Top_Clamping.PositionDigits = 6;
-            this.unitLeft_Top_Clamping.PositionSuffix = "mm";
-            this.unitLeft_Top_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitLeft_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitLeft_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitLeft_Top_Clamping.ErrorAAddress = "M905";
-            this.unitLeft_Top_Clamping.ErrorBAddress = "M904";
-            this.unitLeft_Top_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
             // 
             // ManualProfile_Recognition
             // 
@@ -242,12 +192,12 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private Kaban.UI.Controls.CylinderUnitHMI unitUnit_Up_Down;
         private Kaban.UI.Controls.ButtonHMI btnHigh_Air_Pressure;
-        private Kaban.UI.Controls.CylinderUnitHMI unitFront_Clamping;
-        private Kaban.UI.Controls.CylinderUnitHMI unitTop_Clamping;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitFront_Clamping;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitTop_Clamping;
         private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
         private Kaban.UI.Controls.ButtonHMI btnSawdust_Blowing;
         private Kaban.UI.Controls.ButtonHMI btnLeft_End_Encoders_Active;
         private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_FW_Back;
-        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Top_Clamping;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitLeft_Top_Clamping;
     }
 }

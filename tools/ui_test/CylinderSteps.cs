@@ -74,12 +74,14 @@ class CS {
         var pages = new[] { "ManualClamping_Moulds", "ManualCutting", "ManualEntry_Conveyor", "ManualExit", "ManualMilling",
                             "ManualOther", "ManualProfile_Recognition", "ManualRobot", "ManualYZ_Cross_Rollers" };
         var units = new List<KeyValuePair<string, CylinderUnitHMI>>();
-        foreach (var p in pages) {
-            var page = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + p));
+        // (9 October) a cylinder with an encoder is described once, on its row of Machine Parameters >
+        // Encoders - its manual pages' units take it from there
+        foreach (var p in pages.Concat(new[] { "Parameters.ParamEncoders" })) {
+            var page = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens." + (p.Contains(".") ? p : "Manual." + p)));
             foreach (var u in page.Controls.OfType<CylinderUnitHMI>().Where(x => x.Kind == UnitKind.Cylinder))
                 units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + u.Name, u));
-            // a pneumatic positioning's manual movement: the cylinder unit inside its row (9 October), by the row's name
-            foreach (var r in page.Controls.OfType<PneumaticPositioningHMI>())
+            // a cylinder row's manual movement (a pneumatic positioning's, an encoder's): the unit inside, by the row's name
+            foreach (var r in page.Controls.OfType<CylinderRowHMI>())
                 units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + r.Name, r.Unit));
         }
         Func<string, CylinderUnitHMI> unit = n => units.First(k => k.Key.EndsWith("." + n) || k.Key == n).Value;
@@ -110,7 +112,7 @@ class CS {
         Check("the 1. cross roller (Y143 / Y144) shows ITS back sensor, SN.101 on X126 (M266)",
               pr.Lamp1AAddress == "M266" && WiringTable.OutputFor(1, pr.CommandAAddress).Address == "Y143");
         Check("the milling front clamping shows its pressure switch (X73 = M243), not M349",
-              unit("ManualMilling.unitFront_Clamping").Lamp1BAddress == "M243");
+              unit("encMilling_Cutting_Left_Front").Lamp1BAddress == "M243");
         Check("a mold: 5/3 and its analogue sensor, no lamps",
               unit("ppConveyor_Front_Vertical").ValveType == CylinderValve.ThreeWayClosedCenter &&
               unit("ppConveyor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("ppConveyor_Front_Vertical")).Any());

@@ -251,7 +251,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.PositionAddress = "W0";
             this.axRobot_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axRobot_X.PositionDivisor = 1000D;
-            this.axRobot_X.LoadEncoderValueAddress = "d100";
+            this.axRobot_X.LoadEncoderValueAddress = "D22";
             this.axRobot_X.ReferenceAddress = "D316";
             this.axRobot_X.ReferenceSensorAddress = "M330";
             this.axRobot_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;

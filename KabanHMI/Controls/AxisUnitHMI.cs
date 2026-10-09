@@ -98,6 +98,7 @@ namespace Kaban.UI.Controls
             _unit.Lamp1AAddress = _unit.Lamp1BAddress = "";
             _unit.ErrorAAddress = _unit.ErrorBAddress = "";
             _unit.SetAxisCodes("", "", "");
+            _unit.PositionDisplay.ComparedAddress = "";
             if (InDesigner || _axisNumber <= 0)
             {
                 _unit.TitleTextKey = _axisNumber > 0 ? "Axis " + _axisNumber : "Axis";
@@ -139,6 +140,11 @@ namespace Kaban.UI.Controls
             _unit.PositionDecimalPlaces = a.Decimals;
             _unit.PositionDigits = a.Digits;
             _unit.PositionSuffix = a.Suffix;
+            // THE LOAD-SIDE ENCODER in the position's tooltip, with the difference - as on
+            // the axis row (9 October: FA2010's Robot X shows D22 there, the old Encoders
+            // page's "Robot Position", which is gone from that page).
+            _unit.PositionDisplay.ComparedAddress = (a.RealPosition ?? "").Trim();
+            _unit.PositionDisplay.ComparedCaptionKey = "Tip_LoadEncoder";
 
             // The reference sensor on ONE side only, as on the axis row.
             bool back = a.ReferenceSide == AxisReferenceSide.Back;

@@ -11,6 +11,11 @@ namespace Kaban.UI.Controls
     /// items, Motion monitor) and the column names - stays at the top while the
     /// rows scroll up and down under it, and follows them sideways.
     ///
+    /// A page of cylinder rows too (CylinderRowHMI: PneumaticPositioningHMI,
+    /// CylinderEncoderSettingHMI - 9 October, "150% zoom: should I do the same
+    /// here? Yes"): its column names stay at the top, and the rows' names at the
+    /// left, as an axis page's.
+    ///
     /// The designer's page is the same as ever (labels above, rows below); when
     /// it is shown its controls are put into this frame (Freeze): what is above
     /// the first row into the heading, the rows into the body, which scrolls.
@@ -81,6 +86,22 @@ namespace Kaban.UI.Controls
                 if (top == null || row.Top < top.Top) top = row;
             }
             if (top != null) top.StickHeading(HeadContent, s, top.Left + s);
+
+            // the cylinder rows' names, and the room over them in the heading
+            CylinderRowHMI topRow = null;
+            foreach (var row in Body.Controls.OfType<CylinderRowHMI>())
+            {
+                row.StickName(s, row.Left + s);
+                if (row.Visible && (topRow == null || row.Top < topRow.Top)) topRow = row;
+            }
+            if (topRow != null) topRow.StickHeading(HeadContent, s, topRow.Left + s);
+        }
+
+        /// <summary>A row the frame is made for: an axis row (not the Axis Monitor's), a cylinder row.</summary>
+        private static bool IsRow(Control c)
+        {
+            var axis = c as AxisSettingHMI;
+            return axis != null ? !axis.MonitorMode : c is CylinderRowHMI;
         }
 
         /// <summary>The frame a page of rows is in - from the page, the body or a row - or null.</summary>
@@ -109,13 +130,17 @@ namespace Kaban.UI.Controls
         /// lists, the column names) into the heading, the rest into the body, which
         /// scrolls; the page no longer scrolls itself. Nothing to do for a page that
         /// is framed already, has no rows, or is not one that scrolls.
+        /// <paramref name="keepScroll"/> false: the rows shown from the left top
+        /// whatever the page was scrolled to - a page of cylinder rows, scrolled
+        /// only by the focus its first row got as it was shown (the row, wider
+        /// than the window, put at the left edge: its margin out of sight).
         /// </summary>
-        public static AxisPageFrame Freeze(Control page)
+        public static AxisPageFrame Freeze(Control page, bool keepScroll = true)
         {
             var sc = page as ScrollableControl;
             if (sc == null || page.IsDisposed || page is AxisPageFrame || OfBody(page) != null) return null;
             if (page.Controls[FrameName] is AxisPageFrame) return (AxisPageFrame)page.Controls[FrameName];
-            var rows = page.Controls.OfType<AxisSettingHMI>().Where(r => !r.MonitorMode).ToList();
+            var rows = page.Controls.Cast<Control>().Where(IsRow).ToList();
             if (rows.Count == 0) return null;
 
             // measured unscrolled, where the designer put them
@@ -143,7 +168,7 @@ namespace Kaban.UI.Controls
                 foreach (var c in originals)
                 {
                     var was = at0[c];
-                    if (c is AxisSettingHMI || was.Y >= line - 2)
+                    if (IsRow(c) || c is AxisSettingHMI || was.Y >= line - 2)
                     {
                         frame.Body.Controls.Add(c);
                         c.Location = new Point(was.X, was.Y - line);
@@ -162,7 +187,7 @@ namespace Kaban.UI.Controls
                 page.ResumeLayout(true);
             }
             frame.Sync();
-            if (scrolled != Point.Empty) frame.Body.AutoScrollPosition = new Point(-scrolled.X, -scrolled.Y);
+            if (keepScroll && scrolled != Point.Empty) frame.Body.AutoScrollPosition = new Point(-scrolled.X, -scrolled.Y);
             return frame;
         }
 

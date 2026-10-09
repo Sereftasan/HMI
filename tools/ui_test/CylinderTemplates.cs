@@ -83,12 +83,21 @@ class CT {
 
         Console.WriteLine("--- the FA2010 units, filled in ---");
         var fa = Assembly.LoadFrom("Kaban.Machines.FA2010.exe");
-        var units = new List<CylinderUnitHMI>();
+        var units = new List<KeyValuePair<string, CylinderUnitHMI>>();
+        // a cylinder with an encoder takes itself from its row on Encoders (9 October): found first
+        Kaban.UI.Helpers.AlarmHelpLinks.EnsureDiscovered();
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest((Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Parameters.ParamEncoders")));
         foreach (var p in new[] { "ManualProfile_Recognition", "ManualCutting", "ManualExit", "ManualClamping_Moulds", "ManualMilling" }) {
             var page = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + p));
-            units.AddRange(All(page).OfType<CylinderUnitHMI>().Where(u => u.Kind == UnitKind.Cylinder));
+            foreach (var c in All(page))
+            {
+                var e = c as CylinderEncoderUnitHMI;
+                if (e != null) { units.Add(new KeyValuePair<string, CylinderUnitHMI>(e.Name, e.Unit)); continue; }
+                var u = c as CylinderUnitHMI;
+                if (u != null && u.Kind == UnitKind.Cylinder && !(u.Parent is CylinderEncoderUnitHMI)) units.Add(new KeyValuePair<string, CylinderUnitHMI>(u.Name, u));
+            }
         }
-        Func<string, CylinderUnitHMI> unit = n => units.First(u => u.Name == n);
+        Func<string, CylinderUnitHMI> unit = n => units.First(u => u.Key == n).Value;
         var fc = unit("unitFront_Clamping");
         var mv = fc.MovementFor("B");
         Check("the front clamping's clamp: 5/3 with a pressure switch", (int)fc.ValveType == 3 && (int)fc.FeedbackType == 5 && mv.Error == "M844");

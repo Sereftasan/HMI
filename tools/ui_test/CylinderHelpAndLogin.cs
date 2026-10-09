@@ -140,7 +140,7 @@ class CH {
                  Assembly.LoadFrom("Kaban.Machines.FA2010.exe");
         var cutting = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualCutting"));
         var milling = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualMilling"));
-        Func<Control, List<Control>> units = p => p.Controls.Cast<Control>().Where(c => c is CylinderUnitHMI || c is AxisUnitHMI).ToList();
+        Func<Control, List<Control>> units = p => p.Controls.Cast<Control>().Where(c => c is CylinderUnitHMI || c is AxisUnitHMI || c is CylinderEncoderUnitHMI).ToList();
         // 29 September: a single-function unit became a button or a value (CylinderUnitHMI is
         // for cylinders) - in the same slot of the page's grid.
         Func<Control, List<Control>> singles = p => p.Controls.Cast<Control>().Where(c => c is ButtonHMI || c is NumericDisplayHMI).ToList();
@@ -166,6 +166,11 @@ class CH {
         var valves = new HashSet<CylinderValve>(); int typed = 0;
         var byName = new Dictionary<string, CylinderUnitHMI>();
         var pagesBuilt = new List<Control>();
+        // a cylinder with an encoder: its manual page's unit takes it from its row on Encoders (9 October)
+        Kaban.UI.Helpers.AlarmHelpLinks.EnsureDiscovered();
+        var encPage = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Parameters.ParamEncoders"));
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest(encPage);
+        pagesBuilt.Add(encPage);
         foreach (var name in new[] { "ManualExit", "ManualMilling", "ManualCutting", "ManualClamping_Moulds", "ManualEntry_Conveyor", "ManualProfile_Recognition",
                                      "ManualRobot", "ManualYZ_Cross_Rollers" })
         {
@@ -173,6 +178,7 @@ class CH {
             pagesBuilt.Add(pg);
             // (a pneumatic positioning's manual movement is a cylinder unit inside its row - 9 October)
             foreach (var u in pg.Controls.OfType<CylinderUnitHMI>().Concat(pg.Controls.OfType<PneumaticPositioningHMI>().Select(r => r.Unit))
+                                .Concat(pg.Controls.OfType<CylinderEncoderUnitHMI>().Select(e => e.Unit))
                                 .Where(u => u.ValveType != CylinderValve.Unspecified))
             { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }

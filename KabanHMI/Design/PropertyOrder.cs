@@ -34,8 +34,9 @@ namespace Kaban.UI.Design
         /// <summary>Every category, in page-building order. A control uses the ones it has.</summary>
         public static readonly string[] CategoryOrder =
         {
-            "Valve & Feedback", "Device", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
-            "Target position", "Calibration", "Positioning tolerance", "Direction ref", "Value", "Settings",
+            "Valve & Feedback", "Device", "Encoder", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
+            "Target position", "Calibration", "Positioning tolerance", "Direction ref",
+            "Reference", "Measuring tolerance", "Minimum limit", "Unclamping interval", "Value", "Settings",
             "Commands", "Display", "Input", "Formula", "State", "Meters", "Bands", "Diagnostics", "Parts",
             "Conditions", "Security", "Help"
         };
@@ -162,15 +163,37 @@ namespace Kaban.UI.Design
                 C("Conditions", "VisibilityConditions", "EnableConditions"),
                 C("Security", "RequiredSecurity", "SettingsSecurity", "LogAction")),
 
+            // A cylinder with an encoder, as a row of Machine Parameters > Encoders.
+            ["CylinderEncoderSettingHMI"] = L(
+                C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),
+                C("Device", "PlcNumber", "EncoderNumber"),
+                C("Unit", "TitleTextKey", "NameWidth"),
+                C("Movement", "CommandBackAddress", "CommandForwardAddress", "VerticalMovement", "BackSensorAddress", "ForwardSensorAddress",
+                              "ErrorBackAddress", "ErrorForwardAddress", "HelpBackFiles", "HelpForwardFiles"),
+                C("Position", "PositionAddress", "PositionDataType", "PositionDivisor", "PositionDecimalPlaces", "PositionDigits",
+                              "PositionSuffix", "PositionUnitType"),
+                C("Reference", "ReferenceAddress"),
+                C("Measuring tolerance", "MeasuringToleranceAddress"),
+                C("Minimum limit", "MinimumLimitAddress"),
+                C("Unclamping interval", "UnclampingIntervalAddress"),
+                C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix", "UnitType"),
+                C("Conditions", "VisibilityConditions", "EnableConditions"),
+                C("Security", "RequiredSecurity", "SettingsSecurity", "LogAction")),
+
+            // A cylinder with an encoder on a manual page: its encoder's number, the rest from that row.
+            ["CylinderEncoderUnitHMI"] = L(
+                C("Encoder", "EncoderNumber", "PlcNumber"),
+                C("Unit", "TitleTextKey"),
+                C("Conditions", "VisibilityConditions", "EnableConditions")),
+
             ["CylinderUnitHMI"] = L(
                 C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),   // chosen first: they decide what else is needed
                 C("Device", "PlcNumber", "BaseOffset"),
                 C("Unit", "TitleTextKey", "TitleTipKey"),
                 C("Action A", Side("A")),
                 C("Action B", Side("B")),
-                C("Position", "PositionStyle", "PositionAddress", "PositionDataType", "PositionDivisor", "PositionDecimalPlaces",
-                              "PositionDigits", "PositionSuffix", "PositionUnitType", "PositionOffset", "PositionTipKey"),
-                C("Parts", "ButtonA", "ButtonB", "PositionDisplay", "Arrows"),
+                // (no Position: a position is a pneumatic positioning's or an encoder unit's - 9 October)
+                C("Parts", "ButtonA", "ButtonB", "Arrows"),
                 C("Conditions", "VisibilityConditions", "EnableConditions"),
                 C("Security", "RequiredSecurity", "ConfirmationNeeded", "LogAction")),
         };

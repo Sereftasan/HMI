@@ -166,18 +166,19 @@ class MG {
 
         var uses = DeviceCollector.UsesOf(1);
         string why;
-        var unit = shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(), out why) as CylinderUnitHMI;
+        // (9 October: M672's unit on Cutting is its encoder's - a CylinderEncoderUnitHMI, the unit's size)
+        var unit = shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(u => u.PageTitle.EndsWith("Cutting")), out why);
         Pump(100);
         Check("a page opened after start: its unit at 1.5 (360 x 64 -> 540 x 96)", unit != null && unit.Width == 540 && unit.Height == 96,
               unit == null ? why : unit.Size.ToString());
         var home = ((System.Collections.IDictionary)Get(shell, "_menuButtons")).Values.Cast<UserControl>().Last();
         shell.LoadScreen(home);
-        shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(), out why);
+        shell.ShowDeviceUse(DeviceFindForm.Match(uses, 1, "M672").First(u => u.PageTitle.EndsWith("Cutting")), out why);
         Pump(50);
         Check("  shown, left and shown again: still 540 (scaled once)", unit.Width == 540, unit.Width.ToString());
 
         Console.WriteLine("--- everything reachable at 1.5 ---");
-        var aBtn = (Control)Get(unit, "_btnA");
+        var aBtn = (Control)Get(unit is CylinderEncoderUnitHMI ? ((CylinderEncoderUnitHMI)unit).Unit : unit, "_btnA");
         Check("the unit's buttons grow with it (36 at factor 1: a thin row in a tall frame before)", aBtn.Height > 40, aBtn.Height.ToString());
         shell.WindowState = FormWindowState.Normal;
         shell.Bounds = new Rectangle(0, 0, 1200, 740);

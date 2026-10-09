@@ -4740,3 +4740,37 @@ and `UnitLookAndErrors` extended.
 - `tools/ai_guide`: the control, the page layout, the machines' own conditions (read from the program); `docs/AI_Page_Design_Guide.md` made again.
 - Tests: `PneumaticPositioning.cs`, `PneumaticPositioningScale.cs`, `MouldsOption.cs` (new); `LegacyPages.cs`, `CylinderSteps.cs`, `CylinderHelpAndLogin.cs`,
   `CylinderDrawings.cs`, `PropertyOrderUi.cs`. Manual: *4a. Pneumatic positionings* (new); FA2010's chapter: Clamping Moulds.
+
+## 2026-10-09 (night, later) - CylinderEncoderSettingHMI and CylinderEncoderUnitHMI; Machine Parameters' tabs renamed, Entry and Process split
+
+- New `Kaban.UI.Controls.CylinderRowHMI` (base of the cylinder rows: name, manual movement, `AddSection` fields / SET buttons, `LayoutPage`,
+  `AlignHeadings`, `Restack(host, kind)`, `RowsOfKind`, `RowOfHeading`, `SectionTitle(Key)`, `ColumnOf`); `PneumaticPositioningHMI` built on it.
+- New `CylinderEncoderSettingHMI` (`EncoderNumber`, `ReferenceAddress`, `MeasuringToleranceAddress`, `MinimumLimitAddress`, `UnclampingIntervalAddress`,
+  `Info()`), `CylinderEncoderUnitHMI` (`EncoderNumber`, `PlcNumber`, `TitleTextKey`, `VisibilityConditions`, `EnableConditions`, `Unit`, `IsResolved`, `Row`).
+  `AlarmHelpLinks.EncoderInfo`, `FindEncoder`, `AllEncoders` (registered by discovery). `PropertyOrder`: their layouts; categories *Encoder*,
+  *Reference*, *Measuring tolerance*, *Minimum limit*, *Unclamping interval*; CylinderUnitHMI without *Position*.
+- `CylinderUnitHMI`: the position's properties `[Browsable(false)]`; `PartOfComposite`; TypeProblems names the control a position belongs to.
+- `AxisUnitHMI`: the axis's load-side encoder (`RealPosition`) as its position's compared value.
+- FA2010: `ParamEncoders` of 11 rows; manual pages' 11 encoder units; `ParamEntry` / `ParamProcess` replaced by `ParamConveyor`, `ParamRobot`,
+  `ParamMilling`, `ParamCutting`; tabs `Tab_AxisSettings` "Axis", `Tab_ParamConveyor`, `Tab_ParamRobot`, `Tab_ParamMilling`, `Tab_ParamCutting`,
+  `Tab_ParamEncoders` "Encoders", `Tab_ParamOther` "Others" (`Tab_ParamEntry`, `Tab_ParamProcess` removed); Robot X's `LoadEncoderValueAddress` D22;
+  translations "Left Profile Recognition Front / Top".
+- `AlarmSettingsPage`: "Alarms" (`Set_Alarms`, six languages); `Msg_FindAlarm` points at Machine Parameters > Alarms.
+- Translations: `Col_EncReference`, `Col_EncTolerance`, `Col_EncMinimumLimit`, `Col_EncUnclamping`, `Tip_Enc*`, `Enc_NotFound` - six languages.
+- `NoteTarget`, `NotesPage.PropertyRows`, `DeviceCollector`, `StationMap`: the cylinder rows and the encoder unit.
+- `tools/legacy_fa2010_pages.py` (see REVIEW 4zzf), `tools/ai_guide` and `docs/AI_Page_Design_Guide.md` made again.
+- Tests: `CylinderEncoders.cs` (new); `LegacyPages`, `CylinderSteps`, `CylinderHelpAndLogin`, `CylinderDrawings`, `CylinderTemplates`, `MonitorFind`,
+  `UnitTypes`, `ConditionDropdown`, `PropertyOrderUi`. Manual: *4b. Cylinders with an encoder* (new), chapter 10 (encoder rows, *Alarms*); FA2010's
+  chapter: the tabs, Encoders, the encoder units.
+
+## 2026-10-09 (night, last) - The cylinder rows' pages as tables (headings at the top, names at the left); Direction ref explained
+
+- `AxisPageFrame`: frames a page of cylinder rows too (`IsRow`: an axis row not in monitor mode, a `CylinderRowHMI`); `StickNames` sticks their
+  names and the cover over them; `Freeze(page, keepScroll)` - false starts the body unscrolled.
+- `CylinderRowHMI`: the page framed once shown (`ScheduleFreeze`, not in the designer); `StickName(scrolled, margin)`, `StickHeading` (the
+  `NameCoverName` label), `NameStuck`; `RowsHost(page)`, `HeadingsHost(page)`; `RowsOfKind`, `LayoutPage`, `Restack`, `AlignHeadings`,
+  `RowOfHeading` look in the frame's body and heading.
+- `AxisSettingHMI.SetStuck` internal (shared). `NoteTarget`: the cover is nothing to note.
+- `PositioningDirectionReferenceAddress`' description and `Tip_PpDirectionRef` (six languages): how the PLC uses it. Manual 4a, 4b; FA2010's
+  chapter; `tools/ai_guide/guide_template.md` (the pages become tables) and `MakeAiPageGuide.cs`; `docs/AI_Page_Design_Guide.md` made again.
+- Tests: `CylinderRowTable.cs` (new); `PneumaticPositioning`, `PneumaticPositioningScale`, `CylinderEncoders`.

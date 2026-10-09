@@ -126,17 +126,29 @@
     <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
       <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamEntry.cs">
+    <Compile Include="Screens\Parameters\ParamConveyor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamEntry.Designer.cs">
-      <DependentUpon>ParamEntry.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamConveyor.Designer.cs">
+      <DependentUpon>ParamConveyor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamProcess.cs">
+    <Compile Include="Screens\Parameters\ParamRobot.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\Parameters\ParamProcess.Designer.cs">
-      <DependentUpon>ParamProcess.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamRobot.Designer.cs">
+      <DependentUpon>ParamRobot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMilling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamMilling.Designer.cs">
+      <DependentUpon>ParamMilling.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamCutting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\ParamCutting.Designer.cs">
+      <DependentUpon>ParamCutting.cs</DependentUpon>
     </Compile>
     <Compile Include="Screens\Parameters\ParamEncoders.cs">
       <SubType>UserControl</SubType>

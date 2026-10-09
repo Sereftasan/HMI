@@ -41,7 +41,7 @@ namespace Kaban.UI.Helpers
                 if (first == null && IsUnitFrame(c)) return c.Parent;
                 var owner = AttachedDescription.OwnerOf(c);
                 if (owner != null) return owner;
-                if (c is IHmiControl && !(c is AxisSettingHMI) && !(c is CylinderUnitHMI) && !(c is PneumaticPositioningHMI)) return c;
+                if (c is IHmiControl && !(c is AxisSettingHMI) && !(c is CylinderUnitHMI) && !(c is CylinderRowHMI)) return c;
                 if (first == null && IsNotable(c)) first = c;
             }
             return first;
@@ -56,6 +56,8 @@ namespace Kaban.UI.Helpers
         private static bool IsNotable(Control c)
         {
             if (c is AxisPageFrame) return false;
+            // the room kept clear over a table's names (CylinderRowHMI.StickHeading): nothing to note
+            if (c.Name == CylinderRowHMI.NameCoverName) return false;
             if (c is IHmiControl || c is ButtonBase || c is Label || c is ListControl || c is TextBoxBase || c is DataGridView ||
                 c is TrackBar || c is ProgressBar || c is PictureBox || c is Kaban.UI.Dashboard.PickList) return true;
             var ns = c.GetType().Namespace ?? "";
@@ -66,7 +68,7 @@ namespace Kaban.UI.Helpers
         private static Control UnitOf(Control c)
         {
             for (var p = c.Parent; p != null; p = p.Parent)
-                if (p is AxisSettingHMI || p is CylinderUnitHMI || p is PneumaticPositioningHMI) return p;
+                if (p is AxisSettingHMI || p is CylinderUnitHMI || p is CylinderRowHMI) return p;
             return null;
         }
 
@@ -82,6 +84,9 @@ namespace Kaban.UI.Helpers
         {
             var axis = c as AxisSettingHMI;
             if (axis != null) return T(axis.AxisNameKey ?? "", axis.AxisNameKey ?? "");
+            // an encoder's unit: the title it shows (its own, or its encoder row's name)
+            var encoderUnit = c as CylinderEncoderUnitHMI;
+            if (encoderUnit != null) return T(encoderUnit.Unit.TitleTextKey ?? "", encoderUnit.Unit.TitleTextKey ?? "");
             var button = c as ButtonHMI;
             if (button != null)
             {
@@ -119,17 +124,19 @@ namespace Kaban.UI.Helpers
                 var col = axis.ColumnOf(c);
                 return Caption(axis) + " - " + (col != null ? AxisSettingHMI.HeadingText(col) : Caption(c));
             }
-            // A PART OF A PNEUMATIC POSITIONING (its fields, its manual movement): the
-            // row's name and the part's column - its name alone for the name itself.
-            var row = unit as PneumaticPositioningHMI ?? (unit != null ? unit.Parent as PneumaticPositioningHMI : null);
+            // A PART OF A CYLINDER ROW (a pneumatic positioning's, an encoder's: its
+            // fields, its manual movement): the row's name and the part's column - its
+            // name alone for the name itself.
+            var row = unit as CylinderRowHMI ?? (unit != null ? unit.Parent as CylinderRowHMI : null);
             if (row != null && (unit == row || c == unit))
             {
                 var col = row.ColumnOf(c);
-                return col == null || col == "Name" ? Caption(row) : Caption(row) + " - " + PneumaticPositioningHMI.HeadingText(col);
+                return col == null || col == "Name" ? Caption(row) : Caption(row) + " - " + row.SectionTitle(col);
             }
             if (unit != null) return Caption(unit) + " - " + Caption(c);
             var tag = c.Tag as string;
-            if (c is Label && tag != null && tag.StartsWith(PneumaticPositioningHMI.HeadingTag))
+            string headingKey;
+            if (c is Label && CylinderRowHMI.RowOfHeading((Label)c, out headingKey) != null)
                 return T("Nts_Heading", "Column heading") + ": " + c.Text;
             if (c is Label && tag != null && tag.StartsWith("AxisHeading:"))
                 return T("Nts_Heading", "Column heading") + ": " + c.Text;
@@ -205,10 +212,11 @@ namespace Kaban.UI.Helpers
             var tag = c.Tag as string;
             if (c is Label && tag != null && tag.StartsWith("AxisHeading:"))
                 add(T("Nts_KeyHeading", "Column heading"), AxisSettingHMI.HeadingKey(tag.Substring("AxisHeading:".Length)));
-            if (c is Label && tag != null && tag.StartsWith(PneumaticPositioningHMI.HeadingTag))
-                add(T("Nts_KeyHeading", "Column heading"), PneumaticPositioningHMI.HeadingKey(tag.Substring(PneumaticPositioningHMI.HeadingTag.Length)));
-            // the name at a pneumatic positioning's left end: its TitleTextKey
-            var named = c.Parent as PneumaticPositioningHMI;
+            string rowHeading = null;
+            var headed = c is Label ? CylinderRowHMI.RowOfHeading((Label)c, out rowHeading) : null;
+            if (headed != null) add(T("Nts_KeyHeading", "Column heading"), headed.SectionTitleKey(rowHeading));
+            // the name at a cylinder row's left end: its TitleTextKey
+            var named = c.Parent as CylinderRowHMI;
             if (named != null && c == named.NameLabel) { add(T("Nts_KeyTitle", "Title"), named.TitleTextKey); return list; }
             // (a field of an axis row: no texts of its own - its column's heading is
             // translated on the heading; 8 October: "the current one opens translation
@@ -230,8 +238,8 @@ namespace Kaban.UI.Helpers
             // a button or a lamp of a cylinder unit: the unit's title too - it names them
             var unit = UnitOf(c) as CylinderUnitHMI;
             if (unit != null) add(T("Nts_KeyUnitTitle", "Unit title"), unit.TitleTextKey);
-            // ...and a part of a pneumatic positioning: the row's name
-            var row = UnitOf(c) as PneumaticPositioningHMI;
+            // ...and a part of a cylinder row: the row's name
+            var row = UnitOf(c) as CylinderRowHMI;
             if (row != null) add(T("Nts_KeyUnitTitle", "Unit title"), row.TitleTextKey);
             return list;
         }

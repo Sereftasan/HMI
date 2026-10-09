@@ -410,7 +410,7 @@ namespace Kaban.UI.Forms
             if (use == null) return;
             if (use.IsAlarm)
             {
-                _status.Text = T("Msg_FindAlarm", "An alarm definition's bit - see HMI Settings > Alarm Settings.");
+                _status.Text = T("Msg_FindAlarm", "An alarm definition's bit - see Machine Parameters > Alarms.");
                 return;
             }
             var why = _open != null ? _open(use) : "";

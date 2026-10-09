@@ -10,12 +10,11 @@ using System.Windows.Forms;
 
 namespace Kaban.Machines.FA2010.Screens.Parameters
 {
-    public partial class ParamEntry : UserControl
+    public partial class ParamCutting : UserControl
     {
-        public ParamEntry()
+        public ParamCutting()
         {
             InitializeComponent();
         }
     }
 }
-

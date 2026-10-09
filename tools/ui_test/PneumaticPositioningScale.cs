@@ -44,7 +44,9 @@ class PPS {
         form.ClientSize = new Size(fw, fh); Pump(300);
 
         var rows = PneumaticPositioningHMI.RowsOf(page);
-        var heads = page.Controls.OfType<Label>().Where(l => (l.Tag as string ?? "").StartsWith(PneumaticPositioningHMI.HeadingTag)).ToList();
+        // the page a table once shown (AxisPageFrame): the headings in its heading, the rows in its body
+        var heads = CylinderRowHMI.HeadingsHost(page).Controls.OfType<Label>().Where(l => (l.Tag as string ?? "").StartsWith(PneumaticPositioningHMI.HeadingTag)).ToList();
+        Func<Control, Rectangle> scr = c => c.RectangleToScreen(c.ClientRectangle);
         Console.WriteLine("--- at " + factor + " ---");
         Check("16 rows, each as tall as an axis row at the scale", rows.Count == 16 && rows.All(r => r.Height == UiScale.Px(AxisSettingHMI.RowHeight)),
               rows.Count + " rows, " + rows[0].Height);
@@ -57,7 +59,7 @@ class PPS {
         bool over = heads.All(h => {
             var key = ((string)h.Tag).Substring(PneumaticPositioningHMI.HeadingTag.Length);
             var col = f.Columns[key];
-            return Math.Abs(h.Left - (f.Left + UiScale.Px(col.X))) <= 1 && Math.Abs(h.Width - UiScale.Px(col.Y)) <= 1 && h.Bottom <= f.Top;
+            return Math.Abs(scr(h).Left - (scr(f).Left + UiScale.Px(col.X))) <= 1 && Math.Abs(h.Width - UiScale.Px(col.Y)) <= 1 && scr(h).Bottom <= scr(f).Top;
         });
         Check("  the five headings over their columns, above the rows", heads.Count == 5 && over,
               string.Join(" ", heads.Select(h => h.Text + "@" + h.Left)));

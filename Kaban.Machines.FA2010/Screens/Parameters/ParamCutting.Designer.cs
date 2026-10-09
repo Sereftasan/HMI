@@ -10,7 +10,7 @@
 
 namespace Kaban.Machines.FA2010.Screens.Parameters
 {
-    partial class ParamProcess
+    partial class ParamCutting
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -24,21 +24,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
 
         private void InitializeComponent()
         {
-            this.lblMilling = new Kaban.UI.Controls.LabelHMI();
-            this.numX_Top_Clamping_Clearing_Pos = new Kaban.UI.Controls.NumericInputHMI();
-            this.numX_Top_Clamping_Distance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numMax_Milling_Length_w_o_Clamp = new Kaban.UI.Controls.NumericInputHMI();
-            this.numClampless_Speed_Override = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN1st_Tool_Length = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN2nd_Tool_Length = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN3rd_Tool_Length = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN4th_Tool_Length = new Kaban.UI.Controls.NumericInputHMI();
-            this.numTool_Cooling_Time = new Kaban.UI.Controls.NumericInputHMI();
-            this.numTool_Cooling_Period = new Kaban.UI.Controls.NumericInputHMI();
-            this.numMotor_Cooling_Stopping_Delay = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblCutting = new Kaban.UI.Controls.LabelHMI();
             this.numSaw_Diameter = new Kaban.UI.Controls.NumericInputHMI();
             this.numMin_Cut_Length_to_Conveyor = new Kaban.UI.Controls.NumericInputHMI();
             this.numMin_Waste_Profile_to_Conveyor = new Kaban.UI.Controls.NumericInputHMI();
@@ -53,301 +38,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Time = new Kaban.UI.Controls.NumericInputHMI();
             this.numSaw_Cooling_Period = new Kaban.UI.Controls.NumericInputHMI();
             this.SuspendLayout();
-            // 
-            // lblMilling
-            // 
-            this.lblMilling.Name = "lblMilling";
-            this.lblMilling.TranslationKey = "Milling";
-            this.lblMilling.Text = "Milling";
-            this.lblMilling.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblMilling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblMilling.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblMilling.Location = new System.Drawing.Point(16, 16);
-            this.lblMilling.Size = new System.Drawing.Size(460, 26);
-            // 
-            // numX_Top_Clamping_Clearing_Pos  (D534)
-            // 
-            this.numX_Top_Clamping_Clearing_Pos.BackColor = System.Drawing.Color.White;
-            this.numX_Top_Clamping_Clearing_Pos.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numX_Top_Clamping_Clearing_Pos.Name = "numX_Top_Clamping_Clearing_Pos";
-            this.numX_Top_Clamping_Clearing_Pos.PlcNumber = 1;
-            this.numX_Top_Clamping_Clearing_Pos.Address = "D534";
-            this.numX_Top_Clamping_Clearing_Pos.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numX_Top_Clamping_Clearing_Pos.DescriptionText = "X Top Clamping Clearing Pos.";
-            this.numX_Top_Clamping_Clearing_Pos.AutoSize = false;
-            this.numX_Top_Clamping_Clearing_Pos.Digits = 5;
-            this.numX_Top_Clamping_Clearing_Pos.DecimalPlaces = 1;
-            this.numX_Top_Clamping_Clearing_Pos.Divisor = 10000D;
-            this.numX_Top_Clamping_Clearing_Pos.Suffix = "mm";
-            this.numX_Top_Clamping_Clearing_Pos.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numX_Top_Clamping_Clearing_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numX_Top_Clamping_Clearing_Pos.LogAction = true;
-            this.numX_Top_Clamping_Clearing_Pos.Location = new System.Drawing.Point(360, 50);
-            this.numX_Top_Clamping_Clearing_Pos.Size = new System.Drawing.Size(116, 26);
-            this.numX_Top_Clamping_Clearing_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numX_Top_Clamping_Distance  (D552)
-            // 
-            this.numX_Top_Clamping_Distance.BackColor = System.Drawing.Color.White;
-            this.numX_Top_Clamping_Distance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numX_Top_Clamping_Distance.Name = "numX_Top_Clamping_Distance";
-            this.numX_Top_Clamping_Distance.PlcNumber = 1;
-            this.numX_Top_Clamping_Distance.Address = "D552";
-            this.numX_Top_Clamping_Distance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numX_Top_Clamping_Distance.DescriptionText = "X Top Clamping Distance";
-            this.numX_Top_Clamping_Distance.AutoSize = false;
-            this.numX_Top_Clamping_Distance.Digits = 5;
-            this.numX_Top_Clamping_Distance.DecimalPlaces = 1;
-            this.numX_Top_Clamping_Distance.Divisor = 100D;
-            this.numX_Top_Clamping_Distance.Suffix = "mm";
-            this.numX_Top_Clamping_Distance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numX_Top_Clamping_Distance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numX_Top_Clamping_Distance.LogAction = true;
-            this.numX_Top_Clamping_Distance.Location = new System.Drawing.Point(360, 86);
-            this.numX_Top_Clamping_Distance.Size = new System.Drawing.Size(116, 26);
-            this.numX_Top_Clamping_Distance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numMax_Milling_Length_w_o_Clamp  (D440)
-            // 
-            this.numMax_Milling_Length_w_o_Clamp.BackColor = System.Drawing.Color.White;
-            this.numMax_Milling_Length_w_o_Clamp.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMax_Milling_Length_w_o_Clamp.Name = "numMax_Milling_Length_w_o_Clamp";
-            this.numMax_Milling_Length_w_o_Clamp.PlcNumber = 1;
-            this.numMax_Milling_Length_w_o_Clamp.Address = "D440";
-            this.numMax_Milling_Length_w_o_Clamp.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numMax_Milling_Length_w_o_Clamp.DescriptionText = "Max. Milling Length w/o Clamp";
-            this.numMax_Milling_Length_w_o_Clamp.AutoSize = false;
-            this.numMax_Milling_Length_w_o_Clamp.Digits = 5;
-            this.numMax_Milling_Length_w_o_Clamp.DecimalPlaces = 1;
-            this.numMax_Milling_Length_w_o_Clamp.Divisor = 10000D;
-            this.numMax_Milling_Length_w_o_Clamp.Suffix = "mm";
-            this.numMax_Milling_Length_w_o_Clamp.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMax_Milling_Length_w_o_Clamp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMax_Milling_Length_w_o_Clamp.LogAction = true;
-            this.numMax_Milling_Length_w_o_Clamp.Location = new System.Drawing.Point(360, 122);
-            this.numMax_Milling_Length_w_o_Clamp.Size = new System.Drawing.Size(116, 26);
-            this.numMax_Milling_Length_w_o_Clamp.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numClampless_Speed_Override  (D510)
-            // 
-            this.numClampless_Speed_Override.BackColor = System.Drawing.Color.White;
-            this.numClampless_Speed_Override.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numClampless_Speed_Override.Name = "numClampless_Speed_Override";
-            this.numClampless_Speed_Override.PlcNumber = 1;
-            this.numClampless_Speed_Override.Address = "D510";
-            this.numClampless_Speed_Override.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numClampless_Speed_Override.DescriptionText = "Clampless Speed Override";
-            this.numClampless_Speed_Override.AutoSize = false;
-            this.numClampless_Speed_Override.Digits = 5;
-            this.numClampless_Speed_Override.DecimalPlaces = 0;
-            this.numClampless_Speed_Override.Divisor = 1D;
-            this.numClampless_Speed_Override.Suffix = "%";
-            this.numClampless_Speed_Override.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.numClampless_Speed_Override.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numClampless_Speed_Override.LogAction = true;
-            this.numClampless_Speed_Override.Location = new System.Drawing.Point(360, 158);
-            this.numClampless_Speed_Override.Size = new System.Drawing.Size(116, 26);
-            this.numClampless_Speed_Override.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN1st_Tool_Length  (D526)
-            // 
-            this.numN1st_Tool_Length.BackColor = System.Drawing.Color.White;
-            this.numN1st_Tool_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN1st_Tool_Length.Name = "numN1st_Tool_Length";
-            this.numN1st_Tool_Length.PlcNumber = 1;
-            this.numN1st_Tool_Length.Address = "D526";
-            this.numN1st_Tool_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN1st_Tool_Length.DescriptionText = "1st Tool Length";
-            this.numN1st_Tool_Length.AutoSize = false;
-            this.numN1st_Tool_Length.Digits = 5;
-            this.numN1st_Tool_Length.DecimalPlaces = 1;
-            this.numN1st_Tool_Length.Divisor = 10000D;
-            this.numN1st_Tool_Length.Suffix = "mm";
-            this.numN1st_Tool_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN1st_Tool_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN1st_Tool_Length.LogAction = true;
-            this.numN1st_Tool_Length.Location = new System.Drawing.Point(360, 194);
-            this.numN1st_Tool_Length.Size = new System.Drawing.Size(116, 26);
-            this.numN1st_Tool_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN2nd_Tool_Length  (D528)
-            // 
-            this.numN2nd_Tool_Length.BackColor = System.Drawing.Color.White;
-            this.numN2nd_Tool_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN2nd_Tool_Length.Name = "numN2nd_Tool_Length";
-            this.numN2nd_Tool_Length.PlcNumber = 1;
-            this.numN2nd_Tool_Length.Address = "D528";
-            this.numN2nd_Tool_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN2nd_Tool_Length.DescriptionText = "2nd Tool Length";
-            this.numN2nd_Tool_Length.AutoSize = false;
-            this.numN2nd_Tool_Length.Digits = 5;
-            this.numN2nd_Tool_Length.DecimalPlaces = 1;
-            this.numN2nd_Tool_Length.Divisor = 10000D;
-            this.numN2nd_Tool_Length.Suffix = "mm";
-            this.numN2nd_Tool_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN2nd_Tool_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN2nd_Tool_Length.LogAction = true;
-            this.numN2nd_Tool_Length.Location = new System.Drawing.Point(360, 230);
-            this.numN2nd_Tool_Length.Size = new System.Drawing.Size(116, 26);
-            this.numN2nd_Tool_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN3rd_Tool_Length  (D530)
-            // 
-            this.numN3rd_Tool_Length.BackColor = System.Drawing.Color.White;
-            this.numN3rd_Tool_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN3rd_Tool_Length.Name = "numN3rd_Tool_Length";
-            this.numN3rd_Tool_Length.PlcNumber = 1;
-            this.numN3rd_Tool_Length.Address = "D530";
-            this.numN3rd_Tool_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN3rd_Tool_Length.DescriptionText = "3rd Tool Length";
-            this.numN3rd_Tool_Length.AutoSize = false;
-            this.numN3rd_Tool_Length.Digits = 5;
-            this.numN3rd_Tool_Length.DecimalPlaces = 1;
-            this.numN3rd_Tool_Length.Divisor = 10000D;
-            this.numN3rd_Tool_Length.Suffix = "mm";
-            this.numN3rd_Tool_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN3rd_Tool_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN3rd_Tool_Length.LogAction = true;
-            this.numN3rd_Tool_Length.Location = new System.Drawing.Point(360, 266);
-            this.numN3rd_Tool_Length.Size = new System.Drawing.Size(116, 26);
-            this.numN3rd_Tool_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN4th_Tool_Length  (D532)
-            // 
-            this.numN4th_Tool_Length.BackColor = System.Drawing.Color.White;
-            this.numN4th_Tool_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN4th_Tool_Length.Name = "numN4th_Tool_Length";
-            this.numN4th_Tool_Length.PlcNumber = 1;
-            this.numN4th_Tool_Length.Address = "D532";
-            this.numN4th_Tool_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN4th_Tool_Length.DescriptionText = "4th Tool Length";
-            this.numN4th_Tool_Length.AutoSize = false;
-            this.numN4th_Tool_Length.Digits = 5;
-            this.numN4th_Tool_Length.DecimalPlaces = 1;
-            this.numN4th_Tool_Length.Divisor = 10000D;
-            this.numN4th_Tool_Length.Suffix = "mm";
-            this.numN4th_Tool_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN4th_Tool_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN4th_Tool_Length.LogAction = true;
-            this.numN4th_Tool_Length.Location = new System.Drawing.Point(360, 302);
-            this.numN4th_Tool_Length.Size = new System.Drawing.Size(116, 26);
-            this.numN4th_Tool_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numTool_Cooling_Time  (D62)
-            // 
-            this.numTool_Cooling_Time.BackColor = System.Drawing.Color.White;
-            this.numTool_Cooling_Time.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numTool_Cooling_Time.Name = "numTool_Cooling_Time";
-            this.numTool_Cooling_Time.PlcNumber = 1;
-            this.numTool_Cooling_Time.Address = "D62";
-            this.numTool_Cooling_Time.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numTool_Cooling_Time.DescriptionText = "Tool Cooling Time";
-            this.numTool_Cooling_Time.AutoSize = false;
-            this.numTool_Cooling_Time.Digits = 5;
-            this.numTool_Cooling_Time.DecimalPlaces = 1;
-            this.numTool_Cooling_Time.Divisor = 10D;
-            this.numTool_Cooling_Time.Suffix = "s";
-            this.numTool_Cooling_Time.UnitType = Kaban.Core.Enums.UnitType.Time;
-            this.numTool_Cooling_Time.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numTool_Cooling_Time.LogAction = true;
-            this.numTool_Cooling_Time.Location = new System.Drawing.Point(360, 338);
-            this.numTool_Cooling_Time.Size = new System.Drawing.Size(116, 26);
-            this.numTool_Cooling_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numTool_Cooling_Period  (D63)
-            // 
-            this.numTool_Cooling_Period.BackColor = System.Drawing.Color.White;
-            this.numTool_Cooling_Period.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numTool_Cooling_Period.Name = "numTool_Cooling_Period";
-            this.numTool_Cooling_Period.PlcNumber = 1;
-            this.numTool_Cooling_Period.Address = "D63";
-            this.numTool_Cooling_Period.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numTool_Cooling_Period.DescriptionText = "Tool Cooling Period";
-            this.numTool_Cooling_Period.AutoSize = false;
-            this.numTool_Cooling_Period.Digits = 5;
-            this.numTool_Cooling_Period.DecimalPlaces = 1;
-            this.numTool_Cooling_Period.Divisor = 10D;
-            this.numTool_Cooling_Period.Suffix = "s";
-            this.numTool_Cooling_Period.UnitType = Kaban.Core.Enums.UnitType.Time;
-            this.numTool_Cooling_Period.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numTool_Cooling_Period.LogAction = true;
-            this.numTool_Cooling_Period.Location = new System.Drawing.Point(360, 374);
-            this.numTool_Cooling_Period.Size = new System.Drawing.Size(116, 26);
-            this.numTool_Cooling_Period.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numMotor_Cooling_Stopping_Delay  (D442)
-            // 
-            this.numMotor_Cooling_Stopping_Delay.BackColor = System.Drawing.Color.White;
-            this.numMotor_Cooling_Stopping_Delay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMotor_Cooling_Stopping_Delay.Name = "numMotor_Cooling_Stopping_Delay";
-            this.numMotor_Cooling_Stopping_Delay.PlcNumber = 1;
-            this.numMotor_Cooling_Stopping_Delay.Address = "D442";
-            this.numMotor_Cooling_Stopping_Delay.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numMotor_Cooling_Stopping_Delay.DescriptionText = "Motor Cooling Stopping Delay";
-            this.numMotor_Cooling_Stopping_Delay.AutoSize = false;
-            this.numMotor_Cooling_Stopping_Delay.Digits = 5;
-            this.numMotor_Cooling_Stopping_Delay.DecimalPlaces = 0;
-            this.numMotor_Cooling_Stopping_Delay.Divisor = 1D;
-            this.numMotor_Cooling_Stopping_Delay.Suffix = "s";
-            this.numMotor_Cooling_Stopping_Delay.UnitType = Kaban.Core.Enums.UnitType.Time;
-            this.numMotor_Cooling_Stopping_Delay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMotor_Cooling_Stopping_Delay.LogAction = true;
-            this.numMotor_Cooling_Stopping_Delay.Location = new System.Drawing.Point(360, 410);
-            this.numMotor_Cooling_Stopping_Delay.Size = new System.Drawing.Size(116, 26);
-            this.numMotor_Cooling_Stopping_Delay.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN1st_Milling_Unit_Motor_Center_Dislocation  (D674)
-            // 
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.BackColor = System.Drawing.Color.White;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Name = "numN1st_Milling_Unit_Motor_Center_Dislocation";
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.PlcNumber = 1;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Address = "D674";
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.DescriptionText = "1st Milling Unit Motor Center Dislocation";
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.AutoSize = false;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Digits = 6;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.DecimalPlaces = 2;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Divisor = 10000D;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Suffix = "mm";
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.LogAction = true;
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Location = new System.Drawing.Point(790, 50);
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.Size = new System.Drawing.Size(116, 26);
-            this.numN1st_Milling_Unit_Motor_Center_Dislocation.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN2nd_Milling_Unit_Motor_Center_Dislocation  (D676)
-            // 
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.BackColor = System.Drawing.Color.White;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Name = "numN2nd_Milling_Unit_Motor_Center_Dislocation";
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.PlcNumber = 1;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Address = "D676";
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.DescriptionText = "2nd Milling Unit Motor Center Dislocation";
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.AutoSize = false;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Digits = 6;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.DecimalPlaces = 2;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Divisor = 10000D;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Suffix = "mm";
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.LogAction = true;
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Location = new System.Drawing.Point(790, 86);
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.Size = new System.Drawing.Size(116, 26);
-            this.numN2nd_Milling_Unit_Motor_Center_Dislocation.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblCutting
-            // 
-            this.lblCutting.Name = "lblCutting";
-            this.lblCutting.TranslationKey = "Cutting";
-            this.lblCutting.Text = "Cutting";
-            this.lblCutting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblCutting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblCutting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblCutting.Location = new System.Drawing.Point(16, 460);
-            this.lblCutting.Size = new System.Drawing.Size(460, 26);
             // 
             // numSaw_Diameter  (D524)
             // 
@@ -367,7 +57,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Diameter.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numSaw_Diameter.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numSaw_Diameter.LogAction = true;
-            this.numSaw_Diameter.Location = new System.Drawing.Point(360, 494);
+            this.numSaw_Diameter.Location = new System.Drawing.Point(360, 16);
             this.numSaw_Diameter.Size = new System.Drawing.Size(116, 26);
             this.numSaw_Diameter.AddressOffset.StaticValue = 0D;
             this.numSaw_Diameter.AddressOffset.TagAddress = "";
@@ -423,7 +113,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Cut_Length_to_Conveyor.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numMin_Cut_Length_to_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numMin_Cut_Length_to_Conveyor.LogAction = true;
-            this.numMin_Cut_Length_to_Conveyor.Location = new System.Drawing.Point(360, 530);
+            this.numMin_Cut_Length_to_Conveyor.Location = new System.Drawing.Point(360, 52);
             this.numMin_Cut_Length_to_Conveyor.Size = new System.Drawing.Size(116, 26);
             this.numMin_Cut_Length_to_Conveyor.AddressOffset.StaticValue = 0D;
             this.numMin_Cut_Length_to_Conveyor.AddressOffset.TagAddress = "";
@@ -476,7 +166,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Waste_Profile_to_Conveyor.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numMin_Waste_Profile_to_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numMin_Waste_Profile_to_Conveyor.LogAction = true;
-            this.numMin_Waste_Profile_to_Conveyor.Location = new System.Drawing.Point(360, 566);
+            this.numMin_Waste_Profile_to_Conveyor.Location = new System.Drawing.Point(360, 88);
             this.numMin_Waste_Profile_to_Conveyor.Size = new System.Drawing.Size(116, 26);
             this.numMin_Waste_Profile_to_Conveyor.AddressOffset.StaticValue = 0D;
             this.numMin_Waste_Profile_to_Conveyor.AddressOffset.TagAddress = "";
@@ -528,7 +218,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN45_Target_Position.UnitType = Kaban.Core.Enums.UnitType.None;
             this.numN45_Target_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN45_Target_Position.LogAction = true;
-            this.numN45_Target_Position.Location = new System.Drawing.Point(360, 602);
+            this.numN45_Target_Position.Location = new System.Drawing.Point(360, 124);
             this.numN45_Target_Position.Size = new System.Drawing.Size(116, 26);
             this.numN45_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -549,7 +239,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Target_Position.UnitType = Kaban.Core.Enums.UnitType.None;
             this.numN90_Target_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN90_Target_Position.LogAction = true;
-            this.numN90_Target_Position.Location = new System.Drawing.Point(360, 638);
+            this.numN90_Target_Position.Location = new System.Drawing.Point(360, 160);
             this.numN90_Target_Position.Size = new System.Drawing.Size(116, 26);
             this.numN90_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -570,7 +260,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN135_Target_Position.UnitType = Kaban.Core.Enums.UnitType.None;
             this.numN135_Target_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN135_Target_Position.LogAction = true;
-            this.numN135_Target_Position.Location = new System.Drawing.Point(360, 674);
+            this.numN135_Target_Position.Location = new System.Drawing.Point(360, 196);
             this.numN135_Target_Position.Size = new System.Drawing.Size(116, 26);
             this.numN135_Target_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -592,7 +282,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLast_Piece_Cutting_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numLast_Piece_Cutting_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numLast_Piece_Cutting_Offset.LogAction = true;
-            this.numLast_Piece_Cutting_Offset.Location = new System.Drawing.Point(360, 710);
+            this.numLast_Piece_Cutting_Offset.Location = new System.Drawing.Point(360, 232);
             this.numLast_Piece_Cutting_Offset.Size = new System.Drawing.Size(116, 26);
             this.numLast_Piece_Cutting_Offset.AddressOffset.StaticValue = 0D;
             this.numLast_Piece_Cutting_Offset.AddressOffset.TagAddress = "";
@@ -645,7 +335,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRight_Front_Clamp_Min_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numRight_Front_Clamp_Min_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numRight_Front_Clamp_Min_Length.LogAction = true;
-            this.numRight_Front_Clamp_Min_Length.Location = new System.Drawing.Point(360, 746);
+            this.numRight_Front_Clamp_Min_Length.Location = new System.Drawing.Point(360, 268);
             this.numRight_Front_Clamp_Min_Length.Size = new System.Drawing.Size(116, 26);
             this.numRight_Front_Clamp_Min_Length.AddressOffset.StaticValue = 0D;
             this.numRight_Front_Clamp_Min_Length.AddressOffset.TagAddress = "";
@@ -697,7 +387,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.LogAction = true;
-            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Location = new System.Drawing.Point(360, 782);
+            this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Location = new System.Drawing.Point(360, 304);
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.Size = new System.Drawing.Size(116, 26);
             this.numMilling_X_Cutting_Front_Vertical_Clamping_Distance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -719,7 +409,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLong_Profile_Ejection_Min_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numLong_Profile_Ejection_Min_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numLong_Profile_Ejection_Min_Length.LogAction = true;
-            this.numLong_Profile_Ejection_Min_Length.Location = new System.Drawing.Point(790, 494);
+            this.numLong_Profile_Ejection_Min_Length.Location = new System.Drawing.Point(360, 340);
             this.numLong_Profile_Ejection_Min_Length.Size = new System.Drawing.Size(116, 26);
             this.numLong_Profile_Ejection_Min_Length.AddressOffset.StaticValue = 0D;
             this.numLong_Profile_Ejection_Min_Length.AddressOffset.TagAddress = "";
@@ -772,7 +462,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Right_Top_Clamp_Clearing_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numSaw_Right_Top_Clamp_Clearing_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numSaw_Right_Top_Clamp_Clearing_Position.LogAction = true;
-            this.numSaw_Right_Top_Clamp_Clearing_Position.Location = new System.Drawing.Point(790, 530);
+            this.numSaw_Right_Top_Clamp_Clearing_Position.Location = new System.Drawing.Point(360, 376);
             this.numSaw_Right_Top_Clamp_Clearing_Position.Size = new System.Drawing.Size(116, 26);
             this.numSaw_Right_Top_Clamp_Clearing_Position.AddressOffset.StaticValue = 0D;
             this.numSaw_Right_Top_Clamp_Clearing_Position.AddressOffset.TagAddress = "";
@@ -825,7 +515,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Time.UnitType = Kaban.Core.Enums.UnitType.Time;
             this.numSaw_Cooling_Time.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numSaw_Cooling_Time.LogAction = true;
-            this.numSaw_Cooling_Time.Location = new System.Drawing.Point(790, 566);
+            this.numSaw_Cooling_Time.Location = new System.Drawing.Point(360, 412);
             this.numSaw_Cooling_Time.Size = new System.Drawing.Size(116, 26);
             this.numSaw_Cooling_Time.AddressOffset.StaticValue = 0D;
             this.numSaw_Cooling_Time.AddressOffset.TagAddress = "";
@@ -878,7 +568,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Period.UnitType = Kaban.Core.Enums.UnitType.Time;
             this.numSaw_Cooling_Period.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numSaw_Cooling_Period.LogAction = true;
-            this.numSaw_Cooling_Period.Location = new System.Drawing.Point(790, 602);
+            this.numSaw_Cooling_Period.Location = new System.Drawing.Point(360, 448);
             this.numSaw_Cooling_Period.Size = new System.Drawing.Size(116, 26);
             this.numSaw_Cooling_Period.AddressOffset.StaticValue = 0D;
             this.numSaw_Cooling_Period.AddressOffset.TagAddress = "";
@@ -913,7 +603,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numSaw_Cooling_Period.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
             this.numSaw_Cooling_Period.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // ParamProcess
+            // ParamCutting
             // 
             // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
             // auto-scaling container (the tab host), which would scale them twice.
@@ -921,21 +611,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lblMilling);
-            this.Controls.Add(this.numX_Top_Clamping_Clearing_Pos);
-            this.Controls.Add(this.numX_Top_Clamping_Distance);
-            this.Controls.Add(this.numMax_Milling_Length_w_o_Clamp);
-            this.Controls.Add(this.numClampless_Speed_Override);
-            this.Controls.Add(this.numN1st_Tool_Length);
-            this.Controls.Add(this.numN2nd_Tool_Length);
-            this.Controls.Add(this.numN3rd_Tool_Length);
-            this.Controls.Add(this.numN4th_Tool_Length);
-            this.Controls.Add(this.numTool_Cooling_Time);
-            this.Controls.Add(this.numTool_Cooling_Period);
-            this.Controls.Add(this.numMotor_Cooling_Stopping_Delay);
-            this.Controls.Add(this.numN1st_Milling_Unit_Motor_Center_Dislocation);
-            this.Controls.Add(this.numN2nd_Milling_Unit_Motor_Center_Dislocation);
-            this.Controls.Add(this.lblCutting);
             this.Controls.Add(this.numSaw_Diameter);
             this.Controls.Add(this.numMin_Cut_Length_to_Conveyor);
             this.Controls.Add(this.numMin_Waste_Profile_to_Conveyor);
@@ -949,29 +624,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.numSaw_Right_Top_Clamp_Clearing_Position);
             this.Controls.Add(this.numSaw_Cooling_Time);
             this.Controls.Add(this.numSaw_Cooling_Period);
-            this.Name = "ParamProcess";
-            this.Size = new System.Drawing.Size(946, 832);
+            this.Name = "ParamCutting";
+            this.Size = new System.Drawing.Size(516, 498);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI lblMilling;
-        private Kaban.UI.Controls.NumericInputHMI numX_Top_Clamping_Clearing_Pos;
-        private Kaban.UI.Controls.NumericInputHMI numX_Top_Clamping_Distance;
-        private Kaban.UI.Controls.NumericInputHMI numMax_Milling_Length_w_o_Clamp;
-        private Kaban.UI.Controls.NumericInputHMI numClampless_Speed_Override;
-        private Kaban.UI.Controls.NumericInputHMI numN1st_Tool_Length;
-        private Kaban.UI.Controls.NumericInputHMI numN2nd_Tool_Length;
-        private Kaban.UI.Controls.NumericInputHMI numN3rd_Tool_Length;
-        private Kaban.UI.Controls.NumericInputHMI numN4th_Tool_Length;
-        private Kaban.UI.Controls.NumericInputHMI numTool_Cooling_Time;
-        private Kaban.UI.Controls.NumericInputHMI numTool_Cooling_Period;
-        private Kaban.UI.Controls.NumericInputHMI numMotor_Cooling_Stopping_Delay;
-        private Kaban.UI.Controls.NumericInputHMI numN1st_Milling_Unit_Motor_Center_Dislocation;
-        private Kaban.UI.Controls.NumericInputHMI numN2nd_Milling_Unit_Motor_Center_Dislocation;
-        private Kaban.UI.Controls.LabelHMI lblCutting;
         private Kaban.UI.Controls.NumericInputHMI numSaw_Diameter;
         private Kaban.UI.Controls.NumericInputHMI numMin_Cut_Length_to_Conveyor;
         private Kaban.UI.Controls.NumericInputHMI numMin_Waste_Profile_to_Conveyor;

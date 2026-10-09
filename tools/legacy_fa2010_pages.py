@@ -97,10 +97,23 @@ def Mould(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valv
                 target=target, send=send, cal=cal, calibrate=calibrate, tol=tol, offset=offset, name=None,
                 valve=valve, feedback=feedback, optional=optional)
 
-def Enc(title, back, fwd, pos, ref=None, tol=None, start=None, unclamp=None, note=None, name=None):
-    """An encoder: the unit (back, position, forward) and its settings."""
-    return dict(kind='enc', title=title, a=side(back), b=side(fwd), pos=value(pos),
-                ref=ref, tol=tol, start=start, unclamp=unclamp, note=note, name=name)
+ENCODERS = {}                        # number -> its row's spec (CylinderEncoderUnitHMI finds it)
+
+def Enc(number, title, back, fwd, pos, ref=None, tol=None, start=None, unclamp=None, note=None, name=None, valve=None, feedback=None):
+    """A cylinder with an encoder: a CylinderEncoderSettingHMI row of Machine Parameters >
+    Encoders (9 October) - its number, its manual movement (back and forward as
+    'command/lamp', its position) and its settings: reference, measuring tolerance
+    (tol), minimum limit (start - the old page's Start Limit), unclamping interval."""
+    it = dict(kind='enc', number=number, title=title, a=side(back), b=side(fwd), pos=value(pos),
+              ref=ref, tol=tol, start=start, unclamp=unclamp, note=note, name=name, valve=valve, feedback=feedback)
+    assert number not in ENCODERS, number
+    ENCODERS[number] = it
+    return it
+
+def EncU(number, title, name=None):
+    """A cylinder with an encoder on a Manual Movement page: a CylinderEncoderUnitHMI that takes
+    everything from encoder <number>'s row - its title here is the page's own."""
+    return dict(kind='encunit', number=number, title=title, name=name)
 
 def Num(caption, addr, bits, div, dec, unit='mm', name=None):
     return dict(kind='num', title=caption, addr=addr, bits=bits, div=float(div), dec=dec, unit=unit, name=name)
@@ -140,7 +153,7 @@ page('ManualEntry_Conveyor', 'Manual', 'ucEntryConveyor', 'Entry Conveyor', [Col
     Cyl('Profile Clamping 4', 'M693/M210', 'M686/M217'),
     Cyl('Profile Clamping 5', 'M694/M211', 'M687/M218'),
     Cyl('Profile Clamping 6', 'M695/M212', 'M688/M219'),
-    Cyl('Profile Clamping 7', 'M696/M213', 'M689/M220', 'D4 16 /10 1'),
+    EncU(10, 'Profile Clamping 7'),
     # The old page lit the rolls' DOWN sensors (M346, 2SN.94 / 2SN.95) on the Up
     # button; M745 is the Rolls Down valve (Y42), so they light Down - as since
     # the drawings review of 30 September (REVIEW 4r).
@@ -148,7 +161,7 @@ page('ManualEntry_Conveyor', 'Manual', 'ucEntryConveyor', 'Entry Conveyor', [Col
 
 page('ManualRobot', 'Manual', 'ucRobot', 'Robot', [Col(None,
     Axis(1, 'Axis X'), Axis(2, 'Axis Y'), Axis(3, 'Axis Z'),
-    Cyl('Gripper', 'M642/M222', 'M641', 'D21 16 /10 2'),
+    EncU(1, 'Gripper'),
     Btn('Sawdust Blowing', 'M697'),
     Lamp('Bar First End Read SN', 'M323'),
     Lamp('Bar Last End Read SN', 'M324'),
@@ -161,15 +174,13 @@ page('ManualRobot', 'Manual', 'ucRobot', 'Robot', [Col(None,
 page('ManualProfile_Recognition', 'Manual', 'ucProfileRecognition', 'Profile Recognition', [Col(None,
     Cyl('Unit Up/Down', 'M643/M224', 'M644'),
     Btn('High Air Pressure', 'M719!Alt'),
-    # Forward: the pressure switch the drawings wire (SW1 = SN83 on X70 = M240), as
-    # since 30 September; the old page lit M348, which is no input.
-    Cyl('Front Clamping', 'M646/M225', 'M645/M240', 'D4 16 /10 1'),
-    Cyl('Top Clamping', 'M648/M226', 'M647', 'D6 16 /10 1'),
+    EncU(2, 'Front Clamping'),
+    EncU(3, 'Top Clamping'),
     Cyl('Roller Up/Down', 'M703/M223', 'M702'),
     Btn('Sawdust Blowing', 'M661'),
     Btn('Left End Encoders Active', 'M724!Alt', lamp='M724'),
     Cyl('Left Top FW/Back', 'M743/M203', 'M742/M206'),
-    Cyl('Left Top Clamping', 'M741/M345', 'M740', 'D6 16 /10 1'))])
+    EncU(11, 'Left Top Clamping'))])
 
 page('ManualMilling', 'Manual', 'ucMilling', 'Milling',
     [Col(None,
@@ -177,10 +188,8 @@ page('ManualMilling', 'Manual', 'ucMilling', 'Milling',
         # the roller (P21) has no sensor - no lamp, as since 30 September.
         Cyl('Roller Up/Down', 'M705', 'M704'),
         Btn('High Air Pressure', 'M716!Alt'),
-        Cyl('Top Clamping', 'M730/M228', 'M729', 'D14 16 /10 1'),
-        # Forward: the pressure switch (SN84 on X73 = M243), as since 30 September;
-        # the old page lit M349, which is no input.
-        Cyl('Front Clamping', 'M653/M227', 'M652/M243', 'D20 16 /10 1')),
+        EncU(4, 'Top Clamping'),
+        EncU(5, 'Front Clamping')),
      Col(None,
         Group('Drills to Changing Pos.', [('M176', '1'), ('M177', '2'), ('M178', '3'), ('M179', '4')], 'Set'),
         Btn('Machine Cleaning Pos.', 'M180!Alt'))],
@@ -204,9 +213,9 @@ page('ManualCutting', 'Manual', 'ucCutting', 'Cutting',
         Axis(12, 'Cutting Angle'), Axis(13, 'Cutting Z'),
         Btn('High Air Pressure', 'M651'),
         Cyl('Left Top Small Clamping', 'M699/M230', 'M698'),
-        Cyl('Left Top Clamping', 'M672/M245', 'M671', 'D15 16 /10 1'),
-        Cyl('Right Front Clamping', 'M655/M232', 'M654', 'D16 16 /10 1'),
-        Cyl('Right Front Vert. Clamping', 'M659/M246', 'M658', 'D7 16 /10 1', name='unitRight_Front_Vert_Clamping'),
+        EncU(6, 'Left Top Clamping'),
+        EncU(7, 'Right Front Clamping'),
+        EncU(9, 'Right Front Vert. Clamping', name='unitRight_Front_Vert_Clamping'),
         Btn('Saw Motor', 'M636!Alt'),
         Hex('Saw Inverter Error', 'D669'),
         Btn('Saw Cooling', 'M714!Alt'),
@@ -229,7 +238,7 @@ page('ManualCutting', 'Manual', 'ucCutting', 'Cutting',
         Btn('Mullion Blade Change', 'M749', lamp='M273'))])
 
 page('ManualExit', 'Manual', 'ucExit', 'Exit', [Col(None,
-    Cyl('Robot Top Clamping', 'M657/M233', 'M656', 'D17 16 /10 1'),
+    EncU(8, 'Robot Top Clamping'),
     Cyl('Robot Top Small Clamping', 'M701/M231', 'M700'),
     Axis(16, 'Exit Robot', name='unitRobot_Movement'),
     Cyl('Roller Up/Down', 'M709/M234', 'M708'),
@@ -281,8 +290,13 @@ page('ManualYZ_Cross_Rollers', 'Manual', None, 'YZ Cross Rollers', [Col(None,
 # ------------------------------------------------------------ PARAMETERS ----
 L32, L16 = 32, 16
 
-page('ParamEntry', 'Parameters', 'ucEntryParameters', 'Entry Parameters',
-    [Col('Conveyor',
+# 9 October: "remove 'Parameters' of all the tab titles ... Entry (we should divide this page as
+# Conveyor and Robot instead actually since they are totally different sections anyway and move the
+# right side of Robot ones to the left bottom as well because the page height will be enough then),
+# Process (we should divide this page as Milling and Cutting instead actually)" - the old Entry and
+# Process pages are two tabs each, a column each, the tab their heading.
+page('ParamConveyor', 'Parameters', 'ucEntryParameters', 'Conveyor',
+    [Col(None,
         Num('Minimum Bar Length', 'D438', L32, 10000, 1),
         Num('1st Clamping Position', 'D452', L32, 10000, 1),
         Num('2nd Clamping Position', 'D454', L32, 10000, 1),
@@ -290,8 +304,10 @@ page('ParamEntry', 'Parameters', 'ucEntryParameters', 'Entry Parameters',
         Num('4th Clamping Position', 'D458', L32, 10000, 1),
         Num('5th Clamping Position', 'D460', L32, 10000, 1),
         Num('6th Clamping Position', 'D462', L32, 10000, 1),
-        Num('7th Clamping Position', 'D464', L32, 10000, 1))],
-    [Col('Robot',
+        Num('7th Clamping Position', 'D464', L32, 10000, 1))])
+
+page('ParamRobot', 'Parameters', 'ucEntryParameters', 'Robot',
+    [Col(None,
         Num('Gripper Length', 'D506', L32, 10000, 1),
         Num('Encoder Reference', 'D516', L16, 10, 1),
         Num('Length Measuring Dist.', 'D384', L32, 10000, 1),
@@ -301,8 +317,7 @@ page('ParamEntry', 'Parameters', 'ucEntryParameters', 'Entry Parameters',
         Num('Recognition Extrication Pos.', 'D508', L32, 10000, 1),
         Num('Y Profile Clearing Pos.', 'D626', L32, 10000, 1),
         Num('Z Profile Clearing Pos.', 'D550', L32, 10000, 1),
-        Num('Cross Rollers Robot Y Offset', 'D782', L32, 10000, 1)),
-     Col(None,
+        Num('Cross Rollers Robot Y Offset', 'D782', L32, 10000, 1),
         Num('Robot Height', 'D664', L32, 10000, 0),
         Num('Left Front Extrication Pos.', 'D520', L32, 10000, 1),
         Num('Conveyor Extrication Position', 'D504', L32, 10000, 1),
@@ -314,8 +329,8 @@ page('ParamEntry', 'Parameters', 'ucEntryParameters', 'Entry Parameters',
         Num('90 Degree Gripper Z Offset', 'D704', L32, 10000, 1),
         Num('Cross Rollers Robot Z Offset', 'D784', L32, 10000, 1))])
 
-page('ParamProcess', 'Parameters', 'ucProcessParameters', 'Process Parameters',
-    [Col('Milling',
+page('ParamMilling', 'Parameters', 'ucProcessParameters', 'Milling',
+    [Col(None,
         Num('X Top Clamping Clearing Pos.', 'D534', L32, 10000, 1),
         Num('X Top Clamping Distance', 'D552', L32, 100, 1),
         Num('Max. Milling Length w/o Clamp', 'D440', L32, 10000, 1),
@@ -326,11 +341,12 @@ page('ParamProcess', 'Parameters', 'ucProcessParameters', 'Process Parameters',
         Num('4th Tool Length', 'D532', L32, 10000, 1),
         Num('Tool Cooling Time', 'D62', L16, 10, 1, 's'),
         Num('Tool Cooling Period', 'D63', L16, 10, 1, 's'),
-        Num('Motor Cooling Stopping Delay', 'D442', L16, 1, 0, 's')),
-     Col(None,
+        Num('Motor Cooling Stopping Delay', 'D442', L16, 1, 0, 's'),
         Num('1st Milling Unit Motor Center Dislocation', 'D674', L32, 10000, 2),
-        Num('2nd Milling Unit Motor Center Dislocation', 'D676', L32, 10000, 2))],
-    [Col('Cutting',
+        Num('2nd Milling Unit Motor Center Dislocation', 'D676', L32, 10000, 2))])
+
+page('ParamCutting', 'Parameters', 'ucProcessParameters', 'Cutting',
+    [Col(None,
         Num('Saw Diameter', 'D524', L32, 10000, 1),
         Num('Min. Cut Length to Conveyor', 'D556', L32, 10000, 1),
         Num('Min. Waste Profile to Conveyor', 'D538', L32, 10000, 1),
@@ -339,32 +355,42 @@ page('ParamProcess', 'Parameters', 'ucProcessParameters', 'Process Parameters',
         Num('135° Target Position', 'D624', L32, 100000, 2, '°'),
         Num('Last Piece Cutting Offset', 'D448', L32, 10000, 1),
         Num('Right Front Clamp Min. Length', 'D518', L32, 10000, 1),
-        Num('Milling X - Cutting Front Vertical Clamping Distance', 'D680', L32, 10000, 1)),
-     Col(None,
+        Num('Milling X - Cutting Front Vertical Clamping Distance', 'D680', L32, 10000, 1),
         Num('Long Profile Ejection Min Length', 'D686', L32, 10000, 1),
         Num('Saw Right Top Clamp Clearing Position', 'D682', L32, 10000, 1),
         Num('Saw Cooling Time', 'D68', L16, 10, 1, 's'),
         Num('Saw Cooling Period', 'D69', L16, 10, 1, 's'))])
 
 E = Enc
-page('ParamEncoders', 'Parameters', 'ucEncodersParameters', 'Encoders Parameters',
-    [Col('Encoders',
-        E('Robot Position', 'M604/M330', 'M605', 'D22 32 /1000 2'),
-        # The old page jogged this row with M657/M656 - the Exit's Robot Top
-        # Clamping, copied from the row below. The gripper is M642/M641
-        # (Manual Movement - Robot).
-        E('Robot Gripper', 'M642', 'M641', 'D21 16 /10 1', ref='D516'),
-        E('Profile Recognition Front', 'M646', 'M645', 'D4 16 /10 1', ref='D477', tol='D479', start='D483', unclamp='D51'),
-        E('Profile Recognition Top', 'M648', 'M647', 'D6 16 /10 1', ref='D478', tol='D480', start='D484', unclamp='D50'),
-        E('Milling Top', 'M730', 'M729', 'D14 16 /10 1', ref='D511', unclamp='D53'),
-        E('Milling-Cutting Left Front', 'M653', 'M652', 'D20 16 /10 1', ref='D512', unclamp='D52'),
-        E('Cutting Left Top', 'M672', 'M671', 'D15 16 /10 1', ref='D513', unclamp='D54'),
-        E('Cutting Right Front', 'M655', 'M654', 'D16 16 /10 1', ref='D514', unclamp='D55'),
-        E('Exit Carrying Top', 'M657', 'M656', 'D17 16 /10 1', ref='D515', unclamp='D56'),
-        E('Cutting Front Right Vertical', 'M659', 'M658', 'D7 16 /10 1', ref='D517', unclamp='D64'))],
-    [Col('Left Encoders',
-        E('Profile Recognition Front', 'M689', 'M696', 'D4 16 /10 1', ref='D546', name='encLeft_Profile_Recognition_Front'),
-        E('Profile Recognition Top', 'M740', 'M741', 'D6 16 /10 1', ref='D547', name='encLeft_Profile_Recognition_Top'))],
+# 9 October: a CylinderEncoderSettingHMI row an encoder, as the axis rows of Axis Parameters; the
+# manual pages' CylinderEncoderUnitHMI take everything from them by number. Each row's movement is
+# the manual page's (its sides and lamps as reviewed against the drawings on 30 September): the old
+# Encoders page jogged them without lamps. Its old first row, Robot Position (M604 / M605, D22), is
+# Robot X - its axis unit on Manual Movement - Robot, D22 its load-side encoder, shown in the tooltip
+# of its position - so it is gone from here.
+page('ParamEncoders', 'Parameters', 'ucEncodersParameters', 'Encoders',
+    [Col(None,
+        # The old page jogged this row with M657/M656 - the Exit's Robot Top Clamping, copied
+        # from the row below. The gripper is M642/M641 (Manual Movement - Robot); its position
+        # in 0.1 mm with ONE decimal, as here (the old Robot page showed two).
+        E(1, 'Robot Gripper', 'M642/M222', 'M641', 'D21 16 /10 1', ref='D516'),
+        # Forward: the pressure switch the drawings wire (SW1 = SN83 on X70 = M240), as since
+        # 30 September; the old page lit M348, which is no input.
+        E(2, 'Profile Recognition Front', 'M646/M225', 'M645/M240', 'D4 16 /10 1', ref='D477', tol='D479', start='D483', unclamp='D51'),
+        E(3, 'Profile Recognition Top', 'M648/M226', 'M647', 'D6 16 /10 1', ref='D478', tol='D480', start='D484', unclamp='D50'),
+        E(4, 'Milling Top', 'M730/M228', 'M729', 'D14 16 /10 1', ref='D511', unclamp='D53'),
+        # Forward: the pressure switch (SN84 on X73 = M243), as since 30 September; the old
+        # page lit M349, which is no input.
+        E(5, 'Milling-Cutting Left Front', 'M653/M227', 'M652/M243', 'D20 16 /10 1', ref='D512', unclamp='D52'),
+        E(6, 'Cutting Left Top', 'M672/M245', 'M671', 'D15 16 /10 1', ref='D513', unclamp='D54'),
+        E(7, 'Cutting Right Front', 'M655/M232', 'M654', 'D16 16 /10 1', ref='D514', unclamp='D55'),
+        E(8, 'Exit Carrying Top', 'M657/M233', 'M656', 'D17 16 /10 1', ref='D515', unclamp='D56'),
+        E(9, 'Cutting Front Right Vertical', 'M659/M246', 'M658', 'D7 16 /10 1', ref='D517', unclamp='D64'),
+        # The old page's "Left Encoders" (Profile Recognition Front and Top), its buttons the
+        # other way round: release / clamp, up / down - as the manual pages and the drawings
+        # have them (M696 release, M689 clamp; M741 up, M740 down).
+        E(10, 'Left Profile Recognition Front', 'M696/M213', 'M689/M220', 'D4 16 /10 1', ref='D546', name='encLeft_Profile_Recognition_Front'),
+        E(11, 'Left Profile Recognition Top', 'M741/M345', 'M740', 'D6 16 /10 1', ref='D547', name='encLeft_Profile_Recognition_Top'))],
     table=True)
 
 page('ParamOther', 'Parameters', 'ucOtherParameters', 'Other Parameters',
@@ -428,7 +454,13 @@ EXPECTED = {
     'ucEntryConveyor': {'pairs': {('M745', 'M346')}},
     'ucProfileRecognition': {'extra': {'M240'}, 'missing': {'M348'}, 'pairs': {('M645', 'M240')}},
     'ucMilling': {'extra': {'M243'}, 'missing': {'M229', 'M349'}, 'pairs': {('M652', 'M243')}},
-    'ucEncodersParameters': {'extra': {'M642', 'M641'}},   # the gripper row (M657/M656 stay on Exit Carrying Top)
+    # the gripper row (M657/M656 stay on Exit Carrying Top); the rows' lamps, the manual pages'
+    # (9 October); the Robot Position row is Robot X's axis unit (D22 in its tooltip); the left
+    # encoders' buttons release / clamp and up / down, as the manual pages have them
+    'ucEncodersParameters': {'extra': {'M642', 'M641', 'M222', 'M225', 'M240', 'M226', 'M228', 'M227', 'M243', 'M245',
+                                       'M232', 'M233', 'M246', 'M213', 'M220', 'M345'},
+                             'missing': {'M604', 'M330', 'M605', 'D22'},
+                             'swapped': {('M696', 'M689'), ('M741', 'M740')}},
     # V Cutting Z's and the Exit Robot's lamps: the axis rows' reference sensors
     # now (M259 - the old Cutting page lit the Exit Robot's M258 - and M343, as
     # on the old Axis Parameters page).
@@ -452,7 +484,7 @@ CHAR_W = 6.4                     # a caption's width, per character (Segoe UI 9)
 
 def height(item):
     k = item['kind']
-    if k in ('cyl', 'axis', 'group', 'mould', 'enc'): return UNIT_H
+    if k in ('cyl', 'axis', 'group', 'mould', 'enc', 'encunit'): return UNIT_H
     if k == 'lamp': return 36
     if k == 'head': return HEAD_H - 2
     return 40                       # btn, hex
@@ -516,7 +548,8 @@ def keys_of_current(block, path, name):
     if t == 'ButtonHMI': return set(bit_addresses(path, name))
     if t in ('LampHMI', 'NumericDisplayHMI', 'NumericInputHMI', 'CheckBoxHMI'): return {x for x in (v('Address'),) if x}
     if t == 'AxisUnitHMI': return {'axis:' + (v('AxisNumber') or '')}
-    if t == 'PneumaticPositioningHMI': return {x for x in (v('CommandBackAddress'), v('CommandForwardAddress')) if x}
+    if t in ('PneumaticPositioningHMI', 'CylinderEncoderSettingHMI'): return {x for x in (v('CommandBackAddress'), v('CommandForwardAddress')) if x}
+    if t == 'CylinderEncoderUnitHMI': return {'enc:' + (v('EncoderNumber') or '')}
     return set()
 
 def title_of_current(block):
@@ -537,7 +570,7 @@ def ident(text):
     if s and s[0].isdigit(): s = 'N' + s
     return s
 
-PREFIX = {'cyl': 'unit', 'axis': 'unit', 'btn': 'btn', 'lamp': 'lamp', 'hex': 'disp', 'group': 'grp',
+PREFIX = {'cyl': 'unit', 'axis': 'unit', 'encunit': 'unit', 'btn': 'btn', 'lamp': 'lamp', 'hex': 'disp', 'group': 'grp',
           'mould': 'pp', 'enc': 'enc', 'num': 'num', 'opt': 'opt'}
 
 # ============================================================================
@@ -548,6 +581,8 @@ TYPES = {'CylinderUnitHMI': 'Kaban.UI.Controls.CylinderUnitHMI', 'AxisUnitHMI': 
          'NumericDisplayHMI': 'Kaban.UI.Controls.NumericDisplayHMI', 'NumericInputHMI': 'Kaban.UI.Controls.NumericInputHMI',
          'CheckBoxHMI': 'Kaban.UI.Controls.CheckBoxHMI', 'GroupBoxHMI': 'Kaban.UI.Controls.GroupBoxHMI',
          'LabelHMI': 'Kaban.UI.Controls.LabelHMI', 'PneumaticPositioningHMI': 'Kaban.UI.Controls.PneumaticPositioningHMI',
+         'CylinderEncoderSettingHMI': 'Kaban.UI.Controls.CylinderEncoderSettingHMI',
+         'CylinderEncoderUnitHMI': 'Kaban.UI.Controls.CylinderEncoderUnitHMI',
          'Label': 'System.Windows.Forms.Label'}
 
 # The properties a page sets itself; everything else a control carries is kept.
@@ -571,6 +606,12 @@ OWNED = {
                                 'PositionAddress', 'PositionDataType', 'PositionDivisor', 'PositionDecimalPlaces',
                                 'TargetPosition', 'PositioningStartAddress', 'CalibrationAddress', 'CalibrateAddress',
                                 'PositioningToleranceAddress', 'PositioningDirectionReferenceAddress', 'Divisor', 'DecimalPlaces'},
+    'CylinderEncoderSettingHMI': {'BackColor', 'Name', 'PlcNumber', 'EncoderNumber', 'TitleTextKey', 'Location', 'Size', 'TabIndex',
+                                  'CommandBackAddress', 'CommandForwardAddress', 'BackSensorAddress', 'ForwardSensorAddress',
+                                  'PositionAddress', 'PositionDataType', 'PositionDivisor', 'PositionDecimalPlaces',
+                                  'ReferenceAddress', 'MeasuringToleranceAddress', 'MinimumLimitAddress', 'UnclampingIntervalAddress',
+                                  'Divisor', 'DecimalPlaces'},
+    'CylinderEncoderUnitHMI': {'BackColor', 'Name', 'EncoderNumber', 'PlcNumber', 'TitleTextKey', 'Location', 'Size', 'TabIndex'},
 }
 
 # A control of another type that a new one replaces: its own additions, renamed
@@ -584,9 +625,42 @@ CARRIED = {
         'ValveType': 'ValveType', 'FeedbackType': 'FeedbackType', 'RequiredSecurity': 'RequiredSecurity',
         'VisibilityConditions': 'VisibilityConditions', 'EnableConditions': 'EnableConditions',
         'ConfirmationNeeded': None, 'LogAction': 'LogAction'},
+    # 9 October: a cylinder with an encoder - what describes the cylinder goes to its encoder's
+    # row (Machine Parameters > Encoders) ...
+    ('CylinderUnitHMI', 'CylinderEncoderSettingHMI'): {
+        'ErrorAAddress': 'ErrorBackAddress', 'ErrorBAddress': 'ErrorForwardAddress',
+        'HelpAFiles': 'HelpBackFiles', 'HelpBFiles': 'HelpForwardFiles',
+        'ValveType': 'ValveType', 'FeedbackType': 'FeedbackType', 'RequiredSecurity': 'RequiredSecurity'},
+    # ... what the page wanted of it stays with the unit on the page (False: carried to the row)
+    ('CylinderUnitHMI', 'CylinderEncoderUnitHMI'): {
+        'VisibilityConditions': 'VisibilityConditions', 'EnableConditions': 'EnableConditions',
+        'ErrorAAddress': False, 'ErrorBAddress': False, 'HelpAFiles': False, 'HelpBFiles': False,
+        'ValveType': False, 'FeedbackType': False, 'RequiredSecurity': False},
 }
 
 ACTION = {'Momentary': 'Momentary', 'Alternate': 'Alternate', 'Set': 'SET'}   # Kaban.Core.Enums.BitActionType
+
+PAGE_CODE = '''// <auto-generated>
+//   Generated by tools/legacy_fa2010_pages.py from the page of the HMI the machine runs today.
+//   This is a normal WinForms DESIGNER file: open the page in Visual Studio and
+//   every control appears on the design surface with its properties editable.
+//   Re-running the generator overwrites it, so make lasting changes in the
+//   workbook (or stop generating this page and keep it by hand).
+// </auto-generated>
+
+using System.Windows.Forms;
+
+namespace %s
+{
+    public partial class %s : UserControl
+    {
+        public %s()
+        {
+            InitializeComponent();
+        }
+    }
+}
+'''
 
 def cs(s):
     return '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
@@ -634,21 +708,22 @@ class Emitter:
     def p(self, name, prop, val):
         self.body.append('            this.%s.%s = %s;' % (name, prop, val))
 
-    def kept(self, name, t, old):
-        """The old control's own additions, renamed."""
+    def kept(self, name, t, old, have=None, report=True):
+        """The old control's own additions, renamed (none of the properties in <have>)."""
         if not old: return
         b = self.current[old]
         carried = CARRIED.get((b['type'], t))
         if b['type'] != t and carried is None: return
         own = OWNED.get(b['type'], set())
-        have = set()
+        have = set(have or ())
         for prop, comments, text in b['lines']:
             if prop in own or prop.startswith('BitActions'): continue
             new = prop
             if carried is not None:
                 new = carried.get(prop)
+                if new is False: continue            # carried to another control
                 if not new:
-                    self.dropped.append('%s.%s (no %s property for it)' % (b['own'], prop, t))
+                    if report: self.dropped.append('%s.%s (no %s property for it)' % (b['own'], prop, t))
                     continue
             if new in have: continue
             have.add(new)
@@ -861,8 +936,65 @@ class Emitter:
             self.p(name, 'VisibilityConditions', '((Kaban.Core.Enums.SystemCondition)(%dL))' % CLAMPING_MOULD_OPTION)
         self.add(name)
 
-    def pp_heading(self, key, text, x, y, w):
-        """A heading over the pneumatic positioning rows' column 'key' (the rows put it over the column)."""
+    def encoder_row(self, name, item, x, y, w, old, source=None):
+        """A cylinder with an encoder as a CylinderEncoderSettingHMI row (9 October). source: the
+        manual page's unit it was until then - what was set on it describes the cylinder."""
+        t = 'CylinderEncoderSettingHMI'
+        self.decl(name, t)
+        a, b = item['a'], item['b']
+        self.header(name, '%s: encoder %d - %s / %s, position %s; reference %s, measuring tolerance %s, minimum limit %s, unclamping interval %s.%s' % (
+            item['title'], item['number'], a['cmd'], b['cmd'], item['pos']['addr'], item.get('ref') or '-', item.get('tol') or '-',
+            item.get('start') or '-', item.get('unclamp') or '-', ('\n' + item['note']) if item.get('note') else ''))
+        self.p(name, 'BackColor', 'System.Drawing.Color.White')
+        self.p(name, 'Name', cs(name))
+        self.p(name, 'PlcNumber', '1')
+        self.p(name, 'EncoderNumber', str(item['number']))
+        self.p(name, 'TitleTextKey', cs(item['title']))
+        self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, PP_ROW_H))
+        self.p(name, 'CommandBackAddress', cs(a['cmd']))
+        self.p(name, 'CommandForwardAddress', cs(b['cmd']))
+        if a.get('lamp') and a['lamp'] != a['cmd']: self.p(name, 'BackSensorAddress', cs(a['lamp']))
+        if b.get('lamp') and b['lamp'] != b['cmd']: self.p(name, 'ForwardSensorAddress', cs(b['lamp']))
+        pos = item['pos']
+        self.p(name, 'PositionAddress', cs(pos['addr']))
+        self.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % pos['bits'])
+        self.p(name, 'PositionDivisor', dnum(pos['div']))
+        self.p(name, 'PositionDecimalPlaces', str(pos['dec']))
+        for key, prop in (('ref', 'ReferenceAddress'), ('tol', 'MeasuringToleranceAddress'), ('start', 'MinimumLimitAddress'),
+                          ('unclamp', 'UnclampingIntervalAddress')):
+            if item.get(key): self.p(name, prop, cs(item[key]))
+        self.p(name, 'Divisor', '10D')
+        self.p(name, 'DecimalPlaces', '1')
+        have = self.kept(name, t, old) or set()
+        # the first time: what the manual page's unit carried (valve, feedback, error bits, help)
+        if source and not (old and self.current[old]['type'] == t):
+            have |= self.kept(name, t, source, have, report=False) or set()
+        if item.get('valve') and 'ValveType' not in have:
+            self.p(name, 'ValveType', 'Kaban.UI.Controls.CylinderValve.' + item['valve'])
+        if item.get('feedback') and 'FeedbackType' not in have:
+            self.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + item['feedback'])
+        self.add(name)
+
+    def encoder_unit(self, name, item, x, y, old):
+        """A cylinder with an encoder on a manual page: a CylinderEncoderUnitHMI of its encoder's row."""
+        t = 'CylinderEncoderUnitHMI'
+        self.decl(name, t)
+        enc = ENCODERS[item['number']]
+        self.header(name, '%s: encoder %d of Machine Parameters - Encoders (%s): its buttons, sensors, position, valve, feedback and error bits come from there.' % (
+            item['title'], item['number'], enc['title']))
+        self.p(name, 'BackColor', 'System.Drawing.Color.White')
+        self.p(name, 'Name', cs(name))
+        self.p(name, 'EncoderNumber', str(item['number']))
+        self.p(name, 'PlcNumber', '1')
+        self.p(name, 'TitleTextKey', cs(item['title']))
+        self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (UNIT_W, UNIT_H))
+        self.kept(name, t, old)
+        self.add(name)
+
+    def pp_heading(self, key, text, x, y, w, tag='PositioningHeading:'):
+        """A heading over a column of a page's cylinder rows (the rows put it over the column)."""
         name = 'lblHead_' + key
         self.decl(name, 'Label')
         self.header(name)
@@ -871,7 +1003,7 @@ class Emitter:
         self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
         self.p(name, 'Name', cs(name))
         self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, PP_HEAD_H))
-        self.p(name, 'Tag', cs('PositioningHeading:' + key))
+        self.p(name, 'Tag', cs(tag + key))
         self.p(name, 'Text', cs(text))
         self.p(name, 'TextAlign', 'System.Drawing.ContentAlignment.BottomCenter')
         self.add(name)
@@ -961,6 +1093,10 @@ class Emitter:
         out.append('}')
         out.append('')
         text = '\n'.join(out)
+        # a new page (9 October: Conveyor, Robot, Milling, Cutting): its code file as well
+        code = path.replace('.Designer.cs', '.cs')
+        if not os.path.exists(code):
+            open(code, 'w', encoding='utf-8', newline='\n').write(PAGE_CODE % (ns, cls, cls))
         # A BOM only when the page needs it (a degree sign, an arrow): the
         # compiler then cannot read it in the wrong code page.
         open(path, 'w', encoding='utf-8-sig' if any(ord(c) > 127 for c in text) else 'utf-8', newline='\n').write(text)
@@ -968,15 +1104,21 @@ class Emitter:
 # ============================================================================
 #  MATCHING: which current control each new one is
 # ============================================================================
-SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc': 'CylinderUnitHMI', 'axis': 'AxisUnitHMI',
+SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc': 'CylinderEncoderSettingHMI',
+             'encunit': 'CylinderEncoderUnitHMI', 'axis': 'AxisUnitHMI',
              'btn': 'ButtonHMI', 'lamp': 'LampHMI', 'hex': 'NumericDisplayHMI', 'num': 'NumericInputHMI', 'opt': 'CheckBoxHMI'}
 # what a spec item may be matched with on the current pages: its own type, or the
 # type it replaced (a mould was a CylinderUnitHMI until 9 October)
-MATCHES = {'mould': ('PneumaticPositioningHMI', 'CylinderUnitHMI')}
+MATCHES = {'mould': ('PneumaticPositioningHMI', 'CylinderUnitHMI'),
+           'enc': ('CylinderEncoderSettingHMI', 'CylinderUnitHMI'),
+           'encunit': ('CylinderEncoderUnitHMI', 'CylinderUnitHMI')}
 
 def spec_keys(item):
     k = item['kind']
     if k in ('cyl', 'mould', 'enc'): return {s['cmd'] for s in (item.get('a'), item.get('b')) if s and s['cmd']}
+    if k == 'encunit':
+        enc = ENCODERS[item['number']]
+        return {'enc:%d' % item['number']} | {s['cmd'] for s in (enc['a'], enc['b']) if s and s['cmd']}
     if k == 'btn': return {item['cmd']}
     if k in ('lamp', 'hex', 'num', 'opt'): return {item['addr']}
     if k == 'axis': return {'axis:%d' % item['number']}
@@ -1071,6 +1213,8 @@ def write_manual(pg, current, match):
                     em.cylinder(n, it, x, cy, old(it))
                 elif k == 'axis':
                     em.axis(n, it, x, cy, old(it))
+                elif k == 'encunit':
+                    em.encoder_unit(n, it, x, cy, old(it))
                 elif k == 'btn':
                     if it.get('val'):
                         v = it['val']
@@ -1186,27 +1330,32 @@ def write_params(pg, current, match):
     em.write(os.path.join(PARAMS, pg['cls'] + '.Designer.cs'), (right, y))
     return em
 
+# Machine Parameters > Encoders (9 October): a CylinderEncoderSettingHMI row an encoder, laid out
+# as the pneumatic positionings' rows; the five headings over them.
+ENC_SECTIONS = [('Manual', 'Manual movement', 248), ('Reference', 'Reference', 86), ('Tolerance', 'Measuring tolerance', 86),
+                ('MinimumLimit', 'Minimum limit', 86), ('Unclamping', 'Unclamping interval', 86)]
+
+def manual_source(em, item):
+    """The manual page's CylinderUnitHMI an encoder row was until 9 October (its commands), or None."""
+    keys = spec_keys(item)
+    for k, b in em.current.items():
+        if b['type'] == 'CylinderUnitHMI' and b['page'].startswith('Manual') and keys_of_current(b, None, b['own']) == keys:
+            return k
+    return None
+
 def write_encoders(pg, em, old):
-    cols = [('Reference', 'ref'), ('Tolerance', 'tol'), ('Start Limit', 'start'), ('Unclamping Interval', 'unclamp')]
-    x0 = X0 + UNIT_W + 16
-    xs = [x0 + i * 112 for i in range(len(cols))]
-    for (title, _), x in zip(cols, xs):
-        em.heading('lblHead_' + ident(title), title, x, Y0, 104, 32, small=True, align='BottomCenter')
-    y = Y0 + 40
-    for bi, band in enumerate(pg['bands']):
-        for col in band:
-            em.heading(em.unique('lbl' + ident(col['heading'])), col['heading'], X0, y, UNIT_W)
-            y += HEAD_H + 6
-            for it in col['items']:
-                n = it['name']
-                em.cylinder(n, it, X0, y, old(it))
-                base = n.replace('enc', '', 1)
-                for (title, key), x in zip(cols, xs):
-                    if it.get(key):
-                        em.entry('num' + base + '_' + ident(title), title, it[key], 16, 10, 1, 'mm', x, y + 19, 104, 26, None, describe=False)
-                y += UNIT_H + 6
-        y += 8
-    em.write(os.path.join(PARAMS, pg['cls'] + '.Designer.cs'), (xs[-1] + 104 + X0, y))
+    items = [it for band in pg['bands'] for col in band for it in col['items']]
+    namew = pp_name_width(items)
+    x = X0 + namew + PP_GAP + PP_GROUP_GAP
+    for i, (key, text, w) in enumerate(ENC_SECTIONS):
+        em.pp_heading(key, text, x, Y0, w, tag='EncoderHeading:')
+        x += w + (PP_GROUP_GAP if i < len(ENC_SECTIONS) - 1 else 0)
+    roww = x - X0
+    y = Y0 + PP_HEAD_H + 6
+    for it in items:
+        em.encoder_row(it['name'], it, X0, y, roww, old(it), manual_source(em, it))
+        y += PP_PITCH
+    em.write(os.path.join(PARAMS, pg['cls'] + '.Designer.cs'), (X0 + roww + X0, y + 8))
     return em
 
 # ============================================================================
@@ -1240,6 +1389,12 @@ AXIS_DEVICES = {1: ('M604', 'M605', 'M330', 'W0'), 2: ('M603', 'M602', 'M341', '
                 13: ('M625', 'M624', 'M340', 'WA0'), 14: ('M627', 'M626', 'M257', 'WE0'), 15: ('M629', 'M628', 'M259', 'WF0'),
                 16: ('M731', 'M732', 'M343', 'WD0'), 17: ('M631', 'M630', 'M269', 'D838')}
 
+def encoder_devices(enc):
+    """An encoder row's devices: its commands, lamps and position (a manual page's unit of it shows these)."""
+    out = {x for s in (enc['a'], enc['b']) if s for x in (s['cmd'], s['lamp'], s.get('lamp2')) if x}
+    out.add(enc['pos']['addr'])
+    return out
+
 def spec_devices(pg):
     out = set()
     for it in all_items(pg):
@@ -1254,6 +1409,7 @@ def spec_devices(pg):
             if it.get('val'): out.add(it['val']['addr'])
         if k in ('lamp', 'hex', 'num', 'opt'): out.add(it['addr'])
         if k == 'axis': out |= set(AXIS_DEVICES[it['number']])
+        if k == 'encunit': out |= encoder_devices(ENCODERS[it['number']])
         if k == 'group': out |= {a for a, _ in it['buttons']}
         for key in ('target', 'send', 'cal', 'calibrate', 'tol', 'offset', 'ref', 'start', 'unclamp'):
             if it.get(key): out.add(it[key])
@@ -1306,10 +1462,12 @@ def roles(pg):
     acts = {c['Device']: c.get('ButtonType', '').split('.')[-1] for c in oc if c.get('Device') and c['t'] in ('KabanButton', 'KabanLambButton')}
     for it in all_items(pg):
         a, b = it.get('a'), it.get('b')
-        if a and b and a['cmd'] and b['cmd'] and a['cmd'] in xs and b['cmd'] in xs and not xs[a['cmd']] < xs[b['cmd']]:
+        if a and b and a['cmd'] and b['cmd'] and a['cmd'] in xs and b['cmd'] in xs and not xs[a['cmd']] < xs[b['cmd']] \
+                and (a['cmd'], b['cmd']) not in EXPECTED.get(pg['old'], {}).get('swapped', set()):
             problems.append('%s: Back %s is not left of Forward %s' % (it['title'], a['cmd'], b['cmd']))
         for s in (a, b):
-            if s and s['cmd'] and s['lamp'] and s['cmd'] in xs and (s['cmd'], s['lamp']) not in pairs \
+            # (an encoder row's lamps are its manual page's, checked there - 9 October)
+            if s and s['cmd'] and s['lamp'] and s['cmd'] in xs and (s['cmd'], s['lamp']) not in pairs and it['kind'] != 'enc' \
                     and (s['cmd'], s['lamp']) not in EXPECTED.get(pg['old'], {}).get('pairs', set()):
                 problems.append('%s: %s/%s is not a lamp button of the old page' % (it['title'], s['cmd'], s['lamp']))
             if s and s['cmd'] and s['cmd'] in acts and acts[s['cmd']] and acts[s['cmd']] != s['action']:
@@ -1336,17 +1494,23 @@ def roles(pg):
 
 def check():
     bad = 0
+    olds = []
     for pg in PAGES:
-        if not pg['old']: continue
-        for pr in roles(pg):
-            print('   ', pg['old'], pr); bad += 1
-        o, s = old_devices(pg['old']), spec_devices(pg)
-        exp = EXPECTED.get(pg['old'], {})
+        if pg['old'] and pg['old'] not in olds: olds.append(pg['old'])
+    for old in olds:
+        # an old page may be two tabs now (Entry: Conveyor and Robot, 9 October): all of them
+        pages = [pg for pg in PAGES if pg['old'] == old]
+        for pg in pages:
+            for pr in roles(pg):
+                print('   ', old, pr); bad += 1
+        o = old_devices(old)
+        s = set().union(*[spec_devices(pg) for pg in pages])
+        exp = EXPECTED.get(old, {})
         missing = o - s - exp.get('missing', set())
         extra = s - o - exp.get('extra', set())
         # an axis brings its whole row: the old pages show only some of it
-        extra = {x for x in extra if not any(x in AXIS_DEVICES[it['number']] for it in all_items(pg) if it['kind'] == 'axis')}
-        print('%-24s old %3d  spec %3d  missing %s  extra %s' % (pg['old'], len(o), len(s), sorted(missing) or '-', sorted(extra) or '-'))
+        extra = {x for x in extra if not any(x in AXIS_DEVICES[it['number']] for pg in pages for it in all_items(pg) if it['kind'] == 'axis')}
+        print('%-24s old %3d  spec %3d  missing %s  extra %s' % (old, len(o), len(s), sorted(missing) or '-', sorted(extra) or '-'))
         bad += len(missing) + len(extra)
     return bad
 
@@ -1380,11 +1544,12 @@ def main():
         for d in em.dropped: print('    not carried over: ' + d)
     # what the earlier pages had and these do not (a control this tool made
     # itself is not one: run again, the list is empty and the file is kept)
-    # nor one whose devices its page still has (the moulds' separate fields, now parts of their rows)
-    devices = {pg['cls']: spec_devices(pg) for pg in PAGES}
+    # nor one whose devices a page still has (the moulds' separate fields, now parts of their rows;
+    # a page made two, 9 October; a manual unit now its encoder's)
+    devices = set().union(*[spec_devices(pg) for pg in PAGES])
     def kept_devices(k):
         ks = keysets[k]
-        return bool(ks) and ks <= devices.get(current[k]['page'], set())
+        return bool(ks) and ks <= devices
     left = sorted((current[k]['page'], current[k]['own'], current[k]['type'], k) for k in current
                   if k not in used and current[k]['type'] in SPEC_TYPE.values() and (current[k]['page'], current[k]['own']) not in made
                   and not kept_devices(k))

@@ -117,6 +117,15 @@
     <Compile Include="Controls\PneumaticPositioningHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\CylinderRowHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CylinderEncoderSettingHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CylinderEncoderUnitHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\AxisUnitHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>

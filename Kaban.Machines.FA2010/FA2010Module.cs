@@ -172,11 +172,15 @@ namespace Kaban.Machines.FA2010
 
                 MachineSettings = new Kaban.UI.Settings.ISettingsPage[]
                 {
-                    new Screens.GeneratedPage("Tab_AxisSettings", "Axis Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
-                    new Screens.GeneratedPage("Tab_ParamEntry", "Entry Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEntry()),
-                    new Screens.GeneratedPage("Tab_ParamProcess", "Process Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamProcess()),
-                    new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
-                    new Screens.GeneratedPage("Tab_ParamOther", "Other Parameters", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
+                    // 9 October: no "Parameters" in the tabs' names (the button says it); the old
+                    // Entry and Process pages two tabs each, a section each.
+                    new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
+                    new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
+                    new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
+                    new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
+                    new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
+                    new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
+                    new Screens.GeneratedPage("Tab_ParamOther", "Others", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
                 },
 
                 // The machine dashboard: the Industry 4 log (states, events, alarms,

@@ -24,839 +24,378 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
 
         private void InitializeComponent()
         {
-            this.lblHead_Reference = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Tolerance = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Start_Limit = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Unclamping_Interval = new Kaban.UI.Controls.LabelHMI();
-            this.lblEncoders = new Kaban.UI.Controls.LabelHMI();
-            this.encRobot_Position = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.encRobot_Gripper = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numRobot_Gripper_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.encProfile_Recognition_Front = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numProfile_Recognition_Front_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Front_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Front_Start_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Front_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encProfile_Recognition_Top = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numProfile_Recognition_Top_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Top_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Top_Start_Limit = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Top_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encMilling_Top = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numMilling_Top_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numMilling_Top_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encMilling_Cutting_Left_Front = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numMilling_Cutting_Left_Front_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encCutting_Left_Top = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Left_Top_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Left_Top_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encCutting_Right_Front = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Right_Front_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Right_Front_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encExit_Carrying_Top = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numExit_Carrying_Top_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numExit_Carrying_Top_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.encCutting_Front_Right_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Front_Right_Vertical_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblLeft_Encoders = new Kaban.UI.Controls.LabelHMI();
-            this.encLeft_Profile_Recognition_Front = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numLeft_Profile_Recognition_Front_Reference = new Kaban.UI.Controls.NumericInputHMI();
-            this.encLeft_Profile_Recognition_Top = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numLeft_Profile_Recognition_Top_Reference = new Kaban.UI.Controls.NumericInputHMI();
+            this.lblHead_Manual = new System.Windows.Forms.Label();
+            this.lblHead_Reference = new System.Windows.Forms.Label();
+            this.lblHead_Tolerance = new System.Windows.Forms.Label();
+            this.lblHead_MinimumLimit = new System.Windows.Forms.Label();
+            this.lblHead_Unclamping = new System.Windows.Forms.Label();
+            this.encRobot_Gripper = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encProfile_Recognition_Front = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encProfile_Recognition_Top = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encMilling_Top = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encMilling_Cutting_Left_Front = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encCutting_Left_Top = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encCutting_Right_Front = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encExit_Carrying_Top = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encCutting_Front_Right_Vertical = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encLeft_Profile_Recognition_Front = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
+            this.encLeft_Profile_Recognition_Top = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
             this.SuspendLayout();
+            // 
+            // lblHead_Manual
+            // 
+            this.lblHead_Manual.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_Manual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Manual.Location = new System.Drawing.Point(262, 16);
+            this.lblHead_Manual.Name = "lblHead_Manual";
+            this.lblHead_Manual.Size = new System.Drawing.Size(248, 32);
+            this.lblHead_Manual.Tag = "EncoderHeading:Manual";
+            this.lblHead_Manual.Text = "Manual movement";
+            this.lblHead_Manual.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // lblHead_Reference
             // 
-            this.lblHead_Reference.Name = "lblHead_Reference";
-            this.lblHead_Reference.TranslationKey = "Reference";
-            this.lblHead_Reference.Text = "Reference";
             this.lblHead_Reference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Reference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Reference.Location = new System.Drawing.Point(528, 16);
+            this.lblHead_Reference.Name = "lblHead_Reference";
+            this.lblHead_Reference.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Reference.Tag = "EncoderHeading:Reference";
+            this.lblHead_Reference.Text = "Reference";
             this.lblHead_Reference.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Reference.Location = new System.Drawing.Point(392, 16);
-            this.lblHead_Reference.Size = new System.Drawing.Size(104, 32);
             // 
             // lblHead_Tolerance
             // 
-            this.lblHead_Tolerance.Name = "lblHead_Tolerance";
-            this.lblHead_Tolerance.TranslationKey = "Tolerance";
-            this.lblHead_Tolerance.Text = "Tolerance";
             this.lblHead_Tolerance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Tolerance.Location = new System.Drawing.Point(632, 16);
+            this.lblHead_Tolerance.Name = "lblHead_Tolerance";
+            this.lblHead_Tolerance.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Tolerance.Tag = "EncoderHeading:Tolerance";
+            this.lblHead_Tolerance.Text = "Measuring tolerance";
             this.lblHead_Tolerance.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Tolerance.Location = new System.Drawing.Point(504, 16);
-            this.lblHead_Tolerance.Size = new System.Drawing.Size(104, 32);
             // 
-            // lblHead_Start_Limit
+            // lblHead_MinimumLimit
             // 
-            this.lblHead_Start_Limit.Name = "lblHead_Start_Limit";
-            this.lblHead_Start_Limit.TranslationKey = "Start Limit";
-            this.lblHead_Start_Limit.Text = "Start Limit";
-            this.lblHead_Start_Limit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Start_Limit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Start_Limit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Start_Limit.Location = new System.Drawing.Point(616, 16);
-            this.lblHead_Start_Limit.Size = new System.Drawing.Size(104, 32);
+            this.lblHead_MinimumLimit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_MinimumLimit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_MinimumLimit.Location = new System.Drawing.Point(736, 16);
+            this.lblHead_MinimumLimit.Name = "lblHead_MinimumLimit";
+            this.lblHead_MinimumLimit.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_MinimumLimit.Tag = "EncoderHeading:MinimumLimit";
+            this.lblHead_MinimumLimit.Text = "Minimum limit";
+            this.lblHead_MinimumLimit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // lblHead_Unclamping_Interval
+            // lblHead_Unclamping
             // 
-            this.lblHead_Unclamping_Interval.Name = "lblHead_Unclamping_Interval";
-            this.lblHead_Unclamping_Interval.TranslationKey = "Unclamping Interval";
-            this.lblHead_Unclamping_Interval.Text = "Unclamping Interval";
-            this.lblHead_Unclamping_Interval.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Unclamping_Interval.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Unclamping_Interval.Location = new System.Drawing.Point(728, 16);
-            this.lblHead_Unclamping_Interval.Size = new System.Drawing.Size(104, 32);
-            // 
-            // lblEncoders
-            // 
-            this.lblEncoders.Name = "lblEncoders";
-            this.lblEncoders.TranslationKey = "Encoders";
-            this.lblEncoders.Text = "Encoders";
-            this.lblEncoders.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblEncoders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblEncoders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblEncoders.Location = new System.Drawing.Point(16, 56);
-            this.lblEncoders.Size = new System.Drawing.Size(360, 26);
-            // 
-            // encRobot_Position
-            // 
-            this.encRobot_Position.BackColor = System.Drawing.Color.White;
-            this.encRobot_Position.Name = "encRobot_Position";
-            this.encRobot_Position.PlcNumber = 1;
-            this.encRobot_Position.TitleTextKey = "Robot Position";
-            this.encRobot_Position.Location = new System.Drawing.Point(16, 88);
-            this.encRobot_Position.Size = new System.Drawing.Size(360, 64);
-            this.encRobot_Position.LogAction = true;
-            this.encRobot_Position.CommandAAddress = "M604";
-            this.encRobot_Position.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encRobot_Position.Lamp1AAddress = "M330";
-            this.encRobot_Position.CommandBAddress = "M605";
-            this.encRobot_Position.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encRobot_Position.PositionAddress = "D22";
-            this.encRobot_Position.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.encRobot_Position.PositionDivisor = 1000D;
-            this.encRobot_Position.PositionDecimalPlaces = 2;
-            this.encRobot_Position.PositionDigits = 8;
-            this.encRobot_Position.PositionSuffix = "mm";
-            this.encRobot_Position.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.encRobot_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.lblHead_Unclamping.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_Unclamping.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Unclamping.Location = new System.Drawing.Point(840, 16);
+            this.lblHead_Unclamping.Name = "lblHead_Unclamping";
+            this.lblHead_Unclamping.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Unclamping.Tag = "EncoderHeading:Unclamping";
+            this.lblHead_Unclamping.Text = "Unclamping interval";
+            this.lblHead_Unclamping.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // encRobot_Gripper
             // 
+            // Robot Gripper: encoder 1 - M642 / M641, position D21; reference D516, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encRobot_Gripper.BackColor = System.Drawing.Color.White;
             this.encRobot_Gripper.Name = "encRobot_Gripper";
             this.encRobot_Gripper.PlcNumber = 1;
+            this.encRobot_Gripper.EncoderNumber = 1;
             this.encRobot_Gripper.TitleTextKey = "Robot Gripper";
-            this.encRobot_Gripper.Location = new System.Drawing.Point(16, 158);
-            this.encRobot_Gripper.Size = new System.Drawing.Size(360, 64);
-            this.encRobot_Gripper.LogAction = true;
-            this.encRobot_Gripper.CommandAAddress = "M642";
-            this.encRobot_Gripper.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encRobot_Gripper.CommandBAddress = "M641";
-            this.encRobot_Gripper.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encRobot_Gripper.Location = new System.Drawing.Point(16, 54);
+            this.encRobot_Gripper.Size = new System.Drawing.Size(910, 40);
+            this.encRobot_Gripper.CommandBackAddress = "M642";
+            this.encRobot_Gripper.CommandForwardAddress = "M641";
+            this.encRobot_Gripper.BackSensorAddress = "M222";
             this.encRobot_Gripper.PositionAddress = "D21";
             this.encRobot_Gripper.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encRobot_Gripper.PositionDivisor = 10D;
             this.encRobot_Gripper.PositionDecimalPlaces = 1;
-            this.encRobot_Gripper.PositionDigits = 6;
-            this.encRobot_Gripper.PositionSuffix = "mm";
-            this.encRobot_Gripper.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encRobot_Gripper.ReferenceAddress = "D516";
+            this.encRobot_Gripper.Divisor = 10D;
+            this.encRobot_Gripper.DecimalPlaces = 1;
             this.encRobot_Gripper.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numRobot_Gripper_Reference  (D516)
-            // 
-            this.numRobot_Gripper_Reference.BackColor = System.Drawing.Color.White;
-            this.numRobot_Gripper_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numRobot_Gripper_Reference.Name = "numRobot_Gripper_Reference";
-            this.numRobot_Gripper_Reference.PlcNumber = 1;
-            this.numRobot_Gripper_Reference.Address = "D516";
-            this.numRobot_Gripper_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numRobot_Gripper_Reference.AutoSize = false;
-            this.numRobot_Gripper_Reference.Digits = 5;
-            this.numRobot_Gripper_Reference.DecimalPlaces = 1;
-            this.numRobot_Gripper_Reference.Divisor = 10D;
-            this.numRobot_Gripper_Reference.Suffix = "mm";
-            this.numRobot_Gripper_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numRobot_Gripper_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numRobot_Gripper_Reference.LogAction = true;
-            this.numRobot_Gripper_Reference.Location = new System.Drawing.Point(392, 177);
-            this.numRobot_Gripper_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numRobot_Gripper_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encRobot_Gripper.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encRobot_Gripper.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // encProfile_Recognition_Front
             // 
+            // Profile Recognition Front: encoder 2 - M646 / M645, position D4; reference D477, measuring tolerance D479, minimum limit D483, unclamping interval D51.
             this.encProfile_Recognition_Front.BackColor = System.Drawing.Color.White;
             this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
             this.encProfile_Recognition_Front.PlcNumber = 1;
+            this.encProfile_Recognition_Front.EncoderNumber = 2;
             this.encProfile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
-            this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 228);
-            this.encProfile_Recognition_Front.Size = new System.Drawing.Size(360, 64);
-            this.encProfile_Recognition_Front.LogAction = true;
-            this.encProfile_Recognition_Front.CommandAAddress = "M646";
-            this.encProfile_Recognition_Front.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encProfile_Recognition_Front.CommandBAddress = "M645";
-            this.encProfile_Recognition_Front.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
+            this.encProfile_Recognition_Front.Size = new System.Drawing.Size(910, 40);
+            this.encProfile_Recognition_Front.CommandBackAddress = "M646";
+            this.encProfile_Recognition_Front.CommandForwardAddress = "M645";
+            this.encProfile_Recognition_Front.BackSensorAddress = "M225";
+            this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
             this.encProfile_Recognition_Front.PositionAddress = "D4";
             this.encProfile_Recognition_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encProfile_Recognition_Front.PositionDivisor = 10D;
             this.encProfile_Recognition_Front.PositionDecimalPlaces = 1;
-            this.encProfile_Recognition_Front.PositionDigits = 6;
-            this.encProfile_Recognition_Front.PositionSuffix = "mm";
-            this.encProfile_Recognition_Front.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encProfile_Recognition_Front.ReferenceAddress = "D477";
+            this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
+            this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
+            this.encProfile_Recognition_Front.UnclampingIntervalAddress = "D51";
+            this.encProfile_Recognition_Front.Divisor = 10D;
+            this.encProfile_Recognition_Front.DecimalPlaces = 1;
             this.encProfile_Recognition_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Front_Reference  (D477)
-            // 
-            this.numProfile_Recognition_Front_Reference.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Reference.Name = "numProfile_Recognition_Front_Reference";
-            this.numProfile_Recognition_Front_Reference.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Reference.Address = "D477";
-            this.numProfile_Recognition_Front_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Reference.AutoSize = false;
-            this.numProfile_Recognition_Front_Reference.Digits = 5;
-            this.numProfile_Recognition_Front_Reference.DecimalPlaces = 1;
-            this.numProfile_Recognition_Front_Reference.Divisor = 10D;
-            this.numProfile_Recognition_Front_Reference.Suffix = "mm";
-            this.numProfile_Recognition_Front_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Reference.LogAction = true;
-            this.numProfile_Recognition_Front_Reference.Location = new System.Drawing.Point(392, 247);
-            this.numProfile_Recognition_Front_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Front_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Front_Tolerance  (D479)
-            // 
-            this.numProfile_Recognition_Front_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Tolerance.Name = "numProfile_Recognition_Front_Tolerance";
-            this.numProfile_Recognition_Front_Tolerance.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Tolerance.Address = "D479";
-            this.numProfile_Recognition_Front_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Tolerance.AutoSize = false;
-            this.numProfile_Recognition_Front_Tolerance.Digits = 5;
-            this.numProfile_Recognition_Front_Tolerance.DecimalPlaces = 1;
-            this.numProfile_Recognition_Front_Tolerance.Divisor = 10D;
-            this.numProfile_Recognition_Front_Tolerance.Suffix = "mm";
-            this.numProfile_Recognition_Front_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Tolerance.LogAction = true;
-            this.numProfile_Recognition_Front_Tolerance.Location = new System.Drawing.Point(504, 247);
-            this.numProfile_Recognition_Front_Tolerance.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Front_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Front_Start_Limit  (D483)
-            // 
-            this.numProfile_Recognition_Front_Start_Limit.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Start_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Start_Limit.Name = "numProfile_Recognition_Front_Start_Limit";
-            this.numProfile_Recognition_Front_Start_Limit.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Start_Limit.Address = "D483";
-            this.numProfile_Recognition_Front_Start_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Start_Limit.AutoSize = false;
-            this.numProfile_Recognition_Front_Start_Limit.Digits = 5;
-            this.numProfile_Recognition_Front_Start_Limit.DecimalPlaces = 1;
-            this.numProfile_Recognition_Front_Start_Limit.Divisor = 10D;
-            this.numProfile_Recognition_Front_Start_Limit.Suffix = "mm";
-            this.numProfile_Recognition_Front_Start_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Start_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Start_Limit.LogAction = true;
-            this.numProfile_Recognition_Front_Start_Limit.Location = new System.Drawing.Point(616, 247);
-            this.numProfile_Recognition_Front_Start_Limit.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Front_Start_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Front_Unclamping_Interval  (D51)
-            // 
-            this.numProfile_Recognition_Front_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Name = "numProfile_Recognition_Front_Unclamping_Interval";
-            this.numProfile_Recognition_Front_Unclamping_Interval.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Address = "D51";
-            this.numProfile_Recognition_Front_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Unclamping_Interval.AutoSize = false;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Digits = 5;
-            this.numProfile_Recognition_Front_Unclamping_Interval.DecimalPlaces = 1;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Divisor = 10D;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Suffix = "mm";
-            this.numProfile_Recognition_Front_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Unclamping_Interval.LogAction = true;
-            this.numProfile_Recognition_Front_Unclamping_Interval.Location = new System.Drawing.Point(728, 247);
-            this.numProfile_Recognition_Front_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Front_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encProfile_Recognition_Front.ErrorBackAddress = "M845";
+            this.encProfile_Recognition_Front.ErrorForwardAddress = "M844";
+            // Pneumatic drawing: Y28/Y29, 5/3 open centre (P16); back sensor SN59 (X51) + pressure switch SW1.
+            this.encProfile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.encProfile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             // 
             // encProfile_Recognition_Top
             // 
+            // Profile Recognition Top: encoder 3 - M648 / M647, position D6; reference D478, measuring tolerance D480, minimum limit D484, unclamping interval D50.
             this.encProfile_Recognition_Top.BackColor = System.Drawing.Color.White;
             this.encProfile_Recognition_Top.Name = "encProfile_Recognition_Top";
             this.encProfile_Recognition_Top.PlcNumber = 1;
+            this.encProfile_Recognition_Top.EncoderNumber = 3;
             this.encProfile_Recognition_Top.TitleTextKey = "Profile Recognition Top";
-            this.encProfile_Recognition_Top.Location = new System.Drawing.Point(16, 298);
-            this.encProfile_Recognition_Top.Size = new System.Drawing.Size(360, 64);
-            this.encProfile_Recognition_Top.LogAction = true;
-            this.encProfile_Recognition_Top.CommandAAddress = "M648";
-            this.encProfile_Recognition_Top.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encProfile_Recognition_Top.CommandBAddress = "M647";
-            this.encProfile_Recognition_Top.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encProfile_Recognition_Top.Location = new System.Drawing.Point(16, 142);
+            this.encProfile_Recognition_Top.Size = new System.Drawing.Size(910, 40);
+            this.encProfile_Recognition_Top.CommandBackAddress = "M648";
+            this.encProfile_Recognition_Top.CommandForwardAddress = "M647";
+            this.encProfile_Recognition_Top.BackSensorAddress = "M226";
             this.encProfile_Recognition_Top.PositionAddress = "D6";
             this.encProfile_Recognition_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encProfile_Recognition_Top.PositionDivisor = 10D;
             this.encProfile_Recognition_Top.PositionDecimalPlaces = 1;
-            this.encProfile_Recognition_Top.PositionDigits = 6;
-            this.encProfile_Recognition_Top.PositionSuffix = "mm";
-            this.encProfile_Recognition_Top.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encProfile_Recognition_Top.ReferenceAddress = "D478";
+            this.encProfile_Recognition_Top.MeasuringToleranceAddress = "D480";
+            this.encProfile_Recognition_Top.MinimumLimitAddress = "D484";
+            this.encProfile_Recognition_Top.UnclampingIntervalAddress = "D50";
+            this.encProfile_Recognition_Top.Divisor = 10D;
+            this.encProfile_Recognition_Top.DecimalPlaces = 1;
             this.encProfile_Recognition_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Top_Reference  (D478)
-            // 
-            this.numProfile_Recognition_Top_Reference.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Top_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Top_Reference.Name = "numProfile_Recognition_Top_Reference";
-            this.numProfile_Recognition_Top_Reference.PlcNumber = 1;
-            this.numProfile_Recognition_Top_Reference.Address = "D478";
-            this.numProfile_Recognition_Top_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Top_Reference.AutoSize = false;
-            this.numProfile_Recognition_Top_Reference.Digits = 5;
-            this.numProfile_Recognition_Top_Reference.DecimalPlaces = 1;
-            this.numProfile_Recognition_Top_Reference.Divisor = 10D;
-            this.numProfile_Recognition_Top_Reference.Suffix = "mm";
-            this.numProfile_Recognition_Top_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Top_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Top_Reference.LogAction = true;
-            this.numProfile_Recognition_Top_Reference.Location = new System.Drawing.Point(392, 317);
-            this.numProfile_Recognition_Top_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Top_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Top_Tolerance  (D480)
-            // 
-            this.numProfile_Recognition_Top_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Top_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Top_Tolerance.Name = "numProfile_Recognition_Top_Tolerance";
-            this.numProfile_Recognition_Top_Tolerance.PlcNumber = 1;
-            this.numProfile_Recognition_Top_Tolerance.Address = "D480";
-            this.numProfile_Recognition_Top_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Top_Tolerance.AutoSize = false;
-            this.numProfile_Recognition_Top_Tolerance.Digits = 5;
-            this.numProfile_Recognition_Top_Tolerance.DecimalPlaces = 1;
-            this.numProfile_Recognition_Top_Tolerance.Divisor = 10D;
-            this.numProfile_Recognition_Top_Tolerance.Suffix = "mm";
-            this.numProfile_Recognition_Top_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Top_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Top_Tolerance.LogAction = true;
-            this.numProfile_Recognition_Top_Tolerance.Location = new System.Drawing.Point(504, 317);
-            this.numProfile_Recognition_Top_Tolerance.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Top_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Top_Start_Limit  (D484)
-            // 
-            this.numProfile_Recognition_Top_Start_Limit.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Top_Start_Limit.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Top_Start_Limit.Name = "numProfile_Recognition_Top_Start_Limit";
-            this.numProfile_Recognition_Top_Start_Limit.PlcNumber = 1;
-            this.numProfile_Recognition_Top_Start_Limit.Address = "D484";
-            this.numProfile_Recognition_Top_Start_Limit.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Top_Start_Limit.AutoSize = false;
-            this.numProfile_Recognition_Top_Start_Limit.Digits = 5;
-            this.numProfile_Recognition_Top_Start_Limit.DecimalPlaces = 1;
-            this.numProfile_Recognition_Top_Start_Limit.Divisor = 10D;
-            this.numProfile_Recognition_Top_Start_Limit.Suffix = "mm";
-            this.numProfile_Recognition_Top_Start_Limit.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Top_Start_Limit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Top_Start_Limit.LogAction = true;
-            this.numProfile_Recognition_Top_Start_Limit.Location = new System.Drawing.Point(616, 317);
-            this.numProfile_Recognition_Top_Start_Limit.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Top_Start_Limit.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Top_Unclamping_Interval  (D50)
-            // 
-            this.numProfile_Recognition_Top_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Top_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Name = "numProfile_Recognition_Top_Unclamping_Interval";
-            this.numProfile_Recognition_Top_Unclamping_Interval.PlcNumber = 1;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Address = "D50";
-            this.numProfile_Recognition_Top_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Top_Unclamping_Interval.AutoSize = false;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Digits = 5;
-            this.numProfile_Recognition_Top_Unclamping_Interval.DecimalPlaces = 1;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Divisor = 10D;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Suffix = "mm";
-            this.numProfile_Recognition_Top_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Top_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Top_Unclamping_Interval.LogAction = true;
-            this.numProfile_Recognition_Top_Unclamping_Interval.Location = new System.Drawing.Point(728, 317);
-            this.numProfile_Recognition_Top_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numProfile_Recognition_Top_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encProfile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encProfile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.encProfile_Recognition_Top.ErrorBackAddress = "M847";
+            this.encProfile_Recognition_Top.ErrorForwardAddress = "M846";
             // 
             // encMilling_Top
             // 
+            // Milling Top: encoder 4 - M730 / M729, position D14; reference D511, measuring tolerance -, minimum limit -, unclamping interval D53.
             this.encMilling_Top.BackColor = System.Drawing.Color.White;
             this.encMilling_Top.Name = "encMilling_Top";
             this.encMilling_Top.PlcNumber = 1;
+            this.encMilling_Top.EncoderNumber = 4;
             this.encMilling_Top.TitleTextKey = "Milling Top";
-            this.encMilling_Top.Location = new System.Drawing.Point(16, 368);
-            this.encMilling_Top.Size = new System.Drawing.Size(360, 64);
-            this.encMilling_Top.LogAction = true;
-            this.encMilling_Top.CommandAAddress = "M730";
-            this.encMilling_Top.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encMilling_Top.CommandBAddress = "M729";
-            this.encMilling_Top.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encMilling_Top.Location = new System.Drawing.Point(16, 186);
+            this.encMilling_Top.Size = new System.Drawing.Size(910, 40);
+            this.encMilling_Top.CommandBackAddress = "M730";
+            this.encMilling_Top.CommandForwardAddress = "M729";
+            this.encMilling_Top.BackSensorAddress = "M228";
             this.encMilling_Top.PositionAddress = "D14";
             this.encMilling_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encMilling_Top.PositionDivisor = 10D;
             this.encMilling_Top.PositionDecimalPlaces = 1;
-            this.encMilling_Top.PositionDigits = 6;
-            this.encMilling_Top.PositionSuffix = "mm";
-            this.encMilling_Top.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encMilling_Top.ReferenceAddress = "D511";
+            this.encMilling_Top.UnclampingIntervalAddress = "D53";
+            this.encMilling_Top.Divisor = 10D;
+            this.encMilling_Top.DecimalPlaces = 1;
             this.encMilling_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numMilling_Top_Reference  (D511)
-            // 
-            this.numMilling_Top_Reference.BackColor = System.Drawing.Color.White;
-            this.numMilling_Top_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMilling_Top_Reference.Name = "numMilling_Top_Reference";
-            this.numMilling_Top_Reference.PlcNumber = 1;
-            this.numMilling_Top_Reference.Address = "D511";
-            this.numMilling_Top_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numMilling_Top_Reference.AutoSize = false;
-            this.numMilling_Top_Reference.Digits = 5;
-            this.numMilling_Top_Reference.DecimalPlaces = 1;
-            this.numMilling_Top_Reference.Divisor = 10D;
-            this.numMilling_Top_Reference.Suffix = "mm";
-            this.numMilling_Top_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMilling_Top_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMilling_Top_Reference.LogAction = true;
-            this.numMilling_Top_Reference.Location = new System.Drawing.Point(392, 387);
-            this.numMilling_Top_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numMilling_Top_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numMilling_Top_Unclamping_Interval  (D53)
-            // 
-            this.numMilling_Top_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numMilling_Top_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMilling_Top_Unclamping_Interval.Name = "numMilling_Top_Unclamping_Interval";
-            this.numMilling_Top_Unclamping_Interval.PlcNumber = 1;
-            this.numMilling_Top_Unclamping_Interval.Address = "D53";
-            this.numMilling_Top_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numMilling_Top_Unclamping_Interval.AutoSize = false;
-            this.numMilling_Top_Unclamping_Interval.Digits = 5;
-            this.numMilling_Top_Unclamping_Interval.DecimalPlaces = 1;
-            this.numMilling_Top_Unclamping_Interval.Divisor = 10D;
-            this.numMilling_Top_Unclamping_Interval.Suffix = "mm";
-            this.numMilling_Top_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMilling_Top_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMilling_Top_Unclamping_Interval.LogAction = true;
-            this.numMilling_Top_Unclamping_Interval.Location = new System.Drawing.Point(728, 387);
-            this.numMilling_Top_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numMilling_Top_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encMilling_Top.ErrorBackAddress = "M887";
+            this.encMilling_Top.ErrorForwardAddress = "M886";
+            // Pneumatic drawing: Y33/Y34, 5/3 closed centre (P18); up sensor SN62 (X54) + encoder X4/X5.
+            this.encMilling_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.encMilling_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             // 
             // encMilling_Cutting_Left_Front
             // 
+            // Milling-Cutting Left Front: encoder 5 - M653 / M652, position D20; reference D512, measuring tolerance -, minimum limit -, unclamping interval D52.
             this.encMilling_Cutting_Left_Front.BackColor = System.Drawing.Color.White;
             this.encMilling_Cutting_Left_Front.Name = "encMilling_Cutting_Left_Front";
             this.encMilling_Cutting_Left_Front.PlcNumber = 1;
+            this.encMilling_Cutting_Left_Front.EncoderNumber = 5;
             this.encMilling_Cutting_Left_Front.TitleTextKey = "Milling-Cutting Left Front";
-            this.encMilling_Cutting_Left_Front.Location = new System.Drawing.Point(16, 438);
-            this.encMilling_Cutting_Left_Front.Size = new System.Drawing.Size(360, 64);
-            this.encMilling_Cutting_Left_Front.LogAction = true;
-            this.encMilling_Cutting_Left_Front.CommandAAddress = "M653";
-            this.encMilling_Cutting_Left_Front.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encMilling_Cutting_Left_Front.CommandBAddress = "M652";
-            this.encMilling_Cutting_Left_Front.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encMilling_Cutting_Left_Front.Location = new System.Drawing.Point(16, 230);
+            this.encMilling_Cutting_Left_Front.Size = new System.Drawing.Size(910, 40);
+            this.encMilling_Cutting_Left_Front.CommandBackAddress = "M653";
+            this.encMilling_Cutting_Left_Front.CommandForwardAddress = "M652";
+            this.encMilling_Cutting_Left_Front.BackSensorAddress = "M227";
+            this.encMilling_Cutting_Left_Front.ForwardSensorAddress = "M243";
             this.encMilling_Cutting_Left_Front.PositionAddress = "D20";
             this.encMilling_Cutting_Left_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encMilling_Cutting_Left_Front.PositionDivisor = 10D;
             this.encMilling_Cutting_Left_Front.PositionDecimalPlaces = 1;
-            this.encMilling_Cutting_Left_Front.PositionDigits = 6;
-            this.encMilling_Cutting_Left_Front.PositionSuffix = "mm";
-            this.encMilling_Cutting_Left_Front.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encMilling_Cutting_Left_Front.ReferenceAddress = "D512";
+            this.encMilling_Cutting_Left_Front.UnclampingIntervalAddress = "D52";
+            this.encMilling_Cutting_Left_Front.Divisor = 10D;
+            this.encMilling_Cutting_Left_Front.DecimalPlaces = 1;
             this.encMilling_Cutting_Left_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numMilling_Cutting_Left_Front_Reference  (D512)
-            // 
-            this.numMilling_Cutting_Left_Front_Reference.BackColor = System.Drawing.Color.White;
-            this.numMilling_Cutting_Left_Front_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMilling_Cutting_Left_Front_Reference.Name = "numMilling_Cutting_Left_Front_Reference";
-            this.numMilling_Cutting_Left_Front_Reference.PlcNumber = 1;
-            this.numMilling_Cutting_Left_Front_Reference.Address = "D512";
-            this.numMilling_Cutting_Left_Front_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numMilling_Cutting_Left_Front_Reference.AutoSize = false;
-            this.numMilling_Cutting_Left_Front_Reference.Digits = 5;
-            this.numMilling_Cutting_Left_Front_Reference.DecimalPlaces = 1;
-            this.numMilling_Cutting_Left_Front_Reference.Divisor = 10D;
-            this.numMilling_Cutting_Left_Front_Reference.Suffix = "mm";
-            this.numMilling_Cutting_Left_Front_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMilling_Cutting_Left_Front_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMilling_Cutting_Left_Front_Reference.LogAction = true;
-            this.numMilling_Cutting_Left_Front_Reference.Location = new System.Drawing.Point(392, 457);
-            this.numMilling_Cutting_Left_Front_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numMilling_Cutting_Left_Front_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numMilling_Cutting_Left_Front_Unclamping_Interval  (D52)
-            // 
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Name = "numMilling_Cutting_Left_Front_Unclamping_Interval";
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.PlcNumber = 1;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Address = "D52";
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.AutoSize = false;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Digits = 5;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.DecimalPlaces = 1;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Divisor = 10D;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Suffix = "mm";
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.LogAction = true;
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Location = new System.Drawing.Point(728, 457);
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numMilling_Cutting_Left_Front_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encMilling_Cutting_Left_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+            this.encMilling_Cutting_Left_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Left_Top
             // 
+            // Cutting Left Top: encoder 6 - M672 / M671, position D15; reference D513, measuring tolerance -, minimum limit -, unclamping interval D54.
             this.encCutting_Left_Top.BackColor = System.Drawing.Color.White;
             this.encCutting_Left_Top.Name = "encCutting_Left_Top";
             this.encCutting_Left_Top.PlcNumber = 1;
+            this.encCutting_Left_Top.EncoderNumber = 6;
             this.encCutting_Left_Top.TitleTextKey = "Cutting Left Top";
-            this.encCutting_Left_Top.Location = new System.Drawing.Point(16, 508);
-            this.encCutting_Left_Top.Size = new System.Drawing.Size(360, 64);
-            this.encCutting_Left_Top.LogAction = true;
-            this.encCutting_Left_Top.CommandAAddress = "M672";
-            this.encCutting_Left_Top.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encCutting_Left_Top.CommandBAddress = "M671";
-            this.encCutting_Left_Top.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encCutting_Left_Top.Location = new System.Drawing.Point(16, 274);
+            this.encCutting_Left_Top.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Left_Top.CommandBackAddress = "M672";
+            this.encCutting_Left_Top.CommandForwardAddress = "M671";
+            this.encCutting_Left_Top.BackSensorAddress = "M245";
             this.encCutting_Left_Top.PositionAddress = "D15";
             this.encCutting_Left_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encCutting_Left_Top.PositionDivisor = 10D;
             this.encCutting_Left_Top.PositionDecimalPlaces = 1;
-            this.encCutting_Left_Top.PositionDigits = 6;
-            this.encCutting_Left_Top.PositionSuffix = "mm";
-            this.encCutting_Left_Top.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encCutting_Left_Top.ReferenceAddress = "D513";
+            this.encCutting_Left_Top.UnclampingIntervalAddress = "D54";
+            this.encCutting_Left_Top.Divisor = 10D;
+            this.encCutting_Left_Top.DecimalPlaces = 1;
             this.encCutting_Left_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Top_Reference  (D513)
-            // 
-            this.numCutting_Left_Top_Reference.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Top_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Top_Reference.Name = "numCutting_Left_Top_Reference";
-            this.numCutting_Left_Top_Reference.PlcNumber = 1;
-            this.numCutting_Left_Top_Reference.Address = "D513";
-            this.numCutting_Left_Top_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Top_Reference.AutoSize = false;
-            this.numCutting_Left_Top_Reference.Digits = 5;
-            this.numCutting_Left_Top_Reference.DecimalPlaces = 1;
-            this.numCutting_Left_Top_Reference.Divisor = 10D;
-            this.numCutting_Left_Top_Reference.Suffix = "mm";
-            this.numCutting_Left_Top_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Top_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Top_Reference.LogAction = true;
-            this.numCutting_Left_Top_Reference.Location = new System.Drawing.Point(392, 527);
-            this.numCutting_Left_Top_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Left_Top_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Top_Unclamping_Interval  (D54)
-            // 
-            this.numCutting_Left_Top_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Top_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Top_Unclamping_Interval.Name = "numCutting_Left_Top_Unclamping_Interval";
-            this.numCutting_Left_Top_Unclamping_Interval.PlcNumber = 1;
-            this.numCutting_Left_Top_Unclamping_Interval.Address = "D54";
-            this.numCutting_Left_Top_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Top_Unclamping_Interval.AutoSize = false;
-            this.numCutting_Left_Top_Unclamping_Interval.Digits = 5;
-            this.numCutting_Left_Top_Unclamping_Interval.DecimalPlaces = 1;
-            this.numCutting_Left_Top_Unclamping_Interval.Divisor = 10D;
-            this.numCutting_Left_Top_Unclamping_Interval.Suffix = "mm";
-            this.numCutting_Left_Top_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Top_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Top_Unclamping_Interval.LogAction = true;
-            this.numCutting_Left_Top_Unclamping_Interval.Location = new System.Drawing.Point(728, 527);
-            this.numCutting_Left_Top_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Left_Top_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encCutting_Left_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encCutting_Left_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Right_Front
             // 
+            // Cutting Right Front: encoder 7 - M655 / M654, position D16; reference D514, measuring tolerance -, minimum limit -, unclamping interval D55.
             this.encCutting_Right_Front.BackColor = System.Drawing.Color.White;
             this.encCutting_Right_Front.Name = "encCutting_Right_Front";
             this.encCutting_Right_Front.PlcNumber = 1;
+            this.encCutting_Right_Front.EncoderNumber = 7;
             this.encCutting_Right_Front.TitleTextKey = "Cutting Right Front";
-            this.encCutting_Right_Front.Location = new System.Drawing.Point(16, 578);
-            this.encCutting_Right_Front.Size = new System.Drawing.Size(360, 64);
-            this.encCutting_Right_Front.LogAction = true;
-            this.encCutting_Right_Front.CommandAAddress = "M655";
-            this.encCutting_Right_Front.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encCutting_Right_Front.CommandBAddress = "M654";
-            this.encCutting_Right_Front.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encCutting_Right_Front.Location = new System.Drawing.Point(16, 318);
+            this.encCutting_Right_Front.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Right_Front.CommandBackAddress = "M655";
+            this.encCutting_Right_Front.CommandForwardAddress = "M654";
+            this.encCutting_Right_Front.BackSensorAddress = "M232";
             this.encCutting_Right_Front.PositionAddress = "D16";
             this.encCutting_Right_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encCutting_Right_Front.PositionDivisor = 10D;
             this.encCutting_Right_Front.PositionDecimalPlaces = 1;
-            this.encCutting_Right_Front.PositionDigits = 6;
-            this.encCutting_Right_Front.PositionSuffix = "mm";
-            this.encCutting_Right_Front.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encCutting_Right_Front.ReferenceAddress = "D514";
+            this.encCutting_Right_Front.UnclampingIntervalAddress = "D55";
+            this.encCutting_Right_Front.Divisor = 10D;
+            this.encCutting_Right_Front.DecimalPlaces = 1;
             this.encCutting_Right_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Front_Reference  (D514)
-            // 
-            this.numCutting_Right_Front_Reference.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Reference.Name = "numCutting_Right_Front_Reference";
-            this.numCutting_Right_Front_Reference.PlcNumber = 1;
-            this.numCutting_Right_Front_Reference.Address = "D514";
-            this.numCutting_Right_Front_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Reference.AutoSize = false;
-            this.numCutting_Right_Front_Reference.Digits = 5;
-            this.numCutting_Right_Front_Reference.DecimalPlaces = 1;
-            this.numCutting_Right_Front_Reference.Divisor = 10D;
-            this.numCutting_Right_Front_Reference.Suffix = "mm";
-            this.numCutting_Right_Front_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Reference.LogAction = true;
-            this.numCutting_Right_Front_Reference.Location = new System.Drawing.Point(392, 597);
-            this.numCutting_Right_Front_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Right_Front_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Front_Unclamping_Interval  (D55)
-            // 
-            this.numCutting_Right_Front_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Unclamping_Interval.Name = "numCutting_Right_Front_Unclamping_Interval";
-            this.numCutting_Right_Front_Unclamping_Interval.PlcNumber = 1;
-            this.numCutting_Right_Front_Unclamping_Interval.Address = "D55";
-            this.numCutting_Right_Front_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Unclamping_Interval.AutoSize = false;
-            this.numCutting_Right_Front_Unclamping_Interval.Digits = 5;
-            this.numCutting_Right_Front_Unclamping_Interval.DecimalPlaces = 1;
-            this.numCutting_Right_Front_Unclamping_Interval.Divisor = 10D;
-            this.numCutting_Right_Front_Unclamping_Interval.Suffix = "mm";
-            this.numCutting_Right_Front_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Unclamping_Interval.LogAction = true;
-            this.numCutting_Right_Front_Unclamping_Interval.Location = new System.Drawing.Point(728, 597);
-            this.numCutting_Right_Front_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Right_Front_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encCutting_Right_Front.ErrorBackAddress = "M852";
+            this.encCutting_Right_Front.ErrorForwardAddress = "M851";
+            this.encCutting_Right_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            // Drawings: Y43/Y44 5/3 closed centre (P22); back sensor SN76 (X60) + encoder X14/X15.
+            this.encCutting_Right_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             // 
             // encExit_Carrying_Top
             // 
+            // Exit Carrying Top: encoder 8 - M657 / M656, position D17; reference D515, measuring tolerance -, minimum limit -, unclamping interval D56.
             this.encExit_Carrying_Top.BackColor = System.Drawing.Color.White;
             this.encExit_Carrying_Top.Name = "encExit_Carrying_Top";
             this.encExit_Carrying_Top.PlcNumber = 1;
+            this.encExit_Carrying_Top.EncoderNumber = 8;
             this.encExit_Carrying_Top.TitleTextKey = "Exit Carrying Top";
-            this.encExit_Carrying_Top.Location = new System.Drawing.Point(16, 648);
-            this.encExit_Carrying_Top.Size = new System.Drawing.Size(360, 64);
-            this.encExit_Carrying_Top.LogAction = true;
-            this.encExit_Carrying_Top.CommandAAddress = "M657";
-            this.encExit_Carrying_Top.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encExit_Carrying_Top.CommandBAddress = "M656";
-            this.encExit_Carrying_Top.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encExit_Carrying_Top.Location = new System.Drawing.Point(16, 362);
+            this.encExit_Carrying_Top.Size = new System.Drawing.Size(910, 40);
+            this.encExit_Carrying_Top.CommandBackAddress = "M657";
+            this.encExit_Carrying_Top.CommandForwardAddress = "M656";
+            this.encExit_Carrying_Top.BackSensorAddress = "M233";
             this.encExit_Carrying_Top.PositionAddress = "D17";
             this.encExit_Carrying_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encExit_Carrying_Top.PositionDivisor = 10D;
             this.encExit_Carrying_Top.PositionDecimalPlaces = 1;
-            this.encExit_Carrying_Top.PositionDigits = 6;
-            this.encExit_Carrying_Top.PositionSuffix = "mm";
-            this.encExit_Carrying_Top.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encExit_Carrying_Top.ReferenceAddress = "D515";
+            this.encExit_Carrying_Top.UnclampingIntervalAddress = "D56";
+            this.encExit_Carrying_Top.Divisor = 10D;
+            this.encExit_Carrying_Top.DecimalPlaces = 1;
             this.encExit_Carrying_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numExit_Carrying_Top_Reference  (D515)
-            // 
-            this.numExit_Carrying_Top_Reference.BackColor = System.Drawing.Color.White;
-            this.numExit_Carrying_Top_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numExit_Carrying_Top_Reference.Name = "numExit_Carrying_Top_Reference";
-            this.numExit_Carrying_Top_Reference.PlcNumber = 1;
-            this.numExit_Carrying_Top_Reference.Address = "D515";
-            this.numExit_Carrying_Top_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numExit_Carrying_Top_Reference.AutoSize = false;
-            this.numExit_Carrying_Top_Reference.Digits = 5;
-            this.numExit_Carrying_Top_Reference.DecimalPlaces = 1;
-            this.numExit_Carrying_Top_Reference.Divisor = 10D;
-            this.numExit_Carrying_Top_Reference.Suffix = "mm";
-            this.numExit_Carrying_Top_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numExit_Carrying_Top_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numExit_Carrying_Top_Reference.LogAction = true;
-            this.numExit_Carrying_Top_Reference.Location = new System.Drawing.Point(392, 667);
-            this.numExit_Carrying_Top_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numExit_Carrying_Top_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numExit_Carrying_Top_Unclamping_Interval  (D56)
-            // 
-            this.numExit_Carrying_Top_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numExit_Carrying_Top_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numExit_Carrying_Top_Unclamping_Interval.Name = "numExit_Carrying_Top_Unclamping_Interval";
-            this.numExit_Carrying_Top_Unclamping_Interval.PlcNumber = 1;
-            this.numExit_Carrying_Top_Unclamping_Interval.Address = "D56";
-            this.numExit_Carrying_Top_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numExit_Carrying_Top_Unclamping_Interval.AutoSize = false;
-            this.numExit_Carrying_Top_Unclamping_Interval.Digits = 5;
-            this.numExit_Carrying_Top_Unclamping_Interval.DecimalPlaces = 1;
-            this.numExit_Carrying_Top_Unclamping_Interval.Divisor = 10D;
-            this.numExit_Carrying_Top_Unclamping_Interval.Suffix = "mm";
-            this.numExit_Carrying_Top_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numExit_Carrying_Top_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numExit_Carrying_Top_Unclamping_Interval.LogAction = true;
-            this.numExit_Carrying_Top_Unclamping_Interval.Location = new System.Drawing.Point(728, 667);
-            this.numExit_Carrying_Top_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numExit_Carrying_Top_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encExit_Carrying_Top.ErrorBackAddress = "M854";
+            this.encExit_Carrying_Top.ErrorForwardAddress = "M840";
+            // Up sensor SN77 (X61) + encoder X16/X17 (Cutting Right Top Clamping).
+            this.encExit_Carrying_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encExit_Carrying_Top.HelpBackFiles = "c# learning structure.png";
+            this.encExit_Carrying_Top.HelpForwardFiles = "c# learning structure.png";
+            // Pneumatic drawing: Y45/Y46, 5/3 closed centre (P23).
+            this.encExit_Carrying_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Front_Right_Vertical
             // 
+            // Cutting Front Right Vertical: encoder 9 - M659 / M658, position D7; reference D517, measuring tolerance -, minimum limit -, unclamping interval D64.
             this.encCutting_Front_Right_Vertical.BackColor = System.Drawing.Color.White;
             this.encCutting_Front_Right_Vertical.Name = "encCutting_Front_Right_Vertical";
             this.encCutting_Front_Right_Vertical.PlcNumber = 1;
+            this.encCutting_Front_Right_Vertical.EncoderNumber = 9;
             this.encCutting_Front_Right_Vertical.TitleTextKey = "Cutting Front Right Vertical";
-            this.encCutting_Front_Right_Vertical.Location = new System.Drawing.Point(16, 718);
-            this.encCutting_Front_Right_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.encCutting_Front_Right_Vertical.LogAction = true;
-            this.encCutting_Front_Right_Vertical.CommandAAddress = "M659";
-            this.encCutting_Front_Right_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encCutting_Front_Right_Vertical.CommandBAddress = "M658";
-            this.encCutting_Front_Right_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encCutting_Front_Right_Vertical.Location = new System.Drawing.Point(16, 406);
+            this.encCutting_Front_Right_Vertical.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Front_Right_Vertical.CommandBackAddress = "M659";
+            this.encCutting_Front_Right_Vertical.CommandForwardAddress = "M658";
+            this.encCutting_Front_Right_Vertical.BackSensorAddress = "M246";
             this.encCutting_Front_Right_Vertical.PositionAddress = "D7";
             this.encCutting_Front_Right_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encCutting_Front_Right_Vertical.PositionDivisor = 10D;
             this.encCutting_Front_Right_Vertical.PositionDecimalPlaces = 1;
-            this.encCutting_Front_Right_Vertical.PositionDigits = 6;
-            this.encCutting_Front_Right_Vertical.PositionSuffix = "mm";
-            this.encCutting_Front_Right_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encCutting_Front_Right_Vertical.ReferenceAddress = "D517";
+            this.encCutting_Front_Right_Vertical.UnclampingIntervalAddress = "D64";
+            this.encCutting_Front_Right_Vertical.Divisor = 10D;
+            this.encCutting_Front_Right_Vertical.DecimalPlaces = 1;
             this.encCutting_Front_Right_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Front_Right_Vertical_Reference  (D517)
-            // 
-            this.numCutting_Front_Right_Vertical_Reference.BackColor = System.Drawing.Color.White;
-            this.numCutting_Front_Right_Vertical_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Front_Right_Vertical_Reference.Name = "numCutting_Front_Right_Vertical_Reference";
-            this.numCutting_Front_Right_Vertical_Reference.PlcNumber = 1;
-            this.numCutting_Front_Right_Vertical_Reference.Address = "D517";
-            this.numCutting_Front_Right_Vertical_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Front_Right_Vertical_Reference.AutoSize = false;
-            this.numCutting_Front_Right_Vertical_Reference.Digits = 5;
-            this.numCutting_Front_Right_Vertical_Reference.DecimalPlaces = 1;
-            this.numCutting_Front_Right_Vertical_Reference.Divisor = 10D;
-            this.numCutting_Front_Right_Vertical_Reference.Suffix = "mm";
-            this.numCutting_Front_Right_Vertical_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Front_Right_Vertical_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Front_Right_Vertical_Reference.LogAction = true;
-            this.numCutting_Front_Right_Vertical_Reference.Location = new System.Drawing.Point(392, 737);
-            this.numCutting_Front_Right_Vertical_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Front_Right_Vertical_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Front_Right_Vertical_Unclamping_Interval  (D64)
-            // 
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.BackColor = System.Drawing.Color.White;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Name = "numCutting_Front_Right_Vertical_Unclamping_Interval";
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.PlcNumber = 1;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Address = "D64";
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.AutoSize = false;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Digits = 5;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.DecimalPlaces = 1;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Divisor = 10D;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Suffix = "mm";
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.LogAction = true;
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Location = new System.Drawing.Point(728, 737);
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.Size = new System.Drawing.Size(104, 26);
-            this.numCutting_Front_Right_Vertical_Unclamping_Interval.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblLeft_Encoders
-            // 
-            this.lblLeft_Encoders.Name = "lblLeft_Encoders";
-            this.lblLeft_Encoders.TranslationKey = "Left Encoders";
-            this.lblLeft_Encoders.Text = "Left Encoders";
-            this.lblLeft_Encoders.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblLeft_Encoders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblLeft_Encoders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblLeft_Encoders.Location = new System.Drawing.Point(16, 796);
-            this.lblLeft_Encoders.Size = new System.Drawing.Size(360, 26);
+            this.encCutting_Front_Right_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.encCutting_Front_Right_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // encLeft_Profile_Recognition_Front
             // 
+            // Left Profile Recognition Front: encoder 10 - M696 / M689, position D4; reference D546, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encLeft_Profile_Recognition_Front.BackColor = System.Drawing.Color.White;
             this.encLeft_Profile_Recognition_Front.Name = "encLeft_Profile_Recognition_Front";
             this.encLeft_Profile_Recognition_Front.PlcNumber = 1;
-            this.encLeft_Profile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
-            this.encLeft_Profile_Recognition_Front.Location = new System.Drawing.Point(16, 828);
-            this.encLeft_Profile_Recognition_Front.Size = new System.Drawing.Size(360, 64);
-            this.encLeft_Profile_Recognition_Front.LogAction = true;
-            this.encLeft_Profile_Recognition_Front.CommandAAddress = "M689";
-            this.encLeft_Profile_Recognition_Front.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encLeft_Profile_Recognition_Front.CommandBAddress = "M696";
-            this.encLeft_Profile_Recognition_Front.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encLeft_Profile_Recognition_Front.EncoderNumber = 10;
+            this.encLeft_Profile_Recognition_Front.TitleTextKey = "Left Profile Recognition Front";
+            this.encLeft_Profile_Recognition_Front.Location = new System.Drawing.Point(16, 450);
+            this.encLeft_Profile_Recognition_Front.Size = new System.Drawing.Size(910, 40);
+            this.encLeft_Profile_Recognition_Front.CommandBackAddress = "M696";
+            this.encLeft_Profile_Recognition_Front.CommandForwardAddress = "M689";
+            this.encLeft_Profile_Recognition_Front.BackSensorAddress = "M213";
+            this.encLeft_Profile_Recognition_Front.ForwardSensorAddress = "M220";
             this.encLeft_Profile_Recognition_Front.PositionAddress = "D4";
             this.encLeft_Profile_Recognition_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encLeft_Profile_Recognition_Front.PositionDivisor = 10D;
             this.encLeft_Profile_Recognition_Front.PositionDecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Front.PositionDigits = 6;
-            this.encLeft_Profile_Recognition_Front.PositionSuffix = "mm";
-            this.encLeft_Profile_Recognition_Front.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encLeft_Profile_Recognition_Front.ReferenceAddress = "D546";
+            this.encLeft_Profile_Recognition_Front.Divisor = 10D;
+            this.encLeft_Profile_Recognition_Front.DecimalPlaces = 1;
             this.encLeft_Profile_Recognition_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Front_Reference  (D546)
-            // 
-            this.numLeft_Profile_Recognition_Front_Reference.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Front_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Front_Reference.Name = "numLeft_Profile_Recognition_Front_Reference";
-            this.numLeft_Profile_Recognition_Front_Reference.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Front_Reference.Address = "D546";
-            this.numLeft_Profile_Recognition_Front_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Front_Reference.AutoSize = false;
-            this.numLeft_Profile_Recognition_Front_Reference.Digits = 5;
-            this.numLeft_Profile_Recognition_Front_Reference.DecimalPlaces = 1;
-            this.numLeft_Profile_Recognition_Front_Reference.Divisor = 10D;
-            this.numLeft_Profile_Recognition_Front_Reference.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Front_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Front_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Front_Reference.LogAction = true;
-            this.numLeft_Profile_Recognition_Front_Reference.Location = new System.Drawing.Point(392, 847);
-            this.numLeft_Profile_Recognition_Front_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numLeft_Profile_Recognition_Front_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encLeft_Profile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.encLeft_Profile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.encLeft_Profile_Recognition_Front.ErrorBackAddress = "M875";
+            this.encLeft_Profile_Recognition_Front.ErrorForwardAddress = "M874";
             // 
             // encLeft_Profile_Recognition_Top
             // 
+            // Left Profile Recognition Top: encoder 11 - M741 / M740, position D6; reference D547, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encLeft_Profile_Recognition_Top.BackColor = System.Drawing.Color.White;
             this.encLeft_Profile_Recognition_Top.Name = "encLeft_Profile_Recognition_Top";
             this.encLeft_Profile_Recognition_Top.PlcNumber = 1;
-            this.encLeft_Profile_Recognition_Top.TitleTextKey = "Profile Recognition Top";
-            this.encLeft_Profile_Recognition_Top.Location = new System.Drawing.Point(16, 898);
-            this.encLeft_Profile_Recognition_Top.Size = new System.Drawing.Size(360, 64);
-            this.encLeft_Profile_Recognition_Top.LogAction = true;
-            this.encLeft_Profile_Recognition_Top.CommandAAddress = "M740";
-            this.encLeft_Profile_Recognition_Top.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.encLeft_Profile_Recognition_Top.CommandBAddress = "M741";
-            this.encLeft_Profile_Recognition_Top.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.encLeft_Profile_Recognition_Top.EncoderNumber = 11;
+            this.encLeft_Profile_Recognition_Top.TitleTextKey = "Left Profile Recognition Top";
+            this.encLeft_Profile_Recognition_Top.Location = new System.Drawing.Point(16, 494);
+            this.encLeft_Profile_Recognition_Top.Size = new System.Drawing.Size(910, 40);
+            this.encLeft_Profile_Recognition_Top.CommandBackAddress = "M741";
+            this.encLeft_Profile_Recognition_Top.CommandForwardAddress = "M740";
+            this.encLeft_Profile_Recognition_Top.BackSensorAddress = "M345";
             this.encLeft_Profile_Recognition_Top.PositionAddress = "D6";
             this.encLeft_Profile_Recognition_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encLeft_Profile_Recognition_Top.PositionDivisor = 10D;
             this.encLeft_Profile_Recognition_Top.PositionDecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Top.PositionDigits = 6;
-            this.encLeft_Profile_Recognition_Top.PositionSuffix = "mm";
-            this.encLeft_Profile_Recognition_Top.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
+            this.encLeft_Profile_Recognition_Top.ReferenceAddress = "D547";
+            this.encLeft_Profile_Recognition_Top.Divisor = 10D;
+            this.encLeft_Profile_Recognition_Top.DecimalPlaces = 1;
             this.encLeft_Profile_Recognition_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Top_Reference  (D547)
-            // 
-            this.numLeft_Profile_Recognition_Top_Reference.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Top_Reference.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Top_Reference.Name = "numLeft_Profile_Recognition_Top_Reference";
-            this.numLeft_Profile_Recognition_Top_Reference.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Top_Reference.Address = "D547";
-            this.numLeft_Profile_Recognition_Top_Reference.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Top_Reference.AutoSize = false;
-            this.numLeft_Profile_Recognition_Top_Reference.Digits = 5;
-            this.numLeft_Profile_Recognition_Top_Reference.DecimalPlaces = 1;
-            this.numLeft_Profile_Recognition_Top_Reference.Divisor = 10D;
-            this.numLeft_Profile_Recognition_Top_Reference.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Top_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Top_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Top_Reference.LogAction = true;
-            this.numLeft_Profile_Recognition_Top_Reference.Location = new System.Drawing.Point(392, 917);
-            this.numLeft_Profile_Recognition_Top_Reference.Size = new System.Drawing.Size(104, 26);
-            this.numLeft_Profile_Recognition_Top_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.encLeft_Profile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encLeft_Profile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.encLeft_Profile_Recognition_Top.ErrorBackAddress = "M905";
+            this.encLeft_Profile_Recognition_Top.ErrorForwardAddress = "M904";
             // 
             // ParamEncoders
             // 
@@ -866,95 +405,45 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.lblHead_Manual);
             this.Controls.Add(this.lblHead_Reference);
             this.Controls.Add(this.lblHead_Tolerance);
-            this.Controls.Add(this.lblHead_Start_Limit);
-            this.Controls.Add(this.lblHead_Unclamping_Interval);
-            this.Controls.Add(this.lblEncoders);
-            this.Controls.Add(this.encRobot_Position);
+            this.Controls.Add(this.lblHead_MinimumLimit);
+            this.Controls.Add(this.lblHead_Unclamping);
             this.Controls.Add(this.encRobot_Gripper);
-            this.Controls.Add(this.numRobot_Gripper_Reference);
             this.Controls.Add(this.encProfile_Recognition_Front);
-            this.Controls.Add(this.numProfile_Recognition_Front_Reference);
-            this.Controls.Add(this.numProfile_Recognition_Front_Tolerance);
-            this.Controls.Add(this.numProfile_Recognition_Front_Start_Limit);
-            this.Controls.Add(this.numProfile_Recognition_Front_Unclamping_Interval);
             this.Controls.Add(this.encProfile_Recognition_Top);
-            this.Controls.Add(this.numProfile_Recognition_Top_Reference);
-            this.Controls.Add(this.numProfile_Recognition_Top_Tolerance);
-            this.Controls.Add(this.numProfile_Recognition_Top_Start_Limit);
-            this.Controls.Add(this.numProfile_Recognition_Top_Unclamping_Interval);
             this.Controls.Add(this.encMilling_Top);
-            this.Controls.Add(this.numMilling_Top_Reference);
-            this.Controls.Add(this.numMilling_Top_Unclamping_Interval);
             this.Controls.Add(this.encMilling_Cutting_Left_Front);
-            this.Controls.Add(this.numMilling_Cutting_Left_Front_Reference);
-            this.Controls.Add(this.numMilling_Cutting_Left_Front_Unclamping_Interval);
             this.Controls.Add(this.encCutting_Left_Top);
-            this.Controls.Add(this.numCutting_Left_Top_Reference);
-            this.Controls.Add(this.numCutting_Left_Top_Unclamping_Interval);
             this.Controls.Add(this.encCutting_Right_Front);
-            this.Controls.Add(this.numCutting_Right_Front_Reference);
-            this.Controls.Add(this.numCutting_Right_Front_Unclamping_Interval);
             this.Controls.Add(this.encExit_Carrying_Top);
-            this.Controls.Add(this.numExit_Carrying_Top_Reference);
-            this.Controls.Add(this.numExit_Carrying_Top_Unclamping_Interval);
             this.Controls.Add(this.encCutting_Front_Right_Vertical);
-            this.Controls.Add(this.numCutting_Front_Right_Vertical_Reference);
-            this.Controls.Add(this.numCutting_Front_Right_Vertical_Unclamping_Interval);
-            this.Controls.Add(this.lblLeft_Encoders);
             this.Controls.Add(this.encLeft_Profile_Recognition_Front);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Front_Reference);
             this.Controls.Add(this.encLeft_Profile_Recognition_Top);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Top_Reference);
             this.Name = "ParamEncoders";
-            this.Size = new System.Drawing.Size(848, 976);
+            this.Size = new System.Drawing.Size(942, 546);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI lblHead_Reference;
-        private Kaban.UI.Controls.LabelHMI lblHead_Tolerance;
-        private Kaban.UI.Controls.LabelHMI lblHead_Start_Limit;
-        private Kaban.UI.Controls.LabelHMI lblHead_Unclamping_Interval;
-        private Kaban.UI.Controls.LabelHMI lblEncoders;
-        private Kaban.UI.Controls.CylinderUnitHMI encRobot_Position;
-        private Kaban.UI.Controls.CylinderUnitHMI encRobot_Gripper;
-        private Kaban.UI.Controls.NumericInputHMI numRobot_Gripper_Reference;
-        private Kaban.UI.Controls.CylinderUnitHMI encProfile_Recognition_Front;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Start_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encProfile_Recognition_Top;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Top_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Top_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Top_Start_Limit;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Top_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encMilling_Top;
-        private Kaban.UI.Controls.NumericInputHMI numMilling_Top_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numMilling_Top_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encMilling_Cutting_Left_Front;
-        private Kaban.UI.Controls.NumericInputHMI numMilling_Cutting_Left_Front_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numMilling_Cutting_Left_Front_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encCutting_Left_Top;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Top_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Top_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encCutting_Right_Front;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encExit_Carrying_Top;
-        private Kaban.UI.Controls.NumericInputHMI numExit_Carrying_Top_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numExit_Carrying_Top_Unclamping_Interval;
-        private Kaban.UI.Controls.CylinderUnitHMI encCutting_Front_Right_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Front_Right_Vertical_Reference;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Front_Right_Vertical_Unclamping_Interval;
-        private Kaban.UI.Controls.LabelHMI lblLeft_Encoders;
-        private Kaban.UI.Controls.CylinderUnitHMI encLeft_Profile_Recognition_Front;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Front_Reference;
-        private Kaban.UI.Controls.CylinderUnitHMI encLeft_Profile_Recognition_Top;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Top_Reference;
+        private System.Windows.Forms.Label lblHead_Manual;
+        private System.Windows.Forms.Label lblHead_Reference;
+        private System.Windows.Forms.Label lblHead_Tolerance;
+        private System.Windows.Forms.Label lblHead_MinimumLimit;
+        private System.Windows.Forms.Label lblHead_Unclamping;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encRobot_Gripper;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encProfile_Recognition_Front;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encProfile_Recognition_Top;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encMilling_Top;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encMilling_Cutting_Left_Front;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encCutting_Left_Top;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encCutting_Right_Front;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encExit_Carrying_Top;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encCutting_Front_Right_Vertical;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encLeft_Profile_Recognition_Front;
+        private Kaban.UI.Controls.CylinderEncoderSettingHMI encLeft_Profile_Recognition_Top;
     }
 }

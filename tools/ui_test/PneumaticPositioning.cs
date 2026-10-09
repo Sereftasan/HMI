@@ -114,8 +114,13 @@ class PPT {
         var rows = PneumaticPositioningHMI.RowsOf(page);
         Check("16 moulds, each a PneumaticPositioningHMI", rows.Count == 16, rows.Count.ToString());
         Check("  nothing else of the old lines on the page (units, fields, buttons)",
-              !page.Controls.OfType<CylinderUnitHMI>().Any() && !page.Controls.OfType<NumericInputHMI>().Any() && !page.Controls.OfType<ButtonHMI>().Any());
-        var heads = page.Controls.OfType<Label>().Where(l => (l.Tag as string ?? "").StartsWith(PneumaticPositioningHMI.HeadingTag)).ToList();
+              new[] { CylinderRowHMI.RowsHost(page), CylinderRowHMI.HeadingsHost(page) }.All(h =>
+                  !h.Controls.OfType<CylinderUnitHMI>().Any() && !h.Controls.OfType<NumericInputHMI>().Any() && !h.Controls.OfType<ButtonHMI>().Any()));
+        // the page a table once shown (AxisPageFrame): the headings in its heading, the rows in its body
+        Check("  the page a table once shown: its headings stay, its rows scroll", AxisPageFrame.Of(page) != null &&
+              CylinderRowHMI.RowsHost(page) == AxisPageFrame.Of(page).Body && rows.All(r => r.Parent == AxisPageFrame.Of(page).Body));
+        var heads = CylinderRowHMI.HeadingsHost(page).Controls.OfType<Label>().Where(l => (l.Tag as string ?? "").StartsWith(PneumaticPositioningHMI.HeadingTag)).ToList();
+        Func<Control, Rectangle> scr = c => c.RectangleToScreen(c.ClientRectangle);
         Check("  five headings: Manual movement, Target position, Calibration, Positioning tolerance, Direction ref",
               string.Join(",", heads.OrderBy(l => l.Left).Select(l => l.Text)) == "Manual movement,Target position,Calibration,Positioning tolerance,Direction ref",
               string.Join(",", heads.OrderBy(l => l.Left).Select(l => l.Text)));
@@ -125,7 +130,7 @@ class PPT {
         {
             var key = ((string)h.Tag).Substring(PneumaticPositioningHMI.HeadingTag.Length);
             var col = first.Columns[key];
-            if (h.Left != first.Left + col.X || h.Width != col.Y || h.Bottom > first.Top) { over = false; why += key + " " + h.Bounds + " col " + col + "; "; }
+            if (scr(h).Left != scr(first).Left + col.X || h.Width != col.Y || scr(h).Bottom > scr(first).Top) { over = false; why += key + " " + scr(h) + " col " + col + "; "; }
         }
         Check("  each over its column, above the first row", over, why);
         var f = rows[0];
@@ -176,7 +181,7 @@ class PPT {
               shown.Select(r => r.Location).SequenceEqual(places.Take(6)) &&
               shown.Select(r => r.TitleTextKey).SequenceEqual(front.Select(r => r.TitleTextKey)),
               string.Join(" ", shown.Select(r => r.Top)));
-        Check("  the headings stay over them", heads.All(h => h.Bottom <= shown[0].Top));
+        Check("  the headings stay over them", heads.All(h => scr(h).Bottom <= scr(shown[0]).Top));
         Console.WriteLine("--- the option on again ---");
         foreach (var r in rows) r.UpdateState(read, on);
         Pump(100);

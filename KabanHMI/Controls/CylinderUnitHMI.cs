@@ -148,6 +148,7 @@ namespace Kaban.UI.Controls
         public ButtonHMI ButtonB { get { return _btnB; } }
 
         /// <summary>The encoder position display. Exposed for full styling access.</summary>
+        [Browsable(false)]   // no position on a cylinder unit placed by hand (9 October)
         [Category(" Buttons")]
         [Description("Position readout - full NumericDisplayHMI property set.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -433,6 +434,7 @@ namespace Kaban.UI.Controls
         /// unit showed the same kind of number in two different styles, and red
         /// digits read as an alarm on a page where red means exactly that.
         /// </summary>
+        [Browsable(false)]
         [Category(" Position"), DefaultValue(UnitPositionStyle.Standard)]
         [Description("Standard: black bold digits on grey, like the Axis Settings rows. Readout: red digits on black.")]
         public UnitPositionStyle PositionStyle
@@ -725,34 +727,47 @@ namespace Kaban.UI.Controls
         }
 
         // ================= optional position display (encoder) =================
-
+        // NOT IN THE PROPERTIES WINDOW since 9 October ("we wouldn't need the
+        // position property for the cylinder movement controls anymore"): a cylinder
+        // positioned by its analogue sensor is a PneumaticPositioningHMI row, one with
+        // an encoder a CylinderEncoderUnitHMI that takes its position from its
+        // encoder's row (CylinderEncoderSettingHMI, Machine Parameters > Encoders).
+        // Kept for those (the unit inside them shows the position) and for a page
+        // that still sets them.
         private string _positionAddress = "";
+        [Browsable(false)]
         [Category(" Position")]
         [Description("Word address of the encoder value. Empty hides the readout.")]
         public string PositionAddress { get { return _positionAddress; } set { _positionAddress = value; ApplySettings(); } }
 
         private DataTypeEnum _positionDataType = DataTypeEnum.Bin_16;
+        [Browsable(false)]
         [Category(" Position")]
         public DataTypeEnum PositionDataType { get { return _positionDataType; } set { _positionDataType = value; ApplySettings(); } }
 
         private double _positionDivisor = 1.0;
+        [Browsable(false)]
         [Category(" Position")]
         public double PositionDivisor { get { return _positionDivisor; } set { _positionDivisor = value; ApplySettings(); } }
 
         private int _positionDecimalPlaces = 0;
+        [Browsable(false)]
         [Category(" Position")]
         public int PositionDecimalPlaces { get { return _positionDecimalPlaces; } set { _positionDecimalPlaces = value; ApplySettings(); } }
 
         private int _positionDigits = 5;
+        [Browsable(false)]
         [Category(" Position")]
         [Description("Total digit count shown (like NumericDisplayHMI.Digits). The readout width auto-fits this so it doesn't waste space.")]
         public int PositionDigits { get { return _positionDigits; } set { _positionDigits = Math.Max(1, value); ApplySettings(); } }
 
         private string _positionSuffix = "";
+        [Browsable(false)]
         [Category(" Position")]
         public string PositionSuffix { get { return _positionSuffix; } set { _positionSuffix = value; ApplySettings(); } }
 
         private UnitType _positionUnitType = UnitType.None;
+        [Browsable(false)]
         [Category(" Position")]
         [Description("Unit family for the position readout. When set (e.g. Length), the value follows " +
                      "the unit chosen in Unit Settings and the suffix changes with it; PositionSuffix is " +
@@ -764,6 +779,7 @@ namespace Kaban.UI.Controls
         }
 
         private DynamicValue _positionOffset = new DynamicValue();
+        [Browsable(false)]
         [Category(" Position")]
         [Description("Address offset for the position tag (Static / Tag / HmiVariable), same as NumericDisplayHMI.AddressOffset.")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
@@ -771,6 +787,7 @@ namespace Kaban.UI.Controls
         public DynamicValue PositionOffset { get { return _positionOffset; } set { _positionOffset = value; ApplySettings(); } }
 
         private string _positionTip = "Current position";
+        [Browsable(false)]
         [Category(" Position")]
         public string PositionTipKey { get { return _positionTip; } set { _positionTip = value; ApplyTranslation(); } }
 
@@ -987,6 +1004,16 @@ namespace Kaban.UI.Controls
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int PositionSlotWidth { get; set; }
 
+        /// <summary>
+        /// The unit inside a control that owns its position (CylinderEncoderUnitHMI;
+        /// a row's, InRow, is one too): its checks speak of its position, not of the
+        /// control a position belongs to.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool PartOfComposite { get; set; }
+
+        private bool PositionOwned { get { return _inRow || PartOfComposite; } }
+
         // ==================================================================
         // THE VALVE AND THE FEEDBACK: WHAT EVERYTHING ELSE DEPENDS ON
         // ------------------------------------------------------------------
@@ -1113,11 +1140,13 @@ namespace Kaban.UI.Controls
                     break;
                 case CylinderFeedback.AnalogueMagnetic:
                     if (lamps > 0) p.Add("AnalogueMagnetic: the position is the feedback - no lamps (" + lamps + " set).");
-                    if (!pos) p.Add("AnalogueMagnetic: set PositionAddress - the analogue position.");
+                    if (!pos) p.Add(PositionOwned ? "AnalogueMagnetic: set PositionAddress - the analogue position."
+                                                  : "AnalogueMagnetic: a cylinder positioned by its analogue sensor is a PneumaticPositioningHMI row - its position, target and calibration there.");
                     break;
                 case CylinderFeedback.EncoderPlusReference:
                     if (lamps != 1) p.Add("EncoderPlusReference: one lamp - the reference sensor" + (lamps == 0 ? " (none set)." : " (" + lamps + " set)."));
-                    if (!pos) p.Add("EncoderPlusReference: set PositionAddress - the encoder position.");
+                    if (!pos) p.Add(PositionOwned ? "EncoderPlusReference: set PositionAddress - the encoder position."
+                                                  : "EncoderPlusReference: a cylinder with an encoder is a CylinderEncoderUnitHMI - its encoder's row (CylinderEncoderSettingHMI, Machine Parameters > Encoders) gives it its position.");
                     break;
                 case CylinderFeedback.NoSensor:
                     if (lamps > 0) p.Add("NoSensor: the cylinder has no sensor - no lamps (" + lamps + " set).");

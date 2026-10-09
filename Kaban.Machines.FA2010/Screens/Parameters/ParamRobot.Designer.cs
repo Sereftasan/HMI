@@ -10,7 +10,7 @@
 
 namespace Kaban.Machines.FA2010.Screens.Parameters
 {
-    partial class ParamEntry
+    partial class ParamRobot
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -24,16 +24,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
 
         private void InitializeComponent()
         {
-            this.lblConveyor = new Kaban.UI.Controls.LabelHMI();
-            this.numMinimum_Bar_Length = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN1st_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN2nd_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN3rd_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN4th_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN5th_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN6th_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.numN7th_Clamping_Position = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblRobot = new Kaban.UI.Controls.LabelHMI();
             this.numGripper_Length = new Kaban.UI.Controls.NumericInputHMI();
             this.numEncoder_Reference = new Kaban.UI.Controls.NumericInputHMI();
             this.numLength_Measuring_Dist = new Kaban.UI.Controls.NumericInputHMI();
@@ -56,196 +46,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Z_Offset = new Kaban.UI.Controls.NumericInputHMI();
             this.SuspendLayout();
             // 
-            // lblConveyor
-            // 
-            this.lblConveyor.Name = "lblConveyor";
-            this.lblConveyor.TranslationKey = "Conveyor";
-            this.lblConveyor.Text = "Conveyor";
-            this.lblConveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblConveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblConveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblConveyor.Location = new System.Drawing.Point(16, 16);
-            this.lblConveyor.Size = new System.Drawing.Size(320, 26);
-            // 
-            // numMinimum_Bar_Length  (D438)
-            // 
-            this.numMinimum_Bar_Length.BackColor = System.Drawing.Color.White;
-            this.numMinimum_Bar_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numMinimum_Bar_Length.Name = "numMinimum_Bar_Length";
-            this.numMinimum_Bar_Length.PlcNumber = 1;
-            this.numMinimum_Bar_Length.Address = "D438";
-            this.numMinimum_Bar_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numMinimum_Bar_Length.DescriptionText = "Minimum Bar Length";
-            this.numMinimum_Bar_Length.AutoSize = false;
-            this.numMinimum_Bar_Length.Digits = 5;
-            this.numMinimum_Bar_Length.DecimalPlaces = 1;
-            this.numMinimum_Bar_Length.Divisor = 10000D;
-            this.numMinimum_Bar_Length.Suffix = "mm";
-            this.numMinimum_Bar_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numMinimum_Bar_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numMinimum_Bar_Length.LogAction = true;
-            this.numMinimum_Bar_Length.Location = new System.Drawing.Point(220, 50);
-            this.numMinimum_Bar_Length.Size = new System.Drawing.Size(116, 26);
-            this.numMinimum_Bar_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN1st_Clamping_Position  (D452)
-            // 
-            this.numN1st_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN1st_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN1st_Clamping_Position.Name = "numN1st_Clamping_Position";
-            this.numN1st_Clamping_Position.PlcNumber = 1;
-            this.numN1st_Clamping_Position.Address = "D452";
-            this.numN1st_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN1st_Clamping_Position.DescriptionText = "1st Clamping Position";
-            this.numN1st_Clamping_Position.AutoSize = false;
-            this.numN1st_Clamping_Position.Digits = 5;
-            this.numN1st_Clamping_Position.DecimalPlaces = 1;
-            this.numN1st_Clamping_Position.Divisor = 10000D;
-            this.numN1st_Clamping_Position.Suffix = "mm";
-            this.numN1st_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN1st_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN1st_Clamping_Position.LogAction = true;
-            this.numN1st_Clamping_Position.Location = new System.Drawing.Point(220, 86);
-            this.numN1st_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN1st_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN2nd_Clamping_Position  (D454)
-            // 
-            this.numN2nd_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN2nd_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN2nd_Clamping_Position.Name = "numN2nd_Clamping_Position";
-            this.numN2nd_Clamping_Position.PlcNumber = 1;
-            this.numN2nd_Clamping_Position.Address = "D454";
-            this.numN2nd_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN2nd_Clamping_Position.DescriptionText = "2nd Clamping Position";
-            this.numN2nd_Clamping_Position.AutoSize = false;
-            this.numN2nd_Clamping_Position.Digits = 5;
-            this.numN2nd_Clamping_Position.DecimalPlaces = 1;
-            this.numN2nd_Clamping_Position.Divisor = 10000D;
-            this.numN2nd_Clamping_Position.Suffix = "mm";
-            this.numN2nd_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN2nd_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN2nd_Clamping_Position.LogAction = true;
-            this.numN2nd_Clamping_Position.Location = new System.Drawing.Point(220, 122);
-            this.numN2nd_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN2nd_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN3rd_Clamping_Position  (D456)
-            // 
-            this.numN3rd_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN3rd_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN3rd_Clamping_Position.Name = "numN3rd_Clamping_Position";
-            this.numN3rd_Clamping_Position.PlcNumber = 1;
-            this.numN3rd_Clamping_Position.Address = "D456";
-            this.numN3rd_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN3rd_Clamping_Position.DescriptionText = "3rd Clamping Position";
-            this.numN3rd_Clamping_Position.AutoSize = false;
-            this.numN3rd_Clamping_Position.Digits = 5;
-            this.numN3rd_Clamping_Position.DecimalPlaces = 1;
-            this.numN3rd_Clamping_Position.Divisor = 10000D;
-            this.numN3rd_Clamping_Position.Suffix = "mm";
-            this.numN3rd_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN3rd_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN3rd_Clamping_Position.LogAction = true;
-            this.numN3rd_Clamping_Position.Location = new System.Drawing.Point(220, 158);
-            this.numN3rd_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN3rd_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN4th_Clamping_Position  (D458)
-            // 
-            this.numN4th_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN4th_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN4th_Clamping_Position.Name = "numN4th_Clamping_Position";
-            this.numN4th_Clamping_Position.PlcNumber = 1;
-            this.numN4th_Clamping_Position.Address = "D458";
-            this.numN4th_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN4th_Clamping_Position.DescriptionText = "4th Clamping Position";
-            this.numN4th_Clamping_Position.AutoSize = false;
-            this.numN4th_Clamping_Position.Digits = 5;
-            this.numN4th_Clamping_Position.DecimalPlaces = 1;
-            this.numN4th_Clamping_Position.Divisor = 10000D;
-            this.numN4th_Clamping_Position.Suffix = "mm";
-            this.numN4th_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN4th_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN4th_Clamping_Position.LogAction = true;
-            this.numN4th_Clamping_Position.Location = new System.Drawing.Point(220, 194);
-            this.numN4th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN4th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN5th_Clamping_Position  (D460)
-            // 
-            this.numN5th_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN5th_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN5th_Clamping_Position.Name = "numN5th_Clamping_Position";
-            this.numN5th_Clamping_Position.PlcNumber = 1;
-            this.numN5th_Clamping_Position.Address = "D460";
-            this.numN5th_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN5th_Clamping_Position.DescriptionText = "5th Clamping Position";
-            this.numN5th_Clamping_Position.AutoSize = false;
-            this.numN5th_Clamping_Position.Digits = 5;
-            this.numN5th_Clamping_Position.DecimalPlaces = 1;
-            this.numN5th_Clamping_Position.Divisor = 10000D;
-            this.numN5th_Clamping_Position.Suffix = "mm";
-            this.numN5th_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN5th_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN5th_Clamping_Position.LogAction = true;
-            this.numN5th_Clamping_Position.Location = new System.Drawing.Point(220, 230);
-            this.numN5th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN5th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN6th_Clamping_Position  (D462)
-            // 
-            this.numN6th_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN6th_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN6th_Clamping_Position.Name = "numN6th_Clamping_Position";
-            this.numN6th_Clamping_Position.PlcNumber = 1;
-            this.numN6th_Clamping_Position.Address = "D462";
-            this.numN6th_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN6th_Clamping_Position.DescriptionText = "6th Clamping Position";
-            this.numN6th_Clamping_Position.AutoSize = false;
-            this.numN6th_Clamping_Position.Digits = 5;
-            this.numN6th_Clamping_Position.DecimalPlaces = 1;
-            this.numN6th_Clamping_Position.Divisor = 10000D;
-            this.numN6th_Clamping_Position.Suffix = "mm";
-            this.numN6th_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN6th_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN6th_Clamping_Position.LogAction = true;
-            this.numN6th_Clamping_Position.Location = new System.Drawing.Point(220, 266);
-            this.numN6th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN6th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numN7th_Clamping_Position  (D464)
-            // 
-            this.numN7th_Clamping_Position.BackColor = System.Drawing.Color.White;
-            this.numN7th_Clamping_Position.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numN7th_Clamping_Position.Name = "numN7th_Clamping_Position";
-            this.numN7th_Clamping_Position.PlcNumber = 1;
-            this.numN7th_Clamping_Position.Address = "D464";
-            this.numN7th_Clamping_Position.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.numN7th_Clamping_Position.DescriptionText = "7th Clamping Position";
-            this.numN7th_Clamping_Position.AutoSize = false;
-            this.numN7th_Clamping_Position.Digits = 5;
-            this.numN7th_Clamping_Position.DecimalPlaces = 1;
-            this.numN7th_Clamping_Position.Divisor = 10000D;
-            this.numN7th_Clamping_Position.Suffix = "mm";
-            this.numN7th_Clamping_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numN7th_Clamping_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numN7th_Clamping_Position.LogAction = true;
-            this.numN7th_Clamping_Position.Location = new System.Drawing.Point(220, 302);
-            this.numN7th_Clamping_Position.Size = new System.Drawing.Size(116, 26);
-            this.numN7th_Clamping_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // lblRobot
-            // 
-            this.lblRobot.Name = "lblRobot";
-            this.lblRobot.TranslationKey = "Robot";
-            this.lblRobot.Text = "Robot";
-            this.lblRobot.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblRobot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblRobot.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblRobot.Location = new System.Drawing.Point(16, 352);
-            this.lblRobot.Size = new System.Drawing.Size(320, 26);
-            // 
             // numGripper_Length  (D506)
             // 
             this.numGripper_Length.BackColor = System.Drawing.Color.White;
@@ -263,7 +63,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numGripper_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numGripper_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numGripper_Length.LogAction = true;
-            this.numGripper_Length.Location = new System.Drawing.Point(220, 386);
+            this.numGripper_Length.Location = new System.Drawing.Point(220, 16);
             this.numGripper_Length.Size = new System.Drawing.Size(116, 26);
             this.numGripper_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -284,7 +84,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numEncoder_Reference.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numEncoder_Reference.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numEncoder_Reference.LogAction = true;
-            this.numEncoder_Reference.Location = new System.Drawing.Point(220, 422);
+            this.numEncoder_Reference.Location = new System.Drawing.Point(220, 52);
             this.numEncoder_Reference.Size = new System.Drawing.Size(116, 26);
             this.numEncoder_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -305,7 +105,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLength_Measuring_Dist.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numLength_Measuring_Dist.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numLength_Measuring_Dist.LogAction = true;
-            this.numLength_Measuring_Dist.Location = new System.Drawing.Point(220, 458);
+            this.numLength_Measuring_Dist.Location = new System.Drawing.Point(220, 88);
             this.numLength_Measuring_Dist.Size = new System.Drawing.Size(116, 26);
             this.numLength_Measuring_Dist.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -326,7 +126,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Lifting_Amount.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numZ_Profile_Lifting_Amount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numZ_Profile_Lifting_Amount.LogAction = true;
-            this.numZ_Profile_Lifting_Amount.Location = new System.Drawing.Point(220, 494);
+            this.numZ_Profile_Lifting_Amount.Location = new System.Drawing.Point(220, 124);
             this.numZ_Profile_Lifting_Amount.Size = new System.Drawing.Size(116, 26);
             this.numZ_Profile_Lifting_Amount.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -347,7 +147,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Back_Clearing_Amount.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numY_Profile_Back_Clearing_Amount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numY_Profile_Back_Clearing_Amount.LogAction = true;
-            this.numY_Profile_Back_Clearing_Amount.Location = new System.Drawing.Point(220, 530);
+            this.numY_Profile_Back_Clearing_Amount.Location = new System.Drawing.Point(220, 160);
             this.numY_Profile_Back_Clearing_Amount.Size = new System.Drawing.Size(116, 26);
             this.numY_Profile_Back_Clearing_Amount.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -368,7 +168,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN1st_Clamp_Releasing_Distance.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numN1st_Clamp_Releasing_Distance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN1st_Clamp_Releasing_Distance.LogAction = true;
-            this.numN1st_Clamp_Releasing_Distance.Location = new System.Drawing.Point(220, 566);
+            this.numN1st_Clamp_Releasing_Distance.Location = new System.Drawing.Point(220, 196);
             this.numN1st_Clamp_Releasing_Distance.Size = new System.Drawing.Size(116, 26);
             this.numN1st_Clamp_Releasing_Distance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -389,7 +189,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRecognition_Extrication_Pos.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numRecognition_Extrication_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numRecognition_Extrication_Pos.LogAction = true;
-            this.numRecognition_Extrication_Pos.Location = new System.Drawing.Point(220, 602);
+            this.numRecognition_Extrication_Pos.Location = new System.Drawing.Point(220, 232);
             this.numRecognition_Extrication_Pos.Size = new System.Drawing.Size(116, 26);
             this.numRecognition_Extrication_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -410,7 +210,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numY_Profile_Clearing_Pos.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numY_Profile_Clearing_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numY_Profile_Clearing_Pos.LogAction = true;
-            this.numY_Profile_Clearing_Pos.Location = new System.Drawing.Point(220, 638);
+            this.numY_Profile_Clearing_Pos.Location = new System.Drawing.Point(220, 268);
             this.numY_Profile_Clearing_Pos.Size = new System.Drawing.Size(116, 26);
             this.numY_Profile_Clearing_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -431,7 +231,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numZ_Profile_Clearing_Pos.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numZ_Profile_Clearing_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numZ_Profile_Clearing_Pos.LogAction = true;
-            this.numZ_Profile_Clearing_Pos.Location = new System.Drawing.Point(220, 674);
+            this.numZ_Profile_Clearing_Pos.Location = new System.Drawing.Point(220, 304);
             this.numZ_Profile_Clearing_Pos.Size = new System.Drawing.Size(116, 26);
             this.numZ_Profile_Clearing_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -452,7 +252,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Y_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numCross_Rollers_Robot_Y_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numCross_Rollers_Robot_Y_Offset.LogAction = true;
-            this.numCross_Rollers_Robot_Y_Offset.Location = new System.Drawing.Point(220, 710);
+            this.numCross_Rollers_Robot_Y_Offset.Location = new System.Drawing.Point(220, 340);
             this.numCross_Rollers_Robot_Y_Offset.Size = new System.Drawing.Size(116, 26);
             this.numCross_Rollers_Robot_Y_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -473,7 +273,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRobot_Height.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numRobot_Height.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numRobot_Height.LogAction = true;
-            this.numRobot_Height.Location = new System.Drawing.Point(573, 386);
+            this.numRobot_Height.Location = new System.Drawing.Point(220, 376);
             this.numRobot_Height.Size = new System.Drawing.Size(116, 26);
             this.numRobot_Height.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -494,7 +294,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLeft_Front_Extrication_Pos.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numLeft_Front_Extrication_Pos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numLeft_Front_Extrication_Pos.LogAction = true;
-            this.numLeft_Front_Extrication_Pos.Location = new System.Drawing.Point(573, 422);
+            this.numLeft_Front_Extrication_Pos.Location = new System.Drawing.Point(220, 412);
             this.numLeft_Front_Extrication_Pos.Size = new System.Drawing.Size(116, 26);
             this.numLeft_Front_Extrication_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -515,7 +315,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numConveyor_Extrication_Position.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numConveyor_Extrication_Position.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numConveyor_Extrication_Position.LogAction = true;
-            this.numConveyor_Extrication_Position.Location = new System.Drawing.Point(573, 458);
+            this.numConveyor_Extrication_Position.Location = new System.Drawing.Point(220, 448);
             this.numConveyor_Extrication_Position.Size = new System.Drawing.Size(116, 26);
             this.numConveyor_Extrication_Position.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -536,7 +336,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numAcceleration_Time.UnitType = Kaban.Core.Enums.UnitType.Time;
             this.numAcceleration_Time.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numAcceleration_Time.LogAction = true;
-            this.numAcceleration_Time.Location = new System.Drawing.Point(573, 494);
+            this.numAcceleration_Time.Location = new System.Drawing.Point(220, 484);
             this.numAcceleration_Time.Size = new System.Drawing.Size(116, 26);
             this.numAcceleration_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -557,7 +357,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numDeceleration_Time.UnitType = Kaban.Core.Enums.UnitType.Time;
             this.numDeceleration_Time.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numDeceleration_Time.LogAction = true;
-            this.numDeceleration_Time.Location = new System.Drawing.Point(573, 530);
+            this.numDeceleration_Time.Location = new System.Drawing.Point(220, 520);
             this.numDeceleration_Time.Size = new System.Drawing.Size(116, 26);
             this.numDeceleration_Time.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -578,7 +378,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numR_Movement_Amount_Rotation.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numR_Movement_Amount_Rotation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numR_Movement_Amount_Rotation.LogAction = true;
-            this.numR_Movement_Amount_Rotation.Location = new System.Drawing.Point(573, 566);
+            this.numR_Movement_Amount_Rotation.Location = new System.Drawing.Point(220, 556);
             this.numR_Movement_Amount_Rotation.Size = new System.Drawing.Size(116, 26);
             this.numR_Movement_Amount_Rotation.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -599,7 +399,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLinear_Encoder_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numLinear_Encoder_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numLinear_Encoder_Tolerance.LogAction = true;
-            this.numLinear_Encoder_Tolerance.Location = new System.Drawing.Point(573, 602);
+            this.numLinear_Encoder_Tolerance.Location = new System.Drawing.Point(220, 592);
             this.numLinear_Encoder_Tolerance.Size = new System.Drawing.Size(116, 26);
             this.numLinear_Encoder_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -620,7 +420,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Y_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numN90_Degree_Gripper_Y_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN90_Degree_Gripper_Y_Offset.LogAction = true;
-            this.numN90_Degree_Gripper_Y_Offset.Location = new System.Drawing.Point(573, 638);
+            this.numN90_Degree_Gripper_Y_Offset.Location = new System.Drawing.Point(220, 628);
             this.numN90_Degree_Gripper_Y_Offset.Size = new System.Drawing.Size(116, 26);
             this.numN90_Degree_Gripper_Y_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -641,7 +441,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numN90_Degree_Gripper_Z_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numN90_Degree_Gripper_Z_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numN90_Degree_Gripper_Z_Offset.LogAction = true;
-            this.numN90_Degree_Gripper_Z_Offset.Location = new System.Drawing.Point(573, 674);
+            this.numN90_Degree_Gripper_Z_Offset.Location = new System.Drawing.Point(220, 664);
             this.numN90_Degree_Gripper_Z_Offset.Size = new System.Drawing.Size(116, 26);
             this.numN90_Degree_Gripper_Z_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
@@ -662,11 +462,11 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Rollers_Robot_Z_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
             this.numCross_Rollers_Robot_Z_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.numCross_Rollers_Robot_Z_Offset.LogAction = true;
-            this.numCross_Rollers_Robot_Z_Offset.Location = new System.Drawing.Point(573, 710);
+            this.numCross_Rollers_Robot_Z_Offset.Location = new System.Drawing.Point(220, 700);
             this.numCross_Rollers_Robot_Z_Offset.Size = new System.Drawing.Size(116, 26);
             this.numCross_Rollers_Robot_Z_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             // 
-            // ParamEntry
+            // ParamRobot
             // 
             // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
             // auto-scaling container (the tab host), which would scale them twice.
@@ -674,16 +474,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lblConveyor);
-            this.Controls.Add(this.numMinimum_Bar_Length);
-            this.Controls.Add(this.numN1st_Clamping_Position);
-            this.Controls.Add(this.numN2nd_Clamping_Position);
-            this.Controls.Add(this.numN3rd_Clamping_Position);
-            this.Controls.Add(this.numN4th_Clamping_Position);
-            this.Controls.Add(this.numN5th_Clamping_Position);
-            this.Controls.Add(this.numN6th_Clamping_Position);
-            this.Controls.Add(this.numN7th_Clamping_Position);
-            this.Controls.Add(this.lblRobot);
             this.Controls.Add(this.numGripper_Length);
             this.Controls.Add(this.numEncoder_Reference);
             this.Controls.Add(this.numLength_Measuring_Dist);
@@ -704,24 +494,14 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.numN90_Degree_Gripper_Y_Offset);
             this.Controls.Add(this.numN90_Degree_Gripper_Z_Offset);
             this.Controls.Add(this.numCross_Rollers_Robot_Z_Offset);
-            this.Name = "ParamEntry";
-            this.Size = new System.Drawing.Size(729, 760);
+            this.Name = "ParamRobot";
+            this.Size = new System.Drawing.Size(376, 750);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI lblConveyor;
-        private Kaban.UI.Controls.NumericInputHMI numMinimum_Bar_Length;
-        private Kaban.UI.Controls.NumericInputHMI numN1st_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN2nd_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN3rd_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN4th_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN5th_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN6th_Clamping_Position;
-        private Kaban.UI.Controls.NumericInputHMI numN7th_Clamping_Position;
-        private Kaban.UI.Controls.LabelHMI lblRobot;
         private Kaban.UI.Controls.NumericInputHMI numGripper_Length;
         private Kaban.UI.Controls.NumericInputHMI numEncoder_Reference;
         private Kaban.UI.Controls.NumericInputHMI numLength_Measuring_Dist;

@@ -27,7 +27,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManualExit));
-            this.unitRobot_Top_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitRobot_Top_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRobot_Top_Small_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitRobot_Movement = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
@@ -41,77 +41,15 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitRobot_Top_Clamping
             // 
+            // Robot Top Clamping: encoder 8 of Machine Parameters - Encoders (Exit Carrying Top): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitRobot_Top_Clamping.BackColor = System.Drawing.Color.White;
             this.unitRobot_Top_Clamping.Name = "unitRobot_Top_Clamping";
+            this.unitRobot_Top_Clamping.EncoderNumber = 8;
             this.unitRobot_Top_Clamping.PlcNumber = 1;
             this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
             this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(16, 16);
             this.unitRobot_Top_Clamping.Size = new System.Drawing.Size(360, 64);
-            this.unitRobot_Top_Clamping.LogAction = true;
-            this.unitRobot_Top_Clamping.CommandAAddress = "M657";
-            this.unitRobot_Top_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRobot_Top_Clamping.Lamp1AAddress = "M233";
-            this.unitRobot_Top_Clamping.CommandBAddress = "M656";
-            this.unitRobot_Top_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRobot_Top_Clamping.PositionAddress = "D17";
-            this.unitRobot_Top_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitRobot_Top_Clamping.PositionDivisor = 10D;
-            this.unitRobot_Top_Clamping.PositionDecimalPlaces = 1;
-            this.unitRobot_Top_Clamping.PositionDigits = 6;
-            this.unitRobot_Top_Clamping.PositionSuffix = "mm";
-            this.unitRobot_Top_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitRobot_Top_Clamping.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
-            this.unitRobot_Top_Clamping.BaseOffset = 0;
-            this.unitRobot_Top_Clamping.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.DescriptionKey = "";
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.MonitorAddress = "d1";
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.Less;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.LessOrEqual;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.Range;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.ValA = 0D;
-            this.unitRobot_Top_Clamping.ButtonAEnableTrigger.ValB = 555D;
-            this.unitRobot_Top_Clamping.ButtonATextKey = "◀";
-            this.unitRobot_Top_Clamping.ButtonATipKey = "";
-            this.unitRobot_Top_Clamping.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitRobot_Top_Clamping.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.DescriptionKey = "";
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.MonitorAddress = "";
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.ValA = 0D;
-            this.unitRobot_Top_Clamping.ButtonBEnableTrigger.ValB = 0D;
-            this.unitRobot_Top_Clamping.ButtonBTextKey = "▶";
-            this.unitRobot_Top_Clamping.ButtonBTipKey = "";
-            this.unitRobot_Top_Clamping.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.unitRobot_Top_Clamping.ButtonSlotWidth = 0;
-            this.unitRobot_Top_Clamping.ConfirmationNeeded = false;
             this.unitRobot_Top_Clamping.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
-            this.unitRobot_Top_Clamping.ErrorAAddress = "M854";
-            this.unitRobot_Top_Clamping.ErrorBAddress = "M840";
-            // Up sensor SN77 (X61) + encoder X16/X17 (Cutting Right Top Clamping).
-            this.unitRobot_Top_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitRobot_Top_Clamping.HelpAFiles = "c# learning structure.png";
-            this.unitRobot_Top_Clamping.HelpBFiles = "c# learning structure.png";
-            this.unitRobot_Top_Clamping.Lamp1ATipKey = "";
-            this.unitRobot_Top_Clamping.Lamp1BTipKey = "";
-            this.unitRobot_Top_Clamping.Lamp2ATipKey = "";
-            this.unitRobot_Top_Clamping.Lamp2BTipKey = "";
-            this.unitRobot_Top_Clamping.OutputAAddress = "";
-            this.unitRobot_Top_Clamping.OutputBAddress = "";
-            this.unitRobot_Top_Clamping.PositionOffset.StaticValue = 0D;
-            this.unitRobot_Top_Clamping.PositionOffset.TagAddress = "";
-            this.unitRobot_Top_Clamping.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.unitRobot_Top_Clamping.PositionSlotWidth = 0;
-            this.unitRobot_Top_Clamping.PositionTipKey = "Current position";
-            this.unitRobot_Top_Clamping.RelayAAddress = "";
-            this.unitRobot_Top_Clamping.RelayBAddress = "";
-            this.unitRobot_Top_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.unitRobot_Top_Clamping.TitleTipKey = "";
-            // Pneumatic drawing: Y45/Y46, 5/3 closed centre (P23).
-            this.unitRobot_Top_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.unitRobot_Top_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             // 
             // unitRobot_Top_Small_Clamping
@@ -463,7 +401,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         #endregion
 
-        private Kaban.UI.Controls.CylinderUnitHMI unitRobot_Top_Clamping;
+        private Kaban.UI.Controls.CylinderEncoderUnitHMI unitRobot_Top_Clamping;
         private Kaban.UI.Controls.CylinderUnitHMI unitRobot_Top_Small_Clamping;
         private Kaban.UI.Controls.AxisUnitHMI unitRobot_Movement;
         private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;

@@ -78,6 +78,7 @@
  <a href="#notes">&nbsp;&nbsp;3b. Notes and feedback</a>
  <a href="#units">4. Manual Movement: the units</a>
  <a href="#positioning">&nbsp;&nbsp;4a. Pneumatic positionings</a>
+ <a href="#encoders">&nbsp;&nbsp;4b. Cylinders with an encoder</a>
  <a href="#keypad">5. Entering a value</a>
  <a href="#alarms">6. Alarms</a>
  <a href="#genalarms">&nbsp;&nbsp;6a. Alarms the HMI raises itself</a>
@@ -527,15 +528,33 @@ like a row of Axis Settings: its name at the left end, then its sections under t
      without the frame. Its chain and its <b>?</b> stand at the right end of the section; its alarms, its help and its coupling are any unit's.</li>
  <li><b>Target position</b> &ndash; where it goes, and <b>&#9654;|</b> beside it, which starts the positioning (the PLC switches it off).</li>
  <li><b>Calibration</b> &ndash; the calibration position, and <b>&#9654;|</b> beside it, which calibrates: where the cylinder stands now is taken as that position.</li>
- <li><b>Positioning tolerance</b> &ndash; how far from the target still counts as there; <b>Direction ref</b> &ndash; the positioning's direction reference
-     (some pages called it the <i>stopping offset</i>).</li>
+ <li><b>Positioning tolerance</b> &ndash; how far from the target still counts as there; <b>Direction ref</b> &ndash; the direction reference
+     (some pages called it the <i>stopping offset</i>): the PLC compares the target with it to choose the way to go &ndash; to a target
+     above it the cylinder moves the way the position increases, to a target below it the other way.</li>
  <li>The target and its start are the <b>Operator</b>'s; the calibration, calibrating, the tolerance and the direction reference need <b>Maintenance</b>.
      Every value written and every press is in the log.</li>
  <li>A positioning the machine has <b>only with an option</b> is shown only while the option is on; the rows under it <b>move up</b>, so the page
      has no empty lines. The rows share one names' column, as wide as the widest name.</li>
+ <li>The page is a <b>table</b>, as an axis page is: the column names <b>stay at the top</b> while the rows scroll up and down, and the
+     <b>names stay at the left</b> while they scroll sideways (at a larger screen scale a row is wider than the screen) &ndash; which cylinder a
+     value is of is always in sight.</li>
 </ul>
 <div class="safety"><b>Safety.</b> Calibrating tells the PLC where the cylinder is. Calibrate only with the cylinder standing where its calibration
 position says it is &ndash; a wrong calibration sends every later positioning to the wrong place.</div>
+
+<h3 id="encoders">4b. Cylinders with an encoder</h3>
+<p>A clamp or a stop whose position an <b>encoder</b> counts (its reference sensor sets the count) looks on a Manual Movement page like any
+unit &ndash; its name, its two buttons with their sensors, its position between them, its chain and its <b>?</b>. But it is described in
+<b>one place</b>: its row on the machine's encoders page of <b>Machine Parameters</b> (<a href="#params">10</a>). Its buttons, sensors, position,
+valve and feedback, error bits and helpers come from that row; the unit on the page has only the encoder's number, its title on that page
+(the row's name when it has none) and the conditions it is shown under there.</p>
+<ul>
+ <li>A new address, a sensor, an error bit, a helper: change it on the encoder's row &ndash; every page showing that cylinder has it at the next start.</li>
+ <li>A unit whose encoder has no row says so in its title (<i>Encoder 12: no encoder settings row</i>) and does nothing.</li>
+ <li>The encoders page is a table like a page of positionings: its column names stay at the top, its names at the left.</li>
+ <li>A cylinder unit placed by hand has no position of its own: a cylinder whose position is read is a pneumatic positioning (<a href="#positioning">4a</a>)
+     or a cylinder with an encoder.</li>
+</ul>
 
 <!-- ================================================================== -->
 <h2 id="keypad">5. Entering a value</h2>
@@ -592,7 +611,7 @@ position says it is &ndash; a wrong calibration sends every later positioning to
 </ul>
 
 <h3 id="genalarms">6a. Alarms the HMI raises itself</h3>
-<p>Two switches per machine, in <b>Alarm Settings</b> (<a href="#params">10</a>). With <b>the cylinder alarms</b> switched on, the HMI does not wait
+<p>Two switches per machine, in <b>Alarms</b> (<a href="#params">10</a>). With <b>the cylinder alarms</b> switched on, the HMI does not wait
 for the PLC to report a cylinder that did not arrive: it times every cylinder unit's movements itself. <b>The axis alarms</b> &ndash; on unless
 switched off &ndash; watch every axis's drive.</p>
 <ul>
@@ -830,7 +849,11 @@ cannot change are grey. Under the list &ndash; always at the same place, however
      (the pointer turns into a hand): a click opens just that code's entry of its manual &ndash; the alarm and what it means, the code,
      and one table of its causes, how to check each, and what to do.
      Warnings are amber, alarms red; a blank cell means no code.</li>
- <li><b>Alarm Settings:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
+ <li><b>Cylinders with an encoder</b> (on a machine that has them): one row per encoder, laid out like an axis row &ndash; its name, its
+     <b>manual movement</b> (&#9664; position &#9654;), <b>Reference</b> (the position the count takes at the reference sensor), <b>Measuring tolerance</b>,
+     <b>Minimum limit</b> and <b>Unclamping interval</b>, under their headings; a field the encoder has not is left empty, its column kept.
+     The encoder units of the Manual Movement pages take everything from these rows (<a href="#encoders">4b</a>).</li>
+ <li><b>Alarms:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
      opened from the alarm. Double-click the cell (or &#9999;&#65039;) for the list: <i>Add files&hellip;</i>, a link typed in, remove, up and down;
      or type them in the cell with <b>;</b> between them. &#128194; opens one (a menu when there are several).
      Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.

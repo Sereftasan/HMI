@@ -25,11 +25,13 @@ Tab_ManualExit;Exit;Çıkış;Выход;Ausgang;Uscita;Salida
 Tab_ManualOther;Other;Diğer;Прочее;Sonstiges;Altro;Otros
 Tab_ManualClamping_Moulds;Clamping Moulds;Kalıplı Sıkmalar;Прижимы с шаблонами;Spannformen;Bloccaggi a stampo;Sujeciones con molde
 Tab_ManualYZ_Cross_Rollers;YZ Cross Rollers;YZ Çapraz Rulolar;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
-Tab_AxisSettings;Axis Parameters;Eksen Parametreleri;Параметры осей;Achsparameter;Parametri assi;Parámetros de ejes
-Tab_ParamEntry;Entry Parameters;Giriş Parametreleri;Параметры входа;Einlaufparameter;Parametri d'ingresso;Parámetros de entrada
-Tab_ParamProcess;Process Parameters;Operasyon Parametreleri;Параметры обработки;Bearbeitungsparameter;Parametri di lavorazione;Parámetros de proceso
-Tab_ParamEncoders;Encoders Parameters;Enkoder Parametreleri;Параметры энкодеров;Encoderparameter;Parametri encoder;Parámetros de encoders
-Tab_ParamOther;Other Parameters;Diğer Parametreler;Прочие параметры;Sonstige Parameter;Altri parametri;Otros parámetros
+Tab_AxisSettings;Axis;Eksen;Оси;Achsen;Assi;Ejes
+Tab_ParamEncoders;Encoders;Enkoderler;Энкодеры;Encoder;Encoder;Encoders
+Tab_ParamOther;Others;Diğerleri;Прочее;Sonstiges;Altri;Otros
+Tab_ParamConveyor;Conveyor;Konveyör;Конвейер;Förderer;Trasportatore;Transportador
+Tab_ParamRobot;Robot;Robot;Робот;Roboter;Robot;Robot
+Tab_ParamMilling;Milling;Freze;Фрезерование;Fräsen;Fresatura;Fresado
+Tab_ParamCutting;Cutting;Kesim;Резка;Schneiden;Taglio;Corte
 Entry Conveyor;Entry Conveyor;Giriş Konveyörü;Входной конвейер;Einlaufförderer;Trasportatore d'ingresso;Transportador de entrada
 Conveyor Motor;Conveyor Motor;Konveyör Motoru;Двигатель конвейера;Fördermotor;Motore trasportatore;Motor del transportador
 Conveyor Motor Run;Conveyor Motor Run;Konveyör Motoru Çalışıyor;Двигатель конвейера работает;Fördermotor läuft;Motore trasportatore in marcia;Motor del transportador en marcha
@@ -211,6 +213,8 @@ Profile Recog. Carrying Roller;Profile Recog. Carrying Roller;Profil Tanıma Kal
 Milling Carrying Roller;Milling Carrying Roller;Freze Kaldırma Rulosu;Ролик переноса фрезы;Tragrolle Fräsen;Rullo trasporto fresatura;Rodillo de transporte fresado
 Exit Carrying Roller;Exit Carrying Roller;Çıkış Kaldırma Rulosu;Ролик переноса выхода;Tragrolle Ausgang;Rullo trasporto uscita;Rodillo de transporte salida
 Left Profile Recognition;Left Profile Recognition;Sol Profil Tanıma;Левое распознавание профиля;Linke Profilerkennung;Riconoscimento profilo sinistro;Reconocimiento de perfil izquierdo
+Left Profile Recognition Front;Left Profile Recognition Front;Sol Profil Tanıma Ön;Левое распознавание профиля передний;Linke Profilerkennung vorn;Riconoscimento profilo sinistro anteriore;Reconocimiento de perfil izquierdo delantero
+Left Profile Recognition Top;Left Profile Recognition Top;Sol Profil Tanıma Üst;Левое распознавание профиля верхний;Linke Profilerkennung oben;Riconoscimento profilo sinistro superiore;Reconocimiento de perfil izquierdo superior
 Sliding Conveyor Rollers;Sliding Conveyor Rollers;Hareketli Giriş Konveyörü Ruloları;Подвижные ролики конвейера;Verschiebbare Förderrollen;Rulli trasportatore scorrevoli;Rodillos deslizantes del transportador
 Reverse Machine;Reverse Machine;Ters Makine;Станок обратного исполнения;Spiegelmaschine;Macchina invertita;Máquina invertida
 Special Reverse Machine;Special Reverse Machine;Özel Ters Makine;Специальный станок обратного исполнения;Spezielle Spiegelmaschine;Macchina invertita speciale;Máquina invertida especial

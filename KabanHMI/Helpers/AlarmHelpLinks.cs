@@ -98,6 +98,55 @@ namespace Kaban.UI.Helpers
             _conflicts.Clear();
             _axes.Clear();
             _axisList.Clear();
+            _encoders.Clear();
+        }
+
+        // ---- cylinders with an encoder (9 October) ------------------------------
+        //
+        // Every CylinderEncoderSettingHMI row seen by discovery, so a
+        // CylinderEncoderUnitHMI on a manual page can mirror it by number - copied,
+        // as the axis rows are.
+
+        public sealed class EncoderInfo
+        {
+            public int Station, Number, Decimals, Digits;
+            public string NameKey = "", Back = "", Forward = "", BackSensor = "", ForwardSensor = "",
+                          ErrorBack = "", ErrorForward = "", HelpBack = "", HelpForward = "", Position = "", Suffix = "";
+            public Kaban.Core.Enums.DataTypeEnum PositionType;
+            public Kaban.Core.Enums.UnitType UnitType;
+            public double Divisor;
+            public CylinderValve Valve;
+            public CylinderFeedback Feedback;
+            public bool Vertical;
+            public Kaban.Core.Enums.SecurityLevel Security = Kaban.Core.Enums.SecurityLevel.Operator;
+        }
+
+        private static readonly Dictionary<string, EncoderInfo> _encoders = new Dictionary<string, EncoderInfo>();
+
+        /// <summary>The encoder rows found, by station and number.</summary>
+        public static IList<EncoderInfo> AllEncoders { get { return _encoders.Values.ToList(); } }
+
+        public static EncoderInfo FindEncoder(int station, int number)
+        {
+            EncoderInfo e;
+            return _encoders.TryGetValue(station + "|" + number, out e) ? e : null;
+        }
+
+        private static void RegisterEncoder(CylinderEncoderSettingHMI row)
+        {
+            if (row == null || row.EncoderNumber <= 0) return;
+            var info = row.Info();
+            var key = info.Station + "|" + info.Number;
+            EncoderInfo seen;
+            if (_encoders.TryGetValue(key, out seen))
+            {
+                // the same row searched twice is no conflict; two rows with one number are
+                if (string.Equals(seen.Position, info.Position, StringComparison.OrdinalIgnoreCase) && seen.Back == info.Back && seen.Forward == info.Forward) return;
+                var msg = string.Format("PLC {0} encoder {1} is numbered on two rows", info.Station, info.Number);
+                if (!_conflicts.Contains(msg)) { _conflicts.Add(msg); AuditLogger.Log("encoder conflict - " + msg); }
+                return;
+            }
+            _encoders[key] = info;
         }
 
         // ---- axes ------------------------------------------------------------
@@ -249,6 +298,10 @@ namespace Kaban.UI.Helpers
             var axis = root as AxisSettingHMI;
             if (axis != null) { HarvestAxis(axis); return; }
 
+            // an encoder's row: known by its number - its unit inside is harvested below
+            var enc = root as CylinderEncoderSettingHMI;
+            if (enc != null) RegisterEncoder(enc);
+
             // A settings screen builds its tabs only when they are opened; its
             // pages are built here one at a time instead.
             var settings = root as SettingsScreen;
@@ -265,6 +318,8 @@ namespace Kaban.UI.Helpers
             if (unit != null) { HarvestUnit(unit); return; }
             var axis = root as AxisSettingHMI;
             if (axis != null) { HarvestAxis(axis); return; }
+            var enc = root as CylinderEncoderSettingHMI;
+            if (enc != null) RegisterEncoder(enc);
             foreach (Control c in root.Controls) HarvestControls(c);
         }
 

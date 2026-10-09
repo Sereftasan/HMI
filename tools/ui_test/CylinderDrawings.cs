@@ -180,7 +180,11 @@ class CD {
               aSvg.Contains(">4 mA<") && aSvg.Contains(">20 mA<") && aSvg.Contains(">SN110<") && aSvg.Contains(">U19<") && aSvg.Contains(">FX5-8AD<") && aSvg.Contains(">CH1<"));
         Check("  the same on the cylinder's own step (the movement)", Svg(aPage, "look").Contains(">U19<"));
         var cuttingPage = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualCutting"));
-        var enc = cuttingPage.Controls.Find("unitLeft_Top_Clamping", true).OfType<CylinderUnitHMI>().First();
+        // a cylinder with an encoder: the unit on the page takes itself from its row on Encoders (9 October)
+        Kaban.UI.Helpers.AlarmHelpLinks.EnsureDiscovered();
+        Kaban.UI.Helpers.AlarmHelpLinks.Harvest((Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Parameters.ParamEncoders")));
+        cuttingPage = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualCutting"));
+        var enc = cuttingPage.Controls.Find("unitLeft_Top_Clamping", true).OfType<CylinderEncoderUnitHMI>().First().Unit;
         var ePage = page(enc, "B", "EN");
         var eSvg = Svg(ePage, "C2");
         Check("encoder (X6/X7 on the CPU card U4): the step names who counts it", Text(Step(ePage, "C2")).Contains("Counted by U4 FX5U-64MT-ESS, X6/X7"));

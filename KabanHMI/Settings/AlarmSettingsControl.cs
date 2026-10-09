@@ -558,7 +558,7 @@ namespace Kaban.UI.Settings
         public AlarmSettingsPage() : this(null) { }
         public AlarmSettingsPage(Kaban.Core.Machines.IMachineMountContext ctx) { _moduleId = ctx == null ? null : ctx.ModuleId; }
         public string TitleKey { get { return "Set_Alarms"; } }
-        public string TitleFallback { get { return "Alarm Settings"; } }
+        public string TitleFallback { get { return "Alarms"; } }
         public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
         public UserControl GetControl() { return new AlarmSettingsControl(_moduleId); }
     }

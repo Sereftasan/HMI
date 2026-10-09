@@ -22,23 +22,31 @@ buttons. The inverters' error codes are shown in hexadecimal.</p>
 <p><b>Clamping Moulds</b>: a row for each mould, a pneumatic positioning (<a href="#positioning">4a</a>) &ndash; its manual
 movement (down / up for a vertical mould, back / forward for a horizontal one, and its position), then <b>Target position</b> and its
 start (the old <i>Send To Position</i>, for the operator), <b>Calibration</b> and <i>Calibrate</i>, <b>Positioning tolerance</b> and
-<b>Direction ref</b> (the old <i>Stopping Offset</i>) &ndash; Maintenance. Type a target, then press &#9654;| beside it: the mould goes there.</p>
+<b>Direction ref</b> (the old <i>Stopping Offset</i>: the PLC compares the target with it to choose the direction &ndash; a target
+above it is approached the way the position increases, one below it the other way) &ndash; Maintenance. Type a target, then press &#9654;| beside it: the mould goes there.</p>
 <p>The six <b>front vertical</b> moulds are always fitted. The ten <b>back</b> moulds, vertical and horizontal, are fitted only with the
-<b>Clamping Mould</b> option (<b>Machine Parameters &rsaquo; Other Parameters</b>, Machine Options): without it they are not shown and
+<b>Clamping Mould</b> option (<b>Machine Parameters &rsaquo; Others</b>, Machine Options): without it they are not shown and
 the front ones stand together at the top of the page; tick the option and they appear in their places.</p>
 <p>An axis unit (Robot X, Unit 1 X ...) takes its buttons, position and reference lamp from its row on
-<b>Machine Parameters &rsaquo; Axis Parameters</b>; change them there, not on the page.</p>
+<b>Machine Parameters &rsaquo; Axis</b>; change them there, not on the page. Robot X's position tooltip also shows its linear
+encoder (<code>D22</code>, the old Encoders page's <i>Robot Position</i>) and the difference.</p>
+<p>The clamps with an encoder (<a href="#encoders">4b</a>) &ndash; the Gripper, Profile Recognition's Front, Top and Left Top Clamping,
+Entry Conveyor's Profile Clamping 7, Milling's Top and Front Clamping, Cutting's Left Top, Right Front and Right Front Vert. Clamping,
+the Exit's Robot Top Clamping &ndash; take theirs from their rows on <b>Machine Parameters &rsaquo; Encoders</b>.</p>
 <p class="note">Not here yet: the old screen's top bar (JOG and the 10 / 1 / 0.1 / 0.01 mm steps, Reset, the speed in %).</p>
 
 <h4 id="fa-params">Machine Parameters</h4>
-<p>As on the old program: <b>Axis Parameters</b> (the axes' limits, reference, calibration and reference activation, in the old
+<p>As on the old program, in these tabs: <b>Axis</b> (the axes' limits, reference, calibration and reference activation, in the old
 order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting; <b>Send Axes to Reference</b> under them sends the axes
-ticked in the <i>Ref</i> column to their references), <b>Entry Parameters</b> (Conveyor, Robot), <b>Process Parameters</b>
-(Milling, Cutting), <b>Encoders Parameters</b> and <b>Other Parameters</b>. Every value is in the unit shown beside it (mm,
+ticked in the <i>Ref</i> column to their references), <b>Conveyor</b> and <b>Robot</b> (the old Entry Parameters), <b>Milling</b> and
+<b>Cutting</b> (the old Process Parameters), <b>Encoders</b>, <b>Others</b> and <b>Alarms</b>. Every value is in the unit shown beside it (mm,
 s, &deg;, %), divided as the old pages divided it. They need the <b>Maintenance</b> level.</p>
-<p><b>Encoders Parameters</b>: each encoder's unit (Back, its position, Forward - to move it while setting it up) with its
-<b>Reference</b>, <b>Tolerance</b>, <b>Start Limit</b> and <b>Unclamping Interval</b>.</p>
-<p><b>Other Parameters</b>: the exit conveyor, the distances between the units, the lubrication, the <b>Machine Options</b>
+<p><b>Encoders</b>: a row per encoder (<a href="#params">10</a>) &ndash; Robot Gripper, Profile Recognition Front and Top, Milling Top,
+Milling-Cutting Left Front, Cutting Left Top, Cutting Right Front, Exit Carrying Top, Cutting Front Right Vertical, Left Profile
+Recognition Front and Top &ndash; its manual movement (to move it while setting it up), <b>Reference</b>, <b>Measuring tolerance</b>,
+<b>Minimum limit</b> (the old <i>Start Limit</i>) and <b>Unclamping interval</b>. The old page's first row, <i>Robot Position</i>, is Robot X
+(an axis).</p>
+<p><b>Others</b>: the exit conveyor, the distances between the units, the lubrication, the <b>Machine Options</b>
 (a tick box per option the machine has: mullion notching, cooling, the carrying rollers, a reverse machine ...), the
 <b>Middle Register Notch Parameters</b> and the cross rollers' distances from the milling's X zero.</p>
 <div class="safety"><b>Safety.</b> A machine option tells the PLC program what the machine has. Change one only when the machine was built or
