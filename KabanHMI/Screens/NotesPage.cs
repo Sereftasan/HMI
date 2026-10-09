@@ -856,8 +856,11 @@ namespace Kaban.UI.Screens
             if (c == null) return rows;
             AddProperties(rows, c, "");
             for (var p = c.Parent; p != null; p = p.Parent)
-                if (p is AxisSettingHMI || p is CylinderUnitHMI)
+                if (p is AxisSettingHMI || p is CylinderUnitHMI || p is PneumaticPositioningHMI)
                 {
+                    // the manual movement of a pneumatic positioning: the row's properties
+                    // (what its page sets), not the unit's inside it
+                    if (p is CylinderUnitHMI && p.Parent is PneumaticPositioningHMI) p = p.Parent;
                     string unit = NoteTarget.NameOf(p);
                     AddProperties(rows, p, (string.IsNullOrEmpty(unit) ? p.Name : unit) + ": ");
                     break;

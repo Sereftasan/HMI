@@ -102,6 +102,12 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("MillingUnitInside_PLC2"),
                 ctx.Scoped("MillingUnitInside_PLC2"), "Milling Unit is NOT Inside_PLC2", plc2, "M23",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+            // The Clamping Mould option (Machine Parameters > Other, L27): the back
+            // moulds - vertical and horizontal - are fitted only with it (9 October).
+            // ALLOCATED LAST: the bits before it keep their numbers (a page stores the
+            // number of the condition it uses - this one is 1 << 19 on FA2010).
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("ClampingMouldOption"),
+                ctx.Scoped("ClampingMouldOption"), "Clamping Mould option is on", plc1, "L27");
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>

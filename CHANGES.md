@@ -4720,3 +4720,23 @@ and `UnitLookAndErrors` extended.
 - New `tools/ai_guide/` (`MakeAiPageGuide.cs`, `guide_template.md`, `make_guide.sh`, README) and `docs/AI_Page_Design_Guide.md`.
 - Tests: `HelpMenu.cs`, `AlarmAiPrompt.cs`, `ConnectionPageAndShutdown.cs`, `LastPlace.cs`. Manual: the "?" section, the alarm list's AI entries,
   HMI Settings' table (order, names, AI), the preferences table.
+
+## 2026-10-09 (night) - PneumaticPositioningHMI; FA2010's Clamping Moulds of them; the back moulds only with the Clamping Mould option
+
+- New `Kaban.UI.Controls.PneumaticPositioningHMI` (UserControl, `IConditionalControl`): name, manual movement (a `CylinderUnitHMI` with the new
+  `InRow`: no frame or title, the axis rows' widths, chain and "?" in a column at its right end; `RoundedGroupBox.Frameless`), target position +
+  start (SET), calibration + calibrate (SET), positioning tolerance, direction ref. Properties `TargetPosition`, `PositioningStartAddress`,
+  `CalibrationAddress`, `CalibrateAddress`, `PositioningToleranceAddress`, `PositioningDirectionReferenceAddress`, the movement's
+  (`CommandBackAddress` ... `HelpForwardFiles`, `VerticalMovement`), the position's, the values' scaling, `VisibilityConditions`, `EnableConditions`,
+  `RequiredSecurity`, `SettingsSecurity`, `LogAction`, `NameWidth`. Static `LayoutPage`, `AlignHeadings`, `Restack`, `RowsOf`, `HeadingText`,
+  `HeadingKey`; `ColumnOf`. `PropertyOrder`: its layout and the categories *Target position, Calibration, Positioning tolerance, Direction ref*.
+- `FA2010Module.RegisterConditions`: machine condition `FA2010.ClampingMouldOption` - "Clamping Mould option is on", PLC 1 `L27` = 1 (bit 1 << 19).
+- `ManualClamping_Moulds.Designer.cs` made again by `tools/legacy_fa2010_pages.py`: 16 rows (`pp...`), 5 headings; the back moulds' `VisibilityConditions`
+  the option. The tool: `Mould(optional=)`, `positioning`, `pp_heading`, `CARRIED` (a replaced control's settings renamed), `MATCHES`; the left-out report
+  ignores controls whose devices the page still has (read before the pages are written).
+- `NoteTarget`, `NotesPage.PropertyRows`, `DeviceCollector`, `StationMap`: the row as a unit.
+- Translations: `Col_PpManual`, `Col_PpTarget`, `Col_PpCalibration`, `Col_PpTolerance`, `Col_PpDirectionRef`, `Tip_PpTarget`, `Tip_PpStart`,
+  `Tip_PpCalibration`, `Tip_PpCalibrate`, `Tip_PpTolerance`, `Tip_PpDirectionRef` - six languages.
+- `tools/ai_guide`: the control, the page layout, the machines' own conditions (read from the program); `docs/AI_Page_Design_Guide.md` made again.
+- Tests: `PneumaticPositioning.cs`, `PneumaticPositioningScale.cs`, `MouldsOption.cs` (new); `LegacyPages.cs`, `CylinderSteps.cs`, `CylinderHelpAndLogin.cs`,
+  `CylinderDrawings.cs`, `PropertyOrderUi.cs`. Manual: *4a. Pneumatic positionings* (new); FA2010's chapter: Clamping Moulds.

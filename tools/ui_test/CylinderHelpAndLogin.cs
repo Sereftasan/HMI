@@ -171,7 +171,9 @@ class CH {
         {
             var pg = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + name));
             pagesBuilt.Add(pg);
-            foreach (var u in pg.Controls.OfType<CylinderUnitHMI>().Where(u => u.ValveType != CylinderValve.Unspecified))
+            // (a pneumatic positioning's manual movement is a cylinder unit inside its row - 9 October)
+            foreach (var u in pg.Controls.OfType<CylinderUnitHMI>().Concat(pg.Controls.OfType<PneumaticPositioningHMI>().Select(r => r.Unit))
+                                .Where(u => u.ValveType != CylinderValve.Unspecified))
             { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }
         // 30 September: every cylinder the drawings show (tools/set_cylinder_types.py).

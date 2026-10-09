@@ -27,7 +27,8 @@ class PO {
         var asm = typeof(ButtonHMI).Assembly;
         var types = new[] { typeof(NumericDisplayHMI), typeof(NumericInputHMI), typeof(ButtonHMI), typeof(CheckBoxHMI), typeof(CheckListHMI),
                             typeof(ComboBoxHMI), typeof(GroupBoxHMI), typeof(HexCodeHMI), typeof(LabelHMI), typeof(LampHMI), typeof(MeterHMI),
-                            typeof(MeterInputHMI), typeof(AxisUnitHMI), typeof(AxisSettingHMI), typeof(CylinderUnitHMI) };
+                            typeof(MeterInputHMI), typeof(AxisUnitHMI), typeof(AxisSettingHMI), typeof(CylinderUnitHMI),
+                            typeof(PneumaticPositioningHMI) };
 
         foreach (var t in types)
         {

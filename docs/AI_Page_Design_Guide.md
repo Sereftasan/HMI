@@ -59,6 +59,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 | A cylinder or any two-way movement: two buttons (back / forward, down / up, open / close, release / clamp), its end sensors, maybe a position | **CylinderUnitHMI** | One unit per cylinder. Button **A** (left) = back / down / open / release, **B** (right) = forward / up / close / clamp. `CommandAAddress` / `CommandBAddress` with `CommandAAction` / `CommandBAction`; the end sensors as `Lamp1AAddress` / `Lamp1BAddress` (and `Lamp2...`); `PositionAddress` for a position. `ValveType` and `FeedbackType` from the electrical and pneumatic drawings; the PLC's error bits as `ErrorAAddress` / `ErrorBAddress`. Size 360 x 64. |
 | A servo axis on a Manual Movement page | **AxisUnitHMI** | Only `AxisNumber` (and `PlcNumber`): its buttons, position, name and reference sensor come from that axis' AxisSettingHMI row. Size 360 x 64. |
 | A servo axis' settings: limits, reference, calibration, its codes | **AxisSettingHMI** | One row per axis on the Axis Parameters page; `HMIAxisIndex` is the axis number the AxisUnitHMI uses. |
+| A pneumatic positioning: a cylinder with a position sensor sent to a target (a mould, a stop) - on the old page a unit with Target / Send / Calibration / Calibrate / Tolerance / Stopping Offset beside it | **PneumaticPositioningHMI** | One row per positioning, the rows one under the other 44 px apart, the five heading Labels above them (section 3). `CommandBackAddress` / `CommandForwardAddress` (`VerticalMovement` for down / up), `PositionAddress` with its scaling, `TargetPosition` + `PositioningStartAddress`, `CalibrationAddress` + `CalibrateAddress`, `PositioningToleranceAddress`, `PositioningDirectionReferenceAddress` (the old "Stopping Offset"), their scaling in `Divisor` / `DecimalPlaces`; `ValveType` / `FeedbackType` and the error bits as a cylinder unit's. Never rebuild it from loose fields and buttons. |
 | A push button: a function on / off, start, reset, a jog, one-way movement | **ButtonHMI** | `BitActions`: one `Kaban.Core.Models.BitAction` a bit - `Momentary` (on while pressed), `Alternate` (each press toggles), `SET` (on; the PLC switches it off), `RESET`. Its state or sensor as `Lamp1Address`. `TranslationKey` + `FallbackText` = its caption. A row of an old page with ONE button is a ButtonHMI, with TWO opposite buttons a CylinderUnitHMI. |
 | A sensor, a state, an output shown | **LampHMI** | `Address` of the bit; its caption `DescriptionText`. Size 36 x 36, the caption drawn beside it. |
 | A value typed in: a parameter, a speed, a target, a time | **NumericInputHMI** | `Address` (a D word), `DataType` (`Bin_16`, or `Bin_32` for a double word), `Divisor`, `DecimalPlaces`, `Suffix`, `UnitType`, `MinLimit` / `MaxLimit`; `DescriptionText` its caption (drawn to its left). |
@@ -82,6 +83,11 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
   **360 x 64**, columns **390 px** apart (a unit and a 30 px gutter), **10 px** between rows; a lamp row 36 high, a button
   row 40, a heading 26. A column longer than about 650 px goes on at the top of the next column - reading order, never
   snaking left and right. A section of the old page is a LabelHMI heading above its rows.
+- **A page of pneumatic positionings** (PneumaticPositioningHMI): the rows at x 16, the first at y 54, each 40 high and **44 px** apart;
+  above them five plain `System.Windows.Forms.Label`s, Segoe UI 8 bold, grey (110, 116, 124), `TextAlign = BottomCenter`, 32 high at y 16,
+  `Tag = "PositioningHeading:Manual"` ("Manual movement"), `"...:Target"` ("Target position"), `"...:Calibration"` ("Calibration"),
+  `"...:Tolerance"` ("Positioning tolerance"), `"...:DirectionRef"` ("Direction ref") - the rows put them over their columns and
+  translate them. Names `pp<Name>`.
 - **A Machine Parameters page:** a NumericInputHMI box **116 x 26** a row, **36 px** apart, its caption (DescriptionText)
   drawn to its left - the box placed so that the captions of a column fit; columns side by side with 40 px between;
   headings above a column; option tick boxes (CheckBoxHMI 44 x 32, `DescriptionSide = Left`) in the same rows.
@@ -107,7 +113,19 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 - **`RequiredSecurity`**: `Operator` on Manual Movement, `Maintenance` on Machine Parameters (calibration, options), `Admin`
   for what only the builder sets. **`LogAction = true`** on everything that writes to the PLC (the log says who did what).
 - **Conditions** - `EnableConditions` / `VisibilityConditions`: flags of `SystemCondition` (below) and the machine's own named
-  conditions; leave them `None` unless the old page greyed or hid the control.
+  conditions; leave them `None` unless the old page greyed or hid the control (or an option decides whether the machine has the part).
+  A machine's own condition is written as its number, for example
+  `this.ppConveyor_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));` - the ones registered now:
+
+  | Number | Name (as the conditions list shows it) | Machine | Read from |
+  |---|---|---|---|
+  | `65536L` (1 << 16) | Robot is at Outside | FA2010 | PLC 1 `X50` = 1 |
+  | `131072L` (1 << 17) | Milling Unit is NOT Inside | FA2010 | PLC 1 `M22` = 0 |
+  | `262144L` (1 << 18) | Milling Unit is NOT Inside_PLC2 | FA2010 | PLC 2 `M23` = 0 |
+  | `524288L` (1 << 19) | Clamping Mould option is on | FA2010 | PLC 1 `L27` = 1 |
+
+  A new one is registered in `<ID>Module.cs` (`RegisterConditions`: `MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("Tag"), ...)`),
+  after the machine's others so their numbers stay; ask for it rather than inventing a number.
 - **Help**: `ToolTipTextKey` / tips - a sentence for a user, translated like the captions.
 
 ## 5. The controls
@@ -115,7 +133,7 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 ### CylinderUnitHMI
 
 A cylinder (any two-way movement) on a Manual Movement page: a frame with its title, two command buttons (A left, B right), the end sensors as lamps on the buttons, a position display, the "?" with its helpers and its alarms. Its ValveType and FeedbackType decide which sensors it needs and how the HMI watches its movements.
-On our pages: 90 of them; size 360 x 64 (90).
+On our pages: 74 of them; size 360 x 64 (74).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -327,10 +345,100 @@ this.axV_Cutting_X.VerticalMovement = false;
 this.axV_Cutting_X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
 ```
 
+### PneumaticPositioningHMI
+
+A pneumatic positioning - a cylinder with a position sensor (analogue or encoder) and a 5/3 valve that the PLC drives to a target, used on our machines as an axis - as ONE ROW, laid out like an AxisSettingHMI row: its name (TitleTextKey) at the left end, then Manual movement (CommandBackAddress / CommandForwardAddress and the position: a CylinderUnitHMI inside, so its ValveType, FeedbackType, error bits, help, alarms and coupling are a cylinder unit's), Target position (TargetPosition + PositioningStartAddress, a SET button), Calibration (CalibrationAddress + CalibrateAddress, a SET button), Positioning tolerance (PositioningToleranceAddress) and Direction ref (PositioningDirectionReferenceAddress - the old pages' 'Stopping Offset'). The rows of a page share one names' column (the widest name) and the headings over their columns: plain Labels tagged "PositioningHeading:Manual" (Target, Calibration, Tolerance, DirectionRef) above the first row - made at run time when the page has none. A row whose VisibilityConditions are not met is taken out and the rows under it move up. Rows 40 high, 44 apart.
+On our pages: 16 of them; size 1078 x 40 (16).
+
+| Property | Type | Default | What it is |
+|---|---|---|---|
+| **Valve & Feedback** | | | |
+| `ValveType` | CylinderValve | Unspecified | The valve: it decides the actions (a pneumatic positioning: 3WayClosedCenter, a 5/3 closed centre). On an error the '?' opens the cylinder manual with only this valve's part. |
+| `FeedbackType` | CylinderFeedback | Unspecified | The feedback: it decides the lamps and the position (a pneumatic positioning: AnalogueMagnetic, or EncoderPlusReference). On an error the '?' opens the cylinder manual with only this feedback's part. |
+| **Device** | | | |
+| `PlcNumber` | int | 1 | The controller of the positioning (1 unless the machine has several). |
+| **Unit** | | | |
+| `TitleTextKey` | string | "" | The name at the left end of the row - a translation key, usually its English text. |
+| `NameWidth` | int | 0 | The width of the names' column at 100 %: 0 fits the page's widest name (every row of the page uses the widest of theirs). |
+| **Movement** | | | |
+| `CommandBackAddress` | string | "" | Command bit of the BACK (or DOWN) movement - the left button, momentary. |
+| `CommandForwardAddress` | string | "" | Command bit of the FORWARD (or UP) movement - the right button, momentary. |
+| `VerticalMovement` | bool | False | A vertical movement: the buttons show down and up instead of back and forward. |
+| `BackSensorAddress` | string | "" | The sensor at the back (down) end - a lamp on the left button. Empty for an analogue sensor. |
+| `ForwardSensorAddress` | string | "" | The sensor at the forward (up) end - a lamp on the right button. Empty for an analogue sensor. |
+| `ErrorBackAddress` | string | "" | Error bit set when the back (down) movement fails: the '?' turns red and the left button blinks. |
+| `ErrorForwardAddress` | string | "" | Error bit set when the forward (up) movement fails: the '?' turns red and the right button blinks. |
+| `HelpBackFiles` | string | "" | Help files of the back movement (in the machine's Help folder): shown with the manual when its error is set, and behind the '?' at any time. |
+| `HelpForwardFiles` | string | "" | Help files of the forward movement (in the machine's Help folder): shown with the manual when its error is set, and behind the '?' at any time. |
+| **Position** | | | |
+| `PositionAddress` | string | "" | Word of the position read (the analogue sensor, the encoder). |
+| `PositionDataType` | DataTypeEnum | Bin_16 | Bin_16 = one word, Bin_32 = a double word. |
+| `PositionDivisor` | double | 1 | The position's raw value is divided by this (0.1 mm: 10). |
+| `PositionDecimalPlaces` | int | 0 | Decimals of the position. |
+| `PositionDigits` | int | 6 | Digits of the position in all. |
+| `PositionSuffix` | string | "mm" | The position's unit ("mm"). |
+| `PositionUnitType` | UnitType | Length | The unit family: the position follows the unit chosen in Unit Settings. |
+| **Target position** | | | |
+| `TargetPosition` | string | "" | Word of the target position - where the positioning goes. |
+| `PositioningStartAddress` | string | "" | Bit that starts the positioning to the target (SET: the PLC resets it). |
+| **Calibration** | | | |
+| `CalibrationAddress` | string | "" | Word of the calibration position - what the position reads after a calibration. |
+| `CalibrateAddress` | string | "" | Bit that calibrates: the position read now becomes the calibration position (SET: the PLC resets it). |
+| **Positioning tolerance** | | | |
+| `PositioningToleranceAddress` | string | "" | Word of the positioning tolerance - how far from the target still counts as there. |
+| **Direction ref** | | | |
+| `PositioningDirectionReferenceAddress` | string | "" | Word of the positioning's direction reference (the old pages' 'Stopping Offset'). |
+| **Value** | | | |
+| `SettingDataType` | DataTypeEnum | Bin_16 | The target, calibration, tolerance and direction ref words: one word (Bin_16) or two (Bin_32). |
+| `Divisor` | double | 1 | Their raw values are divided by this (0.01 mm: 100). |
+| `DecimalPlaces` | int | 0 | Decimals shown. |
+| `Digits` | int | 6 | Digits shown in all (the box's width follows). |
+| `Suffix` | string | "mm" | Their unit (not drawn: the headings say what they are, the position shows the unit). |
+| `UnitType` | UnitType | Length | The unit family: the values follow the unit chosen in Unit Settings, as the position does. |
+| **Conditions** | | | |
+| `VisibilityConditions` | SystemCondition | None | The row is shown only while these are met (an option the machine may not have); the rows under it move up. |
+| `EnableConditions` | SystemCondition | None | The buttons and the fields can be used only while these are met. |
+| **Security** | | | |
+| `RequiredSecurity` | SecurityLevel | Operator | Who may move it and send it to a target. |
+| `SettingsSecurity` | SecurityLevel | Maintenance | Who may change the calibration, calibrate, and change the tolerance and the direction ref. |
+| `LogAction` | bool | True | Every press and every value written is in the log (who did what). |
+
+An example from Manual\ManualClamping_Moulds.Designer.cs:
+
+```csharp
+this.ppLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+this.ppLeft_Profile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
+this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
+this.ppLeft_Profile_Recognition_Front_Vertical.PlcNumber = 1;
+this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
+this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
+this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+this.ppLeft_Profile_Recognition_Front_Vertical.CommandBackAddress = "M541";
+this.ppLeft_Profile_Recognition_Front_Vertical.CommandForwardAddress = "M540";
+this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
+this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
+this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
+this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
+this.ppLeft_Profile_Recognition_Front_Vertical.DecimalPlaces = 2;
+this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
+this.ppLeft_Profile_Recognition_Front_Vertical.ErrorBackAddress = "M915";
+this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+this.ppLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+this.ppLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+```
+
 ### ButtonHMI
 
 A push button writing bits (BitActions) and / or words (WordActions): momentary, alternate, SET or RESET; a lamp of its state or sensor on it (Lamp1Address). Its caption: TranslationKey + FallbackText (or ButtonText).
-On our pages: 129 of them; size 360 x 40 (38), 300 x 36 (33), 90 x 36 (32).
+On our pages: 97 of them; size 360 x 40 (38), 300 x 36 (33), 79 x 32 (12).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -434,7 +542,7 @@ this.lampSawdust_Conveyor_Thermic.VisibilityConditions = Kaban.Core.Enums.System
 ### NumericInputHMI
 
 A value typed in (a word or a double word): the keypad on a tap, limits, scaling, units, confirmation, conditions. Its caption (DescriptionText) is drawn to its left.
-On our pages: 282 of them; size 440 x 32 (112), 116 x 26 (81), 100 x 26 (64).
+On our pages: 218 of them; size 440 x 32 (112), 116 x 26 (81), 104 x 26 (23).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -618,7 +726,7 @@ A choice written to one word: Options one per line, TranslationKey|Fallback|Valu
 ### LabelHMI
 
 A heading or a fixed text on a page, translated (TranslationKey).
-On our pages: 28 of them; size 360 x 26 (6), 104 x 32 (4), 100 x 32 (4).
+On our pages: 22 of them; size 360 x 26 (6), 104 x 32 (4), 326 x 26 (3).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|

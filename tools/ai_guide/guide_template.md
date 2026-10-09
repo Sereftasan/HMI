@@ -59,6 +59,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 | A cylinder or any two-way movement: two buttons (back / forward, down / up, open / close, release / clamp), its end sensors, maybe a position | **CylinderUnitHMI** | One unit per cylinder. Button **A** (left) = back / down / open / release, **B** (right) = forward / up / close / clamp. `CommandAAddress` / `CommandBAddress` with `CommandAAction` / `CommandBAction`; the end sensors as `Lamp1AAddress` / `Lamp1BAddress` (and `Lamp2...`); `PositionAddress` for a position. `ValveType` and `FeedbackType` from the electrical and pneumatic drawings; the PLC's error bits as `ErrorAAddress` / `ErrorBAddress`. Size 360 x 64. |
 | A servo axis on a Manual Movement page | **AxisUnitHMI** | Only `AxisNumber` (and `PlcNumber`): its buttons, position, name and reference sensor come from that axis' AxisSettingHMI row. Size 360 x 64. |
 | A servo axis' settings: limits, reference, calibration, its codes | **AxisSettingHMI** | One row per axis on the Axis Parameters page; `HMIAxisIndex` is the axis number the AxisUnitHMI uses. |
+| A pneumatic positioning: a cylinder with a position sensor sent to a target (a mould, a stop) - on the old page a unit with Target / Send / Calibration / Calibrate / Tolerance / Stopping Offset beside it | **PneumaticPositioningHMI** | One row per positioning, the rows one under the other 44 px apart, the five heading Labels above them (section 3). `CommandBackAddress` / `CommandForwardAddress` (`VerticalMovement` for down / up), `PositionAddress` with its scaling, `TargetPosition` + `PositioningStartAddress`, `CalibrationAddress` + `CalibrateAddress`, `PositioningToleranceAddress`, `PositioningDirectionReferenceAddress` (the old "Stopping Offset"), their scaling in `Divisor` / `DecimalPlaces`; `ValveType` / `FeedbackType` and the error bits as a cylinder unit's. Never rebuild it from loose fields and buttons. |
 | A push button: a function on / off, start, reset, a jog, one-way movement | **ButtonHMI** | `BitActions`: one `Kaban.Core.Models.BitAction` a bit - `Momentary` (on while pressed), `Alternate` (each press toggles), `SET` (on; the PLC switches it off), `RESET`. Its state or sensor as `Lamp1Address`. `TranslationKey` + `FallbackText` = its caption. A row of an old page with ONE button is a ButtonHMI, with TWO opposite buttons a CylinderUnitHMI. |
 | A sensor, a state, an output shown | **LampHMI** | `Address` of the bit; its caption `DescriptionText`. Size 36 x 36, the caption drawn beside it. |
 | A value typed in: a parameter, a speed, a target, a time | **NumericInputHMI** | `Address` (a D word), `DataType` (`Bin_16`, or `Bin_32` for a double word), `Divisor`, `DecimalPlaces`, `Suffix`, `UnitType`, `MinLimit` / `MaxLimit`; `DescriptionText` its caption (drawn to its left). |
@@ -82,6 +83,11 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
   **360 x 64**, columns **390 px** apart (a unit and a 30 px gutter), **10 px** between rows; a lamp row 36 high, a button
   row 40, a heading 26. A column longer than about 650 px goes on at the top of the next column - reading order, never
   snaking left and right. A section of the old page is a LabelHMI heading above its rows.
+- **A page of pneumatic positionings** (PneumaticPositioningHMI): the rows at x 16, the first at y 54, each 40 high and **44 px** apart;
+  above them five plain `System.Windows.Forms.Label`s, Segoe UI 8 bold, grey (110, 116, 124), `TextAlign = BottomCenter`, 32 high at y 16,
+  `Tag = "PositioningHeading:Manual"` ("Manual movement"), `"...:Target"` ("Target position"), `"...:Calibration"` ("Calibration"),
+  `"...:Tolerance"` ("Positioning tolerance"), `"...:DirectionRef"` ("Direction ref") - the rows put them over their columns and
+  translate them. Names `pp<Name>`.
 - **A Machine Parameters page:** a NumericInputHMI box **116 x 26** a row, **36 px** apart, its caption (DescriptionText)
   drawn to its left - the box placed so that the captions of a column fit; columns side by side with 40 px between;
   headings above a column; option tick boxes (CheckBoxHMI 44 x 32, `DescriptionSide = Left`) in the same rows.
@@ -107,7 +113,14 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 - **`RequiredSecurity`**: `Operator` on Manual Movement, `Maintenance` on Machine Parameters (calibration, options), `Admin`
   for what only the builder sets. **`LogAction = true`** on everything that writes to the PLC (the log says who did what).
 - **Conditions** - `EnableConditions` / `VisibilityConditions`: flags of `SystemCondition` (below) and the machine's own named
-  conditions; leave them `None` unless the old page greyed or hid the control.
+  conditions; leave them `None` unless the old page greyed or hid the control (or an option decides whether the machine has the part).
+  A machine's own condition is written as its number, for example
+  `this.ppConveyor_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));` - the ones registered now:
+
+{{MACHINE_CONDITIONS}}
+
+  A new one is registered in `<ID>Module.cs` (`RegisterConditions`: `MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("Tag"), ...)`),
+  after the machine's others so their numbers stay; ask for it rather than inventing a number.
 - **Help**: `ToolTipTextKey` / tips - a sentence for a user, translated like the captions.
 
 ## 5. The controls

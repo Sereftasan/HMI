@@ -146,23 +146,23 @@ class LP {
               top.ValveType == CylinderValve.ThreeWayClosedCenter && top.VisibilityConditions == SystemCondition.ManualMode &&
               top.PositionAddress == "D17" && top.PositionDivisor == 10);
 
-        Console.WriteLine("--- Clamping Moulds: the old page's columns ---");
+        Console.WriteLine("--- Clamping Moulds: the old page's columns, a pneumatic positioning a mould (9 October) ---");
         var moulds = Page("ManualClamping_Moulds");
-        var first = Find<CylinderUnitHMI>(moulds, "unitLeft_Profile_Recognition_Front_Vertical");
-        Check("the unit: Back M541, Forward M540, position D110 / 10 with 2 decimals", first.CommandAAddress == "M541" && first.CommandBAddress == "M540" &&
-              first.PositionAddress == "D110" && first.PositionDivisor == 10 && first.PositionDecimalPlaces == 2);
-        Func<string, NumericInputHMI> num = n => Find<NumericInputHMI>(moulds, n);
-        var target = num("numLeft_Profile_Recognition_Front_Vertical_Target");
+        var first = Find<PneumaticPositioningHMI>(moulds, "ppLeft_Profile_Recognition_Front_Vertical");
+        Check("the manual movement: Back M541, Forward M540, position D110 / 10 with 2 decimals", first.CommandBackAddress == "M541" && first.CommandForwardAddress == "M540" &&
+              first.PositionAddress == "D110" && first.PositionDivisor == 10 && first.PositionDecimalPlaces == 2 &&
+              first.Unit.CommandAAddress == "M541" && first.Unit.PositionAddress == "D110");
+        var target = first.TargetField;
         Check("Target Position D150 (/100, 2 decimals), for the operator", target.Address == "D150" && target.Divisor == 100 && target.DecimalPlaces == 2 && target.RequiredSecurity == SecurityLevel.Operator);
-        Check("Send To Position M50 (SET)", Bits(Find<ButtonHMI>(moulds, "btnLeft_Profile_Recognition_Front_Vertical_Send")) == "M50:SET");
-        Check("Calibration Pos. D130, Calibrate M30 (SET) - Maintenance", num("numLeft_Profile_Recognition_Front_Vertical_Calibration").Address == "D130" &&
-              Bits(Find<ButtonHMI>(moulds, "btnLeft_Profile_Recognition_Front_Vertical_Calibrate")) == "M30:SET" &&
-              Find<ButtonHMI>(moulds, "btnLeft_Profile_Recognition_Front_Vertical_Calibrate").RequiredSecurity == SecurityLevel.Maintenance);
-        Check("Tolerance D750, Stopping Offset D790", num("numLeft_Profile_Recognition_Front_Vertical_Tolerance").Address == "D750" && num("numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset").Address == "D790");
-        Check("16 moulds, the last the Right Front Vertical Clamping (M585/M584, D128)", All(moulds).OfType<CylinderUnitHMI>().Count() == 16 &&
-              Find<CylinderUnitHMI>(moulds, "unitRight_Front_Vertical_Clamping").CommandAAddress == "M585");
+        Check("Send To Position M50 (SET)", Bits(first.StartButton) == "M50:SET");
+        Check("Calibration Pos. D130, Calibrate M30 (SET) - Maintenance", first.CalibrationField.Address == "D130" &&
+              Bits(first.CalibrateButton) == "M30:SET" && first.CalibrateButton.RequiredSecurity == SecurityLevel.Maintenance);
+        Check("Tolerance D750, Stopping Offset (direction ref) D790", first.ToleranceField.Address == "D750" && first.DirectionRefField.Address == "D790");
+        Check("16 moulds, the last the Right Front Vertical Clamping (M585/M584, D128)", All(moulds).OfType<PneumaticPositioningHMI>().Count() == 16 &&
+              Find<PneumaticPositioningHMI>(moulds, "ppRight_Front_Vertical_Clamping").CommandBackAddress == "M585");
         Check("the Cutting/Exit small clampings are not moulds", !All(moulds).OfType<CylinderUnitHMI>().Any(u => u.CommandAAddress == "M699" || u.CommandAAddress == "M701"));
-        Check("the old valve and feedback of each mould kept", first.FeedbackType != CylinderFeedback.Unspecified);
+        Check("the old valve and feedback of each mould kept", All(moulds).OfType<PneumaticPositioningHMI>().All(r => r.FeedbackType != CylinderFeedback.Unspecified &&
+              r.ValveType == CylinderValve.ThreeWayClosedCenter));
 
         Console.WriteLine("--- YZ Cross Rollers: the machine's three ---");
         var yz = Page("ManualYZ_Cross_Rollers");

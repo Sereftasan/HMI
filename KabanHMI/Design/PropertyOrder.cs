@@ -34,7 +34,8 @@ namespace Kaban.UI.Design
         /// <summary>Every category, in page-building order. A control uses the ones it has.</summary>
         public static readonly string[] CategoryOrder =
         {
-            "Valve & Feedback", "Device", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position", "Value", "Settings",
+            "Valve & Feedback", "Device", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
+            "Target position", "Calibration", "Positioning tolerance", "Direction ref", "Value", "Settings",
             "Commands", "Display", "Input", "Formula", "State", "Meters", "Bands", "Diagnostics", "Parts",
             "Conditions", "Security", "Help"
         };
@@ -142,6 +143,24 @@ namespace Kaban.UI.Design
                 C("Diagnostics", "ErrorAddress", "ServoAlarmAddress", "AxisAlarmAddress", "AxisWarningAddress"),
                 C("Conditions", "VisibilityConditions"),
                 C("Security", "RequiredSecurity")),
+
+            // A pneumatic positioning: its valve and feedback first (as a cylinder's),
+            // then the row's sections in the row's order.
+            ["PneumaticPositioningHMI"] = L(
+                C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),
+                C("Device", "PlcNumber"),
+                C("Unit", "TitleTextKey", "NameWidth"),
+                C("Movement", "CommandBackAddress", "CommandForwardAddress", "VerticalMovement", "BackSensorAddress", "ForwardSensorAddress",
+                              "ErrorBackAddress", "ErrorForwardAddress", "HelpBackFiles", "HelpForwardFiles"),
+                C("Position", "PositionAddress", "PositionDataType", "PositionDivisor", "PositionDecimalPlaces", "PositionDigits",
+                              "PositionSuffix", "PositionUnitType"),
+                C("Target position", "TargetPosition", "PositioningStartAddress"),
+                C("Calibration", "CalibrationAddress", "CalibrateAddress"),
+                C("Positioning tolerance", "PositioningToleranceAddress"),
+                C("Direction ref", "PositioningDirectionReferenceAddress"),
+                C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix", "UnitType"),
+                C("Conditions", "VisibilityConditions", "EnableConditions"),
+                C("Security", "RequiredSecurity", "SettingsSecurity", "LogAction")),
 
             ["CylinderUnitHMI"] = L(
                 C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),   // chosen first: they decide what else is needed

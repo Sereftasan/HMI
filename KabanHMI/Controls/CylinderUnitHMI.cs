@@ -466,6 +466,41 @@ namespace Kaban.UI.Controls
         [Category(" Function")]
         public int PlcNumber { get { return _plcNumber; } set { _plcNumber = value; ApplySettings(); } }
 
+        // ---- a row's manual movement (PneumaticPositioningHMI, 9 October) ------------
+
+        private bool _inRow;
+
+        /// <summary>
+        /// THE UNIT AS A ROW'S MANUAL MOVEMENT (PneumaticPositioningHMI): no frame and
+        /// no title - the row names it at its left end - the two buttons and the
+        /// position at the axis rows' widths, and the chain and the "?" one above the
+        /// other at its right end. Everything else - the help, the alarms, the
+        /// coupling, the simulation - is any unit's. A coupled unit (or, in the
+        /// designer, one that does not match its types) still draws its frame.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool InRow
+        {
+            get { return _inRow; }
+            set
+            {
+                _inRow = value;
+                _grp.Frameless = value;
+                ButtonSlotWidth = value ? AxisSettingHMI.WJog : 0;
+                PositionSlotWidth = value ? AxisSettingHMI.WPosition : 0;
+                LayoutChildren();
+                ApplyUnitCornerRegion();
+                _grp.Invalidate();
+            }
+        }
+
+        /// <summary>The width of the column of the chain and the "?" at a row unit's right end.</summary>
+        public const int RowBadgeWidth = 16;
+
+        /// <summary>A row unit's width: its two buttons, its position and its badges, at the axis rows' widths.</summary>
+        public const int RowWidth = AxisSettingHMI.WJog + AxisSettingHMI.Gap + AxisSettingHMI.WPosition + AxisSettingHMI.Gap +
+                                    AxisSettingHMI.WJog + AxisSettingHMI.Gap + RowBadgeWidth;
+
         private int _baseOffset = 0;
         [Category(" Function")]
         [Description("ROW INDEX added to every address in its own number system (M decimal, X/Y octal).")]
@@ -1621,6 +1656,8 @@ namespace Kaban.UI.Controls
         // not to clip the GroupBox caption).
         private void ApplyUnitCornerRegion()
         {
+            // a row's unit has no frame to round (its buttons round themselves)
+            if (_inRow) { if (this.Region != null) this.Region = null; return; }
             int radius = 4;
             if (this.Width < radius * 2 || this.Height < radius * 2) return;
             int d = radius * 2;
@@ -1719,6 +1756,15 @@ namespace Kaban.UI.Controls
             int capH = (int)Math.Ceiling(_grp.Font.GetHeight());
             int topPad = capH + px(6);
             int botPad = px(6);
+            if (_inRow)
+            {
+                // A row's: no frame, no title - the buttons as the axis rows' jogs
+                // (4 from the top and the bottom), the badges' column at the right.
+                gap = px(AxisSettingHMI.Gap);
+                leftPad = 0;
+                rightPad = px(RowBadgeWidth) + gap;
+                topPad = botPad = px(4);
+            }
 
             int areaX = leftPad;
             int areaY = topPad;
@@ -1841,6 +1887,26 @@ namespace Kaban.UI.Controls
         private void LayoutBadges()
         {
             if (_grp == null) return;
+            if (_inRow)
+            {
+                // In a row: the chain above, the "?" below, in their column at the right end.
+                int col = this.ClientSize.Width - UiScale.For(this, RowBadgeWidth);
+                bool linked = !DesignMode && HasCommands;
+                if (_couple.Visible != linked) _couple.Visible = linked;
+                int edge = UiScale.For(this, 2);
+                if (linked)
+                {
+                    int s = UiScale.For(this, CoupleBadge.BadgeSize);
+                    if (_couple.Width != s) _couple.Size = new Size(s, s);
+                    _couple.Location = new Point(col + (UiScale.For(this, RowBadgeWidth) - _couple.Width) / 2, edge);
+                }
+                // the two one above the other; one alone in the middle
+                bool help = _help.State != UnitHelpBadge.BadgeState.Hidden;
+                if (linked && !help) _couple.Top = (this.ClientSize.Height - _couple.Height) / 2;
+                _help.Location = new Point(col + (UiScale.For(this, RowBadgeWidth) - _help.Width) / 2,
+                                           linked ? this.ClientSize.Height - edge - _help.Height : (this.ClientSize.Height - _help.Height) / 2);
+                return;
+            }
             int frameTop = (int)(_grp.Font.GetHeight() / 2f);
             _help.Location = new Point(this.ClientSize.Width - UiScale.For(this, 12) - _help.Width,
                                        Math.Max(0, frameTop - _help.Height / 2));
@@ -1897,6 +1963,12 @@ namespace Kaban.UI.Controls
         public static readonly Color NormalBorder = System.Drawing.Color.FromArgb(180, 180, 180);
         public Color BorderColor { get; set; } = NormalBorder;
 
+        /// <summary>
+        /// No frame and no caption (a row's unit, CylinderUnitHMI.InRow) - except a
+        /// frame of another colour than the usual: coupled, or a type mismatch.
+        /// </summary>
+        public bool Frameless { get; set; }
+
         public RoundedGroupBox()
         {
             this.DoubleBuffered = true;
@@ -1916,6 +1988,24 @@ namespace Kaban.UI.Controls
             base.OnPaint(e);
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+            if (Frameless)
+            {
+                if (BorderColor == NormalBorder) return;
+                using (var pen = new Pen(BorderColor, 1.4f))
+                using (var path = new System.Drawing.Drawing2D.GraphicsPath())
+                {
+                    int rr = CornerRadius * 2;
+                    var box = new Rectangle(0, 0, this.Width - 1, this.Height - 1);
+                    path.AddArc(box.X, box.Y, rr, rr, 180, 90);
+                    path.AddArc(box.Right - rr, box.Y, rr, rr, 270, 90);
+                    path.AddArc(box.Right - rr, box.Bottom - rr, rr, rr, 0, 90);
+                    path.AddArc(box.X, box.Bottom - rr, rr, rr, 90, 90);
+                    path.CloseFigure();
+                    e.Graphics.DrawPath(pen, path);
+                }
+                return;
+            }
 
             var captionSize = string.IsNullOrEmpty(this.Text)
                 ? SizeF.Empty

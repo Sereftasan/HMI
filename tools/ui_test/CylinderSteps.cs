@@ -78,6 +78,9 @@ class CS {
             var page = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual." + p));
             foreach (var u in page.Controls.OfType<CylinderUnitHMI>().Where(x => x.Kind == UnitKind.Cylinder))
                 units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + u.Name, u));
+            // a pneumatic positioning's manual movement: the cylinder unit inside its row (9 October), by the row's name
+            foreach (var r in page.Controls.OfType<PneumaticPositioningHMI>())
+                units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + r.Name, r.Unit));
         }
         Func<string, CylinderUnitHMI> unit = n => units.First(k => k.Key.EndsWith("." + n) || k.Key == n).Value;
         Func<CylinderUnitHMI, IEnumerable<string>> lamps = u => new[] { u.Lamp1AAddress, u.Lamp2AAddress, u.Lamp1BAddress, u.Lamp2BAddress }.Where(a => !string.IsNullOrEmpty(a));
@@ -109,8 +112,8 @@ class CS {
         Check("the milling front clamping shows its pressure switch (X73 = M243), not M349",
               unit("ManualMilling.unitFront_Clamping").Lamp1BAddress == "M243");
         Check("a mold: 5/3 and its analogue sensor, no lamps",
-              unit("unitConveyor_Front_Vertical").ValveType == CylinderValve.ThreeWayClosedCenter &&
-              unit("unitConveyor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("unitConveyor_Front_Vertical")).Any());
+              unit("ppConveyor_Front_Vertical").ValveType == CylinderValve.ThreeWayClosedCenter &&
+              unit("ppConveyor_Front_Vertical").FeedbackType == CylinderFeedback.AnalogueMagnetic && !lamps(unit("ppConveyor_Front_Vertical")).Any());
         Check("the milling roller: no sensor on the drawings (X55 free), no lamp", unit("ManualMilling.unitRoller_Up_Down").FeedbackType == CylinderFeedback.NoSensor &&
               !lamps(unit("ManualMilling.unitRoller_Up_Down")).Any());
         Console.WriteLine("  what TypeCheck still says (for the review):");

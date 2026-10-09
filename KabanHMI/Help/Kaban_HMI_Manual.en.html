@@ -77,6 +77,7 @@
  <a href="#nav">3. Moving between pages</a>
  <a href="#notes">&nbsp;&nbsp;3b. Notes and feedback</a>
  <a href="#units">4. Manual Movement: the units</a>
+ <a href="#positioning">&nbsp;&nbsp;4a. Pneumatic positionings</a>
  <a href="#keypad">5. Entering a value</a>
  <a href="#alarms">6. Alarms</a>
  <a href="#genalarms">&nbsp;&nbsp;6a. Alarms the HMI raises itself</a>
@@ -493,6 +494,48 @@ The alarm list's help for the same alarm offers the same step-by-step page, with
 While an error bit is set, the part that failed blinks a red border: the button of the movement that failed (cylinder),
 or the position reading (axis). A controller that is not answering shows no <b>?</b>: its reading cannot be trusted.</p>
 <p>While the unit shows a fault, the last entry of its list is <b>AI prompt</b> (see <a href="#alarms">6</a>).</p>
+
+<h3 id="positioning">4a. Pneumatic positionings</h3>
+<p>A cylinder the PLC drives <b>to a position</b> &ndash; a 5/3 valve and a position sensor, used as an axis is &ndash; is one <b>row</b>, laid out
+like a row of Axis Settings: its name at the left end, then its sections under their headings.</p>
+<figure>
+<svg viewBox="0 0 900 118" role="img" aria-label="A pneumatic positioning row">
+ <defs><style>.h{font:bold 11px "Segoe UI",Arial;fill:#6e747c}.n{font:13px "Segoe UI",Arial;fill:#23262c}.v{font:12px "Segoe UI",Arial;fill:#23262c}.s{font:12px "Segoe UI",Arial;fill:#5b6270}</style></defs>
+ <text class="h" x="262" y="18" text-anchor="middle">Manual movement</text>
+ <text class="h" x="448" y="18" text-anchor="middle">Target position</text>
+ <text class="h" x="580" y="18" text-anchor="middle">Calibration</text>
+ <text class="h" x="696" y="12" text-anchor="middle">Positioning</text><text class="h" x="696" y="25" text-anchor="middle">tolerance</text>
+ <text class="h" x="790" y="18" text-anchor="middle">Direction ref</text>
+ <text class="n" x="132" y="56" text-anchor="end">Front vertical mould</text>
+ <rect x="144" y="36" width="44" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="159" y="58" font-size="15" fill="#23262c">&#9660;</text>
+ <rect x="192" y="36" width="110" height="32" rx="4" fill="#dcdcdc" stroke="#aab1bb"/><text x="204" y="58" font-size="15" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">118.00 mm</text>
+ <rect x="306" y="36" width="44" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="321" y="58" font-size="15" fill="#23262c">&#9650;</text>
+ <circle cx="362" cy="52" r="7" fill="#fff" stroke="#6e747c"/>
+ <rect x="384" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="458" y="57" text-anchor="end">118.00</text>
+ <rect x="468" y="36" width="40" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="478" y="58" font-size="14" fill="#23262c">&#9654;|</text>
+ <rect x="516" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="590" y="57" text-anchor="end">0.00</text>
+ <rect x="600" y="36" width="40" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="610" y="58" font-size="14" fill="#23262c">&#9654;|</text>
+ <rect x="656" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="730" y="57" text-anchor="end">0.50</text>
+ <rect x="750" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="824" y="57" text-anchor="end">1.20</text>
+ <text class="s" x="144" y="92">Hold &#9660; / &#9650; to move it by hand; the chain couples it, a ? opens its help.</text>
+ <text class="s" x="384" y="110">Type a target, press &#9654;| beside it: the PLC drives it there.</text>
+</svg>
+<figcaption>A pneumatic positioning row: the manual movement, then its target, calibration, tolerance and direction reference.</figcaption>
+</figure>
+<ul>
+ <li><b>Manual movement</b> &ndash; its two buttons (&#9664; &#9654;, or &#9660; &#9650; for a vertical one) and its position: a unit as above,
+     without the frame. Its chain and its <b>?</b> stand at the right end of the section; its alarms, its help and its coupling are any unit's.</li>
+ <li><b>Target position</b> &ndash; where it goes, and <b>&#9654;|</b> beside it, which starts the positioning (the PLC switches it off).</li>
+ <li><b>Calibration</b> &ndash; the calibration position, and <b>&#9654;|</b> beside it, which calibrates: where the cylinder stands now is taken as that position.</li>
+ <li><b>Positioning tolerance</b> &ndash; how far from the target still counts as there; <b>Direction ref</b> &ndash; the positioning's direction reference
+     (some pages called it the <i>stopping offset</i>).</li>
+ <li>The target and its start are the <b>Operator</b>'s; the calibration, calibrating, the tolerance and the direction reference need <b>Maintenance</b>.
+     Every value written and every press is in the log.</li>
+ <li>A positioning the machine has <b>only with an option</b> is shown only while the option is on; the rows under it <b>move up</b>, so the page
+     has no empty lines. The rows share one names' column, as wide as the widest name.</li>
+</ul>
+<div class="safety"><b>Safety.</b> Calibrating tells the PLC where the cylinder is. Calibrate only with the cylinder standing where its calibration
+position says it is &ndash; a wrong calibration sends every later positioning to the wrong place.</div>
 
 <!-- ================================================================== -->
 <h2 id="keypad">5. Entering a value</h2>

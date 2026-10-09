@@ -46,7 +46,7 @@ namespace Kaban.UI.Helpers
                 // A COMPOSITE passes its station down to its own parts. Walking into
                 // them as well would translate them a second time - 1 to 3, then 3
                 // through the map again.
-                if (c is CylinderUnitHMI || c is AxisSettingHMI || c is AxisUnitHMI) return;
+                if (c is CylinderUnitHMI || c is AxisSettingHMI || c is AxisUnitHMI || c is PneumaticPositioningHMI) return;
             }
 
             foreach (Control child in c.Controls) Walk(ctx, child);

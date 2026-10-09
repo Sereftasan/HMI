@@ -171,7 +171,7 @@ class CD {
         WiringTable.Clear();
         WiringTable.Load(Path.Combine(dir, "Wiring.csv"), plc => plc);
         var moulds = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens.Manual.ManualClamping_Moulds"));
-        var analog = moulds.Controls.Find("unitLeft_Profile_Recognition_Front_Vertical", true).OfType<CylinderUnitHMI>().First();
+        var analog = moulds.Controls.Find("ppLeft_Profile_Recognition_Front_Vertical", true).OfType<PneumaticPositioningHMI>().First().Unit;
         var aPage = page(analog, "B", "EN");
         var aSvg = Svg(aPage, "C1");
         Check("analogue (SN110 to U19 FX5-8AD channel 1): the step names its module", Text(Step(aPage, "C1")).Contains("Read by the module U19 FX5-8AD, CH1"),

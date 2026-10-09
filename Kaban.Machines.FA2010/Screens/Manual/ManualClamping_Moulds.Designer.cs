@@ -24,2341 +24,562 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction3 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction4 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction5 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction6 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction8 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction9 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction16 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction17 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction18 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction19 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction20 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction21 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction22 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction23 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction24 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction25 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction26 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction27 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction28 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction29 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction30 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction31 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction32 = new Kaban.Core.Models.BitAction();
-            this.lblHead_Target_Position = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Send_To_Position = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Calibration_Pos = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Calibrate = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Tolerance = new Kaban.UI.Controls.LabelHMI();
-            this.lblHead_Stopping_Offset = new Kaban.UI.Controls.LabelHMI();
-            this.unitLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numLeft_Profile_Recognition_Front_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitLeft_Profile_Recognition_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numLeft_Profile_Recognition_Back_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitLeft_Profile_Recognition_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitConveyor_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numConveyor_Front_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Front_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Front_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Front_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Front_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numConveyor_Front_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitConveyor_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numConveyor_Back_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Back_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Back_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Back_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Back_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numConveyor_Back_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitConveyor_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numConveyor_Back_Horizontal_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Back_Horizontal_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Back_Horizontal_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnConveyor_Back_Horizontal_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numConveyor_Back_Horizontal_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numConveyor_Back_Horizontal_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitProfile_Recognition_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numProfile_Recognition_Front_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Front_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Front_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Front_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Front_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitProfile_Recognition_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numProfile_Recognition_Back_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Back_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Back_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Back_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Back_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitProfile_Recognition_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numProfile_Recognition_Back_Horizontal_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Back_Horizontal_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Back_Horizontal_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numProfile_Recognition_Back_Horizontal_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Left_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Left_Front_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Front_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Front_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Front_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Front_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Left_Front_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Left_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Left_Back_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Back_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Back_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Back_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Back_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Left_Back_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Left_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Left_Back_Horizontal_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Back_Horizontal_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Back_Horizontal_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Left_Back_Horizontal_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Left_Back_Horizontal_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Right_Front_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Right_Front_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Front_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Front_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Front_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Front_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Right_Front_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Right_Back_Vertical = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Right_Back_Vertical_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Back_Vertical_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Back_Vertical_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Back_Vertical_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Back_Vertical_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Right_Back_Vertical_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitCutting_Right_Back_Horizontal = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numCutting_Right_Back_Horizontal_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Back_Horizontal_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Back_Horizontal_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnCutting_Right_Back_Horizontal_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numCutting_Right_Back_Horizontal_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
-            this.unitRight_Front_Vertical_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.numRight_Front_Vertical_Clamping_Target = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnRight_Front_Vertical_Clamping_Send = new Kaban.UI.Controls.ButtonHMI();
-            this.numRight_Front_Vertical_Clamping_Calibration = new Kaban.UI.Controls.NumericInputHMI();
-            this.btnRight_Front_Vertical_Clamping_Calibrate = new Kaban.UI.Controls.ButtonHMI();
-            this.numRight_Front_Vertical_Clamping_Tolerance = new Kaban.UI.Controls.NumericInputHMI();
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset = new Kaban.UI.Controls.NumericInputHMI();
+            this.lblHead_Manual = new System.Windows.Forms.Label();
+            this.lblHead_Target = new System.Windows.Forms.Label();
+            this.lblHead_Calibration = new System.Windows.Forms.Label();
+            this.lblHead_Tolerance = new System.Windows.Forms.Label();
+            this.lblHead_DirectionRef = new System.Windows.Forms.Label();
+            this.ppLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppLeft_Profile_Recognition_Back_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppLeft_Profile_Recognition_Back_Horizontal = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppConveyor_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppConveyor_Back_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppConveyor_Back_Horizontal = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppProfile_Recognition_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppProfile_Recognition_Back_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppProfile_Recognition_Back_Horizontal = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Left_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Left_Back_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Left_Back_Horizontal = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Right_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Right_Back_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppCutting_Right_Back_Horizontal = new Kaban.UI.Controls.PneumaticPositioningHMI();
+            this.ppRight_Front_Vertical_Clamping = new Kaban.UI.Controls.PneumaticPositioningHMI();
             this.SuspendLayout();
             // 
-            // lblHead_Target_Position
+            // lblHead_Manual
             // 
-            this.lblHead_Target_Position.Name = "lblHead_Target_Position";
-            this.lblHead_Target_Position.TranslationKey = "Target Position";
-            this.lblHead_Target_Position.Text = "Target Position";
-            this.lblHead_Target_Position.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Target_Position.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Target_Position.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Target_Position.Location = new System.Drawing.Point(392, 16);
-            this.lblHead_Target_Position.Size = new System.Drawing.Size(100, 32);
+            this.lblHead_Manual.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_Manual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Manual.Location = new System.Drawing.Point(334, 16);
+            this.lblHead_Manual.Name = "lblHead_Manual";
+            this.lblHead_Manual.Size = new System.Drawing.Size(248, 32);
+            this.lblHead_Manual.Tag = "PositioningHeading:Manual";
+            this.lblHead_Manual.Text = "Manual movement";
+            this.lblHead_Manual.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // lblHead_Send_To_Position
+            // lblHead_Target
             // 
-            this.lblHead_Send_To_Position.Name = "lblHead_Send_To_Position";
-            this.lblHead_Send_To_Position.TranslationKey = "Send To Position";
-            this.lblHead_Send_To_Position.Text = "Send To Position";
-            this.lblHead_Send_To_Position.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Send_To_Position.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Send_To_Position.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Send_To_Position.Location = new System.Drawing.Point(502, 16);
-            this.lblHead_Send_To_Position.Size = new System.Drawing.Size(90, 32);
+            this.lblHead_Target.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_Target.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Target.Location = new System.Drawing.Point(600, 16);
+            this.lblHead_Target.Name = "lblHead_Target";
+            this.lblHead_Target.Size = new System.Drawing.Size(134, 32);
+            this.lblHead_Target.Tag = "PositioningHeading:Target";
+            this.lblHead_Target.Text = "Target position";
+            this.lblHead_Target.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // lblHead_Calibration_Pos
+            // lblHead_Calibration
             // 
-            this.lblHead_Calibration_Pos.Name = "lblHead_Calibration_Pos";
-            this.lblHead_Calibration_Pos.TranslationKey = "Calibration Pos.";
-            this.lblHead_Calibration_Pos.Text = "Calibration Pos.";
-            this.lblHead_Calibration_Pos.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Calibration_Pos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Calibration_Pos.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Calibration_Pos.Location = new System.Drawing.Point(602, 16);
-            this.lblHead_Calibration_Pos.Size = new System.Drawing.Size(100, 32);
-            // 
-            // lblHead_Calibrate
-            // 
-            this.lblHead_Calibrate.Name = "lblHead_Calibrate";
-            this.lblHead_Calibrate.TranslationKey = "Calibrate";
-            this.lblHead_Calibrate.Text = "Calibrate";
-            this.lblHead_Calibrate.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Calibrate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Calibrate.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Calibrate.Location = new System.Drawing.Point(712, 16);
-            this.lblHead_Calibrate.Size = new System.Drawing.Size(90, 32);
+            this.lblHead_Calibration.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_Calibration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Calibration.Location = new System.Drawing.Point(752, 16);
+            this.lblHead_Calibration.Name = "lblHead_Calibration";
+            this.lblHead_Calibration.Size = new System.Drawing.Size(134, 32);
+            this.lblHead_Calibration.Tag = "PositioningHeading:Calibration";
+            this.lblHead_Calibration.Text = "Calibration";
+            this.lblHead_Calibration.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // lblHead_Tolerance
             // 
-            this.lblHead_Tolerance.Name = "lblHead_Tolerance";
-            this.lblHead_Tolerance.TranslationKey = "Tolerance";
-            this.lblHead_Tolerance.Text = "Tolerance";
             this.lblHead_Tolerance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_Tolerance.Location = new System.Drawing.Point(904, 16);
+            this.lblHead_Tolerance.Name = "lblHead_Tolerance";
+            this.lblHead_Tolerance.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Tolerance.Tag = "PositioningHeading:Tolerance";
+            this.lblHead_Tolerance.Text = "Positioning tolerance";
             this.lblHead_Tolerance.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Tolerance.Location = new System.Drawing.Point(812, 16);
-            this.lblHead_Tolerance.Size = new System.Drawing.Size(100, 32);
             // 
-            // lblHead_Stopping_Offset
-            // 
-            this.lblHead_Stopping_Offset.Name = "lblHead_Stopping_Offset";
-            this.lblHead_Stopping_Offset.TranslationKey = "Stopping Offset";
-            this.lblHead_Stopping_Offset.Text = "Stopping Offset";
-            this.lblHead_Stopping_Offset.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
-            this.lblHead_Stopping_Offset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.lblHead_Stopping_Offset.Location = new System.Drawing.Point(922, 16);
-            this.lblHead_Stopping_Offset.Size = new System.Drawing.Size(100, 32);
-            // 
-            // unitLeft_Profile_Recognition_Front_Vertical
-            // 
-            this.unitLeft_Profile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitLeft_Profile_Recognition_Front_Vertical.Name = "unitLeft_Profile_Recognition_Front_Vertical";
-            this.unitLeft_Profile_Recognition_Front_Vertical.PlcNumber = 1;
-            this.unitLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
-            this.unitLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 56);
-            this.unitLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitLeft_Profile_Recognition_Front_Vertical.LogAction = true;
-            this.unitLeft_Profile_Recognition_Front_Vertical.CommandAAddress = "M541";
-            this.unitLeft_Profile_Recognition_Front_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Front_Vertical.CommandBAddress = "M540";
-            this.unitLeft_Profile_Recognition_Front_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionDigits = 6;
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionSuffix = "mm";
-            this.unitLeft_Profile_Recognition_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitLeft_Profile_Recognition_Front_Vertical.ErrorBAddress = "M916";
-            this.unitLeft_Profile_Recognition_Front_Vertical.ErrorAAddress = "M915";
-            this.unitLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Front_Vertical_Target  (D150)
-            // 
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Name = "numLeft_Profile_Recognition_Front_Vertical_Target";
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Address = "D150";
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.AutoSize = false;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Digits = 6;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.LogAction = true;
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Location = new System.Drawing.Point(392, 75);
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Front_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnLeft_Profile_Recognition_Front_Vertical_Send
-            // 
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.Name = "btnLeft_Profile_Recognition_Front_Vertical_Send";
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.TranslationKey = "Send";
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.FallbackText = "Send";
-            bitAction1.Address = "M50";
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.BitActions.Add(bitAction1);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.Location = new System.Drawing.Point(502, 70);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.LogAction = true;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Front_Vertical_Calibration  (D130)
-            // 
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Name = "numLeft_Profile_Recognition_Front_Vertical_Calibration";
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Address = "D130";
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.AutoSize = false;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Digits = 6;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.LogAction = true;
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Location = new System.Drawing.Point(602, 75);
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Front_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnLeft_Profile_Recognition_Front_Vertical_Calibrate
-            // 
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.Name = "btnLeft_Profile_Recognition_Front_Vertical_Calibrate";
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction2.Address = "M30";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.BitActions.Add(bitAction2);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.Location = new System.Drawing.Point(712, 70);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.LogAction = true;
-            this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Front_Vertical_Tolerance  (D750)
-            // 
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Name = "numLeft_Profile_Recognition_Front_Vertical_Tolerance";
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Address = "D750";
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.AutoSize = false;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Digits = 6;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.LogAction = true;
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Location = new System.Drawing.Point(812, 75);
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Front_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset  (D790)
-            // 
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Name = "numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset";
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Address = "D790";
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.AutoSize = false;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Digits = 6;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.LogAction = true;
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 75);
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitLeft_Profile_Recognition_Back_Vertical
-            // 
-            this.unitLeft_Profile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitLeft_Profile_Recognition_Back_Vertical.Name = "unitLeft_Profile_Recognition_Back_Vertical";
-            this.unitLeft_Profile_Recognition_Back_Vertical.PlcNumber = 1;
-            this.unitLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
-            this.unitLeft_Profile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 126);
-            this.unitLeft_Profile_Recognition_Back_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitLeft_Profile_Recognition_Back_Vertical.LogAction = true;
-            this.unitLeft_Profile_Recognition_Back_Vertical.CommandAAddress = "M543";
-            this.unitLeft_Profile_Recognition_Back_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Back_Vertical.CommandBAddress = "M542";
-            this.unitLeft_Profile_Recognition_Back_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionAddress = "D111";
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 10D;
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionDigits = 6;
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionSuffix = "mm";
-            this.unitLeft_Profile_Recognition_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitLeft_Profile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitLeft_Profile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Back_Vertical_Target  (D151)
-            // 
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Name = "numLeft_Profile_Recognition_Back_Vertical_Target";
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Address = "D151";
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Location = new System.Drawing.Point(392, 145);
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnLeft_Profile_Recognition_Back_Vertical_Send
-            // 
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.Name = "btnLeft_Profile_Recognition_Back_Vertical_Send";
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.TranslationKey = "Send";
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.FallbackText = "Send";
-            bitAction3.Address = "M51";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.BitActions.Add(bitAction3);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.Location = new System.Drawing.Point(502, 140);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.LogAction = true;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Back_Vertical_Calibration  (D131)
-            // 
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Name = "numLeft_Profile_Recognition_Back_Vertical_Calibration";
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Address = "D131";
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Location = new System.Drawing.Point(602, 145);
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnLeft_Profile_Recognition_Back_Vertical_Calibrate
-            // 
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.Name = "btnLeft_Profile_Recognition_Back_Vertical_Calibrate";
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction4.Address = "M31";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.BitActions.Add(bitAction4);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.Location = new System.Drawing.Point(712, 140);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.LogAction = true;
-            this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Back_Vertical_Tolerance  (D751)
-            // 
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Name = "numLeft_Profile_Recognition_Back_Vertical_Tolerance";
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Address = "D751";
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Location = new System.Drawing.Point(812, 145);
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset  (D791)
-            // 
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Name = "numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset";
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Address = "D791";
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 145);
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitLeft_Profile_Recognition_Back_Horizontal
-            // 
-            this.unitLeft_Profile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.Name = "unitLeft_Profile_Recognition_Back_Horizontal";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PlcNumber = 1;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 196);
-            this.unitLeft_Profile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
-            this.unitLeft_Profile_Recognition_Back_Horizontal.LogAction = true;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.CommandAAddress = "M545";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.CommandBAddress = "M544";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionAddress = "D112";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 10D;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionDigits = 6;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionSuffix = "mm";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitLeft_Profile_Recognition_Back_Horizontal.ErrorAAddress = "M919";
-            this.unitLeft_Profile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Back_Horizontal_Target  (D152)
-            // 
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Name = "numLeft_Profile_Recognition_Back_Horizontal_Target";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Address = "D152";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Location = new System.Drawing.Point(392, 215);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnLeft_Profile_Recognition_Back_Horizontal_Send
-            // 
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.Name = "btnLeft_Profile_Recognition_Back_Horizontal_Send";
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.TranslationKey = "Send";
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.FallbackText = "Send";
-            bitAction5.Address = "M52";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.BitActions.Add(bitAction5);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.Location = new System.Drawing.Point(502, 210);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.LogAction = true;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numLeft_Profile_Recognition_Back_Horizontal_Calibration  (D132)
-            // 
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Name = "numLeft_Profile_Recognition_Back_Horizontal_Calibration";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Address = "D132";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Location = new System.Drawing.Point(602, 215);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnLeft_Profile_Recognition_Back_Horizontal_Calibrate
-            // 
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.Name = "btnLeft_Profile_Recognition_Back_Horizontal_Calibrate";
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.PlcNumber = 1;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.TranslationKey = "Calibrate";
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.FallbackText = "Calibrate";
-            bitAction6.Address = "M32";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.BitActions.Add(bitAction6);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.Location = new System.Drawing.Point(712, 210);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.LogAction = true;
-            this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Back_Horizontal_Tolerance  (D752)
-            // 
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Name = "numLeft_Profile_Recognition_Back_Horizontal_Tolerance";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Address = "D752";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Location = new System.Drawing.Point(812, 215);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset  (D792)
-            // 
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Name = "numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.PlcNumber = 1;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Address = "D792";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.AutoSize = false;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Digits = 6;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.DecimalPlaces = 2;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Divisor = 100D;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Suffix = "mm";
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.LogAction = true;
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Location = new System.Drawing.Point(922, 215);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitConveyor_Front_Vertical
-            // 
-            this.unitConveyor_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitConveyor_Front_Vertical.Name = "unitConveyor_Front_Vertical";
-            this.unitConveyor_Front_Vertical.PlcNumber = 1;
-            this.unitConveyor_Front_Vertical.TitleTextKey = "Conveyor Front Vertical";
-            this.unitConveyor_Front_Vertical.Location = new System.Drawing.Point(16, 266);
-            this.unitConveyor_Front_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Front_Vertical.LogAction = true;
-            this.unitConveyor_Front_Vertical.CommandAAddress = "M547";
-            this.unitConveyor_Front_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Front_Vertical.CommandBAddress = "M546";
-            this.unitConveyor_Front_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Front_Vertical.PositionAddress = "D113";
-            this.unitConveyor_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Front_Vertical.PositionDivisor = 10D;
-            this.unitConveyor_Front_Vertical.PositionDecimalPlaces = 2;
-            this.unitConveyor_Front_Vertical.PositionDigits = 6;
-            this.unitConveyor_Front_Vertical.PositionSuffix = "mm";
-            this.unitConveyor_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitConveyor_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitConveyor_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Front_Vertical_Target  (D153)
-            // 
-            this.numConveyor_Front_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Front_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Front_Vertical_Target.Name = "numConveyor_Front_Vertical_Target";
-            this.numConveyor_Front_Vertical_Target.PlcNumber = 1;
-            this.numConveyor_Front_Vertical_Target.Address = "D153";
-            this.numConveyor_Front_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Front_Vertical_Target.AutoSize = false;
-            this.numConveyor_Front_Vertical_Target.Digits = 6;
-            this.numConveyor_Front_Vertical_Target.DecimalPlaces = 2;
-            this.numConveyor_Front_Vertical_Target.Divisor = 100D;
-            this.numConveyor_Front_Vertical_Target.Suffix = "mm";
-            this.numConveyor_Front_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Front_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Front_Vertical_Target.LogAction = true;
-            this.numConveyor_Front_Vertical_Target.Location = new System.Drawing.Point(392, 285);
-            this.numConveyor_Front_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Front_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnConveyor_Front_Vertical_Send
-            // 
-            this.btnConveyor_Front_Vertical_Send.Name = "btnConveyor_Front_Vertical_Send";
-            this.btnConveyor_Front_Vertical_Send.PlcNumber = 1;
-            this.btnConveyor_Front_Vertical_Send.TranslationKey = "Send";
-            this.btnConveyor_Front_Vertical_Send.FallbackText = "Send";
-            bitAction7.Address = "M53";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Front_Vertical_Send.BitActions.Add(bitAction7);
-            this.btnConveyor_Front_Vertical_Send.Location = new System.Drawing.Point(502, 280);
-            this.btnConveyor_Front_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Front_Vertical_Send.LogAction = true;
-            this.btnConveyor_Front_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Front_Vertical_Calibration  (D133)
-            // 
-            this.numConveyor_Front_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Front_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Front_Vertical_Calibration.Name = "numConveyor_Front_Vertical_Calibration";
-            this.numConveyor_Front_Vertical_Calibration.PlcNumber = 1;
-            this.numConveyor_Front_Vertical_Calibration.Address = "D133";
-            this.numConveyor_Front_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Front_Vertical_Calibration.AutoSize = false;
-            this.numConveyor_Front_Vertical_Calibration.Digits = 6;
-            this.numConveyor_Front_Vertical_Calibration.DecimalPlaces = 2;
-            this.numConveyor_Front_Vertical_Calibration.Divisor = 100D;
-            this.numConveyor_Front_Vertical_Calibration.Suffix = "mm";
-            this.numConveyor_Front_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Front_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Front_Vertical_Calibration.LogAction = true;
-            this.numConveyor_Front_Vertical_Calibration.Location = new System.Drawing.Point(602, 285);
-            this.numConveyor_Front_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Front_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnConveyor_Front_Vertical_Calibrate
-            // 
-            this.btnConveyor_Front_Vertical_Calibrate.Name = "btnConveyor_Front_Vertical_Calibrate";
-            this.btnConveyor_Front_Vertical_Calibrate.PlcNumber = 1;
-            this.btnConveyor_Front_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnConveyor_Front_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction8.Address = "M33";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Front_Vertical_Calibrate.BitActions.Add(bitAction8);
-            this.btnConveyor_Front_Vertical_Calibrate.Location = new System.Drawing.Point(712, 280);
-            this.btnConveyor_Front_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Front_Vertical_Calibrate.LogAction = true;
-            this.btnConveyor_Front_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Front_Vertical_Tolerance  (D753)
-            // 
-            this.numConveyor_Front_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Front_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Front_Vertical_Tolerance.Name = "numConveyor_Front_Vertical_Tolerance";
-            this.numConveyor_Front_Vertical_Tolerance.PlcNumber = 1;
-            this.numConveyor_Front_Vertical_Tolerance.Address = "D753";
-            this.numConveyor_Front_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Front_Vertical_Tolerance.AutoSize = false;
-            this.numConveyor_Front_Vertical_Tolerance.Digits = 6;
-            this.numConveyor_Front_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numConveyor_Front_Vertical_Tolerance.Divisor = 100D;
-            this.numConveyor_Front_Vertical_Tolerance.Suffix = "mm";
-            this.numConveyor_Front_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Front_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Front_Vertical_Tolerance.LogAction = true;
-            this.numConveyor_Front_Vertical_Tolerance.Location = new System.Drawing.Point(812, 285);
-            this.numConveyor_Front_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Front_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Front_Vertical_Stopping_Offset  (D793)
-            // 
-            this.numConveyor_Front_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Front_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Name = "numConveyor_Front_Vertical_Stopping_Offset";
-            this.numConveyor_Front_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Address = "D793";
-            this.numConveyor_Front_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Front_Vertical_Stopping_Offset.AutoSize = false;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Digits = 6;
-            this.numConveyor_Front_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numConveyor_Front_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Front_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Front_Vertical_Stopping_Offset.LogAction = true;
-            this.numConveyor_Front_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 285);
-            this.numConveyor_Front_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Front_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitConveyor_Back_Vertical
-            // 
-            this.unitConveyor_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitConveyor_Back_Vertical.Name = "unitConveyor_Back_Vertical";
-            this.unitConveyor_Back_Vertical.PlcNumber = 1;
-            this.unitConveyor_Back_Vertical.TitleTextKey = "Conveyor Back Vertical";
-            this.unitConveyor_Back_Vertical.Location = new System.Drawing.Point(16, 336);
-            this.unitConveyor_Back_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Back_Vertical.LogAction = true;
-            this.unitConveyor_Back_Vertical.CommandAAddress = "M549";
-            this.unitConveyor_Back_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Back_Vertical.CommandBAddress = "M548";
-            this.unitConveyor_Back_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Back_Vertical.PositionAddress = "D114";
-            this.unitConveyor_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Back_Vertical.PositionDivisor = 10D;
-            this.unitConveyor_Back_Vertical.PositionDecimalPlaces = 2;
-            this.unitConveyor_Back_Vertical.PositionDigits = 6;
-            this.unitConveyor_Back_Vertical.PositionSuffix = "mm";
-            this.unitConveyor_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitConveyor_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitConveyor_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Back_Vertical_Target  (D154)
-            // 
-            this.numConveyor_Back_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Vertical_Target.Name = "numConveyor_Back_Vertical_Target";
-            this.numConveyor_Back_Vertical_Target.PlcNumber = 1;
-            this.numConveyor_Back_Vertical_Target.Address = "D154";
-            this.numConveyor_Back_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Vertical_Target.AutoSize = false;
-            this.numConveyor_Back_Vertical_Target.Digits = 6;
-            this.numConveyor_Back_Vertical_Target.DecimalPlaces = 2;
-            this.numConveyor_Back_Vertical_Target.Divisor = 100D;
-            this.numConveyor_Back_Vertical_Target.Suffix = "mm";
-            this.numConveyor_Back_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Vertical_Target.LogAction = true;
-            this.numConveyor_Back_Vertical_Target.Location = new System.Drawing.Point(392, 355);
-            this.numConveyor_Back_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnConveyor_Back_Vertical_Send
-            // 
-            this.btnConveyor_Back_Vertical_Send.Name = "btnConveyor_Back_Vertical_Send";
-            this.btnConveyor_Back_Vertical_Send.PlcNumber = 1;
-            this.btnConveyor_Back_Vertical_Send.TranslationKey = "Send";
-            this.btnConveyor_Back_Vertical_Send.FallbackText = "Send";
-            bitAction9.Address = "M54";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Back_Vertical_Send.BitActions.Add(bitAction9);
-            this.btnConveyor_Back_Vertical_Send.Location = new System.Drawing.Point(502, 350);
-            this.btnConveyor_Back_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Back_Vertical_Send.LogAction = true;
-            this.btnConveyor_Back_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Back_Vertical_Calibration  (D134)
-            // 
-            this.numConveyor_Back_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Vertical_Calibration.Name = "numConveyor_Back_Vertical_Calibration";
-            this.numConveyor_Back_Vertical_Calibration.PlcNumber = 1;
-            this.numConveyor_Back_Vertical_Calibration.Address = "D134";
-            this.numConveyor_Back_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Vertical_Calibration.AutoSize = false;
-            this.numConveyor_Back_Vertical_Calibration.Digits = 6;
-            this.numConveyor_Back_Vertical_Calibration.DecimalPlaces = 2;
-            this.numConveyor_Back_Vertical_Calibration.Divisor = 100D;
-            this.numConveyor_Back_Vertical_Calibration.Suffix = "mm";
-            this.numConveyor_Back_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Vertical_Calibration.LogAction = true;
-            this.numConveyor_Back_Vertical_Calibration.Location = new System.Drawing.Point(602, 355);
-            this.numConveyor_Back_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnConveyor_Back_Vertical_Calibrate
-            // 
-            this.btnConveyor_Back_Vertical_Calibrate.Name = "btnConveyor_Back_Vertical_Calibrate";
-            this.btnConveyor_Back_Vertical_Calibrate.PlcNumber = 1;
-            this.btnConveyor_Back_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnConveyor_Back_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction10.Address = "M34";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Back_Vertical_Calibrate.BitActions.Add(bitAction10);
-            this.btnConveyor_Back_Vertical_Calibrate.Location = new System.Drawing.Point(712, 350);
-            this.btnConveyor_Back_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Back_Vertical_Calibrate.LogAction = true;
-            this.btnConveyor_Back_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Back_Vertical_Tolerance  (D754)
-            // 
-            this.numConveyor_Back_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Vertical_Tolerance.Name = "numConveyor_Back_Vertical_Tolerance";
-            this.numConveyor_Back_Vertical_Tolerance.PlcNumber = 1;
-            this.numConveyor_Back_Vertical_Tolerance.Address = "D754";
-            this.numConveyor_Back_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Vertical_Tolerance.AutoSize = false;
-            this.numConveyor_Back_Vertical_Tolerance.Digits = 6;
-            this.numConveyor_Back_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numConveyor_Back_Vertical_Tolerance.Divisor = 100D;
-            this.numConveyor_Back_Vertical_Tolerance.Suffix = "mm";
-            this.numConveyor_Back_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Vertical_Tolerance.LogAction = true;
-            this.numConveyor_Back_Vertical_Tolerance.Location = new System.Drawing.Point(812, 355);
-            this.numConveyor_Back_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Back_Vertical_Stopping_Offset  (D794)
-            // 
-            this.numConveyor_Back_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Name = "numConveyor_Back_Vertical_Stopping_Offset";
-            this.numConveyor_Back_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Address = "D794";
-            this.numConveyor_Back_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Vertical_Stopping_Offset.AutoSize = false;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Digits = 6;
-            this.numConveyor_Back_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numConveyor_Back_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Vertical_Stopping_Offset.LogAction = true;
-            this.numConveyor_Back_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 355);
-            this.numConveyor_Back_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitConveyor_Back_Horizontal
-            // 
-            this.unitConveyor_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.unitConveyor_Back_Horizontal.Name = "unitConveyor_Back_Horizontal";
-            this.unitConveyor_Back_Horizontal.PlcNumber = 1;
-            this.unitConveyor_Back_Horizontal.TitleTextKey = "Conveyor Back Horizontal";
-            this.unitConveyor_Back_Horizontal.Location = new System.Drawing.Point(16, 406);
-            this.unitConveyor_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
-            this.unitConveyor_Back_Horizontal.LogAction = true;
-            this.unitConveyor_Back_Horizontal.CommandAAddress = "M551";
-            this.unitConveyor_Back_Horizontal.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Back_Horizontal.CommandBAddress = "M550";
-            this.unitConveyor_Back_Horizontal.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitConveyor_Back_Horizontal.PositionAddress = "D115";
-            this.unitConveyor_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitConveyor_Back_Horizontal.PositionDivisor = 10D;
-            this.unitConveyor_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.unitConveyor_Back_Horizontal.PositionDigits = 6;
-            this.unitConveyor_Back_Horizontal.PositionSuffix = "mm";
-            this.unitConveyor_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitConveyor_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitConveyor_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Back_Horizontal_Target  (D155)
-            // 
-            this.numConveyor_Back_Horizontal_Target.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Horizontal_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Horizontal_Target.Name = "numConveyor_Back_Horizontal_Target";
-            this.numConveyor_Back_Horizontal_Target.PlcNumber = 1;
-            this.numConveyor_Back_Horizontal_Target.Address = "D155";
-            this.numConveyor_Back_Horizontal_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Horizontal_Target.AutoSize = false;
-            this.numConveyor_Back_Horizontal_Target.Digits = 6;
-            this.numConveyor_Back_Horizontal_Target.DecimalPlaces = 2;
-            this.numConveyor_Back_Horizontal_Target.Divisor = 100D;
-            this.numConveyor_Back_Horizontal_Target.Suffix = "mm";
-            this.numConveyor_Back_Horizontal_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Horizontal_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Horizontal_Target.LogAction = true;
-            this.numConveyor_Back_Horizontal_Target.Location = new System.Drawing.Point(392, 425);
-            this.numConveyor_Back_Horizontal_Target.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Horizontal_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnConveyor_Back_Horizontal_Send
-            // 
-            this.btnConveyor_Back_Horizontal_Send.Name = "btnConveyor_Back_Horizontal_Send";
-            this.btnConveyor_Back_Horizontal_Send.PlcNumber = 1;
-            this.btnConveyor_Back_Horizontal_Send.TranslationKey = "Send";
-            this.btnConveyor_Back_Horizontal_Send.FallbackText = "Send";
-            bitAction11.Address = "M55";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Back_Horizontal_Send.BitActions.Add(bitAction11);
-            this.btnConveyor_Back_Horizontal_Send.Location = new System.Drawing.Point(502, 420);
-            this.btnConveyor_Back_Horizontal_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Back_Horizontal_Send.LogAction = true;
-            this.btnConveyor_Back_Horizontal_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numConveyor_Back_Horizontal_Calibration  (D135)
-            // 
-            this.numConveyor_Back_Horizontal_Calibration.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Horizontal_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Horizontal_Calibration.Name = "numConveyor_Back_Horizontal_Calibration";
-            this.numConveyor_Back_Horizontal_Calibration.PlcNumber = 1;
-            this.numConveyor_Back_Horizontal_Calibration.Address = "D135";
-            this.numConveyor_Back_Horizontal_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Horizontal_Calibration.AutoSize = false;
-            this.numConveyor_Back_Horizontal_Calibration.Digits = 6;
-            this.numConveyor_Back_Horizontal_Calibration.DecimalPlaces = 2;
-            this.numConveyor_Back_Horizontal_Calibration.Divisor = 100D;
-            this.numConveyor_Back_Horizontal_Calibration.Suffix = "mm";
-            this.numConveyor_Back_Horizontal_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Horizontal_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Horizontal_Calibration.LogAction = true;
-            this.numConveyor_Back_Horizontal_Calibration.Location = new System.Drawing.Point(602, 425);
-            this.numConveyor_Back_Horizontal_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Horizontal_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnConveyor_Back_Horizontal_Calibrate
-            // 
-            this.btnConveyor_Back_Horizontal_Calibrate.Name = "btnConveyor_Back_Horizontal_Calibrate";
-            this.btnConveyor_Back_Horizontal_Calibrate.PlcNumber = 1;
-            this.btnConveyor_Back_Horizontal_Calibrate.TranslationKey = "Calibrate";
-            this.btnConveyor_Back_Horizontal_Calibrate.FallbackText = "Calibrate";
-            bitAction12.Address = "M35";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnConveyor_Back_Horizontal_Calibrate.BitActions.Add(bitAction12);
-            this.btnConveyor_Back_Horizontal_Calibrate.Location = new System.Drawing.Point(712, 420);
-            this.btnConveyor_Back_Horizontal_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnConveyor_Back_Horizontal_Calibrate.LogAction = true;
-            this.btnConveyor_Back_Horizontal_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Back_Horizontal_Tolerance  (D755)
-            // 
-            this.numConveyor_Back_Horizontal_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Horizontal_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Horizontal_Tolerance.Name = "numConveyor_Back_Horizontal_Tolerance";
-            this.numConveyor_Back_Horizontal_Tolerance.PlcNumber = 1;
-            this.numConveyor_Back_Horizontal_Tolerance.Address = "D755";
-            this.numConveyor_Back_Horizontal_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Horizontal_Tolerance.AutoSize = false;
-            this.numConveyor_Back_Horizontal_Tolerance.Digits = 6;
-            this.numConveyor_Back_Horizontal_Tolerance.DecimalPlaces = 2;
-            this.numConveyor_Back_Horizontal_Tolerance.Divisor = 100D;
-            this.numConveyor_Back_Horizontal_Tolerance.Suffix = "mm";
-            this.numConveyor_Back_Horizontal_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Horizontal_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Horizontal_Tolerance.LogAction = true;
-            this.numConveyor_Back_Horizontal_Tolerance.Location = new System.Drawing.Point(812, 425);
-            this.numConveyor_Back_Horizontal_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Horizontal_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numConveyor_Back_Horizontal_Stopping_Offset  (D795)
-            // 
-            this.numConveyor_Back_Horizontal_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Name = "numConveyor_Back_Horizontal_Stopping_Offset";
-            this.numConveyor_Back_Horizontal_Stopping_Offset.PlcNumber = 1;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Address = "D795";
-            this.numConveyor_Back_Horizontal_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.AutoSize = false;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Digits = 6;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.DecimalPlaces = 2;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Divisor = 100D;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Suffix = "mm";
-            this.numConveyor_Back_Horizontal_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.LogAction = true;
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Location = new System.Drawing.Point(922, 425);
-            this.numConveyor_Back_Horizontal_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numConveyor_Back_Horizontal_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitProfile_Recognition_Front_Vertical
-            // 
-            this.unitProfile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitProfile_Recognition_Front_Vertical.Name = "unitProfile_Recognition_Front_Vertical";
-            this.unitProfile_Recognition_Front_Vertical.PlcNumber = 1;
-            this.unitProfile_Recognition_Front_Vertical.TitleTextKey = "Profile Recognition Front Vertical";
-            this.unitProfile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 476);
-            this.unitProfile_Recognition_Front_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitProfile_Recognition_Front_Vertical.LogAction = true;
-            this.unitProfile_Recognition_Front_Vertical.CommandAAddress = "M553";
-            this.unitProfile_Recognition_Front_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Front_Vertical.CommandBAddress = "M552";
-            this.unitProfile_Recognition_Front_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Front_Vertical.PositionAddress = "D116";
-            this.unitProfile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitProfile_Recognition_Front_Vertical.PositionDivisor = 10D;
-            this.unitProfile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.unitProfile_Recognition_Front_Vertical.PositionDigits = 6;
-            this.unitProfile_Recognition_Front_Vertical.PositionSuffix = "mm";
-            this.unitProfile_Recognition_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitProfile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitProfile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Front_Vertical_Target  (D156)
-            // 
-            this.numProfile_Recognition_Front_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Vertical_Target.Name = "numProfile_Recognition_Front_Vertical_Target";
-            this.numProfile_Recognition_Front_Vertical_Target.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Vertical_Target.Address = "D156";
-            this.numProfile_Recognition_Front_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Vertical_Target.AutoSize = false;
-            this.numProfile_Recognition_Front_Vertical_Target.Digits = 6;
-            this.numProfile_Recognition_Front_Vertical_Target.DecimalPlaces = 2;
-            this.numProfile_Recognition_Front_Vertical_Target.Divisor = 100D;
-            this.numProfile_Recognition_Front_Vertical_Target.Suffix = "mm";
-            this.numProfile_Recognition_Front_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Vertical_Target.LogAction = true;
-            this.numProfile_Recognition_Front_Vertical_Target.Location = new System.Drawing.Point(392, 495);
-            this.numProfile_Recognition_Front_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Front_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnProfile_Recognition_Front_Vertical_Send
-            // 
-            this.btnProfile_Recognition_Front_Vertical_Send.Name = "btnProfile_Recognition_Front_Vertical_Send";
-            this.btnProfile_Recognition_Front_Vertical_Send.PlcNumber = 1;
-            this.btnProfile_Recognition_Front_Vertical_Send.TranslationKey = "Send";
-            this.btnProfile_Recognition_Front_Vertical_Send.FallbackText = "Send";
-            bitAction13.Address = "M56";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Front_Vertical_Send.BitActions.Add(bitAction13);
-            this.btnProfile_Recognition_Front_Vertical_Send.Location = new System.Drawing.Point(502, 490);
-            this.btnProfile_Recognition_Front_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Front_Vertical_Send.LogAction = true;
-            this.btnProfile_Recognition_Front_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Front_Vertical_Calibration  (D136)
-            // 
-            this.numProfile_Recognition_Front_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Name = "numProfile_Recognition_Front_Vertical_Calibration";
-            this.numProfile_Recognition_Front_Vertical_Calibration.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Address = "D136";
-            this.numProfile_Recognition_Front_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Vertical_Calibration.AutoSize = false;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Digits = 6;
-            this.numProfile_Recognition_Front_Vertical_Calibration.DecimalPlaces = 2;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Divisor = 100D;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Suffix = "mm";
-            this.numProfile_Recognition_Front_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Vertical_Calibration.LogAction = true;
-            this.numProfile_Recognition_Front_Vertical_Calibration.Location = new System.Drawing.Point(602, 495);
-            this.numProfile_Recognition_Front_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Front_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnProfile_Recognition_Front_Vertical_Calibrate
-            // 
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.Name = "btnProfile_Recognition_Front_Vertical_Calibrate";
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.PlcNumber = 1;
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction14.Address = "M36";
-            bitAction14.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.BitActions.Add(bitAction14);
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.Location = new System.Drawing.Point(712, 490);
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.LogAction = true;
-            this.btnProfile_Recognition_Front_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Front_Vertical_Tolerance  (D756)
-            // 
-            this.numProfile_Recognition_Front_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Name = "numProfile_Recognition_Front_Vertical_Tolerance";
-            this.numProfile_Recognition_Front_Vertical_Tolerance.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Address = "D756";
-            this.numProfile_Recognition_Front_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.AutoSize = false;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Digits = 6;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Divisor = 100D;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Suffix = "mm";
-            this.numProfile_Recognition_Front_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.LogAction = true;
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Location = new System.Drawing.Point(812, 495);
-            this.numProfile_Recognition_Front_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Front_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Front_Vertical_Stopping_Offset  (D796)
-            // 
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Name = "numProfile_Recognition_Front_Vertical_Stopping_Offset";
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Address = "D796";
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.AutoSize = false;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Digits = 6;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.LogAction = true;
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 495);
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Front_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitProfile_Recognition_Back_Vertical
-            // 
-            this.unitProfile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitProfile_Recognition_Back_Vertical.Name = "unitProfile_Recognition_Back_Vertical";
-            this.unitProfile_Recognition_Back_Vertical.PlcNumber = 1;
-            this.unitProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
-            this.unitProfile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 546);
-            this.unitProfile_Recognition_Back_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitProfile_Recognition_Back_Vertical.LogAction = true;
-            this.unitProfile_Recognition_Back_Vertical.CommandAAddress = "M555";
-            this.unitProfile_Recognition_Back_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Back_Vertical.CommandBAddress = "M554";
-            this.unitProfile_Recognition_Back_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Back_Vertical.PositionAddress = "D117";
-            this.unitProfile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitProfile_Recognition_Back_Vertical.PositionDivisor = 10D;
-            this.unitProfile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.unitProfile_Recognition_Back_Vertical.PositionDigits = 6;
-            this.unitProfile_Recognition_Back_Vertical.PositionSuffix = "mm";
-            this.unitProfile_Recognition_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitProfile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitProfile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Back_Vertical_Target  (D157)
-            // 
-            this.numProfile_Recognition_Back_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Vertical_Target.Name = "numProfile_Recognition_Back_Vertical_Target";
-            this.numProfile_Recognition_Back_Vertical_Target.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Vertical_Target.Address = "D157";
-            this.numProfile_Recognition_Back_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Vertical_Target.AutoSize = false;
-            this.numProfile_Recognition_Back_Vertical_Target.Digits = 6;
-            this.numProfile_Recognition_Back_Vertical_Target.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Vertical_Target.Divisor = 100D;
-            this.numProfile_Recognition_Back_Vertical_Target.Suffix = "mm";
-            this.numProfile_Recognition_Back_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Vertical_Target.LogAction = true;
-            this.numProfile_Recognition_Back_Vertical_Target.Location = new System.Drawing.Point(392, 565);
-            this.numProfile_Recognition_Back_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnProfile_Recognition_Back_Vertical_Send
-            // 
-            this.btnProfile_Recognition_Back_Vertical_Send.Name = "btnProfile_Recognition_Back_Vertical_Send";
-            this.btnProfile_Recognition_Back_Vertical_Send.PlcNumber = 1;
-            this.btnProfile_Recognition_Back_Vertical_Send.TranslationKey = "Send";
-            this.btnProfile_Recognition_Back_Vertical_Send.FallbackText = "Send";
-            bitAction15.Address = "M57";
-            bitAction15.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Back_Vertical_Send.BitActions.Add(bitAction15);
-            this.btnProfile_Recognition_Back_Vertical_Send.Location = new System.Drawing.Point(502, 560);
-            this.btnProfile_Recognition_Back_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Back_Vertical_Send.LogAction = true;
-            this.btnProfile_Recognition_Back_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Back_Vertical_Calibration  (D137)
-            // 
-            this.numProfile_Recognition_Back_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Name = "numProfile_Recognition_Back_Vertical_Calibration";
-            this.numProfile_Recognition_Back_Vertical_Calibration.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Address = "D137";
-            this.numProfile_Recognition_Back_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Vertical_Calibration.AutoSize = false;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Digits = 6;
-            this.numProfile_Recognition_Back_Vertical_Calibration.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Divisor = 100D;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Suffix = "mm";
-            this.numProfile_Recognition_Back_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Vertical_Calibration.LogAction = true;
-            this.numProfile_Recognition_Back_Vertical_Calibration.Location = new System.Drawing.Point(602, 565);
-            this.numProfile_Recognition_Back_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnProfile_Recognition_Back_Vertical_Calibrate
-            // 
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.Name = "btnProfile_Recognition_Back_Vertical_Calibrate";
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.PlcNumber = 1;
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction16.Address = "M37";
-            bitAction16.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.BitActions.Add(bitAction16);
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.Location = new System.Drawing.Point(712, 560);
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.LogAction = true;
-            this.btnProfile_Recognition_Back_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Back_Vertical_Tolerance  (D757)
-            // 
-            this.numProfile_Recognition_Back_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Name = "numProfile_Recognition_Back_Vertical_Tolerance";
-            this.numProfile_Recognition_Back_Vertical_Tolerance.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Address = "D757";
-            this.numProfile_Recognition_Back_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.AutoSize = false;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Digits = 6;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Divisor = 100D;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Suffix = "mm";
-            this.numProfile_Recognition_Back_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.LogAction = true;
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Location = new System.Drawing.Point(812, 565);
-            this.numProfile_Recognition_Back_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Back_Vertical_Stopping_Offset  (D797)
-            // 
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Name = "numProfile_Recognition_Back_Vertical_Stopping_Offset";
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Address = "D797";
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.AutoSize = false;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Digits = 6;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.LogAction = true;
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 565);
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitProfile_Recognition_Back_Horizontal
-            // 
-            this.unitProfile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.unitProfile_Recognition_Back_Horizontal.Name = "unitProfile_Recognition_Back_Horizontal";
-            this.unitProfile_Recognition_Back_Horizontal.PlcNumber = 1;
-            this.unitProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
-            this.unitProfile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 616);
-            this.unitProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
-            this.unitProfile_Recognition_Back_Horizontal.LogAction = true;
-            this.unitProfile_Recognition_Back_Horizontal.CommandAAddress = "M557";
-            this.unitProfile_Recognition_Back_Horizontal.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Back_Horizontal.CommandBAddress = "M556";
-            this.unitProfile_Recognition_Back_Horizontal.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
-            this.unitProfile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
-            this.unitProfile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.unitProfile_Recognition_Back_Horizontal.PositionDigits = 6;
-            this.unitProfile_Recognition_Back_Horizontal.PositionSuffix = "mm";
-            this.unitProfile_Recognition_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitProfile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitProfile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Back_Horizontal_Target  (D158)
-            // 
-            this.numProfile_Recognition_Back_Horizontal_Target.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Horizontal_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Horizontal_Target.Name = "numProfile_Recognition_Back_Horizontal_Target";
-            this.numProfile_Recognition_Back_Horizontal_Target.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Horizontal_Target.Address = "D158";
-            this.numProfile_Recognition_Back_Horizontal_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Horizontal_Target.AutoSize = false;
-            this.numProfile_Recognition_Back_Horizontal_Target.Digits = 6;
-            this.numProfile_Recognition_Back_Horizontal_Target.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Horizontal_Target.Divisor = 100D;
-            this.numProfile_Recognition_Back_Horizontal_Target.Suffix = "mm";
-            this.numProfile_Recognition_Back_Horizontal_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Horizontal_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Horizontal_Target.LogAction = true;
-            this.numProfile_Recognition_Back_Horizontal_Target.Location = new System.Drawing.Point(392, 635);
-            this.numProfile_Recognition_Back_Horizontal_Target.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Horizontal_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnProfile_Recognition_Back_Horizontal_Send
-            // 
-            this.btnProfile_Recognition_Back_Horizontal_Send.Name = "btnProfile_Recognition_Back_Horizontal_Send";
-            this.btnProfile_Recognition_Back_Horizontal_Send.PlcNumber = 1;
-            this.btnProfile_Recognition_Back_Horizontal_Send.TranslationKey = "Send";
-            this.btnProfile_Recognition_Back_Horizontal_Send.FallbackText = "Send";
-            bitAction17.Address = "M58";
-            bitAction17.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Back_Horizontal_Send.BitActions.Add(bitAction17);
-            this.btnProfile_Recognition_Back_Horizontal_Send.Location = new System.Drawing.Point(502, 630);
-            this.btnProfile_Recognition_Back_Horizontal_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Back_Horizontal_Send.LogAction = true;
-            this.btnProfile_Recognition_Back_Horizontal_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numProfile_Recognition_Back_Horizontal_Calibration  (D138)
-            // 
-            this.numProfile_Recognition_Back_Horizontal_Calibration.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Name = "numProfile_Recognition_Back_Horizontal_Calibration";
-            this.numProfile_Recognition_Back_Horizontal_Calibration.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Address = "D138";
-            this.numProfile_Recognition_Back_Horizontal_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.AutoSize = false;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Digits = 6;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Divisor = 100D;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Suffix = "mm";
-            this.numProfile_Recognition_Back_Horizontal_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.LogAction = true;
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Location = new System.Drawing.Point(602, 635);
-            this.numProfile_Recognition_Back_Horizontal_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Horizontal_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnProfile_Recognition_Back_Horizontal_Calibrate
-            // 
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.Name = "btnProfile_Recognition_Back_Horizontal_Calibrate";
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.PlcNumber = 1;
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.TranslationKey = "Calibrate";
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.FallbackText = "Calibrate";
-            bitAction18.Address = "M38";
-            bitAction18.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.BitActions.Add(bitAction18);
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.Location = new System.Drawing.Point(712, 630);
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.LogAction = true;
-            this.btnProfile_Recognition_Back_Horizontal_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Back_Horizontal_Tolerance  (D758)
-            // 
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Name = "numProfile_Recognition_Back_Horizontal_Tolerance";
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Address = "D758";
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.AutoSize = false;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Digits = 6;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Divisor = 100D;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Suffix = "mm";
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.LogAction = true;
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Location = new System.Drawing.Point(812, 635);
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Horizontal_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numProfile_Recognition_Back_Horizontal_Stopping_Offset  (D798)
-            // 
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Name = "numProfile_Recognition_Back_Horizontal_Stopping_Offset";
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.PlcNumber = 1;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Address = "D798";
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.AutoSize = false;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Digits = 6;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.DecimalPlaces = 2;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Divisor = 100D;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Suffix = "mm";
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.LogAction = true;
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Location = new System.Drawing.Point(922, 635);
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numProfile_Recognition_Back_Horizontal_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Left_Front_Vertical
-            // 
-            this.unitCutting_Left_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Left_Front_Vertical.Name = "unitCutting_Left_Front_Vertical";
-            this.unitCutting_Left_Front_Vertical.PlcNumber = 1;
-            this.unitCutting_Left_Front_Vertical.TitleTextKey = "Cutting Left Front Vertical";
-            this.unitCutting_Left_Front_Vertical.Location = new System.Drawing.Point(16, 686);
-            this.unitCutting_Left_Front_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Left_Front_Vertical.LogAction = true;
-            this.unitCutting_Left_Front_Vertical.CommandAAddress = "M559";
-            this.unitCutting_Left_Front_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Front_Vertical.CommandBAddress = "M558";
-            this.unitCutting_Left_Front_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Front_Vertical.PositionAddress = "D119";
-            this.unitCutting_Left_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Left_Front_Vertical.PositionDivisor = 10D;
-            this.unitCutting_Left_Front_Vertical.PositionDecimalPlaces = 2;
-            this.unitCutting_Left_Front_Vertical.PositionDigits = 6;
-            this.unitCutting_Left_Front_Vertical.PositionSuffix = "mm";
-            this.unitCutting_Left_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Left_Front_Vertical.ErrorBAddress = "M934";
-            this.unitCutting_Left_Front_Vertical.ErrorAAddress = "M933";
-            this.unitCutting_Left_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Front_Vertical_Target  (D159)
-            // 
-            this.numCutting_Left_Front_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Front_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Front_Vertical_Target.Name = "numCutting_Left_Front_Vertical_Target";
-            this.numCutting_Left_Front_Vertical_Target.PlcNumber = 1;
-            this.numCutting_Left_Front_Vertical_Target.Address = "D159";
-            this.numCutting_Left_Front_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Front_Vertical_Target.AutoSize = false;
-            this.numCutting_Left_Front_Vertical_Target.Digits = 6;
-            this.numCutting_Left_Front_Vertical_Target.DecimalPlaces = 2;
-            this.numCutting_Left_Front_Vertical_Target.Divisor = 100D;
-            this.numCutting_Left_Front_Vertical_Target.Suffix = "mm";
-            this.numCutting_Left_Front_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Front_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Front_Vertical_Target.LogAction = true;
-            this.numCutting_Left_Front_Vertical_Target.Location = new System.Drawing.Point(392, 705);
-            this.numCutting_Left_Front_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Front_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Left_Front_Vertical_Send
-            // 
-            this.btnCutting_Left_Front_Vertical_Send.Name = "btnCutting_Left_Front_Vertical_Send";
-            this.btnCutting_Left_Front_Vertical_Send.PlcNumber = 1;
-            this.btnCutting_Left_Front_Vertical_Send.TranslationKey = "Send";
-            this.btnCutting_Left_Front_Vertical_Send.FallbackText = "Send";
-            bitAction19.Address = "M59";
-            bitAction19.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Front_Vertical_Send.BitActions.Add(bitAction19);
-            this.btnCutting_Left_Front_Vertical_Send.Location = new System.Drawing.Point(502, 700);
-            this.btnCutting_Left_Front_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Front_Vertical_Send.LogAction = true;
-            this.btnCutting_Left_Front_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Front_Vertical_Calibration  (D139)
-            // 
-            this.numCutting_Left_Front_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Front_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Front_Vertical_Calibration.Name = "numCutting_Left_Front_Vertical_Calibration";
-            this.numCutting_Left_Front_Vertical_Calibration.PlcNumber = 1;
-            this.numCutting_Left_Front_Vertical_Calibration.Address = "D139";
-            this.numCutting_Left_Front_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Front_Vertical_Calibration.AutoSize = false;
-            this.numCutting_Left_Front_Vertical_Calibration.Digits = 6;
-            this.numCutting_Left_Front_Vertical_Calibration.DecimalPlaces = 2;
-            this.numCutting_Left_Front_Vertical_Calibration.Divisor = 100D;
-            this.numCutting_Left_Front_Vertical_Calibration.Suffix = "mm";
-            this.numCutting_Left_Front_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Front_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Front_Vertical_Calibration.LogAction = true;
-            this.numCutting_Left_Front_Vertical_Calibration.Location = new System.Drawing.Point(602, 705);
-            this.numCutting_Left_Front_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Front_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Left_Front_Vertical_Calibrate
-            // 
-            this.btnCutting_Left_Front_Vertical_Calibrate.Name = "btnCutting_Left_Front_Vertical_Calibrate";
-            this.btnCutting_Left_Front_Vertical_Calibrate.PlcNumber = 1;
-            this.btnCutting_Left_Front_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Left_Front_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction20.Address = "M39";
-            bitAction20.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Front_Vertical_Calibrate.BitActions.Add(bitAction20);
-            this.btnCutting_Left_Front_Vertical_Calibrate.Location = new System.Drawing.Point(712, 700);
-            this.btnCutting_Left_Front_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Front_Vertical_Calibrate.LogAction = true;
-            this.btnCutting_Left_Front_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Front_Vertical_Tolerance  (D759)
-            // 
-            this.numCutting_Left_Front_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Front_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Front_Vertical_Tolerance.Name = "numCutting_Left_Front_Vertical_Tolerance";
-            this.numCutting_Left_Front_Vertical_Tolerance.PlcNumber = 1;
-            this.numCutting_Left_Front_Vertical_Tolerance.Address = "D759";
-            this.numCutting_Left_Front_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Front_Vertical_Tolerance.AutoSize = false;
-            this.numCutting_Left_Front_Vertical_Tolerance.Digits = 6;
-            this.numCutting_Left_Front_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Left_Front_Vertical_Tolerance.Divisor = 100D;
-            this.numCutting_Left_Front_Vertical_Tolerance.Suffix = "mm";
-            this.numCutting_Left_Front_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Front_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Front_Vertical_Tolerance.LogAction = true;
-            this.numCutting_Left_Front_Vertical_Tolerance.Location = new System.Drawing.Point(812, 705);
-            this.numCutting_Left_Front_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Front_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Front_Vertical_Stopping_Offset  (D799)
-            // 
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Name = "numCutting_Left_Front_Vertical_Stopping_Offset";
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Address = "D799";
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.AutoSize = false;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Digits = 6;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.LogAction = true;
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 705);
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Front_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Left_Back_Vertical
-            // 
-            this.unitCutting_Left_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Left_Back_Vertical.Name = "unitCutting_Left_Back_Vertical";
-            this.unitCutting_Left_Back_Vertical.PlcNumber = 1;
-            this.unitCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
-            this.unitCutting_Left_Back_Vertical.Location = new System.Drawing.Point(16, 756);
-            this.unitCutting_Left_Back_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Left_Back_Vertical.LogAction = true;
-            this.unitCutting_Left_Back_Vertical.CommandAAddress = "M561";
-            this.unitCutting_Left_Back_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Back_Vertical.CommandBAddress = "M560";
-            this.unitCutting_Left_Back_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Back_Vertical.PositionAddress = "D120";
-            this.unitCutting_Left_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Left_Back_Vertical.PositionDivisor = 10D;
-            this.unitCutting_Left_Back_Vertical.PositionDecimalPlaces = 2;
-            this.unitCutting_Left_Back_Vertical.PositionDigits = 6;
-            this.unitCutting_Left_Back_Vertical.PositionSuffix = "mm";
-            this.unitCutting_Left_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Left_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Left_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Back_Vertical_Target  (D160)
-            // 
-            this.numCutting_Left_Back_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Vertical_Target.Name = "numCutting_Left_Back_Vertical_Target";
-            this.numCutting_Left_Back_Vertical_Target.PlcNumber = 1;
-            this.numCutting_Left_Back_Vertical_Target.Address = "D160";
-            this.numCutting_Left_Back_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Vertical_Target.AutoSize = false;
-            this.numCutting_Left_Back_Vertical_Target.Digits = 6;
-            this.numCutting_Left_Back_Vertical_Target.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Vertical_Target.Divisor = 100D;
-            this.numCutting_Left_Back_Vertical_Target.Suffix = "mm";
-            this.numCutting_Left_Back_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Vertical_Target.LogAction = true;
-            this.numCutting_Left_Back_Vertical_Target.Location = new System.Drawing.Point(392, 775);
-            this.numCutting_Left_Back_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Left_Back_Vertical_Send
-            // 
-            this.btnCutting_Left_Back_Vertical_Send.Name = "btnCutting_Left_Back_Vertical_Send";
-            this.btnCutting_Left_Back_Vertical_Send.PlcNumber = 1;
-            this.btnCutting_Left_Back_Vertical_Send.TranslationKey = "Send";
-            this.btnCutting_Left_Back_Vertical_Send.FallbackText = "Send";
-            bitAction21.Address = "M60";
-            bitAction21.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Back_Vertical_Send.BitActions.Add(bitAction21);
-            this.btnCutting_Left_Back_Vertical_Send.Location = new System.Drawing.Point(502, 770);
-            this.btnCutting_Left_Back_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Back_Vertical_Send.LogAction = true;
-            this.btnCutting_Left_Back_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Back_Vertical_Calibration  (D140)
-            // 
-            this.numCutting_Left_Back_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Vertical_Calibration.Name = "numCutting_Left_Back_Vertical_Calibration";
-            this.numCutting_Left_Back_Vertical_Calibration.PlcNumber = 1;
-            this.numCutting_Left_Back_Vertical_Calibration.Address = "D140";
-            this.numCutting_Left_Back_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Vertical_Calibration.AutoSize = false;
-            this.numCutting_Left_Back_Vertical_Calibration.Digits = 6;
-            this.numCutting_Left_Back_Vertical_Calibration.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Vertical_Calibration.Divisor = 100D;
-            this.numCutting_Left_Back_Vertical_Calibration.Suffix = "mm";
-            this.numCutting_Left_Back_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Vertical_Calibration.LogAction = true;
-            this.numCutting_Left_Back_Vertical_Calibration.Location = new System.Drawing.Point(602, 775);
-            this.numCutting_Left_Back_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Left_Back_Vertical_Calibrate
-            // 
-            this.btnCutting_Left_Back_Vertical_Calibrate.Name = "btnCutting_Left_Back_Vertical_Calibrate";
-            this.btnCutting_Left_Back_Vertical_Calibrate.PlcNumber = 1;
-            this.btnCutting_Left_Back_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Left_Back_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction22.Address = "M40";
-            bitAction22.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Back_Vertical_Calibrate.BitActions.Add(bitAction22);
-            this.btnCutting_Left_Back_Vertical_Calibrate.Location = new System.Drawing.Point(712, 770);
-            this.btnCutting_Left_Back_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Back_Vertical_Calibrate.LogAction = true;
-            this.btnCutting_Left_Back_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Back_Vertical_Tolerance  (D760)
-            // 
-            this.numCutting_Left_Back_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Vertical_Tolerance.Name = "numCutting_Left_Back_Vertical_Tolerance";
-            this.numCutting_Left_Back_Vertical_Tolerance.PlcNumber = 1;
-            this.numCutting_Left_Back_Vertical_Tolerance.Address = "D760";
-            this.numCutting_Left_Back_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Vertical_Tolerance.AutoSize = false;
-            this.numCutting_Left_Back_Vertical_Tolerance.Digits = 6;
-            this.numCutting_Left_Back_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Vertical_Tolerance.Divisor = 100D;
-            this.numCutting_Left_Back_Vertical_Tolerance.Suffix = "mm";
-            this.numCutting_Left_Back_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Vertical_Tolerance.LogAction = true;
-            this.numCutting_Left_Back_Vertical_Tolerance.Location = new System.Drawing.Point(812, 775);
-            this.numCutting_Left_Back_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Back_Vertical_Stopping_Offset  (D800)
-            // 
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Name = "numCutting_Left_Back_Vertical_Stopping_Offset";
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Address = "D800";
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.AutoSize = false;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Digits = 6;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.LogAction = true;
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 775);
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Left_Back_Horizontal
-            // 
-            this.unitCutting_Left_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Left_Back_Horizontal.Name = "unitCutting_Left_Back_Horizontal";
-            this.unitCutting_Left_Back_Horizontal.PlcNumber = 1;
-            this.unitCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
-            this.unitCutting_Left_Back_Horizontal.Location = new System.Drawing.Point(16, 826);
-            this.unitCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Left_Back_Horizontal.LogAction = true;
-            this.unitCutting_Left_Back_Horizontal.CommandAAddress = "M563";
-            this.unitCutting_Left_Back_Horizontal.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Back_Horizontal.CommandBAddress = "M562";
-            this.unitCutting_Left_Back_Horizontal.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Left_Back_Horizontal.PositionAddress = "D121";
-            this.unitCutting_Left_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Left_Back_Horizontal.PositionDivisor = 10D;
-            this.unitCutting_Left_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.unitCutting_Left_Back_Horizontal.PositionDigits = 6;
-            this.unitCutting_Left_Back_Horizontal.PositionSuffix = "mm";
-            this.unitCutting_Left_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Left_Back_Horizontal.ErrorAAddress = "M937";
-            this.unitCutting_Left_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Back_Horizontal_Target  (D161)
-            // 
-            this.numCutting_Left_Back_Horizontal_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Horizontal_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Horizontal_Target.Name = "numCutting_Left_Back_Horizontal_Target";
-            this.numCutting_Left_Back_Horizontal_Target.PlcNumber = 1;
-            this.numCutting_Left_Back_Horizontal_Target.Address = "D161";
-            this.numCutting_Left_Back_Horizontal_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Horizontal_Target.AutoSize = false;
-            this.numCutting_Left_Back_Horizontal_Target.Digits = 6;
-            this.numCutting_Left_Back_Horizontal_Target.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Horizontal_Target.Divisor = 100D;
-            this.numCutting_Left_Back_Horizontal_Target.Suffix = "mm";
-            this.numCutting_Left_Back_Horizontal_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Horizontal_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Horizontal_Target.LogAction = true;
-            this.numCutting_Left_Back_Horizontal_Target.Location = new System.Drawing.Point(392, 845);
-            this.numCutting_Left_Back_Horizontal_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Horizontal_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Left_Back_Horizontal_Send
-            // 
-            this.btnCutting_Left_Back_Horizontal_Send.Name = "btnCutting_Left_Back_Horizontal_Send";
-            this.btnCutting_Left_Back_Horizontal_Send.PlcNumber = 1;
-            this.btnCutting_Left_Back_Horizontal_Send.TranslationKey = "Send";
-            this.btnCutting_Left_Back_Horizontal_Send.FallbackText = "Send";
-            bitAction23.Address = "M61";
-            bitAction23.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Back_Horizontal_Send.BitActions.Add(bitAction23);
-            this.btnCutting_Left_Back_Horizontal_Send.Location = new System.Drawing.Point(502, 840);
-            this.btnCutting_Left_Back_Horizontal_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Back_Horizontal_Send.LogAction = true;
-            this.btnCutting_Left_Back_Horizontal_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Left_Back_Horizontal_Calibration  (D141)
-            // 
-            this.numCutting_Left_Back_Horizontal_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Horizontal_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Horizontal_Calibration.Name = "numCutting_Left_Back_Horizontal_Calibration";
-            this.numCutting_Left_Back_Horizontal_Calibration.PlcNumber = 1;
-            this.numCutting_Left_Back_Horizontal_Calibration.Address = "D141";
-            this.numCutting_Left_Back_Horizontal_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Horizontal_Calibration.AutoSize = false;
-            this.numCutting_Left_Back_Horizontal_Calibration.Digits = 6;
-            this.numCutting_Left_Back_Horizontal_Calibration.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Horizontal_Calibration.Divisor = 100D;
-            this.numCutting_Left_Back_Horizontal_Calibration.Suffix = "mm";
-            this.numCutting_Left_Back_Horizontal_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Horizontal_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Horizontal_Calibration.LogAction = true;
-            this.numCutting_Left_Back_Horizontal_Calibration.Location = new System.Drawing.Point(602, 845);
-            this.numCutting_Left_Back_Horizontal_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Horizontal_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Left_Back_Horizontal_Calibrate
-            // 
-            this.btnCutting_Left_Back_Horizontal_Calibrate.Name = "btnCutting_Left_Back_Horizontal_Calibrate";
-            this.btnCutting_Left_Back_Horizontal_Calibrate.PlcNumber = 1;
-            this.btnCutting_Left_Back_Horizontal_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Left_Back_Horizontal_Calibrate.FallbackText = "Calibrate";
-            bitAction24.Address = "M41";
-            bitAction24.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Left_Back_Horizontal_Calibrate.BitActions.Add(bitAction24);
-            this.btnCutting_Left_Back_Horizontal_Calibrate.Location = new System.Drawing.Point(712, 840);
-            this.btnCutting_Left_Back_Horizontal_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Left_Back_Horizontal_Calibrate.LogAction = true;
-            this.btnCutting_Left_Back_Horizontal_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Back_Horizontal_Tolerance  (D761)
-            // 
-            this.numCutting_Left_Back_Horizontal_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Horizontal_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Name = "numCutting_Left_Back_Horizontal_Tolerance";
-            this.numCutting_Left_Back_Horizontal_Tolerance.PlcNumber = 1;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Address = "D761";
-            this.numCutting_Left_Back_Horizontal_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Horizontal_Tolerance.AutoSize = false;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Digits = 6;
-            this.numCutting_Left_Back_Horizontal_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Divisor = 100D;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Suffix = "mm";
-            this.numCutting_Left_Back_Horizontal_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Horizontal_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Horizontal_Tolerance.LogAction = true;
-            this.numCutting_Left_Back_Horizontal_Tolerance.Location = new System.Drawing.Point(812, 845);
-            this.numCutting_Left_Back_Horizontal_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Horizontal_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Left_Back_Horizontal_Stopping_Offset  (D801)
-            // 
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Name = "numCutting_Left_Back_Horizontal_Stopping_Offset";
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Address = "D801";
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.AutoSize = false;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Digits = 6;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.LogAction = true;
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Location = new System.Drawing.Point(922, 845);
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Left_Back_Horizontal_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Right_Front_Vertical
-            // 
-            this.unitCutting_Right_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Right_Front_Vertical.Name = "unitCutting_Right_Front_Vertical";
-            this.unitCutting_Right_Front_Vertical.PlcNumber = 1;
-            this.unitCutting_Right_Front_Vertical.TitleTextKey = "Cutting Right Front Vertical";
-            this.unitCutting_Right_Front_Vertical.Location = new System.Drawing.Point(16, 896);
-            this.unitCutting_Right_Front_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Right_Front_Vertical.LogAction = true;
-            this.unitCutting_Right_Front_Vertical.CommandAAddress = "M565";
-            this.unitCutting_Right_Front_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Front_Vertical.CommandBAddress = "M564";
-            this.unitCutting_Right_Front_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Front_Vertical.PositionAddress = "D122";
-            this.unitCutting_Right_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Right_Front_Vertical.PositionDivisor = 10D;
-            this.unitCutting_Right_Front_Vertical.PositionDecimalPlaces = 2;
-            this.unitCutting_Right_Front_Vertical.PositionDigits = 6;
-            this.unitCutting_Right_Front_Vertical.PositionSuffix = "mm";
-            this.unitCutting_Right_Front_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Right_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Right_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Front_Vertical_Target  (D162)
-            // 
-            this.numCutting_Right_Front_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Vertical_Target.Name = "numCutting_Right_Front_Vertical_Target";
-            this.numCutting_Right_Front_Vertical_Target.PlcNumber = 1;
-            this.numCutting_Right_Front_Vertical_Target.Address = "D162";
-            this.numCutting_Right_Front_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Vertical_Target.AutoSize = false;
-            this.numCutting_Right_Front_Vertical_Target.Digits = 6;
-            this.numCutting_Right_Front_Vertical_Target.DecimalPlaces = 2;
-            this.numCutting_Right_Front_Vertical_Target.Divisor = 100D;
-            this.numCutting_Right_Front_Vertical_Target.Suffix = "mm";
-            this.numCutting_Right_Front_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Vertical_Target.LogAction = true;
-            this.numCutting_Right_Front_Vertical_Target.Location = new System.Drawing.Point(392, 915);
-            this.numCutting_Right_Front_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Front_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Right_Front_Vertical_Send
-            // 
-            this.btnCutting_Right_Front_Vertical_Send.Name = "btnCutting_Right_Front_Vertical_Send";
-            this.btnCutting_Right_Front_Vertical_Send.PlcNumber = 1;
-            this.btnCutting_Right_Front_Vertical_Send.TranslationKey = "Send";
-            this.btnCutting_Right_Front_Vertical_Send.FallbackText = "Send";
-            bitAction25.Address = "M62";
-            bitAction25.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Front_Vertical_Send.BitActions.Add(bitAction25);
-            this.btnCutting_Right_Front_Vertical_Send.Location = new System.Drawing.Point(502, 910);
-            this.btnCutting_Right_Front_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Front_Vertical_Send.LogAction = true;
-            this.btnCutting_Right_Front_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Front_Vertical_Calibration  (D142)
-            // 
-            this.numCutting_Right_Front_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Vertical_Calibration.Name = "numCutting_Right_Front_Vertical_Calibration";
-            this.numCutting_Right_Front_Vertical_Calibration.PlcNumber = 1;
-            this.numCutting_Right_Front_Vertical_Calibration.Address = "D142";
-            this.numCutting_Right_Front_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Vertical_Calibration.AutoSize = false;
-            this.numCutting_Right_Front_Vertical_Calibration.Digits = 6;
-            this.numCutting_Right_Front_Vertical_Calibration.DecimalPlaces = 2;
-            this.numCutting_Right_Front_Vertical_Calibration.Divisor = 100D;
-            this.numCutting_Right_Front_Vertical_Calibration.Suffix = "mm";
-            this.numCutting_Right_Front_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Vertical_Calibration.LogAction = true;
-            this.numCutting_Right_Front_Vertical_Calibration.Location = new System.Drawing.Point(602, 915);
-            this.numCutting_Right_Front_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Front_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Right_Front_Vertical_Calibrate
-            // 
-            this.btnCutting_Right_Front_Vertical_Calibrate.Name = "btnCutting_Right_Front_Vertical_Calibrate";
-            this.btnCutting_Right_Front_Vertical_Calibrate.PlcNumber = 1;
-            this.btnCutting_Right_Front_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Right_Front_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction26.Address = "M42";
-            bitAction26.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Front_Vertical_Calibrate.BitActions.Add(bitAction26);
-            this.btnCutting_Right_Front_Vertical_Calibrate.Location = new System.Drawing.Point(712, 910);
-            this.btnCutting_Right_Front_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Front_Vertical_Calibrate.LogAction = true;
-            this.btnCutting_Right_Front_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Front_Vertical_Tolerance  (D762)
-            // 
-            this.numCutting_Right_Front_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Vertical_Tolerance.Name = "numCutting_Right_Front_Vertical_Tolerance";
-            this.numCutting_Right_Front_Vertical_Tolerance.PlcNumber = 1;
-            this.numCutting_Right_Front_Vertical_Tolerance.Address = "D762";
-            this.numCutting_Right_Front_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Vertical_Tolerance.AutoSize = false;
-            this.numCutting_Right_Front_Vertical_Tolerance.Digits = 6;
-            this.numCutting_Right_Front_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Right_Front_Vertical_Tolerance.Divisor = 100D;
-            this.numCutting_Right_Front_Vertical_Tolerance.Suffix = "mm";
-            this.numCutting_Right_Front_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Vertical_Tolerance.LogAction = true;
-            this.numCutting_Right_Front_Vertical_Tolerance.Location = new System.Drawing.Point(812, 915);
-            this.numCutting_Right_Front_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Front_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Front_Vertical_Stopping_Offset  (D802)
-            // 
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Name = "numCutting_Right_Front_Vertical_Stopping_Offset";
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Address = "D802";
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.AutoSize = false;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Digits = 6;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.LogAction = true;
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 915);
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Front_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Right_Back_Vertical
-            // 
-            this.unitCutting_Right_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Right_Back_Vertical.Name = "unitCutting_Right_Back_Vertical";
-            this.unitCutting_Right_Back_Vertical.PlcNumber = 1;
-            this.unitCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
-            this.unitCutting_Right_Back_Vertical.Location = new System.Drawing.Point(16, 966);
-            this.unitCutting_Right_Back_Vertical.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Right_Back_Vertical.LogAction = true;
-            this.unitCutting_Right_Back_Vertical.CommandAAddress = "M567";
-            this.unitCutting_Right_Back_Vertical.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Back_Vertical.CommandBAddress = "M566";
-            this.unitCutting_Right_Back_Vertical.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Back_Vertical.PositionAddress = "D123";
-            this.unitCutting_Right_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Right_Back_Vertical.PositionDivisor = 10D;
-            this.unitCutting_Right_Back_Vertical.PositionDecimalPlaces = 2;
-            this.unitCutting_Right_Back_Vertical.PositionDigits = 6;
-            this.unitCutting_Right_Back_Vertical.PositionSuffix = "mm";
-            this.unitCutting_Right_Back_Vertical.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Right_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.unitCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Right_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Back_Vertical_Target  (D163)
-            // 
-            this.numCutting_Right_Back_Vertical_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Vertical_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Vertical_Target.Name = "numCutting_Right_Back_Vertical_Target";
-            this.numCutting_Right_Back_Vertical_Target.PlcNumber = 1;
-            this.numCutting_Right_Back_Vertical_Target.Address = "D163";
-            this.numCutting_Right_Back_Vertical_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Vertical_Target.AutoSize = false;
-            this.numCutting_Right_Back_Vertical_Target.Digits = 6;
-            this.numCutting_Right_Back_Vertical_Target.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Vertical_Target.Divisor = 100D;
-            this.numCutting_Right_Back_Vertical_Target.Suffix = "mm";
-            this.numCutting_Right_Back_Vertical_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Vertical_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Vertical_Target.LogAction = true;
-            this.numCutting_Right_Back_Vertical_Target.Location = new System.Drawing.Point(392, 985);
-            this.numCutting_Right_Back_Vertical_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Vertical_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Right_Back_Vertical_Send
-            // 
-            this.btnCutting_Right_Back_Vertical_Send.Name = "btnCutting_Right_Back_Vertical_Send";
-            this.btnCutting_Right_Back_Vertical_Send.PlcNumber = 1;
-            this.btnCutting_Right_Back_Vertical_Send.TranslationKey = "Send";
-            this.btnCutting_Right_Back_Vertical_Send.FallbackText = "Send";
-            bitAction27.Address = "M63";
-            bitAction27.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Back_Vertical_Send.BitActions.Add(bitAction27);
-            this.btnCutting_Right_Back_Vertical_Send.Location = new System.Drawing.Point(502, 980);
-            this.btnCutting_Right_Back_Vertical_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Back_Vertical_Send.LogAction = true;
-            this.btnCutting_Right_Back_Vertical_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Back_Vertical_Calibration  (D143)
-            // 
-            this.numCutting_Right_Back_Vertical_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Vertical_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Vertical_Calibration.Name = "numCutting_Right_Back_Vertical_Calibration";
-            this.numCutting_Right_Back_Vertical_Calibration.PlcNumber = 1;
-            this.numCutting_Right_Back_Vertical_Calibration.Address = "D143";
-            this.numCutting_Right_Back_Vertical_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Vertical_Calibration.AutoSize = false;
-            this.numCutting_Right_Back_Vertical_Calibration.Digits = 6;
-            this.numCutting_Right_Back_Vertical_Calibration.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Vertical_Calibration.Divisor = 100D;
-            this.numCutting_Right_Back_Vertical_Calibration.Suffix = "mm";
-            this.numCutting_Right_Back_Vertical_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Vertical_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Vertical_Calibration.LogAction = true;
-            this.numCutting_Right_Back_Vertical_Calibration.Location = new System.Drawing.Point(602, 985);
-            this.numCutting_Right_Back_Vertical_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Vertical_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Right_Back_Vertical_Calibrate
-            // 
-            this.btnCutting_Right_Back_Vertical_Calibrate.Name = "btnCutting_Right_Back_Vertical_Calibrate";
-            this.btnCutting_Right_Back_Vertical_Calibrate.PlcNumber = 1;
-            this.btnCutting_Right_Back_Vertical_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Right_Back_Vertical_Calibrate.FallbackText = "Calibrate";
-            bitAction28.Address = "M43";
-            bitAction28.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Back_Vertical_Calibrate.BitActions.Add(bitAction28);
-            this.btnCutting_Right_Back_Vertical_Calibrate.Location = new System.Drawing.Point(712, 980);
-            this.btnCutting_Right_Back_Vertical_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Back_Vertical_Calibrate.LogAction = true;
-            this.btnCutting_Right_Back_Vertical_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Back_Vertical_Tolerance  (D763)
-            // 
-            this.numCutting_Right_Back_Vertical_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Vertical_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Vertical_Tolerance.Name = "numCutting_Right_Back_Vertical_Tolerance";
-            this.numCutting_Right_Back_Vertical_Tolerance.PlcNumber = 1;
-            this.numCutting_Right_Back_Vertical_Tolerance.Address = "D763";
-            this.numCutting_Right_Back_Vertical_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Vertical_Tolerance.AutoSize = false;
-            this.numCutting_Right_Back_Vertical_Tolerance.Digits = 6;
-            this.numCutting_Right_Back_Vertical_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Vertical_Tolerance.Divisor = 100D;
-            this.numCutting_Right_Back_Vertical_Tolerance.Suffix = "mm";
-            this.numCutting_Right_Back_Vertical_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Vertical_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Vertical_Tolerance.LogAction = true;
-            this.numCutting_Right_Back_Vertical_Tolerance.Location = new System.Drawing.Point(812, 985);
-            this.numCutting_Right_Back_Vertical_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Vertical_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Back_Vertical_Stopping_Offset  (D803)
-            // 
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Name = "numCutting_Right_Back_Vertical_Stopping_Offset";
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Address = "D803";
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.AutoSize = false;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Digits = 6;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.LogAction = true;
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Location = new System.Drawing.Point(922, 985);
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Vertical_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitCutting_Right_Back_Horizontal
-            // 
-            this.unitCutting_Right_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Right_Back_Horizontal.Name = "unitCutting_Right_Back_Horizontal";
-            this.unitCutting_Right_Back_Horizontal.PlcNumber = 1;
-            this.unitCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
-            this.unitCutting_Right_Back_Horizontal.Location = new System.Drawing.Point(16, 1036);
-            this.unitCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Right_Back_Horizontal.LogAction = true;
-            this.unitCutting_Right_Back_Horizontal.CommandAAddress = "M569";
-            this.unitCutting_Right_Back_Horizontal.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Back_Horizontal.CommandBAddress = "M568";
-            this.unitCutting_Right_Back_Horizontal.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right_Back_Horizontal.PositionAddress = "D124";
-            this.unitCutting_Right_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitCutting_Right_Back_Horizontal.PositionDivisor = 10D;
-            this.unitCutting_Right_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.unitCutting_Right_Back_Horizontal.PositionDigits = 6;
-            this.unitCutting_Right_Back_Horizontal.PositionSuffix = "mm";
-            this.unitCutting_Right_Back_Horizontal.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitCutting_Right_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.unitCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitCutting_Right_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Back_Horizontal_Target  (D164)
-            // 
-            this.numCutting_Right_Back_Horizontal_Target.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Horizontal_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Horizontal_Target.Name = "numCutting_Right_Back_Horizontal_Target";
-            this.numCutting_Right_Back_Horizontal_Target.PlcNumber = 1;
-            this.numCutting_Right_Back_Horizontal_Target.Address = "D164";
-            this.numCutting_Right_Back_Horizontal_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Horizontal_Target.AutoSize = false;
-            this.numCutting_Right_Back_Horizontal_Target.Digits = 6;
-            this.numCutting_Right_Back_Horizontal_Target.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Horizontal_Target.Divisor = 100D;
-            this.numCutting_Right_Back_Horizontal_Target.Suffix = "mm";
-            this.numCutting_Right_Back_Horizontal_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Horizontal_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Horizontal_Target.LogAction = true;
-            this.numCutting_Right_Back_Horizontal_Target.Location = new System.Drawing.Point(392, 1055);
-            this.numCutting_Right_Back_Horizontal_Target.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Horizontal_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnCutting_Right_Back_Horizontal_Send
-            // 
-            this.btnCutting_Right_Back_Horizontal_Send.Name = "btnCutting_Right_Back_Horizontal_Send";
-            this.btnCutting_Right_Back_Horizontal_Send.PlcNumber = 1;
-            this.btnCutting_Right_Back_Horizontal_Send.TranslationKey = "Send";
-            this.btnCutting_Right_Back_Horizontal_Send.FallbackText = "Send";
-            bitAction29.Address = "M64";
-            bitAction29.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Back_Horizontal_Send.BitActions.Add(bitAction29);
-            this.btnCutting_Right_Back_Horizontal_Send.Location = new System.Drawing.Point(502, 1050);
-            this.btnCutting_Right_Back_Horizontal_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Back_Horizontal_Send.LogAction = true;
-            this.btnCutting_Right_Back_Horizontal_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numCutting_Right_Back_Horizontal_Calibration  (D144)
-            // 
-            this.numCutting_Right_Back_Horizontal_Calibration.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Horizontal_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Horizontal_Calibration.Name = "numCutting_Right_Back_Horizontal_Calibration";
-            this.numCutting_Right_Back_Horizontal_Calibration.PlcNumber = 1;
-            this.numCutting_Right_Back_Horizontal_Calibration.Address = "D144";
-            this.numCutting_Right_Back_Horizontal_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Horizontal_Calibration.AutoSize = false;
-            this.numCutting_Right_Back_Horizontal_Calibration.Digits = 6;
-            this.numCutting_Right_Back_Horizontal_Calibration.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Horizontal_Calibration.Divisor = 100D;
-            this.numCutting_Right_Back_Horizontal_Calibration.Suffix = "mm";
-            this.numCutting_Right_Back_Horizontal_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Horizontal_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Horizontal_Calibration.LogAction = true;
-            this.numCutting_Right_Back_Horizontal_Calibration.Location = new System.Drawing.Point(602, 1055);
-            this.numCutting_Right_Back_Horizontal_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Horizontal_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnCutting_Right_Back_Horizontal_Calibrate
-            // 
-            this.btnCutting_Right_Back_Horizontal_Calibrate.Name = "btnCutting_Right_Back_Horizontal_Calibrate";
-            this.btnCutting_Right_Back_Horizontal_Calibrate.PlcNumber = 1;
-            this.btnCutting_Right_Back_Horizontal_Calibrate.TranslationKey = "Calibrate";
-            this.btnCutting_Right_Back_Horizontal_Calibrate.FallbackText = "Calibrate";
-            bitAction30.Address = "M44";
-            bitAction30.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnCutting_Right_Back_Horizontal_Calibrate.BitActions.Add(bitAction30);
-            this.btnCutting_Right_Back_Horizontal_Calibrate.Location = new System.Drawing.Point(712, 1050);
-            this.btnCutting_Right_Back_Horizontal_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnCutting_Right_Back_Horizontal_Calibrate.LogAction = true;
-            this.btnCutting_Right_Back_Horizontal_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Back_Horizontal_Tolerance  (D764)
-            // 
-            this.numCutting_Right_Back_Horizontal_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Horizontal_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Name = "numCutting_Right_Back_Horizontal_Tolerance";
-            this.numCutting_Right_Back_Horizontal_Tolerance.PlcNumber = 1;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Address = "D764";
-            this.numCutting_Right_Back_Horizontal_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Horizontal_Tolerance.AutoSize = false;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Digits = 6;
-            this.numCutting_Right_Back_Horizontal_Tolerance.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Divisor = 100D;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Suffix = "mm";
-            this.numCutting_Right_Back_Horizontal_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Horizontal_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Horizontal_Tolerance.LogAction = true;
-            this.numCutting_Right_Back_Horizontal_Tolerance.Location = new System.Drawing.Point(812, 1055);
-            this.numCutting_Right_Back_Horizontal_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Horizontal_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numCutting_Right_Back_Horizontal_Stopping_Offset  (D804)
-            // 
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Name = "numCutting_Right_Back_Horizontal_Stopping_Offset";
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.PlcNumber = 1;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Address = "D804";
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.AutoSize = false;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Digits = 6;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.DecimalPlaces = 2;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Divisor = 100D;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Suffix = "mm";
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.LogAction = true;
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Location = new System.Drawing.Point(922, 1055);
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numCutting_Right_Back_Horizontal_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // unitRight_Front_Vertical_Clamping
-            // 
-            this.unitRight_Front_Vertical_Clamping.BackColor = System.Drawing.Color.White;
-            this.unitRight_Front_Vertical_Clamping.Name = "unitRight_Front_Vertical_Clamping";
-            this.unitRight_Front_Vertical_Clamping.PlcNumber = 1;
-            this.unitRight_Front_Vertical_Clamping.TitleTextKey = "Right Front Vertical Clamping";
-            this.unitRight_Front_Vertical_Clamping.Location = new System.Drawing.Point(16, 1106);
-            this.unitRight_Front_Vertical_Clamping.Size = new System.Drawing.Size(360, 64);
-            this.unitRight_Front_Vertical_Clamping.LogAction = true;
-            this.unitRight_Front_Vertical_Clamping.CommandAAddress = "M585";
-            this.unitRight_Front_Vertical_Clamping.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRight_Front_Vertical_Clamping.CommandBAddress = "M584";
-            this.unitRight_Front_Vertical_Clamping.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRight_Front_Vertical_Clamping.PositionAddress = "D128";
-            this.unitRight_Front_Vertical_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.unitRight_Front_Vertical_Clamping.PositionDivisor = 10D;
-            this.unitRight_Front_Vertical_Clamping.PositionDecimalPlaces = 2;
-            this.unitRight_Front_Vertical_Clamping.PositionDigits = 6;
-            this.unitRight_Front_Vertical_Clamping.PositionSuffix = "mm";
-            this.unitRight_Front_Vertical_Clamping.PositionUnitType = Kaban.Core.Enums.UnitType.Length;
-            this.unitRight_Front_Vertical_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.unitRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.unitRight_Front_Vertical_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            // 
-            // numRight_Front_Vertical_Clamping_Target  (D167)
-            // 
-            this.numRight_Front_Vertical_Clamping_Target.BackColor = System.Drawing.Color.White;
-            this.numRight_Front_Vertical_Clamping_Target.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numRight_Front_Vertical_Clamping_Target.Name = "numRight_Front_Vertical_Clamping_Target";
-            this.numRight_Front_Vertical_Clamping_Target.PlcNumber = 1;
-            this.numRight_Front_Vertical_Clamping_Target.Address = "D167";
-            this.numRight_Front_Vertical_Clamping_Target.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numRight_Front_Vertical_Clamping_Target.AutoSize = false;
-            this.numRight_Front_Vertical_Clamping_Target.Digits = 6;
-            this.numRight_Front_Vertical_Clamping_Target.DecimalPlaces = 2;
-            this.numRight_Front_Vertical_Clamping_Target.Divisor = 100D;
-            this.numRight_Front_Vertical_Clamping_Target.Suffix = "mm";
-            this.numRight_Front_Vertical_Clamping_Target.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numRight_Front_Vertical_Clamping_Target.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numRight_Front_Vertical_Clamping_Target.LogAction = true;
-            this.numRight_Front_Vertical_Clamping_Target.Location = new System.Drawing.Point(392, 1125);
-            this.numRight_Front_Vertical_Clamping_Target.Size = new System.Drawing.Size(100, 26);
-            this.numRight_Front_Vertical_Clamping_Target.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnRight_Front_Vertical_Clamping_Send
-            // 
-            this.btnRight_Front_Vertical_Clamping_Send.Name = "btnRight_Front_Vertical_Clamping_Send";
-            this.btnRight_Front_Vertical_Clamping_Send.PlcNumber = 1;
-            this.btnRight_Front_Vertical_Clamping_Send.TranslationKey = "Send";
-            this.btnRight_Front_Vertical_Clamping_Send.FallbackText = "Send";
-            bitAction31.Address = "M67";
-            bitAction31.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnRight_Front_Vertical_Clamping_Send.BitActions.Add(bitAction31);
-            this.btnRight_Front_Vertical_Clamping_Send.Location = new System.Drawing.Point(502, 1120);
-            this.btnRight_Front_Vertical_Clamping_Send.Size = new System.Drawing.Size(90, 36);
-            this.btnRight_Front_Vertical_Clamping_Send.LogAction = true;
-            this.btnRight_Front_Vertical_Clamping_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // numRight_Front_Vertical_Clamping_Calibration  (D147)
-            // 
-            this.numRight_Front_Vertical_Clamping_Calibration.BackColor = System.Drawing.Color.White;
-            this.numRight_Front_Vertical_Clamping_Calibration.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numRight_Front_Vertical_Clamping_Calibration.Name = "numRight_Front_Vertical_Clamping_Calibration";
-            this.numRight_Front_Vertical_Clamping_Calibration.PlcNumber = 1;
-            this.numRight_Front_Vertical_Clamping_Calibration.Address = "D147";
-            this.numRight_Front_Vertical_Clamping_Calibration.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numRight_Front_Vertical_Clamping_Calibration.AutoSize = false;
-            this.numRight_Front_Vertical_Clamping_Calibration.Digits = 6;
-            this.numRight_Front_Vertical_Clamping_Calibration.DecimalPlaces = 2;
-            this.numRight_Front_Vertical_Clamping_Calibration.Divisor = 100D;
-            this.numRight_Front_Vertical_Clamping_Calibration.Suffix = "mm";
-            this.numRight_Front_Vertical_Clamping_Calibration.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numRight_Front_Vertical_Clamping_Calibration.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numRight_Front_Vertical_Clamping_Calibration.LogAction = true;
-            this.numRight_Front_Vertical_Clamping_Calibration.Location = new System.Drawing.Point(602, 1125);
-            this.numRight_Front_Vertical_Clamping_Calibration.Size = new System.Drawing.Size(100, 26);
-            this.numRight_Front_Vertical_Clamping_Calibration.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // btnRight_Front_Vertical_Clamping_Calibrate
-            // 
-            this.btnRight_Front_Vertical_Clamping_Calibrate.Name = "btnRight_Front_Vertical_Clamping_Calibrate";
-            this.btnRight_Front_Vertical_Clamping_Calibrate.PlcNumber = 1;
-            this.btnRight_Front_Vertical_Clamping_Calibrate.TranslationKey = "Calibrate";
-            this.btnRight_Front_Vertical_Clamping_Calibrate.FallbackText = "Calibrate";
-            bitAction32.Address = "M47";
-            bitAction32.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnRight_Front_Vertical_Clamping_Calibrate.BitActions.Add(bitAction32);
-            this.btnRight_Front_Vertical_Clamping_Calibrate.Location = new System.Drawing.Point(712, 1120);
-            this.btnRight_Front_Vertical_Clamping_Calibrate.Size = new System.Drawing.Size(90, 36);
-            this.btnRight_Front_Vertical_Clamping_Calibrate.LogAction = true;
-            this.btnRight_Front_Vertical_Clamping_Calibrate.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numRight_Front_Vertical_Clamping_Tolerance  (D846)
-            // 
-            this.numRight_Front_Vertical_Clamping_Tolerance.BackColor = System.Drawing.Color.White;
-            this.numRight_Front_Vertical_Clamping_Tolerance.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Name = "numRight_Front_Vertical_Clamping_Tolerance";
-            this.numRight_Front_Vertical_Clamping_Tolerance.PlcNumber = 1;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Address = "D846";
-            this.numRight_Front_Vertical_Clamping_Tolerance.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numRight_Front_Vertical_Clamping_Tolerance.AutoSize = false;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Digits = 6;
-            this.numRight_Front_Vertical_Clamping_Tolerance.DecimalPlaces = 2;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Divisor = 100D;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Suffix = "mm";
-            this.numRight_Front_Vertical_Clamping_Tolerance.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numRight_Front_Vertical_Clamping_Tolerance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numRight_Front_Vertical_Clamping_Tolerance.LogAction = true;
-            this.numRight_Front_Vertical_Clamping_Tolerance.Location = new System.Drawing.Point(812, 1125);
-            this.numRight_Front_Vertical_Clamping_Tolerance.Size = new System.Drawing.Size(100, 26);
-            this.numRight_Front_Vertical_Clamping_Tolerance.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            // 
-            // numRight_Front_Vertical_Clamping_Stopping_Offset  (D807)
-            // 
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.BackColor = System.Drawing.Color.White;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Name = "numRight_Front_Vertical_Clamping_Stopping_Offset";
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.PlcNumber = 1;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Address = "D807";
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.AutoSize = false;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Digits = 6;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.DecimalPlaces = 2;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Divisor = 100D;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Suffix = "mm";
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.UnitType = Kaban.Core.Enums.UnitType.Length;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.LogAction = true;
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Location = new System.Drawing.Point(922, 1125);
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.Size = new System.Drawing.Size(100, 26);
-            this.numRight_Front_Vertical_Clamping_Stopping_Offset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            // lblHead_DirectionRef
+            // 
+            this.lblHead_DirectionRef.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            this.lblHead_DirectionRef.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
+            this.lblHead_DirectionRef.Location = new System.Drawing.Point(1008, 16);
+            this.lblHead_DirectionRef.Name = "lblHead_DirectionRef";
+            this.lblHead_DirectionRef.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_DirectionRef.Tag = "PositioningHeading:DirectionRef";
+            this.lblHead_DirectionRef.Text = "Direction ref";
+            this.lblHead_DirectionRef.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // ppLeft_Profile_Recognition_Front_Vertical
+            // 
+            // Left Profile Recognition Front Vertical: M541 / M540, position D110; target D150 (M50), calibration D130 (M30), tolerance D750, direction ref D790.
+            this.ppLeft_Profile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PlcNumber = 1;
+            this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
+            this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
+            this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Front_Vertical.CommandBackAddress = "M541";
+            this.ppLeft_Profile_Recognition_Front_Vertical.CommandForwardAddress = "M540";
+            this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
+            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
+            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
+            this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
+            this.ppLeft_Profile_Recognition_Front_Vertical.DecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
+            this.ppLeft_Profile_Recognition_Front_Vertical.ErrorBackAddress = "M915";
+            this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // ppLeft_Profile_Recognition_Back_Vertical
+            // 
+            // Left Profile Recognition Back Vertical: M543 / M542, position D111; target D151 (M51), calibration D131 (M31), tolerance D751, direction ref D791.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppLeft_Profile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppLeft_Profile_Recognition_Back_Vertical.Name = "ppLeft_Profile_Recognition_Back_Vertical";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PlcNumber = 1;
+            this.ppLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
+            this.ppLeft_Profile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 98);
+            this.ppLeft_Profile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Back_Vertical.CommandBackAddress = "M543";
+            this.ppLeft_Profile_Recognition_Back_Vertical.CommandForwardAddress = "M542";
+            this.ppLeft_Profile_Recognition_Back_Vertical.VerticalMovement = true;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionAddress = "D111";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Vertical.TargetPosition = "D151";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningStartAddress = "M51";
+            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrationAddress = "D131";
+            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrateAddress = "M31";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningToleranceAddress = "D751";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D791";
+            this.ppLeft_Profile_Recognition_Back_Vertical.Divisor = 100D;
+            this.ppLeft_Profile_Recognition_Back_Vertical.DecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppLeft_Profile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppLeft_Profile_Recognition_Back_Horizontal
+            // 
+            // Left Profile Recognition Back Horizontal: M545 / M544, position D112; target D152 (M52), calibration D132 (M32), tolerance D752, direction ref D792.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppLeft_Profile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Name = "ppLeft_Profile_Recognition_Back_Horizontal";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PlcNumber = 1;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 142);
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CommandBackAddress = "M545";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CommandForwardAddress = "M544";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionAddress = "D112";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.TargetPosition = "D152";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningStartAddress = "M52";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrationAddress = "D132";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrateAddress = "M32";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D752";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D792";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Divisor = 100D;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.DecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.ErrorBackAddress = "M919";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppLeft_Profile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppConveyor_Front_Vertical
+            // 
+            // Conveyor Front Vertical: M547 / M546, position D113; target D153 (M53), calibration D133 (M33), tolerance D753, direction ref D793.
+            this.ppConveyor_Front_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppConveyor_Front_Vertical.Name = "ppConveyor_Front_Vertical";
+            this.ppConveyor_Front_Vertical.PlcNumber = 1;
+            this.ppConveyor_Front_Vertical.TitleTextKey = "Conveyor Front Vertical";
+            this.ppConveyor_Front_Vertical.Location = new System.Drawing.Point(16, 186);
+            this.ppConveyor_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Front_Vertical.CommandBackAddress = "M547";
+            this.ppConveyor_Front_Vertical.CommandForwardAddress = "M546";
+            this.ppConveyor_Front_Vertical.VerticalMovement = true;
+            this.ppConveyor_Front_Vertical.PositionAddress = "D113";
+            this.ppConveyor_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppConveyor_Front_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppConveyor_Front_Vertical.TargetPosition = "D153";
+            this.ppConveyor_Front_Vertical.PositioningStartAddress = "M53";
+            this.ppConveyor_Front_Vertical.CalibrationAddress = "D133";
+            this.ppConveyor_Front_Vertical.CalibrateAddress = "M33";
+            this.ppConveyor_Front_Vertical.PositioningToleranceAddress = "D753";
+            this.ppConveyor_Front_Vertical.PositioningDirectionReferenceAddress = "D793";
+            this.ppConveyor_Front_Vertical.Divisor = 100D;
+            this.ppConveyor_Front_Vertical.DecimalPlaces = 2;
+            this.ppConveyor_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppConveyor_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // ppConveyor_Back_Vertical
+            // 
+            // Conveyor Back Vertical: M549 / M548, position D114; target D154 (M54), calibration D134 (M34), tolerance D754, direction ref D794.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppConveyor_Back_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppConveyor_Back_Vertical.Name = "ppConveyor_Back_Vertical";
+            this.ppConveyor_Back_Vertical.PlcNumber = 1;
+            this.ppConveyor_Back_Vertical.TitleTextKey = "Conveyor Back Vertical";
+            this.ppConveyor_Back_Vertical.Location = new System.Drawing.Point(16, 230);
+            this.ppConveyor_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Back_Vertical.CommandBackAddress = "M549";
+            this.ppConveyor_Back_Vertical.CommandForwardAddress = "M548";
+            this.ppConveyor_Back_Vertical.VerticalMovement = true;
+            this.ppConveyor_Back_Vertical.PositionAddress = "D114";
+            this.ppConveyor_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppConveyor_Back_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppConveyor_Back_Vertical.TargetPosition = "D154";
+            this.ppConveyor_Back_Vertical.PositioningStartAddress = "M54";
+            this.ppConveyor_Back_Vertical.CalibrationAddress = "D134";
+            this.ppConveyor_Back_Vertical.CalibrateAddress = "M34";
+            this.ppConveyor_Back_Vertical.PositioningToleranceAddress = "D754";
+            this.ppConveyor_Back_Vertical.PositioningDirectionReferenceAddress = "D794";
+            this.ppConveyor_Back_Vertical.Divisor = 100D;
+            this.ppConveyor_Back_Vertical.DecimalPlaces = 2;
+            this.ppConveyor_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppConveyor_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppConveyor_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppConveyor_Back_Horizontal
+            // 
+            // Conveyor Back Horizontal: M551 / M550, position D115; target D155 (M55), calibration D135 (M35), tolerance D755, direction ref D795.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppConveyor_Back_Horizontal.BackColor = System.Drawing.Color.White;
+            this.ppConveyor_Back_Horizontal.Name = "ppConveyor_Back_Horizontal";
+            this.ppConveyor_Back_Horizontal.PlcNumber = 1;
+            this.ppConveyor_Back_Horizontal.TitleTextKey = "Conveyor Back Horizontal";
+            this.ppConveyor_Back_Horizontal.Location = new System.Drawing.Point(16, 274);
+            this.ppConveyor_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Back_Horizontal.CommandBackAddress = "M551";
+            this.ppConveyor_Back_Horizontal.CommandForwardAddress = "M550";
+            this.ppConveyor_Back_Horizontal.PositionAddress = "D115";
+            this.ppConveyor_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppConveyor_Back_Horizontal.PositionDivisor = 10D;
+            this.ppConveyor_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppConveyor_Back_Horizontal.TargetPosition = "D155";
+            this.ppConveyor_Back_Horizontal.PositioningStartAddress = "M55";
+            this.ppConveyor_Back_Horizontal.CalibrationAddress = "D135";
+            this.ppConveyor_Back_Horizontal.CalibrateAddress = "M35";
+            this.ppConveyor_Back_Horizontal.PositioningToleranceAddress = "D755";
+            this.ppConveyor_Back_Horizontal.PositioningDirectionReferenceAddress = "D795";
+            this.ppConveyor_Back_Horizontal.Divisor = 100D;
+            this.ppConveyor_Back_Horizontal.DecimalPlaces = 2;
+            this.ppConveyor_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppConveyor_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppConveyor_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppProfile_Recognition_Front_Vertical
+            // 
+            // Profile Recognition Front Vertical: M553 / M552, position D116; target D156 (M56), calibration D136 (M36), tolerance D756, direction ref D796.
+            this.ppProfile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppProfile_Recognition_Front_Vertical.Name = "ppProfile_Recognition_Front_Vertical";
+            this.ppProfile_Recognition_Front_Vertical.PlcNumber = 1;
+            this.ppProfile_Recognition_Front_Vertical.TitleTextKey = "Profile Recognition Front Vertical";
+            this.ppProfile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 318);
+            this.ppProfile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Front_Vertical.CommandBackAddress = "M553";
+            this.ppProfile_Recognition_Front_Vertical.CommandForwardAddress = "M552";
+            this.ppProfile_Recognition_Front_Vertical.VerticalMovement = true;
+            this.ppProfile_Recognition_Front_Vertical.PositionAddress = "D116";
+            this.ppProfile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppProfile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Front_Vertical.TargetPosition = "D156";
+            this.ppProfile_Recognition_Front_Vertical.PositioningStartAddress = "M56";
+            this.ppProfile_Recognition_Front_Vertical.CalibrationAddress = "D136";
+            this.ppProfile_Recognition_Front_Vertical.CalibrateAddress = "M36";
+            this.ppProfile_Recognition_Front_Vertical.PositioningToleranceAddress = "D756";
+            this.ppProfile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D796";
+            this.ppProfile_Recognition_Front_Vertical.Divisor = 100D;
+            this.ppProfile_Recognition_Front_Vertical.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppProfile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // ppProfile_Recognition_Back_Vertical
+            // 
+            // Profile Recognition Back Vertical: M555 / M554, position D117; target D157 (M57), calibration D137 (M37), tolerance D757, direction ref D797.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppProfile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppProfile_Recognition_Back_Vertical.Name = "ppProfile_Recognition_Back_Vertical";
+            this.ppProfile_Recognition_Back_Vertical.PlcNumber = 1;
+            this.ppProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
+            this.ppProfile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 362);
+            this.ppProfile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Back_Vertical.CommandBackAddress = "M555";
+            this.ppProfile_Recognition_Back_Vertical.CommandForwardAddress = "M554";
+            this.ppProfile_Recognition_Back_Vertical.VerticalMovement = true;
+            this.ppProfile_Recognition_Back_Vertical.PositionAddress = "D117";
+            this.ppProfile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppProfile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Vertical.TargetPosition = "D157";
+            this.ppProfile_Recognition_Back_Vertical.PositioningStartAddress = "M57";
+            this.ppProfile_Recognition_Back_Vertical.CalibrationAddress = "D137";
+            this.ppProfile_Recognition_Back_Vertical.CalibrateAddress = "M37";
+            this.ppProfile_Recognition_Back_Vertical.PositioningToleranceAddress = "D757";
+            this.ppProfile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D797";
+            this.ppProfile_Recognition_Back_Vertical.Divisor = 100D;
+            this.ppProfile_Recognition_Back_Vertical.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppProfile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppProfile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppProfile_Recognition_Back_Horizontal
+            // 
+            // Profile Recognition Back Horizontal: M557 / M556, position D118; target D158 (M58), calibration D138 (M38), tolerance D758, direction ref D798.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppProfile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
+            this.ppProfile_Recognition_Back_Horizontal.Name = "ppProfile_Recognition_Back_Horizontal";
+            this.ppProfile_Recognition_Back_Horizontal.PlcNumber = 1;
+            this.ppProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
+            this.ppProfile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 406);
+            this.ppProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Back_Horizontal.CommandBackAddress = "M557";
+            this.ppProfile_Recognition_Back_Horizontal.CommandForwardAddress = "M556";
+            this.ppProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
+            this.ppProfile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Horizontal.TargetPosition = "D158";
+            this.ppProfile_Recognition_Back_Horizontal.PositioningStartAddress = "M58";
+            this.ppProfile_Recognition_Back_Horizontal.CalibrationAddress = "D138";
+            this.ppProfile_Recognition_Back_Horizontal.CalibrateAddress = "M38";
+            this.ppProfile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D758";
+            this.ppProfile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D798";
+            this.ppProfile_Recognition_Back_Horizontal.Divisor = 100D;
+            this.ppProfile_Recognition_Back_Horizontal.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppProfile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppProfile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppCutting_Left_Front_Vertical
+            // 
+            // Cutting Left Front Vertical: M559 / M558, position D119; target D159 (M59), calibration D139 (M39), tolerance D759, direction ref D799.
+            this.ppCutting_Left_Front_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Left_Front_Vertical.Name = "ppCutting_Left_Front_Vertical";
+            this.ppCutting_Left_Front_Vertical.PlcNumber = 1;
+            this.ppCutting_Left_Front_Vertical.TitleTextKey = "Cutting Left Front Vertical";
+            this.ppCutting_Left_Front_Vertical.Location = new System.Drawing.Point(16, 450);
+            this.ppCutting_Left_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Front_Vertical.CommandBackAddress = "M559";
+            this.ppCutting_Left_Front_Vertical.CommandForwardAddress = "M558";
+            this.ppCutting_Left_Front_Vertical.VerticalMovement = true;
+            this.ppCutting_Left_Front_Vertical.PositionAddress = "D119";
+            this.ppCutting_Left_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Left_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Front_Vertical.TargetPosition = "D159";
+            this.ppCutting_Left_Front_Vertical.PositioningStartAddress = "M59";
+            this.ppCutting_Left_Front_Vertical.CalibrationAddress = "D139";
+            this.ppCutting_Left_Front_Vertical.CalibrateAddress = "M39";
+            this.ppCutting_Left_Front_Vertical.PositioningToleranceAddress = "D759";
+            this.ppCutting_Left_Front_Vertical.PositioningDirectionReferenceAddress = "D799";
+            this.ppCutting_Left_Front_Vertical.Divisor = 100D;
+            this.ppCutting_Left_Front_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Front_Vertical.ErrorForwardAddress = "M934";
+            this.ppCutting_Left_Front_Vertical.ErrorBackAddress = "M933";
+            this.ppCutting_Left_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // ppCutting_Left_Back_Vertical
+            // 
+            // Cutting Left Back Vertical: M561 / M560, position D120; target D160 (M60), calibration D140 (M40), tolerance D760, direction ref D800.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppCutting_Left_Back_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Left_Back_Vertical.Name = "ppCutting_Left_Back_Vertical";
+            this.ppCutting_Left_Back_Vertical.PlcNumber = 1;
+            this.ppCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
+            this.ppCutting_Left_Back_Vertical.Location = new System.Drawing.Point(16, 494);
+            this.ppCutting_Left_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Back_Vertical.CommandBackAddress = "M561";
+            this.ppCutting_Left_Back_Vertical.CommandForwardAddress = "M560";
+            this.ppCutting_Left_Back_Vertical.VerticalMovement = true;
+            this.ppCutting_Left_Back_Vertical.PositionAddress = "D120";
+            this.ppCutting_Left_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Left_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Back_Vertical.TargetPosition = "D160";
+            this.ppCutting_Left_Back_Vertical.PositioningStartAddress = "M60";
+            this.ppCutting_Left_Back_Vertical.CalibrationAddress = "D140";
+            this.ppCutting_Left_Back_Vertical.CalibrateAddress = "M40";
+            this.ppCutting_Left_Back_Vertical.PositioningToleranceAddress = "D760";
+            this.ppCutting_Left_Back_Vertical.PositioningDirectionReferenceAddress = "D800";
+            this.ppCutting_Left_Back_Vertical.Divisor = 100D;
+            this.ppCutting_Left_Back_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Left_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppCutting_Left_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppCutting_Left_Back_Horizontal
+            // 
+            // Cutting Left Back Horizontal: M563 / M562, position D121; target D161 (M61), calibration D141 (M41), tolerance D761, direction ref D801.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppCutting_Left_Back_Horizontal.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Left_Back_Horizontal.Name = "ppCutting_Left_Back_Horizontal";
+            this.ppCutting_Left_Back_Horizontal.PlcNumber = 1;
+            this.ppCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
+            this.ppCutting_Left_Back_Horizontal.Location = new System.Drawing.Point(16, 538);
+            this.ppCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Back_Horizontal.CommandBackAddress = "M563";
+            this.ppCutting_Left_Back_Horizontal.CommandForwardAddress = "M562";
+            this.ppCutting_Left_Back_Horizontal.PositionAddress = "D121";
+            this.ppCutting_Left_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Left_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Back_Horizontal.TargetPosition = "D161";
+            this.ppCutting_Left_Back_Horizontal.PositioningStartAddress = "M61";
+            this.ppCutting_Left_Back_Horizontal.CalibrationAddress = "D141";
+            this.ppCutting_Left_Back_Horizontal.CalibrateAddress = "M41";
+            this.ppCutting_Left_Back_Horizontal.PositioningToleranceAddress = "D761";
+            this.ppCutting_Left_Back_Horizontal.PositioningDirectionReferenceAddress = "D801";
+            this.ppCutting_Left_Back_Horizontal.Divisor = 100D;
+            this.ppCutting_Left_Back_Horizontal.DecimalPlaces = 2;
+            this.ppCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Back_Horizontal.ErrorBackAddress = "M937";
+            this.ppCutting_Left_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppCutting_Left_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppCutting_Right_Front_Vertical
+            // 
+            // Cutting Right Front Vertical: M565 / M564, position D122; target D162 (M62), calibration D142 (M42), tolerance D762, direction ref D802.
+            this.ppCutting_Right_Front_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Right_Front_Vertical.Name = "ppCutting_Right_Front_Vertical";
+            this.ppCutting_Right_Front_Vertical.PlcNumber = 1;
+            this.ppCutting_Right_Front_Vertical.TitleTextKey = "Cutting Right Front Vertical";
+            this.ppCutting_Right_Front_Vertical.Location = new System.Drawing.Point(16, 582);
+            this.ppCutting_Right_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Front_Vertical.CommandBackAddress = "M565";
+            this.ppCutting_Right_Front_Vertical.CommandForwardAddress = "M564";
+            this.ppCutting_Right_Front_Vertical.VerticalMovement = true;
+            this.ppCutting_Right_Front_Vertical.PositionAddress = "D122";
+            this.ppCutting_Right_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Right_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Front_Vertical.TargetPosition = "D162";
+            this.ppCutting_Right_Front_Vertical.PositioningStartAddress = "M62";
+            this.ppCutting_Right_Front_Vertical.CalibrationAddress = "D142";
+            this.ppCutting_Right_Front_Vertical.CalibrateAddress = "M42";
+            this.ppCutting_Right_Front_Vertical.PositioningToleranceAddress = "D762";
+            this.ppCutting_Right_Front_Vertical.PositioningDirectionReferenceAddress = "D802";
+            this.ppCutting_Right_Front_Vertical.Divisor = 100D;
+            this.ppCutting_Right_Front_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Right_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Right_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 
+            // ppCutting_Right_Back_Vertical
+            // 
+            // Cutting Right Back Vertical: M567 / M566, position D123; target D163 (M63), calibration D143 (M43), tolerance D763, direction ref D803.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppCutting_Right_Back_Vertical.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Right_Back_Vertical.Name = "ppCutting_Right_Back_Vertical";
+            this.ppCutting_Right_Back_Vertical.PlcNumber = 1;
+            this.ppCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
+            this.ppCutting_Right_Back_Vertical.Location = new System.Drawing.Point(16, 626);
+            this.ppCutting_Right_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Back_Vertical.CommandBackAddress = "M567";
+            this.ppCutting_Right_Back_Vertical.CommandForwardAddress = "M566";
+            this.ppCutting_Right_Back_Vertical.VerticalMovement = true;
+            this.ppCutting_Right_Back_Vertical.PositionAddress = "D123";
+            this.ppCutting_Right_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Right_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Back_Vertical.TargetPosition = "D163";
+            this.ppCutting_Right_Back_Vertical.PositioningStartAddress = "M63";
+            this.ppCutting_Right_Back_Vertical.CalibrationAddress = "D143";
+            this.ppCutting_Right_Back_Vertical.CalibrateAddress = "M43";
+            this.ppCutting_Right_Back_Vertical.PositioningToleranceAddress = "D763";
+            this.ppCutting_Right_Back_Vertical.PositioningDirectionReferenceAddress = "D803";
+            this.ppCutting_Right_Back_Vertical.Divisor = 100D;
+            this.ppCutting_Right_Back_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Right_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Right_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppCutting_Right_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppCutting_Right_Back_Horizontal
+            // 
+            // Cutting Right Back Horizontal: M569 / M568, position D124; target D164 (M64), calibration D144 (M44), tolerance D764, direction ref D804.
+            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
+            this.ppCutting_Right_Back_Horizontal.BackColor = System.Drawing.Color.White;
+            this.ppCutting_Right_Back_Horizontal.Name = "ppCutting_Right_Back_Horizontal";
+            this.ppCutting_Right_Back_Horizontal.PlcNumber = 1;
+            this.ppCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
+            this.ppCutting_Right_Back_Horizontal.Location = new System.Drawing.Point(16, 670);
+            this.ppCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Back_Horizontal.CommandBackAddress = "M569";
+            this.ppCutting_Right_Back_Horizontal.CommandForwardAddress = "M568";
+            this.ppCutting_Right_Back_Horizontal.PositionAddress = "D124";
+            this.ppCutting_Right_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppCutting_Right_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Back_Horizontal.TargetPosition = "D164";
+            this.ppCutting_Right_Back_Horizontal.PositioningStartAddress = "M64";
+            this.ppCutting_Right_Back_Horizontal.CalibrationAddress = "D144";
+            this.ppCutting_Right_Back_Horizontal.CalibrateAddress = "M44";
+            this.ppCutting_Right_Back_Horizontal.PositioningToleranceAddress = "D764";
+            this.ppCutting_Right_Back_Horizontal.PositioningDirectionReferenceAddress = "D804";
+            this.ppCutting_Right_Back_Horizontal.Divisor = 100D;
+            this.ppCutting_Right_Back_Horizontal.DecimalPlaces = 2;
+            this.ppCutting_Right_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Right_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
+            this.ppCutting_Right_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            // 
+            // ppRight_Front_Vertical_Clamping
+            // 
+            // Right Front Vertical Clamping: M585 / M584, position D128; target D167 (M67), calibration D147 (M47), tolerance D846, direction ref D807.
+            this.ppRight_Front_Vertical_Clamping.BackColor = System.Drawing.Color.White;
+            this.ppRight_Front_Vertical_Clamping.Name = "ppRight_Front_Vertical_Clamping";
+            this.ppRight_Front_Vertical_Clamping.PlcNumber = 1;
+            this.ppRight_Front_Vertical_Clamping.TitleTextKey = "Right Front Vertical Clamping";
+            this.ppRight_Front_Vertical_Clamping.Location = new System.Drawing.Point(16, 714);
+            this.ppRight_Front_Vertical_Clamping.Size = new System.Drawing.Size(1078, 40);
+            this.ppRight_Front_Vertical_Clamping.CommandBackAddress = "M585";
+            this.ppRight_Front_Vertical_Clamping.CommandForwardAddress = "M584";
+            this.ppRight_Front_Vertical_Clamping.VerticalMovement = true;
+            this.ppRight_Front_Vertical_Clamping.PositionAddress = "D128";
+            this.ppRight_Front_Vertical_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.ppRight_Front_Vertical_Clamping.PositionDivisor = 10D;
+            this.ppRight_Front_Vertical_Clamping.PositionDecimalPlaces = 2;
+            this.ppRight_Front_Vertical_Clamping.TargetPosition = "D167";
+            this.ppRight_Front_Vertical_Clamping.PositioningStartAddress = "M67";
+            this.ppRight_Front_Vertical_Clamping.CalibrationAddress = "D147";
+            this.ppRight_Front_Vertical_Clamping.CalibrateAddress = "M47";
+            this.ppRight_Front_Vertical_Clamping.PositioningToleranceAddress = "D846";
+            this.ppRight_Front_Vertical_Clamping.PositioningDirectionReferenceAddress = "D807";
+            this.ppRight_Front_Vertical_Clamping.Divisor = 100D;
+            this.ppRight_Front_Vertical_Clamping.DecimalPlaces = 2;
+            this.ppRight_Front_Vertical_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppRight_Front_Vertical_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
             // 
             // ManualClamping_Moulds
             // 
@@ -2368,249 +589,55 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lblHead_Target_Position);
-            this.Controls.Add(this.lblHead_Send_To_Position);
-            this.Controls.Add(this.lblHead_Calibration_Pos);
-            this.Controls.Add(this.lblHead_Calibrate);
+            this.Controls.Add(this.lblHead_Manual);
+            this.Controls.Add(this.lblHead_Target);
+            this.Controls.Add(this.lblHead_Calibration);
             this.Controls.Add(this.lblHead_Tolerance);
-            this.Controls.Add(this.lblHead_Stopping_Offset);
-            this.Controls.Add(this.unitLeft_Profile_Recognition_Front_Vertical);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Front_Vertical_Target);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Front_Vertical_Send);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Front_Vertical_Calibration);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Front_Vertical_Calibrate);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Front_Vertical_Tolerance);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitLeft_Profile_Recognition_Back_Vertical);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Vertical_Target);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Back_Vertical_Send);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Vertical_Calibration);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Back_Vertical_Calibrate);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Vertical_Tolerance);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitLeft_Profile_Recognition_Back_Horizontal);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Horizontal_Target);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Back_Horizontal_Send);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Horizontal_Calibration);
-            this.Controls.Add(this.btnLeft_Profile_Recognition_Back_Horizontal_Calibrate);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Horizontal_Tolerance);
-            this.Controls.Add(this.numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset);
-            this.Controls.Add(this.unitConveyor_Front_Vertical);
-            this.Controls.Add(this.numConveyor_Front_Vertical_Target);
-            this.Controls.Add(this.btnConveyor_Front_Vertical_Send);
-            this.Controls.Add(this.numConveyor_Front_Vertical_Calibration);
-            this.Controls.Add(this.btnConveyor_Front_Vertical_Calibrate);
-            this.Controls.Add(this.numConveyor_Front_Vertical_Tolerance);
-            this.Controls.Add(this.numConveyor_Front_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitConveyor_Back_Vertical);
-            this.Controls.Add(this.numConveyor_Back_Vertical_Target);
-            this.Controls.Add(this.btnConveyor_Back_Vertical_Send);
-            this.Controls.Add(this.numConveyor_Back_Vertical_Calibration);
-            this.Controls.Add(this.btnConveyor_Back_Vertical_Calibrate);
-            this.Controls.Add(this.numConveyor_Back_Vertical_Tolerance);
-            this.Controls.Add(this.numConveyor_Back_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitConveyor_Back_Horizontal);
-            this.Controls.Add(this.numConveyor_Back_Horizontal_Target);
-            this.Controls.Add(this.btnConveyor_Back_Horizontal_Send);
-            this.Controls.Add(this.numConveyor_Back_Horizontal_Calibration);
-            this.Controls.Add(this.btnConveyor_Back_Horizontal_Calibrate);
-            this.Controls.Add(this.numConveyor_Back_Horizontal_Tolerance);
-            this.Controls.Add(this.numConveyor_Back_Horizontal_Stopping_Offset);
-            this.Controls.Add(this.unitProfile_Recognition_Front_Vertical);
-            this.Controls.Add(this.numProfile_Recognition_Front_Vertical_Target);
-            this.Controls.Add(this.btnProfile_Recognition_Front_Vertical_Send);
-            this.Controls.Add(this.numProfile_Recognition_Front_Vertical_Calibration);
-            this.Controls.Add(this.btnProfile_Recognition_Front_Vertical_Calibrate);
-            this.Controls.Add(this.numProfile_Recognition_Front_Vertical_Tolerance);
-            this.Controls.Add(this.numProfile_Recognition_Front_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitProfile_Recognition_Back_Vertical);
-            this.Controls.Add(this.numProfile_Recognition_Back_Vertical_Target);
-            this.Controls.Add(this.btnProfile_Recognition_Back_Vertical_Send);
-            this.Controls.Add(this.numProfile_Recognition_Back_Vertical_Calibration);
-            this.Controls.Add(this.btnProfile_Recognition_Back_Vertical_Calibrate);
-            this.Controls.Add(this.numProfile_Recognition_Back_Vertical_Tolerance);
-            this.Controls.Add(this.numProfile_Recognition_Back_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitProfile_Recognition_Back_Horizontal);
-            this.Controls.Add(this.numProfile_Recognition_Back_Horizontal_Target);
-            this.Controls.Add(this.btnProfile_Recognition_Back_Horizontal_Send);
-            this.Controls.Add(this.numProfile_Recognition_Back_Horizontal_Calibration);
-            this.Controls.Add(this.btnProfile_Recognition_Back_Horizontal_Calibrate);
-            this.Controls.Add(this.numProfile_Recognition_Back_Horizontal_Tolerance);
-            this.Controls.Add(this.numProfile_Recognition_Back_Horizontal_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Left_Front_Vertical);
-            this.Controls.Add(this.numCutting_Left_Front_Vertical_Target);
-            this.Controls.Add(this.btnCutting_Left_Front_Vertical_Send);
-            this.Controls.Add(this.numCutting_Left_Front_Vertical_Calibration);
-            this.Controls.Add(this.btnCutting_Left_Front_Vertical_Calibrate);
-            this.Controls.Add(this.numCutting_Left_Front_Vertical_Tolerance);
-            this.Controls.Add(this.numCutting_Left_Front_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Left_Back_Vertical);
-            this.Controls.Add(this.numCutting_Left_Back_Vertical_Target);
-            this.Controls.Add(this.btnCutting_Left_Back_Vertical_Send);
-            this.Controls.Add(this.numCutting_Left_Back_Vertical_Calibration);
-            this.Controls.Add(this.btnCutting_Left_Back_Vertical_Calibrate);
-            this.Controls.Add(this.numCutting_Left_Back_Vertical_Tolerance);
-            this.Controls.Add(this.numCutting_Left_Back_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Left_Back_Horizontal);
-            this.Controls.Add(this.numCutting_Left_Back_Horizontal_Target);
-            this.Controls.Add(this.btnCutting_Left_Back_Horizontal_Send);
-            this.Controls.Add(this.numCutting_Left_Back_Horizontal_Calibration);
-            this.Controls.Add(this.btnCutting_Left_Back_Horizontal_Calibrate);
-            this.Controls.Add(this.numCutting_Left_Back_Horizontal_Tolerance);
-            this.Controls.Add(this.numCutting_Left_Back_Horizontal_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Right_Front_Vertical);
-            this.Controls.Add(this.numCutting_Right_Front_Vertical_Target);
-            this.Controls.Add(this.btnCutting_Right_Front_Vertical_Send);
-            this.Controls.Add(this.numCutting_Right_Front_Vertical_Calibration);
-            this.Controls.Add(this.btnCutting_Right_Front_Vertical_Calibrate);
-            this.Controls.Add(this.numCutting_Right_Front_Vertical_Tolerance);
-            this.Controls.Add(this.numCutting_Right_Front_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Right_Back_Vertical);
-            this.Controls.Add(this.numCutting_Right_Back_Vertical_Target);
-            this.Controls.Add(this.btnCutting_Right_Back_Vertical_Send);
-            this.Controls.Add(this.numCutting_Right_Back_Vertical_Calibration);
-            this.Controls.Add(this.btnCutting_Right_Back_Vertical_Calibrate);
-            this.Controls.Add(this.numCutting_Right_Back_Vertical_Tolerance);
-            this.Controls.Add(this.numCutting_Right_Back_Vertical_Stopping_Offset);
-            this.Controls.Add(this.unitCutting_Right_Back_Horizontal);
-            this.Controls.Add(this.numCutting_Right_Back_Horizontal_Target);
-            this.Controls.Add(this.btnCutting_Right_Back_Horizontal_Send);
-            this.Controls.Add(this.numCutting_Right_Back_Horizontal_Calibration);
-            this.Controls.Add(this.btnCutting_Right_Back_Horizontal_Calibrate);
-            this.Controls.Add(this.numCutting_Right_Back_Horizontal_Tolerance);
-            this.Controls.Add(this.numCutting_Right_Back_Horizontal_Stopping_Offset);
-            this.Controls.Add(this.unitRight_Front_Vertical_Clamping);
-            this.Controls.Add(this.numRight_Front_Vertical_Clamping_Target);
-            this.Controls.Add(this.btnRight_Front_Vertical_Clamping_Send);
-            this.Controls.Add(this.numRight_Front_Vertical_Clamping_Calibration);
-            this.Controls.Add(this.btnRight_Front_Vertical_Clamping_Calibrate);
-            this.Controls.Add(this.numRight_Front_Vertical_Clamping_Tolerance);
-            this.Controls.Add(this.numRight_Front_Vertical_Clamping_Stopping_Offset);
+            this.Controls.Add(this.lblHead_DirectionRef);
+            this.Controls.Add(this.ppLeft_Profile_Recognition_Front_Vertical);
+            this.Controls.Add(this.ppLeft_Profile_Recognition_Back_Vertical);
+            this.Controls.Add(this.ppLeft_Profile_Recognition_Back_Horizontal);
+            this.Controls.Add(this.ppConveyor_Front_Vertical);
+            this.Controls.Add(this.ppConveyor_Back_Vertical);
+            this.Controls.Add(this.ppConveyor_Back_Horizontal);
+            this.Controls.Add(this.ppProfile_Recognition_Front_Vertical);
+            this.Controls.Add(this.ppProfile_Recognition_Back_Vertical);
+            this.Controls.Add(this.ppProfile_Recognition_Back_Horizontal);
+            this.Controls.Add(this.ppCutting_Left_Front_Vertical);
+            this.Controls.Add(this.ppCutting_Left_Back_Vertical);
+            this.Controls.Add(this.ppCutting_Left_Back_Horizontal);
+            this.Controls.Add(this.ppCutting_Right_Front_Vertical);
+            this.Controls.Add(this.ppCutting_Right_Back_Vertical);
+            this.Controls.Add(this.ppCutting_Right_Back_Horizontal);
+            this.Controls.Add(this.ppRight_Front_Vertical_Clamping);
             this.Name = "ManualClamping_Moulds";
-            this.Size = new System.Drawing.Size(1048, 1184);
+            this.Size = new System.Drawing.Size(1110, 766);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI lblHead_Target_Position;
-        private Kaban.UI.Controls.LabelHMI lblHead_Send_To_Position;
-        private Kaban.UI.Controls.LabelHMI lblHead_Calibration_Pos;
-        private Kaban.UI.Controls.LabelHMI lblHead_Calibrate;
-        private Kaban.UI.Controls.LabelHMI lblHead_Tolerance;
-        private Kaban.UI.Controls.LabelHMI lblHead_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Front_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Front_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Front_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Front_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Front_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Front_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Front_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Back_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Back_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Back_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitLeft_Profile_Recognition_Back_Horizontal;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Horizontal_Target;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Back_Horizontal_Send;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Horizontal_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnLeft_Profile_Recognition_Back_Horizontal_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Horizontal_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numLeft_Profile_Recognition_Back_Horizontal_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitConveyor_Front_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Front_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Front_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Front_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Front_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Front_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Front_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitConveyor_Back_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Back_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Back_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitConveyor_Back_Horizontal;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Horizontal_Target;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Back_Horizontal_Send;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Horizontal_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Back_Horizontal_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Horizontal_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numConveyor_Back_Horizontal_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Front_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Front_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Front_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Front_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Back_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Back_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Back_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition_Back_Horizontal;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Horizontal_Target;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Back_Horizontal_Send;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Horizontal_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnProfile_Recognition_Back_Horizontal_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Horizontal_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numProfile_Recognition_Back_Horizontal_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Front_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Front_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Front_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Front_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Front_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Front_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Front_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Back_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Back_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Back_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Left_Back_Horizontal;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Horizontal_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Back_Horizontal_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Horizontal_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Left_Back_Horizontal_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Horizontal_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Left_Back_Horizontal_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Front_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Front_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Front_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Front_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Back_Vertical;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Vertical_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Back_Vertical_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Vertical_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Back_Vertical_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Vertical_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Vertical_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right_Back_Horizontal;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Horizontal_Target;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Back_Horizontal_Send;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Horizontal_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnCutting_Right_Back_Horizontal_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Horizontal_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numCutting_Right_Back_Horizontal_Stopping_Offset;
-        private Kaban.UI.Controls.CylinderUnitHMI unitRight_Front_Vertical_Clamping;
-        private Kaban.UI.Controls.NumericInputHMI numRight_Front_Vertical_Clamping_Target;
-        private Kaban.UI.Controls.ButtonHMI btnRight_Front_Vertical_Clamping_Send;
-        private Kaban.UI.Controls.NumericInputHMI numRight_Front_Vertical_Clamping_Calibration;
-        private Kaban.UI.Controls.ButtonHMI btnRight_Front_Vertical_Clamping_Calibrate;
-        private Kaban.UI.Controls.NumericInputHMI numRight_Front_Vertical_Clamping_Tolerance;
-        private Kaban.UI.Controls.NumericInputHMI numRight_Front_Vertical_Clamping_Stopping_Offset;
+        private System.Windows.Forms.Label lblHead_Manual;
+        private System.Windows.Forms.Label lblHead_Target;
+        private System.Windows.Forms.Label lblHead_Calibration;
+        private System.Windows.Forms.Label lblHead_Tolerance;
+        private System.Windows.Forms.Label lblHead_DirectionRef;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppLeft_Profile_Recognition_Front_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppLeft_Profile_Recognition_Back_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppLeft_Profile_Recognition_Back_Horizontal;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppConveyor_Front_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppConveyor_Back_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppConveyor_Back_Horizontal;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppProfile_Recognition_Front_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppProfile_Recognition_Back_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppProfile_Recognition_Back_Horizontal;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Left_Front_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Left_Back_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Left_Back_Horizontal;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Right_Front_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Right_Back_Vertical;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppCutting_Right_Back_Horizontal;
+        private Kaban.UI.Controls.PneumaticPositioningHMI ppRight_Front_Vertical_Clamping;
     }
 }

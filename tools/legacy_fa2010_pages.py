@@ -88,11 +88,14 @@ def Group(title, buttons, action='Mom', name=None):
     return dict(kind='group', title=title, buttons=buttons,
                 action={'Alt': 'Alternate', 'Set': 'Set', 'Mom': 'Momentary'}[action], name=name)
 
-def Mould(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valve=None, feedback=None):
-    """A clamping mould: the unit, then its target / calibration / tolerance columns."""
+def Mould(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valve=None, feedback=None, optional=False):
+    """A clamping mould: a pneumatic positioning (PneumaticPositioningHMI, 9 October) - its
+    manual movement, target position, calibration, tolerance and direction ref ("Stopping
+    Offset" on the old page). optional: fitted only with the Clamping Mould option (L27) -
+    the back moulds, vertical and horizontal; the front vertical ones are always fitted."""
     return dict(kind='mould', title=title, a=side(back), b=side(fwd), pos=value(pos + ' 16 /10 2'),
                 target=target, send=send, cal=cal, calibrate=calibrate, tol=tol, offset=offset, name=None,
-                valve=valve, feedback=feedback)
+                valve=valve, feedback=feedback, optional=optional)
 
 def Enc(title, back, fwd, pos, ref=None, tol=None, start=None, unclamp=None, note=None, name=None):
     """An encoder: the unit (back, position, forward) and its settings."""
@@ -249,20 +252,20 @@ page('ManualOther', 'Manual', None, 'Other', [Col(None,
 M = lambda n, a, b, pos, t, s, c, k, tol, off, **kw: Mould(n, a, b, pos, t, s, c, k, tol, off, **kw)
 page('ManualClamping_Moulds', 'Manual', 'ucClampingMoulds', 'Clamping Moulds', [Col(None,
     M('Left Profile Recognition Front Vertical', 'M541', 'M540', 'D110', 'D150', 'M50', 'D130', 'M30', 'D750', 'D790'),
-    M('Left Profile Recognition Back Vertical', 'M543', 'M542', 'D111', 'D151', 'M51', 'D131', 'M31', 'D751', 'D791'),
-    M('Left Profile Recognition Back Horizontal', 'M545', 'M544', 'D112', 'D152', 'M52', 'D132', 'M32', 'D752', 'D792'),
+    M('Left Profile Recognition Back Vertical', 'M543', 'M542', 'D111', 'D151', 'M51', 'D131', 'M31', 'D751', 'D791', optional=True),
+    M('Left Profile Recognition Back Horizontal', 'M545', 'M544', 'D112', 'D152', 'M52', 'D132', 'M32', 'D752', 'D792', optional=True),
     M('Conveyor Front Vertical', 'M547', 'M546', 'D113', 'D153', 'M53', 'D133', 'M33', 'D753', 'D793'),
-    M('Conveyor Back Vertical', 'M549', 'M548', 'D114', 'D154', 'M54', 'D134', 'M34', 'D754', 'D794'),
-    M('Conveyor Back Horizontal', 'M551', 'M550', 'D115', 'D155', 'M55', 'D135', 'M35', 'D755', 'D795'),
+    M('Conveyor Back Vertical', 'M549', 'M548', 'D114', 'D154', 'M54', 'D134', 'M34', 'D754', 'D794', optional=True),
+    M('Conveyor Back Horizontal', 'M551', 'M550', 'D115', 'D155', 'M55', 'D135', 'M35', 'D755', 'D795', optional=True),
     M('Profile Recognition Front Vertical', 'M553', 'M552', 'D116', 'D156', 'M56', 'D136', 'M36', 'D756', 'D796'),
-    M('Profile Recognition Back Vertical', 'M555', 'M554', 'D117', 'D157', 'M57', 'D137', 'M37', 'D757', 'D797'),
-    M('Profile Recognition Back Horizontal', 'M557', 'M556', 'D118', 'D158', 'M58', 'D138', 'M38', 'D758', 'D798'),
+    M('Profile Recognition Back Vertical', 'M555', 'M554', 'D117', 'D157', 'M57', 'D137', 'M37', 'D757', 'D797', optional=True),
+    M('Profile Recognition Back Horizontal', 'M557', 'M556', 'D118', 'D158', 'M58', 'D138', 'M38', 'D758', 'D798', optional=True),
     M('Cutting Left Front Vertical', 'M559', 'M558', 'D119', 'D159', 'M59', 'D139', 'M39', 'D759', 'D799'),
-    M('Cutting Left Back Vertical', 'M561', 'M560', 'D120', 'D160', 'M60', 'D140', 'M40', 'D760', 'D800'),
-    M('Cutting Left Back Horizontal', 'M563', 'M562', 'D121', 'D161', 'M61', 'D141', 'M41', 'D761', 'D801'),
+    M('Cutting Left Back Vertical', 'M561', 'M560', 'D120', 'D160', 'M60', 'D140', 'M40', 'D760', 'D800', optional=True),
+    M('Cutting Left Back Horizontal', 'M563', 'M562', 'D121', 'D161', 'M61', 'D141', 'M41', 'D761', 'D801', optional=True),
     M('Cutting Right Front Vertical', 'M565', 'M564', 'D122', 'D162', 'M62', 'D142', 'M42', 'D762', 'D802'),
-    M('Cutting Right Back Vertical', 'M567', 'M566', 'D123', 'D163', 'M63', 'D143', 'M43', 'D763', 'D803'),
-    M('Cutting Right Back Horizontal', 'M569', 'M568', 'D124', 'D164', 'M64', 'D144', 'M44', 'D764', 'D804'),
+    M('Cutting Right Back Vertical', 'M567', 'M566', 'D123', 'D163', 'M63', 'D143', 'M43', 'D763', 'D803', optional=True),
+    M('Cutting Right Back Horizontal', 'M569', 'M568', 'D124', 'D164', 'M64', 'D144', 'M44', 'D764', 'D804', optional=True),
     M('Right Front Vertical Clamping', 'M585', 'M584', 'D128', 'D167', 'M67', 'D147', 'M47', 'D846', 'D807',
       # P57 Output Front Up-Down Mold (Y151 up M584 / Y152 down M585): 5/3 closed
       # centre with an analogue sensor, as the drawings show it.
@@ -513,6 +516,7 @@ def keys_of_current(block, path, name):
     if t == 'ButtonHMI': return set(bit_addresses(path, name))
     if t in ('LampHMI', 'NumericDisplayHMI', 'NumericInputHMI', 'CheckBoxHMI'): return {x for x in (v('Address'),) if x}
     if t == 'AxisUnitHMI': return {'axis:' + (v('AxisNumber') or '')}
+    if t == 'PneumaticPositioningHMI': return {x for x in (v('CommandBackAddress'), v('CommandForwardAddress')) if x}
     return set()
 
 def title_of_current(block):
@@ -534,7 +538,7 @@ def ident(text):
     return s
 
 PREFIX = {'cyl': 'unit', 'axis': 'unit', 'btn': 'btn', 'lamp': 'lamp', 'hex': 'disp', 'group': 'grp',
-          'mould': 'unit', 'enc': 'enc', 'num': 'num', 'opt': 'opt'}
+          'mould': 'pp', 'enc': 'enc', 'num': 'num', 'opt': 'opt'}
 
 # ============================================================================
 #  EMITTING
@@ -543,7 +547,8 @@ TYPES = {'CylinderUnitHMI': 'Kaban.UI.Controls.CylinderUnitHMI', 'AxisUnitHMI': 
          'ButtonHMI': 'Kaban.UI.Controls.ButtonHMI', 'LampHMI': 'Kaban.UI.Controls.LampHMI',
          'NumericDisplayHMI': 'Kaban.UI.Controls.NumericDisplayHMI', 'NumericInputHMI': 'Kaban.UI.Controls.NumericInputHMI',
          'CheckBoxHMI': 'Kaban.UI.Controls.CheckBoxHMI', 'GroupBoxHMI': 'Kaban.UI.Controls.GroupBoxHMI',
-         'LabelHMI': 'Kaban.UI.Controls.LabelHMI'}
+         'LabelHMI': 'Kaban.UI.Controls.LabelHMI', 'PneumaticPositioningHMI': 'Kaban.UI.Controls.PneumaticPositioningHMI',
+         'Label': 'System.Windows.Forms.Label'}
 
 # The properties a page sets itself; everything else a control carries is kept.
 OWNED = {
@@ -561,6 +566,24 @@ OWNED = {
                         'Digits', 'DecimalPlaces', 'Divisor', 'Suffix', 'UnitType', 'TextAlign', 'LogAction', 'Location',
                         'Size', 'BackColor', 'BorderStyle', 'TabIndex', 'DescriptionSide'},
     'CheckBoxHMI': {'Name', 'PlcNumber', 'Address', 'DescriptionText', 'DescriptionSide', 'Location', 'Size', 'LogAction', 'TabIndex'},
+    'PneumaticPositioningHMI': {'BackColor', 'Name', 'PlcNumber', 'TitleTextKey', 'Location', 'Size', 'TabIndex',
+                                'CommandBackAddress', 'CommandForwardAddress', 'VerticalMovement',
+                                'PositionAddress', 'PositionDataType', 'PositionDivisor', 'PositionDecimalPlaces',
+                                'TargetPosition', 'PositioningStartAddress', 'CalibrationAddress', 'CalibrateAddress',
+                                'PositioningToleranceAddress', 'PositioningDirectionReferenceAddress', 'Divisor', 'DecimalPlaces'},
+}
+
+# A control of another type that a new one replaces: its own additions, renamed
+# (the clamping moulds' cylinder units, 9 October: their valve and feedback, error
+# bits and security go to the pneumatic positioning that replaces each of them).
+CARRIED = {
+    ('CylinderUnitHMI', 'PneumaticPositioningHMI'): {
+        'ErrorAAddress': 'ErrorBackAddress', 'ErrorBAddress': 'ErrorForwardAddress',
+        'HelpAFiles': 'HelpBackFiles', 'HelpBFiles': 'HelpForwardFiles',
+        'Lamp1AAddress': 'BackSensorAddress', 'Lamp1BAddress': 'ForwardSensorAddress',
+        'ValveType': 'ValveType', 'FeedbackType': 'FeedbackType', 'RequiredSecurity': 'RequiredSecurity',
+        'VisibilityConditions': 'VisibilityConditions', 'EnableConditions': 'EnableConditions',
+        'ConfirmationNeeded': None, 'LogAction': 'LogAction'},
 }
 
 ACTION = {'Momentary': 'Momentary', 'Alternate': 'Alternate', 'Set': 'SET'}   # Kaban.Core.Enums.BitActionType
@@ -583,6 +606,7 @@ class Emitter:
         self.needs_resources = False
         self.kept_from = {}             # new name -> old name
         self.tab = 0
+        self.dropped = []               # an old control's additions the new one has no place for
 
     def decl(self, name, t):
         assert name not in {n for n, _ in self.decls}, name
@@ -614,14 +638,22 @@ class Emitter:
         """The old control's own additions, renamed."""
         if not old: return
         b = self.current[old]
-        if b['type'] != t: return
-        own = OWNED.get(t, set())
+        carried = CARRIED.get((b['type'], t))
+        if b['type'] != t and carried is None: return
+        own = OWNED.get(b['type'], set())
         have = set()
         for prop, comments, text in b['lines']:
             if prop in own or prop.startswith('BitActions'): continue
-            if prop in have: continue
-            have.add(prop)
+            new = prop
+            if carried is not None:
+                new = carried.get(prop)
+                if not new:
+                    self.dropped.append('%s.%s (no %s property for it)' % (b['own'], prop, t))
+                    continue
+            if new in have: continue
+            have.add(new)
             for c in comments: self.body.append(c)
+            text = re.sub(r'this\.' + re.escape(b['own']) + r'\.' + re.escape(prop) + r'\b', 'this.' + name + '.' + new, text)
             text = re.sub(r'this\.' + re.escape(b['own']) + r'\.', 'this.' + name + '.', text)
             if 'resources.GetObject' in text: self.needs_resources = True
             self.body.append(text)
@@ -788,6 +820,62 @@ class Emitter:
         self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (UNIT_W, UNIT_H))
         self.add(name)
 
+    def positioning(self, name, item, x, y, w, old):
+        """A clamping mould as a PneumaticPositioningHMI row."""
+        t = 'PneumaticPositioningHMI'
+        self.decl(name, t)
+        self.header(name, '%s: %s / %s, position %s; target %s (%s), calibration %s (%s), tolerance %s, direction ref %s.%s' % (
+            item['title'], item['a']['cmd'], item['b']['cmd'], item['pos']['addr'], item['target'], item['send'], item['cal'],
+            item['calibrate'], item['tol'], item['offset'],
+            '\nFitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.' if item.get('optional') else ''))
+        self.p(name, 'BackColor', 'System.Drawing.Color.White')
+        self.p(name, 'Name', cs(name))
+        self.p(name, 'PlcNumber', '1')
+        self.p(name, 'TitleTextKey', cs(item['title']))
+        self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, PP_ROW_H))
+        self.p(name, 'CommandBackAddress', cs(item['a']['cmd']))
+        self.p(name, 'CommandForwardAddress', cs(item['b']['cmd']))
+        if 'Vertical' in item['title']:
+            self.p(name, 'VerticalMovement', 'true')       # back = down, forward = up (the drawings' valves)
+        pos = item['pos']
+        self.p(name, 'PositionAddress', cs(pos['addr']))
+        self.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % pos['bits'])
+        self.p(name, 'PositionDivisor', dnum(pos['div']))
+        self.p(name, 'PositionDecimalPlaces', str(pos['dec']))
+        self.p(name, 'TargetPosition', cs(item['target']))
+        self.p(name, 'PositioningStartAddress', cs(item['send']))
+        self.p(name, 'CalibrationAddress', cs(item['cal']))
+        self.p(name, 'CalibrateAddress', cs(item['calibrate']))
+        self.p(name, 'PositioningToleranceAddress', cs(item['tol']))
+        self.p(name, 'PositioningDirectionReferenceAddress', cs(item['offset']))
+        self.p(name, 'Divisor', '100D')
+        self.p(name, 'DecimalPlaces', '2')
+        have = self.kept(name, t, old) or set()
+        if item.get('valve') and 'ValveType' not in have:
+            self.p(name, 'ValveType', 'Kaban.UI.Controls.CylinderValve.' + item['valve'])
+        if item.get('feedback') and 'FeedbackType' not in have:
+            self.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + item['feedback'])
+        if item.get('optional') and 'VisibilityConditions' not in have:
+            self.body.append('            // %d: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)' % CLAMPING_MOULD_OPTION)
+            self.p(name, 'VisibilityConditions', '((Kaban.Core.Enums.SystemCondition)(%dL))' % CLAMPING_MOULD_OPTION)
+        self.add(name)
+
+    def pp_heading(self, key, text, x, y, w):
+        """A heading over the pneumatic positioning rows' column 'key' (the rows put it over the column)."""
+        name = 'lblHead_' + key
+        self.decl(name, 'Label')
+        self.header(name)
+        self.p(name, 'Font', 'new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold)')
+        self.p(name, 'ForeColor', 'System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))))')
+        self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        self.p(name, 'Name', cs(name))
+        self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, PP_HEAD_H))
+        self.p(name, 'Tag', cs('PositioningHeading:' + key))
+        self.p(name, 'Text', cs(text))
+        self.p(name, 'TextAlign', 'System.Drawing.ContentAlignment.BottomCenter')
+        self.add(name)
+
     def heading(self, name, text, x, y, w, h=HEAD_H, small=False, align='MiddleLeft'):
         self.decl(name, 'LabelHMI')
         self.header(name)
@@ -880,8 +968,11 @@ class Emitter:
 # ============================================================================
 #  MATCHING: which current control each new one is
 # ============================================================================
-SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'CylinderUnitHMI', 'enc': 'CylinderUnitHMI', 'axis': 'AxisUnitHMI',
+SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc': 'CylinderUnitHMI', 'axis': 'AxisUnitHMI',
              'btn': 'ButtonHMI', 'lamp': 'LampHMI', 'hex': 'NumericDisplayHMI', 'num': 'NumericInputHMI', 'opt': 'CheckBoxHMI'}
+# what a spec item may be matched with on the current pages: its own type, or the
+# type it replaced (a mould was a CylinderUnitHMI until 9 October)
+MATCHES = {'mould': ('PneumaticPositioningHMI', 'CylinderUnitHMI')}
 
 def spec_keys(item):
     k = item['kind']
@@ -898,9 +989,10 @@ def assign(pages, current, paths):
         for it in all_items(pg):
             t = SPEC_TYPE.get(it['kind'])
             if not t: continue
+            types = MATCHES.get(it['kind'], (t,))
             keys = spec_keys(it)
             for name, b in current.items():
-                if b['type'] != t: continue
+                if b['type'] not in types: continue
                 score = 0
                 if name == it['name']: score += 100
                 ck = keys_of_current(b, paths[name], b['own'])
@@ -1007,28 +1099,36 @@ def write_manual(pg, current, match):
     em.write(path, (right + X0, y))
     return em
 
+# A PneumaticPositioningHMI row (KabanHMI/Controls/PneumaticPositioningHMI.cs): the axis
+# rows' height and widths. The rows lay themselves out (the names' column as wide as
+# the page's widest name) and put the headings over their columns; the numbers here
+# give the designer the same picture.
+PP_ROW_H, PP_PITCH, PP_HEAD_H = 40, 44, 32
+PP_SECTIONS = [('Manual', 'Manual movement', 248), ('Target', 'Target position', 134), ('Calibration', 'Calibration', 134),
+               ('Tolerance', 'Positioning tolerance', 86), ('DirectionRef', 'Direction ref', 86)]
+PP_GAP, PP_GROUP_GAP = 4, 18
+# FA2010's machine condition for the Clamping Mould option (L27): its fourth machine
+# bit (16 RobotIsOutside, 17 MillingUnitInside, 18 MillingUnitInside_PLC2, 19 this).
+CLAMPING_MOULD_OPTION = 1 << 19
+
+def pp_name_width(items):
+    """The names' column the rows will make (the widest name in Segoe UI 10), roughly."""
+    return min(420, max(132, max(int(len(it['title']) * 7.2) + 8 for it in items)))
+
 def write_moulds(pg, em, old):
-    """Clamping Moulds: a table - the unit, then the columns of the old page."""
-    cols = [('Target Position', 100), ('Send To Position', 90), ('Calibration Pos.', 100), ('Calibrate', 90),
-            ('Tolerance', 100), ('Stopping Offset', 100)]
-    x = X0 + UNIT_W + 16
-    xs = []
-    for i, (title, w) in enumerate(cols):
-        em.heading('lblHead_' + ident(title), title, x, Y0, w, 32, small=True, align='BottomCenter')
-        xs.append(x); x += w + 10
-    y = Y0 + 40
-    for it in pg['bands'][0][0]['items']:
-        n = it['name']
-        em.cylinder(n, it, X0, y, old(it))
-        base = n.replace('unit', '', 1)
-        em.entry('num' + base + '_Target', 'Target Position', it['target'], 16, 100, 2, 'mm', xs[0], y + 19, 100, 26, None, level='Operator', describe=False)
-        em.button('btn' + base + '_Send', 'Send', it['send'], 'Set', xs[1], y + 14, 90, 36, None)
-        em.entry('num' + base + '_Calibration', 'Calibration Pos.', it['cal'], 16, 100, 2, 'mm', xs[2], y + 19, 100, 26, None, describe=False)
-        em.button('btn' + base + '_Calibrate', 'Calibrate', it['calibrate'], 'Set', xs[3], y + 14, 90, 36, None, level='Maintenance')
-        em.entry('num' + base + '_Tolerance', 'Tolerance', it['tol'], 16, 100, 2, 'mm', xs[4], y + 19, 100, 26, None, describe=False)
-        em.entry('num' + base + '_Stopping_Offset', 'Stopping Offset', it['offset'], 16, 100, 2, 'mm', xs[5], y + 19, 100, 26, None, describe=False)
-        y += UNIT_H + 6
-    em.write(os.path.join(MANUAL, pg['cls'] + '.Designer.cs'), (x + X0, y + 8))
+    """Clamping Moulds: one PneumaticPositioningHMI row a mould (9 October), the headings over them."""
+    items = pg['bands'][0][0]['items']
+    namew = pp_name_width(items)
+    x = X0 + namew + PP_GAP + PP_GROUP_GAP
+    for i, (key, text, w) in enumerate(PP_SECTIONS):
+        em.pp_heading(key, text, x, Y0, w)
+        x += w + (PP_GROUP_GAP if i < len(PP_SECTIONS) - 1 else 0)
+    roww = x - X0
+    y = Y0 + PP_HEAD_H + 6
+    for it in items:
+        em.positioning(it['name'], it, X0, y, roww, old(it))
+        y += PP_PITCH
+    em.write(os.path.join(MANUAL, pg['cls'] + '.Designer.cs'), (X0 + roww + X0, y + 8))
     return em
 
 def caption_w(text):
@@ -1269,16 +1369,25 @@ def main():
     match = assign([p for p in PAGES if p['folder'] == 'Manual'], manual, where)
     match.update(assign([p for p in PAGES if p['folder'] == 'Parameters'], params, where))
     used = set(match.values())
-    keys = {k: ', '.join(sorted(keys_of_current(b, where[k], b['own']))) for k, b in current.items()}
+    # read before the pages are written (a button's bits are read from its file)
+    keysets = {k: keys_of_current(b, where[k], b['own']) for k, b in current.items()}
+    keys = {k: ', '.join(sorted(v)) for k, v in keysets.items()}
     made = set()
     for pg in PAGES:
         em = (write_manual if pg['folder'] == 'Manual' else write_params)(pg, current, match)
         made |= {(pg['cls'], n) for n, _ in em.decls}
         print('%-26s %3d controls' % (pg['cls'], len(em.decls)))
+        for d in em.dropped: print('    not carried over: ' + d)
     # what the earlier pages had and these do not (a control this tool made
     # itself is not one: run again, the list is empty and the file is kept)
+    # nor one whose devices its page still has (the moulds' separate fields, now parts of their rows)
+    devices = {pg['cls']: spec_devices(pg) for pg in PAGES}
+    def kept_devices(k):
+        ks = keysets[k]
+        return bool(ks) and ks <= devices.get(current[k]['page'], set())
     left = sorted((current[k]['page'], current[k]['own'], current[k]['type'], k) for k in current
-                  if k not in used and current[k]['type'] in SPEC_TYPE.values() and (current[k]['page'], current[k]['own']) not in made)
+                  if k not in used and current[k]['type'] in SPEC_TYPE.values() and (current[k]['page'], current[k]['own']) not in made
+                  and not kept_devices(k))
     if not left:
         print('nothing left out')
         return

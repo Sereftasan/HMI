@@ -114,6 +114,9 @@
     <Compile Include="Controls\AxisSettingHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\PneumaticPositioningHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\AxisUnitHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>

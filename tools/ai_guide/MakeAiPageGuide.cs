@@ -23,7 +23,7 @@ class MakeAiPageGuide
 {
     static readonly string[] Controls =
     {
-        "CylinderUnitHMI", "AxisUnitHMI", "AxisSettingHMI", "ButtonHMI", "LampHMI", "NumericInputHMI", "NumericDisplayHMI",
+        "CylinderUnitHMI", "AxisUnitHMI", "AxisSettingHMI", "PneumaticPositioningHMI", "ButtonHMI", "LampHMI", "NumericInputHMI", "NumericDisplayHMI",
         "CheckBoxHMI", "CheckListHMI", "ComboBoxHMI", "LabelHMI", "GroupBoxHMI", "MeterHMI", "MeterInputHMI"
     };
 
@@ -32,6 +32,7 @@ class MakeAiPageGuide
         { "CylinderUnitHMI", "A cylinder (any two-way movement) on a Manual Movement page: a frame with its title, two command buttons (A left, B right), the end sensors as lamps on the buttons, a position display, the \"?\" with its helpers and its alarms. Its ValveType and FeedbackType decide which sensors it needs and how the HMI watches its movements." },
         { "AxisUnitHMI", "A servo axis on a Manual Movement page, looking like a CylinderUnitHMI: set only its AxisNumber - its jog bits, position, name, error bit and reference sensor are taken from the AxisSettingHMI row with the same HMIAxisIndex." },
         { "AxisSettingHMI", "One servo axis as one row of the Axis Parameters page: jog buttons, position, current, limits, reference, calibration, its codes (servo alarm, axis alarm, axis warning), and the simple motion module's values. One row per axis; the rows of a page line up as a table." },
+        { "PneumaticPositioningHMI", "A pneumatic positioning - a cylinder with a position sensor (analogue or encoder) and a 5/3 valve that the PLC drives to a target, used on our machines as an axis - as ONE ROW, laid out like an AxisSettingHMI row: its name (TitleTextKey) at the left end, then Manual movement (CommandBackAddress / CommandForwardAddress and the position: a CylinderUnitHMI inside, so its ValveType, FeedbackType, error bits, help, alarms and coupling are a cylinder unit's), Target position (TargetPosition + PositioningStartAddress, a SET button), Calibration (CalibrationAddress + CalibrateAddress, a SET button), Positioning tolerance (PositioningToleranceAddress) and Direction ref (PositioningDirectionReferenceAddress - the old pages' 'Stopping Offset'). The rows of a page share one names' column (the widest name) and the headings over their columns: plain Labels tagged \"PositioningHeading:Manual\" (Target, Calibration, Tolerance, DirectionRef) above the first row - made at run time when the page has none. A row whose VisibilityConditions are not met is taken out and the rows under it move up. Rows 40 high, 44 apart." },
         { "ButtonHMI", "A push button writing bits (BitActions) and / or words (WordActions): momentary, alternate, SET or RESET; a lamp of its state or sensor on it (Lamp1Address). Its caption: TranslationKey + FallbackText (or ButtonText)." },
         { "LampHMI", "A bit shown as a lamp (a sensor, a state, an output), its caption (DescriptionText) beside it." },
         { "NumericInputHMI", "A value typed in (a word or a double word): the keypad on a tap, limits, scaling, units, confirmation, conditions. Its caption (DescriptionText) is drawn to its left." },
@@ -200,14 +201,50 @@ class MakeAiPageGuide
             pages.AppendLine();
         }
 
+        // THE MACHINES' OWN CONDITIONS: registered by each machine module (RegisterConditions)
+        // and stored in a designer file as their number.
+        var conds = new StringBuilder();
+        try
+        {
+            var prog = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly.GetType("Kaban.Machines.FA2010.Program");
+            prog.GetMethod("RegisterDriverKinds", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+            prog.GetMethod("MountMachines", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, null);
+            // indented: a table inside the list item it belongs to
+            conds.AppendLine("  | Number | Name (as the conditions list shows it) | Machine | Read from |");
+            conds.AppendLine("  |---|---|---|---|");
+            foreach (var kv in Kaban.Core.Helpers.MachineConditionMap.GetAllMachineBits().OrderBy(k => k.Key))
+            {
+                var d = kv.Value;
+                string module = (d.TagName ?? "").Contains(".") ? d.TagName.Substring(0, d.TagName.IndexOf('.')) : "";
+                conds.AppendLine("  | `" + kv.Key + "L` (1 << " + (int)Math.Round(Math.Log(kv.Key, 2)) + ") | " + d.Name + " | " + module + " | PLC " + d.PlcNumber + " `" + d.Address + "` " +
+                                 OpText(d.Operator) + " " + d.RequiredValue + " |");
+            }
+        }
+        catch (Exception ex) { conds.AppendLine("(the machines could not be mounted to list them: " + ex.Message + ")"); }
+
         var template = File.ReadAllText(Path.Combine(Root, "tools", "ai_guide", "guide_template.md"));
         var text = template.Replace("{{DATE}}", DateTime.Now.ToString("d MMMM yyyy", CultureInfo.InvariantCulture))
+                           .Replace("{{MACHINE_CONDITIONS}}", conds.ToString().TrimEnd())
                            .Replace("{{CONTROLS}}", controls.ToString().TrimEnd())
                            .Replace("{{ENUMS}}", en.ToString().TrimEnd())
                            .Replace("{{PAGES}}", pages.ToString().TrimEnd());
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)));
         File.WriteAllText(output, text.Replace("\r\n", "\n"), new UTF8Encoding(false));
         Console.WriteLine("written " + output + " (" + text.Length + " characters, " + Controls.Length + " controls, " + enums.Count + " enums, " + instances.Count + " examples read)");
+    }
+
+    static string OpText(Kaban.Core.Enums.ComparisonOperator op)
+    {
+        switch (op.ToString())
+        {
+            case "Equal": return "=";
+            case "NotEqual": return "<>";
+            case "Greater": return ">";
+            case "GreaterOrEqual": return ">=";
+            case "Less": return "<";
+            case "LessOrEqual": return "<=";
+            default: return op.ToString();
+        }
     }
 
     // ---- the properties ------------------------------------------------------------
@@ -250,6 +287,12 @@ class MakeAiPageGuide
     static string Describe(PropertyInfo pi, Dictionary<string, string> summaries)
     {
         string k;
+        // a row's own words first: its name is not a frame's title, its divisor is its fields'
+        if (pi.DeclaringType != null && pi.DeclaringType.Name == "PneumaticPositioningHMI")
+        {
+            var own = Own(pi, summaries);
+            if (own.Length > 0) return own;
+        }
         if (Known.TryGetValue(pi.Name, out k)) return k;
         // a unit's B side as its A side
         var side = Regex.Match(pi.Name, @"^(Command|Button|Lamp1|Lamp2|Relay|Output|Error|Help)([AB])(.*)$");
