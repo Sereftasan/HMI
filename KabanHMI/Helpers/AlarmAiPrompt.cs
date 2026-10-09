@@ -753,16 +753,25 @@ namespace Kaban.UI.Helpers
         {
             LastSaved = Save(prompt, subject == Subject.Hmi ? "HMI" : null);
             LastOpened = null;
+            // AS A FILE (9 October: "is it not possible to copy the prompt file instead
+            // of the text? The user wouldn't have to open any folder"): Ctrl+V in the
+            // chat attaches it, however long. As text when the user prefers it, or
+            // when the file could not be written.
+            LastAsFile = LastSaved != null && ViewPreferences.Get(ViewPreferences.AiPromptAs) != "Text";
             try
             {
-                Clipboard.SetText(prompt ?? "");
+                if (LastAsFile)
+                {
+                    var files = new System.Collections.Specialized.StringCollection();
+                    files.Add(LastSaved);
+                    Clipboard.SetFileDropList(files);
+                }
+                else Clipboard.SetText(prompt ?? "");
             }
             catch (Exception ex)
             {
                 AuditLogger.Log("could not copy the AI prompt: " + ex.Message);
-                LastMessage = LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again.");
-                if (CopiedNotice != null) CopiedNotice(owner);
-                else MessageBox.Show(owner, LastMessage, LanguageManager.GetString("Hlp_AiPrompt", "AI prompt"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
                 return false;
             }
             bool opened = false;
@@ -772,52 +781,46 @@ namespace Kaban.UI.Helpers
                 if (opened) LastOpened = chat;
             }
             AuditLogger.Log((chat != null ? "asked " + chat.Name + (opened ? "" : " (the browser did not open)") + " with" : "copied") +
-                            " the AI prompt for " + (subject == Subject.Hmi ? "the HMI" : "an alarm") + " (" + (prompt ?? "").Length + " characters)" +
-                            (LastSaved != null ? ", saved as " + LastSaved : "") + ".");
-            LastMessage = chat == null ? CopiedMessage(LastSaved, subject) : AskedMessage(chat, opened, LastSaved);
-            if (CopiedNotice != null) CopiedNotice(owner);
-            else
-                MessageBox.Show(owner, LastMessage, LanguageManager.GetString("Hlp_AiPrompt", "AI prompt"), MessageBoxButtons.OK,
-                                chat != null && !opened ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                            " the AI prompt for " + (subject == Subject.Hmi ? "the HMI" : "an alarm") + " (" + (prompt ?? "").Length + " characters, " +
+                            (LastAsFile ? "as a file" : "as text") + ")" + (LastSaved != null ? ", saved as " + LastSaved : "") + ".");
+            Tell(owner, chat == null ? CopiedMessage(LastAsFile) : AskedMessage(chat, opened, LastAsFile), chat != null && !opened);
             return true;
+        }
+
+        /// <summary>The short note after copying: a toast that goes by itself (CopiedNotice instead, for tests).</summary>
+        private static void Tell(IWin32Window owner, string text, bool warning)
+        {
+            LastMessage = text;
+            if (CopiedNotice != null) CopiedNotice(owner);
+            else Kaban.UI.Controls.Toast.Show(owner, text, warning);
         }
 
         /// <summary>The message shown last (tests).</summary>
         public static string LastMessage { get; private set; }
         /// <summary>The chat opened last, or null (tests).</summary>
         public static AiChats.Chat LastOpened { get; private set; }
+        /// <summary>The prompt went on the clipboard as a file (else as its text) - the last time (tests).</summary>
+        public static bool LastAsFile { get; private set; }
 
-        /// <summary>What the operator is told after copying: paste it, what comes back, and the file for a chat that says it is too long.</summary>
-        public static string CopiedMessage(string saved, Subject subject = Subject.Alarm)
+        /// <summary>What the user is told after copying - one line (9 October: no long message any more).</summary>
+        public static string CopiedMessage(bool asFile)
         {
-            var msg = subject == Subject.Hmi
-                ? LanguageManager.GetString("Msg_HmiPromptCopied",
-                    "The AI prompt is on the clipboard: the HMI, its machines, where you are and its whole manual. " +
-                    "Open any AI chat (Claude, ChatGPT, Gemini, Grok...) and paste it (Ctrl+V): it tells you what it can help you with on this panel - then ask it anything about the HMI.")
-                : LanguageManager.GetString("Msg_AiPromptCopied",
-                    "The AI prompt is on the clipboard: everything about this alarm, its unit and the machine, with the HMI's step-by-step page as the format to follow. " +
-                    "Open any AI chat (Claude, ChatGPT, Gemini, Grok...) and paste it (Ctrl+V): it writes you helper pages for the operator, the maintenance technician and the automation engineer - " +
-                    "then ask it about any part you do not understand, or tell it what you find at the machine.");
-            return msg + SavedLine(saved);
+            return asFile
+                ? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
+                : LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
         }
 
-        /// <summary>What the operator is told after asking: paste it into the chat now open - or, when the browser did not open, use the file elsewhere.</summary>
-        public static string AskedMessage(AiChats.Chat chat, bool opened, string saved)
+        /// <summary>What the user is told after asking: paste it into the chat now opening - or, when it did not open, where the prompt is.</summary>
+        public static string AskedMessage(AiChats.Chat chat, bool opened, bool asFile)
         {
-            string msg = opened
-                ? string.Format(LanguageManager.GetString("Msg_AiAsked",
-                    "{0} is opening in the browser. The prompt is on the clipboard: paste it into the chat (Ctrl+V) and send it."), chat.Name)
-                : string.Format(LanguageManager.GetString("Msg_AiAskFailed",
-                    "{0} could not be opened ({1}) - this panel may have no browser or no internet. The prompt is on the clipboard and in the file below: use it in an AI chat on another computer or a phone."),
-                    chat.Name, chat.Link);
-            return msg + SavedLine(saved);
+            if (opened)
+                return string.Format(asFile
+                    ? LanguageManager.GetString("Msg_AiAskedFile", "{0} is opening: paste the prompt file into the chat (Ctrl+V) and send it.")
+                    : LanguageManager.GetString("Msg_AiAsked", "{0} is opening: paste the prompt into the chat (Ctrl+V) and send it."), chat.Name);
+            return string.Format(LanguageManager.GetString("Msg_AiAskFailed",
+                "{0} could not be opened (no browser or no internet?). The prompt is on the clipboard and in Documents\\Kaban HMI\\AI prompts."), chat.Name);
         }
 
-        private static string SavedLine(string saved)
-        {
-            return string.IsNullOrEmpty(saved) ? "" : "\n\n" + string.Format(LanguageManager.GetString("Msg_AiPromptSaved",
-                "If the chat says the text is too long, attach this file instead (it is the same prompt):\n{0}"), saved);
-        }
 
         /// <summary>Replaces the message after copying (tests).</summary>
         public static Action<IWin32Window> CopiedNotice;

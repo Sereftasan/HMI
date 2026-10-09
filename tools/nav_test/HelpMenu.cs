@@ -109,12 +109,13 @@ class HM {
         menu = form.BuildHelpMenu();
         Item(menu, "aiPrompt").PerformClick();
         Pump(100);
-        string clip = null;
-        try { clip = Clipboard.GetText(); } catch { }
-        var p = clip ?? "";
+        System.Collections.Specialized.StringCollection clipFiles = null;
+        try { clipFiles = Clipboard.GetFileDropList(); } catch { }
+        var p = AlarmAiPrompt.LastSaved != null && File.Exists(AlarmAiPrompt.LastSaved) ? File.ReadAllText(AlarmAiPrompt.LastSaved) : "";
         int ask = p.IndexOf("## What I ask you", StringComparison.Ordinal), html = p.IndexOf("```html", StringComparison.Ordinal);
-        Check("on the clipboard, and said so", p.StartsWith("# Help me use an industrial machine's HMI (operator panel)") && noticed != null &&
-              noticed.Contains("the HMI, its machines, where you are and its whole manual"), noticed ?? "no message");
+        Check("on the clipboard as a file, said in one short line", p.StartsWith("# Help me use an industrial machine's HMI (operator panel)") &&
+              clipFiles != null && clipFiles.Count == 1 && clipFiles[0] == AlarmAiPrompt.LastSaved &&
+              noticed == "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.", noticed ?? "no message");
         Check("  the program, its machines and their stations, its controllers", p.Contains("- Kaban HMI: ") && p.Contains("HMI library") &&
               p.Contains("FA2010") && p.Contains("the main machine, PLC station 1") && p.Contains("a sub-machine mounted with it") && p.Contains("- Station 1"),
               p.Length > 1500 ? p.Substring(0, 1500) : p);
@@ -131,7 +132,7 @@ class HM {
               p.Contains("Answer from the manual above") && p.Contains("Step by step") && p.Contains("Safety first") && p.Contains("do not invent pages") &&
               p.Contains("write me a short helper page") && p.Contains("explain it again, more simply"));
         var saved = AlarmAiPrompt.LastSaved;
-        Check("  saved as a file to attach", saved != null && Path.GetFileName(saved).StartsWith("AI prompt HMI ") && File.ReadAllText(saved) == p, saved ?? "none");
+        Check("  the file: AI prompt HMI <time>.txt", saved != null && Path.GetFileName(saved).StartsWith("AI prompt HMI ") && saved.EndsWith(".txt"), saved ?? "none");
         Check("  not opened anywhere (only copied)", opened.Count == 0 && AlarmAiPrompt.LastOpened == null);
 
         Console.WriteLine("--- Ask AI for help: the user's AI opened ---");
@@ -144,7 +145,7 @@ class HM {
         Pump(100);
         Check("  copied, saved, and ChatGPT opened in the browser", opened.Count == 1 && opened[0] == "https://chatgpt.com/" &&
               AlarmAiPrompt.LastOpened != null && AlarmAiPrompt.LastOpened.Name == "ChatGPT" &&
-              noticed != null && noticed.StartsWith("ChatGPT is opening in the browser. The prompt is on the clipboard: paste it") && noticed.Contains("attach this file"),
+              noticed == "ChatGPT is opening: paste the prompt file into the chat (Ctrl+V) and send it.",
               string.Join(",", opened) + " / " + noticed);
         var gemini = Item(menu, "aiAskOther").DropDownItems.Cast<ToolStripItem>().First(i => i.Text == "Gemini");
         gemini.PerformClick();
@@ -154,8 +155,7 @@ class HM {
         Item(menu, "aiAsk").PerformClick();
         Pump(100);
         Check("  no browser, no internet: said so, the prompt still on the clipboard and in its file",
-              noticed != null && noticed.StartsWith("ChatGPT could not be opened (https://chatgpt.com/)") && noticed.Contains("another computer or a phone") &&
-              noticed.Contains(AlarmAiPrompt.LastSaved ?? "?"), noticed);
+              noticed != null && noticed.StartsWith("ChatGPT could not be opened (no browser or no internet?)") && noticed.Contains("Documents\\Kaban HMI\\AI prompts"), noticed);
         AiChats.OpenLink = link => { opened.Add(link); return true; };
 
         Console.WriteLine("--- the AI chats: the panel's, an Admin's ---");
@@ -171,8 +171,8 @@ class HM {
         holder.Show(); Pump(200);
         var ed = aiPage.Chats;
         var g = ed.Grid;
-        Check("  at the top of the page, above the designer prompt", ed.Parent == aiPage && ed.Top == 0 &&
-              aiPage.Controls.Find("aiDesignHead", false).First().Top >= ed.Bottom, ed.Bounds.ToString());
+        Check("  the page is the chats alone (the page-designer prompt is gone)", ed.Parent == aiPage && ed.Top == 0 &&
+              aiPage.Controls.Count == 1 && aiTab.TitleFallback == "AI", ed.Bounds.ToString());
         Check("  a table as the others: a name and a web address a row, the usual list", g.Rows.Count == AiChats.Defaults.Count &&
               g.Columns[0].HeaderText == "Name" && g.Columns[1].HeaderText == "Web address" && !g.RowHeadersVisible && !g.AllowUserToAddRows &&
               Convert.ToString(g.Rows[0].Cells[0].Value) == "Claude");
@@ -236,12 +236,24 @@ class HM {
         Check("  his AI: everyone's (none chosen: the first of the list)", Item(menu, "aiAsk").Text.EndsWith("Ask ChatGPT"), Item(menu, "aiAsk").Text);
         Item(menu, "aiPrompt").PerformClick();
         Pump(100);
-        try { clip = Clipboard.GetText(); } catch { }
-        Check("  his prompt: his level, the helper at it", clip != null && clip.Contains("level Operator") && clip.Contains("at my level (Operator)"));
+        var clip = File.ReadAllText(AlarmAiPrompt.LastSaved);
+        Check("  his prompt: his level, the helper at it", clip.Contains("level Operator") && clip.Contains("at my level (Operator)"));
 
+        // the Help and AI section: Preferred AI, then how the prompt is copied
+        var page2 = new UsersPreferencesControl { Dock = DockStyle.Fill };
+        var host2 = new Form { ClientSize = new System.Drawing.Size(1200, 800) };
+        host2.Controls.Add(page2);
+        host2.Show(); Pump(150);
+        var asCombo = page2.ComboOf(ViewPreferences.AiPromptAs);
+        var asItems = asCombo == null ? new List<string>() : asCombo.Items.Cast<object>().Select(o => o.ToString()).ToList();
+        Check("'AI prompt copied as': a file (Ctrl+V attaches it) - the first - or its text", asCombo != null &&
+              asItems.Skip(Math.Max(0, asItems.Count - 2)).SequenceEqual(new[] { "A file (Ctrl+V attaches it)", "Its text" }) &&
+              (asItems.Count == 2 || asItems[0] == "As for everyone  (A file (Ctrl+V attaches it))") &&
+              asCombo.Top > page2.ComboOf(ViewPreferences.PreferredAi).Top, string.Join(" | ", asItems));
+        host2.Close();
         Check("the texts in every language", new[] { "Ttl_Help", "Tip_Help", "Hlp_About", "Hlp_AiPromptItem", "Hlp_AiAskItem", "Hlp_AiAskOther", "Tip_AiAsk",
-              "Tip_HmiPrompt", "Msg_HmiPromptCopied", "Msg_AiAsked", "Msg_AiAskFailed", "AiC_Head", "AiC_Note", "AiC_Name", "AiC_Link",
-              "AiC_Save", "AiC_Revert", "AiC_Add", "AiC_Remove", "AiC_Kept", "AiC_Usual", "AiC_BadLink", "Ai_DesignHead", "VP_SecHelp", "VP_PreferredAi", "PV_Ai" }
+              "Tip_HmiPrompt", "Msg_AiPromptFile", "Msg_AiAsked", "Msg_AiAskedFile", "Msg_AiAskFailed", "AiC_Head", "AiC_Note", "AiC_Name", "AiC_Link",
+              "AiC_Save", "AiC_Revert", "AiC_Add", "AiC_Remove", "AiC_Kept", "AiC_Usual", "AiC_BadLink", "VP_SecHelp", "VP_PreferredAi", "PV_Ai" }
               .All(k => new[] { "EN", "TR", "RU", "DE", "IT", "ES" }.All(l => !string.IsNullOrEmpty(LanguageManager.GetStringIn(l, k)))));
         form.Close();
         Console.WriteLine(fail == 0 ? "\nHELP MENU ALL PASS" : "\nHELP MENU " + fail + " FAILED");

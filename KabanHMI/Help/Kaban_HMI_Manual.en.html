@@ -175,12 +175,14 @@ on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the po
      and controllers, who is signed in and at what level, the page on screen and the side page beside it, the alarms on the list, and <b>this manual whole</b>.
      Paste it into the chat (<kbd>Ctrl</kbd>+<kbd>V</kbd>): it says in a few lines what it can help with on this panel at your level, then answers your
      questions from the manual, step by step and in the screen's language; it can write a short helper page for a task, and explains again whatever
-     is not clear. The prompt is also saved as a text file (<i>Documents\Kaban HMI\AI prompts</i>) &ndash; attach it when a chat says the text is too long.</li>
+     is not clear. The prompt goes on the clipboard <b>as a file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept): <kbd>Ctrl</kbd>+<kbd>V</kbd>
+     in the chat <b>attaches it</b>, however long. Or as its text: <i>AI prompt copied as</i> in Users and Preferences (<i>Help and AI</i>). A short note at the
+     bottom of the window says what to do, and goes by itself.</li>
  <li><b>Ask &lt;your AI&gt;</b> (<i>Ask Claude</i>): the same prompt, and <b>your AI chat opened</b> in the browser &ndash; paste it there and send it.
      Your AI is your <i>Preferred AI</i> (Users and Preferences, <i>Help and AI</i>); none chosen, the first of the list. <b>Ask another AI</b> offers
      the others. The prompt is far too long to travel in the chat's web address, so it is pasted, never sent by the HMI; with no browser or no
-     internet on the panel the HMI says so, and the prompt is still on the clipboard and in its file to use on another computer or a phone.</li>
- <li>The chats offered are the panel's list: <span class="lvl l3">Admin</span> <b>HMI Settings &rsaquo; AI Prompt</b>, the table <i>AI chats</i> at its top
+     internet on the panel the note says so, and the prompt is still on the clipboard and in its file to use on another computer or a phone.</li>
+ <li>The chats offered are the panel's list: <span class="lvl l3">Admin</span> <b>HMI Settings &rsaquo; AI</b>, the table <i>AI chats</i>
      &ndash; a name and a web address each, in their order; &#10133; adds one, &#128465; removes the one selected, &#9650; &#9660; move it, &#8635; puts
      <i>the usual list</i> back (Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity), &#128190; keeps it. Only web addresses (<code>https://</code>) are taken.</li>
 </ul>
@@ -536,8 +538,8 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      for the maintenance technician, one for the automation engineer, in the HMI's language &ndash; and then to stay on and explain any part you
      do not understand, asking what you see at the machine. Open any AI chat (Claude, ChatGPT, Gemini, Grok&hellip;) and paste it
      (<kbd>Ctrl</kbd>+<kbd>V</kbd>). The first prompt takes a moment (the HMI looks through every page for where the devices are).
-     The prompt is long: it is also <b>saved as a text file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept) &ndash; when a chat
-     says the text is too long, attach that file instead; the message after copying names it.
+     The prompt is long: it goes on the clipboard <b>as a file</b> (<i>Documents\Kaban HMI\AI prompts</i>) that the chat attaches on
+     <kbd>Ctrl</kbd>+<kbd>V</kbd> - or as text (see <a href="#help">1</a>).
      <i>Ask &lt;your AI&gt;</i> (<i>Ask Claude</i>) does the same and opens your AI chat in the browser to paste it into; <i>Ask another AI</i> the others
      (see <a href="#help">1</a>).</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
@@ -616,10 +618,10 @@ that is not in it is shown as <i>PLC message n</i>, with OK.</p>
 </ul>
 <table>
 <tr><th>Code</th><th>Meaning</th><th>Check</th></tr>
-<tr><td>C01</td><td>No driver configured for this station</td><td>HMI Settings &rsaquo; PLC Connection</td></tr>
+<tr><td>C01</td><td>No driver configured for this station</td><td>HMI Settings &rsaquo; PLC Connections</td></tr>
 <tr><td>C02</td><td>Link not open</td><td>Cable, power, IP address / station number</td></tr>
 <tr><td>C03</td><td>Link open but no reply</td><td>Network, switch, PLC in RUN</td></tr>
-<tr><td>C04</td><td>Unexpected reply</td><td>Driver type and PLC model in PLC Connection</td></tr>
+<tr><td>C04</td><td>Unexpected reply</td><td>Driver type and PLC model in PLC Connections</td></tr>
 </table>
 
 <!-- ================================================================== -->
@@ -637,15 +639,14 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>Users and Preferences</td><td><span class="lvl l1">Operator</span></td><td>The accounts &ndash; names, passwords, levels, by level (<a href="#viewprefs">below</a>) &ndash;
   and how the screen shows things for everyone or as a user's own: the <b>screen scale</b>, captions, numbers, dates, the <b>units of measure</b> (see 8),
   tables, tooltips, the page after sign-in, an alarm's sound.</td></tr>
-<tr><td>Import Settings</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
 <tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The settings of the logs: the HMI's log, and each machine's log database and its reports
   (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page.
   Switching the HMI's log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
-<tr><td>PLC Connection</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller: its driver, station and address (changed by an <span class="lvl l3">Admin</span>),
+<tr><td>PLC Connections</td><td><span class="lvl l2">Maintenance</span></td><td>Each controller: its driver, station and address (changed by an <span class="lvl l3">Admin</span>),
   and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
-<tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>At its top the <b>AI chats</b> the <b>?</b> offers (a table: add, remove, order, the usual list &ndash;
-  see <a href="#help">1</a>); under it a prompt for a page's designer file, to ask an assistant to build or check a page.</td></tr>
+<tr><td>Config Import</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
+<tr><td>AI</td><td><span class="lvl l3">Admin</span></td><td>The <b>AI chats</b> the <b>?</b> offers, as a table: add, remove, order, the usual list (see <a href="#help">1</a>).</td></tr>
 </table>
 
 <h3 id="magnifier">The screen scale</h3>
@@ -708,8 +709,9 @@ cannot change are grey. Under the list &ndash; always at the same place, however
 <tr><td>Sound for a new alarm</td><td><b>Off</b> &middot; On: once for each alarm that comes onto the list, not while it stays</td></tr>
 <tr><td>Attention marks</td><td><b>Blink</b> &middot; Steady: codes, lamps, borders, the top bar's alarm and connection marks and the sign-in reminder shown steadily</td></tr>
 <tr><td>Tooltips appear after</td><td>Normal (1 s) &middot; Short (0.4 s) &middot; Long (2 s)</td></tr>
-<tr><td>Help and AI</td><td>Preferred AI</td><td>The panel's AI chats (an Admin keeps the list: the <b>?</b>); everyone's not chosen: the first of the list &ndash; the chat
+<tr><td rowspan="2">Help and AI</td><td>Preferred AI</td><td>The panel's AI chats (an Admin keeps the list: HMI Settings &rsaquo; AI); everyone's not chosen: the first of the list &ndash; the chat
   <i>Ask &lt;your AI&gt;</i> opens (see <a href="#help">1</a>)</td></tr>
+<tr><td>AI prompt copied as</td><td><b>A file</b> (<kbd>Ctrl</kbd>+<kbd>V</kbd> in a chat attaches it) &middot; Its text</td></tr>
 </table>
 <p><b>Who may change what</b>:</p>
 <ul>
@@ -823,7 +825,7 @@ cannot change are grey. Under the list &ndash; always at the same place, however
        another program's database), no logs yet, dates it cannot read, a file that is no database. &#128269; looks again.</li>
    <li>A program whose machines keep no log database has no Dashboard page: the HMI's log is read here, in the table below.</li>
   </ul></li>
- <li><b>The log table</b> (the Dashboard's <i>All logs</i> tab; Logs and Reports on a program with no machine log; PLC Connection's connection events),
+ <li><b>The log table</b> (the Dashboard's <i>All logs</i> tab; Logs and Reports on a program with no machine log; PLC Connections' connection events),
      newest first (click <i>Time</i> to turn it round):
   <ul>
    <li>On the Dashboard's <i>All logs</i> tab it lists, beside what was done on the HMI, the machine's <b>states</b> (with how many minutes; <i>still</i>
@@ -839,7 +841,7 @@ cannot change are grey. Under the list &ndash; always at the same place, however
    <li><b>Live</b> (with a period of its own): while the period runs up to now, new entries appear as they are written; the row you are reading stays put.</li>
    <li>The selected entry is shown in full under the table (a station scan is a report of several lines). &#128228; exports the entries shown, as a log file or a CSV table.</li>
   </ul></li>
- <li><b>PLC Connection</b> <span class="lvl l2">Maintenance</span>:
+ <li><b>PLC Connections</b> <span class="lvl l2">Maintenance</span>:
   <ul>
    <li><b>Controllers</b>: each controller's driver, logical station and address &ndash; as saved, used from the next start; an <span class="lvl l3">Admin</span>
        changes them and saves &#128190; &ndash; and beside them how it is doing now: whether it answers, when it last did, <b>drops today</b>

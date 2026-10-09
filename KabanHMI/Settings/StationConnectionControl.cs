@@ -536,7 +536,7 @@ namespace Kaban.UI.Settings
     public class StationConnectionPage : ISettingsPage
     {
         public string TitleKey { get { return "Set_StationConn"; } }
-        public string TitleFallback { get { return "PLC Connection"; } }
+        public string TitleFallback { get { return "PLC Connections"; } }
         // Maintenance reads it (state, events); an Admin changes connections and
         // uses the MX Component tools - see PlcConnectionScreen.
         public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }

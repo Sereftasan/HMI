@@ -168,6 +168,8 @@ namespace Kaban.UI.Settings
                     return T("PV_Blink", "Codes, lamps, borders, the alarm and connection marks on the top bar, the sign-in reminder.");
                 case ViewPreferences.TooltipDelay:
                     return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
+                case ViewPreferences.AiPromptAs:
+                    return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its text.");
                 case ViewPreferences.PreferredAi:
                     return T("PV_Ai", "The AI chat 'Ask AI for help' opens - from the ? on the caption bar and from an alarm's help list. The prompt goes on the clipboard: paste it there.");
                 case SummaryKey:

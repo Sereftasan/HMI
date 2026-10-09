@@ -126,9 +126,9 @@ class CP {
         Pump(50);
         var settings = All(hmi).OfType<SettingsScreen>().FirstOrDefault(sc => sc.AllPages.Any(p => p.TitleKey == "Set_StationConn")) ?? hmi;
         var titles = settings.AllPages.Select(p => p.TitleFallback).ToList();
-        Check("HMI Settings has PLC Connection, and no separate PLC Diagnostics", titles.Contains("PLC Connection") && !titles.Any(t => t.Contains("Diagnostics")),
+        Check("HMI Settings has PLC Connections, and no separate PLC Diagnostics", titles.Contains("PLC Connections") && !titles.Any(t => t.Contains("Diagnostics")),
               string.Join(", ", titles));
-        var conn = ShowPage(settings, "PLC Connection") as SettingsScreen;
+        var conn = ShowPage(settings, "PLC Connections") as SettingsScreen;
         Check("  its tabs: Controllers, Connection events, MX Component (Admin)",
               conn != null && string.Join(",", conn.AllPages.Select(p => p.TitleFallback)) == "Controllers,Connection events,MX Component" &&
               conn.AllPages.Last().RequiredLevel == SecurityLevel.Admin,

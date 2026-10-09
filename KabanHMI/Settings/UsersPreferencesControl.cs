@@ -996,6 +996,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
                 case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
                 case ViewPreferences.PreferredAi: return T("VP_PreferredAi", "Preferred AI");
+                case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
                     // a unit family: "Unit_Length" -> Length
@@ -1042,6 +1043,8 @@ namespace Kaban.UI.Settings
                 case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
                 case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
                 case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
+                case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
+                case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
                 default: return value;
             }
         }

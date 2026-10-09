@@ -23,12 +23,14 @@ namespace Kaban.UI.Settings
                 // The accounts and how the screen shows things - units of measure
                 // included - for everyone or per user (it was three tabs: Unit
                 // Settings, User Settings and View Preferences).
+                // 9 October, the order asked for: Users and Preferences, Logs and
+                // Reports, PLC Connections, Config Import, AI.
                 new UsersPreferencesPage(),
-                new ImportSettingsPage(),
                 new LogSettingsPage(),
                 // One tab for the controllers: connections, their state, the
                 // connection events and the MX Component tools (it was two).
                 new StationConnectionPage(),
+                new ImportSettingsPage(),
                 new AiPromptPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:
                 // "it is not a setting thing at all and the user's eyes don't catch it there")

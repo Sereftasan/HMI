@@ -88,6 +88,9 @@
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
     <Compile Include="Helpers\AiMenu.cs" />
+    <Compile Include="Controls\Toast.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Helpers\HmiAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\ShownPick.cs" />

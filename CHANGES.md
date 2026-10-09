@@ -4707,3 +4707,16 @@ and `UnitLookAndErrors` extended.
 - Translations: `AiC_Head`, `AiC_Revert`, `AiC_Add`, `AiC_Remove`, `AiC_Kept`, `Ai_DesignHead` new; `AiC_Note`, `PV_Ai`, `Hlp_AiAskItem` changed;
   `Hlp_AiChats`, `Tip_AiChats` removed.
 - Tests: `HelpMenu.cs`, `AlarmAiPrompt.cs`, `AboutManual.cs`. Manual: the "?" section, the alarm list's entries, HMI Settings' AI Prompt row.
+
+## 2026-10-09 (evening) - The prompt copied as a file; a toast instead of the message; HMI Settings' order; the page design guide
+
+- `AlarmAiPrompt.Deliver`: the saved prompt put on the clipboard as a file (`Clipboard.SetFileDropList`), or as text with
+  `ViewPreferences.AiPromptAs = Text` (new preference, section *Help and AI*); `LastAsFile`; one-line `CopiedMessage(asFile)` /
+  `AskedMessage(chat, opened, asFile)` shown by the new `Kaban.UI.Controls.Toast` (a self-closing note, no focus taken; `CopiedNotice` for tests).
+  Texts: `Msg_AiPromptFile`, `Msg_AiPromptText`, `Msg_AiAskedFile`, `Msg_AiAsked`, `Msg_AiAskFailed`, `VP_AiPromptAs`, `VP_AiAsFile`, `VP_AiAsText`,
+  `PV_AiAs`; `Msg_AiPromptCopied`, `Msg_HmiPromptCopied`, `Msg_AiPromptSaved` removed.
+- HMI Settings: Users and Preferences, Logs and Reports, PLC Connections, Config Import, AI (`Set_StationConn`, `Set_Import`, `Set_AiPrompt`).
+- `AiPromptControl`: the AI chats only - the page-designer prompt and its texts (`Ai_Task` ... `Ai_DesignHead`) removed.
+- New `tools/ai_guide/` (`MakeAiPageGuide.cs`, `guide_template.md`, `make_guide.sh`, README) and `docs/AI_Page_Design_Guide.md`.
+- Tests: `HelpMenu.cs`, `AlarmAiPrompt.cs`, `ConnectionPageAndShutdown.cs`, `LastPlace.cs`. Manual: the "?" section, the alarm list's AI entries,
+  HMI Settings' table (order, names, AI), the preferences table.

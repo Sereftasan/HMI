@@ -39,7 +39,7 @@ namespace Kaban.UI.Settings
     public class ImportSettingsPage : ISettingsPage
     {
         public string TitleKey => "Set_Import";
-        public string TitleFallback => "Import Settings";
+        public string TitleFallback => "Config Import";
         public SecurityLevel RequiredLevel => SecurityLevel.Admin;
         public UserControl GetControl() => new ImportSettingsControl();
     }

@@ -157,17 +157,26 @@ class AAP {
         AlarmAiPrompt.CopiedNotice = w => noticed = "copied";
         last.PerformClick();
         Pump(50);
+        // 9 October: "is it not possible to copy the prompt file instead of the text? ... we could remove this long text popup"
+        var saved = AlarmAiPrompt.LastSaved;
+        System.Collections.Specialized.StringCollection clipFiles = null;
+        try { clipFiles = Clipboard.GetFileDropList(); } catch { }
+        Check("a click: the prompt FILE on the clipboard (Ctrl+V in a chat attaches it), named by its code",
+              noticed == "copied" && AlarmAiPrompt.LastAsFile && saved != null && File.Exists(saved) && Path.GetFileName(saved).StartsWith("AI prompt FA2010.") &&
+              saved.EndsWith(".txt") && File.ReadAllText(saved).StartsWith("# Help me with an alarm") && File.ReadAllText(saved).Contains("M852") &&
+              clipFiles != null && clipFiles.Count == 1 && clipFiles[0] == saved,
+              (clipFiles == null ? "no file list" : string.Join(",", clipFiles.Cast<string>())) + " / " + (saved ?? "not saved"));
+        Check("  said in one short line - no long message", AlarmAiPrompt.LastMessage == "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.",
+              AlarmAiPrompt.LastMessage);
+        ViewPreferences.SetPanel(ViewPreferences.AiPromptAs, "Text");
+        last.PerformClick();
+        Pump(50);
         string clip = null;
         try { clip = Clipboard.GetText(); } catch { }
-        Check("a click: on the clipboard, and said so", noticed == "copied" && clip != null && clip.StartsWith("# Help me with an alarm") && clip.Contains("M852"),
+        Check("as text when that is the user's choice (AI prompt copied as: Its text)", !AlarmAiPrompt.LastAsFile && clip != null && clip.StartsWith("# Help me with an alarm") &&
+              clip.Contains("M852") && AlarmAiPrompt.LastMessage == "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.",
               clip == null ? "no clipboard" : clip.Length + " characters");
-        var saved = AlarmAiPrompt.LastSaved;
-        Check("  and saved as a .txt file named by its code, to attach when a chat says it is too long",
-              saved != null && File.Exists(saved) && Path.GetFileName(saved).StartsWith("AI prompt FA2010.") && saved.EndsWith(".txt") &&
-              File.ReadAllText(saved).StartsWith("# Help me with an alarm"), saved ?? "not saved");
-        var said = AlarmAiPrompt.CopiedMessage(saved);
-        Check("  the message: what comes back, then ask it, and the file", said.Contains("helper pages for the operator, the maintenance technician and the automation engineer") &&
-              said.Contains("any part you do not understand") && said.Contains("too long, attach this file") && said.Contains(saved ?? "?"), said);
+        ViewPreferences.SetPanel(ViewPreferences.AiPromptAs, null);
 
         Console.WriteLine("--- the alarm list ---");
         var screen = MachineRegistry.AllScreens().First(kv => kv.Key.Context.ModuleId == "FA2010" && kv.Value.Role == ScreenRoles.Alarms).Value;
@@ -189,7 +198,7 @@ class AAP {
         Check("an alarm with no document: its Help cell offers the AI prompt", bareRow != null &&
               Convert.ToString(bareRow.Cells["Help"].FormattedValue) == "Create AI prompt",
               bareRow == null ? "no row" : Convert.ToString(bareRow.Cells["Help"].FormattedValue));
-        Check("the texts in every language", new[] { "Hlp_AiPromptItem", "Hlp_AiPrompt", "Tip_AiPrompt", "Msg_AiPromptCopied", "Msg_AiPromptFailed", "Msg_AiPromptSaved", "Hlp_AiAskItem", "Msg_AiAsked" }
+        Check("the texts in every language", new[] { "Hlp_AiPromptItem", "Hlp_AiPrompt", "Tip_AiPrompt", "Msg_AiPromptFile", "Msg_AiPromptText", "Msg_AiPromptFailed", "Hlp_AiAskItem", "Msg_AiAsked", "Msg_AiAskedFile", "VP_AiPromptAs", "VP_AiAsFile", "VP_AiAsText", "PV_AiAs" }
               .All(k => new[] { "EN", "TR", "RU", "DE", "IT", "ES" }.All(l => !string.IsNullOrEmpty(LanguageManager.GetStringIn(l, k)))));
         host.Close();
         form.Close();
