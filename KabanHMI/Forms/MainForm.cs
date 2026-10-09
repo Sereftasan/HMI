@@ -838,7 +838,14 @@ namespace Kaban.UI.Forms
                 _btnLang.Left = right - _btnLang.Width;
                 right = _btnLang.Left - gap;
             }
-            // the magnifying factor, between the language and the user
+            // help (the "?": about, the manual, an AI to ask), between the language and the screen scale
+            if (_btnHelp != null)
+            {
+                _btnHelp.Top = midY - _btnHelp.Height / 2;
+                _btnHelp.Left = right - _btnHelp.Width;
+                right = _btnHelp.Left - gap;
+            }
+            // the magnifying factor, between the help and the user
             if (_btnZoom != null)
             {
                 _btnZoom.Top = midY - _btnZoom.Height / 2;
@@ -1007,6 +1014,7 @@ namespace Kaban.UI.Forms
             Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
             pnlTop.Controls.Add(_btnLang);
             SetupZoomButton();
+            SetupHelpButton();
 
             if (UseCustomCaption) SetupCaptionBar();
             SetupAlarmIndicator();

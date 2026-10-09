@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaban HMI - Operator and Engineer Manual</title>
 <!--
-  THE HMI MANUAL. Opened from HMI Settings > About > "Open the HMI manual".
+  THE HMI MANUAL. Opened from the caption bar's "?" > "Open the HMI manual" (or About).
 
   One file per language, beside each other in the Help folder:
       Kaban_HMI_Manual.en.html   English (this file)
@@ -15,7 +15,7 @@
   manual keeps working on a panel PC with no network.
 
   ONE MANUAL, ANY MACHINE. This file names no machine. When it is opened from
-  About, the HMI fills in the machines THIS program runs (the main machine and
+  the "?", the HMI fills in the machines THIS program runs (the main machine and
   the sub-machines mounted with it) - nothing about any other machine. It
   replaces what stands between these pairs of marker comments in the body
   (written here with brackets, as a comment cannot hold a comment):
@@ -92,7 +92,7 @@
 
 <main>
 
-<p class="tip"><b>Keep this manual beside the program.</b> It opens from <b>HMI Settings &rsaquo; About</b>. It is a file
+<p class="tip"><b>Keep this manual beside the program.</b> It opens from the <b>?</b> on the caption bar (<kbd>F1</kbd>) &rsaquo; <i>Open the HMI manual</i>. It is a file
 in the program's <code>Help</code> folder, so it works on a machine with no network.</p>
 
 <!-- ================================================================== -->
@@ -108,7 +108,8 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
  <rect x="480" y="16" width="30" height="24" rx="4" fill="#333"/><text class="w" x="486" y="33">&#128279;</text>
  <circle cx="535" cy="28" r="10" fill="none" stroke="#fff" stroke-width="2"/>
  <circle cx="572" cy="26" r="6" fill="none" stroke="#fff" stroke-width="2"/><line x1="569" y1="26" x2="575" y2="26" stroke="#fff" stroke-width="1.5"/><line x1="572" y1="23" x2="572" y2="29" stroke="#fff" stroke-width="1.5"/><line x1="576" y1="30" x2="581" y2="35" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text class="w" x="586" y="33">100% &#9662;</text>
- <rect x="640" y="16" width="70" height="24" rx="3" fill="#333"/><text class="w" x="650" y="33">EN &#9662;</text>
+ <circle cx="655" cy="28" r="9" fill="none" stroke="#fff" stroke-width="2"/><text class="w" x="651" y="33" font-weight="bold">?</text><text class="w" x="668" y="33">&#9662;</text>
+ <rect x="690" y="16" width="62" height="24" rx="3" fill="#333"/><text class="w" x="698" y="33">EN &#9662;</text>
  <text class="w" x="760" y="33">&#9472;</text><text class="w" x="800" y="33">&#9744;</text><text class="w" x="840" y="33">&#10005;</text>
  <!-- nav bar -->
  <rect x="10" y="46" width="190" height="414" fill="#eef0f3"/>
@@ -131,13 +132,13 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
  <rect x="858" y="118" width="18" height="13" fill="none" stroke="#285aaa" stroke-width="2"/>
  <!-- callouts -->
  <g fill="#1e78dc">
-  <circle cx="455" cy="62" r="10"/><circle cx="495" cy="62" r="10"/><circle cx="535" cy="62" r="10"/><circle cx="598" cy="62" r="10"/><circle cx="675" cy="62" r="10"/><circle cx="800" cy="62" r="10"/>
+  <circle cx="455" cy="62" r="10"/><circle cx="495" cy="62" r="10"/><circle cx="535" cy="62" r="10"/><circle cx="598" cy="62" r="10"/><circle cx="657" cy="62" r="10"/><circle cx="720" cy="62" r="10"/><circle cx="800" cy="62" r="10"/>
   <circle cx="190" cy="80" r="10"/><circle cx="190" cy="315" r="10"/><circle cx="110" cy="444" r="10"/>
   <circle cx="838" cy="160" r="10"/>
  </g>
  <g class="n" text-anchor="middle">
-  <text x="455" y="66">1</text><text x="495" y="66">2</text><text x="535" y="66">3</text><text x="598" y="66">4</text><text x="675" y="66">5</text><text x="800" y="66">6</text>
-  <text x="190" y="84">7</text><text x="190" y="319">8</text><text x="110" y="448">9</text><text x="838" y="164">10</text>
+  <text x="455" y="66">1</text><text x="495" y="66">2</text><text x="535" y="66">3</text><text x="598" y="66">4</text><text x="657" y="66">5</text><text x="720" y="66">6</text><text x="800" y="66">7</text>
+  <text x="190" y="84">8</text><text x="190" y="319">9</text><text x="110" y="448">10</text><text x="838" y="164">11</text>
  </g>
 </svg>
 <figcaption>The screen. The caption bar at the top, the page menu on the left, the machine list under it, the page in the middle, the side bar at the right edge.</figcaption>
@@ -149,20 +150,40 @@ in the program's <code>Help</code> folder, so it works on a machine with no netw
 <tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
 <tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
 <tr><td>4</td><td>Screen scale</td><td>The glass with a <b>+</b> in it (the plain glass is <i>Find</i>) and the size on screen, in percent (<b>100%</b>). Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
-<tr><td>5</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
-<tr><td>6</td><td>Minimise, maximise, close</td><td>The &#10005; asks first: <b>Close</b> or <b>Restart the program</b>, so a stray tap never ends a shift.
+<tr><td>5</td><td>Help (<b>?</b>)</td><td><i>About Kaban HMI</i>, <i>Open the HMI manual</i>, and an AI to ask about the HMI (<kbd>F1</kbd>). See <a href="#help">below</a>.</td></tr>
+<tr><td>6</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once.</td></tr>
+<tr><td>7</td><td>Minimise, maximise, close</td><td>The &#10005; asks first: <b>Close</b> or <b>Restart the program</b>, so a stray tap never ends a shift.
 Every restart keeps whoever is signed in signed in.
 Closing from the Windows taskbar or with <kbd>Alt</kbd>+<kbd>F4</kbd> closes at once. Maximise fills the screen the window is on.</td></tr>
-<tr><td>7</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown. The gear is <b>Machine Parameters</b>, the screen with a gear <b>HMI Settings</b>.</td></tr>
-<tr><td>8</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. Each machine has its own picture, drawn in black like the others: what it does (a milling cutter and a saw blade, a screw, a drill bit). The highlighted one is the machine on screen.</td></tr>
-<tr><td>9</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
-<tr><td>10</td><td>Side bar</td><td>Pages that open <b>beside</b> the page on display: Inputs / Outputs, the Axis Monitor, the PLC Monitor, the machine's own
+<tr><td>8</td><td>Page menu</td><td>The same on every machine. A page you may not open is not shown. The gear is <b>Machine Parameters</b>, the screen with a gear <b>HMI Settings</b>.</td></tr>
+<tr><td>9</td><td>Machine list</td><td>Which machine the page shows, when sub-machines are mounted. Each machine has its own picture, drawn in black like the others: what it does (a milling cutter and a saw blade, a screw, a drill bit). The highlighted one is the machine on screen.</td></tr>
+<tr><td>10</td><td>Back / Forward</td><td>Steps through the places you have been, like a web browser. See <a href="#nav">3</a>.</td></tr>
+<tr><td>11</td><td>Side bar</td><td>Pages that open <b>beside</b> the page on display: Inputs / Outputs, the Axis Monitor, the PLC Monitor, the machine's own
 &ndash; and the main pages you put there (a machine's Home, Manual Movement, Alarms ...). See <a href="#side">3a</a>.</td></tr>
 </table>
 
 <p>Everything you can click shows a <b>hand</b> pointer; anything that cannot be used right now shows the plain arrow and,
 when you rest the pointer on it, says <b>why</b> (not signed in, level too low, machine not in manual, controller not answering). Rest the pointer on a <b>value field</b> for what may be typed in it (<i>Allowed: 0.00 - 6500.00 mm</i>);
 on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the pointer, like every control's border. An Admin also sees how each is wired.</p>
+
+<h3 id="help">The <b>?</b>: about, the manual, an AI to ask</h3>
+<p>The <b>?</b> on the caption bar, between the screen scale and the language (<kbd>F1</kbd>), for everyone:</p>
+<ul>
+ <li><b>About Kaban HMI</b>: the program, its version, the machines it runs &ndash; and the manual's button.</li>
+ <li><b>Open the HMI manual</b>: this manual, in the browser, in the language on screen, with this panel's machines in chapter 13.</li>
+ <li><b>Create AI prompt</b>: puts on the clipboard a prompt for an AI chat (Claude, ChatGPT, Gemini, Grok&hellip;) with the program, its machines
+     and controllers, who is signed in and at what level, the page on screen and the side page beside it, the alarms on the list, and <b>this manual whole</b>.
+     Paste it into the chat (<kbd>Ctrl</kbd>+<kbd>V</kbd>): it says in a few lines what it can help with on this panel at your level, then answers your
+     questions from the manual, step by step and in the screen's language; it can write a short helper page for a task, and explains again whatever
+     is not clear. The prompt is also saved as a text file (<i>Documents\Kaban HMI\AI prompts</i>) &ndash; attach it when a chat says the text is too long.</li>
+ <li><b>Ask AI for help (&lt;your AI&gt;)</b>: the same prompt, and <b>your AI chat opened</b> in the browser &ndash; paste it there and send it.
+     Your AI is your <i>Preferred AI</i> (Users and Preferences, <i>Help and AI</i>); none chosen, the first of the list. <b>Ask another AI</b> offers
+     the others. The prompt is far too long to travel in the chat's web address, so it is pasted, never sent by the HMI; with no browser or no
+     internet on the panel the HMI says so, and the prompt is still on the clipboard and in its file to use on another computer or a phone.</li>
+ <li><span class="lvl l3">Admin</span> <b>AI chats and their links&hellip;</b>: the chats offered, a name and a web address each, in their order
+     (<i>The usual list</i>: Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity). Only web addresses (<code>https://</code>) are taken.</li>
+</ul>
+<p>An alarm's help list (its <b>Help</b> column, a unit's <b>?</b>) ends with the same <b>Create AI prompt</b> and <b>Ask AI for help</b>, for that alarm (see <a href="#alarms">6</a>).</p>
 
 <h3 id="tables">Tables</h3>
 <p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue.
@@ -302,17 +323,17 @@ tables and tabs work as usual while picking &ndash; a tap on them is never taken
 <ul>
  <li><b>What and where</b>: its name as on the screen (<i>Robot X - Min</i>) and its page (<i>&lt;machine&gt; / Machine Parameters / Axis Settings</i>).</li>
  <li><b>Its tooltip</b> &ndash; on a touch screen the one way to read it, since there is no pointer to rest on a control.</li>
- <li><b>Its value</b>, for a value shown (a display, a lamp, a table's cell): <i>Shown now</i>, then <i>What it should be</i> and a comment (why);
+ <li><b>Its value</b>, for a value shown (a display, a lamp, a table's cell): <i>Shown now</i>, then <i>Your suggestion</i> (what it should be) and its <i>Reason</i>;
      &#128190; <i>Keep the note</i>. It goes to the machine's builder in the feedback file &ndash; nothing is changed on the screen.</li>
- <li><b>Its texts</b>, in a table: <i>Language</i>, <i>Now</i>, <i>Request</i>, <i>Comment</i>. Type what the text should be under <i>Request</i>;
-     its <i>Comment</i> (why) opens once something is requested. A unit's title is offered with the unit (a tap on its frame or its name)
+ <li><b>Its texts</b>, in a table: <i>Language</i>, <i>Now</i>, <i>Your suggestion</i>, <i>Reason</i>. Type what the text should be under <i>Your suggestion</i>;
+     its <i>Reason</i> (why) opens once something is suggested. A unit's title is offered with the unit (a tap on its frame or its name)
      and with each of its buttons and lamps (<i>Unit title</i>). <i>Languages:</i> chooses the languages listed &ndash; kept as yours; none chosen,
      the screen's language and English. A value has no texts of its own (its column's heading is translated on the heading).
      <span class="lvl l2">Maintenance</span> and <span class="lvl l3">Admin</span>: <i>Keep the texts</i> puts them <b>on the screen at once</b>,
      for everyone on this panel (and at every start). An <span class="lvl l1">Operator</span>: <i>Propose the texts</i> &ndash; a proposal, which
      Maintenance or an Admin <b>accepts</b> on the same page.</li>
  <li><span class="lvl l3">Admin</span> <b>Its settings</b>: the control's own settings in a table &ndash; its text key, its PLC, its addresses &hellip;
-     (and its unit's, for a field of a unit) &ndash; with <i>Now</i>, <i>Request</i> and <i>Comment</i>; &#128190; <i>Keep the settings asked for</i>.
+     (and its unit's, for a field of a unit) &ndash; with <i>Now</i>, <i>Your suggestion</i> and <i>Reason</i>; &#128190; <i>Keep the settings asked for</i>.
      They are for the builder, in the feedback file: <b>the program is not changed</b>.</li>
  <li><b>Its helpers</b>: a text and a file (a document, a picture, a video) for this control. Maintenance's and an Admin's are offered
      <b>with the control at once</b>: in a unit's <b>?</b>, or as a small blue <b>?</b> on the corner of any other control &ndash; a click opens it
@@ -504,8 +525,8 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button drives the machine's reset device
      as the machine's program says: a short pulse, or <b>SET</b> &ndash; the HMI switches the device on and the PLC switches it off itself
      once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
- <li><b>AI prompt</b>: the last entry of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers it
-     too) and in a unit's <b>?</b> while it shows a fault. A click puts on the clipboard a prompt with <b>everything the HMI knows</b> about the alarm:
+ <li><b>Create AI prompt</b> and <b>Ask AI for help</b>: the last entries of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers them
+     too) and in a unit's <b>?</b> while it shows a fault. <i>Create AI prompt</i> puts on the clipboard a prompt with <b>everything the HMI knows</b> about the alarm:
      the machine, its PLC and cards, how its alarms are raised; the alarm, its code and device, what the HMI saw fail and the states before it came;
      the unit with <b>both</b> its movements (command, output, sensors, error bit and alarm, delay); <b>every device involved</b> with its PLC label,
      its line on the electrical drawing (wire, relay, coil, card terminal), its air line (valve, hoses, cylinder), where it is on the HMI and its state
@@ -515,7 +536,9 @@ or the position reading (axis). A controller that is not answering shows no <b>?
      do not understand, asking what you see at the machine. Open any AI chat (Claude, ChatGPT, Gemini, Grok&hellip;) and paste it
      (<kbd>Ctrl</kbd>+<kbd>V</kbd>). The first prompt takes a moment (the HMI looks through every page for where the devices are).
      The prompt is long: it is also <b>saved as a text file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept) &ndash; when a chat
-     says the text is too long, attach that file instead; the message after copying names it.</li>
+     says the text is too long, attach that file instead; the message after copying names it.
+     <i>Ask AI for help (&lt;your AI&gt;)</i> does the same and opens your AI chat in the browser to paste it into; <i>Ask another AI</i> the others
+     (see <a href="#help">1</a>).</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
@@ -621,12 +644,11 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
   and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
 <tr><td>AI Prompt</td><td><span class="lvl l3">Admin</span></td><td>Builds a description of the machine's set-up to ask an assistant for help.</td></tr>
-<tr><td>About</td><td><span class="lvl l0">None</span></td><td>Program version, machines mounted, and this manual.</td></tr>
 </table>
 
 <h3 id="magnifier">The screen scale</h3>
 <p>Draws the whole program larger or smaller &ndash; text, buttons, fields, menus, pictures, pages &ndash; from <b>80%</b> (more on the screen)
-to <b>150%</b> (half as large again). Click the <b>glass</b> on the caption bar, between the user and the language. The menu shows the size
+to <b>150%</b> (half as large again). Click the <b>glass</b> on the caption bar, between the user and the <b>?</b>. The menu shows the size
 on screen in its heading (<i>Screen scale (100%)</i>), a list of sizes, and a row to set any size in between:
 <b>&minus;</b> and <b>+</b> change it by <b>1%</b> (hold for more), <b>&#10003;</b> takes it.</p>
 <ul>
@@ -684,6 +706,8 @@ cannot change are grey. Under the list &ndash; always at the same place, however
 <tr><td>Sound for a new alarm</td><td><b>Off</b> &middot; On: once for each alarm that comes onto the list, not while it stays</td></tr>
 <tr><td>Attention marks</td><td><b>Blink</b> &middot; Steady: codes, lamps, borders, the top bar's alarm and connection marks and the sign-in reminder shown steadily</td></tr>
 <tr><td>Tooltips appear after</td><td>Normal (1 s) &middot; Short (0.4 s) &middot; Long (2 s)</td></tr>
+<tr><td>Help and AI</td><td>Preferred AI</td><td>The panel's AI chats (an Admin keeps the list: the <b>?</b>); everyone's not chosen: the first of the list &ndash; the chat
+  <i>Ask AI for help</i> opens (see <a href="#help">1</a>)</td></tr>
 </table>
 <p><b>Who may change what</b>:</p>
 <ul>
@@ -982,7 +1006,7 @@ machine off at the wrong moment cannot leave a half-written file.</p>
 <!-- ================================================================== -->
 <h2 id="machine">13. This machine</h2>
 <!--machine-chapter--><p>The machines this program runs, their controllers and their own pages are listed here when the manual is
-opened from <b>HMI Settings &rsaquo; About</b>.</p><!--/machine-chapter-->
+opened from the <b>?</b> on the caption bar.</p><!--/machine-chapter-->
 
 <footer>Kaban Machines &middot; HMI manual. To translate it, copy this file as <code>Kaban_HMI_Manual.&lt;language&gt;.html</code>
 (for example <code>.tr.html</code>) in the same folder.</footer>

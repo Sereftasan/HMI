@@ -29,9 +29,9 @@ namespace Kaban.UI.Settings
                 // One tab for the controllers: connections, their state, the
                 // connection events and the MX Component tools (it was two).
                 new StationConnectionPage(),
-                new AiPromptPage(),
-                // No "Manual" tab: the manual is an HTML file opened from About.
-                new AboutPage()
+                new AiPromptPage()
+                // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:
+                // "it is not a setting thing at all and the user's eyes don't catch it there")
             });
         }
     }

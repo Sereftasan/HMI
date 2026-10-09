@@ -97,6 +97,7 @@
     <Compile Include="Helpers\HmiUtilities.cs" />
     <Compile Include="Helpers\SafeFile.cs" />
     <Compile Include="Helpers\NotesStore.cs" />
+    <Compile Include="Helpers\AiChats.cs" />
     <Compile Include="Helpers\PlcPopups.cs" />
     <Compile Include="Helpers\DisplaySettings.cs" />
     <Compile Include="Helpers\ViewPreferences.cs" />

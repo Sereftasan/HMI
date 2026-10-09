@@ -16,8 +16,9 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// HMI Settings > About: what this program is, which machines it is running,
-    /// and the button that opens the HMI MANUAL.
+    /// About (the caption bar's "?" since 9 October - it was a tab of HMI Settings,
+    /// where nobody looked for it): what this program is, which machines it is
+    /// running, and the button that opens the HMI MANUAL.
     ///
     /// THE MANUAL IS AN HTML FILE, Help\Kaban_HMI_Manual.&lt;language&gt;.html, opened
     /// in the browser. It used to be a plain-text tab of its own ("Manual"),
@@ -52,6 +53,7 @@ namespace Kaban.UI.Settings
             var info = new Label
             {
                 Text = DescribeProgram(),
+                UseMnemonic = false,          // "Screwing & Holing", not "Screwing _Holing"
                 Font = UiStyle.Body,
                 ForeColor = Color.FromArgb(70, 76, 86),
                 AutoSize = true,
@@ -293,23 +295,33 @@ namespace Kaban.UI.Settings
 
         private void OpenManual()
         {
+            _status.Text = TryOpenManual();
+        }
+
+        /// <summary>Opens the manual for this program in the browser; "" when it opened, else why not (the caption bar's "?" too).</summary>
+        public static string TryOpenManual()
+        {
             string template = ManualPath();
             if (string.IsNullOrEmpty(template) || !File.Exists(template))
-            {
-                _status.Text = LanguageManager.GetString("Msg_ManualMissing", "The manual was not found:") + " " + template;
-                return;
-            }
+                return LanguageManager.GetString("Msg_ManualMissing", "The manual was not found:") + " " + template;
             string path = PrepareManual();
             try
             {
                 AuditLogger.Log("opened the HMI manual.");
-                Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
-                _status.Text = "";
+                if (!OpenFile(path)) return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + path;
+                return "";
             }
             catch (Exception ex)
             {
-                _status.Text = LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + ex.Message;
+                return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + ex.Message;
             }
         }
+
+        /// <summary>Opens a file with its program. Replaceable so a test sees what would open.</summary>
+        public static Func<string, bool> OpenFile = path =>
+        {
+            Process.Start(new ProcessStartInfo { FileName = path, UseShellExecute = true });
+            return true;
+        };
     }
 }

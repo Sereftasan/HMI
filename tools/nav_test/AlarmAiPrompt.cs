@@ -39,6 +39,10 @@ class AAP {
         AlarmGeneration.SettingsPath = Path.Combine(dir, "AlarmGeneration.cfg");
         NotesStore.Folder = Path.Combine(dir, "Notes");
         AlarmAiPrompt.SaveFolder = Path.Combine(dir, "AI prompts");
+        ViewPreferences.SettingsPath = Path.Combine(dir, "View.cfg");
+        ViewPreferences.Reload();
+        AiChats.SettingsPath = Path.Combine(dir, "AiChats.cfg");
+        AiChats.OpenLink = link => true;
         AlarmAiPrompt.ReadNow = (st, a) => st == 1 && a == "D16" ? 1234 : st == 1 && a == "Y55" ? 1 : (int?)null;
         var prog = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly.GetType("Kaban.Machines.FA2010.Program");
         Func<string, MethodInfo> m = n => prog.GetMethod(n, BindingFlags.NonPublic | BindingFlags.Static);
@@ -142,9 +146,13 @@ class AAP {
 
         Console.WriteLine("--- the help list's last entry ---");
         var menu = MachineAlarmScreen.BuildHelpMenu(docs, d => { }, () => AlarmAiPrompt.Build(item, null, docs), form);
-        var last = menu.Items[menu.Items.Count - 1];
-        Check("the AI prompt, last, after the documents", last.Name == "aiPrompt" && last.Text == "AI prompt - copy it for an AI chat" &&
-              menu.Items.OfType<ToolStripMenuItem>().Count() == docs.Count + 1, last.Text);
+        var aiNames = menu.Items.OfType<ToolStripMenuItem>().Skip(docs.Count).Select(i => i.Name).ToList();
+        var last = menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiPrompt");
+        // 9 October: "another member as 'Ask AI for help' to open an AI automatically as well as 'Create AI prompt'"
+        Check("after the documents: Create AI prompt, Ask AI for help (the user's AI), Ask another AI",
+              string.Join(",", aiNames) == "aiPrompt,aiAsk,aiAskOther" && last.Text.EndsWith("Create AI prompt") &&
+              menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiAsk").Text.EndsWith("Ask AI for help (Claude)"),
+              string.Join(" | ", menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text)));
         string noticed = null;
         AlarmAiPrompt.CopiedNotice = w => noticed = "copied";
         last.PerformClick();
@@ -179,9 +187,9 @@ class AAP {
         Pump(300);
         var bareRow = grid.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.DataBoundItem == bare);
         Check("an alarm with no document: its Help cell offers the AI prompt", bareRow != null &&
-              Convert.ToString(bareRow.Cells["Help"].FormattedValue) == "AI prompt - copy it for an AI chat",
+              Convert.ToString(bareRow.Cells["Help"].FormattedValue) == "Create AI prompt",
               bareRow == null ? "no row" : Convert.ToString(bareRow.Cells["Help"].FormattedValue));
-        Check("the texts in every language", new[] { "Hlp_AiPromptItem", "Hlp_AiPrompt", "Tip_AiPrompt", "Msg_AiPromptCopied", "Msg_AiPromptFailed", "Msg_AiPromptSaved" }
+        Check("the texts in every language", new[] { "Hlp_AiPromptItem", "Hlp_AiPrompt", "Tip_AiPrompt", "Msg_AiPromptCopied", "Msg_AiPromptFailed", "Msg_AiPromptSaved", "Hlp_AiAskItem", "Msg_AiAsked" }
               .All(k => new[] { "EN", "TR", "RU", "DE", "IT", "ES" }.All(l => !string.IsNullOrEmpty(LanguageManager.GetStringIn(l, k)))));
         host.Close();
         form.Close();

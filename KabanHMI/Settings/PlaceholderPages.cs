@@ -7,7 +7,7 @@ namespace Kaban.UI.Settings
 {
     /// <summary>
     /// Body for a page that has no content of its own - a machine with no
-    /// parameter pages (StandardScreens). About has its own control now.
+    /// parameter pages (StandardScreens). About is the caption bar's "?" (AboutControl in a dialog).
     /// </summary>
     internal class PlaceholderControl : UserControl
     {
@@ -54,14 +54,5 @@ namespace Kaban.UI.Settings
 
 
 
-    public class AboutPage : ISettingsPage
-    {
-        public string TitleKey => "Set_About";
-        public string TitleFallback => "About";
-        public SecurityLevel RequiredLevel => SecurityLevel.None;
-        // Program, version, machines - and the button that opens the HMI manual,
-        // which replaced the plain-text "Manual" tab (see AboutControl).
-        public UserControl GetControl() => new AboutControl();
-    }
 }
 

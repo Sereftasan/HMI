@@ -435,10 +435,10 @@ namespace Kaban.Core.Helpers
             sb.AppendLine();
             sb.AppendLine("Notes.html        every note, by page and control - to read.");
             sb.AppendLine("Translations.csv  the texts asked for, in CommonTranslations.csv form (Key;EN;TR;RU;DE;IT;ES) - the latest per key and");
-            sb.AppendLine("                  language; the Comment and Who columns after them say why and who. Merge the rows into the translation file.");
+            sb.AppendLine("                  language; the Reason and Who columns after them say why and who. Merge the rows into the translation file.");
             sb.AppendLine("Properties.csv    control settings asked for by an Admin (addresses, numbers ...): the page, the control, its type and its");
-            sb.AppendLine("                  path of designer names, the property, now -> required, and why. Set them in the designer.");
-            sb.AppendLine("Values.csv        values shown on the screen that should be different (a table's cell, a display), now -> required, why.");
+            sb.AppendLine("                  path of designer names, the property, now -> suggested, and the reason. Set them in the designer.");
+            sb.AppendLine("Values.csv        values shown on the screen that should be different (a table's cell, a display), now -> suggested, the reason.");
             sb.AppendLine("Notes.csv         every note in one sheet.");
             sb.AppendLine("Notes.xml         the panel's notes as kept (ProgramData\\KabanHMI\\Notes\\Notes.xml): copy it there to read them on another panel.");
             sb.AppendLine("Files/            the helpers' files and the files of general notes, as named in Notes.html.");
@@ -452,7 +452,7 @@ namespace Kaban.Core.Helpers
             foreach (var t in notes.Where(n => n.Kind == NoteKind.Translation).SelectMany(n => n.Texts))
                 if (!string.IsNullOrEmpty(t.Lang) && !langs.Contains(t.Lang.ToUpperInvariant())) langs.Add(t.Lang.ToUpperInvariant());
             var sb = new StringBuilder();
-            sb.AppendLine("Key;" + string.Join(";", langs) + ";State;Comment;Who;Control;Page");
+            sb.AppendLine("Key;" + string.Join(";", langs) + ";State;Reason;Who;Control;Page");
             foreach (var key in notes.Where(n => n.Kind == NoteKind.Translation && !string.IsNullOrWhiteSpace(n.TranslationKey))
                                      .GroupBy(n => n.TranslationKey).OrderBy(g => g.Key, StringComparer.Ordinal))
             {
@@ -478,7 +478,7 @@ namespace Kaban.Core.Helpers
         private static string ValuesCsv(IEnumerable<Note> notes)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Time;Who;Page;Control;Type;Path;Name;Now;Required;Comment;Key");
+            sb.AppendLine("Time;Who;Page;Control;Type;Path;Name;Now;Suggested;Reason;Key");
             foreach (var n in notes.OrderBy(n => n.Time))
                 foreach (var v in n.Values)
                     sb.AppendLine(string.Join(";", new[]
@@ -544,7 +544,7 @@ namespace Kaban.Core.Helpers
             var props = notes.Where(n => n.Kind == NoteKind.Property || n.Kind == NoteKind.Value).OrderBy(n => n.Time).ToList();
             if (props.Count > 0)
             {
-                sb.Append("<h2>Settings and values asked for</h2><table><tr><th>Page</th><th>Control</th><th>Type / path</th><th>Name</th><th>Now</th><th>Required</th><th>Why</th><th>Who</th></tr>");
+                sb.Append("<h2>Settings and values asked for</h2><table><tr><th>Page</th><th>Control</th><th>Type / path</th><th>Name</th><th>Now</th><th>Suggested</th><th>Reason</th><th>Who</th></tr>");
                 foreach (var n in props)
                     foreach (var v in n.Values)
                         sb.Append("<tr><td>").Append(h(n.Page)).Append("</td><td>").Append(h(n.ControlName)).Append("</td><td>").Append(h(n.ControlType))

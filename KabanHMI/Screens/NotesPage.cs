@@ -33,8 +33,8 @@ namespace Kaban.UI.Screens
     ///    shown only picks its value; a cell to type in is typed in, not picked;
     ///  - the menu's page buttons and a page's tabs work as ever and are noted
     ///    with the page they open; the caption bar is picked as the page is;
-    ///  - texts in a table: now / request / comment (the comment once something
-    ///    is requested), in the user's chosen languages only;
+    ///  - texts in a table: now / your suggestion / reason (the reason once
+    ///    something is suggested), in the user's chosen languages only;
     ///  - an Admin's table of the control's settings (addresses ...): now /
     ///    required / comment, for the builder;
     ///  - general notes, on no control, with a file.
@@ -540,7 +540,7 @@ namespace Kaban.UI.Screens
         /// <summary>A caption and a box beside it (the comment of a note: why).</summary>
         private TextBox CommentBox(string name, bool enabled)
         {
-            AddText(T("Nts_Why", "Comment (why) - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+            AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
             return Box("", false, enabled, name);
         }
 
@@ -619,7 +619,7 @@ namespace Kaban.UI.Screens
             FitWidths();
         }
 
-        // ---- a table: now / request / comment ----------------------------------------------
+        // ---- a table: now / your suggestion / reason --------------------------------------
 
         /// <summary>
         /// A small table of entries - texts, settings - with what they are now, what
@@ -636,8 +636,9 @@ namespace Kaban.UI.Screens
             };
             grid.Columns.Add("what", firstHeading);
             grid.Columns.Add("now", T("Nts_ColNow", "Now"));
-            grid.Columns.Add("required", T("Nts_ColRequired", "Request"));
-            grid.Columns.Add("comment", T("Nts_ColComment", "Comment"));
+            // 9 October: "change it to 'Your suggestion' instead, and 'Comment' to 'Reason'"
+            grid.Columns.Add("required", T("Nts_ColRequired", "Your suggestion"));
+            grid.Columns.Add("comment", T("Nts_ColReason", "Reason"));
             grid.Columns[0].FillWeight = 22; grid.Columns[1].FillWeight = 30; grid.Columns[2].FillWeight = 30; grid.Columns[3].FillWeight = 30;
             grid.Columns[0].ReadOnly = true;
             grid.Columns[1].ReadOnly = true;
@@ -689,7 +690,7 @@ namespace Kaban.UI.Screens
         {
             Head(T("Nts_SecValue", "Its value"));
             AddText(T("Nts_ValueNow", "Shown now") + ": " + (string.IsNullOrEmpty(_value) ? "-" : _value));
-            AddText(T("Nts_ValueRequired", "What it should be:"), false, Color.FromArgb(90, 96, 106), 4);
+            AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
             var required = Box("", false, write, "notesValueRequired");
             var comment = CommentBox("notesValueComment", false);
             required.TextChanged += (s, e) => comment.Enabled = write && required.Text.Trim().Length > 0;

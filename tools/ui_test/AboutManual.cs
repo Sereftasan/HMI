@@ -18,7 +18,8 @@ class AM {
         var hmi = (SettingsScreen)new HmiSettingsPage().GetControl();
         var keys = hmi.AllPages.Select(p => p.TitleKey).ToList();
         Check("no Manual tab", !keys.Contains("Set_Manual"), string.Join(",", keys));
-        Check("About is there", keys.Contains("Set_About"));
+        // 9 October: About is the caption bar's "?" now ("not a setting thing at all")
+        Check("About is no tab of HMI Settings any more", !keys.Contains("Set_About"), string.Join(",", keys));
 
         var about = new AboutControl();
         var btn = All(about).OfType<Button>().FirstOrDefault(b => b.Text.Contains("manual"));

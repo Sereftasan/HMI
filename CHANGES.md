@@ -4675,3 +4675,24 @@ and `UnitLookAndErrors` extended.
   `AlarmGenerationUi.cs`, `CylinderHelpAndLogin.cs`, `UnitTypes.cs` (the valve names).
 - Manual: the AI prompt, the HMI alarms' device and SET, the notes page's unit frame and own fields, *Request*, the axis lists, the side bar's
   order, the fit width; the 3-way valves' names.
+
+## 2026-10-09 - The caption bar's "?" (About, the manual, an AI to ask); AI chats and Preferred AI; "Your suggestion" / "Reason"
+
+- **Notes page:** `Nts_ColRequired` *Your suggestion*, new `Nts_ColReason` *Reason* (`Nts_ColComment` gone), `Nts_ValueRequired`, `Nts_Why`;
+  `NotesStore` feedback files: *Suggested* / *Reason* headings.
+- **`MainForm.Help.cs`** (new): `_btnHelp` between the screen scale and the language (`LayoutTopBar`), F1 (`Shortcuts`), `DrawHelpGlyph`,
+  `BuildHelpMenu` (About, Open the HMI manual, `AiMenu` entries, an Admin's *AI chats and their links...*), `ShowAbout` (the `AboutControl` in a
+  dialog), `HelpContext` (the page on show, the side page, the scale). `AboutPage` removed from HMI Settings; `AboutControl.TryOpenManual` and
+  `OpenFile` (replaceable).
+- **`HmiAiPrompt`** (new): the program, languages, scale, machines and stations (`AboutControl.RunningMachines`), controllers and their state,
+  the user and level, the page, the alarms, the manual composed for the panel (`AboutControl.PrepareManual`, without `<base>`), the request last.
+- **`AiMenu`** (new): *Create AI prompt*, *Ask AI for help (&lt;Preferred&gt;)*, *Ask another AI* - for the "?" and every alarm help list
+  (`MachineAlarmScreen.BuildHelpMenu`). `AlarmAiPrompt.Deliver` (save, clipboard, open the chat, the message), `Subject`, `Save(prompt, name)`,
+  `AskedMessage`, `LastMessage`, `LastOpened`.
+- **`Kaban.Core.Helpers.AiChats`** (new): the panel's chats (`AiChats.cfg`, `Defaults`), `IsLink` (http/https only), `Preferred`, `Open`,
+  `OpenLink` (replaceable). **`AiChatsForm`** (new, Admin): the list edited. `ViewPreferences.PreferredAi` (section *Help and AI* in Users and
+  Preferences, with its preview text).
+- Translations: 28 new or changed texts (the help menu, the AI entries and messages, the chats' editor, the preference) - six languages.
+- Tests: `HelpMenu.cs` (new), `AlarmAiPrompt.cs`, `NotesFeedback.cs`, `AboutManual.cs`.
+- Manual: the screen's drawing and table (the "?" as 5), *The ?: about, the manual, an AI to ask* (new), the alarm list's AI entries, the
+  preferences table (*Help and AI*), HMI Settings without About, the notes page's columns.

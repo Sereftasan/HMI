@@ -507,32 +507,21 @@ namespace Kaban.UI.Screens
                 item.Click += (s, e) => open(d);
                 menu.Items.Add(item);
             }
-            // THE LAST ENTRY: an AI prompt for this alarm, put on the clipboard (8 October)
+            // THE LAST ENTRIES: an AI prompt for this alarm, put on the clipboard (8 October),
+            // and the user's AI chat opened with it (9 October)
             if (aiPrompt != null)
             {
                 if (docs.Count > 0) menu.Items.Add(new ToolStripSeparator());
-                var ai = new ToolStripMenuItem(AiPromptCaption) { Name = "aiPrompt" };
-                ai.ToolTipText = LanguageManager.GetString("Tip_AiPrompt",
-                    "Copies a prompt for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit and the machine: paste it there, the AI writes you a helper for it.");
-                ai.Click += (s, e) =>
-                {
-                    string text = null;
-                    // the first one reads every page for where its devices are: a moment
-                    var was = Cursor.Current;
-                    Cursor.Current = Cursors.WaitCursor;
-                    try { text = aiPrompt(); } catch (Exception ex) { AuditLogger.Log("AI prompt failed: " + ex.Message); }
-                    finally { Cursor.Current = was; }
-                    if (!string.IsNullOrEmpty(text)) Kaban.UI.Helpers.AlarmAiPrompt.Copy(owner, text);
-                };
-                menu.Items.Add(ai);
+                foreach (var item in Kaban.UI.Helpers.AiMenu.Items(aiPrompt, Kaban.UI.Helpers.AlarmAiPrompt.Subject.Alarm, owner))
+                    menu.Items.Add(item);
             }
             return menu;
         }
 
-        /// <summary>The help list's last entry.</summary>
+        /// <summary>The help list's AI entry (the Help cell of an alarm with no document of its own).</summary>
         public static string AiPromptCaption
         {
-            get { return LanguageManager.GetString("Hlp_AiPromptItem", "AI prompt - copy it for an AI chat"); }
+            get { return Kaban.UI.Helpers.AiMenu.CreateCaption; }
         }
 
         private void OpenDocument(TroubleshootingCatalog.HelpDocument doc)

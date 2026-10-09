@@ -87,6 +87,8 @@
     <Compile Include="Helpers\PageScroll.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
+    <Compile Include="Helpers\AiMenu.cs" />
+    <Compile Include="Helpers\HmiAiPrompt.cs" />
     <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\UnitCoupling.cs" />
@@ -279,6 +281,9 @@
     <Compile Include="Settings\AboutControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Settings\AiChatsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,6 +299,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Notes.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Help.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>

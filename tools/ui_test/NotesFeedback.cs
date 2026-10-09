@@ -137,8 +137,8 @@ class NF {
         Func<string, Control> named = n => Tree(body).FirstOrDefault(c => c.Name == n);
         Func<DataGridView> texts = () => (DataGridView)named("notesTexts");
         Func<DataGridView, string> langs = g => string.Join(",", g.Rows.Cast<DataGridViewRow>().Select(r => Convert.ToString(r.Cells[0].Value)));
-        Check("its texts in a table: language, now, request, comment - the screen's language and English when none is chosen",
-              texts() != null && texts().Columns.Count == 4 && texts().Columns[2].HeaderText == "Request" && langs(texts()) == "EN" && Convert.ToString(texts().Rows[0].Cells[1].Value) == "Start",
+        Check("its texts in a table: language, now, your suggestion, reason - the screen's language and English when none is chosen",
+              texts() != null && texts().Columns.Count == 4 && texts().Columns[2].HeaderText == "Your suggestion" && texts().Columns[3].HeaderText == "Reason" && langs(texts()) == "EN" && Convert.ToString(texts().Rows[0].Cells[1].Value) == "Start",
               texts() == null ? "none" : langs(texts()));
         ViewPreferences.SetList(ViewPreferences.NoteLanguages, new[] { "EN", "TR", "IT" });
         Pump(100);
@@ -296,7 +296,7 @@ class NF {
                   names.Any(n => n.EndsWith("layout_idea.txt")), string.Join(", ", names));
             var tcsv = NotesStore.TextIn(zip, "Translations.csv") ?? "";
             Check("  Translations.csv: Key;EN;TR;RU;DE;IT;ES then why and who - the row of Btn_TestStart with its IT and DE",
-                  tcsv.StartsWith("Key;EN;TR;RU;DE;IT;ES;State;Comment;Who") && tcsv.Contains("Btn_TestStart;;") && tcsv.Contains(";Starten;Avvia;") && tcsv.Contains("IT: the Italian panel says Avvia"),
+                  tcsv.StartsWith("Key;EN;TR;RU;DE;IT;ES;State;Reason;Who") && tcsv.Contains("Btn_TestStart;;") && tcsv.Contains(";Starten;Avvia;") && tcsv.Contains("IT: the Italian panel says Avvia"),
                   tcsv.Replace("\r\n", " / "));
             var pcsv = NotesStore.TextIn(zip, "Properties.csv") ?? "";
             Check("  Properties.csv: the control, its type and path, now -> required, why", pcsv.Contains("\"PlcNumber\";\"1\";\"2\";\"the start is on the second PLC\"") &&
