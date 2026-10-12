@@ -273,6 +273,7 @@ namespace Kaban.UI.Plc
                 Add(b.OutputAddress);
                 Add(b.Lamp1Address);
                 Add(b.Lamp2Address);
+                Add(b.ConfirmationAddress);          // asked while it is on (FA2010's Cancel)
 
                 AddConditions(b.VisibilityConditions);
                 AddConditions(b.EnableConditions);

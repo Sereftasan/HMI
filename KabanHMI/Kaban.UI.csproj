@@ -54,6 +54,9 @@
     <Compile Include="Controls\BaseNumericHMI.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\SpeedOverrideHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\ButtonHMI.cs">
       <SubType>Component</SubType>
     </Compile>

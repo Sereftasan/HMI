@@ -182,6 +182,19 @@ namespace Kaban.UI.Controls
         [Category(" System")]
         [Description("Ask before writing Set/Reset/Alternate and word actions. Not used for Momentary (jog) actions: holding the button is the confirmation.")]
         public bool ConfirmationNeeded { get; set; } = false;
+
+        /// <summary>
+        /// Asks only WHILE THIS BIT IS ON (12 October, FA2010's Cancel as the old program's:
+        /// "Cancel the operation?" while the machine works, M21 - at once when it does not).
+        /// Not for Momentary actions, as ConfirmationNeeded.
+        /// </summary>
+        [Category(" System")]
+        [Description("Ask before writing only while this bit is on (FA2010's Cancel: while the machine works, M21). Empty: as ConfirmationNeeded says.")]
+        public string ConfirmationAddress { get; set; } = "";
+
+        /// <summary>The question asked (a translation key; ConfirmationText when it has no text).</summary>
+        [Category(" System")] public string ConfirmationTextKey { get; set; } = "";
+        [Category(" System")] public string ConfirmationText { get; set; } = "";
         [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.None;
         [Category(" Security")] public bool LogAction { get; set; } = false;
 
@@ -1395,15 +1408,44 @@ namespace Kaban.UI.Controls
                                    WordActions.Any(a => a != null);
             if (!hasClickActions) return;
 
-            if (ConfirmationNeeded)
+            if (NeedsConfirmation)
             {
-                var result = MessageBox.Show("Are you sure you want to execute this action?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var result = AskConfirmation != null ? AskConfirmation(QuestionText)
+                           : MessageBox.Show(QuestionText, LanguageManager.GetString("Ttl_Confirm", "Confirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result != DialogResult.Yes) return;
             }
             // coupled units follow (they check where they are first)
             RaiseUserActed(UserAction.Click);
             RunClickActions();
         }
+
+        /// <summary>True when a click asks first: always (ConfirmationNeeded), or while ConfirmationAddress is on.</summary>
+        internal bool NeedsConfirmation
+        {
+            get
+            {
+                if (ConfirmationNeeded) return true;
+                if (string.IsNullOrWhiteSpace(ConfirmationAddress)) return false;
+                var read = _lastReadPlc;
+                // not read yet: ask - a cancel of a machine that may be working is worth the question
+                if (read == null) return true;
+                try { return read(ConfirmationAddress) != 0; } catch { return true; }
+            }
+        }
+
+        /// <summary>The question asked before the click's actions.</summary>
+        internal string QuestionText
+        {
+            get
+            {
+                string fallback = string.IsNullOrEmpty(ConfirmationText) ? "Are you sure you want to execute this action?" : ConfirmationText;
+                return string.IsNullOrEmpty(ConfirmationTextKey) ? LanguageManager.GetString("Msg_ConfirmAction", fallback)
+                                                                : LanguageManager.GetString(ConfirmationTextKey, fallback);
+            }
+        }
+
+        /// <summary>Answers the question instead of a message box (tests).</summary>
+        internal static Func<string, DialogResult> AskConfirmation;
 
         /// <summary>The click's bit and word actions (not the momentary ones).</summary>
         private void RunClickActions()
