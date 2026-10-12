@@ -578,7 +578,7 @@ namespace Kaban.UI.Screens
             _body.SuspendLayout();
             try
             {
-                foreach (Control c in _body.Controls.Cast<Control>().ToList()) { _body.Controls.Remove(c); c.Dispose(); }
+                foreach (Control c in _body.Controls.Cast<Control>().ToList()) { EndEdits(c); _body.Controls.Remove(c); c.Dispose(); }
                 bool write = NotesStore.CanWrite, apply = NotesStore.CanApply;
                 _count.Text = string.Format(T("Nts_Count", "{0} notes on this panel"), NotesStore.All.Count);
                 _folder.Enabled = _lastExport != null && SecurityManager.HasAccess(SecurityLevel.Maintenance);
@@ -617,6 +617,24 @@ namespace Kaban.UI.Screens
                 _body.ResumeLayout(true);
             }
             FitWidths();
+        }
+
+        /// <summary>
+        /// A table of the page being typed in: its editing ended before the page fills again.
+        /// 12 October, the panel's audit log (10:24:27): a suggestion was being typed when another
+        /// control was tapped - .NET's DataGridView, thrown away with its editing box open, fell over
+        /// (ArgumentOutOfRangeException in PositionEditingControl) and the HMI restarted.
+        /// </summary>
+        private static void EndEdits(Control c)
+        {
+            var grid = c as DataGridView;
+            if (grid != null)
+            {
+                try { if (grid.IsCurrentCellInEditMode && !grid.EndEdit()) grid.CancelEdit(); } catch { }
+                try { grid.CurrentCell = null; } catch { }
+                try { if (grid.IsCurrentCellInEditMode) { grid.CancelEdit(); grid.CurrentCell = null; } } catch { }
+            }
+            foreach (Control k in c.Controls) EndEdits(k);
         }
 
         // ---- a table: now / your suggestion / reason --------------------------------------

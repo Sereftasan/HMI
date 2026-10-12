@@ -12,5 +12,7 @@ This bug doesn't seem to be solved properly, the scroll position still gets brok
     do: drag the scroll bar, click its arrows, the mouse wheel? Does it stop short, or jump back while you scroll?
 
 ## Done
+- (this commit) - Found in the panel's audit log (12 October 10:24:27, the HMI restarted): typing a suggestion in the Notes
+  page's texts table and then tapping another control crashed it. The table's typing is now ended first.
 - 931ba43 - The description texts' bottom was cut off (Machine Parameters > Others at 80%, captions on the left):
   a caption is now as high as its letters at every screen scale (_requests\ScreenScale_80%.bmp).
