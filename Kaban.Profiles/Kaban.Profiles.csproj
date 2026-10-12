@@ -39,7 +39,9 @@
   <ItemGroup>
     <Compile Include="Data\Db.cs" />
     <Compile Include="Data\Library.cs" />
-    <Compile Include="Data\NativeSqlite.cs" />
+    <Compile Include="Data\NativeSqlite.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\ProfileResolver.cs" />
     <Compile Include="Data\Repositories.cs" />
     <Compile Include="Geometry\DxfReader.cs" />
