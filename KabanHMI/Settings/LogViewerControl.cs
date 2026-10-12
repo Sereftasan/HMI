@@ -35,8 +35,12 @@ namespace Kaban.UI.Settings
     ///     table, with a Source column and filter (HMI, or a machine), read on a
     ///     thread of its own (MachineLogFeed).
     /// </summary>
-    public class LogViewerControl : UserControl
+    public class LogViewerControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         public enum Period { LastHour = 0, Today, Yesterday, Last7Days, Last30Days, AllKept, Custom }
 
         /// <summary>At most this many entries are listed - the newest; the status line says so.</summary>

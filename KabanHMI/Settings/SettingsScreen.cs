@@ -39,6 +39,8 @@ namespace Kaban.UI.Settings
         private readonly Panel _host = new Panel();
         private readonly Dictionary<ISettingsPage, Button> _tabButtons = new Dictionary<ISettingsPage, Button>();
         private readonly Dictionary<ISettingsPage, UserControl> _instances = new Dictionary<ISettingsPage, UserControl>();
+        // the language each page was built in (IRebuildForLanguage: built again in another)
+        private readonly Dictionary<ISettingsPage, string> _builtIn = new Dictionary<ISettingsPage, string>();
         private ISettingsPage _active;
 
         // stored so Dispose can actually unsubscribe (a lambda in -= removes nothing)
@@ -529,6 +531,23 @@ namespace Kaban.UI.Settings
             _active = page;
 
             UserControl view;
+            // BUILT IN ANOTHER LANGUAGE: a page that puts its texts on when it is built
+            // is built again (the one on show at a language change, the others now that
+            // they are shown), on the place the operator was looking at.
+            object place = null;
+            bool rebuilt = false;
+            string builtIn;
+            if (_instances.TryGetValue(page, out view) && view is IRebuildForLanguage &&
+                _builtIn.TryGetValue(page, out builtIn) &&
+                !string.Equals(builtIn, LanguageManager.CurrentLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                try { place = ((IRebuildForLanguage)view).Place; } catch { }
+                _instances.Remove(page);
+                if (view.Parent != null) view.Parent.Controls.Remove(view);
+                view.Dispose();
+                view = null;
+                rebuilt = true;
+            }
             if (!_instances.TryGetValue(page, out view))
             {
                 view = page.GetControl();
@@ -536,6 +555,10 @@ namespace Kaban.UI.Settings
                 {
                     view.Dock = DockStyle.Fill;
                     _instances[page] = view;
+                    _builtIn[page] = LanguageManager.CurrentLanguage;
+                    var again = view as IRebuildForLanguage;
+                    if (rebuilt && again != null && place != null)
+                        try { again.ReturnTo(place); } catch { }
                 }
             }
 
@@ -585,6 +608,7 @@ namespace Kaban.UI.Settings
                 foreach (var view in _instances.Values)
                     if (view != null && !view.IsDisposed && view.Parent == null) view.Dispose();
                 _instances.Clear();
+                _builtIn.Clear();
             }
             base.Dispose(disposing);
         }

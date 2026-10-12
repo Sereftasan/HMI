@@ -39,8 +39,12 @@ namespace Kaban.UI.Settings
     /// are already bound to the running one would leave half the HMI reading from a
     /// disposed COM object, so the page saves and says so rather than pretending.
     /// </summary>
-    public class StationConnectionControl : UserControl
+    public class StationConnectionControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         private class Row
         {
             public PlcConnectionSettings.Endpoint Endpoint;

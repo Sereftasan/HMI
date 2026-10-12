@@ -63,8 +63,12 @@ namespace Kaban.UI.Settings
     /// logs themselves are read on the Dashboard page, in its tabs; only a program
     /// whose machines keep no log database shows the HMI's log here.
     /// </summary>
-    public class LogSettingsControl : UserControl
+    public class LogSettingsControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         private readonly CheckBox _chkEnabled = new CheckBox();
         private readonly NumericUpDown _numRetain = new NumericUpDown();
         private readonly Label _off = new Label();

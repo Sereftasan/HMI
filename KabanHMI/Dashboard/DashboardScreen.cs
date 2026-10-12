@@ -103,7 +103,15 @@ namespace Kaban.UI.Dashboard
             _to = DashboardConfig.Minute(now);
             _from = _to.AddDays(-1);
 
-            _onLanguage = (s, e) => { if (IsHandleCreated) BeginInvoke(new Action(() => { Retranslate(); Reload(true); })); };
+            // NOT ON THE SCREEN YET (no handle): its texts at once - it was built before the
+            // language was put in force and stayed English (12 October); its data are read
+            // when it is first shown.
+            _onLanguage = (s, e) =>
+            {
+                if (IsDisposed) return;
+                if (IsHandleCreated) BeginInvoke(new Action(() => { Retranslate(); Reload(true); }));
+                else Retranslate();
+            };
             // a sign-in while the page is not built on screen yet counts too (ApplyAccess when shown)
             _onUser = (s, e) =>
             {

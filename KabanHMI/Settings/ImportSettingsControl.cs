@@ -22,8 +22,12 @@ namespace Kaban.UI.Settings
     /// pressed Import. A settings transfer that silently does the wrong thing is
     /// discovered when the machine behaves oddly days later.
     /// </summary>
-    public class ImportSettingsControl : UserControl
+    public class ImportSettingsControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         private readonly TextBox _source = new TextBox();
         private readonly DataGridView _grid = new DataGridView();
         private readonly Label _status = new Label();

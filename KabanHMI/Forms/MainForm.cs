@@ -325,6 +325,7 @@ namespace Kaban.UI.Forms
         public void BuildNavigation()
         {
             UserControl first = null;
+            PrepareLanguage();
 
             // Screens are grouped by ROLE: every machine's "Home" becomes tabs of a
             // single Home button, and so on. That is what makes the left bar look
@@ -2512,6 +2513,28 @@ namespace Kaban.UI.Forms
         /// that makes the shared keys available to every machine even if the .csv was
         /// not copied next to the .exe.
         /// </summary>
+        /// <summary>
+        /// THE LANGUAGE BEFORE THE PAGES (12 October: Users and Preferences and the
+        /// Dashboard came up in English with the flag on TR). The shared texts were read,
+        /// and everyone's kept language put on the screen, only when the window loaded -
+        /// after BuildNavigation had built the pages in English, and a page that puts its
+        /// texts on when it is built kept them. Both now come before the first page is
+        /// made (the load reads the texts again and finds the language already in force).
+        /// </summary>
+        private static void PrepareLanguage()
+        {
+            try
+            {
+                if (!LanguageManager.HasCommonTranslations())
+                {
+                    LanguageManager.LoadCommonTranslations(Path.Combine(Application.StartupPath, "CommonTranslations.csv"));
+                    if (!LanguageManager.HasCommonTranslations()) LoadEmbeddedCommonTranslations();
+                }
+                Helpers.UserLanguage.Apply();
+            }
+            catch (Exception ex) { AuditLogger.Log("language before the pages: " + ex.Message); }
+        }
+
         private static void LoadEmbeddedCommonTranslations()
         {
             try

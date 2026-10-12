@@ -24,8 +24,12 @@ namespace Kaban.UI.Settings
     /// per machine, with the general delay; in the table, a delay of its own for
     /// a cylinder movement's alarm (blank: the general one). See AlarmGeneration.
     /// </summary>
-    public class AlarmSettingsControl : UserControl
+    public class AlarmSettingsControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         private readonly DataGridView _grid = new DataGridView();
         private readonly Label _status = new Label();
 

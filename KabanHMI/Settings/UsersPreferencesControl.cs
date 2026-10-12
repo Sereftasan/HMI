@@ -40,7 +40,7 @@ namespace Kaban.UI.Settings
     /// Who may change what: UserRights (their own; below their level; their
     /// level when they created it; everyone's from Maintenance).
     /// </summary>
-    public class UsersPreferencesControl : UserControl
+    public class UsersPreferencesControl : UserControl, IRebuildForLanguage
     {
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
@@ -175,6 +175,18 @@ namespace Kaban.UI.Settings
             Fill();
             SecurityManager.UserChanged += OnUserChanged;
             Disposed += (s, e) => SecurityManager.UserChanged -= OnUserChanged;
+        }
+
+        // BUILT AGAIN IN ANOTHER LANGUAGE (SettingsScreen): on the user that was selected
+        object IRebuildForLanguage.Place { get { return Selected; } }
+        void IRebuildForLanguage.ReturnTo(object place)
+        {
+            var who = place as string;
+            if (who == null || who == _selected || (who != Everyone && AccountOf(who) == null)) return;
+            _creating = false;
+            _selected = who;
+            RefreshList();
+            Fill();
         }
 
         /// <summary>The one shown first: the one signed in - if they have an account here (a trusted sign-in may not) - else Everyone.</summary>

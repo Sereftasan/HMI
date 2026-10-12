@@ -25,5 +25,19 @@ namespace Kaban.UI.Settings
         /// <summary>The actual page content.</summary>
         UserControl GetControl();
     }
+
+    /// <summary>
+    /// A page that puts its texts on when it is BUILT - made in code, not of the HMI
+    /// controls (they follow a language change themselves). The tab strip holding it
+    /// builds it again after a language change: the one on show at once, the others
+    /// when they are next shown (12 October: Users and Preferences stayed English with
+    /// the flag on TR). <see cref="Place"/> is what the operator was looking at, handed
+    /// to the new one by <see cref="ReturnTo"/> (null: nothing to keep).
+    /// </summary>
+    public interface IRebuildForLanguage
+    {
+        object Place { get; }
+        void ReturnTo(object place);
+    }
 }
 

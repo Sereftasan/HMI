@@ -17,8 +17,12 @@ namespace Kaban.UI.Settings
     /// (docs/AI_Page_Design_Guide.md) - every control, its properties and the
     /// pages' conventions, made from the program itself - to attach to an AI chat.
     /// </summary>
-    public class AiPromptControl : UserControl
+    public class AiPromptControl : UserControl, IRebuildForLanguage
     {
+        // its texts are put on when it is built: built again in another language (SettingsScreen)
+        object IRebuildForLanguage.Place { get { return null; } }
+        void IRebuildForLanguage.ReturnTo(object place) { }
+
         /// <summary>The panel's AI chats (tests).</summary>
         public AiChatsEditor Chats { get; private set; }
 
