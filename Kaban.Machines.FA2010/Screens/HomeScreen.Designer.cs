@@ -1,4 +1,4 @@
-namespace Kaban.Machines.FA2010.Screens
+﻿namespace Kaban.Machines.FA2010.Screens
 {
     partial class HomeScreen
     {

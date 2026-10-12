@@ -1,4 +1,4 @@
-namespace Kaban.Machines.SB3012.Screens
+﻿namespace Kaban.Machines.SB3012.Screens
 {
     partial class HomeScreen
     {

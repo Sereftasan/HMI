@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using Microsoft.Win32;
 using Kaban.Core.Helpers;

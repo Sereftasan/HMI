@@ -1,4 +1,4 @@
-using System; using System.IO; using Kaban.Core.Helpers; using TC = Kaban.Core.Helpers.TroubleshootingCatalog;
+﻿using System; using System.IO; using Kaban.Core.Helpers; using TC = Kaban.Core.Helpers.TroubleshootingCatalog;
 class L2 {
     static int fail=0;
     static void Check(string w,bool ok,string d=""){Console.WriteLine((ok?"  PASS  ":"  FAIL  ")+w+(d.Length>0?"   ["+d+"]":""));if(!ok)fail++;}

@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Kaban.Machines.MD3020.Screens.Parameters
 {

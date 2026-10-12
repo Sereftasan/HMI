@@ -1,4 +1,4 @@
-
+﻿
 namespace Kaban.Core.Enums
 {
     public enum TriggerType { None, OFF, ON, Range }

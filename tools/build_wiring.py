@@ -562,7 +562,7 @@ def build():
         r = rows[p]
         out.write(';'.join(r.get(c, '').replace(';', ',') for c in COLUMNS) + '\n')
     path = os.path.join(MACHINE, 'Wiring.csv')
-    with io.open(path, 'w', encoding='utf-8', newline='\r\n') as f:
+    with io.open(path, 'w', encoding='utf-8-sig', newline='\n') as f:
         f.write(out.getvalue())
     return path, len(rows)
 

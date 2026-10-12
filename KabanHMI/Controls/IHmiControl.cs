@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Kaban.Core.Enums;
 
 namespace Kaban.UI.Controls

@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Kaban.Machines.H800.Screens.Parameters
 {

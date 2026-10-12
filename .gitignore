@@ -1,0 +1,11 @@
+# Visual Studio and build output
+.vs/
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.cache
+TestResults/
+# the old delivery's list of changed files (git log is the history now)
+CHANGED_FILES.txt

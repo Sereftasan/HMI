@@ -1,4 +1,4 @@
-namespace Kaban.UI.Controls
+﻿namespace Kaban.UI.Controls
 {
     partial class ButtonHMI
     {

@@ -1,4 +1,4 @@
-namespace Kaban.Core.Interfaces
+﻿namespace Kaban.Core.Interfaces
 {
     public interface IPlcDriver
     {

@@ -1,4 +1,4 @@
-using System; using System.Windows.Forms; using Kaban.UI.Controls;
+﻿using System; using System.Windows.Forms; using Kaban.UI.Controls;
 class N { static int fail=0;
   static void Check(string w,bool ok,string d=""){Console.WriteLine((ok?"  PASS  ":"  FAIL  ")+w+(d.Length>0?"   ["+d+"]":""));if(!ok)fail++;}
   [STAThread] static void Main(){

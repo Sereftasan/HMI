@@ -1,4 +1,4 @@
-
+﻿
 using System.Windows.Forms;
 
 namespace Kaban.Machines.FA2010.Screens

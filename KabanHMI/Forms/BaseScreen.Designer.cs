@@ -1,4 +1,4 @@
-namespace Kaban.UI.Forms
+﻿namespace Kaban.UI.Forms
 {
     partial class BaseScreen
     {

@@ -1,4 +1,4 @@
-Label;DataType;Address
+﻿Label;DataType;Address
 PC_ProfilBasiKontrol_Aktif;Bit;L0
 PC_Barkod_Aktif;Bit;L1
 PC_IsBitiste_BaslangicPoza;Bit;L2

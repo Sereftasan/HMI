@@ -1,4 +1,4 @@
-using Kaban.UI;
+﻿using Kaban.UI;
 
 namespace Kaban.Machines.SB3012.Screens
 {

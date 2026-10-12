@@ -1,4 +1,4 @@
-// Kaban.Core.Helpers/ComparisonHelper.cs
+﻿// Kaban.Core.Helpers/ComparisonHelper.cs
 using Kaban.Core.Enums;
 
 namespace Kaban.Core.Helpers

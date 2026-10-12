@@ -1,4 +1,4 @@
-page;control;device;data_type;divisor;floating_point;digits;mask;read_mode;button_type;caption
+﻿page;control;device;data_type;divisor;floating_point;digits;mask;read_mode;button_type;caption
 AlarmPanelScrewing;btnReset;M36;;;;;;;Momentary;Reset
 ucAlarmsScrewing;btnReset;M36;;;;;;;Momentary;Alarm List
 ucScrewingAxisPositions;kabanLedLabel1;D80;Bit_32;1;0;6;;CONTINUOUS;;Axis X1

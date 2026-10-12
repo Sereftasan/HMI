@@ -1,4 +1,4 @@
-using Kaban.Core.Enums;
+﻿using Kaban.Core.Enums;
 
 namespace Kaban.Core.Helpers
 {

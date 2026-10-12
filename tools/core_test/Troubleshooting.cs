@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using Kaban.Core.Helpers;
 using TC = Kaban.Core.Helpers.TroubleshootingCatalog;

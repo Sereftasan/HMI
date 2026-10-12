@@ -1,4 +1,4 @@
-// =============================================================================
+﻿// =============================================================================
 // EXAMPLE: Giriş Konveyör manual page built from CylinderUnitHMI (merged style)
 // -----------------------------------------------------------------------------
 // Reference snippet (not compiled into any project). Copy CreateSikmaUnits into

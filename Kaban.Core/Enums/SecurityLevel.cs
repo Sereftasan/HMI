@@ -1,4 +1,4 @@
-namespace Kaban.Core.Enums
+﻿namespace Kaban.Core.Enums
 {
     public enum SecurityLevel
     {

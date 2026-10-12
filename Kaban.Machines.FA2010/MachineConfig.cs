@@ -1,4 +1,4 @@
-using Kaban.Core.Machines;
+﻿using Kaban.Core.Machines;
 
 namespace Kaban.Machines.FA2010
 {

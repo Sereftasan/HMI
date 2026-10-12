@@ -1113,10 +1113,11 @@ class Emitter:
         # a new page (9 October: Conveyor, Robot, Milling, Cutting): its code file as well
         code = path.replace('.Designer.cs', '.cs')
         if not os.path.exists(code):
-            open(code, 'w', encoding='utf-8', newline='\n').write(PAGE_CODE % (ns, cls, cls))
+            open(code, 'w', encoding='utf-8-sig', newline='\n').write(PAGE_CODE % (ns, cls, cls))
         # A BOM only when the page needs it (a degree sign, an arrow): the
         # compiler then cannot read it in the wrong code page.
-        open(path, 'w', encoding='utf-8-sig' if any(ord(c) > 127 for c in text) else 'utf-8', newline='\n').write(text)
+        # with a byte order mark, as Visual Studio keeps the program's files (12 October)
+        open(path, 'w', encoding='utf-8-sig', newline='\n').write(text)
 
 # ============================================================================
 #  MATCHING: which current control each new one is

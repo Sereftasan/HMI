@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using Kaban.UI;
 
 namespace Kaban.Machines.FA2010.Screens
