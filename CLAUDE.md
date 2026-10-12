@@ -28,10 +28,11 @@
 
 ## For Claude, at the start of a session or a batch
 1. Stage `_history\HMI.bundle` and clone it: that is the repository (`git clone HMI.bundle work`).
-2. List this folder (mtimes) for files changed since the last write - the user's own changes - stage and take them in.
+2. List this folder: a file newer than `_history\HMI.bundle` (written last in every batch) is the user's own change -
+   stage it and take it in (bin, obj, .vs and packages are Visual Studio's).
 3. Read `REQUESTS.md`. Work; commit per item (the trailer lines as the session says); re-add the BOMs.
-4. Write the changed files here (`device_commit_files`, up to 50 a call) and a new `_history\HMI.bundle`
-   (`git bundle create HMI.bundle master`); move the done requests to "Done".
+4. Write the changed files here (`device_commit_files`, up to 50 a call), move the done requests to "Done", and
+   last a new `_history\HMI.bundle` (`git bundle create HMI.bundle master`).
 
 ## Conventions
 - Files: UTF-8 with a byte order mark for `.cs`, `.csproj`, `.csv`; Windows line endings in this folder.
