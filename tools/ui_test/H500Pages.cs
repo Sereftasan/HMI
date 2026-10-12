@@ -109,6 +109,27 @@ class H5P {
               string.Join(",", opts.Select(o => o.Address)));
         Check("  a Maintenance's to change", nums.All(n => n.RequiredSecurity == SecurityLevel.Maintenance) && opts.All(o => o.RequiredSecurity == SecurityLevel.Maintenance));
 
+        Console.WriteLine("--- in Turkish (12 October: \"H500 pages Turkish translations are missing\") ---");
+        // the H500's own file and the shared one - as when the H500 runs alone (under FA2010 the files merge)
+        LanguageManager.LoadMachineTranslations(Path.Combine("H500", "Translations.csv"));
+        var pages = new Control[] { entry, heads, prm, new Kaban.Machines.H500.Screens.HomeScreen() };
+        var keys = new List<string>();
+        foreach (var pg in pages)
+            foreach (var c in Tree(pg))
+                foreach (var pn in new[] { "TranslationKey", "DescriptionText", "TitleTextKey" }) {
+                    var pi = c.GetType().GetProperty(pn);
+                    var v = pi == null ? null : pi.GetValue(c, null) as string;
+                    if (!string.IsNullOrWhiteSpace(v) && !System.Text.RegularExpressions.Regex.IsMatch(v, "^[XYZ][12]$")) keys.Add(v);
+                }
+        keys.AddRange(new[] { "Tab_H500_ManualEntry_Conveyor", "Tab_H500_ManualHeads", "Tab_H500_ParamMachine", "Machine ready to work (M1)", "Current position" });
+        var missing = keys.Distinct().Where(k => LanguageManager.GetStringIn("TR", k) == null).ToList();
+        Check("every caption of the four pages, their tabs and Start's condition has its Turkish (" + keys.Distinct().Count() + ")", missing.Count == 0, string.Join(", ", missing));
+        LanguageManager.ChangeLanguage("TR");
+        Check("  shown: Kafa 1, Motor Çalıştır, Vidalama 1-2 Güvenlik Mesafesi, Başlat",
+              Named<LabelHMI>(heads, "lblHead_1").Text == "Kafa 1" && LanguageManager.GetString(hb("btnHead_1_Engine_Start").TranslationKey, "") == "Motor Çalıştır" &&
+              LanguageManager.GetString(num("D116").DescriptionText, "") == "Vidalama 1-2 Güvenlik Mesafesi" && LanguageManager.GetString("Btn_HomeStart", "") == "Başlat");
+        LanguageManager.ChangeLanguage("EN");
+
         Console.WriteLine(fail == 0 ? "\nH500 PAGES ALL PASS" : "\nH500 PAGES " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

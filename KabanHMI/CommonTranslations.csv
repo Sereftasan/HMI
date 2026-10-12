@@ -50,6 +50,12 @@ Set_PlcDiag;PLC Diagnostics;PLC Tanılama;Диагностика ПЛК;SPS-Diag
 Sys_ConfirmLogout;Log out of this session?;Oturumu kapatmak istiyor musunuz?;Завершить сеанс?;Diese Sitzung beenden?;Terminare questa sessione?;¿Cerrar esta sesión?
 Btn_ChangeUser;Change user;Kullanıcı değiştir;Сменить пользователя;Benutzer wechseln;Cambia utente;Cambiar usuario
 Btn_Cancel;Cancel;İptal;Отмена;Abbrechen;Annulla;Cancelar
+Btn_HomeStart;Start;Başlat;;;;
+Btn_HomePause;Pause;Duraklat;;;;
+Lbl_Speed;Speed;Hız;;;;
+Msg_CancelOperation;The machine is working. Cancel the operation?;Makine çalışıyor. İşlem iptal edilsin mi?;;;;
+Ttl_Confirm;Confirm;Onay;;;;
+Current position;Current position;Mevcut konum;;;;
 Sys_ConfirmClose;Close the program?;Program kapatılsın mı?;Закрыть программу?;Programm schließen?;Chiudere il programma?;¿Cerrar el programa?
 Btn_Close;Close;Kapat;Закрыть;Schließen;Chiudi;Cerrar
 Btn_AlarmReset;Reset alarms;Alarmları sıfırla;Сброс аварий;Alarme zurücksetzen;Reimposta allarmi;Reiniciar alarmas

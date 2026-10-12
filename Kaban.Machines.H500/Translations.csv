@@ -6,4 +6,81 @@ Fnc_H500_Unit2;Unit 2;Ünite 2;Узел 2;Einheit 2;Unità 2;Unidad 2
 Tip_H500_AtHome;Unit at home position;Ünite başlangıç konumunda;Узел в исходном положении;Einheit in Grundstellung;Unità in posizione di riferimento;Unidad en posición de origen
 Alm_H500_Fault1;H500: unit fault;Alt Makine 1: ünite arızası;H500: неисправность узла;H500: Einheitsstörung;H500: guasto unità;H500: fallo de unidad
 Alm_H500_NotHome;H500: not at home position;Alt Makine 1: başlangıç konumunda değil;H500: не в исходном положении;H500: nicht in Grundstellung;H500: non in posizione di riferimento;H500: no está en posición de origen
-
+Tab_H500_ManualEntry_Conveyor;Entry Conveyor;Giriş Konveyörü;;;;
+Servo Manual;Servo Manual;Servo Manuel;;;;
+X1 Second Value;X1 Second Value;X1 İkinci Değer;;;;
+X2 Second Value;X2 Second Value;X2 İkinci Değer;;;;
+Hole Drilling 1;Hole Drilling 1;Delik Delme 1;;;;
+Hole Drilling 2;Hole Drilling 2;Delik Delme 2;;;;
+Reference;Reference;Referans;Референс;Referenz;Riferimento;Referencia
+X1 Reference;X1 Reference;X1 Referans;;;;
+X2 Reference;X2 Reference;X2 Referans;;;;
+Z1 Reference;Z1 Reference;Z1 Referans;;;;
+Z2 Reference;Z2 Reference;Z2 Referans;;;;
+Y1 Reference;Y1 Reference;Y1 Referans;;;;
+Y2 Reference;Y2 Reference;Y2 Referans;;;;
+Home;Home;Başlangıç Konumu;;;;
+Screwing Tightening;Screwing Tightening;Vidalama Sıkma;;;;
+Conveyor;Conveyor;Konveyör;Конвейер;Förderer;Trasportatore;Transportador
+Clampings Up/Down;Clampings Up/Down;Sıkmalar Yukarı/Aşağı;;;;
+Clamping 1;Clamping 1;Sıkma 1;;;;
+Clamping 2;Clamping 2;Sıkma 2;;;;
+Clamping 3;Clamping 3;Sıkma 3;;;;
+Clamping 4;Clamping 4;Sıkma 4;;;;
+Clamping 5;Clamping 5;Sıkma 5;;;;
+Clamping 6;Clamping 6;Sıkma 6;;;;
+Clamping 7;Clamping 7;Sıkma 7;;;;
+Clampings Release;Clampings Release;Sıkmaları Aç;;;;
+Profile Initial Measurement;Profile Initial Measurement;Profil İlk Ölçümü;;;;
+Piston Forward;Piston Forward;Piston İleri;;;;
+Tab_H500_ManualHeads;Heads;Kafalar;;;;
+Head 1;Head 1;Kafa 1;;;;
+Head 2;Head 2;Kafa 2;;;;
+Engine Start;Engine Start;Motor Çalıştır;;;;
+High Speed;High Speed;Yüksek Hız;;;;
+Warehouse Up;Warehouse Up;Depo Yukarı;;;;
+Feed Screw;Feed Screw;Vida Besle;;;;
+Unload Screw;Unload Screw;Vida Boşalt;;;;
+Servo Torque Limit;Servo Torque Limit;Servo Tork Limiti;;;;
+Start Screwing;Start Screwing;Vidalama Başlat;;;;
+Screwing Finished;Screwing Finished;Vidalama Bitti;;;;
+Screwing 1 Up/Down;Screwing 1 Up/Down;Vidalama 1 Yukarı/Aşağı;;;;
+Screwing 2 Up/Down;Screwing 2 Up/Down;Vidalama 2 Yukarı/Aşağı;;;;
+Screwing 1 Press;Screwing 1 Press;Vidalama 1 Baskı;;;;
+Screwing 2 Press;Screwing 2 Press;Vidalama 2 Baskı;;;;
+Screwing 1;Screwing 1;Vidalama 1;;;;
+Screwing 2;Screwing 2;Vidalama 2;;;;
+Screwing 1 Forward / Back;Screwing 1 Forward / Back;Vidalama 1 İleri / Geri;;;;
+Screwing 2 Forward / Back;Screwing 2 Forward / Back;Vidalama 2 İleri / Geri;;;;
+Calibration Position;Calibration Position;Kalibrasyon Poz.;;;;
+Calibrate;Calibrate;Kalibre Et;Калибровать;Kalibrieren;Calibra;Calibrar
+Position To Go;Position To Go;Hedef Pozisyon;;;;
+GO!;GO!;GİT!;;;;
+Tab_H500_ParamMachine;Parameters;Parametreler;;;;
+Axis Speed Limits;Axis Speed Limits;Eksen Hız Limitleri;;;;
+Manual Speed X;Manual Speed X;Manuel Hız X;;;;
+Automatic Speed X;Automatic Speed X;Otomatik Hız X;;;;
+Manual Speed Y;Manual Speed Y;Manuel Hız Y;;;;
+Automatic Speed Y;Automatic Speed Y;Otomatik Hız Y;;;;
+Screwing Profile Length Limits;Screwing Profile Length Limits;Vidalama Profil Boy Limitleri;;;;
+Minimum Length;Minimum Length;Minimum Boy;;;;
+Maximum Length;Maximum Length;Maksimum Boy;;;;
+Machine Operation Settings;Machine Operation Settings;Makine Çalışma Ayarları;;;;
+Screwing 1 Reference Position;Screwing 1 Reference Position;Vidalama 1 Referans Pozisyonu;;;;
+Screwing 2 Reference Position;Screwing 2 Reference Position;Vidalama 2 Referans Pozisyonu;;;;
+Screwing 1 - Screwing 2 Safety Distance;Screwing 1 - Screwing 2 Safety Distance;Vidalama 1-2 Güvenlik Mesafesi;;;;
+Screwing Maximum Pressing Time;Screwing Maximum Pressing Time;Vidalama Maksimum Baskı Süresi;;;;
+Hole Drilling Available;Hole Drilling Available;Delik Delme Var;;;;
+Screwing Servo;Screwing Servo;Vidalama Servo;;;;
+Feed Control Sensor;Feed Control Sensor;Besleme Kontrol Sensörü;;;;
+Screw 1 - Holing 1 Distance;Screw 1 - Holing 1 Distance;Vida 1 - Delik 1 Mesafesi;;;;
+Screw 2 - Holing 2 Distance;Screw 2 - Holing 2 Distance;Vida 2 - Delik 2 Mesafesi;;;;
+Holing Z-1 Reference Position;Holing Z-1 Reference Position;Delme Z-1 Referans Pozisyonu;;;;
+Holing Z-2 Reference Position;Holing Z-2 Reference Position;Delme Z-2 Referans Pozisyonu;;;;
+Z-1 Profile Left Recovering Position;Z-1 Profile Left Recovering Position;Z-1 Profil Sol Kurtarma Pozisyonu;;;;
+Profile Initial Measurement Ref. Pos.;Profile Initial Measurement Ref. Pos.;Profil İlk Ölçüm Ref. Poz.;;;;
+X Encoder Active;X Encoder Active;X Enkoder Aktif;;;;
+Unit Y Pneumatic Position;Unit Y Pneumatic Position;Ünite Y Pnömatik Pozisyon;;;;
+Drilling Encoder Accuracy;Drilling Encoder Accuracy;Delme Enkoder Hassasiyeti;;;;
+Screwing Encoder Precision;Screwing Encoder Precision;Vidalama Enkoder Hassasiyeti;;;;
+Machine ready to work (M1);Machine ready to work (M1);Makine çalışmaya hazır (M1);;;;
