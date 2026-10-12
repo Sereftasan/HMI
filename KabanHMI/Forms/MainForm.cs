@@ -710,6 +710,8 @@ namespace Kaban.UI.Forms
                 }
 
                 cmbLanguage.SelectedIndexChanged += CmbLanguage_SelectedIndexChanged;
+                // everyone's language now, the user's own at each sign-in (View Preferences)
+                Helpers.UserLanguage.Attach();
             }
             catch (Exception ex)
             {
@@ -992,6 +994,8 @@ namespace Kaban.UI.Forms
             };
             _btnLang.FlatAppearance.BorderSize = 0;
             _btnLang.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
+            // the flag of the language in force (a sign-in may bring the user's own)
+            LanguageManager.LanguageChanged += (s, e) => { if (_btnLang != null && !_btnLang.IsDisposed) _btnLang.Invalidate(); };
             _btnLang.Paint += (s, e) =>
             {
                 // Sizes at factor 1, drawn at the magnifying factor (UiScale.Px).
@@ -2232,9 +2236,11 @@ namespace Kaban.UI.Forms
                     Checked = string.Equals(code, LanguageManager.CurrentLanguage, StringComparison.OrdinalIgnoreCase),
                     Image = FlagBitmap(code)
                 };
+                // everyone's language - kept, as the scale beside it is the panel's
+                // (a user's own is a preference of theirs: Users and Preferences > Screen)
                 item.Click += (s2, e2) =>
                 {
-                    LanguageManager.ChangeLanguage(code);
+                    Helpers.UserLanguage.ChooseForPanel(code);
                     _btnLang.Invalidate();
                 };
                 menu.Items.Add(item);
@@ -2273,7 +2279,7 @@ namespace Kaban.UI.Forms
             return img;
         }
 
-        private static void DrawFlag(Graphics g, Rectangle flag, string code)
+        internal static void DrawFlag(Graphics g, Rectangle flag, string code)
         {
             // Real artwork when we have it (the flags shipped with the alarm pack,
             // plus the two exact tricolours); the painted fallback only runs for a

@@ -285,7 +285,8 @@ namespace Kaban.UI.Settings
             _scale.Hovered += (s, f) => ShowScaleBeside(_scale.OpenMenu, f);
             _scale.MenuClosed += (s, e) => HidePreview();
 
-            foreach (var group in new[] { "Captions", "Numbers", "Units", "Tables", "SignIn", "Help" })
+            // Screen: the scale above, then the language (12 October)
+            foreach (var group in new[] { "Screen", "Captions", "Numbers", "Units", "Tables", "SignIn", "Help" })
             {
                 if (group == "Units")
                 {
@@ -514,6 +515,8 @@ namespace Kaban.UI.Settings
         {
             var unit = UnitOf(key);
             if (unit != UnitType.None) return UnitManager.GetAvailable(unit).Select(u => u.Name);
+            // the languages: those whose texts were read
+            if (key == ViewPreferences.Language) return LanguageManager.AvailableLanguages.Select(l => l.ToUpperInvariant()).Distinct().ToList();
             var p = ViewPreferences.Find(key);
             return p != null ? p.Values : new string[0];
         }
@@ -852,7 +855,9 @@ namespace Kaban.UI.Settings
                 foreach (var kv in prefs.Where(p => UnitOf(p.Key) != UnitType.None && p.Value != null).ToList())
                     if (kv.Value != UnitManager.PanelUnitName(UnitOf(kv.Key))) UnitManager.SetActive(UnitOf(kv.Key), kv.Value);
                 var rest = prefs.Where(p => UnitOf(p.Key) == UnitType.None).ToDictionary(p => p.Key, p => p.Value);
+                string langBefore = ViewPreferences.LanguageInForce;
                 ViewPreferences.SetMany(null, rest);
+                LanguageNow(langBefore);
                 AuditLogger.Log("view preferences for everyone kept: " + Shown(prefs));
                 double before = DisplaySettings.PanelFactor;
                 bool scaleChanged = _scale.Value.HasValue && Math.Abs(_scale.Value.Value - before) > 0.0005;
@@ -898,8 +903,10 @@ namespace Kaban.UI.Settings
             if (beforeScale != _scale.Value)
                 AuditLogger.Log("screen scale of user '" + account.Username + "': " +
                                 (_scale.Value.HasValue ? DisplaySettings.Percent(_scale.Value.Value) : "no specific request") + ".");
+            string languageBefore = ViewPreferences.LanguageInForce;
             ViewPreferences.SetMany(account.Username, prefs);
             AuditLogger.Log("view preferences of " + account.Username + " kept: " + Shown(prefs));
+            LanguageNow(languageBefore);
             RefreshList();
             Fill();
             Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
@@ -913,6 +920,16 @@ namespace Kaban.UI.Settings
                 else AskRestart(f.Value);
             }
             return true;
+        }
+
+        /// <summary>
+        /// The language changed for the one signed in by what was kept (their own, or
+        /// everyone's that they follow): on the screen at once - no restart, as the scale needs.
+        /// </summary>
+        private static void LanguageNow(string before)
+        {
+            var after = ViewPreferences.LanguageInForce;
+            if (after != null && !string.Equals(after, before, StringComparison.OrdinalIgnoreCase)) Kaban.UI.Helpers.UserLanguage.Apply();
         }
 
         private void Say(string message)
@@ -994,6 +1011,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
                 case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
                 case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
+                case ViewPreferences.Language: return T("VP_Language", "Language");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
                     // a unit family: "Unit_Length" -> Length
@@ -1008,6 +1026,13 @@ namespace Kaban.UI.Settings
 
         public static string ValueText(string key, string value)
         {
+            // a language: its code and its own name ("TR  Türkçe")
+            if (key == ViewPreferences.Language)
+            {
+                string code = (value ?? "").Trim().ToUpperInvariant();
+                string name = Kaban.UI.Helpers.UserLanguage.NameOf(code);
+                return name == code ? code : code + "  " + name;
+            }
             switch (key + "." + value)
             {
                 case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");

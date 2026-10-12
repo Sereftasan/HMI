@@ -85,6 +85,7 @@
     <Compile Include="Helpers\SidePages.cs" />
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
+    <Compile Include="Helpers\UserLanguage.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
     <Compile Include="Helpers\AiMenu.cs" />

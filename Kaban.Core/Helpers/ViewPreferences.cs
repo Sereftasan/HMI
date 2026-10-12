@@ -68,9 +68,17 @@ namespace Kaban.Core.Helpers
         public const string NoteLanguages = "NoteLanguages";
         /// <summary>How an AI prompt goes on the clipboard: as a file (pasted, a chat attaches it) or as its text.</summary>
         public const string AiPromptAs = "AiPromptAs";              // File | Text
+        /// <summary>
+        /// The language of the screen (a code: EN, TR ...): everyone's is the flag on the top
+        /// bar's, a user's own is taken when they sign in (12 October: "add language selection
+        /// to the preferences as well, under Screen ... just like Screen scale").
+        /// </summary>
+        public const string Language = "Language";
 
         public static readonly IList<Preference> All = new List<Preference>
         {
+            // the languages are the translations loaded (LanguageManager.AvailableLanguages)
+            new Preference { Key = Language, Group = "Screen", Default = "EN" },
             P(CaptionAlign, "Captions", "Right", "Left"),
             P(DecimalSeparator, "Numbers", "Windows", "Point", "Comma"),
             P(DateFormat, "Numbers", "Iso", "European", "Us"),
@@ -170,6 +178,30 @@ namespace Kaban.Core.Helpers
             }
             var p = Find(key);
             return p != null ? p.Default : "";
+        }
+
+        /// <summary>Everyone's value when one was set (not the default), else null.</summary>
+        public static string PanelChosen(string key)
+        {
+            lock (Gate)
+            {
+                Load();
+                string v;
+                return _panel.TryGetValue(key, out v) && Valid(key, v) ? v : null;
+            }
+        }
+
+        /// <summary>
+        /// The language the screen is in for the one signed in: their own, else everyone's -
+        /// null when neither was ever chosen (the screen keeps the one it has).
+        /// </summary>
+        public static string LanguageInForce
+        {
+            get
+            {
+                var user = ActiveUser;
+                return (user != null ? UserValue(user, Language) : null) ?? PanelChosen(Language);
+            }
         }
 
         /// <summary>A user's own value, or null when they take everyone's.</summary>
@@ -445,6 +477,7 @@ namespace Kaban.Core.Helpers
             if (value == null) return false;
             var p = Find(key);
             if (p == null) return false;
+            if (p.Key == Language) return value.Trim().Length > 0 && value.Trim().All(char.IsLetter);
             if (p.Values.Length == 0) return true;          // free text (a list, a place)
             return p.Values.Contains(value);
         }
