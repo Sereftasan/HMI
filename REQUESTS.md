@@ -4,14 +4,16 @@ Write here what is missing or wrong, whenever you notice it - one line or a para
 Claude reads this file at the start of every batch, does the items, and moves each one to "Done" with its commit.
 
 ## To do
-"Bug reports without the conditions. “Axis monitor second page doesn’t scroll to the right end” took me a while to reproduce. It only happened at 150% scale, signed in as Admin, with Motion monitor columns ticked."
-This bug doesn't seem to be solved properly, the scroll position still gets broken when there is too many control on the page and screen scale is big (the horizontal scroll movement gets big then, it could be the reason)
-  - Claude (12 October): not reproduced yet - in the side panel and in its own window, at 150%, as Admin with every
-    PLC axis item and all 43 Motion monitor columns (rows 8262 px wide), the scroll reaches the last column here.
-    Please put a screenshot of the broken state in _requests (scrolled as far right as it goes) and write what you
-    do: drag the scroll bar, click its arrows, the mouse wheel? Does it stop short, or jump back while you scroll?
 
 ## Done
+- 8fb896b - Axis Monitor at 150%: the bottom scroll stopped short and put the rows back at the top, only sometimes
+  (_requests\AxisMonitor_scroll_150%.png). It stopped with Robot X's back jog button at the left edge: opening the
+  side page gave that button the focus, and Windows scrolls a panel back to its focused control whenever the focus
+  is given to it again. The list takes the focus itself now and never jumps back to a control focused before (the
+  Axis Settings and cylinder pages' rows the same).
+- be89ade - Users and Preferences > Screen: Language under the screen scale - a user's own is put on the screen when
+  they sign in (at once, no restart), everyone's again when they sign out. Everyone's is the flag's on the top bar,
+  kept over a restart now (it came back in English).
 - 70c199e - Found in the panel's audit log (12 October 10:24:27, the HMI restarted): typing a suggestion in the Notes
   page's texts table and then tapping another control crashed it. The table's typing is now ended first.
 - 931ba43 - The description texts' bottom was cut off (Machine Parameters > Others at 80%, captions on the left):
