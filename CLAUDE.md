@@ -1,10 +1,13 @@
 # Kaban HMI - how we work (for Claude and for you)
 
 ## Where the code is
-- **C:\Kaban Files\_Projects\HMI** is the project: a git repository (branch `master`, the whole history since the
-  first upload). Solution: `KabanHMI\KabanHMI.sln`. Visual Studio's *Git Changes* / *Git Repository* windows show it.
+- **C:\Kaban Files\_Projects\HMI** is the project. Solution: `KabanHMI\KabanHMI.sln`.
 - Claude works on a copy in its cloud workspace (it builds and tests there on Mono/Linux), then writes the changed
-  files and the new commits straight into this folder. No zip any more.
+  files straight into this folder - they are the newest code at once. No zip any more.
+- **The history** (every commit since the first upload, branch `master`) is in `_history\HMI.bundle`, renewed with
+  each batch. Claude may not write into a `.git` folder itself, so **double-click `Update_Git_History.cmd`** when you
+  want the history in Visual Studio's *Git Changes* / *Git Repository* windows: the first time it makes this folder
+  a git repository, later it brings it up to Claude's newest commit. It overwrites no file.
 - **Your own changes**: edit freely. Before each batch Claude looks for files changed in this folder since its last
   write and takes them in first - nothing of yours is overwritten. Committing them yourself is fine too (on `master`
   or a branch of your own); say so in your request.
@@ -22,6 +25,13 @@
 - Done every time: the code, the tests of what changed, a commit per item, the files into this folder, a short report.
 - **Only when you ask**: REVIEW_2026-09-24.md / CHANGES.md, the translations (new texts are English until then),
   the manuals (`KabanHMI\Help`, the machines' `Help`), the AI page design guide, the full test suite.
+
+## For Claude, at the start of a session or a batch
+1. Stage `_history\HMI.bundle` and clone it: that is the repository (`git clone HMI.bundle work`).
+2. List this folder (mtimes) for files changed since the last write - the user's own changes - stage and take them in.
+3. Read `REQUESTS.md`. Work; commit per item (the trailer lines as the session says); re-add the BOMs.
+4. Write the changed files here (`device_commit_files`, up to 50 a call) and a new `_history\HMI.bundle`
+   (`git bundle create HMI.bundle master`); move the done requests to "Done".
 
 ## Conventions
 - Files: UTF-8 with a byte order mark for `.cs`, `.csproj`, `.csv`; Windows line endings in this folder.

@@ -9,3 +9,5 @@ packages/
 TestResults/
 # the old delivery's list of changed files (git log is the history now)
 CHANGED_FILES.txt
+# the history Claude leaves for Update_Git_History.cmd (it is git's own record)
+_history/
