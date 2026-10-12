@@ -204,9 +204,10 @@ class LP {
         var entryP = Page("ParamConveyor");
         var robotP = Page("ParamRobot");
         Check("Conveyor: the clamping positions in 0.0001 mm (they were divided by 100)", at(entryP, "D452").Divisor == 10000 && at(entryP, "D464").Divisor == 10000);
-        Check("  the encoder reference D516 one word / 10 (Robot)", at(robotP, "D516").DataType == DataTypeEnum.Bin_16 && at(robotP, "D516").Divisor == 10);
-        Check("Conveyor (8) and Robot (10 + 10, the right column under the left): one column each, no heading", oneColumn(entryP) && oneColumn(robotP) &&
-              All(entryP).OfType<NumericInputHMI>().Count() == 8 && All(robotP).OfType<NumericInputHMI>().Count() == 20 &&
+        // 12 October: the encoder reference D516 is the Robot Gripper encoder row's Reference only
+        Check("  no encoder reference D516 on Robot (the Encoders page's Robot Gripper row has it)", !All(robotP).OfType<NumericInputHMI>().Any(n => n.Address == "D516"));
+        Check("Conveyor (8) and Robot (9 + 10, the right column under the left): one column each, no heading", oneColumn(entryP) && oneColumn(robotP) &&
+              All(entryP).OfType<NumericInputHMI>().Count() == 8 && All(robotP).OfType<NumericInputHMI>().Count() == 19 &&
               All(robotP).OfType<NumericInputHMI>().OrderBy(n => n.Top).Last().Address == "D784");
         var other = Page("ParamOther");
         var opts = All(other).OfType<CheckBoxHMI>().ToList();

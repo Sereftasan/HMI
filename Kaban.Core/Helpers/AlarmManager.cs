@@ -188,6 +188,8 @@ namespace Kaban.Core.Helpers
         public static AlarmDefinition FindByStationAndAddress(int station, string address)
         {
             if (string.IsNullOrWhiteSpace(address)) return null;
+            // "M915@2": PLC 2's alarm, whichever control names it
+            PlcAddressHelper.Resolve(station, address.Trim(), out station, out address);
             foreach (var def in _definitions.Values)
                 if (def.PlcNumber == station &&
                     string.Equals((def.Address ?? "").Trim(), address.Trim(), StringComparison.OrdinalIgnoreCase))

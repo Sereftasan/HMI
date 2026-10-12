@@ -268,13 +268,16 @@ page('ManualClamping_Moulds', 'Manual', 'ucClampingMoulds', 'Clamping Moulds', [
     M('Conveyor Back Horizontal', 'M551', 'M550', 'D115', 'D155', 'M55', 'D135', 'M35', 'D755', 'D795', optional=True),
     M('Profile Recognition Front Vertical', 'M553', 'M552', 'D116', 'D156', 'M56', 'D136', 'M36', 'D756', 'D796'),
     M('Profile Recognition Back Vertical', 'M555', 'M554', 'D117', 'D157', 'M57', 'D137', 'M37', 'D757', 'D797', optional=True),
-    M('Profile Recognition Back Horizontal', 'M557', 'M556', 'D118', 'D158', 'M58', 'D138', 'M38', 'D758', 'D798', optional=True),
+    # 12 October: the three back horizontal moulds with an encoder have their reference
+    # sensors on PLC 2 (PLC 1's encoder inputs were full) - X12, X13, X14 of PLC 2, named
+    # "X12@2" on these PLC 1 rows; their valves' outputs are PLC 2's too (Wiring.csv).
+    M('Profile Recognition Back Horizontal', 'M557/X12@2', 'M556', 'D118', 'D158', 'M58', 'D138', 'M38', 'D758', 'D798', optional=True),
     M('Cutting Left Front Vertical', 'M559', 'M558', 'D119', 'D159', 'M59', 'D139', 'M39', 'D759', 'D799'),
     M('Cutting Left Back Vertical', 'M561', 'M560', 'D120', 'D160', 'M60', 'D140', 'M40', 'D760', 'D800', optional=True),
-    M('Cutting Left Back Horizontal', 'M563', 'M562', 'D121', 'D161', 'M61', 'D141', 'M41', 'D761', 'D801', optional=True),
+    M('Cutting Left Back Horizontal', 'M563/X13@2', 'M562', 'D121', 'D161', 'M61', 'D141', 'M41', 'D761', 'D801', optional=True),
     M('Cutting Right Front Vertical', 'M565', 'M564', 'D122', 'D162', 'M62', 'D142', 'M42', 'D762', 'D802'),
     M('Cutting Right Back Vertical', 'M567', 'M566', 'D123', 'D163', 'M63', 'D143', 'M43', 'D763', 'D803', optional=True),
-    M('Cutting Right Back Horizontal', 'M569', 'M568', 'D124', 'D164', 'M64', 'D144', 'M44', 'D764', 'D804', optional=True),
+    M('Cutting Right Back Horizontal', 'M569/X14@2', 'M568', 'D124', 'D164', 'M64', 'D144', 'M44', 'D764', 'D804', optional=True),
     M('Right Front Vertical Clamping', 'M585', 'M584', 'D128', 'D167', 'M67', 'D147', 'M47', 'D846', 'D807',
       # P57 Output Front Up-Down Mold (Y151 up M584 / Y152 down M585): 5/3 closed
       # centre with an analogue sensor, as the drawings show it.
@@ -309,7 +312,9 @@ page('ParamConveyor', 'Parameters', 'ucEntryParameters', 'Conveyor',
 page('ParamRobot', 'Parameters', 'ucEntryParameters', 'Robot',
     [Col(None,
         Num('Gripper Length', 'D506', L32, 10000, 1),
-        Num('Encoder Reference', 'D516', L16, 10, 1),
+        # 12 October: "Encoder Reference" (D516) is the Robot Gripper's encoder row's
+        # Reference (Machine Parameters > Encoders) - "remove it from Robot, the encoder page
+        # is enough".
         Num('Length Measuring Dist.', 'D384', L32, 10000, 1),
         Num('Z Profile Lifting Amount', 'D522', L32, 10000, 1),
         Num('Y Profile Back Clearing Amount', 'D578', L32, 10000, 1),
@@ -372,8 +377,9 @@ page('ParamEncoders', 'Parameters', 'ucEncodersParameters', 'Encoders',
     [Col(None,
         # The old page jogged this row with M657/M656 - the Exit's Robot Top Clamping, copied
         # from the row below. The gripper is M642/M641 (Manual Movement - Robot); its position
-        # in 0.1 mm with ONE decimal, as here (the old Robot page showed two).
-        E(1, 'Robot Gripper', 'M642/M222', 'M641', 'D21 16 /10 1', ref='D516'),
+        # in 0.1 mm with TWO decimals, as the old Robot page showed it (12 October: "make it 2
+        # decimal at the encoder page as well"). Its Reference, D516, is only here now.
+        E(1, 'Robot Gripper', 'M642/M222', 'M641', 'D21 16 /10 2', ref='D516'),
         # Forward: the pressure switch the drawings wire (SW1 = SN83 on X70 = M240), as since
         # 30 September; the old page lit M348, which is no input.
         E(2, 'Profile Recognition Front', 'M646/M225', 'M645/M240', 'D4 16 /10 1', ref='D477', tol='D479', start='D483', unclamp='D51'),
@@ -460,13 +466,20 @@ EXPECTED = {
     'ucEncodersParameters': {'extra': {'M642', 'M641', 'M222', 'M225', 'M240', 'M226', 'M228', 'M227', 'M243', 'M245',
                                        'M232', 'M233', 'M246', 'M213', 'M220', 'M345'},
                              'missing': {'M604', 'M330', 'M605', 'D22'},
-                             'swapped': {('M696', 'M689'), ('M741', 'M740')}},
+                             'swapped': {('M696', 'M689'), ('M741', 'M740')},
+                             # the gripper's position with two decimals, as the old Robot page (12 October)
+                             'scales': {'D21': (10.0, 2)}},
     # V Cutting Z's and the Exit Robot's lamps: the axis rows' reference sensors
     # now (M259 - the old Cutting page lit the Exit Robot's M258 - and M343, as
     # on the old Axis Parameters page).
     'ucCutting': {'missing': {'M258', 'M276', 'M277'}, 'extra': {'M271', 'M270', 'M273'},
                   'pairs': {('M748', 'M271'), ('M747', 'M270')}},
     'ucExit': {'missing': {'M258'}},
+    # the back horizontal moulds' reference sensors, on PLC 2 (12 October)
+    'ucClampingMoulds': {'extra': {'X12@2', 'X13@2', 'X14@2'},
+                         'pairs': {('M557', 'X12@2'), ('M563', 'X13@2'), ('M569', 'X14@2')}},
+    # Encoder Reference: the Robot Gripper's encoder row's Reference (Encoders) only (12 October)
+    'ucEntryParameters': {'missing': {'D516'}},
 }
 
 # ============================================================================
@@ -603,6 +616,7 @@ OWNED = {
     'CheckBoxHMI': {'Name', 'PlcNumber', 'Address', 'DescriptionText', 'DescriptionSide', 'Location', 'Size', 'LogAction', 'TabIndex'},
     'PneumaticPositioningHMI': {'BackColor', 'Name', 'PlcNumber', 'TitleTextKey', 'Location', 'Size', 'TabIndex',
                                 'CommandBackAddress', 'CommandForwardAddress', 'VerticalMovement',
+                                'BackSensorAddress', 'ForwardSensorAddress',
                                 'PositionAddress', 'PositionDataType', 'PositionDivisor', 'PositionDecimalPlaces',
                                 'TargetPosition', 'PositioningStartAddress', 'CalibrationAddress', 'CalibrateAddress',
                                 'PositioningToleranceAddress', 'PositioningDirectionReferenceAddress', 'Divisor', 'DecimalPlaces'},
@@ -911,6 +925,9 @@ class Emitter:
         self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (w, PP_ROW_H))
         self.p(name, 'CommandBackAddress', cs(item['a']['cmd']))
         self.p(name, 'CommandForwardAddress', cs(item['b']['cmd']))
+        # a sensor named on the row (12 October: the back horizontal moulds' reference sensors, "X12@2")
+        if item['a'].get('lamp'): self.p(name, 'BackSensorAddress', cs(item['a']['lamp']))
+        if item['b'].get('lamp'): self.p(name, 'ForwardSensorAddress', cs(item['b']['lamp']))
         if 'Vertical' in item['title']:
             self.p(name, 'VerticalMovement', 'true')       # back = down, forward = up (the drawings' valves)
         pos = item['pos']
@@ -1488,7 +1505,7 @@ def roles(pg):
             for k in ('ref', 'tol', 'start', 'unclamp'):
                 if it.get(k): checks.append((it[k], (10.0, 1)))
         for addr, dv in checks:
-            if addr in vals and dv not in vals[addr]:
+            if addr in vals and dv not in vals[addr] and EXPECTED.get(pg['old'], {}).get('scales', {}).get(addr) != dv:
                 problems.append('%s: %s divided %s here, %s on the old page' % (it['title'], addr, dv, sorted(vals[addr])))
     return problems
 

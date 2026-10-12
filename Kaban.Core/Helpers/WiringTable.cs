@@ -223,8 +223,15 @@ namespace Kaban.Core.Helpers
                         var addresses = Table(_byAddress, p.Station);
                         addresses[p.Address] = p;
                         if (p.Read.Length > 0) addresses[p.Read] = p;
-                        var commands = Table(_byCommand, p.Station);
-                        foreach (var c in p.Commands) commands[c] = p;
+                        // A command of another controller ("M543@1" for a PLC 2 output
+                        // the main PLC's manual bit drives): found from that one's bit.
+                        foreach (var c in p.Commands)
+                        {
+                            int at; string bit;
+                            if (PlcAddressHelper.TrySplitStation(c, out bit, out at))
+                                Table(_byCommand, station != null ? station(at) : at)[bit] = p;
+                            else Table(_byCommand, p.Station)[c] = p;
+                        }
                     }
                     n++;
                 }
@@ -281,6 +288,8 @@ namespace Kaban.Core.Helpers
         public static Point Find(int station, string address)
         {
             if (string.IsNullOrWhiteSpace(address)) return null;
+            // "Y0@2": on that controller (12 October)
+            PlcAddressHelper.Resolve(station, address.Trim(), out station, out address);
             EnsureLoaded();
             lock (_lock)
             {
@@ -301,10 +310,15 @@ namespace Kaban.Core.Helpers
             }
         }
 
-        /// <summary>The output a manual command bit drives (M688 -> Y12), null when none is known.</summary>
+        /// <summary>
+        /// The output a manual command bit drives (M688 -> Y12), null when none is
+        /// known - on its own controller or another (the point's Station: the back
+        /// moulds' M543 on PLC 1 drives Y1 on PLC 2).
+        /// </summary>
         public static Point OutputFor(int station, string command)
         {
             if (string.IsNullOrWhiteSpace(command)) return null;
+            PlcAddressHelper.Resolve(station, command.Trim(), out station, out command);
             EnsureLoaded();
             lock (_lock)
             {

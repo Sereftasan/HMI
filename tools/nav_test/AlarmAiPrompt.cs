@@ -61,9 +61,11 @@ class AAP {
         Pump(300);
 
         Console.WriteLine("--- an alarm on the list: the PLC's bit for a cylinder's movement ---");
-        var cyl = AlarmGeneration.Cylinders.First(c => c.Unit == "Right Front Clamping");
+        // 9 October: the Cutting page's Right Front Clamping is a cylinder with an encoder now - the HMI watches it, and
+        // names its alarms, by its encoder's row (Machine Parameters > Encoders): "Cutting Right Front"
+        var cyl = AlarmGeneration.Cylinders.First(c => c.Unit == "Cutting Right Front");
         var side = cyl.Sides.First(x => x.ErrorAddress == "M852");
-        NotesStore.Add(new Note { Kind = NoteKind.Comment, ControlKey = "x", ControlName = "Right Front Clamping - Back", Page = "FA2010 / Manual Movement / Cutting",
+        NotesStore.Add(new Note { Kind = NoteKind.Comment, ControlKey = "x", ControlName = "Cutting Right Front - Back", Page = "FA2010 / Manual Movement / Cutting",
                                   Author = "mt1", Level = "Maintenance", Time = new DateTime(2026, 10, 7, 15, 0, 0), Text = "The encoder coupling was tightened on 7 October." });
         sim[1].Write("M852", 1);
         AlarmManager.Evaluate(1, a => a == "M852" ? 1 : 0);
@@ -98,7 +100,7 @@ class AAP {
         Check("the alarm: its text, code, device, time", p.Contains("\"Cutting Right Front Clamp Releasing Alarm\"") && p.Contains("PLC device of the alarm: M852") &&
               p.Contains("Came at: ") && p.Contains("Still active: yes"));
         Check("the unit: its name, valve, feedback, the movement, its output, its sensor, its position",
-              p.Contains("Name on the HMI: Right Front Clamping") && p.Contains("closed center (3WayClosedCenter)") && p.Contains("Incremental encoder + reference sensor") &&
+              p.Contains("Name on the HMI: Cutting Right Front") && p.Contains("closed center (3WayClosedCenter)") && p.Contains("Incremental encoder + reference sensor") &&
               p.Contains("The movement that failed: \"Back\"") && p.Contains("Its valve output: Y55") && p.Contains("Position reading: D16"));
         var sideLines = p.Split('\n').Where(l => l.StartsWith("  - Left button (A)") || l.StartsWith("  - Right button (B)")).ToList();
         Check("  BOTH its movements as the HMI watches them: outputs, sensors, error bits with their alarms", sideLines.Count == 2 &&
@@ -115,13 +117,13 @@ class AAP {
         Check("  the sensor with its input and its sensor tag", devText.Contains("- M232 - ") && devText.Contains("X60") && devText.Contains("SN76"));
         Check("  the note a user left on it", p.Contains("The encoder coupling was tightened on 7 October.") && p.Contains("Notes the machine's users left on this unit"));
         Check("the HMI's own help listed, and its step-by-step page's words in it (the wiring numbers)",
-              p.Contains("Step by step - Right Front Clamping - Back") && p.Contains("Does the PLC switch on <code>Y55</code>?") && p.Contains("relay K45"));
+              p.Contains("Step by step - Cutting Right Front - Back") && p.Contains("Does the PLC switch on <code>Y55</code>?") && p.Contains("relay K45"));
         int html = p.IndexOf("```html", StringComparison.Ordinal), htmlEnd = html < 0 ? -1 : p.IndexOf("```", html + 7, StringComparison.Ordinal);
         string page = html < 0 || htmlEnd < 0 ? "" : p.Substring(html + 7, htmlEnd - html - 7);
         Check("  the step-by-step page IN FULL as the format: its HTML whole, with its style and drawings",
               page.TrimStart().StartsWith("<!DOCTYPE html>") && page.TrimEnd().EndsWith("</html>") && page.Contains("<style>") && page.Contains("<svg") &&
               page.Contains("Does the PLC switch on <code>Y55</code>?") && !page.Contains("{{") && p.Contains("in full below, as the format to follow"), page.Length + " characters");
-        Check("  the other document (the cylinder manual) as text, shortened", p.Contains("### Cylinder troubleshooting - Right Front Clamping (its text)"));
+        Check("  the other document (the cylinder manual) as text, shortened", p.Contains("### Cylinder troubleshooting - Cutting Right Front (its text)"));
         Check("  big, but a chat takes it (under 200 000 characters)", p.Length > 60000 && p.Length < 200000, p.Length + " characters");
         // the HMI's own alarm for the movement ("M873.1" in the feedback): what it saw, the states at the alarm
         var gen = new AlarmItem(item.AlarmCode + ".2", item.TranslationKey, AlarmSeverity.Fault)
@@ -149,9 +151,11 @@ class AAP {
         var aiNames = menu.Items.OfType<ToolStripMenuItem>().Skip(docs.Count).Select(i => i.Name).ToList();
         var last = menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiPrompt");
         // 9 October: "another member as 'Ask AI for help' to open an AI automatically as well as 'Create AI prompt'"
-        Check("after the documents: Create AI prompt, Ask <the user's AI>, Ask another AI",
-              string.Join(",", aiNames) == "aiPrompt,aiAsk,aiAskOther" && last.Text.EndsWith("Create AI prompt") &&
-              menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiAsk").Text.EndsWith("Ask Claude"),
+        // 12 October: every AI of the list, in its order - no "Ask another AI"; pictures as the user menu's
+        Check("after the documents: Create AI prompt, then Ask <AI> for every chat of the list (Ask Claude, Ask ChatGPT ...)",
+              string.Join(",", aiNames) == "aiPrompt," + string.Join(",", AiChats.All.Select(c => "aiAsk:" + c.Name)) && last.Text == "Create AI prompt" &&
+              menu.Items.OfType<ToolStripMenuItem>().First(i => i.Name == "aiAsk:Claude").Text == "Ask Claude" &&
+              menu.Items.OfType<ToolStripMenuItem>().Skip(docs.Count).All(i => i.Image != null),
               string.Join(" | ", menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text)));
         string noticed = null;
         AlarmAiPrompt.CopiedNotice = w => noticed = "copied";

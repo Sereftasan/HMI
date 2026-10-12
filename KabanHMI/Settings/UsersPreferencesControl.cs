@@ -514,8 +514,6 @@ namespace Kaban.UI.Settings
         {
             var unit = UnitOf(key);
             if (unit != UnitType.None) return UnitManager.GetAvailable(unit).Select(u => u.Name);
-            // the panel's AI chats (an Admin keeps the list: the caption bar's ?)
-            if (key == ViewPreferences.PreferredAi) return AiChats.All.Select(c => c.Name);
             var p = ViewPreferences.Find(key);
             return p != null ? p.Values : new string[0];
         }
@@ -995,7 +993,6 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
                 case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
                 case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
-                case ViewPreferences.PreferredAi: return T("VP_PreferredAi", "Preferred AI");
                 case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
@@ -1011,12 +1008,6 @@ namespace Kaban.UI.Settings
 
         public static string ValueText(string key, string value)
         {
-            if (key == ViewPreferences.PreferredAi && string.IsNullOrEmpty(value))
-            {
-                // none chosen: the first of the list
-                var first = AiChats.All.FirstOrDefault();
-                return first != null ? first.Name : "-";
-            }
             switch (key + "." + value)
             {
                 case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");

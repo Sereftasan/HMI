@@ -384,7 +384,10 @@ namespace Kaban.Core.Helpers
                 return new Signal
                 {
                     Address = d.Address.Trim(),
-                    Name = p != null && p.Tag.Length > 0 ? p.Tag + " (" + p.Address + ")" : d.Address.Trim()
+                    // "X12 (PLC 2)" for a device of the other controller
+                    Name = p != null && p.Tag.Length > 0
+                        ? p.Tag + " (" + PlcAddressHelper.Describe(c.Station, PlcAddressHelper.WithStation(p.Address, p.Station, c.Station)) + ")"
+                        : PlcAddressHelper.Describe(c.Station, d.Address.Trim())
                 };
             };
             foreach (var d in mv.Feedback) if (!string.IsNullOrWhiteSpace(d.Address)) s.MustOn.Add(sig(d));

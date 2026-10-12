@@ -66,8 +66,6 @@ namespace Kaban.Core.Helpers
         public const string IoShown = "IoShown";
         /// <summary>The languages the notes page lists a text in (comma list of codes; empty: the screen's and English).</summary>
         public const string NoteLanguages = "NoteLanguages";
-        /// <summary>The AI chat "Ask AI for help" opens (a name of AiChats; empty: the first of the list).</summary>
-        public const string PreferredAi = "PreferredAi";
         /// <summary>How an AI prompt goes on the clipboard: as a file (pasted, a chat attaches it) or as its text.</summary>
         public const string AiPromptAs = "AiPromptAs";              // File | Text
 
@@ -83,8 +81,6 @@ namespace Kaban.Core.Helpers
             P(AlarmSound, "SignIn", "Off", "On"),
             P(Blinking, "SignIn", "On", "Off"),
             P(TooltipDelay, "SignIn", "Normal", "Short", "Long"),
-            // the chats' names are the panel's (AiChats): any text kept
-            new Preference { Key = PreferredAi, Group = "Help", Default = "" },
             P(AiPromptAs, "Help", "File", "Text"),
             new Preference { Key = MotionColumns, Group = "", Hidden = true },
             new Preference { Key = LastPlace, Group = "", Hidden = true },

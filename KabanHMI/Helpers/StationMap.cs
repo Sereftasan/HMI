@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Reflection;
 using System.Windows.Forms;
+using Kaban.Core.Helpers;
 using Kaban.Core.Machines;
 using Kaban.UI.Controls;
 using Kaban.UI.Settings;
@@ -42,6 +44,8 @@ namespace Kaban.UI.Helpers
                     int host = ctx.Station(local);
                     if (host != local) prop.SetValue(c, host, null);
                 }
+                // and a device it names on another of the machine's controllers ("X12@2")
+                MapAddresses(ctx, c, 0);
 
                 // A COMPOSITE passes its station down to its own parts. Walking into
                 // them as well would translate them a second time - 1 to 3, then 3
@@ -50,6 +54,41 @@ namespace Kaban.UI.Helpers
             }
 
             foreach (Control child in c.Controls) Walk(ctx, child);
+        }
+
+        /// <summary>
+        /// A device of another of the machine's controllers ("X12@2", 12 October)
+        /// names the machine's own PLC 2: given the host's number for it, as the
+        /// control's PlcNumber is. Every "...Address" text of the control, of its
+        /// actions and of its limits and triggers.
+        /// </summary>
+        private static void MapAddresses(IMachineMountContext ctx, object o, int depth)
+        {
+            if (o == null || depth > 2) return;
+            foreach (var p in o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (!p.CanRead || p.GetIndexParameters().Length > 0) continue;
+                if (p.PropertyType == typeof(string))
+                {
+                    if (!p.CanWrite || p.Name.IndexOf("Address", System.StringComparison.Ordinal) < 0) continue;
+                    string value;
+                    try { value = p.GetValue(o, null) as string; } catch { continue; }
+                    string device; int local;
+                    if (!PlcAddressHelper.TrySplitStation(value, out device, out local)) continue;
+                    int host = ctx.Station(local);
+                    if (host != local) try { p.SetValue(o, device + PlcAddressHelper.StationMark + host, null); } catch { }
+                    continue;
+                }
+                var ns = p.PropertyType.Namespace ?? "";
+                bool models = ns.StartsWith("Kaban.Core.Models");
+                bool list = typeof(IList).IsAssignableFrom(p.PropertyType) && p.PropertyType.IsGenericType &&
+                            (p.PropertyType.GetGenericArguments()[0].Namespace ?? "").StartsWith("Kaban.Core.Models");
+                if (!models && !list) continue;
+                object inner;
+                try { inner = p.GetValue(o, null); } catch { continue; }
+                if (list) { foreach (var item in (IList)inner ?? new object[0]) MapAddresses(ctx, item, depth + 1); }
+                else MapAddresses(ctx, inner, depth + 1);
+            }
         }
     }
 

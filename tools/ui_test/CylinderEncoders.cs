@@ -93,6 +93,10 @@ class CET {
               prf.UnclampingField.Address == "D51" && prf.ReferenceField.Divisor == 10 && prf.UnclampingField.DecimalPlaces == 1);
         Check("  its settings the Maintenance level's, moving it the Operator's", prf.ReferenceField.RequiredSecurity == SecurityLevel.Maintenance &&
               prf.Unit.RequiredSecurity == SecurityLevel.Operator);
+        var grip = rows.First(r => r.TitleTextKey == "Robot Gripper");
+        Check("Robot Gripper: its position D21 / 10 with two decimals, as the old Robot page (12 October); its reference D516 here",
+              grip.PositionAddress == "D21" && grip.PositionDivisor == 10 && grip.PositionDecimalPlaces == 2 && grip.ReferenceField.Address == "D516" &&
+              grip.Unit.PositionDisplay.DecimalPlaces == 2, grip.PositionDecimalPlaces + " / " + grip.Unit.PositionDisplay.DecimalPlaces);
         var milling = rows.First(r => r.TitleTextKey == "Milling Top");
         Check("Milling Top: only a reference and an unclamping interval - the other two fields not there, their columns kept",
               milling.ReferenceField.Parent == milling && milling.UnclampingField.Parent == milling && milling.ToleranceField.Parent == null &&
@@ -161,8 +165,9 @@ class CET {
         Func<Control, List<NumericInputHMI>> fields = p => p.Controls.OfType<NumericInputHMI>().OrderBy(n => n.Top).ToList();
         var robotP = Page("Parameters", "ParamRobot");
         var rf = fields(robotP);
-        Check("Robot: 20 values in one column, the old right column under the left (Robot Height after Cross Rollers Robot Y Offset)",
-              rf.Count == 20 && rf.Select(n => n.Left).Distinct().Count() == 1 && rf[9].Address == "D782" && rf[10].Address == "D664" && rf.Last().Address == "D784");
+        Check("Robot: 19 values in one column, the old right column under the left (Robot Height after Cross Rollers Robot Y Offset) - Encoder Reference not here",
+              rf.Count == 19 && rf.Select(n => n.Left).Distinct().Count() == 1 && rf[8].Address == "D782" && rf[9].Address == "D664" && rf.Last().Address == "D784" &&
+              !rf.Any(n => n.Address == "D516"));
         Check("  as high as the old page's two sections (fits a page)", rf.Last().Bottom < 760, rf.Last().Bottom.ToString());
         var conv = fields(Page("Parameters", "ParamConveyor"));
         var mil = fields(Page("Parameters", "ParamMilling"));

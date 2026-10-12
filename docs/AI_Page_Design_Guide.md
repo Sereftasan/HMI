@@ -1,6 +1,6 @@
 # Kaban HMI - page design guide for an AI
 
-*Made from the program itself on 9 October 2026 by `tools/ai_guide/MakeAiPageGuide.cs` (the controls, their
+*Made from the program itself on 12 October 2026 by `tools/ai_guide/MakeAiPageGuide.cs` (the controls, their
 properties and the examples are read from the code and the real pages; the rest is `tools/ai_guide/guide_template.md`).
 Make it again after the controls change.*
 
@@ -108,6 +108,9 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 
 - **`PlcNumber`** - the machine's own PLC number as its project sees it: **1** = its main PLC (2 = a second one). The HMI
   maps it to the panel's station (a sub-machine's 1 is its own PLC) - never put a station number of the panel here.
+- **A device of the machine's OTHER PLC** in a property: the address, `@` and that PLC's number - `"X12@2"` is X12 of PLC 2
+  on a control whose `PlcNumber` is 1 (FA2010's back horizontal moulds' reference sensors). Only where the device really is
+  on the other PLC; never a dot for it (`D100.5` is bit 5 of D100).
 - **Addresses are Mitsubishi device names as strings**: `"M695"`, `"D16"`, `"L3"`, `"B16"`. **A physical input or output
   is read through the relay the PLC program copies it into** - the `Read` column of the machine's `IoList.csv` (FA2010's input
   `X60` is read as `M232`): a lamp of a sensor gets that relay; only where the `Read` column is empty, the X / Y address itself
@@ -651,7 +654,7 @@ this.lampSawdust_Conveyor_Thermic.VisibilityConditions = Kaban.Core.Enums.System
 ### NumericInputHMI
 
 A value typed in (a word or a double word): the keypad on a tap, limits, scaling, units, confirmation, conditions. Its caption (DescriptionText) is drawn to its left.
-On our pages: 195 of them; size 440 x 32 (112), 116 x 26 (81), 170 x 36 (2).
+On our pages: 194 of them; size 440 x 32 (112), 116 x 26 (80), 170 x 36 (2).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|

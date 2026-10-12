@@ -659,8 +659,14 @@ namespace Kaban.UI.Controls
             // are hidden, so the page scrolls no further than its columns (it kept
             // the widest it had ever been, and the Motion monitor ran off into an
             // empty page). In the designer it only grows, so a page is not changed.
+            // AT THE SCREEN'S SCALE: x is in the units of factor 1, the parts are
+            // scaled as they are added to a scaled row - a row built again on a
+            // scaled page (the Axis Monitor's, or its picks changed) kept the width
+            // of factor 1, and its right end could not be scrolled to (12 October:
+            // "Axis monitor second page down scroll doesn't move to right end again").
             bool design = DesignMode || LicenseManager.UsageMode == LicenseUsageMode.Designtime;
-            Width = design ? Math.Max(Width, x) : x;
+            int width = UiScale.For(this, x);
+            Width = design ? Math.Max(Width, width) : width;
             AlignHeaders();
             // in a frame scrolled sideways: the name where the frame keeps it
             var frame = AxisPageFrame.OfBody(Parent);

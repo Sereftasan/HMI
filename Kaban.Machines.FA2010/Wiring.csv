@@ -182,3 +182,26 @@ Y154;M484;M748;;512;24.7;K106;24.7;Y.128;617;32.2;Y122/Y123 (1/8 5/2 double sole
 Y155;M485;M749;;513;24.8;K107;24.8;Y.129;618;32.3;Y124 (1/8 5/2 single solenoid);P60 Blade Change Cylinder;164 (A) / 165 (B);164;8 D1;Mullion Milling Blade Change Valve;1;U15 FX5-16EYT-ESS, terminal Y15;;;;;;
 M345;;;SN93;175;17.7;;;;;;;;;;;Left Profile Recognition Unit Up Sensor;1;;DI1 of the 2nd simple motion module (2/FX5-80SSC-S);;;;;2. simple motion modülünün DI1 girişi (2/FX5-80SSC-S)
 M346;;;2SN.94 / 2SN.95;173 / 174;17.6 - 17.7;;;;;;;;;;;Input Conveyor Roll Down Sensors (left / right);1;;DI2 / DI3 of the 2nd simple motion module (2/FX5-80SSC-S);;;;;2. simple motion modülünün DI2 / DI3 girişleri (2/FX5-80SSC-S)
+X12;;;;;;;;;;;;;;;;Profile Recognition Back Horizontal Mold Reference Sensor (IN_ProfilTanima_ArkaYatay_RefSN);2;;;;;;;
+X13;;;;;;;;;;;;;;;;Cutting Left Back Horizontal Mold Reference Sensor (IN_KesimSol_ArkaYatay_RefSN);2;;;;;;;
+X14;;;;;;;;;;;;;;;;Cutting Right Back Horizontal Mold Reference Sensor (IN_CikisTasima_ArkaYatay_RefSN);2;;;;;;;
+Y0;;M542@1;;;;;;;;;;;;;;Left Profile Recognition Back Mold Up Valve (OUT_SolProfilTanima_ArkaDikey_Yukari);2;;;;;;;
+Y1;;M543@1;;;;;;;;;;;;;;Left Profile Recognition Back Mold Down Valve (OUT_SolProfilTanima_ArkaDikey_Asagi);2;;;;;;;
+Y2;;M544@1;;;;;;;;;;;;;;Left Profile Recognition Back Horizontal Mold Forward Valve (OUT_SolProfilTanima_ArkaYatay_Ileri);2;;;;;;;
+Y3;;M545@1;;;;;;;;;;;;;;Left Profile Recognition Back Horizontal Mold Back Valve (OUT_SolProfilTanima_ArkaYatay_Geri);2;;;;;;;
+Y4;;M548@1;;;;;;;;;;;;;;Input Conveyor Back Mold Up Valve (OUT_Konveyor_ArkaDikey_Yukari);2;;;;;;;
+Y5;;M549@1;;;;;;;;;;;;;;Input Conveyor Back Mold Down Valve (OUT_Konveyor_ArkaDikey_Asagi);2;;;;;;;
+Y6;;M550@1;;;;;;;;;;;;;;Input Conveyor Back Horizontal Mold Forward Valve (OUT_Konveyor_ArkaYatay_Ileri);2;;;;;;;
+Y7;;M551@1;;;;;;;;;;;;;;Input Conveyor Back Horizontal Mold Back Valve (OUT_Konveyor_ArkaYatay_Geri);2;;;;;;;
+Y10;;M554@1;;;;;;;;;;;;;;Profile Recognition Back Mold Up Valve (OUT_ProfilTanima_ArkaDikey_Yukari);2;;;;;;;
+Y11;;M555@1;;;;;;;;;;;;;;Profile Recognition Back Mold Down Valve (OUT_ProfilTanima_ArkaDikey_Asagi);2;;;;;;;
+Y12;;M556@1;;;;;;;;;;;;;;Profile Recognition Back Horizontal Mold Forward Valve (OUT_ProfilTanima_ArkaYatay_Ileri);2;;;;;;;
+Y13;;M557@1;;;;;;;;;;;;;;Profile Recognition Back Horizontal Mold Back Valve (OUT_ProfilTanima_ArkaYatay_Geri);2;;;;;;;
+Y14;;M560@1;;;;;;;;;;;;;;Cutting Left Back Mold Up Valve (OUT_KesimSol_ArkaDikey_Yukari);2;;;;;;;
+Y15;;M561@1;;;;;;;;;;;;;;Cutting Left Back Mold Down Valve (OUT_KesimSol_ArkaDikey_Asagi);2;;;;;;;
+Y16;;M562@1;;;;;;;;;;;;;;Cutting Left Back Horizontal Mold Forward Valve (OUT_KesimSol_ArkaYatay_Ileri);2;;;;;;;
+Y17;;M563@1;;;;;;;;;;;;;;Cutting Left Back Horizontal Mold Back Valve (OUT_KesimSol_ArkaYatay_Geri);2;;;;;;;
+Y20;;M566@1;;;;;;;;;;;;;;Cutting Right Back Mold Up Valve (OUT_CikisTasima_ArkaDikey_Yukari);2;;;;;;;
+Y21;;M567@1;;;;;;;;;;;;;;Cutting Right Back Mold Down Valve (OUT_CikisTasima_ArkaDikey_Asagi);2;;;;;;;
+Y22;;M568@1;;;;;;;;;;;;;;Cutting Right Back Horizontal Mold Forward Valve (OUT_CikisTasima_ArkaYatay_Ileri);2;;;;;;;
+Y23;;M569@1;;;;;;;;;;;;;;Cutting Right Back Horizontal Mold Back Valve (OUT_CikisTasima_ArkaYatay_Geri);2;;;;;;;

@@ -9,13 +9,14 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// THE PANEL'S AI CHATS, at the top of HMI Settings > AI Prompt (an Admin's
-    /// page; 9 October: "move this part on top of the AI Prompt page as a table,
-    /// formatted the same as the other tables - the buttons' style as well - and
-    /// add Add and Remove"): a name and a web address a row, in the order "Ask
-    /// &lt;AI&gt;" offers them. The bar as every settings page's: keep, throw the changes
-    /// away, add, remove, up, down - and the usual list. Each user picks theirs in
-    /// Users and Preferences (Help and AI: Preferred AI); none picked, the first.
+    /// THE PANEL'S AI CHATS, HMI Settings > AI (an Admin's page; 9 October: "move
+    /// this part on top of the AI Prompt page as a table, formatted the same as the
+    /// other tables - the buttons' style as well - and add Add and Remove"): a name
+    /// and a web address a row. The Help menu (the caption bar's "?") and every
+    /// alarm's help list offer each of them, in this order: "Ask Claude", "Ask
+    /// ChatGPT" ... (12 October: no user's choice among them any more, and no
+    /// "AI chats" title - the tab says what the page is). The bar as every settings
+    /// page's: keep, throw the changes away, add, remove, up, down - and the usual list.
     /// </summary>
     public class AiChatsEditor : UserControl
     {
@@ -42,16 +43,12 @@ namespace Kaban.UI.Settings
             Name = "aiChatsEditor";
             var tips = UiStyle.Tips();
 
-            var head = new Label
-            {
-                Dock = DockStyle.Top, Height = 26, Padding = new Padding(8, 6, 0, 0), Name = "aiChatsHead",
-                Text = T("AiC_Head", "AI chats"), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(40, 46, 56)
-            };
             var note = new Label
             {
-                Dock = DockStyle.Top, Height = 22, Padding = new Padding(8, 2, 8, 0), ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small,
-                AutoEllipsis = true,
-                Text = T("AiC_Note", "The AI chats 'Ask <AI>' offers, in this order: a name and its web address (https://...). Each user picks theirs in Users and Preferences - none picked, the first.")
+                Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 6, 8, 0), ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small,
+                AutoEllipsis = true, Name = "aiChatsNote",
+                Text = T("AiC_Note", "The AI chats the Help menu (?) and every alarm's help list offer, each as 'Ask <name>', in this order: a name and its web address (https://...).") +
+                       "\n" + T("AiC_Note2", "'Ask <name>' puts the prompt on the clipboard and opens that chat in the browser, to paste it into (Ctrl+V).")
             };
 
             // ---- the bar, as every settings page's ----
@@ -99,7 +96,6 @@ namespace Kaban.UI.Settings
             Controls.Add(_grid);
             Controls.Add(note);
             Controls.Add(bar);
-            Controls.Add(head);
 
             Fill(AiChats.All);
             AiChats.Changed += OnChanged;

@@ -222,7 +222,23 @@ namespace Kaban.Core.Helpers
         /// <summary>A controller's real input or output (X34, Y21) - not an internal device.</summary>
         public static bool IsPhysicalIo(string address)
         {
-            return Regex.IsMatch((address ?? "").Trim(), "^[XYxy][0-9A-Fa-f]+$");
+            // "X12@2": PLC 2's input - real all the same (12 October)
+            return Regex.IsMatch(PlcAddressHelper.DeviceOf((address ?? "").Trim()) ?? "", "^[XYxy][0-9A-Fa-f]+$");
+        }
+
+        /// <summary>The station of the page being made: a device of another controller is named with it ("Y13 (PLC 2)").</summary>
+        [ThreadStatic] private static int _pageStation;
+
+        /// <summary>A device as the page shows it: "Y13", or "Y13 (PLC 2)" on the other controller.</summary>
+        private static string Shown(string address)
+        {
+            return PlcAddressHelper.Describe(_pageStation, (address ?? "").Trim());
+        }
+
+        /// <summary>A point of the drawings as the page shows it: "Y13 (PLC 2)" when it is the other controller's.</summary>
+        private static string Shown(WiringTable.Point p)
+        {
+            return p == null ? "" : Shown(PlcAddressHelper.WithStation(p.Address, p.Station, _pageStation));
         }
 
         private static string MissingTemplatePage(ValveType valve, FeedbackType feedback)
@@ -243,8 +259,8 @@ namespace Kaban.Core.Helpers
             public WiringTable.Point Point;
             public bool IsPressureSwitch;
 
-            /// <summary>The address the Inputs / Outputs page shows it by (X70), or the one the unit reads.</summary>
-            public string Io { get { return Point != null ? Point.Address : Device.Address; } }
+            /// <summary>The address the Inputs / Outputs page shows it by (X70), or the one the unit reads - "X12@2" on the other controller.</summary>
+            public string Io { get { return Point != null ? PlcAddressHelper.WithStation(Point.Address, Point.Station, _pageStation) : Device.Address; } }
         }
 
         /// <summary>One step of the page as it came out of the template: where it is, and what it is.</summary>
@@ -286,6 +302,7 @@ namespace Kaban.Core.Helpers
                 _failure = failure;
                 try { _admin = AdminView != null && AdminView(); } catch { _admin = false; }
                 mv = chain.Mv;
+                _pageStation = mv.Station;
                 _lang = template != null && template.Path.Length > 0 ? (Path.GetFileName(Path.GetDirectoryName(template.Path)) ?? "") : "";
                 _supply = WiringTable.SupplyOf(mv.Station);
                 _double = c.DoubleCoil;
@@ -531,7 +548,7 @@ namespace Kaban.Core.Helpers
                     "Switch", s.IsPressureSwitch,
                     "SensorWord", tag && !p.Tag.StartsWith("SW", StringComparison.OrdinalIgnoreCase),
                     "Tag", tag ? E(p.Tag) : "",
-                    "Io", tag ? Dev(p.Address) : "",
+                    "Io", tag ? Dev(PlcAddressHelper.WithStation(p.Address, p.Station, _pageStation)) : "",
                     "Dev", Dev(s.Device.Address));
             }
 
@@ -565,11 +582,11 @@ namespace Kaban.Core.Helpers
                     if (p.Wire.Length > 0) q.Add(Phrase("Wire", "V", E(p.Wire)));
                     if (p.Sheet.Length > 0) q.Add(Phrase("Sheet", "V", E(p.Sheet)));
                     if (p.Via.Length > 0) q.Add(Phrase("ReadThrough", "V", E(Data(p, "Via", p.Via))));
-                    parts.Add(E(p.Address) + (q.Count > 0 ? " - " + string.Join(", ", q) : ""));
+                    parts.Add(E(Shown(p)) + (q.Count > 0 ? " - " + string.Join(", ", q) : ""));
                 }
                 else
                 {
-                    parts.Add(E(p.Address) + (p.Wire.Length > 0 ? " - " + Phrase("Wire", "V", E(p.Wire)) : "") +
+                    parts.Add(E(Shown(p)) + (p.Wire.Length > 0 ? " - " + Phrase("Wire", "V", E(p.Wire)) : "") +
                               (p.Relay.Length == 0 && p.Sheet.Length > 0 ? " " + Phrase("SheetParen", "V", E(p.Sheet)) : ""));
                     if (p.Relay.Length > 0) parts.Add(Phrase("Relay", "V", E(p.Relay)) + (p.RelaySheet.Length > 0 ? " " + Phrase("SheetParen", "V", E(p.RelaySheet)) : ""));
                     if (p.Coil.Length > 0)
@@ -611,7 +628,7 @@ namespace Kaban.Core.Helpers
                 return sb.ToString();
             }
 
-            private static string Code(string address) { return "<code>" + E((address ?? "").Trim()) + "</code>"; }
+            private static string Code(string address) { return "<code>" + E(Shown(address)) + "</code>"; }
 
             /// <summary>A device as the page names it: a real input or output for everyone, an internal one (M, D...) for an Admin only; "" when not named.</summary>
             private string Dev(string address)
@@ -641,7 +658,7 @@ namespace Kaban.Core.Helpers
                 if (cm.Success) { led.Tag = cm.Groups[1].Value; led.Model = cm.Groups[2].Value.Trim(); }
                 else led.Tag = card;
                 led.Cpu = led.Model.IndexOf("FX5U", StringComparison.OrdinalIgnoreCase) >= 0;
-                var dm = Regex.Match((terminal.Length > 0 ? terminal : address) ?? "", @"([0-9]+)$");
+                var dm = Regex.Match((terminal.Length > 0 ? terminal : PlcAddressHelper.DeviceOf(address)) ?? "", @"([0-9]+)$");
                 if (!dm.Success || card.Length == 0) return led;
                 int n = int.Parse(dm.Groups[1].Value, CultureInfo.InvariantCulture), tens = n / 10, digit = n % 10;
                 if (digit > 7) return led;
@@ -701,13 +718,13 @@ namespace Kaban.Core.Helpers
                     { "Io", Dev(s.Io) },
                     { "Dev", Dev(s.Device.Address) },
                     // the PLC copies it into an internal device: worth saying to an Admin only
-                    { "CopiedTo", _admin && p != null && !string.Equals(p.Address, s.Device.Address, StringComparison.OrdinalIgnoreCase) },
+                    { "CopiedTo", _admin && p != null && !string.Equals(p.Address, PlcAddressHelper.DeviceOf(s.Device.Address), StringComparison.OrdinalIgnoreCase) },
                     { "IsSwitch", s.IsPressureSwitch },
                     { "Wire", p != null ? E(p.Wire) : "" },
                     { "Card", p != null ? E(Words(p.Card)) : "" },
                     // for the drawings: the sensor's own tag and the input's LED on its card
                     { "TagPlain", p != null ? E(p.Tag) : "" },
-                    { "IoPlain", IsPhysicalIo(s.Io) || _admin ? E(s.Io) : "" },
+                    { "IoPlain", IsPhysicalIo(s.Io) || _admin ? E(Shown(s.Io)) : "" },
                     { "Key", "" }, { "Next", "" }, { "Last", false }
                 };
                 PutLed(item, "In", LedOf(p, s.Io));
@@ -765,7 +782,7 @@ namespace Kaban.Core.Helpers
                 m["OutTerminalOther"] = terminal.Length > 0 && !string.Equals(terminal, od != null ? od.Address : "", StringComparison.OrdinalIgnoreCase);
                 m["OtherOut"] = c.OtherDevice != null ? Dev(c.OtherDevice.Address) : "";
                 PutLed(m, "Out", LedOf(o, od != null ? od.Address : ""));
-                m["OutPlain"] = od != null && (_admin || IsPhysicalIo(od.Address)) ? e(od.Address) : "";
+                m["OutPlain"] = od != null && (_admin || IsPhysicalIo(od.Address)) ? e(Shown(od.Address)) : "";
                 m["Relay"] = o != null ? e(o.Relay) : "";
                 PutRelays(m, o != null ? o.Relay : "");
                 m["RelaySheet"] = o != null ? e(o.RelaySheet) : "";
@@ -890,7 +907,7 @@ namespace Kaban.Core.Helpers
                 m["RefWhere"] = reference != null ? SensorWhere(reference) : "";
                 m["RefIo"] = reference != null ? Dev(reference.Io) : "";
                 // for the cylinder's drawing: the sensor at the end it moves to, the one at its start
-                Func<Sensor, string> tagOf = x => x == null ? "" : x.Point != null && x.Point.Tag.Length > 0 ? e(x.Point.Tag) : (_admin || IsPhysicalIo(x.Io) ? e(x.Io) : "");
+                Func<Sensor, string> tagOf = x => x == null ? "" : x.Point != null && x.Point.Tag.Length > 0 ? e(x.Point.Tag) : (_admin || IsPhysicalIo(x.Io) ? e(Shown(x.Io)) : "");
                 m["OnTag"] = tagOf(_mustOn.FirstOrDefault(x => !x.IsPressureSwitch));
                 m["StartTag"] = tagOf(start.FirstOrDefault());
                 m["SwitchTag"] = tagOf(_mustOn.Concat(_mustOff).FirstOrDefault(x => x.IsPressureSwitch));

@@ -120,20 +120,21 @@ namespace Kaban.UI.Helpers
         {
             foreach (var u in _units)
             {
-                var drv = Simulated(u.Station);
-                if (drv == null) continue;
+                if (Simulated(u.Station) == null) continue;
 
-                bool a = Bit(drv, u.CommandA), b = Bit(drv, u.CommandB);
-                Side(drv, now, a, u.ActionA, u.LampA, u.LampB, ref u.HeldA, ref u.DoneA);
-                Side(drv, now, b, u.ActionB, u.LampB, u.LampA, ref u.HeldB, ref u.DoneB);
+                // each device on its own controller: a sensor may be the other one's ("X12@2")
+                bool a = Bit(u.Station, u.CommandA), b = Bit(u.Station, u.CommandB);
+                Side(u.Station, now, a, u.ActionA, u.LampA, u.LampB, ref u.HeldA, ref u.DoneA);
+                Side(u.Station, now, b, u.ActionB, u.LampB, u.LampA, ref u.HeldB, ref u.DoneB);
             }
 
             foreach (var x in _axes)
             {
-                var drv = Simulated(x.Station);
-                if (drv == null) { x.LastTick = null; continue; }
+                string position;
+                var drv = At(x.Station, x.Position, out position);
+                if (drv == null || Simulated(x.Station) == null) { x.LastTick = null; continue; }
 
-                bool back = Bit(drv, x.Back), forward = Bit(drv, x.Forward);
+                bool back = Bit(x.Station, x.Back), forward = Bit(x.Station, x.Forward);
                 if (back == forward) { x.LastTick = now; continue; }   // neither, or both: standing still
 
                 var since = x.LastTick ?? now;
@@ -142,13 +143,13 @@ namespace Kaban.UI.Helpers
                 if (seconds <= 0 || seconds > 1) continue;             // first tick, or the clock jumped
 
                 double step = AxisSpeedPerSecond * seconds * x.Divisor * (forward ? 1 : -1);
-                long value = (long)Math.Round(ReadPosition(drv, x) + step);
-                WritePosition(drv, x, value);
+                long value = (long)Math.Round(ReadPosition(drv, position, x) + step);
+                WritePosition(drv, position, x, value);
             }
         }
 
         /// <summary>One side of a unit: its lamp answers its own command.</summary>
-        private static void Side(IPlcDriver drv, DateTime now, bool pressed, BitActionType action,
+        private static void Side(int station, DateTime now, bool pressed, BitActionType action,
                                  string ownLamp, string otherLamp, ref DateTime? held, ref bool done)
         {
             if (!pressed)
@@ -163,7 +164,7 @@ namespace Kaban.UI.Helpers
                 held = now;
                 // Leaving this end is instant: the sensor at the far end lets go
                 // as soon as the cylinder starts moving.
-                if (!string.IsNullOrEmpty(otherLamp)) drv.Write(otherLamp, 0);
+                Set(station, otherLamp, 0);
             }
 
             if (done) return;
@@ -171,7 +172,7 @@ namespace Kaban.UI.Helpers
             bool latched = action != BitActionType.Momentary;      // SET, RESET, ALTERNATE: one press is the whole press
             if (latched || (now - held.Value).TotalMilliseconds >= StrokeMs)
             {
-                if (!string.IsNullOrEmpty(ownLamp)) drv.Write(ownLamp, 1);
+                Set(station, ownLamp, 1);
                 done = true;
             }
         }
@@ -186,32 +187,51 @@ namespace Kaban.UI.Helpers
             return drv != null && drv.GetType().Name == "SimulationDriver" && drv.IsConnected ? drv : null;
         }
 
-        private static bool Bit(IPlcDriver drv, string address)
+        /// <summary>The simulated driver a device is on - its own controller ("X12@2") or the unit's - and the device there.</summary>
+        private static IPlcDriver At(int station, string address, out string device)
         {
-            int v;
-            return !string.IsNullOrEmpty(address) && drv.TryRead(address, out v) && v != 0;
+            int st;
+            PlcAddressHelper.Resolve(station, (address ?? "").Trim(), out st, out device);
+            return string.IsNullOrEmpty(device) ? null : Simulated(st);
         }
 
-        private static long ReadPosition(IPlcDriver drv, Axis x)
+        private static bool Bit(int station, string address)
+        {
+            if (string.IsNullOrEmpty(address)) return false;
+            string device;
+            var drv = At(station, address, out device);
+            int v;
+            return drv != null && drv.TryRead(device, out v) && v != 0;
+        }
+
+        private static void Set(int station, string address, int value)
+        {
+            if (string.IsNullOrEmpty(address)) return;
+            string device;
+            var drv = At(station, address, out device);
+            if (drv != null) drv.Write(device, value);
+        }
+
+        private static long ReadPosition(IPlcDriver drv, string position, Axis x)
         {
             int low;
-            if (!drv.TryRead(x.Position, out low)) return 0;
+            if (!drv.TryRead(position, out low)) return 0;
             if (x.PositionType != DataTypeEnum.Bin_32) return (short)low;
 
             int high;
-            drv.TryRead(PlcAddressHelper.GetNextAddress(x.Position), out high);
+            drv.TryRead(PlcAddressHelper.GetNextAddress(position), out high);
             return (int)(((uint)(high & 0xFFFF) << 16) | (uint)(low & 0xFFFF));
         }
 
-        private static void WritePosition(IPlcDriver drv, Axis x, long value)
+        private static void WritePosition(IPlcDriver drv, string position, Axis x, long value)
         {
             if (x.PositionType != DataTypeEnum.Bin_32)
             {
-                drv.Write(x.Position, (int)Math.Max(short.MinValue, Math.Min(short.MaxValue, value)));
+                drv.Write(position, (int)Math.Max(short.MinValue, Math.Min(short.MaxValue, value)));
                 return;
             }
-            drv.Write(x.Position, (int)(value & 0xFFFF));
-            drv.Write(PlcAddressHelper.GetNextAddress(x.Position), (int)((value >> 16) & 0xFFFF));
+            drv.Write(position, (int)(value & 0xFFFF));
+            drv.Write(PlcAddressHelper.GetNextAddress(position), (int)((value >> 16) & 0xFFFF));
         }
     }
 }

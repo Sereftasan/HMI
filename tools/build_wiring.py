@@ -297,6 +297,43 @@ MODULE_INPUTS = [
      'Input Conveyor Roll Down Sensors (left / right)'),
 ]
 
+# ------------------------------------------------- the second controller ----
+# 12 October: the ten back moulds' valves and the three back horizontal moulds'
+# reference sensors are wired to PLC 2 (PLC 1's encoder inputs were full). Their
+# PLC 2 labels as given (IN_ProfilTanima_ArkaYatay_RefSN ...); this revision of
+# the drawings does not draw them, so no wires or sheets. Commands: the manual
+# bits on PLC 1 that drive them ("M542@1" - a device of PLC 1, PLC 2's own
+# being plain). Up / forward is the even bit, down / back the odd one, as for
+# the front moulds (Y131 M540 up, Y132 M541 down).
+PLC2 = [
+    # point, commands, text
+    ('X12', '', 'Profile Recognition Back Horizontal Mold Reference Sensor (IN_ProfilTanima_ArkaYatay_RefSN)'),
+    ('X13', '', 'Cutting Left Back Horizontal Mold Reference Sensor (IN_KesimSol_ArkaYatay_RefSN)'),
+    ('X14', '', 'Cutting Right Back Horizontal Mold Reference Sensor (IN_CikisTasima_ArkaYatay_RefSN)'),
+    ('Y0',  'M542@1', 'Left Profile Recognition Back Mold Up Valve (OUT_SolProfilTanima_ArkaDikey_Yukari)'),
+    ('Y1',  'M543@1', 'Left Profile Recognition Back Mold Down Valve (OUT_SolProfilTanima_ArkaDikey_Asagi)'),
+    ('Y2',  'M544@1', 'Left Profile Recognition Back Horizontal Mold Forward Valve (OUT_SolProfilTanima_ArkaYatay_Ileri)'),
+    ('Y3',  'M545@1', 'Left Profile Recognition Back Horizontal Mold Back Valve (OUT_SolProfilTanima_ArkaYatay_Geri)'),
+    ('Y4',  'M548@1', 'Input Conveyor Back Mold Up Valve (OUT_Konveyor_ArkaDikey_Yukari)'),
+    ('Y5',  'M549@1', 'Input Conveyor Back Mold Down Valve (OUT_Konveyor_ArkaDikey_Asagi)'),
+    ('Y6',  'M550@1', 'Input Conveyor Back Horizontal Mold Forward Valve (OUT_Konveyor_ArkaYatay_Ileri)'),
+    ('Y7',  'M551@1', 'Input Conveyor Back Horizontal Mold Back Valve (OUT_Konveyor_ArkaYatay_Geri)'),
+    ('Y10', 'M554@1', 'Profile Recognition Back Mold Up Valve (OUT_ProfilTanima_ArkaDikey_Yukari)'),
+    ('Y11', 'M555@1', 'Profile Recognition Back Mold Down Valve (OUT_ProfilTanima_ArkaDikey_Asagi)'),
+    ('Y12', 'M556@1', 'Profile Recognition Back Horizontal Mold Forward Valve (OUT_ProfilTanima_ArkaYatay_Ileri)'),
+    ('Y13', 'M557@1', 'Profile Recognition Back Horizontal Mold Back Valve (OUT_ProfilTanima_ArkaYatay_Geri)'),
+    ('Y14', 'M560@1', 'Cutting Left Back Mold Up Valve (OUT_KesimSol_ArkaDikey_Yukari)'),
+    ('Y15', 'M561@1', 'Cutting Left Back Mold Down Valve (OUT_KesimSol_ArkaDikey_Asagi)'),
+    ('Y16', 'M562@1', 'Cutting Left Back Horizontal Mold Forward Valve (OUT_KesimSol_ArkaYatay_Ileri)'),
+    ('Y17', 'M563@1', 'Cutting Left Back Horizontal Mold Back Valve (OUT_KesimSol_ArkaYatay_Geri)'),
+    ('Y20', 'M566@1', 'Cutting Right Back Mold Up Valve (OUT_CikisTasima_ArkaDikey_Yukari)'),
+    ('Y21', 'M567@1', 'Cutting Right Back Mold Down Valve (OUT_CikisTasima_ArkaDikey_Asagi)'),
+    ('Y22', 'M568@1', 'Cutting Right Back Horizontal Mold Forward Valve (OUT_CikisTasima_ArkaYatay_Ileri)'),
+    ('Y23', 'M569@1', 'Cutting Right Back Horizontal Mold Back Valve (OUT_CikisTasima_ArkaYatay_Geri)'),
+    # (X15, X16 and Y24 - Y27, the upper small clampings of Cutting Left and Exit
+    # Carrying, were the first project's: not used any more - not listed.)
+]
+
 # ------------------------------------------------------ what a cylinder has --
 # Beside its valve: how its position is measured, and the pressure it clamps
 # with. Keyed, like PNEUMATIC, by the outputs that drive it.
@@ -493,6 +530,8 @@ def build():
         row['Card'] = card(p)
     for relay, tag, wire, sheet, via, text in MODULE_INPUTS:
         rows[relay] = dict(Point=relay, Tag=tag, Wire=wire, Sheet=sheet, Via=via, Text=text, Plc='1')
+    for point, cmd, text in PLC2:
+        rows[point + '@2'] = dict(Point=point, Commands=cmd, Text=text, Plc='2')
     missing = set()
     for row in rows.values():
         for lang, texts in TRANSLATED.items():
@@ -515,7 +554,11 @@ def build():
     out.write('#! ZeroVoltWire=21\n')
     out.write('#! SensorSupplyWire=20\n')
     out.write(';'.join(COLUMNS) + '\n')
-    for p in sorted(rows, key=lambda q: (1, q) if q.startswith('M') else (0,) + octal_key(q)):
+    def order(q):
+        r = rows[q]
+        plc, p = int(r.get('Plc') or 1), r['Point']
+        return (plc, 1, p) if p.startswith('M') else (plc, 0) + octal_key(p)
+    for p in sorted(rows, key=order):
         r = rows[p]
         out.write(';'.join(r.get(c, '').replace(';', ',') for c in COLUMNS) + '\n')
     path = os.path.join(MACHINE, 'Wiring.csv')

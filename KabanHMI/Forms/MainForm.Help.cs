@@ -18,9 +18,11 @@ namespace Kaban.UI.Forms
     ///   About Kaban HMI         - the program, its version, its machines (a message box)
     ///   Open the HMI manual     - in the browser, with this panel's machines
     ///   Create AI prompt        - the HMI explained and its manual, for any AI chat
-    ///   Ask Claude              - the same, the user's preferred AI chat opened
-    ///   Ask another AI  >
-    /// F1 opens it. The chats are an Admin's list: HMI Settings > AI Prompt.
+    ///   Ask Claude              - the same, that AI chat opened
+    ///   Ask ChatGPT ...         - every chat of the panel's list, in its order
+    /// F1 opens it. The chats are an Admin's list: HMI Settings > AI. Its pictures
+    /// are the user menu's kind (12 October): black line pictures in the picture
+    /// column, not emojis in the words (MenuGlyphs).
     /// </summary>
     public partial class MainForm
     {
@@ -113,12 +115,12 @@ namespace Kaban.UI.Forms
             });
             menu.Items.Add(new ToolStripSeparator());
 
-            var about = new ToolStripMenuItem("ℹ️  " + LanguageManager.GetString("Hlp_About", "About Kaban HMI")) { Name = "helpAbout" };
+            var about = new ToolStripMenuItem(LanguageManager.GetString("Hlp_About", "About Kaban HMI"), MenuGlyphs.Info()) { Name = "helpAbout" };
             about.ToolTipText = LanguageManager.GetString("Tip_HlpAbout", "The program, its version and the machines it runs");
             about.Click += (s, e) => ShowAbout();
             menu.Items.Add(about);
 
-            var manual = new ToolStripMenuItem("📖  " + LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual")) { Name = "helpManual" };
+            var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
             manual.ToolTipText = LanguageManager.GetString("Tip_OpenManual", "Opens the operator and engineer manual in the browser, in the language on screen.");
             manual.Click += (s, e) => OpenManualFromHelp();
             menu.Items.Add(manual);

@@ -108,6 +108,9 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 
 - **`PlcNumber`** - the machine's own PLC number as its project sees it: **1** = its main PLC (2 = a second one). The HMI
   maps it to the panel's station (a sub-machine's 1 is its own PLC) - never put a station number of the panel here.
+- **A device of the machine's OTHER PLC** in a property: the address, `@` and that PLC's number - `"X12@2"` is X12 of PLC 2
+  on a control whose `PlcNumber` is 1 (FA2010's back horizontal moulds' reference sensors). Only where the device really is
+  on the other PLC; never a dot for it (`D100.5` is bit 5 of D100).
 - **Addresses are Mitsubishi device names as strings**: `"M695"`, `"D16"`, `"L3"`, `"B16"`. **A physical input or output
   is read through the relay the PLC program copies it into** - the `Read` column of the machine's `IoList.csv` (FA2010's input
   `X60` is read as `M232`): a lamp of a sensor gets that relay; only where the `Read` column is empty, the X / Y address itself

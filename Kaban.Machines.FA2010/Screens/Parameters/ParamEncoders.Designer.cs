@@ -113,7 +113,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encRobot_Gripper.PositionAddress = "D21";
             this.encRobot_Gripper.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.encRobot_Gripper.PositionDivisor = 10D;
-            this.encRobot_Gripper.PositionDecimalPlaces = 1;
+            this.encRobot_Gripper.PositionDecimalPlaces = 2;
             this.encRobot_Gripper.ReferenceAddress = "D516";
             this.encRobot_Gripper.Divisor = 10D;
             this.encRobot_Gripper.DecimalPlaces = 1;

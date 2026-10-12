@@ -87,6 +87,8 @@ namespace Kaban.UI.Helpers
 
         private static string Key(int station, string address)
         {
+            // "M915@2": PLC 2's error bit, whichever unit names it (12 October)
+            PlcAddressHelper.Resolve(station, (address ?? "").Trim(), out station, out address);
             return station + "|" + (address ?? "").Trim().ToUpperInvariant();
         }
 

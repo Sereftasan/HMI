@@ -354,6 +354,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
             this.ppProfile_Recognition_Back_Horizontal.CommandBackAddress = "M557";
             this.ppProfile_Recognition_Back_Horizontal.CommandForwardAddress = "M556";
+            this.ppProfile_Recognition_Back_Horizontal.BackSensorAddress = "X12@2";
             this.ppProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
             this.ppProfile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
@@ -445,6 +446,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
             this.ppCutting_Left_Back_Horizontal.CommandBackAddress = "M563";
             this.ppCutting_Left_Back_Horizontal.CommandForwardAddress = "M562";
+            this.ppCutting_Left_Back_Horizontal.BackSensorAddress = "X13@2";
             this.ppCutting_Left_Back_Horizontal.PositionAddress = "D121";
             this.ppCutting_Left_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.ppCutting_Left_Back_Horizontal.PositionDivisor = 10D;
@@ -535,6 +537,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
             this.ppCutting_Right_Back_Horizontal.CommandBackAddress = "M569";
             this.ppCutting_Right_Back_Horizontal.CommandForwardAddress = "M568";
+            this.ppCutting_Right_Back_Horizontal.BackSensorAddress = "X14@2";
             this.ppCutting_Right_Back_Horizontal.PositionAddress = "D124";
             this.ppCutting_Right_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.ppCutting_Right_Back_Horizontal.PositionDivisor = 10D;

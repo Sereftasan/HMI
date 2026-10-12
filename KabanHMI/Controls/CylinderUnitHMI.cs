@@ -1299,7 +1299,8 @@ namespace Kaban.UI.Controls
             try
             {
                 var w = WiringTable.OutputFor(_plcNumber, Abs(cmd));
-                return w != null ? w.Address : "";
+                // on the other controller it says so ("Y1@2": the back moulds' valves on PLC 2)
+                return w != null ? PlcAddressHelper.WithStation(w.Address, w.Station, _plcNumber) : "";
             }
             catch { return ""; }
         }

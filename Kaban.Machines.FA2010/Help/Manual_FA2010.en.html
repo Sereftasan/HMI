@@ -27,6 +27,10 @@ above it is approached the way the position increases, one below it the other wa
 <p>The six <b>front vertical</b> moulds are always fitted. The ten <b>back</b> moulds, vertical and horizontal, are fitted only with the
 <b>Clamping Mould</b> option (<b>Machine Parameters &rsaquo; Others</b>, Machine Options): without it they are not shown and
 the front ones stand together at the top of the page; tick the option and they appear in their places.</p>
+<p>The back moulds' valves are wired to the <b>second controller</b> (PLC 2: Y0 &ndash; Y23), and so are the reference sensors of the three
+back horizontal moulds with an encoder &ndash; Profile Recognition, Cutting Left and Cutting Right Back Horizontal: <b>X12, X13, X14 of PLC 2</b>
+(<code>X12@2</code> on the page; PLC 1's encoder inputs were full). Their buttons are PLC 1's as the others'; their lamp, their help and the HMI's
+alarm for them read PLC 2, and say so (<i>X12 (PLC 2)</i>).</p>
 <p>An axis unit (Robot X, Unit 1 X ...) takes its buttons, position and reference lamp from its row on
 <b>Machine Parameters &rsaquo; Axis</b>; change them there, not on the page. Robot X's position tooltip also shows its linear
 encoder (<code>D22</code>, the old Encoders page's <i>Robot Position</i>) and the difference.</p>
@@ -45,7 +49,8 @@ s, &deg;, %), divided as the old pages divided it. They need the <b>Maintenance<
 Milling-Cutting Left Front, Cutting Left Top, Cutting Right Front, Exit Carrying Top, Cutting Front Right Vertical, Left Profile
 Recognition Front and Top &ndash; its manual movement (to move it while setting it up), <b>Reference</b>, <b>Measuring tolerance</b>,
 <b>Minimum limit</b> (the old <i>Start Limit</i>) and <b>Unclamping interval</b>. The old page's first row, <i>Robot Position</i>, is Robot X
-(an axis).</p>
+(an axis). The Robot Gripper's position shows two decimals, as the old Robot page did; its <b>Reference</b> (D516, the old Robot page's
+<i>Encoder Reference</i>) is set here only.</p>
 <p><b>Others</b>: the exit conveyor, the distances between the units, the lubrication, the <b>Machine Options</b>
 (a tick box per option the machine has: mullion notching, cooling, the carrying rollers, a reverse machine ...), the
 <b>Middle Register Notch Parameters</b> and the cross rollers' distances from the milling's X zero.</p>

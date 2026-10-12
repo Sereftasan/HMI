@@ -4774,3 +4774,24 @@ and `UnitLookAndErrors` extended.
 - `PositioningDirectionReferenceAddress`' description and `Tip_PpDirectionRef` (six languages): how the PLC uses it. Manual 4a, 4b; FA2010's
   chapter; `tools/ai_guide/guide_template.md` (the pages become tables) and `MakeAiPageGuide.cs`; `docs/AI_Page_Design_Guide.md` made again.
 - Tests: `CylinderRowTable.cs` (new); `PneumaticPositioning`, `PneumaticPositioningScale`, `CylinderEncoders`.
+
+## 2026-10-12 - "X12@2": a device of the other controller; the back moulds on PLC 2; the Axis Monitor at 150%; the Help menu as the user menu, every AI listed
+
+- `PlcAddressHelper`: `StationMark` ('@'), `TrySplitStation`, `Resolve`, `StationOf`, `DeviceOf`, `WithStation`; `Describe` "X12 (PLC 2)";
+  `OffsetAddress` keeps the station. `LoggedDriver` routes a device of another station (Read, TryRead, ReadMulti, TryReadMulti by groups,
+  Write through that station's `GetDriverForWrite` and log). `PlcScanner`: batches and lookups by the address's station. `WiringTable`:
+  `Find` / `OutputFor` resolve it, a Commands entry "M543@1". `AlarmHelpLinks.Key`, `AlarmManager.FindByStationAndAddress`,
+  `DeviceCollector` (by the address's station), `SimulationMotion` (each device on its station), `StationMap` (a sub-machine's "@n"),
+  `TroubleshootingCatalog.Steps` (`Shown`, `IsPhysicalIo`), `AlarmGeneration` signal names, `CylinderUnitHMI.DrivenOutput` ("Y13@2").
+- FA2010: Clamping Moulds' back horizontal moulds with an encoder: `BackSensorAddress` X12@2, X13@2, X14@2; `Wiring.csv` PLC 2 points
+  X12 - X14, Y0 - Y23 (`tools/build_wiring.py` `PLC2`); `ParamRobot` without D516 (19 values); Robot Gripper position 2 decimals.
+  `tools/legacy_fa2010_pages.py`: a mould's sensors (`M557/X12@2`), `EXPECTED` pairs, scales and D516.
+- `AxisSettingHMI.BuildRow`: the row's width at the screen's scale (the Axis Monitor's rows at 150%, a row rebuilt on a scaled page).
+- New `Kaban.UI.Controls.MenuGlyphs` (Info, Book, Clipboard, Chat); `MainForm.BuildHelpMenu` and `AiMenu.Items` with pictures, no emojis;
+  `AiMenu`: an "Ask <name>" entry per chat (`AskName`), no "Ask another AI". Removed `ViewPreferences.PreferredAi`, `AiChats.Preferred`.
+  `AiChatsEditor`: no title, the new note (`AiC_Note`, `AiC_Note2`); `Tip_AiAsk` names the chat. Translations removed: `VP_PreferredAi`,
+  `PV_Ai`, `Hlp_AiAskOther`, `AiC_Head`.
+- Manual: 1 (the ? and every AI), 6, 7 (a device of the other controller), 9 (AI, Users and Preferences); FA2010 chapter (the back moulds
+  on PLC 2, the gripper). AI page design guide: "X12@2".
+- Tests: `core_test/StationAddress.cs`, `ui_test/StationAddressUi.cs`, `nav_test/AxisMonitorScale.cs` (new); `HelpMenu`, `AlarmAiPrompt`,
+  `LegacyPages`, `CylinderEncoders`.

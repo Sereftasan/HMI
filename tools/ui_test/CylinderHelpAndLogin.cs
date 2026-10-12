@@ -203,12 +203,16 @@ class CH {
         // position the drawings measure nothing for.
         // 8 October: the two small presses are not on the old program's Clamping Moulds
         // page (they are Cutting's and the Exit's top small clampings) - five now.
-        var expectedOpen = new[] { "ManualClamping_Moulds/Profile Recognition Back Horizontal", "ManualClamping_Moulds/Cutting Left Back Horizontal",
-                                   "ManualClamping_Moulds/Cutting Right Back Horizontal", "ManualCutting/Right Front Vert. Clamping",
-                                   "ManualEntry_Conveyor/Profile Clamping 7" };
+        // 12 October: the three back horizontal moulds' reference sensors are named on PLC 2 now (X12@2,
+        // X13@2, X14@2) - two left open.
+        var expectedOpen = new[] { "ManualCutting/Right Front Vert. Clamping", "ManualEntry_Conveyor/Profile Clamping 7" };
         var open = byName.Where(kv => kv.Value.TypeCheck != "OK").Select(kv => kv.Key).ToList();
-        Check("every other typed unit's wiring suits its types (five left open for a decision)",
+        Check("every other typed unit's wiring suits its types (two left open for a decision)",
               open.Count == expectedOpen.Length && expectedOpen.All(open.Contains), string.Join(" | ", open));
+        Check("  the back horizontal moulds with an encoder as drawn now: their reference sensor on PLC 2",
+              new[] { "Profile Recognition Back Horizontal", "Cutting Left Back Horizontal", "Cutting Right Back Horizontal" }
+                  .All(n => asDrawn("ManualClamping_Moulds/" + n, CylinderValve.ThreeWayClosedCenter, CylinderFeedback.EncoderPlusReference) &&
+                            byName["ManualClamping_Moulds/" + n].Lamp1AAddress.EndsWith("@2")));
         foreach (var pg in pagesBuilt) pg.Dispose();
 
         Console.WriteLine("--- the login: pick the user, type the password ---");

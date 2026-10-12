@@ -74,12 +74,25 @@ class HM {
         Check("  F1 opens it, said in its tooltip", Shortcuts.Of(help) == Keys.F1 && (UiStyle.TipOf(help) ?? "").StartsWith("F1\nHelp"), UiStyle.TipOf(help));
         var menu = form.BuildHelpMenu();
         var names = menu.Items.Cast<ToolStripItem>().Select(i => i.Name).Where(n => !string.IsNullOrEmpty(n)).ToList();
-        Check("the menu: About, the manual, then Create AI prompt, Ask <AI>, Ask another AI (the chats' list is on HMI Settings > AI Prompt)",
-              string.Join(",", names) == "helpAbout,helpManual,aiPrompt,aiAsk,aiAskOther", string.Join(",", names));
-        Check("  their words", Item(menu, "helpAbout").Text.EndsWith("About Kaban HMI") && Item(menu, "helpManual").Text.EndsWith("Open the HMI manual") &&
-              Item(menu, "aiPrompt").Text.EndsWith("Create AI prompt") && Item(menu, "aiAsk").Text.EndsWith("Ask Claude") &&
-              Item(menu, "aiAskOther").Text == "Ask another AI" && Item(menu, "aiAskOther").DropDownItems.Count == AiChats.Defaults.Count - 1,
+        // 12 October: "list all the AIs as on the list directly (rather than with 'Ask another AI') ... in the order
+        // set in HMI Settings / AI as 'Ask Claude', 'Ask ChatGPT', etc"
+        Check("the menu: About, the manual, Create AI prompt, then Ask <AI> for every chat of the list, in its order - no Ask another AI",
+              string.Join(",", names) == "helpAbout,helpManual,aiPrompt," + string.Join(",", AiChats.Defaults.Select(c => "aiAsk:" + c.Name)), string.Join(",", names));
+        Check("  their words: Ask Claude, Ask ChatGPT ...", Item(menu, "helpAbout").Text == "About Kaban HMI" && Item(menu, "helpManual").Text == "Open the HMI manual" &&
+              Item(menu, "aiPrompt").Text == "Create AI prompt" && Item(menu, "aiAsk:Claude").Text == "Ask Claude" && Item(menu, "aiAsk:ChatGPT").Text == "Ask ChatGPT" &&
+              AiChats.Defaults.All(c => Item(menu, "aiAsk:" + c.Name).Text == "Ask " + c.Name),
               string.Join(" | ", menu.Items.Cast<ToolStripItem>().Select(i => i.Text)));
+        // 12 October: "modify Help dropdown menu emojis so the menu gets to the same format as login dropdown"
+        var entries = menu.Items.OfType<ToolStripMenuItem>().ToList();
+        var logoutMenu = (ContextMenuStrip)typeof(MainForm).GetMethod("BuildLogoutMenu", Any).Invoke(form, null);
+        var logoutEntries = logoutMenu.Items.OfType<ToolStripMenuItem>().ToList();
+        Check("  as the user menu: a picture in the picture column, the words alone (no emoji in them)",
+              entries.All(i => i.Image != null && i.Image.Width == MenuGlyphs.Size) && entries.All(i => !i.Text.Any(ch => char.IsSurrogate(ch) || ch >= 0x2100)) &&
+              logoutEntries.All(i => i.Image != null) && menu.ShowImageMargin && menu.ImageScalingSize == logoutMenu.ImageScalingSize &&
+              menu.Renderer.GetType() == logoutMenu.Renderer.GetType(),
+              string.Join(" | ", entries.Select(i => i.Text + (i.Image == null ? " (no picture)" : ""))));
+        Check("  each chat's tooltip names it", (Item(menu, "aiAsk:Gemini").ToolTipText ?? "").StartsWith("Copies the prompt and opens Gemini in the browser"),
+              Item(menu, "aiAsk:Gemini").ToolTipText);
         var hmi = (Kaban.UI.Settings.SettingsScreen)new HmiSettingsPage().GetControl();
         Check("HMI Settings has no About tab any more", !hmi.AllPages.Any(x => x.TitleKey == "Set_About"), string.Join(",", hmi.AllPages.Select(x => x.TitleFallback)));
 
@@ -135,24 +148,20 @@ class HM {
         Check("  the file: AI prompt HMI <time>.txt", saved != null && Path.GetFileName(saved).StartsWith("AI prompt HMI ") && saved.EndsWith(".txt"), saved ?? "none");
         Check("  not opened anywhere (only copied)", opened.Count == 0 && AlarmAiPrompt.LastOpened == null);
 
-        Console.WriteLine("--- Ask AI for help: the user's AI opened ---");
-        ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, "ChatGPT");
+        Console.WriteLine("--- Ask <AI>: that AI opened ---");
         menu = form.BuildHelpMenu();
-        Check("his preferred AI in the entry", Item(menu, "aiAsk").Text.EndsWith("Ask ChatGPT") &&
-              Item(menu, "aiAskOther").DropDownItems.Cast<ToolStripItem>().All(i => i.Text != "ChatGPT"), Item(menu, "aiAsk").Text);
         noticed = null;
-        Item(menu, "aiAsk").PerformClick();
+        Item(menu, "aiAsk:ChatGPT").PerformClick();
         Pump(100);
         Check("  copied, saved, and ChatGPT opened in the browser", opened.Count == 1 && opened[0] == "https://chatgpt.com/" &&
               AlarmAiPrompt.LastOpened != null && AlarmAiPrompt.LastOpened.Name == "ChatGPT" &&
               noticed == "ChatGPT is opening: paste the prompt file into the chat (Ctrl+V) and send it.",
               string.Join(",", opened) + " / " + noticed);
-        var gemini = Item(menu, "aiAskOther").DropDownItems.Cast<ToolStripItem>().First(i => i.Text == "Gemini");
-        gemini.PerformClick();
+        Item(menu, "aiAsk:Gemini").PerformClick();
         Pump(100);
-        Check("  another AI from the list", opened.Count == 2 && opened[1] == "https://gemini.google.com/app", string.Join(",", opened));
+        Check("  another AI of the list, straight from the menu", opened.Count == 2 && opened[1] == "https://gemini.google.com/app", string.Join(",", opened));
         AiChats.OpenLink = link => false;
-        Item(menu, "aiAsk").PerformClick();
+        Item(menu, "aiAsk:ChatGPT").PerformClick();
         Pump(100);
         Check("  no browser, no internet: said so, the prompt still on the clipboard and in its file",
               noticed != null && noticed.StartsWith("ChatGPT could not be opened (no browser or no internet?)") && noticed.Contains("Documents\\Kaban HMI\\AI prompts"), noticed);
@@ -173,6 +182,11 @@ class HM {
         var g = ed.Grid;
         Check("  the page is the chats alone (the page-designer prompt is gone)", ed.Parent == aiPage && ed.Top == 0 &&
               aiPage.Controls.Count == 1 && aiTab.TitleFallback == "AI", ed.Bounds.ToString());
+        var aiNote = ed.Controls.OfType<Label>().FirstOrDefault(l => l.Name == "aiChatsNote");
+        Check("  no 'AI chats' title; its note: the Help menu and the alarms' help lists offer each, as 'Ask <name>', in this order",
+              !ed.Controls.OfType<Label>().Any(l => l.Text == "AI chats") && aiNote != null &&
+              aiNote.Text.StartsWith("The AI chats the Help menu (?) and every alarm's help list offer, each as 'Ask <name>', in this order") &&
+              !aiNote.Text.Contains("Users and Preferences"), aiNote == null ? "no note" : aiNote.Text);
         Check("  a table as the others: a name and a web address a row, the usual list", g.Rows.Count == AiChats.Defaults.Count &&
               g.Columns[0].HeaderText == "Name" && g.Columns[1].HeaderText == "Web address" && !g.RowHeadersVisible && !g.AllowUserToAddRows &&
               Convert.ToString(g.Rows[0].Cells[0].Value) == "Claude");
@@ -205,35 +219,27 @@ class HM {
               !ed.SaveButton.Enabled && ed.Status == "The list is kept.",
               ed.Status + " / " + string.Join(",", AiChats.All.Select(c => c.Name)));
         holder.Close();
-        ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, "Claude");
-        Check("a preferred AI no longer in the list: the first of it", AiChats.Preferred.Name == "ChatGPT", AiChats.Preferred.Name);
-        ViewPreferences.SetUser("admin", ViewPreferences.PreferredAi, null);
+        menu = form.BuildHelpMenu();
+        Check("the menu follows the list: Ask ChatGPT first, Ask Our AI last, no Ask Claude",
+              string.Join(",", menu.Items.Cast<ToolStripItem>().Select(i => i.Name).Where(n => n.StartsWith("aiAsk:"))) ==
+              string.Join(",", AiChats.All.Select(c => "aiAsk:" + c.Name)) && Item(menu, "aiAsk:ChatGPT") != null && Item(menu, "aiAsk:Our AI") != null &&
+              Item(menu, "aiAsk:Claude") == null, string.Join(",", menu.Items.Cast<ToolStripItem>().Select(i => i.Name)));
 
-        Console.WriteLine("--- Preferred AI in Users and Preferences ---");
+        Console.WriteLine("--- Users and Preferences: no Preferred AI any more ---");
         var page = new UsersPreferencesControl { Dock = DockStyle.Fill };
         var host = new Form { ClientSize = new System.Drawing.Size(1200, 800) };
         host.Controls.Add(page);
         host.Show(); Pump(200);
-        var combo = page.ComboOf(ViewPreferences.PreferredAi);
-        var items = combo == null ? new List<string>() : combo.Items.Cast<object>().Select(o => o.ToString()).ToList();
-        Check("its own row under 'Help and AI': as for everyone, then the panel's chats", combo != null && items.Count == AiChats.All.Count + 1 &&
-              items[0] == "As for everyone  (" + AiChats.All[0].Name + ")" && items.Skip(1).SequenceEqual(AiChats.All.Select(c => c.Name)) &&
-              page.PreferencesColumn.Controls.OfType<Label>().Any(l => l.Text == "Help and AI") &&
-              page.PreferencesColumn.Controls.OfType<Label>().Any(l => l.Text.StartsWith("Preferred AI")),
-              string.Join(" | ", items));
-        combo.SelectedIndex = items.IndexOf("Our AI");
-        Pump(50);
-        bool savedPrefs = (bool)typeof(UsersPreferencesControl).GetMethod("Save", Any).Invoke(page, null);
-        Check("  chosen and kept as his own: the menu asks Our AI", savedPrefs && ViewPreferences.UserValue("admin", ViewPreferences.PreferredAi) == "Our AI" &&
-              Item(form.BuildHelpMenu(), "aiAsk").Text.EndsWith("Ask Our AI"), ViewPreferences.UserValue("admin", ViewPreferences.PreferredAi) ?? "none");
+        Check("no Preferred AI row (every AI is in the menu); 'Help and AI' keeps how the prompt is copied",
+              page.ComboOf("PreferredAi") == null && !page.PreferencesColumn.Controls.OfType<Label>().Any(l => l.Text.StartsWith("Preferred AI")) &&
+              page.PreferencesColumn.Controls.OfType<Label>().Any(l => l.Text == "Help and AI") && page.ComboOf(ViewPreferences.AiPromptAs) != null);
         host.Close();
 
         Console.WriteLine("--- an Operator ---");
         SecurityManager.Login("op", SecurityLevel.Operator);
         Pump(100);
         menu = form.BuildHelpMenu();
-        Check("the same menu", Item(menu, "helpAbout") != null && Item(menu, "aiAsk") != null);
-        Check("  his AI: everyone's (none chosen: the first of the list)", Item(menu, "aiAsk").Text.EndsWith("Ask ChatGPT"), Item(menu, "aiAsk").Text);
+        Check("the same menu, every AI of the list", Item(menu, "helpAbout") != null && AiChats.All.All(c => Item(menu, "aiAsk:" + c.Name) != null));
         Item(menu, "aiPrompt").PerformClick();
         Pump(100);
         var clip = File.ReadAllText(AlarmAiPrompt.LastSaved);
@@ -248,13 +254,14 @@ class HM {
         var asItems = asCombo == null ? new List<string>() : asCombo.Items.Cast<object>().Select(o => o.ToString()).ToList();
         Check("'AI prompt copied as': a file (Ctrl+V attaches it) - the first - or its text", asCombo != null &&
               asItems.Skip(Math.Max(0, asItems.Count - 2)).SequenceEqual(new[] { "A file (Ctrl+V attaches it)", "Its text" }) &&
-              (asItems.Count == 2 || asItems[0] == "As for everyone  (A file (Ctrl+V attaches it))") &&
-              asCombo.Top > page2.ComboOf(ViewPreferences.PreferredAi).Top, string.Join(" | ", asItems));
+              (asItems.Count == 2 || asItems[0] == "As for everyone  (A file (Ctrl+V attaches it))"), string.Join(" | ", asItems));
         host2.Close();
-        Check("the texts in every language", new[] { "Ttl_Help", "Tip_Help", "Hlp_About", "Hlp_AiPromptItem", "Hlp_AiAskItem", "Hlp_AiAskOther", "Tip_AiAsk",
-              "Tip_HmiPrompt", "Msg_AiPromptFile", "Msg_AiAsked", "Msg_AiAskedFile", "Msg_AiAskFailed", "AiC_Head", "AiC_Note", "AiC_Name", "AiC_Link",
-              "AiC_Save", "AiC_Revert", "AiC_Add", "AiC_Remove", "AiC_Kept", "AiC_Usual", "AiC_BadLink", "VP_SecHelp", "VP_PreferredAi", "PV_Ai" }
+        Check("the texts in every language", new[] { "Ttl_Help", "Tip_Help", "Hlp_About", "Hlp_AiPromptItem", "Hlp_AiAskItem", "Tip_AiAsk",
+              "Tip_HmiPrompt", "Msg_AiPromptFile", "Msg_AiAsked", "Msg_AiAskedFile", "Msg_AiAskFailed", "AiC_Note", "AiC_Note2", "AiC_Name", "AiC_Link",
+              "AiC_Save", "AiC_Revert", "AiC_Add", "AiC_Remove", "AiC_Kept", "AiC_Usual", "AiC_BadLink", "VP_SecHelp" }
               .All(k => new[] { "EN", "TR", "RU", "DE", "IT", "ES" }.All(l => !string.IsNullOrEmpty(LanguageManager.GetStringIn(l, k)))));
+        Check("  the gone ones gone (Ask another AI, AI chats, Preferred AI)", new[] { "Hlp_AiAskOther", "AiC_Head", "VP_PreferredAi", "PV_Ai" }
+              .All(k => string.IsNullOrEmpty(LanguageManager.GetStringIn("EN", k))));
         form.Close();
         Console.WriteLine(fail == 0 ? "\nHELP MENU ALL PASS" : "\nHELP MENU " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

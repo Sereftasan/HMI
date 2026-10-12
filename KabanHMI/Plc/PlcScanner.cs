@@ -153,8 +153,11 @@ namespace Kaban.UI.Plc
             Action<int, string> AddTo = (station, s) =>
             {
                 if (string.IsNullOrWhiteSpace(s)) return;
-                if (!perPlc.ContainsKey(station)) perPlc[station] = new HashSet<string>();
-                perPlc[station].Add(s.Trim().ToUpper());
+                // "X12@2": read in PLC 2's batch, whichever control names it (12 October)
+                int st; string device;
+                PlcAddressHelper.Resolve(station, s.Trim(), out st, out device);
+                if (!perPlc.ContainsKey(st)) perPlc[st] = new HashSet<string>();
+                perPlc[st].Add(device.Trim().ToUpper());
             };
             Action<string> Add = (s) => AddTo(curPlc, s);
 
@@ -767,6 +770,25 @@ namespace Kaban.UI.Plc
                 lookups[plc] = (addr) =>
                 {
                     if (string.IsNullOrWhiteSpace(addr)) return 0;
+                    // A DEVICE OF ANOTHER CONTROLLER ("X12@2"): that controller's
+                    // values - the control reading it need not know (12 October).
+                    int at; string device;
+                    if (PlcAddressHelper.TrySplitStation(addr, out device, out at))
+                    {
+                        if (at != capturedPlc)
+                        {
+                            Func<string, int> there;
+                            if (lookups.TryGetValue(at, out there)) return there(device);
+                            // not read there yet: into that station's batch
+                            HashSet<string> dynThere;
+                            string clean = device.Trim().ToUpper();
+                            if (!_dynamicAddresses.TryGetValue(at, out dynThere))
+                                _dynamicAddresses[at] = dynThere = new HashSet<string>();
+                            if (!dynThere.Contains(clean)) { dynThere.Add(clean); _needsRebuild = true; }
+                            return 0;
+                        }
+                        addr = device;
+                    }
                     string cleanAddr = addr.Trim().ToUpper();
 
                     Dictionary<string, int> map;

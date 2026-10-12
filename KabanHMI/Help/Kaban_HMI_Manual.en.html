@@ -180,15 +180,15 @@ on a <b>lamp</b> for its name and state &ndash; its ring turns blue under the po
      is not clear. The prompt goes on the clipboard <b>as a file</b> (<i>Documents\Kaban HMI\AI prompts</i>, the newest 50 kept): <kbd>Ctrl</kbd>+<kbd>V</kbd>
      in the chat <b>attaches it</b>, however long. Or as its text: <i>AI prompt copied as</i> in Users and Preferences (<i>Help and AI</i>). A short note at the
      bottom of the window says what to do, and goes by itself.</li>
- <li><b>Ask &lt;your AI&gt;</b> (<i>Ask Claude</i>): the same prompt, and <b>your AI chat opened</b> in the browser &ndash; paste it there and send it.
-     Your AI is your <i>Preferred AI</i> (Users and Preferences, <i>Help and AI</i>); none chosen, the first of the list. <b>Ask another AI</b> offers
-     the others. The prompt is far too long to travel in the chat's web address, so it is pasted, never sent by the HMI; with no browser or no
-     internet on the panel the note says so, and the prompt is still on the clipboard and in its file to use on another computer or a phone.</li>
- <li>The chats offered are the panel's list: <span class="lvl l3">Admin</span> <b>HMI Settings &rsaquo; AI</b>, the table <i>AI chats</i>
-     &ndash; a name and a web address each, in their order; &#10133; adds one, &#128465; removes the one selected, &#9650; &#9660; move it, &#8635; puts
+ <li><b>Ask Claude</b>, <b>Ask ChatGPT</b>, <b>Ask Gemini</b>&hellip; &ndash; one entry for <b>every AI chat of the list</b>, in its order: the same prompt,
+     and <b>that AI chat opened</b> in the browser &ndash; paste it there and send it. The prompt is far too long to travel in the chat's web address,
+     so it is pasted, never sent by the HMI; with no browser or no internet on the panel the note says so, and the prompt is still on the clipboard
+     and in its file to use on another computer or a phone.</li>
+ <li>The chats offered are the panel's list: <span class="lvl l3">Admin</span> <b>HMI Settings &rsaquo; AI</b>, a table
+     &ndash; a name and a web address each, in the order the menus offer them; &#10133; adds one, &#128465; removes the one selected, &#9650; &#9660; move it, &#8635; puts
      <i>the usual list</i> back (Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity), &#128190; keeps it. Only web addresses (<code>https://</code>) are taken.</li>
 </ul>
-<p>An alarm's help list (its <b>Help</b> column, a unit's <b>?</b>) ends with the same <b>Create AI prompt</b> and <b>Ask &lt;your AI&gt;</b>, for that alarm (see <a href="#alarms">6</a>).</p>
+<p>An alarm's help list (its <b>Help</b> column, a unit's <b>?</b>) ends with the same <b>Create AI prompt</b> and <b>Ask &lt;AI&gt;</b> entries, for that alarm (see <a href="#alarms">6</a>).</p>
 
 <h3 id="tables">Tables</h3>
 <p>Every table of the program looks and works the same: bold headings on light grey, thin rules between the rows, the selected row in pale blue.
@@ -590,7 +590,7 @@ valve and feedback, error bits and helpers come from that row; the unit on the p
      The <b>Help</b> column opens the documents linked to an alarm; the <b>Reset</b> button drives the machine's reset device
      as the machine's program says: a short pulse, or <b>SET</b> &ndash; the HMI switches the device on and the PLC switches it off itself
      once every device is reset. An Admin sees the device and how it is driven in the button's tooltip.</li>
- <li><b>Create AI prompt</b> and <b>Ask &lt;your AI&gt;</b>: the last entries of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers them
+ <li><b>Create AI prompt</b> and <b>Ask &lt;AI&gt;</b> (one for each chat of the list): the last entries of every alarm's help list &ndash; in the <b>Help</b> column (an alarm with no document of its own offers them
      too) and in a unit's <b>?</b> while it shows a fault. <i>Create AI prompt</i> puts on the clipboard a prompt with <b>everything the HMI knows</b> about the alarm:
      the machine, its PLC and cards, how its alarms are raised; the alarm, its code and device, what the HMI saw fail and the states before it came;
      the unit with <b>both</b> its movements (command, output, sensors, error bit and alarm, delay); <b>every device involved</b> with its PLC label,
@@ -602,7 +602,7 @@ valve and feedback, error bits and helpers come from that row; the unit on the p
      (<kbd>Ctrl</kbd>+<kbd>V</kbd>). The first prompt takes a moment (the HMI looks through every page for where the devices are).
      The prompt is long: it goes on the clipboard <b>as a file</b> (<i>Documents\Kaban HMI\AI prompts</i>) that the chat attaches on
      <kbd>Ctrl</kbd>+<kbd>V</kbd> - or as text (see <a href="#help">1</a>).
-     <i>Ask &lt;your AI&gt;</i> (<i>Ask Claude</i>) does the same and opens your AI chat in the browser to paste it into; <i>Ask another AI</i> the others
+     <i>Ask Claude</i>, <i>Ask ChatGPT</i>&hellip; (every chat of the panel's list) do the same and open that AI chat in the browser to paste it into
      (see <a href="#help">1</a>).</li>
  <li>Each machine has <b>its own</b> reset device, set in the machine's program. Where none is set yet, the Reset button is grey and says so,
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
@@ -685,6 +685,11 @@ that is not in it is shown as <i>PLC message n</i>, with OK.</p>
 <tr><td>C03</td><td>Link open but no reply</td><td>Network, switch, PLC in RUN</td></tr>
 <tr><td>C04</td><td>Unexpected reply</td><td>Driver type and PLC model in PLC Connections</td></tr>
 </table>
+<p><b>A device of the machine's other controller.</b> A control belongs to one controller (its <code>PlcNumber</code>), but one of its devices
+may be wired to another one &ndash; written with <b>@</b> and that controller's number: <code>X12@2</code> is X12 of PLC 2 (on a machine whose first
+controller had no input left for it). The HMI reads, writes, lights and watches it on that controller, its alarms and help are that controller's,
+and its tooltips and help pages say <i>X12 (PLC 2)</i>. A dot is not used for this: it is already part of addresses (<code>D100.5</code>, bit 5 of a word;
+Siemens' <code>M10.3</code>).</p>
 
 <!-- ================================================================== -->
 <h2 id="unitset">8. Units of measure</h2>
@@ -708,7 +713,7 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
   and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i> &ndash; last answer, drops today and last error; the connection events;
   and <span class="lvl l3">Admin</span> the MX Component check and logical-station scan (see <a href="#diag">11</a>).</td></tr>
 <tr><td>Config Import</td><td><span class="lvl l3">Admin</span></td><td>Carry station addresses, users and alarm settings over to a new program version.</td></tr>
-<tr><td>AI</td><td><span class="lvl l3">Admin</span></td><td>The <b>AI chats</b> the <b>?</b> offers, as a table: add, remove, order, the usual list (see <a href="#help">1</a>).</td></tr>
+<tr><td>AI</td><td><span class="lvl l3">Admin</span></td><td>The AI chats the <b>?</b> and the alarms' help lists offer (<i>Ask Claude</i>, <i>Ask ChatGPT</i>&hellip;, in this order), as a table: add, remove, order, the usual list (see <a href="#help">1</a>).</td></tr>
 </table>
 
 <h3 id="magnifier">The screen scale</h3>
@@ -771,9 +776,7 @@ cannot change are grey. Under the list &ndash; always at the same place, however
 <tr><td>Sound for a new alarm</td><td><b>Off</b> &middot; On: once for each alarm that comes onto the list, not while it stays</td></tr>
 <tr><td>Attention marks</td><td><b>Blink</b> &middot; Steady: codes, lamps, borders, the top bar's alarm and connection marks and the sign-in reminder shown steadily</td></tr>
 <tr><td>Tooltips appear after</td><td>Normal (1 s) &middot; Short (0.4 s) &middot; Long (2 s)</td></tr>
-<tr><td rowspan="2">Help and AI</td><td>Preferred AI</td><td>The panel's AI chats (an Admin keeps the list: HMI Settings &rsaquo; AI); everyone's not chosen: the first of the list &ndash; the chat
-  <i>Ask &lt;your AI&gt;</i> opens (see <a href="#help">1</a>)</td></tr>
-<tr><td>AI prompt copied as</td><td><b>A file</b> (<kbd>Ctrl</kbd>+<kbd>V</kbd> in a chat attaches it) &middot; Its text</td></tr>
+<tr><td>Help and AI</td><td>AI prompt copied as</td><td><b>A file</b> (<kbd>Ctrl</kbd>+<kbd>V</kbd> in a chat attaches it) &middot; Its text</td></tr>
 </table>
 <p><b>Who may change what</b>:</p>
 <ul>

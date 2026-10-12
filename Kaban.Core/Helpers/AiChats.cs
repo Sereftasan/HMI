@@ -14,10 +14,10 @@ namespace Kaban.Core.Helpers
     /// automatically, as well as 'Create AI prompt'").
     ///
     /// A list of chats - a name and its web address - kept for the panel (an
-    /// Admin edits it), and each user's choice among them (View Preferences:
-    /// PreferredAi; none chosen, the first of the list). "Ask AI for help" puts
-    /// the prompt on the clipboard and in a file and opens the chosen chat in the
-    /// browser, to paste it into: a prompt of a hundred thousand characters does
+    /// Admin edits it). Every chat of it is offered, in its order: "Ask Claude",
+    /// "Ask ChatGPT" ... (12 October: no user's choice among them any more - every
+    /// user picked from all of them anyway). "Ask &lt;AI&gt;" puts the prompt on the
+    /// clipboard and in a file and opens that chat in the browser, to paste it into: a prompt of a hundred thousand characters does
     /// not travel in a web address (the chats' "?q=" links take a few thousand at
     /// most), so it is never sent that way.
     ///
@@ -126,12 +126,6 @@ namespace Kaban.Core.Helpers
         {
             if (string.IsNullOrWhiteSpace(name)) return null;
             return All.FirstOrDefault(c => Same(c.Name, name));
-        }
-
-        /// <summary>The signed-in user's chat (else everyone's choice, else the first of the list); null when the list is empty.</summary>
-        public static Chat Preferred
-        {
-            get { return Find(ViewPreferences.Get(ViewPreferences.PreferredAi)) ?? All.FirstOrDefault(); }
         }
 
         /// <summary>Opens a web address in the browser. Replaceable so a test sees what would open.</summary>

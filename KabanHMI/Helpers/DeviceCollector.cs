@@ -116,11 +116,18 @@ namespace Kaban.UI.Helpers
             return dv != null && dv.Type == LimitSourceType.Static ? (int)dv.StaticValue : 0;
         }
 
+        /// <summary>The station a collection is for (Collect sets it): a control's device of another controller ("X12@2") is that one's.</summary>
+        [ThreadStatic] private static int _wanted;
+
         private static void Add(List<Device> list, HashSet<string> seen, int station, string address,
                                 string dataType, string owner, string role)
         {
             if (string.IsNullOrWhiteSpace(address)) return;
-            var a = address.Trim().ToUpperInvariant();
+            // "X12@2" on a PLC 1 control is a device of PLC 2 (12 October)
+            string device;
+            PlcAddressHelper.Resolve(station, address.Trim(), out station, out device);
+            if (_wanted > 0 && station != _wanted) return;
+            var a = device.Trim().ToUpperInvariant();
             if (!seen.Add(a)) return;
             string usedAs = owner.Length > 0 ? owner + (role.Length > 0 ? " - " + role : "") : role;
             list.Add(new Device { Station = station, Address = a, DataType = dataType, UsedAs = usedAs });
@@ -128,8 +135,10 @@ namespace Kaban.UI.Helpers
 
         private static void Collect(Control c, int station, List<Device> list, HashSet<string> seen, string owner)
         {
+            // every control on a station - and any other naming a device of it ("X12@2")
             int st = StationOf(c);
-            if (st != station) return;
+            if (st <= 0) return;
+            _wanted = station;
             string own = owner;
             string text = (c.Text ?? "").Trim();
             string self = own.Length > 0 ? "" : (text.Length > 1 && text.Any(char.IsLetter) ? text : c.Name ?? "");
@@ -252,6 +261,7 @@ namespace Kaban.UI.Helpers
             // things looked at when an alarm will not clear.
             var alarms = new PageDevices { Title = LanguageManager.GetString("Btn_Alarms", "Alarms") };
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            _wanted = station;
             foreach (var def in AlarmManager.GetAllDefinitions().Where(d => d != null && d.PlcNumber == station))
                 Add(alarms.Devices, seen, station, def.Address,
                     def.DataType == DataTypeEnum.Bin_32 ? DoubleWord : IsBitDevice(def.Address) ? Bit : Word, "",

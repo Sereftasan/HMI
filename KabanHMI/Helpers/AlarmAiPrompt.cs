@@ -548,7 +548,7 @@ namespace Kaban.UI.Helpers
                 var words = new List<string>();
                 if (p.Text.Length > 0) words.Add("\"" + p.Text + "\"");
                 if (p.Read.Length > 0 && !p.Read.Equals(address, StringComparison.OrdinalIgnoreCase)) words.Add("read at " + p.Read);
-                if (p.Commands.Count > 0) words.Add("commanded by " + string.Join(", ", p.Commands));
+                if (p.Commands.Count > 0) words.Add("commanded by " + string.Join(", ", p.Commands.Select(c => PlcAddressHelper.Describe(p.Station, c))));
                 lines.Add("drawing: " + (words.Count > 0 ? string.Join(", ", words) + " - " : "") + p.Electrical());
                 if (p.Card.Length > 0) lines.Add("PLC card: " + p.Card);
                 var air = p.Pneumatic();

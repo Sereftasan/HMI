@@ -207,6 +207,7 @@
     <Compile Include="Controls\UiStyle.cs" />
     <Compile Include="Controls\ToolGlyphs.cs" />
     <Compile Include="Controls\EmojiArt.cs" />
+    <Compile Include="Controls\MenuGlyphs.cs" />
     <Compile Include="Controls\MotionValueHMI.cs" />
     <Compile Include="Controls\AxisPickBar.cs" />
     <Compile Include="Controls\AxisPageFrame.cs" />
