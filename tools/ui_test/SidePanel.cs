@@ -124,7 +124,8 @@ class SP {
         var leaf = AllOf(homePage).OfType<ScrollableControl>().FirstOrDefault(c => c.AutoScroll && !(c is Kaban.UI.Settings.SettingsScreen));
         Check("the page scrolls when the panel narrows it (it was cut off, no scroll bar)", leaf != null && leaf.HorizontalScroll.Visible,
               leaf == null ? "no scrolling page" : leaf.GetType().Name + " scroll=" + leaf.HorizontalScroll.Visible);
-        var d110 = DeviceFindForm.Match(DeviceCollector.UsesOf(2), 2, "D110").FirstOrDefault();
+        // the speed at the right end of FA2010's home (D408; the demo's D110 of PLC 2 went with the demo, 12 October)
+        var d110 = DeviceFindForm.Match(DeviceCollector.UsesOf(1), 1, "D408").FirstOrDefault();
         string why0;
         var far = d110 == null ? null : form.ShowDeviceUse(d110, out why0);
         Pump(100);
@@ -135,7 +136,7 @@ class SP {
             Check("  a unit at the far side found by Find: scrolled into sight, beside the panel", seen.Contains(at) && -leaf.AutoScrollPosition.X > 0,
                   at + " in " + seen + ", scrolled " + leaf.AutoScrollPosition);
         }
-        else Check("  a unit at the far side found by Find", false, d110 == null ? "D110 not found" : "not shown");
+        else Check("  a unit at the far side found by Find", false, d110 == null ? "D408 not found" : "not shown");
         form.Bounds = sizeBefore;
         Pump(50);
 
