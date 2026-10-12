@@ -264,10 +264,16 @@ namespace Kaban.UI.Controls
                 foreach (var d in col)
                 {
                     int at = Math.Max(origin, d._owner.Left - widest - gap);
+                    // AS HIGH AS ITS TEXT NEEDS, measured now: a caption no longer sized by
+                    // itself kept the height it had, and at a smaller screen scale (80%) the
+                    // scaled height was less than the scaled font needs - the bottom of the
+                    // letters was cut off (12 October: "the description texts' bottom side
+                    // doesn't get rendered").
+                    int h = Math.Max(d._label.PreferredHeight,
+                                     TextRenderer.MeasureText(d._label.Text ?? "", d._label.Font).Height + d._label.Padding.Vertical);
                     d._label.AutoSize = false;
                     d._label.TextAlign = ContentAlignment.MiddleLeft;
-                    d._label.SetBounds(at, d._owner.Top + (d._owner.Height - d._label.Height) / 2,
-                                       Math.Max(10, d._owner.Left - gap - at), d._label.Height);
+                    d._label.SetBounds(at, d._owner.Top + (d._owner.Height - h) / 2, Math.Max(10, d._owner.Left - gap - at), h);
                 }
                 return;
             }
