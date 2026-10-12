@@ -32,7 +32,7 @@ class CylinderHelpReview {
         { "FA2010", new[] { "Screens.Manual.ManualClamping_Moulds", "Screens.Manual.ManualCutting", "Screens.Manual.ManualEntry_Conveyor", "Screens.Manual.ManualExit",
                             "Screens.Manual.ManualMilling", "Screens.Manual.ManualOther", "Screens.Manual.ManualProfile_Recognition", "Screens.Manual.ManualRobot",
                             "Screens.Manual.ManualYZ_Cross_Rollers" } },
-        { "H500", new[] { "Screens.ManualOther", "Screens.ManualProfile_Rotation" } },
+        { "H500", new[] { "Screens.Manual.ManualEntry_Conveyor", "Screens.Manual.ManualHeads" } },
         { "H800", new[] { "Screens.ManualDischarge", "Screens.ManualConveyor", "Screens.ManualProfile_Rotation" } },
     };
 

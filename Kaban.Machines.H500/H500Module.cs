@@ -7,7 +7,8 @@ using Kaban.UI.Screens;
 namespace Kaban.Machines.H500
 {
     /// <summary>
-    /// H500 - profile edge cleaning centre.
+    /// H500 - the screwing and holing machine, its H500 FX5 version (12 October: its
+    /// pages from the program the machine runs today - tools/legacy_h500_pages.py).
     ///
     /// The machine supplies only its OWN content; the left bar, its icons and
     /// the settings structure all come from Kaban.UI, so this machine cannot end
@@ -82,17 +83,19 @@ namespace Kaban.Machines.H500
             return StandardScreens.Build(ctx, new StandardScreens.Options
             {
                 Home = () => new MachineHomeScreen(HomeSpec(ctx)),
+                // The old program's H500 FX5 pages (12 October): Entry Conveyor and Heads,
+                // and its Parameters tab - not its Configuration tab (the profile tables).
                 ManualPages = new Kaban.UI.Settings.ISettingsPage[]
                 {
-                    new Kaban.UI.Settings.SimplePage("Tab_H500_ManualOther", "Other",
-                        SecurityLevel.Operator, () => new Screens.ManualOther()),
-                    new Kaban.UI.Settings.SimplePage("Tab_H500_ManualProfile_Rotation", "Profile Rotation",
-                        SecurityLevel.Operator, () => new Screens.ManualProfile_Rotation())
+                    new Kaban.UI.Settings.SimplePage("Tab_H500_ManualEntry_Conveyor", "Entry Conveyor",
+                        SecurityLevel.Operator, () => new Screens.Manual.ManualEntry_Conveyor()),
+                    new Kaban.UI.Settings.SimplePage("Tab_H500_ManualHeads", "Heads",
+                        SecurityLevel.Operator, () => new Screens.Manual.ManualHeads())
                 },
                 MachineSettings = new Kaban.UI.Settings.ISettingsPage[]
                 {
-                    new Kaban.UI.Settings.SimplePage("Tab_H500_MachineParameters", "Parameters",
-                        SecurityLevel.Maintenance, () => new Screens.MachineParameters())
+                    new Kaban.UI.Settings.SimplePage("Tab_H500_ParamMachine", "Parameters",
+                        SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMachine())
                 }
             });
         }

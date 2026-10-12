@@ -90,23 +90,23 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Screens\MachineParameters.cs">
+    <Compile Include="Screens\Manual\ManualEntry_Conveyor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\MachineParameters.Designer.cs">
-      <DependentUpon>MachineParameters.cs</DependentUpon>
+    <Compile Include="Screens\Manual\ManualEntry_Conveyor.Designer.cs">
+      <DependentUpon>ManualEntry_Conveyor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualOther.cs">
+    <Compile Include="Screens\Manual\ManualHeads.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualOther.Designer.cs">
-      <DependentUpon>ManualOther.cs</DependentUpon>
+    <Compile Include="Screens\Manual\ManualHeads.Designer.cs">
+      <DependentUpon>ManualHeads.cs</DependentUpon>
     </Compile>
-    <Compile Include="Screens\ManualProfile_Rotation.cs">
+    <Compile Include="Screens\Parameters\ParamMachine.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Screens\ManualProfile_Rotation.Designer.cs">
-      <DependentUpon>ManualProfile_Rotation.cs</DependentUpon>
+    <Compile Include="Screens\Parameters\ParamMachine.Designer.cs">
+      <DependentUpon>ParamMachine.cs</DependentUpon>
     </Compile>
     <Compile Include="H500Module.cs" />
     <Compile Include="Program.cs" />
