@@ -90,6 +90,38 @@ class HC {
 
         scanner.Stop();
         form.Close();
+
+        Console.WriteLine("--- H500's home: the old H500 FX5 main control panel's buttons ---");
+        var form5 = new Form { ClientSize = new Size(600, 160), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        var home5 = new Kaban.Machines.H500.Screens.HomeScreen { Dock = DockStyle.Fill };
+        form5.Controls.Add(home5);
+        var scan5 = new Kaban.UI.Plc.PlcScanner(home5);
+        scan5.RefreshTags();
+        form5.Show(); Pump(400);
+        var b5 = Tree(home5).OfType<ButtonHMI>().ToList();
+        Check("Start, Pause, Cancel - nothing else (the old H500 home has no speed)", string.Join(",", b5.Select(b => b.FallbackText)) == "Start,Pause,Cancel" &&
+              Tree(home5).Count(c => c is IHmiControl) == 3);
+        var st5 = b5[0];
+        Func<bool> canAct = () => (bool)typeof(ButtonHMI).GetProperty("CanAct", Any).GetValue(st5, null);
+        sim.Write("M1", 0); sim.Write("M60", 1); sim.Write("M2", 0); Pump(600);
+        Check("Start while the machine is not ready (M1 off): it cannot be pressed", !canAct());
+        sim.Write("M1", 1); Pump(600);
+        Check("  ready: it can", canAct());
+        var down = typeof(ButtonHMI).GetMethod("OnMouseDown", Any);
+        var up = typeof(ButtonHMI).GetMethod("OnMouseUp", Any);
+        down.Invoke(st5, new object[] { new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0) });
+        Check("pressed: the job-finished flag M60 cleared first, the start M2 on while held", sim.Read("M60") == 0 && sim.Read("M2") == 1);
+        up.Invoke(st5, new object[] { new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0) });
+        Check("  let go: M2 off - a pulse, as the old Start", sim.Read("M2") == 0);
+        Check("  lit while the machine works (M0)", st5.Lamp1Address == "M0");
+        Click(b5[1]); Pump(100);
+        Check("Pause M4 alternate", sim.Read("M4") == 1 && b5[1].Lamp1Address == "M4");
+        down.Invoke(b5[2], new object[] { new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0) });
+        bool held = sim.Read("M3") == 1;
+        up.Invoke(b5[2], new object[] { new MouseEventArgs(MouseButtons.Left, 1, 5, 5, 0) });
+        Check("Cancel M3 momentary", held && sim.Read("M3") == 0);
+        scan5.Stop();
+        form5.Close();
         Console.WriteLine(fail == 0 ? "\nHOME CYCLE ALL PASS" : "\nHOME CYCLE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

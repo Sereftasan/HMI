@@ -90,6 +90,12 @@
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Screens\HomeScreen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\HomeScreen.Designer.cs">
+      <DependentUpon>HomeScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Manual\ManualEntry_Conveyor.cs">
       <SubType>UserControl</SubType>
     </Compile>

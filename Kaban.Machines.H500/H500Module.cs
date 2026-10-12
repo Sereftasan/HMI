@@ -62,27 +62,13 @@ namespace Kaban.Machines.H500
                 replaceExisting: false, moduleId: ctx.ModuleId, stationRemap: ctx.Station);
         }
 
-        /// <summary>
-        /// The home screen is described, not hand-laid - see MachineHomeScreen.
-        /// Addresses come from this machine's own label list.
-        /// </summary>
-        private MachineHomeScreen.MachineHomeSpec HomeSpec(IMachineMountContext ctx)
-        {
-            var spec = new MachineHomeScreen.MachineHomeSpec
-            {
-                MachineName = "H500",
-                // This machine's OWN controller: station 3 when H500 is mounted
-                // under FA2010. "1" showed FA2010's PLC on the sub-machine's home.
-                PlcNumber = ctx.Station(1),
-            };
-            return spec;
-        }
-
         public IEnumerable<MachineScreen> GetScreens(IMachineMountContext ctx)
         {
             return StandardScreens.Build(ctx, new StandardScreens.Options
             {
-                Home = () => new MachineHomeScreen(HomeSpec(ctx)),
+                // The old H500 FX5 main control panel's Start, Pause and Cancel (12 October), on
+                // this machine's OWN controller: station 3 when H500 is mounted under FA2010.
+                Home = () => Kaban.UI.Helpers.StationMap.Apply(ctx, new Screens.HomeScreen()),
                 // The old program's H500 FX5 pages (12 October): Entry Conveyor and Heads,
                 // and its Parameters tab - not its Configuration tab (the profile tables).
                 ManualPages = new Kaban.UI.Settings.ISettingsPage[]
