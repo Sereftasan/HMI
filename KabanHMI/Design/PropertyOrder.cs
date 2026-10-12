@@ -79,8 +79,15 @@ namespace Kaban.UI.Design
                 C("State", "Lamp1Address", "Lamp1Tip", "Lamp2Address", "Lamp2Tip", "LampDirection", "RelayAddress",
                            "OutputAddress", "ErrorAddress", "BlinkCondition", "AlertBlink"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
-                C("Security", "RequiredSecurity", "ConfirmationNeeded", "LogAction"),
+                C("Security", "RequiredSecurity", "ConfirmationNeeded", "ConfirmationAddress", "ConfirmationTextKey", "ConfirmationText", "LogAction"),
                 C("Help", "ToolTipText")),
+
+            // the machine's speed in percent (a home page's, 12 October)
+            ["SpeedOverrideHMI"] = L(
+                C("Device", "PlcNumber", "Address"),
+                C("Display", "TranslationKey", "FallbackText"),
+                C("Input", "Steps"),
+                C("Security", "RequiredSecurity", "LogAction")),
 
             ["CheckBoxHMI"] = L(
                 C("Device", "PlcNumber", "Address", "AlertAddress"),

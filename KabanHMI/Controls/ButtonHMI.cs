@@ -193,8 +193,10 @@ namespace Kaban.UI.Controls
         public string ConfirmationAddress { get; set; } = "";
 
         /// <summary>The question asked (a translation key; ConfirmationText when it has no text).</summary>
-        [Category(" System")] public string ConfirmationTextKey { get; set; } = "";
-        [Category(" System")] public string ConfirmationText { get; set; } = "";
+        [Category(" System")] [Description("The question asked: a translation key (Msg_CancelOperation). Empty: \"Are you sure?\".")]
+        public string ConfirmationTextKey { get; set; } = "";
+        [Category(" System")] [Description("The question in English, shown when its key has no translation.")]
+        public string ConfirmationText { get; set; } = "";
         [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.None;
         [Category(" Security")] public bool LogAction { get; set; } = false;
 

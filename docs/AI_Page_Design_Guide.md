@@ -35,7 +35,9 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 - **Where a page appears:** a machine's screens are tabs, made in `<ID>Module.cs`, for example
   `new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit())`
   in `ManualPages` (Manual Movement, `Screens\Manual`, Operator) or `MachineSettings` (Machine Parameters,
-  `Screens\Parameters`, Maintenance). The tab's caption is the translation `Tab_<Class>`.
+  `Screens\Parameters`, Maintenance). The tab's caption is the translation `Tab_<Class>`. A machine's **Home** is
+  `Screens\HomeScreen` (`Home` in `<ID>Module.cs`); a machine mounted under another (H500 under FA2010) has its own
+  pages and translations, its `PlcNumber` 1 being its own PLC.
 - **The project file is the old style: every file is listed.** A page adds:
 
 ```xml
@@ -47,10 +49,18 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 </Compile>
 ```
 
-- **Translations:** `Kaban.Machines.<ID>\Translations.csv` (the machine's words) and `KabanHMI\CommonTranslations.csv`
-  (shared ones), one row a key: `Key;EN;TR;RU;DE;IT;ES` - never a `;` inside a text. A caption's key is usually its
-  English text (`DescriptionText`, `TitleTextKey`, `TranslationKey` = "Profile Clamping 6"); a missing translation
-  shows the English.
+- **Translations:** `Kaban.Machines.<ID>\Translations.csv` (the machine's words - H500's in H500's own file) and
+  `KabanHMI\CommonTranslations.csv` (shared ones), one row a key: `Key;EN;TR;RU;DE;IT;ES` - never a `;` inside a text.
+  A caption's key is usually its English text (`DescriptionText`, `TitleTextKey`, `TranslationKey` = "Profile Clamping 6");
+  a missing translation shows the English.
+  - **Every new caption comes with its Turkish**, in Kaban's words - FA2010's and H500's files hold them: Sıkma
+    (clamping), Referans, Kalibre Et, Pozisyon / Poz., Konveyör, Enkoder, Vidalama (screwing), Delme (drilling),
+    Kurtarma (clearing), İleri / Geri, Yukarı / Aşağı. The other languages may stay empty (they show the English).
+  - **A Turkish caption about as long as the English**: the page's places are sized for the English text
+    ("Kalibrasyon Poz.", not "Kalibrasyon Pozisyonu"; "Vidalama 1-2 Güvenlik Mesafesi").
+  - **A key another machine's file has already** (FA2010's "Conveyor") is copied with its whole row: under one panel
+    the files are merged, and a blank cell of the later one would hide the other's text.
+  - A page of our controls follows a language change by itself; nothing to do for it on the page.
 
 ## 2. Which control for which function
 
@@ -71,12 +81,17 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 | A heading, a section's title on a page | **LabelHMI** | `TranslationKey` = `Text` = its English text; bold Segoe UI 10 (a column title: 8, grey). |
 | A group of small buttons belonging together (0° 90° 180° 270°, Drills 1 - 4) | **GroupBoxHMI** with ButtonHMI inside | `TitleTextKey`; the buttons are added to the group (`this.grp.Controls.Add(...)`). Size 360 x 64. |
 | A load, a pressure, a percentage as a gauge | **MeterHMI** (shown) / **MeterInputHMI** (set) | `Address`, `Divisor`, `ScaleMinimum` / `ScaleMaximum`, bands. |
+| The machine's Start, Pause and Cancel on a Home page | **ButtonHMI** | Start: the old program's bit, `SET` (`Momentary` where the old page pulsed it), `Lamp1Address` the bit that says the machine works, `EnableTrigger` the "ready" bit where the old page waited for it. Pause: `Alternate`, lit by its own bit. Cancel: `SET` or `Momentary`, asked first only while the machine works - `ConfirmationAddress` (the working bit) with `ConfirmationTextKey` + `ConfirmationText`. Keys `Btn_HomeStart`, `Btn_HomePause`, `Btn_Cancel`. Size 130 x 56. |
+| The machine's working speed in percent (the old page's speed slider) | **SpeedOverrideHMI** | `Address` the speed word (FA2010: D408); - and + step through `Steps`. Size 340 x 56. |
+| A second value of a unit (a measurement, another position) on a Manual Movement page | **NumericDisplayHMI** | Under the unit on its own row, 150 x 40 at the unit's right edge, its caption (`DescriptionText`) to its left (H500's "X1 Second Value"). |
+| A value typed in with its own button beside it (Calibration Position + Calibrate, Position To Go + GO!) | **NumericInputHMI** + **ButtonHMI** | One row the unit's width: the box (122 x 32, its caption to its left), the button 90 x 40 at the right edge (H500's Heads). |
 
 Do **not** use stock WinForms controls (`Button`, `Label`, `TextBox`, `CheckBox` ...) for anything bound to the PLC.
 
 ## 3. Laying a page out
 
-From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/legacy_fa2010_pages.py`):
+From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/legacy_fa2010_pages.py`, and H500's, by
+`tools/legacy_h500_pages.py`):
 
 - **Absolute pixels at 100 %**: `this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;` - the HMI scales the whole
   screen itself (80 % - 150 %) and would otherwise scale twice. `this.AutoScroll = true;`, `this.BackColor = System.Drawing.Color.White;`,
@@ -98,6 +113,9 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 - **A Machine Parameters page:** a NumericInputHMI box **116 x 26** a row, **36 px** apart, its caption (DescriptionText)
   drawn to its left - the box placed so that the captions of a column fit; columns side by side with 40 px between;
   headings above a column; option tick boxes (CheckBoxHMI 44 x 32, `DescriptionSide = Left`) in the same rows.
+- **A Home page** - only what the machine is run with, no pictures or tables: Start, Pause and Cancel 130 x 56 from x 16,
+  y 24, 10 px apart, then the speed (SpeedOverrideHMI, 340 x 56) 30 px after Cancel; `this.Size` the last control's
+  right and bottom plus 24.
 - **Names:** `unit<Name>` (CylinderUnitHMI, AxisUnitHMI), `btn<Name>`, `lamp<Name>`, `num<Name>` (NumericInputHMI),
   `disp<Name>` (NumericDisplayHMI), `opt<Name>` (CheckBoxHMI), `grp<Name>`, `lbl<Name>`, `ax<Name>` (AxisSettingHMI);
   `<Name>` from its caption without spaces (`unitProfile_Clamping_6`). Every control has a `Name`.
@@ -143,7 +161,7 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 ### CylinderUnitHMI
 
 A cylinder (any two-way movement) on a Manual Movement page: a frame with its title, two command buttons (A left, B right), the end sensors as lamps on the buttons, the "?" with its helpers and its alarms - and no position (a cylinder whose position is read is a PneumaticPositioningHMI or a CylinderEncoderUnitHMI). Its ValveType and FeedbackType decide which sensors it needs and how the HMI watches its movements.
-On our pages: 51 of them; size 360 x 64 (51).
+On our pages: 46 of them; size 360 x 64 (46).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -550,7 +568,7 @@ this.encProfile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedb
 ### ButtonHMI
 
 A push button writing bits (BitActions) and / or words (WordActions): momentary, alternate, SET or RESET; a lamp of its state or sensor on it (Lamp1Address). Its caption: TranslationKey + FallbackText (or ButtonText).
-On our pages: 97 of them; size 360 x 40 (38), 300 x 36 (33), 79 x 32 (12).
+On our pages: 122 of them; size 360 x 40 (54), 300 x 36 (33), 79 x 32 (12).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -582,6 +600,9 @@ On our pages: 97 of them; size 360 x 40 (38), 300 x 36 (33), 79 x 32 (12).
 | **Security** | | | |
 | `RequiredSecurity` | SecurityLevel | None | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
 | `ConfirmationNeeded` | bool | False | Asks "Are you sure?" before a SET / RESET / ALTERNATE or word write (never before a momentary jog). |
+| `ConfirmationAddress` | string | "" | Asks only while this bit is on (a Cancel asked while the machine works: M21 on FA2010); empty: as ConfirmationNeeded says. |
+| `ConfirmationTextKey` | string | "" | The question asked: a translation key (Msg_CancelOperation); empty: "Are you sure?". |
+| `ConfirmationText` | string | "" | The question in English, shown when its key has no translation. |
 | `LogAction` | bool | False | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
 | **Help** | | | |
 | `ToolTipText` | string | "" | Its tooltip: a translation key, or the text. |
@@ -610,7 +631,7 @@ this.btnUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.O
 ### LampHMI
 
 A bit shown as a lamp (a sensor, a state, an output), its caption (DescriptionText) beside it.
-On our pages: 108 of them; size 300 x 26 (96), 36 x 36 (12).
+On our pages: 112 of them; size 300 x 26 (96), 36 x 36 (16).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -654,7 +675,7 @@ this.lampSawdust_Conveyor_Thermic.VisibilityConditions = Kaban.Core.Enums.System
 ### NumericInputHMI
 
 A value typed in (a word or a double word): the keypad on a tap, limits, scaling, units, confirmation, conditions. Its caption (DescriptionText) is drawn to its left.
-On our pages: 194 of them; size 440 x 32 (112), 116 x 26 (80), 170 x 36 (2).
+On our pages: 199 of them; size 116 x 26 (104), 440 x 32 (91), 122 x 32 (2).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -725,7 +746,7 @@ this.numMinimum_Bar_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Mai
 ### NumericDisplayHMI
 
 A value only shown (a word or a double word): scaled, in decimal or hexadecimal (an error code).
-On our pages: 10 of them; size 110 x 40 (6), 170 x 36 (2), 120 x 40 (2).
+On our pages: 11 of them; size 110 x 40 (6), 120 x 40 (3), 150 x 40 (2).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -772,7 +793,7 @@ this.dispConveyor_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemC
 ### CheckBoxHMI
 
 One bit as a tick box (an option on / off), written on a click.
-On our pages: 59 of them; size 440 x 28 (43), 44 x 32 (16).
+On our pages: 65 of them; size 440 x 28 (43), 44 x 32 (22).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -838,7 +859,7 @@ A choice written to one word: Options one per line, TranslationKey|Fallback|Valu
 ### LabelHMI
 
 A heading or a fixed text on a page, translated (TranslationKey).
-On our pages: 12 of them; size 360 x 26 (4), 326 x 26 (3), 435 x 26 (2).
+On our pages: 21 of them; size 360 x 26 (12), 326 x 26 (3), 377 x 26 (3).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -949,6 +970,37 @@ A gauge whose value is set (with its arrows and limits) - it writes to the PLC.
 | `RequiredSecurity` | SecurityLevel | Operator | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
 | `LogAction` | bool | True | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
 
+### SpeedOverrideHMI
+
+The machine's working speed in percent on a Home page (the old program's speed track bar): its caption, - and + stepping through Steps (0, 1, 2, 4 ... 95, 100 by default) and the percentage read back from Address, so a value set elsewhere is shown as it is.
+On our pages: 1 of it; size 340 x 56 (1).
+
+| Property | Type | Default | What it is |
+|---|---|---|---|
+| **Device** | | | |
+| `PlcNumber` | int | 1 | The machine's own PLC number: 1 = its main PLC (2 = a second one). |
+| `Address` | string | "" | The PLC device it reads / writes ("D16", "M232"). |
+| **Display** | | | |
+| `TranslationKey` | string | "Lbl_Speed" | The key of its text in the translation files - usually the English text itself. |
+| `FallbackText` | string | "Speed" | Its caption when the key has no translation (the English text). |
+| **Input** | | | |
+| `Steps` | int[] |  | The percentages - and + step through, lowest first (leave the default: the old track bar's). |
+| **Security** | | | |
+| `RequiredSecurity` | SecurityLevel | Operator | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
+| `LogAction` | bool | True | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
+
+An example from Screens\HomeScreen.Designer.cs:
+
+```csharp
+this.speedOverride = new Kaban.UI.Controls.SpeedOverrideHMI();
+this.speedOverride.Name = "speedOverride";
+this.speedOverride.PlcNumber = 1;
+this.speedOverride.Address = "D408";
+this.speedOverride.Location = new System.Drawing.Point(456, 24);
+this.speedOverride.Size = new System.Drawing.Size(340, 56);
+this.speedOverride.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+```
+
 ## 6. The values of the enums
 
 - **Kaban.UI.Controls.AxisReferenceSide**: `Back`, `Forward`
@@ -971,8 +1023,8 @@ A gauge whose value is set (with its arrows and limits) - it writes to the PLC.
 1. The complete `<Page>.cs` and `<Page>.Designer.cs` (namespace `Kaban.Machines.<ID>.Screens.<Folder>`).
 2. The `.csproj` lines (section 1).
 3. The tab line for `<ID>Module.cs` (section 1).
-4. The `Translations.csv` rows of every new caption: `Key;EN;TR;RU;DE;IT;ES` (the Turkish when the old page or the device
-   list has it, else leave it empty - English shows).
+4. The `Translations.csv` rows of every new caption: `Key;EN;TR;RU;DE;IT;ES` - always with the Turkish (section 1;
+   the old page's or the device list's when they have it); the other languages may stay empty (English shows).
 5. A short table of the addresses used: the control, the address, where it came from (the old page, the device list).
 6. What could not be mapped or placed, and every assumption - instead of an invented address.
 

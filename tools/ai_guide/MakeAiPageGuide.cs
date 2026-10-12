@@ -24,7 +24,7 @@ class MakeAiPageGuide
     static readonly string[] Controls =
     {
         "CylinderUnitHMI", "AxisUnitHMI", "AxisSettingHMI", "PneumaticPositioningHMI", "CylinderEncoderUnitHMI", "CylinderEncoderSettingHMI", "ButtonHMI", "LampHMI", "NumericInputHMI", "NumericDisplayHMI",
-        "CheckBoxHMI", "CheckListHMI", "ComboBoxHMI", "LabelHMI", "GroupBoxHMI", "MeterHMI", "MeterInputHMI"
+        "CheckBoxHMI", "CheckListHMI", "ComboBoxHMI", "LabelHMI", "GroupBoxHMI", "MeterHMI", "MeterInputHMI", "SpeedOverrideHMI"
     };
 
     static readonly Dictionary<string, string> Purpose = new Dictionary<string, string>
@@ -46,6 +46,7 @@ class MakeAiPageGuide
         { "GroupBoxHMI", "A frame like a CylinderUnitHMI's around controls that belong together (a row of small buttons); its title TitleTextKey. The controls inside are added to it." },
         { "MeterHMI", "A gauge showing a value (a load, a pressure) with its bands - read only." },
         { "MeterInputHMI", "A gauge whose value is set (with its arrows and limits) - it writes to the PLC." },
+        { "SpeedOverrideHMI", "The machine's working speed in percent on a Home page (the old program's speed track bar): its caption, - and + stepping through Steps (0, 1, 2, 4 ... 95, 100 by default) and the percentage read back from Address, so a value set elsewhere is shown as it is." },
     };
 
     static string Root;
@@ -91,6 +92,10 @@ class MakeAiPageGuide
         { "PositionDigits", "Digits of the position in all." },
         { "ConfirmationNeeded", "Asks \"Are you sure?\" before a SET / RESET / ALTERNATE or word write (never before a momentary jog)." },
         { "ConfirmWrite", "Asks before the value is written." },
+        { "ConfirmationAddress", "Asks only while this bit is on (a Cancel asked while the machine works: M21 on FA2010); empty: as ConfirmationNeeded says." },
+        { "ConfirmationTextKey", "The question asked: a translation key (Msg_CancelOperation); empty: \"Are you sure?\"." },
+        { "ConfirmationText", "The question in English, shown when its key has no translation." },
+        { "Steps", "The percentages - and + step through, lowest first (leave the default: the old track bar's)." },
         { "MinLimit", "The lowest value accepted (a number, a PLC word, or none)." },
         { "MaxLimit", "The highest value accepted (a number, a PLC word, or none)." },
         { "BitActions", "The bits the button writes: one BitAction (Address, Action) each." },
@@ -158,7 +163,9 @@ class MakeAiPageGuide
                 controls.AppendLine();
             }
             // an example from a real page (Manual Movement, Machine Parameters) before the demo screens
+            // FA2010's first: its pages are the model (H500's servos are units with a position, as the old page showed them)
             var real = mine.Where(i => i.Page.StartsWith("Manual\\") || i.Page.StartsWith("Parameters\\")).ToList();
+            if (real.Any(i => i.Machine == "FA2010")) real = real.Where(i => i.Machine == "FA2010").ToList();
             var pool = real.Count > 0 ? real : mine;
             var example = pool.Where(i => i.Lines.Count <= 30).OrderByDescending(i => i.Lines.Count).FirstOrDefault() ?? pool.FirstOrDefault();
             if (example != null)
@@ -255,6 +262,7 @@ class MakeAiPageGuide
     {
         var u = Nullable.GetUnderlyingType(t);
         if (u != null) return TypeName(u) + "?";
+        if (t.IsArray) return TypeName(t.GetElementType()) + "[]";
         if (t == typeof(string)) return "string";
         if (t == typeof(int)) return "int";
         if (t == typeof(bool)) return "bool";
@@ -390,7 +398,7 @@ class MakeAiPageGuide
 
     // ---- the real pages -----------------------------------------------------------------
 
-    sealed class Instance { public string Type, Name, Page, Size; public List<string> Lines = new List<string>(); }
+    sealed class Instance { public string Type, Name, Page, Size, Machine; public List<string> Lines = new List<string>(); }
 
     static List<Instance> ReadInstances(IEnumerable<string> files)
     {
@@ -404,10 +412,12 @@ class MakeAiPageGuide
             var byName = new Dictionary<string, Instance>();
             var bits = new Dictionary<string, List<string>>();
             string page = Path.GetFileName(Path.GetDirectoryName(file)) + "\\" + Path.GetFileName(file);
+            var project = file.Replace('\\', '/').Split('/').FirstOrDefault(s => s.StartsWith("Kaban.Machines."));
+            string machine = project == null ? "" : project.Substring("Kaban.Machines.".Length);
             foreach (var l in lines)
             {
                 var m = decl.Match(l);
-                if (m.Success) { byName[m.Groups[1].Value] = new Instance { Name = m.Groups[1].Value, Type = m.Groups[2].Value, Page = page }; continue; }
+                if (m.Success) { byName[m.Groups[1].Value] = new Instance { Name = m.Groups[1].Value, Type = m.Groups[2].Value, Page = page, Machine = machine }; continue; }
                 var b = bitDecl.Match(l);
                 if (b.Success && !l.Contains(" = new "))
                 {

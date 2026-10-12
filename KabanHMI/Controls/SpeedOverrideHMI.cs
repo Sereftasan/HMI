@@ -19,6 +19,7 @@ namespace Kaban.UI.Controls
     /// set is shown as it is.
     /// </summary>
     [ToolboxItem(true)]
+    [TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class SpeedOverrideHMI : UserControl, IPlcBoundControl, ILocalizable
     {
         private readonly Button _down = new Button { Text = "−", Name = "speedDown", TabStop = false };
@@ -31,15 +32,21 @@ namespace Kaban.UI.Controls
         /// <summary>The old track bar's steps, in percent.</summary>
         public static readonly int[] DefaultSteps = { 0, 1, 2, 4, 6, 8, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100 };
 
-        [Category("   Device")] public int PlcNumber { get; set; } = 1;
-        [Category("   Device")] public string Address { get; set; } = "";
-        [Category("   Behavior")] [Description("The steps - and + go through, in percent (the old track bar's by default).")]
+        [Category("Device")] [Description("The machine's own PLC number: 1 = its main PLC.")]
+        public int PlcNumber { get; set; } = 1;
+        [Category("Device")] [Description("The word the speed is written to and read from, in percent (FA2010: D408).")]
+        public string Address { get; set; } = "";
+        [Category("Input")] [Description("The steps - and + go through, in percent (the old track bar's by default).")]
         public int[] Steps { get; set; } = (int[])DefaultSteps.Clone();
-        [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.Operator;
-        [Category(" Security")] public bool LogAction { get; set; } = true;
+        [Category("Security")] [Description("The lowest level allowed to change the speed.")]
+        public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.Operator;
+        [Category("Security")] [Description("true: every change goes to the log with the user's name.")]
+        public bool LogAction { get; set; } = true;
         private string _key = "Lbl_Speed", _fallback = "Speed";
-        [Category("  Display")] public string TranslationKey { get { return _key; } set { _key = value; ApplyTranslation(); } }
-        [Category("  Display")] public string FallbackText { get { return _fallback; } set { _fallback = value; ApplyTranslation(); } }
+        [Category("Display")] [Description("The key of its caption (Lbl_Speed: Speed).")]
+        public string TranslationKey { get { return _key; } set { _key = value; ApplyTranslation(); } }
+        [Category("Display")] [Description("Its caption when the key has no translation.")]
+        public string FallbackText { get { return _fallback; } set { _fallback = value; ApplyTranslation(); } }
 
         public SpeedOverrideHMI()
         {
@@ -80,6 +87,7 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>The percentage shown (tests): null before the first read.</summary>
+        [Browsable(false)]
         public int? Current { get { return _current; } }
 
         private void Arrange()
