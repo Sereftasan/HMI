@@ -28,8 +28,25 @@ namespace Kaban.UI.Screens
         /// side panel the page around it was made to scroll as well (PageScroll), and
         /// two scrolls for one list hid its right end under the outer one's edge
         /// (8 October: "the scroll doesn't move to right as much as needed").
+        /// It stays where it is scrolled to (SteadyScroll), and it takes the focus the
+        /// side page is given itself - the first row's jog button had it, and the
+        /// list, scrolled back to it again and again, could not be scrolled past it
+        /// (12 October) - so the wheel scrolls it.
         /// </summary>
-        private sealed class RowList : FlowLayoutPanel, IScrollsItself { }
+        private sealed class RowList : SteadyScroll.FlowPanel, IScrollsItself
+        {
+            public RowList()
+            {
+                SetStyle(ControlStyles.Selectable, true);
+                TabStop = true;
+            }
+
+            protected override void OnMouseDown(MouseEventArgs e)
+            {
+                if (CanFocus && !Focused) Focus();
+                base.OnMouseDown(e);
+            }
+        }
         private readonly FlowLayoutPanel _list = new RowList();
         private readonly Label _empty = new Label();
         private readonly Panel _head = new Panel { Dock = DockStyle.Top, Height = 26, BackColor = Color.White };

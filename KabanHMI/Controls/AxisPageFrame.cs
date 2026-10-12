@@ -42,7 +42,7 @@ namespace Kaban.UI.Controls
             Head = new HeadPanel { Dock = DockStyle.Top, Name = "axisPageHead" };
             HeadContent = new Panel { Location = Point.Empty, Name = "axisPageHeadContent" };
             Head.Controls.Add(HeadContent);
-            Body = new Panel { Dock = DockStyle.Fill, AutoScroll = true, Name = "axisPageBody" };
+            Body = new SteadyScroll.Panel { Dock = DockStyle.Fill, AutoScroll = true, Name = "axisPageBody" };
             Controls.Add(Body);
             Controls.Add(Head);
 
@@ -204,6 +204,63 @@ namespace Kaban.UI.Controls
                 base.OnPaint(e);
                 using (var pen = new Pen(UiStyle.GridRule)) e.Graphics.DrawLine(pen, 0, Height - 1, Width, Height - 1);
             }
+        }
+    }
+
+    /// <summary>
+    /// A SCROLLED LIST THAT STAYS WHERE IT IS SCROLLED TO. Windows scrolls a panel
+    /// to the control that has the focus whenever the focus is given to it again -
+    /// the window or the side page activated, a dialog closed, and on the panel
+    /// even while its scroll bar is dragged: with a field of the first row focused,
+    /// the rows could not be scrolled further right than that field's left edge,
+    /// and every move sideways put them back at the top (12 October, the Axis
+    /// Monitor at 150%: "the bottom scroll doesn't move any more right than that
+    /// and it resets the right scroll to the top as well" - only sometimes: only
+    /// while a control of its first row had the focus). A control newly focused -
+    /// tapped, or reached with Tab - is still brought into sight; the same control
+    /// again never moves the list, nor does a row (wider than the list, it was put
+    /// at its left edge).
+    /// </summary>
+    public static class SteadyScroll
+    {
+        /// <summary>A panel that scrolls so (an axis page's rows).</summary>
+        public class Panel : System.Windows.Forms.Panel
+        {
+            private Control _last;
+            protected override Point ScrollToControl(Control activeControl) { return To(this, activeControl, ref _last); }
+        }
+
+        /// <summary>A flow of rows that scrolls so (the Axis Monitor's).</summary>
+        public class FlowPanel : FlowLayoutPanel
+        {
+            private Control _last;
+            protected override Point ScrollToControl(Control activeControl) { return To(this, activeControl, ref _last); }
+        }
+
+        /// <summary>
+        /// Where <paramref name="list"/> scrolls for the control focused in it: where it
+        /// is, unless the control is a newly focused one that fits in it: then just far
+        /// enough for all of it to be in sight (a control in a row as well - Mono's own
+        /// measured it in its row, not in the list).
+        /// </summary>
+        internal static Point To(ScrollableControl list, Control focused, ref Control last)
+        {
+            var keep = list.DisplayRectangle.Location;
+            if (focused == null || focused.IsDisposed) return keep;
+            // a row's field, not the row it is in
+            var inner = focused;
+            for (var cc = inner as ContainerControl; cc != null && cc.ActiveControl != null && cc.ActiveControl != inner; cc = inner as ContainerControl)
+                inner = cc.ActiveControl;
+            bool again = ReferenceEquals(inner, last);
+            last = inner;
+            if (again || inner.Parent == null) return keep;
+            var client = list.ClientRectangle;
+            if (inner.Width > client.Width || inner.Height > client.Height || !list.IsHandleCreated || !inner.Parent.IsHandleCreated) return keep;
+            var b = list.RectangleToClient(inner.Parent.RectangleToScreen(inner.Bounds));
+            int x = keep.X, y = keep.Y;
+            if (b.Left < 0) x -= b.Left; else if (b.Right > client.Width) x -= b.Right - client.Width;
+            if (b.Top < 0) y -= b.Top; else if (b.Bottom > client.Height) y -= b.Bottom - client.Height;
+            return new Point(x, y);
         }
     }
 
