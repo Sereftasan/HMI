@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- b6675a8, f39a294, da06455 - Users and Preferences, the Dashboard and H500's pages in Turkish, and the AI guide. The
+  first two had their Turkish: they had been built in English before the kept language was put on the screen (now the
+  language comes first, and a page made in code is built again after a change). H500's Entry Conveyor, Heads,
+  Parameters and Home in Turkish (other languages English for now), the home buttons both machines share too; the AI
+  page design guide: Turkish with every caption, the Home page's controls (SpeedOverrideHMI).
 - 9ecd1b1, 6de47d7, 46e2c1a - From the HMI the machines run today (KabanMachinesSystem): H500's Manual Movement (Entry
   Conveyor, Heads) and Machine Parameters (Parameters) from its H500 FX5 pages (tools/legacy_h500_pages.py,
   tools/legacy/H500); FA2010's Home: Start M21, Pause M111, Cancel M24 (asked while the machine works) and the speed
