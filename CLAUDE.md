@@ -17,6 +17,8 @@
   item and reports per item, with the questions it has at the end.
 - Something new while Claude is working: write it in **REQUESTS.md** (in this folder) instead of sending it then -
   Claude reads it at the start of the next batch. A message sent mid-batch gets merged into the running batch.
+- Screenshots and files for a request (PNG, PDF, XLS, CSV ...): into the **`_requests`** folder, their names in the
+  item in REQUESTS.md. In a chat message a picture can also be pasted directly.
 - A bug: the page, the user level, the screen scale, and a screenshot from the real panel when you can - Claude's
   tests run on Linux, so Windows' look is the one thing it cannot see itself.
 - A new screen or a UI change you are not sure of: ask for a mock-up first ("show me before you build").
@@ -30,7 +32,7 @@
 1. Stage `_history\HMI.bundle` and clone it: that is the repository (`git clone HMI.bundle work`).
 2. List this folder: a file newer than `_history\HMI.bundle` (written last in every batch) is the user's own change -
    stage it and take it in (bin, obj, .vs and packages are Visual Studio's).
-3. Read `REQUESTS.md`. Work; commit per item (the trailer lines as the session says); re-add the BOMs.
+3. Read `REQUESTS.md` and stage the `_requests` files it names (Read shows pictures and PDFs). Work; commit per item (the trailer lines as the session says); re-add the BOMs.
 4. Write the changed files here (`device_commit_files`, up to 50 a call), move the done requests to "Done", and
    last a new `_history\HMI.bundle` (`git bundle create HMI.bundle master`).
 

@@ -11,3 +11,5 @@ TestResults/
 CHANGED_FILES.txt
 # the history Claude leaves for Update_Git_History.cmd (it is git's own record)
 _history/
+# the screenshots and files for REQUESTS.md
+_requests/
