@@ -13,3 +13,6 @@ CHANGED_FILES.txt
 _history/
 # the screenshots and files for REQUESTS.md
 _requests/
+# the FR-A800 manual the user keeps in the Help folder (23 MB): the inverter fault help opens it, the machines
+# copy it when it is there - too big for the history
+KabanHMI/Help/FR-A800_Instruction_Manual.pdf

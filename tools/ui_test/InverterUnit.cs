@@ -82,6 +82,15 @@ class INV {
         int sections = System.Text.RegularExpressions.Regex.Matches(html, "<section class=\"code\"").Count;
         Check("every fault of 6.4 is in the list", sections >= 70 && new[] { 16, 17, 18, 32, 33, 34, 48, 49, 64, 80, 81, 82, 96, 112, 128, 129, 144, 160, 176, 192, 201, 208, 230, 251 }
               .All(c => AxisCodeHelp.Find(K, c) != null), sections + " sections");
+        // 15 October, checked against the user's copy of the manual (IB-0600503ENG-N): E.PE6 and E.ECA have data codes,
+        // E.SCF (output short-circuit, 20) was missing, E.EHR is an Ethernet model's fault this manual does not have
+        Check("  E.SCF 20, E.PE6 172, E.ECA 212 by their data codes; E.EHR (not in the manual) gone; every fault by a number",
+              AxisCodeHelp.Display(K, 20) == "E.SCF" && AxisCodeHelp.Display(K, 172) == "E.PE6" && AxisCodeHelp.Display(K, 212) == "E.ECA" &&
+              !html.Contains("E.EHR") && !html.Contains("data-code=\"E."),
+              AxisCodeHelp.Display(K, 20) + " " + AxisCodeHelp.Display(K, 172) + " " + AxisCodeHelp.Display(K, 212));
+        Check("  each fault links its page of the manual: E.OC1 page 805 (the PDF's 806), the Help folder's copy and online",
+              page.Contains("page 805") && page.Contains(AxisCodeHelp.InverterManualFile + "#page=806") && page.Contains(AxisCodeHelp.InverterManualUrl + "#page=806") &&
+              System.Text.RegularExpressions.Regex.Matches(html, "#page=\\d+\"").Count == 2 * sections);
         var unknown = AxisCodeHelp.Document(K, 999);
         var up = unknown == null ? "" : File.ReadAllText(AxisCodeHelp.Extract(unknown));
         Check("a code the list does not have: the list says so and links the manual", unknown != null && up.Contains("not listed") && up.Contains(AxisCodeHelp.InverterManualUrl));

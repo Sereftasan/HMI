@@ -15,10 +15,11 @@ data-name="..."> - AxisCodeHelp (AxisCodeKind.InverterFault) finds the code's se
 shows that section alone; the whole manual is the help's second entry.
 
 The texts follow 6.5 "Causes and corrective actions" of the FR-A800 Instruction Manual
-(Detailed), IB-0600503ENG, and Mitsubishi Electric's FR-A800 fault page, in short words of our
-own - the manual itself stays the reference (its link is in every section). Faults whose data
-code was not in the source are listed by their display (data-code is the display, so a number
-never finds them); a code the list does not have opens the "not listed" note and the manual.
+(Detailed), IB-0600503ENG-N, in short words of our own - the manual itself stays the reference:
+every section links its page, in the copy in the Help folder (KabanHMI\Help\FR-A800_Instruction_Manual.pdf,
+not in git: 23 MB) and online. The data codes and pages are 6.4's of that edition (15 October:
+checked against the user's PDF; E.SCF added, E.EHR - an FR-A800-E Ethernet model's fault, not in
+this manual - removed). A code the list does not have opens the "not listed" note and the manual.
 
 Run:  python3 tools/build_inverter_help.py
 """
@@ -29,6 +30,17 @@ MANUAL_FILE = "FR-A800_Instruction_Manual.pdf"
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "KabanHMI", "Help", "Inverter_Fault_Codes.en.html")
 
 PM = "(PM sensorless vector control)"
+
+# 6.4's "Refer to page" of each data code (the printed page; the PDF's page is one more: its cover).
+PAGE = {16: 805, 17: 806, 18: 806, 20: 806, 32: 807, 33: 807, 34: 807, 48: 808, 49: 808, 64: 808,
+        80: 809, 81: 809, 82: 809, 96: 810, 97: 810, 98: 810, 99: 810, 112: 811, 128: 811, 129: 811,
+        144: 811, 145: 811, 160: 812, 161: 812, 162: 812, 163: 812, 164: 812, 165: 812, 166: 812,
+        167: 812, 168: 812, 172: 813, 176: 813, 177: 813, 178: 813, 179: 813, 192: 814, 193: 814,
+        194: 814, 196: 814, 197: 814, 198: 815, 199: 815, 200: 815, 201: 815, 202: 815, 253: 815,
+        208: 816, 209: 816, 210: 816, 211: 817, 212: 817, 213: 817, 214: 817, 215: 817, 216: 817,
+        217: 817, 218: 817, 219: 817, 220: 817, 222: 818, 224: 818, 225: 818, 228: 818, 229: 818,
+        230: 819, 241: 819, 242: 819, 243: 819, 245: 814, 246: 814, 247: 814, 251: 819}
+PDF_PAGE_OFFSET = 1
 
 # (displays and data codes, name, when it trips, check points, corrective actions)
 F = [
@@ -84,6 +96,11 @@ F = [
    "Vector control: check the RS-485 terminal connection.",
    "Do not switch the direction during torque control under Real sensorless vector control.",
    "Match the capacities; start after the motor has stopped or use the automatic restart (Pr.57) " + PM + "."]),
+ ([("E.SCF", 20)], "Output short-circuit",
+  "An output short circuit was detected while Pr.521 = 1; the output is shut off. (With Pr.521 = 0, the initial value, a short circuit trips as E.OC1, E.OC2 or E.OC3 instead.)",
+  ["A short circuit on the output side (motor cable, motor)."],
+  ["Check the output wiring: no short circuit.",
+   "Then switch the control circuit power OFF to reset the inverter."]),
  ([("E.OV1", 32)], "Regenerative overvoltage trip during acceleration",
   "Regenerated energy or a surge on the supply raised the main circuit DC voltage to the trip level while ACCELERATING; the output is shut off.",
   ["The acceleration is too slow (e.g. the downward acceleration of a lift load).",
@@ -400,31 +417,27 @@ F = [
   ["Was the direction switched forward / reverse during torque control under Real sensorless vector control?"],
   ["Do not switch the direction during torque control under Real sensorless vector control.",
    "Contact the sales representative."]),
- # their data code was not in the source: listed by their display
- ([("E.PE6", None)], "Internal storage device fault",
-  "Writing the parameters failed - the power was cut during a parameter operation, or the storage device's data is faulty.",
-  ["Was the power switched off during a parameter operation?",
-   "The supply and the devices on it."],
-  ["Check the supply and its devices.",
-   "After a power-off during a parameter operation: read Pr.890; 7 or less - do an All parameter clear and an inverter reset, then enter the changed parameters again.",
-   "Any other cause: contact the sales representative."]),
- ([("E.ECA", None)], "Orientation encoder no-signal",
-  "The encoder signal was lost during orientation control. Off in the initial setting.",
-  ["The encoder signal (cable, connector), its specification, the vector control option's switch.",
-   "Is the encoder powered - not later than the inverter? Its supply voltage against its output voltage."],
-  ["Remove the cause of the signal loss; connect securely; use an encoder that meets the specification; set the switch.",
-   "Power the encoder with the inverter (if later: confirm the signal, then Pr.376 or Pr.855 = 0).",
-   "Match the encoder's supply voltage to its output voltage."]),
- ([("E.EHR", None)], "Ethernet communication fault",
-  "The Ethernet communication was broken for the Pr.1432 time (Pr.1431 = 3); with CC-Link IE Field Network Basic, no data within the time-out or the cyclic status bit OFF; with BACnet/IP, another inverter's IP address inside the command source range.",
-  ["The Ethernet board and cable; is Pr.1432 too short?",
-   "Excessive noise around the inverter.",
-   "CC-Link IE Field Basic: the master's time-out and the own station's cyclic status bit.",
-   "BACnet/IP: other inverters' IP addresses in the command source range."],
-  ["Fit the board; connect (replace) the cable; set Pr.1432 longer.",
-   "Against noise: change the master's communication settings (time-out, retries).",
-   "CC-Link IE Field Basic: set a longer time-out; turn the own station's cyclic status bit ON.",
-   "BACnet/IP: keep other inverters' IP addresses out of the command source range."]),
+ ([("E.PE6", 172)], "Internal storage device fault",
+  "At an inverter reset: writing data failed because the power went OFF, or a data fault occurred in the storage device, during a parameter operation (Parameter clear, All parameter clear, Parameter copy, offline auto tuning, a parameter batch write from FR Configurator2) or while the set frequency was written.",
+  ["Was the power turned OFF during a parameter operation?",
+   "Is the EEPROM written too often (parameters or the set frequency written over and over by the PLC or communication)?"],
+  ["Check the power supply and the devices on the power system: no fault.",
+   "After a power-OFF during a parameter operation: read Pr.890. 7 or smaller - do an All parameter clear, then an inverter reset, and set the parameters that had been changed again.",
+   "Any other cause (a power OFF/ON or an inverter reset), or Pr.890 is 8 or more: contact the sales representative."]),
+ ([("E.ECA", 212)], "Encoder signal loss for orientation",
+  "Vector control, machine end orientation control: the machine end encoder's signal was lost; the output is shut off. Not active in the initial setting.",
+  ["Is the encoder signal lost (cable, connector)?",
+   "Are the encoder's specifications correct?",
+   "Is a connector loose?",
+   "Is the switch of the Vector control compatible option set correctly?",
+   "Is the encoder powered - and not powered later than the inverter?",
+   "Is the encoder's supply voltage the same as its output voltage?"],
+  ["Remedy the signal loss.",
+   "Use an encoder that meets the specifications.",
+   "Make the connection securely.",
+   "Set the Vector control compatible option's switch correctly (manual page 89).",
+   "Power the encoder, at the same time as the inverter. If it is powered later: check that its signal comes properly, then set Pr.376 Encoder signal loss detection enable/disable selection to 0 (the initial value) to disable the detection.",
+   "Make the encoder's supply voltage the same as its output voltage."]),
 ]
 
 STYLE = """ body{font-family:"Segoe UI",Arial,sans-serif;max-width:1100px;margin:1.5em auto;padding:0 1.5em;color:#23262c;line-height:1.45;font-size:14px}
@@ -467,9 +480,16 @@ def section(display, code, name, when, checks, actions, others):
     out.append('<tr><th>Check point</th><td><ol>%s</ol></td></tr>' % "".join("<li>%s</li>" % e(c) for c in checks))
     out.append('<tr><th>Corrective action</th><td><ol>%s</ol></td></tr>' % "".join("<li>%s</li>" % e(a) for a in actions))
     out.append('</table>')
-    out.append('<div class="src">FR-A800 Instruction Manual (Detailed), IB-0600503ENG, 6.5 Causes and corrective actions - '
-               '<a href="%s">the manual</a> (a copy put in the Help folder as %s opens from there: <a href="%s">%s</a>)</div>'
-               % (MANUAL_URL, MANUAL_FILE, MANUAL_FILE, MANUAL_FILE))
+    page = PAGE.get(code)
+    if page:
+        at = "#page=%d" % (page + PDF_PAGE_OFFSET)
+        out.append('<div class="src">FR-A800 Instruction Manual (Detailed), IB-0600503ENG, 6.5 Causes and corrective actions, '
+                   'page %d: <a href="%s%s">open the page</a> (the copy in the Help folder) or <a href="%s%s">online</a></div>'
+                   % (page, MANUAL_FILE, at, MANUAL_URL, at))
+    else:
+        out.append('<div class="src">FR-A800 Instruction Manual (Detailed), IB-0600503ENG, 6.5 Causes and corrective actions - '
+                   '<a href="%s">the manual</a> (the copy in the Help folder: <a href="%s">%s</a>)</div>'
+                   % (MANUAL_URL, MANUAL_FILE, MANUAL_FILE))
     out.append('</section>')
     return "\n".join(out)
 
