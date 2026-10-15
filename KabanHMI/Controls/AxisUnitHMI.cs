@@ -24,7 +24,7 @@ namespace Kaban.UI.Controls
     [ToolboxItem(true)]
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
-    public class AxisUnitHMI : UserControl
+    public class AxisUnitHMI : UserControl, IConditionalControl
     {
         private readonly CylinderUnitHMI _unit = new CylinderUnitHMI { Dock = DockStyle.Fill };
         private int _axisNumber;
@@ -99,6 +99,11 @@ namespace Kaban.UI.Controls
             _unit.ErrorAAddress = _unit.ErrorBAddress = "";
             _unit.SetAxisCodes("", "", "");
             _unit.PositionDisplay.ComparedAddress = "";
+            _visibility = SystemCondition.None;
+            _unit.VisibilityConditions = SystemCondition.None;
+            _unit.ButtonAEnableConditions = _unit.ButtonBEnableConditions = SystemCondition.None;
+            _unit.ButtonAEnableTrigger = new Kaban.Core.Models.PlcTrigger();
+            _unit.ButtonBEnableTrigger = new Kaban.Core.Models.PlcTrigger();
             if (InDesigner || _axisNumber <= 0)
             {
                 _unit.TitleTextKey = _axisNumber > 0 ? "Axis " + _axisNumber : "Axis";
@@ -160,10 +165,36 @@ namespace Kaban.UI.Controls
             _unit.ErrorBAddress = a.Error;
             _unit.SetAxisCodes(a.ServoAlarm, a.AxisAlarm, a.AxisWarning);
 
+            // ITS ROW'S CONDITIONS (14 October: "AxisSettingHMI visibility condition doesn't
+            // work for AxisUnitHMI, it should"): shown while the row is - the whole unit -
+            // and each jog usable while the row's and that jog's own are met.
+            _visibility = a.Visibility;
+            _unit.VisibilityConditions = a.Visibility;
+            _unit.ButtonAEnableConditions = a.BackEnable;
+            _unit.ButtonBEnableConditions = a.ForwardEnable;
+            _unit.ButtonAEnableTrigger = a.BackTrigger ?? new Kaban.Core.Models.PlcTrigger();
+            _unit.ButtonBEnableTrigger = a.ForwardTrigger ?? new Kaban.Core.Models.PlcTrigger();
+
             _unit.ButtonA.Direction = a.Vertical ? ButtonGlyphs.Direction.Down : ButtonGlyphs.Direction.Left;
             _unit.ButtonB.Direction = a.Vertical ? ButtonGlyphs.Direction.Up : ButtonGlyphs.Direction.Right;
 
             IsResolved = true;
+        }
+
+        // ---- shown while its row's visibility conditions are met ----------------------
+        private SystemCondition _visibility;
+        private bool _hiddenByConditions;
+
+        /// <summary>The row's visibility conditions (taken from it: not set here).</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SystemCondition VisibilityConditions { get { return _visibility; } }
+
+        public void UpdateState(Func<string, int> lookup, Func<SystemCondition, bool> checkGlobal)
+        {
+            bool met = _visibility == SystemCondition.None || checkGlobal == null || checkGlobal(_visibility);
+            if (met == !_hiddenByConditions) return;
+            _hiddenByConditions = !met;
+            Visible = met;
         }
     }
 }

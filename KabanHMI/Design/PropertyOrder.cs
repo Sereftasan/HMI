@@ -92,6 +92,7 @@ namespace Kaban.UI.Design
             ["CheckBoxHMI"] = L(
                 C("Device", "PlcNumber", "Address", "AlertAddress"),
                 C("Display", "DescriptionText", "DescriptionSide", "CornerRadius"),
+                C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
                 C("Security", "RequiredSecurity", "LogAction"),
                 C("Help", "ToolTipCaption")),
 
@@ -149,7 +150,8 @@ namespace Kaban.UI.Design
                 C("Commands", "CalibrateAddress", "GoToReferenceAddress", "HomeRequestAddress"),
                 C("Meters", "CurrentAddress", "CurrentDivisor", "CurrentFullScale", "ZDistanceAddress", "ZDistanceDivisor", "ZDistanceFullScale"),
                 C("Diagnostics", "ErrorAddress", "ServoAlarmAddress", "AxisAlarmAddress", "AxisWarningAddress"),
-                C("Conditions", "VisibilityConditions"),
+                C("Conditions", "VisibilityConditions", "EnableConditions", "BackEnableConditions", "BackEnableTrigger",
+                                "ForwardEnableConditions", "ForwardEnableTrigger", "CalibrateEnableConditions", "CalibrateEnableTrigger"),
                 C("Security", "RequiredSecurity")),
 
             // A pneumatic positioning: its valve and feedback first (as a cylinder's),

@@ -377,6 +377,68 @@ namespace Kaban.UI.Controls
         [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition VisibilityConditions { get; set; } = SystemCondition.None;
 
+        // ---- WHEN ITS BUTTONS MAY BE USED (14 October: "EnableCondition and EnableTrigger
+        // for each AxisSettingHMI button, just like CylinderUnitHMI, working with
+        // AxisUnitHMI as well") - the row's for all of them (the jogs, Calibrate, the Ref
+        // box), and each button's own ADDED to it: a button is only ever more restricted
+        // than its row. An AxisUnitHMI of the axis takes the row's and the jogs' own.
+
+        [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("Its buttons (the jogs, Calibrate, the Ref box) are usable only while these are met - and so are the AxisUnitHMI's of the axis.")]
+        public SystemCondition EnableConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("EXTRA conditions of the back (down) jog, added to the row's.")]
+        public SystemCondition BackEnableConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [TypeConverter(typeof(Kaban.Core.Models.PlcTriggerSorter))]
+        [Description("A PLC signal that must be true before the back (down) jog can be pressed.")]
+        public Kaban.Core.Models.PlcTrigger BackEnableTrigger { get; set; } = new Kaban.Core.Models.PlcTrigger();
+
+        [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("EXTRA conditions of the forward (up) jog, added to the row's.")]
+        public SystemCondition ForwardEnableConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [TypeConverter(typeof(Kaban.Core.Models.PlcTriggerSorter))]
+        [Description("A PLC signal that must be true before the forward (up) jog can be pressed.")]
+        public Kaban.Core.Models.PlcTrigger ForwardEnableTrigger { get; set; } = new Kaban.Core.Models.PlcTrigger();
+
+        [Category(" Triggers")]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("EXTRA conditions of the Calibrate button, added to the row's.")]
+        public SystemCondition CalibrateEnableConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [TypeConverter(typeof(Kaban.Core.Models.PlcTriggerSorter))]
+        [Description("A PLC signal that must be true before Calibrate can be pressed.")]
+        public Kaban.Core.Models.PlcTrigger CalibrateEnableTrigger { get; set; } = new Kaban.Core.Models.PlcTrigger();
+
+        /// <summary>The row's and each button's own conditions put on the buttons built.</summary>
+        private void ApplyButtonConditions()
+        {
+            foreach (var t in new[] { Tuple.Create(_back, BackEnableConditions, BackEnableTrigger),
+                                      Tuple.Create(_forward, ForwardEnableConditions, ForwardEnableTrigger),
+                                      Tuple.Create(_calibrate, CalibrateEnableConditions, CalibrateEnableTrigger) })
+            {
+                if (t.Item1 == null) continue;
+                t.Item1.EnableConditions = EnableConditions | t.Item2;
+                t.Item1.EnableTrigger = t.Item3 ?? new Kaban.Core.Models.PlcTrigger();
+            }
+            if (_goRef != null) _goRef.EnableConditions = EnableConditions;
+        }
+
         // ==================================================================
         // LAYOUT
         // ==================================================================
@@ -654,6 +716,7 @@ namespace Kaban.UI.Controls
             }
 
             AddMotionColumns(ref x);
+            ApplyButtonConditions();
 
             // As wide as what it shows - at run time the row is narrower when items
             // are hidden, so the page scrolls no further than its columns (it kept

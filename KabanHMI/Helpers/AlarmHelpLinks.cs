@@ -171,6 +171,9 @@ namespace Kaban.UI.Helpers
             public string Current = "", RealPosition = "";
             public double CurrentDivisor = 1, CurrentFullScale = 100;
             public Kaban.Core.Enums.SystemCondition Visibility;
+            /// <summary>When its jogs may be used (the row's, and each jog's own added) - an AxisUnitHMI's too.</summary>
+            public Kaban.Core.Enums.SystemCondition BackEnable, ForwardEnable;
+            public Kaban.Core.Models.PlcTrigger BackTrigger, ForwardTrigger;
             /// <summary>Every setting of the row, so the Axis Monitor can show it again (an Admin's PLC axis items).</summary>
             public Dictionary<string, object> Row;
         }
@@ -219,6 +222,8 @@ namespace Kaban.UI.Helpers
                 AxisWarning = a.AxisWarningAddress ?? "",
                 Current = a.CurrentAddress ?? "", CurrentDivisor = a.CurrentDivisor, CurrentFullScale = a.CurrentFullScale,
                 RealPosition = a.LoadEncoderValueAddress ?? "", Visibility = a.VisibilityConditions,
+                BackEnable = a.EnableConditions | a.BackEnableConditions, ForwardEnable = a.EnableConditions | a.ForwardEnableConditions,
+                BackTrigger = a.BackEnableTrigger, ForwardTrigger = a.ForwardEnableTrigger,
                 Row = a.Snapshot()
             };
             if (!string.IsNullOrWhiteSpace(info.Position) &&

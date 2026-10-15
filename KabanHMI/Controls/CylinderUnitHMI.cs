@@ -114,7 +114,7 @@ namespace Kaban.UI.Controls
     [ToolboxBitmap(typeof(GroupBox))]
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
-    public class CylinderUnitHMI : UserControl, ILocalizable
+    public class CylinderUnitHMI : UserControl, ILocalizable, IConditionalControl
     {
         /// <summary>Toolbox-proportioned default (matches a hand-placed unit).</summary>
         protected override Size DefaultSize => new Size(360, 64);
@@ -812,6 +812,24 @@ namespace Kaban.UI.Controls
         [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
         [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
         public SystemCondition VisibilityConditions { get { return _visibilityConditions; } set { _visibilityConditions = value; ApplySettings(); } }
+
+        // THE WHOLE UNIT follows its visibility conditions (14 October: "CylinderUnitHMI
+        // visibility condition only hides the buttons inside, the border line and the
+        // description stay - it should hide all the control"). A unit without
+        // conditions is never touched.
+        private bool _hiddenByConditions;
+
+        /// <summary>Hidden now because its visibility conditions are not met (tests).</summary>
+        [Browsable(false)]
+        public bool HiddenByConditions { get { return _hiddenByConditions; } }
+
+        public void UpdateState(Func<string, int> lookup, Func<SystemCondition, bool> checkGlobal)
+        {
+            bool met = _visibilityConditions == SystemCondition.None || checkGlobal == null || checkGlobal(_visibilityConditions);
+            if (met == !_hiddenByConditions) return;
+            _hiddenByConditions = !met;
+            Visible = met;
+        }
 
         private SystemCondition _enableConditions = SystemCondition.None;
         [Category(" Triggers")]

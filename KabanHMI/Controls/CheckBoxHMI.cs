@@ -40,6 +40,34 @@ namespace Kaban.UI.Controls
         [Category("   Behavior")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.Operator;
         [Category("   Behavior")] public bool LogAction { get; set; } = true;
 
+        // ---- conditions and trigger, as a ButtonHMI's (14 October: "CheckBoxHMI should
+        // have visibility condition, enabling condition and trigger as well") ----
+
+        [Category(" Triggers"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("The box is shown only while these are met.")]
+        public SystemCondition VisibilityConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("The box can be ticked only while these are met (greyed otherwise, the reason in its tooltip).")]
+        public SystemCondition EnableConditions { get; set; } = SystemCondition.None;
+
+        [Category(" Triggers")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [TypeConverter(typeof(Kaban.Core.Models.PlcTriggerSorter))]
+        [Description("A PLC signal that must be true before the box can be ticked.")]
+        public Kaban.Core.Models.PlcTrigger EnableTrigger { get; set; } = new Kaban.Core.Models.PlcTrigger();
+
+        private bool _softEnabled = true;
+        private string _disabledReason = "";
+
+        /// <summary>Whether it may be ticked now (its conditions and trigger) - tests.</summary>
+        [Browsable(false)]
+        public bool CanTick { get { return _softEnabled; } }
+
         /// <summary>
         /// A bit that asks for this box: while it is TRUE the box's border blinks
         /// red. The axis row's Ref box uses it for the PLC's home (reference)
@@ -152,7 +180,7 @@ namespace Kaban.UI.Controls
 
             using (var back = new SolidBrush(Color.White))
                 g.FillRectangle(back, box);
-            bool live = Enabled && !IsStale;
+            bool live = Enabled && !IsStale && _softEnabled;
             using (var pen = new Pen(live ? Color.FromArgb(120, 128, 140)
                                           : Color.FromArgb(205, 210, 217)))
                 g.DrawRectangle(pen, box);
@@ -202,7 +230,7 @@ namespace Kaban.UI.Controls
 
         protected override void OnClick(EventArgs e)
         {
-            if (IsStale || DisplayOnly) return;          // not ticked: nothing can be written
+            if (IsStale || DisplayOnly || !_softEnabled) return;          // not ticked: nothing can be written
             base.OnClick(e);
         }
 
@@ -267,6 +295,8 @@ namespace Kaban.UI.Controls
             string tip = PlcAddressHelper.StationHeader(PlcNumber) + PlcAddressHelper.Describe(PlcNumber, Address);
             // Not answering: why, first (the box is grey and does nothing).
             if (IsStale) tip = ConnectionMonitor.ReasonFor(PlcNumber) + "\r\n" + tip;
+            // held back by its conditions or trigger: what it waits for
+            else if (!_softEnabled && !string.IsNullOrEmpty(_disabledReason)) tip = _disabledReason + "\r\n" + tip;
             if (!string.IsNullOrWhiteSpace(AlertAddress))
                 tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
                        PlcAddressHelper.Describe(PlcNumber, AlertAddress.Trim()) +
@@ -284,6 +314,34 @@ namespace Kaban.UI.Controls
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             if (!_tipBuilt) RefreshTooltip();
+            if (checkGlobal != null)
+            {
+                bool vis = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
+                if (Visible != vis) Visible = vis;
+                if (!vis) return;
+                bool condOk = EnableConditions == SystemCondition.None || checkGlobal(EnableConditions);
+                bool trigOk = EnableTrigger == null || string.IsNullOrEmpty(EnableTrigger.MonitorAddress) || EnableTrigger.Check(readPlc);
+                bool en = condOk && trigOk;
+                if (en != _softEnabled)
+                {
+                    _softEnabled = en;
+                    Cursor = en && !DisplayOnly ? Cursors.Hand : Cursors.Default;
+                    Invalidate();
+                }
+                if (en) _disabledReason = "";
+                else
+                {
+                    var sb = new System.Text.StringBuilder(LanguageManager.GetString("Sys_Disabled", "Action Disabled."));
+                    if (!condOk)
+                    {
+                        sb.Append("\n").Append(LanguageManager.GetString("Sys_ReqState", "Required Machine State:"));
+                        foreach (var name in MachineConditionMap.Unmet(EnableConditions, checkGlobal)) sb.Append("\n  \u2022 ").Append(name);
+                    }
+                    if (!trigOk) sb.Append("\n").Append(LanguageManager.GetString("Sys_WaitSignal", "Waiting for Signal:")).Append(" ")
+                                   .Append(string.IsNullOrWhiteSpace(EnableTrigger.DescriptionKey) ? EnableTrigger.MonitorAddress : LanguageManager.Localize(EnableTrigger.DescriptionKey));
+                    _disabledReason = sb.ToString();
+                }
+            }
             bool alert = !string.IsNullOrWhiteSpace(AlertAddress) && readPlc(AlertAddress.Trim()) != 0;
             bool blinkOn = alert && BlinkHelper.IsBlinkActive;
             if (alert != _alert || blinkOn != _alertBlinkOn)
