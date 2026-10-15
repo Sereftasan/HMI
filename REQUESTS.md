@@ -14,7 +14,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     E.SCF (output short-circuit, 20) added, E.EHR removed (an Ethernet model's fault, not in this manual). Each fault
     links its page of the manual, in the Help folder's copy and online. The PDF stays out of git (23 MB).
   - 7328a83 - AxisSettingHMI: the position divided by the row's Divisor (PositionDivisor gone); a "Load Side Encoder"
-    category with LoadSideEncoderAddress and LoadSideEncoderDivisor (0: the row's Divisor). FA2010's Robot X: D22 / 1000.
+    category with LoadSideEncoderAddress and LoadSideEncoderDivisor. 2ab9fbd - the encoder's divisor follows the
+    Divisor until it is set (Robot X: D22 / 10000).
+  - 3179458 - Conditions put on a page in Visual Studio (the Options page's "SystemCondition.1048576" errors): a
+    machine's conditions are named in the enum now (MachineBit16 ... MachineBit63), so the designer writes them as code
+    that compiles and reads them back.
 - 14 October (the Axis Settings page broken, two screenshots):
   - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
   - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
