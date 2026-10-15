@@ -68,6 +68,8 @@ namespace Kaban.Core.Helpers
         public const string NoteLanguages = "NoteLanguages";
         /// <summary>How an AI prompt goes on the clipboard: as a file (pasted, a chat attaches it) or as its text.</summary>
         public const string AiPromptAs = "AiPromptAs";              // File | Text
+        /// <summary>"Ask &lt;AI&gt;" pastes the prompt into the chat it opens by itself (14 October).</summary>
+        public const string AiPaste = "AiPaste";                    // On | Off
         /// <summary>
         /// The language of the screen (a code: EN, TR ...): everyone's is the flag on the top
         /// bar's, a user's own is taken when they sign in (12 October: "add language selection
@@ -90,6 +92,7 @@ namespace Kaban.Core.Helpers
             P(Blinking, "SignIn", "On", "Off"),
             P(TooltipDelay, "SignIn", "Normal", "Short", "Long"),
             P(AiPromptAs, "Help", "File", "Text"),
+            P(AiPaste, "Help", "On", "Off"),
             new Preference { Key = MotionColumns, Group = "", Hidden = true },
             new Preference { Key = LastPlace, Group = "", Hidden = true },
             new Preference { Key = AxisItems, Group = "", Hidden = true },

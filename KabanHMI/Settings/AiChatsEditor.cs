@@ -48,7 +48,7 @@ namespace Kaban.UI.Settings
                 Dock = DockStyle.Top, Height = 40, Padding = new Padding(8, 6, 8, 0), ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small,
                 AutoEllipsis = true, Name = "aiChatsNote",
                 Text = T("AiC_Note", "The AI chats the Help menu (?) and every alarm's help list offer, each as 'Ask <name>', in this order: a name and its web address (https://...).") +
-                       "\n" + T("AiC_Note2", "'Ask <name>' puts the prompt on the clipboard and opens that chat in the browser, to paste it into (Ctrl+V).")
+                       "\n" + T("AiC_Note2", "'Ask <name>' opens that chat in the browser and pastes the prompt into it (Ctrl+V, Preferences: Paste into the chat).")
             };
 
             // ---- the bar, as every settings page's ----

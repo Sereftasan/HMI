@@ -98,6 +98,7 @@
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
     <Compile Include="Helpers\AiMenu.cs" />
+    <Compile Include="Helpers\AiPaste.cs" />
     <Compile Include="Controls\Toast.cs">
       <SubType>Form</SubType>
     </Compile>

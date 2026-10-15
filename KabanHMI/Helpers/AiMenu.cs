@@ -43,8 +43,8 @@ namespace Kaban.UI.Helpers
             bool alarm = subject == AlarmAiPrompt.Subject.Alarm;
             var create = new ToolStripMenuItem(CreateCaption, MenuGlyphs.Clipboard()) { Name = "aiPrompt" };
             create.ToolTipText = alarm
-                ? T("Tip_AiPrompt", "Copies a prompt for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit and the machine, and the HMI's step-by-step page as the format: paste it there, the AI writes you helper pages for each level and answers your questions.")
-                : T("Tip_HmiPrompt", "Copies a prompt for an AI chat with the HMI, its machines, where you are and its whole manual: paste it there and ask it anything about the HMI.");
+                ? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's own troubleshooting for it: paste it there - the AI starts with the likely cause and the first check, and walks you through it step by step. It writes printable helper pages when you ask.")
+                : T("Tip_HmiPrompt", "Copies a briefing for an AI chat with the HMI, its machines, where you are and what the page shows, and its whole manual: paste it there and ask it anything about the HMI.");
             create.Click += (s, e) => Run(prompt, subject, owner, null);
             items.Add(create);
 
@@ -53,7 +53,7 @@ namespace Kaban.UI.Helpers
             {
                 var chat = c;
                 var ask = new ToolStripMenuItem(AskCaption(chat), MenuGlyphs.Chat()) { Name = AskName(chat) };
-                ask.ToolTipText = string.Format(T("Tip_AiAsk", "Copies the prompt and opens {0} in the browser: paste it there (Ctrl+V)."), chat.Name);
+                ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
                 ask.Click += (s, e) => Run(prompt, subject, owner, chat);
                 items.Add(ask);
             }

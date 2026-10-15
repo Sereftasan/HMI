@@ -1023,6 +1023,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
                 case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
                 case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
+                case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
                 case ViewPreferences.Language: return T("VP_Language", "Language");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
@@ -1073,6 +1074,8 @@ namespace Kaban.UI.Settings
                 case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
                 case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
                 case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
+                case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
+                case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
                 default: return value;
             }
         }

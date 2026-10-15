@@ -99,6 +99,13 @@ namespace Kaban.UI.Forms
         /// <summary>The page on show, as the operator went there (a page button noted with the page it opened).</summary>
         private string CurrentPlace()
         {
+            var deepest = CurrentView();
+            return deepest != null ? PlaceOf(deepest) : "";
+        }
+
+        /// <summary>The page on show - the open tab of the open tab, as deep as they go.</summary>
+        internal Control CurrentView()
+        {
             Control deepest = _currentScreen;
             for (int guard = 0; deepest != null && guard < 6; guard++)
             {
@@ -106,7 +113,7 @@ namespace Kaban.UI.Forms
                 if (tabs == null || tabs.ActiveView == null) break;
                 deepest = tabs.ActiveView;
             }
-            return deepest != null ? PlaceOf(deepest) : "";
+            return deepest;
         }
 
         private static Kaban.UI.Settings.SettingsScreen FirstStrip(Control c)

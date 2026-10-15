@@ -39,6 +39,138 @@ namespace Kaban.UI.Helpers
             public string SidePage = "";
             /// <summary>The window's screen scale ("100%").</summary>
             public string Scale = "";
+            /// <summary>What the page on show shows, one line a control (DescribePage) - filled by the main window.</summary>
+            public List<string> OnScreen = new List<string>();
+        }
+
+        /// <summary>How many controls of the page on show are described, at most.</summary>
+        public const int OnScreenMax = 150;
+
+        /// <summary>
+        /// The page on show as the briefing tells it (14 October: "create more detailed document
+        /// as the AI prompt ... enough for the AI to start chatting with the user and give them
+        /// proper answers"): its headings, units, axes, motors, buttons, values, lamps and options,
+        /// in the order they are on the page (top to bottom, left to right), with what each shows
+        /// now and the device it works. Hidden controls are left out; at most OnScreenMax lines.
+        /// </summary>
+        public static List<string> DescribePage(System.Windows.Forms.Control page)
+        {
+            var lines = new List<string>();
+            if (page == null) return lines;
+            try { Describe(page, lines, 0); } catch (Exception ex) { AuditLogger.Log("could not describe the page for the AI prompt: " + ex.Message); }
+            if (lines.Count > OnScreenMax) { lines = lines.Take(OnScreenMax).ToList(); lines.Add("(... more on the page)"); }
+            return lines;
+        }
+
+        private static string Tr(string key) { return string.IsNullOrWhiteSpace(key) ? "" : LanguageManager.GetString(key, key).Trim(); }
+
+        private static string Commands(Kaban.UI.Controls.ButtonHMI b)
+        {
+            if (b == null || b.BitActions == null) return "";
+            var a = b.BitActions.Where(x => x != null && !string.IsNullOrWhiteSpace(x.Address)).Select(x => x.Address.Trim() + " " + x.Action).ToList();
+            return a.Count == 0 ? "" : " (" + string.Join(", ", a) + ")";
+        }
+
+        private static void Describe(System.Windows.Forms.Control parent, List<string> lines, int depth)
+        {
+            if (depth > 12 || lines.Count > OnScreenMax) return;
+            var kids = parent.Controls.Cast<System.Windows.Forms.Control>().Where(c => c.Visible)
+                             .OrderBy(c => c.Top / 20).ThenBy(c => c.Left).ToList();
+            foreach (var c in kids)
+            {
+                if (lines.Count > OnScreenMax) return;
+                var inv = c as Kaban.UI.Controls.InverterUnitHMI;
+                var unit = c as Kaban.UI.Controls.CylinderUnitHMI;
+                var axisUnit = c as Kaban.UI.Controls.AxisUnitHMI;
+                if (inv != null)
+                {
+                    var code = inv.InverterFaultCode;
+                    lines.Add("Motor (inverter) \"" + Tr(inv.TitleTextKey) + "\": " + UnitButtons(inv) +
+                              (string.IsNullOrWhiteSpace(inv.PositionAddress) ? "" : "; its value " + inv.PositionDisplay.Text.Trim() + " (" + inv.PositionAddress + ")") +
+                              (string.IsNullOrWhiteSpace(inv.RunLampAddress) ? "" : "; run lamp " + (inv.RunLamp.IsOn ? "ON" : "off") + " (" + inv.RunLampAddress + ")") +
+                              (code != 0 ? "; INVERTER FAULT " + AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code) : ""));
+                    continue;
+                }
+                if (axisUnit != null)
+                {
+                    var u = axisUnit.Unit;
+                    lines.Add("Axis \"" + Tr(u.TitleTextKey) + "\": " + UnitButtons(u) + "; position " + u.PositionDisplay.Text.Trim() +
+                              (string.IsNullOrWhiteSpace(u.PositionAddress) ? "" : " (" + u.PositionAddress + ")"));
+                    continue;
+                }
+                if (unit != null)
+                {
+                    lines.Add("Unit \"" + Tr(unit.TitleTextKey) + "\": " + UnitButtons(unit) +
+                              (string.IsNullOrWhiteSpace(unit.PositionAddress) || !unit.PositionDisplay.Visible ? "" : "; position " + unit.PositionDisplay.Text.Trim() + " (" + unit.PositionAddress + ")"));
+                    continue;
+                }
+                var row = c as Kaban.UI.Controls.AxisSettingHMI;
+                if (row != null) { lines.Add("Axis row \"" + Tr(row.AxisNameKey) + "\" (axis " + row.HMIAxisIndex + ")"); continue; }
+                var heading = c as Kaban.UI.Controls.LabelHMI;
+                if (heading != null) { if (heading.Text.Trim().Length > 0) lines.Add("Heading: " + heading.Text.Trim()); continue; }
+                var btn = c as Kaban.UI.Controls.ButtonHMI;
+                if (btn != null)
+                {
+                    lines.Add("Button \"" + btn.Text.Trim() + "\"" + Commands(btn) + (btn.Enabled ? "" : " - greyed now") +
+                              (string.IsNullOrWhiteSpace(btn.Lamp1Address) ? "" : "; its lamp " + btn.Lamp1Address));
+                    continue;
+                }
+                var num = c as Kaban.UI.Controls.BaseNumericHMI;
+                if (num != null)
+                {
+                    lines.Add((num is Kaban.UI.Controls.NumericInputHMI ? "Value to enter" : "Value") + " \"" + Tr(num.DescriptionText).TrimEnd(':') + "\": " + num.Text.Trim() +
+                              (string.IsNullOrWhiteSpace(num.Address) ? "" : " (" + num.Address + ")"));
+                    continue;
+                }
+                var lamp = c as Kaban.UI.Controls.LampHMI;
+                if (lamp != null)
+                {
+                    lines.Add("Lamp \"" + Tr(lamp.DescriptionText) + "\": " + (lamp.IsOn ? "ON" : "off") + (string.IsNullOrWhiteSpace(lamp.Address) ? "" : " (" + lamp.Address + ")"));
+                    continue;
+                }
+                var box = c as Kaban.UI.Controls.CheckBoxHMI;
+                if (box != null)
+                {
+                    lines.Add("Option \"" + Tr(box.DescriptionText) + "\": " + (box.Checked ? "on" : "off") + (string.IsNullOrWhiteSpace(box.Address) ? "" : " (" + box.Address + ")"));
+                    continue;
+                }
+                var group = c as Kaban.UI.Controls.GroupBoxHMI;
+                if (group != null && Tr(group.TitleTextKey).Length > 0) lines.Add("Group \"" + Tr(group.TitleTextKey) + "\":");
+                if (c.HasChildren) Describe(c, lines, depth + 1);
+            }
+        }
+
+        /// <summary>A button's caption as words: the arrows the units draw are named ("◀" is "back (left arrow)").</summary>
+        private static string ButtonWord(string caption, string shown)
+        {
+            var t = (string.IsNullOrWhiteSpace(caption) ? shown ?? "" : caption).Trim();
+            switch (t)
+            {
+                case "\u25C0": return "◀ back (left arrow)";
+                case "\u25B6": return "▶ forward (right arrow)";
+                case "\u25B2": return "▲ up";
+                case "\u25BC": return "▼ down";
+                case "\u21E4": return "⇤ open";
+                case "\u21E5": return "⇥ close";
+                default: return t;
+            }
+        }
+
+        private static string UnitButtons(Kaban.UI.Controls.CylinderUnitHMI u)
+        {
+            var parts = new List<string>();
+            foreach (var side in new[] { "A", "B" })
+            {
+                var b = side == "A" ? u.ButtonA : u.ButtonB;
+                var cmd = side == "A" ? u.CommandAAddress : u.CommandBAddress;
+                if (string.IsNullOrWhiteSpace(cmd)) continue;
+                var lamps = new[] { side == "A" ? u.Lamp1AAddress : u.Lamp1BAddress, side == "A" ? u.Lamp2AAddress : u.Lamp2BAddress }
+                            .Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                parts.Add((side == "A" ? "left" : "right") + " button \"" + ButtonWord(Tr(side == "A" ? u.ButtonATextKey : u.ButtonBTextKey), b.Text) + "\" (" + cmd.Trim() + ")" +
+                          (lamps.Count > 0 ? " with its sensor lamp " + string.Join(", ", lamps) : "") + (b.Enabled ? "" : " - greyed now") +
+                          (b.AlertBlink ? " - its border BLINKS RED (an error)" : ""));
+            }
+            return parts.Count == 0 ? "no buttons" : string.Join("; ", parts);
         }
 
         public static string Build(Context ctx)
@@ -49,16 +181,16 @@ namespace Kaban.UI.Helpers
             var level = SecurityManager.CurrentLevel;
             string levelName = level == SecurityLevel.None ? "nobody signed in" : level.ToString();
             var machines = Safe(() => Kaban.UI.Settings.HmiManual.RunningMachines(), new List<Kaban.UI.Settings.HmiManual.ManualMachine>());
-            string manual = ManualHtml();
+            string manual = ManualText();
             var sb = new StringBuilder();
 
             // ---- what this is -------------------------------------------------------------
             sb.AppendLine("# Help me use an industrial machine's HMI (operator panel)");
             sb.AppendLine();
             sb.AppendLine("I work with the HMI described below: Kaban HMI, the operator panel program of Kaban Makina's aluminium / PVC profile processing machines. " +
-                          "Below is the program and the machines it runs, who I am on it and where I am on the screen, what is going on now" +
-                          (manual.Length > 0 ? ", and the HMI's manual whole (HTML), with this panel's machines in it" : "") +
-                          ". What I ask you is at the end, under \"What I ask you\". Answer in " + language + ".");
+                          "This briefing, made by the HMI itself, holds the program and the machines it runs, who I am on it, where I am on the screen and what that page shows now, what is going on now" +
+                          (manual.Length > 0 ? ", and the HMI's manual whole (its text), with this panel's machines in it" : "") +
+                          ". Read all of it: what I ask you is at the end, under \"What I ask you\" - we are going to talk. Answer in " + language + ".");
             sb.AppendLine();
 
             // ---- the program and its machines ------------------------------------------------
@@ -99,6 +231,12 @@ namespace Kaban.UI.Helpers
             if (!string.IsNullOrWhiteSpace(ctx.Place)) sb.AppendLine("- The page on my screen: " + ctx.Place.Trim());
             if (!string.IsNullOrWhiteSpace(ctx.SidePage)) sb.AppendLine("- Open beside it (the side panel): " + ctx.SidePage.Trim());
             sb.AppendLine();
+            if (ctx.OnScreen != null && ctx.OnScreen.Count > 0)
+            {
+                sb.AppendLine("## What that page shows now (top to bottom, left to right; device numbers in brackets)");
+                foreach (var l in ctx.OnScreen) sb.AppendLine("- " + l);
+                sb.AppendLine();
+            }
 
             // ---- now ----------------------------------------------------------------------------
             var alarms = Safe(() => AlarmManager.ActiveAlarms.Where(a => a != null).ToList(), new List<AlarmItem>());
@@ -122,19 +260,19 @@ namespace Kaban.UI.Helpers
             // ---- the manual -------------------------------------------------------------------
             if (manual.Length > 0)
             {
-                sb.AppendLine("## The HMI's manual (complete HTML, for this panel's machines)");
+                sb.AppendLine("## The HMI's manual (its text, whole, for this panel's machines)");
                 sb.AppendLine();
-                sb.AppendLine("```html");
                 sb.AppendLine(manual);
-                sb.AppendLine("```");
                 sb.AppendLine();
             }
 
             // ---- what is asked ----------------------------------------------------------------
             sb.AppendLine("## What I ask you");
             sb.AppendLine();
-            sb.AppendLine("1. Be my helper for THIS HMI, in " + language + ", at my level (" + levelName + "). " +
-                          "First, in a few short lines, say what you can help me with on this panel - given my level and the page I am on - and ask me what I want to do or what is not clear to me.");
+            sb.AppendLine("1. Be my helper for THIS HMI, in " + language + ", at my level (" + levelName + "), in a conversation. " +
+                          "Start now, in a few short lines: what the page I am on is for and what I can do there at my level" +
+                          (alarms.Count > 0 ? "; that there are alarms on the list (name the first) and that you can walk me through it" : "") +
+                          "; then ask me what I want to do or what is not clear to me. Keep each answer short - it is read on the panel or a phone beside the machine.");
             sb.AppendLine("2. Answer from the manual above. Name the pages, tabs, buttons and fields as the HMI shows them; my screen is in " + language +
                           ", the manual in English - give the English name in brackets when you are not sure of the word on my screen. " +
                           "Step by step: one action a step, and what I should see after it.");
@@ -180,6 +318,23 @@ namespace Kaban.UI.Helpers
                 AuditLogger.Log("could not read the manual for the AI prompt: " + ex.Message);
                 return "";
             }
+        }
+
+        /// <summary>
+        /// The manual as the briefing carries it (14 October): its TEXT - headings, paragraphs,
+        /// lists, a table's cells between " | " - without its markup, styles, drawings and
+        /// script: what an AI reads to answer from, at a fraction of the HTML's length.
+        /// Whole up to ManualChars, then cut. "" when there is none.
+        /// </summary>
+        public static string ManualText()
+        {
+            var html = ManualHtml();
+            if (html.Length == 0) return "";
+            var text = AlarmAiPrompt.HtmlToText(html);
+            text = Regex.Replace(text, @"[ \t]+", " ");
+            text = Regex.Replace(text, @"\n\s*\n\s*\n+", "\n\n").Trim();
+            if (text.Length > ManualChars) text = text.Substring(0, ManualChars) + "\n[... shortened]";
+            return text;
         }
 
         private static T Safe<T>(Func<T> f, T fallback) { try { var v = f(); return v == null ? fallback : v; } catch { return fallback; } }

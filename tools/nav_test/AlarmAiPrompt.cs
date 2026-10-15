@@ -76,21 +76,29 @@ class AAP {
         var docs = AlarmHelpLinks.DocumentsFor(item);
         var p = AlarmAiPrompt.Build(item, null, docs);
         int ask = p.IndexOf("## What I ask you", StringComparison.Ordinal);
-        Check("the prompt says what it holds first and asks LAST, after the data and the example",
-              p.StartsWith("# Help me with an alarm on an industrial machine") && p.Contains("What I ask you is at the end") &&
-              ask > p.IndexOf("```html", StringComparison.Ordinal) && ask > p.IndexOf("## The devices involved", StringComparison.Ordinal) && p.IndexOf("```html", StringComparison.Ordinal) > 0);
-        Check("  helper documents for THIS alarm on THIS machine, in the HMI's language, as HTML files in the step-by-step page's format",
-              p.Contains("Write me helper documents for THIS alarm on THIS machine, in English: complete HTML files in the same format, style and colours as the HMI's step-by-step page above"));
-        Check("  one file for each reader: operator, maintenance technician, automation engineer",
-              p.Contains("one file for each of these readers") && p.Contains("1. Operator - ") && p.Contains("2. Maintenance technician - ") && p.Contains("3. Automation engineer - "));
-        Check("  the page's parts: the signal path, safety, numbered steps with good / bad results, drawings, the symptom table, self-contained",
-              p.Contains("the signal path") && p.Contains("a safety box") && p.Contains("what a good and a bad result means") && p.Contains("inline SVG drawings") &&
-              p.Contains("symptom - cause - remedy") && p.Contains("no external files, scripts or fonts"));
-        Check("  safety first, the names as given, the most likely cause first, its questions",
-              p.Contains("safety first") && p.Contains("do not invent device numbers") && p.Contains("most likely cause given the device states at the alarm") && p.Contains("your questions"));
-        Check("  then it stays on: explains any part in more detail and asks what is seen",
-              p.Contains("Then stay with me") && p.Contains("explain that part in more detail") && p.Contains("ask me what I see"));
-        Check("  too long for one answer: the operator's first, then \"next\"", p.Contains("write the operator's first and go on with the next when I say \"next\""));
+        // 14 October: "the responses we get from AIs are not so useful ... the document should be enough for the
+        // AI to start chatting with the user and give them proper answers" - a briefing, and a conversation
+        Check("the briefing says what it holds first and asks LAST, after the data and the HMI's own troubleshooting",
+              p.StartsWith("# Help me with an alarm on an industrial machine") && p.Contains("This is a briefing made by the HMI") && p.Contains("what I ask you is at the end") &&
+              ask > p.IndexOf("## The HMI's own troubleshooting", StringComparison.Ordinal) && ask > p.IndexOf("## The devices involved", StringComparison.Ordinal) &&
+              p.IndexOf("## The HMI's own troubleshooting", StringComparison.Ordinal) > 0);
+        Check("  who I am on the panel", p.Contains("## Me") && p.Contains("Signed in on the panel: ") && p.Contains("The levels: Operator"));
+        string asked = ask < 0 ? "" : p.Substring(ask);
+        Check("  a conversation in the HMI's language: it starts at once - the meaning, the likely causes in order with their evidence, the FIRST check, then a question",
+              asked.Contains("Be my troubleshooting partner for THIS alarm on THIS machine, in English, in a conversation") && asked.Contains("Start now") &&
+              asked.Contains("the most likely cause given the device states at the alarm") && asked.Contains("each with the evidence for it") &&
+              asked.Contains("the FIRST check to do - one step") && asked.Contains("Then ask me what I see"));
+        Check("  one step at a time, waiting for my answer, short answers; at my level (operator, maintenance technician, automation engineer)",
+              asked.Contains("one step at a time: wait for my answer before the next step") && asked.Contains("keep each answer short") &&
+              asked.Contains("for an operator, only safe checks") && asked.Contains("for a maintenance technician") && asked.Contains("for an automation engineer"));
+        Check("  safety first, the names as given, ask when something is missing; the reset and a note when it is fixed",
+              asked.Contains("safety first") && asked.Contains("do not invent device numbers") && asked.Contains("ask me") &&
+              asked.Contains("how to reset the alarm and test the movement safely") && asked.Contains("HMI's notes"));
+        Check("  the printable pages when asked for: one self-contained HTML file a reader, in the HMI's style, the signal path, safety, steps, drawings, the symptom table",
+              asked.Contains("When I ask for printable pages") && asked.Contains("in the HMI's own style (its style sheet above)") && asked.Contains("self-contained HTML files") &&
+              asked.Contains("the operator, the maintenance technician, the automation engineer") && asked.Contains("the signal path") && asked.Contains("a safety box") &&
+              asked.Contains("inline SVG drawings") && asked.Contains("symptom - cause - remedy") && asked.Contains("the next when I say \"next\""));
+        Check("  and it explains again, simpler, what I do not understand", asked.Contains("When I do not understand a part, explain it again"));
         Check("the machine: FA2010 Processing Center, the others on the panel, the PLC and its cards from the drawing",
               p.Contains("Machine: Processing Center - model FA2010") && p.Contains("3D Hinge Drilling (H800)") &&
               p.Contains("U4 FX5U-64MT-ESS") && p.Contains("U19 FX5-8AD") && p.Contains("PLC station 1 (FA2010 Main PLC)"));
@@ -117,14 +125,18 @@ class AAP {
         Check("  the sensor with its input and its sensor tag", devText.Contains("- M232 - ") && devText.Contains("X60") && devText.Contains("SN76"));
         Check("  the note a user left on it", p.Contains("The encoder coupling was tightened on 7 October.") && p.Contains("Notes the machine's users left on this unit"));
         Check("the HMI's own help listed, and its step-by-step page's words in it (the wiring numbers)",
-              p.Contains("Step by step - Cutting Right Front - Back") && p.Contains("Does the PLC switch on <code>Y55</code>?") && p.Contains("relay K45"));
-        int html = p.IndexOf("```html", StringComparison.Ordinal), htmlEnd = html < 0 ? -1 : p.IndexOf("```", html + 7, StringComparison.Ordinal);
-        string page = html < 0 || htmlEnd < 0 ? "" : p.Substring(html + 7, htmlEnd - html - 7);
-        Check("  the step-by-step page IN FULL as the format: its HTML whole, with its style and drawings",
-              page.TrimStart().StartsWith("<!DOCTYPE html>") && page.TrimEnd().EndsWith("</html>") && page.Contains("<style>") && page.Contains("<svg") &&
-              page.Contains("Does the PLC switch on <code>Y55</code>?") && !page.Contains("{{") && p.Contains("in full below, as the format to follow"), page.Length + " characters");
+              p.Contains("Step by step - Cutting Right Front - Back") && p.Contains("Does the PLC switch on Y55?") && p.Contains("relay K45"));
+        int steps = p.IndexOf("## The HMI's own troubleshooting", StringComparison.Ordinal);
+        string stepText = steps < 0 ? "" : p.Substring(steps, Math.Max(0, p.IndexOf("### Its style sheet", steps, StringComparison.Ordinal) - steps));
+        Check("  the step-by-step page WHOLE as text - its steps, good / bad results, the parts - no markup, no drawings",
+              stepText.Contains("Where is the cylinder now?") && stepText.Contains("Does relay K45 pull in?") && stepText.Contains("Still not solved?") &&
+              stepText.Contains("The parts of this movement") && !stepText.Contains("<svg") && !stepText.Contains("<td") && !stepText.Contains("{{") &&
+              p.Contains("- its text below, whole"), stepText.Length + " characters");
+        Check("  before the other documents' texts (the specific first), with its style sheet for the pages",
+              steps > 0 && steps < p.IndexOf("### Cylinder troubleshooting - Cutting Right Front (its text)", StringComparison.Ordinal) &&
+              p.Contains("### Its style sheet (for the printable pages, when I ask for them)") && p.Contains("```css"));
         Check("  the other document (the cylinder manual) as text, shortened", p.Contains("### Cylinder troubleshooting - Cutting Right Front (its text)"));
-        Check("  big, but a chat takes it (under 200 000 characters)", p.Length > 60000 && p.Length < 200000, p.Length + " characters");
+        Check("  a briefing a chat reads whole (20 000 - 120 000 characters)", p.Length > 20000 && p.Length < 120000, p.Length + " characters");
         // the HMI's own alarm for the movement ("M873.1" in the feedback): what it saw, the states at the alarm
         var gen = new AlarmItem(item.AlarmCode + ".2", item.TranslationKey, AlarmSeverity.Fault)
         {
@@ -138,8 +150,8 @@ class AAP {
               gp.Contains("- Code: M852.2") && gp.Contains("Raised by the HMI itself") && gp.Contains("What the HMI saw fail: SN76 (X60) did not come ON") &&
               gp.Contains("- Y55 - Back: its valve output") && gp.Contains("at the alarm ON") && gp.Contains("- M232 - ") && gp.Contains("at the alarm OFF"),
               string.Join(" / ", gp.Split('\n').Where(l => l.StartsWith("- Code") || l.StartsWith("- What") || l.StartsWith("- Y55") || l.StartsWith("- M232"))));
-        Check("  its step-by-step page in full as the format", gdocs.Any(d => d.StepByStep) && gp.Contains("```html") && gp.Contains("as the format to follow"),
-              string.Join(" / ", gdocs.Select(d => d.Title)));
+        Check("  its step-by-step page whole, as text", gdocs.Any(d => d.StepByStep) && gp.Contains("## The HMI's own troubleshooting for this alarm: \"Step by step") &&
+              gp.Contains("- its text below, whole"), string.Join(" / ", gdocs.Select(d => d.Title)));
         LanguageManager.ChangeLanguage("TR");
         var tr = AlarmAiPrompt.Build(item, null, AlarmHelpLinks.DocumentsFor(item));
         Check("in Turkish when the HMI is in Turkish (asked for, and the Turkish texts beside the English)",

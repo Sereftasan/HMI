@@ -172,6 +172,8 @@ namespace Kaban.UI.Settings
                     return T("PV_Language", "Every page, menu and message in this language - taken at once when this user signs in. The flag on the top bar sets everyone's (this panel's).");
                 case ViewPreferences.AiPromptAs:
                     return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its text.");
+                case ViewPreferences.AiPaste:
+                    return T("PV_AiPaste", "'Ask <AI>' opens the chat and, a few seconds later, presses Ctrl+V in it: the prompt goes in by itself - you check it and send it (Enter).");
                 case SummaryKey:
                     return "";
                 default:

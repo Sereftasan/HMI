@@ -95,6 +95,8 @@ namespace Kaban.UI.Forms
         {
             var ctx = new HmiAiPrompt.Context();
             try { ctx.Place = CurrentPlace(); } catch { }
+            // what the page on show shows now (14 October: a briefing the AI can talk from)
+            try { ctx.OnScreen = HmiAiPrompt.DescribePage(CurrentView()); } catch { }
             if (_sidePanel != null && _sidePanel.Visible && _sideOpen != null) ctx.SidePage = _sideOpen.Title;
             ctx.Scale = DisplaySettings.Percent(UiScale.Factor);
             return ctx;

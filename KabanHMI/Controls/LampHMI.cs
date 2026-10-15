@@ -77,6 +77,10 @@ namespace Kaban.UI.Controls
         /// <summary>True while the bound bit is on.</summary>
         private bool _isOn;
 
+        /// <summary>The lamp is lit now (the AI briefing says what the page shows).</summary>
+        [System.ComponentModel.Browsable(false), System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public bool IsOn { get { return _isOn; } }
+
         /// <summary>
         /// A RING, not a filled tile.
         ///

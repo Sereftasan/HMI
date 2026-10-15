@@ -91,7 +91,7 @@ class HM {
               logoutEntries.All(i => i.Image != null) && menu.ShowImageMargin && menu.ImageScalingSize == logoutMenu.ImageScalingSize &&
               menu.Renderer.GetType() == logoutMenu.Renderer.GetType(),
               string.Join(" | ", entries.Select(i => i.Text + (i.Image == null ? " (no picture)" : ""))));
-        Check("  each chat's tooltip names it", (Item(menu, "aiAsk:Gemini").ToolTipText ?? "").StartsWith("Copies the prompt and opens Gemini in the browser"),
+        Check("  each chat's tooltip names it", (Item(menu, "aiAsk:Gemini").ToolTipText ?? "").StartsWith("Opens Gemini in the browser and pastes the briefing into it"),
               Item(menu, "aiAsk:Gemini").ToolTipText);
         var hmi = (Kaban.UI.Settings.SettingsScreen)new HmiSettingsPage().GetControl();
         Check("HMI Settings has no About tab any more", !hmi.AllPages.Any(x => x.TitleKey == "Set_About"), string.Join(",", hmi.AllPages.Select(x => x.TitleFallback)));
@@ -125,7 +125,7 @@ class HM {
         System.Collections.Specialized.StringCollection clipFiles = null;
         try { clipFiles = Clipboard.GetFileDropList(); } catch { }
         var p = AlarmAiPrompt.LastSaved != null && File.Exists(AlarmAiPrompt.LastSaved) ? File.ReadAllText(AlarmAiPrompt.LastSaved) : "";
-        int ask = p.IndexOf("## What I ask you", StringComparison.Ordinal), html = p.IndexOf("```html", StringComparison.Ordinal);
+        int ask = p.IndexOf("## What I ask you", StringComparison.Ordinal), html = p.IndexOf("## The HMI's manual (its text, whole", StringComparison.Ordinal);
         Check("on the clipboard as a file, said in one short line", p.StartsWith("# Help me use an industrial machine's HMI (operator panel)") &&
               clipFiles != null && clipFiles.Count == 1 && clipFiles[0] == AlarmAiPrompt.LastSaved &&
               noticed == "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.", noticed ?? "no message");
@@ -136,11 +136,19 @@ class HM {
               p.Contains("Signed in: admin, level Admin") && p.Contains("The page on my screen: ") && p.Contains("Manual Movement") && p.Contains("Open beside it (the side panel): "));
         Check("  the alarms now", p.Contains("## Now") && (p.Contains("No alarm on the list.") || p.Contains("Alarms on the list")));
         string manual = html < 0 ? "" : p.Substring(html, Math.Max(0, ask - html));
-        Check("  the manual whole (HTML), with this panel's machines, no local path in it",
-              manual.Contains("<title>Kaban HMI - Operator and Engineer Manual</title>") && manual.Contains("</html>") && manual.Contains("FA2010") &&
-              !manual.Contains("<base"), manual.Length + " characters");
-        Check("  what is asked comes last: be the helper at my level, in my language; say what it can help with first",
-              ask > html && html > 0 && p.Contains("Be my helper for THIS HMI, in English, at my level (Admin)") && p.Contains("say what you can help me with on this panel"));
+        // 14 October: a briefing an AI talks from - the manual's text, not its markup
+        Check("  the manual whole as TEXT, with this panel's machines - no markup, script, or local path in it",
+              manual.Contains("Contents") && manual.Contains("6. Alarms") && manual.Contains("13. This machine") && manual.Contains("FA2010") &&
+              !manual.Contains("<base") && !manual.Contains("<div") && !manual.Contains("<script") && !manual.Contains("addEventListener") && !manual.Contains("file:///"),
+              manual.Length + " characters");
+        int shows = p.IndexOf("## What that page shows now", StringComparison.Ordinal);
+        string onPage = shows < 0 ? "" : p.Substring(shows, Math.Max(0, p.IndexOf("\n## ", shows + 5, StringComparison.Ordinal) - shows));
+        Check("  what the page on screen shows now: its units with their buttons and devices, top to bottom",
+              onPage.Contains("- Unit \"") && onPage.Contains("button \"") && System.Text.RegularExpressions.Regex.IsMatch(onPage, @"\((M|Y)\d+\)"),
+              onPage.Length > 400 ? onPage.Substring(0, 400) : onPage);
+        Check("  what is asked comes last: be the helper at my level, in my language, in a conversation that starts at once",
+              ask > html && html > 0 && p.Contains("Be my helper for THIS HMI, in English, at my level (Admin), in a conversation") &&
+              p.Contains("Start now, in a few short lines: what the page I am on is for") && p.Contains("Keep each answer short"));
         Check("  from the manual, step by step, the names as on the screen; safety; nothing invented; a helper page when asked; explain again",
               p.Contains("Answer from the manual above") && p.Contains("Step by step") && p.Contains("Safety first") && p.Contains("do not invent pages") &&
               p.Contains("write me a short helper page") && p.Contains("explain it again, more simply"));
@@ -155,11 +163,49 @@ class HM {
         Pump(100);
         Check("  copied, saved, and ChatGPT opened in the browser", opened.Count == 1 && opened[0] == "https://chatgpt.com/" &&
               AlarmAiPrompt.LastOpened != null && AlarmAiPrompt.LastOpened.Name == "ChatGPT" &&
-              noticed == "ChatGPT is opening: paste the prompt file into the chat (Ctrl+V) and send it.",
+              noticed == "ChatGPT is opening: the prompt goes into the chat by itself in a few seconds - check it and send it (Enter). If it does not, paste it there (Ctrl+V).",
               string.Join(",", opened) + " / " + noticed);
+        // 14 October: "paste it to the AI page directly with the ask AI button (all AI pages support Ctrl+V)"
+        var pressed = new List<string>(); var put = new List<string>(); bool done = false;
+        AiPaste.OtherWindowInFront = () => true;
+        AiPaste.Press = k => pressed.Add(k);
+        AiPaste.PutDocument = (f, t) => put.Add(f != null ? "file:" + Path.GetFileName(f) : "text:" + (t ?? "").Length);
+        AiPaste.PutText = t => put.Add("message:" + t);
+        AiPaste.Delay = TimeSpan.FromMilliseconds(50); AiPaste.Between = TimeSpan.FromMilliseconds(50);
+        EventHandler onDone = (s2, e2) => done = true;
+        AiPaste.Done += onDone;
+        Item(menu, "aiAsk:Claude").PerformClick();
+        for (int i = 0; i < 100 && !done; i++) Pump(20);
+        Check("  a moment later Ctrl+V in the chat: the briefing file, then the message to read it and start", done && pressed.SequenceEqual(new[] { "^v", "^v" }) &&
+              put.Count == 3 && put[0] == "file:" + Path.GetFileName(AlarmAiPrompt.LastSaved) && put[1].StartsWith("message:The attached file \"" + Path.GetFileName(AlarmAiPrompt.LastSaved) + "\" is a briefing from Kaban HMI") &&
+              put[1].Contains("start as it asks at its end") && put[1].Contains("Answer in English.") && put[2] == put[0] && AiPaste.LastResult == "pasted+message",
+              string.Join(" | ", put) + " / " + string.Join(",", pressed) + " / " + AiPaste.LastResult);
+        Check("  sending left to the user: no Enter pressed", !pressed.Any(k => k.Contains("{ENTER}") || k.Contains("~")));
+        done = false; pressed.Clear(); put.Clear();
+        AiPaste.OtherWindowInFront = () => false;
+        Item(menu, "aiAsk:Claude").PerformClick();
+        for (int i = 0; i < 100 && !done; i++) Pump(20);
+        Check("  the HMI still in front (no browser came up): nothing pressed - the prompt stays on the clipboard", done && pressed.Count == 0 &&
+              AiPaste.LastResult == "skipped: the HMI in front", AiPaste.LastResult);
+        done = false; pressed.Clear(); put.Clear();
+        AiPaste.OtherWindowInFront = () => true;
+        ViewPreferences.SetPanel(ViewPreferences.AiPromptAs, "Text");
+        Item(menu, "aiAsk:Claude").PerformClick();
+        for (int i = 0; i < 100 && !done; i++) Pump(20);
+        Check("  as text (the user's choice): the briefing's text pasted once - it ends with what is asked", done && pressed.Count == 1 && put.Count == 1 &&
+              put[0].StartsWith("text:") && AiPaste.LastResult == "pasted", string.Join(" | ", put));
+        ViewPreferences.SetPanel(ViewPreferences.AiPromptAs, null);
+        done = false; pressed.Clear(); put.Clear();
+        ViewPreferences.SetPanel(ViewPreferences.AiPaste, "Off");
+        Item(menu, "aiAsk:Claude").PerformClick();
+        Pump(200);
+        Check("  switched off in Preferences: nothing pasted, the user told to paste it", pressed.Count == 0 && AiPaste.LastResult == "off" &&
+              noticed == "Claude is opening: paste the prompt file into the chat (Ctrl+V) and send it.", noticed);
+        ViewPreferences.SetPanel(ViewPreferences.AiPaste, null);
+        AiPaste.Done -= onDone;
         Item(menu, "aiAsk:Gemini").PerformClick();
         Pump(100);
-        Check("  another AI of the list, straight from the menu", opened.Count == 2 && opened[1] == "https://gemini.google.com/app", string.Join(",", opened));
+        Check("  another AI of the list, straight from the menu", opened.Count >= 2 && opened.Last() == "https://gemini.google.com/app", string.Join(",", opened));
         AiChats.OpenLink = link => false;
         Item(menu, "aiAsk:ChatGPT").PerformClick();
         Pump(100);

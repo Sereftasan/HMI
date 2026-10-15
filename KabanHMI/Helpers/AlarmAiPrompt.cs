@@ -39,6 +39,8 @@ namespace Kaban.UI.Helpers
     {
         /// <summary>The format example (the step-by-step page) in full up to this many characters; beyond it, without its drawings.</summary>
         public const int ExampleChars = 160000;
+        /// <summary>The step-by-step page's text, whole up to this many characters (14 October: as text, not HTML).</summary>
+        public const int ExampleTextChars = 60000;
         /// <summary>How much of another help document's own text is put in (characters).</summary>
         public const int DocumentChars = 30000;
         /// <summary>The other documents' texts together, at most.</summary>
@@ -139,12 +141,12 @@ namespace Kaban.UI.Helpers
             // ---- what this is ---------------------------------------------------------
             sb.AppendLine("# Help me with an alarm on an industrial machine");
             sb.AppendLine();
-            sb.AppendLine("I work at the machine described below and the alarm below is on its HMI (the operator panel). " +
-                          "Below is everything the HMI knows about it: the machine and its control system, how its alarms are raised, the alarm and what the HMI saw when it came, " +
+            sb.AppendLine("This is a briefing made by the HMI (the operator panel) of the machine I work at, about the alarm on it now. " +
+                          "It holds everything the HMI knows: the machine and its control system, how its alarms are raised, who I am on the panel, the alarm and what the HMI saw when it came, " +
                           "the unit it belongs to with its movements, every device involved with its PLC label, its wiring and air line from the machine's drawings and its state, " +
                           "the other alarms, the notes the machine's users left" +
-                          (example != null ? ", and the HMI's own help for this alarm - its " + (stepByStep ? "step-by-step page" : "help page") + " in full, as the format I want" : "") +
-                          ". What I ask you is at the end, under \"What I ask you\". Answer in " + language + ".");
+                          (example != null ? ", and the HMI's own troubleshooting for this alarm - its " + (stepByStep ? "step-by-step page" : "help page") + " - as text" : "") +
+                          ". Read all of it: what I ask you is at the end, under \"What I ask you\" - we are going to talk about this alarm until it is solved. Answer in " + language + ".");
             sb.AppendLine();
 
             // ---- the machine ----------------------------------------------------------
@@ -184,6 +186,12 @@ namespace Kaban.UI.Helpers
                           " an alarm as soon as an axis' servo alarm or axis error code is not zero, and SETs the axis' error bit in the PLC." +
                           " The same for an inverter (a Mitsubishi FR-A800 driving a motor): its fault's data code (16 = E.OC1, the FR-A800 manual's 6.4)" +
                           " raises its alarm, named by the inverter's panel code (M830.E.OC1).");
+            sb.AppendLine();
+
+            // ---- me ---------------------------------------------------------------------
+            sb.AppendLine("## Me");
+            sb.AppendLine("- " + MeLine() + " The levels: Operator (runs the machine, the manual movements, the alarms), Maintenance (also settings, parameters, calibration), " +
+                          "Admin (everything, the PLC Monitor included). The panel's language: " + language + ".");
             sb.AppendLine();
 
             // ---- the alarm ------------------------------------------------------------
@@ -226,8 +234,9 @@ namespace Kaban.UI.Helpers
             sb.AppendLine();
 
             // ---- the unit -------------------------------------------------------------
-            string unit = link != null && link.Unit.Length > 0 ? link.Unit : cylinder != null ? cylinder.Unit : axis != null ? axis.Name : "";
-            if (link != null || cylinder != null || axis != null)
+            var inverter = AlarmGeneration.InverterOf(item);
+            string unit = link != null && link.Unit.Length > 0 ? link.Unit : cylinder != null ? cylinder.Unit : axis != null ? axis.Name : inverter != null ? inverter.Name : "";
+            if (link != null || cylinder != null || axis != null || inverter != null)
             {
                 sb.AppendLine("## The unit it belongs to");
                 sb.AppendLine("- Name on the HMI: " + (unit.Length > 0 ? unit : "(none)"));
@@ -254,6 +263,18 @@ namespace Kaban.UI.Helpers
                     AppendCode(sb, devices, station, "Axis error code word [Md.23]", AxisCodeKind.AxisError, link != null && link.AxisAlarm.Length > 0 ? link.AxisAlarm : axis != null ? axis.AxisAlarm : "");
                     AppendCode(sb, devices, station, "Axis warning code word [Md.24]", AxisCodeKind.AxisWarning, link != null ? link.AxisWarning : "");
                     if (axis != null) devices.Add(axis.ErrorAddress, "the axis' error bit");
+                }
+                else if ((link != null && link.Kind == TC.ErrorType.InverterMotor) || inverter != null)
+                {
+                    // 14 October: an inverter's motor (InverterUnitHMI)
+                    sb.AppendLine("- Kind: a motor driven by a Mitsubishi FR-A800 inverter (its fault is read as the data code of the FR-A800 manual's 6.4 \"List of fault displays\": 16 = E.OC1)");
+                    AppendCode(sb, devices, station, "The inverter's fault code word", AxisCodeKind.InverterFault,
+                               link != null && !string.IsNullOrEmpty(link.InverterFault) ? link.InverterFault : inverter != null ? inverter.CodeAddress : "");
+                    if (inverter != null && inverter.Code != 0)
+                        sb.AppendLine("- The fault the HMI raised the alarm for: " + AxisCodeHelp.Describe(AxisCodeKind.InverterFault, inverter.Code) +
+                                      " - the inverter's own panel shows " + AxisCodeHelp.Display(AxisCodeKind.InverterFault, inverter.Code));
+                    if (inverter != null) devices.Add(inverter.ErrorAddress, "the inverter's alarm bit");
+                    sb.AppendLine("- The inverter's manual: " + AxisCodeHelp.InverterManualUrl + " (FR-A800 Instruction Manual (Detailed), IB-0600503ENG: 6.5 \"Causes and corrective actions\").");
                 }
                 else if (link != null) sb.AppendLine("- Kind: " + link.Kind);
                 sb.AppendLine();
@@ -338,9 +359,35 @@ namespace Kaban.UI.Helpers
                 {
                     var ext = Path.GetExtension(d.FileName ?? "").ToLowerInvariant();
                     sb.AppendLine("- " + d.Title + (string.IsNullOrEmpty(d.Section) ? "" : " (section " + d.Section + ")") + " - " + Path.GetFileName(d.FileName ?? "") +
-                                  (d == example ? " - in full below, as the format to follow" : ext == ".pdf" ? " - a PDF, not included (ask me for a page if you need it)" : ""));
+                                  (d == example ? " - its text below, whole" : ext == ".pdf" ? " - a PDF, not included (ask me for a page if you need it)" : ""));
                 }
                 sb.AppendLine();
+                // ---- the HMI's own troubleshooting for it: its words, whole ---------------------
+                // (14 October: "the responses we get from AIs are not so useful ... the document should
+                // be enough for the AI to start chatting with the user and give them proper answers" -
+                // the page as KNOWLEDGE to talk from, not 100 000 characters of HTML to copy; its
+                // style alone is kept, for the printable pages asked for later.)
+                if (example != null)
+                {
+                    var steps = HtmlToText(exampleHtml);
+                    steps = Regex.Replace(Regex.Replace(steps, @"[ \t]+", " "), @"\n\s*\n\s*\n+", "\n\n").Trim();
+                    if (steps.Length > ExampleTextChars) steps = steps.Substring(0, ExampleTextChars).TrimEnd() + "\n[... shortened]";
+                    sb.AppendLine("## The HMI's own troubleshooting for this alarm: \"" + example.Title + "\" (its text, whole)");
+                    sb.AppendLine("The HMI made it from the data above" + (stepByStep ? " and shows it when the alarm's help is opened" : "") +
+                                  ". Its steps are the checks to walk me through; its device numbers are the real ones.");
+                    sb.AppendLine();
+                    sb.AppendLine(steps);
+                    sb.AppendLine();
+                    var style = Regex.Match(exampleHtml, @"<style\b[^>]*>(.*?)</style>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    if (style.Success && style.Groups[1].Value.Trim().Length > 0)
+                    {
+                        sb.AppendLine("### Its style sheet (for the printable pages, when I ask for them)");
+                        sb.AppendLine("```css");
+                        sb.AppendLine(style.Groups[1].Value.Trim());
+                        sb.AppendLine("```");
+                        sb.AppendLine();
+                    }
+                }
                 int budget = AllDocumentsChars;
                 foreach (var d in docs)
                 {
@@ -354,41 +401,46 @@ namespace Kaban.UI.Helpers
                 }
             }
 
-            // ---- the format to follow: the HMI's own page, whole --------------------------
-            if (example != null)
-            {
-                sb.AppendLine("## The format to follow: the HMI's " + (stepByStep ? "step-by-step page" : "help page") + " for this alarm (complete HTML)");
-                sb.AppendLine("\"" + example.Title + "\" - the HMI made it from the data above" + (stepByStep ? " and shows it when the alarm's help is opened" : "") + ":");
-                sb.AppendLine();
-                sb.AppendLine("```html");
-                sb.AppendLine(exampleHtml);
-                sb.AppendLine("```");
-                sb.AppendLine();
-            }
-
             // ---- what is asked --------------------------------------------------------
             sb.AppendLine("## What I ask you");
             sb.AppendLine();
-            sb.AppendLine("1. Write me helper documents for THIS alarm on THIS machine, in " + language + ": " +
-                          (example != null ? "complete HTML files in the same format, style and colours as the HMI's " + (stepByStep ? "step-by-step" : "help") + " page above" : "complete HTML files, clear and printable") +
-                          " - one file for each of these readers:");
-            sb.AppendLine("   1. Operator - quick, safe checks from the panel and around the machine, no tools, nothing opened: what to look at on the HMI (which page, which lamp, which value), what to try once, when to stop and call maintenance.");
-            sb.AppendLine("   2. Maintenance technician - the diagnosis with a multimeter and the machine's drawings: the real device numbers given above (outputs, relays, coils, valves, hoses, sensors, cards, wires, sheets), what each reading means, the likely causes in order of probability, how to fix each.");
-            sb.AppendLine("   3. Automation engineer - what to check in the PLC program (the bits and words above, the conditions, the timings), the drive or module parameters, the HMI's alarm settings, and how to keep it from coming back.");
-            sb.AppendLine("2. Each file" + (example != null ? ", like the page above," : "") + " has: the alarm as its title with its device; the signal path (button - command bit - output - relay - coil - valve - hoses - cylinder - sensors or position, or for an axis: module - amplifier - motor - encoder) as a numbered chain linking to its steps; a safety box; " +
-                          "then numbered steps, each with one question, what a good and a bad result means and which step comes next; simple inline SVG drawings where they help; " +
-                          "at the end a short table symptom - cause - remedy. One self-contained file each - no external files, scripts or fonts - so it opens in any browser and prints well.");
-            sb.AppendLine("3. Start each file with the most likely cause given the device states at the alarm and what the HMI saw. " +
-                          "Rules: safety first (stop the machine, lockout / tagout, air pressure released before touching a cylinder, never bridge a safety circuit). " +
-                          "Use the names and numbers exactly as given here - do not invent device numbers; where something is not given, say what to look for and where.");
-            sb.AppendLine("4. If one answer cannot hold all three files in full, write the operator's first and go on with the next when I say \"next\". " +
-                          "If something important is missing, list your questions for me after the files.");
-            sb.AppendLine("5. Then stay with me: I will ask about the parts I do not understand, or tell you what I find at the machine - explain that part in more detail, step by step and in simple words for my level, ask me what I see, and guide me to the cause.");
+            sb.AppendLine("Be my troubleshooting partner for THIS alarm on THIS machine, in " + language + ", in a conversation:");
+            sb.AppendLine("1. Start now, in a few short lines: what this alarm means on this machine, in plain words; the most likely cause given the device states at the alarm, " +
+                          "the states now and what the HMI saw - then the next ones, in order, each with the evidence for it from above; and the FIRST check to do - one step: " +
+                          "where (which page, lamp or value on the HMI, or which device, terminal or hose by its number above), what to look at, and what a good and a bad result would mean. " +
+                          "Then ask me what I see - and, if it is not clear from my level above, whether I am the operator, the maintenance technician or the automation engineer.");
+            sb.AppendLine("2. Then guide me one step at a time: wait for my answer before the next step; when a check is good, go on to the next most likely cause; " +
+                          "keep each answer short (it is read on a panel or a phone beside the machine). Ask me for what you need to know - a lamp, a value, a sound, a reading.");
+            sb.AppendLine("3. At my level: for an operator, only safe checks from the panel and around the machine - no tools, nothing opened - and when to stop and call maintenance; " +
+                          "for a maintenance technician, the diagnosis with a multimeter and the drawings: the real device numbers above (outputs, relays, coils, valves, hoses, sensors, cards, wires, sheets) and what each reading means; " +
+                          "for an automation engineer, the PLC program (the bits and words above, the conditions, the timings), the drive or module parameters, and the HMI's alarm settings.");
+            sb.AppendLine("4. Rules: safety first (stop the machine, lockout / tagout, air pressure released before touching a cylinder, never bridge a safety circuit or an emergency stop). " +
+                          "Use the names and numbers exactly as given here - do not invent device numbers; where something is not given, say what to look for and where. " +
+                          "If something important is missing, ask me.");
+            sb.AppendLine("5. When I tell you what I found, say what it means and what to do; when it is fixed, how to reset the alarm and test the movement safely, " +
+                          "and a line I can leave in the HMI's notes for the next person.");
+            sb.AppendLine("6. When I ask for printable pages (\"pages\"), write me helper documents for THIS alarm" +
+                          (example != null ? " in the HMI's own style (its style sheet above)" : "") +
+                          ": complete, self-contained HTML files - no external files, scripts or fonts - one for each reader: the operator, the maintenance technician, the automation engineer. " +
+                          "Each has: the alarm as its title with its device; the signal path (button - command bit - output - relay - coil - valve - hoses - cylinder - sensors or position, " +
+                          "or for an axis or an inverter: module - drive - motor - encoder) as a numbered chain linking to its steps; a safety box; numbered steps, each with one question, " +
+                          "what a good and a bad result means and which step comes next; simple inline SVG drawings where they help; a short symptom - cause - remedy table at the end. " +
+                          "One file an answer, the operator's first; the next when I say \"next\".");
+            sb.AppendLine("7. When I do not understand a part, explain it again - in more detail, step by step and in simple words for my level - and ask me what I see.");
             sb.AppendLine();
             sb.AppendLine("---");
             sb.AppendLine("(Made by Kaban HMI on " + DateTime.Now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) +
                           ". Answer in " + language + ".)");
             return sb.ToString();
+        }
+
+        /// <summary>Who is signed in, as the briefings say it.</summary>
+        public static string MeLine()
+        {
+            var level = SecurityManager.CurrentLevel;
+            return level == Kaban.Core.Enums.SecurityLevel.None
+                ? "Nobody is signed in on the panel (its view for anyone)."
+                : "Signed in on the panel: " + (SecurityManager.CurrentUser ?? "") + ", level " + level + ".";
         }
 
         private static string Seconds(double s)
@@ -776,16 +828,24 @@ namespace Kaban.UI.Helpers
                 Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
                 return false;
             }
-            bool opened = false;
+            bool opened = false, pasting = false;
             if (chat != null)
             {
                 opened = AiChats.Open(chat);
                 if (opened) LastOpened = chat;
+                // 14 October: "paste it to the AI page directly with the ask AI button" - a few
+                // seconds later, into the chat in front (AiPaste); the user sends it.
+                if (opened)
+                {
+                    pasting = AiPaste.Enabled;
+                    AiPaste.Schedule(LastAsFile ? LastSaved : null, LastAsFile ? null : prompt,
+                                     LastAsFile ? KickOff(subject, Path.GetFileName(LastSaved)) : null);
+                }
             }
             AuditLogger.Log((chat != null ? "asked " + chat.Name + (opened ? "" : " (the browser did not open)") + " with" : "copied") +
                             " the AI prompt for " + (subject == Subject.Hmi ? "the HMI" : "an alarm") + " (" + (prompt ?? "").Length + " characters, " +
                             (LastAsFile ? "as a file" : "as text") + ")" + (LastSaved != null ? ", saved as " + LastSaved : "") + ".");
-            Tell(owner, chat == null ? CopiedMessage(LastAsFile) : AskedMessage(chat, opened, LastAsFile), chat != null && !opened);
+            Tell(owner, chat == null ? CopiedMessage(LastAsFile) : pasting ? PastingMessage(chat) : AskedMessage(chat, opened, LastAsFile), chat != null && !opened);
             return true;
         }
 
@@ -810,6 +870,27 @@ namespace Kaban.UI.Helpers
             return asFile
                 ? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
                 : LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
+        }
+
+        /// <summary>
+        /// The message pasted after a briefing FILE: a chat needs a word to start, and an AI
+        /// reads an attachment best when told what it is. In English (the briefing's own
+        /// language), asking for the answer in the panel's.
+        /// </summary>
+        public static string KickOff(Subject subject, string fileName)
+        {
+            string language = LanguageName(LanguageManager.CurrentLanguage ?? "EN");
+            return "The attached file \"" + (fileName ?? "") + "\" is a briefing from Kaban HMI, the operator panel of the machine I work at" +
+                   (subject == Subject.Hmi ? ": the program, its machines, where I am on it, what is going on now and its manual. "
+                                           : ", about an alarm on it: everything the panel knows about it. ") +
+                   "Read it whole, then start as it asks at its end, under \"What I ask you\". Answer in " + language + ".";
+        }
+
+        /// <summary>What the user is told when the prompt goes into the chat by itself.</summary>
+        public static string PastingMessage(AiChats.Chat chat)
+        {
+            return string.Format(LanguageManager.GetString("Msg_AiPasting",
+                "{0} is opening: the prompt goes into the chat by itself in a few seconds - check it and send it (Enter). If it does not, paste it there (Ctrl+V)."), chat.Name);
         }
 
         /// <summary>What the user is told after asking: paste it into the chat now opening - or, when it did not open, where the prompt is.</summary>

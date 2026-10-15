@@ -119,6 +119,12 @@ class INV {
         var docs = AlarmHelpLinks.DocumentsFor(g);
         Check("its help: the fault's entry first, the whole manual second", docs.Count == 2 && docs[0].Code == "16" && docs[0].FileName == AxisCodeHelp.InverterFaultDocument &&
               docs[1].FileName == AxisCodeHelp.InverterManualUrl, string.Join(" | ", docs.Select(d => d.Title + " " + d.FileName)));
+        AlarmAiPrompt.ReadNow = (st, a) => Read(a);
+        var brief = AlarmAiPrompt.Build(g, null, docs);
+        Check("its AI briefing: an inverter's motor, the fault's data code now and its name, the manual, the fault's own troubleshooting as text",
+              brief.Contains("Kind: a motor driven by a Mitsubishi FR-A800 inverter") && brief.Contains("The inverter's fault code word: D669, now 16 - Inverter fault E.OC1 (16)") &&
+              brief.Contains("the inverter's own panel shows E.OC1") && brief.Contains(AxisCodeHelp.InverterManualUrl) && brief.Contains("Set a longer acceleration time"),
+              string.Join(" / ", brief.Split('\n').Where(l => l.Contains("Kind:") || l.Contains("code word"))));
         mem["D669"] = 999; Scan();
         g = Gen().SingleOrDefault();
         docs = AlarmHelpLinks.DocumentsFor(g);
