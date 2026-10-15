@@ -13,6 +13,8 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - 8962266 - Inverter fault help checked against your FR-A800 PDF: E.PE6 is 172, E.ECA 212 (their texts as printed),
     E.SCF (output short-circuit, 20) added, E.EHR removed (an Ethernet model's fault, not in this manual). Each fault
     links its page of the manual, in the Help folder's copy and online. The PDF stays out of git (23 MB).
+  - 7328a83 - AxisSettingHMI: the position divided by the row's Divisor (PositionDivisor gone); a "Load Side Encoder"
+    category with LoadSideEncoderAddress and LoadSideEncoderDivisor (0: the row's Divisor). FA2010's Robot X: D22 / 1000.
 - 14 October (the Axis Settings page broken, two screenshots):
   - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
   - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
