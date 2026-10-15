@@ -1017,8 +1017,9 @@ class Emitter:
         if item.get('feedback') and 'FeedbackType' not in have:
             self.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + item['feedback'])
         if item.get('optional') and 'VisibilityConditions' not in have:
-            self.body.append('            // %d: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)' % CLAMPING_MOULD_OPTION)
-            self.p(name, 'VisibilityConditions', '((Kaban.Core.Enums.SystemCondition)(%dL))' % CLAMPING_MOULD_OPTION)
+            # by its NAME (15 October): Visual Studio writes a bit with no name in the enum as
+            # "SystemCondition.524288", which does not compile - MachineBit19 is the option
+            self.p(name, 'VisibilityConditions', 'Kaban.Core.Enums.SystemCondition.MachineBit%d' % (CLAMPING_MOULD_OPTION.bit_length() - 1))
         self.add(name)
 
     def encoder_row(self, name, item, x, y, w, old, source=None):

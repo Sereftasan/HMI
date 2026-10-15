@@ -24,7 +24,7 @@ namespace Kaban.Core.Machines
     {
         private static readonly List<MountedModule> _modules = new List<MountedModule>();
         /// <summary>The first machine condition bit: 0 - 15 belong to SystemCondition.</summary>
-        public const int FirstMachineBit = 16;
+        public const int FirstMachineBit = Kaban.Core.Enums.ConditionBits.FirstMachineBit;
         private static int _nextMachineBit = FirstMachineBit; // bits 0-15 belong to SystemCondition
 
         public class MountedModule

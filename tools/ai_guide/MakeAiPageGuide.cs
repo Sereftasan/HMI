@@ -186,8 +186,11 @@ class MakeAiPageGuide
         foreach (var e in enums.OrderBy(x => x.Name))
         {
             en.AppendLine("- **" + e.FullName.Replace('+', '.') + "**" + (e.GetCustomAttributes(typeof(FlagsAttribute), false).Any() ? " (flags: combine with `|`)" : "") + ": " +
-                          string.Join(", ", Enum.GetNames(e).Select(n =>
+                          // the machine bits (MachineBit16...63) in one entry, not 48
+                          string.Join(", ", Enum.GetNames(e).Where(n => e != typeof(Kaban.Core.Enums.SystemCondition) || !n.StartsWith("MachineBit") || n == "MachineBit16").Select(n =>
                           {
+                              if (n == "MachineBit16")
+                                  return "`MachineBit16` ... `MachineBit63` - a machine's own conditions (its RegisterMachineBit rules, in the order it allocates them)";
                               var f = e.GetField(n);
                               var d = f.GetCustomAttributes(typeof(DescriptionAttribute), false).OfType<DescriptionAttribute>().FirstOrDefault();
                               string shown = n;

@@ -1447,7 +1447,7 @@ namespace Kaban.UI.Controls
             foreach (var part in MachineConditionMap.Parts(set))
             {
                 var name = MachineConditionMap.NameOf(part);
-                ConditionRule rule = Enum.IsDefined(typeof(SystemCondition), part) ? MachineConditionMap.GetRule(part)
+                ConditionRule rule = ConditionBits.IsShared(part) ? MachineConditionMap.GetRule(part)
                     : MachineConditionMap.GetAllMachineBits().Where(kv => kv.Key == (long)part).Select(kv => (ConditionRule)kv.Value).FirstOrDefault();
                 mv.Conditions.Add(new TroubleshootingCatalog.MovementInfo.Condition
                 {

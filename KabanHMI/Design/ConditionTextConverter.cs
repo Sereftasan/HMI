@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.ComponentModel.Design.Serialization; // <--- ADDED for InstanceDescriptor
-using System.Reflection; // <--- ADDED for MethodInfo
 using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 
@@ -18,12 +16,12 @@ namespace Kaban.UI.Design
             return base.CanConvertFrom(context, sourceType);
         }
 
-        // 2. NEW: Tells Visual Studio we know how to write safe C# code
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            if (destinationType == typeof(InstanceDescriptor)) return true;
-            return base.CanConvertTo(context, destinationType);
-        }
+        // 2. THE DESIGNER FILE: not this converter's. Visual Studio writes an enum
+        // property with the ENUM's serializer, by its members' names - a property's
+        // converter is not asked (its InstanceDescriptor here was never used, and the
+        // "System.Enum.ToObject(...)" it described would not have compiled without a
+        // cast). The machine bits are named for it (SystemCondition.MachineBit16...,
+        // 15 October): "SystemCondition.1048576" was what came out before.
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
@@ -35,9 +33,10 @@ namespace Kaban.UI.Design
 
                 var names = new List<string>();
 
-                foreach (SystemCondition item in Enum.GetValues(typeof(SystemCondition)))
+                // the shared ones by their descriptions; the machine bits (named MachineBit16...
+                // in the enum) by their machine's names below
+                foreach (SystemCondition item in ConditionBits.Shared)
                 {
-                    if (item == SystemCondition.None) continue;
                     long itemBit = (long)item;
 
                     if ((currentVal & itemBit) == itemBit)
@@ -59,17 +58,6 @@ namespace Kaban.UI.Design
                 if (currentVal != 0) names.Add($"Unknown({currentVal})");
 
                 return string.Join(", ", names);
-            }
-
-            // 4. VISUAL STUDIO CODE GENERATOR: Safely writes the .Designer.cs file
-            if (destinationType == typeof(InstanceDescriptor) && value != null)
-            {
-                // This forces the designer to generate: System.Enum.ToObject(typeof(SystemCondition), 458754L)
-                MethodInfo method = typeof(Enum).GetMethod("ToObject", new Type[] { typeof(Type), typeof(long) });
-                if (method != null)
-                {
-                    return new InstanceDescriptor(method, new object[] { value.GetType(), Convert.ToInt64(value) });
-                }
             }
 
             return base.ConvertTo(context, culture, value, destinationType);

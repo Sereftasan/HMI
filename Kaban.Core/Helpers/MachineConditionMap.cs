@@ -99,7 +99,7 @@ namespace Kaban.Core.Helpers
         public static List<Entry> All()
         {
             var list = new List<Entry>();
-            foreach (SystemCondition c in Enum.GetValues(typeof(SystemCondition)))
+            foreach (SystemCondition c in ConditionBits.Shared)
             {
                 ConditionRule r;
                 if (c == SystemCondition.None || !_map.TryGetValue(c, out r) || r == null || string.IsNullOrWhiteSpace(r.Address)) continue;
@@ -191,7 +191,7 @@ namespace Kaban.Core.Helpers
         /// <summary>A condition's name: its description, or a machine condition's own name.</summary>
         public static string NameOf(SystemCondition condition)
         {
-            if (Enum.IsDefined(typeof(SystemCondition), condition)) return EnumHelper.GetDescription(condition);
+            if (ConditionBits.IsShared(condition)) return EnumHelper.GetDescription(condition);
             ConditionDefinition def;
             return _machineBits.TryGetValue((long)condition, out def) && !string.IsNullOrEmpty(def.Name)
                 ? def.Name : "Condition " + (long)condition;

@@ -457,7 +457,7 @@
             this.checkBoxWithBladeBackFinishCut.CornerRadius = 4;
             this.checkBoxWithBladeBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeBackFinishCut.DescriptionText = "with Blade Back Finish Cut";
-            this.checkBoxWithBladeBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
             this.checkBoxWithBladeBackFinishCut.EnableTrigger.DescriptionKey = "";
             this.checkBoxWithBladeBackFinishCut.EnableTrigger.MonitorAddress = "";
             this.checkBoxWithBladeBackFinishCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -483,7 +483,7 @@
             this.checkBoxWithBladeLeftBackFinishCut.CornerRadius = 4;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionText = "with Blade Left Back Finish Cut";
-            this.checkBoxWithBladeLeftBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
             this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.DescriptionKey = "";
             this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.MonitorAddress = "";
             this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -509,7 +509,7 @@
             this.checkBoxWithBladeSingleSideCut.CornerRadius = 4;
             this.checkBoxWithBladeSingleSideCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeSingleSideCut.DescriptionText = "with Blade Single Side Cut";
-            this.checkBoxWithBladeSingleSideCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeSingleSideCut.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
             this.checkBoxWithBladeSingleSideCut.EnableTrigger.DescriptionKey = "";
             this.checkBoxWithBladeSingleSideCut.EnableTrigger.MonitorAddress = "";
             this.checkBoxWithBladeSingleSideCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -535,7 +535,7 @@
             this.optVithBlade.CornerRadius = 4;
             this.optVithBlade.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optVithBlade.DescriptionText = "with Blade";
-            this.optVithBlade.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.optVithBlade.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
             this.optVithBlade.EnableTrigger.DescriptionKey = "";
             this.optVithBlade.EnableTrigger.MonitorAddress = "";
             this.optVithBlade.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -561,7 +561,7 @@
             this.optMullionNotching.CornerRadius = 4;
             this.optMullionNotching.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMullionNotching.DescriptionText = "Mullion Notching";
-            this.optMullionNotching.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.optMullionNotching.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
             this.optMullionNotching.EnableTrigger.DescriptionKey = "";
             this.optMullionNotching.EnableTrigger.MonitorAddress = "";
             this.optMullionNotching.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;

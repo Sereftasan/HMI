@@ -81,9 +81,8 @@ namespace Kaban.UI.Design
             var primary = new List<DisplayItem>();
             var secondary = new List<DisplayItem>();
 
-            foreach (SystemCondition item in Enum.GetValues(typeof(SystemCondition)))
+            foreach (SystemCondition item in ConditionBits.Shared)
             {
-                if (item == SystemCondition.None) continue;
                 var rule = MachineConditionMap.GetRule(item);
                 if (rule != null)
                 {

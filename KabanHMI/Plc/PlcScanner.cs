@@ -486,9 +486,9 @@ namespace Kaban.UI.Plc
         /// The condition flags, looked up once. Enum.GetValues plus HasFlag (which
         /// boxes) ran for every condition of every control on every 100 ms scan.
         /// </summary>
-        private static readonly SystemCondition[] ConditionFlags =
-            ((SystemCondition[])Enum.GetValues(typeof(SystemCondition)))
-                .Where(f => f != SystemCondition.None).ToArray();
+        // The SHARED ones only (bits 0 - 15): the machine bits are named in the enum too
+        // (MachineBit16...) and are checked below by their machine's rules.
+        private static readonly SystemCondition[] ConditionFlags = ConditionBits.Shared;
 
         /// <summary>Stations with page controls (see RefreshTags).</summary>
         private readonly HashSet<int> _displayStations = new HashSet<int>();
