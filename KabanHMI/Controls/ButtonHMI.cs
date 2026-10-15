@@ -1268,8 +1268,8 @@ namespace Kaban.UI.Controls
                 admin.Append('\n').Append(caption).Append(value);
             };
 
-            add("Visibility Condition:\t", Convert.ToString(VisibilityConditions));
-            add("Enable Condition:\t", Convert.ToString(EnableConditions));
+            add("Visibility Condition:\t", VisibilityConditions == SystemCondition.None ? "" : Kaban.UI.Plc.PlcScanner.DescribeConditions(VisibilityConditions));
+            add("Enable Condition:\t", EnableConditions == SystemCondition.None ? "" : Kaban.UI.Plc.PlcScanner.DescribeConditions(EnableConditions));
             if (EnableTrigger != null && !string.IsNullOrEmpty(EnableTrigger.MonitorAddress))
                 add("Enable Trigger:\t\t", EnableTrigger.ToString());
             add("Security Level:\t\t", RequiredSecurity == SecurityLevel.None ? "" : RequiredSecurity.ToString());

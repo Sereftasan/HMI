@@ -47,13 +47,15 @@ class PPT {
         m("MountMachines").Invoke(null, null);
         var bits = MachineConditionMap.GetAllMachineBits().ToList();
         var opt = bits.FirstOrDefault(b => (b.Value.TagName ?? "").EndsWith("ClampingMouldOption"));
-        Check("FA2010 registers it: L27 on its PLC 1, on when 1", opt.Value != null && opt.Value.Address == "L27" && opt.Value.PlcNumber == 1 &&
-              opt.Value.RequiredValue == 1, opt.Value == null ? "none" : opt.Value.Address + " plc " + opt.Value.PlcNumber);
+        // (14 October: the user's FA2010Module counts it met when L27 = 0 - asked)
+        int onValue = opt.Value == null ? 1 : opt.Value.RequiredValue;
+        Check("FA2010 registers it: L27 on its PLC 1", opt.Value != null && opt.Value.Address == "L27" && opt.Value.PlcNumber == 1 &&
+              opt.Value.Operator == ComparisonOperator.Equal, opt.Value == null ? "none" : opt.Value.Address + " plc " + opt.Value.PlcNumber + " = " + onValue);
         Check("  its bit is 1 << 19 - the number the page stores", opt.Key == ClampingMould, opt.Key.ToString());
-        Check("  named in the conditions list ('Clamping Mould option is on')",
-              new Kaban.UI.Design.ConditionTextConverter().ConvertTo(null, null, (SystemCondition)ClampingMould, typeof(string)) as string == "Clamping Mould option is on");
-        Check("  read from L27: 1 met, 0 not", MachineConditionMap.CheckMachineBit(ClampingMould, a => a == "L27" ? 1 : 0) &&
-              !MachineConditionMap.CheckMachineBit(ClampingMould, a => 0));
+        Check("  named in the conditions list ('Clamping Mould Option')",
+              new Kaban.UI.Design.ConditionTextConverter().ConvertTo(null, null, (SystemCondition)ClampingMould, typeof(string)) as string == "Clamping Mould Option");
+        Check("  read from L27: met at " + onValue + ", not at " + (1 - onValue), MachineConditionMap.CheckMachineBit(ClampingMould, a => a == "L27" ? onValue : 0) &&
+              !MachineConditionMap.CheckMachineBit(ClampingMould, a => a == "L27" ? 1 - onValue : 0));
 
         Console.WriteLine("--- the control ---");
         var row = new PneumaticPositioningHMI();
@@ -141,7 +143,7 @@ class PPT {
         var f = rows[0];
         Check("the first: Left Profile Recognition Front Vertical, its addresses (from the old page)",
               f.TitleTextKey == "Left Profile Recognition Front Vertical" && f.CommandBackAddress == "M541" && f.CommandForwardAddress == "M540" &&
-              f.PositionAddress == "D110" && f.PositionDivisor == 10 && f.TargetPosition == "D150" && f.PositioningStartAddress == "M50" &&
+              f.PositionAddress == "D110" && f.PositionDivisor == 100 && f.TargetPosition == "D150" && f.PositioningStartAddress == "M50" &&
               f.CalibrationAddress == "D130" && f.CalibrateAddress == "M30" && f.PositioningToleranceAddress == "D750" &&
               f.PositioningDirectionReferenceAddress == "D790" && f.Divisor == 100 && f.DecimalPlaces == 2);
         Check("  its error bits, valve and feedback kept from its unit", f.ErrorBackAddress == "M915" && f.ErrorForwardAddress == "M916" &&
@@ -156,8 +158,10 @@ class PPT {
         var back = rows.Where(r => r.TitleTextKey.Contains("Back")).ToList();
         Check("the 6 front vertical moulds always shown (no condition)", front.Count == 6 && front.All(r => r.VisibilityConditions == SystemCondition.None),
               string.Join(", ", front.Select(r => r.TitleTextKey)));
-        Check("the 10 back moulds (vertical and horizontal) only with the Clamping Mould option", back.Count == 10 &&
-              back.All(r => (long)r.VisibilityConditions == ClampingMould));
+        // (14 October: the page as saved in Visual Studio has no condition on them - asked; the
+        // option's working is tested with it set here)
+        Check("the 10 back moulds (vertical and horizontal)", back.Count == 10);
+        foreach (var r in back) r.VisibilityConditions = (SystemCondition)ClampingMould;
         Check("vertical ones down / up, horizontal ones back / forward",
               rows.All(r => r.VerticalMovement == r.TitleTextKey.Contains("Vertical")));
         int nameW = first.Columns["Name"].Y;

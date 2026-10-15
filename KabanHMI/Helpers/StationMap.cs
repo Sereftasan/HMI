@@ -35,6 +35,7 @@ namespace Kaban.UI.Helpers
 
         private static void Walk(IMachineMountContext ctx, Control c)
         {
+            MapConditions(ctx, c);
             var prop = c.GetType().GetProperty("PlcNumber", BindingFlags.Public | BindingFlags.Instance);
             if (prop != null && prop.PropertyType == typeof(int) && prop.CanRead && prop.CanWrite)
             {
@@ -54,6 +55,30 @@ namespace Kaban.UI.Helpers
             }
 
             foreach (Control child in c.Controls) Walk(ctx, child);
+        }
+
+        /// <summary>
+        /// THE MACHINE'S OWN CONDITIONS, as this mounting numbered them (14 October):
+        /// a page designed with the machine on its own names its first condition bit
+        /// 16; mounted under FA2010 that bit is FA2010's. Every SystemCondition
+        /// property of the control (VisibilityConditions, EnableConditions, a button's
+        /// own...) - a composite passes them on to its parts itself.
+        /// </summary>
+        private static void MapConditions(IMachineMountContext ctx, Control c)
+        {
+            var mount = ctx as MachineRegistry.MountContext;
+            if (mount == null) return;
+            foreach (var p in c.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (p.PropertyType != typeof(Kaban.Core.Enums.SystemCondition) || !p.CanRead || !p.CanWrite || p.GetIndexParameters().Length > 0) continue;
+                try
+                {
+                    var v = (Kaban.Core.Enums.SystemCondition)p.GetValue(c, null);
+                    var m = mount.MapConditions(v);
+                    if (m != v) p.SetValue(c, m, null);
+                }
+                catch { }
+            }
         }
 
         /// <summary>

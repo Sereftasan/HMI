@@ -490,6 +490,18 @@ namespace Kaban.UI.Plc
         private readonly HashSet<int> _displayStations = new HashSet<int>();
 
         /// <summary>
+        /// The conditions as the last scan found them - an Admin's tooltip marks each
+        /// condition of a control met or not with it (14 October). Null before a scan.
+        /// </summary>
+        public static Func<SystemCondition, bool> LastConditionCheck { get; private set; }
+
+        /// <summary>A set of conditions in words, each marked met or not by the last scan.</summary>
+        public static string DescribeConditions(SystemCondition set)
+        {
+            return MachineConditionMap.Describe(set, LastConditionCheck);
+        }
+
+        /// <summary>
         /// Checks a control's conditions, each against the data of the station the
         /// condition is registered on. A station with no data at all fails the
         /// condition (fail-closed): "we cannot tell if it is in manual" must not
@@ -828,6 +840,7 @@ namespace Kaban.UI.Plc
                 return lookups.TryGetValue(st, out lk) ? lk : null;
             };
             Func<SystemCondition, bool> checkGlobal = cond => CheckGlobalCondition(cond, lookupFor);
+            LastConditionCheck = checkGlobal;
 
             foreach (var num in _numerics) withLookup(num.PlcNumber, lk => num.UpdateState(lk, checkGlobal: checkGlobal));
             foreach (var btn in _buttons) withLookup(btn.PlcNumber, lk => btn.UpdateState(lk, checkGlobal: checkGlobal));

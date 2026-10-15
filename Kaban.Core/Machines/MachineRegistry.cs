@@ -23,7 +23,9 @@ namespace Kaban.Core.Machines
     public static class MachineRegistry
     {
         private static readonly List<MountedModule> _modules = new List<MountedModule>();
-        private static int _nextMachineBit = 16; // bits 0-15 belong to SystemCondition
+        /// <summary>The first machine condition bit: 0 - 15 belong to SystemCondition.</summary>
+        public const int FirstMachineBit = 16;
+        private static int _nextMachineBit = FirstMachineBit; // bits 0-15 belong to SystemCondition
 
         public class MountedModule
         {
@@ -40,7 +42,7 @@ namespace Kaban.Core.Machines
         public static void Reset()
         {
             _modules.Clear();
-            _nextMachineBit = 16;
+            _nextMachineBit = FirstMachineBit;
         }
 
         /// <summary>Mounts the machine that owns this HMI.</summary>
@@ -189,6 +191,9 @@ namespace Kaban.Core.Machines
             private readonly int[] _stationMap;
             private readonly string _baseFolder;
             private readonly Dictionary<string, long> _bits = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+            // the tags in the order the module allocated them: its pages were designed with
+            // the machine on its own, where the n-th one is bit 16 + n
+            private readonly List<string> _order = new List<string>();
 
             public MountContext(string moduleId, bool isMain, int[] stationMap, string baseFolder)
             {
@@ -239,7 +244,33 @@ namespace Kaban.Core.Machines
                 if (_bits.TryGetValue(localTag, out bit)) return bit;   // stable per tag
                 bit = NextMachineBit();
                 _bits[localTag] = bit;
+                _order.Add(localTag);
                 return bit;
+            }
+
+            /// <summary>
+            /// A page's conditions as the machine's own pages name them, given the bits
+            /// this mounting gave them (14 October). A machine's pages are designed with
+            /// the machine on its own: its first condition is bit 16, its second 17...
+            /// Mounted under another machine those bits are the host's (FA2010's first
+            /// five are 16 - 20), and a sub-machine page naming its own first condition
+            /// asked for the host's. The shared conditions (bits 0 - 15) stay as they are;
+            /// a bit the machine never allocated too.
+            /// </summary>
+            public Kaban.Core.Enums.SystemCondition MapConditions(Kaban.Core.Enums.SystemCondition designed)
+            {
+                long v = (long)designed;
+                if (IsMainMachine || (v >> FirstMachineBit) == 0) return designed;
+                long result = v & ((1L << FirstMachineBit) - 1);
+                for (int i = FirstMachineBit; i < 64; i++)
+                {
+                    long bit = 1L << i;
+                    if ((v & bit) == 0) continue;
+                    int n = i - FirstMachineBit;
+                    long mounted;
+                    result |= n < _order.Count && _bits.TryGetValue(_order[n], out mounted) ? mounted : bit;
+                }
+                return (Kaban.Core.Enums.SystemCondition)result;
             }
 
             public string ResolveFile(string fileName)

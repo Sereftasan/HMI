@@ -198,6 +198,36 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
+        /// A set of conditions in words, each with what it reads (14 October: several
+        /// conditions together "not working" - an Admin's tooltip printed the set as a
+        /// number, 524290, so which one held a control back could not be seen):
+        /// "Manual Mode Active (M100 = 0) + Clamping Mould Option (L27 = 1)". With
+        /// <paramref name="check"/>, each is marked met or not. A condition this program
+        /// has no rule for says so: it is never met.
+        /// </summary>
+        public static string Describe(SystemCondition set, Func<SystemCondition, bool> check = null)
+        {
+            if (set == SystemCondition.None) return "None";
+            var parts = new List<string>();
+            foreach (var part in Parts(set))
+            {
+                string text = NameOf(part);
+                ConditionRule rule = GetRule(part);
+                if (rule == null)
+                {
+                    ConditionDefinition def;
+                    if (_machineBits.TryGetValue((long)part, out def)) rule = def;
+                }
+                if (part == SystemCondition.AdminUser) text += " (signed in as Admin)";
+                else if (rule != null && !string.IsNullOrWhiteSpace(rule.Address)) text += " (" + RuleText(rule) + (rule.PlcNumber > 1 ? ", PLC " + rule.PlcNumber : "") + ")";
+                else text += " (no rule on this machine - never met)";
+                if (check != null) text = (check(part) ? "✓ " : "✗ ") + text;
+                parts.Add(text);
+            }
+            return string.Join(" + ", parts);
+        }
+
+        /// <summary>
         /// The names of the conditions of a set that are NOT met - what a disabled
         /// control says when it is hovered. The whole set used to be printed, met
         /// and unmet alike, which left the operator to work out which one mattered.

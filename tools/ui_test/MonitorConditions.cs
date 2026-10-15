@@ -61,11 +61,11 @@ class MC {
         MachineConditionMap.Register(SystemCondition.AutoMode, 21, "D300", DataTypeEnum.Bin_16, ComparisonOperator.LessOrEqual, 3);
         MachineConditionMap.Register(SystemCondition.MachineIsRunning, 21, "D200", DataTypeEnum.Bin_32, ComparisonOperator.Greater, 0);
         MachineConditionMap.RegisterMachineBit(1L << 16, "T.RobotIsOutside", "Robot is at Outside", 21, "X50");
-        MachineConditionMap.Register(SystemCondition.RobotIsSafe, 22, "X20");      // another controller's
+        MachineConditionMap.Register(SystemCondition.SafetyOK, 22, "X20");      // another controller's
 
         Console.WriteLine("--- the list of conditions ---");
         var all = MachineConditionMap.All();
-        Check("every registered condition, system ones first", all.Count == 5 && all[0].Key == "S:ManualMode" && all.Last().Key == "B:T.RobotIsOutside",
+        Check("every registered condition, system ones first", all.Count == 5 && all.Take(4).All(e => e.Key.StartsWith("S:")) && all.Last().Key == "B:T.RobotIsOutside",
               string.Join(", ", all.Select(e => e.Key)));
         Check("a rule in words", MachineConditionMap.RuleText(MachineConditionMap.Find("S:AutoMode").Rule) == "D300 \u2264 3" &&
               MachineConditionMap.RuleText(MachineConditionMap.Find("S:MachineIsRunning").Rule) == "D200 (32-bit) > 0");

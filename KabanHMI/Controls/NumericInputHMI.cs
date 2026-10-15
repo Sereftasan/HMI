@@ -287,7 +287,7 @@ namespace Kaban.UI.Controls
         protected override string BuildAdminTooltip()
         {
             var sb = new System.Text.StringBuilder(base.BuildAdminTooltip());
-            sb.Append("\nWrite Condition:\t\t").Append(EnableConditions);
+            sb.Append("\nWrite Condition:\t\t").Append(Kaban.UI.Plc.PlcScanner.DescribeConditions(EnableConditions));
 
             string trig = (EnableTrigger != null && !string.IsNullOrEmpty(EnableTrigger.MonitorAddress))
                           ? EnableTrigger.ToString() : "None";

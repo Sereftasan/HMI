@@ -388,7 +388,7 @@ namespace Kaban.UI.Controls
                 ? "None" : PlcAddressHelper.Describe(PlcNumber, Address));
             if (AddressOffset != null && AddressOffset.Type != LimitSourceType.None)
                 sb.Append("\nAddress Offset:\t\t").Append(AddressOffset);
-            sb.Append("\nVisibility Condition:\t").Append(VisibilityConditions);
+            sb.Append("\nVisibility Condition:\t").Append(Kaban.UI.Plc.PlcScanner.DescribeConditions(VisibilityConditions));
             sb.Append("\nSecurity Level:\t\t").Append(RequiredSecurity);
             return sb.ToString();
         }

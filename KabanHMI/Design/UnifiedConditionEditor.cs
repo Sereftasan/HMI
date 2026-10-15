@@ -54,8 +54,14 @@ namespace Kaban.UI.Design
             // later one (EnableConditions) found "No logic found".
             if (!string.IsNullOrEmpty(machineNamespace) && typeResSvc != null)
             {
-                if (MachineConditionMap.IsEmpty || !string.Equals(_loadedNamespace, machineNamespace, StringComparison.Ordinal))
+                // ...and again when the machine was BUILT again (14 October): its module is
+                // then another type, and a condition added or changed in it was not listed
+                // until Visual Studio was restarted.
+                var source = SourceType(machineNamespace, typeResSvc);
+                if (MachineConditionMap.IsEmpty || !string.Equals(_loadedNamespace, machineNamespace, StringComparison.Ordinal) ||
+                    (source != null && !ReferenceEquals(source, _loadedSource)))
                 {
+                    _loadedSource = source;
                     MachineConditionMap.Clear();
                     if (LoadMachine(machineNamespace, typeResSvc)) _loadedNamespace = machineNamespace;
                     else _loadedNamespace = null;
@@ -146,6 +152,20 @@ namespace Kaban.UI.Design
 
         /// <summary>The machine whose conditions are loaded now (its namespace).</summary>
         private static string _loadedNamespace;
+        /// <summary>The type they were read from (MachineConfig or the module) - another after a build.</summary>
+        private static Type _loadedSource;
+
+        private static Type SourceType(string machineNamespace, ITypeResolutionService types)
+        {
+            try
+            {
+                var config = types.GetType(machineNamespace + ".MachineConfig");
+                if (config != null) return config;
+                string last = machineNamespace.Substring(machineNamespace.LastIndexOf('.') + 1);
+                return types.GetType(machineNamespace + "." + last + "Module");
+            }
+            catch { return null; }
+        }
 
         /// <summary>
         /// Loads a machine's conditions for the designer: its MachineConfig.Initialize()
