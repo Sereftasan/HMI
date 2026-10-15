@@ -41,6 +41,9 @@
 - Translations: `Key;EN;TR;RU;DE;IT;ES`, no `;` inside a text.
 - The general manual names no machine; a machine's own chapter is in its project (`Kaban.Machines.FA2010\Help`).
 - A device of a machine's other PLC in a property: `X12@2` (X12 of PLC 2) - never a dot (`D100.5` is bit 5 of D100).
+- A control of a machine's own that its pages hold (FA2010's AxisJogBar) goes into the machine's library of controls
+  (`Kaban.Machines.FA2010.Shared`), never into the machine's program: the program is built 32-bit (for MX Component)
+  and Visual Studio's designer cannot load a control from it ("Could not find type ...").
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand).
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
 
