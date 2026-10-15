@@ -62,7 +62,11 @@ class MO {
         m("MountMachines").Invoke(null, null);
         var sim = new Dictionary<int, Kaban.Drivers.Simulation.SimulationDriver>();
         foreach (int st in new[] { 1, 2, 3, 4 }) { sim[st] = new Kaban.Drivers.Simulation.SimulationDriver(st); PlcManager.Instance.RegisterDriver(st, sim[st]); }
-        sim[1].Write("L27", 0);
+        // 14 October: the option as the user registered it - "Clamping Mould Option", L27 Equal 0 (met while L27 is 0):
+        // OFF is the value that does not meet it
+        var opt = MachineConditionMap.GetAllMachineBits().First(kv => kv.Value.Name == "Clamping Mould Option");
+        int offValue = opt.Value.RequiredValue == 0 ? 1 : 0, onValue = opt.Value.RequiredValue;
+        sim[1].Write("L27", offValue);
         SecurityManager.Login("op", SecurityLevel.Operator);
         var form = new MainForm();
         form.BuildNavigation();
@@ -80,12 +84,15 @@ class MO {
         Check("the page is open", page != null && page.Visible);
         if (page == null) { Environment.Exit(1); return; }
         var rows = PneumaticPositioningHMI.RowsOf(page);
+        // (the page as saved in Visual Studio has no condition on its back moulds - asked; given here)
+        foreach (var r in rows.Where(r => r.TitleTextKey.Contains("Back") && r.VisibilityConditions == SystemCondition.None))
+            r.VisibilityConditions = (SystemCondition)opt.Key;
         // the places the designer gave the rows (the scanner may have moved them already)
         var places = rows.Select(r => r.Location).OrderBy(p => p.Y).ToList();
         Func<List<PneumaticPositioningHMI>> shown = () => rows.Where(r => r.Visible).OrderBy(r => r.Top).ToList();
         bool hid = WaitFor(() => shown().Count == 6, 4000);
         var s = shown();
-        Check("the scanner read L27 = 0: the 6 front vertical moulds shown", hid && s.All(r => !r.TitleTextKey.Contains("Back")),
+        Check("the scanner read L27 = " + offValue + " (the option off): the 6 front vertical moulds shown", hid && s.All(r => !r.TitleTextKey.Contains("Back")),
               s.Count + ": " + string.Join(", ", s.Select(r => r.TitleTextKey)));
         Check("  moved up together - the first six places, no empty lines", s.Select(r => r.Location).SequenceEqual(places.Take(6)),
               string.Join(" ", s.Select(r => r.Location)) + " / " + string.Join(" ", places.Take(6)));
@@ -93,12 +100,12 @@ class MO {
               page.DisplayRectangle.Height + " vs " + s.Last().Bottom);
 
         Console.WriteLine("--- the option on (L27 = 1) ---");
-        sim[1].Write("L27", 1);
+        sim[1].Write("L27", onValue);
         bool all = WaitFor(() => shown().Count == 16, 4000);
         Check("all 16 shown, each in its place", all && rows.Select(r => r.Location).SequenceEqual(places));
 
         Console.WriteLine("--- off again ---");
-        sim[1].Write("L27", 0);
+        sim[1].Write("L27", offValue);
         Check("the back ones out again, the front ones up", WaitFor(() => shown().Count == 6, 4000) &&
               shown().Select(r => r.Location).SequenceEqual(places.Take(6)));
 

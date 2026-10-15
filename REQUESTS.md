@@ -6,6 +6,25 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 14 October (the Axis Settings page broken, two screenshots):
+  - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
+  - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
+    flag with no rule on the machine "never met"; a sub-machine's machine bits numbered as mounted. Enable conditions
+    and triggers for each Axis Settings row button (Back, Forward, Calibrate) and the axis units that follow them;
+    a cylinder unit hidden whole by its visibility conditions (frame and caption too); CheckBoxHMI with visibility,
+    enable conditions and a trigger.
+  - dbda973 - SpeedOverrideHMI: one compact control - drag left / right, the percentage typed in the keypad.
+  - 3e6412c - The servo speed / jog-step set as ONE control per machine (Screens\Shared\AxisJogBar): change it in its
+    own designer, it changes on every page. On Robot, Milling, Cutting, Exit, Machine Parameters > Axis and the Axis
+    Monitor. Axis Settings' first row back under its headings.
+  - 392e54d - InverterUnitHMI: a motor's buttons, run lamp, value and inverter fault code as one control; the fault
+    raises its alarm (M830.E.OC1) and its help is the code's troubleshooting (FR-A800 6.5, in the servo codes'
+    format) then the whole manual. FA2010's six inverter sets replaced; the error code no longer on screen.
+  - 2b5670e - HMI manual: the Contents go to their sections again (the copy's base address sent them to the Help
+    folder); the section on screen is bold in the Contents.
+  - 68ed4ad - AI help: a briefing to talk from (who is signed in, what the page shows, the step-by-step page and the
+    manual as text, a conversation that starts with the likely cause and the first check); "Ask <AI>" pastes it into
+    the chat by itself (Ctrl+V) - you check it and press Enter. Preferences > Help: "Paste into the chat".
 - b6675a8, f39a294, da06455 - Users and Preferences, the Dashboard and H500's pages in Turkish, and the AI guide. The
   first two had their Turkish: they had been built in English before the kept language was put on the screen (now the
   language comes first, and a page made in code is built again after a change). H500's Entry Conveyor, Heads,

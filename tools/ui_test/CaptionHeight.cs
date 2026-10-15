@@ -37,16 +37,19 @@ class CH {
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
         LanguageManager.LoadMachineTranslations("Translations.csv");
         UnitManager.EnsureDefaults();
-        foreach (var side in new[] { "Left", "Right" }) {
+        // (14 October: the machine's options are on an Options page of their own now - both pages)
+        foreach (var side in new[] { "Left", "Right" })
+        foreach (var which in new[] { "Others", "Options" }) {
             ViewPreferences.SetPanel(ViewPreferences.CaptionAlign, side);
             var form = new Form { ClientSize = new Size(1270, 800), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
-            var page = new Kaban.Machines.FA2010.Screens.Parameters.ParamOther { Dock = DockStyle.Fill };
+            Control page = which == "Others" ? (Control)new Kaban.Machines.FA2010.Screens.Parameters.ParamOther() : new Kaban.Machines.FA2010.Screens.Parameters.Options();
+            page.Dock = DockStyle.Fill;
             form.Controls.Add(page);
             UiScale.ApplyOnLoad(form);
             form.Show(); Pump(800);
             int n = All(page).OfType<Label>().Count(x => OwnerOf.Invoke(null, new object[] { x }) != null);
             var bad = Clipped(page);
-            Check("at 80%, captions " + side.ToLower() + ": every caption of Others as high as its letters (" + n + ")", n > 40 && bad.Count == 0,
+            Check("at 80%, captions " + side.ToLower() + ": every caption of " + which + " as high as its letters (" + n + ")", n >= 15 && bad.Count == 0,
                   string.Join(" | ", bad.Take(4)));
             form.Close(); form.Dispose(); Pump(100);
         }

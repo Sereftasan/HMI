@@ -60,7 +60,7 @@ class AM {
         var x = fa[0];
         var pos = (NumericDisplayHMI)typeof(AxisMonitorRow).GetField("Position", Any).GetValue(x);
         var cur = (MeterHMI)typeof(AxisMonitorRow).GetField("Current", Any).GetValue(x);
-        Check("Robot X: position W0 as on the row (divisor, decimals, mm)", pos.Address == "W0" && pos.Divisor == 1000 && pos.DecimalPlaces == 2 && pos.Suffix == "mm" &&
+        Check("Robot X: position W0 as on the row (divisor 10000 as the user set it, decimals, mm)", pos.Address == "W0" && pos.Divisor == 10000 && pos.DecimalPlaces == 2 && pos.Suffix == "mm" &&
               pos.Width == AxisSettingHMI.WPosition && pos.Height == AxisSettingHMI.RowHeight - 8, pos.Address + " " + pos.Divisor + " " + pos.Size);
         Check("  its current W0A, the row's meter", cur != null && cur.Address == "W0A" && cur.Width == AxisSettingHMI.WMeter && cur.Left == pos.Right + AxisSettingHMI.Gap);
         var h800 = rows.First(r => r.PlcNumber == 4);

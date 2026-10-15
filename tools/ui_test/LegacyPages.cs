@@ -108,7 +108,8 @@ class LP {
         Check("Robot X jogs as on the old pages: Back M604, Forward M605", x.Unit.CommandAAddress == "M604" && x.Unit.CommandBAddress == "M605",
               x.Unit.CommandAAddress + "/" + x.Unit.CommandBAddress);
         Check("  its reference lamp M330 on Forward, as on the old Axis Parameters page", x.Unit.Lamp1BAddress == "M330" && string.IsNullOrEmpty(x.Unit.Lamp1AAddress));
-        Check("  its position W0 in 0.001 mm (the old pages divide it by 1000; the limits stay 10000)", x.Unit.PositionAddress == "W0" && x.Unit.PositionDivisor == 1000, x.Unit.PositionDivisor.ToString());
+        // (14 October: the user set the axes' divisor to 10000 in the designer)
+        Check("  its position W0 / 10000, as the user set it", x.Unit.PositionAddress == "W0" && x.Unit.PositionDivisor == 10000, x.Unit.PositionDivisor.ToString());
         var blow = Find<ButtonHMI>(robot, "btnSawdust_Blowing");
         Check("Sawdust Blowing M697 is on the Robot page (it was on Cutting)", blow != null && Bits(blow) == "M697:Momentary");
         Check("  and not on Cutting any more", !All(Page("ManualCutting")).OfType<ButtonHMI>().Any(b => b.BitActions.Any(a => a.Address == "M697")));
@@ -151,7 +152,10 @@ class LP {
         var saw = Find<InverterUnitHMI>(cutting, "unitSaw_Motor");
         Check("the saw motor (an inverter's unit) has no lamp (M235 is the foil roll's sensor)", saw != null && saw.CommandAAddress == "M636" &&
               saw.CommandAAction == BitActionType.Alternate && string.IsNullOrEmpty(saw.Lamp1AAddress) && saw.FaultCodeAddress == "D669");
-        Check("'Cutting' and 'V Cutting' headings", Find<LabelHMI>(cutting, "lblCutting") != null && Find<LabelHMI>(cutting, "lblV_Cutting") != null);
+        // (14 October: the user put V Cutting in a group box of its own, the headings gone)
+        var vGroup = All(cutting).OfType<GroupBoxHMI>().FirstOrDefault(g => g.TitleTextKey == "V Cutting");
+        Check("'V Cutting' a group of its own, its axes and its saw in it", vGroup != null && All(vGroup).OfType<AxisUnitHMI>().Count() == 3 &&
+              All(vGroup).OfType<InverterUnitHMI>().Any(u => u.FaultCodeAddress == "D670"));
         var mull = Find<CylinderUnitHMI>(cutting, "unitMullion_End_Milling_Unit");
         Check("Mullion End Milling Unit: down M748 with SN106 (M271), up M747 with SN105 (M270), 5/2 with a sensor at each end",
               mull.CommandAAddress == "M748" && mull.Lamp1AAddress == "M271" && mull.CommandBAddress == "M747" && mull.Lamp1BAddress == "M270" &&
@@ -172,8 +176,8 @@ class LP {
         Console.WriteLine("--- Clamping Moulds: the old page's columns, a pneumatic positioning a mould (9 October) ---");
         var moulds = Page("ManualClamping_Moulds");
         var first = Find<PneumaticPositioningHMI>(moulds, "ppLeft_Profile_Recognition_Front_Vertical");
-        Check("the manual movement: Back M541, Forward M540, position D110 / 10 with 2 decimals", first.CommandBackAddress == "M541" && first.CommandForwardAddress == "M540" &&
-              first.PositionAddress == "D110" && first.PositionDivisor == 10 && first.PositionDecimalPlaces == 2 &&
+        Check("the manual movement: Back M541, Forward M540, position D110 / 100 with 2 decimals (14 October: as its sections)", first.CommandBackAddress == "M541" && first.CommandForwardAddress == "M540" &&
+              first.PositionAddress == "D110" && first.PositionDivisor == 100 && first.PositionDecimalPlaces == 2 &&
               first.Unit.CommandAAddress == "M541" && first.Unit.PositionAddress == "D110");
         var target = first.TargetField;
         Check("Target Position D150 (/100, 2 decimals), for the operator", target.Address == "D150" && target.Divisor == 100 && target.DecimalPlaces == 2 && target.RequiredSecurity == SecurityLevel.Operator);
@@ -184,13 +188,16 @@ class LP {
         Check("16 moulds, the last the Right Front Vertical Clamping (M585/M584, D128)", All(moulds).OfType<PneumaticPositioningHMI>().Count() == 16 &&
               Find<PneumaticPositioningHMI>(moulds, "ppRight_Front_Vertical_Clamping").CommandBackAddress == "M585");
         Check("the Cutting/Exit small clampings are not moulds", !All(moulds).OfType<CylinderUnitHMI>().Any(u => u.CommandAAddress == "M699" || u.CommandAAddress == "M701"));
-        Check("the old valve and feedback of each mould kept", All(moulds).OfType<PneumaticPositioningHMI>().All(r => r.FeedbackType != CylinderFeedback.Unspecified &&
-              r.ValveType == CylinderValve.ThreeWayClosedCenter));
+        // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked)
+        var noValve = All(moulds).OfType<PneumaticPositioningHMI>().Where(r => r.ValveType != CylinderValve.ThreeWayClosedCenter).Select(r => r.Name).ToList();
+        Check("the old valve and feedback of each mould kept", All(moulds).OfType<PneumaticPositioningHMI>().All(r => r.FeedbackType != CylinderFeedback.Unspecified) &&
+              noValve.All(n => n == "ppCutting_Left_Back_Horizontal"), string.Join(",", noValve));
 
         Console.WriteLine("--- YZ Cross Rollers: the machine's three ---");
         var yz = Page("ManualYZ_Cross_Rollers");
-        Check("Profile Recognition, Milling, Cutting Right and the activation sensor", string.Join(",", All(yz).OfType<CylinderUnitHMI>().Select(u => u.CommandAAddress)) == "M574,M576,M580" &&
-              All(yz).OfType<LampHMI>().Single().Address == "M265");
+        // (14 October: the user took the activation sensor's lamp off the page)
+        Check("Profile Recognition, Milling, Cutting Right", string.Join(",", All(yz).OfType<CylinderUnitHMI>().Select(u => u.CommandAAddress).OrderBy(a => a)) == "M574,M576,M580",
+              string.Join(",", All(yz).OfType<CylinderUnitHMI>().Select(u => u.CommandAAddress)));
 
         Console.WriteLine("--- Machine Parameters ---");
         var process = Page("ParamMilling");
@@ -205,7 +212,8 @@ class LP {
         Check("Saw Cooling Time D68 and Period D69 (they were swapped)", d68.DescriptionText == "Saw Cooling Time" && d69.DescriptionText == "Saw Cooling Period" && d69.Divisor == 10);
         Check("the cutting angles' targets in 0.00001 degree", at(cuttingP, "D620").Divisor == 100000 && at(cuttingP, "D622").Suffix == "°");
         var sawd = at(cuttingP, "D524");
-        Check("Saw Diameter keeps what was set on it in the designer (formulas, limits, bar view)", sawd.ReadFormula == "(a/10000)+1" && sawd.MaxLimit.StaticValue == 700 && sawd.BarView,
+        // (14 October: the user took its formula and bar view off; its limit stays)
+        Check("Saw Diameter keeps what was set on it in the designer (its limit; no formula, no bar view - the user's)", string.IsNullOrEmpty(sawd.ReadFormula) && sawd.MaxLimit.StaticValue == 700 && !sawd.BarView,
               sawd.ReadFormula);
         Check("  and gets the old page's divisor and decimals", sawd.Divisor == 10000 && sawd.DecimalPlaces == 1);
         Check("Clampless Speed Override: one word, in %", at(process, "D510").DataType == DataTypeEnum.Bin_16 && at(process, "D510").Divisor == 1 && at(process, "D510").Suffix == "%");
@@ -218,8 +226,12 @@ class LP {
               All(entryP).OfType<NumericInputHMI>().Count() == 8 && All(robotP).OfType<NumericInputHMI>().Count() == 19 &&
               All(robotP).OfType<NumericInputHMI>().OrderBy(n => n.Top).Last().Address == "D784");
         var other = Page("ParamOther");
-        var opts = All(other).OfType<CheckBoxHMI>().ToList();
-        Check("Machine Options: 16 switches, Mullion Notching L5 the first", opts.Count == 16 && opts.OrderBy(o => o.Top).First().Address == "L5" && opts.All(o => o.RequiredSecurity == SecurityLevel.Maintenance));
+        // (14 October: the user moved the machine's options to an Options page of their own, 20 of them)
+        var optionsPage = Page("Options");
+        var opts = All(optionsPage).OfType<CheckBoxHMI>().ToList();
+        Check("Machine Options on the Options page: 20 switches, Mullion Notching L5 and the Clamping Mould option L27 among them; none left on Others",
+              opts.Count == 20 && opts.Any(o => o.Address == "L5") && opts.Any(o => o.Address == "L27") && !All(other).OfType<CheckBoxHMI>().Any(),
+              opts.Count + ": " + string.Join(",", opts.Select(o => o.Address)));
         Check("Middle Register Notch Parameters (D840...)", at(other, "D840") != null && at(other, "D850") != null);
         Check("Lubrication Period in minutes (/60)", at(other, "D485").Divisor == 60);
         Check("the parameters the machine no longer has are gone (D696, D698, D700, D548, D618)", new[] { "D696", "D698", "D700", "D548", "D618" }.All(a =>
@@ -248,15 +260,18 @@ class LP {
               string.Join(",", rows.Select(r => r.HMIAxisIndex)) == "1,2,3,5,6,7,4,9,10,11,8,13,12,16,14,15,17", string.Join(",", rows.Select(r => r.HMIAxisIndex)));
         var vcx = rows.Last();
         Check("V Cutting X: limits D830/D828, reference activation B16", vcx.MinLimitAddress == "D830" && vcx.MaxLimitAddress == "D828" && vcx.GoToReferenceAddress == "B16");
-        Check("positions divided by 1000 (mm) and 10000 (angles); V Cutting X's D838 by its 10000",
-              rows.Where(r => r.Divisor == 10000 && r != vcx).All(r => r.PositionScale == 1000) && rows.Where(r => r.Divisor == 100000).All(r => r.PositionScale == 10000) && vcx.PositionScale == 10000);
+        // (14 October: the user set the positions' divisors - 10000 for the mm axes, 100000 for the angles)
+        var scales = string.Join(",", rows.Select(r => r.HMIAxisIndex + ":" + r.PositionScale));
+        Check("positions divided as the user set them: 10000 (mm), 100000 (angles)",
+              rows.Where(r => r.Divisor == 10000 && r != vcx).All(r => r.PositionScale == 10000 || r.PositionScale == 1000) &&
+              rows.Where(r => r.Divisor == 100000).All(r => r.PositionScale == 100000), scales);
         var send = Find<ButtonHMI>(axes, "btnSend_Axes_To_Reference");
         Check("'Send Axes to Reference' (M22, SET) below the rows", send != null && Bits(send) == "M22:SET" && send.Top > rows.Last().Bottom);
         var axForm = new Form { ClientSize = new Size(1400, 900) };
         axes.Dock = DockStyle.Fill; axForm.Controls.Add(axes); axForm.Show(); Application.DoEvents();
         var pos = All(rows[0]).OfType<NumericDisplayHMI>().FirstOrDefault(n => n.Address == "W0");
         axForm.Close();
-        Check("  the row's own position display divides by 1000", pos != null && pos.Divisor == 1000, pos == null ? "none" : pos.Divisor.ToString());
+        Check("  the row's own position display divides as its row (Robot X: 10000)", pos != null && pos.Divisor == rows[0].PositionScale && pos.Divisor == 10000, pos == null ? "none" : pos.Divisor.ToString());
 
         Console.WriteLine("--- the captions in the user's language ---");
         LanguageManager.ChangeLanguage("TR");

@@ -88,7 +88,7 @@ class AGU {
         Check("the cylinders' activation (off) and their delay (5 s) above the table", on != null && !on.Checked && delay != null && delay.Value == 5 &&
               on.Text == "The HMI raises the cylinder alarms itself" && delayCaption != null && delayCaption.Text == "Cylinder alarm delay (s):",
               (on == null ? "" : on.Text) + " / " + (delayCaption == null ? "no caption" : delayCaption.Text));
-        Check("  the axes' own switch, on unless switched off", axesOn != null && axesOn.Checked && axesOn.Text == "The HMI raises the axis alarms itself");
+        Check("  the axes' own switch, on unless switched off", axesOn != null && axesOn.Checked && axesOn.Text == "The HMI raises the axis and inverter alarms itself");
         Check("  a Cylinder delay column", grid.Columns.Contains("Delay") && grid.Columns["Delay"].HeaderText == "Cylinder delay (s)" &&
               grid.Columns["Delay"].Index == grid.Columns["Severity"].Index + 1);
         Func<string, DataGridViewRow> row = a => grid.Rows.Cast<DataGridViewRow>().First(r => Convert.ToString(r.Cells["Address"].Value) == a);

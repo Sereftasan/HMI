@@ -74,14 +74,17 @@ class CS {
         var pages = new[] { "ManualClamping_Moulds", "ManualCutting", "ManualEntry_Conveyor", "ManualExit", "ManualMilling",
                             "ManualOther", "ManualProfile_Recognition", "ManualRobot", "ManualYZ_Cross_Rollers" };
         var units = new List<KeyValuePair<string, CylinderUnitHMI>>();
+        // a page's controls and those in its group boxes (14 October: the user put V Cutting in one)
+        Func<Control, IEnumerable<Control>> kids = null;
+        kids = c => c.Controls.Cast<Control>().SelectMany(k => k is GroupBoxHMI ? new[] { k }.Concat(kids(k)) : new[] { k });
         // (9 October) a cylinder with an encoder is described once, on its row of Machine Parameters >
         // Encoders - its manual pages' units take it from there
         foreach (var p in pages.Concat(new[] { "Parameters.ParamEncoders" })) {
             var page = (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens." + (p.Contains(".") ? p : "Manual." + p)));
-            foreach (var u in page.Controls.OfType<CylinderUnitHMI>().Where(x => x.Kind == UnitKind.Cylinder))
+            foreach (var u in kids(page).OfType<CylinderUnitHMI>().Where(x => x.Kind == UnitKind.Cylinder))
                 units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + u.Name, u));
             // a cylinder row's manual movement (a pneumatic positioning's, an encoder's): the unit inside, by the row's name
-            foreach (var r in page.Controls.OfType<CylinderRowHMI>())
+            foreach (var r in kids(page).OfType<CylinderRowHMI>())
                 units.Add(new KeyValuePair<string, CylinderUnitHMI>(p + "." + r.Name, r.Unit));
         }
         Func<string, CylinderUnitHMI> unit = n => units.First(k => k.Key.EndsWith("." + n) || k.Key == n).Value;
@@ -90,7 +93,8 @@ class CS {
         // Left for a decision (REVIEW 4r) until 8 October: three units whose titles were not
         // what their bits drive. The old program's pages settled it - one unit, the
         // Mullion End Milling Unit on Cutting, drives the mullion milling unit.
-        var undecided = new string[0];
+        // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked)
+        var undecided = new[] { "ManualClamping_Moulds.ppCutting_Left_Back_Horizontal" };
         var mullion = units.Where(k => new[] { WiringTable.OutputFor(1, k.Value.CommandAAddress), WiringTable.OutputFor(1, k.Value.CommandBAddress) }
                                            .Any(o => o != null && o.Text.StartsWith("Mullion Milling Unit"))).Select(k => k.Key).ToList();
         Check("one unit drives the mullion milling unit, titled so (Cutting's Mullion End Milling Unit)",

@@ -1,7 +1,7 @@
 # Kaban HMI - how we work (for Claude and for you)
 
 ## Where the code is
-- **C:\Kaban Files\_Projects\HMI** is the project. Solution: `KabanHMI\KabanHMI.sln`.
+- **C:\Kaban Files\_Projects\_HMI\HMI** is the project (it moved there on 14 October). Solution: `KabanHMI\KabanHMI.sln`.
 - Claude works on a copy in its cloud workspace (it builds and tests there on Mono/Linux), then writes the changed
   files straight into this folder - they are the newest code at once. No zip any more.
 - **The history** (every commit since the first upload, branch `master`) is in `_history\HMI.bundle`, renewed with

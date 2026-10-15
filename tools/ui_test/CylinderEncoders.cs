@@ -53,8 +53,9 @@ class CET {
         var mp = MachineRegistry.AllScreens().First(kv => kv.Key.IsMain && kv.Value.Role == ScreenRoles.MachineParameters).Value;
         var screen = (SettingsScreen)mp.CreateView();
         var titles = screen.AllPages.Select(p => LanguageManager.GetString(p.TitleKey, p.TitleFallback)).ToList();
-        Check("Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms - no 'Parameters'",
-              string.Join(", ", titles) == "Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms", string.Join(", ", titles));
+        // (14 October: the user's Options tab first)
+        Check("Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms - no 'Parameters'",
+              string.Join(", ", titles) == "Options, Axis, Conveyor, Robot, Milling, Cutting, Encoders, Others, Alarms", string.Join(", ", titles));
         AlarmHelpLinks.Discard(screen);
         LanguageManager.ChangeLanguage("TR");
         Check("  in Turkish: Eksen ... Enkoderler, Diğerleri, Alarmlar", LanguageManager.GetString("Tab_AxisSettings", "") == "Eksen" &&
@@ -94,8 +95,9 @@ class CET {
         Check("  its settings the Maintenance level's, moving it the Operator's", prf.ReferenceField.RequiredSecurity == SecurityLevel.Maintenance &&
               prf.Unit.RequiredSecurity == SecurityLevel.Operator);
         var grip = rows.First(r => r.TitleTextKey == "Robot Gripper");
-        Check("Robot Gripper: its position D21 / 10 with two decimals, as the old Robot page (12 October); its reference D516 here",
-              grip.PositionAddress == "D21" && grip.PositionDivisor == 10 && grip.PositionDecimalPlaces == 2 && grip.ReferenceField.Address == "D516" &&
+        // (14 October: the user set its divisor to 100 in the designer)
+        Check("Robot Gripper: its position D21 / 100 with two decimals; its reference D516 here",
+              grip.PositionAddress == "D21" && grip.PositionDivisor == 100 && grip.PositionDecimalPlaces == 2 && grip.ReferenceField.Address == "D516" &&
               grip.Unit.PositionDisplay.DecimalPlaces == 2, grip.PositionDecimalPlaces + " / " + grip.Unit.PositionDisplay.DecimalPlaces);
         var milling = rows.First(r => r.TitleTextKey == "Milling Top");
         Check("Milling Top: only a reference and an unclamping interval - the other two fields not there, their columns kept",
