@@ -151,8 +151,8 @@ namespace Kaban.UI.Helpers
 
         /// <summary>
         /// The manual as the "?" menu opens it - this panel's machines and their own
-        /// chapters filled in - without the local base address (a path on the panel
-        /// says nothing to an AI). Whole up to ManualChars; beyond, without its
+        /// chapters filled in - without the panel's own folder in its links and without
+        /// its script (a path on the panel, a page's code, say nothing to an AI). Whole up to ManualChars; beyond, without its
         /// drawings, then cut. "" when there is none.
         /// </summary>
         public static string ManualHtml()
@@ -163,6 +163,13 @@ namespace Kaban.UI.Helpers
                 if (string.IsNullOrEmpty(path) || !File.Exists(path)) return "";
                 var html = File.ReadAllText(path).TrimStart('﻿').Trim();
                 html = Regex.Replace(html, @"<base\b[^>]*>", "", RegexOptions.IgnoreCase);
+                html = Regex.Replace(html, @"<script\b.*?</script>\s*", "", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                try
+                {
+                    var root = new Uri(TroubleshootingCatalog.HelpFolder.TrimEnd('\\', '/') + Path.DirectorySeparatorChar).AbsoluteUri;
+                    html = html.Replace(root, "");
+                }
+                catch { }
                 if (html.Length > ManualChars)
                     html = Regex.Replace(html, @"<svg\b.*?</svg>", "<!-- a drawing, left out here -->", RegexOptions.Singleline | RegexOptions.IgnoreCase);
                 if (html.Length > ManualChars) html = html.Substring(0, ManualChars) + "\n<!-- [... shortened] -->";

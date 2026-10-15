@@ -74,8 +74,8 @@ class AC {
         Check("52.1, two pages of the manual: ONE table all the same, causes (1) to (14) in it",
               Regex.Matches(s52, "<table>").Count == 1 && Regex.Matches(s52, "<tr><th").Count == 1 &&
               s52.Contains("<div>(1)</div>") && s52.Contains("<div>(12)</div>") && s52.Contains("<div>(14)</div>"));
-        Check("  and a base pointing at the Help folder (the link to the PDF works from the copy)",
-              html.Contains("<base href=\"file:") && html.Contains("MR_J4_TroubleShooting.pdf#page="));
+        Check("  and the link to the PDF made absolute - to the Help folder (it works from the copy), no <base> (14 October: it broke '#' links)",
+              Regex.IsMatch(html, "href=\"file:[^\"]*/Help/MR_J4_TroubleShooting\\.pdf#page=") && !html.Contains("<base"));
 
         doc = AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, 0x160);
         html = File.ReadAllText(TroubleshootingCatalog.ExtractSection(doc));

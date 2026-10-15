@@ -310,9 +310,10 @@ namespace Kaban.Core.Helpers
         /// first section is copied but its head: the page is the code's caption
         /// and its table of causes and remedies, nothing else to read first.
         ///
-        /// A &lt;base&gt; pointing at the Help folder goes into the copy: it is
-        /// written to the temp folder, and without it the link to the PDF and any
-        /// picture the document refers to by name would point into nothing.
+        /// The copy is written to the temp folder, so the links and pictures it names
+        /// relative to the Help folder are made absolute - without that the link to
+        /// the PDF would point into nothing (not a &lt;base&gt;: it sent "#" links to
+        /// the folder).
         /// </summary>
         public static string Extract(TroubleshootingCatalog.HelpDocument doc)
         {
@@ -358,11 +359,7 @@ namespace Kaban.Core.Helpers
                 }
                 page.Append("</body></html>\r\n");
 
-                string result = page.ToString();
-                string baseTag = "<base href=\"" + new Uri(TroubleshootingCatalog.HelpFolder.TrimEnd('\\', '/') +
-                                                           Path.DirectorySeparatorChar).AbsoluteUri + "\">";
-                int head = result.IndexOf("<head>", StringComparison.OrdinalIgnoreCase);
-                result = head >= 0 ? result.Insert(head + 6, baseTag) : baseTag + result;
+                string result = TroubleshootingCatalog.AbsoluteLinks(page.ToString());
 
                 var safe = new string(doc.Code.Where(char.IsLetterOrDigit).ToArray());
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(full) + "_" + safe + ".html");

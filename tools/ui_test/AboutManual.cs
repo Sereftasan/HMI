@@ -74,6 +74,22 @@ class AM {
 
         Check("with no machine mounted (a test), the plain manual is opened", HmiManual.PrepareManual() == path, HmiManual.PrepareManual());
 
+        // 14 October: "HMI manual left side CONTENTS navigation is broken, all the navigation is linked to the
+        // document directory instead of the manual sections" - the copy's <base href> sent "#alarms" to the folder.
+        string copy = TroubleshootingCatalog.AbsoluteLinks(forFa);
+        var toc = System.Text.RegularExpressions.Regex.Match(copy, "<nav class=\"toc\">(.*?)</nav>", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+        var hrefs = System.Text.RegularExpressions.Regex.Matches(toc, "href=\"([^\"]*)\"").Cast<System.Text.RegularExpressions.Match>().Select(m => m.Groups[1].Value).ToList();
+        Check("the copy has no <base>, and every Contents link is still the page's own section (#...)", !copy.Contains("<base") && hrefs.Count >= 13 &&
+              hrefs.All(h => h.StartsWith("#")), string.Join(" ", hrefs.Take(4)));
+        var missingIds = hrefs.Where(h => !copy.Contains("id=\"" + h.Substring(1) + "\"")).ToList();
+        Check("  each one has its section", missingIds.Count == 0, string.Join(",", missingIds));
+        var sample = TroubleshootingCatalog.AbsoluteLinks("<img src=\"pic.png\"><a href=\"#alarms\">a</a><a href=\"https://x.y/z.pdf\">b</a><a href=\"Manual.pdf#page=3\">c</a>", "/opt/hmi/Help");
+        Check("  a picture or file named by the manual still resolves from the copy; '#', http links untouched",
+              sample.Contains("src=\"file:///opt/hmi/Help/pic.png\"") && sample.Contains("href=\"#alarms\"") && sample.Contains("href=\"https://x.y/z.pdf\"") &&
+              sample.Contains("href=\"file:///opt/hmi/Help/Manual.pdf#page=3\""), sample);
+        Check("the section on screen is bold in the Contents (its script and style)", template.Contains("nav.toc a.active{font-weight:700") &&
+              template.Contains("addEventListener('scroll', mark"));
+
         Console.WriteLine(fail == 0 ? "\nABOUT ALL PASS" : "\nABOUT " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

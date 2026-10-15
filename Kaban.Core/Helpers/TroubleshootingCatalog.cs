@@ -432,6 +432,33 @@ namespace Kaban.Core.Helpers
                 public static string HelpFolder =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Help");
 
+        private static readonly Regex RelativeLink = new Regex("\\b(src|href)\\s*=\\s*\"([^\"]*)\"", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        /// <summary>
+        /// A page written to the temp folder from one of the Help folder's: every link and
+        /// picture named relative to the Help folder made absolute, so they still resolve
+        /// from the copy. A link to a part of the page itself ("#alarms") stays as it is.
+        ///
+        /// It was a &lt;base href&gt; pointing at the Help folder - and a base changes
+        /// "#alarms" too: the HMI manual's Contents opened the Help folder's listing
+        /// instead of the section (14 October).
+        /// </summary>
+        public static string AbsoluteLinks(string html, string folder = null)
+        {
+            if (string.IsNullOrEmpty(html)) return html;
+            string root;
+            try { root = new Uri((folder ?? HelpFolder).TrimEnd('\\', '/') + Path.DirectorySeparatorChar).AbsoluteUri; }
+            catch { return html; }
+            return RelativeLink.Replace(html, m =>
+            {
+                var url = m.Groups[2].Value.Trim();
+                // the page's own parts, absolute or rooted links, other schemes (http:, file:, data:, mailto:...)
+                if (url.Length == 0 || url[0] == '#' || url[0] == '/' || url[0] == '\\' || Regex.IsMatch(url, "^[A-Za-z][A-Za-z0-9+.-]*:"))
+                    return m.Value;
+                return m.Groups[1].Value + "=\"" + root + url.Replace('\\', '/') + "\"";
+            });
+        }
+
         /// <summary>
         /// Which file answers which kind of fault. One entry per error type, set
         /// once for the machine - not per alarm.

@@ -200,9 +200,10 @@ namespace Kaban.UI.Settings
 
         /// <summary>
         /// Writes the manual for this program to the temp folder and returns its
-        /// path - the plain manual when it cannot. A &lt;base&gt; pointing at the
-        /// Help folder goes in, so pictures and links named in the manual still
-        /// resolve from the copy.
+        /// path - the plain manual when it cannot. Its pictures and links named
+        /// relative to the Help folder are made absolute, so they still resolve from
+        /// the copy - not with a &lt;base&gt;, which sent the Contents' "#section"
+        /// links to the Help folder (14 October).
         /// </summary>
         public static string PrepareManual()
         {
@@ -212,11 +213,7 @@ namespace Kaban.UI.Settings
                 if (string.IsNullOrEmpty(template) || !File.Exists(template)) return template;
                 var machines = RunningMachines();
                 if (machines.Count == 0) return template;
-                var html = ComposeManual(File.ReadAllText(template), machines);
-                string baseTag = "<base href=\"" + new Uri(TroubleshootingCatalog.HelpFolder.TrimEnd('\\', '/') +
-                                                             Path.DirectorySeparatorChar).AbsoluteUri + "\">";
-                int head = html.IndexOf("<head>", StringComparison.OrdinalIgnoreCase);
-                html = head >= 0 ? html.Insert(head + 6, baseTag) : baseTag + html;
+                var html = TroubleshootingCatalog.AbsoluteLinks(ComposeManual(File.ReadAllText(template), machines));
 
                 var main = machines.FirstOrDefault(m => m.IsMain) ?? machines[0];
                 var path = Path.Combine(Path.GetTempPath(),

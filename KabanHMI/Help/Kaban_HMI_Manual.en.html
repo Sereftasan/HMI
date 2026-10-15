@@ -40,6 +40,7 @@
  nav.toc b{display:block;margin:0 0 .5em;color:var(--muted);font-size:.85em;letter-spacing:.06em;text-transform:uppercase}
  nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;font-size:.95em}
  nav.toc a:hover{color:var(--blue)}
+ nav.toc a.active{font-weight:700;color:var(--head)}
  main{flex:1;min-width:0;padding:10px 34px 60px}
  h2{font-size:1.25em;color:var(--head);margin:1.9em 0 .5em;padding-top:.4em;border-top:1px solid var(--rule)}
  h3{font-size:1.04em;margin:1.2em 0 .3em}
@@ -1085,4 +1086,39 @@ opened from the <b>?</b> on the caption bar.</p><!--/machine-chapter-->
 (for example <code>.tr.html</code>) in the same folder.</footer>
 </main>
 </div>
+<script>
+// The Contents follows the reading: the section on screen is bold (14 October).
+(function () {
+  var nav = document.querySelector('nav.toc');
+  if (!nav || !document.getElementById) return;
+  var links = [], i;
+  var all = nav.getElementsByTagName('a');
+  for (i = 0; i < all.length; i++) {
+    var href = all[i].getAttribute('href') || '';
+    if (href.charAt(0) !== '#') continue;
+    var target = document.getElementById(href.substring(1));
+    if (target) links.push({ a: all[i], t: target });
+  }
+  if (!links.length) return;
+  var shown = null;
+  function mark() {
+    var line = 90, current = links[0], atEnd = (window.innerHeight + window.pageYOffset) >= document.body.scrollHeight - 2;
+    for (i = 0; i < links.length; i++)
+      if (links[i].t.getBoundingClientRect().top <= line) current = links[i];
+    if (atEnd) current = links[links.length - 1];
+    if (current === shown) return;
+    if (shown) shown.a.className = shown.a.className.replace(/\s*\bactive\b/g, '');
+    current.a.className += ' active';
+    shown = current;
+    // kept in sight in the Contents' own scrolling
+    var a = current.a, top = a.offsetTop - nav.offsetTop;
+    if (top < nav.scrollTop || top + a.offsetHeight > nav.scrollTop + nav.clientHeight)
+      nav.scrollTop = Math.max(0, top - nav.clientHeight / 3);
+  }
+  window.addEventListener('scroll', mark, false);
+  window.addEventListener('resize', mark, false);
+  window.addEventListener('hashchange', function () { setTimeout(mark, 0); }, false);
+  mark();
+})();
+</script>
 </body></html>
