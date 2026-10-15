@@ -51,9 +51,10 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblHead_Manual.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Manual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Manual.Location = new System.Drawing.Point(334, 16);
+            this.lblHead_Manual.Location = new System.Drawing.Point(357, 16);
             this.lblHead_Manual.Name = "lblHead_Manual";
             this.lblHead_Manual.Size = new System.Drawing.Size(248, 32);
+            this.lblHead_Manual.TabIndex = 0;
             this.lblHead_Manual.Tag = "PositioningHeading:Manual";
             this.lblHead_Manual.Text = "Manual movement";
             this.lblHead_Manual.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -62,9 +63,10 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblHead_Target.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Target.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Target.Location = new System.Drawing.Point(600, 16);
+            this.lblHead_Target.Location = new System.Drawing.Point(623, 16);
             this.lblHead_Target.Name = "lblHead_Target";
             this.lblHead_Target.Size = new System.Drawing.Size(134, 32);
+            this.lblHead_Target.TabIndex = 1;
             this.lblHead_Target.Tag = "PositioningHeading:Target";
             this.lblHead_Target.Text = "Target position";
             this.lblHead_Target.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -73,9 +75,10 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblHead_Calibration.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Calibration.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Calibration.Location = new System.Drawing.Point(752, 16);
+            this.lblHead_Calibration.Location = new System.Drawing.Point(775, 16);
             this.lblHead_Calibration.Name = "lblHead_Calibration";
             this.lblHead_Calibration.Size = new System.Drawing.Size(134, 32);
+            this.lblHead_Calibration.TabIndex = 2;
             this.lblHead_Calibration.Tag = "PositioningHeading:Calibration";
             this.lblHead_Calibration.Text = "Calibration";
             this.lblHead_Calibration.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -84,9 +87,10 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblHead_Tolerance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Tolerance.Location = new System.Drawing.Point(904, 16);
+            this.lblHead_Tolerance.Location = new System.Drawing.Point(927, 16);
             this.lblHead_Tolerance.Name = "lblHead_Tolerance";
             this.lblHead_Tolerance.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Tolerance.TabIndex = 3;
             this.lblHead_Tolerance.Tag = "PositioningHeading:Tolerance";
             this.lblHead_Tolerance.Text = "Positioning tolerance";
             this.lblHead_Tolerance.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -95,500 +99,419 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblHead_DirectionRef.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_DirectionRef.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_DirectionRef.Location = new System.Drawing.Point(1008, 16);
+            this.lblHead_DirectionRef.Location = new System.Drawing.Point(1031, 16);
             this.lblHead_DirectionRef.Name = "lblHead_DirectionRef";
             this.lblHead_DirectionRef.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_DirectionRef.TabIndex = 4;
             this.lblHead_DirectionRef.Tag = "PositioningHeading:DirectionRef";
             this.lblHead_DirectionRef.Text = "Direction ref";
             this.lblHead_DirectionRef.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // ppLeft_Profile_Recognition_Front_Vertical
             // 
-            // Left Profile Recognition Front Vertical: M541 / M540, position D110; target D150 (M50), calibration D130 (M30), tolerance D750, direction ref D790.
             this.ppLeft_Profile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
-            this.ppLeft_Profile_Recognition_Front_Vertical.PlcNumber = 1;
-            this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
-            this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
-            this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
+            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
             this.ppLeft_Profile_Recognition_Front_Vertical.CommandBackAddress = "M541";
             this.ppLeft_Profile_Recognition_Front_Vertical.CommandForwardAddress = "M540";
-            this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
-            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
-            this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
-            this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Front_Vertical.DecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
+            this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Front_Vertical.ErrorBackAddress = "M915";
-            this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
             this.ppLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.ppLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
+            this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
+            this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppLeft_Profile_Recognition_Front_Vertical.TabIndex = 5;
+            this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
+            this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
+            this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
             // 
             // ppLeft_Profile_Recognition_Back_Vertical
             // 
-            // Left Profile Recognition Back Vertical: M543 / M542, position D111; target D151 (M51), calibration D131 (M31), tolerance D751, direction ref D791.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppLeft_Profile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppLeft_Profile_Recognition_Back_Vertical.Name = "ppLeft_Profile_Recognition_Back_Vertical";
-            this.ppLeft_Profile_Recognition_Back_Vertical.PlcNumber = 1;
-            this.ppLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
-            this.ppLeft_Profile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 98);
-            this.ppLeft_Profile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrateAddress = "M31";
+            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrationAddress = "D131";
             this.ppLeft_Profile_Recognition_Back_Vertical.CommandBackAddress = "M543";
             this.ppLeft_Profile_Recognition_Back_Vertical.CommandForwardAddress = "M542";
-            this.ppLeft_Profile_Recognition_Back_Vertical.VerticalMovement = true;
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositionAddress = "D111";
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 10D;
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Back_Vertical.TargetPosition = "D151";
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningStartAddress = "M51";
-            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrationAddress = "D131";
-            this.ppLeft_Profile_Recognition_Back_Vertical.CalibrateAddress = "M31";
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningToleranceAddress = "D751";
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D791";
-            this.ppLeft_Profile_Recognition_Back_Vertical.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Vertical.DecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Vertical.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppLeft_Profile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 98);
+            this.ppLeft_Profile_Recognition_Back_Vertical.Name = "ppLeft_Profile_Recognition_Back_Vertical";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionAddress = "D111";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D791";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningStartAddress = "M51";
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositioningToleranceAddress = "D751";
+            this.ppLeft_Profile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppLeft_Profile_Recognition_Back_Vertical.TabIndex = 6;
+            this.ppLeft_Profile_Recognition_Back_Vertical.TargetPosition = "D151";
+            this.ppLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
             this.ppLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppLeft_Profile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppLeft_Profile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppLeft_Profile_Recognition_Back_Vertical.VerticalMovement = true;
             // 
             // ppLeft_Profile_Recognition_Back_Horizontal
             // 
-            // Left Profile Recognition Back Horizontal: M545 / M544, position D112; target D152 (M52), calibration D132 (M32), tolerance D752, direction ref D792.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppLeft_Profile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.Name = "ppLeft_Profile_Recognition_Back_Horizontal";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PlcNumber = 1;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 142);
-            this.ppLeft_Profile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrateAddress = "M32";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrationAddress = "D132";
             this.ppLeft_Profile_Recognition_Back_Horizontal.CommandBackAddress = "M545";
             this.ppLeft_Profile_Recognition_Back_Horizontal.CommandForwardAddress = "M544";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionAddress = "D112";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 10D;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.TargetPosition = "D152";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningStartAddress = "M52";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrationAddress = "D132";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.CalibrateAddress = "M32";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D752";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D792";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Horizontal.DecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Divisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Horizontal.ErrorBackAddress = "M919";
-            this.ppLeft_Profile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppLeft_Profile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppLeft_Profile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 142);
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Name = "ppLeft_Profile_Recognition_Back_Horizontal";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionAddress = "D112";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D792";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningStartAddress = "M52";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D752";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1101, 40);
+            this.ppLeft_Profile_Recognition_Back_Horizontal.TabIndex = 7;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.TargetPosition = "D152";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
+            this.ppLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // ppConveyor_Front_Vertical
             // 
-            // Conveyor Front Vertical: M547 / M546, position D113; target D153 (M53), calibration D133 (M33), tolerance D753, direction ref D793.
             this.ppConveyor_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppConveyor_Front_Vertical.Name = "ppConveyor_Front_Vertical";
-            this.ppConveyor_Front_Vertical.PlcNumber = 1;
-            this.ppConveyor_Front_Vertical.TitleTextKey = "Conveyor Front Vertical";
-            this.ppConveyor_Front_Vertical.Location = new System.Drawing.Point(16, 186);
-            this.ppConveyor_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Front_Vertical.CalibrateAddress = "M33";
+            this.ppConveyor_Front_Vertical.CalibrationAddress = "D133";
             this.ppConveyor_Front_Vertical.CommandBackAddress = "M547";
             this.ppConveyor_Front_Vertical.CommandForwardAddress = "M546";
-            this.ppConveyor_Front_Vertical.VerticalMovement = true;
-            this.ppConveyor_Front_Vertical.PositionAddress = "D113";
-            this.ppConveyor_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppConveyor_Front_Vertical.PositionDivisor = 10D;
-            this.ppConveyor_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppConveyor_Front_Vertical.TargetPosition = "D153";
-            this.ppConveyor_Front_Vertical.PositioningStartAddress = "M53";
-            this.ppConveyor_Front_Vertical.CalibrationAddress = "D133";
-            this.ppConveyor_Front_Vertical.CalibrateAddress = "M33";
-            this.ppConveyor_Front_Vertical.PositioningToleranceAddress = "D753";
-            this.ppConveyor_Front_Vertical.PositioningDirectionReferenceAddress = "D793";
-            this.ppConveyor_Front_Vertical.Divisor = 100D;
             this.ppConveyor_Front_Vertical.DecimalPlaces = 2;
+            this.ppConveyor_Front_Vertical.Divisor = 100D;
             this.ppConveyor_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Front_Vertical.Location = new System.Drawing.Point(16, 186);
+            this.ppConveyor_Front_Vertical.Name = "ppConveyor_Front_Vertical";
+            this.ppConveyor_Front_Vertical.PositionAddress = "D113";
+            this.ppConveyor_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppConveyor_Front_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Front_Vertical.PositioningDirectionReferenceAddress = "D793";
+            this.ppConveyor_Front_Vertical.PositioningStartAddress = "M53";
+            this.ppConveyor_Front_Vertical.PositioningToleranceAddress = "D753";
+            this.ppConveyor_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppConveyor_Front_Vertical.TabIndex = 8;
+            this.ppConveyor_Front_Vertical.TargetPosition = "D153";
+            this.ppConveyor_Front_Vertical.TitleTextKey = "Conveyor Front Vertical";
             this.ppConveyor_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppConveyor_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppConveyor_Front_Vertical.VerticalMovement = true;
             // 
             // ppConveyor_Back_Vertical
             // 
-            // Conveyor Back Vertical: M549 / M548, position D114; target D154 (M54), calibration D134 (M34), tolerance D754, direction ref D794.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppConveyor_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppConveyor_Back_Vertical.Name = "ppConveyor_Back_Vertical";
-            this.ppConveyor_Back_Vertical.PlcNumber = 1;
-            this.ppConveyor_Back_Vertical.TitleTextKey = "Conveyor Back Vertical";
-            this.ppConveyor_Back_Vertical.Location = new System.Drawing.Point(16, 230);
-            this.ppConveyor_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Back_Vertical.CalibrateAddress = "M34";
+            this.ppConveyor_Back_Vertical.CalibrationAddress = "D134";
             this.ppConveyor_Back_Vertical.CommandBackAddress = "M549";
             this.ppConveyor_Back_Vertical.CommandForwardAddress = "M548";
-            this.ppConveyor_Back_Vertical.VerticalMovement = true;
-            this.ppConveyor_Back_Vertical.PositionAddress = "D114";
-            this.ppConveyor_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppConveyor_Back_Vertical.PositionDivisor = 10D;
-            this.ppConveyor_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppConveyor_Back_Vertical.TargetPosition = "D154";
-            this.ppConveyor_Back_Vertical.PositioningStartAddress = "M54";
-            this.ppConveyor_Back_Vertical.CalibrationAddress = "D134";
-            this.ppConveyor_Back_Vertical.CalibrateAddress = "M34";
-            this.ppConveyor_Back_Vertical.PositioningToleranceAddress = "D754";
-            this.ppConveyor_Back_Vertical.PositioningDirectionReferenceAddress = "D794";
-            this.ppConveyor_Back_Vertical.Divisor = 100D;
             this.ppConveyor_Back_Vertical.DecimalPlaces = 2;
+            this.ppConveyor_Back_Vertical.Divisor = 100D;
             this.ppConveyor_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Back_Vertical.Location = new System.Drawing.Point(16, 230);
+            this.ppConveyor_Back_Vertical.Name = "ppConveyor_Back_Vertical";
+            this.ppConveyor_Back_Vertical.PositionAddress = "D114";
+            this.ppConveyor_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppConveyor_Back_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Back_Vertical.PositioningDirectionReferenceAddress = "D794";
+            this.ppConveyor_Back_Vertical.PositioningStartAddress = "M54";
+            this.ppConveyor_Back_Vertical.PositioningToleranceAddress = "D754";
+            this.ppConveyor_Back_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppConveyor_Back_Vertical.TabIndex = 9;
+            this.ppConveyor_Back_Vertical.TargetPosition = "D154";
+            this.ppConveyor_Back_Vertical.TitleTextKey = "Conveyor Back Vertical";
             this.ppConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppConveyor_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppConveyor_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppConveyor_Back_Vertical.VerticalMovement = true;
             // 
             // ppConveyor_Back_Horizontal
             // 
-            // Conveyor Back Horizontal: M551 / M550, position D115; target D155 (M55), calibration D135 (M35), tolerance D755, direction ref D795.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppConveyor_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.ppConveyor_Back_Horizontal.Name = "ppConveyor_Back_Horizontal";
-            this.ppConveyor_Back_Horizontal.PlcNumber = 1;
-            this.ppConveyor_Back_Horizontal.TitleTextKey = "Conveyor Back Horizontal";
-            this.ppConveyor_Back_Horizontal.Location = new System.Drawing.Point(16, 274);
-            this.ppConveyor_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppConveyor_Back_Horizontal.CalibrateAddress = "M35";
+            this.ppConveyor_Back_Horizontal.CalibrationAddress = "D135";
             this.ppConveyor_Back_Horizontal.CommandBackAddress = "M551";
             this.ppConveyor_Back_Horizontal.CommandForwardAddress = "M550";
-            this.ppConveyor_Back_Horizontal.PositionAddress = "D115";
-            this.ppConveyor_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppConveyor_Back_Horizontal.PositionDivisor = 10D;
-            this.ppConveyor_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppConveyor_Back_Horizontal.TargetPosition = "D155";
-            this.ppConveyor_Back_Horizontal.PositioningStartAddress = "M55";
-            this.ppConveyor_Back_Horizontal.CalibrationAddress = "D135";
-            this.ppConveyor_Back_Horizontal.CalibrateAddress = "M35";
-            this.ppConveyor_Back_Horizontal.PositioningToleranceAddress = "D755";
-            this.ppConveyor_Back_Horizontal.PositioningDirectionReferenceAddress = "D795";
-            this.ppConveyor_Back_Horizontal.Divisor = 100D;
             this.ppConveyor_Back_Horizontal.DecimalPlaces = 2;
+            this.ppConveyor_Back_Horizontal.Divisor = 100D;
             this.ppConveyor_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppConveyor_Back_Horizontal.Location = new System.Drawing.Point(16, 274);
+            this.ppConveyor_Back_Horizontal.Name = "ppConveyor_Back_Horizontal";
+            this.ppConveyor_Back_Horizontal.PositionAddress = "D115";
+            this.ppConveyor_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppConveyor_Back_Horizontal.PositionDivisor = 10D;
+            this.ppConveyor_Back_Horizontal.PositioningDirectionReferenceAddress = "D795";
+            this.ppConveyor_Back_Horizontal.PositioningStartAddress = "M55";
+            this.ppConveyor_Back_Horizontal.PositioningToleranceAddress = "D755";
+            this.ppConveyor_Back_Horizontal.Size = new System.Drawing.Size(1101, 40);
+            this.ppConveyor_Back_Horizontal.TabIndex = 10;
+            this.ppConveyor_Back_Horizontal.TargetPosition = "D155";
+            this.ppConveyor_Back_Horizontal.TitleTextKey = "Conveyor Back Horizontal";
             this.ppConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppConveyor_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppConveyor_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppProfile_Recognition_Front_Vertical
             // 
-            // Profile Recognition Front Vertical: M553 / M552, position D116; target D156 (M56), calibration D136 (M36), tolerance D756, direction ref D796.
             this.ppProfile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppProfile_Recognition_Front_Vertical.Name = "ppProfile_Recognition_Front_Vertical";
-            this.ppProfile_Recognition_Front_Vertical.PlcNumber = 1;
-            this.ppProfile_Recognition_Front_Vertical.TitleTextKey = "Profile Recognition Front Vertical";
-            this.ppProfile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 318);
-            this.ppProfile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Front_Vertical.CalibrateAddress = "M36";
+            this.ppProfile_Recognition_Front_Vertical.CalibrationAddress = "D136";
             this.ppProfile_Recognition_Front_Vertical.CommandBackAddress = "M553";
             this.ppProfile_Recognition_Front_Vertical.CommandForwardAddress = "M552";
-            this.ppProfile_Recognition_Front_Vertical.VerticalMovement = true;
-            this.ppProfile_Recognition_Front_Vertical.PositionAddress = "D116";
-            this.ppProfile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppProfile_Recognition_Front_Vertical.PositionDivisor = 10D;
-            this.ppProfile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Front_Vertical.TargetPosition = "D156";
-            this.ppProfile_Recognition_Front_Vertical.PositioningStartAddress = "M56";
-            this.ppProfile_Recognition_Front_Vertical.CalibrationAddress = "D136";
-            this.ppProfile_Recognition_Front_Vertical.CalibrateAddress = "M36";
-            this.ppProfile_Recognition_Front_Vertical.PositioningToleranceAddress = "D756";
-            this.ppProfile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D796";
-            this.ppProfile_Recognition_Front_Vertical.Divisor = 100D;
             this.ppProfile_Recognition_Front_Vertical.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Front_Vertical.Divisor = 100D;
             this.ppProfile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppProfile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 318);
+            this.ppProfile_Recognition_Front_Vertical.Name = "ppProfile_Recognition_Front_Vertical";
+            this.ppProfile_Recognition_Front_Vertical.PositionAddress = "D116";
+            this.ppProfile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D796";
+            this.ppProfile_Recognition_Front_Vertical.PositioningStartAddress = "M56";
+            this.ppProfile_Recognition_Front_Vertical.PositioningToleranceAddress = "D756";
+            this.ppProfile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppProfile_Recognition_Front_Vertical.TabIndex = 11;
+            this.ppProfile_Recognition_Front_Vertical.TargetPosition = "D156";
+            this.ppProfile_Recognition_Front_Vertical.TitleTextKey = "Profile Recognition Front Vertical";
             this.ppProfile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppProfile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppProfile_Recognition_Front_Vertical.VerticalMovement = true;
             // 
             // ppProfile_Recognition_Back_Vertical
             // 
-            // Profile Recognition Back Vertical: M555 / M554, position D117; target D157 (M57), calibration D137 (M37), tolerance D757, direction ref D797.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppProfile_Recognition_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppProfile_Recognition_Back_Vertical.Name = "ppProfile_Recognition_Back_Vertical";
-            this.ppProfile_Recognition_Back_Vertical.PlcNumber = 1;
-            this.ppProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
-            this.ppProfile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 362);
-            this.ppProfile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Back_Vertical.CalibrateAddress = "M37";
+            this.ppProfile_Recognition_Back_Vertical.CalibrationAddress = "D137";
             this.ppProfile_Recognition_Back_Vertical.CommandBackAddress = "M555";
             this.ppProfile_Recognition_Back_Vertical.CommandForwardAddress = "M554";
-            this.ppProfile_Recognition_Back_Vertical.VerticalMovement = true;
-            this.ppProfile_Recognition_Back_Vertical.PositionAddress = "D117";
-            this.ppProfile_Recognition_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppProfile_Recognition_Back_Vertical.PositionDivisor = 10D;
-            this.ppProfile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Back_Vertical.TargetPosition = "D157";
-            this.ppProfile_Recognition_Back_Vertical.PositioningStartAddress = "M57";
-            this.ppProfile_Recognition_Back_Vertical.CalibrationAddress = "D137";
-            this.ppProfile_Recognition_Back_Vertical.CalibrateAddress = "M37";
-            this.ppProfile_Recognition_Back_Vertical.PositioningToleranceAddress = "D757";
-            this.ppProfile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D797";
-            this.ppProfile_Recognition_Back_Vertical.Divisor = 100D;
             this.ppProfile_Recognition_Back_Vertical.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Vertical.Divisor = 100D;
             this.ppProfile_Recognition_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppProfile_Recognition_Back_Vertical.Location = new System.Drawing.Point(16, 362);
+            this.ppProfile_Recognition_Back_Vertical.Name = "ppProfile_Recognition_Back_Vertical";
+            this.ppProfile_Recognition_Back_Vertical.PositionAddress = "D117";
+            this.ppProfile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D797";
+            this.ppProfile_Recognition_Back_Vertical.PositioningStartAddress = "M57";
+            this.ppProfile_Recognition_Back_Vertical.PositioningToleranceAddress = "D757";
+            this.ppProfile_Recognition_Back_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppProfile_Recognition_Back_Vertical.TabIndex = 12;
+            this.ppProfile_Recognition_Back_Vertical.TargetPosition = "D157";
+            this.ppProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
             this.ppProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppProfile_Recognition_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppProfile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppProfile_Recognition_Back_Vertical.VerticalMovement = true;
             // 
             // ppProfile_Recognition_Back_Horizontal
             // 
-            // Profile Recognition Back Horizontal: M557 / M556, position D118; target D158 (M58), calibration D138 (M38), tolerance D758, direction ref D798.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppProfile_Recognition_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.ppProfile_Recognition_Back_Horizontal.Name = "ppProfile_Recognition_Back_Horizontal";
-            this.ppProfile_Recognition_Back_Horizontal.PlcNumber = 1;
-            this.ppProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
-            this.ppProfile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 406);
-            this.ppProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppProfile_Recognition_Back_Horizontal.BackSensorAddress = "X12@2";
+            this.ppProfile_Recognition_Back_Horizontal.CalibrateAddress = "M38";
+            this.ppProfile_Recognition_Back_Horizontal.CalibrationAddress = "D138";
             this.ppProfile_Recognition_Back_Horizontal.CommandBackAddress = "M557";
             this.ppProfile_Recognition_Back_Horizontal.CommandForwardAddress = "M556";
-            this.ppProfile_Recognition_Back_Horizontal.BackSensorAddress = "X12@2";
-            this.ppProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
-            this.ppProfile_Recognition_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
-            this.ppProfile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Back_Horizontal.TargetPosition = "D158";
-            this.ppProfile_Recognition_Back_Horizontal.PositioningStartAddress = "M58";
-            this.ppProfile_Recognition_Back_Horizontal.CalibrationAddress = "D138";
-            this.ppProfile_Recognition_Back_Horizontal.CalibrateAddress = "M38";
-            this.ppProfile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D758";
-            this.ppProfile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D798";
-            this.ppProfile_Recognition_Back_Horizontal.Divisor = 100D;
             this.ppProfile_Recognition_Back_Horizontal.DecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Horizontal.Divisor = 100D;
             this.ppProfile_Recognition_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppProfile_Recognition_Back_Horizontal.Location = new System.Drawing.Point(16, 406);
+            this.ppProfile_Recognition_Back_Horizontal.Name = "ppProfile_Recognition_Back_Horizontal";
+            this.ppProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
+            this.ppProfile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D798";
+            this.ppProfile_Recognition_Back_Horizontal.PositioningStartAddress = "M58";
+            this.ppProfile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D758";
+            this.ppProfile_Recognition_Back_Horizontal.Size = new System.Drawing.Size(1101, 40);
+            this.ppProfile_Recognition_Back_Horizontal.TabIndex = 13;
+            this.ppProfile_Recognition_Back_Horizontal.TargetPosition = "D158";
+            this.ppProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
             this.ppProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppProfile_Recognition_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppProfile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppCutting_Left_Front_Vertical
             // 
-            // Cutting Left Front Vertical: M559 / M558, position D119; target D159 (M59), calibration D139 (M39), tolerance D759, direction ref D799.
             this.ppCutting_Left_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Left_Front_Vertical.Name = "ppCutting_Left_Front_Vertical";
-            this.ppCutting_Left_Front_Vertical.PlcNumber = 1;
-            this.ppCutting_Left_Front_Vertical.TitleTextKey = "Cutting Left Front Vertical";
-            this.ppCutting_Left_Front_Vertical.Location = new System.Drawing.Point(16, 450);
-            this.ppCutting_Left_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Front_Vertical.CalibrateAddress = "M39";
+            this.ppCutting_Left_Front_Vertical.CalibrationAddress = "D139";
             this.ppCutting_Left_Front_Vertical.CommandBackAddress = "M559";
             this.ppCutting_Left_Front_Vertical.CommandForwardAddress = "M558";
-            this.ppCutting_Left_Front_Vertical.VerticalMovement = true;
-            this.ppCutting_Left_Front_Vertical.PositionAddress = "D119";
-            this.ppCutting_Left_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Left_Front_Vertical.PositionDivisor = 10D;
-            this.ppCutting_Left_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Front_Vertical.TargetPosition = "D159";
-            this.ppCutting_Left_Front_Vertical.PositioningStartAddress = "M59";
-            this.ppCutting_Left_Front_Vertical.CalibrationAddress = "D139";
-            this.ppCutting_Left_Front_Vertical.CalibrateAddress = "M39";
-            this.ppCutting_Left_Front_Vertical.PositioningToleranceAddress = "D759";
-            this.ppCutting_Left_Front_Vertical.PositioningDirectionReferenceAddress = "D799";
-            this.ppCutting_Left_Front_Vertical.Divisor = 100D;
             this.ppCutting_Left_Front_Vertical.DecimalPlaces = 2;
-            this.ppCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-            this.ppCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppCutting_Left_Front_Vertical.ErrorForwardAddress = "M934";
+            this.ppCutting_Left_Front_Vertical.Divisor = 100D;
             this.ppCutting_Left_Front_Vertical.ErrorBackAddress = "M933";
-            this.ppCutting_Left_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppCutting_Left_Front_Vertical.ErrorForwardAddress = "M934";
+            this.ppCutting_Left_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Left_Front_Vertical.Location = new System.Drawing.Point(16, 450);
+            this.ppCutting_Left_Front_Vertical.Name = "ppCutting_Left_Front_Vertical";
+            this.ppCutting_Left_Front_Vertical.PositionAddress = "D119";
+            this.ppCutting_Left_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Front_Vertical.PositioningDirectionReferenceAddress = "D799";
+            this.ppCutting_Left_Front_Vertical.PositioningStartAddress = "M59";
+            this.ppCutting_Left_Front_Vertical.PositioningToleranceAddress = "D759";
+            this.ppCutting_Left_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Left_Front_Vertical.TabIndex = 14;
+            this.ppCutting_Left_Front_Vertical.TargetPosition = "D159";
+            this.ppCutting_Left_Front_Vertical.TitleTextKey = "Cutting Left Front Vertical";
+            this.ppCutting_Left_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Front_Vertical.VerticalMovement = true;
             // 
             // ppCutting_Left_Back_Vertical
             // 
-            // Cutting Left Back Vertical: M561 / M560, position D120; target D160 (M60), calibration D140 (M40), tolerance D760, direction ref D800.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppCutting_Left_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Left_Back_Vertical.Name = "ppCutting_Left_Back_Vertical";
-            this.ppCutting_Left_Back_Vertical.PlcNumber = 1;
-            this.ppCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
-            this.ppCutting_Left_Back_Vertical.Location = new System.Drawing.Point(16, 494);
-            this.ppCutting_Left_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Back_Vertical.CalibrateAddress = "M40";
+            this.ppCutting_Left_Back_Vertical.CalibrationAddress = "D140";
             this.ppCutting_Left_Back_Vertical.CommandBackAddress = "M561";
             this.ppCutting_Left_Back_Vertical.CommandForwardAddress = "M560";
-            this.ppCutting_Left_Back_Vertical.VerticalMovement = true;
-            this.ppCutting_Left_Back_Vertical.PositionAddress = "D120";
-            this.ppCutting_Left_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Left_Back_Vertical.PositionDivisor = 10D;
-            this.ppCutting_Left_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Back_Vertical.TargetPosition = "D160";
-            this.ppCutting_Left_Back_Vertical.PositioningStartAddress = "M60";
-            this.ppCutting_Left_Back_Vertical.CalibrationAddress = "D140";
-            this.ppCutting_Left_Back_Vertical.CalibrateAddress = "M40";
-            this.ppCutting_Left_Back_Vertical.PositioningToleranceAddress = "D760";
-            this.ppCutting_Left_Back_Vertical.PositioningDirectionReferenceAddress = "D800";
-            this.ppCutting_Left_Back_Vertical.Divisor = 100D;
             this.ppCutting_Left_Back_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Left_Back_Vertical.Divisor = 100D;
             this.ppCutting_Left_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Left_Back_Vertical.Location = new System.Drawing.Point(16, 494);
+            this.ppCutting_Left_Back_Vertical.Name = "ppCutting_Left_Back_Vertical";
+            this.ppCutting_Left_Back_Vertical.PositionAddress = "D120";
+            this.ppCutting_Left_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Vertical.PositioningDirectionReferenceAddress = "D800";
+            this.ppCutting_Left_Back_Vertical.PositioningStartAddress = "M60";
+            this.ppCutting_Left_Back_Vertical.PositioningToleranceAddress = "D760";
+            this.ppCutting_Left_Back_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Left_Back_Vertical.TabIndex = 15;
+            this.ppCutting_Left_Back_Vertical.TargetPosition = "D160";
+            this.ppCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
             this.ppCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppCutting_Left_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppCutting_Left_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppCutting_Left_Back_Vertical.VerticalMovement = true;
             // 
             // ppCutting_Left_Back_Horizontal
             // 
-            // Cutting Left Back Horizontal: M563 / M562, position D121; target D161 (M61), calibration D141 (M41), tolerance D761, direction ref D801.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppCutting_Left_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Left_Back_Horizontal.Name = "ppCutting_Left_Back_Horizontal";
-            this.ppCutting_Left_Back_Horizontal.PlcNumber = 1;
-            this.ppCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
-            this.ppCutting_Left_Back_Horizontal.Location = new System.Drawing.Point(16, 538);
-            this.ppCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Left_Back_Horizontal.BackSensorAddress = "X13@2";
+            this.ppCutting_Left_Back_Horizontal.CalibrateAddress = "M41";
+            this.ppCutting_Left_Back_Horizontal.CalibrationAddress = "D141";
             this.ppCutting_Left_Back_Horizontal.CommandBackAddress = "M563";
             this.ppCutting_Left_Back_Horizontal.CommandForwardAddress = "M562";
-            this.ppCutting_Left_Back_Horizontal.BackSensorAddress = "X13@2";
-            this.ppCutting_Left_Back_Horizontal.PositionAddress = "D121";
-            this.ppCutting_Left_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Left_Back_Horizontal.PositionDivisor = 10D;
-            this.ppCutting_Left_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Back_Horizontal.TargetPosition = "D161";
-            this.ppCutting_Left_Back_Horizontal.PositioningStartAddress = "M61";
-            this.ppCutting_Left_Back_Horizontal.CalibrationAddress = "D141";
-            this.ppCutting_Left_Back_Horizontal.CalibrateAddress = "M41";
-            this.ppCutting_Left_Back_Horizontal.PositioningToleranceAddress = "D761";
-            this.ppCutting_Left_Back_Horizontal.PositioningDirectionReferenceAddress = "D801";
-            this.ppCutting_Left_Back_Horizontal.Divisor = 100D;
             this.ppCutting_Left_Back_Horizontal.DecimalPlaces = 2;
-            this.ppCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.ppCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Back_Horizontal.Divisor = 100D;
             this.ppCutting_Left_Back_Horizontal.ErrorBackAddress = "M937";
-            this.ppCutting_Left_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppCutting_Left_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppCutting_Left_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppCutting_Left_Back_Horizontal.Location = new System.Drawing.Point(16, 538);
+            this.ppCutting_Left_Back_Horizontal.Name = "ppCutting_Left_Back_Horizontal";
+            this.ppCutting_Left_Back_Horizontal.PositionAddress = "D121";
+            this.ppCutting_Left_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppCutting_Left_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Horizontal.PositioningDirectionReferenceAddress = "D801";
+            this.ppCutting_Left_Back_Horizontal.PositioningStartAddress = "M61";
+            this.ppCutting_Left_Back_Horizontal.PositioningToleranceAddress = "D761";
+            this.ppCutting_Left_Back_Horizontal.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Left_Back_Horizontal.TabIndex = 16;
+            this.ppCutting_Left_Back_Horizontal.TargetPosition = "D161";
+            this.ppCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
             // 
             // ppCutting_Right_Front_Vertical
             // 
-            // Cutting Right Front Vertical: M565 / M564, position D122; target D162 (M62), calibration D142 (M42), tolerance D762, direction ref D802.
             this.ppCutting_Right_Front_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Right_Front_Vertical.Name = "ppCutting_Right_Front_Vertical";
-            this.ppCutting_Right_Front_Vertical.PlcNumber = 1;
-            this.ppCutting_Right_Front_Vertical.TitleTextKey = "Cutting Right Front Vertical";
-            this.ppCutting_Right_Front_Vertical.Location = new System.Drawing.Point(16, 582);
-            this.ppCutting_Right_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Front_Vertical.CalibrateAddress = "M42";
+            this.ppCutting_Right_Front_Vertical.CalibrationAddress = "D142";
             this.ppCutting_Right_Front_Vertical.CommandBackAddress = "M565";
             this.ppCutting_Right_Front_Vertical.CommandForwardAddress = "M564";
-            this.ppCutting_Right_Front_Vertical.VerticalMovement = true;
-            this.ppCutting_Right_Front_Vertical.PositionAddress = "D122";
-            this.ppCutting_Right_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Right_Front_Vertical.PositionDivisor = 10D;
-            this.ppCutting_Right_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Front_Vertical.TargetPosition = "D162";
-            this.ppCutting_Right_Front_Vertical.PositioningStartAddress = "M62";
-            this.ppCutting_Right_Front_Vertical.CalibrationAddress = "D142";
-            this.ppCutting_Right_Front_Vertical.CalibrateAddress = "M42";
-            this.ppCutting_Right_Front_Vertical.PositioningToleranceAddress = "D762";
-            this.ppCutting_Right_Front_Vertical.PositioningDirectionReferenceAddress = "D802";
-            this.ppCutting_Right_Front_Vertical.Divisor = 100D;
             this.ppCutting_Right_Front_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Right_Front_Vertical.Divisor = 100D;
             this.ppCutting_Right_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Right_Front_Vertical.Location = new System.Drawing.Point(16, 582);
+            this.ppCutting_Right_Front_Vertical.Name = "ppCutting_Right_Front_Vertical";
+            this.ppCutting_Right_Front_Vertical.PositionAddress = "D122";
+            this.ppCutting_Right_Front_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Front_Vertical.PositioningDirectionReferenceAddress = "D802";
+            this.ppCutting_Right_Front_Vertical.PositioningStartAddress = "M62";
+            this.ppCutting_Right_Front_Vertical.PositioningToleranceAddress = "D762";
+            this.ppCutting_Right_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Right_Front_Vertical.TabIndex = 17;
+            this.ppCutting_Right_Front_Vertical.TargetPosition = "D162";
+            this.ppCutting_Right_Front_Vertical.TitleTextKey = "Cutting Right Front Vertical";
             this.ppCutting_Right_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppCutting_Right_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.ppCutting_Right_Front_Vertical.VerticalMovement = true;
             // 
             // ppCutting_Right_Back_Vertical
             // 
-            // Cutting Right Back Vertical: M567 / M566, position D123; target D163 (M63), calibration D143 (M43), tolerance D763, direction ref D803.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppCutting_Right_Back_Vertical.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Right_Back_Vertical.Name = "ppCutting_Right_Back_Vertical";
-            this.ppCutting_Right_Back_Vertical.PlcNumber = 1;
-            this.ppCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
-            this.ppCutting_Right_Back_Vertical.Location = new System.Drawing.Point(16, 626);
-            this.ppCutting_Right_Back_Vertical.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Back_Vertical.CalibrateAddress = "M43";
+            this.ppCutting_Right_Back_Vertical.CalibrationAddress = "D143";
             this.ppCutting_Right_Back_Vertical.CommandBackAddress = "M567";
             this.ppCutting_Right_Back_Vertical.CommandForwardAddress = "M566";
-            this.ppCutting_Right_Back_Vertical.VerticalMovement = true;
-            this.ppCutting_Right_Back_Vertical.PositionAddress = "D123";
-            this.ppCutting_Right_Back_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Right_Back_Vertical.PositionDivisor = 10D;
-            this.ppCutting_Right_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Back_Vertical.TargetPosition = "D163";
-            this.ppCutting_Right_Back_Vertical.PositioningStartAddress = "M63";
-            this.ppCutting_Right_Back_Vertical.CalibrationAddress = "D143";
-            this.ppCutting_Right_Back_Vertical.CalibrateAddress = "M43";
-            this.ppCutting_Right_Back_Vertical.PositioningToleranceAddress = "D763";
-            this.ppCutting_Right_Back_Vertical.PositioningDirectionReferenceAddress = "D803";
-            this.ppCutting_Right_Back_Vertical.Divisor = 100D;
             this.ppCutting_Right_Back_Vertical.DecimalPlaces = 2;
+            this.ppCutting_Right_Back_Vertical.Divisor = 100D;
             this.ppCutting_Right_Back_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppCutting_Right_Back_Vertical.Location = new System.Drawing.Point(16, 626);
+            this.ppCutting_Right_Back_Vertical.Name = "ppCutting_Right_Back_Vertical";
+            this.ppCutting_Right_Back_Vertical.PositionAddress = "D123";
+            this.ppCutting_Right_Back_Vertical.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Vertical.PositioningDirectionReferenceAddress = "D803";
+            this.ppCutting_Right_Back_Vertical.PositioningStartAddress = "M63";
+            this.ppCutting_Right_Back_Vertical.PositioningToleranceAddress = "D763";
+            this.ppCutting_Right_Back_Vertical.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Right_Back_Vertical.TabIndex = 18;
+            this.ppCutting_Right_Back_Vertical.TargetPosition = "D163";
+            this.ppCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
             this.ppCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppCutting_Right_Back_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppCutting_Right_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
+            this.ppCutting_Right_Back_Vertical.VerticalMovement = true;
             // 
             // ppCutting_Right_Back_Horizontal
             // 
-            // Cutting Right Back Horizontal: M569 / M568, position D124; target D164 (M64), calibration D144 (M44), tolerance D764, direction ref D804.
-            // Fitted only with the Clamping Mould option (L27): shown only while it is on - the rows under it move up.
             this.ppCutting_Right_Back_Horizontal.BackColor = System.Drawing.Color.White;
-            this.ppCutting_Right_Back_Horizontal.Name = "ppCutting_Right_Back_Horizontal";
-            this.ppCutting_Right_Back_Horizontal.PlcNumber = 1;
-            this.ppCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
-            this.ppCutting_Right_Back_Horizontal.Location = new System.Drawing.Point(16, 670);
-            this.ppCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(1078, 40);
+            this.ppCutting_Right_Back_Horizontal.BackSensorAddress = "X14@2";
+            this.ppCutting_Right_Back_Horizontal.CalibrateAddress = "M44";
+            this.ppCutting_Right_Back_Horizontal.CalibrationAddress = "D144";
             this.ppCutting_Right_Back_Horizontal.CommandBackAddress = "M569";
             this.ppCutting_Right_Back_Horizontal.CommandForwardAddress = "M568";
-            this.ppCutting_Right_Back_Horizontal.BackSensorAddress = "X14@2";
-            this.ppCutting_Right_Back_Horizontal.PositionAddress = "D124";
-            this.ppCutting_Right_Back_Horizontal.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppCutting_Right_Back_Horizontal.PositionDivisor = 10D;
-            this.ppCutting_Right_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Back_Horizontal.TargetPosition = "D164";
-            this.ppCutting_Right_Back_Horizontal.PositioningStartAddress = "M64";
-            this.ppCutting_Right_Back_Horizontal.CalibrationAddress = "D144";
-            this.ppCutting_Right_Back_Horizontal.CalibrateAddress = "M44";
-            this.ppCutting_Right_Back_Horizontal.PositioningToleranceAddress = "D764";
-            this.ppCutting_Right_Back_Horizontal.PositioningDirectionReferenceAddress = "D804";
-            this.ppCutting_Right_Back_Horizontal.Divisor = 100D;
             this.ppCutting_Right_Back_Horizontal.DecimalPlaces = 2;
+            this.ppCutting_Right_Back_Horizontal.Divisor = 100D;
             this.ppCutting_Right_Back_Horizontal.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.ppCutting_Right_Back_Horizontal.Location = new System.Drawing.Point(16, 670);
+            this.ppCutting_Right_Back_Horizontal.Name = "ppCutting_Right_Back_Horizontal";
+            this.ppCutting_Right_Back_Horizontal.PositionAddress = "D124";
+            this.ppCutting_Right_Back_Horizontal.PositionDecimalPlaces = 2;
+            this.ppCutting_Right_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Horizontal.PositioningDirectionReferenceAddress = "D804";
+            this.ppCutting_Right_Back_Horizontal.PositioningStartAddress = "M64";
+            this.ppCutting_Right_Back_Horizontal.PositioningToleranceAddress = "D764";
+            this.ppCutting_Right_Back_Horizontal.Size = new System.Drawing.Size(1101, 40);
+            this.ppCutting_Right_Back_Horizontal.TabIndex = 19;
+            this.ppCutting_Right_Back_Horizontal.TargetPosition = "D164";
+            this.ppCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
             this.ppCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            this.ppCutting_Right_Back_Horizontal.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 524288: the machine condition "Clamping Mould option is on" (L27, FA2010Module.RegisterConditions)
-            this.ppCutting_Right_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppRight_Front_Vertical_Clamping
             // 
-            // Right Front Vertical Clamping: M585 / M584, position D128; target D167 (M67), calibration D147 (M47), tolerance D846, direction ref D807.
             this.ppRight_Front_Vertical_Clamping.BackColor = System.Drawing.Color.White;
-            this.ppRight_Front_Vertical_Clamping.Name = "ppRight_Front_Vertical_Clamping";
-            this.ppRight_Front_Vertical_Clamping.PlcNumber = 1;
-            this.ppRight_Front_Vertical_Clamping.TitleTextKey = "Right Front Vertical Clamping";
-            this.ppRight_Front_Vertical_Clamping.Location = new System.Drawing.Point(16, 714);
-            this.ppRight_Front_Vertical_Clamping.Size = new System.Drawing.Size(1078, 40);
+            this.ppRight_Front_Vertical_Clamping.CalibrateAddress = "M47";
+            this.ppRight_Front_Vertical_Clamping.CalibrationAddress = "D147";
             this.ppRight_Front_Vertical_Clamping.CommandBackAddress = "M585";
             this.ppRight_Front_Vertical_Clamping.CommandForwardAddress = "M584";
-            this.ppRight_Front_Vertical_Clamping.VerticalMovement = true;
-            this.ppRight_Front_Vertical_Clamping.PositionAddress = "D128";
-            this.ppRight_Front_Vertical_Clamping.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.ppRight_Front_Vertical_Clamping.PositionDivisor = 10D;
-            this.ppRight_Front_Vertical_Clamping.PositionDecimalPlaces = 2;
-            this.ppRight_Front_Vertical_Clamping.TargetPosition = "D167";
-            this.ppRight_Front_Vertical_Clamping.PositioningStartAddress = "M67";
-            this.ppRight_Front_Vertical_Clamping.CalibrationAddress = "D147";
-            this.ppRight_Front_Vertical_Clamping.CalibrateAddress = "M47";
-            this.ppRight_Front_Vertical_Clamping.PositioningToleranceAddress = "D846";
-            this.ppRight_Front_Vertical_Clamping.PositioningDirectionReferenceAddress = "D807";
-            this.ppRight_Front_Vertical_Clamping.Divisor = 100D;
             this.ppRight_Front_Vertical_Clamping.DecimalPlaces = 2;
-            this.ppRight_Front_Vertical_Clamping.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.ppRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppRight_Front_Vertical_Clamping.Divisor = 100D;
             this.ppRight_Front_Vertical_Clamping.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
+            this.ppRight_Front_Vertical_Clamping.Location = new System.Drawing.Point(16, 714);
+            this.ppRight_Front_Vertical_Clamping.Name = "ppRight_Front_Vertical_Clamping";
+            this.ppRight_Front_Vertical_Clamping.PositionAddress = "D128";
+            this.ppRight_Front_Vertical_Clamping.PositionDecimalPlaces = 2;
+            this.ppRight_Front_Vertical_Clamping.PositionDivisor = 10D;
+            this.ppRight_Front_Vertical_Clamping.PositioningDirectionReferenceAddress = "D807";
+            this.ppRight_Front_Vertical_Clamping.PositioningStartAddress = "M67";
+            this.ppRight_Front_Vertical_Clamping.PositioningToleranceAddress = "D846";
+            this.ppRight_Front_Vertical_Clamping.Size = new System.Drawing.Size(1101, 40);
+            this.ppRight_Front_Vertical_Clamping.TabIndex = 20;
+            this.ppRight_Front_Vertical_Clamping.TargetPosition = "D167";
+            this.ppRight_Front_Vertical_Clamping.TitleTextKey = "Right Front Vertical Clamping";
+            this.ppRight_Front_Vertical_Clamping.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppRight_Front_Vertical_Clamping.VerticalMovement = true;
             // 
             // ManualClamping_Moulds
             // 
-            // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
-            // auto-scaling container (the tab host), which would scale them twice.
-            // The layout is in absolute pixels anyway.
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
@@ -614,9 +537,9 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.Controls.Add(this.ppCutting_Right_Back_Horizontal);
             this.Controls.Add(this.ppRight_Front_Vertical_Clamping);
             this.Name = "ManualClamping_Moulds";
-            this.Size = new System.Drawing.Size(1110, 766);
+            this.Size = new System.Drawing.Size(1242, 819);
             this.ResumeLayout(false);
-            this.PerformLayout();
+
         }
 
         #endregion

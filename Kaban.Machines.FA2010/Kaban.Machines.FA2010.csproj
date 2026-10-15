@@ -126,6 +126,12 @@
     <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
       <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\Parameters\Options.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Parameters\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Parameters\ParamConveyor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -174,19 +180,19 @@
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Accessories.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
-      <SubType>Code</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Details.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
-      <SubType>Code</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Drawing.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
-      <SubType>Code</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\ProfilesScreen.Program.cs">
       <DependentUpon>ProfilesScreen.cs</DependentUpon>
-      <SubType>Code</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Screens\HomeScreen.cs">
       <SubType>UserControl</SubType>
@@ -247,11 +253,56 @@
       <DependentUpon>HomeScreen.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualClamping_Moulds.resx">
+      <DependentUpon>ManualClamping_Moulds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualCutting.resx">
+      <DependentUpon>ManualCutting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualEntry_Conveyor.resx">
+      <DependentUpon>ManualEntry_Conveyor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Screens\Manual\ManualExit.resx">
       <DependentUpon>ManualExit.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualMilling.resx">
+      <DependentUpon>ManualMilling.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualOther.resx">
+      <DependentUpon>ManualOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualProfile_Recognition.resx">
+      <DependentUpon>ManualProfile_Recognition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualRobot.resx">
+      <DependentUpon>ManualRobot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Manual\ManualYZ_Cross_Rollers.resx">
+      <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Screens\Parameters\AxisSettings.resx">
       <DependentUpon>AxisSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamConveyor.resx">
+      <DependentUpon>ParamConveyor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamCutting.resx">
+      <DependentUpon>ParamCutting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamEncoders.resx">
+      <DependentUpon>ParamEncoders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamMilling.resx">
+      <DependentUpon>ParamMilling.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamOther.resx">
+      <DependentUpon>ParamOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Screens\Parameters\ParamRobot.resx">
+      <DependentUpon>ParamRobot.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -226,8 +226,8 @@ namespace Kaban.Machines.FA2010
                 if (endpoint.ModuleId == "FA2010" && endpoint.LocalPlcNumber == 1)
                 {
                     // FA2010 CPU1 conditions (see FA2010Module.RegisterConditions).
-                    sim.Seed("M100", 0)    // ManualMode  == 0 -> active
-                       .Seed("D300", 0)    // AutoMode    <= 3 -> active
+                    sim.Seed("M21", 0)    // ManualMode  == 0 -> active
+                       .Seed("M21", 1)    // AutoMode    <= 3 -> active
                        .Seed("D200", 0)    // MachineIsRunning > 0 -> inactive
                        .Seed("X20", 1)     // RobotIsSafe -> ON so commands are allowed
                        .Seed("X50", 1)     // RobotIsOutside
@@ -239,7 +239,7 @@ namespace Kaban.Machines.FA2010
                     // PLC2 showcase controls use, so they all appear in the monitor
                     // immediately and are wired end to end (otherwise an address only
                     // shows up after its control writes it).
-                    sim.Seed("X25", 1)     // lamp + MillingUnitIsBack (PLC2)
+                    sim.Seed("X25", 1)     // lamp + MullionNotching (PLC2)
                        .Seed("M23", 0)     // MillingUnitInside_PLC2
                        .Seed("M10", 0)     // demo button relay / unit fwd command
                        .Seed("M11", 0)     // unit reverse command

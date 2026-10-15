@@ -25,99 +25,243 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private void InitializeComponent()
         {
             this.unitProfile_Recognition = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.lampProfile_Recognition_Activation_SN = new Kaban.UI.Controls.LampHMI();
-            this.unitMilling = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitCutting_Right = new Kaban.UI.Controls.CylinderUnitHMI();
+            this.unitMilling = new Kaban.UI.Controls.CylinderUnitHMI();
             this.SuspendLayout();
             // 
             // unitProfile_Recognition
             // 
+            this.unitProfile_Recognition.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
             this.unitProfile_Recognition.BackColor = System.Drawing.Color.White;
-            this.unitProfile_Recognition.Name = "unitProfile_Recognition";
-            this.unitProfile_Recognition.PlcNumber = 1;
-            this.unitProfile_Recognition.TitleTextKey = "Profile Recognition";
-            this.unitProfile_Recognition.Location = new System.Drawing.Point(16, 16);
-            this.unitProfile_Recognition.Size = new System.Drawing.Size(360, 64);
-            this.unitProfile_Recognition.LogAction = true;
-            this.unitProfile_Recognition.CommandAAddress = "M574";
+            this.unitProfile_Recognition.BaseOffset = 0;
+            this.unitProfile_Recognition.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.DescriptionKey = "";
+            this.unitProfile_Recognition.ButtonAEnableTrigger.MonitorAddress = "";
+            this.unitProfile_Recognition.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.ValA = 0D;
+            this.unitProfile_Recognition.ButtonAEnableTrigger.ValB = 0D;
+            this.unitProfile_Recognition.ButtonATextKey = "◀";
+            this.unitProfile_Recognition.ButtonATipKey = "";
+            this.unitProfile_Recognition.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Recognition.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.DescriptionKey = "";
+            this.unitProfile_Recognition.ButtonBEnableTrigger.MonitorAddress = "";
+            this.unitProfile_Recognition.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.ValA = 0D;
+            this.unitProfile_Recognition.ButtonBEnableTrigger.ValB = 0D;
+            this.unitProfile_Recognition.ButtonBTextKey = "▶";
+            this.unitProfile_Recognition.ButtonBTipKey = "";
+            this.unitProfile_Recognition.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitProfile_Recognition.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition.Lamp1AAddress = "M266";
-            this.unitProfile_Recognition.CommandBAddress = "M575";
+            this.unitProfile_Recognition.CommandAAddress = "M574";
             this.unitProfile_Recognition.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitProfile_Recognition.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
-            this.unitProfile_Recognition.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitProfile_Recognition.ErrorBAddress = "M843";
+            this.unitProfile_Recognition.CommandBAddress = "M575";
+            this.unitProfile_Recognition.ConfirmationNeeded = false;
+            this.unitProfile_Recognition.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitProfile_Recognition.ErrorAAddress = "M842";
+            this.unitProfile_Recognition.ErrorBAddress = "M843";
+            this.unitProfile_Recognition.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitProfile_Recognition.Lamp1AAddress = "M266";
+            this.unitProfile_Recognition.Lamp1ATipKey = "";
+            this.unitProfile_Recognition.Lamp1BAddress = "";
+            this.unitProfile_Recognition.Lamp1BTipKey = "";
+            this.unitProfile_Recognition.Lamp2AAddress = "";
+            this.unitProfile_Recognition.Lamp2ATipKey = "";
+            this.unitProfile_Recognition.Lamp2BAddress = "";
+            this.unitProfile_Recognition.Lamp2BTipKey = "";
+            this.unitProfile_Recognition.Location = new System.Drawing.Point(21, 36);
+            this.unitProfile_Recognition.LogAction = true;
+            this.unitProfile_Recognition.Name = "unitProfile_Recognition";
+            this.unitProfile_Recognition.OutputAAddress = "";
+            this.unitProfile_Recognition.OutputBAddress = "";
+            this.unitProfile_Recognition.PlcNumber = 1;
+            this.unitProfile_Recognition.PositionAddress = "";
+            this.unitProfile_Recognition.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitProfile_Recognition.PositionDecimalPlaces = 0;
+            this.unitProfile_Recognition.PositionDigits = 5;
+            this.unitProfile_Recognition.PositionDivisor = 1D;
+            this.unitProfile_Recognition.PositionOffset.StaticValue = 0D;
+            this.unitProfile_Recognition.PositionOffset.TagAddress = "";
+            this.unitProfile_Recognition.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.unitProfile_Recognition.PositionSuffix = "";
+            this.unitProfile_Recognition.PositionTipKey = "Current position";
+            this.unitProfile_Recognition.PositionUnitType = Kaban.Core.Enums.UnitType.None;
+            this.unitProfile_Recognition.RelayAAddress = "";
+            this.unitProfile_Recognition.RelayBAddress = "";
             this.unitProfile_Recognition.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lampProfile_Recognition_Activation_SN
-            // 
-            this.lampProfile_Recognition_Activation_SN.Name = "lampProfile_Recognition_Activation_SN";
-            this.lampProfile_Recognition_Activation_SN.PlcNumber = 1;
-            this.lampProfile_Recognition_Activation_SN.Address = "M265";
-            this.lampProfile_Recognition_Activation_SN.DescriptionText = "Profile Recognition Activation SN";
-            this.lampProfile_Recognition_Activation_SN.Location = new System.Drawing.Point(16, 90);
-            this.lampProfile_Recognition_Activation_SN.Size = new System.Drawing.Size(36, 36);
-            // 
-            // unitMilling
-            // 
-            this.unitMilling.BackColor = System.Drawing.Color.White;
-            this.unitMilling.Name = "unitMilling";
-            this.unitMilling.PlcNumber = 1;
-            this.unitMilling.TitleTextKey = "Milling";
-            this.unitMilling.Location = new System.Drawing.Point(16, 136);
-            this.unitMilling.Size = new System.Drawing.Size(360, 64);
-            this.unitMilling.LogAction = true;
-            this.unitMilling.CommandAAddress = "M576";
-            this.unitMilling.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitMilling.Lamp1AAddress = "M267";
-            this.unitMilling.CommandBAddress = "M577";
-            this.unitMilling.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitMilling.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
-            this.unitMilling.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitMilling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitProfile_Recognition.Size = new System.Drawing.Size(360, 64);
+            this.unitProfile_Recognition.TabIndex = 0;
+            this.unitProfile_Recognition.TitleTextKey = "Profile Recognition";
+            this.unitProfile_Recognition.TitleTipKey = "";
+            this.unitProfile_Recognition.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitProfile_Recognition.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // unitCutting_Right
             // 
+            this.unitCutting_Right.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
             this.unitCutting_Right.BackColor = System.Drawing.Color.White;
-            this.unitCutting_Right.Name = "unitCutting_Right";
-            this.unitCutting_Right.PlcNumber = 1;
-            this.unitCutting_Right.TitleTextKey = "Cutting Right";
-            this.unitCutting_Right.Location = new System.Drawing.Point(16, 210);
-            this.unitCutting_Right.Size = new System.Drawing.Size(360, 64);
-            this.unitCutting_Right.LogAction = true;
-            this.unitCutting_Right.CommandAAddress = "M580";
+            this.unitCutting_Right.BaseOffset = 0;
+            this.unitCutting_Right.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitCutting_Right.ButtonAEnableTrigger.DescriptionKey = "";
+            this.unitCutting_Right.ButtonAEnableTrigger.MonitorAddress = "";
+            this.unitCutting_Right.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitCutting_Right.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitCutting_Right.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitCutting_Right.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitCutting_Right.ButtonAEnableTrigger.ValA = 0D;
+            this.unitCutting_Right.ButtonAEnableTrigger.ValB = 0D;
+            this.unitCutting_Right.ButtonATextKey = "◀";
+            this.unitCutting_Right.ButtonATipKey = "";
+            this.unitCutting_Right.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitCutting_Right.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitCutting_Right.ButtonBEnableTrigger.DescriptionKey = "";
+            this.unitCutting_Right.ButtonBEnableTrigger.MonitorAddress = "";
+            this.unitCutting_Right.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitCutting_Right.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitCutting_Right.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitCutting_Right.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitCutting_Right.ButtonBEnableTrigger.ValA = 0D;
+            this.unitCutting_Right.ButtonBEnableTrigger.ValB = 0D;
+            this.unitCutting_Right.ButtonBTextKey = "▶";
+            this.unitCutting_Right.ButtonBTipKey = "";
+            this.unitCutting_Right.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitCutting_Right.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitCutting_Right.Lamp1AAddress = "M268";
-            this.unitCutting_Right.CommandBAddress = "M581";
+            this.unitCutting_Right.CommandAAddress = "M580";
             this.unitCutting_Right.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitCutting_Right.CommandBAddress = "M581";
+            this.unitCutting_Right.ConfirmationNeeded = false;
+            this.unitCutting_Right.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitCutting_Right.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
-            this.unitCutting_Right.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitCutting_Right.Lamp1AAddress = "M268";
+            this.unitCutting_Right.Lamp1ATipKey = "";
+            this.unitCutting_Right.Lamp1BAddress = "";
+            this.unitCutting_Right.Lamp1BTipKey = "";
+            this.unitCutting_Right.Lamp2AAddress = "";
+            this.unitCutting_Right.Lamp2ATipKey = "";
+            this.unitCutting_Right.Lamp2BAddress = "";
+            this.unitCutting_Right.Lamp2BTipKey = "";
+            this.unitCutting_Right.Location = new System.Drawing.Point(21, 184);
+            this.unitCutting_Right.LogAction = true;
+            this.unitCutting_Right.Name = "unitCutting_Right";
+            this.unitCutting_Right.OutputAAddress = "";
+            this.unitCutting_Right.OutputBAddress = "";
+            this.unitCutting_Right.PlcNumber = 1;
+            this.unitCutting_Right.PositionAddress = "";
+            this.unitCutting_Right.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitCutting_Right.PositionDecimalPlaces = 0;
+            this.unitCutting_Right.PositionDigits = 5;
+            this.unitCutting_Right.PositionDivisor = 1D;
+            this.unitCutting_Right.PositionOffset.StaticValue = 0D;
+            this.unitCutting_Right.PositionOffset.TagAddress = "";
+            this.unitCutting_Right.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.unitCutting_Right.PositionSuffix = "";
+            this.unitCutting_Right.PositionTipKey = "Current position";
+            this.unitCutting_Right.PositionUnitType = Kaban.Core.Enums.UnitType.None;
+            this.unitCutting_Right.RelayAAddress = "";
+            this.unitCutting_Right.RelayBAddress = "";
             this.unitCutting_Right.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitCutting_Right.Size = new System.Drawing.Size(360, 64);
+            this.unitCutting_Right.TabIndex = 4;
+            this.unitCutting_Right.TitleTextKey = "Cutting Right";
+            this.unitCutting_Right.TitleTipKey = "";
+            this.unitCutting_Right.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitCutting_Right.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // unitMilling
+            // 
+            this.unitMilling.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
+            this.unitMilling.BackColor = System.Drawing.Color.White;
+            this.unitMilling.BaseOffset = 0;
+            this.unitMilling.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitMilling.ButtonAEnableTrigger.DescriptionKey = "";
+            this.unitMilling.ButtonAEnableTrigger.MonitorAddress = "";
+            this.unitMilling.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitMilling.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitMilling.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitMilling.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitMilling.ButtonAEnableTrigger.ValA = 0D;
+            this.unitMilling.ButtonAEnableTrigger.ValB = 0D;
+            this.unitMilling.ButtonATextKey = "◀";
+            this.unitMilling.ButtonATipKey = "";
+            this.unitMilling.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitMilling.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitMilling.ButtonBEnableTrigger.DescriptionKey = "";
+            this.unitMilling.ButtonBEnableTrigger.MonitorAddress = "";
+            this.unitMilling.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitMilling.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitMilling.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitMilling.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitMilling.ButtonBEnableTrigger.ValA = 0D;
+            this.unitMilling.ButtonBEnableTrigger.ValB = 0D;
+            this.unitMilling.ButtonBTextKey = "▶";
+            this.unitMilling.ButtonBTipKey = "";
+            this.unitMilling.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitMilling.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitMilling.CommandAAddress = "M576";
+            this.unitMilling.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitMilling.CommandBAddress = "M577";
+            this.unitMilling.ConfirmationNeeded = false;
+            this.unitMilling.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitMilling.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleInductive;
+            this.unitMilling.Lamp1AAddress = "M267";
+            this.unitMilling.Lamp1ATipKey = "";
+            this.unitMilling.Lamp1BAddress = "";
+            this.unitMilling.Lamp1BTipKey = "";
+            this.unitMilling.Lamp2AAddress = "";
+            this.unitMilling.Lamp2ATipKey = "";
+            this.unitMilling.Lamp2BAddress = "";
+            this.unitMilling.Lamp2BTipKey = "";
+            this.unitMilling.Location = new System.Drawing.Point(21, 110);
+            this.unitMilling.LogAction = true;
+            this.unitMilling.Name = "unitMilling";
+            this.unitMilling.OutputAAddress = "";
+            this.unitMilling.OutputBAddress = "";
+            this.unitMilling.PlcNumber = 1;
+            this.unitMilling.PositionAddress = "";
+            this.unitMilling.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitMilling.PositionDecimalPlaces = 0;
+            this.unitMilling.PositionDigits = 5;
+            this.unitMilling.PositionDivisor = 1D;
+            this.unitMilling.PositionOffset.StaticValue = 0D;
+            this.unitMilling.PositionOffset.TagAddress = "";
+            this.unitMilling.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.unitMilling.PositionSuffix = "";
+            this.unitMilling.PositionTipKey = "Current position";
+            this.unitMilling.PositionUnitType = Kaban.Core.Enums.UnitType.None;
+            this.unitMilling.RelayAAddress = "";
+            this.unitMilling.RelayBAddress = "";
+            this.unitMilling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitMilling.Size = new System.Drawing.Size(360, 64);
+            this.unitMilling.TabIndex = 3;
+            this.unitMilling.TitleTextKey = "Milling";
+            this.unitMilling.TitleTipKey = "";
+            this.unitMilling.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitMilling.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // ManualYZ_Cross_Rollers
             // 
-            // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
-            // auto-scaling container (the tab host), which would scale them twice.
-            // The layout is in absolute pixels anyway.
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.unitProfile_Recognition);
-            this.Controls.Add(this.lampProfile_Recognition_Activation_SN);
             this.Controls.Add(this.unitMilling);
             this.Controls.Add(this.unitCutting_Right);
             this.Name = "ManualYZ_Cross_Rollers";
-            this.Size = new System.Drawing.Size(392, 292);
+            this.Size = new System.Drawing.Size(804, 862);
             this.ResumeLayout(false);
-            this.PerformLayout();
+
         }
 
         #endregion
 
         private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Recognition;
-        private Kaban.UI.Controls.LampHMI lampProfile_Recognition_Activation_SN;
-        private Kaban.UI.Controls.CylinderUnitHMI unitMilling;
         private Kaban.UI.Controls.CylinderUnitHMI unitCutting_Right;
+        private UI.Controls.CylinderUnitHMI unitMilling;
     }
 }

@@ -117,8 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="Kaban.Core" name="Kaban.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-  <data name="lampSawdust_Conveyor_Thermic.AddressOffset" type="Kaban.Core.Models.DynamicValue, Kaban.Core">
-    <value>None</value>
-  </data>
 </root>

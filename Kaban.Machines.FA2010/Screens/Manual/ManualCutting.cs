@@ -16,6 +16,11 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         {
             InitializeComponent();
         }
+
+        private void groupBoxHMI1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
 

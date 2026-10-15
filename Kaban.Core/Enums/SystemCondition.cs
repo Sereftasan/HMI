@@ -24,11 +24,11 @@ namespace Kaban.Core.Enums
         [Description("Machine is Running")]
         MachineIsRunning = 1L << 4,
 
-        [Description("Robot is at Safe Position")]
-        RobotIsSafe = 1L << 5,
+        //[Description("Robot is at Safe Position")]
+        //RobotIsSafe = 1L << 5,
 
-        [Description("Milling Unit is at Back")]
-        MillingUnitIsBack = 1L << 6 
+        //[Description("Mullion notching unit is mounted")]
+        //MullionNotching = 1L << 6 
     }
 
     /// <summary>Arrow pair shown on a CylinderUnitHMI's two buttons.</summary>

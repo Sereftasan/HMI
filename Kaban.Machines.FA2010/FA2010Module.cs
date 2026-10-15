@@ -89,8 +89,6 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.Register(SystemCondition.ManualMode, plc1, "M100", DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
             MachineConditionMap.Register(SystemCondition.AutoMode, plc1, "D300", DataTypeEnum.Bin_16, ComparisonOperator.LessOrEqual, 3);
             MachineConditionMap.Register(SystemCondition.MachineIsRunning, plc1, "D200", DataTypeEnum.Bin_32, ComparisonOperator.Greater, 0);
-            MachineConditionMap.Register(SystemCondition.RobotIsSafe, plc1, "X20");
-            MachineConditionMap.Register(SystemCondition.MillingUnitIsBack, plc2, "X25");
 
             // Machine-specific bits are ALLOCATED, never hardcoded - two modules
             // would otherwise both claim bit 16 and silently corrupt each other.
@@ -107,7 +105,11 @@ namespace Kaban.Machines.FA2010
             // ALLOCATED LAST: the bits before it keep their numbers (a page stores the
             // number of the condition it uses - this one is 1 << 19 on FA2010).
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("ClampingMouldOption"),
-                ctx.Scoped("ClampingMouldOption"), "Clamping Mould option is on", plc1, "L27");
+                ctx.Scoped("ClampingMouldOption"), "Clamping Mould Option", plc1, "L27",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("MullionNotchingOption"),
+                ctx.Scoped("MullionNotchingOption"), "Mullion Notching Option", plc1, "L5",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>
@@ -174,6 +176,7 @@ namespace Kaban.Machines.FA2010
                 {
                     // 9 October: no "Parameters" in the tabs' names (the button says it); the old
                     // Entry and Process pages two tabs each, a section each.
+                    new Screens.GeneratedPage("Tab_Options", "Options", SecurityLevel.Maintenance, () => new Screens.Parameters.Options()),
                     new Screens.GeneratedPage("Tab_AxisSettings", "Axis", SecurityLevel.Maintenance, () => new Screens.Parameters.AxisSettings()),
                     new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
                     new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
@@ -188,17 +191,17 @@ namespace Kaban.Machines.FA2010
                 Dashboard = new Kaban.UI.Dashboard.DashboardDefinition(),
 
                 // Machine-specific: Role = "" keeps its own button (the DXF workbench).
-                Extra = new[]
-                {
-                    new MachineScreen
-                    {
-                        TitleKey = "Btn_Profiles",
-                        TitleFallback = "Profiles",
-                        Icon = () => Kaban.UI.Properties.Resources.bar_chart_24,
-                        SortOrder = 30,
-                        CreateView = () => new Screens.ProfilesScreen()
-                    }
-                }
+                //Extra = new[]
+                //{
+                //    new MachineScreen
+                //    {
+                //        TitleKey = "Btn_Profiles",
+                //        TitleFallback = "Profiles",
+                //        Icon = () => Kaban.UI.Properties.Resources.bar_chart_24,
+                //        SortOrder = 30,
+                //        CreateView = () => new Screens.ProfilesScreen()
+                //    }
+                //}
             });
         }
     }

@@ -102,7 +102,7 @@ namespace Kaban.Machines.SB3012.Screens
             this.btnReset.Text = "🔄 Reset Alarms";
             this.btnReset.TranslationKey = "Btn_Reset";
             this.btnReset.UseVisualStyleBackColor = false;
-            this.btnReset.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)((Kaban.Core.Enums.SystemCondition.ManualMode | Kaban.Core.Enums.SystemCondition.MillingUnitIsBack)));
+            this.btnReset.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)((Kaban.Core.Enums.SystemCondition.ManualMode | Kaban.Core.Enums.SystemCondition.None)));
             // 
             // AlarmScreen
             // 

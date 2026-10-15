@@ -44,6 +44,15 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             Kaban.Core.Models.BitAction bitAction18 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction19 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction20 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction21 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction22 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction23 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction24 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction25 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction26 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction27 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction28 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction29 = new Kaban.Core.Models.BitAction();
             this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
             this.btnHigh_Air_Pressure = new Kaban.UI.Controls.ButtonHMI();
             this.unitTop_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
@@ -84,6 +93,13 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_2_Change_Degree_N90 = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnit_2_Change_Degree_N180 = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnit_2_Change_Degree_N270 = new Kaban.UI.Controls.ButtonHMI();
+            this.Btn001mm = new Kaban.UI.Controls.ButtonHMI();
+            this.Btn01mm = new Kaban.UI.Controls.ButtonHMI();
+            this.Btn1mm = new Kaban.UI.Controls.ButtonHMI();
+            this.Btn10mm = new Kaban.UI.Controls.ButtonHMI();
+            this.speedOverrideHMI1 = new Kaban.UI.Controls.SpeedOverrideHMI();
+            this.BtnJog = new Kaban.UI.Controls.ButtonHMI();
+            this.BtnSafetyBypass = new Kaban.UI.Controls.ButtonHMI();
             this.grpDrills_to_Changing_Pos.SuspendLayout();
             this.grpUnit_1_Change_Degree.SuspendLayout();
             this.grpUnit_2_Change_Degree.SuspendLayout();
@@ -91,523 +107,2332 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitRoller_Up_Down
             // 
+            this.unitRoller_Up_Down.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
             this.unitRoller_Up_Down.BackColor = System.Drawing.Color.White;
-            this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
-            this.unitRoller_Up_Down.PlcNumber = 1;
-            this.unitRoller_Up_Down.TitleTextKey = "Roller Up/Down";
-            this.unitRoller_Up_Down.Location = new System.Drawing.Point(16, 16);
-            this.unitRoller_Up_Down.Size = new System.Drawing.Size(360, 64);
-            this.unitRoller_Up_Down.LogAction = true;
-            this.unitRoller_Up_Down.CommandAAddress = "M705";
+            this.unitRoller_Up_Down.BaseOffset = 0;
+            this.unitRoller_Up_Down.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.DescriptionKey = "";
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.MonitorAddress = "";
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.ValA = 0D;
+            this.unitRoller_Up_Down.ButtonAEnableTrigger.ValB = 0D;
+            this.unitRoller_Up_Down.ButtonATextKey = "◀";
+            this.unitRoller_Up_Down.ButtonATipKey = "";
+            this.unitRoller_Up_Down.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitRoller_Up_Down.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.DescriptionKey = "";
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.MonitorAddress = "";
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.ValA = 0D;
+            this.unitRoller_Up_Down.ButtonBEnableTrigger.ValB = 0D;
+            this.unitRoller_Up_Down.ButtonBTextKey = "▶";
+            this.unitRoller_Up_Down.ButtonBTipKey = "";
+            this.unitRoller_Up_Down.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitRoller_Up_Down.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitRoller_Up_Down.CommandBAddress = "M704";
+            this.unitRoller_Up_Down.CommandAAddress = "M705";
             this.unitRoller_Up_Down.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitRoller_Up_Down.CommandBAddress = "M704";
+            this.unitRoller_Up_Down.ConfirmationNeeded = false;
+            this.unitRoller_Up_Down.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitRoller_Up_Down.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
-            this.unitRoller_Up_Down.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitRoller_Up_Down.Lamp1AAddress = "";
+            this.unitRoller_Up_Down.Lamp1ATipKey = "";
+            this.unitRoller_Up_Down.Lamp1BAddress = "";
+            this.unitRoller_Up_Down.Lamp1BTipKey = "";
+            this.unitRoller_Up_Down.Lamp2AAddress = "";
+            this.unitRoller_Up_Down.Lamp2ATipKey = "";
+            this.unitRoller_Up_Down.Lamp2BAddress = "";
+            this.unitRoller_Up_Down.Lamp2BTipKey = "";
+            this.unitRoller_Up_Down.Location = new System.Drawing.Point(14, 85);
+            this.unitRoller_Up_Down.LogAction = true;
+            this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
+            this.unitRoller_Up_Down.OutputAAddress = "";
+            this.unitRoller_Up_Down.OutputBAddress = "";
+            this.unitRoller_Up_Down.PlcNumber = 1;
+            this.unitRoller_Up_Down.PositionAddress = "";
+            this.unitRoller_Up_Down.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitRoller_Up_Down.PositionDecimalPlaces = 0;
+            this.unitRoller_Up_Down.PositionDigits = 5;
+            this.unitRoller_Up_Down.PositionDivisor = 1D;
+            this.unitRoller_Up_Down.PositionOffset.StaticValue = 0D;
+            this.unitRoller_Up_Down.PositionOffset.TagAddress = "";
+            this.unitRoller_Up_Down.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.unitRoller_Up_Down.PositionSuffix = "";
+            this.unitRoller_Up_Down.PositionTipKey = "Current position";
+            this.unitRoller_Up_Down.PositionUnitType = Kaban.Core.Enums.UnitType.None;
+            this.unitRoller_Up_Down.RelayAAddress = "";
+            this.unitRoller_Up_Down.RelayBAddress = "";
             this.unitRoller_Up_Down.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitRoller_Up_Down.Size = new System.Drawing.Size(360, 64);
+            this.unitRoller_Up_Down.TabIndex = 0;
+            this.unitRoller_Up_Down.TitleTextKey = "Roller Up/Down";
+            this.unitRoller_Up_Down.TitleTipKey = "";
+            this.unitRoller_Up_Down.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitRoller_Up_Down.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // btnHigh_Air_Pressure
             // 
-            this.btnHigh_Air_Pressure.Name = "btnHigh_Air_Pressure";
-            this.btnHigh_Air_Pressure.PlcNumber = 1;
-            this.btnHigh_Air_Pressure.TranslationKey = "High Air Pressure";
-            this.btnHigh_Air_Pressure.FallbackText = "High Air Pressure";
-            bitAction1.Address = "M716";
+            this.btnHigh_Air_Pressure.ActiveBackColor = System.Drawing.Color.White;
+            this.btnHigh_Air_Pressure.AlertBlink = false;
+            this.btnHigh_Air_Pressure.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             bitAction1.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction1.Address = "M716";
+            bitAction1.AddressOffset.StaticValue = 0D;
+            bitAction1.AddressOffset.TagAddress = "";
+            bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.btnHigh_Air_Pressure.BitActions.Add(bitAction1);
-            this.btnHigh_Air_Pressure.Location = new System.Drawing.Point(16, 90);
-            this.btnHigh_Air_Pressure.Size = new System.Drawing.Size(360, 40);
+            this.btnHigh_Air_Pressure.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnHigh_Air_Pressure.ButtonText = "High Air Pressure";
+            this.btnHigh_Air_Pressure.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnHigh_Air_Pressure.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnHigh_Air_Pressure.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnHigh_Air_Pressure.ConfirmationAddress = "";
+            this.btnHigh_Air_Pressure.ConfirmationNeeded = false;
+            this.btnHigh_Air_Pressure.ConfirmationText = "";
+            this.btnHigh_Air_Pressure.ConfirmationTextKey = "";
+            this.btnHigh_Air_Pressure.CornerRadius = 4;
+            this.btnHigh_Air_Pressure.DescriptionText = "";
+            this.btnHigh_Air_Pressure.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnHigh_Air_Pressure.DisplayAddress = null;
+            this.btnHigh_Air_Pressure.DisplayOffset.StaticValue = 0D;
+            this.btnHigh_Air_Pressure.DisplayOffset.TagAddress = "";
+            this.btnHigh_Air_Pressure.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnHigh_Air_Pressure.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnHigh_Air_Pressure.EnableTrigger.DescriptionKey = "";
+            this.btnHigh_Air_Pressure.EnableTrigger.MonitorAddress = "";
+            this.btnHigh_Air_Pressure.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnHigh_Air_Pressure.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnHigh_Air_Pressure.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnHigh_Air_Pressure.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnHigh_Air_Pressure.EnableTrigger.ValA = 0D;
+            this.btnHigh_Air_Pressure.EnableTrigger.ValB = 0D;
+            this.btnHigh_Air_Pressure.ErrorAddress = "";
+            this.btnHigh_Air_Pressure.FallbackText = "High Air Pressure";
+            this.btnHigh_Air_Pressure.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnHigh_Air_Pressure.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnHigh_Air_Pressure.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHigh_Air_Pressure.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnHigh_Air_Pressure.ForeColor = System.Drawing.Color.Black;
+            this.btnHigh_Air_Pressure.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnHigh_Air_Pressure.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnHigh_Air_Pressure.ImageActive = null;
+            this.btnHigh_Air_Pressure.ImagePassive = null;
+            this.btnHigh_Air_Pressure.IsActivePage = false;
+            this.btnHigh_Air_Pressure.Lamp1Address = "";
+            this.btnHigh_Air_Pressure.Lamp1Tip = "";
+            this.btnHigh_Air_Pressure.Lamp2Address = "";
+            this.btnHigh_Air_Pressure.Lamp2Tip = "";
+            this.btnHigh_Air_Pressure.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnHigh_Air_Pressure.Location = new System.Drawing.Point(14, 167);
             this.btnHigh_Air_Pressure.LogAction = true;
+            this.btnHigh_Air_Pressure.Name = "btnHigh_Air_Pressure";
+            this.btnHigh_Air_Pressure.OutputAddress = "";
+            this.btnHigh_Air_Pressure.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnHigh_Air_Pressure.PlcNumber = 1;
+            this.btnHigh_Air_Pressure.RelayAddress = "";
             this.btnHigh_Air_Pressure.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnHigh_Air_Pressure.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnHigh_Air_Pressure.RoundLeftOnly = false;
+            this.btnHigh_Air_Pressure.RoundRightOnly = false;
+            this.btnHigh_Air_Pressure.ShowCaption = true;
+            this.btnHigh_Air_Pressure.Size = new System.Drawing.Size(360, 40);
+            this.btnHigh_Air_Pressure.TabIndex = 1;
+            this.btnHigh_Air_Pressure.ToolTipText = "";
+            this.btnHigh_Air_Pressure.TranslationKey = "High Air Pressure";
+            this.btnHigh_Air_Pressure.UseVisualStyleBackColor = false;
+            this.btnHigh_Air_Pressure.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // unitTop_Clamping
             // 
-            // Top Clamping: encoder 4 of Machine Parameters - Encoders (Milling Top): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitTop_Clamping.BackColor = System.Drawing.Color.White;
-            this.unitTop_Clamping.Name = "unitTop_Clamping";
             this.unitTop_Clamping.EncoderNumber = 4;
-            this.unitTop_Clamping.PlcNumber = 1;
-            this.unitTop_Clamping.TitleTextKey = "Top Clamping";
-            this.unitTop_Clamping.Location = new System.Drawing.Point(16, 140);
+            this.unitTop_Clamping.Location = new System.Drawing.Point(14, 217);
+            this.unitTop_Clamping.Name = "unitTop_Clamping";
             this.unitTop_Clamping.Size = new System.Drawing.Size(360, 64);
+            this.unitTop_Clamping.TabIndex = 2;
+            this.unitTop_Clamping.TitleTextKey = "Top Clamping";
             // 
             // unitFront_Clamping
             // 
-            // Front Clamping: encoder 5 of Machine Parameters - Encoders (Milling-Cutting Left Front): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitFront_Clamping.BackColor = System.Drawing.Color.White;
-            this.unitFront_Clamping.Name = "unitFront_Clamping";
             this.unitFront_Clamping.EncoderNumber = 5;
-            this.unitFront_Clamping.PlcNumber = 1;
-            this.unitFront_Clamping.TitleTextKey = "Front Clamping";
-            this.unitFront_Clamping.Location = new System.Drawing.Point(16, 214);
+            this.unitFront_Clamping.Location = new System.Drawing.Point(14, 291);
+            this.unitFront_Clamping.Name = "unitFront_Clamping";
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);
+            this.unitFront_Clamping.TabIndex = 3;
+            this.unitFront_Clamping.TitleTextKey = "Front Clamping";
             // 
             // grpDrills_to_Changing_Pos
             // 
-            this.grpDrills_to_Changing_Pos.Name = "grpDrills_to_Changing_Pos";
-            this.grpDrills_to_Changing_Pos.PlcNumber = 1;
-            this.grpDrills_to_Changing_Pos.TitleTextKey = "Drills to Changing Pos.";
-            this.grpDrills_to_Changing_Pos.Location = new System.Drawing.Point(406, 16);
-            this.grpDrills_to_Changing_Pos.Size = new System.Drawing.Size(360, 64);
-            // 
-            // btnDrills_to_Changing_Pos_N1
-            // 
-            this.btnDrills_to_Changing_Pos_N1.Name = "btnDrills_to_Changing_Pos_N1";
-            this.btnDrills_to_Changing_Pos_N1.PlcNumber = 1;
-            this.btnDrills_to_Changing_Pos_N1.TranslationKey = "1";
-            this.btnDrills_to_Changing_Pos_N1.FallbackText = "1";
-            bitAction2.Address = "M176";
-            bitAction2.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnDrills_to_Changing_Pos_N1.BitActions.Add(bitAction2);
-            this.btnDrills_to_Changing_Pos_N1.Location = new System.Drawing.Point(10, 24);
-            this.btnDrills_to_Changing_Pos_N1.Size = new System.Drawing.Size(79, 32);
-            this.btnDrills_to_Changing_Pos_N1.LogAction = true;
-            this.btnDrills_to_Changing_Pos_N1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnDrills_to_Changing_Pos_N2
-            // 
-            this.btnDrills_to_Changing_Pos_N2.Name = "btnDrills_to_Changing_Pos_N2";
-            this.btnDrills_to_Changing_Pos_N2.PlcNumber = 1;
-            this.btnDrills_to_Changing_Pos_N2.TranslationKey = "2";
-            this.btnDrills_to_Changing_Pos_N2.FallbackText = "2";
-            bitAction3.Address = "M177";
-            bitAction3.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnDrills_to_Changing_Pos_N2.BitActions.Add(bitAction3);
-            this.btnDrills_to_Changing_Pos_N2.Location = new System.Drawing.Point(97, 24);
-            this.btnDrills_to_Changing_Pos_N2.Size = new System.Drawing.Size(79, 32);
-            this.btnDrills_to_Changing_Pos_N2.LogAction = true;
-            this.btnDrills_to_Changing_Pos_N2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnDrills_to_Changing_Pos_N3
-            // 
-            this.btnDrills_to_Changing_Pos_N3.Name = "btnDrills_to_Changing_Pos_N3";
-            this.btnDrills_to_Changing_Pos_N3.PlcNumber = 1;
-            this.btnDrills_to_Changing_Pos_N3.TranslationKey = "3";
-            this.btnDrills_to_Changing_Pos_N3.FallbackText = "3";
-            bitAction4.Address = "M178";
-            bitAction4.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnDrills_to_Changing_Pos_N3.BitActions.Add(bitAction4);
-            this.btnDrills_to_Changing_Pos_N3.Location = new System.Drawing.Point(184, 24);
-            this.btnDrills_to_Changing_Pos_N3.Size = new System.Drawing.Size(79, 32);
-            this.btnDrills_to_Changing_Pos_N3.LogAction = true;
-            this.btnDrills_to_Changing_Pos_N3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnDrills_to_Changing_Pos_N4
-            // 
-            this.btnDrills_to_Changing_Pos_N4.Name = "btnDrills_to_Changing_Pos_N4";
-            this.btnDrills_to_Changing_Pos_N4.PlcNumber = 1;
-            this.btnDrills_to_Changing_Pos_N4.TranslationKey = "4";
-            this.btnDrills_to_Changing_Pos_N4.FallbackText = "4";
-            bitAction5.Address = "M179";
-            bitAction5.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnDrills_to_Changing_Pos_N4.BitActions.Add(bitAction5);
-            this.btnDrills_to_Changing_Pos_N4.Location = new System.Drawing.Point(271, 24);
-            this.btnDrills_to_Changing_Pos_N4.Size = new System.Drawing.Size(79, 32);
-            this.btnDrills_to_Changing_Pos_N4.LogAction = true;
-            this.btnDrills_to_Changing_Pos_N4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnMachine_Cleaning_Pos
-            // 
-            this.btnMachine_Cleaning_Pos.Name = "btnMachine_Cleaning_Pos";
-            this.btnMachine_Cleaning_Pos.PlcNumber = 1;
-            this.btnMachine_Cleaning_Pos.TranslationKey = "Machine Cleaning Pos.";
-            this.btnMachine_Cleaning_Pos.FallbackText = "Machine Cleaning Pos.";
-            bitAction6.Address = "M180";
-            bitAction6.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnMachine_Cleaning_Pos.BitActions.Add(bitAction6);
-            this.btnMachine_Cleaning_Pos.Location = new System.Drawing.Point(406, 90);
-            this.btnMachine_Cleaning_Pos.Size = new System.Drawing.Size(360, 40);
-            this.btnMachine_Cleaning_Pos.LogAction = true;
-            this.btnMachine_Cleaning_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lblUnit_1
-            // 
-            this.lblUnit_1.Name = "lblUnit_1";
-            this.lblUnit_1.TranslationKey = "Unit 1";
-            this.lblUnit_1.Text = "Unit 1";
-            this.lblUnit_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblUnit_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblUnit_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblUnit_1.Location = new System.Drawing.Point(16, 296);
-            this.lblUnit_1.Size = new System.Drawing.Size(360, 26);
-            // 
-            // unitUnit_1_Angle
-            // 
-            // Unit 1 Angle: axis 4 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_1_Angle.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Angle.Name = "unitUnit_1_Angle";
-            this.unitUnit_1_Angle.AxisNumber = 4;
-            this.unitUnit_1_Angle.PlcNumber = 1;
-            this.unitUnit_1_Angle.Location = new System.Drawing.Point(16, 328);
-            this.unitUnit_1_Angle.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_1_X
-            // 
-            // Unit 1 X: axis 5 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_1_X.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_X.Name = "unitUnit_1_X";
-            this.unitUnit_1_X.AxisNumber = 5;
-            this.unitUnit_1_X.PlcNumber = 1;
-            this.unitUnit_1_X.Location = new System.Drawing.Point(16, 402);
-            this.unitUnit_1_X.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_1_Y
-            // 
-            // Unit 1 Y: axis 6 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_1_Y.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Y.Name = "unitUnit_1_Y";
-            this.unitUnit_1_Y.AxisNumber = 6;
-            this.unitUnit_1_Y.PlcNumber = 1;
-            this.unitUnit_1_Y.Location = new System.Drawing.Point(16, 476);
-            this.unitUnit_1_Y.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_1_Z
-            // 
-            // Unit 1 Z: axis 7 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_1_Z.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Z.Name = "unitUnit_1_Z";
-            this.unitUnit_1_Z.AxisNumber = 7;
-            this.unitUnit_1_Z.PlcNumber = 1;
-            this.unitUnit_1_Z.Location = new System.Drawing.Point(16, 550);
-            this.unitUnit_1_Z.Size = new System.Drawing.Size(360, 64);
-            // 
-            // btnUnit_1_Milling_Motor
-            // 
-            this.btnUnit_1_Milling_Motor.Name = "btnUnit_1_Milling_Motor";
-            this.btnUnit_1_Milling_Motor.PlcNumber = 1;
-            this.btnUnit_1_Milling_Motor.TranslationKey = "Milling Motor";
-            this.btnUnit_1_Milling_Motor.FallbackText = "Milling Motor";
-            bitAction7.Address = "M649";
-            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_1_Milling_Motor.BitActions.Add(bitAction7);
-            this.btnUnit_1_Milling_Motor.Lamp1Address = "M230";
-            this.btnUnit_1_Milling_Motor.Location = new System.Drawing.Point(16, 624);
-            this.btnUnit_1_Milling_Motor.Size = new System.Drawing.Size(230, 40);
-            this.btnUnit_1_Milling_Motor.LogAction = true;
-            this.btnUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_1_Milling_Motor_Value
-            // 
-            // Milling Motor: the value the old page showed beside it (D18, raw / 100).
-            this.btnUnit_1_Milling_Motor_Value.Name = "btnUnit_1_Milling_Motor_Value";
-            this.btnUnit_1_Milling_Motor_Value.PlcNumber = 1;
-            this.btnUnit_1_Milling_Motor_Value.Address = "D18";
-            this.btnUnit_1_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.btnUnit_1_Milling_Motor_Value.Divisor = 100D;
-            this.btnUnit_1_Milling_Motor_Value.DecimalPlaces = 2;
-            this.btnUnit_1_Milling_Motor_Value.Digits = 6;
-            this.btnUnit_1_Milling_Motor_Value.Location = new System.Drawing.Point(256, 624);
-            this.btnUnit_1_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
-            // 
-            // dispUnit_1_Inverter_Error
-            // 
-            // The inverter's error code, in hexadecimal as the old page showed it.
-            this.dispUnit_1_Inverter_Error.Name = "dispUnit_1_Inverter_Error";
-            this.dispUnit_1_Inverter_Error.PlcNumber = 1;
-            this.dispUnit_1_Inverter_Error.Address = "D667";
-            this.dispUnit_1_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.dispUnit_1_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-            this.dispUnit_1_Inverter_Error.Digits = 4;
-            this.dispUnit_1_Inverter_Error.DescriptionText = "Inverter Error";
-            this.dispUnit_1_Inverter_Error.Location = new System.Drawing.Point(266, 674);
-            this.dispUnit_1_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-            // 
-            // btnUnit_1_Tool_1_Cooling
-            // 
-            this.btnUnit_1_Tool_1_Cooling.Name = "btnUnit_1_Tool_1_Cooling";
-            this.btnUnit_1_Tool_1_Cooling.PlcNumber = 1;
-            this.btnUnit_1_Tool_1_Cooling.TranslationKey = "1st Tool Cooling";
-            this.btnUnit_1_Tool_1_Cooling.FallbackText = "1st Tool Cooling";
-            bitAction8.Address = "M710";
-            bitAction8.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_1_Tool_1_Cooling.BitActions.Add(bitAction8);
-            this.btnUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(16, 724);
-            this.btnUnit_1_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
-            this.btnUnit_1_Tool_1_Cooling.LogAction = true;
-            this.btnUnit_1_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_1_Tool_2_Cooling
-            // 
-            this.btnUnit_1_Tool_2_Cooling.Name = "btnUnit_1_Tool_2_Cooling";
-            this.btnUnit_1_Tool_2_Cooling.PlcNumber = 1;
-            this.btnUnit_1_Tool_2_Cooling.TranslationKey = "2nd Tool Cooling";
-            this.btnUnit_1_Tool_2_Cooling.FallbackText = "2nd Tool Cooling";
-            bitAction9.Address = "M711";
-            bitAction9.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_1_Tool_2_Cooling.BitActions.Add(bitAction9);
-            this.btnUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(16, 774);
-            this.btnUnit_1_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
-            this.btnUnit_1_Tool_2_Cooling.LogAction = true;
-            this.btnUnit_1_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // grpUnit_1_Change_Degree
-            // 
-            this.grpUnit_1_Change_Degree.Name = "grpUnit_1_Change_Degree";
-            this.grpUnit_1_Change_Degree.PlcNumber = 1;
-            this.grpUnit_1_Change_Degree.TitleTextKey = "Change Degree";
-            this.grpUnit_1_Change_Degree.Location = new System.Drawing.Point(16, 824);
-            this.grpUnit_1_Change_Degree.Size = new System.Drawing.Size(360, 64);
-            // 
-            // btnUnit_1_Change_Degree_N0
-            // 
-            this.btnUnit_1_Change_Degree_N0.Name = "btnUnit_1_Change_Degree_N0";
-            this.btnUnit_1_Change_Degree_N0.PlcNumber = 1;
-            this.btnUnit_1_Change_Degree_N0.TranslationKey = "0°";
-            this.btnUnit_1_Change_Degree_N0.FallbackText = "0°";
-            bitAction10.Address = "M673";
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_1_Change_Degree_N0.BitActions.Add(bitAction10);
-            this.btnUnit_1_Change_Degree_N0.Location = new System.Drawing.Point(10, 24);
-            this.btnUnit_1_Change_Degree_N0.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_1_Change_Degree_N0.LogAction = true;
-            this.btnUnit_1_Change_Degree_N0.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_1_Change_Degree_N90
-            // 
-            this.btnUnit_1_Change_Degree_N90.Name = "btnUnit_1_Change_Degree_N90";
-            this.btnUnit_1_Change_Degree_N90.PlcNumber = 1;
-            this.btnUnit_1_Change_Degree_N90.TranslationKey = "90°";
-            this.btnUnit_1_Change_Degree_N90.FallbackText = "90°";
-            bitAction11.Address = "M674";
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_1_Change_Degree_N90.BitActions.Add(bitAction11);
-            this.btnUnit_1_Change_Degree_N90.Location = new System.Drawing.Point(97, 24);
-            this.btnUnit_1_Change_Degree_N90.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_1_Change_Degree_N90.LogAction = true;
-            this.btnUnit_1_Change_Degree_N90.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_1_Change_Degree_N180
-            // 
-            this.btnUnit_1_Change_Degree_N180.Name = "btnUnit_1_Change_Degree_N180";
-            this.btnUnit_1_Change_Degree_N180.PlcNumber = 1;
-            this.btnUnit_1_Change_Degree_N180.TranslationKey = "180°";
-            this.btnUnit_1_Change_Degree_N180.FallbackText = "180°";
-            bitAction12.Address = "M675";
-            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_1_Change_Degree_N180.BitActions.Add(bitAction12);
-            this.btnUnit_1_Change_Degree_N180.Location = new System.Drawing.Point(184, 24);
-            this.btnUnit_1_Change_Degree_N180.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_1_Change_Degree_N180.LogAction = true;
-            this.btnUnit_1_Change_Degree_N180.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_1_Change_Degree_N270
-            // 
-            this.btnUnit_1_Change_Degree_N270.Name = "btnUnit_1_Change_Degree_N270";
-            this.btnUnit_1_Change_Degree_N270.PlcNumber = 1;
-            this.btnUnit_1_Change_Degree_N270.TranslationKey = "270°";
-            this.btnUnit_1_Change_Degree_N270.FallbackText = "270°";
-            bitAction13.Address = "M676";
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_1_Change_Degree_N270.BitActions.Add(bitAction13);
-            this.btnUnit_1_Change_Degree_N270.Location = new System.Drawing.Point(271, 24);
-            this.btnUnit_1_Change_Degree_N270.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_1_Change_Degree_N270.LogAction = true;
-            this.btnUnit_1_Change_Degree_N270.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // lblUnit_2
-            // 
-            this.lblUnit_2.Name = "lblUnit_2";
-            this.lblUnit_2.TranslationKey = "Unit 2";
-            this.lblUnit_2.Text = "Unit 2";
-            this.lblUnit_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblUnit_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblUnit_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblUnit_2.Location = new System.Drawing.Point(406, 296);
-            this.lblUnit_2.Size = new System.Drawing.Size(360, 26);
-            // 
-            // unitUnit_2_Angle
-            // 
-            // Unit 2 Angle: axis 8 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_2_Angle.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Angle.Name = "unitUnit_2_Angle";
-            this.unitUnit_2_Angle.AxisNumber = 8;
-            this.unitUnit_2_Angle.PlcNumber = 1;
-            this.unitUnit_2_Angle.Location = new System.Drawing.Point(406, 328);
-            this.unitUnit_2_Angle.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_2_X
-            // 
-            // Unit 2 X: axis 9 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_2_X.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_X.Name = "unitUnit_2_X";
-            this.unitUnit_2_X.AxisNumber = 9;
-            this.unitUnit_2_X.PlcNumber = 1;
-            this.unitUnit_2_X.Location = new System.Drawing.Point(406, 402);
-            this.unitUnit_2_X.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_2_Y
-            // 
-            // Unit 2 Y: axis 10 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_2_Y.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Y.Name = "unitUnit_2_Y";
-            this.unitUnit_2_Y.AxisNumber = 10;
-            this.unitUnit_2_Y.PlcNumber = 1;
-            this.unitUnit_2_Y.Location = new System.Drawing.Point(406, 476);
-            this.unitUnit_2_Y.Size = new System.Drawing.Size(360, 64);
-            // 
-            // unitUnit_2_Z
-            // 
-            // Unit 2 Z: axis 11 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitUnit_2_Z.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Z.Name = "unitUnit_2_Z";
-            this.unitUnit_2_Z.AxisNumber = 11;
-            this.unitUnit_2_Z.PlcNumber = 1;
-            this.unitUnit_2_Z.Location = new System.Drawing.Point(406, 550);
-            this.unitUnit_2_Z.Size = new System.Drawing.Size(360, 64);
-            // 
-            // btnUnit_2_Milling_Motor
-            // 
-            this.btnUnit_2_Milling_Motor.Name = "btnUnit_2_Milling_Motor";
-            this.btnUnit_2_Milling_Motor.PlcNumber = 1;
-            this.btnUnit_2_Milling_Motor.TranslationKey = "Milling Motor";
-            this.btnUnit_2_Milling_Motor.FallbackText = "Milling Motor";
-            bitAction14.Address = "M650";
-            bitAction14.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_2_Milling_Motor.BitActions.Add(bitAction14);
-            this.btnUnit_2_Milling_Motor.Lamp1Address = "M231";
-            this.btnUnit_2_Milling_Motor.Location = new System.Drawing.Point(406, 624);
-            this.btnUnit_2_Milling_Motor.Size = new System.Drawing.Size(230, 40);
-            this.btnUnit_2_Milling_Motor.LogAction = true;
-            this.btnUnit_2_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_2_Milling_Motor_Value
-            // 
-            // Milling Motor: the value the old page showed beside it (D19, raw / 100).
-            this.btnUnit_2_Milling_Motor_Value.Name = "btnUnit_2_Milling_Motor_Value";
-            this.btnUnit_2_Milling_Motor_Value.PlcNumber = 1;
-            this.btnUnit_2_Milling_Motor_Value.Address = "D19";
-            this.btnUnit_2_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.btnUnit_2_Milling_Motor_Value.Divisor = 100D;
-            this.btnUnit_2_Milling_Motor_Value.DecimalPlaces = 2;
-            this.btnUnit_2_Milling_Motor_Value.Digits = 6;
-            this.btnUnit_2_Milling_Motor_Value.Location = new System.Drawing.Point(646, 624);
-            this.btnUnit_2_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
-            // 
-            // dispUnit_2_Inverter_Error
-            // 
-            // The inverter's error code, in hexadecimal as the old page showed it.
-            this.dispUnit_2_Inverter_Error.Name = "dispUnit_2_Inverter_Error";
-            this.dispUnit_2_Inverter_Error.PlcNumber = 1;
-            this.dispUnit_2_Inverter_Error.Address = "D668";
-            this.dispUnit_2_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.dispUnit_2_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-            this.dispUnit_2_Inverter_Error.Digits = 4;
-            this.dispUnit_2_Inverter_Error.DescriptionText = "Inverter Error";
-            this.dispUnit_2_Inverter_Error.Location = new System.Drawing.Point(656, 674);
-            this.dispUnit_2_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-            // 
-            // btnUnit_2_Tool_1_Cooling
-            // 
-            this.btnUnit_2_Tool_1_Cooling.Name = "btnUnit_2_Tool_1_Cooling";
-            this.btnUnit_2_Tool_1_Cooling.PlcNumber = 1;
-            this.btnUnit_2_Tool_1_Cooling.TranslationKey = "1st Tool Cooling";
-            this.btnUnit_2_Tool_1_Cooling.FallbackText = "1st Tool Cooling";
-            bitAction15.Address = "M712";
-            bitAction15.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_2_Tool_1_Cooling.BitActions.Add(bitAction15);
-            this.btnUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(406, 724);
-            this.btnUnit_2_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
-            this.btnUnit_2_Tool_1_Cooling.LogAction = true;
-            this.btnUnit_2_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_2_Tool_2_Cooling
-            // 
-            this.btnUnit_2_Tool_2_Cooling.Name = "btnUnit_2_Tool_2_Cooling";
-            this.btnUnit_2_Tool_2_Cooling.PlcNumber = 1;
-            this.btnUnit_2_Tool_2_Cooling.TranslationKey = "2nd Tool Cooling";
-            this.btnUnit_2_Tool_2_Cooling.FallbackText = "2nd Tool Cooling";
-            bitAction16.Address = "M713";
-            bitAction16.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            this.btnUnit_2_Tool_2_Cooling.BitActions.Add(bitAction16);
-            this.btnUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(406, 774);
-            this.btnUnit_2_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
-            this.btnUnit_2_Tool_2_Cooling.LogAction = true;
-            this.btnUnit_2_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // grpUnit_2_Change_Degree
-            // 
-            this.grpUnit_2_Change_Degree.Name = "grpUnit_2_Change_Degree";
-            this.grpUnit_2_Change_Degree.PlcNumber = 1;
-            this.grpUnit_2_Change_Degree.TitleTextKey = "Change Degree";
-            this.grpUnit_2_Change_Degree.Location = new System.Drawing.Point(406, 824);
-            this.grpUnit_2_Change_Degree.Size = new System.Drawing.Size(360, 64);
-            // 
-            // btnUnit_2_Change_Degree_N0
-            // 
-            this.btnUnit_2_Change_Degree_N0.Name = "btnUnit_2_Change_Degree_N0";
-            this.btnUnit_2_Change_Degree_N0.PlcNumber = 1;
-            this.btnUnit_2_Change_Degree_N0.TranslationKey = "0°";
-            this.btnUnit_2_Change_Degree_N0.FallbackText = "0°";
-            bitAction17.Address = "M677";
-            bitAction17.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_2_Change_Degree_N0.BitActions.Add(bitAction17);
-            this.btnUnit_2_Change_Degree_N0.Location = new System.Drawing.Point(10, 24);
-            this.btnUnit_2_Change_Degree_N0.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_2_Change_Degree_N0.LogAction = true;
-            this.btnUnit_2_Change_Degree_N0.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_2_Change_Degree_N90
-            // 
-            this.btnUnit_2_Change_Degree_N90.Name = "btnUnit_2_Change_Degree_N90";
-            this.btnUnit_2_Change_Degree_N90.PlcNumber = 1;
-            this.btnUnit_2_Change_Degree_N90.TranslationKey = "90°";
-            this.btnUnit_2_Change_Degree_N90.FallbackText = "90°";
-            bitAction18.Address = "M678";
-            bitAction18.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_2_Change_Degree_N90.BitActions.Add(bitAction18);
-            this.btnUnit_2_Change_Degree_N90.Location = new System.Drawing.Point(97, 24);
-            this.btnUnit_2_Change_Degree_N90.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_2_Change_Degree_N90.LogAction = true;
-            this.btnUnit_2_Change_Degree_N90.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_2_Change_Degree_N180
-            // 
-            this.btnUnit_2_Change_Degree_N180.Name = "btnUnit_2_Change_Degree_N180";
-            this.btnUnit_2_Change_Degree_N180.PlcNumber = 1;
-            this.btnUnit_2_Change_Degree_N180.TranslationKey = "180°";
-            this.btnUnit_2_Change_Degree_N180.FallbackText = "180°";
-            bitAction19.Address = "M679";
-            bitAction19.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_2_Change_Degree_N180.BitActions.Add(bitAction19);
-            this.btnUnit_2_Change_Degree_N180.Location = new System.Drawing.Point(184, 24);
-            this.btnUnit_2_Change_Degree_N180.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_2_Change_Degree_N180.LogAction = true;
-            this.btnUnit_2_Change_Degree_N180.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            // 
-            // btnUnit_2_Change_Degree_N270
-            // 
-            this.btnUnit_2_Change_Degree_N270.Name = "btnUnit_2_Change_Degree_N270";
-            this.btnUnit_2_Change_Degree_N270.PlcNumber = 1;
-            this.btnUnit_2_Change_Degree_N270.TranslationKey = "270°";
-            this.btnUnit_2_Change_Degree_N270.FallbackText = "270°";
-            bitAction20.Address = "M680";
-            bitAction20.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            this.btnUnit_2_Change_Degree_N270.BitActions.Add(bitAction20);
-            this.btnUnit_2_Change_Degree_N270.Location = new System.Drawing.Point(271, 24);
-            this.btnUnit_2_Change_Degree_N270.Size = new System.Drawing.Size(79, 32);
-            this.btnUnit_2_Change_Degree_N270.LogAction = true;
-            this.btnUnit_2_Change_Degree_N270.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.grpDrills_to_Changing_Pos.Address = null;
+            this.grpDrills_to_Changing_Pos.BackColor = System.Drawing.Color.White;
             this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N1);
             this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N2);
             this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N3);
             this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N4);
+            this.grpDrills_to_Changing_Pos.Emoji = "";
+            this.grpDrills_to_Changing_Pos.EnableAddress = "";
+            this.grpDrills_to_Changing_Pos.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpDrills_to_Changing_Pos.Location = new System.Drawing.Point(454, 85);
+            this.grpDrills_to_Changing_Pos.Name = "grpDrills_to_Changing_Pos";
+            this.grpDrills_to_Changing_Pos.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpDrills_to_Changing_Pos.PlcNumber = 1;
+            this.grpDrills_to_Changing_Pos.Size = new System.Drawing.Size(360, 64);
+            this.grpDrills_to_Changing_Pos.TabIndex = 4;
+            this.grpDrills_to_Changing_Pos.TitleText = "Drills to Changing Pos.";
+            this.grpDrills_to_Changing_Pos.TitleTextKey = "Drills to Changing Pos.";
+            this.grpDrills_to_Changing_Pos.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpDrills_to_Changing_Pos.VisibleAddress = "";
+            // 
+            // btnDrills_to_Changing_Pos_N1
+            // 
+            this.btnDrills_to_Changing_Pos_N1.ActiveBackColor = System.Drawing.Color.White;
+            this.btnDrills_to_Changing_Pos_N1.AlertBlink = false;
+            this.btnDrills_to_Changing_Pos_N1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction2.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction2.Address = "M176";
+            bitAction2.AddressOffset.StaticValue = 0D;
+            bitAction2.AddressOffset.TagAddress = "";
+            bitAction2.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N1.BitActions.Add(bitAction2);
+            this.btnDrills_to_Changing_Pos_N1.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N1.ButtonText = "1";
+            this.btnDrills_to_Changing_Pos_N1.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnDrills_to_Changing_Pos_N1.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnDrills_to_Changing_Pos_N1.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N1.ConfirmationAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.ConfirmationNeeded = false;
+            this.btnDrills_to_Changing_Pos_N1.ConfirmationText = "";
+            this.btnDrills_to_Changing_Pos_N1.ConfirmationTextKey = "";
+            this.btnDrills_to_Changing_Pos_N1.CornerRadius = 4;
+            this.btnDrills_to_Changing_Pos_N1.DescriptionText = "";
+            this.btnDrills_to_Changing_Pos_N1.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnDrills_to_Changing_Pos_N1.DisplayAddress = null;
+            this.btnDrills_to_Changing_Pos_N1.DisplayOffset.StaticValue = 0D;
+            this.btnDrills_to_Changing_Pos_N1.DisplayOffset.TagAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N1.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.DescriptionKey = "";
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.MonitorAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.ValA = 0D;
+            this.btnDrills_to_Changing_Pos_N1.EnableTrigger.ValB = 0D;
+            this.btnDrills_to_Changing_Pos_N1.ErrorAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.FallbackText = "1";
+            this.btnDrills_to_Changing_Pos_N1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDrills_to_Changing_Pos_N1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnDrills_to_Changing_Pos_N1.ForeColor = System.Drawing.Color.Black;
+            this.btnDrills_to_Changing_Pos_N1.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnDrills_to_Changing_Pos_N1.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnDrills_to_Changing_Pos_N1.ImageActive = null;
+            this.btnDrills_to_Changing_Pos_N1.ImagePassive = null;
+            this.btnDrills_to_Changing_Pos_N1.IsActivePage = false;
+            this.btnDrills_to_Changing_Pos_N1.Lamp1Address = "";
+            this.btnDrills_to_Changing_Pos_N1.Lamp1Tip = "";
+            this.btnDrills_to_Changing_Pos_N1.Lamp2Address = "";
+            this.btnDrills_to_Changing_Pos_N1.Lamp2Tip = "";
+            this.btnDrills_to_Changing_Pos_N1.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnDrills_to_Changing_Pos_N1.Location = new System.Drawing.Point(10, 24);
+            this.btnDrills_to_Changing_Pos_N1.LogAction = true;
+            this.btnDrills_to_Changing_Pos_N1.Name = "btnDrills_to_Changing_Pos_N1";
+            this.btnDrills_to_Changing_Pos_N1.OutputAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnDrills_to_Changing_Pos_N1.PlcNumber = 1;
+            this.btnDrills_to_Changing_Pos_N1.RelayAddress = "";
+            this.btnDrills_to_Changing_Pos_N1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnDrills_to_Changing_Pos_N1.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnDrills_to_Changing_Pos_N1.RoundLeftOnly = false;
+            this.btnDrills_to_Changing_Pos_N1.RoundRightOnly = false;
+            this.btnDrills_to_Changing_Pos_N1.ShowCaption = true;
+            this.btnDrills_to_Changing_Pos_N1.Size = new System.Drawing.Size(79, 32);
+            this.btnDrills_to_Changing_Pos_N1.TabIndex = 0;
+            this.btnDrills_to_Changing_Pos_N1.ToolTipText = "";
+            this.btnDrills_to_Changing_Pos_N1.TranslationKey = "1";
+            this.btnDrills_to_Changing_Pos_N1.UseVisualStyleBackColor = false;
+            this.btnDrills_to_Changing_Pos_N1.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnDrills_to_Changing_Pos_N2
+            // 
+            this.btnDrills_to_Changing_Pos_N2.ActiveBackColor = System.Drawing.Color.White;
+            this.btnDrills_to_Changing_Pos_N2.AlertBlink = false;
+            this.btnDrills_to_Changing_Pos_N2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction3.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction3.Address = "M177";
+            bitAction3.AddressOffset.StaticValue = 0D;
+            bitAction3.AddressOffset.TagAddress = "";
+            bitAction3.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N2.BitActions.Add(bitAction3);
+            this.btnDrills_to_Changing_Pos_N2.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N2.ButtonText = "2";
+            this.btnDrills_to_Changing_Pos_N2.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnDrills_to_Changing_Pos_N2.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnDrills_to_Changing_Pos_N2.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N2.ConfirmationAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.ConfirmationNeeded = false;
+            this.btnDrills_to_Changing_Pos_N2.ConfirmationText = "";
+            this.btnDrills_to_Changing_Pos_N2.ConfirmationTextKey = "";
+            this.btnDrills_to_Changing_Pos_N2.CornerRadius = 4;
+            this.btnDrills_to_Changing_Pos_N2.DescriptionText = "";
+            this.btnDrills_to_Changing_Pos_N2.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnDrills_to_Changing_Pos_N2.DisplayAddress = null;
+            this.btnDrills_to_Changing_Pos_N2.DisplayOffset.StaticValue = 0D;
+            this.btnDrills_to_Changing_Pos_N2.DisplayOffset.TagAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N2.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.DescriptionKey = "";
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.MonitorAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.ValA = 0D;
+            this.btnDrills_to_Changing_Pos_N2.EnableTrigger.ValB = 0D;
+            this.btnDrills_to_Changing_Pos_N2.ErrorAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.FallbackText = "2";
+            this.btnDrills_to_Changing_Pos_N2.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N2.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDrills_to_Changing_Pos_N2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnDrills_to_Changing_Pos_N2.ForeColor = System.Drawing.Color.Black;
+            this.btnDrills_to_Changing_Pos_N2.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnDrills_to_Changing_Pos_N2.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnDrills_to_Changing_Pos_N2.ImageActive = null;
+            this.btnDrills_to_Changing_Pos_N2.ImagePassive = null;
+            this.btnDrills_to_Changing_Pos_N2.IsActivePage = false;
+            this.btnDrills_to_Changing_Pos_N2.Lamp1Address = "";
+            this.btnDrills_to_Changing_Pos_N2.Lamp1Tip = "";
+            this.btnDrills_to_Changing_Pos_N2.Lamp2Address = "";
+            this.btnDrills_to_Changing_Pos_N2.Lamp2Tip = "";
+            this.btnDrills_to_Changing_Pos_N2.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnDrills_to_Changing_Pos_N2.Location = new System.Drawing.Point(97, 24);
+            this.btnDrills_to_Changing_Pos_N2.LogAction = true;
+            this.btnDrills_to_Changing_Pos_N2.Name = "btnDrills_to_Changing_Pos_N2";
+            this.btnDrills_to_Changing_Pos_N2.OutputAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnDrills_to_Changing_Pos_N2.PlcNumber = 1;
+            this.btnDrills_to_Changing_Pos_N2.RelayAddress = "";
+            this.btnDrills_to_Changing_Pos_N2.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnDrills_to_Changing_Pos_N2.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnDrills_to_Changing_Pos_N2.RoundLeftOnly = false;
+            this.btnDrills_to_Changing_Pos_N2.RoundRightOnly = false;
+            this.btnDrills_to_Changing_Pos_N2.ShowCaption = true;
+            this.btnDrills_to_Changing_Pos_N2.Size = new System.Drawing.Size(79, 32);
+            this.btnDrills_to_Changing_Pos_N2.TabIndex = 1;
+            this.btnDrills_to_Changing_Pos_N2.ToolTipText = "";
+            this.btnDrills_to_Changing_Pos_N2.TranslationKey = "2";
+            this.btnDrills_to_Changing_Pos_N2.UseVisualStyleBackColor = false;
+            this.btnDrills_to_Changing_Pos_N2.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnDrills_to_Changing_Pos_N3
+            // 
+            this.btnDrills_to_Changing_Pos_N3.ActiveBackColor = System.Drawing.Color.White;
+            this.btnDrills_to_Changing_Pos_N3.AlertBlink = false;
+            this.btnDrills_to_Changing_Pos_N3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction4.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction4.Address = "M178";
+            bitAction4.AddressOffset.StaticValue = 0D;
+            bitAction4.AddressOffset.TagAddress = "";
+            bitAction4.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N3.BitActions.Add(bitAction4);
+            this.btnDrills_to_Changing_Pos_N3.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N3.ButtonText = "3";
+            this.btnDrills_to_Changing_Pos_N3.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnDrills_to_Changing_Pos_N3.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnDrills_to_Changing_Pos_N3.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N3.ConfirmationAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.ConfirmationNeeded = false;
+            this.btnDrills_to_Changing_Pos_N3.ConfirmationText = "";
+            this.btnDrills_to_Changing_Pos_N3.ConfirmationTextKey = "";
+            this.btnDrills_to_Changing_Pos_N3.CornerRadius = 4;
+            this.btnDrills_to_Changing_Pos_N3.DescriptionText = "";
+            this.btnDrills_to_Changing_Pos_N3.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnDrills_to_Changing_Pos_N3.DisplayAddress = null;
+            this.btnDrills_to_Changing_Pos_N3.DisplayOffset.StaticValue = 0D;
+            this.btnDrills_to_Changing_Pos_N3.DisplayOffset.TagAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N3.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.DescriptionKey = "";
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.MonitorAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.ValA = 0D;
+            this.btnDrills_to_Changing_Pos_N3.EnableTrigger.ValB = 0D;
+            this.btnDrills_to_Changing_Pos_N3.ErrorAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.FallbackText = "3";
+            this.btnDrills_to_Changing_Pos_N3.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N3.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDrills_to_Changing_Pos_N3.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnDrills_to_Changing_Pos_N3.ForeColor = System.Drawing.Color.Black;
+            this.btnDrills_to_Changing_Pos_N3.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnDrills_to_Changing_Pos_N3.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnDrills_to_Changing_Pos_N3.ImageActive = null;
+            this.btnDrills_to_Changing_Pos_N3.ImagePassive = null;
+            this.btnDrills_to_Changing_Pos_N3.IsActivePage = false;
+            this.btnDrills_to_Changing_Pos_N3.Lamp1Address = "";
+            this.btnDrills_to_Changing_Pos_N3.Lamp1Tip = "";
+            this.btnDrills_to_Changing_Pos_N3.Lamp2Address = "";
+            this.btnDrills_to_Changing_Pos_N3.Lamp2Tip = "";
+            this.btnDrills_to_Changing_Pos_N3.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnDrills_to_Changing_Pos_N3.Location = new System.Drawing.Point(184, 24);
+            this.btnDrills_to_Changing_Pos_N3.LogAction = true;
+            this.btnDrills_to_Changing_Pos_N3.Name = "btnDrills_to_Changing_Pos_N3";
+            this.btnDrills_to_Changing_Pos_N3.OutputAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnDrills_to_Changing_Pos_N3.PlcNumber = 1;
+            this.btnDrills_to_Changing_Pos_N3.RelayAddress = "";
+            this.btnDrills_to_Changing_Pos_N3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnDrills_to_Changing_Pos_N3.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnDrills_to_Changing_Pos_N3.RoundLeftOnly = false;
+            this.btnDrills_to_Changing_Pos_N3.RoundRightOnly = false;
+            this.btnDrills_to_Changing_Pos_N3.ShowCaption = true;
+            this.btnDrills_to_Changing_Pos_N3.Size = new System.Drawing.Size(79, 32);
+            this.btnDrills_to_Changing_Pos_N3.TabIndex = 2;
+            this.btnDrills_to_Changing_Pos_N3.ToolTipText = "";
+            this.btnDrills_to_Changing_Pos_N3.TranslationKey = "3";
+            this.btnDrills_to_Changing_Pos_N3.UseVisualStyleBackColor = false;
+            this.btnDrills_to_Changing_Pos_N3.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnDrills_to_Changing_Pos_N4
+            // 
+            this.btnDrills_to_Changing_Pos_N4.ActiveBackColor = System.Drawing.Color.White;
+            this.btnDrills_to_Changing_Pos_N4.AlertBlink = false;
+            this.btnDrills_to_Changing_Pos_N4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction5.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction5.Address = "M179";
+            bitAction5.AddressOffset.StaticValue = 0D;
+            bitAction5.AddressOffset.TagAddress = "";
+            bitAction5.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N4.BitActions.Add(bitAction5);
+            this.btnDrills_to_Changing_Pos_N4.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N4.ButtonText = "4";
+            this.btnDrills_to_Changing_Pos_N4.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnDrills_to_Changing_Pos_N4.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnDrills_to_Changing_Pos_N4.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N4.ConfirmationAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.ConfirmationNeeded = false;
+            this.btnDrills_to_Changing_Pos_N4.ConfirmationText = "";
+            this.btnDrills_to_Changing_Pos_N4.ConfirmationTextKey = "";
+            this.btnDrills_to_Changing_Pos_N4.CornerRadius = 4;
+            this.btnDrills_to_Changing_Pos_N4.DescriptionText = "";
+            this.btnDrills_to_Changing_Pos_N4.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnDrills_to_Changing_Pos_N4.DisplayAddress = null;
+            this.btnDrills_to_Changing_Pos_N4.DisplayOffset.StaticValue = 0D;
+            this.btnDrills_to_Changing_Pos_N4.DisplayOffset.TagAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnDrills_to_Changing_Pos_N4.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.DescriptionKey = "";
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.MonitorAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.ValA = 0D;
+            this.btnDrills_to_Changing_Pos_N4.EnableTrigger.ValB = 0D;
+            this.btnDrills_to_Changing_Pos_N4.ErrorAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.FallbackText = "4";
+            this.btnDrills_to_Changing_Pos_N4.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N4.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnDrills_to_Changing_Pos_N4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDrills_to_Changing_Pos_N4.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnDrills_to_Changing_Pos_N4.ForeColor = System.Drawing.Color.Black;
+            this.btnDrills_to_Changing_Pos_N4.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnDrills_to_Changing_Pos_N4.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnDrills_to_Changing_Pos_N4.ImageActive = null;
+            this.btnDrills_to_Changing_Pos_N4.ImagePassive = null;
+            this.btnDrills_to_Changing_Pos_N4.IsActivePage = false;
+            this.btnDrills_to_Changing_Pos_N4.Lamp1Address = "";
+            this.btnDrills_to_Changing_Pos_N4.Lamp1Tip = "";
+            this.btnDrills_to_Changing_Pos_N4.Lamp2Address = "";
+            this.btnDrills_to_Changing_Pos_N4.Lamp2Tip = "";
+            this.btnDrills_to_Changing_Pos_N4.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnDrills_to_Changing_Pos_N4.Location = new System.Drawing.Point(271, 24);
+            this.btnDrills_to_Changing_Pos_N4.LogAction = true;
+            this.btnDrills_to_Changing_Pos_N4.Name = "btnDrills_to_Changing_Pos_N4";
+            this.btnDrills_to_Changing_Pos_N4.OutputAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnDrills_to_Changing_Pos_N4.PlcNumber = 1;
+            this.btnDrills_to_Changing_Pos_N4.RelayAddress = "";
+            this.btnDrills_to_Changing_Pos_N4.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnDrills_to_Changing_Pos_N4.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnDrills_to_Changing_Pos_N4.RoundLeftOnly = false;
+            this.btnDrills_to_Changing_Pos_N4.RoundRightOnly = false;
+            this.btnDrills_to_Changing_Pos_N4.ShowCaption = true;
+            this.btnDrills_to_Changing_Pos_N4.Size = new System.Drawing.Size(79, 32);
+            this.btnDrills_to_Changing_Pos_N4.TabIndex = 3;
+            this.btnDrills_to_Changing_Pos_N4.ToolTipText = "";
+            this.btnDrills_to_Changing_Pos_N4.TranslationKey = "4";
+            this.btnDrills_to_Changing_Pos_N4.UseVisualStyleBackColor = false;
+            this.btnDrills_to_Changing_Pos_N4.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnMachine_Cleaning_Pos
+            // 
+            this.btnMachine_Cleaning_Pos.ActiveBackColor = System.Drawing.Color.White;
+            this.btnMachine_Cleaning_Pos.AlertBlink = false;
+            this.btnMachine_Cleaning_Pos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction6.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction6.Address = "M180";
+            bitAction6.AddressOffset.StaticValue = 0D;
+            bitAction6.AddressOffset.TagAddress = "";
+            bitAction6.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnMachine_Cleaning_Pos.BitActions.Add(bitAction6);
+            this.btnMachine_Cleaning_Pos.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnMachine_Cleaning_Pos.ButtonText = "Machine Cleaning Pos.";
+            this.btnMachine_Cleaning_Pos.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnMachine_Cleaning_Pos.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnMachine_Cleaning_Pos.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnMachine_Cleaning_Pos.ConfirmationAddress = "";
+            this.btnMachine_Cleaning_Pos.ConfirmationNeeded = false;
+            this.btnMachine_Cleaning_Pos.ConfirmationText = "";
+            this.btnMachine_Cleaning_Pos.ConfirmationTextKey = "";
+            this.btnMachine_Cleaning_Pos.CornerRadius = 4;
+            this.btnMachine_Cleaning_Pos.DescriptionText = "";
+            this.btnMachine_Cleaning_Pos.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnMachine_Cleaning_Pos.DisplayAddress = null;
+            this.btnMachine_Cleaning_Pos.DisplayOffset.StaticValue = 0D;
+            this.btnMachine_Cleaning_Pos.DisplayOffset.TagAddress = "";
+            this.btnMachine_Cleaning_Pos.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnMachine_Cleaning_Pos.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.DescriptionKey = "";
+            this.btnMachine_Cleaning_Pos.EnableTrigger.MonitorAddress = "";
+            this.btnMachine_Cleaning_Pos.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.ValA = 0D;
+            this.btnMachine_Cleaning_Pos.EnableTrigger.ValB = 0D;
+            this.btnMachine_Cleaning_Pos.ErrorAddress = "";
+            this.btnMachine_Cleaning_Pos.FallbackText = "Machine Cleaning Pos.";
+            this.btnMachine_Cleaning_Pos.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnMachine_Cleaning_Pos.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnMachine_Cleaning_Pos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMachine_Cleaning_Pos.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnMachine_Cleaning_Pos.ForeColor = System.Drawing.Color.Black;
+            this.btnMachine_Cleaning_Pos.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnMachine_Cleaning_Pos.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnMachine_Cleaning_Pos.ImageActive = null;
+            this.btnMachine_Cleaning_Pos.ImagePassive = null;
+            this.btnMachine_Cleaning_Pos.IsActivePage = false;
+            this.btnMachine_Cleaning_Pos.Lamp1Address = "";
+            this.btnMachine_Cleaning_Pos.Lamp1Tip = "";
+            this.btnMachine_Cleaning_Pos.Lamp2Address = "";
+            this.btnMachine_Cleaning_Pos.Lamp2Tip = "";
+            this.btnMachine_Cleaning_Pos.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnMachine_Cleaning_Pos.Location = new System.Drawing.Point(454, 159);
+            this.btnMachine_Cleaning_Pos.LogAction = true;
+            this.btnMachine_Cleaning_Pos.Name = "btnMachine_Cleaning_Pos";
+            this.btnMachine_Cleaning_Pos.OutputAddress = "";
+            this.btnMachine_Cleaning_Pos.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnMachine_Cleaning_Pos.PlcNumber = 1;
+            this.btnMachine_Cleaning_Pos.RelayAddress = "";
+            this.btnMachine_Cleaning_Pos.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnMachine_Cleaning_Pos.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnMachine_Cleaning_Pos.RoundLeftOnly = false;
+            this.btnMachine_Cleaning_Pos.RoundRightOnly = false;
+            this.btnMachine_Cleaning_Pos.ShowCaption = true;
+            this.btnMachine_Cleaning_Pos.Size = new System.Drawing.Size(360, 40);
+            this.btnMachine_Cleaning_Pos.TabIndex = 5;
+            this.btnMachine_Cleaning_Pos.ToolTipText = "";
+            this.btnMachine_Cleaning_Pos.TranslationKey = "Machine Cleaning Pos.";
+            this.btnMachine_Cleaning_Pos.UseVisualStyleBackColor = false;
+            this.btnMachine_Cleaning_Pos.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // lblUnit_1
+            // 
+            this.lblUnit_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUnit_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.lblUnit_1.Location = new System.Drawing.Point(14, 382);
+            this.lblUnit_1.Name = "lblUnit_1";
+            this.lblUnit_1.Size = new System.Drawing.Size(360, 26);
+            this.lblUnit_1.TabIndex = 6;
+            this.lblUnit_1.Text = "Unit 1";
+            this.lblUnit_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblUnit_1.TranslationKey = "Unit 1";
+            // 
+            // unitUnit_1_Angle
+            // 
+            this.unitUnit_1_Angle.AxisNumber = 4;
+            this.unitUnit_1_Angle.BackColor = System.Drawing.Color.White;
+            this.unitUnit_1_Angle.Location = new System.Drawing.Point(14, 414);
+            this.unitUnit_1_Angle.Name = "unitUnit_1_Angle";
+            this.unitUnit_1_Angle.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_1_Angle.TabIndex = 7;
+            // 
+            // unitUnit_1_X
+            // 
+            this.unitUnit_1_X.AxisNumber = 5;
+            this.unitUnit_1_X.BackColor = System.Drawing.Color.White;
+            this.unitUnit_1_X.Location = new System.Drawing.Point(14, 488);
+            this.unitUnit_1_X.Name = "unitUnit_1_X";
+            this.unitUnit_1_X.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_1_X.TabIndex = 8;
+            // 
+            // unitUnit_1_Y
+            // 
+            this.unitUnit_1_Y.AxisNumber = 6;
+            this.unitUnit_1_Y.BackColor = System.Drawing.Color.White;
+            this.unitUnit_1_Y.Location = new System.Drawing.Point(14, 562);
+            this.unitUnit_1_Y.Name = "unitUnit_1_Y";
+            this.unitUnit_1_Y.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_1_Y.TabIndex = 9;
+            // 
+            // unitUnit_1_Z
+            // 
+            this.unitUnit_1_Z.AxisNumber = 7;
+            this.unitUnit_1_Z.BackColor = System.Drawing.Color.White;
+            this.unitUnit_1_Z.Location = new System.Drawing.Point(14, 636);
+            this.unitUnit_1_Z.Name = "unitUnit_1_Z";
+            this.unitUnit_1_Z.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_1_Z.TabIndex = 10;
+            // 
+            // btnUnit_1_Milling_Motor
+            // 
+            this.btnUnit_1_Milling_Motor.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Milling_Motor.AlertBlink = false;
+            this.btnUnit_1_Milling_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction7.Address = "M649";
+            bitAction7.AddressOffset.StaticValue = 0D;
+            bitAction7.AddressOffset.TagAddress = "";
+            bitAction7.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Milling_Motor.BitActions.Add(bitAction7);
+            this.btnUnit_1_Milling_Motor.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Milling_Motor.ButtonText = "Milling Motor";
+            this.btnUnit_1_Milling_Motor.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Milling_Motor.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Milling_Motor.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Milling_Motor.ConfirmationAddress = "";
+            this.btnUnit_1_Milling_Motor.ConfirmationNeeded = false;
+            this.btnUnit_1_Milling_Motor.ConfirmationText = "";
+            this.btnUnit_1_Milling_Motor.ConfirmationTextKey = "";
+            this.btnUnit_1_Milling_Motor.CornerRadius = 4;
+            this.btnUnit_1_Milling_Motor.DescriptionText = "";
+            this.btnUnit_1_Milling_Motor.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Milling_Motor.DisplayAddress = null;
+            this.btnUnit_1_Milling_Motor.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Milling_Motor.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Milling_Motor.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Milling_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Milling_Motor.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Milling_Motor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Milling_Motor.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Milling_Motor.ErrorAddress = "";
+            this.btnUnit_1_Milling_Motor.FallbackText = "Milling Motor";
+            this.btnUnit_1_Milling_Motor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Milling_Motor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Milling_Motor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Milling_Motor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Milling_Motor.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Milling_Motor.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Milling_Motor.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Milling_Motor.ImageActive = null;
+            this.btnUnit_1_Milling_Motor.ImagePassive = null;
+            this.btnUnit_1_Milling_Motor.IsActivePage = false;
+            this.btnUnit_1_Milling_Motor.Lamp1Address = "M230";
+            this.btnUnit_1_Milling_Motor.Lamp1Tip = "";
+            this.btnUnit_1_Milling_Motor.Lamp2Address = "";
+            this.btnUnit_1_Milling_Motor.Lamp2Tip = "";
+            this.btnUnit_1_Milling_Motor.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Milling_Motor.Location = new System.Drawing.Point(14, 710);
+            this.btnUnit_1_Milling_Motor.LogAction = true;
+            this.btnUnit_1_Milling_Motor.Name = "btnUnit_1_Milling_Motor";
+            this.btnUnit_1_Milling_Motor.OutputAddress = "";
+            this.btnUnit_1_Milling_Motor.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Milling_Motor.PlcNumber = 1;
+            this.btnUnit_1_Milling_Motor.RelayAddress = "";
+            this.btnUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Milling_Motor.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Milling_Motor.RoundLeftOnly = false;
+            this.btnUnit_1_Milling_Motor.RoundRightOnly = false;
+            this.btnUnit_1_Milling_Motor.ShowCaption = true;
+            this.btnUnit_1_Milling_Motor.Size = new System.Drawing.Size(230, 40);
+            this.btnUnit_1_Milling_Motor.TabIndex = 11;
+            this.btnUnit_1_Milling_Motor.ToolTipText = "";
+            this.btnUnit_1_Milling_Motor.TranslationKey = "Milling Motor";
+            this.btnUnit_1_Milling_Motor.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Milling_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Milling_Motor_Value
+            // 
+            this.btnUnit_1_Milling_Motor_Value.Address = "D18";
+            this.btnUnit_1_Milling_Motor_Value.AddressOffset.StaticValue = 0D;
+            this.btnUnit_1_Milling_Motor_Value.AddressOffset.TagAddress = "";
+            this.btnUnit_1_Milling_Motor_Value.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Milling_Motor_Value.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnUnit_1_Milling_Motor_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.btnUnit_1_Milling_Motor_Value.CornerRadius = 4;
+            this.btnUnit_1_Milling_Motor_Value.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Signed_Decimal;
+            this.btnUnit_1_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Milling_Motor_Value.DecimalPlaces = 2;
+            this.btnUnit_1_Milling_Motor_Value.DescriptionColon = true;
+            this.btnUnit_1_Milling_Motor_Value.DescriptionText = "";
+            this.btnUnit_1_Milling_Motor_Value.Digits = 6;
+            this.btnUnit_1_Milling_Motor_Value.Divisor = 100D;
+            this.btnUnit_1_Milling_Motor_Value.FillZero = false;
+            this.btnUnit_1_Milling_Motor_Value.IsEditing = false;
+            this.btnUnit_1_Milling_Motor_Value.Location = new System.Drawing.Point(254, 710);
+            this.btnUnit_1_Milling_Motor_Value.LogAction = false;
+            this.btnUnit_1_Milling_Motor_Value.Name = "btnUnit_1_Milling_Motor_Value";
+            this.btnUnit_1_Milling_Motor_Value.PlcNumber = 1;
+            this.btnUnit_1_Milling_Motor_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.btnUnit_1_Milling_Motor_Value.ShowSuffix = true;
+            this.btnUnit_1_Milling_Motor_Value.ShowValueBorder = true;
+            this.btnUnit_1_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
+            this.btnUnit_1_Milling_Motor_Value.Suffix = "";
+            this.btnUnit_1_Milling_Motor_Value.TabIndex = 12;
+            this.btnUnit_1_Milling_Motor_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnUnit_1_Milling_Motor_Value.ToolTipTextKey = "";
+            this.btnUnit_1_Milling_Motor_Value.TranslationKey = "";
+            this.btnUnit_1_Milling_Motor_Value.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.btnUnit_1_Milling_Motor_Value.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
+            this.btnUnit_1_Milling_Motor_Value.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // dispUnit_1_Inverter_Error
+            // 
+            this.dispUnit_1_Inverter_Error.Address = "D667";
+            this.dispUnit_1_Inverter_Error.AddressOffset.StaticValue = 0D;
+            this.dispUnit_1_Inverter_Error.AddressOffset.TagAddress = "";
+            this.dispUnit_1_Inverter_Error.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.dispUnit_1_Inverter_Error.BackColor = System.Drawing.Color.Gainsboro;
+            this.dispUnit_1_Inverter_Error.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dispUnit_1_Inverter_Error.CornerRadius = 4;
+            this.dispUnit_1_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
+            this.dispUnit_1_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.dispUnit_1_Inverter_Error.DecimalPlaces = 0;
+            this.dispUnit_1_Inverter_Error.DescriptionColon = true;
+            this.dispUnit_1_Inverter_Error.DescriptionText = "Inverter Error";
+            this.dispUnit_1_Inverter_Error.Digits = 4;
+            this.dispUnit_1_Inverter_Error.Divisor = 1D;
+            this.dispUnit_1_Inverter_Error.FillZero = false;
+            this.dispUnit_1_Inverter_Error.IsEditing = false;
+            this.dispUnit_1_Inverter_Error.Location = new System.Drawing.Point(264, 760);
+            this.dispUnit_1_Inverter_Error.LogAction = false;
+            this.dispUnit_1_Inverter_Error.Name = "dispUnit_1_Inverter_Error";
+            this.dispUnit_1_Inverter_Error.PlcNumber = 1;
+            this.dispUnit_1_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.dispUnit_1_Inverter_Error.ShowSuffix = true;
+            this.dispUnit_1_Inverter_Error.ShowValueBorder = true;
+            this.dispUnit_1_Inverter_Error.Size = new System.Drawing.Size(110, 40);
+            this.dispUnit_1_Inverter_Error.Suffix = "";
+            this.dispUnit_1_Inverter_Error.TabIndex = 13;
+            this.dispUnit_1_Inverter_Error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.dispUnit_1_Inverter_Error.ToolTipTextKey = "";
+            this.dispUnit_1_Inverter_Error.TranslationKey = "Inverter Error";
+            this.dispUnit_1_Inverter_Error.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.dispUnit_1_Inverter_Error.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
+            this.dispUnit_1_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Tool_1_Cooling
+            // 
+            this.btnUnit_1_Tool_1_Cooling.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Tool_1_Cooling.AlertBlink = false;
+            this.btnUnit_1_Tool_1_Cooling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction8.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction8.Address = "M710";
+            bitAction8.AddressOffset.StaticValue = 0D;
+            bitAction8.AddressOffset.TagAddress = "";
+            bitAction8.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Tool_1_Cooling.BitActions.Add(bitAction8);
+            this.btnUnit_1_Tool_1_Cooling.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Tool_1_Cooling.ButtonText = "1st Tool Cooling";
+            this.btnUnit_1_Tool_1_Cooling.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Tool_1_Cooling.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Tool_1_Cooling.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_1_Cooling.ConfirmationAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.ConfirmationNeeded = false;
+            this.btnUnit_1_Tool_1_Cooling.ConfirmationText = "";
+            this.btnUnit_1_Tool_1_Cooling.ConfirmationTextKey = "";
+            this.btnUnit_1_Tool_1_Cooling.CornerRadius = 4;
+            this.btnUnit_1_Tool_1_Cooling.DescriptionText = "";
+            this.btnUnit_1_Tool_1_Cooling.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Tool_1_Cooling.DisplayAddress = null;
+            this.btnUnit_1_Tool_1_Cooling.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Tool_1_Cooling.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Tool_1_Cooling.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Tool_1_Cooling.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Tool_1_Cooling.ErrorAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.FallbackText = "1st Tool Cooling";
+            this.btnUnit_1_Tool_1_Cooling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_1_Cooling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_1_Cooling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Tool_1_Cooling.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Tool_1_Cooling.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Tool_1_Cooling.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Tool_1_Cooling.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Tool_1_Cooling.ImageActive = null;
+            this.btnUnit_1_Tool_1_Cooling.ImagePassive = null;
+            this.btnUnit_1_Tool_1_Cooling.IsActivePage = false;
+            this.btnUnit_1_Tool_1_Cooling.Lamp1Address = "";
+            this.btnUnit_1_Tool_1_Cooling.Lamp1Tip = "";
+            this.btnUnit_1_Tool_1_Cooling.Lamp2Address = "";
+            this.btnUnit_1_Tool_1_Cooling.Lamp2Tip = "";
+            this.btnUnit_1_Tool_1_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(14, 810);
+            this.btnUnit_1_Tool_1_Cooling.LogAction = true;
+            this.btnUnit_1_Tool_1_Cooling.Name = "btnUnit_1_Tool_1_Cooling";
+            this.btnUnit_1_Tool_1_Cooling.OutputAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Tool_1_Cooling.PlcNumber = 1;
+            this.btnUnit_1_Tool_1_Cooling.RelayAddress = "";
+            this.btnUnit_1_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Tool_1_Cooling.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Tool_1_Cooling.RoundLeftOnly = false;
+            this.btnUnit_1_Tool_1_Cooling.RoundRightOnly = false;
+            this.btnUnit_1_Tool_1_Cooling.ShowCaption = true;
+            this.btnUnit_1_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
+            this.btnUnit_1_Tool_1_Cooling.TabIndex = 15;
+            this.btnUnit_1_Tool_1_Cooling.ToolTipText = "";
+            this.btnUnit_1_Tool_1_Cooling.TranslationKey = "1st Tool Cooling";
+            this.btnUnit_1_Tool_1_Cooling.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Tool_1_Cooling.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Tool_2_Cooling
+            // 
+            this.btnUnit_1_Tool_2_Cooling.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Tool_2_Cooling.AlertBlink = false;
+            this.btnUnit_1_Tool_2_Cooling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction9.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction9.Address = "M711";
+            bitAction9.AddressOffset.StaticValue = 0D;
+            bitAction9.AddressOffset.TagAddress = "";
+            bitAction9.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Tool_2_Cooling.BitActions.Add(bitAction9);
+            this.btnUnit_1_Tool_2_Cooling.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Tool_2_Cooling.ButtonText = "2nd Tool Cooling";
+            this.btnUnit_1_Tool_2_Cooling.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Tool_2_Cooling.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Tool_2_Cooling.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_2_Cooling.ConfirmationAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.ConfirmationNeeded = false;
+            this.btnUnit_1_Tool_2_Cooling.ConfirmationText = "";
+            this.btnUnit_1_Tool_2_Cooling.ConfirmationTextKey = "";
+            this.btnUnit_1_Tool_2_Cooling.CornerRadius = 4;
+            this.btnUnit_1_Tool_2_Cooling.DescriptionText = "";
+            this.btnUnit_1_Tool_2_Cooling.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Tool_2_Cooling.DisplayAddress = null;
+            this.btnUnit_1_Tool_2_Cooling.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Tool_2_Cooling.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Tool_2_Cooling.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Tool_2_Cooling.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Tool_2_Cooling.ErrorAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.FallbackText = "2nd Tool Cooling";
+            this.btnUnit_1_Tool_2_Cooling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_2_Cooling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Tool_2_Cooling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Tool_2_Cooling.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Tool_2_Cooling.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Tool_2_Cooling.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Tool_2_Cooling.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Tool_2_Cooling.ImageActive = null;
+            this.btnUnit_1_Tool_2_Cooling.ImagePassive = null;
+            this.btnUnit_1_Tool_2_Cooling.IsActivePage = false;
+            this.btnUnit_1_Tool_2_Cooling.Lamp1Address = "";
+            this.btnUnit_1_Tool_2_Cooling.Lamp1Tip = "";
+            this.btnUnit_1_Tool_2_Cooling.Lamp2Address = "";
+            this.btnUnit_1_Tool_2_Cooling.Lamp2Tip = "";
+            this.btnUnit_1_Tool_2_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(14, 860);
+            this.btnUnit_1_Tool_2_Cooling.LogAction = true;
+            this.btnUnit_1_Tool_2_Cooling.Name = "btnUnit_1_Tool_2_Cooling";
+            this.btnUnit_1_Tool_2_Cooling.OutputAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Tool_2_Cooling.PlcNumber = 1;
+            this.btnUnit_1_Tool_2_Cooling.RelayAddress = "";
+            this.btnUnit_1_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Tool_2_Cooling.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Tool_2_Cooling.RoundLeftOnly = false;
+            this.btnUnit_1_Tool_2_Cooling.RoundRightOnly = false;
+            this.btnUnit_1_Tool_2_Cooling.ShowCaption = true;
+            this.btnUnit_1_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
+            this.btnUnit_1_Tool_2_Cooling.TabIndex = 16;
+            this.btnUnit_1_Tool_2_Cooling.ToolTipText = "";
+            this.btnUnit_1_Tool_2_Cooling.TranslationKey = "2nd Tool Cooling";
+            this.btnUnit_1_Tool_2_Cooling.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Tool_2_Cooling.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // grpUnit_1_Change_Degree
+            // 
+            this.grpUnit_1_Change_Degree.Address = null;
+            this.grpUnit_1_Change_Degree.BackColor = System.Drawing.Color.White;
             this.grpUnit_1_Change_Degree.Controls.Add(this.btnUnit_1_Change_Degree_N0);
             this.grpUnit_1_Change_Degree.Controls.Add(this.btnUnit_1_Change_Degree_N90);
             this.grpUnit_1_Change_Degree.Controls.Add(this.btnUnit_1_Change_Degree_N180);
             this.grpUnit_1_Change_Degree.Controls.Add(this.btnUnit_1_Change_Degree_N270);
+            this.grpUnit_1_Change_Degree.Emoji = "";
+            this.grpUnit_1_Change_Degree.EnableAddress = "";
+            this.grpUnit_1_Change_Degree.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpUnit_1_Change_Degree.Location = new System.Drawing.Point(14, 910);
+            this.grpUnit_1_Change_Degree.Name = "grpUnit_1_Change_Degree";
+            this.grpUnit_1_Change_Degree.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpUnit_1_Change_Degree.PlcNumber = 1;
+            this.grpUnit_1_Change_Degree.Size = new System.Drawing.Size(360, 64);
+            this.grpUnit_1_Change_Degree.TabIndex = 17;
+            this.grpUnit_1_Change_Degree.TitleText = "Change Degree";
+            this.grpUnit_1_Change_Degree.TitleTextKey = "Change Degree";
+            this.grpUnit_1_Change_Degree.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpUnit_1_Change_Degree.VisibleAddress = "";
+            // 
+            // btnUnit_1_Change_Degree_N0
+            // 
+            this.btnUnit_1_Change_Degree_N0.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Change_Degree_N0.AlertBlink = false;
+            this.btnUnit_1_Change_Degree_N0.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction10.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction10.Address = "M673";
+            bitAction10.AddressOffset.StaticValue = 0D;
+            bitAction10.AddressOffset.TagAddress = "";
+            bitAction10.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N0.BitActions.Add(bitAction10);
+            this.btnUnit_1_Change_Degree_N0.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N0.ButtonText = "0°";
+            this.btnUnit_1_Change_Degree_N0.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Change_Degree_N0.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Change_Degree_N0.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N0.ConfirmationAddress = "";
+            this.btnUnit_1_Change_Degree_N0.ConfirmationNeeded = false;
+            this.btnUnit_1_Change_Degree_N0.ConfirmationText = "";
+            this.btnUnit_1_Change_Degree_N0.ConfirmationTextKey = "";
+            this.btnUnit_1_Change_Degree_N0.CornerRadius = 4;
+            this.btnUnit_1_Change_Degree_N0.DescriptionText = "";
+            this.btnUnit_1_Change_Degree_N0.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Change_Degree_N0.DisplayAddress = null;
+            this.btnUnit_1_Change_Degree_N0.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Change_Degree_N0.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Change_Degree_N0.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N0.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Change_Degree_N0.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Change_Degree_N0.ErrorAddress = "";
+            this.btnUnit_1_Change_Degree_N0.FallbackText = "0°";
+            this.btnUnit_1_Change_Degree_N0.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N0.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N0.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Change_Degree_N0.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Change_Degree_N0.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Change_Degree_N0.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Change_Degree_N0.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Change_Degree_N0.ImageActive = null;
+            this.btnUnit_1_Change_Degree_N0.ImagePassive = null;
+            this.btnUnit_1_Change_Degree_N0.IsActivePage = false;
+            this.btnUnit_1_Change_Degree_N0.Lamp1Address = "";
+            this.btnUnit_1_Change_Degree_N0.Lamp1Tip = "";
+            this.btnUnit_1_Change_Degree_N0.Lamp2Address = "";
+            this.btnUnit_1_Change_Degree_N0.Lamp2Tip = "";
+            this.btnUnit_1_Change_Degree_N0.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Change_Degree_N0.Location = new System.Drawing.Point(10, 24);
+            this.btnUnit_1_Change_Degree_N0.LogAction = true;
+            this.btnUnit_1_Change_Degree_N0.Name = "btnUnit_1_Change_Degree_N0";
+            this.btnUnit_1_Change_Degree_N0.OutputAddress = "";
+            this.btnUnit_1_Change_Degree_N0.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Change_Degree_N0.PlcNumber = 1;
+            this.btnUnit_1_Change_Degree_N0.RelayAddress = "";
+            this.btnUnit_1_Change_Degree_N0.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Change_Degree_N0.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Change_Degree_N0.RoundLeftOnly = false;
+            this.btnUnit_1_Change_Degree_N0.RoundRightOnly = false;
+            this.btnUnit_1_Change_Degree_N0.ShowCaption = true;
+            this.btnUnit_1_Change_Degree_N0.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_1_Change_Degree_N0.TabIndex = 0;
+            this.btnUnit_1_Change_Degree_N0.ToolTipText = "";
+            this.btnUnit_1_Change_Degree_N0.TranslationKey = "0°";
+            this.btnUnit_1_Change_Degree_N0.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Change_Degree_N0.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Change_Degree_N90
+            // 
+            this.btnUnit_1_Change_Degree_N90.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Change_Degree_N90.AlertBlink = false;
+            this.btnUnit_1_Change_Degree_N90.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction11.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction11.Address = "M674";
+            bitAction11.AddressOffset.StaticValue = 0D;
+            bitAction11.AddressOffset.TagAddress = "";
+            bitAction11.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N90.BitActions.Add(bitAction11);
+            this.btnUnit_1_Change_Degree_N90.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N90.ButtonText = "90°";
+            this.btnUnit_1_Change_Degree_N90.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Change_Degree_N90.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Change_Degree_N90.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N90.ConfirmationAddress = "";
+            this.btnUnit_1_Change_Degree_N90.ConfirmationNeeded = false;
+            this.btnUnit_1_Change_Degree_N90.ConfirmationText = "";
+            this.btnUnit_1_Change_Degree_N90.ConfirmationTextKey = "";
+            this.btnUnit_1_Change_Degree_N90.CornerRadius = 4;
+            this.btnUnit_1_Change_Degree_N90.DescriptionText = "";
+            this.btnUnit_1_Change_Degree_N90.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Change_Degree_N90.DisplayAddress = null;
+            this.btnUnit_1_Change_Degree_N90.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Change_Degree_N90.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Change_Degree_N90.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N90.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Change_Degree_N90.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Change_Degree_N90.ErrorAddress = "";
+            this.btnUnit_1_Change_Degree_N90.FallbackText = "90°";
+            this.btnUnit_1_Change_Degree_N90.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N90.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N90.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Change_Degree_N90.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Change_Degree_N90.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Change_Degree_N90.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Change_Degree_N90.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Change_Degree_N90.ImageActive = null;
+            this.btnUnit_1_Change_Degree_N90.ImagePassive = null;
+            this.btnUnit_1_Change_Degree_N90.IsActivePage = false;
+            this.btnUnit_1_Change_Degree_N90.Lamp1Address = "";
+            this.btnUnit_1_Change_Degree_N90.Lamp1Tip = "";
+            this.btnUnit_1_Change_Degree_N90.Lamp2Address = "";
+            this.btnUnit_1_Change_Degree_N90.Lamp2Tip = "";
+            this.btnUnit_1_Change_Degree_N90.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Change_Degree_N90.Location = new System.Drawing.Point(97, 24);
+            this.btnUnit_1_Change_Degree_N90.LogAction = true;
+            this.btnUnit_1_Change_Degree_N90.Name = "btnUnit_1_Change_Degree_N90";
+            this.btnUnit_1_Change_Degree_N90.OutputAddress = "";
+            this.btnUnit_1_Change_Degree_N90.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Change_Degree_N90.PlcNumber = 1;
+            this.btnUnit_1_Change_Degree_N90.RelayAddress = "";
+            this.btnUnit_1_Change_Degree_N90.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Change_Degree_N90.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Change_Degree_N90.RoundLeftOnly = false;
+            this.btnUnit_1_Change_Degree_N90.RoundRightOnly = false;
+            this.btnUnit_1_Change_Degree_N90.ShowCaption = true;
+            this.btnUnit_1_Change_Degree_N90.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_1_Change_Degree_N90.TabIndex = 1;
+            this.btnUnit_1_Change_Degree_N90.ToolTipText = "";
+            this.btnUnit_1_Change_Degree_N90.TranslationKey = "90°";
+            this.btnUnit_1_Change_Degree_N90.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Change_Degree_N90.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Change_Degree_N180
+            // 
+            this.btnUnit_1_Change_Degree_N180.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Change_Degree_N180.AlertBlink = false;
+            this.btnUnit_1_Change_Degree_N180.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction12.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction12.Address = "M675";
+            bitAction12.AddressOffset.StaticValue = 0D;
+            bitAction12.AddressOffset.TagAddress = "";
+            bitAction12.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N180.BitActions.Add(bitAction12);
+            this.btnUnit_1_Change_Degree_N180.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N180.ButtonText = "180°";
+            this.btnUnit_1_Change_Degree_N180.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Change_Degree_N180.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Change_Degree_N180.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N180.ConfirmationAddress = "";
+            this.btnUnit_1_Change_Degree_N180.ConfirmationNeeded = false;
+            this.btnUnit_1_Change_Degree_N180.ConfirmationText = "";
+            this.btnUnit_1_Change_Degree_N180.ConfirmationTextKey = "";
+            this.btnUnit_1_Change_Degree_N180.CornerRadius = 4;
+            this.btnUnit_1_Change_Degree_N180.DescriptionText = "";
+            this.btnUnit_1_Change_Degree_N180.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Change_Degree_N180.DisplayAddress = null;
+            this.btnUnit_1_Change_Degree_N180.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Change_Degree_N180.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Change_Degree_N180.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N180.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Change_Degree_N180.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Change_Degree_N180.ErrorAddress = "";
+            this.btnUnit_1_Change_Degree_N180.FallbackText = "180°";
+            this.btnUnit_1_Change_Degree_N180.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N180.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N180.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Change_Degree_N180.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Change_Degree_N180.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Change_Degree_N180.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Change_Degree_N180.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Change_Degree_N180.ImageActive = null;
+            this.btnUnit_1_Change_Degree_N180.ImagePassive = null;
+            this.btnUnit_1_Change_Degree_N180.IsActivePage = false;
+            this.btnUnit_1_Change_Degree_N180.Lamp1Address = "";
+            this.btnUnit_1_Change_Degree_N180.Lamp1Tip = "";
+            this.btnUnit_1_Change_Degree_N180.Lamp2Address = "";
+            this.btnUnit_1_Change_Degree_N180.Lamp2Tip = "";
+            this.btnUnit_1_Change_Degree_N180.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Change_Degree_N180.Location = new System.Drawing.Point(184, 24);
+            this.btnUnit_1_Change_Degree_N180.LogAction = true;
+            this.btnUnit_1_Change_Degree_N180.Name = "btnUnit_1_Change_Degree_N180";
+            this.btnUnit_1_Change_Degree_N180.OutputAddress = "";
+            this.btnUnit_1_Change_Degree_N180.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Change_Degree_N180.PlcNumber = 1;
+            this.btnUnit_1_Change_Degree_N180.RelayAddress = "";
+            this.btnUnit_1_Change_Degree_N180.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Change_Degree_N180.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Change_Degree_N180.RoundLeftOnly = false;
+            this.btnUnit_1_Change_Degree_N180.RoundRightOnly = false;
+            this.btnUnit_1_Change_Degree_N180.ShowCaption = true;
+            this.btnUnit_1_Change_Degree_N180.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_1_Change_Degree_N180.TabIndex = 2;
+            this.btnUnit_1_Change_Degree_N180.ToolTipText = "";
+            this.btnUnit_1_Change_Degree_N180.TranslationKey = "180°";
+            this.btnUnit_1_Change_Degree_N180.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Change_Degree_N180.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_1_Change_Degree_N270
+            // 
+            this.btnUnit_1_Change_Degree_N270.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_1_Change_Degree_N270.AlertBlink = false;
+            this.btnUnit_1_Change_Degree_N270.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction13.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction13.Address = "M676";
+            bitAction13.AddressOffset.StaticValue = 0D;
+            bitAction13.AddressOffset.TagAddress = "";
+            bitAction13.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N270.BitActions.Add(bitAction13);
+            this.btnUnit_1_Change_Degree_N270.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N270.ButtonText = "270°";
+            this.btnUnit_1_Change_Degree_N270.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_1_Change_Degree_N270.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_1_Change_Degree_N270.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N270.ConfirmationAddress = "";
+            this.btnUnit_1_Change_Degree_N270.ConfirmationNeeded = false;
+            this.btnUnit_1_Change_Degree_N270.ConfirmationText = "";
+            this.btnUnit_1_Change_Degree_N270.ConfirmationTextKey = "";
+            this.btnUnit_1_Change_Degree_N270.CornerRadius = 4;
+            this.btnUnit_1_Change_Degree_N270.DescriptionText = "";
+            this.btnUnit_1_Change_Degree_N270.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_1_Change_Degree_N270.DisplayAddress = null;
+            this.btnUnit_1_Change_Degree_N270.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_1_Change_Degree_N270.DisplayOffset.TagAddress = "";
+            this.btnUnit_1_Change_Degree_N270.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_1_Change_Degree_N270.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.ValA = 0D;
+            this.btnUnit_1_Change_Degree_N270.EnableTrigger.ValB = 0D;
+            this.btnUnit_1_Change_Degree_N270.ErrorAddress = "";
+            this.btnUnit_1_Change_Degree_N270.FallbackText = "270°";
+            this.btnUnit_1_Change_Degree_N270.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N270.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_1_Change_Degree_N270.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_1_Change_Degree_N270.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_1_Change_Degree_N270.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_1_Change_Degree_N270.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_1_Change_Degree_N270.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_1_Change_Degree_N270.ImageActive = null;
+            this.btnUnit_1_Change_Degree_N270.ImagePassive = null;
+            this.btnUnit_1_Change_Degree_N270.IsActivePage = false;
+            this.btnUnit_1_Change_Degree_N270.Lamp1Address = "";
+            this.btnUnit_1_Change_Degree_N270.Lamp1Tip = "";
+            this.btnUnit_1_Change_Degree_N270.Lamp2Address = "";
+            this.btnUnit_1_Change_Degree_N270.Lamp2Tip = "";
+            this.btnUnit_1_Change_Degree_N270.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_1_Change_Degree_N270.Location = new System.Drawing.Point(271, 24);
+            this.btnUnit_1_Change_Degree_N270.LogAction = true;
+            this.btnUnit_1_Change_Degree_N270.Name = "btnUnit_1_Change_Degree_N270";
+            this.btnUnit_1_Change_Degree_N270.OutputAddress = "";
+            this.btnUnit_1_Change_Degree_N270.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_1_Change_Degree_N270.PlcNumber = 1;
+            this.btnUnit_1_Change_Degree_N270.RelayAddress = "";
+            this.btnUnit_1_Change_Degree_N270.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_1_Change_Degree_N270.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_1_Change_Degree_N270.RoundLeftOnly = false;
+            this.btnUnit_1_Change_Degree_N270.RoundRightOnly = false;
+            this.btnUnit_1_Change_Degree_N270.ShowCaption = true;
+            this.btnUnit_1_Change_Degree_N270.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_1_Change_Degree_N270.TabIndex = 3;
+            this.btnUnit_1_Change_Degree_N270.ToolTipText = "";
+            this.btnUnit_1_Change_Degree_N270.TranslationKey = "270°";
+            this.btnUnit_1_Change_Degree_N270.UseVisualStyleBackColor = false;
+            this.btnUnit_1_Change_Degree_N270.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // lblUnit_2
+            // 
+            this.lblUnit_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUnit_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
+            this.lblUnit_2.Location = new System.Drawing.Point(454, 382);
+            this.lblUnit_2.Name = "lblUnit_2";
+            this.lblUnit_2.Size = new System.Drawing.Size(360, 26);
+            this.lblUnit_2.TabIndex = 18;
+            this.lblUnit_2.Text = "Unit 2";
+            this.lblUnit_2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblUnit_2.TranslationKey = "Unit 2";
+            // 
+            // unitUnit_2_Angle
+            // 
+            this.unitUnit_2_Angle.AxisNumber = 8;
+            this.unitUnit_2_Angle.BackColor = System.Drawing.Color.White;
+            this.unitUnit_2_Angle.Location = new System.Drawing.Point(454, 414);
+            this.unitUnit_2_Angle.Name = "unitUnit_2_Angle";
+            this.unitUnit_2_Angle.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_2_Angle.TabIndex = 19;
+            // 
+            // unitUnit_2_X
+            // 
+            this.unitUnit_2_X.AxisNumber = 9;
+            this.unitUnit_2_X.BackColor = System.Drawing.Color.White;
+            this.unitUnit_2_X.Location = new System.Drawing.Point(454, 488);
+            this.unitUnit_2_X.Name = "unitUnit_2_X";
+            this.unitUnit_2_X.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_2_X.TabIndex = 20;
+            // 
+            // unitUnit_2_Y
+            // 
+            this.unitUnit_2_Y.AxisNumber = 10;
+            this.unitUnit_2_Y.BackColor = System.Drawing.Color.White;
+            this.unitUnit_2_Y.Location = new System.Drawing.Point(454, 562);
+            this.unitUnit_2_Y.Name = "unitUnit_2_Y";
+            this.unitUnit_2_Y.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_2_Y.TabIndex = 21;
+            // 
+            // unitUnit_2_Z
+            // 
+            this.unitUnit_2_Z.AxisNumber = 11;
+            this.unitUnit_2_Z.BackColor = System.Drawing.Color.White;
+            this.unitUnit_2_Z.Location = new System.Drawing.Point(454, 636);
+            this.unitUnit_2_Z.Name = "unitUnit_2_Z";
+            this.unitUnit_2_Z.Size = new System.Drawing.Size(360, 64);
+            this.unitUnit_2_Z.TabIndex = 22;
+            // 
+            // btnUnit_2_Milling_Motor
+            // 
+            this.btnUnit_2_Milling_Motor.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Milling_Motor.AlertBlink = false;
+            this.btnUnit_2_Milling_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction14.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction14.Address = "M650";
+            bitAction14.AddressOffset.StaticValue = 0D;
+            bitAction14.AddressOffset.TagAddress = "";
+            bitAction14.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Milling_Motor.BitActions.Add(bitAction14);
+            this.btnUnit_2_Milling_Motor.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Milling_Motor.ButtonText = "Milling Motor";
+            this.btnUnit_2_Milling_Motor.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Milling_Motor.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Milling_Motor.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Milling_Motor.ConfirmationAddress = "";
+            this.btnUnit_2_Milling_Motor.ConfirmationNeeded = false;
+            this.btnUnit_2_Milling_Motor.ConfirmationText = "";
+            this.btnUnit_2_Milling_Motor.ConfirmationTextKey = "";
+            this.btnUnit_2_Milling_Motor.CornerRadius = 4;
+            this.btnUnit_2_Milling_Motor.DescriptionText = "";
+            this.btnUnit_2_Milling_Motor.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Milling_Motor.DisplayAddress = null;
+            this.btnUnit_2_Milling_Motor.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Milling_Motor.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Milling_Motor.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Milling_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Milling_Motor.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Milling_Motor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Milling_Motor.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Milling_Motor.ErrorAddress = "";
+            this.btnUnit_2_Milling_Motor.FallbackText = "Milling Motor";
+            this.btnUnit_2_Milling_Motor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Milling_Motor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Milling_Motor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Milling_Motor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Milling_Motor.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Milling_Motor.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Milling_Motor.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Milling_Motor.ImageActive = null;
+            this.btnUnit_2_Milling_Motor.ImagePassive = null;
+            this.btnUnit_2_Milling_Motor.IsActivePage = false;
+            this.btnUnit_2_Milling_Motor.Lamp1Address = "M231";
+            this.btnUnit_2_Milling_Motor.Lamp1Tip = "";
+            this.btnUnit_2_Milling_Motor.Lamp2Address = "";
+            this.btnUnit_2_Milling_Motor.Lamp2Tip = "";
+            this.btnUnit_2_Milling_Motor.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Milling_Motor.Location = new System.Drawing.Point(454, 710);
+            this.btnUnit_2_Milling_Motor.LogAction = true;
+            this.btnUnit_2_Milling_Motor.Name = "btnUnit_2_Milling_Motor";
+            this.btnUnit_2_Milling_Motor.OutputAddress = "";
+            this.btnUnit_2_Milling_Motor.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Milling_Motor.PlcNumber = 1;
+            this.btnUnit_2_Milling_Motor.RelayAddress = "";
+            this.btnUnit_2_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Milling_Motor.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Milling_Motor.RoundLeftOnly = false;
+            this.btnUnit_2_Milling_Motor.RoundRightOnly = false;
+            this.btnUnit_2_Milling_Motor.ShowCaption = true;
+            this.btnUnit_2_Milling_Motor.Size = new System.Drawing.Size(230, 40);
+            this.btnUnit_2_Milling_Motor.TabIndex = 23;
+            this.btnUnit_2_Milling_Motor.ToolTipText = "";
+            this.btnUnit_2_Milling_Motor.TranslationKey = "Milling Motor";
+            this.btnUnit_2_Milling_Motor.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Milling_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Milling_Motor_Value
+            // 
+            this.btnUnit_2_Milling_Motor_Value.Address = "D19";
+            this.btnUnit_2_Milling_Motor_Value.AddressOffset.StaticValue = 0D;
+            this.btnUnit_2_Milling_Motor_Value.AddressOffset.TagAddress = "";
+            this.btnUnit_2_Milling_Motor_Value.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Milling_Motor_Value.BackColor = System.Drawing.Color.Gainsboro;
+            this.btnUnit_2_Milling_Motor_Value.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.btnUnit_2_Milling_Motor_Value.CornerRadius = 4;
+            this.btnUnit_2_Milling_Motor_Value.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Signed_Decimal;
+            this.btnUnit_2_Milling_Motor_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Milling_Motor_Value.DecimalPlaces = 2;
+            this.btnUnit_2_Milling_Motor_Value.DescriptionColon = true;
+            this.btnUnit_2_Milling_Motor_Value.DescriptionText = "";
+            this.btnUnit_2_Milling_Motor_Value.Digits = 6;
+            this.btnUnit_2_Milling_Motor_Value.Divisor = 100D;
+            this.btnUnit_2_Milling_Motor_Value.FillZero = false;
+            this.btnUnit_2_Milling_Motor_Value.IsEditing = false;
+            this.btnUnit_2_Milling_Motor_Value.Location = new System.Drawing.Point(694, 710);
+            this.btnUnit_2_Milling_Motor_Value.LogAction = false;
+            this.btnUnit_2_Milling_Motor_Value.Name = "btnUnit_2_Milling_Motor_Value";
+            this.btnUnit_2_Milling_Motor_Value.PlcNumber = 1;
+            this.btnUnit_2_Milling_Motor_Value.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.btnUnit_2_Milling_Motor_Value.ShowSuffix = true;
+            this.btnUnit_2_Milling_Motor_Value.ShowValueBorder = true;
+            this.btnUnit_2_Milling_Motor_Value.Size = new System.Drawing.Size(120, 40);
+            this.btnUnit_2_Milling_Motor_Value.Suffix = "";
+            this.btnUnit_2_Milling_Motor_Value.TabIndex = 24;
+            this.btnUnit_2_Milling_Motor_Value.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnUnit_2_Milling_Motor_Value.ToolTipTextKey = "";
+            this.btnUnit_2_Milling_Motor_Value.TranslationKey = "";
+            this.btnUnit_2_Milling_Motor_Value.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.btnUnit_2_Milling_Motor_Value.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
+            this.btnUnit_2_Milling_Motor_Value.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // dispUnit_2_Inverter_Error
+            // 
+            this.dispUnit_2_Inverter_Error.Address = "D668";
+            this.dispUnit_2_Inverter_Error.AddressOffset.StaticValue = 0D;
+            this.dispUnit_2_Inverter_Error.AddressOffset.TagAddress = "";
+            this.dispUnit_2_Inverter_Error.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.dispUnit_2_Inverter_Error.BackColor = System.Drawing.Color.Gainsboro;
+            this.dispUnit_2_Inverter_Error.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.dispUnit_2_Inverter_Error.CornerRadius = 4;
+            this.dispUnit_2_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
+            this.dispUnit_2_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.dispUnit_2_Inverter_Error.DecimalPlaces = 0;
+            this.dispUnit_2_Inverter_Error.DescriptionColon = true;
+            this.dispUnit_2_Inverter_Error.DescriptionText = "Inverter Error";
+            this.dispUnit_2_Inverter_Error.Digits = 4;
+            this.dispUnit_2_Inverter_Error.Divisor = 1D;
+            this.dispUnit_2_Inverter_Error.FillZero = false;
+            this.dispUnit_2_Inverter_Error.IsEditing = false;
+            this.dispUnit_2_Inverter_Error.Location = new System.Drawing.Point(704, 760);
+            this.dispUnit_2_Inverter_Error.LogAction = false;
+            this.dispUnit_2_Inverter_Error.Name = "dispUnit_2_Inverter_Error";
+            this.dispUnit_2_Inverter_Error.PlcNumber = 1;
+            this.dispUnit_2_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
+            this.dispUnit_2_Inverter_Error.ShowSuffix = true;
+            this.dispUnit_2_Inverter_Error.ShowValueBorder = true;
+            this.dispUnit_2_Inverter_Error.Size = new System.Drawing.Size(110, 40);
+            this.dispUnit_2_Inverter_Error.Suffix = "";
+            this.dispUnit_2_Inverter_Error.TabIndex = 25;
+            this.dispUnit_2_Inverter_Error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.dispUnit_2_Inverter_Error.ToolTipTextKey = "";
+            this.dispUnit_2_Inverter_Error.TranslationKey = "Inverter Error";
+            this.dispUnit_2_Inverter_Error.UnitType = Kaban.Core.Enums.UnitType.None;
+            this.dispUnit_2_Inverter_Error.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
+            this.dispUnit_2_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Tool_1_Cooling
+            // 
+            this.btnUnit_2_Tool_1_Cooling.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Tool_1_Cooling.AlertBlink = false;
+            this.btnUnit_2_Tool_1_Cooling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction15.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction15.Address = "M712";
+            bitAction15.AddressOffset.StaticValue = 0D;
+            bitAction15.AddressOffset.TagAddress = "";
+            bitAction15.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Tool_1_Cooling.BitActions.Add(bitAction15);
+            this.btnUnit_2_Tool_1_Cooling.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Tool_1_Cooling.ButtonText = "1st Tool Cooling";
+            this.btnUnit_2_Tool_1_Cooling.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Tool_1_Cooling.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Tool_1_Cooling.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_1_Cooling.ConfirmationAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.ConfirmationNeeded = false;
+            this.btnUnit_2_Tool_1_Cooling.ConfirmationText = "";
+            this.btnUnit_2_Tool_1_Cooling.ConfirmationTextKey = "";
+            this.btnUnit_2_Tool_1_Cooling.CornerRadius = 4;
+            this.btnUnit_2_Tool_1_Cooling.DescriptionText = "";
+            this.btnUnit_2_Tool_1_Cooling.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Tool_1_Cooling.DisplayAddress = null;
+            this.btnUnit_2_Tool_1_Cooling.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Tool_1_Cooling.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Tool_1_Cooling.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Tool_1_Cooling.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Tool_1_Cooling.ErrorAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.FallbackText = "1st Tool Cooling";
+            this.btnUnit_2_Tool_1_Cooling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_1_Cooling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_1_Cooling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Tool_1_Cooling.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Tool_1_Cooling.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Tool_1_Cooling.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Tool_1_Cooling.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Tool_1_Cooling.ImageActive = null;
+            this.btnUnit_2_Tool_1_Cooling.ImagePassive = null;
+            this.btnUnit_2_Tool_1_Cooling.IsActivePage = false;
+            this.btnUnit_2_Tool_1_Cooling.Lamp1Address = "";
+            this.btnUnit_2_Tool_1_Cooling.Lamp1Tip = "";
+            this.btnUnit_2_Tool_1_Cooling.Lamp2Address = "";
+            this.btnUnit_2_Tool_1_Cooling.Lamp2Tip = "";
+            this.btnUnit_2_Tool_1_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(454, 810);
+            this.btnUnit_2_Tool_1_Cooling.LogAction = true;
+            this.btnUnit_2_Tool_1_Cooling.Name = "btnUnit_2_Tool_1_Cooling";
+            this.btnUnit_2_Tool_1_Cooling.OutputAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Tool_1_Cooling.PlcNumber = 1;
+            this.btnUnit_2_Tool_1_Cooling.RelayAddress = "";
+            this.btnUnit_2_Tool_1_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Tool_1_Cooling.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Tool_1_Cooling.RoundLeftOnly = false;
+            this.btnUnit_2_Tool_1_Cooling.RoundRightOnly = false;
+            this.btnUnit_2_Tool_1_Cooling.ShowCaption = true;
+            this.btnUnit_2_Tool_1_Cooling.Size = new System.Drawing.Size(360, 40);
+            this.btnUnit_2_Tool_1_Cooling.TabIndex = 27;
+            this.btnUnit_2_Tool_1_Cooling.ToolTipText = "";
+            this.btnUnit_2_Tool_1_Cooling.TranslationKey = "1st Tool Cooling";
+            this.btnUnit_2_Tool_1_Cooling.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Tool_1_Cooling.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Tool_2_Cooling
+            // 
+            this.btnUnit_2_Tool_2_Cooling.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Tool_2_Cooling.AlertBlink = false;
+            this.btnUnit_2_Tool_2_Cooling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction16.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction16.Address = "M713";
+            bitAction16.AddressOffset.StaticValue = 0D;
+            bitAction16.AddressOffset.TagAddress = "";
+            bitAction16.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Tool_2_Cooling.BitActions.Add(bitAction16);
+            this.btnUnit_2_Tool_2_Cooling.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Tool_2_Cooling.ButtonText = "2nd Tool Cooling";
+            this.btnUnit_2_Tool_2_Cooling.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Tool_2_Cooling.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Tool_2_Cooling.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_2_Cooling.ConfirmationAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.ConfirmationNeeded = false;
+            this.btnUnit_2_Tool_2_Cooling.ConfirmationText = "";
+            this.btnUnit_2_Tool_2_Cooling.ConfirmationTextKey = "";
+            this.btnUnit_2_Tool_2_Cooling.CornerRadius = 4;
+            this.btnUnit_2_Tool_2_Cooling.DescriptionText = "";
+            this.btnUnit_2_Tool_2_Cooling.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Tool_2_Cooling.DisplayAddress = null;
+            this.btnUnit_2_Tool_2_Cooling.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Tool_2_Cooling.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Tool_2_Cooling.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Tool_2_Cooling.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Tool_2_Cooling.ErrorAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.FallbackText = "2nd Tool Cooling";
+            this.btnUnit_2_Tool_2_Cooling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_2_Cooling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Tool_2_Cooling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Tool_2_Cooling.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Tool_2_Cooling.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Tool_2_Cooling.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Tool_2_Cooling.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Tool_2_Cooling.ImageActive = null;
+            this.btnUnit_2_Tool_2_Cooling.ImagePassive = null;
+            this.btnUnit_2_Tool_2_Cooling.IsActivePage = false;
+            this.btnUnit_2_Tool_2_Cooling.Lamp1Address = "";
+            this.btnUnit_2_Tool_2_Cooling.Lamp1Tip = "";
+            this.btnUnit_2_Tool_2_Cooling.Lamp2Address = "";
+            this.btnUnit_2_Tool_2_Cooling.Lamp2Tip = "";
+            this.btnUnit_2_Tool_2_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(454, 860);
+            this.btnUnit_2_Tool_2_Cooling.LogAction = true;
+            this.btnUnit_2_Tool_2_Cooling.Name = "btnUnit_2_Tool_2_Cooling";
+            this.btnUnit_2_Tool_2_Cooling.OutputAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Tool_2_Cooling.PlcNumber = 1;
+            this.btnUnit_2_Tool_2_Cooling.RelayAddress = "";
+            this.btnUnit_2_Tool_2_Cooling.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Tool_2_Cooling.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Tool_2_Cooling.RoundLeftOnly = false;
+            this.btnUnit_2_Tool_2_Cooling.RoundRightOnly = false;
+            this.btnUnit_2_Tool_2_Cooling.ShowCaption = true;
+            this.btnUnit_2_Tool_2_Cooling.Size = new System.Drawing.Size(360, 40);
+            this.btnUnit_2_Tool_2_Cooling.TabIndex = 28;
+            this.btnUnit_2_Tool_2_Cooling.ToolTipText = "";
+            this.btnUnit_2_Tool_2_Cooling.TranslationKey = "2nd Tool Cooling";
+            this.btnUnit_2_Tool_2_Cooling.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Tool_2_Cooling.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // grpUnit_2_Change_Degree
+            // 
+            this.grpUnit_2_Change_Degree.Address = null;
+            this.grpUnit_2_Change_Degree.BackColor = System.Drawing.Color.White;
             this.grpUnit_2_Change_Degree.Controls.Add(this.btnUnit_2_Change_Degree_N0);
             this.grpUnit_2_Change_Degree.Controls.Add(this.btnUnit_2_Change_Degree_N90);
             this.grpUnit_2_Change_Degree.Controls.Add(this.btnUnit_2_Change_Degree_N180);
             this.grpUnit_2_Change_Degree.Controls.Add(this.btnUnit_2_Change_Degree_N270);
+            this.grpUnit_2_Change_Degree.Emoji = "";
+            this.grpUnit_2_Change_Degree.EnableAddress = "";
+            this.grpUnit_2_Change_Degree.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpUnit_2_Change_Degree.Location = new System.Drawing.Point(454, 910);
+            this.grpUnit_2_Change_Degree.Name = "grpUnit_2_Change_Degree";
+            this.grpUnit_2_Change_Degree.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpUnit_2_Change_Degree.PlcNumber = 1;
+            this.grpUnit_2_Change_Degree.Size = new System.Drawing.Size(360, 64);
+            this.grpUnit_2_Change_Degree.TabIndex = 29;
+            this.grpUnit_2_Change_Degree.TitleText = "Change Degree";
+            this.grpUnit_2_Change_Degree.TitleTextKey = "Change Degree";
+            this.grpUnit_2_Change_Degree.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpUnit_2_Change_Degree.VisibleAddress = "";
+            // 
+            // btnUnit_2_Change_Degree_N0
+            // 
+            this.btnUnit_2_Change_Degree_N0.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Change_Degree_N0.AlertBlink = false;
+            this.btnUnit_2_Change_Degree_N0.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction17.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction17.Address = "M677";
+            bitAction17.AddressOffset.StaticValue = 0D;
+            bitAction17.AddressOffset.TagAddress = "";
+            bitAction17.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N0.BitActions.Add(bitAction17);
+            this.btnUnit_2_Change_Degree_N0.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N0.ButtonText = "0°";
+            this.btnUnit_2_Change_Degree_N0.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Change_Degree_N0.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Change_Degree_N0.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N0.ConfirmationAddress = "";
+            this.btnUnit_2_Change_Degree_N0.ConfirmationNeeded = false;
+            this.btnUnit_2_Change_Degree_N0.ConfirmationText = "";
+            this.btnUnit_2_Change_Degree_N0.ConfirmationTextKey = "";
+            this.btnUnit_2_Change_Degree_N0.CornerRadius = 4;
+            this.btnUnit_2_Change_Degree_N0.DescriptionText = "";
+            this.btnUnit_2_Change_Degree_N0.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Change_Degree_N0.DisplayAddress = null;
+            this.btnUnit_2_Change_Degree_N0.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Change_Degree_N0.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Change_Degree_N0.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N0.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Change_Degree_N0.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Change_Degree_N0.ErrorAddress = "";
+            this.btnUnit_2_Change_Degree_N0.FallbackText = "0°";
+            this.btnUnit_2_Change_Degree_N0.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N0.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N0.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Change_Degree_N0.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Change_Degree_N0.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Change_Degree_N0.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Change_Degree_N0.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Change_Degree_N0.ImageActive = null;
+            this.btnUnit_2_Change_Degree_N0.ImagePassive = null;
+            this.btnUnit_2_Change_Degree_N0.IsActivePage = false;
+            this.btnUnit_2_Change_Degree_N0.Lamp1Address = "";
+            this.btnUnit_2_Change_Degree_N0.Lamp1Tip = "";
+            this.btnUnit_2_Change_Degree_N0.Lamp2Address = "";
+            this.btnUnit_2_Change_Degree_N0.Lamp2Tip = "";
+            this.btnUnit_2_Change_Degree_N0.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Change_Degree_N0.Location = new System.Drawing.Point(10, 24);
+            this.btnUnit_2_Change_Degree_N0.LogAction = true;
+            this.btnUnit_2_Change_Degree_N0.Name = "btnUnit_2_Change_Degree_N0";
+            this.btnUnit_2_Change_Degree_N0.OutputAddress = "";
+            this.btnUnit_2_Change_Degree_N0.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Change_Degree_N0.PlcNumber = 1;
+            this.btnUnit_2_Change_Degree_N0.RelayAddress = "";
+            this.btnUnit_2_Change_Degree_N0.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Change_Degree_N0.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Change_Degree_N0.RoundLeftOnly = false;
+            this.btnUnit_2_Change_Degree_N0.RoundRightOnly = false;
+            this.btnUnit_2_Change_Degree_N0.ShowCaption = true;
+            this.btnUnit_2_Change_Degree_N0.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_2_Change_Degree_N0.TabIndex = 0;
+            this.btnUnit_2_Change_Degree_N0.ToolTipText = "";
+            this.btnUnit_2_Change_Degree_N0.TranslationKey = "0°";
+            this.btnUnit_2_Change_Degree_N0.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Change_Degree_N0.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Change_Degree_N90
+            // 
+            this.btnUnit_2_Change_Degree_N90.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Change_Degree_N90.AlertBlink = false;
+            this.btnUnit_2_Change_Degree_N90.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction18.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction18.Address = "M678";
+            bitAction18.AddressOffset.StaticValue = 0D;
+            bitAction18.AddressOffset.TagAddress = "";
+            bitAction18.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N90.BitActions.Add(bitAction18);
+            this.btnUnit_2_Change_Degree_N90.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N90.ButtonText = "90°";
+            this.btnUnit_2_Change_Degree_N90.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Change_Degree_N90.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Change_Degree_N90.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N90.ConfirmationAddress = "";
+            this.btnUnit_2_Change_Degree_N90.ConfirmationNeeded = false;
+            this.btnUnit_2_Change_Degree_N90.ConfirmationText = "";
+            this.btnUnit_2_Change_Degree_N90.ConfirmationTextKey = "";
+            this.btnUnit_2_Change_Degree_N90.CornerRadius = 4;
+            this.btnUnit_2_Change_Degree_N90.DescriptionText = "";
+            this.btnUnit_2_Change_Degree_N90.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Change_Degree_N90.DisplayAddress = null;
+            this.btnUnit_2_Change_Degree_N90.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Change_Degree_N90.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Change_Degree_N90.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N90.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Change_Degree_N90.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Change_Degree_N90.ErrorAddress = "";
+            this.btnUnit_2_Change_Degree_N90.FallbackText = "90°";
+            this.btnUnit_2_Change_Degree_N90.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N90.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N90.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Change_Degree_N90.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Change_Degree_N90.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Change_Degree_N90.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Change_Degree_N90.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Change_Degree_N90.ImageActive = null;
+            this.btnUnit_2_Change_Degree_N90.ImagePassive = null;
+            this.btnUnit_2_Change_Degree_N90.IsActivePage = false;
+            this.btnUnit_2_Change_Degree_N90.Lamp1Address = "";
+            this.btnUnit_2_Change_Degree_N90.Lamp1Tip = "";
+            this.btnUnit_2_Change_Degree_N90.Lamp2Address = "";
+            this.btnUnit_2_Change_Degree_N90.Lamp2Tip = "";
+            this.btnUnit_2_Change_Degree_N90.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Change_Degree_N90.Location = new System.Drawing.Point(97, 24);
+            this.btnUnit_2_Change_Degree_N90.LogAction = true;
+            this.btnUnit_2_Change_Degree_N90.Name = "btnUnit_2_Change_Degree_N90";
+            this.btnUnit_2_Change_Degree_N90.OutputAddress = "";
+            this.btnUnit_2_Change_Degree_N90.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Change_Degree_N90.PlcNumber = 1;
+            this.btnUnit_2_Change_Degree_N90.RelayAddress = "";
+            this.btnUnit_2_Change_Degree_N90.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Change_Degree_N90.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Change_Degree_N90.RoundLeftOnly = false;
+            this.btnUnit_2_Change_Degree_N90.RoundRightOnly = false;
+            this.btnUnit_2_Change_Degree_N90.ShowCaption = true;
+            this.btnUnit_2_Change_Degree_N90.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_2_Change_Degree_N90.TabIndex = 1;
+            this.btnUnit_2_Change_Degree_N90.ToolTipText = "";
+            this.btnUnit_2_Change_Degree_N90.TranslationKey = "90°";
+            this.btnUnit_2_Change_Degree_N90.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Change_Degree_N90.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Change_Degree_N180
+            // 
+            this.btnUnit_2_Change_Degree_N180.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Change_Degree_N180.AlertBlink = false;
+            this.btnUnit_2_Change_Degree_N180.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction19.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction19.Address = "M679";
+            bitAction19.AddressOffset.StaticValue = 0D;
+            bitAction19.AddressOffset.TagAddress = "";
+            bitAction19.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N180.BitActions.Add(bitAction19);
+            this.btnUnit_2_Change_Degree_N180.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N180.ButtonText = "180°";
+            this.btnUnit_2_Change_Degree_N180.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Change_Degree_N180.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Change_Degree_N180.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N180.ConfirmationAddress = "";
+            this.btnUnit_2_Change_Degree_N180.ConfirmationNeeded = false;
+            this.btnUnit_2_Change_Degree_N180.ConfirmationText = "";
+            this.btnUnit_2_Change_Degree_N180.ConfirmationTextKey = "";
+            this.btnUnit_2_Change_Degree_N180.CornerRadius = 4;
+            this.btnUnit_2_Change_Degree_N180.DescriptionText = "";
+            this.btnUnit_2_Change_Degree_N180.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Change_Degree_N180.DisplayAddress = null;
+            this.btnUnit_2_Change_Degree_N180.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Change_Degree_N180.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Change_Degree_N180.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N180.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Change_Degree_N180.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Change_Degree_N180.ErrorAddress = "";
+            this.btnUnit_2_Change_Degree_N180.FallbackText = "180°";
+            this.btnUnit_2_Change_Degree_N180.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N180.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N180.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Change_Degree_N180.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Change_Degree_N180.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Change_Degree_N180.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Change_Degree_N180.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Change_Degree_N180.ImageActive = null;
+            this.btnUnit_2_Change_Degree_N180.ImagePassive = null;
+            this.btnUnit_2_Change_Degree_N180.IsActivePage = false;
+            this.btnUnit_2_Change_Degree_N180.Lamp1Address = "";
+            this.btnUnit_2_Change_Degree_N180.Lamp1Tip = "";
+            this.btnUnit_2_Change_Degree_N180.Lamp2Address = "";
+            this.btnUnit_2_Change_Degree_N180.Lamp2Tip = "";
+            this.btnUnit_2_Change_Degree_N180.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Change_Degree_N180.Location = new System.Drawing.Point(184, 24);
+            this.btnUnit_2_Change_Degree_N180.LogAction = true;
+            this.btnUnit_2_Change_Degree_N180.Name = "btnUnit_2_Change_Degree_N180";
+            this.btnUnit_2_Change_Degree_N180.OutputAddress = "";
+            this.btnUnit_2_Change_Degree_N180.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Change_Degree_N180.PlcNumber = 1;
+            this.btnUnit_2_Change_Degree_N180.RelayAddress = "";
+            this.btnUnit_2_Change_Degree_N180.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Change_Degree_N180.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Change_Degree_N180.RoundLeftOnly = false;
+            this.btnUnit_2_Change_Degree_N180.RoundRightOnly = false;
+            this.btnUnit_2_Change_Degree_N180.ShowCaption = true;
+            this.btnUnit_2_Change_Degree_N180.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_2_Change_Degree_N180.TabIndex = 2;
+            this.btnUnit_2_Change_Degree_N180.ToolTipText = "";
+            this.btnUnit_2_Change_Degree_N180.TranslationKey = "180°";
+            this.btnUnit_2_Change_Degree_N180.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Change_Degree_N180.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // btnUnit_2_Change_Degree_N270
+            // 
+            this.btnUnit_2_Change_Degree_N270.ActiveBackColor = System.Drawing.Color.White;
+            this.btnUnit_2_Change_Degree_N270.AlertBlink = false;
+            this.btnUnit_2_Change_Degree_N270.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction20.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction20.Address = "M680";
+            bitAction20.AddressOffset.StaticValue = 0D;
+            bitAction20.AddressOffset.TagAddress = "";
+            bitAction20.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N270.BitActions.Add(bitAction20);
+            this.btnUnit_2_Change_Degree_N270.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N270.ButtonText = "270°";
+            this.btnUnit_2_Change_Degree_N270.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnUnit_2_Change_Degree_N270.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnUnit_2_Change_Degree_N270.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N270.ConfirmationAddress = "";
+            this.btnUnit_2_Change_Degree_N270.ConfirmationNeeded = false;
+            this.btnUnit_2_Change_Degree_N270.ConfirmationText = "";
+            this.btnUnit_2_Change_Degree_N270.ConfirmationTextKey = "";
+            this.btnUnit_2_Change_Degree_N270.CornerRadius = 4;
+            this.btnUnit_2_Change_Degree_N270.DescriptionText = "";
+            this.btnUnit_2_Change_Degree_N270.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnUnit_2_Change_Degree_N270.DisplayAddress = null;
+            this.btnUnit_2_Change_Degree_N270.DisplayOffset.StaticValue = 0D;
+            this.btnUnit_2_Change_Degree_N270.DisplayOffset.TagAddress = "";
+            this.btnUnit_2_Change_Degree_N270.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnUnit_2_Change_Degree_N270.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.DescriptionKey = "";
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.MonitorAddress = "";
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.ValA = 0D;
+            this.btnUnit_2_Change_Degree_N270.EnableTrigger.ValB = 0D;
+            this.btnUnit_2_Change_Degree_N270.ErrorAddress = "";
+            this.btnUnit_2_Change_Degree_N270.FallbackText = "270°";
+            this.btnUnit_2_Change_Degree_N270.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N270.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnUnit_2_Change_Degree_N270.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUnit_2_Change_Degree_N270.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnUnit_2_Change_Degree_N270.ForeColor = System.Drawing.Color.Black;
+            this.btnUnit_2_Change_Degree_N270.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnUnit_2_Change_Degree_N270.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnUnit_2_Change_Degree_N270.ImageActive = null;
+            this.btnUnit_2_Change_Degree_N270.ImagePassive = null;
+            this.btnUnit_2_Change_Degree_N270.IsActivePage = false;
+            this.btnUnit_2_Change_Degree_N270.Lamp1Address = "";
+            this.btnUnit_2_Change_Degree_N270.Lamp1Tip = "";
+            this.btnUnit_2_Change_Degree_N270.Lamp2Address = "";
+            this.btnUnit_2_Change_Degree_N270.Lamp2Tip = "";
+            this.btnUnit_2_Change_Degree_N270.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnUnit_2_Change_Degree_N270.Location = new System.Drawing.Point(271, 24);
+            this.btnUnit_2_Change_Degree_N270.LogAction = true;
+            this.btnUnit_2_Change_Degree_N270.Name = "btnUnit_2_Change_Degree_N270";
+            this.btnUnit_2_Change_Degree_N270.OutputAddress = "";
+            this.btnUnit_2_Change_Degree_N270.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnUnit_2_Change_Degree_N270.PlcNumber = 1;
+            this.btnUnit_2_Change_Degree_N270.RelayAddress = "";
+            this.btnUnit_2_Change_Degree_N270.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnUnit_2_Change_Degree_N270.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnUnit_2_Change_Degree_N270.RoundLeftOnly = false;
+            this.btnUnit_2_Change_Degree_N270.RoundRightOnly = false;
+            this.btnUnit_2_Change_Degree_N270.ShowCaption = true;
+            this.btnUnit_2_Change_Degree_N270.Size = new System.Drawing.Size(79, 32);
+            this.btnUnit_2_Change_Degree_N270.TabIndex = 3;
+            this.btnUnit_2_Change_Degree_N270.ToolTipText = "";
+            this.btnUnit_2_Change_Degree_N270.TranslationKey = "270°";
+            this.btnUnit_2_Change_Degree_N270.UseVisualStyleBackColor = false;
+            this.btnUnit_2_Change_Degree_N270.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // Btn001mm
+            // 
+            this.Btn001mm.ActiveBackColor = System.Drawing.Color.White;
+            this.Btn001mm.AlertBlink = false;
+            this.Btn001mm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction21.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction21.Address = "m173";
+            bitAction21.AddressOffset.StaticValue = 0D;
+            bitAction21.AddressOffset.TagAddress = "";
+            bitAction21.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn001mm.BitActions.Add(bitAction21);
+            this.Btn001mm.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.Btn001mm.ButtonText = "0.01 mm";
+            this.Btn001mm.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.Btn001mm.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.Btn001mm.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn001mm.ConfirmationAddress = "";
+            this.Btn001mm.ConfirmationNeeded = false;
+            this.Btn001mm.ConfirmationText = "";
+            this.Btn001mm.ConfirmationTextKey = "";
+            this.Btn001mm.CornerRadius = 4;
+            this.Btn001mm.DescriptionText = "";
+            this.Btn001mm.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.Btn001mm.DisplayAddress = null;
+            this.Btn001mm.DisplayOffset.StaticValue = 0D;
+            this.Btn001mm.DisplayOffset.TagAddress = "";
+            this.Btn001mm.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn001mm.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.Btn001mm.EnableTrigger.DescriptionKey = "";
+            this.Btn001mm.EnableTrigger.MonitorAddress = "";
+            this.Btn001mm.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.Btn001mm.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn001mm.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn001mm.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.Btn001mm.EnableTrigger.ValA = 0D;
+            this.Btn001mm.EnableTrigger.ValB = 0D;
+            this.Btn001mm.ErrorAddress = "";
+            this.Btn001mm.FallbackText = "0.01 mm";
+            this.Btn001mm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn001mm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn001mm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn001mm.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Btn001mm.ForeColor = System.Drawing.Color.Black;
+            this.Btn001mm.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.Btn001mm.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.Btn001mm.ImageActive = null;
+            this.Btn001mm.ImagePassive = null;
+            this.Btn001mm.IsActivePage = false;
+            this.Btn001mm.Lamp1Address = "m173";
+            this.Btn001mm.Lamp1Tip = "";
+            this.Btn001mm.Lamp2Address = "";
+            this.Btn001mm.Lamp2Tip = "";
+            this.Btn001mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.Btn001mm.Location = new System.Drawing.Point(630, 14);
+            this.Btn001mm.LogAction = true;
+            this.Btn001mm.Name = "Btn001mm";
+            this.Btn001mm.OutputAddress = "";
+            this.Btn001mm.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.Btn001mm.PlcNumber = 1;
+            this.Btn001mm.RelayAddress = "";
+            this.Btn001mm.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.Btn001mm.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.Btn001mm.RoundLeftOnly = false;
+            this.Btn001mm.RoundRightOnly = false;
+            this.Btn001mm.ShowCaption = true;
+            this.Btn001mm.Size = new System.Drawing.Size(76, 42);
+            this.Btn001mm.TabIndex = 44;
+            this.Btn001mm.ToolTipText = "";
+            this.Btn001mm.TranslationKey = "Btn_001mm";
+            this.Btn001mm.UseVisualStyleBackColor = false;
+            this.Btn001mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // Btn01mm
+            // 
+            this.Btn01mm.ActiveBackColor = System.Drawing.Color.White;
+            this.Btn01mm.AlertBlink = false;
+            this.Btn01mm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction22.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction22.Address = "m172";
+            bitAction22.AddressOffset.StaticValue = 0D;
+            bitAction22.AddressOffset.TagAddress = "";
+            bitAction22.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn01mm.BitActions.Add(bitAction22);
+            this.Btn01mm.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.Btn01mm.ButtonText = "0.1 mm";
+            this.Btn01mm.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.Btn01mm.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.Btn01mm.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn01mm.ConfirmationAddress = "";
+            this.Btn01mm.ConfirmationNeeded = false;
+            this.Btn01mm.ConfirmationText = "";
+            this.Btn01mm.ConfirmationTextKey = "";
+            this.Btn01mm.CornerRadius = 4;
+            this.Btn01mm.DescriptionText = "";
+            this.Btn01mm.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.Btn01mm.DisplayAddress = null;
+            this.Btn01mm.DisplayOffset.StaticValue = 0D;
+            this.Btn01mm.DisplayOffset.TagAddress = "";
+            this.Btn01mm.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn01mm.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.Btn01mm.EnableTrigger.DescriptionKey = "";
+            this.Btn01mm.EnableTrigger.MonitorAddress = "";
+            this.Btn01mm.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.Btn01mm.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn01mm.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn01mm.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.Btn01mm.EnableTrigger.ValA = 0D;
+            this.Btn01mm.EnableTrigger.ValB = 0D;
+            this.Btn01mm.ErrorAddress = "";
+            this.Btn01mm.FallbackText = "0.1 mm";
+            this.Btn01mm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn01mm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn01mm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn01mm.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Btn01mm.ForeColor = System.Drawing.Color.Black;
+            this.Btn01mm.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.Btn01mm.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.Btn01mm.ImageActive = null;
+            this.Btn01mm.ImagePassive = null;
+            this.Btn01mm.IsActivePage = false;
+            this.Btn01mm.Lamp1Address = "m172";
+            this.Btn01mm.Lamp1Tip = "";
+            this.Btn01mm.Lamp2Address = "";
+            this.Btn01mm.Lamp2Tip = "";
+            this.Btn01mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.Btn01mm.Location = new System.Drawing.Point(548, 14);
+            this.Btn01mm.LogAction = true;
+            this.Btn01mm.Name = "Btn01mm";
+            this.Btn01mm.OutputAddress = "";
+            this.Btn01mm.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.Btn01mm.PlcNumber = 1;
+            this.Btn01mm.RelayAddress = "";
+            this.Btn01mm.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.Btn01mm.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.Btn01mm.RoundLeftOnly = false;
+            this.Btn01mm.RoundRightOnly = false;
+            this.Btn01mm.ShowCaption = true;
+            this.Btn01mm.Size = new System.Drawing.Size(76, 42);
+            this.Btn01mm.TabIndex = 43;
+            this.Btn01mm.ToolTipText = "";
+            this.Btn01mm.TranslationKey = "Btn_01mm";
+            this.Btn01mm.UseVisualStyleBackColor = false;
+            this.Btn01mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // Btn1mm
+            // 
+            this.Btn1mm.ActiveBackColor = System.Drawing.Color.White;
+            this.Btn1mm.AlertBlink = false;
+            this.Btn1mm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction23.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction23.Address = "m171";
+            bitAction23.AddressOffset.StaticValue = 0D;
+            bitAction23.AddressOffset.TagAddress = "";
+            bitAction23.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn1mm.BitActions.Add(bitAction23);
+            this.Btn1mm.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.Btn1mm.ButtonText = "1 mm";
+            this.Btn1mm.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.Btn1mm.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.Btn1mm.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn1mm.ConfirmationAddress = "";
+            this.Btn1mm.ConfirmationNeeded = false;
+            this.Btn1mm.ConfirmationText = "";
+            this.Btn1mm.ConfirmationTextKey = "";
+            this.Btn1mm.CornerRadius = 4;
+            this.Btn1mm.DescriptionText = "";
+            this.Btn1mm.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.Btn1mm.DisplayAddress = null;
+            this.Btn1mm.DisplayOffset.StaticValue = 0D;
+            this.Btn1mm.DisplayOffset.TagAddress = "";
+            this.Btn1mm.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn1mm.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.Btn1mm.EnableTrigger.DescriptionKey = "";
+            this.Btn1mm.EnableTrigger.MonitorAddress = "";
+            this.Btn1mm.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.Btn1mm.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn1mm.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn1mm.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.Btn1mm.EnableTrigger.ValA = 0D;
+            this.Btn1mm.EnableTrigger.ValB = 0D;
+            this.Btn1mm.ErrorAddress = "";
+            this.Btn1mm.FallbackText = "1 mm";
+            this.Btn1mm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn1mm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn1mm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn1mm.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Btn1mm.ForeColor = System.Drawing.Color.Black;
+            this.Btn1mm.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.Btn1mm.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.Btn1mm.ImageActive = null;
+            this.Btn1mm.ImagePassive = null;
+            this.Btn1mm.IsActivePage = false;
+            this.Btn1mm.Lamp1Address = "m171";
+            this.Btn1mm.Lamp1Tip = "";
+            this.Btn1mm.Lamp2Address = "";
+            this.Btn1mm.Lamp2Tip = "";
+            this.Btn1mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.Btn1mm.Location = new System.Drawing.Point(466, 14);
+            this.Btn1mm.LogAction = true;
+            this.Btn1mm.Name = "Btn1mm";
+            this.Btn1mm.OutputAddress = "";
+            this.Btn1mm.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.Btn1mm.PlcNumber = 1;
+            this.Btn1mm.RelayAddress = "";
+            this.Btn1mm.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.Btn1mm.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.Btn1mm.RoundLeftOnly = false;
+            this.Btn1mm.RoundRightOnly = false;
+            this.Btn1mm.ShowCaption = true;
+            this.Btn1mm.Size = new System.Drawing.Size(76, 42);
+            this.Btn1mm.TabIndex = 42;
+            this.Btn1mm.ToolTipText = "";
+            this.Btn1mm.TranslationKey = "Btn_1mm";
+            this.Btn1mm.UseVisualStyleBackColor = false;
+            this.Btn1mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // Btn10mm
+            // 
+            this.Btn10mm.ActiveBackColor = System.Drawing.Color.White;
+            this.Btn10mm.AlertBlink = false;
+            this.Btn10mm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction24.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction24.Address = "m170";
+            bitAction24.AddressOffset.StaticValue = 0D;
+            bitAction24.AddressOffset.TagAddress = "";
+            bitAction24.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn10mm.BitActions.Add(bitAction24);
+            this.Btn10mm.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.Btn10mm.ButtonText = "10 mm";
+            this.Btn10mm.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.Btn10mm.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.Btn10mm.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn10mm.ConfirmationAddress = "";
+            this.Btn10mm.ConfirmationNeeded = false;
+            this.Btn10mm.ConfirmationText = "";
+            this.Btn10mm.ConfirmationTextKey = "";
+            this.Btn10mm.CornerRadius = 4;
+            this.Btn10mm.DescriptionText = "";
+            this.Btn10mm.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.Btn10mm.DisplayAddress = null;
+            this.Btn10mm.DisplayOffset.StaticValue = 0D;
+            this.Btn10mm.DisplayOffset.TagAddress = "";
+            this.Btn10mm.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.Btn10mm.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.Btn10mm.EnableTrigger.DescriptionKey = "";
+            this.Btn10mm.EnableTrigger.MonitorAddress = "";
+            this.Btn10mm.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.Btn10mm.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn10mm.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.Btn10mm.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.Btn10mm.EnableTrigger.ValA = 0D;
+            this.Btn10mm.EnableTrigger.ValB = 0D;
+            this.Btn10mm.ErrorAddress = "";
+            this.Btn10mm.FallbackText = "10 mm";
+            this.Btn10mm.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn10mm.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.Btn10mm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn10mm.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.Btn10mm.ForeColor = System.Drawing.Color.Black;
+            this.Btn10mm.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.Btn10mm.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.Btn10mm.ImageActive = null;
+            this.Btn10mm.ImagePassive = null;
+            this.Btn10mm.IsActivePage = false;
+            this.Btn10mm.Lamp1Address = "m170";
+            this.Btn10mm.Lamp1Tip = "";
+            this.Btn10mm.Lamp2Address = "";
+            this.Btn10mm.Lamp2Tip = "";
+            this.Btn10mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.Btn10mm.Location = new System.Drawing.Point(384, 14);
+            this.Btn10mm.LogAction = true;
+            this.Btn10mm.Name = "Btn10mm";
+            this.Btn10mm.OutputAddress = "";
+            this.Btn10mm.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.Btn10mm.PlcNumber = 1;
+            this.Btn10mm.RelayAddress = "";
+            this.Btn10mm.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.Btn10mm.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.Btn10mm.RoundLeftOnly = false;
+            this.Btn10mm.RoundRightOnly = false;
+            this.Btn10mm.ShowCaption = true;
+            this.Btn10mm.Size = new System.Drawing.Size(76, 42);
+            this.Btn10mm.TabIndex = 41;
+            this.Btn10mm.ToolTipText = "";
+            this.Btn10mm.TranslationKey = "Btn_10mm";
+            this.Btn10mm.UseVisualStyleBackColor = false;
+            this.Btn10mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // speedOverrideHMI1
+            // 
+            this.speedOverrideHMI1.Address = "D409";
+            this.speedOverrideHMI1.BackColor = System.Drawing.Color.White;
+            this.speedOverrideHMI1.FallbackText = "Speed";
+            this.speedOverrideHMI1.Location = new System.Drawing.Point(18, 14);
+            this.speedOverrideHMI1.LogAction = true;
+            this.speedOverrideHMI1.Name = "speedOverrideHMI1";
+            this.speedOverrideHMI1.PlcNumber = 1;
+            this.speedOverrideHMI1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.speedOverrideHMI1.Size = new System.Drawing.Size(248, 42);
+            this.speedOverrideHMI1.Steps = new int[] {
+        0,
+        1,
+        2,
+        4,
+        6,
+        8,
+        10,
+        15,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        95,
+        100};
+            this.speedOverrideHMI1.TabIndex = 40;
+            this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
+            // 
+            // BtnJog
+            // 
+            this.BtnJog.ActiveBackColor = System.Drawing.Color.White;
+            this.BtnJog.AlertBlink = false;
+            this.BtnJog.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction25.Action = Kaban.Core.Enums.BitActionType.RESET;
+            bitAction25.Address = "m170";
+            bitAction25.AddressOffset.StaticValue = 0D;
+            bitAction25.AddressOffset.TagAddress = "";
+            bitAction25.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            bitAction26.Action = Kaban.Core.Enums.BitActionType.RESET;
+            bitAction26.Address = "m171";
+            bitAction26.AddressOffset.StaticValue = 0D;
+            bitAction26.AddressOffset.TagAddress = "";
+            bitAction26.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            bitAction27.Action = Kaban.Core.Enums.BitActionType.RESET;
+            bitAction27.Address = "m172";
+            bitAction27.AddressOffset.StaticValue = 0D;
+            bitAction27.AddressOffset.TagAddress = "";
+            bitAction27.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            bitAction28.Action = Kaban.Core.Enums.BitActionType.RESET;
+            bitAction28.Address = "m173";
+            bitAction28.AddressOffset.StaticValue = 0D;
+            bitAction28.AddressOffset.TagAddress = "";
+            bitAction28.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.BtnJog.BitActions.Add(bitAction25);
+            this.BtnJog.BitActions.Add(bitAction26);
+            this.BtnJog.BitActions.Add(bitAction27);
+            this.BtnJog.BitActions.Add(bitAction28);
+            this.BtnJog.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.BtnJog.ButtonText = "JOG";
+            this.BtnJog.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.BtnJog.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.BtnJog.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnJog.ConfirmationAddress = "";
+            this.BtnJog.ConfirmationNeeded = false;
+            this.BtnJog.ConfirmationText = "";
+            this.BtnJog.ConfirmationTextKey = "";
+            this.BtnJog.CornerRadius = 4;
+            this.BtnJog.DescriptionText = "";
+            this.BtnJog.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.BtnJog.DisplayAddress = null;
+            this.BtnJog.DisplayOffset.StaticValue = 0D;
+            this.BtnJog.DisplayOffset.TagAddress = "";
+            this.BtnJog.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.BtnJog.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.BtnJog.EnableTrigger.DescriptionKey = "";
+            this.BtnJog.EnableTrigger.MonitorAddress = "";
+            this.BtnJog.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.BtnJog.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.BtnJog.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.BtnJog.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.BtnJog.EnableTrigger.ValA = 0D;
+            this.BtnJog.EnableTrigger.ValB = 0D;
+            this.BtnJog.ErrorAddress = "";
+            this.BtnJog.FallbackText = "JOG";
+            this.BtnJog.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnJog.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnJog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnJog.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.BtnJog.ForeColor = System.Drawing.Color.Black;
+            this.BtnJog.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.BtnJog.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.BtnJog.ImageActive = null;
+            this.BtnJog.ImagePassive = null;
+            this.BtnJog.IsActivePage = false;
+            this.BtnJog.Lamp1Address = "m174";
+            this.BtnJog.Lamp1Tip = "";
+            this.BtnJog.Lamp2Address = "";
+            this.BtnJog.Lamp2Tip = "";
+            this.BtnJog.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.BtnJog.Location = new System.Drawing.Point(302, 14);
+            this.BtnJog.LogAction = true;
+            this.BtnJog.Name = "BtnJog";
+            this.BtnJog.OutputAddress = "";
+            this.BtnJog.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.BtnJog.PlcNumber = 1;
+            this.BtnJog.RelayAddress = "";
+            this.BtnJog.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.BtnJog.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.BtnJog.RoundLeftOnly = false;
+            this.BtnJog.RoundRightOnly = false;
+            this.BtnJog.ShowCaption = true;
+            this.BtnJog.Size = new System.Drawing.Size(76, 42);
+            this.BtnJog.TabIndex = 39;
+            this.BtnJog.ToolTipText = "";
+            this.BtnJog.TranslationKey = "Btn_JOG";
+            this.BtnJog.UseVisualStyleBackColor = false;
+            this.BtnJog.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // 
+            // BtnSafetyBypass
+            // 
+            this.BtnSafetyBypass.ActiveBackColor = System.Drawing.Color.White;
+            this.BtnSafetyBypass.AlertBlink = false;
+            this.BtnSafetyBypass.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction29.Action = Kaban.Core.Enums.BitActionType.Alternate;
+            bitAction29.Address = "m175";
+            bitAction29.AddressOffset.StaticValue = 0D;
+            bitAction29.AddressOffset.TagAddress = "";
+            bitAction29.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.BtnSafetyBypass.BitActions.Add(bitAction29);
+            this.BtnSafetyBypass.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.BtnSafetyBypass.ButtonText = "Safety Bypass";
+            this.BtnSafetyBypass.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.BtnSafetyBypass.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.BtnSafetyBypass.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnSafetyBypass.ConfirmationAddress = "";
+            this.BtnSafetyBypass.ConfirmationNeeded = false;
+            this.BtnSafetyBypass.ConfirmationText = "";
+            this.BtnSafetyBypass.ConfirmationTextKey = "";
+            this.BtnSafetyBypass.CornerRadius = 4;
+            this.BtnSafetyBypass.DescriptionText = "";
+            this.BtnSafetyBypass.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.BtnSafetyBypass.DisplayAddress = null;
+            this.BtnSafetyBypass.DisplayOffset.StaticValue = 0D;
+            this.BtnSafetyBypass.DisplayOffset.TagAddress = "";
+            this.BtnSafetyBypass.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.BtnSafetyBypass.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+            this.BtnSafetyBypass.EnableTrigger.DescriptionKey = "";
+            this.BtnSafetyBypass.EnableTrigger.MonitorAddress = "";
+            this.BtnSafetyBypass.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.BtnSafetyBypass.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.BtnSafetyBypass.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.BtnSafetyBypass.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.BtnSafetyBypass.EnableTrigger.ValA = 0D;
+            this.BtnSafetyBypass.EnableTrigger.ValB = 0D;
+            this.BtnSafetyBypass.ErrorAddress = "";
+            this.BtnSafetyBypass.FallbackText = "Safety Bypass";
+            this.BtnSafetyBypass.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnSafetyBypass.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.BtnSafetyBypass.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnSafetyBypass.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.BtnSafetyBypass.ForeColor = System.Drawing.Color.Black;
+            this.BtnSafetyBypass.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.BtnSafetyBypass.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.BtnSafetyBypass.ImageActive = null;
+            this.BtnSafetyBypass.ImagePassive = null;
+            this.BtnSafetyBypass.IsActivePage = false;
+            this.BtnSafetyBypass.Lamp1Address = "m175";
+            this.BtnSafetyBypass.Lamp1Tip = "";
+            this.BtnSafetyBypass.Lamp2Address = "";
+            this.BtnSafetyBypass.Lamp2Tip = "";
+            this.BtnSafetyBypass.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
+            this.BtnSafetyBypass.Location = new System.Drawing.Point(734, 14);
+            this.BtnSafetyBypass.LogAction = true;
+            this.BtnSafetyBypass.Name = "BtnSafetyBypass";
+            this.BtnSafetyBypass.OutputAddress = "";
+            this.BtnSafetyBypass.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.BtnSafetyBypass.PlcNumber = 1;
+            this.BtnSafetyBypass.RelayAddress = "";
+            this.BtnSafetyBypass.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.BtnSafetyBypass.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.BtnSafetyBypass.RoundLeftOnly = false;
+            this.BtnSafetyBypass.RoundRightOnly = false;
+            this.BtnSafetyBypass.ShowCaption = true;
+            this.BtnSafetyBypass.Size = new System.Drawing.Size(109, 42);
+            this.BtnSafetyBypass.TabIndex = 48;
+            this.BtnSafetyBypass.ToolTipText = "";
+            this.BtnSafetyBypass.TranslationKey = "Btn_SafetyBypass";
+            this.BtnSafetyBypass.UseVisualStyleBackColor = false;
+            this.BtnSafetyBypass.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // ManualMilling
             // 
-            // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
-            // auto-scaling container (the tab host), which would scale them twice.
-            // The layout is in absolute pixels anyway.
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.BtnSafetyBypass);
+            this.Controls.Add(this.Btn001mm);
+            this.Controls.Add(this.Btn01mm);
+            this.Controls.Add(this.Btn1mm);
+            this.Controls.Add(this.Btn10mm);
+            this.Controls.Add(this.speedOverrideHMI1);
+            this.Controls.Add(this.BtnJog);
             this.Controls.Add(this.unitRoller_Up_Down);
             this.Controls.Add(this.btnHigh_Air_Pressure);
             this.Controls.Add(this.unitTop_Clamping);
@@ -637,12 +2462,13 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.Controls.Add(this.btnUnit_2_Tool_2_Cooling);
             this.Controls.Add(this.grpUnit_2_Change_Degree);
             this.Name = "ManualMilling";
-            this.Size = new System.Drawing.Size(782, 906);
+            this.Size = new System.Drawing.Size(1354, 995);
             this.grpDrills_to_Changing_Pos.ResumeLayout(false);
             this.grpUnit_1_Change_Degree.ResumeLayout(false);
             this.grpUnit_2_Change_Degree.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -687,5 +2513,12 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N90;
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N180;
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N270;
+        private UI.Controls.ButtonHMI Btn001mm;
+        private UI.Controls.ButtonHMI Btn01mm;
+        private UI.Controls.ButtonHMI Btn1mm;
+        private UI.Controls.ButtonHMI Btn10mm;
+        private UI.Controls.SpeedOverrideHMI speedOverrideHMI1;
+        private UI.Controls.ButtonHMI BtnJog;
+        private UI.Controls.ButtonHMI BtnSafetyBypass;
     }
 }

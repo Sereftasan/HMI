@@ -30,7 +30,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            Kaban.Core.Models.BitAction bitActionRef = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             this.lblHead0 = new System.Windows.Forms.Label();
             this.lblHead1 = new System.Windows.Forms.Label();
             this.lblHead2 = new System.Windows.Forms.Label();
@@ -66,9 +66,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // lblHead0
             // 
+            this.lblHead0.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblHead0.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead0.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead0.Location = new System.Drawing.Point(0, 10);
+            this.lblHead0.Location = new System.Drawing.Point(0, 50);
             this.lblHead0.Name = "lblHead0";
             this.lblHead0.Size = new System.Drawing.Size(132, 18);
             this.lblHead0.TabIndex = 0;
@@ -80,7 +81,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead1.Location = new System.Drawing.Point(208, 10);
+            this.lblHead1.Location = new System.Drawing.Point(208, 50);
             this.lblHead1.Name = "lblHead1";
             this.lblHead1.Size = new System.Drawing.Size(120, 18);
             this.lblHead1.TabIndex = 1;
@@ -92,7 +93,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead2.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead2.Location = new System.Drawing.Point(484, 10);
+            this.lblHead2.Location = new System.Drawing.Point(484, 50);
             this.lblHead2.Name = "lblHead2";
             this.lblHead2.Size = new System.Drawing.Size(86, 18);
             this.lblHead2.TabIndex = 2;
@@ -104,7 +105,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead3.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead3.Location = new System.Drawing.Point(574, 10);
+            this.lblHead3.Location = new System.Drawing.Point(574, 50);
             this.lblHead3.Name = "lblHead3";
             this.lblHead3.Size = new System.Drawing.Size(86, 18);
             this.lblHead3.TabIndex = 3;
@@ -116,7 +117,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead4.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead4.Location = new System.Drawing.Point(664, 10);
+            this.lblHead4.Location = new System.Drawing.Point(664, 50);
             this.lblHead4.Name = "lblHead4";
             this.lblHead4.Size = new System.Drawing.Size(86, 18);
             this.lblHead4.TabIndex = 4;
@@ -128,7 +129,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead5.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead5.Location = new System.Drawing.Point(754, 10);
+            this.lblHead5.Location = new System.Drawing.Point(754, 50);
             this.lblHead5.Name = "lblHead5";
             this.lblHead5.Size = new System.Drawing.Size(86, 18);
             this.lblHead5.TabIndex = 5;
@@ -140,7 +141,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead6.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead6.Location = new System.Drawing.Point(844, 10);
+            this.lblHead6.Location = new System.Drawing.Point(844, 50);
             this.lblHead6.Name = "lblHead6";
             this.lblHead6.Size = new System.Drawing.Size(44, 18);
             this.lblHead6.TabIndex = 6;
@@ -152,7 +153,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead7.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead7.Location = new System.Drawing.Point(900, 10);
+            this.lblHead7.Location = new System.Drawing.Point(900, 50);
             this.lblHead7.Name = "lblHead7";
             this.lblHead7.Size = new System.Drawing.Size(44, 18);
             this.lblHead7.TabIndex = 7;
@@ -164,7 +165,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead8.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead8.Location = new System.Drawing.Point(332, 10);
+            this.lblHead8.Location = new System.Drawing.Point(332, 50);
             this.lblHead8.Name = "lblHead8";
             this.lblHead8.Size = new System.Drawing.Size(76, 18);
             this.lblHead8.TabIndex = 8;
@@ -176,7 +177,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead9.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead9.Location = new System.Drawing.Point(948, 10);
+            this.lblHead9.Location = new System.Drawing.Point(948, 50);
             this.lblHead9.Name = "lblHead9";
             this.lblHead9.Size = new System.Drawing.Size(76, 18);
             this.lblHead9.TabIndex = 9;
@@ -188,7 +189,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead10.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead10.Location = new System.Drawing.Point(1046, 10);
+            this.lblHead10.Location = new System.Drawing.Point(1046, 50);
             this.lblHead10.Name = "lblHead10";
             this.lblHead10.Size = new System.Drawing.Size(72, 18);
             this.lblHead10.TabIndex = 10;
@@ -200,7 +201,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead11.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead11.Location = new System.Drawing.Point(1122, 10);
+            this.lblHead11.Location = new System.Drawing.Point(1122, 50);
             this.lblHead11.Name = "lblHead11";
             this.lblHead11.Size = new System.Drawing.Size(72, 18);
             this.lblHead11.TabIndex = 11;
@@ -212,7 +213,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead12.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead12.Location = new System.Drawing.Point(1198, 10);
+            this.lblHead12.Location = new System.Drawing.Point(1198, 50);
             this.lblHead12.Name = "lblHead12";
             this.lblHead12.Size = new System.Drawing.Size(72, 18);
             this.lblHead12.TabIndex = 12;
@@ -225,9 +226,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.AxisAlarmAddress = "W4";
             this.axRobot_X.AxisName = "Axis_RobotX";
             this.axRobot_X.AxisNameKey = "Axis_RobotX";
-            this.axRobot_X.MotionAxisIndex = 1;
-            this.axRobot_X.MotionNumber = 1;
-            this.axRobot_X.HMIAxisIndex = 1;
             this.axRobot_X.AxisWarningAddress = "W5";
             this.axRobot_X.BackColor = System.Drawing.Color.White;
             this.axRobot_X.CalibrateAddress = "M140";
@@ -240,18 +238,27 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.DecimalPlaces = 2;
             this.axRobot_X.Digits = 8;
             this.axRobot_X.Divisor = 10000D;
+            this.axRobot_X.EntryMaximum.StaticValue = 0D;
+            this.axRobot_X.EntryMaximum.TagAddress = "";
+            this.axRobot_X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axRobot_X.EntryMinimum.StaticValue = 0D;
+            this.axRobot_X.EntryMinimum.TagAddress = "";
+            this.axRobot_X.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axRobot_X.ErrorAddress = "M801";
             this.axRobot_X.GoToReferenceAddress = "B0";
+            this.axRobot_X.HMIAxisIndex = 1;
             this.axRobot_X.HomeRequestAddress = "m100";
-            this.axRobot_X.Location = new System.Drawing.Point(0, 34);
+            this.axRobot_X.LoadEncoderValueAddress = "D22";
+            this.axRobot_X.Location = new System.Drawing.Point(0, 74);
             this.axRobot_X.MaxLimitAddress = "D312";
             this.axRobot_X.MinLimitAddress = "D314";
+            this.axRobot_X.MotionAxisIndex = 1;
+            this.axRobot_X.MotionNumber = 1;
             this.axRobot_X.Name = "axRobot_X";
             this.axRobot_X.PlcNumber = 1;
             this.axRobot_X.PositionAddress = "W0";
             this.axRobot_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_X.PositionDivisor = 1000D;
-            this.axRobot_X.LoadEncoderValueAddress = "D22";
+            this.axRobot_X.PositionDivisor = 10000D;
             this.axRobot_X.ReferenceAddress = "D316";
             this.axRobot_X.ReferenceSensorAddress = "M330";
             this.axRobot_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
@@ -273,9 +280,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.AxisAlarmAddress = "W0B4";
             this.axRobot_Y.AxisName = "Axis_RobotY";
             this.axRobot_Y.AxisNameKey = "Axis_RobotY";
-            this.axRobot_Y.MotionAxisIndex = 5;
-            this.axRobot_Y.MotionNumber = 2;
-            this.axRobot_Y.HMIAxisIndex = 2;
             this.axRobot_Y.AxisWarningAddress = "W0B5";
             this.axRobot_Y.BackColor = System.Drawing.Color.White;
             this.axRobot_Y.CalibrateAddress = "M151";
@@ -288,11 +292,20 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.DecimalPlaces = 2;
             this.axRobot_Y.Digits = 8;
             this.axRobot_Y.Divisor = 10000D;
+            this.axRobot_Y.EntryMaximum.StaticValue = 0D;
+            this.axRobot_Y.EntryMaximum.TagAddress = "";
+            this.axRobot_Y.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axRobot_Y.EntryMinimum.StaticValue = 0D;
+            this.axRobot_Y.EntryMinimum.TagAddress = "";
+            this.axRobot_Y.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axRobot_Y.ErrorAddress = "M813";
             this.axRobot_Y.GoToReferenceAddress = "B11";
+            this.axRobot_Y.HMIAxisIndex = 2;
             this.axRobot_Y.Location = new System.Drawing.Point(0, 78);
             this.axRobot_Y.MaxLimitAddress = "D306";
             this.axRobot_Y.MinLimitAddress = "D308";
+            this.axRobot_Y.MotionAxisIndex = 5;
+            this.axRobot_Y.MotionNumber = 2;
             this.axRobot_Y.Name = "axRobot_Y";
             this.axRobot_Y.PlcNumber = 1;
             this.axRobot_Y.PositionAddress = "WB0";
@@ -317,9 +330,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.AxisAlarmAddress = "W0C4";
             this.axRobot_Z.AxisName = "Axis_RobotZ";
             this.axRobot_Z.AxisNameKey = "Axis_RobotZ";
-            this.axRobot_Z.MotionAxisIndex = 6;
-            this.axRobot_Z.MotionNumber = 2;
-            this.axRobot_Z.HMIAxisIndex = 3;
             this.axRobot_Z.AxisWarningAddress = "W0C5";
             this.axRobot_Z.BackColor = System.Drawing.Color.White;
             this.axRobot_Z.CalibrateAddress = "M152";
@@ -332,16 +342,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.DecimalPlaces = 2;
             this.axRobot_Z.Digits = 8;
             this.axRobot_Z.Divisor = 10000D;
+            this.axRobot_Z.EntryMaximum.StaticValue = 0D;
+            this.axRobot_Z.EntryMaximum.TagAddress = "";
+            this.axRobot_Z.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axRobot_Z.EntryMinimum.StaticValue = 0D;
+            this.axRobot_Z.EntryMinimum.TagAddress = "";
+            this.axRobot_Z.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axRobot_Z.ErrorAddress = "M814";
             this.axRobot_Z.GoToReferenceAddress = "B12";
+            this.axRobot_Z.HMIAxisIndex = 3;
             this.axRobot_Z.Location = new System.Drawing.Point(0, 122);
             this.axRobot_Z.MaxLimitAddress = "D300";
             this.axRobot_Z.MinLimitAddress = "D302";
+            this.axRobot_Z.MotionAxisIndex = 6;
+            this.axRobot_Z.MotionNumber = 2;
             this.axRobot_Z.Name = "axRobot_Z";
             this.axRobot_Z.PlcNumber = 1;
             this.axRobot_Z.PositionAddress = "WC0";
             this.axRobot_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_Z.PositionDivisor = 1000D;
+            this.axRobot_Z.PositionDivisor = 10000D;
             this.axRobot_Z.ReferenceAddress = "D304";
             this.axRobot_Z.ReferenceSensorAddress = "M342";
             this.axRobot_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -361,9 +380,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.AxisAlarmAddress = "W14";
             this.axMilling_1_Angle.AxisName = "Axis_Milling1Angle";
             this.axMilling_1_Angle.AxisNameKey = "Axis_Milling1Angle";
-            this.axMilling_1_Angle.MotionAxisIndex = 1;
-            this.axMilling_1_Angle.MotionNumber = 2;
-            this.axMilling_1_Angle.HMIAxisIndex = 4;
             this.axMilling_1_Angle.AxisWarningAddress = "W15";
             this.axMilling_1_Angle.BackColor = System.Drawing.Color.White;
             this.axMilling_1_Angle.CalibrateAddress = "M141";
@@ -376,16 +392,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.DecimalPlaces = 3;
             this.axMilling_1_Angle.Digits = 8;
             this.axMilling_1_Angle.Divisor = 100000D;
+            this.axMilling_1_Angle.EntryMaximum.StaticValue = 0D;
+            this.axMilling_1_Angle.EntryMaximum.TagAddress = "";
+            this.axMilling_1_Angle.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_1_Angle.EntryMinimum.StaticValue = 0D;
+            this.axMilling_1_Angle.EntryMinimum.TagAddress = "";
+            this.axMilling_1_Angle.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_1_Angle.ErrorAddress = "M809";
             this.axMilling_1_Angle.GoToReferenceAddress = "B1";
+            this.axMilling_1_Angle.HMIAxisIndex = 4;
             this.axMilling_1_Angle.Location = new System.Drawing.Point(0, 298);
             this.axMilling_1_Angle.MaxLimitAddress = "D318";
             this.axMilling_1_Angle.MinLimitAddress = "D320";
+            this.axMilling_1_Angle.MotionAxisIndex = 1;
+            this.axMilling_1_Angle.MotionNumber = 2;
             this.axMilling_1_Angle.Name = "axMilling_1_Angle";
             this.axMilling_1_Angle.PlcNumber = 1;
             this.axMilling_1_Angle.PositionAddress = "W10";
             this.axMilling_1_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1_Angle.PositionDivisor = 10000D;
+            this.axMilling_1_Angle.PositionDivisor = 100000D;
             this.axMilling_1_Angle.ReferenceAddress = "D322";
             this.axMilling_1_Angle.ReferenceSensorAddress = "M331";
             this.axMilling_1_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -405,9 +430,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.AxisAlarmAddress = "W74";
             this.axMilling_1X.AxisName = "Axis_Milling1X";
             this.axMilling_1X.AxisNameKey = "Axis_Milling1X";
-            this.axMilling_1X.MotionAxisIndex = 2;
-            this.axMilling_1X.MotionNumber = 1;
-            this.axMilling_1X.HMIAxisIndex = 5;
             this.axMilling_1X.AxisWarningAddress = "W75";
             this.axMilling_1X.BackColor = System.Drawing.Color.White;
             this.axMilling_1X.CalibrateAddress = "M147";
@@ -420,15 +442,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.DecimalPlaces = 2;
             this.axMilling_1X.Digits = 8;
             this.axMilling_1X.Divisor = 10000D;
+            this.axMilling_1X.EntryMaximum.StaticValue = 0D;
+            this.axMilling_1X.EntryMaximum.TagAddress = "";
+            this.axMilling_1X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_1X.EntryMinimum.StaticValue = 0D;
+            this.axMilling_1X.EntryMinimum.TagAddress = "";
+            this.axMilling_1X.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_1X.GoToReferenceAddress = "B7";
+            this.axMilling_1X.HMIAxisIndex = 5;
             this.axMilling_1X.Location = new System.Drawing.Point(0, 166);
             this.axMilling_1X.MaxLimitAddress = "D354";
             this.axMilling_1X.MinLimitAddress = "D356";
+            this.axMilling_1X.MotionAxisIndex = 2;
+            this.axMilling_1X.MotionNumber = 1;
             this.axMilling_1X.Name = "axMilling_1X";
             this.axMilling_1X.PlcNumber = 1;
             this.axMilling_1X.PositionAddress = "W70";
             this.axMilling_1X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1X.PositionDivisor = 1000D;
+            this.axMilling_1X.PositionDivisor = 10000D;
             this.axMilling_1X.ReferenceAddress = "D358";
             this.axMilling_1X.ReferenceSensorAddress = "M337";
             this.axMilling_1X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -448,9 +479,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.AxisAlarmAddress = "W24";
             this.axMilling_1Y.AxisName = "Axis_Milling1Y";
             this.axMilling_1Y.AxisNameKey = "Axis_Milling1Y";
-            this.axMilling_1Y.MotionAxisIndex = 3;
-            this.axMilling_1Y.MotionNumber = 1;
-            this.axMilling_1Y.HMIAxisIndex = 6;
             this.axMilling_1Y.AxisWarningAddress = "W25";
             this.axMilling_1Y.BackColor = System.Drawing.Color.White;
             this.axMilling_1Y.CalibrateAddress = "M142";
@@ -463,15 +491,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.DecimalPlaces = 2;
             this.axMilling_1Y.Digits = 8;
             this.axMilling_1Y.Divisor = 10000D;
+            this.axMilling_1Y.EntryMaximum.StaticValue = 0D;
+            this.axMilling_1Y.EntryMaximum.TagAddress = "";
+            this.axMilling_1Y.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_1Y.EntryMinimum.StaticValue = 0D;
+            this.axMilling_1Y.EntryMinimum.TagAddress = "";
+            this.axMilling_1Y.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_1Y.GoToReferenceAddress = "B2";
+            this.axMilling_1Y.HMIAxisIndex = 6;
             this.axMilling_1Y.Location = new System.Drawing.Point(0, 210);
             this.axMilling_1Y.MaxLimitAddress = "D324";
             this.axMilling_1Y.MinLimitAddress = "D326";
+            this.axMilling_1Y.MotionAxisIndex = 3;
+            this.axMilling_1Y.MotionNumber = 1;
             this.axMilling_1Y.Name = "axMilling_1Y";
             this.axMilling_1Y.PlcNumber = 1;
             this.axMilling_1Y.PositionAddress = "W20";
             this.axMilling_1Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1Y.PositionDivisor = 1000D;
+            this.axMilling_1Y.PositionDivisor = 10000D;
             this.axMilling_1Y.ReferenceAddress = "D328";
             this.axMilling_1Y.ReferenceSensorAddress = "M332";
             this.axMilling_1Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -491,9 +528,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.AxisAlarmAddress = "W34";
             this.axMilling_1Z.AxisName = "Axis_Milling1Z";
             this.axMilling_1Z.AxisNameKey = "Axis_Milling1Z";
-            this.axMilling_1Z.MotionAxisIndex = 4;
-            this.axMilling_1Z.MotionNumber = 1;
-            this.axMilling_1Z.HMIAxisIndex = 7;
             this.axMilling_1Z.AxisWarningAddress = "W35";
             this.axMilling_1Z.BackColor = System.Drawing.Color.White;
             this.axMilling_1Z.CalibrateAddress = "M143";
@@ -506,15 +540,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.DecimalPlaces = 2;
             this.axMilling_1Z.Digits = 8;
             this.axMilling_1Z.Divisor = 10000D;
+            this.axMilling_1Z.EntryMaximum.StaticValue = 0D;
+            this.axMilling_1Z.EntryMaximum.TagAddress = "";
+            this.axMilling_1Z.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_1Z.EntryMinimum.StaticValue = 0D;
+            this.axMilling_1Z.EntryMinimum.TagAddress = "";
+            this.axMilling_1Z.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_1Z.GoToReferenceAddress = "B3";
+            this.axMilling_1Z.HMIAxisIndex = 7;
             this.axMilling_1Z.Location = new System.Drawing.Point(0, 254);
             this.axMilling_1Z.MaxLimitAddress = "D330";
             this.axMilling_1Z.MinLimitAddress = "D332";
+            this.axMilling_1Z.MotionAxisIndex = 4;
+            this.axMilling_1Z.MotionNumber = 1;
             this.axMilling_1Z.Name = "axMilling_1Z";
             this.axMilling_1Z.PlcNumber = 1;
             this.axMilling_1Z.PositionAddress = "W30";
             this.axMilling_1Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_1Z.PositionDivisor = 1000D;
+            this.axMilling_1Z.PositionDivisor = 10000D;
             this.axMilling_1Z.ReferenceAddress = "D334";
             this.axMilling_1Z.ReferenceSensorAddress = "M333";
             this.axMilling_1Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -534,9 +577,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.AxisAlarmAddress = "W44";
             this.axMilling_2_Angle.AxisName = "Axis_Milling2Angle";
             this.axMilling_2_Angle.AxisNameKey = "Axis_Milling2Angle";
-            this.axMilling_2_Angle.MotionAxisIndex = 2;
-            this.axMilling_2_Angle.MotionNumber = 2;
-            this.axMilling_2_Angle.HMIAxisIndex = 8;
             this.axMilling_2_Angle.AxisWarningAddress = "W45";
             this.axMilling_2_Angle.BackColor = System.Drawing.Color.White;
             this.axMilling_2_Angle.CalibrateAddress = "M144";
@@ -549,16 +589,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.DecimalPlaces = 3;
             this.axMilling_2_Angle.Digits = 8;
             this.axMilling_2_Angle.Divisor = 100000D;
+            this.axMilling_2_Angle.EntryMaximum.StaticValue = 0D;
+            this.axMilling_2_Angle.EntryMaximum.TagAddress = "";
+            this.axMilling_2_Angle.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_2_Angle.EntryMinimum.StaticValue = 0D;
+            this.axMilling_2_Angle.EntryMinimum.TagAddress = "";
+            this.axMilling_2_Angle.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_2_Angle.ErrorAddress = "M810";
             this.axMilling_2_Angle.GoToReferenceAddress = "B4";
+            this.axMilling_2_Angle.HMIAxisIndex = 8;
             this.axMilling_2_Angle.Location = new System.Drawing.Point(0, 474);
             this.axMilling_2_Angle.MaxLimitAddress = "D336";
             this.axMilling_2_Angle.MinLimitAddress = "D338";
+            this.axMilling_2_Angle.MotionAxisIndex = 2;
+            this.axMilling_2_Angle.MotionNumber = 2;
             this.axMilling_2_Angle.Name = "axMilling_2_Angle";
             this.axMilling_2_Angle.PlcNumber = 1;
             this.axMilling_2_Angle.PositionAddress = "W40";
             this.axMilling_2_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2_Angle.PositionDivisor = 10000D;
+            this.axMilling_2_Angle.PositionDivisor = 100000D;
             this.axMilling_2_Angle.ReferenceAddress = "D340";
             this.axMilling_2_Angle.ReferenceSensorAddress = "M334";
             this.axMilling_2_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -578,9 +627,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.AxisAlarmAddress = "W84";
             this.axMilling_2X.AxisName = "Axis_Milling2X";
             this.axMilling_2X.AxisNameKey = "Axis_Milling2X";
-            this.axMilling_2X.MotionAxisIndex = 5;
-            this.axMilling_2X.MotionNumber = 1;
-            this.axMilling_2X.HMIAxisIndex = 9;
             this.axMilling_2X.AxisWarningAddress = "W85";
             this.axMilling_2X.BackColor = System.Drawing.Color.White;
             this.axMilling_2X.CalibrateAddress = "M148";
@@ -593,15 +639,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.DecimalPlaces = 2;
             this.axMilling_2X.Digits = 8;
             this.axMilling_2X.Divisor = 10000D;
+            this.axMilling_2X.EntryMaximum.StaticValue = 0D;
+            this.axMilling_2X.EntryMaximum.TagAddress = "";
+            this.axMilling_2X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_2X.EntryMinimum.StaticValue = 0D;
+            this.axMilling_2X.EntryMinimum.TagAddress = "";
+            this.axMilling_2X.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_2X.GoToReferenceAddress = "B8";
+            this.axMilling_2X.HMIAxisIndex = 9;
             this.axMilling_2X.Location = new System.Drawing.Point(0, 342);
             this.axMilling_2X.MaxLimitAddress = "D360";
             this.axMilling_2X.MinLimitAddress = "D362";
+            this.axMilling_2X.MotionAxisIndex = 5;
+            this.axMilling_2X.MotionNumber = 1;
             this.axMilling_2X.Name = "axMilling_2X";
             this.axMilling_2X.PlcNumber = 1;
             this.axMilling_2X.PositionAddress = "W80";
             this.axMilling_2X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2X.PositionDivisor = 1000D;
+            this.axMilling_2X.PositionDivisor = 10000D;
             this.axMilling_2X.ReferenceAddress = "D364";
             this.axMilling_2X.ReferenceSensorAddress = "M338";
             this.axMilling_2X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -621,9 +676,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.AxisAlarmAddress = "W54";
             this.axMilling_2Y.AxisName = "Axis_Milling2Y";
             this.axMilling_2Y.AxisNameKey = "Axis_Milling2Y";
-            this.axMilling_2Y.MotionAxisIndex = 6;
-            this.axMilling_2Y.MotionNumber = 1;
-            this.axMilling_2Y.HMIAxisIndex = 10;
             this.axMilling_2Y.AxisWarningAddress = "W55";
             this.axMilling_2Y.BackColor = System.Drawing.Color.White;
             this.axMilling_2Y.CalibrateAddress = "M145";
@@ -636,15 +688,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.DecimalPlaces = 2;
             this.axMilling_2Y.Digits = 8;
             this.axMilling_2Y.Divisor = 10000D;
+            this.axMilling_2Y.EntryMaximum.StaticValue = 0D;
+            this.axMilling_2Y.EntryMaximum.TagAddress = "";
+            this.axMilling_2Y.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_2Y.EntryMinimum.StaticValue = 0D;
+            this.axMilling_2Y.EntryMinimum.TagAddress = "";
+            this.axMilling_2Y.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_2Y.GoToReferenceAddress = "B5";
+            this.axMilling_2Y.HMIAxisIndex = 10;
             this.axMilling_2Y.Location = new System.Drawing.Point(0, 386);
             this.axMilling_2Y.MaxLimitAddress = "D342";
             this.axMilling_2Y.MinLimitAddress = "D344";
+            this.axMilling_2Y.MotionAxisIndex = 6;
+            this.axMilling_2Y.MotionNumber = 1;
             this.axMilling_2Y.Name = "axMilling_2Y";
             this.axMilling_2Y.PlcNumber = 1;
             this.axMilling_2Y.PositionAddress = "W50";
             this.axMilling_2Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2Y.PositionDivisor = 1000D;
+            this.axMilling_2Y.PositionDivisor = 10000D;
             this.axMilling_2Y.ReferenceAddress = "D346";
             this.axMilling_2Y.ReferenceSensorAddress = "M335";
             this.axMilling_2Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -664,9 +725,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.AxisAlarmAddress = "W64";
             this.axMilling_2Z.AxisName = "Axis_Milling2Z";
             this.axMilling_2Z.AxisNameKey = "Axis_Milling2Z";
-            this.axMilling_2Z.MotionAxisIndex = 7;
-            this.axMilling_2Z.MotionNumber = 1;
-            this.axMilling_2Z.HMIAxisIndex = 11;
             this.axMilling_2Z.AxisWarningAddress = "W65";
             this.axMilling_2Z.BackColor = System.Drawing.Color.White;
             this.axMilling_2Z.CalibrateAddress = "M146";
@@ -679,15 +737,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.DecimalPlaces = 2;
             this.axMilling_2Z.Digits = 8;
             this.axMilling_2Z.Divisor = 10000D;
+            this.axMilling_2Z.EntryMaximum.StaticValue = 0D;
+            this.axMilling_2Z.EntryMaximum.TagAddress = "";
+            this.axMilling_2Z.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axMilling_2Z.EntryMinimum.StaticValue = 0D;
+            this.axMilling_2Z.EntryMinimum.TagAddress = "";
+            this.axMilling_2Z.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axMilling_2Z.GoToReferenceAddress = "B6";
+            this.axMilling_2Z.HMIAxisIndex = 11;
             this.axMilling_2Z.Location = new System.Drawing.Point(0, 430);
             this.axMilling_2Z.MaxLimitAddress = "D348";
             this.axMilling_2Z.MinLimitAddress = "D350";
+            this.axMilling_2Z.MotionAxisIndex = 7;
+            this.axMilling_2Z.MotionNumber = 1;
             this.axMilling_2Z.Name = "axMilling_2Z";
             this.axMilling_2Z.PlcNumber = 1;
             this.axMilling_2Z.PositionAddress = "W60";
             this.axMilling_2Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axMilling_2Z.PositionDivisor = 1000D;
+            this.axMilling_2Z.PositionDivisor = 10000D;
             this.axMilling_2Z.ReferenceAddress = "D352";
             this.axMilling_2Z.ReferenceSensorAddress = "M336";
             this.axMilling_2Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -707,9 +774,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.AxisAlarmAddress = "W94";
             this.axCutting_Angle.AxisName = "Axis_CuttingAngle";
             this.axCutting_Angle.AxisNameKey = "Axis_CuttingAngle";
-            this.axCutting_Angle.MotionAxisIndex = 3;
-            this.axCutting_Angle.MotionNumber = 2;
-            this.axCutting_Angle.HMIAxisIndex = 12;
             this.axCutting_Angle.AxisWarningAddress = "W95";
             this.axCutting_Angle.BackColor = System.Drawing.Color.White;
             this.axCutting_Angle.CalibrateAddress = "M149";
@@ -722,16 +786,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.DecimalPlaces = 3;
             this.axCutting_Angle.Digits = 8;
             this.axCutting_Angle.Divisor = 100000D;
+            this.axCutting_Angle.EntryMaximum.StaticValue = 0D;
+            this.axCutting_Angle.EntryMaximum.TagAddress = "";
+            this.axCutting_Angle.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axCutting_Angle.EntryMinimum.StaticValue = 0D;
+            this.axCutting_Angle.EntryMinimum.TagAddress = "";
+            this.axCutting_Angle.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axCutting_Angle.ErrorAddress = "M811";
             this.axCutting_Angle.GoToReferenceAddress = "B9";
+            this.axCutting_Angle.HMIAxisIndex = 12;
             this.axCutting_Angle.Location = new System.Drawing.Point(0, 562);
             this.axCutting_Angle.MaxLimitAddress = "D366";
             this.axCutting_Angle.MinLimitAddress = "D368";
+            this.axCutting_Angle.MotionAxisIndex = 3;
+            this.axCutting_Angle.MotionNumber = 2;
             this.axCutting_Angle.Name = "axCutting_Angle";
             this.axCutting_Angle.PlcNumber = 1;
             this.axCutting_Angle.PositionAddress = "W90";
             this.axCutting_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axCutting_Angle.PositionDivisor = 10000D;
+            this.axCutting_Angle.PositionDivisor = 100000D;
             this.axCutting_Angle.ReferenceAddress = "D370";
             this.axCutting_Angle.ReferenceSensorAddress = "M339";
             this.axCutting_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -751,9 +824,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.AxisAlarmAddress = "W0A4";
             this.axCutting_Z.AxisName = "Axis_CuttingZ";
             this.axCutting_Z.AxisNameKey = "Axis_CuttingZ";
-            this.axCutting_Z.MotionAxisIndex = 4;
-            this.axCutting_Z.MotionNumber = 2;
-            this.axCutting_Z.HMIAxisIndex = 13;
             this.axCutting_Z.AxisWarningAddress = "W0A5";
             this.axCutting_Z.BackColor = System.Drawing.Color.White;
             this.axCutting_Z.CalibrateAddress = "M150";
@@ -766,16 +836,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.DecimalPlaces = 2;
             this.axCutting_Z.Digits = 8;
             this.axCutting_Z.Divisor = 10000D;
+            this.axCutting_Z.EntryMaximum.StaticValue = 0D;
+            this.axCutting_Z.EntryMaximum.TagAddress = "";
+            this.axCutting_Z.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axCutting_Z.EntryMinimum.StaticValue = 0D;
+            this.axCutting_Z.EntryMinimum.TagAddress = "";
+            this.axCutting_Z.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axCutting_Z.ErrorAddress = "M812";
             this.axCutting_Z.GoToReferenceAddress = "B10";
+            this.axCutting_Z.HMIAxisIndex = 13;
             this.axCutting_Z.Location = new System.Drawing.Point(0, 518);
             this.axCutting_Z.MaxLimitAddress = "D372";
             this.axCutting_Z.MinLimitAddress = "D374";
+            this.axCutting_Z.MotionAxisIndex = 4;
+            this.axCutting_Z.MotionNumber = 2;
             this.axCutting_Z.Name = "axCutting_Z";
             this.axCutting_Z.PlcNumber = 1;
             this.axCutting_Z.PositionAddress = "WA0";
             this.axCutting_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axCutting_Z.PositionDivisor = 1000D;
+            this.axCutting_Z.PositionDivisor = 10000D;
             this.axCutting_Z.ReferenceAddress = "D376";
             this.axCutting_Z.ReferenceSensorAddress = "M340";
             this.axCutting_Z.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
@@ -795,9 +874,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.AxisAlarmAddress = "W0E4";
             this.axV_Cutting_Y.AxisName = "Axis_VCuttingY";
             this.axV_Cutting_Y.AxisNameKey = "Axis_VCuttingY";
-            this.axV_Cutting_Y.MotionAxisIndex = 7;
-            this.axV_Cutting_Y.MotionNumber = 2;
-            this.axV_Cutting_Y.HMIAxisIndex = 14;
             this.axV_Cutting_Y.AxisWarningAddress = "W0E5";
             this.axV_Cutting_Y.BackColor = System.Drawing.Color.White;
             this.axV_Cutting_Y.CalibrateAddress = "M154";
@@ -810,16 +886,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.DecimalPlaces = 2;
             this.axV_Cutting_Y.Digits = 8;
             this.axV_Cutting_Y.Divisor = 10000D;
+            this.axV_Cutting_Y.EntryMaximum.StaticValue = 0D;
+            this.axV_Cutting_Y.EntryMaximum.TagAddress = "";
+            this.axV_Cutting_Y.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axV_Cutting_Y.EntryMinimum.StaticValue = 0D;
+            this.axV_Cutting_Y.EntryMinimum.TagAddress = "";
+            this.axV_Cutting_Y.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axV_Cutting_Y.ErrorAddress = "M817";
             this.axV_Cutting_Y.GoToReferenceAddress = "B14";
+            this.axV_Cutting_Y.HMIAxisIndex = 14;
             this.axV_Cutting_Y.Location = new System.Drawing.Point(0, 650);
             this.axV_Cutting_Y.MaxLimitAddress = "D492";
             this.axV_Cutting_Y.MinLimitAddress = "D494";
+            this.axV_Cutting_Y.MotionAxisIndex = 7;
+            this.axV_Cutting_Y.MotionNumber = 2;
             this.axV_Cutting_Y.Name = "axV_Cutting_Y";
             this.axV_Cutting_Y.PlcNumber = 1;
             this.axV_Cutting_Y.PositionAddress = "WE0";
             this.axV_Cutting_Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axV_Cutting_Y.PositionDivisor = 1000D;
+            this.axV_Cutting_Y.PositionDivisor = 10000D;
             this.axV_Cutting_Y.ReferenceAddress = "D490";
             this.axV_Cutting_Y.ReferenceSensorAddress = "M257";
             this.axV_Cutting_Y.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
@@ -840,9 +925,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.AxisAlarmAddress = "W0F4";
             this.axV_Cutting_Z.AxisName = "Axis_VCuttingZ";
             this.axV_Cutting_Z.AxisNameKey = "Axis_VCuttingZ";
-            this.axV_Cutting_Z.MotionAxisIndex = 8;
-            this.axV_Cutting_Z.MotionNumber = 2;
-            this.axV_Cutting_Z.HMIAxisIndex = 15;
             this.axV_Cutting_Z.AxisWarningAddress = "W0F5";
             this.axV_Cutting_Z.BackColor = System.Drawing.Color.White;
             this.axV_Cutting_Z.CalibrateAddress = "M155";
@@ -855,16 +937,25 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.DecimalPlaces = 2;
             this.axV_Cutting_Z.Digits = 8;
             this.axV_Cutting_Z.Divisor = 10000D;
+            this.axV_Cutting_Z.EntryMaximum.StaticValue = 0D;
+            this.axV_Cutting_Z.EntryMaximum.TagAddress = "";
+            this.axV_Cutting_Z.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axV_Cutting_Z.EntryMinimum.StaticValue = 0D;
+            this.axV_Cutting_Z.EntryMinimum.TagAddress = "";
+            this.axV_Cutting_Z.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axV_Cutting_Z.ErrorAddress = "M818";
             this.axV_Cutting_Z.GoToReferenceAddress = "B15";
+            this.axV_Cutting_Z.HMIAxisIndex = 15;
             this.axV_Cutting_Z.Location = new System.Drawing.Point(0, 694);
             this.axV_Cutting_Z.MaxLimitAddress = "D610";
             this.axV_Cutting_Z.MinLimitAddress = "D612";
+            this.axV_Cutting_Z.MotionAxisIndex = 8;
+            this.axV_Cutting_Z.MotionNumber = 2;
             this.axV_Cutting_Z.Name = "axV_Cutting_Z";
             this.axV_Cutting_Z.PlcNumber = 1;
             this.axV_Cutting_Z.PositionAddress = "WF0";
             this.axV_Cutting_Z.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axV_Cutting_Z.PositionDivisor = 1000D;
+            this.axV_Cutting_Z.PositionDivisor = 10000D;
             this.axV_Cutting_Z.ReferenceAddress = "D608";
             this.axV_Cutting_Z.ReferenceSensorAddress = "M259";
             this.axV_Cutting_Z.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
@@ -885,9 +976,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.AxisAlarmAddress = "W0D4";
             this.axExit_X.AxisName = "Axis_ExitX";
             this.axExit_X.AxisNameKey = "Axis_ExitX";
-            this.axExit_X.MotionAxisIndex = 8;
-            this.axExit_X.MotionNumber = 1;
-            this.axExit_X.HMIAxisIndex = 16;
             this.axExit_X.AxisWarningAddress = "W0D5";
             this.axExit_X.BackColor = System.Drawing.Color.White;
             this.axExit_X.CalibrateAddress = "M153";
@@ -900,15 +988,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.DecimalPlaces = 2;
             this.axExit_X.Digits = 8;
             this.axExit_X.Divisor = 10000D;
+            this.axExit_X.EntryMaximum.StaticValue = 0D;
+            this.axExit_X.EntryMaximum.TagAddress = "";
+            this.axExit_X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axExit_X.EntryMinimum.StaticValue = 0D;
+            this.axExit_X.EntryMinimum.TagAddress = "";
+            this.axExit_X.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axExit_X.GoToReferenceAddress = "B13";
+            this.axExit_X.HMIAxisIndex = 16;
             this.axExit_X.Location = new System.Drawing.Point(0, 606);
             this.axExit_X.MaxLimitAddress = "D378";
             this.axExit_X.MinLimitAddress = "D380";
+            this.axExit_X.MotionAxisIndex = 8;
+            this.axExit_X.MotionNumber = 1;
             this.axExit_X.Name = "axExit_X";
             this.axExit_X.PlcNumber = 1;
             this.axExit_X.PositionAddress = "WD0";
             this.axExit_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axExit_X.PositionDivisor = 1000D;
+            this.axExit_X.PositionDivisor = 10000D;
             this.axExit_X.ReferenceAddress = "D382";
             this.axExit_X.ReferenceSensorAddress = "M343";
             this.axExit_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
@@ -926,23 +1023,29 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             // axV_Cutting_X
             // 
-            // From the old HMI's Axis Parameters page (8 October): start limit D830,
-            // finish limit D828, position D838 (0.0001 mm, so no position divisor
-            // of its own), reference activation B16. Its reference sensor is the
-            // Mullion Milling X Axis Reference Sensor M269 (Wiring.csv, X131) - the
-            // old page's lamp said M259, the V Cutting Z sensor. The reference and
-            // calibration words, the servo codes and the meters are not on the old
-            // page: fill them in when known.
+            this.axV_Cutting_X.AxisAlarmAddress = "";
             this.axV_Cutting_X.AxisName = "Axis_VCuttingX";
             this.axV_Cutting_X.AxisNameKey = "Axis_VCuttingX";
-            this.axV_Cutting_X.HMIAxisIndex = 17;
+            this.axV_Cutting_X.AxisWarningAddress = "";
             this.axV_Cutting_X.BackColor = System.Drawing.Color.White;
+            this.axV_Cutting_X.CalibrateAddress = "";
+            this.axV_Cutting_X.CalibrationAddress = "";
             this.axV_Cutting_X.CommandBackAddress = "M631";
             this.axV_Cutting_X.CommandForwardAddress = "M630";
+            this.axV_Cutting_X.CurrentAddress = "";
+            this.axV_Cutting_X.CurrentDivisor = 1D;
+            this.axV_Cutting_X.CurrentFullScale = 100D;
             this.axV_Cutting_X.DecimalPlaces = 2;
             this.axV_Cutting_X.Digits = 8;
             this.axV_Cutting_X.Divisor = 10000D;
+            this.axV_Cutting_X.EntryMaximum.StaticValue = 0D;
+            this.axV_Cutting_X.EntryMaximum.TagAddress = "";
+            this.axV_Cutting_X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.axV_Cutting_X.EntryMinimum.StaticValue = 0D;
+            this.axV_Cutting_X.EntryMinimum.TagAddress = "";
+            this.axV_Cutting_X.EntryMinimum.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.axV_Cutting_X.GoToReferenceAddress = "B16";
+            this.axV_Cutting_X.HMIAxisIndex = 17;
             this.axV_Cutting_X.Location = new System.Drawing.Point(0, 738);
             this.axV_Cutting_X.MaxLimitAddress = "D828";
             this.axV_Cutting_X.MinLimitAddress = "D830";
@@ -950,33 +1053,91 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_X.PlcNumber = 1;
             this.axV_Cutting_X.PositionAddress = "D838";
             this.axV_Cutting_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+            this.axV_Cutting_X.PositionDivisor = 10000D;
+            this.axV_Cutting_X.ReferenceAddress = "";
             this.axV_Cutting_X.ReferenceSensorAddress = "M269";
             this.axV_Cutting_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
             this.axV_Cutting_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.axV_Cutting_X.ServoAlarmAddress = "";
             this.axV_Cutting_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
             this.axV_Cutting_X.Size = new System.Drawing.Size(1382, 40);
             this.axV_Cutting_X.Suffix = "mm";
             this.axV_Cutting_X.TabIndex = 29;
             this.axV_Cutting_X.VerticalMovement = false;
             this.axV_Cutting_X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.axV_Cutting_X.ZDistanceAddress = "";
+            this.axV_Cutting_X.ZDistanceDivisor = 1000D;
+            this.axV_Cutting_X.ZDistanceFullScale = 10D;
             // 
             // btnSend_Axes_To_Reference
             // 
-            // The old Axis Parameters page's "Send to Referance" (M22, SET; the
-            // device list's "Eksen Referansa Git"): sends the axes ticked in the
-            // Ref column to their references.
-            this.btnSend_Axes_To_Reference.Name = "btnSend_Axes_To_Reference";
-            this.btnSend_Axes_To_Reference.PlcNumber = 1;
-            this.btnSend_Axes_To_Reference.TranslationKey = "Send Axes to Reference";
+            this.btnSend_Axes_To_Reference.ActiveBackColor = System.Drawing.Color.White;
+            this.btnSend_Axes_To_Reference.AlertBlink = false;
+            this.btnSend_Axes_To_Reference.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction1.Address = "M22";
+            bitAction1.AddressOffset.StaticValue = 0D;
+            bitAction1.AddressOffset.TagAddress = "";
+            bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnSend_Axes_To_Reference.BitActions.Add(bitAction1);
+            this.btnSend_Axes_To_Reference.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnSend_Axes_To_Reference.ButtonText = "Send Axes to Reference";
+            this.btnSend_Axes_To_Reference.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnSend_Axes_To_Reference.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnSend_Axes_To_Reference.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnSend_Axes_To_Reference.ConfirmationAddress = "";
+            this.btnSend_Axes_To_Reference.ConfirmationNeeded = false;
+            this.btnSend_Axes_To_Reference.ConfirmationText = "";
+            this.btnSend_Axes_To_Reference.ConfirmationTextKey = "";
+            this.btnSend_Axes_To_Reference.CornerRadius = 4;
+            this.btnSend_Axes_To_Reference.DescriptionText = "";
+            this.btnSend_Axes_To_Reference.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnSend_Axes_To_Reference.DisplayAddress = null;
+            this.btnSend_Axes_To_Reference.DisplayOffset.StaticValue = 0D;
+            this.btnSend_Axes_To_Reference.DisplayOffset.TagAddress = "";
+            this.btnSend_Axes_To_Reference.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnSend_Axes_To_Reference.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnSend_Axes_To_Reference.EnableTrigger.DescriptionKey = "";
+            this.btnSend_Axes_To_Reference.EnableTrigger.MonitorAddress = "";
+            this.btnSend_Axes_To_Reference.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnSend_Axes_To_Reference.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnSend_Axes_To_Reference.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnSend_Axes_To_Reference.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnSend_Axes_To_Reference.EnableTrigger.ValA = 0D;
+            this.btnSend_Axes_To_Reference.EnableTrigger.ValB = 0D;
+            this.btnSend_Axes_To_Reference.ErrorAddress = "";
             this.btnSend_Axes_To_Reference.FallbackText = "Send Axes to Reference";
-            bitActionRef.Address = "M22";
-            bitActionRef.Action = Kaban.Core.Enums.BitActionType.SET;
-            this.btnSend_Axes_To_Reference.BitActions.Add(bitActionRef);
-            this.btnSend_Axes_To_Reference.Location = new System.Drawing.Point(8, 792);
-            this.btnSend_Axes_To_Reference.Size = new System.Drawing.Size(260, 40);
-            this.btnSend_Axes_To_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.btnSend_Axes_To_Reference.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSend_Axes_To_Reference.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnSend_Axes_To_Reference.ForeColor = System.Drawing.Color.Black;
+            this.btnSend_Axes_To_Reference.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnSend_Axes_To_Reference.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnSend_Axes_To_Reference.ImageActive = null;
+            this.btnSend_Axes_To_Reference.ImagePassive = null;
+            this.btnSend_Axes_To_Reference.IsActivePage = false;
+            this.btnSend_Axes_To_Reference.Lamp1Address = "";
+            this.btnSend_Axes_To_Reference.Lamp1Tip = "";
+            this.btnSend_Axes_To_Reference.Lamp2Address = "";
+            this.btnSend_Axes_To_Reference.Lamp2Tip = "";
+            this.btnSend_Axes_To_Reference.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnSend_Axes_To_Reference.Location = new System.Drawing.Point(829, 797);
             this.btnSend_Axes_To_Reference.LogAction = true;
+            this.btnSend_Axes_To_Reference.Name = "btnSend_Axes_To_Reference";
+            this.btnSend_Axes_To_Reference.OutputAddress = "";
+            this.btnSend_Axes_To_Reference.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnSend_Axes_To_Reference.PlcNumber = 1;
+            this.btnSend_Axes_To_Reference.RelayAddress = "";
+            this.btnSend_Axes_To_Reference.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.btnSend_Axes_To_Reference.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnSend_Axes_To_Reference.RoundLeftOnly = false;
+            this.btnSend_Axes_To_Reference.RoundRightOnly = false;
+            this.btnSend_Axes_To_Reference.ShowCaption = true;
+            this.btnSend_Axes_To_Reference.Size = new System.Drawing.Size(180, 40);
             this.btnSend_Axes_To_Reference.TabIndex = 30;
+            this.btnSend_Axes_To_Reference.ToolTipText = "";
+            this.btnSend_Axes_To_Reference.TranslationKey = "Send Axes to Reference";
+            this.btnSend_Axes_To_Reference.UseVisualStyleBackColor = false;
+            this.btnSend_Axes_To_Reference.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // AxisSettings
             // 
@@ -1014,7 +1175,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.axV_Cutting_X);
             this.Controls.Add(this.btnSend_Axes_To_Reference);
             this.Name = "AxisSettings";
-            this.Size = new System.Drawing.Size(1316, 850);
+            this.Size = new System.Drawing.Size(1295, 829);
             this.ResumeLayout(false);
 
         }
@@ -1053,4 +1214,3 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         private Kaban.UI.Controls.ButtonHMI btnSend_Axes_To_Reference;
     }
 }
-

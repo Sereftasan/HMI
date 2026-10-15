@@ -184,7 +184,7 @@ namespace Kaban.UI.Plc
             Action<PlcTrigger> AddTrigger = (pt) => { if (pt != null && !string.IsNullOrEmpty(pt.MonitorAddress)) Add(pt.MonitorAddress); };
 
             // A condition is read from the station IT is registered on, not from
-            // the control's: MillingUnitIsBack lives on PLC2, and a PLC1 button
+            // the control's: MullionNotching lives on PLC2, and a PLC1 button
             // gated by it used to read X25 from PLC1 - a different input entirely.
             Action<SystemCondition> AddConditions = (cond) =>
             {

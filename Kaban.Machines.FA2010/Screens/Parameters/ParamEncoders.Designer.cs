@@ -46,9 +46,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead_Manual.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Manual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Manual.Location = new System.Drawing.Point(262, 16);
+            this.lblHead_Manual.Location = new System.Drawing.Point(278, 16);
             this.lblHead_Manual.Name = "lblHead_Manual";
             this.lblHead_Manual.Size = new System.Drawing.Size(248, 32);
+            this.lblHead_Manual.TabIndex = 0;
             this.lblHead_Manual.Tag = "EncoderHeading:Manual";
             this.lblHead_Manual.Text = "Manual movement";
             this.lblHead_Manual.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -57,9 +58,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead_Reference.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Reference.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Reference.Location = new System.Drawing.Point(528, 16);
+            this.lblHead_Reference.Location = new System.Drawing.Point(544, 16);
             this.lblHead_Reference.Name = "lblHead_Reference";
             this.lblHead_Reference.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Reference.TabIndex = 1;
             this.lblHead_Reference.Tag = "EncoderHeading:Reference";
             this.lblHead_Reference.Text = "Reference";
             this.lblHead_Reference.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -68,9 +70,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead_Tolerance.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Tolerance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Tolerance.Location = new System.Drawing.Point(632, 16);
+            this.lblHead_Tolerance.Location = new System.Drawing.Point(648, 16);
             this.lblHead_Tolerance.Name = "lblHead_Tolerance";
             this.lblHead_Tolerance.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Tolerance.TabIndex = 2;
             this.lblHead_Tolerance.Tag = "EncoderHeading:Tolerance";
             this.lblHead_Tolerance.Text = "Measuring tolerance";
             this.lblHead_Tolerance.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -79,9 +82,10 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead_MinimumLimit.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_MinimumLimit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_MinimumLimit.Location = new System.Drawing.Point(736, 16);
+            this.lblHead_MinimumLimit.Location = new System.Drawing.Point(752, 16);
             this.lblHead_MinimumLimit.Name = "lblHead_MinimumLimit";
             this.lblHead_MinimumLimit.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_MinimumLimit.TabIndex = 3;
             this.lblHead_MinimumLimit.Tag = "EncoderHeading:MinimumLimit";
             this.lblHead_MinimumLimit.Text = "Minimum limit";
             this.lblHead_MinimumLimit.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -90,318 +94,278 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             // 
             this.lblHead_Unclamping.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this.lblHead_Unclamping.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(110)))), ((int)(((byte)(116)))), ((int)(((byte)(124)))));
-            this.lblHead_Unclamping.Location = new System.Drawing.Point(840, 16);
+            this.lblHead_Unclamping.Location = new System.Drawing.Point(856, 16);
             this.lblHead_Unclamping.Name = "lblHead_Unclamping";
             this.lblHead_Unclamping.Size = new System.Drawing.Size(86, 32);
+            this.lblHead_Unclamping.TabIndex = 4;
             this.lblHead_Unclamping.Tag = "EncoderHeading:Unclamping";
             this.lblHead_Unclamping.Text = "Unclamping interval";
             this.lblHead_Unclamping.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // encRobot_Gripper
             // 
-            // Robot Gripper: encoder 1 - M642 / M641, position D21; reference D516, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encRobot_Gripper.BackColor = System.Drawing.Color.White;
-            this.encRobot_Gripper.Name = "encRobot_Gripper";
-            this.encRobot_Gripper.PlcNumber = 1;
-            this.encRobot_Gripper.EncoderNumber = 1;
-            this.encRobot_Gripper.TitleTextKey = "Robot Gripper";
-            this.encRobot_Gripper.Location = new System.Drawing.Point(16, 54);
-            this.encRobot_Gripper.Size = new System.Drawing.Size(910, 40);
+            this.encRobot_Gripper.BackSensorAddress = "M222";
             this.encRobot_Gripper.CommandBackAddress = "M642";
             this.encRobot_Gripper.CommandForwardAddress = "M641";
-            this.encRobot_Gripper.BackSensorAddress = "M222";
-            this.encRobot_Gripper.PositionAddress = "D21";
-            this.encRobot_Gripper.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encRobot_Gripper.PositionDivisor = 10D;
-            this.encRobot_Gripper.PositionDecimalPlaces = 2;
-            this.encRobot_Gripper.ReferenceAddress = "D516";
-            this.encRobot_Gripper.Divisor = 10D;
             this.encRobot_Gripper.DecimalPlaces = 1;
-            this.encRobot_Gripper.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encRobot_Gripper.Divisor = 10D;
+            this.encRobot_Gripper.EncoderNumber = 1;
             this.encRobot_Gripper.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encRobot_Gripper.Location = new System.Drawing.Point(16, 54);
+            this.encRobot_Gripper.Name = "encRobot_Gripper";
+            this.encRobot_Gripper.PositionAddress = "D21";
+            this.encRobot_Gripper.PositionDecimalPlaces = 2;
+            this.encRobot_Gripper.PositionDivisor = 100D;
+            this.encRobot_Gripper.ReferenceAddress = "D516";
+            this.encRobot_Gripper.Size = new System.Drawing.Size(926, 40);
+            this.encRobot_Gripper.TabIndex = 5;
+            this.encRobot_Gripper.TitleTextKey = "Robot Gripper";
             this.encRobot_Gripper.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // encProfile_Recognition_Front
             // 
-            // Profile Recognition Front: encoder 2 - M646 / M645, position D4; reference D477, measuring tolerance D479, minimum limit D483, unclamping interval D51.
             this.encProfile_Recognition_Front.BackColor = System.Drawing.Color.White;
-            this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
-            this.encProfile_Recognition_Front.PlcNumber = 1;
-            this.encProfile_Recognition_Front.EncoderNumber = 2;
-            this.encProfile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
-            this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
-            this.encProfile_Recognition_Front.Size = new System.Drawing.Size(910, 40);
+            this.encProfile_Recognition_Front.BackSensorAddress = "M225";
             this.encProfile_Recognition_Front.CommandBackAddress = "M646";
             this.encProfile_Recognition_Front.CommandForwardAddress = "M645";
-            this.encProfile_Recognition_Front.BackSensorAddress = "M225";
-            this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
-            this.encProfile_Recognition_Front.PositionAddress = "D4";
-            this.encProfile_Recognition_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encProfile_Recognition_Front.PositionDivisor = 10D;
-            this.encProfile_Recognition_Front.PositionDecimalPlaces = 1;
-            this.encProfile_Recognition_Front.ReferenceAddress = "D477";
-            this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
-            this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
-            this.encProfile_Recognition_Front.UnclampingIntervalAddress = "D51";
-            this.encProfile_Recognition_Front.Divisor = 10D;
             this.encProfile_Recognition_Front.DecimalPlaces = 1;
-            this.encProfile_Recognition_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encProfile_Recognition_Front.Divisor = 10D;
+            this.encProfile_Recognition_Front.EncoderNumber = 2;
             this.encProfile_Recognition_Front.ErrorBackAddress = "M845";
             this.encProfile_Recognition_Front.ErrorForwardAddress = "M844";
-            // Pneumatic drawing: Y28/Y29, 5/3 open centre (P16); back sensor SN59 (X51) + pressure switch SW1.
-            this.encProfile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.encProfile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+            this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
+            this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
+            this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
+            this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
+            this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
+            this.encProfile_Recognition_Front.PositionAddress = "D4";
+            this.encProfile_Recognition_Front.PositionDecimalPlaces = 1;
+            this.encProfile_Recognition_Front.PositionDivisor = 10D;
+            this.encProfile_Recognition_Front.ReferenceAddress = "D477";
+            this.encProfile_Recognition_Front.Size = new System.Drawing.Size(926, 40);
+            this.encProfile_Recognition_Front.TabIndex = 6;
+            this.encProfile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
+            this.encProfile_Recognition_Front.UnclampingIntervalAddress = "D51";
+            this.encProfile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encProfile_Recognition_Top
             // 
-            // Profile Recognition Top: encoder 3 - M648 / M647, position D6; reference D478, measuring tolerance D480, minimum limit D484, unclamping interval D50.
             this.encProfile_Recognition_Top.BackColor = System.Drawing.Color.White;
-            this.encProfile_Recognition_Top.Name = "encProfile_Recognition_Top";
-            this.encProfile_Recognition_Top.PlcNumber = 1;
-            this.encProfile_Recognition_Top.EncoderNumber = 3;
-            this.encProfile_Recognition_Top.TitleTextKey = "Profile Recognition Top";
-            this.encProfile_Recognition_Top.Location = new System.Drawing.Point(16, 142);
-            this.encProfile_Recognition_Top.Size = new System.Drawing.Size(910, 40);
+            this.encProfile_Recognition_Top.BackSensorAddress = "M226";
             this.encProfile_Recognition_Top.CommandBackAddress = "M648";
             this.encProfile_Recognition_Top.CommandForwardAddress = "M647";
-            this.encProfile_Recognition_Top.BackSensorAddress = "M226";
-            this.encProfile_Recognition_Top.PositionAddress = "D6";
-            this.encProfile_Recognition_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encProfile_Recognition_Top.PositionDivisor = 10D;
-            this.encProfile_Recognition_Top.PositionDecimalPlaces = 1;
-            this.encProfile_Recognition_Top.ReferenceAddress = "D478";
-            this.encProfile_Recognition_Top.MeasuringToleranceAddress = "D480";
-            this.encProfile_Recognition_Top.MinimumLimitAddress = "D484";
-            this.encProfile_Recognition_Top.UnclampingIntervalAddress = "D50";
-            this.encProfile_Recognition_Top.Divisor = 10D;
             this.encProfile_Recognition_Top.DecimalPlaces = 1;
-            this.encProfile_Recognition_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.encProfile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.encProfile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.encProfile_Recognition_Top.Divisor = 10D;
+            this.encProfile_Recognition_Top.EncoderNumber = 3;
             this.encProfile_Recognition_Top.ErrorBackAddress = "M847";
             this.encProfile_Recognition_Top.ErrorForwardAddress = "M846";
+            this.encProfile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encProfile_Recognition_Top.Location = new System.Drawing.Point(16, 142);
+            this.encProfile_Recognition_Top.MeasuringToleranceAddress = "D480";
+            this.encProfile_Recognition_Top.MinimumLimitAddress = "D484";
+            this.encProfile_Recognition_Top.Name = "encProfile_Recognition_Top";
+            this.encProfile_Recognition_Top.PositionAddress = "D6";
+            this.encProfile_Recognition_Top.PositionDecimalPlaces = 1;
+            this.encProfile_Recognition_Top.PositionDivisor = 10D;
+            this.encProfile_Recognition_Top.ReferenceAddress = "D478";
+            this.encProfile_Recognition_Top.Size = new System.Drawing.Size(926, 40);
+            this.encProfile_Recognition_Top.TabIndex = 7;
+            this.encProfile_Recognition_Top.TitleTextKey = "Profile Recognition Top";
+            this.encProfile_Recognition_Top.UnclampingIntervalAddress = "D50";
+            this.encProfile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encMilling_Top
             // 
-            // Milling Top: encoder 4 - M730 / M729, position D14; reference D511, measuring tolerance -, minimum limit -, unclamping interval D53.
             this.encMilling_Top.BackColor = System.Drawing.Color.White;
-            this.encMilling_Top.Name = "encMilling_Top";
-            this.encMilling_Top.PlcNumber = 1;
-            this.encMilling_Top.EncoderNumber = 4;
-            this.encMilling_Top.TitleTextKey = "Milling Top";
-            this.encMilling_Top.Location = new System.Drawing.Point(16, 186);
-            this.encMilling_Top.Size = new System.Drawing.Size(910, 40);
+            this.encMilling_Top.BackSensorAddress = "M228";
             this.encMilling_Top.CommandBackAddress = "M730";
             this.encMilling_Top.CommandForwardAddress = "M729";
-            this.encMilling_Top.BackSensorAddress = "M228";
-            this.encMilling_Top.PositionAddress = "D14";
-            this.encMilling_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encMilling_Top.PositionDivisor = 10D;
-            this.encMilling_Top.PositionDecimalPlaces = 1;
-            this.encMilling_Top.ReferenceAddress = "D511";
-            this.encMilling_Top.UnclampingIntervalAddress = "D53";
-            this.encMilling_Top.Divisor = 10D;
             this.encMilling_Top.DecimalPlaces = 1;
-            this.encMilling_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encMilling_Top.Divisor = 10D;
+            this.encMilling_Top.EncoderNumber = 4;
             this.encMilling_Top.ErrorBackAddress = "M887";
             this.encMilling_Top.ErrorForwardAddress = "M886";
-            // Pneumatic drawing: Y33/Y34, 5/3 closed centre (P18); up sensor SN62 (X54) + encoder X4/X5.
-            this.encMilling_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.encMilling_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encMilling_Top.Location = new System.Drawing.Point(16, 186);
+            this.encMilling_Top.Name = "encMilling_Top";
+            this.encMilling_Top.PositionAddress = "D14";
+            this.encMilling_Top.PositionDecimalPlaces = 1;
+            this.encMilling_Top.PositionDivisor = 10D;
+            this.encMilling_Top.ReferenceAddress = "D511";
+            this.encMilling_Top.Size = new System.Drawing.Size(926, 40);
+            this.encMilling_Top.TabIndex = 8;
+            this.encMilling_Top.TitleTextKey = "Milling Top";
+            this.encMilling_Top.UnclampingIntervalAddress = "D53";
+            this.encMilling_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encMilling_Cutting_Left_Front
             // 
-            // Milling-Cutting Left Front: encoder 5 - M653 / M652, position D20; reference D512, measuring tolerance -, minimum limit -, unclamping interval D52.
             this.encMilling_Cutting_Left_Front.BackColor = System.Drawing.Color.White;
-            this.encMilling_Cutting_Left_Front.Name = "encMilling_Cutting_Left_Front";
-            this.encMilling_Cutting_Left_Front.PlcNumber = 1;
-            this.encMilling_Cutting_Left_Front.EncoderNumber = 5;
-            this.encMilling_Cutting_Left_Front.TitleTextKey = "Milling-Cutting Left Front";
-            this.encMilling_Cutting_Left_Front.Location = new System.Drawing.Point(16, 230);
-            this.encMilling_Cutting_Left_Front.Size = new System.Drawing.Size(910, 40);
+            this.encMilling_Cutting_Left_Front.BackSensorAddress = "M227";
             this.encMilling_Cutting_Left_Front.CommandBackAddress = "M653";
             this.encMilling_Cutting_Left_Front.CommandForwardAddress = "M652";
-            this.encMilling_Cutting_Left_Front.BackSensorAddress = "M227";
-            this.encMilling_Cutting_Left_Front.ForwardSensorAddress = "M243";
-            this.encMilling_Cutting_Left_Front.PositionAddress = "D20";
-            this.encMilling_Cutting_Left_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encMilling_Cutting_Left_Front.PositionDivisor = 10D;
-            this.encMilling_Cutting_Left_Front.PositionDecimalPlaces = 1;
-            this.encMilling_Cutting_Left_Front.ReferenceAddress = "D512";
-            this.encMilling_Cutting_Left_Front.UnclampingIntervalAddress = "D52";
-            this.encMilling_Cutting_Left_Front.Divisor = 10D;
             this.encMilling_Cutting_Left_Front.DecimalPlaces = 1;
-            this.encMilling_Cutting_Left_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encMilling_Cutting_Left_Front.Divisor = 10D;
+            this.encMilling_Cutting_Left_Front.EncoderNumber = 5;
             this.encMilling_Cutting_Left_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+            this.encMilling_Cutting_Left_Front.ForwardSensorAddress = "M243";
+            this.encMilling_Cutting_Left_Front.Location = new System.Drawing.Point(16, 230);
+            this.encMilling_Cutting_Left_Front.Name = "encMilling_Cutting_Left_Front";
+            this.encMilling_Cutting_Left_Front.PositionAddress = "D20";
+            this.encMilling_Cutting_Left_Front.PositionDecimalPlaces = 1;
+            this.encMilling_Cutting_Left_Front.PositionDivisor = 10D;
+            this.encMilling_Cutting_Left_Front.ReferenceAddress = "D512";
+            this.encMilling_Cutting_Left_Front.Size = new System.Drawing.Size(926, 40);
+            this.encMilling_Cutting_Left_Front.TabIndex = 9;
+            this.encMilling_Cutting_Left_Front.TitleTextKey = "Milling-Cutting Left Front";
+            this.encMilling_Cutting_Left_Front.UnclampingIntervalAddress = "D52";
             this.encMilling_Cutting_Left_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Left_Top
             // 
-            // Cutting Left Top: encoder 6 - M672 / M671, position D15; reference D513, measuring tolerance -, minimum limit -, unclamping interval D54.
             this.encCutting_Left_Top.BackColor = System.Drawing.Color.White;
-            this.encCutting_Left_Top.Name = "encCutting_Left_Top";
-            this.encCutting_Left_Top.PlcNumber = 1;
-            this.encCutting_Left_Top.EncoderNumber = 6;
-            this.encCutting_Left_Top.TitleTextKey = "Cutting Left Top";
-            this.encCutting_Left_Top.Location = new System.Drawing.Point(16, 274);
-            this.encCutting_Left_Top.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Left_Top.BackSensorAddress = "M245";
             this.encCutting_Left_Top.CommandBackAddress = "M672";
             this.encCutting_Left_Top.CommandForwardAddress = "M671";
-            this.encCutting_Left_Top.BackSensorAddress = "M245";
-            this.encCutting_Left_Top.PositionAddress = "D15";
-            this.encCutting_Left_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encCutting_Left_Top.PositionDivisor = 10D;
-            this.encCutting_Left_Top.PositionDecimalPlaces = 1;
-            this.encCutting_Left_Top.ReferenceAddress = "D513";
-            this.encCutting_Left_Top.UnclampingIntervalAddress = "D54";
-            this.encCutting_Left_Top.Divisor = 10D;
             this.encCutting_Left_Top.DecimalPlaces = 1;
-            this.encCutting_Left_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encCutting_Left_Top.Divisor = 10D;
+            this.encCutting_Left_Top.EncoderNumber = 6;
             this.encCutting_Left_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encCutting_Left_Top.Location = new System.Drawing.Point(16, 274);
+            this.encCutting_Left_Top.Name = "encCutting_Left_Top";
+            this.encCutting_Left_Top.PositionAddress = "D15";
+            this.encCutting_Left_Top.PositionDecimalPlaces = 1;
+            this.encCutting_Left_Top.PositionDivisor = 10D;
+            this.encCutting_Left_Top.ReferenceAddress = "D513";
+            this.encCutting_Left_Top.Size = new System.Drawing.Size(926, 40);
+            this.encCutting_Left_Top.TabIndex = 10;
+            this.encCutting_Left_Top.TitleTextKey = "Cutting Left Top";
+            this.encCutting_Left_Top.UnclampingIntervalAddress = "D54";
             this.encCutting_Left_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Right_Front
             // 
-            // Cutting Right Front: encoder 7 - M655 / M654, position D16; reference D514, measuring tolerance -, minimum limit -, unclamping interval D55.
             this.encCutting_Right_Front.BackColor = System.Drawing.Color.White;
-            this.encCutting_Right_Front.Name = "encCutting_Right_Front";
-            this.encCutting_Right_Front.PlcNumber = 1;
-            this.encCutting_Right_Front.EncoderNumber = 7;
-            this.encCutting_Right_Front.TitleTextKey = "Cutting Right Front";
-            this.encCutting_Right_Front.Location = new System.Drawing.Point(16, 318);
-            this.encCutting_Right_Front.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Right_Front.BackSensorAddress = "M232";
             this.encCutting_Right_Front.CommandBackAddress = "M655";
             this.encCutting_Right_Front.CommandForwardAddress = "M654";
-            this.encCutting_Right_Front.BackSensorAddress = "M232";
-            this.encCutting_Right_Front.PositionAddress = "D16";
-            this.encCutting_Right_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encCutting_Right_Front.PositionDivisor = 10D;
-            this.encCutting_Right_Front.PositionDecimalPlaces = 1;
-            this.encCutting_Right_Front.ReferenceAddress = "D514";
-            this.encCutting_Right_Front.UnclampingIntervalAddress = "D55";
-            this.encCutting_Right_Front.Divisor = 10D;
             this.encCutting_Right_Front.DecimalPlaces = 1;
-            this.encCutting_Right_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encCutting_Right_Front.Divisor = 10D;
+            this.encCutting_Right_Front.EncoderNumber = 7;
             this.encCutting_Right_Front.ErrorBackAddress = "M852";
             this.encCutting_Right_Front.ErrorForwardAddress = "M851";
-            this.encCutting_Right_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
-            // Drawings: Y43/Y44 5/3 closed centre (P22); back sensor SN76 (X60) + encoder X14/X15.
             this.encCutting_Right_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encCutting_Right_Front.Location = new System.Drawing.Point(16, 318);
+            this.encCutting_Right_Front.Name = "encCutting_Right_Front";
+            this.encCutting_Right_Front.PositionAddress = "D16";
+            this.encCutting_Right_Front.PositionDecimalPlaces = 1;
+            this.encCutting_Right_Front.PositionDivisor = 10D;
+            this.encCutting_Right_Front.ReferenceAddress = "D514";
+            this.encCutting_Right_Front.Size = new System.Drawing.Size(926, 40);
+            this.encCutting_Right_Front.TabIndex = 11;
+            this.encCutting_Right_Front.TitleTextKey = "Cutting Right Front";
+            this.encCutting_Right_Front.UnclampingIntervalAddress = "D55";
+            this.encCutting_Right_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encExit_Carrying_Top
             // 
-            // Exit Carrying Top: encoder 8 - M657 / M656, position D17; reference D515, measuring tolerance -, minimum limit -, unclamping interval D56.
             this.encExit_Carrying_Top.BackColor = System.Drawing.Color.White;
-            this.encExit_Carrying_Top.Name = "encExit_Carrying_Top";
-            this.encExit_Carrying_Top.PlcNumber = 1;
-            this.encExit_Carrying_Top.EncoderNumber = 8;
-            this.encExit_Carrying_Top.TitleTextKey = "Exit Carrying Top";
-            this.encExit_Carrying_Top.Location = new System.Drawing.Point(16, 362);
-            this.encExit_Carrying_Top.Size = new System.Drawing.Size(910, 40);
+            this.encExit_Carrying_Top.BackSensorAddress = "M233";
             this.encExit_Carrying_Top.CommandBackAddress = "M657";
             this.encExit_Carrying_Top.CommandForwardAddress = "M656";
-            this.encExit_Carrying_Top.BackSensorAddress = "M233";
-            this.encExit_Carrying_Top.PositionAddress = "D17";
-            this.encExit_Carrying_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encExit_Carrying_Top.PositionDivisor = 10D;
-            this.encExit_Carrying_Top.PositionDecimalPlaces = 1;
-            this.encExit_Carrying_Top.ReferenceAddress = "D515";
-            this.encExit_Carrying_Top.UnclampingIntervalAddress = "D56";
-            this.encExit_Carrying_Top.Divisor = 10D;
             this.encExit_Carrying_Top.DecimalPlaces = 1;
-            this.encExit_Carrying_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encExit_Carrying_Top.Divisor = 10D;
+            this.encExit_Carrying_Top.EncoderNumber = 8;
             this.encExit_Carrying_Top.ErrorBackAddress = "M854";
             this.encExit_Carrying_Top.ErrorForwardAddress = "M840";
-            // Up sensor SN77 (X61) + encoder X16/X17 (Cutting Right Top Clamping).
             this.encExit_Carrying_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.encExit_Carrying_Top.HelpBackFiles = "c# learning structure.png";
             this.encExit_Carrying_Top.HelpForwardFiles = "c# learning structure.png";
-            // Pneumatic drawing: Y45/Y46, 5/3 closed centre (P23).
+            this.encExit_Carrying_Top.Location = new System.Drawing.Point(16, 362);
+            this.encExit_Carrying_Top.Name = "encExit_Carrying_Top";
+            this.encExit_Carrying_Top.PositionAddress = "D17";
+            this.encExit_Carrying_Top.PositionDecimalPlaces = 1;
+            this.encExit_Carrying_Top.PositionDivisor = 10D;
+            this.encExit_Carrying_Top.ReferenceAddress = "D515";
+            this.encExit_Carrying_Top.Size = new System.Drawing.Size(926, 40);
+            this.encExit_Carrying_Top.TabIndex = 12;
+            this.encExit_Carrying_Top.TitleTextKey = "Exit Carrying Top";
+            this.encExit_Carrying_Top.UnclampingIntervalAddress = "D56";
             this.encExit_Carrying_Top.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             // 
             // encCutting_Front_Right_Vertical
             // 
-            // Cutting Front Right Vertical: encoder 9 - M659 / M658, position D7; reference D517, measuring tolerance -, minimum limit -, unclamping interval D64.
             this.encCutting_Front_Right_Vertical.BackColor = System.Drawing.Color.White;
-            this.encCutting_Front_Right_Vertical.Name = "encCutting_Front_Right_Vertical";
-            this.encCutting_Front_Right_Vertical.PlcNumber = 1;
-            this.encCutting_Front_Right_Vertical.EncoderNumber = 9;
-            this.encCutting_Front_Right_Vertical.TitleTextKey = "Cutting Front Right Vertical";
-            this.encCutting_Front_Right_Vertical.Location = new System.Drawing.Point(16, 406);
-            this.encCutting_Front_Right_Vertical.Size = new System.Drawing.Size(910, 40);
+            this.encCutting_Front_Right_Vertical.BackSensorAddress = "M246";
             this.encCutting_Front_Right_Vertical.CommandBackAddress = "M659";
             this.encCutting_Front_Right_Vertical.CommandForwardAddress = "M658";
-            this.encCutting_Front_Right_Vertical.BackSensorAddress = "M246";
-            this.encCutting_Front_Right_Vertical.PositionAddress = "D7";
-            this.encCutting_Front_Right_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encCutting_Front_Right_Vertical.PositionDivisor = 10D;
-            this.encCutting_Front_Right_Vertical.PositionDecimalPlaces = 1;
-            this.encCutting_Front_Right_Vertical.ReferenceAddress = "D517";
-            this.encCutting_Front_Right_Vertical.UnclampingIntervalAddress = "D64";
-            this.encCutting_Front_Right_Vertical.Divisor = 10D;
             this.encCutting_Front_Right_Vertical.DecimalPlaces = 1;
-            this.encCutting_Front_Right_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.encCutting_Front_Right_Vertical.Divisor = 10D;
+            this.encCutting_Front_Right_Vertical.EncoderNumber = 9;
             this.encCutting_Front_Right_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
+            this.encCutting_Front_Right_Vertical.Location = new System.Drawing.Point(16, 406);
+            this.encCutting_Front_Right_Vertical.Name = "encCutting_Front_Right_Vertical";
+            this.encCutting_Front_Right_Vertical.PositionAddress = "D7";
+            this.encCutting_Front_Right_Vertical.PositionDecimalPlaces = 1;
+            this.encCutting_Front_Right_Vertical.PositionDivisor = 10D;
+            this.encCutting_Front_Right_Vertical.ReferenceAddress = "D517";
+            this.encCutting_Front_Right_Vertical.Size = new System.Drawing.Size(926, 40);
+            this.encCutting_Front_Right_Vertical.TabIndex = 13;
+            this.encCutting_Front_Right_Vertical.TitleTextKey = "Cutting Front Right Vertical";
+            this.encCutting_Front_Right_Vertical.UnclampingIntervalAddress = "D64";
             this.encCutting_Front_Right_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // encLeft_Profile_Recognition_Front
             // 
-            // Left Profile Recognition Front: encoder 10 - M696 / M689, position D4; reference D546, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encLeft_Profile_Recognition_Front.BackColor = System.Drawing.Color.White;
-            this.encLeft_Profile_Recognition_Front.Name = "encLeft_Profile_Recognition_Front";
-            this.encLeft_Profile_Recognition_Front.PlcNumber = 1;
-            this.encLeft_Profile_Recognition_Front.EncoderNumber = 10;
-            this.encLeft_Profile_Recognition_Front.TitleTextKey = "Left Profile Recognition Front";
-            this.encLeft_Profile_Recognition_Front.Location = new System.Drawing.Point(16, 450);
-            this.encLeft_Profile_Recognition_Front.Size = new System.Drawing.Size(910, 40);
+            this.encLeft_Profile_Recognition_Front.BackSensorAddress = "M213";
             this.encLeft_Profile_Recognition_Front.CommandBackAddress = "M696";
             this.encLeft_Profile_Recognition_Front.CommandForwardAddress = "M689";
-            this.encLeft_Profile_Recognition_Front.BackSensorAddress = "M213";
-            this.encLeft_Profile_Recognition_Front.ForwardSensorAddress = "M220";
-            this.encLeft_Profile_Recognition_Front.PositionAddress = "D4";
-            this.encLeft_Profile_Recognition_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encLeft_Profile_Recognition_Front.PositionDivisor = 10D;
-            this.encLeft_Profile_Recognition_Front.PositionDecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Front.ReferenceAddress = "D546";
-            this.encLeft_Profile_Recognition_Front.Divisor = 10D;
             this.encLeft_Profile_Recognition_Front.DecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.encLeft_Profile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
-            this.encLeft_Profile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.encLeft_Profile_Recognition_Front.Divisor = 10D;
+            this.encLeft_Profile_Recognition_Front.EncoderNumber = 10;
             this.encLeft_Profile_Recognition_Front.ErrorBackAddress = "M875";
             this.encLeft_Profile_Recognition_Front.ErrorForwardAddress = "M874";
+            this.encLeft_Profile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
+            this.encLeft_Profile_Recognition_Front.ForwardSensorAddress = "M220";
+            this.encLeft_Profile_Recognition_Front.Location = new System.Drawing.Point(16, 450);
+            this.encLeft_Profile_Recognition_Front.Name = "encLeft_Profile_Recognition_Front";
+            this.encLeft_Profile_Recognition_Front.PositionAddress = "D4";
+            this.encLeft_Profile_Recognition_Front.PositionDecimalPlaces = 1;
+            this.encLeft_Profile_Recognition_Front.PositionDivisor = 10D;
+            this.encLeft_Profile_Recognition_Front.ReferenceAddress = "D546";
+            this.encLeft_Profile_Recognition_Front.Size = new System.Drawing.Size(926, 40);
+            this.encLeft_Profile_Recognition_Front.TabIndex = 14;
+            this.encLeft_Profile_Recognition_Front.TitleTextKey = "Left Profile Recognition Front";
+            this.encLeft_Profile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // encLeft_Profile_Recognition_Top
             // 
-            // Left Profile Recognition Top: encoder 11 - M741 / M740, position D6; reference D547, measuring tolerance -, minimum limit -, unclamping interval -.
             this.encLeft_Profile_Recognition_Top.BackColor = System.Drawing.Color.White;
-            this.encLeft_Profile_Recognition_Top.Name = "encLeft_Profile_Recognition_Top";
-            this.encLeft_Profile_Recognition_Top.PlcNumber = 1;
-            this.encLeft_Profile_Recognition_Top.EncoderNumber = 11;
-            this.encLeft_Profile_Recognition_Top.TitleTextKey = "Left Profile Recognition Top";
-            this.encLeft_Profile_Recognition_Top.Location = new System.Drawing.Point(16, 494);
-            this.encLeft_Profile_Recognition_Top.Size = new System.Drawing.Size(910, 40);
+            this.encLeft_Profile_Recognition_Top.BackSensorAddress = "M345";
             this.encLeft_Profile_Recognition_Top.CommandBackAddress = "M741";
             this.encLeft_Profile_Recognition_Top.CommandForwardAddress = "M740";
-            this.encLeft_Profile_Recognition_Top.BackSensorAddress = "M345";
-            this.encLeft_Profile_Recognition_Top.PositionAddress = "D6";
-            this.encLeft_Profile_Recognition_Top.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.encLeft_Profile_Recognition_Top.PositionDivisor = 10D;
-            this.encLeft_Profile_Recognition_Top.PositionDecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Top.ReferenceAddress = "D547";
-            this.encLeft_Profile_Recognition_Top.Divisor = 10D;
             this.encLeft_Profile_Recognition_Top.DecimalPlaces = 1;
-            this.encLeft_Profile_Recognition_Top.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.encLeft_Profile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
-            this.encLeft_Profile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.encLeft_Profile_Recognition_Top.Divisor = 10D;
+            this.encLeft_Profile_Recognition_Top.EncoderNumber = 11;
             this.encLeft_Profile_Recognition_Top.ErrorBackAddress = "M905";
             this.encLeft_Profile_Recognition_Top.ErrorForwardAddress = "M904";
+            this.encLeft_Profile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encLeft_Profile_Recognition_Top.Location = new System.Drawing.Point(16, 494);
+            this.encLeft_Profile_Recognition_Top.Name = "encLeft_Profile_Recognition_Top";
+            this.encLeft_Profile_Recognition_Top.PositionAddress = "D6";
+            this.encLeft_Profile_Recognition_Top.PositionDecimalPlaces = 1;
+            this.encLeft_Profile_Recognition_Top.PositionDivisor = 10D;
+            this.encLeft_Profile_Recognition_Top.ReferenceAddress = "D547";
+            this.encLeft_Profile_Recognition_Top.Size = new System.Drawing.Size(926, 40);
+            this.encLeft_Profile_Recognition_Top.TabIndex = 15;
+            this.encLeft_Profile_Recognition_Top.TitleTextKey = "Left Profile Recognition Top";
+            this.encLeft_Profile_Recognition_Top.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             // 
             // ParamEncoders
             // 
-            // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
-            // auto-scaling container (the tab host), which would scale them twice.
-            // The layout is in absolute pixels anyway.
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
@@ -422,9 +386,9 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.encLeft_Profile_Recognition_Front);
             this.Controls.Add(this.encLeft_Profile_Recognition_Top);
             this.Name = "ParamEncoders";
-            this.Size = new System.Drawing.Size(942, 546);
+            this.Size = new System.Drawing.Size(1285, 778);
             this.ResumeLayout(false);
-            this.PerformLayout();
+
         }
 
         #endregion
