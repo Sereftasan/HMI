@@ -319,9 +319,9 @@ namespace Kaban.UI.Controls
         public string ComparedAddress { get; set; } = "";
 
         /// <summary>
-        /// The compared value's own divisor - a load-side encoder read by the PLC
-        /// counts in its own unit (FA2010's Robot X: 0.001 mm against the module's
-        /// 0.0001 mm, 15 October). 0: this value's Divisor.
+        /// The compared value's own divisor - a load-side encoder read by the PLC may
+        /// count in its own unit (15 October; usually the PLC scales it to the
+        /// module's count, and this is the same). 0: this value's Divisor.
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public double ComparedDivisor { get; set; }

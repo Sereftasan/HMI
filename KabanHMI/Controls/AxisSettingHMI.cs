@@ -116,18 +116,39 @@ namespace Kaban.UI.Controls
          Description("The load-side encoder's value (read by the PLC itself, in its own count). Shown in the position's tooltip with the difference, in the axis's unit to its last count.")]
         public string LoadSideEncoderAddress { get; set; }
 
-        /// <summary>
-        /// The load-side encoder's raw-to-display divisor - its own count, not the
-        /// motion module's (FA2010's Robot X: D22 in 0.001 mm, the old Encoders page's
-        /// 1000, while the position is in 0.0001 mm). 0: the row's Divisor.
-        /// </summary>
-        [Category(" Load Side Encoder"), DefaultValue(0D),
-         Description("Raw-to-display divisor of the load-side encoder's value only (the PLC's count, e.g. 1000 for 0.001 mm). 0: the row's Divisor.")]
-        public double LoadSideEncoderDivisor { get; set; }
+        private double? _loadSideEncoderDivisor;
 
-        /// <summary>What the load-side encoder's value is divided by: LoadSideEncoderDivisor, or the row's Divisor.</summary>
+        /// <summary>
+        /// The load-side encoder's raw-to-display divisor, when the PLC counts it
+        /// differently from the motion module. Usually it does not: the PLC multiplies
+        /// the encoder's value to the module's count for its own calculations (FA2010's
+        /// Robot X: D22 / 10000, as W0). So until it is set it IS the row's Divisor -
+        /// shown so in the Properties window (not bold), not written into the page, and
+        /// following the Divisor when that changes (15 October: "get its value from
+        /// Divisor when it is null, so the user wouldn't have to enter it again").
+        /// Right-click > Reset, or 0, goes back to that.
+        /// </summary>
+        [Category(" Load Side Encoder"),
+         Description("Raw-to-display divisor of the load-side encoder's value. Not set: the row's Divisor (the usual case - the PLC scales the encoder to the axis's count). Reset or 0: back to the Divisor.")]
+        public double LoadSideEncoderDivisor
+        {
+            get { return _loadSideEncoderDivisor ?? PositionScale; }
+            set { _loadSideEncoderDivisor = value > 0 ? value : (double?)null; }
+        }
+
+        /// <summary>The designer writes the encoder's divisor only when one was set (not the Divisor it follows).</summary>
+        public bool ShouldSerializeLoadSideEncoderDivisor() { return _loadSideEncoderDivisor.HasValue; }
+
+        /// <summary>Back to following the row's Divisor (the Properties window's Reset).</summary>
+        public void ResetLoadSideEncoderDivisor() { _loadSideEncoderDivisor = null; }
+
+        /// <summary>True when the encoder has a divisor of its own (not the row's Divisor).</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public double LoadSideEncoderScale { get { return LoadSideEncoderDivisor > 0 ? LoadSideEncoderDivisor : PositionScale; } }
+        public bool HasOwnLoadSideEncoderDivisor { get { return _loadSideEncoderDivisor.HasValue; } }
+
+        /// <summary>What the load-side encoder's value is divided by.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public double LoadSideEncoderScale { get { return LoadSideEncoderDivisor > 0 ? LoadSideEncoderDivisor : 1; } }
 
         /// <summary>Kept so older designer files compile; forwards to LoadSideEncoderAddress.</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

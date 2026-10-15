@@ -160,11 +160,11 @@ class CET {
         Console.WriteLine("--- Robot X: the old Robot Position (D22) in its position's tooltip ---");
         var robot = Page("Manual", "ManualRobot");
         var robotX = robot.Controls.OfType<AxisUnitHMI>().First(a => a.AxisNumber == 1);
-        // 15 October: D22 is read by the PLC itself, in 0.001 mm (the old Encoders page's / 1000) - its own divisor,
-        // the position W0 the row's (10000)
+        // 15 October: D22 is read by the PLC itself, which scales it to the module's count - its divisor is the
+        // row's (10000, as W0), taken from the Divisor, not entered again
         var rx = AlarmHelpLinks.FindAxis(1, 1);
-        Check("the axis row's load-side encoder D22 / 1000 (Bin_32, as W0 / 10000)", rx.LoadSideEncoder == "D22" && rx.LoadSideEncoderDivisor == 1000 &&
-              rx.Divisor == 10000 && robotX.Unit.PositionDisplay.ComparedAddress == "D22" && robotX.Unit.PositionDisplay.ComparedDivisor == 1000 &&
+        Check("the axis row's load-side encoder D22 / 10000 - the row's Divisor (Bin_32, as W0)", rx.LoadSideEncoder == "D22" && rx.LoadSideEncoderDivisor == 10000 &&
+              rx.Divisor == 10000 && robotX.Unit.PositionDisplay.ComparedAddress == "D22" && robotX.Unit.PositionDisplay.ComparedDivisor == 10000 &&
               robotX.Unit.PositionDisplay.Divisor == 10000,
               robotX.Unit.PositionDisplay.ComparedAddress + " / " + robotX.Unit.PositionDisplay.ComparedDivisor + ", " + rx.Divisor);
 

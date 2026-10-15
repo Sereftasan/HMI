@@ -250,7 +250,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.HMIAxisIndex = 1;
             this.axRobot_X.HomeRequestAddress = "m100";
             this.axRobot_X.LoadSideEncoderAddress = "D22";
-            this.axRobot_X.LoadSideEncoderDivisor = 1000D;
             this.axRobot_X.Location = new System.Drawing.Point(0, 76);
             this.axRobot_X.MaxLimitAddress = "D312";
             this.axRobot_X.MinLimitAddress = "D314";

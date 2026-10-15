@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -110,9 +111,28 @@ class AR {
         Check("  8184899 (0.001 mm) reads 8184.8990 mm - to the finer one's last count", ll3[0].EndsWith("\t8184.8990 mm"), ll3[0]);
         Check("  against the position's 8184.9000 mm: +0.0010 mm", ll3.Length > 1 && ll3[1].EndsWith("\t+0.0010 mm"), ll3.Length > 1 ? ll3[1] : "");
         Check("  the position itself as before: 8184.90 mm", lp3.Text == "8184.90 mm", lp3.Text);
-        Check("no divisor of its own (0): the row's", new AxisSettingHMI { Divisor = 10000 }.LoadSideEncoderScale == 10000 &&
-              new AxisSettingHMI { Divisor = 10000, LoadSideEncoderDivisor = 1000 }.LoadSideEncoderScale == 1000 &&
-              new AxisSettingHMI { Divisor = 100000, LoadSideEncoderDivisor = 1000 }.PositionScale == 100000);
+        Check("a divisor of its own does not change the position's", new AxisSettingHMI { Divisor = 100000, LoadSideEncoderDivisor = 1000 }.PositionScale == 100000);
+
+        // 15 October: "make LoadSideEncoderDivisor get its value from Divisor when it is null, so the user
+        // wouldn't have to enter it again when they are the same"
+        Console.WriteLine("--- the encoder's divisor follows the Divisor until it is set ---");
+        var fol = new AxisSettingHMI { Divisor = 10000 };
+        var lsd = TypeDescriptor.GetProperties(fol)["LoadSideEncoderDivisor"];
+        Check("not set: it reads the Divisor (10000) - not written into the page, not bold",
+              fol.LoadSideEncoderDivisor == 10000 && fol.LoadSideEncoderScale == 10000 && !lsd.ShouldSerializeValue(fol) && !fol.HasOwnLoadSideEncoderDivisor);
+        fol.Divisor = 100000;
+        Check("  and follows it when the Divisor changes (100000)", fol.LoadSideEncoderDivisor == 100000, fol.LoadSideEncoderDivisor.ToString());
+        fol.LoadSideEncoderDivisor = 1000;
+        Check("set: its own (1000), written into the page", fol.LoadSideEncoderDivisor == 1000 && lsd.ShouldSerializeValue(fol) && fol.Divisor == 100000);
+        Check("  the Properties window can reset it", lsd.CanResetValue(fol));
+        lsd.ResetValue(fol);
+        Check("  reset: the Divisor again", fol.LoadSideEncoderDivisor == 100000 && !lsd.ShouldSerializeValue(fol), fol.LoadSideEncoderDivisor.ToString());
+        fol.LoadSideEncoderDivisor = 1000; fol.LoadSideEncoderDivisor = 0;
+        Check("  0: the Divisor again", fol.LoadSideEncoderDivisor == 100000 && !fol.HasOwnLoadSideEncoderDivisor);
+        var flr = Full("Axis_RobotX", "real");
+        flr.BuildRow();
+        Check("a row with an encoder and no divisor of its own: the tooltip divides it by the Divisor",
+              flr.Controls.OfType<NumericDisplayHMI>().Single().ComparedDivisor == flr.Divisor);
 
         Console.WriteLine("--- travel per revolution and backlash ---");
         Check("none given: no fields, no columns", !col.ContainsKey("TravelPerRev") && !col.ContainsKey("Backlash") &&
