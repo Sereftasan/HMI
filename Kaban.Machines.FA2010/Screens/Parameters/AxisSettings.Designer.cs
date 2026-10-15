@@ -311,7 +311,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.PlcNumber = 1;
             this.axRobot_Y.PositionAddress = "WB0";
             this.axRobot_Y.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-            this.axRobot_Y.PositionDivisor = 1000D;
+            this.axRobot_Y.PositionDivisor = 10000D;
             this.axRobot_Y.ReferenceAddress = "D310";
             this.axRobot_Y.ReferenceSensorAddress = "M341";
             this.axRobot_Y.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;

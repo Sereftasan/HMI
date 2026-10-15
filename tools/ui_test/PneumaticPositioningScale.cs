@@ -67,9 +67,6 @@ class PPS {
         Shot("moulds_on.png", fw, fh);
 
         Func<SystemCondition, bool> off = c => ((long)c & (1L << 19)) == 0;
-        // (14 October: the page as saved in Visual Studio has no condition on its back moulds - asked; given here)
-        foreach (var r in rows.Where(r => (r.TitleTextKey ?? "").Contains("Back")))
-            if (r.VisibilityConditions == SystemCondition.None) r.VisibilityConditions = (SystemCondition)(1L << 19);
         foreach (var r in rows) r.UpdateState(a => 0, off);
         Pump(200);
         var shown = rows.Where(r => r.Visible).OrderBy(r => r.Top).ToList();

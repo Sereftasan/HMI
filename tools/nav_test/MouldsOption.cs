@@ -62,10 +62,12 @@ class MO {
         m("MountMachines").Invoke(null, null);
         var sim = new Dictionary<int, Kaban.Drivers.Simulation.SimulationDriver>();
         foreach (int st in new[] { 1, 2, 3, 4 }) { sim[st] = new Kaban.Drivers.Simulation.SimulationDriver(st); PlcManager.Instance.RegisterDriver(st, sim[st]); }
-        // 14 October: the option as the user registered it - "Clamping Mould Option", L27 Equal 0 (met while L27 is 0):
-        // OFF is the value that does not meet it
+        // the option: met while L27 is ON - the back moulds hidden while it is 0 (15 October, the user)
         var opt = MachineConditionMap.GetAllMachineBits().First(kv => kv.Value.Name == "Clamping Mould Option");
-        int offValue = opt.Value.RequiredValue == 0 ? 1 : 0, onValue = opt.Value.RequiredValue;
+        Check("the Clamping Mould option is FA2010's condition 1 << 19, met while L27 = 1",
+              opt.Key == (1L << 19) && opt.Value.Address == "L27" && opt.Value.Operator == ComparisonOperator.Equal && opt.Value.RequiredValue == 1,
+              opt.Key + " " + opt.Value.Address + " " + opt.Value.Operator + " " + opt.Value.RequiredValue);
+        int offValue = 0, onValue = 1;
         sim[1].Write("L27", offValue);
         SecurityManager.Login("op", SecurityLevel.Operator);
         var form = new MainForm();
@@ -84,9 +86,10 @@ class MO {
         Check("the page is open", page != null && page.Visible);
         if (page == null) { Environment.Exit(1); return; }
         var rows = PneumaticPositioningHMI.RowsOf(page);
-        // (the page as saved in Visual Studio has no condition on its back moulds - asked; given here)
-        foreach (var r in rows.Where(r => r.TitleTextKey.Contains("Back") && r.VisibilityConditions == SystemCondition.None))
-            r.VisibilityConditions = (SystemCondition)opt.Key;
+        Check("the page's 10 back moulds carry the option's condition, the front ones none",
+              rows.Count(r => r.TitleTextKey.Contains("Back")) == 10 &&
+              rows.All(r => r.VisibilityConditions == (r.TitleTextKey.Contains("Back") ? (SystemCondition)opt.Key : SystemCondition.None)),
+              string.Join(", ", rows.Where(r => r.TitleTextKey.Contains("Back") != (r.VisibilityConditions != SystemCondition.None)).Select(r => r.Name)));
         // the places the designer gave the rows (the scanner may have moved them already)
         var places = rows.Select(r => r.Location).OrderBy(p => p.Y).ToList();
         Func<List<PneumaticPositioningHMI>> shown = () => rows.Where(r => r.Visible).OrderBy(r => r.Top).ToList();

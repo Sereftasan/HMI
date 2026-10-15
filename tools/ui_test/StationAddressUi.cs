@@ -55,9 +55,7 @@ class SAU {
               pr.BackSensorAddress == "X12@2" && row("Cutting Left Back Horizontal").BackSensorAddress == "X13@2" &&
               row("Cutting Right Back Horizontal").BackSensorAddress == "X14@2" && pr.PlcNumber == 1);
         Check("  their manual movement's one lamp: the reference (EncoderPlusReference) - nothing left open",
-              // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked; its lamp is right)
-              pr.Unit.TypeCheck == "OK" && (row("Cutting Left Back Horizontal").Unit.TypeCheck == "OK" ||
-                                            row("Cutting Left Back Horizontal").Unit.TypeCheck.StartsWith("ValveType is not set")),
+              pr.Unit.TypeCheck == "OK" && row("Cutting Left Back Horizontal").Unit.TypeCheck == "OK",
               pr.Unit.TypeCheck + " / " + row("Cutting Left Back Horizontal").Unit.TypeCheck);
 
         Console.WriteLine("--- read in PLC 2's batch ---");

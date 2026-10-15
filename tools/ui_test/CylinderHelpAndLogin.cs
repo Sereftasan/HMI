@@ -187,8 +187,7 @@ class CH {
             { typed++; valves.Add(u.ValveType); byName[name + "/" + u.TitleTextKey] = u; }
         }
         // 30 September: every cylinder the drawings show (tools/set_cylinder_types.py).
-        // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked: 42 until then)
-        Check("every drawn cylinder carries its valve and feedback type (43 with Profile Clamping 3), every valve among them", (typed == 43 || typed == 42) && valves.Count == 3, typed + " units, " + valves.Count + " valves");
+        Check("every drawn cylinder carries its valve and feedback type (43 with Profile Clamping 3), every valve among them", typed == 43 && valves.Count == 3, typed + " units, " + valves.Count + " valves");
         Func<string, CylinderValve, CylinderFeedback, bool> asDrawn = (key, v, f) =>
             byName.ContainsKey(key) && byName[key].ValveType == v && byName[key].FeedbackType == f && byName[key].TypeCheck == "OK";
         Check("Milling Top Clamping as drawn: 5/3 (Y33/Y34), up sensor + encoder",
@@ -215,7 +214,7 @@ class CH {
         Check("every other typed unit's wiring suits its types (two left open for a decision)",
               open.Count == expectedOpen.Length && expectedOpen.All(open.Contains), string.Join(" | ", open));
         Check("  the back horizontal moulds with an encoder as drawn now: their reference sensor on PLC 2",
-              new[] { "Profile Recognition Back Horizontal", "Cutting Right Back Horizontal" }
+              new[] { "Profile Recognition Back Horizontal", "Cutting Left Back Horizontal", "Cutting Right Back Horizontal" }
                   .All(n => asDrawn("ManualClamping_Moulds/" + n, CylinderValve.ThreeWayClosedCenter, CylinderFeedback.EncoderPlusReference) &&
                             byName["ManualClamping_Moulds/" + n].Lamp1AAddress.EndsWith("@2")));
         foreach (var pg in pagesBuilt) pg.Dispose();

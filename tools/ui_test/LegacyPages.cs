@@ -188,10 +188,9 @@ class LP {
         Check("16 moulds, the last the Right Front Vertical Clamping (M585/M584, D128)", All(moulds).OfType<PneumaticPositioningHMI>().Count() == 16 &&
               Find<PneumaticPositioningHMI>(moulds, "ppRight_Front_Vertical_Clamping").CommandBackAddress == "M585");
         Check("the Cutting/Exit small clampings are not moulds", !All(moulds).OfType<CylinderUnitHMI>().Any(u => u.CommandAAddress == "M699" || u.CommandAAddress == "M701"));
-        // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked)
         var noValve = All(moulds).OfType<PneumaticPositioningHMI>().Where(r => r.ValveType != CylinderValve.ThreeWayClosedCenter).Select(r => r.Name).ToList();
         Check("the old valve and feedback of each mould kept", All(moulds).OfType<PneumaticPositioningHMI>().All(r => r.FeedbackType != CylinderFeedback.Unspecified) &&
-              noValve.All(n => n == "ppCutting_Left_Back_Horizontal"), string.Join(",", noValve));
+              noValve.Count == 0, string.Join(",", noValve));
 
         Console.WriteLine("--- YZ Cross Rollers: the machine's three ---");
         var yz = Page("ManualYZ_Cross_Rollers");
@@ -263,7 +262,7 @@ class LP {
         // (14 October: the user set the positions' divisors - 10000 for the mm axes, 100000 for the angles)
         var scales = string.Join(",", rows.Select(r => r.HMIAxisIndex + ":" + r.PositionScale));
         Check("positions divided as the user set them: 10000 (mm), 100000 (angles)",
-              rows.Where(r => r.Divisor == 10000 && r != vcx).All(r => r.PositionScale == 10000 || r.PositionScale == 1000) &&
+              rows.Where(r => r.Divisor == 10000 && r != vcx).All(r => r.PositionScale == 10000) &&
               rows.Where(r => r.Divisor == 100000).All(r => r.PositionScale == 100000), scales);
         var send = Find<ButtonHMI>(axes, "btnSend_Axes_To_Reference");
         Check("'Send Axes to Reference' (M22, SET) below the rows", send != null && Bits(send) == "M22:SET" && send.Top > rows.Last().Bottom);

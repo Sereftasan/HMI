@@ -104,9 +104,10 @@ namespace Kaban.Machines.FA2010
             // moulds - vertical and horizontal - are fitted only with it (9 October).
             // ALLOCATED LAST: the bits before it keep their numbers (a page stores the
             // number of the condition it uses - this one is 1 << 19 on FA2010).
+            // Met while L27 is ON: the back moulds are hidden while it is 0 (15 October).
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("ClampingMouldOption"),
                 ctx.Scoped("ClampingMouldOption"), "Clamping Mould Option", plc1, "L27",
-                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("MullionNotchingOption"),
                 ctx.Scoped("MullionNotchingOption"), "Mullion Notching Option", plc1, "L5",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);

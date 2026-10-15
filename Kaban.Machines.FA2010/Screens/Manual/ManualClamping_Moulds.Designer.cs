@@ -158,6 +158,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppLeft_Profile_Recognition_Back_Vertical.TitleTextKey = "Left Profile Recognition Back Vertical";
             this.ppLeft_Profile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.ppLeft_Profile_Recognition_Back_Vertical.VerticalMovement = true;
+            this.ppLeft_Profile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppLeft_Profile_Recognition_Back_Horizontal
             // 
@@ -183,6 +184,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppLeft_Profile_Recognition_Back_Horizontal.TargetPosition = "D152";
             this.ppLeft_Profile_Recognition_Back_Horizontal.TitleTextKey = "Left Profile Recognition Back Horizontal";
             this.ppLeft_Profile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppConveyor_Front_Vertical
             // 
@@ -233,6 +235,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppConveyor_Back_Vertical.TitleTextKey = "Conveyor Back Vertical";
             this.ppConveyor_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.ppConveyor_Back_Vertical.VerticalMovement = true;
+            this.ppConveyor_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppConveyor_Back_Horizontal
             // 
@@ -257,6 +260,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppConveyor_Back_Horizontal.TargetPosition = "D155";
             this.ppConveyor_Back_Horizontal.TitleTextKey = "Conveyor Back Horizontal";
             this.ppConveyor_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppConveyor_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppProfile_Recognition_Front_Vertical
             // 
@@ -307,6 +311,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Back_Vertical.TitleTextKey = "Profile Recognition Back Vertical";
             this.ppProfile_Recognition_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.ppProfile_Recognition_Back_Vertical.VerticalMovement = true;
+            this.ppProfile_Recognition_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppProfile_Recognition_Back_Horizontal
             // 
@@ -332,6 +337,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Back_Horizontal.TargetPosition = "D158";
             this.ppProfile_Recognition_Back_Horizontal.TitleTextKey = "Profile Recognition Back Horizontal";
             this.ppProfile_Recognition_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppProfile_Recognition_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppCutting_Left_Front_Vertical
             // 
@@ -384,6 +390,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Back_Vertical.TitleTextKey = "Cutting Left Back Vertical";
             this.ppCutting_Left_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.ppCutting_Left_Back_Vertical.VerticalMovement = true;
+            this.ppCutting_Left_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppCutting_Left_Back_Horizontal
             // 
@@ -409,6 +416,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Back_Horizontal.TabIndex = 16;
             this.ppCutting_Left_Back_Horizontal.TargetPosition = "D161";
             this.ppCutting_Left_Back_Horizontal.TitleTextKey = "Cutting Left Back Horizontal";
+            this.ppCutting_Left_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Left_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppCutting_Right_Front_Vertical
             // 
@@ -459,6 +468,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Back_Vertical.TitleTextKey = "Cutting Right Back Vertical";
             this.ppCutting_Right_Back_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
             this.ppCutting_Right_Back_Vertical.VerticalMovement = true;
+            this.ppCutting_Right_Back_Vertical.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppCutting_Right_Back_Horizontal
             // 
@@ -484,6 +494,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Back_Horizontal.TargetPosition = "D164";
             this.ppCutting_Right_Back_Horizontal.TitleTextKey = "Cutting Right Back Horizontal";
             this.ppCutting_Right_Back_Horizontal.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+            this.ppCutting_Right_Back_Horizontal.VisibilityConditions = ((Kaban.Core.Enums.SystemCondition)(524288L));
             // 
             // ppRight_Front_Vertical_Clamping
             // 

@@ -93,8 +93,7 @@ class CS {
         // Left for a decision (REVIEW 4r) until 8 October: three units whose titles were not
         // what their bits drive. The old program's pages settled it - one unit, the
         // Mullion End Milling Unit on Cutting, drives the mullion milling unit.
-        // (14 October: the user's save left Cutting Left Back Horizontal's valve unset - asked)
-        var undecided = new[] { "ManualClamping_Moulds.ppCutting_Left_Back_Horizontal" };
+        var undecided = new string[0];
         var mullion = units.Where(k => new[] { WiringTable.OutputFor(1, k.Value.CommandAAddress), WiringTable.OutputFor(1, k.Value.CommandBAddress) }
                                            .Any(o => o != null && o.Text.StartsWith("Mullion Milling Unit"))).Select(k => k.Key).ToList();
         Check("one unit drives the mullion milling unit, titled so (Cutting's Mullion End Milling Unit)",
