@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 15 October (answers to the 14 October questions):
+  - 61372f4 - Clamping Moulds: the back moulds hidden again while the Clamping Mould option (L27) is 0 - the rule is
+    "L27 Equal 1" again and the 10 back rows carry its condition; Cutting Left Back Horizontal: the 5/3 closed-centre
+    valve again; Robot Y's position divisor 10000.
+  - 8962266 - Inverter fault help checked against your FR-A800 PDF: E.PE6 is 172, E.ECA 212 (their texts as printed),
+    E.SCF (output short-circuit, 20) added, E.EHR removed (an Ethernet model's fault, not in this manual). Each fault
+    links its page of the manual, in the Help folder's copy and online. The PDF stays out of git (23 MB).
 - 14 October (the Axis Settings page broken, two screenshots):
   - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
   - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
