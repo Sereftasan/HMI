@@ -19,6 +19,8 @@ Claude reads this file at the start of every batch, does the items, and moves ea
   - 3179458 - Conditions put on a page in Visual Studio (the Options page's "SystemCondition.1048576" errors): a
     machine's conditions are named in the enum now (MachineBit16 ... MachineBit63), so the designer writes them as code
     that compiles and reads them back.
+  - 1ab2298 - "Could not find type 'Kaban.Machines.FA2010.Screens.Shared.AxisJogBar'": the bar is in a library of its own
+    (Kaban.Machines.FA2010.Shared) - Visual Studio cannot load a control from the 32-bit machine program.
 - 14 October (the Axis Settings page broken, two screenshots):
   - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
   - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
