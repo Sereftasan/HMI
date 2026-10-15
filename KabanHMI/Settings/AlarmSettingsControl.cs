@@ -101,11 +101,12 @@ namespace Kaban.UI.Settings
             _genAxes = new CheckBox
             {
                 Name = "GenerationAxes", AutoSize = true, Checked = gen.AxisAlarms, Margin = new Padding(3, 3, 18, 0),
-                Text = LanguageManager.GetString("Set_AlarmGenAxes", "The HMI raises the axis alarms itself")
+                Text = LanguageManager.GetString("Set_AlarmGenAxes", "The HMI raises the axis and inverter alarms itself")
             };
             Kaban.UI.Controls.UiStyle.SetTip(tips, _genAxes, LanguageManager.GetString("Tip_AlarmGenAxes",
                 "On: an axis row raises its alarm as soon as its Axis Alarm or Servo Alarm shows a code other than 0 (no delay) - " +
-                "its Axis Warning is only a warning. The PLC's own alarm for the same axis is then not listed twice."));
+                "its Axis Warning is only a warning. An inverter's unit raises its alarm as soon as its fault code is not 0. " +
+                "The PLC's own alarm for the same axis or inverter is then not listed twice."));
             var delayLabel = new Label
             {
                 AutoSize = true, Margin = new Padding(3, 6, 3, 0),

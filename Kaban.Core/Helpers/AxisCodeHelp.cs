@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,7 +19,14 @@ namespace Kaban.Core.Helpers
         /// <summary>[Md.23] Axis error No. of the Simple Motion module, "1904H".</summary>
         AxisError = 2,
         /// <summary>[Md.24] Axis warning No. of the Simple Motion module, "0900H".</summary>
-        AxisWarning = 3
+        AxisWarning = 3,
+        /// <summary>
+        /// An inverter's fault: the DATA CODE its fault is read as (FR-A800 manual,
+        /// 6.4 "List of fault displays"), in decimal - 16 is E.OC1 (H10). Answered by
+        /// Inverter_Fault_Codes.html (6.5 "Causes and corrective actions"), with the
+        /// whole manual after it (InverterUnitHMI, 14 October).
+        /// </summary>
+        InverterFault = 4
     }
 
     /// <summary>
@@ -50,6 +58,16 @@ namespace Kaban.Core.Helpers
         public const string ServoAlarmDocument = "Servo_Alarm_Codes.html";
         public const string AxisErrorDocument = "Axis_Error_Codes.html";
         public const string AxisWarningDocument = "Axis_Warning_Codes.html";
+        public const string InverterFaultDocument = "Inverter_Fault_Codes.html";
+
+        /// <summary>
+        /// The inverter's whole manual, the second entry of an inverter fault's help
+        /// (14 October: "give the whole document as the second helper element, so there
+        /// is one helper at least even when the code is not found on the list"): the PDF
+        /// when it is in the Help folder, the manufacturer's link otherwise.
+        /// </summary>
+        public const string InverterManualFile = "FR-A800_Instruction_Manual.pdf";
+        public const string InverterManualUrl = "https://dl.mitsubishielectric.com/dl/fa/document/manual/inv/ib0600503eng/ib0600503engn.pdf";
 
         /// <summary>The document answering a kind of code ("" for None).</summary>
         public static string DocumentFor(AxisCodeKind kind)
@@ -59,8 +77,24 @@ namespace Kaban.Core.Helpers
                 case AxisCodeKind.ServoAlarm: return ServoAlarmDocument;
                 case AxisCodeKind.AxisError: return AxisErrorDocument;
                 case AxisCodeKind.AxisWarning: return AxisWarningDocument;
+                case AxisCodeKind.InverterFault: return InverterFaultDocument;
                 default: return "";
             }
+        }
+
+        /// <summary>
+        /// The whole manual behind a kind of code, as a help entry - the inverter's
+        /// (the local PDF, else the link to it); null for the axis codes, whose manuals
+        /// their alarms list already (TroubleshootingCatalog.DocumentForType).
+        /// </summary>
+        public static TroubleshootingCatalog.HelpDocument ManualDocument(AxisCodeKind kind, string unit = "")
+        {
+            if (kind != AxisCodeKind.InverterFault) return null;
+            var title = LanguageManager.GetString("Hlp_InverterManual", "Inverter manual (FR-A800)") +
+                        (string.IsNullOrEmpty(unit) ? "" : " - " + unit);
+            var local = new TroubleshootingCatalog.HelpDocument { FileName = InverterManualFile, Title = title };
+            if (local.Exists) return local;
+            return new TroubleshootingCatalog.HelpDocument { FileName = InverterManualUrl, Title = title };
         }
 
         /// <summary>
@@ -76,6 +110,8 @@ namespace Kaban.Core.Helpers
         {
             if (raw == 0) return "";
             if (raw < 0) return "-";
+            // the inverter's data code as the manual's table gives it: decimal
+            if (kind == AxisCodeKind.InverterFault) return (raw & 0xFFFF).ToString(CultureInfo.InvariantCulture);
             if (kind == AxisCodeKind.AxisError || kind == AxisCodeKind.AxisWarning)
                 return (raw & 0xFFFF).ToString("X4") + "H";
             string hex = raw.ToString("X");
@@ -87,6 +123,7 @@ namespace Kaban.Core.Helpers
         public static string Key(AxisCodeKind kind, int raw)
         {
             if (raw <= 0) return "";
+            if (kind == AxisCodeKind.InverterFault) return (raw & 0xFFFF).ToString(CultureInfo.InvariantCulture);
             if (kind == AxisCodeKind.AxisError || kind == AxisCodeKind.AxisWarning)
                 return (raw & 0xFFFF).ToString("X4");
             // The alarm number is two digits on the display: 0x0E61 is E6.1.
@@ -109,6 +146,7 @@ namespace Kaban.Core.Helpers
                 case AxisCodeKind.ServoAlarm: return LanguageManager.GetString("Code_ServoAlarm", "Servo alarm");
                 case AxisCodeKind.AxisError: return LanguageManager.GetString("Code_AxisAlarm", "Axis alarm");
                 case AxisCodeKind.AxisWarning: return LanguageManager.GetString("Code_AxisWarning", "Axis warning");
+                case AxisCodeKind.InverterFault: return LanguageManager.GetString("Code_InverterFault", "Inverter fault");
                 default: return "";
             }
         }
@@ -217,11 +255,28 @@ namespace Kaban.Core.Helpers
             return e != null && e.IsWarning;
         }
 
-        /// <summary>"Servo alarm 16.3 - Encoder initial communication - Receive data error 3".</summary>
+        /// <summary>
+        /// The inverter's own name for a fault, as its panel shows it ("E.OC1"), or the
+        /// data code when the document does not list it.
+        /// </summary>
+        public static string Display(AxisCodeKind kind, int raw)
+        {
+            if (kind != AxisCodeKind.InverterFault) return Format(kind, raw);
+            var e = Find(kind, raw);
+            return e != null && e.Alarm.Length > 0 ? e.Alarm : Format(kind, raw);
+        }
+
+        /// <summary>"Servo alarm 16.3 - Encoder initial communication - Receive data error 3"; "Inverter fault E.OC1 (16) - Overcurrent trip during acceleration".</summary>
         public static string Describe(AxisCodeKind kind, int raw)
         {
             var e = Find(kind, raw);
             var text = Caption(kind) + " " + Format(kind, raw);
+            if (kind == AxisCodeKind.InverterFault)
+            {
+                text = Caption(kind) + " " + (e != null && e.Alarm.Length > 0 ? e.Alarm + " (" + Format(kind, raw) + ")" : Format(kind, raw));
+                if (e != null && e.Name.Length > 0) text += " - " + e.Name;
+                return text;
+            }
             if (e != null)
             {
                 // A servo detail missing from the manual is named by its ALARM:

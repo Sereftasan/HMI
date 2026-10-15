@@ -34,7 +34,7 @@ namespace Kaban.UI.Design
         /// <summary>Every category, in page-building order. A control uses the ones it has.</summary>
         public static readonly string[] CategoryOrder =
         {
-            "Valve & Feedback", "Device", "Encoder", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
+            "Valve & Feedback", "Inverter", "Device", "Encoder", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
             "Target position", "Calibration", "Positioning tolerance", "Direction ref",
             "Reference", "Measuring tolerance", "Minimum limit", "Unclamping interval", "Value", "Settings",
             "Commands", "Display", "Input", "Formula", "State", "Meters", "Bands", "Diagnostics", "Parts",
@@ -205,7 +205,26 @@ namespace Kaban.UI.Design
                 C("Parts", "ButtonA", "ButtonB", "Arrows"),
                 C("Conditions", "VisibilityConditions", "EnableConditions"),
                 C("Security", "RequiredSecurity", "ConfirmationNeeded", "LogAction")),
+
+            // An inverter's motor (14 October): its fault code first - it is what the unit is for.
+            ["InverterUnitHMI"] = L(
+                C("Inverter", "FaultCodeAddress", "ErrorAddress", "RunLampAddress", "RunLampTipKey"),
+                C("Device", "PlcNumber", "BaseOffset"),
+                C("Unit", "TitleTextKey", "TitleTipKey"),
+                C("Action A", InverterSide("A")),
+                C("Action B", InverterSide("B")),
+                C("Value", "PositionAddress", "PositionDataType", "PositionDivisor", "PositionDecimalPlaces", "PositionDigits",
+                           "PositionSuffix", "PositionUnitType", "PositionOffset", "PositionStyle", "PositionTipKey"),
+                C("Parts", "ButtonA", "ButtonB", "Arrows"),
+                C("Conditions", "VisibilityConditions", "EnableConditions"),
+                C("Security", "RequiredSecurity", "ConfirmationNeeded", "LogAction")),
         };
+
+        /// <summary>A motor's button: no error bit of its own (the inverter's is ErrorAddress).</summary>
+        private static string[] InverterSide(string s)
+        {
+            return Side(s).Where(p => !p.StartsWith("Error", StringComparison.Ordinal)).ToArray();
+        }
 
         private static string[] Side(string s)
         {

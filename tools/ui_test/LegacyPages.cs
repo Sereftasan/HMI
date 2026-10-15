@@ -74,8 +74,9 @@ class LP {
             Check("  every axis unit finds its row on Axis Parameters", lost.Count == 0, string.Join(",", lost));
             var lostEnc = All(page).OfType<CylinderEncoderUnitHMI>().Where(a => !a.IsResolved).Select(a => a.Name + " #" + a.EncoderNumber).ToList();
             Check("  every encoder unit finds its row on Encoders", lostEnc.Count == 0, string.Join(",", lostEnc));
+            // (an inverter's unit shows its motor's value there - a speed, not a position: 14 October)
             var stray = All(page).OfType<CylinderUnitHMI>().Where(u => !(u.Parent is AxisUnitHMI) && !(u.Parent is CylinderEncoderUnitHMI) && !(u.Parent is CylinderRowHMI) &&
-                                                                        !string.IsNullOrEmpty(u.PositionAddress)).Select(u => u.Name).ToList();
+                                                                        !(u is InverterUnitHMI) && !string.IsNullOrEmpty(u.PositionAddress)).Select(u => u.Name).ToList();
             Check("  no cylinder unit reads a position itself (an encoder's, a pneumatic positioning's)", stray.Count == 0, string.Join(",", stray));
         }
 
@@ -91,11 +92,15 @@ class LP {
         Check("Profile Clamping 7: encoder 10 (Left Profile Recognition Front) - its encoder D4 in 0.1 mm, release M696, clamp M689, its title kept",
               pc7e.EncoderNumber == 10 && pc7.PositionAddress == "D4" && pc7.PositionDivisor == 10 && pc7.PositionDecimalPlaces == 1 &&
               pc7.CommandAAddress == "M696" && pc7.CommandBAddress == "M689" && pc7.TitleTextKey == "Profile Clamping 7");
-        var inv = Find<NumericDisplayHMI>(entry, "dispConveyor_Inverter_Error");
-        Check("the inverter's error in hexadecimal, as the old page showed it", inv != null && inv.Address == "D666" && inv.DataFormat == DisplayFormatEnum.Hexadecimal);
-        Check("the rows in the old page's order", entry.Controls.Cast<Control>().Where(c => c.Left < 380 && c.Name.Length > 0).OrderBy(c => c.Top).Select(c => c.Name).Take(5).SequenceEqual(
-              new[] { "unitConveyor_Motor", "lampConveyor_Motor_Run", "dispConveyor_Inverter_Error", "lampConveyor_Limit_SN", "unitProfile_Clampings" }),
-              string.Join(",", entry.Controls.Cast<Control>().Where(c => c.Left < 380 && c.Name.Length > 0).OrderBy(c => c.Top).Select(c => c.Name).Take(5)));
+        // 14 October: the motor, its run lamp and its inverter's error - one InverterUnitHMI
+        var inv = Find<InverterUnitHMI>(entry, "unitConveyor_Motor");
+        Check("the conveyor motor is an inverter's unit: its fault code D666 (not shown), its run lamp M203, its alarm bit M827",
+              inv != null && inv.FaultCodeAddress == "D666" && inv.RunLampAddress == "M203" && inv.ErrorAddress == "M827" &&
+              inv.CommandAAddress == "M640" && inv.CommandBAddress == "M639" && inv.Lamp1BAddress == "M221");
+        Check("  no error display, no lamp of its own beside it", Find<Control>(entry, "dispConveyor_Inverter_Error") == null && Find<Control>(entry, "lampConveyor_Motor_Run") == null);
+        Check("the rows in the old page's order", entry.Controls.Cast<Control>().Where(c => c.Left < 380 && c.Name.Length > 0).OrderBy(c => c.Top).Select(c => c.Name).Take(3).SequenceEqual(
+              new[] { "unitConveyor_Motor", "lampConveyor_Limit_SN", "unitProfile_Clamping_1" }),
+              string.Join(",", entry.Controls.Cast<Control>().Where(c => c.Left < 380 && c.Name.Length > 0).OrderBy(c => c.Top).Select(c => c.Name).Take(3)));
 
         Console.WriteLine("--- Robot ---");
         var robot = Page("ManualRobot");
@@ -128,8 +133,10 @@ class LP {
               drills != null && string.Join(",", drills.Controls.OfType<ButtonHMI>().OrderBy(b => b.Left).Select(Bits)) == "M176:SET,M177:SET,M178:SET,M179:SET");
         var deg = Find<GroupBoxHMI>(milling, "grpUnit_2_Change_Degree");
         Check("Unit 2's Change Degree: 0/90/180/270 on M677-M680", deg != null && string.Join(",", deg.Controls.OfType<ButtonHMI>().OrderBy(b => b.Left).Select(b => b.BitActions[0].Address)) == "M677,M678,M679,M680");
-        var motor = Find<NumericDisplayHMI>(milling, "btnUnit_1_Milling_Motor_Value");
-        Check("the milling motor's value D18 with its two implied decimals", motor != null && motor.Address == "D18" && motor.Divisor == 100 && motor.DecimalPlaces == 2);
+        var motor = Find<InverterUnitHMI>(milling, "unitUnit_1_Milling_Motor");
+        Check("the milling motor (an inverter's unit, 14 October): M649 toggled, its lamp M230, its value D18 with its two implied decimals, fault D667",
+              motor != null && motor.CommandAAddress == "M649" && motor.CommandAAction == BitActionType.Alternate && motor.Lamp1AAddress == "M230" &&
+              motor.PositionAddress == "D18" && motor.PositionDivisor == 100 && motor.PositionDecimalPlaces == 2 && motor.FaultCodeAddress == "D667");
         Check("no 'Front Height Setting' (M748/M747 is the Mullion End Milling Unit now)", Find<Control>(milling, "unitFront_Height_Setting") == null);
 
         Console.WriteLine("--- Cutting ---");
@@ -141,8 +148,9 @@ class LP {
         Check("V Cutting Z's reference sensor M259 (it lit the Exit Robot's M258)", vz.Unit.Lamp1BAddress == "M259");
         var hap = Find<ButtonHMI>(cutting, "btnHigh_Air_Pressure");
         Check("Cutting's High Air Pressure is momentary there (milling's toggles)", Bits(hap) == "M651:Momentary" && Bits(Find<ButtonHMI>(milling, "btnHigh_Air_Pressure")) == "M716:Alternate");
-        var saw = Find<ButtonHMI>(cutting, "btnSaw_Motor");
-        Check("the saw motor has no lamp (M235 is the foil roll's sensor)", Bits(saw) == "M636:Alternate" && string.IsNullOrEmpty(saw.Lamp1Address));
+        var saw = Find<InverterUnitHMI>(cutting, "unitSaw_Motor");
+        Check("the saw motor (an inverter's unit) has no lamp (M235 is the foil roll's sensor)", saw != null && saw.CommandAAddress == "M636" &&
+              saw.CommandAAction == BitActionType.Alternate && string.IsNullOrEmpty(saw.Lamp1AAddress) && saw.FaultCodeAddress == "D669");
         Check("'Cutting' and 'V Cutting' headings", Find<LabelHMI>(cutting, "lblCutting") != null && Find<LabelHMI>(cutting, "lblV_Cutting") != null);
         var mull = Find<CylinderUnitHMI>(cutting, "unitMullion_End_Milling_Unit");
         Check("Mullion End Milling Unit: down M748 with SN106 (M271), up M747 with SN105 (M270), 5/2 with a sensor at each end",

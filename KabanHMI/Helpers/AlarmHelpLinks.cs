@@ -51,6 +51,9 @@ namespace Kaban.UI.Helpers
             /// </summary>
             public string ServoAlarm = "", AxisAlarm = "", AxisWarning = "";
 
+            /// <summary>An inverter's fault code word (InverterUnitHMI): its entry first, the manual after it.</summary>
+            public string InverterFault = "";
+
             /// <summary>
             /// A cylinder's error bit is one side's: the movement it reports and
             /// that movement's devices, named at the top of the tailored manual.
@@ -73,7 +76,7 @@ namespace Kaban.UI.Helpers
 
             public bool HasCodes
             {
-                get { return ServoAlarm.Length > 0 || AxisAlarm.Length > 0 || AxisWarning.Length > 0; }
+                get { return ServoAlarm.Length > 0 || AxisAlarm.Length > 0 || AxisWarning.Length > 0 || (InverterFault ?? "").Length > 0; }
             }
         }
 
@@ -333,6 +336,14 @@ namespace Kaban.UI.Helpers
         private static void HarvestUnit(CylinderUnitHMI unit)
         {
             foreach (var l in unit.HelpLinks()) Register(l);
+            // an inverter: its fault code word, for the alarm the HMI raises itself
+            var inverter = unit as InverterUnitHMI;
+            if (inverter != null)
+            {
+                try { AlarmGeneration.Register(inverter.BuildInverterWatch()); }
+                catch (Exception ex) { AuditLogger.Log("alarm generation skipped inverter '" + unit.Name + "': " + ex.Message); }
+                return;
+            }
             SimulationMotion.Register(unit);
             // its movements, for the alarms the HMI raises itself
             try { AlarmGeneration.Register(unit.BuildWatch()); }
@@ -531,6 +542,13 @@ namespace Kaban.UI.Helpers
             if (steps != null) docs.Add(steps);
             var code = AlarmGeneration.CodeDocumentFor(item);
             if (code != null) docs.Add(code);
+            // an inverter's fault: the whole manual second, even for a code the list does not have
+            var inverter = AlarmGeneration.InverterOf(item);
+            if (inverter != null)
+            {
+                var manual = AxisCodeHelp.ManualDocument(AxisCodeKind.InverterFault, inverter.Name);
+                if (manual != null) docs.Add(manual);
+            }
             var def = string.IsNullOrEmpty(item.BaseCode) ? null : AlarmManager.FindByCode(item.BaseCode);
             foreach (var d in DocumentsFor(item.Station, item.Address, def != null ? def.HelperKeys : null))
             {
@@ -538,7 +556,9 @@ namespace Kaban.UI.Helpers
                 if (code != null && !string.IsNullOrEmpty(d.Code)) continue;   // the code's entry is first already
                 docs.Add(d);
             }
-            return docs.Where(d => d.Exists).ToList();
+            // one entry per plain file (the inverter's manual is offered by its unit's link too)
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            return docs.Where(d => d.Exists && (d.StepByStep || !string.IsNullOrEmpty(d.Code) || d.Movement != null || seen.Add(d.FileName))).ToList();
         }
 
         public static List<TC.HelpDocument> DocumentsFor(int station, string address, IEnumerable<string> helperFiles)
@@ -551,6 +571,13 @@ namespace Kaban.UI.Helpers
             // the answer to this fault, not the manual it is somewhere in.
             if (link != null && link.HasCodes)
                 docs.AddRange(CodeDocuments(link));
+
+            // An inverter: its whole manual next - there even when the code is not in the list.
+            if (link != null && link.Kind == TC.ErrorType.InverterMotor)
+            {
+                var manual = AxisCodeHelp.ManualDocument(AxisCodeKind.InverterFault, link.Unit);
+                if (manual != null) docs.Add(manual);
+            }
 
             string file;
             if (link != null && TC.DocumentForType.TryGetValue(link.Kind, out file) && !string.IsNullOrEmpty(file))
@@ -631,7 +658,8 @@ namespace Kaban.UI.Helpers
             {
                 new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.ServoAlarm, link.ServoAlarm),
                 new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.AxisError, link.AxisAlarm),
-                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.AxisWarning, link.AxisWarning)
+                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.AxisWarning, link.AxisWarning),
+                new KeyValuePair<AxisCodeKind, string>(AxisCodeKind.InverterFault, link.InverterFault ?? "")
             })
             {
                 if (string.IsNullOrWhiteSpace(kv.Value)) continue;

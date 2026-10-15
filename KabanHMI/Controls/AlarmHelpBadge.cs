@@ -97,6 +97,24 @@ namespace Kaban.UI.Controls
             add(AxisCodeKind.AxisWarning, axisWarning);
         }
 
+        /// <summary>
+        /// Makes this an INVERTER's "?" (InverterUnitHMI): shown while its fault code
+        /// word is not zero, with the code's entry of Inverter_Fault_Codes and then the
+        /// whole manual. Empty returns the badge to the error bit.
+        /// </summary>
+        public void SetInverterCode(string faultCode)
+        {
+            _codes.Clear();
+            if (!string.IsNullOrWhiteSpace(faultCode))
+                _codes.Add(new CodeWord { Kind = AxisCodeKind.InverterFault, Address = faultCode.Trim() });
+        }
+
+        /// <summary>The value of the inverter's fault code word now (0: none, or not an inverter's badge).</summary>
+        public int InverterCode
+        {
+            get { var c = _codes.FirstOrDefault(x => x.Kind == AxisCodeKind.InverterFault); return c == null ? 0 : c.Value; }
+        }
+
         /// <summary>True when the "?" follows code words (an axis), not the error bit.</summary>
         public bool UsesCodeWords { get { return _codes.Count > 0; } }
 
@@ -238,9 +256,11 @@ namespace Kaban.UI.Controls
                 if (v != c.Value) { c.Value = v; codesChanged = true; }
             }
             bool any = _codes.Any(c => c.Value != 0);
+            // an inverter's alarm bit with no code to show (not read yet, or 0): its "?" still offers the manual
+            if (!any && error && _codes.Any(c => c.Kind == AxisCodeKind.InverterFault)) any = true;
             // Looked up only when a code CHANGES, not on every 100 ms scan.
             bool warningOnly = codesChanged
-                ? any && _codes.Where(c => c.Value != 0).All(c => AxisCodeHelp.IsWarning(c.Kind, c.Value))
+                ? any && _codes.Any(c => c.Value != 0) && _codes.Where(c => c.Value != 0).All(c => AxisCodeHelp.IsWarning(c.Kind, c.Value))
                 : _warningOnly;
             bool warnChanged = warningOnly != _warningOnly;
             Set(any, error, warningOnly);
@@ -293,6 +313,12 @@ namespace Kaban.UI.Controls
             if (_codes.Count > 0)
             {
                 text = string.Join("\r\n", _codes.Where(c => c.Value != 0).Select(c => AxisCodeHelp.Describe(c.Kind, c.Value)));
+                if (text.Length == 0 && _error)
+                {
+                    // an inverter's alarm bit without a code: the alarm's name
+                    var bit = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
+                    text = bit != null ? LanguageManager.GetString(bit.TranslationKey, bit.AlarmCode) : "";
+                }
             }
             else if (GeneratedItem != null)
             {
@@ -385,10 +411,19 @@ namespace Kaban.UI.Controls
         public List<TroubleshootingCatalog.HelpDocument> Documents()
         {
             if (_codes.Count > 0)
-                return _codes.Where(c => c.Value != 0)
-                             // No axis name in the entry: the "?" is on that axis's own unit.
-                             .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, ""))
-                             .Where(d => d != null).ToList();
+            {
+                var list = _codes.Where(c => c.Value != 0)
+                                 // No axis name in the entry: the "?" is on that axis's own unit.
+                                 .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, ""))
+                                 .Where(d => d != null).ToList();
+                // an inverter's: the whole manual second - there even for a code the list does not have
+                if (_codes.Any(c => c.Kind == AxisCodeKind.InverterFault) && (_error || _codes.Any(c => c.Value != 0)))
+                {
+                    var manual = AxisCodeHelp.ManualDocument(AxisCodeKind.InverterFault);
+                    if (manual != null) list.Add(manual);
+                }
+                return list;
+            }
             var def = AlarmManager.FindByStationAndAddress(PlcNumber, Address);
             return AlarmHelpLinks.DocumentsFor(PlcNumber, Address, def != null ? def.HelperKeys : null);
         }

@@ -24,7 +24,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction2 = new Kaban.Core.Models.BitAction();
             this.unitRobot_Top_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRobot_Top_Small_Clamping = new Kaban.UI.Controls.CylinderUnitHMI();
@@ -32,8 +31,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitProfile_Ejection = new Kaban.UI.Controls.CylinderUnitHMI();
             this.unitShort_Profile_Support = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.btnConveyor_Motor = new Kaban.UI.Controls.ButtonHMI();
-            this.dispConveyor_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitConveyor_Motor = new Kaban.UI.Controls.InverterUnitHMI();
             this.lampSawdust_Conveyor_Thermic = new Kaban.UI.Controls.LampHMI();
             this.btnSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
             this.axisJogBar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
@@ -344,112 +342,25 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitShort_Profile_Support.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // btnConveyor_Motor
+            // unitConveyor_Motor
             // 
-            this.btnConveyor_Motor.ActiveBackColor = System.Drawing.Color.White;
-            this.btnConveyor_Motor.AlertBlink = false;
-            this.btnConveyor_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
-            bitAction1.Address = "M660";
-            bitAction1.AddressOffset.StaticValue = 0D;
-            bitAction1.AddressOffset.TagAddress = "";
-            bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnConveyor_Motor.BitActions.Add(bitAction1);
-            this.btnConveyor_Motor.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
-            this.btnConveyor_Motor.ButtonText = "Conveyor Motor";
-            this.btnConveyor_Motor.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.btnConveyor_Motor.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
-            this.btnConveyor_Motor.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnConveyor_Motor.ConfirmationAddress = "";
-            this.btnConveyor_Motor.ConfirmationNeeded = false;
-            this.btnConveyor_Motor.ConfirmationText = "";
-            this.btnConveyor_Motor.ConfirmationTextKey = "";
-            this.btnConveyor_Motor.CornerRadius = 4;
-            this.btnConveyor_Motor.DescriptionText = "";
-            this.btnConveyor_Motor.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
-            this.btnConveyor_Motor.DisplayAddress = null;
-            this.btnConveyor_Motor.DisplayOffset.StaticValue = 0D;
-            this.btnConveyor_Motor.DisplayOffset.TagAddress = "";
-            this.btnConveyor_Motor.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnConveyor_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.btnConveyor_Motor.EnableTrigger.DescriptionKey = "";
-            this.btnConveyor_Motor.EnableTrigger.MonitorAddress = "";
-            this.btnConveyor_Motor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.btnConveyor_Motor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnConveyor_Motor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnConveyor_Motor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.btnConveyor_Motor.EnableTrigger.ValA = 0D;
-            this.btnConveyor_Motor.EnableTrigger.ValB = 0D;
-            this.btnConveyor_Motor.ErrorAddress = "";
-            this.btnConveyor_Motor.FallbackText = "Conveyor Motor";
-            this.btnConveyor_Motor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnConveyor_Motor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnConveyor_Motor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConveyor_Motor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnConveyor_Motor.ForeColor = System.Drawing.Color.Black;
-            this.btnConveyor_Motor.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
-            this.btnConveyor_Motor.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
-            this.btnConveyor_Motor.ImageActive = null;
-            this.btnConveyor_Motor.ImagePassive = null;
-            this.btnConveyor_Motor.IsActivePage = false;
-            this.btnConveyor_Motor.Lamp1Address = "M243";
-            this.btnConveyor_Motor.Lamp1Tip = "";
-            this.btnConveyor_Motor.Lamp2Address = "";
-            this.btnConveyor_Motor.Lamp2Tip = "";
-            this.btnConveyor_Motor.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnConveyor_Motor.Location = new System.Drawing.Point(14, 541);
-            this.btnConveyor_Motor.LogAction = true;
-            this.btnConveyor_Motor.Name = "btnConveyor_Motor";
-            this.btnConveyor_Motor.OutputAddress = "";
-            this.btnConveyor_Motor.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
-            this.btnConveyor_Motor.PlcNumber = 1;
-            this.btnConveyor_Motor.RelayAddress = "";
-            this.btnConveyor_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.btnConveyor_Motor.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
-            this.btnConveyor_Motor.RoundLeftOnly = false;
-            this.btnConveyor_Motor.RoundRightOnly = false;
-            this.btnConveyor_Motor.ShowCaption = true;
-            this.btnConveyor_Motor.Size = new System.Drawing.Size(360, 40);
-            this.btnConveyor_Motor.TabIndex = 6;
-            this.btnConveyor_Motor.ToolTipText = "";
-            this.btnConveyor_Motor.TranslationKey = "Conveyor Motor";
-            this.btnConveyor_Motor.UseVisualStyleBackColor = false;
-            this.btnConveyor_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            // 
-            // dispConveyor_Inverter_Error
-            // 
-            this.dispConveyor_Inverter_Error.Address = "D671";
-            this.dispConveyor_Inverter_Error.AddressOffset.StaticValue = 0D;
-            this.dispConveyor_Inverter_Error.AddressOffset.TagAddress = "";
-            this.dispConveyor_Inverter_Error.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.dispConveyor_Inverter_Error.BackColor = System.Drawing.Color.Gainsboro;
-            this.dispConveyor_Inverter_Error.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dispConveyor_Inverter_Error.CornerRadius = 4;
-            this.dispConveyor_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-            this.dispConveyor_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.dispConveyor_Inverter_Error.DecimalPlaces = 0;
-            this.dispConveyor_Inverter_Error.DescriptionColon = true;
-            this.dispConveyor_Inverter_Error.DescriptionText = "Conveyor Inverter Error";
-            this.dispConveyor_Inverter_Error.Digits = 4;
-            this.dispConveyor_Inverter_Error.Divisor = 1D;
-            this.dispConveyor_Inverter_Error.FillZero = false;
-            this.dispConveyor_Inverter_Error.IsEditing = false;
-            this.dispConveyor_Inverter_Error.Location = new System.Drawing.Point(264, 591);
-            this.dispConveyor_Inverter_Error.LogAction = false;
-            this.dispConveyor_Inverter_Error.Name = "dispConveyor_Inverter_Error";
-            this.dispConveyor_Inverter_Error.PlcNumber = 1;
-            this.dispConveyor_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
-            this.dispConveyor_Inverter_Error.ShowSuffix = true;
-            this.dispConveyor_Inverter_Error.ShowValueBorder = true;
-            this.dispConveyor_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-            this.dispConveyor_Inverter_Error.Suffix = "";
-            this.dispConveyor_Inverter_Error.TabIndex = 7;
-            this.dispConveyor_Inverter_Error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.dispConveyor_Inverter_Error.ToolTipTextKey = "";
-            this.dispConveyor_Inverter_Error.TranslationKey = "Conveyor Inverter Error";
-            this.dispConveyor_Inverter_Error.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.dispConveyor_Inverter_Error.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
-            this.dispConveyor_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // An inverter's motor (14 October): its fault code D671 is not shown - its alarm and help come from it.
+            this.unitConveyor_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitConveyor_Motor.BackColor = System.Drawing.Color.White;
+            this.unitConveyor_Motor.ButtonATextKey = "Run";
+            this.unitConveyor_Motor.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+            this.unitConveyor_Motor.CommandAAddress = "M660";
+            this.unitConveyor_Motor.ErrorAddress = "M831";
+            this.unitConveyor_Motor.FaultCodeAddress = "D671";
+            this.unitConveyor_Motor.Lamp1AAddress = "M243";
+            this.unitConveyor_Motor.Location = new System.Drawing.Point(14, 541);
+            this.unitConveyor_Motor.LogAction = true;
+            this.unitConveyor_Motor.Name = "unitConveyor_Motor";
+            this.unitConveyor_Motor.PlcNumber = 1;
+            this.unitConveyor_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitConveyor_Motor.Size = new System.Drawing.Size(360, 64);
+            this.unitConveyor_Motor.TabIndex = 6;
+            this.unitConveyor_Motor.TitleTextKey = "Conveyor Motor";
             // 
             // lampSawdust_Conveyor_Thermic
             // 
@@ -463,7 +374,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.lampSawdust_Conveyor_Thermic.DescriptionText = "Sawdust Conveyor Thermic";
             this.lampSawdust_Conveyor_Thermic.ImageActive = null;
             this.lampSawdust_Conveyor_Thermic.ImagePassive = null;
-            this.lampSawdust_Conveyor_Thermic.Location = new System.Drawing.Point(14, 641);
+            this.lampSawdust_Conveyor_Thermic.Location = new System.Drawing.Point(14, 615);
             this.lampSawdust_Conveyor_Thermic.Name = "lampSawdust_Conveyor_Thermic";
             this.lampSawdust_Conveyor_Thermic.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampSawdust_Conveyor_Thermic.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
@@ -527,7 +438,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnSawdust_Blowing.Lamp2Address = "";
             this.btnSawdust_Blowing.Lamp2Tip = "";
             this.btnSawdust_Blowing.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 687);
+            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 661);
             this.btnSawdust_Blowing.LogAction = true;
             this.btnSawdust_Blowing.Name = "btnSawdust_Blowing";
             this.btnSawdust_Blowing.OutputAddress = "";
@@ -565,8 +476,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.Controls.Add(this.unitRoller_Up_Down);
             this.Controls.Add(this.unitProfile_Ejection);
             this.Controls.Add(this.unitShort_Profile_Support);
-            this.Controls.Add(this.btnConveyor_Motor);
-            this.Controls.Add(this.dispConveyor_Inverter_Error);
+            this.Controls.Add(this.unitConveyor_Motor);
             this.Controls.Add(this.lampSawdust_Conveyor_Thermic);
             this.Controls.Add(this.btnSawdust_Blowing);
             this.Name = "ManualExit";
@@ -584,8 +494,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.CylinderUnitHMI unitRoller_Up_Down;
         private Kaban.UI.Controls.CylinderUnitHMI unitProfile_Ejection;
         private Kaban.UI.Controls.CylinderUnitHMI unitShort_Profile_Support;
-        private Kaban.UI.Controls.ButtonHMI btnConveyor_Motor;
-        private Kaban.UI.Controls.NumericDisplayHMI dispConveyor_Inverter_Error;
+        private Kaban.UI.Controls.InverterUnitHMI unitConveyor_Motor;
         private Kaban.UI.Controls.LampHMI lampSawdust_Conveyor_Thermic;
         private Kaban.UI.Controls.ButtonHMI btnSawdust_Blowing;
         private Kaban.Machines.FA2010.Screens.Shared.AxisJogBar axisJogBar;

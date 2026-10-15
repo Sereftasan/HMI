@@ -127,6 +127,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
+    <None Include="..\KabanHMI\Help\Inverter_Fault_Codes.en.html">
+      <Link>Help\Inverter_Fault_Codes.en.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\KabanHMI\Help\FR-A800_Instruction_Manual.pdf" Condition="Exists('..\KabanHMI\Help\FR-A800_Instruction_Manual.pdf')">
+      <Link>Help\FR-A800_Instruction_Manual.pdf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
     <None Include="..\KabanHMI\Help\Axis_Error_Codes.en.html">
       <Link>Help\Axis_Error_Codes.en.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

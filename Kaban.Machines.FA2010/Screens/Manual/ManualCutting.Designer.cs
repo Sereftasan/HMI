@@ -24,10 +24,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
 
         private void InitializeComponent()
         {
-            Kaban.Core.Models.BitAction bitAction10 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction12 = new Kaban.Core.Models.BitAction();
-            Kaban.Core.Models.BitAction bitAction13 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction14 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction15 = new Kaban.Core.Models.BitAction();
             Kaban.Core.Models.BitAction bitAction16 = new Kaban.Core.Models.BitAction();
@@ -39,8 +37,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Cutting_Y = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitV_Cutting_Z = new Kaban.UI.Controls.AxisUnitHMI();
             this.unitV_Cutting_X = new Kaban.UI.Controls.AxisUnitHMI();
-            this.btnV_Cutting_Saw_Motor = new Kaban.UI.Controls.ButtonHMI();
-            this.dispV_Cutting_Saw_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitV_Cutting_Saw_Motor = new Kaban.UI.Controls.InverterUnitHMI();
             this.unitMullion_End_Milling_Unit = new Kaban.UI.Controls.CylinderUnitHMI();
             this.btnMullion_Blade_Change = new Kaban.UI.Controls.ButtonHMI();
             this.unitCutting_Angle = new Kaban.UI.Controls.AxisUnitHMI();
@@ -50,8 +47,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitLeft_Top_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRight_Front_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
             this.unitRight_Front_Vert_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
-            this.btnSaw_Motor = new Kaban.UI.Controls.ButtonHMI();
-            this.dispSaw_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
+            this.unitSaw_Motor = new Kaban.UI.Controls.InverterUnitHMI();
             this.btnSaw_Cooling = new Kaban.UI.Controls.ButtonHMI();
             this.btnLeftOver_Ejection = new Kaban.UI.Controls.ButtonHMI();
             this.btnBlowing = new Kaban.UI.Controls.ButtonHMI();
@@ -72,8 +68,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Y);
             this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Z);
             this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_X);
-            this.groupBoxVCuıtting.Controls.Add(this.btnV_Cutting_Saw_Motor);
-            this.groupBoxVCuıtting.Controls.Add(this.dispV_Cutting_Saw_Inverter_Error);
+            this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Saw_Motor);
             this.groupBoxVCuıtting.Controls.Add(this.unitMullion_End_Milling_Unit);
             this.groupBoxVCuıtting.Controls.Add(this.btnMullion_Blade_Change);
             this.groupBoxVCuıtting.Emoji = "";
@@ -83,7 +78,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.groupBoxVCuıtting.Name = "groupBoxVCuıtting";
             this.groupBoxVCuıtting.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.groupBoxVCuıtting.PlcNumber = 1;
-            this.groupBoxVCuıtting.Size = new System.Drawing.Size(390, 473);
+            this.groupBoxVCuıtting.Size = new System.Drawing.Size(390, 447);
             this.groupBoxVCuıtting.TabIndex = 40;
             this.groupBoxVCuıtting.TitleText = "V Cutting";
             this.groupBoxVCuıtting.TitleTextKey = "V Cutting";
@@ -118,112 +113,23 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitV_Cutting_X.Size = new System.Drawing.Size(360, 64);
             this.unitV_Cutting_X.TabIndex = 28;
             // 
-            // btnV_Cutting_Saw_Motor
+            // unitV_Cutting_Saw_Motor
             // 
-            this.btnV_Cutting_Saw_Motor.ActiveBackColor = System.Drawing.Color.White;
-            this.btnV_Cutting_Saw_Motor.AlertBlink = false;
-            this.btnV_Cutting_Saw_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            bitAction10.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            bitAction10.Address = "M637";
-            bitAction10.AddressOffset.StaticValue = 0D;
-            bitAction10.AddressOffset.TagAddress = "";
-            bitAction10.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnV_Cutting_Saw_Motor.BitActions.Add(bitAction10);
-            this.btnV_Cutting_Saw_Motor.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
-            this.btnV_Cutting_Saw_Motor.ButtonText = "Saw Motor";
-            this.btnV_Cutting_Saw_Motor.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.btnV_Cutting_Saw_Motor.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
-            this.btnV_Cutting_Saw_Motor.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnV_Cutting_Saw_Motor.ConfirmationAddress = "";
-            this.btnV_Cutting_Saw_Motor.ConfirmationNeeded = false;
-            this.btnV_Cutting_Saw_Motor.ConfirmationText = "";
-            this.btnV_Cutting_Saw_Motor.ConfirmationTextKey = "";
-            this.btnV_Cutting_Saw_Motor.CornerRadius = 4;
-            this.btnV_Cutting_Saw_Motor.DescriptionText = "";
-            this.btnV_Cutting_Saw_Motor.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
-            this.btnV_Cutting_Saw_Motor.DisplayAddress = null;
-            this.btnV_Cutting_Saw_Motor.DisplayOffset.StaticValue = 0D;
-            this.btnV_Cutting_Saw_Motor.DisplayOffset.TagAddress = "";
-            this.btnV_Cutting_Saw_Motor.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnV_Cutting_Saw_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.DescriptionKey = "";
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.MonitorAddress = "";
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.ValA = 0D;
-            this.btnV_Cutting_Saw_Motor.EnableTrigger.ValB = 0D;
-            this.btnV_Cutting_Saw_Motor.ErrorAddress = "";
-            this.btnV_Cutting_Saw_Motor.FallbackText = "Saw Motor";
-            this.btnV_Cutting_Saw_Motor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnV_Cutting_Saw_Motor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnV_Cutting_Saw_Motor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnV_Cutting_Saw_Motor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnV_Cutting_Saw_Motor.ForeColor = System.Drawing.Color.Black;
-            this.btnV_Cutting_Saw_Motor.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
-            this.btnV_Cutting_Saw_Motor.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
-            this.btnV_Cutting_Saw_Motor.ImageActive = null;
-            this.btnV_Cutting_Saw_Motor.ImagePassive = null;
-            this.btnV_Cutting_Saw_Motor.IsActivePage = false;
-            this.btnV_Cutting_Saw_Motor.Lamp1Address = "";
-            this.btnV_Cutting_Saw_Motor.Lamp1Tip = "";
-            this.btnV_Cutting_Saw_Motor.Lamp2Address = "";
-            this.btnV_Cutting_Saw_Motor.Lamp2Tip = "";
-            this.btnV_Cutting_Saw_Motor.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnV_Cutting_Saw_Motor.Location = new System.Drawing.Point(13, 247);
-            this.btnV_Cutting_Saw_Motor.LogAction = true;
-            this.btnV_Cutting_Saw_Motor.Name = "btnV_Cutting_Saw_Motor";
-            this.btnV_Cutting_Saw_Motor.OutputAddress = "";
-            this.btnV_Cutting_Saw_Motor.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
-            this.btnV_Cutting_Saw_Motor.PlcNumber = 1;
-            this.btnV_Cutting_Saw_Motor.RelayAddress = "";
-            this.btnV_Cutting_Saw_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.btnV_Cutting_Saw_Motor.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
-            this.btnV_Cutting_Saw_Motor.RoundLeftOnly = false;
-            this.btnV_Cutting_Saw_Motor.RoundRightOnly = false;
-            this.btnV_Cutting_Saw_Motor.ShowCaption = true;
-            this.btnV_Cutting_Saw_Motor.Size = new System.Drawing.Size(360, 40);
-            this.btnV_Cutting_Saw_Motor.TabIndex = 29;
-            this.btnV_Cutting_Saw_Motor.ToolTipText = "";
-            this.btnV_Cutting_Saw_Motor.TranslationKey = "Saw Motor";
-            this.btnV_Cutting_Saw_Motor.UseVisualStyleBackColor = false;
-            this.btnV_Cutting_Saw_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            // 
-            // dispV_Cutting_Saw_Inverter_Error
-            // 
-            this.dispV_Cutting_Saw_Inverter_Error.Address = "D670";
-            this.dispV_Cutting_Saw_Inverter_Error.AddressOffset.StaticValue = 0D;
-            this.dispV_Cutting_Saw_Inverter_Error.AddressOffset.TagAddress = "";
-            this.dispV_Cutting_Saw_Inverter_Error.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.dispV_Cutting_Saw_Inverter_Error.BackColor = System.Drawing.Color.Gainsboro;
-            this.dispV_Cutting_Saw_Inverter_Error.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dispV_Cutting_Saw_Inverter_Error.CornerRadius = 4;
-            this.dispV_Cutting_Saw_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-            this.dispV_Cutting_Saw_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.dispV_Cutting_Saw_Inverter_Error.DecimalPlaces = 0;
-            this.dispV_Cutting_Saw_Inverter_Error.DescriptionColon = true;
-            this.dispV_Cutting_Saw_Inverter_Error.DescriptionText = "Saw Inverter Error";
-            this.dispV_Cutting_Saw_Inverter_Error.Digits = 4;
-            this.dispV_Cutting_Saw_Inverter_Error.Divisor = 1D;
-            this.dispV_Cutting_Saw_Inverter_Error.FillZero = false;
-            this.dispV_Cutting_Saw_Inverter_Error.IsEditing = false;
-            this.dispV_Cutting_Saw_Inverter_Error.Location = new System.Drawing.Point(263, 297);
-            this.dispV_Cutting_Saw_Inverter_Error.LogAction = false;
-            this.dispV_Cutting_Saw_Inverter_Error.Name = "dispV_Cutting_Saw_Inverter_Error";
-            this.dispV_Cutting_Saw_Inverter_Error.PlcNumber = 1;
-            this.dispV_Cutting_Saw_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
-            this.dispV_Cutting_Saw_Inverter_Error.ShowSuffix = true;
-            this.dispV_Cutting_Saw_Inverter_Error.ShowValueBorder = true;
-            this.dispV_Cutting_Saw_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-            this.dispV_Cutting_Saw_Inverter_Error.Suffix = "";
-            this.dispV_Cutting_Saw_Inverter_Error.TabIndex = 30;
-            this.dispV_Cutting_Saw_Inverter_Error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.dispV_Cutting_Saw_Inverter_Error.ToolTipTextKey = "";
-            this.dispV_Cutting_Saw_Inverter_Error.TranslationKey = "Saw Inverter Error";
-            this.dispV_Cutting_Saw_Inverter_Error.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.dispV_Cutting_Saw_Inverter_Error.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
-            this.dispV_Cutting_Saw_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // An inverter's motor (14 October): its fault code D670 is not shown - its alarm and help come from it.
+            this.unitV_Cutting_Saw_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitV_Cutting_Saw_Motor.BackColor = System.Drawing.Color.White;
+            this.unitV_Cutting_Saw_Motor.ButtonATextKey = "Run";
+            this.unitV_Cutting_Saw_Motor.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitV_Cutting_Saw_Motor.CommandAAddress = "M637";
+            this.unitV_Cutting_Saw_Motor.FaultCodeAddress = "D670";
+            this.unitV_Cutting_Saw_Motor.Location = new System.Drawing.Point(13, 247);
+            this.unitV_Cutting_Saw_Motor.LogAction = true;
+            this.unitV_Cutting_Saw_Motor.Name = "unitV_Cutting_Saw_Motor";
+            this.unitV_Cutting_Saw_Motor.PlcNumber = 1;
+            this.unitV_Cutting_Saw_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitV_Cutting_Saw_Motor.Size = new System.Drawing.Size(360, 64);
+            this.unitV_Cutting_Saw_Motor.TabIndex = 29;
+            this.unitV_Cutting_Saw_Motor.TitleTextKey = "Saw Motor";
             // 
             // unitMullion_End_Milling_Unit
             // 
@@ -269,7 +175,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitMullion_End_Milling_Unit.Lamp2ATipKey = "";
             this.unitMullion_End_Milling_Unit.Lamp2BAddress = "";
             this.unitMullion_End_Milling_Unit.Lamp2BTipKey = "";
-            this.unitMullion_End_Milling_Unit.Location = new System.Drawing.Point(13, 347);
+            this.unitMullion_End_Milling_Unit.Location = new System.Drawing.Point(13, 321);
             this.unitMullion_End_Milling_Unit.LogAction = true;
             this.unitMullion_End_Milling_Unit.Name = "unitMullion_End_Milling_Unit";
             this.unitMullion_End_Milling_Unit.OutputAAddress = "";
@@ -349,7 +255,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnMullion_Blade_Change.Lamp2Address = "";
             this.btnMullion_Blade_Change.Lamp2Tip = "";
             this.btnMullion_Blade_Change.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnMullion_Blade_Change.Location = new System.Drawing.Point(13, 421);
+            this.btnMullion_Blade_Change.Location = new System.Drawing.Point(13, 395);
             this.btnMullion_Blade_Change.LogAction = true;
             this.btnMullion_Blade_Change.Name = "btnMullion_Blade_Change";
             this.btnMullion_Blade_Change.OutputAddress = "";
@@ -561,112 +467,24 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRight_Front_Vert_Clamping.TabIndex = 48;
             this.unitRight_Front_Vert_Clamping.TitleTextKey = "Right Front Vert. Clamping";
             // 
-            // btnSaw_Motor
+            // unitSaw_Motor
             // 
-            this.btnSaw_Motor.ActiveBackColor = System.Drawing.Color.White;
-            this.btnSaw_Motor.AlertBlink = false;
-            this.btnSaw_Motor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            bitAction13.Action = Kaban.Core.Enums.BitActionType.Alternate;
-            bitAction13.Address = "M636";
-            bitAction13.AddressOffset.StaticValue = 0D;
-            bitAction13.AddressOffset.TagAddress = "";
-            bitAction13.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnSaw_Motor.BitActions.Add(bitAction13);
-            this.btnSaw_Motor.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
-            this.btnSaw_Motor.ButtonText = "Saw Motor";
-            this.btnSaw_Motor.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-            this.btnSaw_Motor.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
-            this.btnSaw_Motor.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnSaw_Motor.ConfirmationAddress = "";
-            this.btnSaw_Motor.ConfirmationNeeded = false;
-            this.btnSaw_Motor.ConfirmationText = "";
-            this.btnSaw_Motor.ConfirmationTextKey = "";
-            this.btnSaw_Motor.CornerRadius = 4;
-            this.btnSaw_Motor.DescriptionText = "";
-            this.btnSaw_Motor.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
-            this.btnSaw_Motor.DisplayAddress = null;
-            this.btnSaw_Motor.DisplayOffset.StaticValue = 0D;
-            this.btnSaw_Motor.DisplayOffset.TagAddress = "";
-            this.btnSaw_Motor.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnSaw_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.btnSaw_Motor.EnableTrigger.DescriptionKey = "";
-            this.btnSaw_Motor.EnableTrigger.MonitorAddress = "";
-            this.btnSaw_Motor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.btnSaw_Motor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnSaw_Motor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.btnSaw_Motor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
-            this.btnSaw_Motor.EnableTrigger.ValA = 0D;
-            this.btnSaw_Motor.EnableTrigger.ValB = 0D;
-            this.btnSaw_Motor.ErrorAddress = "";
-            this.btnSaw_Motor.FallbackText = "Saw Motor";
-            this.btnSaw_Motor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnSaw_Motor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            this.btnSaw_Motor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSaw_Motor.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.btnSaw_Motor.ForeColor = System.Drawing.Color.Black;
-            this.btnSaw_Motor.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
-            this.btnSaw_Motor.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
-            this.btnSaw_Motor.ImageActive = null;
-            this.btnSaw_Motor.ImagePassive = null;
-            this.btnSaw_Motor.IsActivePage = false;
-            this.btnSaw_Motor.Lamp1Address = "";
-            this.btnSaw_Motor.Lamp1Tip = "";
-            this.btnSaw_Motor.Lamp2Address = "";
-            this.btnSaw_Motor.Lamp2Tip = "";
-            this.btnSaw_Motor.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnSaw_Motor.Location = new System.Drawing.Point(17, 607);
-            this.btnSaw_Motor.LogAction = true;
-            this.btnSaw_Motor.Name = "btnSaw_Motor";
-            this.btnSaw_Motor.OutputAddress = "";
-            this.btnSaw_Motor.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
-            this.btnSaw_Motor.PlcNumber = 1;
-            this.btnSaw_Motor.RelayAddress = "";
-            this.btnSaw_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.btnSaw_Motor.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
-            this.btnSaw_Motor.RoundLeftOnly = false;
-            this.btnSaw_Motor.RoundRightOnly = false;
-            this.btnSaw_Motor.ShowCaption = true;
-            this.btnSaw_Motor.Size = new System.Drawing.Size(360, 40);
-            this.btnSaw_Motor.TabIndex = 49;
-            this.btnSaw_Motor.ToolTipText = "";
-            this.btnSaw_Motor.TranslationKey = "Saw Motor";
-            this.btnSaw_Motor.UseVisualStyleBackColor = false;
-            this.btnSaw_Motor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
-            // 
-            // dispSaw_Inverter_Error
-            // 
-            this.dispSaw_Inverter_Error.Address = "D669";
-            this.dispSaw_Inverter_Error.AddressOffset.StaticValue = 0D;
-            this.dispSaw_Inverter_Error.AddressOffset.TagAddress = "";
-            this.dispSaw_Inverter_Error.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.dispSaw_Inverter_Error.BackColor = System.Drawing.Color.Gainsboro;
-            this.dispSaw_Inverter_Error.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dispSaw_Inverter_Error.CornerRadius = 4;
-            this.dispSaw_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-            this.dispSaw_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-            this.dispSaw_Inverter_Error.DecimalPlaces = 0;
-            this.dispSaw_Inverter_Error.DescriptionColon = true;
-            this.dispSaw_Inverter_Error.DescriptionText = "Saw Inverter Error";
-            this.dispSaw_Inverter_Error.Digits = 4;
-            this.dispSaw_Inverter_Error.Divisor = 1D;
-            this.dispSaw_Inverter_Error.FillZero = false;
-            this.dispSaw_Inverter_Error.IsEditing = false;
-            this.dispSaw_Inverter_Error.Location = new System.Drawing.Point(267, 657);
-            this.dispSaw_Inverter_Error.LogAction = false;
-            this.dispSaw_Inverter_Error.Name = "dispSaw_Inverter_Error";
-            this.dispSaw_Inverter_Error.PlcNumber = 1;
-            this.dispSaw_Inverter_Error.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.None;
-            this.dispSaw_Inverter_Error.ShowSuffix = true;
-            this.dispSaw_Inverter_Error.ShowValueBorder = true;
-            this.dispSaw_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-            this.dispSaw_Inverter_Error.Suffix = "";
-            this.dispSaw_Inverter_Error.TabIndex = 50;
-            this.dispSaw_Inverter_Error.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.dispSaw_Inverter_Error.ToolTipTextKey = "";
-            this.dispSaw_Inverter_Error.TranslationKey = "Saw Inverter Error";
-            this.dispSaw_Inverter_Error.UnitType = Kaban.Core.Enums.UnitType.None;
-            this.dispSaw_Inverter_Error.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
-            this.dispSaw_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            // An inverter's motor (14 October): its fault code D669 is not shown - its alarm and help come from it.
+            this.unitSaw_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+            this.unitSaw_Motor.BackColor = System.Drawing.Color.White;
+            this.unitSaw_Motor.ButtonATextKey = "Run";
+            this.unitSaw_Motor.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+            this.unitSaw_Motor.CommandAAddress = "M636";
+            this.unitSaw_Motor.ErrorAddress = "M830";
+            this.unitSaw_Motor.FaultCodeAddress = "D669";
+            this.unitSaw_Motor.Location = new System.Drawing.Point(17, 607);
+            this.unitSaw_Motor.LogAction = true;
+            this.unitSaw_Motor.Name = "unitSaw_Motor";
+            this.unitSaw_Motor.PlcNumber = 1;
+            this.unitSaw_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitSaw_Motor.Size = new System.Drawing.Size(360, 64);
+            this.unitSaw_Motor.TabIndex = 49;
+            this.unitSaw_Motor.TitleTextKey = "Saw Motor";
             // 
             // btnSaw_Cooling
             // 
@@ -721,7 +539,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnSaw_Cooling.Lamp2Address = "";
             this.btnSaw_Cooling.Lamp2Tip = "";
             this.btnSaw_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnSaw_Cooling.Location = new System.Drawing.Point(17, 707);
+            this.btnSaw_Cooling.Location = new System.Drawing.Point(17, 681);
             this.btnSaw_Cooling.LogAction = true;
             this.btnSaw_Cooling.Name = "btnSaw_Cooling";
             this.btnSaw_Cooling.OutputAddress = "";
@@ -1283,8 +1101,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.Controls.Add(this.unitLeft_Top_Clamping);
             this.Controls.Add(this.unitRight_Front_Clamping);
             this.Controls.Add(this.unitRight_Front_Vert_Clamping);
-            this.Controls.Add(this.btnSaw_Motor);
-            this.Controls.Add(this.dispSaw_Inverter_Error);
+            this.Controls.Add(this.unitSaw_Motor);
             this.Controls.Add(this.btnSaw_Cooling);
             this.Controls.Add(this.btnLeftOver_Ejection);
             this.Controls.Add(this.btnBlowing);
@@ -1309,8 +1126,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private UI.Controls.AxisUnitHMI unitV_Cutting_Y;
         private UI.Controls.AxisUnitHMI unitV_Cutting_Z;
         private UI.Controls.AxisUnitHMI unitV_Cutting_X;
-        private UI.Controls.ButtonHMI btnV_Cutting_Saw_Motor;
-        private UI.Controls.NumericDisplayHMI dispV_Cutting_Saw_Inverter_Error;
+        private Kaban.UI.Controls.InverterUnitHMI unitV_Cutting_Saw_Motor;
         private UI.Controls.CylinderUnitHMI unitMullion_End_Milling_Unit;
         private UI.Controls.ButtonHMI btnMullion_Blade_Change;
         private UI.Controls.AxisUnitHMI unitCutting_Angle;
@@ -1320,8 +1136,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private UI.Controls.CylinderEncoderUnitHMI unitLeft_Top_Clamping;
         private UI.Controls.CylinderEncoderUnitHMI unitRight_Front_Clamping;
         private UI.Controls.CylinderEncoderUnitHMI unitRight_Front_Vert_Clamping;
-        private UI.Controls.ButtonHMI btnSaw_Motor;
-        private UI.Controls.NumericDisplayHMI dispSaw_Inverter_Error;
+        private Kaban.UI.Controls.InverterUnitHMI unitSaw_Motor;
         private UI.Controls.ButtonHMI btnSaw_Cooling;
         private UI.Controls.ButtonHMI btnLeftOver_Ejection;
         private UI.Controls.ButtonHMI btnBlowing;

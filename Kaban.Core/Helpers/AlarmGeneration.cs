@@ -35,6 +35,10 @@ namespace Kaban.Core.Helpers
     ///     the PLC raises its cylinder alarms, so the HMI's were left off - and the
     ///     axis alarms with them): its own switch per machine, on unless switched
     ///     off; the delay is the cylinders' only.
+    ///   * every INVERTER UNIT (InverterUnitHMI, 14 October) raises its alarm while
+    ///     its fault code word is not zero - the inverter's data code as the
+    ///     sub-code, by its panel's name (M820.E.OC1) - at once, with the axes'
+    ///     switch, and SETs its error bit like an axis.
     ///
     /// The PLC's own bit for the same device stays off the list while the HMI's
     /// alarm for it is on show: one fault, one line.
@@ -225,8 +229,28 @@ namespace Kaban.Core.Helpers
             public string Code { get { return !string.IsNullOrWhiteSpace(ErrorAddress) ? ErrorAddress.Trim() : "Axis " + Number; } }
         }
 
+        /// <summary>An inverter: its fault's data code word, and the alarm bit the HMI sets for it.</summary>
+        public sealed class Inverter
+        {
+            public int Station = 1;
+            public string ModuleId = "";
+            /// <summary>The unit as its page names it ("Saw Motor").</summary>
+            public string Name = "";
+            /// <summary>The word the PLC copies the inverter's fault into: its data code (FR-A800 6.4), 0 = no fault.</summary>
+            public string CodeAddress = "";
+            /// <summary>The alarm bit SET in the PLC when the fault comes (optional).</summary>
+            public string ErrorAddress = "";
+            internal int Last;
+            public AlarmItem Raised { get; internal set; }
+            /// <summary>The data code of the fault on show (0: none).</summary>
+            public int Code { get { return Last; } }
+            /// <summary>The device the alarm is named by: the error bit, or the code word.</summary>
+            public string Device { get { return !string.IsNullOrWhiteSpace(ErrorAddress) ? ErrorAddress.Trim() : (CodeAddress ?? "").Trim(); } }
+        }
+
         private static readonly List<Cylinder> _cylinders = new List<Cylinder>();
         private static readonly List<Axis> _axes = new List<Axis>();
+        private static readonly List<Inverter> _inverters = new List<Inverter>();
 
         /// <summary>Raised when what is read changes (a watch added, a machine switched on or off): the scanner re-reads its list.</summary>
         public static event EventHandler WatchesChanged;
@@ -239,6 +263,7 @@ namespace Kaban.Core.Helpers
 
         public static IReadOnlyList<Cylinder> Cylinders { get { return _cylinders; } }
         public static IReadOnlyList<Axis> Axes { get { return _axes; } }
+        public static IReadOnlyList<Inverter> Inverters { get { return _inverters; } }
 
         /// <summary>
         /// The machine a station belongs to (the module that mapped it), so a unit
@@ -279,13 +304,26 @@ namespace Kaban.Core.Helpers
             OnWatchesChanged();
         }
 
+        /// <summary>Adds an inverter's fault word (the same word on two pages is added once).</summary>
+        public static void Register(Inverter v)
+        {
+            if (v == null || string.IsNullOrWhiteSpace(v.CodeAddress)) return;
+            if (string.IsNullOrEmpty(v.ModuleId)) v.ModuleId = ModuleOfStation(v.Station);
+            HookSuppression();
+            if (_inverters.Any(x => x.Station == v.Station && string.Equals(x.CodeAddress.Trim(), v.CodeAddress.Trim(), StringComparison.OrdinalIgnoreCase))) return;
+            _inverters.Add(v);
+            OnWatchesChanged();
+        }
+
         /// <summary>Forgets the watches (a new discovery) and takes the alarms they raised off the list - nothing could clear them any more.</summary>
         public static void Clear()
         {
             foreach (var c in _cylinders) foreach (var s in c.Sides) Drop(s);
             foreach (var x in _axes) DropAxis(x);
+            foreach (var v in _inverters) DropInverter(v);
             _cylinders.Clear();
             _axes.Clear();
+            _inverters.Clear();
             OnWatchesChanged();
         }
 
@@ -307,6 +345,8 @@ namespace Kaban.Core.Helpers
                 if (!string.IsNullOrWhiteSpace(x.ServoAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.ServoAlarm.Trim());
                 if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
             }
+            foreach (var v in _inverters)
+                if (AxisAlarmsFor(v.ModuleId)) yield return new KeyValuePair<int, string>(v.Station, v.CodeAddress.Trim());
         }
 
         // ---- a unit's movements, from what its help knows of them ----------------------
@@ -455,6 +495,12 @@ namespace Kaban.Core.Helpers
                 if (x.Station != station) continue;
                 if (!AxisAlarmsFor(x.ModuleId)) { DropAxis(x); continue; }
                 EvaluateAxis(x, lookup, now);
+            }
+            foreach (var v in _inverters)
+            {
+                if (v.Station != station) continue;
+                if (!AxisAlarmsFor(v.ModuleId)) { DropInverter(v); continue; }
+                EvaluateInverter(v, lookup, now);
             }
         }
 
@@ -695,6 +741,54 @@ namespace Kaban.Core.Helpers
             return item;
         }
 
+        private static void DropInverter(Inverter v)
+        {
+            if (v.Raised != null) { AlarmManager.ClearGenerated(v.Raised); v.Raised = null; }
+            v.Last = 0;
+        }
+
+        private static void EvaluateInverter(Inverter v, Func<string, int> lookup, DateTime now)
+        {
+            int code = Word(lookup, v.CodeAddress) & 0xFFFF;
+            // acknowledged while the inverter still shows the fault: back on the list
+            if (v.Raised != null && !AlarmManager.IsOnList(v.Raised)) { v.Raised = null; v.Last = 0; }
+            if (code == v.Last) return;
+            if (v.Raised != null) { AlarmManager.ClearGenerated(v.Raised); v.Raised = null; }
+            v.Last = code;
+            if (code != 0) v.Raised = RaiseInverter(v, code, now);
+        }
+
+        private static AlarmItem RaiseInverter(Inverter v, int code, DateTime now)
+        {
+            var def = string.IsNullOrWhiteSpace(v.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(v.Station, v.ErrorAddress);
+            string baseCode = def != null ? def.AlarmCode : (string.IsNullOrEmpty(v.ModuleId) ? "" : v.ModuleId + ".") + "Inverter_" + Safe(v.Name);
+            var item = new AlarmItem(baseCode + "." + code.ToString(CultureInfo.InvariantCulture),
+                                     def != null ? def.TranslationKey : v.Name, def != null ? def.Severity : AlarmSeverity.Fault)
+            {
+                Generated = true,
+                Station = v.Station,
+                Address = v.Device,
+                // as the inverter's panel shows it: "E.OC1"
+                SubCode = AxisCodeHelp.Display(AxisCodeKind.InverterFault, code),
+                Detail = AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code),
+                DetailText = () => AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code),
+                BaseCode = def != null ? def.AlarmCode : "",
+                GroupCode = baseCode,
+                Device = (v.ErrorAddress ?? "").Trim(),
+                TriggerTime = now
+            };
+            AlarmManager.RaiseGenerated(item);
+            SetDevice(item);
+            return item;
+        }
+
+        /// <summary>The inverter whose fault a generated alarm is, or null.</summary>
+        public static Inverter InverterOf(AlarmItem item)
+        {
+            if (item == null || !item.Generated) return null;
+            return _inverters.FirstOrDefault(v => ReferenceEquals(v.Raised, item));
+        }
+
         // ---- asked by the units, the alarm list and the PLC alarms -------------------------------
 
         /// <summary>
@@ -731,6 +825,8 @@ namespace Kaban.Core.Helpers
                 if (ReferenceEquals(x.RaisedServo, item)) return AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, x.LastServo, x.Name);
                 if (ReferenceEquals(x.RaisedAxis, item)) return AxisCodeHelp.Document(AxisCodeKind.AxisError, x.LastAxis, x.Name);
             }
+            var v = InverterOf(item);
+            if (v != null) return AxisCodeHelp.Document(AxisCodeKind.InverterFault, v.Last, v.Name);
             return null;
         }
 
@@ -842,7 +938,10 @@ namespace Kaban.Core.Helpers
                 foreach (var c in _cylinders.Where(c => string.Equals(c.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase)))
                     foreach (var s in c.Sides) { s.Since = null; s.Seen = false; Drop(s); }
             if (axes)
+            {
                 foreach (var x in _axes.Where(x => string.Equals(x.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase))) DropAxis(x);
+                foreach (var v in _inverters.Where(v => string.Equals(v.ModuleId, moduleId ?? "", StringComparison.OrdinalIgnoreCase))) DropInverter(v);
+            }
         }
 
         /// <summary>Every watch and setting forgotten (tests).</summary>
@@ -851,8 +950,10 @@ namespace Kaban.Core.Helpers
             foreach (var c in _cylinders)
                 foreach (var x in c.Sides) { x.Seen = x.Commanded = x.Moved = false; x.Since = null; x.Raised = null; }
             foreach (var a in _axes) { a.LastServo = a.LastAxis = 0; a.RaisedServo = a.RaisedAxis = null; }
+            foreach (var v in _inverters) { v.Last = 0; v.Raised = null; }
             _cylinders.Clear();
             _axes.Clear();
+            _inverters.Clear();
             _settings = null;
         }
     }

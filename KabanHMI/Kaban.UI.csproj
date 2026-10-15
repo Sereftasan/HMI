@@ -72,6 +72,9 @@
     <Compile Include="Controls\DisplayPLC.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\InverterUnitHMI.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\CylinderUnitHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>

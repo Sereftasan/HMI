@@ -181,7 +181,9 @@ namespace Kaban.UI.Helpers
                           "and SETs that bit in the PLC so the program knows; its code says why: .1 the start sensor stayed ON (it did not leave), .2 the target sensor did not come ON, " +
                           ".3 the target came ON but the start sensor stayed ON, .4 both coils were ON, .5 the position did not change, .6 the position was still changing.");
             sb.AppendLine("- For the servo axes the HMI " + (gen.AxisAlarms ? "raises" : "can raise (switched off for this machine now)") +
-                          " an alarm as soon as an axis' servo alarm or axis error code is not zero, and SETs the axis' error bit in the PLC.");
+                          " an alarm as soon as an axis' servo alarm or axis error code is not zero, and SETs the axis' error bit in the PLC." +
+                          " The same for an inverter (a Mitsubishi FR-A800 driving a motor): its fault's data code (16 = E.OC1, the FR-A800 manual's 6.4)" +
+                          " raises its alarm, named by the inverter's panel code (M830.E.OC1).");
             sb.AppendLine();
 
             // ---- the alarm ------------------------------------------------------------

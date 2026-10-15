@@ -21,7 +21,9 @@ namespace Kaban.UI.Controls
     public enum UnitKind
     {
         Cylinder = 0,
-        Axis = 1
+        Axis = 1,
+        /// <summary>An inverter's motor (InverterUnitHMI): its fault code, no valve or sensors to time.</summary>
+        Inverter = 2
     }
 
     /// <summary>
@@ -1091,7 +1093,7 @@ namespace Kaban.UI.Controls
         public List<string> TypeProblems()
         {
             var p = new List<string>();
-            if (_kind == UnitKind.Axis) return p;
+            if (_kind != UnitKind.Cylinder) return p;
             bool cmdA = Has(_commandAAddress), cmdB = Has(_commandBAddress);
             int lampsA = (Has(_lamp1AAddress) ? 1 : 0) + (Has(_lamp2AAddress) ? 1 : 0);
             int lampsB = (Has(_lamp1BAddress) ? 1 : 0) + (Has(_lamp2BAddress) ? 1 : 0);
@@ -1206,12 +1208,44 @@ namespace Kaban.UI.Controls
         private string[] _codeWords = { "", "", "" };
 
         /// <summary>
+        /// Makes the "?" an INVERTER's (InverterUnitHMI): shown while its fault code
+        /// word is not zero, its entries the code's part of Inverter_Fault_Codes and
+        /// the whole manual; the buttons' borders blink red meanwhile.
+        /// </summary>
+        public void SetInverterCode(string faultCodeAddress)
+        {
+            _inverterCode = (faultCodeAddress ?? "").Trim();
+            _codeWords = new[] { "", "", "" };
+            _helpA.SetCodeWords(null, null, null);
+            _helpB.SetInverterCode(_inverterCode);
+            ApplyAlarmTips();
+            if (IsHandleCreated || DesignMode) UpdateHelpBadge();
+        }
+
+        private string _inverterCode = "";
+
+        /// <summary>The inverter's fault data code now (0: none, or not an inverter).</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int InverterFaultCode { get { return _kind == UnitKind.Inverter ? _helpB.InverterCode : 0; } }
+
+        /// <summary>
         /// Each button's tooltip names its alarm bit - its own side's error bit
         /// (an axis: the axis's, on both) - and an axis's drive code words.
         /// </summary>
         private void ApplyAlarmTips()
         {
-            if (_kind == UnitKind.Axis)
+            if (_kind == UnitKind.Inverter)
+            {
+                var error = Abs(!string.IsNullOrWhiteSpace(_errorBAddress) ? _errorBAddress : _errorAAddress);
+                foreach (var b in new[] { _btnA, _btnB })
+                {
+                    b.ErrorAddress = error;
+                    b.AlarmCodeAddresses.Clear();
+                    if (_inverterCode.Length > 0)
+                        b.AlarmCodeAddresses.Add(new KeyValuePair<string, string>(LanguageManager.GetString("Tip_CodeInverterFault", "Inverter fault code"), Abs(_inverterCode)));
+                }
+            }
+            else if (_kind == UnitKind.Axis)
             {
                 var error = Abs(!string.IsNullOrWhiteSpace(_errorBAddress) ? _errorBAddress : _errorAAddress);
                 var codes = new List<KeyValuePair<string, string>>();
@@ -1247,7 +1281,7 @@ namespace Kaban.UI.Controls
                 return Abs(a) + (string.IsNullOrWhiteSpace(text) ? "" : " " + text);
             };
             string alarm = LanguageManager.GetString("Tip_AlarmBit", "Alarm bit");
-            if (_kind == UnitKind.Axis)
+            if (_kind == UnitKind.Axis || _kind == UnitKind.Inverter)
             {
                 var error = !string.IsNullOrWhiteSpace(_errorBAddress) ? _errorBAddress : _errorAAddress;
                 if (!string.IsNullOrWhiteSpace(error)) lines.Add(alarm + ": " + named(error));
@@ -1276,23 +1310,25 @@ namespace Kaban.UI.Controls
                 if (!string.IsNullOrWhiteSpace(address))
                     yield return new Kaban.UI.Helpers.AlarmHelpLinks.Link
                     {
-                        // An axis faults as a servo; its valve and feedback mean nothing.
+                        // An axis faults as a servo, an inverter as an inverter; their valve and feedback mean nothing.
                         Kind = _kind == UnitKind.Axis ? TroubleshootingCatalog.ErrorType.ServoFault
-                                                      : TroubleshootingCatalog.ErrorType.CylinderMovement,
+                             : _kind == UnitKind.Inverter ? TroubleshootingCatalog.ErrorType.InverterMotor
+                                                          : TroubleshootingCatalog.ErrorType.CylinderMovement,
                         Station = _plcNumber,
                         Address = address,
-                        Valve = _kind == UnitKind.Axis ? 0 : (int)_valve,
-                        Feedback = _kind == UnitKind.Axis ? 0 : (int)_feedback,
+                        Valve = _kind != UnitKind.Cylinder ? 0 : (int)_valve,
+                        Feedback = _kind != UnitKind.Cylinder ? 0 : (int)_feedback,
                         Unit = name,
                         // That movement's own files: the other direction's are about another movement.
                         HelpFiles = HelpFileNames(address == _errorAAddress ? "A" : "B"),
                         ServoAlarm = _kind == UnitKind.Axis ? _codeWords[0] : "",
                         AxisAlarm = _kind == UnitKind.Axis ? _codeWords[1] : "",
                         AxisWarning = _kind == UnitKind.Axis ? _codeWords[2] : "",
+                        InverterFault = _kind == UnitKind.Inverter ? Abs(_inverterCode) : "",
                         // Which side's error bit this is: the alarm list's help names
                         // that movement's devices, like the unit's own "?".
-                        Movement = _kind == UnitKind.Axis ? null : MovementFor(address == _errorAAddress ? "A" : "B"),
-                        MovementNow = MovementNowFor(_kind == UnitKind.Axis ? null : address == _errorAAddress ? "A" : "B")
+                        Movement = _kind != UnitKind.Cylinder ? null : MovementFor(address == _errorAAddress ? "A" : "B"),
+                        MovementNow = MovementNowFor(_kind != UnitKind.Cylinder ? null : address == _errorAAddress ? "A" : "B")
                     };
         }
 
@@ -1331,7 +1367,7 @@ namespace Kaban.UI.Controls
         /// </summary>
         private AlarmItem GeneratedFor(string side)
         {
-            if (_kind == UnitKind.Axis || DesignMode) return null;
+            if (_kind != UnitKind.Cylinder || DesignMode) return null;
             bool a = side == "A";
             return AlarmGeneration.ActiveFor(_plcNumber, side,
                 Abs(a ? _errorAAddress : _errorBAddress), Abs(a ? _commandAAddress : _commandBAddress),
@@ -1347,7 +1383,7 @@ namespace Kaban.UI.Controls
         /// </summary>
         public AlarmGeneration.Cylinder BuildWatch()
         {
-            if (_kind == UnitKind.Axis) return null;
+            if (_kind != UnitKind.Cylinder) return null;
             var name = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText);
             return AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
         }
@@ -1355,7 +1391,7 @@ namespace Kaban.UI.Controls
         /// <summary>The devices one side's error bit is judged by: command, both coils, the sensors of both ends.</summary>
         private IEnumerable<string> SignalsFor(string side)
         {
-            if (_kind == UnitKind.Axis) return Enumerable.Empty<string>();
+            if (_kind != UnitKind.Cylinder) return Enumerable.Empty<string>();
             bool a = side == "A";
             return new[]
             {
@@ -1492,7 +1528,7 @@ namespace Kaban.UI.Controls
             var docs = new List<TroubleshootingCatalog.HelpDocument>();
             bool errA = _helpA.IsActive, errB = _helpB.IsActive;
 
-            if (_kind == UnitKind.Axis)
+            if (_kind == UnitKind.Axis || _kind == UnitKind.Inverter)
             {
                 if (errB) docs.AddRange(_helpB.Documents());           // the drive codes (or the error bit)
                 if (errA) docs.AddRange(_helpA.Documents());
@@ -1626,7 +1662,14 @@ namespace Kaban.UI.Controls
             // sets runs this, and the "?" looks its files up on disk. Done once the
             // unit has a window (OnHandleCreated), and on every change after that.
             if (IsHandleCreated || DesignMode) UpdateHelpBadge();
+            OnSettingsApplied();
         }
+
+        /// <summary>After the unit's settings reach its parts: a derived unit passes its own on (InverterUnitHMI's run lamp).</summary>
+        protected virtual void OnSettingsApplied() { }
+
+        /// <summary>A device of the unit as it is read: its BaseOffset applied.</summary>
+        protected string Absolute(string address) { return Abs(address); }
 
         /// <summary>The designer's frame for a unit whose wiring does not match its types.</summary>
         internal static readonly Color TypeMismatchFrame = Color.FromArgb(230, 150, 30);
@@ -1939,7 +1982,7 @@ namespace Kaban.UI.Controls
             {
                 // In a row: the chain above, the "?" below, in their column at the right end.
                 int col = this.ClientSize.Width - UiScale.For(this, RowBadgeWidth);
-                bool linked = !DesignMode && HasCommands;
+                bool linked = !DesignMode && HasCommands && _kind != UnitKind.Inverter;
                 if (_couple.Visible != linked) _couple.Visible = linked;
                 int edge = UiScale.For(this, 2);
                 if (linked)
@@ -1959,7 +2002,8 @@ namespace Kaban.UI.Controls
             _help.Location = new Point(this.ClientSize.Width - UiScale.For(this, 12) - _help.Width,
                                        Math.Max(0, frameTop - _help.Height / 2));
             // the chain left of the "?" (in its place when there is none)
-            bool chain = !DesignMode && HasCommands;
+            // an inverter's motor is not coupled with others: no chain
+            bool chain = !DesignMode && HasCommands && _kind != UnitKind.Inverter;
             if (_couple.Visible != chain) _couple.Visible = chain;
             if (chain)
             {
@@ -1968,7 +2012,14 @@ namespace Kaban.UI.Controls
                 int right = _help.Visible ? _help.Left - UiScale.For(this, 4) : this.ClientSize.Width - UiScale.For(this, 12);
                 _couple.Location = new Point(right - _couple.Width, Math.Max(0, frameTop - _couple.Height / 2));
             }
+            OnBadgesLaidOut();
         }
+
+        /// <summary>After the frame's badges are placed: a unit that adds to its caption row places its part (InverterUnitHMI's run lamp).</summary>
+        protected virtual void OnBadgesLaidOut() { }
+
+        /// <summary>The frame the unit's caption is drawn on (InverterUnitHMI puts its run lamp before the caption).</summary>
+        internal RoundedGroupBox FrameBox { get { return _grp; } }
 
         /// <summary>
         /// While an error bit is set, the border of what failed blinks red: the
@@ -1985,6 +2036,16 @@ namespace Kaban.UI.Controls
             bool hasA = !string.IsNullOrWhiteSpace(_commandAAddress);
             bool hasB = !string.IsNullOrWhiteSpace(_commandBAddress);
 
+            if (_kind == UnitKind.Inverter)
+            {
+                // AN INVERTER'S FAULT is its whole motor's: both buttons blink while its
+                // code is not zero (or its alarm bit is set) - the value beside them does not.
+                bool fault = _helpB.IsErrorSet || _helpA.IsErrorSet || (_helpB.IsActive && !_helpB.IsWarningOnly);
+                _numPosition.AlertBlink = false;
+                _btnA.AlertBlink = fault && hasA;
+                _btnB.AlertBlink = fault && hasB;
+                return;
+            }
             bool onDisplay = hasPos && (_kind == UnitKind.Axis || (errA && !hasA) || (errB && !hasB));
             _numPosition.AlertBlink = onDisplay && (errA || errB);
             _btnA.AlertBlink = !(_kind == UnitKind.Axis && hasPos) && errA && hasA;
@@ -2016,6 +2077,9 @@ namespace Kaban.UI.Controls
         /// frame of another colour than the usual: coupled, or a type mismatch.
         /// </summary>
         public bool Frameless { get; set; }
+
+        /// <summary>Room kept clear before the caption (an inverter unit's run lamp sits there).</summary>
+        public int CaptionLead { get; set; }
 
         public RoundedGroupBox()
         {
@@ -2079,11 +2143,11 @@ namespace Kaban.UI.Controls
             }
 
             // Caption straddling the top border: clear the border under it, then draw.
-            if (!string.IsNullOrEmpty(this.Text))
+            if (!string.IsNullOrEmpty(this.Text) || CaptionLead > 0)
             {
-                int tx = 12;
+                int tx = 12 + CaptionLead;
                 using (var bg = new SolidBrush(this.BackColor))
-                    e.Graphics.FillRectangle(bg, tx - 4, 0, captionSize.Width + 8, captionSize.Height);
+                    e.Graphics.FillRectangle(bg, tx - 4 - CaptionLead, 0, captionSize.Width + 8 + CaptionLead, Math.Max(captionSize.Height, this.Font.GetHeight()));
                 using (var br = new SolidBrush(this.ForeColor))
                     e.Graphics.DrawString(this.Text, this.Font, br, tx, 0);
             }

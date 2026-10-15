@@ -83,6 +83,15 @@ def Btn(title, addr, lamp=None, val=None, name=None, note=None):
     return dict(kind='btn', title=title, cmd=s['cmd'], action=s['action'], lamp=lamp,
                 val=value(val) if val else None, name=name, note=note)
 
+def Inv(title, fault, a=None, b=None, run=None, val=None, error=None, name=None, text='Run'):
+    """An inverter's motor as ONE control (InverterUnitHMI, 14 October): its buttons (A / B as
+    'command/lamp'; a one-button motor has A, captioned <text>), its run lamp before its name,
+    its value beside the buttons ('D18 16 /100 2'), its fault code word (the old page's
+    hexadecimal error display - no longer shown: its alarm and help come from it) and the
+    PLC's alarm bit for the inverter (set by the HMI when the fault comes)."""
+    return dict(kind='inv', title=title, fault=fault, a=side(a), b=side(b), run=run, val=value(val) if val else None,
+                error=error, name=name, text=text)
+
 def Lamp(title, addr, name=None):
     return dict(kind='lamp', title=title, addr=addr, name=name)
 
@@ -161,9 +170,7 @@ def page(cls, folder, old, caption, *bands, **kw):
 # ---------------------------------------------------------------- MANUAL ----
 
 page('ManualEntry_Conveyor', 'Manual', 'ucEntryConveyor', 'Entry Conveyor', [Col(None,
-    Cyl('Conveyor Motor', 'M640', 'M639/M221'),
-    Lamp('Conveyor Motor Run', 'M203'),
-    Hex('Conveyor Inverter Error', 'D666'),
+    Inv('Conveyor Motor', 'D666', a='M640', b='M639/M221', run='M203', error='M827', name='unitConveyor_Motor'),
     Lamp('Conveyor Limit SN', 'M344'),
     Cyl('Profile Clampings', 'M721', 'M720'),
     Cyl('Profile Clamping 1', 'M690/M207', 'M683/M214'),
@@ -214,15 +221,13 @@ page('ManualMilling', 'Manual', 'ucMilling', 'Milling',
         Btn('Machine Cleaning Pos.', 'M180!Alt'))],
     [Col('Unit 1',
         Axis(4, 'Unit 1 Angle'), Axis(5, 'Unit 1 X'), Axis(6, 'Unit 1 Y'), Axis(7, 'Unit 1 Z'),
-        Btn('Milling Motor', 'M649!Alt', lamp='M230', val='D18 16 /100 2', name='btnUnit_1_Milling_Motor'),
-        Hex('Inverter Error', 'D667', name='dispUnit_1_Inverter_Error'),
+        Inv('Milling Motor', 'D667', a='M649/M230!Alt', val='D18 16 /100 2', error='M828', name='unitUnit_1_Milling_Motor'),
         Btn('1st Tool Cooling', 'M710!Alt', name='btnUnit_1_Tool_1_Cooling'),
         Btn('2nd Tool Cooling', 'M711!Alt', name='btnUnit_1_Tool_2_Cooling'),
         Group('Change Degree', [('M673', '0°'), ('M674', '90°'), ('M675', '180°'), ('M676', '270°')], name='grpUnit_1_Change_Degree')),
      Col('Unit 2',
         Axis(8, 'Unit 2 Angle'), Axis(9, 'Unit 2 X'), Axis(10, 'Unit 2 Y'), Axis(11, 'Unit 2 Z'),
-        Btn('Milling Motor', 'M650!Alt', lamp='M231', val='D19 16 /100 2', name='btnUnit_2_Milling_Motor'),
-        Hex('Inverter Error', 'D668', name='dispUnit_2_Inverter_Error'),
+        Inv('Milling Motor', 'D668', a='M650/M231!Alt', val='D19 16 /100 2', error='M829', name='unitUnit_2_Milling_Motor'),
         Btn('1st Tool Cooling', 'M712!Alt', name='btnUnit_2_Tool_1_Cooling'),
         Btn('2nd Tool Cooling', 'M713!Alt', name='btnUnit_2_Tool_2_Cooling'),
         Group('Change Degree', [('M677', '0°'), ('M678', '90°'), ('M679', '180°'), ('M680', '270°')], name='grpUnit_2_Change_Degree'))])
@@ -235,8 +240,7 @@ page('ManualCutting', 'Manual', 'ucCutting', 'Cutting',
         EncU(6, 'Left Top Clamping'),
         EncU(7, 'Right Front Clamping'),
         EncU(9, 'Right Front Vert. Clamping', name='unitRight_Front_Vert_Clamping'),
-        Btn('Saw Motor', 'M636!Alt'),
-        Hex('Saw Inverter Error', 'D669'),
+        Inv('Saw Motor', 'D669', a='M636!Alt', error='M830', name='unitSaw_Motor'),
         Btn('Saw Cooling', 'M714!Alt'),
         Btn('LeftOver Ejection', 'M706'),
         Btn('Blowing', 'M746'),
@@ -247,8 +251,7 @@ page('ManualCutting', 'Manual', 'ucCutting', 'Cutting',
         Group('Change Degree', [('M181', '45°'), ('M182', '90°'), ('M183', '135°')])),
      Col('V Cutting',
         Axis(14, 'V Cutting Y'), Axis(15, 'V Cutting Z'), Axis(17, 'V Cutting X'),
-        Btn('Saw Motor', 'M637!Alt', name='btnV_Cutting_Saw_Motor'),
-        Hex('Saw Inverter Error', 'D670', name='dispV_Cutting_Saw_Inverter_Error'),
+        Inv('Saw Motor', 'D670', a='M637!Alt', name='unitV_Cutting_Saw_Motor'),
         # P58, 5/2 double solenoid: M748 drives it down (Y154), M747 up (Y153);
         # its sensors on the drawings are SN106 down (X133 = M271) and SN105 up
         # (X132 = M270) - the old page lit M276 / M277, which are no inputs.
@@ -263,8 +266,7 @@ page('ManualExit', 'Manual', 'ucExit', 'Exit', [Col(None,
     Cyl('Roller Up/Down', 'M709/M234', 'M708'),
     Cyl('Profile Ejection', '/M238', 'M707/M239'),
     Cyl('Short Profile Support', 'M682/M204', 'M681/M205'),
-    Btn('Conveyor Motor', 'M660', lamp='M243'),
-    Hex('Conveyor Inverter Error', 'D671'),
+    Inv('Conveyor Motor', 'D671', a='M660/M243', error='M831', name='unitConveyor_Motor'),
     Lamp('Sawdust Conveyor Thermic', 'M242'),
     Btn('Sawdust Blowing', 'M736'))])
 
@@ -516,7 +518,7 @@ CHAR_W = 6.4                     # a caption's width, per character (Segoe UI 9)
 
 def height(item):
     k = item['kind']
-    if k in ('cyl', 'axis', 'group', 'mould', 'enc', 'encunit'): return UNIT_H
+    if k in ('cyl', 'axis', 'group', 'mould', 'enc', 'encunit', 'inv'): return UNIT_H
     if k == 'lamp': return 36
     if k == 'head': return HEAD_H - 2
     return 40                       # btn, hex, disp, entry
@@ -602,13 +604,13 @@ def ident(text):
     if s and s[0].isdigit(): s = 'N' + s
     return s
 
-PREFIX = {'cyl': 'unit', 'axis': 'unit', 'encunit': 'unit', 'btn': 'btn', 'lamp': 'lamp', 'hex': 'disp', 'group': 'grp',
+PREFIX = {'cyl': 'unit', 'axis': 'unit', 'encunit': 'unit', 'inv': 'unit', 'btn': 'btn', 'lamp': 'lamp', 'hex': 'disp', 'group': 'grp',
           'mould': 'pp', 'enc': 'enc', 'num': 'num', 'opt': 'opt', 'disp': 'disp', 'entry': 'num'}
 
 # ============================================================================
 #  EMITTING
 # ============================================================================
-TYPES = {'CylinderUnitHMI': 'Kaban.UI.Controls.CylinderUnitHMI', 'AxisUnitHMI': 'Kaban.UI.Controls.AxisUnitHMI',
+TYPES = {'CylinderUnitHMI': 'Kaban.UI.Controls.CylinderUnitHMI', 'InverterUnitHMI': 'Kaban.UI.Controls.InverterUnitHMI', 'AxisUnitHMI': 'Kaban.UI.Controls.AxisUnitHMI',
          'ButtonHMI': 'Kaban.UI.Controls.ButtonHMI', 'LampHMI': 'Kaban.UI.Controls.LampHMI',
          'NumericDisplayHMI': 'Kaban.UI.Controls.NumericDisplayHMI', 'NumericInputHMI': 'Kaban.UI.Controls.NumericInputHMI',
          'CheckBoxHMI': 'Kaban.UI.Controls.CheckBoxHMI', 'GroupBoxHMI': 'Kaban.UI.Controls.GroupBoxHMI',
@@ -624,6 +626,11 @@ OWNED = {
                         'Lamp2AAddress', 'Lamp2BAddress',
                         'PositionAddress', 'PositionDataType', 'PositionDecimalPlaces', 'PositionDigits', 'PositionSuffix',
                         'PositionUnitType', 'PositionDivisor', 'TabIndex'},
+    'InverterUnitHMI': {'BackColor', 'Name', 'PlcNumber', 'TitleTextKey', 'TitleText', 'Location', 'Size', 'LogAction', 'Arrows',
+                        'ButtonATextKey', 'CommandAAddress', 'CommandAAction', 'CommandBAddress', 'CommandBAction', 'Lamp1AAddress',
+                        'Lamp1BAddress', 'Lamp2AAddress', 'Lamp2BAddress', 'FaultCodeAddress', 'RunLampAddress', 'ErrorAddress',
+                        'PositionAddress', 'PositionDataType', 'PositionDecimalPlaces', 'PositionDigits', 'PositionSuffix',
+                        'PositionUnitType', 'PositionDivisor', 'PositionTipKey', 'TabIndex'},
     'AxisUnitHMI': {'Name', 'AxisNumber', 'PlcNumber', 'Location', 'Size', 'BackColor', 'TabIndex'},
     'ButtonHMI': {'Name', 'PlcNumber', 'TranslationKey', 'FallbackText', 'Text', 'Lamp1Address', 'Location', 'Size', 'LogAction', 'TabIndex'},
     'LampHMI': {'Name', 'PlcNumber', 'Address', 'DescriptionText', 'Location', 'Size', 'TabIndex'},
@@ -670,6 +677,12 @@ CARRIED = {
         'ErrorAAddress': False, 'ErrorBAddress': False, 'HelpAFiles': False, 'HelpBFiles': False,
         'ValveType': False, 'FeedbackType': False, 'RequiredSecurity': False},
 }
+
+# 14 October: a motor's cylinder unit or button becomes an inverter's unit - what was added to it stays
+CARRIED[('CylinderUnitHMI', 'InverterUnitHMI')] = None          # the same properties (see Emitter.kept)
+CARRIED[('ButtonHMI', 'InverterUnitHMI')] = {
+    'VisibilityConditions': 'VisibilityConditions', 'EnableConditions': 'EnableConditions', 'RequiredSecurity': 'RequiredSecurity',
+    'ConfirmationNeeded': 'ConfirmationNeeded', 'ToolTipText': 'ButtonATipKey'}
 
 ACTION = {'Momentary': 'Momentary', 'Alternate': 'Alternate', 'Set': 'SET'}   # Kaban.Core.Enums.BitActionType
 
@@ -746,7 +759,8 @@ class Emitter:
         if not old: return
         b = self.current[old]
         carried = CARRIED.get((b['type'], t))
-        if b['type'] != t and carried is None: return
+        same = b['type'] == t or (b['type'], t) == ('CylinderUnitHMI', 'InverterUnitHMI')
+        if not same and carried is None: return
         own = OWNED.get(b['type'], set())
         have = set(have or ())
         for prop, comments, text in b['lines']:
@@ -810,6 +824,41 @@ class Emitter:
         if item.get('feedback') and 'FeedbackType' not in have:
             self.p(name, 'FeedbackType', 'Kaban.UI.Controls.CylinderFeedback.' + item['feedback'])
         self.security(name, 'CylinderUnitHMI', old, 'Operator')
+        self.add(name)
+
+    def inverter(self, name, item, x, y, old):
+        """An inverter's motor: InverterUnitHMI (14 October)."""
+        self.decl(name, 'InverterUnitHMI')
+        self.header(name, '%s: an inverter\'s motor - its fault code %s is not shown; its alarm and help come from it.' % (item['title'], item['fault']))
+        self.p(name, 'BackColor', 'System.Drawing.Color.White')
+        self.p(name, 'Name', cs(name))
+        self.p(name, 'PlcNumber', '1')
+        self.p(name, 'TitleTextKey', cs(item['title']))
+        self.p(name, 'Location', 'new System.Drawing.Point(%d, %d)' % (x, y))
+        self.p(name, 'Size', 'new System.Drawing.Size(%d, %d)' % (UNIT_W, UNIT_H))
+        self.p(name, 'LogAction', 'true')
+        if not item.get('b'):
+            self.p(name, 'Arrows', 'Kaban.Core.Enums.ButtonArrowStyle.Custom')
+            self.p(name, 'ButtonATextKey', cs(item['text']))
+        for s, k in ((item.get('a'), 'A'), (item.get('b'), 'B')):
+            if not s: continue
+            self.p(name, 'Command%sAddress' % k, cs(s['cmd']))
+            self.p(name, 'Command%sAction' % k, 'Kaban.Core.Enums.BitActionType.' + ACTION[s['action']])
+            if s['lamp'] and s['lamp'] != s['cmd']: self.p(name, 'Lamp1%sAddress' % k, cs(s['lamp']))
+            if s.get('lamp2'): self.p(name, 'Lamp2%sAddress' % k, cs(s['lamp2']))
+        self.p(name, 'FaultCodeAddress', cs(item['fault']))
+        if item.get('error'): self.p(name, 'ErrorAddress', cs(item['error']))
+        if item.get('run'): self.p(name, 'RunLampAddress', cs(item['run']))
+        v = item.get('val')
+        if v:
+            self.p(name, 'PositionAddress', cs(v['addr']))
+            self.p(name, 'PositionDataType', 'Kaban.Core.Enums.DataTypeEnum.Bin_%d' % v['bits'])
+            self.p(name, 'PositionDivisor', dnum(v['div']))
+            self.p(name, 'PositionDecimalPlaces', str(v['dec']))
+            self.p(name, 'PositionDigits', '6')
+            self.p(name, 'PositionTipKey', '""')
+        self.kept(name, 'InverterUnitHMI', old)
+        self.security(name, 'InverterUnitHMI', old, 'Operator')
         self.add(name)
 
     def axis(self, name, item, x, y, old):
@@ -1141,7 +1190,7 @@ class Emitter:
 # ============================================================================
 #  MATCHING: which current control each new one is
 # ============================================================================
-SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc': 'CylinderEncoderSettingHMI',
+SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'inv': 'InverterUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc': 'CylinderEncoderSettingHMI',
              'encunit': 'CylinderEncoderUnitHMI', 'axis': 'AxisUnitHMI',
              'btn': 'ButtonHMI', 'lamp': 'LampHMI', 'hex': 'NumericDisplayHMI', 'num': 'NumericInputHMI', 'opt': 'CheckBoxHMI',
              'disp': 'NumericDisplayHMI', 'entry': 'NumericInputHMI'}
@@ -1149,11 +1198,12 @@ SPEC_TYPE = {'cyl': 'CylinderUnitHMI', 'mould': 'PneumaticPositioningHMI', 'enc'
 # type it replaced (a mould was a CylinderUnitHMI until 9 October)
 MATCHES = {'mould': ('PneumaticPositioningHMI', 'CylinderUnitHMI'),
            'enc': ('CylinderEncoderSettingHMI', 'CylinderUnitHMI'),
-           'encunit': ('CylinderEncoderUnitHMI', 'CylinderUnitHMI')}
+           'encunit': ('CylinderEncoderUnitHMI', 'CylinderUnitHMI'),
+           'inv': ('InverterUnitHMI', 'CylinderUnitHMI', 'ButtonHMI')}
 
 def spec_keys(item):
     k = item['kind']
-    if k in ('cyl', 'mould', 'enc'): return {s['cmd'] for s in (item.get('a'), item.get('b')) if s and s['cmd']}
+    if k in ('cyl', 'mould', 'enc', 'inv'): return {s['cmd'] for s in (item.get('a'), item.get('b')) if s and s['cmd']}
     if k == 'encunit':
         enc = ENCODERS[item['number']]
         return {'enc:%d' % item['number']} | {s['cmd'] for s in (enc['a'], enc['b']) if s and s['cmd']}
@@ -1252,6 +1302,8 @@ def write_manual(pg, current, match):
                     em.cylinder(n, it, x, cy, old(it))
                 elif k == 'axis':
                     em.axis(n, it, x, cy, old(it))
+                elif k == 'inv':
+                    em.inverter(n, it, x, cy, old(it))
                 elif k == 'encunit':
                     em.encoder_unit(n, it, x, cy, old(it))
                 elif k == 'btn':
@@ -1465,6 +1517,8 @@ def spec_devices(pg):
         if k in ('lamp', 'hex', 'num', 'opt'): out.add(it['addr'])
         if k in ('disp', 'entry'): out.add(it['val']['addr'])
         if k == 'entry' and it.get('cmd'): out.add(it['cmd'])
+        if k == 'inv':
+            out |= {x for x in (it['fault'], it.get('run'), it['val']['addr'] if it.get('val') else None) if x}
         if k == 'axis': out |= set(AXIS_DEVICES[it['number']])
         if k == 'encunit': out |= encoder_devices(ENCODERS[it['number']])
         if k == 'group': out |= {a for a, _ in it['buttons']}
