@@ -44,11 +44,11 @@
             this.optClamping_Mould = new Kaban.UI.Controls.CheckBoxHMI();
             this.optCross_Roller = new Kaban.UI.Controls.CheckBoxHMI();
             this.groupBoxMullionNotching = new Kaban.UI.Controls.GroupBoxHMI();
-            this.optMullionNotching = new Kaban.UI.Controls.CheckBoxHMI();
-            this.optVithBlade = new Kaban.UI.Controls.CheckBoxHMI();
-            this.checkBoxWithBladeSingleSideCut = new Kaban.UI.Controls.CheckBoxHMI();
-            this.checkBoxWithBladeLeftBackFinishCut = new Kaban.UI.Controls.CheckBoxHMI();
             this.checkBoxWithBladeBackFinishCut = new Kaban.UI.Controls.CheckBoxHMI();
+            this.checkBoxWithBladeLeftBackFinishCut = new Kaban.UI.Controls.CheckBoxHMI();
+            this.checkBoxWithBladeSingleSideCut = new Kaban.UI.Controls.CheckBoxHMI();
+            this.optVithBlade = new Kaban.UI.Controls.CheckBoxHMI();
+            this.optMullionNotching = new Kaban.UI.Controls.CheckBoxHMI();
             this.groupBoxMullionNotching.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +59,14 @@
             this.optCooling.CornerRadius = 4;
             this.optCooling.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCooling.DescriptionText = "Cooling";
+            this.optCooling.EnableTrigger.DescriptionKey = "";
+            this.optCooling.EnableTrigger.MonitorAddress = "";
+            this.optCooling.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCooling.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCooling.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCooling.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCooling.EnableTrigger.ValA = 0D;
+            this.optCooling.EnableTrigger.ValB = 0D;
             this.optCooling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optCooling.Location = new System.Drawing.Point(404, 53);
             this.optCooling.LogAction = true;
@@ -76,6 +84,14 @@
             this.optProfile_Carrying_Roller_Sensor.CornerRadius = 4;
             this.optProfile_Carrying_Roller_Sensor.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optProfile_Carrying_Roller_Sensor.DescriptionText = "Profile Carrying Roller Sensor";
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.DescriptionKey = "";
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.MonitorAddress = "";
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.ValA = 0D;
+            this.optProfile_Carrying_Roller_Sensor.EnableTrigger.ValB = 0D;
             this.optProfile_Carrying_Roller_Sensor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optProfile_Carrying_Roller_Sensor.Location = new System.Drawing.Point(404, 89);
             this.optProfile_Carrying_Roller_Sensor.LogAction = true;
@@ -93,6 +109,14 @@
             this.optProfile_Recog_Carrying_Roller.CornerRadius = 4;
             this.optProfile_Recog_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optProfile_Recog_Carrying_Roller.DescriptionText = "Profile Recog. Carrying Roller";
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.DescriptionKey = "";
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.MonitorAddress = "";
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.ValA = 0D;
+            this.optProfile_Recog_Carrying_Roller.EnableTrigger.ValB = 0D;
             this.optProfile_Recog_Carrying_Roller.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optProfile_Recog_Carrying_Roller.Location = new System.Drawing.Point(404, 125);
             this.optProfile_Recog_Carrying_Roller.LogAction = true;
@@ -110,6 +134,14 @@
             this.optMilling_Carrying_Roller.CornerRadius = 4;
             this.optMilling_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMilling_Carrying_Roller.DescriptionText = "Milling Carrying Roller";
+            this.optMilling_Carrying_Roller.EnableTrigger.DescriptionKey = "";
+            this.optMilling_Carrying_Roller.EnableTrigger.MonitorAddress = "";
+            this.optMilling_Carrying_Roller.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optMilling_Carrying_Roller.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMilling_Carrying_Roller.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMilling_Carrying_Roller.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optMilling_Carrying_Roller.EnableTrigger.ValA = 0D;
+            this.optMilling_Carrying_Roller.EnableTrigger.ValB = 0D;
             this.optMilling_Carrying_Roller.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optMilling_Carrying_Roller.Location = new System.Drawing.Point(404, 161);
             this.optMilling_Carrying_Roller.LogAction = true;
@@ -127,6 +159,14 @@
             this.optExit_Carrying_Roller.CornerRadius = 4;
             this.optExit_Carrying_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optExit_Carrying_Roller.DescriptionText = "Exit Carrying Roller";
+            this.optExit_Carrying_Roller.EnableTrigger.DescriptionKey = "";
+            this.optExit_Carrying_Roller.EnableTrigger.MonitorAddress = "";
+            this.optExit_Carrying_Roller.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optExit_Carrying_Roller.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optExit_Carrying_Roller.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optExit_Carrying_Roller.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optExit_Carrying_Roller.EnableTrigger.ValA = 0D;
+            this.optExit_Carrying_Roller.EnableTrigger.ValB = 0D;
             this.optExit_Carrying_Roller.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optExit_Carrying_Roller.Location = new System.Drawing.Point(404, 197);
             this.optExit_Carrying_Roller.LogAction = true;
@@ -144,6 +184,14 @@
             this.optLeft_Profile_Recognition.CornerRadius = 4;
             this.optLeft_Profile_Recognition.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optLeft_Profile_Recognition.DescriptionText = "Left Profile Recognition";
+            this.optLeft_Profile_Recognition.EnableTrigger.DescriptionKey = "";
+            this.optLeft_Profile_Recognition.EnableTrigger.MonitorAddress = "";
+            this.optLeft_Profile_Recognition.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optLeft_Profile_Recognition.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optLeft_Profile_Recognition.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optLeft_Profile_Recognition.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optLeft_Profile_Recognition.EnableTrigger.ValA = 0D;
+            this.optLeft_Profile_Recognition.EnableTrigger.ValB = 0D;
             this.optLeft_Profile_Recognition.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optLeft_Profile_Recognition.Location = new System.Drawing.Point(404, 233);
             this.optLeft_Profile_Recognition.LogAction = true;
@@ -161,6 +209,14 @@
             this.optSliding_Conveyor_Rollers.CornerRadius = 4;
             this.optSliding_Conveyor_Rollers.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optSliding_Conveyor_Rollers.DescriptionText = "Sliding Conveyor Rollers";
+            this.optSliding_Conveyor_Rollers.EnableTrigger.DescriptionKey = "";
+            this.optSliding_Conveyor_Rollers.EnableTrigger.MonitorAddress = "";
+            this.optSliding_Conveyor_Rollers.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optSliding_Conveyor_Rollers.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optSliding_Conveyor_Rollers.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optSliding_Conveyor_Rollers.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optSliding_Conveyor_Rollers.EnableTrigger.ValA = 0D;
+            this.optSliding_Conveyor_Rollers.EnableTrigger.ValB = 0D;
             this.optSliding_Conveyor_Rollers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optSliding_Conveyor_Rollers.Location = new System.Drawing.Point(404, 269);
             this.optSliding_Conveyor_Rollers.LogAction = true;
@@ -178,6 +234,14 @@
             this.optReverse_Machine.CornerRadius = 4;
             this.optReverse_Machine.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optReverse_Machine.DescriptionText = "Reverse Machine";
+            this.optReverse_Machine.EnableTrigger.DescriptionKey = "";
+            this.optReverse_Machine.EnableTrigger.MonitorAddress = "";
+            this.optReverse_Machine.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optReverse_Machine.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optReverse_Machine.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optReverse_Machine.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optReverse_Machine.EnableTrigger.ValA = 0D;
+            this.optReverse_Machine.EnableTrigger.ValB = 0D;
             this.optReverse_Machine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optReverse_Machine.Location = new System.Drawing.Point(404, 305);
             this.optReverse_Machine.LogAction = true;
@@ -195,6 +259,14 @@
             this.optSpecial_Reverse_Machine.CornerRadius = 4;
             this.optSpecial_Reverse_Machine.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optSpecial_Reverse_Machine.DescriptionText = "Special Reverse Machine";
+            this.optSpecial_Reverse_Machine.EnableTrigger.DescriptionKey = "";
+            this.optSpecial_Reverse_Machine.EnableTrigger.MonitorAddress = "";
+            this.optSpecial_Reverse_Machine.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optSpecial_Reverse_Machine.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optSpecial_Reverse_Machine.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optSpecial_Reverse_Machine.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optSpecial_Reverse_Machine.EnableTrigger.ValA = 0D;
+            this.optSpecial_Reverse_Machine.EnableTrigger.ValB = 0D;
             this.optSpecial_Reverse_Machine.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optSpecial_Reverse_Machine.Location = new System.Drawing.Point(404, 341);
             this.optSpecial_Reverse_Machine.LogAction = true;
@@ -212,6 +284,14 @@
             this.optCutting_Right_Top_Clamping_Long.CornerRadius = 4;
             this.optCutting_Right_Top_Clamping_Long.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCutting_Right_Top_Clamping_Long.DescriptionText = "Cutting Right Top Clamping Long";
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.DescriptionKey = "";
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.MonitorAddress = "";
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.ValA = 0D;
+            this.optCutting_Right_Top_Clamping_Long.EnableTrigger.ValB = 0D;
             this.optCutting_Right_Top_Clamping_Long.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optCutting_Right_Top_Clamping_Long.Location = new System.Drawing.Point(404, 377);
             this.optCutting_Right_Top_Clamping_Long.LogAction = true;
@@ -229,6 +309,14 @@
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.CornerRadius = 4;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.DescriptionText = "Major Profile Ejection Tray Operates Individually";
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.DescriptionKey = "";
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.MonitorAddress = "";
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.ValA = 0D;
+            this.optMajor_Profile_Ejection_Tray_Operates_Individually.EnableTrigger.ValB = 0D;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.Location = new System.Drawing.Point(404, 413);
             this.optMajor_Profile_Ejection_Tray_Operates_Individually.LogAction = true;
@@ -246,6 +334,14 @@
             this.optTop_Clamping_Reclamp.CornerRadius = 4;
             this.optTop_Clamping_Reclamp.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optTop_Clamping_Reclamp.DescriptionText = "Top Clamping Reclamp";
+            this.optTop_Clamping_Reclamp.EnableTrigger.DescriptionKey = "";
+            this.optTop_Clamping_Reclamp.EnableTrigger.MonitorAddress = "";
+            this.optTop_Clamping_Reclamp.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optTop_Clamping_Reclamp.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optTop_Clamping_Reclamp.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optTop_Clamping_Reclamp.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optTop_Clamping_Reclamp.EnableTrigger.ValA = 0D;
+            this.optTop_Clamping_Reclamp.EnableTrigger.ValB = 0D;
             this.optTop_Clamping_Reclamp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optTop_Clamping_Reclamp.Location = new System.Drawing.Point(404, 449);
             this.optTop_Clamping_Reclamp.LogAction = true;
@@ -263,6 +359,14 @@
             this.optGripper_0_90_Degree_Turn.CornerRadius = 4;
             this.optGripper_0_90_Degree_Turn.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optGripper_0_90_Degree_Turn.DescriptionText = "Gripper 0/90 Degree Turn";
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.DescriptionKey = "";
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.MonitorAddress = "";
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.ValA = 0D;
+            this.optGripper_0_90_Degree_Turn.EnableTrigger.ValB = 0D;
             this.optGripper_0_90_Degree_Turn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optGripper_0_90_Degree_Turn.Location = new System.Drawing.Point(404, 485);
             this.optGripper_0_90_Degree_Turn.LogAction = true;
@@ -280,6 +384,14 @@
             this.optClamping_Mould.CornerRadius = 4;
             this.optClamping_Mould.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optClamping_Mould.DescriptionText = "Clamping Mould";
+            this.optClamping_Mould.EnableTrigger.DescriptionKey = "";
+            this.optClamping_Mould.EnableTrigger.MonitorAddress = "";
+            this.optClamping_Mould.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optClamping_Mould.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optClamping_Mould.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optClamping_Mould.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optClamping_Mould.EnableTrigger.ValA = 0D;
+            this.optClamping_Mould.EnableTrigger.ValB = 0D;
             this.optClamping_Mould.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optClamping_Mould.Location = new System.Drawing.Point(404, 521);
             this.optClamping_Mould.LogAction = true;
@@ -297,6 +409,14 @@
             this.optCross_Roller.CornerRadius = 4;
             this.optCross_Roller.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.optCross_Roller.DescriptionText = "Cross Roller";
+            this.optCross_Roller.EnableTrigger.DescriptionKey = "";
+            this.optCross_Roller.EnableTrigger.MonitorAddress = "";
+            this.optCross_Roller.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCross_Roller.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCross_Roller.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCross_Roller.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCross_Roller.EnableTrigger.ValA = 0D;
+            this.optCross_Roller.EnableTrigger.ValB = 0D;
             this.optCross_Roller.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optCross_Roller.Location = new System.Drawing.Point(404, 557);
             this.optCross_Roller.LogAction = true;
@@ -330,56 +450,31 @@
             this.groupBoxMullionNotching.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.groupBoxMullionNotching.VisibleAddress = "";
             // 
-            // optMullionNotching
+            // checkBoxWithBladeBackFinishCut
             // 
-            this.optMullionNotching.Address = "L5";
-            this.optMullionNotching.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.optMullionNotching.CornerRadius = 4;
-            this.optMullionNotching.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
-            this.optMullionNotching.DescriptionText = "Mullion Notching";
-            this.optMullionNotching.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optMullionNotching.Location = new System.Drawing.Point(319, 37);
-            this.optMullionNotching.LogAction = true;
-            this.optMullionNotching.Name = "optMullionNotching";
-            this.optMullionNotching.PlcNumber = 1;
-            this.optMullionNotching.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optMullionNotching.Size = new System.Drawing.Size(44, 32);
-            this.optMullionNotching.TabIndex = 62;
-            this.optMullionNotching.ToolTipCaption = null;
-            // 
-            // optVithBlade
-            // 
-            this.optVithBlade.Address = "L46";
-            this.optVithBlade.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.optVithBlade.CornerRadius = 4;
-            this.optVithBlade.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
-            this.optVithBlade.DescriptionText = "with Blade";
-            this.optVithBlade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.optVithBlade.Location = new System.Drawing.Point(319, 75);
-            this.optVithBlade.LogAction = true;
-            this.optVithBlade.Name = "optVithBlade";
-            this.optVithBlade.PlcNumber = 1;
-            this.optVithBlade.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.optVithBlade.Size = new System.Drawing.Size(44, 32);
-            this.optVithBlade.TabIndex = 64;
-            this.optVithBlade.ToolTipCaption = null;
-            // 
-            // checkBoxWithBladeSingleSideCut
-            // 
-            this.checkBoxWithBladeSingleSideCut.Address = "L49";
-            this.checkBoxWithBladeSingleSideCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBoxWithBladeSingleSideCut.CornerRadius = 4;
-            this.checkBoxWithBladeSingleSideCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
-            this.checkBoxWithBladeSingleSideCut.DescriptionText = "with Blade Single Side Cut";
-            this.checkBoxWithBladeSingleSideCut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBoxWithBladeSingleSideCut.Location = new System.Drawing.Point(319, 193);
-            this.checkBoxWithBladeSingleSideCut.LogAction = true;
-            this.checkBoxWithBladeSingleSideCut.Name = "checkBoxWithBladeSingleSideCut";
-            this.checkBoxWithBladeSingleSideCut.PlcNumber = 1;
-            this.checkBoxWithBladeSingleSideCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.checkBoxWithBladeSingleSideCut.Size = new System.Drawing.Size(44, 32);
-            this.checkBoxWithBladeSingleSideCut.TabIndex = 66;
-            this.checkBoxWithBladeSingleSideCut.ToolTipCaption = null;
+            this.checkBoxWithBladeBackFinishCut.Address = "L47";
+            this.checkBoxWithBladeBackFinishCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxWithBladeBackFinishCut.CornerRadius = 4;
+            this.checkBoxWithBladeBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.checkBoxWithBladeBackFinishCut.DescriptionText = "with Blade Back Finish Cut";
+            this.checkBoxWithBladeBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.DescriptionKey = "";
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.MonitorAddress = "";
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.ValA = 0D;
+            this.checkBoxWithBladeBackFinishCut.EnableTrigger.ValB = 0D;
+            this.checkBoxWithBladeBackFinishCut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBoxWithBladeBackFinishCut.Location = new System.Drawing.Point(319, 113);
+            this.checkBoxWithBladeBackFinishCut.LogAction = true;
+            this.checkBoxWithBladeBackFinishCut.Name = "checkBoxWithBladeBackFinishCut";
+            this.checkBoxWithBladeBackFinishCut.PlcNumber = 1;
+            this.checkBoxWithBladeBackFinishCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.checkBoxWithBladeBackFinishCut.Size = new System.Drawing.Size(44, 32);
+            this.checkBoxWithBladeBackFinishCut.TabIndex = 70;
+            this.checkBoxWithBladeBackFinishCut.ToolTipCaption = null;
             // 
             // checkBoxWithBladeLeftBackFinishCut
             // 
@@ -388,6 +483,15 @@
             this.checkBoxWithBladeLeftBackFinishCut.CornerRadius = 4;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
             this.checkBoxWithBladeLeftBackFinishCut.DescriptionText = "with Blade Left Back Finish Cut";
+            this.checkBoxWithBladeLeftBackFinishCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.DescriptionKey = "";
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.MonitorAddress = "";
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.ValA = 0D;
+            this.checkBoxWithBladeLeftBackFinishCut.EnableTrigger.ValB = 0D;
             this.checkBoxWithBladeLeftBackFinishCut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBoxWithBladeLeftBackFinishCut.Location = new System.Drawing.Point(319, 151);
             this.checkBoxWithBladeLeftBackFinishCut.LogAction = true;
@@ -398,22 +502,83 @@
             this.checkBoxWithBladeLeftBackFinishCut.TabIndex = 68;
             this.checkBoxWithBladeLeftBackFinishCut.ToolTipCaption = null;
             // 
-            // checkBoxWithBladeBackFinishCut
+            // checkBoxWithBladeSingleSideCut
             // 
-            this.checkBoxWithBladeBackFinishCut.Address = "L47";
-            this.checkBoxWithBladeBackFinishCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.checkBoxWithBladeBackFinishCut.CornerRadius = 4;
-            this.checkBoxWithBladeBackFinishCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
-            this.checkBoxWithBladeBackFinishCut.DescriptionText = "with Blade Back Finish Cut";
-            this.checkBoxWithBladeBackFinishCut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBoxWithBladeBackFinishCut.Location = new System.Drawing.Point(319, 113);
-            this.checkBoxWithBladeBackFinishCut.LogAction = true;
-            this.checkBoxWithBladeBackFinishCut.Name = "checkBoxWithBladeBackFinishCut";
-            this.checkBoxWithBladeBackFinishCut.PlcNumber = 1;
-            this.checkBoxWithBladeBackFinishCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-            this.checkBoxWithBladeBackFinishCut.Size = new System.Drawing.Size(44, 32);
-            this.checkBoxWithBladeBackFinishCut.TabIndex = 70;
-            this.checkBoxWithBladeBackFinishCut.ToolTipCaption = null;
+            this.checkBoxWithBladeSingleSideCut.Address = "L49";
+            this.checkBoxWithBladeSingleSideCut.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.checkBoxWithBladeSingleSideCut.CornerRadius = 4;
+            this.checkBoxWithBladeSingleSideCut.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.checkBoxWithBladeSingleSideCut.DescriptionText = "with Blade Single Side Cut";
+            this.checkBoxWithBladeSingleSideCut.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.DescriptionKey = "";
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.MonitorAddress = "";
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.ValA = 0D;
+            this.checkBoxWithBladeSingleSideCut.EnableTrigger.ValB = 0D;
+            this.checkBoxWithBladeSingleSideCut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBoxWithBladeSingleSideCut.Location = new System.Drawing.Point(319, 193);
+            this.checkBoxWithBladeSingleSideCut.LogAction = true;
+            this.checkBoxWithBladeSingleSideCut.Name = "checkBoxWithBladeSingleSideCut";
+            this.checkBoxWithBladeSingleSideCut.PlcNumber = 1;
+            this.checkBoxWithBladeSingleSideCut.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.checkBoxWithBladeSingleSideCut.Size = new System.Drawing.Size(44, 32);
+            this.checkBoxWithBladeSingleSideCut.TabIndex = 66;
+            this.checkBoxWithBladeSingleSideCut.ToolTipCaption = null;
+            // 
+            // optVithBlade
+            // 
+            this.optVithBlade.Address = "L46";
+            this.optVithBlade.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optVithBlade.CornerRadius = 4;
+            this.optVithBlade.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.optVithBlade.DescriptionText = "with Blade";
+            this.optVithBlade.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.optVithBlade.EnableTrigger.DescriptionKey = "";
+            this.optVithBlade.EnableTrigger.MonitorAddress = "";
+            this.optVithBlade.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optVithBlade.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optVithBlade.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optVithBlade.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optVithBlade.EnableTrigger.ValA = 0D;
+            this.optVithBlade.EnableTrigger.ValB = 0D;
+            this.optVithBlade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.optVithBlade.Location = new System.Drawing.Point(319, 75);
+            this.optVithBlade.LogAction = true;
+            this.optVithBlade.Name = "optVithBlade";
+            this.optVithBlade.PlcNumber = 1;
+            this.optVithBlade.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.optVithBlade.Size = new System.Drawing.Size(44, 32);
+            this.optVithBlade.TabIndex = 64;
+            this.optVithBlade.ToolTipCaption = null;
+            // 
+            // optMullionNotching
+            // 
+            this.optMullionNotching.Address = "L5";
+            this.optMullionNotching.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optMullionNotching.CornerRadius = 4;
+            this.optMullionNotching.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.optMullionNotching.DescriptionText = "Mullion Notching";
+            this.optMullionNotching.EnableConditions = Kaban.Core.Enums.SystemCondition.1048576;
+            this.optMullionNotching.EnableTrigger.DescriptionKey = "";
+            this.optMullionNotching.EnableTrigger.MonitorAddress = "";
+            this.optMullionNotching.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optMullionNotching.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMullionNotching.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optMullionNotching.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optMullionNotching.EnableTrigger.ValA = 0D;
+            this.optMullionNotching.EnableTrigger.ValB = 0D;
+            this.optMullionNotching.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.optMullionNotching.Location = new System.Drawing.Point(319, 37);
+            this.optMullionNotching.LogAction = true;
+            this.optMullionNotching.Name = "optMullionNotching";
+            this.optMullionNotching.PlcNumber = 1;
+            this.optMullionNotching.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.optMullionNotching.Size = new System.Drawing.Size(44, 32);
+            this.optMullionNotching.TabIndex = 62;
+            this.optMullionNotching.ToolTipCaption = null;
             // 
             // Options
             // 
