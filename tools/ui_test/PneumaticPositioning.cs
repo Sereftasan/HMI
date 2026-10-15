@@ -113,6 +113,11 @@ class PPT {
         form.Show(); Pump(800);
         var rows = PneumaticPositioningHMI.RowsOf(page);
         Check("16 moulds, each a PneumaticPositioningHMI", rows.Count == 16, rows.Count.ToString());
+        // 14 October: "the position numerical display shows the value 10 times ... the numerical inputs
+        // inside this control are right" - the position / 100 as the old page showed it, as the sections
+        Check("  the position scaled as the sections (/ 100, 2 decimals) - it was / 10, ten times the value",
+              rows.All(r => r.PositionDivisor == r.Divisor && r.PositionDivisor == 100 && r.PositionDecimalPlaces == 2),
+              string.Join(" ", rows.Select(r => r.PositionDivisor + "/" + r.Divisor).Distinct()));
         Check("  nothing else of the old lines on the page (units, fields, buttons)",
               new[] { CylinderRowHMI.RowsHost(page), CylinderRowHMI.HeadingsHost(page) }.All(h =>
                   !h.Controls.OfType<CylinderUnitHMI>().Any() && !h.Controls.OfType<NumericInputHMI>().Any() && !h.Controls.OfType<ButtonHMI>().Any()));

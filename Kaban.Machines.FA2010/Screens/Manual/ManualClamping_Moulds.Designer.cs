@@ -123,7 +123,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
             this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
             this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 100D;
             this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
             this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
             this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
@@ -148,7 +148,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppLeft_Profile_Recognition_Back_Vertical.Name = "ppLeft_Profile_Recognition_Back_Vertical";
             this.ppLeft_Profile_Recognition_Back_Vertical.PositionAddress = "D111";
             this.ppLeft_Profile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Vertical.PositionDivisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D791";
             this.ppLeft_Profile_Recognition_Back_Vertical.PositioningStartAddress = "M51";
             this.ppLeft_Profile_Recognition_Back_Vertical.PositioningToleranceAddress = "D751";
@@ -174,7 +174,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppLeft_Profile_Recognition_Back_Horizontal.Name = "ppLeft_Profile_Recognition_Back_Horizontal";
             this.ppLeft_Profile_Recognition_Back_Horizontal.PositionAddress = "D112";
             this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppLeft_Profile_Recognition_Back_Horizontal.PositionDivisor = 100D;
             this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D792";
             this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningStartAddress = "M52";
             this.ppLeft_Profile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D752";
@@ -198,7 +198,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppConveyor_Front_Vertical.Name = "ppConveyor_Front_Vertical";
             this.ppConveyor_Front_Vertical.PositionAddress = "D113";
             this.ppConveyor_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppConveyor_Front_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Front_Vertical.PositionDivisor = 100D;
             this.ppConveyor_Front_Vertical.PositioningDirectionReferenceAddress = "D793";
             this.ppConveyor_Front_Vertical.PositioningStartAddress = "M53";
             this.ppConveyor_Front_Vertical.PositioningToleranceAddress = "D753";
@@ -223,7 +223,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppConveyor_Back_Vertical.Name = "ppConveyor_Back_Vertical";
             this.ppConveyor_Back_Vertical.PositionAddress = "D114";
             this.ppConveyor_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppConveyor_Back_Vertical.PositionDivisor = 10D;
+            this.ppConveyor_Back_Vertical.PositionDivisor = 100D;
             this.ppConveyor_Back_Vertical.PositioningDirectionReferenceAddress = "D794";
             this.ppConveyor_Back_Vertical.PositioningStartAddress = "M54";
             this.ppConveyor_Back_Vertical.PositioningToleranceAddress = "D754";
@@ -248,7 +248,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppConveyor_Back_Horizontal.Name = "ppConveyor_Back_Horizontal";
             this.ppConveyor_Back_Horizontal.PositionAddress = "D115";
             this.ppConveyor_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppConveyor_Back_Horizontal.PositionDivisor = 10D;
+            this.ppConveyor_Back_Horizontal.PositionDivisor = 100D;
             this.ppConveyor_Back_Horizontal.PositioningDirectionReferenceAddress = "D795";
             this.ppConveyor_Back_Horizontal.PositioningStartAddress = "M55";
             this.ppConveyor_Back_Horizontal.PositioningToleranceAddress = "D755";
@@ -272,7 +272,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Front_Vertical.Name = "ppProfile_Recognition_Front_Vertical";
             this.ppProfile_Recognition_Front_Vertical.PositionAddress = "D116";
             this.ppProfile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Front_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Front_Vertical.PositionDivisor = 100D;
             this.ppProfile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D796";
             this.ppProfile_Recognition_Front_Vertical.PositioningStartAddress = "M56";
             this.ppProfile_Recognition_Front_Vertical.PositioningToleranceAddress = "D756";
@@ -297,7 +297,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Back_Vertical.Name = "ppProfile_Recognition_Back_Vertical";
             this.ppProfile_Recognition_Back_Vertical.PositionAddress = "D117";
             this.ppProfile_Recognition_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Back_Vertical.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Vertical.PositionDivisor = 100D;
             this.ppProfile_Recognition_Back_Vertical.PositioningDirectionReferenceAddress = "D797";
             this.ppProfile_Recognition_Back_Vertical.PositioningStartAddress = "M57";
             this.ppProfile_Recognition_Back_Vertical.PositioningToleranceAddress = "D757";
@@ -323,7 +323,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppProfile_Recognition_Back_Horizontal.Name = "ppProfile_Recognition_Back_Horizontal";
             this.ppProfile_Recognition_Back_Horizontal.PositionAddress = "D118";
             this.ppProfile_Recognition_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 10D;
+            this.ppProfile_Recognition_Back_Horizontal.PositionDivisor = 100D;
             this.ppProfile_Recognition_Back_Horizontal.PositioningDirectionReferenceAddress = "D798";
             this.ppProfile_Recognition_Back_Horizontal.PositioningStartAddress = "M58";
             this.ppProfile_Recognition_Back_Horizontal.PositioningToleranceAddress = "D758";
@@ -349,7 +349,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Front_Vertical.Name = "ppCutting_Left_Front_Vertical";
             this.ppCutting_Left_Front_Vertical.PositionAddress = "D119";
             this.ppCutting_Left_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Front_Vertical.PositionDivisor = 100D;
             this.ppCutting_Left_Front_Vertical.PositioningDirectionReferenceAddress = "D799";
             this.ppCutting_Left_Front_Vertical.PositioningStartAddress = "M59";
             this.ppCutting_Left_Front_Vertical.PositioningToleranceAddress = "D759";
@@ -374,7 +374,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Back_Vertical.Name = "ppCutting_Left_Back_Vertical";
             this.ppCutting_Left_Back_Vertical.PositionAddress = "D120";
             this.ppCutting_Left_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Vertical.PositionDivisor = 100D;
             this.ppCutting_Left_Back_Vertical.PositioningDirectionReferenceAddress = "D800";
             this.ppCutting_Left_Back_Vertical.PositioningStartAddress = "M60";
             this.ppCutting_Left_Back_Vertical.PositioningToleranceAddress = "D760";
@@ -401,7 +401,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Left_Back_Horizontal.Name = "ppCutting_Left_Back_Horizontal";
             this.ppCutting_Left_Back_Horizontal.PositionAddress = "D121";
             this.ppCutting_Left_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppCutting_Left_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Left_Back_Horizontal.PositionDivisor = 100D;
             this.ppCutting_Left_Back_Horizontal.PositioningDirectionReferenceAddress = "D801";
             this.ppCutting_Left_Back_Horizontal.PositioningStartAddress = "M61";
             this.ppCutting_Left_Back_Horizontal.PositioningToleranceAddress = "D761";
@@ -424,7 +424,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Front_Vertical.Name = "ppCutting_Right_Front_Vertical";
             this.ppCutting_Right_Front_Vertical.PositionAddress = "D122";
             this.ppCutting_Right_Front_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Front_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Front_Vertical.PositionDivisor = 100D;
             this.ppCutting_Right_Front_Vertical.PositioningDirectionReferenceAddress = "D802";
             this.ppCutting_Right_Front_Vertical.PositioningStartAddress = "M62";
             this.ppCutting_Right_Front_Vertical.PositioningToleranceAddress = "D762";
@@ -449,7 +449,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Back_Vertical.Name = "ppCutting_Right_Back_Vertical";
             this.ppCutting_Right_Back_Vertical.PositionAddress = "D123";
             this.ppCutting_Right_Back_Vertical.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Back_Vertical.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Vertical.PositionDivisor = 100D;
             this.ppCutting_Right_Back_Vertical.PositioningDirectionReferenceAddress = "D803";
             this.ppCutting_Right_Back_Vertical.PositioningStartAddress = "M63";
             this.ppCutting_Right_Back_Vertical.PositioningToleranceAddress = "D763";
@@ -475,7 +475,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppCutting_Right_Back_Horizontal.Name = "ppCutting_Right_Back_Horizontal";
             this.ppCutting_Right_Back_Horizontal.PositionAddress = "D124";
             this.ppCutting_Right_Back_Horizontal.PositionDecimalPlaces = 2;
-            this.ppCutting_Right_Back_Horizontal.PositionDivisor = 10D;
+            this.ppCutting_Right_Back_Horizontal.PositionDivisor = 100D;
             this.ppCutting_Right_Back_Horizontal.PositioningDirectionReferenceAddress = "D804";
             this.ppCutting_Right_Back_Horizontal.PositioningStartAddress = "M64";
             this.ppCutting_Right_Back_Horizontal.PositioningToleranceAddress = "D764";
@@ -499,7 +499,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.ppRight_Front_Vertical_Clamping.Name = "ppRight_Front_Vertical_Clamping";
             this.ppRight_Front_Vertical_Clamping.PositionAddress = "D128";
             this.ppRight_Front_Vertical_Clamping.PositionDecimalPlaces = 2;
-            this.ppRight_Front_Vertical_Clamping.PositionDivisor = 10D;
+            this.ppRight_Front_Vertical_Clamping.PositionDivisor = 100D;
             this.ppRight_Front_Vertical_Clamping.PositioningDirectionReferenceAddress = "D807";
             this.ppRight_Front_Vertical_Clamping.PositioningStartAddress = "M67";
             this.ppRight_Front_Vertical_Clamping.PositioningToleranceAddress = "D846";

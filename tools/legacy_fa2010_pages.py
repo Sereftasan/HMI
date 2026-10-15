@@ -110,7 +110,9 @@ def Mould(title, back, fwd, pos, target, send, cal, calibrate, tol, offset, valv
     manual movement, target position, calibration, tolerance and direction ref ("Stopping
     Offset" on the old page). optional: fitted only with the Clamping Mould option (L27) -
     the back moulds, vertical and horizontal; the front vertical ones are always fitted."""
-    return dict(kind='mould', title=title, a=side(back), b=side(fwd), pos=value(pos + ' 16 /10 2'),
+    # the position / 100 as the sections' (14 October: "shows the value 10 times"; the old
+    # page's KabanLedLabel, Divisor 10, shows raw / 100 - see roles())
+    return dict(kind='mould', title=title, a=side(back), b=side(fwd), pos=value(pos + ' 16 /100 2'),
                 target=target, send=send, cal=cal, calibrate=calibrate, tol=tol, offset=offset, name=None,
                 valve=valve, feedback=feedback, optional=optional)
 
