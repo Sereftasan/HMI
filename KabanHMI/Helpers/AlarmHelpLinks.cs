@@ -184,10 +184,34 @@ namespace Kaban.UI.Helpers
         private static readonly List<AxisInfo> _axisList = new List<AxisInfo>();
 
         /// <summary>
-        /// Every axis row discovery saw, in page order, numbered or not - the Axis
-        /// Monitor's list. The same row seen twice (a page built twice) once.
+        /// Every axis row discovery saw, numbered or not - the Axis Monitor's list. The
+        /// same row seen twice (a page built twice) once. MACHINE BY MACHINE, the main
+        /// machine first, then its sub-machines as they are mounted - in page order within
+        /// each: the order the pages happen to be built in is not the machines' (14 October:
+        /// with FA2010's Options tab first, H800's axes were found - and listed - before its own).
         /// </summary>
-        public static IList<AxisInfo> AllAxes { get { return _axisList.AsReadOnly(); } }
+        public static IList<AxisInfo> AllAxes
+        {
+            get
+            {
+                Func<int, int> machineOrder = station =>
+                {
+                    try
+                    {
+                        var st = PlcManager.Instance.GetStation(station);
+                        var owner = st != null ? st.OwnerModuleId ?? "" : "";
+                        var modules = MachineRegistry.Modules.OrderByDescending(m => m.IsMain).ToList();
+                        int i = modules.FindIndex(m => m.Context != null && string.Equals(m.Context.ModuleId, owner, StringComparison.OrdinalIgnoreCase));
+                        return i < 0 ? int.MaxValue : i;
+                    }
+                    catch { return int.MaxValue; }
+                };
+                var cache = new Dictionary<int, int>();
+                return _axisList.Select((a, i) => new { a, i })
+                                .OrderBy(x => { int o; if (!cache.TryGetValue(x.a.Station, out o)) cache[x.a.Station] = o = machineOrder(x.a.Station); return o; })
+                                .ThenBy(x => x.i).Select(x => x.a).ToList().AsReadOnly();
+            }
+        }
 
         private static readonly Dictionary<string, AxisInfo> _axes = new Dictionary<string, AxisInfo>();
         private static bool _discovered, _discovering;

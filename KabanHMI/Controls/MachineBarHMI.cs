@@ -34,7 +34,7 @@ namespace Kaban.UI.Controls
     /// where the designer put them.
     /// </summary>
     [ToolboxItem(false)]
-    public class MachineBarHMI : UserControl, IPageBar
+    public class MachineBarHMI : UserControl, IPageBar, Kaban.UI.Helpers.ISidePageWidth
     {
         private Dictionary<Control, Rectangle> _designed;
         private Size _designedSize;
@@ -42,6 +42,20 @@ namespace Kaban.UI.Controls
         public MachineBarHMI()
         {
             BackColor = Color.White;
+        }
+
+        /// <summary>
+        /// A side page fitted to its content is not made wider for the bar: its parts go on
+        /// in rows when it is narrow (FitTo), so the widest part is all it needs - however
+        /// its parts are laid out at the moment it is measured.
+        /// </summary>
+        public int PreferredWidth(int available)
+        {
+            var parts = _designed != null ? _designed.Values.Select(r => r.Width) : Controls.Cast<Control>().Select(c => c.Width);
+            int widest = parts.DefaultIfEmpty(0).Max();
+            int left = _designed != null && _designed.Count > 0 ? _designed.Values.Min(r => r.Left)
+                     : Controls.Count > 0 ? Controls.Cast<Control>().Min(c => c.Left) : 0;
+            return Math.Min(available, widest + 2 * Math.Max(0, left));
         }
 
         /// <summary>

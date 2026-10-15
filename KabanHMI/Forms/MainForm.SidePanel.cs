@@ -502,7 +502,13 @@ namespace Kaban.UI.Forms
                         if (ch is Controls.AxisPickBar) break;
                         bool right = (ch.Anchor & AnchorStyles.Right) != 0 && (ch.Anchor & AnchorStyles.Left) == 0;
                         if (right) anchoredRight = Math.Max(anchoredRight, ch.Width + ch.Margin.Horizontal);
-                        else placed = Math.Max(placed, ch.Right + offset + ch.Margin.Right);
+                        else
+                        {
+                            // a part that says what it needs (a machine's bar - it wraps its parts when
+                            // narrow): that, not the width it has been given for now
+                            var needs = ch as ISidePageWidth;
+                            placed = Math.Max(placed, (needs != null ? ch.Left + needs.PreferredWidth(int.MaxValue / 4) : ch.Right) + offset + ch.Margin.Right);
+                        }
                         break;
                 }
             }
