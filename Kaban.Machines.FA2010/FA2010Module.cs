@@ -202,6 +202,19 @@ namespace Kaban.Machines.FA2010
                 //        CreateView = () => new Screens.ProfilesScreen()
                 //    }
                 //}
+                // The axes' manual movement bar (speed, JOG / steps, Safety Bypass), designed
+                // once in Screens\Shared: the manual pages with axes hold it, and the program
+                // shows it above Axis Settings' rows and on the Axis Monitor (14 October).
+                Extra = new[]
+                {
+                    new MachineScreen
+                    {
+                        Role = ScreenRoles.AxisBar,
+                        TitleKey = "Bar_AxisJog",
+                        TitleFallback = "Axes' manual movement",
+                        CreateView = () => new Screens.Shared.AxisJogBar()
+                    }
+                }
             });
         }
     }

@@ -126,6 +126,12 @@
     <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
       <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\Shared\AxisJogBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Shared\AxisJogBar.Designer.cs">
+      <DependentUpon>AxisJogBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Parameters\Options.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -175,7 +175,9 @@ namespace Kaban.UI.Controls
                     }
                     else
                     {
-                        (c.Name == AxisSettingHMI.MotionBarName ? (Control)frame.Head : frame.HeadContent).Controls.Add(c);
+                        // the Motion monitor and a machine's bar (the axes' speed and jog step)
+                        // stay where they are while the rows scroll sideways
+                        (c.Name == AxisSettingHMI.MotionBarName || c is IPageBar ? (Control)frame.Head : frame.HeadContent).Controls.Add(c);
                         c.Location = was;
                     }
                 }

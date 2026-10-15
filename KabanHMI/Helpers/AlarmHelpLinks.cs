@@ -396,7 +396,7 @@ namespace Kaban.UI.Helpers
             {
                 var screen = kv.Value;
                 if (screen.CreateView == null) continue;
-                if (screen.Role == ScreenRoles.Alarms || screen.Role == ScreenRoles.HmiSettings) continue;
+                if (screen.Role == ScreenRoles.Alarms || screen.Role == ScreenRoles.HmiSettings || screen.Role == ScreenRoles.AxisBar) continue;
                 _pending.Enqueue(() => HarvestScreen(screen));
             }
             Application.Idle += OnIdle;

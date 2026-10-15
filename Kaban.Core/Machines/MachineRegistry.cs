@@ -95,6 +95,12 @@ namespace Kaban.Core.Machines
                     yield return new KeyValuePair<MountedModule, MachineScreen>(m, s);
         }
 
+        /// <summary>The axes' bar of every mounted machine that has one (ScreenRoles.AxisBar), main machine first.</summary>
+        public static IEnumerable<KeyValuePair<MountedModule, MachineScreen>> AxisBars()
+        {
+            return AllScreens().Where(kv => string.Equals(kv.Value.Role ?? "", ScreenRoles.AxisBar, StringComparison.OrdinalIgnoreCase));
+        }
+
         /// <summary>The side pages of every mounted machine (ScreenRoles.SidePage), main machine first.</summary>
         public static IEnumerable<KeyValuePair<MountedModule, MachineScreen>> SidePages()
         {
@@ -134,8 +140,10 @@ namespace Kaban.Core.Machines
                 var mounted = pair.Key;
                 var screen = pair.Value;
                 string role = screen.Role ?? "";
-                // Side pages are on the right-hand bar, not in the menu (see SidePages).
-                if (string.Equals(role, ScreenRoles.SidePage, StringComparison.OrdinalIgnoreCase)) continue;
+                // Side pages are on the right-hand bar, not in the menu (see SidePages);
+                // a machine's axes' bar is on the pages with its axes (see AxisBars).
+                if (string.Equals(role, ScreenRoles.SidePage, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(role, ScreenRoles.AxisBar, StringComparison.OrdinalIgnoreCase)) continue;
 
                 if (role.Length == 0)
                 {

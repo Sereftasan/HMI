@@ -114,6 +114,15 @@ namespace Kaban.Core.Machines
         /// Studio like any page; its HMI controls are read like a page's.
         /// </summary>
         public const string SidePage = "SidePage";
+
+        /// <summary>
+        /// THE MACHINE'S AXES' MANUAL MOVEMENT BAR (14 October): the speed and the jog
+        /// step - designed once (a MachineBarHMI of the machine's own). A page shows it
+        /// by holding it, as any control (FA2010's manual pages with axes, its Axis
+        /// Settings); declared here, the Axis Monitor - made by the program - shows it
+        /// too. Not in the menu.
+        /// </summary>
+        public const string AxisBar = "AxisBar";
     }
 
     /// <summary>

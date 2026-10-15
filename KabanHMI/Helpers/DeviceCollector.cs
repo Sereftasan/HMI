@@ -227,7 +227,8 @@ namespace Kaban.UI.Helpers
             {
                 var screen = kv.Value;
                 if (screen.CreateView == null) continue;
-                if (screen.Role == ScreenRoles.HmiSettings) continue;
+                // (a machine's axes' bar is on its pages: found there)
+                if (screen.Role == ScreenRoles.HmiSettings || screen.Role == ScreenRoles.AxisBar) continue;
                 string screenTitle = LanguageManager.GetString(screen.TitleKey ?? "", screen.TitleFallback ?? "");
                 if (!kv.Key.IsMain) screenTitle = Kaban.UI.Screens.MachineTabScreen.DisplayNameOf(kv.Key) + " / " + screenTitle;
 
@@ -356,7 +357,7 @@ namespace Kaban.UI.Helpers
             foreach (var kv in MachineRegistry.AllScreens())
             {
                 var screen = kv.Value;
-                if (screen.CreateView == null || screen.Role == ScreenRoles.HmiSettings) continue;
+                if (screen.CreateView == null || screen.Role == ScreenRoles.HmiSettings || screen.Role == ScreenRoles.AxisBar) continue;
                 // The key's translation, else the screen's own wording - never the bare key.
                 string title = LanguageManager.GetString(screen.TitleKey ?? "", screen.TitleFallback ?? "");
                 if (!kv.Key.IsMain) title = Kaban.UI.Screens.MachineTabScreen.DisplayNameOf(kv.Key) + " / " + title;

@@ -58,6 +58,19 @@ namespace Kaban.UI.Screens
                                             { Dock = DockStyle.Top, WrapContents = true };
         private string _built;
 
+        /// <summary>
+        /// THE MACHINES' AXES' BARS (14 October: "copy this control set ... to the Axis
+        /// Monitor"): each machine's speed and jog step (ScreenRoles.AxisBar), at the top,
+        /// for the machines whose axes are listed - made once, its parts in rows when the
+        /// side page is narrower than it.
+        /// </summary>
+        private readonly Panel _machineBars = new Panel { Dock = DockStyle.Top, Height = 0, BackColor = Color.White, Name = "monitorMachineBars", Padding = new Padding(4, 4, 0, 4) };
+        private readonly Dictionary<string, MachineBarHMI> _barOf = new Dictionary<string, MachineBarHMI>();
+
+        /// <summary>The machines' bars shown (tests).</summary>
+        internal IList<MachineBarHMI> MachineBars { get { return _machineBars.Controls.OfType<MachineBarHMI>().Where(_wantedBars.Contains).ToList(); } }
+        private readonly HashSet<MachineBarHMI> _wantedBars = new HashSet<MachineBarHMI>();
+
         /// <summary>Column widths: the Axis Settings row's own.</summary>
         internal const int WName = AxisSettingHMI.WAxis, WPosition = AxisSettingHMI.WPosition, WMeter = AxisSettingHMI.WMeter,
                            Gap = AxisSettingHMI.Gap, Left0 = 4;
@@ -103,6 +116,8 @@ namespace Kaban.UI.Screens
             Controls.Add(_head);
             ScrollFollow.Follow(_list, FollowRows);
             Controls.Add(_bar);
+            Controls.Add(_machineBars);
+            _machineBars.Resize += (s, e) => FitMachineBars();
             Build();
 
             // A sign-in (an Admin's picks, or none) and a pick changed: the rows again.
@@ -236,9 +251,58 @@ namespace Kaban.UI.Screens
                 // Laid out once they are all there: a column is there when any axis has it.
                 foreach (var r in rows) r.BuildRow();
                 if (rows.Count > 0) AddHeadings(rows[0]);
+                ShowMachineBars(axes);
             }
             finally { _list.ResumeLayout(); }
             FitBar();
+        }
+
+        /// <summary>The bars of the machines whose axes are listed - made the first time, kept after.</summary>
+        private void ShowMachineBars(IEnumerable<AlarmHelpLinks.AxisInfo> axes)
+        {
+            var owners = new HashSet<string>(axes.Select(a =>
+            {
+                var st = PlcManager.Instance.GetStation(a.Station);
+                return st != null ? st.OwnerModuleId ?? "" : "";
+            }), StringComparer.OrdinalIgnoreCase);
+            // one machine only (its stations may not name it): its bar
+            var bars = Kaban.Core.Machines.MachineRegistry.AxisBars().ToList();
+            foreach (var kv in bars)
+            {
+                string id = kv.Key.Module.ModuleId ?? "";
+                bool wanted = owners.Contains(id) || (bars.Count == 1 && owners.Count > 0 && owners.All(o => o.Length == 0));
+                MachineBarHMI bar;
+                if (!_barOf.TryGetValue(id, out bar))
+                {
+                    if (!wanted) continue;
+                    try
+                    {
+                        bar = kv.Value.CreateView() as MachineBarHMI;
+                        if (bar == null) continue;
+                        Kaban.UI.Helpers.StationMap.Apply(kv.Key.Context, bar);
+                    }
+                    catch (Exception ex) { AuditLogger.Log("axis bar of " + id + ": " + ex.Message); continue; }
+                    bar.Margin = Padding.Empty;
+                    _barOf[id] = bar;
+                    _machineBars.Controls.Add(bar);
+                }
+                bar.Visible = wanted;
+                if (wanted) _wantedBars.Add(bar); else _wantedBars.Remove(bar);
+            }
+            FitMachineBars();
+        }
+
+        /// <summary>Each bar as wide as the side page (its parts in rows when narrower), one under the other.</summary>
+        private void FitMachineBars()
+        {
+            int y = _machineBars.Padding.Top, w = Math.Max(60, _machineBars.ClientSize.Width - _machineBars.Padding.Horizontal);
+            foreach (var bar in _machineBars.Controls.OfType<MachineBarHMI>().Where(_wantedBars.Contains))
+            {
+                bar.Location = new Point(_machineBars.Padding.Left, y);
+                y += bar.FitTo(w) + 4;
+            }
+            int h = y == _machineBars.Padding.Top ? 0 : y - 4 + _machineBars.Padding.Bottom;
+            if (_machineBars.Height != h) _machineBars.Height = h;
         }
 
         /// <summary>The columns' headings, above the list: staying while the rows scroll up and down, following them sideways.</summary>
