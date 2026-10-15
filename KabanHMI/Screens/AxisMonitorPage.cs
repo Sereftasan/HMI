@@ -402,7 +402,9 @@ namespace Kaban.UI.Screens
                 Digits = a.Digits,
                 Suffix = a.Suffix,
                 UnitType = a.Suffix == "mm" ? UnitType.Length : UnitType.None,
-                ComparedAddress = a.RealPosition ?? "",
+                ComparedAddress = a.LoadSideEncoder ?? "",
+                ComparedDivisor = a.LoadSideEncoderDivisor,
+                ComparedCaptionKey = "Tip_LoadEncoder",
                 Font = new Font("Segoe UI", 12F, FontStyle.Bold)
             };
             Position.SetBounds(x, 4, AxisMonitorPage.WPosition, AxisSettingHMI.RowHeight - 8);

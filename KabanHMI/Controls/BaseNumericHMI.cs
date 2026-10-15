@@ -307,17 +307,24 @@ namespace Kaban.UI.Controls
         // ---- a second value compared with this one (an axis's real position) ----
 
         /// <summary>
-        /// A device holding the value this one should agree with - an axis's REAL
-        /// (encoder) position beside its commanded position. Not a designer
-        /// property: AxisSettingHMI sets it from its RealPositionAddress. The
-        /// scanner reads it (same data type), and the tooltip starts with it and
-        /// the difference, in the value's unit at FULL RESOLUTION (every count: 4
-        /// decimals for a divisor of 10000) - at the field's own 2 decimals a
-        /// difference of a few counts would read 0.00 (30 September: shown in mm,
-        /// not in raw counts).
+        /// A device holding the value this one should agree with - an axis's
+        /// load-side encoder beside its position. Not a designer property:
+        /// AxisSettingHMI sets it from its LoadSideEncoderAddress. The scanner reads
+        /// it (same data type), and the tooltip starts with it and the difference,
+        /// in the value's unit at FULL RESOLUTION (every count: 4 decimals for a
+        /// divisor of 10000) - at the field's own 2 decimals a difference of a few
+        /// counts would read 0.00 (30 September: shown in mm, not in raw counts).
         /// </summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string ComparedAddress { get; set; } = "";
+
+        /// <summary>
+        /// The compared value's own divisor - a load-side encoder read by the PLC
+        /// counts in its own unit (FA2010's Robot X: 0.001 mm against the module's
+        /// 0.0001 mm, 15 October). 0: this value's Divisor.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public double ComparedDivisor { get; set; }
 
         /// <summary>Caption of the compared value in the tooltip (a translation key).</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -337,9 +344,12 @@ namespace Kaban.UI.Controls
             if (!_comparedRaw.HasValue || !_lastRaw.HasValue)
                 return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
             double d = Divisor != 0 ? Divisor : 1;
-            int decimals = ResolutionDecimals(Divisor, DecimalPlaces);
-            string shown = FormatValue(_comparedRaw.Value / d, decimals, false);
-            double diff = (_lastRaw.Value - _comparedRaw.Value) / d;
+            double cd = ComparedDivisor != 0 ? ComparedDivisor : d;
+            // to the last count of the finer of the two
+            int decimals = Math.Max(ResolutionDecimals(d, DecimalPlaces), ResolutionDecimals(cd, DecimalPlaces));
+            double compared = _comparedRaw.Value / cd;
+            string shown = FormatValue(compared, decimals, false);
+            double diff = _lastRaw.Value / d - compared;
             return caption + ":\t" + shown + "\n" +
                    LanguageManager.GetString("Tip_PositionDifference", "Difference") + ":\t" +
                    (diff > 0 ? "+" : "") + FormatValue(diff, decimals, false);

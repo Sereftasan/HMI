@@ -78,13 +78,23 @@ class AXI {
         var order = props.Cast<PropertyDescriptor>().Where(p => p.Category.Trim() == "Device").Select(p => p.Name).ToList();
         Check("  in that order", string.Join(",", order) == "PlcNumber,HMIAxisIndex,MotionNumber,MotionAxisIndex", string.Join(",", order));
         Check("no 'Simple motion' category", !props.Cast<PropertyDescriptor>().Any(p => p.IsBrowsable && p.Category.Contains("Simple motion")));
-        Check("LoadEncoderValueAddress in Movement", cat("LoadEncoderValueAddress") == "Movement");
-        Check("the old names hidden", new[] { "AxisNumber", "MotionModuleNumber", "ModuleAxisIndex", "RealPositionAddress" }
+        // 15 October: the load-side encoder in a category of its own, with its own divisor; the position has none
+        Check("LoadSideEncoderAddress and LoadSideEncoderDivisor in 'Load Side Encoder', in that order",
+              cat("LoadSideEncoderAddress") == "Load Side Encoder" && cat("LoadSideEncoderDivisor") == "Load Side Encoder" &&
+              string.Join(",", props.Cast<PropertyDescriptor>().Where(p => p.Category.Trim() == "Load Side Encoder").Select(p => p.Name)) == "LoadSideEncoderAddress,LoadSideEncoderDivisor",
+              cat("LoadSideEncoderAddress") + " / " + cat("LoadSideEncoderDivisor"));
+        Check("  the position's divisor gone (it is the row's Divisor)", props["PositionDivisor"] == null && typeof(AxisSettingHMI).GetProperty("PositionDivisor") == null);
+        Check("  Movement: the jogs and the position only",
+              string.Join(",", props.Cast<PropertyDescriptor>().Where(p => p.IsBrowsable && p.Category.Trim() == "Movement").Select(p => p.Name).OrderBy(n => n)) ==
+              "CommandBackAddress,CommandForwardAddress,PositionAddress,PositionDataType",
+              string.Join(",", props.Cast<PropertyDescriptor>().Where(p => p.IsBrowsable && p.Category.Trim() == "Movement").Select(p => p.Name)));
+        Check("the old names hidden", new[] { "AxisNumber", "MotionModuleNumber", "ModuleAxisIndex", "RealPositionAddress", "LoadEncoderValueAddress" }
               .All(n => props[n] == null || !props[n].IsBrowsable));
         var old = new AxisSettingHMI { AxisNumber = 3, MotionModuleNumber = 2, ModuleAxisIndex = 5, RealPositionAddress = "W10" };
+        var older = new AxisSettingHMI { LoadEncoderValueAddress = "W12" };
         Check("  and still kept by an older designer file", old.HMIAxisIndex == 3 && old.MotionNumber == 2 && old.MotionAxisIndex == 5 &&
-              old.LoadEncoderValueAddress == "W10" && old.HasMotion);
-        var enc = new AxisSettingHMI { PositionAddress = "W0", LoadEncoderValueAddress = "W10" };
+              old.LoadSideEncoderAddress == "W10" && older.LoadSideEncoderAddress == "W12" && old.HasMotion);
+        var enc = new AxisSettingHMI { PositionAddress = "W0", LoadSideEncoderAddress = "W10" };
         enc.BuildRow();
         var encPos = enc.Controls.OfType<NumericDisplayHMI>().First();
         Check("the position's tooltip: 'Load encoder value'", encPos.ComparedAddress == "W10" && encPos.ComparedCaptionKey == "Tip_LoadEncoder" &&

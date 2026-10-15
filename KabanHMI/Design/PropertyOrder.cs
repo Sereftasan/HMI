@@ -37,7 +37,7 @@ namespace Kaban.UI.Design
             "Valve & Feedback", "Inverter", "Device", "Encoder", "Unit", "Axis", "Action", "Action A", "Action B", "Movement", "Position",
             "Target position", "Calibration", "Positioning tolerance", "Direction ref",
             "Reference", "Measuring tolerance", "Minimum limit", "Unclamping interval", "Value", "Settings",
-            "Commands", "Display", "Input", "Formula", "State", "Meters", "Bands", "Diagnostics", "Parts",
+            "Load Side Encoder", "Commands", "Display", "Input", "Formula", "State", "Meters", "Bands", "Diagnostics", "Parts",
             "Conditions", "Security", "Help"
         };
 
@@ -142,11 +142,12 @@ namespace Kaban.UI.Design
             ["AxisSettingHMI"] = L(
                 C("Device", "PlcNumber", "HMIAxisIndex", "MotionNumber", "MotionAxisIndex"),
                 C("Axis", "AxisNameKey", "VerticalMovement", "ReferenceSensorAddress", "ReferenceSensorSide"),
-                C("Movement", "CommandBackAddress", "CommandForwardAddress", "PositionAddress", "PositionDataType", "PositionDivisor", "LoadEncoderValueAddress"),
+                C("Movement", "CommandBackAddress", "CommandForwardAddress", "PositionAddress", "PositionDataType"),
                 C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix",
                            "EntryMinimum", "EntryMaximum"),
                 C("Settings", "MinLimitAddress", "MaxLimitAddress", "ReferenceAddress", "CalibrationAddress",
                               "TravelPerRevolutionAddress", "BacklashAddress"),
+                C("Load Side Encoder", "LoadSideEncoderAddress", "LoadSideEncoderDivisor"),
                 C("Commands", "CalibrateAddress", "GoToReferenceAddress", "HomeRequestAddress"),
                 C("Meters", "CurrentAddress", "CurrentDivisor", "CurrentFullScale", "ZDistanceAddress", "ZDistanceDivisor", "ZDistanceFullScale"),
                 C("Diagnostics", "ErrorAddress", "ServoAlarmAddress", "AxisAlarmAddress", "AxisWarningAddress"),

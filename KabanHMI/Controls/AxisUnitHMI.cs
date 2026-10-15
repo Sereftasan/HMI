@@ -148,7 +148,8 @@ namespace Kaban.UI.Controls
             // THE LOAD-SIDE ENCODER in the position's tooltip, with the difference - as on
             // the axis row (9 October: FA2010's Robot X shows D22 there, the old Encoders
             // page's "Robot Position", which is gone from that page).
-            _unit.PositionDisplay.ComparedAddress = (a.RealPosition ?? "").Trim();
+            _unit.PositionDisplay.ComparedAddress = (a.LoadSideEncoder ?? "").Trim();
+            _unit.PositionDisplay.ComparedDivisor = a.LoadSideEncoderDivisor;
             _unit.PositionDisplay.ComparedCaptionKey = "Tip_LoadEncoder";
 
             // The reference sensor on ONE side only, as on the axis row.

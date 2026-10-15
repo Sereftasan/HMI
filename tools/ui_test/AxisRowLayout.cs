@@ -42,7 +42,7 @@ class AR {
             MinLimitAddress = "D2", MaxLimitAddress = "D4", ReferenceAddress = "D6", CalibrationAddress = "D8",
             CalibrateAddress = "M3", GoToReferenceAddress = "M4", CurrentAddress = "W0A", ZDistanceAddress = "D73",
             AxisAlarmAddress = "W4", AxisWarningAddress = "W5", ServoAlarmAddress = "W0B" };
-        if (extra.Contains("real")) a.LoadEncoderValueAddress = "W10";
+        if (extra.Contains("real")) a.LoadSideEncoderAddress = "W10";
         if (extra.Contains("travel")) a.TravelPerRevolutionAddress = "D100";
         if (extra.Contains("backlash")) a.BacklashAddress = "D102";
         return a;
@@ -79,7 +79,7 @@ class AR {
         var r2 = Full("Axis_RobotX", "real");
         r2.BuildRow();
         var p2 = r2.Controls.OfType<NumericDisplayHMI>().Single();
-        Check("the position compares with LoadEncoderValueAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
+        Check("the position compares with LoadSideEncoderAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
         var mem = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 81848988 & 0xFFFF }, { "W11", 81848988 >> 16 } };
         p2.UpdateState(a => mem.ContainsKey(a) ? mem[a] : 0, c => true);
         var build = typeof(BaseNumericHMI).GetMethod("BuildTooltip", Any);
@@ -92,8 +92,27 @@ class AR {
         Check("  then the usual notes", tip.Contains("Address:"), tip.Replace("\n", " | "));
         Check("no load encoder, no such lines", !((string)build.Invoke(pos, null)).Contains("Load encoder"));
         var devs = DeviceCollector.FromControl(r2, 1);
-        Check("the device list names it", devs.Any(d => d.Address == "W10" && d.UsedAs.Contains("real position")),
+        Check("the device list names it", devs.Any(d => d.Address == "W10" && d.UsedAs.Contains("load-side encoder")),
               string.Join(" ", devs.Select(d => d.Address)));
+
+        // 15 October: the load-side encoder is read by the PLC itself, in its own count - its own divisor
+        // (FA2010's Robot X: D22 in 0.001 mm), while the position is divided by the row's Divisor (0.0001 mm)
+        Console.WriteLine("--- the load-side encoder in its own count ---");
+        var ls3 = Full("Axis_RobotX", "real");
+        ls3.LoadSideEncoderDivisor = 1000;
+        ls3.BuildRow();
+        var lp3 = ls3.Controls.OfType<NumericDisplayHMI>().Single();
+        Check("the position divided by the row's Divisor (10000), the encoder by its own (1000)", lp3.Divisor == 10000 && lp3.ComparedDivisor == 1000,
+              lp3.Divisor + " / " + lp3.ComparedDivisor);
+        var lmem3 = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 8184899 & 0xFFFF }, { "W11", 8184899 >> 16 } };
+        lp3.UpdateState(a => lmem3.ContainsKey(a) ? lmem3[a] : 0, c => true);
+        var ll3 = ((string)build.Invoke(lp3, null)).Split('\n');
+        Check("  8184899 (0.001 mm) reads 8184.8990 mm - to the finer one's last count", ll3[0].EndsWith("\t8184.8990 mm"), ll3[0]);
+        Check("  against the position's 8184.9000 mm: +0.0010 mm", ll3.Length > 1 && ll3[1].EndsWith("\t+0.0010 mm"), ll3.Length > 1 ? ll3[1] : "");
+        Check("  the position itself as before: 8184.90 mm", lp3.Text == "8184.90 mm", lp3.Text);
+        Check("no divisor of its own (0): the row's", new AxisSettingHMI { Divisor = 10000 }.LoadSideEncoderScale == 10000 &&
+              new AxisSettingHMI { Divisor = 10000, LoadSideEncoderDivisor = 1000 }.LoadSideEncoderScale == 1000 &&
+              new AxisSettingHMI { Divisor = 100000, LoadSideEncoderDivisor = 1000 }.PositionScale == 100000);
 
         Console.WriteLine("--- travel per revolution and backlash ---");
         Check("none given: no fields, no columns", !col.ContainsKey("TravelPerRev") && !col.ContainsKey("Backlash") &&

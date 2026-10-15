@@ -160,8 +160,13 @@ class CET {
         Console.WriteLine("--- Robot X: the old Robot Position (D22) in its position's tooltip ---");
         var robot = Page("Manual", "ManualRobot");
         var robotX = robot.Controls.OfType<AxisUnitHMI>().First(a => a.AxisNumber == 1);
-        Check("the axis row's load-side encoder D22 (Bin_32 / 1000, as W0)", AlarmHelpLinks.FindAxis(1, 1).RealPosition == "D22" &&
-              robotX.Unit.PositionDisplay.ComparedAddress == "D22", robotX.Unit.PositionDisplay.ComparedAddress);
+        // 15 October: D22 is read by the PLC itself, in 0.001 mm (the old Encoders page's / 1000) - its own divisor,
+        // the position W0 the row's (10000)
+        var rx = AlarmHelpLinks.FindAxis(1, 1);
+        Check("the axis row's load-side encoder D22 / 1000 (Bin_32, as W0 / 10000)", rx.LoadSideEncoder == "D22" && rx.LoadSideEncoderDivisor == 1000 &&
+              rx.Divisor == 10000 && robotX.Unit.PositionDisplay.ComparedAddress == "D22" && robotX.Unit.PositionDisplay.ComparedDivisor == 1000 &&
+              robotX.Unit.PositionDisplay.Divisor == 10000,
+              robotX.Unit.PositionDisplay.ComparedAddress + " / " + robotX.Unit.PositionDisplay.ComparedDivisor + ", " + rx.Divisor);
 
         Console.WriteLine("--- the split pages ---");
         Func<Control, List<NumericInputHMI>> fields = p => p.Controls.OfType<NumericInputHMI>().OrderBy(n => n.Top).ToList();

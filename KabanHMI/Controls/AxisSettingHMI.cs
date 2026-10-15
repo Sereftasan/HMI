@@ -81,42 +81,63 @@ namespace Kaban.UI.Controls
         [Category(" Movement"), Description("Jog forward / plus.")]
         public string CommandForwardAddress { get; set; }
 
-        [Category(" Movement"), Description("Live axis position.")]
+        [Category(" Movement"), Description("Live axis position. Divided by the row's Divisor, as its limits, reference and calibration.")]
         public string PositionAddress { get; set; }
 
         [Category(" Movement")]
         public DataTypeEnum PositionDataType { get; set; }
 
         /// <summary>
-        /// The POSITION's own divisor, when the PLC keeps the position in a finer or
-        /// coarser count than the settings: FA2010's live positions are in 0.001 mm
-        /// (0.0001 degree) while its limits, reference and calibration are in
-        /// 0.0001 mm (0.00001 degree) - its old HMI divided them by 1000 and 10000
-        /// (8 October). 0 (the default): the row's Divisor, as before.
+        /// What the position is divided by: the row's Divisor. The position is kept by
+        /// the motion module in the same count as its limits, reference and
+        /// calibration (15 October: "the axis positions are all formatted same as the
+        /// related parameters"), so it has no divisor of its own any more - the one it
+        /// had (PositionDivisor) is the load-side encoder's now.
         /// </summary>
-        [Category(" Movement"), DefaultValue(0D), Description("Raw-to-display divisor of the position only. 0: the row's Divisor.")]
-        public double PositionDivisor { get; set; }
-
-        /// <summary>What the position is divided by: PositionDivisor, or the row's Divisor.</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public double PositionScale { get { return PositionDivisor > 0 ? PositionDivisor : (Divisor > 0 ? Divisor : 1); } }
+        public double PositionScale { get { return Divisor > 0 ? Divisor : 1; } }
+
+        // ---- the load-side encoder ----
+        // 15 October: "the load side encoder has different format because it is
+        // connected to PLC itself, not to the motion module" - its own category, its
+        // own divisor.
 
         /// <summary>
-        /// The LOAD-SIDE ENCODER's value (a linear scale on the axis), when the PLC
-        /// keeps it apart from the position above. Not shown as a field: the
-        /// position's tooltip starts with it and with the difference, in the axis's
-        /// unit to its last count (4 decimals for a divisor of 10000) - at the row's
-        /// 2 decimals a difference of a few counts would read 0.00. (It was
-        /// RealPositionAddress: the servo motor's own encoder position is the
-        /// simple motion module's "Real current value", Md.101, on the Motion monitor.)
+        /// The LOAD-SIDE ENCODER's value (a linear scale on the axis), read by the PLC
+        /// itself - not by the motion module. Not shown as a field: the position's
+        /// tooltip starts with it and with the difference, in the axis's unit to the
+        /// last count of the finer of the two (4 decimals for a divisor of 10000) - at
+        /// the row's 2 decimals a difference of a few counts would read 0.00. (It was
+        /// LoadEncoderValueAddress, and RealPositionAddress before that: the servo
+        /// motor's own encoder position is the simple motion module's "Real current
+        /// value", Md.101, on the Motion monitor.)
         /// </summary>
-        [Category(" Movement"), DefaultValue(""), Description("Load-side encoder value. Shown in the position's tooltip with its difference, in the axis's unit to its last count.")]
-        public string LoadEncoderValueAddress { get; set; }
+        [Category(" Load Side Encoder"), DefaultValue(""),
+         Description("The load-side encoder's value (read by the PLC itself, in its own count). Shown in the position's tooltip with the difference, in the axis's unit to its last count.")]
+        public string LoadSideEncoderAddress { get; set; }
 
-        /// <summary>Kept so older designer files compile; forwards to LoadEncoderValueAddress.</summary>
+        /// <summary>
+        /// The load-side encoder's raw-to-display divisor - its own count, not the
+        /// motion module's (FA2010's Robot X: D22 in 0.001 mm, the old Encoders page's
+        /// 1000, while the position is in 0.0001 mm). 0: the row's Divisor.
+        /// </summary>
+        [Category(" Load Side Encoder"), DefaultValue(0D),
+         Description("Raw-to-display divisor of the load-side encoder's value only (the PLC's count, e.g. 1000 for 0.001 mm). 0: the row's Divisor.")]
+        public double LoadSideEncoderDivisor { get; set; }
+
+        /// <summary>What the load-side encoder's value is divided by: LoadSideEncoderDivisor, or the row's Divisor.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public double LoadSideEncoderScale { get { return LoadSideEncoderDivisor > 0 ? LoadSideEncoderDivisor : PositionScale; } }
+
+        /// <summary>Kept so older designer files compile; forwards to LoadSideEncoderAddress.</summary>
         [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public string RealPositionAddress { get { return LoadEncoderValueAddress; } set { LoadEncoderValueAddress = value; } }
+        public string LoadEncoderValueAddress { get { return LoadSideEncoderAddress; } set { LoadSideEncoderAddress = value; } }
+
+        /// <summary>Kept so older designer files compile; forwards to LoadSideEncoderAddress.</summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public string RealPositionAddress { get { return LoadSideEncoderAddress; } set { LoadSideEncoderAddress = value; } }
 
         // Position, min, max, reference and calibration are all the SAME physical
         // quantity on the same axis, so they share one divisor, one digit count
@@ -498,7 +519,7 @@ namespace Kaban.UI.Controls
             ErrorAddress = "";
             ReferenceSensorAddress = "";
             AxisAlarmAddress = AxisWarningAddress = ServoAlarmAddress = "";
-            LoadEncoderValueAddress = TravelPerRevolutionAddress = BacklashAddress = "";
+            LoadSideEncoderAddress = TravelPerRevolutionAddress = BacklashAddress = "";
             PositionDataType = DataTypeEnum.Bin_32;
             SettingDataType = DataTypeEnum.Bin_32;
             Divisor = 10000;
@@ -593,8 +614,10 @@ namespace Kaban.UI.Controls
                         Digits = Digits,
                         Suffix = Suffix,
                         UnitType = PositionUnitType,
-                        // The load-side encoder's value, in the tooltip with the difference.
-                        ComparedAddress = (LoadEncoderValueAddress ?? "").Trim(),
+                        // The load-side encoder's value, in the tooltip with the difference -
+                        // divided by its own divisor (the PLC's count, not the module's).
+                        ComparedAddress = (LoadSideEncoderAddress ?? "").Trim(),
+                        ComparedDivisor = LoadSideEncoderScale,
                         ComparedCaptionKey = "Tip_LoadEncoder",
                         // The position is the number the operator watches while
                         // jogging, so it is the one thing on the row drawn large.
@@ -957,7 +980,7 @@ namespace Kaban.UI.Controls
 
         // ---- a copy of the row (the Axis Monitor) ------------------------------------
 
-        private static readonly string[] NotCopied = { "MonitorMode", "AxisName", "AxisNumber", "RealPositionAddress", "MotionModuleNumber", "ModuleAxisIndex" };
+        private static readonly string[] NotCopied = { "MonitorMode", "AxisName", "AxisNumber", "RealPositionAddress", "LoadEncoderValueAddress", "MotionModuleNumber", "ModuleAxisIndex" };
 
         /// <summary>The row's settings (every property of its own), to make it again elsewhere.</summary>
         public System.Collections.Generic.Dictionary<string, object> Snapshot()

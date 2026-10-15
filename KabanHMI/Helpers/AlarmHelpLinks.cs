@@ -171,8 +171,11 @@ namespace Kaban.UI.Helpers
             public double Divisor;
             public bool Vertical;
             /// <summary>For the Axis Monitor: the current meter and when the row is shown.</summary>
-            public string Current = "", RealPosition = "";
+            public string Current = "";
             public double CurrentDivisor = 1, CurrentFullScale = 100;
+            /// <summary>The load-side encoder (read by the PLC itself) and its own divisor - the position's tooltip compares them.</summary>
+            public string LoadSideEncoder = "";
+            public double LoadSideEncoderDivisor = 1;
             public Kaban.Core.Enums.SystemCondition Visibility;
             /// <summary>When its jogs may be used (the row's, and each jog's own added) - an AxisUnitHMI's too.</summary>
             public Kaban.Core.Enums.SystemCondition BackEnable, ForwardEnable;
@@ -248,7 +251,8 @@ namespace Kaban.UI.Helpers
                 ServoAlarm = a.ServoAlarmAddress ?? "", AxisAlarm = a.AxisAlarmAddress ?? "",
                 AxisWarning = a.AxisWarningAddress ?? "",
                 Current = a.CurrentAddress ?? "", CurrentDivisor = a.CurrentDivisor, CurrentFullScale = a.CurrentFullScale,
-                RealPosition = a.LoadEncoderValueAddress ?? "", Visibility = a.VisibilityConditions,
+                LoadSideEncoder = a.LoadSideEncoderAddress ?? "", LoadSideEncoderDivisor = a.LoadSideEncoderScale,
+                Visibility = a.VisibilityConditions,
                 BackEnable = a.EnableConditions | a.BackEnableConditions, ForwardEnable = a.EnableConditions | a.ForwardEnableConditions,
                 BackTrigger = a.BackEnableTrigger, ForwardTrigger = a.ForwardEnableTrigger,
                 Row = a.Snapshot()
