@@ -23,6 +23,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     it is above the Manual Movement tabs (over all of them) and on the Axis Monitor; Machine Parameters > Axis has a
     copy of its controls. The library project of 15 October (Kaban.Machines.FA2010.Shared) is gone.
   - a44b299 - Axis page: the speed and steps at the top, the PLC axis items / Motion monitor just before the column names.
+  - 4965dc0 - Machine Parameters > Axis holds AxisJogBar itself again (no copy of its buttons): the program is "Any CPU"
+    to Visual Studio, "Could not find type" was the machine not built / an older build loaded.
+  - 8e4b637 - AxisJogBar: its parts 14 from the left and 13 from the top and bottom, as the Home page's speed.
   - c61f1a2, 63d5fb9 - The lists were made in Visual Studio's designer too, moving the Axis page down 40 on every
     opening (saved: the column names at 92, Robot X on Robot Y); no more - your save of the page taken in, the shift undone.
 - 14 October (the Axis Settings page broken, two screenshots):
