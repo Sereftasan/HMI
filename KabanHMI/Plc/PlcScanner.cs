@@ -44,6 +44,28 @@ namespace Kaban.UI.Plc
         private readonly System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, int>> _plcIndexMap = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.Dictionary<string, int>>();
         private readonly System.Collections.Generic.Dictionary<int, int[]> _plcResults = new System.Collections.Generic.Dictionary<int, int[]>();
         private readonly System.Collections.Generic.Dictionary<int, int[]> _plcLastGood = new System.Collections.Generic.Dictionary<int, int[]>();
+        /// <summary>The batch the last good values were read with (its devices, in its order).</summary>
+        private readonly Dictionary<int, string[]> _plcLastGoodBatch = new Dictionary<int, string[]>();
+
+        // EACH BATCH'S OWN INDEX (17 October). A read in flight when the page or a tab
+        // changed came back with the OLD batch's values, and they were looked up by the
+        // NEW batch's index: for that scan every device read another device's value.
+        // Shown as an axis "jogged both ways" with its limits 0 and its reference sensor
+        // ON when the code came - and a code word read from the wrong place could raise
+        // an alarm of its own. The values are now always read by the batch they came with.
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<string[], Dictionary<string, int>> _batchIndex =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<string[], Dictionary<string, int>>();
+
+        /// <summary>Device -> place in that very batch.</summary>
+        private Dictionary<string, int> IndexOf(string[] batch)
+        {
+            return _batchIndex.GetValue(batch, b =>
+            {
+                var map = new Dictionary<string, int>();
+                for (int i = 0; i < b.Length; i++) map[b[i]] = i;
+                return map;
+            });
+        }
         private readonly System.Collections.Generic.Dictionary<int, int> _plcReconnectTicks = new System.Collections.Generic.Dictionary<int, int>();
         private readonly System.Collections.Generic.Dictionary<int, bool> _plcHealthy = new System.Collections.Generic.Dictionary<int, bool>();
 
@@ -375,9 +397,7 @@ namespace Kaban.UI.Plc
             {
                 var arr = kv.Value.ToArray();
                 _plcBatch[kv.Key] = arr;
-                var map = new Dictionary<string, int>();
-                for (int i = 0; i < arr.Length; i++) map[arr[i]] = i;
-                _plcIndexMap[kv.Key] = map;
+                _plcIndexMap[kv.Key] = IndexOf(arr);
             }
 
             _needsRebuild = false; // RESET the flag
@@ -767,10 +787,13 @@ namespace Kaban.UI.Plc
                     continue;
                 }
 
+                // the values and the batch they were read with - never another batch's index
+                string[] readWith = batch;
                 if (ok)
                 {
                     _plcResults[plc] = fresh;
                     _plcLastGood[plc] = fresh;
+                    _plcLastGoodBatch[plc] = batch;
                     LogStation(plc, true, batch.Length + " tags");
                     if (plc == 1) station1Fresh = true;
                 }
@@ -781,8 +804,14 @@ namespace Kaban.UI.Plc
                     LogStation(plc, false, failures.TryGetValue(plc, out why) ? why : "read failed");
                     // stale-but-real beats lying zeros; nothing at all -> no update
                     int[] lastGood;
-                    if (_plcLastGood.TryGetValue(plc, out lastGood) && lastGood.Length == batch.Length)
+                    string[] lastBatch;
+                    if (_plcLastGood.TryGetValue(plc, out lastGood) && _plcLastGoodBatch.TryGetValue(plc, out lastBatch) &&
+                        lastBatch != null && lastGood.Length == lastBatch.Length)
+                    {
                         _plcResults[plc] = lastGood;
+                        fresh = lastGood;
+                        readWith = lastBatch;
+                    }
                     else
                     {
                         _plcResults.Remove(plc);
@@ -791,6 +820,8 @@ namespace Kaban.UI.Plc
                 }
 
                 var capturedPlc = plc;
+                var capturedValues = fresh;
+                var capturedIndex = IndexOf(readWith);
                 lookups[plc] = (addr) =>
                 {
                     if (string.IsNullOrWhiteSpace(addr)) return 0;
@@ -815,15 +846,9 @@ namespace Kaban.UI.Plc
                     }
                     string cleanAddr = addr.Trim().ToUpper();
 
-                    Dictionary<string, int> map;
-                    int[] results;
-                    if (_plcIndexMap.TryGetValue(capturedPlc, out map) &&
-                        _plcResults.TryGetValue(capturedPlc, out results))
-                    {
-                        int idx;
-                        if (map.TryGetValue(cleanAddr, out idx) && idx < results.Length)
-                            return results[idx];
-                    }
+                    int idx;
+                    if (capturedValues != null && capturedIndex.TryGetValue(cleanAddr, out idx) && idx < capturedValues.Length)
+                        return capturedValues[idx];
 
                     // AUTO-HEALING: unknown tag -> queue for this STATION's batch
                     HashSet<string> dyn;
