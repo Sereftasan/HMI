@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 October:
+  - 80f1e8d - Coupling: a chain whose unit does not match the units coupled is faded and does nothing (a click
+    says why) - no more blinking of the ones that match. Axes couple only in step mode (not JOG: FA2010's JOG lamp
+    M174 OFF) and on the same page, wherever each one stands; positioning / encoder cylinders when their
+    FeedbackType is the same, wherever each one stands. Maintenance and Admin only: an operator sees no chain.
+  - 20331ec - The caption bar's blue blinking chain while units are coupled: its menu lists them (one clicked is
+    uncoupled) and last "Uncouple all".
+  - 4186fab - Cylinder FW/Back, right of Safety Bypass: while on, a cylinder / positioning started moves back and
+    forth every 5 s (its coupled units with it) until a button of it is pressed again or the function goes off.
+    Both buttons for Maintenance and Admin only, both off when the user changes. The step buttons 60 wide.
 - 16 October (night):
   - 4411c17 - The Axis lists (Axis page, Axis Monitor): an axis whose visibility conditions are not met is not offered.
   - 1814811 - Help pages: the step on show is marked by its beige box only - its number no longer blinks.
