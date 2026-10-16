@@ -57,6 +57,12 @@
     <Compile Include="Controls\MachineBarHMI.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\PercentSlider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScaleSlider.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SpeedOverrideHMI.cs">
       <SubType>Component</SubType>
     </Compile>

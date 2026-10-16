@@ -319,16 +319,16 @@ class UAP {
               page.Preview.Description.Contains("Axis Monitor") && ViewPreferences.All.All(p => p.Key != "AxisNameAlign"));
         Snap(page, page.Height, "/tmp/users_prefs_captions.png");
         Shut(page, caps);
-        page.ScaleBox.PerformClick(); Pump(60);
-        var menu = page.ScaleBox.OpenMenu;
-        var size125 = menu == null ? null : menu.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text == "125%");
-        if (size125 != null) typeof(ToolStripItem).GetMethod("OnMouseEnter", Any).Invoke(size125, new object[] { EventArgs.Empty });
+        // 16 October: the screen scale's slider (as the speed's) - the size it is held at, previewed
+        var scale = page.ScaleBox.Slider;
+        Func<int, MouseEventArgs> at = v => new MouseEventArgs(MouseButtons.Left, 1, (int)scale.GetType().GetMethod("XOf", Any).Invoke(scale, new object[] { v }), scale.Height / 2, 0);
+        typeof(Control).GetMethod("OnMouseDown", Any).Invoke(scale, new object[] { at(125) });
         Pump(20);
-        Check("the screen scale: its menu's size under the pointer", menu != null && page.Preview.Visible && page.Preview.Key == UsersPreferencesControl.ScaleKey &&
+        Check("the screen scale: the size its slider is held at, beside it", page.Preview.Visible && page.Preview.Key == UsersPreferencesControl.ScaleKey &&
               page.Preview.Value == "125%", page.Preview.Value);
-        if (menu != null) menu.Close();
+        typeof(Control).GetMethod("OnMouseUp", Any).Invoke(scale, new object[] { at(125) });
         Pump(30);
-        Check("  the menu closed: gone", !page.Preview.Visible);
+        Check("  let go: gone - and the field is 125%", !page.Preview.Visible && page.ScaleBox.Text == "125%", page.ScaleBox.Text);
 
         Console.WriteLine("--- the units of measure ---");
         var length = page.ComboOf(UnitManager.UnitKey(UnitType.Length));

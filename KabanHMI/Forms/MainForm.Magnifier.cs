@@ -167,19 +167,20 @@ namespace Kaban.UI.Forms
         internal ContextMenuStrip BuildZoomMenu()
         {
             return BuildScaleMenu(LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + " (" + DisplaySettings.Percent(UiScale.Factor) + ")",
-                                  ChosenFactor(), false, f => { if (f.HasValue) ChooseFactor(f.Value); });
+                                  ChosenFactor(), f => { if (f.HasValue) ChooseFactor(f.Value); });
         }
 
         /// <summary>
-        /// THE SCALE MENU - the caption bar's and User Settings': an optional
-        /// heading, "No specific request" when a choice may be none, the usual
-        /// sizes, and the row that sets any percent 1% at a time.
+        /// THE SCALE MENU under the caption bar's glass: its heading, and the screen scale
+        /// set as the speed is (16 October: "change the Screen Scale setting dropdown menu
+        /// to our new Speed setting control, it looks much neater") - the slider through the
+        /// usual sizes, the percentage for any size between them. Let go (or the keypad's
+        /// OK): the menu closes and the size is chosen.
         /// </summary>
-        internal static ContextMenuStrip BuildScaleMenu(string heading, double? chosen, bool offerNone, Action<double?> choose)
+        internal static ContextMenuStrip BuildScaleMenu(string heading, double? chosen, Action<double?> choose)
         {
-            var menu = new ContextMenuStrip { ShowImageMargin = true, Font = UiStyle.MenuFont };
+            var menu = new ContextMenuStrip { ShowImageMargin = false, Font = UiStyle.MenuFont };
             menu.Renderer = new HmiMenuRenderer();
-            menu.ImageScalingSize = UiScale.Px(new System.Drawing.Size(22, 22));
 
             if (!string.IsNullOrEmpty(heading))
             {
@@ -187,35 +188,17 @@ namespace Kaban.UI.Forms
                 {
                     Font = MenuHeaderFont(),
                     ForeColor = System.Drawing.Color.FromArgb(40, 46, 56),
-                    Margin = new Padding(-34, 2, 2, 2)
+                    Margin = new Padding(UiScale.Px(4), 2, 2, 2)
                 });
                 menu.Items.Add(new ToolStripSeparator());
             }
-            if (offerNone)
-            {
-                var none = new ToolStripMenuItem(NoScaleRequest) { Checked = !chosen.HasValue, Tag = null };
-                none.Click += (s, e) => choose(null);
-                menu.Items.Add(none);
-                menu.Items.Add(new ToolStripSeparator());
-            }
-
-            foreach (var f in FactorChoices)
-            {
-                double factor = f;
-                var item = new ToolStripMenuItem(DisplaySettings.Percent(factor))
-                {
-                    Checked = chosen.HasValue && Math.Abs(factor - chosen.Value) < 0.001,
-                    Tag = factor
-                };
-                item.Click += (s, e) => choose(factor);
-                menu.Items.Add(item);
-            }
-            menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(new ToolStripControlHost(new ZoomStepper(chosen ?? UiScale.Factor, f => { menu.Close(); choose(f); }))
+            var slider = new Kaban.UI.Controls.ScaleSlider { Value = chosen ?? UiScale.Factor, Name = "scaleSlider" };
+            slider.Chosen += (s, f) => { menu.Close(); choose(f); };
+            menu.Items.Add(new ToolStripControlHost(slider)
             {
                 AutoSize = false,
-                Size = new System.Drawing.Size(UiScale.Px(196), UiScale.Px(36)),
-                Margin = new Padding(UiScale.Px(4), 2, 2, 2)
+                Size = new System.Drawing.Size(UiScale.Px(300), UiScale.Px(34)),
+                Margin = new Padding(UiScale.Px(6), UiScale.Px(4), UiScale.Px(6), UiScale.Px(6))
             });
             return menu;
         }
@@ -229,73 +212,6 @@ namespace Kaban.UI.Forms
         private void ShowZoomMenu()
         {
             UiStyle.ShowPopup(BuildZoomMenu(), _btnZoom, new System.Drawing.Point(0, _btnZoom.Height));
-        }
-
-        /// <summary>
-        /// The row under the list: "-  137%  +" and a tick to apply it. The
-        /// buttons step by 1% and do not close the menu; the tick does.
-        /// </summary>
-        internal sealed class ZoomStepper : Panel
-        {
-            private readonly Label _value;
-            private int _percent;
-
-            public int Percent { get { return _percent; } }
-
-            public ZoomStepper(double start, Action<double> apply)
-            {
-                BackColor = System.Drawing.Color.White;
-                _percent = (int)Math.Round(DisplaySettings.Clamp(start) * 100);
-                Func<string, string, Button> button = (text, name) =>
-                {
-                    var b = new Button
-                    {
-                        Text = text, FlatStyle = FlatStyle.Flat, TabStop = false, AccessibleName = name,
-                        Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold), Cursor = Cursors.Hand
-                    };
-                    b.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(180, 186, 194);
-                    Controls.Add(b);
-                    return b;
-                };
-                var minus = button("\u2212", "Smaller");
-                var plus = button("+", "Larger");
-                var ok = button("\u2713", "Apply");
-                _value = new Label { TextAlign = System.Drawing.ContentAlignment.MiddleCenter, Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold) };
-                Controls.Add(_value);
-                ShowValue();
-                minus.Click += (s, e) => Step(-1);
-                plus.Click += (s, e) => Step(+1);
-                ok.Click += (s, e) => apply(_percent / 100.0);
-                // Held, the buttons keep stepping: 80% to 150% is 70 presses.
-                foreach (var b in new[] { minus, plus })
-                {
-                    var hold = new Timer { Interval = 90 };
-                    int dir = b == minus ? -1 : 1;
-                    hold.Tick += (s, e) => { hold.Interval = 45; Step(dir); };
-                    b.MouseDown += (s, e) => { hold.Interval = 400; hold.Start(); };
-                    b.MouseUp += (s, e) => hold.Stop();
-                    b.MouseLeave += (s, e) => hold.Stop();
-                    Disposed += (s, e) => hold.Dispose();
-                }
-                Resize += (s, e) =>
-                {
-                    int h = Height - 4, w = Math.Max(24, h + 4);
-                    minus.SetBounds(0, 2, w, h);
-                    _value.SetBounds(w + 2, 2, Width - 3 * w - 8, h);
-                    plus.SetBounds(Width - 2 * w - 4, 2, w, h);
-                    ok.SetBounds(Width - w, 2, w, h);
-                };
-            }
-
-            /// <summary>One percent up or down, within 80% - 150%.</summary>
-            public void Step(int by)
-            {
-                int min = (int)Math.Round(DisplaySettings.Min * 100), max = (int)Math.Round(DisplaySettings.Max * 100);
-                _percent = Math.Max(min, Math.Min(max, _percent + by));
-                ShowValue();
-            }
-
-            private void ShowValue() { _value.Text = _percent + "%"; }
         }
 
         /// <summary>

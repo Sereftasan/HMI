@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
 using Kaban.UI.Forms;
 using Kaban.UI.Settings;
 
@@ -64,30 +65,43 @@ class ZM {
         var heading = menu.Items.OfType<ToolStripLabel>().Select(l => l.Text).ToList();
         Check("one heading, 'Screen scale' with the size on screen at its end: 'Screen scale (100%)'", heading.Count == 1 && heading[0] == "Screen scale (100%)",
               string.Join(" | ", heading));
-        var factors = menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
-        Check("percentages 80% to 150% - and nothing else in the list", string.Join(" ", factors) == "80% 90% 100% 110% 120% 125% 130% 140% 150%", string.Join(" ", factors));
-        Check("  the screen's size ticked", Checked(menu.Items) == "100%", Checked(menu.Items));
-        Check("  no 'For everyone', no 'The panel's', no 'Your own' line",
-              !menu.Items.OfType<ToolStripItem>().Any(i => (i.Text ?? "").Contains("everyone") || (i.Text ?? "").Contains("panel's") || (i.Text ?? "").StartsWith("Your own")));
-        Check("the glass is named 'Screen scale'", zoom.AccessibleName == "Screen scale");
+        // 16 October: the speed's slider instead of the list of sizes and the 1% row
+        Check("no list of sizes any more", !menu.Items.OfType<ToolStripMenuItem>().Any(), string.Join(" ", menu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text)));
         var host = menu.Items.OfType<ToolStripControlHost>().FirstOrDefault();
-        var stepper = host == null ? null : host.Control;
-        Check("a row to set any percent: - 100% + and a tick", stepper != null && stepper.Controls.OfType<Button>().Count() == 3 &&
-              stepper.Controls.OfType<Label>().Any(l => l.Text == "100%"));
-        if (stepper != null) {
-            var step = stepper.GetType().GetMethod("Step");
-            for (int i = 0; i < 37; i++) step.Invoke(stepper, new object[] { 1 });
-            Check("  1% at a time: 137%", stepper.Controls.OfType<Label>().First().Text == "137%");
-            for (int i = 0; i < 40; i++) step.Invoke(stepper, new object[] { 1 });
-            Check("  never above 150%", stepper.Controls.OfType<Label>().First().Text == "150%");
-            for (int i = 0; i < 20; i++) step.Invoke(stepper, new object[] { -1 });
-            menu.Show(form, 0, 0); Pump(50);
-            stepper.Controls.OfType<Button>().First(b => b.AccessibleName == "Apply").PerformClick();
+        var slider = host == null ? null : host.Control as ScaleSlider;
+        Check("the screen scale's slider, at the screen's size: 100%", slider != null && slider.Value == 1.0 && slider.Text == "100%");
+        Check("  its steps: the usual sizes, 80% to 150%", string.Join(" ", ScaleSlider.PresetSteps) == "80 90 100 110 120 125 130 140 150", string.Join(" ", ScaleSlider.PresetSteps));
+        Check("the glass is named 'Screen scale'", zoom.AccessibleName == "Screen scale");
+        if (slider != null) {
+            menu.Show(form, 0, 0); Pump(80);
+            Func<int, MouseEventArgs> at = v => new MouseEventArgs(MouseButtons.Left, 1, (int)slider.GetType().GetMethod("XOf", Any).Invoke(slider, new object[] { v }), slider.Height / 2, 0);
+            typeof(Control).GetMethod("OnMouseDown", Any).Invoke(slider, new object[] { at(120) });
+            typeof(Control).GetMethod("OnMouseMove", Any).Invoke(slider, new object[] { at(130) });
+            Check("  held and moved to 130%: shown, not chosen yet", DisplaySettings.PanelFactor == 1.0 && (int?)Get(slider, "_dragging") == 130);
+            typeof(Control).GetMethod("OnMouseUp", Any).Invoke(slider, new object[] { at(130) });
             Pump(50);
-            Check("  the tick keeps 130% as the PANEL'S scale", DisplaySettings.PanelFactor == 1.30 && DisplaySettings.StartFactor == 1.30,
+            Check("  let go: 130% is the PANEL'S scale, the menu closed", DisplaySettings.PanelFactor == 1.30 && DisplaySettings.StartFactor == 1.30 && !menu.Visible,
                   DisplaySettings.PanelFactor + " / " + DisplaySettings.StartFactor);
             Check("  and leaves admin's own request alone (there is none)", !DisplaySettings.UserFactor("admin").HasValue);
-            menu.Close(); menu.Dispose(); Pump(50);
+            menu.Dispose(); Pump(30);
+            menu = Menu(form);
+            slider = (ScaleSlider)menu.Items.OfType<ToolStripControlHost>().First().Control;
+            int asked2 = 0;
+            typeof(ScaleSlider).GetField("EnterValue", Any).SetValue(null, (Func<ScaleSlider, int, int?>)((s, now) => { asked2 = now; return 137; }));
+            menu.Show(form, 0, 0); Pump(50);
+            slider.GetType().GetMethod("AskValue", Any).Invoke(slider, null);
+            Pump(50);
+            Check("the percentage typed (the keypad, from 130%): any size - 137%", asked2 == 130 && DisplaySettings.PanelFactor == 1.37, asked2 + " / " + DisplaySettings.PanelFactor);
+            menu.Dispose();
+            menu = Menu(form);
+            slider = (ScaleSlider)menu.Items.OfType<ToolStripControlHost>().First().Control;
+            typeof(ScaleSlider).GetField("EnterValue", Any).SetValue(null, (Func<ScaleSlider, int, int?>)((s, now) => 160));
+            menu.Show(form, 0, 0); Pump(50);
+            slider.GetType().GetMethod("AskValue", Any).Invoke(slider, null);
+            Pump(50);
+            Check("  never above 150%", DisplaySettings.PanelFactor == 1.50, DisplaySettings.PanelFactor.ToString());
+            typeof(ScaleSlider).GetField("EnterValue", Any).SetValue(null, null);
+            menu.Dispose(); Pump(30);
         }
 
         DisplaySettings.SetUserFactor("admin", 1.2);
@@ -98,8 +112,7 @@ class ZM {
         Check("  the file keeps it: Panel=1.37, Start=1.37, admin's 1.2", File.ReadAllText(Path.Combine(dir, "Display.cfg")).Contains("Panel=1.37") &&
               File.ReadAllText(Path.Combine(dir, "Display.cfg")).Contains("User=admin;1.2"));
         menu = Menu(form);
-        Check("  no preset ticked for 137% (the row shows it)", Checked(menu.Items) == "" &&
-              menu.Items.OfType<ToolStripControlHost>().First().Control.Controls.OfType<Label>().First().Text == "137%");
+        Check("  the slider shows 137% (between two steps)", ((ScaleSlider)menu.Items.OfType<ToolStripControlHost>().First().Control).Text == "137%");
         Check("percent typed: '137%', '137' and '1.37' are all 1.37", DisplaySettings.Parse("137%") == 1.37 && DisplaySettings.Parse("137") == 1.37 &&
               DisplaySettings.Parse("1.37") == 1.37 && DisplaySettings.Parse("160%") == null);
 
@@ -127,7 +140,7 @@ class ZM {
         Check("no explanation on the page (no panel block, no note)", !texts.Any(t => t.Contains("of this panel") || t.StartsWith("For everyone") ||
               t.StartsWith("The user's own size") || t.StartsWith("0.8 to 1.5")), string.Join(" | ", texts));
         Check("  the field is called 'Screen scale'", texts.Any(t => t.StartsWith("Screen scale")));
-        var chooser = All(users).OfType<Button>().First(b => b.AccessibleName == "Screen scale");
+        var chooser = All(users).OfType<ScaleField>().First();
         var grid = All(users).OfType<DataGridView>().First();
         var nameBox = All(users).OfType<TextBox>().First();
         Func<string, string> select = name => {
@@ -138,23 +151,15 @@ class ZM {
         typeof(UsersPreferencesControl).GetMethod("RefreshList", Any).Invoke(users, null);
         Check("a user with no request: 'No specific request'", select("oper2") == "No specific request", chooser.Text);
         Check("admin: their own 120% - not the 90% the caption bar chose", select("admin") == "120%", chooser.Text);
-        var cmenu = (ContextMenuStrip)chooser.GetType().GetMethod("BuildMenu", Any).Invoke(chooser, null);
-        var citems = cmenu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text).ToList();
-        Check("its menu: 'No specific request', then 80% ... 150%", citems.First() == "No specific request" && citems.Skip(1).First() == "80%" && citems.Last() == "150%",
-              string.Join(" ", citems));
-        Check("  120% ticked", Checked(cmenu.Items) == "120%", Checked(cmenu.Items));
-        var cstep = cmenu.Items.OfType<ToolStripControlHost>().First().Control;
-        Check("  and the same 1% row, starting at 120%", cstep.Controls.OfType<Label>().First().Text == "120%");
-        cstep.GetType().GetMethod("Step").Invoke(cstep, new object[] { 3 });
-        cmenu.Show(users, 0, 0); Pump(30);
-        cstep.Controls.OfType<Button>().First(b => b.AccessibleName == "Apply").PerformClick();
-        Pump(30);
-        Check("  applying 123% sets the field", chooser.Text == "123%", chooser.Text);
-        cmenu.Close(); cmenu.Dispose(); Pump(30);
-        cmenu = (ContextMenuStrip)chooser.GetType().GetMethod("BuildMenu", Any).Invoke(chooser, null);
-        cmenu.Items.OfType<ToolStripMenuItem>().First().PerformClick();
-        Check("  'No specific request' clears it", chooser.Text == "No specific request");
-        cmenu.Dispose();
+        Check("the field: the same slider at 120%, and 'x' (no specific request) beside it",
+              chooser.Slider.Value == 1.2 && chooser.OfferNone && chooser.NoneButton.Visible && chooser.NoneButton.Enabled);
+        typeof(ScaleSlider).GetField("EnterValue", Any).SetValue(null, (Func<ScaleSlider, int, int?>)((s, now) => 123));
+        chooser.Slider.GetType().GetMethod("AskValue", Any).Invoke(chooser.Slider, null);
+        typeof(ScaleSlider).GetField("EnterValue", Any).SetValue(null, null);
+        Check("  the percentage typed: 123% in the field", chooser.Text == "123%", chooser.Text);
+        chooser.NoneButton.PerformClick();
+        Check("  'x' clears it: no specific request - the panel's size shown grey, 'x' greyed", chooser.Text == "No specific request" && !chooser.Value.HasValue &&
+              !chooser.NoneButton.Enabled, chooser.Text);
         UserStore.RemoveUser("oper2");
 
         form.Close();

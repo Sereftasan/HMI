@@ -61,7 +61,7 @@ namespace Kaban.UI.Settings
         private readonly ComboBox _level = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList };
         private readonly Label _createdBy = new Label { AutoSize = true, ForeColor = Color.FromArgb(110, 116, 124), Font = UiStyle.Small };
         private readonly ComboBox _readFrom = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Name = "readFrom" };
-        private readonly ScaleChooser _scale = new ScaleChooser();
+        private readonly ScaleField _scale = new ScaleField();
         private readonly Dictionary<string, ComboBox> _combos = new Dictionary<string, ComboBox>();
         private readonly List<Control[]> _rows = new List<Control[]>();        // caption, field, the row's section
         private readonly DirtyTracker _dirty = new DirtyTracker();
@@ -88,7 +88,7 @@ namespace Kaban.UI.Settings
         public TextBox NameBox { get { return _name; } }
         public TextBox PasswordBox { get { return _pass; } }
         public ComboBox LevelBox { get { return _level; } }
-        public ScaleChooser ScaleBox { get { return _scale; } }
+        public ScaleField ScaleBox { get { return _scale; } }
         public PreferencePreview Preview { get { return _preview; } }
         public string StatusText { get { return _status.Text; } }
         public string NoteText { get { return _note.Visible ? _note.Text : ""; } }
@@ -293,9 +293,8 @@ namespace Kaban.UI.Settings
 
             Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
             _scale.ValueChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
-            // its menu's sizes previewed as the pointer moves over them
-            _scale.Hovered += (s, f) => ShowScaleBeside(_scale.OpenMenu, f);
-            _scale.MenuClosed += (s, e) => HidePreview();
+            // the size the slider is held at, previewed beside it (16 October: the speed's slider)
+            _scale.Previewing += (s, f) => { if (f.HasValue) ShowScaleBeside(f); else HidePreview(); };
 
             // Screen: the scale above, then the language (12 October)
             foreach (var group in new[] { "Screen", "Captions", "Numbers", "Units", "Tables", "SignIn", "Help" })
@@ -588,6 +587,7 @@ namespace Kaban.UI.Settings
 
                 // ---- the screen scale ----
                 _scale.OfferNone = !IsEveryone;
+                _scale.NoneFactor = DisplaySettings.PanelFactor;
                 _scale.Value = IsEveryone ? DisplaySettings.PanelFactor : user != null ? DisplaySettings.UserFactor(user) : (double?)null;
                 _scale.Enabled = edit;
 
@@ -731,16 +731,15 @@ namespace Kaban.UI.Settings
             if (_preview.Visible) _preview.Visible = false;
         }
 
-        /// <summary>The screen scale's menu: the size under the pointer, beside the menu.</summary>
-        private void ShowScaleBeside(ToolStripDropDown menu, double? factor)
+        /// <summary>The screen scale's slider held at a size: that size, beside the field.</summary>
+        private void ShowScaleBeside(double? factor)
         {
             _preview.ShowScale(factor, DisplaySettings.PanelFactor);
-            var bounds = menu != null && menu.Visible ? menu.Bounds : ListBounds(_readFrom);
-            PlaceBeside(bounds, _scale.PointToScreen(Point.Empty).Y);
+            PlaceBeside(_scale.RectangleToScreen(_scale.ClientRectangle), _scale.PointToScreen(Point.Empty).Y);
         }
 
-        /// <summary>Test hook: a size of the scale menu under the pointer.</summary>
-        internal void HoverScale(double? factor) { ShowScaleBeside(null, factor); }
+        /// <summary>Test hook: the slider held at a size.</summary>
+        internal void HoverScale(double? factor) { ShowScaleBeside(factor); }
 
         /// <summary>A user's (or everyone's) preferences, line by line: the name, the value, their own or not.</summary>
         private List<PreferencePreview.Line> SummaryOf(string who)
@@ -1078,100 +1077,6 @@ namespace Kaban.UI.Settings
                 case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
                 default: return value;
             }
-        }
-    }
-
-    /// <summary>
-    /// A user's screen scale, chosen as on the caption bar: looks like the other
-    /// fields' boxes; a click opens the same menu - "No specific request" (when
-    /// offered), the usual sizes, and the row that sets any percent 1% at a time.
-    /// </summary>
-    public sealed class ScaleChooser : Button
-    {
-        private double? _value;
-
-        public ScaleChooser()
-        {
-            FlatStyle = FlatStyle.Flat;
-            BackColor = Color.White;
-            TextAlign = ContentAlignment.MiddleLeft;
-            Height = 26;
-            Cursor = Cursors.Hand;
-            AccessibleName = "Screen scale";
-            FlatAppearance.BorderColor = Color.FromArgb(160, 166, 176);
-            Text = Caption;
-        }
-
-        /// <summary>"No specific request" in the menu (not for everyone's: the panel always has one).</summary>
-        public bool OfferNone = true;
-
-        public event EventHandler ValueChanged;
-
-        /// <summary>The request; null: no specific request (the panel's).</summary>
-        public double? Value
-        {
-            get { return _value; }
-            set
-            {
-                var v = value.HasValue ? DisplaySettings.Clamp(value.Value) : (double?)null;
-                bool changed = v != _value;
-                _value = v;
-                Text = Caption;
-                Invalidate();
-                if (changed) { var h = ValueChanged; if (h != null) h(this, EventArgs.Empty); }
-            }
-        }
-
-        public string Caption
-        {
-            get { return _value.HasValue ? DisplaySettings.Percent(_value.Value) : Kaban.UI.Forms.MainForm.NoScaleRequest; }
-        }
-
-        /// <summary>A size of the open menu under the pointer (null: "No specific request") - the page previews it.</summary>
-        public event Action<object, double?> Hovered;
-        /// <summary>The menu closed.</summary>
-        public event EventHandler MenuClosed;
-        /// <summary>The menu open now, or null.</summary>
-        public ToolStripDropDown OpenMenu { get; private set; }
-
-        /// <summary>The menu a click opens (tests use it as the operator would).</summary>
-        internal ContextMenuStrip BuildMenu()
-        {
-            var menu = Kaban.UI.Forms.MainForm.BuildScaleMenu(null, _value, OfferNone, v => Value = v);
-            foreach (var item in menu.Items.OfType<ToolStripMenuItem>())
-            {
-                var it = item;
-                it.MouseEnter += (s, e) =>
-                {
-                    var h = Hovered;
-                    if (h != null) h(this, it.Tag is double ? (double?)(double)it.Tag : null);
-                };
-            }
-            menu.Closed += (s, e) =>
-            {
-                OpenMenu = null;
-                var h = MenuClosed;
-                if (h != null) h(this, EventArgs.Empty);
-            };
-            return menu;
-        }
-
-        protected override void OnClick(EventArgs e)
-        {
-            base.OnClick(e);
-            var menu = BuildMenu();
-            OpenMenu = menu;
-            UiStyle.ShowPopup(menu, this, new Point(0, Height));
-        }
-
-        protected override void OnPaint(PaintEventArgs pevent)
-        {
-            base.OnPaint(pevent);
-            // The drop-down caret, as on a combo box.
-            float cx = Width - UiScale.For(this, 12), cy = Height / 2f;
-            float d = UiScale.For(this, 4);
-            using (var b = new SolidBrush(Color.FromArgb(60, 66, 76)))
-                pevent.Graphics.FillPolygon(b, new[] { new PointF(cx - d, cy - d / 2), new PointF(cx + d, cy - d / 2), new PointF(cx, cy + d / 2 + 1) });
         }
     }
 }
