@@ -6,6 +6,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 October (late night) - "the format looks good but the info is false mostly":
+  - The scanner: a read in flight when the page / a tab changed was looked up by the new batch's index (every device
+    read another's value for that scan) - now by the batch it was read with. The likely cause of all three.
+  - What the axis was doing: the motion module's word first (standby, BUSY OFF: standing still), both jog commands ON
+    is no jog; the jog commands still shown, "they did not move it" when so.
+  - The reference sensor read at the drawings' input (SN.1 X100 at M248), not at the row's lamp (M330).
 - 17 October (night):
   - The axis help by the moment of its code, visible: the code's own entry (alarm list, axis "?", the Axis page's code
     cell, the PLC's error bit) starts with what the axis was doing, where to start, the reference sensor's drawing
