@@ -7,12 +7,10 @@ using System.Windows.Forms;
 using Kaban.Core.Helpers;
 
 // 15 October: Visual Studio could not open FA2010's manual pages - "Could not find type
-// 'Kaban.Machines.FA2010.Screens.Shared.AxisJogBar'". The bar was a control of the machine's PROGRAM,
-// and the program is built 32-bit (Prefer 32-bit, for MX Component: CLR flags 0x20003), which the
-// 64-bit Visual Studio cannot load a control from; Kaban.UI's controls load (a library: Any CPU).
-// 16 October, simpler: no page holds the bar - it is shown above the Manual Movement tabs and on the
-// Axis Monitor by the program, and the Axis page has a copy of its controls. Every machine's pages: no
-// control on them may come from a machine's program (.exe).
+// 'Kaban.Machines.FA2010.Screens.Shared.AxisJogBar'". Taken then for the machine's program being 32-bit; it is not, to
+// a loader ("Any CPU", MSIL - its 32-bit preference is for running it): the designer says so when the machine was not
+// built, or an older build is still loaded. 16 October: the Axis page holds the bar itself again. A page holds
+// controls of libraries and of its own machine's program - never another machine's.
 class PD {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -43,17 +41,19 @@ class PD {
                 try { page = (Control)Activator.CreateInstance(t); } catch { continue; }
                 pages++;
                 foreach (var c in All(page))
-                    if (c.GetType().Assembly.Location.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    if (c.GetType().Assembly.Location.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) && c.GetType().Assembly != asm)
                         bad.Add(asm.GetName().Name + ": " + t.Name + "." + c.Name + " is a " + c.GetType().FullName + " (" + Path.GetFileName(c.GetType().Assembly.Location) + ")");
                 page.Dispose();
             }
         }
-        Check("every page's controls come from libraries, none from a machine's program - " + pages + " pages", pages > 20 && bad.Count == 0,
+        Check("every page's controls come from libraries or its own machine's program, none from another's - " + pages + " pages", pages > 20 && bad.Count == 0,
               string.Join(" | ", bad.Take(6)));
         var fa = programs.FirstOrDefault(a => a.GetName().Name == "Kaban.Machines.FA2010");
         var bar = fa == null ? null : fa.GetType("Kaban.Machines.FA2010.Screens.Shared.AxisJogBar");
-        Check("FA2010's jog bar: in the machine's program again (no library of its own), held by no page",
-              bar != null && !File.Exists("Kaban.Machines.FA2010.Shared.dll"));
+        Check("FA2010's jog bar: in the machine's program (no library of its own), loadable as Any CPU (MSIL)",
+              bar != null && !File.Exists("Kaban.Machines.FA2010.Shared.dll") &&
+              AssemblyName.GetAssemblyName(fa.Location).ProcessorArchitecture == ProcessorArchitecture.MSIL,
+              fa == null ? "-" : AssemblyName.GetAssemblyName(fa.Location).ProcessorArchitecture.ToString());
 
         // 16 October: opened in Visual Studio, the Axis page's lists (PLC axis items, Motion monitor) were made
         // at design time too, moving the page's controls down 40 - and the designer saved the moved places: the
@@ -72,9 +72,9 @@ class PD {
               lists + " lists; " + string.Join(", ", moved.Take(5)));
         var heads = axisPage.Controls.OfType<Label>().Where(l => l.Name.StartsWith("lblHead")).ToList();
         var rows = axisPage.Controls.OfType<Kaban.UI.Controls.AxisSettingHMI>().OrderBy(r => r.Top).ToList();
-        Check("  as saved: the speed and steps at the top, the column names at 52, Robot X at 76, the rows one under the other",
-              heads.All(h => h.Top == 52) && rows[0].Name == "axRobot_X" && rows[0].Top == 76 && rows.Zip(rows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0) &&
-              axisPage.Controls.OfType<Kaban.UI.Controls.SpeedOverrideHMI>().Single().Top == 0,
+        Check("  as saved: the jog bar at the top, the column names at 68, Robot X at 92, the rows one under the other",
+              heads.All(h => h.Top == 68) && rows[0].Name == "axRobot_X" && rows[0].Top == 92 && rows.Zip(rows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0) &&
+              axisPage.Controls.Cast<Control>().Single(c => c.GetType() == bar).Top == 0,
               string.Join(" ", rows.Take(3).Select(r => r.Name + "@" + r.Top)));
         win.Close();
 

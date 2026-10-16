@@ -20,8 +20,10 @@ using Kaban.UI.Screens;
 // library of its own was one project too many: "put this control set somewhere shared by all Manual Movement pages
 // (this set and the sub page tabs just under it) and copy it to Machine Parameters / Axis manually" - and on the
 // Axis page "AxisJogBar at the top of the page; the item selection just before the column header line".
-// One bar (FA2010: Screens\Shared\AxisJogBar) above the Manual Movement tabs and on the Axis Monitor, held by no
-// page; its controls copied onto the Axis page.
+// One bar (FA2010: Screens\Shared\AxisJogBar) above the Manual Movement tabs and on the Axis Monitor; and later that
+// day: "why do we still need to add the buttons separately when we already have Shared / AxisJogBar.cs, can we not use
+// it as it is anywhere we want?" - yes: the Axis page holds the bar itself. And "leave a little space on the left, top
+// and bottom ... as the speed control on the Home page": its parts 14 from its left, 13 from its top and bottom.
 class AJ {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -100,8 +102,11 @@ class AJ {
             var host = manual.Controls.Cast<Control>().First(c => c.Dock == DockStyle.Fill);
             Check("  at the top, the tabs just under it, the page under them", scr(mbar).Top >= scr(manual).Top && scr(mbar).Bottom <= scr(strip).Top + 1 &&
                   scr(strip).Bottom <= scr(host).Top + 1 && mbar.Visible, scr(mbar) + " / " + scr(strip) + " / " + scr(host));
-            Check("  lined up with the tabs, all of it in sight", mbar.Left > 0 && mbar.Controls.Cast<Control>().All(c => c.Right <= mbar.Width) &&
-                  scr(mbar).Right <= scr(manual).Right, mbar.Bounds.ToString());
+            var mspeed = mbar.Controls.OfType<SpeedOverrideHMI>().Single();
+            Check("  room around it as the Home page's speed: 14 from the left, 13 above it and 13 below, to the tabs",
+                  scr(mspeed).Left - scr(manual).Left == 14 && scr(mspeed).Top - scr(manual).Top == 13 && scr(strip).Top - scr(mspeed).Bottom == 13 &&
+                  mbar.Controls.Cast<Control>().All(c => c.Right <= mbar.Width) && scr(mbar).Right <= scr(manual).Right,
+                  scr(mspeed) + " in " + scr(manual) + ", tabs at " + scr(strip).Top);
             var sim = (Kaban.Drivers.Simulation.SimulationDriver)PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(1));
             sim.Write("D409", 60);
             var spd = mbar.Controls.OfType<SpeedOverrideHMI>().Single();
@@ -116,22 +121,21 @@ class AJ {
             Shot(form, "manual_movement");
         }
 
-        Console.WriteLine("--- Machine Parameters > Axis: its own copy at the top, the lists, the column names, the rows ---");
+        Console.WriteLine("--- Machine Parameters > Axis: the bar itself at the top, the lists, the column names, the rows ---");
         var axes = new Kaban.Machines.FA2010.Screens.Parameters.AxisSettings { Dock = DockStyle.Fill };
-        var copy = axes.Controls.OfType<ButtonHMI>().Where(x => x.Name.StartsWith("Btn")).ToDictionary(x => x.Name);
-        var cs = axes.Controls.OfType<SpeedOverrideHMI>().SingleOrDefault();
-        Check("the page holds a copy of the bar's controls, set as the bar's (D409, M170 - M175)", cs != null && cs.Address == "D409" &&
-              new[] { "BtnJog", "Btn10mm", "Btn1mm", "Btn01mm", "Btn001mm", "BtnSafetyBypass" }.All(n => copy.ContainsKey(n) && Bits(copy[n]) == Bits(b[n])),
-              string.Join(",", copy.Keys));
+        var held = axes.Controls.OfType<Kaban.Machines.FA2010.Screens.Shared.AxisJogBar>().ToList();
+        Check("the page holds the bar itself - no copies of its buttons", held.Count == 1 && held[0].Top == 0 &&
+              !axes.Controls.OfType<SpeedOverrideHMI>().Any() && !axes.Controls.OfType<ButtonHMI>().Any(x => x.Name.StartsWith("Btn")), held.Count.ToString());
+        var cs = held[0].Controls.OfType<SpeedOverrideHMI>().Single();
         var win = new Form { ClientSize = new Size(1300, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         win.Controls.Add(axes); win.Show(); Pump(1200);
         var frame = AxisPageFrame.Of(axes);
         var rows = frame.Body.Controls.OfType<AxisSettingHMI>().OrderBy(r => r.Top).ToList();
         var heads = All(frame.Head).OfType<Label>().Where(l => (l.Name ?? "").StartsWith("lblHead")).ToList();
         var items = All(frame.Head).OfType<AxisPickBar>().FirstOrDefault(x => x.Name == "axisItemsBar");
-        var top = new Control[] { cs }.Concat(copy.Values).ToList();
-        Check("the speed and steps in the page's heading, at its top - staying while the rows scroll sideways", frame != null && top.All(c => c.Parent == frame.Head),
-              string.Join(",", top.Select(c => c.Parent == null ? "-" : c.Parent.Name).Distinct()));
+        var top = new Control[] { held[0] }.ToList();
+        Check("the bar in the page's heading, at its top - staying while the rows scroll sideways", frame != null && held[0].Parent == frame.Head,
+              held[0].Parent == null ? "-" : held[0].Parent.Name);
         Check("  then the PLC axis items, just before the column names (16 October)", items != null && top.All(c => scr(c).Bottom <= scr(items).Top) &&
               heads.Count > 0 && heads.All(h => scr(h).Top >= scr(items).Bottom),
               (items == null ? "no lists" : "lists " + scr(items)) + " speed " + scr(cs) + " names " + (heads.Count > 0 ? scr(heads[0]).ToString() : "-"));
@@ -159,7 +163,7 @@ class AJ {
             Check("  above the rows", scr(mb).Bottom <= scr(view.Controls.OfType<Control>().First(c => c.Dock == DockStyle.Fill && c.Visible)).Top + 1);
             Shot(form, "axis_monitor");
             int wide = mb.FitTo(2000);
-            Check("  given room: as designed again, one line", mb.Controls.Cast<Control>().Select(c => c.Top).Distinct().Count() == 1 && wide == 42, wide.ToString());
+            Check("  given room: as designed again, one line", mb.Controls.Cast<Control>().Select(c => c.Top).Distinct().Count() == 1 && wide == 68, wide.ToString());
         }
         form.Close();
         Console.WriteLine(fail == 0 ? "\nAXIS JOG BAR ALL PASS" : "\nAXIS JOG BAR " + fail + " FAILED");

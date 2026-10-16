@@ -23,14 +23,16 @@ namespace Kaban.UI.Controls
     /// one? ... I will have to change it at all of these pages"):
     ///
     /// A machine makes one UserControl from this (FA2010: Screens\Shared\AxisJogBar),
-    /// designed in Visual Studio like a page. NO PAGE HOLDS IT (16 October): the program
-    /// shows it - above the Manual Movement tabs, over all of them (StandardScreens
-    /// Options.ManualBar), and on the Axis Monitor (the module declares it,
-    /// ScreenRoles.AxisBar). Held by the pages it could not be shown by Visual Studio's
-    /// designer ("Could not find type", 15 October - the machine's program is built
-    /// 32-bit); a library of its own for it was one project too many. Machine
-    /// Parameters > Axis has a copy of its controls on the page. Changed in its own
-    /// designer, it is changed everywhere it is shown.
+    /// designed in Visual Studio like a page. The program shows it above the Manual
+    /// Movement tabs, over all of them (StandardScreens Options.ManualBar), and on the
+    /// Axis Monitor (the module declares it, ScreenRoles.AxisBar); a page shows it by
+    /// holding it, as any control - Machine Parameters > Axis does (the Toolbox lists it
+    /// under the machine's own components once the machine is built). The machine's
+    /// program is "Any CPU" to a loader (its 32-bit preference is for running it), so
+    /// the designer loads it; "Could not find type" (15 October) is what it says when
+    /// the machine was not built, or an older build is still loaded. Changed in its own designer, it is changed
+    /// everywhere it is shown. The room around its parts is its own: FA2010's are 14
+    /// from its left and 13 from its top and bottom, as the Home page's speed.
     ///
     /// Where it is narrower than designed (the Axis Monitor beside a page) its parts go
     /// on in rows, in their order from left to right (FitTo); as wide or wider, they are
