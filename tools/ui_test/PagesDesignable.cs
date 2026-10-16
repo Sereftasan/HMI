@@ -19,6 +19,15 @@ class PD {
         Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
     }
     static IEnumerable<Control> All(Control c) { foreach (Control k in c.Controls) { yield return k; foreach (var d in All(k)) yield return d; } }
+    static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); } }
+    // a control as Visual Studio's designer has it: sited, in design mode
+    class DesignSite : System.ComponentModel.ISite {
+        public System.ComponentModel.IComponent Component { get; set; }
+        public System.ComponentModel.IContainer Container { get { return null; } }
+        public bool DesignMode { get { return true; } }
+        public string Name { get; set; }
+        public object GetService(Type t) { return null; }
+    }
 
     [STAThread]
     static void Main() {
@@ -45,6 +54,30 @@ class PD {
         var bar = fa == null ? null : fa.GetType("Kaban.Machines.FA2010.Screens.Shared.AxisJogBar");
         Check("FA2010's jog bar: in the machine's program again (no library of its own), held by no page",
               bar != null && !File.Exists("Kaban.Machines.FA2010.Shared.dll"));
+
+        // 16 October: opened in Visual Studio, the Axis page's lists (PLC axis items, Motion monitor) were made
+        // at design time too, moving the page's controls down 40 - and the designer saved the moved places: the
+        // column names went from 52 to 92, Robot X onto Robot Y. Designed, a page of axis rows is left as it is.
+        var axisType = fa == null ? null : fa.GetType("Kaban.Machines.FA2010.Screens.Parameters.AxisSettings");
+        var axisPage = (UserControl)Activator.CreateInstance(axisType);
+        axisPage.Site = new DesignSite { Component = axisPage, Name = "AxisSettings" };
+        foreach (var c in All(axisPage).ToList()) c.Site = new DesignSite { Component = c, Name = c.Name };
+        var before = axisPage.Controls.Cast<Control>().ToDictionary(c => c, c => c.Location);
+        var win = new Form { ClientSize = new System.Drawing.Size(1300, 700) };
+        axisPage.Dock = DockStyle.Fill;
+        win.Controls.Add(axisPage); win.Show(); Pump(800);
+        var moved = before.Where(kv => kv.Key.Location != kv.Value).Select(kv => kv.Key.Name + " " + kv.Value.Y + "->" + kv.Key.Location.Y).ToList();
+        var lists = All(axisPage).OfType<Kaban.UI.Controls.AxisPickBar>().Count();
+        Check("the Axis page in the designer: nothing moved, no lists made (the designer would save them)", moved.Count == 0 && lists == 0,
+              lists + " lists; " + string.Join(", ", moved.Take(5)));
+        var heads = axisPage.Controls.OfType<Label>().Where(l => l.Name.StartsWith("lblHead")).ToList();
+        var rows = axisPage.Controls.OfType<Kaban.UI.Controls.AxisSettingHMI>().OrderBy(r => r.Top).ToList();
+        Check("  as saved: the speed and steps at the top, the column names at 52, Robot X at 76, the rows one under the other",
+              heads.All(h => h.Top == 52) && rows[0].Name == "axRobot_X" && rows[0].Top == 76 && rows.Zip(rows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0) &&
+              axisPage.Controls.OfType<Kaban.UI.Controls.SpeedOverrideHMI>().Single().Top == 0,
+              string.Join(" ", rows.Take(3).Select(r => r.Name + "@" + r.Top)));
+        win.Close();
+
         Console.WriteLine(fail == 0 ? "PAGES DESIGNABLE ALL PASS" : "PAGES DESIGNABLE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

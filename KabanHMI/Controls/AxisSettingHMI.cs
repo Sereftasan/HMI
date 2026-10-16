@@ -1268,7 +1268,11 @@ namespace Kaban.UI.Controls
             }
             if (MonitorMode) return;                         // the Axis Monitor draws its own
             if (top != this) return;                         // the top row speaks for the page
-            EnsureMotionBar(page);
+            // NOT IN VISUAL STUDIO'S DESIGNER: the lists move the page's controls down to
+            // make room, and the designer wrote those moved places into the page - 40 more
+            // on every opening (16 October: the column names went from 52 to 92, Robot X
+            // over Robot Y, the jog bar under the lists).
+            if (!InDesigner(page)) EnsureMotionBar(page);
 
             // The headings: above the first row on the page - or, the page framed
             // (AxisPageFrame: its heading stays while the rows scroll), in its heading.
@@ -1495,6 +1499,14 @@ namespace Kaban.UI.Controls
             bool hasMotion = PageHasMotion();
             motion.Visible = hasMotion;
             motion.Offer(PageItems(), hasMotion);
+        }
+
+        /// <summary>True on a page being designed in Visual Studio (the page or a control of it sited in the designer).</summary>
+        internal static bool InDesigner(Control c)
+        {
+            for (; c != null; c = c.Parent)
+                if (c.Site != null && c.Site.DesignMode) return true;
+            return false;
         }
 
         /// <summary>
