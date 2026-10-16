@@ -509,7 +509,8 @@ namespace Kaban.UI.Helpers
                               ", on the " + (m.RefForward ? "forward (+)" : "back (-)") + " side: " + st(m.RefOn) +
                               (m.Direction != 0 ? "; the axis was moving " + (m.Direction > 0 ? "forward (+)" : "back (-)") : ""));
                 if (p != null) devices.Add(p.Address, "the axis' reference sensor", p.Tag);
-                if (!string.IsNullOrWhiteSpace(m.RefAddress)) devices.Add(m.RefAddress, "the reference sensor as the Axis page reads it");
+                if (!string.IsNullOrWhiteSpace(m.RefAddress)) devices.Add(m.RefAddress, "the reference sensor as the HMI reads it");
+                if (!string.IsNullOrWhiteSpace(m.RefRow)) devices.Add(m.RefRow, "the Axis row's reference lamp (not the sensor's input)");
             }
             if (axis != null && !string.IsNullOrWhiteSpace(axis.Position)) devices.Add(axis.Position, "the axis' position (low word)");
         }

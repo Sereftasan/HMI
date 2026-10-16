@@ -59,8 +59,10 @@ namespace Kaban.Core.Helpers
         public int Decimals = 2;
         public string Suffix = "";
 
-        /// <summary>The reference sensor as the page reads it (M330 / X100) and its state the scan before.</summary>
+        /// <summary>The reference sensor where it is read (the drawings' input, M248 for X100; else the row's) and its state the scan before.</summary>
         public string RefAddress = "";
+        /// <summary>The Axis row's own reference lamp when it is not the sensor (M330), else "".</summary>
+        public string RefRow = "";
         public bool? RefOn;
         /// <summary>The reference sensor is on the forward side (the jog button it lights).</summary>
         public bool RefForward;
@@ -499,6 +501,7 @@ namespace Kaban.Core.Helpers
             model["RefInput"] = H(refShown);
             model["RefRead"] = admin && p != null && !string.IsNullOrWhiteSpace(m.RefAddress) &&
                                !string.Equals(p.Address, m.RefAddress.Trim(), StringComparison.OrdinalIgnoreCase) ? H(m.RefAddress.Trim()) : "";
+            model["RefRow"] = admin && !string.IsNullOrWhiteSpace(m.RefRow) ? H(m.RefRow.Trim()) : "";
             model["RefDrawn"] = p != null;
             if (p != null)
             {

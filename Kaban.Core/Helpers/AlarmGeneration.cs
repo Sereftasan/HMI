@@ -240,6 +240,11 @@ namespace Kaban.Core.Helpers
             public string Suffix = "";
             /// <summary>The jog commands (held while the button is), the reference sensor and its side, the PLC's home request.</summary>
             public string JogBack = "", JogForward = "", RefSensor = "", HomeRequest = "";
+            /// <summary>
+            /// The row's own reference lamp when the drawings' sensor is read instead (17 October:
+            /// FA2010's rows light M330..., the sensors are X100... read at M248...).
+            /// </summary>
+            public string RefRow = "";
             public bool RefForward, Vertical;
             /// <summary>The motion module's operation status (Md.26) and BUSY (Md.141, one bit per axis).</summary>
             public string Status = "", Busy = "";
@@ -933,7 +938,7 @@ namespace Kaban.Core.Helpers
                 Station = x.Station, Unit = x.Name, Kind = kind, Code = code, AlarmTime = now,
                 SeenRising = x.Last != null,
                 Decimals = x.Decimals, Suffix = x.Suffix ?? "",
-                RefAddress = (x.RefSensor ?? "").Trim(), RefForward = x.RefForward, Vertical = x.Vertical
+                RefAddress = (x.RefSensor ?? "").Trim(), RefRow = (x.RefRow ?? "").Trim(), RefForward = x.RefForward, Vertical = x.Vertical
             };
             try { m.RefPoint = AxisSteps.FindReferenceSensor(x.Station, x.RefSensor, string.IsNullOrWhiteSpace(x.DrawingName) ? x.Name : x.DrawingName); }
             catch { }

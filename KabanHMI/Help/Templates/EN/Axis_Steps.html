@@ -78,7 +78,8 @@
 {{#RefWire}}<tr><td>Wire</td><td>{{RefWire}}</td></tr>{{/RefWire}}
 {{#RefSheet}}<tr><td>Electrical drawing</td><td>sheet {{RefSheet}}</td></tr>{{/RefSheet}}
 {{#SensorWire}}<tr><td>Sensor supply</td><td>+24 V wire {{SensorWire}}{{#ZeroWire}}, 0 V wire {{ZeroWire}}{{/ZeroWire}}</td></tr>{{/SensorWire}}
-{{#RefRead}}<tr><td>The page reads it at</td><td><code>{{RefRead}}</code></td></tr>{{/RefRead}}
+{{#RefRead}}<tr><td>The HMI reads it at</td><td><code>{{RefRead}}</code></td></tr>{{/RefRead}}
+{{#RefRow}}<tr><td>The <i>Axis</i> row's lamp</td><td><code>{{RefRow}}</code> &ndash; another device, not this sensor's input</td></tr>{{/RefRow}}
 </table>
 {{/RefDrawn}}
 <ul>

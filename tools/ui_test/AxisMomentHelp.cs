@@ -119,18 +119,24 @@ class AMH {
         var x = Watch("W0B");
         Check("the position (two words), its limits, the jog buttons, the reference sensor and its side, the home request",
               x.Position == "W0" && x.PositionDouble && x.MinLimit == "D314" && x.MaxLimit == "D316" && x.JogBack == "M604" && x.JogForward == "M605" &&
-              x.RefSensor == "M330" && x.RefForward && x.HomeRequest == "M121" && x.Divisor == 10000 && x.Decimals == 4 && x.Suffix == "mm");   // as the page shows it
+              x.RefSensor == "M248" && x.RefForward && x.HomeRequest == "M121" && x.Divisor == 10000 && x.Decimals == 4 && x.Suffix == "mm");   // as the page shows it
+        // 17 October: "the sensor was OFF actually" - the row's M330 is not SN.1
+        Check("the reference sensor where the drawings wire it: SN.1 (X100) read at M248 - the row's M330 kept as its lamp",
+              x.RefSensor == "M248" && x.RefRow == "M330" && Watch("W1B").RefSensor == "M249" && Watch("W1B").RefRow == "M341" &&
+              Watch("W2B").RefSensor == "M250", x.RefSensor + " " + x.RefRow + " | " + Watch("W1B").RefSensor + " " + Watch("W2B").RefSensor);
+        Check("a sensor the drawings do not show: the row's own", AlarmHelpLinks.DrawnReferenceSensor(1, "M999", "Loader Q") == "");
         Check("the motion module's state (Md.26) and BUSY (Md.141, its bit)", x.Status == "U1\\G2409" && x.Busy == "U1\\G31501" && x.BusyBit == 0 &&
               Watch("W1B").Status == "U1\\G2509" && Watch("W1B").BusyBit == 1, x.Status + " " + x.Busy + " " + x.BusyBit);
         Check("the machine's running and manual mode conditions", x.Running != null && x.Running.Address == "D200" && x.ManualMode != null && x.ManualMode.Address == "M100");
         Check("only a real vertical axis is one for the brake", Watch("W2B").Vertical && !x.Vertical);
         var reads = AlarmGeneration.Addresses().Where(kv => kv.Key == 1).Select(kv => kv.Value).ToList();
         Check("the scan reads them all (each word of a 32-bit value)",
-              new[] { "W0", "W1", "D314", "D315", "D316", "D317", "M604", "M605", "M330", "M121", "U1\\G2409", "U1\\G31501", "D200", "D201", "M100" }.All(reads.Contains),
-              string.Join(",", new[] { "W0", "W1", "D314", "D315", "M330", "U1\\G2409", "D200", "D201" }.Where(a => !reads.Contains(a))));
+              new[] { "W0", "W1", "D314", "D315", "D316", "D317", "M604", "M605", "M248", "M121", "U1\\G2409", "U1\\G31501", "D200", "D201", "M100" }.All(reads.Contains),
+              string.Join(",", new[] { "W0", "W1", "D314", "D315", "M248", "U1\\G2409", "D200", "D201" }.Where(a => !reads.Contains(a))));
 
         Console.WriteLine("--- 1. homing: moved, then got stuck - 50.1: the reference sensor ---");
         mem["D314"] = 0; mem["D315"] = 0;
+        mem["M330"] = 1;                                           // the row's lamp ON, the sensor (M248) OFF
         Pos("D316", 2500);
         Pos("W0", 500); mem["U1\\G2409"] = 0;
         Scan(3);
@@ -149,7 +155,7 @@ class AMH {
               m == null ? "" : m.Motion + " moved=" + m.Moved + " stuck=" + m.Stuck + " " + m.StuckMs + "ms pos=" + m.Position + " from " + m.PositionStart);
         Check("  read the scan before: Home return (7), BUSY ON - not the error state of the code's scan",
               m != null && m.Status == 7 && m.Busy == true, m == null ? "" : m.StatusText);
-        Check("  the reference sensor SN.1 (X100) from the drawings, OFF at the alarm",
+        Check("  the reference sensor SN.1 (X100) from the drawings, OFF at the alarm (its own input - the row's lamp M330 was ON)",
               m != null && m.RefPoint != null && m.RefPoint.Address == "X100" && m.RefOn == false);
         Check("  the hint: stuck while homing; the reference sensor checked first",
               m != null && AxisSteps.HintOf(m) == "HomeStuck" && AxisSteps.StepsOf(m).FirstOrDefault() == "RefSensor",
@@ -189,7 +195,9 @@ class AMH {
         Check("  the PLC's internal relay (M330) is not shown to a maintenance user", !text.Contains("M330"));
         SecurityManager.Login("a", SecurityLevel.Admin);
         var adminText = Text(File.ReadAllText(TC.ExtractSection(docs[0])));
-        Check("  an Admin sees where the page reads it (M330)", adminText.Contains("The page reads it at M330"));
+        Check("  an Admin sees where the HMI reads it (M248) and the row's own lamp (M330)",
+              adminText.Contains("The HMI reads it at M248") && adminText.Contains("row's lamp M330 - another device, not this sensor's input"),
+              Regex.Match(adminText, "The HMI reads.{0,120}").Value);
         SecurityManager.Login("m", SecurityLevel.Maintenance);
         Check("the row's code cell / '?' finds the same moment while the code is shown",
               AlarmGeneration.AxisStepsForCode(1, "W0B", 0x501) != null && AlarmGeneration.AxisStepsForCode(1, "W0B", 0x501).AxisMoment == m &&
