@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 16 October (evening):
+  - 45e8d89 - HMI Settings > AI: an "Active" column. Not ticked: the chat stays in the table with its address but is
+    not offered in the help lists ("Ask ...", the AI prompt's menu).
+  - 87000f9 - The axis help by what the axis was doing when its code came - standing, homing, moved by hand, in the
+    automatic cycle (the motion module's state and BUSY, the jog buttons, the machine running, the position and how it
+    moved). The alarm's help, the axis "?" and its code cell open "Step by step - <axis> - <what it was doing>" first:
+    an overload that got stuck while homing points at the reference sensor, with its drawing's details (sensor, input,
+    card and terminal, wire, sheet, supply wires); by hand or in the cycle at a crash and the limits (at its limit:
+    the limit beyond the mechanical end); a vertical axis standing still at its brake. The words are in
+    Help\Templates\EN\Axis_Steps.html.
 - 15 October (answers to the 14 October questions):
   - 61372f4 - Clamping Moulds: the back moulds hidden again while the Clamping Mould option (L27) is 0 - the rule is
     "L27 Equal 1" again and the 10 back rows carry its condition; Cutting Left Back Horizontal: the 5/3 closed-centre
