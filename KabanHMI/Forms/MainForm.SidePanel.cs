@@ -71,7 +71,9 @@ namespace Kaban.UI.Forms
                 TitleKey = "Ttl_IoMonitor", TitleFallback = "Inputs / Outputs",
                 Glyph = DrawIoGlyph,
                 Create = () => new Screens.IoMonitorPage(),
-                RequiredLevel = SecurityLevel.Maintenance,
+                // every level (16 October: "no safety issue for the operator to see them, they
+                // will need it for the error troubleshooting") - it only shows, it writes nothing
+                RequiredLevel = SecurityLevel.None,
                 SortOrder = 10
             });
             // Every axis's position and current, from the Axis Settings rows - watching only.

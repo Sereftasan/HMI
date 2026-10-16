@@ -256,8 +256,16 @@ class SP {
         form.ShowSidePage("IoMonitor");
         SecurityManager.Logout();
         Pump(50);
-        Check("signed out: the Axis Monitor, the Order page and Notes stay (they ask for no level); Inputs / Outputs is closed",
-              string.Join(",", buttons.Keys) == "AxisMonitor,TST.Order,Notes,+" && form.OpenSidePage == null && bar.Visible, string.Join(",", buttons.Keys));
+        // 16 October: Inputs / Outputs for every level - the operator needs it to find a fault
+        Check("signed out: Inputs / Outputs, the Axis Monitor, the Order page and Notes stay (they ask for no level); Inputs / Outputs stays open",
+              string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,+" && form.OpenSidePage != null && form.OpenSidePage.Key == "IoMonitor" && bar.Visible,
+              string.Join(",", buttons.Keys));
+        SecurityManager.Login("op", SecurityLevel.Operator);
+        Pump(50);
+        Check("  an operator: Inputs / Outputs too, no PLC monitor", string.Join(",", buttons.Keys) == "IoMonitor,AxisMonitor,TST.Order,Notes,+", string.Join(",", buttons.Keys));
+        SecurityManager.Logout();
+        form.CloseSidePanel();
+        Pump(50);
 
         Console.WriteLine("--- the bar folds to the edge ---");
         form.GetType().GetMethod("SetSideBarFolded", Any).Invoke(form, new object[] { true });
