@@ -126,6 +126,12 @@
     <Compile Include="Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs">
       <DependentUpon>ManualYZ_Cross_Rollers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Screens\Shared\AxisJogBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Screens\Shared\AxisJogBar.Designer.cs">
+      <DependentUpon>AxisJogBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Screens\Parameters\Options.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -238,11 +244,6 @@
     <ProjectReference Include="..\KabanHMI\Kaban.UI.csproj">
       <Project>{ac4e46e4-8e1e-4d8a-8231-62588c3d42f9}</Project>
       <Name>Kaban.UI</Name>
-    </ProjectReference>
-    <!-- its own controls for its pages (the axes' jog bar): a library, so the designer can load them -->
-    <ProjectReference Include="..\Kaban.Machines.FA2010.Shared\Kaban.Machines.FA2010.Shared.csproj">
-      <Project>{0b972c29-1d39-42ef-a3a4-3e902e6a97c5}</Project>
-      <Name>Kaban.Machines.FA2010.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

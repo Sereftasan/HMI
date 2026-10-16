@@ -1434,6 +1434,11 @@ namespace Kaban.UI.Controls
         /// The page's controls move down to make room for it (the designer's page
         /// is not changed), and the bar stays in sight while the page is scrolled
         /// sideways.
+        ///
+        /// JUST ABOVE THE COLUMN NAMES (16 October: "I need AxisJogBar to be at the top
+        /// of the page ... the item selection should be just before the column header
+        /// line"): what the page has above its column names - FA2010's speed and jog
+        /// step - stays at the top, and only the column names and the rows move down.
         /// </summary>
         private void EnsureMotionBar(Control page)
         {
@@ -1443,11 +1448,11 @@ namespace Kaban.UI.Controls
             if (frame != null && (items == null || motion == null)) return;
             if (items == null || motion == null)
             {
-                int top = int.MaxValue, left = int.MaxValue;
-                foreach (Control c in page.Controls) { top = Math.Min(top, c.Top); left = Math.Min(left, c.Left); }
-                if (top == int.MaxValue) { top = 0; left = 0; }
+                int top = HeadingLine(page), left = int.MaxValue;
+                foreach (Control c in page.Controls) if (c.Top >= top) left = Math.Min(left, c.Left);
+                if (left == int.MaxValue) left = 0;
                 int shift = UiScale.For(page, 40);
-                foreach (Control c in page.Controls) c.Top += shift;
+                foreach (Control c in page.Controls) if (c.Top >= top) c.Top += shift;
 
                 // PLC axis items: an ordinary part of the page, scrolling with it - and
                 // before it the Axes list: which rows the page shows.
@@ -1490,6 +1495,21 @@ namespace Kaban.UI.Controls
             bool hasMotion = PageHasMotion();
             motion.Visible = hasMotion;
             motion.Offer(PageItems(), hasMotion);
+        }
+
+        /// <summary>
+        /// Where the page's column names start: the top of the plain labels just above
+        /// its first row (within a heading's height of it) - or the first row itself on
+        /// a page without names. What is above it is the page's own top (a speed bar).
+        /// </summary>
+        internal static int HeadingLine(Control page)
+        {
+            var rows = page.Controls.OfType<AxisSettingHMI>().Where(r => !r.MonitorMode).ToList();
+            if (rows.Count == 0) return 0;
+            int first = rows.Min(r => r.Top), line = first, band = UiScale.For(page, 40);
+            foreach (Control c in page.Controls)
+                if (c.GetType() == typeof(Label) && c.Bottom <= first + 2 && c.Bottom >= first - band) line = Math.Min(line, c.Top);
+            return line;
         }
 
         /// <summary>The bar's ticks as kept (another user signed in, the pick changed elsewhere).</summary>

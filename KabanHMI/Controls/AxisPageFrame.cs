@@ -165,6 +165,10 @@ namespace Kaban.UI.Controls
                 page.Controls.Add(frame);
                 frame.Head.Height = line;
                 frame.SuspendLayout();
+                // what the page has above its lists (FA2010's speed and jog step, 16 October)
+                // stays in the heading as it is - not moved sideways with the rows
+                var lists = originals.FirstOrDefault(c => c.Name == AxisSettingHMI.ItemsBarName);
+                int listsTop = lists != null ? at0[lists].Y : int.MinValue;
                 foreach (var c in originals)
                 {
                     var was = at0[c];
@@ -177,7 +181,8 @@ namespace Kaban.UI.Controls
                     {
                         // the Motion monitor and a machine's bar (the axes' speed and jog step)
                         // stay where they are while the rows scroll sideways
-                        (c.Name == AxisSettingHMI.MotionBarName || c is IPageBar ? (Control)frame.Head : frame.HeadContent).Controls.Add(c);
+                        bool stays = c.Name == AxisSettingHMI.MotionBarName || c is IPageBar || (c != lists && was.Y + c.Height <= listsTop + 1);
+                        (stays ? (Control)frame.Head : frame.HeadContent).Controls.Add(c);
                         c.Location = was;
                     }
                 }
