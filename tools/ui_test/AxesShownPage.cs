@@ -94,9 +94,28 @@ class ASP {
         Pump(100);
         Check("hidden by its conditions: the rows below move up into its place", !opt.Visible && rows[3].Top == slots[2] && rows.Last().Top == slots[slots.Count - 2],
               rows[3].Top + " vs " + slots[2]);
+        var optKey = opt.AxisNameKey + "@" + opt.PlcNumber;
+        Check("  and not offered in the Axes list (16 October: ticked, it could not be seen)", pick.Items.Count == 16 && !pick.Items.Any(i => i.Key == optKey),
+              pick.Items.Count + " offered");
         opt.UpdateState(a => 0, c => true);
         Pump(100);
         Check("  met again: back in its place", opt.Visible && rows.Select(r => r.Top).SequenceEqual(slots));
+        Check("  and offered again, in its place in the list", pick.Items.Count == 17 && pick.Items[2].Key == optKey);
+        pick.Select(new[] { optKey, keep[0] });
+        Pump(100);
+        opt.UpdateState(a => 0, c => false);
+        Pump(100);
+        shown = rows.Where(r => r.Visible).ToList();
+        Check("ticked, then its conditions not met: the other tick shows alone, its own tick kept",
+              shown.Count == 1 && shown[0].AxisNameKey == names[1] && pick.Selected.SetEquals(new[] { keep[0] }) &&
+              ViewPreferences.PickOf(ViewPreferences.AxesShown).Contains(optKey), string.Join(",", shown.Select(r => r.AxisNameKey)));
+        opt.UpdateState(a => 0, c => true);
+        Pump(100);
+        shown = rows.Where(r => r.Visible).ToList();
+        Check("  met again: ticked and shown again", shown.Count == 2 && pick.Selected.SetEquals(new[] { optKey, keep[0] }) && opt.Visible,
+              string.Join(",", shown.Select(r => r.AxisNameKey)));
+        pick.Select(new string[0]);
+        Pump(100);
         pick.Select(keep);
         Pump(100);
         opt.UpdateState(a => 0, c => true);

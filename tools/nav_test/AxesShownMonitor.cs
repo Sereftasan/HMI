@@ -58,7 +58,9 @@ class ASM {
         var adminHead = rowsHead.Controls.Count > 0 ? rowsHead.Controls[0].Controls.OfType<Label>().FirstOrDefault(l => (l.Tag as string) == "AxisHeading:Axis") : null;
         var classicHead = ((Panel)typeof(AxisMonitorPage).GetField("_head", Any).GetValue(view)).Controls.OfType<Label>().First();
         Check("the Axis heading opens it", AxisHeadingFilter.PickOf(adminHead ?? classicHead) == pick);
-        Check("the Axes list: the 23 axes, the machine before the name", pick != null && pick.Items.Count == 23 &&
+        // V Cutting's three axes need their option (MachineBit20, not set in the simulation): not offered (16 October)
+        Check("the Axes list: the 20 axes that can be seen of 23 (V Cutting's need their option), the machine before the name", pick != null && pick.Items.Count == 20 &&
+              !pick.Items.Any(i => i.Text.Contains("V Cutting")) &&
               pick.Items[0].Text == "Processing Center · Robot X" && pick.Items.Last().Text.StartsWith("3D Hinge Drilling · "),
               pick == null ? "none" : pick.Items.Count + ": " + pick.Items[0].Text + " ... " + pick.Items.Last().Text);
         Func<List<string>> listed = () => P<IList<AxisMonitorRow>>(view, "Rows").Select(r => r.NameKey + "@" + r.PlcNumber).Concat(P<IList<AxisSettingHMI>>(view, "SettingRows").Select(r => r.AxisNameKey + "@" + r.PlcNumber)).ToList();
@@ -91,6 +93,19 @@ class ASM {
         P<AxisPickBar>(view, "Bar").AxesPick.Select(new string[0]);
         Pump(300);
         Check("  nothing ticked: all again", listed().Count == 23);
+        // 16 October: an axis whose visibility conditions are not met is not offered
+        var canBeSeen = typeof(AxisMonitorPage).GetField("CanBeSeen", Any);
+        var seenWas = canBeSeen.GetValue(null);
+        canBeSeen.SetValue(null, (Func<Kaban.UI.Helpers.AlarmHelpLinks.AxisInfo, bool>)(a => !(a.NameKey ?? "").EndsWith("RobotZ")));
+        typeof(AxisMonitorPage).GetMethod("ReofferAxes", Any).Invoke(view, null);     // as the heading does before it opens
+        Pump(200);
+        pick = P<AxisPickBar>(view, "Bar").AxesPick;
+        Check("an axis whose conditions are not met: not in the Axes list when it opens (here: Robot Z)", pick.Items.Count == 22 && !pick.Items.Any(i => i.Text.EndsWith("Robot Z")),
+              pick.Items.Count.ToString());
+        canBeSeen.SetValue(null, seenWas);
+        typeof(AxisMonitorPage).GetMethod("ReofferAxes", Any).Invoke(view, null);
+        Pump(200);
+        Check("  met again: offered again (the 20 that can be seen)", P<AxisPickBar>(view, "Bar").AxesPick.Items.Count == 20);
 
         Console.WriteLine("--- Inputs / Outputs ---");
         var io = form.ShowSidePage("IoMonitor") as IoMonitorPage;

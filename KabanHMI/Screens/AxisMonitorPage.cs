@@ -85,7 +85,7 @@ namespace Kaban.UI.Screens
             var axisHead = Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName);
             _head.Controls.Add(axisHead);
             // the Axis heading opens the Axes list (which axes the monitor shows)
-            AxisHeadingFilter.Attach(axisHead, _bar.AxesPick);
+            AxisHeadingFilter.Attach(axisHead, _bar.AxesPick, ReofferAxes);
             x += WName + Gap + Gap;
             _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisPosition", "Position"), x, WPosition));
             x += WPosition + Gap;
@@ -164,6 +164,33 @@ namespace Kaban.UI.Screens
         /// <summary>An axis's key in the Axes list: its name and station.</summary>
         internal static string AxisKey(AlarmHelpLinks.AxisInfo a) { return (a.NameKey ?? "") + "@" + a.Station; }
 
+        /// <summary>
+        /// Whether an axis can be seen now: its visibility conditions met (16 October: one that
+        /// is not - an option the machine has not got - is not offered in the Axes list).
+        /// Not known yet (no scan): it can.
+        /// </summary>
+        internal static Func<AlarmHelpLinks.AxisInfo, bool> CanBeSeen = a =>
+        {
+            if (a == null || a.Visibility == SystemCondition.None) return true;
+            var check = Kaban.UI.Plc.PlcScanner.LastConditionCheck;
+            if (check == null) return true;
+            try { return check(a.Visibility); } catch { return true; }
+        };
+
+        /// <summary>The axes the Axes list offers: the ones that can be seen.</summary>
+        private List<AlarmHelpLinks.AxisInfo> OfferedAxes()
+        {
+            return AlarmHelpLinks.AllAxes.Where(a => CanBeSeen(a)).ToList();
+        }
+
+        /// <summary>Before the Axes list opens: the axes that can be seen now - the rows again when that changed.</summary>
+        private void ReofferAxes()
+        {
+            if (IsDisposed) return;
+            var want = OfferedAxes().Select(AxisKey).ToList();
+            if (!want.SequenceEqual(_bar.AxesPick.Items.Select(i => i.Key))) { Build(); Kaban.UI.Plc.PlcScanner.NotifyContentChanged(); }
+        }
+
         private void RebuildIfChanged()
         {
             if (IsDisposed || Signature() == _built) return;
@@ -206,7 +233,7 @@ namespace Kaban.UI.Screens
                 // machine before the name when more than one machine has axes. The PLC
                 // axis items and the Motion monitor: an Admin's.
                 _bar.HideLists(!admin);
-                _bar.OfferAxes(axes.Select(a =>
+                _bar.OfferAxes(axes.Where(a => CanBeSeen(a)).Select(a =>
                 {
                     string name = LanguageManager.GetString(a.NameKey ?? "", a.NameKey ?? "");
                     string m = machineOf(a);
@@ -325,7 +352,7 @@ namespace Kaban.UI.Screens
                 l.SetBounds(UiScale.For(first, kv.Value.X), 0, UiScale.For(first, kv.Value.Y), head.Height);
                 l.Text = AxisSettingHMI.HeadingText(kv.Key);
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
-                if (kv.Key == "Axis") AxisHeadingFilter.Attach(l, _bar.AxesPick);
+                if (kv.Key == "Axis") AxisHeadingFilter.Attach(l, _bar.AxesPick, ReofferAxes);
                 else if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
             }
             FollowRows();

@@ -1334,7 +1334,7 @@ namespace Kaban.UI.Controls
             Label axisHead;
             var axesBar = BarOf(page, ItemsBarName);
             if (byKey.TryGetValue("Axis", out axisHead) && axesBar != null && axesBar.AxesPick != null)
-                AxisHeadingFilter.Attach(axisHead, axesBar.AxesPick);
+                AxisHeadingFilter.Attach(axisHead, axesBar.AxesPick, () => OfferPageAxes(page));
 
             // THE SIMPLE MOTION COLUMNS: a heading each, in the same style - its
             // short name over the column, the whole name in its tooltip.
@@ -1553,10 +1553,14 @@ namespace Kaban.UI.Controls
         /// <summary>The row as the page wants it: its conditions met and not hidden by the Axes list.</summary>
         internal bool Wanted { get { return _conditionsMet && !FilteredOut; } }
 
-        /// <summary>The page's rows for its Axes list, in the page's order.</summary>
+        /// <summary>
+        /// The page's rows for its Axes list, in the page's order - not the ones whose
+        /// visibility conditions are not met (16 October: ticked, they could not be seen
+        /// anyway). A tick kept for one of them comes back when its conditions are met.
+        /// </summary>
         private static System.Collections.Generic.List<Kaban.UI.Dashboard.PickList.Item> PageAxes(Control host)
         {
-            return RowsOf(host).Select(r => new Kaban.UI.Dashboard.PickList.Item(r.FilterKey,
+            return RowsOf(host).Where(r => r._conditionsMet).Select(r => new Kaban.UI.Dashboard.PickList.Item(r.FilterKey,
                 LanguageManager.GetString(r.AxisNameKey ?? "", r.AxisNameKey ?? r.Name))).ToList();
         }
 
@@ -1571,6 +1575,17 @@ namespace Kaban.UI.Controls
                 foreach (var r in rows.Where(r => r._rank < 0).OrderBy(r => r.Top).ThenBy(r => r.Left)) r._rank = next++;
             }
             return rows.OrderBy(r => r._rank).ToList();
+        }
+
+        /// <summary>The page's Axes list offered again (its rows' conditions changed, or it is opened) and its ticks applied.</summary>
+        private static void OfferPageAxes(Control page)
+        {
+            if (page == null) return;
+            var bar = BarOf(page, ItemsBarName);
+            if (bar == null || bar.AxesPick == null) return;
+            var axes = PageAxes(page);
+            if (!axes.Select(a => a.Key).SequenceEqual(bar.AxesPick.Items.Select(i => i.Key))) bar.OfferAxes(axes);
+            ApplyAxisFilter(page, bar);
         }
 
         /// <summary>The Axes list's ticks on the page's rows: the ones it hides out of sight, the rest moved up together.</summary>
@@ -1983,7 +1998,12 @@ namespace Kaban.UI.Controls
             _conditionsMet = met;
             bool vis = Wanted;
             if (Visible != vis) Visible = vis;
-            if (changed && !MonitorMode && Parent != null) Restack(Parent);
+            if (changed && !MonitorMode && Parent != null)
+            {
+                // the Axes list offers the rows that can be seen (the ticks applied again)
+                if (BarOf(Parent, ItemsBarName) != null) OfferPageAxes(Parent);
+                Restack(Parent);
+            }
         }
     }
 

@@ -36,7 +36,7 @@ namespace Kaban.UI.Controls
     /// </summary>
     public static class AxisHeadingFilter
     {
-        private sealed class Hook { public PickList Pick; }
+        private sealed class Hook { public PickList Pick; public Action BeforeOpen; }
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook> _hooks =
             new System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook>();
 
@@ -47,22 +47,33 @@ namespace Kaban.UI.Controls
             return heading != null && _hooks.TryGetValue(heading, out h) ? h.Pick : null;
         }
 
-        /// <summary>Makes <paramref name="heading"/> open <paramref name="pick"/> (again: the list it opens now).</summary>
-        public static void Attach(Label heading, PickList pick)
+        /// <summary>
+        /// Makes <paramref name="heading"/> open <paramref name="pick"/> (again: the list it opens now).
+        /// <paramref name="beforeOpen"/>: the axes offered again just before it opens (16 October: an
+        /// axis whose visibility conditions are not met is not offered - ticked, it could not be seen).
+        /// </summary>
+        public static void Attach(Label heading, PickList pick, Action beforeOpen = null)
         {
             if (heading == null || pick == null) return;
             Hook hook;
             if (_hooks.TryGetValue(heading, out hook))
             {
                 if (hook.Pick != pick) { hook.Pick = pick; pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); }; }
+                if (beforeOpen != null) hook.BeforeOpen = beforeOpen;
                 heading.Invalidate();
                 return;
             }
-            hook = new Hook { Pick = pick };
+            hook = new Hook { Pick = pick, BeforeOpen = beforeOpen };
             _hooks.Add(heading, hook);
             pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); };
             heading.Cursor = Cursors.Hand;
-            heading.Click += (s, e) => { var p = hook.Pick; if (p != null && p.Items.Count > 0) p.DropUnder(heading); };
+            heading.Click += (s, e) =>
+            {
+                var before = hook.BeforeOpen;
+                if (before != null) { try { before(); } catch (Exception ex) { AuditLogger.Log("the axes list: " + ex.Message); } }
+                var p = hook.Pick;
+                if (p != null && p.Items.Count > 0 && !heading.IsDisposed) p.DropUnder(heading);
+            };
             UiStyle.HoverTip(UiStyle.Tips(), heading, () =>
             {
                 var p = hook.Pick;
