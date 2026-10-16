@@ -10,7 +10,8 @@ using Kaban.Core.Helpers;
 // 'Kaban.Machines.FA2010.Screens.Shared.AxisJogBar'". The bar was a control of the machine's PROGRAM,
 // and the program is built 32-bit (Prefer 32-bit, for MX Component: CLR flags 0x20003), which the
 // 64-bit Visual Studio cannot load a control from; Kaban.UI's controls load (a library: Any CPU).
-// The bar is in a library of its own now (Kaban.Machines.FA2010.Shared). Every machine's pages: no
+// 16 October, simpler: no page holds the bar - it is shown above the Manual Movement tabs and on the
+// Axis Monitor by the program, and the Axis page has a copy of its controls. Every machine's pages: no
 // control on them may come from a machine's program (.exe).
 class PD {
     static int fail = 0;
@@ -40,9 +41,10 @@ class PD {
         }
         Check("every page's controls come from libraries, none from a machine's program - " + pages + " pages", pages > 20 && bad.Count == 0,
               string.Join(" | ", bad.Take(6)));
-        var bar = Type.GetType("Kaban.Machines.FA2010.Screens.Shared.AxisJogBar, Kaban.Machines.FA2010.Shared");
-        Check("FA2010's jog bar: in Kaban.Machines.FA2010.Shared.dll, same name as before (the pages' designer files unchanged)",
-              bar != null && Path.GetFileName(bar.Assembly.Location) == "Kaban.Machines.FA2010.Shared.dll");
+        var fa = programs.FirstOrDefault(a => a.GetName().Name == "Kaban.Machines.FA2010");
+        var bar = fa == null ? null : fa.GetType("Kaban.Machines.FA2010.Screens.Shared.AxisJogBar");
+        Check("FA2010's jog bar: in the machine's program again (no library of its own), held by no page",
+              bar != null && !File.Exists("Kaban.Machines.FA2010.Shared.dll"));
         Console.WriteLine(fail == 0 ? "PAGES DESIGNABLE ALL PASS" : "PAGES DESIGNABLE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

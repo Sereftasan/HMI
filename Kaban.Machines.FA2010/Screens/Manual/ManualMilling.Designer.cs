@@ -78,7 +78,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_2_Change_Degree_N90 = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnit_2_Change_Degree_N180 = new Kaban.UI.Controls.ButtonHMI();
             this.btnUnit_2_Change_Degree_N270 = new Kaban.UI.Controls.ButtonHMI();
-            this.axisJogBar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
             this.grpDrills_to_Changing_Pos.SuspendLayout();
             this.grpUnit_1_Change_Degree.SuspendLayout();
             this.grpUnit_2_Change_Degree.SuspendLayout();
@@ -128,7 +127,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down.Lamp2ATipKey = "";
             this.unitRoller_Up_Down.Lamp2BAddress = "";
             this.unitRoller_Up_Down.Lamp2BTipKey = "";
-            this.unitRoller_Up_Down.Location = new System.Drawing.Point(14, 85);
+            this.unitRoller_Up_Down.Location = new System.Drawing.Point(14, 14);
             this.unitRoller_Up_Down.LogAction = true;
             this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
             this.unitRoller_Up_Down.OutputAAddress = "";
@@ -208,7 +207,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnHigh_Air_Pressure.Lamp2Address = "";
             this.btnHigh_Air_Pressure.Lamp2Tip = "";
             this.btnHigh_Air_Pressure.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnHigh_Air_Pressure.Location = new System.Drawing.Point(14, 167);
+            this.btnHigh_Air_Pressure.Location = new System.Drawing.Point(14, 96);
             this.btnHigh_Air_Pressure.LogAction = true;
             this.btnHigh_Air_Pressure.Name = "btnHigh_Air_Pressure";
             this.btnHigh_Air_Pressure.OutputAddress = "";
@@ -231,7 +230,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitTop_Clamping.BackColor = System.Drawing.Color.White;
             this.unitTop_Clamping.EncoderNumber = 4;
-            this.unitTop_Clamping.Location = new System.Drawing.Point(14, 217);
+            this.unitTop_Clamping.Location = new System.Drawing.Point(14, 146);
             this.unitTop_Clamping.Name = "unitTop_Clamping";
             this.unitTop_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitTop_Clamping.TabIndex = 2;
@@ -241,7 +240,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitFront_Clamping.BackColor = System.Drawing.Color.White;
             this.unitFront_Clamping.EncoderNumber = 5;
-            this.unitFront_Clamping.Location = new System.Drawing.Point(14, 291);
+            this.unitFront_Clamping.Location = new System.Drawing.Point(14, 220);
             this.unitFront_Clamping.Name = "unitFront_Clamping";
             this.unitFront_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitFront_Clamping.TabIndex = 3;
@@ -258,7 +257,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.grpDrills_to_Changing_Pos.Emoji = "";
             this.grpDrills_to_Changing_Pos.EnableAddress = "";
             this.grpDrills_to_Changing_Pos.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.grpDrills_to_Changing_Pos.Location = new System.Drawing.Point(454, 85);
+            this.grpDrills_to_Changing_Pos.Location = new System.Drawing.Point(454, 14);
             this.grpDrills_to_Changing_Pos.Name = "grpDrills_to_Changing_Pos";
             this.grpDrills_to_Changing_Pos.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.grpDrills_to_Changing_Pos.PlcNumber = 1;
@@ -610,7 +609,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnMachine_Cleaning_Pos.Lamp2Address = "";
             this.btnMachine_Cleaning_Pos.Lamp2Tip = "";
             this.btnMachine_Cleaning_Pos.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnMachine_Cleaning_Pos.Location = new System.Drawing.Point(454, 159);
+            this.btnMachine_Cleaning_Pos.Location = new System.Drawing.Point(454, 88);
             this.btnMachine_Cleaning_Pos.LogAction = true;
             this.btnMachine_Cleaning_Pos.Name = "btnMachine_Cleaning_Pos";
             this.btnMachine_Cleaning_Pos.OutputAddress = "";
@@ -633,7 +632,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblUnit_1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblUnit_1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblUnit_1.Location = new System.Drawing.Point(14, 382);
+            this.lblUnit_1.Location = new System.Drawing.Point(14, 311);
             this.lblUnit_1.Name = "lblUnit_1";
             this.lblUnit_1.Size = new System.Drawing.Size(360, 26);
             this.lblUnit_1.TabIndex = 6;
@@ -645,7 +644,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_1_Angle.AxisNumber = 4;
             this.unitUnit_1_Angle.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Angle.Location = new System.Drawing.Point(14, 414);
+            this.unitUnit_1_Angle.Location = new System.Drawing.Point(14, 343);
             this.unitUnit_1_Angle.Name = "unitUnit_1_Angle";
             this.unitUnit_1_Angle.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_1_Angle.TabIndex = 7;
@@ -654,7 +653,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_1_X.AxisNumber = 5;
             this.unitUnit_1_X.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_X.Location = new System.Drawing.Point(14, 488);
+            this.unitUnit_1_X.Location = new System.Drawing.Point(14, 417);
             this.unitUnit_1_X.Name = "unitUnit_1_X";
             this.unitUnit_1_X.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_1_X.TabIndex = 8;
@@ -663,7 +662,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_1_Y.AxisNumber = 6;
             this.unitUnit_1_Y.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Y.Location = new System.Drawing.Point(14, 562);
+            this.unitUnit_1_Y.Location = new System.Drawing.Point(14, 491);
             this.unitUnit_1_Y.Name = "unitUnit_1_Y";
             this.unitUnit_1_Y.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_1_Y.TabIndex = 9;
@@ -672,7 +671,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_1_Z.AxisNumber = 7;
             this.unitUnit_1_Z.BackColor = System.Drawing.Color.White;
-            this.unitUnit_1_Z.Location = new System.Drawing.Point(14, 636);
+            this.unitUnit_1_Z.Location = new System.Drawing.Point(14, 565);
             this.unitUnit_1_Z.Name = "unitUnit_1_Z";
             this.unitUnit_1_Z.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_1_Z.TabIndex = 10;
@@ -688,7 +687,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitUnit_1_Milling_Motor.ErrorAddress = "M828";
             this.unitUnit_1_Milling_Motor.FaultCodeAddress = "D667";
             this.unitUnit_1_Milling_Motor.Lamp1AAddress = "M230";
-            this.unitUnit_1_Milling_Motor.Location = new System.Drawing.Point(14, 710);
+            this.unitUnit_1_Milling_Motor.Location = new System.Drawing.Point(14, 639);
             this.unitUnit_1_Milling_Motor.LogAction = true;
             this.unitUnit_1_Milling_Motor.Name = "unitUnit_1_Milling_Motor";
             this.unitUnit_1_Milling_Motor.PlcNumber = 1;
@@ -756,7 +755,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_1_Tool_1_Cooling.Lamp2Address = "";
             this.btnUnit_1_Tool_1_Cooling.Lamp2Tip = "";
             this.btnUnit_1_Tool_1_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(14, 784);
+            this.btnUnit_1_Tool_1_Cooling.Location = new System.Drawing.Point(14, 713);
             this.btnUnit_1_Tool_1_Cooling.LogAction = true;
             this.btnUnit_1_Tool_1_Cooling.Name = "btnUnit_1_Tool_1_Cooling";
             this.btnUnit_1_Tool_1_Cooling.OutputAddress = "";
@@ -828,7 +827,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_1_Tool_2_Cooling.Lamp2Address = "";
             this.btnUnit_1_Tool_2_Cooling.Lamp2Tip = "";
             this.btnUnit_1_Tool_2_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(14, 834);
+            this.btnUnit_1_Tool_2_Cooling.Location = new System.Drawing.Point(14, 763);
             this.btnUnit_1_Tool_2_Cooling.LogAction = true;
             this.btnUnit_1_Tool_2_Cooling.Name = "btnUnit_1_Tool_2_Cooling";
             this.btnUnit_1_Tool_2_Cooling.OutputAddress = "";
@@ -858,7 +857,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.grpUnit_1_Change_Degree.Emoji = "";
             this.grpUnit_1_Change_Degree.EnableAddress = "";
             this.grpUnit_1_Change_Degree.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.grpUnit_1_Change_Degree.Location = new System.Drawing.Point(14, 884);
+            this.grpUnit_1_Change_Degree.Location = new System.Drawing.Point(14, 813);
             this.grpUnit_1_Change_Degree.Name = "grpUnit_1_Change_Degree";
             this.grpUnit_1_Change_Degree.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.grpUnit_1_Change_Degree.PlcNumber = 1;
@@ -1161,7 +1160,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.lblUnit_2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblUnit_2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblUnit_2.Location = new System.Drawing.Point(454, 382);
+            this.lblUnit_2.Location = new System.Drawing.Point(454, 311);
             this.lblUnit_2.Name = "lblUnit_2";
             this.lblUnit_2.Size = new System.Drawing.Size(360, 26);
             this.lblUnit_2.TabIndex = 18;
@@ -1173,7 +1172,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_2_Angle.AxisNumber = 8;
             this.unitUnit_2_Angle.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Angle.Location = new System.Drawing.Point(454, 414);
+            this.unitUnit_2_Angle.Location = new System.Drawing.Point(454, 343);
             this.unitUnit_2_Angle.Name = "unitUnit_2_Angle";
             this.unitUnit_2_Angle.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_2_Angle.TabIndex = 19;
@@ -1182,7 +1181,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_2_X.AxisNumber = 9;
             this.unitUnit_2_X.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_X.Location = new System.Drawing.Point(454, 488);
+            this.unitUnit_2_X.Location = new System.Drawing.Point(454, 417);
             this.unitUnit_2_X.Name = "unitUnit_2_X";
             this.unitUnit_2_X.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_2_X.TabIndex = 20;
@@ -1191,7 +1190,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_2_Y.AxisNumber = 10;
             this.unitUnit_2_Y.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Y.Location = new System.Drawing.Point(454, 562);
+            this.unitUnit_2_Y.Location = new System.Drawing.Point(454, 491);
             this.unitUnit_2_Y.Name = "unitUnit_2_Y";
             this.unitUnit_2_Y.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_2_Y.TabIndex = 21;
@@ -1200,7 +1199,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitUnit_2_Z.AxisNumber = 11;
             this.unitUnit_2_Z.BackColor = System.Drawing.Color.White;
-            this.unitUnit_2_Z.Location = new System.Drawing.Point(454, 636);
+            this.unitUnit_2_Z.Location = new System.Drawing.Point(454, 565);
             this.unitUnit_2_Z.Name = "unitUnit_2_Z";
             this.unitUnit_2_Z.Size = new System.Drawing.Size(360, 64);
             this.unitUnit_2_Z.TabIndex = 22;
@@ -1216,7 +1215,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitUnit_2_Milling_Motor.ErrorAddress = "M829";
             this.unitUnit_2_Milling_Motor.FaultCodeAddress = "D668";
             this.unitUnit_2_Milling_Motor.Lamp1AAddress = "M231";
-            this.unitUnit_2_Milling_Motor.Location = new System.Drawing.Point(454, 710);
+            this.unitUnit_2_Milling_Motor.Location = new System.Drawing.Point(454, 639);
             this.unitUnit_2_Milling_Motor.LogAction = true;
             this.unitUnit_2_Milling_Motor.Name = "unitUnit_2_Milling_Motor";
             this.unitUnit_2_Milling_Motor.PlcNumber = 1;
@@ -1284,7 +1283,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_2_Tool_1_Cooling.Lamp2Address = "";
             this.btnUnit_2_Tool_1_Cooling.Lamp2Tip = "";
             this.btnUnit_2_Tool_1_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(454, 784);
+            this.btnUnit_2_Tool_1_Cooling.Location = new System.Drawing.Point(454, 713);
             this.btnUnit_2_Tool_1_Cooling.LogAction = true;
             this.btnUnit_2_Tool_1_Cooling.Name = "btnUnit_2_Tool_1_Cooling";
             this.btnUnit_2_Tool_1_Cooling.OutputAddress = "";
@@ -1356,7 +1355,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_2_Tool_2_Cooling.Lamp2Address = "";
             this.btnUnit_2_Tool_2_Cooling.Lamp2Tip = "";
             this.btnUnit_2_Tool_2_Cooling.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(454, 834);
+            this.btnUnit_2_Tool_2_Cooling.Location = new System.Drawing.Point(454, 763);
             this.btnUnit_2_Tool_2_Cooling.LogAction = true;
             this.btnUnit_2_Tool_2_Cooling.Name = "btnUnit_2_Tool_2_Cooling";
             this.btnUnit_2_Tool_2_Cooling.OutputAddress = "";
@@ -1386,7 +1385,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.grpUnit_2_Change_Degree.Emoji = "";
             this.grpUnit_2_Change_Degree.EnableAddress = "";
             this.grpUnit_2_Change_Degree.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
-            this.grpUnit_2_Change_Degree.Location = new System.Drawing.Point(454, 884);
+            this.grpUnit_2_Change_Degree.Location = new System.Drawing.Point(454, 813);
             this.grpUnit_2_Change_Degree.Name = "grpUnit_2_Change_Degree";
             this.grpUnit_2_Change_Degree.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
             this.grpUnit_2_Change_Degree.PlcNumber = 1;
@@ -1685,19 +1684,11 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnUnit_2_Change_Degree_N270.UseVisualStyleBackColor = false;
             this.btnUnit_2_Change_Degree_N270.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // axisJogBar
-            // 
-            this.axisJogBar.Location = new System.Drawing.Point(18, 14);
-            this.axisJogBar.Name = "axisJogBar";
-            this.axisJogBar.Size = new System.Drawing.Size(825, 42);
-            this.axisJogBar.TabIndex = 39;
-            // 
             // ManualMilling
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.axisJogBar);
             this.Controls.Add(this.unitRoller_Up_Down);
             this.Controls.Add(this.btnHigh_Air_Pressure);
             this.Controls.Add(this.unitTop_Clamping);
@@ -1770,6 +1761,5 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N90;
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N180;
         private Kaban.UI.Controls.ButtonHMI btnUnit_2_Change_Degree_N270;
-        private Kaban.Machines.FA2010.Screens.Shared.AxisJogBar axisJogBar;
     }
 }

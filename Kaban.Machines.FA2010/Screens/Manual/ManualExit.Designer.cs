@@ -34,7 +34,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Motor = new Kaban.UI.Controls.InverterUnitHMI();
             this.lampSawdust_Conveyor_Thermic = new Kaban.UI.Controls.LampHMI();
             this.btnSawdust_Blowing = new Kaban.UI.Controls.ButtonHMI();
-            this.axisJogBar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
             this.SuspendLayout();
             // 
             // unitRobot_Top_Clamping
@@ -42,7 +41,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Clamping.BackColor = System.Drawing.Color.White;
             this.unitRobot_Top_Clamping.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
             this.unitRobot_Top_Clamping.EncoderNumber = 8;
-            this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(14, 97);
+            this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(14, 13);
             this.unitRobot_Top_Clamping.Name = "unitRobot_Top_Clamping";
             this.unitRobot_Top_Clamping.Size = new System.Drawing.Size(360, 64);
             this.unitRobot_Top_Clamping.TabIndex = 0;
@@ -93,7 +92,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRobot_Top_Small_Clamping.Lamp2ATipKey = "";
             this.unitRobot_Top_Small_Clamping.Lamp2BAddress = "";
             this.unitRobot_Top_Small_Clamping.Lamp2BTipKey = "";
-            this.unitRobot_Top_Small_Clamping.Location = new System.Drawing.Point(14, 171);
+            this.unitRobot_Top_Small_Clamping.Location = new System.Drawing.Point(14, 87);
             this.unitRobot_Top_Small_Clamping.LogAction = true;
             this.unitRobot_Top_Small_Clamping.Name = "unitRobot_Top_Small_Clamping";
             this.unitRobot_Top_Small_Clamping.OutputAAddress = "";
@@ -124,7 +123,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitRobot_Movement.AxisNumber = 16;
             this.unitRobot_Movement.BackColor = System.Drawing.Color.White;
-            this.unitRobot_Movement.Location = new System.Drawing.Point(14, 245);
+            this.unitRobot_Movement.Location = new System.Drawing.Point(14, 161);
             this.unitRobot_Movement.Name = "unitRobot_Movement";
             this.unitRobot_Movement.Size = new System.Drawing.Size(360, 64);
             this.unitRobot_Movement.TabIndex = 2;
@@ -172,7 +171,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitRoller_Up_Down.Lamp2ATipKey = "";
             this.unitRoller_Up_Down.Lamp2BAddress = "";
             this.unitRoller_Up_Down.Lamp2BTipKey = "";
-            this.unitRoller_Up_Down.Location = new System.Drawing.Point(14, 319);
+            this.unitRoller_Up_Down.Location = new System.Drawing.Point(14, 235);
             this.unitRoller_Up_Down.LogAction = true;
             this.unitRoller_Up_Down.Name = "unitRoller_Up_Down";
             this.unitRoller_Up_Down.OutputAAddress = "";
@@ -243,7 +242,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Ejection.Lamp2ATipKey = "";
             this.unitProfile_Ejection.Lamp2BAddress = "";
             this.unitProfile_Ejection.Lamp2BTipKey = "";
-            this.unitProfile_Ejection.Location = new System.Drawing.Point(14, 393);
+            this.unitProfile_Ejection.Location = new System.Drawing.Point(14, 309);
             this.unitProfile_Ejection.LogAction = true;
             this.unitProfile_Ejection.Name = "unitProfile_Ejection";
             this.unitProfile_Ejection.OutputAAddress = "";
@@ -315,7 +314,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitShort_Profile_Support.Lamp2ATipKey = "";
             this.unitShort_Profile_Support.Lamp2BAddress = "";
             this.unitShort_Profile_Support.Lamp2BTipKey = "";
-            this.unitShort_Profile_Support.Location = new System.Drawing.Point(14, 467);
+            this.unitShort_Profile_Support.Location = new System.Drawing.Point(14, 383);
             this.unitShort_Profile_Support.LogAction = true;
             this.unitShort_Profile_Support.Name = "unitShort_Profile_Support";
             this.unitShort_Profile_Support.OutputAAddress = "";
@@ -353,7 +352,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Motor.ErrorAddress = "M831";
             this.unitConveyor_Motor.FaultCodeAddress = "D671";
             this.unitConveyor_Motor.Lamp1AAddress = "M243";
-            this.unitConveyor_Motor.Location = new System.Drawing.Point(14, 541);
+            this.unitConveyor_Motor.Location = new System.Drawing.Point(14, 457);
             this.unitConveyor_Motor.LogAction = true;
             this.unitConveyor_Motor.Name = "unitConveyor_Motor";
             this.unitConveyor_Motor.PlcNumber = 1;
@@ -374,7 +373,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.lampSawdust_Conveyor_Thermic.DescriptionText = "Sawdust Conveyor Thermic";
             this.lampSawdust_Conveyor_Thermic.ImageActive = null;
             this.lampSawdust_Conveyor_Thermic.ImagePassive = null;
-            this.lampSawdust_Conveyor_Thermic.Location = new System.Drawing.Point(14, 615);
+            this.lampSawdust_Conveyor_Thermic.Location = new System.Drawing.Point(14, 531);
             this.lampSawdust_Conveyor_Thermic.Name = "lampSawdust_Conveyor_Thermic";
             this.lampSawdust_Conveyor_Thermic.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampSawdust_Conveyor_Thermic.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
@@ -438,7 +437,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnSawdust_Blowing.Lamp2Address = "";
             this.btnSawdust_Blowing.Lamp2Tip = "";
             this.btnSawdust_Blowing.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 661);
+            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 577);
             this.btnSawdust_Blowing.LogAction = true;
             this.btnSawdust_Blowing.Name = "btnSawdust_Blowing";
             this.btnSawdust_Blowing.OutputAddress = "";
@@ -457,19 +456,11 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnSawdust_Blowing.UseVisualStyleBackColor = false;
             this.btnSawdust_Blowing.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // axisJogBar
-            // 
-            this.axisJogBar.Location = new System.Drawing.Point(14, 13);
-            this.axisJogBar.Name = "axisJogBar";
-            this.axisJogBar.Size = new System.Drawing.Size(822, 42);
-            this.axisJogBar.TabIndex = 39;
-            // 
             // ManualExit
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.axisJogBar);
             this.Controls.Add(this.unitRobot_Top_Clamping);
             this.Controls.Add(this.unitRobot_Top_Small_Clamping);
             this.Controls.Add(this.unitRobot_Movement);
@@ -497,6 +488,5 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.InverterUnitHMI unitConveyor_Motor;
         private Kaban.UI.Controls.LampHMI lampSawdust_Conveyor_Thermic;
         private Kaban.UI.Controls.ButtonHMI btnSawdust_Blowing;
-        private Kaban.Machines.FA2010.Screens.Shared.AxisJogBar axisJogBar;
     }
 }

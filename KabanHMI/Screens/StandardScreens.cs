@@ -32,6 +32,13 @@ namespace Kaban.UI.Screens
             /// <summary>Manual-movement pages, shown as tabs. Optional.</summary>
             public ISettingsPage[] ManualPages;
 
+            /// <summary>
+            /// A bar shown above the Manual Movement tabs, over every one of them (FA2010:
+            /// the axes' speed and jog step, Screens\Shared\AxisJogBar - 16 October).
+            /// Optional; made when the Manual Movement page is.
+            /// </summary>
+            public Func<Control> ManualBar;
+
             /// <summary>This machine's settings pages (parameters, barcode...). Optional.</summary>
             public ISettingsPage[] MachineSettings;
 
@@ -105,9 +112,14 @@ namespace Kaban.UI.Screens
                     Icon = () => Properties.Resources.manual_move_24,
                     SortOrder = 40,
                     RequiredLevel = SecurityLevel.Operator,
-                    CreateView = () => pages.Length == 1
-                        ? (UserControl)pages[0].GetControl()
-                        : new SettingsScreen(pages)
+                    CreateView = () =>
+                    {
+                        // with a bar above the tabs, a single page gets a screen too (the bar over it)
+                        if (pages.Length == 1 && options.ManualBar == null) return (UserControl)pages[0].GetControl();
+                        var screen = new SettingsScreen(pages);
+                        if (options.ManualBar != null) screen.TopBar = ManualBarFor(ctx, options.ManualBar);
+                        return screen;
+                    }
                 };
             }
 
@@ -182,6 +194,22 @@ namespace Kaban.UI.Screens
                     SortOrder = 910,
                     CreateView = () => new HmiSettingsPage().GetControl()
                 };
+            }
+        }
+
+        /// <summary>The machine's bar for its Manual Movement page - a sub-machine's on the host's stations.</summary>
+        private static Control ManualBarFor(IMachineMountContext ctx, Func<Control> make)
+        {
+            try
+            {
+                var bar = make();
+                if (bar != null && ctx != null && !ctx.IsMainMachine) Kaban.UI.Helpers.StationMap.Apply(ctx, bar);
+                return bar;
+            }
+            catch (Exception ex)
+            {
+                Kaban.Core.Helpers.AuditLogger.Log("the Manual Movement bar of " + (ctx != null ? ctx.ModuleId : "?") + " could not be made: " + ex.Message);
+                return null;
             }
         }
 

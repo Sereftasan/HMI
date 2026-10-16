@@ -33,14 +33,13 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.lampBar_First_End_Read_SN = new Kaban.UI.Controls.LampHMI();
             this.lampBar_Last_End_Read_SN = new Kaban.UI.Controls.LampHMI();
             this.unitGripper_Angle = new Kaban.UI.Controls.CylinderUnitHMI();
-            this.axisJogBar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
             this.SuspendLayout();
             // 
             // unitAxis_X
             // 
             this.unitAxis_X.AxisNumber = 1;
             this.unitAxis_X.BackColor = System.Drawing.Color.White;
-            this.unitAxis_X.Location = new System.Drawing.Point(14, 91);
+            this.unitAxis_X.Location = new System.Drawing.Point(14, 16);
             this.unitAxis_X.Name = "unitAxis_X";
             this.unitAxis_X.Size = new System.Drawing.Size(360, 64);
             this.unitAxis_X.TabIndex = 0;
@@ -49,7 +48,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitAxis_Y.AxisNumber = 2;
             this.unitAxis_Y.BackColor = System.Drawing.Color.White;
-            this.unitAxis_Y.Location = new System.Drawing.Point(14, 165);
+            this.unitAxis_Y.Location = new System.Drawing.Point(14, 90);
             this.unitAxis_Y.Name = "unitAxis_Y";
             this.unitAxis_Y.Size = new System.Drawing.Size(360, 64);
             this.unitAxis_Y.TabIndex = 1;
@@ -58,7 +57,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitAxis_Z.AxisNumber = 3;
             this.unitAxis_Z.BackColor = System.Drawing.Color.White;
-            this.unitAxis_Z.Location = new System.Drawing.Point(14, 239);
+            this.unitAxis_Z.Location = new System.Drawing.Point(14, 164);
             this.unitAxis_Z.Name = "unitAxis_Z";
             this.unitAxis_Z.Size = new System.Drawing.Size(360, 64);
             this.unitAxis_Z.TabIndex = 2;
@@ -67,7 +66,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             this.unitGripper.BackColor = System.Drawing.Color.White;
             this.unitGripper.EncoderNumber = 1;
-            this.unitGripper.Location = new System.Drawing.Point(14, 313);
+            this.unitGripper.Location = new System.Drawing.Point(14, 238);
             this.unitGripper.Name = "unitGripper";
             this.unitGripper.Size = new System.Drawing.Size(360, 64);
             this.unitGripper.TabIndex = 3;
@@ -126,7 +125,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.btnSawdust_Blowing.Lamp2Address = "";
             this.btnSawdust_Blowing.Lamp2Tip = "";
             this.btnSawdust_Blowing.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
-            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 387);
+            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 312);
             this.btnSawdust_Blowing.LogAction = true;
             this.btnSawdust_Blowing.Name = "btnSawdust_Blowing";
             this.btnSawdust_Blowing.OutputAddress = "";
@@ -157,7 +156,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.lampBar_First_End_Read_SN.DescriptionText = "Bar First End Read SN";
             this.lampBar_First_End_Read_SN.ImageActive = null;
             this.lampBar_First_End_Read_SN.ImagePassive = null;
-            this.lampBar_First_End_Read_SN.Location = new System.Drawing.Point(14, 437);
+            this.lampBar_First_End_Read_SN.Location = new System.Drawing.Point(14, 362);
             this.lampBar_First_End_Read_SN.Name = "lampBar_First_End_Read_SN";
             this.lampBar_First_End_Read_SN.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampBar_First_End_Read_SN.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
@@ -180,7 +179,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.lampBar_Last_End_Read_SN.DescriptionText = "Bar Last End Read SN";
             this.lampBar_Last_End_Read_SN.ImageActive = null;
             this.lampBar_Last_End_Read_SN.ImagePassive = null;
-            this.lampBar_Last_End_Read_SN.Location = new System.Drawing.Point(14, 483);
+            this.lampBar_Last_End_Read_SN.Location = new System.Drawing.Point(14, 408);
             this.lampBar_Last_End_Read_SN.Name = "lampBar_Last_End_Read_SN";
             this.lampBar_Last_End_Read_SN.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
             this.lampBar_Last_End_Read_SN.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
@@ -235,7 +234,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitGripper_Angle.Lamp2ATipKey = "";
             this.unitGripper_Angle.Lamp2BAddress = "";
             this.unitGripper_Angle.Lamp2BTipKey = "";
-            this.unitGripper_Angle.Location = new System.Drawing.Point(14, 529);
+            this.unitGripper_Angle.Location = new System.Drawing.Point(14, 454);
             this.unitGripper_Angle.LogAction = true;
             this.unitGripper_Angle.Name = "unitGripper_Angle";
             this.unitGripper_Angle.OutputAAddress = "";
@@ -262,19 +261,11 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitGripper_Angle.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
             this.unitGripper_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // axisJogBar
-            // 
-            this.axisJogBar.Location = new System.Drawing.Point(14, 16);
-            this.axisJogBar.Name = "axisJogBar";
-            this.axisJogBar.Size = new System.Drawing.Size(826, 42);
-            this.axisJogBar.TabIndex = 39;
-            // 
             // ManualRobot
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.axisJogBar);
             this.Controls.Add(this.unitAxis_X);
             this.Controls.Add(this.unitAxis_Y);
             this.Controls.Add(this.unitAxis_Z);
@@ -300,6 +291,5 @@ namespace Kaban.Machines.FA2010.Screens.Manual
         private Kaban.UI.Controls.LampHMI lampBar_First_End_Read_SN;
         private Kaban.UI.Controls.LampHMI lampBar_Last_End_Read_SN;
         private Kaban.UI.Controls.CylinderUnitHMI unitGripper_Angle;
-        private Kaban.Machines.FA2010.Screens.Shared.AxisJogBar axisJogBar;
     }
 }

@@ -175,6 +175,10 @@ namespace Kaban.Machines.FA2010
                     new Screens.GeneratedPage("Tab_ManualClamping_Moulds", "Clamping Moulds", SecurityLevel.Operator, () => new Screens.Manual.ManualClamping_Moulds()),
                     new Screens.GeneratedPage("Tab_ManualYZ_Cross_Rollers", "YZ Cross Rollers", SecurityLevel.Operator, () => new Screens.Manual.ManualYZ_Cross_Rollers())
                 },
+                // The axes' manual movement bar (speed, JOG / steps, Safety Bypass) above the
+                // Manual Movement tabs, over all of them (16 October) - designed once in
+                // Screens\Shared; no page holds it.
+                ManualBar = () => new Screens.Shared.AxisJogBar(),
 
                 MachineSettings = new Kaban.UI.Settings.ISettingsPage[]
                 {
@@ -206,9 +210,8 @@ namespace Kaban.Machines.FA2010
                 //        CreateView = () => new Screens.ProfilesScreen()
                 //    }
                 //}
-                // The axes' manual movement bar (speed, JOG / steps, Safety Bypass), designed
-                // once in Screens\Shared: the manual pages with axes hold it, and the program
-                // shows it above Axis Settings' rows and on the Axis Monitor (14 October).
+                // The same bar on the Axis Monitor (14 October). Machine Parameters > Axis has a
+                // copy of its controls on the page itself (16 October).
                 Extra = new[]
                 {
                     new MachineScreen

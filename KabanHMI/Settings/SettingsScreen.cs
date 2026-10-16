@@ -178,6 +178,64 @@ namespace Kaban.UI.Settings
             ApplyContentPadding();
         }
 
+        // ---- a machine's bar above the tabs ---------------------------------------------
+
+        private Panel _topBarHolder;
+        private Control _topBar;
+
+        /// <summary>
+        /// A BAR ABOVE THE TABS, shown over every one of them: FA2010's Manual Movement
+        /// has the axes' speed and jog step there (16 October: "put this control set
+        /// somewhere shared by all Manual Movement pages - this set, and the sub page tabs
+        /// just under it"). The machine designs it once in Visual Studio as a UserControl
+        /// of its own (a MachineBarHMI: its parts go on in rows when the screen is
+        /// narrower than they are) and gives it to StandardScreens (Options.ManualBar);
+        /// no page holds it, so the designer never has to load it into another page.
+        /// </summary>
+        public Control TopBar
+        {
+            get { return _topBar; }
+            set
+            {
+                if (ReferenceEquals(_topBar, value)) return;
+                if (_topBarHolder == null)
+                {
+                    _topBarHolder = new Panel { Dock = DockStyle.Top, BackColor = Color.White, Name = "settingsTopBar" };
+                    _topBarHolder.Resize += (s, e) => FitTopBar();
+                }
+                if (_topBar != null) _topBarHolder.Controls.Remove(_topBar);
+                _topBar = value;
+                if (value == null)
+                {
+                    Controls.Remove(_topBarHolder);
+                    return;
+                }
+                value.Dock = DockStyle.None;
+                value.Margin = Padding.Empty;
+                _topBarHolder.Controls.Add(value);
+                // added after the strip: docked before it - at the very top, the tabs under it
+                if (_topBarHolder.Parent != this) Controls.Add(_topBarHolder);
+                FitTopBar();
+            }
+        }
+
+        /// <summary>The bar in its place: lined up with the tabs, its parts in rows when the screen is narrower.</summary>
+        private void FitTopBar()
+        {
+            if (_topBar == null || _topBarHolder == null) return;
+            int left = Kaban.UI.Controls.UiScale.For(_topBarHolder, 8), top = Kaban.UI.Controls.UiScale.For(_topBarHolder, 6);
+            int bottom = Kaban.UI.Controls.UiScale.For(_topBarHolder, 4);
+            _topBar.Location = new Point(left, top);
+            int h = _topBar.Height;
+            var bar = _topBar as Kaban.UI.Controls.MachineBarHMI;
+            // fitted only once it has its real size (magnified with the screen): a layout
+            // kept before it would be put back unmagnified
+            if (bar != null && _topBarHolder.Width > 0 && (!Kaban.UI.Controls.UiScale.Active || Kaban.UI.Controls.UiScale.IsScaled(bar)))
+                h = bar.FitTo(Math.Max(60, _topBarHolder.ClientSize.Width - 2 * left));
+            int want = top + h + bottom;
+            if (_topBarHolder.Height != want) _topBarHolder.Height = want;
+        }
+
         /// <summary>
         /// Hides this strip's OWN tabs because something else is driving the choice.
         ///

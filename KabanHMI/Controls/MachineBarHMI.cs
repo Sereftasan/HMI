@@ -22,15 +22,15 @@ namespace Kaban.UI.Controls
     /// show this control set on all these pages without copy / pasting everywhere one by
     /// one? ... I will have to change it at all of these pages"):
     ///
-    /// A machine makes one UserControl from this (FA2010: AxisJogBar), designed in
-    /// Visual Studio like a page - in a LIBRARY of the machine's own controls
-    /// (Kaban.Machines.FA2010.Shared), not in the machine's program: the program is
-    /// built 32-bit and Visual Studio's designer cannot load a control from it (15
-    /// October: "Could not find type"). A page shows it by holding it - it is in
-    /// the Toolbox once the library is built, dropped like any control - and the module
-    /// declares it (ScreenRoles.AxisBar) so the pages made by the program (Axis Settings,
-    /// the Axis Monitor) show it too. Changed in its own designer, it is changed on every
-    /// page.
+    /// A machine makes one UserControl from this (FA2010: Screens\Shared\AxisJogBar),
+    /// designed in Visual Studio like a page. NO PAGE HOLDS IT (16 October): the program
+    /// shows it - above the Manual Movement tabs, over all of them (StandardScreens
+    /// Options.ManualBar), and on the Axis Monitor (the module declares it,
+    /// ScreenRoles.AxisBar). Held by the pages it could not be shown by Visual Studio's
+    /// designer ("Could not find type", 15 October - the machine's program is built
+    /// 32-bit); a library of its own for it was one project too many. Machine
+    /// Parameters > Axis has a copy of its controls on the page. Changed in its own
+    /// designer, it is changed everywhere it is shown.
     ///
     /// Where it is narrower than designed (the Axis Monitor beside a page) its parts go
     /// on in rows, in their order from left to right (FitTo); as wide or wider, they are

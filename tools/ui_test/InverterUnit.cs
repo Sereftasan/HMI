@@ -209,7 +209,8 @@ class INV {
         var mill = Page("ManualMilling");
         var m1 = All(mill).OfType<InverterUnitHMI>().First(u => u.Name == "unitUnit_1_Milling_Motor");
         var cool = mill.Controls.Find("btnUnit_1_Tool_1_Cooling", true).First();
-        Check("Milling: the motor's unit where its button was, the coolings under it", m1.Top == 710 && cool.Top >= m1.Bottom + 6 && cool.Top - m1.Bottom <= 12,
+        // (639: 710 before the jog bar left the page's top, 16 October)
+        Check("Milling: the motor's unit where its button was, the coolings under it", m1.Top == 639 && cool.Top >= m1.Bottom + 6 && cool.Top - m1.Bottom <= 12,
               m1.Bounds + " / " + cool.Top);
         AlarmGeneration.ResetForTests();
         var harvest = typeof(AlarmHelpLinks).GetMethod("HarvestControls", BindingFlags.NonPublic | BindingFlags.Static);
