@@ -869,6 +869,13 @@ namespace Kaban.UI.Forms
                 _btnAlarmReset.Left = right - _btnAlarmReset.Width;
                 right = _btnAlarmReset.Left - gap;
             }
+            // the coupled units' chain - only while units are coupled (17 October)
+            if (_btnCoupled != null && _btnCoupled.Visible)
+            {
+                _btnCoupled.Top = midY - _btnCoupled.Height / 2;
+                _btnCoupled.Left = right - _btnCoupled.Width;
+                right = _btnCoupled.Left - gap;
+            }
 
             // connection warning - sits beside the alarm bell, and only while a
             // controller is actually down
@@ -1023,6 +1030,7 @@ namespace Kaban.UI.Forms
 
             if (UseCustomCaption) SetupCaptionBar();
             SetupAlarmIndicator();
+            SetupCouplingIndicator();
             SetupConnectionIndicator();
 
             // THE CONNECTION POLL, on the UI thread. A Forms timer rather than the

@@ -111,6 +111,34 @@ class R {
         Check("an everyone-level page stays visible throughout",
               home != null && home.Visible, home != null ? "Visible=" + home.Visible : "no Home button");
 
+        Console.WriteLine("--- the caption bar's chain: the coupled units (17 October) ---");
+        var cb = (Button)typeof(MainForm).GetProperty("CouplingButton", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(form, null);
+        Check("hidden while nothing is coupled", cb != null && !cb.Visible);
+        var host = new Panel { Visible = false };
+        form.Controls.Add(host);
+        Func<string, int, Kaban.UI.Controls.CylinderUnitHMI> pos = (name, n) =>
+        {
+            var u = new Kaban.UI.Controls.CylinderUnitHMI { Name = name, TitleText = name, PlcNumber = 1, Size = new Size(360, 64),
+                                                           CommandAAddress = "M" + (400 + 2 * n), CommandBAddress = "M" + (401 + 2 * n),
+                                                           FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference, PositionAddress = "D" + (600 + n) };
+            host.Controls.Add(u);
+            return u;
+        };
+        var u1 = pos("Positioning 1", 0); var u2 = pos("Positioning 2", 1); var u3 = pos("Positioning 3", 2);
+        Kaban.UI.Helpers.UnitCoupling.Toggle(u1); Kaban.UI.Helpers.UnitCoupling.Toggle(u2); Kaban.UI.Helpers.UnitCoupling.Toggle(u3);
+        Check("three units coupled: the chain shown in the caption bar, left of what was there", cb.Visible && cb.Parent != null && cb.Right < cb.Parent.Width,
+              "visible=" + cb.Visible + " at " + cb.Bounds);
+        var menuOf = typeof(MainForm).GetMethod("BuildCouplingMenu", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var cm = (ContextMenuStrip)menuOf.Invoke(form, null);
+        var texts = cm.Items.Cast<ToolStripItem>().Select(i => i.Text).Where(t => !string.IsNullOrEmpty(t)).ToList();
+        Check("its menu: a heading, each coupled unit, and last 'Uncouple all 3'",
+              texts.Count == 5 && texts[1].Contains("Positioning 1") && texts[3].Contains("Positioning 3") && texts[4].Contains("all 3"), string.Join(" | ", texts));
+        cm.Items["uncouple:Positioning 2"].PerformClick();
+        Check("  one clicked: that unit uncoupled, the others still", !Kaban.UI.Helpers.UnitCoupling.IsCoupled(u2) && Kaban.UI.Helpers.UnitCoupling.IsCoupled(u1) && cb.Visible);
+        cm = (ContextMenuStrip)menuOf.Invoke(form, null);
+        cm.Items["uncoupleAll"].PerformClick();
+        Check("  'Uncouple all': none coupled, the chain hidden again", Kaban.UI.Helpers.UnitCoupling.All.Count == 0 && !cb.Visible);
+
         Console.WriteLine(fail==0 ? "\nREAL FORM ALL PASS" : "\nREAL FORM " + fail + " FAILED");
         Environment.Exit(fail==0?0:1);
     }
