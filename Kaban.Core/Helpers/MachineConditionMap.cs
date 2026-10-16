@@ -219,6 +219,7 @@ namespace Kaban.Core.Helpers
                     if (_machineBits.TryGetValue((long)part, out def)) rule = def;
                 }
                 if (part == SystemCondition.AdminUser) text += " (signed in as Admin)";
+                else if (part == SystemCondition.MaintenanceUser) text += " (signed in as Maintenance or Admin)";
                 else if (rule != null && !string.IsNullOrWhiteSpace(rule.Address)) text += " (" + RuleText(rule) + (rule.PlcNumber > 1 ? ", PLC " + rule.PlcNumber : "") + ")";
                 else text += " (no rule on this machine - never met)";
                 if (check != null) text = (check(part) ? "✓ " : "✗ ") + text;

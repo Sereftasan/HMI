@@ -24,11 +24,16 @@ namespace Kaban.Core.Enums
         [Description("Machine is Running")]
         MachineIsRunning = 1L << 4,
 
-        //[Description("Robot is at Safe Position")]
-        //RobotIsSafe = 1L << 5,
+        /// <summary>A Maintenance or Admin user is signed in (17 October: Safety Bypass, Cylinder FW/Back).</summary>
+        [Description("Maintenance User Logged In")]
+        MaintenanceUser = 1L << 5,
 
-        //[Description("Mullion notching unit is mounted")]
-        //MullionNotching = 1L << 6 
+        /// <summary>
+        /// The axes jog by a step (10 / 1 / 0.1 / 0.01 mm), not JOG - the machine's rule
+        /// (FA2010: the JOG lamp M174 OFF). Axes are coupled only then (17 October).
+        /// </summary>
+        [Description("Axes in Step Mode (not JOG)")]
+        AxisStepMode = 1L << 6,
 
         // ---- the machines' own conditions: bits 16 - 63 ----
         // NAMED ONLY SO VISUAL STUDIO CAN WRITE THEM (15 October). The designer writes a

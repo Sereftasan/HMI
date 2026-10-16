@@ -200,6 +200,12 @@ namespace Kaban.UI.Controls
         /// <summary>A sensor at each end (a cylinder whose end is known from them).</summary>
         internal bool HasEndSensors { get { return !string.IsNullOrWhiteSpace(_lamp1AAddress) && !string.IsNullOrWhiteSpace(_lamp1BAddress); } }
 
+        /// <summary>A position reading (an axis, a cylinder measured by an encoder or an analogue sensor).</summary>
+        internal bool HasPosition { get { return !string.IsNullOrWhiteSpace(_positionAddress); } }
+
+        /// <summary>Its chain may be clicked now, or is faded (UnitCoupling.RefreshAvailability).</summary>
+        internal void ShowCouplingAvailable(bool on) { _couple.Available = on; }
+
         /// <summary>The position read, in its display unit (null: none, or not read yet).</summary>
         internal double? PositionValue
         {
@@ -252,8 +258,20 @@ namespace Kaban.UI.Controls
             NotesStore.Changed += OnNotesChanged;
             Disposed += (s, e) => NotesStore.Changed -= OnNotesChanged;
             lock (_live) _live.Add(new WeakReference(this));
+            UnitCoupling.Watch();
+            // the chain is a Maintenance user's (17 October): shown or not as the user changes
+            EventHandler userChanged = (s, e) => { if (!IsDisposed && IsHandleCreated) BeginInvoke(new Action(LayoutBadges)); };
+            SecurityManager.UserChanged += userChanged;
+            Disposed += (s, e) => SecurityManager.UserChanged -= userChanged;
             _couple.Click += (s, e) =>
             {
+                // faded: no match now - it says why, and does nothing
+                if (!_couple.Available)
+                {
+                    var whyNot = UnitCoupling.WhyNot(this);
+                    if (!string.IsNullOrEmpty(whyNot)) ShowCouplingNotice(whyNot);
+                    return;
+                }
                 // coupled with two or more others: this one only, or all of them (16 October: an easy way out)
                 if (UnitCoupling.IsCoupled(this) && UnitCoupling.Coupled(_kind).Count > 2)
                 {
@@ -263,13 +281,16 @@ namespace Kaban.UI.Controls
                 var why = UnitCoupling.Toggle(this);
                 if (why != null) ShowCouplingNotice(why);
             };
-            UiStyle.HoverTip(UiStyle.Tips(), _couple, () => UnitCoupling.IsCoupled(this)
-                ? LanguageManager.GetString("Tip_Coupled", "Coupled: a button pressed here presses the same button of every coupled unit. Click to uncouple (with more than two: this one or all of them).")
-                : _couple.Inviting
-                ? LanguageManager.GetString("Tip_CoupleJoin", "It can join the units coupled now (it stands where they stand): click to couple it with them.")
-                : UnitCoupling.Coupled(_kind).Count > 0
-                ? LanguageManager.GetString("Tip_CoupleOther", "Units are coupled now, and this one cannot join them (it is not where they are). A click asks whether to let that coupling go and couple this one.")
-                : LanguageManager.GetString("Tip_Couple", "Couple for manual movement: units coupled (at the same position) move together - a button pressed on one presses the same button of all."));
+            UiStyle.HoverTip(UiStyle.Tips(), _couple, () =>
+            {
+                if (UnitCoupling.IsCoupled(this))
+                    return LanguageManager.GetString("Tip_Coupled", "Coupled: a button pressed here presses the same button of every coupled unit. Click to uncouple (with more than two: this one or all of them).");
+                var whyNot = UnitCoupling.WhyNot(this);
+                if (whyNot != null) return LanguageManager.GetString("Tip_CoupleNot", "Cannot be coupled now") + ": " + whyNot;
+                return UnitCoupling.Coupled(_kind).Count > 0
+                    ? LanguageManager.GetString("Tip_CoupleJoin", "It matches the units coupled now: click to couple it with them.")
+                    : LanguageManager.GetString("Tip_Couple", "Couple for manual movement: units coupled move together - a button pressed on one presses the same button of all.");
+            });
             _btnA.UserActed += (b, a) => UnitCoupling.Acted(this, true, b, a);
             _btnB.UserActed += (b, a) => UnitCoupling.Acted(this, false, b, a);
             // only units in sight move together: one leaving the screen leaves the coupling
@@ -2004,7 +2025,7 @@ namespace Kaban.UI.Controls
             {
                 // In a row: the chain above, the "?" below, in their column at the right end.
                 int col = this.ClientSize.Width - UiScale.For(this, RowBadgeWidth);
-                bool linked = !DesignMode && HasCommands && _kind != UnitKind.Inverter;
+                bool linked = !DesignMode && HasCommands && _kind != UnitKind.Inverter && UnitCoupling.Allowed;
                 if (_couple.Visible != linked) _couple.Visible = linked;
                 int edge = UiScale.For(this, 2);
                 if (linked)
@@ -2024,7 +2045,8 @@ namespace Kaban.UI.Controls
             // buttons on the right and show the helper button on its left side, so the button
             // positions don't change all the time" - the "?" comes and goes, the chain stays).
             // An inverter's motor is not coupled with others: no chain, the "?" at the end.
-            bool chain = !DesignMode && HasCommands && _kind != UnitKind.Inverter;
+            // a Maintenance user's only (17 October)
+            bool chain = !DesignMode && HasCommands && _kind != UnitKind.Inverter && UnitCoupling.Allowed;
             if (_couple.Visible != chain) _couple.Visible = chain;
             int right = this.ClientSize.Width - UiScale.For(this, 12);
             if (chain)

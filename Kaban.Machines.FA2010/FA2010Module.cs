@@ -89,6 +89,8 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.Register(SystemCondition.ManualMode, plc1, "M100", DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
             MachineConditionMap.Register(SystemCondition.AutoMode, plc1, "D300", DataTypeEnum.Bin_16, ComparisonOperator.LessOrEqual, 3);
             MachineConditionMap.Register(SystemCondition.MachineIsRunning, plc1, "D200", DataTypeEnum.Bin_32, ComparisonOperator.Greater, 0);
+            // the axes jog by a step, not JOG: the bar's JOG lamp (M174) OFF - axes are coupled only then
+            MachineConditionMap.Register(SystemCondition.AxisStepMode, plc1, "M174", DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
 
             // Machine-specific bits are ALLOCATED, never hardcoded - two modules
             // would otherwise both claim bit 16 and silently corrupt each other.

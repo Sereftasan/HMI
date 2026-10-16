@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.UI.Controls;
 
@@ -9,45 +10,60 @@ namespace Kaban.UI.Helpers
     /// <summary>
     /// COUPLED UNITS FOR MANUAL MOVEMENT (8 October: "clatch multiple same type of
     /// controls (cylinder or axis) together for manual movement - selecting them to
-    /// clatch first (they have to be at the same position to be clatched ...), then
-    /// clicking any one of them activates all of those controls same side buttons,
-    /// just like all of them clicked at the same time").
+    /// clatch first, then clicking any one of them activates all of those controls same
+    /// side buttons, just like all of them clicked at the same time").
     ///
-    /// The chain on a unit's frame couples it (and uncouples it). Units are coupled
-    /// with units of their own kind - cylinders with cylinders, axes with axes - and
-    /// only when they stand where the others stand: a cylinder at the same end (its
-    /// end sensor lit, the other not), an axis at the same position (within
-    /// <see cref="AxisTolerance"/>). A press of a coupled unit's button presses the
-    /// same side's button of every other one; its release releases them all, however
-    /// the press ended. Every button still acts with its own conditions, rights and
-    /// log.
+    /// The chain on a unit's frame couples it (and uncouples it). Units are coupled with
+    /// units of their own kind - cylinders with cylinders, axes with axes - and only
+    /// those that match (17 October: "make it safe to clutch, not unfunctional"):
     ///
-    /// SAFETY: before each coupled movement the units are checked again - all at the
-    /// same place, every same-side button able to act. If not, the coupling is let
-    /// go (and said so) and only the pressed unit moves, as it would on its own. A
-    /// unit that leaves the screen (another page or tab) leaves the coupling: only
-    /// units in sight move together.
+    ///   a cylinder with a sensor at each end    at the same end (its sensor lit, the other not)
+    ///   a cylinder measured by its position     the same FeedbackType (an encoder with
+    ///   (pneumatic positioning, encoder rows)   encoders, an analogue sensor with those) -
+    ///                                           wherever each one stands
+    ///   an axis                                 only while the axes are in STEP mode (the
+    ///                                           bar's 10 / 1 / 0.1 / 0.01 mm, not JOG:
+    ///                                           SystemCondition.AxisStepMode), and on the
+    ///                                           same page - the user sees every axis moving
     ///
-    /// WHICH ONES CAN JOIN, AND STARTING AGAIN (16 October: "when the user selects one
-    /// to clutch and forgets it ... give them an easy way to cancel active clutching;
-    /// most of the other units are not suitable for the coupling, so make the chains of
-    /// the ones that can join blink while a coupling is on, and ask the user whether to
-    /// cancel the previous coupling when they click a chain that does not blink"):
-    /// while units of a kind are coupled, the chains of the units of that kind in sight
-    /// that stand where they stand blink. A click on a chain that does not blink asks
-    /// whether to let the coupling go and couple that unit instead. A unit uncoupled
-    /// leaves no unit coupled alone.
+    /// A press of a coupled unit's button presses the same side's button of every other
+    /// one; its release releases them all, however the press ended. Every button still
+    /// acts with its own conditions, rights and log.
+    ///
+    /// WHO MAY: Maintenance and Admin only (17 October: "a normal operator does not need
+    /// it, and it could be unsafe for them") - an operator sees no chain; another user
+    /// signing in lets every coupling go.
+    ///
+    /// WHICH CHAINS: while units of a kind are coupled, the chains of the units that
+    /// could not join them are disabled (drawn faded; a click says why) - the ones left
+    /// are the ones that can (17 October: "disable the clutching button if there is no
+    /// match ... the possible clutches appear anyway"). With nothing coupled, a chain is
+    /// disabled while its unit cannot be coupled at all (a cylinder between its ends,
+    /// the axes in JOG). The caption bar's blue chain lists the coupled units
+    /// (MainForm): one to uncouple, or all of them.
+    ///
+    /// SAFETY: before each coupled movement the units are checked again - in sight,
+    /// still matching, every same-side button able to act. If not, the coupling is let
+    /// go (and said so) and only the pressed unit moves, as it would on its own. A unit
+    /// that leaves the screen (another page or tab) leaves the coupling.
     /// </summary>
     public static class UnitCoupling
     {
         static UnitCoupling()
         {
             // another user (or nobody): what the last one coupled is let go
-            SecurityManager.UserChanged += (s, e) => { if (_coupled.Count > 0) Clear(); };
+            SecurityManager.UserChanged += (s, e) =>
+            {
+                if (_coupled.Count > 0) Clear();
+                else RefreshAvailability();
+            };
         }
 
-        /// <summary>How far apart two axes may be and still be "at the same position" (in their display unit: mm, degrees).</summary>
-        public static double AxisTolerance = 0.5;
+        /// <summary>The level coupling asks for (17 October: Maintenance).</summary>
+        public const SecurityLevel RequiredLevel = SecurityLevel.Maintenance;
+
+        /// <summary>True when the signed-in user may couple units.</summary>
+        public static bool Allowed { get { return SecurityManager.HasAccess(RequiredLevel); } }
 
         private static readonly List<CylinderUnitHMI> _coupled = new List<CylinderUnitHMI>();
         /// <summary>The buttons a coupled press holds, per pressed button (released with it).</summary>
@@ -56,19 +72,32 @@ namespace Kaban.UI.Helpers
         /// <summary>Said when the coupling is refused or let go (the unit, the reason); the unit shows it.</summary>
         public static event Action<CylinderUnitHMI, string> Notice;
 
+        /// <summary>Raised when units were coupled or uncouped (the caption bar's chain follows).</summary>
+        public static event EventHandler Changed;
+
         /// <summary>
-        /// Asks whether to let the coupling now go and couple the unit clicked instead (Yes: let go).
-        /// Replaceable so a test answers.
+        /// The axes in step mode now: true / false, or null when this machine has no rule
+        /// for it (then axes are not coupled). Replaceable so a test answers.
         /// </summary>
-        public static Func<string, bool> AskLetGo = q =>
-            System.Windows.Forms.MessageBox.Show(q, T("Ttl_Coupling", "Coupled units"), System.Windows.Forms.MessageBoxButtons.YesNo,
-                                                 System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
+        public static Func<bool?> AxesInStepMode = () =>
+        {
+            if (MachineConditionMap.GetRule(SystemCondition.AxisStepMode) == null) return null;
+            var check = Kaban.UI.Plc.PlcScanner.LastConditionCheck;
+            if (check == null) return null;
+            try { return check(SystemCondition.AxisStepMode); } catch { return null; }
+        };
 
         /// <summary>The coupled units of a kind.</summary>
         public static IList<CylinderUnitHMI> Coupled(UnitKind kind)
         {
             _coupled.RemoveAll(u => u.IsDisposed);
             return _coupled.Where(u => u.Kind == kind).ToList();
+        }
+
+        /// <summary>Every coupled unit, of every kind, in the order they were coupled.</summary>
+        public static IList<CylinderUnitHMI> All
+        {
+            get { _coupled.RemoveAll(u => u.IsDisposed); return _coupled.ToList(); }
         }
 
         public static bool IsCoupled(CylinderUnitHMI unit) { return unit != null && _coupled.Contains(unit); }
@@ -80,28 +109,102 @@ namespace Kaban.UI.Helpers
         {
             if (unit == null) return null;
             if (IsCoupled(unit)) { Remove(unit, null); return null; }
-            if (!unit.HasCommands) return T("Cpl_NoCommands", "This unit has no movement to couple.");
+            var why = WhyNot(unit);
+            if (why != null) return why;
             var group = Coupled(unit.Kind);
-            string place = PlaceOf(unit);
-            if (place == null)
-                return unit.Kind == UnitKind.Axis ? T("Cpl_NoPosition", "Its position is not known: it cannot be coupled.")
-                                                  : T("Cpl_NoEnd", "It is not at one of its ends: only a unit at an end can be coupled.");
-            if (group.Count > 0 && !SamePlace(group[0], unit))
-            {
-                // not where they are (its chain does not blink): start again with it?
-                string names = string.Join(", ", group.Select(u => "'" + u.CouplingName + "'"));
-                string q = string.Format(T("Cpl_AskLetGo", "Coupled now: {0} ({1}). '{2}' is not where they are ({3}), so it cannot join them.\n\nLet that coupling go and start a new one with '{2}'?"),
-                                         names, Describe(group[0]), unit.CouplingName, Describe(unit));
-                if (!AskLetGo(q)) return null;
-                foreach (var u in group) _coupled.Remove(u);
-                AuditLogger.Log("coupling of " + names + " let go by the user, to couple '" + unit.CouplingName + "' instead.");
-                group.Clear();
-            }
             _coupled.Add(unit);
             AuditLogger.Log("coupled '" + unit.CouplingName + "' (" + Describe(unit) + ") with " +
                             (group.Count == 0 ? "nothing yet" : string.Join(", ", group.Select(u => "'" + u.CouplingName + "'"))) + ".");
             Refresh();
             return null;
+        }
+
+        /// <summary>Why the unit cannot be coupled now (with the units of its kind coupled, if any), or null when it can.</summary>
+        public static string WhyNot(CylinderUnitHMI unit)
+        {
+            if (unit == null) return "";
+            if (!Allowed) return T("Cpl_Level", "Coupling units is for Maintenance and Admin users.");
+            if (!unit.HasCommands || unit.Kind == UnitKind.Inverter) return T("Cpl_NoCommands", "This unit has no movement to couple.");
+            var alone = WhyNotAlone(unit);
+            if (alone != null) return alone;
+            var group = Coupled(unit.Kind).Where(u => u != unit).ToList();
+            return group.Count == 0 ? null : WhyNotWith(group[0], unit);
+        }
+
+        /// <summary>What keeps a unit from being coupled at all, or null.</summary>
+        private static string WhyNotAlone(CylinderUnitHMI unit)
+        {
+            if (unit.Kind == UnitKind.Axis)
+            {
+                var step = AxesInStepMode();
+                if (step == null) return T("Cpl_NoStepMode", "Axes are coupled only in step mode, and this machine does not say which mode it is in.");
+                if (step == false) return T("Cpl_Jog", "Axes are coupled only in step mode: choose a step above (10 / 1 / 0.1 / 0.01 mm), not JOG.");
+                return null;
+            }
+            if (unit.HasEndSensors)
+                return PlaceOf(unit) == null ? T("Cpl_NoEnd", "It is not at one of its ends: only a unit at an end can be coupled.") : null;
+            if (IsPositioned(unit)) return null;
+            return T("Cpl_NoFeedback", "Nothing tells where it is (no sensor at each end, no position): it cannot be coupled.");
+        }
+
+        /// <summary>What keeps a unit from joining a coupled one, or null when it matches.</summary>
+        private static string WhyNotWith(CylinderUnitHMI coupled, CylinderUnitHMI unit)
+        {
+            if (coupled.Kind != unit.Kind) return T("Cpl_OtherKind", "Only units of one kind are coupled: cylinders with cylinders, axes with axes.");
+            if (unit.Kind == UnitKind.Axis)
+                return SamePage(coupled, unit) ? null
+                     : string.Format(T("Cpl_OtherPage", "It is not on the page of the coupled axes ('{0}'): only axes in sight together move together."), coupled.CouplingName);
+            if (coupled.HasEndSensors && unit.HasEndSensors)
+                return SamePlace(coupled, unit) ? null
+                     : string.Format(T("Cpl_NotSame", "It is not where the coupled units are ({0}): only units at the same position move together."), Describe(coupled));
+            if (IsPositioned(coupled) && IsPositioned(unit) && !coupled.HasEndSensors && !unit.HasEndSensors)
+                return coupled.FeedbackType == unit.FeedbackType ? null
+                     : string.Format(T("Cpl_OtherFeedback", "It is measured otherwise than the coupled units ({0} / {1}): only units of the same feedback type move together."),
+                                     unit.FeedbackType, coupled.FeedbackType);
+            return string.Format(T("Cpl_OtherFeedback", "It is measured otherwise than the coupled units ({0} / {1}): only units of the same feedback type move together."),
+                                 unit.FeedbackType, coupled.FeedbackType);
+        }
+
+        /// <summary>A cylinder measured by its position (pneumatic positioning, an encoder or analogue sensor).</summary>
+        private static bool IsPositioned(CylinderUnitHMI unit)
+        {
+            return unit.Kind == UnitKind.Cylinder &&
+                   (unit.FeedbackType == CylinderFeedback.AnalogueMagnetic || unit.FeedbackType == CylinderFeedback.EncoderPlusReference ||
+                    (!unit.HasEndSensors && unit.HasPosition));
+        }
+
+        /// <summary>The page a unit is on: its tab, else the screen below the window.</summary>
+        internal static System.Windows.Forms.Control PageOf(System.Windows.Forms.Control c)
+        {
+            System.Windows.Forms.Control top = null;
+            for (var p = c == null ? null : c.Parent; p != null; p = p.Parent)
+            {
+                if (p is System.Windows.Forms.TabPage) return p;
+                if (p is System.Windows.Forms.Form) break;
+                top = p;
+            }
+            return top;
+        }
+
+        private static bool SamePage(CylinderUnitHMI a, CylinderUnitHMI b)
+        {
+            var pa = PageOf(a);
+            return pa != null && pa == PageOf(b);
+        }
+
+        /// <summary>True when the unit could join the units of its kind coupled now (in sight, matching).</summary>
+        public static bool CanJoin(CylinderUnitHMI unit)
+        {
+            if (unit == null || unit.IsDisposed || IsCoupled(unit)) return false;
+            if (!unit.Visible || !unit.IsHandleCreated) return false;
+            return Coupled(unit.Kind).Count > 0 && WhyNot(unit) == null;
+        }
+
+        /// <summary>Its chain may be clicked: coupled (to uncouple), or it can be coupled now.</summary>
+        public static bool Available(CylinderUnitHMI unit)
+        {
+            if (unit == null || unit.IsDisposed) return false;
+            return IsCoupled(unit) || WhyNot(unit) == null;
         }
 
         /// <summary>Takes a unit out (the reason said when there is one); one left alone is no coupling.</summary>
@@ -141,6 +244,16 @@ namespace Kaban.UI.Helpers
             Refresh();
         }
 
+        /// <summary>The user lets every coupling go (the caption bar's "Uncouple all").</summary>
+        public static void LetGoAll()
+        {
+            var units = All;
+            if (units.Count == 0) return;
+            _coupled.Clear();
+            AuditLogger.Log("every coupling let go by the user (" + string.Join(", ", units.Select(u => "'" + u.CouplingName + "'")) + ").");
+            Refresh();
+        }
+
         /// <summary>Everything let go (tests, a sign-out).</summary>
         public static void Clear()
         {
@@ -153,49 +266,31 @@ namespace Kaban.UI.Helpers
         {
             foreach (var u in _coupled.ToList()) if (!u.IsDisposed) u.ShowCoupled(true);
             foreach (var u in CylinderUnitHMI.Live) if (!_coupled.Contains(u)) u.ShowCoupled(false);
-            RefreshInvitations();
+            RefreshAvailability();
+            var h = Changed;
+            if (h != null) try { h(null, EventArgs.Empty); } catch (Exception ex) { AuditLogger.Log("coupling changed: " + ex.Message); }
         }
 
-        // ---- the chains that can join blink (16 October) ----------------------------------
+        // ---- which chains may be clicked (17 October) -------------------------------------
 
-        private static System.Windows.Forms.Timer _blink;
-
-        /// <summary>True when the unit could join the units of its kind coupled now (in sight, where they stand, with a movement).</summary>
-        public static bool CanJoin(CylinderUnitHMI unit)
-        {
-            if (unit == null || unit.IsDisposed || IsCoupled(unit) || !unit.HasCommands || unit.Kind == UnitKind.Inverter) return false;
-            if (!unit.Visible || !unit.IsHandleCreated) return false;
-            var group = Coupled(unit.Kind);
-            return group.Count > 0 && PlaceOf(unit) != null && SamePlace(group[0], unit);
-        }
+        private static System.Windows.Forms.Timer _watch;
 
         /// <summary>
-        /// Every chain in sight: blinking when its unit could join, still when not. Run by
-        /// the blink's timer while a coupling is on (the units move: who can join changes).
+        /// Every chain in sight: available or disabled, as its unit stands now. Run by a
+        /// timer while units are on screens (they move: who can be coupled changes).
         /// </summary>
-        internal static void RefreshInvitations()
+        internal static void RefreshAvailability()
         {
-            bool any = _coupled.Any(u => !u.IsDisposed);
-            foreach (var u in CylinderUnitHMI.Live) u.CoupleChain.Inviting = any && CanJoin(u);
-            if (any)
-            {
-                if (_blink == null)
-                {
-                    _blink = new System.Windows.Forms.Timer { Interval = 500 };
-                    _blink.Tick += (s, e) =>
-                    {
-                        CoupleBadge.Phase = !CoupleBadge.Phase;
-                        RefreshInvitations();
-                        foreach (var u in CylinderUnitHMI.Live) if (u.CoupleChain.Inviting) u.CoupleChain.Invalidate();
-                    };
-                }
-                if (!_blink.Enabled) _blink.Start();
-            }
-            else if (_blink != null && _blink.Enabled)
-            {
-                _blink.Stop();
-                CoupleBadge.Phase = true;
-            }
+            foreach (var u in CylinderUnitHMI.Live) u.ShowCouplingAvailable(Available(u));
+        }
+
+        /// <summary>Starts following the units (a unit with a chain calls it).</summary>
+        internal static void Watch()
+        {
+            if (_watch != null) return;
+            _watch = new System.Windows.Forms.Timer { Interval = 400 };
+            _watch.Tick += (s, e) => { try { RefreshAvailability(); } catch (Exception ex) { AuditLogger.Log("coupling chains: " + ex.Message); } };
+            _watch.Start();
         }
 
         /// <summary>Where a unit stands: "A" / "B" (a cylinder at an end), a position (an axis, an encoder cylinder), or null (unknown).</summary>
@@ -210,17 +305,12 @@ namespace Kaban.UI.Helpers
             return pos.HasValue ? pos.Value.ToString("R", System.Globalization.CultureInfo.InvariantCulture) : null;
         }
 
-        /// <summary>True when the two stand at the same place.</summary>
+        /// <summary>True when two cylinders with a sensor at each end stand at the same end.</summary>
         internal static bool SamePlace(CylinderUnitHMI x, CylinderUnitHMI y)
         {
-            if (x.Kind != y.Kind) return false;
-            if (x.Kind == UnitKind.Cylinder && x.HasEndSensors && y.HasEndSensors)
-            {
-                var px = PlaceOf(x);
-                return px != null && px == PlaceOf(y);
-            }
-            double? a = x.PositionValue, b = y.PositionValue;
-            return a.HasValue && b.HasValue && Math.Abs(a.Value - b.Value) <= AxisTolerance + 1e-9;
+            if (x.Kind != y.Kind || !x.HasEndSensors || !y.HasEndSensors) return false;
+            var px = PlaceOf(x);
+            return px != null && px == PlaceOf(y);
         }
 
         /// <summary>Where a unit stands, in words (messages, the log).</summary>
@@ -257,7 +347,14 @@ namespace Kaban.UI.Helpers
             foreach (var o in others)
             {
                 if (!o.Visible || !o.IsHandleCreated) { why = string.Format(T("Cpl_Gone", "'{0}' is not on the screen"), o.CouplingName); break; }
-                if (!SamePlace(unit, o)) { why = string.Format(T("Cpl_Moved", "'{0}' is not where '{1}' is ({2} / {3})"), o.CouplingName, unit.CouplingName, Describe(o), Describe(unit)); break; }
+                var apart = unit.Kind == UnitKind.Axis ? WhyNotAlone(o) ?? WhyNotWith(unit, o) : WhyNotWith(unit, o);
+                if (apart != null)
+                {
+                    why = unit.Kind == UnitKind.Cylinder && unit.HasEndSensors && o.HasEndSensors
+                        ? string.Format(T("Cpl_Moved", "'{0}' is not where '{1}' is ({2} / {3})"), o.CouplingName, unit.CouplingName, Describe(o), Describe(unit))
+                        : "'" + o.CouplingName + "': " + apart;
+                    break;
+                }
                 var b = sideA ? o.ButtonA : o.ButtonB;
                 if (!b.CanAct) { why = string.Format(T("Cpl_CannotAct", "'{0}' cannot do '{1}' now"), o.CouplingName, o.SideText(sideA)); break; }
             }

@@ -348,6 +348,8 @@ namespace Kaban.UI.Plc
             // so H500's and H800's alarms (remapped to stations 3 and 4, same M801...
             // addresses) were raised and cleared by FA2010's bits.
             AddTo(1, Kaban.UI.Forms.MainForm.MachineErrorAddress);   // machine-error summary bit (main PLC)
+            // the axes' step mode: coupled axes ask for it on any page (17 October)
+            AddConditions(SystemCondition.AxisStepMode);
             foreach (var alarmDef in AlarmManager.GetAllDefinitions())
             {
                 if (string.IsNullOrEmpty(alarmDef.Address)) continue;
@@ -525,6 +527,11 @@ namespace Kaban.UI.Plc
                     if (flag == SystemCondition.AdminUser)
                     {
                         result &= SecurityManager.HasAccess(SecurityLevel.Admin);
+                        continue;
+                    }
+                    if (flag == SystemCondition.MaintenanceUser)
+                    {
+                        result &= SecurityManager.HasAccess(SecurityLevel.Maintenance);
                         continue;
                     }
 
