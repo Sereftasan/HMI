@@ -23,6 +23,8 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     it is above the Manual Movement tabs (over all of them) and on the Axis Monitor; Machine Parameters > Axis has a
     copy of its controls. The library project of 15 October (Kaban.Machines.FA2010.Shared) is gone.
   - a44b299 - Axis page: the speed and steps at the top, the PLC axis items / Motion monitor just before the column names.
+  - c61f1a2, 63d5fb9 - The lists were made in Visual Studio's designer too, moving the Axis page down 40 on every
+    opening (saved: the column names at 92, Robot X on Robot Y); no more - your save of the page taken in, the shift undone.
 - 14 October (the Axis Settings page broken, two screenshots):
   - acbfe12 - Clamping Moulds: the position shown 10 times its value - divided by 100 as its sections now.
   - 9e1cd58, 87c0284 - Several conditions together: each control's tooltip (Admin) says each one met or not, and a
