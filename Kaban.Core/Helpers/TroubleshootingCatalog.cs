@@ -360,6 +360,13 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public AxisMoment AxisMoment;
 
+            /// <summary>
+            /// For a code's entry of the manual: the moment the code came, when the HMI knows it -
+            /// its hint is shown at the top of the entry (17 October), with a link to its
+            /// step-by-step page. The entry itself is shown as ever.
+            /// </summary>
+            public AxisMoment MomentHint;
+
             public string FullPath
             {
                 get { return IsWebLink ? FileName.Trim() : ResolveLanguageFile(FileName); }

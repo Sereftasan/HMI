@@ -339,6 +339,8 @@ namespace Kaban.Core.Helpers
                 int body = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
                 body = body < 0 ? first : Math.Min(first, html.IndexOf('>', body) + 1);
                 var page = new StringBuilder(html.Substring(0, body)).Append("\r\n");
+                // what the axis was doing when the code came, and where to start (17 October)
+                if (doc.MomentHint != null) page.Append(AxisSteps.HintBox(doc.MomentHint, doc.AlarmTime, doc.AlarmText)).Append("\r\n");
                 if (fallback)
                     page.Append("<div class=\"missing\">The manual has no entry for <b>" + WebUtility.HtmlEncode(doc.Code) +
                                 "</b>. These are the entries of alarm <b>" + WebUtility.HtmlEncode(doc.CodeGroup) +
@@ -361,7 +363,8 @@ namespace Kaban.Core.Helpers
 
                 string result = TroubleshootingCatalog.AbsoluteLinks(page.ToString());
 
-                var safe = new string(doc.Code.Where(char.IsLetterOrDigit).ToArray());
+                var safe = new string(doc.Code.Where(char.IsLetterOrDigit).ToArray()) +
+                           (doc.MomentHint != null ? "_" + new string((doc.MomentHint.Unit ?? "").Where(char.IsLetterOrDigit).ToArray()) : "");
                 var path = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(full) + "_" + safe + ".html");
                 File.WriteAllText(path, result, new UTF8Encoding(true));
                 return path;

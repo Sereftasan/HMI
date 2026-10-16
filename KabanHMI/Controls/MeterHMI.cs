@@ -713,6 +713,8 @@ namespace Kaban.UI.Controls
             if (!HasHelp || IsStale) return;
             // what the axis was doing when the code came (16 October): that page first, the code's entry second
             var moment = AlarmGeneration.AxisStepsForCode(PlcNumber, Address, _raw);
+            // the code's entry with the moment's hint at its top (17 October)
+            _help.MomentHint = moment != null ? moment.AxisMoment : null;
             if (moment != null)
             {
                 var docs = new System.Collections.Generic.List<TroubleshootingCatalog.HelpDocument> { moment, _help };

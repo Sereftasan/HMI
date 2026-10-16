@@ -282,8 +282,8 @@ class AG {
         mem["D101"] = 0x1904; Scan();
         Check("  a long cylinder delay does not hold it", Gen().Count == 1 && Gen()[0].ShownCode == "M801.1904H", Codes());
         AlarmGeneration.Save("T", new AlarmGeneration.Settings { Enabled = true, DelaySeconds = 5, AxisAlarms = false });
-        Check("the axis alarms switched off: its line goes, its words not read", Gen().Count == 0 &&
-              !AlarmGeneration.Addresses().Any(k => k.Value == "D100" || k.Value == "D101"), Codes());
+        Check("the axis alarms switched off: its line goes; its words still read - the codes' help tells what the axis was doing (17 October)",
+              Gen().Count == 0 && AlarmGeneration.Addresses().Any(k => k.Value == "D100") && AlarmGeneration.Addresses().Any(k => k.Value == "D101"), Codes());
         mem["D100"] = 0x163; Scan();
         Check("  and nothing raised", Gen().Count == 0);
         var kept = File.ReadAllText(AlarmGeneration.SettingsPath);

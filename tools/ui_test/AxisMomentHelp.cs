@@ -145,6 +145,16 @@ class AMH {
               string.Join(" | ", docs.Select(d => d.Title + ":" + d.Code)));
         Check("  titled with the axis and what it was doing", docs.Count > 0 && docs[0].Title.Contains("Robot X") && docs[0].Title.Contains("homing"),
               docs.Count > 0 ? docs[0].Title : "");
+        // 17 October: "I don't see a hint according to the error moment state" - on the code's own entry too
+        var entryPath = docs.Count > 1 ? TC.ExtractSection(docs[1]) : "";
+        var entry = File.Exists(entryPath) ? Text(File.ReadAllText(entryPath)) : "";
+        Check("the code's own entry (50.1) carries the moment's hint at its top: homing, where to start, the sensor, a link to the steps",
+              docs.Count > 1 && docs[1].MomentHint == m && entry.Contains("When the code came") && entry.Contains("Robot X was homing") &&
+              entry.Contains("Where to start:") && entry.Contains("never seen") && entry.Contains("Reference sensor: SN.1 at X100") &&
+              entry.Contains("Step by step for this moment") && entry.IndexOf("When the code came") < entry.IndexOf("Thermal overload error 1"),
+              entry.Length > 600 ? entry.Substring(0, 600) : entry);
+        var link = System.Text.RegularExpressions.Regex.Match(File.Exists(entryPath) ? File.ReadAllText(entryPath) : "", "href=\"(file:[^\"]+Steps_Axis[^\"]+)\"");
+        Check("  the link opens the step-by-step page", link.Success && File.Exists(new Uri(link.Groups[1].Value).LocalPath), link.Success ? link.Groups[1].Value : "no link");
         var path = docs.Count > 0 ? TC.ExtractSection(docs[0]) : "";
         var html = File.Exists(path) ? File.ReadAllText(path) : "";
         var text = Text(html);
@@ -264,6 +274,41 @@ class AMH {
         Check("read from just after it, and the page says so", m != null && !m.SeenRising &&
               Text(AxisSteps.Build(m, "EN")).Contains("already there when the HMI started reading"));
         Check("  16.3: the encoder cable", AxisSteps.HintOf(m) == "Encoder" && AxisSteps.StepsOf(m).SequenceEqual(new[] { "EncoderCable" }));
+
+        Console.WriteLine("--- the axis alarms switched off: the help still knows the moment (17 October) ---");
+        AlarmGeneration.Save("", new AlarmGeneration.Settings { Enabled = false, AxisAlarms = false });
+        var q = Watch("W0B");
+        mem["W0B"] = 0; Scan(2);
+        Pos("W0", 300); mem["U1\\G2409"] = 7; Busy(0, true); mem["M121"] = 1; Scan();
+        for (int i = 1; i <= 5; i++) { Pos("W0", 300 + 10 * i); Scan(); }
+        Scan(7);
+        mem["W0B"] = 0x521; Busy(0, false); Scan();
+        var qm = AlarmGeneration.MomentForCode(1, "W0B", 0x521);
+        Check("no alarm raised by the HMI, the moment taken all the same: homing, stuck", q.RaisedServo == null && qm != null && qm.Motion == AxisMotion.Homing && qm.Stuck,
+              qm == null ? "no moment" : qm.Motion + " stuck=" + qm.Stuck);
+        AlarmHelpLinks.ReadCodeNow = (st, a) => Read(a);
+        var plcDocs = AlarmHelpLinks.DocumentsFor(1, "M891", null);
+        Check("  the PLC's alarm (the error bit's help): the moment's page first, then 52.1's entry with its hint",
+              plcDocs.Count >= 2 && plcDocs[0].AxisMoment == qm && plcDocs[1].Code == "52.1" && plcDocs[1].MomentHint == qm,
+              string.Join(" | ", plcDocs.Select(d => d.Title + ":" + d.Code)));
+        var qb = new AlarmHelpBadge { PlcNumber = 1, Address = "M891" };
+        qb.SetCodeWords("W0B", "W4", "W5");
+        qb.UpdateState(Read, c => true);
+        var qd = qb.Documents();
+        Check("  the axis's '?': the same", qd.Count == 2 && qd[0].AxisMoment == qm && qd[1].MomentHint == qm, string.Join(" | ", qd.Select(d => d.Title)));
+        AlarmGeneration.Save("", new AlarmGeneration.Settings { Enabled = false, AxisAlarms = true });
+        Scan();
+        Check("  switched on again: the code shown now raised, with that moment", q.RaisedServo != null && q.RaisedServo.AxisMoment == qm);
+        mem["W0B"] = 0; mem["U1\\G2409"] = 0; mem["M121"] = 0; Scan();
+
+        Console.WriteLine("--- a Help folder without the template: the program's own copy ---");
+        var helpWas = TC.HelpFolder;
+        var emptyHelp = Path.Combine(Path.GetTempPath(), "nohelp_" + Guid.NewGuid().ToString("N")); Directory.CreateDirectory(emptyHelp);
+        TC.HelpFolder = emptyHelp;
+        var builtIn = AxisSteps.TemplatePath("EN");
+        Check("the template found all the same (built into the program)", builtIn.Length > 0 && File.Exists(builtIn) && !builtIn.StartsWith(emptyHelp), builtIn);
+        Check("  the page made from it", Text(AxisSteps.Build(qm, "EN")).Contains("Where to start"));
+        TC.HelpFolder = helpWas;
 
         Console.WriteLine("--- the template ---");
         var tpl = TC.LoadTemplate(AxisSteps.TemplatePath("EN"));

@@ -252,6 +252,8 @@ namespace Kaban.Core.Helpers
             public AxisMoment AxisMoment { get; internal set; }
 
             internal Reading Last;
+            /// <summary>Its alarms are not raised now (the axis alarms switched off).</summary>
+            internal bool Quiet;
             internal DateTime? MoveStart, LastChange;
             internal long? StartRaw, LastRaw;
             internal bool Moved;
@@ -395,7 +397,7 @@ namespace Kaban.Core.Helpers
             }
             foreach (var x in _axes)
             {
-                if (!AxisAlarmsFor(x.ModuleId)) continue;
+                // read with the axis alarms off too: the code's help still tells what the axis was doing (17 October)
                 if (!string.IsNullOrWhiteSpace(x.ServoAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.ServoAlarm.Trim());
                 if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
                 // what it is doing, for the help of a code when it comes (16 October)
@@ -579,8 +581,16 @@ namespace Kaban.Core.Helpers
             foreach (var x in _axes)
             {
                 if (x.Station != station) continue;
-                if (!AxisAlarmsFor(x.ModuleId)) { DropAxis(x); continue; }
-                EvaluateAxis(x, lookup, now);
+                // the axis alarms off: none raised, the moments still taken for the codes' help (17 October)
+                bool raise = AxisAlarmsFor(x.ModuleId);
+                if (!raise)
+                {
+                    if (x.RaisedServo != null) { AlarmManager.ClearGenerated(x.RaisedServo); x.RaisedServo = null; }
+                    if (x.RaisedAxis != null) { AlarmManager.ClearGenerated(x.RaisedAxis); x.RaisedAxis = null; }
+                    x.Quiet = true;
+                }
+                else if (x.Quiet) { x.Quiet = false; x.LastServo = x.LastAxis = 0; }   // switched on: the codes shown now raised
+                EvaluateAxis(x, lookup, now, raise);
             }
             foreach (var v in _inverters)
             {
@@ -781,7 +791,7 @@ namespace Kaban.Core.Helpers
             x.LastServo = x.LastAxis = 0;
         }
 
-        private static void EvaluateAxis(Axis x, Func<string, int> lookup, DateTime now)
+        private static void EvaluateAxis(Axis x, Func<string, int> lookup, DateTime now, bool raise = true)
         {
             int servo = string.IsNullOrWhiteSpace(x.ServoAlarm) ? 0 : Word(lookup, x.ServoAlarm) & 0xFFFF;
             int axis = string.IsNullOrWhiteSpace(x.AxisAlarm) ? 0 : Word(lookup, x.AxisAlarm) & 0xFFFF;
@@ -799,7 +809,7 @@ namespace Kaban.Core.Helpers
                 {
                     // the same code again (acknowledged, still shown): the moment it first came
                     if (x.ServoMoment == null || x.ServoMoment.Code != servo) x.ServoMoment = MomentOf(x, AxisCodeKind.ServoAlarm, servo, cur, now);
-                    x.RaisedServo = RaiseAxis(x, AxisCodeKind.ServoAlarm, servo, now, x.ServoMoment);
+                    if (raise) x.RaisedServo = RaiseAxis(x, AxisCodeKind.ServoAlarm, servo, now, x.ServoMoment);
                 }
                 x.LastServo = servo;
             }
@@ -810,7 +820,7 @@ namespace Kaban.Core.Helpers
                 else
                 {
                     if (x.AxisMoment == null || x.AxisMoment.Code != axis) x.AxisMoment = MomentOf(x, AxisCodeKind.AxisError, axis, cur, now);
-                    x.RaisedAxis = RaiseAxis(x, AxisCodeKind.AxisError, axis, now, x.AxisMoment);
+                    if (raise) x.RaisedAxis = RaiseAxis(x, AxisCodeKind.AxisError, axis, now, x.AxisMoment);
                 }
                 x.LastAxis = axis;
             }
@@ -967,16 +977,24 @@ namespace Kaban.Core.Helpers
         /// <summary>The page for the code an axis's code word shows now (its row's code cell, its "?"), or null.</summary>
         public static TroubleshootingCatalog.HelpDocument AxisStepsForCode(int station, string codeAddress, int code)
         {
+            var m = MomentForCode(station, codeAddress, code);
+            return m == null ? null : AxisStepsDocument(m);
+        }
+
+        /// <summary>What the axis was doing when the code its code word shows now came, or null (not watched, another code).</summary>
+        public static AxisMoment MomentForCode(int station, string codeAddress, int code)
+        {
             if (string.IsNullOrWhiteSpace(codeAddress) || code <= 0) return null;
+            PlcAddressHelper.Resolve(station, codeAddress.Trim(), out station, out codeAddress);
             foreach (var x in _axes)
             {
                 if (x.Station != station) continue;
                 if (string.Equals((x.ServoAlarm ?? "").Trim(), codeAddress.Trim(), StringComparison.OrdinalIgnoreCase) &&
                     x.ServoMoment != null && x.ServoMoment.Code == (code & 0xFFFF))
-                    return AxisStepsDocument(x.ServoMoment);
+                    return x.ServoMoment;
                 if (string.Equals((x.AxisAlarm ?? "").Trim(), codeAddress.Trim(), StringComparison.OrdinalIgnoreCase) &&
                     x.AxisMoment != null && x.AxisMoment.Code == (code & 0xFFFF))
-                    return AxisStepsDocument(x.AxisMoment);
+                    return x.AxisMoment;
             }
             return null;
         }
@@ -1110,14 +1128,25 @@ namespace Kaban.Core.Helpers
             return null;
         }
 
+        /// <summary>The code's entry with its moment's hint at the top (17 October).</summary>
+        private static TroubleshootingCatalog.HelpDocument WithHint(TroubleshootingCatalog.HelpDocument doc, AlarmItem item)
+        {
+            if (doc != null && item.AxisMoment != null)
+            {
+                doc.MomentHint = item.AxisMoment;
+                doc.AlarmTime = item.TriggerTime;
+            }
+            return doc;
+        }
+
         /// <summary>The help entry for the drive code of a generated axis alarm, or null.</summary>
         public static TroubleshootingCatalog.HelpDocument CodeDocumentFor(AlarmItem item)
         {
             if (item == null || !item.Generated) return null;
             foreach (var x in _axes)
             {
-                if (ReferenceEquals(x.RaisedServo, item)) return AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, x.LastServo, x.Name);
-                if (ReferenceEquals(x.RaisedAxis, item)) return AxisCodeHelp.Document(AxisCodeKind.AxisError, x.LastAxis, x.Name);
+                if (ReferenceEquals(x.RaisedServo, item)) return WithHint(AxisCodeHelp.Document(AxisCodeKind.ServoAlarm, x.LastServo, x.Name), item);
+                if (ReferenceEquals(x.RaisedAxis, item)) return WithHint(AxisCodeHelp.Document(AxisCodeKind.AxisError, x.LastAxis, x.Name), item);
             }
             var v = InverterOf(item);
             if (v != null) return AxisCodeHelp.Document(AxisCodeKind.InverterFault, v.Last, v.Name);

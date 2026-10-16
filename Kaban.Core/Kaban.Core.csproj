@@ -139,6 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="..\KabanHMI\Help\Templates\EN\Axis_Steps.html">
+      <Link>Templates\Axis_Steps.html</Link>
+      <LogicalName>Kaban.Core.Axis_Steps.html</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Schema.sql">

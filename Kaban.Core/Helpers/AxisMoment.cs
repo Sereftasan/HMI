@@ -293,7 +293,11 @@ namespace Kaban.Core.Helpers
 
         // ---- the page ------------------------------------------------------------------
 
-        /// <summary>The template in a language: its own, else English ("" when neither is there).</summary>
+        /// <summary>
+        /// The template in a language: its own, else English - from the Help folder, else the
+        /// copy built into the program (17 October: a Help folder without it - a project not
+        /// built again after the file was added - left the axes with no hint at all).
+        /// </summary>
         public static string TemplatePath(string language)
         {
             foreach (var lang in new[] { (language ?? "").ToUpperInvariant(), "EN" })
@@ -302,7 +306,34 @@ namespace Kaban.Core.Helpers
                 var p = Path.Combine(TroubleshootingCatalog.TemplateFolder, lang, TemplateFile);
                 try { if (File.Exists(p)) return p; } catch { }
             }
-            return "";
+            return BuiltInTemplate();
+        }
+
+        /// <summary>The program's own copy of the English template, written to the temp folder once ("" when it has none).</summary>
+        internal static string BuiltInTemplate()
+        {
+            try
+            {
+                var dir = Path.Combine(Path.GetTempPath(), "KabanHMI_Templates", "EN");
+                var path = Path.Combine(dir, TemplateFile);
+                using (var s = typeof(AxisSteps).Assembly.GetManifestResourceStream("Kaban.Core.Axis_Steps.html"))
+                {
+                    if (s == null) return "";
+                    byte[] data;
+                    using (var ms = new MemoryStream()) { s.CopyTo(ms); data = ms.ToArray(); }
+                    if (!File.Exists(path) || new FileInfo(path).Length != data.Length || !File.ReadAllBytes(path).SequenceEqual(data))
+                    {
+                        Directory.CreateDirectory(dir);
+                        File.WriteAllBytes(path, data);
+                    }
+                }
+                return path;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("the axis help's built-in template could not be written: " + ex.Message);
+                return "";
+            }
         }
 
         private static string H(string s) { return WebUtility.HtmlEncode(s ?? ""); }
@@ -311,21 +342,7 @@ namespace Kaban.Core.Helpers
         public static string Write(TroubleshootingCatalog.HelpDocument doc)
         {
             if (doc == null || doc.AxisMoment == null) return "";
-            try
-            {
-                var html = Build(doc.AxisMoment, LanguageManager.CurrentLanguage, doc.AlarmTime, doc.AlarmText);
-                if (string.IsNullOrEmpty(html)) return "";
-                var name = "Steps_Axis_" + new string((doc.AxisMoment.Unit ?? "").Where(char.IsLetterOrDigit).ToArray()) + "_" +
-                           AxisCodeHelp.Key(doc.AxisMoment.Kind, doc.AxisMoment.Code).Replace(".", "") + ".html";
-                var path = Path.Combine(Path.GetTempPath(), name);
-                File.WriteAllText(path, html, new UTF8Encoding(true));
-                return path;
-            }
-            catch (Exception ex)
-            {
-                AuditLogger.Log("the axis step-by-step help could not be written: " + ex.Message);
-                return "";
-            }
+            return WritePage(doc.AxisMoment, doc.AlarmTime, doc.AlarmText);
         }
 
         /// <summary>The page as HTML ("" without a template).</summary>
@@ -339,6 +356,57 @@ namespace Kaban.Core.Helpers
 
         /// <summary>The page from a template (tests give their own).</summary>
         public static string Build(AxisMoment m, StepTemplate tpl, DateTime? alarmTime = null, string alarmText = "")
+        {
+            return tpl.Render(ModelOf(m, tpl, alarmTime, alarmText));
+        }
+
+        /// <summary>
+        /// THE MOMENT'S HINT ON THE CODE'S OWN PAGE (17 October: "I don't see a hint according
+        /// to the error moment state"): a box at the top of the code's entry of the manual -
+        /// what the axis was doing when the code came, where to start, and a link to the
+        /// step-by-step page. The template's phrase MomentBox ("" without a template).
+        /// </summary>
+        public static string HintBox(AxisMoment m, DateTime? alarmTime = null, string alarmText = "")
+        {
+            if (m == null) return "";
+            try
+            {
+                var tpl = TroubleshootingCatalog.LoadTemplate(TemplatePath(LanguageManager.CurrentLanguage));
+                if (tpl == null || !tpl.HasPhrase("MomentBox")) return "";
+                var steps = WritePage(m, alarmTime, alarmText);
+                var model = ModelOf(m, tpl, alarmTime, alarmText);
+                model["StepsLink"] = string.IsNullOrEmpty(steps) ? "" : H(new Uri(steps).AbsoluteUri);
+                return tpl.Phrase("MomentBox", model);
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("the axis moment's hint could not be made: " + ex.Message);
+                return "";
+            }
+        }
+
+        /// <summary>The moment's step-by-step page written to the temp folder; its path ("" when it cannot).</summary>
+        public static string WritePage(AxisMoment m, DateTime? alarmTime = null, string alarmText = "")
+        {
+            if (m == null) return "";
+            try
+            {
+                var html = Build(m, LanguageManager.CurrentLanguage, alarmTime, alarmText);
+                if (string.IsNullOrEmpty(html)) return "";
+                var name = "Steps_Axis_" + new string((m.Unit ?? "").Where(char.IsLetterOrDigit).ToArray()) + "_" +
+                           AxisCodeHelp.Key(m.Kind, m.Code).Replace(".", "") + ".html";
+                var path = Path.Combine(Path.GetTempPath(), name);
+                File.WriteAllText(path, html, new UTF8Encoding(true));
+                return path;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("the axis step-by-step help could not be written: " + ex.Message);
+                return "";
+            }
+        }
+
+        private static Dictionary<string, object> ModelOf(AxisMoment m, StepTemplate tpl, DateTime? alarmTime, string alarmText)
         {
             bool admin = false;
             try { admin = TroubleshootingCatalog.AdminView != null && TroubleshootingCatalog.AdminView(); } catch { }
@@ -433,7 +501,7 @@ namespace Kaban.Core.Helpers
             }
             model["Steps"] = steps;
             model["HasSteps"] = steps.Count > 0;
-            return tpl.Render(model);
+            return model;
         }
     }
 }

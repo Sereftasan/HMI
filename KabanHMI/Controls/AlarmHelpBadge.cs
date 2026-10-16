@@ -416,10 +416,14 @@ namespace Kaban.UI.Controls
                 var list = _codes.Where(c => c.Value != 0 && c.Kind != AxisCodeKind.InverterFault)
                                  .Select(c => AlarmGeneration.AxisStepsForCode(PlcNumber, c.Address, c.Value))
                                  .Where(d => d != null).ToList();
-                list.AddRange(_codes.Where(c => c.Value != 0)
-                                 // No axis name in the entry: the "?" is on that axis's own unit.
-                                 .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, ""))
-                                 .Where(d => d != null));
+                foreach (var c in _codes.Where(c => c.Value != 0))
+                {
+                    // No axis name in the entry: the "?" is on that axis's own unit.
+                    var d = AxisCodeHelp.Document(c.Kind, c.Value, "");
+                    if (d == null) continue;
+                    if (c.Kind != AxisCodeKind.InverterFault) d.MomentHint = AlarmGeneration.MomentForCode(PlcNumber, c.Address, c.Value);
+                    list.Add(d);
+                }
                 // an inverter's: the whole manual second - there even for a code the list does not have
                 if (_codes.Any(c => c.Kind == AxisCodeKind.InverterFault) && (_error || _codes.Any(c => c.Value != 0)))
                 {

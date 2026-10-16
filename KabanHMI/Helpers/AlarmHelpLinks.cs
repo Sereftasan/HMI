@@ -738,7 +738,17 @@ namespace Kaban.UI.Helpers
                 var v = ReadCodeNow(link.Station, kv.Value.Trim());
                 if (v == null || v.Value == 0) continue;
                 var d = AxisCodeHelp.Document(kv.Key, v.Value, link.Unit);
-                if (d != null) docs.Add(d);
+                if (d == null) continue;
+                // what the axis was doing when the code came: its hint on the entry, its page before it (17 October)
+                var moment = kv.Key == AxisCodeKind.ServoAlarm || kv.Key == AxisCodeKind.AxisError
+                             ? AlarmGeneration.MomentForCode(link.Station, kv.Value.Trim(), v.Value & 0xFFFF) : null;
+                if (moment != null)
+                {
+                    d.MomentHint = moment;
+                    var steps = AlarmGeneration.AxisStepsDocument(moment);
+                    if (steps != null) docs.Add(steps);
+                }
+                docs.Add(d);
             }
             return docs;
         }
