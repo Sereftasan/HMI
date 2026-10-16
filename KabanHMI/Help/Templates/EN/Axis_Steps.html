@@ -175,7 +175,7 @@
 <tr><td>The axis was</td><td><b>{{Motion}}</b></td></tr>
 {{#Status}}<tr><td>Motion module</td><td>{{Status}}</td></tr>{{/Status}}
 {{#Busy}}<tr><td>BUSY</td><td>{{Busy}}</td></tr>{{/Busy}}
-{{#JogBack}}<tr><td>Jog &minus; / +</td><td>{{JogBack}} / {{JogForward}}</td></tr>{{/JogBack}}
+{{#JogBack}}<tr><td>Jog &minus; / +</td><td>{{JogBack}} / {{JogForward}}{{#JogIdle}} <span style="color:#6c757d">&ndash; they did not move it{{#ModuleStood}} (the motion module stood){{/ModuleStood}}</span>{{/JogIdle}}</td></tr>{{/JogBack}}
 {{#Running}}<tr><td>Machine running</td><td>{{Running}}</td></tr>{{/Running}}
 {{#Position}}<tr><td>Position</td><td>{{Position}}{{#Moved}}{{#PositionStart}} (started at {{PositionStart}}){{/PositionStart}}{{/Moved}}</td></tr>{{/Position}}
 {{#Stuck}}<tr><td>Stood still</td><td>{{StuckSeconds}} s before the code, after moving</td></tr>{{/Stuck}}

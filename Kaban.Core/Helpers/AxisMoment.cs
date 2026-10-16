@@ -92,13 +92,39 @@ namespace Kaban.Core.Helpers
         public bool RefKnown { get { return RefPoint != null || !string.IsNullOrWhiteSpace(RefAddress); } }
 
         /// <summary>A module state that is a movement: interpolation, JOG, manual pulse, home return, positioning.</summary>
+        /// <summary>One jog command ON: both at once is no jog (the PLC starts neither).</summary>
+        public static bool OneJog(bool? jogBack, bool? jogForward) { return (jogBack == true) != (jogForward == true); }
+
+        /// <summary>
+        /// A jog command was ON but it did not move the axis: the motion module stood, or
+        /// both commands were ON at once.
+        /// </summary>
+        public bool JogIdle
+        {
+            get
+            {
+                if (JogBack != true && JogForward != true) return false;
+                return (JogBack == true && JogForward == true) || ModuleStood;
+            }
+        }
+
+        /// <summary>The motion module was read and it stood: not BUSY, not moving.</summary>
+        public bool ModuleStood
+        {
+            get { return (Status.HasValue || Busy.HasValue) && !(Busy == true || (Status.HasValue && IsMoving(Status.Value))); }
+        }
+
         public static bool IsMoving(int status) { return status == 2 || status == 3 || status == 4 || (status >= 6 && status <= 13); }
 
         /// <summary>
         /// What the axis was doing, from what was read the scan before:
-        ///   a jog button held, or the module in JOG / manual pulse (3, 4)   manual
-        ///   the module's home return (7), or moving while the axis asks
-        ///   to be referenced (the PLC's or the module's home request)      homing
+        ///   the module's home return (7)                                    homing
+        ///   the module in JOG / manual pulse (3, 4)                         manual
+        ///   the module standing (not BUSY, not moving): standing - a jog
+        ///   command ON did not move it (17 October)                         standing
+        ///   one jog command ON (both at once is no jog)                     manual
+        ///   moving while the axis asks to be referenced (the PLC's or
+        ///   the module's home request)                                      homing
         ///   moving otherwise: the machine running - automatic; in manual
         ///   mode (a "go to" of a manual page) - manual; else automatic
         ///   not moving                                                      standing
@@ -107,10 +133,12 @@ namespace Kaban.Core.Helpers
         public static AxisMotion MotionOf(int? status, bool? busy, bool? jogBack, bool? jogForward, bool? running,
                                           bool? manualMode = null, bool? homeRequest = null)
         {
-            if (jogBack == true || jogForward == true) return AxisMotion.Manual;
             if (status == 7) return AxisMotion.Homing;
             if (status == 3 || status == 4) return AxisMotion.Manual;
             bool moving = busy == true || (status.HasValue && IsMoving(status.Value));
+            // the motion module says what it did: it stood (17 October - "jogged" while it stood was not true)
+            if ((status.HasValue || busy.HasValue) && !moving) return AxisMotion.Standing;
+            if (OneJog(jogBack, jogForward)) return AxisMotion.Manual;
             if (moving)
             {
                 if (homeRequest == true) return AxisMotion.Homing;
@@ -437,6 +465,8 @@ namespace Kaban.Core.Helpers
             model["JogForward"] = state(m.JogForward);
             model["JogBackOn"] = m.JogBack == true;
             model["JogForwardOn"] = m.JogForward == true;
+            model["JogIdle"] = m.JogIdle;
+            model["ModuleStood"] = m.ModuleStood;
             model["Running"] = state(m.Running);
             model["Moved"] = m.Moved;
             model["Stuck"] = m.Stuck;

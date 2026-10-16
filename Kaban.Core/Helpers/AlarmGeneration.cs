@@ -276,7 +276,15 @@ namespace Kaban.Core.Helpers
             public int? Status;
             public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest, Ref;
             public long? Position, Min, Max;
-            public bool Moving { get { return Busy == true || JogBack == true || JogForward == true || (Status.HasValue && AxisMoment.IsMoving(Status.Value)); } }
+            /// <summary>The motion module's word when it is read (a jog command it did not act on is no movement); else one jog command.</summary>
+            public bool Moving
+            {
+                get
+                {
+                    if (Status.HasValue || Busy.HasValue) return Busy == true || (Status.HasValue && AxisMoment.IsMoving(Status.Value));
+                    return AxisMoment.OneJog(JogBack, JogForward);
+                }
+            }
         }
 
         /// <summary>

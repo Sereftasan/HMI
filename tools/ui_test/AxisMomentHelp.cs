@@ -72,6 +72,21 @@ class AMH {
         Check("BUSY alone, no module state read: automatic", AxisMoment.MotionOf(null, true, null, null, null) == AxisMotion.Automatic);
         Check("standby, not BUSY, no button: standing", AxisMoment.MotionOf(0, false, false, false, true) == AxisMotion.Standing);
         Check("nothing read: not known", AxisMoment.MotionOf(null, null, null, null, null) == AxisMotion.Unknown);
+        // 17 October: "moved by hand" with the module in standby and BUSY OFF was not true
+        Check("a jog command ON, the module standing (standby, BUSY OFF): standing - the module says what it did",
+              AxisMoment.MotionOf(0, false, false, true, false) == AxisMotion.Standing && AxisMoment.MotionOf(0, false, true, true, false) == AxisMotion.Standing);
+        Check("both jog commands ON, no module read: no jog", AxisMoment.MotionOf(null, null, true, true, null) == AxisMotion.Standing);
+        Check("one jog command, no module read: manual", AxisMoment.MotionOf(null, null, false, true, null) == AxisMotion.Manual);
+        Check("the module's home return with a jog command ON: homing", AxisMoment.MotionOf(7, true, true, false, null) == AxisMotion.Homing);
+        var idle = new AxisMoment { Unit = "Robot X", Kind = AxisCodeKind.AxisError, Code = 0x1F4, Status = 0, Busy = false, JogBack = true, JogForward = true,
+                                    Motion = AxisMoment.MotionOf(0, false, true, true, false), SeenRising = true };
+        var idleText = Text(AxisSteps.Build(idle, "EN"));
+        Check("  the page: standing still; the jog commands ON / ON - they did not move it (the motion module stood)",
+              idle.JogIdle && idle.ModuleStood && idleText.Contains("standing still") && idleText.Contains("ON / ON - they did not move it (the motion module stood)") &&
+              !idleText.Contains("moved by hand"), Regex.Match(idleText, "Jog.{0,90}").Value);
+        var moving = new AxisMoment { Status = 8, Busy = true, JogBack = true, JogForward = true };
+        Check("  both ON while it positioned: they did not move it - but not 'the module stood'", moving.JogIdle && !moving.ModuleStood);
+        Check("  one held while it jogged: no note", !new AxisMoment { Status = 3, Busy = true, JogForward = true }.JogIdle);
 
         Console.WriteLine("--- the kind of fault a code is ---");
         Check("50.1 / 51.1 / 52.1 / E1.1: overload", new[] { 0x501, 0x511, 0x521, 0xE11 }.All(c => AxisSteps.Classify(AxisCodeKind.ServoAlarm, c) == AxisFault.Overload));
