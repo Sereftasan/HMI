@@ -30,7 +30,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         #region Component Designer generated code
         private void InitializeComponent()
         {
-            Kaban.Core.Models.BitAction bitAction11 = new Kaban.Core.Models.BitAction();
+            Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();
             this.lblHead0 = new System.Windows.Forms.Label();
             this.lblHead1 = new System.Windows.Forms.Label();
             this.lblHead2 = new System.Windows.Forms.Label();
@@ -229,7 +229,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.AxisNameKey = "Axis_RobotX";
             this.axRobot_X.AxisWarningAddress = "W5";
             this.axRobot_X.BackColor = System.Drawing.Color.White;
-            this.axRobot_X.BackEnableConditions = ((Kaban.Core.Enums.SystemCondition)((Kaban.Core.Enums.SystemCondition.MachineBit19 | Kaban.Core.Enums.SystemCondition.MachineBit20)));
+            this.axRobot_X.BackEnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axRobot_X.BackEnableTrigger.DescriptionKey = "";
             this.axRobot_X.BackEnableTrigger.MonitorAddress = "";
             this.axRobot_X.BackEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
@@ -267,11 +267,11 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.ErrorAddress = "M801";
             this.axRobot_X.ForwardEnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axRobot_X.ForwardEnableTrigger.DescriptionKey = "";
-            this.axRobot_X.ForwardEnableTrigger.MonitorAddress = "m111";
+            this.axRobot_X.ForwardEnableTrigger.MonitorAddress = "";
             this.axRobot_X.ForwardEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
             this.axRobot_X.ForwardEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
             this.axRobot_X.ForwardEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
-            this.axRobot_X.ForwardEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.ON;
+            this.axRobot_X.ForwardEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
             this.axRobot_X.ForwardEnableTrigger.ValA = 0D;
             this.axRobot_X.ForwardEnableTrigger.ValB = 0D;
             this.axRobot_X.GoToReferenceAddress = "B0";
@@ -1534,12 +1534,12 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.btnSend_Axes_To_Reference.ActiveBackColor = System.Drawing.Color.White;
             this.btnSend_Axes_To_Reference.AlertBlink = false;
             this.btnSend_Axes_To_Reference.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
-            bitAction11.Action = Kaban.Core.Enums.BitActionType.SET;
-            bitAction11.Address = "M22";
-            bitAction11.AddressOffset.StaticValue = 0D;
-            bitAction11.AddressOffset.TagAddress = "";
-            bitAction11.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
-            this.btnSend_Axes_To_Reference.BitActions.Add(bitAction11);
+            bitAction1.Action = Kaban.Core.Enums.BitActionType.SET;
+            bitAction1.Address = "M22";
+            bitAction1.AddressOffset.StaticValue = 0D;
+            bitAction1.AddressOffset.TagAddress = "";
+            bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnSend_Axes_To_Reference.BitActions.Add(bitAction1);
             this.btnSend_Axes_To_Reference.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
             this.btnSend_Axes_To_Reference.ButtonText = "Send Axes to Reference";
             this.btnSend_Axes_To_Reference.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
@@ -1646,7 +1646,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.Controls.Add(this.axV_Cutting_X);
             this.Controls.Add(this.btnSend_Axes_To_Reference);
             this.Name = "AxisSettings";
-            this.Size = new System.Drawing.Size(1253, 829);
+            this.Size = new System.Drawing.Size(1232, 808);
             this.ResumeLayout(false);
 
         }
