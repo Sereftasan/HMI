@@ -6,6 +6,15 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 16 October (night):
+  - 4411c17 - The Axis lists (Axis page, Axis Monitor): an axis whose visibility conditions are not met is not offered.
+  - 1814811 - Help pages: the step on show is marked by its beige box only - its number no longer blinks.
+  - 59f87df - The Inputs / Outputs side page for every user level.
+  - ec0cdb7 - Screen Scale (caption bar menu, Users and Preferences): the slider and percentage of the speed control.
+  - c765a89 - Couple for manual movement: while units are coupled, the chains that can join blink; a chain that does
+    not blink asks whether to let the coupling go and start again with its unit; with three or more coupled a chain
+    offers "Uncouple '<unit>'" or "Uncouple all"; one unit is never left coupled alone; the chain stays at the right
+    end of the frame line and the "?" comes and goes on its left.
 - 16 October (evening):
   - 45e8d89 - HMI Settings > AI: an "Active" column. Not ticked: the chat stays in the table with its address but is
     not offered in the help lists ("Ask ...", the AI prompt's menu).
