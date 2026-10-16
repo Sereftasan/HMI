@@ -711,6 +711,15 @@ namespace Kaban.UI.Controls
         {
             base.OnClick(e);
             if (!HasHelp || IsStale) return;
+            // what the axis was doing when the code came (16 October): that page first, the code's entry second
+            var moment = AlarmGeneration.AxisStepsForCode(PlcNumber, Address, _raw);
+            if (moment != null)
+            {
+                var docs = new System.Collections.Generic.List<TroubleshootingCatalog.HelpDocument> { moment, _help };
+                var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), d), null, FindForm());
+                UiStyle.ShowPopup(menu, this, new Point(0, Height));
+                return;
+            }
             Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), _help);
         }
 

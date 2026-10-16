@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Kaban.Core.Enums;
 using Kaban.Core.Interfaces;
 using Kaban.Core.Models;
 
@@ -227,7 +228,60 @@ namespace Kaban.Core.Helpers
             public AlarmItem RaisedAxis { get; internal set; }
             /// <summary>The device the alarm is named by: the error bit, or "Axis 3".</summary>
             public string Code { get { return !string.IsNullOrWhiteSpace(ErrorAddress) ? ErrorAddress.Trim() : "Axis " + Number; } }
+
+            // ---- what it was doing when a code came (16 October, AxisMoment) ----------
+            /// <summary>Its name as the drawings would have it (English: "Robot X") - to find its reference sensor there.</summary>
+            public string DrawingName = "";
+            /// <summary>The live position (two words when PositionDouble) and the limits, in the count the Divisor divides.</summary>
+            public string Position = "", MinLimit = "", MaxLimit = "";
+            public bool PositionDouble = true, LimitsDouble = true;
+            public double Divisor = 1;
+            public int Decimals = 2;
+            public string Suffix = "";
+            /// <summary>The jog commands (held while the button is), the reference sensor and its side, the PLC's home request.</summary>
+            public string JogBack = "", JogForward = "", RefSensor = "", HomeRequest = "";
+            public bool RefForward, Vertical;
+            /// <summary>The motion module's operation status (Md.26) and BUSY (Md.141, one bit per axis).</summary>
+            public string Status = "", Busy = "";
+            public int BusyBit = -1;
+            /// <summary>The machine's "running" and "manual mode" conditions (on this axis's station only).</summary>
+            public ConditionRule Running, ManualMode;
+
+            /// <summary>The moment of the code shown now (kept while the code is: acknowledged and back, it is the same moment).</summary>
+            public AxisMoment ServoMoment { get; internal set; }
+            public AxisMoment AxisMoment { get; internal set; }
+
+            internal Reading Last;
+            internal DateTime? MoveStart, LastChange;
+            internal long? StartRaw, LastRaw;
+            internal bool Moved;
+            internal int Direction;
+
+            /// <summary>True when anything of its movement is watched.</summary>
+            public bool WatchesMotion
+            {
+                get
+                {
+                    return new[] { Position, JogBack, JogForward, RefSensor, HomeRequest, Status, Busy }.Any(a => !string.IsNullOrWhiteSpace(a)) ||
+                           Running != null || ManualMode != null;
+                }
+            }
         }
+
+        /// <summary>One scan's reading of an axis's movement devices (null: not read).</summary>
+        internal sealed class Reading
+        {
+            public int? Status;
+            public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest, Ref;
+            public long? Position, Min, Max;
+            public bool Moving { get { return Busy == true || JogBack == true || JogForward == true || (Status.HasValue && AxisMoment.IsMoving(Status.Value)); } }
+        }
+
+        /// <summary>
+        /// How long an axis that moved must have stood still before its code for the help
+        /// to call it stuck (it ran into something). Replaceable for the tests.
+        /// </summary>
+        public static int StuckMs = 500;
 
         /// <summary>An inverter: its fault's data code word, and the alarm bit the HMI sets for it.</summary>
         public sealed class Inverter
@@ -344,9 +398,41 @@ namespace Kaban.Core.Helpers
                 if (!AxisAlarmsFor(x.ModuleId)) continue;
                 if (!string.IsNullOrWhiteSpace(x.ServoAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.ServoAlarm.Trim());
                 if (!string.IsNullOrWhiteSpace(x.AxisAlarm)) yield return new KeyValuePair<int, string>(x.Station, x.AxisAlarm.Trim());
+                // what it is doing, for the help of a code when it comes (16 October)
+                foreach (var a in MotionAddresses(x)) yield return new KeyValuePair<int, string>(x.Station, a);
             }
             foreach (var v in _inverters)
                 if (AxisAlarmsFor(v.ModuleId)) yield return new KeyValuePair<int, string>(v.Station, v.CodeAddress.Trim());
+        }
+
+        /// <summary>The devices an axis's moment is read from (each word of a 32-bit value).</summary>
+        public static IEnumerable<string> MotionAddresses(Axis x)
+        {
+            var list = new List<string>();
+            Action<string, bool> add = (a, dbl) =>
+            {
+                if (string.IsNullOrWhiteSpace(a)) return;
+                list.Add(a.Trim());
+                if (dbl) { var next = NextWord(a.Trim()); if (next != null) list.Add(next); }
+            };
+            add(x.Position, x.PositionDouble);
+            add(x.MinLimit, x.LimitsDouble);
+            add(x.MaxLimit, x.LimitsDouble);
+            add(x.JogBack, false);
+            add(x.JogForward, false);
+            add(x.RefSensor, false);
+            add(x.HomeRequest, false);
+            add(x.Status, false);
+            add(x.Busy, false);
+            foreach (var r in new[] { x.Running, x.ManualMode })
+                if (r != null && r.PlcNumber == x.Station) add(r.Address, r.DataType == DataTypeEnum.Bin_32);
+            return list.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        }
+
+        private static string NextWord(string address)
+        {
+            try { return SimpleMotion.IsModuleAddress(address) ? SimpleMotion.OffsetModuleAddress(address, 1) : PlcAddressHelper.GetNextAddress(address); }
+            catch { return null; }
         }
 
         // ---- a unit's movements, from what its help knows of them ----------------------
@@ -699,6 +785,8 @@ namespace Kaban.Core.Helpers
         {
             int servo = string.IsNullOrWhiteSpace(x.ServoAlarm) ? 0 : Word(lookup, x.ServoAlarm) & 0xFFFF;
             int axis = string.IsNullOrWhiteSpace(x.AxisAlarm) ? 0 : Word(lookup, x.AxisAlarm) & 0xFFFF;
+            // what it is doing now; a code that comes is told what it was doing the scan before
+            var cur = x.WatchesMotion ? ReadMotion(x, lookup) : null;
             // Acknowledged while the drive still shows the code: back on the list, as
             // a PLC alarm bit that is still on comes back.
             if (x.RaisedServo != null && !AlarmManager.IsOnList(x.RaisedServo)) { x.RaisedServo = null; x.LastServo = 0; }
@@ -706,18 +794,223 @@ namespace Kaban.Core.Helpers
             if (servo != x.LastServo)
             {
                 if (x.RaisedServo != null) { AlarmManager.ClearGenerated(x.RaisedServo); x.RaisedServo = null; }
-                if (servo != 0) x.RaisedServo = RaiseAxis(x, AxisCodeKind.ServoAlarm, servo, now);
+                if (servo == 0) x.ServoMoment = null;
+                else
+                {
+                    // the same code again (acknowledged, still shown): the moment it first came
+                    if (x.ServoMoment == null || x.ServoMoment.Code != servo) x.ServoMoment = MomentOf(x, AxisCodeKind.ServoAlarm, servo, cur, now);
+                    x.RaisedServo = RaiseAxis(x, AxisCodeKind.ServoAlarm, servo, now, x.ServoMoment);
+                }
                 x.LastServo = servo;
             }
             if (axis != x.LastAxis)
             {
                 if (x.RaisedAxis != null) { AlarmManager.ClearGenerated(x.RaisedAxis); x.RaisedAxis = null; }
-                if (axis != 0) x.RaisedAxis = RaiseAxis(x, AxisCodeKind.AxisError, axis, now);
+                if (axis == 0) x.AxisMoment = null;
+                else
+                {
+                    if (x.AxisMoment == null || x.AxisMoment.Code != axis) x.AxisMoment = MomentOf(x, AxisCodeKind.AxisError, axis, cur, now);
+                    x.RaisedAxis = RaiseAxis(x, AxisCodeKind.AxisError, axis, now, x.AxisMoment);
+                }
                 x.LastAxis = axis;
+            }
+            if (cur != null) TrackMotion(x, cur, now);
+        }
+
+        // ---- what an axis was doing (16 October) -----------------------------------------
+
+        private static Reading ReadMotion(Axis x, Func<string, int> lookup)
+        {
+            Func<string, int?> read = a =>
+            {
+                if (string.IsNullOrWhiteSpace(a)) return null;
+                try { return lookup(a.Trim()); } catch { return null; }
+            };
+            Func<string, bool?> bit = a => { var v = read(a); return v.HasValue ? v.Value != 0 : (bool?)null; };
+            Func<string, bool, long?> number = (a, dbl) =>
+            {
+                var lo = read(a);
+                if (!lo.HasValue) return null;
+                if (!dbl) return (short)lo.Value;
+                var hi = read(NextWord(a.Trim()));
+                if (!hi.HasValue) return null;
+                return (int)(((uint)(hi.Value & 0xFFFF) << 16) | (uint)(lo.Value & 0xFFFF));
+            };
+            Func<ConditionRule, bool?> rule = r =>
+            {
+                if (r == null || r.PlcNumber != x.Station || string.IsNullOrWhiteSpace(r.Address)) return null;
+                double v;
+                return MachineConditionMap.Evaluate(r, read, out v);
+            };
+            var status = read(x.Status);
+            var busy = read(x.Busy);
+            return new Reading
+            {
+                Status = status.HasValue ? (short)status.Value : (int?)null,
+                Busy = busy.HasValue ? (x.BusyBit >= 0 ? ((busy.Value >> x.BusyBit) & 1) == 1 : busy.Value != 0) : (bool?)null,
+                JogBack = bit(x.JogBack),
+                JogForward = bit(x.JogForward),
+                Ref = bit(x.RefSensor),
+                HomeRequest = bit(x.HomeRequest),
+                Running = rule(x.Running),
+                ManualMode = rule(x.ManualMode),
+                Position = number(x.Position, x.PositionDouble),
+                Min = number(x.MinLimit, x.LimitsDouble),
+                Max = number(x.MaxLimit, x.LimitsDouble)
+            };
+        }
+
+        /// <summary>
+        /// The smallest change of position that is a movement (in counts): a hundredth of the
+        /// axis's unit (0.01 mm), or the last decimal the page shows when it shows fewer -
+        /// smaller is the servo holding its place.
+        /// </summary>
+        private static long Tolerance(Axis x)
+        {
+            double d = x.Divisor > 0 ? x.Divisor : 1;
+            return Math.Max(1, (long)Math.Round(d * Math.Pow(10, -Math.Max(0, Math.Min(2, x.Decimals)))));
+        }
+
+        /// <summary>Follows the movement: when it started, from where, whether it moved, its last change.</summary>
+        private static void TrackMotion(Axis x, Reading cur, DateTime now)
+        {
+            bool moving = cur.Moving;
+            bool wasMoving = x.Last != null && x.Last.Moving;
+            if (moving && !wasMoving)
+            {
+                x.MoveStart = now;
+                x.StartRaw = x.LastRaw = cur.Position;
+                x.LastChange = now;
+                x.Moved = false;
+                x.Direction = 0;
+            }
+            else if (moving && cur.Position.HasValue)
+            {
+                long tol = Tolerance(x);
+                if (!x.LastRaw.HasValue) { x.LastRaw = cur.Position; x.LastChange = now; }
+                else if (Math.Abs(cur.Position.Value - x.LastRaw.Value) >= tol)
+                {
+                    x.LastRaw = cur.Position;
+                    x.LastChange = now;
+                }
+                if (!x.StartRaw.HasValue) x.StartRaw = cur.Position;
+                long d = cur.Position.Value - x.StartRaw.Value;
+                if (Math.Abs(d) >= tol) { x.Moved = true; x.Direction = d > 0 ? 1 : -1; }
+            }
+            else if (!moving)
+            {
+                x.MoveStart = null;
+                x.LastChange = null;
+                x.Moved = false;
+            }
+            x.Last = cur;
+        }
+
+        /// <summary>The moment of a code: what was read the scan before (the scan of the code when it was there from the start).</summary>
+        private static AxisMoment MomentOf(Axis x, AxisCodeKind kind, int code, Reading cur, DateTime now)
+        {
+            var before = x.Last ?? cur;
+            var m = new AxisMoment
+            {
+                Station = x.Station, Unit = x.Name, Kind = kind, Code = code, AlarmTime = now,
+                SeenRising = x.Last != null,
+                Decimals = x.Decimals, Suffix = x.Suffix ?? "",
+                RefAddress = (x.RefSensor ?? "").Trim(), RefForward = x.RefForward, Vertical = x.Vertical
+            };
+            try { m.RefPoint = AxisSteps.FindReferenceSensor(x.Station, x.RefSensor, string.IsNullOrWhiteSpace(x.DrawingName) ? x.Name : x.DrawingName); }
+            catch { }
+            if (before == null) return m;
+            double div = x.Divisor > 0 ? x.Divisor : 1;
+            Func<long?, double?> scaled = v => v.HasValue ? v.Value / div : (double?)null;
+            m.Status = before.Status;
+            m.Busy = before.Busy;
+            m.JogBack = before.JogBack;
+            m.JogForward = before.JogForward;
+            m.Running = before.Running;
+            m.ManualMode = before.ManualMode;
+            m.HomeRequest = before.HomeRequest;
+            m.RefOn = before.Ref;
+            m.Position = scaled(cur != null && cur.Position.HasValue ? cur.Position : before.Position);
+            m.MinLimit = scaled(before.Min);
+            m.MaxLimit = scaled(before.Max);
+            m.Motion = AxisMoment.MotionOf(before.Status, before.Busy, before.JogBack, before.JogForward, before.Running, before.ManualMode, before.HomeRequest);
+            if (x.Last != null && x.Last.Moving && x.MoveStart.HasValue)
+            {
+                m.MovingMs = (int)Math.Max(0, (now - x.MoveStart.Value).TotalMilliseconds);
+                m.Moved = x.Moved;
+                m.Direction = x.Direction;
+                m.PositionStart = scaled(x.StartRaw);
+                // moved, then stood still - and still standing at the code
+                bool stillNow = cur == null || !cur.Position.HasValue || !x.LastRaw.HasValue ||
+                                Math.Abs(cur.Position.Value - x.LastRaw.Value) < Tolerance(x);
+                if (x.Moved && stillNow && x.LastChange.HasValue)
+                {
+                    int ms = (int)Math.Max(0, (now - x.LastChange.Value).TotalMilliseconds);
+                    if (ms >= StuckMs) { m.Stuck = true; m.StuckMs = ms; }
+                }
+            }
+            return m;
+        }
+
+        /// <summary>
+        /// The axis's step-by-step page for a code it raised (the moment it came), or null:
+        /// not an axis's alarm, or nothing of its movement watched.
+        /// </summary>
+        public static TroubleshootingCatalog.HelpDocument AxisStepsFor(AlarmItem item)
+        {
+            if (item == null || item.AxisMoment == null) return null;
+            var doc = AxisStepsDocument(item.AxisMoment);
+            if (doc != null) { doc.AlarmTime = item.TriggerTime; doc.AlarmText = item.Description ?? ""; }
+            return doc;
+        }
+
+        /// <summary>The page for the code an axis's code word shows now (its row's code cell, its "?"), or null.</summary>
+        public static TroubleshootingCatalog.HelpDocument AxisStepsForCode(int station, string codeAddress, int code)
+        {
+            if (string.IsNullOrWhiteSpace(codeAddress) || code <= 0) return null;
+            foreach (var x in _axes)
+            {
+                if (x.Station != station) continue;
+                if (string.Equals((x.ServoAlarm ?? "").Trim(), codeAddress.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    x.ServoMoment != null && x.ServoMoment.Code == (code & 0xFFFF))
+                    return AxisStepsDocument(x.ServoMoment);
+                if (string.Equals((x.AxisAlarm ?? "").Trim(), codeAddress.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    x.AxisMoment != null && x.AxisMoment.Code == (code & 0xFFFF))
+                    return AxisStepsDocument(x.AxisMoment);
+            }
+            return null;
+        }
+
+        /// <summary>The help entry of a moment: "Step by step - Robot X - homing" (null when there is nothing to tell).</summary>
+        public static TroubleshootingCatalog.HelpDocument AxisStepsDocument(AxisMoment m)
+        {
+            if (m == null || m.Motion == AxisMotion.Unknown && !m.RefKnown) return null;
+            var doc = new TroubleshootingCatalog.HelpDocument
+            {
+                FileName = AxisCodeHelp.DocumentFor(m.Kind),
+                StepByStep = true,
+                AxisMoment = m,
+                AlarmTime = m.AlarmTime,
+                Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+                        (string.IsNullOrEmpty(m.Unit) ? "" : " - " + m.Unit) + " - " +
+                        LanguageManager.GetString("Hlp_AxisMotion_" + m.Motion, MotionWords(m.Motion))
+            };
+            return doc.Exists && !string.IsNullOrEmpty(AxisSteps.TemplatePath(LanguageManager.CurrentLanguage)) ? doc : null;
+        }
+
+        private static string MotionWords(AxisMotion motion)
+        {
+            switch (motion)
+            {
+                case AxisMotion.Standing: return "standing still";
+                case AxisMotion.Homing: return "homing";
+                case AxisMotion.Manual: return "moved by hand";
+                case AxisMotion.Automatic: return "in the automatic cycle";
+                default: return "at the alarm";
             }
         }
 
-        private static AlarmItem RaiseAxis(Axis x, AxisCodeKind kind, int value, DateTime now)
+        private static AlarmItem RaiseAxis(Axis x, AxisCodeKind kind, int value, DateTime now, AxisMoment moment = null)
         {
             var def = string.IsNullOrWhiteSpace(x.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(x.Station, x.ErrorAddress);
             string sub = AxisCodeHelp.Format(kind, value);
@@ -734,7 +1027,8 @@ namespace Kaban.Core.Helpers
                 BaseCode = def != null ? def.AlarmCode : "",
                 GroupCode = baseCode,
                 Device = (x.ErrorAddress ?? "").Trim(),
-                TriggerTime = now
+                TriggerTime = now,
+                AxisMoment = moment
             };
             AlarmManager.RaiseGenerated(item);
             SetDevice(item);
@@ -949,7 +1243,12 @@ namespace Kaban.Core.Helpers
         {
             foreach (var c in _cylinders)
                 foreach (var x in c.Sides) { x.Seen = x.Commanded = x.Moved = false; x.Since = null; x.Raised = null; }
-            foreach (var a in _axes) { a.LastServo = a.LastAxis = 0; a.RaisedServo = a.RaisedAxis = null; }
+            foreach (var a in _axes)
+            {
+                a.LastServo = a.LastAxis = 0; a.RaisedServo = a.RaisedAxis = null;
+                a.ServoMoment = a.AxisMoment = null; a.Last = null; a.MoveStart = a.LastChange = null; a.StartRaw = a.LastRaw = null; a.Moved = false;
+            }
+            StuckMs = 500;
             foreach (var v in _inverters) { v.Last = 0; v.Raised = null; }
             _cylinders.Clear();
             _axes.Clear();

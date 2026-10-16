@@ -412,10 +412,14 @@ namespace Kaban.UI.Controls
         {
             if (_codes.Count > 0)
             {
-                var list = _codes.Where(c => c.Value != 0)
+                // what the axis was doing when its code came first (16 October), then each code's entry
+                var list = _codes.Where(c => c.Value != 0 && c.Kind != AxisCodeKind.InverterFault)
+                                 .Select(c => AlarmGeneration.AxisStepsForCode(PlcNumber, c.Address, c.Value))
+                                 .Where(d => d != null).ToList();
+                list.AddRange(_codes.Where(c => c.Value != 0)
                                  // No axis name in the entry: the "?" is on that axis's own unit.
                                  .Select(c => AxisCodeHelp.Document(c.Kind, c.Value, ""))
-                                 .Where(d => d != null).ToList();
+                                 .Where(d => d != null));
                 // an inverter's: the whole manual second - there even for a code the list does not have
                 if (_codes.Any(c => c.Kind == AxisCodeKind.InverterFault) && (_error || _codes.Any(c => c.Value != 0)))
                 {

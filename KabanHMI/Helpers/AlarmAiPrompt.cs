@@ -263,6 +263,9 @@ namespace Kaban.UI.Helpers
                     AppendCode(sb, devices, station, "Axis error code word [Md.23]", AxisCodeKind.AxisError, link != null && link.AxisAlarm.Length > 0 ? link.AxisAlarm : axis != null ? axis.AxisAlarm : "");
                     AppendCode(sb, devices, station, "Axis warning code word [Md.24]", AxisCodeKind.AxisWarning, link != null ? link.AxisWarning : "");
                     if (axis != null) devices.Add(axis.ErrorAddress, "the axis' error bit");
+                    // what it was doing when the code came (16 October)
+                    var moment = (item != null ? item.AxisMoment : null) ?? (axis != null ? axis.ServoMoment ?? axis.AxisMoment : null);
+                    if (moment != null) AppendMoment(sb, moment, axis, devices);
                 }
                 else if ((link != null && link.Kind == TC.ErrorType.InverterMotor) || inverter != null)
                 {
@@ -475,6 +478,40 @@ namespace Kaban.UI.Helpers
                        (link != null && link.Unit.Length > 0 ? list.FirstOrDefault(c => string.Equals(c.Unit, link.Unit, StringComparison.OrdinalIgnoreCase)) : null);
             }
             catch { return null; }
+        }
+
+        /// <summary>The axis at the moment of its code, as the HMI read it the scan before (AxisMoment).</summary>
+        private static void AppendMoment(StringBuilder sb, AxisMoment m, AlarmGeneration.Axis axis, Devices devices)
+        {
+            Func<bool?, string> st = b => b.HasValue ? (b.Value ? "ON" : "OFF") : "not read";
+            var motion = m.Motion == AxisMotion.Standing ? "standing still" : m.Motion == AxisMotion.Homing ? "homing" :
+                         m.Motion == AxisMotion.Manual ? "moved by hand (jog or a manual page)" :
+                         m.Motion == AxisMotion.Automatic ? "moving in the automatic cycle" : "not known";
+            sb.AppendLine("- What the axis was doing when " + AxisCodeHelp.Describe(m.Kind, m.Code) + " came (the HMI's reading of the scan before" +
+                          (m.SeenRising ? "" : "; the code was there when the HMI started reading, so just after it") + "): " + motion);
+            var facts = new List<string>();
+            if (m.Status.HasValue) facts.Add("motion module state [Md.26] " + m.StatusText);
+            if (m.Busy.HasValue) facts.Add("BUSY [Md.141] " + st(m.Busy));
+            if (m.JogBack.HasValue || m.JogForward.HasValue) facts.Add("jog - " + st(m.JogBack) + " / jog + " + st(m.JogForward));
+            if (m.Running.HasValue) facts.Add("machine running " + st(m.Running));
+            if (m.ManualMode.HasValue) facts.Add("manual mode " + st(m.ManualMode));
+            if (m.HomeRequest.HasValue) facts.Add("home request " + st(m.HomeRequest));
+            if (facts.Count > 0) sb.AppendLine("  - " + string.Join("; ", facts));
+            if (m.Position.HasValue)
+                sb.AppendLine("  - Position " + m.Shown(m.Position) + (m.Moved && m.PositionStart.HasValue ? ", the movement started at " + m.Shown(m.PositionStart) : "") +
+                              (m.MovingMs > 0 ? ", moving for " + (m.MovingMs / 1000.0).ToString("0.0", CultureInfo.InvariantCulture) + " s" : "") +
+                              (m.Stuck ? ", and it STOOD STILL for " + (m.StuckMs / 1000.0).ToString("0.0", CultureInfo.InvariantCulture) + " s after moving, before the code came" : "") +
+                              (m.MinLimit.HasValue || m.MaxLimit.HasValue ? "; its limits " + m.Shown(m.MinLimit) + " ... " + m.Shown(m.MaxLimit) : ""));
+            if (m.RefKnown)
+            {
+                var p = m.RefPoint;
+                sb.AppendLine("  - Reference (home) sensor " + (p != null ? p.Tag + " at " + p.Address + (p.Text.Length > 0 ? " (" + p.Text + ")" : "") : m.RefAddress) +
+                              ", on the " + (m.RefForward ? "forward (+)" : "back (-)") + " side: " + st(m.RefOn) +
+                              (m.Direction != 0 ? "; the axis was moving " + (m.Direction > 0 ? "forward (+)" : "back (-)") : ""));
+                if (p != null) devices.Add(p.Address, "the axis' reference sensor", p.Tag);
+                if (!string.IsNullOrWhiteSpace(m.RefAddress)) devices.Add(m.RefAddress, "the reference sensor as the Axis page reads it");
+            }
+            if (axis != null && !string.IsNullOrWhiteSpace(axis.Position)) devices.Add(axis.Position, "the axis' position (low word)");
         }
 
         private static AlarmGeneration.Axis AxisOf(int station, string address, AlarmHelpLinks.Link link)

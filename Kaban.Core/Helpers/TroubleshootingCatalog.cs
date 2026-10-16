@@ -353,6 +353,13 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public int Failure;
 
+            /// <summary>
+            /// For an axis code the HMI raised itself: what the axis was doing when it
+            /// came (16 October) - the page is then the axis's step-by-step help for that
+            /// moment (AxisSteps), not the code's entry of the manual.
+            /// </summary>
+            public AxisMoment AxisMoment;
+
             public string FullPath
             {
                 get { return IsWebLink ? FileName.Trim() : ResolveLanguageFile(FileName); }
@@ -567,6 +574,13 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static string ExtractSection(HelpDocument doc)
         {
+            // An axis at the moment of its code: its step-by-step page (AxisMoment.cs).
+            if (doc != null && doc.AxisMoment != null)
+            {
+                var steps = AxisSteps.Write(doc);
+                if (steps.Length > 0) return steps;
+            }
+
             // An axis code: only that code's entry of the manual (AxisCodeHelp).
             if (doc != null && doc.Exists && !string.IsNullOrEmpty(doc.Code))
                 return AxisCodeHelp.Extract(doc);

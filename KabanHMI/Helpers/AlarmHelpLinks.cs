@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.Core.Machines;
 using Kaban.Core.Models;
@@ -384,15 +385,55 @@ namespace Kaban.UI.Helpers
             RegisterAxis(axis);
             SimulationMotion.Register(axis);
             // its drive's alarm codes (the Axis Warning is only a warning: not watched)
-            AlarmGeneration.Register(new AlarmGeneration.Axis
+            AlarmGeneration.Register(AxisWatch(axis));
+        }
+
+        /// <summary>
+        /// An axis's watch: its drive codes, and what it is doing - for the help of a code
+        /// when it comes (16 October: homing, jogged, in the cycle or standing; its position,
+        /// limits and reference sensor). The motion module's state and BUSY when the row
+        /// names its module and axis.
+        /// </summary>
+        internal static AlarmGeneration.Axis AxisWatch(AxisSettingHMI axis)
+        {
+            Func<string, string> t = s => (s ?? "").Trim();
+            var w = new AlarmGeneration.Axis
             {
                 Station = axis.PlcNumber,
                 Number = axis.HMIAxisIndex,
                 Name = string.IsNullOrEmpty(axis.AxisNameKey) ? "Axis " + axis.HMIAxisIndex : LanguageManager.GetString(axis.AxisNameKey, axis.AxisNameKey),
-                ErrorAddress = (axis.ErrorAddress ?? "").Trim(),
-                ServoAlarm = (axis.ServoAlarmAddress ?? "").Trim(),
-                AxisAlarm = (axis.AxisAlarmAddress ?? "").Trim()
-            });
+                DrawingName = string.IsNullOrEmpty(axis.AxisNameKey) ? "" : (LanguageManager.GetStringIn("EN", axis.AxisNameKey) ?? ""),
+                ErrorAddress = t(axis.ErrorAddress),
+                ServoAlarm = t(axis.ServoAlarmAddress),
+                AxisAlarm = t(axis.AxisAlarmAddress),
+                Position = t(axis.PositionAddress),
+                PositionDouble = axis.PositionDataType == DataTypeEnum.Bin_32,
+                MinLimit = t(axis.MinLimitAddress),
+                MaxLimit = t(axis.MaxLimitAddress),
+                LimitsDouble = axis.SettingDataType == DataTypeEnum.Bin_32,
+                Divisor = axis.PositionScale,
+                Decimals = BaseNumericHMI.ResolutionDecimals(axis.Divisor, axis.DecimalPlaces),
+                Suffix = axis.Suffix ?? "",
+                JogBack = t(axis.CommandBackAddress),
+                JogForward = t(axis.CommandForwardAddress),
+                RefSensor = t(axis.ReferenceSensorAddress),
+                RefForward = axis.ReferenceSensorSide == AxisReferenceSide.Forward,
+                HomeRequest = t(axis.HomeRequestAddress),
+                // an angle axis has up / down arrows too: only a real vertical one hangs on its brake
+                Vertical = axis.VerticalMovement && !axis.IsAngle
+            };
+            if (axis.HasMotion)
+            {
+                w.Status = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("OperationStatus"), axis.MotionAxisIndex));
+                var busy = SimpleMotion.Find("Busy");
+                w.Busy = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(busy, axis.MotionAxisIndex));
+                w.BusyBit = axis.MotionAxisIndex - 1;
+            }
+            var running = MachineConditionMap.GetRule(SystemCondition.MachineIsRunning);
+            if (running != null && running.PlcNumber == axis.PlcNumber && !string.IsNullOrWhiteSpace(running.Address)) w.Running = running;
+            var manual = MachineConditionMap.GetRule(SystemCondition.ManualMode);
+            if (manual != null && manual.PlcNumber == axis.PlcNumber && !string.IsNullOrWhiteSpace(manual.Address)) w.ManualMode = manual;
+            return w;
         }
 
         private static void HarvestPage(ISettingsPage page)
@@ -568,6 +609,9 @@ namespace Kaban.UI.Helpers
             var docs = new List<TC.HelpDocument>();
             var steps = AlarmGeneration.StepsFor(item);
             if (steps != null) docs.Add(steps);
+            // an axis's code: the page for what it was doing when the code came (16 October)
+            var moment = AlarmGeneration.AxisStepsFor(item);
+            if (moment != null) docs.Add(moment);
             var code = AlarmGeneration.CodeDocumentFor(item);
             if (code != null) docs.Add(code);
             // an inverter's fault: the whole manual second, even for a code the list does not have

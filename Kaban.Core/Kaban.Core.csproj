@@ -91,6 +91,7 @@
       <DependentUpon>TroubleshootingCatalog.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AxisCodeHelp.cs" />
+    <Compile Include="Helpers\AxisMoment.cs" />
     <Compile Include="Helpers\ComparisonHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\HmiInternalVariables.cs" />

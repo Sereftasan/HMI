@@ -540,6 +540,7 @@
     <None Include="Help\FX5_40SSC_Troubleshooting.pdf" />
     <None Include="Help\README.md" />
     <!-- templates:begin - written by tools/build_cylinder_templates.py -->
+    <None Include="Help\Templates\EN\Axis_Steps.html" />
     <None Include="Help\Templates\EN\Cylinder_5-2-Double_Analogue.html" />
     <None Include="Help\Templates\EN\Cylinder_5-2-Double_Encoder.html" />
     <None Include="Help\Templates\EN\Cylinder_5-2-Double_Feedback-NotSet.html" />

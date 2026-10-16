@@ -314,6 +314,11 @@
   <ItemGroup>
     <!-- templates:begin - the cylinder step-by-step templates, one per valve and feedback pair, per language.
          Written by tools/build_cylinder_templates.py. -->
+    <None Include="..\KabanHMI\Help\Templates\EN\Axis_Steps.html">
+      <Link>Help\Templates\EN\Axis_Steps.html</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
     <None Include="..\KabanHMI\Help\Templates\EN\Cylinder_5-2-Double_Analogue.html">
       <Link>Help\Templates\EN\Cylinder_5-2-Double_Analogue.html</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

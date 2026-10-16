@@ -41,6 +41,8 @@ namespace Kaban.Core.Models
         public string BaseCode { get; set; } = "";
         /// <summary>The movement's devices when it was raised (address upper-case, 1 on / 0 off).</summary>
         public Dictionary<string, int> Snapshot { get; set; }
+        /// <summary>An axis code the HMI raised: what the axis was doing when it came (its step-by-step help, 16 October).</summary>
+        public Kaban.Core.Helpers.AxisMoment AxisMoment { get; set; }
         /// <summary>The cylinder side ("A" / "B") a generated movement alarm is about, or "".</summary>
         public string Side { get; set; } = "";
 
