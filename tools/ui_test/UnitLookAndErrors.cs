@@ -145,7 +145,7 @@ class U {
         Application.DoEvents();
         Check("the '?' shows", mark.Visible && axisHelp.IsActive);
         Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
-        Check("  at its right end, left of the coupling chain (16 October)", mark.Right >= axis.ClientSize.Width - 40 && mark.Right <= axis.ClientSize.Width - 16,
+        Check("  at its right end (no chain for this user: Maintenance and Admin only)", mark.Right == axis.ClientSize.Width - 12,
               mark.Right + " of " + axis.ClientSize.Width);
         Check("the display's border blinks", pos.AlertBlink);
         Check("the jog buttons do not", !axis.ButtonA.AlertBlink && !axis.ButtonB.AlertBlink);

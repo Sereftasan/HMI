@@ -63,8 +63,8 @@ class CDC {
         Check("  None as before", Code(SystemCondition.None) == "Kaban.Core.Enums.SystemCondition.None", Code(SystemCondition.None));
 
         Console.WriteLine("--- the names do not make them shared conditions ---");
-        Check("the shared ones: SafetyOK, ManualMode, AutoMode, AdminUser, MachineIsRunning",
-              string.Join(",", ConditionBits.Shared) == "SafetyOK,ManualMode,AutoMode,AdminUser,MachineIsRunning", string.Join(",", ConditionBits.Shared));
+        Check("the shared ones: SafetyOK, ManualMode, AutoMode, AdminUser, MachineIsRunning, MaintenanceUser, AxisStepMode (17 October)",
+              string.Join(",", ConditionBits.Shared) == "SafetyOK,ManualMode,AutoMode,AdminUser,MachineIsRunning,MaintenanceUser,AxisStepMode", string.Join(",", ConditionBits.Shared));
         Check("  MachineBit16 and MachineBit63 are a machine's; ManualMode is not",
               ConditionBits.IsMachineBit(SystemCondition.MachineBit16) && ConditionBits.IsMachineBit(SystemCondition.MachineBit63) &&
               !ConditionBits.IsMachineBit(SystemCondition.ManualMode) && !ConditionBits.IsShared(SystemCondition.MachineBit20));
