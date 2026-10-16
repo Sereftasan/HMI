@@ -135,6 +135,11 @@ namespace Kaban.UI.Forms
             // no sub-machines), so it never asks a question with a single answer.
             SyncMachineStrip();
 
+            // Coupling works on Manual Movement, the Axis page and the Axis Monitor only;
+            // Cylinder FW/Back on Manual Movement only (17 October): left - let go.
+            Kaban.UI.Helpers.UnitCoupling.CheckPages();
+            Kaban.UI.Helpers.UnitCycling.CheckPage();
+
             // history: page changes are recorded like browser visits - the page
             // AND the machine/tab it is showing (see RecordLocation).
             RecordLocation();

@@ -227,6 +227,18 @@ class CU {
         avail();
         Check("  step mode again: the axes can be clicked", new[] { a1, a2, a3, a4 }.All(u => Chain(u).Available));
 
+        Console.WriteLine("--- its pages: Manual Movement, the Axis page, the Axis Monitor (17 October) ---");
+        bool shown = true;
+        UnitCoupling.PagesShown = () => shown;
+        Check("coupled: Axis 1 and 2", UnitCoupling.Toggle(a1) == null && UnitCoupling.Toggle(a2) == null);
+        shown = false;
+        UnitCoupling.CheckPages();
+        Check("another page opened (none of them): every coupling let go", UnitCoupling.All.Count == 0 && !Chain(a1).On);
+        why = UnitCoupling.Toggle(a1);
+        Check("  and none can be made there, and why", why != null && why.Contains("Manual Movement"), why);
+        shown = true;
+        UnitCoupling.PagesShown = () => true;
+
         Console.WriteLine("--- rights: Maintenance and Admin only ---");
         Check("coupled now: Axis 1 and 2", UnitCoupling.Toggle(a1) == null && UnitCoupling.Toggle(a2) == null);
         SecurityManager.Login("op", SecurityLevel.Operator);

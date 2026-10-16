@@ -63,6 +63,7 @@ class FB {
         var form = new Form { ClientSize = new Size(900, 700) };
         var page = new Panel { Dock = DockStyle.Fill };
         form.Controls.Add(page);
+        UnitCycling.MarkManualPage(page);                  // as StandardScreens marks Manual Movement
         var dbl = Cyl("Clamp", "M100", "M101", BitActionType.Momentary, "X0", "X1", 10);
         var spring = Cyl("Ejector", null, "M120", BitActionType.Momentary, "X2", "X3", 80, CylinderValve.SingleSolenoid);
         var c1 = Cyl("Stop 1", "M130", "M131", BitActionType.Momentary, "X4", "X5", 150);
@@ -100,6 +101,22 @@ class FB {
         Check("  described as such", MachineConditionMap.Describe(SystemCondition.MaintenanceUser).Contains("Maintenance or Admin"));
         SecurityManager.Login("m", SecurityLevel.Maintenance);
         Scan();
+
+        Console.WriteLine("--- Manual Movement only (17 October) ---");
+        Check("its button shown on the Manual Movement page", fwBack.Visible);
+        var elsewhere = new Panel { Dock = DockStyle.Right, Width = 150 };
+        form.Controls.Add(elsewhere);
+        var fwOther = new ButtonHMI { HmiFunction = HmiButtonFunction.CylinderForwardBack, VisibilityConditions = SystemCondition.MaintenanceUser, Size = new Size(70, 50) };
+        elsewhere.Controls.Add(fwOther);
+        fwOther.UpdateState(a => 0, c => true);
+        Check("  the same button on another page (the Axis page's bar, the Axis Monitor): hidden", !fwOther.Visible);
+        bool manualShown = true;
+        UnitCycling.ManualPageShown = () => manualShown;
+        UnitCycling.SetActive(true);
+        manualShown = false;
+        UnitCycling.CheckPage();
+        Check("  on, then Manual Movement closed: off", !UnitCycling.Active);
+        manualShown = true;
 
         Console.WriteLine("--- Cylinder FW/Back on and off ---");
         Check("off at the start, its lamp off", !UnitCycling.Active && !(bool)typeof(ButtonHMI).GetField("_lamp1On", Any).GetValue(fwBack));

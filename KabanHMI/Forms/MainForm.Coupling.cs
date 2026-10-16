@@ -60,6 +60,9 @@ namespace Kaban.UI.Forms
             };
             UnitCoupling.Changed += OnCouplingChanged;
             Disposed += (s, e) => UnitCoupling.Changed -= OnCouplingChanged;
+            // the pages they work on (17 October)
+            UnitCoupling.PagesShown = CouplingPagesShown;
+            UnitCycling.ManualPageShown = () => _currentScreen != null && UnitCycling.ShowsManualPage(_currentScreen);
             UpdateCouplingIndicator();
         }
 
@@ -80,6 +83,34 @@ namespace Kaban.UI.Forms
             if (_btnCoupled.Visible == any) return;
             _btnCoupled.Visible = any;
             LayoutTopBar();
+        }
+
+        /// <summary>
+        /// A page coupling works on is shown: Manual Movement; the Axis page (Machine
+        /// Parameters' page of axis rows); the Axis Monitor beside the page or in its window.
+        /// </summary>
+        internal bool CouplingPagesShown()
+        {
+            if (IsDisposed) return false;
+            if (_currentScreen != null && UnitCycling.ShowsManualPage(_currentScreen)) return true;
+            if (_currentScreen != null && HasAxisRows(_currentScreen)) return true;
+            var side = OpenSidePage;
+            if (side != null && SidePageView(side.Key) is Kaban.UI.Screens.AxisMonitorPage) return true;
+            foreach (var w in _sideWindows.Values)
+                if (w != null && !w.IsDisposed && w.Visible && w.View is Kaban.UI.Screens.AxisMonitorPage) return true;
+            return false;
+        }
+
+        /// <summary>An axis row (not a monitor's) in sight on the page: the Axis page is shown.</summary>
+        private static bool HasAxisRows(Control c)
+        {
+            foreach (Control k in c.Controls)
+            {
+                if (!k.Visible) continue;                      // another tab's page: not shown
+                if (k is AxisSettingHMI) { if (!((AxisSettingHMI)k).MonitorMode) return true; continue; }
+                if (HasAxisRows(k)) return true;
+            }
+            return false;
         }
 
         /// <summary>The coupled units, each to uncouple, and - last - all of them.</summary>

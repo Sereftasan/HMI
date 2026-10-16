@@ -95,6 +95,63 @@ namespace Kaban.UI.Helpers
             return r == null ? (bool?)null : r.SideA;
         }
 
+        // ---- Manual Movement only (17 October) ------------------------------------------
+
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<System.Windows.Forms.Control, object> _manualPages =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<System.Windows.Forms.Control, object>();
+
+        /// <summary>Marks the Manual Movement page (its screen): the function's button is shown on it only.</summary>
+        public static void MarkManualPage(System.Windows.Forms.Control page)
+        {
+            object o;
+            if (page != null && !_manualPages.TryGetValue(page, out o)) _manualPages.Add(page, null);
+        }
+
+        /// <summary>True when the control is on the Manual Movement page (itself, or inside it).</summary>
+        public static bool IsOnManualPage(System.Windows.Forms.Control c)
+        {
+            object o;
+            for (var p = c; p != null; p = p.Parent)
+                if (_manualPages.TryGetValue(p, out o)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// True when the Manual Movement page is shown in this one: it, inside it, or holding
+        /// it a few levels down (the machine's tabs around a page), and in sight.
+        /// </summary>
+        public static bool ShowsManualPage(System.Windows.Forms.Control root)
+        {
+            if (root == null) return false;
+            if (IsOnManualPage(root)) return true;
+            var level = new List<System.Windows.Forms.Control> { root };
+            for (int depth = 0; depth < 5 && level.Count > 0; depth++)
+            {
+                var next = new List<System.Windows.Forms.Control>();
+                foreach (var c in level)
+                    foreach (System.Windows.Forms.Control k in c.Controls)
+                    {
+                        object o;
+                        if (_manualPages.TryGetValue(k, out o)) { if (k.Visible) return true; continue; }
+                        next.Add(k);
+                    }
+                level = next;
+            }
+            return false;
+        }
+
+        /// <summary>True while Manual Movement is the page shown. The main window answers it; true without one.</summary>
+        public static Func<bool> ManualPageShown = () => true;
+
+        /// <summary>Off when Manual Movement is closed (the window calls it when the page changes).</summary>
+        public static void CheckPage()
+        {
+            if (!Active) return;
+            bool shown;
+            try { shown = ManualPageShown(); } catch { shown = true; }
+            if (!shown) SetActive(false, T("Cyc_PageLeft", "Manual Movement was closed"));
+        }
+
         /// <summary>A unit that can move back and forth: a cylinder with a command (not an axis, not a motor).</summary>
         public static bool CanCycle(CylinderUnitHMI unit)
         {
@@ -175,7 +232,7 @@ namespace Kaban.UI.Helpers
             foreach (var r in _runs.ToList())
             {
                 if (!_runs.Contains(r)) continue;
-                if (r.Unit.IsDisposed || !r.Unit.Visible || !r.Unit.IsHandleCreated)
+                if (r.Unit.IsDisposed || !r.Unit.Visible || !r.Unit.IsHandleCreated || r.Unit.FindForm() == null)
                 {
                     Stop(new List<CylinderUnitHMI> { r.Unit }, T("Cpl_LeftScreen", "it left the screen"), null);
                     continue;

@@ -115,9 +115,16 @@ namespace Kaban.UI.Screens
                     CreateView = () =>
                     {
                         // with a bar above the tabs, a single page gets a screen too (the bar over it)
-                        if (pages.Length == 1 && options.ManualBar == null) return (UserControl)pages[0].GetControl();
+                        // marked: Cylinder FW/Back works (and its button is shown) on this page only (17 October)
+                        if (pages.Length == 1 && options.ManualBar == null)
+                        {
+                            var single = (UserControl)pages[0].GetControl();
+                            Kaban.UI.Helpers.UnitCycling.MarkManualPage(single);
+                            return single;
+                        }
                         var screen = new SettingsScreen(pages);
                         if (options.ManualBar != null) screen.TopBar = ManualBarFor(ctx, options.ManualBar);
+                        Kaban.UI.Helpers.UnitCycling.MarkManualPage(screen);
                         return screen;
                     }
                 };

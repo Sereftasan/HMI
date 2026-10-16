@@ -124,6 +124,7 @@ namespace Kaban.UI.Helpers
         {
             if (unit == null) return "";
             if (!Allowed) return T("Cpl_Level", "Coupling units is for Maintenance and Admin users.");
+            if (!PagesShown()) return T("Cpl_Pages", "Units are coupled only while Manual Movement, the Axis page or the Axis Monitor is open.");
             if (!unit.HasCommands || unit.Kind == UnitKind.Inverter) return T("Cpl_NoCommands", "This unit has no movement to couple.");
             var alone = WhyNotAlone(unit);
             if (alone != null) return alone;
@@ -289,8 +290,36 @@ namespace Kaban.UI.Helpers
         {
             if (_watch != null) return;
             _watch = new System.Windows.Forms.Timer { Interval = 400 };
-            _watch.Tick += (s, e) => { try { RefreshAvailability(); } catch (Exception ex) { AuditLogger.Log("coupling chains: " + ex.Message); } };
+            _watch.Tick += (s, e) =>
+            {
+                try { CheckPages(); RefreshAvailability(); }
+                catch (Exception ex) { AuditLogger.Log("coupling chains: " + ex.Message); }
+            };
             _watch.Start();
+        }
+
+        // ---- the pages it works on (17 October) -------------------------------------------
+
+        /// <summary>
+        /// True while a page coupling works on is shown: Manual Movement, the Axis page or the
+        /// Axis Monitor (17 October: "cancel the clutching when the manual movement, axis setting
+        /// or axis monitor pages are not active"). The main window answers it; true without one.
+        /// </summary>
+        public static Func<bool> PagesShown = () => true;
+
+        /// <summary>Every coupling let go when none of its pages is shown (the window calls it when the page changes; a timer too).</summary>
+        public static void CheckPages()
+        {
+            if (_coupled.Count == 0) return;
+            bool shown;
+            try { shown = PagesShown(); } catch { shown = true; }
+            if (shown) return;
+            var units = All;
+            _coupled.Clear();
+            _held.Clear();
+            AuditLogger.Log("coupling of " + string.Join(", ", units.Select(u => "'" + u.CouplingName + "'")) +
+                            " let go: Manual Movement, the Axis page and the Axis Monitor were left.");
+            Refresh();
         }
 
         /// <summary>Where a unit stands: "A" / "B" (a cylinder at an end), a position (an axis, an encoder cylinder), or null (unknown).</summary>

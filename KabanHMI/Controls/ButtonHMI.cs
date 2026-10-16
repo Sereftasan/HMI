@@ -778,6 +778,8 @@ namespace Kaban.UI.Controls
             _lastReadPlc = readPlc;
 
             bool vis = !SlotDisabled && checkGlobal(VisibilityConditions);
+            // Cylinder FW/Back: on the Manual Movement page only (17 October) - the same bar is shown elsewhere too
+            if (vis && HmiFunction == HmiButtonFunction.CylinderForwardBack && !Kaban.UI.Helpers.UnitCycling.IsOnManualPage(this)) vis = false;
             if (this.Visible != vis) this.Visible = vis;
             if (!vis) return;
 

@@ -125,6 +125,9 @@ class R {
             return u;
         };
         var u1 = pos("Positioning 1", 0); var u2 = pos("Positioning 2", 1); var u3 = pos("Positioning 3", 2);
+        Check("Home shown: not a page coupling works on (Manual Movement, the Axis page, the Axis Monitor)", !Kaban.UI.Helpers.UnitCoupling.PagesShown());
+        var pagesShown = Kaban.UI.Helpers.UnitCoupling.PagesShown;
+        Kaban.UI.Helpers.UnitCoupling.PagesShown = () => true;     // as on Manual Movement (AxisJogBarUi opens the real one)
         Kaban.UI.Helpers.UnitCoupling.Toggle(u1); Kaban.UI.Helpers.UnitCoupling.Toggle(u2); Kaban.UI.Helpers.UnitCoupling.Toggle(u3);
         Check("three units coupled: the chain shown in the caption bar, left of what was there", cb.Visible && cb.Parent != null && cb.Right < cb.Parent.Width,
               "visible=" + cb.Visible + " at " + cb.Bounds);
@@ -138,6 +141,10 @@ class R {
         cm = (ContextMenuStrip)menuOf.Invoke(form, null);
         cm.Items["uncoupleAll"].PerformClick();
         Check("  'Uncouple all': none coupled, the chain hidden again", Kaban.UI.Helpers.UnitCoupling.All.Count == 0 && !cb.Visible);
+        Kaban.UI.Helpers.UnitCoupling.Toggle(u1); Kaban.UI.Helpers.UnitCoupling.Toggle(u2);
+        Kaban.UI.Helpers.UnitCoupling.PagesShown = pagesShown;
+        Kaban.UI.Helpers.UnitCoupling.CheckPages();
+        Check("coupled, then checked on Home: let go, the chain hidden", Kaban.UI.Helpers.UnitCoupling.All.Count == 0 && !cb.Visible);
 
         Console.WriteLine(fail==0 ? "\nREAL FORM ALL PASS" : "\nREAL FORM " + fail + " FAILED");
         Environment.Exit(fail==0?0:1);
