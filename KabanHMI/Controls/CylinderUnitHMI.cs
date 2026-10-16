@@ -182,6 +182,18 @@ namespace Kaban.UI.Controls
 
         internal CoupleBadge CoupleChain { get { return _couple; } }
 
+        /// <summary>The chain's menu while three or more are coupled: uncouple this one, or all of them.</summary>
+        internal ContextMenuStrip UncoupleMenu()
+        {
+            var menu = UiStyle.Menu();
+            var all = UnitCoupling.Coupled(_kind);
+            menu.Items.Add(new ToolStripMenuItem(string.Format(LanguageManager.GetString("Cpl_UncoupleThis", "Uncouple '{0}'"), CouplingName), null,
+                                                 (s, e) => UnitCoupling.Remove(this, null)) { Name = "uncoupleThis" });
+            menu.Items.Add(new ToolStripMenuItem(string.Format(LanguageManager.GetString("Cpl_UncoupleAll", "Uncouple all {0}"), all.Count), null,
+                                                 (s, e) => UnitCoupling.LetGo(_kind)) { Name = "uncoupleAll" });
+            return menu;
+        }
+
         /// <summary>A movement to couple: a command on either side.</summary>
         internal bool HasCommands { get { return !string.IsNullOrWhiteSpace(_commandAAddress) || !string.IsNullOrWhiteSpace(_commandBAddress); } }
 
@@ -242,11 +254,21 @@ namespace Kaban.UI.Controls
             lock (_live) _live.Add(new WeakReference(this));
             _couple.Click += (s, e) =>
             {
+                // coupled with two or more others: this one only, or all of them (16 October: an easy way out)
+                if (UnitCoupling.IsCoupled(this) && UnitCoupling.Coupled(_kind).Count > 2)
+                {
+                    UiStyle.ShowPopup(UncoupleMenu(), _couple, new Point(0, _couple.Height));
+                    return;
+                }
                 var why = UnitCoupling.Toggle(this);
                 if (why != null) ShowCouplingNotice(why);
             };
             UiStyle.HoverTip(UiStyle.Tips(), _couple, () => UnitCoupling.IsCoupled(this)
-                ? LanguageManager.GetString("Tip_Coupled", "Coupled: a button pressed here presses the same button of every coupled unit. Click to uncouple.")
+                ? LanguageManager.GetString("Tip_Coupled", "Coupled: a button pressed here presses the same button of every coupled unit. Click to uncouple (with more than two: this one or all of them).")
+                : _couple.Inviting
+                ? LanguageManager.GetString("Tip_CoupleJoin", "It can join the units coupled now (it stands where they stand): click to couple it with them.")
+                : UnitCoupling.Coupled(_kind).Count > 0
+                ? LanguageManager.GetString("Tip_CoupleOther", "Units are coupled now, and this one cannot join them (it is not where they are). A click asks whether to let that coupling go and couple this one.")
                 : LanguageManager.GetString("Tip_Couple", "Couple for manual movement: units coupled (at the same position) move together - a button pressed on one presses the same button of all."));
             _btnA.UserActed += (b, a) => UnitCoupling.Acted(this, true, b, a);
             _btnB.UserActed += (b, a) => UnitCoupling.Acted(this, false, b, a);
@@ -1991,27 +2013,28 @@ namespace Kaban.UI.Controls
                     if (_couple.Width != s) _couple.Size = new Size(s, s);
                     _couple.Location = new Point(col + (UiScale.For(this, RowBadgeWidth) - _couple.Width) / 2, edge);
                 }
-                // the two one above the other; one alone in the middle
-                bool help = _help.State != UnitHelpBadge.BadgeState.Hidden;
-                if (linked && !help) _couple.Top = (this.ClientSize.Height - _couple.Height) / 2;
+                // the two one above the other - the chain always at the top (16 October: the
+                // buttons stay where they are); the "?" alone in the middle
                 _help.Location = new Point(col + (UiScale.For(this, RowBadgeWidth) - _help.Width) / 2,
                                            linked ? this.ClientSize.Height - edge - _help.Height : (this.ClientSize.Height - _help.Height) / 2);
                 return;
             }
             int frameTop = (int)(_grp.Font.GetHeight() / 2f);
-            _help.Location = new Point(this.ClientSize.Width - UiScale.For(this, 12) - _help.Width,
-                                       Math.Max(0, frameTop - _help.Height / 2));
-            // the chain left of the "?" (in its place when there is none)
-            // an inverter's motor is not coupled with others: no chain
+            // THE CHAIN AT THE RIGHT END, the "?" left of it (16 October: "keep the clutching
+            // buttons on the right and show the helper button on its left side, so the button
+            // positions don't change all the time" - the "?" comes and goes, the chain stays).
+            // An inverter's motor is not coupled with others: no chain, the "?" at the end.
             bool chain = !DesignMode && HasCommands && _kind != UnitKind.Inverter;
             if (_couple.Visible != chain) _couple.Visible = chain;
+            int right = this.ClientSize.Width - UiScale.For(this, 12);
             if (chain)
             {
                 int size = UiScale.For(this, CoupleBadge.BadgeSize);
                 if (_couple.Width != size) _couple.Size = new Size(size, size);
-                int right = _help.Visible ? _help.Left - UiScale.For(this, 4) : this.ClientSize.Width - UiScale.For(this, 12);
                 _couple.Location = new Point(right - _couple.Width, Math.Max(0, frameTop - _couple.Height / 2));
+                right = _couple.Left - UiScale.For(this, 4);
             }
+            _help.Location = new Point(right - _help.Width, Math.Max(0, frameTop - _help.Height / 2));
             OnBadgesLaidOut();
         }
 

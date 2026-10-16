@@ -9,12 +9,17 @@ namespace Kaban.UI.Controls
     /// <summary>
     /// THE CHAIN ON A UNIT'S FRAME (UnitCoupling): a click couples the unit with
     /// the other coupled units of its kind, or uncouples it. Grey and open while
-    /// uncoupled; blue and closed while coupled.
+    /// uncoupled; blue and closed while coupled; blinking light blue while units of
+    /// its kind are coupled and it could join them (16 October: "make the clutching
+    /// possible controls' clutching button blink when any clutching is activated").
     /// </summary>
     public class CoupleBadge : Control, UiStyle.IDrawsOwnHoverBorder
     {
         public const int BadgeSize = 16;
-        private bool _on, _hover;
+        private bool _on, _hover, _inviting;
+
+        /// <summary>The blink's phase, shared by every chain (UnitCoupling's timer turns it).</summary>
+        internal static bool Phase = true;
 
         public CoupleBadge()
         {
@@ -34,6 +39,16 @@ namespace Kaban.UI.Controls
             set { if (_on == value) return; _on = value; Invalidate(); }
         }
 
+        /// <summary>It could join the units coupled now: blinking (steady light blue with blinking off).</summary>
+        public bool Inviting
+        {
+            get { return _inviting; }
+            set { if (_inviting == value) return; _inviting = value; Invalidate(); }
+        }
+
+        /// <summary>Drawn lit now (inviting, in the blink's bright phase).</summary>
+        internal bool Lit { get { return _inviting && !_on && (Phase || !ViewPreferences.BlinkingOn); } }
+
         protected override void OnMouseEnter(EventArgs e) { base.OnMouseEnter(e); _hover = true; Invalidate(); }
         protected override void OnMouseLeave(EventArgs e) { base.OnMouseLeave(e); _hover = false; Invalidate(); }
 
@@ -43,9 +58,10 @@ namespace Kaban.UI.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
             // a white disc behind it, as the "?": it sits on the frame's line
             var r = new RectangleF(0.5f, 0.5f, Width - 1.5f, Height - 1.5f);
-            using (var back = new SolidBrush(_on ? Color.FromArgb(0, 120, 215) : Color.White)) g.FillEllipse(back, r);
-            var ink = _on ? Color.White : _hover ? Color.FromArgb(0, 120, 215) : Color.FromArgb(120, 126, 134);
-            using (var ring = new Pen(_on ? Color.FromArgb(0, 120, 215) : ink, 1.2f)) g.DrawEllipse(ring, r);
+            bool lit = Lit;
+            using (var back = new SolidBrush(_on ? Color.FromArgb(0, 120, 215) : lit ? Color.FromArgb(204, 228, 250) : Color.White)) g.FillEllipse(back, r);
+            var ink = _on ? Color.White : _hover || lit ? Color.FromArgb(0, 120, 215) : Color.FromArgb(120, 126, 134);
+            using (var ring = new Pen(_on ? Color.FromArgb(0, 120, 215) : ink, lit ? 1.6f : 1.2f)) g.DrawEllipse(ring, r);
             // two links of a chain, slanted; apart while uncoupled
             float s = Width / 16f;
             var state = g.Save();

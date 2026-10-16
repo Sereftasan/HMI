@@ -92,13 +92,30 @@ class CU {
         Check("on every unit with a movement, on its frame's top line", units.All(u => Chain(u).Visible && Chain(u).Top < 12 && Chain(u).Right <= u.Width),
               string.Join(",", units.Select(u => Chain(u).Bounds.ToString())));
         Check("  open while uncoupled", units.All(u => !Chain(u).On));
+        Check("  at the right end of the line, where it stays (16 October: the \"?\" left of it)",
+              units.All(u => Chain(u).Right == u.ClientSize.Width - 12), string.Join(",", units.Select(u => Chain(u).Right + "/" + u.ClientSize.Width)));
+        Check("  none blinks while nothing is coupled", units.All(u => !Chain(u).Inviting));
+        string asked = null; bool answer = false;
+        UnitCoupling.AskLetGo = q => { asked = q; return answer; };
+        Action invites = () => typeof(UnitCoupling).GetMethod("RefreshInvitations", Any).Invoke(null, null);
 
         Console.WriteLine("--- coupling ---");
         Check("Clamp 1 coupled: the chain closed, the frame blue", UnitCoupling.Toggle(c1) == null && Chain(c1).On &&
               Frame(c1) == (Color)typeof(CylinderUnitHMI).GetField("CoupledFrame", Any).GetValue(null));
+        invites();
+        Check("the chains that can join blink: Clamp 2 and the stops (at the back too), not Clamp 3 (forward), not the axes, not Clamp 1 itself",
+              Chain(c2).Inviting && Chain(s1).Inviting && Chain(s2).Inviting && !Chain(c3).Inviting && !Chain(a1).Inviting && !Chain(c1).Inviting,
+              string.Join(",", units.Where(u => Chain(u).Inviting).Select(u => u.Name)));
+        bool phase0 = (bool)typeof(CoupleBadge).GetField("Phase", Any).GetValue(null);
+        Pump(650);
+        Check("  blinking: the phase turns", (bool)typeof(CoupleBadge).GetField("Phase", Any).GetValue(null) != phase0);
         var why = UnitCoupling.Toggle(c3);
-        Check("Clamp 3 refused: it is at its other end", why != null && why.Contains("Back") && !UnitCoupling.IsCoupled(c3), why);
+        Check("Clamp 3 (not blinking: at its other end) clicked: asked whether to let Clamp 1's coupling go", why == null && asked != null &&
+              asked.Contains("Clamp 1") && asked.Contains("Clamp 3") && asked.Contains("Back") && asked.Contains("Forward"), asked);
+        Check("  no: nothing changes", !UnitCoupling.IsCoupled(c3) && UnitCoupling.IsCoupled(c1));
         Check("Clamp 2 coupled (at the back as Clamp 1)", UnitCoupling.Toggle(c2) == null && UnitCoupling.Coupled(UnitKind.Cylinder).Count == 2);
+        invites();
+        Check("  its chain closed, no longer blinking", Chain(c2).On && !Chain(c2).Inviting);
         Check("  an axis is not coupled with cylinders: its own group", UnitCoupling.Toggle(a1) == null && UnitCoupling.Coupled(UnitKind.Cylinder).Count == 2 &&
               UnitCoupling.Coupled(UnitKind.Axis).Count == 1);
 
@@ -113,6 +130,23 @@ class CU {
         Check("pressed on Clamp 2 (Back): Clamp 1's Back too", R("M100") == 1 && R("M102") == 1);
         typeof(Control).GetMethod("OnMouseCaptureChanged", Any).Invoke(c2.ButtonA, new object[] { EventArgs.Empty });
         Check("  the press lost (another window took the mouse): both released", R("M100") == 0 && R("M102") == 0);
+
+        Console.WriteLine("--- three or more coupled: this one or all of them ---");
+        Func<CylinderUnitHMI, ContextMenuStrip> menuOf = u => (ContextMenuStrip)typeof(CylinderUnitHMI).GetMethod("UncoupleMenu", Any).Invoke(u, null);
+        Check("Stop 1 joins the clamps (at the back too): three coupled", UnitCoupling.Toggle(s1) == null && UnitCoupling.Coupled(UnitKind.Cylinder).Count == 3);
+        var m3 = menuOf(s1);
+        Check("  its chain offers: uncouple 'Stop 1', uncouple all 3",
+              m3.Items.Count == 2 && m3.Items[0].Text.Contains("Stop 1") && m3.Items[1].Text.Contains("all 3"), string.Join(" | ", m3.Items.Cast<ToolStripItem>().Select(i => i.Text)));
+        m3.Items["uncoupleThis"].PerformClick();
+        Check("  'Stop 1' only: out, the clamps still coupled", !UnitCoupling.IsCoupled(s1) && UnitCoupling.IsCoupled(c1) && UnitCoupling.IsCoupled(c2));
+        UnitCoupling.Toggle(s1); UnitCoupling.Toggle(s2);
+        Check("all four coupled", UnitCoupling.Coupled(UnitKind.Cylinder).Count == 4);
+        menuOf(c2).Items["uncoupleAll"].PerformClick();
+        Check("  'Uncouple all 4' from any chain: none coupled, every chain open, none blinks",
+              UnitCoupling.Coupled(UnitKind.Cylinder).Count == 0 && new[] { c1, c2, s1, s2 }.All(u => !Chain(u).On) &&
+              new[] { c1, c2, s1, s2, c3 }.All(u => !Chain(u).Inviting));
+        Check("  the axes' coupling not touched", UnitCoupling.IsCoupled(a1));
+        UnitCoupling.Toggle(c1); UnitCoupling.Toggle(c2);
 
         Console.WriteLine("--- one not where the other is ---");
         plc.Write("X2", 0); plc.Write("X3", 1);                    // Clamp 2 forward now
@@ -138,13 +172,26 @@ class CU {
         s2.Visible = true;
 
         Console.WriteLine("--- axes ---");
+        invites();
+        Check("Axis 1 coupled: Axis 2 (at 100.3) blinks, Axis 3 (at 120) does not", Chain(a2).Inviting && !Chain(a3).Inviting);
         Check("Axis 2 at 100.3 joins Axis 1 at 100.0 (within 0.5)", UnitCoupling.Toggle(a2) == null && UnitCoupling.Coupled(UnitKind.Axis).Count == 2);
+        asked = null; answer = false;
         why = UnitCoupling.Toggle(a3);
-        Check("Axis 3 at 120 refused", why != null && !UnitCoupling.IsCoupled(a3), why);
+        Check("Axis 3 at 120 clicked: asked first; no - not coupled", why == null && asked != null && asked.Contains("Axis 3") && !UnitCoupling.IsCoupled(a3), asked);
         Down(a2.ButtonB);
         Check("a jog of Axis 2: Axis 1 jogs too", R("M303") == 1 && R("M301") == 1);
         Up(a2.ButtonB);
         Check("  both stop", R("M303") == 0 && R("M301") == 0);
+        UnitCoupling.Toggle(a2);
+        Check("Axis 2 uncoupled: Axis 1 left alone is no coupling - none forgotten coupled", !UnitCoupling.IsCoupled(a2) && !UnitCoupling.IsCoupled(a1) && !Chain(a1).On);
+        invites();
+        Check("  nothing coupled: no chain blinks", units.All(u => !Chain(u).Inviting));
+        UnitCoupling.Toggle(a1); UnitCoupling.Toggle(a2);
+        answer = true;
+        why = UnitCoupling.Toggle(a3);
+        Check("Axis 3 clicked again, yes: the coupling let go, Axis 3 coupled - the start of a new one", why == null && UnitCoupling.IsCoupled(a3) &&
+              !UnitCoupling.IsCoupled(a1) && !UnitCoupling.IsCoupled(a2) && Chain(a3).On && !Chain(a1).On);
+        Check("  the cylinders' coupling is not touched by the axes'", UnitCoupling.IsCoupled(c1) || UnitCoupling.Coupled(UnitKind.Cylinder).Count == 0);
 
         Console.WriteLine("--- rights, sign-out ---");
         SecurityManager.Logout();

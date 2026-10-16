@@ -27,6 +27,16 @@ namespace Kaban.UI.Helpers
     /// go (and said so) and only the pressed unit moves, as it would on its own. A
     /// unit that leaves the screen (another page or tab) leaves the coupling: only
     /// units in sight move together.
+    ///
+    /// WHICH ONES CAN JOIN, AND STARTING AGAIN (16 October: "when the user selects one
+    /// to clutch and forgets it ... give them an easy way to cancel active clutching;
+    /// most of the other units are not suitable for the coupling, so make the chains of
+    /// the ones that can join blink while a coupling is on, and ask the user whether to
+    /// cancel the previous coupling when they click a chain that does not blink"):
+    /// while units of a kind are coupled, the chains of the units of that kind in sight
+    /// that stand where they stand blink. A click on a chain that does not blink asks
+    /// whether to let the coupling go and couple that unit instead. A unit uncoupled
+    /// leaves no unit coupled alone.
     /// </summary>
     public static class UnitCoupling
     {
@@ -45,6 +55,14 @@ namespace Kaban.UI.Helpers
 
         /// <summary>Said when the coupling is refused or let go (the unit, the reason); the unit shows it.</summary>
         public static event Action<CylinderUnitHMI, string> Notice;
+
+        /// <summary>
+        /// Asks whether to let the coupling now go and couple the unit clicked instead (Yes: let go).
+        /// Replaceable so a test answers.
+        /// </summary>
+        public static Func<string, bool> AskLetGo = q =>
+            System.Windows.Forms.MessageBox.Show(q, T("Ttl_Coupling", "Coupled units"), System.Windows.Forms.MessageBoxButtons.YesNo,
+                                                 System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes;
 
         /// <summary>The coupled units of a kind.</summary>
         public static IList<CylinderUnitHMI> Coupled(UnitKind kind)
@@ -69,7 +87,16 @@ namespace Kaban.UI.Helpers
                 return unit.Kind == UnitKind.Axis ? T("Cpl_NoPosition", "Its position is not known: it cannot be coupled.")
                                                   : T("Cpl_NoEnd", "It is not at one of its ends: only a unit at an end can be coupled.");
             if (group.Count > 0 && !SamePlace(group[0], unit))
-                return string.Format(T("Cpl_NotSame", "It is not where the coupled units are ({0}): only units at the same position move together."), Describe(group[0]));
+            {
+                // not where they are (its chain does not blink): start again with it?
+                string names = string.Join(", ", group.Select(u => "'" + u.CouplingName + "'"));
+                string q = string.Format(T("Cpl_AskLetGo", "Coupled now: {0} ({1}). '{2}' is not where they are ({3}), so it cannot join them.\n\nLet that coupling go and start a new one with '{2}'?"),
+                                         names, Describe(group[0]), unit.CouplingName, Describe(unit));
+                if (!AskLetGo(q)) return null;
+                foreach (var u in group) _coupled.Remove(u);
+                AuditLogger.Log("coupling of " + names + " let go by the user, to couple '" + unit.CouplingName + "' instead.");
+                group.Clear();
+            }
             _coupled.Add(unit);
             AuditLogger.Log("coupled '" + unit.CouplingName + "' (" + Describe(unit) + ") with " +
                             (group.Count == 0 ? "nothing yet" : string.Join(", ", group.Select(u => "'" + u.CouplingName + "'"))) + ".");
@@ -82,8 +109,13 @@ namespace Kaban.UI.Helpers
         {
             if (!_coupled.Remove(unit)) return;
             AuditLogger.Log("uncoupled '" + unit.CouplingName + "'" + (string.IsNullOrEmpty(reason) ? "." : ": " + reason));
+            // one left alone is no coupling (16 October: not one forgotten, still coupled)
             var rest = Coupled(unit.Kind);
-            if (rest.Count == 1 && !string.IsNullOrEmpty(reason)) _coupled.Remove(rest[0]);
+            if (rest.Count == 1)
+            {
+                _coupled.Remove(rest[0]);
+                AuditLogger.Log("uncoupled '" + rest[0].CouplingName + "': left alone.");
+            }
             Refresh();
         }
 
@@ -99,6 +131,16 @@ namespace Kaban.UI.Helpers
             if (h != null) h(shownOn, T("Cpl_LetGo", "The coupling was let go") + ": " + reason);
         }
 
+        /// <summary>The user lets the whole coupling of a kind go (the chain's "Uncouple all").</summary>
+        public static void LetGo(UnitKind kind)
+        {
+            var units = Coupled(kind);
+            if (units.Count == 0) return;
+            foreach (var u in units) _coupled.Remove(u);
+            AuditLogger.Log("coupling of " + string.Join(", ", units.Select(u => "'" + u.CouplingName + "'")) + " let go by the user.");
+            Refresh();
+        }
+
         /// <summary>Everything let go (tests, a sign-out).</summary>
         public static void Clear()
         {
@@ -111,6 +153,49 @@ namespace Kaban.UI.Helpers
         {
             foreach (var u in _coupled.ToList()) if (!u.IsDisposed) u.ShowCoupled(true);
             foreach (var u in CylinderUnitHMI.Live) if (!_coupled.Contains(u)) u.ShowCoupled(false);
+            RefreshInvitations();
+        }
+
+        // ---- the chains that can join blink (16 October) ----------------------------------
+
+        private static System.Windows.Forms.Timer _blink;
+
+        /// <summary>True when the unit could join the units of its kind coupled now (in sight, where they stand, with a movement).</summary>
+        public static bool CanJoin(CylinderUnitHMI unit)
+        {
+            if (unit == null || unit.IsDisposed || IsCoupled(unit) || !unit.HasCommands || unit.Kind == UnitKind.Inverter) return false;
+            if (!unit.Visible || !unit.IsHandleCreated) return false;
+            var group = Coupled(unit.Kind);
+            return group.Count > 0 && PlaceOf(unit) != null && SamePlace(group[0], unit);
+        }
+
+        /// <summary>
+        /// Every chain in sight: blinking when its unit could join, still when not. Run by
+        /// the blink's timer while a coupling is on (the units move: who can join changes).
+        /// </summary>
+        internal static void RefreshInvitations()
+        {
+            bool any = _coupled.Any(u => !u.IsDisposed);
+            foreach (var u in CylinderUnitHMI.Live) u.CoupleChain.Inviting = any && CanJoin(u);
+            if (any)
+            {
+                if (_blink == null)
+                {
+                    _blink = new System.Windows.Forms.Timer { Interval = 500 };
+                    _blink.Tick += (s, e) =>
+                    {
+                        CoupleBadge.Phase = !CoupleBadge.Phase;
+                        RefreshInvitations();
+                        foreach (var u in CylinderUnitHMI.Live) if (u.CoupleChain.Inviting) u.CoupleChain.Invalidate();
+                    };
+                }
+                if (!_blink.Enabled) _blink.Start();
+            }
+            else if (_blink != null && _blink.Enabled)
+            {
+                _blink.Stop();
+                CoupleBadge.Phase = true;
+            }
         }
 
         /// <summary>Where a unit stands: "A" / "B" (a cylinder at an end), a position (an axis, an encoder cylinder), or null (unknown).</summary>

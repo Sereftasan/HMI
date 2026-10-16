@@ -110,7 +110,8 @@ class L {
         Check("B's error: the '?' offers its help, still BLUE", mark.State == UnitHelpBadge.BadgeState.Error && helpB.IsActive && !helpB.Visible &&
               mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         Check("  on the top frame line", mark.Top <= 4, "top=" + mark.Top);
-        Check("  at its RIGHT end", mark.Right >= unit.ClientSize.Width - 16 && mark.Right <= unit.ClientSize.Width,
+        Check("  at the right end, left of the coupling chain (16 October: the chain stays at the end)",
+              mark.Right >= unit.ClientSize.Width - 40 && mark.Right <= unit.ClientSize.Width - 16,
               "right=" + mark.Right + " of " + unit.ClientSize.Width);
         Check("  and button B's border blinks red, A's does not", unit.ButtonB.AlertBlink && !unit.ButtonA.AlertBlink);
         var bdocs = unit.HelpDocuments();
