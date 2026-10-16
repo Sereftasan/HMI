@@ -48,8 +48,9 @@ namespace Kaban.UI.Helpers
             create.Click += (s, e) => Run(prompt, subject, owner, null);
             items.Add(create);
 
-            // every chat of the panel's list, in its order (HMI Settings > AI)
-            foreach (var c in AiChats.All)
+            // every ACTIVE chat of the panel's list, in its order (HMI Settings > AI - 16 October:
+            // a chat not active stays in the table, out of these lists)
+            foreach (var c in AiChats.Offered)
             {
                 var chat = c;
                 var ask = new ToolStripMenuItem(AskCaption(chat), MenuGlyphs.Chat()) { Name = AskName(chat) };

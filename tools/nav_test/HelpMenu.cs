@@ -271,6 +271,37 @@ class HM {
               string.Join(",", AiChats.All.Select(c => "aiAsk:" + c.Name)) && Item(menu, "aiAsk:ChatGPT") != null && Item(menu, "aiAsk:Our AI") != null &&
               Item(menu, "aiAsk:Claude") == null, string.Join(",", menu.Items.Cast<ToolStripItem>().Select(i => i.Name)));
 
+        // 16 October: "add an Activate column to the HMI Settings / AI table so the user could remove them from the AI
+        // helper lists (to make the combos not look too dirty) without deleting their web addresses from this table"
+        Console.WriteLine("--- Active: out of the lists, kept in the table ---");
+        var ed2 = new Kaban.UI.Settings.AiChatsEditor();
+        var holder2 = new Form { ClientSize = new System.Drawing.Size(1100, 600) };
+        holder2.Controls.Add(ed2); holder2.Show(); Pump(150);
+        var g2 = ed2.Grid;
+        Check("an 'Active' column of ticks, every chat ticked", g2.Columns.Count == 3 && g2.Columns[2].HeaderText == "Active" &&
+              g2.Columns[2] is DataGridViewCheckBoxColumn && g2.Rows.Cast<DataGridViewRow>().All(r => (bool)r.Cells[2].Value),
+              string.Join(",", g2.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText)));
+        int gpt = g2.Rows.Cast<DataGridViewRow>().First(r => Convert.ToString(r.Cells[0].Value) == "ChatGPT").Index;
+        g2.CurrentCell = g2.Rows[gpt].Cells[2];
+        g2.Rows[gpt].Cells[2].Value = false;
+        Check("  unticked: 💾 ready", ed2.SaveButton.Enabled);
+        ed2.SaveButton.PerformClick(); Pump(50);
+        var kept = File.ReadAllLines(AiChats.SettingsPath).FirstOrDefault(l => l.StartsWith("ChatGPT;"));
+        Check("  kept with its web address, marked not active (ChatGPT;https://chatgpt.com/;off)", kept == "ChatGPT;https://chatgpt.com/;off" &&
+              AiChats.Find("ChatGPT") != null && !AiChats.Find("ChatGPT").Active && AiChats.Find("ChatGPT").Link == "https://chatgpt.com/", kept);
+        menu = form.BuildHelpMenu();
+        Check("  the Help menu: no Ask ChatGPT, the others as before", Item(menu, "aiAsk:ChatGPT") == null && Item(menu, "aiAsk:Our AI") != null &&
+              AiChats.Offered.Count == AiChats.All.Count - 1, string.Join(",", menu.Items.Cast<ToolStripItem>().Select(i => i.Name).Where(n => n.StartsWith("aiAsk:"))));
+        var alarmItems = AiMenu.Items(() => "x", AlarmAiPrompt.Subject.Alarm, form);
+        Check("  an alarm's help list too", !alarmItems.Any(i => i.Name == "aiAsk:ChatGPT") && alarmItems.Any(i => i.Name == "aiAsk:Our AI"));
+        Check("  still in the table, unticked, after it was read again", new Kaban.UI.Settings.AiChatsEditor().Grid.Rows.Cast<DataGridViewRow>()
+              .Any(r => Convert.ToString(r.Cells[0].Value) == "ChatGPT" && Convert.ToString(r.Cells[1].Value) == "https://chatgpt.com/" && !(bool)r.Cells[2].Value));
+        g2.Rows[gpt].Cells[2].Value = true;
+        ed2.SaveButton.PerformClick(); Pump(50);
+        Check("  ticked again: offered again", AiChats.Find("ChatGPT").Active && Item(form.BuildHelpMenu(), "aiAsk:ChatGPT") != null &&
+              File.ReadAllLines(AiChats.SettingsPath).Contains("ChatGPT;https://chatgpt.com/"));
+        holder2.Close();
+
         Console.WriteLine("--- Users and Preferences: no Preferred AI any more ---");
         var page = new UsersPreferencesControl { Dock = DockStyle.Fill };
         var host = new Form { ClientSize = new System.Drawing.Size(1200, 800) };

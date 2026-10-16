@@ -17,6 +17,10 @@ namespace Kaban.UI.Settings
     /// ChatGPT" ... (12 October: no user's choice among them any more, and no
     /// "AI chats" title - the tab says what the page is). The bar as every settings
     /// page's: keep, throw the changes away, add, remove, up, down - and the usual list.
+    ///
+    /// ACTIVE (16 October: "so the user could remove them from the AI helper lists,
+    /// to make the combos not look too dirty, without deleting their web addresses
+    /// from this table"): a chat not ticked stays in the table, out of the lists.
     /// </summary>
     public class AiChatsEditor : UserControl
     {
@@ -82,8 +86,19 @@ namespace Kaban.UI.Settings
             _grid.BackgroundColor = Color.White;
             _grid.Columns.Add("name", T("AiC_Name", "Name"));
             _grid.Columns.Add("link", T("AiC_Link", "Web address"));
+            _grid.Columns.Add(new DataGridViewCheckBoxColumn
+            {
+                Name = "active", HeaderText = T("AiC_Active", "Active"),
+                ToolTipText = T("AiC_ActiveTip", "Offered in the help lists as 'Ask <name>'. Not ticked: kept here, not offered.")
+            });
             _grid.Columns[0].FillWeight = 30;
-            _grid.Columns[1].FillWeight = 70;
+            _grid.Columns[1].FillWeight = 62;
+            _grid.Columns[2].FillWeight = 8;
+            // a tick counts at once (a check box's change is committed when the cell is left otherwise)
+            _grid.CurrentCellDirtyStateChanged += (s, e) =>
+            {
+                if (_grid.IsCurrentCellDirty && _grid.CurrentCell is DataGridViewCheckBoxCell) _grid.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            };
             foreach (DataGridViewColumn c in _grid.Columns) c.SortMode = DataGridViewColumnSortMode.NotSortable;
             UiStyle.EnableTableTools(_grid, "AiChats", sorting: false);
             _grid.CellValueChanged += (s, e) => { if (!_filling) _dirty.MarkDirty(); };
@@ -115,7 +130,7 @@ namespace Kaban.UI.Settings
             try
             {
                 _grid.Rows.Clear();
-                foreach (var c in chats) _grid.Rows.Add(c.Name, c.Link);
+                foreach (var c in chats) _grid.Rows.Add(c.Name, c.Link, c.Active);
             }
             finally { _filling = false; }
             _dirty.Reset();
@@ -147,7 +162,7 @@ namespace Kaban.UI.Settings
         /// <summary>A new row at the end, its name to type.</summary>
         internal void AddRow()
         {
-            int i = _grid.Rows.Add("", "https://");
+            int i = _grid.Rows.Add("", "https://", true);
             _dirty.MarkDirty();
             FitHeight();
             try
@@ -179,11 +194,12 @@ namespace Kaban.UI.Settings
             int i = cell.RowIndex, j = i + by;
             if (i < 0 || j < 0 || j >= _grid.Rows.Count) return;
             _grid.EndEdit();
-            var a = new[] { _grid.Rows[i].Cells[0].Value, _grid.Rows[i].Cells[1].Value };
-            _grid.Rows[i].Cells[0].Value = _grid.Rows[j].Cells[0].Value;
-            _grid.Rows[i].Cells[1].Value = _grid.Rows[j].Cells[1].Value;
-            _grid.Rows[j].Cells[0].Value = a[0];
-            _grid.Rows[j].Cells[1].Value = a[1];
+            for (int k = 0; k < _grid.Columns.Count; k++)
+            {
+                var a = _grid.Rows[i].Cells[k].Value;
+                _grid.Rows[i].Cells[k].Value = _grid.Rows[j].Cells[k].Value;
+                _grid.Rows[j].Cells[k].Value = a;
+            }
             _grid.CurrentCell = _grid.Rows[j].Cells[cell.ColumnIndex];
             _dirty.MarkDirty();
         }
@@ -201,7 +217,8 @@ namespace Kaban.UI.Settings
                 if (!AiChats.IsLink(link)) return Fail(string.Format(T("AiC_BadLink", "{0}: its web address must start with https:// (or http://)."), name));
                 if (list.Any(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase)))
                     return Fail(string.Format(T("AiC_Twice", "{0} is in the list twice."), name));
-                list.Add(new AiChats.Chat(name.Replace(";", ","), link));
+                bool active = !(r.Cells[2].Value is bool) || (bool)r.Cells[2].Value;
+                list.Add(new AiChats.Chat(name.Replace(";", ","), link, active));
             }
             if (list.Count == 0) return Fail(T("AiC_Empty", "At least one AI chat, please."));
             try { AiChats.Save(list); }

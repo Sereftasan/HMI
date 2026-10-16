@@ -22,7 +22,9 @@ namespace Kaban.Core.Helpers
     /// most), so it is never sent that way.
     ///
     /// Kept in AiChats.cfg beside the other HMI settings, a chat a line:
-    ///   &lt;name&gt;;&lt;link&gt;
+    ///   &lt;name&gt;;&lt;link&gt;          offered
+    ///   &lt;name&gt;;&lt;link&gt;;off      kept, not offered (16 October: an "Active" column, so a
+    ///                         chat can leave the help lists without losing its address)
     /// No file: the list below.
     /// </summary>
     public static class AiChats
@@ -31,8 +33,10 @@ namespace Kaban.Core.Helpers
         {
             public string Name = "";
             public string Link = "";
+            /// <summary>Offered in the help lists ("Ask &lt;name&gt;"); not active: kept in the table only.</summary>
+            public bool Active = true;
             public Chat() { }
-            public Chat(string name, string link) { Name = name ?? ""; Link = link ?? ""; }
+            public Chat(string name, string link, bool active = true) { Name = name ?? ""; Link = link ?? ""; Active = active; }
             public override string ToString() { return Name; }
         }
 
@@ -61,7 +65,13 @@ namespace Kaban.Core.Helpers
         /// <summary>Raised when the list changed.</summary>
         public static event EventHandler Changed;
 
-        /// <summary>The panel's chats, in its order (a copy).</summary>
+        /// <summary>The chats the help lists offer: the active ones, in the list's order.</summary>
+        public static IList<Chat> Offered
+        {
+            get { return All.Where(c => c.Active).ToList(); }
+        }
+
+        /// <summary>The panel's chats, in its order, active or not (a copy).</summary>
         public static IList<Chat> All
         {
             get
@@ -76,7 +86,16 @@ namespace Kaban.Core.Helpers
                         if (line.Length == 0 || line.StartsWith("#")) continue;
                         int cut = line.IndexOf(';');
                         if (cut <= 0) continue;
-                        var chat = new Chat(line.Substring(0, cut).Trim(), line.Substring(cut + 1).Trim());
+                        // ";off" at the end: kept, not offered
+                        bool active = true;
+                        var rest = line.Substring(cut + 1).Trim();
+                        var flag = System.Text.RegularExpressions.Regex.Match(rest, @";\s*(off|on)\s*$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                        if (flag.Success)
+                        {
+                            active = !flag.Groups[1].Value.Equals("off", StringComparison.OrdinalIgnoreCase);
+                            rest = rest.Substring(0, flag.Index).Trim();
+                        }
+                        var chat = new Chat(line.Substring(0, cut).Trim(), rest, active);
                         if (chat.Name.Length > 0 && IsLink(chat.Link) && !list.Any(c => Same(c.Name, chat.Name))) list.Add(chat);
                     }
                     return list;
@@ -93,7 +112,7 @@ namespace Kaban.Core.Helpers
         public static void Save(IEnumerable<Chat> chats)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("# Kaban HMI - the AI chats 'Ask AI for help' opens: <name>;<link>, in the order they are offered.");
+            sb.AppendLine("# Kaban HMI - the AI chats 'Ask AI for help' opens: <name>;<link>, in the order they are offered; <name>;<link>;off is kept but not offered.");
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var c in chats ?? new Chat[0])
             {
@@ -101,7 +120,7 @@ namespace Kaban.Core.Helpers
                 var name = (c.Name ?? "").Replace(";", ",").Replace("\r", " ").Replace("\n", " ").Trim();
                 var link = (c.Link ?? "").Trim();
                 if (name.Length == 0 || !IsLink(link) || !seen.Add(name)) continue;
-                sb.AppendLine(name + ";" + link);
+                sb.AppendLine(name + ";" + link + (c.Active ? "" : ";off"));
             }
             var dir = Path.GetDirectoryName(SettingsPath);
             if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
