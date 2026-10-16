@@ -137,8 +137,10 @@ class CD {
               Text(c2).Contains("Pull its plug: the input goes OFF") && Text(c2).Contains("The input stays ON with the plug pulled."));
 
         Console.WriteLine("--- the left side follows the right ---");
-        Check("the page carries its script: the box of the step on show marked, blinking",
-              release.Contains("nav.path a.box") && release.Contains("classList.add(\"now\")") && release.Contains(".box.now .sn{background:#e8590c;animation:snblink"));
+        // 16 October: the box's colour is enough - its number no longer blinks
+        Check("the page carries its script: the box of the step on show marked (its colour, no blinking)",
+              release.Contains("nav.path a.box") && release.Contains("classList.add(\"now\")") && release.Contains(".box.now{border-color:#e8590c;background:#fff4e6") &&
+              release.Contains(".box.now .sn{background:#e8590c}") && !release.Contains("animation") && !release.Contains("@keyframes"));
         Check("  the path's boxes carry their step numbers (what the script compares)",
               Regex.Matches(release, "<a class=\"box\" href=\"#[A-Z0-9]+\"[^>]*><span class=\"sn\">\\d+</span>").Count >= 6);
 
