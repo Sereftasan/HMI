@@ -6,6 +6,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 October (evening):
+  - 6b9c0fd - Coupling only while Manual Movement, Machine Parameters > Axis or the Axis Monitor is shown: another
+    page lets every coupling go. Cylinder FW/Back off when Manual Movement is closed; its button on the Manual
+    Movement page only.
+  - 5dd9f35 - The axes' bar: the steps, Safety Bypass and Cylinder FW/Back with their captions on two lines and
+    narrower (ButtonHMI.TwoLineCaption); the bar 712 x 76, the Axis page's content 8 lower.
 - 17 October:
   - 80f1e8d - Coupling: a chain whose unit does not match the units coupled is faded and does nothing (a click
     says why) - no more blinking of the ones that match. Axes couple only in step mode (not JOG: FA2010's JOG lamp
