@@ -325,6 +325,27 @@ namespace Kaban.UI.Helpers
             return pos.HasValue ? pos.Value.ToString("0.###", System.Globalization.CultureInfo.CurrentCulture) : "?";
         }
 
+        /// <summary>
+        /// Why the units coupled with one cannot move with it now (null: they can) - in
+        /// sight, still matching, the same side's button able to act. Asked before every
+        /// coupled movement (and by the back-and-forth movement, UnitCycling).
+        /// </summary>
+        internal static string WhyNotTogether(CylinderUnitHMI unit, bool sideA, IEnumerable<CylinderUnitHMI> others)
+        {
+            foreach (var o in others)
+            {
+                if (!o.Visible || !o.IsHandleCreated) return string.Format(T("Cpl_Gone", "'{0}' is not on the screen"), o.CouplingName);
+                var apart = unit.Kind == UnitKind.Axis ? WhyNotAlone(o) ?? WhyNotWith(unit, o) : WhyNotWith(unit, o);
+                if (apart != null)
+                    return unit.Kind == UnitKind.Cylinder && unit.HasEndSensors && o.HasEndSensors
+                        ? string.Format(T("Cpl_Moved", "'{0}' is not where '{1}' is ({2} / {3})"), o.CouplingName, unit.CouplingName, Describe(o), Describe(unit))
+                        : "'" + o.CouplingName + "': " + apart;
+                var b = sideA ? o.ButtonA : o.ButtonB;
+                if (!b.CanAct) return string.Format(T("Cpl_CannotAct", "'{0}' cannot do '{1}' now"), o.CouplingName, o.SideText(sideA));
+            }
+            return null;
+        }
+
         /// <summary>A coupled unit's button was pressed, released or clicked: the others follow - or the coupling goes.</summary>
         internal static void Acted(CylinderUnitHMI unit, bool sideA, ButtonHMI pressed, ButtonHMI.UserAction action)
         {
@@ -343,21 +364,7 @@ namespace Kaban.UI.Helpers
             if (others.Count == 0) return;
 
             // checked again before every movement: in sight, at the same place, able to act
-            string why = null;
-            foreach (var o in others)
-            {
-                if (!o.Visible || !o.IsHandleCreated) { why = string.Format(T("Cpl_Gone", "'{0}' is not on the screen"), o.CouplingName); break; }
-                var apart = unit.Kind == UnitKind.Axis ? WhyNotAlone(o) ?? WhyNotWith(unit, o) : WhyNotWith(unit, o);
-                if (apart != null)
-                {
-                    why = unit.Kind == UnitKind.Cylinder && unit.HasEndSensors && o.HasEndSensors
-                        ? string.Format(T("Cpl_Moved", "'{0}' is not where '{1}' is ({2} / {3})"), o.CouplingName, unit.CouplingName, Describe(o), Describe(unit))
-                        : "'" + o.CouplingName + "': " + apart;
-                    break;
-                }
-                var b = sideA ? o.ButtonA : o.ButtonB;
-                if (!b.CanAct) { why = string.Format(T("Cpl_CannotAct", "'{0}' cannot do '{1}' now"), o.CouplingName, o.SideText(sideA)); break; }
-            }
+            string why = WhyNotTogether(unit, sideA, others);
             if (why != null) { Dissolve(unit.Kind, unit, why + " - " + T("Cpl_OnlyThis", "only the unit pressed moves.")); return; }
 
             var follow = others.Select(o => sideA ? o.ButtonA : o.ButtonB).ToList();

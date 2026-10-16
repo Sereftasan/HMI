@@ -1606,7 +1606,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axisJogBar.BackColor = System.Drawing.Color.White;
             this.axisJogBar.Location = new System.Drawing.Point(0, 0);
             this.axisJogBar.Name = "axisJogBar";
-            this.axisJogBar.Size = new System.Drawing.Size(854, 68);
+            this.axisJogBar.Size = new System.Drawing.Size(848, 68);
             this.axisJogBar.TabIndex = 0;
             // 
             // AxisSettings

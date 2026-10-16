@@ -112,6 +112,7 @@
     <Compile Include="Helpers\PlcPopupHost.cs" />
     <Compile Include="Helpers\ShownPick.cs" />
     <Compile Include="Helpers\UnitCoupling.cs" />
+    <Compile Include="Helpers\UnitCycling.cs" />
     <Compile Include="Helpers\NoteHelpers.cs" />
     <Compile Include="Controls\CoupleBadge.cs">
       <SubType>Component</SubType>

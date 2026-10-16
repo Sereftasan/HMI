@@ -63,8 +63,14 @@ class AJ {
         var bar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
         var b = bar.Controls.OfType<ButtonHMI>().ToDictionary(x => x.Name);
         var sp = bar.Controls.OfType<SpeedOverrideHMI>().Single();
-        Check("the speed of the axes' manual movement (D409), JOG, 10 / 1 / 0.1 / 0.01 mm, Safety Bypass", sp.Address == "D409" &&
-              new[] { "BtnJog", "Btn10mm", "Btn1mm", "Btn01mm", "Btn001mm", "BtnSafetyBypass" }.All(b.ContainsKey), string.Join(",", b.Keys));
+        Check("the speed of the axes' manual movement (D409), JOG, 10 / 1 / 0.1 / 0.01 mm, Safety Bypass, Cylinder FW/Back", sp.Address == "D409" &&
+              new[] { "BtnJog", "Btn10mm", "Btn1mm", "Btn01mm", "Btn001mm", "BtnSafetyBypass", "BtnCylinderFwBack" }.All(b.ContainsKey), string.Join(",", b.Keys));
+        Check("  Safety Bypass and Cylinder FW/Back for Maintenance and Admin (17 October), both off when the user changes",
+              b["BtnSafetyBypass"].VisibilityConditions == SystemCondition.MaintenanceUser && b["BtnCylinderFwBack"].VisibilityConditions == SystemCondition.MaintenanceUser &&
+              b["BtnSafetyBypass"].ResetOnUserChange && b["BtnCylinderFwBack"].HmiFunction == HmiButtonFunction.CylinderForwardBack &&
+              b["BtnCylinderFwBack"].BitActions.Count == 0);
+        Check("  Cylinder FW/Back right of Safety Bypass, all on one row", b["BtnCylinderFwBack"].Left > b["BtnSafetyBypass"].Right &&
+              b.Values.All(x => x.Top == 13) && b.Values.Max(x => x.Right) + 14 <= bar.Width, b["BtnCylinderFwBack"].Bounds + " in " + bar.Width);
         Check("  the steps SET M170 - M173, JOG resets them (lit by M174), Safety Bypass alternates M175 - as the user set them",
               Bits(b["Btn10mm"]) == "SET M170" && Bits(b["Btn001mm"]) == "SET M173" && Bits(b["BtnJog"]) == "RESET M170,RESET M171,RESET M172,RESET M173" &&
               b["BtnJog"].Lamp1Address == "M174" && Bits(b["BtnSafetyBypass"]) == "Alternate M175", Bits(b["BtnJog"]));

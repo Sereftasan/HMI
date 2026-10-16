@@ -71,7 +71,7 @@ namespace Kaban.UI.Design
 
             ["ButtonHMI"] = L(
                 C("Device", "PlcNumber"),
-                C("Action", "BitActions", "WordActions"),
+                C("Action", "BitActions", "WordActions", "HmiFunction"),
                 C("Display", "DescriptionText", "ButtonText", "FallbackText", "TranslationKey", "ShowCaption", "Direction",
                              "DisplayAddress", "DisplayOffset", "ImageActive", "ImagePassive", "ColorActive", "ColorPassive",
                              "ColorDisabled", "ForeDisabled", "ActiveBackColor", "IsActivePage", "CornerRadius",
@@ -79,7 +79,8 @@ namespace Kaban.UI.Design
                 C("State", "Lamp1Address", "Lamp1Tip", "Lamp2Address", "Lamp2Tip", "LampDirection", "RelayAddress",
                            "OutputAddress", "ErrorAddress", "BlinkCondition", "AlertBlink"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
-                C("Security", "RequiredSecurity", "ConfirmationNeeded", "ConfirmationAddress", "ConfirmationTextKey", "ConfirmationText", "LogAction"),
+                C("Security", "RequiredSecurity", "ConfirmationNeeded", "ConfirmationAddress", "ConfirmationTextKey", "ConfirmationText", "LogAction",
+                              "ResetOnUserChange"),
                 C("Help", "ToolTipText")),
 
             // the machine's speed in percent (a home page's, 12 October)

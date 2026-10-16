@@ -178,6 +178,7 @@ namespace Kaban.UI.Controls
         static CylinderUnitHMI()
         {
             UnitCoupling.Notice += (unit, text) => { if (unit != null && !unit.IsDisposed) unit.ShowCouplingNotice(text); };
+            UnitCycling.Notice += (unit, text) => { if (unit != null && !unit.IsDisposed) unit.ShowCouplingNotice(text); };
         }
 
         internal CoupleBadge CoupleChain { get { return _couple; } }
@@ -293,11 +294,16 @@ namespace Kaban.UI.Controls
             });
             _btnA.UserActed += (b, a) => UnitCoupling.Acted(this, true, b, a);
             _btnB.UserActed += (b, a) => UnitCoupling.Acted(this, false, b, a);
+            // Cylinder FW/Back on: a press starts (or stops) its back-and-forth movement (17 October)
+            _btnA.Intercept = (b, a) => UnitCycling.Handle(this, true, b, a);
+            _btnB.Intercept = (b, a) => UnitCycling.Handle(this, false, b, a);
             // only units in sight move together: one leaving the screen leaves the coupling
             VisibleChanged += (s, e) =>
             {
                 if (!Visible && UnitCoupling.IsCoupled(this))
                     UnitCoupling.Remove(this, LanguageManager.GetString("Cpl_LeftScreen", "it left the screen"));
+                if (!Visible && UnitCycling.IsCycling(this))
+                    UnitCycling.Stop(this, LanguageManager.GetString("Cpl_LeftScreen", "it left the screen"));
             };
             Disposed += (s, e) => { if (UnitCoupling.IsCoupled(this)) UnitCoupling.Remove(this, "closed"); };
         }

@@ -14,6 +14,14 @@ using Kaban.Core.Models;
 
 namespace Kaban.UI.Controls
 {
+    /// <summary>An HMI function a button switches instead of a PLC bit (ButtonHMI.HmiFunction).</summary>
+    public enum HmiButtonFunction
+    {
+        None = 0,
+        /// <summary>Cylinder FW/Back: a cylinder started moves back and forth every 5 s (UnitCycling).</summary>
+        CylinderForwardBack = 1
+    }
+
     [ToolboxBitmap(typeof(Button))]
     [TypeConverter(typeof(ButtonHMISorter))]
     // The Properties window in the order of the work (see PropertyOrder).
@@ -200,6 +208,42 @@ namespace Kaban.UI.Controls
         [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.None;
         [Category(" Security")] public bool LogAction { get; set; } = false;
 
+        /// <summary>
+        /// Its latched bits (Alternate, SET actions) set to 0 when the signed-in user
+        /// changes (17 October: Safety Bypass - "FALSE automatically when the user changes").
+        /// </summary>
+        [Category(" Security"), DefaultValue(false),
+         Description("Its latched bits (Alternate / SET actions) are set to 0 when the signed-in user changes (Safety Bypass).")]
+        public bool ResetOnUserChange { get; set; }
+
+        /// <summary>
+        /// An HMI function the button switches instead of a PLC bit (17 October: "Cylinder
+        /// FW/Back"): a click turns it on or off, its lamp shows it.
+        /// </summary>
+        [Category("  Actions"), DefaultValue(HmiButtonFunction.None),
+         Description("An HMI function the button switches, no PLC bit: CylinderForwardBack - a cylinder started moves back and forth every 5 s (Maintenance and Admin).")]
+        public HmiButtonFunction HmiFunction { get; set; }
+
+        /// <summary>The HMI function is on now.</summary>
+        internal bool HmiFunctionOn
+        {
+            get { return HmiFunction == HmiButtonFunction.CylinderForwardBack && Kaban.UI.Helpers.UnitCycling.Active; }
+        }
+
+        /// <summary>
+        /// Asked first on a user's press (a momentary button) or click (the others): true
+        /// takes it over - the button does nothing of its own (UnitCycling: a cylinder
+        /// moving back and forth, 17 October).
+        /// </summary>
+        public Func<ButtonHMI, UserAction, bool> Intercept;
+
+        private bool Intercepted(UserAction a)
+        {
+            var f = Intercept;
+            if (f == null) return false;
+            try { return f(this, a); } catch (Exception ex) { AuditLogger.Log("button intercept: " + ex.Message); return false; }
+        }
+
         private Func<string, int> _lastReadPlc;
         private bool _relayOn = false;
         private bool _outputOn = false;
@@ -361,6 +405,8 @@ namespace Kaban.UI.Controls
             // and through it the whole page it sat on - alive for the life of the
             // program, and re-translated all of them on each language change.
             LanguageManager.LanguageChanged += OnLanguageChanged;
+            SecurityManager.UserChanged += OnUserChanged;
+            Kaban.UI.Helpers.UnitCycling.Changed += OnHmiFunctionChanged;
             // ApplyTranslation decides whether this button shows a caption or a
             // sign, and it only ran on a language change. A button placed by the
             // designer and never re-translated therefore kept _glyph null, so the
@@ -378,8 +424,36 @@ namespace Kaban.UI.Controls
         private void DisposeOwnResources()
         {
             LanguageManager.LanguageChanged -= OnLanguageChanged;
+            SecurityManager.UserChanged -= OnUserChanged;
+            Kaban.UI.Helpers.UnitCycling.Changed -= OnHmiFunctionChanged;
             _alerting.Remove(this);
             ReleaseMomentary();
+            ReleaseCycle();
+        }
+
+        private void OnHmiFunctionChanged(object sender, EventArgs e)
+        {
+            if (HmiFunction == HmiButtonFunction.None || IsDisposed) return;
+            bool on = HmiFunctionOn;
+            if (_lamp1On == on) return;
+            _lamp1On = on;
+            Invalidate();
+        }
+
+        /// <summary>Another user: its latched bits to 0 (ResetOnUserChange) - through the monitoring driver, as a jog's release.</summary>
+        private void OnUserChanged(object sender, EventArgs e)
+        {
+            if (!ResetOnUserChange || IsDisposed) return;
+            var driver = PlcManager.Instance.GetDriverForMonitoring(PlcNumber);
+            if (driver == null) return;
+            foreach (var action in BitActions)
+            {
+                if (action == null || (action.Action != BitActionType.Alternate && action.Action != BitActionType.SET)) continue;
+                string eff = EffectiveAddress(action.Address, action.AddressOffset);
+                if (string.IsNullOrEmpty(eff)) continue;
+                try { WriteBit(driver, eff, false, action.Address, "reset on user change"); }
+                catch (Exception ex) { AuditLogger.Log("reset of " + eff + " on user change failed: " + ex.Message); }
+            }
         }
 
         // keep the mouse-over/down fill identical to the current back color
@@ -726,7 +800,7 @@ namespace Kaban.UI.Controls
             // A button that may not be pressed must not stay pressed: the enable
             // condition dropping (manual mode left, logged out, station lost) ends
             // a jog in progress.
-            if (!en) ReleaseMomentary();
+            if (!en) { ReleaseMomentary(); ReleaseCycle(); }
 
             var wantCursor = en ? Cursors.Hand : Cursors.Default;
             if (this.Cursor != wantCursor) this.Cursor = wantCursor;
@@ -771,7 +845,7 @@ namespace Kaban.UI.Controls
             string relayAddr = !string.IsNullOrEmpty(RelayAddress) ? RelayAddress : EffectiveDisplayAddress(readPlc);
             bool relay = !string.IsNullOrEmpty(relayAddr) && readPlc(relayAddr) != 0;
             bool output = !string.IsNullOrEmpty(OutputAddress) && readPlc(OutputAddress) != 0;
-            bool l1 = !string.IsNullOrEmpty(Lamp1Address) && readPlc(Lamp1Address) != 0;
+            bool l1 = HmiFunction != HmiButtonFunction.None ? HmiFunctionOn : !string.IsNullOrEmpty(Lamp1Address) && readPlc(Lamp1Address) != 0;
             bool l2 = !string.IsNullOrEmpty(Lamp2Address) && readPlc(Lamp2Address) != 0;
 
             bool blinkCond = BlinkCondition != SystemCondition.None && checkGlobal(BlinkCondition);
@@ -1081,7 +1155,7 @@ namespace Kaban.UI.Controls
             base.OnPaint(pevent);
             pevent.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 
-            DrawLamp(pevent.Graphics, Lamp1Address, _lamp1On, LampRect(0));
+            DrawLamp(pevent.Graphics, HmiFunction != HmiButtonFunction.None && string.IsNullOrEmpty(Lamp1Address) ? "HMI" : Lamp1Address, _lamp1On, LampRect(0));
             DrawLamp(pevent.Graphics, Lamp2Address, _lamp2On, LampRect(1));
 
             DrawGlyph(pevent.Graphics);
@@ -1402,6 +1476,14 @@ namespace Kaban.UI.Controls
 
             if (!_softEnabled) return;
 
+            // an HMI function (Cylinder FW/Back): switched on or off, no PLC bit
+            if (HmiFunction != HmiButtonFunction.None)
+            {
+                Kaban.UI.Helpers.UnitCycling.SetActive(!Kaban.UI.Helpers.UnitCycling.Active,
+                    Kaban.UI.Helpers.UnitCycling.Active ? "switched off" : null);
+                return;
+            }
+
             // A button whose every action is MOMENTARY (a jog) did its work while
             // it was held - there is nothing left to do on the click. It used to
             // go on to ask "Are you sure?" after the jog had already happened
@@ -1409,6 +1491,8 @@ namespace Kaban.UI.Controls
             bool hasClickActions = BitActions.Any(a => a != null && a.Action != BitActionType.Momentary) ||
                                    WordActions.Any(a => a != null);
             if (!hasClickActions) return;
+            // taken over (a cylinder moving back and forth starts or stops)
+            if (Intercepted(UserAction.Click)) return;
 
             if (NeedsConfirmation)
             {
@@ -1515,6 +1599,8 @@ namespace Kaban.UI.Controls
             if (mevent.Button != MouseButtons.Left) return;
             if (_heldMomentary.Count > 0) return;   // already held
             if (PlcManager.Instance.GetDriver(PlcNumber) == null) return;
+            // taken over (a cylinder moving back and forth starts or stops): nothing of its own
+            if (IsMomentary && Intercepted(UserAction.Press)) return;
             // coupled units follow (they check where they are first); then this one
             if (IsMomentary) { _userHeld = true; RaiseUserActed(UserAction.Press); }
             PressMomentary();
@@ -1554,25 +1640,79 @@ namespace Kaban.UI.Controls
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
-            if (!Visible) ReleaseMomentary();
+            if (!Visible) { ReleaseMomentary(); ReleaseCycle(); }
         }
 
         protected override void OnEnabledChanged(EventArgs e)
         {
             base.OnEnabledChanged(e);
-            if (!Enabled) ReleaseMomentary();
+            if (!Enabled) { ReleaseMomentary(); ReleaseCycle(); }
         }
 
         protected override void OnParentChanged(EventArgs e)
         {
             base.OnParentChanged(e);
             ReleaseMomentary();
+            ReleaseCycle();
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
         {
             ReleaseMomentary();
+            ReleaseCycle();
             base.OnHandleDestroyed(e);
+        }
+
+        // ---- held by the back-and-forth movement (UnitCycling, 17 October) -------------
+        // Its own list, apart from a press's: the mouse-up of the press that started the
+        // movement must not end it. Released by the movement, and on every way a press is
+        // released (hidden, disabled, moved, destroyed, its enable lost).
+
+        private readonly List<KeyValuePair<string, string>> _cycleHeld = new List<KeyValuePair<string, string>>();
+        private int _cycleStation;
+
+        /// <summary>True when the back-and-forth movement holds its bits now.</summary>
+        internal bool HoldsCycle { get { return _cycleHeld.Count > 0; } }
+
+        /// <summary>True when the button has anything to do (a bit or word action).</summary>
+        internal bool HasActions { get { return BitActions.Count > 0 || WordActions.Count > 0; } }
+
+        /// <summary>
+        /// Its side of a back-and-forth movement: a momentary button's bits held ON (until
+        /// ReleaseCycle), another button clicked once. False when it cannot act now.
+        /// </summary>
+        internal bool HoldAsCycle()
+        {
+            if (!CanAct) return false;
+            if (!IsMomentary) { RunClickActions(); return true; }
+            if (_cycleHeld.Count > 0) return true;
+            var driver = PlcManager.Instance.GetDriver(PlcNumber);
+            if (driver == null) return false;
+            foreach (var action in BitActions)
+            {
+                if (action == null || action.Action != BitActionType.Momentary) continue;
+                string eff = EffectiveAddress(action.Address, action.AddressOffset);
+                if (string.IsNullOrEmpty(eff)) continue;
+                _cycleHeld.Add(new KeyValuePair<string, string>(eff, action.Address));
+                _cycleStation = PlcNumber;
+                WriteBit(driver, eff, true, action.Address, "back and forth");
+            }
+            return true;
+        }
+
+        /// <summary>The bits the back-and-forth movement holds, to 0 (not permission-gated, as a jog's release).</summary>
+        internal void ReleaseCycle()
+        {
+            if (_cycleHeld.Count == 0) return;
+            var held = _cycleHeld.ToArray();
+            _cycleHeld.Clear();
+            var driver = PlcManager.Instance.GetDriverForMonitoring(_cycleStation);
+            if (driver == null) return;
+            foreach (var h in held)
+            {
+                try { WriteBit(driver, h.Key, false, h.Value, "back and forth release"); }
+                catch (Exception ex) { AuditLogger.Log("back-and-forth release of " + h.Key + " (PLC " + _cycleStation + ") failed: " + ex.Message); }
+            }
         }
 
         /// <summary>Writes 0 to every momentary bit this button is holding ON.</summary>
