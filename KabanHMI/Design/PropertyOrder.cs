@@ -72,7 +72,7 @@ namespace Kaban.UI.Design
             ["ButtonHMI"] = L(
                 C("Device", "PlcNumber"),
                 C("Action", "BitActions", "WordActions", "HmiFunction"),
-                C("Display", "DescriptionText", "ButtonText", "FallbackText", "TranslationKey", "ShowCaption", "Direction",
+                C("Display", "DescriptionText", "ButtonText", "FallbackText", "TranslationKey", "ShowCaption", "TwoLineCaption", "Direction",
                              "DisplayAddress", "DisplayOffset", "ImageActive", "ImagePassive", "ColorActive", "ColorPassive",
                              "ColorDisabled", "ForeDisabled", "ActiveBackColor", "IsActivePage", "CornerRadius",
                              "RoundLeftOnly", "RoundRightOnly", "RestingBorderColor", "OutputBorderColor", "HoverBorderColor"),

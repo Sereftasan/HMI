@@ -124,7 +124,34 @@ class AJ {
             if (moulds != null) { moulds.PerformClick(); Pump(400); }
             Check("  another tab (Clamping Moulds): the same bar, in the same place", moulds != null && manual.TopBar == mbar && mbar.Visible &&
                   scr(mbar).Bottom <= scr(strip).Top + 1, tabs.Count + " tabs");
+            var fw = mbar.Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnCylinderFwBack");
+            until = DateTime.Now.AddSeconds(3);
+            while (DateTime.Now < until && !fw.Visible) Pump(100);
+            Check("  Cylinder FW/Back shown here (Manual Movement)", fw.Visible && Kaban.UI.Helpers.UnitCycling.IsOnManualPage(fw));
+            Check("  its captions on two lines: the steps, Safety Bypass, Cylinder FW/Back - JOG on one",
+                  mbar.Controls.OfType<ButtonHMI>().Where(x => x.Name != "BtnJog").All(x => x.TwoLineCaption) && !mbar.Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnJog").TwoLineCaption &&
+                  ButtonHMI.TwoLines("Safety Bypass") == "Safety\nBypass" && ButtonHMI.TwoLines("Cylinder FW/Back") == "Cylinder\nFW/Back" && ButtonHMI.TwoLines("0.1 mm") == "0.1\nmm");
+            var pagesShown = (Func<bool>)(() => (bool)typeof(MainForm).GetMethod("CouplingPagesShown", Any).Invoke(form, null));
+            Check("  coupling works here (Manual Movement)", pagesShown());
+            Kaban.UI.Helpers.UnitCycling.SetActive(true);
+            Check("  Cylinder FW/Back switched on", Kaban.UI.Helpers.UnitCycling.Active);
             Shot(form, "manual_movement");
+            var homeBtn = ((System.Collections.IDictionary)typeof(MainForm).GetField("_menuButtons", Any).GetValue(form)).Keys.Cast<ButtonHMI>()
+                          .First(x => (x.TranslationKey ?? "") == "Btn_Home");
+            homeBtn.PerformClick(); Pump(400);
+            Check("Home opened: Cylinder FW/Back off (17 October: Manual Movement closed), coupling would be let go there",
+                  !Kaban.UI.Helpers.UnitCycling.Active && !pagesShown());
+            var paramsBtn = ((System.Collections.IDictionary)typeof(MainForm).GetField("_menuButtons", Any).GetValue(form)).Keys.Cast<ButtonHMI>()
+                            .First(x => (x.TranslationKey ?? "") == "Btn_MachineParameters");
+            paramsBtn.PerformClick(); Pump(600);
+            var ps = All(form).OfType<Kaban.UI.Settings.SettingsScreen>().FirstOrDefault(x => x.Visible && x.HasPage("Tab_AxisSettings"));
+            bool onAxis = ps != null && ps.ActivateByKey("Tab_AxisSettings");
+            Pump(600);
+            Check("Machine Parameters > Axis: coupling works here too", onAxis && pagesShown());
+            var otherTab = ps == null ? null : ps.AllPages.FirstOrDefault(pg => pg.TitleKey != "Tab_AxisSettings");
+            if (otherTab != null) { ps.ActivateByKey(otherTab.TitleKey); Pump(400); }
+            Check("  another tab of Machine Parameters: not", otherTab != null && !pagesShown(), otherTab == null ? "-" : otherTab.TitleKey);
+            nav.PerformClick(); Pump(400);
         }
 
         Console.WriteLine("--- Machine Parameters > Axis: the bar itself at the top, the lists, the column names, the rows ---");
@@ -154,6 +181,9 @@ class AJ {
         int moved = frame.Body.AutoScrollPosition.X;
         Check("  scrolled sideways: the speed stays, the column names follow the rows", moved < 0 && scr(cs).Left == speedX &&
               far != null && scr(far).Left == farX + moved, "scrolled " + moved + ", speed " + speedX + "->" + scr(cs).Left + ", " + (far == null ? "-" : far.Name + " " + farX + "->" + scr(far).Left));
+        var fwHere = held[0].Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnCylinderFwBack");
+        fwHere.UpdateState(a => 0, c => true);
+        Check("  Cylinder FW/Back not shown on the Axis page (Manual Movement only)", !fwHere.Visible && held[0].Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnSafetyBypass").Visible);
         Shot(win, "axis_page");
         win.Close();
 
@@ -169,7 +199,10 @@ class AJ {
             Check("  above the rows", scr(mb).Bottom <= scr(view.Controls.OfType<Control>().First(c => c.Dock == DockStyle.Fill && c.Visible)).Top + 1);
             Shot(form, "axis_monitor");
             int wide = mb.FitTo(2000);
-            Check("  given room: as designed again, one line", mb.Controls.Cast<Control>().Select(c => c.Top).Distinct().Count() == 1 && wide == 68, wide.ToString());
+            Check("  given room: as designed again, one line", mb.Controls.Cast<Control>().Select(c => c.Top).Distinct().Count() == 1 && wide == 76, wide.ToString());
+            var fwSide = mb.Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnCylinderFwBack");
+            fwSide.UpdateState(a => 0, c => true);
+            Check("  Cylinder FW/Back not shown on the Axis Monitor", !fwSide.Visible);
         }
         form.Close();
         Console.WriteLine(fail == 0 ? "\nAXIS JOG BAR ALL PASS" : "\nAXIS JOG BAR " + fail + " FAILED");

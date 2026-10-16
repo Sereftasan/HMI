@@ -702,6 +702,45 @@ namespace Kaban.UI.Controls
         /// again, so the label came back. Hiding is a display decision and now says
         /// so, leaving the caption untouched to be shown again on expand.
         /// </summary>
+        private bool _twoLines;
+
+        /// <summary>
+        /// The caption on two lines (17 October: "0.1 / mm", "Safety / Bypass", "Cylinder /
+        /// FW/Back" - a narrower button): broken at its space nearest the middle, in every
+        /// language; a caption with a line break of its own is broken there.
+        /// </summary>
+        [Category("   Appearance"), DefaultValue(false),
+         Description("The caption on two lines, broken at its space nearest the middle (any language) - a narrower button.")]
+        public bool TwoLineCaption
+        {
+            get { return _twoLines; }
+            set { if (_twoLines == value) return; _twoLines = value; Invalidate(); }
+        }
+
+        /// <summary>A caption on two lines: at its own line break, else at the space nearest its middle.</summary>
+        public static string TwoLines(string caption)
+        {
+            if (string.IsNullOrEmpty(caption)) return caption ?? "";
+            var text = caption.Replace("\r\n", "\n").Trim();
+            if (text.IndexOf('\n') >= 0) return text;
+            int best = -1;
+            for (int i = 0; i < text.Length; i++)
+                if (text[i] == ' ' && (best < 0 || Math.Abs(i - text.Length / 2.0) < Math.Abs(best - text.Length / 2.0))) best = i;
+            return best < 0 ? text : text.Substring(0, best).TrimEnd() + "\n" + text.Substring(best + 1).TrimStart();
+        }
+
+        /// <summary>Two lines centred in the area (GDI centres a single line only).</summary>
+        private void DrawTwoLines(Graphics g, string caption, Rectangle area, Color colour)
+        {
+            var text = TwoLines(caption);
+            var flags = TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding;
+            var horizontal = AlignmentFlags() & (TextFormatFlags.Left | TextFormatFlags.Right | TextFormatFlags.HorizontalCenter);
+            var size = TextRenderer.MeasureText(g, text, this.Font, new Size(area.Width, int.MaxValue), flags);
+            int top = area.Top + Math.Max(0, (area.Height - size.Height) / 2);
+            TextRenderer.DrawText(g, text, this.Font, new Rectangle(area.Left, top, area.Width, Math.Min(area.Height, size.Height + 2)), colour,
+                                  flags | horizontal);
+        }
+
         [Category("   Appearance")]
         public bool ShowCaption
         {
@@ -1016,6 +1055,7 @@ namespace Kaban.UI.Controls
                     captionArea = new Rectangle(area.X + shift, area.Y,
                                                 Math.Max(10, area.Width - shift), area.Height);
                 }
+                if (_twoLines) { DrawTwoLines(g, _caption, captionArea, colour); return; }
                 TextRenderer.DrawText(g, _caption, this.Font, captionArea, colour,
                     AlignmentFlags() | TextFormatFlags.WordEllipsis | TextFormatFlags.NoPrefix);
                 return;
@@ -1130,7 +1170,7 @@ namespace Kaban.UI.Controls
         /// </summary>
         private Rectangle GlyphArea()
         {
-            bool lamps = HasLamp(Lamp1Address) || HasLamp(Lamp2Address);
+            bool lamps = HasLamp(Lamp1Address) || HasLamp(Lamp2Address) || HmiFunction != HmiButtonFunction.None;
             int pad = lamps ? LampBarInset + LampBarWidth + 2 : 2;
 
             switch (lamps ? LampDirection : LampDirectionPosition.Left)

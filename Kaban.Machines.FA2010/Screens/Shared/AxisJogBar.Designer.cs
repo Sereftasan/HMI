@@ -24,8 +24,9 @@
         // pages. Designed here ONCE: Manual Movement (above its tabs), Machine
         // Parameters > Axis and the Axis Monitor show this one. Its parts 14 from
         // the left and 13 from the top and the bottom, as the Home page's speed
-        // (16 October: "it looks too crowded around there"). 17 October: the step buttons
-        // 60 wide (they were 76) so Cylinder FW/Back still fits on one row of a manual page.
+        // (16 October: "it looks too crowded around there"). 17 October: the step buttons,
+        // Safety Bypass and Cylinder FW/Back with their captions on two lines (TwoLineCaption),
+        // narrower; every part 50 high for the two lines.
         // ===================================================================
         private void InitializeComponent()
         {
@@ -103,7 +104,7 @@
             this.speedOverrideHMI1.Name = "speedOverrideHMI1";
             this.speedOverrideHMI1.PlcNumber = 1;
             this.speedOverrideHMI1.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
-            this.speedOverrideHMI1.Size = new System.Drawing.Size(248, 42);
+            this.speedOverrideHMI1.Size = new System.Drawing.Size(248, 50);
             this.speedOverrideHMI1.Steps = new int[] {
         0,
         1,
@@ -209,7 +210,7 @@
             this.BtnJog.RoundLeftOnly = false;
             this.BtnJog.RoundRightOnly = false;
             this.BtnJog.ShowCaption = true;
-            this.BtnJog.Size = new System.Drawing.Size(60, 42);
+            this.BtnJog.Size = new System.Drawing.Size(50, 50);
             this.BtnJog.TabIndex = 38;
             this.BtnJog.ToolTipText = "";
             this.BtnJog.TranslationKey = "Btn_JOG";
@@ -269,7 +270,7 @@
             this.Btn10mm.Lamp2Address = "";
             this.Btn10mm.Lamp2Tip = "";
             this.Btn10mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn10mm.Location = new System.Drawing.Point(340, 13);
+            this.Btn10mm.Location = new System.Drawing.Point(330, 13);
             this.Btn10mm.LogAction = true;
             this.Btn10mm.Name = "Btn10mm";
             this.Btn10mm.OutputAddress = "";
@@ -281,9 +282,10 @@
             this.Btn10mm.RoundLeftOnly = false;
             this.Btn10mm.RoundRightOnly = false;
             this.Btn10mm.ShowCaption = true;
-            this.Btn10mm.Size = new System.Drawing.Size(60, 42);
+            this.Btn10mm.Size = new System.Drawing.Size(50, 50);
             this.Btn10mm.TabIndex = 40;
             this.Btn10mm.ToolTipText = "";
+            this.Btn10mm.TwoLineCaption = true;
             this.Btn10mm.TranslationKey = "Btn_10mm";
             this.Btn10mm.UseVisualStyleBackColor = false;
             this.Btn10mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
@@ -341,7 +343,7 @@
             this.Btn1mm.Lamp2Address = "";
             this.Btn1mm.Lamp2Tip = "";
             this.Btn1mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn1mm.Location = new System.Drawing.Point(406, 13);
+            this.Btn1mm.Location = new System.Drawing.Point(386, 13);
             this.Btn1mm.LogAction = true;
             this.Btn1mm.Name = "Btn1mm";
             this.Btn1mm.OutputAddress = "";
@@ -353,9 +355,10 @@
             this.Btn1mm.RoundLeftOnly = false;
             this.Btn1mm.RoundRightOnly = false;
             this.Btn1mm.ShowCaption = true;
-            this.Btn1mm.Size = new System.Drawing.Size(60, 42);
+            this.Btn1mm.Size = new System.Drawing.Size(50, 50);
             this.Btn1mm.TabIndex = 41;
             this.Btn1mm.ToolTipText = "";
+            this.Btn1mm.TwoLineCaption = true;
             this.Btn1mm.TranslationKey = "Btn_1mm";
             this.Btn1mm.UseVisualStyleBackColor = false;
             this.Btn1mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
@@ -413,7 +416,7 @@
             this.Btn01mm.Lamp2Address = "";
             this.Btn01mm.Lamp2Tip = "";
             this.Btn01mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn01mm.Location = new System.Drawing.Point(472, 13);
+            this.Btn01mm.Location = new System.Drawing.Point(442, 13);
             this.Btn01mm.LogAction = true;
             this.Btn01mm.Name = "Btn01mm";
             this.Btn01mm.OutputAddress = "";
@@ -425,9 +428,10 @@
             this.Btn01mm.RoundLeftOnly = false;
             this.Btn01mm.RoundRightOnly = false;
             this.Btn01mm.ShowCaption = true;
-            this.Btn01mm.Size = new System.Drawing.Size(60, 42);
+            this.Btn01mm.Size = new System.Drawing.Size(50, 50);
             this.Btn01mm.TabIndex = 42;
             this.Btn01mm.ToolTipText = "";
+            this.Btn01mm.TwoLineCaption = true;
             this.Btn01mm.TranslationKey = "Btn_01mm";
             this.Btn01mm.UseVisualStyleBackColor = false;
             this.Btn01mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
@@ -485,7 +489,7 @@
             this.Btn001mm.Lamp2Address = "";
             this.Btn001mm.Lamp2Tip = "";
             this.Btn001mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn001mm.Location = new System.Drawing.Point(538, 13);
+            this.Btn001mm.Location = new System.Drawing.Point(498, 13);
             this.Btn001mm.LogAction = true;
             this.Btn001mm.Name = "Btn001mm";
             this.Btn001mm.OutputAddress = "";
@@ -497,9 +501,10 @@
             this.Btn001mm.RoundLeftOnly = false;
             this.Btn001mm.RoundRightOnly = false;
             this.Btn001mm.ShowCaption = true;
-            this.Btn001mm.Size = new System.Drawing.Size(60, 42);
+            this.Btn001mm.Size = new System.Drawing.Size(50, 50);
             this.Btn001mm.TabIndex = 43;
             this.Btn001mm.ToolTipText = "";
+            this.Btn001mm.TwoLineCaption = true;
             this.Btn001mm.TranslationKey = "Btn_001mm";
             this.Btn001mm.UseVisualStyleBackColor = false;
             this.Btn001mm.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
@@ -557,7 +562,7 @@
             this.BtnSafetyBypass.Lamp2Address = "";
             this.BtnSafetyBypass.Lamp2Tip = "";
             this.BtnSafetyBypass.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.BtnSafetyBypass.Location = new System.Drawing.Point(604, 13);
+            this.BtnSafetyBypass.Location = new System.Drawing.Point(560, 13);
             this.BtnSafetyBypass.LogAction = true;
             this.BtnSafetyBypass.Name = "BtnSafetyBypass";
             this.BtnSafetyBypass.OutputAddress = "";
@@ -570,9 +575,10 @@
             this.BtnSafetyBypass.RoundLeftOnly = false;
             this.BtnSafetyBypass.RoundRightOnly = false;
             this.BtnSafetyBypass.ShowCaption = true;
-            this.BtnSafetyBypass.Size = new System.Drawing.Size(104, 42);
+            this.BtnSafetyBypass.Size = new System.Drawing.Size(64, 50);
             this.BtnSafetyBypass.TabIndex = 47;
             this.BtnSafetyBypass.ToolTipText = "";
+            this.BtnSafetyBypass.TwoLineCaption = true;
             this.BtnSafetyBypass.TranslationKey = "Btn_SafetyBypass";
             this.BtnSafetyBypass.UseVisualStyleBackColor = false;
             this.BtnSafetyBypass.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MaintenanceUser;
@@ -625,7 +631,7 @@
             this.BtnCylinderFwBack.Lamp2Address = "";
             this.BtnCylinderFwBack.Lamp2Tip = "";
             this.BtnCylinderFwBack.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.BtnCylinderFwBack.Location = new System.Drawing.Point(714, 13);
+            this.BtnCylinderFwBack.Location = new System.Drawing.Point(630, 13);
             this.BtnCylinderFwBack.LogAction = true;
             this.BtnCylinderFwBack.Name = "BtnCylinderFwBack";
             this.BtnCylinderFwBack.OutputAddress = "";
@@ -637,9 +643,10 @@
             this.BtnCylinderFwBack.RoundLeftOnly = false;
             this.BtnCylinderFwBack.RoundRightOnly = false;
             this.BtnCylinderFwBack.ShowCaption = true;
-            this.BtnCylinderFwBack.Size = new System.Drawing.Size(120, 42);
+            this.BtnCylinderFwBack.Size = new System.Drawing.Size(68, 50);
             this.BtnCylinderFwBack.TabIndex = 48;
             this.BtnCylinderFwBack.ToolTipText = "";
+            this.BtnCylinderFwBack.TwoLineCaption = true;
             this.BtnCylinderFwBack.TranslationKey = "Btn_CylinderFwBack";
             this.BtnCylinderFwBack.UseVisualStyleBackColor = false;
             this.BtnCylinderFwBack.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MaintenanceUser;
@@ -657,7 +664,7 @@
             this.Controls.Add(this.BtnSafetyBypass);
             this.Controls.Add(this.BtnCylinderFwBack);
             this.Name = "AxisJogBar";
-            this.Size = new System.Drawing.Size(848, 68);
+            this.Size = new System.Drawing.Size(712, 76);
             this.ResumeLayout(false);
         }
 
