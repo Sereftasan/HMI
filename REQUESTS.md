@@ -6,6 +6,10 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 17 October (night):
+  - The axis help by the moment of its code, visible: the code's own entry (alarm list, axis "?", the Axis page's code
+    cell, the PLC's error bit) starts with what the axis was doing, where to start, the reference sensor's drawing
+    details and a link to the step-by-step page; taken with the axis alarms off too; the template built into the program.
 - 17 October (evening):
   - 6b9c0fd - Coupling only while Manual Movement, Machine Parameters > Axis or the Axis Monitor is shown: another
     page lets every coupling go. Cylinder FW/Back off when Manual Movement is closed; its button on the Manual
