@@ -85,9 +85,15 @@ class CDC {
         Func<string, Control> page = n => (Control)Activator.CreateInstance(fa.GetType("Kaban.Machines.FA2010.Screens." + n));
         Func<Control, IEnumerable<Control>> all = null;
         all = c => c.Controls.Cast<Control>().SelectMany(k => new[] { k }.Concat(all(k)));
+        // (as the user saved them in Visual Studio after the fix: the names written and read back)
         var opts = all(page("Parameters.Options")).OfType<CheckBoxHMI>().Where(c => c.EnableConditions != SystemCondition.None).ToList();
-        Check("Options: the five 'with blade' switches enabled by the Mullion Notching option (MachineBit20)",
-              opts.Count == 5 && opts.All(c => c.EnableConditions == SystemCondition.MachineBit20), opts.Count + ": " + string.Join(",", opts.Select(c => c.Name)));
+        Check("Options: 'with Blade' enabled by the Mullion Notching option (MachineBit20)",
+              opts.Count == 1 && opts[0].Name == "optVithBlade" && opts[0].EnableConditions == SystemCondition.MachineBit20,
+              opts.Count + ": " + string.Join(",", opts.Select(c => c.Name)));
+        var clamps = all(page("Manual.ManualEntry_Conveyor")).OfType<CylinderUnitHMI>().Where(u => u.VisibilityConditions != SystemCondition.None).ToList();
+        Check("Entry Conveyor: Profile Clamping 1 - 5 shown by Conveyor With Clamps (MachineBit21, the user's new condition)",
+              clamps.Count == 5 && clamps.All(u => u.VisibilityConditions == SystemCondition.MachineBit21 && u.Name.StartsWith("unitProfile_Clamping_")),
+              clamps.Count + ": " + string.Join(",", clamps.Select(u => u.Name)));
         var moulds = all(page("Manual.ManualClamping_Moulds")).OfType<PneumaticPositioningHMI>().Where(r => r.VisibilityConditions != SystemCondition.None).ToList();
         Check("Clamping Moulds: the 10 back moulds shown by the Clamping Mould option (MachineBit19)",
               moulds.Count == 10 && moulds.All(r => r.VisibilityConditions == SystemCondition.MachineBit19 && r.TitleTextKey.Contains("Back")), moulds.Count.ToString());
