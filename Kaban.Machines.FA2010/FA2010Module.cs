@@ -111,6 +111,9 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("MullionNotchingOption"),
                 ctx.Scoped("MullionNotchingOption"), "Mullion Notching Option", plc1, "L5",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("ConveyorWithClamps"),
+                ctx.Scoped("ConveyorWithClamps"), "Conveyor With Clamps", plc1, "L27",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>

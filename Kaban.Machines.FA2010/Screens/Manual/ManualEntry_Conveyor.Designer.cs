@@ -39,7 +39,6 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitConveyor_Motor
             // 
-            // An inverter's motor (14 October): its run lamp before its name, its fault code D666 not shown - its alarm and help come from it.
             this.unitConveyor_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
             this.unitConveyor_Motor.BackColor = System.Drawing.Color.White;
             this.unitConveyor_Motor.BaseOffset = 0;
@@ -72,9 +71,9 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Motor.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
             this.unitConveyor_Motor.CommandBAddress = "M639";
             this.unitConveyor_Motor.ConfirmationNeeded = false;
+            this.unitConveyor_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitConveyor_Motor.ErrorAddress = "M827";
             this.unitConveyor_Motor.FaultCodeAddress = "D666";
-            this.unitConveyor_Motor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitConveyor_Motor.Lamp1AAddress = "";
             this.unitConveyor_Motor.Lamp1ATipKey = "";
             this.unitConveyor_Motor.Lamp1BAddress = "M221";
@@ -102,8 +101,8 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitConveyor_Motor.PositionUnitType = Kaban.Core.Enums.UnitType.None;
             this.unitConveyor_Motor.RelayAAddress = "";
             this.unitConveyor_Motor.RelayBAddress = "";
-            this.unitConveyor_Motor.RunLampAddress = "M203";
             this.unitConveyor_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitConveyor_Motor.RunLampAddress = "M203";
             this.unitConveyor_Motor.Size = new System.Drawing.Size(360, 64);
             this.unitConveyor_Motor.TabIndex = 0;
             this.unitConveyor_Motor.TitleTextKey = "Conveyor Motor";
@@ -270,7 +269,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_1.TabIndex = 8;
             this.unitProfile_Clamping_1.TitleTextKey = "Profile Clamping 1";
             this.unitProfile_Clamping_1.TitleTipKey = "";
-            this.unitProfile_Clamping_1.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Clamping_1.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MachineBit21;
             // 
             // unitProfile_Clamping_2
             // 
@@ -339,7 +338,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_2.TabIndex = 9;
             this.unitProfile_Clamping_2.TitleTextKey = "Profile Clamping 2";
             this.unitProfile_Clamping_2.TitleTipKey = "";
-            this.unitProfile_Clamping_2.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Clamping_2.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MachineBit21;
             // 
             // unitProfile_Clamping_3
             // 
@@ -412,7 +411,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_3.TitleTextKey = "Profile Clamping 3";
             this.unitProfile_Clamping_3.TitleTipKey = "";
             this.unitProfile_Clamping_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-            this.unitProfile_Clamping_3.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Clamping_3.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MachineBit21;
             // 
             // unitProfile_Clamping_4
             // 
@@ -483,7 +482,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_4.TabIndex = 11;
             this.unitProfile_Clamping_4.TitleTextKey = "Profile Clamping 4";
             this.unitProfile_Clamping_4.TitleTipKey = "";
-            this.unitProfile_Clamping_4.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Clamping_4.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MachineBit21;
             // 
             // unitProfile_Clamping_5
             // 
@@ -554,7 +553,7 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.unitProfile_Clamping_5.TabIndex = 12;
             this.unitProfile_Clamping_5.TitleTextKey = "Profile Clamping 5";
             this.unitProfile_Clamping_5.TitleTipKey = "";
-            this.unitProfile_Clamping_5.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitProfile_Clamping_5.VisibilityConditions = Kaban.Core.Enums.SystemCondition.MachineBit21;
             // 
             // unitProfile_Clamping_6
             // 
