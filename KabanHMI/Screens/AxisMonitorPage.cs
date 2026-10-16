@@ -64,7 +64,7 @@ namespace Kaban.UI.Screens
         /// for the machines whose axes are listed - made once, its parts in rows when the
         /// side page is narrower than it.
         /// </summary>
-        private readonly Panel _machineBars = new Panel { Dock = DockStyle.Top, Height = 0, BackColor = Color.White, Name = "monitorMachineBars", Padding = new Padding(4, 4, 0, 4) };
+        private readonly Panel _machineBars = new Panel { Dock = DockStyle.Top, Height = 0, BackColor = Color.White, Name = "monitorMachineBars", Padding = Padding.Empty };   // the room around a bar's parts is the bar's own
         private readonly Dictionary<string, MachineBarHMI> _barOf = new Dictionary<string, MachineBarHMI>();
 
         /// <summary>The machines' bars shown (tests).</summary>

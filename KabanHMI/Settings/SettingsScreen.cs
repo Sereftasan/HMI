@@ -219,12 +219,15 @@ namespace Kaban.UI.Settings
             }
         }
 
-        /// <summary>The bar in its place: lined up with the tabs, its parts in rows when the screen is narrower.</summary>
+        /// <summary>
+        /// The bar in its place, its parts in rows when the screen is narrower. The room
+        /// around its parts is the bar's own (FA2010's: 14 from the left, 13 above and
+        /// below, as the Home page's speed - 16 October), nothing added here.
+        /// </summary>
         private void FitTopBar()
         {
             if (_topBar == null || _topBarHolder == null) return;
-            int left = Kaban.UI.Controls.UiScale.For(_topBarHolder, 8), top = Kaban.UI.Controls.UiScale.For(_topBarHolder, 6);
-            int bottom = Kaban.UI.Controls.UiScale.For(_topBarHolder, 4);
+            int left = 0, top = 0, bottom = 0;
             _topBar.Location = new Point(left, top);
             int h = _topBar.Height;
             var bar = _topBar as Kaban.UI.Controls.MachineBarHMI;

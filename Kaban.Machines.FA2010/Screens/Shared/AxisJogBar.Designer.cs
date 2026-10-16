@@ -19,8 +19,10 @@
         // FA2010's AXES' MANUAL MOVEMENT BAR (14 October): the speed of the axes'
         // manual movement (D409) and the jog step - JOG (continuous) or 10 / 1 /
         // 0.1 / 0.01 mm - and Safety Bypass, as the user set them on the manual
-        // pages. Designed here ONCE: the manual pages with axes, Machine
-        // Parameters > Axis and the Axis Monitor show this one.
+        // pages. Designed here ONCE: Manual Movement (above its tabs), Machine
+        // Parameters > Axis and the Axis Monitor show this one. Its parts 14 from
+        // the left and 13 from the top and the bottom, as the Home page's speed
+        // (16 October: "it looks too crowded around there").
         // ===================================================================
         private void InitializeComponent()
         {
@@ -92,7 +94,7 @@
             this.speedOverrideHMI1.Address = "D409";
             this.speedOverrideHMI1.BackColor = System.Drawing.Color.White;
             this.speedOverrideHMI1.FallbackText = "Speed";
-            this.speedOverrideHMI1.Location = new System.Drawing.Point(0, 0);
+            this.speedOverrideHMI1.Location = new System.Drawing.Point(14, 13);
             this.speedOverrideHMI1.LogAction = true;
             this.speedOverrideHMI1.Name = "speedOverrideHMI1";
             this.speedOverrideHMI1.PlcNumber = 1;
@@ -191,7 +193,7 @@
             this.BtnJog.Lamp2Address = "";
             this.BtnJog.Lamp2Tip = "";
             this.BtnJog.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.BtnJog.Location = new System.Drawing.Point(284, 0);
+            this.BtnJog.Location = new System.Drawing.Point(298, 13);
             this.BtnJog.LogAction = true;
             this.BtnJog.Name = "BtnJog";
             this.BtnJog.OutputAddress = "";
@@ -263,7 +265,7 @@
             this.Btn10mm.Lamp2Address = "";
             this.Btn10mm.Lamp2Tip = "";
             this.Btn10mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn10mm.Location = new System.Drawing.Point(366, 0);
+            this.Btn10mm.Location = new System.Drawing.Point(380, 13);
             this.Btn10mm.LogAction = true;
             this.Btn10mm.Name = "Btn10mm";
             this.Btn10mm.OutputAddress = "";
@@ -335,7 +337,7 @@
             this.Btn1mm.Lamp2Address = "";
             this.Btn1mm.Lamp2Tip = "";
             this.Btn1mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn1mm.Location = new System.Drawing.Point(448, 0);
+            this.Btn1mm.Location = new System.Drawing.Point(462, 13);
             this.Btn1mm.LogAction = true;
             this.Btn1mm.Name = "Btn1mm";
             this.Btn1mm.OutputAddress = "";
@@ -407,7 +409,7 @@
             this.Btn01mm.Lamp2Address = "";
             this.Btn01mm.Lamp2Tip = "";
             this.Btn01mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn01mm.Location = new System.Drawing.Point(530, 0);
+            this.Btn01mm.Location = new System.Drawing.Point(544, 13);
             this.Btn01mm.LogAction = true;
             this.Btn01mm.Name = "Btn01mm";
             this.Btn01mm.OutputAddress = "";
@@ -479,7 +481,7 @@
             this.Btn001mm.Lamp2Address = "";
             this.Btn001mm.Lamp2Tip = "";
             this.Btn001mm.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.Btn001mm.Location = new System.Drawing.Point(612, 0);
+            this.Btn001mm.Location = new System.Drawing.Point(626, 13);
             this.Btn001mm.LogAction = true;
             this.Btn001mm.Name = "Btn001mm";
             this.Btn001mm.OutputAddress = "";
@@ -551,7 +553,7 @@
             this.BtnSafetyBypass.Lamp2Address = "";
             this.BtnSafetyBypass.Lamp2Tip = "";
             this.BtnSafetyBypass.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Bottom;
-            this.BtnSafetyBypass.Location = new System.Drawing.Point(717, 0);
+            this.BtnSafetyBypass.Location = new System.Drawing.Point(731, 13);
             this.BtnSafetyBypass.LogAction = true;
             this.BtnSafetyBypass.Name = "BtnSafetyBypass";
             this.BtnSafetyBypass.OutputAddress = "";
@@ -582,7 +584,7 @@
             this.Controls.Add(this.Btn001mm);
             this.Controls.Add(this.BtnSafetyBypass);
             this.Name = "AxisJogBar";
-            this.Size = new System.Drawing.Size(826, 42);
+            this.Size = new System.Drawing.Size(854, 68);
             this.ResumeLayout(false);
         }
 
