@@ -6,6 +6,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (evening):
+  - Structured data types (Mitsubishi's) in the PLC Monitor: defined in "Structured data types..." (name, length,
+    members at their offsets), chosen like a simple data type; an array of them steps by its length (R0, R16 ...).
 - 19 October (later):
   - The row's "go to reference" (B0, B11 ...) read as the PLC's homing in progress: homing whatever the module does meanwhile.
   - One help per fault: an axis code's page holds the moment, the checks and the code's entry of the manual (last step);
