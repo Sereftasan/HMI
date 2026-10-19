@@ -161,7 +161,10 @@ namespace Kaban.UI.Forms
                 if (_members.IsCurrentCellDirty && _members.CurrentCell is DataGridViewComboBoxCell) _members.CommitEdit(DataGridViewDataErrorContexts.Commit);
             };
             _members.DataError += (s, e) => { e.ThrowException = false; };
+            // the row chosen moves Up / Down: both events, as either may come first (Windows changes
+            // the selection before the current cell)
             _members.SelectionChanged += (s, e) => UpdateButtons();
+            _members.CurrentCellChanged += (s, e) => UpdateButtons();
             _members.CellClick += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0 || _members.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly) return;
@@ -320,32 +323,56 @@ namespace Kaban.UI.Forms
             AddMemberRow(m);
             _size.Value = Math.Min(_size.Maximum, t.Size);
             _filling = false;
-            _members.ClearSelection();
-            _members.CurrentCell = _members.Rows[_members.Rows.Count - 1].Cells["Name"];
             UpdateState();
+            Choose(_members.Rows.Count - 1);
         }
 
-        private void RemoveMember()
+        /// <summary>
+        /// The member chosen: the selected row (the current cell follows it a moment later on
+        /// Windows - Up and Down took the row chosen before), else the current cell's.
+        /// </summary>
+        internal int SelectedMember
+        {
+            get
+            {
+                if (_members.SelectedRows.Count > 0) return _members.SelectedRows[0].Index;
+                return _members.CurrentCell != null ? _members.CurrentCell.RowIndex : -1;
+            }
+        }
+
+        /// <summary>Makes a member's row the chosen one (selected and current).</summary>
+        private void Choose(int row)
+        {
+            if (row < 0 || row >= _members.Rows.Count) { UpdateButtons(); return; }
+            _members.CurrentCell = _members.Rows[row].Cells["Name"];
+            _members.ClearSelection();
+            _members.Rows[row].Selected = true;
+            UpdateButtons();
+        }
+
+        internal void RemoveMember()
         {
             var t = Current;
-            int i = _members.CurrentRow != null ? _members.CurrentRow.Index : -1;
+            int i = SelectedMember;
             if (t == null || i < 0 || i >= t.Members.Count) return;
+            if (_members.IsCurrentCellInEditMode) _members.EndEdit();
             t.Members.RemoveAt(i);
             ShowCurrent();
-            if (_members.Rows.Count > 0) _members.CurrentCell = _members.Rows[Math.Min(i, _members.Rows.Count - 1)].Cells["Name"];
+            Choose(Math.Min(i, _members.Rows.Count - 1));
         }
 
-        private void MoveMember(int by)
+        internal void MoveMember(int by)
         {
             var t = Current;
-            int i = _members.CurrentRow != null ? _members.CurrentRow.Index : -1;
+            int i = SelectedMember;
             int j = i + by;
-            if (t == null || i < 0 || j < 0 || j >= t.Members.Count) return;
+            if (t == null || i < 0 || i >= t.Members.Count || j < 0 || j >= t.Members.Count) return;
+            if (_members.IsCurrentCellInEditMode) _members.EndEdit();
             var m = t.Members[i];
             t.Members.RemoveAt(i);
             t.Members.Insert(j, m);
             ShowCurrent();
-            _members.CurrentCell = _members.Rows[j].Cells["Name"];
+            Choose(j);
         }
 
         // ---- what it says -----------------------------------------------------------------
@@ -365,11 +392,12 @@ namespace Kaban.UI.Forms
         private void UpdateButtons()
         {
             var t = Current;
-            int i = _members.CurrentRow != null ? _members.CurrentRow.Index : -1;
+            int i = SelectedMember;
+            bool chosen = t != null && i >= 0 && i < _members.Rows.Count;
             _copy.Enabled = _delete.Enabled = _addMember.Enabled = t != null;
-            _removeMember.Enabled = t != null && i >= 0;
-            _up.Enabled = t != null && i > 0;
-            _down.Enabled = t != null && i >= 0 && i < _members.Rows.Count - 1;
+            _removeMember.Enabled = chosen;
+            _up.Enabled = chosen && i > 0;
+            _down.Enabled = chosen && i < _members.Rows.Count - 1;
         }
 
         /// <summary>The first structure that is not complete, and why (null: all are).</summary>

@@ -202,6 +202,23 @@ class PS {
             Check("opened on the row's structure: its 9 members listed with their offsets and bits",
                   cur != null && cur.Name == "FrezeAdim" && membersGrid.Rows.Count == 9 && Convert.ToString(membersGrid.Rows[1].Cells["Offset"].Value) == "1" &&
                   Convert.ToString(membersGrid.Rows[8].Cells["Bit"].Value) == "3" && membersGrid.Rows[1].Cells["Bit"].ReadOnly);
+            // 19 October: "Up and Down button enabling doesn't work well - they get enabled and disabled
+            // at the wrong positions of the selected label" (Windows selects the row before it moves the
+            // current cell: the buttons followed the row chosen before)
+            var up = (Control)Get(f, "_up"); var down = (Control)Get(f, "_down"); var remove = (Control)Get(f, "_removeMember");
+            Func<int, string> pick = i => { membersGrid.ClearSelection(); membersGrid.Rows[i].Selected = true; Application.DoEvents();
+                                            return (up.Enabled ? "U" : "-") + (down.Enabled ? "D" : "-") + (remove.Enabled ? "R" : "-"); };
+            string first = pick(0), last = pick(8), middle = pick(4);
+            Check("Up / Down follow the row selected (the current cell still on another): the first only down, the last only up, between both",
+                  first == "-DR" && last == "U-R" && middle == "UDR", first + " " + last + " " + middle);
+            Call(f, "MoveMember", -1);
+            Check("  Up: the member one higher, still the one chosen", cur.Members[3].Name == "I" && (int)Get(f, "SelectedMember") == 3 && up.Enabled && down.Enabled,
+                  cur.Members[3].Name + " " + Get(f, "SelectedMember"));
+            pick(1); Call(f, "MoveMember", -1);
+            Check("  Up to the top: Up off there", cur.Members[0].Name == "X" && (int)Get(f, "SelectedMember") == 0 && !up.Enabled && down.Enabled);
+            Call(f, "MoveMember", +1); pick(3); Call(f, "MoveMember", +1);
+            Check("  back down: the order as it was", string.Join(",", cur.Members.Select(m => m.Name)) == "HareketKodu,X,Y,Z,I,J,K,Hiz,Bitti",
+                  string.Join(",", cur.Members.Select(m => m.Name)));
             Call(f, "NewType", (object)null);
             cur = (StructuredTypes.Type)Get(f, "Current");
             Call(f, "AddMember"); Call(f, "AddMember");
