@@ -11,7 +11,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     read another's value for that scan) - now by the batch it was read with. The likely cause of all three.
   - What the axis was doing: the motion module's word first (standby, BUSY OFF: standing still), both jog commands ON
     is no jog; the jog commands still shown, "they did not move it" when so.
-  - The reference sensor read at the drawings' input (SN.1 X100 at M248), not at the row's lamp (M330).
+  - (Taken back on 19 October: the rows' M330, M341, M342 ARE the sensors - M248... are overwritten in the PLC.)
+- 19 October:
+  - The reference sensor read at the Axis row's address again (M330 ...), the drawings' details kept.
+  - The holding brake check only for a vertical axis (up / down arrows); the three angle axes have left / right arrows.
+  - AxisUnitHMI: its row's arrows (it showed left / right on every axis).
+  - The motion module's own software stroke limits (Pr.13 / Pr.12) in the help, beside the Axis page's (0 ... 0 on FA2010).
 - 17 October (night):
   - The axis help by the moment of its code, visible: the code's own entry (alarm list, axis "?", the Axis page's code
     cell, the PLC's error bit) starts with what the axis was doing, where to start, the reference sensor's drawing
