@@ -13,6 +13,7 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     is no longer lengthened by itself.
   - 8e5794b - PLC Monitor: "Reset (0 into its devices)..." in the rows' right-click menu: a structure's every label,
     an array's every element, or one element / label; a Bit label only its bit. Asked first.
+    3f21cdd - a structure's whole length is reset, the words no label uses too.
   - (The PLC Monitor's toolbar button for the structures: left out, as asked - they stay in the + menu.)
 - 19 October (night) - structured data types:
   - 0746a59 - Each machine its own: StructuredTypes.csv beside its PlcLabels.csv (a mounted machine's in its folder,
