@@ -6,6 +6,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (later still):
+  - 1c7e2eb - The cylinder help: the manual is a step of its own on the left (after the last one, its details 1.1 - 1.8),
+    lit while the manual is read; a click unfolds it.
 - 19 October (late night) - structured data types:
   - bb26a32 - Up / Down / Remove without the "reentrant call to SetCurrentCellAddressCore" error.
   - 20214df - Space between the Comment line and the labels' buttons.
