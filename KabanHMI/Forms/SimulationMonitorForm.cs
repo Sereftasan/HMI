@@ -1218,6 +1218,9 @@ namespace Kaban.UI.Forms
                     rowMenu.Items.Add(Item(head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
                                                         : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
                                            (s2, e2) => ToggleArray(mon, sh, head)));
+                // 19 October: 0 into every device of the rows chosen (a structure's members, an array's elements)
+                bool devices = SelectedIndices(sh).Any(i => i < sh.Rows.Count && sh.Rows[i].IsDevice);
+                rowMenu.Items.Add(Item(T("Mnu_MonReset", "Reset (0 into its devices)..."), (s2, e2) => ResetSelected(mon, sh), devices));
                 if (sel)
                 {
                     var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
@@ -2630,6 +2633,99 @@ namespace Kaban.UI.Forms
 
             if (!mon.IsSimulated)
                 AuditLogger.Log("monitor wrote " + (text ?? "").Trim() + " to " + row.Address + " on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
+        }
+
+        /// <summary>
+        /// RESET (19 October: "a Reset in the labels' right-click menu - we need to be able to reset
+        /// all the values of a structured label and of an array easily"): 0 into every device of
+        /// the rows chosen - an array's every element, a structure's every member; a Bit member
+        /// only its bit, the rest of its word kept - after asking.
+        /// </summary>
+        internal void ResetSelected(MonitorTab mon, Sheet sh, bool ask = true)
+        {
+            if (mon == null || sh == null) return;
+            var chosen = SelectedIndices(sh).Where(i => i >= 0 && i < sh.Rows.Count).Select(i => sh.Rows[i]).Where(r => r.IsDevice).ToList();
+            // a row under another one chosen is reset with it
+            chosen = chosen.Where(r => !chosen.Any(o => !ReferenceEquals(o, r) && IsUnder(r, o))).ToList();
+            if (chosen.Count == 0) return;
+
+            int notRead;
+            var words = ResetWords(mon, chosen, out notRead);
+            if (words.Count == 0)
+            {
+                SetStatus(T("Msg_MonBitNotRead", "Its word is not read yet - nothing written."));
+                return;
+            }
+            string labels = string.Join(", ", chosen.Select(r => string.IsNullOrWhiteSpace(r.EffectiveLabel) ? r.ShownAddress : r.EffectiveLabel.Trim()));
+            if (ask)
+            {
+                string range = words.Count == 1 ? words[0].Key : words[0].Key + " … " + words[words.Count - 1].Key;
+                string question = string.Format(T("Msg_MonReset", "Write 0 into the {0} device(s) of {1} ({2})?"), words.Count, labels, range);
+                if (notRead > 0)
+                    question += "\r\n\r\n" + string.Format(T("Msg_MonResetNotRead", "{0} bit(s) stay as they are: their word is not read yet."), notRead);
+                if (!mon.IsSimulated)
+                    question += "\r\n\r\n" + T("Msg_MonResetLive", "This is the machine's PLC: it uses the new values at once.");
+                if (MessageBox.Show(DialogOwner, question, Text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            }
+
+            var driver = mon.WriteDriver;
+            if (driver == null)
+            {
+                MessageBox.Show(DialogOwner, PlcManager.Instance.DescribeAccess(mon.Station), Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: reset (0) " + labels))
+                foreach (var w in words)
+                {
+                    driver.Write(w.Key, w.Value);
+                    mon.Values[w.Key] = w.Value;
+                }
+            if (!mon.IsSimulated)
+                AuditLogger.Log("monitor reset " + words.Count + " device(s) of " + labels + " to 0 on " + PlcEndpointNaming.CaptionWithStation(mon.Endpoint) + ".");
+            SetStatus(string.Format(T("Msg_MonResetDone", "{0} device(s) set to 0."), words.Count));
+            Render(mon, sh);
+        }
+
+        /// <summary>A row inside another: an element of its array, a member of its structure (at any depth).</summary>
+        private static bool IsUnder(WatchRow r, WatchRow above)
+        {
+            for (var h = r.Head; h != null; h = h.Head) if (ReferenceEquals(h, above)) return true;
+            return false;
+        }
+
+        /// <summary>The rows with values of their own under a row: an array's elements', a structure's members' - or the row itself.</summary>
+        private static IEnumerable<WatchRow> ValueRows(WatchRow r)
+        {
+            if (r.IsArray && r.Elements != null) return r.Elements.SelectMany(ValueRows);
+            if (r.Structure != null) return (r.Members ?? new List<WatchRow>()).SelectMany(ValueRows);
+            return r.IsDevice ? new[] { r } : new WatchRow[0];
+        }
+
+        /// <summary>
+        /// The words a reset writes, in order: 0 for every word of the rows' values; a Bit member's
+        /// word as last read with its bit cleared (not read yet: left, and counted).
+        /// </summary>
+        internal static List<KeyValuePair<string, int>> ResetWords(MonitorTab mon, IEnumerable<WatchRow> rows, out int notRead)
+        {
+            notRead = 0;
+            var value = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            var order = new List<string>();
+            var bits = new List<WatchRow>();
+            foreach (var leaf in rows.SelectMany(ValueRows))
+            {
+                if (leaf.BitIndex >= 0) { bits.Add(leaf); continue; }
+                foreach (var a in WordsOf(leaf))
+                    if (!value.ContainsKey(a)) { value[a] = 0; order.Add(a); }
+            }
+            foreach (var b in bits)
+            {
+                int now;
+                if (value.TryGetValue(b.Address, out now)) { value[b.Address] = now & ~(1 << b.BitIndex); continue; }
+                if (mon == null || !mon.Values.TryGetValue(b.Address, out now)) { notRead++; continue; }
+                value[b.Address] = now & ~(1 << b.BitIndex);
+                order.Add(b.Address);
+            }
+            return order.Select(a => new KeyValuePair<string, int>(a, value[a])).ToList();
         }
 
         /// <summary>

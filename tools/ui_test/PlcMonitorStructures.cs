@@ -170,6 +170,53 @@ class PS {
         Call(form, "WriteValue", mon, els[1], "5"); sim.TryRead("R16", out v);
         Check("a step's own line has no value: nothing written to R16", v == 2, v.ToString());
 
+        // 19 October: "a Reset in the labels' right-click menu - we need to reset all the values of a
+        // structured label and of an array's devices easily"
+        Console.WriteLine("--- reset: 0 into its devices ---");
+        Action fill = () =>
+        {
+            for (int i = 0; i < 48; i++) sim.Write("R" + i, i + 1);
+            foreach (var w in new[] { 15, 31, 47 }) sim.Write("R" + w, 0x00FF);
+            for (int i = 100; i < 105; i++) sim.Write("D" + i, i);
+            Call(form, "RefreshValues"); Application.DoEvents();
+        };
+        Func<string, int> R = a => { int x; sim.TryRead(a, out x); return x; };
+        var words4 = Row("D100", "Word [Signed]", 4, "Counts");
+        Rows(sh).Insert(Rows(sh).Count - 1, words4);
+        Call(form, "Render", mon, sh);
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(rec) });
+        var cms = grid.ContextMenuStrip;
+        typeof(ToolStripDropDown).GetMethod("OnOpening", Any).Invoke(cms, new object[] { new System.ComponentModel.CancelEventArgs() });
+        var resetItem = cms.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text.StartsWith("Reset"));
+        Check("the row menu: Reset", resetItem != null && resetItem.Enabled, string.Join(" | ", cms.Items.OfType<ToolStripItem>().Select(i => i.Text)));
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("the array of 3 steps reset: every member's word 0 (R0 ... R13, R16 ... R29, R32 ... R45)",
+              Enumerable.Range(0, 14).Concat(Enumerable.Range(16, 14)).Concat(Enumerable.Range(32, 14)).All(i => R("R" + i) == 0));
+        Check("  the bit members only their bit: R15 / R31 / R47 0x00F7 (bit 3 off, the rest kept); no member's word (R14, R30, R46) left as it was",
+              R("R15") == 0xF7 && R("R31") == 0xF7 && R("R47") == 0xF7 && R("R14") == 15 && R("R30") == 31 && R("R46") == 47,
+              R("R15").ToString("X") + " " + R("R14"));
+        Check("  shown at once: step 1's X 0", Shown(mon, m1[1]) == "0", Shown(mon, m1[1]));
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(els[1]) });
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("one step (Recipe[1]): its devices only (R16 ... R29, R31's bit), the others kept",
+              Enumerable.Range(16, 14).All(i => R("R" + i) == 0) && R("R31") == 0xF7 && R("R0") == 1 && R("R15") == 0xFF && R("R32") == 33, R("R0") + " " + R("R16"));
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(m1[1]), Rows(sh).IndexOf(els[1]) });
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("  a step and one of its members chosen: the step once", Enumerable.Range(16, 14).All(i => R("R" + i) == 0) && R("R31") == 0xF7);
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(m1[1]) });
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("one member (Recipe[1].X, a double word): R17 and R18 only", R("R17") == 0 && R("R18") == 0 && R("R16") == 17 && R("R19") == 20);
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(words4) });
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("an array of 4 words (D100): D100 ... D103, not D104", R("D100") == 0 && R("D103") == 0 && R("D104") == 104, R("D100") + " " + R("D104"));
+        Rows(sh).Remove(words4);
+        Call(form, "Render", mon, sh);
+
         Console.WriteLine("--- kept, and read back ---");
         var lines = (List<string>)Call(MonType, "Serialize", mon);
         Check("kept as ONE line - the type's name and the count; steps and members are made from it",
