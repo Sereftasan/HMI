@@ -110,9 +110,10 @@ namespace Kaban.UI.Forms
             _down = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_StructDown", "Move the label chosen down"), _tips);
             Kaban.UI.Helpers.Shortcuts.Set(_up, Keys.Control | Keys.Up, _tips, T("Tip_StructUp", "Move the label chosen up"));
             Kaban.UI.Helpers.Shortcuts.Set(_down, Keys.Control | Keys.Down, _tips, T("Tip_StructDown", "Move the label chosen down"));
-            Bar(right, x, 118, _addMember, _removeMember, _up, _down);
+            // 19 October: "leave some space between the comment line and the table's buttons"
+            Bar(right, x, 136, _addMember, _removeMember, _up, _down);
 
-            _members.SetBounds(x, 158, w, right.Height - 158 - 30);
+            _members.SetBounds(x, 176, w, right.Height - 176 - 30);
             _members.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _members.AllowUserToAddRows = false;
             _members.AllowUserToDeleteRows = false;
