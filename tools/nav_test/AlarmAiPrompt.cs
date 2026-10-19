@@ -133,9 +133,12 @@ class AAP {
               stepText.Contains("The parts of this movement") && !stepText.Contains("<svg") && !stepText.Contains("<td") && !stepText.Contains("{{") &&
               p.Contains("- its text below, whole"), stepText.Length + " characters");
         Check("  before the other documents' texts (the specific first), with its style sheet for the pages",
-              steps > 0 && steps < p.IndexOf("### Cylinder troubleshooting - Cutting Right Front (its text)", StringComparison.Ordinal) &&
+              steps > 0 && steps < p.IndexOf("(its text - inside that page, folded at its end)", StringComparison.Ordinal) &&
               p.Contains("### Its style sheet (for the printable pages, when I ask for them)") && p.Contains("```css"));
-        Check("  the other document (the cylinder manual) as text, shortened", p.Contains("### Cylinder troubleshooting - Cutting Right Front (its text)"));
+        // 18 October: the manual is folded inside the step-by-step page - its text after the steps'
+        Check("  the cylinder manual (inside the page) as text after it, shortened; not in the steps' text",
+              System.Text.RegularExpressions.Regex.IsMatch(p, "### .*The cylinder manual for this cylinder.*for its valve and feedback \\(its text - inside that page, folded at its end\\)") &&
+              !stepText.Contains("Remedies for cylinder movement failure") && p.Contains("Remedies for cylinder movement failure"));
         Check("  a briefing a chat reads whole (20 000 - 120 000 characters)", p.Length > 20000 && p.Length < 120000, p.Length + " characters");
         // the HMI's own alarm for the movement ("M873.1" in the feedback): what it saw, the states at the alarm
         var gen = new AlarmItem(item.AlarmCode + ".2", item.TranslationKey, AlarmSeverity.Fault)

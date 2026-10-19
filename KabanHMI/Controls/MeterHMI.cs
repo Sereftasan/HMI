@@ -711,17 +711,11 @@ namespace Kaban.UI.Controls
         {
             base.OnClick(e);
             if (!HasHelp || IsStale) return;
-            // what the axis was doing when the code came (16 October): that page first, the code's entry second
-            var moment = AlarmGeneration.AxisStepsForCode(PlcNumber, Address, _raw);
-            // the code's entry with the moment's hint at its top (17 October)
-            _help.MomentHint = moment != null ? moment.AxisMoment : null;
-            if (moment != null)
-            {
-                var docs = new System.Collections.Generic.List<TroubleshootingCatalog.HelpDocument> { moment, _help };
-                var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), d), null, FindForm());
-                UiStyle.ShowPopup(menu, this, new Point(0, Height));
-                return;
-            }
+            // the code's one page: with what the axis was doing when it came, when the HMI knows (18 October)
+            _help.AxisMoment = null;
+            _help.StepByStep = false;
+            _help.AlarmTime = null;
+            AlarmGeneration.WithMoment(_help, AlarmGeneration.MomentForCode(PlcNumber, Address, _raw));
             Kaban.UI.Helpers.AlarmHelpLinks.Open(FindForm(), _help);
         }
 

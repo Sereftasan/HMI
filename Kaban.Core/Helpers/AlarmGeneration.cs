@@ -1030,33 +1030,15 @@ namespace Kaban.Core.Helpers
             return null;
         }
 
-        /// <summary>The help entry of a moment: "Step by step - Robot X - homing" (null when there is nothing to tell).</summary>
+        /// <summary>
+        /// The code's one help with its moment: "Servo alarm 50.1 - Thermal overload error 1  (Robot X)",
+        /// the moment, the checks and the manual's entry on one page (null when there is nothing to tell).
+        /// </summary>
         public static TroubleshootingCatalog.HelpDocument AxisStepsDocument(AxisMoment m)
         {
-            if (m == null || m.Motion == AxisMotion.Unknown && !m.RefKnown) return null;
-            var doc = new TroubleshootingCatalog.HelpDocument
-            {
-                FileName = AxisCodeHelp.DocumentFor(m.Kind),
-                StepByStep = true,
-                AxisMoment = m,
-                AlarmTime = m.AlarmTime,
-                Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
-                        (string.IsNullOrEmpty(m.Unit) ? "" : " - " + m.Unit) + " - " +
-                        LanguageManager.GetString("Hlp_AxisMotion_" + m.Motion, MotionWords(m.Motion))
-            };
-            return doc.Exists && !string.IsNullOrEmpty(AxisSteps.TemplatePath(LanguageManager.CurrentLanguage)) ? doc : null;
-        }
-
-        private static string MotionWords(AxisMotion motion)
-        {
-            switch (motion)
-            {
-                case AxisMotion.Standing: return "standing still";
-                case AxisMotion.Homing: return "homing";
-                case AxisMotion.Manual: return "moved by hand";
-                case AxisMotion.Automatic: return "in the automatic cycle";
-                default: return "at the alarm";
-            }
+            if (m == null) return null;
+            var doc = AxisCodeHelp.Document(m.Kind, m.Code, m.Unit);
+            return WithMoment(doc, m) ? doc : null;
         }
 
         private static AlarmItem RaiseAxis(Axis x, AxisCodeKind kind, int value, DateTime now, AxisMoment moment = null)
@@ -1159,15 +1141,28 @@ namespace Kaban.Core.Helpers
             return null;
         }
 
-        /// <summary>The code's entry with its moment's hint at the top (17 October).</summary>
+        /// <summary>The code's entry, as its one page with the moment when the HMI knows it (18 October).</summary>
         private static TroubleshootingCatalog.HelpDocument WithHint(TroubleshootingCatalog.HelpDocument doc, AlarmItem item)
         {
-            if (doc != null && item.AxisMoment != null)
-            {
-                doc.MomentHint = item.AxisMoment;
-                doc.AlarmTime = item.TriggerTime;
-            }
+            if (WithMoment(doc, item.AxisMoment) && item.TriggerTime != default(DateTime)) doc.AlarmTime = item.TriggerTime;
             return doc;
+        }
+
+        /// <summary>
+        /// ONE HELP PER CODE (18 October: "two different helpers are not very well presented - can we
+        /// combine them?"): a code's entry of the manual becomes its step-by-step page when the HMI
+        /// knows the moment it came - what the axis was doing, where to start, the checks for that,
+        /// and the entry itself as the last step. False (the entry as it is) when there is nothing
+        /// of its movement to tell or no template.
+        /// </summary>
+        public static bool WithMoment(TroubleshootingCatalog.HelpDocument doc, AxisMoment m)
+        {
+            if (doc == null || m == null || m.Motion == AxisMotion.Unknown && !m.RefKnown) return false;
+            if (string.IsNullOrEmpty(AxisSteps.TemplatePath(LanguageManager.CurrentLanguage))) return false;
+            doc.AxisMoment = m;
+            doc.StepByStep = true;
+            if (!doc.AlarmTime.HasValue) doc.AlarmTime = m.AlarmTime;
+            return true;
         }
 
         /// <summary>The help entry for the drive code of a generated axis alarm, or null.</summary>

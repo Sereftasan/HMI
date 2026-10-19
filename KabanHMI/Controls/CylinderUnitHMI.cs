@@ -1594,7 +1594,8 @@ namespace Kaban.UI.Controls
                     if (side == null) continue;
                     var steps = StepsDocument(side);
                     if (steps != null) docs.Add(steps);
-                    var d = CylinderDocument(side);
+                    // the cylinder manual is inside that page (18 October: one help per fault) - on its own only without one
+                    var d = steps == null ? CylinderDocument(side) : null;
                     if (d != null) docs.Add(d);
                     // The failed movement's own files, then the alarm's.
                     docs.AddRange(UnitHelpDocuments(side));

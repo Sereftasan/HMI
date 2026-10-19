@@ -408,31 +408,6 @@ namespace Kaban.Core.Helpers
             return tpl.Render(ModelOf(m, tpl, alarmTime, alarmText));
         }
 
-        /// <summary>
-        /// THE MOMENT'S HINT ON THE CODE'S OWN PAGE (17 October: "I don't see a hint according
-        /// to the error moment state"): a box at the top of the code's entry of the manual -
-        /// what the axis was doing when the code came, where to start, and a link to the
-        /// step-by-step page. The template's phrase MomentBox ("" without a template).
-        /// </summary>
-        public static string HintBox(AxisMoment m, DateTime? alarmTime = null, string alarmText = "")
-        {
-            if (m == null) return "";
-            try
-            {
-                var tpl = TroubleshootingCatalog.LoadTemplate(TemplatePath(LanguageManager.CurrentLanguage));
-                if (tpl == null || !tpl.HasPhrase("MomentBox")) return "";
-                var steps = WritePage(m, alarmTime, alarmText);
-                var model = ModelOf(m, tpl, alarmTime, alarmText);
-                model["StepsLink"] = string.IsNullOrEmpty(steps) ? "" : H(new Uri(steps).AbsoluteUri);
-                return tpl.Phrase("MomentBox", model);
-            }
-            catch (Exception ex)
-            {
-                AuditLogger.Log("the axis moment's hint could not be made: " + ex.Message);
-                return "";
-            }
-        }
-
         /// <summary>The moment's step-by-step page written to the temp folder; its path ("" when it cannot).</summary>
         public static string WritePage(AxisMoment m, DateTime? alarmTime = null, string alarmText = "")
         {
@@ -541,9 +516,13 @@ namespace Kaban.Core.Helpers
                 model["SensorWire"] = supply != null ? H(supply.SensorSupplyWire) : "";
             }
 
-            // the most likely cause, then the checks - each a phrase, numbered
-            var hint = HintOf(m);
-            model["Hint"] = tpl.Phrase("H_" + hint, model);
+            // the code's own entry of the drive's manual: the last step (18 October - one page per code)
+            string manualStyle;
+            var entry = AxisCodeHelp.EntryHtml(m.Kind, m.Code, ".manual", out manualStyle);
+            model["ManualEntry"] = entry;
+            model["ManualStyle"] = entry.Length > 0 && manualStyle.Length > 0 ? "<style>\n" + manualStyle + "</style>" : "";
+
+            // the checks - each a phrase, numbered - then the most likely cause
             var steps = new List<IDictionary<string, object>>();
             int n = 0;
             foreach (var s in StepsOf(m))
@@ -557,8 +536,19 @@ namespace Kaban.Core.Helpers
                                                            { "Name", s }, { "Html", body },
                                                            { "Caption", tpl.HasPhrase("C_" + s) ? tpl.Phrase("C_" + s, model) : "" } });
             }
+            if (entry.Length > 0 && tpl.HasPhrase("S_Manual"))
+            {
+                n++;
+                model["ManualN"] = n.ToString(CultureInfo.InvariantCulture);
+                steps.Add(new Dictionary<string, object> { { "N", n.ToString(CultureInfo.InvariantCulture) }, { "Id", "manual" }, { "First", n == 1 },
+                                                           { "Name", "Manual" }, { "Html", tpl.Phrase("S_Manual", model) },
+                                                           { "Caption", tpl.HasPhrase("C_Manual") ? tpl.Phrase("C_Manual", model) : "" } });
+            }
+            else model["ManualN"] = "";
             model["Steps"] = steps;
             model["HasSteps"] = steps.Count > 0;
+            var hint = HintOf(m);
+            model["Hint"] = tpl.Phrase("H_" + hint, model);
             return model;
         }
     }

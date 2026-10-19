@@ -322,31 +322,76 @@ namespace Kaban.Core.Helpers
             try
             {
                 var html = File.ReadAllText(full);
-                var bodies = Sections(html);
                 int first = html.IndexOf("<section class=\"code\"", StringComparison.OrdinalIgnoreCase);
                 if (first < 0) return full;
-
-                var chosen = bodies.Where(s => s.Key.Code.Equals(doc.Code, StringComparison.OrdinalIgnoreCase)).ToList();
-                bool fallback = false;
-                if (chosen.Count == 0 && !string.IsNullOrEmpty(doc.CodeGroup))
-                {
-                    chosen = bodies.Where(s => s.Key.Group.Equals(doc.CodeGroup, StringComparison.OrdinalIgnoreCase)).ToList();
-                    fallback = chosen.Count > 0;
-                }
 
                 // Just the code: the document's head (its style) and the sections -
                 // not its title or anything else above the first section.
                 int body = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
                 body = body < 0 ? first : Math.Min(first, html.IndexOf('>', body) + 1);
                 var page = new StringBuilder(html.Substring(0, body)).Append("\r\n");
-                // what the axis was doing when the code came, and where to start (17 October)
-                if (doc.MomentHint != null) page.Append(AxisSteps.HintBox(doc.MomentHint, doc.AlarmTime, doc.AlarmText)).Append("\r\n");
+                page.Append(EntryOf(html, doc.Code, doc.CodeGroup));
+                page.Append("</body></html>\r\n");
+
+                string result = TroubleshootingCatalog.AbsoluteLinks(page.ToString());
+
+                var safe = new string(doc.Code.Where(char.IsLetterOrDigit).ToArray());
+                var path = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(full) + "_" + safe + ".html");
+                File.WriteAllText(path, result, new UTF8Encoding(true));
+                return path;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not prepare the help for code " + doc.Code + ": " + ex.Message);
+                return full;
+            }
+        }
+
+        /// <summary>
+        /// A code's entry to put on another page (18 October: the axis's one page for its code -
+        /// the moment, the checks, and the manual's entry at its end): its sections with the
+        /// links made absolute, and the manual's style kept to them (under <paramref name="scope"/>).
+        /// "" when there is no manual.
+        /// </summary>
+        public static string EntryHtml(AxisCodeKind kind, int raw, string scope, out string style)
+        {
+            style = "";
+            var doc = Document(kind, raw);
+            if (doc == null) return "";
+            try
+            {
+                var html = File.ReadAllText(doc.FullPath);
+                if (html.IndexOf("<section class=\"code\"", StringComparison.OrdinalIgnoreCase) < 0) return "";
+                var css = Regex.Match(html, "<style[^>]*>(.*?)</style>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                if (css.Success) style = TroubleshootingCatalog.ScopeStyle(css.Groups[1].Value, scope);
+                return TroubleshootingCatalog.AbsoluteLinks(EntryOf(html, doc.Code, doc.CodeGroup));
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not take the manual's entry for code " + doc.Code + ": " + ex.Message);
+                return "";
+            }
+        }
+
+        /// <summary>The code's sections of a manual (its alarm's caption once), with a note when the manual has none of its own.</summary>
+        private static string EntryOf(string html, string code, string codeGroup)
+        {
+            var page = new StringBuilder();
+            {
+                var bodies = Sections(html);
+                var chosen = bodies.Where(s => s.Key.Code.Equals(code, StringComparison.OrdinalIgnoreCase)).ToList();
+                bool fallback = false;
+                if (chosen.Count == 0 && !string.IsNullOrEmpty(codeGroup))
+                {
+                    chosen = bodies.Where(s => s.Key.Group.Equals(codeGroup, StringComparison.OrdinalIgnoreCase)).ToList();
+                    fallback = chosen.Count > 0;
+                }
                 if (fallback)
-                    page.Append("<div class=\"missing\">The manual has no entry for <b>" + WebUtility.HtmlEncode(doc.Code) +
-                                "</b>. These are the entries of alarm <b>" + WebUtility.HtmlEncode(doc.CodeGroup) +
+                    page.Append("<div class=\"missing\">The manual has no entry for <b>" + WebUtility.HtmlEncode(code) +
+                                "</b>. These are the entries of alarm <b>" + WebUtility.HtmlEncode(codeGroup) +
                                 "</b>; the one that matches the amplifier's display applies.</div>\r\n");
                 if (chosen.Count == 0)
-                    page.Append("<div class=\"missing\">Code <b>" + WebUtility.HtmlEncode(doc.Code) +
+                    page.Append("<div class=\"missing\">Code <b>" + WebUtility.HtmlEncode(code) +
                                 "</b> is not listed in this document. Look it up in the manual itself: " +
                                 ManualLinks(html) + "</div>\r\n");
                 // Several details of one alarm: the alarm's caption once, above the first.
@@ -359,21 +404,8 @@ namespace Kaban.Core.Helpers
                     else if (group.Success) shownGroup = group.Value;
                     page.Append(section).Append("\r\n");
                 }
-                page.Append("</body></html>\r\n");
-
-                string result = TroubleshootingCatalog.AbsoluteLinks(page.ToString());
-
-                var safe = new string(doc.Code.Where(char.IsLetterOrDigit).ToArray()) +
-                           (doc.MomentHint != null ? "_" + new string((doc.MomentHint.Unit ?? "").Where(char.IsLetterOrDigit).ToArray()) : "");
-                var path = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(full) + "_" + safe + ".html");
-                File.WriteAllText(path, result, new UTF8Encoding(true));
-                return path;
             }
-            catch (Exception ex)
-            {
-                AuditLogger.Log("could not prepare the help for code " + doc.Code + ": " + ex.Message);
-                return full;
-            }
+            return page.ToString();
         }
 
         /// <summary>A servo section's alarm caption: &lt;header class="alarm"&gt;...&lt;/header&gt;.</summary>

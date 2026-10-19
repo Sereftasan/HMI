@@ -5,7 +5,9 @@
   (an alarm of Machine Parameters > Axis: a servo alarm or an axis error). The {{...}}
   get what the axis was doing the scan before the code came - standing, homing, moved
   by hand, moving in the automatic cycle - its position and limits, and its reference
-  sensor with the drawings' numbers (the machine's Wiring.csv).
+  sensor with the drawings' numbers (the machine's Wiring.csv). It is the code's ONE help
+  (18 October): the checks for that moment, and the code's own entry of the drive's
+  manual as the last step (S_Manual).
 
   The program decides WHICH hint and WHICH checks apply (Kaban.Core/Helpers/AxisMoment.cs:
   AxisSteps.HintOf / StepsOf), by their names: the hint is the phrase H_<name>, each
@@ -54,7 +56,7 @@
 <!--def H_AbsoluteLost-->The amplifier has <b>lost the absolute position</b> (its battery, or the encoder cable off without power). Replace the battery if it is low, then home the axis.<!--/def-->
 <!--def H_Encoder-->A fault of the <b>encoder or its communication</b> &ndash; not of the movement. Its cable and connectors first.<!--/def-->
 <!--def H_Supply-->A fault of the <b>supply or the ready signals</b> (control voltage, the emergency stop chain, the PLC READY) &ndash; not of the movement itself.<!--/def-->
-<!--def H_Other-->What the axis was doing is above; this code's own causes and remedies are in its entry of the manual (the next help in the list).<!--/def-->
+<!--def H_Other-->What the axis was doing is above; this code's own causes and remedies are the manual's entry at the end of this page{{#ManualN}} (step {{ManualN}}){{/ManualN}}.<!--/def-->
 
 {{! ============================== THE CHECKS ============================== }}
 <!--def C_RefSensor-->reference sensor<!--/def-->
@@ -101,6 +103,12 @@
 <li>{{>Hand}} Where it is safe and the axis is not vertical: push it by hand with the power off &ndash; it should move evenly, without a hard spot.</li>
 <li>{{>Ear}} Back in operation: move it slowly over its travel and listen; watch its load (the current bar on the <i>Axis</i> page) &ndash; a load that rises at one spot shows where it drags.</li>
 </ul><!--/def-->
+<!--doc S_Manual / C_Manual: the LAST step - the code's own entry of the drive's manual (its causes, checks and remedies),
+  taken from Servo_Alarm_Codes / Axis_Error_Codes with its style (18 October: one page per code instead of two helps). -->
+<!--def S_Manual--><h3>&#128214; The manual: {{Code}}</h3>
+<p class="ref">The drive's own causes and remedies for this code, in its order.</p>
+<div class="manual">{{ManualEntry}}</div><!--/def-->
+<!--def C_Manual-->the manual<!--/def-->
 <!--doc S_Brake: a vertical axis only - the up / down arrows on its row (19 October: only vertical axes have a brake). -->
 <!--def S_Brake--><h3>Does the holding brake open?</h3>
 <ul>
@@ -152,12 +160,9 @@
 </ul><!--/def-->
 
 {{! ============================== THE HINT ON THE CODE'S OWN PAGE ============================== }}
-<!--doc MomentBox: shown at the top of the code's entry of the manual (17 October) - what the axis was doing
-  when the code came, where to start, and a link to this page. Its own style: that page has another one. -->
-<!--def MomentBox--><div class="moment" style="border:1px solid #e0b252;background:#fff8e1;border-radius:8px;padding:.6em .9em;margin:.6em 0 .9em;font-family:'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.45;color:#1e2329"><div style="font-weight:600;margin-bottom:.25em">When the code came{{#AlarmDate}} ({{AlarmDate}}){{/AlarmDate}}: {{Unit}} was {{Motion}}{{#Position}}, at {{Position}}{{/Position}}{{^SeenRising}} <span style="font-weight:normal;color:#6c757d">(read just after it: the code was there when the HMI started reading)</span>{{/SeenRising}}</div><div><b>Where to start:</b> {{Hint}}</div>{{#RefDrawn}}<div style="margin-top:.3em;color:#3d4550">Reference sensor: <b>{{RefTag}}</b> at <code>{{RefInput}}</code>{{#RefCard}} &ndash; {{RefCard}}{{/RefCard}}{{#RefWire}}, wire {{RefWire}}{{/RefWire}}{{#RefSheet}}, sheet {{RefSheet}}{{/RefSheet}}{{#RefState}} &ndash; {{RefState}} at the alarm{{/RefState}}</div>{{/RefDrawn}}{{#StepsLink}}<div style="margin-top:.45em"><a href="{{StepsLink}}" style="font-weight:600">&#9654; Step by step for this moment</a></div>{{/StepsLink}}</div><!--/def-->
 
 {{! ============================== THE PAGE ============================== }}
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>{{Title}} - step by step</title>{{>Style}}</head><body>
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>{{Title}} - step by step</title>{{>Style}}{{ManualStyle}}</head><body>
 <header class="top">
 <h1>{{Title}}{{#CodeShown}} <span class="dev">({{CodeShown}})</span>{{/CodeShown}}</h1>
 <p class="dates">{{#AlarmDate}}Alarm: {{AlarmDate}} &middot; {{/AlarmDate}}Helper made: {{Created}}</p>
@@ -193,7 +198,6 @@
 {{Html}}
 </div></div>
 {{/Steps}}
-<p class="ref">{{Code}}: its own entry in the manual (causes and remedies) is the next help in the list.</p>
 </main></div>
 <!--def Script--><script>(function(){var boxes=[],steps=[].slice.call(document.querySelectorAll("main .step")),last=null;[].forEach.call(document.querySelectorAll("nav.path a.box"),function(b){var s=b.querySelector(".sn");var n=s?parseInt(s.textContent,10):NaN;if(!isNaN(n))boxes.push({el:b,n:n});});function now(){var cur=0,line=window.innerHeight*0.35;for(var i=0;i<steps.length;i++){if(steps[i].getBoundingClientRect().top>line)break;var t=steps[i].querySelector(".num");var n=t?parseInt(t.textContent,10):NaN;if(!isNaN(n))cur=n;}var pick=null;for(var j=0;j<boxes.length;j++)if(boxes[j].n<=cur&&(!pick||boxes[j].n>=pick.n))pick=boxes[j];if(pick===last)return;if(last)last.el.classList.remove("now");if(pick){void pick.el.offsetWidth;pick.el.classList.add("now");}last=pick;}window.addEventListener("scroll",now);window.addEventListener("resize",now);now();})();</script><!--/def-->
 </body></html>

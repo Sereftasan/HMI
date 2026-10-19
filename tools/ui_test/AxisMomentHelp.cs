@@ -161,21 +161,13 @@ class AMH {
               m != null && AxisSteps.HintOf(m) == "HomeStuck" && AxisSteps.StepsOf(m).FirstOrDefault() == "RefSensor",
               m == null ? "" : AxisSteps.HintOf(m) + ": " + string.Join(",", AxisSteps.StepsOf(m)));
         var docs = AlarmHelpLinks.DocumentsFor(item);
-        Check("the alarm's help: the moment's page first, the code's entry (50.1) second",
-              docs.Count >= 2 && docs[0].AxisMoment == m && docs[0].StepByStep && docs[1].Code == "50.1",
+        // 18 October: "two different helpers are not very well presented" - ONE page per code
+        Check("the alarm's help: ONE page for the code - its moment, the checks and 50.1's entry; no second entry for it",
+              docs.Count >= 1 && docs[0].AxisMoment == m && docs[0].StepByStep && docs[0].Code == "50.1" &&
+              !docs.Skip(1).Any(d => d.Code == "50.1" || d.AxisMoment != null),
               string.Join(" | ", docs.Select(d => d.Title + ":" + d.Code)));
-        Check("  titled with the axis and what it was doing", docs.Count > 0 && docs[0].Title.Contains("Robot X") && docs[0].Title.Contains("homing"),
-              docs.Count > 0 ? docs[0].Title : "");
-        // 17 October: "I don't see a hint according to the error moment state" - on the code's own entry too
-        var entryPath = docs.Count > 1 ? TC.ExtractSection(docs[1]) : "";
-        var entry = File.Exists(entryPath) ? Text(File.ReadAllText(entryPath)) : "";
-        Check("the code's own entry (50.1) carries the moment's hint at its top: homing, where to start, the sensor, a link to the steps",
-              docs.Count > 1 && docs[1].MomentHint == m && entry.Contains("When the code came") && entry.Contains("Robot X was homing") &&
-              entry.Contains("Where to start:") && entry.Contains("never seen") && entry.Contains("Reference sensor: SN.1 at X100") &&
-              entry.Contains("Step by step for this moment") && entry.IndexOf("When the code came") < entry.IndexOf("Thermal overload error 1"),
-              entry.Length > 600 ? entry.Substring(0, 600) : entry);
-        var link = System.Text.RegularExpressions.Regex.Match(File.Exists(entryPath) ? File.ReadAllText(entryPath) : "", "href=\"(file:[^\"]+Steps_Axis[^\"]+)\"");
-        Check("  the link opens the step-by-step page", link.Success && File.Exists(new Uri(link.Groups[1].Value).LocalPath), link.Success ? link.Groups[1].Value : "no link");
+        Check("  titled with the code and the axis", docs.Count > 0 && docs[0].Title.Contains("50.1") && docs[0].Title.Contains("Thermal overload error 1") &&
+              docs[0].Title.Contains("Robot X"), docs.Count > 0 ? docs[0].Title : "");
         var path = docs.Count > 0 ? TC.ExtractSection(docs[0]) : "";
         var html = File.Exists(path) ? File.ReadAllText(path) : "";
         var text = Text(html);
@@ -187,9 +179,13 @@ class AMH {
         Check("  the hint: it was never seen, ran on into the end; the reference sensor is the first suspect",
               text.Contains("never seen") && text.Contains("The reference sensor is the first suspect"));
         var titles = Titles(html);
-        Check("  the checks: the sensor, the homing direction, the mechanics",
-              titles.Count == 3 && titles[0].Contains("SN.1") && titles[1].Contains("towards its sensor") && titles[2].Contains("free to move"),
-              string.Join(" | ", titles));
+        Check("  the checks: the sensor, the homing direction, the mechanics - then the manual's entry",
+              titles.Count >= 4 && titles[0].Contains("SN.1") && titles[1].Contains("towards its sensor") && titles[2].Contains("free to move") &&
+              titles[3].Contains("The manual: Servo alarm 50.1"), string.Join(" | ", titles));
+        Check("  the last step: 50.1's own entry (its causes and remedies), with the manual's style kept to it; on the path too",
+              html.Contains("id=\"manual\"") && text.Contains("AL. 50.1") && text.Contains("The servo motor power cable was disconnected") &&
+              html.Contains(".manual table{") && html.Contains(".manual{max-width:none") && Regex.IsMatch(Text(Regex.Match(html, "<nav class=\"path\">.*?</nav>", RegexOptions.Singleline).Value), "4\\s*the manual") &&
+              !text.Contains("next help in the list"), Text(Regex.Match(html, "<nav class=\"path\">.*?</nav>", RegexOptions.Singleline).Value));
         Check("  the drawing's details: X100 on U9 FX5-16EX/ES terminal X00, wire 40, sheet 15.1",
               text.Contains("X100 - U9 FX5-16EX/ES, terminal X00") && text.Contains("Wire 40") && text.Contains("sheet 15.1"), "");
         Check("  the PLC's internal relay (M330) is not shown to a maintenance user", !text.Contains("M330"));
@@ -204,7 +200,7 @@ class AMH {
         badge.SetCodeWords("W0B", "W4", "W5");
         badge.UpdateState(Read, c => true);
         var bd = badge.Documents();
-        Check("  the axis's '?': the moment first, then 50.1's entry", bd.Count == 2 && bd[0].AxisMoment == m && bd[1].Code == "50.1",
+        Check("  the axis's '?': the same one page", bd.Count == 1 && bd[0].AxisMoment == m && bd[0].Code == "50.1" && bd[0].StepByStep,
               string.Join(" | ", bd.Select(d => d.Title)));
         var prompt = AlarmAiPrompt.Build(item, null, docs);
         Check("the AI prompt tells the moment: homing, stood still, the sensor and its input",
@@ -312,7 +308,9 @@ class AMH {
               m != null && m.Kind == AxisCodeKind.AxisError && m.Motion == AxisMotion.Automatic && AxisSteps.HintOf(m) == "SoftLimit" &&
               Text(AxisSteps.Build(m, "EN")).Contains("A target of the cycle is outside the limits"));
         var ydocs = AlarmHelpLinks.DocumentsFor(y.RaisedAxis);
-        Check("  its help: the moment, then 1A18H's entry", ydocs.Count >= 2 && ydocs[0].AxisMoment == m && ydocs[1].Code == "1A18",
+        Check("  its help: 1A18H's one page with the moment, the full servo manual after it",
+              ydocs.Count >= 2 && ydocs[0].AxisMoment == m && ydocs[0].Code == "1A18" && string.IsNullOrEmpty(ydocs[1].Code) && ydocs[1].AxisMoment == null &&
+              Text(File.ReadAllText(TC.ExtractSection(ydocs[0]))).Contains("The manual: Axis alarm 1A18H"),
               string.Join(" | ", ydocs.Select(d => d.Title + ":" + d.Code)));
         mem["W14"] = 0; mem["D200"] = 0; mem["U1\\G2509"] = 0; Busy(1, false); Scan();
 
@@ -373,14 +371,14 @@ class AMH {
               qm == null ? "no moment" : qm.Motion + " stuck=" + qm.Stuck);
         AlarmHelpLinks.ReadCodeNow = (st, a) => Read(a);
         var plcDocs = AlarmHelpLinks.DocumentsFor(1, "M891", null);
-        Check("  the PLC's alarm (the error bit's help): the moment's page first, then 52.1's entry with its hint",
-              plcDocs.Count >= 2 && plcDocs[0].AxisMoment == qm && plcDocs[1].Code == "52.1" && plcDocs[1].MomentHint == qm,
+        Check("  the PLC's alarm (the error bit's help): 52.1's one page with that moment",
+              plcDocs.Count >= 1 && plcDocs[0].AxisMoment == qm && plcDocs[0].Code == "52.1" && !plcDocs.Skip(1).Any(d => d.Code == "52.1"),
               string.Join(" | ", plcDocs.Select(d => d.Title + ":" + d.Code)));
         var qb = new AlarmHelpBadge { PlcNumber = 1, Address = "M891" };
         qb.SetCodeWords("W0B", "W4", "W5");
         qb.UpdateState(Read, c => true);
         var qd = qb.Documents();
-        Check("  the axis's '?': the same", qd.Count == 2 && qd[0].AxisMoment == qm && qd[1].MomentHint == qm, string.Join(" | ", qd.Select(d => d.Title)));
+        Check("  the axis's '?': the same", qd.Count == 1 && qd[0].AxisMoment == qm && qd[0].Code == "52.1", string.Join(" | ", qd.Select(d => d.Title)));
         AlarmGeneration.Save("", new AlarmGeneration.Settings { Enabled = false, AxisAlarms = true });
         Scan();
         Check("  switched on again: the code shown now raised, with that moment", q.RaisedServo != null && q.RaisedServo.AxisMoment == qm);

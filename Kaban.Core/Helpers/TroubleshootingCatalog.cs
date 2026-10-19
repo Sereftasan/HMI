@@ -360,13 +360,6 @@ namespace Kaban.Core.Helpers
             /// </summary>
             public AxisMoment AxisMoment;
 
-            /// <summary>
-            /// For a code's entry of the manual: the moment the code came, when the HMI knows it -
-            /// its hint is shown at the top of the entry (17 October), with a link to its
-            /// step-by-step page. The entry itself is shown as ever.
-            /// </summary>
-            public AxisMoment MomentHint;
-
             public string FullPath
             {
                 get { return IsWebLink ? FileName.Trim() : ResolveLanguageFile(FileName); }
@@ -457,6 +450,51 @@ namespace Kaban.Core.Helpers
         /// "#alarms" too: the HMI manual's Contents opened the Help folder's listing
         /// instead of the section (14 October).
         /// </summary>
+        /// <summary>
+        /// A manual's style kept to a part of another page (18 October: the manual inside the
+        /// step-by-step page): every rule's selectors under <paramref name="scope"/> - its body's
+        /// rule for the scope itself, without the page's width and margins - and the rules of
+        /// an @media block the same way.
+        /// </summary>
+        public static string ScopeStyle(string css, string scope)
+        {
+            if (string.IsNullOrWhiteSpace(css) || string.IsNullOrWhiteSpace(scope)) return "";
+            css = Regex.Replace(css, @"/\*.*?\*/", "", RegexOptions.Singleline);
+            var sb = new System.Text.StringBuilder();
+            int i = 0;
+            while (i < css.Length)
+            {
+                int open = css.IndexOf('{', i);
+                if (open < 0) break;
+                string head = css.Substring(i, open - i).Trim();
+                if (head.StartsWith("@", StringComparison.Ordinal))
+                {
+                    // an @media block: its rules up to the matching brace
+                    int depth = 1, j = open + 1;
+                    while (j < css.Length && depth > 0) { if (css[j] == '{') depth++; else if (css[j] == '}') depth--; j++; }
+                    var inner = css.Substring(open + 1, Math.Max(0, j - open - 2));
+                    if (head.StartsWith("@media", StringComparison.OrdinalIgnoreCase))
+                        sb.Append(head).Append('{').Append(ScopeStyle(inner, scope)).Append("}\n");
+                    i = j;
+                    continue;
+                }
+                int close = css.IndexOf('}', open);
+                if (close < 0) break;
+                string body = css.Substring(open + 1, close - open - 1).Trim();
+                var selectors = head.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).Select(s =>
+                {
+                    if (s == "body" || s == "html" || s == ":root") return scope;
+                    if (s.StartsWith("body ", StringComparison.Ordinal) || s.StartsWith("html ", StringComparison.Ordinal)) return scope + " " + s.Substring(5).Trim();
+                    return scope + " " + s;
+                }).Distinct().ToList();
+                if (selectors.Count > 0) sb.Append(string.Join(",", selectors)).Append('{').Append(body).Append("}\n");
+                i = close + 1;
+            }
+            // the manual's page width and margins are not the part's
+            sb.Append(scope).Append("{max-width:none;margin:0;padding:0}\n");
+            return sb.ToString();
+        }
+
         public static string AbsoluteLinks(string html, string folder = null)
         {
             if (string.IsNullOrEmpty(html)) return html;

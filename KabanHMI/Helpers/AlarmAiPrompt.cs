@@ -131,6 +131,15 @@ namespace Kaban.UI.Helpers
             var example = ExampleDocument(docs);
             string exampleHtml = example != null ? ExampleHtml(example, ExampleChars) : "";
             if (exampleHtml.Length == 0) example = null;
+            // the manual folded inside the page (18 October): its own text after the steps, as the other documents'
+            var fold = Regex.Match(exampleHtml, "<details class=\"manual\"[^>]*>(.*?)</details>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            string foldTitle = "", foldHtml = "";
+            if (fold.Success)
+            {
+                foldTitle = Regex.Replace(HtmlToText(Regex.Match(fold.Groups[1].Value, "<summary>(.*?)</summary>", RegexOptions.Singleline).Groups[1].Value), @"\s+", " ").Trim();
+                foldHtml = Regex.Replace(fold.Groups[1].Value, "<summary>.*?</summary>", "", RegexOptions.Singleline);
+                exampleHtml = exampleHtml.Remove(fold.Index, fold.Length);
+            }
             bool stepByStep = example != null && example.StepByStep;
             string moduleId = AlarmGeneration.ModuleOfStation(station);
             var cylinder = CylinderOf(station, address, item, link);
@@ -392,6 +401,15 @@ namespace Kaban.UI.Helpers
                     }
                 }
                 int budget = AllDocumentsChars;
+                if (foldHtml.Length > 0)
+                {
+                    var manual = Regex.Replace(Regex.Replace(HtmlToText(foldHtml), @"[ \t]+", " "), @"\n\s*\n\s*\n+", "\n\n").Trim();
+                    if (manual.Length > Math.Min(DocumentChars, budget)) manual = manual.Substring(0, Math.Min(DocumentChars, budget)).TrimEnd() + "\n[... shortened]";
+                    budget -= manual.Length;
+                    sb.AppendLine("### " + (foldTitle.Length > 0 ? foldTitle : "The manual") + " (its text - inside that page, folded at its end)");
+                    sb.AppendLine(manual);
+                    sb.AppendLine();
+                }
                 foreach (var d in docs)
                 {
                     if (d == example || budget <= 500) continue;
@@ -674,6 +692,9 @@ namespace Kaban.UI.Helpers
                 var html = File.ReadAllText(path).TrimStart('﻿').Trim();
                 if (html.Length > max)
                     html = Regex.Replace(html, @"<svg\b.*?</svg>", "<!-- a drawing, left out here -->", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                // the manual's pictures inside the page (18 October): their bytes say nothing in text
+                if (html.Length > max)
+                    html = Regex.Replace(html, "src=\"data:[^\"]*\"", "src=\"\" alt=\"a picture, left out here\"", RegexOptions.IgnoreCase);
                 if (html.Length > max) html = html.Substring(0, max) + "\n<!-- [... shortened] -->";
                 return html;
             }

@@ -412,16 +412,14 @@ namespace Kaban.UI.Controls
         {
             if (_codes.Count > 0)
             {
-                // what the axis was doing when its code came first (16 October), then each code's entry
-                var list = _codes.Where(c => c.Value != 0 && c.Kind != AxisCodeKind.InverterFault)
-                                 .Select(c => AlarmGeneration.AxisStepsForCode(PlcNumber, c.Address, c.Value))
-                                 .Where(d => d != null).ToList();
+                // each code's one page: with what the axis was doing when it came, when the HMI knows (18 October)
+                var list = new List<TroubleshootingCatalog.HelpDocument>();
                 foreach (var c in _codes.Where(c => c.Value != 0))
                 {
                     // No axis name in the entry: the "?" is on that axis's own unit.
                     var d = AxisCodeHelp.Document(c.Kind, c.Value, "");
                     if (d == null) continue;
-                    if (c.Kind != AxisCodeKind.InverterFault) d.MomentHint = AlarmGeneration.MomentForCode(PlcNumber, c.Address, c.Value);
+                    if (c.Kind != AxisCodeKind.InverterFault) AlarmGeneration.WithMoment(d, AlarmGeneration.MomentForCode(PlcNumber, c.Address, c.Value));
                     list.Add(d);
                 }
                 // an inverter's: the whole manual second - there even for a code the list does not have

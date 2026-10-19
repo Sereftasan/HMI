@@ -132,6 +132,7 @@ namespace Kaban.Core.Helpers
             {
                 var html = BuildSteps(doc.Movement, (ValveType)CanonicalValve(doc.Valve), (FeedbackType)CanonicalFeedback(doc.Feedback), doc.Failure,
                                       LanguageManager.CurrentLanguage, doc.AlarmTime, doc.AlarmText);
+                html = WithManual(html, doc);
                 var path = Path.Combine(Path.GetTempPath(), StepsFileName(doc));
                 File.WriteAllText(path, html, new UTF8Encoding(true));
                 return path;
@@ -142,6 +143,71 @@ namespace Kaban.Core.Helpers
                 return doc.FullPath;
             }
         }
+
+        /// <summary>
+        /// THE MANUAL INSIDE THE MOVEMENT'S PAGE (18 October: "two different helpers are not very
+        /// well presented - can we combine them?"): the cylinder manual, prepared for this valve and
+        /// feedback, folded at the end of the step-by-step page - one help per fault. Each step's
+        /// "manual 1.6" opens it at that detail.
+        /// </summary>
+        public static string WithManual(string page, HelpDocument doc)
+        {
+            if (string.IsNullOrEmpty(page) || doc == null) return page;
+            try
+            {
+                var manual = new HelpDocument { FileName = doc.FileName, Valve = doc.Valve, Feedback = doc.Feedback };
+                if (!manual.Exists || !manual.FileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase)) return page;
+                int main = page.LastIndexOf("</main>", StringComparison.OrdinalIgnoreCase);
+                if (main < 0) return page;
+                var html = File.ReadAllText(Tailor(manual));
+                int b = html.IndexOf("<body", StringComparison.OrdinalIgnoreCase);
+                int e = html.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+                if (b < 0) return page;
+                b = html.IndexOf('>', b) + 1;
+                var body = html.Substring(b, (e > b ? e : html.Length) - b);
+                body = Regex.Replace(body, "<h1[^>]*>.*?</h1>", "", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                // each detail's first rows: where "manual 1.6" goes
+                var anchored = new HashSet<string>();
+                body = Regex.Replace(body, "<tbody class=\"block\"([^>]*?)data-detail=\"([0-9.]+)\"", m =>
+                    anchored.Add(m.Groups[2].Value) ? "<tbody id=\"manual-" + m.Groups[2].Value + "\" class=\"block\"" + m.Groups[1].Value + "data-detail=\"" + m.Groups[2].Value + "\"" : m.Value);
+                body = AbsoluteLinks(body);
+                var css = Regex.Match(html, "<style[^>]*>(.*?)</style>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                var style = (css.Success ? ScopeStyle(css.Groups[1].Value, ".manualbody") : "") + ManualFoldStyle;
+
+                var summary = System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInside", "The cylinder manual for this cylinder")) +
+                              " <span class=\"sub\">&ndash; " + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInsideSub",
+                                  "the general view behind these steps, for its valve and feedback")) + "</span>";
+                var fold = "<details class=\"manual\" id=\"manual\"><summary>&#128214; " + summary + "</summary><div class=\"manualbody\">" + body + "</div></details>\r\n";
+                page = page.Insert(main, fold);
+                // "manual 1.6 (1), 1.4": each detail a link to its rows
+                page = Regex.Replace(page, "(<p class=\"man\">)(.*?)(</p>)", m => m.Groups[1].Value +
+                    Regex.Replace(m.Groups[2].Value, @"(?<![0-9.])1\.[0-9](?![0-9])", x => anchored.Contains(x.Value)
+                        ? "<a class=\"toman\" href=\"#manual-" + x.Value + "\">" + x.Value + "</a>" : x.Value) + m.Groups[3].Value, RegexOptions.Singleline);
+                int head = page.IndexOf("</head>", StringComparison.OrdinalIgnoreCase);
+                if (head >= 0) page = page.Insert(head, "<style>\n" + style + "</style>");
+                int end = page.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+                page = end >= 0 ? page.Insert(end, ManualFoldScript) : page + ManualFoldScript;
+                return page;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("the cylinder manual could not be put in the step-by-step page: " + ex.Message);
+                return page;
+            }
+        }
+
+        private const string ManualFoldStyle =
+            "details.manual{margin:1.2em 0 .6em;border:1px solid #d0d7e2;border-radius:10px;background:#fff;padding:.35em .9em}\n" +
+            "details.manual>summary{cursor:pointer;font-weight:600;font-size:1.05em;padding:.35em 0;color:#1f4e79}\n" +
+            "details.manual>summary .sub{font-weight:normal;font-size:.88em;color:#5a6270}\n" +
+            "details.manual[open]>summary{border-bottom:1px solid #e3e7ee;margin-bottom:.6em}\n" +
+            "p.man a.toman{color:inherit;text-decoration:underline dotted}\n" +
+            ".manualbody tbody[id]{scroll-margin-top:4.5em}\n";
+
+        // a link into the folded manual unfolds it first, then goes there
+        private const string ManualFoldScript =
+            "<script>(function(){var d=document.getElementById(\"manual\");if(!d)return;" +
+            "[].forEach.call(document.querySelectorAll(\"a.toman\"),function(a){a.addEventListener(\"click\",function(){d.open=true;});});})();</script>\r\n";
 
         private static string StepsFileName(HelpDocument doc)
         {

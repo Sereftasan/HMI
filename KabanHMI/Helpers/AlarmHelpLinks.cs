@@ -615,9 +615,7 @@ namespace Kaban.UI.Helpers
             var docs = new List<TC.HelpDocument>();
             var steps = AlarmGeneration.StepsFor(item);
             if (steps != null) docs.Add(steps);
-            // an axis's code: the page for what it was doing when the code came (16 October)
-            var moment = AlarmGeneration.AxisStepsFor(item);
-            if (moment != null) docs.Add(moment);
+            // an axis's code: ONE page - what it was doing when the code came, the checks, the manual's entry (18 October)
             var code = AlarmGeneration.CodeDocumentFor(item);
             if (code != null) docs.Add(code);
             // an inverter's fault: the whole manual second, even for a code the list does not have
@@ -631,6 +629,8 @@ namespace Kaban.UI.Helpers
             foreach (var d in DocumentsFor(item.Station, item.Address, def != null ? def.HelperKeys : null))
             {
                 if (d.StepByStep) continue;                           // the PLC bit's view of the movement
+                // the cylinder manual is inside the movement's page (18 October: one help per fault)
+                if (steps != null && string.Equals(d.FileName, steps.FileName, StringComparison.OrdinalIgnoreCase)) continue;
                 if (code != null && !string.IsNullOrEmpty(d.Code)) continue;   // the code's entry is first already
                 docs.Add(d);
             }
@@ -661,7 +661,8 @@ namespace Kaban.UI.Helpers
             if (link != null && TC.DocumentForType.TryGetValue(link.Kind, out file) && !string.IsNullOrEmpty(file))
             {
                 bool cylinder = link.Kind == TC.ErrorType.CylinderMovement;
-                // A unit's movement: its step-by-step troubleshooter first, the manual after it.
+                // A unit's movement: its step-by-step troubleshooter, the manual inside it (18 October:
+                // one help per fault); the manual on its own only with no movement to go through.
                 var movement = cylinder ? link.CurrentMovement() : null;
                 if (movement != null)
                     docs.Add(new TC.HelpDocument
@@ -674,16 +675,16 @@ namespace Kaban.UI.Helpers
                         Feedback = TC.CanonicalFeedback(link.Feedback),
                         Movement = movement
                     });
-                docs.Add(new TC.HelpDocument
-                {
-                    FileName = file,
-                    Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
-                                      : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
-                            + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
-                    Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
-                    Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0,
-                    Movement = movement
-                });
+                if (movement == null)
+                    docs.Add(new TC.HelpDocument
+                    {
+                        FileName = file,
+                        Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
+                                          : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
+                                + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
+                        Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
+                        Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0
+                    });
             }
 
             // The unit's own help next: what the unit IS, beside what went wrong.
@@ -745,15 +746,9 @@ namespace Kaban.UI.Helpers
                 if (v == null || v.Value == 0) continue;
                 var d = AxisCodeHelp.Document(kv.Key, v.Value, link.Unit);
                 if (d == null) continue;
-                // what the axis was doing when the code came: its hint on the entry, its page before it (17 October)
-                var moment = kv.Key == AxisCodeKind.ServoAlarm || kv.Key == AxisCodeKind.AxisError
-                             ? AlarmGeneration.MomentForCode(link.Station, kv.Value.Trim(), v.Value & 0xFFFF) : null;
-                if (moment != null)
-                {
-                    d.MomentHint = moment;
-                    var steps = AlarmGeneration.AxisStepsDocument(moment);
-                    if (steps != null) docs.Add(steps);
-                }
+                // what the axis was doing when the code came: the entry becomes its one page with it (18 October)
+                if (kv.Key == AxisCodeKind.ServoAlarm || kv.Key == AxisCodeKind.AxisError)
+                    AlarmGeneration.WithMoment(d, AlarmGeneration.MomentForCode(link.Station, kv.Value.Trim(), v.Value & 0xFFFF));
                 docs.Add(d);
             }
             return docs;

@@ -33,14 +33,16 @@ class CS {
         Field<AlarmHelpBadge>(u, "_helpA").UpdateState(Read, c => true);
         Field<AlarmHelpBadge>(u, "_helpB").UpdateState(Read, c => true);
     }
-    static string Chart(CylinderUnitHMI u, string side) {
-        var d = u.HelpDocuments().FirstOrDefault(x => x.Movement != null && x.Movement.Side == side && !x.StepByStep);
-        return d == null ? "" : File.ReadAllText(TC.Tailor(d));
-    }
-    static string Steps(CylinderUnitHMI u, string side) {
+    // 18 October: ONE help per fault - the cylinder manual folded at the end of the step-by-step page
+    static readonly Regex Fold = new Regex("<details class=\"manual\".*?</details>", RegexOptions.Singleline);
+    static string Page(CylinderUnitHMI u, string side) {
         var d = u.HelpDocuments().FirstOrDefault(x => x.StepByStep && x.Movement != null && x.Movement.Side == side);
         return d == null ? "" : File.ReadAllText(TC.ExtractSection(d));
     }
+    /// <summary>The manual inside the movement's page.</summary>
+    static string Chart(CylinderUnitHMI u, string side) { return Fold.Match(Page(u, side)).Value; }
+    /// <summary>The steps: the page without the manual folded in it.</summary>
+    static string Steps(CylinderUnitHMI u, string side) { return Fold.Replace(Page(u, side), ""); }
     // A step's box (by its title), as text.
     static string StepText(string html, string title) {
         foreach (Match m in Regex.Matches(html, "<div class=\"step[^\"]*\" id=\"[^\"]+\">.*?</div></div>", RegexOptions.Singleline))
@@ -145,8 +147,9 @@ class CS {
         mem["M645"] = 1; mem["Y32"] = 0; mem["M225"] = 1; Scan(u1);
         mem["M844"] = 1; Scan(u1); Application.DoEvents();
         var docs = u1.HelpDocuments();
-        Check("a fault: the '?' offers the step-by-step page first, then the manual", docs.Count >= 2 && docs[0].StepByStep && docs[0].Title == "Step by step - Clamp" &&
-              !docs[1].StepByStep && docs[1].Movement != null, string.Join(" | ", docs.Select(d => d.Title)));
+        Check("a fault: the '?' offers ONE page for it - the step-by-step page, the manual inside it (18 October)",
+              docs.Count >= 1 && docs[0].StepByStep && docs[0].Title == "Step by step - Clamp" &&
+              !docs.Any(d => !d.StepByStep && (d.Movement != null || d.Valve != 0 || d.Feedback != 0)), string.Join(" | ", docs.Select(d => d.Title)));
         var html = Steps(u1, "B");
         var text = Text(html);
         Check("the page: the unit and the movement, named from the drawing (Clamp, not the button's sign)",
@@ -201,8 +204,16 @@ class CS {
         Check("the parts of this movement at the end", text.Contains("The parts of this movement") && text.Contains("0 V is wire 21") && text.Contains("+24 V is wire 20"));
 
         var chart = Chart(u1, "B");
-        Check("the manual after it: the general view, no notes in its checks, a line leading to the steps",
-              chart.Length > 0 && !chart.Contains("On this machine") && chart.Contains("step-by-step troubleshooter") && chart.Contains("Steps_FrontClamping_B.html"));
+        Check("the manual folded at the end: the general view, its 5/3 part only, no notes in its checks, no link to another page",
+              chart.Length > 0 && chart.Contains("Remedies for cylinder movement failure") && !chart.Contains("On this machine") &&
+              !chart.Contains("step-by-step troubleshooter") && !chart.Contains("Steps_FrontClamping_B.html") &&
+              chart.Contains("data-variant=\"valve:3\"") && !Regex.IsMatch(chart, "data-variant=\"valve:[12]\""));
+        var whole = Page(u1, "B");
+        var refs = Regex.Matches(html, "<a class=\"toman\" href=\"#manual-([0-9.]+)\">").Cast<Match>().Select(m => m.Groups[1].Value).Distinct().ToList();
+        Check("  each step's 'manual 1.6' opens it at that detail", refs.Contains("1.6") && refs.Contains("1.8") &&
+              refs.All(r => whole.Contains("<tbody id=\"manual-" + r + "\"")) && whole.Contains("d.open=true"), string.Join(",", refs));
+        Check("  folded, after the parts of this movement", Regex.IsMatch(whole, "The parts of this movement.*<details class=\"manual\" id=\"manual\"><summary>", RegexOptions.Singleline) &&
+              !whole.Contains("<details class=\"manual\" id=\"manual\" open"));
 
         Console.WriteLine("--- Y32 ON but the cylinder never left its start ---");
         mem["M844"] = 0; Scan(u1);
@@ -297,7 +308,8 @@ class CS {
         foreach (var l in u1.HelpLinks()) typeof(Kaban.UI.Helpers.AlarmHelpLinks).GetMethod("Register", Any, null, new[] { l.GetType() }, null).Invoke(null, new object[] { l });
         mem.Clear(); Scan(u1); mem["M645"] = 1; mem["Y32"] = 1; Scan(u1); mem["M844"] = 1; Scan(u1);
         var listDocs = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor(1, "M844", null);
-        Check("the alarm list's help: the step-by-step page first, with the movement and its states", listDocs.Count >= 2 && listDocs[0].StepByStep &&
+        Check("the alarm list's help: the step-by-step page first, with the movement and its states", listDocs.Count >= 1 && listDocs[0].StepByStep &&
+              !listDocs.Any(d => !d.StepByStep && d.Movement != null) &&
               listDocs[0].Movement != null && listDocs[0].Movement.Output != null && listDocs[0].Movement.Output.AtAlarm == 1,
               string.Join(" | ", listDocs.Select(d => d.Title)));
         TC.Clock = () => new DateTime(2026, 10, 2, 10, 20, 0);

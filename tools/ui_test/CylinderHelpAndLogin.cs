@@ -78,9 +78,10 @@ class CH {
         helpA.UpdateState(a => a == "M810" ? 1 : 0, c => true);
         Check("the '?' offers the fault's help - and stays blue", mark.State == UnitHelpBadge.BadgeState.Error && mark.MarkColor.ToArgb() == UnitHelpBadge.Blue.ToArgb());
         var docs = unit.HelpDocuments();
-        // 1 October: the step-by-step page first (CylinderSteps.cs), the manual after it.
-        Check("the step-by-step page first", docs.Count > 0 && docs[0].StepByStep && docs[0].Title.EndsWith("Clamp"), string.Join(" | ", docs.Select(d => d.Title)));
-        var doc = docs.FirstOrDefault(d => d.Movement != null && !d.StepByStep);
+        // 1 October: the step-by-step page first (CylinderSteps.cs); 18 October: the manual inside it - one help per fault.
+        Check("the step-by-step page, and no manual beside it", docs.Count > 0 && docs[0].StepByStep && docs[0].Title.EndsWith("Clamp") &&
+              !docs.Any(d => !d.StepByStep && d.Movement != null), string.Join(" | ", docs.Select(d => d.Title)));
+        var doc = docs.FirstOrDefault(d => d.Movement != null && d.StepByStep);
         Check("its help names movement A", doc != null && doc.Movement.Side == "A" && doc.Movement.Name == "Clamp" &&
               doc.Movement.Command.Address == "M604" && doc.Movement.Output.Address == "Y24",
               doc == null ? "none" : doc.Title);
@@ -89,9 +90,10 @@ class CH {
         Check("  sensors: X30 must turn on, X31 must turn off",
               doc != null && doc.Movement.Feedback.Single().Address == "X30" && doc.Movement.OppositeFeedback.Single().Address == "X31");
         string path = TC.ExtractSection(doc);
-        string html = File.ReadAllText(path);
+        // the manual, folded at the end of the movement's page
+        string html = Regex.Match(File.ReadAllText(path), "<details class=\"manual\".*?</details>", RegexOptions.Singleline).Value;
         Console.WriteLine("      " + path);
-        var details = Regex.Matches(html, "<tbody class=\"block\" data-detail=\"([^\"]*)\"").Cast<Match>().Select(m => m.Groups[1].Value).ToList();
+        var details = Regex.Matches(html, "<tbody[^>]*class=\"block\" data-detail=\"([^\"]*)\"").Cast<Match>().Select(m => m.Groups[1].Value).ToList();
         Check("ONE chart: one heading row, details 1.1 to 1.8 once each, in order",
               Regex.Matches(html, "<thead>").Count == 1 && string.Join(",", details) == "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8",
               Regex.Matches(html, "<thead>").Count + " headings; " + string.Join(",", details));
@@ -99,16 +101,16 @@ class CH {
               !html.Contains("Double solenoid 5/2 (impulse") && !html.Contains(">(3) Double solenoid 5/3"));
         Check("  only the two end sensors in 1.7", html.Contains("Two end magnetic sensors") && !html.Contains("Analogue magnetic sensor (4"));
         Check("  the variant number is dropped from the one left", !html.Contains("<strong class=\"vt\">(2)"));
-        Check("  a line at the top leads to the movement's step-by-step page (no box of devices, no notes in the checks)",
-              html.Contains("step-by-step troubleshooter") && !html.Contains("Movement that failed") && !html.Contains("On this machine"));
+        Check("  inside the movement's page: no line to another page, no box of devices, no notes in the checks",
+              html.Length > 0 && !html.Contains("step-by-step troubleshooter") && !html.Contains("Movement that failed") && !html.Contains("On this machine"));
         Check("  and the safety cautions are still there", html.Contains("CAUTION"));
 
         Console.WriteLine("--- the alarm list's help names the same movement ---");
         AlarmHelpLinks.Clear();
         AlarmHelpLinks.Harvest(unit);
         var listed = AlarmHelpLinks.DocumentsFor(4, "M811", null);
-        Check("the error bit of B: movement B, Release (its step-by-step page first)", listed.Count >= 2 && listed[0].StepByStep && listed[0].Movement != null &&
-              listed[0].Movement.Side == "B" && listed[0].Movement.Name == "Release" && listed[0].Valve == 2 && !listed[1].StepByStep,
+        Check("the error bit of B: movement B, Release (its step-by-step page, the manual inside it)", listed.Count >= 1 && listed[0].StepByStep && listed[0].Movement != null &&
+              listed[0].Movement.Side == "B" && listed[0].Movement.Name == "Release" && listed[0].Valve == 2 && !listed.Any(d => !d.StepByStep && d.Movement != null),
               string.Join(" | ", listed.Select(d => d.Title)));
         helpA.UpdateState(a => 0, c => true);
         Check("cleared: the '?' goes again", mark.State == UnitHelpBadge.BadgeState.Hidden);

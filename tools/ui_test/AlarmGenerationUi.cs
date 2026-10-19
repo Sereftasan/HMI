@@ -120,7 +120,8 @@ class AGU {
               !Field<AlarmHelpBadge>(u, "_helpA").IsErrorSet);
         Check("  its tip names the alarm with its sub-number", hb.TipText.StartsWith("M844.2 Front clamping did not clamp"), hb.TipText);
         var docs = u.HelpDocuments();
-        Check("  the '?' opens the step-by-step page for that failure first", docs.Count >= 2 && docs[0].StepByStep && docs[0].Failure == 2 &&
+        Check("  the '?' opens the step-by-step page for that failure first (the manual inside it: 18 October)", docs.Count >= 1 && docs[0].StepByStep && docs[0].Failure == 2 &&
+              !docs.Any(d => !d.StepByStep && d.Movement != null) &&
               docs[0].Title.EndsWith("(M844.2)") && docs[0].Movement.Feedback[0].AtAlarm == 0 && docs[0].Movement.Output.AtAlarm == 1,
               string.Join(" | ", docs.Select(d => d.Title)));
         var html = File.ReadAllText(TC.WriteSteps(docs[0]));
@@ -157,9 +158,10 @@ class AGU {
         Check("  an Admin does", ag.Columns["Address"].Visible);
         SecurityManager.Login("m", SecurityLevel.Maintenance); Application.DoEvents();
         var listDocs = (List<TC.HelpDocument>)screen.GetType().GetMethod("HelpDocumentsFor", Any).Invoke(screen, new object[] { ag.Rows[0].DataBoundItem });
-        Check("  its help: that failure's step-by-step page first, then the manual (not the PLC bit's step-by-step)",
-              listDocs.Count >= 2 && listDocs[0].StepByStep && listDocs[0].Failure == 2 && listDocs[0].Title.Contains("Front Clamping") &&
-              !listDocs.Skip(1).Any(d => d.StepByStep) && listDocs[1].Valve != 0,
+        Check("  its help: that failure's step-by-step page, the manual inside it (not the PLC bit's step-by-step, no manual beside it)",
+              listDocs.Count >= 1 && listDocs[0].StepByStep && listDocs[0].Failure == 2 && listDocs[0].Title.Contains("Front Clamping") &&
+              !listDocs.Skip(1).Any(d => d.StepByStep) && !listDocs.Any(d => d.Valve != 0 && !d.StepByStep) &&
+              File.ReadAllText(TC.ExtractSection(listDocs[0])).Contains("<details class=\"manual\" id=\"manual\">"),
               string.Join(" | ", listDocs.Select(d => d.Title)));
         var hist = (UserControl)screen.GetType().GetMethod("BuildHistory", Any).Invoke(screen, new object[] { null });
         host.Controls.Add(hist); hist.Bounds = new Rectangle(0, 100, 1000, 300); Application.DoEvents();
