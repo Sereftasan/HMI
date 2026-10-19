@@ -1,0 +1,9 @@
+﻿# Kaban HMI structured data types - the PLC Monitor's, chosen like a simple data type.
+# [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment
+[Milling Step];16;Used for the milling operation steps
+Cooling Selection;Bit;0;1;
+Motor Selection;Bit;0;5;
+Y Position;Double Word [Signed];3;;
+X Position;Double Word [Signed];1;;
+Z Position;Double Word [Signed];5;;
+Speed;Word [Signed];12;;
