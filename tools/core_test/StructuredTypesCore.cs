@@ -61,11 +61,11 @@ class STC {
         Check("two members on one device: said, with their places", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("'X' (+1) and 'Y' (+2)"),
               StructuredTypes.Problem(bad, new[] { bad }));
         bad = Milling(); bad.Size = 12;
-        Check("shorter than its members reach", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("reach 14"), StructuredTypes.Problem(bad, new[] { bad }));
+        Check("shorter than its labels reach: said, with the label reaching furthest", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("reach 14 ('Hiz' at +13)"), StructuredTypes.Problem(bad, new[] { bad }));
         bad = Milling(); bad.Name = "Bit";
         Check("named as a simple type", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("simple data type"));
         bad = Milling(); bad.Members[1].Name = "HareketKodu";
-        Check("two members of one name", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("Two members"));
+        Check("two members of one name", (StructuredTypes.Problem(bad, new[] { bad }) ?? "").Contains("Two labels"));
         var twin = Milling();
         Check("two structures of one name", (StructuredTypes.Problem(twin, new[] { Milling(), twin }) ?? "").Contains("another structure"));
         bad = Milling(); bad.Members[0].DataType = "FrezeAdim";

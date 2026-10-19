@@ -270,6 +270,10 @@ class PS {
             bool bottomOff = up.Enabled && !down.Enabled && cur.Members[8].Name == "Hiz";
             pick(8); Call(f, "MoveMember", -1); pick(0); Call(f, "MoveMember", +1); Application.DoEvents();
             Call(f, "AddMember"); Application.DoEvents();
+            string past = (string)Call(f, "FirstProblem") ?? "";
+            Check("  a label added past the length (+16, of 16): the length stays, the problem names the label",
+                  cur.Members.Count == 10 && cur.Size == 16 && past.Contains("its labels reach 17") && past.Contains("'Member10' at +16") &&
+                  ((Label)Get(f, "_problem")).Text == past, past);
             remove.Focus(); Call(f, "RemoveMember"); Application.DoEvents();
             Check("Up to the top, Down to the bottom, a label removed: done, the buttons never switched inside the table's change (Windows' reentrant call)",
                   inTable.Count == 0 && topOff && bottomOff && cur.Members.Count == 9 && (int)Get(f, "SelectedMember") == 8 && !down.Enabled && remove.Enabled &&
@@ -280,12 +284,20 @@ class PS {
             Call(f, "NewType", (object)null);
             cur = (StructuredTypes.Type)Get(f, "Current");
             Call(f, "AddMember"); Call(f, "AddMember");
-            Check("a new one: named, its members one after the other (+0, +1)", cur.Name == "Structure" && cur.Members.Count == 2 && cur.Members[1].Offset == 1 && cur.Size == 2,
-                  cur.Name + " " + cur.Members.Count + " " + cur.Size);
+            Check("a new one: named, its labels one after the other (+0, +1); one device long, so the second is past it: said, the length kept",
+                  cur.Name == "Structure" && cur.Members.Count == 2 && cur.Members[1].Offset == 1 && cur.Size == 1 && ((NumericUpDown)Get(f, "_size")).Value == 1 &&
+                  ((string)Call(f, "FirstProblem") ?? "").Contains("its labels reach 2"),
+                  cur.Name + " " + cur.Members.Count + " " + cur.Size + " " + (string)Call(f, "FirstProblem"));
+            ((NumericUpDown)Get(f, "_size")).Value = 3;
+            Check("  made 3 long: complete", cur.Size == 3 && Call(f, "FirstProblem") == null, (string)Call(f, "FirstProblem"));
             membersGrid.Rows[1].Cells["DataType"].Value = "Float [Single Precision]";
-            Check("  a member made a float: the structure grows to 3 devices", cur.Members[1].DataType == "Float [Single Precision]" && cur.Size == 3, cur.Size.ToString());
+            Check("  a label made a float (+1, 2 devices): fits, still 3 long", cur.Members[1].DataType == "Float [Single Precision]" && cur.Size == 3 && Call(f, "FirstProblem") == null,
+                  cur.Size.ToString());
+            membersGrid.Rows[1].Cells["Offset"].Value = "2";
+            Check("  moved to +2: past the length - not made longer, said", cur.Size == 3 && ((string)Call(f, "FirstProblem") ?? "").Contains("reach 4 ('Member2' at +2, 2 devices)"),
+                  (string)Call(f, "FirstProblem"));
             membersGrid.Rows[1].Cells["Offset"].Value = "0";
-            Check("  two members on one device: said, and OK refuses it", ((string)Call(f, "FirstProblem") ?? "").Contains("use the same device"),
+            Check("  two labels on one device: said, and OK refuses it", ((string)Call(f, "FirstProblem") ?? "").Contains("use the same device"),
                   (string)Call(f, "FirstProblem"));
             membersGrid.Rows[1].Cells["Offset"].Value = "1";
             ((TextBox)Get(f, "_name")).Text = "Kesim";

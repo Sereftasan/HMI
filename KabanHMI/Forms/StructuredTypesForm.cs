@@ -333,8 +333,7 @@ namespace Kaban.UI.Forms
             if (!m.IsBit && Convert.ToString(cells["Bit"].Value ?? "") != "") cells["Bit"].Value = "";
             if (m.IsBit && Convert.ToString(cells["Bit"].Value ?? "") == "") cells["Bit"].Value = m.Bit.ToString("X", CultureInfo.InvariantCulture);
             _filling = was;
-            // the structure grows with its members
-            if (t.Size < t.MinimumSize) { _filling = true; t.Size = t.MinimumSize; _size.Value = Math.Min(_size.Maximum, t.Size); _filling = was; }
+            // a label past the length does not lengthen it: the problem line says it, OK refuses it
             UpdateState(fromTable: true);
         }
 
@@ -350,10 +349,10 @@ namespace Kaban.UI.Forms
             for (int n = t.Members.Count + 2; t.Members.Any(o => string.Equals(o.Name, name, StringComparison.OrdinalIgnoreCase)); n++) name = "Member" + n;
             var m = new StructuredTypes.Member { Name = name, DataType = type, Offset = offset, Bit = bit };
             t.Members.Add(m);
-            if (t.Size < t.MinimumSize) t.Size = t.MinimumSize;
+            // past the length: the length stays (19 October: "it should give an error instead, just like
+            // lowering the length below the labels") - the problem line says it, OK refuses it
             _filling = true;
             AddMemberRow(m);
-            _size.Value = Math.Min(_size.Maximum, t.Size);
             _filling = false;
             UpdateState();
             Choose(_members.Rows.Count - 1);

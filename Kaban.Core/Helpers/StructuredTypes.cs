@@ -399,22 +399,28 @@ namespace Kaban.Core.Helpers
                 return "'" + name + "' is a simple data type's name.";
             if (all != null && all.Count(o => !ReferenceEquals(o, t) && string.Equals((o.Name ?? "").Trim(), name, StringComparison.OrdinalIgnoreCase)) > 0)
                 return "There is another structure named '" + name + "'.";
-            if (t.Members.Count == 0) return "'" + name + "' has no members.";
+            if (t.Members.Count == 0) return "'" + name + "' has no labels.";
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var m in t.Members)
             {
-                if ((m.Name ?? "").Trim().Length == 0) return "Every member of '" + name + "' needs a name.";
-                if (Regex.IsMatch(m.Name, @"[;\[\]()|.@]")) return "A member's name cannot have ; [ ] ( ) | . or @ in it: '" + m.Name + "'.";
-                if (!seen.Add(m.Name.Trim())) return "Two members of '" + name + "' are named '" + m.Name.Trim() + "'.";
-                if (!IsSimple(m.DataType)) return "Member '" + m.Name + "': a simple data type only (" + m.DataType + ").";
-                if (m.Offset < 0) return "Member '" + m.Name + "': its offset cannot be below 0.";
-                if (m.IsBit && (m.Bit < 0 || m.Bit > 15)) return "Member '" + m.Name + "': a bit of its word is 0 - 15.";
+                if ((m.Name ?? "").Trim().Length == 0) return "Every label of '" + name + "' needs a name.";
+                if (Regex.IsMatch(m.Name, @"[;\[\]()|.@]")) return "A label's name cannot have ; [ ] ( ) | . or @ in it: '" + m.Name + "'.";
+                if (!seen.Add(m.Name.Trim())) return "Two labels of '" + name + "' are named '" + m.Name.Trim() + "'.";
+                if (!IsSimple(m.DataType)) return "Label '" + m.Name + "': a simple data type only (" + m.DataType + ").";
+                if (m.Offset < 0) return "Label '" + m.Name + "': its offset cannot be below 0.";
+                if (m.IsBit && (m.Bit < 0 || m.Bit > 15)) return "Label '" + m.Name + "': a bit of its word is 0 - 15.";
             }
             for (int i = 0; i < t.Members.Count; i++)
                 for (int j = i + 1; j < t.Members.Count; j++)
                     if (Overlap(t.Members[i], t.Members[j]))
-                        return "Members '" + t.Members[i].Name + "' (" + t.Members[i].Place + ") and '" + t.Members[j].Name + "' (" + t.Members[j].Place + ") use the same device.";
-            if (t.Size < t.MinimumSize) return "'" + name + "' is " + t.Size + " devices long, but its members reach " + t.MinimumSize + ".";
+                        return "Labels '" + t.Members[i].Name + "' (" + t.Members[i].Place + ") and '" + t.Members[j].Name + "' (" + t.Members[j].Place + ") use the same device.";
+            if (t.Size < t.MinimumSize)
+            {
+                // the label that reaches furthest, named: the one just added, or the one just made longer
+                var far = t.Members.OrderByDescending(m => m.Offset + m.Words).First();
+                return "'" + name + "' is " + t.Size + " devices long, but its labels reach " + t.MinimumSize +
+                       " ('" + far.Name + "' at " + far.Place + (far.Words > 1 ? ", " + far.Words + " devices" : "") + "): make it longer, or move the label.";
+            }
             return null;
         }
 
