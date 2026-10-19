@@ -202,6 +202,35 @@ class PS {
             Check("opened on the row's structure: its 9 members listed with their offsets and bits",
                   cur != null && cur.Name == "FrezeAdim" && membersGrid.Rows.Count == 9 && Convert.ToString(membersGrid.Rows[1].Cells["Offset"].Value) == "1" &&
                   Convert.ToString(membersGrid.Rows[8].Cells["Bit"].Value) == "3" && membersGrid.Rows[1].Cells["Bit"].ReadOnly);
+            // 19 October: the page redesigned - "remove the Structures and Members captions; New, Copy and
+            // Delete on top of the list, Add, Remove, Up and Down on top of the labels, emojis instead of
+            // the words; the Member column is Label; Name, Length and Comment each on its own line, the
+            // label on the left; and no '... members, ... devices used - in an array ...' line"
+            Func<Control, IEnumerable<Control>> all = null;
+            all = c => c.Controls.Cast<Control>().SelectMany(k => new[] { k }.Concat(all(k)));
+            var texts = all(f).OfType<Label>().Select(l => l.Text).ToList();
+            Check("no Structures / Members captions, no layout line", !texts.Contains("Structures") && !texts.Contains("Members") &&
+                  !texts.Any(s => s.Contains("devices used")) && f.GetType().GetField("_layout", Any) == null, string.Join("|", texts));
+            Check("the first column is Label", membersGrid.Columns["Name"].HeaderText == "Label", membersGrid.Columns["Name"].HeaderText);
+            var types = (Control)Get(f, "_types");
+            var bNew = (Button)Get(f, "_new"); var bCopy = (Button)Get(f, "_copy"); var bDel = (Button)Get(f, "_delete");
+            var bAdd = (Button)Get(f, "_addMember"); var bRem = (Button)Get(f, "_removeMember"); var bUp = (Button)Get(f, "_up"); var bDown = (Button)Get(f, "_down");
+            Check("New, Copy, Delete: pictures on top of the list", bNew.Text == "\u2795" && bCopy.Text == "" && bCopy.AccessibleName == "Copy" && bDel.Text == "\U0001F5D1" &&
+                  new[] { bNew, bCopy, bDel }.All(b => b.Parent == types.Parent && b.Bottom <= types.Top && b.Left >= types.Left && b.Right <= types.Right),
+                  bNew.Text + bCopy.Text + bDel.Text + " " + bNew.Bounds + " " + types.Bounds);
+            Check("Add, Remove, Up, Down: pictures on top of the labels", bAdd.Text == "\u2795" && bRem.Text == "\U0001F5D1" && bUp.Text == "" && bDown.Text == "" &&
+                  bUp.AccessibleName == "Move up" && bDown.AccessibleName == "Move down" &&
+                  new[] { bAdd, bRem, bUp, bDown }.All(b => b.Parent == membersGrid.Parent && b.Bottom <= membersGrid.Top && b.Top > ((Control)Get(f, "_comment")).Bottom),
+                  bAdd.Bounds + " " + membersGrid.Bounds);
+            Func<string, string, bool> line = (caption, field) =>
+            {
+                var box = (Control)Get(f, field);
+                var l = all(f).OfType<Label>().FirstOrDefault(k => k.Text == caption + ":");
+                return l != null && l.Parent == box.Parent && l.Right <= box.Left && l.Top >= box.Top - 2 && l.Bottom <= box.Bottom + 6;
+            };
+            Check("Name, Length, Comment: each its own line, the label left of its box",
+                  line("Name", "_name") && line("Length (devices)", "_size") && line("Comment", "_comment") &&
+                  ((Control)Get(f, "_name")).Bottom <= ((Control)Get(f, "_size")).Top && ((Control)Get(f, "_size")).Bottom <= ((Control)Get(f, "_comment")).Top);
             // 19 October: "Up and Down button enabling doesn't work well - they get enabled and disabled
             // at the wrong positions of the selected label" (Windows selects the row before it moves the
             // current cell: the buttons followed the row chosen before)

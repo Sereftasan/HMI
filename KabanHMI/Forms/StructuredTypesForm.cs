@@ -28,8 +28,8 @@ namespace Kaban.UI.Forms
         private readonly NumericUpDown _size = new NumericUpDown();
         private readonly TextBox _comment = new TextBox();
         private readonly DataGridView _members = new DataGridView();
-        private readonly Label _layout = new Label();
         private readonly Label _problem = new Label();
+        private readonly ToolTip _tips = new ToolTip();
         private readonly Button _new, _copy, _delete, _addMember, _removeMember, _up, _down;
         private readonly List<StructuredTypes.Type> _work;
         /// <summary>The station whose machine's types these are (each machine keeps its own).</summary>
@@ -65,34 +65,54 @@ namespace Kaban.UI.Forms
             MinimumSize = new Size(820, 460);
 
             _work = StructuredTypes.All(station).Select(t => t.Clone()).ToList();
+            Kaban.UI.Helpers.Shortcuts.Attach(this);      // Insert / Delete / Ctrl+Up / Ctrl+Down: the buttons nearest the focus
 
-            // ---- the list ----
-            var listCaption = new Label { Text = T("Lbl_StructList", "Structures"), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), AutoSize = true, Location = new Point(14, 12) };
-            Controls.Add(listCaption);
-            _types.SetBounds(14, 36, 210, ClientSize.Height - 36 - 96);
+            // 19 October: "remove the captions - the page's name says it; the buttons on top of
+            // the list and of the labels, with emojis instead of words, just like the other pages;
+            // Name, Length and Comment each on its own line, the label left of its box"
+            const int bottom = 56;                         // OK / Cancel under both halves
+
+            // ---- the list: its buttons above it ----
+            var left = new Panel { Bounds = new Rectangle(0, 0, 238, ClientSize.Height - bottom), Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left };
+            Controls.Add(left);
+            _new = UiStyle.ToolButton(E(0x2795), T("Tip_StructNew", "New structure"), _tips);
+            _copy = UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_StructCopy", "A copy of the structure chosen"), _tips);
+            _delete = UiStyle.ToolButton(E(0x1F5D1), T("Tip_StructDelete", "Delete the structure chosen"), _tips);
+            Bar(left, 14, 10, _new, _copy, _delete);
+            _types.SetBounds(14, 50, 210, left.Height - 50);
             _types.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             _types.IntegralHeight = false;
-            Controls.Add(_types);
-            _new = Btn(T("Btn_StructNew", "New"), 14, ClientSize.Height - 90, 66);
-            _copy = Btn(T("Btn_StructCopy", "Copy"), 86, ClientSize.Height - 90, 66);
-            _delete = Btn(T("Btn_StructDelete", "Delete"), 158, ClientSize.Height - 90, 66);
-            foreach (var b in new[] { _new, _copy, _delete }) b.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            left.Controls.Add(_types);
 
-            // ---- the structure ----
-            int x = 244, w = ClientSize.Width - x - 14;
-            AddField(T("Lbl_StructName", "Name"), _name, x, 12, 260);
-            AddField(T("Lbl_StructSize", "Length (devices)"), _size, x + 290, 12, 90);
+            // ---- the structure: a line each, the label left of its box ----
+            var right = new Panel { Bounds = new Rectangle(left.Right, 0, ClientSize.Width - left.Right, ClientSize.Height - bottom),
+                                    Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right };
+            Controls.Add(right);
+            int x = 6, w = right.Width - x - 14;
+            var nameCaption = Caption(right, T("Lbl_StructName", "Name"));
+            var sizeCaption = Caption(right, T("Lbl_StructSize", "Length (devices)"));
+            var commentCaption = Caption(right, T("Lbl_StructComment", "Comment"));
+            int boxX = x + new[] { nameCaption, sizeCaption, commentCaption }.Max(l => l.PreferredWidth) + 10;
+            Line(right, nameCaption, _name, x, boxX, 12, 260);
+            Line(right, sizeCaption, _size, x, boxX, 46, 90);
             _size.Minimum = 1; _size.Maximum = 4096;
             var sizeNote = new Label { Text = T("Lbl_StructSizeNote", "an array's next element starts this far on"), AutoSize = true,
-                                       ForeColor = Color.FromArgb(90, 96, 106), Location = new Point(x + 290 + 96, 40) };
-            Controls.Add(sizeNote);
-            AddField(T("Lbl_StructComment", "Comment"), _comment, x, 64, w);
+                                       ForeColor = Color.FromArgb(90, 96, 106) };
+            right.Controls.Add(sizeNote);
+            sizeNote.Location = new Point(_size.Right + 10, sizeCaption.Top);
+            Line(right, commentCaption, _comment, x, boxX, 80, right.Width - boxX - 14);
             _comment.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
-            // ---- its members ----
-            var membersCaption = new Label { Text = T("Lbl_StructMembers", "Members"), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), AutoSize = true, Location = new Point(x, 120) };
-            Controls.Add(membersCaption);
-            _members.SetBounds(x, 144, w, ClientSize.Height - 144 - 132);
+            // ---- its members (labels inside the label): their buttons above them ----
+            _addMember = UiStyle.ToolButton(E(0x2795), T("Tip_StructAddMember", "Add a label after the last one"), _tips);
+            _removeMember = UiStyle.ToolButton(E(0x1F5D1), T("Tip_StructRemoveMember", "Remove the label chosen"), _tips);
+            _up = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_StructUp", "Move the label chosen up"), _tips);
+            _down = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_StructDown", "Move the label chosen down"), _tips);
+            Kaban.UI.Helpers.Shortcuts.Set(_up, Keys.Control | Keys.Up, _tips, T("Tip_StructUp", "Move the label chosen up"));
+            Kaban.UI.Helpers.Shortcuts.Set(_down, Keys.Control | Keys.Down, _tips, T("Tip_StructDown", "Move the label chosen down"));
+            Bar(right, x, 118, _addMember, _removeMember, _up, _down);
+
+            _members.SetBounds(x, 158, w, right.Height - 158 - 30);
             _members.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _members.AllowUserToAddRows = false;
             _members.AllowUserToDeleteRows = false;
@@ -101,11 +121,11 @@ namespace Kaban.UI.Forms
             _members.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             _members.MultiSelect = false;
             // a tap (or a key) edits a cell; moving onto one does not - a member just added is not
-            // put in an editor that a second "Add member" would commit empty
+            // put in an editor that a second "Add" would commit empty
             _members.EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2;
             _members.BackgroundColor = Color.White;
             _members.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Name", HeaderText = T("Col_StructMember", "Member"), FillWeight = 26 });
+            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Name", HeaderText = T("Col_Label", "Label"), FillWeight = 26 });
             var type = new DataGridViewComboBoxColumn { Name = "DataType", HeaderText = T("Col_DataType", "DataType"), FillWeight = 26, FlatStyle = FlatStyle.Flat };
             type.Items.AddRange(MemberTypes);
             _members.Columns.Add(type);
@@ -114,25 +134,14 @@ namespace Kaban.UI.Forms
             _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Comment", HeaderText = T("Col_Comment", "Comment"), FillWeight = 30 });
             foreach (DataGridViewColumn c in _members.Columns) c.SortMode = DataGridViewColumnSortMode.NotSortable;
             try { UiStyle.GridLook(_members); } catch { }
-            Controls.Add(_members);
+            right.Controls.Add(_members);
 
-            int by = ClientSize.Height - 124;
-            _addMember = Btn(T("Btn_StructAddMember", "Add member"), x, by, 120);
-            _removeMember = Btn(T("Btn_StructRemoveMember", "Remove member"), x + 126, by, 130);
-            _up = Btn(T("Btn_StructUp", "Up"), x + 262, by, 60);
-            _down = Btn(T("Btn_StructDown", "Down"), x + 328, by, 60);
-            foreach (var b in new[] { _addMember, _removeMember, _up, _down }) b.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-
-            _layout.AutoSize = false;
-            _layout.SetBounds(x, by + 38, w, 22);
-            _layout.ForeColor = Color.FromArgb(70, 76, 86);
-            _layout.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Controls.Add(_layout);
+            // what is wrong with the structure, under its labels
             _problem.AutoSize = false;
-            _problem.SetBounds(x, by + 60, w, 22);
+            _problem.SetBounds(x, right.Height - 26, w, 22);
             _problem.ForeColor = Color.FromArgb(190, 30, 30);
             _problem.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Controls.Add(_problem);
+            right.Controls.Add(_problem);
 
             var ok = Btn(T("Btn_Ok", "OK"), ClientSize.Width - 212, ClientSize.Height - 44, 96);
             var cancel = Btn(T("Btn_Cancel", "Cancel"), ClientSize.Width - 108, ClientSize.Height - 44, 96);
@@ -193,6 +202,8 @@ namespace Kaban.UI.Forms
 
         private static string T(string key, string fallback) { return LanguageManager.GetString(key, fallback); }
 
+        private static string E(int codePoint) { return char.ConvertFromUtf32(codePoint); }
+
         private Button Btn(string text, int x, int y, int w)
         {
             var b = UiStyle.Round(new Button { Text = text, Width = w, Height = 30, Location = new Point(x, y) });
@@ -200,11 +211,31 @@ namespace Kaban.UI.Forms
             return b;
         }
 
-        private void AddField(string caption, Control field, int x, int y, int w)
+        /// <summary>Toolbar buttons side by side from (x, y).</summary>
+        private static void Bar(Control into, int x, int y, params Button[] buttons)
         {
-            Controls.Add(new Label { Text = caption + ":", AutoSize = true, Location = new Point(x, y) });
-            field.SetBounds(x, y + 22, w, 24);
-            Controls.Add(field);
+            foreach (var b in buttons)
+            {
+                b.Location = new Point(x, y);
+                b.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+                into.Controls.Add(b);
+                x += b.Width + 4;
+            }
+        }
+
+        private static Label Caption(Control into, string text)
+        {
+            var l = new Label { Text = text + ":", AutoSize = true };
+            into.Controls.Add(l);
+            return l;
+        }
+
+        /// <summary>A property's line: its label on the left, its box on the right of it.</summary>
+        private static void Line(Control into, Label caption, Control field, int x, int boxX, int y, int w)
+        {
+            field.SetBounds(boxX, y, w, 24);
+            into.Controls.Add(field);
+            caption.Location = new Point(x, y + Math.Max(0, (field.Height - caption.PreferredHeight) / 2));
         }
 
         // ---- the list --------------------------------------------------------------------
@@ -381,9 +412,6 @@ namespace Kaban.UI.Forms
         {
             var t = Current;
             _name.Enabled = _size.Enabled = _comment.Enabled = _members.Enabled = t != null;
-            _layout.Text = t == null ? T("Lbl_StructNone", "No structure yet: New makes one.")
-                : string.Format(T("Lbl_StructLayout", "{0} members, {1} of {2} devices used - in an array starting at R0 the elements are R0, R{2}, R{3} ..."),
-                                t.Members.Count, t.Members.Count == 0 ? 0 : t.MinimumSize, t.Size, 2 * t.Size);
             var p = t == null ? null : StructuredTypes.Problem(t, _work);
             _problem.Text = p ?? "";
             UpdateButtons();
