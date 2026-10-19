@@ -113,7 +113,7 @@ namespace Kaban.UI.Forms
             // 19 October: "leave some space between the comment line and the table's buttons"
             Bar(right, x, 136, _addMember, _removeMember, _up, _down);
 
-            _members.SetBounds(x, 176, w, right.Height - 176 - 30);
+            _members.SetBounds(x, 176, w, right.Height - 176 - 48);
             _members.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             _members.AllowUserToAddRows = false;
             _members.AllowUserToDeleteRows = false;
@@ -139,7 +139,7 @@ namespace Kaban.UI.Forms
 
             // what is wrong with the structure, under its labels
             _problem.AutoSize = false;
-            _problem.SetBounds(x, right.Height - 26, w, 22);
+            _problem.SetBounds(x, right.Height - 44, w, 40);      // two lines: a long label's name fits
             _problem.ForeColor = Color.FromArgb(190, 30, 30);
             _problem.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             right.Controls.Add(_problem);

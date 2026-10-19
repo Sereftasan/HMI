@@ -419,7 +419,7 @@ namespace Kaban.Core.Helpers
                 // the label that reaches furthest, named: the one just added, or the one just made longer
                 var far = t.Members.OrderByDescending(m => m.Offset + m.Words).First();
                 return "'" + name + "' is " + t.Size + " devices long, but its labels reach " + t.MinimumSize +
-                       " ('" + far.Name + "' at " + far.Place + (far.Words > 1 ? ", " + far.Words + " devices" : "") + "): make it longer, or move the label.";
+                       " ('" + far.Name + "' at " + far.Place + (far.Words > 1 ? ", " + far.Words + " devices" : "") + ").";
             }
             return null;
         }
