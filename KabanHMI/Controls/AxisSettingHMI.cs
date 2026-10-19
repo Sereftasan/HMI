@@ -376,7 +376,7 @@ namespace Kaban.UI.Controls
         [Category(" Meters"), Description("Servo load / motor current. Empty hides the bar.")]
         public string CurrentAddress { get; set; }
 
-        [Category(" Meters")]
+        [Category(" Meters"), Description("The reading over this is the percentage: the motion module's motor current (Md.104) is in 0.1 % - 10 (212 is 21.2 %).")]
         public double CurrentDivisor { get; set; }
 
         [Category(" Meters"), Description("Reading that counts as 100% on the bar.")]
@@ -549,7 +549,7 @@ namespace Kaban.UI.Controls
             Suffix = "mm";
             EntryMinimum = new Kaban.Core.Models.DynamicValue();   // no limit unless one is given
             EntryMaximum = new Kaban.Core.Models.DynamicValue();
-            CurrentDivisor = 1;
+            CurrentDivisor = 10;           // the motion module's 0.1 % (19 October: "212 at the address is 21.2 %")
             CurrentFullScale = 100;
             ZDistanceDivisor = 1000;
             ZDistanceFullScale = 10;

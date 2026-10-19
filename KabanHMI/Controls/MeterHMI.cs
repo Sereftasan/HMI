@@ -46,6 +46,18 @@ namespace Kaban.UI.Controls
         [Category(" Value"), Description("Display value at the left end of the bar.")]
         public double ScaleMinimum { get; set; }
 
+        /// <summary>
+        /// 19 October: "the axis current can be negative as well (signed decimal - it is just the
+        /// direction of the motor's torque), so -21.2 % is green just like 21.2 %": a signed word,
+        /// its bands and its bar by its size, its number with its sign.
+        /// </summary>
+        [Category(" Value"), DefaultValue(false),
+         Description("A signed word (-32768 ... 32767) whose sign is only a direction (a motor current's torque): the bands and the bar go by its size, the number keeps its sign.")]
+        public bool Signed { get; set; }
+
+        /// <summary>The value the bands and the bar go by: a signed reading's size.</summary>
+        protected double Magnitude { get { return Signed ? Math.Abs(_display) : _display; } }
+
         [Category(" Value"), Description("Display value that fills the bar.")]
         public double ScaleMaximum { get; set; }
 
@@ -90,13 +102,26 @@ namespace Kaban.UI.Controls
         [Category(" Bands"), Description("Window/Rising: at or above this it is RED.")]
         public double HighAlarm { get; set; }
 
-        /// <summary>Servo current / load: green to 60, amber to 80, red beyond.</summary>
+        /// <summary>
+        /// Servo current / load: green to 60, amber to 80, red beyond - either way round (a signed
+        /// reading, its sign the torque's direction); as many decimals as the divisor gives
+        /// (the motion module's 0.1 %: divisor 10, "21.2 %").
+        /// </summary>
         public void UseCurrentBands()
         {
             Bands = BandShape.Rising;
             HighWarning = 60; HighAlarm = 80;
             ScaleMinimum = 0; ScaleMaximum = 100;
-            Suffix = "%"; DecimalPlaces = 0;
+            Suffix = "%"; DecimalPlaces = DecimalsOf(Divisor);
+            Signed = true;
+        }
+
+        /// <summary>The decimals a divisor gives: 1 none, 10 one, 100 two (at most three).</summary>
+        public static int DecimalsOf(double divisor)
+        {
+            int d = 0;
+            for (double x = divisor; x > 1.0001 && d < 3; x /= 10) d++;
+            return d;
         }
 
         /// <summary>
@@ -182,7 +207,10 @@ namespace Kaban.UI.Controls
         public virtual void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
             if (readPlc == null || string.IsNullOrEmpty(Address)) return;
-            double v = readPlc(Address) / (Divisor <= 0 ? 1 : Divisor);
+            int raw = readPlc(Address);
+            // a word read as 0 ... 65535 (the PLC drivers do): its sign back
+            if (Signed && raw > short.MaxValue && raw <= ushort.MaxValue) raw -= 65536;
+            double v = raw / (Divisor <= 0 ? 1 : Divisor);
             if (_hasValue && Math.Abs(v - _display) < 1e-9) return;
             _display = v;
             _hasValue = true;
@@ -242,7 +270,7 @@ namespace Kaban.UI.Controls
             {
                 double lo = ScaleMinimum, hi = ScaleMaximum;
                 if (Math.Abs(hi - lo) < 1e-9) return 0;
-                double f = (_display - lo) / (hi - lo);
+                double f = (Magnitude - lo) / (hi - lo);
                 return Math.Max(0, Math.Min(1, f));
             }
         }
@@ -284,7 +312,7 @@ namespace Kaban.UI.Controls
             }
         }
 
-        protected Color BarColour() { return ColourAt(_display); }
+        protected Color BarColour() { return ColourAt(Magnitude); }
 
         /// <summary>Mixes a colour toward white by the given amount.</summary>
         private static Color Lighten(Color c, float amount)

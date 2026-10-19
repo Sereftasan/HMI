@@ -252,7 +252,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_X.CommandBackAddress = "M604";
             this.axRobot_X.CommandForwardAddress = "M605";
             this.axRobot_X.CurrentAddress = "W0A";
-            this.axRobot_X.CurrentDivisor = 1D;
+            this.axRobot_X.CurrentDivisor = 10D;
             this.axRobot_X.CurrentFullScale = 100D;
             this.axRobot_X.DecimalPlaces = 2;
             this.axRobot_X.Digits = 8;
@@ -333,7 +333,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Y.CommandBackAddress = "M603";
             this.axRobot_Y.CommandForwardAddress = "M602";
             this.axRobot_Y.CurrentAddress = "W0BA";
-            this.axRobot_Y.CurrentDivisor = 1D;
+            this.axRobot_Y.CurrentDivisor = 10D;
             this.axRobot_Y.CurrentFullScale = 100D;
             this.axRobot_Y.DecimalPlaces = 2;
             this.axRobot_Y.Digits = 8;
@@ -410,7 +410,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axRobot_Z.CommandBackAddress = "M601";
             this.axRobot_Z.CommandForwardAddress = "M600";
             this.axRobot_Z.CurrentAddress = "W0CA";
-            this.axRobot_Z.CurrentDivisor = 1D;
+            this.axRobot_Z.CurrentDivisor = 10D;
             this.axRobot_Z.CurrentFullScale = 100D;
             this.axRobot_Z.DecimalPlaces = 2;
             this.axRobot_Z.Digits = 8;
@@ -487,7 +487,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.CommandBackAddress = "M607";
             this.axMilling_1_Angle.CommandForwardAddress = "M606";
             this.axMilling_1_Angle.CurrentAddress = "W1A";
-            this.axMilling_1_Angle.CurrentDivisor = 1D;
+            this.axMilling_1_Angle.CurrentDivisor = 10D;
             this.axMilling_1_Angle.CurrentFullScale = 100D;
             this.axMilling_1_Angle.DecimalPlaces = 3;
             this.axMilling_1_Angle.Digits = 8;
@@ -564,7 +564,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1X.CommandBackAddress = "M619";
             this.axMilling_1X.CommandForwardAddress = "M618";
             this.axMilling_1X.CurrentAddress = "W7A";
-            this.axMilling_1X.CurrentDivisor = 1D;
+            this.axMilling_1X.CurrentDivisor = 10D;
             this.axMilling_1X.CurrentFullScale = 100D;
             this.axMilling_1X.DecimalPlaces = 2;
             this.axMilling_1X.Digits = 8;
@@ -640,7 +640,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Y.CommandBackAddress = "M609";
             this.axMilling_1Y.CommandForwardAddress = "M608";
             this.axMilling_1Y.CurrentAddress = "W2A";
-            this.axMilling_1Y.CurrentDivisor = 1D;
+            this.axMilling_1Y.CurrentDivisor = 10D;
             this.axMilling_1Y.CurrentFullScale = 100D;
             this.axMilling_1Y.DecimalPlaces = 2;
             this.axMilling_1Y.Digits = 8;
@@ -716,7 +716,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1Z.CommandBackAddress = "M611";
             this.axMilling_1Z.CommandForwardAddress = "M610";
             this.axMilling_1Z.CurrentAddress = "W3A";
-            this.axMilling_1Z.CurrentDivisor = 1D;
+            this.axMilling_1Z.CurrentDivisor = 10D;
             this.axMilling_1Z.CurrentFullScale = 100D;
             this.axMilling_1Z.DecimalPlaces = 2;
             this.axMilling_1Z.Digits = 8;
@@ -792,7 +792,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.CommandBackAddress = "M613";
             this.axMilling_2_Angle.CommandForwardAddress = "M612";
             this.axMilling_2_Angle.CurrentAddress = "W4A";
-            this.axMilling_2_Angle.CurrentDivisor = 1D;
+            this.axMilling_2_Angle.CurrentDivisor = 10D;
             this.axMilling_2_Angle.CurrentFullScale = 100D;
             this.axMilling_2_Angle.DecimalPlaces = 3;
             this.axMilling_2_Angle.Digits = 8;
@@ -869,7 +869,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2X.CommandBackAddress = "M621";
             this.axMilling_2X.CommandForwardAddress = "M620";
             this.axMilling_2X.CurrentAddress = "W8A";
-            this.axMilling_2X.CurrentDivisor = 1D;
+            this.axMilling_2X.CurrentDivisor = 10D;
             this.axMilling_2X.CurrentFullScale = 100D;
             this.axMilling_2X.DecimalPlaces = 2;
             this.axMilling_2X.Digits = 8;
@@ -945,7 +945,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Y.CommandBackAddress = "M615";
             this.axMilling_2Y.CommandForwardAddress = "M614";
             this.axMilling_2Y.CurrentAddress = "W5A";
-            this.axMilling_2Y.CurrentDivisor = 1D;
+            this.axMilling_2Y.CurrentDivisor = 10D;
             this.axMilling_2Y.CurrentFullScale = 100D;
             this.axMilling_2Y.DecimalPlaces = 2;
             this.axMilling_2Y.Digits = 8;
@@ -1021,7 +1021,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2Z.CommandBackAddress = "M617";
             this.axMilling_2Z.CommandForwardAddress = "M616";
             this.axMilling_2Z.CurrentAddress = "W6A";
-            this.axMilling_2Z.CurrentDivisor = 1D;
+            this.axMilling_2Z.CurrentDivisor = 10D;
             this.axMilling_2Z.CurrentFullScale = 100D;
             this.axMilling_2Z.DecimalPlaces = 2;
             this.axMilling_2Z.Digits = 8;
@@ -1097,7 +1097,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.CommandBackAddress = "M623";
             this.axCutting_Angle.CommandForwardAddress = "M622";
             this.axCutting_Angle.CurrentAddress = "W9A";
-            this.axCutting_Angle.CurrentDivisor = 1D;
+            this.axCutting_Angle.CurrentDivisor = 10D;
             this.axCutting_Angle.CurrentFullScale = 100D;
             this.axCutting_Angle.DecimalPlaces = 3;
             this.axCutting_Angle.Digits = 8;
@@ -1174,7 +1174,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Z.CommandBackAddress = "M625";
             this.axCutting_Z.CommandForwardAddress = "M624";
             this.axCutting_Z.CurrentAddress = "W0AA";
-            this.axCutting_Z.CurrentDivisor = 1D;
+            this.axCutting_Z.CurrentDivisor = 10D;
             this.axCutting_Z.CurrentFullScale = 100D;
             this.axCutting_Z.DecimalPlaces = 2;
             this.axCutting_Z.Digits = 8;
@@ -1251,7 +1251,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Y.CommandBackAddress = "M627";
             this.axV_Cutting_Y.CommandForwardAddress = "M626";
             this.axV_Cutting_Y.CurrentAddress = "W0EA";
-            this.axV_Cutting_Y.CurrentDivisor = 1D;
+            this.axV_Cutting_Y.CurrentDivisor = 10D;
             this.axV_Cutting_Y.CurrentFullScale = 100D;
             this.axV_Cutting_Y.DecimalPlaces = 2;
             this.axV_Cutting_Y.Digits = 8;
@@ -1329,7 +1329,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_Z.CommandBackAddress = "M629";
             this.axV_Cutting_Z.CommandForwardAddress = "M628";
             this.axV_Cutting_Z.CurrentAddress = "W0FA";
-            this.axV_Cutting_Z.CurrentDivisor = 1D;
+            this.axV_Cutting_Z.CurrentDivisor = 10D;
             this.axV_Cutting_Z.CurrentFullScale = 100D;
             this.axV_Cutting_Z.DecimalPlaces = 2;
             this.axV_Cutting_Z.Digits = 8;
@@ -1407,7 +1407,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X.CommandBackAddress = "M731";
             this.axExit_X.CommandForwardAddress = "M732";
             this.axExit_X.CurrentAddress = "W0DA";
-            this.axExit_X.CurrentDivisor = 1D;
+            this.axExit_X.CurrentDivisor = 10D;
             this.axExit_X.CurrentFullScale = 100D;
             this.axExit_X.DecimalPlaces = 2;
             this.axExit_X.Digits = 8;
@@ -1484,7 +1484,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axV_Cutting_X.CommandBackAddress = "M631";
             this.axV_Cutting_X.CommandForwardAddress = "M630";
             this.axV_Cutting_X.CurrentAddress = "";
-            this.axV_Cutting_X.CurrentDivisor = 1D;
+            this.axV_Cutting_X.CurrentDivisor = 10D;
             this.axV_Cutting_X.CurrentFullScale = 100D;
             this.axV_Cutting_X.DecimalPlaces = 2;
             this.axV_Cutting_X.Digits = 8;
