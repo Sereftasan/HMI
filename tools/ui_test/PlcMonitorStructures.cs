@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
+using Kaban.Core.Machines;
 using Kaban.UI.Forms;
 
 // 19 October: the PLC Monitor's STRUCTURED DATA TYPE - Mitsubishi's: a recipe step of members,
@@ -15,6 +16,15 @@ using Kaban.UI.Forms;
 // devices, R0, R16 ...); saved, and chosen like a simple data type.
 class PS {
     static int fail = 0;
+    class Mod : IMachineModule {
+        public string Id;
+        public string ModuleId { get { return Id; } }
+        public string DisplayNameKey { get { return Id; } }
+        public void RegisterPlc(IMachineMountContext ctx) { ctx.Station(1); }
+        public void RegisterConditions(IMachineMountContext ctx) { }
+        public void RegisterData(IMachineMountContext ctx) { }
+        public IEnumerable<MachineScreen> GetScreens(IMachineMountContext ctx) { yield break; }
+    }
     static void Check(string w, bool ok, string d = "") {
         d = d ?? "";
         Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
@@ -212,6 +222,28 @@ class PS {
         StructuredTypes.Reload();
         Check("OK kept both: offered by every list from now on", StructuredTypes.Find("Kesim") != null && StructuredTypes.Find("FrezeAdim") != null &&
               StructuredTypes.Find("Kesim").Members[1].DataType == "Float [Single Precision]");
+
+        // 19 October: "they should belong to each machine - shipped with its project like the PLC labels"
+        Console.WriteLine("--- each machine its own ---");
+        MachineRegistry.Reset();
+        MachineRegistry.MountMain(new Mod { Id = "MAIN" }, null, Path.Combine(dir, "bin"));
+        MachineRegistry.MountSub(new Mod { Id = "SUB" }, new[] { 23 }, Path.Combine(dir, "bin"));
+        StructuredTypes.Reload();
+        using (var main = new PlcRowEditorForm("Main", "", "Word [Signed]", "D0", "", isNew: true))
+        using (var sub = new PlcRowEditorForm("Bench", "", "Word [Signed]", "R0", "", isNew: true, station: 23))
+        {
+            var mainTypes = ((ComboBox)Get(main, "_dataType")).Items.Cast<object>().Select(Convert.ToString).ToList();
+            var subTypes = ((ComboBox)Get(sub, "_dataType")).Items.Cast<object>().Select(Convert.ToString).ToList();
+            Check("the main machine's types (the first version's file taken over) on its tabs, not on the mounted machine's (station 23)",
+                  mainTypes.Contains("Kesim") && mainTypes.Contains("FrezeAdim") && !subTypes.Contains("Kesim") && !subTypes.Contains("FrezeAdim") && subTypes.Contains("Bit"),
+                  string.Join(",", subTypes.Skip(Math.Max(0, subTypes.Count - 3))));
+        }
+        using (var f = new StructuredTypesForm(null, 23))
+            Check("  its editor: that machine's, named in the title", f.Text.EndsWith(" - SUB") && ((List<StructuredTypes.Type>)Get(f, "Working")).Count == 0, f.Text);
+        Check("  a row of a type the station's machine does not have is no structure on it",
+              Get(Row("R0", "FrezeAdim"), "Structure") == null && StructuredTypes.Find("FrezeAdim", 1) != null);
+        MachineRegistry.Reset();
+        StructuredTypes.Reload();
 
         form.Close();
         try { Directory.Delete(dir, true); } catch { }

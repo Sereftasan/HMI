@@ -55,9 +55,9 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>How many words a value of this type takes: 2 for a double word or a float, ceil(chars / 2) for a string, a structure's size.</summary>
-        internal static int WordCount(string dataType, int stringLength)
+        internal static int WordCount(string dataType, int stringLength, int station = 0)
         {
-            var st = StructuredTypes.Find(dataType);
+            var st = StructuredTypes.Find(dataType, station);
             if (st != null) return Math.Max(1, st.Size);
             if (IsString(dataType)) return (StringChars(dataType, stringLength) + 1) / 2;
             if (IsDoubleWord(dataType) || IsFloat(dataType)) return 2;
@@ -73,7 +73,7 @@ namespace Kaban.UI.Forms
             string a = r.Address;
             yield return a;
             if (IsBit(r.EffectiveDataType)) yield break;
-            int n = WordCount(r.EffectiveDataType, r.EffectiveStringLength);
+            int n = WordCount(r.EffectiveDataType, r.EffectiveStringLength, r.Station);
             for (int i = 1; i < n; i++) { a = PlcAddressHelper.GetNextAddress(a); yield return a; }
         }
 
@@ -293,7 +293,7 @@ namespace Kaban.UI.Forms
                 if (r.Elements == null || r.Elements.Count != count) r.Elements = new List<WatchRow>();
                 for (int i = 0; i < count; i++)
                 {
-                    string address = PlcRowEditorForm.ElementAddress(r.Address, type, i, len);
+                    string address = PlcRowEditorForm.ElementAddress(r.Address, type, i, len, r.Station);
                     if (i >= r.Elements.Count) r.Elements.Add(new WatchRow());
                     var e = r.Elements[i];
                     e.Head = r; e.ElementIndex = i; e.Station = r.Station; e.Address = address; e.Member = null;

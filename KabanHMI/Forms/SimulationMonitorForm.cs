@@ -129,7 +129,7 @@ namespace Kaban.UI.Forms
                     if (ArrayCount > 1) return ArrayCount;
                     var t = DataTypeOverride.Length > 0 ? DataTypeOverride : LabelDataType;
                     int n = StructuredTypes.CountIn(t);
-                    return n > 1 && StructuredTypes.Find(t) != null ? n : 1;
+                    return n > 1 && StructuredTypes.Find(t, Station) != null ? n : 1;
                 }
             }
 
@@ -140,7 +140,7 @@ namespace Kaban.UI.Forms
             /// <summary>The structure this row is one of (a structure's own row, or an element of an array of them); null otherwise.</summary>
             public StructuredTypes.Type Structure
             {
-                get { return Member == null && IsDevice && !IsArray ? StructuredTypes.Find(EffectiveDataType) : null; }
+                get { return Member == null && IsDevice && !IsArray ? StructuredTypes.Find(EffectiveDataType, Station) : null; }
             }
 
             /// <summary>A row that holds others and has no value of its own: an array, or a structure.</summary>
@@ -576,10 +576,11 @@ namespace Kaban.UI.Forms
             return m;
         }
 
-        /// <summary>The structured data types' editor; every list shows its rows of them anew after it.</summary>
+        /// <summary>The structured data types' editor (the current tab's machine's); every list shows its rows of them anew after it.</summary>
         internal void EditStructures(string select = null)
         {
-            using (var dlg = new StructuredTypesForm(select))
+            var current = CurrentMonitor;
+            using (var dlg = new StructuredTypesForm(select, current != null ? current.Station : 0))
                 if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
             foreach (var mon in _monitors)
                 foreach (var sh in mon.Sheets)
@@ -1734,7 +1735,7 @@ namespace Kaban.UI.Forms
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint),
                        row.IsComment ? row.Comment : row.EffectiveLabel, row.EffectiveDataType, row.Address, valueText,
                        focusField == "Format" ? "DataType" : focusField, isNew: false, isComment: row.IsComment,
-                       displayFormat: row.DisplayFormat, arrayCount: row.ArrayCount, stringLength: row.StringLength))
+                       displayFormat: row.DisplayFormat, arrayCount: row.ArrayCount, stringLength: row.StringLength, station: mon.Station))
             {
                 if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1794,11 +1795,11 @@ namespace Kaban.UI.Forms
             if (above != null && !comment)
             {
                 suggestType = string.IsNullOrWhiteSpace(above.EffectiveDataType) ? "Bit" : above.EffectiveDataType;
-                suggestAddress = PlcRowEditorForm.ElementAddress(above.Address, suggestType, 1);
+                suggestAddress = PlcRowEditorForm.ElementAddress(above.Address, suggestType, 1, 16, mon.Station);
             }
 
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint), "", suggestType, suggestAddress, "",
-                                                  comment ? "Label" : "Address", isNew: true, isComment: comment))
+                                                  comment ? "Label" : "Address", isNew: true, isComment: comment, station: mon.Station))
             {
                 if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(dlg.IsComment ? T("Undo_AddComment", "add a comment line") : T("Undo_AddDevice", "add a device"), mon);
@@ -1818,7 +1819,7 @@ namespace Kaban.UI.Forms
                     };
                     ApplyNames(mon, r, dlg.RowLabel.Length == 0 ? (PlcLabelTable.ByAddress(mon.Station, r.Address) ?? new PlcLabelTable.Entry()).Label : dlg.RowLabel,
                                dlg.RowDataType);
-                    for (int i = 0; i < n; i++) mon.Hidden.Remove(PlcRowEditorForm.ElementAddress(r.Address, dlg.RowDataType, i, r.StringLength));
+                    for (int i = 0; i < n; i++) mon.Hidden.Remove(PlcRowEditorForm.ElementAddress(r.Address, dlg.RowDataType, i, r.StringLength, mon.Station));
                     added.Add(r);
                 }
                 sh.Rows.InsertRange(at, added);

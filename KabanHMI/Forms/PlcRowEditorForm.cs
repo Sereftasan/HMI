@@ -48,6 +48,8 @@ namespace Kaban.UI.Forms
         private readonly Label _labelCaption = new Label();
         private readonly Button _structures = new Button();
         private readonly bool _isNew;
+        /// <summary>The tab's station: its machine's structured data types are offered.</summary>
+        private readonly int _station;
 
         /// <summary>The device types the engineer's list uses (see PlcLabels.csv).</summary>
         public static readonly string[] KnownDataTypes =
@@ -87,16 +89,16 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>How far apart consecutive values of a type are: 2 for a double word or a float, a string's words.</summary>
-        public static int StepFor(string dataType, int stringLength = 16)
+        public static int StepFor(string dataType, int stringLength = 16, int station = 0)
         {
             if (SimulationMonitorForm.IsBit(dataType)) return 1;
-            return SimulationMonitorForm.WordCount(dataType, stringLength);
+            return SimulationMonitorForm.WordCount(dataType, stringLength, station);
         }
 
         /// <summary>The address of element i of an array starting at first.</summary>
-        public static string ElementAddress(string first, string dataType, int i, int stringLength = 16)
+        public static string ElementAddress(string first, string dataType, int i, int stringLength = 16, int station = 0)
         {
-            return PlcAddressHelper.OffsetAddress((first ?? "").Trim().ToUpperInvariant(), i * StepFor(dataType, stringLength));
+            return PlcAddressHelper.OffsetAddress((first ?? "").Trim().ToUpperInvariant(), i * StepFor(dataType, stringLength, station));
         }
 
         /// <param name="focusField">"Label", "DataType", "Address" or "Value": the field to start in.</param>
@@ -104,12 +106,14 @@ namespace Kaban.UI.Forms
         /// <param name="displayFormat">Decimal, Hexadecimal or Binary.</param>
         /// <param name="arrayCount">Elements of an array (1: a single device).</param>
         /// <param name="stringLength">A String's characters.</param>
+        /// <param name="station">The tab's station: its machine's structured data types are offered.</param>
         public PlcRowEditorForm(string caption, string label, string dataType, string address,
                                 string value, string focusField = null, bool isNew = false, bool isComment = false,
-                                string displayFormat = "", int arrayCount = 1, int stringLength = 16)
+                                string displayFormat = "", int arrayCount = 1, int stringLength = 16, int station = 0)
         {
             Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             _isNew = isNew;
+            _station = station;
             Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
                    + " - " + caption;
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -236,7 +240,7 @@ namespace Kaban.UI.Forms
             _structures.Enabled = !comment;
             _count.Enabled = !comment;
             string type = RowDataType;
-            var structure = StructuredTypes.Find(type);
+            var structure = StructuredTypes.Find(type, _station);
             // A display format for the whole numbers (a structure's members); a length for a string.
             _format.Enabled = !comment && (structure != null ||
                               !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsFloat(type) && !SimulationMonitorForm.IsString(type));
@@ -250,7 +254,7 @@ namespace Kaban.UI.Forms
 
             int n = ArrayCount;
             string first = RowAddress;
-            int step = StepFor(RowDataType, RowStringLength);
+            int step = StepFor(RowDataType, RowStringLength, _station);
             if (!comment && structure != null && n <= 1 && first.Length > 0)
             {
                 // one structure: the devices it takes
@@ -259,7 +263,7 @@ namespace Kaban.UI.Forms
                 return;
             }
             _preview.Text = comment || n <= 1 || first.Length == 0 ? ""
-                : first + " … " + ElementAddress(first, RowDataType, n - 1, RowStringLength) +
+                : first + " … " + ElementAddress(first, RowDataType, n - 1, RowStringLength, _station) +
                   (step == 2 ? "  (" + LanguageManager.GetString("Lbl_Step2", "every 2nd device") + ")"
                    : step > 2 ? "  (" + string.Format(LanguageManager.GetString("Lbl_StepN", "every {0}th device"), step) + ")" : "");
         }
@@ -270,14 +274,14 @@ namespace Kaban.UI.Forms
             string keep = _dataType.Text;
             _dataType.Items.Clear();
             _dataType.Items.AddRange(KnownDataTypes);
-            foreach (var name in StructuredTypes.Names) _dataType.Items.Add(name);
+            foreach (var name in StructuredTypes.Names(_station)) _dataType.Items.Add(name);
             _dataType.Text = keep;
         }
 
         /// <summary>The structured data types' editor, on the type chosen; the list offers them as they are after it.</summary>
         private void EditStructures()
         {
-            using (var dlg = new StructuredTypesForm(RowDataType))
+            using (var dlg = new StructuredTypesForm(RowDataType, _station))
                 dlg.ShowDialog(this);
             FillDataTypes();
             UpdateState();

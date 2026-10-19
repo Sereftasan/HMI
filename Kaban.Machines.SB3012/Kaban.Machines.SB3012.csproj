@@ -162,6 +162,10 @@
     <None Include="Translations.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- the machine's structured data types (the PLC Monitor's): written here by the program when it runs from this build -->
+    <None Include="StructuredTypes.csv" Condition="Exists('StructuredTypes.csv')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="..\KabanHMI\CommonTranslations.csv">
       <Link>CommonTranslations.csv</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

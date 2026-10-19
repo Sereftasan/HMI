@@ -540,6 +540,10 @@
     </None>
     <None Include="Translations.csv" />
     <None Include="Alarms.json" />
+    <!-- the machine's structured data types (the PLC Monitor's): written here by the program when it runs from this build -->
+    <None Include="StructuredTypes.csv" Condition="Exists('StructuredTypes.csv')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

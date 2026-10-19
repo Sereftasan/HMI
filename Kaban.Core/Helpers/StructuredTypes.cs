@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Kaban.Core.Machines;
 
 namespace Kaban.Core.Helpers
 {
@@ -25,7 +26,7 @@ namespace Kaban.Core.Helpers
     /// A member is a simple data type (Bit, Word, Double Word, Float, String) at its OFFSET -
     /// the words from the structure's start; a Bit member is a bit of the word at its offset
     /// (R16.3). A structure inside a structure is not offered (the machines have none).
-    /// The types are kept in one file for the whole program, beside the PLC Monitor's lists.
+    /// Each machine keeps its own (StructuredTypes.csv, shipped with its project like PlcLabels.csv).
     /// </summary>
     public static class StructuredTypes
     {
@@ -115,47 +116,79 @@ namespace Kaban.Core.Helpers
             return 1;
         }
 
-        // ---- the library -----------------------------------------------------------------
+        // ---- the library: one per machine ------------------------------------------------
 
-        /// <summary>Where the types are kept. Replaceable for the tests.</summary>
+        /// <summary>
+        /// A machine's types (19 October: "they should belong to each machine - shipped with its
+        /// project like the PLC labels"): beside its PlcLabels.csv - the main machine's beside the
+        /// program, a mounted machine's in its own folder (H500\StructuredTypes.csv) - and, when the
+        /// program runs from Visual Studio's build, also in the machine's project, so the next build
+        /// and every install ship them.
+        /// </summary>
+        public const string FileName = "StructuredTypes.csv";
+
+        /// <summary>
+        /// Where the types are kept when no machine is mounted (the tests), and where the first
+        /// version kept every machine's (the main machine takes those over). Replaceable for the tests.
+        /// </summary>
         public static string FilePath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "Monitor", "StructuredTypes.cfg");
 
+        private sealed class Library
+        {
+            /// <summary>The machine's id ("" with no machine mounted).</summary>
+            public string Machine = "";
+            /// <summary>The program's copy.</summary>
+            public string Path = "";
+            /// <summary>The machine project's own copy (null: not run from a build of it).</summary>
+            public string ProjectPath;
+            public bool IsMain;
+            public List<Type> Types;
+        }
+
         private static readonly object _lock = new object();
-        private static List<Type> _types;
-        private static string _loadedFrom;
+        private static readonly Dictionary<string, Library> _libraries = new Dictionary<string, Library>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>Raised after the types were saved (a list showing them names them anew).</summary>
         public static event EventHandler Changed;
 
-        /// <summary>Every saved type (copies are not made: change them through Save).</summary>
-        public static IList<Type> All
+        /// <summary>Every type of the station's machine (copies are not made: change them through Save).</summary>
+        public static IList<Type> All(int station = 0)
         {
-            get
-            {
-                lock (_lock)
-                {
-                    EnsureLoaded();
-                    return _types.AsReadOnly();
-                }
-            }
+            lock (_lock) return LibraryFor(station).Types.AsReadOnly();
         }
 
-        public static IEnumerable<string> Names { get { return All.Select(t => t.Name); } }
+        public static IEnumerable<string> Names(int station = 0) { return All(station).Select(t => t.Name); }
+
+        /// <summary>The machine whose types the station uses ("" with no machine mounted).</summary>
+        public static string MachineOf(int station = 0)
+        {
+            lock (_lock) return LibraryFor(station).Machine;
+        }
+
+        /// <summary>The file the station's machine keeps its types in (the program's copy).</summary>
+        public static string PathOf(int station = 0)
+        {
+            lock (_lock) return LibraryFor(station).Path;
+        }
+
+        /// <summary>The machine project's copy (null when the program does not run from its build).</summary>
+        public static string ProjectPathOf(int station = 0)
+        {
+            lock (_lock) return LibraryFor(station).ProjectPath;
+        }
 
         /// <summary>
-        /// The structure a data type names: "FrezeAdim", or the label list's array of it
-        /// "FrezeAdim(0..19)"; null for a simple type or one not defined.
+        /// The structure a data type names on the station's machine: "FrezeAdim", or the label
+        /// list's array of it "FrezeAdim(0..19)"; null for a simple type or one not defined.
+        /// Station 0: the main machine's.
         /// </summary>
-        public static Type Find(string dataType)
+        public static Type Find(string dataType, int station = 0)
         {
             var name = BaseName(dataType);
             if (name.Length == 0) return null;
             lock (_lock)
-            {
-                EnsureLoaded();
-                return _types.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
-            }
+                return LibraryFor(station).Types.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>The type without the label list's array range: "FrezeAdim(0..19)" - "FrezeAdim".</summary>
@@ -175,37 +208,132 @@ namespace Kaban.Core.Helpers
             return b - a + 1;
         }
 
-        /// <summary>Reads the file again (the tests, or a file changed by hand).</summary>
+        /// <summary>Reads the files again (the tests, a file changed by hand, machines mounted anew).</summary>
         public static void Reload()
         {
-            lock (_lock) { _types = null; EnsureLoaded(); }
+            lock (_lock) _libraries.Clear();
         }
 
-        private static void EnsureLoaded()
-        {
-            if (_types != null && string.Equals(_loadedFrom, FilePath, StringComparison.OrdinalIgnoreCase)) return;
-            _loadedFrom = FilePath;
-            _types = new List<Type>();
-            try
-            {
-                if (File.Exists(FilePath)) _types = Parse(File.ReadAllLines(FilePath));
-            }
-            catch (Exception ex) { AuditLogger.Log("could not read the structured data types: " + ex.Message); }
-        }
-
-        /// <summary>Keeps the types (replacing all of them) and tells whoever shows them.</summary>
-        public static void Save(IEnumerable<Type> types)
+        /// <summary>Keeps the station's machine's types (replacing all of them) and tells whoever shows them.</summary>
+        public static void Save(IEnumerable<Type> types, int station = 0)
         {
             var list = (types ?? Enumerable.Empty<Type>()).Select(t => t.Clone()).ToList();
             lock (_lock)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-                SafeFile.WriteAllText(FilePath, string.Join("\r\n", Serialize(list)) + "\r\n", new UTF8Encoding(true));
-                _types = list;
-                _loadedFrom = FilePath;
+                var lib = LibraryFor(station);
+                Write(lib, list);
+                lib.Types = list;
             }
             var h = Changed;
             if (h != null) h(null, EventArgs.Empty);
+        }
+
+        /// <summary>The station's machine: the mounted one using it, the main machine for the others (and station 0).</summary>
+        private static MachineRegistry.MountedModule ModuleOf(int station)
+        {
+            var modules = MachineRegistry.Modules;
+            if (modules.Count == 0) return null;
+            if (station > 0)
+                foreach (var m in modules.OrderBy(m => m.IsMain))
+                    if (m.Context != null && m.Context.MappedStations.Any(kv => kv.Value == station)) return m;
+            return MachineRegistry.Main ?? modules[0];
+        }
+
+        private static Library LibraryFor(int station)
+        {
+            var module = ModuleOf(station);
+            string path;
+            if (module == null || module.Context == null) path = FilePath;
+            else
+            {
+                var id = module.Context.ModuleId ?? "";
+                path = module.IsMain ? Path.Combine(module.Context.BaseFolder, FileName) : Path.Combine(module.Context.BaseFolder, id, FileName);
+            }
+            Library lib;
+            if (!_libraries.TryGetValue(path, out lib))
+            {
+                lib = new Library { Path = path };
+                if (module != null && module.Context != null)
+                {
+                    lib.Machine = module.Context.ModuleId ?? "";
+                    lib.IsMain = module.IsMain;
+                    var project = ProjectFolderOf(module.Module, module.Context.BaseFolder);
+                    if (project != null) lib.ProjectPath = Path.Combine(project, FileName);
+                    if (lib.ProjectPath != null && SamePath(lib.ProjectPath, lib.Path)) lib.ProjectPath = null;
+                }
+                _libraries[path] = lib;
+            }
+            if (lib.Types == null) Load(lib);
+            return lib;
+        }
+
+        private static void Load(Library lib)
+        {
+            lib.Types = new List<Type>();
+            try
+            {
+                var from = Newer(lib.Path, lib.ProjectPath);
+                if (from != null) { lib.Types = Parse(File.ReadAllLines(from)); return; }
+                // the first version's file, every machine's types in one: the main machine's now
+                if (lib.IsMain && File.Exists(FilePath) && !SamePath(FilePath, lib.Path))
+                {
+                    var taken = Parse(File.ReadAllLines(FilePath));
+                    if (taken.Count == 0) return;
+                    lib.Types = taken;
+                    Write(lib, taken);
+                    AuditLogger.Log("the structured data types of " + FilePath + " are the main machine's now: " + lib.Path);
+                }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the structured data types: " + ex.Message); }
+        }
+
+        /// <summary>The program's copy (it has to be written), then the project's (a failure there is only logged).</summary>
+        private static void Write(Library lib, List<Type> types)
+        {
+            var text = string.Join("\r\n", Serialize(types)) + "\r\n";
+            Directory.CreateDirectory(Path.GetDirectoryName(lib.Path));
+            SafeFile.WriteAllText(lib.Path, text, new UTF8Encoding(true));
+            if (string.IsNullOrEmpty(lib.ProjectPath)) return;
+            try { SafeFile.WriteAllText(lib.ProjectPath, text, new UTF8Encoding(true)); }
+            catch (Exception ex) { AuditLogger.Log("could not write the structured data types into the project (" + lib.ProjectPath + "): " + ex.Message); }
+        }
+
+        /// <summary>The newer of two files (either may be missing; null: neither is there).</summary>
+        private static string Newer(string a, string b)
+        {
+            bool hasA = !string.IsNullOrEmpty(a) && File.Exists(a), hasB = !string.IsNullOrEmpty(b) && File.Exists(b);
+            if (hasA && hasB) return File.GetLastWriteTimeUtc(b) > File.GetLastWriteTimeUtc(a) ? b : a;
+            return hasA ? a : hasB ? b : null;
+        }
+
+        private static bool SamePath(string a, string b)
+        {
+            try { return string.Equals(Path.GetFullPath(a).TrimEnd('\\', '/'), Path.GetFullPath(b).TrimEnd('\\', '/'), StringComparison.OrdinalIgnoreCase); }
+            catch { return false; }
+        }
+
+        /// <summary>
+        /// The machine's project folder when the program runs from Visual Studio's build of it: the
+        /// folder with the machine assembly's .csproj, the build's folder or one above it - the
+        /// main machine's bin\Debug is two below its project, a mounted machine's project its
+        /// neighbour (Kaban.Machines.FA2010\bin\Debug - ..\..\..\Kaban.Machines.H500).
+        /// </summary>
+        public static string ProjectFolderOf(object module, string buildFolder)
+        {
+            if (module == null || string.IsNullOrEmpty(buildFolder)) return null;
+            try
+            {
+                var asm = module.GetType().Assembly.GetName().Name;
+                var dir = new DirectoryInfo(buildFolder);
+                for (int i = 0; dir != null && i < 6; i++, dir = dir.Parent)
+                {
+                    if (File.Exists(Path.Combine(dir.FullName, asm + ".csproj"))) return dir.FullName;
+                    var inner = Path.Combine(dir.FullName, asm);
+                    if (File.Exists(Path.Combine(inner, asm + ".csproj"))) return inner;
+                }
+            }
+            catch { }
+            return null;
         }
 
         // ---- the file --------------------------------------------------------------------
@@ -278,7 +406,7 @@ namespace Kaban.Core.Helpers
                 if ((m.Name ?? "").Trim().Length == 0) return "Every member of '" + name + "' needs a name.";
                 if (Regex.IsMatch(m.Name, @"[;\[\]()|.@]")) return "A member's name cannot have ; [ ] ( ) | . or @ in it: '" + m.Name + "'.";
                 if (!seen.Add(m.Name.Trim())) return "Two members of '" + name + "' are named '" + m.Name.Trim() + "'.";
-                if (Find(m.DataType) != null || !IsSimple(m.DataType)) return "Member '" + m.Name + "': a simple data type only (" + m.DataType + ").";
+                if (!IsSimple(m.DataType)) return "Member '" + m.Name + "': a simple data type only (" + m.DataType + ").";
                 if (m.Offset < 0) return "Member '" + m.Name + "': its offset cannot be below 0.";
                 if (m.IsBit && (m.Bit < 0 || m.Bit > 15)) return "Member '" + m.Name + "': a bit of its word is 0 - 15.";
             }

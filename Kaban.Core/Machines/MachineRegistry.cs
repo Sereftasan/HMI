@@ -214,6 +214,9 @@ namespace Kaban.Core.Machines
             public string ModuleId { get; }
             public bool IsMainMachine { get; }
 
+            /// <summary>The folder the machine's files are resolved in (the program's; a mounted machine's are in its ModuleId subfolder).</summary>
+            public string BaseFolder { get { return _baseFolder; } }
+
             /// <summary>
             /// Every one of the module's OWN PLC numbers that has been mapped, and
             /// what it resolved to: local -> real station id.

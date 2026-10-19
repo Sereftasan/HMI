@@ -32,6 +32,8 @@ namespace Kaban.UI.Forms
         private readonly Label _problem = new Label();
         private readonly Button _new, _copy, _delete, _addMember, _removeMember, _up, _down;
         private readonly List<StructuredTypes.Type> _work;
+        /// <summary>The station whose machine's types these are (each machine keeps its own).</summary>
+        private readonly int _station;
         private bool _filling;
 
         /// <summary>The member types offered: the simple ones, strings in a few lengths.</summary>
@@ -46,10 +48,13 @@ namespace Kaban.UI.Forms
         internal StructuredTypes.Type Current { get { return _types.SelectedIndex >= 0 && _types.SelectedIndex < _work.Count ? _work[_types.SelectedIndex] : null; } }
 
         /// <param name="select">The structure to show first (a row's data type), or null.</param>
-        public StructuredTypesForm(string select = null)
+        /// <param name="station">The station whose machine's types are edited (0: the main machine's).</param>
+        public StructuredTypesForm(string select = null, int station = 0)
         {
             UiScale.ApplyOnLoad(this);
-            Text = T("Ttl_StructTypes", "Structured data types");
+            _station = station;
+            var machine = StructuredTypes.MachineOf(station);
+            Text = T("Ttl_StructTypes", "Structured data types") + (machine.Length > 0 ? " - " + machine : "");
             FormBorderStyle = FormBorderStyle.Sizable;
             StartPosition = FormStartPosition.CenterParent;
             MinimizeBox = false;
@@ -59,7 +64,7 @@ namespace Kaban.UI.Forms
             ClientSize = new Size(980, 560);
             MinimumSize = new Size(820, 460);
 
-            _work = StructuredTypes.All.Select(t => t.Clone()).ToList();
+            _work = StructuredTypes.All(station).Select(t => t.Clone()).ToList();
 
             // ---- the list ----
             var listCaption = new Label { Text = T("Lbl_StructList", "Structures"), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), AutoSize = true, Location = new Point(14, 12) };
@@ -174,7 +179,7 @@ namespace Kaban.UI.Forms
                     MessageBox.Show(this, bad, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                StructuredTypes.Save(_work);
+                StructuredTypes.Save(_work, _station);
             };
 
             RefreshList();

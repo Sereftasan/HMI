@@ -707,6 +707,10 @@
     <None Include="PlcLabels.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- the machine's structured data types (the PLC Monitor's): written here by the program when it runs from this build -->
+    <None Include="StructuredTypes.csv" Condition="Exists('StructuredTypes.csv')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="IoList.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -798,6 +802,16 @@
     </None>
     <None Include="..\Kaban.Machines.H800\PlcLabels.csv">
       <Link>H800\PlcLabels.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H500\StructuredTypes.csv" Condition="Exists('..\Kaban.Machines.H500\StructuredTypes.csv')">
+      <Link>H500\StructuredTypes.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
+    <None Include="..\Kaban.Machines.H800\StructuredTypes.csv" Condition="Exists('..\Kaban.Machines.H800\StructuredTypes.csv')">
+      <Link>H800\StructuredTypes.csv</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
