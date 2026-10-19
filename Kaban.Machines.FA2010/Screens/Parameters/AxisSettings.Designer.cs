@@ -528,7 +528,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_1_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_1_Angle.Suffix = "°";
             this.axMilling_1_Angle.TabIndex = 19;
-            this.axMilling_1_Angle.VerticalMovement = true;
+            this.axMilling_1_Angle.VerticalMovement = false;
             this.axMilling_1_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_1_Angle.ZDistanceAddress = "D81";
             this.axMilling_1_Angle.ZDistanceDivisor = 1D;
@@ -833,7 +833,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axMilling_2_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axMilling_2_Angle.Suffix = "°";
             this.axMilling_2_Angle.TabIndex = 23;
-            this.axMilling_2_Angle.VerticalMovement = true;
+            this.axMilling_2_Angle.VerticalMovement = false;
             this.axMilling_2_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axMilling_2_Angle.ZDistanceAddress = "D82";
             this.axMilling_2_Angle.ZDistanceDivisor = 1D;
@@ -1138,7 +1138,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axCutting_Angle.Size = new System.Drawing.Size(1382, 40);
             this.axCutting_Angle.Suffix = "°";
             this.axCutting_Angle.TabIndex = 25;
-            this.axCutting_Angle.VerticalMovement = true;
+            this.axCutting_Angle.VerticalMovement = false;
             this.axCutting_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.axCutting_Angle.ZDistanceAddress = "D83";
             this.axCutting_Angle.ZDistanceDivisor = 1D;

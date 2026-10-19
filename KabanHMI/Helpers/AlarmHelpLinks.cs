@@ -419,8 +419,8 @@ namespace Kaban.UI.Helpers
                 RefSensor = t(axis.ReferenceSensorAddress),
                 RefForward = axis.ReferenceSensorSide == AxisReferenceSide.Forward,
                 HomeRequest = t(axis.HomeRequestAddress),
-                // an angle axis has up / down arrows too: only a real vertical one hangs on its brake
-                Vertical = axis.VerticalMovement && !axis.IsAngle
+                // up / down arrows: a vertical axis, the only ones with a holding brake (19 October)
+                Vertical = axis.VerticalMovement
             };
             if (axis.HasMotion)
             {

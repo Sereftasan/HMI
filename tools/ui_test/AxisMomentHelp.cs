@@ -265,6 +265,23 @@ class AMH {
               AxisSteps.StepsOf(m).First() == "Brake", m.Motion + " " + AxisSteps.HintOf(m));
         Check("  the safety: support the load", Text(AxisSteps.Build(m, "EN")).Contains("support the load"));
         mem["W2B"] = 0; Scan();
+        // 19 October: "only create the brake part for the axis with a brake - the up / down arrows"
+        mem["W0B"] = 0x511; Scan();
+        m = x.RaisedServo.AxisMoment;
+        var steps4 = AxisSteps.StepsOf(m);
+        Check("  a horizontal axis (Robot X) standing still: no brake check, nor a brake in the hint",
+              m.Motion == AxisMotion.Standing && !m.Vertical && !steps4.Contains("Brake") && steps4.Contains("Mechanics") &&
+              !Text(AxisSteps.Build(m, "EN")).ToLowerInvariant().Contains("brake drag") && !Titles(AxisSteps.Build(m, "EN")).Any(t => t.Contains("brake")),
+              string.Join(",", steps4));
+        mem["W0B"] = 0; Scan();
+        foreach (var motion in new[] { AxisMotion.Homing, AxisMotion.Standing, AxisMotion.Unknown, AxisMotion.Manual })
+        {
+            var h = new AxisMoment { Kind = AxisCodeKind.ServoAlarm, Code = 0x501, Motion = motion, Position = 10, MovingMs = 900 };
+            var v = new AxisMoment { Kind = AxisCodeKind.ServoAlarm, Code = 0x501, Motion = motion, Position = 10, MovingMs = 900, Vertical = true };
+            Check("  " + AxisSteps.HintOf(h) + ": the brake for a vertical axis only",
+                  !AxisSteps.StepsOf(h).Contains("Brake") && AxisSteps.StepsOf(v).Contains("Brake"),
+                  string.Join(",", AxisSteps.StepsOf(h)) + " | " + string.Join(",", AxisSteps.StepsOf(v)));
+        }
 
         Console.WriteLine("--- 5. a software stroke limit in the cycle (1A18H) ---");
         mem["D200"] = 5; mem["U1\\G2509"] = 8; Busy(1, true); Scan();

@@ -42,8 +42,8 @@
 <!--def H_ManualCrash-->The axis was <b>moved by hand</b>{{#JogForwardOn}} &ndash; jogged {{>JogWay}}{{/JogForwardOn}}{{#JogBackOn}} &ndash; jogged {{>JogWay}}{{/JogBackOn}}{{>Where}}. An overload while moving by hand is most often a <b>mechanical crash</b> (jogged into the end of its travel, a clamp, another unit) or <b>limits</b> that let it go further than the mechanics allow.{{>StoodStill}}{{>AtLimit}}<!--/def-->
 <!--def H_AutoCrash-->The axis was <b>moving in the automatic cycle</b>{{>Where}}. An overload then is most often a <b>mechanical crash</b> (the profile, a clamp or another unit in its way), a target beyond the mechanics (the <b>limits</b>), or a speed or acceleration too high for its load.{{>StoodStill}}{{>AtLimit}}<!--/def-->
 <!--def H_StandingVertical-->The axis was <b>standing still</b>{{>Where}}. A vertical axis overloading at standstill is most often its <b>holding brake</b> (not fully released, or worn) or the load pulling it down; then something pressing on it.<!--/def-->
-<!--def H_Standing-->The axis was <b>standing still</b>{{>Where}}. An overload at standstill means something <b>presses on it</b> (a clamp, another unit, a jammed part) or its brake drags.<!--/def-->
-<!--def H_Overload-->The HMI could not tell what the axis was doing. An overload is most often mechanical (a crash, a block, a dragging brake); during homing, a reference sensor that did not switch.<!--/def-->
+<!--def H_Standing-->The axis was <b>standing still</b>{{>Where}}. An overload at standstill means something <b>presses on it</b> (a clamp, another unit, a jammed part).<!--/def-->
+<!--def H_Overload-->The HMI could not tell what the axis was doing. An overload is most often mechanical (a crash, a block{{#Vertical}}, a dragging brake{{/Vertical}}); during homing, a reference sensor that did not switch.<!--/def-->
 <!--def H_SoftLimitHoming-->The axis reached a <b>software limit while homing</b>{{>Where}}: it went too far looking for {{>SensorName}} (not switching, or the homing going the wrong way), or the limits are set for another reference.<!--/def-->
 <!--def H_SoftLimit-->The axis was sent past its <b>software limit</b>{{>Where}}{{#HasLimits}} (limits {{MinLimit}} &hellip; {{MaxLimit}}){{/HasLimits}}. {{#IsManual}}Moved by hand to the limit: move it back the other way.{{/IsManual}}{{#IsAutomatic}}A target of the cycle is outside the limits: the profile's dimensions, a parameter, or limits set too narrow.{{/IsAutomatic}}{{#IsHoming}}During homing: see the reference sensor.{{/IsHoming}}<!--/def-->
 <!--def H_HardLimit-->The axis reached a <b>limit switch</b> (stroke end){{>Where}}: it went further than its software limits should let it, or the switch is faulty or not connected.<!--/def-->
@@ -101,11 +101,13 @@
 <li>{{>Hand}} Where it is safe and the axis is not vertical: push it by hand with the power off &ndash; it should move evenly, without a hard spot.</li>
 <li>{{>Ear}} Back in operation: move it slowly over its travel and listen; watch its load (the current bar on the <i>Axis</i> page) &ndash; a load that rises at one spot shows where it drags.</li>
 </ul><!--/def-->
+<!--doc S_Brake: a vertical axis only - the up / down arrows on its row (19 October: only vertical axes have a brake). -->
 <!--def S_Brake--><h3>Does the holding brake open?</h3>
 <ul>
 <li>{{>Ear}} When the servo turns on, the brake must <b>click open</b>; listen at the motor.</li>
 <li>{{>Measure}} No click: measure the brake's 24 V at the motor's brake connector while the servo is on (the brake relay in the cabinet switches it).</li>
-<li>{{>Hand}} {{#Vertical}}A vertical axis falls when its brake opens without the servo holding it: <b>support the load</b> before anything is done to the brake.{{/Vertical}}{{^Vertical}}A brake that drags warms the motor's end: feel it after a few movements.{{/Vertical}}</li>
+<li>{{>Hand}} A vertical axis falls when its brake opens without the servo holding it: <b>support the load</b> before anything is done to the brake.</li>
+<li>{{>Hand}} A brake that drags warms the motor's end: feel it after a few movements.</li>
 </ul><!--/def-->
 <!--def S_Limits--><h3>Are the limits inside the mechanical travel?</h3>
 <ul>

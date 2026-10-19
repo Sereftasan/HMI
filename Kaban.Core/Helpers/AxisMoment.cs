@@ -248,13 +248,13 @@ namespace Kaban.Core.Helpers
             {
                 case "HomeStuck": s.AddRange(m.AwayFromReference ? new[] { "HomeDirection", "RefSensor", "Mechanics" }
                                                                  : new[] { "RefSensor", "HomeDirection", "Mechanics" }); break;
-                case "HomeNoMove": s.AddRange(m.Vertical ? new[] { "Brake", "Mechanics", "HomeDirection" } : new[] { "Mechanics", "Brake", "HomeDirection" }); break;
+                case "HomeNoMove": s.AddRange(m.Vertical ? new[] { "Brake", "Mechanics", "HomeDirection" } : new[] { "Mechanics", "HomeDirection" }); break;
                 case "HomeMoving": s.AddRange(new[] { "RefSensor", "Mechanics", "Dynamics" }); break;
                 case "ManualCrash": s.AddRange(new[] { "Mechanics", "Limits" }); if (m.Vertical) s.Add("Brake"); break;
                 case "AutoCrash": s.AddRange(new[] { "Mechanics", "Limits", "Dynamics" }); break;
                 case "StandingVertical": s.AddRange(new[] { "Brake", "Mechanics" }); break;
-                case "Standing": s.AddRange(new[] { "Mechanics", "Brake" }); break;
-                case "Overload": s.AddRange(new[] { "Mechanics", "RefSensor", "Limits", "Brake" }); break;
+                case "Standing": s.Add("Mechanics"); break;
+                case "Overload": s.AddRange(new[] { "Mechanics", "RefSensor", "Limits" }); if (m.Vertical) s.Add("Brake"); break;
                 case "SoftLimitHoming": s.AddRange(new[] { "Limits", "RefSensor" }); break;
                 case "SoftLimit": s.Add("Limits"); break;
                 case "HardLimit": s.AddRange(new[] { "LimitSwitch", "Limits" }); break;
@@ -266,6 +266,8 @@ namespace Kaban.Core.Helpers
                 case "Encoder": s.Add("EncoderCable"); break;
                 case "Supply": s.Add("Supply"); break;
             }
+            // a holding brake only on a vertical axis - the up / down arrows (19 October)
+            if (!m.Vertical) s.Remove("Brake");
             return s;
         }
 
