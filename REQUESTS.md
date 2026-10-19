@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (night) - structured data types:
+  - 0746a59 - Each machine its own: StructuredTypes.csv beside its PlcLabels.csv (a mounted machine's in its folder,
+    H500\StructuredTypes.csv), also written into the machine's project when the program runs from Visual Studio's
+    build, so it is shipped with it. The first version's one file (ProgramData) becomes the main machine's.
+  - b185dcc - Up / Down / Remove follow the label selected (they followed the row chosen before).
+  - c8c6496 - The page redesigned: no captions, the buttons as pictures on top of the list and of the labels, the
+    "Label" column, Name / Length / Comment a line each with the label on the left, no "... devices used" line.
 - 19 October (evening):
   - Structured data types (Mitsubishi's) in the PLC Monitor: defined in "Structured data types..." (name, length,
     members at their offsets), chosen like a simple data type; an array of them steps by its length (R0, R16 ...).
