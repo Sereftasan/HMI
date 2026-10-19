@@ -243,6 +243,12 @@ namespace Kaban.Core.Helpers
             public bool RefForward, Vertical;
             /// <summary>The motion module's operation status (Md.26) and BUSY (Md.141, one bit per axis).</summary>
             public string Status = "", Busy = "";
+            /// <summary>
+            /// The motion module's own software stroke limits (Pr.12 upper, Pr.13 lower: two words each)
+            /// and its unit setting (Pr.1) - the limits the module stops the axis at (19 October: the
+            /// Axis page's D312 / D314 are 0 on FA2010).
+            /// </summary>
+            public string SoftUpper = "", SoftLower = "", UnitWord = "";
             public int BusyBit = -1;
             /// <summary>The machine's "running" and "manual mode" conditions (on this axis's station only).</summary>
             public ConditionRule Running, ManualMode;
@@ -275,7 +281,8 @@ namespace Kaban.Core.Helpers
         {
             public int? Status;
             public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest, Ref;
-            public long? Position, Min, Max;
+            public long? Position, Min, Max, SoftUpper, SoftLower;
+            public int? Unit;
             /// <summary>The motion module's word when it is read (a jog command it did not act on is no movement); else one jog command.</summary>
             public bool Moving
             {
@@ -434,6 +441,9 @@ namespace Kaban.Core.Helpers
             add(x.HomeRequest, false);
             add(x.Status, false);
             add(x.Busy, false);
+            add(x.SoftUpper, true);
+            add(x.SoftLower, true);
+            add(x.UnitWord, false);
             foreach (var r in new[] { x.Running, x.ManualMode })
                 if (r != null && r.PlcNumber == x.Station) add(r.Address, r.DataType == DataTypeEnum.Bin_32);
             return list.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
@@ -874,7 +884,10 @@ namespace Kaban.Core.Helpers
                 ManualMode = rule(x.ManualMode),
                 Position = number(x.Position, x.PositionDouble),
                 Min = number(x.MinLimit, x.LimitsDouble),
-                Max = number(x.MaxLimit, x.LimitsDouble)
+                Max = number(x.MaxLimit, x.LimitsDouble),
+                SoftUpper = number(x.SoftUpper, true),
+                SoftLower = number(x.SoftLower, true),
+                Unit = read(x.UnitWord)
             };
         }
 
@@ -951,6 +964,11 @@ namespace Kaban.Core.Helpers
             m.Position = scaled(cur != null && cur.Position.HasValue ? cur.Position : before.Position);
             m.MinLimit = scaled(before.Min);
             m.MaxLimit = scaled(before.Max);
+            // the module's own, in its unit (Pr.1: 0.1 um for mm, 0.00001 degree)
+            int unit = before.Unit.HasValue && before.Unit.Value >= 0 && before.Unit.Value <= 3 ? before.Unit.Value : ((x.Suffix ?? "").Trim() == "\u00B0" ? 2 : 0);
+            double per = SimpleMotion.PositionScale(unit);
+            m.ModuleMin = before.SoftLower.HasValue ? before.SoftLower.Value / per : (double?)null;
+            m.ModuleMax = before.SoftUpper.HasValue ? before.SoftUpper.Value / per : (double?)null;
             m.Motion = AxisMoment.MotionOf(before.Status, before.Busy, before.JogBack, before.JogForward, before.Running, before.ManualMode, before.HomeRequest);
             if (x.Last != null && x.Last.Moving && x.MoveStart.HasValue)
             {

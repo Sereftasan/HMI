@@ -501,7 +501,10 @@ namespace Kaban.UI.Helpers
                 sb.AppendLine("  - Position " + m.Shown(m.Position) + (m.Moved && m.PositionStart.HasValue ? ", the movement started at " + m.Shown(m.PositionStart) : "") +
                               (m.MovingMs > 0 ? ", moving for " + (m.MovingMs / 1000.0).ToString("0.0", CultureInfo.InvariantCulture) + " s" : "") +
                               (m.Stuck ? ", and it STOOD STILL for " + (m.StuckMs / 1000.0).ToString("0.0", CultureInfo.InvariantCulture) + " s after moving, before the code came" : "") +
-                              (m.MinLimit.HasValue || m.MaxLimit.HasValue ? "; its limits " + m.Shown(m.MinLimit) + " ... " + m.Shown(m.MaxLimit) : ""));
+                              (m.MinLimit.HasValue || m.MaxLimit.HasValue ? "; its limits on the Axis page " + m.Shown(m.MinLimit) + " ... " + m.Shown(m.MaxLimit) +
+                                                                            (m.PageLimitsUnset ? " (equal: not set)" : "") : "") +
+                              (m.ModuleMin.HasValue || m.ModuleMax.HasValue ? "; the motion module's software stroke limits (Pr.13 / Pr.12) " + m.Shown(m.ModuleMin) + " ... " + m.Shown(m.ModuleMax) +
+                                                                              (m.ModuleLimitsOff ? " (equal: off in the module)" : "") : ""));
             if (m.RefKnown)
             {
                 var p = m.RefPoint;

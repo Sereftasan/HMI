@@ -296,6 +296,39 @@ class AMH {
               string.Join(" | ", ydocs.Select(d => d.Title + ":" + d.Code)));
         mem["W14"] = 0; mem["D200"] = 0; mem["U1\\G2509"] = 0; Busy(1, false); Scan();
 
+        Console.WriteLine("--- 5b. the Axis page's limits 0 and 0: the motion module's own (19 October) ---");
+        // "the Axis page shows 0 for D312 / D314 too": the module's software stroke limits are read as well
+        Check("the watch reads the module's Pr.12 / Pr.13 (two words each) and its unit Pr.1",
+              x.SoftUpper == "U1\\G18" && x.SoftLower == "U1\\G20" && x.UnitWord == "U1\\G0" && Watch("W1B").SoftUpper == "U1\\G168" &&
+              new[] { "U1\\G18", "U1\\G19", "U1\\G20", "U1\\G21", "U1\\G0" }.All(AlarmGeneration.Addresses().Where(kv => kv.Key == 1).Select(kv => kv.Value).Contains),
+              x.SoftUpper + " " + x.SoftLower + " " + x.UnitWord + " " + Watch("W1B").SoftUpper);
+        Pos("D314", 0); Pos("D316", 0);
+        Pos("U1\\G18", 6500); Pos("U1\\G20", -5); mem["U1\\G0"] = 0;          // 0.1 um: the same 10 000 a millimetre
+        mem["D200"] = 0; mem["M100"] = 0; mem["U1\\G2409"] = 8; Busy(0, true); Pos("W0", 6400); Scan();
+        for (int i = 1; i <= 5; i++) { Pos("W0", 6400 + 20 * i); Scan(); }
+        Scan(7);
+        mem["W4"] = 0x1A18; mem["U1\\G2409"] = -1; Busy(0, false); Scan();
+        m = x.RaisedAxis != null ? x.RaisedAxis.AxisMoment : null;
+        Check("the moment: the page's limits 0 ... 0 (not set), the module's -5 ... 6500 mm",
+              m != null && m.MinLimit == 0 && m.MaxLimit == 0 && m.PageLimitsUnset && m.ModuleMin == -5 && m.ModuleMax == 6500 && m.ModuleLimitsOn,
+              m == null ? "" : m.MinLimit + " " + m.MaxLimit + " | " + m.ModuleMin + " " + m.ModuleMax);
+        text = m == null ? "" : Text(AxisSteps.Build(m, "EN"));
+        Check("  the page shows both, the hint the module's (it stops the axis there)",
+              text.Contains("Limits ( Axis page) 0.0000 mm … 0.0000 mm - equal: not set".Replace("…", "&hellip;")) &&
+              text.Contains("Software stroke limits (motion module) -5.0000 mm &hellip; 6500.0000 mm") &&
+              text.Contains("(limits -5.0000 mm &hellip; 6500.0000 mm)"), Regex.Match(text, "Limits.{0,260}").Value);
+        Check("  the limits check names the module's limits, on the Axis Monitor",
+              text.Contains("software stroke limits (Pr.13 / Pr.12, on the Axis Monitor ): -5.0000 mm &hellip; 6500.0000 mm"), Regex.Match(text, "motion module's own.{0,160}").Value);
+        mem["W4"] = 0; mem["U1\\G2409"] = 0; mem["M100"] = 1; Scan(2);
+        Pos("U1\\G18", 0); Pos("U1\\G20", 0);
+        var off = new AxisMoment { Kind = AxisCodeKind.AxisError, Code = 0x1A18, MinLimit = 0, MaxLimit = 0, ModuleMin = 0, ModuleMax = 0, Position = 10, Decimals = 1, Suffix = "mm",
+                                   Motion = AxisMotion.Manual, SeenRising = true };
+        var offText = Text(AxisSteps.Build(off, "EN"));
+        Check("  the module's limits equal: off in the module - no 'at its limit' from 0 ... 0",
+              off.ModuleLimitsOff && !off.AtMin && !off.AtMax && offText.Contains("equal: off in the module") && offText.Contains("software stroke limit is off"),
+              Regex.Match(offText, "Software stroke.{0,120}").Value);
+        Pos("D314", 0); Pos("D316", 2500);
+
         Console.WriteLine("--- 6. a code already there at the first scan ---");
         AlarmGeneration.ResetForTests();
         var form2 = new Form();

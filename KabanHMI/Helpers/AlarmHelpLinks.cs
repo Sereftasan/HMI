@@ -428,6 +428,10 @@ namespace Kaban.UI.Helpers
                 var busy = SimpleMotion.Find("Busy");
                 w.Busy = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(busy, axis.MotionAxisIndex));
                 w.BusyBit = axis.MotionAxisIndex - 1;
+                // its software stroke limits in the module, with the unit they are in (19 October)
+                w.SoftUpper = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("SoftLimitUpper"), axis.MotionAxisIndex));
+                w.SoftLower = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("SoftLimitLower"), axis.MotionAxisIndex));
+                w.UnitWord = SimpleMotion.UnitDevice(axis.MotionNumber, axis.MotionAxisIndex);
             }
             var running = MachineConditionMap.GetRule(SystemCondition.MachineIsRunning);
             if (running != null && running.PlcNumber == axis.PlcNumber && !string.IsNullOrWhiteSpace(running.Address)) w.Running = running;

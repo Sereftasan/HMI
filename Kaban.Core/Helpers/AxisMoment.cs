@@ -56,6 +56,19 @@ namespace Kaban.Core.Helpers
         public int MovingMs;
 
         public double? Position, PositionStart, MinLimit, MaxLimit;
+        /// <summary>The motion module's own software stroke limits (Pr.13 lower, Pr.12 upper), in the axis's unit.</summary>
+        public double? ModuleMin, ModuleMax;
+
+        /// <summary>The Axis page's limits are both there and equal (0 and 0): not set.</summary>
+        public bool PageLimitsUnset { get { return MinLimit.HasValue && MaxLimit.HasValue && MinLimit.Value == MaxLimit.Value; } }
+        /// <summary>The module's limits are equal: its software stroke limit is switched off.</summary>
+        public bool ModuleLimitsOff { get { return ModuleMin.HasValue && ModuleMax.HasValue && ModuleMin.Value == ModuleMax.Value; } }
+        /// <summary>The module's limits are read and in use.</summary>
+        public bool ModuleLimitsOn { get { return ModuleMin.HasValue && ModuleMax.HasValue && ModuleMin.Value != ModuleMax.Value; } }
+
+        /// <summary>The limits the axis stops at: the module's when in use, else the Axis page's when set.</summary>
+        public double? LimitMin { get { return ModuleLimitsOn ? ModuleMin : (PageLimitsUnset ? null : MinLimit); } }
+        public double? LimitMax { get { return ModuleLimitsOn ? ModuleMax : (PageLimitsUnset ? null : MaxLimit); } }
         public int Decimals = 2;
         public string Suffix = "";
 
@@ -83,8 +96,8 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>At or past its minimum / maximum (a hair's width counts: the axis stops on the limit).</summary>
-        public bool AtMin { get { return Position.HasValue && MinLimit.HasValue && MaxLimit != MinLimit && Position.Value <= MinLimit.Value + Tolerance; } }
-        public bool AtMax { get { return Position.HasValue && MaxLimit.HasValue && MaxLimit != MinLimit && Position.Value >= MaxLimit.Value - Tolerance; } }
+        public bool AtMin { get { return Position.HasValue && LimitMin.HasValue && Position.Value <= LimitMin.Value + Tolerance; } }
+        public bool AtMax { get { return Position.HasValue && LimitMax.HasValue && Position.Value >= LimitMax.Value - Tolerance; } }
         private double Tolerance { get { return Math.Pow(10, -Math.Max(0, Decimals)) * 5; } }
 
         /// <summary>The reference sensor's side was moved away from: homing the wrong way.</summary>
@@ -483,6 +496,13 @@ namespace Kaban.Core.Helpers
             model["MinLimit"] = H(m.Shown(m.MinLimit));
             model["MaxLimit"] = H(m.Shown(m.MaxLimit));
             model["HasLimits"] = m.MinLimit.HasValue || m.MaxLimit.HasValue;
+            model["PageLimitsUnset"] = m.PageLimitsUnset;
+            model["ModuleMin"] = H(m.Shown(m.ModuleMin));
+            model["ModuleMax"] = H(m.Shown(m.ModuleMax));
+            model["HasModuleLimits"] = m.ModuleMin.HasValue || m.ModuleMax.HasValue;
+            model["ModuleLimitsOff"] = m.ModuleLimitsOff;
+            model["LimitMin"] = H(m.Shown(m.LimitMin));
+            model["LimitMax"] = H(m.Shown(m.LimitMax));
             model["AtMin"] = m.AtMin;
             model["AtMax"] = m.AtMax;
 
@@ -523,7 +543,7 @@ namespace Kaban.Core.Helpers
             foreach (var s in StepsOf(m))
             {
                 if (s == "RefSensor" && !refKnown) continue;
-                if (s == "Limits" && !(m.MinLimit.HasValue || m.MaxLimit.HasValue) && !m.Position.HasValue) continue;
+                if (s == "Limits" && !(m.MinLimit.HasValue || m.MaxLimit.HasValue || m.ModuleMin.HasValue || m.ModuleMax.HasValue) && !m.Position.HasValue) continue;
                 var body = tpl.Phrase("S_" + s, model);
                 if (string.IsNullOrWhiteSpace(body)) continue;
                 n++;

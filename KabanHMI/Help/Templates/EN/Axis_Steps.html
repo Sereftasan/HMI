@@ -32,7 +32,7 @@
 <!--def SensorName-->the reference sensor{{#RefTag}} <b>{{RefTag}}</b>{{/RefTag}}{{^RefTag}}{{#RefInput}} <code>{{RefInput}}</code>{{/RefInput}}{{/RefTag}}<!--/def-->
 <!--def Where-->{{#Position}} at <b>{{Position}}</b>{{/Position}}<!--/def-->
 <!--def Travel-->{{#Moved}}{{#PositionStart}} from {{PositionStart}}{{/PositionStart}}{{#Position}} to {{Position}}{{/Position}}{{/Moved}}<!--/def-->
-<!--def AtLimit-->{{#AtMin}} It stood at its <b>minimum limit</b> ({{MinLimit}}): that limit probably lets it go beyond the mechanical end.{{/AtMin}}{{#AtMax}} It stood at its <b>maximum limit</b> ({{MaxLimit}}): that limit probably lets it go beyond the mechanical end.{{/AtMax}}<!--/def-->
+<!--def AtLimit-->{{#AtMin}} It stood at its <b>minimum limit</b> ({{LimitMin}}): that limit probably lets it go beyond the mechanical end.{{/AtMin}}{{#AtMax}} It stood at its <b>maximum limit</b> ({{LimitMax}}): that limit probably lets it go beyond the mechanical end.{{/AtMax}}<!--/def-->
 <!--def StoodStill-->{{#Stuck}} It moved{{>Travel}} and then <b>stood still</b> for {{StuckSeconds}} s before the code came &ndash; it was pushing against something.{{/Stuck}}<!--/def-->
 
 {{! ============================== THE HINTS: where to start ============================== }}
@@ -45,7 +45,7 @@
 <!--def H_Standing-->The axis was <b>standing still</b>{{>Where}}. An overload at standstill means something <b>presses on it</b> (a clamp, another unit, a jammed part).<!--/def-->
 <!--def H_Overload-->The HMI could not tell what the axis was doing. An overload is most often mechanical (a crash, a block{{#Vertical}}, a dragging brake{{/Vertical}}); during homing, a reference sensor that did not switch.<!--/def-->
 <!--def H_SoftLimitHoming-->The axis reached a <b>software limit while homing</b>{{>Where}}: it went too far looking for {{>SensorName}} (not switching, or the homing going the wrong way), or the limits are set for another reference.<!--/def-->
-<!--def H_SoftLimit-->The axis was sent past its <b>software limit</b>{{>Where}}{{#HasLimits}} (limits {{MinLimit}} &hellip; {{MaxLimit}}){{/HasLimits}}. {{#IsManual}}Moved by hand to the limit: move it back the other way.{{/IsManual}}{{#IsAutomatic}}A target of the cycle is outside the limits: the profile's dimensions, a parameter, or limits set too narrow.{{/IsAutomatic}}{{#IsHoming}}During homing: see the reference sensor.{{/IsHoming}}<!--/def-->
+<!--def H_SoftLimit-->The axis was sent past its <b>software limit</b>{{>Where}}{{#LimitMin}} (limits {{LimitMin}} &hellip; {{LimitMax}}){{/LimitMin}}. {{#IsManual}}Moved by hand to the limit: move it back the other way.{{/IsManual}}{{#IsAutomatic}}A target of the cycle is outside the limits: the profile's dimensions, a parameter, or limits set too narrow.{{/IsAutomatic}}{{#IsHoming}}During homing: see the reference sensor.{{/IsHoming}}<!--/def-->
 <!--def H_HardLimit-->The axis reached a <b>limit switch</b> (stroke end){{>Where}}: it went further than its software limits should let it, or the switch is faulty or not connected.<!--/def-->
 <!--def H_HomeSensor-->The module did not see {{>SensorName}} as homing expects it (too late, too close to the stop, or the zero point not passed){{>Where}}. The sensor and its target first, then the homing settings.<!--/def-->
 <!--def H_HomeFirst-->The axis is <b>not referenced</b>: it was started before homing. Home it, then start again.<!--/def-->
@@ -111,7 +111,8 @@
 </ul><!--/def-->
 <!--def S_Limits--><h3>Are the limits inside the mechanical travel?</h3>
 <ul>
-{{#HasLimits}}<li>{{>Look}} The limits on the <i>Axis</i> page: minimum {{MinLimit}}, maximum {{MaxLimit}}{{#Position}}; at the alarm it was at {{Position}}{{/Position}}.</li>{{/HasLimits}}
+{{#HasLimits}}<li>{{>Look}} The limits on the <i>Axis</i> page: minimum {{MinLimit}}, maximum {{MaxLimit}}{{#PageLimitsUnset}} &ndash; equal: <b>not set</b>{{/PageLimitsUnset}}{{#Position}}; at the alarm it was at {{Position}}{{/Position}}.</li>{{/HasLimits}}
+{{#HasModuleLimits}}<li>{{>Look}} The motion module's own software stroke limits (Pr.13 / Pr.12, on the <i>Axis Monitor</i>): {{ModuleMin}} &hellip; {{ModuleMax}}{{#ModuleLimitsOff}} &ndash; equal: the module's software stroke limit is <b>off</b>, nothing stops the axis before its end but the limit switches{{/ModuleLimitsOff}}.</li>{{/HasModuleLimits}}
 {{^HasLimits}}{{#Position}}<li>{{>Look}} At the alarm it was at {{Position}}.</li>{{/Position}}{{/HasLimits}}
 <li>{{>Hand}} Move it slowly by hand to each end of its travel and note where the mechanics stop it: each limit must be a few millimetres <b>inside</b> that end.</li>
 <li>{{>Look}} A limit beyond the end lets the axis run into it. Since the last homing the reference may have moved (a slipped coupling or belt): then every position is off by the same amount.</li>
@@ -181,7 +182,8 @@
 {{#Running}}<tr><td>Machine running</td><td>{{Running}}</td></tr>{{/Running}}
 {{#Position}}<tr><td>Position</td><td>{{Position}}{{#Moved}}{{#PositionStart}} (started at {{PositionStart}}){{/PositionStart}}{{/Moved}}</td></tr>{{/Position}}
 {{#Stuck}}<tr><td>Stood still</td><td>{{StuckSeconds}} s before the code, after moving</td></tr>{{/Stuck}}
-{{#HasLimits}}<tr><td>Limits</td><td>{{MinLimit}} &hellip; {{MaxLimit}}</td></tr>{{/HasLimits}}
+{{#HasLimits}}<tr><td>Limits (<i>Axis</i> page)</td><td>{{MinLimit}} &hellip; {{MaxLimit}}{{#PageLimitsUnset}} <span style="color:#6c757d">&ndash; equal: not set</span>{{/PageLimitsUnset}}</td></tr>{{/HasLimits}}
+{{#HasModuleLimits}}<tr><td>Software stroke limits (motion module)</td><td>{{ModuleMin}} &hellip; {{ModuleMax}}{{#ModuleLimitsOff}} <span style="color:#6c757d">&ndash; equal: off in the module</span>{{/ModuleLimitsOff}}</td></tr>{{/HasModuleLimits}}
 {{#RefState}}<tr><td>Reference sensor{{#RefTag}} {{RefTag}}{{/RefTag}}</td><td>{{RefState}}</td></tr>{{/RefState}}
 </table></div>
 <div class="hint"><b>Where to start:</b> {{Hint}}</div>
