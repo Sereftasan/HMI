@@ -2638,8 +2638,9 @@ namespace Kaban.UI.Forms
         /// <summary>
         /// RESET (19 October: "a Reset in the labels' right-click menu - we need to be able to reset
         /// all the values of a structured label and of an array easily"): 0 into every device of
-        /// the rows chosen - an array's every element, a structure's every member; a Bit member
-        /// only its bit, the rest of its word kept - after asking.
+        /// the rows chosen - an array's every element; a structure's whole length, the words no
+        /// label uses too ("they should be reset as well"); a Bit label chosen on its own only its
+        /// bit, the rest of its word kept - after asking.
         /// </summary>
         internal void ResetSelected(MonitorTab mon, Sheet sh, bool ask = true)
         {
@@ -2693,17 +2694,20 @@ namespace Kaban.UI.Forms
             return false;
         }
 
-        /// <summary>The rows with values of their own under a row: an array's elements', a structure's members' - or the row itself.</summary>
+        /// <summary>
+        /// What a reset takes under a row: an array's elements; a structure itself (its whole
+        /// length - see ResetWords); otherwise the row (an element, a label of a structure).
+        /// </summary>
         private static IEnumerable<WatchRow> ValueRows(WatchRow r)
         {
             if (r.IsArray && r.Elements != null) return r.Elements.SelectMany(ValueRows);
-            if (r.Structure != null) return (r.Members ?? new List<WatchRow>()).SelectMany(ValueRows);
             return r.IsDevice ? new[] { r } : new WatchRow[0];
         }
 
         /// <summary>
-        /// The words a reset writes, in order: 0 for every word of the rows' values; a Bit member's
-        /// word as last read with its bit cleared (not read yet: left, and counted).
+        /// The words a reset writes, in order: 0 for every word of the rows' values - a structure's
+        /// every word of its length, the words and bits no label uses too; a Bit label of its own:
+        /// its word as last read with its bit cleared (not read yet: left, and counted).
         /// </summary>
         internal static List<KeyValuePair<string, int>> ResetWords(MonitorTab mon, IEnumerable<WatchRow> rows, out int notRead)
         {
@@ -2714,7 +2718,7 @@ namespace Kaban.UI.Forms
             foreach (var leaf in rows.SelectMany(ValueRows))
             {
                 if (leaf.BitIndex >= 0) { bits.Add(leaf); continue; }
-                foreach (var a in WordsOf(leaf))
+                foreach (var a in leaf.Structure != null ? StructureWords(leaf) : WordsOf(leaf))
                     if (!value.ContainsKey(a)) { value[a] = 0; order.Add(a); }
             }
             foreach (var b in bits)

@@ -191,21 +191,23 @@ class PS {
         var resetItem = cms.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text.StartsWith("Reset"));
         Check("the row menu: Reset", resetItem != null && resetItem.Enabled, string.Join(" | ", cms.Items.OfType<ToolStripItem>().Select(i => i.Text)));
         Call(form, "ResetSelected", mon, sh, false);
-        Check("the array of 3 steps reset: every member's word 0 (R0 ... R13, R16 ... R29, R32 ... R45)",
-              Enumerable.Range(0, 14).Concat(Enumerable.Range(16, 14)).Concat(Enumerable.Range(32, 14)).All(i => R("R" + i) == 0));
-        Check("  the bit members only their bit: R15 / R31 / R47 0x00F7 (bit 3 off, the rest kept); no member's word (R14, R30, R46) left as it was",
-              R("R15") == 0xF7 && R("R31") == 0xF7 && R("R47") == 0xF7 && R("R14") == 15 && R("R30") == 31 && R("R46") == 47,
-              R("R15").ToString("X") + " " + R("R14"));
+        // 19 October: "the words inside a structure no label uses - they should be reset as well"
+        Check("the array of 3 steps reset: their whole length 0, R0 ... R47 - the words no label uses (R14, R30, R46) and the bit labels' words too",
+              Enumerable.Range(0, 48).All(i => R("R" + i) == 0), string.Join(",", Enumerable.Range(0, 48).Where(i => R("R" + i) != 0).Select(i => "R" + i)));
         Check("  shown at once: step 1's X 0", Shown(mon, m1[1]) == "0", Shown(mon, m1[1]));
         fill();
         Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(els[1]) });
         Call(form, "ResetSelected", mon, sh, false);
-        Check("one step (Recipe[1]): its devices only (R16 ... R29, R31's bit), the others kept",
-              Enumerable.Range(16, 14).All(i => R("R" + i) == 0) && R("R31") == 0xF7 && R("R0") == 1 && R("R15") == 0xFF && R("R32") == 33, R("R0") + " " + R("R16"));
+        Check("one step (Recipe[1]): its 16 devices R16 ... R31, the others kept",
+              Enumerable.Range(16, 16).All(i => R("R" + i) == 0) && R("R0") == 1 && R("R15") == 0xFF && R("R32") == 33, R("R0") + " " + R("R16") + " " + R("R31"));
         fill();
         Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(m1[1]), Rows(sh).IndexOf(els[1]) });
         Call(form, "ResetSelected", mon, sh, false);
-        Check("  a step and one of its members chosen: the step once", Enumerable.Range(16, 14).All(i => R("R" + i) == 0) && R("R31") == 0xF7);
+        Check("  a step and one of its labels chosen: the step once", Enumerable.Range(16, 16).All(i => R("R" + i) == 0) && R("R32") == 33);
+        fill();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(m1[8]) });
+        Call(form, "ResetSelected", mon, sh, false);
+        Check("a Bit label on its own (Recipe[1].Bitti, R31.3): only its bit - R31 0x00F7, R30 kept", R("R31") == 0xF7 && R("R30") == 31, R("R31").ToString("X"));
         fill();
         Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(m1[1]) });
         Call(form, "ResetSelected", mon, sh, false);
