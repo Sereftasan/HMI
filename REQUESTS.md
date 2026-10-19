@@ -6,6 +6,8 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (evening, last):
+  - 11ed86c - The axis current: 0.1 % (212 at the address is 21.2 %) and signed: -21.2 % green like 21.2 %.
 - 19 October (later still):
   - 1c7e2eb - The cylinder help: the manual is a step of its own on the left (after the last one, its details 1.1 - 1.8),
     lit while the manual is read; a click unfolds it.
