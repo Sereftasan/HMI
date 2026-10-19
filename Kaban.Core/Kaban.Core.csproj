@@ -83,6 +83,7 @@
     <Compile Include="Helpers\PlcWriteLog.cs" />
     <Compile Include="Helpers\SettingsMigration.cs" />
     <Compile Include="Helpers\StepTemplate.cs" />
+    <Compile Include="Helpers\StructuredTypes.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.cs" />
     <Compile Include="Helpers\TroubleshootingCatalog.Movement.cs">
       <DependentUpon>TroubleshootingCatalog.cs</DependentUpon>

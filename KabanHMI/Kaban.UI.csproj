@@ -196,6 +196,9 @@
     <Compile Include="Forms\PlcRowEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\StructuredTypesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\DeviceFindForm.cs">
       <SubType>Form</SubType>
     </Compile>

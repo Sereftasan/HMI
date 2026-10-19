@@ -54,9 +54,11 @@ namespace Kaban.UI.Forms
             return Math.Max(1, rowLength);
         }
 
-        /// <summary>How many words a value of this type takes: 2 for a double word or a float, ceil(chars / 2) for a string.</summary>
+        /// <summary>How many words a value of this type takes: 2 for a double word or a float, ceil(chars / 2) for a string, a structure's size.</summary>
         internal static int WordCount(string dataType, int stringLength)
         {
+            var st = StructuredTypes.Find(dataType);
+            if (st != null) return Math.Max(1, st.Size);
             if (IsString(dataType)) return (StringChars(dataType, stringLength) + 1) / 2;
             if (IsDoubleWord(dataType) || IsFloat(dataType)) return 2;
             return 1;
@@ -66,6 +68,8 @@ namespace Kaban.UI.Forms
         internal static IEnumerable<string> WordsOf(WatchRow r)
         {
             if (r == null || !r.IsDevice) yield break;
+            // a structure is its members' devices, each read with its own row
+            if (r.Structure != null) yield break;
             string a = r.Address;
             yield return a;
             if (IsBit(r.EffectiveDataType)) yield break;
@@ -146,22 +150,43 @@ namespace Kaban.UI.Forms
             if (r == null || !r.IsDevice) return null;
             if (r.IsArray)
             {
-                // AN ARRAY, FOLDED: its first values, enough to see it change.
+                // AN ARRAY, FOLDED: its first values, enough to see it change (of structures: the first two).
                 var parts = new List<string>();
                 bool any = false;
-                foreach (var e in (r.Elements ?? new List<WatchRow>()).Take(8))
+                int show = r.Elements != null && r.Elements.Count > 0 && r.Elements[0].Structure != null ? 2 : 8;
+                foreach (var e in (r.Elements ?? new List<WatchRow>()).Take(show))
                 {
                     bool nz;
                     parts.Add(FormatValue(mon, e, out nz) ?? "-");
                     any |= nz;
                 }
                 nonZero = any;
-                return string.Join(", ", parts) + (r.ArrayCount > 8 ? ", …" : "");
+                return string.Join(", ", parts) + (r.EffectiveCount > show ? ", …" : "");
+            }
+            if (r.Structure != null)
+            {
+                // A STRUCTURE, FOLDED: its members' values in braces.
+                var parts = new List<string>();
+                bool any = false;
+                foreach (var m in (r.Members ?? new List<WatchRow>()).Take(8))
+                {
+                    bool nz;
+                    parts.Add(FormatValue(mon, m, out nz) ?? "-");
+                    any |= nz;
+                }
+                nonZero = any;
+                return "{" + string.Join(", ", parts) + ((r.Members ?? new List<WatchRow>()).Count > 8 ? ", …" : "") + "}";
             }
             string type = r.EffectiveDataType, format = r.EffectiveFormat;
             int[] w;
             if (!TryWords(mon, r, out w)) return null;
-            if (IsBit(type)) { nonZero = w[0] != 0; return w[0] != 0 ? "1" : "0"; }
+            if (IsBit(type))
+            {
+                // a structure's Bit member: its bit of the word (R16.3)
+                bool on = r.BitIndex >= 0 ? ((w[0] >> r.BitIndex) & 1) != 0 : w[0] != 0;
+                nonZero = on;
+                return on ? "1" : "0";
+            }
             if (IsString(type))
             {
                 string text = ToText(w, StringChars(type, r.EffectiveStringLength));
@@ -245,7 +270,8 @@ namespace Kaban.UI.Forms
         /// <summary>
         /// The elements under each array, and nowhere else: made (or kept) for
         /// every array in the list, in its place right under it; an element whose
-        /// array has gone, moved or shrunk goes with it.
+        /// array has gone, moved or shrunk goes with it. A STRUCTURE's members under
+        /// it the same way - under each element of an array of structures (19 October).
         /// </summary>
         internal static void EnsureElements(Sheet sh)
         {
@@ -254,18 +280,26 @@ namespace Kaban.UI.Forms
             {
                 if (r.IsElement) continue;
                 result.Add(r);
-                if (!r.IsArray) { r.Elements = null; continue; }
-                string type = r.EffectiveDataType;
-                int len = r.StringLength;
-                if (r.Elements == null || r.Elements.Count != r.ArrayCount) r.Elements = new List<WatchRow>();
-                for (int i = 0; i < r.ArrayCount; i++)
+                if (!r.IsArray)
+                {
+                    r.Elements = null;
+                    AddMembers(r, result);
+                    continue;
+                }
+                r.Members = null;
+                // an element's type: the array's without the label list's "(0..19)"
+                string type = StructuredTypes.BaseName(r.EffectiveDataType);
+                int len = r.StringLength, count = r.EffectiveCount;
+                if (r.Elements == null || r.Elements.Count != count) r.Elements = new List<WatchRow>();
+                for (int i = 0; i < count; i++)
                 {
                     string address = PlcRowEditorForm.ElementAddress(r.Address, type, i, len);
                     if (i >= r.Elements.Count) r.Elements.Add(new WatchRow());
                     var e = r.Elements[i];
-                    e.Head = r; e.ElementIndex = i; e.Station = r.Station; e.Address = address;
+                    e.Head = r; e.ElementIndex = i; e.Station = r.Station; e.Address = address; e.Member = null;
+                    result.Add(e);
+                    AddMembers(e, result);
                 }
-                result.AddRange(r.Elements);
             }
             bool same = result.Count == sh.Rows.Count;
             for (int i = 0; same && i < result.Count; i++) same = ReferenceEquals(result[i], sh.Rows[i]);
@@ -273,6 +307,25 @@ namespace Kaban.UI.Forms
             sh.Rows.Clear();
             sh.Rows.AddRange(result);
         }
+
+        /// <summary>A structure's member rows right under it, each at its offset from the structure's address.</summary>
+        private static void AddMembers(WatchRow r, List<WatchRow> result)
+        {
+            var st = r.Structure;
+            if (st == null) { r.Members = null; return; }
+            if (r.Members == null || r.Members.Count != st.Members.Count) r.Members = new List<WatchRow>();
+            for (int j = 0; j < st.Members.Count; j++)
+            {
+                if (j >= r.Members.Count) r.Members.Add(new WatchRow());
+                var m = r.Members[j];
+                m.Head = r; m.Member = st.Members[j]; m.ElementIndex = j; m.Station = r.Station;
+                m.Address = PlcAddressHelper.OffsetAddress((r.Address ?? "").Trim().ToUpperInvariant(), st.Members[j].Offset);
+                result.Add(m);
+            }
+        }
+
+        /// <summary>Shown: every row it is under is unfolded.</summary>
+        internal static bool IsShown(WatchRow r) { return r.Head == null || (r.Head.Expanded && IsShown(r.Head)); }
 
         /// <summary>The list's items - arrays as one, their elements not separately.</summary>
         internal static List<WatchRow> Items(Sheet sh) { return sh.Rows.Where(r => !r.IsElement).ToList(); }

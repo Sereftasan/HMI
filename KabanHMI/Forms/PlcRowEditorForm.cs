@@ -25,6 +25,9 @@ namespace Kaban.UI.Forms
     /// its characters need. Addresses count in the device's own number system (X and Y octal, W
     /// and B hexadecimal), as everywhere else in the program.
     ///
+    /// A ROW can be a STRUCTURE (19 October): a structured data type defined in "Structures..."
+    /// is chosen like a simple one; as an array its elements are its length apart (R0, R16 ...).
+    ///
     /// A COMMENT LINE has no address and no value: a heading in the list
     /// ("--- Robot clamps ---") so a long watch list can be read in parts.
     ///
@@ -43,6 +46,7 @@ namespace Kaban.UI.Forms
         private readonly CheckBox _comment = new CheckBox();
         private readonly Label _preview = new Label();
         private readonly Label _labelCaption = new Label();
+        private readonly Button _structures = new Button();
         private readonly bool _isNew;
 
         /// <summary>The device types the engineer's list uses (see PlcLabels.csv).</summary>
@@ -129,8 +133,15 @@ namespace Kaban.UI.Forms
             AddRow(_labelCaption, _label, ref y);
 
             _dataType.DropDownStyle = ComboBoxStyle.DropDown;   // free text: a machine may use its own wording
-            _dataType.Items.AddRange(KnownDataTypes);
+            FillDataTypes();
             AddRow(LanguageManager.GetString("Col_DataType", "DataType"), _dataType, ref y);
+            // the structured data types: defined here, chosen like a simple type
+            _dataType.Width -= 112;
+            _structures.Text = LanguageManager.GetString("Btn_Structures", "Structures...");
+            _structures.SetBounds(_dataType.Right + 6, _dataType.Top - 1, 106, 26);
+            UiStyle.Round(_structures);
+            Controls.Add(_structures);
+            _structures.Click += (s, e) => EditStructures();
             _format.DropDownStyle = ComboBoxStyle.DropDownList;
             foreach (var f in SimulationMonitorForm.DisplayFormats)
                 _format.Items.Add(f);
@@ -222,24 +233,54 @@ namespace Kaban.UI.Forms
         {
             bool comment = _comment.Checked;
             _dataType.Enabled = _address.Enabled = !comment;
+            _structures.Enabled = !comment;
             _count.Enabled = !comment;
             string type = RowDataType;
-            // A display format for the whole numbers; a length for a string.
-            _format.Enabled = !comment && !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsFloat(type) && !SimulationMonitorForm.IsString(type);
-            _chars.Enabled = !comment && SimulationMonitorForm.IsString(type);
+            var structure = StructuredTypes.Find(type);
+            // A display format for the whole numbers (a structure's members); a length for a string.
+            _format.Enabled = !comment && (structure != null ||
+                              !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsFloat(type) && !SimulationMonitorForm.IsString(type));
+            _chars.Enabled = !comment && structure == null && SimulationMonitorForm.IsString(type);
             _labelCaption.Text = (comment ? LanguageManager.GetString("Col_Comment", "Comment")
                                           : LanguageManager.GetString("Col_Label", "Label")) + ":";
             // A value typed for a run of devices would be written to all of them -
             // the kind of side effect that is easy to cause without meaning to.
-            _value.Enabled = !comment && ArrayCount == 1;
+            // A structure's values are its members', each on its own row.
+            _value.Enabled = !comment && ArrayCount == 1 && structure == null;
 
             int n = ArrayCount;
             string first = RowAddress;
             int step = StepFor(RowDataType, RowStringLength);
+            if (!comment && structure != null && n <= 1 && first.Length > 0)
+            {
+                // one structure: the devices it takes
+                _preview.Text = first + " … " + PlcAddressHelper.OffsetAddress(first, Math.Max(1, structure.Size) - 1) + "  (" +
+                                string.Format(LanguageManager.GetString("Lbl_StructPreview", "{0} members, {1} devices"), structure.Members.Count, structure.Size) + ")";
+                return;
+            }
             _preview.Text = comment || n <= 1 || first.Length == 0 ? ""
                 : first + " … " + ElementAddress(first, RowDataType, n - 1, RowStringLength) +
                   (step == 2 ? "  (" + LanguageManager.GetString("Lbl_Step2", "every 2nd device") + ")"
                    : step > 2 ? "  (" + string.Format(LanguageManager.GetString("Lbl_StepN", "every {0}th device"), step) + ")" : "");
+        }
+
+        /// <summary>The simple types, then the structured ones saved.</summary>
+        private void FillDataTypes()
+        {
+            string keep = _dataType.Text;
+            _dataType.Items.Clear();
+            _dataType.Items.AddRange(KnownDataTypes);
+            foreach (var name in StructuredTypes.Names) _dataType.Items.Add(name);
+            _dataType.Text = keep;
+        }
+
+        /// <summary>The structured data types' editor, on the type chosen; the list offers them as they are after it.</summary>
+        private void EditStructures()
+        {
+            using (var dlg = new StructuredTypesForm(RowDataType))
+                dlg.ShowDialog(this);
+            FillDataTypes();
+            UpdateState();
         }
 
         private void AddRow(string caption, Control field, ref int y)

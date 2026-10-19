@@ -103,23 +103,67 @@ namespace Kaban.UI.Forms
             /// <summary>An array shown with its elements under it.</summary>
             public bool Expanded;
 
-            /// <summary>On an element row: its array. Elements are made from the array, never stored.</summary>
+            /// <summary>On an element row: its array; on a member row: its structure. Made from them, never stored.</summary>
             public WatchRow Head;
             public int ElementIndex;
             /// <summary>On an array: its element rows, kept so the same rows stay (and stay selected) between refreshes.</summary>
             public List<WatchRow> Elements;
 
-            public bool IsArray { get { return Head == null && ArrayCount > 1 && IsDevice; } }
+            // ---- A STRUCTURE (19 October: Mitsubishi's structured data type - a recipe step) ----
+            /// <summary>On a member row of a structure: its member.</summary>
+            public StructuredTypes.Member Member;
+            /// <summary>On a structure: its member rows, kept between refreshes like an array's elements.</summary>
+            public List<WatchRow> Members;
+
+            /// <summary>The item this row belongs to: itself, its array, or its structure's array.</summary>
+            public WatchRow Root { get { return Head == null ? this : Head.Root; } }
+            /// <summary>How deep it is under its item: 0, an element 1, a member of an element 2.</summary>
+            public int Depth { get { return Head == null ? 0 : Head.Depth + 1; } }
+
+            /// <summary>Elements: the row's own count, else the label list's "(0..19)" for a structure.</summary>
+            public int EffectiveCount
+            {
+                get
+                {
+                    if (Head != null) return 1;
+                    if (ArrayCount > 1) return ArrayCount;
+                    var t = DataTypeOverride.Length > 0 ? DataTypeOverride : LabelDataType;
+                    int n = StructuredTypes.CountIn(t);
+                    return n > 1 && StructuredTypes.Find(t) != null ? n : 1;
+                }
+            }
+
+            public bool IsArray { get { return Head == null && EffectiveCount > 1 && IsDevice; } }
             public bool IsElement { get { return Head != null; } }
+            public bool IsMember { get { return Member != null; } }
+
+            /// <summary>The structure this row is one of (a structure's own row, or an element of an array of them); null otherwise.</summary>
+            public StructuredTypes.Type Structure
+            {
+                get { return Member == null && IsDevice && !IsArray ? StructuredTypes.Find(EffectiveDataType) : null; }
+            }
+
+            /// <summary>A row that holds others and has no value of its own: an array, or a structure.</summary>
+            public bool IsGroup { get { return IsArray || Structure != null; } }
+
             public string EffectiveFormat
             {
                 get
                 {
-                    var f = Head != null ? Head.DisplayFormat : DisplayFormat;
+                    var f = Root.DisplayFormat;
                     return string.IsNullOrEmpty(f) ? FormatDecimal : f;
                 }
             }
-            public int EffectiveStringLength { get { return Head != null ? Head.StringLength : StringLength; } }
+            public int EffectiveStringLength { get { return Member != null ? 16 : Head != null ? Head.EffectiveStringLength : StringLength; } }
+
+            /// <summary>A Bit member's bit of its word (-1: none) - the address shows it: "R16.3".</summary>
+            public int BitIndex { get { return Member != null && Member.IsBit ? Member.Bit : -1; } }
+            public string ShownAddress { get { return BitIndex >= 0 ? Address + "." + BitIndex.ToString("X", CultureInfo.InvariantCulture) : Address; } }
+
+            private string LabelDataType
+            {
+                get { var e = PlcLabelTable.ByAddress(Station, Address); return e != null ? e.DataType ?? "" : ""; }
+            }
 
             public bool IsComment { get { return string.IsNullOrWhiteSpace(Address) && !string.IsNullOrWhiteSpace(Comment); } }
 
@@ -132,6 +176,11 @@ namespace Kaban.UI.Forms
             {
                 get
                 {
+                    if (Member != null)
+                    {
+                        var s = Head.EffectiveLabel;
+                        return (s.Length > 0 ? s : Head.Address) + "." + Member.Name;
+                    }
                     if (Head != null)
                     {
                         var h = Head.EffectiveLabel;
@@ -147,7 +196,9 @@ namespace Kaban.UI.Forms
             {
                 get
                 {
-                    if (Head != null) return Head.EffectiveDataType;
+                    if (Member != null) return Member.DataType;
+                    // an element: its array's type without the label list's "(0..19)"
+                    if (Head != null) return StructuredTypes.BaseName(Head.EffectiveDataType);
                     if (!string.IsNullOrWhiteSpace(DataTypeOverride)) return DataTypeOverride;
                     var e = PlcLabelTable.ByAddress(Station, Address);
                     return e != null ? e.DataType : "";
@@ -156,7 +207,7 @@ namespace Kaban.UI.Forms
 
             public bool IsUnknownToLabelTable
             {
-                get { return Head != null ? Head.IsUnknownToLabelTable : string.IsNullOrWhiteSpace(LabelOverride) && PlcLabelTable.ByAddress(Station, Address) == null; }
+                get { return Head != null ? Root.IsUnknownToLabelTable : string.IsNullOrWhiteSpace(LabelOverride) && PlcLabelTable.ByAddress(Station, Address) == null; }
             }
 
             public WatchRow Clone()
@@ -519,7 +570,20 @@ namespace Kaban.UI.Forms
             m.Items.Add(new ToolStripSeparator());
             m.Items.Add(Item(T("Mnu_MonCommentEnd", "Comment line at the end..."), (s, e) => AddRows(atEnd: true, comment: true)));
             m.Items.Add(Item(T("Mnu_MonCommentAbove", "Comment line above the selected row..."), (s, e) => AddRows(atEnd: false, comment: true), HasSelection));
+            m.Items.Add(new ToolStripSeparator());
+            // 19 October: Mitsubishi's structured data types - a recipe step, chosen like a data type
+            m.Items.Add(Item(T("Mnu_MonStructures", "Structured data types..."), (s, e) => EditStructures()));
             return m;
+        }
+
+        /// <summary>The structured data types' editor; every list shows its rows of them anew after it.</summary>
+        internal void EditStructures(string select = null)
+        {
+            using (var dlg = new StructuredTypesForm(select))
+                if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
+            foreach (var mon in _monitors)
+                foreach (var sh in mon.Sheets)
+                    if (sh.Grid != null) Render(mon, sh);
         }
 
         private ContextMenuStrip PasteMenu()
@@ -1147,9 +1211,11 @@ namespace Kaban.UI.Forms
                 var at = grid.CurrentRow != null && grid.CurrentRow.Index < sh.Rows.Count ? sh.Rows[grid.CurrentRow.Index] : null;
                 rowMenu.Items.Add(Item(at != null && at.IsDevice ? string.Format(T("Mnu_FindUses", "Where is {0} used?"), at.Address) : T("Mnu_FindUsesNone", "Where is it used?"),
                                        (s2, e2) => OpenFind(at != null ? at.Address : null), at != null && at.IsDevice, keyText: "Ctrl+F"));
-                var head = at != null ? (at.IsElement ? at.Head : at) : null;
-                if (head != null && head.IsArray)
-                    rowMenu.Items.Add(Item(head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"),
+                // the row itself when it holds others (a structure, an element of an array of them), else its item
+                var head = at == null ? null : at.IsGroup ? at : at.Head != null && at.Head.IsGroup ? at.Head : at.Root;
+                if (head != null && head.IsGroup)
+                    rowMenu.Items.Add(Item(head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
+                                                        : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
                                            (s2, e2) => ToggleArray(mon, sh, head)));
                 if (sel)
                 {
@@ -1213,9 +1279,10 @@ namespace Kaban.UI.Forms
             grid.CellMouseClick += (s, e) =>
             {
                 if (e.Button != MouseButtons.Left || e.RowIndex < 0 || e.RowIndex >= sh.Rows.Count || e.ColumnIndex < 0) return;
-                if (grid.Columns[e.ColumnIndex].Name != "Label" || e.X > 24) return;
+                if (grid.Columns[e.ColumnIndex].Name != "Label") return;
                 var r = sh.Rows[e.RowIndex];
-                if (r.IsArray) ToggleArray(mon, sh, r);
+                if (e.X > FoldMarkRight(r)) return;
+                if (r.IsGroup) ToggleArray(mon, sh, r);
             };
             // Tab leaves the table for the next control: stepping cell by cell
             // through a table that selects whole rows shows nothing moving.
@@ -1242,7 +1309,7 @@ namespace Kaban.UI.Forms
                 if (from < sh.Rows.Count && !sh.Rows[from].IsBlank)
                 {
                     // An element moves its whole array.
-                    if (sh.Rows[from].IsElement) from = sh.Rows.IndexOf(sh.Rows[from].Head);
+                    if (sh.Rows[from].IsElement) from = sh.Rows.IndexOf(sh.Rows[from].Root);
                     grid.DoDragDrop(from, DragDropEffects.Move);
                 }
             };
@@ -1262,7 +1329,7 @@ namespace Kaban.UI.Forms
                 Remember(T("Undo_Move", "move rows"), mon);
                 var moved = sh.Rows[from];
                 // Dropped among an array's elements: before that array.
-                var target = sh.Rows[to].IsElement ? sh.Rows[to].Head : sh.Rows[to];
+                var target = sh.Rows[to].Root;
                 var items = Items(sh);
                 int toItem = items.IndexOf(target);
                 items.Remove(moved);
@@ -1285,9 +1352,9 @@ namespace Kaban.UI.Forms
                 if (row == null || (row.IsComment && col != "Label") || (row.IsBlank && col == "Value")) { e.Cancel = true; return; }
                 // An element is its array's: only its value is its own. An array's
                 // value is the list of its elements'.
-                if ((row.IsElement && col != "Value") || (row.IsArray && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
+                if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
-                if (row.IsArray && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
+                if (row.IsGroup && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
                 sh.Editing = true;
                 // A value goes to the PLC and is not undone; a name or an address is.
                 if (col != "Value") Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1327,9 +1394,9 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
-            if (column == "Label" && row.IsArray && sh.Grid.PointToClient(Cursor.Position).X -
-                sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= 24) return;   // the fold mark
-            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsArray))
+            if (column == "Label" && row.IsGroup && sh.Grid.PointToClient(Cursor.Position).X -
+                sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= FoldMarkRight(row)) return;   // the fold mark
+            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup))
             {
                 // In the table itself: the value is what is changed nine times
                 // out of ten, and a dialog for it is a detour.
@@ -1414,7 +1481,7 @@ namespace Kaban.UI.Forms
             {
                 var m = _monitors.FirstOrDefault(x => x.Station == find.Station);
                 var listed = m == null ? null : m.Sheets.SelectMany(x => x.Rows)
-                    .FirstOrDefault(r => r.IsDevice && !r.IsArray && !r.IsElement && string.Equals(r.Address, use.Address, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(r => r.IsDevice && !r.IsGroup && !r.IsElement && string.Equals(r.Address, use.Address, StringComparison.OrdinalIgnoreCase));
                 return listed != null ? listed.EffectiveFormat : null;
             };
             find.Live = (use, format) =>
@@ -1564,15 +1631,12 @@ namespace Kaban.UI.Forms
             rows = rows.ToList();
             // An element asked for (Find, a paste) in a folded array: the array unfolds.
             foreach (var i in rows)
-                if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].IsElement && !sh.Rows[i].Head.Expanded)
+                if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].IsElement && !IsShown(sh.Rows[i]))
                 {
-                    var head = sh.Rows[i].Head;
-                    head.Expanded = true;
-                    foreach (var e in head.Elements ?? new List<WatchRow>())
-                    {
-                        int k = sh.Rows.IndexOf(e);
-                        if (k >= 0 && k < sh.Grid.Rows.Count) sh.Grid.Rows[k].Visible = true;
-                    }
+                    // every row it is under (an array, an element of structures) unfolds
+                    for (var head = sh.Rows[i].Head; head != null; head = head.Head) head.Expanded = true;
+                    for (int k = 0; k < sh.Rows.Count && k < sh.Grid.Rows.Count; k++)
+                        if (IsShown(sh.Rows[k]) && !sh.Grid.Rows[k].Visible) sh.Grid.Rows[k].Visible = true;
                 }
             sh.Grid.ClearSelection();
             int first = -1;
@@ -1662,10 +1726,10 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(true, false); return; }
-            if (row.IsElement) row = row.Head;           // an element is edited as its array
+            if (row.IsElement) row = row.Root;           // an element (a member) is edited as its array (structure)
 
             bool nz;
-            string valueText = row.IsDevice && !row.IsArray ? (FormatValue(mon, row, out nz) ?? "") : "";
+            string valueText = row.IsDevice && !row.IsGroup ? (FormatValue(mon, row, out nz) ?? "") : "";
 
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint),
                        row.IsComment ? row.Comment : row.EffectiveLabel, row.EffectiveDataType, row.Address, valueText,
@@ -1689,7 +1753,7 @@ namespace Kaban.UI.Forms
                         if (row.ArrayCount <= 1) row.Expanded = true;     // just made an array: show it
                         row.ArrayCount = dlg.ArrayCount;
                     }
-                    if (dlg.RowValueText != null && dlg.RowValueText != valueText && !row.IsArray)
+                    if (dlg.RowValueText != null && dlg.RowValueText != valueText && !row.IsGroup)
                         WriteValue(mon, row, dlg.RowValueText);
                 }
                 EnsureBlankRow(sh);
@@ -1759,7 +1823,7 @@ namespace Kaban.UI.Forms
                 }
                 sh.Rows.InsertRange(at, added);
                 EnsureBlankRow(sh);
-                if (dlg.RowValueText != null && added.Count == 1 && added[0].IsDevice && !added[0].IsArray)
+                if (dlg.RowValueText != null && added.Count == 1 && added[0].IsDevice && !added[0].IsGroup)
                     WriteValue(mon, added[0], dlg.RowValueText);
                 SaveWatchList(mon);
                 Render(mon, sh);
@@ -1786,8 +1850,10 @@ namespace Kaban.UI.Forms
             {
                 var r = sh.Rows[i];
                 // An element of an array copied as well goes with it, not twice.
-                if (r.IsElement && chosen.Contains(r.Head)) continue;
+                if (r.IsElement && (chosen.Contains(r.Head) || chosen.Contains(r.Root))) continue;
                 var copy = r.Clone();
+                // a structure's member alone: a device of its own type at its place (a bit: "R16.3")
+                if (r.IsMember) copy.Address = r.ShownAddress;
                 // Keep the names it SHOWS: pasted onto another machine, that
                 // machine's label list does not know them.
                 if (copy.IsDevice)
@@ -1856,14 +1922,14 @@ namespace Kaban.UI.Forms
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
             // An element is part of its array: the array is removed as one item.
-            var items = sel.Select(i => sh.Rows[i]).Select(r => r.IsElement ? r.Head : r).Distinct().ToList();
+            var items = sel.Select(i => sh.Rows[i]).Select(r => r.Root).Distinct().ToList();
             Remember(string.Format(T("Undo_Remove", "remove {0} row(s)"), items.Count), mon);
 
             var gone = new List<string>();
             foreach (var r in items)
             {
                 sh.Rows.Remove(r);
-                if (r.IsDevice) gone.AddRange(r.IsArray && r.Elements != null ? r.Elements.Select(e => e.Address) : new[] { r.Address });
+                if (r.IsDevice) gone.AddRange(r.IsGroup ? GroupWords(r) : new[] { r.Address });
             }
             EnsureBlankRow(sh);
             EnsureElements(sh);                    // the elements leave with their array - before anything is looked up
@@ -2212,7 +2278,7 @@ namespace Kaban.UI.Forms
         private static long? ValueOf(MonitorTab mon, WatchRow r)
         {
             int v;
-            if (!r.IsDevice || r.IsArray || !mon.Values.TryGetValue(r.Address, out v)) return null;
+            if (!r.IsDevice || r.IsGroup || !mon.Values.TryGetValue(r.Address, out v)) return null;
             if (IsFloat(r.EffectiveDataType) || IsString(r.EffectiveDataType)) return null;
             if (!IsDoubleWord(r.EffectiveDataType)) return IsUnsigned(r.EffectiveDataType) ? (long)(ushort)v : (long)(short)v;
             int high;
@@ -2517,7 +2583,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         private void WriteValue(MonitorTab mon, WatchRow row, string text, string how = "typed")
         {
-            if (row == null || !row.IsDevice || row.IsArray) return;
+            if (row == null || !row.IsDevice || row.IsGroup) return;
 
             // In the row's type and display format: a float, a string, a word in
             // hexadecimal or binary - checked for its range before anything goes.
@@ -2538,10 +2604,22 @@ namespace Kaban.UI.Forms
                 return;
             }
 
+            // A STRUCTURE'S BIT MEMBER (R16.3) is a bit of a word: the word as last read, that bit changed.
+            if (row.BitIndex >= 0)
+            {
+                int word;
+                if (!mon.Values.TryGetValue(row.Address, out word))
+                {
+                    SetStatus(T("Msg_MonBitNotRead", "Its word is not read yet - nothing written."));
+                    return;
+                }
+                words = new[] { words[0] != 0 ? word | (1 << row.BitIndex) : word & ~(1 << row.BitIndex) };
+            }
+
             // Every word of the value, low first - the low word alone turns a
             // 32-bit value (or a float, or a string) into nonsense.
             var addresses = WordsOf(row).ToList();
-            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: " + how + " " + (text ?? "").Trim() + " into " + row.Address +
+            using (Kaban.UI.Helpers.WriteSource.For("PLC Monitor: " + how + " " + (text ?? "").Trim() + " into " + row.ShownAddress +
                                                     (string.IsNullOrWhiteSpace(row.EffectiveLabel) ? "" : " [" + row.EffectiveLabel.Trim() + "]")))
                 for (int i = 0; i < words.Length && i < addresses.Count; i++)
                 {
@@ -2563,11 +2641,12 @@ namespace Kaban.UI.Forms
         {
             if (mon == null || sh == null || rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
-            if (!row.IsDevice || row.IsArray) return;
+            if (!row.IsDevice || row.IsGroup) return;
             if (IsBit(row.EffectiveDataType))
             {
                 int now;
                 mon.Values.TryGetValue(row.Address, out now);
+                if (row.BitIndex >= 0) now = (now >> row.BitIndex) & 1;      // a structure's bit of its word
                 WriteValue(mon, row, now != 0 ? "0" : "1", "switched (Shift+Enter) to");
                 Render(mon, sh);
                 return;
@@ -2576,10 +2655,31 @@ namespace Kaban.UI.Forms
             sh.Grid.BeginEdit(true);
         }
 
+        /// <summary>Every device a structure's row takes: its length from its address.</summary>
+        private static IEnumerable<string> StructureWords(WatchRow r)
+        {
+            var st = r.Structure;
+            string a = (r.Address ?? "").Trim().ToUpperInvariant();
+            for (int i = 0; st != null && i < st.Size; i++) yield return PlcAddressHelper.OffsetAddress(a, i);
+        }
+
+        /// <summary>Where a row's fold mark ends in its label cell (pixels): after its indentation.</summary>
+        private static int FoldMarkRight(WatchRow r) { return 24 + (r == null ? 0 : r.Depth * 22); }
+
+        /// <summary>Every device under an array or a structure: its elements', its members' (a member's word).</summary>
+        private static IEnumerable<string> GroupWords(WatchRow r)
+        {
+            foreach (var k in (r.Elements ?? new List<WatchRow>()).Concat(r.Members ?? new List<WatchRow>()))
+            {
+                if (k.IsGroup) { foreach (var a in GroupWords(k)) yield return a; }
+                else yield return k.Address;
+            }
+        }
+
         /// <summary>An array folded or unfolded - kept with the list.</summary>
         private void ToggleArray(MonitorTab mon, Sheet sh, WatchRow head)
         {
-            if (head == null || !head.IsArray) return;
+            if (head == null || !head.IsGroup) return;
             head.Expanded = !head.Expanded;
             SaveWatchList(mon);
             Render(mon, sh);
@@ -2590,7 +2690,7 @@ namespace Kaban.UI.Forms
         /// <summary>The selected rows (an element: its array) shown in a display format.</summary>
         private void SetDisplayFormat(MonitorTab mon, Sheet sh, string format)
         {
-            var items = SelectedIndices(sh).Select(i => sh.Rows[i]).Select(r => r.IsElement ? r.Head : r)
+            var items = SelectedIndices(sh).Select(i => sh.Rows[i]).Select(r => r.Root)
                                            .Where(r => r.IsDevice).Distinct().ToList();
             if (items.Count == 0) return;
             Remember(T("Undo_Format", "display format"), mon);
@@ -2683,7 +2783,7 @@ namespace Kaban.UI.Forms
             var now = DateTime.Now;
             var seenNames = mon.Values.Keys.ToList();
             var seenValues = mon.Values.Values.ToList();
-            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsArray).SelectMany(WordsOf).Concat(FindWords(mon)))
+            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsGroup).SelectMany(WordsOf).Concat(FindWords(mon)))
                 if (!mon.Values.ContainsKey(w) && !seenNames.Contains(w)) { seenNames.Add(w); seenValues.Add(0); }
             DeviceHistory.Observe(mon.Station, seenNames, seenValues, now, now);
 
@@ -2692,8 +2792,10 @@ namespace Kaban.UI.Forms
 
             // A double word's second device is part of its row, not a device of
             // its own: D101 under a D100 double word is D100's high half.
+            // A structure's devices are its own too, the unused ones between its members included.
             var highWords = new HashSet<string>(
-                mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1)),
+                mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1))
+                   .Concat(mon.Sheets.SelectMany(s => s.Rows).Where(r => r.Structure != null).SelectMany(StructureWords)),
                 StringComparer.OrdinalIgnoreCase);
             var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !mon.Listed(a) && !highWords.Contains(a))
                                 .OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToList();
@@ -2717,7 +2819,7 @@ namespace Kaban.UI.Forms
 
             var addresses = new List<string>();
             if (sh != null)
-                foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsArray))
+                foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsGroup))
                     addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words
             addresses.AddRange(FindWords(mon));          // and what Find lists
             var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
@@ -2782,7 +2884,7 @@ namespace Kaban.UI.Forms
                 var row = grid.Rows[i];
 
                 // An element shows while its array is unfolded.
-                bool visible = !model.IsElement || model.Head.Expanded;
+                bool visible = IsShown(model);
                 if (row.Visible != visible)
                 {
                     try { row.Visible = visible; }
@@ -2802,7 +2904,7 @@ namespace Kaban.UI.Forms
                 }
                 Style(row, Color.Empty, Color.Empty, null);
 
-                Set(row.Cells["Address"], model.Address);
+                Set(row.Cells["Address"], model.ShownAddress);
                 if (model.IsBlank)
                 {
                     Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Value"], "");
@@ -2816,14 +2918,18 @@ namespace Kaban.UI.Forms
                 string label = model.EffectiveLabel;
                 if (label.Length == 0) label = "NULL";
                 // AN ARRAY: the fold mark and its count; its elements indented under it.
-                if (model.IsArray) label = (model.Expanded ? "\u25BE " : "\u25B8 ") + label + "   [" + model.ArrayCount + "]";
-                else if (model.IsElement) label = "      " + label;
+                // A STRUCTURE the same: the fold mark, its type's name; its members indented under it.
+                string indent = new string(' ', 6 * model.Depth);
+                if (model.IsArray) label = (model.Expanded ? "\u25BE " : "\u25B8 ") + label + "   [" + model.EffectiveCount + "]";
+                else if (model.Structure != null) label = indent + (model.Expanded ? "\u25BE " : "\u25B8 ") + label;
+                else if (model.IsElement) label = indent + label;
                 if (!(sh.Editing && grid.CurrentCell != null && grid.CurrentCell.RowIndex == i)) Set(row.Cells["Label"], label);
                 var wantLabelColour = model.IsUnknownToLabelTable ? ColLabelUnknown : ColLabelKnown;
                 if (row.Cells["Label"].Style.ForeColor != wantLabelColour) row.Cells["Label"].Style.ForeColor = wantLabelColour;
 
                 string type = model.EffectiveDataType;
-                Set(row.Cells["DataType"], model.IsElement ? "" : type + (IsString(type) && !type.Contains("(") ? "(" + model.StringLength + ")" : ""));
+                // an element's type is its array's; a member's is its own
+                Set(row.Cells["DataType"], model.IsElement && !model.IsMember ? "" : type + (IsString(type) && !type.Contains("(") && !model.IsMember ? "(" + model.StringLength + ")" : ""));
                 bool whole = !IsBit(type) && !IsFloat(type) && !IsString(type);
                 Set(row.Cells["Format"], whole && !model.IsElement ? T("Fmt_" + model.EffectiveFormat, model.EffectiveFormat) : "");
 
@@ -2899,7 +3005,7 @@ namespace Kaban.UI.Forms
         /// </summary>
         internal static DeviceHistory.Info LastChangeOf(MonitorTab mon, WatchRow model)
         {
-            if (model == null || !model.IsDevice || model.IsArray) return null;
+            if (model == null || !model.IsDevice || model.IsGroup) return null;
             DeviceHistory.Info latest = null;
             foreach (var w in WordsOf(model))
             {
@@ -2916,9 +3022,9 @@ namespace Kaban.UI.Forms
             var c = LastChangeOf(mon, model);
             if (c == null)
             {
-                Set(cell, model.IsDevice && !model.IsArray ? "-" : "");
+                Set(cell, model.IsDevice && !model.IsGroup ? "-" : "");
                 if (cell.Style.ForeColor != ColLabelUnknown) cell.Style.ForeColor = ColLabelUnknown;
-                Tip(cell, model.IsDevice && !model.IsArray
+                Tip(cell, model.IsDevice && !model.IsGroup
                     ? T("Tip_MonNoChange", "No change seen since the HMI started reading this device. Changes before that are not known.")
                     : "");
                 return;
@@ -3016,7 +3122,7 @@ namespace Kaban.UI.Forms
                         " - exported " + DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
                         CsvHeader
                     };
-                    foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsArray))
+                    foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsGroup))
                     {
                         if (r.IsComment) { lines.Add(Csv(r.Comment) + ";;;"); continue; }
                         int v;
