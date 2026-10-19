@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (late night) - structured data types:
+  - bb26a32 - Up / Down / Remove without the "reentrant call to SetCurrentCellAddressCore" error.
+  - 20214df - Space between the Comment line and the labels' buttons.
+  - 466dbc6, e82fe77 - A label past the length is an error (named in the problem line, OK refuses it); the length
+    is no longer lengthened by itself.
+  - 8e5794b - PLC Monitor: "Reset (0 into its devices)..." in the rows' right-click menu: a structure's every label,
+    an array's every element, or one element / label; a Bit label only its bit. Asked first.
+  - (The PLC Monitor's toolbar button for the structures: left out, as asked - they stay in the + menu.)
 - 19 October (night) - structured data types:
   - 0746a59 - Each machine its own: StructuredTypes.csv beside its PlcLabels.csv (a mounted machine's in its folder,
     H500\StructuredTypes.csv), also written into the machine's project when the program runs from Visual Studio's
