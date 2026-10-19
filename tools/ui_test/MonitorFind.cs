@@ -105,10 +105,13 @@ class MF {
             var watch = (AlarmHelpBadge)typeof(CylinderUnitHMI).GetField("_helpA", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(rtc);
             watch.UpdateState(a => a == "M854" ? 1 : 0, c => true);
             var docs = rtc.HelpDocuments();
-            var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html" && !d.StepByStep);
-            Check("  M854 on: its '?' offers the manual for its drawn types: 5/3 valve + encoder and reference sensor",
-                  manual != null && manual.Valve == 3 && manual.Feedback == 6, string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
-            var html = System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual));
+            // 18 October: one help per fault - the manual is folded inside the movement's step-by-step page
+            var manual = docs.FirstOrDefault(d => d.FileName == "Cylinder_Troubleshooting.html" && d.StepByStep);
+            Check("  M854 on: its '?' offers the movement's page, the manual for its drawn types inside: 5/3 valve + encoder and reference sensor",
+                  manual != null && manual.Valve == 3 && manual.Feedback == 6 && !docs.Any(d => d.FileName == "Cylinder_Troubleshooting.html" && !d.StepByStep),
+                  string.Join(" | ", docs.Select(d => d.Title + " v" + d.Valve + " f" + d.Feedback)));
+            var html = System.Text.RegularExpressions.Regex.Match(System.IO.File.ReadAllText(TroubleshootingCatalog.ExtractSection(manual)),
+                                                                  "<details class=\"manual\".*?</details>", System.Text.RegularExpressions.RegexOptions.Singleline).Value;
             int heads = System.Text.RegularExpressions.Regex.Matches(html, "<thead>").Count;
             int d14 = System.Text.RegularExpressions.Regex.Matches(html, "data-detail=\"1.4\"").Count;
             int d17 = System.Text.RegularExpressions.Regex.Matches(html, "data-detail=\"1.7\"").Count;
