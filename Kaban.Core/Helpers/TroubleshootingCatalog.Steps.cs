@@ -177,8 +177,15 @@ namespace Kaban.Core.Helpers
                 var summary = System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInside", "The cylinder manual for this cylinder")) +
                               " <span class=\"sub\">&ndash; " + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInsideSub",
                                   "the general view behind these steps, for its valve and feedback")) + "</span>";
-                var fold = "<details class=\"manual\" id=\"manual\"><summary>&#128214; " + summary + "</summary><div class=\"manualbody\">" + body + "</div></details>\r\n";
+                // 19 October: "there should be another step for the cylinder manual - it passes the steps
+                // on the left when the manual opens": the step after the last, on the left too
+                int last = Regex.Matches(page, "<div class=\"num\">(\\d+)</div>").Cast<Match>().Select(m => int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture))
+                                .DefaultIfEmpty(0).Max();
+                string no = (last + 1).ToString(CultureInfo.InvariantCulture);
+                var fold = "<details class=\"manual\" id=\"manual\"><summary><span class=\"mnum\">" + no + "</span>&#128214; " + summary +
+                           "</summary><div class=\"manualbody\">" + body + "</div></details>\r\n";
                 page = page.Insert(main, fold);
+                page = WithManualBox(page, no, anchored);
                 // "manual 1.6 (1), 1.4": each detail a link to its rows
                 page = Regex.Replace(page, "(<p class=\"man\">)(.*?)(</p>)", m => m.Groups[1].Value +
                     Regex.Replace(m.Groups[2].Value, @"(?<![0-9.])1\.[0-9](?![0-9])", x => anchored.Contains(x.Value)
@@ -196,18 +203,46 @@ namespace Kaban.Core.Helpers
             }
         }
 
+        /// <summary>The manual's box at the end of the steps on the left: its number, a link that opens it.</summary>
+        private static string WithManualBox(string page, string no, ICollection<string> details)
+        {
+            int nav = page.IndexOf("<nav class=\"path\"", StringComparison.OrdinalIgnoreCase);
+            int chain = nav < 0 ? -1 : page.IndexOf("<div class=\"chain\">", nav, StringComparison.OrdinalIgnoreCase);
+            int end = chain < 0 ? -1 : page.IndexOf("</div>", chain, StringComparison.OrdinalIgnoreCase);
+            if (end < 0) return page;
+            var sorted = details.OrderBy(d => d, StringComparer.Ordinal).ToList();
+            string range = sorted.Count == 0 ? "" : sorted.Count == 1 ? sorted[0] : sorted[0] + " &ndash; " + sorted[sorted.Count - 1];
+            var box = (page.Substring(chain, end - chain).Contains("class=\"box") ? "<span class=\"arrow\">&darr;</span>" : "") +
+                      "<a class=\"box tomanual\" href=\"#manual\"><span class=\"sn\">" + no + "</span><span class=\"cap\">" +
+                      System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualBox", "cylinder manual")) + "</span><span class=\"val\">&#128214; " +
+                      (range.Length > 0 ? "<b>" + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualBoxDetails", "details")) + " " + range + "</b>" : "") +
+                      "</span></a>";
+            return page.Insert(end, box);
+        }
+
         private const string ManualFoldStyle =
             "details.manual{margin:1.2em 0 .6em;border:1px solid #d0d7e2;border-radius:10px;background:#fff;padding:.35em .9em}\n" +
             "details.manual>summary{cursor:pointer;font-weight:600;font-size:1.05em;padding:.35em 0;color:#1f4e79}\n" +
             "details.manual>summary .sub{font-weight:normal;font-size:.88em;color:#5a6270}\n" +
             "details.manual[open]>summary{border-bottom:1px solid #e3e7ee;margin-bottom:.6em}\n" +
+            "details.manual>summary .mnum{display:inline-flex;align-items:center;justify-content:center;min-width:1.75em;height:1.75em;padding:0 .2em;box-sizing:border-box;" +
+            "border-radius:.9em;background:#1f4e79;color:#fff;font-size:.82em;margin-right:.45em;vertical-align:middle}\n" +
             "p.man a.toman{color:inherit;text-decoration:underline dotted}\n" +
             ".manualbody tbody[id]{scroll-margin-top:4.5em}\n";
 
-        // a link into the folded manual unfolds it first, then goes there
+        // A link into the folded manual (a step's "manual 1.6", its box on the left) unfolds it first,
+        // then goes there. Read in the manual, its box on the left is the one lit (the page's own
+        // script lights the steps' boxes: runs first, and gets its box back on the way up).
         private const string ManualFoldScript =
             "<script>(function(){var d=document.getElementById(\"manual\");if(!d)return;" +
-            "[].forEach.call(document.querySelectorAll(\"a.toman\"),function(a){a.addEventListener(\"click\",function(){d.open=true;});});})();</script>\r\n";
+            "[].forEach.call(document.querySelectorAll(\"a.toman,a.tomanual\"),function(a){a.addEventListener(\"click\",function(){d.open=true;});});" +
+            "var box=document.querySelector(\"nav.path a.tomanual\");if(!box)return;var took=null;" +
+            "function now(){var inside=d.open&&d.getBoundingClientRect().top<=window.innerHeight*0.35;" +
+            "if(inside){[].forEach.call(document.querySelectorAll(\"nav.path .box.now\"),function(x){if(x!==box){took=x;x.classList.remove(\"now\");}});" +
+            "if(!box.classList.contains(\"now\")){void box.offsetWidth;box.classList.add(\"now\");}}" +
+            "else if(box.classList.contains(\"now\")){box.classList.remove(\"now\");" +
+            "if(took&&!document.querySelector(\"nav.path .box.now\"))took.classList.add(\"now\");took=null;}}" +
+            "window.addEventListener(\"scroll\",now);window.addEventListener(\"resize\",now);d.addEventListener(\"toggle\",now);now();})();</script>\r\n";
 
         private static string StepsFileName(HelpDocument doc)
         {

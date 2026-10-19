@@ -214,6 +214,14 @@ class CS {
               refs.All(r => whole.Contains("<tbody id=\"manual-" + r + "\"")) && whole.Contains("d.open=true"), string.Join(",", refs));
         Check("  folded, after the parts of this movement", Regex.IsMatch(whole, "The parts of this movement.*<details class=\"manual\" id=\"manual\"><summary>", RegexOptions.Singleline) &&
               !whole.Contains("<details class=\"manual\" id=\"manual\" open"));
+        // 19 October: "there should be another step for the cylinder manual - it passes the steps on the left when the manual opens"
+        int lastNo = Regex.Matches(html, "<div class=\"num\">(\\d+)</div>").Cast<Match>().Max(m => int.Parse(m.Groups[1].Value));
+        var chainHtml = Regex.Match(whole, "<div class=\"chain\">.*?</div>", RegexOptions.Singleline).Value;
+        Check("  a step of its own on the left: after the last box, numbered on (" + (lastNo + 1) + "), its details, a link that unfolds it; the fold the same number",
+              Regex.IsMatch(chainHtml, "<span class=\"arrow\">&darr;</span><a class=\"box tomanual\" href=\"#manual\"><span class=\"sn\">" + (lastNo + 1) +
+                            "</span><span class=\"cap\">cylinder manual</span><span class=\"val\">&#128214; <b>details 1\\.1 &ndash; 1\\.8</b></span></a></div>$") &&
+              whole.Contains("<summary><span class=\"mnum\">" + (lastNo + 1) + "</span>") && whole.Contains("a.toman,a.tomanual") && whole.Contains("nav.path a.tomanual"),
+              chainHtml.Substring(Math.Max(0, chainHtml.Length - 260)));
 
         Console.WriteLine("--- Y32 ON but the cylinder never left its start ---");
         mem["M844"] = 0; Scan(u1);
