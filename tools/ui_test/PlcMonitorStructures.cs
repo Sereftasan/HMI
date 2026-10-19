@@ -248,6 +248,35 @@ class PS {
             Call(f, "MoveMember", +1); pick(3); Call(f, "MoveMember", +1);
             Check("  back down: the order as it was", string.Join(",", cur.Members.Select(m => m.Name)) == "HareketKodu,X,Y,Z,I,J,K,Hiz,Bitti",
                   string.Join(",", cur.Members.Select(m => m.Name)));
+            Check("  the rows show the order: X second, its offset and no bit", Convert.ToString(membersGrid.Rows[1].Cells["Name"].Value) == "X" &&
+                  Convert.ToString(membersGrid.Rows[1].Cells["Offset"].Value) == "1" && membersGrid.Rows[1].Cells["Bit"].ReadOnly &&
+                  Convert.ToString(membersGrid.Rows[8].Cells["Bit"].Value) == "3" && !membersGrid.Rows[8].Cells["Bit"].ReadOnly);
+
+            // 19 October: "it gives an error when I move the label up or down or delete it - a reentrant call
+            // to SetCurrentCellAddressCore - and then does it anyway": the buttons were switched inside the
+            // table's own change of its current cell, and a button switched off with the focus handed the
+            // focus to the table right then
+            var inTable = new List<string>();
+            EventHandler watch = (s, e) =>
+            {
+                var st = Environment.StackTrace;
+                if (st.Contains("OnCurrentCellChanged") || st.Contains("OnSelectionChanged") || st.Contains("SetCurrentCellAddressCore") || st.Contains("OnRowsRemoved"))
+                    inTable.Add(((Control)s).Name + ((Button)s).AccessibleName + ((Button)s).Text);
+            };
+            foreach (var b in new[] { up, down, remove }) b.EnabledChanged += watch;
+            pick(1); up.Focus(); Call(f, "MoveMember", -1); Application.DoEvents();
+            bool topOff = !up.Enabled && down.Enabled && cur.Members[0].Name == "X";
+            pick(7); down.Focus(); Call(f, "MoveMember", +1); Application.DoEvents();
+            bool bottomOff = up.Enabled && !down.Enabled && cur.Members[8].Name == "Hiz";
+            pick(8); Call(f, "MoveMember", -1); pick(0); Call(f, "MoveMember", +1); Application.DoEvents();
+            Call(f, "AddMember"); Application.DoEvents();
+            remove.Focus(); Call(f, "RemoveMember"); Application.DoEvents();
+            Check("Up to the top, Down to the bottom, a label removed: done, the buttons never switched inside the table's change (Windows' reentrant call)",
+                  inTable.Count == 0 && topOff && bottomOff && cur.Members.Count == 9 && (int)Get(f, "SelectedMember") == 8 && !down.Enabled && remove.Enabled &&
+                  string.Join(",", cur.Members.Select(m => m.Name)) == "HareketKodu,X,Y,Z,I,J,K,Hiz,Bitti" && Call(f, "FirstProblem") == null,
+                  string.Join(" | ", inTable) + " " + topOff + bottomOff + " " + string.Join(",", cur.Members.Select(m => m.Name)));
+            foreach (var b in new[] { up, down, remove }) b.EnabledChanged -= watch;
+
             Call(f, "NewType", (object)null);
             cur = (StructuredTypes.Type)Get(f, "Current");
             Call(f, "AddMember"); Call(f, "AddMember");

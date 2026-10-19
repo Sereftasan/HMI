@@ -172,8 +172,8 @@ namespace Kaban.UI.Forms
             _members.DataError += (s, e) => { e.ThrowException = false; };
             // the row chosen moves Up / Down: both events, as either may come first (Windows changes
             // the selection before the current cell)
-            _members.SelectionChanged += (s, e) => UpdateButtons();
-            _members.CurrentCellChanged += (s, e) => UpdateButtons();
+            _members.SelectionChanged += (s, e) => QueueButtons();
+            _members.CurrentCellChanged += (s, e) => QueueButtons();
             _members.CellClick += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex < 0 || _members.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly) return;
@@ -334,7 +334,7 @@ namespace Kaban.UI.Forms
             _filling = was;
             // the structure grows with its members
             if (t.Size < t.MinimumSize) { _filling = true; t.Size = t.MinimumSize; _size.Value = Math.Min(_size.Maximum, t.Size); _filling = was; }
-            UpdateState();
+            UpdateState(fromTable: true);
         }
 
         internal void AddMember()
@@ -381,14 +381,21 @@ namespace Kaban.UI.Forms
             UpdateButtons();
         }
 
+        // Removed and moved in place - the rows are not made again: making them again moved the
+        // table's current cell, its events disabled the button pressed, and Windows refused to hand
+        // the focus on in the middle of it ("a reentrant call to SetCurrentCellAddressCore").
+
         internal void RemoveMember()
         {
             var t = Current;
             int i = SelectedMember;
-            if (t == null || i < 0 || i >= t.Members.Count) return;
+            if (t == null || i < 0 || i >= t.Members.Count || i >= _members.Rows.Count) return;
             if (_members.IsCurrentCellInEditMode) _members.EndEdit();
             t.Members.RemoveAt(i);
-            ShowCurrent();
+            _filling = true;
+            _members.Rows.RemoveAt(i);
+            _filling = false;
+            UpdateState();
             Choose(Math.Min(i, _members.Rows.Count - 1));
         }
 
@@ -397,24 +404,59 @@ namespace Kaban.UI.Forms
             var t = Current;
             int i = SelectedMember;
             int j = i + by;
-            if (t == null || i < 0 || i >= t.Members.Count || j < 0 || j >= t.Members.Count) return;
+            if (t == null || i < 0 || i >= t.Members.Count || j < 0 || j >= t.Members.Count || j >= _members.Rows.Count) return;
             if (_members.IsCurrentCellInEditMode) _members.EndEdit();
             var m = t.Members[i];
-            t.Members.RemoveAt(i);
-            t.Members.Insert(j, m);
-            ShowCurrent();
+            t.Members[i] = t.Members[j];
+            t.Members[j] = m;
+            _filling = true;
+            FillRow(i, t.Members[i]);
+            FillRow(j, t.Members[j]);
+            _filling = false;
+            UpdateState();
             Choose(j);
+        }
+
+        /// <summary>A member's row shown anew (after a move).</summary>
+        private void FillRow(int row, StructuredTypes.Member m)
+        {
+            var typeColumn = (DataGridViewComboBoxColumn)_members.Columns["DataType"];
+            if (!typeColumn.Items.Contains(m.DataType)) typeColumn.Items.Add(m.DataType);
+            var cells = _members.Rows[row].Cells;
+            cells["Name"].Value = m.Name;
+            cells["DataType"].Value = m.DataType;
+            cells["Offset"].Value = m.Offset.ToString(CultureInfo.InvariantCulture);
+            cells["Bit"].Value = m.IsBit ? m.Bit.ToString("X", CultureInfo.InvariantCulture) : "";
+            cells["Bit"].ReadOnly = !m.IsBit;
+            cells["Comment"].Value = m.Comment;
         }
 
         // ---- what it says -----------------------------------------------------------------
 
-        private void UpdateState()
+        /// <param name="fromTable">Called from the table's own event: the buttons after it (see QueueButtons).</param>
+        private void UpdateState(bool fromTable = false)
         {
             var t = Current;
             _name.Enabled = _size.Enabled = _comment.Enabled = _members.Enabled = t != null;
             var p = t == null ? null : StructuredTypes.Problem(t, _work);
             _problem.Text = p ?? "";
-            UpdateButtons();
+            if (fromTable) QueueButtons(); else UpdateButtons();
+        }
+
+        private bool _buttonsQueued;
+
+        /// <summary>
+        /// The buttons, from the table's own events: right after them. A button disabled while it
+        /// has the focus hands the focus on - to the table, which then moves its current cell; in
+        /// the middle of the table's own change of it Windows refuses that ("Operation is not valid
+        /// because it results in a reentrant call to the SetCurrentCellAddressCore function").
+        /// </summary>
+        private void QueueButtons()
+        {
+            if (!IsHandleCreated || IsDisposed) return;      // not shown yet: ShowCurrent sets them
+            if (_buttonsQueued) return;
+            _buttonsQueued = true;
+            BeginInvoke((Action)(() => { _buttonsQueued = false; if (!IsDisposed) UpdateButtons(); }));
         }
 
         private void UpdateButtons()
@@ -422,10 +464,20 @@ namespace Kaban.UI.Forms
             var t = Current;
             int i = SelectedMember;
             bool chosen = t != null && i >= 0 && i < _members.Rows.Count;
-            _copy.Enabled = _delete.Enabled = _addMember.Enabled = t != null;
-            _removeMember.Enabled = chosen;
-            _up.Enabled = chosen && i > 0;
-            _down.Enabled = chosen && i < _members.Rows.Count - 1;
+            Enable(_copy, t != null);
+            Enable(_delete, t != null);
+            Enable(_addMember, t != null);
+            Enable(_removeMember, chosen);
+            Enable(_up, chosen && i > 0);
+            Enable(_down, chosen && i < _members.Rows.Count - 1);
+        }
+
+        /// <summary>A button turned on or off; turned off with the focus, it hands the focus to the labels' table.</summary>
+        private void Enable(Button b, bool on)
+        {
+            if (b.Enabled == on) return;
+            if (!on && b.Focused && _members.CanFocus) _members.Focus();
+            b.Enabled = on;
         }
 
         /// <summary>The first structure that is not complete, and why (null: all are).</summary>
