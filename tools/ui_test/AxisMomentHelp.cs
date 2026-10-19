@@ -43,7 +43,7 @@ class AMH {
                                     CommandBackAddress = back, CommandForwardAddress = fwd, PositionAddress = pos,
                                     MinLimitAddress = min, MaxLimitAddress = max, Divisor = 10000, DecimalPlaces = 2, Suffix = "mm",
                                     ReferenceSensorAddress = refs, ReferenceSensorSide = AxisReferenceSide.Forward, VerticalMovement = vertical,
-                                    HomeRequestAddress = "M12" + n, ErrorAddress = "M89" + n, ServoAlarmAddress = code, AxisAlarmAddress = err };
+                                    HomeRequestAddress = "M12" + n, GoToReferenceAddress = "B" + n, ErrorAddress = "M89" + n, ServoAlarmAddress = code, AxisAlarmAddress = err };
     }
     static AlarmGeneration.Axis Watch(string servo) { return AlarmGeneration.Axes.First(a => a.ServoAlarm == servo); }
 
@@ -78,6 +78,12 @@ class AMH {
         Check("both jog commands ON, no module read: no jog", AxisMoment.MotionOf(null, null, true, true, null) == AxisMotion.Standing);
         Check("one jog command, no module read: manual", AxisMoment.MotionOf(null, null, false, true, null) == AxisMotion.Manual);
         Check("the module's home return with a jog command ON: homing", AxisMoment.MotionOf(7, true, true, false, null) == AxisMotion.Homing);
+        // 19 October: the row's "go to reference" (B0) "stays on until the home process completed"
+        Check("the PLC's homing in progress: homing - in JOG, positioning or between its moves",
+              AxisMoment.MotionOf(3, true, false, true, false, false, false, true) == AxisMotion.Homing &&
+              AxisMoment.MotionOf(8, true, false, false, false, false, false, true) == AxisMotion.Homing &&
+              AxisMoment.MotionOf(0, false, false, false, false, false, false, true) == AxisMotion.Homing &&
+              AxisMoment.MotionOf(3, true, false, true, false, false, false, false) == AxisMotion.Manual);
         var idle = new AxisMoment { Unit = "Robot X", Kind = AxisCodeKind.AxisError, Code = 0x1F4, Status = 0, Busy = false, JogBack = true, JogForward = true,
                                     Motion = AxisMoment.MotionOf(0, false, true, true, false), SeenRising = true };
         var idleText = Text(AxisSteps.Build(idle, "EN"));
@@ -220,6 +226,20 @@ class AMH {
               string.Join(",", AxisSteps.StepsOf(m)));
         Check("  the hint says so", Text(AxisSteps.Build(m, "EN")).Contains("moved away from the sensor's side"));
         mem["W0B"] = 0; mem["U1\\G2409"] = 0; Scan();
+
+        Console.WriteLine("--- 1c. the PLC homing it by JOG, its 'go to reference' ON (19 October) ---");
+        Check("the watch reads the row's 'go to reference' (B1) as homing in progress", x.Homing == "B1" &&
+              AlarmGeneration.Addresses().Any(kv => kv.Key == 1 && kv.Value == "B1"), x.Homing);
+        int m121 = Read("M121"); mem["M121"] = 0; Pos("W0", 400); Scan(2);
+        mem["B1"] = 1; mem["M605"] = 1; mem["U1\\G2409"] = 3; Busy(0, true); Scan();      // the PLC jogs it forward
+        for (int i = 1; i <= 6; i++) { Pos("W0", 400 + 20 * i); Scan(); }
+        Scan(7);
+        mem["W0B"] = 0x501; Busy(0, false); mem["U1\\G2409"] = -1; Scan();
+        m = x.RaisedServo.AxisMoment;
+        Check("homing, not 'moved by hand': stuck - the reference sensor first", m.Motion == AxisMotion.Homing && m.Homing == true &&
+              AxisSteps.HintOf(m) == "HomeStuck" && AxisSteps.StepsOf(m).First() == "RefSensor", m.Motion + " " + AxisSteps.HintOf(m));
+        Check("  the page shows it: Homing (go to reference) ON", Text(AxisSteps.Build(m, "EN")).Contains("Homing (go to reference) ON"));
+        mem["W0B"] = 0; mem["B1"] = 0; mem["M605"] = 0; mem["U1\\G2409"] = 0; mem["M121"] = m121; Scan(2);
 
         Console.WriteLine("--- 2. jogged into its end (52.1): a mechanical crash or the limits ---");
         var y = Watch("W1B");

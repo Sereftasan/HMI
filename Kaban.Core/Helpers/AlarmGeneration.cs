@@ -240,6 +240,8 @@ namespace Kaban.Core.Helpers
             public string Suffix = "";
             /// <summary>The jog commands (held while the button is), the reference sensor and its side, the PLC's home request.</summary>
             public string JogBack = "", JogForward = "", RefSensor = "", HomeRequest = "";
+            /// <summary>The PLC's homing in progress: the row's "go to reference" bit, ON until the homing is complete (FA2010 B0...).</summary>
+            public string Homing = "";
             public bool RefForward, Vertical;
             /// <summary>The motion module's operation status (Md.26) and BUSY (Md.141, one bit per axis).</summary>
             public string Status = "", Busy = "";
@@ -270,7 +272,7 @@ namespace Kaban.Core.Helpers
             {
                 get
                 {
-                    return new[] { Position, JogBack, JogForward, RefSensor, HomeRequest, Status, Busy }.Any(a => !string.IsNullOrWhiteSpace(a)) ||
+                    return new[] { Position, JogBack, JogForward, RefSensor, HomeRequest, Homing, Status, Busy }.Any(a => !string.IsNullOrWhiteSpace(a)) ||
                            Running != null || ManualMode != null;
                 }
             }
@@ -280,7 +282,7 @@ namespace Kaban.Core.Helpers
         internal sealed class Reading
         {
             public int? Status;
-            public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest, Ref;
+            public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest, Ref, Homing;
             public long? Position, Min, Max, SoftUpper, SoftLower;
             public int? Unit;
             /// <summary>The motion module's word when it is read (a jog command it did not act on is no movement); else one jog command.</summary>
@@ -439,6 +441,7 @@ namespace Kaban.Core.Helpers
             add(x.JogForward, false);
             add(x.RefSensor, false);
             add(x.HomeRequest, false);
+            add(x.Homing, false);
             add(x.Status, false);
             add(x.Busy, false);
             add(x.SoftUpper, true);
@@ -880,6 +883,7 @@ namespace Kaban.Core.Helpers
                 JogForward = bit(x.JogForward),
                 Ref = bit(x.RefSensor),
                 HomeRequest = bit(x.HomeRequest),
+                Homing = bit(x.Homing),
                 Running = rule(x.Running),
                 ManualMode = rule(x.ManualMode),
                 Position = number(x.Position, x.PositionDouble),
@@ -960,6 +964,7 @@ namespace Kaban.Core.Helpers
             m.Running = before.Running;
             m.ManualMode = before.ManualMode;
             m.HomeRequest = before.HomeRequest;
+            m.Homing = before.Homing;
             m.RefOn = before.Ref;
             m.Position = scaled(cur != null && cur.Position.HasValue ? cur.Position : before.Position);
             m.MinLimit = scaled(before.Min);
@@ -969,7 +974,7 @@ namespace Kaban.Core.Helpers
             double per = SimpleMotion.PositionScale(unit);
             m.ModuleMin = before.SoftLower.HasValue ? before.SoftLower.Value / per : (double?)null;
             m.ModuleMax = before.SoftUpper.HasValue ? before.SoftUpper.Value / per : (double?)null;
-            m.Motion = AxisMoment.MotionOf(before.Status, before.Busy, before.JogBack, before.JogForward, before.Running, before.ManualMode, before.HomeRequest);
+            m.Motion = AxisMoment.MotionOf(before.Status, before.Busy, before.JogBack, before.JogForward, before.Running, before.ManualMode, before.HomeRequest, before.Homing);
             if (x.Last != null && x.Last.Moving && x.MoveStart.HasValue)
             {
                 m.MovingMs = (int)Math.Max(0, (now - x.MoveStart.Value).TotalMilliseconds);

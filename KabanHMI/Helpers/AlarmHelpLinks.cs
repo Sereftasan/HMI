@@ -419,6 +419,8 @@ namespace Kaban.UI.Helpers
                 RefSensor = t(axis.ReferenceSensorAddress),
                 RefForward = axis.ReferenceSensorSide == AxisReferenceSide.Forward,
                 HomeRequest = t(axis.HomeRequestAddress),
+                // its homing in progress: ON until the homing is complete (19 October)
+                Homing = t(axis.GoToReferenceAddress),
                 // up / down arrows: a vertical axis, the only ones with a holding brake (19 October)
                 Vertical = axis.VerticalMovement
             };

@@ -45,6 +45,8 @@ namespace Kaban.Core.Helpers
         /// <summary>The module's operation status (Md.26) the scan before, when it is read.</summary>
         public int? Status;
         public bool? Busy, JogBack, JogForward, Running, ManualMode, HomeRequest;
+        /// <summary>The PLC's homing in progress: the row's "go to reference" (FA2010 B0...: ON until the homing is complete).</summary>
+        public bool? Homing;
         /// <summary>The way it moved: +1 forward (the position growing), -1 back, 0 not known.</summary>
         public int Direction;
         /// <summary>The position changed since the movement started.</summary>
@@ -131,7 +133,8 @@ namespace Kaban.Core.Helpers
 
         /// <summary>
         /// What the axis was doing, from what was read the scan before:
-        ///   the module's home return (7)                                    homing
+        ///   the PLC's homing in progress (the row's "go to reference"),
+        ///   or the module's home return (7)                                 homing
         ///   the module in JOG / manual pulse (3, 4)                         manual
         ///   the module standing (not BUSY, not moving): standing - a jog
         ///   command ON did not move it (17 October)                         standing
@@ -144,8 +147,10 @@ namespace Kaban.Core.Helpers
         /// Nothing read at all: not known.
         /// </summary>
         public static AxisMotion MotionOf(int? status, bool? busy, bool? jogBack, bool? jogForward, bool? running,
-                                          bool? manualMode = null, bool? homeRequest = null)
+                                          bool? manualMode = null, bool? homeRequest = null, bool? homing = null)
         {
+            // the PLC's homing in progress: whatever the module does meanwhile (19 October: B0 "stays on until the home process completed")
+            if (homing == true) return AxisMotion.Homing;
             if (status == 7) return AxisMotion.Homing;
             if (status == 3 || status == 4) return AxisMotion.Manual;
             bool moving = busy == true || (status.HasValue && IsMoving(status.Value));
@@ -483,6 +488,7 @@ namespace Kaban.Core.Helpers
             model["JogIdle"] = m.JogIdle;
             model["ModuleStood"] = m.ModuleStood;
             model["Running"] = state(m.Running);
+            model["HomingBit"] = state(m.Homing);
             model["Moved"] = m.Moved;
             model["Stuck"] = m.Stuck;
             model["StuckSeconds"] = H((m.StuckMs / 1000.0).ToString("0.0", CultureInfo.InvariantCulture));
