@@ -422,13 +422,6 @@ namespace Kaban.UI.Helpers
                 // an angle axis has up / down arrows too: only a real vertical one hangs on its brake
                 Vertical = axis.VerticalMovement && !axis.IsAngle
             };
-            // the sensor itself, where the drawings wire it (17 October: the row's M330 read ON while SN.1 was OFF)
-            string drawn = DrawnReferenceSensor(w.Station, w.RefSensor, string.IsNullOrWhiteSpace(w.DrawingName) ? w.Name : w.DrawingName);
-            if (!string.IsNullOrEmpty(drawn) && !string.Equals(drawn, w.RefSensor, StringComparison.OrdinalIgnoreCase))
-            {
-                w.RefRow = w.RefSensor;
-                w.RefSensor = drawn;
-            }
             if (axis.HasMotion)
             {
                 w.Status = SimpleMotion.Device(axis.MotionNumber, SimpleMotion.AddressOf(SimpleMotion.Find("OperationStatus"), axis.MotionAxisIndex));
@@ -441,20 +434,6 @@ namespace Kaban.UI.Helpers
             var manual = MachineConditionMap.GetRule(SystemCondition.ManualMode);
             if (manual != null && manual.PlcNumber == axis.PlcNumber && !string.IsNullOrWhiteSpace(manual.Address)) w.ManualMode = manual;
             return w;
-        }
-
-        /// <summary>
-        /// The axis's reference sensor as the drawings wire it, where the HMI reads that input
-        /// (X100 at M248; "X12@2" on another controller); "" when the drawings do not show it.
-        /// </summary>
-        public static string DrawnReferenceSensor(int station, string rowAddress, string unit)
-        {
-            Kaban.Core.Helpers.WiringTable.Point p = null;
-            try { p = AxisSteps.FindReferenceSensor(station, rowAddress, unit); } catch { }
-            if (p == null) return "";
-            string device = !string.IsNullOrWhiteSpace(p.Read) ? p.Read.Trim() : (p.Address ?? "").Trim();
-            if (device.Length == 0) return "";
-            return p.Station == station ? device : device + "@" + p.Station;
         }
 
         private static void HarvestPage(ISettingsPage page)
