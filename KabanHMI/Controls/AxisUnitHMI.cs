@@ -104,6 +104,7 @@ namespace Kaban.UI.Controls
             _unit.ButtonAEnableConditions = _unit.ButtonBEnableConditions = SystemCondition.None;
             _unit.ButtonAEnableTrigger = new Kaban.Core.Models.PlcTrigger();
             _unit.ButtonBEnableTrigger = new Kaban.Core.Models.PlcTrigger();
+            _unit.Arrows = ButtonArrowStyle.LeftRight;
             if (InDesigner || _axisNumber <= 0)
             {
                 _unit.TitleTextKey = _axisNumber > 0 ? "Axis " + _axisNumber : "Axis";
@@ -176,6 +177,11 @@ namespace Kaban.UI.Controls
             _unit.ButtonAEnableTrigger = a.BackTrigger ?? new Kaban.Core.Models.PlcTrigger();
             _unit.ButtonBEnableTrigger = a.ForwardTrigger ?? new Kaban.Core.Models.PlcTrigger();
 
+            // THE ROW'S ARROWS (19 October: "AxisUnitHMI shows all its buttons as left / right
+            // arrows - they should follow the AxisSettingHMI"). The unit's own captions are its
+            // arrows, and a caption glyph wins over a button's Direction: setting only the
+            // Direction left every axis unit with the unit's default left / right pair.
+            _unit.Arrows = a.Vertical ? ButtonArrowStyle.DownUp : ButtonArrowStyle.LeftRight;   // back = down, forward = up
             _unit.ButtonA.Direction = a.Vertical ? ButtonGlyphs.Direction.Down : ButtonGlyphs.Direction.Left;
             _unit.ButtonB.Direction = a.Vertical ? ButtonGlyphs.Direction.Up : ButtonGlyphs.Direction.Right;
 
