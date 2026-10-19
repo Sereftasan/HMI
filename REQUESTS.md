@@ -6,6 +6,10 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 19 October (later):
+  - The row's "go to reference" (B0, B11 ...) read as the PLC's homing in progress: homing whatever the module does meanwhile.
+  - One help per fault: an axis code's page holds the moment, the checks and the code's entry of the manual (last step);
+    a cylinder movement's step-by-step page holds the cylinder manual folded at its end ("manual 1.6" opens it there).
 - 17 October (late night) - "the format looks good but the info is false mostly":
   - The scanner: a read in flight when the page / a tab changed was looked up by the new batch's index (every device
     read another's value for that scan) - now by the batch it was read with. The likely cause of all three.
