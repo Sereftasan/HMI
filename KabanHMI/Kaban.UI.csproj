@@ -94,6 +94,7 @@
     <Compile Include="Helpers\WriteSource.cs" />
     <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\DeviceCollector.cs" />
+    <Compile Include="Helpers\TextUses.cs" />
     <Compile Include="Helpers\ControlHighlight.cs" />
     <Compile Include="Helpers\WindowLayout.cs" />
     <Compile Include="Helpers\ColumnChooser.cs" />

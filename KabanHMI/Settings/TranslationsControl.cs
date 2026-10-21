@@ -39,7 +39,7 @@ namespace Kaban.UI.Settings
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
-        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport;
+        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport, _btnFind;
 
         private List<TranslationEdits.Row> _rows = new List<TranslationEdits.Row>();
         private List<TranslationEdits.Row> _shown = new List<TranslationEdits.Row>();
@@ -128,8 +128,14 @@ namespace Kaban.UI.Settings
                                              (s, e) => ShowHistory());
             _btnExport = UiStyle.ToolButton(E(0x1F4E4), T("Tip_TrnExport", "Export the rows shown as a translation file (Key;EN;TR ...) - to copy into the program's files"),
                                             _tips, (s, e) => Export());
+            // 21 October: "a tool to find where the translation line is seen (on the screen, a message box ...) -
+            // a button on top, Ctrl+F, which opens the list of where it is used"
+            _btnFind = UiStyle.ToolButton(E(0x1F50E), T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"),
+                                          _tips, (s, e) => FindUses());
+            Kaban.UI.Helpers.Shortcuts.Set(_btnFind, Keys.Control | Keys.F, _tips,
+                                           T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"));
             _dirty.Guard(_btnSave, _btnRevert);
-            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport })
+            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport, _btnFind })
             {
                 b.Margin = new Padding(2, 1, 2, 1);
                 bar.Controls.Add(b);
@@ -474,6 +480,28 @@ namespace Kaban.UI.Settings
             catch { }
         }
 
+        /// <summary>Where the selected row's key is used: a list, a page of it opened on a double click.</summary>
+        private void FindUses()
+        {
+            var row = CurrentRow;
+            if (row == null) { SetStatus(T("Msg_TrnChooseRow", "Choose a row first."), true); return; }
+            List<Kaban.UI.Helpers.TextUses.Use> uses;
+            var cursor = Cursor.Current;
+            Cursor.Current = Cursors.WaitCursor;
+            try { uses = Kaban.UI.Helpers.TextUses.Find(row.Key); }
+            finally { Cursor.Current = cursor; }
+            using (var f = new TranslationUsesForm(row.Key, TextOf(row, (LanguageManager.CurrentLanguage ?? "EN").ToUpperInvariant()), uses))
+            {
+                if (f.ShowDialog(FindForm()) != DialogResult.OK || f.Chosen == null || f.Chosen.Way == null) return;
+                var shell = Application.OpenForms.OfType<Kaban.UI.Forms.MainForm>().FirstOrDefault();
+                if (shell == null) return;
+                string why;
+                var target = shell.ShowDeviceUse(f.Chosen.Way, out why);
+                if (target == null) { Ask.Tell(shell, T("Tab_Translations", "Translation"), why); return; }
+                shell.BeginInvoke((MethodInvoker)(() => Kaban.UI.Helpers.ControlHighlight.Flash(target)));
+            }
+        }
+
         // ---- what the buttons do ---------------------------------------------------------
 
         /// <summary>The texts typed, in force and kept (the number saved).</summary>
@@ -720,6 +748,108 @@ namespace Kaban.UI.Settings
                                           TranslationEdits.Clean(c.Old).Replace("\r\n", "\\r\\n"), TranslationEdits.Clean(c.New).Replace("\r\n", "\\r\\n"))).Append("\r\n");
                 File.WriteAllText(dlg.FileName, sb.ToString(), new UTF8Encoding(true));
             }
+        }
+    }
+
+    /// <summary>
+    /// WHERE A KEY IS USED (Ctrl+F on the Translation page): the menu's buttons and the tabs it
+    /// titles, the pages' controls using it, its alarms, the program's lines naming it; a page's
+    /// use opened (and pointed at) with a double click.
+    /// </summary>
+    public class TranslationUsesForm : Form
+    {
+        private readonly DataGridView _grid = new DataGridView();
+        private readonly Label _status = new Label();
+        private readonly List<Kaban.UI.Helpers.TextUses.Use> _uses;
+
+        /// <summary>The use chosen to open (null: none).</summary>
+        public Kaban.UI.Helpers.TextUses.Use Chosen { get; private set; }
+
+        private static string T(string key, string fallback) { return LanguageManager.GetString(key, fallback); }
+
+        public TranslationUsesForm(string key, string text, List<Kaban.UI.Helpers.TextUses.Use> uses)
+        {
+            _uses = uses ?? new List<Kaban.UI.Helpers.TextUses.Use>();
+            UiScale.ApplyOnLoad(this);
+            Text = T("Ttl_TrnUses", "Where is it used?") + " - " + key;
+            StartPosition = FormStartPosition.CenterParent;
+            Size = new Size(1100, 560);
+            MinimumSize = new Size(640, 320);
+            ShowInTaskbar = false;
+            MinimizeBox = false;
+            BackColor = Color.White;
+            Font = UiStyle.Body;
+
+            var head = new Label
+            {
+                Dock = DockStyle.Top, Height = 34, Padding = new Padding(8, 8, 8, 0), AutoEllipsis = true,
+                Text = key + "   \u00B7   \u201C" + (text ?? "").Replace("\r\n", " ") + "\u201D"
+            };
+            head.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+
+            _grid.Dock = DockStyle.Fill;
+            _grid.ReadOnly = true;
+            _grid.AllowUserToAddRows = false;
+            _grid.AllowUserToDeleteRows = false;
+            _grid.RowHeadersVisible = false;
+            _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _grid.MultiSelect = false;
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Kind", HeaderText = T("Col_FndKind", "Where"), Width = 110 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Place", HeaderText = T("Col_FndPlace", "Page or file"), Width = 320 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "What", HeaderText = T("Col_FndWhat", "What uses it"), Width = 560 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Line", HeaderText = T("Col_FndLine", "Line"), Width = 60 });
+            foreach (var u in _uses)
+                _grid.Rows.Add(KindName(u), u.Place, u.What + (u.ByText ? "  " + T("Fnd_ByText", "(shows the same text)") : ""), u.Line > 0 ? u.Line.ToString(CultureInfo.InvariantCulture) : "");
+            UiStyle.EnableTableTools(_grid, "TranslationUses");
+            _grid.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) Open(e.RowIndex); };
+            _grid.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter && _grid.CurrentRow != null) { Open(_grid.CurrentRow.Index); e.Handled = true; } };
+
+            _status.Dock = DockStyle.Bottom;
+            _status.Height = 44;
+            _status.Padding = new Padding(8, 4, 8, 0);
+            _status.ForeColor = Color.FromArgb(70, 76, 86);
+            bool source = !string.IsNullOrEmpty(Kaban.UI.Helpers.TextUses.SourceRoot());
+            _status.Text = (_uses.Count == 0 ? T("Msg_FndNone", "Not used on a page, in the menu or by an alarm.") + "  "
+                                             : T("Msg_FndOpen", "A double click opens a page and points at what uses it.") + "  ") +
+                           (source ? "" : T("Msg_FndNoSource", "The program's lines (message boxes, status lines ...) are listed when the program runs from its build, its source beside it."));
+
+            var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
+            var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, Height = 44, Padding = new Padding(6) };
+            bottom.Controls.Add(close);
+            CancelButton = close;
+            Controls.Add(_grid);
+            Controls.Add(_status);
+            Controls.Add(bottom);
+            Controls.Add(head);
+        }
+
+        internal DataGridView Grid { get { return _grid; } }
+
+        private static string KindName(Kaban.UI.Helpers.TextUses.Use u)
+        {
+            switch (u.Kind)
+            {
+                case Kaban.UI.Helpers.TextUses.KindMenu: return T("Fnd_KindMenu", "Menu");
+                case Kaban.UI.Helpers.TextUses.KindTab: return T("Fnd_KindTab", "Tab");
+                case Kaban.UI.Helpers.TextUses.KindPage: return T("Fnd_KindPage", "Page");
+                case Kaban.UI.Helpers.TextUses.KindAlarm: return T("Fnd_KindAlarm", "Alarm");
+                default: return T("Fnd_KindCode", "Program");
+            }
+        }
+
+        private void Open(int row)
+        {
+            if (row < 0 || row >= _uses.Count) return;
+            var u = _uses[row];
+            if (u.Way == null)
+            {
+                _status.Text = u.Kind == Kaban.UI.Helpers.TextUses.KindCode
+                    ? string.Format(T("Msg_FndCodeLine", "A line of the program: {0}, line {1}."), u.Place, u.Line)
+                    : T("Msg_FindNoPage", "It is not on a page (an alarm definition).");
+                return;
+            }
+            Chosen = u;
+            DialogResult = DialogResult.OK;
         }
     }
 
