@@ -68,6 +68,9 @@ namespace Kaban.UI.Screens
         /// <summary>The parts of the window a tap picks in - darker while picking (the page on show, the caption bar). Null: no shade.</summary>
         public Func<IEnumerable<Control>> ShadeAreas;
 
+        /// <summary>Opens HMI Settings > Translation on a key ("" or why not) - the texts' link. Null: no link.</summary>
+        public Func<string, string> OpenTranslationTable;
+
         /// <summary>The shade while picking (tests).</summary>
         internal PickShade Shade { get { return _shade; } }
 
@@ -842,6 +845,11 @@ namespace Kaban.UI.Screens
                     apply ? T("Nts_TipKeepTexts", "On the screen at once, for everyone on this panel - and in the feedback file")
                           : T("Nts_TipProposeTexts", "A proposal: Maintenance or an Admin puts it on the screen - and in the feedback file"),
                     (s, e) => KeepTexts(key, grid), "notesKeepTexts", write);
+                // 21 October: "a link to the translation table: the item highlighted there, to edit it directly"
+                if (OpenTranslationTable != null && LanguageManager.HasKey(key.Key) && SecurityManager.HasAccess(SecurityLevel.Maintenance))
+                    Act(acts, "\uD83C\uDF10", T("Nts_OpenTranslation", "In the translation table"),
+                        T("Nts_TipOpenTranslation", "HMI Settings > Translation on this key - its texts in every language, to edit there (picking goes off)"),
+                        (s, e) => OpenTranslation(key.Key), "notesOpenTranslation");
                 foreach (var n in notes.Where(n => n.Kind == NoteKind.Translation && n.TranslationKey == key.Key).OrderByDescending(n => n.Time))
                     NoteLine(n, NotesStore.BodyOf(n), apply);
             }
@@ -860,6 +868,15 @@ namespace Kaban.UI.Screens
                 default:
                     try { return new CultureInfo(code.ToLowerInvariant()).NativeName; } catch { return code; }
             }
+        }
+
+        /// <summary>The key's row of HMI Settings > Translation, picking off (the page is to be typed in).</summary>
+        internal void OpenTranslation(string key)
+        {
+            if (OpenTranslationTable == null) return;
+            SetPicking(false);
+            var why = OpenTranslationTable(key) ?? "";
+            _status.Text = why.Length > 0 ? why : string.Format(T("Nts_TranslationOpened", "{0} in the translation table - picking is off."), key);
         }
 
         private void KeepTexts(NoteTarget.TextKey key, DataGridView grid)

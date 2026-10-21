@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -138,6 +138,11 @@ class TF {
         form.Show(); Pump(100);
         var find = (Button)Get(table, "_btnFind");
         Check("its button on top, Ctrl+F", find.Parent != null && Shortcuts.Of(find) == (Keys.Control | Keys.F));
+        Check("a key shown from elsewhere: every row listed, the machine's row (the one on the screen) marked and chosen in the screen's language",
+              table.ShowKey("Unit_Clamp") && (string)Get(table, "Marked") == "TST\u0001Unit_Clamp" &&
+              ((IList<TranslationEdits.Row>)Get(table, "Shown"))[table.Grid().CurrentCell.RowIndex].Owner == "TST" &&
+              table.Grid().Columns[table.Grid().CurrentCell.ColumnIndex].Name == "L_EN", (string)Get(table, "Marked"));
+        Check("  no such key: nothing", !table.ShowKey("No_Such_Key"));
         form.Close();
 
         Console.WriteLine("--- the notes page: darker while picking, its texts' link ---");
@@ -149,9 +154,11 @@ class TF {
         pageArea.Controls.Add(box);
         var side = new Panel { Bounds = new Rectangle(760, 40, 540, 720) };
         shell.Controls.AddRange(new Control[] { top, menu, pageArea, side });
+        string opened = null;
         var notes = new NotesPage(c => c != null && (pageArea.Contains(c) || top.Contains(c)), c => "Test page", () => "TEST")
         {
-            ShadeAreas = () => new Control[] { top, pageArea }
+            ShadeAreas = () => new Control[] { top, pageArea },
+            OpenTranslationTable = k => { opened = k; return ""; }
         };
         side.Controls.Add(notes);
         shell.Show(); Pump(400);
@@ -170,13 +177,20 @@ class TF {
         int ex = window == null ? 0 : ((CreateParams)typeof(Form).GetProperty("CreateParams", Any).GetValue(window, null)).ExStyle;
         Check("  a see-through window over them that takes no tap (layered, transparent, no activation)", window != null && shade.WindowShown &&
               (ex & 0x80000) != 0 && (ex & 0x20) != 0 && (ex & 0x08000000) != 0 && window.Opacity < 0.5 && !window.ShowInTaskbar, "0x" + ex.ToString("X"));
-        typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { false }); Pump(50);
-        Check("picking off: the shade gone", !notes.Picking && !shade.On && !shade.WindowShown);
+        notes.Pick(box); Pump(50);
+        var link = Tree(notes).OfType<Button>().FirstOrDefault(b => b.Name == "notesOpenTranslation");
+        Check("a picked control's texts: the link to the translation table (Maintenance)", link != null && link.Visible, link == null ? "none" : link.Text);
+        link.PerformClick(); Pump(50);
+        Check("  it opens the key there - picking off, the shade gone", opened == "Unit_Clamp" && !notes.Picking && !shade.On && !shade.WindowShown);
         typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true }); Pump(50);
         Check("picking again: the shade again", shade.On && shade.WindowShown);
         notes.Visible = false; Pump(50);
         Check("  the notes page closed: gone", !shade.On && !shade.WindowShown);
         PickShade.CanShow = false;
+        SecurityManager.Login("op", SecurityLevel.Operator);
+        notes.Visible = true; Pump(50);
+        notes.Pick(box); Pump(50);
+        Check("an Operator: no link (the page is for Maintenance and above)", Tree(notes).OfType<Button>().All(b => b.Name != "notesOpenTranslation"));
         shell.Close();
 
         MachineRegistry.Reset();

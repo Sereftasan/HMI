@@ -32,11 +32,37 @@ namespace Kaban.UI.Forms
                 Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName, IsPassedThrough)
                 {
                     // darker while picking: the page and the caption bar - what a tap picks in (21 October)
-                    ShadeAreas = () => new Control[] { pnlTop, pnlContent }
+                    ShadeAreas = () => new Control[] { pnlTop, pnlContent },
+                    OpenTranslationTable = k => { string why; OpenTranslation(k, out why); return why; }
                 },
                 RequiredLevel = SecurityLevel.None,
                 SortOrder = 900
             });
+        }
+
+        /// <summary>
+        /// HMI Settings > Translation on a key's row, marked and chosen to type in (the notes page's
+        /// link, 21 October); null and why when it cannot be shown (no such page, the level, no such key).
+        /// </summary>
+        public Settings.TranslationsControl OpenTranslation(string key, out string why)
+        {
+            why = "";
+            var screen = System.Linq.Enumerable.FirstOrDefault(
+                System.Linq.Enumerable.Select(Kaban.Core.Machines.MachineRegistry.AllScreens(), kv => kv.Value),
+                s => string.Equals(s.Role ?? "", Kaban.Core.Machines.ScreenRoles.HmiSettings, StringComparison.OrdinalIgnoreCase));
+            if (screen == null) { why = LanguageManager.GetString("Msg_TrnNoPage", "This program has no HMI Settings page."); return null; }
+            var settings = ShowDeviceUse(new Helpers.DeviceCollector.Use { Screen = screen }, out why) as Settings.SettingsScreen;
+            if (settings == null) return null;
+            if (!settings.ActivateByKey("Tab_Translations"))
+            {
+                why = LanguageManager.GetString("Msg_TrnLevel", "The Translation page is for Maintenance and above.");
+                return null;
+            }
+            var page = System.Linq.Enumerable.FirstOrDefault(System.Linq.Enumerable.OfType<Settings.TranslationsPage>(settings.AllPages));
+            var table = page != null ? settings.ViewOf(page) as Settings.TranslationsControl : null;
+            if (table == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
+            if (!table.ShowKey(key)) why = string.Format(LanguageManager.GetString("Msg_TrnNoKey", "{0} is in no translation file."), key);
+            return table;
         }
 
         /// <summary>The panel's name in a feedback file: the main machine's.</summary>

@@ -40,6 +40,8 @@ namespace Kaban.UI.Settings
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
         private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport, _btnFind;
+        /// <summary>The row asked for from elsewhere (the notes page): marked until another is chosen.</summary>
+        private string _marked;
 
         private List<TranslationEdits.Row> _rows = new List<TranslationEdits.Row>();
         private List<TranslationEdits.Row> _shown = new List<TranslationEdits.Row>();
@@ -189,6 +191,13 @@ namespace Kaban.UI.Settings
             _grid.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0 && IsLanguage(e.ColumnIndex)) _grid.BeginEdit(true); };
             _grid.ColumnHeaderMouseClick += (s, e) => { if (e.Button == MouseButtons.Left && e.ColumnIndex >= 0) SortBy(_grid.Columns[e.ColumnIndex].Name); };
             _grid.KeyDown += OnGridKeyDown;
+            // the row asked for stays marked until another is chosen
+            _grid.CellClick += (s, e) =>
+            {
+                if (_marked == null || e.RowIndex < 0 || e.RowIndex >= _shown.Count) return;
+                var r = _shown[e.RowIndex];
+                if (!string.Equals(r.Owner + "\u0001" + r.Key, _marked, StringComparison.OrdinalIgnoreCase)) { _marked = null; _grid.Invalidate(); }
+            };
             BuildColumns();
             UiStyle.EnableTableTools(_grid, "Translations", sorting: false);
 
@@ -438,6 +447,8 @@ namespace Kaban.UI.Settings
             if (e.RowIndex < 0 || e.RowIndex >= _shown.Count || !IsLanguage(e.ColumnIndex)) return;
             var row = _shown[e.RowIndex];
             string id = Id(row.Owner, row.Key, LangOf(_grid.Columns[e.ColumnIndex]));
+            if (_marked != null && string.Equals(_marked, row.Owner + "\u0001" + row.Key, StringComparison.OrdinalIgnoreCase) && !_pending.ContainsKey(id))
+                e.CellStyle.BackColor = Color.FromArgb(214, 232, 252);                                  // the row asked for
             if (_pending.ContainsKey(id)) e.CellStyle.BackColor = Color.FromArgb(255, 226, 190);          // typed, not saved
             else if (_edits.ContainsKey(id)) e.CellStyle.BackColor = Color.FromArgb(255, 246, 200);       // edited here, in force
             else if (string.IsNullOrWhiteSpace(Convert.ToString(e.Value))) e.CellStyle.BackColor = Color.FromArgb(253, 235, 235);   // missing
@@ -479,6 +490,39 @@ namespace Kaban.UI.Settings
             }
             catch { }
         }
+
+        /// <summary>
+        /// A key asked for from elsewhere (21 October: the notes page's texts "a link to open the
+        /// translation page - the item highlighted there to edit it directly"): every row listed,
+        /// the key's row marked and chosen, in the screen's language's cell (its machine's row
+        /// before the general one: the text on the screen is the machine's). False: no such key.
+        /// </summary>
+        public bool ShowKey(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key)) return false;
+            var rows = _rows.Where(r => string.Equals(r.Key, key.Trim(), StringComparison.OrdinalIgnoreCase)).OrderBy(r => r.Common ? 1 : 0).ToList();
+            if (rows.Count == 0) return false;
+            var row = rows[0];
+            ClearFilters();
+            _marked = row.Owner + "\u0001" + row.Key;
+            int i = _shown.IndexOf(row);
+            if (i < 0) return false;
+            string lang = (LanguageManager.CurrentLanguage ?? "EN").ToUpperInvariant();
+            var column = _grid.Columns.Contains(LangPrefix + lang) ? _grid.Columns[LangPrefix + lang] : _grid.Columns[LangPrefix + "EN"];
+            try
+            {
+                _grid.CurrentCell = _grid.Rows[i].Cells[column.Index];
+                _grid.FirstDisplayedScrollingRowIndex = Math.Max(0, i - 3);
+            }
+            catch { }
+            _grid.Invalidate();
+            if (IsHandleCreated) BeginInvoke((Action)(() => { if (!IsDisposed && _grid.CanFocus) _grid.Focus(); }));
+            SetStatus(string.Format(T("Msg_TrnShown", "{0}: its texts - type in a cell to change one, then Save."), row.Key), false);
+            return true;
+        }
+
+        /// <summary>The key of the row marked (tests).</summary>
+        internal string Marked { get { return _marked; } }
 
         /// <summary>Where the selected row's key is used: a list, a page of it opened on a double click.</summary>
         private void FindUses()
