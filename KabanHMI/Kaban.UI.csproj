@@ -208,6 +208,9 @@
     <Compile Include="Settings\StationConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Settings\TranslationsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\PlcEndpointNaming.cs" />
     <Compile Include="Controls\GroupBoxHMI.cs">
       <SubType>Component</SubType>

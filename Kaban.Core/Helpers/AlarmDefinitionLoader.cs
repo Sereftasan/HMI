@@ -280,7 +280,8 @@ namespace Kaban.Core.Helpers
 
                 foreach (var kvp in entry.Translations)
                 {
-                    LanguageManager.AddTranslation(kvp.Key, translationKey, kvp.Value);
+                    // listed on HMI Settings > Translation as its machine's (its Alarms.json)
+                    LanguageManager.AddTranslation(kvp.Key, translationKey, kvp.Value, moduleId ?? "", "Alarms.json");
                 }
             }
         }

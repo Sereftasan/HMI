@@ -19,6 +19,74 @@ namespace Kaban.Core.Helpers
 
         public static event EventHandler LanguageChanged;
 
+        /// <summary>A language was added or deleted (HMI Settings > Translation): the language lists again.</summary>
+        public static event EventHandler LanguagesChanged;
+
+        // ---- where the texts come from (HMI Settings > Translation, 21 October) ----------
+
+        /// <summary>
+        /// One file (or the alarms of one machine) the texts were read from, as read: the
+        /// Translation page lists every key of every one, with whose it is.
+        /// </summary>
+        public sealed class Source
+        {
+            /// <summary>The file read ("" for texts registered while running).</summary>
+            public string Path = "";
+            /// <summary>The common (general) layer; otherwise a machine's.</summary>
+            public bool Common;
+            /// <summary>Whose they are when the registration said so (an alarm's machine); else made from Path.</summary>
+            public string Owner = "";
+            /// <summary>What it is: "CommonTranslations.csv", "Translations.csv", "Alarms.json".</summary>
+            public string FileName = "";
+            public readonly List<string> Languages = new List<string>();
+            /// <summary>The keys in the file's order.</summary>
+            public readonly List<string> Keys = new List<string>();
+            /// <summary>key - language - text.</summary>
+            public readonly Dictionary<string, Dictionary<string, string>> Texts =
+                new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+
+            internal void Put(string key, string lang, string text)
+            {
+                Dictionary<string, string> row;
+                if (!Texts.TryGetValue(key, out row))
+                {
+                    row = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    Texts[key] = row;
+                    Keys.Add(key);
+                }
+                row[lang] = text;
+                if (!Languages.Contains(lang)) Languages.Add(lang);
+            }
+        }
+
+        private static readonly List<Source> _sources = new List<Source>();
+
+        /// <summary>Every file the texts were read from, common ones first, in the order read.</summary>
+        public static IList<Source> Sources
+        {
+            get { lock (_sources) return _sources.OrderByDescending(s => s.Common).ToList().AsReadOnly(); }
+        }
+
+        /// <summary>The languages deleted (HMI Settings > Translation): not offered, though a file has them.</summary>
+        private static readonly HashSet<string> _deleted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        private static Source SourceFor(string path, bool common, bool fresh)
+        {
+            lock (_sources)
+            {
+                var full = string.IsNullOrEmpty(path) ? "" : SafeFull(path);
+                _sources.RemoveAll(s => s.Common == common && fresh && full.Length > 0 && string.Equals(s.Path, full, StringComparison.OrdinalIgnoreCase));
+                var src = new Source { Path = full, Common = common, FileName = full.Length > 0 ? System.IO.Path.GetFileName(full) : "" };
+                _sources.Add(src);
+                return src;
+            }
+        }
+
+        private static string SafeFull(string path)
+        {
+            try { return System.IO.Path.GetFullPath(path); } catch { return path; }
+        }
+
         /// <summary>
         /// Loads the COMMON (shared) translation file - plant-wide texts used by
         /// every machine (Start/Stop, confirm dialogs, unit names, etc.).
@@ -26,6 +94,12 @@ namespace Kaban.Core.Helpers
         public static void LoadCommonTranslations(string filePath)
         {
             LoadInto(_common, filePath, clearFirst: true);
+        }
+
+        private static void ForgetSources(bool common)
+        {
+            // the machines' alarm texts go with them: the alarm loader registers them again
+            lock (_sources) _sources.RemoveAll(s => s.Common == common);
         }
 
         /// <summary>
@@ -71,7 +145,10 @@ namespace Kaban.Core.Helpers
                     var all = new List<string>();
                     string line;
                     while ((line = reader.ReadLine()) != null) all.Add(line);
-                    ParseInto(_common, all.ToArray(), clearFirst);
+                    if (clearFirst) ForgetSources(true);
+                    var src = SourceFor("", true, false);
+                    src.FileName = "CommonTranslations.csv";
+                    ParseInto(_common, all.ToArray(), clearFirst, src);
                 }
             }
             catch (Exception ex)
@@ -99,7 +176,9 @@ namespace Kaban.Core.Helpers
             try
             {
                 var lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                ParseInto(target, lines, clearFirst);
+                bool common = ReferenceEquals(target, _common);
+                if (clearFirst) ForgetSources(common);
+                ParseInto(target, lines, clearFirst, SourceFor(filePath, common, true));
             }
             catch (Exception ex)
             {
@@ -107,7 +186,7 @@ namespace Kaban.Core.Helpers
             }
         }
 
-        private static void ParseInto(Dictionary<string, Dictionary<string, string>> target, string[] lines, bool clearFirst)
+        private static void ParseInto(Dictionary<string, Dictionary<string, string>> target, string[] lines, bool clearFirst, Source source = null)
         {
             if (clearFirst) target.Clear();
 
@@ -123,8 +202,9 @@ namespace Kaban.Core.Helpers
                     langs.Add(langCode);
                     if (!target.ContainsKey(langCode))
                         target[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                    if (!AvailableLanguages.Contains(langCode))
+                    if (!AvailableLanguages.Contains(langCode) && !_deleted.Contains(langCode) && langCode.Length > 0)
                         AvailableLanguages.Add(langCode);
+                    if (source != null && langCode.Length > 0 && !source.Languages.Contains(langCode)) source.Languages.Add(langCode);
                 }
 
                 for (int i = 1; i < lines.Length; i++)
@@ -137,7 +217,12 @@ namespace Kaban.Core.Helpers
                     // A line break is written "\r\n" in the file (one row per key);
                     // shown as a line break, not as the four characters.
                     for (int c = 1; c < columns.Length && c - 1 < langs.Count; c++)
-                        target[langs[c - 1]][key] = columns[c].Trim().Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
+                    {
+                        var text = columns[c].Trim().Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
+                        target[langs[c - 1]][key] = text;
+                        if (source != null) source.Put(key, langs[c - 1], text);
+                    }
+                    if (source != null && !source.Texts.ContainsKey(key)) source.Put(key, langs.Count > 0 ? langs[0] : "EN", "");
                 }
             }
             catch (Exception ex)
@@ -147,17 +232,71 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>Runtime single-key registration (AlarmDefinitionLoader). Machine layer.</summary>
-        public static void AddTranslation(string langCode, string key, string text)
+        /// <param name="owner">Whose text it is (an alarm's machine) - listed on the Translation page; null: not listed (a note's text).</param>
+        /// <param name="fileName">Where it is kept ("Alarms.json").</param>
+        public static void AddTranslation(string langCode, string key, string text, string owner = null, string fileName = null)
         {
             if (string.IsNullOrWhiteSpace(langCode) || string.IsNullOrWhiteSpace(key)) return;
             langCode = langCode.Trim().ToUpper();
             if (!_machine.ContainsKey(langCode))
             {
                 _machine[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                if (!AvailableLanguages.Contains(langCode)) AvailableLanguages.Add(langCode);
+                if (!AvailableLanguages.Contains(langCode) && !_deleted.Contains(langCode)) AvailableLanguages.Add(langCode);
             }
             _machine[langCode][key] = text;
+            if (owner == null) return;
+            lock (_sources)
+            {
+                var src = _sources.FirstOrDefault(s => !s.Common && s.Path.Length == 0 && string.Equals(s.Owner, owner, StringComparison.OrdinalIgnoreCase) &&
+                                                       string.Equals(s.FileName, fileName ?? "", StringComparison.OrdinalIgnoreCase));
+                if (src == null) { src = new Source { Owner = owner, FileName = fileName ?? "" }; _sources.Add(src); }
+                src.Put(key, langCode, text ?? "");
+            }
         }
+
+        /// <summary>
+        /// A text put in force (HMI Settings > Translation): into the common layer or the
+        /// machines', as the text it replaces was; blank: the file's text again.
+        /// </summary>
+        public static void SetText(string langCode, string key, string text, bool common)
+        {
+            if (string.IsNullOrWhiteSpace(langCode) || string.IsNullOrWhiteSpace(key)) return;
+            langCode = langCode.Trim().ToUpper();
+            var layer = common ? _common : _machine;
+            Dictionary<string, string> dict;
+            if (!layer.TryGetValue(langCode, out dict))
+            {
+                dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                layer[langCode] = dict;
+            }
+            dict[key] = text ?? "";
+        }
+
+        /// <summary>A language offered again, or for the first time (its texts: English until given).</summary>
+        public static void AddLanguage(string langCode)
+        {
+            if (string.IsNullOrWhiteSpace(langCode)) return;
+            langCode = langCode.Trim().ToUpper();
+            _deleted.Remove(langCode);
+            if (!_common.ContainsKey(langCode)) _common[langCode] = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (!AvailableLanguages.Contains(langCode)) AvailableLanguages.Add(langCode);
+            LanguagesChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>A language no longer offered (English stays: it is every text's last resort); the screen in English when it was shown.</summary>
+        public static void RemoveLanguage(string langCode)
+        {
+            if (string.IsNullOrWhiteSpace(langCode)) return;
+            langCode = langCode.Trim().ToUpper();
+            if (langCode == "EN") return;
+            _deleted.Add(langCode);
+            AvailableLanguages.RemoveAll(l => string.Equals(l, langCode, StringComparison.OrdinalIgnoreCase));
+            if (string.Equals(CurrentLanguage, langCode, StringComparison.OrdinalIgnoreCase)) ChangeLanguage("EN");
+            LanguagesChanged?.Invoke(null, EventArgs.Empty);
+        }
+
+        /// <summary>A deleted language (its texts still in the files).</summary>
+        public static bool IsDeleted(string langCode) { return !string.IsNullOrEmpty(langCode) && _deleted.Contains(langCode.Trim()); }
 
         /// <summary>Tells every page the texts changed (a translation put in force while the program runs).</summary>
         public static void RaiseLanguageChanged()
@@ -168,6 +307,7 @@ namespace Kaban.Core.Helpers
         public static void ChangeLanguage(string langCode)
         {
             langCode = langCode.ToUpper();
+            if (_deleted.Contains(langCode)) return;
             bool known = _machine.ContainsKey(langCode) || _common.ContainsKey(langCode);
             if (known && CurrentLanguage != langCode)
             {

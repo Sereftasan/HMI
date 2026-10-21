@@ -691,6 +691,8 @@ namespace Kaban.UI.Forms
                 AlarmDefinitionLoader.ReapplyTranslations();
                 // The texts put on the screen from the notes page (Maintenance, Admin).
                 NotesStore.ApplyTranslations();
+                // ...and from HMI Settings > Translation: the languages added and deleted, the texts edited.
+                TranslationEdits.Apply();
 
                 // Visible PLC communication status. Without it a comm failure renders as
                 // a screen full of zeros with nothing to say anything is wrong.
@@ -716,6 +718,13 @@ namespace Kaban.UI.Forms
                 }
 
                 cmbLanguage.SelectedIndexChanged += CmbLanguage_SelectedIndexChanged;
+                // a language added or deleted on HMI Settings > Translation: the list again
+                LanguageManager.LanguagesChanged += (s2, e2) =>
+                {
+                    if (IsDisposed) return;
+                    if (InvokeRequired) { BeginInvoke((Action)(() => RefillLanguages())); return; }
+                    RefillLanguages();
+                };
                 // everyone's language now, the user's own at each sign-in (View Preferences)
                 Helpers.UserLanguage.Attach();
             }
@@ -2498,6 +2507,20 @@ namespace Kaban.UI.Forms
             {
                 form.ShowDialog();
             }
+        }
+
+        /// <summary>The language list as the languages are now (one added or deleted), the one shown kept.</summary>
+        private void RefillLanguages()
+        {
+            cmbLanguage.SelectedIndexChanged -= CmbLanguage_SelectedIndexChanged;
+            try
+            {
+                cmbLanguage.Items.Clear();
+                foreach (var lang in LanguageManager.AvailableLanguages) cmbLanguage.Items.Add(lang);
+                if (cmbLanguage.Items.Contains(LanguageManager.CurrentLanguage)) cmbLanguage.SelectedItem = LanguageManager.CurrentLanguage;
+            }
+            finally { cmbLanguage.SelectedIndexChanged += CmbLanguage_SelectedIndexChanged; }
+            if (_btnLang != null) _btnLang.Invalidate();
         }
 
         private void CmbLanguage_SelectedIndexChanged(object sender, EventArgs e)
