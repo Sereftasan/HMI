@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 21 October:
+  - 9a33c14 - The coupling chain on the units: bold and dark, its ring faint.
+  - fc52bb0 - HMI Settings > Translation (Maintenance and above): every translation, its owner (General / a machine),
+    a column per language; edited on the panel (kept beside the files, in force at once), languages added and deleted,
+    the edit history (who, when, before, after) and the export in the files' format.
 - 19 October (evening, last):
   - 11ed86c - The axis current: 0.1 % (212 at the address is 21.2 %) and signed: -21.2 % green like 21.2 %.
 - 19 October (later still):
