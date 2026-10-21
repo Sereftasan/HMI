@@ -63,6 +63,13 @@ namespace Kaban.UI.Screens
 
         private bool _picking = true;
         private Picker _picker;
+        private readonly PickShade _shade;
+
+        /// <summary>The parts of the window a tap picks in - darker while picking (the page on show, the caption bar). Null: no shade.</summary>
+        public Func<IEnumerable<Control>> ShadeAreas;
+
+        /// <summary>The shade while picking (tests).</summary>
+        internal PickShade Shade { get { return _shade; } }
 
         /// <summary>What was picked: a control, a table's heading or cell, a page button of the menu, a tab - or a general note.</summary>
         public enum PickKind { None, Control, Heading, Cell, Menu, Tab, General }
@@ -85,6 +92,7 @@ namespace Kaban.UI.Screens
             _passThrough = passThrough ?? (c => false);
             _placeOf = placeOf ?? (c => "");
             _panelName = panelName ?? (() => "HMI");
+            _shade = new PickShade(() => ShadeAreas != null ? ShadeAreas() : null);
             Dock = DockStyle.Fill;
             BackColor = Color.White;
             Font = UiStyle.Body;
@@ -141,6 +149,7 @@ namespace Kaban.UI.Screens
                 SecurityManager.UserChanged -= OnUserChanged;
                 ViewPreferences.Changed -= OnPreferencesChanged;
                 RemovePicker();
+                _shade.Dispose();
             };
             SetPicking(true);
             Fill();
@@ -184,10 +193,13 @@ namespace Kaban.UI.Screens
         {
             if (_picking && Shown()) { if (_picker == null) { _picker = new Picker(this); Application.AddMessageFilter(_picker); } }
             else RemovePicker();
+            // the rest of the window darker while a tap picks (21 October)
+            _shade.On = _picking && Shown() && ShadeAreas != null;
         }
 
         private void RemovePicker()
         {
+            if (_shade != null) _shade.On = false;
             if (_picker == null) return;
             Application.RemoveMessageFilter(_picker);
             _picker = null;
@@ -198,6 +210,7 @@ namespace Kaban.UI.Screens
         {
             if (c == null) return;
             _status.Text = T("Nts_Pointing", "Under the pointer") + ": " + NoteTarget.NameOf(c);
+            _shade.Hole = c;                 // bright in the shade
         }
 
         private void Reset()
@@ -322,6 +335,7 @@ namespace Kaban.UI.Screens
         private void ShowPicked(Control flash)
         {
             _status.Text = T("Nts_Picked", "Picked") + ": " + _name;
+            if (flash != null && !flash.IsDisposed) _shade.Hole = flash;
             try { if (flash != null && !flash.IsDisposed) ControlHighlight.Flash(flash, 1500); } catch { }
             _views.SelectedIndex = 0;
             Fill();

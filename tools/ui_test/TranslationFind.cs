@@ -140,6 +140,44 @@ class TF {
         Check("its button on top, Ctrl+F", find.Parent != null && Shortcuts.Of(find) == (Keys.Control | Keys.F));
         form.Close();
 
+        Console.WriteLine("--- the notes page: darker while picking, its texts' link ---");
+        var shell = new Form { Width = 1300, Height = 800, StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        var top = new Panel { Bounds = new Rectangle(0, 0, 1300, 40), Name = "top" };
+        var pageArea = new Panel { Bounds = new Rectangle(120, 40, 640, 720), Name = "content" };
+        var menu = new Panel { Bounds = new Rectangle(0, 40, 120, 720), Name = "menu" };
+        var box = new KeyedBox { Bounds = new Rectangle(20, 20, 200, 80), CaptionKey = "Unit_Clamp", Name = "box" };
+        pageArea.Controls.Add(box);
+        var side = new Panel { Bounds = new Rectangle(760, 40, 540, 720) };
+        shell.Controls.AddRange(new Control[] { top, menu, pageArea, side });
+        var notes = new NotesPage(c => c != null && (pageArea.Contains(c) || top.Contains(c)), c => "Test page", () => "TEST")
+        {
+            ShadeAreas = () => new Control[] { top, pageArea }
+        };
+        side.Controls.Add(notes);
+        shell.Show(); Pump(400);
+        var shade = (PickShade)Get(notes, "Shade");
+        Check("picking: the page and the caption bar darker - not the menu, not the notes page", notes.Picking && shade.On && shade.Shaded.Count == 2 &&
+              shade.Shaded.Contains(pageArea.RectangleToScreen(pageArea.ClientRectangle)) && shade.Shaded.Contains(top.RectangleToScreen(top.ClientRectangle)),
+              string.Join(";", shade.Shaded));
+        Call(notes, "Pointing", box);
+        Check("  the control under the pointer bright in it", shade.HoleRect == Rectangle.Inflate(box.RectangleToScreen(box.ClientRectangle), 5, 5), shade.HoleRect.ToString());
+        pageArea.Width = 500; shade.Sync();
+        Check("  it follows the page (a side panel narrowing it)", shade.Shaded.Contains(pageArea.RectangleToScreen(pageArea.ClientRectangle)));
+        // the window itself: click-through, never active
+        PickShade.CanShow = true;
+        shade.Sync();
+        var window = Application.OpenForms.Cast<Form>().FirstOrDefault(w => w.Name == "notesPickShade");
+        int ex = window == null ? 0 : ((CreateParams)typeof(Form).GetProperty("CreateParams", Any).GetValue(window, null)).ExStyle;
+        Check("  a see-through window over them that takes no tap (layered, transparent, no activation)", window != null && shade.WindowShown &&
+              (ex & 0x80000) != 0 && (ex & 0x20) != 0 && (ex & 0x08000000) != 0 && window.Opacity < 0.5 && !window.ShowInTaskbar, "0x" + ex.ToString("X"));
+        typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { false }); Pump(50);
+        Check("picking off: the shade gone", !notes.Picking && !shade.On && !shade.WindowShown);
+        typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true }); Pump(50);
+        Check("picking again: the shade again", shade.On && shade.WindowShown);
+        notes.Visible = false; Pump(50);
+        Check("  the notes page closed: gone", !shade.On && !shade.WindowShown);
+        PickShade.CanShow = false;
+        shell.Close();
 
         MachineRegistry.Reset();
         try { Directory.Delete(dir, true); } catch { }

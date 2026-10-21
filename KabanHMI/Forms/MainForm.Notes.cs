@@ -29,7 +29,11 @@ namespace Kaban.UI.Forms
                 Key = NotesKey,
                 TitleKey = "Ttl_Notes", TitleFallback = "Notes and feedback",
                 Glyph = DrawNotesGlyph,
-                Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName, IsPassedThrough),
+                Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName, IsPassedThrough)
+                {
+                    // darker while picking: the page and the caption bar - what a tap picks in (21 October)
+                    ShadeAreas = () => new Control[] { pnlTop, pnlContent }
+                },
                 RequiredLevel = SecurityLevel.None,
                 SortOrder = 900
             });
