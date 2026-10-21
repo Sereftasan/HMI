@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Kaban.Core.Enums;
 using Kaban.Core.Models;
@@ -140,6 +141,133 @@ namespace Kaban.Core.Helpers
                 SafeFile.WriteAllText(file, JsonSerializer.Serialize(byFile[file], options),
                                       new System.Text.UTF8Encoding(true));
             return string.Join("; ", order);
+        }
+
+        /// <summary>
+        /// An alarm's text in a language (HMI Settings > Translation, 22 October: "Save writes
+        /// directly"): put on its loaded entry and on the screen, and written into its machine's
+        /// Alarms.json IN PLACE - the entry's "Translations", the rest of the file (its comments,
+        /// its layout) as it was. False when no loaded alarm has the key. <paramref name="tagCode"/>
+        /// is the entry's (for the project's copy of the file).
+        /// </summary>
+        public static bool SetTranslation(string key, string lang, string text, out string tagCode)
+        {
+            tagCode = null;
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(lang)) return false;
+            lang = lang.Trim().ToUpperInvariant();
+            for (int i = 0; i < _loaded.Count; i++)
+            {
+                string mod = i < _loadedModuleIds.Count ? _loadedModuleIds[i] : "";
+                var entry = _loaded[i];
+                if (!string.Equals("Alarm_" + ScopedCode(mod, entry.TagCode), key.Trim(), StringComparison.OrdinalIgnoreCase)) continue;
+                tagCode = entry.TagCode;
+                if (entry.Translations == null) entry.Translations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                entry.Translations[lang] = text ?? "";
+                string file = i < _loadedFiles.Count ? _loadedFiles[i] : "";
+                return !string.IsNullOrEmpty(file) && SetTranslationInFile(file, entry.TagCode, lang, text);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// An alarm's text written into an Alarms.json in place: the entry of the TagCode, its
+        /// "Translations" object, the language's value (added when the entry has none). The rest
+        /// of the file - // comments, order, indentation - is left as it was.
+        /// </summary>
+        public static bool SetTranslationInFile(string path, string tagCode, string lang, string text)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path) || string.IsNullOrWhiteSpace(tagCode)) return false;
+            try
+            {
+                var bytes = File.ReadAllBytes(path);
+                bool bom = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF;
+                var json = System.Text.Encoding.UTF8.GetString(bytes, bom ? 3 : 0, bytes.Length - (bom ? 3 : 0));
+                var value = JsonSerializer.Serialize(text ?? "", new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+                var tag = new System.Text.RegularExpressions.Regex("\"TagCode\"\\s*:\\s*\"" + System.Text.RegularExpressions.Regex.Escape(tagCode) + "\"",
+                                                                   System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                // each entry of the list: an object of the top-level array
+                foreach (var span in Objects(json, 0, json.Length, 2))
+                {
+                    var body = json.Substring(span.Key, span.Value - span.Key + 1);
+                    if (!tag.IsMatch(body)) continue;
+                    var tr = new System.Text.RegularExpressions.Regex("\"Translations\"\\s*:\\s*\\{", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Match(json, span.Key, span.Value - span.Key);
+                    if (!tr.Success) return false;
+                    int open = tr.Index + tr.Length - 1, close = Matching(json, open);
+                    if (close < 0 || close > span.Value) return false;
+                    var lm = new System.Text.RegularExpressions.Regex("\"" + System.Text.RegularExpressions.Regex.Escape(lang.Trim()) + "\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"",
+                                                                      System.Text.RegularExpressions.RegexOptions.IgnoreCase).Match(json, open, close - open);
+                    string result;
+                    if (lm.Success)
+                        result = json.Substring(0, lm.Groups[1].Index - 1) + value + json.Substring(lm.Groups[1].Index + lm.Groups[1].Length + 1);
+                    else
+                    {
+                        // a language the entry has no text in: after its last one, as it is laid out
+                        int last = close - 1;
+                        while (last > open && char.IsWhiteSpace(json[last])) last--;
+                        bool empty = last == open;
+                        var lineStart = json.LastIndexOf('\n', Math.Max(open, last)) + 1;
+                        var indent = new string(json.Skip(lineStart).TakeWhile(ch => ch == ' ' || ch == '\t').ToArray());
+                        string nl = json.Contains("\r\n") ? "\r\n" : "\n";
+                        var add = (empty ? "" : ",") + (empty ? " " : nl + indent) + "\"" + lang.Trim().ToUpperInvariant() + "\": " + value + (empty ? " " : "");
+                        result = json.Substring(0, last + 1) + add + json.Substring(last + 1);
+                    }
+                    SafeFile.WriteAllText(path, result, new System.Text.UTF8Encoding(bom));
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not write the alarm text into " + path + ": " + ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>The objects at a depth (2: the top-level array's entries) between from and to: (open, close) indices.</summary>
+        private static IEnumerable<KeyValuePair<int, int>> Objects(string s, int from, int to, int depthWanted)
+        {
+            int depth = 0, start = -1;
+            for (int i = from; i < to; i++)
+            {
+                char c = s[i];
+                if (c == '"') { i = EndOfString(s, i); continue; }
+                if (c == '/' && i + 1 < to && s[i + 1] == '/') { int e = s.IndexOf('\n', i); i = e < 0 ? to : e; continue; }
+                if (c == '{' || c == '[')
+                {
+                    depth++;
+                    if (c == '{' && depth == depthWanted) start = i;
+                }
+                else if (c == '}' || c == ']')
+                {
+                    if (c == '}' && depth == depthWanted && start >= 0) { yield return new KeyValuePair<int, int>(start, i); start = -1; }
+                    depth--;
+                }
+            }
+        }
+
+        /// <summary>The brace closing the one at open (strings and // comments skipped); -1: none.</summary>
+        private static int Matching(string s, int open)
+        {
+            int depth = 0;
+            for (int i = open; i < s.Length; i++)
+            {
+                char c = s[i];
+                if (c == '"') { i = EndOfString(s, i); continue; }
+                if (c == '/' && i + 1 < s.Length && s[i + 1] == '/') { int e = s.IndexOf('\n', i); if (e < 0) return -1; i = e; continue; }
+                if (c == '{') depth++;
+                else if (c == '}' && --depth == 0) return i;
+            }
+            return -1;
+        }
+
+        private static int EndOfString(string s, int quote)
+        {
+            for (int i = quote + 1; i < s.Length; i++)
+            {
+                if (s[i] == '\\') { i++; continue; }
+                if (s[i] == '"') return i;
+            }
+            return s.Length;
         }
 
         /// <summary>

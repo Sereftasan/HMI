@@ -24,9 +24,10 @@ namespace Kaban.UI.Settings
     ///
     /// Every key of every translation file read (CommonTranslations.csv: General; a machine's
     /// Translations.csv and its alarms' texts: that machine), its text in each language. A text
-    /// is typed in its cell (Delete empties it) and put in force with Save - kept beside the
-    /// files (TranslationEdits), every change in the history. A text edited in force is yellow,
-    /// one typed and not saved orange, an empty one pink.
+    /// is typed in its cell (Delete empties it) and put in force with Save - written into its file
+    /// (22 October: "write directly"; the project's copy too, when the program runs from its build),
+    /// every change in the history. A text edited here is yellow, one typed and not saved orange, an
+    /// empty one pink.
     /// </summary>
     public class TranslationsControl : UserControl, IRebuildForLanguage
     {
@@ -118,7 +119,7 @@ namespace Kaban.UI.Settings
                 Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true,
                 Padding = new Padding(0, 2, 0, 4), BackColor = Color.White
             };
-            _btnSave = UiStyle.ToolButton(E(0x1F4BE), T("Tip_TrnSave", "Save: the texts typed in force, kept beside the translation files and written in the history"), _tips,
+            _btnSave = UiStyle.ToolButton(E(0x1F4BE), T("Tip_TrnSave", "Save: the texts typed in force and written into their translation files - every change in the history"), _tips,
                                           (s, e) => Save());
             _btnRevert = UiStyle.ToolButton("↺", T("Tip_TrnRevert", "Throw away the texts typed and not saved"), _tips, (s, e) => Revert());
             _btnAddLang = UiStyle.ToolButton(E(0x2795), T("Tip_TrnAddLang", "Add a language"), _tips, (s, e) => AddLanguage());
@@ -305,13 +306,11 @@ namespace Kaban.UI.Settings
             return string.Equals(owner, TranslationEdits.General, StringComparison.OrdinalIgnoreCase) ? T("Lbl_TrnGeneral", "General") : owner;
         }
 
-        /// <summary>A text as the cell shows it: typed, else in force (edited here, else the file's).</summary>
+        /// <summary>A text as the cell shows it: typed, else the file's (the edits saved are in the files).</summary>
         private string TextOf(TranslationEdits.Row row, string lang)
         {
             string t;
             if (_pending.TryGetValue(Id(row.Owner, row.Key, lang), out t)) return t;
-            TranslationEdits.Edit e;
-            if (_edits.TryGetValue(Id(row.Owner, row.Key, lang), out e)) return e.Text;
             return row.FileTexts.TryGetValue(lang, out t) ? t ?? "" : "";
         }
 
@@ -562,12 +561,14 @@ namespace Kaban.UI.Settings
                 if (!byId.TryGetValue(kv.Key, out row)) continue;
                 wanted.Add(new TranslationEdits.Wanted { Row = row, Lang = kv.Key.Substring(kv.Key.LastIndexOf('\u0001') + 1), Text = kv.Value });
             }
-            int n = TranslationEdits.Save(wanted);
+            int notWritten;
+            int n = TranslationEdits.Save(wanted, out notWritten);
             _pending.Clear();
             _dirty.Reset();
             _edits = TranslationEdits.Edits.ToDictionary(e => Id(e.Owner, e.Key, e.Lang), e => e, StringComparer.OrdinalIgnoreCase);
             ApplyFilter();
-            SetStatus(string.Format(T("Msg_TrnSaved", "{0} text(s) saved and in force - see the history for them."), n), false);
+            SetStatus(string.Format(T("Msg_TrnSaved", "{0} text(s) saved into the translation files and in force - the history has them."), n) +
+                      (notWritten > 0 ? "  " + string.Format(T("Msg_TrnNotWritten", "{0} in force only: no file could take them."), notWritten) : ""), notWritten > 0);
             return n;
         }
 

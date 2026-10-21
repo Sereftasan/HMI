@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ class TP {
     static object Call(object o, string n, params object[] a) { return o.GetType().GetMethods(Any).First(m => m.Name == n && m.GetParameters().Length == a.Length).Invoke(o, a); }
     static IList<TranslationEdits.Row> Shown(object c) { return (IList<TranslationEdits.Row>)Get(c, "Shown"); }
 
-    static string dir, common, main, sub;
+    static string dir, common, main, sub, alarms;
 
     /// <summary>The program starting: its files read, the alarms' texts, then the edits put on.</summary>
     static void Start(bool restart)
@@ -48,8 +48,7 @@ class TP {
         LanguageManager.LoadCommonTranslations(common);
         LanguageManager.LoadMachineTranslations(main);
         LanguageManager.AddMachineTranslations(sub);
-        LanguageManager.AddTranslation("EN", "Alarm_MAIN.A1", "Door open", "MAIN", "Alarms.json");
-        LanguageManager.AddTranslation("TR", "Alarm_MAIN.A1", "Kapi acik", "MAIN", "Alarms.json");
+        AlarmDefinitionLoader.Load(alarms, true, "MAIN");          // its texts: Alarm_MAIN.Door, MAIN's, Alarms.json
         TranslationEdits.Apply();
     }
 
@@ -63,6 +62,9 @@ class TP {
         File.WriteAllLines(common, new[] { "Key;EN;TR;RU", "Btn_Ok;OK;Tamam;OK", "Btn_Cancel;Cancel;Iptal;Otmena", "Lbl_Speed;Speed;;Skorost" });
         File.WriteAllLines(main, new[] { "Key;EN;TR;RU", "Unit_Clamp;Clamp;Kiskac;Zazhim", "Unit_Saw;Saw;Testere;Pila" });
         File.WriteAllLines(sub, new[] { "Key;EN;TR", "Unit_Drill;Drill;Matkap" });
+        alarms = Path.Combine(dir, "Alarms.json");
+        File.WriteAllText(alarms, "[\r\n  // the doors\r\n  {\r\n    \"PlcAddress\": \"M801\",\r\n    \"TagCode\": \"Door\",\r\n" +
+                                  "    \"Translations\": {\r\n      \"EN\": \"Door open\",\r\n      \"TR\": \"Kapi acik\"\r\n    }\r\n  }\r\n]\r\n");
         TranslationEdits.Folder = Path.Combine(dir, "data");
         MachineRegistry.Reset();
         MachineRegistry.MountMain(new Mod { Id = "MAIN" }, null, dir);
@@ -77,7 +79,7 @@ class TP {
         Func<string, TranslationEdits.Row> row = k => rows.First(r => r.Key == k);
         Check("General (the common file), MAIN (its Translations.csv and its alarms), SUB (its folder's file)",
               row("Btn_Ok").Owner == "General" && row("Btn_Ok").Common && row("Unit_Clamp").Owner == "MAIN" && row("Unit_Drill").Owner == "SUB" &&
-              row("Alarm_MAIN.A1").Owner == "MAIN" && row("Alarm_MAIN.A1").File == "Alarms.json" && row("Unit_Drill").File == "Translations.csv" && rows.Count == 7,
+              row("Alarm_MAIN.Door").Owner == "MAIN" && row("Alarm_MAIN.Door").File == "Alarms.json" && row("Unit_Drill").File == "Translations.csv" && rows.Count == 7,
               string.Join(", ", rows.Select(r => r.Key + "/" + r.Owner + "/" + r.File)));
         Check("  the languages: English first, the files' ones", string.Join(",", TranslationEdits.Languages()) == "EN,TR,RU", string.Join(",", TranslationEdits.Languages()));
         var page = new HmiSettingsPage();
@@ -90,6 +92,7 @@ class TP {
         form.Controls.Add(c);
         form.Show(); Application.DoEvents();
         var grid = (DataGridView)Get(c, "Grid");
+        row = k => ((IEnumerable<TranslationEdits.Row>)Get(c, "_rows")).First(r => r.Key == k);     // the table's own rows (their texts as saved)
         var names = grid.Columns.Cast<DataGridViewColumn>().OrderBy(x => x.DisplayIndex).Select(x => x.Name).ToList();
         Check("the table: Key, Owner, File, a column per language, Edited", string.Join(",", names) == "Key,Owner,File,L_EN,L_TR,L_RU,Changed", string.Join(",", names));
         Check("  every key listed; the languages editable, the key and owner not", Shown(c).Count == 7 && !grid.Columns["L_TR"].ReadOnly && grid.Columns["Key"].ReadOnly && grid.Columns["Owner"].ReadOnly);
@@ -109,7 +112,7 @@ class TP {
         SetP(c, "SearchText", "");
         var missing = (CheckBox)typeof(TranslationsControl).GetField("_missing", Any).GetValue(c);
         missing.Checked = true; Application.DoEvents();
-        Check("a text missing: Lbl_Speed has no TR, Unit_Drill no RU, the alarm no RU", string.Join(",", Shown(c).Select(r => r.Key).OrderBy(k => k)) == "Alarm_MAIN.A1,Lbl_Speed,Unit_Drill",
+        Check("a text missing: Lbl_Speed has no TR, Unit_Drill no RU, the alarm no RU", string.Join(",", Shown(c).Select(r => r.Key).OrderBy(k => k)) == "Alarm_MAIN.Door,Lbl_Speed,Unit_Drill",
               string.Join(",", Shown(c).Select(r => r.Key)));
         missing.Checked = false; Application.DoEvents();
 
@@ -124,8 +127,11 @@ class TP {
         Check("  the history: who, the key, the language, before and after", hist.Count == 2 && hist.Any(h => h.User == "maint" && h.Owner == "MAIN" && h.Key == "Unit_Clamp" &&
               h.Lang == "TR" && h.Old == "Kiskac" && h.New == "Mengene") && hist.Any(h => h.Key == "Lbl_Speed" && h.Old == "" && h.New == "Hiz"),
               string.Join(" | ", hist.Select(h => h.User + " " + h.Key + " " + h.Old + ">" + h.New)));
-        Check("  the files read are not written - the edits kept beside them", File.ReadAllText(main).Contains("Kiskac") && File.Exists(TranslationEdits.EditsFile) &&
-              File.ReadAllText(TranslationEdits.EditsFile).Contains("MAIN;Unit_Clamp;TR;Mengene;maint;"));
+        // 22 October: "Save writes directly into the translation files"
+        Check("  written into their files: the key's line, the language's column - the rest as it was",
+              string.Join("|", File.ReadAllLines(main)) == "Key;EN;TR;RU|Unit_Clamp;Clamp;Mengene;Zazhim|Unit_Saw;Saw;Testere;Pila" &&
+              File.ReadAllLines(common).Contains("Lbl_Speed;Speed;Hiz;Skorost") && !File.Exists(TranslationEdits.EditsFile),
+              string.Join("|", File.ReadAllLines(main)));
         int at = Shown(c).ToList().FindIndex(r => r.Key == "Unit_Clamp");
         Check("  the Edited column: who, when", Convert.ToString(grid.Rows[at].Cells["Changed"].Value).StartsWith("maint  "), Convert.ToString(grid.Rows[at].Cells["Changed"].Value));
         var only = (CheckBox)typeof(TranslationsControl).GetField("_onlyEdited", Any).GetValue(c);
@@ -134,12 +140,41 @@ class TP {
         only.Checked = false; Application.DoEvents();
 
         Start(true);
-        Check("the next start: the files' texts, then the edits over them", LanguageManager.GetStringIn("TR", "Unit_Clamp") == "Mengene" && LanguageManager.GetStringIn("EN", "Unit_Clamp") == "Clamp");
+        Check("the next start: the texts from the files", LanguageManager.GetStringIn("TR", "Unit_Clamp") == "Mengene" && LanguageManager.GetStringIn("EN", "Unit_Clamp") == "Clamp");
 
         Call(c, "Type", row("Unit_Clamp"), "TR", "Kiskac");
         Call(c, "Save");
-        Check("typed back as the file has it: no edit any more, the history says it", TranslationEdits.EditOf("MAIN", "Unit_Clamp", "TR") == null &&
+        Check("typed back: the file has it again, the history says it", File.ReadAllLines(main).Contains("Unit_Clamp;Clamp;Kiskac;Zazhim") &&
               LanguageManager.GetStringIn("TR", "Unit_Clamp") == "Kiskac" && TranslationEdits.History().Last().New == "Kiskac");
+
+        Console.WriteLine("--- an alarm's text: its Alarms.json, in place ---");
+        Call(c, "Type", row("Alarm_MAIN.Door"), "TR", "Kapi acik!");
+        Call(c, "Type", row("Alarm_MAIN.Door"), "RU", "Dver otkryta");
+        Call(c, "Save");
+        var json = File.ReadAllText(alarms);
+        Check("its entry's Translations: TR changed, RU added after it - the comment and the layout kept",
+              json.Contains("// the doors") && json.Contains("\"TR\": \"Kapi acik!\"") && json.Contains("\"TR\": \"Kapi acik!\",\r\n      \"RU\": \"Dver otkryta\"") &&
+              json.Contains("\"PlcAddress\": \"M801\","), json);
+        AlarmDefinitionLoader.Load(alarms, true, "MAIN");
+        Check("  read again: the alarm's texts", LanguageManager.GetStringIn("RU", "Alarm_MAIN.Door") == "Dver otkryta" && LanguageManager.GetStringIn("TR", "Alarm_MAIN.Door") == "Kapi acik!");
+
+        Console.WriteLine("--- run from its build: the project's copy written too ---");
+        var proj = Path.Combine(dir, "proj"); Directory.CreateDirectory(proj);
+        var projCommon = Path.Combine(proj, "CommonTranslations.csv"); File.Copy(common, projCommon);
+        var projAlarms = Path.Combine(proj, "Alarms.json"); File.Copy(alarms, projAlarms);
+        TranslationEdits.ProjectFileOf = r => r.Common ? projCommon : r.File == "Alarms.json" ? projAlarms : null;
+        Call(c, "Type", row("Btn_Ok"), "TR", "Tamam!");
+        Call(c, "Type", row("Alarm_MAIN.Door"), "EN", "The door is open");
+        Call(c, "Save");
+        Check("the program's file and the project's", File.ReadAllLines(common).Contains("Btn_Ok;OK;Tamam!;OK") && File.ReadAllLines(projCommon).Contains("Btn_Ok;OK;Tamam!;OK") &&
+              File.ReadAllText(alarms).Contains("\"EN\": \"The door is open\"") && File.ReadAllText(projAlarms).Contains("\"EN\": \"The door is open\""));
+        TranslationEdits.ProjectFileOf = r => null;
+
+        Console.WriteLine("--- the first version's edits: written into the files once ---");
+        File.WriteAllText(TranslationEdits.EditsFile, "Owner;Key;Lang;Text;User;Time\r\nSUB;Unit_Drill;TR;Delgi;old;2026-10-21 10:00:00\r\n");
+        Start(true);
+        Check("UserTranslations.csv: into SUB's file, the file put away", File.ReadAllLines(sub).Contains("Unit_Drill;Drill;Delgi") && !File.Exists(TranslationEdits.EditsFile) &&
+              File.Exists(TranslationEdits.EditsFile + ".written") && LanguageManager.GetStringIn("TR", "Unit_Drill") == "Delgi", string.Join("|", File.ReadAllLines(sub)));
         Call(c, "Type", row("Btn_Cancel"), "TR", "Vazgec; iptal");
         Check("a ; is no text's (the files' separator): made a ,", (int)Call(c, "Save") == 1 && LanguageManager.GetStringIn("TR", "Btn_Cancel") == "Vazgec, iptal");
         grid.CurrentCell = grid.Rows[Shown(c).ToList().FindIndex(r => r.Key == "Btn_Ok")].Cells["L_RU"];
@@ -157,7 +192,8 @@ class TP {
         Check("  the screen in FR: English where nothing is typed", LanguageManager.CurrentLanguage == "FR" && LanguageManager.GetString("Unit_Saw") == "Saw");
         Call(c, "Type", row("Unit_Saw"), "FR", "Scie");
         Call(c, "Save");
-        Check("  a text typed in FR: on the screen", LanguageManager.GetString("Unit_Saw") == "Scie");
+        Check("  a text typed in FR: on the screen, and in the file - FR's column added to it", LanguageManager.GetString("Unit_Saw") == "Scie" &&
+              File.ReadAllLines(main)[0] == "Key;EN;TR;RU;FR" && File.ReadAllLines(main).Contains("Unit_Saw;Saw;Testere;Pila;Scie"), string.Join("|", File.ReadAllLines(main)));
         LanguageManager.ChangeLanguage("RU");
         Call(c, "DeleteLanguage", "RU");
         Application.DoEvents();

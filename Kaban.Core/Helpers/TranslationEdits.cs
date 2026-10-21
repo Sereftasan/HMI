@@ -12,26 +12,28 @@ namespace Kaban.Core.Helpers
     /// THE TRANSLATIONS EDITED ON THE PANEL (HMI Settings > Translation, 21 October: "a table
     /// of all the translations for Maintenance and above, with what each is owned by - the
     /// general application or a machine - the key and all the languages; a language added or
-    /// deleted; and the edit history kept, so I can check the user edited ones and put them in
-    /// my translation files when I find them useful").
+    /// deleted; and the edit history kept, so I can check the user edited ones").
     ///
-    /// The translation files are not written: an edit is kept beside them, in the program's
-    /// data folder (an update of the program replaces its files, not the edits), and put in
-    /// force over them at every start:
+    /// 22 October: "Save writes the edits directly into the translation files": a text saved
+    /// is written into the file it was read from - the common CommonTranslations.csv, a
+    /// machine's Translations.csv (its line of the key, its language's column; a language new
+    /// to the file gets its column) or its Alarms.json (the alarm's Translations) - and, when the
+    /// program runs from its Visual Studio build, into the project's copy of that file too, so
+    /// it is kept with the source. Every change is written in the history (who, when, before,
+    /// after); a key is never added (only the files' keys are edited).
     ///
-    ///     Translations\UserTranslations.csv     Owner;Key;Lang;Text;User;Time  - the edits in force
-    ///     Translations\Languages.cfg            +FR / -RU                      - languages added, deleted
     ///     Translations\TranslationHistory.csv   Time;User;Owner;Key;Lang;Old;New - every change, oldest first
+    ///     Translations\Languages.cfg            +FR / -RU                      - languages added, deleted
+    ///     (Translations\UserTranslations.csv: the first version's edits, written into the files once)
     ///
-    /// The owner is "General" for the common file (CommonTranslations.csv), a machine's id
-    /// for its own files (its Translations.csv, its Alarms.json).
+    /// The owner is "General" for the common file, a machine's id for its own files.
     /// </summary>
     public static class TranslationEdits
     {
         /// <summary>The common file's owner.</summary>
         public const string General = "General";
 
-        /// <summary>Where the edits are kept (replaceable for the tests).</summary>
+        /// <summary>Where the history and the languages are kept (replaceable for the tests).</summary>
         public static string Folder =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "KabanHMI", "Translations");
 
@@ -39,7 +41,13 @@ namespace Kaban.Core.Helpers
         public static string LanguagesFile { get { return Path.Combine(Folder, "Languages.cfg"); } }
         public static string HistoryFile { get { return Path.Combine(Folder, "TranslationHistory.csv"); } }
 
-        /// <summary>A text put in force on the panel.</summary>
+        /// <summary>
+        /// The project's copy of a row's file when the program runs from its build (null: none).
+        /// Replaceable for the tests.
+        /// </summary>
+        public static Func<Row, string> ProjectFileOf = DefaultProjectFile;
+
+        /// <summary>A text edited on the panel, as the history last has it.</summary>
         public sealed class Edit
         {
             public string Owner = "", Key = "", Lang = "", Text = "", User = "";
@@ -57,13 +65,15 @@ namespace Kaban.Core.Helpers
         public sealed class Row
         {
             public string Key = "", Owner = "", File = "";
+            /// <summary>The file it was read from ("" for an alarm's text: its Alarms.json, kept by the alarm loader).</summary>
+            public string Path = "";
             public bool Common;
             /// <summary>language - the file's text.</summary>
             public readonly Dictionary<string, string> FileTexts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            internal readonly List<LanguageManager.Source> From = new List<LanguageManager.Source>();
         }
 
         private static readonly object _lock = new object();
-        private static List<Edit> _edits;
         private static List<string> _added, _deleted;
         private static string _loadedFrom;
 
@@ -76,7 +86,7 @@ namespace Kaban.Core.Helpers
             if (s.Common) return General;
             if (!string.IsNullOrEmpty(s.Owner)) return s.Owner;
             string dir = "";
-            try { dir = Path.GetFileName(Path.GetDirectoryName(s.Path) ?? "") ?? ""; } catch { }
+            try { dir = System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(s.Path) ?? "") ?? ""; } catch { }
             foreach (var m in MachineRegistry.Modules)
                 if (m.Context != null && string.Equals(m.Context.ModuleId, dir, StringComparison.OrdinalIgnoreCase)) return m.Context.ModuleId;
             var main = MachineRegistry.Main;
@@ -97,10 +107,11 @@ namespace Kaban.Core.Helpers
                     string id = owner + "\u0001" + key;
                     if (!at.TryGetValue(id, out row))
                     {
-                        row = new Row { Key = key, Owner = owner, File = s.FileName, Common = s.Common };
+                        row = new Row { Key = key, Owner = owner, File = s.FileName, Common = s.Common, Path = s.Path };
                         at[id] = row;
                         rows.Add(row);
                     }
+                    if (!row.From.Contains(s)) row.From.Add(s);
                     Dictionary<string, string> texts;
                     if (!s.Texts.TryGetValue(key, out texts)) continue;
                     foreach (var kv in texts)
@@ -108,6 +119,12 @@ namespace Kaban.Core.Helpers
                 }
             }
             return rows;
+        }
+
+        /// <summary>The rows of a key, the machine's first (the text on the screen is the machine's).</summary>
+        public static List<Row> RowsOf(string key)
+        {
+            return Rows().Where(r => string.Equals(r.Key, (key ?? "").Trim(), StringComparison.OrdinalIgnoreCase)).OrderBy(r => r.Common ? 1 : 0).ToList();
         }
 
         /// <summary>The languages: English first, the files' in their order, the ones added - none deleted.</summary>
@@ -123,36 +140,27 @@ namespace Kaban.Core.Helpers
             return list.Where(l => l == "EN" || !deleted.Contains(l, StringComparer.OrdinalIgnoreCase)).ToList();
         }
 
-        // ---- the edits -------------------------------------------------------------------
+        // ---- what was edited here ---------------------------------------------------------
 
-        public static IList<Edit> Edits { get { lock (_lock) { EnsureLoaded(); return _edits.ToList().AsReadOnly(); } } }
+        /// <summary>Every text edited on the panel - the history's last change of each (owner, key, language).</summary>
+        public static IList<Edit> Edits
+        {
+            get
+            {
+                var last = new Dictionary<string, Edit>(StringComparer.OrdinalIgnoreCase);
+                foreach (var c in History().Where(c => c.Key.Length > 0))
+                    last[c.Owner + "\u0001" + c.Key + "\u0001" + c.Lang] = new Edit { Owner = c.Owner, Key = c.Key, Lang = c.Lang, Text = c.New, User = c.User, Time = c.Time };
+                return last.Values.ToList().AsReadOnly();
+            }
+        }
 
         public static IEnumerable<string> AddedLanguages { get { lock (_lock) { EnsureLoaded(); return _added.ToList(); } } }
         public static IEnumerable<string> DeletedLanguages { get { lock (_lock) { EnsureLoaded(); return _deleted.ToList(); } } }
 
-        /// <summary>The edit in force for a key's text in a language (null: the file's text).</summary>
-        public static Edit EditOf(string owner, string key, string lang)
-        {
-            lock (_lock)
-            {
-                EnsureLoaded();
-                return _edits.FirstOrDefault(e => Same(e, owner, key, lang));
-            }
-        }
-
-        private static bool Same(Edit e, string owner, string key, string lang)
-        {
-            return string.Equals(e.Owner, owner ?? "", StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(e.Key, key ?? "", StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(e.Lang, lang ?? "", StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>A text as it is in force: the edit, else the file's.</summary>
+        /// <summary>A text as the files have it now.</summary>
         public static string TextOf(Row row, string lang)
         {
             if (row == null) return "";
-            var e = EditOf(row.Owner, row.Key, lang);
-            if (e != null) return e.Text;
             string t;
             return row.FileTexts.TryGetValue(lang ?? "", out t) ? t ?? "" : "";
         }
@@ -165,18 +173,24 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
-        /// Puts the texts in force, keeps them, and writes each change in the history (who,
-        /// when, the text before and after). A text made the file's again is no edit any more.
-        /// The number of texts changed.
+        /// Puts the texts in force and writes them into their files (and the project's copies),
+        /// each change in the history (who, when, the text before and after). The number of texts
+        /// changed; <paramref name="notWritten"/> the ones no file could take (put in force only).
         /// </summary>
-        public static int Save(IEnumerable<Wanted> wanted, string user = null)
+        public static int Save(IEnumerable<Wanted> wanted, string user = null, bool raise = true)
         {
+            int notWritten;
+            return Save(wanted, out notWritten, user, raise);
+        }
+
+        public static int Save(IEnumerable<Wanted> wanted, out int notWritten, string user = null, bool raise = true)
+        {
+            notWritten = 0;
             user = string.IsNullOrEmpty(user) ? CurrentUser() : user;
             var now = DateTime.Now;
             var history = new List<Change>();
             lock (_lock)
             {
-                EnsureLoaded();
                 foreach (var w in wanted ?? Enumerable.Empty<Wanted>())
                 {
                     if (w == null || w.Row == null || string.IsNullOrEmpty(w.Lang)) continue;
@@ -184,22 +198,78 @@ namespace Kaban.Core.Helpers
                     string text = Clean(w.Text);
                     string old = TextOf(w.Row, lang);
                     if (old == text) continue;
-                    string fileText;
-                    w.Row.FileTexts.TryGetValue(lang, out fileText);
-                    _edits.RemoveAll(e => Same(e, w.Row.Owner, w.Row.Key, lang));
-                    if (text != (fileText ?? ""))
-                        _edits.Add(new Edit { Owner = w.Row.Owner, Key = w.Row.Key, Lang = lang, Text = text, User = user, Time = now });
+                    if (!Write(w.Row, lang, text)) notWritten++;
+                    w.Row.FileTexts[lang] = text;
+                    foreach (var s in w.Row.From) s.Put(w.Row.Key, lang, text);
                     LanguageManager.SetText(lang, w.Row.Key, text, w.Row.Common);
                     history.Add(new Change { Time = now, User = user, Owner = w.Row.Owner, Key = w.Row.Key, Lang = lang, Old = old, New = text });
                 }
                 if (history.Count == 0) return 0;
-                WriteEdits();
                 AppendHistory(history);
             }
-            LanguageManager.RaiseLanguageChanged();
-            AuditLogger.Log("translations changed on the panel: " + history.Count + " text(s) (" +
-                            string.Join(", ", history.Take(5).Select(h => h.Key + " " + h.Lang)) + (history.Count > 5 ? " ..." : "") + ").");
+            if (raise) LanguageManager.RaiseLanguageChanged();
+            AuditLogger.Log("translations changed on the panel: " + history.Count + " text(s) written into the translation files (" +
+                            string.Join(", ", history.Take(5).Select(h => h.Key + " " + h.Lang)) + (history.Count > 5 ? " ..." : "") + ")" +
+                            (notWritten > 0 ? ", " + notWritten + " in force only (no file to write)" : "") + ".");
             return history.Count;
+        }
+
+        /// <summary>A row's text in a language written into its file and the project's copy (false: neither could take it).</summary>
+        private static bool Write(Row row, string lang, string text)
+        {
+            bool written = false;
+            string project = null;
+            try { project = ProjectFileOf != null ? ProjectFileOf(row) : null; } catch { }
+            if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(row.Path))
+            {
+                string tag;
+                written = AlarmDefinitionLoader.SetTranslation(row.Key, lang, text, out tag);
+                if (!string.IsNullOrEmpty(project) && !string.IsNullOrEmpty(tag))
+                    written |= AlarmDefinitionLoader.SetTranslationInFile(project, tag, lang, text);
+                return written;
+            }
+            string path = row.Path;
+            if (string.IsNullOrEmpty(path) && row.Common)
+            {
+                // the common texts read from the program's own copy (no file beside it): the file there
+                var beside = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommonTranslations.csv");
+                if (File.Exists(beside)) path = beside;
+            }
+            if (!string.IsNullOrEmpty(path)) written = TranslationFiles.SetText(path, row.Key, lang, text);
+            if (!string.IsNullOrEmpty(project) && !SamePath(project, path)) written |= TranslationFiles.SetText(project, row.Key, lang, text);
+            return written;
+        }
+
+        private static string DefaultProjectFile(Row row)
+        {
+            if (row == null) return null;
+            string folder = null;
+            if (row.Common)
+            {
+                // the UI library's project: KabanHMI\Kaban.UI.csproj above the build
+                try
+                {
+                    var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+                    for (int i = 0; dir != null && i < 6 && folder == null; i++, dir = dir.Parent)
+                        if (File.Exists(System.IO.Path.Combine(dir.FullName, "KabanHMI", "Kaban.UI.csproj"))) folder = System.IO.Path.Combine(dir.FullName, "KabanHMI");
+                }
+                catch { }
+            }
+            else
+            {
+                var m = MachineRegistry.Modules.FirstOrDefault(x => x.Context != null && string.Equals(x.Context.ModuleId, row.Owner, StringComparison.OrdinalIgnoreCase));
+                if (m != null) folder = StructuredTypes.ProjectFolderOf(m.Module, m.Context.BaseFolder);
+            }
+            if (folder == null) return null;
+            var p = System.IO.Path.Combine(folder, string.IsNullOrEmpty(row.File) ? (row.Common ? "CommonTranslations.csv" : "Translations.csv") : row.File);
+            return File.Exists(p) && !SamePath(p, row.Path) ? p : null;
+        }
+
+        private static bool SamePath(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b)) return false;
+            try { return string.Equals(System.IO.Path.GetFullPath(a), System.IO.Path.GetFullPath(b), StringComparison.OrdinalIgnoreCase); }
+            catch { return false; }
         }
 
         /// <summary>A language offered (a new one: its texts English until given; a deleted one: back with its files' texts).</summary>
@@ -220,7 +290,7 @@ namespace Kaban.Core.Helpers
             AuditLogger.Log("language " + code + " added on the panel.");
         }
 
-        /// <summary>A language no longer offered (not English). Its texts stay in the files - and its edits here - for when it is added again.</summary>
+        /// <summary>A language no longer offered (not English). Its texts stay in the files, for when it is added again.</summary>
         public static bool RemoveLanguage(string code, string user = null)
         {
             code = (code ?? "").Trim().ToUpperInvariant();
@@ -239,18 +309,66 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
-        /// At the start, after the translation files (and the alarms', the notes'): the
-        /// languages added and deleted, the edits in force.
+        /// At the start, after the translation files (and the alarms', the notes'): the languages
+        /// added and deleted - and the first version's edits (kept beside the files) written into
+        /// them, once.
         /// </summary>
         public static void Apply()
         {
-            List<Edit> edits;
             List<string> added, deleted;
-            lock (_lock) { EnsureLoaded(); edits = _edits.ToList(); added = _added.ToList(); deleted = _deleted.ToList(); }
+            lock (_lock) { EnsureLoaded(); added = _added.ToList(); deleted = _deleted.ToList(); }
             foreach (var l in added) LanguageManager.AddLanguage(l);
             foreach (var l in deleted) LanguageManager.RemoveLanguage(l);
-            foreach (var e in edits) LanguageManager.SetText(e.Lang, e.Key, e.Text, string.Equals(e.Owner, General, StringComparison.OrdinalIgnoreCase));
-            if (edits.Count > 0) LanguageManager.RaiseLanguageChanged();
+            TakeOldEdits();
+        }
+
+        /// <summary>The first version's UserTranslations.csv: its texts written into the files (their history is there already), the file renamed.</summary>
+        private static void TakeOldEdits()
+        {
+            if (!File.Exists(EditsFile)) return;
+            try
+            {
+                var rows = Rows();
+                int n = 0;
+                foreach (var line in File.ReadAllLines(EditsFile, Encoding.UTF8).Skip(1))
+                {
+                    var f = line.Split(';');
+                    if (f.Length < 4 || f[1].Trim().Length == 0) continue;
+                    var row = rows.FirstOrDefault(r => string.Equals(r.Owner, f[0].Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                                       string.Equals(r.Key, f[1].Trim(), StringComparison.OrdinalIgnoreCase));
+                    if (row == null) continue;
+                    string lang = f[2].Trim().ToUpperInvariant(), text = Unescape(f[3]);
+                    if (TextOf(row, lang) == text) continue;
+                    Write(row, lang, text);
+                    row.FileTexts[lang] = text;
+                    foreach (var s in row.From) s.Put(row.Key, lang, text);
+                    LanguageManager.SetText(lang, row.Key, text, row.Common);
+                    n++;
+                }
+                var done = EditsFile + ".written";
+                if (File.Exists(done)) File.Delete(done);
+                File.Move(EditsFile, done);
+                if (n > 0) { AuditLogger.Log(n + " translation edit(s) of the first version written into the translation files."); LanguageManager.RaiseLanguageChanged(); }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not write the first version's translation edits into the files: " + ex.Message); }
+        }
+
+        /// <summary>
+        /// A translation note in force (the notes page; 21 October: "the texts proposed and applied
+        /// from the Notes page should appear in the table as edits"): its texts written into the
+        /// files of its key like an edit here, the history naming the note's author. False when its
+        /// key is in no file (a control's text without a key of its own).
+        /// </summary>
+        public static bool FromNote(Note note)
+        {
+            if (note == null || note.Kind != NoteKind.Translation || string.IsNullOrWhiteSpace(note.TranslationKey)) return false;
+            var rows = RowsOf(note.TranslationKey);
+            if (rows.Count == 0) return false;
+            var wanted = (note.Texts ?? new List<NoteText>()).Where(t => t != null && !string.IsNullOrWhiteSpace(t.Lang) && !string.IsNullOrWhiteSpace(t.Text))
+                                                             .Select(t => new Wanted { Row = rows[0], Lang = t.Lang, Text = t.Text }).ToList();
+            var who = (string.IsNullOrEmpty(note.AcceptedBy) ? note.Author : note.AcceptedBy) ?? "";
+            Save(wanted, who + " (note)", raise: false);
+            return true;
         }
 
         /// <summary>Every change kept, oldest first.</summary>
@@ -274,29 +392,18 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>Reads the files again (the tests).</summary>
-        public static void Reload() { lock (_lock) _edits = null; }
+        public static void Reload() { lock (_lock) _added = null; }
 
         // ---- the files -------------------------------------------------------------------
 
         private static void EnsureLoaded()
         {
-            if (_edits != null && string.Equals(_loadedFrom, Folder, StringComparison.OrdinalIgnoreCase)) return;
+            if (_added != null && string.Equals(_loadedFrom, Folder, StringComparison.OrdinalIgnoreCase)) return;
             _loadedFrom = Folder;
-            _edits = new List<Edit>();
             _added = new List<string>();
             _deleted = new List<string>();
             try
             {
-                if (File.Exists(EditsFile))
-                    foreach (var line in File.ReadAllLines(EditsFile, Encoding.UTF8).Skip(1))
-                    {
-                        var f = line.Split(';');
-                        if (f.Length < 4 || f[1].Trim().Length == 0) continue;
-                        DateTime t = DateTime.MinValue;
-                        if (f.Length > 5) DateTime.TryParseExact(f[5], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out t);
-                        _edits.Add(new Edit { Owner = f[0].Trim(), Key = f[1].Trim(), Lang = f[2].Trim().ToUpperInvariant(), Text = Unescape(f[3]),
-                                              User = f.Length > 4 ? f[4] : "", Time = t });
-                    }
                 if (File.Exists(LanguagesFile))
                     foreach (var raw in File.ReadAllLines(LanguagesFile, Encoding.UTF8))
                     {
@@ -307,16 +414,7 @@ namespace Kaban.Core.Helpers
                         if (line[0] == '-' && !_deleted.Contains(code)) _deleted.Add(code);
                     }
             }
-            catch (Exception ex) { AuditLogger.Log("could not read the translation edits: " + ex.Message); }
-        }
-
-        private static void WriteEdits()
-        {
-            var lines = new List<string> { "Owner;Key;Lang;Text;User;Time" };
-            foreach (var e in _edits.OrderBy(e => e.Owner, StringComparer.OrdinalIgnoreCase).ThenBy(e => e.Key, StringComparer.OrdinalIgnoreCase).ThenBy(e => e.Lang))
-                lines.Add(string.Join(";", e.Owner, e.Key, e.Lang, Escape(e.Text), Clean(e.User), e.Time.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)));
-            Directory.CreateDirectory(Folder);
-            SafeFile.WriteAllText(EditsFile, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(true));
+            catch (Exception ex) { AuditLogger.Log("could not read the translation languages: " + ex.Message); }
         }
 
         private static void WriteLanguages()
@@ -347,13 +445,55 @@ namespace Kaban.Core.Helpers
         /// <summary>A text as the files keep it: no ";" (the column separator), line breaks as \r\n.</summary>
         public static string Clean(string text) { return (text ?? "").Replace(";", ",").Trim(); }
 
-        private static string Escape(string text) { return Clean(text).Replace("\r\n", "\\r\\n").Replace("\n", "\\n"); }
+        internal static string Escape(string text) { return Clean(text).Replace("\r\n", "\\r\\n").Replace("\n", "\\n"); }
 
         private static string Unescape(string text) { return (text ?? "").Replace("\\r\\n", "\r\n").Replace("\\n", "\n"); }
 
         private static string CurrentUser()
         {
             try { return string.IsNullOrEmpty(SecurityManager.CurrentUser) ? "?" : SecurityManager.CurrentUser; } catch { return "?"; }
+        }
+    }
+
+    /// <summary>
+    /// A translation file's text changed IN PLACE: the key's line, the language's column - the
+    /// rest of the file as it was (its order, its empty lines, its BOM, its line endings). A
+    /// language the file has no column for gets one (its header and that line).
+    /// </summary>
+    public static class TranslationFiles
+    {
+        /// <summary>False when the file or its key is not there (a key is never added).</summary>
+        public static bool SetText(string path, string key, string lang, string text)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path) || string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(lang)) return false;
+            try
+            {
+                var bytes = File.ReadAllBytes(path);
+                bool bom = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF;
+                var content = Encoding.UTF8.GetString(bytes, bom ? 3 : 0, bytes.Length - (bom ? 3 : 0));
+                string nl = content.Contains("\r\n") ? "\r\n" : "\n";
+                var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
+                int head = lines.FindIndex(l => l.Trim().Length > 0);
+                if (head < 0) return false;
+                var heads = lines[head].Split(';');
+                int col = Array.FindIndex(heads, h => string.Equals(h.Trim(), lang.Trim(), StringComparison.OrdinalIgnoreCase));
+                if (col < 1) { lines[head] = lines[head].TrimEnd() + ";" + lang.Trim().ToUpperInvariant(); col = heads.Length; }
+                int at = -1;
+                for (int i = head + 1; i < lines.Count && at < 0; i++)
+                    if (string.Equals(lines[i].Split(';')[0].Trim(), key.Trim(), StringComparison.OrdinalIgnoreCase)) at = i;
+                if (at < 0) return false;
+                var cols = lines[at].Split(';').ToList();
+                while (cols.Count <= col) cols.Add("");
+                cols[col] = TranslationEdits.Escape(text);
+                lines[at] = string.Join(";", cols);
+                SafeFile.WriteAllText(path, string.Join(nl, lines), new UTF8Encoding(bom));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not write the translation into " + path + ": " + ex.Message);
+                return false;
+            }
         }
     }
 }
