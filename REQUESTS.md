@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 21 October (later):
+  - 2dae673 - Translation page: Where is it used? (Ctrl+F) - the pages and their controls, the menu, the tabs, the alarms,
+    and the program's lines (message boxes, status lines ...) when the program runs from its build; a page opened on a double click.
+  - 1d1005c - Notes and feedback: the page and the caption bar darker while picking, the control under the pointer bright.
+  - 3af3f77 - Notes and feedback: its texts' link to the Translation page, the key's row marked there to edit.
 - 21 October:
   - 9a33c14 - The coupling chain on the units: bold and dark, its ring faint.
   - fc52bb0 - HMI Settings > Translation (Maintenance and above): every translation, its owner (General / a machine),
