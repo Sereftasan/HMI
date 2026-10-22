@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -171,6 +172,75 @@ namespace Kaban.Core.Helpers
             {
                 return baseAddress; // Fail safe
             }
+        }
+
+        // ---- A DEVICE AS ITS LETTERS AND ITS NUMBER (22 October: the PLC backup) ----------------------------
+
+        /// <summary>The bit devices of a MELSEC CPU (the rest are words): their block reads give 16 to a word.</summary>
+        private static readonly HashSet<string> BitDevices = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "X", "Y", "M", "L", "B", "F", "SB", "S", "V", "SM", "TS", "TC", "STS", "STC", "CS", "CC", "LCS", "LCC", "DX", "DY"
+        };
+
+        /// <summary>True for a bit device ("M100", "X17"); false for a word one or a module's buffer memory.</summary>
+        public static bool IsBitDevice(string address)
+        {
+            string prefix; long number;
+            return TrySplit(address, out prefix, out number) && BitDevices.Contains(prefix);
+        }
+
+        /// <summary>The number base a device is counted in: X, Y octal (as the FX numbers them), B, W, SB, SW hexadecimal, the rest decimal.</summary>
+        public static int BaseOf(string prefix) { return GetBase(prefix ?? ""); }
+
+        /// <summary>
+        /// "D2500" - "D", 2500; "X17" - "X", 15 (octal); "U1\G6000" - "U1\G", 6000. False for anything
+        /// else (a bit of a word "D100.5", a digit-count "K4M0", another controller's "X12@2").
+        /// </summary>
+        public static bool TrySplit(string address, out string prefix, out long number)
+        {
+            prefix = ""; number = 0;
+            var a = (address ?? "").Trim().ToUpperInvariant();
+            var module = Regex.Match(a, @"^(U[0-9A-F]+\\G)(\d+)$");
+            if (module.Success)
+            {
+                prefix = module.Groups[1].Value;
+                return long.TryParse(module.Groups[2].Value, NumberStyles.None, CultureInfo.InvariantCulture, out number);
+            }
+            // the longest of the CPU's device letters the rest reads as a number of ("SB1F" is SB 1F,
+            // "STN3" is STN 3, "B1F" is B 1F), else letters and decimal digits
+            foreach (var p in Prefixes)
+            {
+                if (!a.StartsWith(p, StringComparison.Ordinal) || a.Length == p.Length) continue;
+                string n = a.Substring(p.Length);
+                int b = GetBase(p);
+                if (!Regex.IsMatch(n, b == 16 ? "^[0-9A-F]+$" : b == 8 ? "^[0-7]+$" : "^[0-9]+$")) continue;
+                try { number = b == 10 ? long.Parse(n, CultureInfo.InvariantCulture) : Convert.ToInt64(n, b); }
+                catch { continue; }
+                prefix = p;
+                return true;
+            }
+            var m = Regex.Match(a, @"^([A-Z]+)([0-9]+)$");
+            if (!m.Success) return false;
+            prefix = m.Groups[1].Value;
+            return long.TryParse(m.Groups[2].Value, NumberStyles.None, CultureInfo.InvariantCulture, out number);
+        }
+
+        /// <summary>A MELSEC CPU's device letters, the longest first.</summary>
+        private static readonly string[] Prefixes =
+        {
+            "STN", "STS", "STC", "LCN", "LCS", "LCC", "SB", "SW", "SM", "SD", "TN", "TS", "TC", "CN", "CS", "CC", "DX", "DY", "ZR", "LZ",
+            "X", "Y", "M", "L", "B", "F", "S", "V", "D", "W", "R", "Z"
+        };
+
+        /// <summary>A device from its letters and number, in its base: "X", 15 - "X17"; "W", 255 - "WFF".</summary>
+        public static string Compose(string prefix, long number)
+        {
+            prefix = (prefix ?? "").ToUpperInvariant();
+            if (prefix.EndsWith("\\G")) return prefix + number.ToString(CultureInfo.InvariantCulture);
+            int b = GetBase(prefix);
+            return prefix + (b == 16 ? number.ToString("X", CultureInfo.InvariantCulture)
+                           : b == 8 ? Convert.ToString(number, 8)
+                           : number.ToString(CultureInfo.InvariantCulture));
         }
 
         private static int GetBase(string type)

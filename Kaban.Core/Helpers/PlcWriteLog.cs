@@ -241,6 +241,33 @@ namespace Kaban.Core.Helpers
             catch { /* the log must never stop a write */ }
         }
 
+        /// <summary>
+        /// A run of devices written in one call (22 October: a PLC backup written back): ONE line - its
+        /// first and last device and how many ("D2500 - D3499", "(1000 words)" after its source) - the
+        /// values themselves are in the backup it came from.
+        /// </summary>
+        public static void RecordBlock(int station, string first, int words, bool bits, int result, DateTime time)
+        {
+            try
+            {
+                int points = bits ? words * 16 : words;
+                string a = (first ?? "").Trim().ToUpperInvariant();
+                string prefix; long n;
+                string last = PlcAddressHelper.TrySplit(a, out prefix, out n) ? PlcAddressHelper.Compose(prefix, n + Math.Max(0, points - 1)) : a;
+                var e = new Entry
+                {
+                    Time = time, Station = station, Controller = ControllerName(station),
+                    Device = points > 1 ? a + " - " + last : a, Result = result,
+                    User = SecurityManager.CurrentUser ?? "Guest",
+                    Source = (CurrentSource ?? Caller()) + " (" + points.ToString(CultureInfo.InvariantCulture) + (bits ? (points == 1 ? " bit" : " bits") : (points == 1 ? " word" : " words")) + ")"
+                };
+                Append(e);
+                var h = Written;
+                if (h != null) try { h(e); } catch { }
+            }
+            catch { /* the log must never stop a write */ }
+        }
+
         private static readonly Regex DigitsRx = new Regex(@"^K([1-8])([A-Z]+[0-9A-F]+)$");
         private static readonly Regex BitOfWordRx = new Regex(@"^([A-Z]+[0-9A-F]+)\.([0-9A-F]+)$");
 

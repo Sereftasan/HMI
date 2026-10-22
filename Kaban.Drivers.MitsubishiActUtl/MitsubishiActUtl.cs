@@ -5,7 +5,8 @@ using ActUtlTypeLib;
 
 namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 {
-    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, Kaban.Core.Interfaces.IPlcIdentity, IDisposable
+    public class MitsubishiActUtl : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, Kaban.Core.Interfaces.IPlcIdentity,
+                                    Kaban.Core.Interfaces.IPlcBlockAccess, IDisposable
     {
         // The actual MX Component Object
         private ActUtlType _plc;              // touched ONLY on _worker's thread
@@ -234,6 +235,55 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
 
         private struct ReadOne { public bool Ok; public int Value; }
         private struct ReadMany { public bool Ok; public int[] Values; }
+
+        // --- A RUN OF DEVICES IN ONE CALL (22 October: the PLC Connection page's Read and Write) ---
+        //
+        // ReadDeviceBlock2 / WriteDeviceBlock2: words (a bit device 16 to a word). The backup asks
+        // for at most 960 words a call (an MC protocol frame's batch), so each call is milliseconds
+        // and the scanner's reads, which wait their turn on the same thread, are not held up for long.
+
+        /// <summary>How long a block call waits for its turn and its answer.</summary>
+        private const int BlockWaitMs = 5000;
+
+        /// <summary>The CPU refuses a device beyond its parameters' range: the backup asks it for each device's size.</summary>
+        public bool RefusesOutOfRange { get { return true; } }
+
+        public bool TryReadBlock(string first, int count, out short[] values)
+        {
+            values = null;
+            if (count <= 0 || string.IsNullOrWhiteSpace(first)) { values = new short[0]; return count == 0; }
+            if (!_isConnected) return false;
+            var buffer = new short[count];
+            int rc;
+            Func<int> call = () =>
+            {
+                if (!_isConnected || _plc == null) return -1;
+                try { return _plc.ReadDeviceBlock2(first, count, out buffer[0]); }
+                catch { return -1; }
+            };
+            if (_worker.IsWorkerThread) rc = call();
+            else if (!_worker.TryRun(call, BlockWaitMs, out rc)) { Stalled(); return false; }
+            if (rc != 0) return false;
+            values = buffer;
+            return true;
+        }
+
+        public int WriteBlock(string first, short[] values)
+        {
+            if (values == null || values.Length == 0) return 0;
+            if (!_isConnected) return -1;
+            var buffer = (short[])values.Clone();
+            int rc;
+            Func<int> call = () =>
+            {
+                if (!_isConnected || _plc == null) return -1;
+                try { return _plc.WriteDeviceBlock2(first, buffer.Length, ref buffer[0]); }
+                catch { return -1; }
+            };
+            if (_worker.IsWorkerThread) return call();
+            if (!_worker.TryRun(call, BlockWaitMs, out rc)) { Stalled(); return -1; }
+            return rc;
+        }
 
         // --- INTERFACE PROPERTIES ---
         public bool IsConnected => _isConnected;

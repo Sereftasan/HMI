@@ -21,7 +21,7 @@ namespace Kaban.Core.Helpers
     /// connection checks and in its log - and a device marked with this one's
     /// number is read without the mark: no driver below ever sees an "@".
     /// </summary>
-    public sealed class LoggedDriver : IPlcDriver, INonBlockingDriver, IPlcIdentity, IDisposable
+    public sealed class LoggedDriver : IPlcDriver, INonBlockingDriver, IPlcIdentity, IPlcBlockAccess, IDisposable
     {
         private readonly IPlcDriver _inner;
         private readonly int _station;
@@ -179,6 +179,35 @@ namespace Kaban.Core.Helpers
                 throw;
             }
             PlcWriteLog.Record(_station, address, value, rc, time);
+            return rc;
+        }
+
+        // ---- A RUN OF DEVICES (22 October: a PLC backup read, and written back) ----------------------------
+        //
+        // The controller's own block calls when its driver has them (MX Component, the simulator), else
+        // device by device (PlcBlocks). A block written is ONE line of the write log - its first and last
+        // device and how many - not tens of thousands.
+
+        public bool RefusesOutOfRange
+        {
+            get { var b = _inner as IPlcBlockAccess; return b != null && b.RefusesOutOfRange; }
+        }
+
+        public bool TryReadBlock(string first, int count, out short[] values)
+        {
+            var b = _inner as IPlcBlockAccess;
+            if (b != null) return b.TryReadBlock(first, count, out values);
+            return PlcBlocks.ReadByDevice(_inner, first, count, out values);
+        }
+
+        public int WriteBlock(string first, short[] values)
+        {
+            var time = DateTime.Now;
+            var b = _inner as IPlcBlockAccess;
+            int rc;
+            try { rc = b != null ? b.WriteBlock(first, values) : PlcBlocks.WriteByDevice(_inner, first, values); }
+            catch { rc = -1; }
+            PlcWriteLog.RecordBlock(_station, first, values == null ? 0 : values.Length, PlcAddressHelper.IsBitDevice(first), rc, time);
             return rc;
         }
 

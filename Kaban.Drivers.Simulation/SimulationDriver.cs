@@ -28,7 +28,7 @@ namespace Kaban.Drivers.Simulation
     /// Dictionary, which can corrupt or throw under that access pattern; all state
     /// is now guarded by a lock.
     /// </summary>
-    public class SimulationDriver : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver
+    public class SimulationDriver : IPlcDriver, Kaban.Core.Interfaces.INonBlockingDriver, Kaban.Core.Interfaces.IPlcBlockAccess
     {
         private readonly int _station;
         private readonly object _gate = new object();
@@ -291,6 +291,62 @@ namespace Kaban.Drivers.Simulation
                     foreach (var t in targets) _memory[t] = value;
             }
             return 0;
+        }
+
+        // ==================================================================
+        // A RUN OF DEVICES (22 October: the PLC Connection page's Read and Write)
+        // ==================================================================
+
+        /// <summary>The simulator answers any device: a backup of it takes the CPU's default sizes.</summary>
+        public bool RefusesOutOfRange { get { return false; } }
+
+        /// <summary>Words from <paramref name="first"/>: a bit device's 16 bits packed into each, the first the lowest.</summary>
+        public bool TryReadBlock(string first, int count, out short[] values)
+        {
+            values = null;
+            string prefix; long start;
+            if (!IsConnected || count < 0 || !Kaban.Core.Helpers.PlcAddressHelper.TrySplit(first, out prefix, out start)) return false;
+            bool bits = Kaban.Core.Helpers.PlcAddressHelper.IsBitDevice(first);
+            var words = new short[count];
+            lock (_gate)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    if (!bits) { words[i] = (short)Stored(Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i)); continue; }
+                    int w = 0;
+                    for (int b = 0; b < 16; b++)
+                        if (Stored(Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + 16L * i + b)) != 0) w |= 1 << b;
+                    words[i] = (short)w;
+                }
+            }
+            values = words;
+            return true;
+        }
+
+        public int WriteBlock(string first, short[] values)
+        {
+            string prefix; long start;
+            if (!IsConnected || values == null || !Kaban.Core.Helpers.PlcAddressHelper.TrySplit(first, out prefix, out start)) return -1;
+            bool bits = Kaban.Core.Helpers.PlcAddressHelper.IsBitDevice(first);
+            lock (_gate)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (!bits) { _memory[Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i)] = values[i]; continue; }
+                    for (int b = 0; b < 16; b++)
+                        _memory[Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + 16L * i + b)] = (values[i] >> b) & 1;
+                }
+            }
+            return 0;
+        }
+
+        /// <summary>A device's value as stored (a ramp's as it reads now); 0 for one never written. Under the lock.</summary>
+        private int Stored(string key)
+        {
+            Ramp ramp;
+            if (_ramps.TryGetValue(key, out ramp)) return Evaluate(ramp);
+            int v;
+            return _memory.TryGetValue(key, out v) ? v : 0;
         }
 
         // ==================================================================

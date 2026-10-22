@@ -105,6 +105,8 @@
     <Compile Include="Helpers\DisplaySettings.cs" />
     <Compile Include="Helpers\ViewPreferences.cs" />
     <Compile Include="Helpers\SimpleMotion.cs" />
+    <Compile Include="Helpers\PlcBackup.cs" />
+    <Compile Include="Helpers\PlcBlocks.cs" />
     <Compile Include="Helpers\NumericLimits.cs" />
     <Compile Include="Helpers\AuditLogReader.cs" />
     <Compile Include="Helpers\InputLimitsCalculation.cs" />
