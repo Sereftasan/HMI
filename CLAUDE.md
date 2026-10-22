@@ -49,6 +49,9 @@
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
 - The program's lines naming each translation key (HMI Settings > Translation, "Where is it used?" on a panel without
   the source): `tools\translation_uses.py` -> `KabanHMI\TranslationUses.csv`, made again in every batch.
+- Alarm texts in `Alarms.json` (22 October): inherited from the Industry 4 program, kept as they are for now (Config
+  Import still copies the file whole). The two alarm handlings - Industry 4 logging and the HMI's - are to be combined
+  when Industry 4 logging comes into this program; the alarm texts go to the translation files then.
 
 ## Open questions (answer here or in a message)
 1. The back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are on the rows' **back** side - is any of
