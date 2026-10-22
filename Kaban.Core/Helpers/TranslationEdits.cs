@@ -201,7 +201,8 @@ namespace Kaban.Core.Helpers
             return Save(wanted, out notWritten, user, raise);
         }
 
-        public static int Save(IEnumerable<Wanted> wanted, out int notWritten, string user = null, bool raise = true)
+        /// <param name="done">Given: the changes made are added to it (the translation page's undo keeps them).</param>
+        public static int Save(IEnumerable<Wanted> wanted, out int notWritten, string user = null, bool raise = true, List<Change> done = null)
         {
             notWritten = 0;
             user = string.IsNullOrEmpty(user) ? CurrentUser() : user;
@@ -226,6 +227,7 @@ namespace Kaban.Core.Helpers
                 if (history.Count == 0) return 0;
                 notWritten = writes.Flush().Count(ok => !ok);
                 AppendHistory(history);
+                if (done != null) done.AddRange(history);
             }
             if (raise) LanguageManager.RaiseLanguageChanged();
             AuditLogger.Log("translations changed on the panel: " + history.Count + " text(s) written into the translation files (" +

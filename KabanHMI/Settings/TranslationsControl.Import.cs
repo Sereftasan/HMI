@@ -193,7 +193,7 @@ namespace Kaban.UI.Settings
                     }
                 }
             if (res.Blocks == 0) return res;
-            return Apply(incoming, res, "AI", T("Ttl_TrnReviewAi", "The AI's translations - the changes to confirm"),
+            return Apply(incoming, res, "AI", T("Ttl_TrnReviewAi", "The AI's translations - the changes to confirm"), T("Undo_TrnAi", "the AI's translations"),
                          T("Msg_TrnReviewAi", "The AI's texts for the empty cells are written at once. These change a text: tick the ones to take (a New cell can be corrected first)."));
         }
 
@@ -260,6 +260,7 @@ namespace Kaban.UI.Settings
                 }
             }
             return Apply(incoming, res, "import", T("Ttl_TrnReviewOld", "The older installation's translations - the changes to confirm"),
+                         T("Undo_TrnOld", "the older installation's translations"),
                          T("Msg_TrnReviewOld", "Its texts for the empty cells are written at once. These differ from this program's: the ones entered on this panel " +
                                                "are ticked - the others may be older than this program's own. Tick the ones to take."));
         }
@@ -320,6 +321,7 @@ namespace Kaban.UI.Settings
                 }
             }
             return Apply(incoming, res, "import", T("Ttl_TrnReviewFiles", "The files' translations - the changes to confirm"),
+                         T("Undo_TrnFiles", "the files' translations"),
                          T("Msg_TrnReviewOld", "Its texts for the empty cells are written at once. These differ from this program's: the ones entered on this panel " +
                                                "are ticked - the others may be older than this program's own. Tick the ones to take."));
         }
@@ -392,7 +394,7 @@ namespace Kaban.UI.Settings
                 }
             }
             if (res.Blocks == 0) { res.NoFiles = true; return res; }
-            return Apply(incoming, res, null, T("Ttl_TrnReviewProject", "Into the project's files - the changes to confirm"),
+            return Apply(incoming, res, null, T("Ttl_TrnReviewProject", "Into the project's files - the changes to confirm"), null,
                          T("Msg_TrnReviewProject", "The texts for the project's empty cells are written at once. These differ from the project's: the ones entered " +
                                                    "on this panel are ticked - the others may be older than the project's own. Tick the ones to write into the project."),
                          project: true);
@@ -405,7 +407,8 @@ namespace Kaban.UI.Settings
         /// an empty cell - written at once; a change - listed for review, the ticked written. By:
         /// the history's note on who (the user and "AI" / "import"); project: into the project's files.
         /// </summary>
-        private ImportResult Apply(List<Incoming> incoming, ImportResult res, string by, string title, string intro, bool project = false)
+        /// <param name="undoWhat">What the undo step is called ("the AI's translations").</param>
+        private ImportResult Apply(List<Incoming> incoming, ImportResult res, string by, string title, string undoWhat, string intro, bool project = false)
         {
             if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
             var fills = new List<Incoming>();
@@ -457,8 +460,11 @@ namespace Kaban.UI.Settings
                 return res;
             }
             int notWritten;
-            TranslationEdits.Save(wanted, out notWritten, CurrentUser() + (by != null ? " (" + by + ")" : ""));
+            var done = new List<TranslationEdits.Change>();
+            TranslationEdits.Save(wanted, out notWritten, CurrentUser() + (by != null ? " (" + by + ")" : ""), true, done);
             res.NotWritten = notWritten;
+            // one step: Ctrl+Z (or the undo on top) puts every text it wrote back as it was
+            PushWritten(undoWhat ?? title, done);
             // what was typed in those cells and not saved gives way to what was taken
             foreach (var w in wanted) _pending.Remove(Id(w.Row.Owner, w.Row.Key, w.Lang));
             if (_pending.Count == 0) _dirty.Reset();

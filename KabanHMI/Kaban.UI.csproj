@@ -221,6 +221,10 @@
     <Compile Include="Settings\TranslationLanguageForms.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings\TranslationsControl.Undo.cs">
+      <DependentUpon>TranslationsControl.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Settings\TranslationsControl.Import.cs">
       <DependentUpon>TranslationsControl.cs</DependentUpon>
       <SubType>UserControl</SubType>

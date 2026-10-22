@@ -41,7 +41,7 @@ namespace Kaban.UI.Settings
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
-        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind;
+        private readonly Button _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind;
         /// <summary>The row asked for from elsewhere (the notes page): marked until another is chosen.</summary>
         private string _marked;
 
@@ -122,7 +122,10 @@ namespace Kaban.UI.Settings
             };
             _btnSave = UiStyle.ToolButton(E(0x1F4BE), T("Tip_TrnSave", "Save: the texts typed in force and written into their translation files - every change in the history"), _tips,
                                           (s, e) => Save());
-            _btnRevert = UiStyle.ToolButton("↺", T("Tip_TrnRevert", "Throw away the texts typed and not saved"), _tips, (s, e) => Revert());
+            // 23 October: "discard the changes after the AI translation file import with Ctrl+Z on top of the screen":
+            // the curl that only threw away the texts typed is Undo now - a text typed, an import, a Save - with Redo
+            _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_TrnUndo", "Undo the last change: a text typed, an import, a Save"), _tips, (s, e) => Undo());
+            _btnRedo = UiStyle.IconButton(ToolGlyphs.Redo, "Redo", T("Tip_TrnRedo", "Redo the change undone last"), _tips, (s, e) => Redo());
             _btnAddLang = UiStyle.ToolButton(E(0x2795), T("Tip_TrnAddLang", "Add a language"), _tips, (s, e) => AddLanguage());
             _btnDelLang = UiStyle.ToolButton(E(0x1F5D1), T("Tip_TrnDelLang", "Delete a language (not English)"), _tips, null);
             _btnDelLang.Click += (s, e) => DeleteLanguageMenu().Show(_btnDelLang, new Point(0, _btnDelLang.Height));
@@ -151,8 +154,9 @@ namespace Kaban.UI.Settings
                                           _tips, (s, e) => FindUses());
             Kaban.UI.Helpers.Shortcuts.Set(_btnFind, Keys.Control | Keys.F, _tips,
                                            T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"));
-            _dirty.Guard(_btnSave, _btnRevert);
-            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind })
+            _dirty.Guard(_btnSave);
+            UpdateUndoButtons();
+            foreach (var b in new[] { _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind })
             {
                 b.Margin = new Padding(2, 1, 2, 1);
                 bar.Controls.Add(b);
@@ -431,8 +435,19 @@ namespace Kaban.UI.Settings
         {
             text = TranslationEdits.Clean(text);
             string id = Id(row.Owner, row.Key, lang);
+            string was;
+            if (!_pending.TryGetValue(id, out was)) was = null;
             _pending.Remove(id);
             if (text != TextOf(row, lang)) _pending[id] = text;
+            string now;
+            if (!_pending.TryGetValue(id, out now)) now = null;
+            var cell = TypedCell(id, was, now);
+            if (cell != null)
+            {
+                var step = new UndoStep { What = string.Format(T("Undo_TrnTyped", "the text typed in {0} {1}"), row.Key, lang) };
+                step.Cells.Add(cell);
+                PushStep(step);
+            }
             if (_pending.Count > 0) _dirty.MarkDirty(); else _dirty.Reset();
             _grid.InvalidateRow(_shown.IndexOf(row) >= 0 ? _shown.IndexOf(row) : 0);
             UpdateStatus();
@@ -579,8 +594,12 @@ namespace Kaban.UI.Settings
                 wanted.Add(new TranslationEdits.Wanted { Row = row, Lang = kv.Key.Substring(kv.Key.LastIndexOf('\u0001') + 1), Text = kv.Value });
             }
             int notWritten;
-            int n = TranslationEdits.Save(wanted, out notWritten);
+            var done = new List<TranslationEdits.Change>();
+            int n = TranslationEdits.Save(wanted, out notWritten, null, true, done);
             _pending.Clear();
+            // the typing is written now: one step, the Save (undone: the texts before it back in their files)
+            _undoSteps.RemoveAll(st => !st.Written);
+            PushWritten(T("Undo_TrnSave", "the Save"), done);
             _dirty.Reset();
             _edits = TranslationEdits.Edits.ToDictionary(e => Id(e.Owner, e.Key, e.Lang), e => e, StringComparer.OrdinalIgnoreCase);
             ApplyFilter();
@@ -596,6 +615,8 @@ namespace Kaban.UI.Settings
                            string.Format(T("Msg_TrnRevert", "Throw away the {0} text(s) typed and not saved?"), _pending.Count))) return;
             _pending.Clear();
             _dirty.Reset();
+            _undoSteps.RemoveAll(st => !st.Written);         // the typing thrown away: nothing of it to undo
+            UpdateUndoButtons();
             ApplyFilter();
         }
 
@@ -645,13 +666,23 @@ namespace Kaban.UI.Settings
                           .Where(t => t != from && _langs.Contains(t, StringComparer.OrdinalIgnoreCase)).Distinct().ToList();
             if (!_langs.Contains(from, StringComparer.OrdinalIgnoreCase) || targets.Count == 0) return 0;
             int n = 0;
+            var step = new UndoStep { What = string.Format(T("Undo_TrnCopyLang", "{0} copied into the empty cells of {1}"), from, string.Join(", ", targets)) };
             foreach (var r in (shownOnly ? _shown : _rows).ToList())
             {
                 var text = TextOf(r, from);
                 if (text.Trim().Length == 0) continue;
                 foreach (var t in targets)
-                    if (TextOf(r, t).Trim().Length == 0) { _pending[Id(r.Owner, r.Key, t)] = text; n++; }
+                    if (TextOf(r, t).Trim().Length == 0)
+                    {
+                        string id = Id(r.Owner, r.Key, t), was;
+                        if (!_pending.TryGetValue(id, out was)) was = null;
+                        _pending[id] = text;
+                        n++;
+                        var cell = TypedCell(id, was, text);
+                        if (cell != null) step.Cells.Add(cell);
+                    }
             }
+            PushStep(step);
             if (n > 0) _dirty.MarkDirty();
             _grid.Invalidate();
             UpdateStatus();
