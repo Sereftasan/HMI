@@ -30,8 +30,10 @@ namespace Kaban.UI.Forms
         private readonly DataGridView _members = new DataGridView();
         private readonly Label _problem = new Label();
         private readonly ToolTip _tips = new ToolTip();
-        private readonly Button _new, _copy, _delete, _addMember, _removeMember, _up, _down;
+        private readonly Button _new, _copy, _delete, _typeUp, _typeDown, _addMember, _removeMember, _up, _down;
         private readonly List<StructuredTypes.Type> _work;
+        /// <summary>Each structure's name when the window opened (a renamed one keeps it as a former name).</summary>
+        private readonly Dictionary<StructuredTypes.Type, string> _opened = new Dictionary<StructuredTypes.Type, string>();
         /// <summary>The station whose machine's types these are (each machine keeps its own).</summary>
         private readonly int _station;
         private bool _filling;
@@ -65,6 +67,7 @@ namespace Kaban.UI.Forms
             MinimumSize = new Size(820, 460);
 
             _work = StructuredTypes.All(station).Select(t => t.Clone()).ToList();
+            foreach (var t in _work) _opened[t] = t.Name;
             Kaban.UI.Helpers.Shortcuts.Attach(this);      // Insert / Delete / Ctrl+Up / Ctrl+Down: the buttons nearest the focus
 
             // 19 October: "remove the captions - the page's name says it; the buttons on top of
@@ -73,13 +76,19 @@ namespace Kaban.UI.Forms
             const int bottom = 56;                         // OK / Cancel under both halves
 
             // ---- the list: its buttons above it ----
-            var left = new Panel { Bounds = new Rectangle(0, 0, 238, ClientSize.Height - bottom), Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left };
+            // 23 October: "it would be nice if I could change the structured data types list's order - it
+            // could be too messy when too many are added": up / down beside the list's buttons too
+            var left = new Panel { Bounds = new Rectangle(0, 0, 266, ClientSize.Height - bottom), Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left };
             Controls.Add(left);
             _new = UiStyle.ToolButton(E(0x2795), T("Tip_StructNew", "New structure"), _tips);
             _copy = UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_StructCopy", "A copy of the structure chosen"), _tips);
             _delete = UiStyle.ToolButton(E(0x1F5D1), T("Tip_StructDelete", "Delete the structure chosen"), _tips);
-            Bar(left, 14, 10, _new, _copy, _delete);
-            _types.SetBounds(14, 50, 210, left.Height - 50);
+            _typeUp = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_StructTypeUp", "Move the structure chosen up the list"), _tips);
+            _typeDown = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_StructTypeDown", "Move the structure chosen down the list"), _tips);
+            Kaban.UI.Helpers.Shortcuts.Set(_typeUp, Keys.Control | Keys.Up, _tips, T("Tip_StructTypeUp", "Move the structure chosen up the list"));
+            Kaban.UI.Helpers.Shortcuts.Set(_typeDown, Keys.Control | Keys.Down, _tips, T("Tip_StructTypeDown", "Move the structure chosen down the list"));
+            Bar(left, 14, 10, _new, _copy, _delete, _typeUp, _typeDown);
+            _types.SetBounds(14, 50, 238, left.Height - 50);
             _types.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             _types.IntegralHeight = false;
             left.Controls.Add(_types);
@@ -162,6 +171,8 @@ namespace Kaban.UI.Forms
             _new.Click += (s, e) => NewType(null);
             _copy.Click += (s, e) => { if (Current != null) NewType(Current); };
             _delete.Click += (s, e) => DeleteType();
+            _typeUp.Click += (s, e) => MoveType(-1);
+            _typeDown.Click += (s, e) => MoveType(+1);
             _name.TextChanged += (s, e) => { if (_filling || Current == null) return; Current.Name = _name.Text.Trim(); RefreshList(); UpdateState(); };
             _size.ValueChanged += (s, e) => { if (_filling || Current == null) return; Current.Size = (int)_size.Value; UpdateState(); };
             _comment.TextChanged += (s, e) => { if (_filling || Current == null) return; Current.Comment = _comment.Text.Trim(); };
@@ -197,6 +208,7 @@ namespace Kaban.UI.Forms
                     MessageBox.Show(this, bad, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+                KeepFormerNames();
                 StructuredTypes.Save(_work, _station);
             };
 
@@ -267,6 +279,7 @@ namespace Kaban.UI.Forms
         private void NewType(StructuredTypes.Type from)
         {
             var t = from != null ? from.Clone() : new StructuredTypes.Type { Size = 1 };
+            t.FormerNames.Clear();                        // a copy was never called anything else
             string stem = from != null ? from.Name + "_Copy" : "Structure";
             string name = stem;
             for (int n = 2; _work.Any(o => string.Equals(o.Name, name, StringComparison.OrdinalIgnoreCase)); n++) name = stem + n;
@@ -290,6 +303,36 @@ namespace Kaban.UI.Forms
             RefreshList();
             if (_work.Count > 0) _types.SelectedIndex = Math.Min(at, _work.Count - 1);
             ShowCurrent();
+        }
+
+        /// <summary>The structure chosen one place up (-1) or down (+1) the list - the order the data type lists show them in.</summary>
+        internal void MoveType(int by)
+        {
+            int i = _types.SelectedIndex, j = i + by;
+            if (i < 0 || i >= _work.Count || j < 0 || j >= _work.Count) return;
+            var t = _work[i];
+            _work[i] = _work[j];
+            _work[j] = t;
+            RefreshList();
+            _types.SelectedIndex = j;              // shows it (the same structure, at its new place)
+            UpdateButtons();
+        }
+
+        /// <summary>
+        /// A structure renamed: its name of before kept with it, so a label of the label list, a PLC Monitor
+        /// row or a saved tab naming the old one still finds it. A name some structure has now is none's former.
+        /// </summary>
+        internal void KeepFormerNames()
+        {
+            foreach (var t in _work)
+            {
+                string was;
+                if (_opened.TryGetValue(t, out was) && was.Length > 0 && !string.Equals(was, t.Name, StringComparison.OrdinalIgnoreCase) &&
+                    !t.FormerNames.Any(f => string.Equals(f, was, StringComparison.OrdinalIgnoreCase)))
+                    t.FormerNames.Add(was);
+            }
+            foreach (var t in _work)
+                t.FormerNames.RemoveAll(f => _work.Any(o => string.Equals(o.Name, f, StringComparison.OrdinalIgnoreCase)));
         }
 
         // ---- the structure shown ---------------------------------------------------------
@@ -495,6 +538,8 @@ namespace Kaban.UI.Forms
             bool chosen = t != null && i >= 0 && i < _members.Rows.Count;
             Enable(_copy, t != null);
             Enable(_delete, t != null);
+            Enable(_typeUp, t != null && _types.SelectedIndex > 0);
+            Enable(_typeDown, t != null && _types.SelectedIndex < _work.Count - 1);
             Enable(_addMember, t != null);
             Enable(_removeMember, chosen);
             Enable(_up, chosen && i > 0);

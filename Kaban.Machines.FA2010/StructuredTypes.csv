@@ -1,7 +1,9 @@
 ﻿# Kaban HMI structured data types - the PLC Monitor's, chosen like a simple data type.
 # [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment
 #   and, for a value the PLC Monitor also shows calculated: ;Divisor;Decimal places after the comment
+#   a renamed type's names of before (its labels still find it): #formerly;Name;Name under its [Name] line
 [Milling Steps];16;Used for the milling operation steps
+#formerly;Milling Step
 Cooling Selection;Bit;0;1;
 Motor Selection;Bit;0;5;
 X Position;Double Word [Signed];1;;;100;2
@@ -61,6 +63,7 @@ Cut Speed 8;Word [Signed];47;;Kesim Hız8 - xxx.xx mm;100;2
 Cut Speed 9;Word [Signed];48;;Kesim Hız9 - xxx.xx mm;100;2
 Cut Speed 10;Word [Signed];49;;Kesim Hız10 - xxx.xx mm;100;2
 [Milling Parameters];10;FREZE İŞLEM PARAMETRELERİ - İşlem No 1-100: R26000 + 10 each
+#formerly;Milling Operation Parameters
 Tool No;Word [Signed];0;;Takım No (1-4)
 Tool Angle;Word [Signed];1;;Takım Açısı - xxx.xx;100;2
 Operation Length;Word [Signed];2;;İşlem Uzunluğu - xxx.xx mm;100;2
@@ -68,11 +71,13 @@ Profile Approach Y;Word [Signed];3;;Profil Yaklaşma Y - xxx.xx mm;100;2
 Profile Approach Z;Word [Signed];4;;Profil Yaklaşma Z - xxx.xx mm;100;2
 Milling Speed;Word [Signed];5;;Freze Hızı - xxx.xx mm;100;2
 [Special Cut Parameters];5;<> KESİM İŞLEM PARAMETRELERİ - İşlem No 1001-1010: R25650 + 5 each
+#formerly;Cutting Operation Parameters
 Cut Angle;Word [Signed];0;;Kesim Açısı - xxx.x;10;1
 V Cut Y Approach;Word [Signed];1;;V Kesim Y Yaklaşma - xxx.xx mm;100;2
 Exit Robot Hold Position;Word [Signed];2;;Çıkış Rbt. Tutma Poz. - xxx.xx mm;100;2
 Cut X Offset;Word [Signed];3;;Kesim X Ofseti - xxx.xx mm;100;2
 [Special Cut Steps];10;<> KESİM ADIMLARI - 30 steps: R25700 + 10 each
+#formerly;Cutting Step
 Operation Code;Word [Signed];0;;İşlem Kodu: 1 clamps close - 2 clamps open - 3 robots carry - 4 normal cut - 5 V cut - 6 exit robot pulls the profile - 7 recipe merge
 Robot 1;Word [Signed];1;;Robot1 - xxx.xx mm;100;2
 Robot 2;Word [Signed];2;;Robot 2 - xxx.xx mm;100;2

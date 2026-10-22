@@ -84,6 +84,9 @@ class FS {
         Check("Special Cut Steps: 10 devices, the clamps bits 5.0 and 5.1",
               step.Size == 10 && step.Members.Any(m => m.Name == "Left Clamp" && m.Offset == 5 && m.Bit == 0) &&
               step.Members.Any(m => m.Name == "Right Clamp" && m.Offset == 5 && m.Bit == 1));
+        Check("the user's renames kept as former names: a label or a saved tab of 'Cutting Step' still finds 'Special Cut Steps'",
+              types.First(t => t.Name == "Special Cut Steps").FormerNames.SequenceEqual(new[] { "Cutting Step" }) &&
+              types.First(t => t.Name == "Milling Steps").FormerNames.SequenceEqual(new[] { "Milling Step" }));
         var again = StructuredTypes.Parse(StructuredTypes.Serialize(types));
         Check("saved and read again: the same types, sizes, members and divisors",
               again.Count == types.Count && again.Zip(types, (a, b) => a.Name == b.Name && a.Size == b.Size && a.Members.Count == b.Members.Count &&

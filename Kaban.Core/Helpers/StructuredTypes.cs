@@ -72,6 +72,11 @@ namespace Kaban.Core.Helpers
             public int Size;
             public string Comment = "";
             public readonly List<Member> Members = new List<Member>();
+            /// <summary>
+            /// The names it had before (23 October: the user renamed "Milling Step" to "Milling Steps"): a
+            /// label list's or a PLC Monitor row's data type of an old name still finds it.
+            /// </summary>
+            public readonly List<string> FormerNames = new List<string>();
 
             /// <summary>The words its members reach: the smallest size it can have.</summary>
             public int MinimumSize { get { return Members.Count == 0 ? 1 : Members.Max(m => m.Offset + m.Words); } }
@@ -91,6 +96,7 @@ namespace Kaban.Core.Helpers
             {
                 var t = new Type { Name = Name, Size = Size, Comment = Comment };
                 t.Members.AddRange(Members.Select(m => m.Clone()));
+                t.FormerNames.AddRange(FormerNames);
                 return t;
             }
         }
@@ -198,7 +204,12 @@ namespace Kaban.Core.Helpers
             var name = BaseName(dataType);
             if (name.Length == 0) return null;
             lock (_lock)
-                return LibraryFor(station).Types.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
+            {
+                var types = LibraryFor(station).Types;
+                // a name of now first, then one a type had before (renamed)
+                return types.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)) ??
+                       types.FirstOrDefault(t => t.FormerNames.Any(f => string.Equals(f, name, StringComparison.OrdinalIgnoreCase)));
+            }
         }
 
         /// <summary>The type without the label list's array range: "FrezeAdim(0..19)" - "FrezeAdim".</summary>
@@ -348,17 +359,25 @@ namespace Kaban.Core.Helpers
 
         // ---- the file --------------------------------------------------------------------
 
+        /// <summary>The line after a type's that names what it was called before.</summary>
+        public const string FormerPrefix = "#formerly;";
+
         public static List<string> Serialize(IEnumerable<Type> types)
         {
             var lines = new List<string>
             {
                 "# Kaban HMI structured data types - the PLC Monitor's, chosen like a simple data type.",
                 "# [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment",
-                "#   and, for a value the PLC Monitor also shows calculated: ;Divisor;Decimal places after the comment"
+                "#   and, for a value the PLC Monitor also shows calculated: ;Divisor;Decimal places after the comment",
+                "#   a renamed type's names of before (its labels still find it): #formerly;Name;Name under its [Name] line"
             };
             foreach (var t in types)
             {
                 lines.Add("[" + Clean(t.Name) + "];" + t.Size.ToString(CultureInfo.InvariantCulture) + ";" + Clean(t.Comment));
+                // its names of before: a comment line to a program that does not know them
+                var former = t.FormerNames.Select(Clean).Where(f => f.Length > 0 && !string.Equals(f, Clean(t.Name), StringComparison.OrdinalIgnoreCase))
+                              .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+                if (former.Count > 0) lines.Add(FormerPrefix + string.Join(";", former));
                 foreach (var m in t.Members)
                     lines.Add(string.Join(";", Clean(m.Name), Clean(m.DataType), m.Offset.ToString(CultureInfo.InvariantCulture),
                                           m.IsBit ? m.Bit.ToString(CultureInfo.InvariantCulture) : "", Clean(m.Comment)) +
@@ -374,6 +393,11 @@ namespace Kaban.Core.Helpers
             foreach (var raw in lines)
             {
                 var line = (raw ?? "").Trim().TrimStart('﻿');
+                if (current != null && line.StartsWith(FormerPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    current.FormerNames.AddRange(line.Substring(FormerPrefix.Length).Split(';').Select(s => s.Trim()).Where(s => s.Length > 0));
+                    continue;
+                }
                 if (line.Length == 0 || line.StartsWith("#")) continue;
                 var f = line.Split(';');
                 int n;
