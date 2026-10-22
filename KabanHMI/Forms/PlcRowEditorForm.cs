@@ -202,7 +202,7 @@ namespace Kaban.UI.Forms
             _preview.ForeColor = Color.FromArgb(90, 96, 106);
             _preview.SetBounds(214, y - 30, ClientSize.Width - 230, 22);
             Controls.Add(_preview);
-            AddRow(LanguageManager.GetString("Col_Value", "Value"), _value, ref y);
+            AddRow(LanguageManager.GetString("Col_ValuePlc", "Value (PLC)"), _value, ref y);
 
             _label.Text = label ?? "";
             _dataType.Text = string.IsNullOrWhiteSpace(dataType) ? "Bit" : dataType;

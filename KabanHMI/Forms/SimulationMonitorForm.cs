@@ -1201,12 +1201,13 @@ namespace Kaban.UI.Forms
             // How the value is shown and typed: decimal, hexadecimal, binary.
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Format", HeaderText = T("Col_DisplayFormat", "Display Format"), ReadOnly = true });
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Address", HeaderText = T("Col_Address", "Address") });
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value") });
+            // 22 October: "Value (PLC)" and "Value (HMI)" - the value as the PLC holds it, and as the HMI shows it
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_ValuePlc", "Value (PLC)") });
             grid.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             // THE CALCULATED VALUE (22 October): the value divided by the row's divisor, with its
             // decimal places - both units side by side; a column like any other, taken off when not wanted.
-            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Calculated", HeaderText = T("Col_Calculated", "Calculated Value"),
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Calculated", HeaderText = T("Col_ValueHmi", "Value (HMI)"),
                                                              ToolTipText = T("Tip_MonCalculated", "The value divided by the divisor, with the decimal places - typed, it is written times the divisor") });
             grid.Columns["Calculated"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.Columns["Calculated"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;

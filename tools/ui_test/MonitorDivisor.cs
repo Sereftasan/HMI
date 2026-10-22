@@ -115,7 +115,8 @@ class MD {
         var shown = grid.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Where(c => c.Visible).Select(c => c.Name).ToList();
         Check("Calculated Value, Divisor, Decimal Places right after Value", string.Join(",", shown) == "Label,DataType,Format,Address,Value,Calculated,Divisor,Decimals,Changed",
               string.Join(",", shown));
-        Check("  their headings", grid.Columns["Calculated"].HeaderText == "Calculated Value" && grid.Columns["Divisor"].HeaderText == "Divisor" &&
+        // 22 October (evening): "Value" is "Value (PLC)", "Calculated Value" "Value (HMI)"
+        Check("  their headings", grid.Columns["Value"].HeaderText == "Value (PLC)" && grid.Columns["Calculated"].HeaderText == "Value (HMI)" && grid.Columns["Divisor"].HeaderText == "Divisor" &&
               grid.Columns["Decimals"].HeaderText == "Decimal Places");
 
         Console.WriteLine("--- a word, a double word, a float, a bit, a string ---");
