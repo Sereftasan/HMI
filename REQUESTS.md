@@ -6,6 +6,15 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 22 October (later):
+  - 82fbd36 - Translation page: 📥 one import menu beside 🤖 - an older installation's folder (the keys still used, its
+    languages asked), translation files, the AI's answer (files, copied). Empty cells written at once, every change
+    confirmed in a list (ticked: the AI's, and what this panel's history says was typed here). 📤 "Into the project's
+    files (Visual Studio)": the panel's texts into the project, each change confirmed. Save no longer writes the
+    project's copy; Config Import no longer copies translation files.
+  - f856f85 - Add a language: its name (offered from the code, to correct), kept and used for the AI.
+  - e4926f4 - 🤖 and 📥 in colour (Windows drew the robot flat blue).
+  - f6394bc - Notes and feedback: picking turns off when the page is closed (on again when it opens).
 - 22 October - the Translation page:
   - 408c379 - Save writes the texts straight into their translation files (CommonTranslations.csv, a machine's
     Translations.csv, an Alarms.json - edited in place, comments and order kept); from Visual Studio's build the
