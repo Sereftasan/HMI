@@ -310,6 +310,31 @@ class TP {
                                              Texts = new List<NoteText> { new NoteText { Lang = "TR", Text = "Dosyasiz" } } });
         Check("  a key no file has: on the screen as before, not written", !free.Written && LanguageManager.GetStringIn("TR", "Btn_NoFile") == "Dosyasiz");
 
+        Console.WriteLine("--- the history reset (an Admin) ---");
+        int before = TranslationEdits.History().Count;
+        var mainBefore = File.ReadAllText(main);
+        using (var h = new TranslationHistoryForm())
+        {
+            h.Show(); Application.DoEvents();
+            Check("Maintenance: no reset button, no reset", !((Button)Get(h, "ResetButton")).Visible && !(bool)Call(h, "ResetHistory") && TranslationEdits.ResetHistory() == -1 &&
+                  TranslationEdits.History().Count == before);
+        }
+        SecurityManager.Login("admin", SecurityLevel.Admin);
+        using (var h = new TranslationHistoryForm())
+        {
+            h.Show(); Application.DoEvents();
+            var hg = (DataGridView)Get(h, "Grid");
+            Check("an Admin: the 🗑 button; asked, the list emptied", ((Button)Get(h, "ResetButton")).Visible && hg.Rows.Count == before && (bool)Call(h, "ResetHistory") &&
+                  hg.Rows.Count == 0 && TranslationEdits.History().Count == 0 && (bool)Get(h, "WasReset"));
+        }
+        var bak = Directory.GetFiles(TranslationEdits.Folder, "TranslationHistory_*.bak");
+        Check("  the list kept beside it (.bak), the texts as they were, none marked edited any more", bak.Length == 1 && File.ReadAllLines(bak[0]).Length == before + 1 &&
+              File.ReadAllText(main) == mainBefore && !TranslationEdits.Edits.Any() && LanguageManager.GetStringIn("TR", "Unit_Saw") == "Testere",
+              bak.Length + " " + TranslationEdits.Edits.Count());
+        Call(c, "Type", row("Unit_Saw"), "RU", "Pila");
+        Call(c, "Save");
+        Check("  the next change: a new history", TranslationEdits.History().Count == 1 && TranslationEdits.History()[0].User == "admin");
+
         form.Close();
         MachineRegistry.Reset();
         try { Directory.Delete(dir, true); } catch { }

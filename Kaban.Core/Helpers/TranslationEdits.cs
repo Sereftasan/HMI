@@ -528,6 +528,35 @@ namespace Kaban.Core.Helpers
 
         private static string Unescape(string text) { return (text ?? "").Replace("\\r\\n", "\r\n").Replace("\\n", "\n"); }
 
+        /// <summary>
+        /// The edit history emptied - an Admin's (22 October: "the admin user should be able to reset
+        /// the edit history list as well"): the list put away beside it (TranslationHistory_<time>.bak),
+        /// the texts left in the files as they are - the table marks none edited any more. The number
+        /// of changes it had; -1: not an Admin's, or it could not be put away.
+        /// </summary>
+        public static int ResetHistory()
+        {
+            if (!SecurityManager.HasAccess(Kaban.Core.Enums.SecurityLevel.Admin)) return -1;
+            lock (_lock)
+            {
+                try
+                {
+                    if (!File.Exists(HistoryFile)) return 0;
+                    int n = History().Count;
+                    var kept = Path.Combine(Folder, "TranslationHistory_" + DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture) + ".bak");
+                    if (File.Exists(kept)) File.Delete(kept);
+                    File.Move(HistoryFile, kept);
+                    AuditLogger.Log("translation edit history reset by " + CurrentUser() + ": " + n + " change(s) put away as " + Path.GetFileName(kept) + ".");
+                    return n;
+                }
+                catch (Exception ex)
+                {
+                    AuditLogger.Log("could not reset the translation edit history: " + ex.Message);
+                    return -1;
+                }
+            }
+        }
+
         private static string CurrentUser()
         {
             try { return string.IsNullOrEmpty(SecurityManager.CurrentUser) ? "?" : SecurityManager.CurrentUser; } catch { return "?"; }

@@ -717,7 +717,9 @@ namespace Kaban.UI.Settings
         {
             using (var f = new TranslationHistoryForm())
             {
-                if (f.ShowDialog(FindForm()) != DialogResult.OK || f.ChosenKey == null) return;
+                var chosen = f.ShowDialog(FindForm());
+                if (f.WasReset) { LoadRows(); ApplyFilter(); }
+                if (chosen != DialogResult.OK || f.ChosenKey == null) return;
                 ClearFilters();
                 SearchText = f.ChosenKey;
             }
@@ -768,9 +770,12 @@ namespace Kaban.UI.Settings
         private readonly TextBox _search = new TextBox();
         private readonly ToolTip _tips = UiStyle.Tips();
         private List<TranslationEdits.Change> _all;
+        private readonly Button _reset;
 
         /// <summary>The key double clicked (null: none).</summary>
         public string ChosenKey { get; private set; }
+        /// <summary>The history emptied while open (the table's edited marks to read again).</summary>
+        public bool WasReset { get; private set; }
 
         private static string T(string key, string fallback) { return LanguageManager.GetString(key, fallback); }
 
@@ -795,6 +800,16 @@ namespace Kaban.UI.Settings
             var export = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F4E4), T("Tip_TrnHistoryExport", "Export the changes shown (CSV)"), _tips, (s, e) => Export());
             export.Margin = new Padding(8, 1, 3, 1);
             bar.Controls.Add(export);
+            // 22 October: "the admin user should be able to reset the edit history list as well"
+            _reset = UiStyle.ToolButton(char.ConvertFromUtf32(0x1F5D1), T("Tip_TrnHistoryReset",
+                "Reset the history (Admin): the list emptied and kept as a .bak file beside it - the texts stay as they are, none marked edited any more"),
+                _tips, (s, e) => ResetHistory());
+            _reset.Margin = new Padding(3, 1, 3, 1);
+            _reset.Name = "trnHistoryReset";
+            _reset.Visible = SecurityManager.HasAccess(SecurityLevel.Admin);
+            Kaban.UI.Helpers.Shortcuts.Set(_reset, Keys.None, _tips, T("Tip_TrnHistoryReset",
+                "Reset the history (Admin): the list emptied and kept as a .bak file beside it - the texts stay as they are, none marked edited any more"));
+            bar.Controls.Add(_reset);
 
             _grid.Dock = DockStyle.Fill;
             _grid.ReadOnly = true;
@@ -834,6 +849,27 @@ namespace Kaban.UI.Settings
         }
 
         internal DataGridView Grid { get { return _grid; } }
+        internal Button ResetButton { get { return _reset; } }
+
+        /// <summary>🗑 (an Admin): the history emptied once asked - false when not.</summary>
+        internal bool ResetHistory()
+        {
+            if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return false;
+            int count = TranslationEdits.History().Count;
+            if (count == 0) return false;
+            if (!Ask.YesNo(this, T("Ttl_TrnHistory", "Translation - edit history"), string.Format(T("Msg_TrnHistoryReset",
+                "Empty the edit history ({0} change(s))? The texts stay in the translation files as they are - the table marks none as edited any more. " +
+                "The list is kept as a TranslationHistory_....bak file beside it."), count))) return false;
+            if (TranslationEdits.ResetHistory() < 0)
+            {
+                Ask.Tell(this, T("Ttl_TrnHistory", "Translation - edit history"), T("Msg_TrnHistoryResetFailed", "The history could not be reset - the event log says why."));
+                return false;
+            }
+            WasReset = true;
+            _all = TranslationEdits.History();
+            Fill();
+            return true;
+        }
 
         private IEnumerable<TranslationEdits.Change> Shown()
         {
