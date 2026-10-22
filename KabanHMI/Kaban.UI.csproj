@@ -92,6 +92,7 @@
     <Compile Include="Helpers\AlarmSound.cs" />
     <Compile Include="Helpers\MachineLinks.cs" />
     <Compile Include="Helpers\WriteSource.cs" />
+    <Compile Include="Helpers\MotionFlash.cs" />
     <Compile Include="Helpers\AlarmReset.cs" />
     <Compile Include="Helpers\DeviceCollector.cs" />
     <Compile Include="Helpers\TextUses.cs" />
@@ -187,6 +188,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\NumpadForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WorkForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SimulationMonitorForm.cs">

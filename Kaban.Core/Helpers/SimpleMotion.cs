@@ -17,8 +17,17 @@ namespace Kaban.Core.Helpers
     /// The addresses are the module's own, from Mitsubishi's buffer memory list
     /// (80SSC_Devicelist.xls, FX5-SSC-S column): an axis's monitor data is
     /// 2400 + 100 x (axis - 1), its parameters 0 + 150 x (axis - 1), BUSY one bit
-    /// per axis of 31501. Read only - a parameter written here would need the
-    /// module's flash ROM written to keep it, which is the module tool's work.
+    /// per axis of 31501.
+    ///
+    /// THE PARAMETERS ARE AN ADMIN'S TO CHANGE (22 October: "Simple motion write device should
+    /// be changed to numerical input ... some parameters need EPROM write as well"). From the
+    /// module's manual (FX5 Simple Motion Module User's Manual (Application), 10.9 Memory
+    /// Configuration and Data Process): a value written to the buffer memory is used AT ONCE for
+    /// the axis's next start (parameter area (b): Pr.8 - Pr.10, Pr.25 - Pr.42, Pr.84), or when the
+    /// "[Cd.190] PLC READY signal" turns on again (area (a): Pr.1 - Pr.7, Pr.11 - Pr.24, Pr.43 -
+    /// Pr.57 ...). Either way the module loads its FLASH ROM at power on, so a value not written
+    /// into it ("[Cd.1] Flash ROM write request", G5900 = 1 - only while PLC READY is off, at most
+    /// 25 times per power on) is gone at the next power off: see <see cref="WriteFlashRom"/>.
     ///
     /// An AxisSettingHMI with its MotionModuleNumber (the n of Un\G, as GX Works3
     /// numbers the module) and its ModuleAxisIndex (1 - 8) shows the ones picked
@@ -74,6 +83,15 @@ namespace Kaban.Core.Helpers
             public Kind Kind;
             /// <summary>The pick list's group: Alarms, Positions, Loads, Flags, Parameters.</summary>
             public string Group = "";
+            /// <summary>A parameter an Admin may type in (written to the module's buffer memory).</summary>
+            public bool Writable;
+            /// <summary>Its setting range, in the module's own counts (the manual's "value set with a program").</summary>
+            public long Min, Max;
+            /// <summary>
+            /// Taken by the module when its PLC READY signal (Cd.190) turns on (parameter area (a));
+            /// false: at the axis's next start (area (b)).
+            /// </summary>
+            public bool AtPlcReady;
         }
 
         private static Item I(string key, string title, string reference, int b, int stride, Kind kind, string group,
@@ -84,6 +102,15 @@ namespace Kaban.Core.Helpers
                 Key = key, TitleKey = "Mot_" + key, Title = title, Ref = reference, Base = b, Stride = stride, Kind = kind,
                 Group = group, Double = dbl, Signed = signed, Bit = bit, BitPerAxis = bitPerAxis
             };
+        }
+
+        /// <summary>A parameter: typed in by an Admin, within its range, used at PLC READY or at the next start.</summary>
+        private static Item P(string key, string title, string reference, int b, Kind kind, long min, long max, bool atPlcReady,
+                              bool dbl = false, bool signed = false)
+        {
+            var i = I(key, title, reference, b, 150, kind, "Parameters", dbl, signed);
+            i.Writable = true; i.Min = min; i.Max = max; i.AtPlcReady = atPlcReady;
+            return i;
         }
 
         /// <summary>Every value the Axis Settings page can show, in the pick list's order.</summary>
@@ -125,18 +152,18 @@ namespace Kaban.Core.Helpers
             I("RegenerativeLoad", "Regenerative load ratio", "Md.109", 2478, 100, Kind.Percent, "Loads", signed: true),
             I("EffectiveLoad", "Effective load torque", "Md.110", 2479, 100, Kind.Percent, "Loads", signed: true),
             I("PeakTorque", "Peak torque ratio", "Md.111", 2480, 100, Kind.Percent, "Loads", signed: true),
-            // ---- parameters (as set in the module; read only) ----
-            I("UnitSetting", "Unit setting", "Pr.1", 0, 150, Kind.Unit, "Parameters"),
-            I("PulsesPerRevolution", "Pulses per rotation", "Pr.2", 2, 150, Kind.Pulses, "Parameters", dbl: true),
-            I("TravelPerRevolution", "Movement amount per rotation", "Pr.3", 4, 150, Kind.Position, "Parameters", dbl: true),
-            I("Backlash", "Backlash compensation", "Pr.11", 17, 150, Kind.Position, "Parameters"),
-            I("SoftLimitUpper", "Software stroke limit, upper", "Pr.12", 18, 150, Kind.Position, "Parameters", dbl: true, signed: true),
-            I("SoftLimitLower", "Software stroke limit, lower", "Pr.13", 20, 150, Kind.Position, "Parameters", dbl: true, signed: true),
-            I("SpeedLimit", "Speed limit value", "Pr.8", 10, 150, Kind.Speed, "Parameters", dbl: true),
-            I("AccelerationTime", "Acceleration time 0", "Pr.9", 12, 150, Kind.Milliseconds, "Parameters", dbl: true),
-            I("DecelerationTime", "Deceleration time 0", "Pr.10", 14, 150, Kind.Milliseconds, "Parameters", dbl: true),
-            I("HomeAddress", "Home position address", "Pr.45", 72, 150, Kind.Position, "Parameters", dbl: true, signed: true),
-            I("HomingSpeed", "Home return speed", "Pr.46", 74, 150, Kind.Speed, "Parameters", dbl: true)
+            // ---- parameters (as set in the module; an Admin types them in) - ranges from the manual's 10.3 / 10.4 ----
+            P("UnitSetting", "Unit setting", "Pr.1", 0, Kind.Unit, 0, 3, true),
+            P("PulsesPerRevolution", "Pulses per rotation", "Pr.2", 2, Kind.Pulses, 1, 200000000, true, dbl: true),
+            P("TravelPerRevolution", "Movement amount per rotation", "Pr.3", 4, Kind.Position, 1, 200000000, true, dbl: true),
+            P("Backlash", "Backlash compensation", "Pr.11", 17, Kind.Position, 0, 65535, true),
+            P("SoftLimitUpper", "Software stroke limit, upper", "Pr.12", 18, Kind.Position, int.MinValue, int.MaxValue, true, dbl: true, signed: true),
+            P("SoftLimitLower", "Software stroke limit, lower", "Pr.13", 20, Kind.Position, int.MinValue, int.MaxValue, true, dbl: true, signed: true),
+            P("SpeedLimit", "Speed limit value", "Pr.8", 10, Kind.Speed, 1, 2000000000, false, dbl: true),
+            P("AccelerationTime", "Acceleration time 0", "Pr.9", 12, Kind.Milliseconds, 1, 8388608, false, dbl: true),
+            P("DecelerationTime", "Deceleration time 0", "Pr.10", 14, Kind.Milliseconds, 1, 8388608, false, dbl: true),
+            P("HomeAddress", "Home position address", "Pr.45", 72, Kind.Position, int.MinValue, int.MaxValue, true, dbl: true, signed: true),
+            P("HomingSpeed", "Home return speed", "Pr.46", 74, Kind.Speed, 1, 2000000000, true, dbl: true)
         }.AsReadOnly();
 
         /// <summary>The unit setting (Pr.1) of an axis: 0 mm, 1 inch, 2 degree, 3 pulse.</summary>
@@ -172,7 +199,7 @@ namespace Kaban.Core.Helpers
             new KeyValuePair<string, string>("Flags", "Flags"),
             new KeyValuePair<string, string>("Positions", "Positions and speeds"),
             new KeyValuePair<string, string>("Loads", "Loads"),
-            new KeyValuePair<string, string>("Parameters", "Parameters (read only)")
+            new KeyValuePair<string, string>("Parameters", "Parameters")
         }.AsReadOnly();
 
         /// <summary>The highest axis a module has (FX5-80SSC-S: 8).</summary>
@@ -378,6 +405,151 @@ namespace Kaban.Core.Helpers
                 default:
                     return raw.ToString(CultureInfo.InvariantCulture);
             }
+        }
+
+        // ---- AN ADMIN'S VALUE, BACK INTO THE MODULE'S COUNTS ----------------------------------------------------
+
+        /// <summary>
+        /// The number a cell shows for a raw value, in the cell's unit - the keypad's starting value
+        /// (Format's figure without its unit): a position or a speed as the row shows it (the HMI's
+        /// length unit on a length row), 0.1 % a tenth, r/min a hundredth; the rest as counted.
+        /// </summary>
+        public static double Shown(Item item, long raw, int unit, RowUnit row)
+        {
+            switch (item.Kind)
+            {
+                case Kind.Position:
+                case Kind.Speed:
+                    {
+                        if (unit == 3) return raw;
+                        double v = raw / (item.Kind == Kind.Position ? PositionScale(unit) : SpeedScale(unit));
+                        if (row == RowUnit.Length && unit != 2 && unit != 1)
+                            v = UnitManager.ToDisplay(Enums.UnitType.Length, v);
+                        else if (row == RowUnit.Length && unit == 1)
+                            v = UnitManager.ToDisplay(Enums.UnitType.Length, v * 25.4);
+                        return v;
+                    }
+                case Kind.Permille: return raw / 10.0;
+                case Kind.Rpm: return raw / 100.0;
+                default: return raw;
+            }
+        }
+
+        /// <summary>The decimal places a cell's number has (the keypad's): as <see cref="Format(Item,int,int,int,int,int,RowUnit)"/> shows it.</summary>
+        public static int ShownDecimals(Item item, int unit, int decimals, RowUnit row)
+        {
+            switch (item.Kind)
+            {
+                case Kind.Position:
+                    {
+                        if (unit == 3) return 0;
+                        int d = item.Key == "Backlash" || item.Key == "TravelPerRevolution" ? Math.Max(decimals, unit == 0 ? 4 : 5) : decimals;
+                        if (row == RowUnit.Length && unit != 2) d += UnitManager.GetActiveExtraDecimals(Enums.UnitType.Length);
+                        return Math.Min(9, d);
+                    }
+                case Kind.Speed:
+                    {
+                        if (unit == 3) return 0;
+                        int d = unit == 0 ? 2 : 3;
+                        if (row == RowUnit.Length && unit != 2) d = 2 + UnitManager.GetActiveExtraDecimals(Enums.UnitType.Length);
+                        return Math.Min(9, d);
+                    }
+                case Kind.Permille: return 1;
+                case Kind.Rpm: return 2;
+                default: return 0;
+            }
+        }
+
+        /// <summary>
+        /// The module's raw count for a number typed in the cell's unit - <see cref="Shown"/> the other
+        /// way round, rounded to the module's resolution. False when it is outside the parameter's
+        /// setting range (<paramref name="raw"/> is then the nearest it allows).
+        /// </summary>
+        public static bool TryToRaw(Item item, double shown, int unit, RowUnit row, out long raw)
+        {
+            double v = shown;
+            switch (item.Kind)
+            {
+                case Kind.Position:
+                case Kind.Speed:
+                    if (unit != 3)
+                    {
+                        if (row == RowUnit.Length && unit != 2)
+                        {
+                            double mm = UnitManager.ToReference(Enums.UnitType.Length, shown);
+                            v = unit == 1 ? mm / 25.4 : mm;
+                        }
+                        v *= item.Kind == Kind.Position ? PositionScale(unit) : SpeedScale(unit);
+                    }
+                    break;
+                case Kind.Permille: v = shown * 10.0; break;
+                case Kind.Rpm: v = shown * 100.0; break;
+            }
+            double r = Math.Round(v, MidpointRounding.AwayFromZero);
+            long min = item.Writable ? item.Min : item.Double ? (item.Signed ? (long)int.MinValue : 0L) : (item.Signed ? (long)short.MinValue : 0L);
+            long max = item.Writable ? item.Max : item.Double ? (item.Signed ? (long)int.MaxValue : (long)uint.MaxValue) : (item.Signed ? (long)short.MaxValue : (long)ushort.MaxValue);
+            if (double.IsNaN(r) || r < min) { raw = min; return false; }
+            if (r > max) { raw = max; return false; }
+            raw = (long)r;
+            return true;
+        }
+
+        /// <summary>A raw value as the words written: the low word, and the high one of a 32-bit value (0 for one word).</summary>
+        public static void ToWords(Item item, long raw, out int low, out int high)
+        {
+            low = (short)(raw & 0xFFFF);
+            high = item.Double ? (short)((raw >> 16) & 0xFFFF) : 0;
+        }
+
+        // ---- THE MODULE'S FLASH ROM (22 October) ------------------------------------------------------------------
+
+        /// <summary>"[Cd.1] Flash ROM write request": 1 asks the module to write its flash ROM; it sets 0 when done.</summary>
+        public const int FlashWriteRequestAddress = 5900;
+        /// <summary>"[Cd.190] PLC READY signal": the flash ROM is written only while it is off.</summary>
+        public const int PlcReadyAddress = 5950;
+        /// <summary>"[Md.19] Number of write accesses to flash ROM" since power on (two words).</summary>
+        public const int FlashWritesAddress = 4224;
+        /// <summary>A program may write the flash ROM 25 times per power on; the 26th is error 1080H.</summary>
+        public const int MaxFlashWritesPerPowerOn = 25;
+        /// <summary>The module's writing takes up to 5 s (the manual): waited for a little longer.</summary>
+        public const int FlashWriteTimeoutMs = 8000;
+
+        public enum FlashResult { Written, NotConnected, PlcReadyOn, TooManyWrites, Refused, TimedOut }
+
+        /// <summary>
+        /// Writes a module's flash ROM ("execution data backup": its parameters, positioning data,
+        /// block start data and servo parameters as they are in its buffer memory now): PLC READY
+        /// must be off and fewer than 25 writes made since power on; then G5900 = 1, and the module
+        /// sets it back to 0 when it has written. <paramref name="writes"/>: Md.19 afterwards.
+        /// <paramref name="wait"/> sleeps between the polls (a test passes its own).
+        /// </summary>
+        public static FlashResult WriteFlashRom(Interfaces.IPlcDriver driver, int module, out int writes, Action<int> wait = null,
+                                                int timeoutMs = FlashWriteTimeoutMs)
+        {
+            writes = -1;
+            if (driver == null || !driver.IsConnected) return FlashResult.NotConnected;
+            wait = wait ?? (ms => System.Threading.Thread.Sleep(ms));
+            int ready, low, high;
+            if (!driver.TryRead(Device(module, PlcReadyAddress), out ready)) return FlashResult.NotConnected;
+            if ((ready & 1) != 0) return FlashResult.PlcReadyOn;
+            if (driver.TryRead(Device(module, FlashWritesAddress), out low) && driver.TryRead(Device(module, FlashWritesAddress + 1), out high))
+            {
+                writes = (ushort)low | ((ushort)high << 16);
+                if (writes >= MaxFlashWritesPerPowerOn) return FlashResult.TooManyWrites;
+            }
+            if (driver.Write(Device(module, FlashWriteRequestAddress), 1) != 0) return FlashResult.Refused;
+            int waited = 0;
+            while (true)
+            {
+                int request;
+                if (driver.TryRead(Device(module, FlashWriteRequestAddress), out request) && request == 0) break;
+                if (waited >= timeoutMs) return FlashResult.TimedOut;
+                wait(100);
+                waited += 100;
+            }
+            if (driver.TryRead(Device(module, FlashWritesAddress), out low) && driver.TryRead(Device(module, FlashWritesAddress + 1), out high))
+                writes = (ushort)low | ((ushort)high << 16);
+            return FlashResult.Written;
         }
 
         /// <summary>A column's width at factor 1, for its kind.</summary>

@@ -267,6 +267,24 @@ namespace Kaban.Drivers.Simulation
             {
                 _memory[key] = value;
 
+                // A SIMPLE MOTION MODULE'S FLASH ROM WRITE (22 October): "[Cd.1] Flash ROM write
+                // request" (Un\G5900 = 1) is answered as the module does - at once here: the request
+                // back to 0 and "[Md.19] Number of write accesses to flash ROM" (G4224) one more.
+                // Only while "[Cd.190] PLC READY signal" (G5950) is off; on, the request stays.
+                var flash = FlashRequest.Match(key);
+                if (flash.Success && value == 1)
+                {
+                    int ready;
+                    _memory.TryGetValue(flash.Groups[1].Value + "5950", out ready);
+                    if ((ready & 1) == 0)
+                    {
+                        _memory[key] = 0;
+                        int count;
+                        _memory.TryGetValue(flash.Groups[1].Value + "4224", out count);
+                        _memory[flash.Groups[1].Value + "4224"] = count + 1;
+                    }
+                }
+
                 // Drive any mirrored feedback bits so the HMI reacts to the write.
                 List<string> targets;
                 if (_mirrors.TryGetValue(key, out targets))
@@ -284,6 +302,9 @@ namespace Kaban.Drivers.Simulation
         /// address the same cell. Real drivers treat these the same; the previous
         /// version created separate entries and reads appeared to lose writes.
         /// </summary>
+        private static readonly System.Text.RegularExpressions.Regex FlashRequest =
+            new System.Text.RegularExpressions.Regex(@"^(U[0-9A-F]+\\G)5900$");
+
         private static string Normalize(string address)
         {
             return address.Trim().ToUpperInvariant();
