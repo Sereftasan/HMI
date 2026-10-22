@@ -1150,18 +1150,36 @@ namespace Kaban.UI.Controls
             // Copying the cell VALUES into a list, sorting that, and writing them
             // back into the rows that are already there cannot mismatch: a row is
             // rewritten as one unit.
+            //
+            // A ROW MOVES WHOLE (22 October): its values AND what rides on it - the row's Tag
+            // (the alarm definition of Alarm Settings, the change of the translations' review,
+            // a profile's id) and each cell's tag, read-only, tooltip and style. Only the values
+            // moved before: a sorted Alarm Settings table saved one alarm's severity and delay
+            // into another's definition, and the review of a translation import took one row's
+            // text for another key ("An unexpected error" after it, as it fired its events then).
             var cols = new System.Collections.Generic.List<DataGridViewColumn>();
             foreach (DataGridViewColumn c in grid.Columns) cols.Add(c);
 
             var records = new System.Collections.Generic.List<object[]>();
+            var moved = new System.Collections.Generic.List<SortedRow>();
             foreach (DataGridViewRow r in grid.Rows)
             {
                 if (r.IsNewRow) continue;
                 var values = new object[cols.Count];
-                for (int i = 0; i < cols.Count; i++) values[i] = r.Cells[cols[i].Index].Value;
+                var rec = new SortedRow { Tag = r.Tag, Cells = new SortedCell[cols.Count] };
+                for (int i = 0; i < cols.Count; i++)
+                {
+                    var cell = r.Cells[cols[i].Index];
+                    values[i] = cell.Value;
+                    rec.Cells[i] = new SortedCell { Tag = cell.Tag, ReadOnly = cell.ReadOnly && !cols[i].ReadOnly && !r.ReadOnly,
+                                                    Tip = cell.ToolTipText, Style = cell.HasStyle ? cell.Style : null };
+                }
                 records.Add(values);
+                moved.Add(rec);
             }
             if (records.Count < 2) return;
+            var whole = new System.Collections.Generic.Dictionary<object[], SortedRow>();
+            for (int k = 0; k < records.Count; k++) whole[records[k]] = moved[k];
 
             var keyIndex = new System.Collections.Generic.List<int>();
             var keyDesc = new System.Collections.Generic.List<bool>();
@@ -1194,12 +1212,29 @@ namespace Kaban.UI.Controls
                 {
                     if (r.IsNewRow) continue;
                     var values = records[row++];
+                    var rec = whole[values];
+                    // what rides on the row first: a value's event finds the row's own Tag
+                    r.Tag = rec.Tag;
+                    for (int i = 0; i < cols.Count; i++)
+                    {
+                        var cell = r.Cells[cols[i].Index];
+                        var c = rec.Cells[i];
+                        cell.Tag = c.Tag;
+                        if (!cols[i].ReadOnly && !r.ReadOnly) cell.ReadOnly = c.ReadOnly;
+                        cell.ToolTipText = c.Tip;
+                        // a copy: a style object is the grid's for one cell (its repaints follow it)
+                        if (c.Style != null) cell.Style = c.Style.Clone();
+                        else if (cell.HasStyle) cell.Style = null;
+                    }
                     for (int i = 0; i < cols.Count; i++)
                         r.Cells[cols[i].Index].Value = values[i];
                 }
             }
             finally { grid.ResumeLayout(); }
         }
+
+        private sealed class SortedCell { public object Tag; public bool ReadOnly; public string Tip; public DataGridViewCellStyle Style; }
+        private sealed class SortedRow { public object Tag; public SortedCell[] Cells; }
 
         private static int CompareCells(object a, object b)
         {

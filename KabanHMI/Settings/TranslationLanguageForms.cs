@@ -388,22 +388,31 @@ namespace Kaban.UI.Settings
                                                               DefaultCellStyle = { WrapMode = DataGridViewTriState.True } });
             _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Why", HeaderText = T("Col_TrnWhy", "Why"), Width = 220, ReadOnly = true,
                                                               DefaultCellStyle = { WrapMode = DataGridViewTriState.True, ForeColor = Color.FromArgb(90, 96, 106) } });
+            // EACH CHANGE RIDES ON ITS ROW (its Tag), never "the n-th row is the n-th change": a
+            // sort of the table moves the rows (22 October: sorted once, the next review opened
+            // with "An unexpected error" - the sort kept was put back before the OK button was there,
+            // and the changes had been taken by the rows' places, the texts of one key for another).
             _filling = true;
             foreach (var i in _items)
-                _grid.Rows.Add(i.Take, i.Row != null ? i.Row.Key : "", i.Row == null ? "" : i.Row.Owner == TranslationEdits.General ? T("Lbl_TrnGeneral", "General") : i.Row.Owner,
-                               i.Lang, i.Now, i.New, i.Why);
+            {
+                int at = _grid.Rows.Add(i.Take, i.Row != null ? i.Row.Key : "", i.Row == null ? "" : i.Row.Owner == TranslationEdits.General ? T("Lbl_TrnGeneral", "General") : i.Row.Owner,
+                                        i.Lang, i.Now, i.New, i.Why);
+                _grid.Rows[at].Tag = i;
+            }
             _filling = false;
             _grid.CurrentCellDirtyStateChanged += (s, e) => { if (_grid.IsCurrentCellDirty && _grid.CurrentCell is DataGridViewCheckBoxCell) _grid.CommitEdit(DataGridViewDataErrorContexts.Commit); };
             _grid.CellValueChanged += (s, e) =>
             {
-                if (_filling || e.RowIndex < 0 || e.RowIndex >= _items.Count) return;
-                var item = _items[e.RowIndex];
+                var item = ItemOf(e.RowIndex);
+                if (_filling || item == null) return;
                 if (_grid.Columns[e.ColumnIndex].Name == "Take") item.Take = Convert.ToBoolean(_grid.Rows[e.RowIndex].Cells["Take"].Value);
                 if (_grid.Columns[e.ColumnIndex].Name == "New")
                 {
-                    item.New = TranslationEdits.Clean(Convert.ToString(_grid.Rows[e.RowIndex].Cells["New"].Value));
-                    // a text corrected is a text taken
-                    if (!item.Take) { item.Take = true; _filling = true; _grid.Rows[e.RowIndex].Cells["Take"].Value = true; _filling = false; }
+                    var typed = TranslationEdits.Clean(Convert.ToString(_grid.Rows[e.RowIndex].Cells["New"].Value));
+                    // a text corrected is a text taken (a sort writing the same text back is no correction)
+                    bool corrected = typed != TranslationEdits.Clean(item.New);
+                    item.New = typed;
+                    if (corrected && !item.Take) { item.Take = true; _filling = true; _grid.Rows[e.RowIndex].Cells["Take"].Value = true; _filling = false; }
                 }
                 UpdateOk();
             };
@@ -423,6 +432,19 @@ namespace Kaban.UI.Settings
             UpdateOk();
         }
 
+        /// <summary>The change a row shows (null: none).</summary>
+        private Item ItemOf(int row)
+        {
+            return row >= 0 && row < _grid.Rows.Count ? _grid.Rows[row].Tag as Item : null;
+        }
+
+        /// <summary>The row showing a change (-1: none).</summary>
+        private int RowOf(Item item)
+        {
+            for (int r = 0; r < _grid.Rows.Count; r++) if (ReferenceEquals(_grid.Rows[r].Tag, item)) return r;
+            return -1;
+        }
+
         internal DataGridView Grid { get { return _grid; } }
         internal List<Item> Items { get { return _items; } }
         internal string OkText { get { return _ok.Text; } }
@@ -433,7 +455,8 @@ namespace Kaban.UI.Settings
         {
             if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
             _filling = true;
-            for (int r = 0; r < _items.Count; r++) { _items[r].Take = on; _grid.Rows[r].Cells["Take"].Value = on; }
+            foreach (var i in _items) i.Take = on;
+            foreach (DataGridViewRow r in _grid.Rows) r.Cells["Take"].Value = on;
             _filling = false;
             UpdateOk();
         }
@@ -442,13 +465,15 @@ namespace Kaban.UI.Settings
         internal void Tick(int index, bool on)
         {
             if (index < 0 || index >= _items.Count) return;
-            _grid.Rows[index].Cells["Take"].Value = on;
+            int row = RowOf(_items[index]);
+            if (row >= 0) _grid.Rows[row].Cells["Take"].Value = on;
             _items[index].Take = on;
             UpdateOk();
         }
 
         private void UpdateOk()
         {
+            if (_ok == null) return;           // a kept sort put back while the form is made
             _ok.Text = string.Format(_okFormat, _direct, Ticked);
             _ok.Enabled = _direct + Ticked > 0;
         }
