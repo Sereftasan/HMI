@@ -61,7 +61,16 @@ namespace Kaban.UI.Helpers
             string n;
             if (string.IsNullOrEmpty(code)) return "English";
             if (LanguageNames.TryGetValue(code, out n)) return n;
-            // a language added on the Translation page (FR, PL ...): the name the system knows it by
+            // a language added on the Translation page: the name given to it, else the one the system knows the code by
+            try { n = TranslationEdits.NameOf(code); } catch { n = null; }
+            if (!string.IsNullOrEmpty(n)) return n;
+            return SystemName(code) ?? code;
+        }
+
+        /// <summary>The name the system knows a language code by (ISO 639: FR French, PL Polish); null: none.</summary>
+        public static string SystemName(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return null;
             try
             {
                 var c = System.Globalization.CultureInfo.GetCultureInfo(code.Trim().ToLowerInvariant());
@@ -70,7 +79,7 @@ namespace Kaban.UI.Helpers
                     return c.EnglishName.Split('(')[0].Trim();
             }
             catch { }
-            return code;
+            return null;
         }
 
         /// <summary>

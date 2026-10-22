@@ -604,17 +604,17 @@ namespace Kaban.UI.Settings
         /// <summary>➕: the dialog - the code, and a language whose texts it begins with.</summary>
         internal void AddLanguage()
         {
-            string code, from;
-            if (!TranslationLanguageForm.Run(FindForm() ?? (IWin32Window)this, _langs, TextsIn, out code, out from)) return;
-            AddLanguage(code, from);
+            string code, from, name;
+            if (!TranslationLanguageForm.Run(FindForm() ?? (IWin32Window)this, _langs, TextsIn, out code, out from, out name)) return;
+            AddLanguage(code, from, name);
         }
 
-        /// <summary>A language added; copyFrom's texts typed into it (null: none - English shown until typed).</summary>
-        internal void AddLanguage(string code, string copyFrom)
+        /// <summary>A language added, its name kept; copyFrom's texts typed into it (null: none - English shown until typed).</summary>
+        internal void AddLanguage(string code, string copyFrom, string name = null)
         {
             if (TranslationLanguageForm.Problem(code, _langs) != null) return;
             code = code.Trim().ToUpperInvariant();
-            TranslationEdits.AddLanguage(code);
+            TranslationEdits.AddLanguage(code, null, string.IsNullOrWhiteSpace(name) ? TranslationLanguageForm.NameFor(code) : name);
             RefreshLanguages();
             int n = string.IsNullOrEmpty(copyFrom) ? 0 : CopyLanguage(copyFrom, new[] { code }, false);
             SetStatus(n > 0

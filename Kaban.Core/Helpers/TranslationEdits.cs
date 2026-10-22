@@ -75,6 +75,7 @@ namespace Kaban.Core.Helpers
 
         private static readonly object _lock = new object();
         private static List<string> _added, _deleted;
+        private static Dictionary<string, string> _names;
         private static string _loadedFrom;
 
         // ---- the table -------------------------------------------------------------------
@@ -340,14 +341,45 @@ namespace Kaban.Core.Helpers
             catch { return false; }
         }
 
-        /// <summary>A language offered (a new one: its texts English until given; a deleted one: back with its files' texts).</summary>
-        public static void AddLanguage(string code, string user = null)
+        /// <summary>
+        /// A language's name, as given when it was added (22 October: "we only enter 2-3 letters - how
+        /// will the program know which language it is, to ask the AI to translate into it?"); null: none
+        /// given (the system's name of the code is used).
+        /// </summary>
+        public static string NameOf(string code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return null;
+            lock (_lock)
+            {
+                EnsureLoaded();
+                string n;
+                return _names.TryGetValue(code.Trim(), out n) && n.Length > 0 ? n : null;
+            }
+        }
+
+        /// <summary>A language's name kept (Languages.cfg); empty: forgotten.</summary>
+        public static void SetLanguageName(string code, string name)
+        {
+            code = (code ?? "").Trim().ToUpperInvariant();
+            if (code.Length == 0) return;
+            name = Clean(name);
+            lock (_lock)
+            {
+                EnsureLoaded();
+                if (name.Length == 0) _names.Remove(code); else _names[code] = name;
+                WriteLanguages();
+            }
+        }
+
+        /// <summary>A language offered (a new one: its texts English until given; a deleted one: back with its files' texts) - its name kept when given.</summary>
+        public static void AddLanguage(string code, string user = null, string name = null)
         {
             code = (code ?? "").Trim().ToUpperInvariant();
             if (code.Length == 0) return;
             lock (_lock)
             {
                 EnsureLoaded();
+                if (!string.IsNullOrWhiteSpace(name)) _names[code] = Clean(name);
                 bool wasDeleted = _deleted.Remove(code);
                 if (!wasDeleted && !_added.Contains(code) && !LanguageManager.Sources.Any(s => s.Languages.Contains(code, StringComparer.OrdinalIgnoreCase)))
                     _added.Add(code);
@@ -481,6 +513,7 @@ namespace Kaban.Core.Helpers
             _loadedFrom = Folder;
             _added = new List<string>();
             _deleted = new List<string>();
+            _names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             try
             {
                 if (File.Exists(LanguagesFile))
@@ -488,6 +521,13 @@ namespace Kaban.Core.Helpers
                     {
                         var line = raw.Trim().TrimStart('﻿');
                         if (line.Length < 2 || line.StartsWith("#")) continue;
+                        if (line[0] == '=')
+                        {
+                            // a language's name: =FR;French
+                            var f = line.Substring(1).Split(new[] { ';' }, 2);
+                            if (f.Length == 2 && f[0].Trim().Length > 0) _names[f[0].Trim().ToUpperInvariant()] = f[1].Trim();
+                            continue;
+                        }
                         var code = line.Substring(1).Trim().ToUpperInvariant();
                         if (line[0] == '+' && !_added.Contains(code)) _added.Add(code);
                         if (line[0] == '-' && !_deleted.Contains(code)) _deleted.Add(code);
@@ -498,9 +538,10 @@ namespace Kaban.Core.Helpers
 
         private static void WriteLanguages()
         {
-            var lines = new List<string> { "# Kaban HMI: languages added (+) and deleted (-) on the panel (HMI Settings > Translation)" };
+            var lines = new List<string> { "# Kaban HMI: languages added (+) and deleted (-) on the panel (HMI Settings > Translation), their names (=code;name)" };
             lines.AddRange(_added.Select(l => "+" + l));
             lines.AddRange(_deleted.Select(l => "-" + l));
+            lines.AddRange(_names.Select(kv => "=" + kv.Key + ";" + kv.Value));
             Directory.CreateDirectory(Folder);
             SafeFile.WriteAllText(LanguagesFile, string.Join("\r\n", lines) + "\r\n", new UTF8Encoding(true));
         }

@@ -71,7 +71,7 @@ class TP {
         MachineRegistry.MountSub(new Mod { Id = "SUB" }, new[] { 7 }, dir);
         SecurityManager.Login("maint", SecurityLevel.Maintenance);
         // the questions answered (a language's code: FR; anything else: yes)
-        Kaban.UI.Profiles.Ask.Hook = (title, prompt, initial) => prompt.Contains("begin with") ? "" : prompt.Contains("code") ? "fr" : "yes";
+        Kaban.UI.Profiles.Ask.Hook = (title, prompt, initial) => prompt.Contains("begin with") ? "" : prompt.Contains("Its name") ? initial : prompt.Contains("code") ? "fr" : "yes";
         Start(false);
 
         Console.WriteLine("--- every key of every file, with whose it is ---");
@@ -263,14 +263,30 @@ class TP {
             Check("the dialog: a code there already - said in it, not closed", !(bool)Call(lf, "Accept") && ((string)Get(lf, "ErrorText")).Contains("there already"), ((string)Get(lf, "ErrorText")));
             SetP(lf, "CodeText", "x1");
             Check("  not a code - said", !(bool)Call(lf, "Accept") && ((string)Get(lf, "ErrorText")).Contains("2 or 3 letters"));
+            SetP(lf, "CodeText", "pl");
+            Check("  its name: the system's for the code, to correct", (string)Get(lf, "NameText") == "Polish", (string)Get(lf, "NameText"));
+            SetP(lf, "CodeText", "qq");
+            Check("  a code the system has no name for: the name asked", (string)Get(lf, "NameText") == "" && !(bool)Call(lf, "Accept") &&
+                  ((string)Get(lf, "ErrorText")).Contains("its name"), (string)Get(lf, "ErrorText"));
+            SetP(lf, "NameText", "Klingon (test)");
+            SetP(lf, "CodeText", "de");
+            Check("  a name written stays when the code changes", (string)Get(lf, "NameText") == "Klingon (test)");
+            SetP(lf, "NameText", "");
+            SetP(lf, "CodeText", "d");
             SetP(lf, "CodeText", "de");
             var opts = ((ComboBox)Get(lf, "FromBox")).Items.Cast<object>().Select(o => o.ToString()).ToList();
             Check("  its texts: none first, then each language's, with how many it brings", ((ComboBox)Get(lf, "FromBox")).SelectedIndex == 0 && opts.Count == 1 + 4 && opts[1].StartsWith("EN") && opts[1].Contains("7 text"),
                   string.Join(" / ", opts));
             ((ComboBox)Get(lf, "FromBox")).SelectedIndex = 1;
-            Check("  DE from EN: the choice given", (bool)Call(lf, "Accept") && lf.Code == "DE" && lf.CopyFrom == "EN");
+            Check("  DE from EN: the choice given, its name", (bool)Call(lf, "Accept") && lf.Code == "DE" && lf.CopyFrom == "EN" && lf.LanguageName == "German",
+                  lf.LanguageName);
         }
-        Call(c, "AddLanguage", "DE", "EN");
+        Check("FR (added before): its name kept, the AI asked by it", TranslationEdits.NameOf("FR") == "French" && File.ReadAllText(TranslationEdits.LanguagesFile).Contains("=FR;French") &&
+              Kaban.UI.Helpers.AlarmAiPrompt.LanguageName("FR") == "French");
+        TranslationEdits.SetLanguageName("FR", "French (France)");
+        TranslationEdits.Reload();
+        Check("  a name corrected: kept, read back", TranslationEdits.NameOf("FR") == "French (France)" && Kaban.UI.Helpers.AlarmAiPrompt.LanguageName("FR") == "French (France)");
+        Call(c, "AddLanguage", "DE", "EN", null);
         Check("DE added, EN's 7 texts typed into it", grid.Columns.Contains("L_DE") && (int)Get(c, "PendingCount") == 7 && Cell(c, grid, "Unit_Clamp", "DE") == "Clamp", Get(c, "PendingCount") + "");
         Call(c, "Save");
         Check("  saved: every file's keys at once - the common file, MAIN's, SUB's and the alarms'",

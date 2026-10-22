@@ -16,11 +16,15 @@ namespace Kaban.UI.Settings
     /// none (the screen shows English until a text is typed) or a language's copied into it (22
     /// October: "it should also ask if the available columns are to be copied when a new language
     /// is added, on the Add a language dialog"). The copies are typed texts until Save.
+    /// Its name too (22 October: "we only enter 2-3 letters - how will the program know which
+    /// language it is, to ask the AI to translate into it?"): the system's name of the code
+    /// offered, to correct - kept with the language, the AI asked by it.
     /// </summary>
     public class TranslationLanguageForm : Form
     {
         private readonly TextBox _code = new TextBox();
-        private readonly Label _name = new Label();
+        private readonly TextBox _name = new TextBox();
+        private bool _nameGiven, _naming;
         private readonly ComboBox _from = new ComboBox();
         private readonly Label _error = new Label();
         private readonly IList<string> _existing;
@@ -29,11 +33,14 @@ namespace Kaban.UI.Settings
         public string Code { get; private set; }
         /// <summary>The language whose texts are copied into it (null: none).</summary>
         public string CopyFrom { get; private set; }
+        /// <summary>Its name, in English.</summary>
+        public string LanguageName { get; private set; }
 
         private static string T(string key, string fallback) { return LanguageManager.GetString(key, fallback); }
         internal static string Title { get { return T("Tip_TrnAddLang", "Add a language"); } }
         internal static string CodePrompt { get { return T("Msg_TrnLangCode", "The language's code - 2 or 3 letters (FR for French, PL for Polish):"); } }
         internal static string FromPrompt { get { return T("Msg_TrnLangFrom", "Its texts to begin with - a language's copied into it (its code; empty: none):"); } }
+        internal static string NamePrompt { get { return T("Msg_TrnLangName", "Its name, in English - the AI translates into it by this name, the lists show it:"); } }
 
         /// <param name="languages">The languages there (the code may be none of them).</param>
         /// <param name="texts">A language - the number of keys with a text in it (what a copy brings).</param>
@@ -49,18 +56,25 @@ namespace Kaban.UI.Settings
             ShowInTaskbar = false;
             BackColor = Color.White;
             Font = UiStyle.Body;
-            ClientSize = new Size(500, 262);
+            ClientSize = new Size(500, 404);
 
             var prompt = new Label { Text = CodePrompt, Left = 14, Top = 12, Width = 470, Height = 22 };
             _code.SetBounds(14, 38, 90, 26);
             _code.CharacterCasing = CharacterCasing.Upper;
             _code.MaxLength = 3;
-            _name.SetBounds(114, 41, 370, 22);
-            _name.ForeColor = Color.FromArgb(90, 96, 106);
             _code.TextChanged += (s, e) => { _error.Text = ""; ShowName(); };
+            var namePrompt = new Label { Text = NamePrompt, Left = 14, Top = 76, Width = 470, Height = 40 };
+            _name.SetBounds(14, 118, 300, 26);
+            _name.TextChanged += (s, e) => { _error.Text = ""; if (!_naming) _nameGiven = _name.Text.Trim().Length > 0; };
+            var codes = new Label
+            {
+                Text = T("Lbl_TrnLangCodes", "The code is the language's own (ISO 639-1), not its country's: Swedish SV (not SE), Chinese ZH, Japanese JA, " +
+                                             "Greek EL, Czech CS, Danish DA, Ukrainian UK."),
+                Left = 14, Top = 150, Width = 470, Height = 58, ForeColor = Color.FromArgb(90, 96, 106)
+            };
 
-            var begin = new Label { Text = T("Lbl_TrnLangBegin", "Its texts to begin with:"), Left = 14, Top = 82, Width = 470, Height = 22 };
-            _from.SetBounds(14, 108, 470, 28);
+            var begin = new Label { Text = T("Lbl_TrnLangBegin", "Its texts to begin with:"), Left = 14, Top = 214, Width = 470, Height = 22 };
+            _from.SetBounds(14, 238, 470, 28);
             _from.DropDownStyle = ComboBoxStyle.DropDownList;
             _from.Items.Add(new Option(null, T("Lbl_TrnLangNone", "None - the screen shows English until a text is typed")));
             foreach (var l in _existing)
@@ -70,17 +84,17 @@ namespace Kaban.UI.Settings
             var note = new Label
             {
                 Text = T("Lbl_TrnCopyNote", "The copies are typed texts (orange): check or translate them, then Save writes them into the translation files."),
-                Left = 14, Top = 142, Width = 470, Height = 40, ForeColor = Color.FromArgb(90, 96, 106)
+                Left = 14, Top = 272, Width = 470, Height = 40, ForeColor = Color.FromArgb(90, 96, 106)
             };
-            _error.SetBounds(14, 184, 470, 22);
+            _error.SetBounds(14, 318, 470, 22);
             _error.ForeColor = Color.FromArgb(190, 30, 30);
 
             var ok = UiStyle.DialogButton(T("Btn_Ok", "OK"), DialogResult.None);
             var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
-            ok.Location = new Point(ClientSize.Width - 14 - cancel.Width - 8 - ok.Width, 216);
-            cancel.Location = new Point(ClientSize.Width - 14 - cancel.Width, 216);
+            ok.Location = new Point(ClientSize.Width - 14 - cancel.Width - 8 - ok.Width, 354);
+            cancel.Location = new Point(ClientSize.Width - 14 - cancel.Width, 354);
             ok.Click += (s, e) => Accept();
-            Controls.AddRange(new Control[] { prompt, _code, _name, begin, _from, note, _error, ok, cancel });
+            Controls.AddRange(new Control[] { prompt, _code, namePrompt, _name, codes, begin, _from, note, _error, ok, cancel });
             AcceptButton = ok;
             CancelButton = cancel;
         }
@@ -92,50 +106,64 @@ namespace Kaban.UI.Settings
             public override string ToString() { return Text; }
         }
 
+        /// <summary>The code's name offered while the user has not written one.</summary>
         private void ShowName()
         {
+            if (_nameGiven) return;
             var c = (_code.Text ?? "").Trim().ToUpperInvariant();
-            var n = c.Length >= 2 ? AlarmAiPrompt.LanguageName(c) : "";
-            _name.Text = n != c ? n : "";
+            _naming = true;
+            _name.Text = c.Length >= 2 ? NameFor(c) ?? "" : "";
+            _naming = false;
         }
 
-        /// <summary>What is wrong with a code (null: it can be added).</summary>
-        internal static string Problem(string code, IEnumerable<string> existing)
+        /// <summary>The name a code is offered with: the one kept for it, else the system's (null: none known).</summary>
+        internal static string NameFor(string code)
+        {
+            return TranslationEdits.NameOf(code) ?? AlarmAiPrompt.SystemName(code);
+        }
+
+        /// <summary>What is wrong with a code and a name (null: it can be added).</summary>
+        internal static string Problem(string code, IEnumerable<string> existing, string name = "-")
         {
             code = (code ?? "").Trim().ToUpperInvariant();
             if (!Regex.IsMatch(code, "^[A-Z]{2,3}$")) return T("Msg_TrnLangBad", "A language's code is 2 or 3 letters (FR, PL ...).");
             if (existing != null && existing.Contains(code, StringComparer.OrdinalIgnoreCase)) return string.Format(T("Msg_TrnLangThere", "{0} is there already."), code);
+            if (string.IsNullOrWhiteSpace(name)) return T("Msg_TrnLangNoName", "Write its name too, in English - the AI translates into it by its name.");
             return null;
         }
 
         // the tests: the dialog filled in without the mouse
         internal string CodeText { get { return _code.Text; } set { _code.Text = (value ?? "").ToUpperInvariant(); } }
+        internal string NameText { get { return _name.Text; } set { _name.Text = value ?? ""; } }
         internal ComboBox FromBox { get { return _from; } }
         internal string ErrorText { get { return _error.Text; } }
 
         /// <summary>OK: closed when the code can be added, else the reason shown.</summary>
         internal bool Accept()
         {
-            var why = Problem(_code.Text, _existing);
-            if (why != null) { _error.Text = why; _code.Focus(); return false; }
+            var why = Problem(_code.Text, _existing, _name.Text);
+            if (why != null) { _error.Text = why; (Problem(_code.Text, _existing) == null ? _name : _code).Focus(); return false; }
             Code = _code.Text.Trim().ToUpperInvariant();
+            LanguageName = TranslationEdits.Clean(_name.Text);
             var o = _from.SelectedItem as Option;
             CopyFrom = o != null ? o.Code : null;
             DialogResult = DialogResult.OK;
             return true;
         }
 
-        /// <summary>The dialog (a test's Ask.Hook answers the code and the language to copy instead); false: cancelled.</summary>
-        public static bool Run(IWin32Window owner, IList<string> languages, Func<string, int> texts, out string code, out string copyFrom)
+        /// <summary>The dialog (a test's Ask.Hook answers the code, the name and the language to copy instead); false: cancelled.</summary>
+        public static bool Run(IWin32Window owner, IList<string> languages, Func<string, int> texts, out string code, out string copyFrom, out string name)
         {
-            code = copyFrom = null;
+            code = copyFrom = name = null;
             if (Ask.Hook != null)
             {
                 var c = Ask.Text(owner, Title, CodePrompt);
                 if (c == null) return false;
-                var why = Problem(c, languages);
+                var n = Ask.Text(owner, Title, NamePrompt, NameFor(c.Trim().ToUpperInvariant()) ?? "");
+                var why = Problem(c, languages, n);
                 if (why != null) { Ask.Tell(owner, Title, why); return false; }
                 code = c.Trim().ToUpperInvariant();
+                name = TranslationEdits.Clean(n);
                 var f = (Ask.Text(owner, Title, FromPrompt) ?? "").Trim().ToUpperInvariant();
                 copyFrom = languages.Contains(f, StringComparer.OrdinalIgnoreCase) ? f : null;
                 return true;
@@ -145,6 +173,7 @@ namespace Kaban.UI.Settings
                 if (dlg.ShowDialog(owner) != DialogResult.OK) return false;
                 code = dlg.Code;
                 copyFrom = dlg.CopyFrom;
+                name = dlg.LanguageName;
                 return true;
             }
         }
