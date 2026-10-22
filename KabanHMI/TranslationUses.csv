@@ -113,14 +113,17 @@ Btn_Cancel;KabanHMI\Forms\LoginForm.cs;94;Text;btnCancel = UiStyle.DialogButton(
 Btn_Cancel;KabanHMI\Forms\PlcRowEditorForm.cs;224;Text;var cancel = UiStyle.Round(new Button { Text = LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30 });
 Btn_Cancel;KabanHMI\Forms\SimulationMonitorForm.cs;2545;Text;var cancel = UiStyle.Round(new Button { Text = T("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30, Location = new Point(268, 76) });
 Btn_Cancel;KabanHMI\Forms\StructuredTypesForm.cs;162;Text;var cancel = Btn(T("Btn_Cancel", "Cancel"), ClientSize.Width - 108, ClientSize.Height - 44, 96);
+Btn_Cancel;KabanHMI\Forms\WorkForm.cs;72;Text;_cancel = new Button { Text = LanguageManager.GetString("Btn_Cancel", "Cancel"), Size = new Size(110, 32), Location = new Point(334, 102) };
 Btn_Cancel;KabanHMI\Helpers\ColumnChooser.cs;319;Text;var cancel = UiStyle.Round(new Button { Text = T("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30 });
 Btn_Cancel;KabanHMI\Profiles\Ask.cs;32;Text;var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\AlarmSettingsControl.cs;497;Text;var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+Btn_Cancel;KabanHMI\Settings\PlcBackupForms.cs;144;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;93;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;242;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;424;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_ChangeUser;KabanHMI\Forms\MainForm.cs;1604;Menu;var change = new ToolStripMenuItem(LanguageManager.GetString("Btn_ChangeUser", "Change user"),
 Btn_Close;KabanHMI\Forms\MainForm.cs;1231;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Btn_Close", "Close"))
+Btn_Close;KabanHMI\Settings\PlcBackupForms.cs;289;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\TranslationsControl.cs;944;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\TranslationsControl.cs;1072;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Dashboard;KabanHMI\Screens\StandardScreens.cs;147;Text;TitleKey = "Btn_Dashboard",
@@ -214,7 +217,7 @@ Col_DisplayFormat;KabanHMI\Forms\DeviceFindForm.cs;205;Menu;var fmt = new ToolSt
 Col_DisplayFormat;KabanHMI\Forms\PlcRowEditorForm.cs;184;Text;AddRow(LanguageManager.GetString("Col_DisplayFormat", "Display Format"), _format, ref y);
 Col_DisplayFormat;KabanHMI\Forms\SimulationMonitorForm.cs;1226;Heading;grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Format", HeaderText = T("Col_DisplayFormat", "Display Format"), ReadOnly = true });
 Col_DisplayFormat;KabanHMI\Forms\SimulationMonitorForm.cs;1306;Menu;var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
-Col_Driver;KabanHMI\Settings\StationConnectionControl.cs;245;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_Driver", "Driver")), 1, r);
+Col_Driver;KabanHMI\Settings\StationConnectionControl.cs;247;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_Driver", "Driver")), 1, r);
 Col_EncMinimumLimit;KabanHMI\Controls\CylinderEncoderSettingHMI.cs;43;Tooltip;AddSection("MinimumLimit", "Col_EncMinimumLimit", "Minimum limit", "MinimumLimit", "Tip_EncMinimumLimit");
 Col_EncReference;KabanHMI\Controls\CylinderEncoderSettingHMI.cs;41;Tooltip;AddSection("Reference", "Col_EncReference", "Reference", "Reference", "Tip_EncReference");
 Col_EncTolerance;KabanHMI\Controls\CylinderEncoderSettingHMI.cs;42;Tooltip;AddSection("Tolerance", "Col_EncTolerance", "Measuring tolerance", "Tolerance", "Tip_EncTolerance");
@@ -230,7 +233,7 @@ Col_LastChange;KabanHMI\Forms\DeviceFindForm.cs;174;Text;column("Modified", T("C
 Col_LastChange;KabanHMI\Forms\SimulationMonitorForm.cs;1246;Heading;grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Modified"), ReadOnly = true });
 Col_MaxLimit;KabanHMI\Controls\AxisSettingHMI.cs;1317;Text;new[] { "Max", "Col_MaxLimit", "Max" },
 Col_MinLimit;KabanHMI\Controls\AxisSettingHMI.cs;1316;Text;new[] { "Min", "Col_MinLimit", "Min" },
-Col_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;247;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_NetAddress", "Address")), 3, r);
+Col_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;249;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_NetAddress", "Address")), 3, r);
 Col_PpCalibration;KabanHMI\Controls\PneumaticPositioningHMI.cs;44;Text;new[] { "Calibration", "Col_PpCalibration", "Calibration" },
 Col_PpCalibration;KabanHMI\Controls\PneumaticPositioningHMI.cs;55;Tooltip;AddSection("Calibration", "Col_PpCalibration", "Calibration", "Calibration", "Tip_PpCalibration", "Calibrate", "Tip_PpCalibrate");
 Col_PpDirectionRef;KabanHMI\Controls\PneumaticPositioningHMI.cs;46;Text;new[] { "DirectionRef", "Col_PpDirectionRef", "Direction ref" },
@@ -245,7 +248,7 @@ Col_PpTolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;56;Tooltip;AddSecti
 Col_Reference;KabanHMI\Controls\AxisSettingHMI.cs;1318;Text;new[] { "Reference", "Col_Reference", "Reference" },
 Col_SendRef;KabanHMI\Controls\AxisSettingHMI.cs;1321;Text;new[] { "Ref", "Col_SendRef", "Ref" },
 Col_ServoAlarm;KabanHMI\Controls\AxisSettingHMI.cs;1325;Text;new[] { "ServoAlarm", "Col_ServoAlarm", "Servo alarm" },
-Col_StationNo;KabanHMI\Settings\StationConnectionControl.cs;246;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_StationNo", "Station no.")), 2, r);
+Col_StationNo;KabanHMI\Settings\StationConnectionControl.cs;248;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_StationNo", "Station no.")), 2, r);
 Col_TravelPerRev;KabanHMI\Controls\AxisSettingHMI.cs;1326;Text;new[] { "TravelPerRev", "Col_TravelPerRev", "Travel / rev" },
 Col_Value;KabanHMI\Forms\DeviceFindForm.cs;172;Text;column("Value", T("Col_Value", "Value"), 120);
 Col_ZDistance;KabanHMI\Controls\AxisSettingHMI.cs;1322;Text;new[] { "ZDistance", "Col_ZDistance", "Z distance", "Z dist" },
@@ -284,10 +287,10 @@ Cpl_OnlyThis;KabanHMI\Helpers\UnitCoupling.cs;397;Text;if (why != null) { Dissol
 Cpl_OnlyThis;KabanHMI\Helpers\UnitCycling.cs;189;Text;UnitCoupling.Dissolve(unit.Kind, unit, why + " - " + T("Cpl_OnlyThis", "only the unit pressed moves."));
 Cutting;Kaban.Machines.FA2010\FA2010Module.cs;174;Text;new Screens.GeneratedPage("Tab_ManualCutting", "Cutting", SecurityLevel.Operator, () => new Screens.Manual.ManualCutting()),
 Cutting;Kaban.Machines.FA2010\FA2010Module.cs;194;Text;new Screens.GeneratedPage("Tab_ParamCutting", "Cutting", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamCutting()),
-Diag_ColDrops;KabanHMI\Settings\StationConnectionControl.cs;250;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
-Diag_ColError;KabanHMI\Settings\StationConnectionControl.cs;251;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
-Diag_ColLast;KabanHMI\Settings\StationConnectionControl.cs;249;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
-Diag_ColState;KabanHMI\Settings\StationConnectionControl.cs;248;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColState", "State")), 4, r);
+Diag_ColDrops;KabanHMI\Settings\StationConnectionControl.cs;252;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
+Diag_ColError;KabanHMI\Settings\StationConnectionControl.cs;253;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
+Diag_ColLast;KabanHMI\Settings\StationConnectionControl.cs;251;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
+Diag_ColState;KabanHMI\Settings\StationConnectionControl.cs;250;Text;_table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColState", "State")), 4, r);
 Diag_CopyTip;KabanHMI\Settings\PlcConnectionDiagnostics.cs;271;Tooltip;bar.Controls.Add(UiStyle.ToolButton("📋", LanguageManager.GetString("Diag_CopyTip", "Copy this report to the clipboard"),
 Diag_EnvTip;KabanHMI\Settings\PlcConnectionDiagnostics.cs;267;Tooltip;var env = UiStyle.ToolButton("🔄", LanguageManager.GetString("Diag_EnvTip", "Show the MX Component environment report again"),
 Diag_LogicalStation;KabanHMI\Settings\PlcConnectionDiagnostics.cs;177;Text;try { return LanguageManager.GetString("Diag_LogicalStation", "logical station") + " " + Convert.ToString(p.GetValue(drv, null)); }
@@ -882,10 +885,10 @@ Msg_AiPromptFile;KabanHMI\Helpers\AlarmAiPrompt.cs;952;Text;? LanguageManager.Ge
 Msg_AiPromptText;KabanHMI\Helpers\AlarmAiPrompt.cs;953;Text;: LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
 Msg_CancelOperation;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;204;Text;this.btnCancel.ConfirmationTextKey = "Msg_CancelOperation";
 Msg_CommentRequired;KabanHMI\Forms\PlcRowEditorForm.cs;277;Text;problem = LanguageManager.GetString("Msg_CommentRequired", "Type the comment's text.");
-Msg_ConnAdminOnly;KabanHMI\Settings\StationConnectionControl.cs;148;Text;Text = LanguageManager.GetString("Msg_ConnAdminOnly", "Only an Admin can change the connections.")
-Msg_ConnFooter;KabanHMI\Settings\StationConnectionControl.cs;178;Text;_footer.Text = LanguageManager.GetString("Msg_ConnFooter",
-Msg_ConnSaved;KabanHMI\Settings\StationConnectionControl.cs;511;Text;LanguageManager.GetString("Msg_ConnSaved",
-Msg_ConnSaveFailed;KabanHMI\Settings\StationConnectionControl.cs;499;Message;LanguageManager.GetString("Msg_ConnSaveFailed",
+Msg_ConnAdminOnly;KabanHMI\Settings\StationConnectionControl.cs;150;Text;Text = LanguageManager.GetString("Msg_ConnAdminOnly", "Only an Admin can change the connections.")
+Msg_ConnFooter;KabanHMI\Settings\StationConnectionControl.cs;180;Text;_footer.Text = LanguageManager.GetString("Msg_ConnFooter",
+Msg_ConnSaved;KabanHMI\Settings\StationConnectionControl.cs;569;Text;LanguageManager.GetString("Msg_ConnSaved",
+Msg_ConnSaveFailed;KabanHMI\Settings\StationConnectionControl.cs;557;Message;LanguageManager.GetString("Msg_ConnSaveFailed",
 Msg_DelAllTabs;KabanHMI\Forms\SimulationMonitorForm.cs;724;Text;? string.Format(T("Msg_DelAllTabs", "Delete all {0} tab(s) of {1}, with their {2} row(s)?"), tabs, PlcEndpointNaming.Caption(mons[0].Endpoint), rows)
 Msg_DelEverything;KabanHMI\Forms\SimulationMonitorForm.cs;725;Text;: string.Format(T("Msg_DelEverything", "Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?"), tabs, mons.Length, rows);
 Msg_ExportFailed;KabanHMI\Forms\SimulationMonitorForm.cs;3487;Message;MessageBox.Show(DialogOwner, T("Msg_ExportFailed", "Could not write the file:") + "\r\n" + ex.Message,
@@ -944,7 +947,7 @@ Msg_MonStatus;KabanHMI\Forms\SimulationMonitorForm.cs;3443;Text;: string.Format(
 Msg_MonTooLong;KabanHMI\Forms\SimulationMonitorForm.cs;2754;Status;: problem == "Msg_MonTooLong" ? T("Msg_MonTooLong", "Longer than the string - nothing written.")
 Msg_MonTooLong;KabanHMI\Forms\SimulationMonitorForm.Values.cs;328;Text;if (t.Length > chars) { problem = "Msg_MonTooLong"; return null; }
 Msg_NoAxes;KabanHMI\Screens\AxisMonitorPage.cs;105;Text;_empty.Text = LanguageManager.GetString("Msg_NoAxes", "No axis is set up on the Axis Settings pages.");
-Msg_NoControllers;KabanHMI\Settings\StationConnectionControl.cs;223;Text;Text = LanguageManager.GetString("Msg_NoControllers",
+Msg_NoControllers;KabanHMI\Settings\StationConnectionControl.cs;225;Text;Text = LanguageManager.GetString("Msg_NoControllers",
 Msg_NoPermission;Kaban.Core\Helpers\PlcManager.cs;316;Text;return LanguageManager.GetString("Msg_NoPermission",
 Msg_NoPermission;KabanHMI\Controls\MeterHMI.cs;514;Message;LanguageManager.GetString("Msg_NoPermission",
 Msg_NoStations;KabanHMI\Forms\SimulationMonitorForm.cs;866;Text;Text = T("Msg_NoStations",
@@ -1532,8 +1535,8 @@ Set_SafeZ;KabanHMI\Profiles\LibraryEditorForm.cs;463;Text;T("Set_SafeZ", "Safe h
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2029;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22));
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2047;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
 Set_StationConn;KabanHMI\Forms\MainForm.cs;2050;Text;settings.ActivateByKey("Set_StationConn");
-Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;494;Text;string title = LanguageManager.GetString("Set_StationConn", "PLC Connection");
-Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;564;Text;public string TitleKey { get { return "Set_StationConn"; } }
+Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;552;Text;string title = LanguageManager.GetString("Set_StationConn", "PLC Connection");
+Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;622;Text;public string TitleKey { get { return "Set_StationConn"; } }
 Set_UsersPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;15;Text;public string TitleKey => "Set_UsersPrefs";
 Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;148;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
 Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;166;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
@@ -1681,13 +1684,13 @@ Tip_HelpBadge;KabanHMI\Controls\CylinderUnitHMI.cs;1651;Tooltip;"\r\n" + Languag
 Tip_HelpBadge;KabanHMI\Controls\MeterHMI.cs;649;Tooltip;text = _help.Title + "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help") + "\r\n\r\n" + text;
 Tip_HlpAbout;KabanHMI\Forms\MainForm.Help.cs;121;Tooltip;about.ToolTipText = LanguageManager.GetString("Tip_HlpAbout", "The program, its version and the machines it runs");
 Tip_HmiPrompt;KabanHMI\Helpers\AiMenu.cs;49;Tooltip;: T("Tip_HmiPrompt", "Copies a briefing for an AI chat with the HMI, its machines, where you are and what the page shows, and its whole manual: paste it there and ask it anythin...
-Tip_HmiStationId;KabanHMI\Settings\StationConnectionControl.cs;374;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HmiStationId",
+Tip_HmiStationId;KabanHMI\Settings\StationConnectionControl.cs;392;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HmiStationId",
 Tip_IoDrawing;KabanHMI\Screens\IoMonitorPage.cs;513;Tooltip;tip += "\n" + LanguageManager.GetString("Tip_IoDrawing", "On the drawing:") + " " + w.Electrical();
 Tip_IoFilter;KabanHMI\Screens\IoMonitorPage.cs;104;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _filter, T("Tip_IoFilter", "Part of an address (X20, Y1) or of a name"));
 Tip_IoRead;KabanHMI\Screens\IoMonitorPage.cs;507;Tooltip;tip += "\n" + string.Format(LanguageManager.GetString("Tip_IoRead", "read at {0}, the relay the PLC copies it into"), p.Read);
 Tip_LampOff;KabanHMI\Controls\LampHMI.cs;196;Tooltip;string state = _isOn ? LanguageManager.GetString("Tip_LampOn", "On") : LanguageManager.GetString("Tip_LampOff", "Off");
 Tip_LampOn;KabanHMI\Controls\LampHMI.cs;196;Tooltip;string state = _isOn ? LanguageManager.GetString("Tip_LampOn", "On") : LanguageManager.GetString("Tip_LampOff", "Off");
-Tip_LogicalStation;KabanHMI\Settings\StationConnectionControl.cs;379;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, station, LanguageManager.GetString("Tip_LogicalStation",
+Tip_LogicalStation;KabanHMI\Settings\StationConnectionControl.cs;397;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, station, LanguageManager.GetString("Tip_LogicalStation",
 Tip_MonAdd;KabanHMI\Forms\SimulationMonitorForm.cs;499;Tooltip;btnAdd = UiStyle.ToolButton(E(0x2795), T("Tip_MonAdd", "Add a device or a comment line"), _tips,
 Tip_MonAdd;KabanHMI\Forms\SimulationMonitorForm.cs;505;Tooltip;keyed(btnAdd, Keys.Insert, T("Tip_MonAdd", "Add a device or a comment line"));
 Tip_MonChanged;KabanHMI\Forms\SimulationMonitorForm.cs;3389;Tooltip;string tip = string.Format(T("Tip_MonChanged", "Changed from {0} to {1} at {2}."),
@@ -1726,7 +1729,7 @@ Tip_MonUp;KabanHMI\Forms\SimulationMonitorForm.cs;524;Tooltip;keyed(btnUp, Keys.
 Tip_MonWriteLog;KabanHMI\Forms\SimulationMonitorForm.cs;3403;Tooltip;tip += "\r\n" + T("Tip_MonWriteLog", "Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.");
 Tip_NavBack;KabanHMI\Forms\MainForm.cs;2753;Tooltip;Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
 Tip_NavForward;KabanHMI\Forms\MainForm.cs;2754;Tooltip;Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
-Tip_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;382;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
+Tip_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;400;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
 Tip_NoteHelper;KabanHMI\Helpers\NoteHelpers.cs;116;Tooltip;UiStyle.SetTip(UiStyle.Tips(), badge, LanguageManager.GetString("Tip_NoteHelper", "Helpers for this control (from the notes page)") + "\n" +
 Tip_NotReadYet;KabanHMI\Controls\BaseNumericHMI.cs;345;Tooltip;return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
 Tip_OpenManual;KabanHMI\Forms\MainForm.Help.cs;126;Tooltip;manual.ToolTipText = LanguageManager.GetString("Tip_OpenManual", "Opens the operator and engineer manual in the browser, in the language on screen.");
@@ -1739,8 +1742,8 @@ Tip_PpTarget;KabanHMI\Controls\PneumaticPositioningHMI.cs;54;Tooltip;AddSection(
 Tip_PpTolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;56;Tooltip;AddSection("Tolerance", "Col_PpTolerance", "Positioning tolerance", "Tolerance", "Tip_PpTolerance");
 Tip_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;292;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _readFrom, T("Tip_ReadFrom", "Copies another user's screen scale and preferences (or everyone's) into this page, \uD83D\uDCBE ke...
 Tip_RealPosition;KabanHMI\Controls\BaseNumericHMI.cs;331;Tooltip;public string ComparedCaptionKey { get; set; } = "Tip_RealPosition";
-Tip_ReloadConnections;KabanHMI\Settings\StationConnectionControl.cs;143;Tooltip;"Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload());
-Tip_SaveConnections;KabanHMI\Settings\StationConnectionControl.cs;136;Tooltip;"Tip_SaveConnections", "Save these connections"), tips, (s, e) => Save());
+Tip_ReloadConnections;KabanHMI\Settings\StationConnectionControl.cs;145;Tooltip;"Tip_ReloadConnections", "Discard changes and re-read the saved file"), tips, (s, e) => Reload());
+Tip_SaveConnections;KabanHMI\Settings\StationConnectionControl.cs;138;Tooltip;"Tip_SaveConnections", "Save these connections"), tips, (s, e) => Save());
 Tip_SideAddPage;KabanHMI\Forms\MainForm.SidePanel.cs;280;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, add, LanguageManager.GetString("Tip_SideAddPage",
 Tip_SideBarHide;KabanHMI\Forms\MainForm.SidePanel.cs;372;Tooltip;: T("Tip_SideBarHide", "Fold the side bar to the edge"));
 Tip_SideBarShow;KabanHMI\Forms\MainForm.SidePanel.cs;371;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideBarToggle, _sideBarFolded ? T("Tip_SideBarShow", "Show the side bar")
