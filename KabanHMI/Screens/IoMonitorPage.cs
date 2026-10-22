@@ -320,7 +320,7 @@ namespace Kaban.UI.Screens
         {
             var all = new List<IoPoint>();
             var read = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var m in MachineRegistry.Modules.OrderByDescending(x => x.IsMain))
+            foreach (var m in MachineRegistry.ShownModules.OrderByDescending(x => x.IsMain))
             {
                 string path;
                 try { path = m.Context.ResolveFile("IoList.csv"); } catch { continue; }

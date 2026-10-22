@@ -40,7 +40,8 @@ namespace Kaban.UI.Helpers
             var list = new List<MachineLink>();
             try
             {
-                foreach (var m in MachineRegistry.Modules)
+                // a machine none of whose PLCs is active is not shown (HMI Settings > PLC Connection)
+                foreach (var m in MachineRegistry.ShownModules)
                 {
                     if (m == null || m.Module == null) continue;
                     var id = m.Context != null && !string.IsNullOrEmpty(m.Context.ModuleId) ? m.Context.ModuleId : m.Module.ModuleId ?? "";

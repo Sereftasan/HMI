@@ -200,6 +200,8 @@ namespace Kaban.Core.Helpers
 
             foreach (var id in _stationsFor.ToList())
             {
+                // a PLC not active (HMI Settings > PLC Connection): not watched - it is not there
+                if (PlcConnectionSettings.RunsInactive(id)) continue;
                 IPlcDriver drv = null;
                 try { drv = _driverFor(id); } catch { }
 

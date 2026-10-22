@@ -677,6 +677,8 @@ namespace Kaban.UI.Plc
                 int plc = kv.Key;
                 string[] batch = kv.Value;
                 if (batch == null || batch.Length == 0) continue;
+                // a PLC not active (HMI Settings > PLC Connection): not read, no failure to report
+                if (PlcConnectionSettings.RunsInactive(plc)) continue;
 
                 var driver = PlcManager.Instance.GetDriverForMonitoring(plc);
                 if (driver == null)

@@ -1380,8 +1380,12 @@ namespace Kaban.UI.Forms
         /// they saved a checkbox is not a trade the program gets to make. The
         /// operator decides when.
         /// </summary>
+        /// <summary>The tests: told instead of the question (nothing restarts).</summary>
+        public static Action<IWin32Window, string> RestartNotice;
+
         public static void NotifyRestartRequired(IWin32Window owner, string what)
         {
+            if (RestartNotice != null) { RestartNotice(owner, what); return; }
             string title = LanguageManager.GetString("Ttl_RestartNeeded", "Restart needed");
             string body = string.IsNullOrWhiteSpace(what)
                 ? LanguageManager.GetString("Msg_RestartNeeded",

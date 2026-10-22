@@ -48,6 +48,8 @@ namespace Kaban.UI.Settings
         private class Row
         {
             public PlcConnectionSettings.Endpoint Endpoint;
+            /// <summary>Active (22 October): the controller's name ticked - used, its machine's pages shown.</summary>
+            public CheckBox Active;
             public ComboBox Driver;
             public NumericUpDown Station;
             public TextBox Address;
@@ -239,7 +241,7 @@ namespace Kaban.UI.Settings
         private void AddHeader()
         {
             int r = _table.RowCount;
-            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_Plc", "PLC")), 0, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_PlcActive", "PLC (active)")), 0, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_Driver", "Driver")), 1, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_StationNo", "Station no.")), 2, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_NetAddress", "Address")), 3, r);
@@ -268,12 +270,16 @@ namespace Kaban.UI.Settings
             int r = _table.RowCount;
             var saved = PlcConnectionSettings.For(endpoint);
 
-            var name = new Label
+            // ITS NAME, TICKED WHEN ACTIVE (22 October: "an activation checkbox for each PLC - the
+            // machine pages only shown when any PLC of the related machine is activated")
+            var name = new CheckBox
             {
                 UseMnemonic = false,   // "Screwing & Holing", not "Screwing  Holing"
                 Text = PlcEndpointNaming.Caption(endpoint),
                 AutoSize = true,
-                Padding = new Padding(6, 8, 6, 6)
+                Checked = saved.Active,
+                Padding = new Padding(6, 4, 6, 2),
+                Margin = new Padding(3, 3, 3, 3)
             };
 
             // Sized to what they hold: the longest driver name, a four-digit
@@ -345,6 +351,7 @@ namespace Kaban.UI.Settings
             var row = new Row
             {
                 Endpoint = endpoint,
+                Active = name,
                 Driver = driver,
                 Station = station,
                 Address = address,
@@ -357,6 +364,7 @@ namespace Kaban.UI.Settings
             _rows.Add(row);
 
             driver.SelectedIndexChanged += (s, e) => { UpdateRowState(row); MarkDirty(); };
+            name.CheckedChanged += (s, e) => { UpdateRowState(row); MarkDirty(); };
             station.ValueChanged += (s, e) => MarkDirty();
             address.TextChanged += (s, e) => MarkDirty();
             UpdateRowState(row);
@@ -364,7 +372,10 @@ namespace Kaban.UI.Settings
             var tips = Kaban.UI.Controls.UiStyle.Tips();
             Kaban.UI.Controls.UiStyle.SetTip(tips, name, PlcEndpointNaming.CaptionWithStation(endpoint) +
                 "\r\n" + LanguageManager.GetString("Tip_HmiStationId",
-                    "Controls bind to this machine with PlcNumber ") + endpoint.StationId + ".");
+                    "Controls bind to this machine with PlcNumber ") + endpoint.StationId + "." +
+                "\r\n\r\n" + LanguageManager.GetString("Tip_PlcActive",
+                    "Ticked: active - connected, its machine's pages shown. Not ticked: not connected; a machine none of whose PLCs is active " +
+                    "has no pages (the menu, its tabs, the machine list, the PLC Monitor). From the next start."));
             Kaban.UI.Controls.UiStyle.SetTip(tips, station, LanguageManager.GetString("Tip_LogicalStation",
                 "MX Component LOGICAL station number - what the Communication Setting Utility stores. "
               + "Not the same as the HMI's own station id."));
@@ -382,9 +393,11 @@ namespace Kaban.UI.Settings
         private void UpdateRowState(Row row)
         {
             var kind = row.Driver.SelectedItem as PlcDriverCatalog.DriverKind;
-            row.Driver.Enabled = _canEdit;
-            row.Station.Enabled = _canEdit && (kind == null || kind.UsesLogicalStation);
-            row.Address.Enabled = _canEdit && kind != null && kind.UsesNetworkEndpoint;
+            bool active = row.Active == null || row.Active.Checked;
+            if (row.Active != null) row.Active.Enabled = _canEdit;
+            row.Driver.Enabled = _canEdit && active;
+            row.Station.Enabled = _canEdit && active && (kind == null || kind.UsesLogicalStation);
+            row.Address.Enabled = _canEdit && active && kind != null && kind.UsesNetworkEndpoint;
 
             // An empty address box on a network driver is the commonest way to get a
             // silent no-connect, so it offers the shape rather than staying blank.
@@ -404,6 +417,13 @@ namespace Kaban.UI.Settings
         {
             // The same reading as the rest of the program (ControllerStatus): the
             // running driver, ConnectionMonitor's state, the log's drops.
+            if (PlcConnectionSettings.RunsInactive(row.Endpoint.StationId))
+            {
+                // not active in this run: no connection to tell of
+                Set(row.Status, LanguageManager.GetString("Diag_NotActive", "Not active"), ColDim);
+                Set(row.Last, "", ColDim); Set(row.Drops, "", ColDim); Set(row.Error, "", ColDim); Set(row.Version, "", ColDim);
+                return;
+            }
             var st = ControllerStatus.RowFor(row.Endpoint.StationId, row.Endpoint.StationName, row.Endpoint, _drops);
             Set(row.Status, st.State, !st.Registered ? ColDim : st.Live ? ColOk : ColBad);
             Set(row.Last, st.Last, ColDim);
@@ -450,6 +470,7 @@ namespace Kaban.UI.Settings
                 if (kind == null) continue;
                 var saved = PlcConnectionSettings.For(row.Endpoint);
 
+                if (row.Active != null && row.Active.Checked != saved.Active) return true;
                 if (!string.Equals(kind.Id, saved.DriverId, StringComparison.OrdinalIgnoreCase)) return true;
                 if (kind.UsesLogicalStation && (int)row.Station.Value != saved.LogicalStation) return true;
                 if (kind.UsesNetworkEndpoint &&
@@ -466,7 +487,7 @@ namespace Kaban.UI.Settings
                 var kind = row.Driver.SelectedItem as PlcDriverCatalog.DriverKind;
                 if (kind == null) continue;
                 PlcConnectionSettings.Set(row.Endpoint, kind.Id, (int)row.Station.Value,
-                                          row.Address.Text);
+                                          row.Address.Text, row.Active == null || row.Active.Checked);
             }
 
             bool ok = PlcConnectionSettings.Save();
@@ -528,6 +549,7 @@ namespace Kaban.UI.Settings
                     if (row.Station.Value != value) row.Station.Value = value;
                     var text = saved.Endpoint ?? "";
                     if (row.Address.Text != text) row.Address.Text = text;
+                    if (row.Active != null && row.Active.Checked != saved.Active) row.Active.Checked = saved.Active;
                     UpdateRowState(row);
                 }
             }

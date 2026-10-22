@@ -34,6 +34,13 @@ namespace Kaban.Core.Helpers
     ///
     ///     FA2010|1=MitsubishiActUtl;1
     ///     FA2010|2=Simulation;2
+    ///     H500|1=Simulation;3;;off        a PLC not active (22 October)
+    ///
+    /// AN ACTIVE PLC (22 October: "an activation checkbox for each PLC - the machine pages only
+    /// shown when any PLC of the related machine is activated"): a PLC not active gets no driver
+    /// at the start, and a machine none of whose PLCs is active has no pages - in the menu, as a
+    /// tab, on the machine list, in the PLC Monitor (MachineRegistry.Hide). From the next start,
+    /// like every other connection setting.
     /// </summary>
     public static class PlcConnectionSettings
     {
@@ -78,21 +85,43 @@ namespace Kaban.Core.Helpers
             /// which are addressed by number instead.
             /// </summary>
             public string Endpoint = "";
+
+            /// <summary>Used: connected at the start, its machine's pages shown. False: not connected, as if it were not there.</summary>
+            public bool Active = true;
         }
+
+        /// <summary>The stations not active in this run (read at the start: ApplyAll) - a setting changed since takes effect at the next.</summary>
+        private static readonly HashSet<int> _inactiveRunning = new HashSet<int>();
+
+        /// <summary>A station not active in this run.</summary>
+        public static bool RunsInactive(int stationId) { return _inactiveRunning.Contains(stationId); }
+
+        /// <summary>The controllers active in this run - the ones the PLC Monitor and the pages show.</summary>
+        public static List<Endpoint> ActiveEndpoints()
+        {
+            return Endpoints().Where(e => !_inactiveRunning.Contains(e.StationId)).ToList();
+        }
+
+        /// <summary>A controller's saved "active" setting (default: active).</summary>
+        public static bool IsActive(Endpoint endpoint) { return For(endpoint).Active; }
 
         private static readonly Dictionary<string, Connection> _byKey =
             new Dictionary<string, Connection>(StringComparer.OrdinalIgnoreCase);
 
         private static bool _loaded;
 
+        private static string _settingsPath;
+
+        /// <summary>CommonAppData\KabanHMI\PlcConnections.cfg (replaceable for the tests).</summary>
         public static string SettingsPath
         {
             get
             {
-                return Path.Combine(
+                return _settingsPath ?? Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                     "KabanHMI", "PlcConnections.cfg");
             }
+            set { _settingsPath = value; _loaded = false; }
         }
 
         // ==================================================================
@@ -186,7 +215,7 @@ namespace Kaban.Core.Helpers
             return _byKey.ContainsKey(endpoint.Key);
         }
 
-        public static void Set(Endpoint endpoint, string driverId, int logicalStation, string address)
+        public static void Set(Endpoint endpoint, string driverId, int logicalStation, string address, bool active = true)
         {
             if (endpoint == null) return;
             EnsureLoaded();
@@ -194,7 +223,8 @@ namespace Kaban.Core.Helpers
             {
                 DriverId = string.IsNullOrWhiteSpace(driverId) ? PlcDriverCatalog.SimulationId : driverId.Trim(),
                 LogicalStation = logicalStation,
-                Endpoint = (address ?? "").Trim()
+                Endpoint = (address ?? "").Trim(),
+                Active = active
             };
         }
 
@@ -222,19 +252,27 @@ namespace Kaban.Core.Helpers
                     if (eq <= 0) continue;
 
                     string key = line.Substring(0, eq).Trim();
-                    var parts = line.Substring(eq + 1).Split(';');
+                    var parts = line.Substring(eq + 1).Split(';').ToList();
+                    // not active: ";off" after the address
+                    bool active = true;
+                    if (parts.Count >= 4 && string.Equals(parts[parts.Count - 1].Trim(), "off", StringComparison.OrdinalIgnoreCase))
+                    {
+                        active = false;
+                        parts.RemoveAt(parts.Count - 1);
+                    }
 
                     int station;
                     _byKey[key] = new Connection
                     {
                         DriverId = parts[0].Trim(),
-                        LogicalStation = parts.Length > 1 &&
+                        Active = active,
+                        LogicalStation = parts.Count > 1 &&
                                          int.TryParse(parts[1].Trim(), NumberStyles.Integer,
                                                       CultureInfo.InvariantCulture, out station)
                                          ? station : 1,
                         // The endpoint may itself contain ':' but never ';', so
                         // everything after the second ';' is the address.
-                        Endpoint = parts.Length > 2 ? string.Join(";", parts.Skip(2)).Trim() : ""
+                        Endpoint = parts.Count > 2 ? string.Join(";", parts.Skip(2)).Trim() : ""
                     };
                 }
             }
@@ -252,7 +290,7 @@ namespace Kaban.Core.Helpers
                 var lines = new List<string>
                 {
                     "# Kaban HMI - PLC connections.",
-                    "# <ModuleId>|<the module's own PLC number> = <driver id>;<logical station>;<address>",
+                    "# <ModuleId>|<the module's own PLC number> = <driver id>;<logical station>;<address>[;off: not active]",
                     "# <address> is host:rack:slot (Siemens) or host:port:unit (Delta); blank otherwise.",
                     "# Edited from Settings -> HMI Settings -> PLC Connection.",
                     "# Takes effect at the next start: a driver cannot be swapped while",
@@ -261,7 +299,7 @@ namespace Kaban.Core.Helpers
                 foreach (var kv in _byKey.OrderBy(k => k.Key, StringComparer.OrdinalIgnoreCase))
                     lines.Add(kv.Key + "=" + kv.Value.DriverId + ";" +
                               kv.Value.LogicalStation.ToString(CultureInfo.InvariantCulture) + ";" +
-                              (kv.Value.Endpoint ?? ""));
+                              (kv.Value.Endpoint ?? "") + (kv.Value.Active ? "" : ";off"));
 
                 // All-or-nothing (SafeFile): a half-written file here is a machine
                 // that starts with no PLC addresses.
@@ -295,12 +333,20 @@ namespace Kaban.Core.Helpers
         {
             EnsureLoaded();
             int opened = 0;
+            _inactiveRunning.Clear();
 
             foreach (var endpoint in Endpoints())
             {
                 Connection conn = IsConfigured(endpoint)
                     ? For(endpoint)
                     : (fallback != null ? fallback(endpoint) : null) ?? For(endpoint);
+
+                if (!conn.Active)
+                {
+                    _inactiveRunning.Add(endpoint.StationId);
+                    AuditLogger.Log("[PLC DIAG] " + endpoint.Key + " is not active: no connection.");
+                    continue;
+                }
 
                 if (string.Equals(conn.DriverId, PlcDriverCatalog.NoneId, StringComparison.OrdinalIgnoreCase))
                 {
@@ -319,7 +365,19 @@ namespace Kaban.Core.Helpers
                                     : conn.Endpoint) + ").");
                 opened++;
             }
+            HideInactiveMachines();
             return opened;
+        }
+
+        /// <summary>The machines none of whose PLCs is active in this run: their pages are not shown.</summary>
+        private static void HideInactiveMachines()
+        {
+            var endpoints = Endpoints();
+            var hidden = endpoints.GroupBy(e => e.ModuleId ?? "", StringComparer.OrdinalIgnoreCase)
+                                  .Where(g => g.Key.Length > 0 && g.All(e => _inactiveRunning.Contains(e.StationId)))
+                                  .Select(g => g.Key).ToList();
+            MachineRegistry.Hide(hidden);
+            if (hidden.Count > 0) AuditLogger.Log("machines not shown - no PLC of theirs active: " + string.Join(", ", hidden) + ".");
         }
     }
 }

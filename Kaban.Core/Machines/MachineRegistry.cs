@@ -36,12 +36,36 @@ namespace Kaban.Core.Machines
         }
 
         public static IReadOnlyList<MountedModule> Modules => _modules;
+
+        /// <summary>
+        /// The machines whose pages are not shown: none of their PLCs active (HMI Settings > PLC
+        /// Connection, 22 October). Their pages are left out of every list of them - the menu, the
+        /// tabs, the machine list, the axes' bars, the side pages - except the HMI's own settings.
+        /// </summary>
+        private static readonly HashSet<string> _hidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>The machines (module ids) whose pages are not shown in this run.</summary>
+        public static void Hide(IEnumerable<string> moduleIds)
+        {
+            _hidden.Clear();
+            foreach (var id in moduleIds ?? Enumerable.Empty<string>()) if (!string.IsNullOrEmpty(id)) _hidden.Add(id);
+        }
+
+        /// <summary>A machine whose pages are not shown (none of its PLCs active).</summary>
+        public static bool IsHidden(MountedModule m)
+        {
+            return m != null && m.Context != null && _hidden.Contains(m.Context.ModuleId ?? "");
+        }
+
+        /// <summary>The machines whose pages are shown, main first.</summary>
+        public static IEnumerable<MountedModule> ShownModules => _modules.Where(m => !IsHidden(m));
         public static MountedModule Main => _modules.FirstOrDefault(m => m.IsMain);
 
         /// <summary>Clears all mounts (test / restart support).</summary>
         public static void Reset()
         {
             _modules.Clear();
+            _hidden.Clear();
             _nextMachineBit = FirstMachineBit;
         }
 
@@ -87,12 +111,18 @@ namespace Kaban.Core.Machines
             return mounted;
         }
 
-        /// <summary>All screens from all modules, main machine first, then sub-machines.</summary>
+        /// <summary>
+        /// All screens from all modules, main machine first, then sub-machines - a machine not shown
+        /// (none of its PLCs active) without its pages, the HMI's settings kept.
+        /// </summary>
         public static IEnumerable<KeyValuePair<MountedModule, MachineScreen>> AllScreens()
         {
             foreach (var m in _modules.OrderByDescending(m => m.IsMain))
                 foreach (var s in m.Screens.OrderBy(s => s.SortOrder))
+                {
+                    if (IsHidden(m) && !string.Equals(s.Role ?? "", ScreenRoles.HmiSettings, StringComparison.OrdinalIgnoreCase)) continue;
                     yield return new KeyValuePair<MountedModule, MachineScreen>(m, s);
+                }
         }
 
         /// <summary>The axes' bar of every mounted machine that has one (ScreenRoles.AxisBar), main machine first.</summary>
