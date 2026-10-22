@@ -60,6 +60,8 @@ EMOJI = [
     ('26d3', 'chains', []),
     ('26d4', 'no-entry', []),
     ('2702', 'scissors', []),
+    ('1f916', 'robot', []),                       # the AI (22 October: "use this emoji for AI")
+    ('1f4e5', 'inbox-tray', []),                  # an import
 ]
 SIZES = [16, 20, 24, 28, 32, 40, 48]
 PALE = 0.15        # towards grey, then towards white: the colours stay, the glare goes
