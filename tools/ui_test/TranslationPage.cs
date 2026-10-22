@@ -71,7 +71,7 @@ class TP {
         MachineRegistry.MountSub(new Mod { Id = "SUB" }, new[] { 7 }, dir);
         SecurityManager.Login("maint", SecurityLevel.Maintenance);
         // the questions answered (a language's code: FR; anything else: yes)
-        Kaban.UI.Profiles.Ask.Hook = (title, prompt, initial) => prompt.Contains("code") ? "fr" : "yes";
+        Kaban.UI.Profiles.Ask.Hook = (title, prompt, initial) => prompt.Contains("begin with") ? "" : prompt.Contains("code") ? "fr" : "yes";
         Start(false);
 
         Console.WriteLine("--- every key of every file, with whose it is ---");
@@ -176,7 +176,8 @@ class TP {
         Check("UserTranslations.csv: into SUB's file, the file put away", File.ReadAllLines(sub).Contains("Unit_Drill;Drill;Delgi") && !File.Exists(TranslationEdits.EditsFile) &&
               File.Exists(TranslationEdits.EditsFile + ".written") && LanguageManager.GetStringIn("TR", "Unit_Drill") == "Delgi", string.Join("|", File.ReadAllLines(sub)));
         Call(c, "Type", row("Btn_Cancel"), "TR", "Vazgec; iptal");
-        Check("a ; is no text's (the files' separator): made a ,", (int)Call(c, "Save") == 1 && LanguageManager.GetStringIn("TR", "Btn_Cancel") == "Vazgec, iptal");
+        Check("a ; is no text's (the files' separator): made a ,", (int)Call(c, "Save") == 1 && LanguageManager.GetStringIn("TR", "Btn_Cancel") == "Vazgec, iptal" &&
+              File.ReadAllLines(common).Contains("Btn_Cancel;Cancel;Vazgec, iptal;Otmena"), string.Join("|", File.ReadAllLines(common)));
         grid.CurrentCell = grid.Rows[Shown(c).ToList().FindIndex(r => r.Key == "Btn_Ok")].Cells["L_RU"];
         typeof(TranslationsControl).GetMethod("OnGridKeyDown", Any).Invoke(c, new object[] { grid, new KeyEventArgs(Keys.Delete) });
         Check("Delete on a cell: its text emptied (typed, until Save)", (int)Get(c, "PendingCount") == 1 && Convert.ToString(grid.Rows[Shown(c).ToList().FindIndex(r => r.Key == "Btn_Ok")].Cells["L_RU"].Value) == "");
@@ -226,11 +227,69 @@ class TP {
                   Convert.ToString(hg.Rows[0].Cells["Lang"].Value) == "RU" && Convert.ToString(hg.Rows[0].Cells["New"].Value) == "language added", hg.Rows.Count + "");
         }
 
+        Console.WriteLine("--- a language's texts copied into the empty cells of others ---");
+        pickOwner("All");
+        Func<string, string, bool, int> fillable = (f, t, s) => (int)Call(c, "Fillable", f, t, s);
+        Check("EN into FR: every key's cell but Unit_Saw's (it has its text)", fillable("EN", "FR", false) == 6 && fillable("FR", "EN", false) == 0, fillable("EN", "FR", false) + "");
+        using (var cf = new TranslationCopyForm((IList<string>)Get(c, "Languages"), "EN", Shown(c).Count, Shown(c).Count, fillable))
+        {
+            cf.Show(); Application.DoEvents();
+            var items = ((CheckedListBox)Get(cf, "ToBox")).Items.Cast<object>().Select(o => o.ToString()).ToList();
+            var okBtn = cf.Controls.OfType<Button>().First(b => b.Text == "Copy");
+            Check("the dialog: from EN, into each other language - its empty cells counted; nothing ticked, Copy off; all rows shown: no 'only shown'",
+                  ((ComboBox)Get(cf, "FromBox")).SelectedItem.ToString().StartsWith("EN") && items.Count == 3 && items.Any(t => t.StartsWith("FR") && t.Contains(": 6 empty")) &&
+                  !okBtn.Enabled && !((CheckBox)Get(cf, "ShownOnlyBox")).Enabled, string.Join(" / ", items));
+            Call(cf, "Tick", "FR", true);
+            Check("  FR ticked: Copy on, the choice given", okBtn.Enabled && (bool)Call(cf, "Accept") && cf.From == "EN" && string.Join(",", cf.To) == "FR" && !cf.ShownOnly);
+        }
+        int copied = (int)Call(c, "CopyLanguage", "EN", new List<string> { "FR" }, false);
+        Check("copied: 6 typed texts, the cell with a text kept", copied == 6 && (int)Get(c, "PendingCount") == 6 &&
+              Cell(c, grid, "Unit_Saw", "FR") == "Scie" && Cell(c, grid, "Btn_Cancel", "FR") == "Cancel",
+              copied + " " + Get(c, "PendingCount") + " " + Cell(c, grid, "Unit_Saw", "FR") + " " + Cell(c, grid, "Btn_Cancel", "FR"));
+        typeof(TranslationsControl).GetMethod("Revert", Any).Invoke(c, null);
+        pickOwner("SUB");
+        using (var cf = new TranslationCopyForm((IList<string>)Get(c, "Languages"), "TR", Shown(c).Count, 7, fillable))
+            Check("a filter on: 'only the rows shown' offered, ticked", ((CheckBox)Get(cf, "ShownOnlyBox")).Enabled && ((CheckBox)Get(cf, "ShownOnlyBox")).Checked && ((CheckBox)Get(cf, "ShownOnlyBox")).Text.Contains("1 rows shown"), ((CheckBox)Get(cf, "ShownOnlyBox")).Text);
+        Check("TR into FR and RU, the rows shown only: SUB's key, 2 cells", (int)Call(c, "CopyLanguage", "TR", new List<string> { "FR", "RU", "TR" }, true) == 2);
+        Call(c, "Save");
+        Check("  saved: its file has both columns now", string.Join("|", File.ReadAllLines(sub)) == "Key;EN;TR;FR;RU|Unit_Drill;Drill;Delgi;Delgi;Delgi", string.Join("|", File.ReadAllLines(sub)));
+        pickOwner("All");
+
+        Console.WriteLine("--- a language added with another's texts ---");
+        using (var lf = new TranslationLanguageForm((IList<string>)Get(c, "Languages"), l => 7))
+        {
+            lf.Show(); Application.DoEvents();
+            SetP(lf, "CodeText", "tr");
+            Check("the dialog: a code there already - said in it, not closed", !(bool)Call(lf, "Accept") && ((string)Get(lf, "ErrorText")).Contains("there already"), ((string)Get(lf, "ErrorText")));
+            SetP(lf, "CodeText", "x1");
+            Check("  not a code - said", !(bool)Call(lf, "Accept") && ((string)Get(lf, "ErrorText")).Contains("2 or 3 letters"));
+            SetP(lf, "CodeText", "de");
+            var opts = ((ComboBox)Get(lf, "FromBox")).Items.Cast<object>().Select(o => o.ToString()).ToList();
+            Check("  its texts: none first, then each language's, with how many it brings", ((ComboBox)Get(lf, "FromBox")).SelectedIndex == 0 && opts.Count == 1 + 4 && opts[1].StartsWith("EN") && opts[1].Contains("7 text"),
+                  string.Join(" / ", opts));
+            ((ComboBox)Get(lf, "FromBox")).SelectedIndex = 1;
+            Check("  DE from EN: the choice given", (bool)Call(lf, "Accept") && lf.Code == "DE" && lf.CopyFrom == "EN");
+        }
+        Call(c, "AddLanguage", "DE", "EN");
+        Check("DE added, EN's 7 texts typed into it", grid.Columns.Contains("L_DE") && (int)Get(c, "PendingCount") == 7 && Cell(c, grid, "Unit_Clamp", "DE") == "Clamp", Get(c, "PendingCount") + "");
+        Call(c, "Save");
+        Check("  saved: every file's keys at once - the common file, MAIN's, SUB's and the alarms'",
+              File.ReadAllLines(common)[0] == "Key;EN;TR;RU;DE" && File.ReadAllLines(common).Contains("Btn_Ok;OK;Tamam!;OK;OK") && File.ReadAllLines(main)[0] == "Key;EN;TR;RU;FR;DE" &&
+              File.ReadAllLines(main).Contains("Unit_Clamp;Clamp;Kiskac;Zazhim;;Clamp") && File.ReadAllLines(sub).Contains("Unit_Drill;Drill;Delgi;Delgi;Delgi;Drill") &&
+              File.ReadAllText(alarms).Contains("\"DE\": \"The door is open\""),
+              string.Join("|", File.ReadAllLines(common)) + " // " + string.Join("|", File.ReadAllLines(main)));
+
         form.Close();
         MachineRegistry.Reset();
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "TRANSLATION PAGE ALL PASS" : fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
+    }
+
+    static string Cell(object c, DataGridView g, string key, string lang)
+    {
+        int at = Shown(c).ToList().FindIndex(r => r.Key == key);
+        return at < 0 ? null : Convert.ToString(g.Rows[at].Cells["L_" + lang].Value);
     }
 
     static bool HasChooser(DataGridView g)

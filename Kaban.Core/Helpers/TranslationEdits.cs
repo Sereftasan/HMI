@@ -121,6 +121,23 @@ namespace Kaban.Core.Helpers
             return rows;
         }
 
+        /// <summary>
+        /// The files' records a row's key is in, as read NOW (a row kept by a table open while the
+        /// files were read again has the earlier ones too) - a text saved is put in all of them.
+        /// </summary>
+        private static IEnumerable<LanguageManager.Source> SourcesOf(Row row)
+        {
+            var list = new List<LanguageManager.Source>(row.From);
+            foreach (var s in LanguageManager.Sources)
+                if (!list.Contains(s) && string.Equals(OwnerOf(s), row.Owner, StringComparison.OrdinalIgnoreCase) &&
+                    (s.Texts.ContainsKey(row.Key) || s.Keys.Contains(row.Key, StringComparer.OrdinalIgnoreCase)))
+                {
+                    list.Add(s);
+                    row.From.Add(s);
+                }
+            return list;
+        }
+
         /// <summary>The rows of a key, the machine's first (the text on the screen is the machine's).</summary>
         public static List<Row> RowsOf(string key)
         {
@@ -191,6 +208,7 @@ namespace Kaban.Core.Helpers
             var history = new List<Change>();
             lock (_lock)
             {
+                var writes = new Writes();
                 foreach (var w in wanted ?? Enumerable.Empty<Wanted>())
                 {
                     if (w == null || w.Row == null || string.IsNullOrEmpty(w.Lang)) continue;
@@ -198,13 +216,14 @@ namespace Kaban.Core.Helpers
                     string text = Clean(w.Text);
                     string old = TextOf(w.Row, lang);
                     if (old == text) continue;
-                    if (!Write(w.Row, lang, text)) notWritten++;
+                    writes.Add(w.Row, lang, text);
                     w.Row.FileTexts[lang] = text;
-                    foreach (var s in w.Row.From) s.Put(w.Row.Key, lang, text);
+                    foreach (var s in SourcesOf(w.Row)) s.Put(w.Row.Key, lang, text);
                     LanguageManager.SetText(lang, w.Row.Key, text, w.Row.Common);
                     history.Add(new Change { Time = now, User = user, Owner = w.Row.Owner, Key = w.Row.Key, Lang = lang, Old = old, New = text });
                 }
                 if (history.Count == 0) return 0;
+                notWritten = writes.Flush().Count(ok => !ok);
                 AppendHistory(history);
             }
             if (raise) LanguageManager.RaiseLanguageChanged();
@@ -217,27 +236,76 @@ namespace Kaban.Core.Helpers
         /// <summary>A row's text in a language written into its file and the project's copy (false: neither could take it).</summary>
         private static bool Write(Row row, string lang, string text)
         {
-            bool written = false;
-            string project = null;
-            try { project = ProjectFileOf != null ? ProjectFileOf(row) : null; } catch { }
-            if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(row.Path))
+            var w = new Writes();
+            w.Add(row, lang, text);
+            return w.Flush()[0];
+        }
+
+        /// <summary>
+        /// The texts of a Save written file by file - each file read and written once, however many of
+        /// its keys changed (a language's texts copied into all of them): a row's file and the
+        /// project's copy of it; an alarm's text into the Alarms.json it was read from.
+        /// </summary>
+        private sealed class Writes
+        {
+            private readonly Dictionary<string, List<TranslationFiles.Item>> _csv = new Dictionary<string, List<TranslationFiles.Item>>(StringComparer.OrdinalIgnoreCase);
+            private readonly Dictionary<string, List<AlarmDefinitionLoader.TextItem>> _json = new Dictionary<string, List<AlarmDefinitionLoader.TextItem>>(StringComparer.OrdinalIgnoreCase);
+            private readonly List<List<Func<bool>>> _changes = new List<List<Func<bool>>>();
+
+            public void Add(Row row, string lang, string text)
             {
-                string tag;
-                written = AlarmDefinitionLoader.SetTranslation(row.Key, lang, text, out tag);
-                if (!string.IsNullOrEmpty(project) && !string.IsNullOrEmpty(tag))
-                    written |= AlarmDefinitionLoader.SetTranslationInFile(project, tag, lang, text);
-                return written;
+                var done = new List<Func<bool>>();
+                _changes.Add(done);
+                string project = null;
+                try { project = ProjectFileOf != null ? ProjectFileOf(row) : null; } catch { }
+                if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(row.Path))
+                {
+                    string tag;
+                    var file = AlarmDefinitionLoader.SetLoadedTranslation(row.Key, lang, text, out tag);
+                    if (string.IsNullOrEmpty(tag)) return;
+                    var files = new[] { file, SamePath(project, file) ? null : project };
+                    foreach (var f in files)
+                    {
+                        if (string.IsNullOrEmpty(f)) continue;
+                        var item = new AlarmDefinitionLoader.TextItem { TagCode = tag, Lang = lang, Text = text };
+                        Of(_json, f).Add(item);
+                        done.Add(() => item.Written);
+                    }
+                    return;
+                }
+                string path = row.Path;
+                if (string.IsNullOrEmpty(path) && row.Common)
+                {
+                    // the common texts read from the program's own copy (no file beside it): the file there
+                    var beside = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommonTranslations.csv");
+                    if (File.Exists(beside)) path = beside;
+                }
+                var paths = new[] { path, SamePath(project, path) ? null : project };
+                foreach (var f in paths)
+                {
+                    if (string.IsNullOrEmpty(f)) continue;
+                    var item = new TranslationFiles.Item { Key = row.Key, Lang = lang, Text = text };
+                    Of(_csv, f).Add(item);
+                    done.Add(() => item.Written);
+                }
             }
-            string path = row.Path;
-            if (string.IsNullOrEmpty(path) && row.Common)
+
+            private static List<T> Of<T>(Dictionary<string, List<T>> d, string path)
             {
-                // the common texts read from the program's own copy (no file beside it): the file there
-                var beside = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommonTranslations.csv");
-                if (File.Exists(beside)) path = beside;
+                string key;
+                try { key = System.IO.Path.GetFullPath(path); } catch { key = path; }
+                List<T> l;
+                if (!d.TryGetValue(key, out l)) d[key] = l = new List<T>();
+                return l;
             }
-            if (!string.IsNullOrEmpty(path)) written = TranslationFiles.SetText(path, row.Key, lang, text);
-            if (!string.IsNullOrEmpty(project) && !SamePath(project, path)) written |= TranslationFiles.SetText(project, row.Key, lang, text);
-            return written;
+
+            /// <summary>Written; for each change added, whether a file took it.</summary>
+            public List<bool> Flush()
+            {
+                foreach (var kv in _csv) TranslationFiles.SetTexts(kv.Key, kv.Value);
+                foreach (var kv in _json) AlarmDefinitionLoader.SetTranslationsInFile(kv.Key, kv.Value);
+                return _changes.Select(c => c.Any(ok => ok())).ToList();
+            }
         }
 
         private static string DefaultProjectFile(Row row)
@@ -341,7 +409,7 @@ namespace Kaban.Core.Helpers
                     if (TextOf(row, lang) == text) continue;
                     Write(row, lang, text);
                     row.FileTexts[lang] = text;
-                    foreach (var s in row.From) s.Put(row.Key, lang, text);
+                    foreach (var s in SourcesOf(row)) s.Put(row.Key, lang, text);
                     LanguageManager.SetText(lang, row.Key, text, row.Common);
                     n++;
                 }
@@ -462,10 +530,29 @@ namespace Kaban.Core.Helpers
     /// </summary>
     public static class TranslationFiles
     {
+        /// <summary>A text for SetTexts (Written: put in the file).</summary>
+        public sealed class Item
+        {
+            public string Key = "", Lang = "", Text = "";
+            public bool Written;
+        }
+
         /// <summary>False when the file or its key is not there (a key is never added).</summary>
         public static bool SetText(string path, string key, string lang, string text)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path) || string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(lang)) return false;
+            var item = new Item { Key = key, Lang = lang, Text = text };
+            SetTexts(path, new[] { item });
+            return item.Written;
+        }
+
+        /// <summary>
+        /// Texts written into a file in place, the file read and written once (a language's texts
+        /// copied into every key): the key's line, the language's column (added to the heading when
+        /// the file has none) - the rest as it was. The number written (a key not in the file: not).
+        /// </summary>
+        public static int SetTexts(string path, IList<Item> items)
+        {
+            if (items == null || items.Count == 0 || string.IsNullOrEmpty(path) || !File.Exists(path)) return 0;
             try
             {
                 var bytes = File.ReadAllBytes(path);
@@ -474,25 +561,42 @@ namespace Kaban.Core.Helpers
                 string nl = content.Contains("\r\n") ? "\r\n" : "\n";
                 var lines = content.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).ToList();
                 int head = lines.FindIndex(l => l.Trim().Length > 0);
-                if (head < 0) return false;
-                var heads = lines[head].Split(';');
-                int col = Array.FindIndex(heads, h => string.Equals(h.Trim(), lang.Trim(), StringComparison.OrdinalIgnoreCase));
-                if (col < 1) { lines[head] = lines[head].TrimEnd() + ";" + lang.Trim().ToUpperInvariant(); col = heads.Length; }
-                int at = -1;
-                for (int i = head + 1; i < lines.Count && at < 0; i++)
-                    if (string.Equals(lines[i].Split(';')[0].Trim(), key.Trim(), StringComparison.OrdinalIgnoreCase)) at = i;
-                if (at < 0) return false;
-                var cols = lines[at].Split(';').ToList();
-                while (cols.Count <= col) cols.Add("");
-                cols[col] = TranslationEdits.Escape(text);
-                lines[at] = string.Join(";", cols);
+                if (head < 0) return 0;
+                var heads = lines[head].Split(';').ToList();
+                var lineOf = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                for (int i = head + 1; i < lines.Count; i++)
+                {
+                    var k = lines[i].Split(';')[0].Trim();
+                    if (k.Length > 0 && !lineOf.ContainsKey(k)) lineOf[k] = i;
+                }
+                bool headChanged = false;
+                int n = 0;
+                foreach (var it in items)
+                {
+                    if (it == null) continue;
+                    it.Written = false;
+                    int at;
+                    if (string.IsNullOrWhiteSpace(it.Key) || string.IsNullOrWhiteSpace(it.Lang) || !lineOf.TryGetValue(it.Key.Trim(), out at)) continue;
+                    string lang = it.Lang.Trim().ToUpperInvariant();
+                    int col = heads.FindIndex(h => string.Equals(h.Trim(), lang, StringComparison.OrdinalIgnoreCase));
+                    if (col < 1) { heads.Add(lang); col = heads.Count - 1; headChanged = true; }
+                    var cols = lines[at].Split(';').ToList();
+                    while (cols.Count <= col) cols.Add("");
+                    cols[col] = TranslationEdits.Escape(it.Text);
+                    lines[at] = string.Join(";", cols);
+                    it.Written = true;
+                    n++;
+                }
+                if (n == 0) return 0;
+                if (headChanged) lines[head] = string.Join(";", heads);
                 SafeFile.WriteAllText(path, string.Join(nl, lines), new UTF8Encoding(bom));
-                return true;
+                return n;
             }
             catch (Exception ex)
             {
-                AuditLogger.Log("could not write the translation into " + path + ": " + ex.Message);
-                return false;
+                AuditLogger.Log("could not write the translations into " + path + ": " + ex.Message);
+                foreach (var it in items) if (it != null) it.Written = false;
+                return 0;
             }
         }
     }

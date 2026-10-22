@@ -40,7 +40,7 @@ namespace Kaban.UI.Settings
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
-        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport, _btnFind;
+        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnFind;
         /// <summary>The row asked for from elsewhere (the notes page): marked until another is chosen.</summary>
         private string _marked;
 
@@ -125,6 +125,9 @@ namespace Kaban.UI.Settings
             _btnAddLang = UiStyle.ToolButton(E(0x2795), T("Tip_TrnAddLang", "Add a language"), _tips, (s, e) => AddLanguage());
             _btnDelLang = UiStyle.ToolButton(E(0x1F5D1), T("Tip_TrnDelLang", "Delete a language (not English)"), _tips, null);
             _btnDelLang.Click += (s, e) => DeleteLanguageMenu().Show(_btnDelLang, new Point(0, _btnDelLang.Height));
+            // 22 October: "copy any language column to paste to any column's missing cells"
+            _btnCopyLang = UiStyle.ToolButton(E(0x1F4CB), T("Tip_TrnCopyLang", "Copy a language's texts into the empty cells of other languages (typed until Save)"), _tips,
+                                              (s, e) => CopyLanguages());
             // the bin's usual key (Delete) empties a cell of the table here, it does not delete a language
             Kaban.UI.Helpers.Shortcuts.Set(_btnDelLang, Keys.None, _tips, T("Tip_TrnDelLang", "Delete a language (not English)"));
             _btnHistory = UiStyle.ToolButton(E(0x1F552), T("Tip_TrnHistory", "The edit history: every text changed here - who, when, before and after"), _tips,
@@ -138,7 +141,7 @@ namespace Kaban.UI.Settings
             Kaban.UI.Helpers.Shortcuts.Set(_btnFind, Keys.Control | Keys.F, _tips,
                                            T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"));
             _dirty.Guard(_btnSave, _btnRevert);
-            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnHistory, _btnExport, _btnFind })
+            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnFind })
             {
                 b.Margin = new Padding(2, 1, 2, 1);
                 bar.Controls.Add(b);
@@ -214,7 +217,8 @@ namespace Kaban.UI.Settings
             LoadRows();
             ApplyFilter();
             LanguageManager.LanguagesChanged += OnLanguagesChanged;
-            Disposed += (s, e) => { LanguageManager.LanguagesChanged -= OnLanguagesChanged; _typing.Dispose(); };
+            LanguageManager.LanguageChanged += OnTextsChanged;
+            Disposed += (s, e) => { LanguageManager.LanguagesChanged -= OnLanguagesChanged; LanguageManager.LanguageChanged -= OnTextsChanged; _typing.Dispose(); };
         }
 
         private static Control Pair(Control a, Control b)
@@ -582,25 +586,77 @@ namespace Kaban.UI.Settings
             ApplyFilter();
         }
 
+        /// <summary>➕: the dialog - the code, and a language whose texts it begins with.</summary>
         internal void AddLanguage()
         {
-            var code = Ask.Text(this, T("Tip_TrnAddLang", "Add a language"),
-                                T("Msg_TrnLangCode", "The language's code - 2 or 3 letters (FR for French, PL for Polish):"));
-            if (code == null) return;
+            string code, from;
+            if (!TranslationLanguageForm.Run(FindForm() ?? (IWin32Window)this, _langs, TextsIn, out code, out from)) return;
+            AddLanguage(code, from);
+        }
+
+        /// <summary>A language added; copyFrom's texts typed into it (null: none - English shown until typed).</summary>
+        internal void AddLanguage(string code, string copyFrom)
+        {
+            if (TranslationLanguageForm.Problem(code, _langs) != null) return;
             code = code.Trim().ToUpperInvariant();
-            if (!Regex.IsMatch(code, "^[A-Z]{2,3}$"))
-            {
-                Ask.Tell(this, T("Tip_TrnAddLang", "Add a language"), T("Msg_TrnLangBad", "A language's code is 2 or 3 letters (FR, PL ...)."));
-                return;
-            }
-            if (_langs.Contains(code, StringComparer.OrdinalIgnoreCase))
-            {
-                Ask.Tell(this, T("Tip_TrnAddLang", "Add a language"), string.Format(T("Msg_TrnLangThere", "{0} is there already."), code));
-                return;
-            }
             TranslationEdits.AddLanguage(code);
             RefreshLanguages();
-            SetStatus(string.Format(T("Msg_TrnLangAdded", "{0} added: its texts are English until typed - the language list offers it."), code), false);
+            int n = string.IsNullOrEmpty(copyFrom) ? 0 : CopyLanguage(copyFrom, new[] { code }, false);
+            SetStatus(n > 0
+                ? string.Format(T("Msg_TrnLangAddedCopied", "{0} added: {1} text(s) of {2} copied into it - typed (orange) until Save writes them into the files."), code, n, copyFrom)
+                : string.Format(T("Msg_TrnLangAdded", "{0} added: its texts are English until typed - the language list offers it."), code), false);
+        }
+
+        /// <summary>The keys with a text in a language (as the cells show them).</summary>
+        private int TextsIn(string lang)
+        {
+            return _rows.Count(r => TextOf(r, lang).Trim().Length > 0);
+        }
+
+        /// <summary>The empty cells of a language a copy of another's texts fills.</summary>
+        internal int Fillable(string from, string to, bool shownOnly)
+        {
+            if (string.Equals(from, to, StringComparison.OrdinalIgnoreCase)) return 0;
+            return (shownOnly ? _shown : _rows).Count(r => TextOf(r, from).Trim().Length > 0 && TextOf(r, to).Trim().Length == 0);
+        }
+
+        /// <summary>
+        /// A language's texts typed into the EMPTY cells of others (of every row, or of the rows
+        /// shown) - a cell with a text left as it is; Save writes them. The number of cells filled.
+        /// </summary>
+        internal int CopyLanguage(string from, IEnumerable<string> to, bool shownOnly)
+        {
+            if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
+            from = (from ?? "").Trim().ToUpperInvariant();
+            var targets = (to ?? Enumerable.Empty<string>()).Select(t => (t ?? "").Trim().ToUpperInvariant())
+                          .Where(t => t != from && _langs.Contains(t, StringComparer.OrdinalIgnoreCase)).Distinct().ToList();
+            if (!_langs.Contains(from, StringComparer.OrdinalIgnoreCase) || targets.Count == 0) return 0;
+            int n = 0;
+            foreach (var r in (shownOnly ? _shown : _rows).ToList())
+            {
+                var text = TextOf(r, from);
+                if (text.Trim().Length == 0) continue;
+                foreach (var t in targets)
+                    if (TextOf(r, t).Trim().Length == 0) { _pending[Id(r.Owner, r.Key, t)] = text; n++; }
+            }
+            if (n > 0) _dirty.MarkDirty();
+            _grid.Invalidate();
+            UpdateStatus();
+            return n;
+        }
+
+        /// <summary>📋: the dialog - from which language into which ones' empty cells.</summary>
+        private void CopyLanguages()
+        {
+            if (_langs.Count < 2) return;
+            string current = _grid.CurrentCell != null && IsLanguage(_grid.CurrentCell.ColumnIndex) ? LangOf(_grid.Columns[_grid.CurrentCell.ColumnIndex]) : "EN";
+            using (var dlg = new TranslationCopyForm(_langs, current, _shown.Count, _rows.Count, Fillable))
+            {
+                if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
+                int n = CopyLanguage(dlg.From, dlg.To, dlg.ShownOnly);
+                SetStatus(string.Format(T("Msg_TrnCopied", "{0} empty cell(s) of {1} filled with the texts of {2} - typed (orange) until Save."), n,
+                                        string.Join(", ", dlg.To), dlg.From), n == 0);
+            }
         }
 
         private ContextMenuStrip DeleteLanguageMenu()
@@ -627,6 +683,19 @@ namespace Kaban.UI.Settings
             if (_pending.Count == 0) _dirty.Reset();
             TranslationEdits.RemoveLanguage(code);
             RefreshLanguages();
+        }
+
+        /// <summary>Texts put in force elsewhere (a note applied, the files read again): the rows as the files have them now - the texts typed kept.</summary>
+        private void OnTextsChanged(object sender, EventArgs e)
+        {
+            if (IsDisposed || !IsHandleCreated) return;
+            BeginInvoke((Action)(() =>
+            {
+                if (IsDisposed) return;
+                if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
+                LoadRows();
+                ApplyFilter();
+            }));
         }
 
         private void OnLanguagesChanged(object sender, EventArgs e)

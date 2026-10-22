@@ -59,7 +59,18 @@ namespace Kaban.UI.Helpers
         public static string LanguageName(string code)
         {
             string n;
-            return LanguageNames.TryGetValue(code ?? "", out n) ? n : (string.IsNullOrEmpty(code) ? "English" : code);
+            if (string.IsNullOrEmpty(code)) return "English";
+            if (LanguageNames.TryGetValue(code, out n)) return n;
+            // a language added on the Translation page (FR, PL ...): the name the system knows it by
+            try
+            {
+                var c = System.Globalization.CultureInfo.GetCultureInfo(code.Trim().ToLowerInvariant());
+                if (c != null && !string.IsNullOrEmpty(c.EnglishName) && !c.EnglishName.StartsWith("Unknown", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(c.EnglishName, code.Trim(), StringComparison.OrdinalIgnoreCase))
+                    return c.EnglishName.Split('(')[0].Trim();
+            }
+            catch { }
+            return code;
         }
 
         /// <summary>

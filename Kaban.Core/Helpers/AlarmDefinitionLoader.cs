@@ -152,8 +152,18 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static bool SetTranslation(string key, string lang, string text, out string tagCode)
         {
+            var file = SetLoadedTranslation(key, lang, text, out tagCode);
+            return !string.IsNullOrEmpty(file) && SetTranslationInFile(file, tagCode, lang, text);
+        }
+
+        /// <summary>
+        /// An alarm's text changed in the alarms loaded (its key: Alarm_ and the scoped TagCode) - the
+        /// Alarms.json it was read from returned for writing (null: no alarm has the key).
+        /// </summary>
+        public static string SetLoadedTranslation(string key, string lang, string text, out string tagCode)
+        {
             tagCode = null;
-            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(lang)) return false;
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(lang)) return null;
             lang = lang.Trim().ToUpperInvariant();
             for (int i = 0; i < _loaded.Count; i++)
             {
@@ -163,10 +173,23 @@ namespace Kaban.Core.Helpers
                 tagCode = entry.TagCode;
                 if (entry.Translations == null) entry.Translations = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                 entry.Translations[lang] = text ?? "";
-                string file = i < _loadedFiles.Count ? _loadedFiles[i] : "";
-                return !string.IsNullOrEmpty(file) && SetTranslationInFile(file, entry.TagCode, lang, text);
+                return i < _loadedFiles.Count ? _loadedFiles[i] ?? "" : "";
             }
-            return false;
+            return null;
+        }
+
+        /// <summary>An alarm's text for SetTranslationsInFile (Written: put in the file).</summary>
+        public sealed class TextItem
+        {
+            public string TagCode = "", Lang = "", Text = "";
+            public bool Written;
+        }
+
+        public static bool SetTranslationInFile(string path, string tagCode, string lang, string text)
+        {
+            var item = new TextItem { TagCode = tagCode, Lang = lang, Text = text };
+            SetTranslationsInFile(path, new[] { item });
+            return item.Written;
         }
 
         /// <summary>
@@ -174,14 +197,42 @@ namespace Kaban.Core.Helpers
         /// "Translations" object, the language's value (added when the entry has none). The rest
         /// of the file - // comments, order, indentation - is left as it was.
         /// </summary>
-        public static bool SetTranslationInFile(string path, string tagCode, string lang, string text)
+        /// <remarks>The file read and written once for all the texts (the number written).</remarks>
+        public static int SetTranslationsInFile(string path, IList<TextItem> items)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path) || string.IsNullOrWhiteSpace(tagCode)) return false;
+            if (items == null || items.Count == 0 || string.IsNullOrEmpty(path) || !File.Exists(path)) return 0;
             try
             {
                 var bytes = File.ReadAllBytes(path);
                 bool bom = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF;
                 var json = System.Text.Encoding.UTF8.GetString(bytes, bom ? 3 : 0, bytes.Length - (bom ? 3 : 0));
+                int n = 0;
+                foreach (var it in items)
+                {
+                    if (it == null) continue;
+                    it.Written = false;
+                    if (string.IsNullOrWhiteSpace(it.TagCode) || string.IsNullOrWhiteSpace(it.Lang)) continue;
+                    var changed = Edit(json, it.TagCode, it.Lang, it.Text);
+                    if (changed == null) continue;
+                    json = changed;
+                    it.Written = true;
+                    n++;
+                }
+                if (n > 0) SafeFile.WriteAllText(path, json, new System.Text.UTF8Encoding(bom));
+                return n;
+            }
+            catch (Exception ex)
+            {
+                AuditLogger.Log("could not write the alarm texts into " + path + ": " + ex.Message);
+                foreach (var it in items) if (it != null) it.Written = false;
+                return 0;
+            }
+        }
+
+        /// <summary>The JSON with the entry's text set (null: no entry of the TagCode, or it has no Translations).</summary>
+        private static string Edit(string json, string tagCode, string lang, string text)
+        {
+            {
                 var value = JsonSerializer.Serialize(text ?? "", new JsonSerializerOptions { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
                 var tag = new System.Text.RegularExpressions.Regex("\"TagCode\"\\s*:\\s*\"" + System.Text.RegularExpressions.Regex.Escape(tagCode) + "\"",
                                                                    System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -191,9 +242,9 @@ namespace Kaban.Core.Helpers
                     var body = json.Substring(span.Key, span.Value - span.Key + 1);
                     if (!tag.IsMatch(body)) continue;
                     var tr = new System.Text.RegularExpressions.Regex("\"Translations\"\\s*:\\s*\\{", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Match(json, span.Key, span.Value - span.Key);
-                    if (!tr.Success) return false;
+                    if (!tr.Success) return null;
                     int open = tr.Index + tr.Length - 1, close = Matching(json, open);
-                    if (close < 0 || close > span.Value) return false;
+                    if (close < 0 || close > span.Value) return null;
                     var lm = new System.Text.RegularExpressions.Regex("\"" + System.Text.RegularExpressions.Regex.Escape(lang.Trim()) + "\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"",
                                                                       System.Text.RegularExpressions.RegexOptions.IgnoreCase).Match(json, open, close - open);
                     string result;
@@ -211,15 +262,9 @@ namespace Kaban.Core.Helpers
                         var add = (empty ? "" : ",") + (empty ? " " : nl + indent) + "\"" + lang.Trim().ToUpperInvariant() + "\": " + value + (empty ? " " : "");
                         result = json.Substring(0, last + 1) + add + json.Substring(last + 1);
                     }
-                    SafeFile.WriteAllText(path, result, new System.Text.UTF8Encoding(bom));
-                    return true;
+                    return result;
                 }
-                return false;
-            }
-            catch (Exception ex)
-            {
-                AuditLogger.Log("could not write the alarm text into " + path + ": " + ex.Message);
-                return false;
+                return null;
             }
         }
 
