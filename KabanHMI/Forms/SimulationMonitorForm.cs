@@ -251,6 +251,20 @@ namespace Kaban.UI.Forms
             /// <summary>The column last sorted on, and which way - a second click reverses it.</summary>
             public string SortColumn = "";
             public bool SortDescending;
+
+            // ---- THE TABLE VIEW (22 October: SimulationMonitorForm.Table.cs) ----
+            /// <summary>Shown as a table: its arrays side by side, a line per index.</summary>
+            public bool IsTable;
+            /// <summary>The table shows the values as the PLC holds them (false: the calculated ones).</summary>
+            public bool TableRaw;
+            public Panel TableView;
+            public DataGridView TableGrid;
+            public CheckBox TableCalc;
+            public Label TableNote;
+            public Button TableAdd;
+            /// <summary>The columns the table was made with (made again when its arrays change).</summary>
+            public string TableKey;
+            public List<TableColumn> TableCols = new List<TableColumn>();
         }
 
         internal class MonitorTab
@@ -647,6 +661,11 @@ namespace Kaban.UI.Forms
             m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null, keyText: "F2"));
             m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null, keyText: "Del"));
             m.Items.Add(new ToolStripSeparator());
+            // 22 October: the tab's arrays side by side, a line per index
+            var cur = mon != null ? mon.Current : null;
+            m.Items.Add(Item(cur != null && cur.IsTable ? T("Mnu_SheetAsList", "Show this tab as a list") : T("Mnu_SheetAsTable", "Show this tab as a table"),
+                             (s, e) => ShowTable(mon, cur, !cur.IsTable), cur != null));
+            m.Items.Add(new ToolStripSeparator());
             m.Items.Add(Item(T("Mnu_SheetLeft", "Move this tab left"), (s, e) => MoveSheet(-1), mon != null && mon.SheetTabs.SelectedIndex > 0, keyText: "Ctrl+Left"));
             m.Items.Add(Item(T("Mnu_SheetRight", "Move this tab right"), (s, e) => MoveSheet(+1), mon != null && mon.SheetTabs.SelectedIndex < mon.Sheets.Count - 1, keyText: "Ctrl+Right"));
             return m;
@@ -941,6 +960,7 @@ namespace Kaban.UI.Forms
             sh.Page.Tag = sh;                               // the page KNOWS its tab: see Current
             WireGrid(mon, sh);
             EnsureBlankRow(sh);
+            if (sh.IsTable) ApplyView(mon, sh);
             InsertPage(mon, sh.Page, at);
             mon.SyncOrder();
             UpdateEmptyState(mon);
@@ -1248,6 +1268,10 @@ namespace Kaban.UI.Forms
                     rowMenu.Items.Add(Item(head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
                                                         : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
                                            (s2, e2) => ToggleArray(mon, sh, head)));
+                // 22 October: an array as a table - a line per element, a column per member
+                var array = at == null ? null : at.Root.IsArray ? at.Root : null;
+                if (array != null)
+                    rowMenu.Items.Add(Item(T("Mnu_MonOpenTable", "Show the array as a table (a new tab)"), (s2, e2) => OpenAsTable(mon, array)));
                 // 19 October: 0 into every device of the rows chosen (a structure's members, an array's elements)
                 bool devices = SelectedIndices(sh).Any(i => i < sh.Rows.Count && sh.Rows[i].IsDevice);
                 rowMenu.Items.Add(Item(T("Mnu_MonReset", "Reset (0 into its devices)..."), (s2, e2) => ResetSelected(mon, sh), devices));
@@ -1589,7 +1613,14 @@ namespace Kaban.UI.Forms
         {
             var monK = CurrentMonitor;
             var shK = monK != null ? monK.Current : null;
-            bool editing = shK != null && shK.Grid.IsCurrentCellInEditMode;
+            bool editing = shK != null && (shK.Grid.IsCurrentCellInEditMode || shK.TableGrid != null && shK.TableGrid.IsCurrentCellInEditMode);
+            // A TABLE: Enter (or Shift+Enter) types into the value chosen
+            if (shK != null && shK.IsTable && !editing && shK.TableGrid != null && shK.TableGrid.ContainsFocus && shK.TableGrid.CurrentCell != null &&
+                shK.TableGrid.CurrentCell.ColumnIndex > 0 && (keyData == Keys.Enter || keyData == (Keys.Shift | Keys.Enter)))
+            {
+                shK.TableGrid.BeginEdit(true);
+                return true;
+            }
             // Anywhere in the window, unless a cell is being typed into.
             if (!editing)
             {
@@ -2980,7 +3011,7 @@ namespace Kaban.UI.Forms
             if (sh == null) { UpdateStatus(mon, null); return; }
             // An edit that ended without CellEndEdit (cancelled from code) must not
             // stop the refresh for good.
-            if (sh.Editing && !sh.Grid.IsCurrentCellInEditMode) sh.Editing = false;
+            if (sh.Editing && !sh.Grid.IsCurrentCellInEditMode && !(sh.TableGrid != null && sh.TableGrid.IsCurrentCellInEditMode)) sh.Editing = false;
             if (sh.Editing) return;
 
             if (mon.IsSimulated) ReadSimulated(mon);
@@ -3043,8 +3074,9 @@ namespace Kaban.UI.Forms
                 StringComparer.OrdinalIgnoreCase);
             var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !mon.Listed(a) && !highWords.Contains(a))
                                 .OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToList();
-            if (discovered.Count == 0 || mon.Sheets.Count == 0) return;
-            var first = mon.Sheets[0];
+            // into the first tab shown as a list (a table shows arrays only)
+            var first = mon.Sheets.FirstOrDefault(s => !s.IsTable);
+            if (discovered.Count == 0 || first == null) return;
             int at = InsertPoint(first, true);
             foreach (var a in discovered) first.Rows.Insert(at++, new WatchRow { Station = mon.Station, Address = a });
             EnsureBlankRow(first);
@@ -3205,6 +3237,9 @@ namespace Kaban.UI.Forms
             bool conditions = sh.Rows.Any(r => !string.IsNullOrEmpty(r.ConditionKey));
             conditions &= !IsColumnHidden("Condition");
             if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
+
+            // a tab shown as a table: its table too
+            if (sh.IsTable) RenderTable(mon, sh);
         }
 
         private static readonly Color ColScaleDefault = Color.FromArgb(160, 164, 172);
@@ -3591,6 +3626,8 @@ namespace Kaban.UI.Forms
             foreach (var sh in mon.Sheets)
             {
                 lines.Add(SheetPrefix + sh.Name);
+                // shown as a table, and which values (a program of before reads the tab as a list)
+                if (sh.IsTable) lines.Add(TablePrefix + (sh.TableRaw ? "raw" : "calc"));
                 foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsElement))
                     lines.Add(r.IsComment ? Csv(r.Comment) + ";;;"
                                           : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", Extras(r)).TrimEnd(';'));
@@ -3607,6 +3644,11 @@ namespace Kaban.UI.Forms
             {
                 var line = raw.Trim();
                 if (line.StartsWith(HiddenPrefix, StringComparison.OrdinalIgnoreCase)) { mon.Hidden.Add(line.Substring(HiddenPrefix.Length).Trim()); continue; }
+                if (line.StartsWith(TablePrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (current != null) { current.IsTable = true; current.TableRaw = line.Substring(TablePrefix.Length).Trim() == "raw"; }
+                    continue;
+                }
                 if (line.StartsWith(TabsPrefix, StringComparison.OrdinalIgnoreCase))
                 {
                     int n;
