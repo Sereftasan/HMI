@@ -46,78 +46,6 @@ namespace Kaban.UI.Controls
 
             Controls.Add(_unit);
             Size = DefaultSize;
-            // the positions picked on the axis pages: shown here too, when they change
-            ViewPreferences.Changed += OnViewPreferencesChanged;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing) ViewPreferences.Changed -= OnViewPreferencesChanged;
-            base.Dispose(disposing);
-        }
-
-        private void OnViewPreferencesChanged(object sender, EventArgs e)
-        {
-            if (IsDisposed || _axis == null) return;
-            if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnViewPreferencesChanged), sender, e); } catch { } return; }
-            if (string.Join(",", PositionsOf(_axis)) == _positionsShown) return;
-            ShowPositions(_axis);
-            Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
-        }
-
-        // ---- the positions side by side (22 October) -------------------------------------
-
-        private AlarmHelpLinks.AxisInfo _axis;
-        private string _positionsShown = "";
-
-        /// <summary>
-        /// The kinds of position the axis shows: the ones picked on the axis pages (the Position
-        /// heading's list) that it has - the Position always first, as the unit is jogged by it.
-        /// </summary>
-        public static System.Collections.Generic.List<string> PositionsOf(AlarmHelpLinks.AxisInfo a)
-        {
-            var kept = ViewPreferences.ListOf(ViewPreferences.AxisPositions);
-            var list = new System.Collections.Generic.List<string> { "Position" };
-            if (a == null) return list;
-            if (kept.Contains("ServoEncoder") && Kaban.UI.Screens.AxisMonitorPage.HasMotion(a)) list.Add("ServoEncoder");
-            if (kept.Contains("LoadPosition") && !string.IsNullOrWhiteSpace(a.LoadSideEncoder)) list.Add("LoadPosition");
-            return list;
-        }
-
-        /// <summary>The servo encoder's value and the load position beside the position, as picked.</summary>
-        private void ShowPositions(AlarmHelpLinks.AxisInfo a)
-        {
-            var kinds = PositionsOf(a);
-            _positionsShown = string.Join(",", kinds);
-            var extras = new System.Collections.Generic.List<Control>();
-            var tips = UiStyle.Tips();
-            if (kinds.Contains("ServoEncoder") && a.Row != null)
-                using (var row = AxisSettingHMI.FromSnapshot(a.Row))
-                {
-                    var v = new MotionValueHMI(a.Station, SimpleMotion.ServoEncoderItem, row.MotionNumber, row.MotionAxisIndex, a.Decimals,
-                                               a.Suffix == "mm" ? SimpleMotion.RowUnit.Length : SimpleMotion.RowUnit.Module) { Name = "posServoEncoder" };
-                    extras.Add(v);
-                }
-            if (kinds.Contains("LoadPosition"))
-            {
-                int decimals = BaseNumericHMI.ResolutionDecimals(a.LoadSideEncoderDivisor, a.Decimals);
-                var load = new NumericDisplayHMI
-                {
-                    Name = "posLoad",
-                    PlcNumber = a.Station,
-                    Address = a.LoadSideEncoder.Trim(),
-                    DataType = a.PositionType,
-                    Divisor = a.LoadSideEncoderDivisor <= 0 ? 1 : a.LoadSideEncoderDivisor,
-                    DecimalPlaces = decimals,
-                    Digits = Math.Max(a.Digits, decimals + 4),
-                    Suffix = a.Suffix,
-                    TextAlign = ContentAlignment.MiddleCenter,
-                    CornerRadius = 4
-                };
-                UiStyle.SetTip(tips, load, AxisSettingHMI.PositionText("LoadPosition"));
-                extras.Add(load);
-            }
-            _unit.SetExtraPositions(extras);
         }
 
         protected override Size DefaultSize { get { return new Size(360, 64); } }
@@ -170,9 +98,7 @@ namespace Kaban.UI.Controls
             _unit.Lamp1AAddress = _unit.Lamp1BAddress = "";
             _unit.ErrorAAddress = _unit.ErrorBAddress = "";
             _unit.SetAxisCodes("", "", "");
-            _unit.SetExtraPositions(null);
-            _axis = null;
-            _positionsShown = "";
+            _unit.PositionDisplay.ComparedAddress = "";
             _visibility = SystemCondition.None;
             _unit.VisibilityConditions = SystemCondition.None;
             _unit.ButtonAEnableConditions = _unit.ButtonBEnableConditions = SystemCondition.None;
@@ -220,10 +146,9 @@ namespace Kaban.UI.Controls
             _unit.PositionDecimalPlaces = a.Decimals;
             _unit.PositionDigits = a.Digits;
             _unit.PositionSuffix = a.Suffix;
-            // THE OTHER POSITIONS beside it, as picked on the axis pages (22 October: the
-            // load-side encoder was in the position's tooltip, with the difference, until then)
-            _axis = a;
-            ShowPositions(a);
+            // THE POSITION ALONE (22 October: "AxisUnitHMI should only show the position - the
+            // other values make it look too complicated; they can be seen on the Axis Monitor").
+            // The load-side encoder was in its tooltip, with the difference, until then.
 
             // The reference sensor on ONE side only, as on the axis row.
             bool back = a.ReferenceSide == AxisReferenceSide.Back;

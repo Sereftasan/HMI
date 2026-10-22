@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -112,39 +112,26 @@ class APS {
         ViewPreferences.SetList(ViewPreferences.AxisPositions, new[] { "ServoEncoder", "LoadPosition" });
         a1.BuildRow();
         Check("  picked elsewhere, not here: the Position alone", Keys(a1).Contains("Position") && !Keys(a1).Contains("ServoEncoder") && !Keys(a1).Contains("LoadPosition"), Keys(a1));
+        var plainHead = plain.Controls.OfType<Label>().First(l => l.Text == "Position");
+        var plainPick = AxisHeadingFilter.PickOf(plainHead);
+        if (plainPick != null) typeof(Control).GetMethod("OnClick", Any).Invoke(plainHead, new object[] { EventArgs.Empty });
+        Pump(100);
+        Check("  its heading no list to open (nothing to choose)", plainPick == null || (!plainPick.IsOpen && plainHead.Cursor != Cursors.Hand),
+              plainPick == null ? "none" : plainPick.Items.Count + " " + plainHead.Cursor);
+        if (plainPick != null && plainPick.OpenDrop != null) plainPick.OpenDrop.Close();
+        Check("one choice for the Axis Settings pages and the Axis Monitor", typeof(ViewPreferences).GetField("MonitorPositions") == null);
 
-        Console.WriteLine("--- an axis unit: the positions picked, side by side in its slot ---");
+        // 22 October (evening): "AxisUnitHMI should only show the position - the others make it look too
+        // complicated; they can be seen on the Axis Monitor"
+        Console.WriteLine("--- an axis unit: its position only ---");
         var info = new AlarmHelpLinks.AxisInfo { Station = 1, Number = 1, NameKey = "Axis_RobotX", Position = "W0", Divisor = 10000, Decimals = 2, Digits = 6,
                                                   Suffix = "mm", PositionType = DataTypeEnum.Bin_32, LoadSideEncoder = "D22", LoadSideEncoderDivisor = 10000,
                                                   Row = new Dictionary<string, object> { { "MotionNumber", 1 }, { "MotionAxisIndex", 1 } } };
-        Check("picked servo and load: the axis's three (the Position first)", string.Join(",", AxisUnitHMI.PositionsOf(info)) == "Position,ServoEncoder,LoadPosition",
-              string.Join(",", AxisUnitHMI.PositionsOf(info)));
-        info.Row = new Dictionary<string, object>();
-        info.LoadSideEncoder = "";
-        Check("  an axis without them: the Position", string.Join(",", AxisUnitHMI.PositionsOf(info)) == "Position");
-        var uform = new Form { ClientSize = new Size(500, 120) };
-        var unit = new CylinderUnitHMI { Size = new Size(360, 64), Location = new Point(10, 10), Kind = UnitKind.Axis, CommandAAddress = "M1", CommandBAddress = "M2", PositionAddress = "W0" };
-        uform.Controls.Add(unit);
-        uform.Show(); Pump(150);
-        var single = unit.PositionDisplay.Bounds;
-        var e1 = new NumericDisplayHMI { Name = "posLoad" };
-        var e2 = new NumericDisplayHMI { Name = "posOther" };
-        unit.SetExtraPositions(new Control[] { e1, e2 });
-        Pump(100);
-        var p0 = unit.PositionDisplay.Bounds;
-        Check("three positions: the slot shared out, side by side, as tall as the position", unit.ExtraPositions.Count == 2 && e1.Visible && e2.Visible &&
-              e1.Width == p0.Width && e2.Width == p0.Width && e1.Top == p0.Top && e1.Height == p0.Height && e1.Left > p0.Right && e2.Left > e1.Right &&
-              e2.Right - p0.Left > single.Width, p0 + " " + e1.Bounds + " " + e2.Bounds + " (alone " + single + ")");
-        Check("  the buttons narrower, still there", unit.ButtonA.Visible && unit.ButtonB.Visible && unit.ButtonA.Right < p0.Left && unit.ButtonB.Left > e2.Right && unit.ButtonA.Width >= 40,
-              unit.ButtonA.Bounds + " " + unit.ButtonB.Bounds);
-        unit.SetExtraPositions(null);
-        Pump(100);
-        Check("none again: the position as it was", unit.PositionDisplay.Bounds == single && e1.IsDisposed, unit.PositionDisplay.Bounds + " vs " + single);
-        uform.Close();
+        Check("nothing on the unit for the other positions", typeof(AxisUnitHMI).GetMethod("PositionsOf", Any) == null &&
+              typeof(CylinderUnitHMI).GetMethod("SetExtraPositions", Any) == null);
 
         Console.WriteLine("--- the Axis Monitor's rows ---");
         info.Row = new Dictionary<string, object> { { "MotionNumber", 1 }, { "MotionAxisIndex", 2 } };
-        info.LoadSideEncoder = "D22";
         var mrow = new AxisMonitorRow(info, new[] { "Position", "ServoEncoder", "LoadPosition" });
         var mPos = (NumericDisplayHMI)typeof(AxisMonitorRow).GetField("Position", Any).GetValue(mrow);
         var mServo = (MotionValueHMI)typeof(AxisMonitorRow).GetField("ServoEncoder", Any).GetValue(mrow);

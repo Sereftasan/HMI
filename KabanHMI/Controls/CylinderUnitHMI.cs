@@ -125,13 +125,6 @@ namespace Kaban.UI.Controls
         private readonly ButtonHMI _btnA = new ButtonHMI();
         private readonly ButtonHMI _btnB = new ButtonHMI();
         private readonly NumericDisplayHMI _numPosition = new NumericDisplayHMI();
-        /// <summary>
-        /// AN AXIS'S OTHER POSITIONS (22 October: "the user could see all kinds of position
-        /// values side by side"): its servo encoder's value, its load-side encoder's - beside
-        /// the position in its slot, the slot shared out among them (see AxisUnitHMI).
-        /// </summary>
-        private readonly System.Collections.Generic.List<Control> _extraPositions = new System.Collections.Generic.List<Control>();
-        private static readonly Font SplitPositionFont = UiScale.NewFont("Segoe UI", 9.5F, FontStyle.Bold);
         private readonly Panel _blankA = new Panel();  // filler so a 1-button unit looks like a 2-button one
         private readonly Panel _blankB = new Panel();
         private readonly ToolTip _toolTip = UiStyle.Tips();
@@ -163,25 +156,6 @@ namespace Kaban.UI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [TypeConverter(typeof(Kaban.UI.Design.CylinderUnitChildConverter))]
         public NumericDisplayHMI PositionDisplay { get { return _numPosition; } }
-
-        /// <summary>The other positions shown beside the position (an axis unit's).</summary>
-        [Browsable(false)]
-        public System.Collections.Generic.IList<Control> ExtraPositions { get { return _extraPositions.AsReadOnly(); } }
-
-        /// <summary>The other positions beside the position (none: the position alone, as ever).</summary>
-        public void SetExtraPositions(System.Collections.Generic.IEnumerable<Control> extras)
-        {
-            foreach (var c in _extraPositions) { _grp.Controls.Remove(c); c.Dispose(); }
-            _extraPositions.Clear();
-            if (extras != null)
-                foreach (var c in extras)
-                {
-                    if (c == null) continue;
-                    _extraPositions.Add(c);
-                    _grp.Controls.Add(c);
-                }
-            LayoutChildren();
-        }
 
         // ---- coupled with others (UnitCoupling, 8 October) ------------------------------
 
@@ -1969,10 +1943,6 @@ namespace Kaban.UI.Controls
             // generated 248 px unit; kept fixed on a wider unit they left a strip of
             // empty frame on the right, so the same axis looked narrower than the
             // function units beside it. Same proportions, whatever the width.
-            // the other positions gone: the position's own font again before it is measured
-            if (_extraPositions.Count == 0 && _numPosition.Font == SplitPositionFont)
-                _numPosition.Font = _positionStyle == UnitPositionStyle.Standard ? StandardPositionFont : PositionFontFor(Math.Max(UiScale.Pt(9f), Math.Min(areaH, px(36)) * 0.36f));
-
             int slotBtn = 0, slotPos = 0;
             if (ButtonSlotWidth > 0)
             {
@@ -2015,15 +1985,6 @@ namespace Kaban.UI.Controls
                 if (posW < 0) posW = 0;
             }
 
-            // THE OTHER POSITIONS beside it: the slot shared out among them - wider, the
-            // buttons narrower (never under 52 each)
-            int cells = hasPos && posW > 0 ? 1 + _extraPositions.Count : 1;
-            if (cells > 1)
-            {
-                int room = areaW - 2 * gap - 2 * px(52);
-                posW = Math.Max(posW, Math.Min(room, cells * px(78)));
-            }
-
             int totalGaps = hasPos && posW > 0 ? 2 * gap : gap;
             int buttonsW = areaW - posW - totalGaps;
             int halfW = slotBtn > 0 ? Math.Min(slotBtn, buttonsW / 2) : buttonsW / 2;
@@ -2053,24 +2014,9 @@ namespace Kaban.UI.Controls
                     _numPosition.Font = PositionFontFor(fontSize);
 
                 // Height ALWAYS equals the button row height -> aligned with the buttons.
-                if (cells > 1)
-                {
-                    int cellGap = px(3), cellW = (posW - (cells - 1) * cellGap) / cells;
-                    if (_numPosition.Font != SplitPositionFont) _numPosition.Font = SplitPositionFont;
-                    _numPosition.SetBounds(xPos, rowY, cellW, btnH);
-                    for (int k = 0; k < _extraPositions.Count; k++)
-                    {
-                        var c = _extraPositions[k];
-                        c.Visible = true;
-                        c.Font = SplitPositionFont;
-                        c.SetBounds(xPos + (k + 1) * (cellW + cellGap), rowY, cellW, btnH);
-                        c.BringToFront();
-                    }
-                }
-                else _numPosition.SetBounds(xPos, rowY, posW, btnH);
+                _numPosition.SetBounds(xPos, rowY, posW, btnH);
                 _numPosition.BringToFront();
             }
-            foreach (var c in _extraPositions) if (!_numPosition.Visible) c.Visible = false;
             }
             finally { _inLayout = false; }
         }

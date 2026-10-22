@@ -1159,7 +1159,8 @@ namespace Kaban.UI.Controls
         /// <summary>The kinds of position shown: the ones ticked that the page has - nothing ticked, the Position.</summary>
         public System.Collections.Generic.List<string> PickedPositions()
         {
-            var kept = ViewPreferences.ListOf(MonitorMode ? ViewPreferences.MonitorPositions : ViewPreferences.AxisPositions);
+            // one choice for the Axis Settings pages and the Axis Monitor
+            var kept = ViewPreferences.ListOf(ViewPreferences.AxisPositions);
             var offered = OfferedPositions();
             var list = PositionKinds.Where(k => offered.Contains(k) && kept.Contains(k)).ToList();
             if (list.Count == 0) list.Add("Position");
@@ -1428,7 +1429,7 @@ namespace Kaban.UI.Controls
                 {
                     Label posHead;
                     if (byKey.TryGetValue(kind, out posHead))
-                        AxisHeadingFilter.Attach(posHead, axesBar.PositionsPick, () => { var r = RowsOf(page).FirstOrDefault() ?? anyRow; axesBar.OfferPositions(r.OfferedPositions()); }, PositionsTip, showCount: false);
+                        AxisHeadingFilter.Attach(posHead, axesBar.PositionsPick, () => { var r = RowsOf(page).FirstOrDefault() ?? anyRow; axesBar.OfferPositions(r.OfferedPositions()); }, PositionsTip, showCount: false, minItems: 2);
                 }
             }
 

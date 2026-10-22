@@ -36,7 +36,7 @@ namespace Kaban.UI.Controls
     /// </summary>
     public static class AxisHeadingFilter
     {
-        private sealed class Hook { public PickList Pick; public Action BeforeOpen; public Func<string> Tip; public bool Count = true; }
+        private sealed class Hook { public PickList Pick; public Action BeforeOpen; public Func<string> Tip; public bool Count = true; public int MinItems = 1; }
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook> _hooks =
             new System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook>();
 
@@ -54,7 +54,8 @@ namespace Kaban.UI.Controls
         /// </summary>
         /// <param name="tip">What the list is, before what it shows in the heading's tooltip (null: the axes').</param>
         /// <param name="showCount">"2/3" before the arrow while some are ticked (not on a narrow heading: the positions').</param>
-        public static void Attach(Label heading, PickList pick, Action beforeOpen = null, Func<string> tip = null, bool showCount = true)
+        /// <param name="minItems">A list of fewer: no arrow, no click (the positions' list of the Position alone).</param>
+        public static void Attach(Label heading, PickList pick, Action beforeOpen = null, Func<string> tip = null, bool showCount = true, int minItems = 1)
         {
             if (heading == null || pick == null) return;
             Hook hook;
@@ -64,24 +65,26 @@ namespace Kaban.UI.Controls
                 if (beforeOpen != null) hook.BeforeOpen = beforeOpen;
                 if (tip != null) hook.Tip = tip;
                 hook.Count = showCount;
+                hook.MinItems = minItems;
+                heading.Cursor = pick.Items.Count >= Math.Max(1, minItems) ? Cursors.Hand : Cursors.Default;
                 heading.Invalidate();
                 return;
             }
-            hook = new Hook { Pick = pick, BeforeOpen = beforeOpen, Tip = tip, Count = showCount };
+            hook = new Hook { Pick = pick, BeforeOpen = beforeOpen, Tip = tip, Count = showCount, MinItems = minItems };
             _hooks.Add(heading, hook);
             pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); };
-            heading.Cursor = Cursors.Hand;
+            heading.Cursor = pick.Items.Count >= Math.Max(1, minItems) || pick.Items.Count == 0 && minItems <= 1 ? Cursors.Hand : Cursors.Default;
             heading.Click += (s, e) =>
             {
                 var before = hook.BeforeOpen;
                 if (before != null) { try { before(); } catch (Exception ex) { AuditLogger.Log("the axes list: " + ex.Message); } }
                 var p = hook.Pick;
-                if (p != null && p.Items.Count > 0 && !heading.IsDisposed) p.DropUnder(heading);
+                if (p != null && p.Items.Count > 0 && p.Items.Count >= hook.MinItems && !heading.IsDisposed) p.DropUnder(heading);
             };
             UiStyle.HoverTip(UiStyle.Tips(), heading, () =>
             {
                 var p = hook.Pick;
-                if (p == null) return "";
+                if (p == null || p.Items.Count < hook.MinItems) return "";
                 var shown = p.Selected.Count == 0 ? p.AllText : string.Join("\n", p.SelectedTexts);
                 return (hook.Tip != null ? hook.Tip()
                         : LanguageManager.GetString("Tip_AxShow", "The axes shown - a click: tick the ones to show (nothing ticked: all of them). The ones shown move up together.")) +
@@ -90,7 +93,10 @@ namespace Kaban.UI.Controls
             heading.Paint += (s, e) =>
             {
                 var p = hook.Pick;
-                if (p == null || p.Items.Count == 0) return;
+                bool offered = p != null && p.Items.Count > 0 && p.Items.Count >= hook.MinItems;
+                var cursor = offered ? Cursors.Hand : Cursors.Default;
+                if (heading.Cursor != cursor) heading.Cursor = cursor;
+                if (!offered) return;
                 bool on = p.Selected.Count > 0;
                 var g = e.Graphics;
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -189,7 +195,8 @@ namespace Kaban.UI.Controls
                     AllText = AxisSettingHMI.PositionText("Position"),
                     ApplyOnClose = true
                 };
-                PositionsPick.SetItems(AxisSettingHMI.PositionKinds.Select(k => new PickList.Item(k, AxisSettingHMI.PositionText(k))), false);
+                // the Position alone until the rows say what they have (OfferPositions)
+                PositionsPick.SetItems(new[] { new PickList.Item("Position", AxisSettingHMI.PositionText("Position")) }, false);
                 PositionsPick.Changed += (s, e) =>
                 {
                     if (_syncing) return;

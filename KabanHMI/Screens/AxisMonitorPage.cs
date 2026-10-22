@@ -55,7 +55,7 @@ namespace Kaban.UI.Screens
         private readonly Panel _rowsHead = new Panel { Dock = DockStyle.Top, Height = 22, BackColor = Color.White, Visible = false, Name = "monitorRowsHead" };
         /// <summary>An Admin's PLC axis items and Motion monitor for the monitor (5 October).</summary>
         private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion, axesKey: ViewPreferences.MonitorAxes,
-                                                            positionsKey: ViewPreferences.MonitorPositions)
+                                                            positionsKey: ViewPreferences.AxisPositions)
                                             { Dock = DockStyle.Top, WrapContents = true };
         private string _built;
 
@@ -153,7 +153,7 @@ namespace Kaban.UI.Screens
         private static string Signature()
         {
             bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "") + "|" + string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorPositions));
+            string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "") + "|" + string.Join(",", ViewPreferences.ListOf(ViewPreferences.AxisPositions));
             if (!admin) return "user" + axes;
             var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
             return "admin|" + (items == null ? "*" : string.Join(",", AxisSettingHMI.ItemKeys.Where(items.Contains))) + "|" +
@@ -246,7 +246,7 @@ namespace Kaban.UI.Screens
                 if (axes.Any(a => HasMotion(a))) offered.Add("ServoEncoder");
                 if (axes.Any(a => !string.IsNullOrWhiteSpace(a.LoadSideEncoder))) offered.Add("LoadPosition");
                 _bar.OfferPositions(offered);
-                var kept = ViewPreferences.ListOf(ViewPreferences.MonitorPositions);
+                var kept = ViewPreferences.ListOf(ViewPreferences.AxisPositions);   // the Axis Settings pages' choice too
                 _positions = AxisSettingHMI.PositionKinds.Where(k => offered.Contains(k) && kept.Contains(k)).ToList();
                 if (_positions.Count == 0) _positions.Add("Position");
                 ClassicHeadings();
@@ -361,7 +361,7 @@ namespace Kaban.UI.Screens
                 l.Text = AxisSettingHMI.HeadingText(kv.Key);
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
                 if (kv.Key == "Axis") AxisHeadingFilter.Attach(l, _bar.AxesPick, ReofferAxes);
-                else if (AxisSettingHMI.PositionKinds.Contains(kv.Key)) AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false);
+                else if (AxisSettingHMI.PositionKinds.Contains(kv.Key)) AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false, minItems: 2);
                 else if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
             }
             FollowRows();
@@ -409,7 +409,7 @@ namespace Kaban.UI.Screens
                 var l = Heading(AxisSettingHMI.HeadingText(kind), x, WPosition);
                 l.Tag = "AxisHeading:" + kind;
                 _head.Controls.Add(l);
-                AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false);
+                AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false, minItems: 2);
                 x += WPosition + Gap;
             }
             var current = Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter);
