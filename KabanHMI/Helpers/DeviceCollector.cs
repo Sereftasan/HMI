@@ -144,6 +144,11 @@ namespace Kaban.UI.Helpers
             string self = own.Length > 0 ? "" : (text.Length > 1 && text.Any(char.IsLetter) ? text : c.Name ?? "");
             if (own.Length == 0) own = self;
 
+            // an axis's load-side encoder: its own, whether its Load Position column is shown or not
+            var axis = c as AxisSettingHMI;
+            if (axis != null && !string.IsNullOrWhiteSpace(axis.LoadSideEncoderAddress))
+                Add(list, seen, st, axis.LoadSideEncoderAddress.Trim(), axis.PositionDataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own, "load-side encoder");
+
             var num = c as BaseNumericHMI;
             if (num != null)
             {

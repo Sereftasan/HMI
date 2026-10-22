@@ -62,6 +62,13 @@ namespace Kaban.Core.Helpers
         public const string AxesShown = "AxesShown";
         /// <summary>The axes shown on the Axis Monitor (same form).</summary>
         public const string MonitorAxes = "MonitorAxes";
+        /// <summary>
+        /// The positions shown side by side on the axis pages and their axis units (22 October;
+        /// comma list of Position, ServoEncoder, LoadPosition - empty: the Position alone).
+        /// </summary>
+        public const string AxisPositions = "AxisPositions";
+        /// <summary>The positions shown on the Axis Monitor (same form).</summary>
+        public const string MonitorPositions = "MonitorPositions";
         /// <summary>The lists shown on the Inputs / Outputs side page ("station:I" / "station:O"; "*" or empty: all).</summary>
         public const string IoShown = "IoShown";
         /// <summary>The languages the notes page lists a text in (comma list of codes; empty: the screen's and English).</summary>
@@ -100,6 +107,8 @@ namespace Kaban.Core.Helpers
             new Preference { Key = MonitorMotion, Group = "", Hidden = true },
             new Preference { Key = AxesShown, Group = "", Hidden = true },
             new Preference { Key = MonitorAxes, Group = "", Hidden = true },
+            new Preference { Key = AxisPositions, Group = "", Hidden = true },
+            new Preference { Key = MonitorPositions, Group = "", Hidden = true },
             new Preference { Key = IoShown, Group = "", Hidden = true },
             new Preference { Key = NoteLanguages, Group = "", Hidden = true },
             // A user's own units of measure ("Unit_Length" = inch): taken at sign-in by

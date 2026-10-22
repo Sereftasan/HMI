@@ -142,6 +142,24 @@ namespace Kaban.Core.Helpers
         /// <summary>The unit setting (Pr.1) of an axis: 0 mm, 1 inch, 2 degree, 3 pulse.</summary>
         public static readonly Item UnitItem = Items.First(i => i.Key == "UnitSetting");
 
+        /// <summary>
+        /// THE AXIS'S POSITIONS (22 October: "Feed current value and Real current value should be
+        /// removed from the Motion monitor's list - they show the same values"): the feed current
+        /// value is the axis's Position, the real current value its "Servo encoder value" - both
+        /// chosen in the Position column's own list (the axis pages' Position heading), not here.
+        /// </summary>
+        public static bool IsAxisPosition(string key)
+        {
+            return string.Equals(key, "FeedCurrentValue", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(key, "RealCurrentValue", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>The Motion monitor list's values: every one but the axis's positions.</summary>
+        public static IEnumerable<Item> MonitorItems { get { return Items.Where(i => !IsAxisPosition(i.Key)); } }
+
+        /// <summary>The servo motor encoder's position (Md.101): an axis's "Servo encoder value".</summary>
+        public static Item ServoEncoderItem { get { return Find("RealCurrentValue"); } }
+
         public static Item Find(string key)
         {
             return Items.FirstOrDefault(i => string.Equals(i.Key, key, StringComparison.OrdinalIgnoreCase));

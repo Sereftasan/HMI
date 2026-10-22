@@ -36,7 +36,7 @@ namespace Kaban.UI.Controls
     /// </summary>
     public static class AxisHeadingFilter
     {
-        private sealed class Hook { public PickList Pick; public Action BeforeOpen; }
+        private sealed class Hook { public PickList Pick; public Action BeforeOpen; public Func<string> Tip; public bool Count = true; }
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook> _hooks =
             new System.Runtime.CompilerServices.ConditionalWeakTable<Label, Hook>();
 
@@ -52,7 +52,9 @@ namespace Kaban.UI.Controls
         /// <paramref name="beforeOpen"/>: the axes offered again just before it opens (16 October: an
         /// axis whose visibility conditions are not met is not offered - ticked, it could not be seen).
         /// </summary>
-        public static void Attach(Label heading, PickList pick, Action beforeOpen = null)
+        /// <param name="tip">What the list is, before what it shows in the heading's tooltip (null: the axes').</param>
+        /// <param name="showCount">"2/3" before the arrow while some are ticked (not on a narrow heading: the positions').</param>
+        public static void Attach(Label heading, PickList pick, Action beforeOpen = null, Func<string> tip = null, bool showCount = true)
         {
             if (heading == null || pick == null) return;
             Hook hook;
@@ -60,10 +62,12 @@ namespace Kaban.UI.Controls
             {
                 if (hook.Pick != pick) { hook.Pick = pick; pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); }; }
                 if (beforeOpen != null) hook.BeforeOpen = beforeOpen;
+                if (tip != null) hook.Tip = tip;
+                hook.Count = showCount;
                 heading.Invalidate();
                 return;
             }
-            hook = new Hook { Pick = pick, BeforeOpen = beforeOpen };
+            hook = new Hook { Pick = pick, BeforeOpen = beforeOpen, Tip = tip, Count = showCount };
             _hooks.Add(heading, hook);
             pick.Changed += (s, e) => { if (!heading.IsDisposed) heading.Invalidate(); };
             heading.Cursor = Cursors.Hand;
@@ -79,7 +83,8 @@ namespace Kaban.UI.Controls
                 var p = hook.Pick;
                 if (p == null) return "";
                 var shown = p.Selected.Count == 0 ? p.AllText : string.Join("\n", p.SelectedTexts);
-                return LanguageManager.GetString("Tip_AxShow", "The axes shown - a click: tick the ones to show (nothing ticked: all of them). The ones shown move up together.") +
+                return (hook.Tip != null ? hook.Tip()
+                        : LanguageManager.GetString("Tip_AxShow", "The axes shown - a click: tick the ones to show (nothing ticked: all of them). The ones shown move up together.")) +
                        "\n\n" + shown;
             });
             heading.Paint += (s, e) =>
@@ -94,7 +99,7 @@ namespace Kaban.UI.Controls
                 var colour = on ? Color.FromArgb(0, 120, 215) : Color.FromArgb(110, 116, 124);
                 using (var pen = new Pen(colour, Math.Max(1.5f, a / 2f)) { LineJoin = System.Drawing.Drawing2D.LineJoin.Round })
                     g.DrawLines(pen, new[] { new PointF(cx - a, cy - a / 2f), new PointF(cx, cy + a / 2f), new PointF(cx + a, cy - a / 2f) });
-                if (!on) return;
+                if (!on || !hook.Count) return;
                 // some hidden: how many shown, before the arrow
                 var count = p.Selected.Count + "/" + p.Items.Count;
                 var f = UiStyle.Small;
@@ -110,7 +115,7 @@ namespace Kaban.UI.Controls
     {
         private static string T(string key, string text) { return LanguageManager.GetString(key, text); }
 
-        private readonly string _itemsKey, _motionKey, _axesKey;
+        private readonly string _itemsKey, _motionKey, _axesKey, _positionsKey;
         private readonly bool _hasItems, _hasMotion;
         private bool _syncing, _listsHidden;
 
@@ -127,14 +132,24 @@ namespace Kaban.UI.Controls
         /// <summary>The axes shown were changed by the user (once, when the list closes).</summary>
         public event EventHandler AxesChanged;
 
+        /// <summary>
+        /// THE POSITIONS SHOWN SIDE BY SIDE (22 October): the Position, the servo encoder's value,
+        /// the load-side encoder's - the ones the rows have; nothing ticked: the Position. Opened
+        /// from the Position column's heading, as the Axes list from the Axis column's; null on a
+        /// bar without it.
+        /// </summary>
+        public PickList PositionsPick { get; private set; }
+
         /// <param name="items">With the PLC axis items list.</param>
         /// <param name="motion">With the Motion monitor list.</param>
         /// <param name="axesKey">With the Axes list, kept under this View Preferences key (null: none).</param>
-        public AxisPickBar(string itemsKey, string motionKey, bool items = true, bool motion = true, string axesKey = null)
+        /// <param name="positionsKey">With the Positions list, kept under this View Preferences key (null: none).</param>
+        public AxisPickBar(string itemsKey, string motionKey, bool items = true, bool motion = true, string axesKey = null, string positionsKey = null)
         {
             _itemsKey = itemsKey;
             _motionKey = motionKey;
             _axesKey = axesKey;
+            _positionsKey = positionsKey;
             _hasItems = items;
             _hasMotion = motion;
             WrapContents = false;
@@ -163,9 +178,32 @@ namespace Kaban.UI.Controls
                 Heading = T("Mot_Pick", "Motion monitor items"),
                 ApplyOnClose = true
             };
-            MotionPick.SetItems(SimpleMotion.Items.Select(i => new PickList.Item(
+            MotionPick.SetItems(SimpleMotion.MonitorItems.Select(i => new PickList.Item(
                 i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), false);
             MotionPick.Changed += (s, e) => { if (!_syncing) KeepMotion(); };
+            if (positionsKey != null)
+            {
+                PositionsPick = new PickList(null)
+                {
+                    Name = "positionsPick", Size = new Size(220, 28),
+                    AllText = AxisSettingHMI.PositionText("Position"),
+                    ApplyOnClose = true
+                };
+                PositionsPick.SetItems(AxisSettingHMI.PositionKinds.Select(k => new PickList.Item(k, AxisSettingHMI.PositionText(k))), false);
+                PositionsPick.Changed += (s, e) =>
+                {
+                    if (_syncing) return;
+                    // the ones ticked; what is kept but not offered here (another page's) stays
+                    var chosen = PositionsPick.Selected;
+                    var offered = new HashSet<string>(PositionsPick.Items.Select(i => i.Key), StringComparer.OrdinalIgnoreCase);
+                    var kept = ViewPreferences.ListOf(_positionsKey);
+                    var keys = AxisSettingHMI.PositionKinds.Where(k => chosen.Contains(k) || (!offered.Contains(k) && kept.Contains(k))).ToList();
+                    // only the Position: as nothing ticked
+                    if (keys.Count == 1 && keys[0] == "Position") keys.Clear();
+                    if (!keys.SequenceEqual(kept, StringComparer.OrdinalIgnoreCase)) ViewPreferences.SetList(_positionsKey, keys);
+                };
+                Disposed += (s, e) => PositionsPick.Dispose();
+            }
             FitLists();
 
             // both in one bar (the Axis Monitor): the same room between them as on a page
@@ -206,9 +244,14 @@ namespace Kaban.UI.Controls
                 ItemsPick.SetItems(ItemsPick.Items.Select(i => new PickList.Item(i.Key, AxisSettingHMI.ItemText(i.Key))), true);
                 MotionPick.Heading = T("Mot_Pick", "Motion monitor items");
                 MotionPick.AllText = T("Mot_PickNone", "None");
-                MotionPick.SetItems(SimpleMotion.Items.Select(i => new PickList.Item(
+                MotionPick.SetItems(SimpleMotion.MonitorItems.Select(i => new PickList.Item(
                     i.Key, LanguageManager.GetString(i.TitleKey, i.Title) + "  (" + i.Ref + ")")), true);
                 if (AxesPick != null) AxesPick.AllText = T("AxShow_All", "All axes");
+                if (PositionsPick != null)
+                {
+                    PositionsPick.AllText = AxisSettingHMI.PositionText("Position");
+                    PositionsPick.SetItems(PositionsPick.Items.Select(i => new PickList.Item(i.Key, AxisSettingHMI.PositionText(i.Key))), true);
+                }
             }
             finally { _syncing = false; }
             FitLists();
@@ -258,6 +301,33 @@ namespace Kaban.UI.Controls
             Kaban.UI.Helpers.ShownPick.Offer(AxesPick, _axesKey, axes, ref _syncing);
         }
 
+        /// <summary>
+        /// The positions the rows have (the Position always; the servo encoder's value with an
+        /// axis on a simple motion module, the load position with a load-side encoder), ticked as kept.
+        /// </summary>
+        public void OfferPositions(IEnumerable<string> kinds)
+        {
+            if (PositionsPick == null) return;
+            var want = AxisSettingHMI.PositionKinds.Where(k => k == "Position" || kinds.Contains(k)).ToList();
+            _syncing = true;
+            try
+            {
+                if (!want.SequenceEqual(PositionsPick.Items.Select(i => i.Key)))
+                    PositionsPick.SetItems(want.Select(k => new PickList.Item(k, AxisSettingHMI.PositionText(k))), false);
+                var ticked = TickedPositions(want);
+                if (!PositionsPick.Selected.SetEquals(ticked)) PositionsPick.Select(ticked);
+            }
+            finally { _syncing = false; }
+        }
+
+        /// <summary>The kept positions among the ones offered (the Position alone: nothing ticked).</summary>
+        private List<string> TickedPositions(IList<string> offered)
+        {
+            var kept = ViewPreferences.ListOf(_positionsKey);
+            var ticked = offered.Where(kept.Contains).ToList();
+            return ticked.Count == 1 && ticked[0] == "Position" ? new List<string>() : ticked;
+        }
+
         /// <summary>True when the row <paramref name="key"/> is shown (nothing ticked: all are).</summary>
         public bool ShowsAxis(string key)
         {
@@ -283,6 +353,11 @@ namespace Kaban.UI.Controls
                     var axes = Kaban.UI.Helpers.ShownPick.Ticked(_axesKey, AxesPick.Items.Select(i => i.Key));
                     if (!AxesPick.Selected.SetEquals(axes)) AxesPick.Select(axes);
                 }
+                if (PositionsPick != null)
+                {
+                    var ticked = TickedPositions(PositionsPick.Items.Select(i => i.Key).ToList());
+                    if (!PositionsPick.Selected.SetEquals(ticked)) PositionsPick.Select(ticked);
+                }
             }
             finally { _syncing = false; }
         }
@@ -304,7 +379,7 @@ namespace Kaban.UI.Controls
         private void KeepMotion()
         {
             var chosen = MotionPick.Selected;
-            var keys = SimpleMotion.Items.Where(i => chosen.Contains(i.Key)).Select(i => i.Key).ToList();
+            var keys = SimpleMotion.MonitorItems.Where(i => chosen.Contains(i.Key)).Select(i => i.Key).ToList();
             if (keys.SequenceEqual(ViewPreferences.ListOf(_motionKey), StringComparer.OrdinalIgnoreCase)) return;
             ViewPreferences.SetList(_motionKey, keys);
         }

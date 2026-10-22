@@ -54,7 +54,8 @@ namespace Kaban.UI.Screens
         // rows scroll up and down, and follow them sideways.
         private readonly Panel _rowsHead = new Panel { Dock = DockStyle.Top, Height = 22, BackColor = Color.White, Visible = false, Name = "monitorRowsHead" };
         /// <summary>An Admin's PLC axis items and Motion monitor for the monitor (5 October).</summary>
-        private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion, axesKey: ViewPreferences.MonitorAxes)
+        private readonly AxisPickBar _bar = new AxisPickBar(ViewPreferences.MonitorItems, ViewPreferences.MonitorMotion, axesKey: ViewPreferences.MonitorAxes,
+                                                            positionsKey: ViewPreferences.MonitorPositions)
                                             { Dock = DockStyle.Top, WrapContents = true };
         private string _built;
 
@@ -83,13 +84,11 @@ namespace Kaban.UI.Screens
 
             int x = Left0;
             var axisHead = Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName);
+            axisHead.Tag = "AxisHeading:Axis";
             _head.Controls.Add(axisHead);
             // the Axis heading opens the Axes list (which axes the monitor shows)
             AxisHeadingFilter.Attach(axisHead, _bar.AxesPick, ReofferAxes);
-            x += WName + Gap + Gap;
-            _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisPosition", "Position"), x, WPosition));
-            x += WPosition + Gap;
-            _head.Controls.Add(Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter));
+            // the positions' and the current's headings: made with the rows (Build) - the positions shown are a choice
 
             _list.Dock = DockStyle.Fill;
             _list.FlowDirection = FlowDirection.TopDown;
@@ -154,7 +153,7 @@ namespace Kaban.UI.Screens
         private static string Signature()
         {
             bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
-            string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "");
+            string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "") + "|" + string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorPositions));
             if (!admin) return "user" + axes;
             var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
             return "admin|" + (items == null ? "*" : string.Join(",", AxisSettingHMI.ItemKeys.Where(items.Contains))) + "|" +
@@ -242,6 +241,15 @@ namespace Kaban.UI.Screens
                 if (admin) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
                 _bar.Visible = admin && axes.Count > 0;
                 axes = axes.Where(a => _bar.ShowsAxis(AxisKey(a))).ToList();
+                // THE POSITIONS SIDE BY SIDE (22 October): the kinds the axes listed have, as ticked
+                var offered = new List<string> { "Position" };
+                if (axes.Any(a => HasMotion(a))) offered.Add("ServoEncoder");
+                if (axes.Any(a => !string.IsNullOrWhiteSpace(a.LoadSideEncoder))) offered.Add("LoadPosition");
+                _bar.OfferPositions(offered);
+                var kept = ViewPreferences.ListOf(ViewPreferences.MonitorPositions);
+                _positions = AxisSettingHMI.PositionKinds.Where(k => offered.Contains(k) && kept.Contains(k)).ToList();
+                if (_positions.Count == 0) _positions.Add("Position");
+                ClassicHeadings();
                 machines = axes.Select(machineOf).Distinct().ToList();
                 var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
                 bool classic = !admin || (items != null && items.Count == 1 && items.Contains("Torque") &&
@@ -266,7 +274,7 @@ namespace Kaban.UI.Screens
                     }
                     if (classic)
                     {
-                        _list.Controls.Add(new AxisMonitorRow(a) { Margin = new Padding(0, 0, 0, 0) });
+                        _list.Controls.Add(new AxisMonitorRow(a, _positions) { Margin = new Padding(0, 0, 0, 0) });
                         continue;
                     }
                     var row = AxisSettingHMI.FromSnapshot(a.Row);
@@ -353,6 +361,7 @@ namespace Kaban.UI.Screens
                 l.Text = AxisSettingHMI.HeadingText(kv.Key);
                 var tip = AxisSettingHMI.HeadingTip(kv.Key);
                 if (kv.Key == "Axis") AxisHeadingFilter.Attach(l, _bar.AxesPick, ReofferAxes);
+                else if (AxisSettingHMI.PositionKinds.Contains(kv.Key)) AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false);
                 else if (tip != null) Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), l, tip);
             }
             FollowRows();
@@ -370,6 +379,42 @@ namespace Kaban.UI.Screens
             foreach (var r in _list.Controls.OfType<AxisSettingHMI>()) r.StickName(s, r.Left + s);
             var axisHead = head.Controls.OfType<Label>().FirstOrDefault(l => (l.Tag as string) == "AxisHeading:Axis");
             if (axisHead != null) first.Stick(axisHead, s, first.Left + s, head.BackColor);
+        }
+
+        /// <summary>The kinds of position shown (22 October): the Position, the servo encoder's value, the load position.</summary>
+        private List<string> _positions = new List<string> { "Position" };
+
+        /// <summary>An axis on a simple motion module (its servo encoder's value can be read).</summary>
+        internal static bool HasMotion(AlarmHelpLinks.AxisInfo a)
+        {
+            if (a == null || a.Row == null) return false;
+            using (var row = AxisSettingHMI.FromSnapshot(a.Row)) return row.HasMotion;
+        }
+
+        /// <summary>
+        /// The classic rows' headings: the Axis (opening the Axes list), each position shown
+        /// (opening the Positions list), the Current.
+        /// </summary>
+        private void ClassicHeadings()
+        {
+            foreach (Control c in _head.Controls.Cast<Control>().ToList())
+            {
+                if ((c.Tag as string) == "AxisHeading:Axis") continue;
+                _head.Controls.Remove(c);
+                c.Dispose();
+            }
+            int x = Left0 + WName + Gap + Gap;
+            foreach (var kind in _positions)
+            {
+                var l = Heading(AxisSettingHMI.HeadingText(kind), x, WPosition);
+                l.Tag = "AxisHeading:" + kind;
+                _head.Controls.Add(l);
+                AxisHeadingFilter.Attach(l, _bar.PositionsPick, null, AxisSettingHMI.PositionsTip, showCount: false);
+                x += WPosition + Gap;
+            }
+            var current = Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter);
+            current.Tag = "AxisHeading:Current";
+            _head.Controls.Add(current);
         }
 
         /// <summary>The bar as tall as its lists need in the panel's width (they wrap in a narrow panel).</summary>
@@ -393,16 +438,24 @@ namespace Kaban.UI.Screens
         public string NameKey { get; private set; }
 
         internal readonly NumericDisplayHMI Position;
+        /// <summary>The servo encoder's value and the load position, when shown beside the position (22 October).</summary>
+        internal readonly MotionValueHMI ServoEncoder;
+        internal readonly NumericDisplayHMI LoadPosition;
         internal readonly MeterHMI Current;
         /// <summary>The axis's name - to the side View Preferences' Captions say, as on the Axis Settings row.</summary>
         public readonly Label NameLabel;
 
-        public AxisMonitorRow(AlarmHelpLinks.AxisInfo a)
+        public AxisMonitorRow(AlarmHelpLinks.AxisInfo a) : this(a, null) { }
+
+        /// <param name="positions">The kinds of position shown side by side (null: the Position).</param>
+        public AxisMonitorRow(AlarmHelpLinks.AxisInfo a, IList<string> positions)
         {
+            positions = positions == null || positions.Count == 0 ? new List<string> { "Position" } : positions;
             PlcNumber = a.Station;
             VisibilityConditions = a.Visibility;
             NameKey = a.NameKey;
-            Size = new Size(AxisMonitorPage.Left0 + AxisMonitorPage.WName + AxisMonitorPage.WPosition + AxisMonitorPage.WMeter + 4 * AxisMonitorPage.Gap + 8,
+            Size = new Size(AxisMonitorPage.Left0 + AxisMonitorPage.WName + positions.Count * (AxisMonitorPage.WPosition + AxisMonitorPage.Gap) +
+                            AxisMonitorPage.WMeter + 3 * AxisMonitorPage.Gap + 8,
                             AxisSettingHMI.RowHeight);
             BackColor = Color.White;
 
@@ -419,24 +472,61 @@ namespace Kaban.UI.Screens
             ViewPreferences.Changed += OnViewPreferencesChanged;
             x += AxisMonitorPage.WName + AxisMonitorPage.Gap + AxisMonitorPage.Gap;
 
-            Position = new NumericDisplayHMI
+            var unitType = a.Suffix == "mm" ? UnitType.Length : UnitType.None;
+            AxisSettingHMI motion = null;
+            foreach (var kind in positions)
             {
-                PlcNumber = a.Station,
-                Address = a.Position,
-                DataType = a.PositionType,
-                Divisor = a.Divisor <= 0 ? 1 : a.Divisor,
-                DecimalPlaces = a.Decimals,
-                Digits = a.Digits,
-                Suffix = a.Suffix,
-                UnitType = a.Suffix == "mm" ? UnitType.Length : UnitType.None,
-                ComparedAddress = a.LoadSideEncoder ?? "",
-                ComparedDivisor = a.LoadSideEncoderDivisor,
-                ComparedCaptionKey = "Tip_LoadEncoder",
-                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
-            };
-            Position.SetBounds(x, 4, AxisMonitorPage.WPosition, AxisSettingHMI.RowHeight - 8);
-            Controls.Add(Position);
-            x += AxisMonitorPage.WPosition + AxisMonitorPage.Gap;
+                Control shown = null;
+                if (kind == "Position")
+                {
+                    Position = new NumericDisplayHMI
+                    {
+                        PlcNumber = a.Station,
+                        Address = a.Position,
+                        DataType = a.PositionType,
+                        Divisor = a.Divisor <= 0 ? 1 : a.Divisor,
+                        DecimalPlaces = a.Decimals,
+                        Digits = a.Digits,
+                        Suffix = a.Suffix,
+                        UnitType = unitType,
+                        Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                    };
+                    shown = Position;
+                }
+                else if (kind == "ServoEncoder" && a.Row != null)
+                {
+                    // the servo motor's encoder, read from the module (Md.101), in the row's unit
+                    motion = motion ?? AxisSettingHMI.FromSnapshot(a.Row);
+                    if (motion.HasMotion && SimpleMotion.ServoEncoderItem != null)
+                        shown = ServoEncoder = new MotionValueHMI(a.Station, SimpleMotion.ServoEncoderItem, motion.MotionNumber, motion.MotionAxisIndex, a.Decimals,
+                                                                  unitType == UnitType.Length ? SimpleMotion.RowUnit.Length : SimpleMotion.RowUnit.Module)
+                                                { Name = "posServoEncoder", Font = new Font("Segoe UI", 12F, FontStyle.Bold) };
+                }
+                else if (kind == "LoadPosition" && !string.IsNullOrWhiteSpace(a.LoadSideEncoder))
+                {
+                    int decimals = BaseNumericHMI.ResolutionDecimals(a.LoadSideEncoderDivisor, a.Decimals);
+                    shown = LoadPosition = new NumericDisplayHMI
+                    {
+                        Name = "posLoad",
+                        PlcNumber = a.Station,
+                        Address = a.LoadSideEncoder.Trim(),
+                        DataType = a.PositionType,
+                        Divisor = a.LoadSideEncoderDivisor <= 0 ? 1 : a.LoadSideEncoderDivisor,
+                        DecimalPlaces = decimals,
+                        Digits = Math.Max(a.Digits, decimals + 4),
+                        Suffix = a.Suffix,
+                        UnitType = unitType,
+                        Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+                    };
+                }
+                if (shown != null)
+                {
+                    shown.SetBounds(x, 4, AxisMonitorPage.WPosition, AxisSettingHMI.RowHeight - 8);
+                    Controls.Add(shown);
+                }
+                x += AxisMonitorPage.WPosition + AxisMonitorPage.Gap;
+            }
+            if (motion != null) motion.Dispose();
 
             if (!string.IsNullOrWhiteSpace(a.Current))
             {

@@ -97,8 +97,8 @@ class AXI {
         var enc = new AxisSettingHMI { PositionAddress = "W0", LoadSideEncoderAddress = "W10" };
         enc.BuildRow();
         var encPos = enc.Controls.OfType<NumericDisplayHMI>().First();
-        Check("the position's tooltip: 'Load encoder value'", encPos.ComparedAddress == "W10" && encPos.ComparedCaptionKey == "Tip_LoadEncoder" &&
-              LanguageManager.GetString("Tip_LoadEncoder", "") == "Load encoder value");
+        // 22 October: the load-side encoder is the Load Position column now (AxisPositions.cs), not the position's tooltip
+        Check("the position's tooltip compares nothing (the Load Position column instead)", string.IsNullOrEmpty(encPos.ComparedAddress));
 
         Console.WriteLine("--- PLC axis items ---");
         var form = new Form { ClientSize = new Size(1000, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0), BackColor = Color.White };
@@ -169,9 +169,9 @@ class AXI {
         Check("All again: the whole row, kept as '*'", Keys(r1) == all && ViewPreferences.UserValue("boss", ViewPreferences.AxisItems) == "*" &&
               ViewPreferences.PickOf(ViewPreferences.AxisItems) == null);
         Check("the Motion monitor on a page with a module", mot.MotionPick.Visible);
-        ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "RealCurrentValue" });
+        ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "TargetValue" });
         Pump(150);
-        Check("  its columns after the PLC's", Keys(r1).EndsWith("TravelPerRev,Mot:Busy,Mot:RealCurrentValue"), Keys(r1));
+        Check("  its columns after the PLC's", Keys(r1).EndsWith("TravelPerRev,Mot:Busy,Mot:TargetValue"), Keys(r1));
 
         Console.WriteLine("--- in sight while the page scrolls sideways ---");
         int home = mot.HomeX, stick = mot.StickX, itemsLeft = bar.Left, widthBefore = body.DisplayRectangle.Width;
@@ -210,7 +210,7 @@ class AXI {
         int lastCol = r1.Columns.Values.Max(c => c.X + c.Y);   // (left, width)
         Check("the page scrolls as far as its columns, no further", body.DisplayRectangle.Width <= contentRight() + body.AutoScrollMargin.Width + 2 &&
               r1.Width - lastCol >= 0 && r1.Width - lastCol < 40, body.DisplayRectangle.Width + " vs " + contentRight() + ", row " + r1.Width + " last column " + lastCol);
-        var motValue = r1.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == "RealCurrentValue");
+        var motValue = r1.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == "TargetValue");
         Check("the motion monitor's numbers on light grey, not bold", motValue != null && MotionValueHMI.DisplayBack.R < 245 && MotionValueHMI.DisplayBack.R > 220 &&
               !motValue.Font.Bold, motValue == null ? "none" : MotionValueHMI.DisplayBack + " " + motValue.Font);
         int wideAll = r1.Width;
@@ -245,7 +245,7 @@ class AXI {
                   ViewPreferences.PickOf(ViewPreferences.AxisItems) == null && bar.ItemsPick.Selected.Count == 2, Keys(r1));
             bar.ItemsPick.OpenDrop.Close();
             Pump(200);
-            Check("  closed: laid out once, with both", !bar.ItemsPick.IsOpen && Keys(r1) == "Axis,Position,AxisAlarm,AxisWarning,ServoAlarm,Mot:Busy,Mot:RealCurrentValue" &&
+            Check("  closed: laid out once, with both", !bar.ItemsPick.IsOpen && Keys(r1) == "Axis,Position,AxisAlarm,AxisWarning,ServoAlarm,Mot:Busy,Mot:TargetValue" &&
                   ViewPreferences.PickOf(ViewPreferences.AxisItems).SetEquals(new[] { "Manual", "Codes" }), Keys(r1));
         }
         onClick.Invoke(mot.MotionPick, new object[] { EventArgs.Empty });
@@ -255,14 +255,14 @@ class AXI {
         {
             mlist.SetItemChecked(0, !mlist.GetItemChecked(0));
             Pump(150);
-            Check("Motion monitor: a tick while open, nothing yet", ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "RealCurrentValue" }));
+            Check("Motion monitor: a tick while open, nothing yet", ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "TargetValue" }));
             mot.MotionPick.OpenDrop.Close();
             Pump(200);
-            Check("  closed: taken", !ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "RealCurrentValue" }),
+            Check("  closed: taken", !ViewPreferences.ListOf(ViewPreferences.MotionColumns).SequenceEqual(new[] { "Busy", "TargetValue" }),
                   string.Join(",", ViewPreferences.ListOf(ViewPreferences.MotionColumns)));
         }
         else Check("Motion monitor open", false);
-        ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "RealCurrentValue" });
+        ViewPreferences.SetMotionColumnKeys(new[] { "Busy", "TargetValue" });
         ViewPreferences.SetPick(ViewPreferences.AxisItems, new string[0]);
         Pump(150);
         bar.ItemsPick.Select(new[] { "Manual", "Torque", "Codes" });
@@ -372,23 +372,23 @@ class AXI {
         angRow.DecimalPlaces = 3;
         var unitPage = new Panel { Bounds = new Rectangle(0, 0, 1000, 260), AutoScroll = true };
         form.Controls.Add(unitPage);
-        ViewPreferences.SetMotionColumnKeys(new[] { "RealCurrentValue", "SoftLimitUpper", "CurrentSpeed" });
+        ViewPreferences.SetMotionColumnKeys(new[] { "TargetValue", "SoftLimitUpper", "CurrentSpeed" });
         unitPage.Controls.Add(lenRow); unitPage.Controls.Add(angRow);
         Pump(250);
         Func<AxisSettingHMI, string, MotionValueHMI> cell = (r, k) => r.Controls.OfType<MotionValueHMI>().FirstOrDefault(v => v.Item.Key == k);
         Check("on the page: the length row's values as lengths, the angle row's as angles",
-              cell(lenRow, "RealCurrentValue") != null && cell(lenRow, "RealCurrentValue").RowUnit == SimpleMotion.RowUnit.Length &&
+              cell(lenRow, "TargetValue") != null && cell(lenRow, "TargetValue").RowUnit == SimpleMotion.RowUnit.Length &&
               cell(angRow, "SoftLimitUpper") != null && cell(angRow, "SoftLimitUpper").RowUnit == SimpleMotion.RowUnit.Angle);
-        Func<string, int> words = a => a.EndsWith("\\G2450") ? (raw & 0xFFFF) : a.EndsWith("\\G2451") ? (raw >> 16) : 0;   // the module set to mm
+        Func<string, int> words = a => a.EndsWith("\\G2418") ? (raw & 0xFFFF) : a.EndsWith("\\G2419") ? (raw >> 16) : 0;   // the module set to mm
         foreach (var v in lenRow.Controls.OfType<MotionValueHMI>().Concat(angRow.Controls.OfType<MotionValueHMI>())) v.UpdateState(words, c => true);
-        Check("  the module set to mm: 123.46 mm, and the angle 123.457 degrees", cell(lenRow, "RealCurrentValue").ShownText == "123.46 mm" &&
-              cell(angRow, "RealCurrentValue").ShownText == "123.457 \u00B0", cell(lenRow, "RealCurrentValue").ShownText + " / " + cell(angRow, "RealCurrentValue").ShownText);
+        Check("  the module set to mm: 123.46 mm, and the angle 123.457 degrees", cell(lenRow, "TargetValue").ShownText == "123.46 mm" &&
+              cell(angRow, "TargetValue").ShownText == "123.457 \u00B0", cell(lenRow, "TargetValue").ShownText + " / " + cell(angRow, "TargetValue").ShownText);
         UnitManager.SetActive(UnitType.Length, "inch");
         Pump(50);
-        Check("  inch chosen: the length row's in inch at once, the angle's as it was", cell(lenRow, "RealCurrentValue").ShownText == "4.8605 inch" &&
-              cell(angRow, "RealCurrentValue").ShownText == "123.457 \u00B0", cell(lenRow, "RealCurrentValue").ShownText);
+        Check("  inch chosen: the length row's in inch at once, the angle's as it was", cell(lenRow, "TargetValue").ShownText == "4.8605 inch" &&
+              cell(angRow, "TargetValue").ShownText == "123.457 \u00B0", cell(lenRow, "TargetValue").ShownText);
         UnitManager.SetActive(UnitType.Length, "mm");
-        Check("  back to mm", cell(lenRow, "RealCurrentValue").ShownText == "123.46 mm");
+        Check("  back to mm", cell(lenRow, "TargetValue").ShownText == "123.46 mm");
         form.Controls.Remove(unitPage);
         ViewPreferences.SetMotionColumnKeys(new string[0]);
 

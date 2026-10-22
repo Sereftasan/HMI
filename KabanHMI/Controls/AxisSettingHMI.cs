@@ -104,16 +104,16 @@ namespace Kaban.UI.Controls
 
         /// <summary>
         /// The LOAD-SIDE ENCODER's value (a linear scale on the axis), read by the PLC
-        /// itself - not by the motion module. Not shown as a field: the position's
-        /// tooltip starts with it and with the difference, in the axis's unit to the
-        /// last count of the finer of the two (4 decimals for a divisor of 10000) - at
-        /// the row's 2 decimals a difference of a few counts would read 0.00. (It was
-        /// LoadEncoderValueAddress, and RealPositionAddress before that: the servo
-        /// motor's own encoder position is the simple motion module's "Real current
-        /// value", Md.101, on the Motion monitor.)
+        /// itself - not by the motion module. Its column is the LOAD POSITION (22 October:
+        /// "the Position column's caption a multiple selection, so the user can see every
+        /// kind of position side by side"), chosen in the Position heading's list beside the
+        /// Position and the servo encoder's value (the simple motion module's "Real current
+        /// value", Md.101) - in the axis's unit to the last count of its divisor (4
+        /// decimals for 10000). (It was LoadEncoderValueAddress, and RealPositionAddress
+        /// before that; until 22 October it was shown in the position's tooltip.)
         /// </summary>
         [Category(" Load Side Encoder"), DefaultValue(""),
-         Description("The load-side encoder's value (read by the PLC itself, in its own count). Shown in the position's tooltip with the difference, in the axis's unit to its last count.")]
+         Description("The load-side encoder's value (read by the PLC itself, in its own count): the Load Position column, chosen in the Position heading's list.")]
         public string LoadSideEncoderAddress { get; set; }
 
         private double? _loadSideEncoderDivisor;
@@ -621,9 +621,15 @@ namespace Kaban.UI.Controls
             x += GroupGap;
             if (manual) _back = AddJog(CommandBackAddress, ButtonGlyphs.Left, ref x);
 
-            if (position)
+            // THE POSITIONS, SIDE BY SIDE (22 October): the ones ticked in the Position
+            // heading's list - the Position (the module's command position), the servo
+            // encoder's value, the load-side encoder's - each a column of its own.
+            var positions = position ? PickedPositions() : new System.Collections.Generic.List<string>();
+            _positionsBuilt = string.Join(",", positions);
+            foreach (var kind in positions)
             {
-                if (!string.IsNullOrEmpty(PositionAddress))
+                Control shown = null;
+                if (kind == "Position" && !string.IsNullOrEmpty(PositionAddress))
                 {
                     _position = new NumericDisplayHMI
                     {
@@ -635,19 +641,44 @@ namespace Kaban.UI.Controls
                         Digits = Digits,
                         Suffix = Suffix,
                         UnitType = PositionUnitType,
-                        // The load-side encoder's value, in the tooltip with the difference -
-                        // divided by its own divisor (the PLC's count, not the module's).
-                        ComparedAddress = (LoadSideEncoderAddress ?? "").Trim(),
-                        ComparedDivisor = LoadSideEncoderScale,
-                        ComparedCaptionKey = "Tip_LoadEncoder",
                         // The position is the number the operator watches while
                         // jogging, so it is the one thing on the row drawn large.
                         Font = PositionFont
                     };
-                    _position.SetBounds(x, 4, WPosition, RowHeight - 8);
-                    Controls.Add(_position);
+                    shown = _position;
                 }
-                Column("Position", x, WPosition);
+                else if (kind == "ServoEncoder" && HasMotion && SimpleMotion.ServoEncoderItem != null)
+                {
+                    // the servo motor's encoder, read from the module (Md.101) - in the row's unit
+                    var rowUnit = IsAngle ? SimpleMotion.RowUnit.Angle
+                                : PositionUnitType == UnitType.Length ? SimpleMotion.RowUnit.Length : SimpleMotion.RowUnit.Module;
+                    shown = new MotionValueHMI(PlcNumber, SimpleMotion.ServoEncoderItem, MotionNumber, MotionAxisIndex, DecimalPlaces, rowUnit)
+                            { Name = "posServoEncoder", Font = PositionFont };
+                }
+                else if (kind == "LoadPosition" && !string.IsNullOrWhiteSpace(LoadSideEncoderAddress))
+                {
+                    // the load-side encoder, read by the PLC: its own divisor, to its last count
+                    int decimals = BaseNumericHMI.ResolutionDecimals(LoadSideEncoderScale, DecimalPlaces);
+                    shown = new NumericDisplayHMI
+                    {
+                        Name = "posLoad",
+                        PlcNumber = PlcNumber,
+                        Address = LoadSideEncoderAddress.Trim(),
+                        DataType = PositionDataType,
+                        Divisor = LoadSideEncoderScale,
+                        DecimalPlaces = decimals,
+                        Digits = Math.Max(Digits, decimals + 4),
+                        Suffix = Suffix,
+                        UnitType = PositionUnitType,
+                        Font = PositionFont
+                    };
+                }
+                if (shown != null)
+                {
+                    shown.SetBounds(x, 4, WPosition, RowHeight - 8);
+                    Controls.Add(shown);
+                }
+                Column(kind, x, WPosition);
                 x += WPosition + Gap;
             }
 
@@ -1089,9 +1120,56 @@ namespace Kaban.UI.Controls
             foreach (var k in ViewPreferences.ListOf(MonitorMode ? ViewPreferences.MonitorMotion : ViewPreferences.MotionColumns))
             {
                 var item = SimpleMotion.Find(k);
-                if (item != null && !list.Contains(item)) list.Add(item);
+                // the feed and the real current value: the Position heading's (a list of before may have them)
+                if (item != null && !SimpleMotion.IsAxisPosition(item.Key) && !list.Contains(item)) list.Add(item);
             }
             return list;
+        }
+
+        // ---- the positions side by side (22 October) -------------------------------------
+
+        /// <summary>The kinds of position a row can show, in their order.</summary>
+        public static readonly string[] PositionKinds = { "Position", "ServoEncoder", "LoadPosition" };
+
+        /// <summary>A kind of position's name (the Position heading's list, its column's heading).</summary>
+        public static string PositionText(string kind)
+        {
+            switch (kind)
+            {
+                case "ServoEncoder": return LanguageManager.GetString("Col_AxisServoEncoder", "Servo Encoder Value");
+                case "LoadPosition": return LanguageManager.GetString("Col_AxisLoadPosition", "Load Position");
+                default: return LanguageManager.GetString("Col_AxisPosition", "Position");
+            }
+        }
+
+        private string _positionsBuilt = "";
+
+        /// <summary>
+        /// The kinds the rows of the page have: the Position always, the servo encoder's value
+        /// with an axis on a simple motion module, the load position with a load-side encoder.
+        /// </summary>
+        public System.Collections.Generic.List<string> OfferedPositions()
+        {
+            var list = new System.Collections.Generic.List<string> { "Position" };
+            if (PageHasMotion()) list.Add("ServoEncoder");
+            if (PageHas(a => a.LoadSideEncoderAddress)) list.Add("LoadPosition");
+            return list;
+        }
+
+        /// <summary>The kinds of position shown: the ones ticked that the page has - nothing ticked, the Position.</summary>
+        public System.Collections.Generic.List<string> PickedPositions()
+        {
+            var kept = ViewPreferences.ListOf(MonitorMode ? ViewPreferences.MonitorPositions : ViewPreferences.AxisPositions);
+            var offered = OfferedPositions();
+            var list = PositionKinds.Where(k => offered.Contains(k) && kept.Contains(k)).ToList();
+            if (list.Count == 0) list.Add("Position");
+            return list;
+        }
+
+        /// <summary>What the Position heading's list says it is (the tooltip of each position heading).</summary>
+        internal static string PositionsTip()
+        {
+            return LanguageManager.GetString("Tip_AxPositions", "The positions shown side by side - a click: tick the ones to show (the Position, the servo encoder's value, the load-side encoder's - the ones the axes have).");
         }
 
         /// <summary>Whether any axis row of the page is on a simple motion module.</summary>
@@ -1152,7 +1230,9 @@ namespace Kaban.UI.Controls
             var picked = PageHasMotion() ? string.Join(",", PickedMotion().Select(i => i.Key)) : "";
             var items = PickedItems();
             string itemsNow = items == null ? "*" : string.Join(",", ItemKeys.Where(items.Contains));
-            if ((picked == _motionBuilt && itemsNow == _itemsBuilt) || Controls.Count == 0) { SyncMotionBar(); return; }
+            bool position = items == null || items.Contains("Manual") || MonitorMode;
+            string positionsNow = position ? string.Join(",", PickedPositions()) : "";
+            if ((picked == _motionBuilt && itemsNow == _itemsBuilt && positionsNow == _positionsBuilt) || Controls.Count == 0) { SyncMotionBar(); return; }
             BuildRow();
             SyncMotionBar();
             Kaban.UI.Plc.PlcScanner.NotifyContentChanged();
@@ -1228,6 +1308,9 @@ namespace Kaban.UI.Controls
         {
             new[] { "Axis", "Col_Axis", "Axis" },
             new[] { "Position", "Col_AxisPosition", "Position" },
+            // (the column's heading short - the list and the heading's tooltip name it in full)
+            new[] { "ServoEncoder", "Col_AxisServoEncoderShort", "Servo encoder", "Servo Encoder Value" },
+            new[] { "LoadPosition", "Col_AxisLoadPosition", "Load Position" },
             new[] { "Current", "Col_AxisCurrent", "Current" },
             new[] { "Min", "Col_MinLimit", "Min" },
             new[] { "Max", "Col_MaxLimit", "Max" },
@@ -1308,7 +1391,9 @@ namespace Kaban.UI.Controls
                 Label l;
                 if (!byKey.TryGetValue(h[0], out l))
                 {
-                    if (!shown || (h[0] != "TravelPerRev" && h[0] != "Backlash" && h[0] != "Current")) continue;
+                    // the columns no page's designer has a heading for: made in the same style
+                    if (!shown || (h[0] != "TravelPerRev" && h[0] != "Backlash" && h[0] != "Current" &&
+                                   h[0] != "ServoEncoder" && h[0] != "LoadPosition" && h[0] != "Position")) continue;
                     l = new Label
                     {
                         Tag = HeadingTag + h[0],
@@ -1335,6 +1420,17 @@ namespace Kaban.UI.Controls
             var axesBar = BarOf(page, ItemsBarName);
             if (byKey.TryGetValue("Axis", out axisHead) && axesBar != null && axesBar.AxesPick != null)
                 AxisHeadingFilter.Attach(axisHead, axesBar.AxesPick, () => OfferPageAxes(page));
+            // each position's heading opens the Positions list (which kinds of position, side by side)
+            if (axesBar != null && axesBar.PositionsPick != null)
+            {
+                var anyRow = this;
+                foreach (var kind in PositionKinds)
+                {
+                    Label posHead;
+                    if (byKey.TryGetValue(kind, out posHead))
+                        AxisHeadingFilter.Attach(posHead, axesBar.PositionsPick, () => { var r = RowsOf(page).FirstOrDefault() ?? anyRow; axesBar.OfferPositions(r.OfferedPositions()); }, PositionsTip, showCount: false);
+                }
+            }
 
             // THE SIMPLE MOTION COLUMNS: a heading each, in the same style - its
             // short name over the column, the whole name in its tooltip.
@@ -1461,7 +1557,7 @@ namespace Kaban.UI.Controls
                 // PLC axis items: an ordinary part of the page, scrolling with it - and
                 // before it the Axes list: which rows the page shows.
                 items = new AxisPickBar(ViewPreferences.AxisItems, ViewPreferences.MotionColumns, items: true, motion: false,
-                                        axesKey: ViewPreferences.AxesShown)
+                                        axesKey: ViewPreferences.AxesShown, positionsKey: ViewPreferences.AxisPositions)
                         { Name = ItemsBarName, BackColor = page.BackColor };
                 var anyRow = this;
                 var bar = items;
@@ -1494,6 +1590,7 @@ namespace Kaban.UI.Controls
             }
             items.Visible = true;
             items.OfferAxes(PageAxes(page));
+            items.OfferPositions(OfferedPositions());
             items.Offer(PageItems(), false);
             ApplyAxisFilter(page, items);
             bool hasMotion = PageHasMotion();

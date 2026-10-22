@@ -22,7 +22,8 @@ class AMS {
     }
     const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
     static void Pump(int ms) { var until = DateTime.Now.AddMilliseconds(ms); while (DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); } }
-    static int ContentRight(Control row) { return row.Controls.Cast<Control>().Where(k => k.Visible).Max(k => k.Right); }
+    // (a row hidden by its conditions - an option the machine has not got - shows nothing: 0)
+    static int ContentRight(Control row) { return row.Controls.Cast<Control>().Where(k => k.Visible).Select(k => k.Right).DefaultIfEmpty(0).Max(); }
 
     [STAThread]
     static void Main() {
@@ -52,7 +53,7 @@ class AMS {
         Console.WriteLine("--- the Axis Monitor in the side panel at 1.5, an Admin's Motion monitor columns ---");
         var view = form.ShowSidePage("AxisMonitor") as AxisMonitorPage;
         Pump(400);
-        ViewPreferences.SetList(ViewPreferences.MonitorMotion, new[] { "AxisError", "OperationStatus", "Busy", "RealCurrentValue" });
+        ViewPreferences.SetList(ViewPreferences.MonitorMotion, new[] { "AxisError", "OperationStatus", "Busy", "TargetValue" });
         Pump(700);
         var list = (FlowLayoutPanel)typeof(AxisMonitorPage).GetField("_list", Any).GetValue(view);
         var rows = list.Controls.OfType<AxisSettingHMI>().ToList();

@@ -262,12 +262,14 @@ class VPM {
         Check("  the page moved down to make room for it - a heading over the rows now", frame != null && hAxis.Top == 48 && frame.Head.Height == 74 &&
               r1.Parent == frame.Body && r1.Top == 0 && hAxis.Parent == frame.HeadContent, hAxis.Top + " " + r1.Top + " " + (frame == null ? "no frame" : frame.Head.Height.ToString()));
         var pick = bar != null ? bar.Controls["motionPick"] as Kaban.UI.Dashboard.PickList : null;
-        Check("  every value of the module in it", pick != null && pick.Items.Count == SimpleMotion.Items.Count);
+        // 22 October: but the feed and the real current value - the Position heading's (the Position, the Servo Encoder Value)
+        Check("  every value of the module in it but the axis's positions", pick != null && pick.Items.Count == SimpleMotion.Items.Count - 2 &&
+              !pick.Items.Any(i => i.Key == "FeedCurrentValue" || i.Key == "RealCurrentValue"));
         Check("  nothing picked: no columns", r1.Controls["motAxisError"] == null && !r1.Columns.Keys.Any(k => k.StartsWith("Mot:")));
 
         SecurityManager.Login("boss", SecurityLevel.Admin);
         Pump(50);
-        var picked = new[] { "AxisError", "OperationStatus", "HomeRequest", "Busy", "RealCurrentValue" };
+        var picked = new[] { "AxisError", "OperationStatus", "HomeRequest", "Busy", "TargetValue" };
         ViewPreferences.SetMotionColumnKeys(picked);
         Pump(200);
         Check("picked: kept as the signed-in user's own", ViewPreferences.UserValue("boss", ViewPreferences.MotionColumns) == string.Join(",", picked) &&
@@ -275,14 +277,14 @@ class VPM {
         Check("  a column each on the row", picked.All(k => r1.Controls["mot" + k] != null), string.Join(",", r1.Controls.Cast<Control>().Select(c => c.Name).Where(n => n.StartsWith("mot"))));
         Check("  the error code: U1\\G2506 (axis 2)", ((IPlcBoundControl)r1.Controls["motAxisError"]).Address == @"U1\G2506",
               ((IPlcBoundControl)r1.Controls["motAxisError"]).Address);
-        var real = r1.Controls["motRealCurrentValue"] as MotionValueHMI;
-        Check("  the real position: U1\\G2550, and the unit setting U1\\G150 read with it",
-              real != null && real.Address == @"U1\G2550" && real.ExtraAddresses.Contains(@"U1\G150"));
+        var real = r1.Controls["motTargetValue"] as MotionValueHMI;
+        Check("  the target value: U1\\G2518, and the unit setting U1\\G150 read with it",
+              real != null && real.Address == @"U1\G2518" && real.ExtraAddresses.Contains(@"U1\G150"));
         Check("a row not on a module: the space, the columns in line",
               r2.Controls["motBusy"] == null && r2.Columns.ContainsKey("Mot:Busy") && r2.Columns["Mot:Busy"] == r1.Columns["Mot:Busy"]);
         var mem = new Dictionary<string, int> {
             { @"U1\G2509", 7 }, { @"U1\G31501", 2 }, { @"U1\G2517", 1 << 3 }, { @"U1\G150", 0 },
-            { @"U1\G2550", 1234567 & 0xFFFF }, { @"U1\G2551", 1234567 >> 16 } };
+            { @"U1\G2518", 1234567 & 0xFFFF }, { @"U1\G2519", 1234567 >> 16 } };
         Func<string, int> look = a => mem.ContainsKey(a) ? mem[a] : 0;
         foreach (var v in r1.Controls.OfType<MotionValueHMI>()) v.UpdateState(look, c => true);
         Check("the values: Home return (7), BUSY on, home request on, 123.46 mm",

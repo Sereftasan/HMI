@@ -76,25 +76,35 @@ class AR {
         Check("column order", string.Join(",", order) ==
               "Axis,Position,Current,Min,Max,Reference,Calibration,Cal,Ref,ZDistance,AxisAlarm,AxisWarning,ServoAlarm", string.Join(",", order));
 
-        Console.WriteLine("--- the real position in the position's tip ---");
+        // 22 October: "the Position column's caption a multiple combo selection ... the tooltip about the
+        // load side encoder and the deviation should be removed" - the load-side encoder is a column of its own
+        Console.WriteLine("--- the load position beside the position (no more in its tooltip) ---");
+        ViewPreferences.SettingsPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "arl_" + Guid.NewGuid().ToString("N") + ".cfg");
+        ViewPreferences.SetList(ViewPreferences.AxisPositions, new[] { "Position", "LoadPosition" });
         var r2 = Full("Axis_RobotX", "real");
         r2.BuildRow();
-        var p2 = r2.Controls.OfType<NumericDisplayHMI>().Single();
-        Check("the position compares with LoadSideEncoderAddress", p2.ComparedAddress == "W10", p2.ComparedAddress);
+        var p2 = r2.Controls.OfType<NumericDisplayHMI>().First(d => d.Name != "posLoad");
+        var l2 = r2.Controls["posLoad"] as NumericDisplayHMI;
+        Check("a Load Position column right after the Position, as wide; the position compares nothing",
+              l2 != null && l2.Address == "W10" && r2.Columns.ContainsKey("LoadPosition") &&
+              r2.Columns["LoadPosition"].X == r2.Columns["Position"].X + AxisSettingHMI.WPosition + AxisSettingHMI.Gap && string.IsNullOrEmpty(p2.ComparedAddress),
+              string.Join(",", r2.Columns.OrderBy(kv => kv.Value.X).Select(kv => kv.Key)));
         var mem = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 81848988 & 0xFFFF }, { "W11", 81848988 >> 16 } };
         p2.UpdateState(a => mem.ContainsKey(a) ? mem[a] : 0, c => true);
+        l2.UpdateState(a => mem.ContainsKey(a) ? mem[a] : 0, c => true);
+        Check("the load encoder in mm, to its last count: 8184.8988 mm", l2.Text == "8184.8988 mm", l2.Text);
+        Check("  the position as ever: 8184.90 mm", p2.Text == "8184.90 mm", p2.Text);
         var build = typeof(BaseNumericHMI).GetMethod("BuildTooltip", Any);
-        var tip = (string)build.Invoke(p2, null);
-        var lines = tip.Split('\n');
-        // 30 September: in mm, to the last count (divisor 10000: 4 decimals), not raw counts.
-        Check("first line: the load encoder value in mm, to its last count: 8184.8988 mm", lines[0].StartsWith("Load encoder value:") && lines[0].EndsWith("\t8184.8988 mm"), lines[0]);
-        Check("second line: the difference in mm: +0.0012 mm (12 counts)", lines.Length > 1 && lines[1].StartsWith("Difference:") && lines[1].EndsWith("\t+0.0012 mm"),
-              lines.Length > 1 ? lines[1] : "");
-        Check("  then the usual notes", tip.Contains("Address:"), tip.Replace("\n", " | "));
-        Check("no load encoder, no such lines", !((string)build.Invoke(pos, null)).Contains("Load encoder"));
+        Check("  the position's tooltip without the load encoder", !((string)build.Invoke(p2, null)).Contains("Load encoder"));
         var devs = DeviceCollector.FromControl(r2, 1);
         Check("the device list names it", devs.Any(d => d.Address == "W10" && d.UsedAs.Contains("load-side encoder")),
               string.Join(" ", devs.Select(d => d.Address)));
+        ViewPreferences.SetList(ViewPreferences.AxisPositions, new string[0]);
+        var r2b = Full("Axis_RobotX", "real");
+        r2b.BuildRow();
+        Check("  not picked: the Position alone - the device list still names the encoder", r2b.Controls["posLoad"] == null && !r2b.Columns.ContainsKey("LoadPosition") &&
+              DeviceCollector.FromControl(r2b, 1).Any(d => d.Address == "W10" && d.UsedAs.Contains("load-side encoder")));
+        ViewPreferences.SetList(ViewPreferences.AxisPositions, new[] { "LoadPosition" });
 
         // 15 October: the load-side encoder is read by the PLC itself, in its own count - its own divisor
         // (FA2010's Robot X: D22 in 0.001 mm), while the position is divided by the row's Divisor (0.0001 mm)
@@ -102,15 +112,12 @@ class AR {
         var ls3 = Full("Axis_RobotX", "real");
         ls3.LoadSideEncoderDivisor = 1000;
         ls3.BuildRow();
-        var lp3 = ls3.Controls.OfType<NumericDisplayHMI>().Single();
-        Check("the position divided by the row's Divisor (10000), the encoder by its own (1000)", lp3.Divisor == 10000 && lp3.ComparedDivisor == 1000,
-              lp3.Divisor + " / " + lp3.ComparedDivisor);
-        var lmem3 = new Dictionary<string, int> { { "W0", 81849000 & 0xFFFF }, { "W1", 81849000 >> 16 }, { "W10", 8184899 & 0xFFFF }, { "W11", 8184899 >> 16 } };
+        var lp3 = ls3.Controls["posLoad"] as NumericDisplayHMI;
+        Check("the Load Position alone (picked so): divided by its own divisor (1000), to its last count", lp3 != null && lp3.Divisor == 1000 && lp3.DecimalPlaces == 3 &&
+              ls3.Columns.ContainsKey("LoadPosition") && !ls3.Columns.ContainsKey("Position"), lp3 == null ? "none" : lp3.Divisor + " / " + lp3.DecimalPlaces);
+        var lmem3 = new Dictionary<string, int> { { "W10", 8184899 & 0xFFFF }, { "W11", 8184899 >> 16 } };
         lp3.UpdateState(a => lmem3.ContainsKey(a) ? lmem3[a] : 0, c => true);
-        var ll3 = ((string)build.Invoke(lp3, null)).Split('\n');
-        Check("  8184899 (0.001 mm) reads 8184.8990 mm - to the finer one's last count", ll3[0].EndsWith("\t8184.8990 mm"), ll3[0]);
-        Check("  against the position's 8184.9000 mm: +0.0010 mm", ll3.Length > 1 && ll3[1].EndsWith("\t+0.0010 mm"), ll3.Length > 1 ? ll3[1] : "");
-        Check("  the position itself as before: 8184.90 mm", lp3.Text == "8184.90 mm", lp3.Text);
+        Check("  8184899 (0.001 mm) reads 8184.899 mm", lp3.Text == "8184.899 mm", lp3.Text);
         Check("a divisor of its own does not change the position's", new AxisSettingHMI { Divisor = 100000, LoadSideEncoderDivisor = 1000 }.PositionScale == 100000);
 
         // 15 October: "make LoadSideEncoderDivisor get its value from Divisor when it is null, so the user
@@ -131,8 +138,9 @@ class AR {
         Check("  0: the Divisor again", fol.LoadSideEncoderDivisor == 100000 && !fol.HasOwnLoadSideEncoderDivisor);
         var flr = Full("Axis_RobotX", "real");
         flr.BuildRow();
-        Check("a row with an encoder and no divisor of its own: the tooltip divides it by the Divisor",
-              flr.Controls.OfType<NumericDisplayHMI>().Single().ComparedDivisor == flr.Divisor);
+        Check("a row with an encoder and no divisor of its own: its Load Position divided by the Divisor",
+              ((NumericDisplayHMI)flr.Controls["posLoad"]).Divisor == flr.Divisor);
+        ViewPreferences.SetList(ViewPreferences.AxisPositions, new string[0]);
 
         Console.WriteLine("--- travel per revolution and backlash ---");
         Check("none given: no fields, no columns", !col.ContainsKey("TravelPerRev") && !col.ContainsKey("Backlash") &&
