@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 22 October (night):
+  - 421e20b - Axis units: the Position only again. One choice of positions (Position, Servo Encoder Value, Load
+    Position) for the Axis Settings pages and the Axis Monitor; its list opens only with more than one to offer.
+  - da8f86d - Side bar: the Axis Monitor's button only when an axis is set on the Axis Settings pages (not on H500).
+  - 83679fb - PLC Monitor: the columns "Value (PLC)" and "Value (HMI)".
+  - 93befda - PLC Monitor: table view per label - "Show this label in table view" on an array label moves it to the top
+    of the tab as a table (its description the caption, the view buttons under it, the table under them), up / down
+    among the tables, "List view" takes it back to the list, which stays at the bottom.
+  - 72b5ad1 - FA2010: structured data types and labels for the Profiles & Operations sheet's tables (not the PLC device
+    list). A new PLC Monitor row fills itself in from the label list (an address or a label typed).
+  - The designer's "Method not found: ... set_RequiredSecurity": an older Kaban.UI loaded - CLAUDE.md, Conventions.
 - 22 October (evening):
   - 32f7cc6 - HMI Settings > PLC Connection: an Active tick per PLC. A machine none of whose PLCs is active: not
     connected, not watched, its pages in no list (the navigation bar, the PLC Monitor ...) - from the next start.
