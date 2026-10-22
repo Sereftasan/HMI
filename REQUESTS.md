@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 23 October:
+  - cf0691a, 20ea6d4 - FA2010: your StructuredTypes.csv taken in; the labels follow your renamed types, the job list's
+    three columns simple arrays (Double Word [Signed](0..499)).
+  - a9556b9 - Structured data types: the list's order changed with up / down (Ctrl+Up / Ctrl+Down); a renamed type
+    keeps its old name, so labels and saved tabs of the old name still find it.
+  - ddb7357 - PLC Monitor: a tab with list and table labels has two tabs under it, "List viewed labels" and "Table
+    viewed labels" (gone when either is empty); a table's caption no longer cut.
+  - f7e555a - PLC Monitor: Value (HMI) shows a bit's (a structure's bit members') and a string's value in its own cell.
+  - c7aabfa - Translation page: Undo (Ctrl+Z) and Redo (Ctrl+Y) on top - an AI import, a file import, a Save, a text
+    typed, a language copied - undone in one step each.
 - 22 October (night):
   - 421e20b - Axis units: the Position only again. One choice of positions (Position, Servo Encoder Value, Load
     Position) for the Axis Settings pages and the Axis Monitor; its list opens only with more than one to offer.
