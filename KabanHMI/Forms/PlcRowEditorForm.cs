@@ -50,6 +50,12 @@ namespace Kaban.UI.Forms
         private readonly Label _labelCaption = new Label();
         private readonly Button _structures = new Button();
         private readonly bool _isNew;
+        /// <summary>Filling the fields in from the label list (not the user typing); what the user typed himself.</summary>
+        private bool _auto, _labelTyped, _typeTyped, _addressTyped;
+        /// <summary>What a label list's entry filled in, and what the fields held before (put back when the text no longer names one).</summary>
+        private bool _filled;
+        private string _filledLabel, _filledAddress, _filledType, _keptLabel, _keptAddress, _keptType;
+        private decimal _filledCount, _keptCount;
         /// <summary>The tab's station: its machine's structured data types are offered.</summary>
         private readonly int _station;
 
@@ -224,6 +230,14 @@ namespace Kaban.UI.Forms
             AcceptButton = ok;
             CancelButton = cancel;
 
+            // A NEW ROW FROM THE LABEL LIST (22 October): a label's name or its address typed - the
+            // rest filled in from PlcLabels.csv (its data type, an array's length), what was not typed by hand
+            if (isNew)
+            {
+                _address.TextChanged += (s, e) => { if (_auto) return; _addressTyped = true; FillFromLabelList(PlcLabelTable.ByAddress(_station, RowAddress), true); };
+                _label.TextChanged += (s, e) => { if (_auto) return; _labelTyped = true; FillFromLabelList(PlcLabelTable.ByLabel(_station, RowLabel), false); };
+                _dataType.TextChanged += (s, e) => { if (!_auto) _typeTyped = true; };
+            }
             _comment.CheckedChanged += (s, e) => UpdateState();
             _count.ValueChanged += (s, e) => UpdateState();
             _chars.ValueChanged += (s, e) => UpdateState();
@@ -307,6 +321,46 @@ namespace Kaban.UI.Forms
                 : first + " … " + ElementAddress(first, RowDataType, n - 1, RowStringLength, _station) +
                   (step == 2 ? "  (" + LanguageManager.GetString("Lbl_Step2", "every 2nd device") + ")"
                    : step > 2 ? "  (" + string.Format(LanguageManager.GetString("Lbl_StepN", "every {0}th device"), step) + ")" : "");
+        }
+
+        /// <summary>
+        /// A label of the label list met (its address or its name typed): the other of the two, its data
+        /// type and an array's length ("Cutting Step(0..29)": 30) filled in - not what the user typed himself.
+        /// </summary>
+        private void FillFromLabelList(PlcLabelTable.Entry entry, bool fromAddress)
+        {
+            if (IsComment || (entry == null && !_filled)) return;
+            _auto = true;
+            try
+            {
+                if (entry == null)
+                {
+                    // "D8" filled PC_ProfilGenisligi in - "D80" names nothing: what was filled (and not changed since) goes back
+                    if (fromAddress && _label.Text == _filledLabel) _label.Text = _keptLabel;
+                    if (!fromAddress && _address.Text == _filledAddress) _address.Text = _keptAddress;
+                    if (_dataType.Text == _filledType) _dataType.Text = _keptType;
+                    if (_count.Value == _filledCount) _count.Value = _keptCount;
+                    _filled = false;
+                }
+                else
+                {
+                    if (!_filled)
+                    {
+                        _keptLabel = _label.Text; _keptAddress = _address.Text; _keptType = _dataType.Text; _keptCount = _count.Value;
+                    }
+                    if (fromAddress && (!_labelTyped || _label.Text.Trim().Length == 0)) _label.Text = entry.Label ?? "";
+                    if (!fromAddress && (!_addressTyped || _address.Text.Trim().Length == 0)) _address.Text = (entry.Address ?? "").Trim().ToUpperInvariant();
+                    if (!_typeTyped && !string.IsNullOrWhiteSpace(entry.DataType))
+                    {
+                        _dataType.Text = StructuredTypes.BaseName(entry.DataType);
+                        _count.Value = Math.Max(_count.Minimum, Math.Min(_count.Maximum, Math.Max(1, StructuredTypes.CountIn(entry.DataType))));
+                    }
+                    _filledLabel = _label.Text; _filledAddress = _address.Text; _filledType = _dataType.Text; _filledCount = _count.Value;
+                    _filled = true;
+                }
+            }
+            finally { _auto = false; }
+            UpdateState();
         }
 
         /// <summary>The simple types, then the structured ones saved.</summary>

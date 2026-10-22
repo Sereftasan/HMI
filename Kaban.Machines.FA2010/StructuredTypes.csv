@@ -1,9 +1,94 @@
 ﻿# Kaban HMI structured data types - the PLC Monitor's, chosen like a simple data type.
 # [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment
+#   and, for a value the PLC Monitor also shows calculated: ;Divisor;Decimal places after the comment
 [Milling Step];16;Used for the milling operation steps
 Cooling Selection;Bit;0;1;
 Motor Selection;Bit;0;5;
-Y Position;Double Word [Signed];3;;
-X Position;Double Word [Signed];1;;
-Z Position;Double Word [Signed];5;;
-Speed;Word [Signed];12;;
+Y Position;Double Word [Signed];3;;xxx.xx mm;100;2
+X Position;Double Word [Signed];1;;xxx.xx mm;100;2
+Z Position;Double Word [Signed];5;;xxx.xx mm;100;2
+Speed;Word [Signed];12;;xxx.xx mm;100;2
+[Profile Parameters];50;PROFİL PARAMETRELERİ - one profile's parameters, R25600 ... R25649
+Tool Cooling Active;Bit;0;0;Profil ModBitler 0 - Takım Soğutma Aktif
+Top Small Clamp Active;Bit;0;1;Üst Küçük Sıkma Aktif
+Manual Feeding;Bit;0;2;Manuel Besleme
+PT Top Clamp First;Bit;0;3;PT Önce Üst Sıkma
+Conveyor Front Clamps After PT Top Clamp;Bit;0;4;Konveyör Ön Sıkmalar PT Üst Sıkmadan Son
+Robot Clamp 0-90 Degrees;Bit;0;5;Robot Sıkma 0_90 der
+Clamps Open-Close;Bit;0;6;Sıkmalar AçKapa
+Rear Horizontal Positioning After Conveyor Roller;Bit;0;7;ArkaYatayPozisyonlama_KonveyorRulodanSon
+Exit Front Vertical Active;Bit;0;8;Çıkış Ön Dikey Aktif
+High Pressure Cancel;Bit;0;9;Yüksek Basınç İptal
+Mullion Notched Profile;Bit;0;10;Ortakayıt Kertmeli Profil
+Conveyor Speed;Word [Signed];1;;Konveyör Hızı - xxx %
+Profile Recognition Width;Word [Signed];2;;Profil Tanıma Genişlik - xxx.xx mm;100;2
+Profile Recognition Height;Word [Signed];3;;Profil Tanıma Yükseklik - xxx.xx mm;100;2
+Robot Hold Y Position;Word [Signed];4;;Robot Tutma Y Poz - xxx.xx mm;100;2
+Robot Hold Z Position;Word [Signed];5;;Robot Tutma Z Poz - xxx.xx mm;100;2
+Robot Length Measuring Y Position;Word [Signed];6;;Robot Boy Ölçme Y Poz - xxx.xx mm;100;2
+Robot Length Measuring Z Position;Word [Signed];7;;Robot Boy Ölçme Z Poz - xxx.xx mm;100;2
+V Cut Y Position;Word [Signed];8;;V Kesim Y Poz - xxx.xx mm;100;2
+Cut Full Width;Word [Signed];9;;Kesim Tam Genişlik - xxx.xx mm;100;2
+Ear Allowance / Mould Difference;Word [Signed];10;;Kulak Payı / Kalıp Farkı - xxx.xx mm;100;2
+Front Vertical Stop Position;Word [Signed];11;;Ön Dikey Dayama Poz - xxx.xx mm;100;2
+Rear Vertical Stop Position;Word [Signed];12;;Arka Dikey Dayama Poz - xxx.xx mm;100;2
+Rear Horizontal Stop Position;Word [Signed];13;;Arka Yatay Dayama Poz - xxx.xx mm;100;2
+Cut Top Small Clamp Position;Word [Signed];14;;Kesim Üst Küçük Sıkma Poz - xxx.xx mm;100;2
+Profile Correction Position;Word [Signed];15;;Profil Düzeltme Pozisyonu - xxx.xx mm;100;2
+Notch Blade Inner Diameter;Word [Signed];16;;Okayit Bıçağı İç Çapı - xxx.xx mm;100;2
+Notch Blade Outer Diameter;Word [Signed];17;;Okayit Bıçağı Dış Çapı - xxx.xx mm;100;2
+Cut Position 1;Word [Signed];30;;Kesim Pozisyon1 - xxx.xx mm;100;2
+Cut Position 2;Word [Signed];31;;Kesim Pozisyon2 - xxx.xx mm;100;2
+Cut Position 3;Word [Signed];32;;Kesim Pozisyon3 - xxx.xx mm;100;2
+Cut Position 4;Word [Signed];33;;Kesim Pozisyon4 - xxx.xx mm;100;2
+Cut Position 5;Word [Signed];34;;Kesim Pozisyon5 - xxx.xx mm;100;2
+Cut Position 6;Word [Signed];35;;Kesim Pozisyon6 - xxx.xx mm;100;2
+Cut Position 7;Word [Signed];36;;Kesim Pozisyon7 - xxx.xx mm;100;2
+Cut Position 8;Word [Signed];37;;Kesim Pozisyon8 - xxx.xx mm;100;2
+Cut Position 9;Word [Signed];38;;Kesim Pozisyon9 - xxx.xx mm;100;2
+Cut Position 10;Word [Signed];39;;Kesim Pozisyon10 - xxx.xx mm;100;2
+Cut Speed 1;Word [Signed];40;;Kesim Hız1 - xxx.xx mm;100;2
+Cut Speed 2;Word [Signed];41;;Kesim Hız2 - xxx.xx mm;100;2
+Cut Speed 3;Word [Signed];42;;Kesim Hız3 - xxx.xx mm;100;2
+Cut Speed 4;Word [Signed];43;;Kesim Hız4 - xxx.xx mm;100;2
+Cut Speed 5;Word [Signed];44;;Kesim Hız5 - xxx.xx mm;100;2
+Cut Speed 6;Word [Signed];45;;Kesim Hız6 - xxx.xx mm;100;2
+Cut Speed 7;Word [Signed];46;;Kesim Hız7 - xxx.xx mm;100;2
+Cut Speed 8;Word [Signed];47;;Kesim Hız8 - xxx.xx mm;100;2
+Cut Speed 9;Word [Signed];48;;Kesim Hız9 - xxx.xx mm;100;2
+Cut Speed 10;Word [Signed];49;;Kesim Hız10 - xxx.xx mm;100;2
+[Job ID];2;İŞ LİSTESİ - İşlem ID (Integer, 32 bit): D5000, D5002 ... - an operation of the job list, its position and code at the same index
+ID;Double Word [Signed];0;;İşlem ID
+[Job Position];2;İŞ LİSTESİ - Pozisyon (xxx.xx mm, 32 bit): D6000, D6002 ...
+Position;Double Word [Signed];0;;Pozisyon - xxx.xx mm - 999999: the profile's operations finished (sent to the field after the last);100;2
+[Job Operation Code];2;İŞ LİSTESİ - İşlem Kodu (Integer, 16 bit): D7000, D7002 ...
+Code;Word [Signed];0;;Milling: its memory index 1-100 - Cut: 1000+angle*10 - V cut: 1000 and 3000+V cut Y*10 - <> cut: 1001-1010
+[Milling Operation Parameters];10;FREZE İŞLEM PARAMETRELERİ - İşlem No 1-100: R26000 + 10 each
+Tool No;Word [Signed];0;;Takım No (1-4)
+Tool Angle;Word [Signed];1;;Takım Açısı - xxx.xx;100;2
+Operation Length;Word [Signed];2;;İşlem Uzunluğu - xxx.xx mm;100;2
+Profile Approach Y;Word [Signed];3;;Profil Yaklaşma Y - xxx.xx mm;100;2
+Profile Approach Z;Word [Signed];4;;Profil Yaklaşma Z - xxx.xx mm;100;2
+Milling Speed;Word [Signed];5;;Freze Hızı - xxx.xx mm;100;2
+[Cutting Operation Parameters];5;<> KESİM İŞLEM PARAMETRELERİ - İşlem No 1001-1010: R25650 + 5 each
+Cut Angle;Word [Signed];0;;Kesim Açısı - xxx.x;10;1
+V Cut Y Approach;Word [Signed];1;;V Kesim Y Yaklaşma - xxx.xx mm;100;2
+Exit Robot Hold Position;Word [Signed];2;;Çıkış Rbt. Tutma Poz. - xxx.xx mm;100;2
+Cut X Offset;Word [Signed];3;;Kesim X Ofseti - xxx.xx mm;100;2
+[Cutting Step];10;<> KESİM ADIMLARI - 30 steps: R25700 + 10 each
+Operation Code;Word [Signed];0;;İşlem Kodu: 1 clamps close - 2 clamps open - 3 robots carry - 4 normal cut - 5 V cut - 6 exit robot pulls the profile - 7 recipe merge
+Robot 1;Word [Signed];1;;Robot1 - xxx.xx mm;100;2
+Robot 2;Word [Signed];2;;Robot 2 - xxx.xx mm;100;2
+Angle;Word [Signed];3;;Angle - xxx.xx mm;100;2
+V Cut Y;Word [Signed];4;;V Cut Y - xxx.xx mm;100;2
+Left Clamp;Bit;5;0;Left Clamp
+Right Clamp;Bit;5;1;Right Clamp
+[Mullion Notching Step];10;ORTAKAYIT KERTME ADIMLARI - 30 steps: R25700 + 10 each (the cutting steps' devices)
+X1;Word [Signed];0;;X1 (mandatory) - plunge depth - xxx.xx mm;100;2
+X2;Word [Signed];1;;X2 (or X1) - xxx.xx mm;100;2
+Z1;Word [Signed];2;;Z1 (mandatory) - cutting range - xxx.xx mm;100;2
+Z2;Word [Signed];3;;Z2 (or Z1) - xxx.xx mm;100;2
+Y1;Word [Signed];4;;Y1 (or 0) - cutting range - xxx.xx mm;100;2
+Y2;Word [Signed];5;;Y2 (or the profile width) - xxx.xx mm;100;2
+Step;Word [Signed];6;;Adım (or the saw thickness - 0.2 mm) - xxx.xx mm;100;2
+Speed;Word [Signed];7;;Hız (or the cutting speed) - xxx.xx mm;100;2
