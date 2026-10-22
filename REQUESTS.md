@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 22 October (evening, PLC data):
+  - a5bec8e - Axis Settings: the simple motion parameters (Pr.1 - 3, 8 - 13, 45, 46) are an Admin's fields - typed in the
+    cell's unit, checked against the manual's ranges, written to the module; then told when the module takes it (next
+    start, or PLC READY on again) and offered the module's flash ROM (only while PLC READY is off, 25 per power on).
+  - ce4eb08, 5fa445c - HMI Settings > PLC Connection: Read and Write at the end of each PLC's row. Read: the CPU's
+    devices and its simple motion modules' data into a backup with the machine, PLC, CPU, serial number (typed), user,
+    date and description. Write: a backup's areas ticked - all or the devices typed - to the same or other devices
+    (R1000 - R1999 to D2500); never X / Y; the modules' flash ROM afterwards when ticked.
 - 22 October (last):
   - cf0691a, 20ea6d4 - FA2010: your StructuredTypes.csv taken in; the labels follow your renamed types, the job list's
     three columns simple arrays (Double Word [Signed](0..499)).
