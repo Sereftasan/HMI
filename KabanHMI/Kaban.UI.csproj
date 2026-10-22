@@ -219,6 +219,9 @@
     <Compile Include="Settings\StationConnectionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Settings\PlcBackupForms.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Settings\TranslationsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

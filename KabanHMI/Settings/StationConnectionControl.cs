@@ -55,6 +55,8 @@ namespace Kaban.UI.Settings
             public TextBox Address;
             public Label Status;
             public Label Last, Drops, Error, Version;
+            /// <summary>The PLC's data into a backup, and a backup back into the PLC (22 October).</summary>
+            public Button Read, Write;
         }
 
         private Dictionary<int, int> _drops = new Dictionary<int, int>();
@@ -167,8 +169,8 @@ namespace Kaban.UI.Settings
             // one-digit station, after a short address - and pushed the last
             // column off the page. The boxes are sized to their content instead
             // (see AddRow), and the program version moved beside "Connected".
-            _table.ColumnCount = 8;
-            for (int i = 0; i < 8; i++) _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            _table.ColumnCount = 9;
+            for (int i = 0; i < 9; i++) _table.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             body.Controls.Add(_table);
 
             _footer.Dock = DockStyle.Bottom;
@@ -226,7 +228,7 @@ namespace Kaban.UI.Settings
                     ForeColor = ColDim,
                     Padding = new Padding(4, 10, 4, 4)
                 }, 0, _table.RowCount);
-                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 8);
+                _table.SetColumnSpan(_table.GetControlFromPosition(0, _table.RowCount), 9);
                 _table.RowCount++;
                 return;
             }
@@ -249,6 +251,7 @@ namespace Kaban.UI.Settings
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColLast", "Last answer")), 5, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColDrops", "Drops today")), 6, r);
             _table.Controls.Add(HeaderCell(LanguageManager.GetString("Diag_ColError", "Last error")), 7, r);
+            _table.Controls.Add(HeaderCell(LanguageManager.GetString("Col_PlcData", "PLC data")), 8, r);
             _table.RowCount = r + 1;
         }
 
@@ -332,6 +335,17 @@ namespace Kaban.UI.Settings
             _table.Controls.Add(last, 5, r);
             _table.Controls.Add(drops, 6, r);
             _table.Controls.Add(error, 7, r);
+
+            // READ AND WRITE (22 October: "add Read and Write button to the end of PLC Connections table
+            // (enabled when the connection established)"): the PLC's data into a backup; a backup back in
+            var data = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Margin = new Padding(3, 3, 3, 3) };
+            var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
+            var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
+            read.Name = "plcRead"; write.Name = "plcWrite";
+            read.Margin = new Padding(0, 0, 6, 0); write.Margin = Padding.Empty;
+            data.Controls.Add(read);
+            data.Controls.Add(write);
+            _table.Controls.Add(data, 8, r);
             _table.RowCount = r + 1;
 
             // Items are populated and the selection made AFTER the combo is in its
@@ -359,9 +373,13 @@ namespace Kaban.UI.Settings
                 Last = last,
                 Drops = drops,
                 Error = error,
-                Version = version
+                Version = version,
+                Read = read,
+                Write = write
             };
             _rows.Add(row);
+            read.Click += (s, e) => ReadPlc(row);
+            write.Click += (s, e) => WritePlc(row);
 
             driver.SelectedIndexChanged += (s, e) => { UpdateRowState(row); MarkDirty(); };
             name.CheckedChanged += (s, e) => { UpdateRowState(row); MarkDirty(); };
@@ -425,11 +443,51 @@ namespace Kaban.UI.Settings
                 return;
             }
             var st = ControllerStatus.RowFor(row.Endpoint.StationId, row.Endpoint.StationName, row.Endpoint, _drops);
+            SetDataButtons(row, st.Live);
             Set(row.Status, st.State, !st.Registered ? ColDim : st.Live ? ColOk : ColBad);
             Set(row.Last, st.Last, ColDim);
             Set(row.Drops, st.Drops.ToString(System.Globalization.CultureInfo.InvariantCulture), st.Drops > 0 ? ColBad : ColDim);
             Set(row.Error, st.Error, st.Live ? ColDim : ColBad);
             Set(row.Version, st.Version, ColDim);
+        }
+
+        /// <summary>
+        /// Read and Write only while the PLC is connected: Read from Maintenance on (it changes
+        /// nothing in the PLC), Write for an Admin.
+        /// </summary>
+        private void SetDataButtons(Row row, bool live)
+        {
+            if (row.Read == null) return;
+            bool read = live && SecurityManager.HasAccess(SecurityLevel.Maintenance);
+            bool write = live && SecurityManager.HasAccess(SecurityLevel.Admin);
+            string state = live + "|" + SecurityManager.CurrentLevel;
+            if (row.Read.Tag as string == state) return;   // the tips as they are: told again only when it changes
+            row.Read.Tag = state;
+            row.Read.Enabled = read;
+            row.Write.Enabled = write;
+            var tips = Kaban.UI.Controls.UiStyle.Tips();
+            Kaban.UI.Controls.UiStyle.SetTip(tips, row.Read, !live ? LanguageManager.GetString("Tip_PlcDataNotConnected", "Not connected: nothing to read or write.")
+                : LanguageManager.GetString("Tip_PlcRead", "Reads the PLC's devices (and its simple motion modules' data) into a backup, with your description."));
+            Kaban.UI.Controls.UiStyle.SetTip(tips, row.Write, !live ? LanguageManager.GetString("Tip_PlcDataNotConnected", "Not connected: nothing to read or write.")
+                : !SecurityManager.HasAccess(SecurityLevel.Admin) ? LanguageManager.GetString("Tip_PlcWriteAdmin", "An Admin writes a backup into the PLC.")
+                : LanguageManager.GetString("Tip_PlcWrite", "Writes a backup's devices (all, or the ones chosen - to the same or other devices) into the PLC."));
+        }
+
+        /// <summary>Hooks for the tests: the backup windows opened (shown by the test, not as dialogs).</summary>
+        internal static Action<Form> ShowWindow;
+
+        private void ReadPlc(Row row)
+        {
+            var f = new PlcBackupReadForm(row.Endpoint);
+            if (ShowWindow != null) { ShowWindow(f); return; }
+            using (f) f.ShowDialog(FindForm());
+        }
+
+        private void WritePlc(Row row)
+        {
+            var f = new PlcBackupWriteForm(row.Endpoint);
+            if (ShowWindow != null) { ShowWindow(f); return; }
+            using (f) f.ShowDialog(FindForm());
         }
 
         /// <summary>

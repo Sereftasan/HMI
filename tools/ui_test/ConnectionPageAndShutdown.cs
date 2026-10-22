@@ -138,8 +138,9 @@ class CP {
         Pump(1200);
         var table = ctl == null ? null : (TableLayoutPanel)Get(ctl, "_table");
         var header = table == null ? new List<string>() : Enumerable.Range(0, table.ColumnCount).Select(c => table.GetControlFromPosition(c, 0)).Where(c => c != null).Select(c => c.Text).ToList();
-        Check("the Controllers table: the connection and, beside it, how it is doing (the program version in the State)",
-              header.Count == 8 && header[4] == "State" && header[5] == "Last answer" && header[6] == "Drops today" && header[7] == "Last error",
+        // 22 October: and the PLC's data - Read and Write - at the end
+        Check("the Controllers table: the connection and, beside it, how it is doing (the program version in the State), its data last",
+              header.Count == 9 && header[4] == "State" && header[5] == "Last answer" && header[6] == "Drops today" && header[7] == "Last error" && header[8] == "PLC data",
               string.Join(" | ", header));
         Check("  every column as wide as what it holds (no fixed widths)",
               table != null && table.ColumnStyles.Cast<ColumnStyle>().All(cs => cs.SizeType == SizeType.AutoSize));
