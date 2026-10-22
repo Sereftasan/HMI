@@ -771,6 +771,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Visible>false</Visible>
     </None>
+    <None Include="..\KabanHMI\TranslationUses.csv">
+      <Link>TranslationUses.csv</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </None>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -118,8 +118,18 @@ class TF {
               code[1].Line == 6 && code[1].What.StartsWith("status line:"),
               string.Join(" | ", code.Select(u => u.Place + ":" + u.Line + ":" + u.What)));
         TextUses.SourceRoot = () => null;
-        Check("  without the source beside the program: no lines (the rest still)", TextUses.Find("Msg_TestDone").All(u => u.Kind != "Code") && TextUses.Find("Msg_TestDone").Count == 1);
+        var index = Path.Combine(dir, "TranslationUses.csv");
+        TextUses.IndexFile = () => index;
+        Check("  without the source beside the program, nor its list: no lines (the rest still)", TextUses.Find("Msg_TestDone").All(u => u.Kind != "Code") && TextUses.Find("Msg_TestDone").Count == 1);
+        // 22 October: "ship a list of the program's lines" (tools\translation_uses.py)
+        File.WriteAllLines(index, new[] { "Key;File;Line;Kind;Text", "Msg_TestDone;Proj\\Forms\\Main.cs;6;Status;_status.Text = T(\"Msg_TestDone\", \"All done\");",
+                                          "Msg_Other;Proj\\Forms\\Main.cs;9;Text;x" }, new System.Text.UTF8Encoding(true));
+        code = TextUses.Find("Msg_TestDone").Where(u => u.Kind == "Code").ToList();
+        Check("  the list shipped beside it: the key's lines, their kind in the panel's language, the line as it is (its ';' kept)",
+              code.Count == 1 && code[0].Place == "Proj\\Forms\\Main.cs" && code[0].Line == 6 && code[0].What == "status line: _status.Text = T(\"Msg_TestDone\", \"All done\");" &&
+              TextUses.LinesFrom() == "list", string.Join(" | ", code.Select(u => u.Place + ":" + u.Line + ":" + u.What)));
         TextUses.SourceRoot = () => src;
+        Check("  the source there: read from it", TextUses.LinesFrom() == "source" && TextUses.Find("Msg_TestDone").Count(u => u.Kind == "Code") == 2);
 
         using (var f = new TranslationUsesForm("Msg_TestDone", "All done", TextUses.Find("Msg_TestDone")))
         {

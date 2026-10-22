@@ -922,10 +922,10 @@ namespace Kaban.UI.Settings
             _status.Height = 44;
             _status.Padding = new Padding(8, 4, 8, 0);
             _status.ForeColor = Color.FromArgb(70, 76, 86);
-            bool source = !string.IsNullOrEmpty(Kaban.UI.Helpers.TextUses.SourceRoot());
+            bool source = Kaban.UI.Helpers.TextUses.LinesFrom() != null;
             _status.Text = (_uses.Count == 0 ? T("Msg_FndNone", "Not used on a page, in the menu or by an alarm.") + "  "
                                              : T("Msg_FndOpen", "A double click opens a page and points at what uses it.") + "  ") +
-                           (source ? "" : T("Msg_FndNoSource", "The program's lines (message boxes, status lines ...) are listed when the program runs from its build, its source beside it."));
+                           (source ? "" : T("Msg_FndNoSource", "The program's lines (message boxes, status lines ...) are listed from its source or from TranslationUses.csv beside it - neither is here."));
 
             var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
             var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, Height = 44, Padding = new Padding(6) };

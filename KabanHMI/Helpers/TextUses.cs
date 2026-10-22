@@ -22,8 +22,9 @@ namespace Kaban.UI.Helpers
     ///     a tooltip ...), or that show its text without a key of their own - with the way to
     ///     the page, to open it and point at the control (the PLC Monitor's Find's);
     ///   - the alarms it is the text of;
-    ///   - the program's lines naming it - message boxes, status lines, tables' headings - when
-    ///     the program runs from its build (the source beside it).
+    ///   - the program's lines naming it - message boxes, status lines, tables' headings: read
+    ///     from the source when the program runs from its build, else from the list shipped with
+    ///     it (TranslationUses.csv, made by tools\translation_uses.py with each batch).
     /// The pages are built once, off-screen, at the first search (a moment), and kept.
     /// </summary>
     public static class TextUses
@@ -255,12 +256,24 @@ namespace Kaban.UI.Helpers
         private sealed class SourceFile { public DateTime Stamp; public string[] Lines; }
         private static readonly Dictionary<string, SourceFile> _files = new Dictionary<string, SourceFile>(StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>The list of the program's lines shipped beside it (a panel without the source). Replaceable for the tests.</summary>
+        public static Func<string> IndexFile = () => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TranslationUses.csv");
+
+        /// <summary>Where the program's lines come from now: "source", "list" (the shipped one) or null (neither).</summary>
+        public static string LinesFrom()
+        {
+            var root = SourceRoot();
+            if (!string.IsNullOrEmpty(root) && Directory.Exists(root)) return "source";
+            var index = IndexFile();
+            return !string.IsNullOrEmpty(index) && File.Exists(index) ? "list" : null;
+        }
+
         /// <summary>Every line of the program naming the key ("Btn_Ok" in quotes), what kind of text it is.</summary>
         public static List<Use> InCode(string key)
         {
             var list = new List<Use>();
             var root = SourceRoot();
-            if (string.IsNullOrEmpty(root) || !Directory.Exists(root)) return list;
+            if (string.IsNullOrEmpty(root) || !Directory.Exists(root)) return FromIndex(key);
             string quoted = "\"" + key + "\"";
             foreach (var path in SourceFiles(root))
             {
@@ -273,10 +286,51 @@ namespace Kaban.UI.Helpers
                     list.Add(new Use
                     {
                         Kind = KindCode, Place = MakeRelative(root, path), Line = i + 1,
-                        What = KindOfLine(lines, i) + ": " + (line.Length > 180 ? line.Substring(0, 177) + "..." : line)
+                        What = KindText(KindOfLine(lines, i)) + ": " + (line.Length > 180 ? line.Substring(0, 177) + "..." : line)
                     });
                 }
             }
+            return list;
+        }
+
+        private sealed class IndexLine { public string File, Kind, Text; public int Line; }
+        private static Dictionary<string, List<IndexLine>> _byKey;
+        private static string _indexRead;
+        private static DateTime _indexStamp;
+
+        /// <summary>The key's lines as the shipped list has them (Key;File;Line;Kind;Text - the text the rest of the line).</summary>
+        private static List<Use> FromIndex(string key)
+        {
+            var list = new List<Use>();
+            var path = IndexFile();
+            if (string.IsNullOrEmpty(path) || !File.Exists(path)) return list;
+            try
+            {
+                lock (_lock)
+                {
+                    var stamp = File.GetLastWriteTimeUtc(path);
+                    if (_byKey == null || _indexRead != path || _indexStamp != stamp)
+                    {
+                        _byKey = new Dictionary<string, List<IndexLine>>(StringComparer.OrdinalIgnoreCase);
+                        foreach (var l in File.ReadAllLines(path).Skip(1))
+                        {
+                            var f = l.Split(';');
+                            int n;
+                            if (f.Length < 5 || !int.TryParse(f[2], NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) continue;
+                            List<IndexLine> of;
+                            if (!_byKey.TryGetValue(f[0].Trim(), out of)) _byKey[f[0].Trim()] = of = new List<IndexLine>();
+                            of.Add(new IndexLine { File = f[1], Line = n, Kind = f[3], Text = string.Join(";", f.Skip(4)) });
+                        }
+                        _indexRead = path;
+                        _indexStamp = stamp;
+                    }
+                    List<IndexLine> lines;
+                    if (_byKey.TryGetValue((key ?? "").Trim(), out lines))
+                        foreach (var l in lines)
+                            list.Add(new Use { Kind = KindCode, Place = l.File, Line = l.Line, What = KindText(l.Kind) + ": " + l.Text });
+                }
+            }
+            catch { }
             return list;
         }
 
@@ -321,17 +375,34 @@ namespace Kaban.UI.Helpers
             return path.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? path.Substring(root.Length).TrimStart('\\', '/') : path;
         }
 
-        /// <summary>What a program line shows the text as: a message, the status line, a heading, a tooltip, a menu entry - a text.</summary>
+        /// <summary>
+        /// What a program line shows the text as: Message (a message box), Status (the status line),
+        /// Heading (a table's), Tooltip, Menu (an entry) - else Text. tools\translation_uses.py does the same.
+        /// </summary>
         internal static string KindOfLine(string[] lines, int at)
         {
             // the statement may begin a line or two above (a long call broken over lines)
             var text = string.Join(" ", lines.Skip(Math.Max(0, at - 2)).Take(Math.Min(3, at + 1)));
-            if (Regex.IsMatch(text, @"MessageBox\.Show|Ask\.(Tell|YesNo|Text)|\.Tell\(")) return LanguageManager.GetString("Fnd_Message", "message box");
-            if (Regex.IsMatch(text, @"SetStatus|_status\.Text|Status\s*\(")) return LanguageManager.GetString("Fnd_Status", "status line");
-            if (lines[at].Contains("HeaderText")) return LanguageManager.GetString("Fnd_ColHeading", "table heading");
-            if (Regex.IsMatch(lines[at], @"SetTip|ToolTip|Tip_")) return LanguageManager.GetString("Fnd_Tooltip", "tooltip");
-            if (Regex.IsMatch(lines[at], @"ToolStripMenuItem|Item\(")) return LanguageManager.GetString("Fnd_MenuEntry", "menu entry");
-            return LanguageManager.GetString("Fnd_TextOf", "text");
+            if (Regex.IsMatch(text, @"MessageBox\.Show|Ask\.(Tell|YesNo|Text)|\.Tell\(")) return "Message";
+            if (Regex.IsMatch(text, @"SetStatus|_status\.Text|Status\s*\(")) return "Status";
+            if (lines[at].Contains("HeaderText")) return "Heading";
+            if (Regex.IsMatch(lines[at], @"SetTip|ToolTip|Tip_|ToolButton\(")) return "Tooltip";
+            if (Regex.IsMatch(lines[at], @"ToolStripMenuItem|Item\(")) return "Menu";
+            return "Text";
+        }
+
+        /// <summary>A line's kind in the panel's language.</summary>
+        internal static string KindText(string kind)
+        {
+            switch (kind)
+            {
+                case "Message": return LanguageManager.GetString("Fnd_Message", "message box");
+                case "Status": return LanguageManager.GetString("Fnd_Status", "status line");
+                case "Heading": return LanguageManager.GetString("Fnd_ColHeading", "table heading");
+                case "Tooltip": return LanguageManager.GetString("Fnd_Tooltip", "tooltip");
+                case "Menu": return LanguageManager.GetString("Fnd_MenuEntry", "menu entry");
+                default: return LanguageManager.GetString("Fnd_TextOf", "text");
+            }
         }
     }
 }

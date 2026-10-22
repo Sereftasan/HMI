@@ -47,6 +47,8 @@
   AxisJogBar is also shown by the program above the Manual Movement tabs and on the Axis Monitor.
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand).
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
+- The program's lines naming each translation key (HMI Settings > Translation, "Where is it used?" on a panel without
+  the source): `tools\translation_uses.py` -> `KabanHMI\TranslationUses.csv`, made again in every batch.
 
 ## Open questions (answer here or in a message)
 1. The back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are on the rows' **back** side - is any of
