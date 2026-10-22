@@ -113,48 +113,146 @@ class TA {
               File.ReadAllText(AlarmAiPrompt.LastSaved).StartsWith("# Translate the missing texts"), AlarmAiPrompt.LastSaved);
         Check("  the chat's first message: what the file is", AlarmAiPrompt.KickOff(AlarmAiPrompt.Subject.Translation, "x.txt").Contains("translation files"));
 
-        Console.WriteLine("--- the AI's answer imported ---");
+        Console.WriteLine("--- the AI's answer imported: the empty cells at once, the changes confirmed ---");
+        // 22 October: "apply the AI translations to the file with a confirmation system for the changes of any cell -
+        // only the empty cells should be copied to the translation file directly"
+        var original = new[] { File.ReadAllText(common), File.ReadAllText(main), File.ReadAllText(alarms) };
+        TranslationReviewForm shownForm = null;
+        Func<TranslationReviewForm, bool> answerWith = null;
+        TranslationReviewForm.Hook = f => { shownForm = f; return answerWith(f); };
         var answer = string.Join("\r\n", new[] {
             "Here are the files.", "", "### CommonTranslations.csv", "```csv", "Key;EN;TR;RU;Note",
             "Lbl_Speed;;Hız;;the label's usual word", "Msg_Saved;;Kaydedildi.;;placeholder forgotten", "Btn_Ok;;Tamam;;", "```", "",
             "**MAIN_Translations.csv**", "```csv", "Key;EN;TR;RU;FR;Note",
             "Unit_Clamp;;Kıskaç;\"Zazhim; tiski\";Pince;the clamp of a profile", "Nope_Key;;x;;;", "```",
             "Btn_Stop could mean both files - here it is without a name:", "```", "Key;TR", "Btn_Stop;Durdur", "```", "Tell me if you want more." });
+        string okText = null, before = null;
+        List<TranslationReviewForm.Item> items = null;
+        answerWith = f =>
+        {
+            items = ((List<TranslationReviewForm.Item>)Get(f, "Items")).ToList();
+            okText = (string)Get(f, "OkText");
+            before = string.Join(" | ", items.Select(x => x.Row.Key + " " + x.Lang + " " + x.Now + ">" + x.New + " " + x.Take + " " + x.Why));
+            f.Show(); Application.DoEvents();
+            Call(f, "Tick", 1, false);                                              // RU: not taken
+            ((DataGridView)Get(f, "Grid")).Rows[0].Cells["New"].Value = "Kıskaç (profil)";   // TR: corrected, taken
+            return true;
+        };
         var r = Call(c, "ImportAnswer", new List<KeyValuePair<string, string>> { Src(null, answer) });
-        int typed = (int)Get(r, "Typed"), same = (int)Get(r, "Same"), refused = (int)Get(r, "Refused");
         var notFound = (List<string>)Get(r, "NotFound");
         var unknown = (List<string>)Get(r, "Unknown");
-        Check("the answer copied: its three blocks; 3 texts typed, 1 the same, 1 refused (its {0} lost)", (int)Get(r, "Blocks") == 3 && typed == 3 && same == 1 && refused == 1,
-              Get(r, "Blocks") + " " + typed + " " + same + " " + refused);
+        Check("the answer copied: its three blocks - 1 empty cell, 2 changes, 1 the same, 1 refused (its {0} lost)",
+              (int)Get(r, "Blocks") == 3 && (int)Get(r, "Filled") == 1 && (int)Get(r, "Changed") == 2 && (int)Get(r, "Same") == 1 && (int)Get(r, "Refused") == 1,
+              Get(r, "Blocks") + " " + Get(r, "Filled") + " " + Get(r, "Changed") + " " + Get(r, "Same") + " " + Get(r, "Refused"));
+        Check("  the changes to confirm: each with now, new and the AI's note - ticked; the button counts what is written",
+              before == "Unit_Clamp TR Kiskac>Kıskaç True AI: the clamp of a profile | Unit_Clamp RU Zazhim>Zazhim, tiski True AI: the clamp of a profile" &&
+              okText == "Write: 1 empty cell(s) + 2 change(s) ticked", okText + " / " + before);
+        Check("  one unticked, one corrected in its cell: the button says 1 + 1", (string)Get(shownForm, "OkText") == "Write: 1 empty cell(s) + 1 change(s) ticked",
+              (string)Get(shownForm, "OkText"));
         Check("  a key the table has not, a key of two files without the file's name: left out", notFound.Contains("Nope_Key") && notFound.Any(n => n.StartsWith("Btn_Stop")),
               string.Join(", ", notFound));
         Check("  a language the table has not: said", unknown.SequenceEqual(new[] { "FR" }), string.Join(",", unknown));
-        Check("  typed, not saved: orange until Save, the files as they were", (int)Get(c, "PendingCount") == 3 && LanguageManager.GetStringIn("TR", "Lbl_Speed") != "Hız" &&
-              File.ReadAllLines(common).Contains("Lbl_Speed;Speed;;Skorost"));
-        var rows = (List<TranslationEdits.Row>)Get(c, "_rows");
-        Func<string, string, TranslationEdits.Row> rowOf = (o, k) => rows.First(x => x.Owner == o && x.Key == k);
-        var tip = (string)Call(c, "TipOf", rowOf("MAIN", "Unit_Clamp"), "RU");
-        Check("  its cell's tooltip: the AI's note, the file's text", tip == "AI: the clamp of a profile\r\nIn the file: Zazhim", tip);
-        Check("  a ';' in a text (quoted): made a ','", Convert.ToString(grid.Rows[Shown(c).ToList().FindIndex(x => x.Key == "Unit_Clamp")].Cells["L_RU"].Value) == "Zazhim, tiski");
-        var report = (string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r });
-        Check("  the report: typed, the same, refused (which), left out, the language to add", report.Contains("3 text(s) of the AI typed") && report.Contains("Msg_Saved TR: {0}") &&
-              report.Contains("Nope_Key") && report.Contains("FR"), report);
-        Call(c, "Save");
-        Check("Save: written into their files", File.ReadAllLines(common).Contains("Lbl_Speed;Speed;Hız;Skorost") && File.ReadAllLines(main).Contains("Unit_Clamp;Clamp;Kıskaç;Zazhim, tiski") &&
-              TranslationEdits.History().Count == 3 && (int)Get(c, "PendingCount") == 0 && Call(c, "TipOf", rowOf("MAIN", "Unit_Clamp"), "RU") == null,
-              string.Join("|", File.ReadAllLines(main)));
+        var hist = TranslationEdits.History();
+        Check("written: the empty cell and the change taken (corrected) - not the one unticked; the history says the AI",
+              File.ReadAllLines(common).Contains("Lbl_Speed;Speed;Hız;Skorost") && File.ReadAllLines(main).Contains("Unit_Clamp;Clamp;Kıskaç (profil);Zazhim") &&
+              LanguageManager.GetStringIn("TR", "Lbl_Speed") == "Hız" && hist.Count == 2 && hist.All(h => h.User == "maint (AI)") && (int)Get(c, "PendingCount") == 0,
+              string.Join("|", File.ReadAllLines(main)) + " / " + string.Join(", ", hist.Select(h => h.User + " " + h.Key)));
+        var report = (string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r, false });
+        Check("  the report: written, the same, refused (which), left out, the language to add", report.Contains("1 empty cell(s) filled, 1 of 2 change(s) taken") &&
+              report.Contains("Msg_Saved TR: {0}") && report.Contains("Nope_Key") && report.Contains("FR"), report);
 
-        Console.WriteLine("--- its files imported ---");
-        var file = Path.Combine(dir, "MAIN_Translations (1).csv");
-        File.WriteAllText(file, "\uFEFFKey;TR;RU;Note\r\nBtn_Stop;Üniteyi durdur;;the unit's stop\r\nRef_Home;Referans;Referens;\r\n");
-        r = Call(c, "ImportAnswer", new List<KeyValuePair<string, string>> { Src(Path.GetFileName(file), File.ReadAllText(file)) });
-        Check("a file of the AI: its name says whose (MAIN's Btn_Stop, not the common one)", (int)Get(r, "Typed") == 3 &&
-              Call(c, "TipOf", rowOf("MAIN", "Btn_Stop"), "TR") != null && Call(c, "TipOf", rowOf("General", "Btn_Stop"), "TR") == null);
-        Call(c, "Revert");
-        Check("  Revert: thrown away, notes too", (int)Get(c, "PendingCount") == 0 && Call(c, "TipOf", rowOf("MAIN", "Btn_Stop"), "TR") == null);
+        shownForm = null;
+        answerWith = f => false;
+        r = Call(c, "ImportAnswer", new List<KeyValuePair<string, string>> { Src("MAIN_Translations.csv", "Key;TR;RU\r\nRef_Home;Referans;\r\nBtn_Stop;Durdur;\r\n") });
+        Check("the review cancelled: nothing written - not the empty cells either", (bool)Get(r, "Cancelled") && File.ReadAllLines(main).Contains("Ref_Home;Reference;;") &&
+              ((string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r, false })).StartsWith("Cancelled"));
+        shownForm = null;
+        r = Call(c, "ImportAnswer", new List<KeyValuePair<string, string>> { Src("MAIN_Translations.csv", "Key;RU\r\nRef_Home;Referens\r\n") });
+        Check("only empty cells: written at once, nothing to confirm", shownForm == null && (int)Get(r, "Filled") == 1 && File.ReadAllLines(main).Contains("Ref_Home;Reference;;Referens"),
+              string.Join("|", File.ReadAllLines(main)));
         r = Call(c, "ImportAnswer", new List<KeyValuePair<string, string>> { Src(null, "Sorry, I cannot do that.") });
         Check("nothing like a translation file: said so", (int)Get(r, "Blocks") == 0 &&
-              ((string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r })).StartsWith("Nothing to import"));
+              ((string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r, false })).StartsWith("Nothing to import"));
+        var importMenu = (ContextMenuStrip)Call(c, "ImportMenu");
+        Check("📥: an older installation, translation files, the AI's answer (files, copied) - the 🤖 menu imports nothing",
+              importMenu.Items.OfType<ToolStripMenuItem>().Count() == 4 && !menu.Items.OfType<ToolStripMenuItem>().Any(i => i.Text.Contains("Import")),
+              string.Join(" / ", importMenu.Items.OfType<ToolStripMenuItem>().Select(i => i.Text)));
+
+        Console.WriteLine("--- an older installation's translations ---");
+        // 22 October: "the user's translation file is in the previously created folder ... import the language titles from the
+        // file and only the available translation keys - the older file might have unused keys"
+        TranslationEdits.ProgramFolder = dir;
+        var old = Path.Combine(dir, "older"); var oldBin = Path.Combine(old, "bin", "Debug"); Directory.CreateDirectory(oldBin);
+        File.WriteAllLines(Path.Combine(oldBin, "CommonTranslations.csv"), new[] { "Key;EN;TR;RU;PL", "Btn_Ok;OK;Tamam;OK;OK", "Btn_Stop;Stop;Durdur;Stop;Stop",
+                                                                                "Old_Gone;Gone;Yok;;", "Msg_Saved;{0} saved.;{0} kaydedildi.;{0} sokhraneno.;{0} zapisano." });
+        File.WriteAllLines(Path.Combine(oldBin, "Translations.csv"), new[] { "Key;EN;TR;RU", "Unit_Clamp;Clamp;Mengene;Zazhim", "Btn_Stop;Stop the unit;Üniteyi durdur;Ostanovit",
+                                                                          "Ref_Home;Reference;Referans;" });
+        File.WriteAllText(Path.Combine(oldBin, "Alarms.json"), original[2].Replace("Kapi acik", "Kapı açık"));
+        // this panel's history: the older installation's Btn_Stop (MAIN) was typed here
+        File.AppendAllText(TranslationEdits.HistoryFile, "2026-10-20 10:00:00;op1;MAIN;Btn_Stop;TR;Uniteyi durdur;Üniteyi durdur\r\n");
+        string asked = null;
+        Kaban.UI.Profiles.Ask.Hook = (title, prompt, initial) => { told = prompt; if (prompt.Contains("languages this program has not")) asked = prompt; return "yes"; };
+        answerWith = f => { items = ((List<TranslationReviewForm.Item>)Get(f, "Items")).ToList(); okText = (string)Get(f, "OkText"); return true; };
+        r = Call(c, "ImportFolder", old);
+        Check("the install's root picked: its files found under it (bin\\Debug)", (int)Get(r, "Blocks") == 3, Get(r, "Blocks") + "");
+        Check("  a language it has that this one has not: asked, added with its name", asked != null && asked.Contains("PL (Polish)") &&
+              ((List<string>)Get(r, "Added")).SequenceEqual(new[] { "PL" }) && grid.Columns.Contains("L_PL") && TranslationEdits.NameOf("PL") == "Polish", asked);
+        Check("  its key no longer used: left out", (int)Get(r, "OldKeys") == 1 && !File.ReadAllText(common).Contains("Old_Gone"));
+        Func<string, string, TranslationReviewForm.Item> itemOf = (k, l) => items.FirstOrDefault(x => x.Row.Key == k && x.Lang == l && (k != "Btn_Stop" || x.Row.Owner == "MAIN"));
+        Check("  the changes: ticked only what this panel's history says was typed here (who, when)",
+              items.Count == 4 && itemOf("Btn_Stop", "TR").Take && itemOf("Btn_Stop", "TR").Why.StartsWith("entered on the panel: op1") &&
+              !itemOf("Unit_Clamp", "TR").Take && itemOf("Unit_Clamp", "TR").Why == "not entered on this panel" && !itemOf("Alarm_MAIN.Door", "TR").Take &&
+              items.Count(x => x.Row.Key == "Btn_Stop" && x.Row.Owner == "General" && !x.Take) == 1,
+              string.Join(" | ", items.Select(x => x.Row.Owner + "/" + x.Row.Key + " " + x.Lang + " " + x.Now + ">" + x.New + " " + x.Take + " " + x.Why)));
+        Check("  written: the empty cells (PL, RU, TR) and the ticked change - the others as they were",
+              File.ReadAllLines(main).Contains("Btn_Stop;Stop the unit;Üniteyi durdur;Ostanovit") && File.ReadAllLines(main).Contains("Unit_Clamp;Clamp;Kıskaç (profil);Zazhim") &&
+              File.ReadAllLines(main).Contains("Ref_Home;Reference;Referans;Referens") && File.ReadAllLines(common)[0] == "Key;EN;TR;RU;PL" &&
+              File.ReadAllLines(common).Contains("Btn_Stop;Stop;Dur;Stop;Stop") && File.ReadAllLines(common).Contains("Msg_Saved;{0} saved.;{0} kaydedildi.;{0} sokhraneno.;{0} zapisano.") &&
+              File.ReadAllText(alarms).Contains("Kapi acik") && TranslationEdits.History().Last().User == "maint (import)",
+              string.Join("|", File.ReadAllLines(common)) + " // " + string.Join("|", File.ReadAllLines(main)));
+        r = Call(c, "ImportFolder", Path.Combine(dir, "AI prompts"));
+        Check("a folder without this program's files: said so", (bool)Get(r, "NoFiles") &&
+              ((string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r, false })).StartsWith("No translation file"));
+
+        Console.WriteLine("--- translation files picked ---");
+        var other = Path.Combine(dir, "other"); Directory.CreateDirectory(other);
+        File.WriteAllLines(Path.Combine(other, "Translations.csv"), new[] { "Key;EN;TR", "Ref_Home;Reference;Referans noktası", "No_More;x;y" });
+        File.WriteAllText(Path.Combine(other, "Alarms.json"), original[2].Replace("Kapi acik", "Kapı açık!"));
+        answerWith = f => { items = ((List<TranslationReviewForm.Item>)Get(f, "Items")).ToList(); return true; };
+        r = Call(c, "ImportFiles", new List<string> { Path.Combine(other, "Translations.csv"), Path.Combine(other, "Alarms.json") });
+        Check("a Translations.csv (its folder no machine's: the main machine's), an Alarms.json - by key, by the alarm's TagCode",
+              items.Count == 2 && items.Any(x => x.Row.Key == "Ref_Home" && x.New == "Referans noktası" && !x.Take) && items.Any(x => x.Row.Key == "Alarm_MAIN.Door" && x.New == "Kapı açık!") &&
+              (int)Get(r, "OldKeys") == 1, string.Join(" | ", items.Select(x => x.Row.Key + " " + x.New)));
+
+        Console.WriteLine("--- the panel's texts into the project's files ---");
+        // 22 October: "a tool to import these translations to the project file with a confirmation system of the user entry translations"
+        var proj = Path.Combine(dir, "project"); Directory.CreateDirectory(proj);
+        string pCommon = Path.Combine(proj, "CommonTranslations.csv"), pMain = Path.Combine(proj, "Translations.csv"), pAlarms = Path.Combine(proj, "Alarms.json");
+        File.WriteAllText(pCommon, original[0]);
+        File.WriteAllText(pMain, original[1].Replace("Ref_Home;Reference;;", "Ref_Home;Reference point;;"));     // the developer's newer English
+        File.WriteAllText(pAlarms, original[2]);
+        var programFiles = new[] { File.ReadAllText(common), File.ReadAllText(main), File.ReadAllText(alarms) };
+        int historyBefore = TranslationEdits.History().Count;
+        TranslationEdits.ProjectFileOf = x => x.Common ? pCommon : x.File == "Alarms.json" ? pAlarms : pMain;
+        answerWith = f => { items = ((List<TranslationReviewForm.Item>)Get(f, "Items")).ToList(); okText = (string)Get(f, "OkText"); return true; };
+        r = Call(c, "IntoProject");
+        Check("the changes: the texts entered on this panel ticked, the project's newer one not",
+              itemOf("Unit_Clamp", "TR") != null && itemOf("Unit_Clamp", "TR").Take && itemOf("Unit_Clamp", "TR").Now == "Kiskac" &&
+              itemOf("Btn_Stop", "TR") != null && itemOf("Btn_Stop", "TR").Take && itemOf("Ref_Home", "EN") != null && !itemOf("Ref_Home", "EN").Take &&
+              itemOf("Ref_Home", "EN").Why.Contains("project's may be newer") && okText.StartsWith("Write into the project:"),
+              okText + " / " + string.Join(" | ", items.Select(x => x.Row.Key + " " + x.Lang + " " + x.Now + ">" + x.New + " " + x.Take)));
+        Check("  written into the project: the empty cells and the ticked - its newer text kept",
+              File.ReadAllLines(pMain).Contains("Unit_Clamp;Clamp;Kıskaç (profil);Zazhim") && File.ReadAllLines(pMain).Contains("Ref_Home;Reference point;Referans;Referens") &&
+              File.ReadAllLines(pCommon)[0] == "Key;EN;TR;RU;PL" && File.ReadAllLines(pCommon).Contains("Lbl_Speed;Speed;Hız;Skorost") &&
+              File.ReadAllLines(pMain).Contains("Btn_Stop;Stop the unit;Üniteyi durdur;Ostanovit"),
+              string.Join("|", File.ReadAllLines(pMain)) + " // " + string.Join("|", File.ReadAllLines(pCommon)));
+        Check("  the program's own files and its history untouched", File.ReadAllText(common) == programFiles[0] && File.ReadAllText(main) == programFiles[1] &&
+              File.ReadAllText(alarms) == programFiles[2] && TranslationEdits.History().Count == historyBefore);
+        TranslationEdits.ProjectFileOf = x => null;
+        r = Call(c, "IntoProject");
+        Check("not run from its build (no project): said so", (bool)Get(r, "NoFiles") &&
+              ((string)typeof(TranslationsControl).GetMethod("Report", Any).Invoke(null, new[] { r, true })).StartsWith("The project's files are not found"));
+        TranslationReviewForm.Hook = null;
 
         Console.WriteLine("--- a filter: the part asked about ---");
         var owner = (ComboBox)typeof(TranslationsControl).GetField("_owner", Any).GetValue(c);

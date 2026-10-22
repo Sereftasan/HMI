@@ -129,6 +129,15 @@ namespace Kaban.UI.Controls
             return true;
         }
 
+        /// <summary>The text's picture as an image px across (a menu entry's picture); null when it has none.</summary>
+        public static Image Image(string text, int px)
+        {
+            if (!Has(text) || px <= 0) return null;
+            var b = new Bitmap(px, px);
+            using (var g = Graphics.FromImage(b)) Draw(g, new Rectangle(0, 0, px, px), text, true, px);
+            return b;
+        }
+
         /// <summary>Grey, 40 % strong: the look of a disabled button's text.</summary>
         private static ImageAttributes Faint()
         {

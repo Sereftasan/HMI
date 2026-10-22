@@ -234,7 +234,7 @@ namespace Kaban.Core.Helpers
             return history.Count;
         }
 
-        /// <summary>A row's text in a language written into its file and the project's copy (false: neither could take it).</summary>
+        /// <summary>A row's text in a language written into its file (false: no file could take it).</summary>
         private static bool Write(Row row, string lang, string text)
         {
             var w = new Writes();
@@ -242,10 +242,35 @@ namespace Kaban.Core.Helpers
             return w.Flush()[0];
         }
 
+        /// <summary>The program's folder - where its translation files are (the tests: theirs).</summary>
+        public static string ProgramFolder = AppDomain.CurrentDomain.BaseDirectory;
+
+        /// <summary>
+        /// The file a row's texts are in, and an alarm's TagCode (its entry in that Alarms.json):
+        /// the file it was read from (the common texts read from the program's own copy: the one
+        /// beside the program). Null: none known.
+        /// </summary>
+        public static string FileOf(Row row, out string tagCode)
+        {
+            tagCode = null;
+            if (row == null) return null;
+            if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(row.Path))
+                return AlarmDefinitionLoader.FileOf(row.Key, out tagCode);
+            if (!string.IsNullOrEmpty(row.Path)) return row.Path;
+            if (row.Common)
+            {
+                var beside = System.IO.Path.Combine(ProgramFolder ?? "", "CommonTranslations.csv");
+                if (File.Exists(beside)) return beside;
+            }
+            return null;
+        }
+
         /// <summary>
         /// The texts of a Save written file by file - each file read and written once, however many of
-        /// its keys changed (a language's texts copied into all of them): a row's file and the
-        /// project's copy of it; an alarm's text into the Alarms.json it was read from.
+        /// its keys changed (a language's texts copied into all of them): a row's file; an alarm's text
+        /// into the Alarms.json it was read from (and its entry loaded). The project's copy is not
+        /// written (22 October: the project's files take the panel's texts through the page's tool,
+        /// each one confirmed - WriteIntoProject).
         /// </summary>
         private sealed class Writes
         {
@@ -257,36 +282,41 @@ namespace Kaban.Core.Helpers
             {
                 var done = new List<Func<bool>>();
                 _changes.Add(done);
-                string project = null;
-                try { project = ProjectFileOf != null ? ProjectFileOf(row) : null; } catch { }
                 if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && string.IsNullOrEmpty(row.Path))
                 {
                     string tag;
                     var file = AlarmDefinitionLoader.SetLoadedTranslation(row.Key, lang, text, out tag);
-                    if (string.IsNullOrEmpty(tag)) return;
-                    var files = new[] { file, SamePath(project, file) ? null : project };
-                    foreach (var f in files)
-                    {
-                        if (string.IsNullOrEmpty(f)) continue;
-                        var item = new AlarmDefinitionLoader.TextItem { TagCode = tag, Lang = lang, Text = text };
-                        Of(_json, f).Add(item);
-                        done.Add(() => item.Written);
-                    }
+                    if (string.IsNullOrEmpty(tag) || string.IsNullOrEmpty(file)) return;
+                    var item = new AlarmDefinitionLoader.TextItem { TagCode = tag, Lang = lang, Text = text };
+                    Of(_json, file).Add(item);
+                    done.Add(() => item.Written);
                     return;
                 }
-                string path = row.Path;
-                if (string.IsNullOrEmpty(path) && row.Common)
+                string unused;
+                var path = FileOf(row, out unused);
+                if (string.IsNullOrEmpty(path)) return;
+                var csv = new TranslationFiles.Item { Key = row.Key, Lang = lang, Text = text };
+                Of(_csv, path).Add(csv);
+                done.Add(() => csv.Written);
+            }
+
+            /// <summary>Into another copy of the files (the project's): a CSV's text, an alarm's by its TagCode.</summary>
+            public void AddTo(string path, Row row, string tagCode, string lang, string text)
+            {
+                var done = new List<Func<bool>>();
+                _changes.Add(done);
+                if (string.IsNullOrEmpty(path)) return;
+                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
-                    // the common texts read from the program's own copy (no file beside it): the file there
-                    var beside = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommonTranslations.csv");
-                    if (File.Exists(beside)) path = beside;
+                    if (string.IsNullOrEmpty(tagCode)) return;
+                    var item = new AlarmDefinitionLoader.TextItem { TagCode = tagCode, Lang = lang, Text = text };
+                    Of(_json, path).Add(item);
+                    done.Add(() => item.Written);
                 }
-                var paths = new[] { path, SamePath(project, path) ? null : project };
-                foreach (var f in paths)
+                else
                 {
-                    if (string.IsNullOrEmpty(f)) continue;
                     var item = new TranslationFiles.Item { Key = row.Key, Lang = lang, Text = text };
-                    Of(_csv, f).Add(item);
+                    Of(_csv, path).Add(item);
                     done.Add(() => item.Written);
                 }
             }
@@ -307,6 +337,131 @@ namespace Kaban.Core.Helpers
                 foreach (var kv in _json) AlarmDefinitionLoader.SetTranslationsInFile(kv.Key, kv.Value);
                 return _changes.Select(c => c.Any(ok => ok())).ToList();
             }
+        }
+
+        // ---- other copies of the files: an older installation's, the project's ----------------
+
+        /// <summary>Other copies of the files read once: a CSV's key - language - text, an Alarms.json's TagCode - language - text.</summary>
+        public sealed class FileCache
+        {
+            private readonly Dictionary<string, Dictionary<string, Dictionary<string, string>>> _read =
+                new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+            private readonly Dictionary<string, List<string>> _languages = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+            public Dictionary<string, Dictionary<string, string>> Of(string path)
+            {
+                Dictionary<string, Dictionary<string, string>> d;
+                if (_read.TryGetValue(path, out d)) return d;
+                List<string> langs;
+                if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                {
+                    d = AlarmDefinitionLoader.TranslationsInFile(path);
+                    langs = d.Values.SelectMany(t => t.Keys).Select(l => l.ToUpperInvariant()).Distinct().ToList();
+                }
+                else d = TranslationFiles.Read(path, out langs);
+                _read[path] = d;
+                _languages[path] = langs;
+                return d;
+            }
+
+            /// <summary>The languages a file has (a CSV's heading, an Alarms.json's texts).</summary>
+            public List<string> LanguagesOf(string path) { Of(path); return _languages[path]; }
+
+            /// <summary>A row's texts in that copy (null: the copy has not the key).</summary>
+            public Dictionary<string, string> TextsOf(string path, Row row, string tagCode)
+            {
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
+                Dictionary<string, string> t;
+                return Of(path).TryGetValue(path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) ? tagCode ?? "" : row.Key, out t) ? t : null;
+            }
+        }
+
+        /// <summary>
+        /// A row's file in an older installation's folder: the same place under it as the file
+        /// has under the program's folder (CommonTranslations.csv, H500\Translations.csv,
+        /// Alarms.json ...); null when that folder has none.
+        /// </summary>
+        public static string OldFileOf(Row row, string oldFolder, out string tagCode)
+        {
+            var file = FileOf(row, out tagCode);
+            if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(oldFolder)) return null;
+            string rel;
+            try
+            {
+                var full = System.IO.Path.GetFullPath(file);
+                var root = System.IO.Path.GetFullPath(ProgramFolder ?? "").TrimEnd('\\', '/') + System.IO.Path.DirectorySeparatorChar;
+                rel = full.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? full.Substring(root.Length) : System.IO.Path.GetFileName(full);
+            }
+            catch { rel = System.IO.Path.GetFileName(file); }
+            var old = System.IO.Path.Combine(oldFolder, rel);
+            return File.Exists(old) ? old : null;
+        }
+
+        /// <summary>
+        /// Where an older installation's translation files are under a folder picked: the folder of
+        /// its CommonTranslations.csv nearest the top (the install's root picked as often as its
+        /// bin\Debug); the folder itself when none.
+        /// </summary>
+        public static string OldProgramFolder(string picked)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(picked) || !Directory.Exists(picked)) return picked;
+                if (File.Exists(System.IO.Path.Combine(picked, "CommonTranslations.csv"))) return picked;
+                var hit = Directory.GetFiles(picked, "CommonTranslations.csv", SearchOption.AllDirectories)
+                                   .Where(f => !f.Split('\\', '/').Any(part => part.Equals("obj", StringComparison.OrdinalIgnoreCase)))
+                                   .OrderBy(f => f.Count(ch => ch == '\\' || ch == '/')).FirstOrDefault();
+                return hit != null ? System.IO.Path.GetDirectoryName(hit) : picked;
+            }
+            catch { return picked; }
+        }
+
+        /// <summary>A row's file in the project (the program run from its build), its alarm's TagCode; null: none.</summary>
+        public static string ProjectFileFor(Row row, out string tagCode)
+        {
+            FileOf(row, out tagCode);
+            try { return ProjectFileOf != null ? ProjectFileOf(row) : null; } catch { return null; }
+        }
+
+        /// <summary>
+        /// Texts written into the PROJECT's files (HMI Settings > Translation, "Into the project's
+        /// files", each one confirmed; 22 October: "a tool to import these translations to the project
+        /// file with a confirmation system of the user entry translations"): a CSV's line, an
+        /// Alarms.json's entry, in place. The program's own files and its history are not touched.
+        /// The number written.
+        /// </summary>
+        public static int WriteIntoProject(IEnumerable<Wanted> wanted)
+        {
+            var writes = new Writes();
+            int asked = 0;
+            var names = new List<string>();
+            foreach (var w in wanted ?? Enumerable.Empty<Wanted>())
+            {
+                if (w == null || w.Row == null || string.IsNullOrEmpty(w.Lang)) continue;
+                string tag;
+                var path = ProjectFileFor(w.Row, out tag);
+                writes.AddTo(path, w.Row, tag, w.Lang.Trim().ToUpperInvariant(), Clean(w.Text));
+                asked++;
+                if (names.Count < 5) names.Add(w.Row.Key + " " + w.Lang);
+            }
+            if (asked == 0) return 0;
+            int n = writes.Flush().Count(ok => ok);
+            AuditLogger.Log("translations written into the project's files by " + CurrentUser() + ": " + n + " of " + asked + " (" + string.Join(", ", names) + (asked > 5 ? " ..." : "") + ").");
+            return n;
+        }
+
+        /// <summary>The history's change that put a text into a cell (null: none - not entered on the panel).</summary>
+        public static Change EnteredOnPanel(IList<Change> history, Row row, string lang, string text)
+        {
+            if (history == null || row == null) return null;
+            for (int i = history.Count - 1; i >= 0; i--)
+            {
+                var h = history[i];
+                if (h.Key.Length > 0 && string.Equals(h.Owner, row.Owner, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(h.Key, row.Key, StringComparison.OrdinalIgnoreCase) && string.Equals(h.Lang, lang, StringComparison.OrdinalIgnoreCase))
+                    return h.New == Clean(text) ? h : null;
+            }
+            return null;
         }
 
         private static string DefaultProjectFile(Row row)
@@ -616,6 +771,37 @@ namespace Kaban.Core.Helpers
         {
             public string Key = "", Lang = "", Text = "";
             public bool Written;
+        }
+
+        /// <summary>
+        /// A translation file read: key - language - text (a new line back from \r\n), and its
+        /// heading's languages in their order. Empty when it cannot be read.
+        /// </summary>
+        public static Dictionary<string, Dictionary<string, string>> Read(string path, out List<string> languages)
+        {
+            var all = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+            languages = new List<string>();
+            try
+            {
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return all;
+                var lines = File.ReadAllLines(path, Encoding.UTF8);
+                int head = Array.FindIndex(lines, l => l.Trim().TrimStart('\uFEFF').Length > 0);
+                if (head < 0) return all;
+                var heads = lines[head].TrimStart('\uFEFF').Split(';').Select(h => h.Trim().ToUpperInvariant()).ToList();
+                languages.AddRange(heads.Skip(1).Where(h => h.Length > 0));
+                for (int i = head + 1; i < lines.Length; i++)
+                {
+                    var f = lines[i].Split(';');
+                    var key = f[0].Trim();
+                    if (key.Length == 0 || key.StartsWith("#") || all.ContainsKey(key)) continue;
+                    var texts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                    for (int c = 1; c < f.Length && c < heads.Count; c++)
+                        if (heads[c].Length > 0) texts[heads[c]] = f[c].Trim().Replace("\\r\\n", "\r\n").Replace("\\n", "\n");
+                    all[key] = texts;
+                }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the translation file " + path + ": " + ex.Message); }
+            return all;
         }
 
         /// <summary>False when the file or its key is not there (a key is never added).</summary>

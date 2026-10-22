@@ -78,16 +78,11 @@ namespace Kaban.Core.Helpers
                 Name = "Alarms.json", Kind = "Alarm definitions",
                 Detect = DetectAlarmVersion, Upgrade = UpgradeAlarms
             },
-            new FileKind
-            {
-                Name = "Translations.csv", Kind = "Machine translations",
-                Detect = DetectCsvVersion, Upgrade = UpgradeCsv
-            },
-            new FileKind
-            {
-                Name = "CommonTranslations.csv", Kind = "Common translations",
-                Detect = DetectCsvVersion, Upgrade = UpgradeCsv
-            },
+            // THE TRANSLATION FILES ARE NOT COPIED HERE (22 October: "we should use the Translation
+            // page's import to import the translations from other files, so it won't be done at the
+            // Config Import page"): a whole older file over this program's would bring back its old
+            // texts and keys no longer used. HMI Settings > Translation > Import takes each key's
+            // texts that this program still uses, the empty cells at once, every change confirmed.
             new FileKind
             {
                 Name = "PlcLabels.csv", Kind = "PLC label list",

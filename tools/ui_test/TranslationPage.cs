@@ -158,7 +158,8 @@ class TP {
         AlarmDefinitionLoader.Load(alarms, true, "MAIN");
         Check("  read again: the alarm's texts", LanguageManager.GetStringIn("RU", "Alarm_MAIN.Door") == "Dver otkryta" && LanguageManager.GetStringIn("TR", "Alarm_MAIN.Door") == "Kapi acik!");
 
-        Console.WriteLine("--- run from its build: the project's copy written too ---");
+        // 22 October: the project's files take the panel's texts through 📤 "Into the project's files", each confirmed
+        Console.WriteLine("--- run from its build: Save writes the program's files, not the project's ---");
         var proj = Path.Combine(dir, "proj"); Directory.CreateDirectory(proj);
         var projCommon = Path.Combine(proj, "CommonTranslations.csv"); File.Copy(common, projCommon);
         var projAlarms = Path.Combine(proj, "Alarms.json"); File.Copy(alarms, projAlarms);
@@ -166,8 +167,8 @@ class TP {
         Call(c, "Type", row("Btn_Ok"), "TR", "Tamam!");
         Call(c, "Type", row("Alarm_MAIN.Door"), "EN", "The door is open");
         Call(c, "Save");
-        Check("the program's file and the project's", File.ReadAllLines(common).Contains("Btn_Ok;OK;Tamam!;OK") && File.ReadAllLines(projCommon).Contains("Btn_Ok;OK;Tamam!;OK") &&
-              File.ReadAllText(alarms).Contains("\"EN\": \"The door is open\"") && File.ReadAllText(projAlarms).Contains("\"EN\": \"The door is open\""));
+        Check("the program's files only", File.ReadAllLines(common).Contains("Btn_Ok;OK;Tamam!;OK") && File.ReadAllLines(projCommon).Contains("Btn_Ok;OK;Tamam;OK") &&
+              File.ReadAllText(alarms).Contains("\"EN\": \"The door is open\"") && File.ReadAllText(projAlarms).Contains("\"EN\": \"Door open\""));
         TranslationEdits.ProjectFileOf = r => null;
 
         Console.WriteLine("--- the first version's edits: written into the files once ---");

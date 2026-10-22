@@ -215,6 +215,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Settings\TranslationLanguageForms.cs" />
+    <Compile Include="Settings\TranslationsControl.Import.cs">
+      <DependentUpon>TranslationsControl.cs</DependentUpon>
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\PlcEndpointNaming.cs" />
     <Compile Include="Controls\GroupBoxHMI.cs">
       <SubType>Component</SubType>

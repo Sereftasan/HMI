@@ -156,6 +156,40 @@ namespace Kaban.Core.Helpers
             return !string.IsNullOrEmpty(file) && SetTranslationInFile(file, tagCode, lang, text);
         }
 
+        /// <summary>The Alarms.json an alarm's text key was read from, and its entry's TagCode (null: no loaded alarm has the key).</summary>
+        public static string FileOf(string key, out string tagCode)
+        {
+            tagCode = null;
+            if (string.IsNullOrWhiteSpace(key)) return null;
+            for (int i = 0; i < _loaded.Count; i++)
+            {
+                string mod = i < _loadedModuleIds.Count ? _loadedModuleIds[i] : "";
+                if (!string.Equals("Alarm_" + ScopedCode(mod, _loaded[i].TagCode), key.Trim(), StringComparison.OrdinalIgnoreCase)) continue;
+                tagCode = _loaded[i].TagCode;
+                return i < _loadedFiles.Count ? _loadedFiles[i] : null;
+            }
+            return null;
+        }
+
+        /// <summary>An Alarms.json's texts: TagCode - language - text (an older installation's, the project's); empty when it cannot be read.</summary>
+        public static Dictionary<string, Dictionary<string, string>> TranslationsInFile(string path)
+        {
+            var all = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) return all;
+                var options = new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true, PropertyNameCaseInsensitive = true };
+                var entries = JsonSerializer.Deserialize<List<AlarmJsonEntry>>(File.ReadAllText(path, System.Text.Encoding.UTF8), options);
+                foreach (var e in entries ?? new List<AlarmJsonEntry>())
+                {
+                    if (e == null || string.IsNullOrWhiteSpace(e.TagCode) || e.Translations == null) continue;
+                    all[e.TagCode.Trim()] = new Dictionary<string, string>(e.Translations, StringComparer.OrdinalIgnoreCase);
+                }
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the alarm texts of " + path + ": " + ex.Message); }
+            return all;
+        }
+
         /// <summary>
         /// An alarm's text changed in the alarms loaded (its key: Alarm_ and the scoped TagCode) - the
         /// Alarms.json it was read from returned for writing (null: no alarm has the key).

@@ -311,3 +311,158 @@ namespace Kaban.UI.Settings
         }
     }
 }
+
+namespace Kaban.UI.Settings
+{
+    /// <summary>
+    /// THE CHANGES TO CONFIRM (HMI Settings > Translation: an import, the AI's answer, the texts
+    /// into the project's files; 22 October: "apply the translations to the file with a
+    /// confirmation system for the changes of any cell - only the empty cells copied directly"):
+    /// each text that would change a cell - its key, whose, the language, the text now, the new
+    /// one (corrected in its cell when wanted), why (the AI's note, who entered it) - ticked to be
+    /// taken. The button says how many are written: the empty cells' and the ticked changes.
+    /// </summary>
+    public class TranslationReviewForm : Form
+    {
+        public sealed class Item
+        {
+            public TranslationEdits.Row Row;
+            public string Lang = "", Now = "", New = "", Why = "";
+            public bool Take;
+        }
+
+        /// <summary>The tests: given the form instead of showing it - true for OK.</summary>
+        public static Func<TranslationReviewForm, bool> Hook;
+
+        private readonly List<Item> _items;
+        private readonly DataGridView _grid = new DataGridView();
+        private readonly Button _ok;
+        private readonly int _direct;
+        private readonly string _okFormat;
+        private bool _filling;
+
+        private static string T(string key, string fallback) { return LanguageManager.GetString(key, fallback); }
+
+        /// <param name="direct">The empty cells written with them (for the button's count).</param>
+        /// <param name="okFormat">The button: {0} the empty cells, {1} the changes ticked.</param>
+        public TranslationReviewForm(string title, string intro, List<Item> items, int direct, string okFormat)
+        {
+            _items = items ?? new List<Item>();
+            _direct = direct;
+            _okFormat = okFormat ?? "{0} + {1}";
+            UiScale.ApplyOnLoad(this);
+            Text = title;
+            StartPosition = FormStartPosition.CenterParent;
+            Size = new Size(1150, 640);
+            MinimumSize = new Size(760, 400);
+            ShowInTaskbar = false;
+            MinimizeBox = false;
+            BackColor = Color.White;
+            Font = UiStyle.Body;
+
+            var top = new Panel { Dock = DockStyle.Top, Height = 74, Padding = new Padding(10, 8, 10, 4) };
+            var text = new Label { Text = intro ?? "", Dock = DockStyle.Fill, ForeColor = Color.FromArgb(60, 66, 76) };
+            var buttons = new FlowLayoutPanel { Dock = DockStyle.Right, Width = 260, FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
+            var none = new Button { Text = T("Btn_TrnUntickAll", "Untick all"), AutoSize = true, Name = "reviewNone" };
+            var all = new Button { Text = T("Btn_TrnTickAll", "Tick all"), AutoSize = true, Name = "reviewAll" };
+            none.Click += (s, e) => TickAll(false);
+            all.Click += (s, e) => TickAll(true);
+            buttons.Controls.Add(none);
+            buttons.Controls.Add(all);
+            top.Controls.Add(text);
+            top.Controls.Add(buttons);
+
+            _grid.Dock = DockStyle.Fill;
+            _grid.AllowUserToAddRows = false;
+            _grid.AllowUserToDeleteRows = false;
+            _grid.RowHeadersVisible = false;
+            _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            _grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            _grid.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Take", HeaderText = T("Col_TrnTake", "Take"), Width = 56 });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Key", HeaderText = T("Col_TrnKey", "Key"), Width = 190, ReadOnly = true });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Owner", HeaderText = T("Col_TrnOwner", "Owner"), Width = 80, ReadOnly = true });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Lang", HeaderText = T("Col_TrnLang", "Language"), Width = 76, ReadOnly = true });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Now", HeaderText = T("Col_TrnNow", "Now"), Width = 250, ReadOnly = true,
+                                                              DefaultCellStyle = { WrapMode = DataGridViewTriState.True, ForeColor = Color.FromArgb(110, 116, 126) } });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "New", HeaderText = T("Col_TrnNew2", "New"), Width = 250,
+                                                              DefaultCellStyle = { WrapMode = DataGridViewTriState.True } });
+            _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Why", HeaderText = T("Col_TrnWhy", "Why"), Width = 220, ReadOnly = true,
+                                                              DefaultCellStyle = { WrapMode = DataGridViewTriState.True, ForeColor = Color.FromArgb(90, 96, 106) } });
+            _filling = true;
+            foreach (var i in _items)
+                _grid.Rows.Add(i.Take, i.Row != null ? i.Row.Key : "", i.Row == null ? "" : i.Row.Owner == TranslationEdits.General ? T("Lbl_TrnGeneral", "General") : i.Row.Owner,
+                               i.Lang, i.Now, i.New, i.Why);
+            _filling = false;
+            _grid.CurrentCellDirtyStateChanged += (s, e) => { if (_grid.IsCurrentCellDirty && _grid.CurrentCell is DataGridViewCheckBoxCell) _grid.CommitEdit(DataGridViewDataErrorContexts.Commit); };
+            _grid.CellValueChanged += (s, e) =>
+            {
+                if (_filling || e.RowIndex < 0 || e.RowIndex >= _items.Count) return;
+                var item = _items[e.RowIndex];
+                if (_grid.Columns[e.ColumnIndex].Name == "Take") item.Take = Convert.ToBoolean(_grid.Rows[e.RowIndex].Cells["Take"].Value);
+                if (_grid.Columns[e.ColumnIndex].Name == "New")
+                {
+                    item.New = TranslationEdits.Clean(Convert.ToString(_grid.Rows[e.RowIndex].Cells["New"].Value));
+                    // a text corrected is a text taken
+                    if (!item.Take) { item.Take = true; _filling = true; _grid.Rows[e.RowIndex].Cells["Take"].Value = true; _filling = false; }
+                }
+                UpdateOk();
+            };
+            UiStyle.EnableTableTools(_grid, "TranslationReview");
+
+            _ok = UiStyle.DialogButton("", DialogResult.OK);
+            _ok.AutoSize = true;
+            _ok.Name = "reviewOk";
+            var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+            var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, Height = 48, Padding = new Padding(6) };
+            bottom.Controls.Add(cancel);
+            bottom.Controls.Add(_ok);
+            CancelButton = cancel;
+            Controls.Add(_grid);
+            Controls.Add(bottom);
+            Controls.Add(top);
+            UpdateOk();
+        }
+
+        internal DataGridView Grid { get { return _grid; } }
+        internal List<Item> Items { get { return _items; } }
+        internal string OkText { get { return _ok.Text; } }
+        internal int Ticked { get { return _items.Count(i => i.Take); } }
+
+        /// <summary>Every change ticked, or none.</summary>
+        internal void TickAll(bool on)
+        {
+            if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
+            _filling = true;
+            for (int r = 0; r < _items.Count; r++) { _items[r].Take = on; _grid.Rows[r].Cells["Take"].Value = on; }
+            _filling = false;
+            UpdateOk();
+        }
+
+        /// <summary>A change ticked or not (the tests: as a click in its box).</summary>
+        internal void Tick(int index, bool on)
+        {
+            if (index < 0 || index >= _items.Count) return;
+            _grid.Rows[index].Cells["Take"].Value = on;
+            _items[index].Take = on;
+            UpdateOk();
+        }
+
+        private void UpdateOk()
+        {
+            _ok.Text = string.Format(_okFormat, _direct, Ticked);
+            _ok.Enabled = _direct + Ticked > 0;
+        }
+
+        /// <summary>The changes shown to confirm (a test's Hook instead); false: cancelled.</summary>
+        public static bool Review(IWin32Window owner, string title, string intro, List<Item> items, int direct, string okFormat)
+        {
+            using (var f = new TranslationReviewForm(title, intro, items, direct, okFormat))
+            {
+                if (Hook != null) return Hook(f);
+                if (f.ShowDialog(owner) != DialogResult.OK) return false;
+                if (f._grid.IsCurrentCellInEditMode) f._grid.EndEdit();
+                return true;
+            }
+        }
+    }
+}

@@ -8,10 +8,17 @@ class M {
     static void Check(string w,bool ok,string d=""){Console.WriteLine((ok?"  PASS  ":"  FAIL  ")+w+(d.Length>0?"   ["+d+"]":""));if(!ok)fail++;}
 
     static void Main(){
-        string src = "/tmp/mig/old", dst = "/tmp/mig/new";
-        // Start clean: backups from an earlier run would make the count meaningless.
-        if (Directory.Exists(dst)) Directory.Delete(dst, true);
+        var root = Path.Combine(Path.GetTempPath(), "mig_" + Guid.NewGuid().ToString("N"));
+        string src = Path.Combine(root, "old"), dst = Path.Combine(root, "new");
+        Directory.CreateDirectory(Path.Combine(src, "Sub"));
         Directory.CreateDirectory(dst);
+        // an older install: its stations (3 columns: the first format), its alarms, its translation files
+        File.WriteAllLines(Path.Combine(src, "PlcSettings.cfg"), new[] { "# stations", "1\tDrv_Mitsubishi\t192.168.1.31" });
+        File.WriteAllText(Path.Combine(src, "Alarms.json"), "[ { \"PlcAddress\": \"M1\", \"TagCode\": \"A\" } ]");
+        File.WriteAllText(Path.Combine(src, "Sub", "Alarms.json"), "[ { \"PlcAddress\": \"M2\", \"TagCode\": \"B\" } ]");
+        File.WriteAllLines(Path.Combine(src, "Translations.csv"), new[] { "Key;EN;TR", "Btn_Start;Start;Basla" });
+        File.WriteAllLines(Path.Combine(src, "CommonTranslations.csv"), new[] { "Key;EN;TR", "Btn_Ok;OK;Tamam" });
+
         var found = SettingsMigration.Inspect(src, dst);
         Console.WriteLine("found " + found.Count + " files");
         foreach (var f in found)
@@ -19,12 +26,12 @@ class M {
 
         Check("the station file is seen as v1",
               found.Any(f => f.FileName == "PlcSettings.cfg" && f.DetectedVersion == 1));
-        Check("the 3-column CSV is v1",
-              found.Any(f => f.SourcePath.EndsWith("old/Translations.csv") && f.DetectedVersion == 1));
-        Check("the 5-column CSV is v2",
-              found.Any(f => f.SourcePath.Contains("Sub") && f.DetectedVersion == 2));
         Check("an alarms file without help keys is v1",
               found.Any(f => f.FileName == "Alarms.json" && f.DetectedVersion == 1));
+        // 22 October: the translations are imported on HMI Settings > Translation, key by key
+        Check("the translation files are not offered here (the Translation page imports them)",
+              !found.Any(f => f.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) && f.FileName.Contains("Translations")),
+              string.Join(", ", found.Select(f => f.FileName)));
         Check("everything old is flagged for conversion",
               found.Where(f => f.DetectedVersion < SettingsMigration.CurrentFormatVersion)
                    .All(f => f.NeedsUpgrade));
@@ -42,13 +49,7 @@ class M {
         Check("  and the existing values are untouched",
               st[0].StartsWith("1\tDrv_Mitsubishi\t192.168.1.31"), st[0].Replace("\t"," | "));
         Check("  with the station left enabled", st[0].Split('\t')[3] == "1");
-
-        var csv = File.ReadAllLines(Path.Combine(dst, "Translations.csv"))
-                      .Where(l => l.Trim().Length > 0).ToArray();
-        Check("the CSV gained all six language columns",
-              csv.All(l => l.Split(';').Length == 7), csv[1]);
-        Check("  padded with EMPTY cells, not copies of English",
-              csv[1].Split(';')[3] == "" && csv[1].Split(';')[1] == "Start", csv[1]);
+        Check("no translation file copied over this program's", !File.Exists(Path.Combine(dst, "Translations.csv")) && !File.Exists(Path.Combine(dst, "CommonTranslations.csv")));
 
         // a second import must back up what is there
         var before = Directory.GetDirectories(dst, "Backup_*").Length;
@@ -57,8 +58,8 @@ class M {
         Check("re-importing backs up the current files first", after > before,
               before + " -> " + after);
 
+        try { Directory.Delete(root, true); } catch { }
         Console.WriteLine(fail==0?"\nMIGRATION ALL PASS":"\n"+fail+" FAILED");
         Environment.Exit(fail==0?0:1);
     }
 }
-
