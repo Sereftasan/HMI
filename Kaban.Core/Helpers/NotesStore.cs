@@ -77,6 +77,12 @@ namespace Kaban.Core.Helpers
         /// <summary>The control's type and its way down by names in the program (for the developer: the designer's names).</summary>
         public string ControlType { get; set; }
         public string ControlPath { get; set; }
+        /// <summary>
+        /// A translation's texts written into the translation files (22 October: "the texts applied
+        /// from the Notes page should appear in the translation table as edits" - its history names
+        /// the note); false: put on the screen from the notes at each start (a key no file has).
+        /// </summary>
+        public bool Written { get; set; }
 
         public Note() { Texts = new List<NoteText>(); Values = new List<NoteValue>(); }
 
@@ -201,7 +207,7 @@ namespace Kaban.Core.Helpers
                    string.Equals(note.Author, SecurityManager.CurrentUser, StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>Takes a note away (a translation in force stays on screen until the next start).</summary>
+        /// <summary>Takes a note away (a translation written into its file stays there - the Translation page changes it; one put on the screen only: until the next start).</summary>
         public static bool Remove(Note note)
         {
             if (!CanRemove(note)) return false;
@@ -215,7 +221,7 @@ namespace Kaban.Core.Helpers
             return true;
         }
 
-        /// <summary>The translations in force put on the screen - at start, after the translation files.</summary>
+        /// <summary>The translations in force put on the screen - at start, after the translation files (the ones written into them: nothing to do; the ones before: written now).</summary>
         public static void ApplyTranslations()
         {
             List<Note> list;
@@ -226,9 +232,22 @@ namespace Kaban.Core.Helpers
 
         private static void Apply(Note n, bool raise)
         {
-            if (string.IsNullOrWhiteSpace(n.TranslationKey)) return;
-            foreach (var t in n.Texts)
-                if (!string.IsNullOrWhiteSpace(t.Text)) LanguageManager.AddTranslation(t.Lang, n.TranslationKey, t.Text.Trim());
+            if (string.IsNullOrWhiteSpace(n.TranslationKey) || n.Written) return;
+            if (TranslationEdits.FromNote(n))
+            {
+                // into the files: in force from them from now on (a later edit on the Translation page wins)
+                n.Written = true;
+                lock (_lock)
+                {
+                    EnsureLoaded();
+                    var kept = _notes.FirstOrDefault(x => x.Id == n.Id);
+                    if (kept != null) kept.Written = true;
+                    Save();
+                }
+            }
+            else
+                foreach (var t in n.Texts)
+                    if (!string.IsNullOrWhiteSpace(t.Text)) LanguageManager.AddTranslation(t.Lang, n.TranslationKey, t.Text.Trim());
             if (raise) LanguageManager.RaiseLanguageChanged();
         }
 

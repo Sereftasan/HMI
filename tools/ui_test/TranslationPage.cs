@@ -279,6 +279,37 @@ class TP {
               File.ReadAllText(alarms).Contains("\"DE\": \"The door is open\""),
               string.Join("|", File.ReadAllLines(common)) + " // " + string.Join("|", File.ReadAllLines(main)));
 
+        Console.WriteLine("--- a translation of the notes page: an edit of the table ---");
+        NotesStore.Folder = Path.Combine(dir, "Notes");
+        var note = NotesStore.Add(new Note { Kind = NoteKind.Translation, TranslationKey = "Unit_Saw", ControlKey = "page/saw",
+                                             Texts = new List<NoteText> { new NoteText { Lang = "TR", Text = "Testere (daire)" } } });
+        Application.DoEvents();
+        var last = TranslationEdits.History().Last();
+        Check("Maintenance's note: in force, written into the file, the history naming it", note.State == NoteState.Applied && note.Written &&
+              File.ReadAllLines(main).Any(l => l.StartsWith("Unit_Saw;Saw;Testere (daire);")) && LanguageManager.GetStringIn("TR", "Unit_Saw") == "Testere (daire)" &&
+              last.User == "maint (note)" && last.Key == "Unit_Saw" && last.Old == "Testere" && last.New == "Testere (daire)",
+              last.User + " " + last.Key + " " + last.Old + ">" + last.New);
+        at = Shown(c).ToList().FindIndex(r => r.Key == "Unit_Saw");
+        Check("  the table: edited (who: the note's)", at >= 0 && Convert.ToString(grid.Rows[at].Cells["Changed"].Value).StartsWith("maint (note)"),
+              at >= 0 ? Convert.ToString(grid.Rows[at].Cells["Changed"].Value) : "-");
+        Call(c, "Type", row("Unit_Saw"), "TR", "Testere");
+        Call(c, "Save");
+        NotesStore.Folder = NotesStore.Folder;          // the next start: the notes read back
+        NotesStore.ApplyTranslations();
+        Check("  edited again on the page: the next start keeps the page's (the note is written, not put on again)",
+              LanguageManager.GetStringIn("TR", "Unit_Saw") == "Testere" && NotesStore.All.First(n => n.Id == note.Id).Written);
+        // a note of the version before (put on at each start, not written) - the page's edit after it stays
+        var kept = ((List<Note>)typeof(NotesStore).GetField("_notes", Any).GetValue(null)).First(n => n.Id == note.Id);
+        kept.Written = false; kept.AcceptedAt = DateTime.Now.AddDays(-1);
+        kept.Texts.Add(new NoteText { Lang = "RU", Text = "Pila (krug)" });
+        NotesStore.ApplyTranslations();
+        Check("  a note of the version before: written now - but not over a text the page changed after it",
+              kept.Written && File.ReadAllLines(main).Any(l => l.StartsWith("Unit_Saw;Saw;Testere;Pila (krug);")) && LanguageManager.GetStringIn("TR", "Unit_Saw") == "Testere",
+              string.Join("|", File.ReadAllLines(main)));
+        var free = NotesStore.Add(new Note { Kind = NoteKind.Translation, TranslationKey = "Btn_NoFile", ControlKey = "page/x",
+                                             Texts = new List<NoteText> { new NoteText { Lang = "TR", Text = "Dosyasiz" } } });
+        Check("  a key no file has: on the screen as before, not written", !free.Written && LanguageManager.GetStringIn("TR", "Btn_NoFile") == "Dosyasiz");
+
         form.Close();
         MachineRegistry.Reset();
         try { Directory.Delete(dir, true); } catch { }

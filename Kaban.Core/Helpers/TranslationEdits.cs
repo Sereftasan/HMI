@@ -430,10 +430,21 @@ namespace Kaban.Core.Helpers
         public static bool FromNote(Note note)
         {
             if (note == null || note.Kind != NoteKind.Translation || string.IsNullOrWhiteSpace(note.TranslationKey)) return false;
-            var rows = RowsOf(note.TranslationKey);
+            // the rows a file can take (a text registered while running has none)
+            var beside = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommonTranslations.csv");
+            var rows = RowsOf(note.TranslationKey).Where(r => !string.IsNullOrEmpty(r.Path) || string.Equals(r.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) ||
+                                                              (r.Common && File.Exists(beside))).ToList();
             if (rows.Count == 0) return false;
+            var row = rows[0];
+            // a text changed on the Translation page after the note was put in force stays (a note of
+            // the version before, written now)
+            var when = note.AcceptedAt ?? note.Time;
+            var history = History();
             var wanted = (note.Texts ?? new List<NoteText>()).Where(t => t != null && !string.IsNullOrWhiteSpace(t.Lang) && !string.IsNullOrWhiteSpace(t.Text))
-                                                             .Select(t => new Wanted { Row = rows[0], Lang = t.Lang, Text = t.Text }).ToList();
+                         .Where(t => !history.Any(h => h.Time > when && string.Equals(h.Owner, row.Owner, StringComparison.OrdinalIgnoreCase) &&
+                                                        string.Equals(h.Key, row.Key, StringComparison.OrdinalIgnoreCase) &&
+                                                        string.Equals(h.Lang, t.Lang.Trim(), StringComparison.OrdinalIgnoreCase)))
+                         .Select(t => new Wanted { Row = row, Lang = t.Lang, Text = t.Text.Trim() }).ToList();
             var who = (string.IsNullOrEmpty(note.AcceptedBy) ? note.Author : note.AcceptedBy) ?? "";
             Save(wanted, who + " (note)", raise: false);
             return true;
