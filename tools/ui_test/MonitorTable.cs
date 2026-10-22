@@ -105,6 +105,10 @@ class MT {
         Rows(sh).Insert(Rows(sh).Count - 1, single);
         Rows(sh).Insert(Rows(sh).Count - 1, steps);
         Call(form, "RefreshValues"); Application.DoEvents();
+        var page = (TabPage)Get(sh, "Page");
+        var views = (TabControl)Get(sh, "ViewTabs");
+        var host = (Control)Get(sh, "TablesHost");
+        Check("a tab of list labels only: the list on the tab itself, no tabs under it", list.Parent == page && views.Parent == null);
         var cms = list.ContextMenuStrip;
         Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(steps) });
         list.CurrentCell = list.Rows[Rows(sh).IndexOf(steps)].Cells[0];
@@ -118,12 +122,32 @@ class MT {
         item.PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
         var blocks = Blocks(sh);
-        Check("the label off the list, a table on top of the tab; the list (the other label) under it",
+        // 23 October: "the table viewed on top and the list viewed in the bottom don't fit on the page so well - when a
+        // tab has both, two tabs under it: 'List viewed labels' first, 'Table viewed labels' second; removed when either gets empty"
+        Check("the label off the list into a table: the tab has both now - two tabs under it, the list's first, the tables' second",
               !Rows(sh).Contains(steps) && TableRows(sh).Contains(steps) && Rows(sh).Contains(single) && blocks.Count == 1 &&
-              list.Visible && ((Control)Get(sh, "TablesHost")).Visible && ((Control)Get(sh, "TablesHost")).Bottom <= list.Top,
-              blocks.Count + " " + ((Control)Get(sh, "TablesHost")).Bounds + " " + list.Bounds);
+              views.Parent == page && views.TabCount == 2 && views.TabPages[0].Text == "List viewed labels" && views.TabPages[1].Text == "Table viewed labels" &&
+              list.Parent == views.TabPages[0] && host.Parent == views.TabPages[1],
+              blocks.Count + " " + (views.Parent == null ? "-" : views.Parent.Name) + " " + string.Join(",", views.TabPages.Cast<TabPage>().Select(t => t.Text)));
+        Check("  the tables' tab shown (where the label went); the tables fill it", views.SelectedTab == views.TabPages[1] && host.Dock == DockStyle.Fill);
+        list.Rows[Rows(sh).IndexOf(single)].Selected = true;
+        Check("  while it is shown no list row is acted on unseen (a Delete, a paste): the Lamp selected in the list counts as none",
+              ((IList)Call(MonType, "SelectedIndices", sh)).Count == 0);
+        views.SelectedTab = views.TabPages[0]; Application.DoEvents();
+        Check("  the list's tab chosen: it counts", ((IList)Call(MonType, "SelectedIndices", sh)).Count == 1);
+        views.SelectedTab = views.TabPages[1]; Application.DoEvents();
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(single) });
+        Check("  a list row asked for (Find, a paste, one added): its tab shown", views.SelectedTab == views.TabPages[0]);
+        views.SelectedTab = views.TabPages[1]; Application.DoEvents();
         var b0 = blocks[0];
         var g = GridOf(b0);
+        var cap = (Label)Get(b0, "Caption");
+        Check("  the caption as tall as its font needs (not cut)", cap.Height >= TextRenderer.MeasureText("Xg", cap.Font).Height + 6 && cap.Top >= 0,
+              cap.Height + " " + TextRenderer.MeasureText("Xg", cap.Font).Height);
+        Check("  a table alone fills the tab (more of its 30 lines in sight than 10)",
+              ((Control)Get(b0, "Panel")).Height >= host.Height - 10 && g.DisplayedRowCount(false) > 10,
+              ((Control)Get(b0, "Panel")).Height + " / " + host.Height + " - " + g.DisplayedRowCount(false) + " lines; row " + g.RowTemplate.Height + "/" + g.Rows[0].Height +
+              " head " + g.ColumnHeadersHeight + " cap " + cap.Height + " bar " + ((Control)Get(b0, "Bar")).Height + " grid " + g.Height + " " + g.Bounds);
         Check("  its caption the label's description, the view buttons under it, the table under them",
               Caption(b0) == "CuttingSteps" && ((Label)Get(b0, "Caption")).Bottom <= Btn(b0, "ShowHmi").Parent.Top && Btn(b0, "ShowHmi").Parent.Bottom <= g.Top &&
               Btn(b0, "ShowHmi").Text == "Value (HMI)" && Btn(b0, "ShowPlc").Text == "Value (PLC)", Caption(b0));
@@ -197,11 +221,28 @@ class MT {
               !(bool)Get(job2, "Joined") && LastItem(sh) == job1, string.Join(" / ", blocks.Select(Caption)));
         Btn(blocks[1], "ToList").PerformClick();
         Application.DoEvents();
-        Check("List view: CuttingSteps at the end of the list again", Rows(sh).Contains(steps) && !TableRaw(sh, steps) && Blocks(sh).Count == 1 &&
-              LastItem(sh) == steps, Blocks(sh).Count.ToString());
+        Check("List view: CuttingSteps at the end of the list again - the list's tab shown, where it went",
+              Rows(sh).Contains(steps) && !TableRaw(sh, steps) && Blocks(sh).Count == 1 && LastItem(sh) == steps && views.SelectedTab == views.TabPages[0],
+              Blocks(sh).Count.ToString());
         Call(form, "Undo"); Application.DoEvents();
         var shNow = ((IList)Get(mon, "Sheets"))[0];
         Check("undone: its table again", Blocks(shNow).Count == 2 && TableRows(shNow).Cast<object>().Any(r => (string)Get(r, "Address") == "R25700"));
+
+        Console.WriteLine("--- a tab with one kind only: no tabs under it ---");
+        var shL = ((IList)Get(mon, "Sheets"))[0];
+        var keep = Rows(shL).Cast<object>().Where(r => !(bool)Get(r, "IsBlank")).ToList();
+        foreach (var r in keep) Rows(shL).Remove(r);
+        Call(form, "Render", mon, shL);          // (no refresh between: the simulator's devices would be appended to the list)
+        var viewsL = (TabControl)Get(shL, "ViewTabs");
+        var pageL = (TabPage)Get(shL, "Page");
+        Check("the list emptied: the tabs under the tab gone, the tables on the tab itself", viewsL.Parent == null && ((Control)Get(shL, "TablesHost")).Parent == pageL &&
+              Blocks(shL).Count == 2);
+        Rows(shL).Insert(Rows(shL).Count - 1, keep[0]);
+        Call(form, "Render", mon, shL); Application.DoEvents();
+        Check("  a label in the list again: the two tabs back, the list's shown (where it came)",
+              viewsL.Parent == pageL && viewsL.SelectedTab == viewsL.TabPages[0] && ((Control)Get(shL, "Grid")).Parent == viewsL.TabPages[0]);
+        foreach (var r in keep.Skip(1)) Rows(shL).Insert(Rows(shL).Count - 1, r);
+        Call(form, "Render", mon, shL); Application.DoEvents();
 
         Console.WriteLine("--- kept and read back; a tab of before shown whole as a table ---");
         lines = (List<string>)Call(MonType, "Serialize", mon);

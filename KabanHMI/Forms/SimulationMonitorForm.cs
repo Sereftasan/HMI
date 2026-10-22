@@ -269,10 +269,19 @@ namespace Kaban.UI.Forms
             public Sheet Tables { get { return _tables ?? (_tables = new Sheet { Name = "(tables)" }); } }
             /// <summary>Every row of the tab: the list's and the tables'.</summary>
             public IEnumerable<WatchRow> AllRows { get { return _tables == null ? Rows : Rows.Concat(_tables.Rows); } }
-            /// <summary>Where the tables are drawn (above the list), the border under them, their height when dragged.</summary>
+            /// <summary>Where the tables are drawn, one under the other.</summary>
             public Panel TablesHost;
-            public Splitter TablesSplitter;
-            public int TablesHeight;
+            /// <summary>
+            /// 23 October: "the table viewed on top and the list in the bottom don't fit on the page so well - when a tab
+            /// has both kinds, two tabs under it: 'List viewed labels' and 'Table viewed labels', removed when either
+            /// gets empty". The two tabs (made once, on the tab only while it has both), the view shown now
+            /// (0 the list alone, 1 the tables alone, 2 both) and the one to show next ("list" / "tables").
+            /// </summary>
+            public TabControl ViewTabs;
+            public TabPage ListPage, TablesPage;
+            public int ViewMode;
+            public string WantView;
+            public bool ViewArranged;
             /// <summary>The tables as drawn (made again when their labels change).</summary>
             public string TablesKey;
             public readonly List<TableBlock> Blocks = new List<TableBlock>();
@@ -944,18 +953,21 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>The engineer's tabs, drawn like the rest of the program: the chosen one white and bold.</summary>
-        private static void DrawSheetTab(MonitorTab mon, DrawItemEventArgs e)
+        private static void DrawSheetTab(MonitorTab mon, DrawItemEventArgs e) { DrawFlatTab(mon.SheetTabs, e); }
+
+        /// <summary>A tab of the monitor's (the engineer's tabs, the list / tables tabs under one): the chosen one white and bold.</summary>
+        internal static void DrawFlatTab(TabControl tabs, DrawItemEventArgs e)
         {
-            if (e.Index < 0 || e.Index >= mon.SheetTabs.TabCount) return;
-            var r = mon.SheetTabs.GetTabRect(e.Index);
-            bool sel = e.Index == mon.SheetTabs.SelectedIndex;
+            if (e.Index < 0 || e.Index >= tabs.TabCount) return;
+            var r = tabs.GetTabRect(e.Index);
+            bool sel = e.Index == tabs.SelectedIndex;
             using (var back = new SolidBrush(sel ? Color.White : Color.FromArgb(238, 240, 243)))
                 e.Graphics.FillRectangle(back, r);
             if (sel)
                 using (var rule = new Pen(Color.FromArgb(60, 66, 76), 2f))
                     e.Graphics.DrawLine(rule, r.Left + 4, r.Bottom - 2, r.Right - 4, r.Bottom - 2);
             var font = sel ? UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold) : UiStyle.Body;
-            TextRenderer.DrawText(e.Graphics, mon.SheetTabs.TabPages[e.Index].Text, font, r,
+            TextRenderer.DrawText(e.Graphics, tabs.TabPages[e.Index].Text, font, r,
                 sel ? Color.FromArgb(25, 28, 34) : Color.FromArgb(80, 86, 96),
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
         }
@@ -1688,9 +1700,10 @@ namespace Kaban.UI.Forms
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        /// <summary>Selected rows, top to bottom, the empty last line left out.</summary>
+        /// <summary>Selected rows, top to bottom, the empty last line left out (none while the list is not in sight).</summary>
         private static List<int> SelectedIndices(Sheet sh)
         {
+            if (!ListShown(sh)) return new List<int>();      // the tables' tab shown: no list row is acted on unseen
             var list = sh.Grid.SelectedRows.Cast<DataGridViewRow>().Select(r => r.Index)
                          .Where(i => i >= 0 && i < sh.Rows.Count && !sh.Rows[i].IsBlank).ToList();
             if (list.Count == 0 && sh.Grid.CurrentCell != null)
@@ -1715,6 +1728,7 @@ namespace Kaban.UI.Forms
         private static void Select(Sheet sh, IEnumerable<int> rows)
         {
             rows = rows.ToList();
+            if (rows.Any()) ShowListView(sh);                  // rows asked for (Find, a paste, an added one): the list in sight
             // An element asked for (Find, a paste) in a folded array: the array unfolds.
             foreach (var i in rows)
                 if (i >= 0 && i < sh.Rows.Count && sh.Rows[i].IsElement && !IsShown(sh.Rows[i]))

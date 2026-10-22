@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -52,6 +52,7 @@ namespace Kaban.UI.Forms
             public int Count;
             public Panel Panel;
             public Label Caption, Note;
+            public FlowLayoutPanel Bar;
             public Button ShowHmi, ShowPlc, Add, Up, Down, ToList;
             public DataGridView Grid;
             public string Key = "";
@@ -128,6 +129,7 @@ namespace Kaban.UI.Forms
             label.Joined = false;
             sh.Tables.Rows.Add(label);
             sh.Grid.ClearSelection();
+            sh.WantView = "tables";                       // its table in sight
             EnsureBlankRow(sh);
             SaveWatchList(mon);
             Render(mon, sh);
@@ -145,6 +147,7 @@ namespace Kaban.UI.Forms
                 r.Joined = false;
                 sh.Rows.Insert(InsertPoint(sh, true), r);
             }
+            sh.WantView = "list";                         // where they went
             EnsureBlankRow(sh);
             SaveWatchList(mon);
             Render(mon, sh);
@@ -231,17 +234,36 @@ namespace Kaban.UI.Forms
 
         // ---- the view -----------------------------------------------------------------------
 
-        /// <summary>Where the tables go: above the list, a border under them to give them more room or less.</summary>
+        /// <summary>
+        /// A panel that does not scroll to the control given the focus: a click into a table taller than the room
+        /// scrolled the tables, its caption out of sight (23 October: the caption cut at its top).
+        /// </summary>
+        private sealed class TablesPanel : Panel
+        {
+            protected override Point ScrollToControl(Control activeControl) { return DisplayRectangle.Location; }
+        }
+
+        /// <summary>
+        /// Where the tables go, and the two tabs under the tab ("List viewed labels", "Table viewed labels") its list
+        /// and its tables are on while it has both (see ArrangeViews).
+        /// </summary>
         private void BuildTablesHost(MonitorTab mon, Sheet sh)
         {
-            sh.TablesHost = new Panel { Dock = DockStyle.Top, Height = 0, AutoScroll = true, BackColor = Color.White, Visible = false, Name = "tablesHost" };
-            sh.TablesSplitter = new Splitter { Dock = DockStyle.Top, Height = 5, BackColor = Color.FromArgb(226, 229, 234), Visible = false, MinSize = 60, MinExtra = 60 };
-            sh.TablesSplitter.SplitterMoved += (s, e) => { sh.TablesHeight = sh.TablesHost.Height; LayoutTables(sh); };
-            // docked in reverse order: the list (Fill) first in the collection, the tables last (on top)
-            sh.Page.Controls.Add(sh.TablesSplitter);
-            sh.Page.Controls.Add(sh.TablesHost);
+            sh.TablesHost = new TablesPanel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Color.White, Name = "tablesHost" };
             sh.TablesHost.Resize += (s, e) => LayoutTables(sh);
-            sh.Page.Resize += (s, e) => LayoutTables(sh);
+            sh.ViewTabs = new TabControl
+            {
+                Dock = DockStyle.Fill, DrawMode = TabDrawMode.OwnerDrawFixed, SizeMode = TabSizeMode.Normal,
+                Padding = new Point(14, 4), Font = UiStyle.Body, Name = "viewTabs"
+            };
+            sh.ViewTabs.DrawItem += (s, e) => DrawFlatTab(sh.ViewTabs, e);
+            sh.ListPage = new TabPage(T("Tab_MonListLabels", "List viewed labels")) { BackColor = Color.White, Name = "listPage" };
+            sh.TablesPage = new TabPage(T("Tab_MonTableLabels", "Table viewed labels")) { BackColor = Color.White, Name = "tablesPage" };
+            sh.ViewTabs.TabPages.Add(sh.ListPage);
+            sh.ViewTabs.TabPages.Add(sh.TablesPage);
+            sh.TablesPage.Controls.Add(sh.TablesHost);
+            sh.ViewTabs.SelectedIndexChanged += (s, e) => { UpdateToolbar(); RefreshValues(); };
+            sh.ViewMode = 0;                                // the list alone: on the tab itself (AttachSheet put it there)
             sh.Blocks.Clear();
             sh.TablesKey = null;
         }
@@ -261,41 +283,111 @@ namespace Kaban.UI.Forms
                 sh.Blocks.Clear();
                 for (int i = 0; i < groups.Count; i++) sh.Blocks.Add(BuildBlock(mon, sh, groups[i], i, groups.Count));
                 foreach (var b in sh.Blocks) sh.TablesHost.Controls.Add(b.Panel);
-                bool any = sh.Blocks.Count > 0;
-                sh.TablesHost.Visible = sh.TablesSplitter.Visible = any;
-                if (!any) sh.TablesHeight = 0;
                 LayoutTables(sh);
             }
+            ArrangeViews(sh);
             foreach (var b in sh.Blocks)
                 if (!b.Grid.IsCurrentCellInEditMode) b.Grid.Invalidate();
         }
 
-        /// <summary>The tables one under the other, each as tall as its lines (ten at most, then it scrolls).</summary>
+        /// <summary>
+        /// The list and the tables on the tab: the list alone, the tables alone - or, the tab having both, each on
+        /// its own tab under it: "List viewed labels" first, "Table viewed labels" second (gone again when either is
+        /// empty). The one that just came is shown; ShowInTable / TableToList ask for theirs.
+        /// </summary>
+        internal static void ArrangeViews(Sheet sh)
+        {
+            if (sh.ViewTabs == null || sh.Page == null || sh.Grid == null) return;
+            bool tables = sh.Blocks.Count > 0;
+            bool list = sh.Rows.Any(r => !r.IsBlank);
+            int mode = tables && list ? 2 : tables ? 1 : 0;
+            if (mode != sh.ViewMode)
+            {
+                int was = sh.ViewMode;
+                sh.Page.SuspendLayout();
+                if (mode == 2)
+                {
+                    MoveInto(sh.Grid, sh.ListPage);
+                    MoveInto(sh.TablesHost, sh.TablesPage);
+                    MoveInto(sh.ViewTabs, sh.Page);
+                    // the side that was not there before is the one shown (opened with both: the list, the first)
+                    if (sh.WantView == null && sh.ViewArranged) sh.WantView = was == 1 ? "list" : "tables";
+                }
+                else
+                {
+                    if (sh.ViewTabs.Parent != null) sh.ViewTabs.Parent.Controls.Remove(sh.ViewTabs);
+                    if (mode == 1) { MoveInto(sh.Grid, sh.ListPage); MoveInto(sh.TablesHost, sh.Page); }
+                    else { MoveInto(sh.TablesHost, sh.TablesPage); MoveInto(sh.Grid, sh.Page); }
+                }
+                sh.ViewMode = mode;
+                sh.Page.ResumeLayout(true);
+                LayoutTables(sh);
+            }
+            if (mode == 2 && sh.WantView != null)
+            {
+                var want = sh.WantView == "list" ? sh.ListPage : sh.TablesPage;
+                if (sh.ViewTabs.SelectedTab != want) sh.ViewTabs.SelectedTab = want;
+            }
+            sh.WantView = null;
+            sh.ViewArranged = true;
+        }
+
+        private static void MoveInto(Control c, Control into)
+        {
+            if (c.Parent == into) return;
+            if (c.Parent != null) c.Parent.Controls.Remove(c);
+            into.Controls.Add(c);
+        }
+
+        /// <summary>The list in sight: on the tab itself, or its "List viewed labels" tab the one chosen.</summary>
+        internal static bool ListShown(Sheet sh)
+        {
+            if (sh == null || sh.ViewTabs == null) return true;
+            return sh.ViewMode == 0 || (sh.ViewMode == 2 && sh.ViewTabs.SelectedTab == sh.ListPage);
+        }
+
+        /// <summary>The list brought in sight (its tab chosen) - for what is done to its rows.</summary>
+        internal static void ShowListView(Sheet sh)
+        {
+            if (sh == null || sh.ViewTabs == null) return;
+            if (sh.ViewMode == 2 && sh.ViewTabs.SelectedTab != sh.ListPage) sh.ViewTabs.SelectedTab = sh.ListPage;
+            else if (sh.ViewMode == 1) sh.WantView = "list";
+        }
+
+        /// <summary>
+        /// The tables one under the other, each as tall as ten of its lines; room left over goes to the tables with
+        /// more lines, in their order (a table alone fills the tab) - then they scroll.
+        /// </summary>
         private static void LayoutTables(Sheet sh)
         {
             var host = sh.TablesHost;
             if (host == null || sh.Blocks.Count == 0) return;
-            // as tall as the tables, at most 60% of the tab - unless the border was dragged
-            int total = sh.Blocks.Sum(b => BlockHeight(b) + 6);
-            int page = sh.Page != null ? sh.Page.ClientSize.Height : 0;
-            int want = sh.TablesHeight > 0 ? sh.TablesHeight : Math.Min(total + 2, page > 0 ? Math.Max(120, page * 6 / 10) : total + 2);
-            if (host.Height != want) host.Height = want;
+            const int gap = 6;
+            var heights = sh.Blocks.Select(b => BlockHeight(b, 10)).ToList();
+            int room = host.Height - 2;
+            int extra = room - heights.Sum() - gap * heights.Count;
+            for (int i = 0; i < sh.Blocks.Count && extra > 0; i++)
+            {
+                int add = Math.Min(extra, BlockHeight(sh.Blocks[i], sh.Blocks[i].Count) - heights[i]);
+                if (add > 0) { heights[i] += add; extra -= add; }
+            }
+            int total = heights.Sum() + gap * heights.Count;
             // as wide as the room, the scroll bar's taken when they are taller than it (no sideways scroll of the tables)
             int w = Math.Max(200, host.Width - (total > host.Height ? SystemInformation.VerticalScrollBarWidth : 0) - 2);
             int y = 0;
-            foreach (var b in sh.Blocks)
+            for (int i = 0; i < sh.Blocks.Count; i++)
             {
-                int h = BlockHeight(b);
-                b.Panel.SetBounds(0, y + host.AutoScrollPosition.Y, w, h);
-                y += h + 6;
+                sh.Blocks[i].Panel.SetBounds(0, y + host.AutoScrollPosition.Y, w, heights[i]);
+                y += heights[i] + gap;
             }
         }
 
-        private static int BlockHeight(TableBlock b)
+        /// <summary>A table's height showing up to <paramref name="lines"/> of its lines (its caption and buttons over them).</summary>
+        private static int BlockHeight(TableBlock b, int lines)
         {
-            int rows = Math.Max(1, Math.Min(10, b.Count));
+            int rows = Math.Max(1, Math.Min(lines, b.Count));
             int grid = b.Grid.ColumnHeadersHeight + rows * b.Grid.RowTemplate.Height + 4 + SystemInformation.HorizontalScrollBarHeight;
-            return b.Caption.Height + 36 + grid;
+            return b.Caption.Height + b.Bar.Height + grid;
         }
 
         /// <summary>One table: its label as the caption, the view buttons under it, the table under them.</summary>
@@ -306,15 +398,19 @@ namespace Kaban.UI.Forms
             b.Columns = TableColumnsOf(group);
             b.Panel = new Panel { BackColor = Color.White, Name = "table" + index };
 
+            var captionFont = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             b.Caption = new Label
             {
-                Dock = DockStyle.Top, Height = 26, AutoEllipsis = true, Padding = new Padding(6, 6, 6, 0),
-                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(35, 40, 48), Name = "tableCaption",
+                // as tall as its font needs (a fixed 26 cut a larger screen scale's caption)
+                Dock = DockStyle.Top, AutoEllipsis = true, Padding = new Padding(6, 6, 6, 2),
+                Height = TextRenderer.MeasureText("Xg", captionFont).Height + 10,
+                Font = captionFont, ForeColor = Color.FromArgb(35, 40, 48), Name = "tableCaption",
                 Text = string.Join("  +  ", group.Select(NameOf))
             };
             UiStyle.SetTip(_tips, b.Caption, string.Join("\r\n", group.Select(r => NameOf(r) + "   " + r.Address + "   " + r.EffectiveDataType + " [" + r.EffectiveCount + "]")));
 
-            var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 36, Padding = new Padding(6, 4, 6, 2), WrapContents = false, BackColor = Color.White };
+            var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 36, Padding = new Padding(6, 4, 6, 2), WrapContents = false, BackColor = Color.White, Name = "tableBar" };
+            b.Bar = bar;
             // WHICH VALUES: two buttons side by side, the one shown dark
             b.ShowHmi = new Button { Text = T("Col_ValueHmi", "Value (HMI)"), AutoSize = true, Margin = new Padding(0), FlatStyle = FlatStyle.Flat, Name = "tableHmi" };
             b.ShowPlc = new Button { Text = T("Col_ValuePlc", "Value (PLC)"), AutoSize = true, Margin = new Padding(0, 0, 10, 0), FlatStyle = FlatStyle.Flat, Name = "tablePlc" };
@@ -363,6 +459,8 @@ namespace Kaban.UI.Forms
                           (odd.Count == 0 ? "" : "  ·  " + string.Format(T("Msg_MonTableLeft", "another length: {0}"),
                                                                            string.Join(", ", odd.Select(a => NameOf(a) + " [" + a.EffectiveCount + "]"))));
             foreach (Control c in new Control[] { b.ShowHmi, b.ShowPlc, b.Add, b.Up, b.Down, b.ToList, b.Note }) bar.Controls.Add(c);
+            // as tall as its tallest button (their font's)
+            bar.Height = Math.Max(36, bar.Controls.Cast<Control>().Max(c => c.GetPreferredSize(Size.Empty).Height + c.Margin.Vertical) + bar.Padding.Vertical);
 
             b.Grid = BuildTableGrid(mon, sh, b);
             b.Panel.Controls.Add(b.Grid);
