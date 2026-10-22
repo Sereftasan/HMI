@@ -15,16 +15,17 @@ OUT_Korna;Bit;M350
 OUT_Giris_Konv_Ileri;Bit;M351
 Enkoder_RobotPozisyon;Double Word [Signed];D22
 PC_ProfilGenisligi;Word [Signed];D8
-# The Profiles & Operations sheet's tables (FA2010_DeviceList.xls): their structured data types are in StructuredTypes.csv
+# The Profiles & Operations sheet's tables (FA2010_DeviceList.xls): their structured data types are in StructuredTypes.csv;
+# the job list's columns are simple arrays (its 16-bit operation codes are every 2 devices: a Double Word each, the code in its low word)
 PC_ProfilParametreleri;Profile Parameters;R25600
-PC_IsListesi_IslemID;Job ID(0..499);D5000
-PC_IsListesi_Pozisyon;Job Position(0..499);D6000
-PC_IsListesi_IslemKodu;Job Operation Code(0..499);D7000
-PC_FrezeIslemParametreleri;Milling Operation Parameters(0..99);R26000
-PC_KesimIslemParametreleri;Cutting Operation Parameters(0..9);R25650
-PC_Unite1_FrezeAdimlari;Milling Step(0..399);R0
-PC_Unite1_FrezeAdimYedek;Milling Step(0..399);R6400
-PC_Unite2_FrezeAdimlari;Milling Step(0..399);R12800
-PC_Unite2_FrezeAdimYedek;Milling Step(0..399);R19200
-PC_KesimAdimlari;Cutting Step(0..29);R25700
+PC_IsListesi_IslemID;Double Word [Signed](0..499);D5000
+PC_IsListesi_Pozisyon;Double Word [Signed](0..499);D6000
+PC_IsListesi_IslemKodu;Double Word [Signed](0..499);D7000
+PC_FrezeIslemParametreleri;Milling Parameters(0..99);R26000
+PC_KesimIslemParametreleri;Special Cut Parameters(0..9);R25650
+PC_Unite1_FrezeAdimlari;Milling Steps(0..399);R0
+PC_Unite1_FrezeAdimYedek;Milling Steps(0..399);R6400
+PC_Unite2_FrezeAdimlari;Milling Steps(0..399);R12800
+PC_Unite2_FrezeAdimYedek;Milling Steps(0..399);R19200
+PC_KesimAdimlari;Special Cut Steps(0..29);R25700
 PC_OrtakayitKertmeAdimlari;Mullion Notching Step(0..29);R25700
