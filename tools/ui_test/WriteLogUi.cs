@@ -113,7 +113,8 @@ class WL {
         var sh = Call(mf, "EnsureSheet", mon);
         var grid = (DataGridView)Get(sh, "Grid");
         var cols = grid.Columns.Cast<DataGridViewColumn>().OrderBy(c => c.DisplayIndex).Select(c => c.Name).ToList();
-        Check("a Modified (last change) column after Value", cols.IndexOf("Changed") == cols.IndexOf("Value") + 1, string.Join(",", cols));
+        // (22 October: the calculated value, its divisor and decimal places between them)
+        Check("a Modified (last change) column after Value", cols.IndexOf("Changed") == cols.IndexOf("Decimals") + 1 && cols.IndexOf("Calculated") == cols.IndexOf("Value") + 1, string.Join(",", cols));
         Check("  headed Modified", grid.Columns["Changed"].HeaderText == "Modified", grid.Columns["Changed"].HeaderText);
         Check("  read-only", grid.Columns["Changed"].ReadOnly);
 

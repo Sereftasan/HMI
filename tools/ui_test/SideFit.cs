@@ -87,6 +87,9 @@ class SF {
         var find = (DeviceFindForm)monitor.GetType().GetMethod("OpenFind", Any).Invoke(monitor, new object[] { "M672" });
         Pump(300);
         var list = AllOf(find).OfType<DataGridView>().First();
+        // (22 October: the monitor's table has the Calculated Value, Divisor and Decimal Places columns -
+        // Find's list made the wider one again by a column of its widened)
+        if (cols(list) <= cols(grid)) { list.Columns[list.Columns.Count - 1].Width += cols(grid) - cols(list) + 200; Pump(50); }
         Check("Find's list is wider than the table (the case to fit)", cols(list) > cols(grid), cols(list) + " vs " + cols(grid));
         form.FitSidePanel(); Pump(100);
         Check("  fitted: every column of Find in sight", list.ClientSize.Width >= cols(list) + SystemInformation.VerticalScrollBarWidth && panel.Width > table,
