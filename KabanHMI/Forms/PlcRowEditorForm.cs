@@ -43,6 +43,8 @@ namespace Kaban.UI.Forms
         private readonly ComboBox _format = new ComboBox();
         private readonly NumericUpDown _chars = new NumericUpDown();
         private readonly NumericUpDown _count = new NumericUpDown();
+        private readonly TextBox _divisor = new TextBox();
+        private readonly NumericUpDown _decimals = new NumericUpDown();
         private readonly CheckBox _comment = new CheckBox();
         private readonly Label _preview = new Label();
         private readonly Label _labelCaption = new Label();
@@ -63,6 +65,25 @@ namespace Kaban.UI.Forms
 
         /// <summary>A String's length in characters.</summary>
         public int RowStringLength { get { return (int)_chars.Value; } }
+
+        /// <summary>The calculated value's divisor (22 October): 1 when not a number or not typed as one.</summary>
+        public double RowDivisor
+        {
+            get
+            {
+                double d;
+                return _divisor.Enabled && TryDivisor(_divisor.Text, out d) ? d : 1;
+            }
+        }
+
+        /// <summary>The calculated value's decimal places (0 when not a number).</summary>
+        public int RowDecimals { get { return _decimals.Enabled ? (int)_decimals.Value : 0; } }
+
+        private static bool TryDivisor(string text, out double d)
+        {
+            return double.TryParse((text ?? "").Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out d) &&
+                   d != 0 && !double.IsNaN(d) && !double.IsInfinity(d);
+        }
 
         public string RowLabel { get { return _label.Text.Trim(); } }
         public string RowDataType { get { return _dataType.Text.Trim(); } }
@@ -107,9 +128,12 @@ namespace Kaban.UI.Forms
         /// <param name="arrayCount">Elements of an array (1: a single device).</param>
         /// <param name="stringLength">A String's characters.</param>
         /// <param name="station">The tab's station: its machine's structured data types are offered.</param>
+        /// <param name="divisor">A number's calculated value: the value divided by this.</param>
+        /// <param name="decimals">The calculated value's decimal places.</param>
         public PlcRowEditorForm(string caption, string label, string dataType, string address,
                                 string value, string focusField = null, bool isNew = false, bool isComment = false,
-                                string displayFormat = "", int arrayCount = 1, int stringLength = 16, int station = 0)
+                                string displayFormat = "", int arrayCount = 1, int stringLength = 16, int station = 0,
+                                double divisor = 1, int decimals = 0)
         {
             Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             _isNew = isNew;
@@ -153,6 +177,17 @@ namespace Kaban.UI.Forms
             if (_format.SelectedIndex < 0) _format.SelectedIndex = 0;
             AddRow(LanguageManager.GetString("Col_DisplayFormat", "Display Format"), _format, ref y);
             _format.Width = 160;
+            // THE CALCULATED VALUE: the value divided by the divisor, with the decimal places
+            _divisor.Text = (divisor != 0 ? divisor : 1).ToString("0.#########", CultureInfo.InvariantCulture);
+            AddRow(LanguageManager.GetString("Col_Divisor", "Divisor"), _divisor, ref y);
+            _divisor.Width = 90;
+            _decimals.Minimum = 0; _decimals.Maximum = StructuredTypes.MaxDecimals;
+            _decimals.Value = Math.Max(0, Math.Min(StructuredTypes.MaxDecimals, decimals));
+            var decimalsCaption = new Label { Text = LanguageManager.GetString("Col_Decimals", "Decimal Places") + ":", AutoSize = false, TextAlign = ContentAlignment.MiddleRight };
+            decimalsCaption.SetBounds(_divisor.Right + 8, _divisor.Top + 2, 130, 22);
+            _decimals.SetBounds(decimalsCaption.Right + 6, _divisor.Top, 70, 24);
+            Controls.Add(decimalsCaption);
+            Controls.Add(_decimals);
             _chars.Minimum = 1; _chars.Maximum = 256; _chars.Value = Math.Max(1, Math.Min(256, stringLength));
             AddRow(LanguageManager.GetString("Lbl_StringChars", "String (characters)"), _chars, ref y);
             _chars.Width = 90;
@@ -223,10 +258,13 @@ namespace Kaban.UI.Forms
             {
                 if (DialogResult != DialogResult.OK) return;
                 string problem = null;
+                double d;
                 if (IsComment && _label.Text.Trim().Length == 0)
                     problem = LanguageManager.GetString("Msg_CommentRequired", "Type the comment's text.");
                 else if (!IsComment && _address.Text.Trim().Length == 0)
                     problem = LanguageManager.GetString("Msg_AddressRequired", "An address is required.");
+                else if (_divisor.Enabled && !TryDivisor(_divisor.Text, out d))
+                    problem = LanguageManager.GetString("Msg_MonBadDivisorShort", "The divisor is a number other than 0.");
                 if (problem == null) return;
                 MessageBox.Show(this, problem, Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 e.Cancel = true;
@@ -245,6 +283,9 @@ namespace Kaban.UI.Forms
             _format.Enabled = !comment && (structure != null ||
                               !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsFloat(type) && !SimulationMonitorForm.IsString(type));
             _chars.Enabled = !comment && structure == null && SimulationMonitorForm.IsString(type);
+            // a number's calculated value (a structure's members have their own: "Structures...")
+            _divisor.Enabled = _decimals.Enabled = !comment && structure == null &&
+                               !SimulationMonitorForm.IsBit(type) && !SimulationMonitorForm.IsString(type);
             _labelCaption.Text = (comment ? LanguageManager.GetString("Col_Comment", "Comment")
                                           : LanguageManager.GetString("Col_Label", "Label")) + ":";
             // A value typed for a run of devices would be written to all of them -

@@ -132,7 +132,12 @@ namespace Kaban.UI.Forms
             _members.Columns.Add(type);
             _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Offset", HeaderText = T("Col_StructOffset", "Offset (words)"), FillWeight = 16 });
             _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Bit", HeaderText = T("Col_StructBit", "Bit"), FillWeight = 9, ToolTipText = T("Tip_StructBit", "A Bit member: its bit of the word, 0 - F") });
-            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Comment", HeaderText = T("Col_Comment", "Comment"), FillWeight = 30 });
+            // 22 October: the PLC Monitor's calculated value of a number - the value divided by the divisor
+            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Divisor", HeaderText = T("Col_Divisor", "Divisor"), FillWeight = 11,
+                                                                 ToolTipText = T("Tip_MonDivisor", "The value divided by this is the calculated value: 100 for a 'xxx.xx mm' word") });
+            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Decimals", HeaderText = T("Col_Decimals", "Decimal Places"), FillWeight = 16,
+                                                                 ToolTipText = T("Tip_MonDecimals", "The calculated value's decimal places") });
+            _members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Comment", HeaderText = T("Col_Comment", "Comment"), FillWeight = 24 });
             foreach (DataGridViewColumn c in _members.Columns) c.SortMode = DataGridViewColumnSortMode.NotSortable;
             try { UiStyle.GridLook(_members); } catch { }
             right.Controls.Add(_members);
@@ -309,9 +314,19 @@ namespace Kaban.UI.Forms
             var typeColumn = (DataGridViewComboBoxColumn)_members.Columns["DataType"];
             if (!typeColumn.Items.Contains(m.DataType)) typeColumn.Items.Add(m.DataType);     // a length the list does not offer
             int i = _members.Rows.Add(m.Name, m.DataType, m.Offset.ToString(CultureInfo.InvariantCulture),
-                                      m.IsBit ? m.Bit.ToString("X", CultureInfo.InvariantCulture) : "", m.Comment);
+                                      m.IsBit ? m.Bit.ToString("X", CultureInfo.InvariantCulture) : "",
+                                      Scaled(m) ? DivisorText(m.Divisor) : "", Scaled(m) ? m.Decimals.ToString(CultureInfo.InvariantCulture) : "", m.Comment);
             _members.Rows[i].Cells["Bit"].ReadOnly = !m.IsBit;
+            _members.Rows[i].Cells["Divisor"].ReadOnly = _members.Rows[i].Cells["Decimals"].ReadOnly = !Scaled(m);
         }
+
+        /// <summary>A number: it has a calculated value (a bit or a string has none).</summary>
+        private static bool Scaled(StructuredTypes.Member m)
+        {
+            return !m.IsBit && !(m.DataType ?? "").TrimStart().StartsWith("String", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string DivisorText(double d) { return (d != 0 ? d : 1).ToString("0.#########", CultureInfo.InvariantCulture); }
 
         /// <summary>A member's row as typed, into the structure.</summary>
         private void TakeMember(int row)
@@ -327,9 +342,20 @@ namespace Kaban.UI.Forms
             var bit = Convert.ToString(cells["Bit"].Value ?? "").Trim();
             if (bit.Length > 0 && int.TryParse(bit, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out n)) m.Bit = Math.Max(0, Math.Min(15, n));
             m.Comment = Convert.ToString(cells["Comment"].Value ?? "").Trim();
+            double d;
+            if (double.TryParse(Convert.ToString(cells["Divisor"].Value ?? "").Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out d) &&
+                d != 0 && !double.IsNaN(d) && !double.IsInfinity(d)) m.Divisor = d;
+            if (int.TryParse(Convert.ToString(cells["Decimals"].Value ?? "").Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n))
+                m.Decimals = Math.Max(0, Math.Min(StructuredTypes.MaxDecimals, n));
+            if (!Scaled(m)) { m.Divisor = 1; m.Decimals = 0; }
             bool was = _filling;
             _filling = true;
             cells["Bit"].ReadOnly = !m.IsBit;
+            cells["Divisor"].ReadOnly = cells["Decimals"].ReadOnly = !Scaled(m);
+            // shown as taken: a divisor that is no number back to the one kept; a bit or a string none
+            string divText = Scaled(m) ? DivisorText(m.Divisor) : "", decText = Scaled(m) ? m.Decimals.ToString(CultureInfo.InvariantCulture) : "";
+            if (Convert.ToString(cells["Divisor"].Value ?? "") != divText) cells["Divisor"].Value = divText;
+            if (Convert.ToString(cells["Decimals"].Value ?? "") != decText) cells["Decimals"].Value = decText;
             if (!m.IsBit && Convert.ToString(cells["Bit"].Value ?? "") != "") cells["Bit"].Value = "";
             if (m.IsBit && Convert.ToString(cells["Bit"].Value ?? "") == "") cells["Bit"].Value = m.Bit.ToString("X", CultureInfo.InvariantCulture);
             _filling = was;
@@ -428,6 +454,9 @@ namespace Kaban.UI.Forms
             cells["Offset"].Value = m.Offset.ToString(CultureInfo.InvariantCulture);
             cells["Bit"].Value = m.IsBit ? m.Bit.ToString("X", CultureInfo.InvariantCulture) : "";
             cells["Bit"].ReadOnly = !m.IsBit;
+            cells["Divisor"].Value = Scaled(m) ? DivisorText(m.Divisor) : "";
+            cells["Decimals"].Value = Scaled(m) ? m.Decimals.ToString(CultureInfo.InvariantCulture) : "";
+            cells["Divisor"].ReadOnly = cells["Decimals"].ReadOnly = !Scaled(m);
             cells["Comment"].Value = m.Comment;
         }
 

@@ -206,6 +206,111 @@ namespace Kaban.UI.Forms
             return FormatInteger(v, IsDoubleWord(type) ? 32 : 16, format);
         }
 
+        // ---- THE CALCULATED VALUE (22 October) -------------------------------------------
+
+        /// <summary>A number the row holds - a word, a double word or a float - not a bit, a string or a group.</summary>
+        internal static bool IsNumber(WatchRow r)
+        {
+            if (r == null || !r.IsDevice || r.IsGroup) return false;
+            var type = r.EffectiveDataType;
+            return !IsBit(type) && !IsString(type);
+        }
+
+        /// <summary>The row's number as the PLC holds it (null: not a number, or not read).</summary>
+        internal static double? RawNumber(MonitorTab mon, WatchRow r)
+        {
+            if (!IsNumber(r)) return null;
+            string type = r.EffectiveDataType;
+            int[] w;
+            if (!TryWords(mon, r, out w)) return null;
+            if (IsFloat(type)) return w.Length >= 2 ? ToFloat(w[0], w[1]) : (double?)null;
+            bool unsigned = IsUnsigned(type);
+            return w.Length >= 2 && IsDoubleWord(type) ? CombineDouble(w[0], w[1], unsigned)
+                 : unsigned ? (double)(ushort)w[0] : (double)(short)w[0];
+        }
+
+        /// <summary>A number divided by the divisor, with the decimal places - a float not scaled as its value is shown.</summary>
+        internal static string Calculated(double raw, double divisor, int decimals, bool isFloat)
+        {
+            if (divisor == 0) divisor = 1;
+            if (isFloat && divisor == 1 && decimals == 0) return ((float)raw).ToString("G7", CultureInfo.InvariantCulture);
+            return (raw / divisor).ToString("F" + Math.Max(0, Math.Min(StructuredTypes.MaxDecimals, decimals)), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// The row's CALCULATED value: its number divided by its divisor, with its decimal
+        /// places - an array's and a structure's folded like their values. "" for a bit or a
+        /// string (nothing to calculate), null when not read yet.
+        /// </summary>
+        internal static string FormatCalculated(MonitorTab mon, WatchRow r, out bool nonZero)
+        {
+            nonZero = false;
+            if (r == null || !r.IsDevice) return "";
+            if (r.IsArray || r.Structure != null)
+            {
+                var inner = r.IsArray ? (r.Elements ?? new List<WatchRow>()) : (r.Members ?? new List<WatchRow>());
+                if (!inner.Any(HasCalculated)) return "";
+                int show = r.IsArray ? (inner.Count > 0 && inner[0].Structure != null ? 2 : 8) : 8;
+                var parts = new List<string>();
+                bool any = false;
+                foreach (var e in inner.Take(show))
+                {
+                    bool nz;
+                    // a bit or a string among them: as its value
+                    string s = HasCalculated(e) ? FormatCalculated(mon, e, out nz) : FormatValue(mon, e, out nz);
+                    parts.Add(s ?? "-");
+                    any |= nz;
+                }
+                nonZero = any;
+                string list = string.Join(", ", parts) + (inner.Count > show ? ", …" : "");
+                return r.IsArray ? list : "{" + list + "}";
+            }
+            if (!IsNumber(r)) return "";
+            var raw = RawNumber(mon, r);
+            if (raw == null) return null;
+            nonZero = raw.Value != 0;
+            return Calculated(raw.Value, r.EffectiveDivisor, r.EffectiveDecimals, IsFloat(r.EffectiveDataType));
+        }
+
+        /// <summary>A number - or a group with a number in it: it has a calculated value.</summary>
+        internal static bool HasCalculated(WatchRow r)
+        {
+            if (r == null || !r.IsDevice) return false;
+            if (r.IsArray) return (r.Elements ?? new List<WatchRow>()).Any(HasCalculated);
+            if (r.Structure != null) return (r.Members ?? new List<WatchRow>()).Any(HasCalculated);
+            return IsNumber(r);
+        }
+
+        /// <summary>
+        /// A calculated value typed, as the words to write: times the divisor - rounded to a
+        /// whole number for a word or a double word. Null, and why, when it cannot be.
+        /// </summary>
+        internal static int[] ParseCalculated(WatchRow r, string text, out string problem)
+        {
+            problem = null;
+            if (!IsNumber(r)) { problem = "Msg_MonNotNumber"; return null; }
+            double v;
+            if (!double.TryParse((text ?? "").Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out v) || double.IsNaN(v) || double.IsInfinity(v))
+            { problem = "Msg_MonNotNumber"; return null; }
+            string type = r.EffectiveDataType;
+            double raw = v * r.EffectiveDivisor;
+            if (IsFloat(type))
+            {
+                if (Math.Abs(raw) > float.MaxValue) { problem = "Msg_MonOutOfRange"; return null; }
+                int lo, hi;
+                FromFloat((float)raw, out lo, out hi);
+                return new[] { lo, hi };
+            }
+            double whole = Math.Round(raw, MidpointRounding.AwayFromZero);
+            bool dword = IsDoubleWord(type), unsigned = IsUnsigned(type);
+            double min = unsigned ? 0 : dword ? (double)int.MinValue : short.MinValue;
+            double max = dword ? (unsigned ? (double)uint.MaxValue : int.MaxValue) : (unsigned ? (double)ushort.MaxValue : short.MaxValue);
+            if (whole < min || whole > max) { problem = "Msg_MonOutOfRange"; return null; }
+            long n = (long)whole;
+            if (dword) return new[] { (int)(n & 0xFFFF), (int)((n >> 16) & 0xFFFF) };
+            return new[] { (int)(n & 0xFFFF) };
+        }
+
         /// <summary>
         /// What is typed, as the words to write - in the row's type and display
         /// format (a hexadecimal row takes "1F" or "0x1F", a binary one

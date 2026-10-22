@@ -40,8 +40,18 @@ namespace Kaban.Core.Helpers
             /// <summary>A Bit member: its bit of the word at Offset (0 - 15).</summary>
             public int Bit;
             public string Comment = "";
+            /// <summary>
+            /// The CALCULATED value is the PLC's divided by this (22 October): 100 for a "xxx.xx mm"
+            /// word - the PLC Monitor shows both. Never 0 (taken as 1).
+            /// </summary>
+            public double Divisor = 1;
+            /// <summary>The calculated value's decimal places.</summary>
+            public int Decimals;
 
             public Member Clone() { return (Member)MemberwiseClone(); }
+
+            /// <summary>A divisor or decimal places set (the file writes them only then).</summary>
+            public bool IsScaled { get { return Divisor != 1 || Decimals != 0; } }
 
             public bool IsBit { get { return IsBitType(DataType); } }
 
@@ -343,14 +353,16 @@ namespace Kaban.Core.Helpers
             var lines = new List<string>
             {
                 "# Kaban HMI structured data types - the PLC Monitor's, chosen like a simple data type.",
-                "# [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment"
+                "# [Name];Size in devices;Comment - then one member a line: Name;DataType;Offset (words from the start);Bit (a Bit member's, 0-15);Comment",
+                "#   and, for a value the PLC Monitor also shows calculated: ;Divisor;Decimal places after the comment"
             };
             foreach (var t in types)
             {
                 lines.Add("[" + Clean(t.Name) + "];" + t.Size.ToString(CultureInfo.InvariantCulture) + ";" + Clean(t.Comment));
                 foreach (var m in t.Members)
                     lines.Add(string.Join(";", Clean(m.Name), Clean(m.DataType), m.Offset.ToString(CultureInfo.InvariantCulture),
-                                          m.IsBit ? m.Bit.ToString(CultureInfo.InvariantCulture) : "", Clean(m.Comment)));
+                                          m.IsBit ? m.Bit.ToString(CultureInfo.InvariantCulture) : "", Clean(m.Comment)) +
+                              (m.IsScaled ? ";" + m.Divisor.ToString("R", CultureInfo.InvariantCulture) + ";" + m.Decimals.ToString(CultureInfo.InvariantCulture) : ""));
             }
             return lines;
         }
@@ -377,12 +389,25 @@ namespace Kaban.Core.Helpers
                 var m = new Member { Name = f[0].Trim(), DataType = f[1].Trim() };
                 if (int.TryParse(f[2].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) m.Offset = Math.Max(0, n);
                 if (f.Length > 3 && int.TryParse(f[3].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) m.Bit = Math.Max(0, Math.Min(15, n));
-                if (f.Length > 4) m.Comment = string.Join(";", f.Skip(4)).Trim();
+                // the divisor and the decimal places after the comment (a file of before has none)
+                int last = f.Length;
+                double div;
+                if (f.Length >= 7 && double.TryParse(f[f.Length - 2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out div) &&
+                    int.TryParse(f[f.Length - 1].Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n))
+                {
+                    m.Divisor = div != 0 && !double.IsNaN(div) && !double.IsInfinity(div) ? div : 1;
+                    m.Decimals = Math.Max(0, Math.Min(MaxDecimals, n));
+                    last = f.Length - 2;
+                }
+                if (last > 4) m.Comment = string.Join(";", f.Skip(4).Take(last - 4)).Trim();
                 current.Members.Add(m);
             }
             foreach (var t in list) if (t.Size < t.MinimumSize) t.Size = t.MinimumSize;
             return list;
         }
+
+        /// <summary>The most decimal places a calculated value is shown with.</summary>
+        public const int MaxDecimals = 9;
 
         private static string Clean(string s) { return (s ?? "").Replace(";", ",").Replace("\r", " ").Replace("\n", " ").Trim(); }
 

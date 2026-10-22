@@ -89,7 +89,7 @@ class MCol {
         Check("a right-click on a heading: the columns' menu (not the rows')", chooser != null && grid.Columns.Cast<DataGridViewColumn>().All(c => c.HeaderCell.ContextMenuStrip == chooser.Menu));
         var items = chooser.MenuItems();
         var names = items.OfType<ToolStripMenuItem>().Where(i => i.CheckOnClick).Select(i => i.Text).ToList();
-        Check("  every column to tick, in the order shown", names.Count == 7 && names[0] == "Label" && names.Contains("Modified") && names.Contains("Display Format"), string.Join(",", names));
+        Check("  every column to tick, in the order shown", names.Count == 10 && names[0] == "Label" && names.Contains("Calculated Value") && names.Contains("Decimal Places") && names.Contains("Modified") && names.Contains("Display Format"), string.Join(",", names));
         Check("  then Column widths..., Fit the widths to the contents, Save as the default, Default column settings",
               ItemFor(chooser, "widths") != null && ItemFor(chooser, "fit") != null && ItemFor(chooser, "savedefault") != null &&
               ItemFor(chooser, "savedefault").Text == "Save as the default" && ItemFor(chooser, "default").Text == "Default column settings" &&
@@ -104,7 +104,7 @@ class MCol {
         Check("  and from the other tab", !grid2.Columns["DataType"].Visible);
         Check("  kept (Columns.cfg: DataType=...;0)", ColumnsFile(dir).Contains("DataType=") && ColumnsFile(dir).Split('\n').Any(l => l.StartsWith("DataType=") && l.Trim().EndsWith(";0")),
               ColumnsFile(dir).Replace("\r\n", " | "));
-        foreach (var n in new[] { "Label", "Format", "Address", "Value", "Changed" }) if (n != "Value") ItemFor(chooser, n).Checked = false;
+        foreach (var n in new[] { "Label", "Format", "Address", "Value", "Calculated", "Divisor", "Decimals", "Changed" }) if (n != "Value") ItemFor(chooser, n).Checked = false;
         Check("never the last one: Value stays", grid.Columns["Value"].Visible && grid.Columns.Cast<DataGridViewColumn>().Count(c => c.Visible) == 1);
         ItemFor(chooser, "Value").Checked = false;
         Check("  unticking it too is refused", grid.Columns["Value"].Visible);

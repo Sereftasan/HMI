@@ -103,6 +103,23 @@ namespace Kaban.UI.Forms
             /// <summary>An array shown with its elements under it.</summary>
             public bool Expanded;
 
+            /// <summary>
+            /// THE CALCULATED VALUE (22 October: "add Divisor and DecimalPlaces properties to the
+            /// labels and show the value in both units"): the PLC's value divided by this, with
+            /// Decimals places - 12345 in a "xxx.xx mm" word is 123.45 with 100 and 2. Never 0.
+            /// </summary>
+            public double Divisor = 1;
+            public int Decimals;
+
+            /// <summary>A structure's member: its member's; an element: its array's; else its own.</summary>
+            public double EffectiveDivisor
+            {
+                get { var d = Member != null ? Member.Divisor : Head != null ? Head.EffectiveDivisor : Divisor; return d != 0 ? d : 1; }
+            }
+            public int EffectiveDecimals { get { return Member != null ? Member.Decimals : Head != null ? Head.EffectiveDecimals : Decimals; } }
+            /// <summary>A divisor or decimal places set for it.</summary>
+            public bool IsScaled { get { return EffectiveDivisor != 1 || EffectiveDecimals != 0; } }
+
             /// <summary>On an element row: its array; on a member row: its structure. Made from them, never stored.</summary>
             public WatchRow Head;
             public int ElementIndex;
@@ -216,7 +233,8 @@ namespace Kaban.UI.Forms
                                       DataTypeOverride = DataTypeOverride, Comment = Comment,
                                       DisplayFormat = DisplayFormat, StringLength = StringLength,
                                       ArrayCount = Head == null ? ArrayCount : 1, Expanded = Expanded,
-                                      ConditionKey = Head == null ? ConditionKey : "" };
+                                      ConditionKey = Head == null ? ConditionKey : "",
+                                      Divisor = EffectiveDivisor, Decimals = EffectiveDecimals };
             }
         }
 
@@ -1166,6 +1184,18 @@ namespace Kaban.UI.Forms
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Value", HeaderText = T("Col_Value", "Value") });
             grid.Columns["Value"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
             grid.Columns["Value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            // THE CALCULATED VALUE (22 October): the value divided by the row's divisor, with its
+            // decimal places - both units side by side; a column like any other, taken off when not wanted.
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Calculated", HeaderText = T("Col_Calculated", "Calculated Value"),
+                                                             ToolTipText = T("Tip_MonCalculated", "The value divided by the divisor, with the decimal places - typed, it is written times the divisor") });
+            grid.Columns["Calculated"].DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            grid.Columns["Calculated"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Divisor", HeaderText = T("Col_Divisor", "Divisor"),
+                                                             ToolTipText = T("Tip_MonDivisor", "The value divided by this is the calculated value: 100 for a 'xxx.xx mm' word") });
+            grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Decimals", HeaderText = T("Col_Decimals", "Decimal Places"),
+                                                             ToolTipText = T("Tip_MonDecimals", "The calculated value's decimal places") });
+            grid.Columns["Divisor"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            grid.Columns["Decimals"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             // WHEN IT LAST CHANGED, AND WHO CHANGED IT: the HMI (a write of that very
             // value just before) or the PLC program. See DeviceHistory.
             grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Changed", HeaderText = T("Col_LastChange", "Modified"), ReadOnly = true });
@@ -1356,12 +1386,16 @@ namespace Kaban.UI.Forms
                 if (row == null || (row.IsComment && col != "Label") || (row.IsBlank && col == "Value")) { e.Cancel = true; return; }
                 // An element is its array's: only its value is its own. An array's
                 // value is the list of its elements'.
-                if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
+                // The calculated value: a number's; its divisor and decimal places: a number's, an
+                // array of numbers', a structure's member's (the structure's own, kept with it).
+                if (col == "Calculated") { if (!IsNumber(row)) { e.Cancel = true; return; } }
+                else if (col == "Divisor" || col == "Decimals") { if (!CanScale(row)) { e.Cancel = true; return; } }
+                else if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
                 if (row.IsGroup && col == "Label") grid.Rows[e.RowIndex].Cells["Label"].Value = row.EffectiveLabel;
                 sh.Editing = true;
                 // A value goes to the PLC and is not undone; a name or an address is.
-                if (col != "Value") Remember(T("Undo_Edit", "edit a row"), mon);
+                if (col != "Value" && col != "Calculated" && !row.IsMember) Remember(T("Undo_Edit", "edit a row"), mon);
             };
             grid.CellEndEdit += (s, e) =>
             {
@@ -1371,7 +1405,7 @@ namespace Kaban.UI.Forms
             grid.EditingControlShowing += (s, e) =>
             {
                 var tb = e.Control as TextBox;
-                if (tb != null) tb.Font = grid.CurrentCell != null && grid.CurrentCell.OwningColumn.Name == "Value"
+                if (tb != null) tb.Font = grid.CurrentCell != null && (grid.CurrentCell.OwningColumn.Name == "Value" || grid.CurrentCell.OwningColumn.Name == "Calculated")
                                           ? grid.Columns["Value"].DefaultCellStyle.Font : UiStyle.Body;
             };
 
@@ -1400,11 +1434,12 @@ namespace Kaban.UI.Forms
             if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
             if (column == "Label" && row.IsGroup && sh.Grid.PointToClient(Cursor.Position).X -
                 sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= FoldMarkRight(row)) return;   // the fold mark
-            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup))
+            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup) || (column == "Calculated" && IsNumber(row)) ||
+                ((column == "Divisor" || column == "Decimals") && CanScale(row)))
             {
                 // In the table itself: the value is what is changed nine times
                 // out of ten, and a dialog for it is a detour.
-                sh.Grid.CurrentCell = sh.Grid.Rows[rowIndex].Cells[row.IsComment ? "Label" : "Value"];
+                sh.Grid.CurrentCell = sh.Grid.Rows[rowIndex].Cells[row.IsComment ? "Label" : column];
                 sh.Grid.BeginEdit(true);
                 return;
             }
@@ -1717,6 +1752,15 @@ namespace Kaban.UI.Forms
                 case "Value":
                     WriteValue(mon, row, typed);
                     break;
+
+                case "Calculated":
+                    if (typed.Length > 0) WriteValue(mon, row, typed, calculated: true);
+                    break;
+
+                case "Divisor":
+                case "Decimals":
+                    SetScale(mon, row, column == "Divisor" ? typed : null, column == "Decimals" ? typed : null);
+                    break;
             }
 
             EnsureBlankRow(sh);
@@ -1738,7 +1782,8 @@ namespace Kaban.UI.Forms
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint),
                        row.IsComment ? row.Comment : row.EffectiveLabel, row.EffectiveDataType, row.Address, valueText,
                        focusField == "Format" ? "DataType" : focusField, isNew: false, isComment: row.IsComment,
-                       displayFormat: row.DisplayFormat, arrayCount: row.ArrayCount, stringLength: row.StringLength, station: mon.Station))
+                       displayFormat: row.DisplayFormat, arrayCount: row.ArrayCount, stringLength: row.StringLength, station: mon.Station,
+                       divisor: row.Divisor, decimals: row.Decimals))
             {
                 if (dlg.ShowDialog(DialogOwner) != DialogResult.OK) return;
                 Remember(T("Undo_Edit", "edit a row"), mon);
@@ -1752,6 +1797,8 @@ namespace Kaban.UI.Forms
                     ApplyNames(mon, row, dlg.RowLabel, dlg.RowDataType);
                     row.DisplayFormat = dlg.RowDisplayFormat == FormatDecimal ? "" : dlg.RowDisplayFormat;
                     row.StringLength = dlg.RowStringLength;
+                    row.Divisor = dlg.RowDivisor;
+                    row.Decimals = dlg.RowDecimals;
                     if (dlg.ArrayCount != row.ArrayCount)
                     {
                         if (row.ArrayCount <= 1) row.Expanded = true;     // just made an array: show it
@@ -1818,7 +1865,7 @@ namespace Kaban.UI.Forms
                     {
                         Station = mon.Station, Address = dlg.RowAddress, ArrayCount = n, Expanded = n > 1,
                         DisplayFormat = dlg.RowDisplayFormat == FormatDecimal ? "" : dlg.RowDisplayFormat,
-                        StringLength = dlg.RowStringLength
+                        StringLength = dlg.RowStringLength, Divisor = dlg.RowDivisor, Decimals = dlg.RowDecimals
                     };
                     ApplyNames(mon, r, dlg.RowLabel.Length == 0 ? (PlcLabelTable.ByAddress(mon.Station, r.Address) ?? new PlcLabelTable.Entry()).Label : dlg.RowLabel,
                                dlg.RowDataType);
@@ -1992,8 +2039,8 @@ namespace Kaban.UI.Forms
         // COLUMNS: widths, order, sorting
         // ==================================================================
 
-        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Changed", "Condition" };
-        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 130 };
+        private static readonly string[] ColumnNames = { "Label", "DataType", "Format", "Address", "Value", "Calculated", "Divisor", "Decimals", "Changed", "Condition" };
+        private static readonly int[] DefaultWidths = { 280, 170, 110, 90, 180, 150, 80, 115, 150, 130 };
         private static Dictionary<string, int> _colWidth, _colOrder;
         /// <summary>The columns the user took off (right-click on a heading); the Condition column shows only on a tab with conditions anyway.</summary>
         private static HashSet<string> _colHidden;
@@ -2052,6 +2099,28 @@ namespace Kaban.UI.Forms
             catch (Exception ex) { AuditLogger.Log("could not save the monitor's column layout: " + ex.Message); }
         }
 
+        /// <summary>
+        /// The columns in the kept order; a column the kept layout does not know yet (one newer
+        /// than it) right after the one it follows in the default order.
+        /// </summary>
+        internal static List<string> ColumnOrder()
+        {
+            LoadColumnLayout();
+            var ordered = ColumnNames.Where(n => _colOrder.ContainsKey(n)).OrderBy(n => _colOrder[n]).ToList();
+            for (int i = 0; i < ColumnNames.Length; i++)
+            {
+                if (_colOrder.ContainsKey(ColumnNames[i])) continue;
+                int at = 0;
+                for (int k = i - 1; k >= 0; k--)
+                {
+                    int p = ordered.IndexOf(ColumnNames[k]);
+                    if (p >= 0) { at = p + 1; break; }
+                }
+                ordered.Insert(at, ColumnNames[i]);
+            }
+            return ordered;
+        }
+
         /// <summary>The kept widths and order on a grid - every tab looks the same.</summary>
         private static void ApplyColumnLayout(DataGridView grid)
         {
@@ -2065,11 +2134,7 @@ namespace Kaban.UI.Forms
                     var c = grid.Columns[ColumnNames[i]];
                     c.Width = _colWidth.TryGetValue(ColumnNames[i], out w) ? Math.Max(40, w) : DefaultWidths[i];
                 }
-                var ordered = ColumnNames.OrderBy(n =>
-                {
-                    int o;
-                    return _colOrder.TryGetValue(n, out o) ? o : Array.IndexOf(ColumnNames, n);
-                }).ToList();
+                var ordered = ColumnOrder();
                 for (int k = 0; k < ordered.Count; k++) grid.Columns[ordered[k]].DisplayIndex = k;
                 // The ones taken off (Condition also needs a tab with conditions: see Render).
                 foreach (var n in ColumnNames)
@@ -2221,6 +2286,19 @@ namespace Kaban.UI.Forms
                     if (va == null || vb == null) return va == null ? (vb == null ? 0 : 1) : -1;   // unread last
                     return va.Value.CompareTo(vb.Value);
                 }
+                case "Calculated":
+                {
+                    double? va = CalculatedOf(mon, a), vb = CalculatedOf(mon, b);
+                    if (va == null || vb == null) return va == null ? (vb == null ? 0 : 1) : -1;   // unread (and no number) last
+                    return va.Value.CompareTo(vb.Value);
+                }
+                case "Divisor":
+                case "Decimals":
+                {
+                    if (CanScale(a) != CanScale(b)) return CanScale(a) ? -1 : 1;
+                    int c = column == "Divisor" ? a.EffectiveDivisor.CompareTo(b.EffectiveDivisor) : a.EffectiveDecimals.CompareTo(b.EffectiveDecimals);
+                    return c != 0 ? c : CompareAddress(a.Address, b.Address);
+                }
                 case "Condition":
                 {
                     // met first, then not met, then rows that are no condition
@@ -2288,6 +2366,13 @@ namespace Kaban.UI.Forms
             int high;
             mon.Values.TryGetValue(PlcAddressHelper.GetNextAddress(r.Address), out high);
             return CombineDouble(v, high, IsUnsigned(r.EffectiveDataType));
+        }
+
+        /// <summary>A row's calculated value as a number, to sort by (null: no number, or not read).</summary>
+        private static double? CalculatedOf(MonitorTab mon, WatchRow r)
+        {
+            var raw = RawNumber(mon, r);
+            return raw == null ? (double?)null : raw.Value / r.EffectiveDivisor;
         }
 
         private void RestoreHidden()
@@ -2585,14 +2670,16 @@ namespace Kaban.UI.Forms
         /// Writes one device, and reports WHY when it cannot - a silently ignored
         /// write on a machine is the kind of thing that gets diagnosed as a broken PLC.
         /// </summary>
-        private void WriteValue(MonitorTab mon, WatchRow row, string text, string how = "typed")
+        /// <param name="calculated">The text is the CALCULATED value: written times the row's divisor.</param>
+        internal void WriteValue(MonitorTab mon, WatchRow row, string text, string how = "typed", bool calculated = false)
         {
             if (row == null || !row.IsDevice || row.IsGroup) return;
 
             // In the row's type and display format: a float, a string, a word in
             // hexadecimal or binary - checked for its range before anything goes.
+            // A calculated value: times the divisor, rounded to a whole number for a word.
             string problem;
-            var words = ParseValue(row, text, out problem);
+            var words = calculated ? ParseCalculated(row, text, out problem) : ParseValue(row, text, out problem);
             if (words == null)
             {
                 SetStatus(problem == "Msg_MonOutOfRange" ? T("Msg_MonOutOfRange", "Out of range for this data type - nothing written.")
@@ -2786,6 +2873,62 @@ namespace Kaban.UI.Forms
             Render(mon, sh);
             int at = sh.Rows.IndexOf(head);
             if (at >= 0) Select(sh, new[] { at });
+        }
+
+        /// <summary>
+        /// A divisor and decimal places can be set on it: a number, an array of numbers (its
+        /// elements take the array's), a structure's number member (the structure's own: every
+        /// row of that structure shows it).
+        /// </summary>
+        internal static bool CanScale(WatchRow r)
+        {
+            if (r == null || !r.IsDevice) return false;
+            if (r.IsMember) return IsNumber(r);
+            if (r.IsElement) return false;
+            string type = StructuredTypes.BaseName(r.EffectiveDataType);
+            return StructuredTypes.Find(type, r.Station) == null && !IsBit(type) && !IsString(type);
+        }
+
+        /// <summary>
+        /// A divisor and/or decimal places typed (null: that one unchanged) - on a structure's
+        /// member into the structure itself, kept with the machine's structured data types.
+        /// </summary>
+        internal void SetScale(MonitorTab mon, WatchRow row, string divisor, string decimals)
+        {
+            if (!CanScale(row)) return;
+            double div = row.EffectiveDivisor;
+            int dec = row.EffectiveDecimals;
+            if (divisor != null)
+            {
+                double d;
+                if (!double.TryParse(divisor.Trim().Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out d) ||
+                    d == 0 || double.IsNaN(d) || double.IsInfinity(d))
+                {
+                    SetStatus(T("Msg_MonBadDivisor", "The divisor is a number other than 0 - not changed."));
+                    return;
+                }
+                div = d;
+            }
+            if (decimals != null)
+            {
+                int n;
+                if (!int.TryParse(decimals.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out n) || n < 0 || n > StructuredTypes.MaxDecimals)
+                {
+                    SetStatus(string.Format(T("Msg_MonBadDecimals", "Decimal places: 0 - {0} - not changed."), StructuredTypes.MaxDecimals));
+                    return;
+                }
+                dec = n;
+            }
+            if (!row.IsMember) { row.Divisor = div; row.Decimals = dec; return; }
+
+            // the structure's member: every type of the machine kept, this one's member changed
+            var types = StructuredTypes.All(row.Station).Select(t => t.Clone()).ToList();
+            var type = types.FirstOrDefault(t => string.Equals(t.Name, StructuredTypes.BaseName(row.Head.EffectiveDataType), StringComparison.OrdinalIgnoreCase));
+            if (type == null || row.ElementIndex < 0 || row.ElementIndex >= type.Members.Count) return;
+            type.Members[row.ElementIndex].Divisor = div;
+            type.Members[row.ElementIndex].Decimals = dec;
+            try { StructuredTypes.Save(types, row.Station); }
+            catch (Exception ex) { SetStatus(ex.Message); }
         }
 
         /// <summary>The selected rows (an element: its array) shown in a display format.</summary>
@@ -2998,6 +3141,7 @@ namespace Kaban.UI.Forms
                     // A heading: its text across the label cell, the row tinted.
                     Set(row.Cells["Label"], model.Comment);
                     Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Address"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["Calculated"], ""); Set(row.Cells["Divisor"], ""); Set(row.Cells["Decimals"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
                     Style(row, ColCommentBack, ColCommentText, UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold | FontStyle.Italic));
@@ -3009,6 +3153,7 @@ namespace Kaban.UI.Forms
                 if (model.IsBlank)
                 {
                     Set(row.Cells["Label"], ""); Set(row.Cells["DataType"], ""); Set(row.Cells["Format"], ""); Set(row.Cells["Value"], "");
+                    Set(row.Cells["Calculated"], ""); Set(row.Cells["Divisor"], ""); Set(row.Cells["Decimals"], "");
                     Set(row.Cells["Changed"], ""); Tip(row.Cells["Changed"], "");
                     Set(row.Cells["Condition"], ""); Tip(row.Cells["Condition"], "");
                     continue;
@@ -3050,6 +3195,7 @@ namespace Kaban.UI.Forms
                     Set(row.Cells["Value"], "-");
                     if (row.Cells["Value"].Style.ForeColor != ColLabelUnknown) row.Cells["Value"].Style.ForeColor = ColLabelUnknown;
                 }
+                RenderCalculated(mon, sh, i, model, row);
 
                 RenderLastChange(mon, model, row.Cells["Changed"]);
                 RenderCondition(mon, model, row.Cells["Condition"]);
@@ -3059,6 +3205,34 @@ namespace Kaban.UI.Forms
             bool conditions = sh.Rows.Any(r => !string.IsNullOrEmpty(r.ConditionKey));
             conditions &= !IsColumnHidden("Condition");
             if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
+        }
+
+        private static readonly Color ColScaleDefault = Color.FromArgb(160, 164, 172);
+
+        /// <summary>
+        /// The calculated value, the divisor and the decimal places of a row: a number's (its
+        /// elements' and members' folded on an array and a structure); a divisor not set greyed.
+        /// </summary>
+        private static void RenderCalculated(MonitorTab mon, Sheet sh, int i, WatchRow model, DataGridViewRow row)
+        {
+            bool editing = sh.Editing && sh.Grid.CurrentCell != null && sh.Grid.CurrentCell.RowIndex == i;
+            bool nonZero;
+            string calc = FormatCalculated(mon, model, out nonZero);
+            var cell = row.Cells["Calculated"];
+            if (!(editing && sh.Grid.CurrentCell.OwningColumn.Name == "Calculated"))
+            {
+                Set(cell, calc ?? "-");
+                var want = calc == null ? ColLabelUnknown : nonZero ? ColValueSet : ColValueClear;
+                if (cell.Style.ForeColor != want) cell.Style.ForeColor = want;
+            }
+            bool scale = CanScale(model);
+            string div = scale ? model.EffectiveDivisor.ToString("0.#########", CultureInfo.InvariantCulture) : "";
+            string dec = scale ? model.EffectiveDecimals.ToString(CultureInfo.InvariantCulture) : "";
+            if (!(editing && sh.Grid.CurrentCell.OwningColumn.Name == "Divisor")) Set(row.Cells["Divisor"], div);
+            if (!(editing && sh.Grid.CurrentCell.OwningColumn.Name == "Decimals")) Set(row.Cells["Decimals"], dec);
+            var grey = scale && !model.IsScaled ? ColScaleDefault : Color.Empty;
+            if (row.Cells["Divisor"].Style.ForeColor != grey) row.Cells["Divisor"].Style.ForeColor = grey;
+            if (row.Cells["Decimals"].Style.ForeColor != grey) row.Cells["Decimals"].Style.ForeColor = grey;
         }
 
         private static readonly Color ColConditionMet = Color.FromArgb(0, 130, 50);
@@ -3464,8 +3638,9 @@ namespace Kaban.UI.Forms
 
         /// <summary>
         /// The fifth field of a kept row: its display format, an array's count and
-        /// fold, a string's length - "fmt=Hexadecimal|n=10|open=1|len=32", only what
-        /// differs from the default. A list from before reads the same as ever.
+        /// fold, a string's length, the calculated value's divisor and decimal places -
+        /// "fmt=Hexadecimal|n=10|open=1|len=32|div=100|dec=2", only what differs from the
+        /// default. A list from before reads the same as ever.
         /// </summary>
         internal static string Extras(WatchRow r)
         {
@@ -3474,6 +3649,8 @@ namespace Kaban.UI.Forms
             if (r.ArrayCount > 1) { parts.Add("n=" + r.ArrayCount.ToString(CultureInfo.InvariantCulture)); if (r.Expanded) parts.Add("open=1"); }
             if (r.StringLength != 16) parts.Add("len=" + r.StringLength.ToString(CultureInfo.InvariantCulture));
             if (!string.IsNullOrEmpty(r.ConditionKey)) parts.Add("cond=" + r.ConditionKey);
+            if (r.Divisor != 1 && r.Divisor != 0) parts.Add("div=" + r.Divisor.ToString("R", CultureInfo.InvariantCulture));
+            if (r.Decimals != 0) parts.Add("dec=" + r.Decimals.ToString(CultureInfo.InvariantCulture));
             return string.Join("|", parts);
         }
 
@@ -3492,6 +3669,11 @@ namespace Kaban.UI.Forms
                     case "open": r.Expanded = v == "1"; break;
                     case "len": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.StringLength = Math.Max(1, Math.Min(256, n)); break;
                     case "cond": r.ConditionKey = v; break;
+                    case "div":
+                        double d;
+                        if (double.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out d) && d != 0 && !double.IsNaN(d) && !double.IsInfinity(d)) r.Divisor = d;
+                        break;
+                    case "dec": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.Decimals = Math.Max(0, Math.Min(StructuredTypes.MaxDecimals, n)); break;
                 }
             }
         }
