@@ -1426,7 +1426,8 @@ namespace Kaban.UI.Forms
                 // value is the list of its elements'.
                 // The calculated value: a number's; its divisor and decimal places: a number's, an
                 // array of numbers', a structure's member's (the structure's own, kept with it).
-                if (col == "Calculated") { if (!IsNumber(row)) { e.Cancel = true; return; } }
+                // a bit's or a string's Value (HMI) is its value (nothing to calculate): typed as the Value
+                if (col == "Calculated") { if (!row.IsDevice || row.IsGroup) { e.Cancel = true; return; } }
                 else if (col == "Divisor" || col == "Decimals") { if (!CanScale(row)) { e.Cancel = true; return; } }
                 else if ((row.IsElement && col != "Value") || (row.IsGroup && col == "Value") || col == "Format" || col == "Changed") { e.Cancel = true; return; }
                 // The label without the fold mark and the count shown around it.
@@ -1472,7 +1473,7 @@ namespace Kaban.UI.Forms
             if (row.IsBlank) { AddRows(atEnd: true, comment: false); return; }
             if (column == "Label" && row.IsGroup && sh.Grid.PointToClient(Cursor.Position).X -
                 sh.Grid.GetCellDisplayRectangle(sh.Grid.Columns["Label"].Index, rowIndex, false).X <= FoldMarkRight(row)) return;   // the fold mark
-            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup) || (column == "Calculated" && IsNumber(row)) ||
+            if (row.IsComment || (column == "Value" && row.IsDevice && !row.IsGroup) || (column == "Calculated" && row.IsDevice && !row.IsGroup) ||
                 ((column == "Divisor" || column == "Decimals") && CanScale(row)))
             {
                 // In the table itself: the value is what is changed nine times
@@ -1800,7 +1801,7 @@ namespace Kaban.UI.Forms
                     break;
 
                 case "Calculated":
-                    if (typed.Length > 0) WriteValue(mon, row, typed, calculated: true);
+                    if (typed.Length > 0) WriteValue(mon, row, typed, calculated: IsNumber(row));
                     break;
 
                 case "Divisor":

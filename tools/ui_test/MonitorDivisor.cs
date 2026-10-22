@@ -143,7 +143,10 @@ class MD {
               cell(plain, "Decimals") == "0" && grid.Rows[Rows(sh).IndexOf(plain)].Cells["Divisor"].Style.ForeColor != System.Drawing.Color.Empty &&
               grid.Rows[Rows(sh).IndexOf(dw)].Cells["Divisor"].Style.ForeColor == System.Drawing.Color.Empty);
         Check("a float not scaled: as its value", cell(fl, "Calculated") == "3.25", cell(fl, "Calculated"));
-        Check("a bit, a string: nothing to calculate, no divisor", cell(bit, "Calculated") == "" && cell(bit, "Divisor") == "" && cell(str, "Calculated") == "" && cell(str, "Divisor") == "");
+        // 23 October: "the bit labels under a structured label should be seen in their own cells" - Value (HMI) too
+        Check("a bit, a string: nothing to calculate - Value (HMI) their value, no divisor",
+              cell(bit, "Calculated") == "1" && cell(bit, "Divisor") == "" && cell(str, "Calculated") == cell(str, "Value") && cell(str, "Divisor") == "",
+              cell(bit, "Calculated") + " | " + cell(str, "Calculated") + " | " + cell(str, "Value"));
         sim.Write("D100", 5); Call(form, "RefreshValues"); Application.DoEvents();
         Check("  follows the value: 5 - 0.05", cell(dw, "Calculated") == "0.05", cell(dw, "Calculated"));
 
@@ -178,8 +181,8 @@ class MD {
         Rows(sh).Insert(Rows(sh).Count - 1, st);
         Call(form, "RefreshValues"); Application.DoEvents();
         var mem = Kids(st, "Members");
-        Check("Recipe.X 98765 ÷ 100: 987.65; Recipe.Speed 1205 ÷ 10: 120.5; Code as it is; the bit nothing",
-              Calc(mon, mem[1]) == "987.65" && Calc(mon, mem[2]) == "120.5" && Calc(mon, mem[0]) == "7" && Calc(mon, mem[3]) == "",
+        Check("Recipe.X 98765 ÷ 100: 987.65; Recipe.Speed 1205 ÷ 10: 120.5; Code as it is; the bit its value, in its own cell",
+              Calc(mon, mem[1]) == "987.65" && Calc(mon, mem[2]) == "120.5" && Calc(mon, mem[0]) == "7" && Calc(mon, mem[3]) == "1" && cell(mem[3], "Calculated") == "1",
               Calc(mon, mem[1]) + " " + Calc(mon, mem[2]) + " " + Calc(mon, mem[3]));
         Check("  folded in braces, the bit as its value", Calc(mon, st) == "{7, 987.65, 120.5, 1}", Calc(mon, st));
         Check("  each member shows its divisor", cell(mem[1], "Divisor") == "100" && cell(mem[1], "Decimals") == "2" && cell(mem[3], "Divisor") == "" && cell(st, "Divisor") == "");
@@ -202,8 +205,15 @@ class MD {
             Set(sh, "Editing", false);
             return !args.Cancel;
         };
-        Check("the calculated value of a number edited in place; of a bit, an array, a structure not",
-              canEdit(dw, "Calculated") && canEdit(els[1], "Calculated") && canEdit(mem[1], "Calculated") && !canEdit(bit, "Calculated") && !canEdit(arr, "Calculated") && !canEdit(st, "Calculated"));
+        Check("Value (HMI) edited in place: a number's, a bit's (its value) - an array's, a structure's not",
+              canEdit(dw, "Calculated") && canEdit(els[1], "Calculated") && canEdit(mem[1], "Calculated") && canEdit(bit, "Calculated") && canEdit(mem[3], "Calculated") &&
+              !canEdit(arr, "Calculated") && !canEdit(st, "Calculated"));
+        int bitAt = Rows(sh).IndexOf(bit);
+        grid.Rows[bitAt].Cells["Calculated"].Value = "0";
+        Call(form, "CommitCellEdit", mon, sh, bitAt, grid.Columns["Calculated"].Index);
+        sim.TryRead("M5", out v);
+        Check("  0 typed in the bit's Value (HMI): written as its value", v == 0, v.ToString());
+        sim.Write("M5", 1);
         Check("  the divisor: a number's, an array's, a member's - not an element's, a bit's", canEdit(dw, "Divisor") && canEdit(arr, "Decimals") && canEdit(mem[1], "Divisor") &&
               !canEdit(els[1], "Divisor") && !canEdit(bit, "Divisor") && !canEdit(st, "Divisor"));
         int at = Rows(sh).IndexOf(plain);

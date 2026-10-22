@@ -239,8 +239,9 @@ namespace Kaban.UI.Forms
 
         /// <summary>
         /// The row's CALCULATED value: its number divided by its divisor, with its decimal
-        /// places - an array's and a structure's folded like their values. "" for a bit or a
-        /// string (nothing to calculate), null when not read yet.
+        /// places - an array's and a structure's folded like their values. A bit or a string
+        /// (nothing to calculate) as its value (23 October: "the bit labels under a structured
+        /// label should be seen in their own cells"); null when not read yet.
         /// </summary>
         internal static string FormatCalculated(MonitorTab mon, WatchRow r, out bool nonZero)
         {
@@ -249,7 +250,6 @@ namespace Kaban.UI.Forms
             if (r.IsArray || r.Structure != null)
             {
                 var inner = r.IsArray ? (r.Elements ?? new List<WatchRow>()) : (r.Members ?? new List<WatchRow>());
-                if (!inner.Any(HasCalculated)) return "";
                 int show = r.IsArray ? (inner.Count > 0 && inner[0].Structure != null ? 2 : 8) : 8;
                 var parts = new List<string>();
                 bool any = false;
@@ -265,7 +265,7 @@ namespace Kaban.UI.Forms
                 string list = string.Join(", ", parts) + (inner.Count > show ? ", …" : "");
                 return r.IsArray ? list : "{" + list + "}";
             }
-            if (!IsNumber(r)) return "";
+            if (!IsNumber(r)) return FormatValue(mon, r, out nonZero);
             var raw = RawNumber(mon, r);
             if (raw == null) return null;
             nonZero = raw.Value != 0;
