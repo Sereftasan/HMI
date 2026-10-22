@@ -11,19 +11,22 @@ using Kaban.UI.Helpers;
 namespace Kaban.UI.Forms
 {
     // ======================================================================
-    // THE TABLE VIEW (22 October: "create a 2-dimensional table view for the structural array
-    // data type monitor (or same-dimensional multiple array labels). The structure members are
-    // the columns (the data type attached to the label name as the column header), so the table
-    // has as many lines as the array has elements and the whole recipe is seen just like an Excel
-    // table - like '<> KESİM ADIMLARI' on the 'Profiles & Operations' sheet. A button changes the
-    // values shown (the ones calculated with the divisor or the pure ones). Columns can be added
-    // at the end as new labels of the same length, to watch two arrays together - the 'İŞ LİSTESİ'
-    // kind, where the same index of each label belongs together").
+    // LABELS SHOWN AS TABLES (22 October: "create a 2-dimensional table view for the structural
+    // array data type monitor (or same-dimensional multiple array labels): the structure members as
+    // the columns (the data type with the label name as the column header), a line per element - the
+    // whole recipe seen like an Excel table ('<> KESİM ADIMLARI'). A button changes the values shown.
+    // Columns can be added at the end as new labels of the same array quantity, to watch them
+    // together - the 'İŞ LİSTESİ' kind, where the same index of each label belongs together".
     //
-    // A TAB SHOWN AS A TABLE: its list stays what it was - the arrays are its rows, kept, read,
-    // undone and exported as ever - and the table shows them side by side: a line per index, a
-    // column per member of an array of structures, one for an array of a simple type. The
-    // arrays as long as the tab's first are in it; another length is named under the table.
+    // And that evening: "make the table view and the list view label based: 'Show this label in table
+    // view' on a label of a structure or an array moves it on top of the tab as a table; turned back
+    // to the list view it gets back to the list at the bottom. The tables are always at the top (their
+    // order changed among them with up / down), the list always at the bottom - one list in a tab and
+    // as many tables above it as the user likes. The label's description is the table's caption, the
+    // view buttons just under it, the table under them."
+    //
+    // A table is a label of the tab's (Sheet.Tables) - kept, read, undone and exported as its list's
+    // rows are - and the labels joined to it (WatchRow.Joined): their columns at its end.
     // ======================================================================
     public partial class SimulationMonitorForm
     {
@@ -32,7 +35,7 @@ namespace Kaban.UI.Forms
         /// <summary>A column of a table: an array's elements, or one member of each of them.</summary>
         internal sealed class TableColumn
         {
-            /// <summary>The array (a row of the tab).</summary>
+            /// <summary>The array (a label of the table).</summary>
             public WatchRow Source;
             /// <summary>The structure's member (-1: the element itself, an array of a simple type).</summary>
             public int Member = -1;
@@ -40,43 +43,59 @@ namespace Kaban.UI.Forms
             public string DataType = "";
         }
 
-        /// <summary>
-        /// The arrays of a tab in its table: as long as its first array (count); the arrays of
-        /// another length in left.
-        /// </summary>
-        internal static List<WatchRow> TableSources(Sheet sh, out int count, out List<WatchRow> left)
+        /// <summary>A table drawn: its label (and the ones joined to it), its caption, its buttons, its grid.</summary>
+        internal sealed class TableBlock
         {
-            EnsureElements(sh);
-            var arrays = sh.Rows.Where(r => !r.IsElement && r.IsArray).ToList();
-            count = arrays.Count > 0 ? arrays[0].EffectiveCount : 0;
-            int n = count;
-            left = arrays.Where(a => a.EffectiveCount != n).ToList();
-            return arrays.Where(a => a.EffectiveCount == n).ToList();
+            public WatchRow Head;
+            public readonly List<WatchRow> Sources = new List<WatchRow>();
+            public List<TableColumn> Columns = new List<TableColumn>();
+            public int Count;
+            public Panel Panel;
+            public Label Caption, Note;
+            public Button ShowHmi, ShowPlc, Add, Up, Down, ToList;
+            public DataGridView Grid;
+            public string Key = "";
         }
 
-        /// <summary>The table's columns after "#": each array's members (a structure's), or the array itself.</summary>
-        internal static List<TableColumn> TableColumnsOf(Sheet sh, out int count, out List<WatchRow> left)
+        // ---- the model ------------------------------------------------------------------
+
+        /// <summary>The tab's tables: each a label and the labels joined to it, in their order.</summary>
+        internal static List<List<WatchRow>> TableGroups(Sheet sh)
         {
-            var sources = TableSources(sh, out count, out left);
-            var cols = new List<TableColumn>();
-            foreach (var a in sources)
+            EnsureElements(sh.Tables);
+            var groups = new List<List<WatchRow>>();
+            foreach (var r in Items(sh.Tables).Where(r => r.IsDevice))
             {
+                if (groups.Count == 0 || !r.Joined) groups.Add(new List<WatchRow>());
+                groups[groups.Count - 1].Add(r);
+            }
+            return groups;
+        }
+
+        /// <summary>A table's columns after "#": each label's members (a structure's), or the label itself.</summary>
+        internal static List<TableColumn> TableColumnsOf(List<WatchRow> group)
+        {
+            var cols = new List<TableColumn>();
+            for (int i = 0; i < group.Count; i++)
+            {
+                var a = group[i];
                 string label = a.EffectiveLabel.Length > 0 ? a.EffectiveLabel : a.Address;
                 string type = StructuredTypes.BaseName(a.EffectiveDataType);
                 var st = StructuredTypes.Find(type, a.Station);
                 if (st != null)
                 {
-                    // one array of structures: its members' names; with others: "Recipe.X"
+                    // the table's own label: its members' names; a label joined to it: "Label.Member"
+                    // (a structure of one member: the label alone)
                     for (int j = 0; j < st.Members.Count; j++)
                         cols.Add(new TableColumn { Source = a, Member = j, DataType = st.Members[j].DataType,
-                                                   Header = (sources.Count > 1 ? label + "." : "") + st.Members[j].Name });
+                                                   Header = i == 0 ? st.Members[j].Name : st.Members.Count == 1 ? label : label + "." + st.Members[j].Name });
                 }
                 else cols.Add(new TableColumn { Source = a, DataType = type, Header = label });
             }
             return cols;
         }
 
-        /// <summary>The row a cell shows: element index of its array (and its member) - null when there is none.</summary>
+        /// <summary>The row a cell shows: element index of its label (and its member) - null when there is none.</summary>
         internal static WatchRow TableCellRow(TableColumn c, int index)
         {
             if (c == null || c.Source == null || c.Source.Elements == null || index < 0 || index >= c.Source.Elements.Count) return null;
@@ -85,140 +104,276 @@ namespace Kaban.UI.Forms
             return e.Members != null && c.Member < e.Members.Count ? e.Members[c.Member] : null;
         }
 
-        /// <summary>A cell's text: calculated (a number's) or as the PLC holds it; "-" not read yet.</summary>
-        internal static string TableText(MonitorTab mon, Sheet sh, TableColumn c, int index, out bool nonZero)
+        /// <summary>A cell's text: as the HMI shows it (a number's divided by its divisor) or as the PLC holds it; "-" not read yet.</summary>
+        internal static string TableText(MonitorTab mon, bool raw, TableColumn c, int index, out bool nonZero)
         {
             nonZero = false;
             var x = TableCellRow(c, index);
             if (x == null) return "";
-            string text = !sh.TableRaw && HasCalculated(x) ? FormatCalculated(mon, x, out nonZero) : FormatValue(mon, x, out nonZero);
+            string text = !raw && HasCalculated(x) ? FormatCalculated(mon, x, out nonZero) : FormatValue(mon, x, out nonZero);
             return text ?? "-";
         }
 
-        // ---- the view ---------------------------------------------------------------------
+        /// <summary>A label's name for a caption or a menu (its address without one).</summary>
+        private static string NameOf(WatchRow r) { return r.EffectiveLabel.Length > 0 ? r.EffectiveLabel : r.Address; }
 
-        /// <summary>The tab's page as its table or as its list.</summary>
-        private void ApplyView(MonitorTab mon, Sheet sh)
+        // ---- moving labels between the list and the tables -------------------------------
+
+        /// <summary>"Show this label in table view": the label off the list, a table at the end of the tables.</summary>
+        internal void ShowInTable(MonitorTab mon, Sheet sh, WatchRow label)
         {
-            if (sh.IsTable && sh.TableView == null) BuildTableView(mon, sh);
-            if (sh.TableView != null) sh.TableView.Visible = sh.IsTable;
-            sh.Grid.Visible = !sh.IsTable;
-            if (sh.IsTable)
+            if (mon == null || sh == null || label == null || !label.IsArray || !sh.Rows.Contains(label)) return;
+            Remember(string.Format(T("Undo_ShowInTable", "'{0}' in table view"), NameOf(label)), mon);
+            sh.Rows.Remove(label);
+            label.Joined = false;
+            sh.Tables.Rows.Add(label);
+            sh.Grid.ClearSelection();
+            EnsureBlankRow(sh);
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
+        /// <summary>A table back to the list view: its labels at the end of the list, in their order.</summary>
+        internal void TableToList(MonitorTab mon, Sheet sh, WatchRow head)
+        {
+            var group = TableGroups(sh).FirstOrDefault(g => g.Contains(head));
+            if (group == null) return;
+            Remember(string.Format(T("Undo_TableToList", "'{0}' in list view"), NameOf(group[0])), mon);
+            foreach (var r in group)
             {
-                // the list's selection is not the table's: copy, remove and move find nothing chosen
-                sh.Grid.ClearSelection();
-                try { sh.Grid.CurrentCell = null; } catch { }
-                sh.TableKey = null;
-                if (sh.TableCalc != null) sh.TableCalc.Checked = !sh.TableRaw;
+                sh.Tables.Rows.Remove(r);
+                r.Joined = false;
+                sh.Rows.Insert(InsertPoint(sh, true), r);
+            }
+            EnsureBlankRow(sh);
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
+        /// <summary>One label of a table back to the list (the table's own: the next one leads it).</summary>
+        internal void TakeOffTable(MonitorTab mon, Sheet sh, WatchRow label)
+        {
+            var group = TableGroups(sh).FirstOrDefault(g => g.Contains(label));
+            if (group == null) return;
+            if (group.Count == 1) { TableToList(mon, sh, label); return; }
+            Remember(string.Format(T("Undo_TakeOffTable", "'{0}' off the table"), NameOf(label)), mon);
+            if (group[0] == label) { group[1].Joined = false; group[1].TableRaw = label.TableRaw; }
+            sh.Tables.Rows.Remove(label);
+            label.Joined = false;
+            sh.Rows.Insert(InsertPoint(sh, true), label);
+            EnsureBlankRow(sh);
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
+        /// <summary>A table up or down among the tables (the list stays under them).</summary>
+        internal void MoveTable(MonitorTab mon, Sheet sh, WatchRow head, int by)
+        {
+            var groups = TableGroups(sh);
+            int i = groups.FindIndex(g => g.Contains(head)), j = i + by;
+            if (i < 0 || j < 0 || j >= groups.Count) return;
+            Remember(T("Undo_MoveTable", "move a table"), mon);
+            var g0 = groups[i];
+            groups[i] = groups[j];
+            groups[j] = g0;
+            sh.Tables.Rows.Clear();
+            foreach (var g in groups) sh.Tables.Rows.AddRange(g);
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
+        /// <summary>
+        /// A label joined to a table: its columns at the table's end (from the tab's list: moved; from
+        /// elsewhere: a copy). One of another length is put in the list instead, and said so.
+        /// </summary>
+        internal void JoinTable(MonitorTab mon, Sheet sh, WatchRow head, WatchRow label)
+        {
+            var group = TableGroups(sh).FirstOrDefault(g => g.Contains(head));
+            if (group == null || label == null) return;
+            Remember(string.Format(T("Undo_JoinTable", "'{0}' added to a table"), NameOf(label)), mon);
+            label.Station = mon.Station;
+            if (sh.Rows.Contains(label)) sh.Rows.Remove(label);
+            if (label.EffectiveCount != group[0].EffectiveCount)
+            {
+                sh.Rows.Insert(InsertPoint(sh, true), label);
+                SetStatus(string.Format(T("Msg_MonTableOtherLength", "{0} has {1} elements, the table {2}: it is in the tab's list, not in the table."),
+                                        NameOf(label), label.EffectiveCount, group[0].EffectiveCount));
+            }
+            else
+            {
+                label.Joined = true;
+                sh.Tables.Rows.Insert(sh.Tables.Rows.IndexOf(group[group.Count - 1]) + 1, label);
+            }
+            EnsureBlankRow(sh);
+            SaveWatchList(mon);
+            Render(mon, sh);
+        }
+
+        /// <summary>A tab of before shown whole as a table: its arrays of its first array's length a table, the rest its list.</summary>
+        internal static void TakeLegacyTable(Sheet sh)
+        {
+            var arrays = sh.Rows.Where(r => r.IsArray).ToList();
+            if (arrays.Count > 0)
+            {
+                int n = arrays[0].EffectiveCount;
+                bool first = true;
+                foreach (var a in arrays.Where(a => a.EffectiveCount == n))
+                {
+                    sh.Rows.Remove(a);
+                    a.Joined = !first;
+                    if (first) a.TableRaw = sh.LegacyTable == "raw";
+                    first = false;
+                    sh.Tables.Rows.Add(a);
+                }
+            }
+            sh.LegacyTable = null;
+        }
+
+        // ---- the view -----------------------------------------------------------------------
+
+        /// <summary>Where the tables go: above the list, a border under them to give them more room or less.</summary>
+        private void BuildTablesHost(MonitorTab mon, Sheet sh)
+        {
+            sh.TablesHost = new Panel { Dock = DockStyle.Top, Height = 0, AutoScroll = true, BackColor = Color.White, Visible = false, Name = "tablesHost" };
+            sh.TablesSplitter = new Splitter { Dock = DockStyle.Top, Height = 5, BackColor = Color.FromArgb(226, 229, 234), Visible = false, MinSize = 60, MinExtra = 60 };
+            sh.TablesSplitter.SplitterMoved += (s, e) => { sh.TablesHeight = sh.TablesHost.Height; LayoutTables(sh); };
+            // docked in reverse order: the list (Fill) first in the collection, the tables last (on top)
+            sh.Page.Controls.Add(sh.TablesSplitter);
+            sh.Page.Controls.Add(sh.TablesHost);
+            sh.TablesHost.Resize += (s, e) => LayoutTables(sh);
+            sh.Page.Resize += (s, e) => LayoutTables(sh);
+            sh.Blocks.Clear();
+            sh.TablesKey = null;
+        }
+
+        /// <summary>The tables drawn anew: made again when their labels changed, their values every refresh.</summary>
+        internal void RenderTables(MonitorTab mon, Sheet sh)
+        {
+            if (sh.TablesHost == null) return;
+            foreach (var r in sh.Tables.Rows) r.Station = mon.Station;
+            var groups = TableGroups(sh);
+            string key = string.Join(";", groups.Select(g => string.Join("+", g.Select(r =>
+                r.Address + "~" + r.EffectiveDataType + "~" + r.EffectiveCount + "~" + NameOf(r) + "~" + r.TableRaw))));
+            if (key != sh.TablesKey && !sh.TableEditing)
+            {
+                sh.TablesKey = key;
+                foreach (var b in sh.Blocks) { sh.TablesHost.Controls.Remove(b.Panel); b.Panel.Dispose(); }
+                sh.Blocks.Clear();
+                for (int i = 0; i < groups.Count; i++) sh.Blocks.Add(BuildBlock(mon, sh, groups[i], i, groups.Count));
+                foreach (var b in sh.Blocks) sh.TablesHost.Controls.Add(b.Panel);
+                bool any = sh.Blocks.Count > 0;
+                sh.TablesHost.Visible = sh.TablesSplitter.Visible = any;
+                if (!any) sh.TablesHeight = 0;
+                LayoutTables(sh);
+            }
+            foreach (var b in sh.Blocks)
+                if (!b.Grid.IsCurrentCellInEditMode) b.Grid.Invalidate();
+        }
+
+        /// <summary>The tables one under the other, each as tall as its lines (ten at most, then it scrolls).</summary>
+        private static void LayoutTables(Sheet sh)
+        {
+            var host = sh.TablesHost;
+            if (host == null || sh.Blocks.Count == 0) return;
+            // as tall as the tables, at most 60% of the tab - unless the border was dragged
+            int total = sh.Blocks.Sum(b => BlockHeight(b) + 6);
+            int page = sh.Page != null ? sh.Page.ClientSize.Height : 0;
+            int want = sh.TablesHeight > 0 ? sh.TablesHeight : Math.Min(total + 2, page > 0 ? Math.Max(120, page * 6 / 10) : total + 2);
+            if (host.Height != want) host.Height = want;
+            // as wide as the room, the scroll bar's taken when they are taller than it (no sideways scroll of the tables)
+            int w = Math.Max(200, host.Width - (total > host.Height ? SystemInformation.VerticalScrollBarWidth : 0) - 2);
+            int y = 0;
+            foreach (var b in sh.Blocks)
+            {
+                int h = BlockHeight(b);
+                b.Panel.SetBounds(0, y + host.AutoScrollPosition.Y, w, h);
+                y += h + 6;
             }
         }
 
-        /// <summary>A tab shown as its table, or as its list again - kept, undone like any change of the list.</summary>
-        internal void ShowTable(MonitorTab mon, Sheet sh, bool on)
+        private static int BlockHeight(TableBlock b)
         {
-            if (mon == null || sh == null || sh.IsTable == on) return;
-            Remember(on ? T("Undo_TableView", "show the tab as a table") : T("Undo_ListView", "show the tab as a list"), mon);
-            sh.IsTable = on;
-            ApplyView(mon, sh);
-            SaveWatchList(mon);
-            Render(mon, sh);
+            int rows = Math.Max(1, Math.Min(10, b.Count));
+            int grid = b.Grid.ColumnHeadersHeight + rows * b.Grid.RowTemplate.Height + 4 + SystemInformation.HorizontalScrollBarHeight;
+            return b.Caption.Height + 36 + grid;
         }
 
-        /// <summary>An array in a new tab of its own, shown as a table.</summary>
-        internal Sheet OpenAsTable(MonitorTab mon, WatchRow array)
+        /// <summary>One table: its label as the caption, the view buttons under it, the table under them.</summary>
+        private TableBlock BuildBlock(MonitorTab mon, Sheet sh, List<WatchRow> group, int index, int count)
         {
-            if (mon == null || array == null || !array.IsArray) return null;
-            string label = array.EffectiveLabel.Length > 0 ? array.EffectiveLabel : array.Address;
-            Remember(string.Format(T("Undo_OpenTable", "'{0}' as a table"), label), mon);
-            var sh = AddSheet(mon, UniqueName(mon, label), mon.SheetTabs.TabPages.Count);
-            var copy = array.Clone();
-            copy.Station = mon.Station;
-            sh.Rows.Insert(InsertPoint(sh, true), copy);
-            sh.IsTable = true;
-            EnsureBlankRow(sh);
-            ApplyView(mon, sh);
-            SaveWatchList(mon);
-            Render(mon, sh);
-            return sh;
-        }
+            var b = new TableBlock { Head = group[0], Count = group[0].EffectiveCount };
+            b.Sources.AddRange(group);
+            b.Columns = TableColumnsOf(group);
+            b.Panel = new Panel { BackColor = Color.White, Name = "table" + index };
 
-        /// <summary>An array added at the end of the tab: its columns at the end of the table.</summary>
-        internal void AddToTable(MonitorTab mon, Sheet sh, WatchRow row)
-        {
-            if (mon == null || sh == null || row == null) return;
-            Remember(T("Undo_TableAdd", "add an array to the table"), mon);
-            row.Station = mon.Station;
-            sh.Rows.Insert(InsertPoint(sh, true), row);
-            EnsureBlankRow(sh);
-            SaveWatchList(mon);
-            Render(mon, sh);
-            int count; List<WatchRow> left;
-            TableSources(sh, out count, out left);
-            if (left.Contains(row))
-                SetStatus(string.Format(T("Msg_MonTableOtherLength", "{0} has {1} elements, the table {2}: it is in the tab's list, not in the table."),
-                                        row.EffectiveLabel.Length > 0 ? row.EffectiveLabel : row.Address, row.EffectiveCount, count));
-        }
+            b.Caption = new Label
+            {
+                Dock = DockStyle.Top, Height = 26, AutoEllipsis = true, Padding = new Padding(6, 6, 6, 0),
+                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), ForeColor = Color.FromArgb(35, 40, 48), Name = "tableCaption",
+                Text = string.Join("  +  ", group.Select(NameOf))
+            };
+            UiStyle.SetTip(_tips, b.Caption, string.Join("\r\n", group.Select(r => NameOf(r) + "   " + r.Address + "   " + r.EffectiveDataType + " [" + r.EffectiveCount + "]")));
 
-        /// <summary>An array taken off the tab (its columns off the table).</summary>
-        internal void RemoveFromTable(MonitorTab mon, Sheet sh, WatchRow source)
-        {
-            if (mon == null || sh == null || source == null || !sh.Rows.Contains(source)) return;
-            Remember(T("Undo_TableRemove", "take an array off the table"), mon);
-            int at = sh.Rows.IndexOf(source);
-            HideIfUnlisted(mon, source.Address, sh, at);
-            sh.Rows.Remove(source);
-            EnsureBlankRow(sh);
-            SaveWatchList(mon);
-            Render(mon, sh);
-        }
-
-        /// <summary>The table's bar (the values shown, an array added, the list) over its table.</summary>
-        private void BuildTableView(MonitorTab mon, Sheet sh)
-        {
-            var view = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Visible = false };
-            var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(6, 6, 6, 2), WrapContents = false, BackColor = Color.White };
-            // WHICH VALUES: two buttons side by side, the one shown dark (a pressed toggle reads poorly)
-            var calc = new CheckBox { Checked = !sh.TableRaw, Visible = false };
-            var showCalc = new Button { Text = T("Btn_MonTableCalc", "Calculated values"), AutoSize = true, Margin = new Padding(0, 0, 0, 0), FlatStyle = FlatStyle.Flat, Name = "tableCalc" };
-            var showRaw = new Button { Text = T("Btn_MonTableRaw", "PLC values"), AutoSize = true, Margin = new Padding(0, 0, 10, 0), FlatStyle = FlatStyle.Flat, Name = "tableRaw" };
-            UiStyle.SetTip(_tips, showCalc, T("Tip_MonTableCalc", "The values divided by their divisors, with their decimal places"));
-            UiStyle.SetTip(_tips, showRaw, T("Tip_MonTableRaw", "The values as the PLC holds them"));
+            var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 36, Padding = new Padding(6, 4, 6, 2), WrapContents = false, BackColor = Color.White };
+            // WHICH VALUES: two buttons side by side, the one shown dark
+            b.ShowHmi = new Button { Text = T("Col_ValueHmi", "Value (HMI)"), AutoSize = true, Margin = new Padding(0), FlatStyle = FlatStyle.Flat, Name = "tableHmi" };
+            b.ShowPlc = new Button { Text = T("Col_ValuePlc", "Value (PLC)"), AutoSize = true, Margin = new Padding(0, 0, 10, 0), FlatStyle = FlatStyle.Flat, Name = "tablePlc" };
+            UiStyle.SetTip(_tips, b.ShowHmi, T("Tip_MonTableHmi", "The values as the HMI shows them: divided by their divisors, with their decimal places"));
+            UiStyle.SetTip(_tips, b.ShowPlc, T("Tip_MonTablePlc", "The values as the PLC holds them"));
             Action paint = () =>
             {
-                foreach (var b in new[] { showCalc, showRaw })
+                foreach (var btn in new[] { b.ShowHmi, b.ShowPlc })
                 {
-                    bool on = (b == showCalc) == calc.Checked;
-                    b.BackColor = on ? Color.FromArgb(60, 66, 76) : Color.White;
-                    b.ForeColor = on ? Color.White : Color.FromArgb(60, 66, 76);
-                    b.FlatAppearance.BorderColor = Color.FromArgb(60, 66, 76);
-                    b.Cursor = Cursors.Hand;
+                    bool on = (btn == b.ShowPlc) == b.Head.TableRaw;
+                    btn.BackColor = on ? Color.FromArgb(60, 66, 76) : Color.White;
+                    btn.ForeColor = on ? Color.White : Color.FromArgb(60, 66, 76);
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(60, 66, 76);
+                    btn.Cursor = Cursors.Hand;
                 }
             };
-            calc.CheckedChanged += (s, e) =>
+            Action<bool> show = plc =>
             {
+                if (b.Head.TableRaw == plc) return;
+                b.Head.TableRaw = plc;
                 paint();
-                if (sh.TableRaw == !calc.Checked) return;
-                sh.TableRaw = !calc.Checked;
                 SaveWatchList(mon);
-                if (sh.TableGrid != null) sh.TableGrid.Invalidate();
+                b.Grid.Invalidate();
             };
-            showCalc.Click += (s, e) => calc.Checked = true;
-            showRaw.Click += (s, e) => calc.Checked = false;
+            b.ShowHmi.Click += (s, e) => show(false);
+            b.ShowPlc.Click += (s, e) => show(true);
             paint();
-            var add = UiStyle.Round(new Button { Text = T("Btn_MonTableAdd", "Add an array..."), AutoSize = true, Margin = new Padding(0, 0, 6, 0) });
-            UiStyle.SetTip(_tips, add, T("Tip_MonTableAdd", "Columns at the end of the table: an array as long as the table's"));
-            add.Click += (s, e) => ShowMenu(add, TableAddMenu(mon, sh));
-            var list = UiStyle.Round(new Button { Text = T("Btn_MonTableList", "List view"), AutoSize = true, Margin = new Padding(0, 0, 12, 0) });
-            UiStyle.SetTip(_tips, list, T("Tip_MonTableList", "The tab as a list again (its arrays' rows)"));
-            list.Click += (s, e) => ShowTable(mon, sh, false);
-            var note = new Label { AutoSize = true, ForeColor = Color.FromArgb(90, 96, 106), Margin = new Padding(0, 6, 0, 0) };
-            bar.Controls.Add(calc);
-            bar.Controls.Add(showCalc);
-            bar.Controls.Add(showRaw);
-            bar.Controls.Add(add);
-            bar.Controls.Add(list);
-            bar.Controls.Add(note);
+            b.Add = UiStyle.Round(new Button { Text = T("Btn_MonTableAdd", "Add an array..."), AutoSize = true, Margin = new Padding(0, 0, 6, 0), Name = "tableAdd" });
+            UiStyle.SetTip(_tips, b.Add, T("Tip_MonTableAdd", "Columns at the end of the table: a label as long as the table's"));
+            b.Add.Click += (s, e) => ShowMenu(b.Add, TableAddMenu(mon, sh, b.Head));
+            b.Up = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonTableUp", "This table above the one before it"), _tips);
+            b.Down = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonTableDown", "This table under the one after it"), _tips);
+            b.Up.Name = "tableUp"; b.Down.Name = "tableDown";
+            b.Up.Size = b.Down.Size = new Size(30, 26);
+            b.Up.Margin = new Padding(0, 0, 2, 0); b.Down.Margin = new Padding(0, 0, 6, 0);
+            b.Up.Enabled = index > 0;
+            b.Down.Enabled = index < count - 1;
+            b.Up.Click += (s, e) => MoveTable(mon, sh, b.Head, -1);
+            b.Down.Click += (s, e) => MoveTable(mon, sh, b.Head, +1);
+            b.ToList = UiStyle.Round(new Button { Text = T("Btn_MonTableList", "List view"), AutoSize = true, Margin = new Padding(0, 0, 12, 0), Name = "tableList" });
+            UiStyle.SetTip(_tips, b.ToList, T("Tip_MonTableList", "Its labels back to the list, at its end"));
+            b.ToList.Click += (s, e) => TableToList(mon, sh, b.Head);
+            b.Note = new Label { AutoSize = true, ForeColor = Color.FromArgb(90, 96, 106), Margin = new Padding(0, 6, 0, 0), Name = "tableNote" };
+            var odd = group.Skip(1).Where(r => r.EffectiveCount != b.Count).ToList();
+            b.Note.Text = string.Format(T("Msg_MonTableLines", "{0} lines"), b.Count) +
+                          (odd.Count == 0 ? "" : "  ·  " + string.Format(T("Msg_MonTableLeft", "another length: {0}"),
+                                                                           string.Join(", ", odd.Select(a => NameOf(a) + " [" + a.EffectiveCount + "]"))));
+            foreach (Control c in new Control[] { b.ShowHmi, b.ShowPlc, b.Add, b.Up, b.Down, b.ToList, b.Note }) bar.Controls.Add(c);
 
+            b.Grid = BuildTableGrid(mon, sh, b);
+            b.Panel.Controls.Add(b.Grid);
+            b.Panel.Controls.Add(bar);
+            b.Panel.Controls.Add(b.Caption);
+            return b;
+        }
+
+        /// <summary>A table's grid: a line per element (virtual: only the lines in sight are asked for), "#" frozen at the left.</summary>
+        private DataGridView BuildTableGrid(MonitorTab mon, Sheet sh, TableBlock b)
+        {
             var g = new DataGridView
             {
                 Dock = DockStyle.Fill,
@@ -232,7 +387,8 @@ namespace Kaban.UI.Forms
                 MultiSelect = true,
                 EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None,
-                ShowCellToolTips = true
+                ShowCellToolTips = true,
+                Name = "tableGrid"
             };
             UiStyle.GridLook(g);
             // the member's name over its data type, as the sheet's two-line headings
@@ -242,32 +398,50 @@ namespace Kaban.UI.Forms
             g.DefaultCellStyle.Font = UiStyle.FontVariant(UiStyle.TableFont, FontStyle.Bold);
             g.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
+            var index = new DataGridViewTextBoxColumn { Name = "Index", HeaderText = "#", ReadOnly = true, Frozen = true, Width = 56, SortMode = DataGridViewColumnSortMode.NotSortable };
+            index.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            index.DefaultCellStyle.Font = UiStyle.TableFont;
+            index.DefaultCellStyle.BackColor = Color.FromArgb(246, 247, 249);
+            index.DefaultCellStyle.ForeColor = Color.FromArgb(90, 96, 106);
+            g.Columns.Add(index);
+            var font = UiStyle.FontVariant(UiStyle.TableFont, FontStyle.Bold);
+            for (int k = 0; k < b.Columns.Count; k++)
+            {
+                var c = b.Columns[k];
+                int w = Math.Max(TextRenderer.MeasureText(c.Header, font).Width, TextRenderer.MeasureText("(" + c.DataType + ")", font).Width) + 22;
+                var col = new DataGridViewTextBoxColumn
+                {
+                    Name = "c" + k, HeaderText = c.Header + "\n(" + c.DataType + ")", Tag = c, Width = Math.Max(80, Math.Min(260, w)),
+                    SortMode = DataGridViewColumnSortMode.NotSortable
+                };
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                g.Columns.Add(col);
+            }
+            g.RowCount = Math.Max(0, b.Count);
+
             g.CellValueNeeded += (s, e) =>
             {
                 if (e.ColumnIndex == 0) { e.Value = e.RowIndex.ToString(CultureInfo.InvariantCulture); return; }
-                var c = g.Columns[e.ColumnIndex].Tag as TableColumn;
                 bool nz;
-                e.Value = TableText(mon, sh, c, e.RowIndex, out nz);
+                e.Value = TableText(mon, b.Head.TableRaw, g.Columns[e.ColumnIndex].Tag as TableColumn, e.RowIndex, out nz);
             };
             g.CellFormatting += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex <= 0) return;
-                var c = g.Columns[e.ColumnIndex].Tag as TableColumn;
                 bool nz;
-                string text = TableText(mon, sh, c, e.RowIndex, out nz);
+                string text = TableText(mon, b.Head.TableRaw, g.Columns[e.ColumnIndex].Tag as TableColumn, e.RowIndex, out nz);
                 e.CellStyle.ForeColor = text == "-" ? ColLabelUnknown : nz ? ColValueSet : ColValueClear;
             };
             g.CellToolTipTextNeeded += (s, e) =>
             {
                 if (e.RowIndex < 0 || e.ColumnIndex <= 0) return;
-                var c = g.Columns[e.ColumnIndex].Tag as TableColumn;
-                var x = TableCellRow(c, e.RowIndex);
+                var x = TableCellRow(g.Columns[e.ColumnIndex].Tag as TableColumn, e.RowIndex);
                 if (x == null) return;
                 bool nz;
                 string raw = FormatValue(mon, x, out nz) ?? "-";
                 string tip = x.EffectiveLabel + "   " + x.ShownAddress + "   " + x.EffectiveDataType;
                 if (HasCalculated(x) && x.IsScaled)
-                    tip += "\r\n" + string.Format(T("Tip_MonTableScaled", "PLC value {0} ÷ {1}, {2} decimal place(s): {3}"),
+                    tip += "\r\n" + string.Format(T("Tip_MonTableScaled", "Value (PLC) {0} ÷ {1}, {2} decimal place(s): {3}"),
                                                   raw, x.EffectiveDivisor.ToString("0.#########", CultureInfo.InvariantCulture), x.EffectiveDecimals,
                                                   FormatCalculated(mon, x, out nz) ?? "-");
                 e.ToolTipText = tip;
@@ -283,8 +457,8 @@ namespace Kaban.UI.Forms
                 var x = e.ColumnIndex > 0 ? TableCellRow(g.Columns[e.ColumnIndex].Tag as TableColumn, e.RowIndex) : null;
                 string typed = (Convert.ToString(e.Value) ?? "").Trim();
                 if (x == null || typed.Length == 0) return;
-                // shown calculated: typed calculated (times the divisor); else as the PLC holds it
-                WriteValue(mon, x, typed, "typed in the table", calculated: !sh.TableRaw && IsNumber(x));
+                // shown as the HMI shows it: typed so too (times the divisor); else as the PLC holds it
+                WriteValue(mon, x, typed, "typed in the table", calculated: !b.Head.TableRaw && IsNumber(x));
             };
             g.CellEndEdit += (s, e) => { sh.Editing = false; g.InvalidateCell(e.ColumnIndex, e.RowIndex); };
             g.CellDoubleClick += (s, e) =>
@@ -295,143 +469,101 @@ namespace Kaban.UI.Forms
             };
             g.DataError += (s, e) => { e.ThrowException = false; };
 
-            // the column's array: taken off the table, or the table's own choices
+            // the column's label: edited, taken off the table; the table's own choices
             var menu = NewMenu();
             menu.Opening += (s, e) =>
             {
                 menu.Items.Clear();
-                var hit = g.HitTest(g.PointToClient(Cursor.Position).X, g.PointToClient(Cursor.Position).Y);
+                var at = g.PointToClient(Cursor.Position);
+                var hit = g.HitTest(at.X, at.Y);
                 var c = hit.ColumnIndex > 0 ? g.Columns[hit.ColumnIndex].Tag as TableColumn : null;
-                if (c != null)
-                {
-                    string label = c.Source.EffectiveLabel.Length > 0 ? c.Source.EffectiveLabel : c.Source.Address;
-                    menu.Items.Add(Item(string.Format(T("Mnu_MonTableRemove", "Take '{0}' off the table"), label), (s2, e2) => RemoveFromTable(mon, sh, c.Source)));
-                    menu.Items.Add(new ToolStripSeparator());
-                }
-                menu.Items.Add(Item(T("Btn_MonTableAdd", "Add an array..."), (s2, e2) => ShowMenu(add, TableAddMenu(mon, sh))));
-                menu.Items.Add(Item(sh.TableRaw ? T("Mnu_MonTableCalc", "Show the calculated values") : T("Mnu_MonTableRaw", "Show the PLC's values"),
-                                    (s2, e2) => calc.Checked = sh.TableRaw));
-                menu.Items.Add(Item(T("Btn_MonTableList", "List view"), (s2, e2) => ShowTable(mon, sh, false)));
+                var label = c != null ? c.Source : b.Head;
+                menu.Items.Add(Item(string.Format(T("Mnu_MonTableEdit", "Edit '{0}'..."), NameOf(label)), (s2, e2) => EditRow(mon, sh, label, "Label")));
+                menu.Items.Add(Item(string.Format(T("Mnu_MonTableRemove", "Take '{0}' off the table"), NameOf(label)), (s2, e2) => TakeOffTable(mon, sh, label)));
+                menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(Item(T("Btn_MonTableAdd", "Add an array..."), (s2, e2) => ShowMenu(b.Add, TableAddMenu(mon, sh, b.Head))));
+                menu.Items.Add(Item(b.Head.TableRaw ? T("Mnu_MonTableHmi", "Show the values as the HMI shows them") : T("Mnu_MonTablePlc", "Show the values as the PLC holds them"),
+                                    (s2, e2) => (b.Head.TableRaw ? b.ShowHmi : b.ShowPlc).PerformClick()));
+                menu.Items.Add(Item(T("Btn_MonTableList", "List view"), (s2, e2) => TableToList(mon, sh, b.Head)));
                 e.Cancel = false;
             };
             g.ContextMenuStrip = menu;
-
-            view.Controls.Add(g);
-            view.Controls.Add(bar);
-            sh.Page.Controls.Add(view);
-            view.BringToFront();
-            sh.TableView = view;
-            sh.TableGrid = g;
-            sh.TableCalc = calc;
-            sh.TableNote = note;
-            sh.TableAdd = add;
-            sh.TableKey = null;
-        }
-
-        /// <summary>The table drawn anew: its columns when its arrays changed, its values every refresh.</summary>
-        private static void RenderTable(MonitorTab mon, Sheet sh)
-        {
-            var g = sh.TableGrid;
-            if (g == null || !sh.IsTable) return;
-            int count;
-            List<WatchRow> left;
-            var cols = TableColumnsOf(sh, out count, out left);
-            string key = count + "#" + string.Join("|", cols.Select(c => c.Header + "~" + c.DataType + "~" + c.Source.Address));
-            if (key != sh.TableKey && !g.IsCurrentCellInEditMode)
-            {
-                sh.TableKey = key;
-                sh.TableCols = cols;
-                g.SuspendLayout();
-                g.Rows.Clear();
-                g.Columns.Clear();
-                var index = new DataGridViewTextBoxColumn { Name = "Index", HeaderText = "#", ReadOnly = true, Frozen = true, Width = 56, SortMode = DataGridViewColumnSortMode.NotSortable };
-                index.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                index.DefaultCellStyle.Font = UiStyle.TableFont;
-                index.DefaultCellStyle.BackColor = Color.FromArgb(246, 247, 249);
-                index.DefaultCellStyle.ForeColor = Color.FromArgb(90, 96, 106);
-                g.Columns.Add(index);
-                var font = UiStyle.FontVariant(UiStyle.TableFont, FontStyle.Bold);
-                for (int k = 0; k < cols.Count; k++)
-                {
-                    var c = cols[k];
-                    string header = c.Header + "\n(" + c.DataType + ")";
-                    int w = Math.Max(TextRenderer.MeasureText(c.Header, font).Width, TextRenderer.MeasureText("(" + c.DataType + ")", font).Width) + 22;
-                    var col = new DataGridViewTextBoxColumn
-                    {
-                        Name = "c" + k, HeaderText = header, Tag = c, Width = Math.Max(80, Math.Min(260, w)),
-                        SortMode = DataGridViewColumnSortMode.NotSortable
-                    };
-                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    g.Columns.Add(col);
-                }
-                g.ResumeLayout();
-            }
-            if (g.RowCount != count && !g.IsCurrentCellInEditMode) UiStyle.SetRowCount(g, count);
-
-            string note = count == 0
-                ? T("Msg_MonTableEmpty", "No array on this tab: add one (Add an array...)")
-                : string.Format(T("Msg_MonTableNote", "{0} lines  ·  {1} array(s)"), count, TableSources(sh, out count, out left).Count);
-            if (left.Count > 0)
-                note += "  ·  " + string.Format(T("Msg_MonTableLeft", "not in it (another length): {0}"),
-                                               string.Join(", ", left.Select(a => (a.EffectiveLabel.Length > 0 ? a.EffectiveLabel : a.Address) + " [" + a.EffectiveCount + "]")));
-            if (sh.TableNote != null && sh.TableNote.Text != note) sh.TableNote.Text = note;
-            if (sh.TableCalc != null && sh.TableCalc.Checked == sh.TableRaw) sh.TableCalc.Checked = !sh.TableRaw;
-            if (!g.IsCurrentCellInEditMode) g.Invalidate();
+            b.Caption.ContextMenuStrip = menu;
+            return g;
         }
 
         /// <summary>
-        /// What can be added to the table: this controller's arrays of the table's length on its
-        /// other tabs, the label list's, or a new one (the device editor, its length set).
+        /// What can be joined to a table: the labels of its length in the tab's list (moved), on this
+        /// controller's other tabs (copied), in the label list, or a new one (the device editor, its length set).
         /// </summary>
-        private ContextMenuStrip TableAddMenu(MonitorTab mon, Sheet sh)
+        private ContextMenuStrip TableAddMenu(MonitorTab mon, Sheet sh, WatchRow head)
         {
             var m = NewMenu();
-            int count;
-            List<WatchRow> left;
-            var mine = TableSources(sh, out count, out left).Concat(left).ToList();
-            Func<string, string, bool> taken = (address, type) => mine.Any(r => string.Equals(r.Address, address, StringComparison.OrdinalIgnoreCase) &&
-                                                                               string.Equals(StructuredTypes.BaseName(r.EffectiveDataType), StructuredTypes.BaseName(type), StringComparison.OrdinalIgnoreCase));
+            var group = TableGroups(sh).FirstOrDefault(gr => gr.Contains(head)) ?? new List<WatchRow> { head };
+            int count = group[0].EffectiveCount;
+            var mine = sh.AllRows.Where(r => !r.IsElement && r.IsDevice).ToList();
+            Func<string, string, bool> taken = (address, type) => mine.Any(r => !sh.Rows.Contains(r) &&
+                string.Equals(r.Address, address, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(StructuredTypes.BaseName(r.EffectiveDataType), StructuredTypes.BaseName(type), StringComparison.OrdinalIgnoreCase));
             var offers = new List<KeyValuePair<string, Func<WatchRow>>>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // the tab's own list: moved into the table
+            foreach (var r in Items(sh).Where(r => r.IsArray && r.EffectiveCount == count))
+            {
+                var from = r;
+                seen.Add(r.Address + "|" + StructuredTypes.BaseName(r.EffectiveDataType));
+                offers.Add(new KeyValuePair<string, Func<WatchRow>>(NameOf(r) + "   " + r.Address + "   " + StructuredTypes.BaseName(r.EffectiveDataType) +
+                                                                     " [" + r.EffectiveCount + "]   (" + T("Lbl_MonThisList", "this tab's list") + ")", () => from));
+            }
             foreach (var other in mon.Sheets.Where(s => s != sh))
-                foreach (var r in other.Rows.Where(r => !r.IsElement && r.IsArray && (count == 0 || r.EffectiveCount == count)))
+                foreach (var r in other.AllRows.Where(r => !r.IsElement && r.IsArray && r.EffectiveCount == count))
                 {
                     string type = StructuredTypes.BaseName(r.EffectiveDataType);
                     if (taken(r.Address, type) || !seen.Add(r.Address + "|" + type)) continue;
                     var from = r;
                     offers.Add(new KeyValuePair<string, Func<WatchRow>>(
-                        (r.EffectiveLabel.Length > 0 ? r.EffectiveLabel : r.Address) + "   " + r.Address + "   " + type + " [" + r.EffectiveCount + "]   (" + other.Name + ")",
+                        NameOf(r) + "   " + r.Address + "   " + type + " [" + r.EffectiveCount + "]   (" + other.Name + ")",
                         () => { var c = from.Clone(); if (c.LabelOverride.Length == 0) c.LabelOverride = from.EffectiveLabel; return c; }));
                 }
             foreach (var e in PlcLabelTable.EntriesFor(mon.Station))
             {
                 int n = StructuredTypes.CountIn(e.DataType);
-                if (n < 2 || (count > 0 && n != count)) continue;
+                if (n != count) continue;
                 string type = StructuredTypes.BaseName(e.DataType);
                 if (taken(e.Address, type) || !seen.Add(e.Address + "|" + type)) continue;
                 var entry = e;
                 offers.Add(new KeyValuePair<string, Func<WatchRow>>(
                     e.Label + "   " + e.Address + "   " + type + " [" + n + "]   (" + T("Lbl_MonLabelList", "label list") + ")",
-                    () => new WatchRow { Address = entry.Address.Trim().ToUpperInvariant(), DataTypeOverride = StructuredTypes.BaseName(entry.DataType),
-                                         ArrayCount = StructuredTypes.CountIn(entry.DataType) }));
+                    () => FromLabelList(mon, entry)));
             }
-            var head = new ToolStripMenuItem(count > 0 ? string.Format(T("Mnu_MonTableArraysOf", "Arrays of {0}:"), count) : T("Mnu_MonTableArrays", "Arrays:")) { Enabled = false };
-            m.Items.Add(head);
+            m.Items.Add(new ToolStripMenuItem(string.Format(T("Mnu_MonTableArraysOf", "Labels of {0} elements:"), count)) { Enabled = false });
             if (offers.Count == 0)
-                m.Items.Add(new ToolStripMenuItem(T("Mnu_MonTableNone", "(none on the other tabs or in the label list)")) { Enabled = false });
+                m.Items.Add(new ToolStripMenuItem(T("Mnu_MonTableNone", "(none in the lists or in the label list)")) { Enabled = false });
             foreach (var o in offers.Take(40))
             {
                 var make = o.Value;
-                m.Items.Add(Item(o.Key, (s, e) => AddToTable(mon, sh, make())));
+                m.Items.Add(Item(o.Key, (s, e) => JoinTable(mon, sh, head, make())));
             }
             m.Items.Add(new ToolStripSeparator());
-            m.Items.Add(Item(count > 0 ? string.Format(T("Mnu_MonTableNew", "New array of {0}..."), count) : T("Mnu_MonTableNewAny", "New array..."),
-                             (s, e) => NewTableArray(mon, sh, count)));
+            m.Items.Add(Item(string.Format(T("Mnu_MonTableNew", "New array of {0}..."), count), (s, e) => NewTableArray(mon, sh, head, count)));
             return m;
         }
 
-        /// <summary>A new array typed in the device editor - its length the table's - at the end of the table.</summary>
-        private void NewTableArray(MonitorTab mon, Sheet sh, int count)
+        /// <summary>A row for a label of the label list - its own label kept (two labels may share an address).</summary>
+        internal static WatchRow FromLabelList(MonitorTab mon, PlcLabelTable.Entry entry)
+        {
+            var r = new WatchRow
+            {
+                Station = mon.Station, Address = (entry.Address ?? "").Trim().ToUpperInvariant(),
+                DataTypeOverride = StructuredTypes.BaseName(entry.DataType), ArrayCount = Math.Max(1, StructuredTypes.CountIn(entry.DataType))
+            };
+            var first = PlcLabelTable.ByAddress(mon.Station, r.Address);
+            if (first == null || !string.Equals(first.Label, entry.Label, StringComparison.Ordinal)) r.LabelOverride = entry.Label;
+            return r;
+        }
+
+        /// <summary>A new array typed in the device editor - its length the table's - joined to the table.</summary>
+        private void NewTableArray(MonitorTab mon, Sheet sh, WatchRow head, int count)
         {
             using (var dlg = new PlcRowEditorForm(PlcEndpointNaming.Caption(mon.Endpoint), "", "Word [Signed]", "", "", "Address", isNew: true,
                                                   arrayCount: Math.Max(2, count), station: mon.Station))
@@ -445,7 +577,7 @@ namespace Kaban.UI.Forms
                 };
                 ApplyNames(mon, r, dlg.RowLabel.Length == 0 ? (PlcLabelTable.ByAddress(mon.Station, r.Address) ?? new PlcLabelTable.Entry()).Label : dlg.RowLabel,
                            dlg.RowDataType);
-                AddToTable(mon, sh, r);
+                JoinTable(mon, sh, head, r);
             }
         }
     }

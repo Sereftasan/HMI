@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,12 +9,14 @@ using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.UI.Forms;
 
-// 22 October: "create a 2-dimensional table view for the structural array data type monitor (or same-
-// dimensional multiple array labels): the structure members as the columns (the data type attached to
-// the label name as the column header), the lines only the array's quantity - like '<> KESİM ADIMLARI'
-// on the Profiles & Operations sheet. A button changes the values shown (calculated with the divisor or
-// the pure ones). Columns can be added at the end as new labels of the same array quantity, to watch
-// two arrays together (the 'İŞ LİSTESİ' kind)".
+// 22 October: "a 2-dimensional table view for the structural array data type monitor (or same-dimensional
+// multiple array labels): the structure members as the columns (the data type with the label name as the
+// column header), the lines the array's quantity - like '<> KESİM ADIMLARI'. A button changes the values
+// shown. Labels of the same quantity added as columns at the end (the 'İŞ LİSTESİ' kind)."
+// And that evening: "make the table view and list view label based: 'Show this label in table view' moves
+// the label on top of the tab as a table - back to list view, it gets back to the list at the bottom. The
+// tables always at the top (their order changed with up / down), the list always at the bottom. The label's
+// description the table's caption, the view buttons under it, the table under them."
 class MT {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -33,21 +35,27 @@ class MT {
     static object Call(object o, string n, params object[] a) {
         var t = o as Type ?? o.GetType();
         var mi = t.GetMethods(Any).First(m => m.Name == n && m.GetParameters().Length >= a.Length &&
-                                              m.GetParameters().Skip(a.Length).All(p => p.IsOptional));
+                                              m.GetParameters().Skip(a.Length).All(p => p.IsOptional) &&
+                                              m.GetParameters().Take(a.Length).Select((p, i) => a[i] == null || p.ParameterType.IsInstanceOfType(a[i])).All(x => x));
         var args = a.Concat(mi.GetParameters().Skip(a.Length).Select(p => p.DefaultValue)).ToArray();
         return mi.Invoke(o is Type ? null : o, args);
     }
     static IList Rows(object sheet) { return (IList)Get(sheet, "Rows"); }
+    static IList TableRows(object sheet) { return Rows(Get(sheet, "Tables")); }
     static object Row(string address, string type, int count, string label) {
         var r = Activator.CreateInstance(RowType);
         Set(r, "Address", address); Set(r, "DataTypeOverride", type); Set(r, "LabelOverride", label);
         Set(r, "ArrayCount", count); Set(r, "Station", 23);
         return r;
     }
+    static List<object> Blocks(object sheet) { return ((IList)Get(sheet, "Blocks")).Cast<object>().ToList(); }
+    static DataGridView GridOf(object block) { return (DataGridView)Get(block, "Grid"); }
+    static string Caption(object block) { return ((Label)Get(block, "Caption")).Text; }
+    static Button Btn(object block, string n) { return (Button)Get(block, n); }
     static List<string> Headers(DataGridView g) { return g.Columns.Cast<DataGridViewColumn>().Select(c => c.HeaderText.Replace("\n", " | ")).ToList(); }
     static string Cell(DataGridView g, int r, int c) { return Convert.ToString(g.Rows[r].Cells[c].Value); }
 
-    /// <summary>The sheet's '<> KESİM ADIMLARI': a 10-word step - a code, two robot positions (xxx.x), an angle and V cut Y (xxx.xx), two clamp bits.</summary>
+    /// <summary>The sheet's '<> KESİM ADIMLARI': a 10-word step - a code, two robot positions, an angle (xxx.xx), two clamp bits.</summary>
     static StructuredTypes.Type Cutting()
     {
         var t = new StructuredTypes.Type { Name = "CuttingStep", Size = 10 };
@@ -79,137 +87,154 @@ class MT {
             for (int k = 0; k < 10; k++) sim.Write("R" + (b + k), 0);
             if (i < 3) { sim.Write("R" + b, i + 1); sim.Write("R" + (b + 1), 1500 + 25 * i); sim.Write("R" + (b + 3), 4500); sim.Write("R" + (b + 5), i == 1 ? 2 : 1); }
         }
-        for (int i = 0; i < 1000; i++) { sim.Write("D" + (5000 + i), 0); sim.Write("D" + (6000 + i), 0); }
+        for (int i = 0; i < 100; i++) { sim.Write("D" + (5000 + i), 0); sim.Write("D" + (6000 + i), 0); sim.Write("D" + (7000 + i), 0); }
         for (int i = 0; i < 5; i++) { sim.Write("D" + (5000 + 2 * i), 1001 + i); sim.Write("D" + (6000 + 2 * i), 100 * (i + 1)); }
+        sim.Write("M5", 1);
 
-        var form = new SimulationMonitorForm();
+        var form = new SimulationMonitorForm { Width = 1200, Height = 900 };
         form.Show(); Application.DoEvents();
         var monitors = (IList)Get(form, "_monitors");
         var mon = monitors.Cast<object>().First(m => (int)Get(m, "Station") == 23);
         ((TabControl)Get(form, "_tabs")).SelectedIndex = monitors.IndexOf(mon);
         var sh = Call(form, "EnsureSheet", mon);
+        var list = (DataGridView)Get(sh, "Grid");
 
-        Console.WriteLine("--- an array of structures: a line per step, a column per member ---");
+        Console.WriteLine("--- a label of the list shown as a table ---");
         var steps = Row("R25700", "CuttingStep", 30, "CuttingSteps");
+        var single = Row("M5", "Bit", 1, "Lamp");
+        Rows(sh).Insert(Rows(sh).Count - 1, single);
         Rows(sh).Insert(Rows(sh).Count - 1, steps);
         Call(form, "RefreshValues"); Application.DoEvents();
-        Call(form, "ShowTable", mon, sh, true); Application.DoEvents();
-        var g = (DataGridView)Get(sh, "TableGrid");
-        var list = (DataGridView)Get(sh, "Grid");
-        Check("the tab as a table: the table shown, its list not", g != null && g.Visible && !list.Visible && ((Control)Get(sh, "TableView")).Visible);
+        var cms = list.ContextMenuStrip;
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(steps) });
+        list.CurrentCell = list.Rows[Rows(sh).IndexOf(steps)].Cells[0];
+        typeof(ToolStripDropDown).GetMethod("OnOpening", Any).Invoke(cms, new object[] { new System.ComponentModel.CancelEventArgs() });
+        var item = cms.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text == "Show this label in table view");
+        Check("an array label's menu: 'Show this label in table view'", item != null, string.Join(" | ", cms.Items.OfType<ToolStripItem>().Select(i => i.Text)));
+        Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(single) });
+        list.CurrentCell = list.Rows[Rows(sh).IndexOf(single)].Cells[0];
+        typeof(ToolStripDropDown).GetMethod("OnOpening", Any).Invoke(cms, new object[] { new System.ComponentModel.CancelEventArgs() });
+        Check("  a single label's: not", !cms.Items.OfType<ToolStripMenuItem>().Any(i => i.Text == "Show this label in table view"));
+        item.PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
+        var blocks = Blocks(sh);
+        Check("the label off the list, a table on top of the tab; the list (the other label) under it",
+              !Rows(sh).Contains(steps) && TableRows(sh).Contains(steps) && Rows(sh).Contains(single) && blocks.Count == 1 &&
+              list.Visible && ((Control)Get(sh, "TablesHost")).Visible && ((Control)Get(sh, "TablesHost")).Bottom <= list.Top,
+              blocks.Count + " " + ((Control)Get(sh, "TablesHost")).Bounds + " " + list.Bounds);
+        var b0 = blocks[0];
+        var g = GridOf(b0);
+        Check("  its caption the label's description, the view buttons under it, the table under them",
+              Caption(b0) == "CuttingSteps" && ((Label)Get(b0, "Caption")).Bottom <= Btn(b0, "ShowHmi").Parent.Top && Btn(b0, "ShowHmi").Parent.Bottom <= g.Top &&
+              Btn(b0, "ShowHmi").Text == "Value (HMI)" && Btn(b0, "ShowPlc").Text == "Value (PLC)", Caption(b0));
         var heads = Headers(g);
         Check("the columns: #, then each member - its name over its data type", string.Join(", ", heads) ==
               "#, Code | (Word [Signed]), Robot1 | (Word [Signed]), Angle | (Word [Signed]), LeftClamp | (Bit), RightClamp | (Bit)", string.Join(", ", heads));
-        Check("  30 lines - the steps, numbered as their labels ([0] ...)", g.RowCount == 30 && Cell(g, 0, 0) == "0" && Cell(g, 29, 0) == "29", g.RowCount.ToString());
-        Check("step 1 calculated: code 2, Robot1 1525 ÷ 10 = 152.5, Angle 4500 ÷ 100 = 45.00, the clamps 0 / 1",
+        Check("  30 lines, numbered as the labels' elements", g.RowCount == 30 && Cell(g, 0, 0) == "0" && Cell(g, 29, 0) == "29");
+        Check("step 1 as the HMI shows it: code 2, Robot1 152.5, Angle 45.00, the clamps 0 / 1",
               Cell(g, 1, 1) == "2" && Cell(g, 1, 2) == "152.5" && Cell(g, 1, 3) == "45.00" && Cell(g, 1, 4) == "0" && Cell(g, 1, 5) == "1",
               string.Join(" ", Enumerable.Range(1, 5).Select(c => Cell(g, 1, c))));
-        Check("  a step never written: 0, 0.0 ...", Cell(g, 10, 2) == "0.0" && Cell(g, 10, 4) == "0");
-        Check("  the note: 30 lines, 1 array", ((Label)Get(sh, "TableNote")).Text.StartsWith("30 lines") && ((Label)Get(sh, "TableNote")).Text.Contains("1 array"),
-              ((Label)Get(sh, "TableNote")).Text);
-
-        Console.WriteLine("--- the values shown: calculated or the PLC's ---");
-        var view = (Control)Get(sh, "TableView");
-        Func<string, Button> button = n => view.Controls.Find(n, true).OfType<Button>().First();
-        button("tableRaw").PerformClick(); Application.DoEvents();
-        Check("PLC values: Robot1 1525, Angle 4500", Cell(g, 1, 2) == "1525" && Cell(g, 1, 3) == "4500" && (bool)Get(sh, "TableRaw"));
+        Btn(b0, "ShowPlc").PerformClick();
+        Check("Value (PLC): Robot1 1525, Angle 4500 - kept with the label", Cell(g, 1, 2) == "1525" && Cell(g, 1, 3) == "4500" && (bool)Get(steps, "TableRaw"));
         var lines = (List<string>)Call(MonType, "Serialize", mon);
-        Check("  kept with the tab: '#table:raw' under its '#sheet:'", lines.IndexOf("#table:raw") == lines.FindIndex(l => l.StartsWith("#sheet:")) + 1, string.Join(" / ", lines.Take(8)));
-        button("tableCalc").PerformClick(); Application.DoEvents();
-        Check("  back to calculated", Cell(g, 1, 2) == "152.5" && !(bool)Get(sh, "TableRaw"));
+        Check("  kept: 'view=table', 'vals=plc' in its extras, before the list's rows",
+              lines.FindIndex(l => l.Contains(";R25700;") && l.Contains("view=table") && l.Contains("vals=plc")) < lines.FindIndex(l => l.Contains(";M5")) &&
+              lines.Any(l => l.Contains(";R25700;") && l.Contains("view=table")), string.Join(" / ", lines.Where(l => l.Contains(";R2") || l.Contains(";M5"))));
+        Btn(b0, "ShowHmi").PerformClick();
 
         Console.WriteLine("--- typed into a cell ---");
         int v;
         g.Rows[2].Cells[2].Value = "160.4";
         sim.TryRead("R25721", out v);
-        Check("160.4 into step 2's Robot1 (shown calculated): 1604 written", v == 1604, v.ToString());
-        button("tableRaw").PerformClick();
-        g.Rows[2].Cells[3].Value = "9000";
-        sim.TryRead("R25723", out v);
-        Check("  9000 into its Angle (shown as the PLC's): 9000 written", v == 9000, v.ToString());
+        Check("160.4 into step 2's Robot1 (shown as the HMI shows it): 1604 written", v == 1604, v.ToString());
         g.Rows[2].Cells[5].Value = "1";
         sim.TryRead("R25725", out v);
-        Check("  its RightClamp (R25725.1) set: the word's other bit kept", v == 3, v.ToString());
-        button("tableCalc").PerformClick();
-        Call(form, "RefreshValues"); Application.DoEvents();
-        Check("  shown at once", Cell(g, 2, 2) == "160.4" && Cell(g, 2, 3) == "90.00", Cell(g, 2, 2) + " " + Cell(g, 2, 3));
-        var begin = new DataGridViewCellCancelEventArgs(0, 1);
-        typeof(DataGridView).GetMethod("OnCellBeginEdit", Any).Invoke(g, new object[] { begin });
-        Check("  the # column is not typed into", begin.Cancel);
+        Check("  its RightClamp (R25725.1) set, the word's other bit kept", v == 3, v.ToString());
 
-        Console.WriteLine("--- an array of the same length added: its columns at the end ---");
+        Console.WriteLine("--- labels of the same length joined to a table ---");
         var job1 = Row("D5000", "Double Word [Signed]", 30, "Operation1");
-        Call(form, "AddToTable", mon, sh, job1); Application.DoEvents();
-        Call(form, "RefreshValues"); Application.DoEvents();
-        heads = Headers(g);
-        Check("Operation1's column after the steps' members; the members named with their array now",
-              heads.Count == 7 && heads[6] == "Operation1 | (Double Word [Signed])" && heads[1] == "CuttingSteps.Code | (Word [Signed])", string.Join(", ", heads));
-        Check("  the same index together: step 3 and Operation1[3] = 1004", Cell(g, 3, 6) == "1004", Cell(g, 3, 6));
-        var other = Row("D6000", "Word [Signed]", 20, "Short");
-        Call(form, "AddToTable", mon, sh, other); Application.DoEvents();
-        Call(form, "RefreshValues"); Application.DoEvents();
-        Check("an array of 20 (not 30): in the tab's list, not in the table - named under it",
-              Headers(g).Count == 7 && ((Label)Get(sh, "TableNote")).Text.Contains("Short [20]") && Rows(sh).Contains(other), ((Label)Get(sh, "TableNote")).Text);
-        Call(form, "RemoveFromTable", mon, sh, other);
-        Check("  taken off again", !Rows(sh).Contains(other) && !((Label)Get(sh, "TableNote")).Text.Contains("Short"));
-
-        Console.WriteLine("--- what Add an array... offers ---");
-        var sh2 = Call(form, "AddSheet", mon, "Jobs", 1);
         var job2 = Row("D6000", "Double Word [Signed]", 30, "Operation2");
-        var other2 = Row("D7000", "Word [Signed]", 12, "Twelve");
-        Rows(sh2).Insert(0, job2); Rows(sh2).Insert(1, other2);
-        Call(form, "Render", mon, sh2);
-        File.WriteAllLines(Path.Combine(dir, "labels.csv"), new[] { "Label;DataType;Address", "Kesim;CuttingStep(0..29);R26100", "Ten;CuttingStep(0..9);R27000" });
-        PlcLabelTable.LoadStation(Path.Combine(dir, "labels.csv"), 23);
-        var tabs = (TabControl)Get(mon, "SheetTabs");
-        tabs.SelectedIndex = 0; Application.DoEvents();
-        var menu = (ContextMenuStrip)Call(form, "TableAddMenu", mon, sh);
+        var shortOne = Row("D7000", "Word [Signed]", 20, "Short");
+        foreach (var r in new[] { job1, job2, shortOne }) Rows(sh).Insert(Rows(sh).Count - 1, r);
+        Call(form, "Render", mon, sh);
+        Call(form, "ShowInTable", mon, sh, job1);
+        Call(form, "RefreshValues"); Application.DoEvents();
+        blocks = Blocks(sh);
+        var b1 = blocks[1];
+        var menu = (ContextMenuStrip)Call(form, "TableAddMenu", mon, sh, job1);
         var texts = menu.Items.Cast<ToolStripItem>().Select(i => i.Text).ToList();
-        Check("arrays of 30: Operation2 (another tab), Kesim (the label list) - not Twelve, not Ten, not those in the table; a new one",
-              texts[0] == "Arrays of 30:" && texts.Any(t => t.StartsWith("Operation2") && t.Contains("(Jobs)")) && texts.Any(t => t.StartsWith("Kesim") && t.Contains("label list")) &&
-              !texts.Any(t => t.StartsWith("Twelve") || t.StartsWith("Ten") || t.StartsWith("Operation1")) && texts.Last() == "New array of 30...",
-              string.Join(" | ", texts));
+        Check("Add an array...: the labels of 30 elements in this tab's list (not Short's 20), a new one",
+              texts[0] == "Labels of 30 elements:" && texts.Any(t => t.StartsWith("Operation2") && t.Contains("this tab's list")) && !texts.Any(t => t.StartsWith("Short")) &&
+              texts.Last() == "New array of 30...", string.Join(" | ", texts));
         menu.Items.Cast<ToolStripItem>().First(i => i.Text.StartsWith("Operation2")).PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
-        Check("  Operation2 chosen: its column at the end, Operation2[2] = 300", Headers(g).Count == 8 && Headers(g)[7].StartsWith("Operation2") && Cell(g, 2, 7) == "300",
-              string.Join(", ", Headers(g)));
+        blocks = Blocks(sh);
+        b1 = blocks[1];
+        var g1 = GridOf(b1);
+        Check("Operation2 moved from the list into Operation1's table: its column at the end, the same index together",
+              !Rows(sh).Contains(job2) && (bool)Get(job2, "Joined") && Caption(b1) == "Operation1  +  Operation2" &&
+              string.Join(", ", Headers(g1)) == "#, Operation1 | (Double Word [Signed]), Operation2 | (Double Word [Signed])" && Cell(g1, 3, 1) == "1004" && Cell(g1, 3, 2) == "400",
+              Caption(b1) + " / " + string.Join(", ", Headers(g1)));
+        Call(form, "JoinTable", mon, sh, job1, shortOne);
+        Check("  a label of another length: kept in the list, not in the table", Rows(sh).Contains(shortOne) && !(bool)Get(shortOne, "Joined"));
 
-        Console.WriteLine("--- list and table, undone, kept ---");
-        Call(form, "ShowTable", mon, sh, false); Application.DoEvents();
-        Check("the tab as a list again: its arrays its rows", list.Visible && !view.Visible && !(bool)Get(sh, "IsTable"));
+        Console.WriteLine("--- the tables' order, up and down ---");
+        Check("the first table's Up off, the last's Down off", !Btn(blocks[0], "Up").Enabled && Btn(blocks[0], "Down").Enabled &&
+              Btn(blocks[1], "Up").Enabled && !Btn(blocks[1], "Down").Enabled);
+        Btn(blocks[1], "Up").PerformClick();
+        Call(form, "RefreshValues"); Application.DoEvents();
+        blocks = Blocks(sh);
+        Check("Up: Operation1's table first, its joined label with it", Caption(blocks[0]) == "Operation1  +  Operation2" && Caption(blocks[1]) == "CuttingSteps" &&
+              ((Control)Get(blocks[0], "Panel")).Top < ((Control)Get(blocks[1], "Panel")).Top,
+              string.Join(" / ", blocks.Select(Caption)));
+
+        Console.WriteLine("--- back to the list ---");
+        Call(form, "TakeOffTable", mon, sh, job1);
+        Application.DoEvents();
+        blocks = Blocks(sh);
+        // (checked before the simulator's own devices are appended to the list by a refresh)
+        Check("Operation1 taken off its table: at the list's end; Operation2 leads the table now", Rows(sh).Contains(job1) && Caption(blocks[0]) == "Operation2" &&
+              !(bool)Get(job2, "Joined") && LastItem(sh) == job1, string.Join(" / ", blocks.Select(Caption)));
+        Btn(blocks[1], "ToList").PerformClick();
+        Application.DoEvents();
+        Check("List view: CuttingSteps at the end of the list again", Rows(sh).Contains(steps) && !TableRaw(sh, steps) && Blocks(sh).Count == 1 &&
+              LastItem(sh) == steps, Blocks(sh).Count.ToString());
         Call(form, "Undo"); Application.DoEvents();
         var shNow = ((IList)Get(mon, "Sheets"))[0];
-        Check("  undone: a table again (the tab made anew)", (bool)Get(shNow, "IsTable") && ((DataGridView)Get(shNow, "TableGrid")).Visible);
+        Check("undone: its table again", Blocks(shNow).Count == 2 && TableRows(shNow).Cast<object>().Any(r => (string)Get(r, "Address") == "R25700"));
+
+        Console.WriteLine("--- kept and read back; a tab of before shown whole as a table ---");
         lines = (List<string>)Call(MonType, "Serialize", mon);
         var mon2 = Activator.CreateInstance(MonType.GetNestedType("MonitorTab", Any));
         Call(MonType, "Deserialize", mon2, lines);
-        var back = ((IList)Get(mon2, "Sheets")).Cast<object>().ToList();
-        Check("read back: the first tab a table of its 3 arrays, 'Jobs' a list", (bool)Get(back[0], "IsTable") && !(bool)Get(back[1], "IsTable") &&
-              Rows(back[0]).Cast<object>().Count(r => (bool)Get(r, "IsArray")) == 3);
+        var back = ((IList)Get(mon2, "Sheets"))[0];
+        Check("read back: the tables' labels in Tables, in their order; the list's in Rows",
+              string.Join(",", TableRows(back).Cast<object>().Select(r => (string)Get(r, "Address"))) == "D6000,R25700" &&
+              Rows(back).Cast<object>().Any(r => (string)Get(r, "Address") == "D5000"),
+              string.Join(",", TableRows(back).Cast<object>().Select(r => (string)Get(r, "Address"))));
+        var mon3 = Activator.CreateInstance(MonType.GetNestedType("MonitorTab", Any));
+        Call(MonType, "Deserialize", mon3, new List<string> { "#sheet:Jobs", "#table:raw", "Label;DataType;Address;Value",
+            "A;Double Word [Signed];D5000;;n=30", "B;Double Word [Signed];D6000;;n=30", "C;Word [Signed];D7000;;n=20", "Lamp;Bit;M5;" });
+        var old = ((IList)Get(mon3, "Sheets"))[0];
+        Check("a tab of before ('#table:'): its arrays of the first's length one table (B joined), the rest its list",
+              string.Join(",", TableRows(old).Cast<object>().Select(r => (string)Get(r, "Address") + ((bool)Get(r, "Joined") ? "+" : ""))) == "D5000,D6000+" &&
+              (bool)Get(TableRows(old)[0], "TableRaw") && Rows(old).Count == 2,
+              string.Join(",", TableRows(old).Cast<object>().Select(r => (string)Get(r, "Address"))));
 
-        Console.WriteLine("--- an array shown as a table from its row ---");
-        tabs.SelectedIndex = 1; Application.DoEvents();
-        var jobs = ((IList)Get(mon, "Sheets"))[1];
-        var row2 = Rows(jobs).Cast<object>().First(r => (string)Get(r, "Address") == "D7000");
-        var made = Call(form, "OpenAsTable", mon, row2);
-        Check("a new tab named after it, shown as a table of it, chosen", made != null && (string)Get(made, "Name") == "Twelve" && (bool)Get(made, "IsTable") &&
-              ((IList)Get(mon, "Sheets")).Count == 3 && Get(mon, "Current") == made);
-        Call(form, "RefreshValues"); Application.DoEvents();
-        var g3 = (DataGridView)Get(made, "TableGrid");
-        Check("  12 lines, one column: Twelve (Word [Signed])", g3.RowCount == 12 && Headers(g3).Count == 2 && Headers(g3)[1] == "Twelve | (Word [Signed])", string.Join(", ", Headers(g3)));
-        Check("  the list of Jobs as it was", Rows(jobs).Contains(row2));
-
-        Console.WriteLine("--- the simulator's own devices: into a tab shown as a list ---");
+        Console.WriteLine("--- the simulator's own devices: into the list ---");
         sim.Write("M999", 1);
         Call(form, "RefreshValues"); Application.DoEvents();
-        var all = ((IList)Get(mon, "Sheets")).Cast<object>().ToList();
-        Check("M999 appended to Jobs (the first list), not to the table before it",
-              Rows(all[1]).Cast<object>().Any(r => (string)Get(r, "Address") == "M999") && !Rows(all[0]).Cast<object>().Any(r => (string)Get(r, "Address") == "M999"));
+        shNow = ((IList)Get(mon, "Sheets"))[0];
+        Check("M999 appended to the list", Rows(shNow).Cast<object>().Any(r => (string)Get(r, "Address") == "M999") &&
+              !TableRows(shNow).Cast<object>().Any(r => (string)Get(r, "Address") == "M999"));
 
         form.Close();
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "MONITOR TABLE ALL PASS" : fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }
+
+    static bool TableRaw(object sheet, object row) { return TableRows(sheet).Contains(row); }
+    /// <summary>The list's last label (its elements and the empty line after it left out).</summary>
+    static object LastItem(object sheet) { return Rows(sheet).Cast<object>().LastOrDefault(r => !(bool)Get(r, "IsElement") && !(bool)Get(r, "IsBlank")); }
 }

@@ -111,6 +111,14 @@ namespace Kaban.UI.Forms
             public double Divisor = 1;
             public int Decimals;
 
+            // ---- A LABEL SHOWN AS A TABLE (22 October: SimulationMonitorForm.Table.cs) ----
+            /// <summary>Its columns at the end of the table above it (the "İŞ LİSTESİ" kind: the same index belongs together).</summary>
+            public bool Joined;
+            /// <summary>Its table shows the values as the PLC holds them (false: as the HMI shows them).</summary>
+            public bool TableRaw;
+            /// <summary>Read as a table's ("view=table"): only while a list is read.</summary>
+            public bool ViewTable;
+
             /// <summary>A structure's member: its member's; an element: its array's; else its own.</summary>
             public double EffectiveDivisor
             {
@@ -252,23 +260,32 @@ namespace Kaban.UI.Forms
             public string SortColumn = "";
             public bool SortDescending;
 
-            // ---- THE TABLE VIEW (22 October: SimulationMonitorForm.Table.cs) ----
-            /// <summary>Shown as a table: its arrays side by side, a line per index.</summary>
-            public bool IsTable;
-            /// <summary>The table shows the values as the PLC holds them (false: the calculated ones).</summary>
-            public bool TableRaw;
-            public Panel TableView;
-            public DataGridView TableGrid;
-            public CheckBox TableCalc;
-            public Label TableNote;
-            public Button TableAdd;
-            /// <summary>The columns the table was made with (made again when its arrays change).</summary>
-            public string TableKey;
-            public List<TableColumn> TableCols = new List<TableColumn>();
+            // ---- THE TABLES (22 October: SimulationMonitorForm.Table.cs) ----
+            private Sheet _tables;
+            /// <summary>
+            /// The labels shown as TABLES, at the top of the tab in their order - kept apart from
+            /// the list under them (their elements and members made as the list's are).
+            /// </summary>
+            public Sheet Tables { get { return _tables ?? (_tables = new Sheet { Name = "(tables)" }); } }
+            /// <summary>Every row of the tab: the list's and the tables'.</summary>
+            public IEnumerable<WatchRow> AllRows { get { return _tables == null ? Rows : Rows.Concat(_tables.Rows); } }
+            /// <summary>Where the tables are drawn (above the list), the border under them, their height when dragged.</summary>
+            public Panel TablesHost;
+            public Splitter TablesSplitter;
+            public int TablesHeight;
+            /// <summary>The tables as drawn (made again when their labels change).</summary>
+            public string TablesKey;
+            public readonly List<TableBlock> Blocks = new List<TableBlock>();
+            /// <summary>A watch list of before (22 October) whose whole tab was a table: its arrays made tables as it is read.</summary>
+            public string LegacyTable;
+            /// <summary>A table's cell is being typed into.</summary>
+            public bool TableEditing { get { return Blocks.Any(b => b.Grid != null && b.Grid.IsCurrentCellInEditMode); } }
         }
 
         internal class MonitorTab
         {
+            /// <summary>The monitor showing it (its tables' events need it).</summary>
+            public SimulationMonitorForm Form;
             public PlcConnectionSettings.Endpoint Endpoint;
             public bool IsSimulated;
             public TabPage Page;
@@ -337,7 +354,7 @@ namespace Kaban.UI.Forms
 
             public bool Listed(string address)
             {
-                return Sheets.Any(s => s.Rows.Any(r => string.Equals(r.Address, address, StringComparison.OrdinalIgnoreCase)));
+                return Sheets.Any(s => s.AllRows.Any(r => string.Equals(r.Address, address, StringComparison.OrdinalIgnoreCase)));
             }
         }
 
@@ -661,11 +678,6 @@ namespace Kaban.UI.Forms
             m.Items.Add(Item(T("Mnu_SheetRename", "Rename this tab..."), (s, e) => RenameSheet(), mon != null && mon.Current != null, keyText: "F2"));
             m.Items.Add(Item(T("Mnu_SheetDelete", "Delete this tab"), (s, e) => DeleteSheet(), mon != null && mon.Current != null, keyText: "Del"));
             m.Items.Add(new ToolStripSeparator());
-            // 22 October: the tab's arrays side by side, a line per index
-            var cur = mon != null ? mon.Current : null;
-            m.Items.Add(Item(cur != null && cur.IsTable ? T("Mnu_SheetAsList", "Show this tab as a list") : T("Mnu_SheetAsTable", "Show this tab as a table"),
-                             (s, e) => ShowTable(mon, cur, !cur.IsTable), cur != null));
-            m.Items.Add(new ToolStripSeparator());
             m.Items.Add(Item(T("Mnu_SheetLeft", "Move this tab left"), (s, e) => MoveSheet(-1), mon != null && mon.SheetTabs.SelectedIndex > 0, keyText: "Ctrl+Left"));
             m.Items.Add(Item(T("Mnu_SheetRight", "Move this tab right"), (s, e) => MoveSheet(+1), mon != null && mon.SheetTabs.SelectedIndex < mon.Sheets.Count - 1, keyText: "Ctrl+Right"));
             return m;
@@ -857,7 +869,7 @@ namespace Kaban.UI.Forms
             var page = new TabPage(PlcEndpointNaming.Caption(endpoint)) { BackColor = Color.White };
             page.ToolTipText = PlcEndpointNaming.CaptionWithStation(endpoint);
 
-            var mon = new MonitorTab { Endpoint = endpoint, IsSimulated = IsSimulatedStation(endpoint.StationId), Page = page };
+            var mon = new MonitorTab { Form = this, Endpoint = endpoint, IsSimulated = IsSimulatedStation(endpoint.StationId), Page = page };
 
             mon.SheetTabs = new TabControl
             {
@@ -960,7 +972,7 @@ namespace Kaban.UI.Forms
             sh.Page.Tag = sh;                               // the page KNOWS its tab: see Current
             WireGrid(mon, sh);
             EnsureBlankRow(sh);
-            if (sh.IsTable) ApplyView(mon, sh);
+            BuildTablesHost(mon, sh);
             InsertPage(mon, sh.Page, at);
             mon.SyncOrder();
             UpdateEmptyState(mon);
@@ -1269,10 +1281,11 @@ namespace Kaban.UI.Forms
                     rowMenu.Items.Add(Item(head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
                                                         : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
                                            (s2, e2) => ToggleArray(mon, sh, head)));
-                // 22 October: an array as a table - a line per element, a column per member
+                // 22 October: an array label as a table at the top of the tab - a line per element,
+                // a column per member of a structure (the list stays under the tables)
                 var array = at == null ? null : at.Root.IsArray ? at.Root : null;
                 if (array != null)
-                    rowMenu.Items.Add(Item(T("Mnu_MonOpenTable", "Show the array as a table (a new tab)"), (s2, e2) => OpenAsTable(mon, array)));
+                    rowMenu.Items.Add(Item(T("Mnu_MonShowInTable", "Show this label in table view"), (s2, e2) => ShowInTable(mon, sh, array)));
                 // 19 October: 0 into every device of the rows chosen (a structure's members, an array's elements)
                 bool devices = SelectedIndices(sh).Any(i => i < sh.Rows.Count && sh.Rows[i].IsDevice);
                 rowMenu.Items.Add(Item(T("Mnu_MonReset", "Reset (0 into its devices)..."), (s2, e2) => ResetSelected(mon, sh), devices));
@@ -1544,7 +1557,7 @@ namespace Kaban.UI.Forms
             find.DefaultFormat = use =>
             {
                 var m = _monitors.FirstOrDefault(x => x.Station == find.Station);
-                var listed = m == null ? null : m.Sheets.SelectMany(x => x.Rows)
+                var listed = m == null ? null : m.Sheets.SelectMany(x => x.AllRows)
                     .FirstOrDefault(r => r.IsDevice && !r.IsGroup && !r.IsElement && string.Equals(r.Address, use.Address, StringComparison.OrdinalIgnoreCase));
                 return listed != null ? listed.EffectiveFormat : null;
             };
@@ -1614,12 +1627,13 @@ namespace Kaban.UI.Forms
         {
             var monK = CurrentMonitor;
             var shK = monK != null ? monK.Current : null;
-            bool editing = shK != null && (shK.Grid.IsCurrentCellInEditMode || shK.TableGrid != null && shK.TableGrid.IsCurrentCellInEditMode);
+            bool editing = shK != null && (shK.Grid.IsCurrentCellInEditMode || shK.TableEditing);
             // A TABLE: Enter (or Shift+Enter) types into the value chosen
-            if (shK != null && shK.IsTable && !editing && shK.TableGrid != null && shK.TableGrid.ContainsFocus && shK.TableGrid.CurrentCell != null &&
-                shK.TableGrid.CurrentCell.ColumnIndex > 0 && (keyData == Keys.Enter || keyData == (Keys.Shift | Keys.Enter)))
+            var tableGrid = shK != null ? shK.Blocks.Select(b => b.Grid).FirstOrDefault(g => g != null && g.ContainsFocus) : null;
+            if (tableGrid != null && !editing && tableGrid.CurrentCell != null && tableGrid.CurrentCell.ColumnIndex > 0 &&
+                (keyData == Keys.Enter || keyData == (Keys.Shift | Keys.Enter)))
             {
-                shK.TableGrid.BeginEdit(true);
+                tableGrid.BeginEdit(true);
                 return true;
             }
             // Anywhere in the window, unless a cell is being typed into.
@@ -1806,6 +1820,13 @@ namespace Kaban.UI.Forms
             if (rowIndex < 0 || rowIndex >= sh.Rows.Count) return;
             var row = sh.Rows[rowIndex];
             if (row.IsBlank) { AddRows(true, false); return; }
+            EditRow(mon, sh, row, focusField);
+        }
+
+        /// <summary>Opens the editor for a row of the list or of a table (an element: its array).</summary>
+        internal void EditRow(MonitorTab mon, Sheet sh, WatchRow row, string focusField)
+        {
+            if (row == null) return;
             if (row.IsElement) row = row.Root;           // an element (a member) is edited as its array (structure)
 
             bool nz;
@@ -3012,7 +3033,7 @@ namespace Kaban.UI.Forms
             if (sh == null) { UpdateStatus(mon, null); return; }
             // An edit that ended without CellEndEdit (cancelled from code) must not
             // stop the refresh for good.
-            if (sh.Editing && !sh.Grid.IsCurrentCellInEditMode && !(sh.TableGrid != null && sh.TableGrid.IsCurrentCellInEditMode)) sh.Editing = false;
+            if (sh.Editing && !sh.Grid.IsCurrentCellInEditMode && !sh.TableEditing) sh.Editing = false;
             if (sh.Editing) return;
 
             if (mon.IsSimulated) ReadSimulated(mon);
@@ -3059,24 +3080,23 @@ namespace Kaban.UI.Forms
             var now = DateTime.Now;
             var seenNames = mon.Values.Keys.ToList();
             var seenValues = mon.Values.Values.ToList();
-            foreach (var w in mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice && !r.IsGroup).SelectMany(WordsOf).Concat(FindWords(mon)))
+            foreach (var w in mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.IsDevice && !r.IsGroup).SelectMany(WordsOf).Concat(FindWords(mon)))
                 if (!mon.Values.ContainsKey(w) && !seenNames.Contains(w)) { seenNames.Add(w); seenValues.Add(0); }
             DeviceHistory.Observe(mon.Station, seenNames, seenValues, now, now);
 
-            // An array's elements are listed, even one added a moment ago.
-            foreach (var s in mon.Sheets) EnsureElements(s);
+            // An array's elements are listed, even one added a moment ago (a table's too).
+            foreach (var s in mon.Sheets) { EnsureElements(s); EnsureElements(s.Tables); }
 
             // A double word's second device is part of its row, not a device of
             // its own: D101 under a D100 double word is D100's high half.
             // A structure's devices are its own too, the unused ones between its members included.
             var highWords = new HashSet<string>(
-                mon.Sheets.SelectMany(s => s.Rows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1))
-                   .Concat(mon.Sheets.SelectMany(s => s.Rows).Where(r => r.Structure != null).SelectMany(StructureWords)),
+                mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.IsDevice).SelectMany(r => WordsOf(r).Skip(1))
+                   .Concat(mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.Structure != null).SelectMany(StructureWords)),
                 StringComparer.OrdinalIgnoreCase);
             var discovered = mon.Values.Keys.Where(a => !mon.Hidden.Contains(a) && !mon.Listed(a) && !highWords.Contains(a))
                                 .OrderBy(a => a, StringComparer.OrdinalIgnoreCase).ToList();
-            // into the first tab shown as a list (a table shows arrays only)
-            var first = mon.Sheets.FirstOrDefault(s => !s.IsTable);
+            var first = mon.Sheets.FirstOrDefault();
             if (discovered.Count == 0 || first == null) return;
             int at = InsertPoint(first, true);
             foreach (var a in discovered) first.Rows.Insert(at++, new WatchRow { Station = mon.Station, Address = a });
@@ -3096,8 +3116,11 @@ namespace Kaban.UI.Forms
 
             var addresses = new List<string>();
             if (sh != null)
-                foreach (var r in sh.Rows.Where(r => r.IsDevice && !r.IsGroup))
-                    addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words
+            {
+                EnsureElements(sh.Tables);
+                foreach (var r in sh.AllRows.Where(r => r.IsDevice && !r.IsGroup))
+                    addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words (the tables' too)
+            }
             addresses.AddRange(FindWords(mon));          // and what Find lists
             var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
             if (batch.Length == 0) return;
@@ -3138,7 +3161,7 @@ namespace Kaban.UI.Forms
 
         private static void Render(MonitorTab mon, Sheet sh)
         {
-            foreach (var r in sh.Rows) r.Station = mon.Station;   // before any label is looked up
+            foreach (var r in sh.AllRows) r.Station = mon.Station;   // before any label is looked up
             EnsureElements(sh);                                   // the arrays' elements, each under its array
             var grid = sh.Grid;
             bool firstFill = grid.Rows.Count == 0;
@@ -3239,8 +3262,8 @@ namespace Kaban.UI.Forms
             conditions &= !IsColumnHidden("Condition");
             if (grid.Columns["Condition"].Visible != conditions) grid.Columns["Condition"].Visible = conditions;
 
-            // a tab shown as a table: its table too
-            if (sh.IsTable) RenderTable(mon, sh);
+            // the labels shown as tables, above the list
+            if (mon.Form != null) mon.Form.RenderTables(mon, sh);
         }
 
         private static readonly Color ColScaleDefault = Color.FromArgb(160, 164, 172);
@@ -3403,7 +3426,7 @@ namespace Kaban.UI.Forms
             string text = sh == null
                 ? T("Msg_MonNoTabsShort", "No tabs") + "  \u00B7  " + where
                 : string.Format(T("Msg_MonStatus", "{0} device(s), {1} comment line(s)  \u00B7  {2}"),
-                                sh.Rows.Count(r => r.IsDevice && !r.IsElement), sh.Rows.Count(r => r.IsComment), where);
+                                sh.AllRows.Count(r => r.IsDevice && !r.IsElement), sh.Rows.Count(r => r.IsComment), where);
             if (_statusNote.Length > 0 && DateTime.UtcNow < _statusNoteUntil) text = _statusNote + "     " + text;
             if (_status.Text != text) _status.Text = text;
         }
@@ -3627,8 +3650,12 @@ namespace Kaban.UI.Forms
             foreach (var sh in mon.Sheets)
             {
                 lines.Add(SheetPrefix + sh.Name);
-                // shown as a table, and which values (a program of before reads the tab as a list)
-                if (sh.IsTable) lines.Add(TablePrefix + (sh.TableRaw ? "raw" : "calc"));
+                // the labels shown as tables first, in their order ("view=table"; a program of before lists them)
+                foreach (var r in Items(sh.Tables).Where(r => r.IsDevice))
+                {
+                    string ex = Extras(r);
+                    lines.Add(string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", (ex.Length > 0 ? ex + "|" : "") + "view=table"));
+                }
                 foreach (var r in sh.Rows.Where(r => !r.IsBlank && !r.IsElement))
                     lines.Add(r.IsComment ? Csv(r.Comment) + ";;;"
                                           : string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", Extras(r)).TrimEnd(';'));
@@ -3647,7 +3674,8 @@ namespace Kaban.UI.Forms
                 if (line.StartsWith(HiddenPrefix, StringComparison.OrdinalIgnoreCase)) { mon.Hidden.Add(line.Substring(HiddenPrefix.Length).Trim()); continue; }
                 if (line.StartsWith(TablePrefix, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (current != null) { current.IsTable = true; current.TableRaw = line.Substring(TablePrefix.Length).Trim() == "raw"; }
+                    // a tab shown whole as a table (a list of 22 October): its arrays made tables below
+                    if (current != null) current.LegacyTable = line.Substring(TablePrefix.Length).Trim();
                     continue;
                 }
                 if (line.StartsWith(TabsPrefix, StringComparison.OrdinalIgnoreCase))
@@ -3675,8 +3703,10 @@ namespace Kaban.UI.Forms
                 }
                 var row = new WatchRow { Station = mon.Station, Address = address, LabelOverride = f[0].Trim(), DataTypeOverride = f[1].Trim() };
                 if (f.Length > 4) ReadExtras(row, f[4]);
-                current.Rows.Add(row);
+                if (row.ViewTable) { row.ViewTable = false; current.Tables.Rows.Add(row); }
+                else current.Rows.Add(row);
             }
+            foreach (var sh in mon.Sheets.Where(s => s.LegacyTable != null)) TakeLegacyTable(sh);
         }
 
         /// <summary>
@@ -3694,6 +3724,8 @@ namespace Kaban.UI.Forms
             if (!string.IsNullOrEmpty(r.ConditionKey)) parts.Add("cond=" + r.ConditionKey);
             if (r.Divisor != 1 && r.Divisor != 0) parts.Add("div=" + r.Divisor.ToString("R", CultureInfo.InvariantCulture));
             if (r.Decimals != 0) parts.Add("dec=" + r.Decimals.ToString(CultureInfo.InvariantCulture));
+            if (r.Joined) parts.Add("join=1");
+            if (r.TableRaw) parts.Add("vals=plc");
             return string.Join("|", parts);
         }
 
@@ -3717,6 +3749,9 @@ namespace Kaban.UI.Forms
                         if (double.TryParse(v, NumberStyles.Float, CultureInfo.InvariantCulture, out d) && d != 0 && !double.IsNaN(d) && !double.IsInfinity(d)) r.Divisor = d;
                         break;
                     case "dec": if (int.TryParse(v, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) r.Decimals = Math.Max(0, Math.Min(StructuredTypes.MaxDecimals, n)); break;
+                    case "view": r.ViewTable = v == "table"; break;
+                    case "join": r.Joined = v == "1"; break;
+                    case "vals": r.TableRaw = v == "plc"; break;
                 }
             }
         }
