@@ -6,6 +6,18 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 22 October (evening):
+  - 32f7cc6 - HMI Settings > PLC Connection: an Active tick per PLC. A machine none of whose PLCs is active: not
+    connected, not watched, its pages in no list (the navigation bar, the PLC Monitor ...) - from the next start.
+  - 7c6bf40 - PLC Monitor: Divisor and Decimal Places per label (and per structure member, in Structures...); the
+    Calculated Value column beside the Value (typed: written times the divisor). Any of the three can be taken off.
+  - fced1e1 - "An unexpected error" on the translation imports: a sorted table moved its texts, not its rows - now a
+    row moves whole in every table (Alarm Settings' definitions too); the review keeps each change on its row.
+  - 4452f1a - PLC Monitor: a tab shown as a table - a line per index, a column per structure member (name over data
+    type), calculated or PLC values, arrays of the same length added as columns ("Add an array..."), its list kept.
+  - ec2a46b - Axis pages: the Position heading opens a list - Position, Servo Encoder Value (axes on a simple motion
+    module), Load Position (a load-side encoder) - shown side by side; the axis units show them too. The encoder's
+    tooltip and the Motion monitor's Feed / Real current value gone.
 - 22 October (later):
   - 82fbd36 - Translation page: 📥 one import menu beside 🤖 - an older installation's folder (the keys still used, its
     languages asked), translation files, the AI's answer (files, copied). Empty cells written at once, every change
