@@ -147,7 +147,7 @@ namespace Kaban.UI.Screens
             SecurityManager.UserChanged += OnUserChanged;
             ViewPreferences.Changed += OnPreferencesChanged;
             VisibleChanged += (s, e) => UpdatePicker();
-            ParentChanged += (s, e) => UpdatePicker();
+            ParentChanged += (s, e) => { WatchParents(); UpdatePicker(); };
             HandleCreated += (s, e) => UpdatePicker();
             Disposed += (s, e) =>
             {
@@ -155,6 +155,7 @@ namespace Kaban.UI.Screens
                 SecurityManager.UserChanged -= OnUserChanged;
                 ViewPreferences.Changed -= OnPreferencesChanged;
                 RemovePicker();
+                foreach (var w in _watched) { w.VisibleChanged -= OnAncestorChanged; w.ParentChanged -= OnAncestorMoved; }
                 _shade.Dispose();
             };
             SetPicking(true);
@@ -188,15 +189,47 @@ namespace Kaban.UI.Screens
             UpdatePicker();
         }
 
+        /// <summary>On a window on show: the page and every one it is in visible (a page taken out of its window - its window closed - is not).</summary>
         private bool Shown()
         {
             if (IsDisposed || !IsHandleCreated) return false;
-            for (Control p = this; p != null; p = p.Parent) if (!p.Visible) return false;
-            return true;
+            Control p = this;
+            for (; p.Parent != null; p = p.Parent) if (!p.Visible) return false;
+            return p is Form && p.Visible && !p.IsDisposed;
         }
 
+        private bool _wasShown;
+        private readonly List<Control> _watched = new List<Control>();
+
+        /// <summary>The panels and the window the page is in, watched: one hidden or closed closes the page (not every system tells the page itself).</summary>
+        private void WatchParents()
+        {
+            foreach (var w in _watched) { w.VisibleChanged -= OnAncestorChanged; w.ParentChanged -= OnAncestorMoved; }
+            _watched.Clear();
+            for (var p = Parent; p != null; p = p.Parent)
+            {
+                p.VisibleChanged += OnAncestorChanged;
+                p.ParentChanged += OnAncestorMoved;
+                _watched.Add(p);
+            }
+        }
+
+        private void OnAncestorChanged(object sender, EventArgs e) { UpdatePicker(); }
+        private void OnAncestorMoved(object sender, EventArgs e) { WatchParents(); UpdatePicker(); }
+
+        /// <summary>
+        /// The page opened: picking (the page is for that); closed - its side panel closed, another
+        /// page in it, its window closed - picking off (22 October: "the picking mode should turn
+        /// off automatically when the notes page is closed").
+        /// </summary>
         private void UpdatePicker()
         {
+            bool shown = Shown();
+            if (shown != _wasShown)
+            {
+                _wasShown = shown;
+                if (_picking != shown) { SetPicking(shown); return; }
+            }
             if (_picking && Shown()) { if (_picker == null) { _picker = new Picker(this); Application.AddMessageFilter(_picker); } }
             else RemovePicker();
             // the rest of the window darker while a tap picks (21 October)

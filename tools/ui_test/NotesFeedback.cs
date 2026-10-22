@@ -333,6 +333,19 @@ class NF {
         var all = Tree(notes).OfType<DataGridView>().First(g => g.Name == "notesAll");
         Check("every note in a table", all.Rows.Count == NotesStore.All.Count, all.Rows.Count + " / " + NotesStore.All.Count);
         every.SelectedIndex = 0;
+
+        // 22 October: "the picking mode should turn off automatically when the notes page is closed"
+        Console.WriteLine("--- the page closed: picking off ---");
+        Check("open: picking", notes.Picking);
+        host.Visible = false; Pump(100);
+        Check("its panel closed: picking off, no tap taken", !notes.Picking && typeof(NotesPage).GetField("_picker", Any).GetValue(notes) == null &&
+              !(bool)typeof(NotesPage).GetField("_picking", Any).GetValue(notes));
+        host.Visible = true; Pump(100);
+        Check("  opened again: picking", notes.Picking);
+        host.Controls.Remove(notes); Pump(100);
+        Check("taken out of its window (the window closed): picking off", !notes.Picking && typeof(NotesPage).GetField("_picker", Any).GetValue(notes) == null &&
+              !(bool)typeof(NotesPage).GetField("_picking", Any).GetValue(notes));
+        host.Controls.Add(notes); Pump(100);
         form.Close();
 
         Console.WriteLine("--- the main window ---");
