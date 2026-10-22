@@ -6,6 +6,21 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 22 October - the Translation page:
+  - 408c379 - Save writes the texts straight into their translation files (CommonTranslations.csv, a machine's
+    Translations.csv, an Alarms.json - edited in place, comments and order kept); from Visual Studio's build the
+    project's copy too. The first version's UserTranslations.csv is written in once and renamed .written.
+  - c71c9c8 - 📋 copies a language's texts into the empty cells of the languages ticked (every row or the rows shown);
+    "Add a language" asks which language's texts the new one begins with. Typed (orange) until Save.
+  - 751e2d9 - A translation of the Notes page in force is an edit of the table (its history names the note).
+  - 06883b5 - "Where is it used?" without the source: the program's lines from TranslationUses.csv, shipped beside it
+    (`tools\translation_uses.py`, made again in every batch).
+  - c573d32 - An Admin can reset the edit history (🗑 in its window; the list kept as a .bak beside it).
+  - 4efaf94 - 🤖 asks an AI to translate the missing texts or check every translation of the rows shown: a briefing
+    with their files, where each text is shown and the rules; 📥 imports its answer (its files or its answer copied),
+    the texts typed into the table with the AI's note as the cell's tooltip, to check and Save.
+  - 7c7edea - Notes and feedback: the menu's page buttons and the tabs are picked while picking, not used; the menu is
+    darkened too. Picking off goes to another page.
 - 21 October (later):
   - 2dae673 - Translation page: Where is it used? (Ctrl+F) - the pages and their controls, the menu, the tabs, the alarms,
     and the program's lines (message boxes, status lines ...) when the program runs from its build; a page opened on a double click.
