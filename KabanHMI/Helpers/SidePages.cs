@@ -28,6 +28,11 @@ namespace Kaban.UI.Helpers
         /// <summary>Builds the page, once; it is kept while the program runs (closing the panel only hides it).</summary>
         public Func<Control> Create;
         public SecurityLevel RequiredLevel = SecurityLevel.None;
+        /// <summary>
+        /// Whether the page has anything to show (null: always) - the Axis Monitor's button is on
+        /// the bar only when an axis is set on the Axis Settings pages (22 October: not on H500's).
+        /// </summary>
+        public Func<bool> Available;
         /// <summary>Lower numbers are higher on the bar.</summary>
         public int SortOrder = 100;
         /// <summary>Can be taken out of the panel into a window of its own (a second screen).</summary>

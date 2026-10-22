@@ -518,11 +518,19 @@ namespace Kaban.UI.Helpers
             finally { _work.Stop(); _discovering = false; }
         }
 
+        /// <summary>The pages were searched (the axes, the links are known).</summary>
+        public static bool IsDiscovered { get { return _discovered; } }
+
+        /// <summary>Raised when the pages have been searched (the side bar's Axis Monitor button then).</summary>
+        public static event EventHandler Discovered;
+
         private static void Finish()
         {
             Application.Idle -= OnIdle;
             _pending = null;
             _discovered = true;
+            var h = Discovered;
+            if (h != null) { try { h(null, EventArgs.Empty); } catch (Exception ex) { AuditLogger.Log("after the help discovery: " + ex.Message); } }
             LastDiscovery = _work.Elapsed;
             AuditLogger.Log(string.Format("help links: {0} error bit(s) linked to units in {1} ms of idle time{2}",
                 _links.Count, (int)_work.ElapsedMilliseconds,

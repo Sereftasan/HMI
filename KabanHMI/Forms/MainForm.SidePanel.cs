@@ -84,8 +84,18 @@ namespace Kaban.UI.Forms
                 Glyph = DrawAxisGlyph,
                 Create = () => new Screens.AxisMonitorPage(),
                 RequiredLevel = SecurityLevel.None,
+                // only with an axis to watch: known once the pages were searched (in idle time)
+                Available = () => Kaban.UI.Helpers.AlarmHelpLinks.IsDiscovered && Kaban.UI.Helpers.AlarmHelpLinks.AllAxes.Count > 0,
                 SortOrder = 20
             });
+            EventHandler discovered = (s, e) =>
+            {
+                if (IsDisposed) return;
+                if (IsHandleCreated) { try { BeginInvoke(new Action(RefreshSideBar)); } catch { } }
+                else RefreshSideBar();
+            };
+            Kaban.UI.Helpers.AlarmHelpLinks.Discovered += discovered;
+            FormClosed += (s, e) => Kaban.UI.Helpers.AlarmHelpLinks.Discovered -= discovered;
             SidePages.Register(new SidePage
             {
                 Key = PlcMonitorKey,
@@ -227,7 +237,7 @@ namespace Kaban.UI.Forms
         private void RefreshSideBar()
         {
             if (_sideBar == null) return;
-            var pages = SidePages.All().Where(p => SecurityManager.HasAccess(p.RequiredLevel)).ToList();
+            var pages = SidePages.All().Where(p => SecurityManager.HasAccess(p.RequiredLevel) && (p.Available == null || p.Available())).ToList();
 
             // A page the user may no longer open is closed - in the panel and in a window.
             if (_sideOpen != null && !SecurityManager.HasAccess(_sideOpen.RequiredLevel)) CloseSidePanel();
