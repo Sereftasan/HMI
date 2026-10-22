@@ -11,7 +11,7 @@ using Kaban.Core.Machines;
 using Kaban.UI.Helpers;
 using Kaban.UI.Settings;
 
-// 23 October: "Is it possible to discard changes after the AI translation file import with the 'Ctrl+Z' button on
+// 22 October: "Is it possible to discard changes after the AI translation file import with the 'Ctrl+Z' button on
 // top of the screen, the AI results might be too bad to get on with".
 class TU {
     static int fail = 0;

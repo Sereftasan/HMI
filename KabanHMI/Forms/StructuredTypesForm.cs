@@ -76,7 +76,7 @@ namespace Kaban.UI.Forms
             const int bottom = 56;                         // OK / Cancel under both halves
 
             // ---- the list: its buttons above it ----
-            // 23 October: "it would be nice if I could change the structured data types list's order - it
+            // 22 October: "it would be nice if I could change the structured data types list's order - it
             // could be too messy when too many are added": up / down beside the list's buttons too
             var left = new Panel { Bounds = new Rectangle(0, 0, 266, ClientSize.Height - bottom), Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left };
             Controls.Add(left);

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Kaban.Core.Helpers;
 using Kaban.UI.Forms;
 
-// 23 October: "It would be nice if I could be able to change structured data types list, it could be too
+// 22 October: "It would be nice if I could be able to change structured data types list, it could be too
 // messy when added too many" (up / down arrows drawn beside the list). And the user's renamed types
 // ("Milling Step" - "Milling Steps"): what named the old name still finds the structure.
 class SO {

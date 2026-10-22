@@ -240,7 +240,7 @@ namespace Kaban.UI.Forms
         /// <summary>
         /// The row's CALCULATED value: its number divided by its divisor, with its decimal
         /// places - an array's and a structure's folded like their values. A bit or a string
-        /// (nothing to calculate) as its value (23 October: "the bit labels under a structured
+        /// (nothing to calculate) as its value (22 October: "the bit labels under a structured
         /// label should be seen in their own cells"); null when not read yet.
         /// </summary>
         internal static string FormatCalculated(MonitorTab mon, WatchRow r, out bool nonZero)

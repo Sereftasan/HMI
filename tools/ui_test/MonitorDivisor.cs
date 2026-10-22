@@ -143,7 +143,7 @@ class MD {
               cell(plain, "Decimals") == "0" && grid.Rows[Rows(sh).IndexOf(plain)].Cells["Divisor"].Style.ForeColor != System.Drawing.Color.Empty &&
               grid.Rows[Rows(sh).IndexOf(dw)].Cells["Divisor"].Style.ForeColor == System.Drawing.Color.Empty);
         Check("a float not scaled: as its value", cell(fl, "Calculated") == "3.25", cell(fl, "Calculated"));
-        // 23 October: "the bit labels under a structured label should be seen in their own cells" - Value (HMI) too
+        // 22 October: "the bit labels under a structured label should be seen in their own cells" - Value (HMI) too
         Check("a bit, a string: nothing to calculate - Value (HMI) their value, no divisor",
               cell(bit, "Calculated") == "1" && cell(bit, "Divisor") == "" && cell(str, "Calculated") == cell(str, "Value") && cell(str, "Divisor") == "",
               cell(bit, "Calculated") + " | " + cell(str, "Calculated") + " | " + cell(str, "Value"));

@@ -6,7 +6,7 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
-- 23 October:
+- 22 October (last):
   - cf0691a, 20ea6d4 - FA2010: your StructuredTypes.csv taken in; the labels follow your renamed types, the job list's
     three columns simple arrays (Double Word [Signed](0..499)).
   - a9556b9 - Structured data types: the list's order changed with up / down (Ctrl+Up / Ctrl+Down); a renamed type

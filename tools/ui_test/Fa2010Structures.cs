@@ -54,7 +54,7 @@ class FS {
         Console.WriteLine("--- FA2010's StructuredTypes.csv ---");
         var types = StructuredTypes.Parse(File.ReadAllLines(Path.Combine(bin, "StructuredTypes.csv")));
         var names = types.Select(t => t.Name).ToList();
-        Check("a type for each table of the Profiles & Operations sheet - as the user named them (23 October), the job list's none",
+        Check("a type for each table of the Profiles & Operations sheet - as the user named them (22 October), the job list's none",
               string.Join(", ", names) == "Milling Steps, Profile Parameters, Milling Parameters, Special Cut Parameters, Special Cut Steps, Mullion Notching Step",
               string.Join(", ", names));
         foreach (var t in types)

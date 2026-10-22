@@ -272,7 +272,7 @@ namespace Kaban.UI.Forms
             /// <summary>Where the tables are drawn, one under the other.</summary>
             public Panel TablesHost;
             /// <summary>
-            /// 23 October: "the table viewed on top and the list in the bottom don't fit on the page so well - when a tab
+            /// 22 October: "the table viewed on top and the list in the bottom don't fit on the page so well - when a tab
             /// has both kinds, two tabs under it: 'List viewed labels' and 'Table viewed labels', removed when either
             /// gets empty". The two tabs (made once, on the tab only while it has both), the view shown now
             /// (0 the list alone, 1 the tables alone, 2 both) and the one to show next ("list" / "tables").

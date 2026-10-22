@@ -236,7 +236,7 @@ namespace Kaban.UI.Forms
 
         /// <summary>
         /// A panel that does not scroll to the control given the focus: a click into a table taller than the room
-        /// scrolled the tables, its caption out of sight (23 October: the caption cut at its top).
+        /// scrolled the tables, its caption out of sight (22 October: the caption cut at its top).
         /// </summary>
         private sealed class TablesPanel : Panel
         {

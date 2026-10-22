@@ -73,7 +73,7 @@ namespace Kaban.Core.Helpers
             public string Comment = "";
             public readonly List<Member> Members = new List<Member>();
             /// <summary>
-            /// The names it had before (23 October: the user renamed "Milling Step" to "Milling Steps"): a
+            /// The names it had before (22 October: the user renamed "Milling Step" to "Milling Steps"): a
             /// label list's or a PLC Monitor row's data type of an old name still finds it.
             /// </summary>
             public readonly List<string> FormerNames = new List<string>();

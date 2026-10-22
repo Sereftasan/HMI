@@ -122,7 +122,7 @@ class MT {
         item.PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
         var blocks = Blocks(sh);
-        // 23 October: "the table viewed on top and the list viewed in the bottom don't fit on the page so well - when a
+        // 22 October: "the table viewed on top and the list viewed in the bottom don't fit on the page so well - when a
         // tab has both, two tabs under it: 'List viewed labels' first, 'Table viewed labels' second; removed when either gets empty"
         Check("the label off the list into a table: the tab has both now - two tabs under it, the list's first, the tables' second",
               !Rows(sh).Contains(steps) && TableRows(sh).Contains(steps) && Rows(sh).Contains(single) && blocks.Count == 1 &&

@@ -122,7 +122,7 @@ namespace Kaban.UI.Settings
             };
             _btnSave = UiStyle.ToolButton(E(0x1F4BE), T("Tip_TrnSave", "Save: the texts typed in force and written into their translation files - every change in the history"), _tips,
                                           (s, e) => Save());
-            // 23 October: "discard the changes after the AI translation file import with Ctrl+Z on top of the screen":
+            // 22 October: "discard the changes after the AI translation file import with Ctrl+Z on top of the screen":
             // the curl that only threw away the texts typed is Undo now - a text typed, an import, a Save - with Redo
             _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_TrnUndo", "Undo the last change: a text typed, an import, a Save"), _tips, (s, e) => Undo());
             _btnRedo = UiStyle.IconButton(ToolGlyphs.Redo, "Redo", T("Tip_TrnRedo", "Redo the change undone last"), _tips, (s, e) => Redo());

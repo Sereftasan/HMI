@@ -8,7 +8,7 @@ using Kaban.UI.Profiles;
 namespace Kaban.UI.Settings
 {
     // ======================================================================
-    // UNDO AND REDO ON THE TRANSLATION PAGE (23 October: "Is it possible to
+    // UNDO AND REDO ON THE TRANSLATION PAGE (22 October: "Is it possible to
     // discard changes after the AI translation file import with the Ctrl+Z
     // button on top of the screen - the AI results might be too bad to get on
     // with").
