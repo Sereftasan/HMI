@@ -31,8 +31,9 @@ namespace Kaban.UI.Forms
                 Glyph = DrawNotesGlyph,
                 Create = () => new Screens.NotesPage(IsPickable, PlaceOf, PanelName, IsPassedThrough)
                 {
-                    // darker while picking: the page and the caption bar - what a tap picks in (21 October)
-                    ShadeAreas = () => new Control[] { pnlTop, pnlContent },
+                    // darker while picking: the page, the caption bar and the menu - what a tap picks in
+                    // (21 October; the menu's page buttons picked too, 22 October)
+                    ShadeAreas = () => new Control[] { pnlTop, pnlMenu, pnlContent },
                     OpenTranslationTable = k => { string why; OpenTranslation(k, out why); return why; }
                 },
                 RequiredLevel = SecurityLevel.None,
@@ -99,12 +100,11 @@ namespace Kaban.UI.Forms
         }
 
         /// <summary>
-        /// True for what works as ever while the notes page picks - and is noted
-        /// with the page it opened (8 October: "the navigation window should work
-        /// normal but should also create a note page about the navigation button
-        /// and the selected page; the tabs click should behave just like the
-        /// navigation button click"): the menu's page buttons and machine list, a
-        /// page's tabs.
+        /// True for the menu's page buttons and machine list and a page's tabs: picked
+        /// while the notes page picks, not used (22 October: "the navigation buttons work
+        /// as function buttons even with Picking on - they should turn to feedback mode as
+        /// well; the user changes the picking mode to change the screen") - noted with the
+        /// page they open.
         /// </summary>
         internal bool IsPassedThrough(Control c)
         {
@@ -126,7 +126,20 @@ namespace Kaban.UI.Forms
             return false;
         }
 
-        /// <summary>The page on show, as the operator went there (a page button noted with the page it opened).</summary>
+        /// <summary>What a button of the menu opens (it is not used while picking): its page, or its machine.</summary>
+        private string MenuTarget(Control c)
+        {
+            for (var p = c; p != null && p != pnlMenu; p = p.Parent)
+            {
+                var b = p as Controls.ButtonHMI;
+                if (b == null) continue;
+                var text = LanguageManager.GetString(b.TranslationKey ?? "", b.FallbackText ?? "");
+                return string.IsNullOrWhiteSpace(text) ? b.Text : text;
+            }
+            return c.Text;
+        }
+
+        /// <summary>The page on show, as the operator went there.</summary>
         private string CurrentPlace()
         {
             var deepest = CurrentView();
@@ -161,7 +174,7 @@ namespace Kaban.UI.Forms
         {
             if (c == null) return "";
             // the menu: the page it opened; the caption bar: itself
-            if (pnlMenu.Contains(c)) return LanguageManager.GetString("Nts_Opens", "Opens") + ": " + CurrentPlace();
+            if (pnlMenu.Contains(c)) return LanguageManager.GetString("Nts_Opens", "Opens") + ": " + MenuTarget(c);
             if (c == pnlTop || pnlTop.Contains(c)) return LanguageManager.GetString("Nts_CaptionBar", "Caption bar");
             var parts = new List<string>();
             for (var p = c; p != null; p = p.Parent)

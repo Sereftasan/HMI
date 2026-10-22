@@ -31,8 +31,11 @@ namespace Kaban.UI.Screens
     /// 8 October:
     ///  - a table's heading picks the heading (its text to translate); a cell
     ///    shown only picks its value; a cell to type in is typed in, not picked;
-    ///  - the menu's page buttons and a page's tabs work as ever and are noted
-    ///    with the page they open; the caption bar is picked as the page is;
+    ///  - the menu's page buttons and a page's tabs are picked like the rest, not
+    ///    used (22 October: "the navigation buttons work as function buttons even
+    ///    with Picking on - they should turn to feedback mode as well; the user
+    ///    changes the picking mode to change the screen"); the caption bar is
+    ///    picked as the page is;
     ///  - texts in a table: now / your suggestion / reason (the reason once
     ///    something is suggested), in the user's chosen languages only;
     ///  - an Admin's table of the control's settings (addresses ...): now /
@@ -244,8 +247,8 @@ namespace Kaban.UI.Screens
             ShowPicked(c);
         }
 
-        /// <summary>A page button of the menu, or a tab, used as ever - and noted with the page it opened.</summary>
-        internal void PickPassed(Control c)
+        /// <summary>A page button of the menu, or a tab (of a TabControl: the one at tabIndex, -1: the open one), picked - not used.</summary>
+        internal void PickPassed(Control c, int tabIndex = -1)
         {
             if (c == null || c.IsDisposed) return;
             Reset();
@@ -258,9 +261,10 @@ namespace Kaban.UI.Screens
             else if (tabs != null)
             {
                 _kind = PickKind.Tab;
-                var page = tabs.SelectedTab;
+                int index = tabIndex >= 0 && tabIndex < tabs.TabPages.Count ? tabIndex : tabs.SelectedIndex;
+                var page = index >= 0 && index < tabs.TabPages.Count ? tabs.TabPages[index] : null;
                 _name = T("Nts_Tab", "Tab") + ": " + (page != null ? page.Text : "");
-                _key += page != null ? "#tab:" + (string.IsNullOrEmpty(page.Name) ? tabs.SelectedIndex.ToString(CultureInfo.InvariantCulture) : page.Name) : "";
+                _key += page != null ? "#tab:" + (string.IsNullOrEmpty(page.Name) ? index.ToString(CultureInfo.InvariantCulture) : page.Name) : "";
                 _keys = new NoteTarget.TextKey[0];
             }
             else
@@ -379,10 +383,9 @@ namespace Kaban.UI.Screens
         /// <summary>
         /// The taps while picking: a press, a release, a double click or the keys
         /// that press a button, on a control of the page, are kept from it; the
-        /// release picks it. A table's cell to type in, the menu's page buttons and
-        /// a page's tabs are let through (a page button and a tab then noted with
-        /// the page they opened). The pointer moving is let through (its tooltip,
-        /// its border) and shown in the bar.
+        /// release picks it - the menu's page buttons and a page's tabs too, not
+        /// used (22 October). A table's cell to type in is let through. The pointer
+        /// moving is let through (its tooltip, its border) and shown in the bar.
         /// </summary>
         private sealed class Picker : IMessageFilter
         {
@@ -416,16 +419,29 @@ namespace Kaban.UI.Screens
                 var hit = Control.FromChildHandle(m.HWnd);
                 if (hit == null) return false;
 
-                // the menu's page buttons, a page's tabs: as ever - and noted
+                // the menu's page buttons, a page's tabs: picked, not used - the page stays (picking
+                // off goes to another page)
                 var passed = PassedOf(hit);
                 if (passed != null)
                 {
-                    if (m.Msg == WM_LBUTTONUP)
+                    switch (m.Msg)
                     {
-                        var target = passed;
-                        try { _page.BeginInvoke(new Action(() => _page.PickPassed(target))); } catch { }
+                        case WM_MOUSEMOVE:
+                            if (passed != _last) { _last = passed; _page.Pointing(passed); }
+                            return false;
+                        case WM_KEYDOWN: case WM_KEYUP:
+                            var k = (Keys)(int)(long)m.WParam;
+                            if (k != Keys.Space && k != Keys.Enter) return false;
+                            if (m.Msg == WM_KEYUP) Later(passed, -1);
+                            return true;
+                        case WM_LBUTTONUP:
+                            var tabs = passed as TabControl;
+                            int tab = tabs != null ? TabAt(tabs, PointOf(m)) : -1;
+                            if (tabs == null || tab >= 0) Later(passed, tab);
+                            return true;
+                        default:
+                            return true;                    // its press, a double click: kept from it
                     }
-                    return false;
                 }
 
                 if (m.Msg == WM_KEYDOWN || m.Msg == WM_KEYUP)
@@ -476,9 +492,23 @@ namespace Kaban.UI.Screens
             {
                 for (var c = hit; c != null; c = c.Parent)
                     if (c is NotesPage) return null;
+                // a TabControl's own: its row of tabs (a control on one of its pages is the page's)
                 for (var c = hit; c != null; c = c.Parent)
-                    if (_page._passThrough(c)) return c;
+                    if (_page._passThrough(c) && (!(c is TabControl) || c == hit)) return c;
                 return null;
+            }
+
+            private void Later(Control c, int tab)
+            {
+                try { _page.BeginInvoke(new Action(() => _page.PickPassed(c, tab))); } catch { }
+            }
+
+            /// <summary>The tab at a point of its TabControl (-1: none).</summary>
+            internal static int TabAt(TabControl tabs, Point at)
+            {
+                for (int i = 0; i < tabs.TabCount; i++)
+                    if (tabs.GetTabRect(i).Contains(at)) return i;
+                return -1;
             }
         }
 
@@ -606,8 +636,8 @@ namespace Kaban.UI.Screens
                     AddText(T("Nts_How", "Tap or click a control of the page - a field, a button, a lamp, a caption, a column heading. It is not operated while picking: " +
                                      "what it is, its tooltip, its texts in every language, its helpers and its comments appear here, and you can add yours."),
                          false, Color.FromArgb(90, 96, 106));
-                    AddText(T("Nts_HowMore", "The menu's page buttons and a page's tabs work as usual and are noted with the page they open - a table's cell to type in is typed in. " +
-                                         "📝 below: a general note, on no control."), false, Color.FromArgb(90, 96, 106), 6);
+                    AddText(T("Nts_HowNav", "The menu's page buttons and a page's tabs are picked too, not used - turn picking off to go to another page. " +
+                                        "A table's cell to type in is typed in. 📝 below: a general note, on no control."), false, Color.FromArgb(90, 96, 106), 6);
                     if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 10);
                     return;
                 }

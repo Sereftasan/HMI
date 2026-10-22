@@ -115,7 +115,7 @@ class NF {
         table.Columns[0].ReadOnly = true; table.Columns[1].ReadOnly = true;
         table.Rows.Add("X", "12.5", "10"); table.Rows.Add("Y", "3.0", "4");
         machine.Controls.Add(table);
-        // a page button of the menu (worked as ever, and noted)
+        // a page button of the menu (picked, not used - 22 October)
         var nav = new Button { Bounds = new Rectangle(30, 600, 140, 40), Text = "Manual", Name = "navManual" };
         int navClicks = 0;
         nav.Click += (s, e) => navClicks++;
@@ -207,11 +207,33 @@ class NF {
         var ep = new Point(entryAt.X + 5, entryAt.Y + 5);
         Check("a cell typed in: the table's own (not picked)", !tapAt(0x0201, ep) && !tapAt(0x0202, ep) && notes.PickedKind == NotesPage.PickKind.Cell);
 
-        Console.WriteLine("--- a page button of the menu: as ever, and noted ---");
-        Check("its press and release let through", !Tap(notes, nav, 0x0201) && !Tap(notes, nav, 0x0202));
-        Pump(150);
-        Check("  noted with the page it opened", notes.PickedKind == NotesPage.PickKind.Menu && notes.PickedName.StartsWith("Menu button") &&
+        Console.WriteLine("--- a page button of the menu: picked, not used ---");
+        // 22 October: "the navigation buttons work as function buttons even with Picking on - they should
+        // turn to feedback mode as well; the user changes the picking mode to change the screen"
+        Check("its press and release kept from it: the page stays", Tap(notes, nav, 0x0201) && Tap(notes, nav, 0x0202) && Tap(notes, nav, 0x0101, (int)Keys.Space) &&
+              Pump0() && navClicks == 0);
+        Check("  picked, with the page it opens", notes.PickedKind == NotesPage.PickKind.Menu && notes.PickedName.StartsWith("Menu button") &&
               notes.PickedPlace == "Opens: Manual Movement", notes.PickedName + " / " + notes.PickedPlace);
+        var shadeObj = typeof(NotesPage).GetField("_shade", Any).GetValue(notes);
+        Check("  pointed at: let through (its tooltip), bright in the shade", !Tap(notes, nav, 0x0200) && shadeObj.GetType().GetProperty("Hole", Any).GetValue(shadeObj, null) == nav);
+
+        Console.WriteLine("--- a page's tabs: picked, not opened ---");
+        var tabsCtl = new TabControl { Bounds = new Rectangle(340, 300, 300, 160), Name = "tabsTest" };
+        tabsCtl.TabPages.Add(new TabPage("One") { Name = "tpOne" });
+        tabsCtl.TabPages.Add(new TabPage("Two") { Name = "tpTwo" });
+        var inTab = new Button { Bounds = new Rectangle(10, 10, 100, 30), Text = "In a tab", Name = "btnInTab" };
+        int inTabClicks = 0;
+        inTab.Click += (s, e) => inTabClicks++;
+        tabsCtl.TabPages[0].Controls.Add(inTab);
+        machine.Controls.Add(tabsCtl);
+        Pump(150);
+        var r2 = tabsCtl.GetTabRect(1);
+        Func<int, bool> tabTap = msg => { var mm = Message.Create(tabsCtl.Handle, msg, IntPtr.Zero, lp(r2.X + r2.Width / 2, r2.Y + r2.Height / 2)); return picker.PreFilterMessage(ref mm); };
+        Check("a tap on a tab: kept from it - the open tab stays", tabTap(0x0201) && tabTap(0x0202) && Pump0() && tabsCtl.SelectedIndex == 0);
+        Check("  the tab tapped picked - not the open one", notes.PickedKind == NotesPage.PickKind.Tab && notes.PickedName == "Tab: Two" && notes.PickedKey.EndsWith("#tab:tpTwo"),
+              notes.PickedName + " / " + notes.PickedKey);
+        Check("a control on a tab's page: picked as itself, not as the tabs", Tap(notes, inTab, 0x0201) && Tap(notes, inTab, 0x0202) && Pump0() &&
+              notes.PickedKind == NotesPage.PickKind.Control && notes.PickedName.Contains("In a tab") && inTabClicks == 0, notes.PickedKind + " " + notes.PickedName);
 
         Console.WriteLine("--- a general note, with a file ---");
         ((Button)Tree(notes).First(c => c.Name == "notesGeneral")).PerformClick();
@@ -324,6 +346,10 @@ class NF {
         typeof(Kaban.UI.Forms.MainForm).GetMethod("RegisterBuiltInSidePages", Any).Invoke(shell, null);
         var side = SidePages.Find("Notes");
         Check("a side page: Notes and feedback, for anyone (writing needs a sign-in)", side != null && side.RequiredLevel == SecurityLevel.None && side.Title == "Notes and feedback");
+        var pnlTop = (Control)typeof(Kaban.UI.Forms.MainForm).GetField("pnlTop", Any).GetValue(shell);
+        using (var np = (NotesPage)side.Create())
+            Check("  darker while picking: the page, the caption bar and the menu (its buttons are picked too)",
+                  np.ShadeAreas().Contains(pnlContent) && np.ShadeAreas().Contains(pnlTop) && np.ShadeAreas().Contains(pnlMenu));
         shell.Dispose();
 
         Console.WriteLine("--- translations ---");
