@@ -44,6 +44,11 @@
 - FA2010's own controls for its pages (Screens\Shared\AxisJogBar) are UserControls of the machine's project: a page
   holds them like any control (Toolbox, after a build). "Could not find type ..." in the designer means the machine was
   not built, or Visual Studio still has an older build loaded: Rebuild, and restart Visual Studio if it stays.
+  "Method not found: '... set_RequiredSecurity(...)'" (or any member the code has) is the same: the designer loaded a
+  Kaban.UI / Kaban.Core built before the member came. Build > Rebuild Solution (every project, not only the startup
+  one), close the designer tabs and restart Visual Studio; if it stays, close Visual Studio, delete the projects' `bin`
+  and `obj` folders and `%LOCALAPPDATA%\Microsoft\VisualStudio\<version>\ProjectAssemblies`, and build again. Never
+  "Ignore and Continue": the designer then saves the page without what it could not load.
   AxisJogBar is also shown by the program above the Manual Movement tabs and on the Axis Monitor.
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand).
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
