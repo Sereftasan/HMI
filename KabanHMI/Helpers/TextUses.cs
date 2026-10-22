@@ -41,6 +41,8 @@ namespace Kaban.UI.Helpers
             public string What = "";
             /// <summary>A program line's: its line number.</summary>
             public int Line;
+            /// <summary>A program line's kind: Message, Status, Heading, Tooltip, Menu or Text.</summary>
+            public string Code = "";
             /// <summary>Found by its text, not its key (a control made with its text).</summary>
             public bool ByText;
             /// <summary>The way to the page and to the control (null: none to open).</summary>
@@ -86,6 +88,76 @@ namespace Kaban.UI.Helpers
                                    What = (def.AlarmCode ?? "") + (string.IsNullOrWhiteSpace(def.Address) ? "" : "  (" + def.Address.Trim() + ")") });
             list.AddRange(InCode(key));
             return list;
+        }
+
+        /// <summary>
+        /// The uses of many keys at once (the AI prompt of the Translation page: where each text is
+        /// shown) - the pages walked once, the program's lines read once. Every key asked has a list.
+        /// </summary>
+        public static Dictionary<string, List<Use>> FindAll(IEnumerable<string> keys)
+        {
+            var all = new Dictionary<string, List<Use>>(StringComparer.OrdinalIgnoreCase);
+            foreach (var k in keys ?? Enumerable.Empty<string>())
+                if (!string.IsNullOrWhiteSpace(k) && !all.ContainsKey(k.Trim())) all[k.Trim()] = new List<Use>();
+            if (all.Count == 0) return all;
+            List<Found> index;
+            lock (_lock) { if (_index == null) _index = Walk(); index = _index; }
+            // the controls made with a key's text (no key of their own): by its English text
+            var byText = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+            foreach (var k in all.Keys)
+            {
+                var t = Norm(LanguageManager.GetStringIn("EN", k));
+                if (t.Length < 2) continue;
+                List<string> l;
+                if (!byText.TryGetValue(t, out l)) byText[t] = l = new List<string>();
+                l.Add(k);
+            }
+            foreach (var f in index)
+            {
+                List<Use> uses;
+                if (f.Key != null)
+                {
+                    if (all.TryGetValue(f.Key, out uses)) uses.Add(new Use { Kind = f.Kind, Place = f.Place, What = f.What, Way = f.Way });
+                    continue;
+                }
+                List<string> ks;
+                if (f.Text != null && byText.TryGetValue(f.Text, out ks))
+                    foreach (var k in ks) all[k].Add(new Use { Kind = f.Kind, Place = f.Place, What = f.What, Way = f.Way, ByText = true });
+            }
+            foreach (var def in AlarmManager.GetAllDefinitions())
+            {
+                List<Use> uses;
+                if (def == null || string.IsNullOrEmpty(def.TranslationKey) || !all.TryGetValue(def.TranslationKey, out uses)) continue;
+                uses.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
+                                   What = (def.AlarmCode ?? "") + (string.IsNullOrWhiteSpace(def.Address) ? "" : "  (" + def.Address.Trim() + ")") });
+            }
+            // the program's lines: from the source, read once - or from the list shipped
+            var root = SourceRoot();
+            if (!string.IsNullOrEmpty(root) && Directory.Exists(root))
+            {
+                var quoted = new Regex("\"([^\"\\\\\\s]{2,120})\"");
+                foreach (var path in SourceFiles(root))
+                {
+                    var lines = Lines(path);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (lines[i].IndexOf('"') < 0) continue;
+                        var line = lines[i].Trim();
+                        if (line.StartsWith("//")) continue;
+                        foreach (Match m in quoted.Matches(lines[i]))
+                        {
+                            List<Use> uses;
+                            if (!all.TryGetValue(m.Groups[1].Value, out uses)) continue;
+                            if (uses.Any(u => u.Kind == KindCode && u.Line == i + 1 && u.Place == MakeRelative(root, path))) continue;
+                            uses.Add(new Use { Kind = KindCode, Place = MakeRelative(root, path), Line = i + 1, Code = KindOfLine(lines, i),
+                                               What = KindText(KindOfLine(lines, i)) + ": " + (line.Length > 180 ? line.Substring(0, 177) + "..." : line) });
+                        }
+                    }
+                }
+            }
+            else
+                foreach (var kv in all) kv.Value.AddRange(FromIndex(kv.Key));
+            return all;
         }
 
         private static string Norm(string text)
@@ -285,7 +357,7 @@ namespace Kaban.UI.Helpers
                     if (line.StartsWith("//") || line.StartsWith("///")) continue;
                     list.Add(new Use
                     {
-                        Kind = KindCode, Place = MakeRelative(root, path), Line = i + 1,
+                        Kind = KindCode, Place = MakeRelative(root, path), Line = i + 1, Code = KindOfLine(lines, i),
                         What = KindText(KindOfLine(lines, i)) + ": " + (line.Length > 180 ? line.Substring(0, 177) + "..." : line)
                     });
                 }
@@ -327,7 +399,7 @@ namespace Kaban.UI.Helpers
                     List<IndexLine> lines;
                     if (_byKey.TryGetValue((key ?? "").Trim(), out lines))
                         foreach (var l in lines)
-                            list.Add(new Use { Kind = KindCode, Place = l.File, Line = l.Line, What = KindText(l.Kind) + ": " + l.Text });
+                            list.Add(new Use { Kind = KindCode, Place = l.File, Line = l.Line, Code = l.Kind, What = KindText(l.Kind) + ": " + l.Text });
                 }
             }
             catch { }

@@ -117,6 +117,11 @@ class TF {
               code.Count == 2 && code[0].Place.Replace('\\', '/') == "Proj/Forms/Main.cs" && code[0].Line == 4 && code[0].What.StartsWith("message box:") &&
               code[1].Line == 6 && code[1].What.StartsWith("status line:"),
               string.Join(" | ", code.Select(u => u.Place + ":" + u.Line + ":" + u.What)));
+        var many = TextUses.FindAll(new[] { "Unit_Clamp", "Msg_TestDone", "Lbl_Speed", "No_Such" });
+        Check("many keys at once (the AI prompt): the same uses as one by one", many.Count == 4 && many["Msg_TestDone"].Count == TextUses.Find("Msg_TestDone").Count &&
+              many["Unit_Clamp"].Count == TextUses.Find("Unit_Clamp").Count && many["Lbl_Speed"].Any(u => u.ByText) && many["No_Such"].Count == 0 &&
+              many["Msg_TestDone"].Where(u => u.Kind == "Code").Select(u => u.Code).SequenceEqual(new[] { "Message", "Status" }),
+              string.Join(" | ", many.Select(kv => kv.Key + ":" + kv.Value.Count)));
         TextUses.SourceRoot = () => null;
         var index = Path.Combine(dir, "TranslationUses.csv");
         TextUses.IndexFile = () => index;

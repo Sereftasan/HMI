@@ -860,8 +860,8 @@ namespace Kaban.UI.Helpers
             }
         }
 
-        /// <summary>What a prompt is about: an alarm (its helpers), or the HMI itself (the caption bar's ?).</summary>
-        public enum Subject { Alarm, Hmi }
+        /// <summary>What a prompt is about: an alarm (its helpers), the HMI itself (the caption bar's ?), or its translations (HMI Settings > Translation).</summary>
+        public enum Subject { Alarm, Hmi, Translation }
 
         /// <summary>Puts an alarm's prompt on the clipboard (and in a file) and says so; false when the clipboard was not free.</summary>
         public static bool Copy(IWin32Window owner, string prompt)
@@ -877,7 +877,7 @@ namespace Kaban.UI.Helpers
         /// </summary>
         public static bool Deliver(IWin32Window owner, string prompt, Subject subject, AiChats.Chat chat)
         {
-            LastSaved = Save(prompt, subject == Subject.Hmi ? "HMI" : null);
+            LastSaved = Save(prompt, subject == Subject.Hmi ? "HMI" : subject == Subject.Translation ? "translations" : null);
             LastOpened = null;
             // AS A FILE (9 October: "is it not possible to copy the prompt file instead
             // of the text? The user wouldn't have to open any folder"): Ctrl+V in the
@@ -915,7 +915,7 @@ namespace Kaban.UI.Helpers
                 }
             }
             AuditLogger.Log((chat != null ? "asked " + chat.Name + (opened ? "" : " (the browser did not open)") + " with" : "copied") +
-                            " the AI prompt for " + (subject == Subject.Hmi ? "the HMI" : "an alarm") + " (" + (prompt ?? "").Length + " characters, " +
+                             " the AI prompt for " + (subject == Subject.Hmi ? "the HMI" : subject == Subject.Translation ? "the translations" : "an alarm") + " (" + (prompt ?? "").Length + " characters, " +
                             (LastAsFile ? "as a file" : "as text") + ")" + (LastSaved != null ? ", saved as " + LastSaved : "") + ".");
             Tell(owner, chat == null ? CopiedMessage(LastAsFile) : pasting ? PastingMessage(chat) : AskedMessage(chat, opened, LastAsFile), chat != null && !opened);
             return true;
@@ -952,6 +952,10 @@ namespace Kaban.UI.Helpers
         public static string KickOff(Subject subject, string fileName)
         {
             string language = LanguageName(LanguageManager.CurrentLanguage ?? "EN");
+            if (subject == Subject.Translation)
+                return "The attached file \"" + (fileName ?? "") + "\" is a briefing from Kaban HMI, the operator panel program of the machines I work with: " +
+                       "its translation files, with where each text is shown. Read it whole, then do what it asks at its end, under \"What I ask you\". " +
+                       "Write your notes in " + language + ".";
             return "The attached file \"" + (fileName ?? "") + "\" is a briefing from Kaban HMI, the operator panel of the machine I work at" +
                    (subject == Subject.Hmi ? ": the program, its machines, where I am on it, what is going on now and its manual. "
                                            : ", about an alarm on it: everything the panel knows about it. ") +

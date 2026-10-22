@@ -42,7 +42,9 @@ namespace Kaban.UI.Helpers
             if (prompt == null) return items;
             bool alarm = subject == AlarmAiPrompt.Subject.Alarm;
             var create = new ToolStripMenuItem(CreateCaption, MenuGlyphs.Clipboard()) { Name = "aiPrompt" };
-            create.ToolTipText = alarm
+            create.ToolTipText = subject == AlarmAiPrompt.Subject.Translation
+                ? T("Tip_TrnAiPrompt", "Copies a briefing for an AI chat with the translation files of the rows shown and where each text is shown: paste it there - the AI gives the files back, to import with 📥.")
+                : alarm
                 ? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's own troubleshooting for it: paste it there - the AI starts with the likely cause and the first check, and walks you through it step by step. It writes printable helper pages when you ask.")
                 : T("Tip_HmiPrompt", "Copies a briefing for an AI chat with the HMI, its machines, where you are and what the page shows, and its whole manual: paste it there and ask it anything about the HMI.");
             create.Click += (s, e) => Run(prompt, subject, owner, null);
@@ -55,6 +57,7 @@ namespace Kaban.UI.Helpers
                 var chat = c;
                 var ask = new ToolStripMenuItem(AskCaption(chat), MenuGlyphs.Chat()) { Name = AskName(chat) };
                 ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
+                ask.Tag = chat;
                 ask.Click += (s, e) => Run(prompt, subject, owner, chat);
                 items.Add(ask);
             }

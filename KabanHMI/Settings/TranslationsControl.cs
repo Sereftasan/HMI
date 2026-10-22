@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.UI.Controls;
+using Kaban.UI.Helpers;
 using Kaban.UI.Profiles;
 
 namespace Kaban.UI.Settings
@@ -40,7 +41,7 @@ namespace Kaban.UI.Settings
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
-        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnFind;
+        private readonly Button _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind;
         /// <summary>The row asked for from elsewhere (the notes page): marked until another is chosen.</summary>
         private string _marked;
 
@@ -50,6 +51,8 @@ namespace Kaban.UI.Settings
         private Dictionary<string, TranslationEdits.Edit> _edits = new Dictionary<string, TranslationEdits.Edit>(StringComparer.OrdinalIgnoreCase);
         /// <summary>Typed, not saved: owner|key|language - text.</summary>
         private readonly Dictionary<string, string> _pending = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        /// <summary>The AI's note on a text it gave (imported, typed until Save): the cell's tooltip.</summary>
+        private readonly Dictionary<string, string> _aiNotes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private string _sortColumn = "";
         private bool _sortDescending;
         private bool _filling;
@@ -134,6 +137,14 @@ namespace Kaban.UI.Settings
                                              (s, e) => ShowHistory());
             _btnExport = UiStyle.ToolButton(E(0x1F4E4), T("Tip_TrnExport", "Export the rows shown as a translation file (Key;EN;TR ...) - to copy into the program's files"),
                                             _tips, (s, e) => Export());
+            // 22 October: "a tool to use AI to translate the missing cells and to check the other translations ...
+            // and an import button to update the translation files with the files the AI makes"
+            _btnAi = UiStyle.ToolButton(E(0x1F916), T("Tip_TrnAi", "Ask an AI: translate the missing texts, or check every translation, of the rows shown - " +
+                                                     "a briefing with their files and where each text is shown"), _tips, null);
+            _btnAi.Click += (s, e) => AiMenu().Show(_btnAi, new Point(0, _btnAi.Height));
+            _btnImport = UiStyle.ToolButton(E(0x1F4E5), T("Tip_TrnImport", "Import the AI's answer - its files, or its answer copied: the texts it gives typed into the table, " +
+                                                         "with its notes, to check and Save"), _tips, null);
+            _btnImport.Click += (s, e) => ImportMenu().Show(_btnImport, new Point(0, _btnImport.Height));
             // 21 October: "a tool to find where the translation line is seen (on the screen, a message box ...) -
             // a button on top, Ctrl+F, which opens the list of where it is used"
             _btnFind = UiStyle.ToolButton(E(0x1F50E), T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"),
@@ -141,7 +152,7 @@ namespace Kaban.UI.Settings
             Kaban.UI.Helpers.Shortcuts.Set(_btnFind, Keys.Control | Keys.F, _tips,
                                            T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"));
             _dirty.Guard(_btnSave, _btnRevert);
-            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnFind })
+            foreach (var b in new[] { _btnSave, _btnRevert, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind })
             {
                 b.Margin = new Padding(2, 1, 2, 1);
                 bar.Controls.Add(b);
@@ -195,6 +206,8 @@ namespace Kaban.UI.Settings
             _grid.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0 && IsLanguage(e.ColumnIndex)) _grid.BeginEdit(true); };
             _grid.ColumnHeaderMouseClick += (s, e) => { if (e.Button == MouseButtons.Left && e.ColumnIndex >= 0) SortBy(_grid.Columns[e.ColumnIndex].Name); };
             _grid.KeyDown += OnGridKeyDown;
+            _grid.ShowCellToolTips = true;
+            _grid.CellToolTipTextNeeded += OnCellToolTipTextNeeded;
             // the row asked for stays marked until another is chosen
             _grid.CellClick += (s, e) =>
             {
@@ -568,6 +581,7 @@ namespace Kaban.UI.Settings
             int notWritten;
             int n = TranslationEdits.Save(wanted, out notWritten);
             _pending.Clear();
+            _aiNotes.Clear();
             _dirty.Reset();
             _edits = TranslationEdits.Edits.ToDictionary(e => Id(e.Owner, e.Key, e.Lang), e => e, StringComparer.OrdinalIgnoreCase);
             ApplyFilter();
@@ -582,6 +596,7 @@ namespace Kaban.UI.Settings
             if (!Ask.YesNo(this, T("Tab_Translations", "Translation"),
                            string.Format(T("Msg_TrnRevert", "Throw away the {0} text(s) typed and not saved?"), _pending.Count))) return;
             _pending.Clear();
+            _aiNotes.Clear();
             _dirty.Reset();
             ApplyFilter();
         }
@@ -723,6 +738,245 @@ namespace Kaban.UI.Settings
                 ClearFilters();
                 SearchText = f.ChosenKey;
             }
+        }
+
+        // ---- the AI (22 October) -----------------------------------------------------------
+
+        /// <summary>The languages whose columns are shown (the AI is asked about them, an export writes them).</summary>
+        private List<string> ShownLanguages()
+        {
+            return _langs.Where(l => _grid.Columns.Contains(LangPrefix + l) && _grid.Columns[LangPrefix + l].Visible).ToList();
+        }
+
+        /// <summary>The rows the AI is asked about: the rows shown - for the missing texts, those with an empty cell.</summary>
+        internal List<TranslationEdits.Row> AiRows(TranslationAiPrompt.Mode mode)
+        {
+            var langs = ShownLanguages();
+            return _shown.Where(r => mode == TranslationAiPrompt.Mode.Check || langs.Any(l => TextOf(r, l).Trim().Length == 0)).ToList();
+        }
+
+        /// <summary>The briefing for an AI chat (the rows of AiRows, the languages shown).</summary>
+        internal string AiPrompt(TranslationAiPrompt.Mode mode)
+        {
+            return TranslationAiPrompt.Build(AiRows(mode), ShownLanguages(), mode, TextOf);
+        }
+
+        private ContextMenuStrip AiMenu()
+        {
+            var m = UiStyle.Menu();
+            int missing = AiRows(TranslationAiPrompt.Mode.Missing).Count;
+            m.Items.Add(new ToolStripMenuItem(string.Format(T("Lbl_TrnAiRows", "The {0} rows shown - {1} with a text missing (the search and the filters choose them)"),
+                                                            _shown.Count, missing)) { Enabled = false });
+            m.Items.Add(new ToolStripSeparator());
+            foreach (var mode in new[] { TranslationAiPrompt.Mode.Missing, TranslationAiPrompt.Mode.Check })
+            {
+                var md = mode;
+                var item = new ToolStripMenuItem(md == TranslationAiPrompt.Mode.Missing
+                    ? T("Mnu_TrnAiMissing", "Translate the missing texts")
+                    : T("Mnu_TrnAiCheck", "Check every translation (and translate the missing)"));
+                item.ToolTipText = md == TranslationAiPrompt.Mode.Missing
+                    ? T("Tip_TrnAiMissing", "The AI fills the empty cells of the rows shown - the best text for where each one is shown")
+                    : T("Tip_TrnAiCheck", "The AI checks every text of the rows shown for where it is shown and gives a better one where it can - the empty ones too");
+                item.Enabled = md == TranslationAiPrompt.Mode.Check ? _shown.Count > 0 : missing > 0;
+                foreach (var entry in Kaban.UI.Helpers.AiMenu.Items(() => AskedPrompt(md), Kaban.UI.Helpers.AlarmAiPrompt.Subject.Translation, FindForm() ?? (IWin32Window)this))
+                    item.DropDownItems.Add(entry);
+                m.Items.Add(item);
+            }
+            m.Items.Add(new ToolStripSeparator());
+            var import = new ToolStripMenuItem(T("Mnu_TrnAiImport", "Import the AI's answer..."), null, (s, e) => ImportMenu().Show(_btnImport, new Point(0, _btnImport.Height)));
+            m.Items.Add(import);
+            return m;
+        }
+
+        /// <summary>The prompt as asked from the menu: none when no row is asked about; many keys asked first.</summary>
+        private string AskedPrompt(TranslationAiPrompt.Mode mode)
+        {
+            var rows = AiRows(mode);
+            if (rows.Count == 0)
+            {
+                SetStatus(T("Msg_TrnAiNothing", "Nothing to ask: no row shown has a text missing."), true);
+                return null;
+            }
+            if (rows.Count > TranslationAiPrompt.ManyKeys &&
+                !Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnAiMany",
+                    "{0} keys: an AI answers a few hundred at a time, so it gives them in parts (it asks you to go on). A smaller part - an owner, a search, " +
+                    "'A text missing' - is answered better. Ask about all {0}?"), rows.Count)))
+                return null;
+            return TranslationAiPrompt.Build(rows, ShownLanguages(), mode, TextOf);
+        }
+
+        /// <summary>What an import did (the tests read it; the user is told).</summary>
+        internal sealed class ImportResult
+        {
+            public int Blocks, Typed, Same, Refused;
+            public readonly List<string> Problems = new List<string>(), NotFound = new List<string>(), Unknown = new List<string>();
+        }
+
+        private static readonly string[] NoteColumns = { "NOTE", "NOTES", "WHY", "REASON", "COMMENT", "CHANGE", "CHANGES" };
+
+        /// <summary>
+        /// The AI's answer - its files (name, content), or its answer copied (name null): every text it
+        /// gives that differs from the table's is typed into its cell (orange, until Save), its row's
+        /// note the cell's tooltip. An empty cell changes nothing; a text without a placeholder the
+        /// English has ({0} ...) is refused; a row is the file's owner's (CommonTranslations.csv,
+        /// FA2010_Translations.csv), or - not named - the one row of its key.
+        /// </summary>
+        internal ImportResult ImportAnswer(IEnumerable<KeyValuePair<string, string>> sources)
+        {
+            if (_grid.IsCurrentCellInEditMode) _grid.EndEdit();
+            var res = new ImportResult();
+            var owners = _rows.Select(r => r.Owner).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            var byKey = _rows.GroupBy(r => r.Key, StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.ToList(), StringComparer.OrdinalIgnoreCase);
+            foreach (var src in sources ?? Enumerable.Empty<KeyValuePair<string, string>>())
+                foreach (var b in TranslationAiAnswer.Parse(src.Key, src.Value))
+                {
+                    res.Blocks++;
+                    var named = TranslationAiPrompt.OwnerOfFile(b.FileName);
+                    string owner = named == null ? null : owners.FirstOrDefault(o => string.Equals(o, named, StringComparison.OrdinalIgnoreCase));
+                    int keyCol = Array.FindIndex(b.Header, h => string.Equals(h, "Key", StringComparison.OrdinalIgnoreCase));
+                    int noteCol = Array.FindIndex(b.Header, h => NoteColumns.Contains(h.Trim().ToUpperInvariant()));
+                    var langCols = new List<KeyValuePair<int, string>>();
+                    for (int i = 0; i < b.Header.Length; i++)
+                    {
+                        var h = b.Header[i].Trim().ToUpperInvariant();
+                        if (i == keyCol || i == noteCol || !Regex.IsMatch(h, "^[A-Z]{2,3}$") || h == "USE") continue;
+                        var lang = _langs.FirstOrDefault(l => string.Equals(l, h, StringComparison.OrdinalIgnoreCase));
+                        if (lang != null) langCols.Add(new KeyValuePair<int, string>(i, lang));
+                        else if (!res.Unknown.Contains(h)) res.Unknown.Add(h);
+                    }
+                    if (keyCol < 0) continue;
+                    foreach (var cells in b.Rows)
+                    {
+                        if (keyCol >= cells.Length) continue;
+                        var key = cells[keyCol].Trim();
+                        if (key.Length == 0) continue;
+                        List<TranslationEdits.Row> of;
+                        byKey.TryGetValue(key, out of);
+                        TranslationEdits.Row row = null;
+                        if (of != null)
+                            row = owner != null ? of.FirstOrDefault(r => string.Equals(r.Owner, owner, StringComparison.OrdinalIgnoreCase))
+                                                : of.Count == 1 ? of[0] : null;
+                        if (row == null)
+                        {
+                            var why = of == null ? key : key + " (" + (owner ?? "?") + ")";
+                            if (!res.NotFound.Contains(why)) res.NotFound.Add(why);
+                            continue;
+                        }
+                        string note = noteCol >= 0 && noteCol < cells.Length ? cells[noteCol].Trim() : "";
+                        var english = TranslationAiAnswer.Placeholders(TextOf(row, "EN"));
+                        foreach (var lc in langCols)
+                        {
+                            if (lc.Key >= cells.Length) continue;
+                            var text = TranslationEdits.Clean(TranslationAiAnswer.FromFile(cells[lc.Key]));
+                            if (text.Length == 0) continue;
+                            if (text == TextOf(row, lc.Value)) { res.Same++; continue; }
+                            var lost = english.Where(n => !TranslationAiAnswer.Placeholders(text).Contains(n)).ToList();
+                            if (lost.Count > 0)
+                            {
+                                res.Refused++;
+                                res.Problems.Add(row.Key + " " + lc.Value + ": " + string.Join(" ", lost.Select(n => "{" + n + "}")));
+                                continue;
+                            }
+                            string id = Id(row.Owner, row.Key, lc.Value);
+                            _pending[id] = text;
+                            if (note.Length > 0) _aiNotes[id] = note; else _aiNotes.Remove(id);
+                            res.Typed++;
+                        }
+                    }
+                }
+            if (res.Typed > 0) _dirty.MarkDirty();
+            _grid.Invalidate();
+            UpdateStatus();
+            return res;
+        }
+
+        /// <summary>What an import did, in a few lines.</summary>
+        internal static string Report(ImportResult r)
+        {
+            var sb = new StringBuilder();
+            if (r.Blocks == 0)
+                return T("Msg_TrnAiNone", "Nothing to import: no \"Key;EN;TR ...\" heading in it - the AI's translation files, or its answer with them, are what it reads.");
+            sb.Append(r.Typed > 0
+                ? string.Format(T("Msg_TrnAiTyped", "{0} text(s) of the AI typed into the table (orange): check them - its note is the cell's tooltip - then Save writes them; Revert throws them away."), r.Typed)
+                : T("Msg_TrnAiNoChange", "The AI's answer changes no text of the table."));
+            if (r.Same > 0) sb.Append("\r\n").Append(string.Format(T("Msg_TrnAiSame", "{0} the same as the table's already."), r.Same));
+            if (r.Refused > 0)
+                sb.Append("\r\n\r\n").Append(string.Format(T("Msg_TrnAiRefused", "{0} refused - a placeholder of the English missing in them:"), r.Refused))
+                  .Append("\r\n").Append(string.Join("\r\n", r.Problems.Take(8))).Append(r.Problems.Count > 8 ? "\r\n..." : "");
+            if (r.NotFound.Count > 0)
+                sb.Append("\r\n\r\n").Append(string.Format(T("Msg_TrnAiNotFound", "{0} key(s) the table has not (or not for that file) - left out: {1}"), r.NotFound.Count,
+                                                              string.Join(", ", r.NotFound.Take(10)) + (r.NotFound.Count > 10 ? " ..." : "")));
+            if (r.Unknown.Count > 0)
+                sb.Append("\r\n\r\n").Append(string.Format(T("Msg_TrnAiUnknown", "Not a language of the table - left out (add it first with ➕): {0}"), string.Join(", ", r.Unknown)));
+            return sb.ToString();
+        }
+
+        private ContextMenuStrip ImportMenu()
+        {
+            var m = UiStyle.Menu();
+            m.Items.Add(new ToolStripMenuItem(T("Mnu_TrnImportFiles", "From the AI's files..."), null, (s, e) => ImportFiles()));
+            m.Items.Add(new ToolStripMenuItem(T("Mnu_TrnImportClipboard", "From the clipboard (the AI's answer copied)"), null, (s, e) => ImportClipboard()));
+            return m;
+        }
+
+        private void ImportFiles()
+        {
+            using (var dlg = new OpenFileDialog
+            {
+                Multiselect = true, Title = T("Mnu_TrnImportFiles", "From the AI's files..."),
+                Filter = T("Lbl_TrnAiFiles", "The AI's translation files") + " (*.csv;*.txt;*.md)|*.csv;*.txt;*.md|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*"
+            })
+            {
+                if (dlg.ShowDialog(FindForm()) != DialogResult.OK) return;
+                Imported(ReadFiles(dlg.FileNames));
+            }
+        }
+
+        private static List<KeyValuePair<string, string>> ReadFiles(IEnumerable<string> paths)
+        {
+            var list = new List<KeyValuePair<string, string>>();
+            foreach (var p in paths)
+                try { list.Add(new KeyValuePair<string, string>(Path.GetFileName(p), File.ReadAllText(p, Encoding.UTF8))); }
+                catch (Exception ex) { AuditLogger.Log("could not read the AI's file " + p + ": " + ex.Message); }
+            return list;
+        }
+
+        private void ImportClipboard()
+        {
+            var list = new List<KeyValuePair<string, string>>();
+            try
+            {
+                if (Clipboard.ContainsFileDropList()) list.AddRange(ReadFiles(Clipboard.GetFileDropList().Cast<string>()));
+                else if (Clipboard.ContainsText()) list.Add(new KeyValuePair<string, string>(null, Clipboard.GetText()));
+            }
+            catch (Exception ex) { AuditLogger.Log("could not read the clipboard: " + ex.Message); }
+            Imported(list);
+        }
+
+        private void Imported(List<KeyValuePair<string, string>> sources)
+        {
+            var r = ImportAnswer(sources);
+            AuditLogger.Log("the AI's translations imported: " + r.Typed + " typed, " + r.Same + " the same, " + r.Refused + " refused, " + r.NotFound.Count + " keys not found.");
+            Ask.Tell(this, T("Tip_TrnImport", "Import the AI's answer"), Report(r));
+            if (r.Typed > 0) SetStatus(string.Format(T("Msg_TrnAiTypedShort", "{0} text(s) of the AI typed - check them, then Save."), r.Typed), false);
+        }
+
+        /// <summary>A typed text's cell: what its file has, and the AI's note when it gave it.</summary>
+        private void OnCellToolTipTextNeeded(object sender, DataGridViewCellToolTipTextNeededEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _shown.Count || !IsLanguage(e.ColumnIndex)) return;
+            var tip = TipOf(_shown[e.RowIndex], LangOf(_grid.Columns[e.ColumnIndex]));
+            if (tip != null) e.ToolTipText = tip;
+        }
+
+        /// <summary>A typed cell's tooltip (null: not typed).</summary>
+        internal string TipOf(TranslationEdits.Row row, string lang)
+        {
+            string id = Id(row.Owner, row.Key, lang), note, before;
+            if (!_pending.ContainsKey(id)) return null;
+            before = row.FileTexts.TryGetValue(lang, out before) ? before ?? "" : "";
+            return (_aiNotes.TryGetValue(id, out note) ? "AI: " + note + "\r\n" : "") +
+                   T("Lbl_TrnInFile", "In the file") + ": " + (before.Length > 0 ? before : "-");
         }
 
         /// <summary>The rows shown, in the translation files' format (Key;EN;TR ...: the languages shown) - the texts as the cells show them.</summary>
