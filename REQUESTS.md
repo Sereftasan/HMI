@@ -6,6 +6,23 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 23 October (evening):
+  - b7f3fcb - PLC Monitor: "all under the next control / page - into this tab" - the rest of the screen darker, everything
+    under the control, page button or tab title clicked added to the tab on show; a blinking cancel button (Esc too).
+  - ceb144c - PLC data Read: the cam numbers typed for a PLC offered again.
+  - b2fc50a - Safety backups: before a write into a real PLC with no backup of today, its data read and saved first (not
+    the simulator); a translation file kept (ProgramData\KabanHMI\SafetyCopies) the first time it changes each day.
+  - 876adc9 - PLC Monitor: "Write to PLC from backup" (the toolbar, the rows' menu) - the selected labels, a tab's or every
+    tab's, from a backup chosen; only their devices; a real PLC's backup of today taken first.
+  - 1054f65 - Back after a link (the notes page's translation table, a Find's use) returns to the page it was followed
+    from; the Notes and Feedback page's Find (button, Ctrl+F): where the picked control's devices and texts are used.
+  - 123377c - A language's flag (HMI Settings > Translation, the flag button): a country's (its emoji pasted too), stripes
+    or a cross, or a picture; a language added shows its country's flag by itself when the language names it.
+  - ac4e3d0 - Alarms and HMI Settings fit beside a side page (a table scrolls itself); the tooltips' keys were missing from
+    the translation files (527 texts, added with their English - tools\missing_keys.py); tooltips follow a language change.
+  - a136085 - Config Import: what it does said; each file compared with this program's; Compare... side by side; Backups...
+  - 06ce6b8 - Cylinder FW/Back: each way just under the units' alarm delays (0.5 s less than the shortest), not 5 s.
+  - LZ: not backed up on GX Simulator3 (it shows no LZ) - left as it is, as said.
 - 23 October (afternoon):
   - b98a2a4 - PLC Monitor: the simulator's devices never written (0) and moving ones shown - they were "-"; a device a
     real PLC does not answer no longer blanks the whole list (asked alone, then left out of the batch a while).
