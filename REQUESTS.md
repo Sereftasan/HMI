@@ -6,6 +6,14 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 23 October:
+  - 6fa1776 - Axis Settings: a parameter written no longer asks; "Write module n's flash ROM" blinks beside the Motion
+    monitor list while a module of the page's axes has changes its flash ROM does not hold (its tooltip lists them);
+    a click writes Un\G5900 = 1 (PLC READY no longer checked first).
+  - f209d36 - PLC data Read: every device of the CPU (SM, SD, SB, SW, the contacts and coils, LC, Z, LZ too) and the
+    modules' synchronous control parameters. Write: to the simulator every area, the inputs and outputs too.
+  - 3ae1fa6 - FA2010 Axis Settings opens in the designer: a plain panel (axisJogBarPlace) where the jog bar goes; the page
+    puts the AxisJogBar there when it is made.
 - 22 October (evening, PLC data):
   - a5bec8e - Axis Settings: the simple motion parameters (Pr.1 - 3, 8 - 13, 45, 46) are an Admin's fields - typed in the
     cell's unit, checked against the manual's ranges, written to the module; then told when the module takes it (next
