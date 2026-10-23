@@ -145,7 +145,7 @@ namespace Kaban.Core.Helpers
             public bool IsModule { get { return SimpleMotion.IsModuleAddress(First); } }
             /// <summary>
             /// Written back to a real PLC: not the inputs and outputs, the contacts and coils, the system's
-            /// devices - nor a module's area whose words are still to be checked against its manual.
+            /// devices.
             /// </summary>
             public bool Writable { get { return WhyNotWritten == null; } }
 
@@ -154,7 +154,7 @@ namespace Kaban.Core.Helpers
             {
                 get
                 {
-                    if (IsModule) return ModuleNotWritten(First);
+                    if (IsModule) return null;
                     var k = KindOf(Prefix);
                     if (k == null || k.Writable) return null;
                     if (k.Prefix == "X" || k.Prefix == "Y") return LanguageManager.GetString("Msg_BakNotWritable", "Inputs and outputs are not written back.");
@@ -414,15 +414,14 @@ namespace Kaban.Core.Helpers
         /// 71000 + 1000n (two words of each 10); block start data 22000 + 400n; servo parameters
         /// 28400 + 100n, 64400 + 70n, 65520 + 340n; the PLC CPU memo area 30000; mark detection
         /// settings 54000.
-        /// SYNCHRONOUS CONTROL (23 October: "I need all the device data of the moment"): the servo input
-        /// axis parameters [Pr.300] - [Pr.304], 32800 + 10n (the FX5 Simple Motion Module manual (Advanced
-        /// Synchronous Control), 2.1); the synchronous encoder axis parameters [Pr.320] - [Pr.329],
-        /// 34720 + 20j (j: encoder axis - 1, 4 of them), and the synchronous parameters [Pr.400] - [Pr.468]
-        /// (main and auxiliary shaft, clutches, speed change gear, output axis, initial position),
-        /// 36400 + 200n - where Mitsubishi's other Simple Motion modules keep them, not yet checked against
-        /// the FX5's own list: read, not written back to a real PLC (ModuleNotWritten). The command
-        /// generation axis parameters are not in the buffer memory (the manual), and the cams are read
-        /// through the module's cam data operation - neither is in a backup.
+        /// SYNCHRONOUS CONTROL (23 October: "I need all the device data of the moment"), from the FX5 Simple
+        /// Motion Module User's Manual (Advanced Synchronous Control), IB-0300255, Appendix 1: the servo input
+        /// axis parameters [Pr.300] - [Pr.304], 32800 - 32805 + 10n; the synchronous encoder axis parameters
+        /// [Pr.320] - [Pr.329], 34720 - 34735 + 20j (j: encoder axis - 1, 4 of them); the synchronous
+        /// parameters [Pr.400] - [Pr.468] (main and auxiliary shaft, clutches, speed change gear, output axis,
+        /// initial position), 36400 - 36513 + 200n - the words the manual names written back (KnownPieces).
+        /// The command generation axis parameters are not in the buffer memory (the manual), and the cams are
+        /// read through the module's cam data operation ([Cd.600]) - neither is in a backup.
         /// </summary>
         public static List<Area> ModuleAreas(int module, int axes)
         {
@@ -448,32 +447,54 @@ namespace Kaban.Core.Helpers
                 list.Add(M(module, 64400 + 70 * n, 65, ax + t("Bak_ModServo2", "servo parameters (PA19 - PA32, PB, PC continued)")));
                 list.Add(M(module, 65520 + 340 * n, 224, ax + t("Bak_ModServo3", "servo parameters (PD, PE, PF, Po, PS)")));
                 list.Add(M(module, 32800 + 10 * n, 6, ax + t("Bak_ModServoInput", "synchronous control: servo input axis parameters (Pr.300 - Pr.304)")));
-                list.Add(M(module, 36400 + 200 * n, 200, ax + t("Bak_ModSynchronous", "synchronous control: synchronous parameters (Pr.400 - Pr.468)")));
+                list.Add(M(module, 36400 + 200 * n, SynchronousWords, ax + t("Bak_ModSynchronous", "synchronous control: synchronous parameters (Pr.400 - Pr.468)")));
             }
             for (int j = 1; j <= SynchronousEncoderAxes; j++)
-                list.Add(M(module, 34720 + 20 * (j - 1), 20, mod + ", " + string.Format(t("Bak_EncoderAxis", "synchronous encoder axis {0}"), j) + ": " +
-                                                              t("Bak_ModEncoder", "parameters (Pr.320 - Pr.329)")));
+                list.Add(M(module, 34720 + 20 * (j - 1), EncoderWords, mod + ", " + string.Format(t("Bak_EncoderAxis", "synchronous encoder axis {0}"), j) + ": " +
+                                                                       t("Bak_ModEncoder", "parameters (Pr.320 - Pr.329)")));
+            foreach (var a in list) if (a.Pieces == null) a.Pieces = KnownPieces(a.First, a.Points);
             list.Add(M(module, 30000, 100, mod + ": " + t("Bak_ModMemo", "PLC CPU memo area")));
             list.Add(M(module, 54000, 320, mod + ": " + t("Bak_ModMark", "mark detection settings")));
             return list;
         }
 
-        /// <summary>A module's synchronous encoder axes.</summary>
+        /// <summary>A module's synchronous encoder axes (801 - 804 as an input axis: the manual).</summary>
         public const int SynchronousEncoderAxes = 4;
+        /// <summary>An axis's synchronous parameters' words: 36400 - 36513 + 200n.</summary>
+        public const int SynchronousWords = 114;
+        /// <summary>A synchronous encoder axis's parameters' words: 34720 - 34735 + 20j.</summary>
+        public const int EncoderWords = 16;
 
         /// <summary>
-        /// Why a module's area is not written back to a real PLC (null: it is): the synchronous encoder
-        /// axis parameters (34720 - 34799) and the synchronous parameters (36400 - 37999) are read - their
-        /// words are to be checked against the Advanced Synchronous Control manual before they are written.
+        /// The words of a module's area that are written back, where the manuals leave some unnamed (maker
+        /// settings, the FX5-SSC-G's own): (offset, words) runs; null - every word. By the area's first address,
+        /// so a backup made before an area got them is written back the same way (Load). The synchronous ones
+        /// from the Advanced Synchronous Control manual's Appendix 1 (23 October): the encoder axis's 34729 is
+        /// unnamed; of the synchronous parameters 36403, 36424 - 36429, 36452 - 36459, 36466 - 36469, 36471
+        /// (the FX5-SSC-G's [Pr.442]), 36475, 36478 - 36481, 36487 - 36499 and 36505.
         /// </summary>
-        public static string ModuleNotWritten(string address)
+        public static List<int[]> KnownPieces(string first, int points)
         {
             string p; long g;
-            if (!PlcAddressHelper.TrySplit(address, out p, out g)) return null;
-            if ((g >= 34720 && g < 34720 + 20 * SynchronousEncoderAxes) || (g >= 36400 && g < 36400 + 200 * SimpleMotion.MaxAxes))
-                return LanguageManager.GetString("Msg_BakSyncToCheck",
-                    "Kept in the backup - written back once its words are checked against the module's Advanced Synchronous Control manual.");
-            return null;
+            if (!SimpleMotion.IsModuleAddress(first) || !PlcAddressHelper.TrySplit(first, out p, out g)) return null;
+            int[][] runs = null;
+            if (g == 33) runs = new[] { new[] { 0, 1 }, new[] { 2, 1 }, new[] { 34, 1 }, new[] { 72, 2 } };
+            else if (g < 150 * SimpleMotion.MaxAxes && g % 150 == 0) runs = new[] { new[] { 0, 16 }, new[] { 17, 75 }, new[] { 100, 50 } };
+            else if (g >= 71000 && g < 71000 + 1000 * SimpleMotion.MaxAxes && g % 1000 == 0)
+                runs = Enumerable.Range(0, 100).Select(k => new[] { 10 * k, 2 }).ToArray();
+            else if (g >= 34720 && g < 34720 + 20 * SynchronousEncoderAxes && (g - 34720) % 20 == 0)
+                runs = new[] { new[] { 0, 9 }, new[] { 10, 6 } };
+            else if (g >= 36400 && g < 36400 + 200 * SimpleMotion.MaxAxes && (g - 36400) % 200 == 0)
+                runs = new[]
+                {
+                    new[] { 0, 3 }, new[] { 4, 20 },          // main shaft [Pr.400] - [Pr.414]
+                    new[] { 30, 22 },                         // auxiliary shaft [Pr.418] - [Pr.431]
+                    new[] { 60, 6 },                          // speed change gear [Pr.434] - [Pr.437]
+                    new[] { 70, 1 }, new[] { 72, 3 }, new[] { 76, 2 }, new[] { 82, 5 },   // output axis [Pr.438] - [Pr.447]
+                    new[] { 100, 5 }, new[] { 106, 8 }        // initial position [Pr.460] - [Pr.468]
+                };
+            if (runs == null) return null;
+            return runs.Where(r => r[0] < points).Select(r => new[] { r[0], Math.Min(r[1], points - r[0]) }).ToList();
         }
 
         /// <summary>
@@ -588,6 +609,8 @@ namespace Kaban.Core.Helpers
                         if (f.Length > 4 && f[4].Trim().Length > 0)
                             area.Pieces = f[4].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                                               .Select(p => p.Split('+').Select(x => int.Parse(x, CultureInfo.InvariantCulture)).ToArray()).ToList();
+                        // a backup made before the area's unnamed words were known (the synchronous parameters, 23 October)
+                        else area.Pieces = KnownPieces(area.First, area.Points);
                         continue;
                     }
                     if (area != null)
@@ -748,11 +771,6 @@ namespace Kaban.Core.Helpers
                                                     : LanguageManager.GetString("Msg_BakSingleToSingle", "16-bit words are written to 16-bit devices (D, R, W, TN, CN ...).");
                     return false;
                 }
-            }
-            else if (!simulator && ModuleNotWritten(a) != null)
-            {
-                error = ModuleNotWritten(a);
-                return false;
             }
             if (b != null)
             {

@@ -109,6 +109,7 @@ class PBC {
         sim.Write(@"U1\G71000", 2); sim.Write(@"U1\G71002", 99);   // 71002 is no named word
         sim.Write("LCN3", 100000); sim.Write("LZ1", -70000); sim.Write("SM400", 1); sim.Write("SD210", 2026); sim.Write("TS5", 1);
         sim.Write(@"U1\G32800", 1); sim.Write(@"U1\G36400", 3);   // synchronous control: servo input axis type, main input axis
+        sim.Write(@"U1\G36403", 77); sim.Write(@"U1\G36513", 9);   // a word the manual does not name; the last named one
 
         Console.WriteLine("--- what is read ---");
         var logged = (LoggedDriver)PlcManager.Instance.GetDriverForMonitoring(23);
@@ -158,12 +159,15 @@ class PBC {
         var mod = PlcBackup.ModuleAreas(1, 4);
         Check("simple motion module 1 with 4 axes: 2 common areas, 9 a axis, 4 synchronous encoder axes, the memo and mark areas", mod.Count == 2 + 4 * 9 + 4 + 2,
               mod.Count.ToString());
-        Check("  synchronous control: the servo input axis parameters 32800 + 10n, the synchronous parameters 36400 + 200n, the encoder axes 34720 + 20j",
-              mod.Any(a => a.First == @"U1\G32810" && a.Points == 6) && mod.Any(a => a.First == @"U1\G36600" && a.Points == 200) &&
-              mod.Any(a => a.First == @"U1\G34780" && a.Points == 20));
-        Check("  written back: the servo input axis's (from the FX5's manual); not yet the synchronous and encoder parameters (to be checked)",
-              mod.First(a => a.First == @"U1\G32800").Writable && !mod.First(a => a.First == @"U1\G36400").Writable && !mod.First(a => a.First == @"U1\G34720").Writable &&
-              mod.First(a => a.First == @"U1\G36400").WhyNotWritten.Contains("Advanced Synchronous Control manual"));
+        // 23 October: the FX5 Simple Motion Module manual (Advanced Synchronous Control), IB-0300255, Appendix 1
+        Check("  synchronous control: the servo input axis parameters 32800 - 32805 + 10n, the synchronous parameters 36400 - 36513 + 200n, the encoder axes 34720 - 34735 + 20j",
+              mod.Any(a => a.First == @"U1\G32810" && a.Points == 6) && mod.Any(a => a.First == @"U1\G36600" && a.Points == 114) &&
+              mod.Any(a => a.First == @"U1\G34780" && a.Points == 16));
+        var syncArea = mod.First(a => a.First == @"U1\G36400");
+        Check("  all written back (the manual read), the words it names: not 36403, 36424 - 36429, 36471 (the FX5-SSC-G's), 36475, 36505",
+              mod.All(a => a.Writable) && string.Join(" ", syncArea.Pieces.Select(x => x[0] + "+" + x[1])) == "0+3 4+20 30+22 60+6 70+1 72+3 76+2 82+5 100+5 106+8" &&
+              string.Join(" ", mod.First(a => a.First == @"U1\G34720").Pieces.Select(x => x[0] + "+" + x[1])) == "0+9 10+6",
+              string.Join(" ", syncArea.Pieces.Select(x => x[0] + "+" + x[1])));
         var par = mod.First(a => a.First == @"U1\G150");
         Check("  axis 2's parameters: U1\\G150 - U1\\G299, the words the manual names (0 - 15, 17 - 91, 100 - 149)", par.Points == 150 &&
               string.Join(" ", par.Pieces.Select(x => x[0] + "+" + x[1])) == "0+16 17+75 100+50" && par.Title.Contains("axis 2"), par.Title);
@@ -242,14 +246,17 @@ class PBC {
             new PlcBackup.WriteRange { Source = barea("M0"), From = 100, Count = 10, Target = "M100" },
             new PlcBackup.WriteRange { Source = barea(@"U1\G0"), From = 0, Count = 150, Target = @"U1\G150" },
             new PlcBackup.WriteRange { Source = barea(@"U1\G71000"), From = 0, Count = 1000, Target = @"U1\G72000" },
-            new PlcBackup.WriteRange { Source = barea("LCN0"), From = 2, Count = 2, Target = "LCN10" }
+            new PlcBackup.WriteRange { Source = barea("LCN0"), From = 2, Count = 2, Target = "LCN10" },
+            new PlcBackup.WriteRange { Source = barea(@"U1\G36400"), From = 0, Count = 114, Target = @"U1\G36600" }
         };
         sim.Write("LCN3", 0);
         var result = PlcBackup.Write(logged, logged, parts, null);
         var wflaky = new Sized(sim) { DropAfter = 3 };
         var wresult = PlcBackup.Write(new PlcBackup.Link(wflaky, wflaky) { ReconnectWaitMs = 3000 }, parts.Take(1).ToList(), null);
         Check("a write whose link drops: waited for, the block written again", wresult.Ok && !wresult.LinkLost && wresult.Points == 1000, string.Join(" | ", wresult.Failed));
-        Check("written: " + result.Points + " devices", result.Ok && result.Points == 1000 + 1 + 10 + 10 + 150 + 1000 + 2, string.Join(" | ", result.Failed));
+        Check("written: " + result.Points + " devices", result.Ok && result.Points == 1000 + 1 + 10 + 10 + 150 + 1000 + 2 + 114, string.Join(" | ", result.Failed));
+        Check("  axis 1's synchronous parameters into axis 2's: the named words (36600 3, 36713 9), not 36603",
+              sim.Read(@"U1\G36600") == 3 && sim.Read(@"U1\G36713") == 9 && sim.Read(@"U1\G36603") == 0);
         Check("  LCN2 - LCN3 in LCN10 - LCN11: 100000 in LCN11 whole (both its words)", sim.Read("LCN11") == 100000 && sim.Read("LCN3") == 0, sim.Read("LCN11").ToString());
         Check("  R1000 - R1999's values in D2500 - D3499", Enumerable.Range(0, 1000).All(i => sim.Read("D" + (2500 + i)) == (short)(i * 3 - 7)) &&
               sim.Read("D2499") == 0 && sim.Read("D3500") == 0);
@@ -266,6 +273,15 @@ class PBC {
               log.Any(e => e.Device == "D2500 - D3459" && e.User == "boss" && e.Source.EndsWith("(960 words)")) && log.Any(e => e.Device == "D3460 - D3499") &&
               !log.Any(e => e.Device == "D2600"), string.Join(" | ", log.Where(e => e.Device.StartsWith("D")).Select(e => e.Device + " " + e.Source).Take(5)));
         Check("  the last bits of a part one by one (M208, M209)", log.Any(e => e.Device == "M208") && log.Any(e => e.Device == "M209"));
+
+        // a backup made before the synchronous parameters' words were known: written back by the same words
+        var oldFile = Path.Combine(dir, "old" + PlcBackup.Extension);
+        File.WriteAllText(oldFile, "Machine;Old\r\nDate;2026-10-23 09:48:55\r\n[U1\\G36400;200;Words;old synchronous parameters]\r\n" +
+                                   string.Join("\r\n", Enumerable.Range(0, 200 / 16 + 1).Select(i => string.Join(",", Enumerable.Repeat("1", Math.Min(16, 200 - 16 * i)))).Where(l => l.Length > 0)) + "\r\n");
+        var old = PlcBackup.Load(oldFile);
+        Check("an older backup's synchronous area (200 words, no runs saved): the manual's words only",
+              old != null && old.Areas.Count == 1 && old.Areas[0].Words.Length == 200 && old.Areas[0].Pieces != null && old.Areas[0].Pieces.Last()[0] == 106,
+              old == null ? "not loaded" : old.Areas.Count + " " + (old.Areas.Count > 0 ? old.Areas[0].Words.Length.ToString() : ""));
 
         Console.WriteLine("--- a driver without block calls ---");
         var plainLogged = new LoggedDriver(23, new Plain(sim));
