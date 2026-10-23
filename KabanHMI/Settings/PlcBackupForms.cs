@@ -57,6 +57,16 @@ namespace Kaban.UI.Settings
             return string.Join(", ", modules.Select(m => string.Format(T("Msg_BakModuleAxes", "simple motion module {0} ({1} axes)"), m.Key, m.Value)));
         }
 
+        /// <summary>
+        /// The PLC is the simulator (the UI does not reference its assembly: known by its type's name) - 23 October:
+        /// a backup's inputs and outputs (every area) are written into it too, to make it more useful.
+        /// </summary>
+        public static bool IsSimulator(int station)
+        {
+            var drv = PlcManager.Unwrap(PlcManager.Instance.GetDriverForMonitoring(station));
+            return drv != null && drv.GetType().Name == "SimulationDriver";
+        }
+
         /// <summary>The machine and the PLC as a backup names them.</summary>
         public static void Names(PlcConnectionSettings.Endpoint endpoint, out string machine, out string plc)
         {
@@ -130,7 +140,7 @@ namespace Kaban.UI.Settings
             var what = new Label
             {
                 Name = "bakWhat", AutoSize = false,
-                Text = string.Format(T("Msg_BakWhatIsRead", "Read: the CPU's devices (X, Y, M, L, B, F, S, T, ST, C, D, W, R - as far as the CPU has them) and {0}."),
+                Text = string.Format(T("Msg_BakWhatIsRead", "Read: every device of the CPU (X, Y, M, L, B, F, SB, S, T, ST, C, LC, D, W, SW, R, Z, LZ, SM, SD - as far as the CPU has them) and {0}."),
                                      PlcBackupUi.ModulesText(_modules))
             };
             add(T("Lbl_BakWhat", "What is read"), what, 72);
@@ -211,6 +221,8 @@ namespace Kaban.UI.Settings
     {
         private readonly PlcConnectionSettings.Endpoint _endpoint;
         private readonly string _machine, _plc;
+        /// <summary>The PLC is the simulator (23 October): every area written, the inputs and outputs too.</summary>
+        private readonly bool _simulator;
         private readonly DataGridView _backups = new DataGridView { Name = "bakList" };
         private readonly DataGridView _areas = new DataGridView { Name = "bakAreas" };
         private readonly CheckBox _onlyThis = new CheckBox { Name = "bakOnlyThis", AutoSize = true, Checked = true };
@@ -230,6 +242,7 @@ namespace Kaban.UI.Settings
         {
             _endpoint = endpoint;
             PlcBackupUi.Names(endpoint, out _machine, out _plc);
+            _simulator = PlcBackupUi.IsSimulator(endpoint.StationId);
             UiScale.ApplyOnLoad(this);
             Text = string.Format(T("Ttl_BakWrite", "Write a backup into the PLC - {0}"), PlcEndpointNaming.Caption(endpoint));
             StartPosition = FormStartPosition.CenterParent;
@@ -269,7 +282,8 @@ namespace Kaban.UI.Settings
             {
                 Dock = DockStyle.Top, Height = 46, Padding = new Padding(10, 8, 10, 0), ForeColor = Color.FromArgb(70, 76, 86),
                 Text = T("Msg_BakAreasHelp", "Tick what is written. Read: all of the area, or the devices typed (R1000 - R1999). " +
-                                             "Write to: empty - the same devices; or where they go (D2500, or D2500 - D3499).")
+                                             "Write to: empty - the same devices; or where they go (D2500, or D2500 - D3499).") +
+                       (_simulator ? "  " + T("Msg_BakSimulatorAll", "The simulator: every area is written, the inputs and outputs too.") : "")
             };
             Grid(_areas);
             _areas.Dock = DockStyle.Fill;
@@ -380,9 +394,10 @@ namespace Kaban.UI.Settings
                 if (_shown != null)
                     foreach (var a in _shown.Areas)
                     {
-                        int r = _areas.Rows.Add(false, a.Title, a.Range, "", a.Points.ToString("N0"), a.Writable ? "" : T("Msg_BakNotWritable", "Inputs and outputs are not written back."));
+                        bool writable = _simulator || a.Writable;
+                        int r = _areas.Rows.Add(false, a.Title, a.Range, "", a.Points.ToString("N0"), writable ? "" : a.WhyNotWritten);
                         _areas.Rows[r].Tag = a;
-                        if (!a.Writable)
+                        if (!writable)
                         {
                             _areas.Rows[r].ReadOnly = true;
                             _areas.Rows[r].DefaultCellStyle.ForeColor = Color.FromArgb(150, 156, 166);
@@ -403,7 +418,7 @@ namespace Kaban.UI.Settings
             int from, count; string error, target;
             PlcBackup.WriteRange part = null;
             if (!PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
-                !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error))
+                !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
             {
                 _filling = true;
                 row.Cells["Note"].Value = error;
@@ -434,7 +449,7 @@ namespace Kaban.UI.Settings
                 var a = row.Tag as PlcBackup.Area;
                 int from, count; string error, target;
                 if (a == null || !PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
-                    !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error))
+                    !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
                 { ok = false; continue; }
                 parts.Add(new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = target });
             }

@@ -307,11 +307,14 @@ namespace Kaban.Drivers.Simulation
             string prefix; long start;
             if (!IsConnected || count < 0 || !Kaban.Core.Helpers.PlcAddressHelper.TrySplit(first, out prefix, out start)) return false;
             bool bits = Kaban.Core.Helpers.PlcAddressHelper.IsBitDevice(first);
+            bool dbl = Kaban.Core.Helpers.PlcAddressHelper.IsDoubleWordDevice(first);
             var words = new short[count];
             lock (_gate)
             {
                 for (int i = 0; i < count; i++)
                 {
+                    // a 32-bit device (LCN): its two words, the low one first
+                    if (dbl) { int v = Stored(Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i / 2)); words[i] = (short)(i % 2 == 0 ? v & 0xFFFF : (v >> 16) & 0xFFFF); continue; }
                     if (!bits) { words[i] = (short)Stored(Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i)); continue; }
                     int w = 0;
                     for (int b = 0; b < 16; b++)
@@ -328,10 +331,18 @@ namespace Kaban.Drivers.Simulation
             string prefix; long start;
             if (!IsConnected || values == null || !Kaban.Core.Helpers.PlcAddressHelper.TrySplit(first, out prefix, out start)) return -1;
             bool bits = Kaban.Core.Helpers.PlcAddressHelper.IsBitDevice(first);
+            bool dbl = Kaban.Core.Helpers.PlcAddressHelper.IsDoubleWordDevice(first);
             lock (_gate)
             {
                 for (int i = 0; i < values.Length; i++)
                 {
+                    if (dbl)
+                    {
+                        if (i % 2 == 1) continue;
+                        int high = i + 1 < values.Length ? values[i + 1] : 0;
+                        _memory[Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i / 2)] = (ushort)values[i] | (high << 16);
+                        continue;
+                    }
                     if (!bits) { _memory[Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + i)] = values[i]; continue; }
                     for (int b = 0; b < 16; b++)
                         _memory[Kaban.Core.Helpers.PlcAddressHelper.Compose(prefix, start + 16L * i + b)] = (values[i] >> b) & 1;

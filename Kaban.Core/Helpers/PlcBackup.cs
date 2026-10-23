@@ -18,23 +18,27 @@ namespace Kaban.Core.Helpers
     /// another column for the entry if the read device interval and write device interval is
     /// different, e.g writing to D2500 to D3499 of the read data from R1000 to R1999 ...)").
     ///
-    /// WHAT IS READ: the CPU's devices (an FX5's X, Y, M, L, B, F, S, the timers' and counters'
-    /// current values, D, W, R - not the system's SM / SD), each as far as the CPU's parameters
+    /// WHAT IS READ: every device of the CPU (23 October: "I need all the device data of the moment"
+    /// - an FX5's X, Y, M, L, B, F, SB, S, the timers' and counters' contacts, coils and current
+    /// values, the long counters, D, W, SW, R, Z, LZ, SM, SD), each as far as the CPU's parameters
     /// give it - a real CPU refuses a device beyond them, so each size is found by asking (the
     /// simulator answers anything: it takes GX Works3's defaults). And each simple motion module
     /// of the PLC (its axes on the Axis Settings pages): what the module keeps in its flash ROM -
     /// the parameters, positioning data No.1 - 100 with their interpolation axes, block start data,
     /// servo parameters, the PLC CPU memo area, the mark detection settings - from the buffer memory
-    /// list of the FX5 Simple Motion Module manual (Application, 10.2 and 10.9). A module's
-    /// synchronous control parameters (its Advanced Synchronous Control manual) are not in it.
+    /// list of the FX5 Simple Motion Module manual (Application, 10.2 and 10.9) - and its synchronous
+    /// control parameters (ModuleAreas).
     ///
     /// THE FILE: text, one header line a fact, then one [area] after another, its words 16 a line
     /// (decimal; a bit area's in hexadecimal, 16 bits a word, the first device the lowest bit). In
     /// ProgramData\KabanHMI\PlcBackups, or wherever it was copied to.
     ///
     /// WHAT IS WRITTEN BACK: the areas (or parts of them) ticked, each to its own devices or - typed
-    /// beside it - to others of the same kind (bits to bits, words to words). Inputs and outputs are
-    /// never written: X is the PLC's own reading of its inputs, Y would switch outputs.
+    /// beside it - to others of the same kind (bits to bits, words to words, 32-bit to 32-bit). Never
+    /// to a real PLC's inputs and outputs (X is its own reading of its inputs, Y would switch outputs),
+    /// the contacts and coils (they follow their current values) or the system's devices; to the
+    /// simulator every one (23 October: "write inputs and outputs as well if the selected PLC driver
+    /// is simulator so we could make the simulator more useful").
     /// </summary>
     public static class PlcBackup
     {
@@ -48,17 +52,23 @@ namespace Kaban.Core.Helpers
             public int Default, Max;
             /// <summary>False: kept, never written back (X, Y).</summary>
             public bool Writable = true;
+            /// <summary>2 for a 32-bit device (LCN, LZ): two words a device, the low one first.</summary>
+            public int WordsPerPoint = 1;
             public string TitleKey = "", Title = "";
         }
 
-        private static DeviceKind K(string prefix, bool bits, int dflt, int max, bool writable, string title)
+        private static DeviceKind K(string prefix, bool bits, int dflt, int max, bool writable, string title, int wordsPerPoint = 1)
         {
-            return new DeviceKind { Prefix = prefix, Bits = bits, Default = dflt, Max = max, Writable = writable, TitleKey = "Bak_Dev" + prefix, Title = title };
+            return new DeviceKind { Prefix = prefix, Bits = bits, Default = dflt, Max = max, Writable = writable, TitleKey = "Bak_Dev" + prefix,
+                                    Title = title, WordsPerPoint = wordsPerPoint };
         }
 
         /// <summary>
         /// A MELSEC iQ-F FX5 CPU's devices, its default sizes (GX Works3) and the most its parameters
-        /// can give - what is read, in this order.
+        /// can give - what is read, in this order: every one (23 October: "I need all the device data of
+        /// the moment") - the timers' and counters' contacts and coils, the long counters, the index
+        /// registers and the system's SM, SD, SB, SW too. Not written back to a real PLC: the inputs and
+        /// outputs, the contacts and coils (they follow the current values), the system's devices.
         /// </summary>
         public static readonly IList<DeviceKind> Fx5 = new List<DeviceKind>
         {
@@ -68,13 +78,28 @@ namespace Kaban.Core.Helpers
             K("L", true, 7680, 32768, true, "Latch relays (L)"),
             K("B", true, 256, 32768, true, "Link relays (B)"),
             K("F", true, 128, 32768, true, "Annunciators (F)"),
+            K("SB", true, 512, 32768, false, "Link special relays (SB)"),
             K("S", true, 4096, 4096, true, "Step relays (S)"),
+            K("TS", true, 512, 1024, false, "Timers, contacts (T)"),
+            K("TC", true, 512, 1024, false, "Timers, coils (T)"),
             K("TN", false, 512, 1024, true, "Timers, current values (T)"),
+            K("STS", true, 16, 1024, false, "Retentive timers, contacts (ST)"),
+            K("STC", true, 16, 1024, false, "Retentive timers, coils (ST)"),
             K("STN", false, 16, 1024, true, "Retentive timers, current values (ST)"),
+            K("CS", true, 256, 1024, false, "Counters, contacts (C)"),
+            K("CC", true, 256, 1024, false, "Counters, coils (C)"),
             K("CN", false, 256, 1024, true, "Counters, current values (C)"),
+            K("LCS", true, 64, 1024, false, "Long counters, contacts (LC)"),
+            K("LCC", true, 64, 1024, false, "Long counters, coils (LC)"),
+            K("LCN", false, 64, 1024, true, "Long counters, current values (LC)", 2),
             K("D", false, 8000, 65536, true, "Data registers (D)"),
             K("W", false, 512, 32768, true, "Link registers (W)"),
-            K("R", false, 32768, 32768, true, "File registers (R)")
+            K("SW", false, 512, 32768, false, "Link special registers (SW)"),
+            K("R", false, 32768, 32768, true, "File registers (R)"),
+            K("Z", false, 20, 24, true, "Index registers (Z)"),
+            K("LZ", false, 2, 12, true, "Long index registers (LZ)", 2),
+            K("SM", true, 10000, 10000, false, "Special relays (SM)"),
+            K("SD", false, 12000, 12000, false, "Special registers (SD)")
         }.AsReadOnly();
 
         /// <summary>The kind of a device's letters ("D"), or null (a module's buffer memory, a device not read).</summary>
@@ -99,7 +124,9 @@ namespace Kaban.Core.Helpers
             /// back, each (its offset from <see cref="First"/>, its words). Null: every word.
             /// </summary>
             public List<int[]> Pieces;
-            /// <summary>The words read: a word area's one a device, a bit area's 16 devices a word.</summary>
+            /// <summary>2 for a 32-bit device's area (LCN, LZ): two words a device, the low one first.</summary>
+            public int WordsPerPoint = 1;
+            /// <summary>The words read: a word area's one a device (a 32-bit one's two), a bit area's 16 devices a word.</summary>
             public short[] Words = new short[0];
 
             public string Prefix { get { string p; long n; PlcAddressHelper.TrySplit(First, out p, out n); return p; } }
@@ -110,13 +137,33 @@ namespace Kaban.Core.Helpers
             /// <summary>"D0 - D7999".</summary>
             public string Range { get { return Points > 1 ? First + " - " + Last : First; } }
             public bool IsModule { get { return SimpleMotion.IsModuleAddress(First); } }
-            /// <summary>Written back at all: not inputs or outputs.</summary>
-            public bool Writable { get { if (IsModule) return true; var k = KindOf(Prefix); return k == null || k.Writable; } }
-            public int WordCount { get { return Bits ? (Points + 15) / 16 : Points; } }
+            /// <summary>
+            /// Written back to a real PLC: not the inputs and outputs, the contacts and coils, the system's
+            /// devices - nor a module's area whose words are still to be checked against its manual.
+            /// </summary>
+            public bool Writable { get { return WhyNotWritten == null; } }
 
-            /// <summary>Device <paramref name="i"/>'s value: a bit's 0 / 1, a word's as read (signed).</summary>
+            /// <summary>Why it is not written back to a real PLC (null: it is).</summary>
+            public string WhyNotWritten
+            {
+                get
+                {
+                    if (IsModule) return ModuleNotWritten(First);
+                    var k = KindOf(Prefix);
+                    if (k == null || k.Writable) return null;
+                    if (k.Prefix == "X" || k.Prefix == "Y") return LanguageManager.GetString("Msg_BakNotWritable", "Inputs and outputs are not written back.");
+                    if (k.Prefix == "SM" || k.Prefix == "SD" || k.Prefix == "SB" || k.Prefix == "SW")
+                        return LanguageManager.GetString("Msg_BakSystemNotWritten", "The system's devices are not written back.");
+                    return LanguageManager.GetString("Msg_BakContactsNotWritten", "Contacts and coils follow their current values - not written back.");
+                }
+            }
+
+            public int WordCount { get { return Bits ? (Points + 15) / 16 : Points * WordsPerPoint; } }
+
+            /// <summary>Device <paramref name="i"/>'s value: a bit's 0 / 1, a word's as read (signed), a 32-bit one's of its two words.</summary>
             public int Value(long i)
             {
+                if (WordsPerPoint == 2) return 2 * i + 1 < Words.Length ? (ushort)Words[2 * i] | (Words[2 * i + 1] << 16) : 0;
                 if (!Bits) return i < Words.Length ? Words[i] : 0;
                 long w = i / 16;
                 return w < Words.Length ? (Words[w] >> (int)(i % 16)) & 1 : 0;
@@ -180,7 +227,7 @@ namespace Kaban.Core.Helpers
                 int n = ask ? Probe(driver, k) : k.Default;
                 if (k.Bits) n -= n % 16;
                 if (n <= 0) continue;
-                list.Add(new Area { First = k.Prefix + "0", Points = n, Bits = k.Bits, Title = LanguageManager.GetString(k.TitleKey, k.Title) });
+                list.Add(new Area { First = k.Prefix + "0", Points = n, Bits = k.Bits, WordsPerPoint = k.WordsPerPoint, Title = LanguageManager.GetString(k.TitleKey, k.Title) });
             }
             return list;
         }
@@ -218,6 +265,15 @@ namespace Kaban.Core.Helpers
         /// 71000 + 1000n (two words of each 10); block start data 22000 + 400n; servo parameters
         /// 28400 + 100n, 64400 + 70n, 65520 + 340n; the PLC CPU memo area 30000; mark detection
         /// settings 54000.
+        /// SYNCHRONOUS CONTROL (23 October: "I need all the device data of the moment"): the servo input
+        /// axis parameters [Pr.300] - [Pr.304], 32800 + 10n (the FX5 Simple Motion Module manual (Advanced
+        /// Synchronous Control), 2.1); the synchronous encoder axis parameters [Pr.320] - [Pr.329],
+        /// 34720 + 20j (j: encoder axis - 1, 4 of them), and the synchronous parameters [Pr.400] - [Pr.468]
+        /// (main and auxiliary shaft, clutches, speed change gear, output axis, initial position),
+        /// 36400 + 200n - where Mitsubishi's other Simple Motion modules keep them, not yet checked against
+        /// the FX5's own list: read, not written back to a real PLC (ModuleNotWritten). The command
+        /// generation axis parameters are not in the buffer memory (the manual), and the cams are read
+        /// through the module's cam data operation - neither is in a backup.
         /// </summary>
         public static List<Area> ModuleAreas(int module, int axes)
         {
@@ -242,10 +298,33 @@ namespace Kaban.Core.Helpers
                 list.Add(M(module, 28400 + 100 * n, 96, ax + t("Bak_ModServo1", "servo parameters (series, PA01 - PA18, PB, PC)")));
                 list.Add(M(module, 64400 + 70 * n, 65, ax + t("Bak_ModServo2", "servo parameters (PA19 - PA32, PB, PC continued)")));
                 list.Add(M(module, 65520 + 340 * n, 224, ax + t("Bak_ModServo3", "servo parameters (PD, PE, PF, Po, PS)")));
+                list.Add(M(module, 32800 + 10 * n, 6, ax + t("Bak_ModServoInput", "synchronous control: servo input axis parameters (Pr.300 - Pr.304)")));
+                list.Add(M(module, 36400 + 200 * n, 200, ax + t("Bak_ModSynchronous", "synchronous control: synchronous parameters (Pr.400 - Pr.468)")));
             }
+            for (int j = 1; j <= SynchronousEncoderAxes; j++)
+                list.Add(M(module, 34720 + 20 * (j - 1), 20, mod + ", " + string.Format(t("Bak_EncoderAxis", "synchronous encoder axis {0}"), j) + ": " +
+                                                              t("Bak_ModEncoder", "parameters (Pr.320 - Pr.329)")));
             list.Add(M(module, 30000, 100, mod + ": " + t("Bak_ModMemo", "PLC CPU memo area")));
             list.Add(M(module, 54000, 320, mod + ": " + t("Bak_ModMark", "mark detection settings")));
             return list;
+        }
+
+        /// <summary>A module's synchronous encoder axes.</summary>
+        public const int SynchronousEncoderAxes = 4;
+
+        /// <summary>
+        /// Why a module's area is not written back to a real PLC (null: it is): the synchronous encoder
+        /// axis parameters (34720 - 34799) and the synchronous parameters (36400 - 37999) are read - their
+        /// words are to be checked against the Advanced Synchronous Control manual before they are written.
+        /// </summary>
+        public static string ModuleNotWritten(string address)
+        {
+            string p; long g;
+            if (!PlcAddressHelper.TrySplit(address, out p, out g)) return null;
+            if ((g >= 34720 && g < 34720 + 20 * SynchronousEncoderAxes) || (g >= 36400 && g < 36400 + 200 * SimpleMotion.MaxAxes))
+                return LanguageManager.GetString("Msg_BakSyncToCheck",
+                    "Kept in the backup - written back once its words are checked against the module's Advanced Synchronous Control manual.");
+            return null;
         }
 
         /// <summary>
@@ -266,7 +345,7 @@ namespace Kaban.Core.Helpers
                 {
                     int n = Math.Min(Chunk, words.Length - at);
                     short[] got;
-                    string first = area.Bits ? area.Device(16L * at) : area.Device(at);
+                    string first = area.Bits ? area.Device(16L * at) : area.Device(at / area.WordsPerPoint);
                     ok = block.TryReadBlock(first, n, out got) && got != null && got.Length == n;
                     if (ok) Array.Copy(got, 0, words, at, n);
                     done += n;
@@ -308,7 +387,7 @@ namespace Kaban.Core.Helpers
             foreach (var a in b.Areas)
             {
                 sb.Append('[').Append(a.First).Append(';').Append(a.Points.ToString(CultureInfo.InvariantCulture)).Append(';')
-                  .Append(a.Bits ? "Bits" : "Words").Append(';').Append(Line(a.Title).Replace(";", ",").Replace("]", ")"));
+                  .Append(a.Bits ? "Bits" : a.WordsPerPoint == 2 ? "DoubleWords" : "Words").Append(';').Append(Line(a.Title).Replace(";", ",").Replace("]", ")"));
                 if (a.Pieces != null) sb.Append(';').Append(string.Join(" ", a.Pieces.Select(p => p[0] + "+" + p[1])));
                 sb.AppendLine("]");
                 for (int i = 0; i < a.Words.Length; i += 16)
@@ -349,7 +428,7 @@ namespace Kaban.Core.Helpers
                         area = new Area
                         {
                             First = f[0].Trim(), Points = int.Parse(f[1], CultureInfo.InvariantCulture),
-                            Bits = f[2].Trim() == "Bits", Title = Unline(f[3])
+                            Bits = f[2].Trim() == "Bits", WordsPerPoint = f[2].Trim() == "DoubleWords" ? 2 : 1, Title = Unline(f[3])
                         };
                         if (f.Length > 4 && f[4].Trim().Length > 0)
                             area.Pieces = f[4].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -463,16 +542,19 @@ namespace Kaban.Core.Helpers
 
         /// <summary>
         /// Where a part is written: empty - its own devices; "D2500", or "D2500 - D3499" (as many devices
-        /// as read). Bits to bits, words to words; never to inputs or outputs; a module's data to a module's
-        /// buffer memory.
+        /// as read). Bits to bits, words to words, 32-bit ones to 32-bit ones; a module's data to a module's
+        /// buffer memory. On a real PLC never to what is not written back (the inputs and outputs, the
+        /// contacts and coils, the system's devices); <paramref name="simulator"/> (23 October: "write
+        /// inputs and outputs as well if the selected PLC driver is simulator so we could make the
+        /// simulator more useful"): every device - the simulator is no machine.
         /// </summary>
-        public static bool TryParseTarget(Area area, int from, int count, string text, out string first, out string error)
+        public static bool TryParseTarget(Area area, int from, int count, string text, out string first, out string error, bool simulator = false)
         {
             first = area.Device(from); error = "";
             text = (text ?? "").Trim();
             if (text.Length == 0)
             {
-                if (!area.Writable) { error = LanguageManager.GetString("Msg_BakNotWritable", "Inputs and outputs are not written back."); return false; }
+                if (!simulator && !area.Writable) { error = area.WhyNotWritten; return false; }
                 return true;
             }
             string a = text, b = null;
@@ -494,13 +576,28 @@ namespace Kaban.Core.Helpers
             {
                 var k = KindOf(pa);
                 if (k == null) { error = string.Format(LanguageManager.GetString("Msg_BakUnknownDevice", "{0} is not one of the devices written back."), pa); return false; }
-                if (!k.Writable) { error = LanguageManager.GetString("Msg_BakNotWritable", "Inputs and outputs are not written back."); return false; }
+                if (!simulator && !k.Writable)
+                {
+                    error = new Area { First = pa + "0" }.WhyNotWritten;
+                    return false;
+                }
                 if (k.Bits != area.Bits)
                 {
                     error = area.Bits ? LanguageManager.GetString("Msg_BakBitsToBits", "Bits are written to bit devices (M, L, B, F, S).")
                                       : LanguageManager.GetString("Msg_BakWordsToWords", "Words are written to word devices (D, R, W, TN, CN ...).");
                     return false;
                 }
+                if (k.WordsPerPoint != area.WordsPerPoint)
+                {
+                    error = area.WordsPerPoint == 2 ? LanguageManager.GetString("Msg_BakDoubleToDouble", "32-bit values are written to 32-bit devices (LCN, LZ).")
+                                                    : LanguageManager.GetString("Msg_BakSingleToSingle", "16-bit words are written to 16-bit devices (D, R, W, TN, CN ...).");
+                    return false;
+                }
+            }
+            else if (!simulator && ModuleNotWritten(a) != null)
+            {
+                error = ModuleNotWritten(a);
+                return false;
             }
             if (b != null)
             {
@@ -531,7 +628,7 @@ namespace Kaban.Core.Helpers
         public static WriteResult Write(IPlcBlockAccess block, IPlcDriver driver, IList<WriteRange> parts, Progress progress)
         {
             var result = new WriteResult();
-            long total = parts.Sum(p => (long)(p.Source.Bits ? (p.Count + 15) / 16 : p.Count)), done = 0;
+            long total = parts.Sum(p => (long)(p.Source.Bits ? (p.Count + 15) / 16 : p.Count * p.Source.WordsPerPoint)), done = 0;
             foreach (var part in parts)
             {
                 if (progress != null && !progress(done, total, string.Format(LanguageManager.GetString("Msg_BakWriting", "Writing {0}..."), part)))
@@ -545,9 +642,11 @@ namespace Kaban.Core.Helpers
                 int rc = 0;
                 if (!a.Bits)
                 {
-                    // the runs to write: the area's named words (all of them for most areas) within the part
-                    var runs = (a.Pieces ?? new List<int[]> { new[] { 0, a.Points } })
-                        .Select(p => new[] { Math.Max(p[0], part.From), Math.Min(p[0] + p[1], part.From + part.Count) })
+                    // the runs to write, in words: the area's named words (all of them for most areas) within the
+                    // part; a 32-bit area's two words a device, written from a device's first word on
+                    int wpp = a.WordsPerPoint, wFrom = part.From * wpp, wEnd = (part.From + part.Count) * wpp;
+                    var runs = (a.Pieces ?? new List<int[]> { new[] { 0, a.Points * wpp } })
+                        .Select(p => new[] { Math.Max(p[0], wFrom), Math.Min(p[0] + p[1], wEnd) })
                         .Where(r => r[1] > r[0]).ToList();
                     foreach (var r in runs)
                     {
@@ -556,12 +655,12 @@ namespace Kaban.Core.Helpers
                             int n = Math.Min(Chunk, r[1] - at);
                             var words = new short[n];
                             Array.Copy(a.Words, at, words, 0, n);
-                            rc = block.WriteBlock(PlcAddressHelper.Compose(prefix, target + (at - part.From)), words);
+                            rc = block.WriteBlock(PlcAddressHelper.Compose(prefix, target + (at - wFrom) / wpp), words);
                             System.Threading.Thread.Sleep(2);
                         }
                         if (rc != 0) break;
                     }
-                    done += part.Count;
+                    done += part.Count * wpp;
                 }
                 else
                 {

@@ -91,12 +91,17 @@ class PBC {
         sim.Write(@"U1\G16", 1234);                                // a maker setting between Pr.10 and Pr.11
         sim.Write(@"U1\G6000", 0x1100); sim.Write(@"U1\G6006", 5000);
         sim.Write(@"U1\G71000", 2); sim.Write(@"U1\G71002", 99);   // 71002 is no named word
+        sim.Write("LCN3", 100000); sim.Write("LZ1", -70000); sim.Write("SM400", 1); sim.Write("SD210", 2026); sim.Write("TS5", 1);
+        sim.Write(@"U1\G32800", 1); sim.Write(@"U1\G36400", 3);   // synchronous control: servo input axis type, main input axis
 
         Console.WriteLine("--- what is read ---");
         var logged = (LoggedDriver)PlcManager.Instance.GetDriverForMonitoring(23);
         var plan = PlcBackup.PlanDevices(logged, logged);
-        Check("the simulator: GX Works3's default sizes, X Y M L B F S TN STN CN D W R",
-              string.Join(" ", plan.Select(a => a.Range)) == "X0 - X1777 Y0 - Y1777 M0 - M7679 L0 - L7679 B0 - BFF F0 - F127 S0 - S4095 TN0 - TN511 STN0 - STN15 CN0 - CN255 D0 - D7999 W0 - W1FF R0 - R32767",
+        // 23 October: "I need all the device data of the moment" - the contacts and coils, LC, Z, LZ, SB, SW, SM, SD too
+        Check("the simulator: GX Works3's default sizes, every device of an FX5",
+              string.Join(" ", plan.Select(a => a.Range)) == "X0 - X1777 Y0 - Y1777 M0 - M7679 L0 - L7679 B0 - BFF F0 - F127 SB0 - SB1FF S0 - S4095 " +
+              "TS0 - TS511 TC0 - TC511 TN0 - TN511 STS0 - STS15 STC0 - STC15 STN0 - STN15 CS0 - CS255 CC0 - CC255 CN0 - CN255 LCS0 - LCS63 LCC0 - LCC63 LCN0 - LCN63 " +
+              "D0 - D7999 W0 - W1FF SW0 - SW1FF R0 - R32767 Z0 - Z19 LZ0 - LZ1 SM0 - SM9999 SD0 - SD11999",
               string.Join(" ", plan.Select(a => a.Range)));
         var sized = new Sized(sim);
         var real = PlcBackup.PlanDevices(sized, sized);
@@ -104,8 +109,14 @@ class PBC {
               real.First(a => a.Prefix == "M").Points == 8192 && real.First(a => a.Prefix == "R").Points == 32768,
               string.Join(" ", real.Select(a => a.Range)) + " - " + sized.Asked + " asked");
         var mod = PlcBackup.ModuleAreas(1, 4);
-        Check("simple motion module 1 with 4 axes: 2 common areas, 7 a axis, the memo and mark areas", mod.Count == 2 + 4 * 7 + 2,
+        Check("simple motion module 1 with 4 axes: 2 common areas, 9 a axis, 4 synchronous encoder axes, the memo and mark areas", mod.Count == 2 + 4 * 9 + 4 + 2,
               mod.Count.ToString());
+        Check("  synchronous control: the servo input axis parameters 32800 + 10n, the synchronous parameters 36400 + 200n, the encoder axes 34720 + 20j",
+              mod.Any(a => a.First == @"U1\G32810" && a.Points == 6) && mod.Any(a => a.First == @"U1\G36600" && a.Points == 200) &&
+              mod.Any(a => a.First == @"U1\G34780" && a.Points == 20));
+        Check("  written back: the servo input axis's (from the FX5's manual); not yet the synchronous and encoder parameters (to be checked)",
+              mod.First(a => a.First == @"U1\G32800").Writable && !mod.First(a => a.First == @"U1\G36400").Writable && !mod.First(a => a.First == @"U1\G34720").Writable &&
+              mod.First(a => a.First == @"U1\G36400").WhyNotWritten.Contains("Advanced Synchronous Control manual"));
         var par = mod.First(a => a.First == @"U1\G150");
         Check("  axis 2's parameters: U1\\G150 - U1\\G299, the words the manual names (0 - 15, 17 - 91, 100 - 149)", par.Points == 150 &&
               string.Join(" ", par.Pieces.Select(x => x[0] + "+" + x[1])) == "0+16 17+75 100+50" && par.Title.Contains("axis 2"), par.Title);
@@ -121,6 +132,9 @@ class PBC {
         Check("  the values: D0 1, D7999 -5, R1999 2990, M5 on, X17 on, TN3 77, W1F 31",
               area("D0").Value(0) == 1 && area("D0").Value(7999) == -5 && area("R0").Value(1999) == 2990 && area("M0").Value(5) == 1 &&
               area("X0").Value(15) == 1 && area("TN0").Value(3) == 77 && area("W0").Value(31) == 31);
+        Check("  32-bit devices two words each: LCN3 100000, LZ1 -70000", area("LCN0").WordsPerPoint == 2 && area("LCN0").Words.Length == 128 &&
+              area("LCN0").Value(3) == 100000 && area("LZ0").Value(1) == -70000, area("LCN0").Value(3) + " " + area("LZ0").Value(1));
+        Check("  the system's: SM400 on, SD210 2026; a timer's contact TS5 on", area("SM0").Value(400) == 1 && area("SD0").Value(210) == 2026 && area("TS0").Value(5) == 1);
         Check("  the module's: Pr.3 of axis 1 = 100000 in its two words, positioning data 1", (ushort)area(@"U1\G0").Value(4) + (area(@"U1\G0").Value(5) << 16) == 100000 &&
               area(@"U1\G6000").Value(6) == 5000);
 
@@ -157,6 +171,16 @@ class PBC {
               !PlcBackup.TryParseTarget(barea("M0"), 0, 10, "D0", out target, out error), error);
         Check("  never to X or Y; X itself not written back", !PlcBackup.TryParseTarget(barea("M0"), 0, 16, "Y0", out target, out error) &&
               !PlcBackup.TryParseTarget(barea("X0"), 0, 16, "", out target, out error) && error.Contains("Inputs and outputs"), error);
+        Check("  not to the system's devices, nor a timer's contact; SM itself not written back", !PlcBackup.TryParseTarget(barea("D0"), 0, 10, "SD0", out target, out error) &&
+              !PlcBackup.TryParseTarget(barea("M0"), 0, 16, "TS0", out target, out error) && error.Contains("Contacts and coils") &&
+              !PlcBackup.TryParseTarget(barea("SM0"), 0, 16, "", out target, out error) && error.Contains("system's devices"), error);
+        Check("  32-bit values to 32-bit devices only", !PlcBackup.TryParseTarget(barea("LCN0"), 0, 4, "D0", out target, out error) && error.Contains("32-bit") &&
+              PlcBackup.TryParseTarget(barea("LCN0"), 0, 2, "LZ0", out target, out error), error);
+        // 23 October: "write inputs and outputs as well if the selected PLC driver is simulator so we could make the simulator more useful"
+        Check("  the simulator: X, Y and the system's devices too", PlcBackup.TryParseTarget(barea("X0"), 0, 16, "", out target, out error, simulator: true) &&
+              PlcBackup.TryParseTarget(barea("M0"), 0, 16, "Y0", out target, out error, simulator: true) &&
+              PlcBackup.TryParseTarget(barea("SD0"), 0, 16, "", out target, out error, simulator: true) &&
+              PlcBackup.TryParseTarget(barea(@"U1\G36400"), 0, 200, "", out target, out error, simulator: true), error);
         Check("  a module's data to a module's buffer memory only", !PlcBackup.TryParseTarget(barea(@"U1\G6000"), 0, 10, "D0", out target, out error) &&
               PlcBackup.TryParseTarget(barea(@"U1\G6000"), 0, 1000, @"U1\G7000", out target, out error), error);
 
@@ -170,10 +194,13 @@ class PBC {
             new PlcBackup.WriteRange { Source = barea("M0"), From = 100, Count = 10, Target = "M200" },
             new PlcBackup.WriteRange { Source = barea("M0"), From = 100, Count = 10, Target = "M100" },
             new PlcBackup.WriteRange { Source = barea(@"U1\G0"), From = 0, Count = 150, Target = @"U1\G150" },
-            new PlcBackup.WriteRange { Source = barea(@"U1\G71000"), From = 0, Count = 1000, Target = @"U1\G72000" }
+            new PlcBackup.WriteRange { Source = barea(@"U1\G71000"), From = 0, Count = 1000, Target = @"U1\G72000" },
+            new PlcBackup.WriteRange { Source = barea("LCN0"), From = 2, Count = 2, Target = "LCN10" }
         };
+        sim.Write("LCN3", 0);
         var result = PlcBackup.Write(logged, logged, parts, null);
-        Check("written: " + result.Points + " devices", result.Ok && result.Points == 1000 + 1 + 10 + 10 + 150 + 1000, string.Join(" | ", result.Failed));
+        Check("written: " + result.Points + " devices", result.Ok && result.Points == 1000 + 1 + 10 + 10 + 150 + 1000 + 2, string.Join(" | ", result.Failed));
+        Check("  LCN2 - LCN3 in LCN10 - LCN11: 100000 in LCN11 whole (both its words)", sim.Read("LCN11") == 100000 && sim.Read("LCN3") == 0, sim.Read("LCN11").ToString());
         Check("  R1000 - R1999's values in D2500 - D3499", Enumerable.Range(0, 1000).All(i => sim.Read("D" + (2500 + i)) == (short)(i * 3 - 7)) &&
               sim.Read("D2499") == 0 && sim.Read("D3500") == 0);
         Check("  D0 back to 1", sim.Read("D0") == 1);

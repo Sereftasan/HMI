@@ -62,6 +62,7 @@ class PBU {
         for (int i = 0; i < 1000; i++) sim.Write("R" + (1000 + i), 7 * i);
         for (int i = 0; i < 10; i++) sim.Write("M" + (100 + i), i % 2);
         sim.Write("D0", 42);
+        sim.Write("X5", 1);
         sim.Write(@"U1\G4", 20000); sim.Write(@"U1\G5", 0);       // axis 1 of module 1: Pr.3
         // an axis of this PLC on module 1, axis 2 (as the Axis Settings pages' discovery lists it)
         var axes = (IList)typeof(AlarmHelpLinks).GetField("_axisList", Any).GetValue(null);
@@ -109,7 +110,7 @@ class PBU {
               find(rf, "bakMachine").Text == PlcEndpointNaming.MachineName(ep) && find(rf, "bakPlc").Text.Length > 0 && find(rf, "bakUser").Text == "boss" &&
               find(rf, "bakSerial") is TextBox && find(rf, "bakDescription") is TextBox, find(rf, "bakMachine").Text + " / " + find(rf, "bakPlc").Text);
         Check("  what is read: the CPU's devices and simple motion module 1 (4 axes - its axis 2 is set on a page)",
-              find(rf, "bakWhat").Text.Contains("X, Y, M, L, B, F, S, T, ST, C, D, W, R") && find(rf, "bakWhat").Text.Contains("simple motion module 1 (4 axes)"),
+              find(rf, "bakWhat").Text.Contains("X, Y, M, L, B, F, SB, S, T, ST, C, LC, D, W, SW, R, Z, LZ, SM, SD") && find(rf, "bakWhat").Text.Contains("simple motion module 1 (4 axes)"),
               find(rf, "bakWhat").Text);
         find(rf, "bakSerial").Text = "2SZ0123456";
         find(rf, "bakDescription").Text = "before the program change";
@@ -122,7 +123,7 @@ class PBU {
         Check("  with the facts typed and known", b.Serial == "2SZ0123456" && b.Description == "before the program change" && b.User == "boss" &&
               b.Machine == PlcEndpointNaming.MachineName(ep) && (DateTime.Now - b.Date).TotalMinutes < 2 && b.Modules.Count == 1 && b.Modules[0].Value == 4);
         Check("  the CPU's devices and the module's data in it", b.Areas.Any(a => a.First == "R0" && a.Value(1999) == 7 * 999) &&
-              b.Areas.Any(a => a.First == @"U1\G0" && a.Value(4) == 20000) && b.Areas.Count(a => a.IsModule) == 2 + 4 * 7 + 2, b.Areas.Count.ToString());
+              b.Areas.Any(a => a.First == @"U1\G0" && a.Value(4) == 20000) && b.Areas.Count(a => a.IsModule) == 2 + 4 * 9 + 4 + 2, b.Areas.Count.ToString());
         rf.Close();
 
         var again = new PlcBackupReadForm(ep);
@@ -141,9 +142,11 @@ class PBU {
               Convert.ToString(list.Rows[0].Cells["Description"].Value) == "before the program change" && areas.Rows.Count == b.Areas.Count &&
               areas.Rows.Cast<DataGridViewRow>().All(r => !Convert.ToBoolean(r.Cells["Write"].Value)));
         Func<string, DataGridViewRow> row = first => areas.Rows.Cast<DataGridViewRow>().First(r => ((PlcBackup.Area)r.Tag).First == first);
-        Check("  each with its devices in Read (R0 - R32767), Write to empty; X and Y not to be written",
+        // 23 October: "write inputs and outputs as well if the selected PLC driver is simulator"
+        Check("  each with its devices in Read (R0 - R32767), Write to empty; the simulator: X and Y written too, said so",
               Convert.ToString(row("R0").Cells["Read"].Value) == "R0 - R32767" && Convert.ToString(row("R0").Cells["Target"].Value) == "" &&
-              row("X0").ReadOnly && Convert.ToString(row("X0").Cells["Note"].Value).Contains("not written back"));
+              !row("X0").ReadOnly && Convert.ToString(row("X0").Cells["Note"].Value) == "" && !row("SD0").ReadOnly &&
+              Tree(wf).OfType<Label>().Any(l => l.Text.Contains("The simulator: every area is written, the inputs and outputs too.")));
         var writeButton = (Button)Get(wf, "_write");
         Check("  nothing ticked: Write off", !writeButton.Enabled);
         // R1000 - R1999 into D2500 - D3499
@@ -161,6 +164,9 @@ class PBU {
         row("M0").Cells["Target"].Value = "";
         row("D0").Cells["Write"].Value = true;
         row(@"U1\G0").Cells["Write"].Value = true;
+        sim.Write("X5", 0);
+        row("X0").Cells["Read"].Value = "X0 - X7";
+        row("X0").Cells["Write"].Value = true;
         var flash = (CheckBox)Get(wf, "_flash");
         Check("  a module's area in the backup: its flash ROM offered", flash.Visible && !flash.Checked);
         flash.Checked = true;
@@ -172,9 +178,10 @@ class PBU {
         said.Clear();
         answer = DialogResult.Yes;
         var result = (PlcBackup.WriteResult)Call(wf, "DoWrite");
-        Check("Yes: written - R's values in D2500 on, M100 - M109 back, D0 back, axis 1's parameters",
+        Check("Yes: written - R's values in D2500 on, M100 - M109 back, D0 back, axis 1's parameters, the simulator's input X5 back",
               result != null && result.Ok && sim.Read("D2500") == 0 && sim.Read("D2501") == 7 && sim.Read("D3499") == 7 * 999 &&
-              Enumerable.Range(0, 10).All(i => sim.Read("M" + (100 + i)) == i % 2) && sim.Read("D0") == 42 && sim.Read(@"U1\G4") == 20000,
+              Enumerable.Range(0, 10).All(i => sim.Read("M" + (100 + i)) == i % 2) && sim.Read("D0") == 42 && sim.Read(@"U1\G4") == 20000 &&
+              sim.Read("X5") == 1,
               result == null ? "null" : string.Join(" | ", result.Failed));
         Check("  said; then the module's flash ROM written (PLC READY off)", said.Any(s => s.Contains("devices written")) &&
               said.Any(s => s.Contains("Module 1's flash ROM written")) && sim.Read(@"U1\G4224") == 1, string.Join(" // ", said));

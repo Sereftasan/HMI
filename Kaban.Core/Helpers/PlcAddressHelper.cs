@@ -189,6 +189,16 @@ namespace Kaban.Core.Helpers
             return TrySplit(address, out prefix, out number) && BitDevices.Contains(prefix);
         }
 
+        /// <summary>The 32-bit devices: a block of them gives two words a device, the low one first.</summary>
+        private static readonly HashSet<string> DoubleWordDevices = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "LCN", "LZ", "LTN", "LSTN" };
+
+        /// <summary>True for a 32-bit device ("LCN3", "LZ0"): two words a device in a block.</summary>
+        public static bool IsDoubleWordDevice(string address)
+        {
+            string prefix; long number;
+            return TrySplit(address, out prefix, out number) && DoubleWordDevices.Contains(prefix);
+        }
+
         /// <summary>The number base a device is counted in: X, Y octal (as the FX numbers them), B, W, SB, SW hexadecimal, the rest decimal.</summary>
         public static int BaseOf(string prefix) { return GetBase(prefix ?? ""); }
 

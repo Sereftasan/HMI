@@ -252,12 +252,13 @@ namespace Kaban.Core.Helpers
             {
                 int points = bits ? words * 16 : words;
                 string a = (first ?? "").Trim().ToUpperInvariant();
+                int devices = PlcAddressHelper.IsDoubleWordDevice(a) ? (words + 1) / 2 : points;   // a 32-bit device's two words
                 string prefix; long n;
-                string last = PlcAddressHelper.TrySplit(a, out prefix, out n) ? PlcAddressHelper.Compose(prefix, n + Math.Max(0, points - 1)) : a;
+                string last = PlcAddressHelper.TrySplit(a, out prefix, out n) ? PlcAddressHelper.Compose(prefix, n + Math.Max(0, devices - 1)) : a;
                 var e = new Entry
                 {
                     Time = time, Station = station, Controller = ControllerName(station),
-                    Device = points > 1 ? a + " - " + last : a, Result = result,
+                    Device = devices > 1 ? a + " - " + last : a, Result = result,
                     User = SecurityManager.CurrentUser ?? "Guest",
                     Source = (CurrentSource ?? Caller()) + " (" + points.ToString(CultureInfo.InvariantCulture) + (bits ? (points == 1 ? " bit" : " bits") : (points == 1 ? " word" : " words")) + ")"
                 };
