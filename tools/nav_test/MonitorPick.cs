@@ -144,6 +144,16 @@ class MP {
         Pump(100);
         Check("  Esc: the same", kept && !form.DevicePicking && !bar.Visible);
 
+        // 23 October: "The label names are absurd (50.0 mm - setting), could be the description text of the control instead"
+        Console.WriteLine("--- the labels' names ---");
+        var groups = (IDictionary)Get(form, "_screenGroups");
+        var parameters = ((MachineRegistry.RoleGroup)groups[Nav(form, ScreenRoles.MachineParameters)]).Pages[0].Value;
+        var named = Kaban.UI.Helpers.DeviceCollector.FromScreen(parameters, 1);
+        var gripper = named.FirstOrDefault(d => d.Address == "D506");
+        Check("a field's devices named by its caption (Robot: Gripper Length), not its value", gripper != null && gripper.UsedAs == "Gripper Length" &&
+              !named.Any(d => System.Text.RegularExpressions.Regex.IsMatch(d.UsedAs ?? "", @"^-?[0-9.]+ ?(mm|sec|s|%|°)?\b - ")),
+              gripper == null ? "no D506" : gripper.UsedAs + " | " + string.Join(", ", named.Take(6).Select(d => d.Address + "=" + d.UsedAs)));
+
         form.Close();
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail == 0 ? "\nMONITOR PICK ALL PASS" : "\nMONITOR PICK " + fail + " FAILED");

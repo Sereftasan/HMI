@@ -86,6 +86,27 @@ namespace Kaban.UI.Helpers
             foreach (Control child in c.Controls) Walk(child, station, list, seen, owner);
         }
 
+        /// <summary>
+        /// A control's caption as the screen shows it: its DescriptionText (its own key), its name's key (a button's,
+        /// a unit's title, an axis's name), else a text it shows that is words - not a value ("50.0 mm"). "" - none.
+        /// </summary>
+        internal static string CaptionOf(Control c)
+        {
+            if (c == null) return "";
+            foreach (var prop in new[] { "DescriptionText", "TranslationKey", "TitleTextKey", "AxisNameKey" })
+            {
+                var p = c.GetType().GetProperty(prop, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+                if (p == null || p.PropertyType != typeof(string) || p.GetIndexParameters().Length > 0) continue;
+                string v;
+                try { v = p.GetValue(c, null) as string; } catch { v = null; }
+                if (!string.IsNullOrWhiteSpace(v)) return Tr(v.Trim()).Trim().TrimEnd(':').Trim();
+            }
+            if (c is BaseNumericHMI) return "";                     // its text is its value
+            var text = (c.Text ?? "").Trim();
+            int letters = text.Count(char.IsLetter), digits = text.Count(char.IsDigit);
+            return text.Length > 1 && letters > 0 && letters > digits ? text.TrimEnd(':').Trim() : "";
+        }
+
         /// <summary>The unit or axis a control belongs to, for the "used as" name.</summary>
         private static string OwnerName(Control c)
         {
@@ -139,10 +160,14 @@ namespace Kaban.UI.Helpers
             int st = StationOf(c);
             if (st <= 0) return;
             _wanted = station;
-            string own = owner;
-            string text = (c.Text ?? "").Trim();
-            string self = own.Length > 0 ? "" : (text.Length > 1 && text.Any(char.IsLetter) ? text : c.Name ?? "");
-            if (own.Length == 0) own = self;
+            // 23 October (the PLC Monitor's labels: "50.0 mm - setting" - "The label names are absurd, could be the
+            // description text of the control instead"): a control is named by its caption - its DescriptionText,
+            // its name's key - never by the value it shows; inside a unit, the unit's name and its caption
+            string caption = CaptionOf(c);
+            string own = owner.Length > 0
+                ? (caption.Length > 0 && !string.Equals(caption, owner, StringComparison.OrdinalIgnoreCase) ? owner + " - " + caption : owner)
+                : (caption.Length > 0 ? caption : c.Name ?? "");
+            bool named = caption.Length > 0;
 
             // an axis's load-side encoder: its own, whether its Load Position column is shown or not
             var axis = c as AxisSettingHMI;
@@ -154,8 +179,8 @@ namespace Kaban.UI.Helpers
             {
                 Add(list, seen, st, PlcAddressHelper.OffsetAddress(num.Address, StaticOffset(num.AddressOffset)),
                     num.DataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own,
-                    c is NumericInputHMI ? "setting" : "value");
-                Add(list, seen, st, num.ComparedAddress, num.DataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own, "load-side encoder");
+                    named ? "" : c is NumericInputHMI ? "setting" : "value");
+                Add(list, seen, st, num.ComparedAddress, num.DataType == DataTypeEnum.Bin_32 ? DoubleWord : Word, own, "compared value");
                 return;
             }
 
