@@ -968,6 +968,68 @@ namespace Kaban.Core.Helpers
             return null;
         }
 
+        // ---- one device of a backup (23 October: the PLC Monitor's labels written from a backup) -------------
+
+        /// <summary>
+        /// The backup's area a device is in, and its place there ("D105" in D0 - D7999: 105; "U1\G6003": its word
+        /// in U1\G6000's area); null when the backup does not have it. A cam is never one.
+        /// </summary>
+        public static Area AreaOf(Backup b, string device, out int index)
+        {
+            index = -1;
+            string p; long n;
+            if (b == null || !PlcAddressHelper.TrySplit(device, out p, out n)) return null;
+            foreach (var a in b.Areas)
+            {
+                if (a.IsCam) continue;
+                string ap = a.Prefix;
+                bool same = string.Equals(ap, p, StringComparison.OrdinalIgnoreCase);
+                if (!same)
+                {
+                    // the same device by another name (STN / SN)
+                    var k = KindOf(ap);
+                    same = k != null && ReferenceEquals(k, KindOf(p));
+                }
+                if (!same || n < a.Start || n >= a.Start + a.Points) continue;
+                int at = (int)(n - a.Start);
+                // a module's word the manual does not name: not read, not in the backup
+                if (a.Pieces != null && !a.Bits && !a.Pieces.Any(r => at * a.WordsPerPoint >= r[0] && at * a.WordsPerPoint < r[0] + r[1])) return null;
+                index = at;
+                return a;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// The parts that write <paramref name="devices"/> back from <paramref name="b"/>, each to itself - devices
+        /// next to each other in one part; <paramref name="missing"/>: those the backup does not have.
+        /// </summary>
+        public static List<WriteRange> PartsFor(Backup b, IEnumerable<string> devices, out List<string> missing)
+        {
+            missing = new List<string>();
+            var found = new List<KeyValuePair<Area, int>>();
+            foreach (var d in devices.Distinct(StringComparer.OrdinalIgnoreCase))
+            {
+                int i;
+                var a = AreaOf(b, d, out i);
+                if (a == null) { missing.Add(d); continue; }
+                if (!found.Any(f => ReferenceEquals(f.Key, a) && f.Value == i)) found.Add(new KeyValuePair<Area, int>(a, i));
+            }
+            var parts = new List<WriteRange>();
+            foreach (var g in found.GroupBy(f => f.Key))
+            {
+                var at = g.Select(f => f.Value).OrderBy(x => x).ToList();
+                for (int k = 0; k < at.Count; )
+                {
+                    int j = k;
+                    while (j + 1 < at.Count && at[j + 1] == at[j] + 1) j++;
+                    parts.Add(new WriteRange { Source = g.Key, From = at[k], Count = at[j] - at[k] + 1, Target = g.Key.Device(at[k]) });
+                    k = j + 1;
+                }
+            }
+            return parts;
+        }
+
         // ---- writing back ------------------------------------------------------------------------------------
 
         /// <summary>A part of an area written back: its devices <see cref="From"/> .. + <see cref="Count"/>, to <see cref="Target"/> on.</summary>

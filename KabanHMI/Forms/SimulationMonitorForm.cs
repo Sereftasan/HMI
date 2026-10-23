@@ -559,6 +559,13 @@ namespace Kaban.UI.Forms
             // and Reload everywhere else in the program, and were not found here.
             add(UiStyle.ToolButton(E(0x1F4E4), T("Tip_MonExport", "Export this tab to a CSV file (Label / DataType / Address / Value)"), _tips, (s, e) => ExportSheet()));
             add(UiStyle.ToolButton(E(0x1F4E5), T("Tip_MonImport", "Import devices from a CSV file into this tab (a PlcLabels.csv works as it is)"), _tips, (s, e) => ImportSheet()));
+            // 23 October: the labels' values written back from a PLC backup (SimulationMonitorForm.Backup.cs)
+            Button btnBackup = null;
+            btnBackup = UiStyle.ToolButton(E(0x1F504), T("Tip_MonBackup",
+                "Write to PLC from backup: the selected labels, every label of this tab or of every tab - their values as a backup chosen holds them"), _tips,
+                (s, e) => ShowMenu(btnBackup, BackupMenu()));
+            btnBackup.Name = "monWriteBackup";
+            add(btnBackup);
 
             var restore = UiStyle.ToolButton(E(0x1F441), T("Tip_MonRestore",
                 "Show the removed devices again. The simulator lists every device it holds and adds new ones by itself - " +
@@ -1317,6 +1324,7 @@ namespace Kaban.UI.Forms
                 // 19 October: 0 into every device of the rows chosen (a structure's members, an array's elements)
                 bool devices = SelectedIndices(sh).Any(i => i < sh.Rows.Count && sh.Rows[i].IsDevice);
                 rowMenu.Items.Add(Item(T("Mnu_MonReset", "Reset (0 into its devices)..."), (s2, e2) => ResetSelected(mon, sh), devices));
+                rowMenu.Items.Add(Item(T("Mnu_MonBakRows", "Write to PLC from backup..."), (s2, e2) => WriteFromBackup(mon, SelectedLabels(sh), SelectedText(sh)), devices));
                 if (sel)
                 {
                     var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));

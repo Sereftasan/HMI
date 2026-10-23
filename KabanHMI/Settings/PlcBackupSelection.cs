@@ -303,4 +303,157 @@ namespace Kaban.UI.Settings
             }
         }
     }
+
+    /// <summary>
+    /// A BACKUP CHOSEN (23 October: the PLC Monitor's "Write to PLC from backup" - "The backup selection page should
+    /// open (just for the backup selection btw, not for the writing device value interval selection)"): the PLC's
+    /// backups, the newest first (every one's with the box unticked), another file opened; OK takes the one chosen.
+    /// </summary>
+    public sealed class PlcBackupChooseForm : Form
+    {
+        private readonly DataGridView _list = new DataGridView { Name = "chooseList" };
+        private readonly CheckBox _onlyThis = new CheckBox { Name = "chooseOnlyThis", AutoSize = true, Checked = true };
+        private readonly Button _ok;
+        private readonly string _machine, _plc;
+        private List<PlcBackup.Backup> _all = new List<PlcBackup.Backup>();
+        private string _opened;
+
+        /// <summary>The backup chosen, read whole (null until OK).</summary>
+        public PlcBackup.Backup Result { get; private set; }
+
+        private static string T(string key, string en) { return LanguageManager.GetString(key, en); }
+
+        /// <summary>Tests: the window given to it instead of shown (it chooses, takes, and gives the result back).</summary>
+        public static Func<PlcBackupChooseForm, DialogResult> Showing;
+
+        /// <summary>The backup chosen to write <paramref name="what"/> from, read whole - null: none chosen.</summary>
+        public static PlcBackup.Backup Choose(IWin32Window owner, PlcConnectionSettings.Endpoint endpoint, string what)
+        {
+            using (var f = new PlcBackupChooseForm(endpoint, what))
+            {
+                var r = Showing != null ? Showing(f) : f.ShowDialog(owner);
+                return r == DialogResult.OK ? f.Result : null;
+            }
+        }
+
+        /// <summary>The backups listed (tests).</summary>
+        internal List<PlcBackup.Backup> Listed
+        {
+            get { return _list.Rows.Cast<DataGridViewRow>().Select(r => r.Tag as PlcBackup.Backup).Where(b => b != null).ToList(); }
+        }
+
+        /// <summary>The listed backup of <paramref name="path"/> selected (tests).</summary>
+        internal bool Select(string path)
+        {
+            foreach (DataGridViewRow r in _list.Rows)
+            {
+                var b = r.Tag as PlcBackup.Backup;
+                if (b == null || !string.Equals(b.Path, path, StringComparison.OrdinalIgnoreCase)) continue;
+                _list.ClearSelection();
+                r.Selected = true;
+                _list.CurrentCell = r.Cells[0];
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>"Only this PLC's backups" (tests).</summary>
+        internal bool OnlyThis { get { return _onlyThis.Checked; } set { _onlyThis.Checked = value; } }
+
+        public PlcBackupChooseForm(PlcConnectionSettings.Endpoint endpoint, string what)
+        {
+            PlcBackupUi.Names(endpoint, out _machine, out _plc);
+            UiScale.ApplyOnLoad(this);
+            Text = string.Format(T("Ttl_BakChoose", "The backup to write {0} from - {1}"), what, PlcEndpointNaming.Caption(endpoint));
+            StartPosition = FormStartPosition.CenterParent;
+            ShowInTaskbar = false; MinimizeBox = false;
+            BackColor = Color.White;
+            Font = UiStyle.Body;
+            Size = new Size(900, 460);
+            MinimumSize = new Size(600, 300);
+
+            var top = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 44, Padding = new Padding(8, 8, 8, 2), WrapContents = false };
+            _onlyThis.Text = string.Format(T("Chk_BakOnlyThis", "Only {0}'s backups"), (_machine + " " + _plc).Trim());
+            _onlyThis.Margin = new Padding(3, 6, 16, 3);
+            _onlyThis.CheckedChanged += (s, e) => Fill();
+            top.Controls.Add(_onlyThis);
+            top.Controls.Add(UiStyle.TextButton(T("Btn_BakOpenFile", "Open a file..."), 0, (s, e) => OpenFile()));
+
+            _list.Dock = DockStyle.Fill;
+            _list.AllowUserToAddRows = false; _list.AllowUserToDeleteRows = false; _list.RowHeadersVisible = false;
+            _list.ReadOnly = true; _list.MultiSelect = false; _list.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            UiStyle.GridLook(_list);
+            foreach (var c in new[] { new[] { "Date", T("Col_BakDate", "Date"), "140" }, new[] { "Machine", T("Col_BakMachine", "Machine"), "150" },
+                                      new[] { "Plc", T("Col_BakPlc", "PLC"), "150" }, new[] { "User", T("Col_BakUser", "User"), "90" },
+                                      new[] { "Description", T("Col_BakDescription", "Description"), "330" } })
+                _list.Columns.Add(new DataGridViewTextBoxColumn { Name = c[0], HeaderText = c[1], Width = int.Parse(c[2]) });
+            _list.SelectionChanged += (s, e) => { if (_ok != null) _ok.Enabled = _list.SelectedRows.Count > 0; };
+            _list.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) Take(); };
+
+            var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 52, Padding = new Padding(8, 10, 8, 6), FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
+            var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+            _ok = UiStyle.TextButton(T("Btn_BakChooseOk", "Write from it..."), 0, (s, e) => Take());
+            _ok.Name = "chooseOk";
+            bottom.Controls.Add(cancel);
+            bottom.Controls.Add(_ok);
+            CancelButton = cancel;
+
+            Controls.Add(_list);
+            Controls.Add(top);
+            Controls.Add(bottom);
+            Fill();
+        }
+
+        /// <summary>The backups listed (the one opened from a file too), the newest first.</summary>
+        internal void Fill()
+        {
+            _all = PlcBackup.List();
+            if (_opened != null && !_all.Any(b => string.Equals(b.Path, _opened, StringComparison.OrdinalIgnoreCase)))
+            {
+                var other = PlcBackup.Load(_opened, headerOnly: true);
+                if (other != null) _all.Insert(0, other);
+            }
+            var shown = _all.Where(b => !_onlyThis.Checked || (b.Machine == _machine && b.Plc == _plc) || string.Equals(b.Path, _opened, StringComparison.OrdinalIgnoreCase)).ToList();
+            _list.Rows.Clear();
+            foreach (var b in shown)
+            {
+                int r = _list.Rows.Add(b.Date.ToString("yyyy-MM-dd HH:mm:ss"), b.Machine, b.Plc, b.User, b.Description.Replace("\r\n", " / "));
+                _list.Rows[r].Tag = b;
+            }
+            _list.ClearSelection();
+            int at = _opened == null ? (shown.Count > 0 ? 0 : -1) : shown.FindIndex(b => string.Equals(b.Path, _opened, StringComparison.OrdinalIgnoreCase));
+            if (at >= 0) { _list.Rows[at].Selected = true; _list.CurrentCell = _list.Rows[at].Cells[0]; }
+            if (_ok != null) _ok.Enabled = _list.SelectedRows.Count > 0;
+        }
+
+        private void OpenFile()
+        {
+            using (var dlg = new OpenFileDialog { Filter = T("Flt_PlcBackup", "PLC backups") + " (*" + PlcBackup.Extension + ")|*" + PlcBackup.Extension,
+                                                  InitialDirectory = System.IO.Directory.Exists(PlcBackup.Folder) ? PlcBackup.Folder : "" })
+            {
+                if (dlg.ShowDialog(this) != DialogResult.OK) return;
+                Choose(dlg.FileName);
+            }
+        }
+
+        /// <summary>A file chosen (a USB stick's): listed and selected.</summary>
+        internal void Choose(string path)
+        {
+            if (PlcBackup.Load(path, headerOnly: true) == null) return;
+            _opened = path;
+            Fill();
+        }
+
+        /// <summary>The selected backup read whole - the window closed with OK.</summary>
+        internal void Take()
+        {
+            var row = _list.SelectedRows.Count > 0 ? _list.SelectedRows[0] : null;
+            var head = row == null ? null : row.Tag as PlcBackup.Backup;
+            if (head == null) return;
+            Result = PlcBackup.Load(head.Path);
+            if (Result == null) return;
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+    }
 }
