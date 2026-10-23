@@ -430,7 +430,9 @@ namespace Kaban.UI.Forms
             _tabs.Padding = new Point(14, 5);
             _tabs.SelectedIndexChanged += (s, e) => { UpdateToolbar(); RefreshValues(); };
 
+            BuildPickBar();
             Controls.Add(_tabs);
+            Controls.Add(_pickBar);
             Controls.Add(bar);
             Controls.Add(_status);
 
@@ -666,6 +668,13 @@ namespace Kaban.UI.Forms
             var m = NewMenu();
             m.Items.Add(UiStyle.MenuHeader(T("Hdr_MonCollect", "Add every device used by...")));
             m.Items.Add(new ToolStripSeparator());
+            // 23 October: the control (or page, or tab) clicked next - the rest of the window darker meanwhile
+            var pick = Item(T("Mnu_MonFromPick", "all under the next control / page - into this tab"), (s, e) => PickUnder(), Shell != null);
+            pick.ToolTipText = T("Tip_MonFromPick",
+                "Click a control of the page, a page button of the menu, a machine or a tab's title: everything under it goes into this tab. " +
+                "The click does not operate it. Esc or the blinking button gives up.");
+            m.ShowItemToolTips = true;
+            m.Items.Add(pick);
             m.Items.Add(Item(T("Mnu_MonFromScreen", "the screen on display - into this tab"), (s, e) => CollectFromScreen()));
             m.Items.Add(Item(T("Mnu_MonFromProgram", "the whole program - into this tab, a heading line per page"), (s, e) => CollectFromProgram(perPage: false, headings: true)));
             m.Items.Add(Item(T("Mnu_MonFromProgramList", "the whole program - into this tab, one list (each device once, no headings)"), (s, e) => CollectFromProgram(perPage: false, headings: false)));
@@ -2601,6 +2610,99 @@ namespace Kaban.UI.Forms
             MessageBox.Show(DialogOwner,
                 string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added),
                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // ---- ALL UNDER THE NEXT CONTROL / PAGE (23 October) --------------------------------------------------
+        //
+        // "everything under the first clicked control or page navigation button or tab title should be added to the
+        // active tab (there should be a blinking cancelling button appeared on PLC Monitor page then so the user could
+        // give up the label adding process (ESC keyboard shortcut as well))" - the picking is the main window's
+        // (MainForm.DevicePick); here the bar that says so, with its blinking button, and the devices put in.
+
+        private readonly Panel _pickBar = new Panel { Name = "monPickBar", Dock = DockStyle.Top, Visible = false, BackColor = Color.FromArgb(255, 244, 214) };
+        private readonly Label _pickText = new Label { Name = "monPickText", AutoSize = false, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
+        private Button _pickCancel;
+        private readonly Timer _pickBlink = new Timer { Interval = 500 };
+        private readonly Timer _pickHide = new Timer { Interval = 6000 };
+        private bool _pickLit;
+        private MonitorTab _pickMonitor;
+
+        /// <summary>The main window the monitor works with (its page, its menu).</summary>
+        private MainForm Shell { get { return Owner as MainForm ?? Application.OpenForms.OfType<MainForm>().FirstOrDefault(); } }
+
+        /// <summary>True while the next click picks (tests).</summary>
+        internal bool PickingUnder { get { return _pickMonitor != null; } }
+
+        private void BuildPickBar()
+        {
+            _pickBar.Height = UiScale.For(this, 40);
+            _pickBar.Padding = new Padding(8, 4, 8, 4);
+            _pickCancel = UiStyle.TextButton("✖  " + T("Btn_MonPickCancel", "Cancel adding (Esc)"), 0, (s, e) => { var sh = Shell; if (sh != null) sh.CancelDevicePick(); else PickEnded(true); });
+            _pickCancel.Name = "monPickCancel";
+            _pickCancel.Dock = DockStyle.Right;
+            _pickBar.Controls.Add(_pickText);
+            _pickBar.Controls.Add(_pickCancel);
+            _pickBlink.Tick += (s, e) => { _pickLit = !_pickLit; ShadePickCancel(); };
+            _pickHide.Tick += (s, e) => { _pickHide.Stop(); if (_pickMonitor == null) _pickBar.Visible = false; };
+            Disposed += (s, e) =>
+            {
+                _pickBlink.Dispose(); _pickHide.Dispose();
+                var sh = Shell;
+                if (_pickMonitor != null && sh != null && !sh.IsDisposed) sh.CancelDevicePick();
+            };
+        }
+
+        /// <summary>The cancel button blinking: red and white in turn.</summary>
+        private void ShadePickCancel()
+        {
+            _pickCancel.BackColor = _pickLit ? Color.FromArgb(205, 45, 35) : Color.White;
+            _pickCancel.ForeColor = _pickLit ? Color.White : Color.FromArgb(205, 45, 35);
+        }
+
+        /// <summary>The menu's "all under the next control / page - into this tab": the next click picks.</summary>
+        internal void PickUnder()
+        {
+            var mon = CurrentMonitor;
+            var shell = Shell;
+            if (mon == null || shell == null) return;
+            _pickMonitor = mon;
+            _pickHide.Stop();
+            _pickText.Text = string.Format(T("Msg_MonPickNow", "Click a control, a page button, a machine or a tab: everything of {0} under it goes into this tab."),
+                                           PlcEndpointNaming.Caption(mon.Endpoint));
+            _pickText.ForeColor = Color.FromArgb(70, 56, 20);
+            _pickCancel.Visible = true;
+            _pickBar.Visible = true;
+            _pickLit = true; ShadePickCancel();
+            _pickBlink.Start();
+            shell.BeginDevicePick(mon.Station, (title, devices) => PickedUnder(mon, title, devices), PickEnded);
+        }
+
+        /// <summary>A click picked: its devices into the tab on show (false: none of this PLC's there - the next click is waited for).</summary>
+        internal bool PickedUnder(MonitorTab mon, string title, List<DeviceCollector.Device> devices)
+        {
+            if (devices == null || devices.Count == 0)
+            {
+                _pickText.Text = string.Format(T("Msg_MonPickNone", "{0} uses no device of {1} - click another one (Esc: give up)."), title, PlcEndpointNaming.Caption(mon.Endpoint));
+                return false;
+            }
+            Remember(T("Undo_Collect", "add the devices"), mon);
+            var sh = EnsureSheet(mon);
+            int added = AddDevices(mon, sh, devices, null);
+            SaveWatchList(mon);
+            Render(mon, sh);
+            _pickText.Text = string.Format(T("Msg_MonPickDone", "{0}: {1} device(s) added to '{2}', {3} were already listed."), title, added, sh.Name, devices.Count - added);
+            return true;
+        }
+
+        /// <summary>The picking over: the bar's button gone; given up - the bar too, else it tells what was added a while.</summary>
+        private void PickEnded(bool cancelled)
+        {
+            _pickMonitor = null;
+            _pickBlink.Stop();
+            _pickCancel.Visible = false;
+            if (cancelled || IsDisposed) { _pickBar.Visible = false; return; }
+            _pickText.ForeColor = Color.FromArgb(30, 90, 40);
+            _pickHide.Start();
         }
 
         private void CollectFromScreen()

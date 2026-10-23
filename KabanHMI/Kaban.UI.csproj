@@ -377,6 +377,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MainForm.DevicePick.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\MainForm.Coupling.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>

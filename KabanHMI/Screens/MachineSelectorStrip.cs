@@ -187,6 +187,20 @@ namespace Kaban.UI.Screens
 
         public int SelectedIndex { get { return _selectedIndex; } }
 
+        /// <summary>The machines it offers (null: none).</summary>
+        public MachineRegistry.RoleGroup Group { get { return _group; } }
+
+        /// <summary>The machine a button of it is (its index in <see cref="Group"/>), or -1.</summary>
+        public int IndexOfButton(Control c)
+        {
+            for (var p = c; p != null && p != this; p = p.Parent)
+            {
+                int i = _buttons.IndexOf(p as ButtonHMI);
+                if (i >= 0) return i;
+            }
+            return -1;
+        }
+
         /// <summary>Icon-only when the left bar is collapsed, matching the page buttons.</summary>
         public void ApplyCollapsed(bool collapsed)
         {

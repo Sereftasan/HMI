@@ -276,6 +276,47 @@ namespace Kaban.UI.Helpers
             return pages;
         }
 
+        // ---- one control, one page, one screen - every tab of it (23 October: the PLC Monitor's "all under
+        // the next control / page - into this tab": a control, a tab or a page button clicked) ----------------
+
+        /// <summary>Every device under a control on one station, every tab of its tab controls too.</summary>
+        public static List<Device> UnderControl(Control root, int station) { return FromControlAllTabs(root, station); }
+
+        /// <summary>
+        /// Every device of a page of a tab strip: its view when it has been shown, else the page built
+        /// off-screen for the purpose (and let go).
+        /// </summary>
+        public static List<Device> FromPage(ISettingsPage page, Control shown, int station)
+        {
+            if (shown != null) return FromControlAllTabs(shown, station);
+            Control pv = null;
+            try { pv = page.GetControl(); return FromView(pv, station); }
+            catch (Exception ex) { AuditLogger.Log("device list skipped a page: " + ex.Message); return new List<Device>(); }
+            finally { AlarmHelpLinks.Discard(pv); }
+        }
+
+        /// <summary>Every device of a machine's screen, every one of its pages - built off-screen for the purpose.</summary>
+        public static List<Device> FromScreen(MachineScreen screen, int station)
+        {
+            if (screen == null || screen.CreateView == null) return new List<Device>();
+            Control view = null;
+            try { view = screen.CreateView() as Control; return FromView(view, station); }
+            catch (Exception ex) { AuditLogger.Log("device list skipped a screen: " + ex.Message); return new List<Device>(); }
+            finally { AlarmHelpLinks.Discard(view); }
+        }
+
+        /// <summary>A view's devices: a tab strip's every page (built for the purpose when not shown yet), else its controls'.</summary>
+        private static List<Device> FromView(Control view, int station)
+        {
+            var settings = view as SettingsScreen;
+            if (settings == null) return FromControlAllTabs(view, station);
+            var list = new List<Device>();
+            foreach (var page in settings.AllPages)
+                foreach (var d in FromPage(page, settings.ViewOf(page), station))
+                    if (!list.Any(x => string.Equals(x.Address, d.Address, StringComparison.OrdinalIgnoreCase))) list.Add(d);
+            return list;
+        }
+
         /// <summary>Like FromControl, but every tab of a tab control: a page built off-screen shows none of them.</summary>
         private static List<Device> FromControlAllTabs(Control root, int station)
         {
