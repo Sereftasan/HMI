@@ -81,10 +81,10 @@ class PBU {
         var form = new Form { Width = 1500, Height = 400 };
         var page = new StationConnectionControl();
         form.Controls.Add(page);
-        form.Show(); Application.DoEvents();
-        Call(page, "RefreshAllStatus"); Application.DoEvents();
         var read = Tree(page).OfType<Button>().FirstOrDefault(x => x.Name == "plcRead");
         var write = Tree(page).OfType<Button>().FirstOrDefault(x => x.Name == "plcWrite");
+        form.Show(); Application.DoEvents();
+        Call(page, "RefreshAllStatus"); Application.DoEvents();
         var table = (TableLayoutPanel)Get(page, "_table");
         var head = table.GetControlFromPosition(8, 0) as Label;
         Check("a ninth column, PLC data: Read... and Write... at the end of each row", head != null && head.Text == "PLC data" && read != null && write != null &&
@@ -100,6 +100,14 @@ class PBU {
         ConnectionMonitor.ReportRead(1, true);
         Call(page, "RefreshAllStatus"); Application.DoEvents();
         Check("  not connected: neither (back when it is)", downOff && read.Enabled && write.Enabled, downOff + " " + read.Enabled);
+        var inactive = (HashSet<int>)typeof(PlcConnectionSettings).GetField("_inactiveRunning", Any).GetValue(null);
+        inactive.Add(1);
+        Call(page, "RefreshAllStatus"); Application.DoEvents();
+        bool inactiveOff = !read.Enabled && !write.Enabled;
+        inactive.Remove(1);
+        Call(page, "RefreshAllStatus"); Application.DoEvents();
+        // 23 October: "Read and Write buttons should only be enabled when the connection is established"
+        Check("  a PLC not active in this run: neither (they stayed as made - enabled)", inactiveOff && read.Enabled);
 
         Console.WriteLine("--- Read ---");
         read.PerformClick(); Application.DoEvents();

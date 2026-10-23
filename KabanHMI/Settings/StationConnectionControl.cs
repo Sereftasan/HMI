@@ -111,6 +111,8 @@ namespace Kaban.UI.Settings
                 if (InvokeRequired) BeginInvoke((Action)RefreshAllStatus); else RefreshAllStatus();
             };
             ConnectionMonitor.ConnectionChanged += _onConnChanged;
+            // shown again: the state at once, not up to a second later (the refresh skips a hidden page)
+            VisibleChanged += (s, e) => { if (Visible) RefreshAllStatus(); };
             _onUserChanged = (s, e) => { if (!IsDisposed) ApplyAccess(); };
             SecurityManager.UserChanged += _onUserChanged;
             Disposed += (s, e) =>
@@ -342,6 +344,9 @@ namespace Kaban.UI.Settings
             var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
             var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
             read.Name = "plcRead"; write.Name = "plcWrite";
+            // off until the row's state says the PLC is connected (23 October: a PLC not active in this run kept
+            // the buttons as they were made - enabled)
+            read.Enabled = false; write.Enabled = false;
             read.Margin = new Padding(0, 0, 6, 0); write.Margin = Padding.Empty;
             data.Controls.Add(read);
             data.Controls.Add(write);
@@ -440,6 +445,7 @@ namespace Kaban.UI.Settings
                 // not active in this run: no connection to tell of
                 Set(row.Status, LanguageManager.GetString("Diag_NotActive", "Not active"), ColDim);
                 Set(row.Last, "", ColDim); Set(row.Drops, "", ColDim); Set(row.Error, "", ColDim); Set(row.Version, "", ColDim);
+                SetDataButtons(row, false);
                 return;
             }
             var st = ControllerStatus.RowFor(row.Endpoint.StationId, row.Endpoint.StationName, row.Endpoint, _drops);
