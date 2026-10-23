@@ -458,6 +458,87 @@ namespace Kaban.Core.Helpers
             return list;
         }
 
+        // ---- a module's data in groups ----------------------------------------------------------------------
+        //
+        // 23 October: "It could be useful to group the write selection so the user could select them multiple and
+        // easier (the attached image show GX Works way for it)" - GX Works3's Write to the module: positioning data,
+        // block start data, parameters, servo parameters, mark detection, synchronous control parameters, each
+        // ticked whole or for the axes (and positioning data numbers) chosen in its details.
+
+        /// <summary>A simple motion module's data in the groups GX Works3 writes it by (and the PLC CPU memo area).</summary>
+        public enum ModuleGroup { Other, Positioning, BlockStart, Parameters, Servo, MarkDetection, Synchronous, Memo }
+
+        /// <summary>The groups in GX Works3's order.</summary>
+        public static readonly ModuleGroup[] ModuleGroups =
+        {
+            ModuleGroup.Positioning, ModuleGroup.BlockStart, ModuleGroup.Parameters, ModuleGroup.Servo,
+            ModuleGroup.MarkDetection, ModuleGroup.Synchronous, ModuleGroup.Memo
+        };
+
+        /// <summary>Where a module's area belongs.</summary>
+        public sealed class ModulePlace
+        {
+            public int Module;
+            public ModuleGroup Group;
+            /// <summary>Its axis (1 - 8); 0 - the module's own (common parameters, memo, mark detection), or an encoder axis's.</summary>
+            public int Axis;
+            /// <summary>Its synchronous encoder axis (1 - 4), else 0.</summary>
+            public int Encoder;
+            /// <summary>The positioning data's axes to be interpolated (71000 + 1000n): written with the positioning data.</summary>
+            public bool Interpolation;
+        }
+
+        /// <summary>A positioning data's words (Da.1 - Da.10), and the data an axis keeps in the buffer memory (No.1 - 100).</summary>
+        public const int PositioningWords = 10, PositioningData = 100;
+
+        /// <summary>Where a module's area belongs, by its first address; null for a CPU device.</summary>
+        public static ModulePlace PlaceOf(string first)
+        {
+            string p; long g;
+            if (!SimpleMotion.IsModuleAddress(first) || !PlcAddressHelper.TrySplit(first, out p, out g)) return null;
+            int module;
+            int.TryParse(p.Substring(1, p.Length - 3), NumberStyles.None, CultureInfo.InvariantCulture, out module);
+            var place = new ModulePlace { Module = module, Group = ModuleGroup.Other };
+            int axes = SimpleMotion.MaxAxes;
+            Func<long, long, int, int> on = (start, step, count) => g >= start && g < start + step * count && (g - start) % step == 0 ? (int)((g - start) / step) + 1 : 0;
+            int n;
+            if (g == 33 || g == 58000) place.Group = ModuleGroup.Parameters;
+            else if ((n = on(0, 150, axes)) > 0) { place.Group = ModuleGroup.Parameters; place.Axis = n; }
+            else if ((n = on(6000, 1000, axes)) > 0) { place.Group = ModuleGroup.Positioning; place.Axis = n; }
+            else if ((n = on(71000, 1000, axes)) > 0) { place.Group = ModuleGroup.Positioning; place.Axis = n; place.Interpolation = true; }
+            else if ((n = on(22000, 400, axes)) > 0) { place.Group = ModuleGroup.BlockStart; place.Axis = n; }
+            else if ((n = Math.Max(on(28400, 100, axes), Math.Max(on(64400, 70, axes), on(65520, 340, axes)))) > 0) { place.Group = ModuleGroup.Servo; place.Axis = n; }
+            else if ((n = Math.Max(on(32800, 10, axes), on(36400, 200, axes))) > 0) { place.Group = ModuleGroup.Synchronous; place.Axis = n; }
+            else if ((n = on(34720, 20, SynchronousEncoderAxes)) > 0) { place.Group = ModuleGroup.Synchronous; place.Encoder = n; }
+            else if (g == 30000) place.Group = ModuleGroup.Memo;
+            else if (g == 54000) place.Group = ModuleGroup.MarkDetection;
+            return place;
+        }
+
+        /// <summary>A group's name, as GX Works3 has it.</summary>
+        public static string GroupTitle(ModuleGroup group)
+        {
+            switch (group)
+            {
+                case ModuleGroup.Positioning: return LanguageManager.GetString("Bak_GrpPositioning", "Positioning data");
+                case ModuleGroup.BlockStart: return LanguageManager.GetString("Bak_GrpBlockStart", "Block start data");
+                case ModuleGroup.Parameters: return LanguageManager.GetString("Bak_GrpParameters", "Parameters");
+                case ModuleGroup.Servo: return LanguageManager.GetString("Bak_GrpServo", "Servo parameters");
+                case ModuleGroup.MarkDetection: return LanguageManager.GetString("Bak_GrpMark", "Mark detection");
+                case ModuleGroup.Synchronous: return LanguageManager.GetString("Bak_GrpSynchronous", "Synchronous control parameters");
+                case ModuleGroup.Memo: return LanguageManager.GetString("Bak_GrpMemo", "PLC CPU memo area");
+                default: return LanguageManager.GetString("Bak_GrpOther", "Other data");
+            }
+        }
+
+        /// <summary>A module's address in another module: "U1\G6000", 2 - "U2\G6000".</summary>
+        public static string InModule(string address, int module)
+        {
+            string p; long g;
+            if (!PlcAddressHelper.TrySplit(address, out p, out g)) return address;
+            return SimpleMotion.Device(module, (int)g);
+        }
+
         /// <summary>A module's synchronous encoder axes (801 - 804 as an input axis: the manual).</summary>
         public const int SynchronousEncoderAxes = 4;
         /// <summary>An axis's synchronous parameters' words: 36400 - 36513 + 200n.</summary>

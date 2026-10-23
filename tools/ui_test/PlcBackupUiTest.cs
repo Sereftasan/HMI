@@ -145,44 +145,116 @@ class PBU {
         var wf = opened.OfType<PlcBackupWriteForm>().FirstOrDefault();
         var list = (DataGridView)Get(wf, "_backups");
         var areas = (DataGridView)Get(wf, "_areas");
+        var items = ((IEnumerable)Get(wf, "_items")).Cast<object>().ToList();
+        Func<object, string> kindOf = it => Get(it, "Kind").ToString();
+        Func<object, DataGridViewRow> rowOf = it => (DataGridViewRow)Get(it, "Row");
+        Func<object, CheckState> tick = it => { var v = rowOf(it).Cells["Write"].Value; return v is CheckState ? (CheckState)v : v is bool && (bool)v ? CheckState.Checked : CheckState.Unchecked; };
+        Func<string, object> item = first => items.First(it => Get(it, "Area") is PlcBackup.Area && ((PlcBackup.Area)Get(it, "Area")).First == first);
+        Func<string, DataGridViewRow> row = first => rowOf(item(first));
+        Func<string, object> group = title => items.First(it => kindOf(it) == "Group" && ((PlcBackupGroup)Get(it, "Group")).Title == title);
+        Func<string, string, string> cell = (first, col) => Convert.ToString(row(first).Cells[col].Value);
         Check("Write: this PLC's backups - the newest chosen, its areas listed, none ticked",
               wf != null && list.Rows.Count == 1 && Convert.ToString(list.Rows[0].Cells["Serial"].Value) == "2SZ0123456" &&
-              Convert.ToString(list.Rows[0].Cells["Description"].Value) == "before the program change" && areas.Rows.Count == b.Areas.Count &&
-              areas.Rows.Cast<DataGridViewRow>().All(r => !Convert.ToBoolean(r.Cells["Write"].Value)));
-        Func<string, DataGridViewRow> row = first => areas.Rows.Cast<DataGridViewRow>().First(r => ((PlcBackup.Area)r.Tag).First == first);
+              Convert.ToString(list.Rows[0].Cells["Description"].Value) == "before the program change" && items.All(it => tick(it) == CheckState.Unchecked));
+        // 23 October: "It could be useful to group the write selection so the user could select them multiple and easier (the attached image show GX Works way for it)"
+        var tops = items.Where(it => Get(it, "Parent") == null).Select(it => Convert.ToString(rowOf(it).Cells["Item"].Value)).ToList();
+        var under = items.Where(it => kindOf(it) == "Group" || kindOf(it) == "Flash").Select(it => kindOf(it) == "Flash" ? "flash" : ((PlcBackupGroup)Get(it, "Group")).Title).ToList();
+        Check("a tree as GX Works3's: the CPU's devices, then the module - its groups in GX Works3's order, its flash ROM last",
+              tops.Count == 2 && tops[0].StartsWith("▼ PLC CPU: devices") && tops[1] == "▼ Simple motion module 1 (4 axes)" &&
+              string.Join(", ", under) == "Positioning data, Block start data, Parameters, Servo parameters, Mark detection, Synchronous control parameters, PLC CPU memo area, flash" &&
+              items.Count(it => kindOf(it) == "Device") == b.Areas.Count(a => !a.IsModule), string.Join(" | ", tops) + " // " + string.Join(", ", under));
+        Check("  the groups with axes have Details; the memo area none", rowOf(group("Positioning data")).Cells["Details"] is DataGridViewButtonCell &&
+              rowOf(group("Synchronous control parameters")).Cells["Details"] is DataGridViewButtonCell && !(rowOf(group("PLC CPU memo area")).Cells["Details"] is DataGridViewButtonCell));
         // 23 October: "write inputs and outputs as well if the selected PLC driver is simulator"
-        Check("  each with its devices in Read (R0 - R32767), Write to empty; the simulator: X and Y written too, said so",
-              Convert.ToString(row("R0").Cells["Read"].Value) == "R0 - R32767" && Convert.ToString(row("R0").Cells["Target"].Value) == "" &&
-              !row("X0").ReadOnly && Convert.ToString(row("X0").Cells["Note"].Value) == "" && !row("SD0").ReadOnly &&
+        Check("  each device with its devices in Read (R0 - R32767), Write to empty; the simulator: X and Y written too, said so",
+              cell("R0", "Read") == "R0 - R32767" && cell("R0", "Target") == "" && !row("X0").ReadOnly && cell("X0", "Note") == "" && !row("SD0").ReadOnly &&
               Tree(wf).OfType<Label>().Any(l => l.Text.Contains("The simulator: every area is written, the inputs and outputs too.")));
         var writeButton = (Button)Get(wf, "_write");
         Check("  nothing ticked: Write off", !writeButton.Enabled);
+
+        // a row with rows under it ticks them all; the rows above follow
+        var module = items.First(it => kindOf(it) == "Module");
+        rowOf(module).Cells["Write"].Value = CheckState.Checked;
+        Check("the module ticked: every group whole, its flash ROM too", items.Where(it => Get(it, "Parent") == module).All(it => tick(it) == CheckState.Checked) &&
+              Convert.ToString(rowOf(group("Positioning data")).Cells["Read"].Value) == "axes 1 - 4, No.1 - 100" &&
+              Convert.ToString(rowOf(group("Parameters")).Cells["Read"].Value) == "common, axes 1 - 4" &&
+              Convert.ToString(rowOf(group("Synchronous control parameters")).Cells["Read"].Value) == "axes 1 - 4, encoder axes 1 - 4" && writeButton.Enabled,
+              Convert.ToString(rowOf(group("Parameters")).Cells["Read"].Value));
+        rowOf(module).Cells["Write"].Value = CheckState.Indeterminate;   // the cell's own next state after Checked
+        Check("  ticked again: all off", items.Where(it => Get(it, "Parent") == module).All(it => tick(it) == CheckState.Unchecked) && tick(module) == CheckState.Unchecked);
+
+        // a group's details: the axes, an axis's positioning data numbers
+        var pos = group("Positioning data");
+        typeof(PlcBackupWriteForm).GetField("ShowDetails", Any).SetValue(null, (Func<PlcBackupDetailsForm, DialogResult>)(f => {
+            f.Show(); Application.DoEvents();
+            ((Button)Tree(f).First(c => c.Name == "detNone")).PerformClick();
+            ((CheckBox)Tree(f).First(c => c.Name == "detAxis2")).Checked = true;
+            ((NumericUpDown)Tree(f).First(c => c.Name == "detFrom2")).Value = 5;
+            ((NumericUpDown)Tree(f).First(c => c.Name == "detTo2")).Value = 7;
+            Call(f, "Take");
+            f.Hide();
+            return DialogResult.OK;
+        }));
+        Call(wf, "Details", pos);
+        List<PlcBackup.WriteRange> wparts;
+        var partsArgs = new object[] { null };
+        typeof(PlcBackupWriteForm).GetMethods(Any).First(m => m.Name == "Parts" && m.GetParameters().Length == 1).Invoke(wf, partsArgs);
+        wparts = (List<PlcBackup.WriteRange>)partsArgs[0];
+        Check("Details: axis 2, No.5 - 7 - its data's words and their interpolation axes, the row partly ticked, the module too",
+              Convert.ToString(rowOf(pos).Cells["Read"].Value) == "axis 2, No.5 - 7" && tick(pos) == CheckState.Indeterminate && tick(module) == CheckState.Indeterminate &&
+              wparts.Count == 2 && wparts.Any(p => p.Target == @"U1\G7040" && p.Count == 30) && wparts.Any(p => p.Target == @"U1\G72040" && p.Count == 30),
+              Convert.ToString(rowOf(pos).Cells["Read"].Value) + " / " + string.Join(", ", wparts.Select(p => p.Target + "+" + p.Count)));
+        rowOf(module).Cells["Target"].Value = "U2";
+        typeof(PlcBackupWriteForm).GetMethods(Any).First(m => m.Name == "Parts" && m.GetParameters().Length == 1).Invoke(wf, partsArgs);
+        wparts = (List<PlcBackup.WriteRange>)partsArgs[0];
+        Check("  the module's Write to U2: into module 2's buffer memory", wparts.All(p => p.Target.StartsWith(@"U2\G")) &&
+              Convert.ToString(rowOf(module).Cells["Note"].Value).Contains("module 2"), string.Join(", ", wparts.Select(p => p.Target)));
+        rowOf(module).Cells["Target"].Value = "X";
+        Check("  a Write to that is no module: said, Write off", Convert.ToString(rowOf(module).Cells["Note"].Value).Contains("U2") && !writeButton.Enabled);
+        rowOf(module).Cells["Target"].Value = "";
+        Call(wf, "SetAll", true);
+        Check("Select all: every row that can be written (the simulator: all)", items.All(it => tick(it) == CheckState.Checked));
+        Call(wf, "SetAll", false);
+        Check("Deselect all: none", items.All(it => tick(it) == CheckState.Unchecked) && !writeButton.Enabled);
+        var cpu = items.First(it => kindOf(it) == "Cpu");
+        Call(wf, "Fold", cpu, false);
+        bool folded = !row("D0").Visible && rowOf(cpu).Visible && Convert.ToString(rowOf(cpu).Cells["Item"].Value).StartsWith("►");
+        Call(wf, "Fold", cpu, true);
+        Check("a top row folds and opens the rows under it", folded && row("D0").Visible);
+
         // R1000 - R1999 into D2500 - D3499
         row("R0").Cells["Read"].Value = "R1000 - R1999";
         row("R0").Cells["Target"].Value = "D2500";
         row("R0").Cells["Write"].Value = true;
-        Check("  R1000 - R1999 to D2500: 1000 devices, the note says where", Convert.ToString(row("R0").Cells["Devices"].Value) == "1,000" &&
-              Convert.ToString(row("R0").Cells["Note"].Value) == "R1000 - R1999 → D2500 - D3499" && writeButton.Enabled,
-              Convert.ToString(row("R0").Cells["Devices"].Value) + " | " + Convert.ToString(row("R0").Cells["Note"].Value));
+        Check("  R1000 - R1999 to D2500: 1000 devices, the note says where; the CPU's row partly ticked", cell("R0", "Devices") == "1,000" &&
+              cell("R0", "Note") == "R1000 - R1999 → D2500 - D3499" && writeButton.Enabled && tick(cpu) == CheckState.Indeterminate,
+              cell("R0", "Devices") + " | " + cell("R0", "Note"));
         row("M0").Cells["Read"].Value = "M100 - M109";
         row("M0").Cells["Target"].Value = "D0";
         row("M0").Cells["Write"].Value = true;
-        Check("  bits to a word device: refused, Write off", Convert.ToString(row("M0").Cells["Note"].Value).Contains("bit devices") && !writeButton.Enabled,
-              Convert.ToString(row("M0").Cells["Note"].Value));
+        Check("  bits to a word device: refused, Write off", cell("M0", "Note").Contains("bit devices") && !writeButton.Enabled, cell("M0", "Note"));
         row("M0").Cells["Target"].Value = "";
         row("D0").Cells["Write"].Value = true;
-        row(@"U1\G0").Cells["Write"].Value = true;
+        typeof(PlcBackupWriteForm).GetField("ShowDetails", Any).SetValue(null, (Func<PlcBackupDetailsForm, DialogResult>)(f => {
+            f.Show(); Application.DoEvents();
+            ((Button)Tree(f).First(c => c.Name == "detNone")).PerformClick();
+            ((CheckBox)Tree(f).First(c => c.Name == "detAxis1")).Checked = true;
+            Call(f, "Take");
+            f.Hide();
+            return DialogResult.OK;
+        }));
+        Call(wf, "Details", group("Parameters"));
         sim.Write("X5", 0);
         row("X0").Cells["Read"].Value = "X0 - X7";
         row("X0").Cells["Write"].Value = true;
-        var flash = (CheckBox)Get(wf, "_flash");
-        Check("  a module's area in the backup: its flash ROM offered", flash.Visible && !flash.Checked);
-        flash.Checked = true;
+        var flashItem = items.First(it => kindOf(it) == "Flash");
+        rowOf(flashItem).Cells["Write"].Value = true;
         said.Clear();
         answer = DialogResult.No;
         Call(wf, "DoWrite");
-        Check("Write asks first - the parts, that the machine should be stopped; No: nothing written", said.Count == 1 &&
-              said[0].Contains("R1000 - R1999 → D2500 - D3499") && said[0].Contains("machine should be stopped") && sim.Read("D2500") == 0, said.FirstOrDefault());
+        Check("Write asks first - the parts, the module's group and flash ROM, that the machine should be stopped; No: nothing written", said.Count == 1 &&
+              said[0].Contains("R1000 - R1999 → D2500 - D3499") && said[0].Contains("Simple motion module 1: parameters - axis 1") &&
+              said[0].Contains("Then the flash ROM of: U1") && said[0].Contains("machine should be stopped") && sim.Read("D2500") == 0, said.FirstOrDefault());
         said.Clear();
         answer = DialogResult.Yes;
         var result = (PlcBackup.WriteResult)Call(wf, "DoWrite");
@@ -206,6 +278,7 @@ class PBU {
         Call(wf, "Choose", usb);
         Check("a file opened (a USB stick's): listed and chosen though another machine's", list.Rows.Count == 2 &&
               ((PlcBackup.Backup)Get(wf, "Shown")).Machine == "Another machine");
+        items = ((IEnumerable)Get(wf, "_items")).Cast<object>().ToList();
         row("D0").Cells["Write"].Value = true;
         said.Clear();
         answer = DialogResult.No;

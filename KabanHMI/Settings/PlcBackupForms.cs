@@ -224,6 +224,12 @@ namespace Kaban.UI.Settings
     /// The backups (this PLC's, or every one; another file opened); a backup's areas, each ticked to
     /// be written - all of it or the devices typed in "Read", to its own devices or to those typed in
     /// "Write to". A module's data written can be kept in its flash ROM at once.
+    /// IN GROUPS (23 October: "It could be useful to group the write selection so the user could select
+    /// them multiple and easier (the attached image show GX Works way for it)"): a tree as GX Works3's
+    /// Select Data to Write - the CPU's devices under one row, each module's data under its own by
+    /// GX Works3's groups (positioning data, block start data, parameters, servo parameters, mark
+    /// detection, synchronous control parameters; the memo area), each with its Details (the axes, an
+    /// axis's positioning data numbers), the module's flash ROM write last. A row ticks all under it.
     /// </summary>
     public sealed class PlcBackupWriteForm : Form
     {
@@ -234,12 +240,35 @@ namespace Kaban.UI.Settings
         private readonly DataGridView _backups = new DataGridView { Name = "bakList" };
         private readonly DataGridView _areas = new DataGridView { Name = "bakAreas" };
         private readonly CheckBox _onlyThis = new CheckBox { Name = "bakOnlyThis", AutoSize = true, Checked = true };
-        private readonly CheckBox _flash = new CheckBox { Name = "bakFlash", AutoSize = true };
         private readonly Button _write;
         private readonly Label _summary = new Label { Name = "bakSummary", AutoSize = true, ForeColor = Color.FromArgb(90, 96, 106) };
         private List<PlcBackup.Backup> _list = new List<PlcBackup.Backup>();
         private PlcBackup.Backup _shown;
         private bool _filling;
+        private readonly List<Item> _items = new List<Item>();
+
+        internal enum ItemKind { Cpu, Device, Module, Group, Other, Flash }
+
+        /// <summary>A row of the tree: what it stands for.</summary>
+        internal sealed class Item
+        {
+            public ItemKind Kind;
+            public int Module;
+            public PlcBackup.Area Area;
+            public PlcBackupGroup Group;
+            public bool Writable = true;
+            public bool Open = true;
+            public string Text = "";
+            /// <summary>A row with rows under it: its state as last shown (a click on it turns all on, or - all on - off).</summary>
+            public CheckState Last;
+            public Item Parent;
+            public readonly List<Item> Children = new List<Item>();
+            public DataGridViewRow Row;
+            public bool IsParent { get { return Kind == ItemKind.Cpu || Kind == ItemKind.Module; } }
+        }
+
+        /// <summary>For the tests: a group's details window answered instead of shown.</summary>
+        internal static Func<PlcBackupDetailsForm, DialogResult> ShowDetails;
 
         private static string T(string key, string en) { return PlcBackupUi.T(key, en); }
 
@@ -285,37 +314,59 @@ namespace Kaban.UI.Settings
                 _backups.Columns.Add(new DataGridViewTextBoxColumn { Name = c[0], HeaderText = c[1], Width = int.Parse(c[2]) });
             _backups.SelectionChanged += (s, e) => { if (!_filling) ShowSelected(); };
 
-            // ---- its areas ----
-            var mid = new Label
+            // ---- its areas: a tree, as GX Works3's Select Data to Write ----
+            var mid = new Panel { Dock = DockStyle.Top, Height = 74 };
+            var help = new Label
             {
-                Dock = DockStyle.Top, Height = 46, Padding = new Padding(10, 8, 10, 0), ForeColor = Color.FromArgb(70, 76, 86),
-                Text = T("Msg_BakAreasHelp", "Tick what is written. Read: all of the area, or the devices typed (R1000 - R1999). " +
-                                             "Write to: empty - the same devices; or where they go (D2500, or D2500 - D3499).") +
+                Dock = DockStyle.Fill, Padding = new Padding(10, 8, 10, 0), ForeColor = Color.FromArgb(70, 76, 86),
+                Text = T("Msg_BakTreeHelp", "Tick what is written - a row ticks everything under it; Details: a group's axes (and positioning data numbers). " +
+                                            "A device's Read: all of it, or the devices typed (R1000 - R1999); Write to: empty - the same devices, or where they go " +
+                                            "(D2500, or D2500 - D3499). A module's Write to: another module (U2).") +
                        (_simulator ? "  " + T("Msg_BakSimulatorAll", "The simulator: every area is written, the inputs and outputs too.") : "")
             };
+            var picks = new FlowLayoutPanel { Dock = DockStyle.Right, Width = 330, Padding = new Padding(0, 6, 8, 0), FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
+            var none = UiStyle.TextButton(T("Btn_BakDeselectAll", "Deselect all"), 0, (s, e) => SetAll(false));
+            var all = UiStyle.TextButton(T("Btn_BakSelectAll", "Select all"), 0, (s, e) => SetAll(true));
+            none.Name = "bakNone"; all.Name = "bakAll";
+            picks.Controls.Add(none);
+            picks.Controls.Add(all);
+            mid.Controls.Add(help);
+            mid.Controls.Add(picks);
             Grid(_areas);
             _areas.Dock = DockStyle.Fill;
             _areas.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Item", HeaderText = T("Col_BakItem", "Data"), Width = 380, ReadOnly = true });
             _areas.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Write", HeaderText = T("Col_BakWrite", "Write"), Width = 56 });
-            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Area", HeaderText = T("Col_BakArea", "Area"), Width = 330, ReadOnly = true });
-            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Read", HeaderText = T("Col_BakRead", "Read"), Width = 170 });
-            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Target", HeaderText = T("Col_BakTarget", "Write to"), Width = 170 });
+            _areas.Columns.Add(new DataGridViewButtonColumn { Name = "Details", HeaderText = T("Col_BakDetails", "Details"), Width = 84 });
+            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Read", HeaderText = T("Col_BakRead", "Read"), Width = 200 });
+            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Target", HeaderText = T("Col_BakTarget", "Write to"), Width = 150 });
             _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Devices", HeaderText = T("Col_BakDevices", "Devices"), Width = 80, ReadOnly = true,
                                                                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight } });
-            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Note", HeaderText = T("Col_BakNote", "Note"), Width = 240, ReadOnly = true });
+            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Note", HeaderText = T("Col_BakNote", "Note"), Width = 260, ReadOnly = true });
             _areas.CurrentCellDirtyStateChanged += (s, e) => { if (_areas.IsCurrentCellDirty && _areas.CurrentCell is DataGridViewCheckBoxCell) _areas.CommitEdit(DataGridViewDataErrorContexts.Commit); };
-            _areas.CellValueChanged += (s, e) => { if (!_filling && e.RowIndex >= 0) Check(_areas.Rows[e.RowIndex]); };
+            _areas.CellValueChanged += (s, e) => { if (!_filling && e.RowIndex >= 0) Changed(_areas.Rows[e.RowIndex], _areas.Columns[e.ColumnIndex].Name); };
+            _areas.CellContentClick += (s, e) =>
+            {
+                if (e.RowIndex < 0 || _areas.Columns[e.ColumnIndex].Name != "Details") return;
+                var item = _areas.Rows[e.RowIndex].Tag as Item;
+                if (item != null && item.Kind == ItemKind.Group && item.Group.HasDetails) Details(item);
+            };
+            _areas.CellClick += (s, e) =>
+            {
+                if (e.RowIndex < 0 || e.ColumnIndex < 0 || _areas.Columns[e.ColumnIndex].Name != "Item") return;
+                var item = _areas.Rows[e.RowIndex].Tag as Item;
+                if (item != null && item.IsParent) Fold(item, !item.Open);
+            };
+            // a tick ignored on a read-only row (the inputs and outputs of a real PLC ...): no sound, no change
+            _areas.DataError += (s, e) => { e.ThrowException = false; };
 
             // ---- writing ----
             var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 52, Padding = new Padding(8, 10, 8, 6), FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
             var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
             _write = UiStyle.TextButton(T("Btn_BakWrite", "Write..."), 110, (s, e) => DoWrite());
             _write.Name = "bakWrite";
-            _flash.Text = T("Chk_BakFlash", "Then write the simple motion modules' flash ROM");
-            _flash.Margin = new Padding(3, 7, 16, 3);
             bottom.Controls.Add(close);
             bottom.Controls.Add(_write);
-            bottom.Controls.Add(_flash);
             bottom.Controls.Add(_summary);
             _summary.Margin = new Padding(3, 7, 16, 3);
             CancelButton = close;
@@ -325,9 +376,6 @@ namespace Kaban.UI.Settings
             Controls.Add(_backups);
             Controls.Add(top);
             Controls.Add(bottom);
-
-            var tips = UiStyle.Tips();
-            UiStyle.SetTip(tips, _flash, T("Tip_BakFlash", "The module keeps what is written until it is switched off - only what its flash ROM holds after that. Not ticked: the Axis Settings page's flash ROM button blinks until it is written."));
             FillList();
         }
 
@@ -389,7 +437,7 @@ namespace Kaban.UI.Settings
             FillList(path);
         }
 
-        /// <summary>The selected backup read whole, its areas listed - none ticked.</summary>
+        /// <summary>The selected backup read whole, its areas listed as a tree - none ticked.</summary>
         private void ShowSelected()
         {
             var row = _backups.SelectedRows.Count > 0 ? _backups.SelectedRows[0] : null;
@@ -399,84 +447,339 @@ namespace Kaban.UI.Settings
             try
             {
                 _areas.Rows.Clear();
-                if (_shown != null)
-                    foreach (var a in _shown.Areas)
-                    {
-                        bool writable = _simulator || a.Writable;
-                        int r = _areas.Rows.Add(false, a.Title, a.Range, "", a.Points.ToString("N0"), writable ? "" : a.WhyNotWritten);
-                        _areas.Rows[r].Tag = a;
-                        if (!writable)
-                        {
-                            _areas.Rows[r].ReadOnly = true;
-                            _areas.Rows[r].DefaultCellStyle.ForeColor = Color.FromArgb(150, 156, 166);
-                        }
-                    }
+                _items.Clear();
+                if (_shown != null) Build(_shown);
             }
             finally { _filling = false; }
-            _flash.Visible = _shown != null && _shown.Areas.Any(a => a.IsModule);
-            _flash.Checked = false;
+            foreach (var item in _items.Where(i => i.Kind == ItemKind.Device)) CheckDevice(item);
             UpdateWrite();
         }
 
-        /// <summary>A row's Read and Write to checked: its device count, or what is wrong, in its note.</summary>
-        private PlcBackup.WriteRange Check(DataGridViewRow row)
+        private static readonly Color Dim = Color.FromArgb(150, 156, 166);
+
+        /// <summary>The tree: the CPU's devices; each module's groups, its other areas, its flash ROM.</summary>
+        private void Build(PlcBackup.Backup b)
         {
-            var a = row.Tag as PlcBackup.Area;
-            if (a == null) return null;
-            int from, count; string error, target;
-            PlcBackup.WriteRange part = null;
-            if (!PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
-                !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
+            var devices = b.Areas.Where(a => !a.IsModule).ToList();
+            if (devices.Count > 0)
             {
-                _filling = true;
-                row.Cells["Note"].Value = error;
-                row.Cells["Note"].Style.ForeColor = Color.FromArgb(190, 40, 30);
-                _filling = false;
+                string cpu = string.IsNullOrEmpty(b.Cpu) ? "" : " (" + b.Cpu + ")";
+                var top = Add(new Item { Kind = ItemKind.Cpu, Text = T("Bak_TreeCpu", "PLC CPU: devices") + cpu }, null);
+                foreach (var a in devices)
+                {
+                    bool writable = _simulator || a.Writable;
+                    var d = Add(new Item { Kind = ItemKind.Device, Area = a, Writable = writable, Text = a.Title }, top);
+                    d.Row.Cells["Read"].Value = a.Range;
+                    d.Row.Cells["Devices"].Value = a.Points.ToString("N0");
+                    if (!writable) d.Row.Cells["Note"].Value = a.WhyNotWritten;
+                }
             }
+            var modules = b.Areas.Where(a => a.IsModule).Select(a => PlcBackup.PlaceOf(a.First)).Where(p => p != null)
+                           .Select(p => p.Module).Distinct().OrderBy(m => m).ToList();
+            foreach (int m in modules)
+            {
+                int axes = b.Modules.Where(x => x.Key == m).Select(x => x.Value).FirstOrDefault();
+                string name = string.Format(T("Bak_TreeModule", "Simple motion module {0}"), m) +
+                              (axes > 0 ? " (" + string.Format(T("Bak_TreeAxes", "{0} axes"), axes) + ")" : "");
+                var mod = Add(new Item { Kind = ItemKind.Module, Module = m, Text = name }, null);
+                mod.Row.Cells["Target"].ReadOnly = false;
+                foreach (var g in PlcBackup.ModuleGroups)
+                {
+                    var group = PlcBackupGroup.For(m, g, b.Areas);
+                    if (group.Areas.Count == 0) continue;
+                    Add(new Item { Kind = ItemKind.Group, Module = m, Group = group, Text = group.Title }, mod, group.HasDetails);
+                }
+                foreach (var a in b.Areas.Where(a => { var p = PlcBackup.PlaceOf(a.First); return p != null && p.Module == m && p.Group == PlcBackup.ModuleGroup.Other; }))
+                {
+                    var o = Add(new Item { Kind = ItemKind.Other, Module = m, Area = a, Text = a.Title }, mod);
+                    o.Row.Cells["Read"].Value = a.Range;
+                    o.Row.Cells["Devices"].Value = a.Points.ToString("N0");
+                }
+                var flash = Add(new Item { Kind = ItemKind.Flash, Module = m, Text = T("Bak_TreeFlash", "Then write the module's flash ROM") }, mod);
+                flash.Row.Cells["Note"].Value = T("Tip_BakFlash", "The module keeps what is written until it is switched off - only what its flash ROM holds after that. Not ticked: the Axis Settings page's flash ROM button blinks until it is written.");
+            }
+            foreach (var item in _items) Show(item);
+        }
+
+        /// <summary>
+        /// A row for the item, under <paramref name="parent"/> (null: a top row); <paramref name="details"/>: a
+        /// Details button. Its cells made as the row is (a cell put in a row afterwards by its column's name was
+        /// inserted there by Mono's grid, not put in place: every cell after it moved a column on).
+        /// </summary>
+        private Item Add(Item item, Item parent, bool details = false)
+        {
+            item.Parent = parent;
+            if (parent != null) parent.Children.Add(item);
+            _items.Add(item);
+            bool three = item.IsParent || item.Kind == ItemKind.Group;
+            var row = new DataGridViewRow();
+            foreach (DataGridViewColumn col in _areas.Columns)
+            {
+                DataGridViewCell c;
+                if (col.Name == "Write") c = new DataGridViewCheckBoxCell { ThreeState = three, Value = three ? (object)CheckState.Unchecked : false };
+                else if (col.Name == "Details" && details) c = new DataGridViewButtonCell { Value = T("Btn_BakDetails", "Details...") };
+                else c = new DataGridViewTextBoxCell { Value = "" };
+                row.Cells.Add(c);
+            }
+            row.Tag = item;
+            row = _areas.Rows[_areas.Rows.Add(row)];   // the grid's own (never a shared row)
+            item.Row = row;
+            row.Cells["Item"].Style.Padding = new Padding(parent == null ? 4 : 26, 0, 4, 0);
+            if (parent == null) row.Cells["Item"].Style.Font = UiStyle.FontVariant(_areas.Font, FontStyle.Bold);
+            foreach (var col in new[] { "Read", "Target" }) row.Cells[col].ReadOnly = true;
+            if (!details) row.Cells["Details"].ReadOnly = true;
+            if (item.Kind == ItemKind.Device) { row.Cells["Read"].ReadOnly = false; row.Cells["Target"].ReadOnly = false; }
+            if (!item.Writable)
+            {
+                row.ReadOnly = true;
+                row.DefaultCellStyle.ForeColor = Dim;
+            }
+            return item;
+        }
+
+        /// <summary>A row's state shown: its tick, its text (a group's: what of it is chosen), a top row's fold.</summary>
+        private void Show(Item item)
+        {
+            bool was = _filling;
+            _filling = true;
+            try
+            {
+                var cells = item.Row.Cells;
+                cells["Item"].Value = (item.IsParent ? (item.Open ? "▼ " : "► ") : "") + item.Text;
+                if (item.Kind == ItemKind.Group)
+                {
+                    var g = item.Group;
+                    cells["Write"].Value = g.State;
+                    cells["Read"].Value = g.Summary();
+                    long words = g.Parts(g.Module).Sum(p => (long)p.Count);
+                    cells["Devices"].Value = words > 0 ? words.ToString("N0") : "";
+                    item.Last = g.State;
+                }
+                else if (item.IsParent)
+                {
+                    var state = StateOf(item);
+                    cells["Write"].Value = state;
+                    item.Last = state;
+                }
+            }
+            finally { _filling = was; }
+            // the tick just clicked is still the cell's edit: shown as the click left it, not as worked out here
+            if (_areas.CurrentCell != null && _areas.CurrentCell.OwningRow == item.Row && _areas.IsCurrentCellInEditMode && IsHandleCreated)
+                BeginInvoke((Action)(() => { if (!IsDisposed && _areas.IsCurrentCellInEditMode) _areas.RefreshEdit(); }));
+        }
+
+        /// <summary>A top row's state: from the rows under it that can be written.</summary>
+        private CheckState StateOf(Item parent)
+        {
+            var states = parent.Children.Where(c => c.Writable).Select(TickOf).ToList();
+            if (states.Count == 0 || states.All(s => s == CheckState.Unchecked)) return CheckState.Unchecked;
+            return states.All(s => s == CheckState.Checked) ? CheckState.Checked : CheckState.Indeterminate;
+        }
+
+        private static CheckState TickOf(Item item)
+        {
+            if (item.Kind == ItemKind.Group) return item.Group.State;
+            var v = item.Row.Cells["Write"].Value;
+            if (v is CheckState) return (CheckState)v;
+            return v is bool && (bool)v ? CheckState.Checked : CheckState.Unchecked;
+        }
+
+        private static bool IsOn(Item item) { return TickOf(item) == CheckState.Checked; }
+
+        /// <summary>A row ticked or untouched, or its texts typed.</summary>
+        private void Changed(DataGridViewRow row, string column)
+        {
+            var item = row.Tag as Item;
+            if (item == null) return;
+            if (column == "Write")
+            {
+                if (item.Kind == ItemKind.Group || item.IsParent)
+                {
+                    // a click on a row with rows under it: all on - or, all on already, all off
+                    bool on = item.Last != CheckState.Checked;
+                    if (item.Kind == ItemKind.Group) item.Group.All(on);
+                    else foreach (var c in item.Children.Where(c => c.Writable)) SetOn(c, on);
+                    Show(item);
+                }
+                if (item.Parent != null) Show(item.Parent);
+            }
+            else if (item.Kind == ItemKind.Device) CheckDevice(item);
+            else if (item.Kind == ItemKind.Module && column == "Target") CheckModule(item);
+            UpdateWrite();
+        }
+
+        private void SetOn(Item item, bool on)
+        {
+            if (item.Kind == ItemKind.Group) item.Group.All(on);
             else
             {
-                part = new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = target };
+                bool was = _filling;
                 _filling = true;
-                row.Cells["Devices"].Value = count.ToString("N0");
-                row.Cells["Note"].Value = string.Equals(target, a.Device(from), StringComparison.OrdinalIgnoreCase) ? "" : part.ToString();
-                row.Cells["Note"].Style.ForeColor = Color.FromArgb(90, 96, 106);
-                _filling = false;
+                try { item.Row.Cells["Write"].Value = on; }
+                finally { _filling = was; }
             }
+            Show(item);
+        }
+
+        /// <summary>Select all, Deselect all: every row that can be written.</summary>
+        internal void SetAll(bool on)
+        {
+            foreach (var item in _items.Where(i => !i.IsParent && i.Writable)) SetOn(item, on);
+            foreach (var item in _items.Where(i => i.IsParent)) Show(item);
             UpdateWrite();
+        }
+
+        /// <summary>A top row folded or opened: the rows under it hidden or shown.</summary>
+        internal void Fold(Item item, bool open)
+        {
+            item.Open = open;
+            _areas.CurrentCell = item.Row.Cells["Item"];
+            foreach (var c in item.Children) c.Row.Visible = open;
+            Show(item);
+        }
+
+        /// <summary>A group's details: its axes, encoder axes, positioning data numbers.</summary>
+        internal void Details(Item item)
+        {
+            using (var f = new PlcBackupDetailsForm(item.Group))
+            {
+                var answer = ShowDetails != null ? ShowDetails(f) : f.ShowDialog(this);
+                if (answer != DialogResult.OK) return;
+                item.Group.TakeFrom(f.Result);
+            }
+            Show(item);
+            Show(item.Parent);
+            UpdateWrite();
+        }
+
+        /// <summary>A device row's Read and Write to checked: its device count, or what is wrong, in its note.</summary>
+        private PlcBackup.WriteRange CheckDevice(Item item)
+        {
+            var a = item.Area;
+            var row = item.Row;
+            int from, count; string error, target;
+            PlcBackup.WriteRange part = null;
+            bool was = _filling;
+            _filling = true;
+            try
+            {
+                if (!item.Writable) return null;
+                if (!PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
+                    !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
+                {
+                    row.Cells["Note"].Value = error;
+                    row.Cells["Note"].Style.ForeColor = Color.FromArgb(190, 40, 30);
+                }
+                else
+                {
+                    part = new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = target };
+                    row.Cells["Devices"].Value = count.ToString("N0");
+                    row.Cells["Note"].Value = string.Equals(target, a.Device(from), StringComparison.OrdinalIgnoreCase) ? "" : part.ToString();
+                    row.Cells["Note"].Style.ForeColor = Color.FromArgb(90, 96, 106);
+                }
+            }
+            finally { _filling = was; }
             return part;
         }
 
-        /// <summary>The ticked rows as parts to write; false when a ticked row is wrong.</summary>
-        internal bool Parts(out List<PlcBackup.WriteRange> parts)
+        /// <summary>A module row's Write to: empty - the same module; "U2" (or 2) - module 2's buffer memory.</summary>
+        private bool TargetOf(int module, out int target)
+        {
+            target = module;
+            var item = _items.FirstOrDefault(i => i.Kind == ItemKind.Module && i.Module == module);
+            string text = item == null ? "" : Convert.ToString(item.Row.Cells["Target"].Value).Trim();
+            if (text.Length == 0) return true;
+            var m = System.Text.RegularExpressions.Regex.Match(text, @"^U?(\d{1,2})(\\G)?$", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            int n;
+            if (!m.Success || !int.TryParse(m.Groups[1].Value, out n) || n < 1 || n > 16) return false;
+            target = n;
+            return true;
+        }
+
+        private void CheckModule(Item item)
+        {
+            int target;
+            bool ok = TargetOf(item.Module, out target);
+            bool was = _filling;
+            _filling = true;
+            try
+            {
+                item.Row.Cells["Note"].Value = !ok ? T("Msg_BakModuleTarget", "Another module: U2 (or 2) - empty: this one.")
+                                             : target != item.Module ? string.Format(T("Msg_BakIntoModule", "written into simple motion module {0}"), target) : "";
+                item.Row.Cells["Note"].Style.ForeColor = ok ? Color.FromArgb(90, 96, 106) : Color.FromArgb(190, 40, 30);
+            }
+            finally { _filling = was; }
+        }
+
+        /// <summary>
+        /// What is ticked, as parts to write; the lines the question shows; the modules whose flash ROM is
+        /// written after. False when a ticked row is wrong.
+        /// </summary>
+        internal bool Parts(out List<PlcBackup.WriteRange> parts, out List<string> lines, out List<int> flash)
         {
             parts = new List<PlcBackup.WriteRange>();
+            lines = new List<string>();
+            flash = new List<int>();
             bool ok = true;
-            foreach (DataGridViewRow row in _areas.Rows)
+            foreach (var item in _items)
             {
-                if (!Convert.ToBoolean(row.Cells["Write"].Value)) continue;
-                var a = row.Tag as PlcBackup.Area;
-                int from, count; string error, target;
-                if (a == null || !PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
-                    !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
-                { ok = false; continue; }
-                parts.Add(new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = target });
+                if (!item.Writable) continue;
+                int target;
+                switch (item.Kind)
+                {
+                    case ItemKind.Device:
+                        if (!IsOn(item)) break;
+                        var part = CheckDevice(item);
+                        if (part == null) { ok = false; break; }
+                        parts.Add(part);
+                        lines.Add(part.ToString());
+                        break;
+                    case ItemKind.Group:
+                        if (item.Group.Chosen == 0) break;
+                        if (!TargetOf(item.Module, out target)) { ok = false; break; }
+                        var ps = item.Group.Parts(target);
+                        parts.AddRange(ps);
+                        lines.Add(string.Format(T("Bak_LineGroup", "Simple motion module {0}: {1} - {2}"), item.Module, item.Group.Title.ToLowerInvariant(), item.Group.Summary()) +
+                                  (target != item.Module ? " → U" + target : ""));
+                        break;
+                    case ItemKind.Other:
+                        if (!IsOn(item)) break;
+                        if (!TargetOf(item.Module, out target)) { ok = false; break; }
+                        var whole = new PlcBackup.WriteRange { Source = item.Area, From = 0, Count = item.Area.Points, Target = PlcBackup.InModule(item.Area.First, target) };
+                        parts.Add(whole);
+                        lines.Add(whole.ToString());
+                        break;
+                    case ItemKind.Flash:
+                        if (!IsOn(item)) break;
+                        if (!TargetOf(item.Module, out target)) { ok = false; break; }
+                        if (!flash.Contains(target)) flash.Add(target);
+                        break;
+                }
             }
+            if (flash.Count > 0)
+                lines.Add(string.Format(T("Bak_LineFlash", "Then the flash ROM of: {0}"), string.Join(", ", flash.Select(m => "U" + m))));
             return ok;
+        }
+
+        internal bool Parts(out List<PlcBackup.WriteRange> parts)
+        {
+            List<string> lines; List<int> flash;
+            return Parts(out parts, out lines, out flash);
         }
 
         private void UpdateWrite()
         {
-            List<PlcBackup.WriteRange> parts;
-            bool ok = Parts(out parts);
-            _write.Enabled = ok && parts.Count > 0 && SecurityManager.HasAccess(Kaban.Core.Enums.SecurityLevel.Admin);
+            List<PlcBackup.WriteRange> parts; List<string> lines; List<int> flash;
+            bool ok = Parts(out parts, out lines, out flash);
+            _write.Enabled = ok && (parts.Count > 0 || flash.Count > 0) && SecurityManager.HasAccess(Kaban.Core.Enums.SecurityLevel.Admin);
             _summary.Text = parts.Count == 0 ? "" : string.Format(T("Lbl_BakSummary", "{0} ticked, {1} devices"), parts.Count, parts.Sum(p => (long)p.Count).ToString("N0"));
         }
 
         /// <summary>The parts ticked written, after a question (and the modules' flash ROM, when ticked).</summary>
         internal PlcBackup.WriteResult DoWrite()
         {
-            List<PlcBackup.WriteRange> parts;
-            if (_shown == null || !Parts(out parts) || parts.Count == 0) return null;
+            List<PlcBackup.WriteRange> parts; List<string> lines; List<int> flash;
+            if (_shown == null || !Parts(out parts, out lines, out flash) || (parts.Count == 0 && flash.Count == 0)) return null;
             var driver = PlcManager.Instance.GetDriverForWrite(_endpoint.StationId);
             var block = driver as IPlcBlockAccess;
             if (driver == null || block == null || !driver.IsConnected)
@@ -487,36 +790,39 @@ namespace Kaban.UI.Settings
             string from = _shown.Date.ToString("yyyy-MM-dd HH:mm") + " - " + (_shown.Machine + " " + _shown.Plc).Trim();
             string question = string.Format(T("Msg_BakWriteAsk", "Write {0} part(s), {1} devices, of the backup of {2} into {3}?"),
                                             parts.Count, parts.Sum(p => (long)p.Count).ToString("N0"), from, PlcEndpointNaming.Caption(_endpoint)) +
-                              "\r\n\r\n" + string.Join("\r\n", parts.Take(12).Select(p => "  " + p)) + (parts.Count > 12 ? "\r\n  ..." : "") +
+                              "\r\n\r\n" + string.Join("\r\n", lines.Take(16).Select(l => "  " + l)) + (lines.Count > 16 ? "\r\n  ..." : "") +
                               "\r\n\r\n" + T("Msg_BakWriteWarn", "The PLC's values are overwritten at once - the machine should be stopped.");
             if (_shown.Machine != _machine || _shown.Plc != _plc)
                 question += "\r\n\r\n" + string.Format(T("Msg_BakOtherPlc", "This backup is of another PLC ({0}) - not of {1}."),
                                                        (_shown.Machine + " " + _shown.Plc).Trim(), (_machine + " " + _plc).Trim());
             if (PlcBackupUi.Say(this, question, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return null;
 
-            string source = string.Format("PLC Connection: the backup of {0} written", from);
-            var link = new PlcBackup.Link(driver, block);
-            var result = WorkForm.Run(this, Text, T("Msg_BakWritingStart", "Writing..."), p =>
+            var result = new PlcBackup.WriteResult();
+            if (parts.Count > 0)
             {
-                using (WriteSource.For(source))
-                    return PlcBackup.Write(link, parts, (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; });
-            }, cancellable: true);
-            AuditLogger.Log(string.Format("PLC data written (station {0}) from {1}: {2} devices in {3} parts{4}{5}", _endpoint.StationId, _shown.Path,
-                                          result.Points, parts.Count, result.Cancelled ? " - cancelled" : "",
-                                          result.Failed.Count > 0 ? " - failed: " + string.Join(", ", result.Failed) : ""));
-            string text = string.Format(T("Msg_BakWritten", "{0} devices written."), result.Points.ToString("N0"));
-            if (result.Cancelled) text += "\r\n" + T("Msg_BakWriteCancelled", "Cancelled - the parts after it were not written.");
-            if (result.LinkLost) text += "\r\n" + T("Msg_BakWriteLinkLost", "The connection to the PLC was lost and did not come back - the parts after it were not written.");
-            if (result.Failed.Count > 0) text += "\r\n\r\n" + T("Msg_BakWriteFailed", "The PLC refused:") + "\r\n" + string.Join("\r\n", result.Failed);
-            PlcBackupUi.Say(this, text, MessageBoxButtons.OK, result.Ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+                string source = string.Format("PLC Connection: the backup of {0} written", from);
+                var link = new PlcBackup.Link(driver, block);
+                result = WorkForm.Run(this, Text, T("Msg_BakWritingStart", "Writing..."), p =>
+                {
+                    using (WriteSource.For(source))
+                        return PlcBackup.Write(link, parts, (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; });
+                }, cancellable: true);
+                AuditLogger.Log(string.Format("PLC data written (station {0}) from {1}: {2} devices in {3} parts{4}{5}{6}", _endpoint.StationId, _shown.Path,
+                                              result.Points, parts.Count, result.Cancelled ? " - cancelled" : "", result.LinkLost ? " - the connection was lost" : "",
+                                              result.Failed.Count > 0 ? " - failed: " + string.Join(", ", result.Failed) : ""));
+                string text = string.Format(T("Msg_BakWritten", "{0} devices written."), result.Points.ToString("N0"));
+                if (result.Cancelled) text += "\r\n" + T("Msg_BakWriteCancelled", "Cancelled - the parts after it were not written.");
+                if (result.LinkLost) text += "\r\n" + T("Msg_BakWriteLinkLost", "The connection to the PLC was lost and did not come back - the parts after it were not written.");
+                if (result.Failed.Count > 0) text += "\r\n\r\n" + T("Msg_BakWriteFailed", "The PLC refused:") + "\r\n" + string.Join("\r\n", result.Failed);
+                PlcBackupUi.Say(this, text, MessageBoxButtons.OK, result.Ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+            }
 
             // a module's data is gone at power off unless its flash ROM holds it
             // (23 October) not written now: the module counts as changed - the Axis Settings page's button blinks
             foreach (var module in parts.Where(p => p.Source.IsModule).Select(p => ModuleOf(p.Target)).Where(m => m > 0).Distinct())
-            {
                 MotionFlash.MarkChanged(_endpoint.StationId, module, string.Format(T("Msg_BakModuleChanged", "the backup of {0} written into it"), from));
-                if (_flash.Visible && _flash.Checked && result.Ok) MotionFlash.Write(this, _endpoint.StationId, module);
-            }
+            if (result.Ok)
+                foreach (var module in flash) MotionFlash.Write(this, _endpoint.StationId, module);
             return result;
         }
 
