@@ -317,6 +317,13 @@ namespace Kaban.UI.Forms
             /// <summary>A background read is outstanding (real stations only).</summary>
             public volatile bool ReadInFlight;
 
+            /// <summary>
+            /// A real controller's devices it did not answer, and when (23 October): left out of the batch for a
+            /// while, so the others are read in one call again - one such device failed the whole batch, and
+            /// every row showed "-".
+            /// </summary>
+            public readonly Dictionary<string, DateTime> Refused = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+
             public int Station { get { return Endpoint != null ? Endpoint.StationId : 0; } }
 
             /// <summary>
@@ -3090,6 +3097,15 @@ namespace Kaban.UI.Forms
             mon.Values.Clear();
             foreach (System.Collections.DictionaryEntry kv in dump)
                 mon.Values[Convert.ToString(kv.Key)] = Convert.ToInt32(kv.Value);
+            // EVERY LISTED DEVICE AS THE SIMULATOR ANSWERS IT (23 October: "PLC Monitor doesn't show the values for
+            // the simulator"): its memory holds only the devices written to it since the start - one never written
+            // reads 0, a moving one (the bench's axes) its position now; both showed "-", a structure's members too.
+            foreach (var s in mon.Sheets) { EnsureElements(s); EnsureElements(s.Tables); }
+            foreach (var w in mon.Sheets.SelectMany(s => s.AllRows).Where(r => r.IsDevice && !r.IsGroup).SelectMany(WordsOf).Concat(FindWords(mon)).ToList())
+            {
+                int v;
+                if (!mon.Values.ContainsKey(w) && driver.TryRead(w, out v)) mon.Values[w] = v;
+            }
             // The Modified column. A device the simulator has never held reads 0
             // there: seen as 0, so the first write to it is a change.
             var now = DateTime.Now;
@@ -3137,7 +3153,10 @@ namespace Kaban.UI.Forms
                     addresses.AddRange(WordsOf(r));      // a double word, a float or a string: all its words (the tables' too)
             }
             addresses.AddRange(FindWords(mon));          // and what Find lists
-            var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+            // a device the controller did not answer: asked again after a while, not in every batch
+            var since = DateTime.Now.AddSeconds(-RefusedRetrySeconds);
+            foreach (var gone in mon.Refused.Where(kv => kv.Value < since).Select(kv => kv.Key).ToList()) mon.Refused.Remove(gone);
+            var batch = addresses.Distinct(StringComparer.OrdinalIgnoreCase).Where(a => !mon.Refused.ContainsKey(a)).ToArray();
             if (batch.Length == 0) return;
 
             mon.ReadInFlight = true;
@@ -3145,12 +3164,32 @@ namespace Kaban.UI.Forms
             {
                 int[] values = null;
                 bool ok = false;
+                var refused = new List<string>();
                 var started = DateTime.Now;
                 try { ok = driver.TryReadMulti(batch, out values); }
                 catch (Exception ex) { AuditLogger.Log("monitor read failed: " + ex.Message); }
+                // ONE DEVICE THE CONTROLLER DOES NOT ANSWER failed the whole batch, and every row showed "-"
+                // (23 October): then each is asked on its own - the others' values kept, that one left out a while
+                if (!ok && driver.IsConnected)
+                {
+                    var one = new int[batch.Length];
+                    bool any = false;
+                    for (int i = 0; i < batch.Length; i++)
+                    {
+                        int v;
+                        bool got;
+                        try { got = driver.TryRead(batch[i], out v); } catch { got = false; v = 0; }
+                        if (got) { one[i] = v; any = true; } else refused.Add(batch[i]);
+                        if (!driver.IsConnected) { any = false; break; }
+                    }
+                    if (any) { values = one; ok = true; }
+                }
                 // The Modified column: when each device changed, and whether the HMI did it.
                 if (ok && values != null && values.Length == batch.Length)
-                    DeviceHistory.Observe(mon.Station, batch, values, started, DateTime.Now);
+                {
+                    var known = Enumerable.Range(0, batch.Length).Where(i => !refused.Contains(batch[i])).ToList();
+                    DeviceHistory.Observe(mon.Station, known.Select(i => batch[i]).ToList(), known.Select(i => values[i]).ToList(), started, DateTime.Now);
+                }
 
                 try
                 {
@@ -3158,7 +3197,11 @@ namespace Kaban.UI.Forms
                     BeginInvoke((MethodInvoker)delegate
                     {
                         if (ok && values != null && values.Length == batch.Length)
-                            for (int i = 0; i < batch.Length; i++) mon.Values[batch[i]] = values[i];
+                            for (int i = 0; i < batch.Length; i++)
+                            {
+                                if (refused.Contains(batch[i])) { mon.Values.Remove(batch[i]); mon.Refused[batch[i]] = DateTime.Now; }
+                                else mon.Values[batch[i]] = values[i];
+                            }
                         mon.ReadInFlight = false;
                     });
                 }
@@ -3166,6 +3209,9 @@ namespace Kaban.UI.Forms
                 catch (InvalidOperationException) { mon.ReadInFlight = false; } // handle gone mid-read
             });
         }
+
+        /// <summary>How long a device the controller did not answer stays out of the batch.</summary>
+        internal const int RefusedRetrySeconds = 20;
 
         private static readonly Color ColLabelKnown = Color.FromArgb(35, 40, 48);
         private static readonly Color ColLabelUnknown = Color.FromArgb(150, 150, 150);
