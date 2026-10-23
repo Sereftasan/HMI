@@ -228,6 +228,9 @@
     <Compile Include="Settings\PlcBackupSelection.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings\TranslationFlagForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Settings\TranslationsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -326,6 +329,7 @@
     </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
+    <Compile Include="Helpers\LanguageFlags.cs" />
     <Compile Include="Screens\NotesFindForm.cs">
       <SubType>Form</SubType>
     </Compile>

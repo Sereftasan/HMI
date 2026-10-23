@@ -1039,6 +1039,10 @@ namespace Kaban.UI.Forms
             _btnLang.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
             // the flag of the language in force (a sign-in may bring the user's own)
             LanguageManager.LanguageChanged += (s, e) => { if (_btnLang != null && !_btnLang.IsDisposed) _btnLang.Invalidate(); };
+            // a flag made for a language (HMI Settings > Translation): shown at once
+            EventHandler flagMade = (s, e) => { if (_btnLang != null && !_btnLang.IsDisposed) _btnLang.Invalidate(); };
+            Helpers.LanguageFlags.Changed += flagMade;
+            FormClosed += (s, e) => Helpers.LanguageFlags.Changed -= flagMade;
             _btnLang.Paint += (s, e) =>
             {
                 // Sizes at factor 1, drawn at the magnifying factor (UiScale.Px).
@@ -2331,8 +2335,9 @@ namespace Kaban.UI.Forms
         {
             // Real artwork when we have it (the flags shipped with the alarm pack,
             // plus the two exact tricolours); the painted fallback only runs for a
-            // language with no image yet.
-            var art = FlagArt(code);
+            // language with no image yet. 23 October: a flag made for the language on
+            // the panel first (HMI Settings > Translation, LanguageFlags).
+            var art = Helpers.LanguageFlags.Picture(code) ?? FlagArt(code);
             if (art != null)
             {
                 var old = g.InterpolationMode;
@@ -2352,7 +2357,10 @@ namespace Kaban.UI.Forms
                 using (var bg = Graphics.FromImage(bmp))
                 {
                     bg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    DrawFlagCore(bg, new Rectangle(0, 0, bmp.Width, bmp.Height), code);
+                    // a language added since: its country's flag when the language says which (PL, SV, JA ...)
+                    var country = Helpers.LanguageFlags.CountryOfLanguage(code);
+                    if (country != null) country.Draw(bg, new RectangleF(0, 0, bmp.Width, bmp.Height));
+                    else DrawFlagCore(bg, new Rectangle(0, 0, bmp.Width, bmp.Height), code);
                 }
                 var old = g.InterpolationMode;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;

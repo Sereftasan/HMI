@@ -41,7 +41,7 @@ namespace Kaban.UI.Settings
         private readonly ToolTip _tips = UiStyle.Tips();
         private readonly Timer _typing = new Timer { Interval = 300 };
         private readonly DirtyTracker _dirty = new DirtyTracker();
-        private readonly Button _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind;
+        private readonly Button _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnFlag, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind;
         /// <summary>The row asked for from elsewhere (the notes page): marked until another is chosen.</summary>
         private string _marked;
 
@@ -132,6 +132,15 @@ namespace Kaban.UI.Settings
             // 22 October: "copy any language column to paste to any column's missing cells"
             _btnCopyLang = UiStyle.ToolButton(E(0x1F4CB), T("Tip_TrnCopyLang", "Copy a language's texts into the empty cells of other languages (typed until Save)"), _tips,
                                               (s, e) => CopyLanguages());
+            // 23 October: "a language emoji addition tool so we can add flags to the new added languages"
+            _btnFlag = UiStyle.IconButton((g, r, hot) =>
+            {
+                var flag = new Rectangle(r.Left + (r.Width - 24) / 2, r.Top + (r.Height - 16) / 2, 24, 16);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                Kaban.UI.Forms.MainForm.DrawFlag(g, flag, LanguageManager.CurrentLanguage);
+            }, "Flag", T("Tip_TrnFlag", "A language's flag: a country's, stripes or a cross, or a picture - for a language added here, or another one"), _tips,
+            (s, e) => TranslationFlagForm.Run(FindForm() ?? (IWin32Window)this, _langs, LanguageManager.CurrentLanguage));
+            _btnFlag.Name = "trnFlag";
             // the bin's usual key (Delete) empties a cell of the table here, it does not delete a language
             Kaban.UI.Helpers.Shortcuts.Set(_btnDelLang, Keys.None, _tips, T("Tip_TrnDelLang", "Delete a language (not English)"));
             _btnHistory = UiStyle.ToolButton(E(0x1F552), T("Tip_TrnHistory", "The edit history: every text changed here - who, when, before and after"), _tips,
@@ -156,7 +165,7 @@ namespace Kaban.UI.Settings
                                            T("Tip_TrnFind", "Where is it used? The pages, the menu, the alarms and the program's lines using the selected row's key"));
             _dirty.Guard(_btnSave);
             UpdateUndoButtons();
-            foreach (var b in new[] { _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind })
+            foreach (var b in new[] { _btnSave, _btnUndo, _btnRedo, _btnAddLang, _btnDelLang, _btnCopyLang, _btnFlag, _btnHistory, _btnExport, _btnAi, _btnImport, _btnFind })
             {
                 b.Margin = new Padding(2, 1, 2, 1);
                 bar.Controls.Add(b);
@@ -636,9 +645,13 @@ namespace Kaban.UI.Settings
             TranslationEdits.AddLanguage(code, null, string.IsNullOrWhiteSpace(name) ? TranslationLanguageForm.NameFor(code) : name);
             RefreshLanguages();
             int n = string.IsNullOrEmpty(copyFrom) ? 0 : CopyLanguage(copyFrom, new[] { code }, false);
-            SetStatus(n > 0
+            var country = LanguageFlags.CountryOfLanguage(code);
+            string flag = country != null && LanguageFlags.Picture(code) == null
+                ? "  " + string.Format(T("Msg_TrnLangFlagCountry", "Its flag: {0}'s - another one with the flag button."), country.Name)
+                : LanguageFlags.Picture(code) == null ? "  " + T("Msg_TrnLangFlagNone", "Its flag: none yet - make one with the flag button.") : "";
+            SetStatus((n > 0
                 ? string.Format(T("Msg_TrnLangAddedCopied", "{0} added: {1} text(s) of {2} copied into it - typed (orange) until Save writes them into the files."), code, n, copyFrom)
-                : string.Format(T("Msg_TrnLangAdded", "{0} added: its texts are English until typed - the language list offers it."), code), false);
+                : string.Format(T("Msg_TrnLangAdded", "{0} added: its texts are English until typed - the language list offers it."), code)) + flag, false);
         }
 
         /// <summary>The keys with a text in a language (as the cells show them).</summary>
