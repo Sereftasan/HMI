@@ -179,7 +179,7 @@ namespace Kaban.Core.Helpers
         /// <summary>The bit devices of a MELSEC CPU (the rest are words): their block reads give 16 to a word.</summary>
         private static readonly HashSet<string> BitDevices = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "X", "Y", "M", "L", "B", "F", "SB", "S", "V", "SM", "TS", "TC", "STS", "STC", "CS", "CC", "LCS", "LCC", "DX", "DY"
+            "X", "Y", "M", "L", "B", "F", "SB", "S", "V", "SM", "TS", "TC", "STS", "STC", "SS", "SC", "CS", "CC", "LCS", "LCC", "DX", "DY"
         };
 
         /// <summary>True for a bit device ("M100", "X17"); false for a word one or a module's buffer memory.</summary>
@@ -238,7 +238,7 @@ namespace Kaban.Core.Helpers
         /// <summary>A MELSEC CPU's device letters, the longest first.</summary>
         private static readonly string[] Prefixes =
         {
-            "STN", "STS", "STC", "LCN", "LCS", "LCC", "SB", "SW", "SM", "SD", "TN", "TS", "TC", "CN", "CS", "CC", "DX", "DY", "ZR", "LZ",
+            "STN", "STS", "STC", "LCN", "LCS", "LCC", "SB", "SW", "SM", "SD", "SS", "SC", "SN", "TN", "TS", "TC", "CN", "CS", "CC", "DX", "DY", "ZR", "LZ",
             "X", "Y", "M", "L", "B", "F", "S", "V", "D", "W", "R", "Z"
         };
 

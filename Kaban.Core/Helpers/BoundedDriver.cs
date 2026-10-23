@@ -21,12 +21,14 @@ namespace Kaban.Core.Helpers
     /// is not queued behind; a read that stops answering gives up in a second and
     /// marks the link down. Same rules as the MX Component driver's own thread.
     /// </summary>
-    public sealed class BoundedDriver : IPlcDriver, INonBlockingDriver, IDisposable
+    public sealed class BoundedDriver : IPlcDriver, INonBlockingDriver, IPlcBlockAccess, IDisposable
     {
         private readonly IPlcDriver _inner;
         private readonly Thread _thread;
         private readonly BlockingCollection<Action> _queue = new BlockingCollection<Action>();
         private int _busy;
+        /// <summary>Callers waiting for the thread - a bulk call (a block) lets them go first.</summary>
+        private int _waiting;
         private volatile bool _connected, _healthy;
 
         /// <summary>How long the UI waits for a connect: a PLC on the LAN answers well inside it.</summary>
@@ -114,6 +116,62 @@ namespace Kaban.Core.Helpers
             return rc;
         }
 
+        // ---- A RUN OF DEVICES (23 October: the PLC Connection page's Read and Write) ----------------------
+        //
+        // On the driver's own thread in ONE turn: its controller's block call when it has one, else device
+        // by device (PlcBlocks) right there - and the turn is taken politely: while anyone else waits for
+        // the thread, a block waits. Back to back, the device-by-device batches used to go through the
+        // slot one at a time and kept the scanner and the connection beat out until they gave up.
+
+        /// <summary>How long a block waits for its turn and its answer (device by device it is many round trips).</summary>
+        public const int BlockWaitMs = 10000;
+
+        public bool RefusesOutOfRange
+        {
+            get { var b = _inner as IPlcBlockAccess; return b != null && b.RefusesOutOfRange; }
+        }
+
+        public bool TryReadBlock(string first, int count, out short[] values)
+        {
+            values = null;
+            if (!_connected) return false;
+            Tuple<bool, short[]> r;
+            bool started;
+            if (!Run(() =>
+                {
+                    short[] v;
+                    var b = _inner as IPlcBlockAccess;
+                    bool ok = b != null ? b.TryReadBlock(first, count, out v) : PlcBlocks.ReadByDevice(_inner, first, count, out v);
+                    Refresh();
+                    return Tuple.Create(ok, v);
+                }, BlockWaitMs, true, out r, out started))
+            {
+                if (started) Stalled();
+                return false;
+            }
+            values = r.Item2;
+            return r.Item1;
+        }
+
+        public int WriteBlock(string first, short[] values)
+        {
+            if (!_connected) return -1;
+            int rc;
+            bool started;
+            if (!Run(() =>
+                {
+                    var b = _inner as IPlcBlockAccess;
+                    int x = b != null ? b.WriteBlock(first, values) : PlcBlocks.WriteByDevice(_inner, first, values);
+                    Refresh();
+                    return x;
+                }, BlockWaitMs, true, out rc, out started))
+            {
+                if (started) Stalled();
+                return -1;
+            }
+            return rc;
+        }
+
         public void Dispose()
         {
             _queue.CompleteAdding();
@@ -134,17 +192,34 @@ namespace Kaban.Core.Helpers
 
         private bool Run<T>(Func<T> work, int timeoutMs, out T result)
         {
+            bool started;
+            return Run(work, timeoutMs, false, out result, out started);
+        }
+
+        /// <param name="polite">A bulk call: it waits while anyone else is waiting for the thread.</param>
+        /// <param name="started">False when it never had its turn within the time: busy, not dead.</param>
+        private bool Run<T>(Func<T> work, int timeoutMs, bool polite, out T result, out bool started)
+        {
             result = default(T);
-            if (Thread.CurrentThread == _thread) { result = work(); return true; }
+            started = false;
+            if (Thread.CurrentThread == _thread) { started = true; result = work(); return true; }
 
             // Wait for the slot within the same deadline - a normal call takes
             // milliseconds; refusing it would fail good reads.
             int deadline = Environment.TickCount + timeoutMs;
-            while (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
+            bool counted = false;
+            try
             {
-                if (Environment.TickCount - deadline >= 0) return false;
-                Thread.Sleep(1);
+                while (true)
+                {
+                    if (!(polite && Volatile.Read(ref _waiting) > 0) && Interlocked.CompareExchange(ref _busy, 1, 0) == 0) break;
+                    if (!polite && !counted) { Interlocked.Increment(ref _waiting); counted = true; }
+                    if (Environment.TickCount - deadline >= 0) return false;
+                    Thread.Sleep(1);
+                }
             }
+            finally { if (counted) Interlocked.Decrement(ref _waiting); }
+            started = true;
 
             // ONE KERNEL EVENT PER CALL, and it used to be left for the finalizer:
             // at a 100 ms scan plus the 1 s beat that is thousands of undisposed

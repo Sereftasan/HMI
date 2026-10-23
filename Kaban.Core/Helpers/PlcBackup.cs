@@ -55,12 +55,17 @@ namespace Kaban.Core.Helpers
             /// <summary>2 for a 32-bit device (LCN, LZ): two words a device, the low one first.</summary>
             public int WordsPerPoint = 1;
             public string TitleKey = "", Title = "";
+            /// <summary>
+            /// Other names of the device, tried when the CPU does not answer the first (23 October): MX Component's
+            /// list names the retentive timers SS, SC, SN where GX Works3 says STS, STC, STN.
+            /// </summary>
+            public string[] Aliases = new string[0];
         }
 
-        private static DeviceKind K(string prefix, bool bits, int dflt, int max, bool writable, string title, int wordsPerPoint = 1)
+        private static DeviceKind K(string prefix, bool bits, int dflt, int max, bool writable, string title, int wordsPerPoint = 1, params string[] aliases)
         {
             return new DeviceKind { Prefix = prefix, Bits = bits, Default = dflt, Max = max, Writable = writable, TitleKey = "Bak_Dev" + prefix,
-                                    Title = title, WordsPerPoint = wordsPerPoint };
+                                    Title = title, WordsPerPoint = wordsPerPoint, Aliases = aliases ?? new string[0] };
         }
 
         /// <summary>
@@ -83,9 +88,9 @@ namespace Kaban.Core.Helpers
             K("TS", true, 512, 1024, false, "Timers, contacts (T)"),
             K("TC", true, 512, 1024, false, "Timers, coils (T)"),
             K("TN", false, 512, 1024, true, "Timers, current values (T)"),
-            K("STS", true, 16, 1024, false, "Retentive timers, contacts (ST)"),
-            K("STC", true, 16, 1024, false, "Retentive timers, coils (ST)"),
-            K("STN", false, 16, 1024, true, "Retentive timers, current values (ST)"),
+            K("STS", true, 16, 1024, false, "Retentive timers, contacts (ST)", 1, "SS"),
+            K("STC", true, 16, 1024, false, "Retentive timers, coils (ST)", 1, "SC"),
+            K("STN", false, 16, 1024, true, "Retentive timers, current values (ST)", 1, "SN"),
             K("CS", true, 256, 1024, false, "Counters, contacts (C)"),
             K("CC", true, 256, 1024, false, "Counters, coils (C)"),
             K("CN", false, 256, 1024, true, "Counters, current values (C)"),
@@ -102,10 +107,11 @@ namespace Kaban.Core.Helpers
             K("SD", false, 12000, 12000, false, "Special registers (SD)")
         }.AsReadOnly();
 
-        /// <summary>The kind of a device's letters ("D"), or null (a module's buffer memory, a device not read).</summary>
+        /// <summary>The kind of a device's letters ("D", or another name of it: "SN"), or null (a module's buffer memory, a device not read).</summary>
         public static DeviceKind KindOf(string prefix)
         {
-            return Fx5.FirstOrDefault(k => string.Equals(k.Prefix, prefix, StringComparison.OrdinalIgnoreCase));
+            return Fx5.FirstOrDefault(k => string.Equals(k.Prefix, prefix, StringComparison.OrdinalIgnoreCase) ||
+                                           k.Aliases.Any(a => string.Equals(a, prefix, StringComparison.OrdinalIgnoreCase)));
         }
 
         // ---- what a backup holds ------------------------------------------------------------------------------
@@ -214,42 +220,185 @@ namespace Kaban.Core.Helpers
         public const int Chunk = 960;
 
         /// <summary>
-        /// The CPU's devices to read, each as far as the CPU has it: asked device by device when the
-        /// driver's controller refuses a device beyond its range (the last device present found by
-        /// halving), else GX Works3's defaults. A bit device's count is whole words (16).
+        /// THE CONNECTION A READ OR A WRITE GOES THROUGH (23 October). Its block calls, and what a failed one
+        /// means: made while the link is up, the controller's answer (a device it does not have); made while
+        /// the link is down, nothing - the link is waited for (asked to connect again, up to
+        /// <see cref="ReconnectWaitMs"/>) and the call made again. Not back in time: <see cref="Lost"/>, and
+        /// the work stops. The first backup made on GX Simulator3 held none of the CPU's devices: the link had
+        /// gone down while they were read (the reads had kept the screen's own from the driver's thread - see
+        /// StaWorker.TryRunPolite), and every one of them was taken for refused.
         /// </summary>
-        public static List<Area> PlanDevices(IPlcDriver driver, IPlcBlockAccess block)
+        public sealed class Link
+        {
+            public readonly IPlcDriver Driver;
+            public readonly IPlcBlockAccess Block;
+            /// <summary>How long a lost link is waited for.</summary>
+            public int ReconnectWaitMs = 15000;
+            /// <summary>The link went down and did not come back in time.</summary>
+            public bool Lost { get; private set; }
+
+            public Link(IPlcDriver driver, IPlcBlockAccess block)
+            {
+                Driver = driver;
+                Block = block ?? driver as IPlcBlockAccess;
+            }
+
+            public bool RefusesOutOfRange { get { return Block != null && Block.RefusesOutOfRange; } }
+
+            public bool Connected
+            {
+                get { try { return Driver != null && Driver.IsConnected; } catch { return false; } }
+            }
+
+            /// <summary>
+            /// <paramref name="count"/> words from <paramref name="first"/>. Refused while connected: asked once more
+            /// after a moment (a block waits its turn behind the screen's reads, and can miss it) - unless
+            /// <paramref name="once"/> (a size asked: refusals are expected).
+            /// </summary>
+            public bool TryRead(string first, int count, out short[] values, bool once = false)
+            {
+                values = null;
+                if (Block == null) return false;
+                for (int attempt = 0; attempt < 6 && !Lost; attempt++)
+                {
+                    short[] got;
+                    bool ok;
+                    try { ok = Block.TryReadBlock(first, count, out got); } catch { ok = false; got = null; }
+                    if (ok && got != null && got.Length == count) { values = got; return true; }
+                    if (Connected)
+                    {
+                        if (once || attempt > 0) return false;
+                        System.Threading.Thread.Sleep(100);
+                        continue;
+                    }
+                    if (!WaitForLink()) return false;
+                }
+                return false;
+            }
+
+            /// <summary>Words written from <paramref name="first"/>: 0, or the refusal; a link lost meanwhile is waited for and the words written again.</summary>
+            public int Write(string first, short[] values)
+            {
+                int rc = -1;
+                if (Block == null) return rc;
+                for (int attempt = 0; attempt < 4 && !Lost; attempt++)
+                {
+                    try { rc = Block.WriteBlock(first, values); } catch { rc = -1; }
+                    if (rc == 0 || Connected) return rc;
+                    if (!WaitForLink()) return rc;
+                }
+                return rc;
+            }
+
+            /// <summary>One device written (a bit after a bit area's last whole word), as <see cref="Write(string, short[])"/>.</summary>
+            public int WriteOne(string device, int value)
+            {
+                int rc = -1;
+                for (int attempt = 0; attempt < 4 && !Lost; attempt++)
+                {
+                    try { rc = Driver.Write(device, value); } catch { rc = -1; }
+                    if (rc == 0 || Connected) return rc;
+                    if (!WaitForLink()) return rc;
+                }
+                return rc;
+            }
+
+            /// <summary>Waits for the link (asking it to connect); false - and <see cref="Lost"/> - when it is not back in time.</summary>
+            public bool WaitForLink()
+            {
+                int deadline = Environment.TickCount + ReconnectWaitMs;
+                while (!Connected)
+                {
+                    if (Environment.TickCount - deadline >= 0) { Lost = true; return false; }
+                    try { Driver.Connect(); } catch { }
+                    if (Connected) break;
+                    System.Threading.Thread.Sleep(200);
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// The CPU's devices to read, each as far as the CPU has it: asked with block calls when the driver's
+        /// controller refuses a device beyond its range, else GX Works3's defaults. A bit device's count is whole
+        /// words (16). A device the CPU does not answer at all is named in <paramref name="notAnswered"/> (it was
+        /// left out without a word). Null: cancelled, or the link lost (<see cref="Link.Lost"/>).
+        /// </summary>
+        public static List<Area> PlanDevices(Link link, List<string> notAnswered, Progress progress = null)
         {
             var list = new List<Area>();
-            bool ask = block != null && block.RefusesOutOfRange;
+            bool ask = link.RefusesOutOfRange;
+            int i = 0;
             foreach (var k in Fx5)
             {
-                int n = ask ? Probe(driver, k) : k.Default;
+                string title = LanguageManager.GetString(k.TitleKey, k.Title);
+                if (progress != null && ask &&
+                    !progress(i++, Fx5.Count, string.Format(LanguageManager.GetString("Msg_BakAsking", "Asking the CPU how many it has: {0}..."), title)))
+                    return null;
+                string name = k.Prefix;
+                int n = k.Default;
+                if (ask)
+                {
+                    n = Probe(link, k, out name);
+                    if (n < 0) return null;
+                }
                 if (k.Bits) n -= n % 16;
-                if (n <= 0) continue;
-                list.Add(new Area { First = k.Prefix + "0", Points = n, Bits = k.Bits, WordsPerPoint = k.WordsPerPoint, Title = LanguageManager.GetString(k.TitleKey, k.Title) });
+                if (n <= 0)
+                {
+                    if (notAnswered != null) notAnswered.Add(title + " - " + LanguageManager.GetString("Msg_BakNotAnswered", "the CPU does not answer it"));
+                    continue;
+                }
+                list.Add(new Area { First = name + "0", Points = n, Bits = k.Bits, WordsPerPoint = k.WordsPerPoint, Title = title });
             }
             return list;
         }
 
-        /// <summary>How many of a device the CPU has: the largest n whose device n - 1 it answers.</summary>
-        public static int Probe(IPlcDriver driver, DeviceKind k)
+        /// <summary>For the tests and the simple callers: the driver both ways.</summary>
+        public static List<Area> PlanDevices(IPlcDriver driver, IPlcBlockAccess block)
         {
-            Func<long, bool> has = n => { int v; return driver.TryRead(PlcAddressHelper.Compose(k.Prefix, n - 1), out v); };
-            if (!has(1)) return 0;
-            long lo, hi;
-            if (has(k.Default))
+            return PlanDevices(new Link(driver, block), null);
+        }
+
+        /// <summary>
+        /// How many of a device the CPU has - with block calls of its last word (a bit device's last whole word, a
+        /// 32-bit one's two words), never a single device's read: a refused GetDevice counts against MX Component's
+        /// link (IsHealthy). Its name the CPU answers (<paramref name="name"/>: the first, or another of the kind's).
+        /// GX Works3's default first - most CPUs keep it: three questions then. 0: none answered; -1: the link lost.
+        /// </summary>
+        public static int Probe(Link link, DeviceKind k, out string name)
+        {
+            name = k.Prefix;
+            int unit = k.Bits ? 16 : 1;
+            Func<string, long, bool> has = (nm, n) =>
             {
-                if (k.Max <= k.Default || has(k.Max)) return Math.Max(k.Default, k.Max);
-                lo = k.Default; hi = k.Max;
-            }
-            else { lo = 1; hi = k.Default; }
-            while (hi - lo > 1)
+                short[] v;
+                return n >= unit && link.TryRead(PlcAddressHelper.Compose(nm, n - unit), k.WordsPerPoint, out v, once: true);
+            };
+            string found = null;
+            foreach (var nm in new[] { k.Prefix }.Concat(k.Aliases))
             {
-                long mid = (lo + hi) / 2;
-                if (has(mid)) lo = mid; else hi = mid;
+                if (has(nm, unit)) { found = nm; break; }
+                if (link.Lost) return -1;
             }
-            return (int)lo;
+            if (found == null) return 0;
+            name = found;
+            Func<long, bool> h = n => has(found, n);
+            long lo, hi;   // lo: answered, hi: not - multiples of the unit
+            long d = k.Default;
+            if (h(d))
+            {
+                if (k.Max <= d || !h(d + unit)) return link.Lost ? -1 : (int)d;
+                if (h(k.Max)) return link.Lost ? -1 : k.Max;
+                lo = d + unit; hi = k.Max;
+            }
+            else { lo = unit; hi = d; }
+            while (hi - lo > unit)
+            {
+                long mid = (lo + hi) / 2 / unit * unit;
+                if (mid <= lo) mid = lo + unit;
+                if (h(mid)) lo = mid; else hi = mid;
+            }
+            return link.Lost ? -1 : (int)lo;
         }
 
         private static Area M(int module, int address, int words, string title, List<int[]> pieces = null)
@@ -330,9 +479,10 @@ namespace Kaban.Core.Helpers
         /// <summary>
         /// Reads <paramref name="areas"/> into <paramref name="backup"/>, <see cref="Chunk"/> words a
         /// call: an area the PLC refuses is left out and named in <see cref="Backup.Skipped"/>. False
-        /// when cancelled (the backup then holds what was read so far - not to be saved).
+        /// when cancelled or the link lost (<see cref="Link.Lost"/>) - the backup then holds what was
+        /// read so far, not to be saved.
         /// </summary>
-        public static bool ReadAreas(IPlcBlockAccess block, Backup backup, IList<Area> areas, Progress progress)
+        public static bool ReadAreas(Link link, Backup backup, IList<Area> areas, Progress progress)
         {
             long total = areas.Sum(a => (long)a.WordCount), done = 0;
             foreach (var area in areas)
@@ -346,12 +496,11 @@ namespace Kaban.Core.Helpers
                     int n = Math.Min(Chunk, words.Length - at);
                     short[] got;
                     string first = area.Bits ? area.Device(16L * at) : area.Device(at / area.WordsPerPoint);
-                    ok = block.TryReadBlock(first, n, out got) && got != null && got.Length == n;
+                    ok = link.TryRead(first, n, out got);
                     if (ok) Array.Copy(got, 0, words, at, n);
                     done += n;
-                    // a moment for the screen's own reads, which wait their turn on the same connection
-                    System.Threading.Thread.Sleep(2);
                 }
+                if (link.Lost) return false;
                 if (!ok)
                 {
                     backup.Skipped.Add(area.Title + " (" + area.Range + ")");
@@ -362,6 +511,12 @@ namespace Kaban.Core.Helpers
             }
             if (progress != null) progress(total, total, "");
             return true;
+        }
+
+        /// <summary>For the tests and the simple callers: a driver that is its own block access.</summary>
+        public static bool ReadAreas(IPlcBlockAccess block, Backup backup, IList<Area> areas, Progress progress)
+        {
+            return ReadAreas(new Link(block as IPlcDriver, block), backup, areas, progress);
         }
 
         // ---- the file ------------------------------------------------------------------------------------------
@@ -618,14 +773,23 @@ namespace Kaban.Core.Helpers
             public long Points;
             public List<string> Failed = new List<string>();
             public bool Cancelled;
-            public bool Ok { get { return Failed.Count == 0 && !Cancelled; } }
+            /// <summary>The link went down and did not come back: the parts after it were not written.</summary>
+            public bool LinkLost;
+            public bool Ok { get { return Failed.Count == 0 && !Cancelled && !LinkLost; } }
         }
 
         /// <summary>
         /// Writes the parts: a word part in blocks (a module area's named words only); a bit part's whole
-        /// words in blocks and its last bits one by one. Logged as the writer's - one line a block.
+        /// words in blocks and its last bits one by one. Logged as the writer's - one line a block. The link
+        /// lost meanwhile is waited for and the block written again (the same words: harmless twice); not back
+        /// in time, the write stops (<see cref="WriteResult.LinkLost"/>).
         /// </summary>
         public static WriteResult Write(IPlcBlockAccess block, IPlcDriver driver, IList<WriteRange> parts, Progress progress)
+        {
+            return Write(new Link(driver, block), parts, progress);
+        }
+
+        public static WriteResult Write(Link link, IList<WriteRange> parts, Progress progress)
         {
             var result = new WriteResult();
             long total = parts.Sum(p => (long)(p.Source.Bits ? (p.Count + 15) / 16 : p.Count * p.Source.WordsPerPoint)), done = 0;
@@ -655,8 +819,7 @@ namespace Kaban.Core.Helpers
                             int n = Math.Min(Chunk, r[1] - at);
                             var words = new short[n];
                             Array.Copy(a.Words, at, words, 0, n);
-                            rc = block.WriteBlock(PlcAddressHelper.Compose(prefix, target + (at - wFrom) / wpp), words);
-                            System.Threading.Thread.Sleep(2);
+                            rc = link.Write(PlcAddressHelper.Compose(prefix, target + (at - wFrom) / wpp), words);
                         }
                         if (rc != 0) break;
                     }
@@ -675,13 +838,18 @@ namespace Kaban.Core.Helpers
                             for (int bit = 0; bit < 16; bit++) if (a.Value(part.From + 16L * (w + i) + bit) != 0) v |= 1 << bit;
                             words[i] = (short)v;
                         }
-                        rc = block.WriteBlock(PlcAddressHelper.Compose(prefix, target + 16L * w), words);
-                        System.Threading.Thread.Sleep(2);
+                        rc = link.Write(PlcAddressHelper.Compose(prefix, target + 16L * w), words);
                     }
                     // the bits after the last whole word, one by one: a word would change the devices after the part
                     for (int i = whole * 16; i < part.Count && rc == 0; i++)
-                        rc = driver.Write(PlcAddressHelper.Compose(prefix, target + i), a.Value(part.From + i));
+                        rc = link.WriteOne(PlcAddressHelper.Compose(prefix, target + i), a.Value(part.From + i));
                     done += (part.Count + 15) / 16;
+                }
+                if (link.Lost)
+                {
+                    result.LinkLost = true;
+                    result.Failed.Add(part + " (" + LanguageManager.GetString("Msg_BakLinkLostShort", "the connection was lost") + ")");
+                    break;
                 }
                 if (rc != 0) result.Failed.Add(part + " (" + (rc == -1 ? "refused" : "0x" + rc.ToString("X8")) + ")");
                 else result.Points += part.Count;

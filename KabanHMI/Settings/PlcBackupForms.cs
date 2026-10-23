@@ -176,15 +176,23 @@ namespace Kaban.UI.Settings
                 Date = DateTime.Now, Station = _endpoint.StationId, Description = _description.Text.Trim(), Modules = _modules
             };
             if (backup.Cpu.StartsWith("(")) backup.Cpu = "";
+            // 23 October: a link lost while reading is waited for - the first backup on GX Simulator3 lost it,
+            // and every one of the CPU's devices was taken for refused and left out
+            var link = new PlcBackup.Link(driver, block);
             bool finished = WorkForm.Run(this, Text, T("Msg_BakFinding", "Asking the CPU how many of each device it has..."), p =>
             {
-                var areas = PlcBackup.PlanDevices(driver, block);
+                PlcBackup.Progress progress = (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; };
+                var areas = PlcBackup.PlanDevices(link, backup.Skipped, progress);
+                if (areas == null) return false;
                 foreach (var m in _modules) areas.AddRange(PlcBackup.ModuleAreas(m.Key, m.Value));
-                return PlcBackup.ReadAreas(block, backup, areas, (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; });
+                return PlcBackup.ReadAreas(link, backup, areas, progress);
             }, cancellable: true);
             if (!finished)
             {
-                PlcBackupUi.Say(this, T("Msg_BakReadCancelled", "Cancelled - nothing was saved."), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                PlcBackupUi.Say(this, link.Lost ? T("Msg_BakLinkLost", "The connection to the PLC was lost while reading and did not come back - nothing was saved.")
+                                                : T("Msg_BakReadCancelled", "Cancelled - nothing was saved."),
+                                MessageBoxButtons.OK, link.Lost ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+                if (link.Lost) AuditLogger.Log(string.Format("PLC data read (station {0}): the connection was lost - nothing saved", _endpoint.StationId));
                 return false;
             }
             string path = PlcBackup.FileFor(backup);
@@ -200,7 +208,7 @@ namespace Kaban.UI.Settings
                                           backup.Areas.Count, backup.WordTotal, path, backup.Skipped.Count > 0 ? " - not read: " + string.Join(", ", backup.Skipped) : ""));
             string text = string.Format(T("Msg_BakSaved", "Saved: {0}\r\n{1} areas, {2} words."), Path.GetFileName(path), backup.Areas.Count, backup.WordTotal);
             if (backup.Skipped.Count > 0)
-                text += "\r\n\r\n" + T("Msg_BakSkipped", "The PLC refused these - not in the backup:") + "\r\n" + string.Join("\r\n", backup.Skipped);
+                text += "\r\n\r\n" + T("Msg_BakSkipped", "Not in the backup - the PLC refused them:") + "\r\n" + string.Join("\r\n", backup.Skipped);
             PlcBackupUi.Say(this, text, MessageBoxButtons.OK, backup.Skipped.Count > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
             Close();
@@ -487,16 +495,18 @@ namespace Kaban.UI.Settings
             if (PlcBackupUi.Say(this, question, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return null;
 
             string source = string.Format("PLC Connection: the backup of {0} written", from);
+            var link = new PlcBackup.Link(driver, block);
             var result = WorkForm.Run(this, Text, T("Msg_BakWritingStart", "Writing..."), p =>
             {
                 using (WriteSource.For(source))
-                    return PlcBackup.Write(block, driver, parts, (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; });
+                    return PlcBackup.Write(link, parts, (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; });
             }, cancellable: true);
             AuditLogger.Log(string.Format("PLC data written (station {0}) from {1}: {2} devices in {3} parts{4}{5}", _endpoint.StationId, _shown.Path,
                                           result.Points, parts.Count, result.Cancelled ? " - cancelled" : "",
                                           result.Failed.Count > 0 ? " - failed: " + string.Join(", ", result.Failed) : ""));
             string text = string.Format(T("Msg_BakWritten", "{0} devices written."), result.Points.ToString("N0"));
             if (result.Cancelled) text += "\r\n" + T("Msg_BakWriteCancelled", "Cancelled - the parts after it were not written.");
+            if (result.LinkLost) text += "\r\n" + T("Msg_BakWriteLinkLost", "The connection to the PLC was lost and did not come back - the parts after it were not written.");
             if (result.Failed.Count > 0) text += "\r\n\r\n" + T("Msg_BakWriteFailed", "The PLC refused:") + "\r\n" + string.Join("\r\n", result.Failed);
             PlcBackupUi.Say(this, text, MessageBoxButtons.OK, result.Ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 

@@ -19,30 +19,46 @@ class PBC {
         Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++;
     }
 
-    /// <summary>A CPU whose parameters give D 12000, M 8192 - it refuses the devices beyond, as a real one does.</summary>
+    /// <summary>
+    /// A CPU whose parameters give D 12000, M 8192, B 1024 - it refuses a block reaching beyond, as a real one does;
+    /// it has no link special relays (SB), and knows the retentive timers by MX Component's names (SS, SC, SN).
+    /// It can lose its link after so many block calls (DropAfter), and get it back after so many Connects.
+    /// </summary>
     class Sized : IPlcDriver, IPlcBlockAccess {
         readonly Kaban.Drivers.Simulation.SimulationDriver _s;
         public Sized(Kaban.Drivers.Simulation.SimulationDriver s) { _s = s; }
-        public int Asked;
-        bool Inside(string a) {
+        public int Asked, Blocks, Connects;
+        public int DropAfter = -1, BackAfterConnects = 2;
+        bool _up = true;
+        bool Inside(string a, long devices) {
             string p; long n;
             if (!PlcAddressHelper.TrySplit(a, out p, out n)) return false;
+            if (p == "SB" || p == "STS" || p == "STC" || p == "STN") return false;
             var k = PlcBackup.KindOf(p);
-            int size = p == "D" ? 12000 : p == "M" ? 8192 : k != null ? k.Default : 100000;
-            return n < size;
+            int size = p == "D" ? 12000 : p == "M" ? 8192 : p == "B" ? 1024 : k != null ? k.Default : 100000;
+            return n + devices <= size;
         }
-        public bool IsConnected { get { return true; } }
-        public bool IsHealthy { get { return true; } }
-        public bool Connect() { return true; }
+        public bool IsConnected { get { return _up; } }
+        public bool IsHealthy { get { return _up; } }
+        public bool Connect() { if (!_up && ++Connects >= BackAfterConnects && BackAfterConnects > 0) { _up = true; Connects = 0; } return _up; }
         public void Disconnect() { }
         public int Read(string a) { return _s.Read(a); }
         public int[] ReadMulti(string[] a) { return _s.ReadMulti(a); }
-        public bool TryRead(string a, out int v) { Asked++; v = 0; return Inside(a) && _s.TryRead(a, out v); }
+        public bool TryRead(string a, out int v) { Asked++; v = 0; return _up && Inside(a, 1) && _s.TryRead(a, out v); }
         public bool TryReadMulti(string[] a, out int[] v) { return _s.TryReadMulti(a, out v); }
-        public int Write(string a, int v) { return _s.Write(a, v); }
+        public int Write(string a, int v) { return _up ? _s.Write(a, v) : -1; }
         public bool RefusesOutOfRange { get { return true; } }
-        public bool TryReadBlock(string first, int count, out short[] values) { return _s.TryReadBlock(first, count, out values); }
-        public int WriteBlock(string first, short[] values) { return _s.WriteBlock(first, values); }
+        bool Call() { Blocks++; if (DropAfter >= 0 && Blocks > DropAfter && _up) { _up = false; DropAfter = -1; } return _up; }
+        public bool TryReadBlock(string first, int count, out short[] values) {
+            values = null;
+            if (!Call()) return false;
+            if (!first.StartsWith("U")) {
+                long devices = PlcAddressHelper.IsBitDevice(first) ? 16L * count : PlcAddressHelper.IsDoubleWordDevice(first) ? count / 2 : count;
+                if (!Inside(first, devices)) return false;
+            }
+            return _s.TryReadBlock(first, count, out values);
+        }
+        public int WriteBlock(string first, short[] values) { return Call() ? _s.WriteBlock(first, values) : -1; }
     }
 
     /// <summary>A driver without block calls: the logged driver reads and writes it device by device.</summary>
@@ -104,10 +120,41 @@ class PBC {
               "D0 - D7999 W0 - W1FF SW0 - SW1FF R0 - R32767 Z0 - Z19 LZ0 - LZ1 SM0 - SM9999 SD0 - SD11999",
               string.Join(" ", plan.Select(a => a.Range)));
         var sized = new Sized(sim);
-        var real = PlcBackup.PlanDevices(sized, sized);
-        Check("a CPU that refuses beyond its range: D 12000, M 8192 found by asking", real.First(a => a.Prefix == "D").Points == 12000 &&
-              real.First(a => a.Prefix == "M").Points == 8192 && real.First(a => a.Prefix == "R").Points == 32768,
-              string.Join(" ", real.Select(a => a.Range)) + " - " + sized.Asked + " asked");
+        var notAnswered = new List<string>();
+        var real = PlcBackup.PlanDevices(new PlcBackup.Link(sized, sized), notAnswered);
+        Check("a CPU that refuses beyond its range: D 12000, M 8192, B 1024 found by asking", real.First(a => a.Prefix == "D").Points == 12000 &&
+              real.First(a => a.Prefix == "M").Points == 8192 && real.First(a => a.Prefix == "B").Points == 1024 && real.First(a => a.Prefix == "R").Points == 32768,
+              string.Join(" ", real.Select(a => a.Range)) + " - " + sized.Blocks + " asked");
+        // 23 October: the sizes were asked with single reads (GetDevice) - a refused one counts against MX Component's link
+        Check("  asked with block calls only, few of them (GX Works3's default kept: three questions)", sized.Asked == 0 && sized.Blocks < 150, sized.Blocks + " block calls");
+        Check("  the retentive timers by the names the CPU answers (MX Component: SS, SC, SN)",
+              real.Any(a => a.Range == "SS0 - SS15") && real.Any(a => a.Range == "SN0 - SN15") && PlcBackup.KindOf("SN").Prefix == "STN" &&
+              new PlcBackup.Area { First = "SS0" }.WhyNotWritten.Contains("Contacts and coils") && new PlcBackup.Area { First = "SN0" }.Writable);
+        Check("  a device the CPU does not answer is named, not left out silently", !real.Any(a => a.Prefix == "SB") &&
+              notAnswered.Count == 1 && notAnswered[0].StartsWith("Link special relays (SB)"), string.Join(" | ", notAnswered));
+
+        Console.WriteLine("--- the link lost while reading (23 October: the first backup on GX Simulator3 held none of the CPU's devices) ---");
+        var flaky = new Sized(sim) { DropAfter = 40 };
+        var flakyLink = new PlcBackup.Link(flaky, flaky) { ReconnectWaitMs = 3000 };
+        var fb = new PlcBackup.Backup();
+        var fplan = PlcBackup.PlanDevices(flakyLink, fb.Skipped);
+        bool fdone = fplan != null && PlcBackup.ReadAreas(flakyLink, fb, fplan.Concat(PlcBackup.ModuleAreas(1, 4)).ToList(), null);
+        Check("dropped while the sizes were asked: waited for, asked again - every device read, nothing skipped",
+              fdone && !flakyLink.Lost && fb.Skipped.Count == 1 && fb.Skipped[0].StartsWith("Link special relays (SB)") && fplan.Count == real.Count && fb.Areas.Any(a => a.First == "D0" && a.Points == 12000),
+              fdone + " " + flakyLink.Lost + " " + fb.Skipped.Count + " " + string.Join(" | ", fb.Skipped.Take(3)));
+        var flaky2 = new Sized(sim);
+        var flaky2Link = new PlcBackup.Link(flaky2, flaky2) { ReconnectWaitMs = 3000 };
+        var fb2 = new PlcBackup.Backup();
+        var fplan2 = PlcBackup.PlanDevices(flaky2Link, fb2.Skipped);
+        flaky2.DropAfter = flaky2.Blocks + 5;
+        bool fdone2 = PlcBackup.ReadAreas(flaky2Link, fb2, fplan2, null);
+        Check("dropped while the areas were read: the same", fdone2 && fb2.Skipped.Count == 1 && fb2.Areas.Count == fplan2.Count &&
+              fb2.Areas.First(a => a.First == "D0").Value(7999) == -5, fb2.Skipped.Count + " skipped");
+        var dead = new Sized(sim) { DropAfter = 30, BackAfterConnects = 0 };
+        var deadLink = new PlcBackup.Link(dead, dead) { ReconnectWaitMs = 600 };
+        var db = new PlcBackup.Backup();
+        var dplan = PlcBackup.PlanDevices(deadLink, db.Skipped);
+        Check("not back in time: the work stops (Lost) - not a backup of what happened to be read", dplan == null && deadLink.Lost);
         var mod = PlcBackup.ModuleAreas(1, 4);
         Check("simple motion module 1 with 4 axes: 2 common areas, 9 a axis, 4 synchronous encoder axes, the memo and mark areas", mod.Count == 2 + 4 * 9 + 4 + 2,
               mod.Count.ToString());
@@ -199,6 +246,9 @@ class PBC {
         };
         sim.Write("LCN3", 0);
         var result = PlcBackup.Write(logged, logged, parts, null);
+        var wflaky = new Sized(sim) { DropAfter = 3 };
+        var wresult = PlcBackup.Write(new PlcBackup.Link(wflaky, wflaky) { ReconnectWaitMs = 3000 }, parts.Take(1).ToList(), null);
+        Check("a write whose link drops: waited for, the block written again", wresult.Ok && !wresult.LinkLost && wresult.Points == 1000, string.Join(" | ", wresult.Failed));
         Check("written: " + result.Points + " devices", result.Ok && result.Points == 1000 + 1 + 10 + 10 + 150 + 1000 + 2, string.Join(" | ", result.Failed));
         Check("  LCN2 - LCN3 in LCN10 - LCN11: 100000 in LCN11 whole (both its words)", sim.Read("LCN11") == 100000 && sim.Read("LCN3") == 0, sim.Read("LCN11").ToString());
         Check("  R1000 - R1999's values in D2500 - D3499", Enumerable.Range(0, 1000).All(i => sim.Read("D" + (2500 + i)) == (short)(i * 3 - 7)) &&
@@ -223,6 +273,11 @@ class PBC {
         Check("read device by device: M0's first word (M5 on), R1001", plainLogged.TryReadBlock("M0", 1, out words) && words[0] == 1 << 5 &&
               plainLogged.TryReadBlock("R1001", 1, out words) && words[0] == -4);
         Check("  written so: M300 - M315", plainLogged.WriteBlock("M300", new short[] { 0x0003 }) == 0 && sim.Read("M300") == 1 && sim.Read("M301") == 1 && sim.Read("M302") == 0);
+        // 23 October: a driver on a thread of its own (Siemens, Delta): a block is ONE turn on that thread
+        var bounded = new BoundedDriver(new Plain(sim));
+        bounded.Connect();
+        Check("  on its own thread (BoundedDriver): a block in one turn there", bounded.TryReadBlock("R1001", 2, out words) && words[0] == -4 && words[1] == -1 &&
+              !bounded.RefusesOutOfRange && bounded.WriteBlock("D4000", new short[] { 7, 8 }) == 0 && sim.Read("D4001") == 8);
 
         SecurityManager.Logout();
         try { Directory.Delete(dir, true); } catch { }

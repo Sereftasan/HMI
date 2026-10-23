@@ -118,9 +118,36 @@ namespace Kaban.Drivers.MitsubishiActUtl
         /// </summary>
         public bool TryRun<T>(Func<T> work, int timeoutMs, out T result)
         {
-            result = default(T);
+            bool started;
+            return Run(work, timeoutMs, false, out result, out started);
+        }
 
-            if (IsWorkerThread) { result = work(); return true; }
+        /// <summary>
+        /// A BULK JOB'S CALL (23 October: the PLC Connection page's Read and Write): it waits while
+        /// anyone else is waiting for the thread, so the screen's reads, the connection beat and a
+        /// button's write always go first. <paramref name="started"/>: false when it never had its
+        /// turn within the time - that is no sign of a dead link, only of a busy one.
+        ///
+        /// WHY: the backup's calls came back to back, and the slot is taken by whoever asks first after
+        /// it is freed. The scanner and the connection beat poll for it every millisecond - on Windows
+        /// a Sleep(1) is up to 15 ms - and never found it free: after a second each gave up, and a call
+        /// that does not come back in a second takes the link down (Stalled). That is what emptied the
+        /// first backup made on GX Simulator3: the link was closed while the devices were read.
+        /// </summary>
+        public bool TryRunPolite<T>(Func<T> work, int timeoutMs, out T result, out bool started)
+        {
+            return Run(work, timeoutMs, true, out result, out started);
+        }
+
+        /// <summary>The callers waiting for the thread (not the bulk ones): a bulk call lets them go first.</summary>
+        private int _waiting;
+
+        private bool Run<T>(Func<T> work, int timeoutMs, bool polite, out T result, out bool started)
+        {
+            result = default(T);
+            started = false;
+
+            if (IsWorkerThread) { started = true; result = work(); return true; }
             if (_invoker == null || _stopped) return false;
 
             // WAIT FOR THE SLOT, within the same deadline, instead of refusing.
@@ -136,11 +163,20 @@ namespace Kaban.Drivers.MitsubishiActUtl
             // Sleep, not a wait handle: Sleep does not pump messages, so nothing
             // else can run on the UI thread while it waits here.
             var deadline = Environment.TickCount + timeoutMs;
-            while (Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
+            bool counted = false;
+            try
             {
-                if (Environment.TickCount - deadline >= 0) return false;
-                Thread.Sleep(1);
+                while (true)
+                {
+                    // a bulk call steps aside while anyone else is waiting; the others are counted while they wait
+                    if (!(polite && Volatile.Read(ref _waiting) > 0) && Interlocked.CompareExchange(ref _busy, 1, 0) == 0) break;
+                    if (!polite && !counted) { Interlocked.Increment(ref _waiting); counted = true; }
+                    if (Environment.TickCount - deadline >= 0) return false;
+                    Thread.Sleep(1);
+                }
             }
+            finally { if (counted) Interlocked.Decrement(ref _waiting); }
+            started = true;
 
             // One kernel event per call, previously never disposed (left to the
             // finalizer - thousands of handles a minute at the scan rate). On a

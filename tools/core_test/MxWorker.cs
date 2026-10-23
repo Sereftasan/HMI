@@ -34,6 +34,38 @@ class T {
         Check("the click's read WAITS ITS TURN and succeeds (was: refused)", got && limit == 3333, got + " / " + limit);
         Check("  costing only the in-flight read's time", sw.ElapsedMilliseconds < 600, sw.ElapsedMilliseconds + " ms");
 
+        // 23 October: the PLC Connection page's Read sent its block calls back to back - the scanner and the
+        // connection beat never found the thread free, gave up after a second, and the link was taken down
+        Console.WriteLine("--- a bulk job's calls back to back no longer keep the others out ---");
+        int stop = 0, bulk = 0;
+        var bulkThread = new Thread(() => {
+            while (Volatile.Read(ref stop) == 0) {
+                int x; bool st;
+                if (w.TryRunPolite(() => { Thread.Sleep(5); return 1; }, 5000, out x, out st)) Interlocked.Increment(ref bulk);
+            }
+        });
+        bulkThread.Start();
+        Thread.Sleep(100);
+        long worst = 0; int turns = 0;
+        for (int i = 0; i < 20; i++) {
+            sw.Restart();
+            int v;
+            if (w.TryRun(() => 9, 1000, out v) && v == 9) turns++;
+            worst = Math.Max(worst, sw.ElapsedMilliseconds);
+            Thread.Sleep(20);
+        }
+        Volatile.Write(ref stop, 1);
+        bulkThread.Join(3000);
+        Check("every one of the screen's reads had its turn while the bulk job ran", turns == 20, turns + " of 20");
+        Check("  at once - behind the bulk call in flight at most", worst < 200, worst + " ms");
+        Check("  and the bulk job went on between them", bulk > 20, bulk + " bulk calls");
+        var s0 = new ManualResetEvent(false);
+        Occupy(w, 900, s0);
+        bool started0; int r0;
+        Check("a bulk call that never has its turn says so (busy - not a dead link)",
+              !w.TryRunPolite(() => 1, 300, out r0, out started0) && !started0);
+        Thread.Sleep(1000);
+
         Console.WriteLine("--- a STUCK call still cannot freeze the screen ---");
         var s2 = new ManualResetEvent(false);
         Occupy(w, 2500, s2);                                 // Open() to a PLC that is not there

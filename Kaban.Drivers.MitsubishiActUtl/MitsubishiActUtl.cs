@@ -241,6 +241,11 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         // ReadDeviceBlock2 / WriteDeviceBlock2: words (a bit device 16 to a word). The backup asks
         // for at most 960 words a call (an MC protocol frame's batch), so each call is milliseconds
         // and the scanner's reads, which wait their turn on the same thread, are not held up for long.
+        // 23 October: and they go FIRST - a block call waits while any other call is waiting for the
+        // thread (StaWorker.TryRunPolite). Back to back, the backup's calls kept the thread from the
+        // scanner and the connection beat until they gave up and took the link down; and the CPU's
+        // sizes are now found with block calls too, not GetDevice - a refused device no longer counts
+        // against the link's health (IsHealthy).
 
         /// <summary>How long a block call waits for its turn and its answer.</summary>
         private const int BlockWaitMs = 5000;
@@ -261,8 +266,14 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                 try { return _plc.ReadDeviceBlock2(first, count, out buffer[0]); }
                 catch { return -1; }
             };
+            bool started;
             if (_worker.IsWorkerThread) rc = call();
-            else if (!_worker.TryRun(call, BlockWaitMs, out rc)) { Stalled(); return false; }
+            else if (!_worker.TryRunPolite(call, BlockWaitMs, out rc, out started))
+            {
+                // never had its turn (the screen's reads went first): busy, not dead
+                if (started) Stalled();
+                return false;
+            }
             if (rc != 0) return false;
             values = buffer;
             return true;
@@ -281,7 +292,8 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
                 catch { return -1; }
             };
             if (_worker.IsWorkerThread) return call();
-            if (!_worker.TryRun(call, BlockWaitMs, out rc)) { Stalled(); return -1; }
+            bool started;
+            if (!_worker.TryRunPolite(call, BlockWaitMs, out rc, out started)) { if (started) Stalled(); return -1; }
             return rc;
         }
 
