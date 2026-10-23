@@ -258,6 +258,12 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
             values = null;
             if (count <= 0 || string.IsNullOrWhiteSpace(first)) { values = new short[0]; return count == 0; }
             if (!_isConnected) return false;
+            // A 32-BIT DEVICE (LCN, LZ, LTN, LSTN) DEVICE BY DEVICE (23 October): ReadDeviceBlock2 counts them as
+            // devices, not words - on GX Simulator3 the CPU's LCN0 - LCN63 were sized one short and refused as
+            // an area (126 "words" taken for 126 counters), and a call that answered would have written twice the
+            // words asked into the buffer. The random read gives each one's 32 bits.
+            if (Kaban.Core.Helpers.PlcAddressHelper.IsDoubleWordDevice(first))
+                return Kaban.Core.Helpers.PlcBlocks.ReadByDevice(this, first, count, out values);
             var buffer = new short[count];
             int rc;
             Func<int> call = () =>
@@ -283,6 +289,9 @@ namespace Kaban.Drivers.MitsubishiActUtl // <-- Updated Namespace
         {
             if (values == null || values.Length == 0) return 0;
             if (!_isConnected) return -1;
+            // a 32-bit device one by one (SetDevice takes its 32 bits) - see TryReadBlock
+            if (Kaban.Core.Helpers.PlcAddressHelper.IsDoubleWordDevice(first))
+                return Kaban.Core.Helpers.PlcBlocks.WriteByDevice(this, first, values);
             var buffer = (short[])values.Clone();
             int rc;
             Func<int> call = () =>
