@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 23 October (later, PLC data):
+  - 7a5e4d3 - PLC data Read: the CPU's devices are read. The first backup on GX Simulator3 had none: its block calls kept
+    MX Component's thread from the screen's reads until those gave up and the link was taken down. Block calls now go
+    after the others; the sizes are asked with block calls; a lost link is waited for (nothing saved if it does not come
+    back); a device the CPU does not answer is named.
+  - 112e2a6 - PLC Connection: Read and Write only while the PLC is connected (a PLC not active kept them enabled).
+  - d35ac8a - PLC data Write: the synchronous encoder axis and synchronous parameters written back (the Advanced
+    Synchronous Control manual's Appendix 1), only the words it names.
+  - 72232a4 - PLC data Write: the choice as a tree, as GX Works3's Select Data to Write - the CPU's devices; each module's
+    groups with Details (axes, positioning data numbers) and its flash ROM; a row ticks all under it; Select all.
 - 23 October:
   - 6fa1776 - Axis Settings: a parameter written no longer asks; "Write module n's flash ROM" blinks beside the Motion
     monitor list while a module of the page's axes has changes its flash ROM does not hold (its tooltip lists them);
