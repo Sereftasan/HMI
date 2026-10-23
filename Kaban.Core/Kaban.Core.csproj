@@ -99,6 +99,7 @@
     <Compile Include="Helpers\HmiInternalVariables.cs" />
     <Compile Include="Helpers\HmiUtilities.cs" />
     <Compile Include="Helpers\SafeFile.cs" />
+    <Compile Include="Helpers\SafetyCopies.cs" />
     <Compile Include="Helpers\NotesStore.cs" />
     <Compile Include="Helpers\AiChats.cs" />
     <Compile Include="Helpers\PlcPopups.cs" />

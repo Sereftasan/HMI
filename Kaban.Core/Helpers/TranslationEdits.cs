@@ -335,8 +335,9 @@ namespace Kaban.Core.Helpers
             /// <summary>Written; for each change added, whether a file took it.</summary>
             public List<bool> Flush()
             {
-                foreach (var kv in _csv) TranslationFiles.SetTexts(kv.Key, kv.Value);
-                foreach (var kv in _json) AlarmDefinitionLoader.SetTranslationsInFile(kv.Key, kv.Value);
+                // each file as it was this morning kept first (23 October: the previous data backed up before an import)
+                foreach (var kv in _csv) { SafetyCopies.FirstOfDay("Translations", kv.Key); TranslationFiles.SetTexts(kv.Key, kv.Value); }
+                foreach (var kv in _json) { SafetyCopies.FirstOfDay("Translations", kv.Key); AlarmDefinitionLoader.SetTranslationsInFile(kv.Key, kv.Value); }
                 return _changes.Select(c => c.Any(ok => ok())).ToList();
             }
         }

@@ -67,6 +67,91 @@ namespace Kaban.UI.Settings
             return drv != null && drv.GetType().Name == "SimulationDriver";
         }
 
+        /// <summary>
+        /// The PLC's data read into <paramref name="backup"/> (a window with Cancel while it does): its devices, its
+        /// modules' data and their cams - those the axes use and <paramref name="extraCams"/>. False when cancelled
+        /// or the link lost (<see cref="PlcBackup.Link.Lost"/>): nothing to save.
+        /// </summary>
+        internal static bool ReadInto(IWin32Window owner, string title, PlcBackup.Link link, PlcBackup.Backup backup,
+                                      List<KeyValuePair<int, int>> modules, List<int> extraCams)
+        {
+            return WorkForm.Run(owner, title, T("Msg_BakFinding", "Asking the CPU how many of each device it has..."), p =>
+            {
+                PlcBackup.Progress progress = (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; };
+                var areas = PlcBackup.PlanDevices(link, backup.Skipped, progress);
+                if (areas == null) return false;
+                foreach (var m in modules) areas.AddRange(PlcBackup.ModuleAreas(m.Key, m.Value));
+                if (!PlcBackup.ReadAreas(link, backup, areas, progress)) return false;
+                // the modules' cams: those their axes use (as just read), and the numbers typed
+                foreach (var m in modules)
+                {
+                    var cams = PlcBackup.CamsInUse(backup, m.Key).Union(extraCams ?? new List<int>()).OrderBy(x => x).ToList();
+                    if (cams.Count > 0 && !PlcBackup.ReadCams(link, backup, m.Key, cams, progress)) return false;
+                }
+                return true;
+            }, cancellable: true);
+        }
+
+        /// <summary>
+        /// THE SAFETY BACKUP (23 October: "We should read the PLC devices first as a backup just before the writing
+        /// process if there is no backup taken inside the day so the user always have chance to go back to the
+        /// previous devices (sometimes the users forget taking backup before writing data in and write wrong backup
+        /// or there might get a problem writing devices, we have to prevent these to happen)" - "this preventive
+        /// data backup function should only be considered for the real PLCs btw, not for the simulation driver"):
+        /// before a write into a real PLC that has no backup of today, its data read and saved as a backup -
+        /// described as taken before <paramref name="before"/>. True: there is one now (or the simulator - none
+        /// needed); false: not made and the user chose not to write without it (or the PLC is not connected).
+        /// </summary>
+        public static bool SafetyBackup(IWin32Window owner, PlcConnectionSettings.Endpoint endpoint, string before)
+        {
+            if (endpoint == null || IsSimulator(endpoint.StationId)) return true;
+            string machine, plc;
+            Names(endpoint, out machine, out plc);
+            var mine = PlcBackup.List().Where(b => b.Machine == machine && b.Plc == plc).ToList();
+            if (mine.Any(b => b.Date.Date == DateTime.Today)) return true;
+
+            var driver = PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId);
+            var block = driver as IPlcBlockAccess;
+            if (driver == null || block == null || !driver.IsConnected)
+            {
+                Say(owner, T("Msg_BakNotConnected", "The PLC is not connected."), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            var id = driver as IPlcIdentity;
+            var last = mine.FirstOrDefault(b => b.Serial.Length > 0);
+            var lastCams = mine.FirstOrDefault(b => b.CamsTyped.Length > 0);
+            var modules = ModulesOf(endpoint.StationId);
+            var backup = new PlcBackup.Backup
+            {
+                Machine = machine, Plc = plc, Cpu = id != null ? id.Identity ?? "" : "", Serial = last != null ? last.Serial : "",
+                User = SecurityManager.CurrentUser, Date = DateTime.Now, Station = endpoint.StationId, Modules = modules,
+                Description = string.Format(T("Bak_SafetyDescription", "Taken by itself before {0} - no backup of this PLC was made today."), before),
+                CamsTyped = lastCams != null ? lastCams.CamsTyped : ""
+            };
+            List<int> cams;
+            if (!PlcBackup.TryParseCams(backup.CamsTyped, out cams)) cams = new List<int>();
+            var link = new PlcBackup.Link(driver, block);
+            string why = null;
+            bool read = ReadInto(owner, T("Ttl_BakSafety", "A backup first - no backup of this PLC today"), link, backup, modules, cams);
+            if (read)
+            {
+                try
+                {
+                    var path = PlcBackup.FileFor(backup);
+                    PlcBackup.Save(backup, path);
+                    AuditLogger.Log(string.Format("PLC data read (station {0}, {1} {2}) as the safety backup before {3}: {4} areas, {5} words into {6}",
+                                                  endpoint.StationId, machine, plc, before, backup.Areas.Count, backup.WordTotal, path));
+                    return true;
+                }
+                catch (Exception ex) { why = ex.Message; }
+            }
+            else why = link.Lost ? T("Msg_BakLinkLostShort", "the connection was lost") : T("Msg_BakSafetyCancelled", "cancelled");
+            AuditLogger.Log(string.Format("PLC safety backup (station {0}) before {1} not made: {2}", endpoint.StationId, before, why));
+            return Say(owner, string.Format(T("Msg_BakSafetyFailed", "The backup of the PLC's data before writing could not be made ({0}).\r\n\r\nWrite without it? " +
+                                                "What is written cannot be taken back then."), why),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+        }
+
         /// <summary>The machine and the PLC as a backup names them.</summary>
         public static void Names(PlcConnectionSettings.Endpoint endpoint, out string machine, out string plc)
         {
@@ -196,21 +281,7 @@ namespace Kaban.UI.Settings
             // 23 October: a link lost while reading is waited for - the first backup on GX Simulator3 lost it,
             // and every one of the CPU's devices was taken for refused and left out
             var link = new PlcBackup.Link(driver, block);
-            bool finished = WorkForm.Run(this, Text, T("Msg_BakFinding", "Asking the CPU how many of each device it has..."), p =>
-            {
-                PlcBackup.Progress progress = (d, t, what) => { p.Report(d, t, what); return !p.Cancelled; };
-                var areas = PlcBackup.PlanDevices(link, backup.Skipped, progress);
-                if (areas == null) return false;
-                foreach (var m in _modules) areas.AddRange(PlcBackup.ModuleAreas(m.Key, m.Value));
-                if (!PlcBackup.ReadAreas(link, backup, areas, progress)) return false;
-                // the modules' cams: those their axes use (as just read), and the numbers typed
-                foreach (var m in _modules)
-                {
-                    var cams = PlcBackup.CamsInUse(backup, m.Key).Union(extraCams).OrderBy(x => x).ToList();
-                    if (cams.Count > 0 && !PlcBackup.ReadCams(link, backup, m.Key, cams, progress)) return false;
-                }
-                return true;
-            }, cancellable: true);
+            bool finished = PlcBackupUi.ReadInto(this, Text, link, backup, _modules, extraCams);
             if (!finished)
             {
                 PlcBackupUi.Say(this, link.Lost ? T("Msg_BakLinkLost", "The connection to the PLC was lost while reading and did not come back - nothing was saved.")
@@ -820,6 +891,8 @@ namespace Kaban.UI.Settings
                 question += "\r\n\r\n" + string.Format(T("Msg_BakOtherPlc", "This backup is of another PLC ({0}) - not of {1}."),
                                                        (_shown.Machine + " " + _shown.Plc).Trim(), (_machine + " " + _plc).Trim());
             if (PlcBackupUi.Say(this, question, MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return null;
+            // no backup of this (real) PLC today: one read first - what is overwritten can be written back (23 October)
+            if (!PlcBackupUi.SafetyBackup(this, _endpoint, string.Format(T("Bak_SafetyBeforeWrite", "writing the backup of {0}"), from))) return null;
 
             var result = new PlcBackup.WriteResult();
             if (parts.Count > 0)

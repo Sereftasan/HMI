@@ -19,6 +19,24 @@ using Kaban.UI.Settings;
 // page. And Write button is gonna open the read backup list and selection of the devices to be written to the PLC
 // (and another column for the entry if the read device interval and write device interval is different ...)"
 class PBU {
+    /// <summary>A real PLC (not the simulator - its class's name is another): the simulator's memory behind it.</summary>
+    class RealPlc : Kaban.Core.Interfaces.IPlcDriver, Kaban.Core.Interfaces.IPlcBlockAccess, Kaban.Core.Interfaces.INonBlockingDriver {
+        readonly Kaban.Drivers.Simulation.SimulationDriver _s;
+        public RealPlc(Kaban.Drivers.Simulation.SimulationDriver s) { _s = s; }
+        public bool IsConnected { get { return _s.IsConnected; } }
+        public bool IsHealthy { get { return true; } }
+        public bool Connect() { return _s.Connect(); }
+        public void Disconnect() { }
+        public int Read(string a) { return _s.Read(a); }
+        public int[] ReadMulti(string[] a) { return _s.ReadMulti(a); }
+        public bool TryRead(string a, out int v) { return _s.TryRead(a, out v); }
+        public bool TryReadMulti(string[] a, out int[] v) { return _s.TryReadMulti(a, out v); }
+        public int Write(string a, int v) { return _s.Write(a, v); }
+        public bool RefusesOutOfRange { get { return false; } }
+        public bool TryReadBlock(string f, int c, out short[] v) { return _s.TryReadBlock(f, c, out v); }
+        public int WriteBlock(string f, short[] v) { return _s.WriteBlock(f, v); }
+    }
+
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") { d = d ?? ""; Console.WriteLine((ok ? "  PASS  " : "  FAIL  ") + w + (d.Length > 0 ? "   [" + d + "]" : "")); if (!ok) fail++; }
     const BindingFlags Any = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
@@ -282,13 +300,54 @@ class PBU {
         Check("  in the write log as the backup's, the Admin's", log.Any(e => e.Device == "D2500 - D3459" && e.User == "boss" && e.Source.Contains("the backup of")),
               string.Join(" | ", log.Where(e => e.Device.StartsWith("D25")).Select(e => e.Device + " " + e.Source)));
 
+        // 23 October: "We should read the PLC devices first as a backup just before the writing process if there is no
+        // backup taken inside the day ... only be considered for the real PLCs btw, not for the simulation driver"
+        Console.WriteLine("--- the safety backup before a write ---");
+        int files = Directory.GetFiles(PlcBackup.Folder, "*" + PlcBackup.Extension).Length;
+        said.Clear();
+        Check("the simulator: none needed", PlcBackupUi.SafetyBackup(wf, ep, "a test") && Directory.GetFiles(PlcBackup.Folder, "*" + PlcBackup.Extension).Length == files && said.Count == 0);
+        PlcManager.Instance.RegisterDriver(1, new RealPlc(sim));
+        ConnectionMonitor.ReportRead(1, true);
+        Check("a real PLC with a backup of today: none taken", PlcBackupUi.SafetyBackup(wf, ep, "a test") && Directory.GetFiles(PlcBackup.Folder, "*" + PlcBackup.Extension).Length == files);
+        foreach (var f in Directory.GetFiles(PlcBackup.Folder, "*" + PlcBackup.Extension))
+        {
+            var old = PlcBackup.Load(f);
+            old.Date = old.Date.AddDays(-1);
+            File.Delete(f);
+            PlcBackup.Save(old, PlcBackup.FileFor(old));
+        }
+        bool made = PlcBackupUi.SafetyBackup(wf, ep, "writing the backup of yesterday");
+        var newest = PlcBackup.List().First();
+        Check("  none of today: the PLC read first, saved - described as taken by itself, its serial number and cams kept",
+              made && newest.Date.Date == DateTime.Today && newest.Description.StartsWith("Taken by itself before writing the backup of yesterday") &&
+              newest.Serial == "2SZ0123456" && newest.CamsTyped == "4" && PlcBackup.Load(newest.Path).Areas.Any(a => a.First == "D0"),
+              newest.Description);
+        Check("  then: none again the same day", PlcBackupUi.SafetyBackup(wf, ep, "a test") && PlcBackup.List().Count(x => x.Date.Date == DateTime.Today) == 1);
+        sim.Write("D0", 7);
+        int beforeWrite = PlcBackup.List().Count;
+        foreach (var f in Directory.GetFiles(PlcBackup.Folder, "*" + PlcBackup.Extension).Where(f => PlcBackup.Load(f, headerOnly: true).Date.Date == DateTime.Today)) File.Delete(f);
+        items = ((IEnumerable)Get(wf, "_items")).Cast<object>().ToList();
+        Call(wf, "SetAll", false);
+        row("D0").Cells["Write"].Value = true;
+        said.Clear();
+        answer = DialogResult.Yes;
+        var safeResult = (PlcBackup.WriteResult)Call(wf, "DoWrite");
+        var today = PlcBackup.List().FirstOrDefault(x => x.Date.Date == DateTime.Today);
+        Check("Write into a real PLC without a backup of today: its data read first (D0 7 kept), then written",
+              safeResult != null && safeResult.Ok && today != null && PlcBackup.Load(today.Path).Areas.First(a => a.First == "D0").Value(0) == 7 && sim.Read("D0") == 42,
+              today == null ? "no backup of today" : today.Description);
+        PlcManager.Instance.RegisterDriver(1, sim);
+        ConnectionMonitor.ReportRead(1, true);
+        saved = PlcBackup.List().Last().Path;                     // the files were moved to yesterday's names
+
         Console.WriteLine("--- another file ---");
         var other = PlcBackup.Load(saved);
         other.Machine = "Another machine"; other.Date = other.Date.AddDays(-1);
         string usb = Path.Combine(dir, "usb.plcbak");
         PlcBackup.Save(other, usb);
+        int listed = PlcBackup.List().Count;
         Call(wf, "Choose", usb);
-        Check("a file opened (a USB stick's): listed and chosen though another machine's", list.Rows.Count == 2 &&
+        Check("a file opened (a USB stick's): listed and chosen though another machine's", list.Rows.Count == listed + 1 &&
               ((PlcBackup.Backup)Get(wf, "Shown")).Machine == "Another machine");
         items = ((IEnumerable)Get(wf, "_items")).Cast<object>().ToList();
         row("D0").Cells["Write"].Value = true;
