@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
 using Kaban.UI.Forms;
@@ -6,13 +8,19 @@ using Kaban.UI.Forms;
 namespace Kaban.UI.Helpers
 {
     /// <summary>
-    /// A SIMPLE MOTION MODULE'S PARAMETER CHANGED BY AN ADMIN, AND KEPT (22 October: "some
-    /// parameters need EPROM write as well"). From the module's manual: what is written into its
-    /// buffer memory is used at the axis's next start (Pr.8 - Pr.10) or when the PLC READY signal
-    /// turns on again (Pr.1 - Pr.7, Pr.11 - Pr.24, Pr.43 - Pr.57 ...), and is lost at the next
-    /// power off unless the module's flash ROM is written - which it does only while PLC READY is
-    /// off, at most 25 times per power on. So after each parameter written the Admin is told when
-    /// it takes effect and offered the flash ROM; the parameter cells' menu offers it too.
+    /// A SIMPLE MOTION MODULE'S PARAMETERS CHANGED, AND KEPT (22 October: "some parameters need
+    /// EPROM write as well"; 23 October: "You just need to write 1 to Un\G5900 (n is the simple
+    /// motion number, whichever the changed parameter's axis motion number is) for flash ROM write,
+    /// that is all. We need to have a button on the axis setting page (visible when there is any
+    /// parameter changed that needs flash ROM write), the user clicks it after changing the
+    /// parameters (the button should blink as well to warn the user not to forget clicking)").
+    ///
+    /// A parameter written into a module's buffer memory is used at the axis's next start
+    /// (Pr.8 - Pr.10) or when the module's PLC READY signal turns on again (the others) - and is gone
+    /// at the next power off unless the module's flash ROM is written. So every parameter written
+    /// marks its module as CHANGED here; the Axis Settings page shows a blinking button for each
+    /// changed module of its axes (FlashRomButton) until its flash ROM is written: "[Cd.1] Flash ROM
+    /// write request", Un\G5900 = 1 - the module sets it back to 0 when it has written (up to 5 s).
     /// </summary>
     public static class MotionFlash
     {
@@ -39,24 +47,80 @@ namespace Kaban.UI.Helpers
                 : T("Msg_MotionAtStart", "The module uses it from the axis's next start.");
         }
 
-        /// <summary>
-        /// After an Admin wrote <paramref name="item"/> of an axis: when it takes effect, that it is
-        /// lost at power off unless the flash ROM is written - and the flash ROM offered.
-        /// </summary>
-        public static void AfterParameterWritten(IWin32Window owner, int station, int module, int axis, SimpleMotion.Item item, string shown)
+        // ---- the modules changed since their flash ROM was written ---------------------------------------
+
+        private static readonly object _gate = new object();
+        /// <summary>"station|module" - what was changed in it ("Pr.3 of axis 2: 12.5000 mm").</summary>
+        private static readonly Dictionary<string, List<string>> _changed = new Dictionary<string, List<string>>();
+
+        /// <summary>A module was changed, or its flash ROM written (the buttons look again).</summary>
+        public static event EventHandler PendingChanged;
+
+        private static string Key(int station, int module) { return station + "|" + module; }
+
+        private static void Raise()
         {
-            string text = string.Format(T("Msg_MotionWritten", "{0} ({1}) of axis {2} (module {3}): {4} written."),
-                                        T(item.TitleKey, item.Title), item.Ref, axis, module, shown) +
-                          "\r\n\r\n" + WhenUsed(item) +
-                          "\r\n" + T("Msg_MotionKeptUntilOff", "The module keeps it until it is switched off - after that only what its flash ROM holds.") +
-                          "\r\n\r\n" + T("Msg_MotionFlashNow", "Write the module's flash ROM now?");
-            if (Say(owner, text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                Write(owner, station, module);
+            var h = PendingChanged;
+            if (h != null) try { h(null, EventArgs.Empty); } catch { }
         }
 
+        /// <summary>A parameter of the module written: its flash ROM to be written before the power goes off.</summary>
+        public static void MarkChanged(int station, int module, string what)
+        {
+            if (module <= 0) return;
+            lock (_gate)
+            {
+                List<string> list;
+                if (!_changed.TryGetValue(Key(station, module), out list)) _changed[Key(station, module)] = list = new List<string>();
+                list.RemoveAll(w => w == what);
+                list.Add(what ?? "");
+            }
+            Raise();
+        }
+
+        /// <summary>A parameter of an axis written: as <see cref="MarkChanged(int,int,string)"/>, named "Pr.3 of axis 2: 12.5000 mm".</summary>
+        public static void MarkChanged(int station, int module, int axis, SimpleMotion.Item item, string shown)
+        {
+            MarkChanged(station, module, string.Format(T("Msg_MotionChangedItem", "{0} ({1}) of axis {2}: {3}"),
+                                                      T(item.TitleKey, item.Title), item.Ref, axis, shown));
+        }
+
+        public static bool IsChanged(int station, int module)
+        {
+            lock (_gate) return _changed.ContainsKey(Key(station, module));
+        }
+
+        /// <summary>What was changed in a module since its flash ROM was written.</summary>
+        public static IList<string> ChangesOf(int station, int module)
+        {
+            lock (_gate)
+            {
+                List<string> list;
+                return _changed.TryGetValue(Key(station, module), out list) ? list.ToList() : new List<string>();
+            }
+        }
+
+        /// <summary>The module's flash ROM written: nothing waiting any more.</summary>
+        public static void Clear(int station, int module)
+        {
+            bool had;
+            lock (_gate) had = _changed.Remove(Key(station, module));
+            if (had) Raise();
+        }
+
+        /// <summary>For the tests: nothing changed anywhere.</summary>
+        internal static void ClearAll()
+        {
+            lock (_gate) _changed.Clear();
+            Raise();
+        }
+
+        // ---- writing the flash ROM -----------------------------------------------------------------------
+
         /// <summary>
-        /// Writes module <paramref name="module"/>'s flash ROM on <paramref name="station"/>, with a
-        /// window while the module writes (up to 5 s), and says how it went.
+        /// Writes module <paramref name="module"/>'s flash ROM on <paramref name="station"/> (Un\G5900 = 1),
+        /// with a window while the module writes (up to 5 s), and says how it went. Done: the module no
+        /// longer counts as changed.
         /// </summary>
         public static SimpleMotion.FlashResult Write(IWin32Window owner, int station, int module)
         {
@@ -69,7 +133,7 @@ namespace Kaban.UI.Helpers
             }
             int writes = -1;
             var result = WorkForm.Run(owner, T("Ttl_MotionFlash", "Simple motion module"),
-                T("Msg_MotionFlashWriting", "Writing the module's flash ROM (up to 5 seconds) - do not switch the machine off."),
+                string.Format(T("Msg_MotionFlashWriting", "Writing simple motion module {0}'s flash ROM (up to 5 seconds) - do not switch the machine off."), module),
                 p =>
                 {
                     using (WriteSource.For(string.Format("Simple motion module {0}: flash ROM write request (Cd.1)", module)))
@@ -79,14 +143,9 @@ namespace Kaban.UI.Helpers
             switch (result)
             {
                 case SimpleMotion.FlashResult.Written:
+                    Clear(station, module);
                     text = string.Format(T("Msg_MotionFlashDone", "Module {0}'s flash ROM written ({1} of {2} writes allowed since the power was switched on)."),
                                          module, writes < 0 ? "?" : writes.ToString(), SimpleMotion.MaxFlashWritesPerPowerOn);
-                    break;
-                case SimpleMotion.FlashResult.PlcReadyOn:
-                    text = string.Format(T("Msg_MotionFlashReadyOn",
-                        "Not written: the module writes its flash ROM only while its PLC READY signal (Cd.190, {0}) is off - and it is on.\r\n" +
-                        "Turn it off (the PLC in STOP, or its program's PLC READY off - the axes stop), then write the flash ROM again from a parameter's menu."),
-                        SimpleMotion.Device(module, SimpleMotion.PlcReadyAddress));
                     break;
                 case SimpleMotion.FlashResult.TooManyWrites:
                     text = string.Format(T("Msg_MotionFlashTooMany",
@@ -94,7 +153,10 @@ namespace Kaban.UI.Helpers
                         SimpleMotion.MaxFlashWritesPerPowerOn);
                     break;
                 case SimpleMotion.FlashResult.TimedOut:
-                    text = T("Msg_MotionFlashTimedOut", "The module did not report the flash ROM written within 8 seconds - check its error code (Md.23) before switching it off.");
+                    text = string.Format(T("Msg_MotionFlashTimedOut",
+                        "Asked for ({0} = 1), but the module did not report its flash ROM written within 8 seconds. It does not write while its " +
+                        "PLC READY signal (Cd.190) is on (warning 0905H) - check its warning and error codes, then write it again."),
+                        SimpleMotion.Device(module, SimpleMotion.FlashWriteRequestAddress));
                     break;
                 case SimpleMotion.FlashResult.Refused:
                     text = T("Msg_MotionFlashRefused", "The PLC refused the flash ROM write request.");

@@ -305,7 +305,7 @@ namespace Kaban.UI.Settings
             Controls.Add(bottom);
 
             var tips = UiStyle.Tips();
-            UiStyle.SetTip(tips, _flash, T("Tip_BakFlash", "The module keeps what is written until it is switched off - only what its flash ROM holds after that. Written only while its PLC READY signal is off."));
+            UiStyle.SetTip(tips, _flash, T("Tip_BakFlash", "The module keeps what is written until it is switched off - only what its flash ROM holds after that. Not ticked: the Axis Settings page's flash ROM button blinks until it is written."));
             FillList();
         }
 
@@ -486,9 +486,12 @@ namespace Kaban.UI.Settings
             PlcBackupUi.Say(this, text, MessageBoxButtons.OK, result.Ok ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 
             // a module's data is gone at power off unless its flash ROM holds it
-            if (_flash.Visible && _flash.Checked && result.Ok)
-                foreach (var module in parts.Where(p => p.Source.IsModule).Select(p => ModuleOf(p.Target)).Where(m => m > 0).Distinct())
-                    MotionFlash.Write(this, _endpoint.StationId, module);
+            // (23 October) not written now: the module counts as changed - the Axis Settings page's button blinks
+            foreach (var module in parts.Where(p => p.Source.IsModule).Select(p => ModuleOf(p.Target)).Where(m => m > 0).Distinct())
+            {
+                MotionFlash.MarkChanged(_endpoint.StationId, module, string.Format(T("Msg_BakModuleChanged", "the backup of {0} written into it"), from));
+                if (_flash.Visible && _flash.Checked && result.Ok) MotionFlash.Write(this, _endpoint.StationId, module);
+            }
             return result;
         }
 

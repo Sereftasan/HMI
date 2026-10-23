@@ -1584,6 +1584,11 @@ namespace Kaban.UI.Controls
                 motion.Pin(page, x, Math.Max(0, items.Left - offset));
                 // its place taken from the items list, with room between (at any screen scale)
                 motion.StandRightOf(items);
+                // 23 October: the flash ROM button beside the Motion monitor list, blinking while a module
+                // of the page's axes has a parameter changed that its flash ROM does not hold yet
+                // the rows' own page asked each time (they move into the page's frame once it is shown)
+                var aRow = this;
+                motion.Controls.Add(new FlashRomButton(() => PageModules(aRow.Parent)));
 
                 // The page as a table: once it is shown, its heading (these lists and
                 // the column names) stays while the rows scroll under it.
@@ -1597,6 +1602,14 @@ namespace Kaban.UI.Controls
             bool hasMotion = PageHasMotion();
             motion.Visible = hasMotion;
             motion.Offer(PageItems(), hasMotion);
+        }
+
+        /// <summary>The simple motion modules of a page's axes: each one's station and module number.</summary>
+        internal static System.Collections.Generic.IList<System.Collections.Generic.KeyValuePair<int, int>> PageModules(Control page)
+        {
+            if (page == null || page.IsDisposed) return new System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<int, int>>();
+            return RowsOf(page).Where(r => r.HasMotion).Select(r => new System.Collections.Generic.KeyValuePair<int, int>(r.PlcNumber, r.MotionNumber))
+                               .Distinct().ToList();
         }
 
         /// <summary>True on a page being designed in Visual Studio (the page or a control of it sited in the designer).</summary>

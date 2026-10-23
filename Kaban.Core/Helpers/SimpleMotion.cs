@@ -26,8 +26,8 @@ namespace Kaban.Core.Helpers
     /// the axis's next start (parameter area (b): Pr.8 - Pr.10, Pr.25 - Pr.42, Pr.84), or when the
     /// "[Cd.190] PLC READY signal" turns on again (area (a): Pr.1 - Pr.7, Pr.11 - Pr.24, Pr.43 -
     /// Pr.57 ...). Either way the module loads its FLASH ROM at power on, so a value not written
-    /// into it ("[Cd.1] Flash ROM write request", G5900 = 1 - only while PLC READY is off, at most
-    /// 25 times per power on) is gone at the next power off: see <see cref="WriteFlashRom"/>.
+    /// into it ("[Cd.1] Flash ROM write request", G5900 = 1, at most 25 times per power on) is gone
+    /// at the next power off: see <see cref="WriteFlashRom"/>.
     ///
     /// An AxisSettingHMI with its MotionModuleNumber (the n of Un\G, as GX Works3
     /// numbers the module) and its ModuleAxisIndex (1 - 8) shows the ones picked
@@ -505,7 +505,7 @@ namespace Kaban.Core.Helpers
 
         /// <summary>"[Cd.1] Flash ROM write request": 1 asks the module to write its flash ROM; it sets 0 when done.</summary>
         public const int FlashWriteRequestAddress = 5900;
-        /// <summary>"[Cd.190] PLC READY signal": the flash ROM is written only while it is off.</summary>
+        /// <summary>"[Cd.190] PLC READY signal": the module writes its flash ROM only while it is off (else warning 0905H).</summary>
         public const int PlcReadyAddress = 5950;
         /// <summary>"[Md.19] Number of write accesses to flash ROM" since power on (two words).</summary>
         public const int FlashWritesAddress = 4224;
@@ -514,14 +514,15 @@ namespace Kaban.Core.Helpers
         /// <summary>The module's writing takes up to 5 s (the manual): waited for a little longer.</summary>
         public const int FlashWriteTimeoutMs = 8000;
 
-        public enum FlashResult { Written, NotConnected, PlcReadyOn, TooManyWrites, Refused, TimedOut }
+        public enum FlashResult { Written, NotConnected, TooManyWrites, Refused, TimedOut }
 
         /// <summary>
         /// Writes a module's flash ROM ("execution data backup": its parameters, positioning data,
-        /// block start data and servo parameters as they are in its buffer memory now): PLC READY
-        /// must be off and fewer than 25 writes made since power on; then G5900 = 1, and the module
-        /// sets it back to 0 when it has written. <paramref name="writes"/>: Md.19 afterwards.
-        /// <paramref name="wait"/> sleeps between the polls (a test passes its own).
+        /// block start data and servo parameters as they are in its buffer memory now) - 23 October:
+        /// "You just need to write 1 to Un\G5900 ... that is all": G5900 = 1 (unless the 25 writes a
+        /// power on allows are used up - the 26th is error 1080H), and the module sets it back to 0 when
+        /// it has written. <paramref name="writes"/>: Md.19 afterwards. <paramref name="wait"/> sleeps
+        /// between the polls (a test passes its own).
         /// </summary>
         public static FlashResult WriteFlashRom(Interfaces.IPlcDriver driver, int module, out int writes, Action<int> wait = null,
                                                 int timeoutMs = FlashWriteTimeoutMs)
@@ -529,9 +530,7 @@ namespace Kaban.Core.Helpers
             writes = -1;
             if (driver == null || !driver.IsConnected) return FlashResult.NotConnected;
             wait = wait ?? (ms => System.Threading.Thread.Sleep(ms));
-            int ready, low, high;
-            if (!driver.TryRead(Device(module, PlcReadyAddress), out ready)) return FlashResult.NotConnected;
-            if ((ready & 1) != 0) return FlashResult.PlcReadyOn;
+            int low, high;
             if (driver.TryRead(Device(module, FlashWritesAddress), out low) && driver.TryRead(Device(module, FlashWritesAddress + 1), out high))
             {
                 writes = (ushort)low | ((ushort)high << 16);

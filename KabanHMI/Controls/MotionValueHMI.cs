@@ -20,8 +20,8 @@ namespace Kaban.UI.Controls
     /// to numerical input instead of display so the admin user could change them"): white, a click
     /// opens the keypad in the cell's unit (the unit setting a list of the four units), the value
     /// is checked against the parameter's setting range and written into the module's buffer
-    /// memory - then the Admin is told when the module takes it and offered its flash ROM, without
-    /// which the module forgets it at power off (MotionFlash). For anyone else it stays a display.
+    /// memory - and the module counts as changed (MotionFlash): the page's blinking button writes
+    /// its flash ROM, without which it forgets the value at power off. For anyone else a display.
     /// </summary>
     public class MotionValueHMI : Control, IPlcExtraAddresses, UiStyle.IDisplayOnly
     {
@@ -170,7 +170,8 @@ namespace Kaban.UI.Controls
                 text += "\n" + _first + (_item.Double ? " / " + SimpleMotion.Device(_module, SimpleMotion.AddressOf(_item, _axis) + 1) : "") +
                         (_item.Kind == SimpleMotion.Kind.Flag ? (_item.BitPerAxis ? " bit " + (_axis - 1) : " bit " + _item.Bit) : "");
             if (_item.Writable && SecurityManager.HasAccess(SecurityLevel.Admin))
-                text += "\n" + LanguageManager.GetString("Tip_MotionParamEdit", "Click: change it. Right-click: the module's flash ROM.") +
+                text += "\n" + LanguageManager.GetString("Tip_MotionParamEdit",
+                            "Click: change it. Kept after power off once the module's flash ROM is written (the blinking button above the page).") +
                         "\n" + MotionFlash.WhenUsed(_item);
             _tips.SetToolTip(this, text);
         }
@@ -292,7 +293,8 @@ namespace Kaban.UI.Controls
             _low = low; _high = high;
             _text = SimpleMotion.Format(_item, low, high, _unitSetting, _axis, _decimals, _rowUnit);
             Invalidate();
-            MotionFlash.AfterParameterWritten(FindForm(), PlcNumber, _module, _axis, _item, _text);
+            // the module changed: the page's button blinks until its flash ROM is written
+            MotionFlash.MarkChanged(PlcNumber, _module, _axis, _item, _text);
             return true;
         }
 

@@ -257,6 +257,9 @@
     <Compile Include="Controls\ToolGlyphs.cs" />
     <Compile Include="Controls\EmojiArt.cs" />
     <Compile Include="Controls\MenuGlyphs.cs" />
+    <Compile Include="Controls\FlashRomButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\MotionValueHMI.cs">
       <SubType>Component</SubType>
     </Compile>
