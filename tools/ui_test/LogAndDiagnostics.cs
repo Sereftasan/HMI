@@ -188,21 +188,6 @@ class L {
         Check("silence in words", ControllerStatus.Span(TimeSpan.FromSeconds(12)) == "12 s" &&
                                   ControllerStatus.Span(TimeSpan.FromMinutes(4)) == "4 min" &&
                                   ControllerStatus.Span(TimeSpan.FromMinutes(125)) == "2 h 5 min");
-        var used = MxToolsView.StationsInUse();
-        Check("the MX tools know which logical station the machine uses", used.ContainsKey(3) && used[3] == 2,
-              string.Join(",", used.Select(p => p.Key + "->" + p.Value)));
-
-        var mx = new MxToolsView();
-        var host3 = new Form { Width = 1000, Height = 600 }; host3.Controls.Add(mx); host3.Show(); Application.DoEvents();
-        var start = typeof(MxToolsView).GetMethod("Start", BindingFlags.NonPublic | BindingFlags.Instance);
-        start.Invoke(mx, new object[] { new[] { 3, 4 }, true });
-        var until = DateTime.Now.AddSeconds(20);
-        while (mx.Running && DateTime.Now < until) { Application.DoEvents(); System.Threading.Thread.Sleep(20); }
-        for (int i = 0; i < 10; i++) { Application.DoEvents(); System.Threading.Thread.Sleep(20); }
-        Check("the scan runs in the background and ends", !mx.Running);
-        Check("  the machine's own station is reported, not opened", mx.Output.Contains("station 3: in use by PLC 2"), mx.Output);
-        Check("  another is tried (no MX Component here: its code)", mx.Output.Contains("station 4: 0x80040154"), mx.Output);
-        host3.Close();
 
         try { Directory.Delete(dir, true); } catch { }
         Console.WriteLine(fail==0?"\nLOG AND DIAGNOSTICS ALL PASS":"\n"+fail+" FAILED");

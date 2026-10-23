@@ -128,13 +128,12 @@ class CP {
         var titles = settings.AllPages.Select(p => p.TitleFallback).ToList();
         Check("HMI Settings has PLC Connections, and no separate PLC Diagnostics", titles.Contains("PLC Connections") && !titles.Any(t => t.Contains("Diagnostics")),
               string.Join(", ", titles));
-        var conn = ShowPage(settings, "PLC Connections") as SettingsScreen;
-        Check("  its tabs: Controllers, Connection events, MX Component (Admin)",
-              conn != null && string.Join(",", conn.AllPages.Select(p => p.TitleFallback)) == "Controllers,Connection events,MX Component" &&
-              conn.AllPages.Last().RequiredLevel == SecurityLevel.Admin,
-              conn == null ? "not a tab host" : string.Join(",", conn.AllPages.Select(p => p.TitleFallback)));
+        // 23 October: "We should remove Connection events and MX Component tabs on PLC Connections page, they are not
+        // useful at all ... put all the page right inside PLC Connections itself (without any sub tabs)"
+        var ctl = ShowPage(settings, "PLC Connections") as StationConnectionControl;
+        Check("  no tabs under it: the controllers' table itself", ctl != null && !All(ctl).OfType<SettingsScreen>().Any(),
+              ctl == null ? "not the table" : "tabs inside");
         Check("  open to Maintenance", settings.AllPages.First(p => p.TitleKey == "Set_StationConn").RequiredLevel == SecurityLevel.Maintenance);
-        var ctl = conn == null ? null : ShowPage(conn, "Controllers") as StationConnectionControl;
         Pump(1200);
         var table = ctl == null ? null : (TableLayoutPanel)Get(ctl, "_table");
         var header = table == null ? new List<string>() : Enumerable.Range(0, table.ColumnCount).Select(c => table.GetControlFromPosition(c, 0)).Where(c => c != null).Select(c => c.Text).ToList();
@@ -159,9 +158,6 @@ class CP {
         Pump(50);
         Check("  Maintenance reads it, cannot change it (and is told so)", !driverBox.Enabled && !save.Visible && ((Label)Get(ctl, "_adminNote")).Visible);
         SecurityManager.Login("admin", SecurityLevel.Admin);
-        var events = ShowPage(conn, "Connection events") as LogViewerControl;
-        Check("Connection events: the log viewer, with its controller filter", events != null && events.PlcChoices.Count > 1,
-              events == null ? "none" : string.Join(" | ", events.PlcChoices));
 
         form.Close();
         Pump(100);

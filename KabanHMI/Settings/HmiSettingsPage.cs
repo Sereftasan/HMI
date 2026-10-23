@@ -27,8 +27,8 @@ namespace Kaban.UI.Settings
                 // Reports, PLC Connections, Config Import, AI.
                 new UsersPreferencesPage(),
                 new LogSettingsPage(),
-                // One tab for the controllers: connections, their state, the
-                // connection events and the MX Component tools (it was two).
+                // One tab for the controllers: their connections and state, their data's
+                // Read and Write (it was two; no tabs under it since 23 October).
                 new StationConnectionPage(),
                 new ImportSettingsPage(),
                 new AiPromptPage(),

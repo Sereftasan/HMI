@@ -71,7 +71,7 @@ class LP {
         Console.WriteLine("--- a test's shell remembers nothing ---");
         Check("RememberPlace is off unless the program itself starts", !new MainForm().RememberPlace);
 
-        Console.WriteLine("--- first run: HMI Settings > PLC Connections > Connection events, the monitor open ---");
+        Console.WriteLine("--- first run: HMI Settings > PLC Connections, the monitor open ---");
         var a = Start("admin", SecurityLevel.Admin);
         a.LoadScreen(Nav(a, ScreenRoles.HmiSettings));
         Pump(50);
@@ -79,13 +79,11 @@ class LP {
         var tabs = All(hmi).OfType<SettingsScreen>().FirstOrDefault(sc => sc.AllPages.Any(p => p.TitleKey == "Set_StationConn")) ?? hmi;
         typeof(SettingsScreen).GetMethod("ShowPage", Any).Invoke(tabs, new object[] { tabs.AllPages.First(p => p.TitleKey == "Set_StationConn") });
         Pump(50);
-        var conn = All(a).OfType<SettingsScreen>().First(sc => sc.AllPages.Any(p => p.TitleFallback == "Connection events"));
-        typeof(SettingsScreen).GetMethod("ShowPage", Any).Invoke(conn, new object[] { conn.AllPages.First(p => p.TitleFallback == "Connection events") });
         a.RecordLocation();
         a.ShowSidePage("PlcMonitor");
         Pump(100);
         string before = Chain(a);
-        Check("there", before.Contains("PLC Connections > Connection events"), before);
+        Check("there", before.Contains("PLC Connections"), before);
         a.Close();
         Pump(200);
         var file = Path.Combine(dir, "LastPage.cfg");

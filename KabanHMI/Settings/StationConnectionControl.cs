@@ -627,8 +627,8 @@ namespace Kaban.UI.Settings
     {
         public string TitleKey { get { return "Set_StationConn"; } }
         public string TitleFallback { get { return "PLC Connections"; } }
-        // Maintenance reads it (state, events); an Admin changes connections and
-        // uses the MX Component tools - see PlcConnectionScreen.
+        // Maintenance reads it (the controllers' state); an Admin changes the
+        // connections - see PlcConnectionScreen.
         public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
         public UserControl GetControl() { return PlcConnectionScreen.Build(); }
     }
