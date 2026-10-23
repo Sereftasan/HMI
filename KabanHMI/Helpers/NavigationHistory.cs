@@ -40,7 +40,7 @@ namespace Kaban.UI.Helpers
         /// </summary>
         public static void Record(Action restore, object[] key)
         {
-            if (_replaying || restore == null) return;
+            if (_replaying || _muted > 0 || restore == null) return;
             if (key != null && _index >= 0 && _index < _keys.Count && SameKey(_keys[_index], key)) return;
 
             // moving somewhere new discards the forward branch, like a browser
@@ -73,6 +73,28 @@ namespace Kaban.UI.Helpers
             for (int i = 0; i < a.Length; i++)
                 if (!ReferenceEquals(a[i], b[i])) return false;
             return true;
+        }
+
+        private static int _muted;
+
+        /// <summary>
+        /// A LINK'S WAY (23 October: "Previous page button doesn't make the control's original page open when
+        /// translation page opened from Notes and Feedback page, the page history should be recorded from any
+        /// link opens any page"): while a link opens its page - the page, then a tab, then another tab on it -
+        /// nothing is recorded; the shell records the place it led to once, after it (MainForm.AsOneStep). It
+        /// recorded every page and tab on the way, and Back went to one of them - HMI Settings on the tab it
+        /// was left on - instead of the page the link was followed from.
+        /// </summary>
+        public static IDisposable Muted()
+        {
+            _muted++;
+            return new Unmute();
+        }
+
+        private sealed class Unmute : IDisposable
+        {
+            private bool _done;
+            public void Dispose() { if (_done) return; _done = true; if (_muted > 0) _muted--; }
         }
 
         /// <summary>True while a Back/Forward step is being replayed.</summary>

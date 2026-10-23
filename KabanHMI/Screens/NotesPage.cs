@@ -74,6 +74,14 @@ namespace Kaban.UI.Screens
         /// <summary>Opens HMI Settings > Translation on a key ("" or why not) - the texts' link. Null: no link.</summary>
         public Func<string, string> OpenTranslationTable;
 
+        /// <summary>Opens a use's page and points at it ("" or why not) - Find's link. Null: Find lists only.</summary>
+        public Func<DeviceCollector.Use, string> OpenUse;
+
+        /// <summary>Tests: Find's window given to it instead of shown.</summary>
+        public static Func<NotesFindForm, DialogResult> FindShowing;
+
+        private readonly Button _find;
+
         /// <summary>The shade while picking (tests).</summary>
         internal PickShade Shade { get { return _shade; } }
 
@@ -110,7 +118,13 @@ namespace Kaban.UI.Screens
             _pick.Click += (s, e) => SetPicking(!_picking);
             _status.Dock = DockStyle.Fill;
             _status.Padding = new Padding(8, 0, 0, 0);
+            // 23 October: where the picked control's devices and texts are used (Ctrl+F)
+            _find = UiStyle.ToolButton("🔎", T("Nts_TipFind", "Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F)"),
+                                       _tips, (s, e) => OpenFind());
+            _find.Name = "notesFind";
+            _find.Dock = DockStyle.Right;
             top.Controls.Add(_status);
+            top.Controls.Add(_find);
             top.Controls.Add(_pick);
 
             // ---- the foot: a general note, the feedback file ----
@@ -480,6 +494,12 @@ namespace Kaban.UI.Screens
                 if (m.Msg == WM_KEYDOWN || m.Msg == WM_KEYUP)
                 {
                     var key = (Keys)(int)(long)m.WParam;
+                    // Ctrl+F while picking: the notes page's Find, wherever the keyboard is
+                    if (key == Keys.F && (Control.ModifierKeys & Keys.Control) != 0 && (Control.ModifierKeys & Keys.Alt) == 0)
+                    {
+                        if (m.Msg == WM_KEYDOWN) { try { _page.BeginInvoke(new Action(_page.OpenFind)); } catch { } }
+                        return true;
+                    }
                     if (key != Keys.Space && key != Keys.Enter) return false;
                     var focused = NoteTarget.Notable(hit);
                     if (focused == null || !_page._pickable(focused)) return false;
@@ -931,6 +951,58 @@ namespace Kaban.UI.Screens
                 default:
                     try { return new CultureInfo(code.ToLowerInvariant()).NativeName; } catch { return code; }
             }
+        }
+
+        // ---- FIND (23 October) -------------------------------------------------------------
+
+        /// <summary>The picked control's devices (on every controller, "X12@2" another's) and its texts' keys.</summary>
+        internal List<NotesFindForm.Element> Elements()
+        {
+            var list = new List<NotesFindForm.Element>();
+            foreach (var k in _keys)
+                if (!string.IsNullOrWhiteSpace(k.Key) && !list.Any(e => e.IsText && e.Name == k.Key))
+                    list.Add(new NotesFindForm.Element { IsText = true, Name = k.Key, Shown = k.Key });
+            if (_picked == null || _picked.IsDisposed || (_kind != PickKind.Control && _kind != PickKind.Cell && _kind != PickKind.Heading)) return list;
+            int main = MainStation();
+            foreach (int st in PlcConnectionSettings.Endpoints().Select(ep => ep.StationId).Distinct())
+            {
+                List<DeviceCollector.Device> devices;
+                try { devices = DeviceCollector.UnderControl(_picked, st); }
+                catch { continue; }
+                foreach (var d in devices.Take(40))
+                    if (!list.Any(e => !e.IsText && e.Station == d.Station && string.Equals(e.Name, d.Address, StringComparison.OrdinalIgnoreCase)))
+                        list.Add(new NotesFindForm.Element { Name = d.Address, Station = d.Station,
+                                                             Shown = d.Station == main ? d.Address : d.Address + PlcAddressHelper.StationMark + d.Station });
+            }
+            return list;
+        }
+
+        private static int MainStation()
+        {
+            var first = PlcConnectionSettings.Endpoints().FirstOrDefault();
+            return first != null ? first.StationId : 1;
+        }
+
+        /// <summary>
+        /// Find: where the picked control's devices and texts are used - or another one typed; a use chosen,
+        /// its page opened (picking off: the page is to be looked at).
+        /// </summary>
+        internal void OpenFind()
+        {
+            using (var f = new NotesFindForm(_kind == PickKind.General ? "" : _name ?? "", Elements(), MainStation()))
+            {
+                var r = FindShowing != null ? FindShowing(f) : f.ShowDialog(FindForm());
+                if (r != DialogResult.OK || f.Chosen == null || OpenUse == null) return;
+                SetPicking(false);
+                var why = OpenUse(f.Chosen) ?? "";
+                _status.Text = why.Length > 0 ? why : string.Format(T("Nts_FindOpened", "{0}: its page opened - picking is off."), f.Chosen.UsedAs);
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F)) { OpenFind(); return true; }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         /// <summary>The key's row of HMI Settings > Translation, picking off (the page is to be typed in).</summary>

@@ -247,6 +247,27 @@ namespace Kaban.UI.Forms
         /// </summary>
         public Control ShowDeviceUse(Helpers.DeviceCollector.Use use, out string why)
         {
+            Control found = null;
+            string reason = "";
+            AsOneStep(() => found = ShowDeviceUseOnce(use, out reason));
+            why = reason;
+            return found;
+        }
+
+        /// <summary>
+        /// A LINK followed (23 October: "the page history should be recorded from any link opens any page"): the
+        /// place it is followed from recorded as it is now, nothing on the way (a page, a tab, another tab), and
+        /// the place it leads to - one Back/Forward step from where the link was to where it led.
+        /// </summary>
+        internal void AsOneStep(Action open)
+        {
+            RecordLocation();
+            using (Helpers.NavigationHistory.Muted()) open();
+            RecordLocation();
+        }
+
+        private Control ShowDeviceUseOnce(Helpers.DeviceCollector.Use use, out string why)
+        {
             why = "";
             if (use == null || use.Screen == null)
             {
@@ -2046,8 +2067,8 @@ namespace Kaban.UI.Forms
             {
                 var settings = FindSettingsWith(kv.Value, "Set_StationConn");
                 if (settings == null) continue;
-                LoadScreen(kv.Value);
-                settings.ActivateByKey("Set_StationConn");
+                var screen = kv.Value;
+                AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
                 return;
             }
         }

@@ -1081,7 +1081,7 @@ namespace Kaban.UI.Settings
 
         internal DataGridView Grid { get { return _grid; } }
 
-        private static string KindName(Kaban.UI.Helpers.TextUses.Use u)
+        internal static string KindName(Kaban.UI.Helpers.TextUses.Use u)
         {
             switch (u.Kind)
             {

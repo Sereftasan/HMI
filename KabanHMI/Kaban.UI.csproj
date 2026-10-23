@@ -326,6 +326,9 @@
     </Compile>
     <Compile Include="Screens\StandardScreens.cs" />
     <Compile Include="Screens\MachineTabScreen.cs" />
+    <Compile Include="Screens\NotesFindForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Screens\NotesPage.cs">
       <SubType>UserControl</SubType>
     </Compile>

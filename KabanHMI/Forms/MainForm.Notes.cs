@@ -34,7 +34,15 @@ namespace Kaban.UI.Forms
                     // darker while picking: the page, the caption bar and the menu - what a tap picks in
                     // (21 October; the menu's page buttons picked too, 22 October)
                     ShadeAreas = () => new Control[] { pnlTop, pnlMenu, pnlContent },
-                    OpenTranslationTable = k => { string why; OpenTranslation(k, out why); return why; }
+                    OpenTranslationTable = k => { string why; OpenTranslation(k, out why); return why; },
+                    // 23 October: the notes page's Find - a use's page opened, what uses it pointed at
+                    OpenUse = u =>
+                    {
+                        string why;
+                        var target = ShowDeviceUse(u, out why);
+                        if (target != null) BeginInvoke((MethodInvoker)(() => Helpers.ControlHighlight.Flash(target)));
+                        return target != null ? "" : why;
+                    }
                 },
                 RequiredLevel = SecurityLevel.None,
                 SortOrder = 900
@@ -46,6 +54,15 @@ namespace Kaban.UI.Forms
         /// link, 21 October); null and why when it cannot be shown (no such page, the level, no such key).
         /// </summary>
         public Settings.TranslationsControl OpenTranslation(string key, out string why)
+        {
+            Settings.TranslationsControl table = null;
+            string reason = "";
+            AsOneStep(() => table = OpenTranslationOnce(key, out reason));      // one Back step to the page it was opened from
+            why = reason;
+            return table;
+        }
+
+        private Settings.TranslationsControl OpenTranslationOnce(string key, out string why)
         {
             why = "";
             var screen = System.Linq.Enumerable.FirstOrDefault(
