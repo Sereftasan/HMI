@@ -146,6 +146,7 @@ class PBU {
 
         var again = new PlcBackupReadForm(ep);
         Check("the next Read offers the serial number typed for this PLC", ((TextBox)find(again, "bakSerial")).Text == "2SZ0123456");
+        Check("  and the cam numbers typed for it (23 October)", ((TextBox)find(again, "bakCams")).Text == "4" && b.CamsTyped == "4", ((TextBox)find(again, "bakCams")).Text);
         again.Dispose();
 
         Console.WriteLine("--- Write ---");

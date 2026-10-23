@@ -117,8 +117,13 @@ namespace Kaban.UI.Settings
             var id = driver as IPlcIdentity;
             _cpu.Text = id != null && !string.IsNullOrEmpty(id.Identity) ? id.Identity : T("Lbl_BakCpuUnknown", "(the PLC does not say)");
             _date.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
-            var last = PlcBackup.List().FirstOrDefault(b => b.Machine == _machine && b.Plc == _plc && b.Serial.Length > 0);
+            var mine = PlcBackup.List().Where(b => b.Machine == _machine && b.Plc == _plc).ToList();
+            var last = mine.FirstOrDefault(b => b.Serial.Length > 0);
             if (last != null) _serial.Text = last.Serial;
+            // the cam numbers typed for this PLC last (23 October: "Should the Read window remember the cam numbers you typed
+            // for each PLC, the way it offers the last serial number?" - "Yes")
+            var cams = mine.FirstOrDefault(b => b.CamsTyped.Length > 0);
+            if (cams != null) _cams.Text = cams.CamsTyped;
 
             var grid = new TableLayoutPanel { Location = new Point(14, 12), Size = new Size(592, _modules.Count > 0 ? 402 : 360), ColumnCount = 2 };
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
@@ -152,7 +157,7 @@ namespace Kaban.UI.Settings
 
             var tips = UiStyle.Tips();
             UiStyle.SetTip(tips, _serial, T("Tip_BakSerial", "The CPU's serial number, from its label - MX Component does not read it. The last one typed for this PLC is offered."));
-            UiStyle.SetTip(tips, _cams, T("Tip_BakCams", "Cam numbers read besides those the axes use - 1 - 10, 35. A number with no cam leaves warning 0C41H on the module's axis 1 (the module's own answer), so type the cams there are."));
+            UiStyle.SetTip(tips, _cams, T("Tip_BakCams", "Cam numbers read besides those the axes use - 1 - 10, 35. A number with no cam leaves warning 0C41H on the module's axis 1 (the module's own answer), so type the cams there are. The numbers typed for this PLC last are offered."));
 
             var read = UiStyle.TextButton(T("Btn_BakRead", "Read"), 110, (s, e) => DoRead());
             read.Name = "bakRead";
@@ -178,7 +183,8 @@ namespace Kaban.UI.Settings
             var backup = new PlcBackup.Backup
             {
                 Machine = _machine, Plc = _plc, Cpu = _cpu.Text, Serial = _serial.Text.Trim(), User = SecurityManager.CurrentUser,
-                Date = DateTime.Now, Station = _endpoint.StationId, Description = _description.Text.Trim(), Modules = _modules
+                Date = DateTime.Now, Station = _endpoint.StationId, Description = _description.Text.Trim(), Modules = _modules,
+                CamsTyped = _modules.Count > 0 ? _cams.Text.Trim() : ""
             };
             if (backup.Cpu.StartsWith("(")) backup.Cpu = "";
             List<int> extraCams;

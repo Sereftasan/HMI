@@ -195,6 +195,8 @@ namespace Kaban.Core.Helpers
         public sealed class Backup
         {
             public string Machine = "", Plc = "", Cpu = "", Serial = "", User = "", Description = "";
+            /// <summary>The cam numbers typed in the Read window ("1 - 10, 35"), offered again for the PLC's next Read (23 October).</summary>
+            public string CamsTyped = "";
             public DateTime Date;
             public int Station;
             /// <summary>Its simple motion modules: the module's number and its axes.</summary>
@@ -682,6 +684,7 @@ namespace Kaban.Core.Helpers
             sb.AppendLine("Station;" + b.Station.ToString(CultureInfo.InvariantCulture));
             sb.AppendLine("Description;" + Line(b.Description));
             sb.AppendLine("Modules;" + string.Join(",", b.Modules.Select(m => m.Key + ":" + m.Value)));
+            if (!string.IsNullOrWhiteSpace(b.CamsTyped)) sb.AppendLine("Cams;" + Line(b.CamsTyped.Trim()).Replace(";", ","));
             if (b.Skipped.Count > 0) sb.AppendLine("Skipped;" + Line(string.Join(" | ", b.Skipped)));
             foreach (var a in b.Areas)
             {
@@ -777,6 +780,7 @@ namespace Kaban.Core.Helpers
                             }
                             break;
                         case "Skipped": b.Skipped.AddRange(value.Split(new[] { " | " }, StringSplitOptions.RemoveEmptyEntries)); break;
+                        case "Cams": b.CamsTyped = value.Trim(); break;
                     }
                 }
                 close();
