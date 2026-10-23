@@ -228,6 +228,9 @@
     <Compile Include="Settings\PlcBackupSelection.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings\SettingsCompareForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Settings\TranslationFlagForm.cs">
       <SubType>Form</SubType>
     </Compile>

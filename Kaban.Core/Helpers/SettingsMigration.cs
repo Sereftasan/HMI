@@ -53,6 +53,35 @@ namespace Kaban.Core.Helpers
 
             /// <summary>True when the file needs converting, not just copying.</summary>
             public bool NeedsUpgrade { get { return DetectedVersion < CurrentFormatVersion; } }
+
+            /// <summary>
+            /// 23 October: how this program's file and the older one's differ - the lines as the import would write
+            /// them against this program's (null: not compared - unreadable, or from a newer program).
+            /// </summary>
+            public TextDiff.Summary Diff;
+            /// <summary>This program has the file (else the import adds it).</summary>
+            public bool TargetExists;
+        }
+
+        /// <summary>The lines an import of <paramref name="f"/> writes: the older file's, converted when it needs it.</summary>
+        public static string[] ImportedLines(Finding f)
+        {
+            var lines = File.ReadAllLines(f.SourcePath);
+            var kind = Kinds.FirstOrDefault(k => string.Equals(k.Name, f.FileName, StringComparison.OrdinalIgnoreCase));
+            if (kind != null && f.NeedsUpgrade) lines = kind.Upgrade(lines, f.DetectedVersion);
+            return lines;
+        }
+
+        /// <summary>This program's lines of the file (none: it has no such file).</summary>
+        public static string[] CurrentLines(Finding f)
+        {
+            return File.Exists(f.TargetPath) ? File.ReadAllLines(f.TargetPath) : new string[0];
+        }
+
+        /// <summary>This program's file and what the import would write, side by side (TextDiff).</summary>
+        public static List<TextDiff.Row> Compare(Finding f)
+        {
+            return TextDiff.Compare(CurrentLines(f), ImportedLines(f));
         }
 
         /// <summary>The files a machine install owns, and how to recognise them.</summary>
@@ -86,7 +115,8 @@ namespace Kaban.Core.Helpers
             new FileKind
             {
                 Name = "PlcLabels.csv", Kind = "PLC label list",
-                Detect = p => 1, Upgrade = (l, v) => l
+                // one shape so far: copied as it is (it was said to be "converted from v1")
+                Detect = p => CurrentFormatVersion, Upgrade = (l, v) => l
             },
         };
 
@@ -141,6 +171,10 @@ namespace Kaban.Core.Helpers
                     else if (f.NeedsUpgrade)
                         f.Note = "will be converted from v" + f.DetectedVersion +
                                  " to v" + CurrentFormatVersion;
+
+                    f.TargetExists = File.Exists(f.TargetPath);
+                    if (f.Selected)
+                        try { f.Diff = TextDiff.Count(Compare(f)); } catch { f.Diff = null; }
 
                     found.Add(f);
                 }
@@ -324,6 +358,26 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
+        /// The older program's own folder a file found is in (23 October): the nearest folder from the file up that
+        /// holds a program (an .exe) - the folder chosen when none does. A whole installation chosen (C:\OldHMI, the
+        /// program in its bin\Debug) put the files into this program's bin\Debug\ folder, where nothing reads them.
+        /// </summary>
+        private static string ProgramRoot(string dir, string sourceRoot)
+        {
+            var root = Path.GetFullPath(sourceRoot).TrimEnd('\\', '/');
+            try
+            {
+                for (var d = Path.GetFullPath(dir).TrimEnd('\\', '/'); d != null && d.Length >= root.Length; d = Path.GetDirectoryName(d))
+                {
+                    if (Directory.GetFiles(d, "*.exe").Length > 0) return d;
+                    if (string.Equals(d, root, StringComparison.OrdinalIgnoreCase)) break;
+                }
+            }
+            catch { }
+            return root;
+        }
+
+        /// <summary>
         /// Where a found file should land.
         ///
         /// A machine's own files sit in its own folder, so the relative path is
@@ -334,7 +388,7 @@ namespace Kaban.Core.Helpers
             try
             {
                 var dir = Path.GetDirectoryName(sourcePath);
-                var root = Path.GetFullPath(sourceRoot).TrimEnd('\\', '/');
+                var root = ProgramRoot(dir, sourceRoot);
                 var full = Path.GetFullPath(dir).TrimEnd('\\', '/');
                 if (full.Length > root.Length && full.StartsWith(root, StringComparison.OrdinalIgnoreCase))
                 {
