@@ -153,6 +153,22 @@ class MP {
         Check("a field's devices named by its caption (Robot: Gripper Length), not its value", gripper != null && gripper.UsedAs == "Gripper Length" &&
               !named.Any(d => System.Text.RegularExpressions.Regex.IsMatch(d.UsedAs ?? "", @"^-?[0-9.]+ ?(mm|sec|s|%|°)?\b - ")),
               gripper == null ? "no D506" : gripper.UsedAs + " | " + string.Join(", ", named.Take(6).Select(d => d.Address + "=" + d.UsedAs)));
+        var rowType = typeof(SimulationMonitorForm).GetNestedType("WatchRow", Any);
+        var old = Activator.CreateInstance(rowType);
+        rowType.GetField("Address").SetValue(old, "D506");
+        rowType.GetField("Station").SetValue(old, 1);
+        rowType.GetField("LabelOverride").SetValue(old, "50.0 mm - setting");
+        var typed = Activator.CreateInstance(rowType);
+        rowType.GetField("Address").SetValue(typed, "D384");
+        rowType.GetField("Station").SetValue(typed, 1);
+        rowType.GetField("LabelOverride").SetValue(typed, "My own name");
+        var rows = (IList)Get(sheet, "Rows");
+        rows.Insert(0, old); rows.Insert(0, typed);
+        typeof(SimulationMonitorForm).GetMethod("AddDevices", Any).Invoke(null, new object[] { tab, sheet, named, null });
+        Check("  a row already listed with such a name: the caption now; a name typed kept, each row once",
+              (string)rowType.GetField("LabelOverride").GetValue(old) == "Gripper Length" && (string)rowType.GetField("LabelOverride").GetValue(typed) == "My own name" &&
+              rows.Cast<object>().Count(r => (string)rowType.GetField("Address").GetValue(r) == "D506") == 1,
+              (string)rowType.GetField("LabelOverride").GetValue(old));
 
         form.Close();
         try { Directory.Delete(dir, true); } catch { }

@@ -2598,7 +2598,17 @@ namespace Kaban.UI.Forms
             var rows = new List<WatchRow>();
             foreach (var d in devices)
             {
-                if (!have.Add(d.Address)) continue;
+                if (!have.Add(d.Address))
+                {
+                    // 23 October: a row named by the value its field showed ("50.0 mm - setting") gets the field's caption
+                    var listed = sh.Rows.FirstOrDefault(x => x.IsDevice && x.Head == null && string.Equals(x.Address, d.Address, StringComparison.OrdinalIgnoreCase));
+                    if (listed != null && ValueNamed.IsMatch(listed.LabelOverride ?? "") && !string.IsNullOrWhiteSpace(d.UsedAs) && !ValueNamed.IsMatch(d.UsedAs))
+                    {
+                        var label = PlcLabelTable.ByAddress(mon.Station, d.Address);
+                        listed.LabelOverride = label != null && label.Label.Length > 0 ? "" : d.UsedAs;
+                    }
+                    continue;
+                }
                 var r = new WatchRow { Station = mon.Station, Address = d.Address };
                 var known = PlcLabelTable.ByAddress(mon.Station, d.Address);
                 ApplyNames(mon, r, known != null && known.Label.Length > 0 ? known.Label : d.UsedAs, d.DataType);
@@ -2612,6 +2622,10 @@ namespace Kaban.UI.Forms
             EnsureBlankRow(sh);
             return rows.Count(r => r.IsDevice);
         }
+
+        /// <summary>A name made of a value a field showed: "50.0 mm - setting", "-310.0 mm - value" (before 23 October).</summary>
+        private static readonly System.Text.RegularExpressions.Regex ValueNamed =
+            new System.Text.RegularExpressions.Regex(@"^\s*-?[0-9][0-9.,]*\s*\S{0,6}\s+-\s+(setting|value)\s*$");
 
         private void Report(int added, int offered)
         {
