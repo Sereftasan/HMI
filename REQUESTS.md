@@ -6,6 +6,15 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 23 October (afternoon):
+  - b98a2a4 - PLC Monitor: the simulator's devices never written (0) and moving ones shown - they were "-"; a device a
+    real PLC does not answer no longer blanks the whole list (asked alone, then left out of the batch a while).
+  - c32e765 - PLC data: the long counters (LCN) and LZ read and written one by one on MX Component (its block call counts
+    them as devices: GX Simulator3 refused them, LCN sized 63).
+  - fcdf299 - HMI Settings > PLC Connections: the controllers' table itself - the Connection events and MX Component
+    tabs gone (the connection events are in Logs and Reports).
+  - db69fd9 - PLC data: the modules' cams - read through the cam data operation (the cams the axes use, Pr.440, and the
+    numbers typed), "Cam data" in the Write tree written into the cam storage area; the simulator answers it too.
 - 23 October (later, PLC data):
   - 7a5e4d3 - PLC data Read: the CPU's devices are read. The first backup on GX Simulator3 had none: its block calls kept
     MX Component's thread from the screen's reads until those gave up and the link was taken down. Block calls now go
