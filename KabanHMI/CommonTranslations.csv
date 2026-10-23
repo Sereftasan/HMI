@@ -1930,3 +1930,5 @@ Ttl_CmpFile;Compare - {0} ({1});;;;;
 Ttl_Compare;Compare;;;;;
 Imp_HintList;Choose the folder of the previous version: its settings files are listed.;;;;;
 Imp_SourceTipList;The folder the old program ran from - its own folder or the install root. Enter lists its settings files.;;;;;
+Cyc_StartedDelay;Back and forth every {0} s (just under its alarm delay) - press a button of it again to stop.;;;;;
+Cyc_StartedDelays;Back and forth: {0} s this way, {1} s back (just under the alarm delays) - press a button of it again to stop.;;;;;

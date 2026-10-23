@@ -18,7 +18,7 @@ namespace Kaban.UI.Controls
     public enum HmiButtonFunction
     {
         None = 0,
-        /// <summary>Cylinder FW/Back: a cylinder started moves back and forth every 5 s (UnitCycling).</summary>
+        /// <summary>Cylinder FW/Back: a cylinder started moves back and forth, each way just under its alarm delay (UnitCycling).</summary>
         CylinderForwardBack = 1
     }
 
@@ -221,7 +221,7 @@ namespace Kaban.UI.Controls
         /// FW/Back"): a click turns it on or off, its lamp shows it.
         /// </summary>
         [Category("  Actions"), DefaultValue(HmiButtonFunction.None),
-         Description("An HMI function the button switches, no PLC bit: CylinderForwardBack - a cylinder started moves back and forth every 5 s (Maintenance and Admin).")]
+         Description("An HMI function the button switches, no PLC bit: CylinderForwardBack - a cylinder started moves back and forth, each way just under its alarm delay (Maintenance and Admin).")]
         public HmiButtonFunction HmiFunction { get; set; }
 
         /// <summary>The HMI function is on now.</summary>

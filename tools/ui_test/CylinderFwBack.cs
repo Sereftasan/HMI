@@ -12,7 +12,8 @@ using Kaban.UI.Controls;
 using Kaban.UI.Helpers;
 
 // 17 October: "Cylinder FW/Back" next to "Safety Bypass" (both for Maintenance and Admin, both FALSE when the
-// user changes): while TRUE, a cylinder or pneumatic positioning started changes direction every 5 s until its
+// user changes): while TRUE, a cylinder or pneumatic positioning started changes direction every 5 s (23 October: just
+// under its alarm delay) until its
 // buttons are clicked again or the function is FALSE - with the coupling too. A single valve: its output ON / OFF;
 // a double valve: the opposite coil the opposite way.
 class FB {
@@ -205,8 +206,41 @@ class FB {
         Pump(30);
         Check("another user: off, stopped, both OFF", !UnitCycling.Active && !UnitCycling.IsCycling(dbl) && R("M101") == 0 && R("M100") == 0);
 
+        // 23 October: "Cylinder FW/Back function direction changing time delay should be calculated according to the
+        // selected control's alarm delays instead of fixed 5 second (0.5 second less than minimum value of each active
+        // control's Cylinder delay (s) value if entered for the selected direction errors and Cylinder alarm delay (s))"
+        Console.WriteLine("--- the time each way: just under the alarm delays ---");
+        AlarmGeneration.SettingsPath = Path.Combine(dir, "AlarmGeneration.cfg");
+        AlarmGeneration.Save(AlarmGeneration.ModuleOfStation(1), new AlarmGeneration.Settings { Enabled = true, DelaySeconds = 3, AxisAlarms = true });
+        dbl.ErrorAAddress = "M840"; dbl.ErrorBAddress = "M841";
+        AlarmManager.RegisterDefinition("T.ClampBack", "Clamp did not go back", AlarmSeverity.Warning, plcNumber: 1, address: "M840");
+        AlarmManager.FindByCode("T.ClampBack").GenerationDelay = 2;
+        Check("a unit's way with a Cylinder delay of its own (2 s): 1.5 s; the other way, the Cylinder alarm delay's (3 s): 2.5 s",
+              UnitCycling.PeriodFor(new[] { dbl }, true) == 1500 && UnitCycling.PeriodFor(new[] { dbl }, false) == 2500,
+              UnitCycling.PeriodFor(new[] { dbl }, true) + " / " + UnitCycling.PeriodFor(new[] { dbl }, false));
+        Check("  units moving together: the shortest of them", UnitCycling.PeriodFor(new[] { c1, dbl }, true) == 1500 && UnitCycling.PeriodFor(new[] { c1, dbl }, false) == 2500 &&
+              UnitCycling.PeriodFor(new[] { c1 }, true) == 2500);
+        AlarmManager.FindByCode("T.ClampBack").GenerationDelay = 0.6;
+        Check("  a delay under a second: never under half a second", UnitCycling.PeriodFor(new[] { dbl }, true) == UnitCycling.ShortestMs);
+        AlarmManager.FindByCode("T.ClampBack").GenerationDelay = 2;
+        UnitCycling.SetActive(true);
+        Scan();
+        Press(dbl.ButtonA);
+        Check("started: Back", UnitCycling.IsCycling(dbl) && R("M100") == 1 && R("M101") == 0);
+        Wait(1.4);
+        Check("  1.4 s: still Back", R("M100") == 1);
+        Wait(0.2);
+        Check("  1.6 s: Forward - before Back's alarm (2 s)", R("M101") == 1 && R("M100") == 0);
+        Wait(2.4);
+        Check("  2.4 s later: still Forward", R("M101") == 1);
+        Wait(0.2);
+        Check("  2.6 s: Back - before Forward's alarm (3 s)", R("M100") == 1 && R("M101") == 0);
+        Press(dbl.ButtonA);
+        UnitCycling.SetActive(false);
+
         var log = string.Join("\n", Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Select(File.ReadAllText));
-        Check("in the log: switched on / off, the movement, stopped", log.Contains("Cylinder FW/Back ON") && log.Contains("back and forth every 5 s") &&
+        Check("in the log: switched on / off, the movement, stopped", log.Contains("Cylinder FW/Back ON") && log.Contains("back and forth, 4.5 s") &&
+              log.Contains("back and forth, 1.5 s 'Back' and 2.5 s back (the alarm delays)") &&
               log.Contains("back and forth stopped") && log.Contains("Cylinder FW/Back OFF"));
         form.Close();
         Console.WriteLine(fail == 0 ? "\nCYLINDER FW/BACK ALL PASS" : "\nCYLINDER FW/BACK " + fail + " FAILED");

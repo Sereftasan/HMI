@@ -21,7 +21,7 @@ namespace Kaban.UI.Helpers
     /// press of a cylinder unit's button (a cylinder, a pneumatic positioning, an
     /// encoder cylinder - not an axis, not a motor) starts its back-and-forth movement
     /// instead of moving it while held: that side's command ON and the other side's OFF
-    /// for 5 s (Period), then the other way round, and so on. A side with no command (a
+    /// for just under its alarm delay (PeriodFor), then the other way round, and so on. A side with no command (a
     /// single valve's spring side) is just the other one OFF. A coupled unit's partners
     /// move with it, checked as a coupled press is. A press of a button of a unit moving
     /// so stops it (its partners too): both sides OFF. The function switched off, another
@@ -38,8 +38,39 @@ namespace Kaban.UI.Helpers
             SecurityManager.UserChanged += (s, e) => { if (Active) SetActive(false, T("Cyc_UserChanged", "another user signed in")); };
         }
 
-        /// <summary>How long each way lasts (ms). Replaceable for the tests.</summary>
-        public static int PeriodMs = 5000;
+        /// <summary>
+        /// How long each way lasts (ms) when set (tests); 0 - as the units' alarm delays say (23 October: "the
+        /// direction changing time delay should be calculated according to the selected control's alarm delays
+        /// instead of fixed 5 second (0.5 second less than minimum value of each active control's Cylinder delay (s)
+        /// value if entered for the selected direction errors and Cylinder alarm delay (s) so there would get no
+        /// error and the movement delay time wouldn't get absurdly long or too short for the movement to end)").
+        /// </summary>
+        public static int PeriodMs;
+
+        /// <summary>How much before the shortest alarm delay the direction changes (ms).</summary>
+        public const int BeforeAlarmMs = 500;
+        /// <summary>The shortest time a way lasts (ms): a delay set under a second still lets the valve switch.</summary>
+        public const int ShortestMs = 500;
+
+        /// <summary>
+        /// How long the units moving together go one way: the shortest of their alarm delays for that way (each
+        /// one's error's Cylinder delay, else the Cylinder alarm delay) less <see cref="BeforeAlarmMs"/> - no
+        /// alarm, and no longer than the movement may take.
+        /// </summary>
+        public static int PeriodFor(IEnumerable<CylinderUnitHMI> units, bool sideA)
+        {
+            if (PeriodMs > 0) return PeriodMs;
+            double least = double.MaxValue;
+            foreach (var u in units)
+            {
+                if (u == null || u.IsDisposed) continue;
+                try { least = Math.Min(least, u.AlarmDelaySeconds(sideA)); } catch { }
+            }
+            if (least == double.MaxValue) least = AlarmGeneration.DefaultDelaySeconds;
+            return Math.Max(ShortestMs, (int)Math.Round(least * 1000) - BeforeAlarmMs);
+        }
+
+        private static string Seconds(int ms, IFormatProvider culture) { return (ms / 1000.0).ToString("0.#", culture); }
 
         /// <summary>The level the function asks for.</summary>
         public const SecurityLevel RequiredLevel = SecurityLevel.Maintenance;
@@ -192,13 +223,18 @@ namespace Kaban.UI.Helpers
             var first = sideA ? unit.ButtonA : unit.ButtonB;
             if (first.HasActions && !first.CanAct) return;          // it may not do that now: nothing starts
             int group = ++_groups;
-            var next = Now().AddMilliseconds(PeriodMs);
+            int period = PeriodFor(units, sideA), back = PeriodFor(units, !sideA);
+            var next = Now().AddMilliseconds(period);
             foreach (var u in units) _runs.Add(new Run { Unit = u, SideA = sideA, Next = next, Group = group });
-            AuditLogger.Log("back and forth every " + (PeriodMs / 1000.0).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture) + " s: " +
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            AuditLogger.Log("back and forth, " + Seconds(period, inv) + " s '" + unit.SideText(sideA) + "' and " + Seconds(back, inv) + " s back (the alarm delays): " +
                             string.Join(", ", units.Select(u => "'" + u.CouplingName + "'")) + ", first '" + unit.SideText(sideA) + "'.");
             foreach (var r in _runs.Where(x => x.Group == group).ToList()) Apply(r);
-            Say(unit, string.Format(T("Cyc_Started", "Back and forth every {0} s - press a button of it again to stop."),
-                                    (PeriodMs / 1000.0).ToString("0.#", System.Globalization.CultureInfo.CurrentCulture)));
+            var cur = System.Globalization.CultureInfo.CurrentCulture;
+            Say(unit, period == back
+                ? string.Format(T("Cyc_StartedDelay", "Back and forth every {0} s (just under its alarm delay) - press a button of it again to stop."), Seconds(period, cur))
+                : string.Format(T("Cyc_StartedDelays", "Back and forth: {0} s this way, {1} s back (just under the alarm delays) - press a button of it again to stop."),
+                                Seconds(period, cur), Seconds(back, cur)));
             EnsureTimer();
         }
 
@@ -238,9 +274,16 @@ namespace Kaban.UI.Helpers
                     continue;
                 }
                 if (now < r.Next) continue;
-                r.SideA = !r.SideA;
-                r.Next = now.AddMilliseconds(PeriodMs);
-                Apply(r);
+                // the units moving together turn together: the shortest delay of them all for the way they go now
+                var together = _runs.Where(x => x.Group == r.Group && now >= x.Next).ToList();
+                bool side = !r.SideA;
+                int period = PeriodFor(_runs.Where(x => x.Group == r.Group).Select(x => x.Unit), side);
+                foreach (var x in together)
+                {
+                    x.SideA = side;
+                    x.Next = now.AddMilliseconds(period);
+                }
+                foreach (var x in together) if (_runs.Contains(x)) Apply(x);
             }
             if (_runs.Count == 0 && _timer != null) _timer.Stop();
         }
@@ -282,7 +325,7 @@ namespace Kaban.UI.Helpers
         {
             StopAll(null);
             Active = false;
-            PeriodMs = 5000;
+            PeriodMs = 0;
             Now = () => DateTime.Now;
         }
     }

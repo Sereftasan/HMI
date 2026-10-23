@@ -640,6 +640,21 @@ namespace Kaban.Core.Helpers
             return s.MustOn.All(x => On(lookup, x.Address)) && s.MustOff.All(x => !On(lookup, x.Address));
         }
 
+        /// <summary>
+        /// How long a movement may take before the HMI raises its alarm: its error's alarm's own Cylinder delay
+        /// (HMI Settings > Alarms, the Cylinder delay column) when one is entered, else its machine's Cylinder alarm
+        /// delay (23 October: Cylinder FW/Back changes direction just before it).
+        /// </summary>
+        public static double MovementDelay(int station, string errorAddress)
+        {
+            var settings = Peek(ModuleOfStation(station));
+            int st = station; string device = errorAddress;
+            if (!string.IsNullOrWhiteSpace(errorAddress)) PlcAddressHelper.Resolve(station, errorAddress.Trim(), out st, out device);
+            var def = string.IsNullOrWhiteSpace(device) ? null : AlarmManager.FindByStationAndAddress(st, device);
+            double d = def != null && def.GenerationDelay.HasValue && def.GenerationDelay.Value > 0 ? def.GenerationDelay.Value : settings.DelaySeconds;
+            return Math.Max(MinimumDelaySeconds, d);
+        }
+
         private static double DelayOf(Cylinder c, CylinderSide s, Settings settings)
         {
             var def = string.IsNullOrWhiteSpace(s.ErrorAddress) ? null : AlarmManager.FindByStationAndAddress(c.Station, s.ErrorAddress);

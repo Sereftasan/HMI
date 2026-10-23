@@ -19,7 +19,7 @@
         // FA2010's AXES' MANUAL MOVEMENT BAR (14 October): the speed of the axes'
         // manual movement (D409) and the jog step - JOG (continuous) or 10 / 1 /
         // 0.1 / 0.01 mm - Safety Bypass and Cylinder FW/Back (17 October: a cylinder started
-        // moves back and forth every 5 s - UnitCycling; both for Maintenance and Admin,
+        // moves back and forth (each way just under its alarm delay) - UnitCycling; both for Maintenance and Admin,
         // both off when the user changes), as the user set them on the manual
         // pages. Designed here ONCE: Manual Movement (above its tabs), Machine
         // Parameters > Axis and the Axis Monitor show this one. Its parts 14 from

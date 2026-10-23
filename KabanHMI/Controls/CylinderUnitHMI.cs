@@ -1437,6 +1437,15 @@ namespace Kaban.UI.Controls
             return AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
         }
 
+        /// <summary>
+        /// How long one side's movement may take before its alarm (seconds): its error's Cylinder delay when one is
+        /// entered, else the machine's Cylinder alarm delay (AlarmGeneration.MovementDelay) - Cylinder FW/Back's time.
+        /// </summary>
+        public double AlarmDelaySeconds(bool sideA)
+        {
+            return AlarmGeneration.MovementDelay(_plcNumber, Abs(sideA ? _errorAAddress : _errorBAddress));
+        }
+
         /// <summary>The devices one side's error bit is judged by: command, both coils, the sensors of both ends.</summary>
         private IEnumerable<string> SignalsFor(string side)
         {
