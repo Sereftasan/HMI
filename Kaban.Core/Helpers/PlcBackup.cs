@@ -130,6 +130,15 @@ namespace Kaban.Core.Helpers
             /// back, each (its offset from <see cref="First"/>, its words). Null: every word.
             /// </summary>
             public List<int[]> Pieces;
+            /// <summary>
+            /// A CAM (23 October): its number (0 - no cam), its data format (1 stroke ratio, 2 coordinate), its
+            /// resolution (stroke ratio) or coordinate number, its starting point - its <see cref="Words"/> the
+            /// cam data as the module's cam data operation gives them ([Cd.607]: a stroke ratio point's two
+            /// words from point 1 on, a coordinate's four from point 0 on). <see cref="First"/> is the module's
+            /// [Cd.607] (U1\G45008): the cam is read and written through the cam data operation, never as a block.
+            /// </summary>
+            public int Cam, CamFormat, CamResolution, CamStart;
+            public bool IsCam { get { return Cam > 0; } }
             /// <summary>2 for a 32-bit device's area (LCN, LZ): two words a device, the low one first.</summary>
             public int WordsPerPoint = 1;
             /// <summary>The words read: a word area's one a device (a 32-bit one's two), a bit area's 16 devices a word.</summary>
@@ -141,7 +150,14 @@ namespace Kaban.Core.Helpers
             public string Device(long i) { return PlcAddressHelper.Compose(Prefix, Start + i); }
             public string Last { get { return Device(Math.Max(0, Points - 1)); } }
             /// <summary>"D0 - D7999".</summary>
-            public string Range { get { return Points > 1 ? First + " - " + Last : First; } }
+            public string Range
+            {
+                get
+                {
+                    if (IsCam) return string.Format(LanguageManager.GetString("Bak_CamRange", "cam No.{0}"), Cam);
+                    return Points > 1 ? First + " - " + Last : First;
+                }
+            }
             public bool IsModule { get { return SimpleMotion.IsModuleAddress(First); } }
             /// <summary>
             /// Written back to a real PLC: not the inputs and outputs, the contacts and coils, the system's
@@ -301,6 +317,21 @@ namespace Kaban.Core.Helpers
                     if (!WaitForLink()) return rc;
                 }
                 return rc;
+            }
+
+            /// <summary>One device read (a module's control word), as <see cref="WriteOne"/>.</summary>
+            public bool ReadOne(string device, out int value)
+            {
+                value = 0;
+                for (int attempt = 0; attempt < 4 && !Lost; attempt++)
+                {
+                    bool ok;
+                    try { ok = Driver.TryRead(device, out value); } catch { ok = false; }
+                    if (ok) return true;
+                    if (Connected) return false;
+                    if (!WaitForLink()) return false;
+                }
+                return false;
             }
 
             /// <summary>Waits for the link (asking it to connect); false - and <see cref="Lost"/> - when it is not back in time.</summary>
@@ -466,13 +497,13 @@ namespace Kaban.Core.Helpers
         // ticked whole or for the axes (and positioning data numbers) chosen in its details.
 
         /// <summary>A simple motion module's data in the groups GX Works3 writes it by (and the PLC CPU memo area).</summary>
-        public enum ModuleGroup { Other, Positioning, BlockStart, Parameters, Servo, MarkDetection, Synchronous, Memo }
+        public enum ModuleGroup { Other, Positioning, BlockStart, Parameters, Servo, MarkDetection, Synchronous, Memo, Cam }
 
         /// <summary>The groups in GX Works3's order.</summary>
         public static readonly ModuleGroup[] ModuleGroups =
         {
             ModuleGroup.Positioning, ModuleGroup.BlockStart, ModuleGroup.Parameters, ModuleGroup.Servo,
-            ModuleGroup.MarkDetection, ModuleGroup.Synchronous, ModuleGroup.Memo
+            ModuleGroup.MarkDetection, ModuleGroup.Synchronous, ModuleGroup.Cam, ModuleGroup.Memo
         };
 
         /// <summary>Where a module's area belongs.</summary>
@@ -486,6 +517,16 @@ namespace Kaban.Core.Helpers
             public int Encoder;
             /// <summary>The positioning data's axes to be interpolated (71000 + 1000n): written with the positioning data.</summary>
             public bool Interpolation;
+            /// <summary>A cam's number (the cam data group), else 0.</summary>
+            public int Cam;
+        }
+
+        /// <summary>Where an area belongs: by its first address - a cam to the cam data group.</summary>
+        public static ModulePlace PlaceOf(Area a)
+        {
+            var place = a == null ? null : PlaceOf(a.First);
+            if (place != null && a.IsCam) { place.Group = ModuleGroup.Cam; place.Cam = a.Cam; place.Axis = 0; }
+            return place;
         }
 
         /// <summary>A positioning data's words (Da.1 - Da.10), and the data an axis keeps in the buffer memory (No.1 - 100).</summary>
@@ -527,6 +568,7 @@ namespace Kaban.Core.Helpers
                 case ModuleGroup.MarkDetection: return LanguageManager.GetString("Bak_GrpMark", "Mark detection");
                 case ModuleGroup.Synchronous: return LanguageManager.GetString("Bak_GrpSynchronous", "Synchronous control parameters");
                 case ModuleGroup.Memo: return LanguageManager.GetString("Bak_GrpMemo", "PLC CPU memo area");
+                case ModuleGroup.Cam: return LanguageManager.GetString("Bak_GrpCam", "Cam data");
                 default: return LanguageManager.GetString("Bak_GrpOther", "Other data");
             }
         }
@@ -645,7 +687,9 @@ namespace Kaban.Core.Helpers
             {
                 sb.Append('[').Append(a.First).Append(';').Append(a.Points.ToString(CultureInfo.InvariantCulture)).Append(';')
                   .Append(a.Bits ? "Bits" : a.WordsPerPoint == 2 ? "DoubleWords" : "Words").Append(';').Append(Line(a.Title).Replace(";", ",").Replace("]", ")"));
-                if (a.Pieces != null) sb.Append(';').Append(string.Join(" ", a.Pieces.Select(p => p[0] + "+" + p[1])));
+                if (a.Pieces != null || a.IsCam) sb.Append(';').Append(a.Pieces == null ? "" : string.Join(" ", a.Pieces.Select(p => p[0] + "+" + p[1])));
+                // a cam: its number, data format, resolution or coordinate number, starting point
+                if (a.IsCam) sb.Append(";cam=").Append(string.Join(",", new[] { a.Cam, a.CamFormat, a.CamResolution, a.CamStart }.Select(x => x.ToString(CultureInfo.InvariantCulture))));
                 sb.AppendLine("]");
                 for (int i = 0; i < a.Words.Length; i += 16)
                 {
@@ -692,6 +736,12 @@ namespace Kaban.Core.Helpers
                                               .Select(p => p.Split('+').Select(x => int.Parse(x, CultureInfo.InvariantCulture)).ToArray()).ToList();
                         // a backup made before the area's unnamed words were known (the synchronous parameters, 23 October)
                         else area.Pieces = KnownPieces(area.First, area.Points);
+                        if (f.Length > 5 && f[5].Trim().StartsWith("cam="))
+                        {
+                            var c = f[5].Trim().Substring(4).Split(',').Select(x => int.Parse(x, CultureInfo.InvariantCulture)).ToArray();
+                            area.Cam = c[0]; area.CamFormat = c[1]; area.CamResolution = c[2]; area.CamStart = c.Length > 3 ? c[3] : 0;
+                            area.Pieces = null;
+                        }
                         continue;
                     }
                     if (area != null)
@@ -748,6 +798,172 @@ namespace Kaban.Core.Helpers
             return list.OrderByDescending(b => b.Date).ToList();
         }
 
+        // ---- cams ---------------------------------------------------------------------------------------------
+        //
+        // 23 October ("GX Works also writes cam data ... Should I add cam data to the backup and the Write tree?" -
+        // "Yes please"): a module's cams through its cam data operation (the FX5 Simple Motion Module manual
+        // (Advanced Synchronous Control), 3.2): [Cd.601] the cam's number, [Cd.602] its first point, [Cd.603]
+        // how many, then [Cd.600] = 1 reads (the cam open area), 2 writes (the cam storage area and the open area);
+        // the module sets [Cd.600] back to 0 when done. A stroke ratio cam's points 1 - resolution, two words each,
+        // 4096 at a time; a coordinate cam's points 0 - n-1, four words each, 2048 at a time - in [Cd.607]
+        // (45008 - 53199). Its data format, resolution / coordinate number and starting point: [Cd.604] - [Cd.606].
+        // A cam number with no cam is answered with warning 0C41H on the module's axis 1 - so the cams read are the
+        // ones an axis uses ([Pr.440] Cam No.) and those typed in the Read window, never a search through 1 - 256.
+
+        public const int CamRequest = 45000, CamNumber = 45001, CamFirst = 45002, CamPoints = 45003,
+                         CamFormatWord = 45004, CamResolutionWord = 45005, CamStartWord = 45006, CamData = 45008;
+        /// <summary>Points a cam data operation takes: stroke ratio, coordinate.</summary>
+        public const int StrokeChunk = 4096, CoordinateChunk = 2048;
+        /// <summary>The cam numbers ([Cd.601]: 1 - 256, the cam open area's).</summary>
+        public const int MaxCam = 256;
+        /// <summary>How long a cam data operation may take.</summary>
+        public static int CamWaitMs = 5000;
+
+        /// <summary>The cams the module's axes use: [Pr.440] Cam No. (36474 + 200n) in the backup's synchronous parameters.</summary>
+        public static List<int> CamsInUse(Backup b, int module)
+        {
+            var list = new SortedSet<int>();
+            foreach (var a in b.Areas)
+            {
+                var place = PlaceOf(a.First);
+                if (a.IsCam || place == null || place.Module != module || place.Group != ModuleGroup.Synchronous || place.Axis == 0) continue;
+                string p; long g;
+                if (!PlcAddressHelper.TrySplit(a.First, out p, out g) || g < 36400) continue;
+                int cam = a.Value(74);
+                if (cam >= 1 && cam <= MaxCam) list.Add(cam);
+            }
+            return list.ToList();
+        }
+
+        /// <summary>"1 - 10, 35" as cam numbers (1 - 256); false when it is not.</summary>
+        public static bool TryParseCams(string text, out List<int> cams)
+        {
+            cams = new List<int>();
+            var t = Regex.Replace(text ?? "", @"\s*(-|\u2013|\.\.)\s*", "-");
+            foreach (var bit in t.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var m = Regex.Match(bit, @"^(\d+)(?:-(\d+))?$");
+                if (!m.Success) return false;
+                int a = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+                int z = m.Groups[2].Success ? int.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture) : a;
+                if (a < 1 || z > MaxCam || z < a) return false;
+                for (int i = a; i <= z; i++) if (!cams.Contains(i)) cams.Add(i);
+            }
+            cams.Sort();
+            return true;
+        }
+
+        /// <summary>Waits until the module's cam data operation is idle ([Cd.600] 0).</summary>
+        private static bool CamIdle(Link link, int module)
+        {
+            int deadline = Environment.TickCount + CamWaitMs;
+            while (true)
+            {
+                int v;
+                if (!link.ReadOne(SimpleMotion.Device(module, CamRequest), out v)) return false;
+                if (v == 0) return true;
+                if (Environment.TickCount - deadline >= 0) return false;
+                System.Threading.Thread.Sleep(20);
+            }
+        }
+
+        /// <summary>One cam data operation: its number, first point and points set, [Cd.600] = request, done when it is 0 again.</summary>
+        private static bool CamOperation(Link link, int module, int request, int cam, int first, int points)
+        {
+            Func<int, string> g = a => SimpleMotion.Device(module, a);
+            if (link.WriteOne(g(CamNumber), cam) != 0 || link.WriteOne(g(CamFirst), first) != 0 || link.WriteOne(g(CamPoints), points) != 0) return false;
+            if (link.WriteOne(g(CamRequest), request) != 0) return false;
+            return CamIdle(link, module);
+        }
+
+        /// <summary>
+        /// Reads module <paramref name="module"/>'s cams <paramref name="cams"/> into <paramref name="backup"/>: an
+        /// area each; a cam the module does not have (or will not give: a read password) named in Skipped. False
+        /// when cancelled or the link lost.
+        /// </summary>
+        public static bool ReadCams(Link link, Backup backup, int module, IList<int> cams, Progress progress)
+        {
+            Func<int, string> g = a => SimpleMotion.Device(module, a);
+            string mod = string.Format(LanguageManager.GetString("Bak_Module", "Simple motion module {0}"), module);
+            int i = 0;
+            foreach (int cam in cams)
+            {
+                string name = mod + ": " + string.Format(LanguageManager.GetString("Bak_CamRange", "cam No.{0}"), cam);
+                if (progress != null && !progress(i++, cams.Count, string.Format(LanguageManager.GetString("Msg_BakReadingCam", "Reading {0}..."), name)))
+                    return false;
+                int format = 0, resolution = 0, start = 0;
+                bool ok = CamIdle(link, module) &&
+                          // its format and size first: the words cleared, then one point read (point 1 is in both formats)
+                          link.WriteOne(g(CamFormatWord), 0) == 0 && link.WriteOne(g(CamResolutionWord), 0) == 0 &&
+                          CamOperation(link, module, 1, cam, 1, 1) &&
+                          link.ReadOne(g(CamFormatWord), out format) && link.ReadOne(g(CamResolutionWord), out resolution) &&
+                          link.ReadOne(g(CamStartWord), out start);
+                if (link.Lost) return false;
+                if (!ok || (format != 1 && format != 2) || resolution <= 0)
+                {
+                    backup.Skipped.Add(name + " - " + LanguageManager.GetString("Msg_BakNoCam", "not in the module (or read-protected)"));
+                    continue;
+                }
+                bool stroke = format == 1;
+                int wpp = stroke ? 2 : 4, chunk = stroke ? StrokeChunk : CoordinateChunk;
+                int firstPoint = stroke ? 1 : 0, points = resolution;
+                var words = new short[points * wpp];
+                for (int at = 0; at < points && ok; at += chunk)
+                {
+                    int n = Math.Min(chunk, points - at);
+                    short[] got;
+                    got = null;
+                    ok = CamOperation(link, module, 1, cam, firstPoint + at, n) && link.TryRead(g(CamData), n * wpp, out got);
+                    if (ok) Array.Copy(got, 0, words, at * wpp, n * wpp);
+                }
+                if (link.Lost) return false;
+                if (!ok)
+                {
+                    backup.Skipped.Add(name + " (" + LanguageManager.GetString("Msg_BakCamFailed", "its data could not be read") + ")");
+                    continue;
+                }
+                backup.Areas.Add(new Area
+                {
+                    First = g(CamData), Points = words.Length, Words = words, Cam = cam, CamFormat = format, CamResolution = resolution, CamStart = start,
+                    Title = name + " (" + (stroke ? string.Format(LanguageManager.GetString("Bak_CamStroke", "stroke ratio data, resolution {0}"), resolution)
+                                                  : string.Format(LanguageManager.GetString("Bak_CamCoordinate", "coordinate data, {0} points"), resolution)) + ")"
+                });
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// A cam written into module <paramref name="module"/>'s cam storage area (kept at power off; its cam open
+        /// area too), as many operations as it needs; null when done, else why not - a warning of the module's
+        /// axis 1 (0C40H - 0C4BH: the storage area full, a write password ...).
+        /// </summary>
+        public static string WriteCam(Link link, Area cam, int module)
+        {
+            Func<int, string> g = a => SimpleMotion.Device(module, a);
+            bool stroke = cam.CamFormat == 1;
+            int wpp = stroke ? 2 : 4, chunk = stroke ? StrokeChunk : CoordinateChunk;
+            int firstPoint = stroke ? 1 : 0, points = cam.Words.Length / wpp;
+            int before;
+            if (!CamIdle(link, module)) return LanguageManager.GetString("Msg_BakCamBusy", "the module's cam data operation did not answer");
+            link.ReadOne(SimpleMotion.Device(module, SimpleMotion.AddressOf(SimpleMotion.Items.First(x => x.Key == "AxisWarning"), 1)), out before);
+            if (link.WriteOne(g(CamFormatWord), cam.CamFormat) != 0 || link.WriteOne(g(CamResolutionWord), cam.CamResolution) != 0 ||
+                (stroke && link.WriteOne(g(CamStartWord), cam.CamStart) != 0))
+                return LanguageManager.GetString("Msg_BakRefused", "refused");
+            for (int at = 0; at < points; at += chunk)
+            {
+                int n = Math.Min(chunk, points - at);
+                var words = new short[n * wpp];
+                Array.Copy(cam.Words, at * wpp, words, 0, words.Length);
+                if (link.Write(g(CamData), words) != 0 || !CamOperation(link, module, 2, cam.Cam, firstPoint + at, n))
+                    return LanguageManager.GetString("Msg_BakCamBusy", "the module's cam data operation did not answer");
+                int warning;
+                if (link.ReadOne(SimpleMotion.Device(module, SimpleMotion.AddressOf(SimpleMotion.Items.First(x => x.Key == "AxisWarning"), 1)), out warning) &&
+                    warning != before && (warning & 0xFFF0) == 0x0C40)
+                    return string.Format(LanguageManager.GetString("Msg_BakCamWarning", "the module's warning {0:X4}H"), warning);
+            }
+            return null;
+        }
+
         // ---- writing back ------------------------------------------------------------------------------------
 
         /// <summary>A part of an area written back: its devices <see cref="From"/> .. + <see cref="Count"/>, to <see cref="Target"/> on.</summary>
@@ -760,6 +976,12 @@ namespace Kaban.Core.Helpers
             /// <summary>"R1000 - R1999 to D2500 - D3499".</summary>
             public override string ToString()
             {
+                if (Source.IsCam)
+                {
+                    var into = PlaceOf(Target);
+                    var from = PlaceOf(Source.First);
+                    return Source.Range + (into != null && from != null && into.Module != from.Module ? " \u2192 U" + into.Module : "");
+                }
                 string read = Source.Device(From) + (Count > 1 ? " - " + Source.Device(From + Count - 1) : "");
                 string prefix; long t;
                 if (!PlcAddressHelper.TrySplit(Target, out prefix, out t) || string.Equals(Target, Source.Device(From), StringComparison.OrdinalIgnoreCase))
@@ -901,6 +1123,16 @@ namespace Kaban.Core.Helpers
                 }
                 string prefix; long target;
                 if (!PlcAddressHelper.TrySplit(part.Target, out prefix, out target)) { result.Failed.Add(part + ": ?"); continue; }
+                if (part.Source.IsCam)
+                {
+                    // a cam through the module's cam data operation, into its cam storage area
+                    string why = WriteCam(link, part.Source, PlaceOf(part.Target).Module);
+                    done += part.Count;
+                    if (link.Lost) { result.LinkLost = true; result.Failed.Add(part + " (" + LanguageManager.GetString("Msg_BakLinkLostShort", "the connection was lost") + ")"); break; }
+                    if (why != null) result.Failed.Add(part + " (" + why + ")");
+                    else result.Points += part.Count;
+                    continue;
+                }
                 var a = part.Source;
                 int rc = 0;
                 if (!a.Bits)

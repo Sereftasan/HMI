@@ -110,6 +110,7 @@ class PBC {
         sim.Write("LCN3", 100000); sim.Write("LZ1", -70000); sim.Write("SM400", 1); sim.Write("SD210", 2026); sim.Write("TS5", 1);
         sim.Write(@"U1\G32800", 1); sim.Write(@"U1\G36400", 3);   // synchronous control: servo input axis type, main input axis
         sim.Write(@"U1\G36403", 77); sim.Write(@"U1\G36513", 9);   // a word the manual does not name; the last named one
+        sim.Write(@"U1\G36674", 3);                               // axis 2's [Pr.440] Cam No.: cam 3
 
         Console.WriteLine("--- what is read ---");
         var logged = (LoggedDriver)PlcManager.Instance.GetDriverForMonitoring(23);
@@ -189,6 +190,48 @@ class PBC {
         Check("  the module's: Pr.3 of axis 1 = 100000 in its two words, positioning data 1", (ushort)area(@"U1\G0").Value(4) + (area(@"U1\G0").Value(5) << 16) == 100000 &&
               area(@"U1\G6000").Value(6) == 5000);
 
+        // 23 October: "GX Works also writes cam data ... Should I add cam data to the backup and the Write tree?" - "Yes please"
+        Console.WriteLine("--- cams, through the module's cam data operation ---");
+        var link = new PlcBackup.Link(logged, logged);
+        Func<int, int, int, int, int, PlcBackup.Area> camOf = (no, format, resolution, start, seed) =>
+        {
+            int wpp = format == 1 ? 2 : 4;
+            return new PlcBackup.Area { First = @"U1\G45008", Cam = no, CamFormat = format, CamResolution = resolution, CamStart = start,
+                                        Points = resolution * wpp, Words = Enumerable.Range(0, resolution * wpp).Select(i => (short)(seed + i)).ToArray() };
+        };
+        var stroke = camOf(3, 1, 256, 10, 100);
+        var coordinate = camOf(5, 2, 3, 0, -50);
+        var big = camOf(7, 1, 8192, 0, 1);       // 8192 points: two operations of 4096
+        Check("cams written into module 1 (the simulator answers the operation as the module does)",
+              PlcBackup.WriteCam(link, stroke, 1) == null && PlcBackup.WriteCam(link, coordinate, 1) == null && PlcBackup.WriteCam(link, big, 1) == null &&
+              sim.CamCount == 3 && sim.Read(@"U1\G45000") == 0);
+        List<int> typed;
+        Check("cam numbers typed: 1 - 3, 7 (1 - 256 only)", PlcBackup.TryParseCams("1 - 3, 7", out typed) && string.Join(",", typed) == "1,2,3,7" &&
+              !PlcBackup.TryParseCams("0", out typed) && !PlcBackup.TryParseCams("300", out typed) && PlcBackup.TryParseCams("", out typed) && typed.Count == 0);
+        Check("the cams the axes use: axis 2's Cam No. (Pr.440) 3", string.Join(",", PlcBackup.CamsInUse(backup, 1)) == "3",
+              string.Join(",", PlcBackup.CamsInUse(backup, 1)));
+        sim.Write(@"U1\G2407", 0);
+        int before = backup.Areas.Count;
+        bool camsRead = PlcBackup.ReadCams(link, backup, 1, new[] { 3, 5, 7, 9 }, null);
+        var cams = backup.Areas.Skip(before).ToList();
+        Check("read: cams 3, 5, 7 - their format, resolution, starting point and every point; cam 9 named as not there",
+              camsRead && cams.Count == 3 && cams[0].Cam == 3 && cams[0].CamFormat == 1 && cams[0].CamResolution == 256 && cams[0].CamStart == 10 &&
+              cams[0].Words.SequenceEqual(stroke.Words) && cams[1].Words.SequenceEqual(coordinate.Words) && cams[2].Words.SequenceEqual(big.Words) &&
+              backup.Skipped.Any(s => s.Contains("cam No.9") && s.Contains("not in the module")),
+              cams.Count + " cams; " + string.Join(" | ", backup.Skipped));
+        Check("  a cam the module does not have: its own answer, warning 0C41H on axis 1", sim.Read(@"U1\G2407") == 0x0C41, sim.Read(@"U1\G2407").ToString("X4"));
+        Check("  named as cams, in the cam data group", cams[0].Range == "cam No.3" && cams[0].Title.Contains("stroke ratio data, resolution 256") &&
+              cams[1].Title.Contains("coordinate data, 3 points") && PlcBackup.PlaceOf(cams[0]).Group == PlcBackup.ModuleGroup.Cam && PlcBackup.PlaceOf(cams[0]).Cam == 3,
+              cams[0].Title);
+        var camParts = cams.Select(c => new PlcBackup.WriteRange { Source = c, From = 0, Count = c.Points, Target = PlcBackup.InModule(c.First, 2) }).ToList();
+        var camResult = PlcBackup.Write(link, camParts, null);
+        Check("written back into module 2: the same cams there", camResult.Ok && sim.CamCount == 6 && camParts[0].ToString() == "cam No.3 \u2192 U2",
+              string.Join(" | ", camResult.Failed) + " / " + camParts[0]);
+        var again2 = new PlcBackup.Backup();
+        PlcBackup.ReadCams(link, again2, 2, new[] { 3, 5, 7 }, null);
+        Check("  read from module 2: as written", again2.Areas.Count == 3 && again2.Areas[2].Words.SequenceEqual(big.Words) && again2.Areas[1].Words.SequenceEqual(coordinate.Words));
+        backup.Skipped.Remove(backup.Skipped.First(s => s.Contains("cam No.9")));
+
         Console.WriteLine("--- the file ---");
         var path = PlcBackup.FileFor(backup);
         PlcBackup.Save(backup, path);
@@ -202,6 +245,9 @@ class PBC {
         Check("  in the list: its facts alone", listed.Count == 1 && listed[0].Machine == "Bench machine" && listed[0].Areas.Count == 0 &&
               listed[0].Date == backup.Date && listed[0].Description == "before the new program;\r\nsecond line" && listed[0].Modules[0].Value == 4);
         var back = PlcBackup.Load(path);
+        var camBack = back.Areas.FirstOrDefault(a => a.Cam == 3);
+        Check("  a cam kept with its number, format, resolution and starting point", camBack != null && camBack.CamFormat == 1 && camBack.CamResolution == 256 &&
+              camBack.CamStart == 10 && camBack.Words.SequenceEqual(stroke.Words) && camBack.Pieces == null);
         Check("  read again: the same areas and words", back.Areas.Count == backup.Areas.Count &&
               back.Areas.Zip(backup.Areas, (a, b) => a.First == b.First && a.Points == b.Points && a.Bits == b.Bits && a.Words.SequenceEqual(b.Words) &&
                                                       (a.Pieces == null) == (b.Pieces == null)).All(x => x));

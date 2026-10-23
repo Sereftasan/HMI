@@ -122,6 +122,15 @@ class PBU {
               find(rf, "bakWhat").Text);
         find(rf, "bakSerial").Text = "2SZ0123456";
         find(rf, "bakDescription").Text = "before the program change";
+        // a cam in module 1 (23 October: cams in the backup), its number typed
+        var camLink = new PlcBackup.Link(PlcManager.Instance.GetDriverForMonitoring(1), (Kaban.Core.Interfaces.IPlcBlockAccess)PlcManager.Instance.GetDriverForMonitoring(1));
+        Check("the module's cams: those the axes use and the numbers typed (a box for them)", find(rf, "bakCams") is TextBox &&
+              find(rf, "bakWhat").Text.Contains("Its cams: those an axis uses (Cam No., Pr.440)") &&
+              PlcBackup.WriteCam(camLink, new PlcBackup.Area { First = @"U1\G45008", Cam = 4, CamFormat = 2, CamResolution = 2, Points = 8, Words = new short[] { 0, 0, 0, 0, 100, 0, 50, 0 } }, 1) == null);
+        find(rf, "bakCams").Text = "x";
+        said.Clear();
+        Check("  a cam number that is none: said, nothing read", !(bool)Call(rf, "DoRead") && said.Count == 1 && said[0].Contains("1 - 256"), said.FirstOrDefault());
+        find(rf, "bakCams").Text = "4";
         said.Clear();
         bool done = (bool)Call(rf, "DoRead");
         var saved = (string)Get(rf, "SavedPath");
@@ -131,7 +140,8 @@ class PBU {
         Check("  with the facts typed and known", b.Serial == "2SZ0123456" && b.Description == "before the program change" && b.User == "boss" &&
               b.Machine == PlcEndpointNaming.MachineName(ep) && (DateTime.Now - b.Date).TotalMinutes < 2 && b.Modules.Count == 1 && b.Modules[0].Value == 4);
         Check("  the CPU's devices and the module's data in it", b.Areas.Any(a => a.First == "R0" && a.Value(1999) == 7 * 999) &&
-              b.Areas.Any(a => a.First == @"U1\G0" && a.Value(4) == 20000) && b.Areas.Count(a => a.IsModule) == 2 + 4 * 9 + 4 + 2, b.Areas.Count.ToString());
+              b.Areas.Any(a => a.First == @"U1\G0" && a.Value(4) == 20000) && b.Areas.Count(a => a.IsModule) == 2 + 4 * 9 + 4 + 2 + 1, b.Areas.Count.ToString());
+        Check("  and cam 4 (typed): a coordinate cam of 2 points", b.Areas.Any(a => a.Cam == 4 && a.CamFormat == 2 && a.Words[4] == 100));
         rf.Close();
 
         var again = new PlcBackupReadForm(ep);
@@ -161,9 +171,10 @@ class PBU {
         var under = items.Where(it => kindOf(it) == "Group" || kindOf(it) == "Flash").Select(it => kindOf(it) == "Flash" ? "flash" : ((PlcBackupGroup)Get(it, "Group")).Title).ToList();
         Check("a tree as GX Works3's: the CPU's devices, then the module - its groups in GX Works3's order, its flash ROM last",
               tops.Count == 2 && tops[0].StartsWith("▼ PLC CPU: devices") && tops[1] == "▼ Simple motion module 1 (4 axes)" &&
-              string.Join(", ", under) == "Positioning data, Block start data, Parameters, Servo parameters, Mark detection, Synchronous control parameters, PLC CPU memo area, flash" &&
+              string.Join(", ", under) == "Positioning data, Block start data, Parameters, Servo parameters, Mark detection, Synchronous control parameters, Cam data, PLC CPU memo area, flash" &&
               items.Count(it => kindOf(it) == "Device") == b.Areas.Count(a => !a.IsModule), string.Join(" | ", tops) + " // " + string.Join(", ", under));
-        Check("  the groups with axes have Details; the memo area none", rowOf(group("Positioning data")).Cells["Details"] is DataGridViewButtonCell &&
+        Check("  the groups with axes have Details; the memo area none; the cam data its cams", rowOf(group("Positioning data")).Cells["Details"] is DataGridViewButtonCell &&
+              rowOf(group("Cam data")).Cells["Details"] is DataGridViewButtonCell && ((PlcBackupGroup)Get(group("Cam data"), "Group")).AllCams.SequenceEqual(new[] { 4 }) &&
               rowOf(group("Synchronous control parameters")).Cells["Details"] is DataGridViewButtonCell && !(rowOf(group("PLC CPU memo area")).Cells["Details"] is DataGridViewButtonCell));
         // 23 October: "write inputs and outputs as well if the selected PLC driver is simulator"
         Check("  each device with its devices in Read (R0 - R32767), Write to empty; the simulator: X and Y written too, said so",

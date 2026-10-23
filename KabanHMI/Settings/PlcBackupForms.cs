@@ -88,6 +88,8 @@ namespace Kaban.UI.Settings
         private readonly List<KeyValuePair<int, int>> _modules;
         private readonly TextBox _serial = new TextBox { Name = "bakSerial" };
         private readonly TextBox _description = new TextBox { Name = "bakDescription", Multiline = true, ScrollBars = ScrollBars.Vertical };
+        /// <summary>Cam numbers read besides the ones the axes use (23 October): "1 - 10, 35".</summary>
+        private readonly TextBox _cams = new TextBox { Name = "bakCams" };
         private readonly Label _cpu = new Label(), _date = new Label();
         private readonly string _machine, _plc;
 
@@ -109,7 +111,7 @@ namespace Kaban.UI.Settings
             MaximizeBox = false; MinimizeBox = false; ShowInTaskbar = false;
             BackColor = Color.White;
             Font = UiStyle.Body;
-            ClientSize = new Size(620, 470);
+            ClientSize = new Size(620, _modules.Count > 0 ? 512 : 470);
 
             var driver = PlcManager.Instance.GetDriverForMonitoring(endpoint.StationId);
             var id = driver as IPlcIdentity;
@@ -118,7 +120,7 @@ namespace Kaban.UI.Settings
             var last = PlcBackup.List().FirstOrDefault(b => b.Machine == _machine && b.Plc == _plc && b.Serial.Length > 0);
             if (last != null) _serial.Text = last.Serial;
 
-            var grid = new TableLayoutPanel { Location = new Point(14, 12), Size = new Size(592, 360), ColumnCount = 2 };
+            var grid = new TableLayoutPanel { Location = new Point(14, 12), Size = new Size(592, _modules.Count > 0 ? 402 : 360), ColumnCount = 2 };
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
             grid.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             Action<string, Control, int> add = (caption, c, height) =>
@@ -141,13 +143,16 @@ namespace Kaban.UI.Settings
             {
                 Name = "bakWhat", AutoSize = false,
                 Text = string.Format(T("Msg_BakWhatIsRead", "Read: every device of the CPU (X, Y, M, L, B, F, SB, S, T, ST, C, LC, D, W, SW, R, Z, LZ, SM, SD - as far as the CPU has them) and {0}."),
-                                     PlcBackupUi.ModulesText(_modules))
+                                     PlcBackupUi.ModulesText(_modules)) +
+                       (_modules.Count > 0 ? " " + T("Msg_BakWhatCams", "Its cams: those an axis uses (Cam No., Pr.440) and the numbers typed below.") : "")
             };
             add(T("Lbl_BakWhat", "What is read"), what, 72);
+            if (_modules.Count > 0) add(T("Lbl_BakCams", "Cam No. also read"), _cams, 32);
             Controls.Add(grid);
 
             var tips = UiStyle.Tips();
             UiStyle.SetTip(tips, _serial, T("Tip_BakSerial", "The CPU's serial number, from its label - MX Component does not read it. The last one typed for this PLC is offered."));
+            UiStyle.SetTip(tips, _cams, T("Tip_BakCams", "Cam numbers read besides those the axes use - 1 - 10, 35. A number with no cam leaves warning 0C41H on the module's axis 1 (the module's own answer), so type the cams there are."));
 
             var read = UiStyle.TextButton(T("Btn_BakRead", "Read"), 110, (s, e) => DoRead());
             read.Name = "bakRead";
@@ -176,6 +181,12 @@ namespace Kaban.UI.Settings
                 Date = DateTime.Now, Station = _endpoint.StationId, Description = _description.Text.Trim(), Modules = _modules
             };
             if (backup.Cpu.StartsWith("(")) backup.Cpu = "";
+            List<int> extraCams;
+            if (!PlcBackup.TryParseCams(_cams.Text, out extraCams))
+            {
+                PlcBackupUi.Say(this, T("Msg_BakCamsTyped", "Cam numbers 1 - 256, as 1 - 10, 35."), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
             // 23 October: a link lost while reading is waited for - the first backup on GX Simulator3 lost it,
             // and every one of the CPU's devices was taken for refused and left out
             var link = new PlcBackup.Link(driver, block);
@@ -185,7 +196,14 @@ namespace Kaban.UI.Settings
                 var areas = PlcBackup.PlanDevices(link, backup.Skipped, progress);
                 if (areas == null) return false;
                 foreach (var m in _modules) areas.AddRange(PlcBackup.ModuleAreas(m.Key, m.Value));
-                return PlcBackup.ReadAreas(link, backup, areas, progress);
+                if (!PlcBackup.ReadAreas(link, backup, areas, progress)) return false;
+                // the modules' cams: those their axes use (as just read), and the numbers typed
+                foreach (var m in _modules)
+                {
+                    var cams = PlcBackup.CamsInUse(backup, m.Key).Union(extraCams).OrderBy(x => x).ToList();
+                    if (cams.Count > 0 && !PlcBackup.ReadCams(link, backup, m.Key, cams, progress)) return false;
+                }
+                return true;
             }, cancellable: true);
             if (!finished)
             {
@@ -474,7 +492,7 @@ namespace Kaban.UI.Settings
                     if (!writable) d.Row.Cells["Note"].Value = a.WhyNotWritten;
                 }
             }
-            var modules = b.Areas.Where(a => a.IsModule).Select(a => PlcBackup.PlaceOf(a.First)).Where(p => p != null)
+            var modules = b.Areas.Where(a => a.IsModule).Select(a => PlcBackup.PlaceOf(a)).Where(p => p != null)
                            .Select(p => p.Module).Distinct().OrderBy(m => m).ToList();
             foreach (int m in modules)
             {
@@ -489,7 +507,7 @@ namespace Kaban.UI.Settings
                     if (group.Areas.Count == 0) continue;
                     Add(new Item { Kind = ItemKind.Group, Module = m, Group = group, Text = group.Title }, mod, group.HasDetails);
                 }
-                foreach (var a in b.Areas.Where(a => { var p = PlcBackup.PlaceOf(a.First); return p != null && p.Module == m && p.Group == PlcBackup.ModuleGroup.Other; }))
+                foreach (var a in b.Areas.Where(a => { var p = PlcBackup.PlaceOf(a); return p != null && p.Module == m && p.Group == PlcBackup.ModuleGroup.Other; }))
                 {
                     var o = Add(new Item { Kind = ItemKind.Other, Module = m, Area = a, Text = a.Title }, mod);
                     o.Row.Cells["Read"].Value = a.Range;
@@ -819,7 +837,7 @@ namespace Kaban.UI.Settings
 
             // a module's data is gone at power off unless its flash ROM holds it
             // (23 October) not written now: the module counts as changed - the Axis Settings page's button blinks
-            foreach (var module in parts.Where(p => p.Source.IsModule).Select(p => ModuleOf(p.Target)).Where(m => m > 0).Distinct())
+            foreach (var module in parts.Where(p => p.Source.IsModule && !p.Source.IsCam).Select(p => ModuleOf(p.Target)).Where(m => m > 0).Distinct())
                 MotionFlash.MarkChanged(_endpoint.StationId, module, string.Format(T("Msg_BakModuleChanged", "the backup of {0} written into it"), from));
             if (result.Ok)
                 foreach (var module in flash) MotionFlash.Write(this, _endpoint.StationId, module);

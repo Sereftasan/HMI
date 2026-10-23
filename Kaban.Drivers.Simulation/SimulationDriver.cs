@@ -187,6 +187,7 @@ namespace Kaban.Drivers.Simulation
                 _memory.Clear();
                 _mirrors.Clear();
                 _ramps.Clear();
+                _cams.Clear();
             }
         }
 
@@ -285,6 +286,13 @@ namespace Kaban.Drivers.Simulation
                     }
                 }
 
+                // A SIMPLE MOTION MODULE'S CAM DATA OPERATION (23 October): "[Cd.600] Cam data operation
+                // request" (Un\G45000) = 1 reads a cam into [Cd.604] - [Cd.607], 2 or 3 writes one from
+                // them - done at once here, the request back to 0; a cam the module does not have answered
+                // as the module does: warning 0C41H on axis 1 ([Md.24], G2407).
+                var cam = CamRequest.Match(key);
+                if (cam.Success && value >= 1 && value <= 3) CamOperation(cam.Groups[1].Value, value);
+
                 // Drive any mirrored feedback bits so the HMI reacts to the write.
                 List<string> targets;
                 if (_mirrors.TryGetValue(key, out targets))
@@ -371,6 +379,45 @@ namespace Kaban.Drivers.Simulation
         /// </summary>
         private static readonly System.Text.RegularExpressions.Regex FlashRequest =
             new System.Text.RegularExpressions.Regex(@"^(U[0-9A-F]+\\G)5900$");
+        private static readonly System.Text.RegularExpressions.Regex CamRequest =
+            new System.Text.RegularExpressions.Regex(@"^(U[0-9A-F]+\\G)45000$");
+
+        /// <summary>A module's cam as the simulator keeps it: its format, resolution / coordinate number, starting point, words.</summary>
+        private sealed class CamData { public int Format, Resolution, Start; public int[] Words = new int[0]; }
+        private readonly Dictionary<string, CamData> _cams = new Dictionary<string, CamData>(StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>The cams the simulator holds, by module ("U1\G") and number - for the tests.</summary>
+        public int CamCount { get { lock (_gate) return _cams.Count; } }
+
+        /// <summary>The module's cam data operation, under the lock: 1 read, 2 / 3 write ([Cd.601] - [Cd.607], 45001 - 53199).</summary>
+        private void CamOperation(string module, int request)
+        {
+            Func<int, int> word = a => { int v; _memory.TryGetValue(module + a.ToString(System.Globalization.CultureInfo.InvariantCulture), out v); return v; };
+            Action<int, int> set = (a, v) => _memory[module + a.ToString(System.Globalization.CultureInfo.InvariantCulture)] = v;
+            int no = word(45001), first = word(45002), points = word(45003);
+            string id = module + "#" + no;
+            CamData c;
+            if (request == 1)
+            {
+                if (no < 1 || no > 256 || !_cams.TryGetValue(id, out c)) { set(2407, 0x0C41); set(45000, 0); return; }
+                set(45004, c.Format); set(45005, c.Resolution); set(45006, c.Start);
+                bool stroke = c.Format == 1;
+                int wpp = stroke ? 2 : 4, at = stroke ? first - 1 : first;
+                for (int i = 0; i < points * wpp && at * wpp + i < c.Words.Length; i++) set(45008 + i, c.Words[at * wpp + i]);
+            }
+            else
+            {
+                int format = word(45004), resolution = word(45005);
+                if (format != 1 && format != 2) { set(2407, 0x0C44); set(45000, 0); return; }
+                bool stroke = format == 1;
+                int wpp = stroke ? 2 : 4, at = stroke ? first - 1 : first;
+                if (!_cams.TryGetValue(id, out c) || c.Format != format || c.Resolution != resolution)
+                    _cams[id] = c = new CamData { Format = format, Resolution = resolution, Words = new int[resolution * wpp] };
+                c.Start = word(45006);
+                for (int i = 0; i < points * wpp && at * wpp + i < c.Words.Length; i++) c.Words[at * wpp + i] = word(45008 + i);
+            }
+            set(45000, 0);
+        }
 
         private static string Normalize(string address)
         {

@@ -24,11 +24,11 @@ namespace Kaban.UI.Settings
         public readonly List<KeyValuePair<PlcBackup.Area, PlcBackup.ModulePlace>> Areas = new List<KeyValuePair<PlcBackup.Area, PlcBackup.ModulePlace>>();
 
         /// <summary>What the backup has of the group.</summary>
-        public List<int> AllAxes = new List<int>(), AllEncoders = new List<int>();
+        public List<int> AllAxes = new List<int>(), AllEncoders = new List<int>(), AllCams = new List<int>();
         public bool HasCommon;
 
         /// <summary>What is chosen.</summary>
-        public readonly SortedSet<int> Axes = new SortedSet<int>(), Encoders = new SortedSet<int>();
+        public readonly SortedSet<int> Axes = new SortedSet<int>(), Encoders = new SortedSet<int>(), Cams = new SortedSet<int>();
         public bool Common;
         /// <summary>Positioning data: an axis's numbers written, {first, last}.</summary>
         public readonly Dictionary<int, int[]> Numbers = new Dictionary<int, int[]>();
@@ -48,20 +48,21 @@ namespace Kaban.UI.Settings
             var g = new PlcBackupGroup { Module = module, Group = group };
             foreach (var a in areas)
             {
-                var place = PlcBackup.PlaceOf(a.First);
+                var place = PlcBackup.PlaceOf(a);
                 if (place == null || place.Module != module || place.Group != group) continue;
                 g.Areas.Add(new KeyValuePair<PlcBackup.Area, PlcBackup.ModulePlace>(a, place));
             }
             g.AllAxes = g.Areas.Where(kv => kv.Value.Axis > 0).Select(kv => kv.Value.Axis).Distinct().OrderBy(x => x).ToList();
             g.AllEncoders = g.Areas.Where(kv => kv.Value.Encoder > 0).Select(kv => kv.Value.Encoder).Distinct().OrderBy(x => x).ToList();
-            g.HasCommon = g.Areas.Any(kv => kv.Value.Axis == 0 && kv.Value.Encoder == 0);
+            g.AllCams = g.Areas.Where(kv => kv.Value.Cam > 0).Select(kv => kv.Value.Cam).Distinct().OrderBy(x => x).ToList();
+            g.HasCommon = g.Areas.Any(kv => kv.Value.Axis == 0 && kv.Value.Encoder == 0 && kv.Value.Cam == 0);
             return g;
         }
 
         /// <summary>The parts of it the details window lists (more than one: it has details).</summary>
-        public int Total { get { return AllAxes.Count + AllEncoders.Count + (HasCommon ? 1 : 0); } }
-        public int Chosen { get { return Axes.Count + Encoders.Count + (Common ? 1 : 0); } }
-        public bool HasDetails { get { return Total > 1 || IsPositioning; } }
+        public int Total { get { return AllAxes.Count + AllEncoders.Count + AllCams.Count + (HasCommon ? 1 : 0); } }
+        public int Chosen { get { return Axes.Count + Encoders.Count + Cams.Count + (Common ? 1 : 0); } }
+        public bool HasDetails { get { return Total > 1 || IsPositioning || Group == PlcBackup.ModuleGroup.Cam; } }
 
         /// <summary>Every part chosen, every positioning data number.</summary>
         public bool Full
@@ -78,11 +79,12 @@ namespace Kaban.UI.Settings
         /// <summary>Everything, or nothing.</summary>
         public void All(bool on)
         {
-            Axes.Clear(); Encoders.Clear(); Numbers.Clear();
+            Axes.Clear(); Encoders.Clear(); Cams.Clear(); Numbers.Clear();
             Common = on && HasCommon;
             if (!on) return;
             foreach (var ax in AllAxes) Axes.Add(ax);
             foreach (var e in AllEncoders) Encoders.Add(e);
+            foreach (var c in AllCams) Cams.Add(c);
         }
 
         public int[] NumbersOf(int axis)
@@ -101,6 +103,8 @@ namespace Kaban.UI.Settings
                 bits.Add((Axes.Count == 1 ? LanguageManager.GetString("Bak_SumAxis", "axis") : LanguageManager.GetString("Bak_SumAxes", "axes")) + " " + Runs(Axes));
             if (Encoders.Count > 0)
                 bits.Add((Encoders.Count == 1 ? LanguageManager.GetString("Bak_SumEncoder", "encoder axis") : LanguageManager.GetString("Bak_SumEncoders", "encoder axes")) + " " + Runs(Encoders));
+            if (Cams.Count > 0)
+                bits.Add((Cams.Count == 1 ? LanguageManager.GetString("Bak_SumCam", "cam No.") : LanguageManager.GetString("Bak_SumCams", "cams No.")) + Runs(Cams));
             if (IsPositioning && Axes.Count > 0)
             {
                 var ranges = Axes.Select(ax => NumbersOf(ax)).Select(n => n[0] + " - " + n[1]).Distinct().ToList();
@@ -131,7 +135,7 @@ namespace Kaban.UI.Settings
             foreach (var kv in Areas)
             {
                 var a = kv.Key; var place = kv.Value;
-                bool chosen = place.Encoder > 0 ? Encoders.Contains(place.Encoder) : place.Axis > 0 ? Axes.Contains(place.Axis) : Common;
+                bool chosen = place.Cam > 0 ? Cams.Contains(place.Cam) : place.Encoder > 0 ? Encoders.Contains(place.Encoder) : place.Axis > 0 ? Axes.Contains(place.Axis) : Common;
                 if (!chosen) continue;
                 int from = 0, count = a.Points;
                 if (IsPositioning && place.Axis > 0)
@@ -149,10 +153,11 @@ namespace Kaban.UI.Settings
         /// <summary>A copy (the details window works on one: Cancel leaves the group as it was).</summary>
         public PlcBackupGroup Copy()
         {
-            var c = new PlcBackupGroup { Module = Module, Group = Group, AllAxes = AllAxes, AllEncoders = AllEncoders, HasCommon = HasCommon, Common = Common };
+            var c = new PlcBackupGroup { Module = Module, Group = Group, AllAxes = AllAxes, AllEncoders = AllEncoders, AllCams = AllCams, HasCommon = HasCommon, Common = Common };
             c.Areas.AddRange(Areas);
             foreach (var x in Axes) c.Axes.Add(x);
             foreach (var x in Encoders) c.Encoders.Add(x);
+            foreach (var x in Cams) c.Cams.Add(x);
             foreach (var kv in Numbers) c.Numbers[kv.Key] = (int[])kv.Value.Clone();
             return c;
         }
@@ -162,6 +167,7 @@ namespace Kaban.UI.Settings
             Common = c.Common;
             Axes.Clear(); foreach (var x in c.Axes) Axes.Add(x);
             Encoders.Clear(); foreach (var x in c.Encoders) Encoders.Add(x);
+            Cams.Clear(); foreach (var x in c.Cams) Cams.Add(x);
             Numbers.Clear(); foreach (var kv in c.Numbers) Numbers[kv.Key] = (int[])kv.Value.Clone();
         }
     }
@@ -174,7 +180,7 @@ namespace Kaban.UI.Settings
     {
         private readonly PlcBackupGroup _work;
         private readonly CheckBox _common;
-        private readonly Dictionary<int, CheckBox> _axes = new Dictionary<int, CheckBox>(), _encoders = new Dictionary<int, CheckBox>();
+        private readonly Dictionary<int, CheckBox> _axes = new Dictionary<int, CheckBox>(), _encoders = new Dictionary<int, CheckBox>(), _cams = new Dictionary<int, CheckBox>();
         private readonly Dictionary<int, NumericUpDown> _from = new Dictionary<int, NumericUpDown>(), _to = new Dictionary<int, NumericUpDown>();
 
         /// <summary>What was chosen (the group's copy) - taken by the caller on OK.</summary>
@@ -242,6 +248,16 @@ namespace Kaban.UI.Settings
                 _encoders[j] = cb;
                 table.Controls.Add(cb, 0, rows++);
             }
+            foreach (var k in group.AllCams)
+            {
+                // the cam's own title: "cam No.3 (stroke ratio data, resolution 256)"
+                var a = group.Areas.First(kv => kv.Value.Cam == k).Key;
+                string title = a.Title.Contains(": ") ? a.Title.Substring(a.Title.IndexOf(": ", StringComparison.Ordinal) + 2) : a.Title;
+                var cb = box("detCam" + k, title, _work.Cams.Contains(k));
+                _cams[k] = cb;
+                table.Controls.Add(cb, 0, rows++);
+                table.SetColumnSpan(cb, 4);
+            }
             table.RowCount = rows;
 
             var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 52, Padding = new Padding(8, 10, 8, 6), FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
@@ -264,6 +280,7 @@ namespace Kaban.UI.Settings
             if (_common != null) _common.Checked = on;
             foreach (var cb in _axes.Values) cb.Checked = on;
             foreach (var cb in _encoders.Values) cb.Checked = on;
+            foreach (var cb in _cams.Values) cb.Checked = on;
             if (!on) return;
             foreach (var kv in _from) { kv.Value.Value = 1; _to[kv.Key].Value = _to[kv.Key].Maximum; }
         }
@@ -276,6 +293,8 @@ namespace Kaban.UI.Settings
             foreach (var kv in _axes) if (kv.Value.Checked) _work.Axes.Add(kv.Key);
             _work.Encoders.Clear();
             foreach (var kv in _encoders) if (kv.Value.Checked) _work.Encoders.Add(kv.Key);
+            _work.Cams.Clear();
+            foreach (var kv in _cams) if (kv.Value.Checked) _work.Cams.Add(kv.Key);
             _work.Numbers.Clear();
             foreach (var kv in _from)
             {
