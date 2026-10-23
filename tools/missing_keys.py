@@ -20,6 +20,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.dont_write_bytecode = True                      # no __pycache__ left in tools
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import translation_uses as tu  # noqa: E402
 
