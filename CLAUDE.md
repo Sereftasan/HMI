@@ -55,6 +55,9 @@
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
 - The program's lines naming each translation key (HMI Settings > Translation, "Where is it used?" on a panel without
   the source): `tools\translation_uses.py` -> `KabanHMI\TranslationUses.csv`, made again in every batch.
+- The keys the code uses with an English text of its own and the translation files lack (23 October: tooltips shown in
+  English only, not in the Translation table): `tools\missing_keys.py` adds them with their English, every batch - their
+  other languages stay empty (English shown) until translated.
 - Alarm texts in `Alarms.json` (22 October): inherited from the Industry 4 program, kept as they are for now (Config
   Import still copies the file whole). The two alarm handlings - Industry 4 logging and the HMI's - are to be combined
   when Industry 4 logging comes into this program; the alarm texts go to the translation files then.

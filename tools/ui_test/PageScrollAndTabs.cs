@@ -64,9 +64,31 @@ class PT {
         docked.Controls.Add(new DataGridView { Dock = DockStyle.Fill });
         docked.Controls.Add(new Panel { Dock = DockStyle.Top, Height = 40 });
         PageScroll.Enable(docked);
-        Check("a page made of docked parts scrolls below its least size", docked.AutoScroll &&
-              docked.AutoScrollMinSize == new Size(Kaban.UI.Controls.UiScale.Px(PageScroll.MinDockedWidth), Kaban.UI.Controls.UiScale.Px(PageScroll.MinDockedHeight)),
+        // 23 October: "Alarms and HMI Setting pages ... don't get narrowed to the active page area": the least
+        // width is what its parts need - a table scrolls itself - never more than MinDockedWidth
+        Check("a page made of docked parts (a table under a bar): scrolls only below what they need - the table scrolls itself", docked.AutoScroll &&
+              docked.AutoScrollMinSize == new Size(Kaban.UI.Controls.UiScale.Px(240), Kaban.UI.Controls.UiScale.Px(PageScroll.MinDockedHeight)),
               docked.AutoScrollMinSize.ToString());
+        var barred = new UserControl();
+        barred.Controls.Add(new DataGridView { Dock = DockStyle.Fill });
+        var fixedBar = new Panel { Dock = DockStyle.Top, Height = 40 };
+        fixedBar.Controls.Add(new Button { Left = 600, Width = 100 });
+        barred.Controls.Add(fixedBar);
+        PageScroll.Enable(barred);
+        Check("  a bar of buttons placed up to 700: 700 (they would be cut)", barred.AutoScrollMinSize.Width == 700, barred.AutoScrollMinSize.ToString());
+        var wrapping = new UserControl();
+        wrapping.Controls.Add(new DataGridView { Dock = DockStyle.Fill });
+        var flowBar = new FlowLayoutPanel { Dock = DockStyle.Top, WrapContents = true, Height = 40 };
+        for (int i = 0; i < 12; i++) flowBar.Controls.Add(new Button { Width = 80 });
+        wrapping.Controls.Add(flowBar);
+        PageScroll.Enable(wrapping);
+        Check("  a bar that wraps its buttons: its widest button's room", wrapping.AutoScrollMinSize.Width == 240, wrapping.AutoScrollMinSize.ToString());
+        var wide = new UserControl();
+        var wideBar = new Panel { Dock = DockStyle.Top, Height = 40 };
+        wideBar.Controls.Add(new Button { Left = 1200, Width = 100 });
+        wide.Controls.Add(wideBar);
+        PageScroll.Enable(wide);
+        Check("  never more than the least size it was given before", wide.AutoScrollMinSize.Width == Kaban.UI.Controls.UiScale.Px(PageScroll.MinDockedWidth), wide.AutoScrollMinSize.ToString());
         var placed = new UserControl();
         placed.Controls.Add(new Button { Location = new Point(1200, 10) });
         PageScroll.Enable(placed);

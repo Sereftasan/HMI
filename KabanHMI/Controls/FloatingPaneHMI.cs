@@ -87,12 +87,12 @@ namespace Kaban.UI.Controls
             _btnMin.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _btnMin.Click += (s, e) => State = (State == PaneState.Minimized)
                                               ? PaneState.Normal : PaneState.Minimized;
-            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMin, "Minimize this pane to the bottom-left");
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMin, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMin", "Minimize this pane to the bottom-left"));
 
             StyleTitleButton(_btnMax, "\u25A1");
             _btnMax.Click += (s, e) => State = (State == PaneState.Maximized)
                                               ? PaneState.Normal : PaneState.Maximized;
-            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMax, "Maximize this pane to the whole page");
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMax, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMax", "Maximize this pane to the whole page"));
             _title.Controls.Add(_btnMax);
             _title.Controls.Add(_btnMin);
 
@@ -104,7 +104,7 @@ namespace Kaban.UI.Controls
             _btnReset.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _btnReset.Visible = false;
             _btnReset.Click += (s, e) => { if (ResetRequested != null) ResetRequested(this, EventArgs.Empty); };
-            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnReset, "Reset grouping, sorting and columns");
+            Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnReset, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneReset", "Reset grouping, sorting and columns"));
             _title.Controls.Add(_btnReset);
 
             _title.Resize += (s, e) => LayoutTitleButtons();

@@ -1613,7 +1613,49 @@ namespace Kaban.UI.Controls
         /// silent on the panel. Shown explicitly (ToolTip.Show), a tip depends on
         /// nothing but the pointer resting on the control.
         /// </summary>
-        private sealed class OwnTip { public string Text = ""; }
+        private sealed class OwnTip
+        {
+            public string Text = "";
+            /// <summary>The text without its shortcut line ("Ctrl+S\n"), the language it was set in.</summary>
+            public string Body = "", Language = "";
+            public bool Keyed;
+            /// <summary>Its translation key, looked for when first needed (null: not yet; "": none).</summary>
+            public string Key;
+        }
+
+        /// <summary>
+        /// THE TIP IN THE LANGUAGE SHOWN (23 October: "most of the control tooltips (apart from the HMI controls)
+        /// doesn't have translation keys so they are shown in English only"): a tip is set as a text - T(key,
+        /// English) already looked up - so a page built before a language change kept its tips in the language it
+        /// was built in. The text's key is found again (the key with that text in the language it was set in) and
+        /// the tip shown in the language now; the notes page lists it with the control's texts (TipKeyOf).
+        /// </summary>
+        private static string ShownTip(Control c, OwnTip own)
+        {
+            if (own == null || string.IsNullOrEmpty(own.Text)) return own == null ? "" : own.Text;
+            var lang = Kaban.Core.Helpers.LanguageManager.CurrentLanguage ?? "";
+            if (string.Equals(lang, own.Language, StringComparison.OrdinalIgnoreCase)) return own.Text;
+            var key = KeyOfTip(own);
+            if (string.IsNullOrEmpty(key)) return own.Text;
+            var body = Kaban.Core.Helpers.LanguageManager.GetString(key, own.Body);
+            return own.Keyed ? Kaban.UI.Helpers.Shortcuts.With(Kaban.UI.Helpers.Shortcuts.Of(c), body) : body;
+        }
+
+        private static string KeyOfTip(OwnTip own)
+        {
+            if (own.Key == null)
+                own.Key = Kaban.Core.Helpers.LanguageManager.KeyOfTextIn(own.Body, own.Language) ?? Kaban.Core.Helpers.LanguageManager.KeyOfTextIn(own.Body, "EN") ?? "";
+            return own.Key;
+        }
+
+        /// <summary>The translation key of a control's own tip (null: no tip, or a text of no key).</summary>
+        public static string TipKeyOf(Control c)
+        {
+            OwnTip own;
+            if (c == null || !_ownTips.TryGetValue(c, out own) || string.IsNullOrEmpty(own.Text)) return null;
+            var key = KeyOfTip(own);
+            return key.Length > 0 ? key : null;
+        }
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, OwnTip> _ownTips =
             new System.Runtime.CompilerServices.ConditionalWeakTable<Control, OwnTip>();
 
@@ -1641,13 +1683,24 @@ namespace Kaban.UI.Controls
                 var t = tips ?? Tips();
                 // never registered as well: two of them would fight over one window
                 try { if (!string.IsNullOrEmpty(t.GetToolTip(c))) t.SetToolTip(c, null); } catch { }
-                HoverTip(t, c, () => own.Text);
+                HoverTip(t, c, () => ShownTip(c, own));
                 // greyed out it gets no pointer: its parent shows the tip for it
                 EventHandler toParent = (s, e) => { if (c.Parent != null) DisabledTips(t, c.Parent); };
                 c.ParentChanged += toParent;
                 toParent(c, EventArgs.Empty);
             }
             own.Text = text ?? "";
+            own.Language = Kaban.Core.Helpers.LanguageManager.CurrentLanguage ?? "";
+            own.Key = null;
+            own.Body = own.Text;
+            own.Keyed = false;
+            // a shortcut's line first (Shortcuts.Set): the text after it is the one translated
+            var keys = Kaban.UI.Helpers.Shortcuts.Of(c);
+            if (keys != Keys.None)
+            {
+                var head = Kaban.UI.Helpers.Shortcuts.Text(keys) + "\n";
+                if (own.Text.StartsWith(head, StringComparison.Ordinal)) { own.Body = own.Text.Substring(head.Length); own.Keyed = true; }
+            }
         }
 
         private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Control, object> _disabledTipHosts =
@@ -1696,7 +1749,7 @@ namespace Kaban.UI.Controls
                         var c = over;
                         if (c == null || shown || c.Enabled || c.IsDisposed || host.IsDisposed || !host.IsHandleCreated || !c.Visible) return;
                         OwnTip own;
-                        string text = _ownTips.TryGetValue(c, out own) ? own.Text : "";
+                        string text = _ownTips.TryGetValue(c, out own) ? ShownTip(c, own) : "";
                         if (string.IsNullOrEmpty(text)) return;
                         try
                         {

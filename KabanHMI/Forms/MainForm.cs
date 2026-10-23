@@ -2933,7 +2933,7 @@ namespace Kaban.UI.Forms
             _btnSimMonitor.FlatAppearance.BorderSize = 0;
             _btnSimMonitor.FlatAppearance.MouseOverBackColor = Color.FromArgb(48, 48, 48);
             _btnSimMonitor.Paint += (s, e) => DrawMonitorGlyph(e.Graphics, _btnSimMonitor.ClientRectangle, Color.White);
-            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, "Simulation Monitor (F12)");
+            Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
             _btnSimMonitor.Click += (s, e) => ToggleSimulationMonitor();
             pnlTop.Controls.Add(_btnSimMonitor);
             LayoutTopBar();

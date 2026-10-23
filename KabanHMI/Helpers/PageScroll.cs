@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Kaban.UI.Helpers
@@ -61,7 +62,111 @@ namespace Kaban.UI.Helpers
             foreach (Control c in view.Controls)
                 if (c.Dock != DockStyle.None && c.Visible) { docked = true; break; }
             if (docked)
-                sc.AutoScrollMinSize = new Size(Kaban.UI.Controls.UiScale.Px(MinDockedWidth), Kaban.UI.Controls.UiScale.Px(MinDockedHeight));
+            {
+                // 23 October: "Alarms and HMI Setting pages (apart from Users and Preferences tab) don't get narrowed
+                // to the active page area so some part of these screens can't be seen without closing the second
+                // page": a page of a table and a bar was given the 900 pixels whatever it holds - beside a side page
+                // it went on under it, the table's last columns and its own scroll bars with it. The room it needs
+                // now: its table scrolls itself, its bar's buttons wrap or overflow - the most of its parts' least
+                // widths, never more than 900.
+                int most = Kaban.UI.Controls.UiScale.Px(MinDockedWidth);
+                int need;
+                try { need = Math.Min(most, NeededWidth(view, 0)); }
+                catch { need = most; }
+                sc.AutoScrollMinSize = new Size(need, Kaban.UI.Controls.UiScale.Px(MinDockedHeight));
+            }
+        }
+
+        /// <summary>The least room a part keeps for itself: a table, a list, a text box scroll themselves.</summary>
+        private static int Least { get { return Kaban.UI.Controls.UiScale.Px(240); } }
+
+        /// <summary>
+        /// The width a control needs to show all of itself, laid out as it is: its own scrolling parts (a table, a
+        /// list, a panel that scrolls) their least, a bar that wraps its widest button, one that does not all of
+        /// them, controls placed in it as far right as they reach. Deep pages: the deepest parts as they are.
+        /// </summary>
+        internal static int NeededWidth(Control c, int depth)
+        {
+            if (c == null || !c.Visible && depth > 0) return 0;
+            int own = Math.Max(c.MinimumSize.Width, 0);
+            if (depth > 12) return Math.Max(own, c.Width);
+            if (c is DataGridView || c is ListView || c is TreeView || c is ListBox || c is TextBoxBase || c is WebBrowser || c is IScrollsItself)
+                return Math.Max(own, Least);
+            if (c is ToolStrip) return Math.Max(own, ((ToolStrip)c).CanOverflow ? Least : PreferredWidthOf(c));
+            if (c is Label && (((Label)c).AutoEllipsis || !((Label)c).AutoSize) && c.Dock != DockStyle.None) return Math.Max(own, Least / 2);
+            var sc = c as ScrollableControl;
+            // a part that scrolls what is placed in it: its least - what is docked in it it does not scroll
+            if (depth > 0 && sc != null && sc.AutoScroll && !(c is Form) &&
+                !c.Controls.Cast<Control>().Any(k => k.Visible && k.Dock != DockStyle.None))
+                return Math.Max(own, Math.Max(Least, Math.Min(sc.AutoScrollMinSize.Width, Least)));
+            var tabs = c as TabControl;
+            if (tabs != null)
+            {
+                int w = 0;
+                foreach (TabPage p in tabs.TabPages) w = Math.Max(w, NeededWidth(p, depth + 1));
+                return Math.Max(own, w + 8);
+            }
+            var split = c as SplitContainer;
+            if (split != null)
+            {
+                int a = NeededWidth(split.Panel1, depth + 1), b = NeededWidth(split.Panel2, depth + 1);
+                return Math.Max(own, split.Orientation == Orientation.Vertical ? a + b + split.SplitterWidth : Math.Max(a, b));
+            }
+            var flow = c as FlowLayoutPanel;
+            if (flow != null)
+            {
+                var items = flow.Controls.Cast<Control>().Where(k => k.Visible).ToList();
+                bool across = flow.FlowDirection == FlowDirection.LeftToRight || flow.FlowDirection == FlowDirection.RightToLeft;
+                int w = !across || flow.WrapContents
+                    ? items.Select(k => (k.AutoSize || k.Dock != DockStyle.None ? NeededWidth(k, depth + 1) : k.Width) + k.Margin.Horizontal).DefaultIfEmpty(0).Max()
+                    : items.Sum(k => k.Width + k.Margin.Horizontal);
+                return Math.Max(own, w + flow.Padding.Horizontal);
+            }
+            var table = c as TableLayoutPanel;
+            if (table != null)
+            {
+                int w = 0;
+                for (int col = 0; col < table.ColumnCount; col++)
+                {
+                    var style = col < table.ColumnStyles.Count ? table.ColumnStyles[col] : null;
+                    if (style != null && style.SizeType == SizeType.Absolute) { w += (int)style.Width; continue; }
+                    int most = 0;
+                    foreach (Control k in table.Controls)
+                    {
+                        if (!k.Visible || table.GetColumn(k) != col || table.GetColumnSpan(k) != 1) continue;
+                        int kw = k.Dock == DockStyle.Fill || (k.Anchor & (AnchorStyles.Left | AnchorStyles.Right)) == (AnchorStyles.Left | AnchorStyles.Right)
+                            ? NeededWidth(k, depth + 1) : k.Width;
+                        most = Math.Max(most, kw + k.Margin.Horizontal);
+                    }
+                    w += most;
+                }
+                return Math.Max(own, w + table.Padding.Horizontal);
+            }
+            if (c.Controls.Count == 0) return Math.Max(own, c.Width);
+
+            // a container: its docked parts round what fills it; the rest where it is placed
+            int sides = 0, middle = 0, placed = 0;
+            foreach (Control k in c.Controls)
+            {
+                if (!k.Visible) continue;
+                switch (k.Dock)
+                {
+                    case DockStyle.Left: case DockStyle.Right: sides += k.Width; break;
+                    case DockStyle.Fill: case DockStyle.Top: case DockStyle.Bottom: middle = Math.Max(middle, NeededWidth(k, depth + 1)); break;
+                    default:
+                        bool stretches = (k.Anchor & (AnchorStyles.Left | AnchorStyles.Right)) == (AnchorStyles.Left | AnchorStyles.Right);
+                        int left = sc != null ? k.Left - sc.AutoScrollPosition.X : k.Left;
+                        placed = Math.Max(placed, left + (stretches ? Math.Min(k.Width, NeededWidth(k, depth + 1)) : k.Width));
+                        break;
+                }
+            }
+            var pad = c is ScrollableControl ? ((ScrollableControl)c).Padding.Horizontal : 0;
+            return Math.Max(own, Math.Max(sides + middle, placed) + pad);
+        }
+
+        private static int PreferredWidthOf(Control c)
+        {
+            try { return c.GetPreferredSize(Size.Empty).Width; } catch { return c.Width; }
         }
 
         /// <summary>

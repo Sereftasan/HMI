@@ -235,6 +235,8 @@ namespace Kaban.UI.Helpers
             }
             if (list.Count == 0 && (c is Label || c is ButtonBase) && !string.IsNullOrWhiteSpace(c.Text) && !IsNumber(c.Text))
                 add(T("Nts_KeyText", "Its text (no key of its own)"), c.Text);
+            // 23 October: a plain control's tooltip - its key found again by its text (UiStyle.TipKeyOf)
+            add(T("Nts_KeyTip", "Tooltip"), UiStyle.TipKeyOf(c));
             // a button or a lamp of a cylinder unit: the unit's title too - it names them
             var unit = UnitOf(c) as CylinderUnitHMI;
             if (unit != null) add(T("Nts_KeyUnitTitle", "Unit title"), unit.TitleTextKey);

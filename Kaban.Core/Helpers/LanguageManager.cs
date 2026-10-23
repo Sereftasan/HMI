@@ -373,6 +373,22 @@ namespace Kaban.Core.Helpers
             return null;
         }
 
+        /// <summary>The key whose text in <paramref name="lang"/> is <paramref name="text"/> (the machine's keys first); null: none.</summary>
+        public static string KeyOfTextIn(string text, string lang)
+        {
+            if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(lang)) return null;
+            text = text.Trim();
+            lang = lang.Trim().ToUpperInvariant();
+            foreach (var source in new[] { _machine, _common })
+            {
+                Dictionary<string, string> dict;
+                if (!source.TryGetValue(lang, out dict)) continue;
+                foreach (var kv in dict)
+                    if (string.Equals((kv.Value ?? "").Trim(), text, StringComparison.Ordinal)) return kv.Key;
+            }
+            return null;
+        }
+
         /// <summary>A key's text in one language (machine, then common), or null - no English in its place.</summary>
         public static string GetStringIn(string langCode, string key)
         {
