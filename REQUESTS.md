@@ -22,6 +22,8 @@ Claude reads this file at the start of every batch, does the items, and moves ea
     the translation files (527 texts, added with their English - tools\missing_keys.py); tooltips follow a language change.
   - a136085 - Config Import: what it does said; each file compared with this program's; Compare... side by side; Backups...
   - 06ce6b8 - Cylinder FW/Back: each way just under the units' alarm delays (0.5 s less than the shortest), not 5 s.
+  - 14659a8 - PLC Monitor: the labels added from a page named by the controls' captions ("Gripper Length"), not by the
+    values they show ("50.0 mm - setting").
   - LZ: not backed up on GX Simulator3 (it shows no LZ) - left as it is, as said.
 - 23 October (afternoon):
   - b98a2a4 - PLC Monitor: the simulator's devices never written (0) and moving ones shown - they were "-"; a device a

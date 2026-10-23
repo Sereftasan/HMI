@@ -137,8 +137,8 @@ Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;105;Message;MessageBox.Sho
 Btn_Alarms;Kaban.Machines.SB3012\Program.cs;70;Text;shell.AddMenuButton("Btn_Alarms", "Alarms", null, new Screens.AlarmScreen());
 Btn_Alarms;Kaban.Machines.SB3015\Program.cs;63;Text;shell.AddMenuButton("Btn_Alarms", "Alarms", null, new Screens.AlarmScreen());
 Btn_Alarms;KabanHMI\Forms\MainForm.cs;2187;Text;if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
-Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;268;Text;var alarms = new PageDevices { Title = LanguageManager.GetString("Btn_Alarms", "Alarms") };
-Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;424;Text;PageTitle = LanguageManager.GetString("Btn_Alarms", "Alarms"),
+Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;293;Text;var alarms = new PageDevices { Title = LanguageManager.GetString("Btn_Alarms", "Alarms") };
+Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;449;Text;PageTitle = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;87;Text;list.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;131;Text;uses.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Screens\StandardScreens.cs;95;Text;TitleKey = "Btn_Alarms",
