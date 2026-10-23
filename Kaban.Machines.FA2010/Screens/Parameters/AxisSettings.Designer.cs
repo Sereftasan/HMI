@@ -62,7 +62,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.axExit_X = new Kaban.UI.Controls.AxisSettingHMI();
             this.axV_Cutting_X = new Kaban.UI.Controls.AxisSettingHMI();
             this.btnSend_Axes_To_Reference = new Kaban.UI.Controls.ButtonHMI();
-            this.axisJogBar = new Kaban.Machines.FA2010.Screens.Shared.AxisJogBar();
+            this.axisJogBarPlace = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // lblHead0
@@ -1601,19 +1601,19 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.btnSend_Axes_To_Reference.UseVisualStyleBackColor = false;
             this.btnSend_Axes_To_Reference.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // axisJogBar
+            // axisJogBarPlace
             // 
-            this.axisJogBar.BackColor = System.Drawing.Color.White;
-            this.axisJogBar.Location = new System.Drawing.Point(0, 0);
-            this.axisJogBar.Name = "axisJogBar";
-            this.axisJogBar.Size = new System.Drawing.Size(712, 76);
-            this.axisJogBar.TabIndex = 0;
+            this.axisJogBarPlace.BackColor = System.Drawing.Color.White;
+            this.axisJogBarPlace.Location = new System.Drawing.Point(0, 0);
+            this.axisJogBarPlace.Name = "axisJogBarPlace";
+            this.axisJogBarPlace.Size = new System.Drawing.Size(712, 76);
+            this.axisJogBarPlace.TabIndex = 0;
             // 
             // AxisSettings
             // 
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.axisJogBar);
+            this.Controls.Add(this.axisJogBarPlace);
             this.Controls.Add(this.lblHead0);
             this.Controls.Add(this.lblHead1);
             this.Controls.Add(this.lblHead2);
@@ -1683,6 +1683,6 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         private Kaban.UI.Controls.AxisSettingHMI axExit_X;
         private Kaban.UI.Controls.AxisSettingHMI axV_Cutting_X;
         private Kaban.UI.Controls.ButtonHMI btnSend_Axes_To_Reference;
-        private Kaban.Machines.FA2010.Screens.Shared.AxisJogBar axisJogBar;
+        private System.Windows.Forms.Panel axisJogBarPlace;
     }
 }

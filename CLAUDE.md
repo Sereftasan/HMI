@@ -41,14 +41,15 @@
 - Translations: `Key;EN;TR;RU;DE;IT;ES`, no `;` inside a text.
 - The general manual names no machine; a machine's own chapter is in its project (`Kaban.Machines.FA2010\Help`).
 - A device of a machine's other PLC in a property: `X12@2` (X12 of PLC 2) - never a dot (`D100.5` is bit 5 of D100).
-- FA2010's own controls for its pages (Screens\Shared\AxisJogBar) are UserControls of the machine's project: a page
-  holds them like any control (Toolbox, after a build). "Could not find type ..." in the designer means the machine was
-  not built, or Visual Studio still has an older build loaded: Rebuild, and restart Visual Studio if it stays.
-  "Method not found: '... set_RequiredSecurity(...)'" (or any member the code has) is the same: the designer loaded a
-  Kaban.UI / Kaban.Core built before the member came. Build > Rebuild Solution (every project, not only the startup
-  one), close the designer tabs and restart Visual Studio; if it stays, close Visual Studio, delete the projects' `bin`
-  and `obj` folders and `%LOCALAPPDATA%\Microsoft\VisualStudio\<version>\ProjectAssemblies`, and build again. Never
-  "Ignore and Continue": the designer then saves the page without what it could not load.
+- FA2010's own controls for its pages (Screens\Shared\AxisJogBar) are UserControls of the machine's project. A page
+  does NOT hold one in its designer file (23 October): to show it, Visual Studio's designer runs the control's compiled
+  code, and it failed there ("Method not found: '... SpeedOverrideHMI.set_RequiredSecurity(...)'", then "The variable
+  'axisJogBar' is either undeclared or was never assigned") - so the page has a plain panel where the control goes
+  (Axis Settings: `axisJogBarPlace`, moved and sized in the designer), and its constructor puts the control there.
+  "Could not find type ..." or "Method not found ..." on another page: Build > Rebuild Solution, restart Visual Studio;
+  if it stays, close it, delete the projects' `bin` and `obj` folders and
+  `%LOCALAPPDATA%\Microsoft\VisualStudio\<version>\ProjectAssemblies`, and build again. Never "Ignore and Continue":
+  the designer then saves the page without what it could not load.
   AxisJogBar is also shown by the program above the Manual Movement tabs and on the Axis Monitor.
 - FA2010's pages are generated from the old program's: `tools\legacy_fa2010_pages.py` (it keeps what was set by hand).
   Its wiring list: `tools\build_wiring.py` -> `Kaban.Machines.FA2010\Wiring.csv`.
