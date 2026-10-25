@@ -58,7 +58,7 @@ namespace Kaban.UI.Forms
         private readonly ToolTip _tips = UiStyle.CreateTips();
         private ToolStripItem _restoreItem;
         private ToolStrip _bar;
-        private Button _btnUndo, _btnRedo;
+        private Button _btnUndo, _btnRedo, _btnUp, _btnDown, _btnCopy;
 
         /// <summary>Copied rows - shared by every controller, so a list can be copied from one PLC to another.</summary>
         private static readonly List<WatchRow> _clip = new List<WatchRow>();
@@ -289,6 +289,11 @@ namespace Kaban.UI.Forms
             public string LegacyTable;
             /// <summary>A table's cell is being typed into.</summary>
             public bool TableEditing { get { return Blocks.Any(b => b.Grid != null && b.Grid.IsCurrentCellInEditMode); } }
+            /// <summary>
+            /// 24 October: the table (its own label) or the comment line chosen on the "Table viewed labels" tab - what
+            /// the toolbar's buttons act on there (null: none chosen).
+            /// </summary>
+            public WatchRow TableSelected;
         }
 
         internal class MonitorTab
@@ -515,7 +520,7 @@ namespace Kaban.UI.Forms
             // Copy, paste, the moves and undo/redo are DRAWN (ToolGlyphs): the
             // pictures every office program uses, short heavy arrows - their
             // characters and emoji read as thin sticks or as something else.
-            var btnCopy = UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_MonCopy", "Copy the selected rows"), _tips, (s, e) => CopySelected());
+            var btnCopy = _btnCopy = UiStyle.IconButton(ToolGlyphs.Copy, "Copy", T("Tip_MonCopy", "Copy the selected rows"), _tips, (s, e) => CopySelected());
             keyed(btnCopy, Keys.Control | Keys.C, T("Tip_MonCopy", "Copy the selected rows"));
             add(btnCopy);
             Button btnPaste = null;
@@ -529,10 +534,10 @@ namespace Kaban.UI.Forms
                 (s, e) => ShowMenu(btnDelete, DeleteMenu()));
             keyed(btnDelete, Keys.Delete, T("Tip_MonDelete", "Delete: the selected rows (with the key), this tab, every tab of this controller or of every controller"));
             add(btnDelete);
-            var btnUp = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonUp", "Move the selected rows up"), _tips, (s, e) => MoveSelected(-1));
+            var btnUp = _btnUp = UiStyle.IconButton(ToolGlyphs.MoveUp, "Move up", T("Tip_MonUp", "Move the selected rows up"), _tips, (s, e) => MoveSelected(-1));
             keyed(btnUp, Keys.Control | Keys.Up, T("Tip_MonUp", "Move the selected rows up"));
             add(btnUp);
-            var btnDown = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonDown", "Move the selected rows down"), _tips, (s, e) => MoveSelected(+1));
+            var btnDown = _btnDown = UiStyle.IconButton(ToolGlyphs.MoveDown, "Move down", T("Tip_MonDown", "Move the selected rows down"), _tips, (s, e) => MoveSelected(+1));
             keyed(btnDown, Keys.Control | Keys.Down, T("Tip_MonDown", "Move the selected rows down"));
             add(btnDown);
             _btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_MonUndo", "Undo the last change"), _tips, (s, e) => Undo());
@@ -639,6 +644,15 @@ namespace Kaban.UI.Forms
         private ContextMenuStrip AddMenu()
         {
             var m = NewMenu();
+            // the tables' tab in sight: a table or a comment line next to the one chosen (24 October)
+            var shown = CurrentMonitor != null ? CurrentMonitor.Current : null;
+            if (TablesShown(shown))
+            {
+                AddTableMenuItems(m.Items, CurrentMonitor, shown);
+                m.Items.Add(new ToolStripSeparator());
+                m.Items.Add(Item(T("Mnu_MonStructures", "Structured data types..."), (s, e) => EditStructures()));
+                return m;
+            }
             m.Items.Add(Item(T("Mnu_MonAddEnd", "New device at the end..."), (s, e) => AddRows(atEnd: true, comment: false)));
             m.Items.Add(Item(T("Mnu_MonAddAbove", "New device above the selected row..."), (s, e) => AddRows(atEnd: false, comment: false), HasSelection, Keys.Insert));
             m.Items.Add(new ToolStripSeparator());
@@ -665,6 +679,16 @@ namespace Kaban.UI.Forms
         {
             var m = NewMenu();
             bool any = _clip.Count > 0 || ClipboardHasText();
+            var shown = CurrentMonitor != null ? CurrentMonitor.Current : null;
+            if (TablesShown(shown))
+            {
+                int i;
+                bool chosen = SelectedTableItem(shown, out i) != null;
+                m.Items.Add(Item(T("Mnu_MonTablePasteAbove", "Paste above the chosen one"), (s, e) => PasteTables(CurrentMonitor, shown, -1), any && chosen, keyText: "Ctrl+V"));
+                m.Items.Add(Item(T("Mnu_MonTablePasteBelow", "Paste below the chosen one"), (s, e) => PasteTables(CurrentMonitor, shown, +1), any && chosen));
+                m.Items.Add(Item(T("Mnu_MonPasteEnd", "Paste at the end"), (s, e) => PasteTables(CurrentMonitor, shown, 0), any));
+                return m;
+            }
             m.Items.Add(Item(T("Mnu_MonPasteAbove", "Paste above the selected row"), (s, e) => Paste(atEnd: false), any && HasSelection, Keys.Control | Keys.V));
             m.Items.Add(Item(T("Mnu_MonPasteEnd", "Paste at the end"), (s, e) => Paste(atEnd: true), any));
             return m;
@@ -721,6 +745,15 @@ namespace Kaban.UI.Forms
             var m = NewMenu();
             var mon = CurrentMonitor;
             int rows = mon != null && mon.Current != null ? SelectedIndices(mon.Current).Count : 0;
+            if (mon != null && TablesShown(mon.Current))
+            {
+                int i;
+                var item = SelectedTableItem(mon.Current, out i);
+                m.Items.Add(Item(item == null ? T("Mnu_DelTableNone", "The chosen table") : item[0].IsComment ? T("Mnu_DelComment", "The chosen comment line")
+                                 : string.Format(T("Mnu_DelTable", "The table '{0}'"), item[0].EffectiveLabel.Length > 0 ? item[0].EffectiveLabel : item[0].Address),
+                                 (s, e) => RemoveTableItem(mon, mon.Current), item != null, keyText: "Del"));
+            }
+            else
             m.Items.Add(Item(rows > 1 ? string.Format(T("Mnu_DelRows", "The {0} selected rows"), rows)
                                       : T("Mnu_DelRow", "The selected row"), (s, e) => RemoveSelected(), rows > 0, keyText: "Del"));
             m.Items.Add(Item(mon != null && mon.Current != null
@@ -756,6 +789,33 @@ namespace Kaban.UI.Forms
         private void UpdateToolbar()
         {
             var mon = CurrentMonitor;
+            // 24 October: "both of these up/down button look enabled even when the first or last label selected on the tab"
+            Sheet shown;
+            try { shown = mon != null ? mon.Current : null; }
+            catch (ArgumentOutOfRangeException) { shown = null; }          // the tab strip being made again
+            bool up = false, down = false, copy = false;
+            if (shown != null && TablesShown(shown))
+            {
+                int i;
+                copy = SelectedTableItem(shown, out i) != null;
+                up = CanMoveTableItem(shown, -1);
+                down = CanMoveTableItem(shown, +1);
+            }
+            else if (shown != null && shown.Grid != null)
+            {
+                var sel = SelectedIndices(shown);
+                copy = sel.Count > 0;
+                if (sel.Count > 0)
+                {
+                    var items = Items(shown);
+                    var at = sel.Select(k => shown.Rows[k]).Select(r => r.IsElement ? r.Root : r).Distinct().Select(r => items.IndexOf(r)).Where(k => k >= 0).OrderBy(k => k).ToList();
+                    up = at.Count > 0 && at[0] > 0;
+                    down = at.Count > 0 && at[at.Count - 1] < items.Count - 1 - (items.Count > 0 && items[items.Count - 1].IsBlank ? 1 : 0);
+                }
+            }
+            if (_btnUp != null && _btnUp.Enabled != up) _btnUp.Enabled = up;
+            if (_btnDown != null && _btnDown.Enabled != down) _btnDown.Enabled = down;
+            if (_btnCopy != null && _btnCopy.Enabled != copy) _btnCopy.Enabled = copy;
             if (_restoreItem != null)
                 _restoreItem.Visible = mon != null && mon.IsSimulated && mon.Hidden.Count > 0;
             if (_btnUndo != null)
@@ -998,6 +1058,9 @@ namespace Kaban.UI.Forms
         private void AttachSheet(MonitorTab mon, Sheet sh, int at)
         {
             sh.Grid = BuildGrid();
+            // the move buttons on and off as the rows chosen allow (24 October)
+            // (not while the tabs are being made again: an undo, a tab deleted - the tab strip is half built then)
+            sh.Grid.SelectionChanged += (s, e) => { try { UpdateToolbar(); } catch (ArgumentOutOfRangeException) { } };
             // Nothing selected on opening: a highlighted first row reads as "this
             // one is special", and it is the row a stray Delete would remove.
             var g = sh.Grid;
@@ -1708,6 +1771,19 @@ namespace Kaban.UI.Forms
 
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
+            // the tables' tab (24 October): the keys act on the table or comment line chosen
+            if (sh != null && TablesShown(sh) && sh.TablesHost.ContainsFocus && !sh.TableEditing)
+            {
+                switch (keyData)
+                {
+                    case Keys.Control | Keys.C: CopySelected(); return true;
+                    case Keys.Control | Keys.V: Paste(atEnd: sh.TableSelected == null); return true;
+                    case Keys.Delete: RemoveSelected(); return true;
+                    case Keys.Insert: AddRows(atEnd: sh.TableSelected == null, comment: false); return true;
+                    case Keys.Control | Keys.Up: MoveSelected(-1); return true;
+                    case Keys.Control | Keys.Down: MoveSelected(+1); return true;
+                }
+            }
             bool gridHasFocus = sh != null && sh.Grid.ContainsFocus && !sh.Grid.IsCurrentCellInEditMode;
             if (gridHasFocus)
             {
@@ -1926,6 +2002,12 @@ namespace Kaban.UI.Forms
         {
             var mon = CurrentMonitor;
             if (mon == null) return;
+            if (mon.Current != null && TablesShown(mon.Current))
+            {
+                int i;
+                AddTableItem(mon, mon.Current, comment, atEnd || SelectedTableItem(mon.Current, out i) == null ? 0 : -1);
+                return;
+            }
             // With every tab deleted, a "Main" one is made - once the device is
             // confirmed, not for a dialog that is then cancelled.
             var sh = mon.Current;
@@ -1983,6 +2065,7 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
+            if (TablesShown(sh)) { CopyTableItem(mon, sh); return; }
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
 
@@ -2029,6 +2112,7 @@ namespace Kaban.UI.Forms
         {
             var mon = CurrentMonitor;
             if (mon == null) return;
+            if (mon.Current != null && TablesShown(mon.Current)) { int i; PasteTables(mon, mon.Current, atEnd || SelectedTableItem(mon.Current, out i) == null ? 0 : -1); return; }
 
             List<WatchRow> rows;
             string text = "";
@@ -2062,6 +2146,7 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
+            if (TablesShown(sh)) { RemoveTableItem(mon, sh); return; }
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
             // An element is part of its array: the array is removed as one item.
@@ -2101,6 +2186,11 @@ namespace Kaban.UI.Forms
             var mon = CurrentMonitor;
             var sh = mon != null ? mon.Current : null;
             if (sh == null) return;
+            if (TablesShown(sh))
+            {
+                if (sh.TableSelected != null) MoveTable(mon, sh, sh.TableSelected, direction);
+                return;
+            }
             var sel = SelectedIndices(sh);
             if (sel.Count == 0) return;
             // ITEMS move - an array with its elements - past the item next to them.
@@ -3836,8 +3926,10 @@ namespace Kaban.UI.Forms
             {
                 lines.Add(SheetPrefix + sh.Name);
                 // the labels shown as tables first, in their order ("view=table"; a program of before lists them)
-                foreach (var r in Items(sh.Tables).Where(r => r.IsDevice))
+                foreach (var r in Items(sh.Tables).Where(r => r.IsDevice || r.IsComment))
                 {
+                    // a comment line between the tables (24 October): its text, "view=table"
+                    if (r.IsComment) { lines.Add(Csv(r.Comment) + ";;;;view=table"); continue; }
                     string ex = Extras(r);
                     lines.Add(string.Join(";", Csv(r.LabelOverride), Csv(r.DataTypeOverride), Csv(r.Address), "", (ex.Length > 0 ? ex + "|" : "") + "view=table"));
                 }
@@ -3883,7 +3975,10 @@ namespace Kaban.UI.Forms
                 string address = f[2].Trim().ToUpperInvariant();
                 if (address.Length == 0)
                 {
-                    if (f[0].Trim().Length > 0) current.Rows.Add(new WatchRow { Station = mon.Station, Comment = f[0].Trim() });
+                    if (f[0].Trim().Length == 0) continue;
+                    var note = new WatchRow { Station = mon.Station, Comment = f[0].Trim() };
+                    if (f.Length > 4 && f[4].Split('|').Any(x => x.Trim() == "view=table")) current.Tables.Rows.Add(note);
+                    else current.Rows.Add(note);
                     continue;
                 }
                 var row = new WatchRow { Station = mon.Station, Address = address, LabelOverride = f[0].Trim(), DataTypeOverride = f[1].Trim() };
