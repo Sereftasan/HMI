@@ -103,6 +103,9 @@ def main():
         columns = len(lines[0].split(";"))
         for k in keys:
             text = missing[k]["text"].replace(";", ",").strip()
+            if ";" in missing[k]["text"]:
+                # a ';' the text means (Key;EN;TR) is lost: the code should give it apart, as {0}
+                print("  %s: its ';' written as ',' (%s) - give a ';' it means as {0}" % (k, missing[k]["where"]))
             lines.append(";".join([k, text] + [""] * (columns - 2)))
         with open(path, "w", encoding="utf-8-sig", newline=newline) as f:
             f.write("\n".join(lines) + "\n")

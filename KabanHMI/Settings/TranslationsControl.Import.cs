@@ -75,7 +75,7 @@ namespace Kaban.UI.Settings
             var m = UiStyle.Menu();
             m.Items.Add(new ToolStripMenuItem(T("Mnu_TrnExportCsv", "The rows shown as a translation file..."), null, (s, e) => Export())
             {
-                ToolTipText = T("Tip_TrnExport", "Export the rows shown as a translation file (Key;EN;TR ...) - to copy into the program's files")
+                ToolTipText = string.Format(T("Tip_TrnExport", "Export the rows shown as a translation file ({0}) - to copy into the program's files"), "Key;EN;TR ...")
             });
             m.Items.Add(new ToolStripMenuItem(T("Mnu_TrnIntoProject", "Into the project's files (Visual Studio)..."), null, (s, e) => Done(IntoProject(), T("Mnu_TrnIntoProject", "Into the project's files (Visual Studio)..."), true))
             {
@@ -491,7 +491,7 @@ namespace Kaban.UI.Settings
                 return project ? T("Msg_TrnNoProject", "The project's files are not found: this works when the program runs from its Visual Studio build.")
                                : T("Msg_TrnNoOldFiles", "No translation file of this program is in that folder (CommonTranslations.csv, a machine's Translations.csv or Alarms.json).");
             if (r.Blocks == 0)
-                return T("Msg_TrnAiNone", "Nothing to import: no \"Key;EN;TR ...\" heading in it - the AI's translation files, or its answer with them, are what it reads.");
+                return string.Format(T("Msg_TrnAiNone", "Nothing to import: no \"{0}\" heading in it - the AI's translation files, or its answer with them, are what it reads."), "Key;EN;TR ...");
             var sb = new StringBuilder();
             if (r.Cancelled) sb.Append(T("Msg_TrnImportCancelled", "Cancelled: nothing written."));
             else if (r.Filled + r.Taken == 0) sb.Append(project ? T("Msg_TrnProjectSame", "Nothing written: the project's files have the program's texts.")

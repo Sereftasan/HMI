@@ -468,7 +468,8 @@ namespace Kaban.UI.Settings
             if (Convert.ToString(e.FormattedValue ?? "").Contains(";"))
             {
                 e.Cancel = true;
-                SetStatus(T("Msg_TrnNoSemicolon", "A text cannot have ; in it - it separates the languages in the translation files."), true);
+                // the ';' given apart: a translation file's text cannot hold one (24 October)
+                SetStatus(string.Format(T("Msg_TrnNoSemicolon", "A text cannot have {0} in it - it separates the languages in the translation files."), ";"), true);
             }
         }
 
