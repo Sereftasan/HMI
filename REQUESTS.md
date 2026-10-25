@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 24 October:
+  - 67bb4e3 - PLC Monitor, "Table viewed labels": the toolbar works there (up/down greyed at the first/last, add, copy,
+    paste, delete); a comment line or another table above or below the one chosen (its menu too).
+  - 9f0f1d1 - Add an array: its count fixed at the table's length (greyed); the editor's captions seen whole ("Arrays (how many)").
+  - 1a573d4 - PLC Monitor: a table no longer blinks (drawn again only when a value shown changes).
+  - 2671e9c - Write a backup into the PLC: Points + Start (the first device read, how many, the first device written to), as
+    GX Works3 - or Start + End as before; the choice kept.
+  - 2a2ecc1 - A unit's "?": the step-by-step page named as its error (the alarm's text), the files added listed first.
+  - 46a5b09 - Menus: an entry that cannot be used is shown greyed, why in its tooltip (the PLC Monitor's row menu, the
+    headings' menu, PLC Connection below Admin, the side pages, a unit's AI entries, Find, a motion value's menu).
+  - 73fa0df - Translations: the new texts in Turkish (619); the other languages show English until translated.
 - 23 October (evening):
   - b7f3fcb - PLC Monitor: "all under the next control / page - into this tab" - the rest of the screen darker, everything
     under the control, page button or tab title clicked added to the tab on show; a blinking cancel button (Esc too).
