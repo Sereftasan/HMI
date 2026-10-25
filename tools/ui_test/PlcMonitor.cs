@@ -448,9 +448,11 @@ class PM {
         Call(form, "RemoveSelected");
         Call(form, "RefreshValues");
         Check("M5 does not come back on the next refresh", !Rows(sh).Cast<object>().Any(x => Addr(x) == "M5"));
-        Check("  the 'show removed devices again' button appears", ((ToolStripItem)Get(form, "_restoreItem")).Visible);
+        // 24 October: shown greyed while there is nothing to show again, not hidden
+        Check("  the 'show removed devices again' button can be pressed", ((ToolStripItem)Get(form, "_restoreItem")).Visible && ((ToolStripItem)Get(form, "_restoreItem")).Enabled);
         Call(form, "RestoreHidden"); Call(form, "RefreshValues");
-        Check("  and brings it back", Rows(sh).Cast<object>().Any(x => Addr(x) == "M5"));
+        Check("  and brings it back - the button greyed then, still there", Rows(sh).Cast<object>().Any(x => Addr(x) == "M5") &&
+              ((ToolStripItem)Get(form, "_restoreItem")).Visible && !((ToolStripItem)Get(form, "_restoreItem")).Enabled);
 
         Console.WriteLine("--- the window opens where it was closed ---");
         form.Bounds = new System.Drawing.Rectangle(37, 41, 700, 520); Application.DoEvents();

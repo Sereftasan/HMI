@@ -88,6 +88,23 @@ class SC {
         Check("the + button lists the pages, this one ticked", form.SidePagesMenu().Items.OfType<ToolStripMenuItem>().Any(i => i.Name == "side:" + key && i.Checked) &&
               form.SidePagesMenu().Items.OfType<ToolStripMenuItem>().Any(i => i.Name.StartsWith("side:Main:Home")));
 
+        // 24 October: "The disabled dropdown menu items should still be seen on the menu as disabled instead of removed
+        // (all around the application)"
+        Console.WriteLine("--- signed out: the pages there, greyed ---");
+        SecurityManager.Logout();
+        var outMenu = form.SidePagesMenu();
+        var manualItem = outMenu.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Name == "side:" + key);
+        Check("the + button: Manual Movement still listed, greyed - for an Operator and higher, said in its tooltip",
+              manualItem != null && !manualItem.Enabled && manualItem.ToolTipText == "For Operator and higher - sign in as one" && outMenu.ShowItemToolTips,
+              manualItem == null ? string.Join(" | ", outMenu.Items.Cast<ToolStripItem>().Select(i => i.Name)) : manualItem.ToolTipText);
+        var conn = (ContextMenuStrip)typeof(MainForm).GetMethod("BuildConnectionMenu", Any).Invoke(form, null);
+        var connItem = conn.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Name == "connSettings");
+        Check("the connection menu: PLC Connection there, greyed - an Admin's", connItem != null && !connItem.Enabled && connItem.ToolTipText.StartsWith("For an Admin"),
+              string.Join(" | ", conn.Items.Cast<ToolStripItem>().Select(i => i.Text + (i.Enabled ? "" : " (off)"))));
+        SecurityManager.Login("admin", SecurityLevel.Admin);
+        connItem = ((ContextMenuStrip)typeof(MainForm).GetMethod("BuildConnectionMenu", Any).Invoke(form, null)).Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Name == "connSettings");
+        Check("  an Admin: it can be chosen", connItem != null && connItem.Enabled && form.SidePagesMenu().Items.OfType<ToolStripMenuItem>().All(i => i.Enabled));
+
         Console.WriteLine("--- the next run ---");
         SidePages.Unregister(key);
         var form2 = new MainForm();

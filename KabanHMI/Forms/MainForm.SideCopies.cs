@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
 using Kaban.Core.Machines;
 using Kaban.UI.Controls;
@@ -148,13 +149,14 @@ namespace Kaban.UI.Forms
             menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
             foreach (var p in group.Pages)
             {
-                if (!SecurityManager.HasAccess(p.Value.RequiredLevel)) continue;
                 var machine = p.Key;
                 string text = group.IsTabbed ? Screens.MachineTabScreen.DisplayNameOf(machine)
                                              : LanguageManager.GetString(group.TitleKey ?? "", group.TitleFallback ?? "");
                 var item = new ToolStripMenuItem(text) { Name = "side:" + MainPageKey(group, machine), Checked = SidePages.Find(MainPageKey(group, machine)) != null };
                 item.Click += (s, e) => OpenMainPageInSide(group, machine);
                 menu.Items.Add(item);
+                // a page the user's level may not open: there, greyed, saying whose it is (24 October)
+                UiStyle.Unavailable(item, SecurityManager.HasAccess(p.Value.RequiredLevel), LevelNeeded(p.Value.RequiredLevel));
             }
             return menu.Items.Count > 1 ? menu : null;
         }
@@ -164,12 +166,12 @@ namespace Kaban.UI.Forms
         {
             var menu = UiStyle.Menu();
             menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
-            foreach (var group in MachineRegistry.NavigationGroups().Where(CanOpenInSide).Where(g => SecurityManager.HasAccess(g.RequiredLevel)))
+            foreach (var group in MachineRegistry.NavigationGroups().Where(CanOpenInSide))
             {
                 string title = LanguageManager.GetString(group.TitleKey ?? "", group.TitleFallback ?? "");
                 foreach (var p in group.Pages)
                 {
-                    if (!SecurityManager.HasAccess(p.Value.RequiredLevel)) continue;
+                    var level = (SecurityLevel)Math.Max((int)group.RequiredLevel, (int)p.Value.RequiredLevel);
                     var g = group;
                     var machine = p.Key;
                     string key = MainPageKey(g, machine);
@@ -180,9 +182,17 @@ namespace Kaban.UI.Forms
                     };
                     item.Click += (s, e) => OpenMainPageInSide(g, machine);
                     menu.Items.Add(item);
+                    // a page the user's level may not open: there, greyed, saying whose it is (24 October)
+                    UiStyle.Unavailable(item, SecurityManager.HasAccess(level), LevelNeeded(level));
                 }
             }
             return menu;
+        }
+
+        /// <summary>A greyed entry's why: "For Maintenance and higher - sign in as one".</summary>
+        internal static string LevelNeeded(SecurityLevel level)
+        {
+            return string.Format(LanguageManager.GetString("Why_LevelNeeded", "For {0} and higher - sign in as one"), Kaban.UI.Settings.PrefTexts.LevelText(level));
         }
 
         /// <summary>A page button's right-click: the side panel menu for its page.</summary>

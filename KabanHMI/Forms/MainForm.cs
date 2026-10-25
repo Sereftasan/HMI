@@ -2048,12 +2048,15 @@ namespace Kaban.UI.Forms
         /// </summary>
         private void AddStationConnectionItem(ContextMenuStrip menu)
         {
-            if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return;
             menu.Items.Add(new ToolStripSeparator());
             var item = new ToolStripMenuItem(
-                LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22));
+                LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
             item.Click += (s, e) => ShowStationConnection();
             menu.Items.Add(item);
+            // below Admin: there, greyed, saying who opens it (24 October: shown, never left out)
+            menu.ShowItemToolTips = true;
+            Kaban.UI.Controls.UiStyle.Unavailable(item, SecurityManager.HasAccess(SecurityLevel.Admin),
+                LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
         }
 
         private static Image LinkIcon(int size)

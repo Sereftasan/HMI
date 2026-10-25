@@ -618,14 +618,16 @@ namespace Kaban.UI.Forms
 
         private ContextMenuStrip NewMenu()
         {
-            var m = new ContextMenuStrip { Font = UiStyle.MenuFont, ShowImageMargin = false };
+            var m = new ContextMenuStrip { Font = UiStyle.MenuFont, ShowImageMargin = false, ShowItemToolTips = true };
             m.Renderer = new HmiMenuRenderer();
             return m;
         }
 
-        private static ToolStripMenuItem Item(string text, EventHandler click, bool enabled = true, Keys keys = Keys.None, string keyText = null)
+        /// <summary>A menu entry; <paramref name="why"/>: the tooltip of a greyed one (it is shown, never left out - 24 October).</summary>
+        private static ToolStripMenuItem Item(string text, EventHandler click, bool enabled = true, Keys keys = Keys.None, string keyText = null, string why = null)
         {
             var i = new ToolStripMenuItem(text, null, click) { Enabled = enabled };
+            if (!enabled && !string.IsNullOrEmpty(why)) i.ToolTipText = why;
             if (keys != Keys.None) i.ShortcutKeys = keys;
             // Shown only - the window handles the key itself (see ProcessCmdKey).
             if (keyText != null) { i.ShortcutKeyDisplayString = keyText; i.ShowShortcutKeys = true; }
@@ -816,8 +818,12 @@ namespace Kaban.UI.Forms
             if (_btnUp != null && _btnUp.Enabled != up) _btnUp.Enabled = up;
             if (_btnDown != null && _btnDown.Enabled != down) _btnDown.Enabled = down;
             if (_btnCopy != null && _btnCopy.Enabled != copy) _btnCopy.Enabled = copy;
+            // the simulator's: there, greyed while none is removed (24 October)
             if (_restoreItem != null)
-                _restoreItem.Visible = mon != null && mon.IsSimulated && mon.Hidden.Count > 0;
+            {
+                _restoreItem.Visible = mon != null && mon.IsSimulated;
+                _restoreItem.Enabled = mon != null && mon.IsSimulated && mon.Hidden.Count > 0;
+            }
             if (_btnUndo != null)
             {
                 _btnUndo.Enabled = _undo.Count > 0;
@@ -1375,22 +1381,25 @@ namespace Kaban.UI.Forms
                                        (s2, e2) => OpenFind(at != null ? at.Address : null), at != null && at.IsDevice, keyText: "Ctrl+F"));
                 // the row itself when it holds others (a structure, an element of an array of them), else its item
                 var head = at == null ? null : at.IsGroup ? at : at.Head != null && at.Head.IsGroup ? at.Head : at.Root;
-                if (head != null && head.IsGroup)
-                    rowMenu.Items.Add(Item(head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
-                                                        : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
-                                           (s2, e2) => ToggleArray(mon, sh, head)));
+                // every entry is there, a greyed one saying why (24 October)
+                bool group = head != null && head.IsGroup;
+                rowMenu.Items.Add(Item(!group ? T("Mnu_MonExpandNone", "Expand the array or structure")
+                                       : head.IsArray ? (head.Expanded ? T("Mnu_MonCollapse", "Collapse the array") : T("Mnu_MonExpand", "Expand the array"))
+                                                      : (head.Expanded ? T("Mnu_MonCollapseStruct", "Collapse the structure") : T("Mnu_MonExpandStruct", "Expand the structure")),
+                                       (s2, e2) => ToggleArray(mon, sh, head), group,
+                                       why: T("Why_MonNoGroup", "The row is not an array or a structure label (nor one of its elements)")));
                 // 22 October: an array label as a table at the top of the tab - a line per element,
                 // a column per member of a structure (the list stays under the tables)
                 var array = at == null ? null : at.Root.IsArray ? at.Root : null;
-                if (array != null)
-                    rowMenu.Items.Add(Item(T("Mnu_MonShowInTable", "Show this label in table view"), (s2, e2) => ShowInTable(mon, sh, array)));
+                rowMenu.Items.Add(Item(T("Mnu_MonShowInTable", "Show this label in table view"), (s2, e2) => ShowInTable(mon, sh, array), array != null,
+                                       why: T("Why_MonNoArray", "An array label's (or one of its elements'): its elements are the table's lines")));
                 // 19 October: 0 into every device of the rows chosen (a structure's members, an array's elements)
                 bool devices = SelectedIndices(sh).Any(i => i < sh.Rows.Count && sh.Rows[i].IsDevice);
                 rowMenu.Items.Add(Item(T("Mnu_MonReset", "Reset (0 into its devices)..."), (s2, e2) => ResetSelected(mon, sh), devices));
                 rowMenu.Items.Add(Item(T("Mnu_MonBakRows", "Write to PLC from backup..."), (s2, e2) => WriteFromBackup(mon, SelectedLabels(sh), SelectedText(sh)), devices));
-                if (sel)
                 {
-                    var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
+                    var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format")) { Enabled = sel };
+                    if (!sel) fmt.ToolTipText = T("Why_MonNoRow", "Select a row first");
                     foreach (var f in DisplayFormats)
                     {
                         var name = f;
@@ -1407,8 +1416,9 @@ namespace Kaban.UI.Forms
                 rowMenu.Items.Add(Item(T("Mnu_MonPasteEnd", "Paste at the end"), (s2, e2) => Paste(true), any));
                 rowMenu.Items.Add(new ToolStripSeparator());
                 rowMenu.Items.Add(Item(T("Mnu_RemoveRow", "Remove from this list"), (s2, e2) => RemoveSelected(), sel, Keys.Delete));
-                if (mon.IsSimulated && mon.Hidden.Count > 0)
-                    rowMenu.Items.Add(Item(T("Mnu_RestoreRows", "Show removed devices again"), (s2, e2) => RestoreHidden()));
+                rowMenu.Items.Add(Item(T("Mnu_RestoreRows", "Show removed devices again"), (s2, e2) => RestoreHidden(), mon.IsSimulated && mon.Hidden.Count > 0,
+                                       why: mon.IsSimulated ? T("Why_MonNoneRemoved", "No device removed from this list")
+                                                            : T("Why_MonRestoreSim", "The simulator's lists only: the simulator adds every device it holds by itself, and keeps a removed one off")));
                 e.Cancel = false;           // it opened empty: WinForms had set Cancel (the first right-click)
             };
             grid.ContextMenuStrip = rowMenu;

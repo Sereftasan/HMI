@@ -169,6 +169,8 @@ namespace Kaban.UI.Controls
         {
             if (ts == null || !_menuCued.Add(ts)) return;
             var strip = ts;
+            // a greyed entry says why in its tooltip (Unavailable) - a menu's own are off by default
+            if (strip is ToolStripDropDown) strip.ShowItemToolTips = true;
             strip.Disposed += (s, e) => _menuCued.Remove(strip);
             strip.MouseMove += (s, e) =>
             {
@@ -345,10 +347,27 @@ namespace Kaban.UI.Controls
             };
         }
 
+        /// <summary>
+        /// A menu entry that cannot be used now: SHOWN, greyed, with why in its tooltip (24 October: "The
+        /// disabled dropdown menu items should still be seen on the menu as disabled instead of removed (all
+        /// around the application) so the user could understand they are checking the right place for the
+        /// function but there is some reason for it to disable so they won't search it elsewhere").
+        /// <paramref name="enabled"/> true: the entry as it is.
+        /// </summary>
+        public static T Unavailable<T>(T item, bool enabled, string why) where T : ToolStripItem
+        {
+            if (item == null) return null;
+            item.Enabled = enabled;
+            if (!enabled && !string.IsNullOrEmpty(why)) item.ToolTipText = why;
+            var owner = item.Owner as ToolStripDropDown;
+            if (owner != null) owner.ShowItemToolTips = true;
+            return item;
+        }
+
         /// <summary>A dropdown built the same way as every other in the program.</summary>
         public static ContextMenuStrip Menu()
         {
-            var m = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont };
+            var m = new ContextMenuStrip { ShowImageMargin = true, Font = MenuFont, ShowItemToolTips = true };
             m.Renderer = new HmiMenuRenderer();
             m.ImageScalingSize = UiScale.Px(new Size(22, 22));
             HandOverMenuItems(m);

@@ -118,7 +118,12 @@ class MT {
         Call(MonType, "Select", sh, new[] { Rows(sh).IndexOf(single) });
         list.CurrentCell = list.Rows[Rows(sh).IndexOf(single)].Cells[0];
         typeof(ToolStripDropDown).GetMethod("OnOpening", Any).Invoke(cms, new object[] { new System.ComponentModel.CancelEventArgs() });
-        Check("  a single label's: not", !cms.Items.OfType<ToolStripMenuItem>().Any(i => i.Text == "Show this label in table view"));
+        // 24 October: "The disabled dropdown menu items should still be seen on the menu as disabled instead of removed"
+        var greyed = cms.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text == "Show this label in table view");
+        var expand = cms.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Text == "Expand the array or structure");
+        Check("  a single label's: there, greyed, saying why - Expand too", greyed != null && !greyed.Enabled && greyed.ToolTipText.StartsWith("An array label's") &&
+              expand != null && !expand.Enabled && expand.ToolTipText.Length > 0 && cms.ShowItemToolTips,
+              string.Join(" | ", cms.Items.OfType<ToolStripItem>().Select(i => i.Text + (i.Enabled ? "" : " (off)"))));
         item.PerformClick();
         Call(form, "RefreshValues"); Application.DoEvents();
         var blocks = Blocks(sh);

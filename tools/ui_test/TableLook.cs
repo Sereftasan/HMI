@@ -52,14 +52,18 @@ class TL {
         Check("  no frame round it, as before", g.BorderStyle == BorderStyle.None);
         var c = UiStyle.ChooserOf(g);
         Check("the PLC Monitor's menu on its headings", c != null && g.Columns.Cast<DataGridViewColumn>().All(x => x.HeaderCell.ContextMenuStrip == c.Menu));
-        Check("  the columns, widths, fit, save as the default, default column settings", Tags(c).SequenceEqual(new[] { "Code", "Text", "Time", "widths", "fit", "savedefault", "default" }),
-              string.Join(",", Tags(c)));
-        Check("  named as asked", Texts(c).Contains("Save as the default") && Texts(c).Contains("Default column settings") && !Texts(c).Contains("Original"), Texts(c));
+        // 24 October: an entry that cannot be used is shown greyed, saying why - never left out
+        Check("  the columns, widths, fit, save as the default, default column settings, original column settings",
+              Tags(c).SequenceEqual(new[] { "Code", "Text", "Time", "widths", "fit", "savedefault", "default", "original" }), string.Join(",", Tags(c)));
+        var original = c.MenuItems().First(i => Equals(i.Tag, "original"));
+        Check("  named as asked; the original greyed until a default is saved, saying so", Texts(c).Contains("Save as the default") && Texts(c).Contains("Default column settings") &&
+              !original.Enabled && original.ToolTipText.Length > 0, Texts(c));
 
         // the user's own arrangement, kept as the default
         g.Columns["Code"].Visible = false; g.Columns["Text"].Width = 420; g.Columns["Time"].DisplayIndex = 0;
         Check("Save as the default", c.SaveDefault() && File.Exists(Path.Combine(dir, "TestTable.default")));
-        Check("  then the original is offered too", Tags(c).Contains("original") && Texts(c).Contains("Original column settings"));
+        Check("  then the original can be chosen", Tags(c).Contains("original") && Texts(c).Contains("Original column settings") &&
+              c.MenuItems().First(i => Equals(i.Tag, "original")).Enabled);
         g.Columns["Code"].Visible = true; g.Columns["Text"].Width = 200; g.Columns["Time"].DisplayIndex = 2;
         c.ToDefault();
         // (Mono numbers a hidden column's place unlike .NET: the order is checked on .NET only)

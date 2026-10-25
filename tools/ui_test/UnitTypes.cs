@@ -160,6 +160,12 @@ class UT {
         Check("nothing failed: every file of the unit once - and no troubleshooting (a fault's only, 30 September)",
               calm.SequenceEqual(new[] { "Clamp_A_Valve.png", "Clamp_Both.pdf", "Clamp_B_Switch.png" }),
               string.Join(" | ", calm));
+        // 24 October: no fault - the help list's AI entries there, greyed, saying why (not left out)
+        var calmMenu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(c2.HelpDocuments(), d => { }, null, null, "For a fault: the AI prompt is about what failed");
+        var aiItem = calmMenu.Items.OfType<ToolStripMenuItem>().FirstOrDefault(i => i.Name == "aiPrompt");
+        Check("no fault: the files, then the AI prompt entry greyed, saying why", aiItem != null && !aiItem.Enabled && aiItem.ToolTipText.StartsWith("For a fault") &&
+              calmMenu.Items.OfType<ToolStripMenuItem>().Count(i => i.Enabled) == 3 && calmMenu.ShowItemToolTips,
+              string.Join(" | ", calmMenu.Items.Cast<ToolStripItem>().Select(i => i.Text + (i.Enabled ? "" : " (off)"))));
         Field<AlarmHelpBadge>(c2, "_helpB").UpdateState(a => a == "M866" ? 1 : 0, c => true);
         var failedDocs = c2.HelpDocuments();
         var failedB = failedDocs.Select(d => d.FileName).ToList();

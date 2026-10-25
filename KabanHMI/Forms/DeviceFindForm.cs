@@ -201,15 +201,18 @@ namespace Kaban.UI.Forms
                 }
                 rowMenu.Items.Clear();
                 var use = _list.CurrentRow != null ? _list.CurrentRow.Tag as DeviceCollector.Use : null;
-                if (use == null || SimulationMonitorForm.IsBit(use.DataType)) { e.Cancel = true; return; }
                 var fmt = new ToolStripMenuItem(T("Col_DisplayFormat", "Display Format"));
-                foreach (var f in SimulationMonitorForm.DisplayFormats)
-                {
-                    var name = f;
-                    fmt.DropDownItems.Add(new ToolStripMenuItem(T("Fmt_" + name, name), null, (s2, e2) => { _formats[use.Address] = name; RefreshLive(); })
-                                          { Checked = FormatOf(use) == name });
-                }
+                if (use != null && !SimulationMonitorForm.IsBit(use.DataType))
+                    foreach (var f in SimulationMonitorForm.DisplayFormats)
+                    {
+                        var name = f;
+                        fmt.DropDownItems.Add(new ToolStripMenuItem(T("Fmt_" + name, name), null, (s2, e2) => { _formats[use.Address] = name; RefreshLive(); })
+                                              { Checked = FormatOf(use) == name });
+                    }
                 rowMenu.Items.Add(fmt);
+                // a bit's (or no row): there, greyed, saying why (24 October)
+                UiStyle.Unavailable(fmt, fmt.DropDownItems.Count > 0, use == null ? T("Why_MonNoRow", "Select a row first")
+                                                                                 : T("Why_FindBitFormat", "A bit is ON or OFF: it has no display format"));
                 e.Cancel = false;           // it opened empty: WinForms had set Cancel (the first right-click)
             };
             _list.ContextMenuStrip = rowMenu;

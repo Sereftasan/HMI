@@ -572,7 +572,8 @@ namespace Kaban.UI.Controls
             if (docs.Count == 1 && ai == null) { AlarmHelpLinks.Open(FindForm(), docs[0]); return; }
 
             // The SAME list the alarm grid shows, so the two routes to help agree.
-            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d), ai, FindForm());
+            var menu = Kaban.UI.Screens.MachineAlarmScreen.BuildHelpMenu(docs, d => AlarmHelpLinks.Open(FindForm(), d), ai, FindForm(),
+                ai == null ? LanguageManager.GetString("Why_AiNoFault", "For a fault: the AI prompt is about what failed") : null);
             UiStyle.ShowPopup(menu, this, new Point(0, Height));
         }
     }

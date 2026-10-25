@@ -493,7 +493,7 @@ namespace Kaban.UI.Screens
         /// </summary>
         public static ContextMenuStrip BuildHelpMenu(IList<TroubleshootingCatalog.HelpDocument> docs,
                                                      Action<TroubleshootingCatalog.HelpDocument> open,
-                                                     Func<string> aiPrompt = null, IWin32Window owner = null)
+                                                     Func<string> aiPrompt = null, IWin32Window owner = null, string aiWhyNot = null)
         {
             var menu = UiStyle.Menu();
             menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_HelpDocs", "Help Documents")));
@@ -513,6 +513,13 @@ namespace Kaban.UI.Screens
             {
                 if (docs.Count > 0) menu.Items.Add(new ToolStripSeparator());
                 foreach (var item in Kaban.UI.Helpers.AiMenu.Items(aiPrompt, Kaban.UI.Helpers.AlarmAiPrompt.Subject.Alarm, owner))
+                    menu.Items.Add(item);
+            }
+            // no fault to ask about (a unit's "?" with none on): the entries there, greyed, saying why (24 October)
+            else if (aiWhyNot != null)
+            {
+                if (docs.Count > 0) menu.Items.Add(new ToolStripSeparator());
+                foreach (var item in Kaban.UI.Helpers.AiMenu.Unavailable(Kaban.UI.Helpers.AlarmAiPrompt.Subject.Alarm, aiWhyNot))
                     menu.Items.Add(item);
             }
             return menu;

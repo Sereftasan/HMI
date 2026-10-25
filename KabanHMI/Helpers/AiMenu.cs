@@ -36,6 +36,17 @@ namespace Kaban.UI.Helpers
         public static string AskName(AiChats.Chat chat) { return "aiAsk:" + (chat != null ? chat.Name : ""); }
 
         /// <summary>The entries, to add to a menu after its documents.</summary>
+        /// <summary>
+        /// The entries greyed (24 October: shown, never left out), <paramref name="why"/> in their tooltips - for a
+        /// menu with no AI prompt to make now (a unit's "?" with no fault on).
+        /// </summary>
+        public static List<ToolStripItem> Unavailable(AlarmAiPrompt.Subject subject, string why)
+        {
+            var items = Items(() => "", subject, null);
+            foreach (var i in items) Kaban.UI.Controls.UiStyle.Unavailable(i, false, why);
+            return items;
+        }
+
         public static List<ToolStripItem> Items(Func<string> prompt, AlarmAiPrompt.Subject subject, IWin32Window owner)
         {
             var items = new List<ToolStripItem>();

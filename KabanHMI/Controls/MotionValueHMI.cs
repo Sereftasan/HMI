@@ -186,9 +186,10 @@ namespace Kaban.UI.Controls
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
+            // the menu even when nothing can be done: its entries greyed, saying why (24 October)
+            if (e.Button == MouseButtons.Right) { ShowMenu(e.Location); return; }
             if (!Editable) return;
             if (e.Button == MouseButtons.Left) Edit();
-            else if (e.Button == MouseButtons.Right) ShowMenu(e.Location);
         }
 
         private string T(string key, string en) { return LanguageManager.GetString(key, en); }
@@ -196,12 +197,25 @@ namespace Kaban.UI.Controls
         /// <summary>The cell's menu: change it, write the module's flash ROM.</summary>
         private void ShowMenu(Point at)
         {
-            var m = new ContextMenuStrip();
-            m.Items.Add(new ToolStripMenuItem(T("Mnu_MotionChange", "Change..."), null, (s, e) => Edit()));
-            m.Items.Add(new ToolStripMenuItem(string.Format(T("Mnu_MotionFlash", "Write module {0}'s flash ROM..."), _module), null,
-                                              (s, e) => MotionFlash.Write(FindForm(), PlcNumber, _module)));
+            var m = new ContextMenuStrip { ShowItemToolTips = true };
+            m.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(T("Mnu_MotionChange", "Change..."), null, (s, e) => Edit()), Editable, WhyNotEditable()));
+            bool down = ConnectionMonitor.IsKnownDown(PlcNumber);
+            m.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem(string.Format(T("Mnu_MotionFlash", "Write module {0}'s flash ROM..."), _module), null,
+                                                                  (s, e) => MotionFlash.Write(FindForm(), PlcNumber, _module)),
+                                            !down && SecurityManager.HasAccess(SecurityLevel.Admin),
+                                            down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
             m.Closed += (s, e) => BeginInvoke((Action)(() => m.Dispose()));
             m.Show(this, at);
+        }
+
+        /// <summary>Why the value cannot be changed now ("" when it can).</summary>
+        private string WhyNotEditable()
+        {
+            if (!_item.Writable) return T("Why_MotionReadOnly", "The module shows this value: it is not written");
+            if (ConnectionMonitor.IsKnownDown(PlcNumber)) return T("Why_PlcDown", "The PLC is not answering");
+            if (!_known) return T("Why_MotionNotRead", "Not read from the module yet");
+            if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
+            return "";
         }
 
         /// <summary>The number shown now, as the keypad takes it (invariant, the cell's decimals).</summary>
