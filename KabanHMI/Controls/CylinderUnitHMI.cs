@@ -1535,10 +1535,43 @@ namespace Kaban.UI.Controls
             // asks only about that one.
             var gen = (side == "A" ? _helpA : _helpB).GeneratedItem;
             manual.Failure = AlarmGeneration.FailureOf(gen);
-            manual.Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
-                           (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv)) +
+            // Named as the error is (24 October: "should be renamed as the error name instead of 'Step by step -
+            // Release', this name makes looks confusing when new helper documents added"); "Step by step - Release"
+            // only for an error bit no alarm names.
+            var name = ErrorName(side);
+            manual.Title = (name.Length > 0 ? name
+                                            : LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+                                              (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv))) +
                            (manual.Failure > 0 ? " (" + gen.ShownCode + ")" : "");
             return manual;
+        }
+
+        /// <summary>
+        /// A movement's error as the alarm list names it: the HMI's own alarm for it, or the alarm of its error
+        /// bit - "" when neither is there.
+        /// </summary>
+        public string ErrorName(string side)
+        {
+            var badge = side == "A" ? _helpA : _helpB;
+            var gen = badge != null ? badge.GeneratedItem : null;
+            string text = gen != null ? gen.Text : "";
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                var def = AlarmManager.FindByStationAndAddress(_plcNumber, side == "A" ? _errorAAddress : _errorBAddress);
+                if (def != null) text = string.IsNullOrWhiteSpace(def.TranslationKey) ? def.AlarmCode : LanguageManager.GetString(def.TranslationKey, def.TranslationKey);
+            }
+            return (text ?? "").Trim();
+        }
+
+        /// <summary>
+        /// A help the HMI makes for a fault itself - a step-by-step page, the cylinder manual, a drive code's entry,
+        /// the inverter's manual - rather than a file added to the unit, its movement or its alarm.
+        /// </summary>
+        internal static bool IsMadeHelp(TroubleshootingCatalog.HelpDocument d)
+        {
+            return d.StepByStep || d.Movement != null || d.Valve != 0 || d.Feedback != 0 || !string.IsNullOrEmpty(d.Code) ||
+                   string.Equals(d.FileName, AxisCodeHelp.InverterManualFile, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(d.FileName, AxisCodeHelp.InverterManualUrl, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>The cylinder manual for this unit - its valve and feedback, and the movement that failed when given.</summary>
@@ -1561,14 +1594,6 @@ namespace Kaban.UI.Controls
             };
         }
 
-        /// <summary>
-        /// Everything behind the "?" right now. While an error is set: the help for
-        /// what failed first - the manual tailored to this cylinder and to the
-        /// movement whose error bit is set (an axis: the entry of each drive code
-        /// it shows) - then the alarm's own files. With nothing failed there is
-        /// no troubleshooting to offer (30 September). The unit's own files
-        /// always come last.
-        /// </summary>
         /// <summary>The AI prompt for the unit's fault (8 October): the alarm on the list for its error bit, its documents; null without a fault.</summary>
         public string AiPromptText()
         {
@@ -1581,6 +1606,14 @@ namespace Kaban.UI.Controls
             return null;
         }
 
+        /// <summary>
+        /// Everything behind the "?" right now. The files added first - the failed
+        /// movement's, its alarm's, the unit's own - then, while an error is set, the
+        /// help the HMI makes for what failed: the step-by-step page for the movement
+        /// whose error bit is set, named as its error (an axis: the entry of each
+        /// drive code it shows). With nothing failed there is no troubleshooting to
+        /// offer (30 September).
+        /// </summary>
         public List<TroubleshootingCatalog.HelpDocument> HelpDocuments()
         {
             var docs = new List<TroubleshootingCatalog.HelpDocument>();
@@ -1620,6 +1653,10 @@ namespace Kaban.UI.Controls
                 // failed, the "?" offers the unit's own files and no troubleshooting.
             }
             docs.AddRange(UnitHelpDocuments());
+
+            // The files added first, then the helps the HMI made for the fault (24 October: "the additional files
+            // should be listed at top, then the automatically created error helper items") - each in its order.
+            docs = docs.Where(d => !IsMadeHelp(d)).Concat(docs.Where(IsMadeHelp)).ToList();
 
             // One entry per file - except the tailored and coded ones, which differ by what they show.
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

@@ -122,7 +122,7 @@ class AGU {
         var docs = u.HelpDocuments();
         Check("  the '?' opens the step-by-step page for that failure first (the manual inside it: 18 October)", docs.Count >= 1 && docs[0].StepByStep && docs[0].Failure == 2 &&
               !docs.Any(d => !d.StepByStep && d.Movement != null) &&
-              docs[0].Title.EndsWith("(M844.2)") && docs[0].Movement.Feedback[0].AtAlarm == 0 && docs[0].Movement.Output.AtAlarm == 1,
+              docs[0].Title == "Front clamping did not clamp (M844.2)" && docs[0].Movement.Feedback[0].AtAlarm == 0 && docs[0].Movement.Output.AtAlarm == 1,
               string.Join(" | ", docs.Select(d => d.Title)));
         var html = File.ReadAllText(TC.WriteSteps(docs[0]));
         var t = Titles(html);

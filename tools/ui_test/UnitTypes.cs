@@ -161,12 +161,18 @@ class UT {
               calm.SequenceEqual(new[] { "Clamp_A_Valve.png", "Clamp_Both.pdf", "Clamp_B_Switch.png" }),
               string.Join(" | ", calm));
         Field<AlarmHelpBadge>(c2, "_helpB").UpdateState(a => a == "M866" ? 1 : 0, c => true);
-        var failedB = c2.HelpDocuments().Select(d => d.FileName).ToList();
-        Check("B failed: B's step-by-step page and manual, then B's own files first",
-              failedB.Count >= 4 && failedB[0] == "Cylinder_Troubleshooting.html" && failedB[1] == "Cylinder_Troubleshooting.html" &&
-              failedB[2] == "Clamp_B_Switch.png" && failedB[3] == "Clamp_Both.pdf",
-              string.Join(" | ", failedB));
-        Check("  A's file still offered after them", failedB.IndexOf("Clamp_A_Valve.png") > 3, string.Join(" | ", failedB));
+        var failedDocs = c2.HelpDocuments();
+        var failedB = failedDocs.Select(d => d.FileName).ToList();
+        // 24 October: "the additional files should be listed at top, then the automatically created error helper items"
+        Check("B failed: the files first - B's own, then A's - the step-by-step page made for it last (the manual inside it)",
+              failedB.SequenceEqual(new[] { "Clamp_B_Switch.png", "Clamp_Both.pdf", "Clamp_A_Valve.png", "Cylinder_Troubleshooting.html" }) &&
+              failedDocs[3].StepByStep, string.Join(" | ", failedB));
+        Check("  no alarm names its error bit: the page named \"Step by step - <the movement>\"",
+              failedDocs[3].Title == "Step by step - " + TC.MovementName(c2.MovementFor("B")), failedDocs[3].Title);
+        // 24 October: "should be renamed as the error name instead of 'Step by step - Release'"
+        AlarmManager.RegisterDefinition("T.PC3Clamp", "Profile Clamping 3 did not clamp", Kaban.Core.Models.AlarmSeverity.Fault, plcNumber: 1, address: "M866");
+        var named = c2.HelpDocuments().First(d => d.StepByStep);
+        Check("  an alarm for it: the page named as the error", named.Title == "Profile Clamping 3 did not clamp" && c2.ErrorName("B") == named.Title, named.Title);
 
         host.Close();
         try { Directory.Delete(help, true); } catch { }

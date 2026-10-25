@@ -45,9 +45,10 @@ class U {
         var docs = AlarmHelpLinks.DocumentsFor(5, "M900", new[] { "MR_J4_TroubleShooting.pdf;Clamp_Photo.png" });
         var names = docs.Select(d => d.FileName).ToList();
         Console.WriteLine("      " + string.Join("  |  ", docs.Select(d => d.Title)));
-        Check("the step-by-step page first, then the tailored manual", docs[0].StepByStep && names[1] == "Cylinder_Troubleshooting.html" && !docs[1].StepByStep && docs[1].Valve == 1);
-        Check("then the unit's own help", names.Count > 3 && names[2] == "Clamp_Photo.png" && names[3] == "Clamp_Drawing.pdf", string.Join(",", names));
-        Check("then the alarm's files", names.Count > 4 && names[4] == "MR_J4_TroubleShooting.pdf");
+        // 18 October: one help per fault - the tailored manual is inside the step-by-step page, not beside it
+        Check("the step-by-step page first (the tailored manual inside it)", docs[0].StepByStep && docs[0].Valve == 1 && names.Count(n => n == "Cylinder_Troubleshooting.html") == 1);
+        Check("then the unit's own help", names.Count > 2 && names[1] == "Clamp_Photo.png" && names[2] == "Clamp_Drawing.pdf", string.Join(",", names));
+        Check("then the alarm's files", names.Count > 3 && names[3] == "MR_J4_TroubleShooting.pdf");
         Check("a file given twice is listed once", names.Count(n => n == "Clamp_Photo.png") == 1, names.Count.ToString());
 
         Console.WriteLine("--- an AXIS unit on a manual page ---");
