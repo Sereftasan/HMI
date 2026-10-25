@@ -167,6 +167,27 @@ class MTT {
         Check("the comment line between the tables kept in its place", string.Join(" / ", names2) == "Speeds / # Section B / Other array / Positions / Times / Speeds",
               string.Join(" / ", names2));
 
+        // 25 October: "The PLC monitor table blinks sometimes for some reason when the scroll is moved to the right end of the table"
+        Console.WriteLine("--- drawn again only when a value in sight changes ---");
+        ((TabControl)Get(sh, "ViewTabs")).SelectedTab = (TabPage)Get(sh, "TablesPage");
+        Pump();
+        var block = Blocks(sh).First(b => !(bool)Get(b, "IsComment"));
+        var tg = (DataGridView)Get(block, "Grid");
+        bool buffered = (bool)typeof(Control).GetProperty("DoubleBuffered", Any).GetValue(tg, null);
+        int drawn = 0;
+        tg.Invalidated += (s, e) => drawn++;
+        Call(form, "RefreshValues"); Pump();
+        drawn = 0;
+        Call(form, "RefreshValues"); Pump();
+        Call(form, "RefreshValues"); Pump();
+        Check("refreshes that change nothing: the table not drawn again (it was, 4 times a second); drawn into a buffer", drawn == 0 && buffered, drawn + " times");
+        var col = (System.Collections.IList)((IList)Call(MonType, "TableItems", sh)).Cast<IList>().First(i => i[0] == Get(block, "Head"));
+        sim.Write((string)Get(col[0], "Address"), 4321);
+        Call(form, "RefreshValues"); Pump();
+        Call(form, "RefreshValues"); Pump();
+        Check("  a value in sight changed: drawn", drawn > 0, drawn + " times; " + Get(col[0], "Address") + " shown " + Convert.ToString(tg.Rows[0].Cells[1].Value) +
+              ", the tables on show: " + Call(MonType, "TablesShown", sh) + ", grid visible " + tg.Visible + " " + tg.Width + "x" + tg.Height);
+
         Console.WriteLine("--- the device editor of 'Add an array...' ---");
         var dlg = new PlcRowEditorForm("Bench", "", "Word [Signed]", "", "", "Address", isNew: true, arrayCount: 5, station: 23, lockArrayCount: true);
         dlg.Show(); Application.DoEvents();

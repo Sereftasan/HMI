@@ -58,6 +58,8 @@ namespace Kaban.UI.Forms
             public string Key = "";
             /// <summary>A comment line between the tables (24 October): its caption only.</summary>
             public bool IsComment;
+            /// <summary>The texts of the cells in sight when last drawn (a refresh that changes none draws nothing).</summary>
+            public string Drawn;
         }
 
         // ---- the model ------------------------------------------------------------------
@@ -598,8 +600,17 @@ namespace Kaban.UI.Forms
             }
             PaintTableSelection(sh);
             ArrangeViews(sh);
+            // 25 October ("The PLC monitor table blinks sometimes ... when the scroll is moved to the right end of the
+            // table"): each refresh (4 a second) drew every table whole - now a table is drawn again only when a cell in
+            // sight shows something else, and into a buffer (no flicker)
             foreach (var b in sh.Blocks)
-                if (b.Grid != null && !b.Grid.IsCurrentCellInEditMode) b.Grid.Invalidate();
+            {
+                if (b.Grid == null || b.Grid.IsCurrentCellInEditMode) continue;
+                string now = ShownTexts(mon, b);
+                if (now == b.Drawn) continue;
+                b.Drawn = now;
+                b.Grid.Invalidate();
+            }
         }
 
         /// <summary>
@@ -816,6 +827,23 @@ namespace Kaban.UI.Forms
             return b;
         }
 
+        /// <summary>What the cells of a table in sight show now (and its view: HMI / PLC, where it is scrolled).</summary>
+        private static string ShownTexts(MonitorTab mon, TableBlock b)
+        {
+            var g = b.Grid;
+            if (g.RowCount == 0) return "";
+            int top = Math.Max(0, g.FirstDisplayedScrollingRowIndex), n = Math.Max(1, g.DisplayedRowCount(true));
+            var sb = new System.Text.StringBuilder(b.Head.TableRaw ? "P" : "H");
+            for (int r = top; r < Math.Min(g.RowCount, top + n); r++)
+                for (int c = 1; c < g.Columns.Count; c++)
+                {
+                    if (!g.Columns[c].Visible) continue;
+                    bool nz;
+                    sb.Append(TableText(mon, b.Head.TableRaw, g.Columns[c].Tag as TableColumn, r, out nz)).Append(nz ? '\u0002' : '\u0001');
+                }
+            return sb.ToString();
+        }
+
         /// <summary>A table's grid: a line per element (virtual: only the lines in sight are asked for), "#" frozen at the left.</summary>
         private DataGridView BuildTableGrid(MonitorTab mon, Sheet sh, TableBlock b)
         {
@@ -836,6 +864,10 @@ namespace Kaban.UI.Forms
                 Name = "tableGrid"
             };
             UiStyle.GridLook(g);
+            // drawn into a buffer: no flicker when it is drawn again (25 October)
+            try { typeof(Control).GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(g, true, null); } catch { }
+            // scrolled: the cells now in sight drawn (and remembered as drawn)
+            g.Scroll += (s, e) => b.Drawn = null;
             // the member's name over its data type, as the sheet's two-line headings
             g.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
