@@ -1088,6 +1088,46 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
+        /// GX Works3's "Points + Start" (24 October: "the user would need to select two start address (both the
+        /// source and target start address) and one data length"): the first device read, "R1000" (empty: the
+        /// area's first), and how many, "1000" (empty: all from there to the area's end) - as devices of
+        /// <paramref name="area"/>: its <paramref name="from"/> and <paramref name="count"/>.
+        /// </summary>
+        public static bool TryParseStartPoints(Area area, string start, string points, out int from, out int count, out string error)
+        {
+            from = 0; count = area.Points; error = "";
+            start = (start ?? "").Trim();
+            points = (points ?? "").Trim();
+            if (start.Length > 0)
+            {
+                string p; long n;
+                if (RangeRx.IsMatch(start) || !PlcAddressHelper.TrySplit(start, out p, out n))
+                {
+                    error = LanguageManager.GetString("Msg_BakNotDevice", "Not a device - write the first one read, as R1000.");
+                    return false;
+                }
+                if (!string.Equals(p, area.Prefix, StringComparison.OrdinalIgnoreCase) || n < area.Start || n >= area.Start + area.Points)
+                {
+                    error = string.Format(LanguageManager.GetString("Msg_BakOutsideArea", "Within {0} only."), area.Range);
+                    return false;
+                }
+                from = (int)(n - area.Start);
+            }
+            int left = area.Points - from;
+            if (points.Length == 0) { count = left; return true; }
+            // "1,000", "1.000", "1 000": a count has no fractions - every separator is a thousands' one
+            var digits = Regex.Replace(points, @"[\s,.'\u00A0\u202F]", "");
+            long c;
+            if (!long.TryParse(digits, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out c) || c < 1 || c > left)
+            {
+                error = string.Format(LanguageManager.GetString("Msg_BakPointsWithin", "Points: 1 to {0} from {1}."), left.ToString("N0"), area.Device(from));
+                return false;
+            }
+            count = (int)c;
+            return true;
+        }
+
+        /// <summary>
         /// Where a part is written: empty - its own devices; "D2500", or "D2500 - D3499" (as many devices
         /// as read). Bits to bits, words to words, 32-bit ones to 32-bit ones; a module's data to a module's
         /// buffer memory. On a real PLC never to what is not written back (the inputs and outputs, the

@@ -337,6 +337,13 @@ namespace Kaban.UI.Settings
         private readonly CheckBox _onlyThis = new CheckBox { Name = "bakOnlyThis", AutoSize = true, Checked = true };
         private readonly Button _write;
         private readonly Label _summary = new Label { Name = "bakSummary", AutoSize = true, ForeColor = Color.FromArgb(90, 96, 106) };
+        /// <summary>
+        /// How a device's part is typed (24 October, GX Works3's Input Column): Points + Start - the first device
+        /// read, how many, the first device written; Start + End - the devices read, where they go.
+        /// </summary>
+        private readonly RadioButton _byPoints = new RadioButton { Name = "bakByPoints", AutoSize = true };
+        private readonly RadioButton _byRange = new RadioButton { Name = "bakByRange", AutoSize = true };
+        private readonly Label _help = new Label { Name = "bakHelp" };
         private List<PlcBackup.Backup> _list = new List<PlcBackup.Backup>();
         private PlcBackup.Backup _shown;
         private bool _filling;
@@ -410,23 +417,37 @@ namespace Kaban.UI.Settings
             _backups.SelectionChanged += (s, e) => { if (!_filling) ShowSelected(); };
 
             // ---- its areas: a tree, as GX Works3's Select Data to Write ----
-            var mid = new Panel { Dock = DockStyle.Top, Height = 74 };
-            var help = new Label
-            {
-                Dock = DockStyle.Fill, Padding = new Padding(10, 8, 10, 0), ForeColor = Color.FromArgb(70, 76, 86),
-                Text = T("Msg_BakTreeHelp", "Tick what is written - a row ticks everything under it; Details: a group's axes (and positioning data numbers). " +
-                                            "A device's Read: all of it, or the devices typed (R1000 - R1999); Write to: empty - the same devices, or where they go " +
-                                            "(D2500, or D2500 - D3499). A module's Write to: another module (U2).") +
-                       (_simulator ? "  " + T("Msg_BakSimulatorAll", "The simulator: every area is written, the inputs and outputs too.") : "")
-            };
+            var mid = new Panel { Dock = DockStyle.Top, Height = 104 };
+            _help.Dock = DockStyle.Fill;
+            _help.Padding = new Padding(10, 8, 10, 0);
+            _help.ForeColor = Color.FromArgb(70, 76, 86);
+            // as GX Works3's Device Data Detail Setting: Input Column (o) Points + Start  ( ) Start + End
+            var modes = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 30, Padding = new Padding(8, 2, 8, 0), WrapContents = false };
+            var modesLabel = new Label { AutoSize = true, Text = T("Lbl_BakInput", "A device's part typed as:"), Margin = new Padding(3, 6, 8, 3) };
+            _byPoints.Text = T("Opt_BakByPoints", "Points + Start");
+            _byRange.Text = T("Opt_BakByRange", "Start + End");
+            _byPoints.Margin = new Padding(3, 4, 16, 3);
+            _byRange.Margin = new Padding(3, 4, 16, 3);
+            var tips = new ToolTip();
+            tips.SetToolTip(_byPoints, T("Tip_BakByPoints", "Read from: the first device read (R1000). Points: how many (1000). Write to: the first device they go to (D2500) - empty: the same devices."));
+            tips.SetToolTip(_byRange, T("Tip_BakByRange", "Read: the devices read (R1000 - R1999). Write to: the first device they go to (D2500), or all of them (D2500 - D3499) - empty: the same devices."));
+            bool points = ViewPreferences.Get(ViewPreferences.BackupInput) != "Range";
+            _byPoints.Checked = points;
+            _byRange.Checked = !points;
+            _byPoints.CheckedChanged += (s, e) => { if (_byPoints.Checked) SetInput(true); };
+            _byRange.CheckedChanged += (s, e) => { if (_byRange.Checked) SetInput(false); };
+            modes.Controls.Add(modesLabel);
+            modes.Controls.Add(_byPoints);
+            modes.Controls.Add(_byRange);
             var picks = new FlowLayoutPanel { Dock = DockStyle.Right, Width = 330, Padding = new Padding(0, 6, 8, 0), FlowDirection = FlowDirection.RightToLeft, WrapContents = false };
             var none = UiStyle.TextButton(T("Btn_BakDeselectAll", "Deselect all"), 0, (s, e) => SetAll(false));
             var all = UiStyle.TextButton(T("Btn_BakSelectAll", "Select all"), 0, (s, e) => SetAll(true));
             none.Name = "bakNone"; all.Name = "bakAll";
             picks.Controls.Add(none);
             picks.Controls.Add(all);
-            mid.Controls.Add(help);
+            mid.Controls.Add(_help);
             mid.Controls.Add(picks);
+            mid.Controls.Add(modes);
             Grid(_areas);
             _areas.Dock = DockStyle.Fill;
             _areas.SelectionMode = DataGridViewSelectionMode.CellSelect;
@@ -435,7 +456,8 @@ namespace Kaban.UI.Settings
             _areas.Columns.Add(new DataGridViewButtonColumn { Name = "Details", HeaderText = T("Col_BakDetails", "Details"), Width = 84 });
             _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Read", HeaderText = T("Col_BakRead", "Read"), Width = 200 });
             _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Target", HeaderText = T("Col_BakTarget", "Write to"), Width = 150 });
-            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Devices", HeaderText = T("Col_BakDevices", "Devices"), Width = 80, ReadOnly = true,
+            // Points + Start: a device row's Points typed here (each row's cell read-only but those)
+            _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Devices", HeaderText = T("Col_BakDevices", "Devices"), Width = 80,
                                                                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight } });
             _areas.Columns.Add(new DataGridViewTextBoxColumn { Name = "Note", HeaderText = T("Col_BakNote", "Note"), Width = 260, ReadOnly = true });
             _areas.CurrentCellDirtyStateChanged += (s, e) => { if (_areas.IsCurrentCellDirty && _areas.CurrentCell is DataGridViewCheckBoxCell) _areas.CommitEdit(DataGridViewDataErrorContexts.Commit); };
@@ -471,7 +493,73 @@ namespace Kaban.UI.Settings
             Controls.Add(_backups);
             Controls.Add(top);
             Controls.Add(bottom);
+            ShowInput();
             FillList();
+        }
+
+        /// <summary>Points + Start (true) or Start + End: how a device's part is typed.</summary>
+        internal bool ByPoints
+        {
+            get { return _byPoints.Checked; }
+            set { if (value) _byPoints.Checked = true; else _byRange.Checked = true; }
+        }
+
+        /// <summary>The columns' captions, the device rows' Points cells, the help - for the way chosen.</summary>
+        private void ShowInput()
+        {
+            bool points = ByPoints;
+            _areas.Columns["Read"].HeaderText = points ? T("Col_BakReadFrom", "Read from") : T("Col_BakRead", "Read");
+            _areas.Columns["Devices"].HeaderText = points ? T("Col_BakPoints", "Points") : T("Col_BakDevices", "Devices");
+            foreach (var item in _items.Where(i => i.Kind == ItemKind.Device && i.Writable)) item.Row.Cells["Devices"].ReadOnly = !points;
+            _areas.Invalidate();      // the captions drawn again (Mono's grid keeps the old ones until then)
+            _help.Text = T("Msg_BakTreeHelpAll", "Tick what is written - a row ticks everything under it. Details: a group's axes (and positioning data numbers). " +
+                                                 "A module's Write to: another module (U2).") + "  " +
+                         (points ? T("Msg_BakHelpPoints", "A device's Read from: the first device read (R1000). Points: how many (1000). Write to: empty - the same devices, " +
+                                                          "or the first device they go to (D2500).")
+                                 : T("Msg_BakHelpRange", "A device's Read: all of it, or the devices typed (R1000 - R1999). Write to: empty - the same devices, " +
+                                                         "or where they go (D2500, or D2500 - D3499).")) +
+                         (_simulator ? "  " + T("Msg_BakSimulatorAll", "The simulator: every area is written, the inputs and outputs too.") : "");
+        }
+
+        /// <summary>
+        /// The other way chosen: each device row's part typed again that way (R1000 - R1999 to D2500 - D3499 is
+        /// R1000, 1,000 points, to D2500) - a part that is wrong stays as typed; kept as the user's choice.
+        /// </summary>
+        private void SetInput(bool points)
+        {
+            _areas.EndEdit();
+            bool was = _filling;
+            _filling = true;
+            try
+            {
+                foreach (var item in _items)
+                {
+                    var a = item.Area;
+                    var cells = item.Row != null ? item.Row.Cells : null;
+                    if (a == null || cells == null) continue;
+                    if (item.Kind == ItemKind.Other) { cells["Read"].Value = points ? a.First : a.Range; continue; }
+                    if (item.Kind != ItemKind.Device) continue;
+                    int from, count; string error, target;
+                    bool ok = points ? PlcBackup.TryParseRange(a, Convert.ToString(cells["Read"].Value), out from, out count, out error)
+                                     : PlcBackup.TryParseStartPoints(a, Convert.ToString(cells["Read"].Value), Convert.ToString(cells["Devices"].Value), out from, out count, out error);
+                    if (!ok) continue;
+                    if (points)
+                    {
+                        cells["Read"].Value = a.Device(from);
+                        cells["Devices"].Value = count.ToString("N0");
+                        // "D2500 - D3499": its first device - the points say how many
+                        var to = Convert.ToString(cells["Target"].Value);
+                        if (to.Trim().Length > 0 && PlcBackup.TryParseTarget(a, from, count, to, out target, out error, true)) cells["Target"].Value = target;
+                    }
+                    else
+                        cells["Read"].Value = from == 0 && count == a.Points ? a.Range : new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = a.Device(from) }.ToString();
+                }
+            }
+            finally { _filling = was; }
+            ShowInput();
+            foreach (var item in _items.Where(i => i.Kind == ItemKind.Device)) CheckDevice(item);
+            UpdateWrite();
+            ViewPreferences.SetList(ViewPreferences.BackupInput, new[] { points ? "Points" : "Range" });
         }
 
         private static void Grid(DataGridView g)
@@ -564,8 +652,9 @@ namespace Kaban.UI.Settings
                 {
                     bool writable = _simulator || a.Writable;
                     var d = Add(new Item { Kind = ItemKind.Device, Area = a, Writable = writable, Text = a.Title }, top);
-                    d.Row.Cells["Read"].Value = a.Range;
+                    d.Row.Cells["Read"].Value = ByPoints ? a.First : a.Range;
                     d.Row.Cells["Devices"].Value = a.Points.ToString("N0");
+                    d.Row.Cells["Devices"].ReadOnly = !writable || !ByPoints;
                     if (!writable) d.Row.Cells["Note"].Value = a.WhyNotWritten;
                 }
             }
@@ -587,7 +676,7 @@ namespace Kaban.UI.Settings
                 foreach (var a in b.Areas.Where(a => { var p = PlcBackup.PlaceOf(a); return p != null && p.Module == m && p.Group == PlcBackup.ModuleGroup.Other; }))
                 {
                     var o = Add(new Item { Kind = ItemKind.Other, Module = m, Area = a, Text = a.Title }, mod);
-                    o.Row.Cells["Read"].Value = a.Range;
+                    o.Row.Cells["Read"].Value = ByPoints ? a.First : a.Range;
                     o.Row.Cells["Devices"].Value = a.Points.ToString("N0");
                 }
                 var flash = Add(new Item { Kind = ItemKind.Flash, Module = m, Text = T("Bak_TreeFlash", "Then write the module's flash ROM") }, mod);
@@ -621,7 +710,7 @@ namespace Kaban.UI.Settings
             item.Row = row;
             row.Cells["Item"].Style.Padding = new Padding(parent == null ? 4 : 26, 0, 4, 0);
             if (parent == null) row.Cells["Item"].Style.Font = UiStyle.FontVariant(_areas.Font, FontStyle.Bold);
-            foreach (var col in new[] { "Read", "Target" }) row.Cells[col].ReadOnly = true;
+            foreach (var col in new[] { "Read", "Target", "Devices" }) row.Cells[col].ReadOnly = true;
             if (!details) row.Cells["Details"].ReadOnly = true;
             if (item.Kind == ItemKind.Device) { row.Cells["Read"].ReadOnly = false; row.Cells["Target"].ReadOnly = false; }
             if (!item.Writable)
@@ -759,8 +848,10 @@ namespace Kaban.UI.Settings
             try
             {
                 if (!item.Writable) return null;
-                if (!PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error) ||
-                    !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
+                bool points = ByPoints;
+                bool read = points ? PlcBackup.TryParseStartPoints(a, Convert.ToString(row.Cells["Read"].Value), Convert.ToString(row.Cells["Devices"].Value), out from, out count, out error)
+                                   : PlcBackup.TryParseRange(a, Convert.ToString(row.Cells["Read"].Value), out from, out count, out error);
+                if (!read || !PlcBackup.TryParseTarget(a, from, count, Convert.ToString(row.Cells["Target"].Value), out target, out error, _simulator))
                 {
                     row.Cells["Note"].Value = error;
                     row.Cells["Note"].Style.ForeColor = Color.FromArgb(190, 40, 30);
@@ -769,7 +860,10 @@ namespace Kaban.UI.Settings
                 {
                     part = new PlcBackup.WriteRange { Source = a, From = from, Count = count, Target = target };
                     row.Cells["Devices"].Value = count.ToString("N0");
-                    row.Cells["Note"].Value = string.Equals(target, a.Device(from), StringComparison.OrdinalIgnoreCase) ? "" : part.ToString();
+                    if (points && Convert.ToString(row.Cells["Read"].Value).Trim().Length == 0) row.Cells["Read"].Value = a.Device(from);
+                    bool same = string.Equals(target, a.Device(from), StringComparison.OrdinalIgnoreCase);
+                    // Points + Start: the devices read and written said in full - their last ones are typed nowhere
+                    row.Cells["Note"].Value = same && (!points || count == a.Points) ? "" : part.ToString();
                     row.Cells["Note"].Style.ForeColor = Color.FromArgb(90, 96, 106);
                 }
             }

@@ -1649,7 +1649,6 @@ Msg_BakSingleToSingle;16-bit words are written to 16-bit devices (D, R, W, TN, C
 Msg_BakSkipped;Not in the backup - the PLC refused them:;;;;;
 Msg_BakSystemNotWritten;The system's devices are not written back.;;;;;
 Msg_BakTargetCount;As many devices as read: {0}.;;;;;
-Msg_BakTreeHelp;Tick what is written - a row ticks everything under it, Details: a group's axes (and positioning data numbers). A device's Read: all of it, or the devices typed (R1000 - R1999), Write to: empty - the same devices, or where they go (D2500, or D2500 - D3499). A module's Write to: another module (U2).;;;;;
 Msg_BakUnknownDevice;{0} is not one of the devices written back.;;;;;
 Msg_BakWhatCams;Its cams: those an axis uses (Cam No., Pr.440) and the numbers typed below.;;;;;
 Msg_BakWhatIsRead;Read: every device of the CPU (X, Y, M, L, B, F, SB, S, T, ST, C, LC, D, W, SW, R, Z, LZ, SM, SD - as far as the CPU has them) and {0}.;;;;;

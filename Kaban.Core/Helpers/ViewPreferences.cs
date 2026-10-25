@@ -76,6 +76,8 @@ namespace Kaban.Core.Helpers
         public const string AiPromptAs = "AiPromptAs";              // File | Text
         /// <summary>"Ask &lt;AI&gt;" pastes the prompt into the chat it opens by itself (14 October).</summary>
         public const string AiPaste = "AiPaste";                    // On | Off
+        /// <summary>How a device's part is typed in Write a backup into the PLC (24 October, as GX Works3's Input Column).</summary>
+        public const string BackupInput = "BackupInput";            // Points | Range
         /// <summary>
         /// The language of the screen (a code: EN, TR ...): everyone's is the flag on the top
         /// bar's, a user's own is taken when they sign in (12 October: "add language selection
@@ -109,6 +111,7 @@ namespace Kaban.Core.Helpers
             new Preference { Key = AxisPositions, Group = "", Hidden = true },
             new Preference { Key = IoShown, Group = "", Hidden = true },
             new Preference { Key = NoteLanguages, Group = "", Hidden = true },
+            new Preference { Key = BackupInput, Group = "", Hidden = true, Values = new[] { "Points", "Range" }, Default = "Points" },
             // A user's own units of measure ("Unit_Length" = inch): taken at sign-in by
             // UnitManager. Everyone's are UnitManager's own (Units.cfg), not kept here.
             new Preference { Key = "Unit_" + Enums.UnitType.Length, Group = "Units", Hidden = true },

@@ -66,6 +66,8 @@ class PBU {
         LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
         PlcBackup.Folder = Path.Combine(dir, "PlcBackups");
         PlcConnectionSettings.SettingsPath = Path.Combine(dir, "PlcConnections.cfg");
+        ViewPreferences.SettingsPath = Path.Combine(dir, "View.cfg");
+        ViewPreferences.Reload();
         PlcDriverCatalog.RegisterNone();
         PlcDriverCatalog.Register(PlcDriverCatalog.SimulationId, "Drv_Simulation", "Simulation (in-memory)",
                                   (station, endpoint) => new Kaban.Drivers.Simulation.SimulationDriver(station), usesLogicalStation: false);
@@ -195,6 +197,49 @@ class PBU {
         Check("  the groups with axes have Details; the memo area none; the cam data its cams", rowOf(group("Positioning data")).Cells["Details"] is DataGridViewButtonCell &&
               rowOf(group("Cam data")).Cells["Details"] is DataGridViewButtonCell && ((PlcBackupGroup)Get(group("Cam data"), "Group")).AllCams.SequenceEqual(new[] { 4 }) &&
               rowOf(group("Synchronous control parameters")).Cells["Details"] is DataGridViewButtonCell && !(rowOf(group("PLC CPU memo area")).Cells["Details"] is DataGridViewButtonCell));
+        // 24 October: "There is 'Points + Start' option to select the device address interval to write in Mitsubishi ... the user would
+        // need to select two start address (both the source and target start address) and one data length (called 'Points' at the image)"
+        Check("  as GX Works3: Points + Start the first way - a device's first device in Read from, all its devices in Points (typed there), Write to empty",
+              (bool)Get(wf, "ByPoints") && cell("R0", "Read") == "R0" && cell("R0", "Devices") == "32,768" && cell("R0", "Target") == "" && cell("R0", "Note") == "" &&
+              !row("R0").Cells["Devices"].ReadOnly && row("R0").Cells["Read"].ReadOnly == false && areas.Columns["Read"].HeaderText == "Read from" &&
+              areas.Columns["Devices"].HeaderText == "Points" && rowOf(group("Parameters")).Cells["Devices"].ReadOnly,
+              cell("R0", "Read") + " | " + cell("R0", "Devices") + " | " + areas.Columns["Devices"].HeaderText);
+        row("R0").Cells["Read"].Value = "R1000";
+        row("R0").Cells["Devices"].Value = "1000";
+        row("R0").Cells["Target"].Value = "D2500";
+        Check("  R1000, 1000 points, to D2500: the note says them in full", cell("R0", "Devices") == "1,000" && cell("R0", "Note") == "R1000 - R1999 → D2500 - D3499",
+              cell("R0", "Devices") + " | " + cell("R0", "Note"));
+        row("R0").Cells["Devices"].Value = "1.000";
+        Check("  Points typed as 1.000 (a Turkish thousands' mark): the same", cell("R0", "Note") == "R1000 - R1999 → D2500 - D3499", cell("R0", "Note"));
+        row("R0").Cells["Devices"].Value = "40000";
+        Check("  more points than R1000 has after it: said", cell("R0", "Note") == "Points: 1 to 31,768 from R1000.", cell("R0", "Note"));
+        row("R0").Cells["Devices"].Value = "";
+        Check("  Points empty: all from R1000 on", cell("R0", "Devices") == "31,768" && cell("R0", "Note") == "R1000 - R32767 → D2500 - D34267", cell("R0", "Note"));
+        row("R0").Cells["Read"].Value = "R1000 - R1999";
+        Check("  a range in Read from: said to write its first device", cell("R0", "Note").StartsWith("Not a device"), cell("R0", "Note"));
+        row("R0").Cells["Read"].Value = "D5";
+        Check("  another device: within R0 - R32767 only", cell("R0", "Note") == "Within R0 - R32767 only.", cell("R0", "Note"));
+        row("R0").Cells["Read"].Value = "R1000";
+        row("R0").Cells["Devices"].Value = "1000";
+        typeof(PlcBackupWriteForm).GetProperty("ByPoints", Any).SetValue(wf, false, null);
+        Check("Start + End chosen: the part typed again that way (R1000 - R1999, to D2500), the Devices counted, the choice kept",
+              !(bool)Get(wf, "ByPoints") && cell("R0", "Read") == "R1000 - R1999" && cell("R0", "Target") == "D2500" && cell("R0", "Devices") == "1,000" &&
+              row("R0").Cells["Devices"].ReadOnly && areas.Columns["Read"].HeaderText == "Read" && ViewPreferences.Get(ViewPreferences.BackupInput) == "Range",
+              cell("R0", "Read") + " | " + cell("R0", "Target") + " | " + ViewPreferences.Get(ViewPreferences.BackupInput));
+        row("R0").Cells["Target"].Value = "D2500 - D3499";
+        typeof(PlcBackupWriteForm).GetProperty("ByPoints", Any).SetValue(wf, true, null);
+        Check("  Points + Start again: R1000, 1,000 points, to D2500 (the first device of D2500 - D3499)",
+              (bool)Get(wf, "ByPoints") && cell("R0", "Read") == "R1000" && cell("R0", "Devices") == "1,000" && cell("R0", "Target") == "D2500" &&
+              cell("R0", "Note") == "R1000 - R1999 → D2500 - D3499" && ViewPreferences.Get(ViewPreferences.BackupInput) == "Points",
+              cell("R0", "Read") + " | " + cell("R0", "Devices") + " | " + cell("R0", "Target"));
+        row("R0").Cells["Target"].Value = "";
+        typeof(PlcBackupWriteForm).GetProperty("ByPoints", Any).SetValue(wf, false, null);
+        row("R0").Cells["Read"].Value = "";
+        typeof(PlcBackupWriteForm).GetProperty("ByPoints", Any).SetValue(wf, true, null);
+        bool wholeFirst = cell("R0", "Read") == "R0" && cell("R0", "Devices") == "32,768";
+        typeof(PlcBackupWriteForm).GetProperty("ByPoints", Any).SetValue(wf, false, null);
+        Check("  Read empty (all of it) and back: R0, 32,768 points - R0 - R32767", wholeFirst && cell("R0", "Read") == "R0 - R32767", cell("R0", "Read"));
+
         // 23 October: "write inputs and outputs as well if the selected PLC driver is simulator"
         Check("  each device with its devices in Read (R0 - R32767), Write to empty; the simulator: X and Y written too, said so",
               cell("R0", "Read") == "R0 - R32767" && cell("R0", "Target") == "" && !row("X0").ReadOnly && cell("X0", "Note") == "" && !row("SD0").ReadOnly &&
