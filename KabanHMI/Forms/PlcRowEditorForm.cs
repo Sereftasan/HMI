@@ -139,8 +139,9 @@ namespace Kaban.UI.Forms
         public PlcRowEditorForm(string caption, string label, string dataType, string address,
                                 string value, string focusField = null, bool isNew = false, bool isComment = false,
                                 string displayFormat = "", int arrayCount = 1, int stringLength = 16, int station = 0,
-                                double divisor = 1, int decimals = 0)
+                                double divisor = 1, int decimals = 0, bool lockArrayCount = false)
         {
+            _lockCount = lockArrayCount;
             Kaban.UI.Controls.UiScale.ApplyOnLoad(this);       // at the magnifying factor
             _isNew = isNew;
             _station = station;
@@ -153,12 +154,20 @@ namespace Kaban.UI.Forms
             ShowInTaskbar = false;
             BackColor = Color.White;
             Font = UiStyle.Body;
-            ClientSize = new Size(440, 10);
+            // 24 October ("Array (how" - the rest of the caption not seen): the captions' column as wide as its longest
+            // caption in the language shown, the fields after it as wide as before
+            _captionWidth = 100;
+            foreach (var key in new[] { new[] { "Col_Label", "Label" }, new[] { "Col_Comment", "Comment" }, new[] { "Col_DataType", "DataType" },
+                                         new[] { "Col_DisplayFormat", "Display Format" }, new[] { "Col_Divisor", "Divisor" },
+                                         new[] { "Lbl_StringChars", "String (characters)" }, new[] { "Col_Address", "Address" },
+                                         new[] { "Lbl_ArrayCount", "Array (how many)" }, new[] { "Col_ValuePlc", "Value (PLC)" } })
+                _captionWidth = Math.Max(_captionWidth, TextRenderer.MeasureText(LanguageManager.GetString(key[0], key[1]) + ":", Font).Width + 6);
+            ClientSize = new Size(_captionWidth + 340, 10);
 
             int y = 16;
             _comment.Text = LanguageManager.GetString("Lbl_CommentLine", "Comment line (no address, no value)");
             _comment.AutoSize = true;
-            _comment.Location = new Point(118, y);
+            _comment.Location = new Point(FieldLeft, y);
             _comment.Checked = isComment;
             Controls.Add(_comment);
             y += 32;
@@ -206,7 +215,7 @@ namespace Kaban.UI.Forms
             _count.Width = 90;
             _preview.AutoSize = false;
             _preview.ForeColor = Color.FromArgb(90, 96, 106);
-            _preview.SetBounds(214, y - 30, ClientSize.Width - 230, 22);
+            _preview.SetBounds(FieldLeft + 96, y - 30, ClientSize.Width - FieldLeft - 112, 22);
             Controls.Add(_preview);
             AddRow(LanguageManager.GetString("Col_ValuePlc", "Value (PLC)"), _value, ref y);
 
@@ -217,8 +226,11 @@ namespace Kaban.UI.Forms
 
             // Only a NEW row can become a comment: turning a watched device into a
             // heading would silently drop it from the list.
-            _comment.Visible = isNew || isComment;
-            _comment.Enabled = isNew;
+            _comment.Visible = (isNew || isComment) && !_lockCount;
+            _comment.Enabled = isNew && !_lockCount;
+            // 24 October: a label added to a table ("Add an array...") is as long as the table - its count is the table's
+            if (_lockCount)
+                UiStyle.SetTip(UiStyle.Tips(), _count, LanguageManager.GetString("Tip_RowCountLocked", "As many elements as the table has lines - a label of a table is as long as it"));
 
             var ok = UiStyle.Round(new Button { Text = LanguageManager.GetString("Btn_Ok", "OK"), DialogResult = DialogResult.OK, Width = 96, Height = 30 });
             var cancel = UiStyle.Round(new Button { Text = LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30 });
@@ -290,7 +302,7 @@ namespace Kaban.UI.Forms
             bool comment = _comment.Checked;
             _dataType.Enabled = _address.Enabled = !comment;
             _structures.Enabled = !comment;
-            _count.Enabled = !comment;
+            _count.Enabled = !comment && !_lockCount;
             string type = RowDataType;
             var structure = StructuredTypes.Find(type, _station);
             // A display format for the whole numbers (a structure's members); a length for a string.
@@ -339,7 +351,7 @@ namespace Kaban.UI.Forms
                     if (fromAddress && _label.Text == _filledLabel) _label.Text = _keptLabel;
                     if (!fromAddress && _address.Text == _filledAddress) _address.Text = _keptAddress;
                     if (_dataType.Text == _filledType) _dataType.Text = _keptType;
-                    if (_count.Value == _filledCount) _count.Value = _keptCount;
+                    if (_count.Value == _filledCount && !_lockCount) _count.Value = _keptCount;
                     _filled = false;
                 }
                 else
@@ -353,7 +365,7 @@ namespace Kaban.UI.Forms
                     if (!_typeTyped && !string.IsNullOrWhiteSpace(entry.DataType))
                     {
                         _dataType.Text = StructuredTypes.BaseName(entry.DataType);
-                        _count.Value = Math.Max(_count.Minimum, Math.Min(_count.Maximum, Math.Max(1, StructuredTypes.CountIn(entry.DataType))));
+                        if (!_lockCount) _count.Value = Math.Max(_count.Minimum, Math.Min(_count.Maximum, Math.Max(1, StructuredTypes.CountIn(entry.DataType))));
                     }
                     _filledLabel = _label.Text; _filledAddress = _address.Text; _filledType = _dataType.Text; _filledCount = _count.Value;
                     _filled = true;
@@ -387,11 +399,16 @@ namespace Kaban.UI.Forms
             AddRow(new Label { Text = caption + ":" }, field, ref y);
         }
 
+        private bool _lockCount;
+        private int _captionWidth = 100;
+        /// <summary>Where the fields begin: after the captions' column.</summary>
+        private int FieldLeft { get { return 18 + _captionWidth; } }
+
         private void AddRow(Label lbl, Control field, ref int y)
         {
             lbl.AutoSize = false;
-            lbl.SetBounds(16, y + 4, 100, 22);
-            field.SetBounds(118, y, ClientSize.Width - 134, 24);
+            lbl.SetBounds(16, y + 4, _captionWidth, 22);
+            field.SetBounds(FieldLeft, y, ClientSize.Width - FieldLeft - 16, 24);
             Controls.Add(lbl);
             Controls.Add(field);
             y += 34;
