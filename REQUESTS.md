@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 26 October (the answers to 24 October's questions):
+  - 31d8e23 - The alarm list's Help: the files added listed first, then the step-by-step page (its name as before).
+  - 38ca02d - Axis Monitor: Maintenance sees the PLC axis items and Motion monitor lists greyed (an Admin's choice); an
+    Operator does not see them.
+  - Translations: English and Turkish only for now (as said) - a new text gets its Turkish in its batch.
 - 24 October:
   - 67bb4e3 - PLC Monitor, "Table viewed labels": the toolbar works there (up/down greyed at the first/last, add, copy,
     paste, delete); a comment line or another table above or below the one chosen (its menu too).
