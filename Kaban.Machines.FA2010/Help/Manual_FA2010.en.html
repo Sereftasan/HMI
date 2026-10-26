@@ -12,13 +12,30 @@
 -->
 </head><body>
 
+<h4 id="fa-home">Home</h4>
+<p>The old program's main control panel: <b>Start</b> (<code>M21</code>, set; lit while the machine works), <b>Pause</b> (<code>M111</code>, on and off) and
+<b>Cancel</b> (<code>M24</code>, set &ndash; asked first while the machine works, at once when it does not), and the <b>speed</b> of the work (<code>D408</code>),
+a slider through the old track bar's steps (0, 1, 2, 4 &hellip; 95, 100 %) with its percentage to type any value (<a href="#keypad">5</a>). The job list is
+not on the page.</p>
+
 <h4 id="fa-manual">Manual Movement</h4>
 <p>The tabs and their rows are those of the HMI program the machine ran before: <b>Entry Conveyor, Robot, Profile Recognition,
 Milling, Cutting, Exit, Other, Clamping Moulds, YZ Cross Rollers</b>. Each page reads top to bottom as the old table did, in
 columns; its sections are headings (Milling: <i>Unit 1</i> and <i>Unit 2</i> side by side; Cutting: <i>Cutting</i> and
 <i>V Cutting</i>). The old <i>Back</i> column is a unit's &#9664; button, <i>Forward</i> its &#9654;, <i>Positions</i> the value
 beside them. A row with one button is a button; <i>Change Degree</i> and <i>Drills to Changing Pos.</i> are a group of small
-buttons. The inverters' error codes are shown in hexadecimal.</p>
+buttons.</p>
+<p><b>The bar above the tabs</b>, the same over every tab (and at the top of <b>Machine Parameters &rsaquo; Axis</b> and the Axis Monitor): the axes'
+manual <b>speed</b> (<code>D409</code>, a slider and its percentage), <b>JOG</b> &ndash; the axes move while their button is held (lit: <code>M174</code>) &ndash;
+or a <b>step</b> per press: <b>10</b>, <b>1</b>, <b>0.1</b> or <b>0.01 mm</b> (<code>M170</code> &ndash; <code>M173</code>; JOG takes them off). For
+<span class="lvl l2">Maintenance</span> and <span class="lvl l3">Admin</span> only: <b>Safety Bypass</b> (<code>M175</code>, on and off &ndash; switched off whenever
+the user changes) and, on Manual Movement, <b>Cylinder FW/Back</b> (<a href="#fwback">4</a>). The axes can be coupled only in step mode, JOG off
+(<a href="#couple">4</a>).</p>
+<div class="safety"><b>Safety.</b> Safety Bypass lets the PLC move what its interlocks would hold back. Use it only to free the machine, watching it,
+and switch it off at once.</div>
+<p><b>The motors</b> &ndash; the Entry Conveyor's, Milling 1 and 2, the Saw, the V Cutting saw, the Exit Conveyor's &ndash; are motor units (<a href="#motors">4c</a>):
+their buttons, run lamp and value as one; an inverter's fault is not shown as a number but makes both buttons blink red, and its <b>?</b> offers the
+fault's entry and the FR-A800 manual. The HMI raises their alarms itself (their alarm bits <code>M827</code> &ndash; <code>M831</code>).</p>
 <p><b>Clamping Moulds</b>: a row for each mould, a pneumatic positioning (<a href="#positioning">4a</a>) &ndash; its manual
 movement (down / up for a vertical mould, back / forward for a horizontal one, and its position), then <b>Target position</b> and its
 start (the old <i>Send To Position</i>, for the operator), <b>Calibration</b> and <i>Calibrate</i>, <b>Positioning tolerance</b> and
@@ -32,17 +49,17 @@ back horizontal moulds with an encoder &ndash; Profile Recognition, Cutting Left
 (<code>X12@2</code> on the page; PLC 1's encoder inputs were full). Their buttons are PLC 1's as the others'; their lamp, their help and the HMI's
 alarm for them read PLC 2, and say so (<i>X12 (PLC 2)</i>).</p>
 <p>An axis unit (Robot X, Unit 1 X ...) takes its buttons, position and reference lamp from its row on
-<b>Machine Parameters &rsaquo; Axis</b>; change them there, not on the page. Robot X's position tooltip also shows its linear
-encoder (<code>D22</code>, the old Encoders page's <i>Robot Position</i>) and the difference.</p>
+<b>Machine Parameters &rsaquo; Axis</b>; change them there, not on the page. Robot X also has a linear encoder (<code>D22</code>, the old Encoders
+page's <i>Robot Position</i>): its <b>Load Position</b>, a choice of the Position heading on the Axis page and the Axis Monitor (<a href="#params">10</a>).
+The angle axes (Milling 1 and 2 Angle, Cutting Angle) have &#9664; &#9654;; the vertical ones &#9660; &#9650;, and only these are checked for a holding brake.</p>
 <p>The clamps with an encoder (<a href="#encoders">4b</a>) &ndash; the Gripper, Profile Recognition's Front, Top and Left Top Clamping,
 Entry Conveyor's Profile Clamping 7, Milling's Top and Front Clamping, Cutting's Left Top, Right Front and Right Front Vert. Clamping,
 the Exit's Robot Top Clamping &ndash; take theirs from their rows on <b>Machine Parameters &rsaquo; Encoders</b>.</p>
-<p class="note">Not here yet: the old screen's top bar (JOG and the 10 / 1 / 0.1 / 0.01 mm steps, Reset, the speed in %).</p>
 
 <h4 id="fa-params">Machine Parameters</h4>
 <p>As on the old program, in these tabs: <b>Axis</b> (the axes' limits, reference, calibration and reference activation, in the old
-order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting; <b>Send Axes to Reference</b> under them sends the axes
-ticked in the <i>Ref</i> column to their references), <b>Conveyor</b> and <b>Robot</b> (the old Entry Parameters), <b>Milling</b> and
+order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting, with the bar of the axes' speed and steps at the top; <b>Send Axes to Reference</b>
+under them sends the axes ticked in the <i>Ref</i> column to their references), <b>Conveyor</b> and <b>Robot</b> (the old Entry Parameters), <b>Milling</b> and
 <b>Cutting</b> (the old Process Parameters), <b>Encoders</b>, <b>Others</b> and <b>Alarms</b>. Every value is in the unit shown beside it (mm,
 s, &deg;, %), divided as the old pages divided it. They need the <b>Maintenance</b> level.</p>
 <p><b>Encoders</b>: a row per encoder (<a href="#params">10</a>) &ndash; Robot Gripper, Profile Recognition Front and Top, Milling Top,
@@ -56,6 +73,14 @@ Recognition Front and Top &ndash; its manual movement (to move it while setting 
 <b>Middle Register Notch Parameters</b> and the cross rollers' distances from the milling's X zero.</p>
 <div class="safety"><b>Safety.</b> A machine option tells the PLC program what the machine has. Change one only when the machine was built or
 changed that way.</div>
+
+<h4 id="fa-labels">PLC labels and structured data types</h4>
+<p>The PLC Monitor (<a href="#diag">11</a>) names this machine's devices from <code>PlcLabels.csv</code> and offers its structured data types from
+<code>StructuredTypes.csv</code>, both beside the program &ndash; for the tables of the Profiles &amp; Operations sheet: <b>Milling Steps</b> (16 devices: the cooling and
+motor selection, X, Y, Z in 0.01 mm, i, j, k, the speed &ndash; unit 1's at <code>R0</code>, unit 2's at <code>R12800</code>, 400 each, and their spares),
+<b>Profile Parameters</b> (<code>R25600</code>, 50 devices), <b>Milling Parameters</b> (<code>R26000</code>, 100 of 10), <b>Special Cut Parameters</b>
+(<code>R25650</code>, 10 of 5), <b>Special Cut Steps</b> and <b>Mullion Notching Step</b> (both <code>R25700</code>, 30 of 10), and the job list's three columns
+(<code>D5000</code>, <code>D6000</code>, <code>D7000</code>, 500 double words each). A label of an array can be shown as a table, a line per step.</p>
 
 <h4 id="fa-messages">Messages from the PLC</h4>
 <p>The PLC asks for a message by writing its number to <code>D71</code>; the answer is written to <code>D72</code>
