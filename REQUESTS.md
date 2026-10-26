@@ -6,6 +6,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 27 October (Notes and feedback):
+  - d579ad9 - "There is an unsaved note entry." with Save it / Discard it / Cancel - asked as soon as Add is pressed;
+    Remove takes every note chosen in the table (the ones the user may remove).
 - 26 October (Notes and feedback):
   - 57735af - The page redesigned as the others: the notes in a table, Add / general note / View / Edit / Find / Remove /
     feedback file on top of it, with filters (search, kind, state, who); the note or the control picked in the Details tab.
