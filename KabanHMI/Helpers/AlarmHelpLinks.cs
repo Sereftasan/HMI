@@ -598,15 +598,20 @@ namespace Kaban.UI.Helpers
         }
 
         /// <summary>
-        /// The documents for an alarm on the list. One the HMI raised itself: the
+        /// The documents for an alarm on the list: the files added to it (its unit's,
+        /// its own) first, then the help the HMI makes for it (26 October), named as
+        /// before - the alarm's row names the alarm. One the HMI raised itself: the
         /// step-by-step page about the signal that failed (or the entry for the
-        /// drive's code) first, then what its device's alarm offers - without that
-        /// alarm's own step-by-step page, which is about whatever the PLC's bit saw.
+        /// drive's code), then what its device's alarm offers - without that alarm's
+        /// own step-by-step page, which is about whatever the PLC's bit saw.
         /// </summary>
         public static List<TC.HelpDocument> DocumentsFor(AlarmItem item)
         {
             if (item == null) return new List<TC.HelpDocument>();
-            var list = DocumentsOf(item);
+            // the files added first, then the helps the HMI made for the alarm - each in its order (26 October:
+            // "Added files should be first at the alarm list as well but the name should stay as it is since the
+            // alarm shows the name on it anyway")
+            var list = AddedFirst(DocumentsOf(item));
             // the step-by-step page is titled with the alarm and dated with its time
             foreach (var d in list)
                 if (d.StepByStep)
@@ -615,6 +620,23 @@ namespace Kaban.UI.Helpers
                     d.AlarmText = item.Description ?? "";
                 }
             return list;
+        }
+
+        /// <summary>
+        /// A help the HMI makes for a fault itself - a step-by-step page, the cylinder or servo manual of its
+        /// kind of error, a drive code's entry, the inverter's manual - rather than a file added to the unit,
+        /// its movement or its alarm.
+        /// </summary>
+        public static bool IsMade(TC.HelpDocument d)
+        {
+            return d.Made || d.StepByStep || d.Movement != null || d.Valve != 0 || d.Feedback != 0 || !string.IsNullOrEmpty(d.Code);
+        }
+
+        /// <summary>The files added first, then the helps made (24 and 26 October) - each in the order it had.</summary>
+        public static List<TC.HelpDocument> AddedFirst(IEnumerable<TC.HelpDocument> docs)
+        {
+            var all = docs.ToList();
+            return all.Where(d => !IsMade(d)).Concat(all.Where(IsMade)).ToList();
         }
 
         private static List<TC.HelpDocument> DocumentsOf(AlarmItem item)
@@ -690,6 +712,7 @@ namespace Kaban.UI.Helpers
                         Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
                                           : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
                                 + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
+                        Made = true,
                         Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
                         Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0
                     });

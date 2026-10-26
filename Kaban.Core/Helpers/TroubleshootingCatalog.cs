@@ -345,6 +345,12 @@ namespace Kaban.Core.Helpers
             public bool StepByStep;
 
             /// <summary>
+            /// A manual the HMI offers for the kind of fault by itself (the servo drive's, the inverter's), not a
+            /// file added to the unit or the alarm: the lists show the added files first (24 and 26 October).
+            /// </summary>
+            public bool Made;
+
+            /// <summary>
             /// For a movement alarm the HMI raised itself (AlarmGeneration): WHICH
             /// signal failed - 1 the start sensor stayed ON, 2 the target sensor did
             /// not come ON, 3 both came ON, 4 both coils were ON, 5 the position did

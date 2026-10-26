@@ -77,9 +77,11 @@ class L {
         // from the alarm list: the step-by-step page is titled with the alarm and dated with its time (2 October)
         var item = new Kaban.Core.Models.AlarmItem("SUB.Clamp_A", "Alm_Clamp", Kaban.Core.Models.AlarmSeverity.Fault) { TriggerTime = new DateTime(2026, 10, 2, 9, 41, 7) };
         var fromList = AlarmHelpLinks.DocumentsFor(item);
-        Check("  opened from the alarm list: the page gets the alarm's text and time", fromList.Count > 0 && fromList[0].StepByStep &&
-              fromList[0].AlarmTime == item.TriggerTime && fromList[0].AlarmText == item.Description && !fromList.Skip(1).Any(d => d.AlarmTime.HasValue),
-              fromList.Count > 0 ? fromList[0].AlarmText + " " + fromList[0].AlarmTime : "none");
+        // 26 October: "Added files should be first at the alarm list as well"
+        Check("  opened from the alarm list: the file added first, then the page - it gets the alarm's text and time",
+              fromList.Count == 2 && fromList[0].FileName == "MR_J4_TroubleShooting.pdf" && fromList[1].StepByStep &&
+              fromList[1].AlarmTime == item.TriggerTime && fromList[1].AlarmText == item.Description && !fromList[0].AlarmTime.HasValue,
+              string.Join(" | ", fromList.Select(d => d.Title + " " + d.AlarmTime)));
         AlarmManager.RegisterDefinition("SUB.Axis_X", "Alm_X", Kaban.Core.Models.AlarmSeverity.Fault, plcNumber: 3, address: "M801");
         var servo = AlarmHelpLinks.DocumentsFor(AlarmManager.FindByStationAndAddress(3, "M801"));
         Check("an axis fault opens the servo manual, named for the axis",

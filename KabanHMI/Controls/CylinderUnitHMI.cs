@@ -1563,16 +1563,6 @@ namespace Kaban.UI.Controls
             return (text ?? "").Trim();
         }
 
-        /// <summary>
-        /// A help the HMI makes for a fault itself - a step-by-step page, the cylinder manual, a drive code's entry,
-        /// the inverter's manual - rather than a file added to the unit, its movement or its alarm.
-        /// </summary>
-        internal static bool IsMadeHelp(TroubleshootingCatalog.HelpDocument d)
-        {
-            return d.StepByStep || d.Movement != null || d.Valve != 0 || d.Feedback != 0 || !string.IsNullOrEmpty(d.Code) ||
-                   string.Equals(d.FileName, AxisCodeHelp.InverterManualFile, StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(d.FileName, AxisCodeHelp.InverterManualUrl, StringComparison.OrdinalIgnoreCase);
-        }
 
         /// <summary>The cylinder manual for this unit - its valve and feedback, and the movement that failed when given.</summary>
         private TroubleshootingCatalog.HelpDocument CylinderDocument(string side)
@@ -1590,7 +1580,8 @@ namespace Kaban.UI.Controls
                         (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv)),
                 Valve = TroubleshootingCatalog.CanonicalValve((int)_valve),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)_feedback),
-                Movement = mv
+                Movement = mv,
+                Made = true
             };
         }
 
@@ -1656,7 +1647,7 @@ namespace Kaban.UI.Controls
 
             // The files added first, then the helps the HMI made for the fault (24 October: "the additional files
             // should be listed at top, then the automatically created error helper items") - each in its order.
-            docs = docs.Where(d => !IsMadeHelp(d)).Concat(docs.Where(IsMadeHelp)).ToList();
+            docs = AlarmHelpLinks.AddedFirst(docs);
 
             // One entry per file - except the tailored and coded ones, which differ by what they show.
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

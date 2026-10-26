@@ -92,9 +92,9 @@ namespace Kaban.Core.Helpers
             if (kind != AxisCodeKind.InverterFault) return null;
             var title = LanguageManager.GetString("Hlp_InverterManual", "Inverter manual (FR-A800)") +
                         (string.IsNullOrEmpty(unit) ? "" : " - " + unit);
-            var local = new TroubleshootingCatalog.HelpDocument { FileName = InverterManualFile, Title = title };
+            var local = new TroubleshootingCatalog.HelpDocument { FileName = InverterManualFile, Title = title, Made = true };
             if (local.Exists) return local;
-            return new TroubleshootingCatalog.HelpDocument { FileName = InverterManualUrl, Title = title };
+            return new TroubleshootingCatalog.HelpDocument { FileName = InverterManualUrl, Title = title, Made = true };
         }
 
         /// <summary>

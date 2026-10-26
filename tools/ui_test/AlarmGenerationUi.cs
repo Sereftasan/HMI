@@ -163,6 +163,13 @@ class AGU {
               !listDocs.Skip(1).Any(d => d.StepByStep) && !listDocs.Any(d => d.Valve != 0 && !d.StepByStep) &&
               File.ReadAllText(TC.ExtractSection(listDocs[0])).Contains("<details class=\"manual\" id=\"manual\">"),
               string.Join(" | ", listDocs.Select(d => d.Title)));
+        // 26 October: "Added files should be first at the alarm list as well but the name should stay as it is"
+        AlarmManager.SetHelperLinks("M844", "MR_J4_TroubleShooting.pdf");
+        var withFile = Kaban.UI.Helpers.AlarmHelpLinks.DocumentsFor((AlarmItem)ag.Rows[0].DataBoundItem);
+        Check("  a file added to the alarm: listed first, the step-by-step page after it - named as before",
+              withFile.Count >= 2 && withFile[0].FileName == "MR_J4_TroubleShooting.pdf" && withFile[1].StepByStep &&
+              withFile[1].Title == listDocs[0].Title && withFile[1].Title.StartsWith("Step by step"), string.Join(" | ", withFile.Select(d => d.Title)));
+        AlarmManager.SetHelperLinks("M844", "");
         var hist = (UserControl)screen.GetType().GetMethod("BuildHistory", Any).Invoke(screen, new object[] { null });
         host.Controls.Add(hist); hist.Bounds = new Rectangle(0, 100, 1000, 300); Application.DoEvents();
         var hg = All(hist).OfType<DataGridView>().First();
