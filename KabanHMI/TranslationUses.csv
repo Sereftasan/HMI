@@ -239,7 +239,7 @@ Btn_Ok;KabanHMI\Settings\TranslationLanguageForms.cs;92;Text;var ok = UiStyle.Di
 Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;185;Text;Text = LanguageManager.GetString("Btn_OpenJob", "Open job file..."),
 Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;347;Text;dlg.Title = LanguageManager.GetString("Btn_OpenJob", "Open job file...");
 Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;360;Text;LanguageManager.GetString("Btn_OpenJob", "Open job file..."),
-Btn_OpenManual;KabanHMI\Forms\MainForm.Help.cs;125;Menu;var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
+Btn_OpenManual;KabanHMI\Forms\MainForm.Help.cs;133;Menu;var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
 Btn_PlcRead;KabanHMI\Settings\StationConnectionControl.cs;344;Text;var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
 Btn_PlcWrite;KabanHMI\Settings\StationConnectionControl.cs;345;Text;var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
 Btn_Refresh;KabanHMI\Screens\MachineAlarmScreen.cs;283;Text;LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
@@ -684,8 +684,8 @@ Hdr_IoOutputs;KabanHMI\Screens\IoMonitorPage.cs;166;Text;sec.OutputsCaption = Ca
 Hdr_MonCollect;KabanHMI\Forms\SimulationMonitorForm.cs;702;Text;m.Items.Add(UiStyle.MenuHeader(T("Hdr_MonCollect", "Add every device used by...")));
 Hdr_MonConditions;KabanHMI\Forms\SimulationMonitorForm.cs;2954;Text;rows.Insert(0, new WatchRow { Station = mon.Station, Comment = T("Hdr_MonConditions", "Machine conditions") });
 Hint_MonNewRow;KabanHMI\Forms\SimulationMonitorForm.cs;1566;Text;TextRenderer.DrawText(e.Graphics, T("Hint_MonNewRow", "Double-click to add a device"),
-Hlp_About;KabanHMI\Forms\MainForm.Help.cs;120;Menu;var about = new ToolStripMenuItem(LanguageManager.GetString("Hlp_About", "About Kaban HMI"), MenuGlyphs.Info()) { Name = "helpAbout" };
-Hlp_About;KabanHMI\Forms\MainForm.Help.cs;150;Text;string title = LanguageManager.GetString("Hlp_About", "About Kaban HMI");
+Hlp_About;KabanHMI\Forms\MainForm.Help.cs;128;Menu;var about = new ToolStripMenuItem(LanguageManager.GetString("Hlp_About", "About Kaban HMI"), MenuGlyphs.Info()) { Name = "helpAbout" };
+Hlp_About;KabanHMI\Forms\MainForm.Help.cs;158;Text;string title = LanguageManager.GetString("Hlp_About", "About Kaban HMI");
 Hlp_AiAskItem;KabanHMI\Helpers\AiMenu.cs;32;Text;return string.Format(T("Hlp_AiAskItem", "Ask {0}"), chat != null ? chat.Name : "AI");
 Hlp_AiPromptItem;KabanHMI\Helpers\AiMenu.cs;27;Text;public static string CreateCaption { get { return T("Hlp_AiPromptItem", "Create AI prompt"); } }
 Hlp_Cylinder;Kaban.Core\Helpers\TroubleshootingCatalog.cs;563;Text;Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting"),
@@ -1224,13 +1224,13 @@ Mot_Pick;KabanHMI\Controls\AxisPickBar.cs;252;Text;MotionPick.Heading = T("Mot_P
 Mot_PickNone;KabanHMI\Controls\AxisPickBar.cs;183;Text;AllText = T("Mot_PickNone", "None"),
 Mot_PickNone;KabanHMI\Controls\AxisPickBar.cs;253;Text;MotionPick.AllText = T("Mot_PickNone", "None");
 Msg_AddressRequired;KabanHMI\Forms\PlcRowEditorForm.cs;291;Text;problem = LanguageManager.GetString("Msg_AddressRequired", "An address is required.");
-Msg_AiAsked;KabanHMI\Helpers\AlarmAiPrompt.cs;987;Text;: LanguageManager.GetString("Msg_AiAsked", "{0} is opening: paste the prompt into the chat (Ctrl+V) and send it."), chat.Name);
-Msg_AiAskedFile;KabanHMI\Helpers\AlarmAiPrompt.cs;986;Text;? LanguageManager.GetString("Msg_AiAskedFile", "{0} is opening: paste the prompt file into the chat (Ctrl+V) and send it.")
-Msg_AiAskFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;988;Text;return string.Format(LanguageManager.GetString("Msg_AiAskFailed",
-Msg_AiPasting;KabanHMI\Helpers\AlarmAiPrompt.cs;977;Text;return string.Format(LanguageManager.GetString("Msg_AiPasting",
-Msg_AiPromptFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;909;Text;Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
-Msg_AiPromptFile;KabanHMI\Helpers\AlarmAiPrompt.cs;952;Text;? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
-Msg_AiPromptText;KabanHMI\Helpers\AlarmAiPrompt.cs;953;Text;: LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
+Msg_AiAsked;KabanHMI\Helpers\AlarmAiPrompt.cs;993;Text;: LanguageManager.GetString("Msg_AiAsked", "{0} is opening: paste the prompt into the chat (Ctrl+V) and send it."), chat.Name);
+Msg_AiAskedFile;KabanHMI\Helpers\AlarmAiPrompt.cs;992;Text;? LanguageManager.GetString("Msg_AiAskedFile", "{0} is opening: paste the prompt file into the chat (Ctrl+V) and send it.")
+Msg_AiAskFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;994;Text;return string.Format(LanguageManager.GetString("Msg_AiAskFailed",
+Msg_AiPasting;KabanHMI\Helpers\AlarmAiPrompt.cs;983;Text;return string.Format(LanguageManager.GetString("Msg_AiPasting",
+Msg_AiPromptFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;915;Text;Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
+Msg_AiPromptFile;KabanHMI\Helpers\AlarmAiPrompt.cs;958;Text;? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
+Msg_AiPromptText;KabanHMI\Helpers\AlarmAiPrompt.cs;959;Text;: LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
 Msg_BakAsking;Kaban.Core\Helpers\PlcBackup.cs;369;Text;!progress(i++, Fx5.Count, string.Format(LanguageManager.GetString("Msg_BakAsking", "Asking the CPU how many it has: {0}..."), title)))
 Msg_BakBitsToBits;Kaban.Core\Helpers\PlcBackup.cs;1173;Text;error = area.Bits ? LanguageManager.GetString("Msg_BakBitsToBits", "Bits are written to bit devices (M, L, B, F, S).")
 Msg_BakCamBusy;Kaban.Core\Helpers\PlcBackup.cs;951;Text;if (!CamIdle(link, module)) return LanguageManager.GetString("Msg_BakCamBusy", "the module's cam data operation did not answer");
@@ -2345,7 +2345,7 @@ Tip_Help;KabanHMI\Forms\MainForm.Help.cs;62;Tooltip;Action tip = () => Helpers.S
 Tip_HelpBadge;KabanHMI\Controls\AlarmHelpBadge.cs;335;Tooltip;LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
 Tip_HelpBadge;KabanHMI\Controls\CylinderUnitHMI.cs;1688;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help");
 Tip_HelpBadge;KabanHMI\Controls\MeterHMI.cs;649;Tooltip;text = _help.Title + "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help") + "\r\n\r\n" + text;
-Tip_HlpAbout;KabanHMI\Forms\MainForm.Help.cs;121;Tooltip;about.ToolTipText = LanguageManager.GetString("Tip_HlpAbout", "The program, its version and the machines it runs");
+Tip_HlpAbout;KabanHMI\Forms\MainForm.Help.cs;129;Tooltip;about.ToolTipText = LanguageManager.GetString("Tip_HlpAbout", "The program, its version and the machines it runs");
 Tip_HmiPrompt;KabanHMI\Helpers\AiMenu.cs;60;Tooltip;: T("Tip_HmiPrompt", "Copies a briefing for an AI chat with the HMI, its machines, where you are and what the page shows, and its whole manual: paste it there and ask it anythin...
 Tip_HmiStationId;KabanHMI\Settings\StationConnectionControl.cs;397;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HmiStationId",
 Tip_ImpBackups;KabanHMI\Settings\ImportSettingsControl.cs;124;Tooltip;UiStyle.SetTip(tips, backups, T("Tip_ImpBackups", "The program's files as they were before each import (Backup_<date> in the program's folder)"));
@@ -2420,7 +2420,7 @@ Tip_NtsKindFilter;KabanHMI\Screens\NotesPage.cs;310;Tooltip;UiStyle.SetTip(_tips
 Tip_NtsSearch;KabanHMI\Screens\NotesPage.cs;299;Tooltip;UiStyle.SetTip(_tips, _search, T("Tip_NtsSearch", "Every word must appear - in the control, the text, the page, who wrote it, in any case"));
 Tip_NtsStateFilter;KabanHMI\Screens\NotesPage.cs;311;Tooltip;UiStyle.SetTip(_tips, _stateFilter, T("Tip_NtsStateFilter", "Only the proposals to accept, or the texts and helpers in force"));
 Tip_NtsWhoFilter;KabanHMI\Screens\NotesPage.cs;312;Tooltip;UiStyle.SetTip(_tips, _whoFilter, T("Tip_NtsWhoFilter", "Only the notes of one user - or yours"));
-Tip_OpenManual;KabanHMI\Forms\MainForm.Help.cs;126;Tooltip;manual.ToolTipText = LanguageManager.GetString("Tip_OpenManual", "Opens the operator and engineer manual in the browser, in the language on screen.");
+Tip_OpenManual;KabanHMI\Forms\MainForm.Help.cs;134;Tooltip;manual.ToolTipText = LanguageManager.GetString("Tip_OpenManual", "Opens the operator and engineer manual in the browser, in the language on screen.");
 Tip_PaneMax;KabanHMI\Controls\FloatingPaneHMI.cs;95;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMax, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMax", "Maximize this pane to the whole page"));
 Tip_PaneMin;KabanHMI\Controls\FloatingPaneHMI.cs;90;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMin, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMin", "Minimize this pane to the bottom-left"));
 Tip_PaneReset;KabanHMI\Controls\FloatingPaneHMI.cs;107;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnReset, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneReset", "Reset grouping, sorting and columns"));
@@ -2546,8 +2546,8 @@ Ttl_EditDevice;KabanHMI\Forms\PlcRowEditorForm.cs;148;Text;Text = LanguageManage
 Ttl_ExportCsv;KabanHMI\Forms\SimulationMonitorForm.cs;3732;Text;dlg.Title = T("Ttl_ExportCsv", "Export this tab's list");
 Ttl_Find;KabanHMI\Forms\DeviceFindForm.cs;99;Text;Text = T("Ttl_Find", "Find where a device is used") + " - " + caption;
 Ttl_FlgTool;KabanHMI\Settings\TranslationFlagForm.cs;67;Text;Text = T("Ttl_FlgTool", "A language's flag");
-Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;112;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Help", "Help"))
-Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;162;Message;MessageBox.Show(this, why, LanguageManager.GetString("Ttl_Help", "Help"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;120;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Help", "Help"))
+Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;170;Message;MessageBox.Show(this, why, LanguageManager.GetString("Ttl_Help", "Help"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Ttl_HelpDocs;KabanHMI\Screens\MachineAlarmScreen.cs;499;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_HelpDocs", "Help Documents")));
 Ttl_HelperLinks;KabanHMI\Settings\AlarmSettingsControl.cs;455;Text;Text = LanguageManager.GetString("Ttl_HelperLinks", "Helper links") + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
 Ttl_ImportCsv;KabanHMI\Forms\SimulationMonitorForm.cs;3769;Text;dlg.Title = T("Ttl_ImportCsv", "Add devices from a CSV");

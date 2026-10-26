@@ -6,7 +6,18 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
-- 27 October (Notes and feedback):
+- 26 October, evening (the manual and the AI prompts):
+  - c541acf - The HMI manual brought up to date with everything from 12 to 26 October: the notes page as redesigned,
+    coupling and Cylinder FW/Back, motors (inverters), the help pages (one page per fault, files added first), the speed
+    and screen scale sliders, the language preference, greyed menu entries, PLC data backups (7a), the Active tick,
+    Config Import's compare, the Translation tab (9a), the axis pages' positions and module parameters, the PLC
+    Monitor's structured types, tables and writes from a backup, the new files.
+  - 621c77c - FA2010's chapter: the Home page, the bar above Manual Movement (speed, JOG, steps, Safety Bypass,
+    Cylinder FW/Back), the motors, Robot X's Load Position, its structured data types.
+  - 1bd99a1 - The AI prompts: the page on screen told as it is (button captions, the speed, positioning and encoder
+    rows, axis rows, the machine's bar), coupling and Cylinder FW/Back, controllers not active, the levels as they are
+    now; the alarm prompt's pages and its help list (added files first, each said added or the HMI's own).
+- 26 October, afternoon (Notes and feedback):
   - d579ad9 - "There is an unsaved note entry." with Save it / Discard it / Cancel - asked as soon as Add is pressed;
     Remove takes every note chosen in the table (the ones the user may remove).
 - 26 October (Notes and feedback):
