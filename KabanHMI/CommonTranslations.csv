@@ -1173,20 +1173,10 @@ Tip_NavForward;Forward again;Yeniden ileri;Снова вперёд;Wieder vorwä
 Ttl_Notes;Notes and feedback;Notlar ve geri bildirim;Заметки и отзывы;Notizen und Rückmeldung;Note e riscontri;Notas y comentarios
 Nts_TipExport;Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send;Geri bildirim dosyasını oluştur: bu paneldeki tüm notlar, yardımcı dosyalarla birlikte, gönderilecek tek bir .zip içinde;Создать файл отзыва: все заметки этой панели вместе с файлами подсказок в одном .zip для отправки;Die Rückmeldedatei erstellen: alle Notizen dieses Panels mit den Dateien der Hilfen in einer .zip zum Versenden;Crea il file di riscontro: tutte le note di questo pannello, con i file degli aiuti, in un unico .zip da inviare;Crear el archivo de comentarios: todas las notas de este panel, con los archivos de las ayudas, en un .zip para enviar
 Nts_TipFolder;Show the feedback file in its folder (Maintenance, Admin);Geri bildirim dosyasını klasöründe göster (Bakım, Yönetici);Показать файл отзыва в его папке (Обслуживание, Администратор);Die Rückmeldedatei in ihrem Ordner zeigen (Wartung, Admin);Mostra il file di riscontro nella sua cartella (Manutenzione, Admin);Mostrar el archivo de comentarios en su carpeta (Mantenimiento, Admin)
-Nts_Export;Feedback file;Geri bildirim dosyası;Файл отзыва;Rückmeldedatei;File di riscontro;Archivo de comentarios
-Nts_TabControl;The control;Kontrol;Элемент;Das Element;Il controllo;El control
-Nts_TabAll;Every note;Tüm notlar;Все заметки;Alle Notizen;Tutte le note;Todas las notas
-Nts_PickOn;Picking: on;Seçme: açık;Выбор: вкл.;Auswählen: ein;Selezione: attiva;Selección: activa
-Nts_PickOff;Picking: off;Seçme: kapalı;Выбор: выкл.;Auswählen: aus;Selezione: disattiva;Selección: inactiva
-Nts_TipPickOn;A tap or a click on a control of the page shows it here - it does not operate it. Tap here to use the page again.;Sayfadaki bir kontrole dokunmak veya tıklamak onu burada gösterir - onu çalıştırmaz. Sayfayı yeniden kullanmak için buraya dokunun.;Касание или щелчок по элементу страницы показывает его здесь - он не срабатывает. Коснитесь здесь, чтобы снова работать со страницей.;Ein Tippen oder Klicken auf ein Element der Seite zeigt es hier - es wird nicht betätigt. Hier tippen, um die Seite wieder zu bedienen.;Un tocco o un clic su un controllo della pagina lo mostra qui - non lo aziona. Tocca qui per usare di nuovo la pagina.;Un toque o un clic en un control de la página lo muestra aquí - no lo acciona. Toque aquí para volver a usar la página.
-Nts_TipPickOff;The page works as usual. Tap here to pick controls again.;Sayfa her zamanki gibi çalışır. Yeniden kontrol seçmek için buraya dokunun.;Страница работает как обычно. Коснитесь здесь, чтобы снова выбирать элементы.;Die Seite arbeitet wie gewohnt. Hier tippen, um wieder Elemente auszuwählen.;La pagina funziona come sempre. Tocca qui per selezionare di nuovo i controlli.;La página funciona como siempre. Toque aquí para volver a seleccionar controles.
-Nts_StatusPick;Tap or click a control of the page.;Sayfadaki bir kontrole dokunun veya tıklayın.;Коснитесь элемента страницы или щёлкните по нему.;Ein Element der Seite antippen oder anklicken.;Tocca o fai clic su un controllo della pagina.;Toque o haga clic en un control de la página.
 Nts_StatusOff;The page works as usual.;Sayfa her zamanki gibi çalışır.;Страница работает как обычно.;Die Seite arbeitet wie gewohnt.;La pagina funziona come sempre.;La página funciona como siempre.
 Nts_Pointing;Under the pointer;İmlecin altında;Под указателем;Unter dem Zeiger;Sotto il puntatore;Bajo el puntero
 Nts_Picked;Picked;Seçildi;Выбрано;Ausgewählt;Selezionato;Seleccionado
 Nts_Count;{0} notes on this panel;Bu panelde {0} not;Заметок на этой панели: {0};{0} Notizen auf diesem Panel;{0} note su questo pannello;{0} notas en este panel
-Nts_None;No control picked yet.;Henüz kontrol seçilmedi.;Элемент ещё не выбран.;Noch kein Element ausgewählt.;Nessun controllo ancora selezionato.;Aún no se ha seleccionado ningún control.
-Nts_How;Tap or click a control of the page - a field, a button, a lamp, a caption, a column heading. It is not operated while picking: what it is, its tooltip, its texts in every language, its helpers and its comments appear here, and you can add yours.;Sayfadaki bir kontrole dokunun veya tıklayın - bir alan, bir düğme, bir lamba, bir başlık, bir sütun başlığı. Seçerken çalıştırılmaz: ne olduğu, ipucu, tüm dillerdeki metinleri, yardımcıları ve yorumları burada görünür ve kendinizinkini ekleyebilirsiniz.;Коснитесь элемента страницы или щёлкните по нему - поле, кнопка, лампа, подпись, заголовок столбца. При выборе он не срабатывает: здесь появятся его назначение, подсказка, тексты на всех языках, подсказки-помощники и комментарии, и вы можете добавить свои.;Ein Element der Seite antippen oder anklicken - ein Feld, eine Taste, eine Lampe, eine Beschriftung, eine Spaltenüberschrift. Beim Auswählen wird es nicht betätigt: was es ist, sein Tooltip, seine Texte in jeder Sprache, seine Hilfen und Kommentare erscheinen hier, und Sie können Ihre hinzufügen.;Tocca o fai clic su un controllo della pagina - un campo, un pulsante, una lampada, una didascalia, un'intestazione di colonna. Durante la selezione non viene azionato: cosa è, il suo suggerimento, i suoi testi in ogni lingua, i suoi aiuti e commenti compaiono qui e puoi aggiungere i tuoi.;Toque o haga clic en un control de la página - un campo, un botón, una lámpara, un rótulo, un encabezado de columna. Al seleccionarlo no se acciona: aquí aparecen qué es, su ayuda emergente, sus textos en todos los idiomas, sus ayudas y comentarios, y puede añadir los suyos.
 Nts_SignIn;Sign in to write notes.;Not yazmak için oturum açın.;Войдите в систему, чтобы писать заметки.;Zum Schreiben von Notizen anmelden.;Accedi per scrivere note.;Inicie sesión para escribir notas.
 Nts_SecTip;Its tooltip;İpucu;Его подсказка;Sein Tooltip;Il suo suggerimento;Su ayuda emergente
 Nts_NoTip;It has no tooltip.;İpucu yok.;У него нет подсказки.;Es hat keinen Tooltip.;Non ha suggerimento.;No tiene ayuda emergente.
@@ -1225,7 +1215,6 @@ Nts_Accept;Accept;Kabul et;Принять;Annehmen;Accetta;Aceptar
 Nts_TipAcceptText;Put these texts on the screen;Bu metinleri ekrana koy;Вывести эти тексты на экран;Diese Texte auf den Bildschirm bringen;Metti questi testi sullo schermo;Poner estos textos en pantalla
 Nts_TipAcceptHelper;Put this helper in the control's list;Bu yardımcıyı kontrolün listesine koy;Добавить этого помощника в список элемента;Diese Hilfe in die Liste des Elements nehmen;Metti questo aiuto nell'elenco del controllo;Poner esta ayuda en la lista del control
 Nts_Remove;Remove;Kaldır;Удалить;Entfernen;Rimuovi;Quitar
-Nts_TipRemove;Take this note away (yours, or as an Admin);Bu notu kaldır (sizinki veya Yönetici olarak);Удалить эту заметку (свою или как Администратор);Diese Notiz entfernen (Ihre oder als Admin);Rimuovi questa nota (tua o come Admin);Quitar esta nota (suya o como Admin)
 Nts_AskRemove;Take this note away?;Bu not kaldırılsın mı?;Удалить эту заметку?;Diese Notiz entfernen?;Rimuovere questa nota?;¿Quitar esta nota?
 Nts_ColTime;Time;Zaman;Время;Zeit;Ora;Hora
 Nts_ColWho;Who;Kim;Кто;Wer;Chi;Quién
@@ -1773,7 +1762,6 @@ Msg_TrnUndoWritten;Undo {0}?\r\n\r\nThe {1} text(s) it wrote are put back as the
 Msg_TrnUndone;Undone: {0} - {1} text(s) back as they were.;Geri alındı: {0} - {1} metin önceki hâline döndü.;;;;
 Msg_WorkStopping;Stopping at the next safe point...;Bir sonraki güvenli noktada duruluyor...;;;;
 Nts_FindOpened;{0}: its page opened - picking is off.;{0}: sayfası açıldı - seçme kapalı.;;;;
-Nts_HowNav;The menu's page buttons and a page's tabs are picked too, not used - turn picking off to go to another page. A table's cell to type in is typed in. 📝 below: a general note, on no control.;Menünün sayfa düğmeleri ve bir sayfanın sekmeleri de seçilir, kullanılmaz - başka bir sayfaya gitmek için seçmeyi kapatın. Bir tablonun yazılacak hücresine yazılır. Aşağıdaki 📝: genel bir not, hiçbir kontrolde değil.;;;;
 Nts_OpenTranslation;In the translation table;Çeviri tablosunda;;;;
 Nts_TipFind;Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F);Nerede kullanılıyor? Seçilen kontrolün cihazları ve metinleri - ya da herhangi bir cihaz veya çeviri anahtarı (Ctrl+F);;;;
 Nts_TipOpenTranslation;HMI Settings > Translation on this key - its texts in every language, to edit there (picking goes off);Bu anahtarda HMI Ayarları > Çeviri - her dildeki metinleri, orada düzenlemek için (seçme kapanır);;;;
@@ -1987,3 +1975,62 @@ Why_MotionNotRead;Not read from the module yet;Henüz modülden okunmadı;;;;
 Why_MotionReadOnly;The module shows this value: it is not written;Bu değeri modül gösterir: yazılmaz;;;;
 Why_PlcDown;The PLC is not answering;PLC yanıt vermiyor;;;;
 Why_AxMonAdminLists;An Admin chooses what the Axis Monitor shows (sign in as one);Eksen Monitörünün ne göstereceğini Yönetici seçer (Yönetici olarak oturum açın);;;;
+Nts_AcceptedBy;Accepted by {0}, {1};{0} kabul etti, {1};;;;
+Nts_AllKinds;Every kind;Her tür;;;;
+Nts_AllStates;Every state;Her durum;;;;
+Nts_AskDiscard;What you typed here is not kept yet. Discard it?;Burada yazdıklarınız henüz saklanmadı. Atılsın mı?;;;;
+Nts_Cancel;Cancel;Vazgeç;;;;
+Nts_Changed;The note is changed.;Not değiştirildi.;;;;
+Nts_ChangedProposed;The note is changed - a proposal again, for Maintenance or an Admin to accept.;Not değiştirildi - yeniden bir öneri, Bakım veya Yöneticinin kabul etmesi için.;;;;
+Nts_CountShown;{0} of {1} notes;{0} / {1} not;;;;
+Nts_DetailsHow;A note of the list: View or Edit it. A new one: Add, then tap or click the control it is about - a field, a button, a lamp, a caption, a column heading. It is not operated: what it is, its tooltip, its texts in every language, its helpers and its comments appear here, and you can add yours.;Listedeki bir not: Görüntüle veya Düzenle. Yeni bir not: Ekle, sonra ilgili olduğu kontrole dokunun veya tıklayın - bir alan, bir düğme, bir lamba, bir başlık, bir sütun başlığı. Çalıştırılmaz: ne olduğu, ipucu, her dildeki metinleri, yardımcıları ve yorumları burada görünür, siz de kendinizinkini ekleyebilirsiniz.;;;;
+Nts_DetailsNone;Nothing chosen yet.;Henüz bir şey seçilmedi.;;;;
+Nts_Edit;Edit;Düzenle;;;;
+Nts_EditedBy;Changed by {0}, {1};{0} değiştirdi, {1};;;;
+Nts_Editing;Change the note, then Save.;Notu değiştirin, sonra Kaydet.;;;;
+Nts_Everyone;Everyone;Herkes;;;;
+Nts_FindControl;Find its control;Kontrolünü bul;;;;
+Nts_FindGeneral;A general note is on no control.;Genel bir not hiçbir kontrolde değildir.;;;;
+Nts_FindGone;Its control is not on its page any more (the page has changed).;Kontrolü artık sayfasında yok (sayfa değişmiş).;;;;
+Nts_FindOpenPage;Its page is not open: open it ({0}) and Find again.;Sayfası açık değil: açın ({0}) ve yeniden Bul.;;;;
+Nts_FindOpenWindow;Its page is a side page in its own window: open it ({0}) and Find again.;Sayfası kendi penceresinde bir yan sayfa: açın ({0}) ve yeniden Bul.;;;;
+Nts_FoundControl;{0}: its page is open, the control flashing.;{0}: sayfası açık, kontrol yanıp sönüyor.;;;;
+Nts_HowPicking;While picking, the menu's page buttons and a page's tabs are picked too, not used. A table's cell to type in is typed in. Esc, or a click on this page, gives picking up. A general note, on no control: the notepad above the list.;Seçme sırasında menünün sayfa düğmeleri ve bir sayfanın sekmeleri de seçilir, kullanılmaz. Bir tablonun yazılacak hücresine yazılır. Esc veya bu sayfaya bir tıklama seçmeyi bırakır. Hiçbir kontrolde olmayan genel bir not: listenin üstündeki not defteri.;;;;
+Nts_Kept;What you typed is still there - keep it, or discard it.;Yazdıklarınız hâlâ duruyor - saklayın veya atın.;;;;
+Nts_KeyIs;Translation key;Çeviri anahtarı;;;;
+Nts_Mine;Mine;Benimkiler;;;;
+Nts_NoFile;(no file);(dosya yok);;;;
+Nts_NoFileBtn;No file;Dosya yok;;;;
+Nts_NotYours;Only its author, or a level above the author's, changes it.;Onu yalnızca yazarı veya yazarından üst seviyedeki biri değiştirir.;;;;
+Nts_NoteGone;The note is not there any more - it was removed.;Not artık yok - kaldırıldı.;;;;
+Nts_NothingLeft;Nothing is left in it - Remove the note instead.;İçinde bir şey kalmadı - bunun yerine notu kaldırın.;;;;
+Nts_OtherFile;Another file;Başka bir dosya;;;;
+Nts_Removed;The note is taken away.;Not kaldırıldı.;;;;
+Nts_Save;Save;Kaydet;;;;
+Nts_SecTheHelper;The helper;Yardımcı;;;;
+Nts_SecTheNote;The note;Not;;;;
+Nts_SecTheSettings;The settings asked for;İstenen ayarlar;;;;
+Nts_SecTheTexts;The texts;Metinler;;;;
+Nts_StateInForce;In force, in the list;Geçerli, listede;;;;
+Nts_StateProposed;Proposed - to accept;Önerilen - kabul edilecek;;;;
+Nts_TabDetails;Details;Ayrıntılar;;;;
+Nts_TabNotes;Notes;Notlar;;;;
+Nts_TipAdd;Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up);Not ekle: ilgili olduğu sayfa kontrolüne dokunun veya tıklayın - çalıştırılmaz (Esc: vazgeç);;;;
+Nts_TipBack;Back to the notes;Notlara geri dön;;;;
+Nts_TipCancel;Back to the note as it is;Notun şimdiki hâline geri dön;;;;
+Nts_TipEdit;Edit the note chosen - yours, or of a level below yours;Seçilen notu düzenle - sizinkini veya sizden alt seviyedekini;;;;
+Nts_TipEditOne;Change this note - in the next tab;Bu notu değiştir - sonraki sekmede;;;;
+Nts_TipFindNote;Find its control: the page of the note chosen opened, the control shown;Kontrolünü bul: seçilen notun sayfası açılır, kontrol gösterilir;;;;
+Nts_TipNoFile;The note without a file;Not dosyasız;;;;
+Nts_TipOtherFile;A document, a picture or a video instead of this one;Bunun yerine bir belge, resim veya video;;;;
+Nts_TipRemove2;Take this note away (yours, or of a level below yours);Bu notu kaldır (sizinkini veya sizden alt seviyedekini);;;;
+Nts_TipRemoveNote;Remove the note chosen - yours, or of a level below yours;Seçilen notu kaldır - sizinkini veya sizden alt seviyedekini;;;;
+Nts_TipSave;Keep the note as changed here;Notu burada değiştirildiği gibi sakla;;;;
+Nts_TipView;View the note chosen - its details in the next tab (a double click on it too);Seçilen notu görüntüle - ayrıntıları sonraki sekmede (üzerine çift tıklama da);;;;
+Nts_ValueThen;Shown then;O zaman gösterilen;;;;
+Tip_NtsClear;Clear the search and the filters;Aramayı ve filtreleri temizle;;;;
+Tip_NtsKindFilter;Only the notes of one kind: comments, general notes, texts, helpers, values, settings;Yalnızca tek türdeki notlar: yorumlar, genel notlar, metinler, yardımcılar, değerler, ayarlar;;;;
+Tip_NtsSearch;Every word must appear - in the control, the text, the page, who wrote it, in any case;Her kelime geçmeli - kontrolde, metinde, sayfada, yazanda, büyük/küçük harf fark etmez;;;;
+Tip_NtsStateFilter;Only the proposals to accept, or the texts and helpers in force;Yalnızca kabul edilecek öneriler veya geçerli metinler ve yardımcılar;;;;
+Tip_NtsWhoFilter;Only the notes of one user - or yours;Yalnızca bir kullanıcının notları - veya sizinkiler;;;;
+Nts_StatusAdd;Tap or click the control the note is about (Esc: give up).;Notun ilgili olduğu kontrole dokunun veya tıklayın (Esc: vazgeç).;;;;

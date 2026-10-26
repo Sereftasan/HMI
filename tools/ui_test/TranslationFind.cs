@@ -177,6 +177,7 @@ class TF {
         };
         side.Controls.Add(notes);
         shell.Show(); Pump(400);
+        typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true }); Pump(50);   // Add (26 October)
         var shade = (PickShade)Get(notes, "Shade");
         Check("picking: the page and the caption bar darker - not the menu, not the notes page", notes.Picking && shade.On && shade.Shaded.Count == 2 &&
               shade.Shaded.Contains(pageArea.RectangleToScreen(pageArea.ClientRectangle)) && shade.Shaded.Contains(top.RectangleToScreen(top.ClientRectangle)),

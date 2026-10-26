@@ -59,8 +59,11 @@ class NEP {
         form.Show(); Pump(400);
         var body = (Control)typeof(NotesPage).GetProperty("Body", Any).GetValue(notes, null);
         Func<DataGridView> texts = () => Tree(body).OfType<DataGridView>().FirstOrDefault(g => g.Name == "notesTexts");
+        // 26 October: picking with Add; what was typed thrown away when the user says so
+        Action add = () => typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true });
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "yes";
 
-        Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(100);
+        add(); Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(100);
         var grid = texts();
         Check("Start picked: its texts table", notes.PickedName == "Start" && grid != null, notes.PickedName ?? "");
         grid.Focus();
@@ -77,7 +80,7 @@ class NEP {
         old.ParentChanged += (s, e) => { if (old.Parent == null && !removed) { removed = true; editingAtRemoval = old.IsCurrentCellInEditMode || old.EditingControl != null; } };
 
         bool threw = false; string what = "";
-        try { Tap(notes, stop, 0x0201); Tap(notes, stop, 0x0202); Pump(200); }
+        try { add(); Tap(notes, stop, 0x0201); Tap(notes, stop, 0x0202); Pump(200); }
         catch (Exception ex) { threw = true; what = ex.GetType().Name + ": " + ex.Message; }
         Check("another control tapped then: no exception, the page goes on", !threw && unhandled == 0, what);
         Check("  Stop picked, its own texts table", notes.PickedName == "Stop" && texts() != null && texts() != grid &&

@@ -157,6 +157,29 @@ class LH {
         Pump(150);
         Check("  Back: the page the control was picked on", Place(form) == onManual, Place(form) + " (wanted " + onManual + ")");
 
+        // 26 October: "'Every note' page ... We should add to view, edit and find the related control functions on them"
+        Console.WriteLine("--- a note's control found again ---");
+        typeof(NotesPage).GetMethod("AddComment", Any).Invoke(notes, new object[] { "find me" });
+        Pump(100);
+        var kept = NotesStore.All.Last(n => n.Text == "find me");
+        Check("a note keeps where its control's page is (the page, its tabs)", (kept.Location ?? "").Contains("Page\t") && (kept.Location ?? "").Contains("Tabs\t"),
+              (kept.Location ?? "").Replace("\n", " | "));
+        form.LoadScreen(alarms);
+        Pump(150);
+        string onAlarms2 = Place(form);
+        typeof(NotesPage).GetMethod("FindNoted", Any).Invoke(notes, new object[] { kept });
+        Pump(200);
+        Check("Find from another page: the control's page opened, on its tab, the page says so", Place(form) == onManual &&
+              ((string)Get(notes, "StatusText")).Contains("flashing"), Place(form) + " (wanted " + onManual + ") " + (string)Get(notes, "StatusText"));
+        NavigationHistory.Back();
+        Pump(150);
+        Check("  Back: where Find was pressed (one step)", Place(form) == onAlarms2, Place(form) + " (wanted " + onAlarms2 + ")");
+        kept.Location = "";
+        typeof(NotesPage).GetMethod("FindNoted", Any).Invoke(notes, new object[] { kept });
+        Pump(100);
+        Check("  a note of before (no place kept), its page not open: said to open it", ((string)Get(notes, "StatusText")).StartsWith("Its page is not open"),
+              (string)Get(notes, "StatusText"));
+
         Console.WriteLine("--- typed ---");
         var typed = new NotesFindForm("", new List<NotesFindForm.Element>(), 1);
         typeof(NotesFindForm).GetMethod("Search", Any).Invoke(typed, new object[] { "Btn_Home" });

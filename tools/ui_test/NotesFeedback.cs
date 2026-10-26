@@ -126,13 +126,44 @@ class NF {
         var notes = new NotesPage(c => c != null && (machine.Contains(c)), c => c == nav ? "Opens: Manual Movement" : "Test machine / Page", () => "TEST", c => c == nav || c is TabControl);
         host.Controls.Add(notes);
         form.Show(); Pump(400);
-        Check("open and in sight: picking", notes.Picking);
+        // 26 October: "We should make the page just like our other page designs ... remove 'Picking: on' button, create 'Add'
+        // button instead ... We add the current 'General note', 'Make the feedback file' and 'Show the feedback file' buttons and
+        // ... view, edit, find and remove on top of the notes table ... Open the selected note to the next tab"
+        var views = Tree(notes).OfType<TabControl>().First();
+        Func<string, Control> any = n => Tree(notes).FirstOrDefault(c => c.Name == n);
+        Check("open: the notes' table first, picking off", !notes.Picking && views.SelectedTab.Name == "notesList" && views.TabPages[1].Name == "notesDetails" &&
+              views.TabPages[0].Text == "Notes" && views.TabPages[1].Text == "Details");
+        Check("  on top of it: Add, a general note, View, Edit, Find, Remove, the feedback file - no 'Picking' button",
+              new[] { "notesAdd", "notesGeneral", "notesView", "notesEdit", "notesFindNote", "notesRemoveNote", "notesExport", "notesFolder" }.All(n => any(n) is Button &&
+              any(n).Parent == any("notesAdd").Parent) && any("notesPick") == null);
+        Check("  and the filters: a search, the kind, the state, who", any("notesSearch") is TextBox && any("notesKindFilter") is ComboBox &&
+              any("notesStateFilter") is ComboBox && any("notesWhoFilter") is ComboBox);
+        // Add: on top of the notes, and on the details' own bar (the one in sight)
+        Action add = () => ((Button)(any("notesAdd").Visible ? any("notesAdd") : any("notesAddMore"))).PerformClick();
+        Func<string> status = () => (string)typeof(NotesPage).GetProperty("StatusText", Any).GetValue(notes, null);
+        Func<string> mode = () => typeof(NotesPage).GetProperty("Mode", Any).GetValue(notes, null).ToString();
+        Action clearFilters = () => typeof(NotesPage).GetMethod("ClearFilters", Any).Invoke(notes, null);
+        add();
+        Check("Add: picking - the button marked, the page says what to do", notes.Picking && any("notesAdd").BackColor != Color.White &&
+              status().StartsWith("Tap or click the control"), status());
         Check("a press on the button is kept from it", Tap(notes, start, 0x0201) && pressed == 0);
-        Check("  its release picks it - not pressed", Tap(notes, start, 0x0202) && pressed == 0 && notes.PickedName == "Start", notes.PickedName ?? "");
+        Check("  its release picks it - not pressed; one control an Add: picking off, the details shown",
+              Tap(notes, start, 0x0202) && Pump0() && pressed == 0 && notes.PickedName == "Start" && !notes.Picking && views.SelectedTab.Name == "notesDetails",
+              notes.PickedName ?? "");
         Check("  its place: the page and the way down by names", notes.PickedKey == "Panel#0/btnStart", notes.PickedKey);
+        add();
         Check("  the keys that press a button (Space, Enter) are kept from it as well",
-              Tap(notes, start, 0x0100, (int)Keys.Space) && Tap(notes, start, 0x0101, (int)Keys.Space) && pressed == 0 &&
-              !Tap(notes, start, 0x0100, (int)Keys.A));
+              Tap(notes, start, 0x0100, (int)Keys.Space) && Tap(notes, start, 0x0101, (int)Keys.Space) && Pump0() && pressed == 0 &&
+              notes.PickedName == "Start" && !notes.Picking);
+        add();
+        Check("  another key is the control's", !Tap(notes, start, 0x0100, (int)Keys.A));
+        Check("Esc: picking given up", Tap(notes, start, 0x0100, (int)Keys.Escape) && Pump0() && !notes.Picking);
+        add();
+        var ownLabel = Tree(notes).OfType<Label>().First(l => l.Visible && notes.Contains(l));
+        Check("a click on this page: picking off, the click its own", !Tap(notes, ownLabel, 0x0201) && Pump0() && !notes.Picking);
+        add();
+        Check("  Add pressed again: picking stays", !Tap(notes, any("notesAdd"), 0x0201) && Pump0() && notes.Picking);
+        Tap(notes, start, 0x0100, (int)Keys.Escape); Pump0();
         var body = (Control)typeof(NotesPage).GetProperty("Body", Any).GetValue(notes, null);
         Func<string, Control> named = n => Tree(body).FirstOrDefault(c => c.Name == n);
         Func<DataGridView> texts = () => (DataGridView)named("notesTexts");
@@ -156,14 +187,32 @@ class NF {
               minField == null ? "" : NoteTarget.KeyOf(minField));
         Check("  no texts of its own (a value: its heading is translated on the heading)", minField != null && NoteTarget.KeysOf(minField).Count == 0,
               minField == null ? "" : string.Join(",", NoteTarget.KeysOf(minField).Select(k => k.Key)));
+        add();
         Check("the notes page itself is not picked", !Tap(notes, notes, 0x0202));
+        Tap(notes, start, 0x0100, (int)Keys.Escape); Pump0();
 
         Console.WriteLine("--- writing on the page ---");
-        Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
+        add(); Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
         var tg = texts();
         tg.Rows[2].Cells[2].Value = "Avvia";
         Check("  required written: its comment opens", !tg.Rows[2].Cells[3].ReadOnly);
         tg.Rows[2].Cells[3].Value = "the Italian panel says Avvia";
+        // 26 October: "Clicking to a control discards everything on the notes page directly and it causes to data loss.
+        // We should warn the user before discarding the previous one"
+        string asked0 = null;
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked0 = q; return "no"; };
+        add(); Tap(notes, speed, 0x0201); Tap(notes, speed, 0x0202); Pump(100);
+        Check("another control picked with a suggestion typed: asked first - No: the suggestion still there",
+              asked0 != null && asked0.Contains("not kept yet") && notes.PickedName == "Start" && texts() != null &&
+              Convert.ToString(texts().Rows[2].Cells[2].Value) == "Avvia" && Convert.ToString(texts().Rows[2].Cells[3].Value) == "the Italian panel says Avvia" && !notes.Picking,
+              asked0 + " / " + notes.PickedName);
+        Kaban.UI.Profiles.Ask.Hook = null;
+        ((TextBox)named("notesCommentText")).Text = "Half typed";
+        ViewPreferences.SetList(ViewPreferences.NoteLanguages, new[] { "EN", "TR", "IT" });     // the page fills again
+        Pump(100);
+        Check("  the page filling again (a preference, a note kept) keeps what is typed", ((TextBox)named("notesCommentText")).Text == "Half typed" &&
+              Convert.ToString(texts().Rows[2].Cells[2].Value) == "Avvia");
+        ((TextBox)named("notesCommentText")).Text = "";
         ((Button)named("notesKeepTexts")).PerformClick(); Pump(50);
         var mine = NotesStore.Of(notes.PickedKey).Where(n => n.Kind == NoteKind.Translation && n.Author == "op1").ToList();
         Check("an Operator's texts: proposed, only the one changed, with what it was and why", mine.Count == 1 && mine[0].Texts.Count == 1 && mine[0].TextIn("IT") == "Avvia" &&
@@ -189,14 +238,16 @@ class NF {
         Console.WriteLine("--- a table: its heading, a cell shown, a cell typed in ---");
         var headAt = table.GetCellDisplayRectangle(1, -1, true);
         Func<int, int, IntPtr> lp = (x, y) => new IntPtr((y << 16) | (x & 0xFFFF));
-        var picker = typeof(NotesPage).GetField("_picker", Any).GetValue(notes) as IMessageFilter;
-        Func<int, Point, bool> tapAt = (msg, pt) => { var m = Message.Create(table.Handle, msg, IntPtr.Zero, lp(pt.X, pt.Y)); return picker.PreFilterMessage(ref m); };
+        Func<IMessageFilter> picker = () => typeof(NotesPage).GetField("_picker", Any).GetValue(notes) as IMessageFilter;
+        Func<int, Point, bool> tapAt = (msg, pt) => { var m = Message.Create(table.Handle, msg, IntPtr.Zero, lp(pt.X, pt.Y)); var f = picker(); return f != null && f.PreFilterMessage(ref m); };
         var hp = new Point(headAt.X + 5, headAt.Y + 5);
-        Check("a heading: picked (the tap kept from the table)", tapAt(0x0201, hp) && tapAt(0x0202, hp) && notes.PickedKind == NotesPage.PickKind.Heading &&
+        add();
+        Check("a heading: picked (the tap kept from the table)", tapAt(0x0201, hp) && tapAt(0x0202, hp) && Pump0() && notes.PickedKind == NotesPage.PickKind.Heading &&
               notes.PickedName.StartsWith("Column heading: Position"), notes.PickedName ?? "");
         var shownAt = table.GetCellDisplayRectangle(1, 0, true);
         var sp = new Point(shownAt.X + 5, shownAt.Y + 5);
-        Check("a cell shown: picked as a value", tapAt(0x0201, sp) && tapAt(0x0202, sp) && notes.PickedKind == NotesPage.PickKind.Cell &&
+        add();
+        Check("a cell shown: picked as a value", tapAt(0x0201, sp) && tapAt(0x0202, sp) && Pump0() && notes.PickedKind == NotesPage.PickKind.Cell &&
               notes.PickedName.Contains("Position") && notes.PickedName.Contains("(X)"), notes.PickedName ?? "");
         Check("  its value: now, what it should be, why", named("notesValueRequired") != null && Tree(body).OfType<Label>().Any(l => l.Text.EndsWith(": 12.5")));
         typeof(NotesPage).GetMethod("KeepValue", Any).Invoke(notes, new object[] { "12.0", "the sensor is offset" });
@@ -205,7 +256,8 @@ class NF {
               value.Values[0].Comment == "the sensor is offset");
         var entryAt = table.GetCellDisplayRectangle(2, 0, true);
         var ep = new Point(entryAt.X + 5, entryAt.Y + 5);
-        Check("a cell typed in: the table's own (not picked)", !tapAt(0x0201, ep) && !tapAt(0x0202, ep) && notes.PickedKind == NotesPage.PickKind.Cell);
+        add();
+        Check("a cell typed in: the table's own (not picked)", !tapAt(0x0201, ep) && !tapAt(0x0202, ep) && Pump0() && notes.PickedKind == NotesPage.PickKind.Cell);
 
         Console.WriteLine("--- a page button of the menu: picked, not used ---");
         // 22 October: "the navigation buttons work as function buttons even with Picking on - they should
@@ -215,7 +267,9 @@ class NF {
         Check("  picked, with the page it opens", notes.PickedKind == NotesPage.PickKind.Menu && notes.PickedName.StartsWith("Menu button") &&
               notes.PickedPlace == "Opens: Manual Movement", notes.PickedName + " / " + notes.PickedPlace);
         var shadeObj = typeof(NotesPage).GetField("_shade", Any).GetValue(notes);
+        add();
         Check("  pointed at: let through (its tooltip), bright in the shade", !Tap(notes, nav, 0x0200) && shadeObj.GetType().GetProperty("Hole", Any).GetValue(shadeObj, null) == nav);
+        Tap(notes, start, 0x0100, (int)Keys.Escape); Pump0();
 
         Console.WriteLine("--- a page's tabs: picked, not opened ---");
         var tabsCtl = new TabControl { Bounds = new Rectangle(340, 300, 300, 160), Name = "tabsTest" };
@@ -228,14 +282,17 @@ class NF {
         machine.Controls.Add(tabsCtl);
         Pump(150);
         var r2 = tabsCtl.GetTabRect(1);
-        Func<int, bool> tabTap = msg => { var mm = Message.Create(tabsCtl.Handle, msg, IntPtr.Zero, lp(r2.X + r2.Width / 2, r2.Y + r2.Height / 2)); return picker.PreFilterMessage(ref mm); };
+        Func<int, bool> tabTap = msg => { var mm = Message.Create(tabsCtl.Handle, msg, IntPtr.Zero, lp(r2.X + r2.Width / 2, r2.Y + r2.Height / 2)); return picker().PreFilterMessage(ref mm); };
+        add();
         Check("a tap on a tab: kept from it - the open tab stays", tabTap(0x0201) && tabTap(0x0202) && Pump0() && tabsCtl.SelectedIndex == 0);
         Check("  the tab tapped picked - not the open one", notes.PickedKind == NotesPage.PickKind.Tab && notes.PickedName == "Tab: Two" && notes.PickedKey.EndsWith("#tab:tpTwo"),
               notes.PickedName + " / " + notes.PickedKey);
+        add();
         Check("a control on a tab's page: picked as itself, not as the tabs", Tap(notes, inTab, 0x0201) && Tap(notes, inTab, 0x0202) && Pump0() &&
               notes.PickedKind == NotesPage.PickKind.Control && notes.PickedName.Contains("In a tab") && inTabClicks == 0, notes.PickedKind + " " + notes.PickedName);
 
         Console.WriteLine("--- a general note, with a file ---");
+        views.SelectedIndex = 0; Pump0();                 // on top of the notes
         ((Button)Tree(notes).First(c => c.Name == "notesGeneral")).PerformClick();
         Pump(50);
         Check("the general note's page", notes.PickedKind == NotesPage.PickKind.General && named("notesGeneralText") != null);
@@ -245,7 +302,7 @@ class NF {
         typeof(NotesPage).GetMethod("KeepGeneral", Any).Invoke(notes, new object[] { "A second start button at the exit would help." });
         var general = NotesStore.All.LastOrDefault(n => n.IsGeneral);
         Check("  kept on no control, its file with it", general != null && general.Text.StartsWith("A second start") && NotesStore.PathOf(general) != null);
-        Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
+        add(); Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(50);
         SecurityManager.Login("mt1", SecurityLevel.Maintenance);
         Pump(100);
         Check("Maintenance sees Accept on it", named("notesAccept") != null);
@@ -283,26 +340,27 @@ class NF {
         // 8 October: "it doesn't find TitleTextKey for the cylinder unit (e.g. 'Profile Clamping 6')"
         var frame = unit.Controls.Cast<Control>().First(c => c.GetType().Name == "RoundedGroupBox");
         Check("a tap on a unit's frame (its title, its border): the unit", NoteTarget.Notable(frame) == unit, NoteTarget.Notable(frame) == null ? "none" : NoteTarget.Notable(frame).GetType().Name);
-        Check("  picked: named by its title, the title its first text", Tap(notes, frame, 0x0201) && Tap(notes, frame, 0x0202) && notes.PickedName == "Clamp" &&
+        add();
+        Check("  picked: named by its title, the title its first text", Tap(notes, frame, 0x0201) && Tap(notes, frame, 0x0202) && Pump0() && notes.PickedName == "Clamp" &&
               named("notesTexts") != null && body.Controls.Cast<Control>().Any(c => c.Text.StartsWith("Title   (Clamp)")), notes.PickedName);
         Check("  its buttons offer the unit's title too", NoteTarget.KeysOf(unitField).Any(k => k.What == "Unit title" && k.Key == "Clamp") &&
               NoteTarget.KeysOf(unitField).All(k => k.Key.Any(char.IsLetter)), string.Join(", ", NoteTarget.KeysOf(unitField).Select(k => k.What + "=" + k.Key)));
         // 8 October: "any click on the page shakes it for a few seconds and it turns to something else"
         var own = Tree(body).OfType<Label>().First(l => l.Visible);
         string before = notes.PickedKey;
+        add();
         Check("a tap on the notes page itself is its own: not noted as one of its tabs", !Tap(notes, own, 0x0201) && !Tap(notes, own, 0x0202) & Pump0() && notes.PickedKey == before,
               notes.PickedName);
         SecurityManager.Login("op1", SecurityLevel.Operator);
         Pump(50);
 
         Console.WriteLine("--- picking off: the page works as usual ---");
-        ((Button)Tree(notes).First(c => c.Name == "notesPick")).PerformClick();
         Check("off: no filter, a tap is the control's again", !notes.Picking && !Tap(notes, start, 0x0201));
-        ((Button)Tree(notes).First(c => c.Name == "notesPick")).PerformClick();
+        add();
         host.Visible = false; Pump(50);
         Check("the page out of sight (the panel closed): no picking", !notes.Picking);
         host.Visible = true; Pump(50);
-        Check("  in sight again: picking", notes.Picking);
+        Check("  in sight again: still off - Add turns it on", !notes.Picking);
 
         Console.WriteLine("--- the feedback file: one click ---");
         notes.Export();
@@ -328,20 +386,131 @@ class NF {
                   html.Contains("proposed"));
             File.Copy(zip, "/tmp/notes_feedback_sample.zip", true);
         }
-        var every = Tree(notes).OfType<TabControl>().First();
-        every.SelectedIndex = 1; Pump(50);
+        views.SelectedIndex = 0; Pump(50);
         var all = Tree(notes).OfType<DataGridView>().First(g => g.Name == "notesAll");
         Check("every note in a table", all.Rows.Count == NotesStore.All.Count, all.Rows.Count + " / " + NotesStore.All.Count);
-        every.SelectedIndex = 0;
+        Func<IEnumerable<Note>> rowsShown = () => all.Rows.Cast<DataGridViewRow>().Select(r => (Note)r.Tag);
+
+        // 26 October: "Add some filter elements for the table as well btw so I can check though the notes easier"
+        Console.WriteLine("--- the filters ---");
+        var kindBox = (ComboBox)any("notesKindFilter");
+        var stateBox = (ComboBox)any("notesStateFilter");
+        var whoBox = (ComboBox)any("notesWhoFilter");
+        typeof(NotesPage).GetProperty("SearchText", Any).SetValue(notes, "avvia", null);
+        Check("a search: every word, any case - in the texts, the control, the page, who", rowsShown().Count() == 1 && rowsShown().First().TextIn("IT") == "Avvia",
+              string.Join(" | ", rowsShown().Select(n => n.Kind.ToString())));
+        typeof(NotesPage).GetProperty("SearchText", Any).SetValue(notes, "start op1", null);
+        Check("  two words: both somewhere in a note", rowsShown().Any() && rowsShown().All(n => n.Author == "op1"), rowsShown().Count().ToString());
+        clearFilters();
+        kindBox.SelectedIndex = kindBox.Items.Cast<object>().ToList().FindIndex(o => o.ToString() == "Helper");
+        Check("the kind: the helpers only", rowsShown().Any() && rowsShown().All(n => n.Kind == NoteKind.Helper));
+        kindBox.SelectedIndex = kindBox.Items.Cast<object>().ToList().FindIndex(o => o.ToString() == "General");
+        Check("  the general notes only", rowsShown().Count() == 1 && rowsShown().First().IsGeneral);
+        kindBox.SelectedIndex = 0;
+        stateBox.SelectedIndex = 1;
+        Check("the state: the proposals to accept", rowsShown().Any() && rowsShown().All(n => n.State == NoteState.Proposed && (n.Kind == NoteKind.Translation || n.Kind == NoteKind.Helper)));
+        stateBox.SelectedIndex = 0;
+        Check("who: everyone, mine, each author", whoBox.Items.Count >= 3 && whoBox.Items[0].ToString() == "Everyone" && whoBox.Items[1].ToString() == "Mine (op1)" &&
+              whoBox.Items.Cast<object>().Any(o => o.ToString() == "admin"), string.Join(", ", whoBox.Items.Cast<object>()));
+        whoBox.SelectedIndex = 1;
+        var count = (Label)typeof(NotesPage).GetField("_count", Any).GetValue(notes);
+        Check("  mine: op1's only - and how many of how many", rowsShown().Any() && rowsShown().All(n => n.Author == "op1") &&
+              count.Text == rowsShown().Count() + " of " + NotesStore.All.Count + " notes", count.Text);
+        clearFilters();
+        Check("cleared: every note", all.Rows.Count == NotesStore.All.Count && count.Text == NotesStore.All.Count + " notes on this panel", count.Text);
+
+        Console.WriteLine("--- a note viewed, edited, found, removed ---");
+        Func<Note, bool> choose = n =>
+        {
+            var r = all.Rows.Cast<DataGridViewRow>().FirstOrDefault(x => ((Note)x.Tag).Id == n.Id);
+            if (r == null) return false;
+            all.ClearSelection(); all.CurrentCell = null; Pump0();
+            all.CurrentCell = r.Cells[0]; r.Selected = true; Pump0();
+            return true;
+        };
+        var comment = NotesStore.All.First(n => n.Kind == NoteKind.Comment && n.Text == "Works well");
+        var adminHelper = NotesStore.All.Last(n => n.Kind == NoteKind.Helper && n.Author == "admin");
+        Check("op1's own note chosen: View, Edit, Find, Remove", choose(comment) && any("notesView").Enabled && any("notesEdit").Enabled && any("notesFindNote").Enabled == false &&
+              any("notesRemoveNote").Enabled);
+        Check("  an Admin's note: View only (an Operator is below him)", choose(adminHelper) && any("notesView").Enabled && !any("notesEdit").Enabled && !any("notesRemoveNote").Enabled);
+        choose(comment);
+        ((Button)any("notesView")).PerformClick(); Pump0();
+        Check("View: the note in the next tab - what, where, who, its words; Edit and Remove there", views.SelectedTab.Name == "notesDetails" &&
+              mode() == "View" && Tree(body).OfType<Label>().Any(l => l.Text == "Works well") && Tree(body).OfType<Label>().Any(l => l.Text.StartsWith("Comment  ·  op1 (Operator)")) &&
+              named("notesEditOne") != null && named("notesRemoveOne") != null && named("notesEditText") == null, mode());
+        Snap(form, "/tmp/notes_view.png");
+        ((Button)named("notesEditOne")).PerformClick(); Pump0();
+        var editBox = (TextBox)named("notesEditText");
+        Check("Edit: its words to change", mode() == "Edit" && editBox != null && editBox.Text == "Works well" && named("notesSave") != null);
+        editBox.Text = "Works well, but slow";
+        string asked1 = null;
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked1 = q; return "no"; };
+        views.SelectedIndex = 0; choose(adminHelper); ((Button)any("notesView")).PerformClick(); Pump0();
+        Check("  another note viewed while it is changed: asked first - No: still editing, the words kept",
+              asked1 != null && mode() == "Edit" && ((TextBox)named("notesEditText")).Text == "Works well, but slow" && views.SelectedTab.Name == "notesDetails");
+        Kaban.UI.Profiles.Ask.Hook = null;
+        ((Button)named("notesSave")).PerformClick(); Pump0();
+        var edited1 = NotesStore.All.First(n => n.Id == comment.Id);
+        Check("Save: the note changed - its author and time kept, who changed it and when", edited1.Text == "Works well, but slow" && edited1.Author == "op1" &&
+              edited1.Time == comment.Time && edited1.EditedBy == "op1" && edited1.EditedAt.HasValue && mode() == "View" &&
+              Tree(body).OfType<Label>().Any(l => l.Text.StartsWith("Changed by op1")));
+        var proposal = NotesStore.All.First(n => n.Kind == NoteKind.Translation && n.Author == "op1" && n.TextIn("IT") == "Avvia");
+        views.SelectedIndex = 0; choose(proposal); ((Button)any("notesEdit")).PerformClick(); Pump0();
+        var editTexts = (DataGridView)named("notesEditTexts");
+        Check("his proposed texts edited: the languages, what was there, his text and why", editTexts != null && editTexts.Rows.Count == 1 &&
+              Convert.ToString(editTexts.Rows[0].Cells[2].Value) == "Avvia" && !editTexts.Rows[0].Cells[2].ReadOnly);
+        Snap(form, "/tmp/notes_edit.png");
+        editTexts.Rows[0].Cells[2].Value = "Avvio";
+        ((Button)named("notesSave")).PerformClick(); Pump0();
+        Check("  saved: a proposal still (he is an Operator)", NotesStore.All.First(n => n.Id == proposal.Id).TextIn("IT") == "Avvio" &&
+              NotesStore.All.First(n => n.Id == proposal.Id).State == NoteState.Proposed && LanguageManager.GetStringIn("IT", "Btn_TestStart") == null);
+
+        Note sought = null;
+        notes.ShowNoted = n => { sought = n; return ""; };
+        views.SelectedIndex = 0; choose(proposal); Pump0();
+        ((Button)any("notesFindNote")).PerformClick(); Pump0();
+        Check("Find: the main window shows the note's control - the page says so", sought != null && sought.Id == proposal.Id && status().Contains("flashing"),
+              status());
+        notes.ShowNoted = n => "Its page is not open: open it (x) and Find again.";
+        ((Button)any("notesFindNote")).PerformClick(); Pump0();
+        Check("  or why it cannot", status().StartsWith("Its page is not open"));
+        notes.ShowNoted = null;
+        Check("the note's place kept for Find (the main window's: none here)", proposal.ControlKey == "Panel#0/btnStart");
+
+        Console.WriteLine("--- who may change or remove a note ---");
+        Func<string, SecurityLevel, Note> noteBy = (who, level) => new Note { Author = who, Level = level.ToString(), Kind = NoteKind.Comment, Text = "x", ControlKey = "k" };
+        SecurityManager.Login("op2", SecurityLevel.Operator);
+        Check("an Operator: his own only - not another Operator's", NotesStore.CanChange(noteBy("op2", SecurityLevel.Operator)) && !NotesStore.CanChange(noteBy("op1", SecurityLevel.Operator)));
+        SecurityManager.Login("mt1", SecurityLevel.Maintenance);
+        Check("Maintenance: an Operator's too - not another Maintenance's, not an Admin's", NotesStore.CanChange(noteBy("op1", SecurityLevel.Operator)) &&
+              !NotesStore.CanChange(noteBy("mt2", SecurityLevel.Maintenance)) && !NotesStore.CanChange(noteBy("admin", SecurityLevel.Admin)));
+        SecurityManager.Login("admin2", SecurityLevel.Admin);
+        Check("an Admin: Maintenance's and an Operator's too - not another Admin's", NotesStore.CanChange(noteBy("mt1", SecurityLevel.Maintenance)) &&
+              NotesStore.CanRemove(noteBy("op1", SecurityLevel.Operator)) && !NotesStore.CanChange(noteBy("admin", SecurityLevel.Admin)));
+        SecurityManager.Login("mt1", SecurityLevel.Maintenance);
+        Pump0();
+        views.SelectedIndex = 0; choose(edited1);
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "yes";
+        int before2 = NotesStore.All.Count;
+        ((Button)any("notesRemoveNote")).PerformClick(); Pump0();
+        Kaban.UI.Profiles.Ask.Hook = null;
+        Check("Remove (Maintenance, an Operator's note): asked, gone from the table", NotesStore.All.Count == before2 - 1 && !NotesStore.All.Any(n => n.Id == edited1.Id) &&
+              all.Rows.Count == NotesStore.All.Count);
+        Check("  its details tab told", views.SelectedTab.Name == "notesList" || mode() == "None");
+        SecurityManager.Login("op1", SecurityLevel.Operator);
+        Pump0();
+        Snap(form, "/tmp/notes_list.png");
 
         // 22 October: "the picking mode should turn off automatically when the notes page is closed"
         Console.WriteLine("--- the page closed: picking off ---");
-        Check("open: picking", notes.Picking);
+        add();
+        Check("Add: picking", notes.Picking);
         host.Visible = false; Pump(100);
         Check("its panel closed: picking off, no tap taken", !notes.Picking && typeof(NotesPage).GetField("_picker", Any).GetValue(notes) == null &&
               !(bool)typeof(NotesPage).GetField("_picking", Any).GetValue(notes));
         host.Visible = true; Pump(100);
-        Check("  opened again: picking", notes.Picking);
+        Check("  opened again: off until Add", !notes.Picking);
+        add();
         host.Controls.Remove(notes); Pump(100);
         Check("taken out of its window (the window closed): picking off", !notes.Picking && typeof(NotesPage).GetField("_picker", Any).GetValue(notes) == null &&
               !(bool)typeof(NotesPage).GetField("_picking", Any).GetValue(notes));
@@ -367,9 +536,10 @@ class NF {
 
         Console.WriteLine("--- translations ---");
         Func<string, bool> has = k => LanguageManager.GetString(k, "##") != "##";
-        var keys = new[] { "Ttl_Notes", "Nts_PickOn", "Nts_PickOff", "Nts_TipPickOn", "Nts_StatusPick", "Nts_How", "Nts_SecTip", "Nts_SecTexts", "Nts_SecHelpers",
-                           "Nts_SecComments", "Nts_KeepTexts", "Nts_ProposeTexts", "Nts_KeepHelper", "Nts_ProposeHelper", "Nts_AddComment", "Nts_Accept", "Nts_Export",
-                           "Nts_TipExport", "Nts_Exported", "Nts_SignIn", "Nts_Proposed", "Nts_InForce", "Nts_InList", "Nts_TabControl", "Nts_TabAll" };
+        var keys = new[] { "Ttl_Notes", "Nts_TipAdd", "Nts_StatusAdd", "Nts_DetailsHow", "Nts_SecTip", "Nts_SecTexts", "Nts_SecHelpers",
+                           "Nts_SecComments", "Nts_KeepTexts", "Nts_ProposeTexts", "Nts_KeepHelper", "Nts_ProposeHelper", "Nts_AddComment", "Nts_Accept",
+                           "Nts_TipExport", "Nts_Exported", "Nts_SignIn", "Nts_Proposed", "Nts_InForce", "Nts_InList", "Nts_TabNotes", "Nts_TabDetails",
+                           "Nts_AskDiscard", "Nts_TipView", "Nts_TipEdit", "Nts_TipFindNote", "Nts_TipRemoveNote", "Tip_NtsSearch", "Nts_Everyone" };
         Check("the page's texts in the file", keys.All(has), string.Join(",", keys.Where(k => !has(k))));
         SecurityManager.Logout();
         Console.WriteLine(fail == 0 ? "\nNOTES AND FEEDBACK ALL PASS" : "\nNOTES AND FEEDBACK " + fail + " FAILED");

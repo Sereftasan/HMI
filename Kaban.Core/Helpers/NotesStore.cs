@@ -83,6 +83,15 @@ namespace Kaban.Core.Helpers
         /// the note); false: put on the screen from the notes at each start (a key no file has).
         /// </summary>
         public bool Written { get; set; }
+        /// <summary>
+        /// Where the control's page is (26 October, the notes page's Find: its page opened and the control
+        /// shown): the main window's place as it captures it ("Page", "Tabs", a side window's "Window") -
+        /// lines of name and value, a tab between. Empty for a note of before, or on no page.
+        /// </summary>
+        public string Location { get; set; }
+        /// <summary>Who changed it last, and when (26 October: the notes page edits a note).</summary>
+        public string EditedBy { get; set; }
+        public DateTime? EditedAt { get; set; }
 
         public Note() { Texts = new List<NoteText>(); Values = new List<NoteValue>(); }
 
@@ -199,12 +208,65 @@ namespace Kaban.Core.Helpers
             return true;
         }
 
-        /// <summary>True when the one signed in may take a note away: its author, or an Admin.</summary>
-        public static bool CanRemove(Note note)
+        /// <summary>
+        /// True when the one signed in may change or take a note away (26 October: "either superior authority
+        /// level to the user who has created the note or the one who has created it's user themselves"): its
+        /// author, or a level above the author's (Maintenance an Operator's, an Admin Maintenance's too). A note
+        /// whose author's level is not known: its author or an Admin.
+        /// </summary>
+        public static bool CanChange(Note note)
         {
             if (note == null || !CanWrite) return false;
-            return SecurityManager.HasAccess(SecurityLevel.Admin) ||
-                   string.Equals(note.Author, SecurityManager.CurrentUser, StringComparison.OrdinalIgnoreCase);
+            if (string.Equals(note.Author, SecurityManager.CurrentUser, StringComparison.OrdinalIgnoreCase)) return true;
+            SecurityLevel level;
+            if (!Enum.TryParse(note.Level ?? "", true, out level)) return SecurityManager.HasAccess(SecurityLevel.Admin);
+            return SecurityManager.CurrentLevel > level;
+        }
+
+        /// <summary>True when the one signed in may take a note away (as <see cref="CanChange"/>).</summary>
+        public static bool CanRemove(Note note) { return CanChange(note); }
+
+        /// <summary>
+        /// A note changed (26 October: the notes page's Edit): its words, texts, values, file and reason as
+        /// <paramref name="edited"/> has them - its author and time kept, who changed it and when added. A
+        /// translation or a helper changed by an Operator is a proposal again; by Maintenance or an Admin it
+        /// is in force (a translation's texts written into the translation files again). False when not theirs.
+        /// </summary>
+        public static bool Update(Note edited)
+        {
+            if (edited == null || !CanWrite) return false;
+            Note kept;
+            lock (_lock)
+            {
+                EnsureLoaded();
+                kept = _notes.FirstOrDefault(n => n.Id == edited.Id);
+                if (kept == null || !CanChange(kept)) return false;
+                kept.Text = edited.Text;
+                kept.Comment = edited.Comment;
+                kept.Texts = (edited.Texts ?? new List<NoteText>()).ToList();
+                kept.Values = (edited.Values ?? new List<NoteValue>()).ToList();
+                if (kept.File != edited.File)
+                {
+                    kept.File = edited.File;
+                    kept.FileName = edited.FileName;
+                }
+                kept.EditedBy = SecurityManager.CurrentUser ?? "";
+                kept.EditedAt = DateTime.Now;
+                bool asks = kept.Kind == NoteKind.Comment || kept.Kind == NoteKind.Value || kept.Kind == NoteKind.Property;
+                if (!asks)
+                {
+                    kept.State = CanApply ? NoteState.Applied : NoteState.Proposed;
+                    kept.AcceptedBy = kept.State == NoteState.Applied ? kept.EditedBy : null;
+                    kept.AcceptedAt = kept.State == NoteState.Applied ? kept.EditedAt : null;
+                }
+                kept.Written = false;
+                // a helper of words: its page made again from the new words
+                try { var page = Path.Combine(FilesFolder, "helper_" + kept.Id + ".html"); if (System.IO.File.Exists(page)) System.IO.File.Delete(page); } catch { }
+                Save();
+            }
+            if (kept.Kind == NoteKind.Translation && kept.State == NoteState.Applied) Apply(kept, raise: true);
+            Raise();
+            return true;
         }
 
         /// <summary>Takes a note away (a translation written into its file stays there - the Translation page changes it; one put on the screen only: until the next start).</summary>

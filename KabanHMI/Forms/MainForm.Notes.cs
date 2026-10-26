@@ -35,6 +35,9 @@ namespace Kaban.UI.Forms
                     // (21 October; the menu's page buttons picked too, 22 October)
                     ShadeAreas = () => new Control[] { pnlTop, pnlMenu, pnlContent },
                     OpenTranslationTable = k => { string why; OpenTranslation(k, out why); return why; },
+                    // 26 October: a note's Find - its page opened, its control shown
+                    LocationOf = NoteLocationOf,
+                    ShowNoted = ShowNoted,
                     // 23 October: the notes page's Find - a use's page opened, what uses it pointed at
                     OpenUse = u =>
                     {
@@ -211,6 +214,123 @@ namespace Kaban.UI.Forms
             }
             parts.Reverse();
             return string.Join(" / ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        // ---- a note's control found again (26 October) ---------------------------------------
+
+        /// <summary>
+        /// Where a picked control's page is, kept on its note: the page and its tabs as the place is
+        /// captured (a side window's key) - empty for the menu and the caption bar, always in sight.
+        /// </summary>
+        internal string NoteLocationOf(Control c)
+        {
+            if (c == null || c.IsDisposed) return "";
+            var window = c.FindForm() as SidePageWindow;
+            if (window != null)
+            {
+                var key = _sideWindows.Where(kv => kv.Value == window).Select(kv => kv.Key).FirstOrDefault();
+                return key != null ? "Window\t" + key : "";
+            }
+            if (!pnlContent.Contains(c)) return "";
+            var place = CapturePlace();
+            return string.Join("\n", new[] { "Page", "Tabs" }.Where(place.ContainsKey).Select(k => k + "\t" + place[k]));
+        }
+
+        private static Dictionary<string, string> LocationParts(string location)
+        {
+            var v = new Dictionary<string, string>();
+            foreach (var line in (location ?? "").Split('\n'))
+            {
+                int tab = line.IndexOf('\t');
+                if (tab > 0) v[line.Substring(0, tab)] = line.Substring(tab + 1);
+            }
+            return v;
+        }
+
+        /// <summary>A note's control: its page opened (one Back step from here), the control in sight and flashing; "" or why not.</summary>
+        internal string ShowNoted(Note n)
+        {
+            if (n == null || n.IsGeneral) return LanguageManager.GetString("Nts_FindGeneral", "A general note is on no control.");
+            Control found = null;
+            string why = "";
+            AsOneStep(() => found = ShowNotedOnce(n, out why));
+            if (found == null) return why;
+            BeginInvoke((MethodInvoker)(() => { if (!found.IsDisposed) Helpers.ControlHighlight.Flash(found); }));
+            return "";
+        }
+
+        private Control ShowNotedOnce(Note n, out string why)
+        {
+            why = "";
+            var place = LocationParts(n.Location);
+            string window;
+            if (place.TryGetValue("Window", out window))
+            {
+                SidePageWindow open;
+                if (!_sideWindows.TryGetValue(window, out open) || open.IsDisposed || !open.Visible)
+                {
+                    why = string.Format(LanguageManager.GetString("Nts_FindOpenWindow", "Its page is a side page in its own window: open it ({0}) and Find again."), n.Page);
+                    return null;
+                }
+            }
+            else if (place.ContainsKey("Page") && !RestorePlace(place))
+            {
+                why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page.");
+                return null;
+            }
+            // the control itself (a table's heading or cell, a tab: its table, its tab strip)
+            string key = n.ControlKey ?? "";
+            foreach (var mark in new[] { "#col:", "#tab:" })
+            {
+                int at = key.IndexOf(mark, StringComparison.Ordinal);
+                if (at >= 0) key = key.Substring(0, at);
+            }
+            var found = FindNotedControl(this, key);
+            if (found == null)
+                foreach (var w in _sideWindows.Values.Where(w => w != null && !w.IsDisposed && w.Visible))
+                    if ((found = FindNotedControl(w, key)) != null) break;
+            if (found == null)
+            {
+                why = place.Count == 0
+                    ? string.Format(LanguageManager.GetString("Nts_FindOpenPage", "Its page is not open: open it ({0}) and Find again."), n.Page)
+                    : LanguageManager.GetString("Nts_FindGone", "Its control is not on its page any more (the page has changed).");
+                return null;
+            }
+            // on show: the tabs on its way chosen, laid out, scrolled into sight
+            for (var p = found; p != null; p = p.Parent)
+            {
+                var page = p as TabPage;
+                var tabs = page != null ? page.Parent as TabControl : null;
+                if (tabs != null && tabs.SelectedTab != page) tabs.SelectedTab = page;
+            }
+            if (pnlContent.Contains(found))
+            {
+                RelayoutCylinderUnits(_currentScreen);
+                if (_currentScreen != null) _currentScreen.PerformLayout();
+                Helpers.PageScroll.Reveal(found, pnlContent);
+            }
+            else
+            {
+                var form = found.FindForm();
+                if (form != null && form != this) form.Activate();
+            }
+            return found;
+        }
+
+        /// <summary>The control under <paramref name="root"/> whose note key is <paramref name="key"/> (not on the notes page), or null.</summary>
+        private static Control FindNotedControl(Control root, string key)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+            var stack = new Stack<Control>();
+            stack.Push(root);
+            while (stack.Count > 0)
+            {
+                var c = stack.Pop();
+                if (c is Screens.NotesPage) continue;
+                if (c != root && Helpers.NoteTarget.KeyOf(c) == key) return c;
+                foreach (Control k in c.Controls) stack.Push(k);
+            }
+            return null;
         }
 
         /// <summary>The notes page's picture: a note with a pencil.</summary>

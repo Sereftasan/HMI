@@ -52,9 +52,29 @@ namespace Kaban.UI.Screens
         private readonly Func<string> _panelName;
         private readonly ToolTip _tips = UiStyle.Tips();
 
-        private readonly Button _pick;
+        // 26 October: "We should make the page just like our other page designs" - the notes in a table with
+        // the buttons on top of it (Add, a general note, View, Edit, Find, Remove, the feedback file), a note
+        // or the control picked in the next tab
+        private readonly Button _add, _addMore, _view, _edit, _findNote, _remove;
         private readonly Label _status = new Label { AutoSize = false, AutoEllipsis = true, TextAlign = ContentAlignment.MiddleLeft, ForeColor = Color.FromArgb(70, 76, 86) };
         private readonly TabControl _views = new TabControl { Dock = DockStyle.Fill };
+        private readonly TabPage _listTab, _detailsTab;
+
+        // 26 October: "Add some filter elements for the table as well btw so I can check though the notes easier"
+        private readonly TextBox _search = new TextBox { Name = "notesSearch" };
+        private readonly ComboBox _kindFilter = new ComboBox { Name = "notesKindFilter", DropDownStyle = ComboBoxStyle.DropDownList };
+        private readonly ComboBox _stateFilter = new ComboBox { Name = "notesStateFilter", DropDownStyle = ComboBoxStyle.DropDownList };
+        private readonly ComboBox _whoFilter = new ComboBox { Name = "notesWhoFilter", DropDownStyle = ComboBoxStyle.DropDownList };
+        private readonly Timer _typing = new Timer { Interval = 300 };
+        private bool _fillingFilters;
+
+        /// <summary>A filter's choice: what it keeps, what it reads.</summary>
+        private sealed class Choice
+        {
+            public readonly string Value, Text;
+            public Choice(string value, string text) { Value = value; Text = text; }
+            public override string ToString() { return Text; }
+        }
         private readonly FlowLayoutPanel _body = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoScroll = true,
@@ -64,7 +84,7 @@ namespace Kaban.UI.Screens
         private readonly Button _export, _folder, _general;
         private readonly Label _count = new Label { AutoSize = true, ForeColor = Color.FromArgb(110, 116, 124), Margin = new Padding(10, 12, 0, 0) };
 
-        private bool _picking = true;
+        private bool _picking;
         private Picker _picker;
         private readonly PickShade _shade;
 
@@ -76,6 +96,12 @@ namespace Kaban.UI.Screens
 
         /// <summary>Opens a use's page and points at it ("" or why not) - Find's link. Null: Find lists only.</summary>
         public Func<DeviceCollector.Use, string> OpenUse;
+
+        /// <summary>Where a control's page is, kept on its note (the main window's place) - the note's Find goes there. Null: none.</summary>
+        public Func<Control, string> LocationOf;
+
+        /// <summary>A note's control shown: its page opened, the control in sight and flashing ("" or why not). Null: no Find.</summary>
+        public Func<Note, string> ShowNoted;
 
         /// <summary>Tests: Find's window given to it instead of shown.</summary>
         public static Func<NotesFindForm, DialogResult> FindShowing;
@@ -97,6 +123,72 @@ namespace Kaban.UI.Screens
         private string _file;          // a helper's (a general note's) file, chosen, not yet kept
         private string _lastExport;
 
+        /// <summary>What the details tab shows: nothing yet, the control picked, a general note, a note viewed or edited.</summary>
+        internal enum DetailMode { None, Control, General, View, Edit }
+        private DetailMode _mode = DetailMode.None;
+        private Note _note;            // the note viewed or edited
+
+        /// <summary>
+        /// WHAT IS TYPED, kept while the page fills again (a note kept, a language chosen, another user) - by the
+        /// box's name, a table's cell by its table, row and column - and what each was when it was made (26 October:
+        /// "Clicking to a control discards everything on the notes page directly and it causes to data loss").
+        /// </summary>
+        private readonly Dictionary<string, string> _drafts = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _originals = new Dictionary<string, string>();
+        private bool _fileChanged;     // an edited note's file changed (or taken off)
+
+        /// <summary>The details tab's mode (tests).</summary>
+        internal DetailMode Mode { get { return _mode; } }
+        /// <summary>The note viewed or edited (tests).</summary>
+        internal Note NoteShown { get { return _note; } }
+
+        /// <summary>True when something typed here is not kept yet.</summary>
+        internal bool Dirty
+        {
+            get
+            {
+                if (_file != null || _fileChanged) return true;
+                foreach (var kv in _drafts)
+                {
+                    string was;
+                    if (!_originals.TryGetValue(kv.Key, out was)) was = "";
+                    if ((kv.Value ?? "").Trim() != (was ?? "").Trim()) return true;
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Before the details show something else: what was typed and not kept is thrown away only when the
+        /// user says so (26 October: "We should warn the user before discarding the previous one"). True: go on.
+        /// </summary>
+        internal bool MayDiscard()
+        {
+            if (Dirty && !Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"),
+                    T("Nts_AskDiscard", "What you typed here is not kept yet. Discard it?")))
+            {
+                _status.Text = T("Nts_Kept", "What you typed is still there - keep it, or discard it.");
+                _views.SelectedTab = _detailsTab;
+                return false;
+            }
+            ForgetDrafts();
+            return true;
+        }
+
+        private void ForgetDrafts()
+        {
+            _drafts.Clear();
+            _originals.Clear();
+            _file = null;
+            _fileChanged = false;
+        }
+
+        /// <summary>The drafts of a box or a table kept: forgotten (they are a note now).</summary>
+        private void Kept(params string[] prefixes)
+        {
+            foreach (var k in _drafts.Keys.Where(k => prefixes.Any(p => k.StartsWith(p, StringComparison.Ordinal))).ToList()) { _drafts.Remove(k); _originals.Remove(k); }
+        }
+
         /// <summary>The feedback files' folder (Documents\Kaban HMI\Feedback); replaceable for tests.</summary>
         public static string FeedbackFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Kaban HMI", "Feedback");
 
@@ -111,50 +203,132 @@ namespace Kaban.UI.Screens
             BackColor = Color.White;
             Font = UiStyle.Body;
 
-            // ---- the bar: picking on or off, what is under the pointer ----
-            var top = new Panel { Dock = DockStyle.Top, Height = 46, BackColor = Color.White, Padding = new Padding(6, 6, 6, 4) };
-            _pick = new Button { Dock = DockStyle.Left, Width = 170, FlatStyle = FlatStyle.Flat, Name = "notesPick", Cursor = Cursors.Hand };
-            _pick.FlatAppearance.BorderColor = Color.FromArgb(160, 166, 176);
-            _pick.Click += (s, e) => SetPicking(!_picking);
-            _status.Dock = DockStyle.Fill;
-            _status.Padding = new Padding(8, 0, 0, 0);
+            // ---- the notes: the buttons on top of their table ----
+            var bar = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true,
+                Padding = new Padding(2, 4, 2, 4), BackColor = Color.White
+            };
+            // "We should remove 'Picking: on' button, create 'Add' button instead, when this button clicked the screen
+            // should turn to picking on mode ... 'Esc' or other clicks on this menu turns the picking mode to 'off'"
+            _add = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
+                                      _tips, (s, e) => SetPicking(true));
+            _add.Name = "notesAdd";
+            _general = UiStyle.ToolButton(E(0x1F4DD), T("Nts_TipGeneral", "A general note - on no control: an idea, a request, a file to send"), _tips, (s, e) => PickGeneral());
+            _general.Name = "notesGeneral";
+            _view = UiStyle.ToolButton(E(0x1F441), T("Nts_TipView", "View the note chosen - its details in the next tab (a double click on it too)"), _tips, (s, e) => ViewNote(SelectedNote, false));
+            _view.Name = "notesView";
+            _edit = UiStyle.ToolButton(E(0x270F), T("Nts_TipEdit", "Edit the note chosen - yours, or of a level below yours"), _tips, (s, e) => ViewNote(SelectedNote, true));
+            _edit.Name = "notesEdit";
+            _findNote = UiStyle.ToolButton(E(0x1F50D), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"), _tips, (s, e) => FindNoted(SelectedNote));
+            _findNote.Name = "notesFindNote";
+            _remove = UiStyle.ToolButton(E(0x1F5D1), T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"), _tips, (s, e) => RemoveNote(SelectedNote));
+            _remove.Name = "notesRemoveNote";
+            // the bin's key (Delete) is not taken here: a box of the page is typed in
+            Kaban.UI.Helpers.Shortcuts.Set(_remove, Keys.None, _tips, T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"));
+            _export = UiStyle.ToolButton(E(0x1F4E4), T("Nts_TipExport", "Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send"), _tips, (s, e) => Export());
+            _export.Name = "notesExport";
+            _folder = UiStyle.ToolButton(E(0x1F4C2), T("Nts_TipFolder", "Show the feedback file in its folder (Maintenance, Admin)"), _tips, (s, e) => ShowFolder());
+            _folder.Name = "notesFolder";
+            foreach (var b in new Control[] { _add, _general, Gap(), _view, _edit, _findNote, _remove, Gap(), _export, _folder })
+            {
+                if (b is Button) b.Margin = new Padding(2, 1, 2, 1);
+                bar.Controls.Add(b);
+            }
+            // ---- the filters, under the buttons ----
+            var filters = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = true,
+                Padding = new Padding(2, 0, 2, 4), BackColor = Color.White, Name = "notesFilters"
+            };
+            _search.Width = UiScale.For(this, 170);
+            _search.Margin = new Padding(0, 4, 6, 2);
+            UiStyle.SetTip(_tips, _search, T("Tip_NtsSearch", "Every word must appear - in the control, the text, the page, who wrote it, in any case"));
+            _search.TextChanged += (s, e) => { if (_fillingFilters) return; _typing.Stop(); _typing.Start(); };
+            _typing.Tick += (s, e) => { _typing.Stop(); FillAll(); };
+            foreach (var box in new[] { _kindFilter, _stateFilter, _whoFilter })
+            {
+                box.Margin = new Padding(0, 4, 6, 2);
+                box.SelectedIndexChanged += (s, e) => { if (!_fillingFilters) FillAll(); };
+            }
+            _kindFilter.Width = UiScale.For(this, 120);
+            _stateFilter.Width = UiScale.For(this, 130);
+            _whoFilter.Width = UiScale.For(this, 120);
+            UiStyle.SetTip(_tips, _kindFilter, T("Tip_NtsKindFilter", "Only the notes of one kind: comments, general notes, texts, helpers, values, settings"));
+            UiStyle.SetTip(_tips, _stateFilter, T("Tip_NtsStateFilter", "Only the proposals to accept, or the texts and helpers in force"));
+            UiStyle.SetTip(_tips, _whoFilter, T("Tip_NtsWhoFilter", "Only the notes of one user - or yours"));
+            _fillingFilters = true;
+            try
+            {
+                foreach (var c in new[] { new Choice(null, T("Nts_AllKinds", "Every kind")), new Choice("Comment", T("Nts_KindComment", "Comment")),
+                                          new Choice("General", T("Nts_KindGeneral", "General")), new Choice("Translation", T("Nts_KindText", "Texts")),
+                                          new Choice("Helper", T("Nts_KindHelper", "Helper")), new Choice("Value", T("Nts_KindValue", "Value")),
+                                          new Choice("Property", T("Nts_KindProperty", "Settings")) })
+                    _kindFilter.Items.Add(c);
+                foreach (var c in new[] { new Choice(null, T("Nts_AllStates", "Every state")), new Choice("Proposed", T("Nts_StateProposed", "Proposed - to accept")),
+                                          new Choice("Applied", T("Nts_StateInForce", "In force, in the list")) })
+                    _stateFilter.Items.Add(c);
+                _kindFilter.SelectedIndex = 0;
+                _stateFilter.SelectedIndex = 0;
+            }
+            finally { _fillingFilters = false; }
+            var clear = UiStyle.ToolButton("✖", T("Tip_NtsClear", "Clear the search and the filters"), _tips, (s, e) => ClearFilters());
+            clear.Name = "notesClearFilters";
+            clear.Margin = new Padding(2, 2, 2, 1);
+            filters.Controls.Add(new Label { Text = "🔍", AutoSize = true, Margin = new Padding(2, 7, 2, 2), ForeColor = Color.FromArgb(90, 96, 106) });
+            filters.Controls.Add(_search);
+            filters.Controls.Add(_kindFilter);
+            filters.Controls.Add(_stateFilter);
+            filters.Controls.Add(_whoFilter);
+            filters.Controls.Add(clear);
+
+            _all.DoubleClick += (s, e) => { if (_all.CurrentRow != null && _all.CurrentRow.Index >= 0) ViewNote(SelectedNote, false); };
+            _all.SelectionChanged += (s, e) => UpdateButtons();
+
+            // ---- the details: a note viewed or edited, the control picked ----
+            var detailsBar = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false,
+                                                   Padding = new Padding(2, 4, 2, 2), BackColor = Color.White };
+            var back = UiStyle.ToolButton(E(0x21A9), T("Nts_TipBack", "Back to the notes"), _tips, (s, e) => _views.SelectedTab = _listTab);
+            back.Name = "notesBack";
+            back.Margin = new Padding(2, 1, 2, 1);
+            // another note from here too: Add on the details' own bar
+            _addMore = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
+                                          _tips, (s, e) => SetPicking(true));
+            _addMore.Name = "notesAddMore";
+            _addMore.Margin = new Padding(2, 1, 2, 1);
             // 23 October: where the picked control's devices and texts are used (Ctrl+F)
-            _find = UiStyle.ToolButton("🔎", T("Nts_TipFind", "Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F)"),
+            _find = UiStyle.ToolButton(E(0x1F50E), T("Nts_TipFind", "Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F)"),
                                        _tips, (s, e) => OpenFind());
             _find.Name = "notesFind";
-            _find.Dock = DockStyle.Right;
-            top.Controls.Add(_status);
-            top.Controls.Add(_find);
-            top.Controls.Add(_pick);
+            _find.Margin = new Padding(2, 1, 2, 1);
+            detailsBar.Controls.Add(back);
+            detailsBar.Controls.Add(_addMore);
+            detailsBar.Controls.Add(_find);
 
-            // ---- the foot: a general note, the feedback file ----
-            var foot = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 46, BackColor = Color.White, Padding = new Padding(4, 6, 4, 0), WrapContents = false };
-            _general = UiStyle.ToolButton("📝", T("Nts_TipGeneral", "A general note - on no control: an idea, a request, a file to send"), _tips, (s, e) => PickGeneral());
-            _general.Name = "notesGeneral";
-            _export = UiStyle.ToolButton("📤", T("Nts_TipExport", "Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send"), _tips, (s, e) => Export());
-            _export.Name = "notesExport";
-            _folder = UiStyle.ToolButton("📂", T("Nts_TipFolder", "Show the feedback file in its folder (Maintenance, Admin)"), _tips, (s, e) => ShowFolder());
-            _folder.Name = "notesFolder";
-            var exportText = new Label { AutoSize = true, Text = T("Nts_Export", "Feedback file"), Margin = new Padding(2, 12, 6, 0), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold) };
-            foot.Controls.Add(_general);
-            foot.Controls.Add(_export);
-            foot.Controls.Add(exportText);
-            foot.Controls.Add(_folder);
-            foot.Controls.Add(_count);
-
-            // ---- the two views: the control picked, every note ----
-            var one = new TabPage(T("Nts_TabControl", "The control")) { BackColor = Color.White, Name = "notesOne" };
-            one.Controls.Add(_body);
-            var every = new TabPage(T("Nts_TabAll", "Every note")) { BackColor = Color.White, Name = "notesEvery" };
-            every.Controls.Add(_all);
-            _views.TabPages.Add(one);
-            _views.TabPages.Add(every);
-            _views.SelectedIndexChanged += (s, e) => { if (_views.SelectedTab == every) FillAll(); };
+            _listTab = new TabPage(T("Nts_TabNotes", "Notes")) { BackColor = Color.White, Name = "notesList" };
+            _listTab.Controls.Add(_all);
+            _listTab.Controls.Add(filters);
+            _listTab.Controls.Add(bar);
+            _detailsTab = new TabPage(T("Nts_TabDetails", "Details")) { BackColor = Color.White, Name = "notesDetails" };
+            _detailsTab.Controls.Add(_body);
+            _detailsTab.Controls.Add(detailsBar);
+            _views.TabPages.Add(_listTab);
+            _views.TabPages.Add(_detailsTab);
             BuildAllTable();
+
+            // ---- the foot: what is going on, how many notes ----
+            var foot = new Panel { Dock = DockStyle.Bottom, Height = UiScale.For(this, 30), BackColor = Color.White, Padding = new Padding(6, 0, 6, 2) };
+            _status.Dock = DockStyle.Fill;
+            _count.AutoSize = false;
+            _count.Dock = DockStyle.Right;
+            _count.Width = UiScale.For(this, 150);
+            _count.TextAlign = ContentAlignment.MiddleRight;
+            _count.Margin = Padding.Empty;
+            foot.Controls.Add(_status);
+            foot.Controls.Add(_count);
 
             Controls.Add(_views);
             Controls.Add(foot);
-            Controls.Add(top);
 
             _body.Resize += (s, e) => FitWidths();
             NotesStore.Changed += OnNotesChanged;
@@ -168,13 +342,19 @@ namespace Kaban.UI.Screens
                 NotesStore.Changed -= OnNotesChanged;
                 SecurityManager.UserChanged -= OnUserChanged;
                 ViewPreferences.Changed -= OnPreferencesChanged;
+                _typing.Dispose();
                 RemovePicker();
                 foreach (var w in _watched) { w.VisibleChanged -= OnAncestorChanged; w.ParentChanged -= OnAncestorMoved; }
                 _shade.Dispose();
             };
-            SetPicking(true);
+            SetPicking(false);
+            FillAll();
             Fill();
         }
+
+        private static string E(int codePoint) { return char.ConvertFromUtf32(codePoint); }
+
+        private static Control Gap() { return new Label { Width = 12, Height = 8, Margin = Padding.Empty }; }
 
         public int PreferredWidth(int available) { return Math.Min(available, UiScale.For(this, 560)); }
 
@@ -191,15 +371,17 @@ namespace Kaban.UI.Screens
         public PickKind PickedKind { get { return _kind; } }
         public string PickedPlace { get { return _place; } }
 
-        private void SetPicking(bool on)
+        /// <summary>
+        /// Picking on (Add) or off (a control picked, Esc, a click on this page, the page closed). While on, a
+        /// tap on a control of the page picks it - it is not operated - and the rest of the window is darker.
+        /// </summary>
+        internal void SetPicking(bool on)
         {
+            bool was = _picking;
             _picking = on;
-            _pick.Text = on ? "👆  " + T("Nts_PickOn", "Picking: on") : "✋  " + T("Nts_PickOff", "Picking: off");
-            _pick.BackColor = on ? Color.FromArgb(218, 232, 250) : Color.White;
-            Kaban.UI.Controls.UiStyle.SetTip(_tips, _pick, on
-                ? T("Nts_TipPickOn", "A tap or a click on a control of the page shows it here - it does not operate it. Tap here to use the page again.")
-                : T("Nts_TipPickOff", "The page works as usual. Tap here to pick controls again."));
-            _status.Text = on ? T("Nts_StatusPick", "Tap or click a control of the page.") : T("Nts_StatusOff", "The page works as usual.");
+            _add.BackColor = _addMore.BackColor = on ? Color.FromArgb(218, 232, 250) : Color.White;
+            if (on) _status.Text = T("Nts_StatusAdd", "Tap or click the control the note is about (Esc: give up).");
+            else if (was) _status.Text = T("Nts_StatusOff", "The page works as usual.");
             UpdatePicker();
         }
 
@@ -232,9 +414,9 @@ namespace Kaban.UI.Screens
         private void OnAncestorMoved(object sender, EventArgs e) { WatchParents(); UpdatePicker(); }
 
         /// <summary>
-        /// The page opened: picking (the page is for that); closed - its side panel closed, another
-        /// page in it, its window closed - picking off (22 October: "the picking mode should turn
-        /// off automatically when the notes page is closed").
+        /// The page closed - its side panel closed, another page in it, its window closed - picking off (22
+        /// October: "the picking mode should turn off automatically when the notes page is closed"); opened,
+        /// it stays off until Add (26 October).
         /// </summary>
         private void UpdatePicker()
         {
@@ -242,7 +424,7 @@ namespace Kaban.UI.Screens
             if (shown != _wasShown)
             {
                 _wasShown = shown;
-                if (_picking != shown) { SetPicking(shown); return; }
+                if (!shown && _picking) { SetPicking(false); return; }
             }
             if (_picking && Shown()) { if (_picker == null) { _picker = new Picker(this); Application.AddMessageFilter(_picker); } }
             else RemovePicker();
@@ -268,6 +450,7 @@ namespace Kaban.UI.Screens
 
         private void Reset()
         {
+            _note = null;
             _picked = null;
             _key = _name = _place = _tip = _value = null;
             _valueShown = false;
@@ -279,7 +462,9 @@ namespace Kaban.UI.Screens
         public void Pick(Control c)
         {
             if (c == null) return;
-            var grid = c as DataGridView;
+            // one control an Add: picking off, the page usable again
+            SetPicking(false);
+            if (!MayDiscard()) return;
             Reset();
             _picked = c;
             _key = NoteTarget.KeyOf(c);
@@ -298,6 +483,8 @@ namespace Kaban.UI.Screens
         internal void PickPassed(Control c, int tabIndex = -1)
         {
             if (c == null || c.IsDisposed) return;
+            SetPicking(false);
+            if (!MayDiscard()) return;
             Reset();
             _picked = c;
             _key = NoteTarget.KeyOf(c);
@@ -336,6 +523,8 @@ namespace Kaban.UI.Screens
         public void PickCell(DataGridView grid, int column, int row)
         {
             if (grid == null || column < 0 || column >= grid.Columns.Count) return;
+            SetPicking(false);
+            if (!MayDiscard()) return;
             Reset();
             var col = grid.Columns[column];
             string heading = PlainHeading(col.HeaderText);
@@ -377,12 +566,15 @@ namespace Kaban.UI.Screens
         /// <summary>A general note (on no control).</summary>
         public void PickGeneral()
         {
+            SetPicking(false);
+            if (!MayDiscard()) return;
             Reset();
             _kind = PickKind.General;
+            _mode = DetailMode.General;
             _key = "";
             _name = T("Nts_General", "General note");
             _status.Text = T("Nts_GeneralHint", "A note on no control: an idea, a request - with a file if you like.");
-            _views.SelectedIndex = 0;
+            _views.SelectedTab = _detailsTab;
             Fill();
         }
 
@@ -391,7 +583,8 @@ namespace Kaban.UI.Screens
             _status.Text = T("Nts_Picked", "Picked") + ": " + _name;
             if (flash != null && !flash.IsDisposed) _shade.Hole = flash;
             try { if (flash != null && !flash.IsDisposed) ControlHighlight.Flash(flash, 1500); } catch { }
-            _views.SelectedIndex = 0;
+            _mode = DetailMode.Control;
+            _views.SelectedTab = _detailsTab;
             Fill();
         }
 
@@ -463,8 +656,21 @@ namespace Kaban.UI.Screens
                 }
                 // the page out of sight (the panel closed, another page in it): taps are the controls' own
                 if (_page.IsDisposed || !_page.Shown()) return false;
+                // Esc: picking given up (26 October)
+                if ((m.Msg == WM_KEYDOWN || m.Msg == WM_KEYUP) && (Keys)(int)(long)m.WParam == Keys.Escape)
+                {
+                    if (m.Msg == WM_KEYDOWN) Later(() => _page.SetPicking(false));
+                    return true;
+                }
                 var hit = Control.FromChildHandle(m.HWnd);
                 if (hit == null) return false;
+                // a click on this page (but on Add): picking off - the click is the page's own
+                if (m.Msg == WM_LBUTTONDOWN || m.Msg == WM_RBUTTONDOWN)
+                    for (var c = hit; c != null; c = c.Parent)
+                    {
+                        if (c == _page._add || c == _page._addMore) break;
+                        if (c == _page) { Later(() => _page.SetPicking(false)); return false; }
+                    }
 
                 // the menu's page buttons, a page's tabs: picked, not used - the page stays (picking
                 // off goes to another page)
@@ -504,7 +710,7 @@ namespace Kaban.UI.Screens
                     var focused = NoteTarget.Notable(hit);
                     if (focused == null || !_page._pickable(focused)) return false;
                     if (focused is DataGridView) return false;            // a table: its own keys
-                    if (m.Msg == WM_KEYUP) _page.Pick(focused);
+                    if (m.Msg == WM_KEYUP) Later(() => _page.Pick(focused));
                     return true;
                 }
                 var target2 = NoteTarget.Notable(hit);
@@ -523,14 +729,16 @@ namespace Kaban.UI.Screens
                     if (info.Type == DataGridViewHitTestType.Cell && IsEntryCell(grid, info.ColumnIndex, info.RowIndex)) return false;
                     if (info.Type == DataGridViewHitTestType.ColumnHeader || info.Type == DataGridViewHitTestType.Cell)
                     {
-                        if (m.Msg == WM_LBUTTONUP) _page.PickCell(grid, info.ColumnIndex, info.Type == DataGridViewHitTestType.Cell ? info.RowIndex : -1);
+                        int col = info.ColumnIndex, row = info.Type == DataGridViewHitTestType.Cell ? info.RowIndex : -1;
+                        if (m.Msg == WM_LBUTTONUP) Later(() => _page.PickCell(grid, col, row));
                         return true;
                     }
                     // the scroll bars, the empty part: the table's own
                     return false;
                 }
                 if (grid != null) return false;                    // its editing box: typed in
-                if (m.Msg == WM_LBUTTONUP) _page.Pick(target2);
+                // after the filter (26 October): the pick may ask whether to discard what was typed
+                if (m.Msg == WM_LBUTTONUP) Later(() => _page.Pick(target2));
                 return true;
             }
 
@@ -551,9 +759,11 @@ namespace Kaban.UI.Screens
                 return null;
             }
 
-            private void Later(Control c, int tab)
+            private void Later(Control c, int tab) { Later(() => _page.PickPassed(c, tab)); }
+
+            private void Later(Action a)
             {
-                try { _page.BeginInvoke(new Action(() => _page.PickPassed(c, tab))); } catch { }
+                try { _page.BeginInvoke(a); } catch { }
             }
 
             /// <summary>The tab at a point of its TabControl (-1: none).</summary>
@@ -574,7 +784,7 @@ namespace Kaban.UI.Screens
             if (IsDisposed) return;
             if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnNotesChanged), sender, e); } catch { } return; }
             Fill();
-            if (_views.SelectedIndex == 1) FillAll();
+            FillAll();
         }
 
         private void OnUserChanged(object sender, EventArgs e)
@@ -582,6 +792,7 @@ namespace Kaban.UI.Screens
             if (IsDisposed) return;
             if (InvokeRequired) { try { BeginInvoke(new EventHandler(OnUserChanged), sender, e); } catch { } return; }
             Fill();
+            UpdateButtons();
         }
 
         private void OnPreferencesChanged(object sender, EventArgs e)
@@ -628,11 +839,15 @@ namespace Kaban.UI.Screens
 
         private TextBox Box(string text, bool multi, bool enabled, string name)
         {
+            // what was typed in it before the page filled again (26 October)
+            string key = "box:" + name, draft;
+            _originals[key] = text ?? "";
             var b = new TextBox
             {
-                Text = text ?? "", Multiline = multi, Height = multi ? UiScale.For(this, 64) : UiScale.For(this, 26), Width = InnerWidth,
+                Text = _drafts.TryGetValue(key, out draft) ? draft : text ?? "", Multiline = multi, Height = multi ? UiScale.For(this, 64) : UiScale.For(this, 26), Width = InnerWidth,
                 Tag = "full", Enabled = enabled, Name = name, Margin = new Padding(0, 2, 0, 4), ScrollBars = multi ? ScrollBars.Vertical : ScrollBars.None
             };
+            b.TextChanged += (s, e) => _drafts[key] = b.Text;
             _body.Controls.Add(b);
             return b;
         }
@@ -680,17 +895,20 @@ namespace Kaban.UI.Screens
             {
                 foreach (Control c in _body.Controls.Cast<Control>().ToList()) { EndEdits(c); _body.Controls.Remove(c); c.Dispose(); }
                 bool write = NotesStore.CanWrite, apply = NotesStore.CanApply;
-                _count.Text = string.Format(T("Nts_Count", "{0} notes on this panel"), NotesStore.All.Count);
                 _folder.Enabled = _lastExport != null && SecurityManager.HasAccess(SecurityLevel.Maintenance);
-                if (_kind == PickKind.General) { FillGeneral(write); return; }
-                if (_key == null)
+                _find.Visible = _mode == DetailMode.Control;
+                if (_mode == DetailMode.View || _mode == DetailMode.Edit) { FillNote(_mode == DetailMode.Edit); return; }
+                if (_mode == DetailMode.General) { FillGeneral(write); return; }
+                if (_mode == DetailMode.None || _key == null)
                 {
-                    AddText(T("Nts_None", "No control picked yet."), true, null, 6);
-                    AddText(T("Nts_How", "Tap or click a control of the page - a field, a button, a lamp, a caption, a column heading. It is not operated while picking: " +
-                                     "what it is, its tooltip, its texts in every language, its helpers and its comments appear here, and you can add yours."),
-                         false, Color.FromArgb(90, 96, 106));
-                    AddText(T("Nts_HowNav", "The menu's page buttons and a page's tabs are picked too, not used - turn picking off to go to another page. " +
-                                        "A table's cell to type in is typed in. 📝 below: a general note, on no control."), false, Color.FromArgb(90, 96, 106), 6);
+                    AddText(T("Nts_DetailsNone", "Nothing chosen yet."), true, null, 6);
+                    AddText(T("Nts_DetailsHow", "A note of the list: View or Edit it. A new one: Add, then tap or click the control it is about - a field, a button, a lamp, " +
+                                                "a caption, a column heading. It is not operated: what it is, its tooltip, its texts in every language, its helpers " +
+                                                "and its comments appear here, and you can add yours."),
+                            false, Color.FromArgb(90, 96, 106));
+                    AddText(T("Nts_HowPicking", "While picking, the menu's page buttons and a page's tabs are picked too, not used. A table's cell to type in is " +
+                                                "typed in. Esc, or a click on this page, gives picking up. A general note, on no control: the notepad above the list."),
+                            false, Color.FromArgb(90, 96, 106), 6);
                     if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 10);
                     return;
                 }
@@ -743,8 +961,9 @@ namespace Kaban.UI.Screens
         /// A small table of entries - texts, settings - with what they are now, what
         /// is required and why: the comment cell opens once something is required.
         /// </summary>
-        private DataGridView EntryGrid(string name, string firstHeading, IEnumerable<string[]> rows, bool write, int maxRows)
+        private DataGridView EntryGrid(string name, string firstHeading, IEnumerable<string[]> rows, bool write, int maxRows, string draft = null)
         {
+            string id = "grid:" + (draft ?? name) + ":";
             var grid = new DataGridView
             {
                 Name = name, AllowUserToAddRows = false, AllowUserToDeleteRows = false, AllowUserToResizeRows = false, RowHeadersVisible = false,
@@ -764,19 +983,30 @@ namespace Kaban.UI.Screens
             grid.Columns[0].DefaultCellStyle.ForeColor = Color.FromArgb(70, 76, 86);
             grid.Columns[1].DefaultCellStyle.ForeColor = Color.FromArgb(90, 96, 106);
             foreach (DataGridViewColumn c in grid.Columns) c.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // a row: what, now, its tag, and - an edited note's - what was asked and why
             foreach (var r in rows)
             {
-                int i = grid.Rows.Add(r[0], r[1], "", "");
-                grid.Rows[i].Tag = r.Length > 2 ? r[2] : r[0];
-                grid.Rows[i].Cells[3].ReadOnly = true;
-                grid.Rows[i].Cells[3].Style.BackColor = Color.FromArgb(245, 246, 248);
+                string tag = r.Length > 2 ? r[2] : r[0];
+                string required = r.Length > 3 ? r[3] ?? "" : "", reason = r.Length > 4 ? r[4] ?? "" : "", d;
+                _originals[id + tag + ":2"] = required;
+                _originals[id + tag + ":3"] = reason;
+                if (_drafts.TryGetValue(id + tag + ":2", out d)) required = d;
+                if (_drafts.TryGetValue(id + tag + ":3", out d)) reason = d;
+                int i = grid.Rows.Add(r[0], r[1], required, reason);
+                grid.Rows[i].Tag = tag;
+                bool asked = required.Trim().Length > 0;
+                grid.Rows[i].Cells[3].ReadOnly = !asked || !write;
+                grid.Rows[i].Cells[3].Style.BackColor = asked ? Color.White : Color.FromArgb(245, 246, 248);
             }
-            // the comment once something is required
+            // the comment once something is required; what is typed kept while the page fills again
             grid.CellValueChanged += (s, e) =>
             {
-                if (e.RowIndex < 0 || e.ColumnIndex != 2) return;
-                bool asked = !string.IsNullOrWhiteSpace(Convert.ToString(grid.Rows[e.RowIndex].Cells[2].Value));
-                var cell = grid.Rows[e.RowIndex].Cells[3];
+                if (e.RowIndex < 0 || (e.ColumnIndex != 2 && e.ColumnIndex != 3)) return;
+                var row = grid.Rows[e.RowIndex];
+                _drafts[id + Convert.ToString(row.Tag) + ":" + e.ColumnIndex.ToString(CultureInfo.InvariantCulture)] = Convert.ToString(row.Cells[e.ColumnIndex].Value) ?? "";
+                if (e.ColumnIndex != 2) return;
+                bool asked = !string.IsNullOrWhiteSpace(Convert.ToString(row.Cells[2].Value));
+                var cell = row.Cells[3];
                 cell.ReadOnly = !asked || !write;
                 cell.Style.BackColor = asked ? Color.White : Color.FromArgb(245, 246, 248);
             };
@@ -811,6 +1041,7 @@ namespace Kaban.UI.Screens
             AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
             var required = Box("", false, write, "notesValueRequired");
             var comment = CommentBox("notesValueComment", false);
+            comment.Enabled = write && required.Text.Trim().Length > 0;
             required.TextChanged += (s, e) => comment.Enabled = write && required.Text.Trim().Length > 0;
             var acts = Row();
             Act(acts, "💾", T("Nts_KeepValue", "Keep the note"), T("Nts_TipKeepValue", "For the builder: this value as it should be - in the feedback file"),
@@ -824,6 +1055,7 @@ namespace Kaban.UI.Screens
         {
             required = (required ?? "").Trim();
             if (required.Length == 0) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
+            Kept("box:notesValueRequired", "box:notesValueComment");
             var n = NotesStore.Add(Describe(new Note
             {
                 Kind = NoteKind.Value,
@@ -842,6 +1074,8 @@ namespace Kaban.UI.Screens
             {
                 n.ControlType = _picked.GetType().FullName;
                 n.ControlPath = DesignerPath(_picked);
+                // its page, for the note's Find (26 October)
+                if (LocationOf != null) try { n.Location = LocationOf(_picked); } catch { }
             }
             return n;
         }
@@ -922,7 +1156,7 @@ namespace Kaban.UI.Screens
                 var key = k;
                 AddText(key.What + "   (" + key.Key + ")", true, Color.FromArgb(60, 66, 76), 6);
                 var grid = EntryGrid("notesTexts", T("Nts_ColLanguage", "Language"),
-                                     Languages.Select(l => new[] { l, LanguageManager.GetStringIn(l, key.Key) ?? "", l }), write, 8);
+                                     Languages.Select(l => new[] { l, LanguageManager.GetStringIn(l, key.Key) ?? "", l }), write, 8, "notesTexts:" + key.Key);
                 var acts = Row();
                 Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
                     apply ? T("Nts_TipKeepTexts", "On the screen at once, for everyone on this panel - and in the feedback file")
@@ -1020,6 +1254,7 @@ namespace Kaban.UI.Screens
             foreach (var a in Asked(grid))
                 if (a[2] != a[1].Trim()) texts.Add(new NoteText { Lang = a[0], Text = a[2], Now = a[1], Comment = a[3].Length > 0 ? a[3] : null });
             if (texts.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
+            Kept("grid:notesTexts:" + key.Key + ":");
             var n = NotesStore.Add(Describe(new Note { Kind = NoteKind.Translation, TranslationKey = key.Key, Texts = texts }));
             if (n != null)
                 _status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
@@ -1091,6 +1326,7 @@ namespace Kaban.UI.Screens
         {
             var asked = Asked(grid).Where(a => a[2] != a[1]).ToList();
             if (asked.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
+            Kept("grid:notesProps:");
             var n = NotesStore.Add(Describe(new Note
             {
                 Kind = NoteKind.Property,
@@ -1136,9 +1372,12 @@ namespace Kaban.UI.Screens
             string kept = null;
             try { if (_file != null) kept = NotesStore.KeepFile(_file); }
             catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+            Kept("box:notesHelperText", "box:notesHelperComment");
+            var chosen = _file;
+            _file = null;                    // kept: the page filling again shows none chosen
             var n = NotesStore.Add(Describe(new Note
             {
-                Kind = NoteKind.Helper, Text = text, File = kept, FileName = _file != null ? Path.GetFileName(_file) : null,
+                Kind = NoteKind.Helper, Text = text, File = kept, FileName = chosen != null ? Path.GetFileName(chosen) : null,
                 Comment = string.IsNullOrWhiteSpace(comment) ? null : comment.Trim()
             }));
             _file = null;
@@ -1165,6 +1404,7 @@ namespace Kaban.UI.Screens
         {
             text = (text ?? "").Trim();
             if (text.Length == 0) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+            Kept("box:notesCommentText");
             var n = NotesStore.Add(Describe(new Note { Kind = NoteKind.Comment, Text = text }));
             if (n != null) _status.Text = T("Nts_CommentKept", "The comment is kept.");
         }
@@ -1203,10 +1443,13 @@ namespace Kaban.UI.Screens
             string kept = null;
             try { if (_file != null) kept = NotesStore.KeepFile(_file); }
             catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+            Kept("box:notesGeneralText");
+            var chosen = _file;
+            _file = null;
             var n = NotesStore.Add(new Note
             {
                 Kind = NoteKind.Comment, Text = text, ControlKey = "", ControlName = T("Nts_General", "General note"), Page = "",
-                File = kept, FileName = _file != null ? Path.GetFileName(_file) : null
+                File = kept, FileName = chosen != null ? Path.GetFileName(chosen) : null
             });
             _file = null;
             if (n != null) _status.Text = T("Nts_GeneralKept", "The general note is kept.");
@@ -1235,11 +1478,241 @@ namespace Kaban.UI.Screens
                 Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
                                                                                          : T("Nts_TipAcceptHelper", "Put this helper in the control's list"),
                     (s, e) => NotesStore.Accept(n), "notesAccept");
+            if (NotesStore.CanChange(n))
+                Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditLine");
             if (NotesStore.CanRemove(n))
-                Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove", "Take this note away (yours, or as an Admin)"), (s, e) =>
+                Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) =>
                 {
                     if (Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) NotesStore.Remove(n);
                 }, "notesRemove");
+        }
+
+        // ==================================================================
+        // A NOTE VIEWED OR EDITED (26 October)
+        // ==================================================================
+
+        /// <summary>
+        /// A note of the list in the details tab: viewed, or edited (yours, or of a level below yours) - what was
+        /// typed elsewhere there thrown away only when the user says so.
+        /// </summary>
+        internal void ViewNote(Note n, bool edit)
+        {
+            if (n == null) return;
+            if (edit && !NotesStore.CanChange(n))
+            {
+                _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it.");
+                return;
+            }
+            bool same = _note != null && _note.Id == n.Id && (_mode == DetailMode.View || _mode == DetailMode.Edit);
+            if (!(same && _mode == DetailMode.View) && !MayDiscard()) return;
+            SetPicking(false);
+            Reset();
+            _note = n;
+            _kind = PickKind.None;
+            _mode = edit ? DetailMode.Edit : DetailMode.View;
+            _views.SelectedTab = _detailsTab;
+            _status.Text = edit ? T("Nts_Editing", "Change the note, then Save.") : "";
+            Fill();
+        }
+
+        private void FillNote(bool edit)
+        {
+            var n = _note == null ? null : NotesStore.All.FirstOrDefault(x => x.Id == _note.Id);
+            if (n == null)
+            {
+                _note = null;
+                _mode = DetailMode.None;
+                AddText(T("Nts_NoteGone", "The note is not there any more - it was removed."), true, Color.FromArgb(130, 136, 146), 6);
+                return;
+            }
+            _note = n;
+            if (edit && !NotesStore.CanChange(n)) { edit = false; _mode = DetailMode.View; }
+            bool asks = n.Kind == NoteKind.Comment || n.Kind == NoteKind.Value || n.Kind == NoteKind.Property;
+
+            // ---- what, where, who ----
+            AddText(n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, true, null, 4).Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+            if (!string.IsNullOrEmpty(n.Page)) AddText(n.Page, false, Color.FromArgb(110, 116, 124));
+            string state = asks ? "" : n.State == NoteState.Proposed ? "  ·  " + T("Nts_Proposed", "proposed")
+                         : "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
+            AddText(KindText(n) + "  ·  " + Who(n) + state, false, n.State == NoteState.Proposed && !asks ? Color.FromArgb(176, 106, 0) : Color.FromArgb(110, 116, 124), 4);
+            if (!asks && n.State == NoteState.Applied && !string.IsNullOrEmpty(n.AcceptedBy) && n.AcceptedBy != n.Author && n.AcceptedAt.HasValue)
+                AddText(string.Format(T("Nts_AcceptedBy", "Accepted by {0}, {1}"), n.AcceptedBy, WhenOf(n.AcceptedAt.Value)), false, Color.FromArgb(110, 116, 124));
+            if (n.EditedAt.HasValue)
+                AddText(string.Format(T("Nts_EditedBy", "Changed by {0}, {1}"), n.EditedBy, WhenOf(n.EditedAt.Value)), false, Color.FromArgb(110, 116, 124));
+            if (n.Kind == NoteKind.Translation && !string.IsNullOrEmpty(n.TranslationKey))
+                AddText(T("Nts_KeyIs", "Translation key") + ": " + n.TranslationKey, false, Color.FromArgb(110, 116, 124));
+
+            // ---- its words ----
+            TextBox text = null, reason = null, required = null;
+            DataGridView grid = null;
+            switch (n.Kind)
+            {
+                case NoteKind.Translation:
+                    Head(T("Nts_SecTheTexts", "The texts"));
+                    grid = EntryGrid("notesEditTexts", T("Nts_ColLanguage", "Language"),
+                                     n.Texts.Select(t => new[] { t.Lang, t.Now ?? "", t.Lang, t.Text ?? "", t.Comment ?? "" }), edit, 8);
+                    break;
+                case NoteKind.Property:
+                    Head(T("Nts_SecTheSettings", "The settings asked for"));
+                    grid = EntryGrid("notesEditValues", T("Nts_ColProperty", "Setting"),
+                                     n.Values.Select(v => new[] { v.Name, v.Now ?? "", v.Name, v.Required ?? "", v.Comment ?? "" }), edit, 10);
+                    break;
+                case NoteKind.Value:
+                    var v0 = n.Values.FirstOrDefault() ?? new NoteValue();
+                    Head(T("Nts_SecValue", "Its value"));
+                    AddText(T("Nts_ValueThen", "Shown then") + ": " + (string.IsNullOrEmpty(v0.Now) ? "-" : v0.Now));
+                    AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
+                    if (edit) required = Box(v0.Required ?? "", false, true, "notesEditRequired");
+                    else AddText(v0.Required ?? "");
+                    AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+                    var why0 = string.IsNullOrWhiteSpace(v0.Comment) ? n.Comment ?? "" : v0.Comment;
+                    if (edit) reason = Box(why0, false, true, "notesEditReason");
+                    else AddText(why0.Length > 0 ? why0 : "-");
+                    break;
+                default:
+                    Head(n.Kind == NoteKind.Helper ? T("Nts_SecTheHelper", "The helper") : T("Nts_SecTheNote", "The note"));
+                    if (edit) { text = Box(n.Text ?? "", true, true, "notesEditText"); text.Height = UiScale.For(this, 96); }
+                    else AddText(string.IsNullOrWhiteSpace(n.Text) ? "-" : n.Text);
+                    if (n.Kind == NoteKind.Helper)
+                    {
+                        AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+                        if (edit) reason = Box(n.Comment ?? "", false, true, "notesEditReason");
+                        else AddText(string.IsNullOrWhiteSpace(n.Comment) ? "-" : n.Comment);
+                    }
+                    break;
+            }
+
+            // ---- its file ----
+            if (n.Kind == NoteKind.Comment || n.Kind == NoteKind.Helper)
+            {
+                var files = Row();
+                var path = _fileChanged ? null : NotesStore.PathOf(n);
+                string shown = _fileChanged ? (_file != null ? Path.GetFileName(_file) : T("Nts_NoFile", "(no file)"))
+                             : path != null ? n.FileName ?? n.File : edit ? T("Nts_NoFile", "(no file)") : null;
+                if (path != null)
+                    Act(files, "📄", shown, T("Nts_TipOpenFile", "Open the file"), (s, e) =>
+                    {
+                        try { Process.Start(new ProcessStartInfo(path) { UseShellExecute = true }); } catch (Exception ex) { _status.Text = ex.Message; }
+                    }, "notesOpenFile");
+                else if (shown != null)
+                    files.Controls.Add(new Label { AutoSize = true, Margin = new Padding(0, 10, 8, 0), ForeColor = Color.FromArgb(90, 96, 106), Text = shown });
+                if (edit)
+                {
+                    Act(files, "📎", T("Nts_OtherFile", "Another file"), T("Nts_TipOtherFile", "A document, a picture or a video instead of this one"), (s, e) =>
+                    {
+                        using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
+                            if (dlg.ShowDialog(FindForm()) == DialogResult.OK) { _file = dlg.FileName; _fileChanged = true; Fill(); }
+                    }, "notesEditFile");
+                    if (path != null || _file != null)
+                        Act(files, "✖", T("Nts_NoFileBtn", "No file"), T("Nts_TipNoFile", "The note without a file"), (s, e) => { _file = null; _fileChanged = true; Fill(); }, "notesEditNoFile");
+                }
+            }
+
+            // ---- what can be done with it ----
+            var acts = Row();
+            if (edit)
+            {
+                Act(acts, E(0x1F4BE), T("Nts_Save", "Save"), T("Nts_TipSave", "Keep the note as changed here"),
+                    (s, e) => SaveEdit(n, text, reason, required, grid), "notesSave");
+                Act(acts, "↩", T("Nts_Cancel", "Cancel"), T("Nts_TipCancel", "Back to the note as it is"), (s, e) => ViewNote(n, false), "notesCancel");
+                return;
+            }
+            if (NotesStore.CanChange(n)) Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditOne");
+            if (!asks && n.State == NoteState.Proposed && NotesStore.CanApply)
+                Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
+                                                                                         : T("Nts_TipAcceptHelper", "Put this helper in the control's list"),
+                    (s, e) => NotesStore.Accept(n), "notesAccept");
+            if (!n.IsGeneral && ShowNoted != null)
+                Act(acts, E(0x1F50D), T("Nts_FindControl", "Find its control"), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"),
+                    (s, e) => FindNoted(n), "notesFindOne");
+            if (NotesStore.CanRemove(n)) Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) => RemoveNote(n), "notesRemoveOne");
+        }
+
+        private static string WhenOf(DateTime t)
+        {
+            return t.ToString(ViewPreferences.DatePattern + " " + ViewPreferences.TimePattern(false), CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>The note as changed in the details tab kept (tests call it with the page's own boxes).</summary>
+        private void SaveEdit(Note n, TextBox text, TextBox reason, TextBox required, DataGridView grid)
+        {
+            var edited = new Note
+            {
+                Id = n.Id, Text = n.Text, Comment = n.Comment, File = n.File, FileName = n.FileName,
+                Texts = n.Texts.Select(t => new NoteText { Lang = t.Lang, Now = t.Now, Text = t.Text, Comment = t.Comment }).ToList(),
+                Values = n.Values.Select(v => new NoteValue { Name = v.Name, Now = v.Now, Required = v.Required, Comment = v.Comment }).ToList()
+            };
+            Func<string, string> clean = s => string.IsNullOrWhiteSpace(s) ? null : s.Trim();
+            switch (n.Kind)
+            {
+                case NoteKind.Translation:
+                    if (grid.IsCurrentCellInEditMode) grid.EndEdit();
+                    edited.Texts.Clear();
+                    foreach (DataGridViewRow r in grid.Rows)
+                    {
+                        var was = n.Texts.FirstOrDefault(t => t.Lang == Convert.ToString(r.Tag));
+                        var typed = clean(Convert.ToString(r.Cells[2].Value));
+                        if (typed != null) edited.Texts.Add(new NoteText { Lang = Convert.ToString(r.Tag), Now = was != null ? was.Now : "", Text = typed, Comment = clean(Convert.ToString(r.Cells[3].Value)) });
+                    }
+                    if (edited.Texts.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+                    break;
+                case NoteKind.Property:
+                    if (grid.IsCurrentCellInEditMode) grid.EndEdit();
+                    edited.Values.Clear();
+                    foreach (DataGridViewRow r in grid.Rows)
+                    {
+                        var typed = clean(Convert.ToString(r.Cells[2].Value));
+                        if (typed != null) edited.Values.Add(new NoteValue { Name = Convert.ToString(r.Tag), Now = Convert.ToString(r.Cells[1].Value), Required = typed, Comment = clean(Convert.ToString(r.Cells[3].Value)) });
+                    }
+                    if (edited.Values.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+                    break;
+                case NoteKind.Value:
+                    if (clean(required.Text) == null) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
+                    if (edited.Values.Count == 0) edited.Values.Add(new NoteValue { Name = n.ControlName });
+                    edited.Values[0].Required = required.Text.Trim();
+                    edited.Values[0].Comment = clean(reason.Text);
+                    edited.Comment = null;
+                    break;
+                default:
+                    edited.Text = (text.Text ?? "").Trim();
+                    if (reason != null) edited.Comment = clean(reason.Text);
+                    bool hasFile = _fileChanged ? _file != null : NotesStore.PathOf(n) != null;
+                    if (edited.Text.Length == 0 && !hasFile) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+                    break;
+            }
+            if (_fileChanged)
+            {
+                try { edited.File = _file != null ? NotesStore.KeepFile(_file) : null; }
+                catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+                edited.FileName = _file != null ? Path.GetFileName(_file) : null;
+            }
+            ForgetDrafts();
+            _mode = DetailMode.View;
+            if (!NotesStore.Update(edited)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); Fill(); return; }
+            var now = NotesStore.All.FirstOrDefault(x => x.Id == n.Id);
+            _status.Text = now != null && now.State == NoteState.Proposed && (n.Kind == NoteKind.Translation || n.Kind == NoteKind.Helper)
+                ? T("Nts_ChangedProposed", "The note is changed - a proposal again, for Maintenance or an Admin to accept.")
+                : T("Nts_Changed", "The note is changed.");
+        }
+
+        /// <summary>A note taken away, after a question (yours, or of a level below yours).</summary>
+        internal void RemoveNote(Note n)
+        {
+            if (n == null) return;
+            if (!NotesStore.CanRemove(n)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); return; }
+            if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) return;
+            if (_note != null && _note.Id == n.Id) { ForgetDrafts(); _note = null; _mode = DetailMode.None; }
+            if (NotesStore.Remove(n)) _status.Text = T("Nts_Removed", "The note is taken away.");
+        }
+
+        /// <summary>A note's control: its page opened, the control shown (the main window does it).</summary>
+        internal void FindNoted(Note n)
+        {
+            if (n == null || n.IsGeneral || ShowNoted == null) return;
+            string why;
+            try { why = ShowNoted(n) ?? ""; }
+            catch (Exception ex) { why = ex.Message; }
+            _status.Text = why.Length > 0 ? why : string.Format(T("Nts_FoundControl", "{0}: its page is open, the control flashing."), n.ControlName);
         }
 
         // ==================================================================
@@ -1277,17 +1750,119 @@ namespace Kaban.UI.Screens
             }
         }
 
+        /// <summary>The note chosen in the table, or null.</summary>
+        internal Note SelectedNote
+        {
+            get
+            {
+                var r = _all.CurrentRow ?? (_all.SelectedRows.Count > 0 ? _all.SelectedRows[0] : null);
+                return r != null ? r.Tag as Note : null;
+            }
+        }
+
+        /// <summary>The table's buttons for the note chosen: View it, Edit and Remove it (yours, or of a level below yours), Find its control.</summary>
+        private void UpdateButtons()
+        {
+            var n = SelectedNote;
+            _view.Enabled = n != null;
+            _edit.Enabled = n != null && NotesStore.CanChange(n);
+            _remove.Enabled = n != null && NotesStore.CanRemove(n);
+            _findNote.Enabled = n != null && !n.IsGeneral && ShowNoted != null;
+            _folder.Enabled = _lastExport != null && SecurityManager.HasAccess(SecurityLevel.Maintenance);
+        }
+
+        /// <summary>The notes the search and the filters let through.</summary>
+        private IEnumerable<Note> Filtered(IEnumerable<Note> notes)
+        {
+            var kind = _kindFilter.SelectedItem as Choice;
+            var state = _stateFilter.SelectedItem as Choice;
+            var who = _whoFilter.SelectedItem as Choice;
+            var words = (_search.Text ?? "").Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var n in notes)
+            {
+                bool asks = n.Kind == NoteKind.Comment || n.Kind == NoteKind.Value || n.Kind == NoteKind.Property;
+                if (kind != null && kind.Value != null)
+                {
+                    string k = n.Kind == NoteKind.Comment && n.IsGeneral ? "General" : n.Kind.ToString();
+                    if (k != kind.Value) continue;
+                }
+                if (state != null && state.Value != null && (asks || n.State.ToString() != state.Value)) continue;
+                if (who != null && who.Value != null && !string.Equals(n.Author, who.Value, StringComparison.OrdinalIgnoreCase)) continue;
+                if (words.Length > 0)
+                {
+                    string all = string.Join(" ", new[] { n.Author, n.Level, KindText(n), n.ControlName, n.Page, NotesStore.BodyOf(n), n.FileName, n.TranslationKey, When(n) });
+                    if (!words.All(w => all.IndexOf(w, StringComparison.CurrentCultureIgnoreCase) >= 0)) continue;
+                }
+                yield return n;
+            }
+        }
+
+        /// <summary>The users who wrote a note - in the Who filter, yours first ("Mine").</summary>
+        private void FillWhoFilter(IList<Note> notes)
+        {
+            var chosen = _whoFilter.SelectedItem as Choice;
+            string me = SecurityManager.CurrentUser;
+            var authors = notes.Select(n => n.Author ?? "").Where(a => a.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase)
+                               .OrderBy(a => a, StringComparer.CurrentCultureIgnoreCase).ToList();
+            var want = new List<Choice> { new Choice(null, T("Nts_Everyone", "Everyone")) };
+            if (!string.IsNullOrEmpty(me)) want.Add(new Choice(me, T("Nts_Mine", "Mine") + " (" + me + ")"));
+            want.AddRange(authors.Where(a => !string.Equals(a, me, StringComparison.OrdinalIgnoreCase)).Select(a => new Choice(a, a)));
+            if (_whoFilter.Items.Count == want.Count && _whoFilter.Items.Cast<Choice>().Select(c => c.Text).SequenceEqual(want.Select(c => c.Text))) return;
+            _fillingFilters = true;
+            try
+            {
+                _whoFilter.Items.Clear();
+                foreach (var c in want) _whoFilter.Items.Add(c);
+                int at = chosen == null || chosen.Value == null ? 0 : want.FindIndex(c => string.Equals(c.Value, chosen.Value, StringComparison.OrdinalIgnoreCase));
+                _whoFilter.SelectedIndex = Math.Max(0, at);
+            }
+            finally { _fillingFilters = false; }
+        }
+
+        /// <summary>The search and the filters cleared: every note.</summary>
+        internal void ClearFilters()
+        {
+            _fillingFilters = true;
+            try
+            {
+                _search.Text = "";
+                _kindFilter.SelectedIndex = 0;
+                _stateFilter.SelectedIndex = 0;
+                if (_whoFilter.Items.Count > 0) _whoFilter.SelectedIndex = 0;
+            }
+            finally { _fillingFilters = false; }
+            _typing.Stop();
+            FillAll();
+        }
+
+        /// <summary>The search typed now, the table at once (tests).</summary>
+        internal string SearchText { get { return _search.Text; } set { _search.Text = value; _typing.Stop(); FillAll(); } }
+
         private void FillAll()
         {
+            var chosen = SelectedNote;
+            var all = NotesStore.All;
+            FillWhoFilter(all);
+            var shown = Filtered(all.OrderByDescending(x => x.Time)).ToList();
             _all.Rows.Clear();
-            foreach (var n in NotesStore.All.OrderByDescending(x => x.Time))
+            int select = -1;
+            foreach (var n in shown)
             {
                 string body = NotesStore.BodyOf(n) + (string.IsNullOrEmpty(n.FileName) ? "" : "   [" + n.FileName + "]");
                 bool asks = n.Kind == NoteKind.Comment || n.Kind == NoteKind.Value || n.Kind == NoteKind.Property;
                 string state = asks ? "" : n.State == NoteState.Proposed ? T("Nts_Proposed", "proposed")
                              : n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list");
-                _all.Rows.Add(When(n), n.Author, KindText(n), state, n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, body, n.Page);
+                int i = _all.Rows.Add(When(n), n.Author, KindText(n), state, n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, body, n.Page);
+                _all.Rows[i].Tag = n;
+                if (n.State == NoteState.Proposed && !asks) _all.Rows[i].DefaultCellStyle.ForeColor = Color.FromArgb(176, 106, 0);
+                if (chosen != null && n.Id == chosen.Id) select = i;
             }
+            _all.ClearSelection();
+            if (select >= 0) { _all.CurrentCell = _all.Rows[select].Cells[0]; _all.Rows[select].Selected = true; }
+            else if (_all.Rows.Count > 0) { _all.CurrentCell = _all.Rows[0].Cells[0]; _all.Rows[0].Selected = true; }
+            _count.Text = shown.Count == all.Count ? string.Format(T("Nts_Count", "{0} notes on this panel"), all.Count)
+                                                   : string.Format(T("Nts_CountShown", "{0} of {1} notes"), shown.Count, all.Count);
+            UpdateButtons();
         }
 
         /// <summary>The feedback file made (tests read it): its path, or null.</summary>
