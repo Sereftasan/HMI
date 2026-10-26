@@ -200,19 +200,41 @@ class NF {
         // 26 October: "Clicking to a control discards everything on the notes page directly and it causes to data loss.
         // We should warn the user before discarding the previous one"
         string asked0 = null;
-        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked0 = q; return "no"; };
-        add(); Tap(notes, speed, 0x0201); Tap(notes, speed, 0x0202); Pump(100);
-        Check("another control picked with a suggestion typed: asked first - No: the suggestion still there",
-              asked0 != null && asked0.Contains("not kept yet") && notes.PickedName == "Start" && texts() != null &&
+        string buttons0 = null;
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked0 = q; buttons0 = i; return "Cancel"; };
+        add();
+        // 27 October: "We should open this message box right when '+' button clicked to add a note btw"
+        Check("Add with a suggestion typed: asked at once - 'There is an unsaved note entry.' Save it / Discard it / Cancel",
+              asked0 == "There is an unsaved note entry." && buttons0 == "Save it|Discard it|Cancel" && !notes.Picking, asked0 + " / " + buttons0);
+        Check("  Cancel: no picking, the suggestion still there", notes.PickedName == "Start" && texts() != null &&
               Convert.ToString(texts().Rows[2].Cells[2].Value) == "Avvia" && Convert.ToString(texts().Rows[2].Cells[3].Value) == "the Italian panel says Avvia" && !notes.Picking,
-              asked0 + " / " + notes.PickedName);
+              notes.PickedName);
+        asked0 = null;
+        typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true });
+        Tap(notes, speed, 0x0201); Tap(notes, speed, 0x0202); Pump(100);
+        Check("  another control picked meanwhile: asked as well - Cancel: still on Start", asked0 == "There is an unsaved note entry." && notes.PickedName == "Start" &&
+              Convert.ToString(texts().Rows[2].Cells[2].Value) == "Avvia", asked0 + " / " + notes.PickedName);
         Kaban.UI.Profiles.Ask.Hook = null;
         ((TextBox)named("notesCommentText")).Text = "Half typed";
         ViewPreferences.SetList(ViewPreferences.NoteLanguages, new[] { "EN", "TR", "IT" });     // the page fills again
         Pump(100);
         Check("  the page filling again (a preference, a note kept) keeps what is typed", ((TextBox)named("notesCommentText")).Text == "Half typed" &&
               Convert.ToString(texts().Rows[2].Cells[2].Value) == "Avvia");
-        ((TextBox)named("notesCommentText")).Text = "";
+        // 27 October: "add a button so the user could save it directly from that message box as well"
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "Save it";
+        add();
+        Check("Save it: the texts and the comment typed kept as notes - then picking", notes.Picking &&
+              NotesStore.Of("Panel#0/btnStart").Any(n => n.Kind == NoteKind.Comment && n.Text == "Half typed") &&
+              NotesStore.Of("Panel#0/btnStart").Any(n => n.Kind == NoteKind.Translation && n.TextIn("IT") == "Avvia") &&
+              !(bool)typeof(NotesPage).GetProperty("Dirty", Any).GetValue(notes, null));
+        Tap(notes, start, 0x0100, (int)Keys.Escape); Pump0();
+        ((TextBox)named("notesCommentText")).Text = "to be thrown away";
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "Discard it";
+        add();
+        Check("Discard it: nothing kept, the box empty again - then picking", notes.Picking && ((TextBox)named("notesCommentText")).Text == "" &&
+              !NotesStore.All.Any(n => n.Text == "to be thrown away"));
+        Tap(notes, start, 0x0100, (int)Keys.Escape); Pump0();
+        Kaban.UI.Profiles.Ask.Hook = null;
         ((Button)named("notesKeepTexts")).PerformClick(); Pump(50);
         var mine = NotesStore.Of(notes.PickedKey).Where(n => n.Kind == NoteKind.Translation && n.Author == "op1").ToList();
         Check("an Operator's texts: proposed, only the one changed, with what it was and why", mine.Count == 1 && mine[0].Texts.Count == 1 && mine[0].TextIn("IT") == "Avvia" &&
@@ -444,7 +466,7 @@ class NF {
         Check("Edit: its words to change", mode() == "Edit" && editBox != null && editBox.Text == "Works well" && named("notesSave") != null);
         editBox.Text = "Works well, but slow";
         string asked1 = null;
-        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked1 = q; return "no"; };
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked1 = q; return "Cancel"; };
         views.SelectedIndex = 0; choose(adminHelper); ((Button)any("notesView")).PerformClick(); Pump0();
         Check("  another note viewed while it is changed: asked first - No: still editing, the words kept",
               asked1 != null && mode() == "Edit" && ((TextBox)named("notesEditText")).Text == "Works well, but slow" && views.SelectedTab.Name == "notesDetails");
@@ -497,6 +519,20 @@ class NF {
         Check("Remove (Maintenance, an Operator's note): asked, gone from the table", NotesStore.All.Count == before2 - 1 && !NotesStore.All.Any(n => n.Id == edited1.Id) &&
               all.Rows.Count == NotesStore.All.Count);
         Check("  its details tab told", views.SelectedTab.Name == "notesList" || mode() == "None");
+        // 27 October: "'Remove the notes chosen' button only removes one of the selected element of the screen, it should remove all the selected ones"
+        views.SelectedIndex = 0; Pump0();
+        var several = NotesStore.All.Where(n => n.Author == "op1").Take(3).Concat(new[] { adminHelper }).ToList();
+        all.ClearSelection();
+        foreach (DataGridViewRow r in all.Rows) if (several.Any(n => n.Id == ((Note)r.Tag).Id)) r.Selected = true;
+        Pump0();
+        string asked2 = null;
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => { asked2 = q; return "yes"; };
+        int before3 = NotesStore.All.Count;
+        ((Button)any("notesRemoveNote")).PerformClick(); Pump0();
+        Kaban.UI.Profiles.Ask.Hook = null;
+        Check("several chosen: Remove takes every one he may remove at once - an Admin's stays, said in the question",
+              NotesStore.All.Count == before3 - 3 && several.Take(3).All(n => !NotesStore.All.Any(x => x.Id == n.Id)) && NotesStore.All.Any(x => x.Id == adminHelper.Id) &&
+              asked2 != null && asked2.StartsWith("Take the 3 notes chosen away?") && asked2.Contains("1 of the notes chosen stay"), asked2);
         SecurityManager.Login("op1", SecurityLevel.Operator);
         Pump0();
         Snap(form, "/tmp/notes_list.png");
@@ -539,7 +575,7 @@ class NF {
         var keys = new[] { "Ttl_Notes", "Nts_TipAdd", "Nts_StatusAdd", "Nts_DetailsHow", "Nts_SecTip", "Nts_SecTexts", "Nts_SecHelpers",
                            "Nts_SecComments", "Nts_KeepTexts", "Nts_ProposeTexts", "Nts_KeepHelper", "Nts_ProposeHelper", "Nts_AddComment", "Nts_Accept",
                            "Nts_TipExport", "Nts_Exported", "Nts_SignIn", "Nts_Proposed", "Nts_InForce", "Nts_InList", "Nts_TabNotes", "Nts_TabDetails",
-                           "Nts_AskDiscard", "Nts_TipView", "Nts_TipEdit", "Nts_TipFindNote", "Nts_TipRemoveNote", "Tip_NtsSearch", "Nts_Everyone" };
+                           "Nts_AskUnsaved", "Nts_BtnSaveIt", "Nts_BtnDiscardIt", "Nts_TipView", "Nts_TipEdit", "Nts_TipFindNote", "Nts_TipRemoveNotes", "Tip_NtsSearch", "Nts_Everyone" };
         Check("the page's texts in the file", keys.All(has), string.Join(",", keys.Where(k => !has(k))));
         SecurityManager.Logout();
         Console.WriteLine(fail == 0 ? "\nNOTES AND FEEDBACK ALL PASS" : "\nNOTES AND FEEDBACK " + fail + " FAILED");

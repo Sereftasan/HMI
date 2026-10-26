@@ -46,6 +46,47 @@ namespace Kaban.UI.Profiles
             return MessageBox.Show(owner, question, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
+        /// <summary>
+        /// A question with its own buttons ("Save it", "Discard it", "Cancel"): the index of the one pressed,
+        /// -1 when the window is closed. A test's Hook gets the buttons as "A|B|C" and answers one of them.
+        /// </summary>
+        public static int Choose(IWin32Window owner, string title, string question, params string[] buttons)
+        {
+            if (buttons == null || buttons.Length == 0) return -1;
+            if (Hook != null)
+            {
+                var answer = Hook(title, question, string.Join("|", buttons));
+                return Array.FindIndex(buttons, b => string.Equals(b, answer, StringComparison.OrdinalIgnoreCase));
+            }
+            using (var dlg = new Form
+            {
+                Text = title, FormBorderStyle = FormBorderStyle.FixedDialog, StartPosition = FormStartPosition.CenterParent,
+                MinimizeBox = false, MaximizeBox = false, ShowInTaskbar = false, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Padding = new Padding(12), Font = UiStyle.Body, BackColor = Color.White
+            })
+            {
+                UiScale.ApplyOnLoad(dlg);
+                var layout = new TableLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, ColumnCount = 1, Dock = DockStyle.Fill };
+                layout.Controls.Add(new Label { Text = question, AutoSize = true, MaximumSize = new Size(420, 0), Margin = new Padding(0, 0, 0, 14) });
+                var row = new FlowLayoutPanel { AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink, WrapContents = false, Anchor = AnchorStyles.Right };
+                int chosen = -1;
+                for (int i = 0; i < buttons.Length; i++)
+                {
+                    int index = i;
+                    var b = UiStyle.TextButton(buttons[i], 110);
+                    b.Margin = new Padding(6, 0, 0, 0);
+                    b.Click += (s, e) => { chosen = index; dlg.Close(); };
+                    row.Controls.Add(b);
+                    if (i == 0) dlg.AcceptButton = b;
+                    if (i == buttons.Length - 1) dlg.CancelButton = b;      // Esc: the last (Cancel)
+                }
+                layout.Controls.Add(row);
+                dlg.Controls.Add(layout);
+                dlg.ShowDialog(owner);
+                return chosen;
+            }
+        }
+
         /// <summary>A message (a test's Hook sees it and nothing waits).</summary>
         public static void Tell(IWin32Window owner, string title, string text)
         {

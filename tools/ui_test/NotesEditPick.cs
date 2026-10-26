@@ -61,7 +61,7 @@ class NEP {
         Func<DataGridView> texts = () => Tree(body).OfType<DataGridView>().FirstOrDefault(g => g.Name == "notesTexts");
         // 26 October: picking with Add; what was typed thrown away when the user says so
         Action add = () => typeof(NotesPage).GetMethod("SetPicking", Any).Invoke(notes, new object[] { true });
-        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "yes";
+        Kaban.UI.Profiles.Ask.Hook = (t, q, i) => "Discard it";
 
         add(); Tap(notes, start, 0x0201); Tap(notes, start, 0x0202); Pump(100);
         var grid = texts();

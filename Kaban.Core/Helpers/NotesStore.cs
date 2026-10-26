@@ -283,6 +283,22 @@ namespace Kaban.Core.Helpers
             return true;
         }
 
+        /// <summary>Several notes taken away at once (the ones the one signed in may remove): how many went.</summary>
+        public static int Remove(IEnumerable<Note> notes)
+        {
+            var ids = new HashSet<string>((notes ?? new Note[0]).Where(CanRemove).Select(n => n.Id));
+            if (ids.Count == 0) return 0;
+            int gone;
+            lock (_lock)
+            {
+                EnsureLoaded();
+                gone = _notes.RemoveAll(n => ids.Contains(n.Id));
+                if (gone > 0) Save();
+            }
+            if (gone > 0) Raise();
+            return gone;
+        }
+
         /// <summary>The translations in force put on the screen - at start, after the translation files (the ones written into them: nothing to do; the ones before: written now).</summary>
         public static void ApplyTranslations()
         {

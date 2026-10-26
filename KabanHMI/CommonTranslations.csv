@@ -1978,7 +1978,6 @@ Why_AxMonAdminLists;An Admin chooses what the Axis Monitor shows (sign in as one
 Nts_AcceptedBy;Accepted by {0}, {1};{0} kabul etti, {1};;;;
 Nts_AllKinds;Every kind;Her tür;;;;
 Nts_AllStates;Every state;Her durum;;;;
-Nts_AskDiscard;What you typed here is not kept yet. Discard it?;Burada yazdıklarınız henüz saklanmadı. Atılsın mı?;;;;
 Nts_Cancel;Cancel;Vazgeç;;;;
 Nts_Changed;The note is changed.;Not değiştirildi.;;;;
 Nts_ChangedProposed;The note is changed - a proposal again, for Maintenance or an Admin to accept.;Not değiştirildi - yeniden bir öneri, Bakım veya Yöneticinin kabul etmesi için.;;;;
@@ -2024,7 +2023,6 @@ Nts_TipFindNote;Find its control: the page of the note chosen opened, the contro
 Nts_TipNoFile;The note without a file;Not dosyasız;;;;
 Nts_TipOtherFile;A document, a picture or a video instead of this one;Bunun yerine bir belge, resim veya video;;;;
 Nts_TipRemove2;Take this note away (yours, or of a level below yours);Bu notu kaldır (sizinkini veya sizden alt seviyedekini);;;;
-Nts_TipRemoveNote;Remove the note chosen - yours, or of a level below yours;Seçilen notu kaldır - sizinkini veya sizden alt seviyedekini;;;;
 Nts_TipSave;Keep the note as changed here;Notu burada değiştirildiği gibi sakla;;;;
 Nts_TipView;View the note chosen - its details in the next tab (a double click on it too);Seçilen notu görüntüle - ayrıntıları sonraki sekmede (üzerine çift tıklama da);;;;
 Nts_ValueThen;Shown then;O zaman gösterilen;;;;
@@ -2034,3 +2032,12 @@ Tip_NtsSearch;Every word must appear - in the control, the text, the page, who w
 Tip_NtsStateFilter;Only the proposals to accept, or the texts and helpers in force;Yalnızca kabul edilecek öneriler veya geçerli metinler ve yardımcılar;;;;
 Tip_NtsWhoFilter;Only the notes of one user - or yours;Yalnızca bir kullanıcının notları - veya sizinkiler;;;;
 Nts_StatusAdd;Tap or click the control the note is about (Esc: give up).;Notun ilgili olduğu kontrole dokunun veya tıklayın (Esc: vazgeç).;;;;
+Nts_AskRemoveMany;Take the {0} notes chosen away?;Seçilen {0} not kaldırılsın mı?;;;;
+Nts_AskUnsaved;There is an unsaved note entry.;Kaydedilmemiş bir not girişi var.;;;;
+Nts_BtnDiscardIt;Discard it;At;;;;
+Nts_BtnSaveIt;Save it;Kaydet;;;;
+Nts_NoneYours;None of them is yours to remove - their authors, or a level above theirs, remove them.;Hiçbirini siz kaldıramazsınız - onları yazarları veya onlardan üst seviyedeki biri kaldırır.;;;;
+Nts_NotAllSaved;Not everything typed could be kept;Yazılanların hepsi saklanamadı;;;;
+Nts_RemovedMany;{0} notes taken away.;{0} not kaldırıldı.;;;;
+Nts_SomeNotYours;{0} of the notes chosen stay: they are not yours to remove (their authors, or a level above theirs).;Seçilen notlardan {0} tanesi kalıyor: onları siz kaldıramazsınız (yazarları veya onlardan üst seviyedeki biri).;;;;
+Nts_TipRemoveNotes;Remove the notes chosen - yours, or of a level below yours;Seçilen notları kaldır - sizinkileri veya sizden alt seviyedekileri;;;;

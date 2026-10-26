@@ -164,16 +164,68 @@ namespace Kaban.UI.Screens
         /// </summary>
         internal bool MayDiscard()
         {
-            if (Dirty && !Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"),
-                    T("Nts_AskDiscard", "What you typed here is not kept yet. Discard it?")))
+            if (!Dirty) { ForgetDrafts(); return true; }
+            // 27 October: "Change ... to 'There is unsaved note entry' and add a button so the user could save it directly
+            // from that message box as well (without needing to go back to 'Details' page)"
+            int answer = Kaban.UI.Profiles.Ask.Choose(FindForm(), T("Ttl_Notes", "Notes and feedback"),
+                T("Nts_AskUnsaved", "There is an unsaved note entry."),
+                T("Nts_BtnSaveIt", "Save it"), T("Nts_BtnDiscardIt", "Discard it"), T("Btn_Cancel", "Cancel"));
+            if (answer == 0)
             {
-                _status.Text = T("Nts_Kept", "What you typed is still there - keep it, or discard it.");
-                _views.SelectedTab = _detailsTab;
-                return false;
+                if (!SaveDrafts())
+                {
+                    _views.SelectedTab = _detailsTab;
+                    if (!_status.Text.StartsWith(T("Nts_NotAllSaved", "Not everything typed could be kept"), StringComparison.Ordinal))
+                        _status.Text = T("Nts_NotAllSaved", "Not everything typed could be kept") + " - " + _status.Text;
+                    return false;
+                }
+                ForgetDrafts();
+                return true;
             }
-            ForgetDrafts();
-            return true;
+            if (answer == 1)
+            {
+                ForgetDrafts();
+                Fill();                          // the boxes empty again (an edited note: as it is)
+                return true;
+            }
+            _status.Text = T("Nts_Kept", "What you typed is still there - keep it, or discard it.");
+            _views.SelectedTab = _detailsTab;
+            return false;
         }
+
+        /// <summary>
+        /// Everything typed in the details kept as notes (the message's Save it): the control's value, texts,
+        /// settings, helper and comment; a general note; an edited note. True when nothing is left unsaved.
+        /// </summary>
+        internal bool SaveDrafts()
+        {
+            if (_mode == DetailMode.Edit) return _saveEdit != null && _saveEdit();
+            string v;
+            Func<string, string> d = k => _drafts.TryGetValue(k, out v) ? (v ?? "").Trim() : "";
+            if (_mode == DetailMode.General)
+            {
+                if (d("box:notesGeneralText").Length > 0 || _file != null) KeepGeneral(d("box:notesGeneralText"));
+                return !Dirty;
+            }
+            if (_mode != DetailMode.Control) return !Dirty;
+            // every table's entries taken first: each note kept fills the page again
+            var texts = _textGrids.Where(kv => !kv.Value.IsDisposed).Select(kv => new KeyValuePair<string, List<string[]>>(kv.Key, Asked(kv.Value))).ToList();
+            var props = _propsGrid != null && !_propsGrid.IsDisposed ? Asked(_propsGrid) : new List<string[]>();
+            string valueRequired = d("box:notesValueRequired"), valueWhy = d("box:notesValueComment");
+            string helper = d("box:notesHelperText"), helperWhy = d("box:notesHelperComment"), comment = d("box:notesCommentText");
+            bool helperFile = _file != null;
+            if (valueRequired.Length > 0) KeepValue(valueRequired, valueWhy);
+            foreach (var t in texts) if (t.Value.Any(a => a[2] != a[1].Trim())) KeepTextsRows(t.Key, t.Value);
+            if (props.Any(a => a[2] != a[1])) KeepPropertiesRows(props);
+            if (helper.Length > 0 || helperFile) KeepHelper(helper, helperWhy);
+            if (comment.Length > 0) AddComment(comment);
+            return !Dirty;
+        }
+
+        // the tables of the control picked, for Save it (filled with the page)
+        private readonly Dictionary<string, DataGridView> _textGrids = new Dictionary<string, DataGridView>();
+        private DataGridView _propsGrid;
+        private Func<bool> _saveEdit;
 
         private void ForgetDrafts()
         {
@@ -212,7 +264,7 @@ namespace Kaban.UI.Screens
             // "We should remove 'Picking: on' button, create 'Add' button instead, when this button clicked the screen
             // should turn to picking on mode ... 'Esc' or other clicks on this menu turns the picking mode to 'off'"
             _add = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
-                                      _tips, (s, e) => SetPicking(true));
+                                      _tips, (s, e) => StartAdd());
             _add.Name = "notesAdd";
             _general = UiStyle.ToolButton(E(0x1F4DD), T("Nts_TipGeneral", "A general note - on no control: an idea, a request, a file to send"), _tips, (s, e) => PickGeneral());
             _general.Name = "notesGeneral";
@@ -222,10 +274,11 @@ namespace Kaban.UI.Screens
             _edit.Name = "notesEdit";
             _findNote = UiStyle.ToolButton(E(0x1F50D), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"), _tips, (s, e) => FindNoted(SelectedNote));
             _findNote.Name = "notesFindNote";
-            _remove = UiStyle.ToolButton(E(0x1F5D1), T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"), _tips, (s, e) => RemoveNote(SelectedNote));
+            // 27 October: "it should remove all the selected ones"
+            _remove = UiStyle.ToolButton(E(0x1F5D1), T("Nts_TipRemoveNotes", "Remove the notes chosen - yours, or of a level below yours"), _tips, (s, e) => RemoveNotes(SelectedNotes));
             _remove.Name = "notesRemoveNote";
             // the bin's key (Delete) is not taken here: a box of the page is typed in
-            Kaban.UI.Helpers.Shortcuts.Set(_remove, Keys.None, _tips, T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"));
+            Kaban.UI.Helpers.Shortcuts.Set(_remove, Keys.None, _tips, T("Nts_TipRemoveNotes", "Remove the notes chosen - yours, or of a level below yours"));
             _export = UiStyle.ToolButton(E(0x1F4E4), T("Nts_TipExport", "Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send"), _tips, (s, e) => Export());
             _export.Name = "notesExport";
             _folder = UiStyle.ToolButton(E(0x1F4C2), T("Nts_TipFolder", "Show the feedback file in its folder (Maintenance, Admin)"), _tips, (s, e) => ShowFolder());
@@ -293,7 +346,7 @@ namespace Kaban.UI.Screens
             back.Margin = new Padding(2, 1, 2, 1);
             // another note from here too: Add on the details' own bar
             _addMore = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
-                                          _tips, (s, e) => SetPicking(true));
+                                          _tips, (s, e) => StartAdd());
             _addMore.Name = "notesAddMore";
             _addMore.Margin = new Padding(2, 1, 2, 1);
             // 23 October: where the picked control's devices and texts are used (Ctrl+F)
@@ -370,6 +423,18 @@ namespace Kaban.UI.Screens
         public string PickedName { get { return _name; } }
         public PickKind PickedKind { get { return _kind; } }
         public string PickedPlace { get { return _place; } }
+
+        /// <summary>
+        /// Add: an unsaved entry asked about first - saved, thrown away or kept (27 October: "We should open this
+        /// message box right when '+' button clicked to add a note btw, no need to wait until the user select the
+        /// control as well") - then picking on.
+        /// </summary>
+        internal void StartAdd()
+        {
+            if (_picking) { SetPicking(true); return; }
+            if (!MayDiscard()) return;
+            SetPicking(true);
+        }
 
         /// <summary>
         /// Picking on (Add) or off (a control picked, Esc, a click on this page, the page closed). While on, a
@@ -897,6 +962,9 @@ namespace Kaban.UI.Screens
                 bool write = NotesStore.CanWrite, apply = NotesStore.CanApply;
                 _folder.Enabled = _lastExport != null && SecurityManager.HasAccess(SecurityLevel.Maintenance);
                 _find.Visible = _mode == DetailMode.Control;
+                _textGrids.Clear();
+                _propsGrid = null;
+                _saveEdit = null;
                 if (_mode == DetailMode.View || _mode == DetailMode.Edit) { FillNote(_mode == DetailMode.Edit); return; }
                 if (_mode == DetailMode.General) { FillGeneral(write); return; }
                 if (_mode == DetailMode.None || _key == null)
@@ -1157,6 +1225,7 @@ namespace Kaban.UI.Screens
                 AddText(key.What + "   (" + key.Key + ")", true, Color.FromArgb(60, 66, 76), 6);
                 var grid = EntryGrid("notesTexts", T("Nts_ColLanguage", "Language"),
                                      Languages.Select(l => new[] { l, LanguageManager.GetStringIn(l, key.Key) ?? "", l }), write, 8, "notesTexts:" + key.Key);
+                _textGrids[key.Key] = grid;
                 var acts = Row();
                 Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
                     apply ? T("Nts_TipKeepTexts", "On the screen at once, for everyone on this panel - and in the feedback file")
@@ -1248,14 +1317,16 @@ namespace Kaban.UI.Screens
             _status.Text = why.Length > 0 ? why : string.Format(T("Nts_TranslationOpened", "{0} in the translation table - picking is off."), key);
         }
 
-        private void KeepTexts(NoteTarget.TextKey key, DataGridView grid)
+        private void KeepTexts(NoteTarget.TextKey key, DataGridView grid) { KeepTextsRows(key.Key, Asked(grid)); }
+
+        private void KeepTextsRows(string key, List<string[]> asked)
         {
             var texts = new List<NoteText>();
-            foreach (var a in Asked(grid))
+            foreach (var a in asked)
                 if (a[2] != a[1].Trim()) texts.Add(new NoteText { Lang = a[0], Text = a[2], Now = a[1], Comment = a[3].Length > 0 ? a[3] : null });
             if (texts.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
-            Kept("grid:notesTexts:" + key.Key + ":");
-            var n = NotesStore.Add(Describe(new Note { Kind = NoteKind.Translation, TranslationKey = key.Key, Texts = texts }));
+            Kept("grid:notesTexts:" + key + ":");
+            var n = NotesStore.Add(Describe(new Note { Kind = NoteKind.Translation, TranslationKey = key, Texts = texts }));
             if (n != null)
                 _status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
         }
@@ -1315,6 +1386,7 @@ namespace Kaban.UI.Screens
             var rows = PropertyRows(_picked);
             if (rows.Count == 0) { AddText(T("Nts_NoProps", "It has no settings of the program's own."), false, Color.FromArgb(130, 136, 146)); return; }
             var grid = EntryGrid("notesProps", T("Nts_ColProperty", "Setting"), rows, write, 10);
+            _propsGrid = grid;
             var acts = Row();
             Act(acts, "💾", T("Nts_KeepProps", "Keep the settings asked for"), T("Nts_TipKeepProps", "For the builder: these settings as they should be - in the feedback file"),
                 (s, e) => KeepProperties(grid), "notesKeepProps", write);
@@ -1322,9 +1394,11 @@ namespace Kaban.UI.Screens
                 NoteLine(n, NotesStore.BodyOf(n, "\n"), false);
         }
 
-        private void KeepProperties(DataGridView grid)
+        private void KeepProperties(DataGridView grid) { KeepPropertiesRows(Asked(grid)); }
+
+        private void KeepPropertiesRows(List<string[]> rows)
         {
-            var asked = Asked(grid).Where(a => a[2] != a[1]).ToList();
+            var asked = rows.Where(a => a[2] != a[1]).ToList();
             if (asked.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
             Kept("grid:notesProps:");
             var n = NotesStore.Add(Describe(new Note
@@ -1612,6 +1686,7 @@ namespace Kaban.UI.Screens
             var acts = Row();
             if (edit)
             {
+                _saveEdit = () => SaveEdit(n, text, reason, required, grid);
                 Act(acts, E(0x1F4BE), T("Nts_Save", "Save"), T("Nts_TipSave", "Keep the note as changed here"),
                     (s, e) => SaveEdit(n, text, reason, required, grid), "notesSave");
                 Act(acts, "↩", T("Nts_Cancel", "Cancel"), T("Nts_TipCancel", "Back to the note as it is"), (s, e) => ViewNote(n, false), "notesCancel");
@@ -1634,7 +1709,7 @@ namespace Kaban.UI.Screens
         }
 
         /// <summary>The note as changed in the details tab kept (tests call it with the page's own boxes).</summary>
-        private void SaveEdit(Note n, TextBox text, TextBox reason, TextBox required, DataGridView grid)
+        private bool SaveEdit(Note n, TextBox text, TextBox reason, TextBox required, DataGridView grid)
         {
             var edited = new Note
             {
@@ -1654,7 +1729,7 @@ namespace Kaban.UI.Screens
                         var typed = clean(Convert.ToString(r.Cells[2].Value));
                         if (typed != null) edited.Texts.Add(new NoteText { Lang = Convert.ToString(r.Tag), Now = was != null ? was.Now : "", Text = typed, Comment = clean(Convert.ToString(r.Cells[3].Value)) });
                     }
-                    if (edited.Texts.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+                    if (edited.Texts.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return false; }
                     break;
                 case NoteKind.Property:
                     if (grid.IsCurrentCellInEditMode) grid.EndEdit();
@@ -1664,10 +1739,10 @@ namespace Kaban.UI.Screens
                         var typed = clean(Convert.ToString(r.Cells[2].Value));
                         if (typed != null) edited.Values.Add(new NoteValue { Name = Convert.ToString(r.Tag), Now = Convert.ToString(r.Cells[1].Value), Required = typed, Comment = clean(Convert.ToString(r.Cells[3].Value)) });
                     }
-                    if (edited.Values.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+                    if (edited.Values.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return false; }
                     break;
                 case NoteKind.Value:
-                    if (clean(required.Text) == null) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
+                    if (clean(required.Text) == null) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return false; }
                     if (edited.Values.Count == 0) edited.Values.Add(new NoteValue { Name = n.ControlName });
                     edited.Values[0].Required = required.Text.Trim();
                     edited.Values[0].Comment = clean(reason.Text);
@@ -1677,22 +1752,23 @@ namespace Kaban.UI.Screens
                     edited.Text = (text.Text ?? "").Trim();
                     if (reason != null) edited.Comment = clean(reason.Text);
                     bool hasFile = _fileChanged ? _file != null : NotesStore.PathOf(n) != null;
-                    if (edited.Text.Length == 0 && !hasFile) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+                    if (edited.Text.Length == 0 && !hasFile) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return false; }
                     break;
             }
             if (_fileChanged)
             {
                 try { edited.File = _file != null ? NotesStore.KeepFile(_file) : null; }
-                catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+                catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return false; }
                 edited.FileName = _file != null ? Path.GetFileName(_file) : null;
             }
             ForgetDrafts();
             _mode = DetailMode.View;
-            if (!NotesStore.Update(edited)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); Fill(); return; }
+            if (!NotesStore.Update(edited)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); Fill(); return false; }
             var now = NotesStore.All.FirstOrDefault(x => x.Id == n.Id);
             _status.Text = now != null && now.State == NoteState.Proposed && (n.Kind == NoteKind.Translation || n.Kind == NoteKind.Helper)
                 ? T("Nts_ChangedProposed", "The note is changed - a proposal again, for Maintenance or an Admin to accept.")
                 : T("Nts_Changed", "The note is changed.");
+            return true;
         }
 
         /// <summary>A note taken away, after a question (yours, or of a level below yours).</summary>
@@ -1703,6 +1779,26 @@ namespace Kaban.UI.Screens
             if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) return;
             if (_note != null && _note.Id == n.Id) { ForgetDrafts(); _note = null; _mode = DetailMode.None; }
             if (NotesStore.Remove(n)) _status.Text = T("Nts_Removed", "The note is taken away.");
+        }
+
+        /// <summary>
+        /// The notes chosen taken away, after one question (27 October: "it should remove all the selected ones"):
+        /// the ones the user may remove (yours, or of a level below yours) - the others stay, said in the question.
+        /// </summary>
+        internal void RemoveNotes(IList<Note> notes)
+        {
+            if (notes == null || notes.Count == 0) return;
+            if (notes.Count == 1) { RemoveNote(notes[0]); return; }
+            var mine = notes.Where(NotesStore.CanRemove).ToList();
+            if (mine.Count == 0) { _status.Text = T("Nts_NoneYours", "None of them is yours to remove - their authors, or a level above theirs, remove them."); return; }
+            string question = string.Format(T("Nts_AskRemoveMany", "Take the {0} notes chosen away?"), mine.Count);
+            if (mine.Count < notes.Count)
+                question += "\r\n\r\n" + string.Format(T("Nts_SomeNotYours", "{0} of the notes chosen stay: they are not yours to remove (their authors, or a level above theirs)."),
+                                                         notes.Count - mine.Count);
+            if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), question)) return;
+            if (_note != null && mine.Any(n => n.Id == _note.Id)) { ForgetDrafts(); _note = null; _mode = DetailMode.None; }
+            int gone = NotesStore.Remove(mine);
+            _status.Text = string.Format(T("Nts_RemovedMany", "{0} notes taken away."), gone);
         }
 
         /// <summary>A note's control: its page opened, the control shown (the main window does it).</summary>
@@ -1736,6 +1832,7 @@ namespace Kaban.UI.Screens
                 _all.Columns[i].Width = int.Parse(c[2], CultureInfo.InvariantCulture);
             }
             UiStyle.EnableTableTools(_all, "Notes");
+            _all.MultiSelect = true;                 // several notes chosen: Remove takes them all (27 October)
         }
 
         private string KindText(Note n)
@@ -1760,13 +1857,24 @@ namespace Kaban.UI.Screens
             }
         }
 
+        /// <summary>Every note chosen in the table (several rows chosen: all of them).</summary>
+        internal List<Note> SelectedNotes
+        {
+            get
+            {
+                var list = _all.SelectedRows.Cast<DataGridViewRow>().OrderBy(r => r.Index).Select(r => r.Tag as Note).Where(n => n != null).ToList();
+                if (list.Count == 0 && SelectedNote != null) list.Add(SelectedNote);
+                return list;
+            }
+        }
+
         /// <summary>The table's buttons for the note chosen: View it, Edit and Remove it (yours, or of a level below yours), Find its control.</summary>
         private void UpdateButtons()
         {
             var n = SelectedNote;
             _view.Enabled = n != null;
             _edit.Enabled = n != null && NotesStore.CanChange(n);
-            _remove.Enabled = n != null && NotesStore.CanRemove(n);
+            _remove.Enabled = SelectedNotes.Any(NotesStore.CanRemove);
             _findNote.Enabled = n != null && !n.IsGeneral && ShowNoted != null;
             _folder.Enabled = _lastExport != null && SecurityManager.HasAccess(SecurityLevel.Maintenance);
         }
