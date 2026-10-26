@@ -1986,3 +1986,4 @@ Why_MonRestoreSim;The simulator's lists only: the simulator adds every device it
 Why_MotionNotRead;Not read from the module yet;Henüz modülden okunmadı;;;;
 Why_MotionReadOnly;The module shows this value: it is not written;Bu değeri modül gösterir: yazılmaz;;;;
 Why_PlcDown;The PLC is not answering;PLC yanıt vermiyor;;;;
+Why_AxMonAdminLists;An Admin chooses what the Axis Monitor shows (sign in as one);Eksen Monitörünün ne göstereceğini Yönetici seçer (Yönetici olarak oturum açın);;;;

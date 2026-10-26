@@ -22,7 +22,7 @@ AiC_Up;KabanHMI\Settings\AiChatsEditor.cs;64;Tooltip;_up = UiStyle.ToolButton("â
 AiC_Usual;KabanHMI\Settings\AiChatsEditor.cs;66;Tooltip;_usual = UiStyle.ToolButton("â†»", T("AiC_Usual", "The usual list"), tips, (s, e) => { Fill(AiChats.Defaults); _dirty.MarkDirty(); });
 Alarm_Col_Description;KabanHMI\Settings\AlarmSettingsControl.cs;155;Heading;{ Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
 Alarm_Col_Description;KabanHMI\Settings\PreferencePreview.cs;418;Text;TextRenderer.DrawText(g, T("Alarm_Col_Description", "Alarm"), hf, new Rectangle(r.Left + timeW + S(4), y, r.Width - timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
-Alarm_Col_Help;KabanHMI\Helpers\AlarmHelpLinks.cs;815;Text;LanguageManager.GetString("Alarm_Col_Help", "Help"),
+Alarm_Col_Help;KabanHMI\Helpers\AlarmHelpLinks.cs;838;Text;LanguageManager.GetString("Alarm_Col_Help", "Help"),
 Alarm_Col_Help;KabanHMI\Screens\MachineAlarmScreen.cs;389;Heading;HeaderText = LanguageManager.GetString("Alarm_Col_Help", "Help"),
 Alarm_Col_Severity;KabanHMI\Settings\AlarmSettingsControl.cs;158;Heading;{ Name = "Severity", HeaderText = LanguageManager.GetString("Alarm_Col_Severity", "Severity"), FillWeight = 12 };
 Alarm_Col_TriggerTime;KabanHMI\Settings\PreferencePreview.cs;417;Text;TextRenderer.DrawText(g, T("Alarm_Col_TriggerTime", "Time"), hf, new Rectangle(r.Left + S(4), y, timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
@@ -284,7 +284,7 @@ Col_Axis;KabanHMI\Controls\AxisSettingHMI.cs;1310;Text;new[] { "Axis", "Col_Axis
 Col_Axis;KabanHMI\Screens\AxisMonitorPage.cs;86;Text;var axisHead = Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName);
 Col_AxisAlarm;KabanHMI\Controls\AxisSettingHMI.cs;1323;Text;new[] { "AxisAlarm", "Col_AxisAlarm", "Axis alarm" },
 Col_AxisCurrent;KabanHMI\Controls\AxisSettingHMI.cs;1315;Text;new[] { "Current", "Col_AxisCurrent", "Current" },
-Col_AxisCurrent;KabanHMI\Screens\AxisMonitorPage.cs;415;Text;var current = Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter);
+Col_AxisCurrent;KabanHMI\Screens\AxisMonitorPage.cs;418;Text;var current = Heading(LanguageManager.GetString("Col_AxisCurrent", "Current"), x, WMeter);
 Col_AxisLoadPosition;KabanHMI\Controls\AxisSettingHMI.cs;1140;Text;case "LoadPosition": return LanguageManager.GetString("Col_AxisLoadPosition", "Load Position");
 Col_AxisLoadPosition;KabanHMI\Controls\AxisSettingHMI.cs;1314;Text;new[] { "LoadPosition", "Col_AxisLoadPosition", "Load Position" },
 Col_AxisPosition;KabanHMI\Controls\AxisSettingHMI.cs;1141;Text;default: return LanguageManager.GetString("Col_AxisPosition", "Position");
@@ -687,18 +687,18 @@ Hlp_About;KabanHMI\Forms\MainForm.Help.cs;120;Menu;var about = new ToolStripMenu
 Hlp_About;KabanHMI\Forms\MainForm.Help.cs;150;Text;string title = LanguageManager.GetString("Hlp_About", "About Kaban HMI");
 Hlp_AiAskItem;KabanHMI\Helpers\AiMenu.cs;32;Text;return string.Format(T("Hlp_AiAskItem", "Ask {0}"), chat != null ? chat.Name : "AI");
 Hlp_AiPromptItem;KabanHMI\Helpers\AiMenu.cs;27;Text;public static string CreateCaption { get { return T("Hlp_AiPromptItem", "Create AI prompt"); } }
-Hlp_Cylinder;Kaban.Core\Helpers\TroubleshootingCatalog.cs;557;Text;Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting"),
-Hlp_Cylinder;KabanHMI\Controls\CylinderUnitHMI.cs;1589;Text;Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
-Hlp_Cylinder;KabanHMI\Helpers\AlarmHelpLinks.cs;690;Text;Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
+Hlp_Cylinder;Kaban.Core\Helpers\TroubleshootingCatalog.cs;563;Text;Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting"),
+Hlp_Cylinder;KabanHMI\Controls\CylinderUnitHMI.cs;1579;Text;Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
+Hlp_Cylinder;KabanHMI\Helpers\AlarmHelpLinks.cs;712;Text;Title = (cylinder ? LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting")
 Hlp_CylinderSteps;Kaban.Core\Helpers\AlarmGeneration.cs;1266;Text;Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
 Hlp_CylinderSteps;KabanHMI\Controls\CylinderUnitHMI.cs;1543;Text;: LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
-Hlp_CylinderSteps;KabanHMI\Helpers\AlarmHelpLinks.cs;680;Text;Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
+Hlp_CylinderSteps;KabanHMI\Helpers\AlarmHelpLinks.cs;702;Text;Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
 Hlp_InverterManual;Kaban.Core\Helpers\AxisCodeHelp.cs;93;Text;var title = LanguageManager.GetString("Hlp_InverterManual", "Inverter manual (FR-A800)") +
 Hlp_ManualBox;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;217;Text;System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualBox", "cylinder manual")) + "</span><span class=\"val\">&#128214; " +
 Hlp_ManualBoxDetails;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;218;Text;(range.Length > 0 ? "<b>" + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualBoxDetails", "details")) + " " + range + "</b>" : "") +
 Hlp_ManualInside;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;177;Text;var summary = System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInside", "The cylinder manual for this cylinder")) +
 Hlp_ManualInsideSub;Kaban.Core\Helpers\TroubleshootingCatalog.Steps.cs;178;Text;" <span class=\"sub\">&ndash; " + System.Net.WebUtility.HtmlEncode(LanguageManager.GetString("Hlp_ManualInsideSub",
-Hlp_Servo;KabanHMI\Helpers\AlarmHelpLinks.cs;691;Text;: LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
+Hlp_Servo;KabanHMI\Helpers\AlarmHelpLinks.cs;713;Text;: LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
 Home;Kaban.Core\Helpers\ViewPreferences.cs;98;Text;P(StartPage, "SignIn", "Stay", "Home", "Last"),
 Home;Kaban.Core\Machines\IMachineModule.cs;91;Text;public const string Home = "Home";
 Home;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;397;Text;this.btnHome.TranslationKey = "Home";
@@ -1350,7 +1350,7 @@ Msg_FndCodeLine;KabanHMI\Settings\TranslationsControl.cs;1117;Status;? string.Fo
 Msg_FndNone;KabanHMI\Settings\TranslationsControl.cs;1082;Status;_status.Text = (_uses.Count == 0 ? T("Msg_FndNone", "Not used on a page, in the menu or by an alarm.") + "  "
 Msg_FndNoSource;KabanHMI\Settings\TranslationsControl.cs;1084;Status;(source ? "" : T("Msg_FndNoSource", "The program's lines (message boxes, status lines ...) are listed from its source or from TranslationUses.csv beside it - neither is here."));
 Msg_FndOpen;KabanHMI\Settings\TranslationsControl.cs;1083;Status;: T("Msg_FndOpen", "A double click opens a page and points at what uses it.") + "  ") +
-Msg_HelpOpenFailed;KabanHMI\Helpers\AlarmHelpLinks.cs;813;Message;LanguageManager.GetString("Msg_HelpOpenFailed", "Could not open the help document.") +
+Msg_HelpOpenFailed;KabanHMI\Helpers\AlarmHelpLinks.cs;836;Message;LanguageManager.GetString("Msg_HelpOpenFailed", "Could not open the help document.") +
 Msg_ImportApplyValues;KabanHMI\Forms\SimulationMonitorForm.cs;3811;Message;string.Format(T("Msg_ImportApplyValues", "The file also carries {0} values. Write them to this controller as well?"), values.Count),
 Msg_ImportDone;KabanHMI\Forms\SimulationMonitorForm.cs;2733;Message;string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added),
 Msg_ImportDone;KabanHMI\Forms\SimulationMonitorForm.cs;3830;Message;string.Format(T("Msg_ImportDone", "Added {0} device(s). {1} were already listed."), added, offered - added) +
@@ -2255,7 +2255,7 @@ Tip_H500_AtHome;Kaban.Machines.H500\Screens\H500Screen.cs;46;Tooltip;Lamp1ATipKe
 Tip_H800_AtHome;Kaban.Machines.H800\Screens\H800Screen.cs;46;Tooltip;Lamp1ATipKey = "Tip_H800_AtHome",
 Tip_Help;KabanHMI\Forms\MainForm.Help.cs;62;Tooltip;Action tip = () => Helpers.Shortcuts.Set(_btnHelp, Keys.F1, _topTips, LanguageManager.GetString("Tip_Help",
 Tip_HelpBadge;KabanHMI\Controls\AlarmHelpBadge.cs;335;Tooltip;LanguageManager.GetString("Tip_HelpBadge", "Click for help"));
-Tip_HelpBadge;KabanHMI\Controls\CylinderUnitHMI.cs;1697;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help");
+Tip_HelpBadge;KabanHMI\Controls\CylinderUnitHMI.cs;1688;Tooltip;"\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help");
 Tip_HelpBadge;KabanHMI\Controls\MeterHMI.cs;649;Tooltip;text = _help.Title + "\r\n" + LanguageManager.GetString("Tip_HelpBadge", "Click for help") + "\r\n\r\n" + text;
 Tip_HlpAbout;KabanHMI\Forms\MainForm.Help.cs;121;Tooltip;about.ToolTipText = LanguageManager.GetString("Tip_HlpAbout", "The program, its version and the machines it runs");
 Tip_HmiPrompt;KabanHMI\Helpers\AiMenu.cs;60;Tooltip;: T("Tip_HmiPrompt", "Copies a briefing for an AI chat with the HMI, its machines, where you are and what the page shows, and its whole manual: paste it there and ask it anythin...
@@ -2412,7 +2412,7 @@ Tip_TrnSearch;KabanHMI\Settings\TranslationsControl.cs;178;Tooltip;UiStyle.SetTi
 Tip_TrnUndo;KabanHMI\Settings\TranslationsControl.cs;127;Tooltip;_btnUndo = UiStyle.IconButton(ToolGlyphs.Undo, "Undo", T("Tip_TrnUndo", "Undo the last change: a text typed, an import, a Save"), _tips, (s, e) => Undo());
 Tip_TrnUndo;KabanHMI\Settings\TranslationsControl.Undo.cs;85;Tooltip;: T("Tip_TrnUndo", "Undo the last change: a text typed, an import, a Save"));
 Tip_TrnUndoWhat;KabanHMI\Settings\TranslationsControl.Undo.cs;84;Tooltip;? string.Format(T("Tip_TrnUndoWhat", "Undo: {0}"), Describe(_undoSteps[_undoSteps.Count - 1]))
-Tip_UnitHelp;KabanHMI\Controls\CylinderUnitHMI.cs;1692;Tooltip;tip = LanguageManager.GetString("Tip_UnitHelp", "Help for this unit") + "\r\n" +
+Tip_UnitHelp;KabanHMI\Controls\CylinderUnitHMI.cs;1683;Tooltip;tip = LanguageManager.GetString("Tip_UnitHelp", "Help for this unit") + "\r\n" +
 Tip_UsrDelete;KabanHMI\Settings\UsersPreferencesControl.cs;113;Tooltip;_delete = UiStyle.ToolButton("\uD83D\uDDD1", T("Tip_UsrDelete", "Delete the selected user"), tips, (s, e) => DeleteUser());
 Tip_UsrNew;KabanHMI\Settings\UsersPreferencesControl.cs;112;Tooltip;_new = UiStyle.ToolButton("\u2795", T("Tip_UsrNew", "A new user: at your level or lower"), tips, (s, e) => StartNew());
 Tip_UsrPass;KabanHMI\Settings\UsersPreferencesControl.cs;251;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
@@ -2629,6 +2629,7 @@ Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;206;Text;down ? T("Why_PlcDown
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;217;Text;if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
 Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2059;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
 Why_AiNoFault;KabanHMI\Controls\AlarmHelpBadge.cs;576;Text;ai == null ? LanguageManager.GetString("Why_AiNoFault", "For a fault: the AI prompt is about what failed") : null);
+Why_AxMonAdminLists;KabanHMI\Screens\AxisMonitorPage.cs;237;Text;_bar.LockLists(!admin, LanguageManager.GetString("Why_AxMonAdminLists", "An Admin chooses what the Axis Monitor shows (sign in as one)"));
 Why_ColNoDefault;KabanHMI\Helpers\ColumnChooser.cs;133;Text;!string.IsNullOrEmpty(DefaultKey), T("Why_ColNoDefault", "This table keeps no default of its own")));
 Why_ColNoSaved;KabanHMI\Helpers\ColumnChooser.cs;136;Text;HasSavedDefault, T("Why_ColNoSaved", "No default saved for this table: its default column settings are the original ones")));
 Why_FindBitFormat;KabanHMI\Forms\DeviceFindForm.cs;215;Text;: T("Why_FindBitFormat", "A bit is ON or OFF: it has no display format"));
