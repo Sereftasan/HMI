@@ -41,7 +41,20 @@ namespace Kaban.UI.Helpers
             public string Scale = "";
             /// <summary>What the page on show shows, one line a control (DescribePage) - filled by the main window.</summary>
             public List<string> OnScreen = new List<string>();
+            /// <summary>The machine's bar above the page's tabs (Manual Movement's axes' speed and jog steps), as OnScreen; empty without one.</summary>
+            public List<string> Bar = new List<string>();
         }
+
+        /// <summary>
+        /// The user levels as both briefings tell them (26 October: the prompts brought up to the
+        /// program as it is - coupling, Cylinder FW/Back, the translations, the PLC data backups,
+        /// the menus' greyed entries).
+        /// </summary>
+        public const string Levels =
+            "The levels: Operator (runs the machine: the manual movements, the alarms, notes), Maintenance (also the machine parameters, calibration, " +
+            "coupling units to move together, moving a cylinder back and forth to test it, the translations, a backup of a PLC's data, everyone's preferences), " +
+            "Admin (everything: the users, the PLC connections, the PLC Monitor, writing a backup into a PLC, the simple motion modules' parameters). " +
+            "What a level may not do is not shown, or shown greyed - and its tooltip says why.";
 
         /// <summary>How many controls of the page on show are described, at most.</summary>
         public const int OnScreenMax = 150;
@@ -64,8 +77,26 @@ namespace Kaban.UI.Helpers
 
         private static string Tr(string key) { return string.IsNullOrWhiteSpace(key) ? "" : LanguageManager.GetString(key, key).Trim(); }
 
+        /// <summary>What a unit is doing besides its own buttons: coupled to others, moving back and forth.</summary>
+        private static string UnitState(Kaban.UI.Controls.CylinderUnitHMI u)
+        {
+            if (u == null) return "";
+            var s = "";
+            try
+            {
+                if (UnitCoupling.IsCoupled(u)) s += " - COUPLED: a press of its button presses the same button of the units coupled with it";
+                if (UnitCycling.IsCycling(u)) s += " - MOVING BACK AND FORTH by itself (Cylinder FW/Back)";
+            }
+            catch { }
+            return s;
+        }
+
+        private static string Addr(string address) { return string.IsNullOrWhiteSpace(address) ? "" : " (" + address.Trim() + ")"; }
+
         private static string Commands(Kaban.UI.Controls.ButtonHMI b)
         {
+            if (b != null && b.HmiFunction == Kaban.UI.Controls.HmiButtonFunction.CylinderForwardBack)
+                return " (a function of the HMI, no PLC bit: while on, a cylinder's button starts it moving back and forth by itself - " + (b.HmiFunctionOn ? "ON now" : "off now") + ")";
             if (b == null || b.BitActions == null) return "";
             var a = b.BitActions.Where(x => x != null && !string.IsNullOrWhiteSpace(x.Address)).Select(x => x.Address.Trim() + " " + x.Action).ToList();
             return a.Count == 0 ? "" : " (" + string.Join(", ", a) + ")";
@@ -88,30 +119,79 @@ namespace Kaban.UI.Helpers
                     lines.Add("Motor (inverter) \"" + Tr(inv.TitleTextKey) + "\": " + UnitButtons(inv) +
                               (string.IsNullOrWhiteSpace(inv.PositionAddress) ? "" : "; its value " + inv.PositionDisplay.Text.Trim() + " (" + inv.PositionAddress + ")") +
                               (string.IsNullOrWhiteSpace(inv.RunLampAddress) ? "" : "; run lamp " + (inv.RunLamp.IsOn ? "ON" : "off") + " (" + inv.RunLampAddress + ")") +
-                              (code != 0 ? "; INVERTER FAULT " + AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code) : ""));
+                              (code != 0 ? "; INVERTER FAULT " + AxisCodeHelp.Describe(AxisCodeKind.InverterFault, code) + " - not shown on the unit: both its buttons blink red, its ? has the fault's help" : "") +
+                              UnitState(inv));
                     continue;
                 }
                 if (axisUnit != null)
                 {
                     var u = axisUnit.Unit;
                     lines.Add("Axis \"" + Tr(u.TitleTextKey) + "\": " + UnitButtons(u) + "; position " + u.PositionDisplay.Text.Trim() +
-                              (string.IsNullOrWhiteSpace(u.PositionAddress) ? "" : " (" + u.PositionAddress + ")"));
+                              (string.IsNullOrWhiteSpace(u.PositionAddress) ? "" : " (" + u.PositionAddress + ")") + UnitState(u));
+                    continue;
+                }
+                // a pneumatic positioning or an encoder cylinder's settings: one row, its unit then its sections (26 October)
+                var cylRow = c as Kaban.UI.Controls.CylinderRowHMI;
+                if (cylRow != null)
+                {
+                    var ru = cylRow.Unit;
+                    var parts = new List<string>();
+                    foreach (var key in cylRow.SectionKeys.Where(k => k != Kaban.UI.Controls.CylinderRowHMI.ManualKey))
+                    {
+                        var field = cylRow.FieldOf(key);
+                        var cmd = cylRow.CommandOf(key);
+                        if ((field == null || !field.Visible || string.IsNullOrWhiteSpace(field.Address)) && (cmd == null || !cmd.Visible)) continue;
+                        parts.Add(cylRow.SectionTitle(key) + (field != null && field.Visible && !string.IsNullOrWhiteSpace(field.Address) ? " " + field.Text.Trim() + Addr(field.Address) : "") +
+                                  (cmd != null && cmd.Visible && cmd.BitActions != null && cmd.BitActions.Any(a => a != null && !string.IsNullOrWhiteSpace(a.Address))
+                                      ? ", its button \u25B6| beside it" + Commands(cmd) + (cmd.Enabled ? "" : " - greyed now") : ""));
+                    }
+                    lines.Add((cylRow is Kaban.UI.Controls.PneumaticPositioningHMI ? "Pneumatic positioning (a cylinder the PLC drives to a position) \""
+                                                                                    : "Cylinder with an encoder, its settings row \"") + Tr(cylRow.TitleTextKey) + "\": " +
+                              (ru != null ? UnitButtons(ru) + (string.IsNullOrWhiteSpace(ru.PositionAddress) ? "" : "; position " + ru.PositionDisplay.Text.Trim() + Addr(ru.PositionAddress)) : "") +
+                              (parts.Count > 0 ? "; " + string.Join("; ", parts) : "") + UnitState(ru));
                     continue;
                 }
                 if (unit != null)
                 {
                     lines.Add("Unit \"" + Tr(unit.TitleTextKey) + "\": " + UnitButtons(unit) +
-                              (string.IsNullOrWhiteSpace(unit.PositionAddress) || !unit.PositionDisplay.Visible ? "" : "; position " + unit.PositionDisplay.Text.Trim() + " (" + unit.PositionAddress + ")"));
+                              (string.IsNullOrWhiteSpace(unit.PositionAddress) || !unit.PositionDisplay.Visible ? "" : "; position " + unit.PositionDisplay.Text.Trim() + " (" + unit.PositionAddress + ")") +
+                              UnitState(unit));
                     continue;
                 }
                 var row = c as Kaban.UI.Controls.AxisSettingHMI;
-                if (row != null) { lines.Add("Axis row \"" + Tr(row.AxisNameKey) + "\" (axis " + row.HMIAxisIndex + ")"); continue; }
+                if (row != null)
+                {
+                    var kidsOfRow = row.Controls.Cast<System.Windows.Forms.Control>().ToList();
+                    var pos = kidsOfRow.OfType<Kaban.UI.Controls.NumericDisplayHMI>().FirstOrDefault(d => d.Visible && !string.IsNullOrWhiteSpace(row.PositionAddress) &&
+                                                                                                     string.Equals(d.Address, row.PositionAddress, StringComparison.OrdinalIgnoreCase));
+                    var current = kidsOfRow.OfType<Kaban.UI.Controls.MeterHMI>().FirstOrDefault(m => m.Visible && !string.IsNullOrWhiteSpace(row.CurrentAddress) &&
+                                                                                               string.Equals(m.Address, row.CurrentAddress, StringComparison.OrdinalIgnoreCase));
+                    var codes = kidsOfRow.OfType<Kaban.UI.Controls.HexCodeHMI>().Where(h => h.Visible && h.HasHelp).Select(h => h.CodeKind.ToString()).ToList();
+                    lines.Add("Axis row \"" + Tr(row.AxisNameKey) + "\" (axis " + row.HMIAxisIndex + ")" +
+                              (pos != null ? ": position " + pos.Text.Trim() + Addr(row.PositionAddress) : "") +
+                              (current != null ? "; motor current " + current.DisplayValue.ToString("0.0", CultureInfo.InvariantCulture) + " %" + Addr(row.CurrentAddress) : "") +
+                              (codes.Count > 0 ? "; A DRIVE CODE SHOWS (" + string.Join(", ", codes) + ") - its cell opens its help" : ""));
+                    continue;
+                }
+                var speed = c as Kaban.UI.Controls.SpeedOverrideHMI;
+                if (speed != null)
+                {
+                    lines.Add("Speed slider \"" + LanguageManager.GetString(speed.TranslationKey ?? "", speed.FallbackText ?? "").Trim().TrimEnd(':') + "\": " +
+                              (speed.Current.HasValue ? speed.Current.Value + " %" : "not read yet") + Addr(speed.Address) + (speed.Enabled ? "" : " - greyed now"));
+                    continue;
+                }
+                var combo = c as Kaban.UI.Controls.ComboBoxHMI;
+                if (combo != null)
+                {
+                    lines.Add("Choice \"" + Tr(combo.DescriptionText).TrimEnd(':') + "\": " + (combo.Text ?? "").Trim() + Addr(combo.Address) + (combo.Enabled ? "" : " - greyed now"));
+                    continue;
+                }
                 var heading = c as Kaban.UI.Controls.LabelHMI;
                 if (heading != null) { if (heading.Text.Trim().Length > 0) lines.Add("Heading: " + heading.Text.Trim()); continue; }
                 var btn = c as Kaban.UI.Controls.ButtonHMI;
                 if (btn != null)
                 {
-                    lines.Add("Button \"" + btn.Text.Trim() + "\"" + Commands(btn) + (btn.Enabled ? "" : " - greyed now") +
+                    lines.Add("Button \"" + ButtonWord(btn.DisplayText, btn.DisplayText) + "\"" + Commands(btn) + (btn.Enabled ? "" : " - greyed now") +
                               (string.IsNullOrWhiteSpace(btn.Lamp1Address) ? "" : "; its lamp " + btn.Lamp1Address));
                     continue;
                 }
@@ -215,8 +295,11 @@ namespace Kaban.UI.Helpers
                 foreach (var s in stations)
                 {
                     bool down = Safe(() => ConnectionMonitor.IsKnownDown(s.StationId), false);
+                    bool off = Safe(() => PlcConnectionSettings.RunsInactive(s.StationId), false);
                     sb.AppendLine("  - Station " + s.StationId + (string.IsNullOrWhiteSpace(s.Name) ? "" : " (" + s.Name.Trim() + ")") +
-                                  (string.IsNullOrWhiteSpace(s.OwnerModuleId) ? "" : ", of " + s.OwnerModuleId) + (down ? " - NOT ANSWERING now" : ""));
+                                  (string.IsNullOrWhiteSpace(s.OwnerModuleId) ? "" : ", of " + s.OwnerModuleId) +
+                                  (off ? " - NOT ACTIVE (switched off on HMI Settings > PLC Connections: not read; a machine with no active controller has no pages)"
+                                       : down ? " - NOT ANSWERING now" : ""));
                 }
             }
             sb.AppendLine();
@@ -225,16 +308,19 @@ namespace Kaban.UI.Helpers
             sb.AppendLine("## Me, and where I am");
             sb.AppendLine("- Signed in: " + (level == SecurityLevel.None ? "nobody (the panel's own view: what anyone may see)"
                                                                          : (SecurityManager.CurrentUser ?? "") + ", level " + levelName) + ".");
-            sb.AppendLine("- The levels: Operator (runs the machine: manual movements, alarms, the pages to see), Maintenance (also settings, parameters, " +
-                          "calibration, everyone's preferences), Admin (everything: users, the PLC Monitor, the controllers, the pages' settings). " +
-                          "What my level may not do is grey or not shown on my screen.");
+            sb.AppendLine("- " + Levels);
             if (!string.IsNullOrWhiteSpace(ctx.Place)) sb.AppendLine("- The page on my screen: " + ctx.Place.Trim());
             if (!string.IsNullOrWhiteSpace(ctx.SidePage)) sb.AppendLine("- Open beside it (the side panel): " + ctx.SidePage.Trim());
             sb.AppendLine();
-            if (ctx.OnScreen != null && ctx.OnScreen.Count > 0)
+            if ((ctx.OnScreen != null && ctx.OnScreen.Count > 0) || (ctx.Bar != null && ctx.Bar.Count > 0))
             {
                 sb.AppendLine("## What that page shows now (top to bottom, left to right; device numbers in brackets)");
-                foreach (var l in ctx.OnScreen) sb.AppendLine("- " + l);
+                if (ctx.Bar != null && ctx.Bar.Count > 0)
+                {
+                    sb.AppendLine("- The machine's bar above the page's tabs (the same over every tab):");
+                    foreach (var l in ctx.Bar) sb.AppendLine("  - " + l);
+                }
+                if (ctx.OnScreen != null) foreach (var l in ctx.OnScreen) sb.AppendLine("- " + l);
                 sb.AppendLine();
             }
 
@@ -253,6 +339,16 @@ namespace Kaban.UI.Helpers
                                   (a.Generated ? " - raised by the HMI" : ""));
                 }
                 sb.AppendLine("  (Each alarm's own help - and an AI prompt for it alone - is in its Help column on the Alarms page.)");
+            }
+            var coupled = Safe(() => UnitCoupling.All.Where(u => u != null).ToList(), new List<Kaban.UI.Controls.CylinderUnitHMI>());
+            if (coupled.Count > 0)
+                sb.AppendLine("- Units coupled to move together now (the caption bar's blue chain): " + string.Join(", ", coupled.Select(u => "\"" + Tr(u.TitleTextKey) + "\"")) +
+                              " - a press of one's button presses the same button of each.");
+            if (Safe(() => UnitCycling.Active, false))
+            {
+                var cycling = Safe(() => UnitCycling.Cycling.Where(u => u != null).ToList(), new List<Kaban.UI.Controls.CylinderUnitHMI>());
+                sb.AppendLine("- Cylinder FW/Back is ON: a press of a cylinder's button starts it moving back and forth by itself" +
+                              (cycling.Count > 0 ? "; moving now: " + string.Join(", ", cycling.Select(u => "\"" + Tr(u.TitleTextKey) + "\"")) : "") + ".");
             }
             sb.AppendLine("- The prompt was made at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + ".");
             sb.AppendLine();

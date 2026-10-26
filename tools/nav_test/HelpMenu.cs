@@ -146,6 +146,16 @@ class HM {
         Check("  what the page on screen shows now: its units with their buttons and devices, top to bottom",
               onPage.Contains("- Unit \"") && onPage.Contains("button \"") && System.Text.RegularExpressions.Regex.IsMatch(onPage, @"\((M|Y)\d+\)"),
               onPage.Length > 400 ? onPage.Substring(0, 400) : onPage);
+        // 26 October: the prompt brought up to the program as it is
+        Check("  a button by its caption on the screen, never an empty one", !onPage.Contains("Button \"\"") &&
+              System.Text.RegularExpressions.Regex.IsMatch(onPage, "- (Unit|Motor \\(inverter\\)) \"[^\"]+\""),
+              onPage.Length > 400 ? onPage.Substring(0, 400) : onPage);
+        Check("  the machine's bar above the tabs: the axes' speed slider, JOG and the steps, Cylinder FW/Back an HMI function",
+              onPage.Contains("- The machine's bar above the page's tabs (the same over every tab):") && onPage.Contains("  - Speed slider \"") &&
+              onPage.Contains("Button \"JOG\"") && onPage.Contains("Button \"10 mm\"") && onPage.Contains("Cylinder FW/Back\" (a function of the HMI, no PLC bit"),
+              onPage.Length > 900 ? onPage.Substring(0, 900) : onPage);
+        Check("  the levels as they are now (coupling, translations, backups; greyed with why)", p.Contains("- " + HmiAiPrompt.Levels));
+        Check("  coupled units and Cylinder FW/Back told under Now only while there are", !p.Contains("Units coupled to move together now") && !p.Contains("Cylinder FW/Back is ON"));
         Check("  what is asked comes last: be the helper at my level, in my language, in a conversation that starts at once",
               ask > html && html > 0 && p.Contains("Be my helper for THIS HMI, in English, at my level (Admin), in a conversation") &&
               p.Contains("Start now, in a few short lines: what the page I am on is for") && p.Contains("Keep each answer short"));
@@ -155,6 +165,13 @@ class HM {
         var saved = AlarmAiPrompt.LastSaved;
         Check("  the file: AI prompt HMI <time>.txt", saved != null && Path.GetFileName(saved).StartsWith("AI prompt HMI ") && saved.EndsWith(".txt"), saved ?? "none");
         Check("  not opened anywhere (only copied)", opened.Count == 0 && AlarmAiPrompt.LastOpened == null);
+        UnitCycling.SetActive(true);
+        Item(form.BuildHelpMenu(), "aiPrompt").PerformClick();
+        Pump(100);
+        var pc = AlarmAiPrompt.LastSaved != null && File.Exists(AlarmAiPrompt.LastSaved) ? File.ReadAllText(AlarmAiPrompt.LastSaved) : "";
+        Check("  Cylinder FW/Back on: told under Now, its button ON in the bar", pc.Contains("- Cylinder FW/Back is ON: a press of a cylinder's button starts it moving back and forth by itself") &&
+              pc.Contains("moving back and forth by itself - ON now)"));
+        UnitCycling.SetActive(false);
 
         Console.WriteLine("--- Ask <AI>: that AI opened ---");
         menu = form.BuildHelpMenu();

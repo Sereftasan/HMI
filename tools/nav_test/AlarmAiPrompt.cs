@@ -103,6 +103,22 @@ class AAP {
               p.Contains("Machine: Processing Center - model FA2010") && p.Contains("3D Hinge Drilling (H800)") &&
               p.Contains("U4 FX5U-64MT-ESS") && p.Contains("U19 FX5-8AD") && p.Contains("PLC station 1 (FA2010 Main PLC)"));
         Check("  the HMI and its pages", p.Contains("Manual Movement (each cylinder is a unit") && p.Contains("Machine Parameters"));
+        // 26 October: the prompts brought up to the program as it is
+        Check("  its pages as they are now: motors, positionings, the bar, Inputs / Outputs for any user, the notes",
+              p.Contains("a motor driven by an inverter is a unit too") && p.Contains("the axes' speed and jog steps") &&
+              p.Contains("for any user") && p.Contains("Notes and feedback"));
+        Check("  the levels as both prompts tell them: coupling, Cylinder back and forth, translations, backups, greyed with why",
+              p.Contains(HmiAiPrompt.Levels) && p.Contains("coupling units") && p.Contains("a backup of a PLC's data") && p.Contains("its tooltip says why"));
+        var addedFile = Path.Combine(dir, "Clamp photo.txt");
+        File.WriteAllText(addedFile, "The clamp's photo, as the builder added it.");
+        var withAdded = new List<TroubleshootingCatalog.HelpDocument> { new TroubleshootingCatalog.HelpDocument { FileName = addedFile, Title = "Clamp photo" } };
+        withAdded.AddRange(docs);
+        var pa = AlarmAiPrompt.Build(item, null, withAdded);
+        Check("  its help list as the HMI shows it: the files added first, each said added or the HMI's own",
+              pa.Contains("## The help for this alarm (as its Help list on the HMI shows it: the files added by the machine's builder or its users first") &&
+              pa.Contains("- Clamp photo - Clamp photo.txt - added for this alarm or its unit: specific to this machine") &&
+              System.Text.RegularExpressions.Regex.IsMatch(pa, @"- Step by step[^\n]* - the HMI's own"),
+              string.Join(" / ", pa.Split('\n').Where(l => l.Contains(" - added for") || l.Contains(" - the HMI's own"))));
         Check("  how the alarms are raised (the PLC's, the HMI's own with its delay and the SET, the sub-codes)",
               p.Contains("## How the alarms are raised") && p.Contains("within 5 s") && p.Contains("SETs that bit in the PLC") && p.Contains(".2 the target sensor did not come ON"));
         Check("the alarm: its text, code, device, time", p.Contains("\"Cutting Right Front Clamp Releasing Alarm\"") && p.Contains("PLC device of the alarm: M852") &&

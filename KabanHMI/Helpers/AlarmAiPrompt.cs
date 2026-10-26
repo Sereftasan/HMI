@@ -197,8 +197,12 @@ namespace Kaban.UI.Helpers
                 (w.SensorSupplyWire.Length > 0 ? (w.ZeroVoltWire.Length > 0 ? ", " : "") + "the sensors' +24 V is wire " + w.SensorSupplyWire : ""); });
             if (supply.Length > 0) sb.AppendLine("- On the electrical drawing " + supply + ".");
             sb.AppendLine("- The HMI (Kaban HMI) reads the PLC every scan. Its pages: Manual Movement (each cylinder is a unit with two buttons - one per movement - " +
-                          "and lamps for its sensors), Machine Parameters (one row per servo axis: jog buttons, position, current, limits, reference, its alarm codes), " +
-                          "Alarms (this list, with help documents for each alarm), and side pages (Inputs / Outputs, Axis Monitor, PLC Monitor). " +
+                          "and lamps for its sensors; a motor driven by an inverter is a unit too; a cylinder the PLC drives to a position is a row; " +
+                          "the machine's bar above the tabs has the axes' speed and jog steps), " +
+                          "Machine Parameters (one row per servo axis: jog buttons, position, current, limits, reference, its alarm codes, the motion module's values; " +
+                          "a row per cylinder with an encoder; the alarms' settings and delays), " +
+                          "Alarms (this list, with help documents for each alarm), and side pages (Inputs / Outputs - every input and output, lit while on, for any user; " +
+                          "the Axis Monitor; the PLC Monitor, an Admin's; Notes and feedback, where users leave notes on a control). " +
                           "The panel's language now: " + language + "; its users sign in as Operator, Maintenance or Admin.");
             sb.AppendLine();
 
@@ -219,8 +223,7 @@ namespace Kaban.UI.Helpers
 
             // ---- me ---------------------------------------------------------------------
             sb.AppendLine("## Me");
-            sb.AppendLine("- " + MeLine() + " The levels: Operator (runs the machine, the manual movements, the alarms), Maintenance (also settings, parameters, calibration), " +
-                          "Admin (everything, the PLC Monitor included). The panel's language: " + language + ".");
+            sb.AppendLine("- " + MeLine() + " " + HmiAiPrompt.Levels + " The panel's language: " + language + ".");
             sb.AppendLine();
 
             // ---- the alarm ------------------------------------------------------------
@@ -386,11 +389,14 @@ namespace Kaban.UI.Helpers
             // ---- what the HMI's help already says --------------------------------------
             if (docs.Count > 0)
             {
-                sb.AppendLine("## The HMI's own help for this alarm");
+                // 26 October: the files added first, as the alarm's Help list shows them - and which are which
+                sb.AppendLine("## The help for this alarm (as its Help list on the HMI shows it: the files added by the machine's builder or its users first, then the HMI's own)");
                 foreach (var d in docs)
                 {
                     var ext = Path.GetExtension(d.FileName ?? "").ToLowerInvariant();
+                    bool made = Safe(() => AlarmHelpLinks.IsMade(d), true);
                     sb.AppendLine("- " + d.Title + (string.IsNullOrEmpty(d.Section) ? "" : " (section " + d.Section + ")") + " - " + Path.GetFileName(d.FileName ?? "") +
+                                  (made ? " - the HMI's own" : " - added for this alarm or its unit: specific to this machine") +
                                   (d == example ? " - its text below, whole" : ext == ".pdf" ? " - a PDF, not included (ask me for a page if you need it)" : ""));
                 }
                 sb.AppendLine();

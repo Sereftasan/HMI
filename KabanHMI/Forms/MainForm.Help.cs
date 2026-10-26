@@ -97,6 +97,14 @@ namespace Kaban.UI.Forms
             try { ctx.Place = CurrentPlace(); } catch { }
             // what the page on show shows now (14 October: a briefing the AI can talk from)
             try { ctx.OnScreen = HmiAiPrompt.DescribePage(CurrentView()); } catch { }
+            // the machine's bar above the page's tabs (Manual Movement's axes' speed and jog steps) is the page's too
+            try
+            {
+                Kaban.UI.Settings.SettingsScreen screen = null;
+                for (Control c = CurrentView(); c != null && screen == null; c = c.Parent) screen = c as Kaban.UI.Settings.SettingsScreen;
+                if (screen != null && screen.TopBar != null && screen.TopBar.Visible) ctx.Bar = HmiAiPrompt.DescribePage(screen.TopBar);
+            }
+            catch { }
             if (_sidePanel != null && _sidePanel.Visible && _sideOpen != null) ctx.SidePage = _sideOpen.Title;
             ctx.Scale = DisplaySettings.Percent(UiScale.Factor);
             return ctx;
