@@ -291,14 +291,29 @@ namespace Kaban.UI.Controls
         }
 
         /// <summary>
-        /// The PLC axis items and the Motion monitor hidden (the Axis Monitor for
-        /// someone below Admin: what the rows show is an Admin's choice), the Axes
-        /// list left.
+        /// The PLC axis items and the Motion monitor hidden (the Axis Monitor for an
+        /// Operator: what the rows show is an Admin's choice), the Axes list left.
         /// </summary>
         public void HideLists(bool hide)
         {
             _listsHidden = hide;
             if (hide) ItemsPick.Visible = MotionPick.Visible = false;
+        }
+
+        private bool _listsLocked;
+
+        /// <summary>
+        /// The PLC axis items and the Motion monitor shown greyed, not opened, saying why (26 October: the
+        /// Axis Monitor for Maintenance - "The maintenance level should see it greyed, not the operator
+        /// though"): ticked as the rows show them - the torque monitor, no motion monitor item - not as the
+        /// Admin chose for himself.
+        /// </summary>
+        public void LockLists(bool locked, string why)
+        {
+            _listsLocked = locked;
+            ItemsPick.LockedWhy = locked ? why : "";
+            MotionPick.LockedWhy = locked ? why : "";
+            Sync();
         }
 
         /// <summary>The rows the Axes list offers (key: name@station, text: the name).</summary>
@@ -349,11 +364,12 @@ namespace Kaban.UI.Controls
             _syncing = true;
             try
             {
-                var picked = ViewPreferences.PickOf(_itemsKey);
+                // locked (the Axis Monitor below Admin): what the rows show - the torque monitor, as it was
+                var picked = _listsLocked ? new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "Torque" } : ViewPreferences.PickOf(_itemsKey);
                 var want = picked == null ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                                           : new HashSet<string>(ItemsPick.Items.Select(i => i.Key).Where(picked.Contains), StringComparer.OrdinalIgnoreCase);
                 if (!ItemsPick.Selected.SetEquals(want)) ItemsPick.Select(want);
-                var motion = ViewPreferences.ListOf(_motionKey);
+                var motion = _listsLocked ? new List<string>() : ViewPreferences.ListOf(_motionKey);
                 if (!MotionPick.Selected.SetEquals(motion)) MotionPick.Select(motion);
                 if (AxesPick != null)
                 {

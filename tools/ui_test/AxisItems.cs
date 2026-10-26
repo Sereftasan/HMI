@@ -411,10 +411,24 @@ class AXI {
         var mbar = (AxisPickBar)typeof(AxisMonitorPage).GetProperty("Bar", Any).GetValue(monitor, null);
         Func<IList<AxisSettingHMI>> settingRows = () => (IList<AxisSettingHMI>)typeof(AxisMonitorPage).GetProperty("SettingRows", Any).GetValue(monitor, null);
         Check("an Operator: as it was - name, position, current - and no lists", mrows.Count == 2 && settingRows().Count == 0 && !mbar.Visible);
+        // 26 October: "The maintenance level should see it greyed, not the operator though"
+        ViewPreferences.SetPanel(ViewPreferences.MonitorMotion, "Busy");          // an Admin's choice: not what Maintenance sees
+        SecurityManager.Login("tech", SecurityLevel.Maintenance);
+        Pump(200);
+        mrows = (IList<AxisMonitorRow>)typeof(AxisMonitorPage).GetProperty("Rows", Any).GetValue(monitor, null);
+        mbar = (AxisPickBar)typeof(AxisMonitorPage).GetProperty("Bar", Any).GetValue(monitor, null);
+        Check("Maintenance: the rows as an Operator's; the two lists there, greyed - ticked as the rows show (the torque monitor, no motion item), saying why",
+              mrows.Count == 2 && settingRows().Count == 0 && mbar.Visible && mbar.ItemsPick.Visible && mbar.MotionPick.Visible &&
+              mbar.ItemsPick.Locked && mbar.MotionPick.Locked && mbar.ItemsPick.LockedWhy.StartsWith("An Admin chooses") &&
+              mbar.ItemsPick.Selected.SetEquals(new[] { "Torque" }) && mbar.MotionPick.Selected.Count == 0,
+              mbar.Visible + " " + mbar.ItemsPick.Locked + " " + string.Join(",", mbar.ItemsPick.Selected) + " / " + string.Join(",", mbar.MotionPick.Selected));
+        mbar.ItemsPick.DropUnder(mbar.ItemsPick);
+        Check("  a click opens nothing", !mbar.ItemsPick.IsOpen);
+        ViewPreferences.SetPanel(ViewPreferences.MonitorMotion, null);
         SecurityManager.Login("boss", SecurityLevel.Admin);
         Pump(200);
         mrows = (IList<AxisMonitorRow>)typeof(AxisMonitorPage).GetProperty("Rows", Any).GetValue(monitor, null);
-        Check("an Admin: the two lists; at first the monitor as it was (Torque monitor ticked)", mbar.Visible && mrows.Count == 2 &&
+        Check("an Admin: the two lists; at first the monitor as it was (Torque monitor ticked)", mbar.Visible && mrows.Count == 2 && !mbar.ItemsPick.Locked && !mbar.MotionPick.Locked &&
               mbar.ItemsPick.Selected.SetEquals(new[] { "Torque" }) && mbar.MotionPick.Visible);
         mbar.ItemsPick.Select(new[] { "Torque", "Settings", "Codes" });
         mbar.MotionPick.Select(new[] { "Busy", "OperationStatus" });

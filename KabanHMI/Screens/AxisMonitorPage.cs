@@ -154,7 +154,7 @@ namespace Kaban.UI.Screens
         {
             bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
             string axes = "|" + (ViewPreferences.Get(ViewPreferences.MonitorAxes) ?? "") + "|" + string.Join(",", ViewPreferences.ListOf(ViewPreferences.AxisPositions));
-            if (!admin) return "user" + axes;
+            if (!admin) return (SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "maintenance" : "user") + axes;
             var items = ViewPreferences.PickOf(ViewPreferences.MonitorItems);
             return "admin|" + (items == null ? "*" : string.Join(",", AxisSettingHMI.ItemKeys.Where(items.Contains))) + "|" +
                    string.Join(",", ViewPreferences.ListOf(ViewPreferences.MonitorMotion)) + axes;
@@ -218,6 +218,8 @@ namespace Kaban.UI.Screens
                 _list.Visible = axes.Count > 0;
 
                 bool admin = SecurityManager.HasAccess(SecurityLevel.Admin);
+                // Maintenance: the Admin's lists seen, greyed (26 October) - an Operator: not at all
+                bool maintenance = SecurityManager.HasAccess(SecurityLevel.Maintenance);
                 var copies = axes.Select(a => AxisSettingHMI.FromSnapshot(a.Row)).ToList();
 
                 Func<AlarmHelpLinks.AxisInfo, string> machineOf = a =>
@@ -230,16 +232,17 @@ namespace Kaban.UI.Screens
 
                 // The Axes list (everyone, from the Axis heading): which axes - the
                 // machine before the name when more than one machine has axes. The PLC
-                // axis items and the Motion monitor: an Admin's.
-                _bar.HideLists(!admin);
+                // axis items and the Motion monitor: an Admin's - greyed for Maintenance.
+                _bar.HideLists(!maintenance);
+                _bar.LockLists(!admin, LanguageManager.GetString("Why_AxMonAdminLists", "An Admin chooses what the Axis Monitor shows (sign in as one)"));
                 _bar.OfferAxes(axes.Where(a => CanBeSeen(a)).Select(a =>
                 {
                     string name = LanguageManager.GetString(a.NameKey ?? "", a.NameKey ?? "");
                     string m = machineOf(a);
                     return new Kaban.UI.Dashboard.PickList.Item(AxisKey(a), machines.Count > 1 && m.Length > 0 ? m + " \u00B7 " + name : name);
                 }));
-                if (admin) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
-                _bar.Visible = admin && axes.Count > 0;
+                if (maintenance) _bar.Offer(AxisSettingHMI.ItemsOf(copies, monitor: true), copies.Any(c => c.HasMotion));
+                _bar.Visible = maintenance && axes.Count > 0;
                 axes = axes.Where(a => _bar.ShowsAxis(AxisKey(a))).ToList();
                 // THE POSITIONS SIDE BY SIDE (22 October): the kinds the axes listed have, as ticked
                 var offered = new List<string> { "Position" };

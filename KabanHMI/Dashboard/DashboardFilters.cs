@@ -164,6 +164,24 @@ namespace Kaban.UI.Dashboard
             set { _heading = (value ?? "").Trim().TrimEnd(':').Trim(); Caption(); }
         }
 
+        private string _lockedWhy = "";
+
+        /// <summary>
+        /// Shown greyed with its ticks, not opened, saying why in its tooltip (26 October: the Axis Monitor's
+        /// lists for Maintenance - "The maintenance level should see it greyed, not the operator though"). Not
+        /// Enabled = false: a disabled control shows no tooltip. Empty: the list as it is.
+        /// </summary>
+        public string LockedWhy
+        {
+            get { return _lockedWhy; }
+            set { _lockedWhy = value ?? ""; Cursor = Locked ? Cursors.Default : Cursors.Hand; Caption(); }
+        }
+
+        public bool Locked { get { return _lockedWhy.Length > 0; } }
+
+        /// <summary>Drawn as a list that can be opened.</summary>
+        private bool Live { get { return Enabled && !Locked; } }
+
         /// <summary>At the right of a list with a heading: how many are ticked, or what none ticked means.</summary>
         public string State { get { return _selected.Count == 0 ? _allText : _selected.Count + "/" + _items.Count; } }
 
@@ -235,7 +253,8 @@ namespace Kaban.UI.Dashboard
         {
             Text = Shown;
             if (_tips != null) Kaban.UI.Controls.UiStyle.SetTip(_tips, this, (_heading.Length > 0 ? _heading + "\n" : "") +
-                                                                       (_selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts)));
+                                                                       (_selected.Count == 0 ? _allText : string.Join("\n", SelectedTexts)) +
+                                                                       (Locked ? "\n" + _lockedWhy : ""));
             Invalidate();
         }
 
@@ -245,17 +264,17 @@ namespace Kaban.UI.Dashboard
             g.Clear(BackColor);
             if (PaintAsCombo(g)) return;
             var r = new Rectangle(0, 0, Width - 1, Height - 1);
-            using (var pen = new Pen(_hover || Focused ? Color.FromArgb(0, 120, 215) : Color.FromArgb(122, 122, 122)))
+            using (var pen = new Pen(Live && (_hover || Focused) ? Color.FromArgb(0, 120, 215) : Color.FromArgb(122, 122, 122)))
                 g.DrawRectangle(pen, r);
             int arrow = UiScale.Px(18);
             var text = new Rectangle(UiScale.Px(4), 0, Width - arrow - UiScale.Px(6), Height);
             text.Width -= PaintState(g, text.Right);
-            TextRenderer.DrawText(g, Shown, Font, text, Enabled ? UiStyle.GridInk : SystemColors.GrayText,
+            TextRenderer.DrawText(g, Shown, Font, text, Live ? UiStyle.GridInk : SystemColors.GrayText,
                                   TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
             // the arrow of a combo box
             g.SmoothingMode = SmoothingMode.AntiAlias;
             float cx = Width - arrow / 2f - UiScale.Px(2), cy = Height / 2f, a = UiScale.Px(4);
-            using (var pen = new Pen(Color.FromArgb(70, 70, 70), Math.Max(1.5f, UiScale.Px(2) * 0.75f)) { LineJoin = LineJoin.Round })
+            using (var pen = new Pen(Live ? Color.FromArgb(70, 70, 70) : SystemColors.GrayText, Math.Max(1.5f, UiScale.Px(2) * 0.75f)) { LineJoin = LineJoin.Round })
                 g.DrawLines(pen, new[] { new PointF(cx - a, cy - a / 2), new PointF(cx, cy + a / 2), new PointF(cx + a, cy - a / 2) });
         }
 
@@ -270,7 +289,7 @@ namespace Kaban.UI.Dashboard
             {
                 if (!Application.RenderWithVisualStyles || !VisualStyleRenderer.IsSupported) return false;
                 // COMBOBOX: CP_READONLY = 5 (normal 1, hot 2, pressed 3, disabled 4); CP_DROPDOWNBUTTONRIGHT = 6
-                int state = !Enabled ? 4 : _hover ? 2 : 1;
+                int state = !Live ? 4 : _hover ? 2 : 1;
                 var back = VisualStyleElement.CreateElement("COMBOBOX", 5, state);
                 var arrow = VisualStyleElement.CreateElement("COMBOBOX", 6, state);
                 if (!VisualStyleRenderer.IsElementDefined(back) || !VisualStyleRenderer.IsElementDefined(arrow)) return false;
@@ -279,9 +298,9 @@ namespace Kaban.UI.Dashboard
                 new VisualStyleRenderer(arrow).DrawBackground(g, new Rectangle(Width - w - 1, 1, w, Height - 2));
                 var text = new Rectangle(UiScale.Px(4), 0, Width - w - UiScale.Px(6), Height);
                 text.Width -= PaintState(g, text.Right);
-                TextRenderer.DrawText(g, Shown, Font, text, Enabled ? SystemColors.WindowText : SystemColors.GrayText,
+                TextRenderer.DrawText(g, Shown, Font, text, Live ? SystemColors.WindowText : SystemColors.GrayText,
                                       TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
-                if (Focused) ControlPaint.DrawFocusRectangle(g, new Rectangle(2, 2, Width - w - 4, Height - 4));
+                if (Focused && Live) ControlPaint.DrawFocusRectangle(g, new Rectangle(2, 2, Width - w - 4, Height - 4));
                 return true;
             }
             catch { return false; }
@@ -294,7 +313,7 @@ namespace Kaban.UI.Dashboard
             var state = State;
             if (state.Length == 0) return 0;
             var size = TextRenderer.MeasureText(state, UiStyle.Small);
-            var colour = !Enabled ? SystemColors.GrayText : _selected.Count > 0 ? Color.FromArgb(0, 120, 215) : Color.FromArgb(120, 126, 134);
+            var colour = !Live ? SystemColors.GrayText : _selected.Count > 0 ? Color.FromArgb(0, 120, 215) : Color.FromArgb(120, 126, 134);
             TextRenderer.DrawText(g, state, UiStyle.Small, new Rectangle(right - size.Width, 0, size.Width, Height), colour,
                                   TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding);
             return size.Width + UiScale.Px(6);
@@ -335,7 +354,7 @@ namespace Kaban.UI.Dashboard
         /// </summary>
         public void DropUnder(Control anchor)
         {
-            if (anchor == null || anchor.IsDisposed) return;
+            if (anchor == null || anchor.IsDisposed || Locked) return;
             var items = _items.ToList();
             int widest = items.Count == 0 ? 0 : items.Max(i => TextRenderer.MeasureText(i.Text, Font).Width);
             var list = new CheckedListBox
