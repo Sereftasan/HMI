@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 26 October (Notes and feedback):
+  - 57735af - The page redesigned as the others: the notes in a table, Add / general note / View / Edit / Find / Remove /
+    feedback file on top of it, with filters (search, kind, state, who); the note or the control picked in the Details tab.
+    Add turns picking on (one control, Esc or a click on the page gives up); what was typed is asked about before it is
+    thrown away; a note is changed or removed by its author or a level above; Find opens its control's page.
 - 26 October (the answers to 24 October's questions):
   - 31d8e23 - The alarm list's Help: the files added listed first, then the step-by-step page (its name as before).
   - 38ca02d - Axis Monitor: Maintenance sees the PLC axis items and Motion monitor lists greyed (an Admin's choice); an

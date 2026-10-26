@@ -1319,12 +1319,13 @@ Msg_FindCount;KabanHMI\Forms\DeviceFindForm.cs;338;Status;: string.Format(T("Msg
 Msg_FindGone;KabanHMI\Forms\MainForm.cs;286;Text;if (found == null) why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again.");
 Msg_FindGone;KabanHMI\Forms\MainForm.cs;311;Text;if (tabs == null || i < 0 || i >= tabs.AllPages.Count) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
 Msg_FindGone;KabanHMI\Forms\MainForm.cs;321;Text;if (target == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
-Msg_FindGone;KabanHMI\Forms\MainForm.Notes.cs;81;Text;if (table == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
+Msg_FindGone;KabanHMI\Forms\MainForm.Notes.cs;84;Text;if (table == null) { why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again."); return null; }
 Msg_FindHint;KabanHMI\Forms\DeviceFindForm.cs;280;Status;else _status.Text = T("Msg_FindHint", "Type an address (M604), a label, or part of a unit's name, then Enter.");
 Msg_FindHint;KabanHMI\Forms\DeviceFindForm.cs;315;Status;if (q.Length == 0) { _status.Text = T("Msg_FindHint", "Type an address (M604), a label, or part of a unit's name, then Enter."); return _found; }
 Msg_FindNoAccess;KabanHMI\Forms\MainForm.cs;283;Text;if (!SecurityManager.HasAccess(side.RequiredLevel)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
 Msg_FindNoAccess;KabanHMI\Forms\MainForm.cs;302;Text;if (!ReferenceEquals(_currentScreen, nav)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
 Msg_FindNoAccess;KabanHMI\Forms\MainForm.cs;313;Text;if (!SecurityManager.HasAccess(page.RequiredLevel)) { why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page."); return null; }
+Msg_FindNoAccess;KabanHMI\Forms\MainForm.Notes.cs;278;Text;why = LanguageManager.GetString("Msg_FindNoAccess", "Your level may not open that page.");
 Msg_FindNone;KabanHMI\Forms\DeviceFindForm.cs;337;Status;? string.Format(T("Msg_FindNone", "'{0}' is used nowhere on this controller's pages."), q)
 Msg_FindNoPage;KabanHMI\Forms\MainForm.cs;274;Text;why = LanguageManager.GetString("Msg_FindNoPage", "It is not on a page (an alarm definition).");
 Msg_FindNoPage;KabanHMI\Screens\NotesFindForm.cs;222;Status;: T("Msg_FindNoPage", "It is not on a page (an alarm definition).");
@@ -1482,10 +1483,10 @@ Msg_TrnLangFrom;KabanHMI\Settings\TranslationLanguageForms.cs;42;Text;internal s
 Msg_TrnLangName;KabanHMI\Settings\TranslationLanguageForms.cs;43;Text;internal static string NamePrompt { get { return T("Msg_TrnLangName", "Its name, in English - the AI translates into it by this name, the lists show it:"); } }
 Msg_TrnLangNoName;KabanHMI\Settings\TranslationLanguageForms.cs;131;Text;if (string.IsNullOrWhiteSpace(name)) return T("Msg_TrnLangNoName", "Write its name too, in English - the AI translates into it by its name.");
 Msg_TrnLangThere;KabanHMI\Settings\TranslationLanguageForms.cs;130;Text;if (existing != null && existing.Contains(code, StringComparer.OrdinalIgnoreCase)) return string.Format(T("Msg_TrnLangThere", "{0} is there already."), code);
-Msg_TrnLevel;KabanHMI\Forms\MainForm.Notes.cs;76;Text;why = LanguageManager.GetString("Msg_TrnLevel", "The Translation page is for Maintenance and above.");
-Msg_TrnNoKey;KabanHMI\Forms\MainForm.Notes.cs;82;Text;if (!table.ShowKey(key)) why = string.Format(LanguageManager.GetString("Msg_TrnNoKey", "{0} is in no translation file."), key);
+Msg_TrnLevel;KabanHMI\Forms\MainForm.Notes.cs;79;Text;why = LanguageManager.GetString("Msg_TrnLevel", "The Translation page is for Maintenance and above.");
+Msg_TrnNoKey;KabanHMI\Forms\MainForm.Notes.cs;85;Text;if (!table.ShowKey(key)) why = string.Format(LanguageManager.GetString("Msg_TrnNoKey", "{0} is in no translation file."), key);
 Msg_TrnNoOldFiles;KabanHMI\Settings\TranslationsControl.Import.cs;492;Text;: T("Msg_TrnNoOldFiles", "No translation file of this program is in that folder (CommonTranslations.csv, a machine's Translations.csv or Alarms.json).");
-Msg_TrnNoPage;KabanHMI\Forms\MainForm.Notes.cs;71;Text;if (screen == null) { why = LanguageManager.GetString("Msg_TrnNoPage", "This program has no HMI Settings page."); return null; }
+Msg_TrnNoPage;KabanHMI\Forms\MainForm.Notes.cs;74;Text;if (screen == null) { why = LanguageManager.GetString("Msg_TrnNoPage", "This program has no HMI Settings page."); return null; }
 Msg_TrnNoProject;KabanHMI\Settings\TranslationsControl.Import.cs;491;Text;return project ? T("Msg_TrnNoProject", "The project's files are not found: this works when the program runs from its Visual Studio build.")
 Msg_TrnNoSemicolon;KabanHMI\Settings\TranslationsControl.cs;472;Status;SetStatus(string.Format(T("Msg_TrnNoSemicolon", "A text cannot have {0} in it - it separates the languages in the translation files."), ";"), true);
 Msg_TrnNothing;KabanHMI\Settings\TranslationsControl.cs;862;Status;if (_shown.Count == 0) { SetStatus(T("Msg_TrnNothing", "Nothing to export: no row passes the filters."), true); return; }
@@ -1509,153 +1510,231 @@ Msg_TrnUndoWritten;KabanHMI\Settings\TranslationsControl.Undo.cs;103;Message;str
 Msg_UndoHint;KabanHMI\Forms\SimulationMonitorForm.cs;784;Text;question += "\r\n\r\n" + T("Msg_UndoHint", "Undo (Ctrl+Z) brings them back.");
 Msg_Undone;KabanHMI\Forms\SimulationMonitorForm.cs;901;Status;SetStatus(string.Format(T("Msg_Undone", "Undone: {0}."), step.What));
 Msg_WorkStopping;KabanHMI\Forms\WorkForm.cs;77;Text;_text.Text = LanguageManager.GetString("Msg_WorkStopping", "Stopping at the next safe point...");
-Nts_Accept;KabanHMI\Screens\NotesPage.cs;1235;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
-Nts_AddComment;KabanHMI\Screens\NotesPage.cs;1160;Text;Act(acts, "💬", T("Nts_AddComment", "Add the comment"), T("Nts_TipAddComment", "What you think of this control, of this page, of the machine"),
-Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1115;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipAddFile", "A document, a picture or a video for this control"), (s, e) =>
-Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1117;Text;using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
-Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1183;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipGeneralFile", "A document, a picture or a video with the note"), (s, e) =>
-Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1185;Text;using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
-Nts_AskRemove;KabanHMI\Screens\NotesPage.cs;1241;Message;if (Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) NotesStore.Remove(n);
-Nts_CaptionBar;KabanHMI\Forms\MainForm.Notes.cs;195;Text;if (c == pnlTop || pnlTop.Contains(c)) return LanguageManager.GetString("Nts_CaptionBar", "Caption bar");
-Nts_ColControl;KabanHMI\Screens\NotesPage.cs;1259;Text;new[] { "control", T("Nts_ColControl", "Control"), "200" }, new[] { "text", T("Nts_ColText", "Text"), "300" },
-Nts_ColKind;KabanHMI\Screens\NotesPage.cs;1258;Text;new[] { "kind", T("Nts_ColKind", "Kind"), "90" }, new[] { "state", T("Nts_ColState", "State"), "90" },
-Nts_ColLanguage;KabanHMI\Screens\NotesPage.cs;924;Text;var grid = EntryGrid("notesTexts", T("Nts_ColLanguage", "Language"),
-Nts_ColNow;KabanHMI\Screens\NotesPage.cs;756;Text;grid.Columns.Add("now", T("Nts_ColNow", "Now"));
-Nts_ColPage;KabanHMI\Screens\NotesPage.cs;1260;Text;new[] { "page", T("Nts_ColPage", "Page"), "220" } })
-Nts_ColProperty;KabanHMI\Screens\NotesPage.cs;1082;Text;var grid = EntryGrid("notesProps", T("Nts_ColProperty", "Setting"), rows, write, 10);
-Nts_ColReason;KabanHMI\Screens\NotesPage.cs;759;Text;grid.Columns.Add("comment", T("Nts_ColReason", "Reason"));
-Nts_ColRequired;KabanHMI\Screens\NotesPage.cs;758;Text;grid.Columns.Add("required", T("Nts_ColRequired", "Your suggestion"));
-Nts_ColState;KabanHMI\Screens\NotesPage.cs;1258;Text;new[] { "kind", T("Nts_ColKind", "Kind"), "90" }, new[] { "state", T("Nts_ColState", "State"), "90" },
-Nts_ColText;KabanHMI\Screens\NotesPage.cs;1259;Text;new[] { "control", T("Nts_ColControl", "Control"), "200" }, new[] { "text", T("Nts_ColText", "Text"), "300" },
-Nts_ColTime;KabanHMI\Screens\NotesPage.cs;1257;Text;foreach (var c in new[] { new[] { "time", T("Nts_ColTime", "Time"), "120" }, new[] { "who", T("Nts_ColWho", "Who"), "110" },
-Nts_ColWho;KabanHMI\Screens\NotesPage.cs;1257;Text;foreach (var c in new[] { new[] { "time", T("Nts_ColTime", "Time"), "120" }, new[] { "who", T("Nts_ColWho", "Who"), "110" },
-Nts_CommentEmpty;KabanHMI\Screens\NotesPage.cs;1167;Status;if (text.Length == 0) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
-Nts_CommentEmpty;KabanHMI\Screens\NotesPage.cs;1202;Status;if (text.Length == 0 && _file == null) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
-Nts_CommentKept;KabanHMI\Screens\NotesPage.cs;1169;Status;if (n != null) _status.Text = T("Nts_CommentKept", "The comment is kept.");
-Nts_Count;KabanHMI\Screens\NotesPage.cs;683;Text;_count.Text = string.Format(T("Nts_Count", "{0} notes on this panel"), NotesStore.All.Count);
-Nts_Export;KabanHMI\Screens\NotesPage.cs;138;Text;var exportText = new Label { AutoSize = true, Text = T("Nts_Export", "Feedback file"), Margin = new Padding(2, 12, 6, 0), Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold...
-Nts_Exported;KabanHMI\Screens\NotesPage.cs;1302;Status;_status.Text = T("Nts_Exported", "Feedback file made") + ": " + _lastExport;
-Nts_ExportFailed;KabanHMI\Screens\NotesPage.cs;1307;Status;_status.Text = T("Nts_ExportFailed", "The feedback file could not be made") + ": " + ex.Message;
-Nts_FileFailed;KabanHMI\Screens\NotesPage.cs;1138;Status;catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
-Nts_FileFailed;KabanHMI\Screens\NotesPage.cs;1205;Status;catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
-Nts_FindOpened;KabanHMI\Screens\NotesPage.cs;998;Status;_status.Text = why.Length > 0 ? why : string.Format(T("Nts_FindOpened", "{0}: its page opened - picking is off."), f.Chosen.UsedAs);
-Nts_General;KabanHMI\Screens\NotesPage.cs;383;Text;_name = T("Nts_General", "General note");
-Nts_General;KabanHMI\Screens\NotesPage.cs;1208;Text;Kind = NoteKind.Comment, Text = text, ControlKey = "", ControlName = T("Nts_General", "General note"), Page = "",
-Nts_General;KabanHMI\Screens\NotesPage.cs;1289;Text;_all.Rows.Add(When(n), n.Author, KindText(n), state, n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, body, n.Page);
-Nts_GeneralHint;KabanHMI\Screens\NotesPage.cs;384;Status;_status.Text = T("Nts_GeneralHint", "A note on no control: an idea, a request - with a file if you like.");
-Nts_GeneralHint;KabanHMI\Screens\NotesPage.cs;1177;Text;AddText(T("Nts_GeneralHint", "A note on no control: an idea, a request - with a file if you like."), false, Color.FromArgb(110, 116, 124));
-Nts_GeneralKept;KabanHMI\Screens\NotesPage.cs;1212;Status;if (n != null) _status.Text = T("Nts_GeneralKept", "The general note is kept.");
+Nts_Accept;KabanHMI\Screens\NotesPage.cs;1478;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
+Nts_Accept;KabanHMI\Screens\NotesPage.cs;1622;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
+Nts_AcceptedBy;KabanHMI\Screens\NotesPage.cs;1539;Text;AddText(string.Format(T("Nts_AcceptedBy", "Accepted by {0}, {1}"), n.AcceptedBy, WhenOf(n.AcceptedAt.Value)), false, Color.FromArgb(110, 116, 124));
+Nts_AddComment;KabanHMI\Screens\NotesPage.cs;1399;Text;Act(acts, "💬", T("Nts_AddComment", "Add the comment"), T("Nts_TipAddComment", "What you think of this control, of this page, of the machine"),
+Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1351;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipAddFile", "A document, a picture or a video for this control"), (s, e) =>
+Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1353;Text;using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
+Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1423;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipGeneralFile", "A document, a picture or a video with the note"), (s, e) =>
+Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1425;Text;using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
+Nts_AddFile;KabanHMI\Screens\NotesPage.cs;1603;Text;using (var dlg = new OpenFileDialog { Title = T("Nts_AddFile", "Add a file"), Multiselect = false })
+Nts_AllKinds;KabanHMI\Screens\NotesPage.cs;263;Text;foreach (var c in new[] { new Choice(null, T("Nts_AllKinds", "Every kind")), new Choice("Comment", T("Nts_KindComment", "Comment")),
+Nts_AllStates;KabanHMI\Screens\NotesPage.cs;268;Text;foreach (var c in new[] { new Choice(null, T("Nts_AllStates", "Every state")), new Choice("Proposed", T("Nts_StateProposed", "Proposed - to accept")),
+Nts_AskDiscard;KabanHMI\Screens\NotesPage.cs;168;Message;T("Nts_AskDiscard", "What you typed here is not kept yet. Discard it?")))
+Nts_AskRemove;KabanHMI\Screens\NotesPage.cs;1486;Message;if (Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) NotesStore.Remove(n);
+Nts_AskRemove;KabanHMI\Screens\NotesPage.cs;1703;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) return;
+Nts_Cancel;KabanHMI\Screens\NotesPage.cs;1617;Text;Act(acts, "↩", T("Nts_Cancel", "Cancel"), T("Nts_TipCancel", "Back to the note as it is"), (s, e) => ViewNote(n, false), "notesCancel");
+Nts_CaptionBar;KabanHMI\Forms\MainForm.Notes.cs;198;Text;if (c == pnlTop || pnlTop.Contains(c)) return LanguageManager.GetString("Nts_CaptionBar", "Caption bar");
+Nts_Changed;KabanHMI\Screens\NotesPage.cs;1695;Status;: T("Nts_Changed", "The note is changed.");
+Nts_ChangedProposed;KabanHMI\Screens\NotesPage.cs;1694;Status;? T("Nts_ChangedProposed", "The note is changed - a proposal again, for Maintenance or an Admin to accept.")
+Nts_ColControl;KabanHMI\Screens\NotesPage.cs;1732;Text;new[] { "control", T("Nts_ColControl", "Control"), "200" }, new[] { "text", T("Nts_ColText", "Text"), "300" },
+Nts_ColKind;KabanHMI\Screens\NotesPage.cs;1731;Text;new[] { "kind", T("Nts_ColKind", "Kind"), "90" }, new[] { "state", T("Nts_ColState", "State"), "90" },
+Nts_ColLanguage;KabanHMI\Screens\NotesPage.cs;1158;Text;var grid = EntryGrid("notesTexts", T("Nts_ColLanguage", "Language"),
+Nts_ColLanguage;KabanHMI\Screens\NotesPage.cs;1552;Text;grid = EntryGrid("notesEditTexts", T("Nts_ColLanguage", "Language"),
+Nts_ColNow;KabanHMI\Screens\NotesPage.cs;975;Text;grid.Columns.Add("now", T("Nts_ColNow", "Now"));
+Nts_ColPage;KabanHMI\Screens\NotesPage.cs;1733;Text;new[] { "page", T("Nts_ColPage", "Page"), "220" } })
+Nts_ColProperty;KabanHMI\Screens\NotesPage.cs;1317;Text;var grid = EntryGrid("notesProps", T("Nts_ColProperty", "Setting"), rows, write, 10);
+Nts_ColProperty;KabanHMI\Screens\NotesPage.cs;1557;Text;grid = EntryGrid("notesEditValues", T("Nts_ColProperty", "Setting"),
+Nts_ColReason;KabanHMI\Screens\NotesPage.cs;978;Text;grid.Columns.Add("comment", T("Nts_ColReason", "Reason"));
+Nts_ColRequired;KabanHMI\Screens\NotesPage.cs;977;Text;grid.Columns.Add("required", T("Nts_ColRequired", "Your suggestion"));
+Nts_ColState;KabanHMI\Screens\NotesPage.cs;1731;Text;new[] { "kind", T("Nts_ColKind", "Kind"), "90" }, new[] { "state", T("Nts_ColState", "State"), "90" },
+Nts_ColText;KabanHMI\Screens\NotesPage.cs;1732;Text;new[] { "control", T("Nts_ColControl", "Control"), "200" }, new[] { "text", T("Nts_ColText", "Text"), "300" },
+Nts_ColTime;KabanHMI\Screens\NotesPage.cs;1730;Text;foreach (var c in new[] { new[] { "time", T("Nts_ColTime", "Time"), "120" }, new[] { "who", T("Nts_ColWho", "Who"), "110" },
+Nts_ColWho;KabanHMI\Screens\NotesPage.cs;1730;Text;foreach (var c in new[] { new[] { "time", T("Nts_ColTime", "Time"), "120" }, new[] { "who", T("Nts_ColWho", "Who"), "110" },
+Nts_CommentEmpty;KabanHMI\Screens\NotesPage.cs;1406;Status;if (text.Length == 0) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+Nts_CommentEmpty;KabanHMI\Screens\NotesPage.cs;1442;Status;if (text.Length == 0 && _file == null) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+Nts_CommentEmpty;KabanHMI\Screens\NotesPage.cs;1680;Status;if (edited.Text.Length == 0 && !hasFile) { _status.Text = T("Nts_CommentEmpty", "Write the comment first."); return; }
+Nts_CommentKept;KabanHMI\Screens\NotesPage.cs;1409;Status;if (n != null) _status.Text = T("Nts_CommentKept", "The comment is kept.");
+Nts_Count;KabanHMI\Screens\NotesPage.cs;1863;Text;_count.Text = shown.Count == all.Count ? string.Format(T("Nts_Count", "{0} notes on this panel"), all.Count)
+Nts_CountShown;KabanHMI\Screens\NotesPage.cs;1864;Text;: string.Format(T("Nts_CountShown", "{0} of {1} notes"), shown.Count, all.Count);
+Nts_DetailsHow;KabanHMI\Screens\NotesPage.cs;905;Text;AddText(T("Nts_DetailsHow", "A note of the list: View or Edit it. A new one: Add, then tap or click the control it is about - a field, a button, a lamp, " +
+Nts_DetailsNone;KabanHMI\Screens\NotesPage.cs;904;Text;AddText(T("Nts_DetailsNone", "Nothing chosen yet."), true, null, 6);
+Nts_Edit;KabanHMI\Screens\NotesPage.cs;1482;Text;Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditLine");
+Nts_Edit;KabanHMI\Screens\NotesPage.cs;1620;Text;if (NotesStore.CanChange(n)) Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditOne");
+Nts_EditedBy;KabanHMI\Screens\NotesPage.cs;1541;Text;AddText(string.Format(T("Nts_EditedBy", "Changed by {0}, {1}"), n.EditedBy, WhenOf(n.EditedAt.Value)), false, Color.FromArgb(110, 116, 124));
+Nts_Editing;KabanHMI\Screens\NotesPage.cs;1514;Status;_status.Text = edit ? T("Nts_Editing", "Change the note, then Save.") : "";
+Nts_Everyone;KabanHMI\Screens\NotesPage.cs;1807;Text;var want = new List<Choice> { new Choice(null, T("Nts_Everyone", "Everyone")) };
+Nts_Exported;KabanHMI\Screens\NotesPage.cs;1877;Status;_status.Text = T("Nts_Exported", "Feedback file made") + ": " + _lastExport;
+Nts_ExportFailed;KabanHMI\Screens\NotesPage.cs;1882;Status;_status.Text = T("Nts_ExportFailed", "The feedback file could not be made") + ": " + ex.Message;
+Nts_FileFailed;KabanHMI\Screens\NotesPage.cs;1374;Status;catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+Nts_FileFailed;KabanHMI\Screens\NotesPage.cs;1445;Status;catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+Nts_FileFailed;KabanHMI\Screens\NotesPage.cs;1686;Status;catch (Exception ex) { _status.Text = T("Nts_FileFailed", "The file could not be kept") + ": " + ex.Message; return; }
+Nts_FindControl;KabanHMI\Screens\NotesPage.cs;1626;Text;Act(acts, E(0x1F50D), T("Nts_FindControl", "Find its control"), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"),
+Nts_FindGeneral;KabanHMI\Forms\MainForm.Notes.cs;253;Text;if (n == null || n.IsGeneral) return LanguageManager.GetString("Nts_FindGeneral", "A general note is on no control.");
+Nts_FindGone;KabanHMI\Forms\MainForm.Notes.cs;296;Text;: LanguageManager.GetString("Nts_FindGone", "Its control is not on its page any more (the page has changed).");
+Nts_FindOpened;KabanHMI\Screens\NotesPage.cs;1232;Status;_status.Text = why.Length > 0 ? why : string.Format(T("Nts_FindOpened", "{0}: its page opened - picking is off."), f.Chosen.UsedAs);
+Nts_FindOpenPage;KabanHMI\Forms\MainForm.Notes.cs;295;Text;? string.Format(LanguageManager.GetString("Nts_FindOpenPage", "Its page is not open: open it ({0}) and Find again."), n.Page)
+Nts_FindOpenWindow;KabanHMI\Forms\MainForm.Notes.cs;272;Text;why = string.Format(LanguageManager.GetString("Nts_FindOpenWindow", "Its page is a side page in its own window: open it ({0}) and Find again."), n.Page);
+Nts_FoundControl;KabanHMI\Screens\NotesPage.cs;1715;Status;_status.Text = why.Length > 0 ? why : string.Format(T("Nts_FoundControl", "{0}: its page is open, the control flashing."), n.ControlName);
+Nts_General;KabanHMI\Screens\NotesPage.cs;575;Text;_name = T("Nts_General", "General note");
+Nts_General;KabanHMI\Screens\NotesPage.cs;1451;Text;Kind = NoteKind.Comment, Text = text, ControlKey = "", ControlName = T("Nts_General", "General note"), Page = "",
+Nts_General;KabanHMI\Screens\NotesPage.cs;1533;Text;AddText(n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, true, null, 4).Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold);
+Nts_General;KabanHMI\Screens\NotesPage.cs;1855;Text;int i = _all.Rows.Add(When(n), n.Author, KindText(n), state, n.IsGeneral ? T("Nts_General", "General note") : n.ControlName, body, n.Page);
+Nts_GeneralHint;KabanHMI\Screens\NotesPage.cs;576;Status;_status.Text = T("Nts_GeneralHint", "A note on no control: an idea, a request - with a file if you like.");
+Nts_GeneralHint;KabanHMI\Screens\NotesPage.cs;1417;Text;AddText(T("Nts_GeneralHint", "A note on no control: an idea, a request - with a file if you like."), false, Color.FromArgb(110, 116, 124));
+Nts_GeneralKept;KabanHMI\Screens\NotesPage.cs;1455;Status;if (n != null) _status.Text = T("Nts_GeneralKept", "The general note is kept.");
 Nts_Heading;KabanHMI\Helpers\NoteTarget.cs;140;Text;return T("Nts_Heading", "Column heading") + ": " + c.Text;
 Nts_Heading;KabanHMI\Helpers\NoteTarget.cs;142;Text;return T("Nts_Heading", "Column heading") + ": " + c.Text;
-Nts_Heading;KabanHMI\Screens\NotesPage.cs;351;Text;_name = T("Nts_Heading", "Column heading") + ": " + heading + "  (" + table + ")";
-Nts_HelperEmpty;KabanHMI\Screens\NotesPage.cs;1135;Status;if (text.Length == 0 && _file == null) { _status.Text = T("Nts_HelperEmpty", "Write the helper or add a file."); return; }
-Nts_HelperKept;KabanHMI\Screens\NotesPage.cs;1145;Status;if (n != null) _status.Text = n.State == NoteState.Applied ? T("Nts_HelperKept", "The helper is in the list.") : T("Nts_HelperProposed", "The helper is proposed.");
-Nts_HelperProposed;KabanHMI\Screens\NotesPage.cs;1145;Status;if (n != null) _status.Text = n.State == NoteState.Applied ? T("Nts_HelperKept", "The helper is in the list.") : T("Nts_HelperProposed", "The helper is proposed.");
-Nts_HelpersShown;KabanHMI\Screens\NotesPage.cs;1109;Text;else AddText(T("Nts_HelpersShown", "The ones in the list are offered with the control: its \"?\" or its helper mark."), false, Color.FromArgb(110, 116, 124));
-Nts_How;KabanHMI\Screens\NotesPage.cs;689;Text;AddText(T("Nts_How", "Tap or click a control of the page - a field, a button, a lamp, a caption, a column heading. It is not operated while picking: " +
-Nts_HowNav;KabanHMI\Screens\NotesPage.cs;692;Text;AddText(T("Nts_HowNav", "The menu's page buttons and a page's tabs are picked too, not used - turn picking off to go to another page. " +
-Nts_InForce;KabanHMI\Screens\NotesPage.cs;1221;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
-Nts_InForce;KabanHMI\Screens\NotesPage.cs;1288;Text;: n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list");
-Nts_InList;KabanHMI\Screens\NotesPage.cs;1221;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
-Nts_InList;KabanHMI\Screens\NotesPage.cs;1288;Text;: n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list");
-Nts_KeepGeneral;KabanHMI\Screens\NotesPage.cs;1190;Text;Act(keep, "💾", T("Nts_KeepGeneral", "Keep the note"), T("Nts_TipKeepGeneral", "Kept on this panel - and in the feedback file"),
-Nts_KeepHelper;KabanHMI\Screens\NotesPage.cs;1123;Text;Act(keep, "💾", apply ? T("Nts_KeepHelper", "Keep the helper") : T("Nts_ProposeHelper", "Propose the helper"),
-Nts_KeepProps;KabanHMI\Screens\NotesPage.cs;1084;Text;Act(acts, "💾", T("Nts_KeepProps", "Keep the settings asked for"), T("Nts_TipKeepProps", "For the builder: these settings as they should be - in the feedback file"),
-Nts_KeepTexts;KabanHMI\Screens\NotesPage.cs;927;Text;Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
-Nts_KeepValue;KabanHMI\Screens\NotesPage.cs;816;Text;Act(acts, "💾", T("Nts_KeepValue", "Keep the note"), T("Nts_TipKeepValue", "For the builder: this value as it should be - in the feedback file"),
+Nts_Heading;KabanHMI\Screens\NotesPage.cs;540;Text;_name = T("Nts_Heading", "Column heading") + ": " + heading + "  (" + table + ")";
+Nts_HelperEmpty;KabanHMI\Screens\NotesPage.cs;1371;Status;if (text.Length == 0 && _file == null) { _status.Text = T("Nts_HelperEmpty", "Write the helper or add a file."); return; }
+Nts_HelperKept;KabanHMI\Screens\NotesPage.cs;1384;Status;if (n != null) _status.Text = n.State == NoteState.Applied ? T("Nts_HelperKept", "The helper is in the list.") : T("Nts_HelperProposed", "The helper is proposed.");
+Nts_HelperProposed;KabanHMI\Screens\NotesPage.cs;1384;Status;if (n != null) _status.Text = n.State == NoteState.Applied ? T("Nts_HelperKept", "The helper is in the list.") : T("Nts_HelperProposed", "The helper is proposed.");
+Nts_HelpersShown;KabanHMI\Screens\NotesPage.cs;1345;Text;else AddText(T("Nts_HelpersShown", "The ones in the list are offered with the control: its \"?\" or its helper mark."), false, Color.FromArgb(110, 116, 124));
+Nts_HowPicking;KabanHMI\Screens\NotesPage.cs;909;Text;AddText(T("Nts_HowPicking", "While picking, the menu's page buttons and a page's tabs are picked too, not used. A table's cell to type in is " +
+Nts_InForce;KabanHMI\Screens\NotesPage.cs;1464;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
+Nts_InForce;KabanHMI\Screens\NotesPage.cs;1536;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
+Nts_InForce;KabanHMI\Screens\NotesPage.cs;1854;Text;: n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list");
+Nts_InList;KabanHMI\Screens\NotesPage.cs;1464;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
+Nts_InList;KabanHMI\Screens\NotesPage.cs;1536;Text;: "  ·  " + (n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list"));
+Nts_InList;KabanHMI\Screens\NotesPage.cs;1854;Text;: n.Kind == NoteKind.Translation ? T("Nts_InForce", "in force") : T("Nts_InList", "in the list");
+Nts_KeepGeneral;KabanHMI\Screens\NotesPage.cs;1430;Text;Act(keep, "💾", T("Nts_KeepGeneral", "Keep the note"), T("Nts_TipKeepGeneral", "Kept on this panel - and in the feedback file"),
+Nts_KeepHelper;KabanHMI\Screens\NotesPage.cs;1359;Text;Act(keep, "💾", apply ? T("Nts_KeepHelper", "Keep the helper") : T("Nts_ProposeHelper", "Propose the helper"),
+Nts_KeepProps;KabanHMI\Screens\NotesPage.cs;1319;Text;Act(acts, "💾", T("Nts_KeepProps", "Keep the settings asked for"), T("Nts_TipKeepProps", "For the builder: these settings as they should be - in the feedback file"),
+Nts_KeepTexts;KabanHMI\Screens\NotesPage.cs;1161;Text;Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
+Nts_KeepValue;KabanHMI\Screens\NotesPage.cs;1047;Text;Act(acts, "💾", T("Nts_KeepValue", "Keep the note"), T("Nts_TipKeepValue", "For the builder: this value as it should be - in the feedback file"),
+Nts_Kept;KabanHMI\Screens\NotesPage.cs;170;Status;_status.Text = T("Nts_Kept", "What you typed is still there - keep it, or discard it.");
 Nts_KeyAxis;KabanHMI\Helpers\NoteTarget.cs;263;Text;case "AxisNameKey": return T("Nts_KeyAxis", "Axis name");
 Nts_KeyCaption;KabanHMI\Helpers\NoteTarget.cs;224;Text;add(T("Nts_KeyCaption", "Caption"), Str(c, "DescriptionText"));
 Nts_KeyCompared;KabanHMI\Helpers\NoteTarget.cs;265;Text;case "ComparedCaptionKey": return T("Nts_KeyCompared", "Compared value");
 Nts_KeyHeading;KabanHMI\Helpers\NoteTarget.cs;214;Text;add(T("Nts_KeyHeading", "Column heading"), AxisSettingHMI.HeadingKey(tag.Substring("AxisHeading:".Length)));
 Nts_KeyHeading;KabanHMI\Helpers\NoteTarget.cs;217;Text;if (headed != null) add(T("Nts_KeyHeading", "Column heading"), headed.SectionTitleKey(rowHeading));
-Nts_KeyHeading;KabanHMI\Screens\NotesPage.cs;355;Text;_keys = string.IsNullOrEmpty(key) ? new NoteTarget.TextKey[0] : new[] { new NoteTarget.TextKey { What = T("Nts_KeyHeading", "Column heading"), Key = key } };
+Nts_KeyHeading;KabanHMI\Screens\NotesPage.cs;544;Text;_keys = string.IsNullOrEmpty(key) ? new NoteTarget.TextKey[0] : new[] { new NoteTarget.TextKey { What = T("Nts_KeyHeading", "Column heading"), Key = key } };
+Nts_KeyIs;KabanHMI\Screens\NotesPage.cs;1543;Text;AddText(T("Nts_KeyIs", "Translation key") + ": " + n.TranslationKey, false, Color.FromArgb(110, 116, 124));
 Nts_KeyName;KabanHMI\Helpers\NoteTarget.cs;261;Text;case "TranslationKey": return T("Nts_KeyName", "Name");
 Nts_KeyText;KabanHMI\Helpers\NoteTarget.cs;237;Text;add(T("Nts_KeyText", "Its text (no key of its own)"), c.Text);
 Nts_KeyTip;KabanHMI\Helpers\NoteTarget.cs;239;Text;add(T("Nts_KeyTip", "Tooltip"), UiStyle.TipKeyOf(c));
 Nts_KeyTip;KabanHMI\Helpers\NoteTarget.cs;262;Tooltip;case "ToolTipTextKey": case "TipKey": return T("Nts_KeyTip", "Tooltip");
 Nts_KeyTitle;KabanHMI\Helpers\NoteTarget.cs;220;Text;if (named != null && c == named.NameLabel) { add(T("Nts_KeyTitle", "Title"), named.TitleTextKey); return list; }
 Nts_KeyTitle;KabanHMI\Helpers\NoteTarget.cs;264;Text;case "TitleTextKey": return T("Nts_KeyTitle", "Title");
-Nts_KeyTitle;KabanHMI\Screens\NotesPage.cs;332;Text;_keys = new[] { new NoteTarget.TextKey { What = T("Nts_KeyTitle", "Title"), Key = page.TitleKey } };
+Nts_KeyTitle;KabanHMI\Screens\NotesPage.cs;519;Text;_keys = new[] { new NoteTarget.TextKey { What = T("Nts_KeyTitle", "Title"), Key = page.TitleKey } };
 Nts_KeyUnitTitle;KabanHMI\Helpers\NoteTarget.cs;242;Text;if (unit != null) add(T("Nts_KeyUnitTitle", "Unit title"), unit.TitleTextKey);
 Nts_KeyUnitTitle;KabanHMI\Helpers\NoteTarget.cs;245;Text;if (row != null) add(T("Nts_KeyUnitTitle", "Unit title"), row.TitleTextKey);
-Nts_KindComment;KabanHMI\Screens\NotesPage.cs;1276;Text;default: return n.IsGeneral ? T("Nts_KindGeneral", "General") : T("Nts_KindComment", "Comment");
-Nts_KindGeneral;KabanHMI\Screens\NotesPage.cs;1276;Text;default: return n.IsGeneral ? T("Nts_KindGeneral", "General") : T("Nts_KindComment", "Comment");
+Nts_KindComment;KabanHMI\Screens\NotesPage.cs;263;Text;foreach (var c in new[] { new Choice(null, T("Nts_AllKinds", "Every kind")), new Choice("Comment", T("Nts_KindComment", "Comment")),
+Nts_KindComment;KabanHMI\Screens\NotesPage.cs;1749;Text;default: return n.IsGeneral ? T("Nts_KindGeneral", "General") : T("Nts_KindComment", "Comment");
+Nts_KindGeneral;KabanHMI\Screens\NotesPage.cs;264;Text;new Choice("General", T("Nts_KindGeneral", "General")), new Choice("Translation", T("Nts_KindText", "Texts")),
+Nts_KindGeneral;KabanHMI\Screens\NotesPage.cs;1749;Text;default: return n.IsGeneral ? T("Nts_KindGeneral", "General") : T("Nts_KindComment", "Comment");
 Nts_KindHelper;KabanHMI\Helpers\NoteHelpers.cs;51;Text;return string.IsNullOrEmpty(n.FileName) ? LanguageManager.GetString("Nts_KindHelper", "Helper") : n.FileName;
-Nts_KindHelper;KabanHMI\Screens\NotesPage.cs;1273;Text;case NoteKind.Helper: return T("Nts_KindHelper", "Helper");
-Nts_KindProperty;KabanHMI\Screens\NotesPage.cs;1275;Text;case NoteKind.Property: return T("Nts_KindProperty", "Settings");
-Nts_KindText;KabanHMI\Screens\NotesPage.cs;1272;Text;case NoteKind.Translation: return T("Nts_KindText", "Texts");
-Nts_KindValue;KabanHMI\Screens\NotesPage.cs;1274;Text;case NoteKind.Value: return T("Nts_KindValue", "Value");
-Nts_Languages;KabanHMI\Screens\NotesPage.cs;900;Text;langRow.Controls.Add(new Label { AutoSize = true, Text = T("Nts_Languages", "Languages:"), Margin = new Padding(0, 6, 6, 0), ForeColor = Color.FromArgb(90, 96, 106) });
-Nts_MenuButton;KabanHMI\Screens\NotesPage.cs;320;Text;_name = T("Nts_MenuButton", "Menu button") + ": " + NoteTarget.NameOf(c);
-Nts_NoComments;KabanHMI\Screens\NotesPage.cs;1156;Text;if (comments.Count == 0) AddText(T("Nts_NoComments", "No comment yet."), false, Color.FromArgb(130, 136, 146));
-Nts_NoGeneral;KabanHMI\Screens\NotesPage.cs;1194;Text;if (general.Count == 0) AddText(T("Nts_NoGeneral", "No general note yet."), false, Color.FromArgb(130, 136, 146));
-Nts_NoHelpers;KabanHMI\Screens\NotesPage.cs;1108;Text;if (helpers.Count == 0) AddText(T("Nts_NoHelpers", "No helper yet."), false, Color.FromArgb(130, 136, 146));
-Nts_None;KabanHMI\Screens\NotesPage.cs;688;Text;AddText(T("Nts_None", "No control picked yet."), true, null, 6);
-Nts_NoProps;KabanHMI\Screens\NotesPage.cs;1081;Text;if (rows.Count == 0) { AddText(T("Nts_NoProps", "It has no settings of the program's own."), false, Color.FromArgb(130, 136, 146)); return; }
-Nts_NoTexts;KabanHMI\Screens\NotesPage.cs;919;Text;if (_keys.Count == 0) { AddText(T("Nts_NoTexts", "It has no text to translate."), false, Color.FromArgb(130, 136, 146)); return; }
-Nts_NothingChanged;KabanHMI\Screens\NotesPage.cs;1022;Status;if (texts.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
-Nts_NothingChanged;KabanHMI\Screens\NotesPage.cs;1093;Status;if (asked.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
-Nts_NoTip;KabanHMI\Screens\NotesPage.cs;704;Text;AddText(string.IsNullOrWhiteSpace(_tip) ? T("Nts_NoTip", "It has no tooltip.") : _tip, false,
-Nts_Opens;KabanHMI\Forms\MainForm.Notes.cs;194;Text;if (pnlMenu.Contains(c)) return LanguageManager.GetString("Nts_Opens", "Opens") + ": " + MenuTarget(c);
-Nts_OpenTranslation;KabanHMI\Screens\NotesPage.cs;933;Text;Act(acts, "\uD83C\uDF10", T("Nts_OpenTranslation", "In the translation table"),
-Nts_Picked;KabanHMI\Screens\NotesPage.cs;391;Status;_status.Text = T("Nts_Picked", "Picked") + ": " + _name;
-Nts_PickOff;KabanHMI\Screens\NotesPage.cs;197;Text;_pick.Text = on ? "👆  " + T("Nts_PickOn", "Picking: on") : "✋  " + T("Nts_PickOff", "Picking: off");
-Nts_PickOn;KabanHMI\Screens\NotesPage.cs;197;Text;_pick.Text = on ? "👆  " + T("Nts_PickOn", "Picking: on") : "✋  " + T("Nts_PickOff", "Picking: off");
-Nts_Pointing;KabanHMI\Screens\NotesPage.cs;265;Status;_status.Text = T("Nts_Pointing", "Under the pointer") + ": " + NoteTarget.NameOf(c);
-Nts_Proposed;KabanHMI\Screens\NotesPage.cs;1220;Text;: n.State == NoteState.Proposed ? "  ·  " + T("Nts_Proposed", "proposed")
-Nts_Proposed;KabanHMI\Screens\NotesPage.cs;1287;Text;string state = asks ? "" : n.State == NoteState.Proposed ? T("Nts_Proposed", "proposed")
-Nts_ProposeHelper;KabanHMI\Screens\NotesPage.cs;1123;Text;Act(keep, "💾", apply ? T("Nts_KeepHelper", "Keep the helper") : T("Nts_ProposeHelper", "Propose the helper"),
-Nts_ProposeTexts;KabanHMI\Screens\NotesPage.cs;927;Text;Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
-Nts_PropsHint;KabanHMI\Screens\NotesPage.cs;1078;Text;AddText(T("Nts_PropsHint", "What a setting should be (an address, a number ...), and why: for the builder, in the feedback file - the program is not changed."),
-Nts_PropsKept;KabanHMI\Screens\NotesPage.cs;1099;Status;if (n != null) _status.Text = T("Nts_PropsKept", "The settings asked for are kept - for the feedback file.");
-Nts_Remove;KabanHMI\Screens\NotesPage.cs;1239;Text;Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove", "Take this note away (yours, or as an Admin)"), (s, e) =>
-Nts_Row;KabanHMI\Screens\NotesPage.cs;369;Text;_name = table + " - " + heading + (first.Length > 0 ? " (" + first + ")" : " (" + T("Nts_Row", "row") + " " + (row + 1) + ")");
-Nts_SecComments;KabanHMI\Screens\NotesPage.cs;1154;Text;Head(T("Nts_SecComments", "Comments"));
-Nts_SecGeneral;KabanHMI\Screens\NotesPage.cs;1192;Text;Head(T("Nts_SecGeneral", "General notes"));
-Nts_SecHelpers;KabanHMI\Screens\NotesPage.cs;1106;Text;Head(T("Nts_SecHelpers", "Its helpers"));
-Nts_SecProps;KabanHMI\Screens\NotesPage.cs;1077;Text;Head(T("Nts_SecProps", "Its settings (Admin)"));
-Nts_SecTexts;KabanHMI\Screens\NotesPage.cs;897;Text;Head(T("Nts_SecTexts", "Its texts"));
-Nts_SecTip;KabanHMI\Screens\NotesPage.cs;703;Text;Head(T("Nts_SecTip", "Its tooltip"));
-Nts_SecValue;KabanHMI\Screens\NotesPage.cs;809;Text;Head(T("Nts_SecValue", "Its value"));
-Nts_SignIn;KabanHMI\Screens\NotesPage.cs;694;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 10);
-Nts_SignIn;KabanHMI\Screens\NotesPage.cs;701;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 6);
-Nts_SignIn;KabanHMI\Screens\NotesPage.cs;1178;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 6);
-Nts_StatusOff;KabanHMI\Screens\NotesPage.cs;202;Status;_status.Text = on ? T("Nts_StatusPick", "Tap or click a control of the page.") : T("Nts_StatusOff", "The page works as usual.");
-Nts_StatusPick;KabanHMI\Screens\NotesPage.cs;202;Status;_status.Text = on ? T("Nts_StatusPick", "Tap or click a control of the page.") : T("Nts_StatusOff", "The page works as usual.");
-Nts_Tab;KabanHMI\Screens\NotesPage.cs;313;Text;_name = T("Nts_Tab", "Tab") + ": " + (page != null ? page.Text : "");
-Nts_Tab;KabanHMI\Screens\NotesPage.cs;330;Text;_name = T("Nts_Tab", "Tab") + ": " + (page != null ? LanguageManager.GetString(page.TitleKey ?? "", page.TitleFallback ?? "") : tab.Text);
-Nts_TabAll;KabanHMI\Screens\NotesPage.cs;148;Text;var every = new TabPage(T("Nts_TabAll", "Every note")) { BackColor = Color.White, Name = "notesEvery" };
-Nts_TabControl;KabanHMI\Screens\NotesPage.cs;146;Text;var one = new TabPage(T("Nts_TabControl", "The control")) { BackColor = Color.White, Name = "notesOne" };
-Nts_TextsKept;KabanHMI\Screens\NotesPage.cs;1025;Status;_status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
-Nts_TextsProposed;KabanHMI\Screens\NotesPage.cs;1025;Status;_status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
-Nts_TipAcceptHelper;KabanHMI\Screens\NotesPage.cs;1236;Text;: T("Nts_TipAcceptHelper", "Put this helper in the control's list"),
-Nts_TipAcceptText;KabanHMI\Screens\NotesPage.cs;1235;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
-Nts_TipAddComment;KabanHMI\Screens\NotesPage.cs;1160;Text;Act(acts, "💬", T("Nts_AddComment", "Add the comment"), T("Nts_TipAddComment", "What you think of this control, of this page, of the machine"),
-Nts_TipAddFile;KabanHMI\Screens\NotesPage.cs;1115;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipAddFile", "A document, a picture or a video for this control"), (s, e) =>
-Nts_TipExport;KabanHMI\Screens\NotesPage.cs;134;Tooltip;_export = UiStyle.ToolButton("📤", T("Nts_TipExport", "Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send"), _tips, (s, e) => Export());
-Nts_TipFind;KabanHMI\Screens\NotesPage.cs;122;Tooltip;_find = UiStyle.ToolButton("🔎", T("Nts_TipFind", "Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F)"),
-Nts_TipFolder;KabanHMI\Screens\NotesPage.cs;136;Tooltip;_folder = UiStyle.ToolButton("📂", T("Nts_TipFolder", "Show the feedback file in its folder (Maintenance, Admin)"), _tips, (s, e) => ShowFolder());
-Nts_TipGeneral;KabanHMI\Screens\NotesPage.cs;132;Tooltip;_general = UiStyle.ToolButton("📝", T("Nts_TipGeneral", "A general note - on no control: an idea, a request, a file to send"), _tips, (s, e) => PickGeneral());
-Nts_TipGeneralFile;KabanHMI\Screens\NotesPage.cs;1183;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipGeneralFile", "A document, a picture or a video with the note"), (s, e) =>
-Nts_TipKeepGeneral;KabanHMI\Screens\NotesPage.cs;1190;Text;Act(keep, "💾", T("Nts_KeepGeneral", "Keep the note"), T("Nts_TipKeepGeneral", "Kept on this panel - and in the feedback file"),
-Nts_TipKeepHelper;KabanHMI\Screens\NotesPage.cs;1124;Text;apply ? T("Nts_TipKeepHelper", "In this control's helper list at once - and in the feedback file")
-Nts_TipKeepProps;KabanHMI\Screens\NotesPage.cs;1084;Text;Act(acts, "💾", T("Nts_KeepProps", "Keep the settings asked for"), T("Nts_TipKeepProps", "For the builder: these settings as they should be - in the feedback file"),
-Nts_TipKeepTexts;KabanHMI\Screens\NotesPage.cs;928;Text;apply ? T("Nts_TipKeepTexts", "On the screen at once, for everyone on this panel - and in the feedback file")
-Nts_TipKeepValue;KabanHMI\Screens\NotesPage.cs;816;Text;Act(acts, "💾", T("Nts_KeepValue", "Keep the note"), T("Nts_TipKeepValue", "For the builder: this value as it should be - in the feedback file"),
-Nts_TipLanguages;KabanHMI\Screens\NotesPage.cs;916;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, pick, T("Nts_TipLanguages", "The languages listed here - yours (nothing ticked: the screen's and English)"));
-Nts_TipOpenFile;KabanHMI\Screens\NotesPage.cs;1230;Text;Act(acts, "📄", n.FileName ?? n.File, T("Nts_TipOpenFile", "Open the file"), (s, e) =>
-Nts_TipOpenTranslation;KabanHMI\Screens\NotesPage.cs;934;Text;T("Nts_TipOpenTranslation", "HMI Settings > Translation on this key - its texts in every language, to edit there (picking goes off)"),
-Nts_TipPickOff;KabanHMI\Screens\NotesPage.cs;201;Text;: T("Nts_TipPickOff", "The page works as usual. Tap here to pick controls again."));
-Nts_TipPickOn;KabanHMI\Screens\NotesPage.cs;200;Text;? T("Nts_TipPickOn", "A tap or a click on a control of the page shows it here - it does not operate it. Tap here to use the page again.")
-Nts_TipProposeHelper;KabanHMI\Screens\NotesPage.cs;1125;Text;: T("Nts_TipProposeHelper", "A proposal: Maintenance or an Admin puts it in the list - and in the feedback file"),
-Nts_TipProposeTexts;KabanHMI\Screens\NotesPage.cs;929;Text;: T("Nts_TipProposeTexts", "A proposal: Maintenance or an Admin puts it on the screen - and in the feedback file"),
-Nts_TipRemove;KabanHMI\Screens\NotesPage.cs;1239;Text;Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove", "Take this note away (yours, or as an Admin)"), (s, e) =>
-Nts_TranslationOpened;KabanHMI\Screens\NotesPage.cs;1014;Status;_status.Text = why.Length > 0 ? why : string.Format(T("Nts_TranslationOpened", "{0} in the translation table - picking is off."), key);
-Nts_ValueEmpty;KabanHMI\Screens\NotesPage.cs;826;Status;if (required.Length == 0) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
-Nts_ValueKept;KabanHMI\Screens\NotesPage.cs;832;Status;if (n != null) _status.Text = T("Nts_ValueKept", "The note is kept - for the feedback file.");
-Nts_ValueNow;KabanHMI\Screens\NotesPage.cs;810;Text;AddText(T("Nts_ValueNow", "Shown now") + ": " + (string.IsNullOrEmpty(_value) ? "-" : _value));
-Nts_ValueRequired;KabanHMI\Screens\NotesPage.cs;811;Text;AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
-Nts_Why;KabanHMI\Screens\NotesPage.cs;643;Text;AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+Nts_KindHelper;KabanHMI\Screens\NotesPage.cs;265;Text;new Choice("Helper", T("Nts_KindHelper", "Helper")), new Choice("Value", T("Nts_KindValue", "Value")),
+Nts_KindHelper;KabanHMI\Screens\NotesPage.cs;1746;Text;case NoteKind.Helper: return T("Nts_KindHelper", "Helper");
+Nts_KindProperty;KabanHMI\Screens\NotesPage.cs;266;Text;new Choice("Property", T("Nts_KindProperty", "Settings")) })
+Nts_KindProperty;KabanHMI\Screens\NotesPage.cs;1748;Text;case NoteKind.Property: return T("Nts_KindProperty", "Settings");
+Nts_KindText;KabanHMI\Screens\NotesPage.cs;264;Text;new Choice("General", T("Nts_KindGeneral", "General")), new Choice("Translation", T("Nts_KindText", "Texts")),
+Nts_KindText;KabanHMI\Screens\NotesPage.cs;1745;Text;case NoteKind.Translation: return T("Nts_KindText", "Texts");
+Nts_KindValue;KabanHMI\Screens\NotesPage.cs;265;Text;new Choice("Helper", T("Nts_KindHelper", "Helper")), new Choice("Value", T("Nts_KindValue", "Value")),
+Nts_KindValue;KabanHMI\Screens\NotesPage.cs;1747;Text;case NoteKind.Value: return T("Nts_KindValue", "Value");
+Nts_Languages;KabanHMI\Screens\NotesPage.cs;1134;Text;langRow.Controls.Add(new Label { AutoSize = true, Text = T("Nts_Languages", "Languages:"), Margin = new Padding(0, 6, 6, 0), ForeColor = Color.FromArgb(90, 96, 106) });
+Nts_MenuButton;KabanHMI\Screens\NotesPage.cs;507;Text;_name = T("Nts_MenuButton", "Menu button") + ": " + NoteTarget.NameOf(c);
+Nts_Mine;KabanHMI\Screens\NotesPage.cs;1808;Text;if (!string.IsNullOrEmpty(me)) want.Add(new Choice(me, T("Nts_Mine", "Mine") + " (" + me + ")"));
+Nts_NoComments;KabanHMI\Screens\NotesPage.cs;1395;Text;if (comments.Count == 0) AddText(T("Nts_NoComments", "No comment yet."), false, Color.FromArgb(130, 136, 146));
+Nts_NoFile;KabanHMI\Screens\NotesPage.cs;1590;Text;string shown = _fileChanged ? (_file != null ? Path.GetFileName(_file) : T("Nts_NoFile", "(no file)"))
+Nts_NoFile;KabanHMI\Screens\NotesPage.cs;1591;Text;: path != null ? n.FileName ?? n.File : edit ? T("Nts_NoFile", "(no file)") : null;
+Nts_NoFileBtn;KabanHMI\Screens\NotesPage.cs;1607;Text;Act(files, "✖", T("Nts_NoFileBtn", "No file"), T("Nts_TipNoFile", "The note without a file"), (s, e) => { _file = null; _fileChanged = true; Fill(); }, "notesEditNoFile");
+Nts_NoGeneral;KabanHMI\Screens\NotesPage.cs;1434;Text;if (general.Count == 0) AddText(T("Nts_NoGeneral", "No general note yet."), false, Color.FromArgb(130, 136, 146));
+Nts_NoHelpers;KabanHMI\Screens\NotesPage.cs;1344;Text;if (helpers.Count == 0) AddText(T("Nts_NoHelpers", "No helper yet."), false, Color.FromArgb(130, 136, 146));
+Nts_NoProps;KabanHMI\Screens\NotesPage.cs;1316;Text;if (rows.Count == 0) { AddText(T("Nts_NoProps", "It has no settings of the program's own."), false, Color.FromArgb(130, 136, 146)); return; }
+Nts_NoteGone;KabanHMI\Screens\NotesPage.cs;1525;Text;AddText(T("Nts_NoteGone", "The note is not there any more - it was removed."), true, Color.FromArgb(130, 136, 146), 6);
+Nts_NoTexts;KabanHMI\Screens\NotesPage.cs;1153;Text;if (_keys.Count == 0) { AddText(T("Nts_NoTexts", "It has no text to translate."), false, Color.FromArgb(130, 136, 146)); return; }
+Nts_NothingChanged;KabanHMI\Screens\NotesPage.cs;1256;Status;if (texts.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
+Nts_NothingChanged;KabanHMI\Screens\NotesPage.cs;1328;Status;if (asked.Count == 0) { _status.Text = T("Nts_NothingChanged", "No text changed."); return; }
+Nts_NothingLeft;KabanHMI\Screens\NotesPage.cs;1657;Status;if (edited.Texts.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+Nts_NothingLeft;KabanHMI\Screens\NotesPage.cs;1667;Status;if (edited.Values.Count == 0) { _status.Text = T("Nts_NothingLeft", "Nothing is left in it - Remove the note instead."); return; }
+Nts_NoTip;KabanHMI\Screens\NotesPage.cs;922;Text;AddText(string.IsNullOrWhiteSpace(_tip) ? T("Nts_NoTip", "It has no tooltip.") : _tip, false,
+Nts_NotYours;KabanHMI\Screens\NotesPage.cs;1503;Status;_status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it.");
+Nts_NotYours;KabanHMI\Screens\NotesPage.cs;1691;Status;if (!NotesStore.Update(edited)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); Fill(); return; }
+Nts_NotYours;KabanHMI\Screens\NotesPage.cs;1702;Status;if (!NotesStore.CanRemove(n)) { _status.Text = T("Nts_NotYours", "Only its author, or a level above the author's, changes it."); return; }
+Nts_Opens;KabanHMI\Forms\MainForm.Notes.cs;197;Text;if (pnlMenu.Contains(c)) return LanguageManager.GetString("Nts_Opens", "Opens") + ": " + MenuTarget(c);
+Nts_OpenTranslation;KabanHMI\Screens\NotesPage.cs;1167;Text;Act(acts, "\uD83C\uDF10", T("Nts_OpenTranslation", "In the translation table"),
+Nts_OtherFile;KabanHMI\Screens\NotesPage.cs;1601;Text;Act(files, "📎", T("Nts_OtherFile", "Another file"), T("Nts_TipOtherFile", "A document, a picture or a video instead of this one"), (s, e) =>
+Nts_Picked;KabanHMI\Screens\NotesPage.cs;583;Status;_status.Text = T("Nts_Picked", "Picked") + ": " + _name;
+Nts_Pointing;KabanHMI\Screens\NotesPage.cs;447;Status;_status.Text = T("Nts_Pointing", "Under the pointer") + ": " + NoteTarget.NameOf(c);
+Nts_Proposed;KabanHMI\Screens\NotesPage.cs;1463;Text;: n.State == NoteState.Proposed ? "  ·  " + T("Nts_Proposed", "proposed")
+Nts_Proposed;KabanHMI\Screens\NotesPage.cs;1535;Text;string state = asks ? "" : n.State == NoteState.Proposed ? "  ·  " + T("Nts_Proposed", "proposed")
+Nts_Proposed;KabanHMI\Screens\NotesPage.cs;1853;Text;string state = asks ? "" : n.State == NoteState.Proposed ? T("Nts_Proposed", "proposed")
+Nts_ProposeHelper;KabanHMI\Screens\NotesPage.cs;1359;Text;Act(keep, "💾", apply ? T("Nts_KeepHelper", "Keep the helper") : T("Nts_ProposeHelper", "Propose the helper"),
+Nts_ProposeTexts;KabanHMI\Screens\NotesPage.cs;1161;Text;Act(acts, "💾", apply ? T("Nts_KeepTexts", "Keep the texts") : T("Nts_ProposeTexts", "Propose the texts"),
+Nts_PropsHint;KabanHMI\Screens\NotesPage.cs;1313;Text;AddText(T("Nts_PropsHint", "What a setting should be (an address, a number ...), and why: for the builder, in the feedback file - the program is not changed."),
+Nts_PropsKept;KabanHMI\Screens\NotesPage.cs;1335;Status;if (n != null) _status.Text = T("Nts_PropsKept", "The settings asked for are kept - for the feedback file.");
+Nts_Remove;KabanHMI\Screens\NotesPage.cs;1484;Text;Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) =>
+Nts_Remove;KabanHMI\Screens\NotesPage.cs;1628;Text;if (NotesStore.CanRemove(n)) Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) => RemoveNote(n), "n...
+Nts_Removed;KabanHMI\Screens\NotesPage.cs;1705;Message;if (NotesStore.Remove(n)) _status.Text = T("Nts_Removed", "The note is taken away.");
+Nts_Row;KabanHMI\Screens\NotesPage.cs;558;Text;_name = table + " - " + heading + (first.Length > 0 ? " (" + first + ")" : " (" + T("Nts_Row", "row") + " " + (row + 1) + ")");
+Nts_Save;KabanHMI\Screens\NotesPage.cs;1615;Text;Act(acts, E(0x1F4BE), T("Nts_Save", "Save"), T("Nts_TipSave", "Keep the note as changed here"),
+Nts_SecComments;KabanHMI\Screens\NotesPage.cs;1393;Text;Head(T("Nts_SecComments", "Comments"));
+Nts_SecGeneral;KabanHMI\Screens\NotesPage.cs;1432;Text;Head(T("Nts_SecGeneral", "General notes"));
+Nts_SecHelpers;KabanHMI\Screens\NotesPage.cs;1342;Text;Head(T("Nts_SecHelpers", "Its helpers"));
+Nts_SecProps;KabanHMI\Screens\NotesPage.cs;1312;Text;Head(T("Nts_SecProps", "Its settings (Admin)"));
+Nts_SecTexts;KabanHMI\Screens\NotesPage.cs;1131;Text;Head(T("Nts_SecTexts", "Its texts"));
+Nts_SecTheHelper;KabanHMI\Screens\NotesPage.cs;1573;Text;Head(n.Kind == NoteKind.Helper ? T("Nts_SecTheHelper", "The helper") : T("Nts_SecTheNote", "The note"));
+Nts_SecTheNote;KabanHMI\Screens\NotesPage.cs;1573;Text;Head(n.Kind == NoteKind.Helper ? T("Nts_SecTheHelper", "The helper") : T("Nts_SecTheNote", "The note"));
+Nts_SecTheSettings;KabanHMI\Screens\NotesPage.cs;1556;Text;Head(T("Nts_SecTheSettings", "The settings asked for"));
+Nts_SecTheTexts;KabanHMI\Screens\NotesPage.cs;1551;Text;Head(T("Nts_SecTheTexts", "The texts"));
+Nts_SecTip;KabanHMI\Screens\NotesPage.cs;921;Text;Head(T("Nts_SecTip", "Its tooltip"));
+Nts_SecValue;KabanHMI\Screens\NotesPage.cs;1039;Text;Head(T("Nts_SecValue", "Its value"));
+Nts_SecValue;KabanHMI\Screens\NotesPage.cs;1562;Text;Head(T("Nts_SecValue", "Its value"));
+Nts_SignIn;KabanHMI\Screens\NotesPage.cs;912;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 10);
+Nts_SignIn;KabanHMI\Screens\NotesPage.cs;919;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 6);
+Nts_SignIn;KabanHMI\Screens\NotesPage.cs;1418;Text;if (!write) AddText(T("Nts_SignIn", "Sign in to write notes."), false, Color.FromArgb(176, 106, 0), 6);
+Nts_StateInForce;KabanHMI\Screens\NotesPage.cs;269;Text;new Choice("Applied", T("Nts_StateInForce", "In force, in the list")) })
+Nts_StateProposed;KabanHMI\Screens\NotesPage.cs;268;Text;foreach (var c in new[] { new Choice(null, T("Nts_AllStates", "Every state")), new Choice("Proposed", T("Nts_StateProposed", "Proposed - to accept")),
+Nts_StatusAdd;KabanHMI\Screens\NotesPage.cs;383;Status;if (on) _status.Text = T("Nts_StatusAdd", "Tap or click the control the note is about (Esc: give up).");
+Nts_StatusOff;KabanHMI\Screens\NotesPage.cs;384;Status;else if (was) _status.Text = T("Nts_StatusOff", "The page works as usual.");
+Nts_Tab;KabanHMI\Screens\NotesPage.cs;500;Text;_name = T("Nts_Tab", "Tab") + ": " + (page != null ? page.Text : "");
+Nts_Tab;KabanHMI\Screens\NotesPage.cs;517;Text;_name = T("Nts_Tab", "Tab") + ": " + (page != null ? LanguageManager.GetString(page.TitleKey ?? "", page.TitleFallback ?? "") : tab.Text);
+Nts_TabDetails;KabanHMI\Screens\NotesPage.cs;312;Text;_detailsTab = new TabPage(T("Nts_TabDetails", "Details")) { BackColor = Color.White, Name = "notesDetails" };
+Nts_TabNotes;KabanHMI\Screens\NotesPage.cs;308;Text;_listTab = new TabPage(T("Nts_TabNotes", "Notes")) { BackColor = Color.White, Name = "notesList" };
+Nts_TextsKept;KabanHMI\Screens\NotesPage.cs;1260;Status;_status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
+Nts_TextsProposed;KabanHMI\Screens\NotesPage.cs;1260;Status;_status.Text = n.State == NoteState.Applied ? T("Nts_TextsKept", "The texts are on the screen.") : T("Nts_TextsProposed", "The texts are proposed.");
+Nts_TipAcceptHelper;KabanHMI\Screens\NotesPage.cs;1479;Text;: T("Nts_TipAcceptHelper", "Put this helper in the control's list"),
+Nts_TipAcceptHelper;KabanHMI\Screens\NotesPage.cs;1623;Text;: T("Nts_TipAcceptHelper", "Put this helper in the control's list"),
+Nts_TipAcceptText;KabanHMI\Screens\NotesPage.cs;1478;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
+Nts_TipAcceptText;KabanHMI\Screens\NotesPage.cs;1622;Text;Act(acts, "✔", T("Nts_Accept", "Accept"), n.Kind == NoteKind.Translation ? T("Nts_TipAcceptText", "Put these texts on the screen")
+Nts_TipAdd;KabanHMI\Screens\NotesPage.cs;214;Tooltip;_add = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
+Nts_TipAdd;KabanHMI\Screens\NotesPage.cs;295;Tooltip;_addMore = UiStyle.ToolButton(E(0x2795), T("Nts_TipAdd", "Add a note: tap or click the control of the page it is about - it is not operated (Esc: give up)"),
+Nts_TipAddComment;KabanHMI\Screens\NotesPage.cs;1399;Text;Act(acts, "💬", T("Nts_AddComment", "Add the comment"), T("Nts_TipAddComment", "What you think of this control, of this page, of the machine"),
+Nts_TipAddFile;KabanHMI\Screens\NotesPage.cs;1351;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipAddFile", "A document, a picture or a video for this control"), (s, e) =>
+Nts_TipBack;KabanHMI\Screens\NotesPage.cs;291;Tooltip;var back = UiStyle.ToolButton(E(0x21A9), T("Nts_TipBack", "Back to the notes"), _tips, (s, e) => _views.SelectedTab = _listTab);
+Nts_TipCancel;KabanHMI\Screens\NotesPage.cs;1617;Text;Act(acts, "↩", T("Nts_Cancel", "Cancel"), T("Nts_TipCancel", "Back to the note as it is"), (s, e) => ViewNote(n, false), "notesCancel");
+Nts_TipEdit;KabanHMI\Screens\NotesPage.cs;221;Tooltip;_edit = UiStyle.ToolButton(E(0x270F), T("Nts_TipEdit", "Edit the note chosen - yours, or of a level below yours"), _tips, (s, e) => ViewNote(SelectedNote, true));
+Nts_TipEditOne;KabanHMI\Screens\NotesPage.cs;1482;Text;Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditLine");
+Nts_TipEditOne;KabanHMI\Screens\NotesPage.cs;1620;Text;if (NotesStore.CanChange(n)) Act(acts, E(0x270F), T("Nts_Edit", "Edit"), T("Nts_TipEditOne", "Change this note - in the next tab"), (s, e) => ViewNote(n, true), "notesEditOne");
+Nts_TipExport;KabanHMI\Screens\NotesPage.cs;229;Tooltip;_export = UiStyle.ToolButton(E(0x1F4E4), T("Nts_TipExport", "Make the feedback file: every note of this panel, with the helpers' files, in one .zip to send"), _tips, (s, e) => E...
+Nts_TipFind;KabanHMI\Screens\NotesPage.cs;300;Tooltip;_find = UiStyle.ToolButton(E(0x1F50E), T("Nts_TipFind", "Where is it used? The picked control's devices and texts - or any device or translation key (Ctrl+F)"),
+Nts_TipFindNote;KabanHMI\Screens\NotesPage.cs;223;Tooltip;_findNote = UiStyle.ToolButton(E(0x1F50D), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"), _tips, (s, e) => FindNoted(SelectedNo...
+Nts_TipFindNote;KabanHMI\Screens\NotesPage.cs;1626;Text;Act(acts, E(0x1F50D), T("Nts_FindControl", "Find its control"), T("Nts_TipFindNote", "Find its control: the page of the note chosen opened, the control shown"),
+Nts_TipFolder;KabanHMI\Screens\NotesPage.cs;231;Tooltip;_folder = UiStyle.ToolButton(E(0x1F4C2), T("Nts_TipFolder", "Show the feedback file in its folder (Maintenance, Admin)"), _tips, (s, e) => ShowFolder());
+Nts_TipGeneral;KabanHMI\Screens\NotesPage.cs;217;Tooltip;_general = UiStyle.ToolButton(E(0x1F4DD), T("Nts_TipGeneral", "A general note - on no control: an idea, a request, a file to send"), _tips, (s, e) => PickGeneral());
+Nts_TipGeneralFile;KabanHMI\Screens\NotesPage.cs;1423;Text;Act(acts, "📎", T("Nts_AddFile", "Add a file"), T("Nts_TipGeneralFile", "A document, a picture or a video with the note"), (s, e) =>
+Nts_TipKeepGeneral;KabanHMI\Screens\NotesPage.cs;1430;Text;Act(keep, "💾", T("Nts_KeepGeneral", "Keep the note"), T("Nts_TipKeepGeneral", "Kept on this panel - and in the feedback file"),
+Nts_TipKeepHelper;KabanHMI\Screens\NotesPage.cs;1360;Text;apply ? T("Nts_TipKeepHelper", "In this control's helper list at once - and in the feedback file")
+Nts_TipKeepProps;KabanHMI\Screens\NotesPage.cs;1319;Text;Act(acts, "💾", T("Nts_KeepProps", "Keep the settings asked for"), T("Nts_TipKeepProps", "For the builder: these settings as they should be - in the feedback file"),
+Nts_TipKeepTexts;KabanHMI\Screens\NotesPage.cs;1162;Text;apply ? T("Nts_TipKeepTexts", "On the screen at once, for everyone on this panel - and in the feedback file")
+Nts_TipKeepValue;KabanHMI\Screens\NotesPage.cs;1047;Text;Act(acts, "💾", T("Nts_KeepValue", "Keep the note"), T("Nts_TipKeepValue", "For the builder: this value as it should be - in the feedback file"),
+Nts_TipLanguages;KabanHMI\Screens\NotesPage.cs;1150;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_tips, pick, T("Nts_TipLanguages", "The languages listed here - yours (nothing ticked: the screen's and English)"));
+Nts_TipNoFile;KabanHMI\Screens\NotesPage.cs;1607;Text;Act(files, "✖", T("Nts_NoFileBtn", "No file"), T("Nts_TipNoFile", "The note without a file"), (s, e) => { _file = null; _fileChanged = true; Fill(); }, "notesEditNoFile");
+Nts_TipOpenFile;KabanHMI\Screens\NotesPage.cs;1473;Text;Act(acts, "📄", n.FileName ?? n.File, T("Nts_TipOpenFile", "Open the file"), (s, e) =>
+Nts_TipOpenFile;KabanHMI\Screens\NotesPage.cs;1593;Text;Act(files, "📄", shown, T("Nts_TipOpenFile", "Open the file"), (s, e) =>
+Nts_TipOpenTranslation;KabanHMI\Screens\NotesPage.cs;1168;Text;T("Nts_TipOpenTranslation", "HMI Settings > Translation on this key - its texts in every language, to edit there (picking goes off)"),
+Nts_TipOtherFile;KabanHMI\Screens\NotesPage.cs;1601;Text;Act(files, "📎", T("Nts_OtherFile", "Another file"), T("Nts_TipOtherFile", "A document, a picture or a video instead of this one"), (s, e) =>
+Nts_TipProposeHelper;KabanHMI\Screens\NotesPage.cs;1361;Text;: T("Nts_TipProposeHelper", "A proposal: Maintenance or an Admin puts it in the list - and in the feedback file"),
+Nts_TipProposeTexts;KabanHMI\Screens\NotesPage.cs;1163;Text;: T("Nts_TipProposeTexts", "A proposal: Maintenance or an Admin puts it on the screen - and in the feedback file"),
+Nts_TipRemove2;KabanHMI\Screens\NotesPage.cs;1484;Text;Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) =>
+Nts_TipRemove2;KabanHMI\Screens\NotesPage.cs;1628;Text;if (NotesStore.CanRemove(n)) Act(acts, "✖", T("Nts_Remove", "Remove"), T("Nts_TipRemove2", "Take this note away (yours, or of a level below yours)"), (s, e) => RemoveNote(n), "n...
+Nts_TipRemoveNote;KabanHMI\Screens\NotesPage.cs;225;Tooltip;_remove = UiStyle.ToolButton(E(0x1F5D1), T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"), _tips, (s, e) => RemoveNote(SelectedNote));
+Nts_TipRemoveNote;KabanHMI\Screens\NotesPage.cs;228;Text;Kaban.UI.Helpers.Shortcuts.Set(_remove, Keys.None, _tips, T("Nts_TipRemoveNote", "Remove the note chosen - yours, or of a level below yours"));
+Nts_TipSave;KabanHMI\Screens\NotesPage.cs;1615;Text;Act(acts, E(0x1F4BE), T("Nts_Save", "Save"), T("Nts_TipSave", "Keep the note as changed here"),
+Nts_TipView;KabanHMI\Screens\NotesPage.cs;219;Tooltip;_view = UiStyle.ToolButton(E(0x1F441), T("Nts_TipView", "View the note chosen - its details in the next tab (a double click on it too)"), _tips, (s, e) => ViewNote(SelectedNote,...
+Nts_TranslationOpened;KabanHMI\Screens\NotesPage.cs;1248;Status;_status.Text = why.Length > 0 ? why : string.Format(T("Nts_TranslationOpened", "{0} in the translation table - picking is off."), key);
+Nts_ValueEmpty;KabanHMI\Screens\NotesPage.cs;1057;Status;if (required.Length == 0) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
+Nts_ValueEmpty;KabanHMI\Screens\NotesPage.cs;1670;Status;if (clean(required.Text) == null) { _status.Text = T("Nts_ValueEmpty", "Write what it should be first."); return; }
+Nts_ValueKept;KabanHMI\Screens\NotesPage.cs;1064;Status;if (n != null) _status.Text = T("Nts_ValueKept", "The note is kept - for the feedback file.");
+Nts_ValueNow;KabanHMI\Screens\NotesPage.cs;1040;Text;AddText(T("Nts_ValueNow", "Shown now") + ": " + (string.IsNullOrEmpty(_value) ? "-" : _value));
+Nts_ValueRequired;KabanHMI\Screens\NotesPage.cs;1041;Text;AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
+Nts_ValueRequired;KabanHMI\Screens\NotesPage.cs;1564;Text;AddText(T("Nts_ValueRequired", "Your suggestion (what it should be):"), false, Color.FromArgb(90, 96, 106), 4);
+Nts_ValueThen;KabanHMI\Screens\NotesPage.cs;1563;Text;AddText(T("Nts_ValueThen", "Shown then") + ": " + (string.IsNullOrEmpty(v0.Now) ? "-" : v0.Now));
+Nts_Why;KabanHMI\Screens\NotesPage.cs;858;Text;AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+Nts_Why;KabanHMI\Screens\NotesPage.cs;1567;Text;AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
+Nts_Why;KabanHMI\Screens\NotesPage.cs;1578;Text;AddText(T("Nts_Why", "Reason - for the builder:"), false, Color.FromArgb(90, 96, 106), 4);
 Opt_BakByPoints;KabanHMI\Settings\PlcBackupForms.cs;427;Text;_byPoints.Text = T("Opt_BakByPoints", "Points + Start");
 Opt_BakByRange;KabanHMI\Settings\PlcBackupForms.cs;428;Text;_byRange.Text = T("Opt_BakByRange", "Start + End");
 Other;Kaban.Core\Helpers\AxisMoment.cs;257;Text;default: return "Other";
@@ -2177,7 +2256,7 @@ Tab_ParamEncoders;Kaban.Machines.FA2010\FA2010Module.cs;195;Text;new Screens.Gen
 Tab_ParamMilling;Kaban.Machines.FA2010\FA2010Module.cs;193;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
 Tab_ParamOther;Kaban.Machines.FA2010\FA2010Module.cs;196;Text;new Screens.GeneratedPage("Tab_ParamOther", "Others", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamOther())
 Tab_ParamRobot;Kaban.Machines.FA2010\FA2010Module.cs;192;Text;new Screens.GeneratedPage("Tab_ParamRobot", "Robot", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamRobot()),
-Tab_Translations;KabanHMI\Forms\MainForm.Notes.cs;74;Text;if (!settings.ActivateByKey("Tab_Translations"))
+Tab_Translations;KabanHMI\Forms\MainForm.Notes.cs;77;Text;if (!settings.ActivateByKey("Tab_Translations"))
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;585;Message;if (target == null) { Ask.Tell(shell, T("Tab_Translations", "Translation"), why); return; }
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;624;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"),
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;841;Message;!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnAiMany",
@@ -2326,7 +2405,12 @@ Tip_NavForward;KabanHMI\Forms\MainForm.cs;2786;Tooltip;Helpers.Shortcuts.Set(_bt
 Tip_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;405;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
 Tip_NoteHelper;KabanHMI\Helpers\NoteHelpers.cs;116;Tooltip;UiStyle.SetTip(UiStyle.Tips(), badge, LanguageManager.GetString("Tip_NoteHelper", "Helpers for this control (from the notes page)") + "\n" +
 Tip_NotReadYet;KabanHMI\Controls\BaseNumericHMI.cs;345;Tooltip;return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
+Tip_NtsClear;KabanHMI\Screens\NotesPage.cs;275;Tooltip;var clear = UiStyle.ToolButton("✖", T("Tip_NtsClear", "Clear the search and the filters"), _tips, (s, e) => ClearFilters());
 Tip_NtsFindPicked;KabanHMI\Screens\NotesFindForm.cs;97;Tooltip;_tips.SetToolTip(mine, T("Tip_NtsFindPicked", "Every device and text of the control picked, where each one is used"));
+Tip_NtsKindFilter;KabanHMI\Screens\NotesPage.cs;257;Tooltip;UiStyle.SetTip(_tips, _kindFilter, T("Tip_NtsKindFilter", "Only the notes of one kind: comments, general notes, texts, helpers, values, settings"));
+Tip_NtsSearch;KabanHMI\Screens\NotesPage.cs;246;Tooltip;UiStyle.SetTip(_tips, _search, T("Tip_NtsSearch", "Every word must appear - in the control, the text, the page, who wrote it, in any case"));
+Tip_NtsStateFilter;KabanHMI\Screens\NotesPage.cs;258;Tooltip;UiStyle.SetTip(_tips, _stateFilter, T("Tip_NtsStateFilter", "Only the proposals to accept, or the texts and helpers in force"));
+Tip_NtsWhoFilter;KabanHMI\Screens\NotesPage.cs;259;Tooltip;UiStyle.SetTip(_tips, _whoFilter, T("Tip_NtsWhoFilter", "Only the notes of one user - or yours"));
 Tip_OpenManual;KabanHMI\Forms\MainForm.Help.cs;126;Tooltip;manual.ToolTipText = LanguageManager.GetString("Tip_OpenManual", "Opens the operator and engineer manual in the browser, in the language on screen.");
 Tip_PaneMax;KabanHMI\Controls\FloatingPaneHMI.cs;95;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMax, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMax", "Maximize this pane to the whole page"));
 Tip_PaneMin;KabanHMI\Controls\FloatingPaneHMI.cs;90;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _btnMin, Kaban.Core.Helpers.LanguageManager.GetString("Tip_PaneMin", "Minimize this pane to the bottom-left"));
@@ -2473,7 +2557,9 @@ Ttl_MotionFlash;KabanHMI\Controls\MotionValueHMI.cs;319;Message;MessageBox.Show(
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;39;Message;return MessageBox.Show(owner, text, T("Ttl_MotionFlash", "Simple motion module"), buttons, icon);
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;135;Text;var result = WorkForm.Run(owner, T("Ttl_MotionFlash", "Simple motion module"),
 Ttl_Notes;KabanHMI\Forms\MainForm.Notes.cs;30;Text;TitleKey = "Ttl_Notes", TitleFallback = "Notes and feedback",
-Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1241;Message;if (Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) NotesStore.Remove(n);
+Ttl_Notes;KabanHMI\Screens\NotesPage.cs;167;Message;if (Dirty && !Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"),
+Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1486;Message;if (Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) NotesStore.Remove(n);
+Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1703;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), T("Nts_AskRemove", "Take this note away?"))) return;
 Ttl_NtsFind;KabanHMI\Screens\NotesFindForm.cs;72;Text;Text = T("Ttl_NtsFind", "Where is it used?") + (string.IsNullOrWhiteSpace(title) ? "" : " - " + title);
 Ttl_PlcBackup;KabanHMI\Settings\PlcBackupForms.cs;28;Message;return MessageBox.Show(owner, text, T("Ttl_PlcBackup", "PLC data"), buttons, icon);
 Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1208;Text;_btnClose = win("\u2715", LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"),
