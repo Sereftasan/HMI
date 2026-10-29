@@ -298,14 +298,18 @@ namespace Kaban.UI.Settings
             foreach (var t in picked)
             {
                 bool json = t.Item1.EndsWith(".json", StringComparison.OrdinalIgnoreCase);
+                // an Alarms.json's texts: the machine's alarms' rows - from its Alarms.json (an older file) or,
+                // since 30 October, its Translations.csv (Alarm_<machine>.<TagCode>)
                 var rows = _rows.Where(r => string.Equals(r.Owner, t.Item2, StringComparison.OrdinalIgnoreCase) &&
-                                            string.Equals(r.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) == json).ToList();
+                                            (json ? string.Equals(r.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) || AlarmDefinitionLoader.TagOf(r.Key) != null
+                                                  : !string.Equals(r.File, "Alarms.json", StringComparison.OrdinalIgnoreCase))).ToList();
                 // an alarm's text by its entry's TagCode, a CSV's by its key
                 var byName = new Dictionary<string, TranslationEdits.Row>(StringComparer.OrdinalIgnoreCase);
                 foreach (var r in rows)
                 {
                     string tag;
                     TranslationEdits.FileOf(r, out tag);
+                    if (json && tag == null) tag = AlarmDefinitionLoader.TagOf(r.Key);
                     var name = json ? tag : r.Key;
                     if (!string.IsNullOrEmpty(name) && !byName.ContainsKey(name)) byName[name] = r;
                 }

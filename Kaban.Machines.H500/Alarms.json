@@ -4,14 +4,6 @@
     "TagCode": "Head_1_X_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 1 X Servo Fault",
-      "TR": "Kafa1X ServoAriza",
-      "RU": "Head 1 X Servo Fault",
-      "DE": "Head 1 X Servo Fault",
-      "IT": "Head 1 X Servo Fault",
-      "ES": "Head 1 X Servo Fault"
-    },
     "Comment": "code 1 (from the earlier alarm list)"
   },
   {
@@ -19,14 +11,6 @@
     "TagCode": "Head_2_X_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 2 X Servo Fault",
-      "TR": "Kafa2X ServoAriza",
-      "RU": "Head 2 X Servo Fault",
-      "DE": "Head 2 X Servo Fault",
-      "IT": "Head 2 X Servo Fault",
-      "ES": "Head 2 X Servo Fault"
-    },
     "Comment": "code 2 (from the earlier alarm list)"
   },
   {
@@ -34,14 +18,6 @@
     "TagCode": "Conveyor_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Fault",
-      "TR": "KonveyorAriza",
-      "RU": "Conveyor Fault",
-      "DE": "Conveyor Fault",
-      "IT": "Conveyor Fault",
-      "ES": "Conveyor Fault"
-    },
     "Comment": "code 3 (from the earlier alarm list)"
   },
   {
@@ -49,14 +25,6 @@
     "TagCode": "Screwing_1_Did_Not_Press",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 1 Did Not Press",
-      "TR": "Vidalama1 Basamadi",
-      "RU": "Screwing 1 Did Not Press",
-      "DE": "Screwing 1 Did Not Press",
-      "IT": "Screwing 1 Did Not Press",
-      "ES": "Screwing 1 Did Not Press"
-    },
     "Comment": "code 4 (from the earlier alarm list)"
   },
   {
@@ -64,14 +32,6 @@
     "TagCode": "Screwing_2_Did_Not_Press",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 2 Did Not Press",
-      "TR": "Vidalama2 Basamadi",
-      "RU": "Screwing 2 Did Not Press",
-      "DE": "Screwing 2 Did Not Press",
-      "IT": "Screwing 2 Did Not Press",
-      "ES": "Screwing 2 Did Not Press"
-    },
     "Comment": "code 5 (from the earlier alarm list)"
   },
   {
@@ -79,14 +39,6 @@
     "TagCode": "Conveyor_Did_Not_Run",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Did Not Run",
-      "TR": "Konveyor Calismadi",
-      "RU": "Conveyor Did Not Run",
-      "DE": "Conveyor Did Not Run",
-      "IT": "Conveyor Did Not Run",
-      "ES": "Conveyor Did Not Run"
-    },
     "Comment": "code 6 (from the earlier alarm list)"
   },
   {
@@ -94,14 +46,6 @@
     "TagCode": "Clamping_Unit_Up_Cikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping Unit Up Cikamadi",
-      "TR": "SikmaUnitesi YukariCikamadi",
-      "RU": "Clamping Unit Up Cikamadi",
-      "DE": "Clamping Unit Up Cikamadi",
-      "IT": "Clamping Unit Up Cikamadi",
-      "ES": "Clamping Unit Up Cikamadi"
-    },
     "Comment": "code 7 (from the earlier alarm list)"
   },
   {
@@ -109,14 +53,6 @@
     "TagCode": "Clamping_Unit_Down_Inemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping Unit Down Inemedi",
-      "TR": "SikmaUnitesi Asagi Inemedi",
-      "RU": "Clamping Unit Down Inemedi",
-      "DE": "Clamping Unit Down Inemedi",
-      "IT": "Clamping Unit Down Inemedi",
-      "ES": "Clamping Unit Down Inemedi"
-    },
     "Comment": "code 8 (from the earlier alarm list)"
   },
   {
@@ -124,14 +60,6 @@
     "TagCode": "Clamping_1_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 1 Sikamadi",
-      "TR": "Sikma1 Sikamadi",
-      "RU": "Clamping 1 Sikamadi",
-      "DE": "Clamping 1 Sikamadi",
-      "IT": "Clamping 1 Sikamadi",
-      "ES": "Clamping 1 Sikamadi"
-    },
     "Comment": "code 9 (from the earlier alarm list)"
   },
   {
@@ -139,14 +67,6 @@
     "TagCode": "Clamping_2_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 2 Sikamadi",
-      "TR": "Sikma2 Sikamadi",
-      "RU": "Clamping 2 Sikamadi",
-      "DE": "Clamping 2 Sikamadi",
-      "IT": "Clamping 2 Sikamadi",
-      "ES": "Clamping 2 Sikamadi"
-    },
     "Comment": "code 10 (from the earlier alarm list)"
   },
   {
@@ -154,14 +74,6 @@
     "TagCode": "Clamping_3_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 3 Sikamadi",
-      "TR": "Sikma3 Sikamadi",
-      "RU": "Clamping 3 Sikamadi",
-      "DE": "Clamping 3 Sikamadi",
-      "IT": "Clamping 3 Sikamadi",
-      "ES": "Clamping 3 Sikamadi"
-    },
     "Comment": "code 11 (from the earlier alarm list)"
   },
   {
@@ -169,14 +81,6 @@
     "TagCode": "Clamping_4_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 4 Sikamadi",
-      "TR": "Sikma4 Sikamadi",
-      "RU": "Clamping 4 Sikamadi",
-      "DE": "Clamping 4 Sikamadi",
-      "IT": "Clamping 4 Sikamadi",
-      "ES": "Clamping 4 Sikamadi"
-    },
     "Comment": "code 12 (from the earlier alarm list)"
   },
   {
@@ -184,14 +88,6 @@
     "TagCode": "Clamping_5_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 5 Sikamadi",
-      "TR": "Sikma5 Sikamadi",
-      "RU": "Clamping 5 Sikamadi",
-      "DE": "Clamping 5 Sikamadi",
-      "IT": "Clamping 5 Sikamadi",
-      "ES": "Clamping 5 Sikamadi"
-    },
     "Comment": "code 13 (from the earlier alarm list)"
   },
   {
@@ -199,14 +95,6 @@
     "TagCode": "Clamping_6_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 6 Sikamadi",
-      "TR": "Sikma6 Sikamadi",
-      "RU": "Clamping 6 Sikamadi",
-      "DE": "Clamping 6 Sikamadi",
-      "IT": "Clamping 6 Sikamadi",
-      "ES": "Clamping 6 Sikamadi"
-    },
     "Comment": "code 14 (from the earlier alarm list)"
   },
   {
@@ -214,14 +102,6 @@
     "TagCode": "Sikmalar_Acamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Sikmalar Acamadi",
-      "TR": "Sikmalar Acamadi",
-      "RU": "Sikmalar Acamadi",
-      "DE": "Sikmalar Acamadi",
-      "IT": "Sikmalar Acamadi",
-      "ES": "Sikmalar Acamadi"
-    },
     "Comment": "code 15 (from the earlier alarm list)"
   },
   {
@@ -229,14 +109,6 @@
     "TagCode": "Emergency_Stop_Pressed",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Emergency Stop Pressed",
-      "TR": "AcilStop Basili",
-      "RU": "Emergency Stop Pressed",
-      "DE": "Emergency Stop Pressed",
-      "IT": "Emergency Stop Pressed",
-      "ES": "Emergency Stop Pressed"
-    },
     "Comment": "code 16 (from the earlier alarm list)"
   },
   {
@@ -244,14 +116,6 @@
     "TagCode": "Air_Basinci_Missing",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Air Basinci Missing",
-      "TR": "HavaBasinci Yok",
-      "RU": "Air Basinci Missing",
-      "DE": "Air Basinci Missing",
-      "IT": "Air Basinci Missing",
-      "ES": "Air Basinci Missing"
-    },
     "Comment": "code 17 (from the earlier alarm list)"
   },
   {
@@ -259,14 +123,6 @@
     "TagCode": "Head_1_Forward_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 1 Forward Gidemedi",
-      "TR": "Kafa1 IleriGidemedi",
-      "RU": "Head 1 Forward Gidemedi",
-      "DE": "Head 1 Forward Gidemedi",
-      "IT": "Head 1 Forward Gidemedi",
-      "ES": "Head 1 Forward Gidemedi"
-    },
     "Comment": "code 18 (from the earlier alarm list)"
   },
   {
@@ -274,14 +130,6 @@
     "TagCode": "Head_1_Back_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 1 Back Gidemedi",
-      "TR": "Kafa1 GeriGidemedi",
-      "RU": "Head 1 Back Gidemedi",
-      "DE": "Head 1 Back Gidemedi",
-      "IT": "Head 1 Back Gidemedi",
-      "ES": "Head 1 Back Gidemedi"
-    },
     "Comment": "code 19 (from the earlier alarm list)"
   },
   {
@@ -289,14 +137,6 @@
     "TagCode": "Head_2_Forward_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 2 Forward Gidemedi",
-      "TR": "Kafa2 IleriGidemedi",
-      "RU": "Head 2 Forward Gidemedi",
-      "DE": "Head 2 Forward Gidemedi",
-      "IT": "Head 2 Forward Gidemedi",
-      "ES": "Head 2 Forward Gidemedi"
-    },
     "Comment": "code 20 (from the earlier alarm list)"
   },
   {
@@ -304,14 +144,6 @@
     "TagCode": "Head_2_Back_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 2 Back Gidemedi",
-      "TR": "Kafa2 GeriGidemedi",
-      "RU": "Head 2 Back Gidemedi",
-      "DE": "Head 2 Back Gidemedi",
-      "IT": "Head 2 Back Gidemedi",
-      "ES": "Head 2 Back Gidemedi"
-    },
     "Comment": "code 21 (from the earlier alarm list)"
   },
   {
@@ -319,14 +151,6 @@
     "TagCode": "Screwing_1_Down_Inemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 1 Down Inemedi",
-      "TR": "Vidalama1 Asagi Inemedi",
-      "RU": "Screwing 1 Down Inemedi",
-      "DE": "Screwing 1 Down Inemedi",
-      "IT": "Screwing 1 Down Inemedi",
-      "ES": "Screwing 1 Down Inemedi"
-    },
     "Comment": "code 22 (from the earlier alarm list)"
   },
   {
@@ -334,14 +158,6 @@
     "TagCode": "Screwing_2_Down_Inemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 2 Down Inemedi",
-      "TR": "Vidalama2 Asagi Inemedi",
-      "RU": "Screwing 2 Down Inemedi",
-      "DE": "Screwing 2 Down Inemedi",
-      "IT": "Screwing 2 Down Inemedi",
-      "ES": "Screwing 2 Down Inemedi"
-    },
     "Comment": "code 23 (from the earlier alarm list)"
   },
   {
@@ -349,14 +165,6 @@
     "TagCode": "Delme_1_Z_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 1 Z Servo Fault",
-      "TR": "Delme1Z ServoAriza",
-      "RU": "Delme 1 Z Servo Fault",
-      "DE": "Delme 1 Z Servo Fault",
-      "IT": "Delme 1 Z Servo Fault",
-      "ES": "Delme 1 Z Servo Fault"
-    },
     "Comment": "code 24 (from the earlier alarm list)"
   },
   {
@@ -364,14 +172,6 @@
     "TagCode": "Delme_2_Z_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 2 Z Servo Fault",
-      "TR": "Delme2Z ServoAriza",
-      "RU": "Delme 2 Z Servo Fault",
-      "DE": "Delme 2 Z Servo Fault",
-      "IT": "Delme 2 Z Servo Fault",
-      "ES": "Delme 2 Z Servo Fault"
-    },
     "Comment": "code 25 (from the earlier alarm list)"
   },
   {
@@ -379,14 +179,6 @@
     "TagCode": "Delme_1_Drill_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 1 Drill Fault",
-      "TR": "Delme1 MatkapAriza",
-      "RU": "Delme 1 Drill Fault",
-      "DE": "Delme 1 Drill Fault",
-      "IT": "Delme 1 Drill Fault",
-      "ES": "Delme 1 Drill Fault"
-    },
     "Comment": "code 26 (from the earlier alarm list)"
   },
   {
@@ -394,14 +186,6 @@
     "TagCode": "Delme_2_Drill_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 2 Drill Fault",
-      "TR": "Delme2 MatkapAriza",
-      "RU": "Delme 2 Drill Fault",
-      "DE": "Delme 2 Drill Fault",
-      "IT": "Delme 2 Drill Fault",
-      "ES": "Delme 2 Drill Fault"
-    },
     "Comment": "code 27 (from the earlier alarm list)"
   },
   {
@@ -409,14 +193,6 @@
     "TagCode": "Delme_1_Drill_Did_Not_Run",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 1 Drill Did Not Run",
-      "TR": "Delme1 MatkapCalismadi",
-      "RU": "Delme 1 Drill Did Not Run",
-      "DE": "Delme 1 Drill Did Not Run",
-      "IT": "Delme 1 Drill Did Not Run",
-      "ES": "Delme 1 Drill Did Not Run"
-    },
     "Comment": "code 28 (from the earlier alarm list)"
   },
   {
@@ -424,14 +200,6 @@
     "TagCode": "Delme_2_Drill_Did_Not_Run",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Delme 2 Drill Did Not Run",
-      "TR": "Delme2 MatkapCalismadi",
-      "RU": "Delme 2 Drill Did Not Run",
-      "DE": "Delme 2 Drill Did Not Run",
-      "IT": "Delme 2 Drill Did Not Run",
-      "ES": "Delme 2 Drill Did Not Run"
-    },
     "Comment": "code 29 (from the earlier alarm list)"
   },
   {
@@ -439,14 +207,6 @@
     "TagCode": "Profile_Head_Bulunamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Head Bulunamadi",
-      "TR": "ProfilBasi Bulunamadi",
-      "RU": "Profile Head Bulunamadi",
-      "DE": "Profile Head Bulunamadi",
-      "IT": "Profile Head Bulunamadi",
-      "ES": "Profile Head Bulunamadi"
-    },
     "Comment": "code 30 (from the earlier alarm list)"
   },
   {
@@ -454,14 +214,6 @@
     "TagCode": "Unit_1_Y_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Unit 1 Y Servo Fault",
-      "TR": "Unite1Y ServoAriza",
-      "RU": "Unit 1 Y Servo Fault",
-      "DE": "Unit 1 Y Servo Fault",
-      "IT": "Unit 1 Y Servo Fault",
-      "ES": "Unit 1 Y Servo Fault"
-    },
     "Comment": "code 31 (from the earlier alarm list)"
   },
   {
@@ -469,14 +221,6 @@
     "TagCode": "Unit_2_Y_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Unit 2 Y Servo Fault",
-      "TR": "Unite2Y ServoAriza",
-      "RU": "Unit 2 Y Servo Fault",
-      "DE": "Unit 2 Y Servo Fault",
-      "IT": "Unit 2 Y Servo Fault",
-      "ES": "Unit 2 Y Servo Fault"
-    },
     "Comment": "code 32 (from the earlier alarm list)"
   },
   {
@@ -484,14 +228,6 @@
     "TagCode": "Screwing_1_Besleme_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 1 Besleme Fault",
-      "TR": "Vidalama1 BeslemeAriza",
-      "RU": "Screwing 1 Besleme Fault",
-      "DE": "Screwing 1 Besleme Fault",
-      "IT": "Screwing 1 Besleme Fault",
-      "ES": "Screwing 1 Besleme Fault"
-    },
     "Comment": "code 33 (from the earlier alarm list)"
   },
   {
@@ -499,14 +235,6 @@
     "TagCode": "Screwing_2_Besleme_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 2 Besleme Fault",
-      "TR": "Vidalama2 BeslemeAriza",
-      "RU": "Screwing 2 Besleme Fault",
-      "DE": "Screwing 2 Besleme Fault",
-      "IT": "Screwing 2 Besleme Fault",
-      "ES": "Screwing 2 Besleme Fault"
-    },
     "Comment": "code 34 (from the earlier alarm list)"
   },
   {
@@ -514,14 +242,6 @@
     "TagCode": "Screwing_1_Motor_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 1 Motor Servo Fault",
-      "TR": "Vidalama1Motoru ServoArıza",
-      "RU": "Screwing 1 Motor Servo Fault",
-      "DE": "Screwing 1 Motor Servo Fault",
-      "IT": "Screwing 1 Motor Servo Fault",
-      "ES": "Screwing 1 Motor Servo Fault"
-    },
     "Comment": "code 35 (from the earlier alarm list)"
   },
   {
@@ -529,14 +249,6 @@
     "TagCode": "Screwing_2_Motor_Servo_Fault",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Screwing 2 Motor Servo Fault",
-      "TR": "Vidalama2Motoru ServoArıza",
-      "RU": "Screwing 2 Motor Servo Fault",
-      "DE": "Screwing 2 Motor Servo Fault",
-      "IT": "Screwing 2 Motor Servo Fault",
-      "ES": "Screwing 2 Motor Servo Fault"
-    },
     "Comment": "code 36 (from the earlier alarm list)"
   },
   {
@@ -544,14 +256,6 @@
     "TagCode": "Profile_Algiilama_Sensorunden_Kurtarma_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Algiilama Sensorunden Kurtarma Error",
-      "TR": "ProfilAlgiilamaSensorundenKurtarmaHata",
-      "RU": "Profile Algiilama Sensorunden Kurtarma Error",
-      "DE": "Profile Algiilama Sensorunden Kurtarma Error",
-      "IT": "Profile Algiilama Sensorunden Kurtarma Error",
-      "ES": "Profile Algiilama Sensorunden Kurtarma Error"
-    },
     "Comment": "code 37 (from the earlier alarm list)"
   },
   {
@@ -559,14 +263,6 @@
     "TagCode": "Profile_Head_Measurement_Forward_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Head Measurement Forward Gidemedi",
-      "TR": "ProfilBasiOlcum IleriGidemedi",
-      "RU": "Profile Head Measurement Forward Gidemedi",
-      "DE": "Profile Head Measurement Forward Gidemedi",
-      "IT": "Profile Head Measurement Forward Gidemedi",
-      "ES": "Profile Head Measurement Forward Gidemedi"
-    },
     "Comment": "code 38 (from the earlier alarm list)"
   },
   {
@@ -574,14 +270,6 @@
     "TagCode": "Profile_Head_Measurement_Back_Gidemedi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Head Measurement Back Gidemedi",
-      "TR": "ProfilBasiOlcum GeriGidemedi",
-      "RU": "Profile Head Measurement Back Gidemedi",
-      "DE": "Profile Head Measurement Back Gidemedi",
-      "IT": "Profile Head Measurement Back Gidemedi",
-      "ES": "Profile Head Measurement Back Gidemedi"
-    },
     "Comment": "code 39 (from the earlier alarm list)"
   },
   {
@@ -589,14 +277,6 @@
     "TagCode": "Head_1_X_Encoder_Measurement_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 1 X Encoder Measurement Error",
-      "TR": "Kafa1X Encoder Olcum Hata",
-      "RU": "Head 1 X Encoder Measurement Error",
-      "DE": "Head 1 X Encoder Measurement Error",
-      "IT": "Head 1 X Encoder Measurement Error",
-      "ES": "Head 1 X Encoder Measurement Error"
-    },
     "Comment": "code 40 (from the earlier alarm list)"
   },
   {
@@ -604,14 +284,6 @@
     "TagCode": "Head_2_X_Encoder_Measurement_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Head 2 X Encoder Measurement Error",
-      "TR": "Kafa2X Encoder Olcum Hata",
-      "RU": "Head 2 X Encoder Measurement Error",
-      "DE": "Head 2 X Encoder Measurement Error",
-      "IT": "Head 2 X Encoder Measurement Error",
-      "ES": "Head 2 X Encoder Measurement Error"
-    },
     "Comment": "code 41 (from the earlier alarm list)"
   },
   {
@@ -619,14 +291,6 @@
     "TagCode": "Profile_Detection_2_Sensor_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Detection 2 Sensor Error",
-      "TR": "ProfilAlgilama2 Sensor Hata",
-      "RU": "Profile Detection 2 Sensor Error",
-      "DE": "Profile Detection 2 Sensor Error",
-      "IT": "Profile Detection 2 Sensor Error",
-      "ES": "Profile Detection 2 Sensor Error"
-    },
     "Comment": "code 42 (from the earlier alarm list)"
   },
   {
@@ -634,14 +298,6 @@
     "TagCode": "Clamping_7_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 7 Sikamadi",
-      "TR": "Sikma7 Sikamadi",
-      "RU": "Clamping 7 Sikamadi",
-      "DE": "Clamping 7 Sikamadi",
-      "IT": "Clamping 7 Sikamadi",
-      "ES": "Clamping 7 Sikamadi"
-    },
     "Comment": "code 43 (from the earlier alarm list)"
   },
   {
@@ -649,14 +305,6 @@
     "TagCode": "Clamping_8_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 8 Sikamadi",
-      "TR": "Sikma8 Sikamadi",
-      "RU": "Clamping 8 Sikamadi",
-      "DE": "Clamping 8 Sikamadi",
-      "IT": "Clamping 8 Sikamadi",
-      "ES": "Clamping 8 Sikamadi"
-    },
     "Comment": "code 44 (from the earlier alarm list)"
   },
   {
@@ -664,15 +312,6 @@
     "TagCode": "Clamping_9_Sikamadi",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Clamping 9 Sikamadi",
-      "TR": "Sikma9 Sikamadi",
-      "RU": "Clamping 9 Sikamadi",
-      "DE": "Clamping 9 Sikamadi",
-      "IT": "Clamping 9 Sikamadi",
-      "ES": "Clamping 9 Sikamadi"
-    },
     "Comment": "code 45 (from the earlier alarm list)"
   }
 ]
-

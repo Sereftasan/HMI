@@ -9,6 +9,13 @@ using Kaban.Core.Models;
 namespace Kaban.Core.Helpers
 {
     /// <summary>
+    /// THE TEXTS ARE THE MACHINE'S TRANSLATIONS (30 October, the two alarm handlings combined): an
+    /// alarm's text is a row of its machine's Translations.csv, "Alarm_&lt;ModuleId&gt;.&lt;TagCode&gt;" -
+    /// edited, imported and translated as every other text (tools\alarm_texts_to_translations.py moved
+    /// them, the Industry 4 program's Turkish with them). Alarms.json keeps the alarm: its device, code,
+    /// severity, help, and "Log" - where the PLC's log records it. A file of an older installation with
+    /// its "Translations" still reads: a text the translation files have wins.
+    ///
     /// RESTORED: loads machine alarm definitions from an Alarms.json file
     /// (e.g. Kaban.Machines.FA2010/Alarms.json) and registers them with
     /// AlarmManager + LanguageManager. The JSON file and the System.Text.Json
@@ -47,11 +54,59 @@ namespace Kaban.Core.Helpers
             public double? GenerationDelay { get; set; }
 
             /// <summary>
+            /// Where the PLC's log records the alarm (30 October): { "Code": 4, "Value": "First 32
+            /// Errors (1)", "Bit": 0 }. Absent: read from the Comment when it says so.
+            /// </summary>
+            public LogPlace Log { get; set; }
+
+            /// <summary>
             /// The engineer's note ("StateCode 4 / First 32 Errors (1) bit 0").
             /// Every shipped Alarms.json carries one; without this property the
             /// loader dropped it and the first Save erased it from the file.
             /// </summary>
             public string Comment { get; set; }
+        }
+
+        /// <summary>
+        /// WHERE THE PLC'S LOG RECORDS AN ALARM: the Industry 4 record's state code, the name of its
+        /// value (a word of alarm bits - "First 32 Errors (1)"), the bit in it.
+        /// </summary>
+        public sealed class LogPlace
+        {
+            public int Code { get; set; }
+            public string Value { get; set; } = "";
+            public int Bit { get; set; }
+
+            public override string ToString() { return "StateCode " + Code + " / " + Value + " bit " + Bit; }
+        }
+
+        private static readonly System.Text.RegularExpressions.Regex CommentPlace =
+            new System.Text.RegularExpressions.Regex(@"^\s*StateCode\s+(\d+)\s*/\s*(.+?)\s+bit\s+(\d+)\s*$",
+                                                     System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+        /// <summary>The log place an engineer's comment names ("StateCode 4 / First 32 Errors (1) bit 0"); null: none.</summary>
+        public static LogPlace LogPlaceOf(string comment)
+        {
+            var m = CommentPlace.Match(comment ?? "");
+            if (!m.Success) return null;
+            return new LogPlace
+            {
+                Code = int.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture),
+                Value = m.Groups[2].Value.Trim(),
+                Bit = int.Parse(m.Groups[3].Value, System.Globalization.CultureInfo.InvariantCulture)
+            };
+        }
+
+        /// <summary>The TagCode of the loaded alarm whose text key this is ("Alarm_FA2010.Robot_X_Error" - "Robot_X_Error"); null: no alarm's.</summary>
+        public static string TagOf(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key) || !key.StartsWith("Alarm_", StringComparison.OrdinalIgnoreCase)) return null;
+            for (int i = 0; i < _loaded.Count; i++)
+            {
+                string mod = i < _loadedModuleIds.Count ? _loadedModuleIds[i] : "";
+                if (string.Equals("Alarm_" + ScopedCode(mod, _loaded[i].TagCode), key.Trim(), StringComparison.OrdinalIgnoreCase)) return _loaded[i].TagCode;
+            }
+            return null;
         }
 
         private static readonly List<AlarmJsonEntry> _loaded = new List<AlarmJsonEntry>();
@@ -452,7 +507,11 @@ namespace Kaban.Core.Helpers
                         troubleshootingKeys: entry.TroubleshootingKeys,
                         helperKeys: entry.HelperKeys);
                     var registered = AlarmManager.FindByCode(scopedCode);
-                    if (registered != null) registered.GenerationDelay = entry.GenerationDelay;
+                    if (registered != null)
+                    {
+                        registered.GenerationDelay = entry.GenerationDelay;
+                        registered.Log = entry.Log ?? LogPlaceOf(entry.Comment);
+                    }
 
                     _loaded.Add(entry);
                     _loadedModuleIds.Add(moduleId ?? "");
@@ -487,6 +546,8 @@ namespace Kaban.Core.Helpers
 
                 foreach (var kvp in entry.Translations)
                 {
+                    // an older file's text: not over the machine's translation file's (30 October)
+                    if (LanguageManager.InMachineFile(translationKey, kvp.Key)) continue;
                     // listed on HMI Settings > Translation as its machine's (its Alarms.json)
                     LanguageManager.AddTranslation(kvp.Key, translationKey, kvp.Value, moduleId ?? "", "Alarms.json");
                 }

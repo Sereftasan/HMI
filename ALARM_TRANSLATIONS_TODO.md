@@ -1,7 +1,12 @@
 # Alarm texts still needing translation
 
-Alarms below have English (and Turkish from the workbook) but no row in
-Translation_JSON.csv, so RU/DE/IT/ES fall back to English until filled in.
+Since 30 October the alarm texts are rows of each machine's Translations.csv
+(`Alarm_<Machine>.<TagCode>`, moved there from Alarms.json by
+`tools\alarm_texts_to_translations.py`, the Turkish from the Industry 4 program's
+Translation_JSON.csv where it has the alarm). The alarms below had no row in
+Translation_JSON.csv: their Turkish is the workbook's (often the PLC's tag name) and
+RU/DE/IT/ES show English - fill them on HMI Settings > Translation (or with its AI
+prompt).
 
 ## FA2010  (6 of 157)
   M819   OKayitX_Ariza

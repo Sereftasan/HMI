@@ -167,7 +167,8 @@ namespace Kaban.UI.Helpers
                 p = Clean(p);
                 if (p.Length > 0 && !parts.Contains(p, StringComparer.OrdinalIgnoreCase)) parts.Add(p);
             }
-            if (string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) && !parts.Any(p => p.StartsWith("an alarm's message")))
+            if ((string.Equals(row.File, "Alarms.json", StringComparison.OrdinalIgnoreCase) || AlarmDefinitionLoader.TagOf(row.Key) != null) &&
+                !parts.Any(p => p.StartsWith("an alarm's message")))
                 parts.Insert(0, "an alarm's message (the alarm list, the alarm bar)");
             if (parts.Count == 0)
             {

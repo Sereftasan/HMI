@@ -84,3 +84,48 @@ Unit Y Pneumatic Position;Unit Y Pneumatic Position;Ünite Y Pnömatik Pozisyon;
 Drilling Encoder Accuracy;Drilling Encoder Accuracy;Delme Enkoder Hassasiyeti;;;;
 Screwing Encoder Precision;Screwing Encoder Precision;Vidalama Enkoder Hassasiyeti;;;;
 Machine ready to work (M1);Machine ready to work (M1);Makine çalışmaya hazır (M1);;;;
+Alarm_H500.Head_1_X_Servo_Fault;Head 1 X Servo Fault;Kafa1X ServoAriza;Head 1 X Servo Fault;Head 1 X Servo Fault;Head 1 X Servo Fault;Head 1 X Servo Fault
+Alarm_H500.Head_2_X_Servo_Fault;Head 2 X Servo Fault;Kafa2X ServoAriza;Head 2 X Servo Fault;Head 2 X Servo Fault;Head 2 X Servo Fault;Head 2 X Servo Fault
+Alarm_H500.Conveyor_Fault;Conveyor Fault;KonveyorAriza;Conveyor Fault;Conveyor Fault;Conveyor Fault;Conveyor Fault
+Alarm_H500.Screwing_1_Did_Not_Press;Screwing 1 Did Not Press;Vidalama1 Basamadi;Screwing 1 Did Not Press;Screwing 1 Did Not Press;Screwing 1 Did Not Press;Screwing 1 Did Not Press
+Alarm_H500.Screwing_2_Did_Not_Press;Screwing 2 Did Not Press;Vidalama2 Basamadi;Screwing 2 Did Not Press;Screwing 2 Did Not Press;Screwing 2 Did Not Press;Screwing 2 Did Not Press
+Alarm_H500.Conveyor_Did_Not_Run;Conveyor Did Not Run;Konveyor Calismadi;Conveyor Did Not Run;Conveyor Did Not Run;Conveyor Did Not Run;Conveyor Did Not Run
+Alarm_H500.Clamping_Unit_Up_Cikamadi;Clamping Unit Up Cikamadi;SikmaUnitesi YukariCikamadi;Clamping Unit Up Cikamadi;Clamping Unit Up Cikamadi;Clamping Unit Up Cikamadi;Clamping Unit Up Cikamadi
+Alarm_H500.Clamping_Unit_Down_Inemedi;Clamping Unit Down Inemedi;SikmaUnitesi Asagi Inemedi;Clamping Unit Down Inemedi;Clamping Unit Down Inemedi;Clamping Unit Down Inemedi;Clamping Unit Down Inemedi
+Alarm_H500.Clamping_1_Sikamadi;Clamping 1 Sikamadi;Sikma1 Sikamadi;Clamping 1 Sikamadi;Clamping 1 Sikamadi;Clamping 1 Sikamadi;Clamping 1 Sikamadi
+Alarm_H500.Clamping_2_Sikamadi;Clamping 2 Sikamadi;Sikma2 Sikamadi;Clamping 2 Sikamadi;Clamping 2 Sikamadi;Clamping 2 Sikamadi;Clamping 2 Sikamadi
+Alarm_H500.Clamping_3_Sikamadi;Clamping 3 Sikamadi;Sikma3 Sikamadi;Clamping 3 Sikamadi;Clamping 3 Sikamadi;Clamping 3 Sikamadi;Clamping 3 Sikamadi
+Alarm_H500.Clamping_4_Sikamadi;Clamping 4 Sikamadi;Sikma4 Sikamadi;Clamping 4 Sikamadi;Clamping 4 Sikamadi;Clamping 4 Sikamadi;Clamping 4 Sikamadi
+Alarm_H500.Clamping_5_Sikamadi;Clamping 5 Sikamadi;Sikma5 Sikamadi;Clamping 5 Sikamadi;Clamping 5 Sikamadi;Clamping 5 Sikamadi;Clamping 5 Sikamadi
+Alarm_H500.Clamping_6_Sikamadi;Clamping 6 Sikamadi;Sikma6 Sikamadi;Clamping 6 Sikamadi;Clamping 6 Sikamadi;Clamping 6 Sikamadi;Clamping 6 Sikamadi
+Alarm_H500.Sikmalar_Acamadi;Sikmalar Acamadi;Sikmalar Acamadi;Sikmalar Acamadi;Sikmalar Acamadi;Sikmalar Acamadi;Sikmalar Acamadi
+Alarm_H500.Emergency_Stop_Pressed;Emergency Stop Pressed;AcilStop Basili;Emergency Stop Pressed;Emergency Stop Pressed;Emergency Stop Pressed;Emergency Stop Pressed
+Alarm_H500.Air_Basinci_Missing;Air Basinci Missing;HavaBasinci Yok;Air Basinci Missing;Air Basinci Missing;Air Basinci Missing;Air Basinci Missing
+Alarm_H500.Head_1_Forward_Gidemedi;Head 1 Forward Gidemedi;Kafa1 IleriGidemedi;Head 1 Forward Gidemedi;Head 1 Forward Gidemedi;Head 1 Forward Gidemedi;Head 1 Forward Gidemedi
+Alarm_H500.Head_1_Back_Gidemedi;Head 1 Back Gidemedi;Kafa1 GeriGidemedi;Head 1 Back Gidemedi;Head 1 Back Gidemedi;Head 1 Back Gidemedi;Head 1 Back Gidemedi
+Alarm_H500.Head_2_Forward_Gidemedi;Head 2 Forward Gidemedi;Kafa2 IleriGidemedi;Head 2 Forward Gidemedi;Head 2 Forward Gidemedi;Head 2 Forward Gidemedi;Head 2 Forward Gidemedi
+Alarm_H500.Head_2_Back_Gidemedi;Head 2 Back Gidemedi;Kafa2 GeriGidemedi;Head 2 Back Gidemedi;Head 2 Back Gidemedi;Head 2 Back Gidemedi;Head 2 Back Gidemedi
+Alarm_H500.Screwing_1_Down_Inemedi;Screwing 1 Down Inemedi;Vidalama1 Asagi Inemedi;Screwing 1 Down Inemedi;Screwing 1 Down Inemedi;Screwing 1 Down Inemedi;Screwing 1 Down Inemedi
+Alarm_H500.Screwing_2_Down_Inemedi;Screwing 2 Down Inemedi;Vidalama2 Asagi Inemedi;Screwing 2 Down Inemedi;Screwing 2 Down Inemedi;Screwing 2 Down Inemedi;Screwing 2 Down Inemedi
+Alarm_H500.Delme_1_Z_Servo_Fault;Delme 1 Z Servo Fault;Delme1Z ServoAriza;Delme 1 Z Servo Fault;Delme 1 Z Servo Fault;Delme 1 Z Servo Fault;Delme 1 Z Servo Fault
+Alarm_H500.Delme_2_Z_Servo_Fault;Delme 2 Z Servo Fault;Delme2Z ServoAriza;Delme 2 Z Servo Fault;Delme 2 Z Servo Fault;Delme 2 Z Servo Fault;Delme 2 Z Servo Fault
+Alarm_H500.Delme_1_Drill_Fault;Delme 1 Drill Fault;Delme1 MatkapAriza;Delme 1 Drill Fault;Delme 1 Drill Fault;Delme 1 Drill Fault;Delme 1 Drill Fault
+Alarm_H500.Delme_2_Drill_Fault;Delme 2 Drill Fault;Delme2 MatkapAriza;Delme 2 Drill Fault;Delme 2 Drill Fault;Delme 2 Drill Fault;Delme 2 Drill Fault
+Alarm_H500.Delme_1_Drill_Did_Not_Run;Delme 1 Drill Did Not Run;Delme1 MatkapCalismadi;Delme 1 Drill Did Not Run;Delme 1 Drill Did Not Run;Delme 1 Drill Did Not Run;Delme 1 Drill Did Not Run
+Alarm_H500.Delme_2_Drill_Did_Not_Run;Delme 2 Drill Did Not Run;Delme2 MatkapCalismadi;Delme 2 Drill Did Not Run;Delme 2 Drill Did Not Run;Delme 2 Drill Did Not Run;Delme 2 Drill Did Not Run
+Alarm_H500.Profile_Head_Bulunamadi;Profile Head Bulunamadi;ProfilBasi Bulunamadi;Profile Head Bulunamadi;Profile Head Bulunamadi;Profile Head Bulunamadi;Profile Head Bulunamadi
+Alarm_H500.Unit_1_Y_Servo_Fault;Unit 1 Y Servo Fault;Unite1Y ServoAriza;Unit 1 Y Servo Fault;Unit 1 Y Servo Fault;Unit 1 Y Servo Fault;Unit 1 Y Servo Fault
+Alarm_H500.Unit_2_Y_Servo_Fault;Unit 2 Y Servo Fault;Unite2Y ServoAriza;Unit 2 Y Servo Fault;Unit 2 Y Servo Fault;Unit 2 Y Servo Fault;Unit 2 Y Servo Fault
+Alarm_H500.Screwing_1_Besleme_Fault;Screwing 1 Besleme Fault;Vidalama1 BeslemeAriza;Screwing 1 Besleme Fault;Screwing 1 Besleme Fault;Screwing 1 Besleme Fault;Screwing 1 Besleme Fault
+Alarm_H500.Screwing_2_Besleme_Fault;Screwing 2 Besleme Fault;Vidalama2 BeslemeAriza;Screwing 2 Besleme Fault;Screwing 2 Besleme Fault;Screwing 2 Besleme Fault;Screwing 2 Besleme Fault
+Alarm_H500.Screwing_1_Motor_Servo_Fault;Screwing 1 Motor Servo Fault;Vidalama1Motoru ServoArıza;Screwing 1 Motor Servo Fault;Screwing 1 Motor Servo Fault;Screwing 1 Motor Servo Fault;Screwing 1 Motor Servo Fault
+Alarm_H500.Screwing_2_Motor_Servo_Fault;Screwing 2 Motor Servo Fault;Vidalama2Motoru ServoArıza;Screwing 2 Motor Servo Fault;Screwing 2 Motor Servo Fault;Screwing 2 Motor Servo Fault;Screwing 2 Motor Servo Fault
+Alarm_H500.Profile_Algiilama_Sensorunden_Kurtarma_Error;Profile Algiilama Sensorunden Kurtarma Error;ProfilAlgiilamaSensorundenKurtarmaHata;Profile Algiilama Sensorunden Kurtarma Error;Profile Algiilama Sensorunden Kurtarma Error;Profile Algiilama Sensorunden Kurtarma Error;Profile Algiilama Sensorunden Kurtarma Error
+Alarm_H500.Profile_Head_Measurement_Forward_Gidemedi;Profile Head Measurement Forward Gidemedi;ProfilBasiOlcum IleriGidemedi;Profile Head Measurement Forward Gidemedi;Profile Head Measurement Forward Gidemedi;Profile Head Measurement Forward Gidemedi;Profile Head Measurement Forward Gidemedi
+Alarm_H500.Profile_Head_Measurement_Back_Gidemedi;Profile Head Measurement Back Gidemedi;ProfilBasiOlcum GeriGidemedi;Profile Head Measurement Back Gidemedi;Profile Head Measurement Back Gidemedi;Profile Head Measurement Back Gidemedi;Profile Head Measurement Back Gidemedi
+Alarm_H500.Head_1_X_Encoder_Measurement_Error;Head 1 X Encoder Measurement Error;Kafa1X Encoder Olcum Hata;Head 1 X Encoder Measurement Error;Head 1 X Encoder Measurement Error;Head 1 X Encoder Measurement Error;Head 1 X Encoder Measurement Error
+Alarm_H500.Head_2_X_Encoder_Measurement_Error;Head 2 X Encoder Measurement Error;Kafa2X Encoder Olcum Hata;Head 2 X Encoder Measurement Error;Head 2 X Encoder Measurement Error;Head 2 X Encoder Measurement Error;Head 2 X Encoder Measurement Error
+Alarm_H500.Profile_Detection_2_Sensor_Error;Profile Detection 2 Sensor Error;ProfilAlgilama2 Sensor Hata;Profile Detection 2 Sensor Error;Profile Detection 2 Sensor Error;Profile Detection 2 Sensor Error;Profile Detection 2 Sensor Error
+Alarm_H500.Clamping_7_Sikamadi;Clamping 7 Sikamadi;Sikma7 Sikamadi;Clamping 7 Sikamadi;Clamping 7 Sikamadi;Clamping 7 Sikamadi;Clamping 7 Sikamadi
+Alarm_H500.Clamping_8_Sikamadi;Clamping 8 Sikamadi;Sikma8 Sikamadi;Clamping 8 Sikamadi;Clamping 8 Sikamadi;Clamping 8 Sikamadi;Clamping 8 Sikamadi
+Alarm_H500.Clamping_9_Sikamadi;Clamping 9 Sikamadi;Sikma9 Sikamadi;Clamping 9 Sikamadi;Clamping 9 Sikamadi;Clamping 9 Sikamadi;Clamping 9 Sikamadi

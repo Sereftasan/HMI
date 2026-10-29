@@ -388,15 +388,52 @@ namespace Kaban.Core.Helpers
         {
             var file = FileOf(row, out tagCode);
             if (string.IsNullOrEmpty(file) || string.IsNullOrEmpty(oldFolder)) return null;
-            string rel;
+            // AN ALARM'S TEXT in this program's Translations.csv (30 October): an older installation kept it
+            // in its Alarms.json beside that file - read from there while it has the alarm's texts
+            var alarmTag = file.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ? AlarmDefinitionLoader.TagOf(row.Key) : null;
+            if (alarmTag != null)
+            {
+                var oldCsv = OldFileOf(file, oldFolder);
+                var oldJson = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(oldCsv ?? System.IO.Path.Combine(oldFolder, RelativeOf(file))) ?? oldFolder, "Alarms.json");
+                if (File.Exists(oldJson) && OldAlarmTexts(oldJson).ContainsKey(alarmTag)) { tagCode = alarmTag; return oldJson; }
+                return oldCsv;
+            }
+            return OldFileOf(file, oldFolder);
+        }
+
+        // an older Alarms.json's texts, read once a file (its time kept: read again when it changed)
+        private static readonly Dictionary<string, KeyValuePair<DateTime, Dictionary<string, Dictionary<string, string>>>> _oldAlarmTexts =
+            new Dictionary<string, KeyValuePair<DateTime, Dictionary<string, Dictionary<string, string>>>>(StringComparer.OrdinalIgnoreCase);
+
+        private static Dictionary<string, Dictionary<string, string>> OldAlarmTexts(string path)
+        {
+            var time = File.GetLastWriteTimeUtc(path);
+            KeyValuePair<DateTime, Dictionary<string, Dictionary<string, string>>> kept;
+            lock (_oldAlarmTexts)
+            {
+                if (_oldAlarmTexts.TryGetValue(path, out kept) && kept.Key == time) return kept.Value;
+                var texts = AlarmDefinitionLoader.TranslationsInFile(path);
+                _oldAlarmTexts[path] = new KeyValuePair<DateTime, Dictionary<string, Dictionary<string, string>>>(time, texts);
+                return texts;
+            }
+        }
+
+        /// <summary>A file's place under the program's folder ("H500\Translations.csv"), its name when it is elsewhere.</summary>
+        private static string RelativeOf(string file)
+        {
             try
             {
                 var full = System.IO.Path.GetFullPath(file);
                 var root = System.IO.Path.GetFullPath(ProgramFolder ?? "").TrimEnd('\\', '/') + System.IO.Path.DirectorySeparatorChar;
-                rel = full.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? full.Substring(root.Length) : System.IO.Path.GetFileName(full);
+                return full.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? full.Substring(root.Length) : System.IO.Path.GetFileName(full);
             }
-            catch { rel = System.IO.Path.GetFileName(file); }
-            var old = System.IO.Path.Combine(oldFolder, rel);
+            catch { return System.IO.Path.GetFileName(file); }
+        }
+
+        /// <summary>A file's copy at the same place under an older installation's folder; null: it has none.</summary>
+        private static string OldFileOf(string file, string oldFolder)
+        {
+            var old = System.IO.Path.Combine(oldFolder, RelativeOf(file));
             return File.Exists(old) ? old : null;
         }
 

@@ -58,9 +58,12 @@
 - The keys the code uses with an English text of its own and the translation files lack (23 October: tooltips shown in
   English only, not in the Translation table): `tools\missing_keys.py` adds them with their English, every batch - their
   other languages stay empty (English shown) until translated.
-- Alarm texts in `Alarms.json` (22 October): inherited from the Industry 4 program, kept as they are for now (Config
-  Import still copies the file whole). The two alarm handlings - Industry 4 logging and the HMI's - are to be combined
-  when Industry 4 logging comes into this program; the alarm texts go to the translation files then.
+- Alarm texts (30 October): rows of the machine's `Translations.csv`, `Alarm_<ModuleId>.<TagCode>` (moved from
+  `Alarms.json` by `tools\alarm_texts_to_translations.py`, the Industry 4 program's Turkish with them). `Alarms.json`
+  keeps the alarm - device, code, severity, help - and `"Log"`: where the PLC's log records it (state code, value,
+  bit). An older installation's `Alarms.json` with its texts still reads; the translation file's text wins.
+- Optional parts (30 October): HMI Settings > Features - the Industry 4 logging in the HMI and the touch screen, both
+  off until switched on. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
 
 ## Open questions (answer here or in a message)
 1. The back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are on the rows' **back** side - is any of

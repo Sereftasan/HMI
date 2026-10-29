@@ -231,6 +231,24 @@ namespace Kaban.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// True when a machine's translation FILE has a text of the key in the language (an alarm's
+        /// text in its Translations.csv - an older Alarms.json's is not put over it, 30 October).
+        /// </summary>
+        public static bool InMachineFile(string key, string langCode)
+        {
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(langCode)) return false;
+            lock (_sources)
+                foreach (var s in _sources)
+                {
+                    Dictionary<string, string> row;
+                    string t;
+                    if (!s.Common && s.Path.Length > 0 && s.Texts.TryGetValue(key, out row) && row.TryGetValue(langCode.Trim(), out t) && !string.IsNullOrEmpty(t))
+                        return true;
+                }
+            return false;
+        }
+
         /// <summary>Runtime single-key registration (AlarmDefinitionLoader). Machine layer.</summary>
         /// <param name="owner">Whose text it is (an alarm's machine) - listed on the Translation page; null: not listed (a note's text).</param>
         /// <param name="fileName">Where it is kept ("Alarms.json").</param>

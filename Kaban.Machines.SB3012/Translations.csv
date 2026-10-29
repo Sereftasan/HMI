@@ -15,4 +15,117 @@ Tip_Demo_Display;Demo read-only value;Demo salt-okunur değer;Демо-знач�
 Tip_Demo_Fwd;Forward sensor;İleri sensörü;Вперёд sensor;Vorwärts sensor;Avanti sensor;Adelante sensor
 Tip_Demo_Rev;Reverse sensor;Geri sensörü;Датчик заднего положения;Sensor Rückwärts;Sensore di ritorno;Sensor de retroceso
 Tip_Demo_Position;Current position;Mevcut konum;Ток position;Strom position;Corrente position;Corriente position
-
+Alarm_SB3012.Robot_X_Error;Robot X Error;Eksen1_Ariza;Ошибка Robot X;Robot X Fehler;Errore Robot X;Error Robot X
+Alarm_SB3012.Milling_Angle_Error;Milling Angle Error;Eksen2_Ariza;Ошибка угла Milling;Milling Winkel Fehler;Errore Angolo Fresatura;Error Ángulo Fresado
+Alarm_SB3012.Milling_1_Y_Error;Milling 1 Y Error;Eksen3_Ariza;Ошибка Milling 1 Y;Milling 1 Y Fehler;Errore Fresatura 1 Y;Error Fresado 1 Y
+Alarm_SB3012.Milling_1_Z_Error;Milling 1 Z Error;Eksen4_Ariza;Ошибка Milling 1 Z;Milling 1 Z Fehler;Errore Fresatura 1 Z;Error Fresado 1 Z
+Alarm_SB3012.Cutting_Z_Error;Cutting Z Error;Eksen5_Ariza;Ошибка Z резки;Schnitt Z Fehler;Errore Z Taglio;Error Z de Corte
+Alarm_SB3012.Exit_Robot_Error;Exit Robot Error;Eksen6_Ariza;Ошибка выходного робота;Ausgangsroboter Fehler;Errore Robot Uscita;Error Robot de Salida
+Alarm_SB3012.Milling_2_Y_Error;Milling 2 Y Error;Eksen7_Ariza;Ошибка Milling 2 Y;Milling 2 Y Fehler;Errore Fresatura 2 Y;Error Fresado 2 Y
+Alarm_SB3012.Milling_2_Z_Error;Milling 2 Z Error;Eksen8_Ariza;Ошибка Milling 2 Z;Milling 2 Z Fehler;Errore Fresatura 2 Z;Error Fresado 2 Z
+Alarm_SB3012.Robot_X_Servo_SError;Robot X Servo SError;Eksen1_Servo_Ariza;;;;
+Alarm_SB3012.Milling_Angle_Servo_Error;Milling Angle Servo Error;Eksen2_Servo_Ariza;Ошибка угла Milling;Milling Winkel Fehler;Servo Errore Angolo Fresatura;Servo Error Ángulo Fresado
+Alarm_SB3012.Milling_1_Y_Servo_Error;Milling 1 Y Servo Error;Eksen3_Servo_Ariza;Ошибка Milling 1 Y;Milling 1 Y Fehler;Servo Errore Fresatura 1 Y;Servo Error Fresado 1 Y
+Alarm_SB3012.Milling_1_Z_Servo_Error;Milling 1 Z Servo Error;Eksen4_Servo_Ariza;Ошибка Milling 1 Z;Milling 1 Z Fehler;Servo Errore Fresatura 1 Z;Servo Error Fresado 1 Z
+Alarm_SB3012.Cutting_Z_Servo_Error;Cutting Z Servo Error;Eksen5_Servo_Ariza;;;;
+Alarm_SB3012.Exit_Robot_Servo_Error;Exit Robot Servo Error;Eksen6_Servo_Ariza;Ошибка выходного робота;Ausgangsroboter Fehler;Servo Errore Robot Uscita;Servo Error Robot de Salida
+Alarm_SB3012.Milling_2_Y_Servo_Error;Milling 2 Y Servo Error;Eksen7_Servo_Ariza;Ошибка Milling 2 Y;Milling 2 Y Fehler;Servo Errore Fresatura 2 Y;Servo Error Fresado 2 Y
+Alarm_SB3012.Milling_2_Z_Servo_Error;Milling 2 Z Servo Error;Eksen8_Servo_Ariza;Ошибка Milling 2 Z;Milling 2 Z Fehler;Servo Errore Fresatura 2 Z;Servo Error Fresado 2 Z
+Alarm_SB3012.Entry_Conveyor_Inverter_Alarm;Entry Conveyor Inverter Alarm;Giris_Konv_Inverter_Ariza;Авария инвертора входного конвейера;Eingang Förderer Inverter Alarm;Allarme Inverter Conv. Ingresso;Alarma Inversor Transportador Entrada
+Alarm_SB3012.Entry_Conveyor_Inverter_RUN_Failure;Entry Conveyor Inverter RUN Failure;Giris_Konv_Inverter_Calismadi;Ошибка запуска инвертора входного конвейера;Eingang Förderer Inverter Startfehler;Errore avvio inverter convogliatore ingresso;Fallo arranque inverter transportador entrada
+Alarm_SB3012.Milling_1_Inverter_Alarm;Milling 1 Inverter Alarm;Freze1_Inverter_Ariza;Авария инвертора Milling 1;Milling 1 Inverter Alarm;Allarme Inverter Fresatura 1;Alarma Inversor Fresado 1
+Alarm_SB3012.Milling_1_Inverter_RUN_Failure;Milling 1 Inverter RUN Failure;Freze1_Inverter_Calismadi;Ошибка запуска инвертора Freze 1;Milling 1 Inverter Startfehler;Errore avvio inverter fresatura 1;Fallo arranque inverter fresado 1
+Alarm_SB3012.Milling_2_Inverter_Alarm;Milling 2 Inverter Alarm;Freze2_Inverter_Ariza;Авария инвертора Milling 2;Milling 2 Inverter Alarm;Allarme Inverter Fresatura 2;Alarma Inversor Fresado 2
+Alarm_SB3012.Milling_1_Inverter_RUN_Failure;Milling 1 Inverter RUN Failure;Freze2_Inverter_Calismadi;Ошибка запуска инвертора Freze 1;Milling 1 Inverter Startfehler;Errore avvio inverter fresatura 1;Fallo arranque inverter fresado 1
+Alarm_SB3012.45_Saw_Inverter_Alarm;+45 Saw Inverter Alarm;Testere45P_Inverter_Ariza;Авария инвертора пилы +45;+45 Säge Inverter Alarm;Allarme Inverter Sega +45;Alarma Inversor Sierra +45
+Alarm_SB3012.45_Saw_Inverter_RUN_Failure;+45 Saw Inverter RUN Failure;Testere_45P_Inv_Calismadi;Ошибка запуска инвертора пилы +45;+45 Säge Inverter Startfehler;Errore avvio inverter sega +45;Fallo arranque inverter sierra +45
+Alarm_SB3012.45_Saw_Inverter_Error;-45 Saw Inverter Error;Testere45N_Inverter_Ariza;Ошибка инвертора пилы -45;-45 Säge Inverter Fehler;Errore inverter sega -45;Error inversor sierra -45
+Alarm_SB3012.45_Saw_Inverter_RUN_Failure;-45 Saw Inverter RUN Failure;Testere_45N_Inv_Calismadi;Ошибка запуска инвертора пилы -45;-45 Säge Inverter Startfehler;Errore avvio inverter sega -45;Fallo arranque inverter sierra -45
+Alarm_SB3012.90_Saw_Inverter_Error;90 Saw Inverter Error;Testere90_Inverter_Ariza;Ошибка инвертора пилы 90°;90 Säge Inverter Fehler;Errore inverter sega 90°;Error inversor sierra 90°
+Alarm_SB3012.90_Saw_Inverter_RUN_Failure;90 Saw Inverter RUN Failure;Testere_90_Inv_Calismadi;Ошибка запуска инвертора пилы 90°;90 Säge Inverter Startfehler;Errore avvio inverter sega 90°;Fallo arranque inverter sierra 90°
+Alarm_SB3012.Exit_Conveyor_Thermic_Error;Exit Conveyor Thermic Error;Cikis_Konv_Termik_Ariza;Термическая ошибка выходного конвейера;Ausgang Förderer Thermischer Fehler;Errore termico convogliatore uscita;Error térmico transportador salida
+Alarm_SB3012.Exit_Conveyor_Inverter_RUN_Failure;Exit Conveyor Inverter RUN Failure;Cikis_Konv_Mot_Calismadi;Ошибка запуска инвертора выходного конвейера;Ausgang Förderer Inverter Startfehler;Errore avvio inverter convogliatore uscita;Fallo arranque inverter transportador salida
+Alarm_SB3012.Sawdust_Conveyor_Thermic_Error;Sawdust Conveyor Thermic Error;Capak_Konv_Termik_Ariza;Термическая ошибка конвейера стружки;Späneförderer Thermischer Fehler;Errore termico convogliatore trucioli;Error térmico transportador virutas
+Alarm_SB3012.Emergency_Stop;Emergency Stop;Acil_Stop;Аварийная остановка;Not-Aus;Arresto di emergenza;Parada de emergencia
+Alarm_SB3012.Low_Air_Pressure;Low Air Pressure;Dusuk_Basinc;Низкое давление воздуха;Niedriger Luftdruck;Bassa Pressione Aria;Presión de Aire Baja
+Alarm_SB3012.Entry_Robot_Clamping_Failure;Entry Robot Clamping Failure;Robot_SIKMADI;Авария зажима входного робота;Eingangsroboter Spannfehler;Errore serraggio robot ingresso;Fallo sujeción robot entrada
+Alarm_SB3012.Entry_Robot_Releasing_Failure;Entry Robot Releasing Failure;Robot_ACMADI;Авария открытия зажима входного робота;Eingangsroboter Öffnungsfehler;Errore rilascio robot ingresso;Fallo liberación robot entrada
+Alarm_SB3012.Entry_Robot_Moving_Up_Failure;Entry Robot Moving Up Failure;Giris_Robot_Yukari_Cikamadi;Авария подъёма входного робота;Eingangsroboter Aufwärtsbewegung Fehler;Errore salita robot ingresso;Fallo subida robot entrada
+Alarm_SB3012.Entry_Robot_Moving_Down_Failure;Entry Robot Moving Down Failure;Giris_Robot_Asagi_Inemedi;Авария опускания входного робота;Eingangsroboter Abwärtsbewegung Fehler;Errore discesa robot ingresso;Fallo bajada robot entrada
+Alarm_SB3012.Entry_Robot_Stopper_Positioning_Failure;Entry Robot Stopper Positioning Failure;Giris_Robot_Yukseklik_Ayar_Ariz;Авария позиционирования упора входного робота;Eingangsroboter Anschlag Positionierfehler;Errore posizionamento stopper robot ingresso;Fallo posicionamiento tope robot entrada
+Alarm_SB3012.Profile_Measuring_Moving_Up_Failure;Profile Measuring Moving Up Failure;PT_Yukari_CIKMADI;Авария подъёма измерения профиля;Profilmessung Aufwärts Fehler;Errore salita misurazione profilo;Fallo subida medición perfil
+Alarm_SB3012.Profile_Measuring_Moving_Down_Failure;Profile Measuring Moving Down Failure;PT_Asagi_ACMADI;Авария опускания измерения профиля;Profilmessung Abwärts Fehler;Errore discesa misurazione profilo;Fallo bajada medición perfil
+Alarm_SB3012.Profile_Measuring_Front_Clamping_Failure;Profile Measuring Front Clamping Failure;PT_On_SIKMADI;Авария переднего зажима измерения профиля;Profilmessung Vorne Spannfehler;Errore serraggio anteriore misurazione profilo;Fallo sujeción frontal medición perfil
+Alarm_SB3012.Profile_Measuring_Front_Releasing_Failure;Profile Measuring Front Releasing Failure;PT_On_ACMADI;Авария открытия переднего зажима измерения;Profilmessung Vorne Öffnungsfehler;Errore rilascio anteriore misurazione profilo;Fallo liberación frontal medición perfil
+Alarm_SB3012.Profile_Measuring_Top_Clamping_Failure;Profile Measuring Top Clamping Failure;PT_Ust_SIKMADI;Авария верхнего зажима измерения профиля;Profilmessung Oben Spannfehler;Errore serraggio superiore misurazione profilo;Fallo sujeción superior medición perfil
+Alarm_SB3012.Profile_Measuring_Top_Releasing_Failure;Profile Measuring Top Releasing Failure;PT_Ust_ACMADI;Авария открытия верхнего зажима измерения;Profilmessung Oben Öffnungsfehler;Errore rilascio superiore misurazione profilo;Fallo liberación superior medición perfil
+Alarm_SB3012.Profil_Algilama_Piston_Sw_Ariza;Profil_Algilama_Piston_Sw_Ariza;Profil_Algilama_Piston_Sw_Ariza;;;;
+Alarm_SB3012.Profile_Recognition_Sensor_Error;Profile Recognition Sensor Error;Profil_Algilama_Limit_Ariza;Ошибка датчика распознавания профиля;Profil-Erkennung Sensorfehler;Errore sensore riconoscimento profilo;Error sensor reconocimiento perfil
+Alarm_SB3012.Cutting_45_Left_Front_Roller_Clamping_Failure;Cutting 45 Left Front Roller Clamping Failure;Kesim_On1_SIKMADI;Авария зажима левого переднего ролика 45° резки;Schnitt 45 Links Vorne Rolle Spannfehler;Errore serraggio rullo anteriore sinistro taglio 45°;Fallo sujeción rodillo frontal izquierdo corte 45°
+Alarm_SB3012.Cutting_45_Left_Front_Roller_Releasing_Failure;Cutting 45 Left Front Roller Releasing Failure;Kesim_On1_ACMADI;Авария открытия зажима левого переднего ролика 45°;Schnitt 45 Links Vorne Rolle Öffnungsfehler;Errore rilascio rullo anteriore sinistro taglio 45°;Fallo liberación rodillo frontal izquierdo corte 45°
+Alarm_SB3012.Cutting_45_Left_Top_Roller_Clamping_Failure;Cutting 45 Left Top Roller Clamping Failure;Kesim_Ust1_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Left_Top_Roller_Releasing_Failure;Cutting 45 Left Top Roller Releasing Failure;Kesim_Ust1_ACMADI;;;;
+Alarm_SB3012.Kesim_UST_KUCUK_SIKMADI;Kesim_UST_KUCUK_SIKMADI;Kesim_UST_KUCUK_SIKMADI;;;;
+Alarm_SB3012.Kesim_UST_KUCUK_ACMADI;Kesim_UST_KUCUK_ACMADI;Kesim_UST_KUCUK_ACMADI;;;;
+Alarm_SB3012.Cutting_45_Middle_Front_Roller_Moving_FW_Failure;Cutting 45 Middle Front Roller Moving FW Failure;Kesim_Orta_Dayama_Ileri_GITMEDI;;;;
+Alarm_SB3012.Cutting_45_Middle_Front_Roller_Moving_Back_Failure;Cutting 45 Middle Front Roller Moving Back Failure;Kesim_Orta_Dayama_Geri_GITMEDI;;;;
+Alarm_SB3012.Cutting_45_Right_Front_Clamping_Failure;Cutting 45 Right Front Clamping Failure;Kesim_On2_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Front_Releasing_Failure;Cutting 45 Right Front Releasing Failure;Kesim_On2_ACMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Top_Big_Clamping_Failure;Cutting 45 Right Top Big Clamping Failure;Kesim_Ust2_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Top_Big_Releasing_Failure;Cutting 45 Right Top Big Releasing Failure;Kesim_Ust2_ACMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Front_Roller_Moving_FW_Failure;Cutting 45 Right Front Roller Moving FW Failure;Kesim_Sag_Dayama_Ileri_GITMEDI;;;;
+Alarm_SB3012.Cutting_45_Right_Front_Roller_Moving_Back_Failure;Cutting 45 Right Front Roller Moving Back Failure;Kesim_Sag_Dayama_Geri_GITMEDI;;;;
+Alarm_SB3012.Cutting_90_Roller_Moving_Up_Failure;Cutting 90 Roller Moving Up Failure;Kesim90_Alt_Unite_Yuk_CIKMADI;;;;
+Alarm_SB3012.Cutting_90_Roller_Moving_Down_Failure;Cutting 90 Roller Moving Down Failure;Kesim90_Alt_Unite_Asagi_INMEDI;;;;
+Alarm_SB3012.Cutting_90_Front_Clamping_Failure;Cutting 90 Front Clamping Failure;Kesim90_On_Sikma_SIKMADI;;;;
+Alarm_SB3012.Cutting_90_Front_Releasing_Failure;Cutting 90 Front Releasing Failure;Kesim90_On_Sikma_ACMADI;;;;
+Alarm_SB3012.Cutting_90_Top_Clamping_Failure;Cutting 90 Top Clamping Failure;Kesim90_Ust_Sikma_SIKMADI;;;;
+Alarm_SB3012.Cutting_90_Top_Releasing_Failure;Cutting 90 Top Releasing Failure;Kesim90_Ust_Sikma_ACMADI;;;;
+Alarm_SB3012.Wastage_Pushing_Cylinder_Moving_FW_Failure;Wastage Pushing Cylinder Moving FW Failure;KesimSolAltTablaIleriGitmedi;;;;
+Alarm_SB3012.Wastage_Pushing_Cylinder_Moving_Back_Failure;Wastage Pushing Cylinder Moving Back Failure;KesimSolAltTablaGeriGitmedi;;;;
+Alarm_SB3012.Exit_Robot_Clamping_Failure;Exit Robot Clamping Failure;Cikis_Robot_SIKMADI;Авария зажима выходного робота;Ausgangsroboter Spannfehler;Errore serraggio robot uscita;Fallo sujeción robot salida
+Alarm_SB3012.Exit_Robot_Releasing_Failure;Exit Robot Releasing Failure;Cikis_Robot_ACMADI;;;;
+Alarm_SB3012.Exit_Robot_Moving_Up_Failure;Exit Robot Moving Up Failure;Cikis_Robot_Yukari_Cikamadi;;;;
+Alarm_SB3012.Exit_Robot_Moving_Down_Failure;Exit Robot Moving Down Failure;Cikis_Robot_Asagi_Inemedi;;;;
+Alarm_SB3012.Exit_Robot_Stopper_Positioning_Failure;Exit Robot Stopper Positioning Failure;Cik_Robot_Yukseklik_Ayar_Ariz;;;;
+Alarm_SB3012.Exit_Conveyor_Stopping_SW_Error;Exit Conveyor Stopping SW Error;Cikis_Konveyor_Sw_Ariza;;;;
+Alarm_SB3012.Profile_is_Detected_on_the_Machine;Profile is Detected on the Machine;Bekleme_Konumunda_Profil_Var;;;;
+Alarm_SB3012.The_Bar_Length_is_Too_Short_to_Process;The Bar Length is Too Short to Process;Parca_Boyu_Kucuk_Ariza;;;;
+Alarm_SB3012.Milling_Gcode_Starting_Y_and_Z_Values_are_Zero;Milling Gcode Starting Y and Z Values are Zero;Profil_Yanasma_Deger_Ariza;;;;
+Alarm_SB3012.PC_is_not_Online;PC is not Online;PC_Online_Degil;ПК не в сети;PC nicht online;PC non online;PC no está en línea
+Alarm_SB3012.Entry_Robot_Outside_The_Limit;Entry Robot Outside The Limit;Eksen1_Limit_Disi;;;;
+Alarm_SB3012.Milling_Angle_Outside_The_Limit;Milling Angle Outside The Limit;Eksen2_Limit_Disi;;;;
+Alarm_SB3012.Milling_Y1_Outside_The_Limit;Milling Y1 Outside The Limit;Eksen3_Limit_Disi;;;;
+Alarm_SB3012.Milling_Z1_Outside_The_Limit;Milling Z1 Outside The Limit;Eksen4_Limit_Disi;;;;
+Alarm_SB3012.Cutting_Z_Outside_The_Limit;Cutting Z Outside The Limit;Eksen5_Limit_Disi;;;;
+Alarm_SB3012.Exit_Robot_Outside_The_Limit;Exit Robot Outside The Limit;Eksen6_Limit_Disi;;;;
+Alarm_SB3012.Milling_Y2_Outside_The_Limit;Milling Y2 Outside The Limit;Eksen7_Limit_Disi;;;;
+Alarm_SB3012.Milling_Z2_Outside_The_Limit;Milling Z2 Outside The Limit;Eksen8_Limit_Disi;;;;
+Alarm_SB3012.Milling_Z1_Milling_Z2_Crushing_Limit;Milling Z1 + Milling Z2 Crushing Limit;Freze_Z1_Z2_Caprpisma;;;;
+Alarm_SB3012.Profile_is_Detected_in_Exit_Robot;Profile is Detected in Exit Robot;Cikis_Konv_Donus_Engelleme;;;;
+Alarm_SB3012.Cutting_45_Left_Top_Big_Clamping_Failure;Cutting 45 Left Top Big Clamping Failure;Kesim45_Sol2_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Left_Top_Big_Releasing_Failure;Cutting 45 Left Top Big Releasing Failure;Kesim45_Sol2_ACMADI;;;;
+Alarm_SB3012.Cutting_45_Left_Top_Small_Clamping_Failure;Cutting 45 Left Top Small Clamping Failure;Kesim_UST1_KUCUK_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Left_Top_Small_Releasing_Failure;Cutting 45 Left Top Small Releasing Failure;Kesim_UST1_KUCUK_ACMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Top_Small_Clamping_Failure;Cutting 45 Right Top Small Clamping Failure;Kesim_UST2_KUCUK_SIKMADI;;;;
+Alarm_SB3012.Cutting_45_Right_Top_Small_Releasing_Failure;Cutting 45 Right Top Small Releasing Failure;Kesim_UST2_KUCUK_ACMADI;;;;
+Alarm_SB3012.Milling_Front_Plate_Moving_Back_Failure;Milling Front Plate Moving Back Failure;FrezeOnDayGeriGitmedi;;;;
+Alarm_SB3012.Milling_Front_Plate_Moving_FW_Failure;Milling Front Plate Moving FW Failure;FrezeOnDayIleriGitmedi;;;;
+Alarm_SB3012.Milling_Front_Clamping_Failure;Milling Front Clamping Failure;FrezeOnSik_SIKMADI;;;;
+Alarm_SB3012.Milling_Front_Releasing_Failure;Milling Front Releasing Failure;FrezeOnSik_ACMADI;;;;
+Alarm_SB3012.90_Saw_Down_Movement_Failure;90 Saw Down Movement Failure;Testere90_Asagi_Inemedi;;;;
+Alarm_SB3012.90_Saw_Up_Movement_Failure;90 Saw Up Movement Failure;Testere90_Yukari_Cikamadi;;;;
+Alarm_SB3012.Cutting_Foil_Roll_Moving_FW_Failure;Cutting Foil Roll Moving FW Failure;KesimFolyoRulosuIleriGidemedi;;;;
+Alarm_SB3012.Cutting_Foil_Roll_Moving_Back_Failure;Cutting Foil Roll Moving Back Failure;KesimFolyoRulosuGeriGidemedi;;;;
+Alarm_SB3012.Cutting_Foil_Roll_Moving_Up_Failure;Cutting Foil Roll Moving Up Failure;KesimFolyoRulosuBasamadi;;;;
+Alarm_SB3012.Cutting_Foil_Roll_Moving_Down_Failure;Cutting Foil Roll Moving Down Failure;KesimFolyoRulosuAsagiİnemedi;;;;
+Alarm_SB3012.Exit_Conveyor_Inverter_Alarm;Exit Conveyor Inverter Alarm;Cikis_Konv_Inverter_Ariza;Авария инвертора выходного конвейера;Ausgang Förderer Inverter Alarm;Allarme Inverter Conv. Uscita;Alarma Inversor Transportador Salida
+Alarm_SB3012.Conveyor_Roller_Moving_Up_Failure;Conveyor Roller Moving Up Failure;KonveyorRuloYukariCikamadi;;;;
+Alarm_SB3012.Conveyor_Roller_Moving_Down_Failure;Conveyor Roller Moving Down Failure;KonveyorRuloAsagiInemedi;;;;
+Alarm_SB3012.KesimSolAltTabla_SensordenKurtardi_Sikmada;KesimSolAltTabla_SensordenKurtardi_Sikmada;KesimSolAltTabla_SensordenKurtardi_Sikmada;;;;
+Alarm_SB3012.KesimSolDayama_SensordenKurtardi_Sikmada;KesimSolDayama_SensordenKurtardi_Sikmada;KesimSolDayama_SensordenKurtardi_Sikmada;;;;
+Alarm_SB3012.KesimSagDayama_SensordenKurtardi_Sikmada;KesimSagDayama_SensordenKurtardi_Sikmada;KesimSagDayama_SensordenKurtardi_Sikmada;;;;
+Alarm_SB3012.KesimSolAltTabla_SensordenKurtardi_Sikmasiz;KesimSolAltTabla_SensordenKurtardi_Sikmasiz;KesimSolAltTabla_SensordenKurtardi_Sikmasiz;;;;
+Alarm_SB3012.KesimSolDayama_SensordenKurtardi_Sikmasiz;KesimSolDayama_SensordenKurtardi_Sikmasiz;KesimSolDayama_SensordenKurtardi_Sikmasiz;;;;
+Alarm_SB3012.KesimSagDayama_SensordenKurtardi_Sikmasiz;KesimSagDayama_SensordenKurtardi_Sikmasiz;KesimSagDayama_SensordenKurtardi_Sikmasiz;;;;
+Alarm_SB3012.Kesimde_FolyoRulosuGerideDegil;Kesimde_FolyoRulosuGerideDegil;Kesimde_FolyoRulosuGerideDegil;;;;

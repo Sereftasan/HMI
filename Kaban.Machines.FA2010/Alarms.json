@@ -4,13 +4,10 @@
     "TagCode": "Robot_X_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot X Error",
-      "TR": "Eksen1_Ariza",
-      "RU": "Ошибка Robot X",
-      "DE": "Robot X Fehler",
-      "IT": "Errore Robot X",
-      "ES": "Error Robot X"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 0
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 0"
   },
@@ -19,13 +16,10 @@
     "TagCode": "Milling_1_X_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 X Error",
-      "TR": "Eksen2_Ariza",
-      "RU": "Ошибка Milling 1 X",
-      "DE": "Milling 1 X Fehler",
-      "IT": "Errore Fresatura 1 X",
-      "ES": "Error Fresado 1 X"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 1
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 1"
   },
@@ -34,13 +28,10 @@
     "TagCode": "Milling_1_Y_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 Y Error",
-      "TR": "Eksen3_Ariza",
-      "RU": "Ошибка Milling 1 Y",
-      "DE": "Milling 1 Y Fehler",
-      "IT": "Errore Fresatura 1 Y",
-      "ES": "Error Fresado 1 Y"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 2
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 2"
   },
@@ -49,13 +40,10 @@
     "TagCode": "Milling_1_Z_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 Z Error",
-      "TR": "Eksen4_Ariza",
-      "RU": "Ошибка Milling 1 Z",
-      "DE": "Milling 1 Z Fehler",
-      "IT": "Errore Fresatura 1 Z",
-      "ES": "Error Fresado 1 Z"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 3
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 3"
   },
@@ -64,13 +52,10 @@
     "TagCode": "Milling_2_X_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 X Error",
-      "TR": "Eksen5_Ariza",
-      "RU": "Ошибка Milling 2 X",
-      "DE": "Milling 2 X Fehler",
-      "IT": "Errore Fresatura 2 X",
-      "ES": "Error Fresado 2 X"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 4
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 4"
   },
@@ -79,13 +64,10 @@
     "TagCode": "Milling_2_Y_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 Y Error",
-      "TR": "Eksen6_Ariza",
-      "RU": "Ошибка Milling 2 Y",
-      "DE": "Milling 2 Y Fehler",
-      "IT": "Errore Fresatura 2 Y",
-      "ES": "Error Fresado 2 Y"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 5
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 5"
   },
@@ -94,13 +76,10 @@
     "TagCode": "Milling_2_Z_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 Z Error",
-      "TR": "Eksen7_Ariza",
-      "RU": "Ошибка Milling 2 Z",
-      "DE": "Milling 2 Z Fehler",
-      "IT": "Errore Fresatura 2 Z",
-      "ES": "Error Fresado 2 Z"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 6
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 6"
   },
@@ -109,13 +88,10 @@
     "TagCode": "Exit_Robot_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Robot Error",
-      "TR": "Eksen8_Ariza",
-      "RU": "Ошибка выходного робота",
-      "DE": "Ausgangsroboter Fehler",
-      "IT": "Errore Robot Uscita",
-      "ES": "Error Robot de Salida"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 7
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 7"
   },
@@ -124,13 +100,10 @@
     "TagCode": "Milling_1_Angle_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 Angle Error",
-      "TR": "Eksen9_Ariza",
-      "RU": "Ошибка угла Milling 1",
-      "DE": "Milling 1 Winkel Fehler",
-      "IT": "Errore Angolo Fresatura 1",
-      "ES": "Error Ángulo Fresado 1"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 8
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 8"
   },
@@ -139,13 +112,10 @@
     "TagCode": "Milling_2_Angle_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 Angle Error",
-      "TR": "Eksen10_Ariza",
-      "RU": "Ошибка угла Milling 2",
-      "DE": "Milling 2 Winkel Fehler",
-      "IT": "Errore Angolo Fresatura 2",
-      "ES": "Error Ángulo Fresado 2"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 9
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 9"
   },
@@ -154,13 +124,10 @@
     "TagCode": "Cutting_Angle_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Angle Error",
-      "TR": "Eksen11_Ariza",
-      "RU": "Ошибка угла резки",
-      "DE": "Schnittwinkel Fehler",
-      "IT": "Errore Angolo Taglio",
-      "ES": "Error Ángulo de Corte"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 10
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 10"
   },
@@ -169,13 +136,10 @@
     "TagCode": "Cutting_Z_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Z Error",
-      "TR": "Eksen12_Ariza",
-      "RU": "Ошибка Z резки",
-      "DE": "Schnitt Z Fehler",
-      "IT": "Errore Z Taglio",
-      "ES": "Error Z de Corte"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 11
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 11"
   },
@@ -184,13 +148,10 @@
     "TagCode": "Robot_Y_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Y Error",
-      "TR": "Eksen13_Ariza",
-      "RU": "Ошибка Robot Y",
-      "DE": "Robot Y Fehler",
-      "IT": "Errore Robot Y",
-      "ES": "Error Robot Y"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 12
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 12"
   },
@@ -199,13 +160,10 @@
     "TagCode": "Robot_Z_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Z Error",
-      "TR": "Eksen14_Ariza",
-      "RU": "Ошибка Robot Z",
-      "DE": "Robot Z Fehler",
-      "IT": "Errore Robot Z",
-      "ES": "Error Robot Z"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 13
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 13"
   },
@@ -214,13 +172,10 @@
     "TagCode": "PC_Connection_Cut",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "PC Connection Cut",
-      "TR": "PC_BaglantiKoptu",
-      "RU": "Соединение с ПК потеряно",
-      "DE": "PC-Verbindung unterbrochen",
-      "IT": "Connessione PC Interrotta",
-      "ES": "Conexión PC Cortada"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 14
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 14"
   },
@@ -229,13 +184,10 @@
     "TagCode": "Milling_Collision_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Collision Alarm",
-      "TR": "Freze_Carpisma_Alarm",
-      "RU": "Авария столкновения фрезы",
-      "DE": "Fräskollisionsalarm",
-      "IT": "Allarme Collisione Fresatura",
-      "ES": "Alarma Colisión Fresado"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 15
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 15"
   },
@@ -244,13 +196,10 @@
     "TagCode": "V_Cutting_Y_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "V Cutting Y Error",
-      "TR": "Eksen15_Ariza",
-      "RU": "Ошибка V-резки Y",
-      "DE": "V-Schnitt Y Fehler",
-      "IT": "Errore Taglio V Y",
-      "ES": "Error Corte V Y"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 16
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 16"
   },
@@ -259,13 +208,10 @@
     "TagCode": "V_Cutting_Z_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "V Cutting Z Error",
-      "TR": "Eksen16_Ariza",
-      "RU": "Ошибка V-резки Z",
-      "DE": "V-Schnitt Z Fehler",
-      "IT": "Errore Taglio V Z",
-      "ES": "Error Corte V Z"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 17
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 17"
   },
@@ -274,9 +220,10 @@
     "TagCode": "OKayitX_Ariza",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "OKayitX_Ariza",
-      "TR": "OKayitX_Ariza"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 18
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 18"
   },
@@ -285,13 +232,10 @@
     "TagCode": "Entry_Conveyor_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor Inverter Alarm",
-      "TR": "GirisKonv_InverterAriza",
-      "RU": "Авария инвертора входного конвейера",
-      "DE": "Eingang Förderer Inverter Alarm",
-      "IT": "Allarme Inverter Conv. Ingresso",
-      "ES": "Alarma Inversor Transportador Entrada"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 26
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 26"
   },
@@ -300,13 +244,10 @@
     "TagCode": "Milling_1_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 Inverter Alarm",
-      "TR": "Freze1_InverterAriza",
-      "RU": "Авария инвертора Milling 1",
-      "DE": "Milling 1 Inverter Alarm",
-      "IT": "Allarme Inverter Fresatura 1",
-      "ES": "Alarma Inversor Fresado 1"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 27
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 27"
   },
@@ -315,13 +256,10 @@
     "TagCode": "Milling_2_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 Inverter Alarm",
-      "TR": "Freze2_InverterAriza",
-      "RU": "Авария инвертора Milling 2",
-      "DE": "Milling 2 Inverter Alarm",
-      "IT": "Allarme Inverter Fresatura 2",
-      "ES": "Alarma Inversor Fresado 2"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 28
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 28"
   },
@@ -330,13 +268,10 @@
     "TagCode": "Saw_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Saw Inverter Alarm",
-      "TR": "Testere_InverterAriza",
-      "RU": "Авария инвертора пилы",
-      "DE": "Säge Inverter Alarm",
-      "IT": "Allarme Inverter Sega",
-      "ES": "Alarma Inversor Sierra"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 29
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 29"
   },
@@ -345,13 +280,10 @@
     "TagCode": "Exit_Conveyor_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Conveyor Inverter Alarm",
-      "TR": "CikisKonv_InverterAriza",
-      "RU": "Авария инвертора выходного конвейера",
-      "DE": "Ausgang Förderer Inverter Alarm",
-      "IT": "Allarme Inverter Conv. Uscita",
-      "ES": "Alarma Inversor Transportador Salida"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 30
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 30"
   },
@@ -360,9 +292,10 @@
     "TagCode": "Saw_Dust_Conveyor_Inverter_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Saw Dust Conveyor  Inverter Alarm",
-      "TR": "TalasKonv_TermikAriza"
+    "Log": {
+      "Code": 4,
+      "Value": "First 32 Errors (1)",
+      "Bit": 31
     },
     "Comment": "StateCode 4 / First 32 Errors (1) bit 31"
   },
@@ -371,13 +304,10 @@
     "TagCode": "Emergency_Stop",
     "Severity": "Critical",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Emergency Stop",
-      "TR": "AcilStop_Alarm",
-      "RU": "Аварийная остановка",
-      "DE": "Not-Aus",
-      "IT": "Arresto di emergenza",
-      "ES": "Parada de emergencia"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 0
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 0"
   },
@@ -386,13 +316,10 @@
     "TagCode": "Low_Air_Pressure",
     "Severity": "Warning",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Low Air Pressure",
-      "TR": "DusukBasinc_Alarm",
-      "RU": "Низкое давление воздуха",
-      "DE": "Niedriger Luftdruck",
-      "IT": "Bassa Pressione Aria",
-      "ES": "Presión de Aire Baja"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 1
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 1"
   },
@@ -401,13 +328,10 @@
     "TagCode": "Low_Cooling_Oil_Level",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Low Cooling Oil Level",
-      "TR": "SogutmaYag_DusukSeviye",
-      "RU": "Низкий уровень охлаждающей жидкости",
-      "DE": "Niedriger Kühlölstand",
-      "IT": "Livello Olio Raffreddamento Basso",
-      "ES": "Nivel de Aceite de Refrigeración Bajo"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 2
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 2"
   },
@@ -416,13 +340,10 @@
     "TagCode": "Entry_Conveyor_Inverter_RUN_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor Inverter RUN Failure",
-      "TR": "GirisKonv_InverterCalismadi",
-      "RU": "Ошибка запуска инвертора входного конвейера",
-      "DE": "Eingang Förderer Inverter Startfehler",
-      "IT": "Errore avvio inverter convogliatore ingresso",
-      "ES": "Fallo arranque inverter transportador entrada"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 3
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 3"
   },
@@ -431,13 +352,10 @@
     "TagCode": "Milling_1_Inverter_RUN_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 1 Inverter RUN Failure",
-      "TR": "Freze1_InverterCalismadi",
-      "RU": "Ошибка запуска инвертора Freze 1",
-      "DE": "Milling 1 Inverter Startfehler",
-      "IT": "Errore avvio inverter fresatura 1",
-      "ES": "Fallo arranque inverter fresado 1"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 4
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 4"
   },
@@ -446,13 +364,10 @@
     "TagCode": "Milling_2_Inverter_RUN_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling 2 Inverter RUN Failure",
-      "TR": "Freze2_InverterCalismadi",
-      "RU": "Ошибка запуска инвертора Freze 2",
-      "DE": "Milling 2 Inverter Startfehler",
-      "IT": "Errore avvio inverter fresatura 2",
-      "ES": "Fallo arranque inverter fresado 2"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 5
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 5"
   },
@@ -461,13 +376,10 @@
     "TagCode": "Exit_Conveyor_Inverter_RUN_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Conveyor Inverter RUN Failure",
-      "TR": "CikisKonv_MotorCalismadi",
-      "RU": "Ошибка запуска инвертора выходного конвейера",
-      "DE": "Ausgang Förderer Inverter Startfehler",
-      "IT": "Errore avvio inverter convogliatore uscita",
-      "ES": "Fallo arranque inverter transportador salida"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 6
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 6"
   },
@@ -476,13 +388,10 @@
     "TagCode": "Robot_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Clamping Alarm",
-      "TR": "Robot_Sikamadi",
-      "RU": "Авария зажима робота",
-      "DE": "Roboter Spannalarm",
-      "IT": "Allarme serraggio robot",
-      "ES": "Alarma sujeción robot"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 7
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 7",
     "HelperKeys": [
@@ -494,13 +403,10 @@
     "TagCode": "Robot_Clamp_Opening_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Clamp Opening Alarm",
-      "TR": "Robot_Acamadi",
-      "RU": "Авария открытия зажима робота",
-      "DE": "Roboter Klemmöffnungsalarm",
-      "IT": "Allarme apertura morsetto robot",
-      "ES": "Alarma apertura pinza robot"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 8
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 8"
   },
@@ -509,13 +415,10 @@
     "TagCode": "Profile_Recognition_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Up Movement Alarm",
-      "TR": "ProfilTanima_Yukari_Cikamadi",
-      "RU": "Авария подъёма распознавания профиля",
-      "DE": "Profil-Erkennung Aufwärts Alarm",
-      "IT": "Allarme movimento su riconoscimento profilo",
-      "ES": "Alarma movimiento arriba reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 9
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 9"
   },
@@ -524,13 +427,10 @@
     "TagCode": "Profile_Recognition_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Down Movement Alarm",
-      "TR": "ProfilTanima_Asagi_Inemedi",
-      "RU": "Авария опускания распознавания профиля",
-      "DE": "Profil-Erkennung Abwärts Alarm",
-      "IT": "Allarme movimento giù riconoscimento profilo",
-      "ES": "Alarma movimiento abajo reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 10
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 10"
   },
@@ -539,13 +439,10 @@
     "TagCode": "Profile_Recognition_Front_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Front Clamping Alarm",
-      "TR": "ProfilTanima_On_Sikamadi",
-      "RU": "Авария переднего зажима распознавания профиля",
-      "DE": "Profil-Erkennung Front Spannalarm",
-      "IT": "Allarme serraggio anteriore riconoscimento profilo",
-      "ES": "Alarma sujeción frontal reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 11
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 11"
   },
@@ -554,13 +451,10 @@
     "TagCode": "Profile_Recognition_Front_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Front Clamp Releasing Alarm",
-      "TR": "ProfilTanima_On_Acamadi",
-      "RU": "Авария открытия переднего зажима распознавания профиля",
-      "DE": "Profil-Erkennung Front Öffnungsalarm",
-      "IT": "Allarme rilascio anteriore riconoscimento profilo",
-      "ES": "Alarma liberación frontal reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 12
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 12"
   },
@@ -569,13 +463,10 @@
     "TagCode": "Profile_Recognition_Top_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Top Clamping Alarm",
-      "TR": "ProfilTanima_Ust_Sikamadi",
-      "RU": "Авария верхнего зажима распознавания профиля",
-      "DE": "Profil-Erkennung Oben Spannalarm",
-      "IT": "Allarme serraggio superiore riconoscimento profilo",
-      "ES": "Alarma sujeción superior reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 13
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 13"
   },
@@ -584,13 +475,10 @@
     "TagCode": "Profile_Recognition_Top_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Top Clamp Releasing Alarm",
-      "TR": "ProfilTanima_Ust_Acamadi",
-      "RU": "Авария открытия верхнего зажима распознавания профиля",
-      "DE": "Profil-Erkennung Oben Öffnungsalarm",
-      "IT": "Allarme rilascio superiore riconoscimento profilo",
-      "ES": "Alarma liberación superior reconocimiento perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 14
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 14"
   },
@@ -599,13 +487,10 @@
     "TagCode": "Profile_Reaching_Limit_Sensor_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Reaching Limit Sensor Alarm",
-      "TR": "Profil_Algilama_Limit_Ariza",
-      "RU": "Авария предельного датчика профиля",
-      "DE": "Profil Endschalter Alarm",
-      "IT": "Allarme sensore limite profilo",
-      "ES": "Alarma sensor límite perfil"
+    "Log": {
+      "Code": 4,
+      "Value": "Following 16 Errors (2)",
+      "Bit": 15
     },
     "Comment": "StateCode 4 / Following 16 Errors (2) bit 15"
   },
@@ -614,13 +499,10 @@
     "TagCode": "Cutting_Left_Front_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Clamping Alarm",
-      "TR": "KesimSolOn_Sikamadi",
-      "RU": "Авария левого переднего зажима резки",
-      "DE": "Schnitt Links Vorne Spannalarm",
-      "IT": "Allarme serraggio sinistro anteriore taglio",
-      "ES": "Alarma sujeción izquierda frontal corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 0
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 0"
   },
@@ -629,13 +511,10 @@
     "TagCode": "Cutting_Left_Front_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Clamp Releasing Alarm",
-      "TR": "KesimSolOn_Acamadi",
-      "RU": "Авария открытия левого переднего зажима резки",
-      "DE": "Schnitt Links Vorne Öffnungsalarm",
-      "IT": "Allarme rilascio sinistro anteriore taglio",
-      "ES": "Alarma liberación izquierda frontal corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 1
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 1"
   },
@@ -644,13 +523,10 @@
     "TagCode": "Cutting_Right_Front_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Clamping Alarm",
-      "TR": "KesimSagOn_Sikamadi",
-      "RU": "Авария переднего зажима выходного робота",
-      "DE": "Ausgangsroboter Vorne Spannalarm",
-      "IT": "Allarme serraggio anteriore robot uscita",
-      "ES": "Alarma sujeción frontal robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 2
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 2"
   },
@@ -659,13 +535,10 @@
     "TagCode": "Cutting_Right_Front_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Clamp Releasing Alarm",
-      "TR": "KesimSagOn_Acamadi",
-      "RU": "Авария открытия переднего зажима выходного робота",
-      "DE": "Ausgangsroboter Vorne Öffnungsalarm",
-      "IT": "Allarme rilascio anteriore robot uscita",
-      "ES": "Alarma liberación frontal robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 3
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 3"
   },
@@ -674,13 +547,10 @@
     "TagCode": "Exit_Robot_Top_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Robot Top Clamping Alarm",
-      "TR": "CikisRobotuUst_Sikamadi",
-      "RU": "Авария верхнего зажима выходного робота",
-      "DE": "Ausgangsroboter Oben Spannalarm",
-      "IT": "Allarme serraggio superiore robot uscita",
-      "ES": "Alarma sujeción superior robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 4
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 4"
   },
@@ -689,13 +559,10 @@
     "TagCode": "Exit_Robot_Top_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Robot Top Clamp Releasing Alarm",
-      "TR": "CikisRobotuUst_Acamadi",
-      "RU": "Авария открытия верхнего зажима выходного робота",
-      "DE": "Ausgangsroboter Oben Öffnungsalarm",
-      "IT": "Allarme rilascio superiore robot uscita",
-      "ES": "Alarma liberación superior robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 5
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 5"
   },
@@ -704,13 +571,10 @@
     "TagCode": "Bar_Lenght_is_Too_Short_to_Operate",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Bar Length is Too Short to Operate",
-      "TR": "BarBoyuKisa_Alarm",
-      "RU": "Длина прутка слишком мала для работы",
-      "DE": "Stangenlänge zu kurz für Betrieb",
-      "IT": "Lunghezza barra troppo corta",
-      "ES": "Longitud de barra demasiado corta"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 6
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 6"
   },
@@ -719,13 +583,10 @@
     "TagCode": "Profile_Milling_Approaching_Values_are_Empty",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Milling Approaching Values are Empty",
-      "TR": "ProfilYanasmaDegeri_Hata",
-      "RU": "Значения подхода фрезерования профиля пусты",
-      "DE": "Profil Fräsvorschubwerte leer",
-      "IT": "I valori di avvicinamento fresatura profilo sono vuoti",
-      "ES": "Los valores de aproximación fresado perfil están vacíos"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 7
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 7"
   },
@@ -734,13 +595,10 @@
     "TagCode": "PC_is_not_Online",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "PC is not Online",
-      "TR": "PC_OnlineDegil",
-      "RU": "ПК не в сети",
-      "DE": "PC nicht online",
-      "IT": "PC non online",
-      "ES": "PC no está en línea"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 8
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 8"
   },
@@ -749,13 +607,10 @@
     "TagCode": "Cutting_Left_Top_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Top Clamping Alarm",
-      "TR": "KesimSolUst_Sikamadi",
-      "RU": "Авария левого верхнего зажима резки",
-      "DE": "Schnitt Links Oben Spannalarm",
-      "IT": "Allarme serraggio sinistro superiore taglio",
-      "ES": "Alarma sujeción izquierda superior corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 9
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 9"
   },
@@ -764,13 +619,10 @@
     "TagCode": "Cutting_Left_Top_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Top Clamp Releasing Alarm",
-      "TR": "KesimSolUst_Acamadi",
-      "RU": "Авария открытия левого верхнего зажима",
-      "DE": "Schnitt Links Oben Öffnungsalarm",
-      "IT": "Allarme rilascio sinistro superiore taglio",
-      "ES": "Alarma liberación izquierda superior corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 10
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 10"
   },
@@ -779,13 +631,10 @@
     "TagCode": "Short_Profile_Support_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Short Profile Support FW Movement Alarm",
-      "TR": "CikisKonv_KisaProfil_IleriGidemedi",
-      "RU": "Авария движения вперёд короткого профиля",
-      "DE": "Ausgang Förderer Kurzprofil Vorwärts Alarm",
-      "IT": "Allarme movimento avanti supporto profilo corto",
-      "ES": "Alarma movimiento adelante soporte perfil corto"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 11
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 11"
   },
@@ -794,13 +643,10 @@
     "TagCode": "Short_Profile_Support_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Short Profile Support Back Movement Alarm",
-      "TR": "CikisKonv_KisaProfil_GeriGidemedi",
-      "RU": "Авария движения назад короткого профиля",
-      "DE": "Ausgang Förderer Kurzprofil Rückwärts Alarm",
-      "IT": "Allarme movimento indietro supporto profilo corto",
-      "ES": "Alarma movimiento atrás soporte perfil corto"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 12
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 12"
   },
@@ -809,13 +655,10 @@
     "TagCode": "Entry_Conveyor_1st_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 1st Clamping Alarm",
-      "TR": "GirisKonv1_Sikamadi",
-      "RU": "Авария 1-го зажима входного конвейера",
-      "DE": "Eingang Förderer 1. Spannalarm",
-      "IT": "Allarme 1° serraggio conv. ingresso",
-      "ES": "Alarma 1ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 13
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 13"
   },
@@ -824,13 +667,10 @@
     "TagCode": "Entry_Conveyor_1st_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 1st Clamp Releasing Alarm",
-      "TR": "GirisKonv1_Acamadi",
-      "RU": "Авария открытия 1-го зажима входного конвейера",
-      "DE": "Eingang Förderer 1. Öffnungsalarm",
-      "IT": "Allarme rilascio 1° morsetto ingresso",
-      "ES": "Alarma liberación 1ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 14
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 14"
   },
@@ -839,13 +679,10 @@
     "TagCode": "Entry_Conveyor_2nd_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 2nd Clamping Alarm",
-      "TR": "GirisKonv2_Sikamadi",
-      "RU": "Авария 2-го зажима входного конвейера",
-      "DE": "Eingang Förderer 2. Spannalarm",
-      "IT": "Allarme 2° serraggio conv. ingresso",
-      "ES": "Alarma 2ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 15
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 15"
   },
@@ -854,13 +691,10 @@
     "TagCode": "Entry_Conveyor_2nd_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 2nd Clamp Releasing Alarm",
-      "TR": "GirisKonv2_Acamadi",
-      "RU": "Авария открытия 2-го зажима входного конвейера",
-      "DE": "Eingang Förderer 2. Öffnungsalarm",
-      "IT": "Allarme rilascio 2° morsetto ingresso",
-      "ES": "Alarma liberación 2ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 16
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 16"
   },
@@ -869,13 +703,10 @@
     "TagCode": "Entry_Conveyor_3rd_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 3rd Clamping Alarm",
-      "TR": "GirisKonv3_Sikamadi",
-      "RU": "Авария 3-го зажима входного конвейера",
-      "DE": "Eingang Förderer 3. Spannalarm",
-      "IT": "Allarme 3° serraggio conv. ingresso",
-      "ES": "Alarma 3ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 17
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 17"
   },
@@ -884,13 +715,10 @@
     "TagCode": "Entry_Conveyor_3rd_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 3rd Clamp Releasing Alarm",
-      "TR": "GirisKonv3_Acamadi",
-      "RU": "Авария открытия 3-го зажима входного конвейера",
-      "DE": "Eingang Förderer 3. Öffnungsalarm",
-      "IT": "Allarme rilascio 3° morsetto ingresso",
-      "ES": "Alarma liberación 3ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 18
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 18"
   },
@@ -899,13 +727,10 @@
     "TagCode": "Entry_Conveyor_4th_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 4th Clamping Alarm",
-      "TR": "GirisKonv4_Sikamadi",
-      "RU": "Авария 4-го зажима входного конвейера",
-      "DE": "Eingang Förderer 4. Spannalarm",
-      "IT": "Allarme 4° serraggio conv. ingresso",
-      "ES": "Alarma 4ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 19
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 19"
   },
@@ -914,13 +739,10 @@
     "TagCode": "Entry_Conveyor_4th_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 4th Clamp Releasing Alarm",
-      "TR": "GirisKonv4_Acamadi",
-      "RU": "Авария открытия 4-го зажима входного конвейера",
-      "DE": "Eingang Förderer 4. Öffnungsalarm",
-      "IT": "Allarme rilascio 4° morsetto ingresso",
-      "ES": "Alarma liberación 4ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 20
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 20"
   },
@@ -929,13 +751,10 @@
     "TagCode": "Entry_Conveyor_5th_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 5th Clamping Alarm",
-      "TR": "GirisKonv5_Sikamadi",
-      "RU": "Авария 5-го зажима входного конвейера",
-      "DE": "Eingang Förderer 5. Spannalarm",
-      "IT": "Allarme 5° serraggio conv. ingresso",
-      "ES": "Alarma 5ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 21
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 21"
   },
@@ -944,13 +763,10 @@
     "TagCode": "Entry_Conveyor_5th_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 5th Clamp Releasing Alarm",
-      "TR": "GirisKonv5_Acamadi",
-      "RU": "Авария открытия 5-го зажима входного конвейера",
-      "DE": "Eingang Förderer 5. Öffnungsalarm",
-      "IT": "Allarme rilascio 5° morsetto ingresso",
-      "ES": "Alarma liberación 5ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 22
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 22"
   },
@@ -959,13 +775,10 @@
     "TagCode": "Entry_Conveyor_6th_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 6th Clamping Alarm",
-      "TR": "GirisKonv6_Sikamadi",
-      "RU": "Авария 6-го зажима входного конвейера",
-      "DE": "Eingang Förderer 6. Spannalarm",
-      "IT": "Allarme 6° serraggio conv. ingresso",
-      "ES": "Alarma 6ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 23
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 23"
   },
@@ -974,13 +787,10 @@
     "TagCode": "Entry_Conveyor_6th_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 6th Clamp Releasing Alarm",
-      "TR": "GirisKonv6_Acamadi",
-      "RU": "Авария открытия 6-го зажима входного конвейера",
-      "DE": "Eingang Förderer 6. Öffnungsalarm",
-      "IT": "Allarme rilascio 6° morsetto ingresso",
-      "ES": "Alarma liberación 6ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 24
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 24"
   },
@@ -989,13 +799,10 @@
     "TagCode": "Entry_Conveyor_7th_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 7th Clamping Alarm",
-      "TR": "GirisKonv7_Sikamadi",
-      "RU": "Авария 7-го зажима входного конвейера",
-      "DE": "Eingang Förderer 7. Spannalarm",
-      "IT": "Allarme 7° serraggio conv. ingresso",
-      "ES": "Alarma 7ª sujeción transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 25
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 25"
   },
@@ -1004,13 +811,10 @@
     "TagCode": "Entry_Conveyor_7th_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor 7th Clamp Releasing Alarm",
-      "TR": "GirisKonv7_Acamadi",
-      "RU": "Авария открытия 7-го зажима входного конвейера",
-      "DE": "Eingang Förderer 7. Öffnungsalarm",
-      "IT": "Allarme rilascio 7° morsetto ingresso",
-      "ES": "Alarma liberación 7ª pinza entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 26
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 26"
   },
@@ -1019,13 +823,10 @@
     "TagCode": "Profile_Ejection_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Ejection FW Movement Alarm",
-      "TR": "Profil_Ittirme_IleriGidemedi",
-      "RU": "Авария движения вперёд выталкивания профиля",
-      "DE": "Profil Auswurf Vorwärts Alarm",
-      "IT": "Allarme movimento avanti espulsione profilo",
-      "ES": "Alarma movimiento adelante expulsión perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 27
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 27"
   },
@@ -1034,13 +835,10 @@
     "TagCode": "Exit_Roller_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Roller Up Movement Alarm",
-      "TR": "CikisRulo_YukariCikamadi",
-      "RU": "Авария подъёма выходного ролика",
-      "DE": "Ausgang Rollen Aufwärts Alarm",
-      "IT": "Allarme salita rullo uscita",
-      "ES": "Alarma subida rodillo salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 28
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 28"
   },
@@ -1049,13 +847,10 @@
     "TagCode": "Exit_Roller_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Roller Down Movement Alarm",
-      "TR": "CikisRulo_AsagiInemedi",
-      "RU": "Авария опускания выходного ролика",
-      "DE": "Ausgang Rollen Abwärts Alarm",
-      "IT": "Allarme discesa rullo uscita",
-      "ES": "Alarma bajada rodillo salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 29
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 29"
   },
@@ -1064,13 +859,10 @@
     "TagCode": "No_Profile_Recognised",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "No Profile Recognised",
-      "TR": "Profil_Alglanmadi",
-      "RU": "Профиль не распознан",
-      "DE": "Kein Profil erkannt",
-      "IT": "Profilo non riconosciuto",
-      "ES": "Perfil no reconocido"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 30
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 30"
   },
@@ -1079,13 +871,10 @@
     "TagCode": "Robot_Conveyor_Clamps_Crushing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Conveyor Clamps Crushing Alarm",
-      "TR": "Robot1Sikmalar_CarpismaAlarm",
-      "RU": "Авария столкновения зажимов робота конвейера",
-      "DE": "Roboter Förderer Klemmen Kollisionsalarm",
-      "IT": "Allarme schiacciamento morsetti robot conv.",
-      "ES": "Alarma aplastamiento pinzas robot transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (3)",
+      "Bit": 31
     },
     "Comment": "StateCode 14 / Following 32 Errors (3) bit 31"
   },
@@ -1094,13 +883,10 @@
     "TagCode": "Conveyor_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Clamping Alarm",
-      "TR": "KonveyorSikma_Hata",
-      "RU": "Авария зажима конвейера",
-      "DE": "Förderer Spannalarm",
-      "IT": "Allarme serraggio convogliatore",
-      "ES": "Alarma sujeción transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 0
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 0"
   },
@@ -1109,13 +895,10 @@
     "TagCode": "Profile_Recognition_Roller_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Roller Up Movement Alarm",
-      "TR": "ProfilTanimaRulo_YukariCikamadi",
-      "RU": "Авария подъёма ролика распознавания профиля",
-      "DE": "Profil-Erkennung Rolle Aufwärts Alarm",
-      "IT": "Allarme salita rullo riconoscimento profilo",
-      "ES": "Alarma subida rodillo reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 1
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 1"
   },
@@ -1124,13 +907,10 @@
     "TagCode": "Profile_Recognition_Roller_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Roller Down Movement Alarm",
-      "TR": "ProfilTanimaRulo_AsagiInemedi",
-      "RU": "Авария опускания ролика распознавания профиля",
-      "DE": "Profil-Erkennung Rolle Abwärts Alarm",
-      "IT": "Allarme discesa rullo riconoscimento profilo",
-      "ES": "Alarma bajada rodillo reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 2
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 2"
   },
@@ -1139,13 +919,10 @@
     "TagCode": "Milling_Roller_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Roller Up Movement Alarm",
-      "TR": "FrezeRulo_YukariCikamadi",
-      "RU": "Авария подъёма фрезерного ролика",
-      "DE": "Fräse Rolle Aufwärts Alarm",
-      "IT": "Allarme salita rullo fresatura",
-      "ES": "Alarma subida rodillo fresado"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 3
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 3"
   },
@@ -1154,13 +931,10 @@
     "TagCode": "Milling_Roller_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Roller Down Movement Alarm",
-      "TR": "FrezeRulo_AsagiInemedi",
-      "RU": "Авария опускания фрезерного ролика",
-      "DE": "Fräse Rolle Abwärts Alarm",
-      "IT": "Allarme discesa rullo fresatura",
-      "ES": "Alarma bajada rodillo fresado"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 4
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 4"
   },
@@ -1169,13 +943,10 @@
     "TagCode": "Milling_Top_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Top Clamping Alarm",
-      "TR": "FrezeUst_Sikamadi",
-      "RU": "Авария верхнего зажима фрезы",
-      "DE": "Fräse Oben Spannalarm",
-      "IT": "Allarme serraggio superiore fresatura",
-      "ES": "Alarma sujeción superior fresado"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 5
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 5"
   },
@@ -1184,13 +955,10 @@
     "TagCode": "Milling_Top_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Top Clamp Releasing Alarm",
-      "TR": "FrezeUst_Acamadi",
-      "RU": "Авария открытия верхнего зажима фрезы",
-      "DE": "Fräse Oben Öffnungsalarm",
-      "IT": "Allarme rilascio superiore fresatura",
-      "ES": "Alarma liberación superior fresado"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 6
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 6"
   },
@@ -1199,13 +967,10 @@
     "TagCode": "Profile_Ejection_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Ejection Back Movement Alarm",
-      "TR": "Profil_Ittirme_GeriGelemedi",
-      "RU": "Авария возврата выталкивания профиля",
-      "DE": "Profil Auswurf Rückwärts Alarm",
-      "IT": "Allarme ritorno espulsione profilo",
-      "ES": "Alarma retorno expulsión perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 7
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 7"
   },
@@ -1214,13 +979,10 @@
     "TagCode": "Cutting_Right_Front_Vertical_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Vertical Clamping Alarm",
-      "TR": "KesimSagOnDikey_Sikamadi",
-      "RU": "Авария правого переднего вертикального зажима резки",
-      "DE": "Schnitt Rechts Vorne Vertikal Spannalarm",
-      "IT": "Allarme serraggio verticale destro anteriore taglio",
-      "ES": "Alarma sujeción vertical derecha frontal corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 8
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 8"
   },
@@ -1229,13 +991,10 @@
     "TagCode": "Cutting_Right_Front_Vertical_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Vertical Clamp Releasing Alarm",
-      "TR": "KesimSagOnDikey_Acamadi",
-      "RU": "Авария открытия правого переднего вертикального зажима",
-      "DE": "Schnitt Rechts Vorne Vertikal Öffnungsalarm",
-      "IT": "Allarme rilascio verticale destro anteriore",
-      "ES": "Alarma liberación vertical derecha frontal"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 9
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 9"
   },
@@ -1244,13 +1003,10 @@
     "TagCode": "Cutting_Left_Top_Small_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Top Small Clamping Alarm",
-      "TR": "KesimSolUstKucuk_Sikamadi",
-      "RU": "Авария малого левого верхнего зажима резки",
-      "DE": "Schnitt Links Oben Klein Spannalarm",
-      "IT": "Allarme piccolo serraggio sinistro superiore",
-      "ES": "Alarma pequeña sujeción izquierda superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 10
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 10"
   },
@@ -1259,13 +1015,10 @@
     "TagCode": "Cutting_Left_Top_Small_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Top Small Clamp Releasing Alarm",
-      "TR": "KesimSolUstKucuk_Acamadi",
-      "RU": "Авария открытия малого левого верхнего зажима",
-      "DE": "Schnitt Links Oben Klein Öffnungsalarm",
-      "IT": "Allarme piccolo rilascio sinistro superiore",
-      "ES": "Alarma pequeña liberación izquierda superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 11
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 11"
   },
@@ -1274,13 +1027,10 @@
     "TagCode": "Cutting_Right_Top_Small_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Top Small Clamping Alarm",
-      "TR": "CikisRobotuUstKucuk_Sikamadi",
-      "RU": "Авария малого верхнего зажима выходного робота",
-      "DE": "Ausgangsroboter Oben Klein Spannalarm",
-      "IT": "Allarme piccolo serraggio superiore robot uscita",
-      "ES": "Alarma pequeña sujeción superior robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 12
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 12"
   },
@@ -1289,13 +1039,10 @@
     "TagCode": "Cutting_Right_Top_Small_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Top Small Clamp Releasing Alarm",
-      "TR": "CikisRobotuUstKucuk_Acamadi",
-      "RU": "Авария открытия малого верхнего зажима выходного робота",
-      "DE": "Ausgangsroboter Oben Klein Öffnungsalarm",
-      "IT": "Allarme piccolo rilascio superiore robot uscita",
-      "ES": "Alarma pequeña liberación superior robot salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 13
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 13"
   },
@@ -1304,13 +1051,10 @@
     "TagCode": "Robot_Linear_Encoder_Position_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Robot Linear Encoder Position Error",
-      "TR": "RobotLineerEnkoder_PozisyonHata",
-      "RU": "Ошибка позиции линейного энкодера робота",
-      "DE": "Roboter Linearencoder Positionsfehler",
-      "IT": "Errore posizione encoder lineare robot",
-      "ES": "Error posición encoder lineal robot"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 14
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 14"
   },
@@ -1319,13 +1063,10 @@
     "TagCode": "Cutting_Profile_Press_Unit_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Profile Press Unit FW Movement Alarm",
-      "TR": "KesimFolyoRulosu_IleriGidemedi",
-      "RU": "Авария движения блока прижима профиля резки",
-      "DE": "Schnitt Profil Press Einheit Bewegungsalarm",
-      "IT": "Allarme movimento unità pressa profilo taglio",
-      "ES": "Alarma movimiento unidad prensa perfil corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 15
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 15"
   },
@@ -1334,13 +1075,10 @@
     "TagCode": "Cutting_Profile_Press_Unit_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Profile Press Unit Back Movement Alarm",
-      "TR": "KesimFolyoRulosu_GeriGidemedi",
-      "RU": "Авария движения назад прижима профиля",
-      "DE": "Schnitt Profil Press Rückwärts Alarm",
-      "IT": "Allarme indietro unità pressa profilo",
-      "ES": "Alarma atrás unidad prensa perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 16
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 16"
   },
@@ -1349,13 +1087,10 @@
     "TagCode": "Cutting_Profile_Press_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Profile Press Up Movement Alarm",
-      "TR": "KesimFolyoRulosu_Basamadi",
-      "RU": "Авария подъёма прижима профиля",
-      "DE": "Schnitt Profil Press Aufwärts Alarm",
-      "IT": "Allarme salita unità pressa profilo",
-      "ES": "Alarma arriba unidad prensa perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 17
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 17"
   },
@@ -1364,13 +1099,10 @@
     "TagCode": "Cutting_Profile_Press_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Profile Press Down Movement Alarm",
-      "TR": "KesimFolyoRulosu_Asagiİnemedi",
-      "RU": "Авария опускания прижима профиля",
-      "DE": "Schnitt Profil Press Abwärts Alarm",
-      "IT": "Allarme discesa unità pressa profilo",
-      "ES": "Alarma abajo unidad prensa perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 18
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 18"
   },
@@ -1379,13 +1111,10 @@
     "TagCode": "Entry_Conveyor_Roller_Up_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor Roller Up Movement Alarm",
-      "TR": "GirisKonvRulolar_YukariCikamadi",
-      "RU": "Авария подъёма роликов входного конвейера",
-      "DE": "Eingang Förderer Rollen Aufwärts Alarm",
-      "IT": "Allarme salita rulli convogliatore ingresso",
-      "ES": "Alarma subida rodillos transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 19
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 19"
   },
@@ -1394,13 +1123,10 @@
     "TagCode": "Entry_Conveyor_Roller_Down_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Entry Conveyor Roller Down Movement Alarm",
-      "TR": "GirisKonvRulolar_AsagiInemedi",
-      "RU": "Авария опускания роликов входного конвейера",
-      "DE": "Eingang Förderer Rollen Abwärts Alarm",
-      "IT": "Allarme discesa rulli convogliatore ingresso",
-      "ES": "Alarma bajada rodillos transportador entrada"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 20
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 20"
   },
@@ -1409,13 +1135,10 @@
     "TagCode": "Left_Profile_Recognition_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition FW Movement Alarm",
-      "TR": "SolProfilTanimaUst_IleriGidemedi",
-      "RU": "Авария движения вперёд левого верхнего распознавания профиля",
-      "DE": "Linke Profil-Erkennung Oben Vorwärts Alarm",
-      "IT": "Allarme avanti riconoscimento profilo sinistro superiore",
-      "ES": "Alarma adelante reconocimiento perfil izquierdo superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 21
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 21"
   },
@@ -1424,13 +1147,10 @@
     "TagCode": "Left_Profile_Recognition_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Back Movement Alarm",
-      "TR": "SolProfilTanimaUst_GeriGidemedi",
-      "RU": "Авария движения назад левого верхнего распознавания профиля",
-      "DE": "Linke Profil-Erkennung Oben Rückwärts Alarm",
-      "IT": "Allarme indietro riconoscimento profilo sinistro superiore",
-      "ES": "Alarma atrás reconocimiento perfil izquierdo superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 22
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 22"
   },
@@ -1439,13 +1159,10 @@
     "TagCode": "Left_Profile_Recognition_Top_Clamping_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Top Clamping Alarm",
-      "TR": "SolProfilTanimaUst_Sikamadi",
-      "RU": "Авария верхнего зажима левого распознавания профиля",
-      "DE": "Linke Profil-Erkennung Oben Spannalarm",
-      "IT": "Allarme serraggio superiore riconoscimento sinistro",
-      "ES": "Alarma sujeción superior reconocimiento izquierdo"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 23
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 23"
   },
@@ -1454,13 +1171,10 @@
     "TagCode": "Left_Profile_Recognition_Top_Clamp_Releasing_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Top Clamp Releasing Alarm",
-      "TR": "SolProfilTanimaUst_Acamadi",
-      "RU": "Авария открытия верхнего зажима левого распознавания профиля",
-      "DE": "Linke Profil-Erkennung Oben Öffnungsalarm",
-      "IT": "Allarme rilascio superiore riconoscimento sinistro",
-      "ES": "Alarma liberación superior reconocimiento izquierdo"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 24
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 24"
   },
@@ -1469,13 +1183,10 @@
     "TagCode": "Milling_Motor_Cooler_Error",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Milling Motor Cooler Error",
-      "TR": "FrezeMotorSogutucu_Ariza",
-      "RU": "Ошибка охладителя двигателя фрезы",
-      "DE": "Fräsmotor Kühler Fehler",
-      "IT": "Errore raffreddamento motore fresatura",
-      "ES": "Error refrigeración motor fresado"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 25
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 25"
   },
@@ -1484,13 +1195,10 @@
     "TagCode": "Rigth_Profile_Recognition_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Right Profile Recognition FW Movement Alarm",
-      "TR": "_SagProfilTanimaUst_IleriGidemedi_SA3030",
-      "RU": "Авария движения вперёд правого верхнего распознавания профиля",
-      "DE": "Rechte Profil-Erkennung Oben Vorwärts Alarm",
-      "IT": "Allarme avanti riconoscimento profilo destro superiore",
-      "ES": "Alarma adelante reconocimiento perfil derecho superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 26
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 26"
   },
@@ -1499,13 +1207,10 @@
     "TagCode": "Rigth_Profile_Recognition_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Right Profile Recognition Back Movement Alarm",
-      "TR": "_SagProfilTanimaUst_GeriGidemedi_SA3030",
-      "RU": "Авария движения назад правого верхнего распознавания профиля",
-      "DE": "Rechte Profil-Erkennung Oben Rückwärts Alarm",
-      "IT": "Allarme indietro riconoscimento profilo destro superiore",
-      "ES": "Alarma atrás reconocimiento perfil derecho superior"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 27
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 27"
   },
@@ -1514,13 +1219,10 @@
     "TagCode": "Cutting_Left_Front_Height_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Height FW Movement Alarm",
-      "TR": "ProfilOnSikmayiGectiSN_Algilanmadi",
-      "RU": "Авария движения вперёд высоты левого переднего реза",
-      "DE": "Schnitt Links Vorne Höhe Vorwärts Alarm",
-      "IT": "Allarme avanti altezza anteriore sinistra taglio",
-      "ES": "Alarma adelante altura frontal izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 28
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 28"
   },
@@ -1529,13 +1231,10 @@
     "TagCode": "Cutting_Left_Front_Height_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Height Back Movement Alarm",
-      "TR": "Kesim Sol Ön Yükseklik Geri Gidemedi",
-      "RU": "Авария движения назад высоты левого переднего реза",
-      "DE": "Schnitt Links Vorne Höhe Rückwärts Alarm",
-      "IT": "Allarme indietro altezza anteriore sinistra taglio",
-      "ES": "Alarma atrás altura frontal izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 29
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 29"
   },
@@ -1544,13 +1243,10 @@
     "TagCode": "Cutting_Right_Front_Height_FW_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Height FW Movement Alarm",
-      "TR": "Kesim Sağ Ön Yükseklik İleri Gidemedi",
-      "RU": "Авария движения вперёд высоты правого переднего реза",
-      "DE": "Schnitt Rechts Vorne Höhe Vorwärts Alarm",
-      "IT": "Allarme avanti altezza anteriore destra taglio",
-      "ES": "Alarma adelante altura frontal derecha corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 30
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 30"
   },
@@ -1559,13 +1255,10 @@
     "TagCode": "Cutting_Right_Front_Height_Back_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Right Front Height Back Movement Alarm",
-      "TR": "Kesim Sağ Ön Yükseklik Geri Gidemedi",
-      "RU": "Авария движения назад высоты правого переднего реза",
-      "DE": "Schnitt Rechts Vorne Höhe Rückwärts Alarm",
-      "IT": "Allarme indietro altezza anteriore destra taglio",
-      "ES": "Alarma atrás altura frontal derecha corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (4)",
+      "Bit": 31
     },
     "Comment": "StateCode 14 / Following 32 Errors (4) bit 31"
   },
@@ -1574,13 +1267,10 @@
     "TagCode": "Gripper_0_degree_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Gripper 0 degree Movement Alarm",
-      "TR": "RobotSikma_0der_Donemedi",
-      "RU": "Авария поворота захвата робота на 0°",
-      "DE": "Greifer 0-Grad Drehalarm",
-      "IT": "Allarme rotazione pinza robot a 0°",
-      "ES": "Alarma rotación pinza robot a 0°"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 0
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 0"
   },
@@ -1589,13 +1279,10 @@
     "TagCode": "Gripper_90_degree_Movement_Alarm",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Gripper 90 degree Movement Alarm",
-      "TR": "RobotSikma_90der_Donemedi",
-      "RU": "Авария поворота захвата робота на 90°",
-      "DE": "Greifer 90-Grad Drehalarm",
-      "IT": "Allarme rotazione pinza robot a 90°",
-      "ES": "Alarma rotación pinza robot a 90°"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 1
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 1"
   },
@@ -1604,13 +1291,10 @@
     "TagCode": "Left_Profile_Recognition_Front_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Front Vertical Moving Up Failure",
-      "TR": "SolProfilTanima_OnDikey_YukariCikamadi",
-      "RU": "Авария подъёма переднего вертикального левого распознавания профиля",
-      "DE": "Linke Profil-Erkennung Vorne Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale anteriore sinistra riconoscimento profilo",
-      "ES": "Fallo subida vertical frontal izquierda reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 2
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 2"
   },
@@ -1619,13 +1303,10 @@
     "TagCode": "Left_Profile_Recognition_Front_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Front Vertical Moving Down Failure",
-      "TR": "SolProfilTanima_OnDikey_Asagi_Inemedi",
-      "RU": "Авария опускания переднего вертикального левого распознавания",
-      "DE": "Linke Profil-Erkennung Vorne Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale anteriore sinistra",
-      "ES": "Fallo bajada vertical frontal izquierda"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 3
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 3"
   },
@@ -1634,13 +1315,10 @@
     "TagCode": "Left_Profile_Recognition_Back_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Back Vertical Moving Up Failure",
-      "TR": "SolProfilTanima_ArkaDikey_YukariCikamadi",
-      "RU": "Авария подъёма заднего вертикального левого распознавания",
-      "DE": "Linke Profil-Erkennung Hinten Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale posteriore sinistra",
-      "ES": "Fallo subida vertical posterior izquierda"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 4
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 4"
   },
@@ -1649,13 +1327,10 @@
     "TagCode": "Left_Profile_Recognition_Back_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Back Vertical Moving Down Failure",
-      "TR": "SolProfilTanima_ArkaDikey_Asagi_Inemedi",
-      "RU": "Авария опускания заднего вертикального левого распознавания",
-      "DE": "Linke Profil-Erkennung Hinten Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale posteriore sinistra",
-      "ES": "Fallo bajada vertical posterior izquierda"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 5
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 5"
   },
@@ -1664,13 +1339,10 @@
     "TagCode": "Left_Profile_Recognition_Back_Horizontal_Moving_FW_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Back Horizontal Moving FW Failure",
-      "TR": "SolProfilTanima_ArkaYatay_IleriGidemedi",
-      "RU": "Авария движения вперёд заднего горизонтального левого распознавания",
-      "DE": "Linke Profil-Erkennung Hinten Horizontal Vorwärts Fehler",
-      "IT": "Errore avanti orizzontale posteriore sinistro",
-      "ES": "Fallo adelante horizontal posterior izquierdo"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 6
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 6"
   },
@@ -1679,13 +1351,10 @@
     "TagCode": "Left_Profile_Recognition_Back_Horizontal_Moving_Back_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Left Profile Recognition Back Horizontal Moving Back Failure",
-      "TR": "SolProfilTanima_ArkaYatay_GeriGidemedi",
-      "RU": "Авария движения назад заднего горизонтального левого распознавания",
-      "DE": "Linke Profil-Erkennung Hinten Horizontal Rückwärts Fehler",
-      "IT": "Errore indietro orizzontale posteriore sinistro",
-      "ES": "Fallo atrás horizontal posterior izquierdo"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 7
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 7"
   },
@@ -1694,13 +1363,10 @@
     "TagCode": "Conveyor_Front_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Front Vertical Moving Up Failure",
-      "TR": "Konveyor_OnDikey_YukariCikamadi",
-      "RU": "Авария подъёма переднего вертикального конвейера",
-      "DE": "Förderer Vorne Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale anteriore convogliatore",
-      "ES": "Fallo subida vertical frontal transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 8
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 8"
   },
@@ -1709,13 +1375,10 @@
     "TagCode": "Conveyor_Front_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Front Vertical Moving Down Failure",
-      "TR": "Konveyor_OnDikey_Asagi_Inemedi",
-      "RU": "Авария опускания переднего вертикального конвейера",
-      "DE": "Förderer Vorne Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale anteriore convogliatore",
-      "ES": "Fallo bajada vertical frontal transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 9
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 9"
   },
@@ -1724,13 +1387,10 @@
     "TagCode": "Conveyor_Back_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Back Vertical Moving Up Failure",
-      "TR": "Konveyor_ArkaDikey_YukariCikamadi",
-      "RU": "Авария подъёма заднего вертикального конвейера",
-      "DE": "Förderer Hinten Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale posteriore convogliatore",
-      "ES": "Fallo subida vertical posterior transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 10
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 10"
   },
@@ -1739,13 +1399,10 @@
     "TagCode": "Conveyor_Back_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Back Vertical Moving Down Failure",
-      "TR": "Konveyor_ArkaDikey_Asagi_Inemedi",
-      "RU": "Авария опускания заднего вертикального конвейера",
-      "DE": "Förderer Hinten Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale posteriore convogliatore",
-      "ES": "Fallo bajada vertical posterior transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 11
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 11"
   },
@@ -1754,13 +1411,10 @@
     "TagCode": "Conveyor_Back_Horizontal_Moving_FW_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Back Horizontal Moving FW Failure",
-      "TR": "Konveyor_ArkaYatay_IleriGidemedi",
-      "RU": "Авария движения вперёд заднего горизонтального конвейера",
-      "DE": "Förderer Hinten Horizontal Vorwärts Fehler",
-      "IT": "Errore avanti orizzontale posteriore convogliatore",
-      "ES": "Fallo adelante horizontal posterior transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 12
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 12"
   },
@@ -1769,13 +1423,10 @@
     "TagCode": "Conveyor_Back_Horizontal_Moving_Back_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Conveyor Back Horizontal Moving Back Failure",
-      "TR": "Konveyor_ArkaYatay_GeriGidemedi",
-      "RU": "Авария движения назад заднего горизонтального конвейера",
-      "DE": "Förderer Hinten Horizontal Rückwärts Fehler",
-      "IT": "Errore indietro orizzontale posteriore convogliatore",
-      "ES": "Fallo atrás horizontal posterior transportador"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 13
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 13"
   },
@@ -1784,13 +1435,10 @@
     "TagCode": "Profile_Recognition_Front_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Front Vertical Moving Up Failure",
-      "TR": "ProfilTanima_OnDikey_YukariCikamadi",
-      "RU": "Авария подъёма переднего вертикального распознавания профиля",
-      "DE": "Profil-Erkennung Vorne Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale anteriore riconoscimento profilo",
-      "ES": "Fallo subida vertical frontal reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 14
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 14"
   },
@@ -1799,13 +1447,10 @@
     "TagCode": "Profile_Recognition_Front_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Front Vertical Moving Down Failure",
-      "TR": "ProfilTanima_OnDikey_Asagi_Inemedi",
-      "RU": "Авария опускания переднего вертикального распознавания профиля",
-      "DE": "Profil-Erkennung Vorne Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale anteriore riconoscimento profilo",
-      "ES": "Fallo bajada vertical frontal reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 15
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 15"
   },
@@ -1814,13 +1459,10 @@
     "TagCode": "Profile_Recognition_Back_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Back Vertical Moving Up Failure",
-      "TR": "ProfilTanima_ArkaDikey_YukariCikamadi",
-      "RU": "Авария подъёма заднего вертикального распознавания профиля",
-      "DE": "Profil-Erkennung Hinten Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale posteriore riconoscimento profilo",
-      "ES": "Fallo subida vertical posterior reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 16
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 16"
   },
@@ -1829,13 +1471,10 @@
     "TagCode": "Profile_Recognition_Back_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Back Vertical Moving Down Failure",
-      "TR": "ProfilTanima_ArkaDikey_Asagi_Inemedi",
-      "RU": "Авария опускания заднего вертикального распознавания профиля",
-      "DE": "Profil-Erkennung Hinten Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale posteriore riconoscimento profilo",
-      "ES": "Fallo bajada vertical posterior reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 17
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 17"
   },
@@ -1844,13 +1483,10 @@
     "TagCode": "Profile_Recognition_Back_Horizontal_Moving_FW_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Back Horizontal Moving FW Failure",
-      "TR": "ProfilTanima_ArkaYatay_IleriGidemedi",
-      "RU": "Авария движения вперёд заднего горизонтального распознавания профиля",
-      "DE": "Profil-Erkennung Hinten Horizontal Vorwärts Fehler",
-      "IT": "Errore avanti orizzontale posteriore riconoscimento profilo",
-      "ES": "Fallo adelante horizontal posterior reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 18
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 18"
   },
@@ -1859,13 +1495,10 @@
     "TagCode": "Profile_Recognition_Back_Horizontal_Moving_Back_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Profile Recognition Back Horizontal Moving Back Failure",
-      "TR": "ProfilTanima_ArkaYatay_GeriGidemedi",
-      "RU": "Авария движения назад заднего горизонтального распознавания профиля",
-      "DE": "Profil-Erkennung Hinten Horizontal Rückwärts Fehler",
-      "IT": "Errore indietro orizzontale posteriore riconoscimento profilo",
-      "ES": "Fallo atrás horizontal posterior reconocimiento perfil"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 19
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 19"
   },
@@ -1874,13 +1507,10 @@
     "TagCode": "Cutting_Left_Front_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Vertical Moving Up Failure",
-      "TR": "KesimSol_OnDikey_YukariCikamadi",
-      "RU": "Авария подъёма левого переднего вертикального реза",
-      "DE": "Schnitt Links Vorne Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale anteriore sinistra taglio",
-      "ES": "Fallo subida vertical frontal izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 20
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 20"
   },
@@ -1889,13 +1519,10 @@
     "TagCode": "Cutting_Left_Front_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Front Vertical Moving Down Failure",
-      "TR": "KesimSol_OnDikey_Asagi_Inemedi",
-      "RU": "Авария опускания левого переднего вертикального реза",
-      "DE": "Schnitt Links Vorne Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale anteriore sinistra taglio",
-      "ES": "Fallo bajada vertical frontal izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 21
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 21"
   },
@@ -1904,13 +1531,10 @@
     "TagCode": "Cutting_Left_Back_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Back Vertical Moving Up Failure",
-      "TR": "KesimSol_ArkaDikey_YukariCikamadi",
-      "RU": "Авария подъёма левого заднего вертикального реза",
-      "DE": "Schnitt Links Hinten Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale posteriore sinistra taglio",
-      "ES": "Fallo subida vertical posterior izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 22
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 22"
   },
@@ -1919,13 +1543,10 @@
     "TagCode": "Cutting_Left_Back_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Back Vertical Moving Down Failure",
-      "TR": "KesimSol_ArkaDikey_Asagi_Inemedi",
-      "RU": "Авария опускания левого заднего вертикального реза",
-      "DE": "Schnitt Links Hinten Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale posteriore sinistra taglio",
-      "ES": "Fallo bajada vertical posterior izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 23
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 23"
   },
@@ -1934,13 +1555,10 @@
     "TagCode": "Cutting_Left_Back_Horizontal_Moving_FW_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Back Horizontal Moving FW Failure",
-      "TR": "KesimSol_ArkaYatay_IleriGidemedi",
-      "RU": "Авария движения вперёд левого заднего горизонтального реза",
-      "DE": "Schnitt Links Hinten Horizontal Vorwärts Fehler",
-      "IT": "Errore avanti orizzontale posteriore sinistra taglio",
-      "ES": "Fallo adelante horizontal posterior izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 24
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 24"
   },
@@ -1949,13 +1567,10 @@
     "TagCode": "Cutting_Left_Back_Horizontal_Moving_Back_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cutting Left Back Horizontal Moving Back Failure",
-      "TR": "KesimSol_ArkaYatay_GeriGidemedi",
-      "RU": "Авария движения назад левого заднего горизонтального реза",
-      "DE": "Schnitt Links Hinten Horizontal Rückwärts Fehler",
-      "IT": "Errore indietro orizzontale posteriore sinistra taglio",
-      "ES": "Fallo atrás horizontal posterior izquierda corte"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 25
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 25"
   },
@@ -1964,13 +1579,10 @@
     "TagCode": "Exit_Front_Vertical_Moving_Up_Failure",
     "Severity": "Critical",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Front Vertical Moving Up Failure",
-      "TR": "CikisAcili_OnDikey_YukariCikamadi",
-      "RU": "Авария подъёма переднего вертикального выхода",
-      "DE": "Ausgang Transport Vorne Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale anteriore uscita",
-      "ES": "Fallo subida vertical frontal salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 26
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 26"
   },
@@ -1979,13 +1591,10 @@
     "TagCode": "Exit_Front_Vertical_Moving_Down_Failure",
     "Severity": "Critical",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Front Vertical Moving Down Failure",
-      "TR": "CikisAcili_OnDikey_Asagi_Inemedi",
-      "RU": "Авария опускания переднего вертикального выхода",
-      "DE": "Ausgang Transport Vorne Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale anteriore uscita",
-      "ES": "Fallo bajada vertical frontal salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 27
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 27"
   },
@@ -1994,13 +1603,10 @@
     "TagCode": "Exit_Back_Vertical_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Back Vertical Moving Up Failure",
-      "TR": "CikisTasima_ArkaDikey_YukariCikamadi",
-      "RU": "Авария подъёма заднего вертикального выхода",
-      "DE": "Ausgang Transport Hinten Vertikal Aufwärts Fehler",
-      "IT": "Errore salita verticale posteriore uscita",
-      "ES": "Fallo subida vertical posterior salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 28
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 28"
   },
@@ -2009,13 +1615,10 @@
     "TagCode": "Exit_Back_Vertical_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Back Vertical Moving Down Failure",
-      "TR": "CikisTasima_ArkaDikey_Asagi_Inemedi",
-      "RU": "Авария опускания заднего вертикального выхода",
-      "DE": "Ausgang Transport Hinten Vertikal Abwärts Fehler",
-      "IT": "Errore discesa verticale posteriore uscita",
-      "ES": "Fallo bajada vertical posterior salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 29
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 29"
   },
@@ -2024,13 +1627,10 @@
     "TagCode": "Exit_Back_Horizontal_Moving_FW_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Back Horizontal Moving FW Failure",
-      "TR": "CikisTasima_ArkaYatay_IleriGidemedi",
-      "RU": "Авария движения вперёд заднего горизонтального выхода",
-      "DE": "Ausgang Transport Hinten Horizontal Vorwärts Fehler",
-      "IT": "Errore avanti orizzontale posteriore uscita",
-      "ES": "Fallo adelante horizontal posterior salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 30
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 30"
   },
@@ -2039,13 +1639,10 @@
     "TagCode": "Exit_Back_Horizontal_Moving_Back_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Exit Back Horizontal Moving Back Failure",
-      "TR": "CikisTasima_ArkaYatay_GeriGidemedi",
-      "RU": "Авария движения назад заднего горизонтального выхода",
-      "DE": "Ausgang Transport Hinten Horizontal Rückwärts Fehler",
-      "IT": "Errore indietro orizzontale posteriore uscita",
-      "ES": "Fallo atrás horizontal posterior salida"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (5)",
+      "Bit": 31
     },
     "Comment": "StateCode 14 / Following 32 Errors (5) bit 31"
   },
@@ -2054,13 +1651,10 @@
     "TagCode": "Cross_Roller_1_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 1 Moving Down Failure",
-      "TR": "CarprazRulo1_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 1",
-      "DE": "Querrolle 1 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 1",
-      "ES": "Fallo bajada rodillo transversal 1"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 0
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 0"
   },
@@ -2069,13 +1663,10 @@
     "TagCode": "Cross_Roller_1_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 1 Moving Up Failure",
-      "TR": "CarprazRulo1_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 1",
-      "DE": "Querrolle 1 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 1",
-      "ES": "Fallo subida rodillo transversal 1"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 1
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 1"
   },
@@ -2084,13 +1675,10 @@
     "TagCode": "Cross_Roller_2_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 2 Moving Down Failure",
-      "TR": "CarprazRulo2_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 2",
-      "DE": "Querrolle 2 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 2",
-      "ES": "Fallo bajada rodillo transversal 2"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 2
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 2"
   },
@@ -2099,13 +1687,10 @@
     "TagCode": "Cross_Roller_2_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 2 Moving Up Failure",
-      "TR": "CarprazRulo2_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 2",
-      "DE": "Querrolle 2 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 2",
-      "ES": "Fallo subida rodillo transversal 2"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 3
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 3"
   },
@@ -2114,13 +1699,10 @@
     "TagCode": "Cross_Roller_3_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 3 Moving Down Failure",
-      "TR": "CarprazRulo3_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 3",
-      "DE": "Querrolle 3 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 3",
-      "ES": "Fallo bajada rodillo transversal 3"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 4
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 4"
   },
@@ -2129,13 +1711,10 @@
     "TagCode": "Cross_Roller_3_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 3 Moving Up Failure",
-      "TR": "CarprazRulo3_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 3",
-      "DE": "Querrolle 3 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 3",
-      "ES": "Fallo subida rodillo transversal 3"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 5
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 5"
   },
@@ -2144,13 +1723,10 @@
     "TagCode": "Cross_Roller_4_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 4 Moving Down Failure",
-      "TR": "CarprazRulo4_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 4",
-      "DE": "Querrolle 4 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 4",
-      "ES": "Fallo bajada rodillo transversal 4"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 6
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 6"
   },
@@ -2159,13 +1735,10 @@
     "TagCode": "Cross_Roller_4_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 4 Moving Up Failure",
-      "TR": "CarprazRulo4_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 4",
-      "DE": "Querrolle 4 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 4",
-      "ES": "Fallo subida rodillo transversal 4"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 7
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 7"
   },
@@ -2174,13 +1747,10 @@
     "TagCode": "Cross_Roller_5_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 5 Moving Down Failure",
-      "TR": "CarprazRulo5_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 5",
-      "DE": "Querrolle 5 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 5",
-      "ES": "Fallo bajada rodillo transversal 5"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 8
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 8"
   },
@@ -2189,13 +1759,10 @@
     "TagCode": "Cross_Roller_5_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 5 Moving Up Failure",
-      "TR": "CarprazRulo5_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 5",
-      "DE": "Querrolle 5 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 5",
-      "ES": "Fallo subida rodillo transversal 5"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 9
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 9"
   },
@@ -2204,13 +1771,10 @@
     "TagCode": "Cross_Roller_6_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 6 Moving Down Failure",
-      "TR": "CarprazRulo6_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 6",
-      "DE": "Querrolle 6 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 6",
-      "ES": "Fallo bajada rodillo transversal 6"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 10
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 10"
   },
@@ -2219,13 +1783,10 @@
     "TagCode": "Cross_Roller_6_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 6 Moving Up Failure",
-      "TR": "CarprazRulo6_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 6",
-      "DE": "Querrolle 6 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 6",
-      "ES": "Fallo subida rodillo transversal 6"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 11
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 11"
   },
@@ -2234,13 +1795,10 @@
     "TagCode": "Cross_Roller_7_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 7 Moving Down Failure",
-      "TR": "CarprazRulo7_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 7",
-      "DE": "Querrolle 7 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 7",
-      "ES": "Fallo bajada rodillo transversal 7"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 12
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 12"
   },
@@ -2249,13 +1807,10 @@
     "TagCode": "Cross_Roller_7_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 7 Moving Up Failure",
-      "TR": "CarprazRulo7_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 7",
-      "DE": "Querrolle 7 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 7",
-      "ES": "Fallo subida rodillo transversal 7"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 13
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 13"
   },
@@ -2264,13 +1819,10 @@
     "TagCode": "Cross_Roller_8_Moving_Down_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 8 Moving Down Failure",
-      "TR": "CarprazRulo8_Asagi_Inemedi",
-      "RU": "Авария опускания поперечного ролика 8",
-      "DE": "Querrolle 8 Abwärts Fehler",
-      "IT": "Errore discesa rullo trasversale 8",
-      "ES": "Fallo bajada rodillo transversal 8"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 14
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 14"
   },
@@ -2279,13 +1831,10 @@
     "TagCode": "Cross_Roller_8_Moving_Up_Failure",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "Cross Roller 8 Moving Up Failure",
-      "TR": "CarprazRulo8_Yukari_Cikamadi",
-      "RU": "Авария подъёма поперечного ролика 8",
-      "DE": "Querrolle 8 Aufwärts Fehler",
-      "IT": "Errore salita rullo trasversale 8",
-      "ES": "Fallo subida rodillo transversal 8"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 15
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 15"
   },
@@ -2294,9 +1843,10 @@
     "TagCode": "CikisOnDikey_YukariCikamadi",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "CikisOnDikey_YukariCikamadi",
-      "TR": "CikisOnDikey_YukariCikamadi"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 16
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 16"
   },
@@ -2305,9 +1855,10 @@
     "TagCode": "CikisOnDikey_Asagi_Inemedi",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "CikisOnDikey_Asagi_Inemedi",
-      "TR": "CikisOnDikey_Asagi_Inemedi"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 17
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 17"
   },
@@ -2316,9 +1867,10 @@
     "TagCode": "OKayitKertmeUnitesi_YukariCikamadi",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "OKayitKertmeUnitesi_YukariCikamadi",
-      "TR": "OKayitKertmeUnitesi_YukariCikamadi"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 18
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 18"
   },
@@ -2327,11 +1879,11 @@
     "TagCode": "OKayitKertmeUnitesi_Asagi_Inemedi",
     "Severity": "Fault",
     "PlcNumber": 1,
-    "Translations": {
-      "EN": "OKayitKertmeUnitesi_Asagi_Inemedi",
-      "TR": "OKayitKertmeUnitesi_Asagi_Inemedi"
+    "Log": {
+      "Code": 14,
+      "Value": "Following 32 Errors (6)",
+      "Bit": 19
     },
     "Comment": "StateCode 14 / Following 32 Errors (6) bit 19"
   }
 ]
-

@@ -41,6 +41,24 @@ namespace Kaban.Core.Helpers
         /// the machine's general delay.
         /// </summary>
         public double? GenerationDelay { get; set; }
+
+        /// <summary>
+        /// Where the PLC's log records this alarm (30 October, the two alarm handlings combined): the
+        /// Industry 4 record's state code (4 - an error), its value's name ("First 32 Errors (1)") and
+        /// the bit - null when the machine's log does not have it. See AlarmDefinitionLoader.LogPlace.
+        /// </summary>
+        public AlarmDefinitionLoader.LogPlace Log { get; set; }
+
+        /// <summary>The module the alarm is the machine's of ("FA2010" of "FA2010.Robot_X_Error"; "" unscoped).</summary>
+        public string ModuleId
+        {
+            get
+            {
+                var code = AlarmCode ?? "";
+                int dot = code.IndexOf('.');
+                return dot > 0 ? code.Substring(0, dot) : "";
+            }
+        }
     }
 
     /// <summary>
