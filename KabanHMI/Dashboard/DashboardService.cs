@@ -19,6 +19,8 @@ namespace Kaban.UI.Dashboard
         public string ConfigFile = Path.Combine("Dashboard", "config.json");
         public string StateMapFile = Path.Combine("Dashboard", "StateMap.json");
         public string TranslationFile = Path.Combine("Dashboard", "Translation_JSON.csv");
+        /// <summary>The PLC's log area the HMI takes the machine's records from (the Industry 4 service's DeviceGroup + RefDevice).</summary>
+        public string LogArea = MachineLogger.DefaultArea;
     }
 
     /// <summary>One machine's dashboard: its settings (shared by the page, the settings page and the reports) and its state map.</summary>
@@ -26,6 +28,8 @@ namespace Kaban.UI.Dashboard
     {
         public string ModuleId = "";
         public string ShippedConfig = "", StateMapPath = "", TranslationPath = "";
+        /// <summary>The machine's own log area ("R27000"), when the settings name none.</summary>
+        public string LogArea = MachineLogger.DefaultArea;
 
         /// <summary>Held while the settings are changed or written.</summary>
         public readonly object Sync = new object();
@@ -151,7 +155,7 @@ namespace Kaban.UI.Dashboard
         /// <summary>False stops the clock (tests, and the page designer).</summary>
         public static bool AutoReports = true;
 
-        public static MachineDashboard Register(string moduleId, string shippedConfig, string stateMap, string translations)
+        public static MachineDashboard Register(string moduleId, string shippedConfig, string stateMap, string translations, string logArea = null)
         {
             MachineDashboard m;
             lock (_machines)
@@ -161,6 +165,7 @@ namespace Kaban.UI.Dashboard
                 m.ShippedConfig = shippedConfig ?? "";
                 m.StateMapPath = stateMap ?? "";
                 m.TranslationPath = translations ?? "";
+                if (!string.IsNullOrWhiteSpace(logArea)) m.LogArea = logArea.Trim().ToUpperInvariant();
                 if (_timer == null)
                     _timer = new Timer(_ => Tick(), null, TimeSpan.FromSeconds(30), TimeSpan.FromMinutes(1));
             }

@@ -140,7 +140,7 @@ namespace Kaban.UI.Screens
             {
                 var def = options.Dashboard;
                 dashboard = Kaban.UI.Dashboard.DashboardService.Register(ctx.ModuleId,
-                    ctx.ResolveFile(def.ConfigFile), ctx.ResolveFile(def.StateMapFile), ctx.ResolveFile(def.TranslationFile));
+                    ctx.ResolveFile(def.ConfigFile), ctx.ResolveFile(def.StateMapFile), ctx.ResolveFile(def.TranslationFile), def.LogArea);
                 var board = dashboard;
                 yield return new MachineScreen
                 {

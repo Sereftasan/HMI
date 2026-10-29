@@ -24,6 +24,26 @@ namespace Kaban.UI.Dashboard
             public string Description = "";
             public int? PreviousCode;
             public List<string> Parameters = new List<string>();
+            /// <summary>Logged at all (the machine's PLC is told by <see cref="ActiveDevice"/>); a record of an entry not active is never sent.</summary>
+            public bool Active = true;
+            /// <summary>The PLC bit the HMI sets to <see cref="Active"/> at the start ("L1000") - the PLC logs the state only while it is on.</summary>
+            public string ActiveDevice = "";
+            /// <summary>Its values as the PLC sends them (the logger reads them by these).</summary>
+            public List<Param> Params = new List<Param>();
+        }
+
+        /// <summary>
+        /// One value of a record, as the Industry 4 program's sample.json gives it: a word,
+        /// or two (Bit32); divided by its multiplier - or, with Bits, the names of the bits
+        /// that are on (each a detail of its own).
+        /// </summary>
+        public sealed class Param
+        {
+            public string Description = "";
+            public bool Bit32;
+            public List<string> Bits = new List<string>();
+            public int Multiplier = 1;
+            public int Words { get { return Bit32 ? 2 : 1; } }
         }
 
         public const int Closed = 0, NotActive = 1, Active = 2, Pause = 3, Error = 4, Emergency = 5;
@@ -129,12 +149,27 @@ namespace Kaban.UI.Dashboard
                 {
                     Code = (int)code.Value,
                     Description = Json.Text(d, "Description", ""),
-                    PreviousCode = Json.Number(d, "PreviousCode").HasValue ? (int?)(int)Json.Number(d, "PreviousCode").Value : null
+                    PreviousCode = Json.Number(d, "PreviousCode").HasValue ? (int?)(int)Json.Number(d, "PreviousCode").Value : null,
+                    Active = Json.Bool(d, "Active", true),
+                    ActiveDevice = Json.Text(d, "ActiveDevice", "") ?? ""
                 };
                 var ps = Json.List(d, "Parameters");
                 if (ps != null)
                     foreach (var p in ps)
-                        e.Parameters.Add(Json.Text(p as IDictionary<string, object>, "Description", ""));
+                    {
+                        var pd = p as IDictionary<string, object>;
+                        e.Parameters.Add(Json.Text(pd, "Description", ""));
+                        var param = new Param
+                        {
+                            Description = Json.Text(pd, "Description", "") ?? "",
+                            Bit32 = Json.Bool(pd, "Bit32", false),
+                            Multiplier = Json.Number(pd, "Multiplier").HasValue && (int)Json.Number(pd, "Multiplier").Value != 0
+                                ? (int)Json.Number(pd, "Multiplier").Value : 1
+                        };
+                        var bits = pd != null ? Json.List(pd, "Bits") : null;
+                        if (bits != null) foreach (var b in bits) param.Bits.Add(Convert.ToString(b ?? "", CultureInfo.InvariantCulture));
+                        e.Params.Add(param);
+                    }
                 _entries[e.Code] = e;
             }
         }

@@ -628,6 +628,10 @@ namespace Kaban.UI.Forms
             AlarmManager.AlarmsChanged += OnHmiAlarmsChanged;
             // A sound for a new alarm, when View Preferences ask for one.
             Kaban.UI.Helpers.AlarmSound.Start();
+            // The machines' logs taken from their PLCs (the Industry 4 service's job until 29 October).
+            try { Kaban.UI.Dashboard.MachineLoggers.Start(); }
+            catch (Exception ex) { AuditLogger.Log("Machine log: could not start: " + ex.Message); }
+            FormClosed += (s6, e6) => { try { Kaban.UI.Dashboard.MachineLoggers.StopAll(); } catch { } };
             // The PLC's messages to the operator (each machine's PopupTriggerAddress).
             Kaban.UI.Helpers.PlcPopupHost.SignIn = owner =>
             {

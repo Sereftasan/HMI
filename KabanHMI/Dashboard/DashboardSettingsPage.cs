@@ -48,6 +48,12 @@ namespace Kaban.UI.Dashboard
         private readonly Label _next = new Label();
         private readonly Label _problem = new Label();
         private readonly Label _probe = new Label();
+        private readonly CheckBox _plcLogging = new CheckBox();
+        private readonly TextBox _logArea = new TextBox();
+        private readonly Label _loggerState = new Label();
+        private readonly CheckBox _km = new CheckBox();
+        private readonly TextBox _kmConnection = new TextBox();
+        private readonly Timer _loggerTimer = new Timer { Interval = 1000 };
         private Panel _timesRow, _weekdaysRow, _monthDaysRow, _annualRow, _timeRow;
         private readonly FlowLayoutPanel _shiftRows = new FlowLayoutPanel();
         private readonly List<DateTimePicker[]> _shiftPickers = new List<DateTimePicker[]>();
@@ -89,6 +95,27 @@ namespace Kaban.UI.Dashboard
             foreach (var z in DashboardTime.Zones) _zone.Items.Add(z[0]);
             FieldRow("Dsh_SetTimeZone", "Time zone of the panel", _zone);
             Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
+
+            // 29 October: the machine's log taken from its PLC by the HMI - the Industry 4 service's job until now
+            Heading("Plg_Head", "📥", "The machine's log from its PLC");
+            CheckRow(_plcLogging, "Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into this database");
+            _logArea.Width = 120;
+            FieldRow("Plg_Area", "PLC log area", _logArea);
+            UiStyle.SetTip(_tips, _logArea, T("Plg_AreaTip",
+                "The Industry 4 service's device group and reference device (R27000): its first word the records waiting, the next the HMI's answer, the records from its tenth word. Empty: the machine's own."));
+            _loggerState.AutoSize = false;
+            _loggerState.Width = Field;
+            _loggerState.Height = 40;
+            _loggerState.ForeColor = Color.DimGray;
+            FieldRow("Plg_State", "Now", _loggerState);
+            Note("Plg_ServiceNote", "Not beside the Industry 4 service: while it runs on this PC, the HMI waits. Stop it (or uninstall it) once the HMI logs.");
+            CheckRow(_km, "Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)");
+            _kmConnection.Width = Field;
+            FieldRow("Plg_KmConnection", "KMSystem connection", _kmConnection);
+            Note("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it.");
+            _loggerTimer.Tick += (s, e) => ShowLogger();
+            VisibleChanged += (s, e) => { if (Visible) { ShowLogger(); _loggerTimer.Start(); } else _loggerTimer.Stop(); };
+            Disposed += (s, e) => _loggerTimer.Dispose();
 
             Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
             CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");
@@ -201,6 +228,17 @@ namespace Kaban.UI.Dashboard
             });
         }
 
+        /// <summary>What the machine's logger does now.</summary>
+        private void ShowLogger()
+        {
+            var l = MachineLoggers.Of(_machine.ModuleId);
+            _loggerState.Text = l != null ? l.Status
+                : T("Plg_NotStarted", "Not running in this program (it starts with the main window).");
+        }
+
+        /// <summary>The logger's line (tests).</summary>
+        public string LoggerText { get { return _loggerState.Text; } }
+
         private DateTime? _nextDue;
 
         private void ShowNext()
@@ -289,6 +327,11 @@ namespace Kaban.UI.Dashboard
             _problem.Visible = false;
             _db.Text = c.DatabasePath;
             _zone.Text = c.TimeZoneName;
+            _plcLogging.Checked = c.PlcLogging;
+            _logArea.Text = MachineLogger.Area(c, _machine);
+            _km.Checked = c.KmSystemLookup;
+            _kmConnection.Text = c.KmSystemConnection;
+            ShowLogger();
             _barcoded.Checked = c.BarcodedCuttingOnly;
             foreach (var row in _shiftRows.Controls.Cast<Control>().ToList()) { _shiftRows.Controls.Remove(row); row.Dispose(); }
             _shiftPickers.Clear();
@@ -365,6 +408,15 @@ namespace Kaban.UI.Dashboard
             string zone = (_zone.Text ?? "").Trim();
             if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
             c.TimeZoneName = zone;
+            c.PlcLogging = _plcLogging.Checked;
+            string area = (_logArea.Text ?? "").Trim().ToUpperInvariant();
+            string prefix;
+            long number;
+            if (area.Length > 0 && !(PlcAddressHelper.TrySplit(area, out prefix, out number) && !PlcAddressHelper.IsBitDevice(area)))
+                problems.Add(T("Plg_BadArea", "The PLC log area is a word device (R27000, D7000):") + " \"" + area + "\".");
+            c.PlcLogArea = area == (_machine.LogArea ?? "").ToUpperInvariant() ? "" : area;
+            c.KmSystemLookup = _km.Checked;
+            c.KmSystemConnection = (_kmConnection.Text ?? "").Trim();
             c.BarcodedCuttingOnly = _barcoded.Checked;
             var shifts = new List<DashboardConfig.Shift>();
             foreach (var pair in _shiftPickers)

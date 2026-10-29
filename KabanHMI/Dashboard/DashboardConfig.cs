@@ -158,6 +158,42 @@ namespace Kaban.UI.Dashboard
             set { Set("auto_reports", value); }
         }
 
+        // ---- the machine's log, written by the HMI (29 October: the Industry 4 service's job) ----
+
+        /// <summary>The HMI reads the machine's log records from its PLC and writes them into the database (on unless switched off).</summary>
+        public bool PlcLogging
+        {
+            get { return Get("plc_logging", true); }
+            set { Set("plc_logging", value); }
+        }
+
+        /// <summary>
+        /// The PLC's log area, as the Industry 4 service's DeviceGroup + RefDevice ("R27000"):
+        /// its first word the records waiting, the next the PLC busy - and the HMI's answer,
+        /// the records taken - from the tenth on the records, ten words each. "" = the machine's own.
+        /// </summary>
+        public string PlcLogArea
+        {
+            get { return Json.Text(_raw, "plc_log_area", ""); }
+            set { _raw["plc_log_area"] = (value ?? "").Trim().ToUpperInvariant(); }
+        }
+
+        /// <summary>A record's "Process ID" looked up in KMSystem's PostgreSQL database: its Profile Code and Profile Data (the service's Postgresql setting).</summary>
+        public bool KmSystemLookup
+        {
+            get { return Get("kmsystem_lookup", false); }
+            set { Set("kmsystem_lookup", value); }
+        }
+
+        public const string DefaultKmSystemConnection = "Server=localhost;Port=5432;Database=KMSystem;User Id=postgres;Password=123456;";
+
+        /// <summary>KMSystem's PostgreSQL connection string (the service's PostgreConnectionString).</summary>
+        public string KmSystemConnection
+        {
+            get { return Json.Text(_raw, "kmsystem_connection", DefaultKmSystemConnection); }
+            set { _raw["kmsystem_connection"] = value ?? ""; }
+        }
+
         /// <summary>The report due next ("required_report_end_date"), null when none is set.</summary>
         public DateTime? RequiredReportEnd
         {

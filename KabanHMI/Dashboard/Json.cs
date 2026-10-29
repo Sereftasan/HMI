@@ -42,6 +42,8 @@ namespace Kaban.UI.Dashboard
                 while (true)
                 {
                     Skip(s, ref i);
+                    // a comma before the end, as Json.NET (the Industry 4 service's) accepts it
+                    if (i < s.Length && s[i] == '}') { i++; return o; }
                     string key = Str(s, ref i);
                     Skip(s, ref i);
                     if (i >= s.Length || s[i] != ':') throw new FormatException("':' expected at " + i);
@@ -61,6 +63,8 @@ namespace Kaban.UI.Dashboard
                 if (i < s.Length && s[i] == ']') { i++; return a; }
                 while (true)
                 {
+                    Skip(s, ref i);
+                    if (i < s.Length && s[i] == ']' && a.Count > 0) { i++; return a; }
                     a.Add(Value(s, ref i));
                     Skip(s, ref i);
                     if (i < s.Length && s[i] == ',') { i++; continue; }

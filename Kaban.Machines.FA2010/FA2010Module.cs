@@ -197,8 +197,9 @@ namespace Kaban.Machines.FA2010
                 },
 
                 // The machine dashboard: the Industry 4 log (states, events, alarms,
-                // cuts) and its reports, from the files in Dashboard\.
-                Dashboard = new Kaban.UI.Dashboard.DashboardDefinition(),
+                // cuts) and its reports, from the files in Dashboard\. The HMI takes the
+                // records from the PLC's log area itself (29 October: no service any more).
+                Dashboard = new Kaban.UI.Dashboard.DashboardDefinition { LogArea = "R27000" },
 
                 // Machine-specific: Role = "" keeps its own button (the DXF workbench).
                 //Extra = new[]
