@@ -171,7 +171,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Language:
                     return T("PV_Language", "Every page, menu and message in this language - taken at once when this user signs in. The flag on the top bar sets everyone's (this panel's).");
                 case ViewPreferences.InputMode:
-                    return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger; a long press opens a menu (a right-click); a finger drag scrolls; a tap on a text box brings the keyboard, on a number cell the keypad; a tap on something greyed says why. The \U0001F5B1 / \U0001F446 button on the top bar switches it.");
+                    return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger - a long press opens a menu (as a right-click), a finger drag scrolls, a tap on a text box brings the keyboard (on a number cell the keypad), a tap on something greyed says why. The mouse / finger button on the top bar switches it.");
                 case ViewPreferences.AiPromptAs:
                     return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its text.");
                 case ViewPreferences.AiPaste:
