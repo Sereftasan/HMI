@@ -106,7 +106,7 @@ describes all of it for a user and is the best map of the program.
   what is yours: `Home`, `ManualPages`, `MachineSettings` (tabs, `GeneratedPage("Tab_<Class>", "Caption", level, () => new ...)`),
   `ManualBar` (the machine's bar above the Manual Movement tabs) and `Extra`.
 - **A machine's own bar** (`MachineBarHMI`; FA2010's `Screens\Shared\AxisJogBar`: the axes' speed, JOG, steps, Safety
-  Bypass, Cylinder FW/Back) is designed once and shown above Manual Movement's tabs, on the Axis Monitor and on Machine
+  Bypass, Automatic ON/OFF) is designed once and shown above Manual Movement's tabs, on the Axis Monitor and on Machine
   Parameters > Axis. **No page holds a UserControl of the machine's project in its designer file** (23 October: Visual
   Studio's designer failed on it and saved the page without it); a page has a plain Panel where it goes and its constructor
   puts the bar there.

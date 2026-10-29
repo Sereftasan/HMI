@@ -85,7 +85,7 @@ namespace Kaban.UI.Helpers
             try
             {
                 if (UnitCoupling.IsCoupled(u)) s += " - COUPLED: a press of its button presses the same button of the units coupled with it";
-                if (UnitCycling.IsCycling(u)) s += " - MOVING BACK AND FORTH by itself (Cylinder FW/Back)";
+                if (UnitCycling.IsCycling(u)) s += " - MOVING BACK AND FORTH by itself (Automatic ON/OFF)";
             }
             catch { }
             return s;
@@ -347,7 +347,7 @@ namespace Kaban.UI.Helpers
             if (Safe(() => UnitCycling.Active, false))
             {
                 var cycling = Safe(() => UnitCycling.Cycling.Where(u => u != null).ToList(), new List<Kaban.UI.Controls.CylinderUnitHMI>());
-                sb.AppendLine("- Cylinder FW/Back is ON: a press of a cylinder's button starts it moving back and forth by itself" +
+                sb.AppendLine("- Automatic ON/OFF is ON: a press of a cylinder's button starts it moving back and forth by itself" +
                               (cycling.Count > 0 ? "; moving now: " + string.Join(", ", cycling.Select(u => "\"" + Tr(u.TitleTextKey) + "\"")) : "") + ".");
             }
             sb.AppendLine("- The prompt was made at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + ".");

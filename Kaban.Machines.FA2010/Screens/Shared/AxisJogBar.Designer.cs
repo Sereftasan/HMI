@@ -18,14 +18,15 @@
         // ===================================================================
         // FA2010's AXES' MANUAL MOVEMENT BAR (14 October): the speed of the axes'
         // manual movement (D409) and the jog step - JOG (continuous) or 10 / 1 /
-        // 0.1 / 0.01 mm - Safety Bypass and Cylinder FW/Back (17 October: a cylinder started
+        // 0.1 / 0.01 mm - Safety Bypass and Automatic ON/OFF (17 October, "Cylinder FW/Back" until
+        // 30 October: "Change the text to 'Automatic ON/OFF'"; a cylinder started
         // moves back and forth (each way just under its alarm delay) - UnitCycling; both for Maintenance and Admin,
         // both off when the user changes), as the user set them on the manual
         // pages. Designed here ONCE: Manual Movement (above its tabs), Machine
         // Parameters > Axis and the Axis Monitor show this one. Its parts 14 from
         // the left and 13 from the top and the bottom, as the Home page's speed
         // (16 October: "it looks too crowded around there"). 17 October: the step buttons,
-        // Safety Bypass and Cylinder FW/Back with their captions on two lines (TwoLineCaption),
+        // Safety Bypass and Automatic ON/OFF with their captions on two lines (TwoLineCaption),
         // narrower; every part 50 high for the two lines.
         // ===================================================================
         private void InitializeComponent()
@@ -589,7 +590,7 @@
             this.BtnCylinderFwBack.AlertBlink = false;
             this.BtnCylinderFwBack.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             this.BtnCylinderFwBack.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
-            this.BtnCylinderFwBack.ButtonText = "Cylinder FW/Back";
+            this.BtnCylinderFwBack.ButtonText = "Automatic ON/OFF";
             this.BtnCylinderFwBack.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
             this.BtnCylinderFwBack.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
             this.BtnCylinderFwBack.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
@@ -614,7 +615,7 @@
             this.BtnCylinderFwBack.EnableTrigger.ValA = 0D;
             this.BtnCylinderFwBack.EnableTrigger.ValB = 0D;
             this.BtnCylinderFwBack.ErrorAddress = "";
-            this.BtnCylinderFwBack.FallbackText = "Cylinder FW/Back";
+            this.BtnCylinderFwBack.FallbackText = "Automatic ON/OFF";
             this.BtnCylinderFwBack.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             this.BtnCylinderFwBack.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             this.BtnCylinderFwBack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -643,7 +644,7 @@
             this.BtnCylinderFwBack.RoundLeftOnly = false;
             this.BtnCylinderFwBack.RoundRightOnly = false;
             this.BtnCylinderFwBack.ShowCaption = true;
-            this.BtnCylinderFwBack.Size = new System.Drawing.Size(68, 50);
+            this.BtnCylinderFwBack.Size = new System.Drawing.Size(78, 50);
             this.BtnCylinderFwBack.TabIndex = 48;
             this.BtnCylinderFwBack.ToolTipText = "";
             this.BtnCylinderFwBack.TwoLineCaption = true;
@@ -664,7 +665,7 @@
             this.Controls.Add(this.BtnSafetyBypass);
             this.Controls.Add(this.BtnCylinderFwBack);
             this.Name = "AxisJogBar";
-            this.Size = new System.Drawing.Size(712, 76);
+            this.Size = new System.Drawing.Size(722, 76);
             this.ResumeLayout(false);
         }
 

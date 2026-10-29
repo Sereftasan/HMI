@@ -75,7 +75,7 @@ namespace Kaban.UI.Helpers
         /// <summary>The level the function asks for.</summary>
         public const SecurityLevel RequiredLevel = SecurityLevel.Maintenance;
 
-        /// <summary>The function is on (the "Cylinder FW/Back" button).</summary>
+        /// <summary>The function is on (the "Automatic ON/OFF" button - "Cylinder FW/Back" until 30 October).</summary>
         public static bool Active { get; private set; }
 
         /// <summary>Raised when the function is switched on or off.</summary>
@@ -107,10 +107,10 @@ namespace Kaban.UI.Helpers
             if (on && !SecurityManager.HasAccess(RequiredLevel)) return;
             if (Active == on) return;
             Active = on;
-            AuditLogger.Log("Cylinder FW/Back " + (on ? "ON" : "OFF") + (string.IsNullOrEmpty(why) ? "" : ": " + why) + ".");
+            AuditLogger.Log("Automatic ON/OFF (a cylinder back and forth) switched " + (on ? "on" : "off") + (string.IsNullOrEmpty(why) ? "" : ": " + why) + ".");
             if (!on) StopAll(why);
             var h = Changed;
-            if (h != null) try { h(null, EventArgs.Empty); } catch (Exception ex) { AuditLogger.Log("Cylinder FW/Back changed: " + ex.Message); }
+            if (h != null) try { h(null, EventArgs.Empty); } catch (Exception ex) { AuditLogger.Log("Automatic ON/OFF changed: " + ex.Message); }
         }
 
         /// <summary>True when the unit moves back and forth now.</summary>

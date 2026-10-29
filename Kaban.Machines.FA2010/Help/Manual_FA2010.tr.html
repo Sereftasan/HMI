@@ -27,10 +27,10 @@ bir gruptur.</p>
 <p><b>Sekmelerin üstündeki çubuk</b>, her sekmenin üstünde aynı (ve <b>Makine Parametreleri &rsaquo; Eksen</b>'in ve Eksen İzleme'nin üstünde): eksenlerin
 manuel <b>hızı</b> (<code>D409</code>, bir kaydırıcı ve yüzdesi), <b>JOG</b> &ndash; eksenler düğmeleri basılı tutulduğu sürece hareket eder (yanar: <code>M174</code>) &ndash;
 ya da basış başına bir <b>adım</b>: <b>10</b>, <b>1</b>, <b>0.1</b> veya <b>0.01 mm</b> (<code>M170</code> &ndash; <code>M173</code>; JOG onları kapatır).
-Yalnızca <span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span> için: <b>Safety Bypass</b> (güvenlik devre dışı, <code>M175</code>, açık ve kapalı &ndash; kullanıcı
-her değiştiğinde kapanır) ve Manuel Hareket'te <b>Cylinder FW/Back</b> (<a href="#fwback">4</a>). Eksenler yalnızca adım modunda, JOG kapalıyken bağlanabilir
+Yalnızca <span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span> için: <b>Güvenlik Bypass</b> (<code>M175</code>, açık ve kapalı &ndash; kullanıcı
+her değiştiğinde kapanır) ve Manuel Hareket'te <b>Otomatik ON/OFF</b> (kendiliğinden ileri geri hareket eden bir silindir, <a href="#fwback">4</a>). Eksenler yalnızca adım modunda, JOG kapalıyken bağlanabilir
 (<a href="#couple">4</a>).</p>
-<div class="safety"><b>Güvenlik.</b> Safety Bypass, PLC'nin kilitlemelerinin tutacağı şeyi hareket ettirmesine izin verir. Onu yalnızca makineyi kurtarmak için, izleyerek
+<div class="safety"><b>Güvenlik.</b> Güvenlik Bypass, PLC'nin kilitlemelerinin tutacağı şeyi hareket ettirmesine izin verir. Onu yalnızca makineyi kurtarmak için, izleyerek
 kullanın ve hemen kapatın.</div>
 <p><b>Motorlar</b> &ndash; Giriş Konveyörü'nün, Freze 1 ve 2'nin, Testere'nin, V Kesim testeresinin, Çıkış Konveyörü'nün &ndash; motor üniteleridir (<a href="#motors">4c</a>):
 düğmeleri, çalışma lambası ve değeri tek bir bütün; bir invertörün arızası sayı olarak gösterilmez, iki düğmeyi de kırmızı yanıp söndürür ve <b>?</b>'i

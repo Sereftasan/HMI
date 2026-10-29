@@ -449,7 +449,7 @@ control; <code>Notes.csv</code> for a spreadsheet; <code>Notes.xml</code> as kep
 buttons, and sometimes a position reading between them. Axis units and cylinder units are the same size and shape so a page reads as one table,
 and every position reads the same way: black bold figures on grey, as on the Axis Settings rows.</p>
 <p>A machine's own <b>Manual Movement</b> and <b>Machine Parameters</b> pages - their tabs, rows and sections - are described in its chapter (<a href="#machine">13. This machine</a>).
-So is the machine's own bar above Manual Movement's tabs, when it has one &ndash; the axes' speed, JOG and the jog steps, say, and <i>Cylinder FW/Back</i> (below).</p>
+So is the machine's own bar above Manual Movement's tabs, when it has one &ndash; the axes' speed, JOG and the jog steps, say, and <i>Automatic ON/OFF</i> (below).</p>
 
 <figure>
 <svg viewBox="0 0 900 212" role="img" aria-label="Anatomy of a unit">
@@ -523,8 +523,8 @@ buttons were pressed at the same time. Coupling is for Maintenance and Admin use
 <div class="safety"><b>Safety.</b> Each coupled button keeps its own conditions and level. The units are checked before a movement starts, not
 while it runs: watch every coupled unit while they move.</div>
 
-<h3 id="fwback">A cylinder back and forth</h3>
-<p><span class="lvl l2">Maintenance</span> <b>Cylinder FW/Back</b> &ndash; a button of the machine's bar above Manual Movement's tabs &ndash; is a function
+<h3 id="fwback">A cylinder back and forth: Automatic ON/OFF</h3>
+<p><span class="lvl l2">Maintenance</span> <b>Automatic ON/OFF</b> &ndash; a button of the machine's bar above Manual Movement's tabs &ndash; is a function
 of the HMI, for testing and setting up (it has no PLC bit of its own). While it is on (its lamp lit), a press of a <b>cylinder</b> unit's button &ndash; a
 cylinder, a pneumatic positioning, a cylinder with an encoder; not an axis, not a motor &ndash; starts that cylinder <b>moving back and forth by itself</b>:
 that side's command on and the other side's off, then the other way round (a spring valve: its coil on, then off). Its coupled units move with it.</p>
@@ -532,12 +532,12 @@ that side's command on and the other side's off, then the other way round (a spr
  <li>Each way lasts <b>half a second less than the shortest alarm delay</b> of the units moving together that way &ndash; a movement's own
      <i>Cylinder delay</i> when one is entered, else the machine's <i>Cylinder alarm delay</i> (5 s: 4.5 s), never under half a second (<a href="#params">10</a>):
      time to arrive, and no alarm. The two ways may differ; the unit says both when they do.</li>
- <li>It stops &ndash; both sides off &ndash; when a button of the unit is pressed again, Cylinder FW/Back is switched off, another user signs in, the unit leaves
+ <li>It stops &ndash; both sides off &ndash; when a button of the unit is pressed again, Automatic ON/OFF is switched off, another user signs in, the unit leaves
      the screen, one of its commands can no longer act, or Manual Movement is closed.</li>
- <li>The button is shown on Manual Movement only, for Maintenance and Admin: the same bar on the Axis page and the Axis Monitor has no Cylinder FW/Back.</li>
+ <li>The button is shown on Manual Movement only, for Maintenance and Admin: the same bar on the Axis page and the Axis Monitor has no Automatic ON/OFF.</li>
 </ul>
 <div class="safety"><b>Safety.</b> A cylinder moving back and forth goes on with nobody holding a button. Stay at the machine, keep clear of what moves, and
-switch Cylinder FW/Back off before you leave the page.</div>
+switch Automatic ON/OFF off before you leave the page.</div>
 
 <h3>The unit's <b>?</b></h3>
 <p>One mark on the unit's top line (left of its chain), always <b style="color:#2870be">blue</b> &ndash; it never turns red: the buttons and the

@@ -74,7 +74,7 @@ class FB {
                                          CommandAAddress = "M300", CommandAAction = BitActionType.Momentary, CommandBAddress = "M301", CommandBAction = BitActionType.Momentary,
                                          PositionAddress = "D500" };
         units.Add(axis);
-        var fwBack = new ButtonHMI { Name = "BtnCylinderFwBack", ButtonText = "Cylinder FW/Back", HmiFunction = HmiButtonFunction.CylinderForwardBack,
+        var fwBack = new ButtonHMI { Name = "BtnCylinderFwBack", ButtonText = "Automatic ON/OFF", HmiFunction = HmiButtonFunction.CylinderForwardBack,
                                      RequiredSecurity = SecurityLevel.Maintenance, VisibilityConditions = SystemCondition.MaintenanceUser, Location = new Point(400, 10), Size = new Size(124, 42) };
         var bypass = new ButtonHMI { Name = "BtnSafetyBypass", ButtonText = "Safety Bypass", ResetOnUserChange = true, Lamp1Address = "M175",
                                      VisibilityConditions = SystemCondition.MaintenanceUser, Location = new Point(400, 60), Size = new Size(109, 42) };
@@ -239,9 +239,9 @@ class FB {
         UnitCycling.SetActive(false);
 
         var log = string.Join("\n", Directory.GetFiles(dir, "*", SearchOption.AllDirectories).Select(File.ReadAllText));
-        Check("in the log: switched on / off, the movement, stopped", log.Contains("Cylinder FW/Back ON") && log.Contains("back and forth, 4.5 s") &&
+        Check("in the log: switched on / off, the movement, stopped", log.Contains("Automatic ON/OFF (a cylinder back and forth) switched on") && log.Contains("back and forth, 4.5 s") &&
               log.Contains("back and forth, 1.5 s 'Back' and 2.5 s back (the alarm delays)") &&
-              log.Contains("back and forth stopped") && log.Contains("Cylinder FW/Back OFF"));
+              log.Contains("back and forth stopped") && log.Contains("Automatic ON/OFF (a cylinder back and forth) switched off"));
         form.Close();
         Console.WriteLine(fail == 0 ? "\nCYLINDER FW/BACK ALL PASS" : "\nCYLINDER FW/BACK " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

@@ -451,7 +451,7 @@ kontrole göre; bir elektronik tablo için <code>Notes.csv</code>; saklandığı
 düğme ve bazen aralarında bir pozisyon değeri. Eksen üniteleri ve silindir üniteleri aynı boyutta ve biçimdedir, böylece bir sayfa tek bir tablo gibi okunur,
 ve her pozisyon aynı şekilde okunur: Eksen Ayarları satırlarındaki gibi gri üzerinde siyah kalın rakamlar.</p>
 <p>Bir makinenin kendi <b>Manuel Hareket</b> ve <b>Makine Parametreleri</b> sayfaları &ndash; sekmeleri, satırları ve bölümleri &ndash; makinenin bölümünde anlatılır (<a href="#machine">13. Bu makine</a>).
-Makinenin Manuel Hareket sekmelerinin üstündeki kendi çubuğu da öyle, varsa &ndash; örneğin eksenlerin hızı, JOG ve jog adımları, ve <i>Cylinder FW/Back</i> (aşağıda).</p>
+Makinenin Manuel Hareket sekmelerinin üstündeki kendi çubuğu da öyle, varsa &ndash; örneğin eksenlerin hızı, JOG ve jog adımları, ve <i>Otomatik ON/OFF</i> (aşağıda).</p>
 
 <figure>
 <svg viewBox="0 0 900 212" role="img" aria-label="Bir ünitenin yapısı">
@@ -525,8 +525,8 @@ düğmelerine aynı anda basılmış gibi. Bağlama Bakım ve Admin kullanıcıl
 <div class="safety"><b>Güvenlik.</b> Bağlı her düğme kendi koşullarını ve seviyesini korur. Üniteler hareket başlamadan önce kontrol edilir,
 hareket sürerken değil: birlikte hareket ederken bağlı her üniteyi izleyin.</div>
 
-<h3 id="fwback">Silindiri ileri geri hareket ettirme</h3>
-<p><span class="lvl l2">Bakım</span> <b>Cylinder FW/Back</b> (silindir ileri/geri) &ndash; makinenin Manuel Hareket sekmelerinin üstündeki çubuğunun bir düğmesi &ndash; HMI'nin
+<h3 id="fwback">Silindiri ileri geri hareket ettirme: Otomatik ON/OFF</h3>
+<p><span class="lvl l2">Bakım</span> <b>Otomatik ON/OFF</b> &ndash; makinenin Manuel Hareket sekmelerinin üstündeki çubuğunun bir düğmesi &ndash; HMI'nin
 bir işlevidir, deneme ve ayar için (kendi PLC biti yoktur). Açıkken (lambası yanar), bir <b>silindir</b> ünitesinin düğmesine basmak &ndash; bir
 silindir, bir pnömatik pozisyonlama, enkoderli bir silindir; eksen değil, motor değil &ndash; o silindiri <b>kendiliğinden ileri geri hareket ettirmeye</b> başlar:
 o tarafın komutu açık ve öbür tarafınki kapalı, sonra tersi (yaylı bir valf: bobini açık, sonra kapalı). Bağlı üniteleri onunla birlikte hareket eder.</p>
@@ -534,12 +534,12 @@ o tarafın komutu açık ve öbür tarafınki kapalı, sonra tersi (yaylı bir v
  <li>Her yön, o yönde birlikte hareket eden ünitelerin <b>en kısa alarm gecikmesinden yarım saniye daha kısa</b> sürer &ndash; girilmişse bir hareketin kendi
      <i>Silindir gecikmesi</i>, yoksa makinenin <i>Silindir alarm gecikmesi</i> (5 s: 4,5 s), asla yarım saniyenin altında değil (<a href="#params">10</a>):
      varmak için zaman, ve alarm yok. İki yön farklı olabilir; farklıysa ünite ikisini de söyler.</li>
- <li>Durur &ndash; iki taraf da kapalı &ndash; ünitenin bir düğmesine yeniden basılınca, Cylinder FW/Back kapatılınca, başka bir kullanıcı oturum açınca, ünite
+ <li>Durur &ndash; iki taraf da kapalı &ndash; ünitenin bir düğmesine yeniden basılınca, Otomatik ON/OFF kapatılınca, başka bir kullanıcı oturum açınca, ünite
      ekrandan çıkınca, komutlarından biri artık çalışamayınca veya Manuel Hareket kapanınca.</li>
- <li>Düğme yalnızca Manuel Hareket'te, Bakım ve Admin için gösterilir: Eksen sayfasındaki ve Eksen İzleme'deki aynı çubukta Cylinder FW/Back yoktur.</li>
+ <li>Düğme yalnızca Manuel Hareket'te, Bakım ve Admin için gösterilir: Eksen sayfasındaki ve Eksen İzleme'deki aynı çubukta Otomatik ON/OFF yoktur.</li>
 </ul>
 <div class="safety"><b>Güvenlik.</b> İleri geri hareket eden bir silindir, kimse bir düğmeyi tutmadan devam eder. Makinenin başında kalın, hareket edenden uzak durun ve
-sayfadan ayrılmadan önce Cylinder FW/Back'i kapatın.</div>
+sayfadan ayrılmadan önce Otomatik ON/OFF'u kapatın.</div>
 
 <h3>Ünitenin <b>?</b>'i</h3>
 <p>Ünitenin üst satırında (zincirinin solunda) bir işaret, her zaman <b style="color:#2870be">mavi</b> &ndash; asla kırmızıya dönmez: düğmeler ve

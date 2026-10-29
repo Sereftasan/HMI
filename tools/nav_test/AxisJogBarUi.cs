@@ -128,9 +128,11 @@ class AJ {
             until = DateTime.Now.AddSeconds(3);
             while (DateTime.Now < until && !fw.Visible) Pump(100);
             Check("  Cylinder FW/Back shown here (Manual Movement)", fw.Visible && Kaban.UI.Helpers.UnitCycling.IsOnManualPage(fw));
-            Check("  its captions on two lines: the steps, Safety Bypass, Cylinder FW/Back - JOG on one",
+            Check("  its captions on two lines: the steps, Safety Bypass, Automatic ON/OFF (30 October: was Cylinder FW/Back) - JOG on one",
                   mbar.Controls.OfType<ButtonHMI>().Where(x => x.Name != "BtnJog").All(x => x.TwoLineCaption) && !mbar.Controls.OfType<ButtonHMI>().Single(x => x.Name == "BtnJog").TwoLineCaption &&
-                  ButtonHMI.TwoLines("Safety Bypass") == "Safety\nBypass" && ButtonHMI.TwoLines("Cylinder FW/Back") == "Cylinder\nFW/Back" && ButtonHMI.TwoLines("0.1 mm") == "0.1\nmm");
+                  ButtonHMI.TwoLines("Safety Bypass") == "Safety\nBypass" && ButtonHMI.TwoLines("Automatic ON/OFF") == "Automatic\nON/OFF" && ButtonHMI.TwoLines("Otomatik ON/OFF") == "Otomatik\nON/OFF" &&
+                  ButtonHMI.TwoLines("Güvenlik Bypass") == "Güvenlik\nBypass" && (fw.DisplayText ?? "").Replace("\n", " ").Replace("\r", "") == "Automatic ON/OFF" &&
+                  ButtonHMI.TwoLines("0.1 mm") == "0.1\nmm", fw.DisplayText ?? "");
             var pagesShown = (Func<bool>)(() => (bool)typeof(MainForm).GetMethod("CouplingPagesShown", Any).Invoke(form, null));
             Check("  coupling works here (Manual Movement)", pagesShown());
             Kaban.UI.Helpers.UnitCycling.SetActive(true);
