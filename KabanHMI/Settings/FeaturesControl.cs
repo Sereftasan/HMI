@@ -160,7 +160,7 @@ namespace Kaban.UI.Settings
         private void ShowNow()
         {
             if (IsDisposed) return;
-            if (!HmiFeatures.LoggingOn) _loggingNow.Text = T("Ftr_LoggingOff", "Now: the Industry 4 service logs (when it is installed); the HMI's log is in its files.");
+            if (!HmiFeatures.LoggingOn) _loggingNow.Text = T("Ftr_LoggingOff", "Now: the Industry 4 service logs (when it is installed) - the HMI's log is in its files.");
             else
             {
                 var lines = new List<string>();

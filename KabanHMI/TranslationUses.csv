@@ -20,12 +20,14 @@ AiC_Save;KabanHMI\Settings\AiChatsEditor.cs;60;Tooltip;_save = UiStyle.ToolButto
 AiC_Twice;KabanHMI\Settings\AiChatsEditor.cs;219;Text;return Fail(string.Format(T("AiC_Twice", "{0} is in the list twice."), name));
 AiC_Up;KabanHMI\Settings\AiChatsEditor.cs;64;Tooltip;_up = UiStyle.ToolButton("▲", T("AiC_Up", "Up the list"), tips, (s, e) => Move(-1));
 AiC_Usual;KabanHMI\Settings\AiChatsEditor.cs;66;Tooltip;_usual = UiStyle.ToolButton("↻", T("AiC_Usual", "The usual list"), tips, (s, e) => { Fill(AiChats.Defaults); _dirty.MarkDirty(); });
-Alarm_Col_Description;KabanHMI\Settings\AlarmSettingsControl.cs;155;Heading;{ Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
+Alarm_Col_Description;KabanHMI\Settings\AlarmSettingsControl.cs;156;Heading;{ Name = "Text", HeaderText = LanguageManager.GetString("Alarm_Col_Description", "Alarm"), FillWeight = 42, ReadOnly = true });
 Alarm_Col_Description;KabanHMI\Settings\PreferencePreview.cs;447;Text;TextRenderer.DrawText(g, T("Alarm_Col_Description", "Alarm"), hf, new Rectangle(r.Left + timeW + S(4), y, r.Width - timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
 Alarm_Col_Help;KabanHMI\Helpers\AlarmHelpLinks.cs;838;Text;LanguageManager.GetString("Alarm_Col_Help", "Help"),
-Alarm_Col_Help;KabanHMI\Screens\MachineAlarmScreen.cs;389;Heading;HeaderText = LanguageManager.GetString("Alarm_Col_Help", "Help"),
-Alarm_Col_Severity;KabanHMI\Settings\AlarmSettingsControl.cs;158;Heading;{ Name = "Severity", HeaderText = LanguageManager.GetString("Alarm_Col_Severity", "Severity"), FillWeight = 12 };
+Alarm_Col_Help;KabanHMI\Screens\MachineAlarmScreen.cs;416;Heading;HeaderText = LanguageManager.GetString("Alarm_Col_Help", "Help"),
+Alarm_Col_Severity;KabanHMI\Settings\AlarmSettingsControl.cs;159;Heading;{ Name = "Severity", HeaderText = LanguageManager.GetString("Alarm_Col_Severity", "Severity"), FillWeight = 12 };
 Alarm_Col_TriggerTime;KabanHMI\Settings\PreferencePreview.cs;446;Text;TextRenderer.DrawText(g, T("Alarm_Col_TriggerTime", "Time"), hf, new Rectangle(r.Left + S(4), y, timeW, S(22)), Ink, TextFormatFlags.VerticalCenter);
+Alarm_HistoryFromLog;KabanHMI\Screens\MachineAlarmScreen.cs;252;Text;source.Text = LanguageManager.GetString("Alarm_HistoryFromLog", "From the machine's log - kept across restarts - with the alarms the HMI raised itself.");
+Alarm_HistorySinceStart;KabanHMI\Screens\MachineAlarmScreen.cs;258;Text;source.Text = LanguageManager.GetString("Alarm_HistorySinceStart", "Since the HMI started (the machine keeps no log database).");
 Alarm_NoHistory;KabanHMI\Screens\MachineAlarmScreen.cs;223;Text;Text = LanguageManager.GetString("Alarm_NoHistory", "No alarms have been recorded yet.")
 Alarm_None;KabanHMI\Screens\MachineAlarmScreen.cs;151;Text;_empty.Text = LanguageManager.GetString("Alarm_None", "No active alarms.");
 Axis_CuttingAngle;Kaban.Machines.FA2010\Screens\Parameters\AxisSettings.Designer.cs;1073;Text;this.axCutting_Angle.AxisName = "Axis_CuttingAngle";
@@ -129,14 +131,14 @@ Btn_Ack;Kaban.Machines.FA2010\Screens\AlarmScreen.Designer.cs;83;Text;this.butto
 Btn_Ack;Kaban.Machines.SB3012\Screens\AlarmScreen.Designer.cs;79;Text;this.buttonHMI1.TranslationKey = "Btn_Ack";
 Btn_Ack;Kaban.Machines.SB3015\Screens\AlarmScreen.Designer.cs;81;Text;this.buttonHMI1.TranslationKey = "Btn_Ack";
 Btn_Ack;KabanHMI\Screens\MachineAlarmScreen.cs;59;Tooltip;add(UiStyle.ToolButton("\u2714", LanguageManager.GetString("Btn_Ack", "Acknowledge the listed alarms"),
-Btn_AddFiles;KabanHMI\Settings\AlarmSettingsControl.cs;482;Text;btn(LanguageManager.GetString("Btn_AddFiles", "Add files..."), (s, e) => AddFiles());
-Btn_AddLink;KabanHMI\Settings\AlarmSettingsControl.cs;488;Text;var addLink = UiStyle.TextButton(LanguageManager.GetString("Btn_AddLink", "Add link"), 104);
+Btn_AddFiles;KabanHMI\Settings\AlarmSettingsControl.cs;503;Text;btn(LanguageManager.GetString("Btn_AddFiles", "Add files..."), (s, e) => AddFiles());
+Btn_AddLink;KabanHMI\Settings\AlarmSettingsControl.cs;509;Text;var addLink = UiStyle.TextButton(LanguageManager.GetString("Btn_AddLink", "Add link"), 104);
 Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;96;Tooltip;_btnReset.ToolTipText = "Btn_AlarmReset";
 Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;103;Tooltip;var none = UiStyle.ToolButton("\uD83D\uDD04", LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") +
 Btn_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;105;Message;MessageBox.Show(FindForm(), LanguageManager.GetString("Btn_AlarmReset", "Reset alarms") + ": " + why + ".",
 Btn_Alarms;Kaban.Machines.SB3012\Program.cs;70;Text;shell.AddMenuButton("Btn_Alarms", "Alarms", null, new Screens.AlarmScreen());
 Btn_Alarms;Kaban.Machines.SB3015\Program.cs;63;Text;shell.AddMenuButton("Btn_Alarms", "Alarms", null, new Screens.AlarmScreen());
-Btn_Alarms;KabanHMI\Forms\MainForm.cs;2211;Text;if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
+Btn_Alarms;KabanHMI\Forms\MainForm.cs;2214;Text;if (!string.Equals(kv.Key.TranslationKey, "Btn_Alarms", StringComparison.OrdinalIgnoreCase))
 Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;293;Text;var alarms = new PageDevices { Title = LanguageManager.GetString("Btn_Alarms", "Alarms") };
 Btn_Alarms;KabanHMI\Helpers\DeviceCollector.cs;449;Text;PageTitle = LanguageManager.GetString("Btn_Alarms", "Alarms"),
 Btn_Alarms;KabanHMI\Helpers\TextUses.cs;87;Text;list.Add(new Use { Kind = KindAlarm, Place = LanguageManager.GetString("Btn_Alarms", "Alarms"),
@@ -166,15 +168,15 @@ Btn_Cancel;KabanHMI\Forms\WorkForm.cs;72;Text;_cancel = new Button { Text = Lang
 Btn_Cancel;KabanHMI\Helpers\ColumnChooser.cs;320;Text;var cancel = UiStyle.Round(new Button { Text = T("Btn_Cancel", "Cancel"), DialogResult = DialogResult.Cancel, Width = 96, Height = 30 });
 Btn_Cancel;KabanHMI\Profiles\Ask.cs;32;Text;var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Screens\NotesPage.cs;172;Text;T("Nts_BtnSaveIt", "Save it"), T("Nts_BtnDiscardIt", "Discard it"), T("Btn_Cancel", "Cancel"));
-Btn_Cancel;KabanHMI\Settings\AlarmSettingsControl.cs;497;Text;var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
+Btn_Cancel;KabanHMI\Settings\AlarmSettingsControl.cs;518;Text;var cancel = UiStyle.DialogButton(LanguageManager.GetString("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\PlcBackupForms.cs;249;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\PlcBackupSelection.cs;264;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\PlcBackupSelection.cs;394;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;93;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;242;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
 Btn_Cancel;KabanHMI\Settings\TranslationLanguageForms.cs;424;Text;var cancel = UiStyle.DialogButton(T("Btn_Cancel", "Cancel"), DialogResult.Cancel);
-Btn_ChangeUser;KabanHMI\Forms\MainForm.cs;1650;Menu;var change = new ToolStripMenuItem(LanguageManager.GetString("Btn_ChangeUser", "Change user"),
-Btn_Close;KabanHMI\Forms\MainForm.cs;1277;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Btn_Close", "Close"))
+Btn_ChangeUser;KabanHMI\Forms\MainForm.cs;1653;Menu;var change = new ToolStripMenuItem(LanguageManager.GetString("Btn_ChangeUser", "Change user"),
+Btn_Close;KabanHMI\Forms\MainForm.cs;1280;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Btn_Close", "Close"))
 Btn_Close;KabanHMI\Screens\NotesFindForm.cs;124;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\PlcBackupForms.cs;482;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_Close;KabanHMI\Settings\SettingsCompareForm.cs;125;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
@@ -186,8 +188,8 @@ Btn_CmpPrev;KabanHMI\Settings\SettingsCompareForm.cs;94;Text;var prev = UiStyle.
 Btn_Dashboard;KabanHMI\Screens\StandardScreens.cs;147;Text;TitleKey = "Btn_Dashboard",
 Btn_Down;Kaban.Machines.H500\Screens\H500Screen.cs;47;Text;ButtonATextKey = "Btn_Down",
 Btn_Down;Kaban.Machines.H800\Screens\H800Screen.cs;47;Text;ButtonATextKey = "Btn_Down",
-Btn_Down;KabanHMI\Settings\AlarmSettingsControl.cs;485;Text;btn(LanguageManager.GetString("Btn_Down", "Down"), (s, e) => Move(+1));
-Btn_Export;KabanHMI\Screens\MachineAlarmScreen.cs;285;Text;LanguageManager.GetString("Btn_Export", "Save the history to a file"), tips, (s, e) =>
+Btn_Down;KabanHMI\Settings\AlarmSettingsControl.cs;506;Text;btn(LanguageManager.GetString("Btn_Down", "Down"), (s, e) => Move(+1));
+Btn_Export;KabanHMI\Screens\MachineAlarmScreen.cs;308;Text;LanguageManager.GetString("Btn_Export", "Save the history to a file"), tips, (s, e) =>
 Btn_FlashRomMany;KabanHMI\Controls\FlashRomButton.cs;87;Text;: T("Btn_FlashRomMany", "Write the modules' flash ROM"));
 Btn_FlashRomOne;KabanHMI\Controls\FlashRomButton.cs;86;Text;? string.Format(T("Btn_FlashRomOne", "Write module {0}'s flash ROM"), waiting[0].Value)
 Btn_FlgOpen;KabanHMI\Settings\TranslationFlagForm.cs;148;Text;var open = UiStyle.TextButton(T("Btn_FlgOpen", "Open a picture file..."), 0, (s, e) => OpenPicture());
@@ -209,10 +211,10 @@ Btn_ImpCompare;KabanHMI\Settings\ImportSettingsControl.cs;109;Text;Text = T("Btn
 Btn_ImpList;KabanHMI\Settings\ImportSettingsControl.cs;102;Text;Text = T("Btn_ImpList", "List its settings files"), Size = new Size(190, 30), BackColor = Color.White, Name = "impScan"
 Btn_Import;KabanHMI\Settings\ImportSettingsControl.cs;115;Text;Text = T("Btn_Import", "Import selected"), Size = new Size(160, 30), BackColor = Color.White, Name = "impImport"
 Btn_Login;KabanHMI\Forms\LoginForm.cs;92;Text;btnOk = UiStyle.DialogButton(LanguageManager.GetString("Btn_Login", "Login"), DialogResult.None);
-Btn_Login;KabanHMI\Forms\MainForm.cs;2492;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Login", "Login"));
+Btn_Login;KabanHMI\Forms\MainForm.cs;2495;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Login", "Login"));
 Btn_Login;KabanHMI\Forms\PlcPopupForm.cs;193;Text;_signIn = UiStyle.TextButton(T("Btn_Login", "Login"), 120, (s, e) => { var h = SignInAsked; if (h != null) h(); });
-Btn_Logout;KabanHMI\Forms\MainForm.cs;1646;Menu;var logout = new ToolStripMenuItem(LanguageManager.GetString("Btn_Logout", "Logout"),
-Btn_Logout;KabanHMI\Forms\MainForm.cs;2500;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
+Btn_Logout;KabanHMI\Forms\MainForm.cs;1649;Menu;var logout = new ToolStripMenuItem(LanguageManager.GetString("Btn_Logout", "Logout"),
+Btn_Logout;KabanHMI\Forms\MainForm.cs;2503;Text;Helpers.Shortcuts.Set(_btnLogin, Keys.Control | Keys.L, _topTips, LanguageManager.GetString("Btn_Logout", "Logout"));
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;167;Text;TitleKey = "Btn_MachineParameters",
 Btn_MachineParameters;KabanHMI\Screens\StandardScreens.cs;243;Text;return new PlaceholderControl("Btn_MachineParameters", "Machine Parameters",
 Btn_MachineParameters;KabanHMI\Settings\PreferencePreview.cs;354;Text;new[] { "Btn_MachineParameters", "Machine Parameters" }, new[] { "Btn_Alarms", "Alarms" }
@@ -233,7 +235,7 @@ Btn_Ok;KabanHMI\Forms\SimulationMonitorForm.cs;2680;Text;var ok = UiStyle.Round(
 Btn_Ok;KabanHMI\Forms\StructuredTypesForm.cs;161;Text;var ok = Btn(T("Btn_Ok", "OK"), ClientSize.Width - 212, ClientSize.Height - 44, 96);
 Btn_Ok;KabanHMI\Helpers\ColumnChooser.cs;321;Text;var ok = UiStyle.Round(new Button { Text = T("Btn_Ok", "OK"), DialogResult = DialogResult.OK, Width = 96, Height = 30 });
 Btn_Ok;KabanHMI\Profiles\Ask.cs;31;Text;var ok = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.OK);
-Btn_Ok;KabanHMI\Settings\AlarmSettingsControl.cs;498;Text;var ok = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.OK);
+Btn_Ok;KabanHMI\Settings\AlarmSettingsControl.cs;519;Text;var ok = UiStyle.DialogButton(LanguageManager.GetString("Btn_Ok", "OK"), DialogResult.OK);
 Btn_OK;KabanHMI\Settings\PlcBackupSelection.cs;265;Text;var ok = UiStyle.TextButton(T("Btn_OK", "OK"), 96, (s, e) => { Take(); DialogResult = DialogResult.OK; Close(); });
 Btn_Ok;KabanHMI\Settings\TranslationLanguageForms.cs;92;Text;var ok = UiStyle.DialogButton(T("Btn_Ok", "OK"), DialogResult.None);
 Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;185;Text;Text = LanguageManager.GetString("Btn_OpenJob", "Open job file..."),
@@ -242,15 +244,15 @@ Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;360;Text;LanguageManager.GetSt
 Btn_OpenManual;KabanHMI\Forms\MainForm.Help.cs;133;Menu;var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
 Btn_PlcRead;KabanHMI\Settings\StationConnectionControl.cs;344;Text;var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
 Btn_PlcWrite;KabanHMI\Settings\StationConnectionControl.cs;345;Text;var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
-Btn_Refresh;KabanHMI\Screens\MachineAlarmScreen.cs;283;Text;LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
-Btn_Remove;KabanHMI\Settings\AlarmSettingsControl.cs;483;Text;btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
+Btn_Refresh;KabanHMI\Screens\MachineAlarmScreen.cs;306;Text;LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
+Btn_Remove;KabanHMI\Settings\AlarmSettingsControl.cs;504;Text;btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
 Btn_Reset;Kaban.Machines.FA2010\Screens\AlarmScreen.Designer.cs;110;Text;this.btnReset.TranslationKey = "Btn_Reset";
 Btn_Reset;Kaban.Machines.SB3012\Screens\AlarmScreen.Designer.cs;103;Text;this.btnReset.TranslationKey = "Btn_Reset";
 Btn_Reset;Kaban.Machines.SB3015\Screens\AlarmScreen.Designer.cs;107;Text;this.btnReset.TranslationKey = "Btn_Reset";
-Btn_ResetNActive;KabanHMI\Forms\MainForm.cs;1955;Text;LanguageManager.GetString("Btn_ResetNActive", "Reset ({0}) Active Alarms"),
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1295;Menu;var restart = new ToolStripMenuItem(LanguageManager.GetString("Btn_Restart", "Restart"))
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1359;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
-Btn_Restart;KabanHMI\Forms\MainForm.cs;1394;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
+Btn_ResetNActive;KabanHMI\Forms\MainForm.cs;1958;Text;LanguageManager.GetString("Btn_ResetNActive", "Reset ({0}) Active Alarms"),
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1298;Menu;var restart = new ToolStripMenuItem(LanguageManager.GetString("Btn_Restart", "Restart"))
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1362;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
+Btn_Restart;KabanHMI\Forms\MainForm.cs;1397;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
 Btn_Save;KabanHMI\Profiles\LibraryEditorForm.cs;487;Text;var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
 Btn_Start;Kaban.Machines.H500\Screens\H500Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
 Btn_Start;Kaban.Machines.H800\Screens\H800Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
@@ -258,11 +260,11 @@ Btn_Structures;KabanHMI\Forms\PlcRowEditorForm.cs;183;Text;_structures.Text = La
 Btn_TrnCopy;KabanHMI\Settings\TranslationLanguageForms.cs;241;Text;_ok = UiStyle.DialogButton(T("Btn_TrnCopy", "Copy"), DialogResult.None);
 Btn_TrnTickAll;KabanHMI\Settings\TranslationLanguageForms.cs;367;Text;var all = new Button { Text = T("Btn_TrnTickAll", "Tick all"), AutoSize = true, Name = "reviewAll" };
 Btn_TrnUntickAll;KabanHMI\Settings\TranslationLanguageForms.cs;366;Text;var none = new Button { Text = T("Btn_TrnUntickAll", "Untick all"), AutoSize = true, Name = "reviewNone" };
-Btn_TrnWriteImport;KabanHMI\Settings\TranslationsControl.Import.cs;447;Text;: T("Btn_TrnWriteImport", "Write: {0} empty cell(s) + {1} change(s) ticked"));
-Btn_TrnWriteProject;KabanHMI\Settings\TranslationsControl.Import.cs;446;Text;project ? T("Btn_TrnWriteProject", "Write into the project: {0} empty cell(s) + {1} change(s) ticked")
+Btn_TrnWriteImport;KabanHMI\Settings\TranslationsControl.Import.cs;451;Text;: T("Btn_TrnWriteImport", "Write: {0} empty cell(s) + {1} change(s) ticked"));
+Btn_TrnWriteProject;KabanHMI\Settings\TranslationsControl.Import.cs;450;Text;project ? T("Btn_TrnWriteProject", "Write into the project: {0} empty cell(s) + {1} change(s) ticked")
 Btn_Up;Kaban.Machines.H500\Screens\H500Screen.cs;50;Text;ButtonBTextKey = "Btn_Up",
 Btn_Up;Kaban.Machines.H800\Screens\H800Screen.cs;50;Text;ButtonBTextKey = "Btn_Up",
-Btn_Up;KabanHMI\Settings\AlarmSettingsControl.cs;484;Text;btn(LanguageManager.GetString("Btn_Up", "Up"), (s, e) => Move(-1));
+Btn_Up;KabanHMI\Settings\AlarmSettingsControl.cs;505;Text;btn(LanguageManager.GetString("Btn_Up", "Up"), (s, e) => Move(-1));
 Calibrate;Kaban.Machines.H500\Screens\Manual\ManualHeads.Designer.cs;421;Text;this.btnScrewing_1_Calibration.TranslationKey = "Calibrate";
 Calibrate;Kaban.Machines.H500\Screens\Manual\ManualHeads.Designer.cs;422;Text;this.btnScrewing_1_Calibration.FallbackText = "Calibrate";
 Calibrate;Kaban.Machines.H500\Screens\Manual\ManualHeads.Designer.cs;527;Text;this.btnScrewing_2_Calibration.TranslationKey = "Calibrate";
@@ -280,7 +282,7 @@ Col_Address;KabanHMI\Forms\DeviceFindForm.cs;170;Text;column("Address", T("Col_A
 Col_Address;KabanHMI\Forms\PlcRowEditorForm.cs;162;Text;new[] { "Lbl_StringChars", "String (characters)" }, new[] { "Col_Address", "Address" },
 Col_Address;KabanHMI\Forms\PlcRowEditorForm.cs;209;Text;AddRow(LanguageManager.GetString("Col_Address", "Address"), _address, ref y);
 Col_Address;KabanHMI\Forms\SimulationMonitorForm.cs;1331;Heading;grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Address", HeaderText = T("Col_Address", "Address") });
-Col_Address;KabanHMI\Settings\AlarmSettingsControl.cs;153;Heading;{ Name = "Address", HeaderText = LanguageManager.GetString("Col_Address", "Address"), FillWeight = 12, ReadOnly = true });
+Col_Address;KabanHMI\Settings\AlarmSettingsControl.cs;154;Heading;{ Name = "Address", HeaderText = LanguageManager.GetString("Col_Address", "Address"), FillWeight = 12, ReadOnly = true });
 Col_Axis;KabanHMI\Controls\AxisSettingHMI.cs;1310;Text;new[] { "Axis", "Col_Axis", "Axis" },
 Col_Axis;KabanHMI\Screens\AxisMonitorPage.cs;86;Text;var axisHead = Heading(LanguageManager.GetString("Col_Axis", "Axis"), x, WName);
 Col_AxisAlarm;KabanHMI\Controls\AxisSettingHMI.cs;1323;Text;new[] { "AxisAlarm", "Col_AxisAlarm", "Axis alarm" },
@@ -359,7 +361,7 @@ Col_FndPlace;KabanHMI\Screens\NotesFindForm.cs;110;Heading;_grid.Columns.Add(new
 Col_FndPlace;KabanHMI\Settings\TranslationsControl.cs;1068;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Place", HeaderText = T("Col_FndPlace", "Page or file"), Width = 320 });
 Col_FndWhat;KabanHMI\Screens\NotesFindForm.cs;111;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "What", HeaderText = T("Col_FndWhat", "What uses it"), Width = 440 });
 Col_FndWhat;KabanHMI\Settings\TranslationsControl.cs;1069;Heading;_grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "What", HeaderText = T("Col_FndWhat", "What uses it"), Width = 560 });
-Col_HelperLinks;KabanHMI\Settings\AlarmSettingsControl.cs;178;Heading;HeaderText = LanguageManager.GetString("Col_HelperLinks", "Helper links (files, pages or URLs, double click for the list)"),
+Col_HelperLinks;KabanHMI\Settings\AlarmSettingsControl.cs;179;Heading;HeaderText = LanguageManager.GetString("Col_HelperLinks", "Helper links (files, pages or URLs, double click for the list)"),
 Col_Label;KabanHMI\Forms\PlcRowEditorForm.cs;160;Text;foreach (var key in new[] { new[] { "Col_Label", "Label" }, new[] { "Col_Comment", "Comment" }, new[] { "Col_DataType", "DataType" },
 Col_Label;KabanHMI\Forms\PlcRowEditorForm.cs;175;Text;_labelCaption.Text = LanguageManager.GetString("Col_Label", "Label") + ":";
 Col_Label;KabanHMI\Forms\PlcRowEditorForm.cs;316;Text;: LanguageManager.GetString("Col_Label", "Label")) + ":";
@@ -421,14 +423,14 @@ Cond_Met;KabanHMI\Forms\SimulationMonitorForm.cs;3621;Text;string text = met == 
 Cond_NotMet;KabanHMI\Forms\SimulationMonitorForm.cs;3621;Text;string text = met == true ? "\u2714 " + T("Cond_Met", "met") : met == false ? "\u2716 " + T("Cond_NotMet", "not met") : "-";
 Cond_NotRegistered;KabanHMI\Forms\SimulationMonitorForm.cs;3615;Text;Tip(cell, T("Cond_NotRegistered", "This condition is not registered by the machines of this program."));
 Cond_Now;KabanHMI\Forms\SimulationMonitorForm.cs;3626;Text;(met.HasValue ? "\n" + T("Cond_Now", "Now") + ": " + value.ToString(CultureInfo.CurrentCulture) : ""));
-Conn_AllOk;KabanHMI\Forms\MainForm.cs;2032;Text;LanguageManager.GetString("Conn_AllOk", "All controllers connected")) { Enabled = false });
+Conn_AllOk;KabanHMI\Forms\MainForm.cs;2035;Text;LanguageManager.GetString("Conn_AllOk", "All controllers connected")) { Enabled = false });
 Conn_C01;Kaban.Core\Helpers\ConnectionMonitor.cs;378;Text;case "C01": return LanguageManager.GetString("Conn_C01", "No driver configured for this station");
 Conn_C02;Kaban.Core\Helpers\ConnectionMonitor.cs;379;Text;case "C02": return LanguageManager.GetString("Conn_C02", "Link not open - check cable, power and address");
 Conn_C03;Kaban.Core\Helpers\ConnectionMonitor.cs;380;Text;case "C03": return LanguageManager.GetString("Conn_C03", "Link open but no reply - check network and PLC run state");
 Conn_C04;Kaban.Core\Helpers\ConnectionMonitor.cs;381;Text;case "C04": return LanguageManager.GetString("Conn_C04", "Unexpected reply from the controller");
 Conn_ErrorCode;Kaban.Core\Helpers\ConnectionMonitor.cs;348;Text;text += " (" + LanguageManager.GetString("Conn_ErrorCode", "Error Code") + ": " + s.ErrorCode + ")";
-Conn_ErrorCode;KabanHMI\Forms\MainForm.cs;2049;Text;: LanguageManager.GetString("Conn_ErrorCode", "Error Code") +
-Conn_StaleFor;KabanHMI\Forms\MainForm.cs;2056;Text;LanguageManager.GetString("Conn_StaleFor", "No reply for {0} s"),
+Conn_ErrorCode;KabanHMI\Forms\MainForm.cs;2052;Text;: LanguageManager.GetString("Conn_ErrorCode", "Error Code") +
+Conn_StaleFor;KabanHMI\Forms\MainForm.cs;2059;Text;LanguageManager.GetString("Conn_StaleFor", "No reply for {0} s"),
 Conveyor;Kaban.Machines.FA2010\FA2010Module.cs;191;Text;new Screens.GeneratedPage("Tab_ParamConveyor", "Conveyor", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamConveyor()),
 Conveyor;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;422;Text;this.btnConveyor.TranslationKey = "Conveyor";
 Conveyor;Kaban.Machines.H500\Screens\Manual\ManualEntry_Conveyor.Designer.cs;423;Text;this.btnConveyor.FallbackText = "Conveyor";
@@ -504,8 +506,8 @@ Dsh_AllEvents;KabanHMI\Dashboard\DashboardScreen.Sections.cs;318;Text;_eventFilt
 Dsh_AllShifts;KabanHMI\Dashboard\DashboardScreen.cs;361;Text;_shiftPick.AllText = T("Dsh_AllShifts", "All Shifts");
 Dsh_AllTypes;KabanHMI\Dashboard\DashboardScreen.cs;362;Text;_typePick.AllText = T("Dsh_AllTypes", "All types");
 Dsh_AutoHistory;KabanHMI\Dashboard\DashboardScreen.cs;244;Text;_side.Controls.Add(SideCaption("Dsh_AutoHistory", "Auto-Report History"));
-Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;84;Tooltip;var browseDb = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseDb());
-Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;154;Tooltip;var browseDir = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseFolder());
+Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;78;Tooltip;var browseDb = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseDb());
+Dsh_Browse;KabanHMI\Dashboard\DashboardSettingsPage.cs;132;Tooltip;var browseDir = UiStyle.ToolButton("\U0001F4C2", T("Dsh_Browse", "Browse..."), _tips, (s, e) => BrowseFolder());
 Dsh_Browse;KabanHMI\Profiles\LibraryEditorForm.cs;479;Tooltip;var browse = UiStyle.ToolButton("\uD83D\uDCC2", T("Dsh_Browse", "Browse..."), UiStyle.Tips());
 Dsh_Cutting;KabanHMI\Dashboard\DashboardScreen.Sections.cs;58;Text;{ "cutting_details", new[] { "Dsh_Cutting", "Cutting Details" } },
 Dsh_DatabaseError;KabanHMI\Dashboard\DashboardScreen.cs;771;Text;message = T("Dsh_DatabaseError", "The database could not be read:") + " " + r.Error.Message;
@@ -566,50 +568,50 @@ Dsh_Records;KabanHMI\Dashboard\DashboardScreen.cs;789;Status;SetStatus(string.Fo
 Dsh_RightAngle;KabanHMI\Dashboard\DashboardScreen.Sections.cs;310;Text;new TableGrid.Col(T("Dsh_RightAngle", "Right Angle") + " (\u00b0)", 0, "0.0"),
 Dsh_SelectEnd;KabanHMI\Dashboard\DashboardScreen.cs;420;Text;_history.Items.Add(T("Dsh_SelectEnd", "Select End Date"));
 Dsh_SelectPeriod;KabanHMI\Dashboard\DashboardScreen.cs;403;Text;_latest.Items.Add(T("Dsh_SelectPeriod", "Select Period"));
-Dsh_SetAlarmReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;187;Text;new[] { "alarm_logs_report", "Dsh_SetAlarmReport", "Create alarm logs" },
-Dsh_SetAnnualDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;176;Text;_annualRow = FieldRow("Dsh_SetAnnualDates", "Dates (MM-DD, MM-DD ...)", _annualDates);
-Dsh_SetAuto;KabanHMI\Dashboard\DashboardSettingsPage.cs;183;Text;CheckRow(_auto, "Dsh_SetAuto", "Create the reports automatically");
-Dsh_SetBadDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;454;Text;if (s.Type == "Annual" && ad.Count == 0) problems.Add(T("Dsh_SetBadDates", "The dates cannot be read (MM-DD, MM-DD ...)."));
-Dsh_SetBadMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;451;Text;if (s.Type == "Monthly" && md.Count == 0) problems.Add(T("Dsh_SetBadMonthDays", "The days of the month cannot be read (1 to 31)."));
-Dsh_SetBadShift;KabanHMI\Dashboard\DashboardSettingsPage.cs;425;Text;if (sh.Start == sh.End) problems.Add(T("Dsh_SetBadShift", "A shift cannot start and end at the same time:") + " " + sh.Text);
-Dsh_SetBadTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;439;Text;if (s.Type != "Daily" && one.Count != 1) problems.Add(T("Dsh_SetBadTime", "The time cannot be read (HH:MM)."));
-Dsh_SetBadTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;436;Text;if (s.Type == "Daily" && times.Count == 0) problems.Add(T("Dsh_SetBadTimes", "The times cannot be read (HH:MM, HH:MM ...)."));
-Dsh_SetBadWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;443;Text;if (s.Type == "Weekly" && days.Count == 0) problems.Add(T("Dsh_SetBadWeekdays", "Choose at least one weekday."));
-Dsh_SetBadZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;409;Text;if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
-Dsh_SetBarcoded;KabanHMI\Dashboard\DashboardSettingsPage.cs;121;Text;CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");
+Dsh_SetAlarmReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;165;Text;new[] { "alarm_logs_report", "Dsh_SetAlarmReport", "Create alarm logs" },
+Dsh_SetAnnualDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;154;Text;_annualRow = FieldRow("Dsh_SetAnnualDates", "Dates (MM-DD, MM-DD ...)", _annualDates);
+Dsh_SetAuto;KabanHMI\Dashboard\DashboardSettingsPage.cs;161;Text;CheckRow(_auto, "Dsh_SetAuto", "Create the reports automatically");
+Dsh_SetBadDates;KabanHMI\Dashboard\DashboardSettingsPage.cs;408;Text;if (s.Type == "Annual" && ad.Count == 0) problems.Add(T("Dsh_SetBadDates", "The dates cannot be read (MM-DD, MM-DD ...)."));
+Dsh_SetBadMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;405;Text;if (s.Type == "Monthly" && md.Count == 0) problems.Add(T("Dsh_SetBadMonthDays", "The days of the month cannot be read (1 to 31)."));
+Dsh_SetBadShift;KabanHMI\Dashboard\DashboardSettingsPage.cs;379;Text;if (sh.Start == sh.End) problems.Add(T("Dsh_SetBadShift", "A shift cannot start and end at the same time:") + " " + sh.Text);
+Dsh_SetBadTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;393;Text;if (s.Type != "Daily" && one.Count != 1) problems.Add(T("Dsh_SetBadTime", "The time cannot be read (HH:MM)."));
+Dsh_SetBadTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;390;Text;if (s.Type == "Daily" && times.Count == 0) problems.Add(T("Dsh_SetBadTimes", "The times cannot be read (HH:MM, HH:MM ...)."));
+Dsh_SetBadWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;397;Text;if (s.Type == "Weekly" && days.Count == 0) problems.Add(T("Dsh_SetBadWeekdays", "Choose at least one weekday."));
+Dsh_SetBadZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;372;Text;if (!DashboardTime.Known(zone)) problems.Add(T("Dsh_SetBadZone", "This PC does not know the time zone") + " \"" + zone + "\".");
+Dsh_SetBarcoded;KabanHMI\Dashboard\DashboardSettingsPage.cs;99;Text;CheckRow(_barcoded, "Dsh_SetBarcoded", "Use only barcoded cutting logs");
 Dsh_SetDatabase;KabanHMI\Dashboard\DashboardScreen.cs;767;Text;(SecurityManager.HasAccess(SecurityLevel.Maintenance) ? "\n" + T("Dsh_SetDatabase", "Choose it in HMI Settings > Logs and Reports.") : "");
-Dsh_SetDatabaseHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;82;Text;Heading("Dsh_SetDatabaseHead", "\U0001F5C4\ufe0f", "Database");
-Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;85;Text;FieldRow("Dsh_SetDatabasePath", "Database file", _db, browseDb);
-Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;589;Text;using (var d = new OpenFileDialog { Filter = "SQLite (*.sqlite;*.db)|*.sqlite;*.db|*.*|*.*", Title = T("Dsh_SetDatabasePath", "Database file") })
-Dsh_SetEventReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;186;Text;new[] { "event_logs_report", "Dsh_SetEventReport", "Create event logs" },
-Dsh_SetExportDir;KabanHMI\Dashboard\DashboardSettingsPage.cs;155;Text;FieldRow("Dsh_SetExportDir", "Export folder", _exportDir, browseDir);
-Dsh_SetHistoryDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;180;Text;FieldRow("Dsh_SetHistoryDays", "History: days", _historyDays);
-Dsh_SetHistoryLimit;KabanHMI\Dashboard\DashboardSettingsPage.cs;182;Text;FieldRow("Dsh_SetHistoryLimit", "History: most reports listed", _historyLimit);
-Dsh_SetLogicHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;120;Text;Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
-Dsh_SetMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;174;Text;_monthDaysRow = FieldRow("Dsh_SetMonthDays", "Days of the month (1, 11, 21 ...)", _monthDays);
-Dsh_SetNext;KabanHMI\Dashboard\DashboardSettingsPage.cs;246;Text;_next.Text = T("Dsh_SetNext", "Next automatic report:") + " " +
-Dsh_SetNotWritten;KabanHMI\Dashboard\DashboardSettingsPage.cs;476;Text;_problem.Text = T("Dsh_SetNotWritten", "The settings could not be written:") + " " + c.FilePath;
-Dsh_SetPeriod;KabanHMI\Dashboard\DashboardSettingsPage.cs;164;Text;FieldRow("Dsh_SetPeriod", "Auto-report period", _period);
-Dsh_SetReportLanguage;KabanHMI\Dashboard\DashboardSettingsPage.cs;158;Text;FieldRow("Dsh_SetReportLanguage", "Report language", _reportLanguage);
-Dsh_SetReportsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;152;Text;Heading("Dsh_SetReportsHead", "\U0001F4C4", "Exported reports");
-Dsh_SetRevert;KabanHMI\Dashboard\DashboardSettingsPage.cs;210;Tooltip;_revert = UiStyle.ToolButton("\u21ba", T("Dsh_SetRevert", "Put back what is kept"), _tips, (s, e) => Fill(_machine.Config));
-Dsh_SetSave;KabanHMI\Dashboard\DashboardSettingsPage.cs;209;Tooltip;_save = UiStyle.ToolButton("\U0001F4BE", T("Dsh_SetSave", "Keep the settings"), _tips, (s, e) => Save());
-Dsh_SetSectionsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;138;Text;Heading("Dsh_SetSectionsHead", "\U0001F6E0\ufe0f", "Dashboard sections");
-Dsh_SetShiftAdd;KabanHMI\Dashboard\DashboardSettingsPage.cs;131;Text;var addShift = UiStyle.TextButton(T("Dsh_SetShiftAdd", "Add a shift"), 0, (s, e) => AddShift(NextShiftStart(), NextShiftStart().Add(TimeSpan.FromHours(8))));
-Dsh_SetShiftRemove;KabanHMI\Dashboard\DashboardSettingsPage.cs;513;Tooltip;var remove = UiStyle.ToolButton("\uD83D\uDDD1", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
-Dsh_SetShiftsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;124;Text;Heading("Dsh_SetShiftsHead", "\u23f1\ufe0f", "Shifts");
-Dsh_SetShiftsNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;134;Text;Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
-Dsh_SetStateReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;188;Text;new[] { "state_logs_report", "Dsh_SetStateReport", "Create state logs" },
-Dsh_SetTableReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;189;Text;new[] { "database_table_report", "Dsh_SetTableReport", "Create database tables" }
-Dsh_SetTest;KabanHMI\Dashboard\DashboardSettingsPage.cs;87;Tooltip;var test = UiStyle.ToolButton("\U0001F50D", T("Dsh_SetTest", "Look into the database: its logs, first and last"), _tips, (s, e) => TestDatabase());
-Dsh_SetTestCaption;KabanHMI\Dashboard\DashboardSettingsPage.cs;92;Text;FieldRow("Dsh_SetTestCaption", "What it holds", _probe, test);
-Dsh_SetTesting;KabanHMI\Dashboard\DashboardSettingsPage.cs;551;Text;_probe.Text = T("Dsh_SetTesting", "Looking into the database...");
-Dsh_SetTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;178;Text;_timeRow = FieldRow("Dsh_SetTime", "Time (HH:MM)", _time);
-Dsh_SetTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;166;Text;_timesRow = FieldRow("Dsh_SetTimes", "Times (HH:MM, HH:MM ...)", _times);
-Dsh_SetTimeZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;96;Text;FieldRow("Dsh_SetTimeZone", "Time zone of the panel", _zone);
-Dsh_SetTimeZoneNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;97;Text;Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
-Dsh_Settings;KabanHMI\Dashboard\DashboardSettingsPage.cs;575;Text;Text = title ?? T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 760, StartPosition = FormStartPosition.CenterParent,
-Dsh_SetWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;171;Text;_weekdaysRow = FieldRow("Dsh_SetWeekdays", "Weekdays", _weekdays);
+Dsh_SetDatabaseHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;76;Text;Heading("Dsh_SetDatabaseHead", "\U0001F5C4\ufe0f", "Database");
+Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;79;Text;FieldRow("Dsh_SetDatabasePath", "Database file", _db, browseDb);
+Dsh_SetDatabasePath;KabanHMI\Dashboard\DashboardSettingsPage.cs;543;Text;using (var d = new OpenFileDialog { Filter = "SQLite (*.sqlite;*.db)|*.sqlite;*.db|*.*|*.*", Title = T("Dsh_SetDatabasePath", "Database file") })
+Dsh_SetEventReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;164;Text;new[] { "event_logs_report", "Dsh_SetEventReport", "Create event logs" },
+Dsh_SetExportDir;KabanHMI\Dashboard\DashboardSettingsPage.cs;133;Text;FieldRow("Dsh_SetExportDir", "Export folder", _exportDir, browseDir);
+Dsh_SetHistoryDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;158;Text;FieldRow("Dsh_SetHistoryDays", "History: days", _historyDays);
+Dsh_SetHistoryLimit;KabanHMI\Dashboard\DashboardSettingsPage.cs;160;Text;FieldRow("Dsh_SetHistoryLimit", "History: most reports listed", _historyLimit);
+Dsh_SetLogicHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;98;Text;Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");
+Dsh_SetMonthDays;KabanHMI\Dashboard\DashboardSettingsPage.cs;152;Text;_monthDaysRow = FieldRow("Dsh_SetMonthDays", "Days of the month (1, 11, 21 ...)", _monthDays);
+Dsh_SetNext;KabanHMI\Dashboard\DashboardSettingsPage.cs;214;Text;_next.Text = T("Dsh_SetNext", "Next automatic report:") + " " +
+Dsh_SetNotWritten;KabanHMI\Dashboard\DashboardSettingsPage.cs;430;Text;_problem.Text = T("Dsh_SetNotWritten", "The settings could not be written:") + " " + c.FilePath;
+Dsh_SetPeriod;KabanHMI\Dashboard\DashboardSettingsPage.cs;142;Text;FieldRow("Dsh_SetPeriod", "Auto-report period", _period);
+Dsh_SetReportLanguage;KabanHMI\Dashboard\DashboardSettingsPage.cs;136;Text;FieldRow("Dsh_SetReportLanguage", "Report language", _reportLanguage);
+Dsh_SetReportsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;130;Text;Heading("Dsh_SetReportsHead", "\U0001F4C4", "Exported reports");
+Dsh_SetRevert;KabanHMI\Dashboard\DashboardSettingsPage.cs;188;Tooltip;_revert = UiStyle.ToolButton("\u21ba", T("Dsh_SetRevert", "Put back what is kept"), _tips, (s, e) => Fill(_machine.Config));
+Dsh_SetSave;KabanHMI\Dashboard\DashboardSettingsPage.cs;187;Tooltip;_save = UiStyle.ToolButton("\U0001F4BE", T("Dsh_SetSave", "Keep the settings"), _tips, (s, e) => Save());
+Dsh_SetSectionsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;116;Text;Heading("Dsh_SetSectionsHead", "\U0001F6E0\ufe0f", "Dashboard sections");
+Dsh_SetShiftAdd;KabanHMI\Dashboard\DashboardSettingsPage.cs;109;Text;var addShift = UiStyle.TextButton(T("Dsh_SetShiftAdd", "Add a shift"), 0, (s, e) => AddShift(NextShiftStart(), NextShiftStart().Add(TimeSpan.FromHours(8))));
+Dsh_SetShiftRemove;KabanHMI\Dashboard\DashboardSettingsPage.cs;467;Tooltip;var remove = UiStyle.ToolButton("\uD83D\uDDD1", T("Dsh_SetShiftRemove", "Remove this shift"), _tips, (s, e) =>
+Dsh_SetShiftsHead;KabanHMI\Dashboard\DashboardSettingsPage.cs;102;Text;Heading("Dsh_SetShiftsHead", "\u23f1\ufe0f", "Shifts");
+Dsh_SetShiftsNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;112;Text;Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
+Dsh_SetStateReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;166;Text;new[] { "state_logs_report", "Dsh_SetStateReport", "Create state logs" },
+Dsh_SetTableReport;KabanHMI\Dashboard\DashboardSettingsPage.cs;167;Text;new[] { "database_table_report", "Dsh_SetTableReport", "Create database tables" }
+Dsh_SetTest;KabanHMI\Dashboard\DashboardSettingsPage.cs;81;Tooltip;var test = UiStyle.ToolButton("\U0001F50D", T("Dsh_SetTest", "Look into the database: its logs, first and last"), _tips, (s, e) => TestDatabase());
+Dsh_SetTestCaption;KabanHMI\Dashboard\DashboardSettingsPage.cs;86;Text;FieldRow("Dsh_SetTestCaption", "What it holds", _probe, test);
+Dsh_SetTesting;KabanHMI\Dashboard\DashboardSettingsPage.cs;505;Text;_probe.Text = T("Dsh_SetTesting", "Looking into the database...");
+Dsh_SetTime;KabanHMI\Dashboard\DashboardSettingsPage.cs;156;Text;_timeRow = FieldRow("Dsh_SetTime", "Time (HH:MM)", _time);
+Dsh_SetTimes;KabanHMI\Dashboard\DashboardSettingsPage.cs;144;Text;_timesRow = FieldRow("Dsh_SetTimes", "Times (HH:MM, HH:MM ...)", _times);
+Dsh_SetTimeZone;KabanHMI\Dashboard\DashboardSettingsPage.cs;90;Text;FieldRow("Dsh_SetTimeZone", "Time zone of the panel", _zone);
+Dsh_SetTimeZoneNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;91;Text;Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
+Dsh_Settings;KabanHMI\Dashboard\DashboardSettingsPage.cs;529;Text;Text = title ?? T("Dsh_Settings", "Dashboard settings"), Width = 760, Height = 760, StartPosition = FormStartPosition.CenterParent,
+Dsh_SetWeekdays;KabanHMI\Dashboard\DashboardSettingsPage.cs;149;Text;_weekdaysRow = FieldRow("Dsh_SetWeekdays", "Weekdays", _weekdays);
 Dsh_ShiftSelection;KabanHMI\Dashboard\DashboardScreen.cs;282;Text;_shiftPick = SidePick("Dsh_ShiftSelection", "Shift Selection", true);
 Dsh_ShowInFolder;KabanHMI\Dashboard\DashboardScreen.cs;292;Tooltip;_openFolder = UiStyle.ToolButton("\U0001F4C2", T("Dsh_ShowInFolder", "Show in folder"), _tips, (s, e) => OpenFolder());
 Dsh_ShowInFolder;KabanHMI\Dashboard\DashboardScreen.cs;379;Text;T("Dsh_ShowInFolder", "Show in folder") + "\n" + Config.ExportDirectory +
@@ -668,6 +670,19 @@ Fnd_TextOf;KabanHMI\Helpers\TextUses.cs;476;Text;default: return LanguageManager
 Fnd_Tip;KabanHMI\Helpers\TextUses.cs;292;Tooltip;case "ToolTipTextKey": case "TipKey": case "ToolTipKey": return LanguageManager.GetString("Fnd_Tip", "its tooltip");
 Fnd_Title;KabanHMI\Helpers\TextUses.cs;291;Text;case "TitleTextKey": case "TitleKey": return LanguageManager.GetString("Fnd_Title", "its title");
 Fnd_Tooltip;KabanHMI\Helpers\TextUses.cs;474;Text;case "Tooltip": return LanguageManager.GetString("Fnd_Tooltip", "tooltip");
+Ftr_Intro;KabanHMI\Settings\FeaturesControl.cs;81;Text;Text = T("Ftr_Intro", "The HMI's optional parts: each one is switched on for this panel, for everyone, and taken at once."),
+Ftr_Logging;KabanHMI\Settings\FeaturesControl.cs;53;Text;Feature(HmiFeatures.Industry4Logging, "\U0001F4E5", T("Ftr_Logging", "Industry 4 logging in the HMI"),
+Ftr_LoggingNote;KabanHMI\Settings\FeaturesControl.cs;55;Text;T("Ftr_LoggingNote", "While the Industry 4 service runs on this PC the HMI waits: stop it (or uninstall it) once the HMI logs."),
+Ftr_LoggingOff;KabanHMI\Settings\FeaturesControl.cs;163;Text;if (!HmiFeatures.LoggingOn) _loggingNow.Text = T("Ftr_LoggingOff", "Now: the Industry 4 service logs (when it is installed) - the HMI's log is in its files.");
+Ftr_LoggingText;KabanHMI\Settings\FeaturesControl.cs;54;Text;T("Ftr_LoggingText", "The HMI takes each machine's states, events and alarms from its PLC into the machine's log database - the Industry 4 service's job - and keeps its own log ...
+Ftr_NoLogMachine;KabanHMI\Settings\FeaturesControl.cs;172;Text;if (lines.Count == 0) lines.Add(T("Ftr_NoLogMachine", "No machine of this panel keeps a log database (its Dashboard settings)."));
+Ftr_Off;KabanHMI\Settings\FeaturesControl.cs;99;Text;var off = Switch(T("Ftr_Off", "Off"), false);
+Ftr_On;KabanHMI\Settings\FeaturesControl.cs;98;Text;var on = Switch(T("Ftr_On", "On"), true);
+Ftr_Touch;KabanHMI\Settings\FeaturesControl.cs;57;Text;Feature(HmiFeatures.TouchScreen, TouchEmoji, T("Ftr_Touch", "Touch screen"),
+Ftr_TouchNowMouse;KabanHMI\Settings\FeaturesControl.cs;178;Text;: T("Ftr_TouchNowMouse", "Now: used with a mouse - the button on the top bar switches it.");
+Ftr_TouchNowTouch;KabanHMI\Settings\FeaturesControl.cs;177;Text;: ViewPreferences.TouchMode ? T("Ftr_TouchNowTouch", "Now: used by touch.")
+Ftr_TouchOff;KabanHMI\Settings\FeaturesControl.cs;176;Text;_touchNow.Text = !HmiFeatures.TouchOn ? T("Ftr_TouchOff", "Now: used with a mouse.")
+Ftr_TouchText;KabanHMI\Settings\FeaturesControl.cs;58;Text;T("Ftr_TouchText", "The screen may be used by touch: the mouse / finger button on the top bar switches between them, and Users and Preferences has 'Screen used with' for everyon...
 Gen_Sub1;Kaban.Core\Helpers\AlarmGeneration.cs;570;Text;return string.Format(LanguageManager.GetString("Gen_Sub1", "{0} stayed ON - the cylinder did not leave its start"), names(s.MustOff));
 Gen_Sub2;Kaban.Core\Helpers\AlarmGeneration.cs;572;Text;return string.Format(LanguageManager.GetString("Gen_Sub2", "{0} did not come ON - it stopped on the way, or the sensor does not see it"), names(s.MustOn));
 Gen_Sub3;Kaban.Core\Helpers\AlarmGeneration.cs;574;Text;return string.Format(LanguageManager.GetString("Gen_Sub3", "{0} came ON, but {1} at the start stayed ON"), names(s.MustOn), names(s.MustOff));
@@ -711,7 +726,7 @@ Home;KabanHMI\Screens\StandardScreens.cs;84;Text;TitleFallback = "Home",
 Home;KabanHMI\Settings\PreferencePreview.cs;353;Text;new[] { "Btn_Home", "Home" }, new[] { "Btn_ManualMovement", "Manual Movement" },
 Home;KabanHMI\Settings\PreferencePreview.cs;514;Text;string to = v == "Home" ? T("VP_Home", "Home")
 Home;KabanHMI\Settings\PreferencePreview.cs;520;Text;: v == "Home" ? T("PV_HomeNote", "The first page of the menu.")
-Home;KabanHMI\Settings\UsersPreferencesControl.cs;1066;Text;case "StartPage.Home": return T("VP_Home", "Home");
+Home;KabanHMI\Settings\UsersPreferencesControl.cs;1068;Text;case "StartPage.Home": return T("VP_Home", "Home");
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;191;Text;this.btnHorn.ButtonText = "Horn";
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;216;Text;this.btnHorn.FallbackText = "Horn";
 Horn;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;245;Text;this.btnHorn.TranslationKey = "Horn";
@@ -744,8 +759,8 @@ Imp_Source;KabanHMI\Settings\ImportSettingsControl.cs;238;Text;Description = Lan
 Imp_SourceTipList;KabanHMI\Settings\ImportSettingsControl.cs;170;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _source, T("Imp_SourceTipList",
 Imp_Use;KabanHMI\Settings\ImportSettingsControl.cs;139;Heading;{ Name = "Use", HeaderText = T("Imp_Use", "Import"), FillWeight = 8 });
 Imp_Version;KabanHMI\Settings\ImportSettingsControl.cs;147;Heading;{ Name = "Ver", HeaderText = T("Imp_Version", "Format"), FillWeight = 8, ReadOnly = true });
-Inp_OwnNote;KabanHMI\Forms\MainForm.Touch.cs;103;Text;? string.Format(LanguageManager.GetString("Inp_OwnNote", "Kept as {0}'s own (Users and Preferences)"), ViewPreferences.ActiveUser)
-Inp_PanelNote;KabanHMI\Forms\MainForm.Touch.cs;104;Text;: LanguageManager.GetString("Inp_PanelNote", "Kept for everyone on this panel"))
+Inp_OwnNote;KabanHMI\Forms\MainForm.Touch.cs;111;Text;? string.Format(LanguageManager.GetString("Inp_OwnNote", "Kept as {0}'s own (Users and Preferences)"), ViewPreferences.ActiveUser)
+Inp_PanelNote;KabanHMI\Forms\MainForm.Touch.cs;112;Text;: LanguageManager.GetString("Inp_PanelNote", "Kept for everyone on this panel"))
 IoShow_All;KabanHMI\Screens\IoMonitorPage.cs;66;Text;_show.AllText = T("IoShow_All", "All lists");
 IoShow_Inputs;KabanHMI\Screens\IoMonitorPage.cs;195;Menu;if (sec.Inputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":I", sec.Heading.Text + " - " + T("IoShow_Inputs", "inputs")));
 IoShow_Outputs;KabanHMI\Screens\IoMonitorPage.cs;196;Menu;if (sec.Outputs != null) items.Add(new Kaban.UI.Dashboard.PickList.Item(sec.Station + ":O", sec.Heading.Text + " - " + T("IoShow_Outputs", "outputs")));
@@ -790,7 +805,7 @@ Lbl_FlgPattern;KabanHMI\Settings\TranslationFlagForm.cs;125;Text;var patternLabe
 Lbl_FlgPictureNote;KabanHMI\Settings\TranslationFlagForm.cs;154;Text;Text = T("Lbl_FlgPictureNote", "A PNG, JPG, BMP or GIF of any size: its middle is taken in the flags' shape (3:2), cut at the sides or the top and bottom. " +
 Lbl_FlgSearch;KabanHMI\Settings\TranslationFlagForm.cs;104;Text;var searchLabel = new Label { Text = T("Lbl_FlgSearch", "Its name or code - or paste its flag emoji:"), AutoSize = true, Location = new Point(0, 8) };
 Lbl_FlgSmall;KabanHMI\Settings\TranslationFlagForm.cs;93;Text;Text = T("Lbl_FlgSmall", "Beside: as small as on the caption bar."), Location = new Point(12, 386), Size = new Size(250, 40),
-Lbl_HelperLinksNote;KabanHMI\Settings\AlarmSettingsControl.cs;466;Text;Text = LanguageManager.GetString("Lbl_HelperLinksNote", "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
+Lbl_HelperLinksNote;KabanHMI\Settings\AlarmSettingsControl.cs;487;Text;Text = LanguageManager.GetString("Lbl_HelperLinksNote", "The documents this alarm offers, in this order: files (a file in the program's folder is kept " +
 Lbl_IoFilter;KabanHMI\Screens\IoMonitorPage.cs;56;Text;var find = new Label { Text = T("Lbl_IoFilter", "Find:"), AutoSize = true, Location = new Point(8, 11) };
 Lbl_IoShow;KabanHMI\Screens\IoMonitorPage.cs;62;Text;_showCaption.Text = T("Lbl_IoShow", "Lists:");
 Lbl_MonLabelList;KabanHMI\Forms\SimulationMonitorForm.Table.cs;1015;Text;e.Label + "   " + e.Address + "   " + type + " [" + n + "]   (" + T("Lbl_MonLabelList", "label list") + ")",
@@ -825,12 +840,12 @@ Lbl_TrnCopyNote;KabanHMI\Settings\TranslationLanguageForms.cs;86;Text;Text = T("
 Lbl_TrnCopyShown;KabanHMI\Settings\TranslationLanguageForms.cs;231;Text;_shownOnly.Text = string.Format(T("Lbl_TrnCopyShown", "Only the {0} rows shown (the search and the filters), not all {1}"), shown, total);
 Lbl_TrnCopyTo;KabanHMI\Settings\TranslationLanguageForms.cs;227;Text;var l2 = new Label { Text = T("Lbl_TrnCopyTo", "into the empty cells of:"), Left = 14, Top = 76, Width = 470, Height = 22 };
 Lbl_TrnCount;KabanHMI\Settings\TranslationsControl.cs;500;Status;string text = string.Format(T("Lbl_TrnCount", "{0} of {1} keys, {2} languages"), _shown.Count, _rows.Count, _langs.Count);
-Lbl_TrnEnteredBy;KabanHMI\Settings\TranslationsControl.Import.cs;334;Text;i.Note = h != null ? string.Format(T("Lbl_TrnEnteredBy", "entered on the panel: {0}, {1}"), h.User,
+Lbl_TrnEnteredBy;KabanHMI\Settings\TranslationsControl.Import.cs;338;Text;i.Note = h != null ? string.Format(T("Lbl_TrnEnteredBy", "entered on the panel: {0}, {1}"), h.User,
 Lbl_TrnFiles;KabanHMI\Settings\TranslationsControl.Import.cs;116;Text;Filter = T("Lbl_TrnFiles", "Translation files") + " (" + pattern + ")|" + pattern + "|" + T("Lbl_AllFiles", "All files") + " (*.*)|*.*"
 Lbl_TrnGeneral;KabanHMI\Settings\TranslationLanguageForms.cs;398;Text;int at = _grid.Rows.Add(i.Take, i.Row != null ? i.Row.Key : "", i.Row == null ? "" : i.Row.Owner == TranslationEdits.General ? T("Lbl_TrnGeneral", "General") : i.Row.Owner,
 Lbl_TrnGeneral;KabanHMI\Settings\TranslationsControl.cs;336;Text;return string.Equals(owner, TranslationEdits.General, StringComparison.OrdinalIgnoreCase) ? T("Lbl_TrnGeneral", "General") : owner;
 Lbl_TrnGeneral;KabanHMI\Settings\TranslationsControl.cs;1006;Text;c.Key.Length == 0 ? "" : c.Owner == TranslationEdits.General ? T("Lbl_TrnGeneral", "General") : c.Owner, c.Key, c.Lang,
-Lbl_TrnInFile;KabanHMI\Settings\TranslationsControl.Import.cs;535;Text;return T("Lbl_TrnInFile", "In the file") + ": " + (before.Length > 0 ? before : "-");
+Lbl_TrnInFile;KabanHMI\Settings\TranslationsControl.Import.cs;539;Text;return T("Lbl_TrnInFile", "In the file") + ": " + (before.Length > 0 ? before : "-");
 Lbl_TrnLangAdded;KabanHMI\Settings\TranslationsControl.cs;1007;Text;c.Key.Length == 0 ? "" : c.Old, c.Key.Length == 0 ? (c.New == "added" ? T("Lbl_TrnLangAdded", "language added") : T("Lbl_TrnLangDeleted", "language deleted")) : c.New);
 Lbl_TrnLangBegin;KabanHMI\Settings\TranslationLanguageForms.cs;76;Text;var begin = new Label { Text = T("Lbl_TrnLangBegin", "Its texts to begin with:"), Left = 14, Top = 214, Width = 470, Height = 22 };
 Lbl_TrnLangCodes;KabanHMI\Settings\TranslationLanguageForms.cs;71;Text;Text = T("Lbl_TrnLangCodes", "The code is the language's own (ISO 639-1), not its country's: Swedish SV (not SE), Chinese ZH, Japanese JA, " +
@@ -839,10 +854,10 @@ Lbl_TrnLangDeleted;KabanHMI\Settings\TranslationsControl.cs;1007;Text;c.Key.Leng
 Lbl_TrnLangNone;KabanHMI\Settings\TranslationLanguageForms.cs;79;Text;_from.Items.Add(new Option(null, T("Lbl_TrnLangNone", "None - the screen shows English until a text is typed")));
 Lbl_TrnMachines;KabanHMI\Settings\TranslationsControl.cs;326;Text;_owner.Items.Add(new Choice("*machines", T("Lbl_TrnMachines", "Every machine's")));
 Lbl_TrnMissing;KabanHMI\Settings\TranslationsControl.cs;191;Text;_missing.Text = T("Lbl_TrnMissing", "A text missing");
-Lbl_TrnNotEntered;KabanHMI\Settings\TranslationsControl.Import.cs;336;Text;: T("Lbl_TrnNotEntered", "not entered on this panel");
+Lbl_TrnNotEntered;KabanHMI\Settings\TranslationsControl.Import.cs;340;Text;: T("Lbl_TrnNotEntered", "not entered on this panel");
 Lbl_TrnOnlyEdited;KabanHMI\Settings\TranslationsControl.cs;186;Text;_onlyEdited.Text = T("Lbl_TrnOnlyEdited", "Edited here");
 Lbl_TrnPending;KabanHMI\Settings\TranslationsControl.cs;501;Text;if (_pending.Count > 0) text += "  ·  " + string.Format(T("Lbl_TrnPending", "{0} text(s) typed, not saved"), _pending.Count);
-Lbl_TrnProjectNewer;KabanHMI\Settings\TranslationsControl.Import.cs;392;Text;if (!i.Tick) i.Note = T("Lbl_TrnProjectNewer", "not entered on this panel - the project's may be newer");
+Lbl_TrnProjectNewer;KabanHMI\Settings\TranslationsControl.Import.cs;396;Text;if (!i.Tick) i.Note = T("Lbl_TrnProjectNewer", "not entered on this panel - the project's may be newer");
 Lbl_TrnUndoTexts;KabanHMI\Settings\TranslationsControl.Undo.cs;93;Text;return s.What + " (" + string.Format(T("Lbl_TrnUndoTexts", "{0} text(s)"), s.Cells.Count) + ")";
 Lbl_Username;KabanHMI\Forms\LoginForm.cs;56;Text;LanguageManager.GetString("Lbl_Username", "Username"), 20, 20, 100);
 LCol_Accessory;KabanHMI\Profiles\LibraryEditorForm.cs;536;Text;foreach (var c in new[] { T("LCol_Profile", "Profile"), T("LCol_Group", "Group"), T("LCol_Accessory", "Accessory"), "#", T("LCol_Macro", "Macro"), T("LCol_Status", "Status"), T(...
@@ -1102,13 +1117,24 @@ Lubrication;Kaban.Machines.FA2010\Screens\Manual\ManualOther.Designer.cs;105;Tex
 Lubrication;Kaban.Machines.H800\Screens\MachineStatus.Designer.cs;128;Text;this.lLubrication.DescriptionText = "Lubrication";
 Lubrication;Kaban.Machines.H800\Screens\ManualAxes.Designer.cs;98;Text;this.bLubrication.FallbackText = "Lubrication";
 Lubrication;Kaban.Machines.MD3020\Screens\ManualAxes.Designer.cs;63;Text;this.bLubrication.FallbackText = "Lubrication";
-Lvl_Admin;KabanHMI\Settings\UsersPreferencesControl.cs;1005;Text;case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
-Lvl_Maintenance;KabanHMI\Settings\UsersPreferencesControl.cs;1004;Text;case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
-Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1003;Text;case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
+Lvl_Admin;KabanHMI\Settings\UsersPreferencesControl.cs;1007;Text;case SecurityLevel.Admin: return T("Lvl_Admin", "Admin");
+Lvl_Maintenance;KabanHMI\Settings\UsersPreferencesControl.cs;1006;Text;case SecurityLevel.Maintenance: return T("Lvl_Maintenance", "Maintenance");
+Lvl_Operator;KabanHMI\Settings\UsersPreferencesControl.cs;1005;Text;case SecurityLevel.Operator: return T("Lvl_Operator", "Operator");
 Machine_FA2010;Kaban.Machines.FA2010\FA2010Module.cs;23;Text;public string DisplayNameKey => "Machine_FA2010";
 Machine_H500;Kaban.Machines.H500\H500Module.cs;20;Text;public string DisplayNameKey { get { return "Machine_H500"; } }
 Machine_H800;Kaban.Machines.H800\H800Module.cs;19;Text;public string DisplayNameKey { get { return "Machine_H800"; } }
 Machine_MD3020;Kaban.Machines.MD3020\MD3020Module.cs;19;Text;public string DisplayNameKey { get { return "Machine_MD3020"; } }
+Man_And;KabanHMI\Settings\HmiManual.cs;197;Text;string names = string.Join(" " + Word(lang, "Man_And", "and") + " ", subs.Select(m => "<b>" + Enc(m.Label) + "</b>"));
+Man_Controller;KabanHMI\Settings\HmiManual.cs;221;Text;.Append(EncWord(Word(lang, "Man_Controller", "Controller"))).Append("</th><th>").Append(EncWord(Word(lang, "Man_Pages", "Its pages")))
+Man_For;KabanHMI\Settings\HmiManual.cs;202;Text;var html = Fill(template, "machines", Word(lang, "Man_For", "For {0}.", who));
+Man_Machine;KabanHMI\Settings\HmiManual.cs;220;Text;ch.Append("<table>\r\n<tr><th>").Append(EncWord(Word(lang, "Man_Machine", "Machine"))).Append("</th><th>")
+Man_Pages;KabanHMI\Settings\HmiManual.cs;221;Text;.Append(EncWord(Word(lang, "Man_Controller", "Controller"))).Append("</th><th>").Append(EncWord(Word(lang, "Man_Pages", "Its pages")))
+Man_Runs;KabanHMI\Settings\HmiManual.cs;219;Text;ch.Append("<p>").Append(Word(lang, "Man_Runs", "This program runs {0}.", who)).Append("</p>\r\n");
+Man_Station;KabanHMI\Settings\HmiManual.cs;225;Text;.Append("</td><td>").Append(EncWord(Word(lang, "Man_Station", "PLC station {0}", m.Station)))
+Man_SubMachine;KabanHMI\Settings\HmiManual.cs;224;Text;ch.Append("<tr><td>").Append(Enc(m.Label)).Append(m.IsMain ? "" : " <i>" + EncWord(Word(lang, "Man_SubMachine", "(sub-machine)")) + "</i>")
+Man_User;KabanHMI\Settings\HmiManual.cs;204;Text;html = Fill(html, "svg-title", "KABAN &nbsp; " + Enc(main.Label) + " &nbsp;&middot;&nbsp; " + EncWord(Word(lang, "Man_User", "user")));
+Man_WithSub;KabanHMI\Settings\HmiManual.cs;199;Text;? Word(lang, "Man_WithSub", "{0}, with the sub-machine {1} mounted with it", who, names)
+Man_WithSubs;KabanHMI\Settings\HmiManual.cs;200;Text;: Word(lang, "Man_WithSubs", "{0}, with the sub-machines {1} mounted with it", who, names);
 Milling;Kaban.Machines.FA2010\FA2010Module.cs;173;Text;new Screens.GeneratedPage("Tab_ManualMilling", "Milling", SecurityLevel.Operator, () => new Screens.Manual.ManualMilling()),
 Milling;Kaban.Machines.FA2010\FA2010Module.cs;193;Text;new Screens.GeneratedPage("Tab_ParamMilling", "Milling", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamMilling()),
 Milling;Kaban.Machines.FA2010\Screens\Manual\ManualYZ_Cross_Rollers.Designer.cs;242;Text;this.unitMilling.TitleTextKey = "Milling";
@@ -1317,7 +1343,7 @@ Msg_DelAllTabs;KabanHMI\Forms\SimulationMonitorForm.cs;782;Text;? string.Format(
 Msg_DelEverything;KabanHMI\Forms\SimulationMonitorForm.cs;783;Text;: string.Format(T("Msg_DelEverything", "Delete all {0} tab(s) of {1} controllers, with their {2} row(s)?"), tabs, mons.Length, rows);
 Msg_ExportFailed;KabanHMI\Forms\SimulationMonitorForm.cs;3769;Message;MessageBox.Show(DialogOwner, T("Msg_ExportFailed", "Could not write the file:") + "\r\n" + ex.Message,
 Msg_FactorRestartNow;KabanHMI\Forms\MainForm.Magnifier.cs;233;Text;string question = string.Format(LanguageManager.GetString("Msg_FactorRestartNow",
-Msg_FactorRestartNow;KabanHMI\Settings\UsersPreferencesControl.cs;965;Text;string question = string.Format(T("Msg_FactorRestartNow",
+Msg_FactorRestartNow;KabanHMI\Settings\UsersPreferencesControl.cs;967;Text;string question = string.Format(T("Msg_FactorRestartNow",
 Msg_FindAlarm;KabanHMI\Forms\DeviceFindForm.cs;416;Status;_status.Text = T("Msg_FindAlarm", "An alarm definition's bit - see Machine Parameters > Alarms.");
 Msg_FindCount;KabanHMI\Forms\DeviceFindForm.cs;338;Status;: string.Format(T("Msg_FindCount", "{0} use(s) on {1} page(s). Click a line to open its page."), _found.Count, pages);
 Msg_FindGone;KabanHMI\Forms\MainForm.cs;288;Text;if (found == null) why = LanguageManager.GetString("Msg_FindGone", "The page has changed - find again.");
@@ -1365,9 +1391,9 @@ Msg_ImportWrote;KabanHMI\Forms\SimulationMonitorForm.cs;3843;Message;(applied > 
 Msg_IoNone;KabanHMI\Screens\IoMonitorPage.cs;179;Text;_empty.Text = T("Msg_IoNone",
 Msg_JobSelected;KabanHMI\Screens\MachineHomeScreen.cs;358;Message;LanguageManager.GetString("Msg_JobSelected",
 Msg_MagnifierRestart;KabanHMI\Forms\MainForm.Magnifier.cs;57;Text;string question = string.Format(LanguageManager.GetString("Msg_MagnifierRestart",
-Msg_ManualMissing;KabanHMI\Settings\HmiManual.cs;236;Text;return LanguageManager.GetString("Msg_ManualMissing", "The manual was not found:") + " " + template;
-Msg_ManualOpenFailed;KabanHMI\Settings\HmiManual.cs;241;Text;if (!OpenFile(path)) return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + path;
-Msg_ManualOpenFailed;KabanHMI\Settings\HmiManual.cs;246;Text;return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + ex.Message;
+Msg_ManualMissing;KabanHMI\Settings\HmiManual.cs;271;Text;return LanguageManager.GetString("Msg_ManualMissing", "The manual was not found:") + " " + template;
+Msg_ManualOpenFailed;KabanHMI\Settings\HmiManual.cs;276;Text;if (!OpenFile(path)) return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + path;
+Msg_ManualOpenFailed;KabanHMI\Settings\HmiManual.cs;281;Text;return LanguageManager.GetString("Msg_ManualOpenFailed", "Could not open the manual:") + " " + ex.Message;
 Msg_MonBadDecimals;KabanHMI\Forms\SimulationMonitorForm.cs;3228;Status;SetStatus(string.Format(T("Msg_MonBadDecimals", "Decimal places: 0 - {0} - not changed."), StructuredTypes.MaxDecimals));
 Msg_MonBadDivisor;KabanHMI\Forms\SimulationMonitorForm.cs;3218;Status;SetStatus(T("Msg_MonBadDivisor", "The divisor is a number other than 0 - not changed."));
 Msg_MonBadDivisorShort;KabanHMI\Forms\PlcRowEditorForm.cs;293;Text;problem = LanguageManager.GetString("Msg_MonBadDivisorShort", "The divisor is a number other than 0.");
@@ -1450,31 +1476,31 @@ Msg_PlcNotRegistered;Kaban.Core\Helpers\PlcManager.cs;319;Text;return LanguageMa
 Msg_Redone;KabanHMI\Forms\SimulationMonitorForm.cs;916;Status;SetStatus(string.Format(T("Msg_Redone", "Redone: {0}."), step.What));
 Msg_ResetNeedsLogin;KabanHMI\Helpers\AlarmReset.cs;65;Text;why = LanguageManager.GetString("Msg_ResetNeedsLogin", "sign in as Operator or higher to reset the machine");
 Msg_ResetNoBit;KabanHMI\Helpers\AlarmReset.cs;52;Text;why = LanguageManager.GetString("Msg_ResetNoBit", "no alarm reset bit is set up for this machine yet");
-Msg_ResetNotSent;KabanHMI\Forms\MainForm.cs;1998;Message;string.Format(LanguageManager.GetString("Msg_ResetNotSent",
+Msg_ResetNotSent;KabanHMI\Forms\MainForm.cs;2001;Message;string.Format(LanguageManager.GetString("Msg_ResetNotSent",
 Msg_ResetRefused;KabanHMI\Helpers\AlarmReset.cs;85;Text;why = LanguageManager.GetString("Msg_ResetRefused", "the controller did not accept the write");
-Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1357;Message;LanguageManager.GetString("Msg_RestartFailed",
-Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1392;Message;LanguageManager.GetString("Msg_RestartFailed",
-Msg_RestartManually;KabanHMI\Forms\MainForm.cs;1455;Message;LanguageManager.GetString("Msg_RestartManually",
-Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1437;Text;? LanguageManager.GetString("Msg_RestartNeeded",
-Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1439;Text;: what + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNeeded",
-Msg_RestartNow;KabanHMI\Forms\MainForm.cs;1443;Message;body + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNow", "Restart now?"),
+Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1360;Message;LanguageManager.GetString("Msg_RestartFailed",
+Msg_RestartFailed;KabanHMI\Forms\MainForm.cs;1395;Message;LanguageManager.GetString("Msg_RestartFailed",
+Msg_RestartManually;KabanHMI\Forms\MainForm.cs;1458;Message;LanguageManager.GetString("Msg_RestartManually",
+Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1440;Text;? LanguageManager.GetString("Msg_RestartNeeded",
+Msg_RestartNeeded;KabanHMI\Forms\MainForm.cs;1442;Text;: what + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNeeded",
+Msg_RestartNow;KabanHMI\Forms\MainForm.cs;1446;Message;body + "\r\n\r\n" + LanguageManager.GetString("Msg_RestartNow", "Restart now?"),
 Msg_SheetDelete;KabanHMI\Forms\SimulationMonitorForm.cs;2642;Message;string.Format(T("Msg_SheetDelete", "Delete the tab '{0}' and its {1} row(s)?"), sh.Name, n),
 Msg_SheetNameEmpty;KabanHMI\Forms\SimulationMonitorForm.cs;2689;Text;string problem = n.Length == 0 ? T("Msg_SheetNameEmpty", "Type a name.")
 Msg_SheetNameTaken;KabanHMI\Forms\SimulationMonitorForm.cs;2691;Text;? T("Msg_SheetNameTaken", "This controller already has a tab with that name.") : null;
 Msg_StructDelete;KabanHMI\Forms\StructuredTypesForm.cs;299;Message;if (MessageBox.Show(this, string.Format(T("Msg_StructDelete", "Delete the structure '{0}'? A monitor row of this type shows its first word again."), t.Name),
 Msg_TrnAiMany;KabanHMI\Settings\TranslationsControl.cs;841;Message;!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnAiMany",
-Msg_TrnAiNoChange;KabanHMI\Settings\TranslationsControl.Import.cs;498;Text;: T("Msg_TrnAiNoChange", "Nothing written: no text of the table changes."));
-Msg_TrnAiNone;KabanHMI\Settings\TranslationsControl.Import.cs;494;Text;return string.Format(T("Msg_TrnAiNone", "Nothing to import: no \"{0}\" heading in it - the AI's translation files, or its answer with them, are what it reads."), "Key;EN;TR ...");
+Msg_TrnAiNoChange;KabanHMI\Settings\TranslationsControl.Import.cs;502;Text;: T("Msg_TrnAiNoChange", "Nothing written: no text of the table changes."));
+Msg_TrnAiNone;KabanHMI\Settings\TranslationsControl.Import.cs;498;Text;return string.Format(T("Msg_TrnAiNone", "Nothing to import: no \"{0}\" heading in it - the AI's translation files, or its answer with them, are what it reads."), "Key;EN;TR ...");
 Msg_TrnAiNothing;KabanHMI\Settings\TranslationsControl.cs;837;Status;SetStatus(T("Msg_TrnAiNothing", "Nothing to ask: no row shown has a text missing."), true);
 Msg_TrnChooseRow;KabanHMI\Settings\TranslationsControl.cs;572;Status;if (row == null) { SetStatus(T("Msg_TrnChooseRow", "Choose a row first."), true); return; }
 Msg_TrnCopied;KabanHMI\Settings\TranslationsControl.cs;715;Status;SetStatus(string.Format(T("Msg_TrnCopied", "{0} empty cell(s) of {1} filled with the texts of {2} - typed (orange) until Save."), n,
 Msg_TrnExported;KabanHMI\Settings\TranslationsControl.cs;875;Status;SetStatus(string.Format(T("Msg_TrnExported", "{0} rows written to {1}."), _shown.Count, dlg.FileName), false);
 Msg_TrnHistoryReset;KabanHMI\Settings\TranslationsControl.cs;980;Message;if (!Ask.YesNo(this, T("Ttl_TrnHistory", "Translation - edit history"), string.Format(T("Msg_TrnHistoryReset",
 Msg_TrnHistoryResetFailed;KabanHMI\Settings\TranslationsControl.cs;985;Message;Ask.Tell(this, T("Ttl_TrnHistory", "Translation - edit history"), T("Msg_TrnHistoryResetFailed", "The history could not be reset - the event log says why."));
-Msg_TrnImportCancelled;KabanHMI\Settings\TranslationsControl.Import.cs;496;Text;if (r.Cancelled) sb.Append(T("Msg_TrnImportCancelled", "Cancelled: nothing written."));
-Msg_TrnImported;KabanHMI\Settings\TranslationsControl.Import.cs;501;Text;: T("Msg_TrnImported", "Written into the translation files: {0} empty cell(s) filled, {1} of {2} change(s) taken - the history has them."),
-Msg_TrnImportLangs;KabanHMI\Settings\TranslationsControl.Import.cs;348;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnImportLangs",
-Msg_TrnImportLangsDeleted;KabanHMI\Settings\TranslationsControl.Import.cs;350;Message;fresh.Any(l => deleted.Contains(l, StringComparer.OrdinalIgnoreCase)) ? "\r\n\r\n" + T("Msg_TrnImportLangsDeleted", "(Some were deleted here before.)") : "")))
+Msg_TrnImportCancelled;KabanHMI\Settings\TranslationsControl.Import.cs;500;Text;if (r.Cancelled) sb.Append(T("Msg_TrnImportCancelled", "Cancelled: nothing written."));
+Msg_TrnImported;KabanHMI\Settings\TranslationsControl.Import.cs;505;Text;: T("Msg_TrnImported", "Written into the translation files: {0} empty cell(s) filled, {1} of {2} change(s) taken - the history has them."),
+Msg_TrnImportLangs;KabanHMI\Settings\TranslationsControl.Import.cs;352;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnImportLangs",
+Msg_TrnImportLangsDeleted;KabanHMI\Settings\TranslationsControl.Import.cs;354;Message;fresh.Any(l => deleted.Contains(l, StringComparer.OrdinalIgnoreCase)) ? "\r\n\r\n" + T("Msg_TrnImportLangsDeleted", "(Some were deleted here before.)") : "")))
 Msg_TrnLangAdded;KabanHMI\Settings\TranslationsControl.cs;655;Status;: string.Format(T("Msg_TrnLangAdded", "{0} added: its texts are English until typed - the language list offers it."), code)) + flag, false);
 Msg_TrnLangAddedCopied;KabanHMI\Settings\TranslationsControl.cs;654;Status;? string.Format(T("Msg_TrnLangAddedCopied", "{0} added: {1} text(s) of {2} copied into it - typed (orange) until Save writes them into the files."), code, n, copyFrom)
 Msg_TrnLangBad;KabanHMI\Settings\TranslationLanguageForms.cs;129;Text;if (!Regex.IsMatch(code, "^[A-Z]{2,3}$")) return T("Msg_TrnLangBad", "A language's code is 2 or 3 letters (FR, PL ...).");
@@ -1489,24 +1515,24 @@ Msg_TrnLangNoName;KabanHMI\Settings\TranslationLanguageForms.cs;131;Text;if (str
 Msg_TrnLangThere;KabanHMI\Settings\TranslationLanguageForms.cs;130;Text;if (existing != null && existing.Contains(code, StringComparer.OrdinalIgnoreCase)) return string.Format(T("Msg_TrnLangThere", "{0} is there already."), code);
 Msg_TrnLevel;KabanHMI\Forms\MainForm.Notes.cs;79;Text;why = LanguageManager.GetString("Msg_TrnLevel", "The Translation page is for Maintenance and above.");
 Msg_TrnNoKey;KabanHMI\Forms\MainForm.Notes.cs;85;Text;if (!table.ShowKey(key)) why = string.Format(LanguageManager.GetString("Msg_TrnNoKey", "{0} is in no translation file."), key);
-Msg_TrnNoOldFiles;KabanHMI\Settings\TranslationsControl.Import.cs;492;Text;: T("Msg_TrnNoOldFiles", "No translation file of this program is in that folder (CommonTranslations.csv, a machine's Translations.csv or Alarms.json).");
+Msg_TrnNoOldFiles;KabanHMI\Settings\TranslationsControl.Import.cs;496;Text;: T("Msg_TrnNoOldFiles", "No translation file of this program is in that folder (CommonTranslations.csv, a machine's Translations.csv or Alarms.json).");
 Msg_TrnNoPage;KabanHMI\Forms\MainForm.Notes.cs;74;Text;if (screen == null) { why = LanguageManager.GetString("Msg_TrnNoPage", "This program has no HMI Settings page."); return null; }
-Msg_TrnNoProject;KabanHMI\Settings\TranslationsControl.Import.cs;491;Text;return project ? T("Msg_TrnNoProject", "The project's files are not found: this works when the program runs from its Visual Studio build.")
+Msg_TrnNoProject;KabanHMI\Settings\TranslationsControl.Import.cs;495;Text;return project ? T("Msg_TrnNoProject", "The project's files are not found: this works when the program runs from its Visual Studio build.")
 Msg_TrnNoSemicolon;KabanHMI\Settings\TranslationsControl.cs;472;Status;SetStatus(string.Format(T("Msg_TrnNoSemicolon", "A text cannot have {0} in it - it separates the languages in the translation files."), ";"), true);
 Msg_TrnNothing;KabanHMI\Settings\TranslationsControl.cs;862;Status;if (_shown.Count == 0) { SetStatus(T("Msg_TrnNothing", "Nothing to export: no row passes the filters."), true); return; }
 Msg_TrnNotWritten;KabanHMI\Settings\TranslationsControl.cs;617;Status;(notWritten > 0 ? "  " + string.Format(T("Msg_TrnNotWritten", "{0} in force only: no file could take them."), notWritten) : ""), notWritten > 0);
-Msg_TrnOldKeys;KabanHMI\Settings\TranslationsControl.Import.cs;508;Text;: T("Msg_TrnOldKeys", "{0} key(s) this program no longer uses - left out."), r.OldKeys));
+Msg_TrnOldKeys;KabanHMI\Settings\TranslationsControl.Import.cs;512;Text;: T("Msg_TrnOldKeys", "{0} key(s) this program no longer uses - left out."), r.OldKeys));
 Msg_TrnOnlyEnglish;KabanHMI\Settings\TranslationsControl.cs;728;Menu;if (m.Items.Count == 0) m.Items.Add(new ToolStripMenuItem(T("Msg_TrnOnlyEnglish", "English only: it stays (every text's last resort)")) { Enabled = false });
-Msg_TrnProjectNoKey;KabanHMI\Settings\TranslationsControl.Import.cs;507;Text;sb.Append("\r\n").Append(string.Format(project ? T("Msg_TrnProjectNoKey", "{0} key(s) the project's files have not - left out (a key is not added).")
-Msg_TrnProjectSame;KabanHMI\Settings\TranslationsControl.Import.cs;497;Text;else if (r.Filled + r.Taken == 0) sb.Append(project ? T("Msg_TrnProjectSame", "Nothing written: the project's files have the program's texts.")
-Msg_TrnProjectWritten;KabanHMI\Settings\TranslationsControl.Import.cs;500;Text;sb.Append(string.Format(project ? T("Msg_TrnProjectWritten", "Written into the project's files: {0} empty cell(s) filled, {1} of {2} change(s) taken.")
+Msg_TrnProjectNoKey;KabanHMI\Settings\TranslationsControl.Import.cs;511;Text;sb.Append("\r\n").Append(string.Format(project ? T("Msg_TrnProjectNoKey", "{0} key(s) the project's files have not - left out (a key is not added).")
+Msg_TrnProjectSame;KabanHMI\Settings\TranslationsControl.Import.cs;501;Text;else if (r.Filled + r.Taken == 0) sb.Append(project ? T("Msg_TrnProjectSame", "Nothing written: the project's files have the program's texts.")
+Msg_TrnProjectWritten;KabanHMI\Settings\TranslationsControl.Import.cs;504;Text;sb.Append(string.Format(project ? T("Msg_TrnProjectWritten", "Written into the project's files: {0} empty cell(s) filled, {1} of {2} change(s) taken.")
 Msg_TrnRedone;KabanHMI\Settings\TranslationsControl.Undo.cs;128;Status;SetStatus(string.Format(T("Msg_TrnRedone", "Done again: {0} - {1} text(s)."), step.What, n), false);
 Msg_TrnRedoWritten;KabanHMI\Settings\TranslationsControl.Undo.cs;121;Message;string.Format(T("Msg_TrnRedoWritten", "Redo {0}?\r\n\r\nIts {1} text(s) are written again - in force and in their translation files."),
 Msg_TrnRevert;KabanHMI\Settings\TranslationsControl.cs;625;Message;string.Format(T("Msg_TrnRevert", "Throw away the {0} text(s) typed and not saved?"), _pending.Count))) return;
 Msg_TrnReviewAi;KabanHMI\Settings\TranslationsControl.Import.cs;197;Text;T("Msg_TrnReviewAi", "The AI's texts for the empty cells are written at once. These change a text: tick the ones to take (a New cell can be corrected first)."));
 Msg_TrnReviewOld;KabanHMI\Settings\TranslationsControl.Import.cs;264;Text;T("Msg_TrnReviewOld", "Its texts for the empty cells are written at once. These differ from this program's: the ones entered on this panel " +
-Msg_TrnReviewOld;KabanHMI\Settings\TranslationsControl.Import.cs;325;Text;T("Msg_TrnReviewOld", "Its texts for the empty cells are written at once. These differ from this program's: the ones entered on this panel " +
-Msg_TrnReviewProject;KabanHMI\Settings\TranslationsControl.Import.cs;398;Text;T("Msg_TrnReviewProject", "The texts for the project's empty cells are written at once. These differ from the project's: the ones entered " +
+Msg_TrnReviewOld;KabanHMI\Settings\TranslationsControl.Import.cs;329;Text;T("Msg_TrnReviewOld", "Its texts for the empty cells are written at once. These differ from this program's: the ones entered on this panel " +
+Msg_TrnReviewProject;KabanHMI\Settings\TranslationsControl.Import.cs;402;Text;T("Msg_TrnReviewProject", "The texts for the project's empty cells are written at once. These differ from the project's: the ones entered " +
 Msg_TrnSaved;KabanHMI\Settings\TranslationsControl.cs;616;Status;SetStatus(string.Format(T("Msg_TrnSaved", "{0} text(s) saved into the translation files and in force - the history has them."), n) +
 Msg_TrnShown;KabanHMI\Settings\TranslationsControl.cs;561;Status;SetStatus(string.Format(T("Msg_TrnShown", "{0}: its texts - type in a cell to change one, then Save."), row.Key), false);
 Msg_TrnUndone;KabanHMI\Settings\TranslationsControl.Undo.cs;110;Status;SetStatus(string.Format(T("Msg_TrnUndone", "Undone: {0} - {1} text(s) back as they were."), step.What, n), false);
@@ -1761,24 +1787,27 @@ Par_Diameter;KabanHMI\Profiles\LibraryEditorForm.cs;436;Text;case "diameter_mm":
 Par_Length;KabanHMI\Profiles\LibraryEditorForm.cs;438;Text;case "length_mm": return T("Par_Length", "Length (along the bar)");
 Par_Path;KabanHMI\Profiles\LibraryEditorForm.cs;442;Text;case "path": return T("Par_Path", "Path (LINE, CONTOUR)");
 Par_Width;KabanHMI\Profiles\LibraryEditorForm.cs;439;Text;case "width_mm": return T("Par_Width", "Width");
-Plg_Area;KabanHMI\Dashboard\DashboardSettingsPage.cs;103;Text;FieldRow("Plg_Area", "PLC log area", _logArea);
-Plg_AreaTip;KabanHMI\Dashboard\DashboardSettingsPage.cs;104;Tooltip;UiStyle.SetTip(_tips, _logArea, T("Plg_AreaTip",
-Plg_BadArea;KabanHMI\Dashboard\DashboardSettingsPage.cs;416;Text;problems.Add(T("Plg_BadArea", "The PLC log area is a word device (R27000, D7000):") + " \"" + area + "\".");
+Plg_Area;KabanHMI\Dashboard\MachineLogSettings.cs;79;Text;row.Controls.Add(Caption(T("Plg_Area", "PLC log area")));
+Plg_AreaNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;96;Text;Note("Plg_AreaNote", "Its PLC log area: Machine Parameters > Alarms and Logs.");
+Plg_AreaTip;KabanHMI\Dashboard\MachineLogSettings.cs;81;Tooltip;UiStyle.SetTip(_tips, _area, T("Plg_AreaTip",
+Plg_BadArea;KabanHMI\Dashboard\MachineLogSettings.cs;182;Text;problem = T("Plg_BadArea", "The PLC log area is a word device (R27000, D7000):") + " \"" + area + "\".";
 Plg_Error;KabanHMI\Dashboard\MachineLogger.cs;235;Text;Say(T("Plg_Error", "Could not take the records:") + " " + ex.Message);
-Plg_Head;KabanHMI\Dashboard\DashboardSettingsPage.cs;100;Text;Heading("Plg_Head", "📥", "The machine's log from its PLC");
-Plg_Km;KabanHMI\Dashboard\DashboardSettingsPage.cs;112;Text;CheckRow(_km, "Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)");
-Plg_KmConnection;KabanHMI\Dashboard\DashboardSettingsPage.cs;114;Text;FieldRow("Plg_KmConnection", "KMSystem connection", _kmConnection);
-Plg_KmNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;115;Text;Note("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it.");
+Plg_Head;KabanHMI\Dashboard\MachineLogSettings.cs;59;Text;Text = "\U0001F4E5  " + T("Plg_Head", "The machine's log from its PLC"), AutoSize = true,
+Plg_Km;KabanHMI\Dashboard\MachineLogSettings.cs;92;Text;_km.Text = T("Plg_Km", "A record's Process ID: its Profile Code and Profile Data from KMSystem (PostgreSQL)");
+Plg_KmConnection;KabanHMI\Dashboard\MachineLogSettings.cs;96;Text;km.Controls.Add(Caption(T("Plg_KmConnection", "KMSystem connection")));
+Plg_KmNote;KabanHMI\Dashboard\MachineLogSettings.cs;101;Text;Text = T("Plg_KmNote", "Needs Npgsql.dll beside the program, as the Industry 4 service had it."),
 Plg_Last;KabanHMI\Dashboard\MachineLogger.cs;228;Text;LastRecord.HasValue ? ", " + T("Plg_Last", "the last of") + " " + LastRecord.Value.ToString(DashboardData.DbFormat, CultureInfo.InvariantCulture) + " (UTC)" : ""));
+Plg_NoDatabase;KabanHMI\Dashboard\MachineLogSettings.cs;66;Text;_none.Text = T("Plg_NoDatabase", "This machine keeps no log database (HMI Settings > Logs and Reports): nothing is taken from its PLC.");
 Plg_NoMap;KabanHMI\Dashboard\MachineLogger.cs;170;Text;Say(T("Plg_NoMap", "The machine has no state map (Dashboard\\StateMap.json): nothing to log."));
 Plg_NotConnected;KabanHMI\Dashboard\MachineLogger.cs;188;Text;Say(T("Plg_NotConnected", "Waiting for the PLC: not connected."));
-Plg_NotStarted;KabanHMI\Dashboard\DashboardSettingsPage.cs;236;Text;: T("Plg_NotStarted", "Not running in this program (it starts with the main window).");
+Plg_NotStarted;KabanHMI\Dashboard\MachineLogSettings.cs;163;Text;_state.Text = l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window).");
+Plg_NotStarted;KabanHMI\Settings\FeaturesControl.cs;170;Text;lines.Add(m.Name + ": " + (l != null ? l.Status : T("Plg_NotStarted", "Not running in this program (it starts with the main window).")));
 Plg_Off;KabanHMI\Dashboard\MachineLogger.cs;163;Text;Say(T("Plg_Off", "Switched off: the machine's log is not taken from its PLC."));
 Plg_Running;KabanHMI\Dashboard\MachineLogger.cs;226;Text;Say(string.Format(CultureInfo.CurrentCulture, T("Plg_Running",
 Plg_Service;KabanHMI\Dashboard\MachineLogger.cs;178;Text;Say(T("Plg_Service", "Waiting: the Industry 4 service runs on this PC and takes the records - stop it (or uninstall it) and the HMI takes them."));
-Plg_ServiceNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;111;Text;Note("Plg_ServiceNote", "Not beside the Industry 4 service: while it runs on this PC, the HMI waits. Stop it (or uninstall it) once the HMI logs.");
-Plg_State;KabanHMI\Dashboard\DashboardSettingsPage.cs;110;Text;FieldRow("Plg_State", "Now", _loggerState);
-Plg_Switch;KabanHMI\Dashboard\DashboardSettingsPage.cs;101;Text;CheckRow(_plcLogging, "Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into this database");
+Plg_State;KabanHMI\Dashboard\MachineLogSettings.cs;83;Text;row.Controls.Add(Caption(T("Plg_State", "Now")));
+Plg_Switch;KabanHMI\Dashboard\MachineLogSettings.cs;73;Text;_on.Text = T("Plg_Switch", "The HMI takes the machine's states, events and alarms from its PLC into its log database");
+Plg_WhoNote;KabanHMI\Dashboard\DashboardSettingsPage.cs;95;Text;Note("Plg_WhoNote", "Written by the Industry 4 service or the HMI (HMI Settings > Features).");
 Pop_Cancel;KabanHMI\Forms\PlcPopupForm.cs;93;Text;case "cancel": return T("Pop_Cancel", "Cancel");
 Pop_Continue;KabanHMI\Forms\PlcPopupForm.cs;96;Text;case "continue": return T("Pop_Continue", "Continue");
 Pop_Fault;KabanHMI\Forms\PlcPopupForm.cs;420;Text;Head(head.Length > 1 ? head[1] : T("Pop_Fault", "Fault")));
@@ -2143,7 +2172,7 @@ PV_Title;KabanHMI\Settings\PreferencePreview.cs;206;Text;using (var f = F(8.5f))
 PV_Tooltip;KabanHMI\Settings\PreferencePreview.cs;170;Text;return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
 PV_TopBar;KabanHMI\Settings\PreferencePreview.cs;575;Text;TextRenderer.DrawText(g, T("PV_TopBar", "the top bar"), f, new Rectangle(bar.Left + S(110), bar.Top, bar.Width - S(110), bar.Height), Color.White, TextFormatFlags.VerticalCenter);
 PV_Unit;KabanHMI\Settings\PreferencePreview.cs;183;Text;return T("PV_Unit", "Every value of this kind on screen, and what is typed into it - the PLC keeps its own unit, converted both ways.");
-PV_UnitOf;KabanHMI\Settings\UsersPreferencesControl.cs;760;Text;if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
+PV_UnitOf;KabanHMI\Settings\UsersPreferencesControl.cs;762;Text;if (UnitOf(kv.Key) != UnitType.None) name = string.Format(T("PV_UnitOf", "{0} unit"), name);
 PV_UnitPlc;KabanHMI\Settings\PreferencePreview.cs;291;Text;TextRenderer.DrawText(g, T("PV_UnitPlc", "The PLC keeps") + ":  " + refText, f, new Rectangle(r.Left, r.Top + S(82), r.Width, S(20)), Grey, TextFormatFlags.Left);
 Ref_Bed;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;587;Text;case "BED_DATUM": return T("Ref_Bed", "Bed datum");
 Ref_Center;Kaban.Machines.FA2010\Screens\ProfilesScreen.Details.cs;583;Text;case "CENTER": return T("Ref_Center", "Profile centre");
@@ -2176,15 +2205,16 @@ Robot;Kaban.Machines.FA2010\FA2010Module.cs;192;Text;new Screens.GeneratedPage("
 Robot;Kaban.Machines.H800\Screens\ManualDischarge.Designer.cs;54;Text;this.uRobot.TitleTextKey = "Robot";
 Robot;Kaban.Machines.H800\Screens\ManualDischarge.Designer.cs;74;Text;this.uRobot2.TitleTextKey = "Robot";
 Set_AiPrompt;KabanHMI\Settings\AiPromptControl.cs;42;Text;public string TitleKey { get { return "Set_AiPrompt"; } }
-Set_AlarmColDelay;KabanHMI\Settings\AlarmSettingsControl.cs;167;Heading;HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Cylinder delay (s)"),
-Set_AlarmDelayBad;KabanHMI\Settings\AlarmSettingsControl.cs;202;Status;_status.Text = string.Format(LanguageManager.GetString("Set_AlarmDelayBad", "A delay is a number of seconds from {0} to 600, or blank for the general delay."),
-Set_AlarmGenAxes;KabanHMI\Settings\AlarmSettingsControl.cs;104;Text;Text = LanguageManager.GetString("Set_AlarmGenAxes", "The HMI raises the axis and inverter alarms itself")
-Set_AlarmGenDelay;KabanHMI\Settings\AlarmSettingsControl.cs;113;Text;Text = LanguageManager.GetString("Set_AlarmGenDelay", "Cylinder alarm delay (s):")
-Set_AlarmGenHint;KabanHMI\Settings\AlarmSettingsControl.cs;126;Text;Text = LanguageManager.GetString("Set_AlarmGenHint", "A cylinder alarm's own delay: the Cylinder delay column (blank = this one).")
-Set_AlarmGenOn;KabanHMI\Settings\AlarmSettingsControl.cs;94;Text;Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder alarms itself")
-Set_Alarms;KabanHMI\Settings\AlarmSettingsControl.cs;565;Text;public string TitleKey { get { return "Set_Alarms"; } }
+Set_AlarmColDelay;KabanHMI\Settings\AlarmSettingsControl.cs;168;Heading;HeaderText = LanguageManager.GetString("Set_AlarmColDelay", "Cylinder delay (s)"),
+Set_AlarmDelayBad;KabanHMI\Settings\AlarmSettingsControl.cs;203;Status;_status.Text = string.Format(LanguageManager.GetString("Set_AlarmDelayBad", "A delay is a number of seconds from {0} to 600, or blank for the general delay."),
+Set_AlarmGenAxes;KabanHMI\Settings\AlarmSettingsControl.cs;105;Text;Text = LanguageManager.GetString("Set_AlarmGenAxes", "The HMI raises the axis and inverter alarms itself")
+Set_AlarmGenDelay;KabanHMI\Settings\AlarmSettingsControl.cs;114;Text;Text = LanguageManager.GetString("Set_AlarmGenDelay", "Cylinder alarm delay (s):")
+Set_AlarmGenHint;KabanHMI\Settings\AlarmSettingsControl.cs;127;Text;Text = LanguageManager.GetString("Set_AlarmGenHint", "A cylinder alarm's own delay: the Cylinder delay column (blank = this one).")
+Set_AlarmGenOn;KabanHMI\Settings\AlarmSettingsControl.cs;95;Text;Text = LanguageManager.GetString("Set_AlarmGenOn", "The HMI raises the cylinder alarms itself")
+Set_AlarmsAndLogs;KabanHMI\Settings\AlarmSettingsControl.cs;587;Text;public string TitleKey { get { return "Set_AlarmsAndLogs"; } }
 Set_Approach;KabanHMI\Profiles\LibraryEditorForm.cs;463;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
 Set_Breakthrough;KabanHMI\Profiles\LibraryEditorForm.cs;464;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
+Set_Features;KabanHMI\Settings\FeaturesControl.cs;195;Text;public string TitleKey { get { return "Set_Features"; } }
 Set_Folder;KabanHMI\Profiles\LibraryEditorForm.cs;465;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
 Set_Import;KabanHMI\Settings\PlaceholderPages.cs;41;Text;public string TitleKey => "Set_Import";
 Set_Incremental;KabanHMI\Profiles\LibraryEditorForm.cs;465;Text;T("Set_Incremental", "Incremental moves (G91)"), T("Set_Folder", "Folder for program files")
@@ -2192,9 +2222,9 @@ Set_Logs;KabanHMI\Settings\LogSettingsControl.cs;249;Text;LanguageManager.GetStr
 Set_Logs;KabanHMI\Settings\PlaceholderPages.cs;49;Text;public string TitleKey => "Set_Logs";
 Set_Peck;KabanHMI\Profiles\LibraryEditorForm.cs;464;Text;T("Set_Peck", "Most a tool goes down in one pass (mm)"), T("Set_Breakthrough", "Past the wall when cutting through (mm)"),
 Set_SafeZ;KabanHMI\Profiles\LibraryEditorForm.cs;463;Text;T("Set_SafeZ", "Safe height above the face (mm)"), T("Set_Approach", "Feed through air inside the profile (mm/min)"),
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2074;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2096;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
-Set_StationConn;KabanHMI\Forms\MainForm.cs;2099;Text;AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2077;Text;LanguageManager.GetString("Set_StationConn", "PLC Connection"), LinkIcon(22)) { Name = "connSettings" };
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2099;Text;var settings = FindSettingsWith(kv.Value, "Set_StationConn");
+Set_StationConn;KabanHMI\Forms\MainForm.cs;2102;Text;AsOneStep(() => { LoadScreen(screen); settings.ActivateByKey("Set_StationConn"); });
 Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;558;Text;string title = LanguageManager.GetString("Set_StationConn", "PLC Connection");
 Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;628;Text;public string TitleKey { get { return "Set_StationConn"; } }
 Set_UsersPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;15;Text;public string TitleKey => "Set_UsersPrefs";
@@ -2209,13 +2239,13 @@ St_Proposed;KabanHMI\Profiles\LibraryEditorForm.cs;592;Text;case "PROPOSED": ret
 St_Rejected;KabanHMI\Profiles\LibraryEditorForm.cs;595;Text;case "REJECTED": return T("St_Rejected", "not on this profile");
 Sta_Connected;KabanHMI\Settings\PlcConnectionDiagnostics.cs;101;Text;if (r.Live) r.State = "● " + LanguageManager.GetString("Sta_Connected", "Connected");
 Sta_Failed;Kaban.Core\Helpers\ConnectionMonitor.cs;346;Text;var text = LanguageManager.GetString("Sta_Failed", "Connection failed");
-Sta_Failed;KabanHMI\Forms\MainForm.cs;2048;Text;? LanguageManager.GetString("Sta_Failed", "Connection failed") + suffix
+Sta_Failed;KabanHMI\Forms\MainForm.cs;2051;Text;? LanguageManager.GetString("Sta_Failed", "Connection failed") + suffix
 Sta_NotRegistered;KabanHMI\Settings\PlcConnectionDiagnostics.cs;88;Text;r.Driver = LanguageManager.GetString("Sta_NotRegistered", "not registered");
 Sys_Code;Kaban.Machines.FA2010\Screens\AlarmScreen.cs;98;Heading;dgvAlarms.Columns["ColCode"].HeaderText = LanguageManager.GetString("Sys_Code", "Code");
 Sys_Code;Kaban.Machines.SB3012\Screens\AlarmScreen.cs;98;Heading;dgvAlarms.Columns["ColCode"].HeaderText = LanguageManager.GetString("Sys_Code", "Code");
 Sys_Code;Kaban.Machines.SB3015\Screens\AlarmScreen.cs;98;Heading;dgvAlarms.Columns["ColCode"].HeaderText = LanguageManager.GetString("Sys_Code", "Code");
-Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;795;Text;Text = LanguageManager.GetString("Sys_CommLostBanner",
-Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;801;Text;_lblComm.Text = LanguageManager.GetString("Sys_CommLostBanner",
+Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;798;Text;Text = LanguageManager.GetString("Sys_CommLostBanner",
+Sys_CommLostBanner;KabanHMI\Forms\MainForm.cs;804;Text;_lblComm.Text = LanguageManager.GetString("Sys_CommLostBanner",
 Sys_ConfirmChange;KabanHMI\Controls\NumericInputHMI.cs;1122;Text;LanguageManager.GetString("Sys_ConfirmChange",
 Sys_ConfirmChangeAddr;KabanHMI\Controls\NumericInputHMI.cs;1116;Text;LanguageManager.GetString("Sys_ConfirmChangeAddr", "Write {0} to {1}?"),
 Sys_ConfirmTitle;KabanHMI\Controls\NumericInputHMI.cs;1128;Message;LanguageManager.GetString("Sys_ConfirmTitle", "Confirm"),
@@ -2232,10 +2262,10 @@ Sys_Disabled;KabanHMI\Settings\SettingsScreen.cs;278;Message;LanguageManager.Get
 Sys_InputTitle;KabanHMI\Controls\NumericInputHMI.cs;996;Text;LanguageManager.GetString("Sys_InputTitle", "Input"),
 Sys_InputTitle;KabanHMI\Forms\NumpadForm.cs;136;Text;Text = caption ?? LanguageManager.GetString("Sys_InputTitle", "Input");
 Sys_Machine;Kaban.Core\Helpers\PlcManager.cs;168;Text;? LanguageManager.GetString("Sys_Machine", "Machine")
-Sys_NoActiveAlarms;KabanHMI\Forms\MainForm.cs;1943;Text;LanguageManager.GetString("Sys_NoActiveAlarms", "No active alarms")) { Enabled = false });
+Sys_NoActiveAlarms;KabanHMI\Forms\MainForm.cs;1946;Text;LanguageManager.GetString("Sys_NoActiveAlarms", "No active alarms")) { Enabled = false });
 Sys_NoData;KabanHMI\Controls\ButtonHMI.cs;283;Text;return IsPlcBound ? LanguageManager.GetString("Sys_NoData", "Waiting for PLC data.") : "";
-Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;1628;Text;? LanguageManager.GetString("Sys_NotLoggedIn", "No user logged")
-Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;2489;Text;userPart = LanguageManager.GetString("Sys_NotLoggedIn", "No user logged");
+Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;1631;Text;? LanguageManager.GetString("Sys_NotLoggedIn", "No user logged")
+Sys_NotLoggedIn;KabanHMI\Forms\MainForm.cs;2492;Text;userPart = LanguageManager.GetString("Sys_NotLoggedIn", "No user logged");
 Sys_Reason;KabanHMI\Controls\BaseNumericHMI.cs;411;Text;string reason = LanguageManager.GetString("Sys_Reason", "Reason:");
 Sys_Reason;KabanHMI\Controls\NumericInputHMI.cs;327;Text;string reason = LanguageManager.GetString("Sys_Reason", "Reason:");
 Sys_ReqSec;KabanHMI\Controls\BaseNumericHMI.cs;412;Text;string reqSec = LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:");
@@ -2295,7 +2325,7 @@ Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;585;Message;if (target
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;624;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"),
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;841;Message;!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnAiMany",
 Tab_Translations;KabanHMI\Settings\TranslationsControl.cs;1129;Text;public string TitleKey { get { return "Tab_Translations"; } }
-Tab_Translations;KabanHMI\Settings\TranslationsControl.Import.cs;348;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnImportLangs",
+Tab_Translations;KabanHMI\Settings\TranslationsControl.Import.cs;352;Message;if (!Ask.YesNo(this, T("Tab_Translations", "Translation"), string.Format(T("Msg_TrnImportLangs",
 Tab_Translations;KabanHMI\Settings\TranslationsControl.Undo.cs;102;Message;if (step.Written && !Ask.YesNo(this, T("Tab_Translations", "Translation"),
 Tab_Translations;KabanHMI\Settings\TranslationsControl.Undo.cs;120;Message;if (step.Written && !Ask.YesNo(this, T("Tab_Translations", "Translation"),
 Tbl_Add;KabanHMI\Profiles\TableEditor.cs;77;Tooltip;_add = UiStyle.ToolButton("\u2795", T("Tbl_Add", "Add a row"), _tips, (s, e) => AddRow());
@@ -2322,16 +2352,16 @@ Tip_AiAsk;KabanHMI\Helpers\AiMenu.cs;70;Tooltip;ask.ToolTipText = string.Format(
 Tip_AiPrompt;KabanHMI\Helpers\AiMenu.cs;59;Tooltip;? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's o...
 Tip_AlarmBit;KabanHMI\Controls\ButtonHMI.cs;1438;Tooltip;lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
 Tip_AlarmBit;KabanHMI\Controls\CylinderUnitHMI.cs;1332;Tooltip;string alarm = LanguageManager.GetString("Tip_AlarmBit", "Alarm bit");
-Tip_AlarmDelayCell;KabanHMI\Settings\AlarmSettingsControl.cs;268;Tooltip;? LanguageManager.GetString("Tip_AlarmDelayCell", "This movement's delay before the HMI raises the alarm (seconds, blank = the general delay).")
-Tip_AlarmDelayNone;KabanHMI\Settings\AlarmSettingsControl.cs;269;Tooltip;: LanguageManager.GetString("Tip_AlarmDelayNone", "No cylinder unit's movement reports this alarm: the HMI does not time it.");
-Tip_AlarmGenAxes;KabanHMI\Settings\AlarmSettingsControl.cs;106;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genAxes, LanguageManager.GetString("Tip_AlarmGenAxes",
-Tip_AlarmGenDelay;KabanHMI\Settings\AlarmSettingsControl.cs;121;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genDelay, LanguageManager.GetString("Tip_AlarmGenDelay",
-Tip_AlarmGenOn;KabanHMI\Settings\AlarmSettingsControl.cs;96;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genOn, LanguageManager.GetString("Tip_AlarmGenOn",
+Tip_AlarmDelayCell;KabanHMI\Settings\AlarmSettingsControl.cs;281;Tooltip;? LanguageManager.GetString("Tip_AlarmDelayCell", "This movement's delay before the HMI raises the alarm (seconds, blank = the general delay).")
+Tip_AlarmDelayNone;KabanHMI\Settings\AlarmSettingsControl.cs;282;Tooltip;: LanguageManager.GetString("Tip_AlarmDelayNone", "No cylinder unit's movement reports this alarm: the HMI does not time it.");
+Tip_AlarmGenAxes;KabanHMI\Settings\AlarmSettingsControl.cs;107;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genAxes, LanguageManager.GetString("Tip_AlarmGenAxes",
+Tip_AlarmGenDelay;KabanHMI\Settings\AlarmSettingsControl.cs;122;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genDelay, LanguageManager.GetString("Tip_AlarmGenDelay",
+Tip_AlarmGenOn;KabanHMI\Settings\AlarmSettingsControl.cs;97;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, _genOn, LanguageManager.GetString("Tip_AlarmGenOn",
 Tip_AlarmOnNow;KabanHMI\Controls\ButtonHMI.cs;1440;Tooltip;(v.HasValue && v.Value != 0 ? "  (" + LanguageManager.GetString("Tip_AlarmOnNow", "ON now") + ")" : ""));
-Tip_AlarmSetLinks;KabanHMI\Settings\AlarmSettingsControl.cs;77;Tooltip;add(UiStyle.ToolButton("\u270F\uFE0F", LanguageManager.GetString("Tip_AlarmSetLinks", "Edit the helper links of the selected alarm (several documents)"),
-Tip_AlarmSetOpen;KabanHMI\Settings\AlarmSettingsControl.cs;79;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", LanguageManager.GetString("Tip_AlarmSetOpen", "Open a helper document of the selected alarm"),
-Tip_AlarmSetRevert;KabanHMI\Settings\AlarmSettingsControl.cs;76;Tooltip;add(UiStyle.ToolButton("\u21BA", LanguageManager.GetString("Tip_AlarmSetRevert", "Throw the changes away and read the saved settings again"), tips, (s, e) => LoadRows()));
-Tip_AlarmSetSave;KabanHMI\Settings\AlarmSettingsControl.cs;73;Tooltip;_btnSave = UiStyle.ToolButton("\uD83D\uDCBE", LanguageManager.GetString("Tip_AlarmSetSave", "Save the alarm settings"), tips, (s, e) => Save());
+Tip_AlarmSetLinks;KabanHMI\Settings\AlarmSettingsControl.cs;78;Tooltip;add(UiStyle.ToolButton("\u270F\uFE0F", LanguageManager.GetString("Tip_AlarmSetLinks", "Edit the helper links of the selected alarm (several documents)"),
+Tip_AlarmSetOpen;KabanHMI\Settings\AlarmSettingsControl.cs;80;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", LanguageManager.GetString("Tip_AlarmSetOpen", "Open a helper document of the selected alarm"),
+Tip_AlarmSetRevert;KabanHMI\Settings\AlarmSettingsControl.cs;77;Tooltip;add(UiStyle.ToolButton("\u21BA", LanguageManager.GetString("Tip_AlarmSetRevert", "Throw the changes away and read the saved settings again"), tips, (s, e) => LoadRows()));
+Tip_AlarmSetSave;KabanHMI\Settings\AlarmSettingsControl.cs;74;Tooltip;_btnSave = UiStyle.ToolButton("\uD83D\uDCBE", LanguageManager.GetString("Tip_AlarmSetSave", "Save the alarm settings"), tips, (s, e) => Save());
 Tip_AlertBit;KabanHMI\Controls\CheckBoxHMI.cs;312;Tooltip;tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
 Tip_AlertOn;KabanHMI\Controls\CheckBoxHMI.cs;314;Tooltip;(_alert ? "  (" + LanguageManager.GetString("Tip_AlertOn", "now") + ")" : "");
 Tip_Allowed;KabanHMI\Controls\NumericInputHMI.cs;342;Tooltip;if (!hasMin && !hasMax) return IsAngle ? LanguageManager.GetString("Tip_Allowed", "Allowed") + ": 0 - 360" : "";
@@ -2378,9 +2408,9 @@ Tip_HmiStationId;KabanHMI\Settings\StationConnectionControl.cs;397;Tooltip;"\r\n
 Tip_ImpBackups;KabanHMI\Settings\ImportSettingsControl.cs;124;Tooltip;UiStyle.SetTip(tips, backups, T("Tip_ImpBackups", "The program's files as they were before each import (Backup_<date> in the program's folder)"));
 Tip_ImpCompare;KabanHMI\Settings\ImportSettingsControl.cs;112;Tooltip;UiStyle.SetTip(tips, _btnCompare, T("Tip_ImpCompare", "This program's file beside the older one's, line by line - what the import would change (a double click on a row too)"));
 Tip_ImpList;KabanHMI\Settings\ImportSettingsControl.cs;105;Tooltip;UiStyle.SetTip(tips, scan, T("Tip_ImpList", "Looks in the folder (and its folders) for the older program's settings files and lists them, " +
-Tip_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;71;Tooltip;: LanguageManager.GetString("Tip_InputMouse", "Used with a mouse")) +
-Tip_InputSwitch;KabanHMI\Forms\MainForm.Touch.cs;72;Tooltip;"\n" + LanguageManager.GetString("Tip_InputSwitch", "Click to switch between a mouse and a touch screen");
-Tip_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;70;Tooltip;return (TouchInput.On ? LanguageManager.GetString("Tip_InputTouch", "Used by touch: larger menus, rows and buttons, a long press for a menu, a finger drag scrolls, a keyboard on...
+Tip_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;79;Tooltip;: LanguageManager.GetString("Tip_InputMouse", "Used with a mouse")) +
+Tip_InputSwitch;KabanHMI\Forms\MainForm.Touch.cs;80;Tooltip;"\n" + LanguageManager.GetString("Tip_InputSwitch", "Click to switch between a mouse and a touch screen");
+Tip_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;78;Tooltip;return (TouchInput.On ? LanguageManager.GetString("Tip_InputTouch", "Used by touch: larger menus, rows and buttons, a long press for a menu, a finger drag scrolls, a keyboard on...
 Tip_IoDrawing;KabanHMI\Screens\IoMonitorPage.cs;513;Tooltip;tip += "\n" + LanguageManager.GetString("Tip_IoDrawing", "On the drawing:") + " " + w.Electrical();
 Tip_IoFilter;KabanHMI\Screens\IoMonitorPage.cs;104;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _filter, T("Tip_IoFilter", "Part of an address (X20, Y1) or of a name"));
 Tip_IoRead;KabanHMI\Screens\IoMonitorPage.cs;507;Tooltip;tip += "\n" + string.Format(LanguageManager.GetString("Tip_IoRead", "read at {0}, the relay the PLC copies it into"), p.Read);
@@ -2439,8 +2469,8 @@ Tip_MonUp;KabanHMI\Forms\SimulationMonitorForm.cs;537;Tooltip;var btnUp = _btnUp
 Tip_MonUp;KabanHMI\Forms\SimulationMonitorForm.cs;538;Tooltip;keyed(btnUp, Keys.Control | Keys.Up, T("Tip_MonUp", "Move the selected rows up"));
 Tip_MonWriteLog;KabanHMI\Forms\SimulationMonitorForm.cs;3685;Tooltip;tip += "\r\n" + T("Tip_MonWriteLog", "Every HMI write is in the PLC write log: HMI Settings > Log Settings, kind PLC device writes.");
 Tip_MotionParamEdit;KabanHMI\Controls\MotionValueHMI.cs;177;Tooltip;text += "\n" + LanguageManager.GetString("Tip_MotionParamEdit",
-Tip_NavBack;KabanHMI\Forms\MainForm.cs;2806;Tooltip;Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
-Tip_NavForward;KabanHMI\Forms\MainForm.cs;2807;Tooltip;Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
+Tip_NavBack;KabanHMI\Forms\MainForm.cs;2809;Tooltip;Helpers.Shortcuts.Set(_btnHistBack, Keys.Alt | Keys.Left, _topTips, LanguageManager.GetString("Tip_NavBack", "Back to the page before"));
+Tip_NavForward;KabanHMI\Forms\MainForm.cs;2810;Tooltip;Helpers.Shortcuts.Set(_btnHistFwd, Keys.Alt | Keys.Right, _topTips, LanguageManager.GetString("Tip_NavForward", "Forward again"));
 Tip_NetAddress;KabanHMI\Settings\StationConnectionControl.cs;405;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(tips, address, LanguageManager.GetString("Tip_NetAddress",
 Tip_NoteHelper;KabanHMI\Helpers\NoteHelpers.cs;116;Tooltip;UiStyle.SetTip(UiStyle.Tips(), badge, LanguageManager.GetString("Tip_NoteHelper", "Helpers for this control (from the notes page)") + "\n" +
 Tip_NotReadYet;KabanHMI\Controls\BaseNumericHMI.cs;345;Tooltip;return caption + ":\t" + LanguageManager.GetString("Tip_NotReadYet", "not read yet");
@@ -2482,7 +2512,7 @@ Tip_SideClose;KabanHMI\Forms\MainForm.SidePanel.cs;830;Tooltip;_btnClose = Capti
 Tip_SideDockBack;KabanHMI\Forms\MainForm.SidePanel.cs;824;Tooltip;LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"),
 Tip_SidePopOut;KabanHMI\Forms\MainForm.SidePanel.cs;155;Tooltip;_sidePopOut = HeaderButton(DrawPopOutGlyph, "Pop out", T("Tip_SidePopOut", "Open in a window of its own (for a second screen)"),
 Tip_SideSplitter;KabanHMI\Forms\MainForm.SidePanel.cs;195;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
-Tip_SimMonitor;KabanHMI\Forms\MainForm.cs;2960;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
+Tip_SimMonitor;KabanHMI\Forms\MainForm.cs;2963;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
 Tip_SpeedSlider;KabanHMI\Controls\SpeedOverrideHMI.cs;111;Tooltip;(_softEnabled ? LanguageManager.GetString("Tip_SpeedSlider", "Drag the slider, or tap the percentage to type it.")
 Tip_StructAddMember;KabanHMI\Forms\StructuredTypesForm.cs;116;Tooltip;_addMember = UiStyle.ToolButton(E(0x2795), T("Tip_StructAddMember", "Add a label after the last one"), _tips);
 Tip_StructBit;KabanHMI\Forms\StructuredTypesForm.cs;143;Heading;_members.Columns.Add(new DataGridViewTextBoxColumn { Name = "Bit", HeaderText = T("Col_StructBit", "Bit"), FillWeight = 9, ToolTipText = T("Tip_StructBit", "A Bit member: its bi...
@@ -2551,10 +2581,10 @@ Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;45;Text;new[] { "Toleranc
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;56;Tooltip;AddSection("Tolerance", "Col_PpTolerance", "Positioning tolerance", "Tolerance", "Tip_PpTolerance");
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;74;Text;public string PositioningToleranceAddress { get { return FieldAddress("Tolerance"); } set { SetFieldAddress("Tolerance", value); } }
 Tolerance;KabanHMI\Controls\PneumaticPositioningHMI.cs;88;Text;public NumericInputHMI ToleranceField { get { return FieldOf("Tolerance"); } }
-Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1872;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
-Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1920;Text;LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"))
+Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1875;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnAlarmReset, LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"));
+Ttl_ActiveAlarms;KabanHMI\Forms\MainForm.cs;1923;Text;LanguageManager.GetString("Ttl_ActiveAlarms", "Active Alarms"))
 Ttl_AddDevice;KabanHMI\Forms\PlcRowEditorForm.cs;148;Text;Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
-Ttl_AlarmReset;KabanHMI\Forms\MainForm.cs;2000;Text;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
+Ttl_AlarmReset;KabanHMI\Forms\MainForm.cs;2003;Text;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
 Ttl_AlarmReset;KabanHMI\Screens\MachineAlarmScreen.cs;106;Message;LanguageManager.GetString("Ttl_AlarmReset", "Alarm reset"),
 Ttl_AxisMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;83;Text;TitleKey = "Ttl_AxisMonitor", TitleFallback = "Axis Monitor",
 Ttl_BakChoose;KabanHMI\Settings\PlcBackupSelection.cs;367;Text;Text = string.Format(T("Ttl_BakChoose", "The backup to write {0} from - {1}"), what, PlcEndpointNaming.Caption(endpoint));
@@ -2566,10 +2596,10 @@ Ttl_CmpFile;KabanHMI\Settings\SettingsCompareForm.cs;64;Text;Text = string.Forma
 Ttl_ColWidths;KabanHMI\Helpers\ColumnChooser.cs;282;Text;Text = T("Ttl_ColWidths", "Column widths");
 Ttl_Compare;KabanHMI\Settings\SettingsCompareForm.cs;49;Message;T("Ttl_Compare", "Compare"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Ttl_Confirm;KabanHMI\Controls\ButtonHMI.cs;1548;Message;: MessageBox.Show(QuestionText, LanguageManager.GetString("Ttl_Confirm", "Confirm"), MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;1788;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2020;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"))
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2124;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
-Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2146;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;1791;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"));
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2023;Text;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"))
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2127;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
+Ttl_ConnFailure;KabanHMI\Forms\MainForm.cs;2149;Message;LanguageManager.GetString("Ttl_ConnFailure", "PLC Connection Failure"),
 Ttl_Coupled;KabanHMI\Forms\MainForm.Coupling.cs;52;Tooltip;UiStyle.SetTip(_topTips, _btnCoupled, LanguageManager.GetString("Ttl_Coupled", "Coupled units"));
 Ttl_Coupled;KabanHMI\Forms\MainForm.Coupling.cs;120;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_Coupled", "Coupled units")));
 Ttl_EditDevice;KabanHMI\Forms\PlcRowEditorForm.cs;148;Text;Text = LanguageManager.GetString(isNew ? "Ttl_AddDevice" : "Ttl_EditDevice", isNew ? "Add device" : "Edit device")
@@ -2578,20 +2608,20 @@ Ttl_Find;KabanHMI\Forms\DeviceFindForm.cs;99;Text;Text = T("Ttl_Find", "Find whe
 Ttl_FlgTool;KabanHMI\Settings\TranslationFlagForm.cs;67;Text;Text = T("Ttl_FlgTool", "A language's flag");
 Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;120;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Help", "Help"))
 Ttl_Help;KabanHMI\Forms\MainForm.Help.cs;170;Message;MessageBox.Show(this, why, LanguageManager.GetString("Ttl_Help", "Help"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-Ttl_HelpDocs;KabanHMI\Screens\MachineAlarmScreen.cs;499;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_HelpDocs", "Help Documents")));
-Ttl_HelperLinks;KabanHMI\Settings\AlarmSettingsControl.cs;455;Text;Text = LanguageManager.GetString("Ttl_HelperLinks", "Helper links") + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
+Ttl_HelpDocs;KabanHMI\Screens\MachineAlarmScreen.cs;526;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Ttl_HelpDocs", "Help Documents")));
+Ttl_HelperLinks;KabanHMI\Settings\AlarmSettingsControl.cs;476;Text;Text = LanguageManager.GetString("Ttl_HelperLinks", "Helper links") + (string.IsNullOrWhiteSpace(alarm) ? "" : " - " + alarm);
 Ttl_ImportCsv;KabanHMI\Forms\SimulationMonitorForm.cs;3781;Text;dlg.Title = T("Ttl_ImportCsv", "Add devices from a CSV");
 Ttl_ImportSettings;KabanHMI\Settings\ImportSettingsControl.cs;295;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm() ?? (IWin32Window)this, T("Ttl_ImportSettings", "Import settings"),
 Ttl_ImportSettings;KabanHMI\Settings\ImportSettingsControl.cs;314;Message;Kaban.UI.Profiles.Ask.Tell(FindForm() ?? (IWin32Window)this, T("Ttl_ImportSettings", "Import settings"),
 Ttl_IoMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;71;Text;TitleKey = "Ttl_IoMonitor", TitleFallback = "Inputs / Outputs",
-Ttl_Language;KabanHMI\Forms\MainForm.cs;1085;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
-Ttl_Language;KabanHMI\Forms\MainForm.cs;2299;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Language", "Language"))
+Ttl_Language;KabanHMI\Forms\MainForm.cs;1088;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
+Ttl_Language;KabanHMI\Forms\MainForm.cs;2302;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_Language", "Language"))
 Ttl_Login;KabanHMI\Forms\LoginForm.cs;47;Text;this.Text = LanguageManager.GetString("Ttl_Login", "HMI Login");
 Ttl_Magnifier;KabanHMI\Controls\ScaleSlider.cs;126;Text;return LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + ": " + Text + "\n" +
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;61;Message;if (MessageBox.Show(this, question, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;169;Text;return BuildScaleMenu(LanguageManager.GetString("Ttl_Magnifier", "Screen scale") + " (" + DisplaySettings.Percent(UiScale.Factor) + ")",
 Ttl_Magnifier;KabanHMI\Forms\MainForm.Magnifier.cs;237;Message;MessageBox.Show(this, q, LanguageManager.GetString("Ttl_Magnifier", "Screen scale"),
-Ttl_Magnifier;KabanHMI\Settings\UsersPreferencesControl.cs;969;Message;MessageBox.Show(this, question, T("Ttl_Magnifier", "Screen scale"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+Ttl_Magnifier;KabanHMI\Settings\UsersPreferencesControl.cs;971;Message;MessageBox.Show(this, question, T("Ttl_Magnifier", "Screen scale"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 Ttl_MotionFlash;KabanHMI\Controls\MotionValueHMI.cs;325;Message;MessageBox.Show(FindForm(), text, LanguageManager.GetString("Ttl_MotionFlash", "Simple motion module"), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;39;Message;return MessageBox.Show(owner, text, T("Ttl_MotionFlash", "Simple motion module"), buttons, icon);
 Ttl_MotionFlash;KabanHMI\Helpers\MotionFlash.cs;135;Text;var result = WorkForm.Run(owner, T("Ttl_MotionFlash", "Simple motion module"),
@@ -2602,9 +2632,9 @@ Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1779;Message;if (!Kaban.UI.Profiles.Ask.
 Ttl_Notes;KabanHMI\Screens\NotesPage.cs;1798;Message;if (!Kaban.UI.Profiles.Ask.YesNo(FindForm(), T("Ttl_Notes", "Notes and feedback"), question)) return;
 Ttl_NtsFind;KabanHMI\Screens\NotesFindForm.cs;72;Text;Text = T("Ttl_NtsFind", "Where is it used?") + (string.IsNullOrWhiteSpace(title) ? "" : " - " + title);
 Ttl_PlcBackup;KabanHMI\Settings\PlcBackupForms.cs;28;Message;return MessageBox.Show(owner, text, T("Ttl_PlcBackup", "PLC data"), buttons, icon);
-Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1229;Text;_btnClose = win("\u2715", LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"),
-Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1266;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"))
-Ttl_RestartNeeded;KabanHMI\Forms\MainForm.cs;1435;Text;string title = LanguageManager.GetString("Ttl_RestartNeeded", "Restart needed");
+Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1232;Text;_btnClose = win("\u2715", LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"),
+Ttl_ProgramExit;KabanHMI\Forms\MainForm.cs;1269;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("Ttl_ProgramExit", "Program Exit"))
+Ttl_RestartNeeded;KabanHMI\Forms\MainForm.cs;1438;Text;string title = LanguageManager.GetString("Ttl_RestartNeeded", "Restart needed");
 Ttl_SheetNew;KabanHMI\Forms\SimulationMonitorForm.cs;2602;Text;string name = AskText(T("Ttl_SheetNew", "New tab"), T("Lbl_SheetName", "Name of the tab:"),
 Ttl_SheetRename;KabanHMI\Forms\SimulationMonitorForm.cs;2625;Text;string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
 Ttl_SideMonitor;KabanHMI\Forms\MainForm.SidePanel.cs;102;Text;TitleKey = "Ttl_SideMonitor", TitleFallback = "PLC Monitor",
@@ -2615,9 +2645,9 @@ Ttl_TrnHistory;KabanHMI\Settings\TranslationsControl.cs;905;Text;Text = T("Ttl_T
 Ttl_TrnHistory;KabanHMI\Settings\TranslationsControl.cs;980;Message;if (!Ask.YesNo(this, T("Ttl_TrnHistory", "Translation - edit history"), string.Format(T("Msg_TrnHistoryReset",
 Ttl_TrnHistory;KabanHMI\Settings\TranslationsControl.cs;985;Message;Ask.Tell(this, T("Ttl_TrnHistory", "Translation - edit history"), T("Msg_TrnHistoryResetFailed", "The history could not be reset - the event log says why."));
 Ttl_TrnReviewAi;KabanHMI\Settings\TranslationsControl.Import.cs;196;Text;return Apply(incoming, res, "AI", T("Ttl_TrnReviewAi", "The AI's translations - the changes to confirm"), T("Undo_TrnAi", "the AI's translations"),
-Ttl_TrnReviewFiles;KabanHMI\Settings\TranslationsControl.Import.cs;323;Text;return Apply(incoming, res, "import", T("Ttl_TrnReviewFiles", "The files' translations - the changes to confirm"),
+Ttl_TrnReviewFiles;KabanHMI\Settings\TranslationsControl.Import.cs;327;Text;return Apply(incoming, res, "import", T("Ttl_TrnReviewFiles", "The files' translations - the changes to confirm"),
 Ttl_TrnReviewOld;KabanHMI\Settings\TranslationsControl.Import.cs;262;Text;return Apply(incoming, res, "import", T("Ttl_TrnReviewOld", "The older installation's translations - the changes to confirm"),
-Ttl_TrnReviewProject;KabanHMI\Settings\TranslationsControl.Import.cs;397;Text;return Apply(incoming, res, null, T("Ttl_TrnReviewProject", "Into the project's files - the changes to confirm"), null,
+Ttl_TrnReviewProject;KabanHMI\Settings\TranslationsControl.Import.cs;401;Text;return Apply(incoming, res, null, T("Ttl_TrnReviewProject", "Into the project's files - the changes to confirm"), null,
 Ttl_TrnUses;KabanHMI\Settings\TranslationsControl.cs;1044;Text;Text = T("Ttl_TrnUses", "Where is it used?") + " - " + key;
 Undo_AddComment;KabanHMI\Forms\SimulationMonitorForm.cs;2051;Text;Remember(dlg.IsComment ? T("Undo_AddComment", "add a comment line") : T("Undo_AddDevice", "add a device"), mon);
 Undo_AddComment;KabanHMI\Forms\SimulationMonitorForm.Table.cs;349;Text;Remember(r.IsComment ? T("Undo_AddComment", "add a comment line") : string.Format(T("Undo_AddTable", "add the table '{0}'"), NameOf(r)), mon);
@@ -2658,108 +2688,108 @@ Undo_TableToList;KabanHMI\Forms\SimulationMonitorForm.Table.cs;211;Text;Remember
 Undo_TakeOffTable;KabanHMI\Forms\SimulationMonitorForm.Table.cs;230;Text;Remember(string.Format(T("Undo_TakeOffTable", "'{0}' off the table"), NameOf(label)), mon);
 Undo_TrnAi;KabanHMI\Settings\TranslationsControl.Import.cs;196;Text;return Apply(incoming, res, "AI", T("Ttl_TrnReviewAi", "The AI's translations - the changes to confirm"), T("Undo_TrnAi", "the AI's translations"),
 Undo_TrnCopyLang;KabanHMI\Settings\TranslationsControl.cs;683;Text;var step = new UndoStep { What = string.Format(T("Undo_TrnCopyLang", "{0} copied into the empty cells of {1}"), from, string.Join(", ", targets)) };
-Undo_TrnFiles;KabanHMI\Settings\TranslationsControl.Import.cs;324;Text;T("Undo_TrnFiles", "the files' translations"),
+Undo_TrnFiles;KabanHMI\Settings\TranslationsControl.Import.cs;328;Text;T("Undo_TrnFiles", "the files' translations"),
 Undo_TrnOld;KabanHMI\Settings\TranslationsControl.Import.cs;263;Text;T("Undo_TrnOld", "the older installation's translations"),
 Undo_TrnSave;KabanHMI\Settings\TranslationsControl.cs;612;Text;PushWritten(T("Undo_TrnSave", "the Save"), done);
 Undo_TrnTyped;KabanHMI\Settings\TranslationsControl.cs;456;Text;var step = new UndoStep { What = string.Format(T("Undo_TrnTyped", "the text typed in {0} {1}"), row.Key, lang) };
-Usr_CreatedBy;KabanHMI\Settings\UsersPreferencesControl.cs;576;Text;_createdBy.Text = creator.Length > 0 ? string.Format(T("Usr_CreatedBy", "created by {0}"), creator) : "";
+Usr_CreatedBy;KabanHMI\Settings\UsersPreferencesControl.cs;578;Text;_createdBy.Text = creator.Length > 0 ? string.Format(T("Usr_CreatedBy", "created by {0}"), creator) : "";
 Usr_Factor;KabanHMI\Settings\UsersPreferencesControl.cs;131;Text;_grid.Columns.Add("factor", T("Usr_Factor", "Screen scale"));
 Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;294;Text;Row("Screen", ScaleKey, T("Usr_FactorOwn", "Screen scale"), _scale);
-Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;1028;Text;case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
-Usr_InfoEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;552;Text;_info.Text = IsEveryone ? T("Usr_InfoEveryone", "In force while nobody is signed in, and followed by every user's 'As for everyone'.") : "";
+Usr_FactorOwn;KabanHMI\Settings\UsersPreferencesControl.cs;1030;Text;case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
+Usr_InfoEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;554;Text;_info.Text = IsEveryone ? T("Usr_InfoEveryone", "In force while nobody is signed in, and followed by every user's 'As for everyone'.") : "";
 Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;130;Text;_grid.Columns.Add("level", T("Usr_Level", "Level"));
 Usr_Level;KabanHMI\Settings\UsersPreferencesControl.cs;238;Text;new { Caption = T("Usr_Level", "Level"), Field = (Control)_level } })
-Usr_MsgCannotDelete;KabanHMI\Settings\UsersPreferencesControl.cs;979;Text;if (!UserRights.CanDelete(user)) return Fail(T("Usr_MsgCannotDelete", "Only a higher level, or the one who created it, can delete this user."));
-Usr_MsgConfirmDelete;KabanHMI\Settings\UsersPreferencesControl.cs;980;Text;string q = string.Format(T("Usr_MsgConfirmDelete", "Delete user '{0}'?"), user);
-Usr_MsgCreated;KabanHMI\Settings\UsersPreferencesControl.cs;859;Text;Say(string.Format(T("Usr_MsgCreated", "User '{0}' created."), name));
-Usr_MsgDeleted;KabanHMI\Settings\UsersPreferencesControl.cs;989;Text;Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
-Usr_MsgEveryoneSaved;KabanHMI\Settings\UsersPreferencesControl.cs;877;Text;Say(T("Usr_MsgEveryoneSaved", "Everyone's preferences kept."));
-Usr_MsgExists;KabanHMI\Settings\UsersPreferencesControl.cs;846;Text;if (AccountOf(name) != null) return Fail(string.Format(T("Usr_MsgExists", "There is already a user '{0}'."), name));
-Usr_MsgLastAdmin;KabanHMI\Settings\UsersPreferencesControl.cs;895;Text;return Fail(UserStore.WouldRemoveLastAdmin(user, level) ? T("Usr_MsgLastAdmin", "The last Admin account cannot be given a lower level.")
-Usr_MsgLastAdminDelete;KabanHMI\Settings\UsersPreferencesControl.cs;978;Text;if (UserStore.WouldRemoveLastAdmin(user, null)) return Fail(T("Usr_MsgLastAdminDelete", "The last Admin account cannot be deleted."));
-Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;848;Text;if (levelChoice == null || !UserRights.CanCreate(levelChoice.Level)) return Fail(T("Usr_MsgLevel", "You cannot give that level."));
-Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;896;Text;: T("Usr_MsgLevel", "You cannot give that level."));
-Usr_MsgName;KabanHMI\Settings\UsersPreferencesControl.cs;844;Text;if (name.Length == 0) return Fail(T("Usr_MsgName", "Enter a user name."));
-Usr_MsgNoUser;KabanHMI\Settings\UsersPreferencesControl.cs;892;Text;if (account == null) return Fail(string.Format(T("Usr_MsgNoUser", "No user '{0}'."), user));
-Usr_MsgPassword;KabanHMI\Settings\UsersPreferencesControl.cs;847;Text;if (_pass.Text.Length == 0) return Fail(T("Usr_MsgPassword", "A new user needs a password."));
-Usr_MsgSaved;KabanHMI\Settings\UsersPreferencesControl.cs;923;Text;Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
-Usr_MsgSelf;KabanHMI\Settings\UsersPreferencesControl.cs;977;Text;if (UserRights.IsSelf(UserRights.Actor, user)) return Fail(T("Usr_MsgSelf", "You cannot delete the account you are signed in with."));
-Usr_MsgSemicolon;KabanHMI\Settings\UsersPreferencesControl.cs;845;Text;if (!UserStore.IsValidUsername(name)) return Fail(T("Usr_MsgSemicolon", "A user name may not contain a semicolon."));
+Usr_MsgCannotDelete;KabanHMI\Settings\UsersPreferencesControl.cs;981;Text;if (!UserRights.CanDelete(user)) return Fail(T("Usr_MsgCannotDelete", "Only a higher level, or the one who created it, can delete this user."));
+Usr_MsgConfirmDelete;KabanHMI\Settings\UsersPreferencesControl.cs;982;Text;string q = string.Format(T("Usr_MsgConfirmDelete", "Delete user '{0}'?"), user);
+Usr_MsgCreated;KabanHMI\Settings\UsersPreferencesControl.cs;861;Text;Say(string.Format(T("Usr_MsgCreated", "User '{0}' created."), name));
+Usr_MsgDeleted;KabanHMI\Settings\UsersPreferencesControl.cs;991;Text;Say(string.Format(T("Usr_MsgDeleted", "User '{0}' deleted."), user));
+Usr_MsgEveryoneSaved;KabanHMI\Settings\UsersPreferencesControl.cs;879;Text;Say(T("Usr_MsgEveryoneSaved", "Everyone's preferences kept."));
+Usr_MsgExists;KabanHMI\Settings\UsersPreferencesControl.cs;848;Text;if (AccountOf(name) != null) return Fail(string.Format(T("Usr_MsgExists", "There is already a user '{0}'."), name));
+Usr_MsgLastAdmin;KabanHMI\Settings\UsersPreferencesControl.cs;897;Text;return Fail(UserStore.WouldRemoveLastAdmin(user, level) ? T("Usr_MsgLastAdmin", "The last Admin account cannot be given a lower level.")
+Usr_MsgLastAdminDelete;KabanHMI\Settings\UsersPreferencesControl.cs;980;Text;if (UserStore.WouldRemoveLastAdmin(user, null)) return Fail(T("Usr_MsgLastAdminDelete", "The last Admin account cannot be deleted."));
+Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;850;Text;if (levelChoice == null || !UserRights.CanCreate(levelChoice.Level)) return Fail(T("Usr_MsgLevel", "You cannot give that level."));
+Usr_MsgLevel;KabanHMI\Settings\UsersPreferencesControl.cs;898;Text;: T("Usr_MsgLevel", "You cannot give that level."));
+Usr_MsgName;KabanHMI\Settings\UsersPreferencesControl.cs;846;Text;if (name.Length == 0) return Fail(T("Usr_MsgName", "Enter a user name."));
+Usr_MsgNoUser;KabanHMI\Settings\UsersPreferencesControl.cs;894;Text;if (account == null) return Fail(string.Format(T("Usr_MsgNoUser", "No user '{0}'."), user));
+Usr_MsgPassword;KabanHMI\Settings\UsersPreferencesControl.cs;849;Text;if (_pass.Text.Length == 0) return Fail(T("Usr_MsgPassword", "A new user needs a password."));
+Usr_MsgSaved;KabanHMI\Settings\UsersPreferencesControl.cs;925;Text;Say(string.Format(T("Usr_MsgSaved", "User '{0}' saved."), account.Username));
+Usr_MsgSelf;KabanHMI\Settings\UsersPreferencesControl.cs;979;Text;if (UserRights.IsSelf(UserRights.Actor, user)) return Fail(T("Usr_MsgSelf", "You cannot delete the account you are signed in with."));
+Usr_MsgSemicolon;KabanHMI\Settings\UsersPreferencesControl.cs;847;Text;if (!UserStore.IsValidUsername(name)) return Fail(T("Usr_MsgSemicolon", "A user name may not contain a semicolon."));
 Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;129;Text;_grid.Columns.Add("user", T("Usr_Name", "User"));
 Usr_Name;KabanHMI\Settings\UsersPreferencesControl.cs;236;Text;foreach (var pair in new[] { new { Caption = T("Usr_Name", "User"), Field = (Control)_name },
-Usr_NewHint;KabanHMI\Settings\UsersPreferencesControl.cs;814;Text;Say(T("Usr_NewHint", "Name, password and level, then \uD83D\uDCBE."));
-Usr_NewUser;KabanHMI\Settings\UsersPreferencesControl.cs;549;Text;_who.Text = _creating ? T("Usr_NewUser", "New user")
+Usr_NewHint;KabanHMI\Settings\UsersPreferencesControl.cs;816;Text;Say(T("Usr_NewHint", "Name, password and level, then \uD83D\uDCBE."));
+Usr_NewUser;KabanHMI\Settings\UsersPreferencesControl.cs;551;Text;_who.Text = _creating ? T("Usr_NewUser", "New user")
 Usr_NoScaleRequest;KabanHMI\Forms\MainForm.Magnifier.cs;209;Text;get { return LanguageManager.GetString("Usr_NoScaleRequest", "No specific request"); }
-Usr_NoteEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;555;Text;? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
-Usr_NoteNotYours;KabanHMI\Settings\UsersPreferencesControl.cs;556;Text;: string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
-Usr_PageNote;KabanHMI\Settings\UsersPreferencesControl.cs;325;Text;Text = T("Usr_PageNote", "A user's own values are taken when they sign in, 'As for everyone' follows the panel's. A new screen scale needs a restart (offered at once for your ow...
+Usr_NoteEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;557;Text;? T("Usr_NoteEveryone", "Everyone's preferences are changed from Maintenance up.")
+Usr_NoteNotYours;KabanHMI\Settings\UsersPreferencesControl.cs;558;Text;: string.Format(T("Usr_NoteNotYours", "You can see {0}'s settings. Only a higher level, or the one who created the account, can change them."), user);
+Usr_PageNote;KabanHMI\Settings\UsersPreferencesControl.cs;327;Text;Text = T("Usr_PageNote", "A user's own values are taken when they sign in, 'As for everyone' follows the panel's. A new screen scale needs a restart (offered at once for your ow...
 Usr_Pass;KabanHMI\Settings\UsersPreferencesControl.cs;237;Text;new { Caption = T("Usr_Pass", "Password"), Field = (Control)_pass },
-Usr_ReadDone;KabanHMI\Settings\UsersPreferencesControl.cs;800;Text;Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
-Usr_SecPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;332;Text;{ "Prefs", new[] { "Usr_SecPrefs", "Preferences" } },
-Usr_TtlDelete;KabanHMI\Settings\UsersPreferencesControl.cs;982;Message;: MessageBox.Show(this, q, T("Usr_TtlDelete", "Delete user"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
-VP_AiAsFile;KabanHMI\Settings\UsersPreferencesControl.cs;1075;Text;case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
-VP_AiAsText;KabanHMI\Settings\UsersPreferencesControl.cs;1076;Text;case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
-VP_AiPaste;KabanHMI\Settings\UsersPreferencesControl.cs;1025;Text;case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
-VP_AiPasteOff;KabanHMI\Settings\UsersPreferencesControl.cs;1078;Text;case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
-VP_AiPasteOn;KabanHMI\Settings\UsersPreferencesControl.cs;1077;Text;case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
-VP_AiPromptAs;KabanHMI\Settings\UsersPreferencesControl.cs;1024;Text;case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
-VP_AlarmSound;KabanHMI\Settings\UsersPreferencesControl.cs;1021;Text;case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
+Usr_ReadDone;KabanHMI\Settings\UsersPreferencesControl.cs;802;Text;Say(string.Format(T("Usr_ReadDone", "{0}'s preferences read: \uD83D\uDCBE keeps them."), src.Text));
+Usr_SecPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;334;Text;{ "Prefs", new[] { "Usr_SecPrefs", "Preferences" } },
+Usr_TtlDelete;KabanHMI\Settings\UsersPreferencesControl.cs;984;Message;: MessageBox.Show(this, q, T("Usr_TtlDelete", "Delete user"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+VP_AiAsFile;KabanHMI\Settings\UsersPreferencesControl.cs;1077;Text;case "AiPromptAs.File": return T("VP_AiAsFile", "A file (Ctrl+V attaches it)");
+VP_AiAsText;KabanHMI\Settings\UsersPreferencesControl.cs;1078;Text;case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
+VP_AiPaste;KabanHMI\Settings\UsersPreferencesControl.cs;1027;Text;case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
+VP_AiPasteOff;KabanHMI\Settings\UsersPreferencesControl.cs;1080;Text;case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
+VP_AiPasteOn;KabanHMI\Settings\UsersPreferencesControl.cs;1079;Text;case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
+VP_AiPromptAs;KabanHMI\Settings\UsersPreferencesControl.cs;1026;Text;case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
+VP_AlarmSound;KabanHMI\Settings\UsersPreferencesControl.cs;1023;Text;case ViewPreferences.AlarmSound: return T("VP_AlarmSound", "Sound for a new alarm");
 VP_AsEveryone;KabanHMI\Settings\PreferencePreview.cs;142;Text;if (_asEveryone) v = T("VP_AsEveryone", "As for everyone") + ":  " + v;
-VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;603;Text;Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(kv.Key, PanelOf(kv.Key)) + ")"
-VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;764;Text;Value = own != null ? PrefTexts.ValueText(kv.Key, own) : T("VP_AsEveryone", "As for everyone")
-VP_Blink;KabanHMI\Settings\UsersPreferencesControl.cs;1070;Text;case "Blinking.On": return T("VP_Blink", "Blink");
-VP_Blinking;KabanHMI\Settings\UsersPreferencesControl.cs;1022;Text;case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
-VP_CapLeft;KabanHMI\Settings\UsersPreferencesControl.cs;1052;Text;case "CaptionAlign.Left": return T("VP_CapLeft", "Left, in a column");
-VP_CapRight;KabanHMI\Settings\UsersPreferencesControl.cs;1051;Text;case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");
-VP_CaptionAlign;KabanHMI\Settings\UsersPreferencesControl.cs;1014;Text;case ViewPreferences.CaptionAlign: return T("VP_CaptionAlign", "Captions and axis names");
-VP_Compact;KabanHMI\Settings\UsersPreferencesControl.cs;1061;Text;case "TableRows.Compact": return T("VP_Compact", "Compact");
-VP_DateFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1016;Text;case ViewPreferences.DateFormat: return T("VP_DateFormat", "Date");
-VP_DecComma;KabanHMI\Settings\UsersPreferencesControl.cs;1055;Text;case "DecimalSeparator.Comma": return T("VP_DecComma", "Comma") + "  (1234,56)";
-VP_DecimalSeparator;KabanHMI\Settings\UsersPreferencesControl.cs;1015;Text;case ViewPreferences.DecimalSeparator: return T("VP_DecimalSeparator", "Decimal separator");
-VP_DecPoint;KabanHMI\Settings\UsersPreferencesControl.cs;1054;Text;case "DecimalSeparator.Point": return T("VP_DecPoint", "Point") + "  (1234.56)";
-VP_DecWindows;KabanHMI\Settings\UsersPreferencesControl.cs;1053;Text;case "DecimalSeparator.Windows": return T("VP_DecWindows", "As Windows");
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;403;Text;int i = _grid.Rows.Add(T("VP_Everyone", "Everyone (this panel)"), "", DisplaySettings.Percent(DisplaySettings.PanelFactor));
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;550;Text;: _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
-VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;581;Text;if (_selected != Everyone || _creating) _readFrom.Items.Add(new Choice { Value = Everyone, Text = T("VP_Everyone", "Everyone (this panel)") });
-VP_H12;KabanHMI\Settings\UsersPreferencesControl.cs;1060;Text;case "TimeFormat.H12": return T("VP_H12", "12 hours") + "  (2:31 PM)";
-VP_H24;KabanHMI\Settings\UsersPreferencesControl.cs;1059;Text;case "TimeFormat.H24": return T("VP_H24", "24 hours") + "  (14:31)";
+VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;605;Text;Text = T("VP_AsEveryone", "As for everyone") + "  (" + PrefTexts.ValueText(kv.Key, PanelOf(kv.Key)) + ")"
+VP_AsEveryone;KabanHMI\Settings\UsersPreferencesControl.cs;766;Text;Value = own != null ? PrefTexts.ValueText(kv.Key, own) : T("VP_AsEveryone", "As for everyone")
+VP_Blink;KabanHMI\Settings\UsersPreferencesControl.cs;1072;Text;case "Blinking.On": return T("VP_Blink", "Blink");
+VP_Blinking;KabanHMI\Settings\UsersPreferencesControl.cs;1024;Text;case ViewPreferences.Blinking: return T("VP_Blinking", "Attention marks");
+VP_CapLeft;KabanHMI\Settings\UsersPreferencesControl.cs;1054;Text;case "CaptionAlign.Left": return T("VP_CapLeft", "Left, in a column");
+VP_CapRight;KabanHMI\Settings\UsersPreferencesControl.cs;1053;Text;case "CaptionAlign.Right": return T("VP_CapRight", "Right, against the field");
+VP_CaptionAlign;KabanHMI\Settings\UsersPreferencesControl.cs;1016;Text;case ViewPreferences.CaptionAlign: return T("VP_CaptionAlign", "Captions and axis names");
+VP_Compact;KabanHMI\Settings\UsersPreferencesControl.cs;1063;Text;case "TableRows.Compact": return T("VP_Compact", "Compact");
+VP_DateFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1018;Text;case ViewPreferences.DateFormat: return T("VP_DateFormat", "Date");
+VP_DecComma;KabanHMI\Settings\UsersPreferencesControl.cs;1057;Text;case "DecimalSeparator.Comma": return T("VP_DecComma", "Comma") + "  (1234,56)";
+VP_DecimalSeparator;KabanHMI\Settings\UsersPreferencesControl.cs;1017;Text;case ViewPreferences.DecimalSeparator: return T("VP_DecimalSeparator", "Decimal separator");
+VP_DecPoint;KabanHMI\Settings\UsersPreferencesControl.cs;1056;Text;case "DecimalSeparator.Point": return T("VP_DecPoint", "Point") + "  (1234.56)";
+VP_DecWindows;KabanHMI\Settings\UsersPreferencesControl.cs;1055;Text;case "DecimalSeparator.Windows": return T("VP_DecWindows", "As Windows");
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;405;Text;int i = _grid.Rows.Add(T("VP_Everyone", "Everyone (this panel)"), "", DisplaySettings.Percent(DisplaySettings.PanelFactor));
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;552;Text;: _selected == Everyone ? T("VP_Everyone", "Everyone (this panel)")
+VP_Everyone;KabanHMI\Settings\UsersPreferencesControl.cs;583;Text;if (_selected != Everyone || _creating) _readFrom.Items.Add(new Choice { Value = Everyone, Text = T("VP_Everyone", "Everyone (this panel)") });
+VP_H12;KabanHMI\Settings\UsersPreferencesControl.cs;1062;Text;case "TimeFormat.H12": return T("VP_H12", "12 hours") + "  (2:31 PM)";
+VP_H24;KabanHMI\Settings\UsersPreferencesControl.cs;1061;Text;case "TimeFormat.H24": return T("VP_H24", "24 hours") + "  (14:31)";
 VP_Home;KabanHMI\Settings\PreferencePreview.cs;514;Text;string to = v == "Home" ? T("VP_Home", "Home")
-VP_Home;KabanHMI\Settings\UsersPreferencesControl.cs;1066;Text;case "StartPage.Home": return T("VP_Home", "Home");
-VP_InputMode;KabanHMI\Forms\MainForm.Touch.cs;80;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_InputMode", "Screen used with"))
-VP_InputMode;KabanHMI\Settings\UsersPreferencesControl.cs;1027;Text;case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
-VP_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;88;Menu;var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), EmojiArt.Image(TouchInput.MouseEmoji, px))
-VP_InputMouse;KabanHMI\Settings\UsersPreferencesControl.cs;1079;Text;case "InputMode.Mouse": return T("VP_InputMouse", "A mouse");
-VP_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;93;Menu;var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), EmojiArt.Image(TouchInput.TouchEmoji, px))
-VP_InputTouch;KabanHMI\Settings\UsersPreferencesControl.cs;1080;Text;case "InputMode.Touch": return T("VP_InputTouch", "Touch (a finger)");
-VP_Language;KabanHMI\Settings\UsersPreferencesControl.cs;1026;Text;case ViewPreferences.Language: return T("VP_Language", "Language");
-VP_Large;KabanHMI\Settings\UsersPreferencesControl.cs;1064;Text;case "TableRows.Large": case "TableFont.Large": return T("VP_Large", "Large");
-VP_Last;KabanHMI\Settings\UsersPreferencesControl.cs;1067;Text;case "StartPage.Last": return T("VP_Last", "My last page");
-VP_Long;KabanHMI\Settings\UsersPreferencesControl.cs;1074;Text;case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
-VP_Me;KabanHMI\Settings\UsersPreferencesControl.cs;551;Text;: user + (account != null ? "  \u00B7  " + PrefTexts.LevelText(account.Level) : "") + (self ? "  " + T("VP_Me", "(me)") : "");
-VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1063;Text;case "TableRows.Normal": case "TableFont.Normal": return T("VP_Normal", "Normal");
-VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1073;Text;case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
-VP_Off;KabanHMI\Settings\UsersPreferencesControl.cs;1068;Text;case "AlarmSound.Off": return T("VP_Off", "Off");
-VP_On;KabanHMI\Settings\UsersPreferencesControl.cs;1069;Text;case "AlarmSound.On": return T("VP_On", "On");
+VP_Home;KabanHMI\Settings\UsersPreferencesControl.cs;1068;Text;case "StartPage.Home": return T("VP_Home", "Home");
+VP_InputMode;KabanHMI\Forms\MainForm.Touch.cs;88;Text;menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_InputMode", "Screen used with"))
+VP_InputMode;KabanHMI\Settings\UsersPreferencesControl.cs;1029;Text;case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
+VP_InputMouse;KabanHMI\Forms\MainForm.Touch.cs;96;Menu;var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), EmojiArt.Image(TouchInput.MouseEmoji, px))
+VP_InputMouse;KabanHMI\Settings\UsersPreferencesControl.cs;1081;Text;case "InputMode.Mouse": return T("VP_InputMouse", "A mouse");
+VP_InputTouch;KabanHMI\Forms\MainForm.Touch.cs;101;Menu;var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), EmojiArt.Image(TouchInput.TouchEmoji, px))
+VP_InputTouch;KabanHMI\Settings\UsersPreferencesControl.cs;1082;Text;case "InputMode.Touch": return T("VP_InputTouch", "Touch (a finger)");
+VP_Language;KabanHMI\Settings\UsersPreferencesControl.cs;1028;Text;case ViewPreferences.Language: return T("VP_Language", "Language");
+VP_Large;KabanHMI\Settings\UsersPreferencesControl.cs;1066;Text;case "TableRows.Large": case "TableFont.Large": return T("VP_Large", "Large");
+VP_Last;KabanHMI\Settings\UsersPreferencesControl.cs;1069;Text;case "StartPage.Last": return T("VP_Last", "My last page");
+VP_Long;KabanHMI\Settings\UsersPreferencesControl.cs;1076;Text;case "TooltipDelay.Long": return T("VP_Long", "Long") + "  (2 s)";
+VP_Me;KabanHMI\Settings\UsersPreferencesControl.cs;553;Text;: user + (account != null ? "  \u00B7  " + PrefTexts.LevelText(account.Level) : "") + (self ? "  " + T("VP_Me", "(me)") : "");
+VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1065;Text;case "TableRows.Normal": case "TableFont.Normal": return T("VP_Normal", "Normal");
+VP_Normal;KabanHMI\Settings\UsersPreferencesControl.cs;1075;Text;case "TooltipDelay.Normal": return T("VP_Normal", "Normal") + "  (1 s)";
+VP_Off;KabanHMI\Settings\UsersPreferencesControl.cs;1070;Text;case "AlarmSound.Off": return T("VP_Off", "Off");
+VP_On;KabanHMI\Settings\UsersPreferencesControl.cs;1071;Text;case "AlarmSound.On": return T("VP_On", "On");
 VP_ReadFrom;KabanHMI\Settings\UsersPreferencesControl.cs;285;Text;Row("Prefs", null, T("VP_ReadFrom", "Read from"), _readFrom);
-VP_SecCaptions;KabanHMI\Settings\UsersPreferencesControl.cs;334;Text;{ "Captions", new[] { "VP_SecCaptions", "Captions" } },
-VP_SecHelp;KabanHMI\Settings\UsersPreferencesControl.cs;339;Text;{ "Help", new[] { "VP_SecHelp", "Help and AI" } }
-VP_SecNumbers;KabanHMI\Settings\UsersPreferencesControl.cs;335;Text;{ "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
-VP_SecScreen;KabanHMI\Settings\UsersPreferencesControl.cs;333;Text;{ "Screen", new[] { "VP_SecScreen", "Screen" } },
-VP_SecSignIn;KabanHMI\Settings\UsersPreferencesControl.cs;338;Text;{ "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } },
-VP_SecTables;KabanHMI\Settings\UsersPreferencesControl.cs;337;Text;{ "Tables", new[] { "VP_SecTables", "Tables" } },
-VP_SecUnits;KabanHMI\Settings\UsersPreferencesControl.cs;336;Text;{ "Units", new[] { "VP_SecUnits", "Units of measure" } },
-VP_Short;KabanHMI\Settings\UsersPreferencesControl.cs;1072;Text;case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
-VP_Small;KabanHMI\Settings\UsersPreferencesControl.cs;1062;Text;case "TableFont.Small": return T("VP_Small", "Small");
-VP_StartPage;KabanHMI\Settings\UsersPreferencesControl.cs;1020;Text;case ViewPreferences.StartPage: return T("VP_StartPage", "After sign-in");
-VP_Stay;KabanHMI\Settings\UsersPreferencesControl.cs;1065;Text;case "StartPage.Stay": return T("VP_Stay", "Stay where the screen is");
-VP_Steady;KabanHMI\Settings\UsersPreferencesControl.cs;1071;Text;case "Blinking.Off": return T("VP_Steady", "Steady");
-VP_TableFont;KabanHMI\Settings\UsersPreferencesControl.cs;1019;Text;case ViewPreferences.TableFont: return T("VP_TableFont", "Table text");
-VP_TableRows;KabanHMI\Settings\UsersPreferencesControl.cs;1018;Text;case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
-VP_TimeFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1017;Text;case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
-VP_TooltipDelay;KabanHMI\Settings\UsersPreferencesControl.cs;1023;Text;case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
+VP_SecCaptions;KabanHMI\Settings\UsersPreferencesControl.cs;336;Text;{ "Captions", new[] { "VP_SecCaptions", "Captions" } },
+VP_SecHelp;KabanHMI\Settings\UsersPreferencesControl.cs;341;Text;{ "Help", new[] { "VP_SecHelp", "Help and AI" } }
+VP_SecNumbers;KabanHMI\Settings\UsersPreferencesControl.cs;337;Text;{ "Numbers", new[] { "VP_SecNumbers", "Numbers and dates" } },
+VP_SecScreen;KabanHMI\Settings\UsersPreferencesControl.cs;335;Text;{ "Screen", new[] { "VP_SecScreen", "Screen" } },
+VP_SecSignIn;KabanHMI\Settings\UsersPreferencesControl.cs;340;Text;{ "SignIn", new[] { "VP_SecSignIn", "Sign-in and alerts" } },
+VP_SecTables;KabanHMI\Settings\UsersPreferencesControl.cs;339;Text;{ "Tables", new[] { "VP_SecTables", "Tables" } },
+VP_SecUnits;KabanHMI\Settings\UsersPreferencesControl.cs;338;Text;{ "Units", new[] { "VP_SecUnits", "Units of measure" } },
+VP_Short;KabanHMI\Settings\UsersPreferencesControl.cs;1074;Text;case "TooltipDelay.Short": return T("VP_Short", "Short") + "  (0.4 s)";
+VP_Small;KabanHMI\Settings\UsersPreferencesControl.cs;1064;Text;case "TableFont.Small": return T("VP_Small", "Small");
+VP_StartPage;KabanHMI\Settings\UsersPreferencesControl.cs;1022;Text;case ViewPreferences.StartPage: return T("VP_StartPage", "After sign-in");
+VP_Stay;KabanHMI\Settings\UsersPreferencesControl.cs;1067;Text;case "StartPage.Stay": return T("VP_Stay", "Stay where the screen is");
+VP_Steady;KabanHMI\Settings\UsersPreferencesControl.cs;1073;Text;case "Blinking.Off": return T("VP_Steady", "Steady");
+VP_TableFont;KabanHMI\Settings\UsersPreferencesControl.cs;1021;Text;case ViewPreferences.TableFont: return T("VP_TableFont", "Table text");
+VP_TableRows;KabanHMI\Settings\UsersPreferencesControl.cs;1020;Text;case ViewPreferences.TableRows: return T("VP_TableRows", "Table rows");
+VP_TimeFormat;KabanHMI\Settings\UsersPreferencesControl.cs;1019;Text;case ViewPreferences.TimeFormat: return T("VP_TimeFormat", "Time");
+VP_TooltipDelay;KabanHMI\Settings\UsersPreferencesControl.cs;1025;Text;case ViewPreferences.TooltipDelay: return T("VP_TooltipDelay", "Tooltips appear after");
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;210;Text;down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
 Why_AdminOnly;KabanHMI\Controls\MotionValueHMI.cs;222;Text;if (!SecurityManager.HasAccess(SecurityLevel.Admin)) return T("Why_AdminOnly", "For an Admin (sign in as one)");
-Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2080;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
+Why_AdminOnly;KabanHMI\Forms\MainForm.cs;2083;Text;LanguageManager.GetString("Why_AdminOnly", "For an Admin (sign in as one)"));
 Why_AiNoFault;KabanHMI\Controls\AlarmHelpBadge.cs;576;Text;ai == null ? LanguageManager.GetString("Why_AiNoFault", "For a fault: the AI prompt is about what failed") : null);
 Why_AxMonAdminLists;KabanHMI\Screens\AxisMonitorPage.cs;237;Text;_bar.LockLists(!admin, LanguageManager.GetString("Why_AxMonAdminLists", "An Admin chooses what the Axis Monitor shows (sign in as one)"));
 Why_ColNoDefault;KabanHMI\Helpers\ColumnChooser.cs;133;Text;!string.IsNullOrEmpty(DefaultKey), T("Why_ColNoDefault", "This table keeps no default of its own")));
