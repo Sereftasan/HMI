@@ -55,6 +55,8 @@ namespace Kaban.UI.Helpers
             public Control Target;       // the deepest control under the finger (a disabled one too)
             public Point Client, Screen, Last;
             public bool Moved, Held, Panning;
+            public bool Deferred;        // a list's press kept back: a tap is given it on the lift, a drag scrolls instead
+            public int DownMsg;
             public ToolStripItem GreyItem;
             public ComboBox List;
             public object Scroller;      // what a drag scrolls (TouchInput.Scroll)
@@ -122,7 +124,7 @@ namespace Kaban.UI.Helpers
             var client = PointOf(m.LParam);
             var screen = ToScreen(m.HWnd, window ?? owner, client);
             var target = window != null ? Deepest(window, client) : owner;
-            var p = new Press { Hwnd = m.HWnd, Window = window, Owner = owner, Target = target, Client = client, Screen = screen, Last = screen };
+            var p = new Press { Hwnd = m.HWnd, Window = window, Owner = owner, Target = target, Client = client, Screen = screen, Last = screen, DownMsg = m.Msg };
             _press = p;
             var strip = window as ToolStrip;
             if (strip != null)
@@ -133,7 +135,11 @@ namespace Kaban.UI.Helpers
             }
             var combo = owner as ComboBox;
             if (combo != null && UsesTouchList(combo)) { p.List = combo; return true; }    // the list a finger's size, on the tap
-            if (CanHold(target, ToClient(target, screen))) _hold.Start();
+            bool hold = CanHold(target, ToClient(target, screen));
+            if (hold) _hold.Start();
+            // a table's or a list's row is chosen on the lift, not at the touch: a drag scrolls it
+            // without choosing the row it started on (the press is given it as it was, on a tap)
+            if (window != null && Defers(window, client)) { p.Deferred = true; return true; }
             return false;
         }
 
@@ -151,7 +157,7 @@ namespace Kaban.UI.Helpers
                 StopHold();
                 if (StartPan(p, screen)) return true;
             }
-            return p.List != null;
+            return p.List != null || p.Deferred;                        // a press kept back: its moves too
         }
 
         private static bool Up(ref Message m)
@@ -162,6 +168,15 @@ namespace Kaban.UI.Helpers
             if (p == null) return false;
             if (p.Held || p.Panning) { EndPan(p); return true; }         // already let go where it does nothing
             if (p.List != null) { if (!p.Moved) ShowTouchList(p.List); return true; }
+            if (p.Deferred)
+            {
+                if (p.Moved) return true;                               // a drag on a list that does not scroll: nothing
+                // the tap, as the press and the lift it was (a second tap: a double click)
+                Send(p.Hwnd, p.Window, p.DownMsg, MkLButton, LParam(p.Client));
+                Send(p.Hwnd, p.Window, WmLButtonUp, 0, LParam(p.Client));
+                Later(p.Window, () => Tapped(p));
+                return true;
+            }
             if (p.Moved) return false;                                  // a drag: the slider's, the splitter's
             var at = p.Window ?? p.Owner;
             Later(at, () => Tapped(p));
@@ -263,7 +278,7 @@ namespace Kaban.UI.Helpers
             if (p == null || p.Moved || p.Panning || p.Held) return;
             p.Held = true;
             LastHeld = p.Target;
-            RightClick(p.Hwnd, p.Window ?? p.Owner, p.Client, true);
+            RightClick(p.Hwnd, p.Window ?? p.Owner, p.Client, !p.Deferred);
         }
 
         /// <summary>
@@ -511,9 +526,11 @@ namespace Kaban.UI.Helpers
 
         static partial void StartPanPart(Press p, Point screen, ref bool started);
         static partial void PanToPart(Press p, Point screen);
+        static partial void DefersPart(Control window, Point client, ref bool defers);
 
         private static bool StartPan(Press p, Point screen) { bool started = false; StartPanPart(p, screen, ref started); return started; }
         private static void PanTo(Press p, Point screen) { PanToPart(p, screen); p.Last = screen; }
         private static void EndPan(Press p) { }
+        private static bool Defers(Control window, Point client) { bool d = false; DefersPart(window, client, ref d); return d; }
     }
 }

@@ -277,7 +277,7 @@ class TM {
         var press = new Point(cellAt.Left + 30, cellAt.Top + cellAt.Height / 2);
         bool tookDown = Down(rowGrid, press);
         Pump(TouchInput.LongPressMs + 250);
-        Check("held still on a table row with a menu: the menu opens - the row chosen as a right-click chooses it", !tookDown && TouchInput.LastHeld == rowGrid &&
+        Check("held still on a table row with a menu: the menu opens - the row chosen as a right-click chooses it", tookDown && TouchInput.LastHeld == rowGrid &&
               rightRow == 3 && rowMenu.Visible, "held " + (TouchInput.LastHeld == null ? "-" : TouchInput.LastHeld.GetType().Name) + ", row " + rightRow + ", menu " + rowMenu.Visible);
         Check("  the finger lifted: taken - nothing chosen in the menu, nothing clicked", MoveTo(rowGrid, press) && Up(rowGrid, press));
         rowMenu.Close(); Pump(50);
@@ -405,6 +405,72 @@ class TM {
         Check("a mouse: no keyboard", !TouchKeyboard.IsShown);
         TouchInput.AskNumber = (pad, owner) => pad.ShowDialog(owner);
         kf.Close(); kf.Dispose();
+
+        Console.WriteLine("--- a finger drag scrolls, a tap chooses ---");
+        Mode("Touch");
+        var pf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(10, 10), ClientSize = new Size(1200, 900), Text = "scrolling" };
+        var long1 = new DataGridView { Name = "longTable", Location = new Point(10, 10), Size = new Size(600, 400), AllowUserToAddRows = false, RowHeadersVisible = false,
+                                       SelectionMode = DataGridViewSelectionMode.FullRowSelect, ReadOnly = true, MultiSelect = false };
+        UiStyle.GridLook(long1);
+        for (int c = 0; c < 6; c++) long1.Columns.Add("c" + c, "Column " + c);
+        foreach (DataGridViewColumn col in long1.Columns) col.Width = 250;
+        for (int i = 0; i < 100; i++) long1.Rows.Add("row " + i, i, i * 2, i * 3, i * 4, i * 5);
+        int clicks = 0; long1.CellClick += (s, e) => clicks++;
+        var tall = new Panel { Name = "tallPage", Location = new Point(630, 10), Size = new Size(400, 400), AutoScroll = true, BorderStyle = BorderStyle.FixedSingle };
+        var inPage = new Button { Text = "In the tall", Location = new Point(20, 20), Size = new Size(160, 44) };
+        int pageClicks = 0; inPage.Click += (s, e) => pageClicks++;
+        var slider = new TrackBar { Location = new Point(20, 100), Width = 300, Maximum = 100 };
+        var jog2 = new ButtonHMI { Location = new Point(20, 180), Size = new Size(120, 44) };
+        jog2.BitActions.Add(new Kaban.Core.Models.BitAction());
+        tall.Controls.Add(inPage); tall.Controls.Add(slider); tall.Controls.Add(jog2);
+        tall.Controls.Add(new Label { Text = "end", Location = new Point(20, 1900), AutoSize = true });
+        var lb = new ListBox { Name = "longList", Location = new Point(10, 430), Size = new Size(300, 300), IntegralHeight = false };
+        for (int i = 0; i < 100; i++) lb.Items.Add("entry " + i);
+        pf.Controls.Add(long1); pf.Controls.Add(tall); pf.Controls.Add(lb);
+        pf.Show(); Pump(200); TouchInput.Sweep(); Pump(50);
+        long1.CurrentCell = long1.Rows[0].Cells[0]; Pump(30);
+        var r2 = long1.GetCellDisplayRectangle(0, 2, false);
+        var start = new Point(r2.Left + 40, r2.Top + r2.Height / 2);
+        bool d0 = Down(long1, start);
+        Check("a finger down on a table's row: the row not chosen yet", d0 && long1.CurrentCell.RowIndex == 0);
+        MoveTo(long1, new Point(start.X, start.Y - 5));
+        int rowH2 = long1.Rows[0].Height;
+        bool m1 = MoveTo(long1, new Point(start.X, start.Y - 5 * rowH2));
+        Check("dragged up five rows: the table scrolled five rows, the rows not chosen", m1 && long1.FirstDisplayedScrollingRowIndex == 5 &&
+              long1.CurrentCell.RowIndex == 0 && TouchInput.LastScrolled == "longTable", long1.FirstDisplayedScrollingRowIndex + " first, row " + long1.CurrentCell.RowIndex);
+        MoveTo(long1, new Point(start.X, start.Y - 9 * rowH2));
+        MoveTo(long1, new Point(start.X, start.Y - 7 * rowH2));
+        Check("  and back down two: it follows the finger", long1.FirstDisplayedScrollingRowIndex == 7, long1.FirstDisplayedScrollingRowIndex + "");
+        bool u1 = Up(long1, new Point(start.X, start.Y - 7 * rowH2)); Pump(50);
+        Check("  lifted: nothing clicked", u1 && clicks == 0 && long1.CurrentCell.RowIndex == 0);
+        var r9 = long1.GetCellDisplayRectangle(1, 9, false);
+        Tap(long1, new Point(r9.Left + 20, r9.Top + r9.Height / 2)); Pump(50);
+        Check("a tap: that row chosen, a click", long1.CurrentCell.RowIndex == 9 && clicks == 1, "row " + long1.CurrentCell.RowIndex + ", " + clicks + " clicks");
+        var mid = new Point(400, 200);
+        Down(long1, mid); MoveTo(long1, new Point(mid.X - 300, mid.Y + 2)); Up(long1, new Point(mid.X - 300, mid.Y + 2));
+        Check("dragged left: the columns scroll", long1.HorizontalScrollingOffset == 300, long1.HorizontalScrollingOffset + "");
+        long1.HorizontalScrollingOffset = 0; Pump(30);
+        int firstBefore = long1.FirstDisplayedScrollingRowIndex;
+        var head = new Point(100, long1.ColumnHeadersHeight / 2);
+        bool hd = Down(long1, head), hm = MoveTo(long1, new Point(100, head.Y + 150)); Up(long1, new Point(100, head.Y + 150));
+        Check("from the headings: no scroll (their widths, their order)", !hd && !hm && long1.FirstDisplayedScrollingRowIndex == firstBefore);
+
+        bool pd = Down(inPage, new Point(30, 20));
+        bool pm = MoveTo(inPage, new Point(30, 20 - 300));
+        bool pu = Up(inPage, new Point(30, -280)); Pump(50);
+        Check("a page too tall: a drag from a button in it scrolls it - the button not clicked", !pd && pm && pu && -tall.AutoScrollPosition.Y == 300 && pageClicks == 0,
+              -tall.AutoScrollPosition.Y + " / " + pageClicks + " clicks, scrolled " + TouchInput.LastScrolled);
+        tall.AutoScrollPosition = new Point(0, 0); Pump(30);
+        Down(slider, new Point(20, 10)); bool sm = MoveTo(slider, new Point(20, 10 - 200)); Up(slider, new Point(20, -190));
+        Down(jog2, new Point(20, 20)); bool jm = MoveTo(jog2, new Point(20, 20 - 200)); Up(jog2, new Point(20, -180));
+        Check("  not from a slider, nor from a jog button: their drag is theirs", !sm && !jm && tall.AutoScrollPosition.Y == 0);
+        Down(lb, new Point(40, 200)); MoveTo(lb, new Point(40, 200 - 10 * lb.ItemHeight)); Up(lb, new Point(40, 200 - 10 * lb.ItemHeight));
+        Check("a list: its entries scroll", lb.TopIndex == 10 && lb.SelectedIndex < 0, lb.TopIndex + " top, chosen " + lb.SelectedIndex);
+        Mode("Mouse");
+        long1.FirstDisplayedScrollingRowIndex = 0; Pump(30);
+        bool md = Down(long1, start), mm = MoveTo(long1, new Point(start.X, start.Y - 5 * rowH2)); Up(long1, new Point(start.X, start.Y - 5 * rowH2));
+        Check("a mouse: a drag is a drag (it chooses rows), nothing scrolls by itself", !md && !mm && long1.FirstDisplayedScrollingRowIndex == 0);
+        pf.Close(); pf.Dispose();
 
         UserStore.RemoveUser("tmop");                   // the store is shared with the other tests
         Console.WriteLine(fail == 0 ? "TOUCH MODE ALL PASS" : "TOUCH MODE " + fail + " FAILED");
