@@ -55,7 +55,7 @@ namespace Kaban.UI.Settings
                     T("Ftr_LoggingNote", "While the Industry 4 service runs on this PC the HMI waits: stop it (or uninstall it) once the HMI logs."),
                     _loggingNow);
             Feature(HmiFeatures.TouchScreen, TouchEmoji, T("Ftr_Touch", "Touch screen"),
-                    T("Ftr_TouchText", "The screen may be used by touch: the mouse / finger button on the top bar switches between them, and Users and Preferences has 'Screen used with' for everyone or a user. By touch: larger menus, rows and buttons, a long press for a menu, a finger drag scrolls, a keyboard on the screen. Off: a mouse, neither shown."),
+                    T("Ftr_TouchText", "This PC's screen has a touch function: the mouse / finger button is on the top bar, to switch between a mouse and a finger, and Users and Preferences has 'Screen used with' for everyone or a user. By touch: larger menus, rows and buttons, a long press for a menu, a finger drag scrolls, a keyboard on the screen. Off - a screen with no touch function: a mouse, neither shown."),
                     null, _touchNow);
 
             _onChanged = (s, e) => { try { if (IsHandleCreated && InvokeRequired) BeginInvoke((Action)Fill); else Fill(); } catch { } };

@@ -254,11 +254,12 @@ for a control held back by its conditions, each condition in words with what it 
 </ul>
 
 <h3 id="touch">1a. Using it by touch</h3>
-<p>A panel with a touch screen can be used with a finger. The touch screen is an <b>optional part</b>: switched on by an <span class="lvl l3">Admin</span>
-on <b>HMI Settings &rsaquo; Features</b> (<a href="#features">9b</a>) &ndash; off, the program is used with a mouse whatever else is set, and neither the
-mouse / finger button on the caption bar nor the <i>Screen used with</i> preference is shown. Switched on, the screen is used by touch while
-<b>Screen used with</b> says <i>Touch (a finger)</i> &ndash; everyone's, or a user's own, taken when they sign in (<a href="#viewprefs">Users and Preferences</a>) &ndash;
-or after the caption bar's &#128433; / &#128070; button is switched to it. By touch:</p>
+<p>A panel with a touch screen can be used with a finger. Whether <b>this PC's screen has a touch function</b> is said once, by an
+<span class="lvl l3">Admin</span>, on <b>HMI Settings &rsaquo; Features</b> (<a href="#features">9b</a>): <i>Touch screen</i> On. Only then is the
+<b>mouse / finger button</b> (&#128433; / &#128070;) on the caption bar, its menu choosing how the screen is used now &ndash; with a mouse or by touch &ndash;
+and Users and Preferences has <b>Screen used with</b> (everyone's, or a user's own, taken when they sign in, <a href="#viewprefs">Users and Preferences</a>);
+the screen is used by touch while that says <i>Touch (a finger)</i>, or after the button is switched to it. <i>Touch screen</i> Off &ndash; a screen with no
+touch function &ndash; the program is used with a mouse, and neither the button nor <i>Screen used with</i> is shown. By touch:</p>
 <ul>
  <li><b>A finger's size.</b> Menu entries, table rows, tick boxes and round options, toolbar buttons and tabs are larger &ndash; back as they were with a mouse.</li>
  <li><b>A held button is held.</b> Windows does not turn a finger held on the screen into a right-click, nor a finger drag into its own pan: a jog
@@ -1068,8 +1069,9 @@ what it does <b>now</b>; it is switched for this panel, for everyone, at once &n
   Industry 4 service's job &ndash; and keeps its own log (sign-ins, writes, settings) in the same database (<a href="#i4log">11a</a>). Each machine's PLC log area
   is on its Machine Parameters &rsaquo; Alarms and Logs. <i>Now</i> gives each machine's logger's state.</td><td>The Industry 4 service logs (where it is
   installed); the HMI's log is in its files, as before.</td></tr>
-<tr><td>Touch screen</td><td>The screen may be used by touch (<a href="#touch">1a</a>): the &#128433; / &#128070; button on the caption bar, and <i>Screen used with</i>
-  in Users and Preferences. <i>Now</i> says whether it is used by touch or with a mouse.</td><td>Used with a mouse; neither the button nor the preference is shown.</td></tr>
+<tr><td>Touch screen</td><td>This PC's screen has a touch function (<a href="#touch">1a</a>): the &#128433; / &#128070; button is on the caption bar, to switch
+  between a mouse and a finger, and Users and Preferences has <i>Screen used with</i>. <i>Now</i> says whether it is used by touch or with a mouse.</td><td>No touch
+  function: used with a mouse; neither the button nor the preference is shown.</td></tr>
 </table>
 <div class="note">While the Industry 4 service runs on the panel PC the HMI's logging <b>waits</b> (both would take the same records) and says so:
 stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
