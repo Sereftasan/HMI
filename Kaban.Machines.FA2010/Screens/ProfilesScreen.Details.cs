@@ -176,6 +176,7 @@ namespace Kaban.Machines.FA2010.Screens
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "name", HeaderText = T("Prf_RefPoint", "Point"), Width = 150, ReadOnly = true });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "y", HeaderText = "Y (mm)", Width = 70 });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "z", HeaderText = "Z (mm)", Width = 70 });
+            Kaban.UI.Helpers.TouchInput.NumberColumns(_refGrid, "y", "z");      // by touch, the keypad for them
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "source", HeaderText = T("Prf_RefSource", "Found by"), Width = 170, ReadOnly = true });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "sure", HeaderText = T("Prf_RefSure", "Sure"), Width = 55, ReadOnly = true });
             _refGrid.Columns.Add(new DataGridViewTextBoxColumn { Name = "confirmed", HeaderText = T("Prf_RefConfirmed", "Confirmed"), Width = 150, ReadOnly = true });

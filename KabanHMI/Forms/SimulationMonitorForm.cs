@@ -1065,6 +1065,17 @@ namespace Kaban.UI.Forms
         private void AttachSheet(MonitorTab mon, Sheet sh, int at)
         {
             sh.Grid = BuildGrid();
+            // by touch, the keypad for its numbers: a decimal value, its calculated value, divisor and places
+            Kaban.UI.Helpers.TouchInput.NumberCells(sh.Grid, cell =>
+            {
+                if (cell.RowIndex < 0 || cell.RowIndex >= sh.Rows.Count) return false;
+                var row = sh.Rows[cell.RowIndex];
+                string col = cell.OwningColumn.Name;
+                if (col == "Divisor" || col == "Decimals" || col == "Calculated") return true;
+                if (col != "Value" || !row.IsDevice) return false;
+                var dt = row.EffectiveDataType;
+                return !IsString(dt) && !IsBit(dt) && string.IsNullOrEmpty(row.DisplayFormat);   // hexadecimal, binary, a text: the keyboard
+            });
             // the move buttons on and off as the rows chosen allow (24 October)
             // (not while the tabs are being made again: an undo, a tab deleted - the tab strip is half built then)
             sh.Grid.SelectionChanged += (s, e) => { try { UpdateToolbar(); } catch (ArgumentOutOfRangeException) { } };

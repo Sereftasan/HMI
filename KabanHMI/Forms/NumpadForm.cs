@@ -53,11 +53,17 @@ namespace Kaban.UI.Forms
         public void PlaceBeside(Control owner)
         {
             if (owner == null) return;
-            var origin = owner.PointToScreen(Point.Empty);
-            var screen = Screen.FromControl(owner).WorkingArea;
+            PlaceBeside(new Rectangle(owner.PointToScreen(Point.Empty), owner.Size));
+        }
 
-            int x = origin.X + owner.Width - Width;     // right edges aligned
-            int y = origin.Y + owner.Height + 4;        // below by default
+        /// <summary>The same, against a part of the screen (a table's cell).</summary>
+        public void PlaceBeside(Rectangle field)
+        {
+            var origin = field.Location;
+            var screen = Screen.FromRectangle(field).WorkingArea;
+
+            int x = origin.X + field.Width - Width;     // right edges aligned
+            int y = origin.Y + field.Height + 4;        // below by default
 
             if (y + Height > screen.Bottom) y = origin.Y - Height - 4;   // no room: above
             if (y < screen.Top) y = screen.Top + 4;

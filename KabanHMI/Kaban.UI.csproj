@@ -107,6 +107,10 @@
     <Compile Include="Helpers\TouchInput.cs" />
     <Compile Include="Helpers\TouchInput.Sizes.cs" />
     <Compile Include="Helpers\TouchInput.Gestures.cs" />
+    <Compile Include="Helpers\TouchInput.Typing.cs" />
+    <Compile Include="Forms\TouchKeyboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Helpers\UserLanguage.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />

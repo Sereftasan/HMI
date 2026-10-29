@@ -334,6 +334,78 @@ class TM {
         Check("  no menu from holding", !rowMenu.Visible);
         gf.Close(); gf.Dispose();
 
+        Console.WriteLine("--- the keyboard on the screen, the keypad for numbers ---");
+        Mode("Touch");
+        var kf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(20, 20), ClientSize = new Size(900, 900), Text = "typing" };
+        var name = new TextBox { Name = "name", Location = new Point(20, 20), Width = 300 };
+        var low = new TextBox { Name = "low", Location = new Point(20, 860), Width = 300 };
+        var shown = new TextBox { Location = new Point(340, 20), Width = 200, ReadOnly = true, Text = "read only" };
+        var nud = new NumericUpDown { Location = new Point(560, 20), Width = 100, Minimum = -10, Maximum = 100, DecimalPlaces = 1, Value = 5 };
+        var cells = new DataGridView { Location = new Point(20, 80), Size = new Size(600, 240), AllowUserToAddRows = false, RowHeadersVisible = false };
+        cells.Columns.Add(new DataGridViewTextBoxColumn { Name = "label", HeaderText = "Label" });
+        cells.Columns.Add(new DataGridViewTextBoxColumn { Name = "count", HeaderText = "Count", ValueType = typeof(int) });
+        for (int i = 0; i < 4; i++) cells.Rows.Add("item " + i, i);
+        kf.Controls.Add(name); kf.Controls.Add(low); kf.Controls.Add(shown); kf.Controls.Add(nud); kf.Controls.Add(cells);
+        kf.Show(); Pump(200); TouchInput.Sweep();
+        name.Focus(); Pump(30);
+        Tap(name, new Point(30, 8)); Pump(80);
+        var kb = TouchKeyboard.Current;
+        Check("a tap on a text box: the keyboard on the screen, for that box - never taking its focus",
+              TouchKeyboard.IsShown && kb.Target == name && kb.Name == "touchKeyboard", kb == null ? "none" : "target " + (kb.Target == null ? "-" : kb.Target.Name));
+        Shot(kb, "keyboard");
+        foreach (var k in new[] { "ş", "e", "k", "e", "r" }) kb.Press(k);
+        kb.Press("Space");
+        kb.Press("Shift"); kb.Press("i"); kb.Press("z"); kb.Press("m");
+        kb.Press("Shift"); kb.Press("ı");
+        Check("typed: Turkish letters; Shift for the next letter only, i - İ and ı - I as Turkish writes them", name.Text == "şeker İzmI", name.Text);
+        kb.Press("Back");
+        kb.Press("Signs"); kb.Press("@"); kb.Press("Signs");
+        Check("  backspace; the page of signs and back", name.Text == "şeker İzm@" && !kb.Signs, name.Text);
+        kb.Press("Shift"); kb.Press("Shift");
+        foreach (var k in new[] { "ç", "ö" }) kb.Press(k);
+        Check("  Shift twice: all capitals until tapped again", name.Text.EndsWith("ÇÖ") && kb.CapsLock, name.Text);
+        kb.Press("Shift");
+        var kbBounds = kb.Bounds;
+        Check("  at the bottom of the screen, the box seen above it", kbBounds.Bottom >= Screen.PrimaryScreen.WorkingArea.Bottom - 10 &&
+              !kbBounds.IntersectsWith(new Rectangle(name.PointToScreen(Point.Empty), name.Size)), kbBounds.ToString());
+        Tap(low, new Point(30, 8)); Pump(80);
+        Check("a box down where the keyboard would be: the keyboard at the top of the screen", TouchKeyboard.IsShown && kb.Target == low &&
+              kb.Top <= Screen.PrimaryScreen.WorkingArea.Top + 10, kb.Bounds + " target " + (kb.Target == null ? "-" : kb.Target.Name) + " box " + new Rectangle(low.PointToScreen(Point.Empty), low.Size));
+        kb.Press("Enter"); Pump(50);
+        Check("  Enter in a one-line box: done with - the keyboard goes", !TouchKeyboard.IsShown);
+        Tap(shown, new Point(30, 8)); Pump(80);
+        Check("a box that is only read: no keyboard", !TouchKeyboard.IsShown);
+        Tap(name, new Point(30, 8)); Pump(80);
+        kb.Press("Hide"); Pump(30);
+        Check("✕ puts it away", !TouchKeyboard.IsShown);
+
+        NumpadForm asked = null;
+        string answer = "12.5";
+        TouchInput.AskNumber = (pad, owner) => { asked = pad; typeof(NumpadForm).GetField("_text", Any).SetValue(pad, answer); return DialogResult.OK; };
+        Tap(nud, new Point(20, 8)); Pump(80);
+        Check("a number box with arrows: the keypad, its limits - its value set", asked != null && asked.Minimum == -10 && asked.Maximum == 100 && asked.AllowDecimal &&
+              nud.Value == 12.5m, nud.Value + "");
+        asked = null; answer = "42";
+        cells.CurrentCell = cells.Rows[2].Cells["count"]; cells.BeginEdit(true); Pump(50);
+        Tap(cells.EditingControl, new Point(10, 8)); Pump(120);
+        Check("a table's number cell being edited: the keypad, its value in it - OK writes it as Enter would", asked != null && !asked.AllowDecimal &&
+              !cells.IsCurrentCellInEditMode && Convert.ToInt32(cells.Rows[2].Cells["count"].Value) == 42,
+              Convert.ToString(cells.Rows[2].Cells["count"].Value) + " asked " + (asked != null) + " decimal " + (asked != null && asked.AllowDecimal) + " editing " + cells.IsCurrentCellInEditMode);
+        cells.CurrentCell = cells.Rows[1].Cells["label"]; cells.BeginEdit(true); Pump(50);
+        Tap(cells.EditingControl, new Point(10, 8)); Pump(120);
+        Check("  a text cell: the keyboard, for its editor", TouchKeyboard.IsShown && kb.Target == cells.EditingControl);
+        kb.Press("x");
+        Check("    typed into the cell", ((TextBox)cells.EditingControl).Text.Contains("x"), ((TextBox)cells.EditingControl).Text);
+        cells.EndEdit(); TouchKeyboard.HideNow();
+        TouchInput.NumberColumns(cells, "label");
+        Check("  a table that keeps its numbers as text says which cells are numbers", TouchInput.IsNumberCell(cells, cells.Rows[0].Cells["label"]) &&
+              !TouchInput.IsNumberCell(cells, cells.Rows[0].Cells["count"]));
+        Mode("Mouse");
+        Tap(name, new Point(30, 8)); Pump(80);
+        Check("a mouse: no keyboard", !TouchKeyboard.IsShown);
+        TouchInput.AskNumber = (pad, owner) => pad.ShowDialog(owner);
+        kf.Close(); kf.Dispose();
+
         UserStore.RemoveUser("tmop");                   // the store is shared with the other tests
         Console.WriteLine(fail == 0 ? "TOUCH MODE ALL PASS" : "TOUCH MODE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
