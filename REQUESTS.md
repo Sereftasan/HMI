@@ -6,6 +6,23 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 29 October (the Industry 4 logger in the HMI; touch screens):
+  - f718f75 - The machine's log taken from its PLC by the HMI (the Industry 4 service's job): the same protocol (R27000,
+    10-word records, chains, bits, 32-bit values, multipliers, Active devices, the KMSystem Process ID lookup) into the
+    same database and tables; it waits while the Industry 4 service runs on the PC. Dashboard settings: on / off, the log
+    area, what it does now, KMSystem.
+  - 57b7c6d - The HMI's own log in the same database and tables ("Same file, same tables"): codes 1000 + its kind
+    (1001 sign-in ... 1006 a device written), left out of the dashboard, its tables and the reports - their formats as
+    they were; All logs reads it back.
+  - f114882 - Mouse or touch: View Preferences > Screen > Screen used with, and the mouse / finger button on the top
+    bar beside the screen scale; in touch mode Windows' press-and-hold and pan are off (a jog held is held).
+  - c3f15b2 - Touch: menus, table rows, tick boxes, toolbar buttons and tabs a finger's size.
+  - 6aa34b2 - Touch: a long press opens the menu, a "⋮" on a table's row menu, a tap on something greyed says why,
+    closed lists as large menus; Find in the notes opens on a tap.
+  - c8ef793 - Touch: the keyboard on the screen (Turkish Q) when a text box is tapped; the keypad for number cells
+    and number boxes.
+  - 6b3d96f - Touch: a finger drag scrolls tables, lists and pages; a tap chooses the row.
+  - 33861bc - The new texts in Turkish.
 - 26 October, evening (the manual and the AI prompts):
   - c541acf - The HMI manual brought up to date with everything from 12 to 26 October: the notes page as redesigned,
     coupling and Cylinder FW/Back, motors (inverters), the help pages (one page per fault, files added first), the speed
