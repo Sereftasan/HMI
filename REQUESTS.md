@@ -6,6 +6,13 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 30 October, later (the answers to the questions):
+  - d1fcb7b - FA2010's bar: "Cylinder FW/Back" is "Automatic ON/OFF" (Otomatik ON/OFF), the button a little wider so
+    "Automatic" fits; Safety Bypass in Turkish (Güvenlik Bypass); the manuals, the AI prompt and the log with the new name.
+  - b5d8127 - Features > Touch screen: it says whether this PC's screen has a touch function - only then the mouse /
+    finger button on the top bar and "Screen used with" (as it already worked); the texts and the manuals say so.
+  - The back horizontal moulds' reference sensors at the back movement's end: as the program has them, nothing changed.
+  - The question on the clamps' positions asked again, with what the drawings show (CLAUDE.md, Open questions).
 - 30 October (Industry 4 logging and touch optional; the answers to 29 October's questions):
   - f9d31e4 - HMI Settings > Features (Admin, the last tab): Industry 4 logging in the HMI and the touch screen, each
     with On / Off, what it does and what it does now - both off until switched on. Logging off: the Windows service

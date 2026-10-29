@@ -66,7 +66,21 @@
   off until switched on. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
 
 ## Open questions (answer here or in a message)
-1. The back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are on the rows' **back** side - is any of
-   them at the front?
-2. Cutting > Right Front Vert. Clamping and Entry Conveyor > Profile Clamping 7 show a position the drawings measure
-   nothing for: change their feedback type, or are the drawings missing something?
+1. **Three clamps show a position, but the electrical drawing (134581 rev. 9, sheet 11) has no encoder for them.** The
+   drawing's encoder inputs (U4, X2 - X17) are the gripper, Milling Left Top, Cutting Left Top, Profile Recognition width
+   and height (the left or the right unit, switched by K77 / K78), Cutting Right Front and Cutting Right Top clamping.
+   The old program's Encoders page (Machine Parameters > Encoders now) has rows for these three as well:
+   - Cutting > **Right Front Vert. Clamping** - on the drawings the *Output Conveyor Front Clamping Cylinder* (P24,
+     Y105 / Y106, back sensor X76) - shows D7 (row "Cutting Front Right Vertical");
+   - Milling > **Front Clamping** - the *Milling / Cutting Front Clamping Cylinder* (P19, pressure switches SW2, SW3) -
+     shows D20 (row "Milling-Cutting Left Front");
+   - Entry Conveyor > **Profile Clamping 7** - the *Input Conveyor 7. Clamping Cylinder* (P13, Y13 / Y22, sensors X35,
+     X44) - shows D4 (row "Left Profile Recognition Front"), the profile recognition WIDTH, the same D4 as Profile
+     Recognition > Front Clamping.
+
+   For each: does that cylinder have an encoder (then where is it wired - the drawing is missing it), or is the
+   position wrong there (then it shows none, as a plain cylinder)? For Profile Clamping 7: is it the left profile
+   recognition unit's clamp, measured by the width encoder through K77?
+
+Answered: the back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are at the end of the BACK movement
+(30 October) - as the program has them.
