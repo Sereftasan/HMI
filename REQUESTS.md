@@ -6,6 +6,21 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 30 October (Industry 4 logging and touch optional; the answers to 29 October's questions):
+  - f9d31e4 - HMI Settings > Features (Admin, the last tab): Industry 4 logging in the HMI and the touch screen, each
+    with On / Off, what it does and what it does now - both off until switched on. Logging off: the Windows service
+    logs, the HMI's log is in its files. Touch off: a mouse, no mouse / finger button, no "Screen used with".
+  - 2f2ef3c - Machine Parameters > "Alarms and Logs" (the Alarms tab renamed): each machine's PLC log area (R27000 for
+    FA2010), the KMSystem lookup and what its logger does - shown while the HMI logs.
+  - d8d9aea - Question 1, yes: the alarm texts moved into each machine's Translations.csv (Alarm_<machine>.<tag>), the
+    Industry 4 program's Turkish with them; Alarms.json keeps the alarm and where the PLC's log records it.
+  - e3124e8 - Alarms > History read from the machine's log database (kept across restarts), with the alarms the HMI
+    raised itself.
+  - 06d05c5 - Question 2, yes: the English manual brought up to date; the whole manual and FA2010's chapter in Turkish.
+  - 9380117 - Question 2: AI_HANDOFF_PROMPT.md rewritten for the program as it is; the AI page design guide made again
+    (InverterUnitHMI, the machine's bar, touch).
+  - 3ff17ba - The new texts in Turkish.
+  - Question 3 (the touch test on the panel): yours to report - switch the touch screen on first (HMI Settings > Features).
 - 29 October (the Industry 4 logger in the HMI; touch screens):
   - f718f75 - The machine's log taken from its PLC by the HMI (the Industry 4 service's job): the same protocol (R27000,
     10-word records, chains, bits, 32-bit values, multipliers, Active devices, the KMSystem Process ID lookup) into the
