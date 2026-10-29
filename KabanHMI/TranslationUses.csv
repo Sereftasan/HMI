@@ -185,6 +185,7 @@ Btn_Close;KabanHMI\Settings\TranslationsControl.cs;958;Text;var close = UiStyle.
 Btn_Close;KabanHMI\Settings\TranslationsControl.cs;1086;Text;var close = UiStyle.DialogButton(T("Btn_Close", "Close"), DialogResult.Cancel);
 Btn_CmpNext;KabanHMI\Settings\SettingsCompareForm.cs;96;Text;var next = UiStyle.TextButton(T("Btn_CmpNext", "Next difference"), 0, (s, e) => Step(+1));
 Btn_CmpPrev;KabanHMI\Settings\SettingsCompareForm.cs;94;Text;var prev = UiStyle.TextButton(T("Btn_CmpPrev", "Previous difference"), 0, (s, e) => Step(-1));
+Btn_CylinderFwBack;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;651;Text;this.BtnCylinderFwBack.TranslationKey = "Btn_CylinderFwBack";
 Btn_Dashboard;KabanHMI\Screens\StandardScreens.cs;147;Text;TitleKey = "Btn_Dashboard",
 Btn_Down;Kaban.Machines.H500\Screens\H500Screen.cs;47;Text;ButtonATextKey = "Btn_Down",
 Btn_Down;Kaban.Machines.H800\Screens\H800Screen.cs;47;Text;ButtonATextKey = "Btn_Down",
@@ -253,6 +254,7 @@ Btn_ResetNActive;KabanHMI\Forms\MainForm.cs;1958;Text;LanguageManager.GetString(
 Btn_Restart;KabanHMI\Forms\MainForm.cs;1298;Menu;var restart = new ToolStripMenuItem(LanguageManager.GetString("Btn_Restart", "Restart"))
 Btn_Restart;KabanHMI\Forms\MainForm.cs;1362;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
 Btn_Restart;KabanHMI\Forms\MainForm.cs;1397;Text;LanguageManager.GetString("Btn_Restart", "Restart the program"),
+Btn_SafetyBypass;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;583;Text;this.BtnSafetyBypass.TranslationKey = "Btn_SafetyBypass";
 Btn_Save;KabanHMI\Profiles\LibraryEditorForm.cs;487;Text;var save = UiStyle.TextButton(T("Btn_Save", "Save"), 110);
 Btn_Start;Kaban.Machines.H500\Screens\H500Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
 Btn_Start;Kaban.Machines.H800\Screens\H800Screen.cs;64;Text;ButtonATextKey = "Btn_Start",
@@ -682,7 +684,7 @@ Ftr_Touch;KabanHMI\Settings\FeaturesControl.cs;57;Text;Feature(HmiFeatures.Touch
 Ftr_TouchNowMouse;KabanHMI\Settings\FeaturesControl.cs;178;Text;: T("Ftr_TouchNowMouse", "Now: used with a mouse - the button on the top bar switches it.");
 Ftr_TouchNowTouch;KabanHMI\Settings\FeaturesControl.cs;177;Text;: ViewPreferences.TouchMode ? T("Ftr_TouchNowTouch", "Now: used by touch.")
 Ftr_TouchOff;KabanHMI\Settings\FeaturesControl.cs;176;Text;_touchNow.Text = !HmiFeatures.TouchOn ? T("Ftr_TouchOff", "Now: used with a mouse.")
-Ftr_TouchText;KabanHMI\Settings\FeaturesControl.cs;58;Text;T("Ftr_TouchText", "The screen may be used by touch: the mouse / finger button on the top bar switches between them, and Users and Preferences has 'Screen used with' for everyon...
+Ftr_TouchText;KabanHMI\Settings\FeaturesControl.cs;58;Text;T("Ftr_TouchText", "This PC's screen has a touch function: the mouse / finger button is on the top bar, to switch between a mouse and a finger, and Users and Preferences has 'Sc...
 Gen_Sub1;Kaban.Core\Helpers\AlarmGeneration.cs;570;Text;return string.Format(LanguageManager.GetString("Gen_Sub1", "{0} stayed ON - the cylinder did not leave its start"), names(s.MustOff));
 Gen_Sub2;Kaban.Core\Helpers\AlarmGeneration.cs;572;Text;return string.Format(LanguageManager.GetString("Gen_Sub2", "{0} did not come ON - it stopped on the way, or the sensor does not see it"), names(s.MustOn));
 Gen_Sub3;Kaban.Core\Helpers\AlarmGeneration.cs;574;Text;return string.Format(LanguageManager.GetString("Gen_Sub3", "{0} came ON, but {1} at the start stayed ON"), names(s.MustOn), names(s.MustOff));
@@ -817,7 +819,7 @@ Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2602;Text;string name = As
 Lbl_SheetName;KabanHMI\Forms\SimulationMonitorForm.cs;2625;Text;string name = AskText(T("Ttl_SheetRename", "Rename tab"), T("Lbl_SheetName", "Name of the tab:"), sh.Name, mon, sh);
 Lbl_Simulated;KabanHMI\Forms\SimulationMonitorForm.cs;3722;Text;(mon.IsSimulated ? "  \u00B7  " + T("Lbl_Simulated", "simulated") : "");
 Lbl_Speed;Kaban.Machines.FA2010\Screens\HomeScreen.Designer.cs;288;Text;this.speedOverride.TranslationKey = "Lbl_Speed";
-Lbl_Speed;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;128;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
+Lbl_Speed;Kaban.Machines.FA2010\Screens\Shared\AxisJogBar.Designer.cs;129;Text;this.speedOverrideHMI1.TranslationKey = "Lbl_Speed";
 Lbl_Speed;KabanHMI\Controls\SpeedOverrideHMI.cs;57;Text;private string _key = "Lbl_Speed", _fallback = "Speed";
 Lbl_Station;KabanHMI\Helpers\PlcEndpointNaming.cs;75;Text;? LanguageManager.GetString("Lbl_Station", "Station") + " " + endpoint.StationId
 Lbl_StationLower;KabanHMI\Helpers\PlcEndpointNaming.cs;88;Text;LanguageManager.GetString("Lbl_StationLower", "station") + " " + endpoint.StationId + ")";
