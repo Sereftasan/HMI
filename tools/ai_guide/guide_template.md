@@ -25,7 +25,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 
 - **C# / .NET Framework 4.x / WinForms**, built in Visual Studio. Projects: `Kaban.Core` (no WinForms in it), `Kaban.UI`
   (folder `KabanHMI`: the controls, namespace `Kaban.UI.Controls`), and one project per machine, `Kaban.Machines.<ID>`
-  (FA2010, H500, H800, MD3020, SB3012), whose pages are in `Screens\<Folder>\`.
+  (FA2010, H500, H800, MD3020, SB3012, SB3015), whose pages are in `Screens\<Folder>\`.
 - **A page is a `UserControl` in two files** (a partial class):
   - `<Page>.cs` - only the constructor calling `InitializeComponent()`;
   - `<Page>.Designer.cs` - every control: a private field, created in `InitializeComponent`, its properties set, added with
@@ -38,6 +38,12 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
   `Screens\Parameters`, Maintenance). The tab's caption is the translation `Tab_<Class>`. A machine's **Home** is
   `Screens\HomeScreen` (`Home` in `<ID>Module.cs`); a machine mounted under another (H500 under FA2010) has its own
   pages and translations, its `PlcNumber` 1 being its own PLC.
+- **The machine's own bar** (a `MachineBarHMI`: FA2010's `Screens\Shared\AxisJogBar` - the axes' speed, JOG and steps) is
+  designed once and shown by the program above the Manual Movement tabs (`ManualBar` in `<ID>Module.cs`) and on the Axis
+  Monitor - **never put it, or any other UserControl of the machine's project, into a page's designer file**: Visual Studio's
+  designer cannot load it there and saves the page without it. A page that shows it (Machine Parameters > Axis) has a plain
+  `System.Windows.Forms.Panel` where it goes, and its constructor puts the bar in the panel's place - the one thing a page's
+  constructor does besides `InitializeComponent()`.
 - **The project file is the old style: every file is listed.** A page adds:
 
 ```xml
@@ -61,6 +67,9 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
   - **A key another machine's file has already** (FA2010's "Conveyor") is copied with its whole row: under one panel
     the files are merged, and a blank cell of the later one would hide the other's text.
   - A page of our controls follows a language change by itself; nothing to do for it on the page.
+  - An **alarm's** text is a row of the machine's `Translations.csv` too, `Alarm_<ID>.<TagCode>` (FA2010's
+    `Alarm_FA2010.Robot_X_Error`); its `Alarms.json` entry keeps the device, code, severity, help and `"Log"` (where the PLC's
+    log records it) - no texts.
 
 ## 2. Which control for which function
 
@@ -72,6 +81,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 | A cylinder with an encoder on a Manual Movement page (a clamp whose position is shown: the old page's unit with a position) | **CylinderEncoderUnitHMI** | Only `EncoderNumber` (and `PlcNumber`, `TitleTextKey` for the title on this page): everything else comes from its CylinderEncoderSettingHMI row. Size 360 x 64. |
 | A cylinder with an encoder's settings: reference, tolerance, start (minimum) limit, unclamping interval | **CylinderEncoderSettingHMI** | One row per encoder on Machine Parameters > Encoders, numbered (`EncoderNumber`); its movement, sensors, position, valve, feedback and error bits are entered here, once. |
 | A pneumatic positioning: a cylinder with a position sensor sent to a target (a mould, a stop) - on the old page a unit with Target / Send / Calibration / Calibrate / Tolerance / Stopping Offset beside it | **PneumaticPositioningHMI** | One row per positioning, the rows one under the other 44 px apart, the five heading Labels above them (section 3). `CommandBackAddress` / `CommandForwardAddress` (`VerticalMovement` for down / up), `PositionAddress` with its scaling, `TargetPosition` + `PositioningStartAddress`, `CalibrationAddress` + `CalibrateAddress`, `PositioningToleranceAddress`, `PositioningDirectionReferenceAddress` (the old "Stopping Offset"), their scaling in `Divisor` / `DecimalPlaces`; `ValveType` / `FeedbackType` and the error bits as a cylinder unit's. Never rebuild it from loose fields and buttons. |
+| A motor driven by an inverter: run (or the two directions), its run lamp, its speed or frequency, its inverter's fault code | **InverterUnitHMI** | One control for the motor - never a unit, a lamp and a fault code display side by side. `CommandAAddress` (and `CommandBAddress` for two directions), `ButtonATextKey` ("Run"), `RunLampAddress`, `FaultCodeAddress` (the word the PLC copies the inverter's fault into - never shown as a number), `ErrorAddress` (the motor's alarm bit), the value as `PositionAddress` with its scaling. Size 360 x 64. |
 | A push button: a function on / off, start, reset, a jog, one-way movement | **ButtonHMI** | `BitActions`: one `Kaban.Core.Models.BitAction` a bit - `Momentary` (on while pressed), `Alternate` (each press toggles), `SET` (on; the PLC switches it off), `RESET`. Its state or sensor as `Lamp1Address`. `TranslationKey` + `FallbackText` = its caption. A row of an old page with ONE button is a ButtonHMI, with TWO opposite buttons a CylinderUnitHMI. |
 | A sensor, a state, an output shown | **LampHMI** | `Address` of the bit; its caption `DescriptionText`. Size 36 x 36, the caption drawn beside it. |
 | A value typed in: a parameter, a speed, a target, a time | **NumericInputHMI** | `Address` (a D word), `DataType` (`Bin_16`, or `Bin_32` for a double word), `Divisor`, `DecimalPlaces`, `Suffix`, `UnitType`, `MinLimit` / `MaxLimit`; `DescriptionText` its caption (drawn to its left). |
@@ -121,6 +131,10 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
   `<Name>` from its caption without spaces (`unitProfile_Clamping_6`). Every control has a `Name`.
 - **Order in the file:** the fields created first, then each control's block (a `// name` comment header, its properties),
   then the page's own properties and `this.Controls.Add(...)` in reading order, then the field declarations.
+- **A finger as well as a mouse** (HMI Settings > Features > Touch screen): our controls are a finger's size and the HMI
+  turns a long press into the right-click, a tap on something greyed into its reason, a drag into scrolling - so a page of
+  our controls needs nothing for it. Never make a function reachable only by a right-click, a double click or a key, and
+  never put what a user must know only in a tooltip.
 
 ## 4. Addresses, values, security
 
@@ -170,7 +184,8 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 6. What could not be mapped or placed, and every assumption - instead of an invented address.
 
 **Rules:** keep the old page's addresses exactly as they are; one of our controls per function (section 2); every control
-named; `AutoScaleMode.None`; nothing of our controls' types in a `.resx`; no code but the designer's; the layout of section 3.
+named; `AutoScaleMode.None`; nothing of our controls' types in a `.resx`; no code but the designer's (and the machine's bar,
+section 1); no UserControl of the machine's project in a designer file; the layout of section 3.
 
 ## 8. One of our pages, whole
 

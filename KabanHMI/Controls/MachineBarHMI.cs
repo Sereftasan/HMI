@@ -26,8 +26,10 @@ namespace Kaban.UI.Controls
     /// designed in Visual Studio like a page. The program shows it above the Manual
     /// Movement tabs, over all of them (StandardScreens Options.ManualBar), and on the
     /// Axis Monitor (the module declares it, ScreenRoles.AxisBar); a page shows it by
-    /// holding it, as any control - Machine Parameters > Axis does (the Toolbox lists it
-    /// under the machine's own components once the machine is built). The machine's
+    /// putting it in its constructor where a plain Panel of its designer file stands -
+    /// Machine Parameters > Axis does (axisJogBarPlace; 23 October: a page that held it in
+    /// its designer file failed in Visual Studio's designer, "Method not found", and was
+    /// saved without it). The machine's
     /// program is "Any CPU" to a loader (its 32-bit preference is for running it), so
     /// the designer loads it; "Could not find type" (15 October) is what it says when
     /// the machine was not built, or an older build is still loaded. Changed in its own designer, it is changed

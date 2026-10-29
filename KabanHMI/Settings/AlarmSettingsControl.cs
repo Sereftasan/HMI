@@ -12,13 +12,14 @@ using Kaban.UI.Controls;
 namespace Kaban.UI.Settings
 {
     /// <summary>
-    /// Per-alarm settings the ENGINEER owns, kept beside the alarm list rather
-    /// than inside it: the severity an alarm is reported with, and a HELPER LINK -
-    /// a document, drawing or page the operator can open when that alarm fires.
+    /// Per-alarm settings the ENGINEER owns: the severity an alarm is reported
+    /// with, and its HELPER LINKS - documents, drawings or pages the operator can
+    /// open when that alarm fires. Written into the machine's own Alarms.json (the
+    /// AlarmSettings.cfg beside it is gone, see Save); the alarm's texts are rows of
+    /// the machine's Translations.csv (30 October), edited on HMI Settings > Translation.
     ///
-    /// Stored next to the machine (AlarmSettings.cfg) rather than in Alarms.json,
-    /// so regenerating the alarm list from the customer's workbook never discards
-    /// what the engineer has tuned on site.
+    /// The page is Machine Parameters > Alarms and Logs: with the machine's PLC log
+    /// area under the switches while the HMI logs (MachineLogSettings).
     ///
     /// THE ALARMS THE HMI RAISES ITSELF (1 October): above the table, switched on
     /// per machine, with the general delay; in the table, a delay of its own for

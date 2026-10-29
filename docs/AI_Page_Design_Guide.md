@@ -1,6 +1,6 @@
 # Kaban HMI - page design guide for an AI
 
-*Made from the program itself on 12 October 2026 by `tools/ai_guide/MakeAiPageGuide.cs` (the controls, their
+*Made from the program itself on 29 October 2026 by `tools/ai_guide/MakeAiPageGuide.cs` (the controls, their
 properties and the examples are read from the code and the real pages; the rest is `tools/ai_guide/guide_template.md`).
 Make it again after the controls change.*
 
@@ -25,7 +25,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 
 - **C# / .NET Framework 4.x / WinForms**, built in Visual Studio. Projects: `Kaban.Core` (no WinForms in it), `Kaban.UI`
   (folder `KabanHMI`: the controls, namespace `Kaban.UI.Controls`), and one project per machine, `Kaban.Machines.<ID>`
-  (FA2010, H500, H800, MD3020, SB3012), whose pages are in `Screens\<Folder>\`.
+  (FA2010, H500, H800, MD3020, SB3012, SB3015), whose pages are in `Screens\<Folder>\`.
 - **A page is a `UserControl` in two files** (a partial class):
   - `<Page>.cs` - only the constructor calling `InitializeComponent()`;
   - `<Page>.Designer.cs` - every control: a private field, created in `InitializeComponent`, its properties set, added with
@@ -38,6 +38,12 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
   `Screens\Parameters`, Maintenance). The tab's caption is the translation `Tab_<Class>`. A machine's **Home** is
   `Screens\HomeScreen` (`Home` in `<ID>Module.cs`); a machine mounted under another (H500 under FA2010) has its own
   pages and translations, its `PlcNumber` 1 being its own PLC.
+- **The machine's own bar** (a `MachineBarHMI`: FA2010's `Screens\Shared\AxisJogBar` - the axes' speed, JOG and steps) is
+  designed once and shown by the program above the Manual Movement tabs (`ManualBar` in `<ID>Module.cs`) and on the Axis
+  Monitor - **never put it, or any other UserControl of the machine's project, into a page's designer file**: Visual Studio's
+  designer cannot load it there and saves the page without it. A page that shows it (Machine Parameters > Axis) has a plain
+  `System.Windows.Forms.Panel` where it goes, and its constructor puts the bar in the panel's place - the one thing a page's
+  constructor does besides `InitializeComponent()`.
 - **The project file is the old style: every file is listed.** A page adds:
 
 ```xml
@@ -61,6 +67,9 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
   - **A key another machine's file has already** (FA2010's "Conveyor") is copied with its whole row: under one panel
     the files are merged, and a blank cell of the later one would hide the other's text.
   - A page of our controls follows a language change by itself; nothing to do for it on the page.
+  - An **alarm's** text is a row of the machine's `Translations.csv` too, `Alarm_<ID>.<TagCode>` (FA2010's
+    `Alarm_FA2010.Robot_X_Error`); its `Alarms.json` entry keeps the device, code, severity, help and `"Log"` (where the PLC's
+    log records it) - no texts.
 
 ## 2. Which control for which function
 
@@ -72,6 +81,7 @@ old designer file: the .cs and .Designer.cs, the .csproj lines, the tab line for
 | A cylinder with an encoder on a Manual Movement page (a clamp whose position is shown: the old page's unit with a position) | **CylinderEncoderUnitHMI** | Only `EncoderNumber` (and `PlcNumber`, `TitleTextKey` for the title on this page): everything else comes from its CylinderEncoderSettingHMI row. Size 360 x 64. |
 | A cylinder with an encoder's settings: reference, tolerance, start (minimum) limit, unclamping interval | **CylinderEncoderSettingHMI** | One row per encoder on Machine Parameters > Encoders, numbered (`EncoderNumber`); its movement, sensors, position, valve, feedback and error bits are entered here, once. |
 | A pneumatic positioning: a cylinder with a position sensor sent to a target (a mould, a stop) - on the old page a unit with Target / Send / Calibration / Calibrate / Tolerance / Stopping Offset beside it | **PneumaticPositioningHMI** | One row per positioning, the rows one under the other 44 px apart, the five heading Labels above them (section 3). `CommandBackAddress` / `CommandForwardAddress` (`VerticalMovement` for down / up), `PositionAddress` with its scaling, `TargetPosition` + `PositioningStartAddress`, `CalibrationAddress` + `CalibrateAddress`, `PositioningToleranceAddress`, `PositioningDirectionReferenceAddress` (the old "Stopping Offset"), their scaling in `Divisor` / `DecimalPlaces`; `ValveType` / `FeedbackType` and the error bits as a cylinder unit's. Never rebuild it from loose fields and buttons. |
+| A motor driven by an inverter: run (or the two directions), its run lamp, its speed or frequency, its inverter's fault code | **InverterUnitHMI** | One control for the motor - never a unit, a lamp and a fault code display side by side. `CommandAAddress` (and `CommandBAddress` for two directions), `ButtonATextKey` ("Run"), `RunLampAddress`, `FaultCodeAddress` (the word the PLC copies the inverter's fault into - never shown as a number), `ErrorAddress` (the motor's alarm bit), the value as `PositionAddress` with its scaling. Size 360 x 64. |
 | A push button: a function on / off, start, reset, a jog, one-way movement | **ButtonHMI** | `BitActions`: one `Kaban.Core.Models.BitAction` a bit - `Momentary` (on while pressed), `Alternate` (each press toggles), `SET` (on; the PLC switches it off), `RESET`. Its state or sensor as `Lamp1Address`. `TranslationKey` + `FallbackText` = its caption. A row of an old page with ONE button is a ButtonHMI, with TWO opposite buttons a CylinderUnitHMI. |
 | A sensor, a state, an output shown | **LampHMI** | `Address` of the bit; its caption `DescriptionText`. Size 36 x 36, the caption drawn beside it. |
 | A value typed in: a parameter, a speed, a target, a time | **NumericInputHMI** | `Address` (a D word), `DataType` (`Bin_16`, or `Bin_32` for a double word), `Divisor`, `DecimalPlaces`, `Suffix`, `UnitType`, `MinLimit` / `MaxLimit`; `DescriptionText` its caption (drawn to its left). |
@@ -121,6 +131,10 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
   `<Name>` from its caption without spaces (`unitProfile_Clamping_6`). Every control has a `Name`.
 - **Order in the file:** the fields created first, then each control's block (a `// name` comment header, its properties),
   then the page's own properties and `this.Controls.Add(...)` in reading order, then the field declarations.
+- **A finger as well as a mouse** (HMI Settings > Features > Touch screen): our controls are a finger's size and the HMI
+  turns a long press into the right-click, a tap on something greyed into its reason, a drag into scrolling - so a page of
+  our controls needs nothing for it. Never make a function reachable only by a right-click, a double click or a key, and
+  never put what a user must know only in a tooltip.
 
 ## 4. Addresses, values, security
 
@@ -150,7 +164,9 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
   | `65536L` (1 << 16) | Robot is at Outside | FA2010 | PLC 1 `X50` = 1 |
   | `131072L` (1 << 17) | Milling Unit is NOT Inside | FA2010 | PLC 1 `M22` = 0 |
   | `262144L` (1 << 18) | Milling Unit is NOT Inside_PLC2 | FA2010 | PLC 2 `M23` = 0 |
-  | `524288L` (1 << 19) | Clamping Mould option is on | FA2010 | PLC 1 `L27` = 1 |
+  | `524288L` (1 << 19) | Clamping Mould Option | FA2010 | PLC 1 `L27` = 1 |
+  | `1048576L` (1 << 20) | Mullion Notching Option | FA2010 | PLC 1 `L5` = 1 |
+  | `2097152L` (1 << 21) | Conveyor With Clamps | FA2010 | PLC 1 `L27` = 0 |
 
   A new one is registered in `<ID>Module.cs` (`RegisterConditions`: `MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("Tag"), ...)`),
   after the machine's others so their numbers stay; ask for it rather than inventing a number.
@@ -161,7 +177,7 @@ From our pages (FA2010's Manual Movement and Machine Parameters, made by `tools/
 ### CylinderUnitHMI
 
 A cylinder (any two-way movement) on a Manual Movement page: a frame with its title, two command buttons (A left, B right), the end sensors as lamps on the buttons, the "?" with its helpers and its alarms - and no position (a cylinder whose position is read is a PneumaticPositioningHMI or a CylinderEncoderUnitHMI). Its ValveType and FeedbackType decide which sensors it needs and how the HMI watches its movements.
-On our pages: 46 of them; size 360 x 64 (46).
+On our pages: 45 of them; size 360 x 64 (45).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -216,28 +232,49 @@ On our pages: 46 of them; size 360 x 64 (46).
 | `ConfirmationNeeded` | bool | False | Asks "Are you sure?" before a SET / RESET / ALTERNATE or word write (never before a momentary jog). |
 | `LogAction` | bool | True | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
 
-An example from Manual\ManualEntry_Conveyor.Designer.cs:
+An example from Manual\ManualMilling.Designer.cs:
 
 ```csharp
-this.unitProfile_Clamping_3 = new Kaban.UI.Controls.CylinderUnitHMI();
-this.unitProfile_Clamping_3.BackColor = System.Drawing.Color.White;
-this.unitProfile_Clamping_3.Name = "unitProfile_Clamping_3";
-this.unitProfile_Clamping_3.PlcNumber = 1;
-this.unitProfile_Clamping_3.TitleTextKey = "Profile Clamping 3";
-this.unitProfile_Clamping_3.Location = new System.Drawing.Point(16, 454);
-this.unitProfile_Clamping_3.Size = new System.Drawing.Size(360, 64);
-this.unitProfile_Clamping_3.LogAction = true;
-this.unitProfile_Clamping_3.CommandAAddress = "M692";
-this.unitProfile_Clamping_3.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-this.unitProfile_Clamping_3.Lamp1AAddress = "M209";
-this.unitProfile_Clamping_3.CommandBAddress = "M685";
-this.unitProfile_Clamping_3.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-this.unitProfile_Clamping_3.Lamp1BAddress = "M216";
-this.unitProfile_Clamping_3.ErrorAAddress = "M867";
-this.unitProfile_Clamping_3.ErrorBAddress = "M866";
-this.unitProfile_Clamping_3.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
-this.unitProfile_Clamping_3.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
-this.unitProfile_Clamping_3.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.unitRoller_Up_Down = new Kaban.UI.Controls.CylinderUnitHMI();
+this.unitRoller_Up_Down.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
+this.unitRoller_Up_Down.BackColor = System.Drawing.Color.White;
+this.unitRoller_Up_Down.BaseOffset = 0;
+this.unitRoller_Up_Down.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.DescriptionKey = "";
+this.unitRoller_Up_Down.ButtonAEnableTrigger.MonitorAddress = "";
+this.unitRoller_Up_Down.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.ValA = 0D;
+this.unitRoller_Up_Down.ButtonAEnableTrigger.ValB = 0D;
+this.unitRoller_Up_Down.ButtonATextKey = "◀";
+this.unitRoller_Up_Down.ButtonATipKey = "";
+this.unitRoller_Up_Down.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.unitRoller_Up_Down.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.DescriptionKey = "";
+this.unitRoller_Up_Down.ButtonBEnableTrigger.MonitorAddress = "";
+this.unitRoller_Up_Down.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.ValA = 0D;
+this.unitRoller_Up_Down.ButtonBEnableTrigger.ValB = 0D;
+this.unitRoller_Up_Down.ButtonBTextKey = "▶";
+this.unitRoller_Up_Down.ButtonBTipKey = "";
+this.unitRoller_Up_Down.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.unitRoller_Up_Down.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
+this.unitRoller_Up_Down.CommandAAddress = "M705";
+this.unitRoller_Up_Down.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
+this.unitRoller_Up_Down.CommandBAddress = "M704";
+this.unitRoller_Up_Down.ConfirmationNeeded = false;
+this.unitRoller_Up_Down.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.unitRoller_Up_Down.FeedbackType = Kaban.UI.Controls.CylinderFeedback.NoSensor;
+this.unitRoller_Up_Down.Lamp1AAddress = "";
+this.unitRoller_Up_Down.Lamp1ATipKey = "";
+this.unitRoller_Up_Down.Lamp1BAddress = "";
+this.unitRoller_Up_Down.Lamp1BTipKey = "";
+this.unitRoller_Up_Down.Lamp2AAddress = "";
 ```
 
 ### AxisUnitHMI
@@ -255,12 +292,12 @@ An example from Manual\ManualMilling.Designer.cs:
 
 ```csharp
 this.unitUnit_1_Angle = new Kaban.UI.Controls.AxisUnitHMI();
-this.unitUnit_1_Angle.BackColor = System.Drawing.Color.White;
-this.unitUnit_1_Angle.Name = "unitUnit_1_Angle";
 this.unitUnit_1_Angle.AxisNumber = 4;
-this.unitUnit_1_Angle.PlcNumber = 1;
-this.unitUnit_1_Angle.Location = new System.Drawing.Point(16, 328);
+this.unitUnit_1_Angle.BackColor = System.Drawing.Color.White;
+this.unitUnit_1_Angle.Location = new System.Drawing.Point(14, 343);
+this.unitUnit_1_Angle.Name = "unitUnit_1_Angle";
 this.unitUnit_1_Angle.Size = new System.Drawing.Size(360, 64);
+this.unitUnit_1_Angle.TabIndex = 7;
 ```
 
 ### AxisSettingHMI
@@ -283,10 +320,8 @@ On our pages: 26 of them; size 1382 x 40 (17), 1064 x 40 (9).
 | **Movement** | | | |
 | `CommandBackAddress` | string | "" | Jog back / minus. |
 | `CommandForwardAddress` | string | "" | Jog forward / plus. |
-| `PositionAddress` | string | "" | Live axis position. |
+| `PositionAddress` | string | "" | Live axis position. Divided by the row's Divisor, as its limits, reference and calibration. |
 | `PositionDataType` | DataTypeEnum | Bin_32 | Bin_16 = one word, Bin_32 = a double word. |
-| `PositionDivisor` | double | 0 | Raw-to-display divisor of the position only. 0: the row's Divisor. |
-| `LoadEncoderValueAddress` | string | "" | Load-side encoder value. Shown in the position's tooltip with its difference, in the axis's unit to its last count. |
 | **Value** | | | |
 | `SettingDataType` | DataTypeEnum | Bin_32 | Word width of the setting registers. |
 | `Divisor` | double | 10000 | The raw PLC value is divided by it (100: shown in 0.01 steps). |
@@ -302,13 +337,16 @@ On our pages: 26 of them; size 1382 x 40 (17), 1064 x 40 (9).
 | `CalibrationAddress` | string | "" | Calibration value. |
 | `TravelPerRevolutionAddress` | string | "" | Travel per motor revolution, in the axis's unit (its divisor, to the last count). Empty hides the field. |
 | `BacklashAddress` | string | "" | Backlash, in the axis's unit (its divisor, to the last count). Empty hides the field. |
+| **Load Side Encoder** | | | |
+| `LoadSideEncoderAddress` | string | "" | The load-side encoder's value (read by the PLC itself, in its own count): the Load Position column, chosen in the Position heading's list. |
+| `LoadSideEncoderDivisor` | double | 10000 | Raw-to-display divisor of the load-side encoder's value. Not set: the row's Divisor (the usual case - the PLC scales the encoder to the axis's count). Reset or 0: back to the Divisor. |
 | **Commands** | | | |
 | `CalibrateAddress` | string | "" | Applies the calibration value to the axis. |
 | `GoToReferenceAddress` | string | "" | Reference activation selection (latched). |
 | `HomeRequestAddress` | string | "" | The PLC's home (reference) request bit: while TRUE the Ref box's border blinks red. Read only. |
 | **Meters** | | | |
 | `CurrentAddress` | string | "" | Servo load / motor current. Empty hides the bar. |
-| `CurrentDivisor` | double | 1 |  |
+| `CurrentDivisor` | double | 10 | The reading over this is the percentage: the motion module's motor current (Md.104) is in 0.1 % - 10 (212 is 21.2 %). |
 | `CurrentFullScale` | double | 100 | Reading that counts as 100% on the bar. |
 | `ZDistanceAddress` | string | "" | Reference Z signal distance. Empty hides the bar. |
 | `ZDistanceDivisor` | double | 1000 |  |
@@ -320,45 +358,65 @@ On our pages: 26 of them; size 1382 x 40 (17), 1064 x 40 (9).
 | `AxisWarningAddress` | string | "" | Axis warning code word (hexadecimal). |
 | **Conditions** | | | |
 | `VisibilityConditions` | SystemCondition | None | Shown only while these SystemCondition flags are met (None: always). |
+| `EnableConditions` | SystemCondition | None | Usable only while these are met, greyed otherwise (None: always). |
+| `BackEnableConditions` | SystemCondition | None | EXTRA conditions of the back (down) jog, added to the row's. |
+| `BackEnableTrigger` | PlcTrigger |  | A PLC signal that must be true before the back (down) jog can be pressed. |
+| `ForwardEnableConditions` | SystemCondition | None | EXTRA conditions of the forward (up) jog, added to the row's. |
+| `ForwardEnableTrigger` | PlcTrigger |  | A PLC signal that must be true before the forward (up) jog can be pressed. |
+| `CalibrateEnableConditions` | SystemCondition | None | EXTRA conditions of the Calibrate button, added to the row's. |
+| `CalibrateEnableTrigger` | PlcTrigger |  | A PLC signal that must be true before Calibrate can be pressed. |
 | **Security** | | | |
 | `RequiredSecurity` | SecurityLevel | Maintenance | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
 
 An example from Parameters\AxisSettings.Designer.cs:
 
 ```csharp
-this.axV_Cutting_X = new Kaban.UI.Controls.AxisSettingHMI();
-this.axV_Cutting_X.AxisName = "Axis_VCuttingX";
-this.axV_Cutting_X.AxisNameKey = "Axis_VCuttingX";
-this.axV_Cutting_X.HMIAxisIndex = 17;
-this.axV_Cutting_X.BackColor = System.Drawing.Color.White;
-this.axV_Cutting_X.CommandBackAddress = "M631";
-this.axV_Cutting_X.CommandForwardAddress = "M630";
-this.axV_Cutting_X.DecimalPlaces = 2;
-this.axV_Cutting_X.Digits = 8;
-this.axV_Cutting_X.Divisor = 10000D;
-this.axV_Cutting_X.GoToReferenceAddress = "B16";
-this.axV_Cutting_X.Location = new System.Drawing.Point(0, 738);
-this.axV_Cutting_X.MaxLimitAddress = "D828";
-this.axV_Cutting_X.MinLimitAddress = "D830";
-this.axV_Cutting_X.Name = "axV_Cutting_X";
-this.axV_Cutting_X.PlcNumber = 1;
-this.axV_Cutting_X.PositionAddress = "D838";
-this.axV_Cutting_X.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-this.axV_Cutting_X.ReferenceSensorAddress = "M269";
-this.axV_Cutting_X.ReferenceSensorSide = Kaban.UI.Controls.AxisReferenceSide.Forward;
-this.axV_Cutting_X.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
-this.axV_Cutting_X.SettingDataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-this.axV_Cutting_X.Size = new System.Drawing.Size(1382, 40);
-this.axV_Cutting_X.Suffix = "mm";
-this.axV_Cutting_X.TabIndex = 29;
-this.axV_Cutting_X.VerticalMovement = false;
-this.axV_Cutting_X.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.axRobot_X = new Kaban.UI.Controls.AxisSettingHMI();
+this.axRobot_X.AxisAlarmAddress = "W4";
+this.axRobot_X.AxisName = "Axis_RobotX";
+this.axRobot_X.AxisNameKey = "Axis_RobotX";
+this.axRobot_X.AxisWarningAddress = "W5";
+this.axRobot_X.BackColor = System.Drawing.Color.White;
+this.axRobot_X.BackEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.axRobot_X.BackEnableTrigger.DescriptionKey = "";
+this.axRobot_X.BackEnableTrigger.MonitorAddress = "";
+this.axRobot_X.BackEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.axRobot_X.BackEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.axRobot_X.BackEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.axRobot_X.BackEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.axRobot_X.BackEnableTrigger.ValA = 0D;
+this.axRobot_X.BackEnableTrigger.ValB = 0D;
+this.axRobot_X.CalibrateAddress = "M140";
+this.axRobot_X.CalibrateEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.axRobot_X.CalibrateEnableTrigger.DescriptionKey = "";
+this.axRobot_X.CalibrateEnableTrigger.MonitorAddress = "";
+this.axRobot_X.CalibrateEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.axRobot_X.CalibrateEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.axRobot_X.CalibrateEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.axRobot_X.CalibrateEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.axRobot_X.CalibrateEnableTrigger.ValA = 0D;
+this.axRobot_X.CalibrateEnableTrigger.ValB = 0D;
+this.axRobot_X.CalibrationAddress = "D580";
+this.axRobot_X.CommandBackAddress = "M604";
+this.axRobot_X.CommandForwardAddress = "M605";
+this.axRobot_X.CurrentAddress = "W0A";
+this.axRobot_X.CurrentDivisor = 10D;
+this.axRobot_X.CurrentFullScale = 100D;
+this.axRobot_X.DecimalPlaces = 2;
+this.axRobot_X.Digits = 8;
+this.axRobot_X.Divisor = 10000D;
+this.axRobot_X.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.axRobot_X.EntryMaximum.StaticValue = 0D;
+this.axRobot_X.EntryMaximum.TagAddress = "";
+this.axRobot_X.EntryMaximum.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.axRobot_X.EntryMinimum.StaticValue = 0D;
+this.axRobot_X.EntryMinimum.TagAddress = "";
 ```
 
 ### PneumaticPositioningHMI
 
 A pneumatic positioning - a cylinder with a position sensor (analogue or encoder) and a 5/3 valve that the PLC drives to a target, used on our machines as an axis - as ONE ROW, laid out like an AxisSettingHMI row: its name (TitleTextKey) at the left end, then Manual movement (CommandBackAddress / CommandForwardAddress and the position: a CylinderUnitHMI inside, so its ValveType, FeedbackType, error bits, help, alarms and coupling are a cylinder unit's), Target position (TargetPosition + PositioningStartAddress, a SET button), Calibration (CalibrationAddress + CalibrateAddress, a SET button), Positioning tolerance (PositioningToleranceAddress) and Direction ref (PositioningDirectionReferenceAddress - the old pages' 'Stopping Offset': the PLC compares the target with it to choose the direction, a target above it approached the way the position increases, one below it the other way). The rows of a page share one names' column (the widest name) and the headings over their columns: plain Labels tagged "PositioningHeading:Manual" (Target, Calibration, Tolerance, DirectionRef) above the first row - made at run time when the page has none. A row whose VisibilityConditions are not met is taken out and the rows under it move up. Rows 40 high, 44 apart.
-On our pages: 16 of them; size 1078 x 40 (16).
+On our pages: 16 of them; size 1101 x 40 (16).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -418,31 +476,29 @@ An example from Manual\ManualClamping_Moulds.Designer.cs:
 ```csharp
 this.ppLeft_Profile_Recognition_Front_Vertical = new Kaban.UI.Controls.PneumaticPositioningHMI();
 this.ppLeft_Profile_Recognition_Front_Vertical.BackColor = System.Drawing.Color.White;
-this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
-this.ppLeft_Profile_Recognition_Front_Vertical.PlcNumber = 1;
-this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
-this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
-this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1078, 40);
+this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
+this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
 this.ppLeft_Profile_Recognition_Front_Vertical.CommandBackAddress = "M541";
 this.ppLeft_Profile_Recognition_Front_Vertical.CommandForwardAddress = "M540";
-this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
-this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
-this.ppLeft_Profile_Recognition_Front_Vertical.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 10D;
-this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
-this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
-this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
-this.ppLeft_Profile_Recognition_Front_Vertical.CalibrationAddress = "D130";
-this.ppLeft_Profile_Recognition_Front_Vertical.CalibrateAddress = "M30";
-this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
-this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
-this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
 this.ppLeft_Profile_Recognition_Front_Vertical.DecimalPlaces = 2;
-this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
+this.ppLeft_Profile_Recognition_Front_Vertical.Divisor = 100D;
 this.ppLeft_Profile_Recognition_Front_Vertical.ErrorBackAddress = "M915";
-this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+this.ppLeft_Profile_Recognition_Front_Vertical.ErrorForwardAddress = "M916";
 this.ppLeft_Profile_Recognition_Front_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.AnalogueMagnetic;
-this.ppLeft_Profile_Recognition_Front_Vertical.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.ppLeft_Profile_Recognition_Front_Vertical.Location = new System.Drawing.Point(16, 54);
+this.ppLeft_Profile_Recognition_Front_Vertical.Name = "ppLeft_Profile_Recognition_Front_Vertical";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionAddress = "D110";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionDecimalPlaces = 2;
+this.ppLeft_Profile_Recognition_Front_Vertical.PositionDivisor = 100D;
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningDirectionReferenceAddress = "D790";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningStartAddress = "M50";
+this.ppLeft_Profile_Recognition_Front_Vertical.PositioningToleranceAddress = "D750";
+this.ppLeft_Profile_Recognition_Front_Vertical.Size = new System.Drawing.Size(1101, 40);
+this.ppLeft_Profile_Recognition_Front_Vertical.TabIndex = 5;
+this.ppLeft_Profile_Recognition_Front_Vertical.TargetPosition = "D150";
+this.ppLeft_Profile_Recognition_Front_Vertical.TitleTextKey = "Left Profile Recognition Front Vertical";
+this.ppLeft_Profile_Recognition_Front_Vertical.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+this.ppLeft_Profile_Recognition_Front_Vertical.VerticalMovement = true;
 ```
 
 ### CylinderEncoderUnitHMI
@@ -466,20 +522,20 @@ An example from Manual\ManualExit.Designer.cs:
 ```csharp
 this.unitRobot_Top_Clamping = new Kaban.UI.Controls.CylinderEncoderUnitHMI();
 this.unitRobot_Top_Clamping.BackColor = System.Drawing.Color.White;
-this.unitRobot_Top_Clamping.Name = "unitRobot_Top_Clamping";
-this.unitRobot_Top_Clamping.EncoderNumber = 8;
-this.unitRobot_Top_Clamping.PlcNumber = 1;
-this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
-this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(16, 16);
-this.unitRobot_Top_Clamping.Size = new System.Drawing.Size(360, 64);
 this.unitRobot_Top_Clamping.EnableConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
+this.unitRobot_Top_Clamping.EncoderNumber = 8;
+this.unitRobot_Top_Clamping.Location = new System.Drawing.Point(14, 13);
+this.unitRobot_Top_Clamping.Name = "unitRobot_Top_Clamping";
+this.unitRobot_Top_Clamping.Size = new System.Drawing.Size(360, 64);
+this.unitRobot_Top_Clamping.TabIndex = 0;
+this.unitRobot_Top_Clamping.TitleTextKey = "Robot Top Clamping";
 this.unitRobot_Top_Clamping.VisibilityConditions = Kaban.Core.Enums.SystemCondition.ManualMode;
 ```
 
 ### CylinderEncoderSettingHMI
 
 A cylinder with an encoder as ONE ROW of Machine Parameters > Encoders, laid out like an AxisSettingHMI row (and like PneumaticPositioningHMI, the same base): its name, Manual movement (CommandBackAddress / CommandForwardAddress, the sensors as BackSensorAddress / ForwardSensorAddress, the position; ValveType, FeedbackType, the error bits and help as a cylinder unit's), Reference (ReferenceAddress), Measuring tolerance (MeasuringToleranceAddress), Minimum limit (MinimumLimitAddress - the old pages' 'Start Limit'), Unclamping interval (UnclampingIntervalAddress). EncoderNumber is the number a CylinderEncoderUnitHMI names: the cylinder is described once, here. Headings: plain Labels tagged "EncoderHeading:Manual" (Reference, Tolerance, MinimumLimit, Unclamping). Rows 40 high, 44 apart.
-On our pages: 11 of them; size 910 x 40 (11).
+On our pages: 11 of them; size 926 x 40 (11).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -538,37 +594,132 @@ An example from Parameters\ParamEncoders.Designer.cs:
 ```csharp
 this.encProfile_Recognition_Front = new Kaban.UI.Controls.CylinderEncoderSettingHMI();
 this.encProfile_Recognition_Front.BackColor = System.Drawing.Color.White;
-this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
-this.encProfile_Recognition_Front.PlcNumber = 1;
-this.encProfile_Recognition_Front.EncoderNumber = 2;
-this.encProfile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
-this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
-this.encProfile_Recognition_Front.Size = new System.Drawing.Size(910, 40);
+this.encProfile_Recognition_Front.BackSensorAddress = "M225";
 this.encProfile_Recognition_Front.CommandBackAddress = "M646";
 this.encProfile_Recognition_Front.CommandForwardAddress = "M645";
-this.encProfile_Recognition_Front.BackSensorAddress = "M225";
-this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
-this.encProfile_Recognition_Front.PositionAddress = "D4";
-this.encProfile_Recognition_Front.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-this.encProfile_Recognition_Front.PositionDivisor = 10D;
-this.encProfile_Recognition_Front.PositionDecimalPlaces = 1;
-this.encProfile_Recognition_Front.ReferenceAddress = "D477";
-this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
-this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
-this.encProfile_Recognition_Front.UnclampingIntervalAddress = "D51";
-this.encProfile_Recognition_Front.Divisor = 10D;
 this.encProfile_Recognition_Front.DecimalPlaces = 1;
-this.encProfile_Recognition_Front.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.encProfile_Recognition_Front.Divisor = 10D;
+this.encProfile_Recognition_Front.EncoderNumber = 2;
 this.encProfile_Recognition_Front.ErrorBackAddress = "M845";
 this.encProfile_Recognition_Front.ErrorForwardAddress = "M844";
-this.encProfile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
 this.encProfile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
+this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
+this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
+this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
+this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
+this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
+this.encProfile_Recognition_Front.PositionAddress = "D4";
+this.encProfile_Recognition_Front.PositionDecimalPlaces = 1;
+this.encProfile_Recognition_Front.PositionDivisor = 10D;
+this.encProfile_Recognition_Front.ReferenceAddress = "D477";
+this.encProfile_Recognition_Front.Size = new System.Drawing.Size(926, 40);
+this.encProfile_Recognition_Front.TabIndex = 6;
+this.encProfile_Recognition_Front.TitleTextKey = "Profile Recognition Front";
+this.encProfile_Recognition_Front.UnclampingIntervalAddress = "D51";
+this.encProfile_Recognition_Front.ValveType = Kaban.UI.Controls.CylinderValve.ThreeWayClosedCenter;
+```
+
+### InverterUnitHMI
+
+A motor driven by an inverter (a Mitsubishi FR-A800) on a Manual Movement page, looking like a CylinderUnitHMI: its command buttons (one - run - or two, the directions: CommandAAddress / CommandBAddress, their captions ButtonATextKey / ButtonBTextKey), its run lamp before the name (RunLampAddress), its value between the buttons when it has one (the Position... properties: a speed, a frequency), FaultCodeAddress - the word the PLC copies the inverter's fault code into (its data code: 16 = E.OC1) - and ErrorAddress, the motor's alarm bit. The fault code is NEVER shown as a number: while it is not zero both buttons blink red, the unit's "?" opens the fault's entry and the inverter's manual, and the HMI raises the motor's alarm itself. One control instead of a unit, a run lamp and an error display. No valve, no feedback.
+On our pages: 6 of them; size 360 x 64 (6).
+
+| Property | Type | Default | What it is |
+|---|---|---|---|
+| **Inverter** | | | |
+| `FaultCodeAddress` | string | "" | The word holding the inverter's fault as its DATA CODE (FR-A800 manual 6.4: 16 = E.OC1; 0 = no fault). |
+| `ErrorAddress` | string | "" | The alarm bit of the inverter's fault (optional): SET by the HMI when the fault comes, like an axis's error bit; the PLC's alarm for it is then not listed twice. |
+| `RunLampAddress` | string | "" | The inverter running (its RUN output, or the PLC's bit for it): a lamp before the unit's name. Empty: no lamp. |
+| `RunLampTipKey` | string | "Running" | The run lamp's tooltip (translation key or text). |
+| **Device** | | | |
+| `PlcNumber` | int | 1 | The machine's own PLC number: 1 = its main PLC (2 = a second one). |
+| `BaseOffset` | int | 0 | ROW INDEX added to every address in its own number system (M decimal, X/Y octal). |
+| **Unit** | | | |
+| `TitleTextKey` | string | "Motor" | The frame's title: a translation key - usually the English text. |
+| `TitleTipKey` | string | "" | The title's tooltip (a translation key, or the text). |
+| **Action A** | | | |
+| `CommandAAddress` | string | "" | Bit address of command A (M). Empty hides the button. |
+| `CommandAAction` | BitActionType | Momentary | How button A writes its command bit: Momentary (while pressed), Alternate, SET, RESET. |
+| `ButtonATextKey` | string | "◀" | Button A caption. Translation KEY with literal fallback. |
+| `ButtonATipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `Lamp1AAddress` | string | "" | Input sensor lamp 1 on button A (X). Empty hides it. |
+| `Lamp1ATipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `Lamp2AAddress` | string | "" | Input sensor lamp 2 on button A (X). Empty hides it. |
+| `Lamp2ATipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `RelayAAddress` | string | "" | Internal relay bit (M): shades the button slightly darker when ON. Empty = uses CommandAAddress. |
+| `OutputAAddress` | string | "" | Physical output bit (Y): shades darker still and turns text white when ON. |
+| `HelpAFiles` | string | "" | Help files for the A movement (in the machine's Help folder): shown with the manual when ErrorA is set, and behind the unit's '?' at any time. |
+| `ButtonAVisibilityConditions` | SystemCondition | None | EXTRA visibility conditions for button A, added on top of the unit's (inherited conditions always apply). |
+| `ButtonAEnableConditions` | SystemCondition | None | EXTRA enable conditions for button A, added on top of the unit's (inherited conditions always apply). |
+| `ButtonAEnableTrigger` | PlcTrigger |  | PLC signal that must be true before button A can be pressed. |
+| **Action B** | | | |
+| `CommandBAddress` | string | "" | Bit address of command B (M). Empty hides the button. |
+| `CommandBAction` | BitActionType | Momentary | How button B writes its command bit: Momentary (while pressed), Alternate, SET, RESET. |
+| `ButtonBTextKey` | string | "▶" | Button A caption. Translation KEY with literal fallback. |
+| `ButtonBTipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `Lamp1BAddress` | string | "" | Input sensor lamp 1 on button B (X). Empty hides it. |
+| `Lamp1BTipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `Lamp2BAddress` | string | "" | Input sensor lamp 2 on button B (X). Empty hides it. |
+| `Lamp2BTipKey` | string | "" | Its tooltip (a translation key, or the text). |
+| `RelayBAddress` | string | "" | Internal relay bit (M): shades the button slightly darker when ON. Empty = uses CommandAAddress. |
+| `OutputBAddress` | string | "" | Physical output bit (Y): shades darker still and turns text white when ON. |
+| `HelpBFiles` | string | "" | Help files for the B movement (in the machine's Help folder): shown with the manual when ErrorB is set, and behind the unit's '?' at any time. |
+| `ButtonBVisibilityConditions` | SystemCondition | None | EXTRA visibility conditions for button B, added on top of the unit's (inherited conditions always apply). |
+| `ButtonBEnableConditions` | SystemCondition | None | EXTRA enable conditions for button B, added on top of the unit's (inherited conditions always apply). |
+| `ButtonBEnableTrigger` | PlcTrigger |  | PLC signal that must be true before button B can be pressed. |
+| **Value** | | | |
+| `PositionAddress` | string | "" | Word address of the encoder value. Empty hides the readout. |
+| `PositionDataType` | DataTypeEnum | Bin_16 | Bin_16 = one word, Bin_32 = a double word. |
+| `PositionDivisor` | double | 1 |  |
+| `PositionDecimalPlaces` | int | 0 | Decimals of the position. |
+| `PositionDigits` | int | 5 | Digits of the position in all. |
+| `PositionSuffix` | string | "" | The position's unit ("mm"). |
+| `PositionUnitType` | UnitType | None | Unit family for the position readout. When set (e.g. Length), the value follows the unit chosen in Unit Settings and the suffix changes with it; PositionSuffix is then only used as the fallback when no unit is active. |
+| `PositionOffset` | DynamicValue |  | Address offset for the position tag (Static / Tag / HmiVariable), same as NumericDisplayHMI.AddressOffset. |
+| `PositionStyle` | UnitPositionStyle | Standard | Standard: black bold digits on grey, like the Axis Settings rows. Readout: red digits on black. |
+| `PositionTipKey` | string | "" | The position's tooltip (a translation key, or the text). |
+| **Parts** | | | |
+| `Arrows` | ButtonArrowStyle | LeftRight | Arrow pair used on the two buttons. Custom keeps whatever captions you type. |
+| **Conditions** | | | |
+| `VisibilityConditions` | SystemCondition | None | Shown only while these SystemCondition flags are met (None: always). |
+| `EnableConditions` | SystemCondition | None | Usable only while these are met, greyed otherwise (None: always). |
+| **Security** | | | |
+| `RequiredSecurity` | SecurityLevel | Operator | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
+| `ConfirmationNeeded` | bool | False | Asks "Are you sure?" before a SET / RESET / ALTERNATE or word write (never before a momentary jog). |
+| `LogAction` | bool | True | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
+
+An example from Manual\ManualMilling.Designer.cs:
+
+```csharp
+this.unitUnit_1_Milling_Motor = new Kaban.UI.Controls.InverterUnitHMI();
+this.unitUnit_1_Milling_Motor.Arrows = Kaban.Core.Enums.ButtonArrowStyle.Custom;
+this.unitUnit_1_Milling_Motor.BackColor = System.Drawing.Color.White;
+this.unitUnit_1_Milling_Motor.ButtonATextKey = "Run";
+this.unitUnit_1_Milling_Motor.CommandAAction = Kaban.Core.Enums.BitActionType.Alternate;
+this.unitUnit_1_Milling_Motor.CommandAAddress = "M649";
+this.unitUnit_1_Milling_Motor.ErrorAddress = "M828";
+this.unitUnit_1_Milling_Motor.FaultCodeAddress = "D667";
+this.unitUnit_1_Milling_Motor.Lamp1AAddress = "M230";
+this.unitUnit_1_Milling_Motor.Location = new System.Drawing.Point(14, 639);
+this.unitUnit_1_Milling_Motor.LogAction = true;
+this.unitUnit_1_Milling_Motor.Name = "unitUnit_1_Milling_Motor";
+this.unitUnit_1_Milling_Motor.PlcNumber = 1;
+this.unitUnit_1_Milling_Motor.PositionAddress = "D18";
+this.unitUnit_1_Milling_Motor.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.unitUnit_1_Milling_Motor.PositionDecimalPlaces = 2;
+this.unitUnit_1_Milling_Motor.PositionDigits = 6;
+this.unitUnit_1_Milling_Motor.PositionDivisor = 100D;
+this.unitUnit_1_Milling_Motor.PositionTipKey = "";
+this.unitUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.unitUnit_1_Milling_Motor.Size = new System.Drawing.Size(360, 64);
+this.unitUnit_1_Milling_Motor.TabIndex = 11;
+this.unitUnit_1_Milling_Motor.TitleTextKey = "Milling Motor";
 ```
 
 ### ButtonHMI
 
 A push button writing bits (BitActions) and / or words (WordActions): momentary, alternate, SET or RESET; a lamp of its state or sensor on it (Lamp1Address). Its caption: TranslationKey + FallbackText (or ButtonText).
-On our pages: 122 of them; size 360 x 40 (54), 300 x 36 (33), 79 x 32 (12).
+On our pages: 124 of them; size 360 x 40 (51), 300 x 36 (33), 79 x 32 (12).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -577,11 +728,13 @@ On our pages: 122 of them; size 360 x 40 (54), 300 x 36 (33), 79 x 32 (12).
 | **Action** | | | |
 | `BitActions` | List<BitAction> |  | The bits the button writes: one BitAction (Address, Action) each. |
 | `WordActions` | List<WordAction> |  | The words the button writes (a value each): leave empty for a plain button. |
+| `HmiFunction` | HmiButtonFunction | None | An HMI function the button switches, no PLC bit: CylinderForwardBack - a cylinder started moves back and forth, each way just under its alarm delay (Maintenance and Admin). |
 | **Display** | | | |
 | `DescriptionText` | string | "" | Its caption, drawn beside it: a translation key - usually the English text, shown as written when it has no translation. |
 | `ButtonText` | string | "" | The same as FallbackText. |
 | `FallbackText` | string | "" | Its caption when the key has no translation (the English text). |
 | `TranslationKey` | string | "" | The key of its text in the translation files - usually the English text itself. |
+| `TwoLineCaption` | bool | False | The caption on two lines, broken at its space nearest the middle (any language) - a narrower button. |
 | `Direction` | Direction | None | Direction arrow drawn on the button. |
 | `DisplayAddress` | string |  |  |
 | **State** | | | |
@@ -604,34 +757,61 @@ On our pages: 122 of them; size 360 x 40 (54), 300 x 36 (33), 79 x 32 (12).
 | `ConfirmationTextKey` | string | "" | The question asked: a translation key (Msg_CancelOperation); empty: "Are you sure?". |
 | `ConfirmationText` | string | "" | The question in English, shown when its key has no translation. |
 | `LogAction` | bool | False | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
+| `ResetOnUserChange` | bool | False | Its latched bits (Alternate / SET actions) are set to 0 when the signed-in user changes (Safety Bypass). |
 | **Help** | | | |
 | `ToolTipText` | string | "" | Its tooltip: a translation key, or the text. |
 
 A `BitAction` (`Kaban.Core.Models.BitAction`): `Address` (a bit), `Action` (BitActionType). A `WordAction` writes a value to a word.
 
-An example from Manual\ManualMilling.Designer.cs:
+An example from Parameters\AxisSettings.Designer.cs:
 
 ```csharp
-this.btnUnit_1_Milling_Motor = new Kaban.UI.Controls.ButtonHMI();
-this.btnUnit_1_Milling_Motor.Name = "btnUnit_1_Milling_Motor";
-this.btnUnit_1_Milling_Motor.PlcNumber = 1;
-this.btnUnit_1_Milling_Motor.TranslationKey = "Milling Motor";
-this.btnUnit_1_Milling_Motor.FallbackText = "Milling Motor";
-Kaban.Core.Models.BitAction bitAction7 = new Kaban.Core.Models.BitAction();   // declared at the top of InitializeComponent
-bitAction7.Address = "M649";
-bitAction7.Action = Kaban.Core.Enums.BitActionType.Alternate;
-this.btnUnit_1_Milling_Motor.BitActions.Add(bitAction7);
-this.btnUnit_1_Milling_Motor.Lamp1Address = "M230";
-this.btnUnit_1_Milling_Motor.Location = new System.Drawing.Point(16, 624);
-this.btnUnit_1_Milling_Motor.Size = new System.Drawing.Size(230, 40);
-this.btnUnit_1_Milling_Motor.LogAction = true;
-this.btnUnit_1_Milling_Motor.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.btnSend_Axes_To_Reference = new Kaban.UI.Controls.ButtonHMI();
+this.btnSend_Axes_To_Reference.ActiveBackColor = System.Drawing.Color.White;
+this.btnSend_Axes_To_Reference.AlertBlink = false;
+this.btnSend_Axes_To_Reference.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+Kaban.Core.Models.BitAction bitAction1 = new Kaban.Core.Models.BitAction();   // declared at the top of InitializeComponent
+bitAction1.Action = Kaban.Core.Enums.BitActionType.SET;
+bitAction1.Address = "M22";
+bitAction1.AddressOffset.StaticValue = 0D;
+bitAction1.AddressOffset.TagAddress = "";
+bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.btnSend_Axes_To_Reference.BitActions.Add(bitAction1);
+this.btnSend_Axes_To_Reference.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+this.btnSend_Axes_To_Reference.ButtonText = "Send Axes to Reference";
+this.btnSend_Axes_To_Reference.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+this.btnSend_Axes_To_Reference.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+this.btnSend_Axes_To_Reference.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+this.btnSend_Axes_To_Reference.ConfirmationAddress = "";
+this.btnSend_Axes_To_Reference.ConfirmationNeeded = false;
+this.btnSend_Axes_To_Reference.ConfirmationText = "";
+this.btnSend_Axes_To_Reference.ConfirmationTextKey = "";
+this.btnSend_Axes_To_Reference.CornerRadius = 4;
+this.btnSend_Axes_To_Reference.DescriptionText = "";
+this.btnSend_Axes_To_Reference.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+this.btnSend_Axes_To_Reference.DisplayAddress = null;
+this.btnSend_Axes_To_Reference.DisplayOffset.StaticValue = 0D;
+this.btnSend_Axes_To_Reference.DisplayOffset.TagAddress = "";
+this.btnSend_Axes_To_Reference.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.btnSend_Axes_To_Reference.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.btnSend_Axes_To_Reference.EnableTrigger.DescriptionKey = "";
+this.btnSend_Axes_To_Reference.EnableTrigger.MonitorAddress = "";
+this.btnSend_Axes_To_Reference.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.btnSend_Axes_To_Reference.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.btnSend_Axes_To_Reference.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.btnSend_Axes_To_Reference.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.btnSend_Axes_To_Reference.EnableTrigger.ValA = 0D;
+this.btnSend_Axes_To_Reference.EnableTrigger.ValB = 0D;
+this.btnSend_Axes_To_Reference.ErrorAddress = "";
+this.btnSend_Axes_To_Reference.FallbackText = "Send Axes to Reference";
+this.btnSend_Axes_To_Reference.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+this.btnSend_Axes_To_Reference.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
 ```
 
 ### LampHMI
 
 A bit shown as a lamp (a sensor, a state, an output), its caption (DescriptionText) beside it.
-On our pages: 112 of them; size 300 x 26 (96), 36 x 36 (16).
+On our pages: 110 of them; size 300 x 26 (96), 36 x 36 (14).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -649,27 +829,30 @@ On our pages: 112 of them; size 300 x 26 (96), 36 x 36 (16).
 | **Help** | | | |
 | `ToolTipTextKey` | string | "" | Its tooltip: a translation key, or the text. |
 
-An example from Manual\ManualExit.Designer.cs:
+An example from Manual\ManualRobot.Designer.cs:
 
 ```csharp
-this.lampSawdust_Conveyor_Thermic = new Kaban.UI.Controls.LampHMI();
-this.lampSawdust_Conveyor_Thermic.Name = "lampSawdust_Conveyor_Thermic";
-this.lampSawdust_Conveyor_Thermic.PlcNumber = 1;
-this.lampSawdust_Conveyor_Thermic.Address = "M242";
-this.lampSawdust_Conveyor_Thermic.DescriptionText = "Sawdust Conveyor Thermic";
-this.lampSawdust_Conveyor_Thermic.Location = new System.Drawing.Point(16, 560);
-this.lampSawdust_Conveyor_Thermic.Size = new System.Drawing.Size(36, 36);
-this.lampSawdust_Conveyor_Thermic.AddressOffset = ((Kaban.Core.Models.DynamicValue)(resources.GetObject("lampSawdust_Conveyor_Thermic.AddressOffset")));
-this.lampSawdust_Conveyor_Thermic.BackColor = System.Drawing.Color.Transparent;
-this.lampSawdust_Conveyor_Thermic.CornerRadius = 4;
-this.lampSawdust_Conveyor_Thermic.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Right;
-this.lampSawdust_Conveyor_Thermic.ImageActive = null;
-this.lampSawdust_Conveyor_Thermic.ImagePassive = null;
-this.lampSawdust_Conveyor_Thermic.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
-this.lampSawdust_Conveyor_Thermic.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
-this.lampSawdust_Conveyor_Thermic.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-this.lampSawdust_Conveyor_Thermic.ToolTipTextKey = "";
-this.lampSawdust_Conveyor_Thermic.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.lampBar_First_End_Read_SN = new Kaban.UI.Controls.LampHMI();
+this.lampBar_First_End_Read_SN.Address = "M323";
+this.lampBar_First_End_Read_SN.AddressOffset.StaticValue = 0D;
+this.lampBar_First_End_Read_SN.AddressOffset.TagAddress = "";
+this.lampBar_First_End_Read_SN.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.lampBar_First_End_Read_SN.BackColor = System.Drawing.Color.Transparent;
+this.lampBar_First_End_Read_SN.CornerRadius = 4;
+this.lampBar_First_End_Read_SN.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Right;
+this.lampBar_First_End_Read_SN.DescriptionText = "Bar First End Read SN";
+this.lampBar_First_End_Read_SN.ImageActive = null;
+this.lampBar_First_End_Read_SN.ImagePassive = null;
+this.lampBar_First_End_Read_SN.Location = new System.Drawing.Point(14, 362);
+this.lampBar_First_End_Read_SN.Name = "lampBar_First_End_Read_SN";
+this.lampBar_First_End_Read_SN.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+this.lampBar_First_End_Read_SN.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+this.lampBar_First_End_Read_SN.PlcNumber = 1;
+this.lampBar_First_End_Read_SN.Size = new System.Drawing.Size(36, 36);
+this.lampBar_First_End_Read_SN.TabIndex = 5;
+this.lampBar_First_End_Read_SN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+this.lampBar_First_End_Read_SN.ToolTipTextKey = "";
+this.lampBar_First_End_Read_SN.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
 ```
 
 ### NumericInputHMI
@@ -723,30 +906,51 @@ An example from Parameters\ParamConveyor.Designer.cs:
 
 ```csharp
 this.numMinimum_Bar_Length = new Kaban.UI.Controls.NumericInputHMI();
+this.numMinimum_Bar_Length.Address = "D438";
+this.numMinimum_Bar_Length.AddressOffset.StaticValue = 0D;
+this.numMinimum_Bar_Length.AddressOffset.TagAddress = "";
+this.numMinimum_Bar_Length.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
 this.numMinimum_Bar_Length.BackColor = System.Drawing.Color.White;
 this.numMinimum_Bar_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-this.numMinimum_Bar_Length.Name = "numMinimum_Bar_Length";
-this.numMinimum_Bar_Length.PlcNumber = 1;
-this.numMinimum_Bar_Length.Address = "D438";
+this.numMinimum_Bar_Length.ConfirmWrite = false;
+this.numMinimum_Bar_Length.CornerRadius = 4;
+this.numMinimum_Bar_Length.Cursor = System.Windows.Forms.Cursors.Hand;
+this.numMinimum_Bar_Length.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Signed_Decimal;
 this.numMinimum_Bar_Length.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
-this.numMinimum_Bar_Length.DescriptionText = "Minimum Bar Length";
-this.numMinimum_Bar_Length.AutoSize = false;
-this.numMinimum_Bar_Length.Digits = 5;
 this.numMinimum_Bar_Length.DecimalPlaces = 1;
+this.numMinimum_Bar_Length.DescriptionColon = true;
+this.numMinimum_Bar_Length.DescriptionText = "Minimum Bar Length";
+this.numMinimum_Bar_Length.Digits = 5;
 this.numMinimum_Bar_Length.Divisor = 10000D;
-this.numMinimum_Bar_Length.Suffix = "mm";
-this.numMinimum_Bar_Length.UnitType = Kaban.Core.Enums.UnitType.Length;
-this.numMinimum_Bar_Length.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+this.numMinimum_Bar_Length.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.numMinimum_Bar_Length.EnableTrigger.DescriptionKey = "";
+this.numMinimum_Bar_Length.EnableTrigger.MonitorAddress = "";
+this.numMinimum_Bar_Length.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.numMinimum_Bar_Length.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.numMinimum_Bar_Length.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.numMinimum_Bar_Length.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.numMinimum_Bar_Length.EnableTrigger.ValA = 0D;
+this.numMinimum_Bar_Length.EnableTrigger.ValB = 0D;
+this.numMinimum_Bar_Length.FillZero = false;
+this.numMinimum_Bar_Length.IsEditing = false;
+this.numMinimum_Bar_Length.Location = new System.Drawing.Point(281, 22);
 this.numMinimum_Bar_Length.LogAction = true;
-this.numMinimum_Bar_Length.Location = new System.Drawing.Point(162, 16);
-this.numMinimum_Bar_Length.Size = new System.Drawing.Size(116, 26);
+this.numMinimum_Bar_Length.MaxLimit.StaticValue = 0D;
+this.numMinimum_Bar_Length.MaxLimit.TagAddress = "";
+this.numMinimum_Bar_Length.MaxLimit.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.numMinimum_Bar_Length.MinLimit.StaticValue = 0D;
+this.numMinimum_Bar_Length.MinLimit.TagAddress = "";
+this.numMinimum_Bar_Length.MinLimit.Type = Kaban.Core.Enums.LimitSourceType.None;
+this.numMinimum_Bar_Length.Name = "numMinimum_Bar_Length";
+this.numMinimum_Bar_Length.OutOfLimitsWarning = false;
+this.numMinimum_Bar_Length.PlcNumber = 1;
 this.numMinimum_Bar_Length.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
 ```
 
 ### NumericDisplayHMI
 
 A value only shown (a word or a double word): scaled, in decimal or hexadecimal (an error code).
-On our pages: 11 of them; size 110 x 40 (6), 120 x 40 (3), 150 x 40 (2).
+On our pages: 3 of them; size 150 x 40 (2), 120 x 40 (1).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -774,26 +978,27 @@ On our pages: 11 of them; size 110 x 40 (6), 120 x 40 (3), 150 x 40 (2).
 | **Help** | | | |
 | `ToolTipTextKey` | string | "" | Its tooltip: a translation key, or the text. |
 
-An example from Manual\ManualExit.Designer.cs:
+An example from Manual\ManualEntry_Conveyor.Designer.cs:
 
 ```csharp
-this.dispConveyor_Inverter_Error = new Kaban.UI.Controls.NumericDisplayHMI();
-this.dispConveyor_Inverter_Error.Name = "dispConveyor_Inverter_Error";
-this.dispConveyor_Inverter_Error.PlcNumber = 1;
-this.dispConveyor_Inverter_Error.Address = "D671";
-this.dispConveyor_Inverter_Error.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
-this.dispConveyor_Inverter_Error.DataFormat = Kaban.Core.Enums.DisplayFormatEnum.Hexadecimal;
-this.dispConveyor_Inverter_Error.Digits = 4;
-this.dispConveyor_Inverter_Error.DescriptionText = "Conveyor Inverter Error";
-this.dispConveyor_Inverter_Error.Location = new System.Drawing.Point(266, 510);
-this.dispConveyor_Inverter_Error.Size = new System.Drawing.Size(110, 40);
-this.dispConveyor_Inverter_Error.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.dispX1_Second_Value = new Kaban.UI.Controls.NumericDisplayHMI();
+this.dispX1_Second_Value.Name = "dispX1_Second_Value";
+this.dispX1_Second_Value.PlcNumber = 1;
+this.dispX1_Second_Value.Address = "D156";
+this.dispX1_Second_Value.DataType = Kaban.Core.Enums.DataTypeEnum.Bin_32;
+this.dispX1_Second_Value.Divisor = 100D;
+this.dispX1_Second_Value.DecimalPlaces = 1;
+this.dispX1_Second_Value.Digits = 6;
+this.dispX1_Second_Value.Suffix = "mm";
+this.dispX1_Second_Value.DescriptionText = "X1 Second Value";
+this.dispX1_Second_Value.Location = new System.Drawing.Point(226, 122);
+this.dispX1_Second_Value.Size = new System.Drawing.Size(150, 40);
 ```
 
 ### CheckBoxHMI
 
 One bit as a tick box (an option on / off), written on a click.
-On our pages: 65 of them; size 440 x 28 (43), 44 x 32 (22).
+On our pages: 69 of them; size 440 x 28 (43), 44 x 32 (26).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -804,25 +1009,43 @@ On our pages: 65 of them; size 440 x 28 (43), 44 x 32 (22).
 | **Display** | | | |
 | `DescriptionText` | string | "" | Its caption, drawn beside it: a translation key - usually the English text, shown as written when it has no translation. |
 | `DescriptionSide` | DescriptionSide | Right | Which side of it the caption is drawn. |
+| **Conditions** | | | |
+| `VisibilityConditions` | SystemCondition | None | Shown only while these SystemCondition flags are met (None: always). |
+| `EnableConditions` | SystemCondition | None | Usable only while these are met, greyed otherwise (None: always). |
+| `EnableTrigger` | PlcTrigger |  | A PLC bit that must be ON before it can be used (leave empty). |
 | **Security** | | | |
 | `RequiredSecurity` | SecurityLevel | Operator | The lowest level allowed to use it: Operator (Manual Movement), Maintenance (Machine Parameters), Admin. |
 | `LogAction` | bool | True | true: every write it makes goes to the log with the user's name - set it on everything that writes. |
 | **Help** | | | |
 | `ToolTipCaption` | string |  | Text for the TOOLTIP only, never drawn on the control. |
 
-An example from Parameters\ParamOther.Designer.cs:
+An example from Parameters\Options.Designer.cs:
 
 ```csharp
-this.optMullion_Notching = new Kaban.UI.Controls.CheckBoxHMI();
-this.optMullion_Notching.Name = "optMullion_Notching";
-this.optMullion_Notching.PlcNumber = 1;
-this.optMullion_Notching.Address = "L5";
-this.optMullion_Notching.DescriptionText = "Mullion Notching";
-this.optMullion_Notching.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
-this.optMullion_Notching.Location = new System.Drawing.Point(707, 47);
-this.optMullion_Notching.Size = new System.Drawing.Size(44, 32);
-this.optMullion_Notching.LogAction = true;
-this.optMullion_Notching.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+this.optVithBlade = new Kaban.UI.Controls.CheckBoxHMI();
+this.optVithBlade.Address = "L46";
+this.optVithBlade.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+this.optVithBlade.CornerRadius = 4;
+this.optVithBlade.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+this.optVithBlade.DescriptionText = "with Blade";
+this.optVithBlade.EnableConditions = Kaban.Core.Enums.SystemCondition.MachineBit20;
+this.optVithBlade.EnableTrigger.DescriptionKey = "";
+this.optVithBlade.EnableTrigger.MonitorAddress = "";
+this.optVithBlade.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+this.optVithBlade.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+this.optVithBlade.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+this.optVithBlade.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+this.optVithBlade.EnableTrigger.ValA = 0D;
+this.optVithBlade.EnableTrigger.ValB = 0D;
+this.optVithBlade.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+this.optVithBlade.Location = new System.Drawing.Point(319, 75);
+this.optVithBlade.LogAction = true;
+this.optVithBlade.Name = "optVithBlade";
+this.optVithBlade.PlcNumber = 1;
+this.optVithBlade.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+this.optVithBlade.Size = new System.Drawing.Size(44, 32);
+this.optVithBlade.TabIndex = 64;
+this.optVithBlade.ToolTipCaption = null;
 ```
 
 ### CheckListHMI
@@ -859,7 +1082,7 @@ A choice written to one word: Options one per line, TranslationKey|Fallback|Valu
 ### LabelHMI
 
 A heading or a fixed text on a page, translated (TranslationKey).
-On our pages: 21 of them; size 360 x 26 (12), 326 x 26 (3), 377 x 26 (3).
+On our pages: 18 of them; size 360 x 26 (10), 326 x 26 (3), 377 x 26 (3).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -870,20 +1093,21 @@ An example from Parameters\ParamOther.Designer.cs:
 
 ```csharp
 this.lblExit_Conveyor = new Kaban.UI.Controls.LabelHMI();
-this.lblExit_Conveyor.Name = "lblExit_Conveyor";
-this.lblExit_Conveyor.TranslationKey = "Exit Conveyor";
-this.lblExit_Conveyor.Text = "Exit Conveyor";
 this.lblExit_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
 this.lblExit_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-this.lblExit_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 this.lblExit_Conveyor.Location = new System.Drawing.Point(16, 16);
+this.lblExit_Conveyor.Name = "lblExit_Conveyor";
 this.lblExit_Conveyor.Size = new System.Drawing.Size(326, 26);
+this.lblExit_Conveyor.TabIndex = 0;
+this.lblExit_Conveyor.Text = "Exit Conveyor";
+this.lblExit_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+this.lblExit_Conveyor.TranslationKey = "Exit Conveyor";
 ```
 
 ### GroupBoxHMI
 
 A frame like a CylinderUnitHMI's around controls that belong together (a row of small buttons); its title TitleTextKey. The controls inside are added to it.
-On our pages: 4 of them; size 360 x 64 (4).
+On our pages: 6 of them; size 360 x 64 (4), 405 x 245 (1), 390 x 447 (1).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -898,21 +1122,35 @@ On our pages: 4 of them; size 360 x 64 (4).
 | `EnableConditions` | SystemCondition | None | Usable only while these are met, greyed otherwise (None: always). |
 | `EnableAddress` | string | "" | Bit that must be ON for the group to be enabled. Optional. |
 
-An example from Manual\ManualMilling.Designer.cs:
+An example from Manual\ManualCutting.Designer.cs:
 
 ```csharp
-this.grpDrills_to_Changing_Pos = new Kaban.UI.Controls.GroupBoxHMI();
-this.grpDrills_to_Changing_Pos.SuspendLayout();
-this.grpDrills_to_Changing_Pos.Name = "grpDrills_to_Changing_Pos";
-this.grpDrills_to_Changing_Pos.PlcNumber = 1;
-this.grpDrills_to_Changing_Pos.TitleTextKey = "Drills to Changing Pos.";
-this.grpDrills_to_Changing_Pos.Location = new System.Drawing.Point(406, 16);
-this.grpDrills_to_Changing_Pos.Size = new System.Drawing.Size(360, 64);
-this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N1);
-this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N2);
-this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N3);
-this.grpDrills_to_Changing_Pos.Controls.Add(this.btnDrills_to_Changing_Pos_N4);
-this.grpDrills_to_Changing_Pos.ResumeLayout(false);
+this.groupBoxVCuıtting = new Kaban.UI.Controls.GroupBoxHMI();
+this.groupBoxVCuıtting.SuspendLayout();
+this.groupBoxVCuıtting.Address = null;
+this.groupBoxVCuıtting.BackColor = System.Drawing.Color.White;
+this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Y);
+this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Z);
+this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_X);
+this.groupBoxVCuıtting.Controls.Add(this.unitV_Cutting_Saw_Motor);
+this.groupBoxVCuıtting.Controls.Add(this.unitMullion_End_Milling_Unit);
+this.groupBoxVCuıtting.Controls.Add(this.btnMullion_Blade_Change);
+this.groupBoxVCuıtting.Emoji = "";
+this.groupBoxVCuıtting.EnableAddress = "";
+this.groupBoxVCuıtting.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+this.groupBoxVCuıtting.Location = new System.Drawing.Point(845, 14);
+this.groupBoxVCuıtting.Name = "groupBoxVCuıtting";
+this.groupBoxVCuıtting.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+this.groupBoxVCuıtting.PlcNumber = 1;
+this.groupBoxVCuıtting.Size = new System.Drawing.Size(390, 447);
+this.groupBoxVCuıtting.TabIndex = 40;
+this.groupBoxVCuıtting.TitleText = "V Cutting";
+this.groupBoxVCuıtting.TitleTextKey = "V Cutting";
+this.groupBoxVCuıtting.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+this.groupBoxVCuıtting.VisibleAddress = "";
+this.groupBoxVCuıtting.Paint += new System.Windows.Forms.PaintEventHandler(this.groupBoxHMI1_Paint);
+this.groupBoxVCuıtting.ResumeLayout(false);
+this.groupBoxVCuıtting.PerformLayout();
 ```
 
 ### MeterHMI
@@ -973,7 +1211,7 @@ A gauge whose value is set (with its arrows and limits) - it writes to the PLC.
 ### SpeedOverrideHMI
 
 The machine's working speed in percent on a Home page (the old program's speed track bar): its caption, - and + stepping through Steps (0, 1, 2, 4 ... 95, 100 by default) and the percentage read back from Address, so a value set elsewhere is shown as it is.
-On our pages: 1 of it; size 340 x 56 (1).
+On our pages: 2 of them; size 248 x 42 (1), 248 x 50 (1).
 
 | Property | Type | Default | What it is |
 |---|---|---|---|
@@ -993,12 +1231,18 @@ An example from Screens\HomeScreen.Designer.cs:
 
 ```csharp
 this.speedOverride = new Kaban.UI.Controls.SpeedOverrideHMI();
+this.speedOverride.Address = "D408";
+this.speedOverride.BackColor = System.Drawing.Color.White;
+this.speedOverride.FallbackText = "Speed";
+this.speedOverride.Location = new System.Drawing.Point(14, 13);
+this.speedOverride.LogAction = true;
 this.speedOverride.Name = "speedOverride";
 this.speedOverride.PlcNumber = 1;
-this.speedOverride.Address = "D408";
-this.speedOverride.Location = new System.Drawing.Point(456, 24);
-this.speedOverride.Size = new System.Drawing.Size(340, 56);
 this.speedOverride.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+this.speedOverride.Size = new System.Drawing.Size(248, 42);
+this.speedOverride.Steps = new int[] {
+this.speedOverride.TabIndex = 3;
+this.speedOverride.TranslationKey = "Lbl_Speed";
 ```
 
 ## 6. The values of the enums
@@ -1013,9 +1257,11 @@ this.speedOverride.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
 - **Kaban.Core.Enums.DescriptionSide**: `Left`, `Right`
 - **Kaban.UI.Controls.ButtonGlyphs.Direction**: `None`, `Left`, `Right`, `Up`, `Down`
 - **Kaban.Core.Enums.DisplayFormatEnum**: `Signed_Decimal`, `Unsigned_Decimal`, `Hexadecimal`, `Octal`, `Binary`, `Real`
+- **Kaban.UI.Controls.HmiButtonFunction**: `None`, `CylinderForwardBack`
 - **Kaban.UI.Controls.ButtonHMI.LampDirectionPosition**: `Left`, `Right`, `Top`, `Bottom`
 - **Kaban.Core.Enums.SecurityLevel**: `None`, `Operator`, `Maintenance`, `Admin`
-- **Kaban.Core.Enums.SystemCondition** (flags: combine with `|`): `None` - None (Always Active), `SafetyOK` - Safety Relays OK, `ManualMode` - Manual Mode Active, `AutoMode` - Auto Mode Active, `AdminUser` - Admin User Logged In, `MachineIsRunning` - Machine is Running, `RobotIsSafe` - Robot is at Safe Position, `MillingUnitIsBack` - Milling Unit is at Back
+- **Kaban.Core.Enums.SystemCondition** (flags: combine with `|`): `None` - None (Always Active), `SafetyOK` - Safety Relays OK, `ManualMode` - Manual Mode Active, `AutoMode` - Auto Mode Active, `AdminUser` - Admin User Logged In, `MachineIsRunning` - Machine is Running, `MaintenanceUser` - Maintenance User Logged In, `AxisStepMode` - Axes in Step Mode (not JOG), `MachineBit16` ... `MachineBit63` - a machine's own conditions (its RegisterMachineBit rules, in the order it allocates them)
+- **Kaban.UI.Controls.UnitPositionStyle**: `Readout`, `Standard`
 - **Kaban.Core.Enums.UnitType**: `None`, `Length`, `Weight`, `Temperature`, `Pressure`, `Time`
 
 ## 7. What to hand back
@@ -1029,7 +1275,8 @@ this.speedOverride.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
 6. What could not be mapped or placed, and every assumption - instead of an invented address.
 
 **Rules:** keep the old page's addresses exactly as they are; one of our controls per function (section 2); every control
-named; `AutoScaleMode.None`; nothing of our controls' types in a `.resx`; no code but the designer's; the layout of section 3.
+named; `AutoScaleMode.None`; nothing of our controls' types in a `.resx`; no code but the designer's (and the machine's bar,
+section 1); no UserControl of the machine's project in a designer file; the layout of section 3.
 
 ## 8. One of our pages, whole
 
@@ -1100,101 +1347,232 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             // 
             // unitAxis_X
             // 
-            // Axis X: axis 1 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitAxis_X.BackColor = System.Drawing.Color.White;
-            this.unitAxis_X.Name = "unitAxis_X";
             this.unitAxis_X.AxisNumber = 1;
-            this.unitAxis_X.PlcNumber = 1;
-            this.unitAxis_X.Location = new System.Drawing.Point(16, 16);
+            this.unitAxis_X.BackColor = System.Drawing.Color.White;
+            this.unitAxis_X.Location = new System.Drawing.Point(14, 16);
+            this.unitAxis_X.Name = "unitAxis_X";
             this.unitAxis_X.Size = new System.Drawing.Size(360, 64);
+            this.unitAxis_X.TabIndex = 0;
             // 
             // unitAxis_Y
             // 
-            // Axis Y: axis 2 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitAxis_Y.BackColor = System.Drawing.Color.White;
-            this.unitAxis_Y.Name = "unitAxis_Y";
             this.unitAxis_Y.AxisNumber = 2;
-            this.unitAxis_Y.PlcNumber = 1;
-            this.unitAxis_Y.Location = new System.Drawing.Point(16, 90);
+            this.unitAxis_Y.BackColor = System.Drawing.Color.White;
+            this.unitAxis_Y.Location = new System.Drawing.Point(14, 90);
+            this.unitAxis_Y.Name = "unitAxis_Y";
             this.unitAxis_Y.Size = new System.Drawing.Size(360, 64);
+            this.unitAxis_Y.TabIndex = 1;
             // 
             // unitAxis_Z
             // 
-            // Axis Z: axis 3 of Machine Parameters - Axis Parameters (its buttons, position and reference sensor come from there).
-            this.unitAxis_Z.BackColor = System.Drawing.Color.White;
-            this.unitAxis_Z.Name = "unitAxis_Z";
             this.unitAxis_Z.AxisNumber = 3;
-            this.unitAxis_Z.PlcNumber = 1;
-            this.unitAxis_Z.Location = new System.Drawing.Point(16, 164);
+            this.unitAxis_Z.BackColor = System.Drawing.Color.White;
+            this.unitAxis_Z.Location = new System.Drawing.Point(14, 164);
+            this.unitAxis_Z.Name = "unitAxis_Z";
             this.unitAxis_Z.Size = new System.Drawing.Size(360, 64);
+            this.unitAxis_Z.TabIndex = 2;
             // 
             // unitGripper
             // 
-            // Gripper: encoder 1 of Machine Parameters - Encoders (Robot Gripper): its buttons, sensors, position, valve, feedback and error bits come from there.
             this.unitGripper.BackColor = System.Drawing.Color.White;
-            this.unitGripper.Name = "unitGripper";
             this.unitGripper.EncoderNumber = 1;
-            this.unitGripper.PlcNumber = 1;
-            this.unitGripper.TitleTextKey = "Gripper";
-            this.unitGripper.Location = new System.Drawing.Point(16, 238);
+            this.unitGripper.Location = new System.Drawing.Point(14, 238);
+            this.unitGripper.Name = "unitGripper";
             this.unitGripper.Size = new System.Drawing.Size(360, 64);
+            this.unitGripper.TabIndex = 3;
+            this.unitGripper.TitleTextKey = "Gripper";
             // 
             // btnSawdust_Blowing
             // 
-            this.btnSawdust_Blowing.Name = "btnSawdust_Blowing";
-            this.btnSawdust_Blowing.PlcNumber = 1;
-            this.btnSawdust_Blowing.TranslationKey = "Sawdust Blowing";
-            this.btnSawdust_Blowing.FallbackText = "Sawdust Blowing";
-            bitAction1.Address = "M697";
+            this.btnSawdust_Blowing.ActiveBackColor = System.Drawing.Color.White;
+            this.btnSawdust_Blowing.AlertBlink = false;
+            this.btnSawdust_Blowing.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
             bitAction1.Action = Kaban.Core.Enums.BitActionType.Momentary;
+            bitAction1.Address = "M697";
+            bitAction1.AddressOffset.StaticValue = 0D;
+            bitAction1.AddressOffset.TagAddress = "";
+            bitAction1.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
             this.btnSawdust_Blowing.BitActions.Add(bitAction1);
-            this.btnSawdust_Blowing.Location = new System.Drawing.Point(16, 312);
-            this.btnSawdust_Blowing.Size = new System.Drawing.Size(360, 40);
+            this.btnSawdust_Blowing.BlinkCondition = Kaban.Core.Enums.SystemCondition.None;
+            this.btnSawdust_Blowing.ButtonText = "Sawdust Blowing";
+            this.btnSawdust_Blowing.ColorActive = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.btnSawdust_Blowing.ColorDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
+            this.btnSawdust_Blowing.ColorPassive = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnSawdust_Blowing.ConfirmationAddress = "";
+            this.btnSawdust_Blowing.ConfirmationNeeded = false;
+            this.btnSawdust_Blowing.ConfirmationText = "";
+            this.btnSawdust_Blowing.ConfirmationTextKey = "";
+            this.btnSawdust_Blowing.CornerRadius = 4;
+            this.btnSawdust_Blowing.DescriptionText = "";
+            this.btnSawdust_Blowing.Direction = Kaban.UI.Controls.ButtonGlyphs.Direction.None;
+            this.btnSawdust_Blowing.DisplayAddress = null;
+            this.btnSawdust_Blowing.DisplayOffset.StaticValue = 0D;
+            this.btnSawdust_Blowing.DisplayOffset.TagAddress = "";
+            this.btnSawdust_Blowing.DisplayOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.btnSawdust_Blowing.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.btnSawdust_Blowing.EnableTrigger.DescriptionKey = "";
+            this.btnSawdust_Blowing.EnableTrigger.MonitorAddress = "";
+            this.btnSawdust_Blowing.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.btnSawdust_Blowing.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnSawdust_Blowing.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.btnSawdust_Blowing.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.btnSawdust_Blowing.EnableTrigger.ValA = 0D;
+            this.btnSawdust_Blowing.EnableTrigger.ValB = 0D;
+            this.btnSawdust_Blowing.ErrorAddress = "";
+            this.btnSawdust_Blowing.FallbackText = "Sawdust Blowing";
+            this.btnSawdust_Blowing.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnSawdust_Blowing.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(241)))), ((int)(((byte)(243)))));
+            this.btnSawdust_Blowing.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSawdust_Blowing.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.btnSawdust_Blowing.ForeColor = System.Drawing.Color.Black;
+            this.btnSawdust_Blowing.ForeDisabled = System.Drawing.Color.FromArgb(((int)(((byte)(176)))), ((int)(((byte)(182)))), ((int)(((byte)(190)))));
+            this.btnSawdust_Blowing.HoverBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(120)))), ((int)(((byte)(220)))));
+            this.btnSawdust_Blowing.ImageActive = null;
+            this.btnSawdust_Blowing.ImagePassive = null;
+            this.btnSawdust_Blowing.IsActivePage = false;
+            this.btnSawdust_Blowing.Lamp1Address = "";
+            this.btnSawdust_Blowing.Lamp1Tip = "";
+            this.btnSawdust_Blowing.Lamp2Address = "";
+            this.btnSawdust_Blowing.Lamp2Tip = "";
+            this.btnSawdust_Blowing.LampDirection = Kaban.UI.Controls.ButtonHMI.LampDirectionPosition.Left;
+            this.btnSawdust_Blowing.Location = new System.Drawing.Point(14, 312);
             this.btnSawdust_Blowing.LogAction = true;
+            this.btnSawdust_Blowing.Name = "btnSawdust_Blowing";
+            this.btnSawdust_Blowing.OutputAddress = "";
+            this.btnSawdust_Blowing.OutputBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(170)))), ((int)(((byte)(70)))));
+            this.btnSawdust_Blowing.PlcNumber = 1;
+            this.btnSawdust_Blowing.RelayAddress = "";
             this.btnSawdust_Blowing.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.btnSawdust_Blowing.RestingBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(176)))), ((int)(((byte)(186)))));
+            this.btnSawdust_Blowing.RoundLeftOnly = false;
+            this.btnSawdust_Blowing.RoundRightOnly = false;
+            this.btnSawdust_Blowing.ShowCaption = true;
+            this.btnSawdust_Blowing.Size = new System.Drawing.Size(360, 40);
+            this.btnSawdust_Blowing.TabIndex = 4;
+            this.btnSawdust_Blowing.ToolTipText = "";
+            this.btnSawdust_Blowing.TranslationKey = "Sawdust Blowing";
+            this.btnSawdust_Blowing.UseVisualStyleBackColor = false;
+            this.btnSawdust_Blowing.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // lampBar_First_End_Read_SN
             // 
-            this.lampBar_First_End_Read_SN.Name = "lampBar_First_End_Read_SN";
-            this.lampBar_First_End_Read_SN.PlcNumber = 1;
             this.lampBar_First_End_Read_SN.Address = "M323";
+            this.lampBar_First_End_Read_SN.AddressOffset.StaticValue = 0D;
+            this.lampBar_First_End_Read_SN.AddressOffset.TagAddress = "";
+            this.lampBar_First_End_Read_SN.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.lampBar_First_End_Read_SN.BackColor = System.Drawing.Color.Transparent;
+            this.lampBar_First_End_Read_SN.CornerRadius = 4;
+            this.lampBar_First_End_Read_SN.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Right;
             this.lampBar_First_End_Read_SN.DescriptionText = "Bar First End Read SN";
-            this.lampBar_First_End_Read_SN.Location = new System.Drawing.Point(16, 362);
+            this.lampBar_First_End_Read_SN.ImageActive = null;
+            this.lampBar_First_End_Read_SN.ImagePassive = null;
+            this.lampBar_First_End_Read_SN.Location = new System.Drawing.Point(14, 362);
+            this.lampBar_First_End_Read_SN.Name = "lampBar_First_End_Read_SN";
+            this.lampBar_First_End_Read_SN.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+            this.lampBar_First_End_Read_SN.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lampBar_First_End_Read_SN.PlcNumber = 1;
             this.lampBar_First_End_Read_SN.Size = new System.Drawing.Size(36, 36);
+            this.lampBar_First_End_Read_SN.TabIndex = 5;
+            this.lampBar_First_End_Read_SN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lampBar_First_End_Read_SN.ToolTipTextKey = "";
+            this.lampBar_First_End_Read_SN.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // lampBar_Last_End_Read_SN
             // 
-            this.lampBar_Last_End_Read_SN.Name = "lampBar_Last_End_Read_SN";
-            this.lampBar_Last_End_Read_SN.PlcNumber = 1;
             this.lampBar_Last_End_Read_SN.Address = "M324";
+            this.lampBar_Last_End_Read_SN.AddressOffset.StaticValue = 0D;
+            this.lampBar_Last_End_Read_SN.AddressOffset.TagAddress = "";
+            this.lampBar_Last_End_Read_SN.AddressOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.lampBar_Last_End_Read_SN.BackColor = System.Drawing.Color.Transparent;
+            this.lampBar_Last_End_Read_SN.CornerRadius = 4;
+            this.lampBar_Last_End_Read_SN.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Right;
             this.lampBar_Last_End_Read_SN.DescriptionText = "Bar Last End Read SN";
-            this.lampBar_Last_End_Read_SN.Location = new System.Drawing.Point(16, 408);
+            this.lampBar_Last_End_Read_SN.ImageActive = null;
+            this.lampBar_Last_End_Read_SN.ImagePassive = null;
+            this.lampBar_Last_End_Read_SN.Location = new System.Drawing.Point(14, 408);
+            this.lampBar_Last_End_Read_SN.Name = "lampBar_Last_End_Read_SN";
+            this.lampBar_Last_End_Read_SN.OffColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(225)))), ((int)(((byte)(225)))));
+            this.lampBar_Last_End_Read_SN.OnColor = System.Drawing.Color.FromArgb(((int)(((byte)(76)))), ((int)(((byte)(175)))), ((int)(((byte)(80)))));
+            this.lampBar_Last_End_Read_SN.PlcNumber = 1;
             this.lampBar_Last_End_Read_SN.Size = new System.Drawing.Size(36, 36);
+            this.lampBar_Last_End_Read_SN.TabIndex = 7;
+            this.lampBar_Last_End_Read_SN.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lampBar_Last_End_Read_SN.ToolTipTextKey = "";
+            this.lampBar_Last_End_Read_SN.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // unitGripper_Angle
             // 
+            this.unitGripper_Angle.Arrows = Kaban.Core.Enums.ButtonArrowStyle.LeftRight;
             this.unitGripper_Angle.BackColor = System.Drawing.Color.White;
-            this.unitGripper_Angle.Name = "unitGripper_Angle";
-            this.unitGripper_Angle.PlcNumber = 1;
-            this.unitGripper_Angle.TitleTextKey = "Gripper Angle";
-            this.unitGripper_Angle.Location = new System.Drawing.Point(16, 454);
-            this.unitGripper_Angle.Size = new System.Drawing.Size(360, 64);
-            this.unitGripper_Angle.LogAction = true;
-            this.unitGripper_Angle.CommandAAddress = "M752";
+            this.unitGripper_Angle.BaseOffset = 0;
+            this.unitGripper_Angle.ButtonAEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitGripper_Angle.ButtonAEnableTrigger.DescriptionKey = "";
+            this.unitGripper_Angle.ButtonAEnableTrigger.MonitorAddress = "";
+            this.unitGripper_Angle.ButtonAEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitGripper_Angle.ButtonAEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitGripper_Angle.ButtonAEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitGripper_Angle.ButtonAEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitGripper_Angle.ButtonAEnableTrigger.ValA = 0D;
+            this.unitGripper_Angle.ButtonAEnableTrigger.ValB = 0D;
+            this.unitGripper_Angle.ButtonATextKey = "◀";
+            this.unitGripper_Angle.ButtonATipKey = "";
+            this.unitGripper_Angle.ButtonAVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitGripper_Angle.ButtonBEnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.unitGripper_Angle.ButtonBEnableTrigger.DescriptionKey = "";
+            this.unitGripper_Angle.ButtonBEnableTrigger.MonitorAddress = "";
+            this.unitGripper_Angle.ButtonBEnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitGripper_Angle.ButtonBEnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitGripper_Angle.ButtonBEnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.unitGripper_Angle.ButtonBEnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.unitGripper_Angle.ButtonBEnableTrigger.ValA = 0D;
+            this.unitGripper_Angle.ButtonBEnableTrigger.ValB = 0D;
+            this.unitGripper_Angle.ButtonBTextKey = "▶";
+            this.unitGripper_Angle.ButtonBTipKey = "";
+            this.unitGripper_Angle.ButtonBVisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitGripper_Angle.CommandAAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper_Angle.Lamp1AAddress = "M262";
-            this.unitGripper_Angle.CommandBAddress = "M751";
+            this.unitGripper_Angle.CommandAAddress = "M752";
             this.unitGripper_Angle.CommandBAction = Kaban.Core.Enums.BitActionType.Momentary;
-            this.unitGripper_Angle.Lamp1BAddress = "M263";
+            this.unitGripper_Angle.CommandBAddress = "M751";
+            this.unitGripper_Angle.ConfirmationNeeded = false;
+            this.unitGripper_Angle.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
             this.unitGripper_Angle.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
-            this.unitGripper_Angle.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitGripper_Angle.Lamp1AAddress = "M262";
+            this.unitGripper_Angle.Lamp1ATipKey = "";
+            this.unitGripper_Angle.Lamp1BAddress = "M263";
+            this.unitGripper_Angle.Lamp1BTipKey = "";
+            this.unitGripper_Angle.Lamp2AAddress = "";
+            this.unitGripper_Angle.Lamp2ATipKey = "";
+            this.unitGripper_Angle.Lamp2BAddress = "";
+            this.unitGripper_Angle.Lamp2BTipKey = "";
+            this.unitGripper_Angle.Location = new System.Drawing.Point(14, 454);
+            this.unitGripper_Angle.LogAction = true;
+            this.unitGripper_Angle.Name = "unitGripper_Angle";
+            this.unitGripper_Angle.OutputAAddress = "";
+            this.unitGripper_Angle.OutputBAddress = "";
+            this.unitGripper_Angle.PlcNumber = 1;
+            this.unitGripper_Angle.PositionAddress = "";
+            this.unitGripper_Angle.PositionDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.unitGripper_Angle.PositionDecimalPlaces = 0;
+            this.unitGripper_Angle.PositionDigits = 5;
+            this.unitGripper_Angle.PositionDivisor = 1D;
+            this.unitGripper_Angle.PositionOffset.StaticValue = 0D;
+            this.unitGripper_Angle.PositionOffset.TagAddress = "";
+            this.unitGripper_Angle.PositionOffset.Type = Kaban.Core.Enums.LimitSourceType.None;
+            this.unitGripper_Angle.PositionSuffix = "";
+            this.unitGripper_Angle.PositionTipKey = "Current position";
+            this.unitGripper_Angle.PositionUnitType = Kaban.Core.Enums.UnitType.None;
+            this.unitGripper_Angle.RelayAAddress = "";
+            this.unitGripper_Angle.RelayBAddress = "";
             this.unitGripper_Angle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Operator;
+            this.unitGripper_Angle.Size = new System.Drawing.Size(360, 64);
+            this.unitGripper_Angle.TabIndex = 9;
+            this.unitGripper_Angle.TitleTextKey = "Gripper Angle";
+            this.unitGripper_Angle.TitleTipKey = "";
+            this.unitGripper_Angle.ValveType = Kaban.UI.Controls.CylinderValve.DoubleSolenoid;
+            this.unitGripper_Angle.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
             // ManualRobot
             // 
-            // AutoScaleMode.None on purpose: these pages are hosted INSIDE another
-            // auto-scaling container (the tab host), which would scale them twice.
-            // The layout is in absolute pixels anyway.
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
@@ -1207,9 +1585,10 @@ namespace Kaban.Machines.FA2010.Screens.Manual
             this.Controls.Add(this.lampBar_Last_End_Read_SN);
             this.Controls.Add(this.unitGripper_Angle);
             this.Name = "ManualRobot";
-            this.Size = new System.Drawing.Size(392, 536);
+            this.Size = new System.Drawing.Size(1240, 840);
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

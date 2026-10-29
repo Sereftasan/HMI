@@ -1,30 +1,53 @@
 # Kaban HMI — briefing for a new assistant
 
-Copy this whole file into a fresh chat, attach `HMI_Fixed.zip`, and state what you
-want changed. It exists because the previous session ran out of room; everything an
-assistant needs to work on this program safely is below.
+Give this file to a fresh chat before asking for a change. It exists so that a new assistant can work on this program
+safely without the history of the earlier sessions; everything it needs is below or in the files it names.
+(Brought up to date 30 October 2026; the first version was written on 29 September.)
+
+---
+
+## 0. How the work is done (read first)
+
+- **The project:** `C:\Kaban Files\_Projects\_HMI\HMI` on the builder's PC; solution `KabanHMI\KabanHMI.sln`.
+  `CLAUDE.md` in that folder is the working agreement - read it whole. In short:
+  - A list of requests in one message is planned as numbered items: **one commit per item, a short report per item,
+    the questions at the end.**
+  - **Before a batch**, files in the folder newer than `_history\HMI.bundle` are the builder's own changes: take them in
+    first, never overwrite them.
+  - The history (branch `master`) travels as `_history\HMI.bundle`, written **last** in every batch;
+    `Update_Git_History.cmd` brings it into the folder's own git for Visual Studio.
+  - Requests that arrive while a batch runs go into `REQUESTS.md` ("To do"); done items move to "Done" with their commits.
+  - **Every batch:** run the tests of what changed; `python3 tools/missing_keys.py` (adds the keys the code uses with an
+    English text of its own) and `python3 tools/translation_uses.py` (writes `KabanHMI\TranslationUses.csv`).
+  - **New texts are English and Turkish** (the other languages stay empty - English is shown).
+  - Files: `.cs`, `.csproj`, `.csv` are UTF-8 **with** BOM and CRLF; `.md` and `.html` CRLF without BOM.
+- **The assistant builds and tests on Mono/Linux** (xbuild; the tests under `tools/` are C# programs compiled against the
+  built machine folder and run under a virtual display). What only Windows shows - the real look, MX Component, the panel's
+  touch screen - is the builder's to check: say so instead of claiming it works.
+- **The builder** knows the PLC, the mechanics and the operators far better than an assistant will (section 13).
 
 ---
 
 ## 1. What this is
 
-A Windows HMI for Kaban machine tools (PVC/aluminium profile machining centres).
-**C# / .NET Framework 4.x / WinForms**, built in Visual Studio. It runs on a panel
-PC bolted to the machine and talks to Mitsubishi PLCs through **MX Component**
-(`ActUtlType`, a 32-bit COM library).
+A Windows HMI for Kaban machine tools (PVC / aluminium profile machining centres). **C# / .NET Framework 4.x / WinForms**,
+built in Visual Studio. It runs on a panel PC bolted to the machine (17" / 19" 1920 x 1080 screens) and talks to
+Mitsubishi PLCs through **MX Component** (`ActUtlType`, a 32-bit COM library).
 
-The operator uses it to jog axes by hand, set machine parameters, watch alarms, and
-(on FA2010) turn a DXF profile drawing into a cutting program.
+The operator uses it to run the machine, jog axes and cylinders by hand, set machine parameters, watch alarms (with
+step-by-step help pages for each fault), look at the machine's log on a dashboard, and (on FA2010) keep a library of
+profiles and turn a DXF profile drawing into a machining program.
 
 ### Non-negotiable environment facts
 
 | Fact | Why it matters |
 |---|---|
-| MX Component COM is **32-bit only** | Every machine exe must be x86 / `Prefer32Bit=true`. A 64-bit build gets `0x80040154 REGDB_E_CLASSNOTREG`. There is a build guard (`KabanAssert32Bit`) in each machine csproj — do not remove it. |
+| MX Component COM is **32-bit only** | Every machine exe must be x86 / `Prefer32Bit=true`. A 64-bit build gets `0x80040154 REGDB_E_CLASSNOTREG`. There is a build guard (`KabanAssert32Bit`) in each machine csproj - do not remove it. |
 | A failed `Open()` **poisons** the `ActUtlType` instance | It then returns `0xF0000003` for ever. The driver creates a **fresh control** on every retry (`RecreateControl()`). Do not "optimise" that away. |
 | `0xF0000002` = station not in the MX utility; `0xF0000003` = control unusable | Different problems, different fixes. |
-| PLC round trip ≈ **15 ms** | All reads are batched into ONE `ReadDeviceRandom` call and run on a **worker thread**. Never do PLC I/O on the UI thread. |
-| `Kaban.Core` must not reference **WinForms** | It is the UI-free layer. Adding `using System.Windows.Forms` there breaks the whole solution build (this has happened). |
+| PLC round trip ≈ **15 ms** | All reads are batched (one `ReadDeviceRandom` / block reads) and run on a **worker thread**. Never do PLC I/O on the UI thread. |
+| `Kaban.Core` must not reference **WinForms** | It is the UI-free layer. `using System.Windows.Forms` there breaks the whole solution build. |
+| The projects are **old-style csproj: every file is listed** | A file on disk but not in its project compiles here and fails in Visual Studio. `python3 tools/check_projects.py .` checks it. |
 
 ---
 
@@ -32,456 +55,285 @@ The operator uses it to jog axes by hand, set machine parameters, watch alarms, 
 
 ```
 Kaban.Core                     no UI. Enums, models, helpers, the machine contract.
-  Helpers/  PlcManager, AlarmManager, LanguageManager, SecurityManager,
-            UnitManager, PlcLabelTable, PlcValueConverter, HmiLayout, UserStore
-  Machines/ IMachineModule, MachineRegistry
-KabanHMI  (assembly name Kaban.UI)   all shared UI
-  Controls/  the HMI control family (see §4)
-  Forms/     MainForm (the shell), SimulationMonitorForm, InputForm
-  Screens/   StandardScreens, MachineTabScreen, MachineAlarmScreen
-  Settings/  SettingsScreen + every settings page
-  Dxf/       DxfDocument, DxfViewerControl (the profile workbench)
+  Helpers/  PlcManager, AlarmManager, AlarmDefinitionLoader, AlarmGeneration, LanguageManager,
+            TranslationEdits, SecurityManager, UserStore, UserRights, UnitManager, ViewPreferences,
+            HmiFeatures, PlcLabelTable, StructuredTypes, PlcWriteLog, PlcBackup, SimpleMotion,
+            TroubleshootingCatalog (the step-by-step help), WiringTable, NotesStore, AiChats, SafeFile ...
+  Machines/ IMachineModule, MachineRegistry, ScreenRoles
+KabanHMI  (assembly Kaban.UI)  all shared UI
+  Controls/   the HMI control family (section 4) + UiStyle (the look, tooltips, menus)
+  Forms/      MainForm (the shell, in partial files: SidePanel, Touch, Features, Help, Notes, Coupling,
+              Magnifier, LastPlace ...), SimulationMonitorForm (= the PLC Monitor), NumpadForm, TouchKeyboard,
+              PlcPopupForm, LoginForm
+  Screens/    StandardScreens, MachineTabScreen, MachineAlarmScreen, AxisMonitorPage, IoMonitorPage, NotesPage
+  Settings/   SettingsScreen + every HMI Settings / Machine Parameters page
+  Dashboard/  the machine log: DashboardService, DashboardScreen, LogDatabase, StateMap, MachineLogger
+              (the Industry 4 logger), HmiLogStore, MachineAlarmLog, reports
+  Helpers/    TouchInput, UnitCoupling, UnitCycling, AlarmHelpLinks, AI prompts, NavigationHistory, SidePages ...
+  Help/       the manual (Kaban_HMI_Manual.en.html, .tr.html), drive code pages, cylinder templates (Templates\EN, TR)
+  Dxf/, Profiles/  the DXF workbench and the profile library's UI
+Kaban.Profiles                  the profile library: its data, geometry and machining
 Kaban.Drivers.MitsubishiActUtl  the real PLC driver + Interop.ActUtlTypeLib.dll
-Kaban.Drivers.Simulation        a fake PLC for the bench
-Kaban.Drivers.Siemens           S7-1200/1500 over ISO-on-TCP  (UNTESTED on hardware)
-Kaban.Drivers.Delta             Delta AS/DVP over Modbus TCP  (UNTESTED on hardware)
-Kaban.Machines.FA2010           a machine: screens, Alarms.json, PlcLabels.csv
-Kaban.Machines.SB3012 / SB3015  more machines
-Kaban.Machines.H500 / H800      sub-machines (mountable inside a host machine)
-tools/                          generators (see §8) + FA2010_DeviceList.xls
+Kaban.Drivers.Simulation        a simulated PLC for the bench (it plays the PLC program's movements)
+Kaban.Drivers.Siemens / Delta   S7 over ISO-on-TCP, Delta over Modbus TCP (UNTESTED on hardware)
+Kaban.Machines.FA2010           the main machine: screens, Alarms.json, Translations.csv, PlcLabels.csv, IoList.csv,
+                                Wiring.csv, Popups.json, Dashboard\ (StateMap.json, Translation_JSON.csv), Help\
+Kaban.Machines.H500 / H800      sub-machines (mounted under FA2010)
+Kaban.Machines.MD3020 / SB3012 / SB3015   other machines
+tools/                          generators and tests (section 9, 10)
 ```
 
-Each `Kaban.Machines.*` is its **own exe**. A machine can also **mount**
-sub-machines, which then appear as tabs inside the host's pages.
-
-**A machine's `Program.cs` is the one place a deployment is described** — the
-drivers this exe offers, the machines it mounts, and the fallback connections.
-Comment out a `MountSub` line and that unit's tabs, alarms, translations,
-settings and monitor tab all disappear together. Nothing downstream hardcodes
-any of it, which is what lets any machine be main or sub without editing the
-machine project.
+Each `Kaban.Machines.*` is its **own exe**. A machine can **mount** sub-machines, whose pages then appear per machine.
+**A machine's `Program.cs` is the one place a deployment is described** - the drivers this exe offers, the machines it
+mounts, the fallback connections. Comment out a `MountSub` line and that machine's pages, alarms, translations, settings
+and monitor tabs all disappear together; nothing downstream hardcodes any of it.
 
 ---
 
-## 3. The shell and navigation — read this before adding a page
+## 3. The shell - read this before adding a page
 
-`MainForm` builds the left navigation from `MachineRegistry.NavigationGroups()`.
+The window (`MainForm`): the caption bar at the top (alarms, coupling, connection, user, screen scale, mouse / touch,
+the `?` help, language, close), the **page menu** on the left with the **machine list** under it and Back / Forward at
+its bottom, the page in the middle, the **side bar** at the right edge. The manual (`KabanHMI\Help\Kaban_HMI_Manual.en.html`)
+describes all of it for a user and is the best map of the program.
 
-A screen is a `MachineScreen` with a **`Role`**. Screens sharing a role from
-different machines collapse into ONE navigation button whose **tabs are the
-machines**. That is what keeps the left bar identical on every machine:
-
-```
-Home · Manual Movement · Alarms · Machine Parameters · HMI Settings
-                                                     (+ machine-specific pages)
-```
-
-- `Role = ScreenRoles.Home | Manual | Alarms | MachineParameters` → becomes a
-  shared entry, with a TAB per machine named after the machine.
-- `Role = ScreenRoles.HmiSettings` → emitted by the MAIN machine ONLY, so it is a
-  single button with no tab strip. It is the HMI *program's* settings and one set
-  serves every mounted machine; do not emit it per machine.
-- `Role = ""` → keeps its own button (FA2010's **Profiles** does this).
-- With no sub-machines mounted there is **no tab strip at all** — one tab would be noise.
-
-**Do not hand-write these four screens in a machine project.** Call
-`Kaban.UI.Screens.StandardScreens.Build(ctx, options)` and supply only what is
-genuinely yours:
-
-```csharp
-public IEnumerable<MachineScreen> GetScreens(IMachineMountContext ctx)
-{
-    return StandardScreens.Build(ctx, new StandardScreens.Options
-    {
-        Home        = () => new Screens.HomeScreen(),
-        ManualPages = new ISettingsPage[] { /* your manual tabs */ },
-        MachineSettings = new ISettingsPage[] { /* your parameter tabs */ },
-        Extra       = MachineSpecificScreens(ctx)   // e.g. Profiles, Role = ""
-    });
-}
-```
-
-**HMI Settings** (units, users, logs, station connections, PLC diagnostics, AI
-Prompt, Manual, About) is ONE left-bar button, identical everywhere. **Machine
-Parameters** is a second button whose tabs are the machines.
-
-`SettingsScreen` is the ONE tab implementation in the program. Reuse it; do not
-write another tab control. Tabs are outlined left/top/right and look the SAME at
-every nesting level — active is white and merges into its page. The active tab is
-bold with a BLACK rule drawn under the caption (never a font underline — it
-slices descenders; never blue — see below).
-
-**Blue means one thing: the border of the control the pointer is over**
-(`UiStyle.HoverBorderColor`). Do not use blue for selection, emphasis or accent
-fills — use weight or a neutral tone.
-
-- Pages get it automatically: `UiStyle.ApplyInteractionCues(page)` runs from
-  `MainForm.LoadScreen` and from `SettingsScreen` when a tab page is built. Do not
-  wire hover per control.
-- **Containers never light up.** A `GroupBoxHMI` or a `CylinderUnitHMI` frame is
-  not clickable; outlining it competes with the control inside.
-- A control that paints its own border implements `UiStyle.IDrawsOwnHoverBorder`
-  so the walk does not outline it a second time.
-- **Cursor follows Enabled** — hand while usable, arrow once disabled, so an
-  interlocked button reads as dead before it is clicked. Text boxes keep the
-  I-beam.
+- The menu is built from `MachineRegistry.NavigationGroups()`. A screen is a `MachineScreen` with a **`Role`**
+  (`ScreenRoles`): `Home`, `Manual`, `Alarms`, `Dashboard`, `MachineParameters` - one menu button each, shown for the
+  machine picked in the machine list; `HmiSettings` - emitted by the MAIN machine only (one set serves every machine);
+  `SidePage` - an icon on the side bar, opening BESIDE the page; `AxisBar` - the machine's bar (below); `""` - a button of
+  its own (FA2010's Profiles).
+- **Do not hand-write the standard screens in a machine project.** Call `StandardScreens.Build(ctx, options)` and give only
+  what is yours: `Home`, `ManualPages`, `MachineSettings` (tabs, `GeneratedPage("Tab_<Class>", "Caption", level, () => new ...)`),
+  `ManualBar` (the machine's bar above the Manual Movement tabs) and `Extra`.
+- **A machine's own bar** (`MachineBarHMI`; FA2010's `Screens\Shared\AxisJogBar`: the axes' speed, JOG, steps, Safety
+  Bypass, Cylinder FW/Back) is designed once and shown above Manual Movement's tabs, on the Axis Monitor and on Machine
+  Parameters > Axis. **No page holds a UserControl of the machine's project in its designer file** (23 October: Visual
+  Studio's designer failed on it and saved the page without it); a page has a plain Panel where it goes and its constructor
+  puts the bar there.
+- **HMI Settings** tabs: Users and Preferences, Logs and Reports, PLC Connections, Config Import, AI, Translation,
+  Features (Admin, last). **Machine Parameters** has the machine's own tabs and **Alarms and Logs** (`AlarmSettingsPage`).
+- `SettingsScreen` is the ONE tab implementation; reuse it. Tabs that do not fit wrap onto a second row.
+- **Navigation history** (`NavigationHistory`): Back / Forward return to the page, machine and tab; a link (Find, a note's
+  control) is one step. The program reopens where it was (`LastPage.cfg`), side pages and their windows included.
+- **Side pages** open beside the page (it narrows and scrolls, nothing is covered), can go into a window of their own, and
+  the main pages can be put there too (`SidePages`, `SidePanel.cfg`).
+- **The screen scale** (80 - 150 %, the panel's and a user's own) redraws everything; pages are designed at 100 % with
+  `AutoScaleMode.None` and scroll when they do not fit.
+- **Blue means one thing: the border of the control under the pointer** (`UiStyle.HoverBorderColor`) - not selection, not
+  emphasis. `UiStyle.ApplyInteractionCues(page)` does it for every page; containers never light up; a control drawing its
+  own border implements `UiStyle.IDrawsOwnHoverBorder`. The cursor follows `Enabled` (hand / arrow).
+- **Greyed says why**: a disabled control's tooltip, a greyed menu entry's tooltip, and by touch a tap on it
+  (`UiStyle.IExplainsDisabled`).
+- **Optional parts** (`HmiFeatures`, `Features.cfg`, HMI Settings > Features, both off until switched on):
+  - **Industry 4 logging in the HMI** - the machine loggers and the HMI's log in the machine's database (section 6);
+  - **Touch screen** - `ViewPreferences.TouchMode` is true only while it is on AND "Screen used with" says Touch.
+    `TouchInput` then makes menus, rows, tick boxes, toolbar buttons and tabs a finger's size, turns a held finger into
+    the right-click (never on a jog button), a tap on something greyed into its reason, a drag into scrolling, opens the
+    keyboard on the screen (`TouchKeyboard`) for a text box and the keypad for a number cell. Anything a user must do
+    must be reachable by a tap - never only by a right-click, a double click or a key.
 
 ---
 
 ## 4. The control family (`Kaban.UI.Controls`)
 
-Use these, never stock WinForms controls, on any machine screen.
+Use these, never stock WinForms controls, for anything bound to the PLC. **`docs\AI_Page_Design_Guide.md`** lists every
+control with its properties, defaults, sizes and a real example - it is generated from the program
+(`tools/ai_guide/make_guide.sh <built machine folder>`; its hand-written parts are `tools/ai_guide/guide_template.md`).
+Make it again after a control changes.
 
-| Control | Default size | Purpose |
-|---|---|---|
-| `ButtonHMI` | 170×36 | command button, optional sensor lamps in a side bar |
-| `CylinderUnitHMI` | 360×64 | a movement: two command buttons + lamps + position readout |
-| `NumericInputHMI` | 170×36 (115–150×18–26 on generated pages) | editable value |
-| `NumericDisplayHMI` | 170×36 | read-only value |
-| `LampHMI` | 36×36 | indicator, square, caption on the RIGHT |
-| `CheckBoxHMI` | 36×36 | toggle, caption on the RIGHT |
-| `GroupBoxHMI`, `ComboBoxHMI` | — | containers/selection |
+| Control | Purpose |
+|---|---|
+| `CylinderUnitHMI` | a cylinder: two command buttons (A left, B right), end sensors as lamps, its `?`, alarms, coupling; `ValveType` / `FeedbackType` decide how the HMI watches it |
+| `AxisUnitHMI` | a servo axis on a manual page - everything from its `AxisSettingHMI` row (`AxisNumber`) |
+| `AxisSettingHMI` | one axis as one row of Axis Settings: jog, position, current, limits, reference, calibration, codes, simple motion values |
+| `PneumaticPositioningHMI` | a cylinder driven to a target position, as one row |
+| `CylinderEncoderUnitHMI` / `CylinderEncoderSettingHMI` | a clamp whose position an encoder counts: the unit on a manual page, the row on Machine Parameters > Encoders |
+| `InverterUnitHMI` | a motor on an inverter: run lamp, value, fault code (never shown as a number; its `?` and alarm come from it) |
+| `ButtonHMI`, `LampHMI`, `NumericInputHMI`, `NumericDisplayHMI`, `CheckBoxHMI`, `CheckListHMI`, `ComboBoxHMI`, `LabelHMI`, `GroupBoxHMI`, `MeterHMI`, `MeterInputHMI`, `SpeedOverrideHMI` | the rest |
 
-Shared properties on anything PLC-bound:
+Shared properties on anything PLC-bound: `PlcNumber` (the machine's own PLC number: 1 = its main PLC), the address
+properties, `DataType` (`Bin_16` / `Bin_32`), `Divisor`, `DecimalPlaces`, `Suffix`, `UnitType`, `RequiredSecurity`,
+`LogAction`, `VisibilityConditions` / `EnableConditions` (`SystemCondition` flags and the machine's own registered
+conditions), `EnableTrigger`. Captions are translation keys (`DescriptionText`, `TitleTextKey`, `TranslationKey`), usually
+the English text itself.
 
-- `PlcNumber` — station (1 = the machine's own PLC)
-- `Address`, `DataType` (`DataTypeEnum.Bin_16` / `Bin_32`)
-- `Divisor`, `DecimalPlaces`, `Digits`, `Suffix`, `UnitType`
-- `RequiredSecurity` (`None`/`Operator`/`Maintenance`/`Admin`), `LogAction`
-- `VisibilityConditions`, `EnableConditions`, `EnableTrigger`
-- `DescriptionText` — the caption. **It is also the translation key** and falls back
-  to its own text. There is no separate key property. `" :"` is appended
-  automatically for LEFT-side captions only.
-
-`CylinderUnitHMI` specifics: `CommandAAddress`/`CommandBAddress` with
-`CommandAAction`/`CommandBAction` (`BitActionType.Momentary` | `Alternate`),
-`Lamp1AAddress`/`Lamp1BAddress` for the sensors, `PositionAddress` +
-`PositionDataType` + `PositionDivisor` + `PositionDecimalPlaces` +
-`PositionSuffix`, and `Arrows` (`ButtonArrowStyle.LeftRight` default, `UpDown`, …).
-
-### Scaling — get this right or values are wrong by 10×
-
-Reading is **exactly** `displayed = raw / Divisor`. Decimal places are a *display
-format*, not a second scaling. Writing is the single inverse, `raw = typed ×
-Divisor`. (A bug where the write path applied decimals but not the divisor made
-2500 store as 25 — do not reintroduce it.)
-
-Conventions in the parameter pages:
-
-| Kind of parameter | Divisor | Decimals | Suffix |
-|---|---|---|---|
-| servo / linear position | 10000 | 2 | mm |
-| cylinder / clamp position | 100 | 2 | mm |
-| times | 10 | 1 | sec |
-
-### Fail-closed enabling
-
-A PLC-bound control stays disabled until the scanner gives it fresh data. A control
-with **no** PLC binding is always live (that is why navigation buttons render
-normally). If you add a new binding property, include it in `IsPlcBound`.
+- **A device of the machine's other PLC**: `X12@2` (X12 of PLC 2). Never a dot - `D100.5` is bit 5 of D100.
+- **Scaling** - get this right or values are wrong by 10x: reading is exactly `displayed = raw / Divisor`; decimal places
+  are a display format; writing is the single inverse `raw = typed x Divisor`. (A write path that applied the decimals and
+  not the divisor once stored 2500 as 25.)
+- **Fail closed**: a PLC-bound control stays disabled until the scanner gives it fresh data, and says why. A new binding
+  property belongs in `IsPlcBound`.
+- **A movement's alarm bit** (`ErrorAAddress` ...), its help files and its unit's helpers feed the `?` and the alarm list.
 
 ---
 
 ## 5. PLC access
 
-The **simulation monitor** (admin → user menu → Simulation Monitor, or F12) shows
-`Label / DataType / Address / Value` with **one tab per CONTROLLER** — "FA2010
-PLC1", "H500 PLC1" — built from the mounted modules, not from station numbers. A
-row whose label reads `NULL` is an address bound by a screen but absent from the
-device list — a useful smell. All four columns are editable (in the grid, or via
-the popup on double-click); the trailing blank line adds a device; two buttons
-export/import the tab as CSV. Rows can be removed from the view (Del or the
-context menu; it hides the row, it does not clear the PLC image) and dragged into
-any order. Order, labels and hidden rows persist under
-`CommonAppData\KabanHMI\Monitor\`.
-
-**Values write straight through**, on a real CPU as on the simulator — the page is
-admin-only. Real stations are read on a WORKER THREAD via `TryReadMulti`; never
-put PLC I/O on the monitor's 250ms timer.
-
-### Which controller is which — read before touching stations
-
-Two numbers, and confusing them costs an afternoon:
-
-| | |
-|---|---|
-| **StationId** | the HMI's handle. A control's `PlcNumber`; the key in `PlcManager`. |
-| **LocalNumber** | the module's OWN PLC number — the "1" the engineer says. H500's PLC1 sits on station 3. |
-| **LogicalStation** | MX Component's Communication Setting Utility number, for `ActLogicalStationNumber`. |
-
-`PlcConnectionSettings.Endpoints()` is the controller list (main machine first)
-and drives BOTH the monitor's tabs and Settings → HMI Settings → **Station
-Connection**, where the driver and station number/address per controller are set.
-Everything is keyed `ModuleId|LocalPlcNumber`, never by station id — the station
-id is the thing that page is allowed to change.
-
-`PlcDriverCatalog` is what fills the driver combo box. Kinds are registered
-EXPLICITLY in the machine's `Program.cs`, not reflected: Core and UI must not
-reference a driver assembly.
-
-- `PlcManager.Instance.GetDriver(station)` for writes (security-checked),
-  `GetDriverForMonitoring(station)` for reads (works when nobody is signed in).
-- `PlcScanner` (in `KabanHMI/Plc/`) collects the addresses of the **visible**
-  controls, per station, and reads them in one batch on a worker thread. Results
-  are applied on the UI thread.
-- **A screen that swaps content in place (a tab change) must call
-  `PlcScanner.NotifyContentChanged()`**, or the new controls are not in the scan
-  batch and will never update. This bit us once already.
-
-### The PLC label list
-
-`Kaban.Machines.<M>/PlcLabels.csv` — the engineer's device list:
-
-```
-Label;DataType;Address
-MAN_GirisRobotuX_Ileri;Bit;M604
-IN_AcilStop;Bit;M200
-```
-
-**Every address in this file is one the HMI can bind to directly.** There is no
-"mirror" concept in the running program, and you should not introduce one.
-
-The reason it matters: the PLC copies its physical I/O into internal relays in an
-ST interface block, so the machine can be re-wired without touching a screen —
-
-```
-K2M200:=K2X20;  K2M208:=K2X30;  ...  K2M510:=K2Y200;
-```
-
-`K2` = 8 bits; X/Y are **octal**, M is decimal. So the engineer's list may say a
-sensor is at `X20`, but the HMI must read `M200`.
-
-That substitution is done **once, while the CSV is built** —
-`tools/build_plc_labels.py` — not at runtime. A physical point that the ST block
-does *not* copy is **left out** of the CSV entirely, because binding a control to
-`X…` would fail silently on the machine. So when you set a `Lamp1AAddress` or an
-`OutputAddress`, take it from `PlcLabels.csv` and use it as-is.
-
-`PlcLabelTable` (Kaban.Core) loads the file and gives you `ResolveAddress(label)`,
-`LabelOf(address)` and the data type — used by the simulator monitor, tooltips and
-the AI prompt page.
-
-> Known issue in the FA2010 ST block: `K2M248:=K2X100` covers M248–M255, but the
-> next line `K2M252:=K2X110` starts four bits too low, so **X104–X107**
-> (`IN_Freze1Y_RefSN`, `IN_Freze1Z_RefSN`, `IN_Freze1A_RefSN`, `IN_Freze2X_RefSN`)
-> are overwritten and cannot be read from the HMI. The fix belongs in the PLC:
-> `K2M256:=K2X110`. `X1130/X1132/X1133` are not copied at all.
+- `PlcManager.Instance.GetDriver(station)` for writes (security-checked), `GetDriverForMonitoring(station)` for reads.
+  Every write goes through the **PLC write log** (`PlcWriteLog`, `PlcWrites_yyyy-MM-dd.csv`, device by device, with the
+  page and control that wrote it - `WriteSource`). Handshakes of the machine logger are deliberately not in it.
+- `PlcScanner` (`KabanHMI\Plc`) collects the addresses of the **visible** controls per station and reads them in one batch
+  on a worker thread; results are applied on the UI thread. **A screen that swaps content in place (a tab change) must call
+  `PlcScanner.NotifyContentChanged()`**, or the new controls never update.
+- Reconnection backs off (0.5, 1, 2, 4, then every 5 s); a controller counts as connected only while reads succeed.
+- **Stations**: `StationId` is the HMI's handle (a control's `PlcNumber` mapped per machine), the module's **LocalNumber**
+  is its own PLC number (H500's PLC 1 sits on station 3), **LogicalStation** is MX Component's number. Everything is keyed
+  `ModuleId|LocalPlcNumber`. `PlcConnectionSettings.Endpoints()` is the controller list (HMI Settings > PLC Connections,
+  with each controller's **Active** tick). Driver kinds are registered explicitly in the machine's `Program.cs`.
+- **The PLC Monitor** (`SimulationMonitorForm`, Admin, a side page, `F12`): any device of any controller, read and
+  written; a tab per controller with the user's own tabs, arrays, structured data types (`StructuredTypes.csv`), table
+  views, Find (where a device or label is used), Undo, writes from a backup. Its lists are kept in
+  `ProgramData\KabanHMI\Monitor\`.
+- **The PLC label list** `PlcLabels.csv` (`Label;DataType;Address`) names the devices; **every address in it is one the HMI
+  can bind to directly** - the PLC copies its physical I/O into internal relays (`K2M200:=K2X20` ...; X/Y octal, M
+  decimal), so a sensor at `X20` is read at `M200`. The substitution is done once when the files are built
+  (`tools/build_plc_labels.py`, the `Read` column of `IoList.csv`), never at run time.
+  > Known issue in the FA2010 ST block: `K2M252:=K2X110` starts four bits too low, so X104 - X107 are overwritten; the fix
+  > belongs in the PLC (`K2M256:=K2X110`). `X1130/X1132/X1133` are not copied at all.
+- **PLC data backups** (`PlcBackup`, `.plcbak` in `ProgramData\KabanHMI\PlcBackups`): every device of the CPU and the
+  simple motion modules' flash ROM data and cams; writing one back reads a fresh backup first on a real PLC and never
+  writes inputs, outputs or system devices.
+- **Messages from the PLC** (`PlcPopups`, the machine's `Popups.json`; FA2010: D71 trigger, D72 answer).
 
 ---
 
-## 6. Alarms
+## 6. Alarms and the machine's log
 
-- `Alarms.json` per machine, generated from the customer's workbook. Entries carry
-  `PlcAddress`, `TagCode`, `Severity`, `PlcNumber`, and translations.
-- **M800** is the machine-error *summary* bit, **not an alarm** — it drives the
-  pulsing Alarms button and the caption reset button, and must not appear in the
-  list. Alarms start at M801.
-- **M102** is the momentary alarm reset on FA2010; each machine has its own.
-- `MachineAlarmScreen` is used by every machine: Active / History tabs, sortable
-  columns (multi-level: newest click leads, earlier sorts survive, only the leading
-  column shows ▲/▼), per-machine reset, saved column widths.
-- Severity and a per-alarm **helper link** live in `AlarmSettings.cfg` (Settings →
-  Machine Parameters → machine → Alarm Settings) — deliberately *not* in
-  `Alarms.json`, so regenerating from the workbook never discards site tuning.
-
----
-
-## 7. Translations, units, security
-
-- `KabanHMI/CommonTranslations.csv` (shared) and
-  `Kaban.Machines.<M>/Translations.csv` (per machine), both
-  `Key;EN;TR;RU;DE;IT;ES`, UTF-8 **with BOM**, CRLF.
-- A blank cell falls back to **English**, so adding a language can never blank a
-  screen. Machine translations override common ones.
-- Tab captions use `Tab_<PageClassName>`.
-- **Do not write these files with shell `printf`** — it emitted literal `\xc4\xb1`
-  into the Turkish text once. Use Python with an explicit encoding.
-- Units: values are **stored in reference units** (mm, s, °C) and only *displayed*
-  in the operator's choice, so switching units never alters a machine setting.
-  `UnitManager.ToDisplay` / `ToReference`. `EnsureDefaults()` runs at startup so no
-  family is ever unset (an unnamed unit produced blank screens).
-- Security: `SecurityManager.HasAccess(level)`. Users are PBKDF2-hashed in
-  `CommonAppData\KabanHMI\Users.dat` — hash and salt only, never plaintext.
-  `AuditLogger` writes daily files under `CommonAppData\KabanHMI\AuditLogs`.
+- **`Alarms.json`** per machine: each alarm's device, `TagCode`, code, severity, `PlcNumber`, helper links and `"Log"` -
+  where the PLC's log records it (state code, value, bit). **Its texts are rows of the machine's `Translations.csv`**,
+  `Alarm_<ModuleId>.<TagCode>` (30 October, `tools/alarm_texts_to_translations.py`; FA2010's Turkish is the Industry 4
+  program's operator words). An older `Alarms.json` with texts still loads; the translation file wins.
+- **M800** is FA2010's machine-error *summary* bit, not an alarm - it drives the pulsing Alarms button. Each machine sets
+  its own **reset device** (FA2010: `M102`, SET - the PLC switches it off).
+- `MachineAlarmScreen`: Active and History. **History is read from the machine's log database** when it keeps one
+  (`MachineAlarmLog`: the PLC's error records with the bits that were on, as the HMI's alarms), with the alarms the HMI
+  raised itself; otherwise the HMI's own history since it started.
+- **Alarms the HMI raises itself** (`AlarmGeneration`, per machine, `AlarmGeneration.cfg`): cylinder movements not
+  confirmed within their delay (codes `M840.1` ... `.6`, the failed signal), axis drive codes, inverter faults; the HMI
+  SETs the device's error bit so the PLC knows.
+- **Help for an alarm** (`AlarmHelpLinks`, `TroubleshootingCatalog`): the files added first, then the HMI's step-by-step
+  page for that fault (built from `Help\Templates\<lang>` and the machine's `Wiring.csv`), the drive / inverter code
+  entries, the manuals, then **Create AI prompt** / **Ask <AI>** (`AlarmAiPrompt`).
+- **The machine's log** (the "Industry 4" log: `main_log` / `log_details`, SQLite) is read by the **Dashboard**
+  (`DashboardService`, settings per machine in `ProgramData\KabanHMI\Dashboard\<machine>.json`, its state map and texts in
+  the machine's `Dashboard\StateMap.json` / `Translation_JSON.csv`) and its reports. It is written either by the old
+  **Industry 4 Windows service** or - with HMI Settings > Features > Industry 4 logging on - by the HMI:
+  `MachineLogger` (one per machine, the service's protocol record for record at the machine's **PLC log area**, FA2010
+  `R27000`, set per machine on Machine Parameters > Alarms and Logs; it waits while the service runs on the PC) and
+  `HmiLogStore` (the HMI's own log in the same database, codes 1000 - 1006, left out of the dashboard and the reports).
+- The **audit log** (`AuditLogger`, `HmiAudit_yyyy-MM-dd.txt`) records every change with the user.
 
 ---
 
-## 8. The DXF profile workbench (FA2010 Profiles page)
+## 7. Translations, units, users
 
-`DxfDocument` + `DxfViewerControl`. Floating panes (table / details / drawing /
-G-code) that the operator arranges and which persist.
+- `KabanHMI\CommonTranslations.csv` (shared) and `Kaban.Machines.<M>\Translations.csv` (per machine, its pages' and its
+  alarms' texts), `Key;EN;TR;RU;DE;IT;ES`, never a `;` inside a text. A blank cell shows English; a machine's file
+  overrides the common one. **HMI Settings > Translation** edits them on the panel (`TranslationEdits` writes each key back
+  into the file it came from), with history, undo, import, the AI prompts and "Where is it used?" (`TextUses`, from the
+  source or `TranslationUses.csv`).
+- Code texts: `LanguageManager.GetString("Key", "English text")` - the English is the fallback and `missing_keys.py` adds
+  the row. Tab captions are `Tab_<PageClassName>`.
+- **Do not write these files with shell `printf`** (it once put literal `\xc4\xb1` into Turkish); use Python with an
+  explicit encoding, and keep the BOM.
+- Units: values are **stored in the machine's units** and only shown in the user's (`UnitManager.ToDisplay` /
+  `ToReference`).
+- Users (`UserStore`, PBKDF2 hashes in `Users.dat`), levels None / Operator / Maintenance / Admin (`SecurityManager`,
+  `UserRights`: who may change which account). **View preferences** (`ViewPreferences`, `View.cfg`): everyone's and each
+  user's own - language, captions, numbers, dates, units, tables, tooltips, sounds, the AI prompt, Screen used with.
+- **The manual** is HTML per language in `KabanHMI\Help` (English and Turkish), with each machine's own chapter in its
+  project (`Help\Manual_<ModuleId>.<lang>.html`); `HmiManual.ComposeManual` fills in the machines this program runs.
+  Keep the two languages' sections (ids) the same - `ui_test/AboutManual` checks it.
 
-Per-element metadata (`ElementMeta`) drives the cut:
+---
 
-- `Added` — drawn by the operator, not in the source file (bright cyan)
-- `Deleted` — soft-deleted: still drawn, dimmed, out of the cut
-- `Included` — false = "do not cut" (dashed amber)
-- `Depth` / `DepthEnd` — cut depth, different values taper along the element
-- `StartOffset` / `EndOffset` — begin earlier/later, overrun or stop short
+## 8. The DXF profile workbench and the profile library (FA2010 Profiles page)
 
-Facts that are easy to get wrong:
+Floating panes (`FloatingPaneHMI`: profiles, drawing, details, accessories, programs) the operator arranges, named
+layouts. The library (`Kaban.Profiles`): vendor > series > variant > group > profile; reference points found on the
+drawing and confirmed by a person; accessories placed per group; programs made only from confirmed placements.
+Facts that are easy to get wrong in the drawing code:
 
-- **Depth is RADIAL** — how far the cut reaches *into* the profile. The contour is
-  offset inward by it and `G41` applies the tool radius, so the cutter's outer edge
-  lands exactly that far inside the border. All figures on the page are **mm**.
-- The program is walked **element by element**: enter at the start, cut to the
-  **end**, then travel to the next element's start.
-- Offsetting uses **miter joins**. Averaging edge normals falls short by
-  cos(half-angle) — a 90° corner only reached 0.71 of the requested depth.
-- Chaining tolerance is **0.2** mm. At 0.05 a hand-drawn bridging line silently
-  failed to join and the route ignored it.
-- An **explicit border** (set from a selection) remembers its *elements*, so a
-  later "do not cut" rebuilds it. Storing only the point list made exclusions
-  silently ineffective.
-- Selection tools: click, Ctrl-click, rubber band (left = window, right =
-  crossing), **select connected run**, **select between two elements**, split an
-  element at a clicked point, ESC clears. A drag must suppress the `Click` that
-  WinForms raises afterwards, or the selection is wiped.
+- **Depth is RADIAL** - how far the cut reaches into the profile; the contour is offset inward by it and `G41` applies the
+  tool radius. All figures are mm.
+- Offsetting uses **miter joins** (averaged normals fall short by cos(half-angle)). Chaining tolerance is **0.2 mm**.
+- An explicit border remembers its *elements*, so a later "do not cut" rebuilds it.
+- A drag must suppress the `Click` WinForms raises afterwards, or the selection is wiped.
 
 ---
 
 ## 9. Generators (`tools/`)
 
-Screens for FA2010 are **generated from the engineering workbook**, not hand-typed
-— 122 movement rows and 78 parameters by hand is where address slips hide.
-
-```
-tools/generate_pages.py <FA2010_DeviceList.xls> Kaban.Machines.FA2010
-tools/build_plc_labels.py <label list> Kaban.Machines.FA2010
-tools/io_mirror_map.py            # X/Y -> M from the ST block
-```
-
-`generate_pages.py` emits **real designer files** — `Foo.cs` (constructor) +
-`Foo.Designer.cs` (fields + `InitializeComponent`) — registered with
-`SubType`/`DependentUpon`, so they open on the Visual Studio design surface.
-**Re-running overwrites them**: change the workbook, or drop a page from the
-generator to keep it by hand.
-
-Designer rules the WinForms designer enforces, which a generated file must obey:
-
-1. a **private field** per control;
-2. every control created in `InitializeComponent` and added via
-   `this.Controls.Add(this.<field>)`;
-3. `this.AutoScaleMode = AutoScaleMode.None` — these pages are hosted inside
-   another auto-scaling container, and `Font` scaling **doubles up** (this made
-   every generated control ~1.5× too big);
-4. **nothing from another project in the `.resx`** — a resx naming
-   `Kaban.Core.Models.DynamicValue` fails to compile whenever Kaban.Core has not
-   built yet. `DynamicValueConverter` supports `InstanceDescriptor` so the designer
-   emits a constructor call instead.
-
-Layout convention: fill the **left column top to bottom, then continue at the top
-of the next column**. Units 360×64 / 10px apart; inputs 5 digits wide, 22px apart;
-columns 150px apart; captions 330px; margins 16px. Rows per column come from
-`HmiLayout.PageHeight` (detected from the screen, overridable in HMI Settings).
+- **FA2010's pages are generated from the old program's** - `tools/legacy_fa2010_pages.py` (it keeps what was set by
+  hand); H500's by `legacy_h500_pages.py`. Generated pages are **real designer files** (`Foo.cs` + `Foo.Designer.cs`,
+  `SubType` / `DependentUpon`) and must stay designer-loadable: a private field per control, everything created in
+  `InitializeComponent`, `AutoScaleMode.None` (the screen scale scales once), **nothing of another project in a `.resx`**.
+- `build_wiring.py` -> `Wiring.csv` (where each point is on the drawings), `build_io_list.py` -> `IoList.csv`,
+  `build_plc_labels.py`, `build_code_help.py` (drive code pages), `build_inverter_help.py`, `build_cylinder_templates.py`
+  (the step-by-step templates from `tools/cylinder_templates`), `build_emoji_art.py` (the emoji pictures),
+  `alarm_texts_to_translations.py`, `missing_keys.py`, `translation_uses.py`, `ai_guide/make_guide.sh`.
 
 ---
 
-## 10. Verification — run these after ANY change
+## 10. Verification
 
-The previous session kept a battery of self-checking programs. They exist because
-each one caught a real bug.
+- **Tests** are C# programs under `tools/ui_test` (one page or helper each, ~120), `tools/nav_test` (the whole window:
+  navigation, side pages, touch mode, features), `tools/core_test`, `tools/lang_test` and `tools/protocol_tests`
+  (Delta and Siemens drivers against mocks). Each prints PASS / FAIL lines and exits non-zero on a failure. Run the ones
+  of what changed; each exists because it caught a real bug.
+- `python3 tools/check_projects.py .` - every file in its project, XML in the right place.
+- `python3 tools/verify_plc_setup.py` - project wiring, stations, translation rows.
 
-```
-python3 tools/../verify_projects.py    # csproj XML, references, 32-bit guard
-verify_winforms.py                     # no adds into read-only control collections
-verify_designer.py                     # generated pages stay designer-loadable
-verify_alarms.py                       # alarm data vs the customer workbook
-python3 tools/verify_plc_setup.py      # project wiring, stations, translations
-python3 tools/protocol_tests/run_delta.py   # Delta driver vs a Modbus mock
-sudo python3 tools/protocol_tests/run_s7.py # Siemens driver vs an S7 mock (port 102)
-```
+Lessons worth knowing before "fixing" something:
 
-`verify_plc_setup.py` caught two real bugs the day it was written: three projects
-sharing one `ProjectGuid`, and translation rows containing the `;` separator.
-
-Lessons those checks encode — worth knowing before you "fix" something:
-
-- `ToolStrip.Controls` is **read-only on .NET Framework** but not on Mono. Adding
-  to it compiles, runs on Mono, and throws `NotSupportedException` on Windows.
-- `Control.Visible` is **false whenever any ancestor is hidden**. Deriving state
-  from it (e.g. "is this pane minimised?") corrupts saved layouts. Use an explicit
-  field.
-- A `ComboBox` bound with `DataSource` has its `SelectedIndex` **reset when it is
-  added** to a parent (the CurrencyManager). Populate `Items` and select *after*
-  adding.
-- Re-measuring a label inside its own `SizeChanged` handler recurses until the
-  stack overflows. Guard re-entrancy.
-- An `AutoScroll` panel **moves its children's `Location`**. Anything that
-  positions a control relative to another must measure against
-  `AutoScrollPosition`, and restore `AutoSize` when there is room again.
+- `ToolStrip.Controls` is **read-only on .NET Framework** but not on Mono - it compiles, runs on Mono, throws on Windows.
+- `Control.Visible` is **false whenever an ancestor is hidden** - never derive saved state from it.
+- A `ComboBox` bound with `DataSource` resets `SelectedIndex` when added to a parent: fill `Items`, select after adding.
+- Re-measuring a label inside its own `SizeChanged` recurses until the stack overflows. Guard re-entrancy.
+- An `AutoScroll` panel moves its children's `Location`: measure against `AutoScrollPosition`.
+- A method named `Paint` on a Control hides the `Paint` event (it happened in October).
+- "Could not find type" / "Method not found" in Visual Studio's designer: Rebuild, restart Visual Studio, clear `bin`,
+  `obj` and `ProjectAssemblies`; never "Ignore and Continue" (the designer saves the page without what it could not load).
 
 ---
 
 ## 11. Style expected of the code
 
-- Comments explain **why**, not what — especially where a non-obvious constraint
-  drove the choice (COM bitness, WinForms quirks, the mirror indirection).
-- **No `// FIX:` or `// NEW:` markers.** They date a comment to a release nobody
-  remembers and narrate an edit rather than stating a constraint. If the sentence
-  carries a real reason, write it in the present tense; if it only says "we
-  changed this", it belongs in `CHANGES.md`, not in the code.
-- A comment that names a DRIVER or a station number for a particular controller is
-  almost always wrong now: both are settings (HMI Settings → Station Connection).
+- Comments explain **why** - the constraint, the request it came from (dated: "30 October: ...") - not what.
+- **No `// FIX:` or `// NEW:` markers.** State a reason in the present tense; history belongs in the commit message.
+- A comment naming a driver or a station number for a particular controller is almost always wrong: both are settings.
 - Never silently swallow a PLC error; log through `AuditLogger`.
-- Fail closed: if data is stale or permission is missing, disable and say why in
-  the tooltip.
-- Tooltip layout is a contract: label (only when the screen does not show it),
-  operator help, blank line, `----- For Admin -----`, then the wiring as
-  `Property:<tab>Value` lines.
-- New feature → add or extend one of the checking programs in §10.
+- Fail closed: stale data or missing permission disables, and the tooltip says why.
+- Tooltip layout is a contract: the label (only when the screen does not show it), operator help, a blank line,
+  `----- For Admin -----`, then the wiring as `Property:<tab>Value` lines.
+- Settings files are written through `SafeFile` (complete first, then swapped in).
+- A new feature comes with a test (section 10).
 
 ---
 
 ## 12. What is still open
 
-- Fill `RU/DE/IT/ES` for the UI screens. Alarm texts are translated; screen keys
-  are mostly EN/TR with the rest falling back to English.
-- **Regenerate FA2010's pages from the current device list.** The `.xls` in
-  `tools/` is out of date, and only a short sample list is committed. Save the real
-  list as `Label<TAB>DataType<TAB>Address`, then:
-  `python3 tools/build_plc_labels.py <list> Kaban.Machines.FA2010`
-  followed by `python3 tools/generate_pages.py tools/FA2010_DeviceList.xls
-  Kaban.Machines.FA2010`. The generator resolves every command, lamp and position
-  address through `PlcLabels.csv`, so the pages pick up the current devices and any
-  X/Y become the right internal relay. It prints anything it could not resolve
-  rather than binding to a dead address.
-- Fix the ST mirror overlap in the PLC (§5) and re-run the label build.
-- The manual (HMI Settings → Manual) is plain text; a PDF with screenshots was
-  requested.
-- The FA2010 **Profiles** page is wanted on other machines with small differences
-  — it currently lives in `Kaban.Machines.FA2010`. Moving `ProfilesScreen` and the
-  DXF workbench into `Kaban.UI` with the machine-specific parts (columns, G-code
-  post-processing) behind an options object is the clean route, and has not been
-  done yet.
-- Page back/forward navigation does not always land on the right page.
-- **The Siemens and Delta drivers have never run against real hardware.** They
-  pass mock-server protocol tests, which proves the framing and not the CPU. On an
-  S7: clear "Optimized block access" on any DB you read and permit PUT/GET under
-  Protection — both block an otherwise correct connection. On a Delta: the
-  device→Modbus address bases in `DeltaAddress.Map` are the first thing to check
-  if a value reads back wrong.
-- Idle auto-logout on the panel was intended and never built. `MainForm` used to
-  carry `_idleLogoutTimer`, `_lastActivity` and a 10-minute constant with no timer
-  wiring at all, so it never logged anyone out; the dead fields were removed and
-  the intent recorded here.
-- `Examples/GirisKonvExample.cs` is compiled by nothing and kept on purpose: it
-  encodes the real X/Y octal and M decimal address stepping for Sikma 1..7.
+- `RU/DE/IT/ES` for the screens (alarm texts have them); new texts are EN / TR only for now.
+- The touch screen on the real panel: the builder tests it (switch it on first: HMI Settings > Features).
+- The FA2010 ST mirror overlap (section 5), in the PLC.
+- The Siemens and Delta drivers have never run against real hardware (mock-server tests only). On an S7: clear
+  "Optimized block access" on the DBs read and permit PUT/GET; on a Delta, `DeltaAddress.Map` is the first suspect.
+- The FA2010 jog bar's own buttons (`Btn_SafetyBypass`, `Btn_CylinderFwBack`) have no rows in the translation files yet.
+- The questions at the end of `CLAUDE.md` ("Open questions") wait for the builder's answers.
+- Idle auto-logout was intended once and never built.
+- `Examples/GirisKonvExample.cs` is compiled by nothing and kept on purpose (the X/Y octal and M decimal stepping).
 
 ---
 
 ## 13. How to work with the person
 
-They are the machine builder: they know the PLC, the mechanics and the operators
-far better than any assistant will. They report symptoms precisely and expect the
-**cause** to be found rather than the symptom patched. Several times the reported
-"still broken" was correct and the earlier diagnosis was wrong.
+They are the machine builder: they know the PLC, the mechanics and the operators far better than any assistant will. They
+report symptoms precisely and expect the **cause** to be found rather than the symptom patched; several times the
+reported "still broken" was right and the earlier diagnosis wrong.
 
-- Investigate before editing. Measure (render to a bitmap, dump the route, print
-  the config) rather than re-reading code and guessing.
-- If a fix cannot be verified, say so plainly.
-- Tell them when the real defect is in *their* data or PLC (it has happened: the
-  ST overlap, an out-of-date workbook, all-minimised layout files).
-- Keep `CHANGES.md` appended, and repackage the zip after each round — the working
-  container has been reset mid-session before.
-
+- Investigate before editing. Measure (render to a bitmap, dump the values, print the config) rather than re-read code
+  and guess.
+- If a fix cannot be verified here (Windows' look, MX Component, the touch screen), say so plainly.
+- Tell them when the real defect is in *their* data or PLC (it has happened: the ST overlap, an out-of-date workbook).
+- Ask when a decision is theirs (a new screen or a UI change they are not sure of: a mock-up first); otherwise take the
+  conventional choice, say so, and carry on.

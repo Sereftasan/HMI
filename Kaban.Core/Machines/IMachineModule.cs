@@ -117,10 +117,11 @@ namespace Kaban.Core.Machines
 
         /// <summary>
         /// THE MACHINE'S AXES' MANUAL MOVEMENT BAR (14 October): the speed and the jog
-        /// step - designed once (a MachineBarHMI of the machine's own). A page shows it
-        /// by holding it, as any control (FA2010's manual pages with axes, its Axis
-        /// Settings); declared here, the Axis Monitor - made by the program - shows it
-        /// too. Not in the menu.
+        /// step - designed once (a MachineBarHMI of the machine's own). The program shows
+        /// it above the Manual Movement tabs (StandardScreens Options.ManualBar); a page
+        /// shows it from its constructor, in the place of a plain panel of its designer
+        /// file (FA2010's Axis Settings - never held in a designer file, 23 October);
+        /// declared here, the Axis Monitor - made by the program - shows it too. Not in the menu.
         /// </summary>
         public const string AxisBar = "AxisBar";
     }
