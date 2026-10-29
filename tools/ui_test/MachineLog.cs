@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -242,26 +242,46 @@ class ML {
         Check("switched off in the settings: says so", logger.Status.StartsWith("Switched off"), logger.Status);
         logger.Stop();
 
-        Console.WriteLine("--- its settings on Logs and Reports ---");
+        // 30 October: "we should create a setting inside 'Machine Parameters' for each machine as well btw (visible
+        // when HMI industry 4 logging activated). We can change the alarms setting page name to 'Alarms and Logs' and
+        // put the setting on the page"
+        Console.WriteLine("--- its settings on Machine Parameters > Alarms and Logs ---");
+        HmiFeatures.SettingsPath = Path.Combine(dir, "Features.cfg");
+        HmiFeatures.Reload();
         board.Change(c => { c.PlcLogging = true; c.PlcLogArea = ""; });
-        var page = new DashboardSettingsControl(board);
-        var form = new Form { Width = 1000, Height = 800 };
+        var page = new MachineLogSettings("FA2010");
+        var form = new Form { Width = 1200, Height = 800 };
         form.Controls.Add(page);
         form.Show();
         Pump(200);
-        var boxes = All(page).OfType<CheckBox>().ToList();
-        var area = All(page).OfType<TextBox>().First(b => b.Text == "R27000");
-        Check("the switch ticked, the area the machine's own (R27000)", boxes.Any(b => b.Text.StartsWith("The HMI takes the machine's states") && b.Checked) && area != null);
+        Check("hidden while the HMI does not log (HMI Settings > Features off)", !page.Visible);
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, true);
+        Pump(100);
+        Check("  shown once it does", page.Visible);
+        var on = All(page).OfType<CheckBox>().First(b => b.Name == "plcLogging");
+        var area = All(page).OfType<TextBox>().First(b => b.Name == "logArea");
+        Check("the switch ticked, the area the machine's own (R27000)", on.Checked && area.Text == "R27000", area.Text);
+        int edits = 0;
+        page.Edited += (s, e) => edits++;
         SecurityManager.Login("setter", SecurityLevel.Maintenance);
         area.Text = "D7000";
-        var cfg = page.Collect();
-        Check("another area kept (D7000); a bit device refused", cfg != null && cfg.PlcLogArea == "D7000");
+        string problem;
+        Check("another area kept (D7000) - the page told of the edit", edits > 0 && page.Save(out problem) && board.Config.PlcLogArea == "D7000" &&
+              MachineLogger.Area(board.Config, board) == "D7000");
         area.Text = "M100";
-        Check("  M100: refused, said", page.Collect() == null && page.ProblemText.Contains("word device"), page.ProblemText);
+        Check("  M100: refused, said, nothing written", !page.Save(out problem) && problem.Contains("word device") && board.Config.PlcLogArea == "D7000", problem);
         area.Text = "R27000";
-        cfg = page.Collect();
-        Check("  the machine's own again: kept as \"\" (follows the machine)", cfg != null && cfg.PlcLogArea == "");
+        Check("  the machine's own again: kept as \"\" (follows the machine)", page.Save(out problem) && board.Config.PlcLogArea == "");
+        on.Checked = false;
+        page.Save(out problem);
+        Check("  the machine not logged: kept", !board.Config.PlcLogging);
+        board.Change(c => c.PlcLogging = true);
+        page.Fill();
+        Check("  filled again from the settings (the page's revert)", on.Checked);
         form.Close();
+        var none = new MachineLogSettings("H500");
+        Check("a machine with no log database: says so", none.Machine == null && All(none).OfType<Label>().Any(l => l.Name == "noLogDatabase" && l.Text.Contains("no log database")));
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, false);
 
         Console.WriteLine(fail == 0 ? "MACHINE LOG ALL PASS" : "MACHINE LOG " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

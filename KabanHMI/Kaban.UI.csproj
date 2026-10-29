@@ -318,6 +318,7 @@
     <Compile Include="Dashboard\LogDatabase.cs" />
     <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\MachineLogger.cs" />
+    <Compile Include="Dashboard\MachineLogSettings.cs" />
     <Compile Include="Dashboard\DashboardSettingsPage.cs">
       <SubType>UserControl</SubType>
     </Compile>

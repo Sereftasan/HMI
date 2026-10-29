@@ -217,13 +217,25 @@ namespace Kaban.UI.Settings
             _status.Padding = new Padding(8, 4, 0, 0);
             _status.Font = Kaban.UI.Controls.UiStyle.Small;
 
+            // ---- the machine's log from its PLC (30 October: "visible when HMI industry 4 logging
+            // activated ... change the alarms setting page name to 'Alarms and Logs' and put the setting
+            // on the page"): under the alarms the HMI raises, while HMI Settings > Features has it on
+            _log = new Kaban.UI.Dashboard.MachineLogSettings(string.IsNullOrEmpty(moduleId) ? AlarmGeneration.ModuleOfStation(1) : moduleId);
+            _log.Edited += (s, e) => _dirty.MarkDirty();
+
             Controls.Add(_grid);
             Controls.Add(_status);
+            Controls.Add(_log);
             Controls.Add(_genPanel);
             Controls.Add(bar);
 
             LoadRows();
         }
+
+        private readonly Kaban.UI.Dashboard.MachineLogSettings _log;
+
+        /// <summary>The machine's log settings on the page (tests).</summary>
+        public Kaban.UI.Dashboard.MachineLogSettings MachineLog { get { return _log; } }
 
 
         private readonly FlowLayoutPanel _genPanel;
@@ -293,6 +305,7 @@ namespace Kaban.UI.Settings
             _genAxes.Checked = gen.AxisAlarms;
             _genDelay.Value = (decimal)Math.Max(AlarmGeneration.MinimumDelaySeconds, Math.Min(600, gen.DelaySeconds));
             ShowGeneration();
+            if (_log != null) _log.Fill();
             // What discovery found, so a unit whose error bits were set in the designer
             // can be checked without raising an alarm.
             _status.Text = _grid.Rows.Count + " alarms. " + Kaban.UI.Helpers.AlarmHelpLinks.Count +
@@ -314,6 +327,13 @@ namespace Kaban.UI.Settings
         {
             try
             {
+                // the machine's log first: a log area that is no word device stops the save, said
+                string logProblem;
+                if (_log != null && HmiFeatures.LoggingOn && !_log.Save(out logProblem))
+                {
+                    _status.Text = logProblem;
+                    return;
+                }
                 foreach (DataGridViewRow r in _grid.Rows)
                 {
                     if (r.IsNewRow) continue;
@@ -562,8 +582,9 @@ namespace Kaban.UI.Settings
         private readonly string _moduleId;
         public AlarmSettingsPage() : this(null) { }
         public AlarmSettingsPage(Kaban.Core.Machines.IMachineMountContext ctx) { _moduleId = ctx == null ? null : ctx.ModuleId; }
-        public string TitleKey { get { return "Set_Alarms"; } }
-        public string TitleFallback { get { return "Alarms"; } }
+        // 30 October: "We can change the alarms setting page name to 'Alarms and Logs'"
+        public string TitleKey { get { return "Set_AlarmsAndLogs"; } }
+        public string TitleFallback { get { return "Alarms and Logs"; } }
         public SecurityLevel RequiredLevel { get { return SecurityLevel.Maintenance; } }
         public UserControl GetControl() { return new AlarmSettingsControl(_moduleId); }
     }

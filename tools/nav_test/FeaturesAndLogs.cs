@@ -84,6 +84,53 @@ class FL {
               AuditLogReader.Store == null, MachineLoggers.All.Count + " loggers");
         host.Close(); host.Dispose();
 
+        Console.WriteLine("--- Machine Parameters > Alarms and Logs: the machine's PLC log area ---");
+        var fa2010 = Kaban.Core.Machines.MachineRegistry.Modules.First(x => x.IsMain);
+        var alarmsPage = new AlarmSettingsPage(fa2010.Context);
+        Check("the Alarms tab is 'Alarms and Logs' now", alarmsPage.TitleFallback == "Alarms and Logs" && LanguageManager.GetString(alarmsPage.TitleKey, "") != "");
+        var alarms = (AlarmSettingsControl)alarmsPage.GetControl();
+        var ahost = new Form { ClientSize = new Size(1260, 760), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        alarms.Dock = DockStyle.Fill; ahost.Controls.Add(alarms); ahost.Show(); Pump(200);
+        Check("  Industry 4 logging off: the log settings not shown", !alarms.MachineLog.Visible && alarms.MachineLog.Machine != null);
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, true); Pump(400);
+        var areaBox = All(alarms.MachineLog).OfType<TextBox>().First(b => b.Name == "logArea");
+        Check("  on: shown under the alarms the HMI raises - FA2010's log area R27000, its logger's state", alarms.MachineLog.Visible && areaBox.Text == "R27000" &&
+              alarms.MachineLog.Top > ((Control)Get(alarms, "_genPanel")).Top, areaBox.Text + " / " + alarms.MachineLog.StateText);
+        var save = (Control)Get(alarms, "_btnSave");
+        areaBox.Text = "R28000"; Pump(50);
+        Check("  an edit: the page's Save comes on", save.Enabled);
+        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(100);
+        var board = DashboardService.Find("FA2010");
+        Check("  saved with the alarms: FA2010's log area R28000 - the logger takes it", board.Config.PlcLogArea == "R28000" &&
+              MachineLogger.Area(board.Config, board) == "R28000");
+        Pump(1500);
+        Check("    its state says so", alarms.MachineLog.StateText.Contains("(R28000)"), alarms.MachineLog.StateText);
+        var shotDir = Environment.GetEnvironmentVariable("TOUCH_SHOTS");
+        if (!string.IsNullOrEmpty(shotDir))
+        {
+            Directory.CreateDirectory(shotDir);
+            var at = ahost.PointToScreen(Point.Empty);
+            var p = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3",
+                "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," + (at.X + 1260) + "," + (at.Y + 420) + "), xdisplay=':99').save('" +
+                Path.Combine(shotDir, "alarms_and_logs.png") + "')\"") { UseShellExecute = false });
+            p.WaitForExit(10000);
+        }
+        areaBox.Text = "M5"; Pump(50);
+        typeof(AlarmSettingsControl).GetMethod("Save", Any).Invoke(alarms, null); Pump(50);
+        Check("  a bit device: not saved, said on the page", board.Config.PlcLogArea == "R28000" &&
+              ((Label)Get(alarms, "_status")).Text.Contains("word device"), ((Label)Get(alarms, "_status")).Text);
+        board.Change(c => c.PlcLogArea = "");
+        HmiFeatures.Set(HmiFeatures.Industry4Logging, false); Pump(200);
+        Check("  logging off again: hidden", !alarms.MachineLog.Visible);
+        ahost.Close(); ahost.Dispose();
+        var logs = new LogSettingsControl();
+        var lhost = new Form { ClientSize = new Size(1200, 800) };
+        logs.Dock = DockStyle.Fill; lhost.Controls.Add(logs); lhost.Show(); Pump(300);
+        Check("Logs and Reports: the log area no more - where it is now, said", logs.MachineSettings == null ||
+              (!All(logs.MachineSettings).OfType<TextBox>().Any(b => b.Text == "R27000") &&
+               All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: Machine Parameters > Alarms and Logs.")));
+        lhost.Close(); lhost.Dispose();
+
         Console.WriteLine(fail == 0 ? "FEATURES AND LOGS ALL PASS" : "FEATURES AND LOGS " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }
