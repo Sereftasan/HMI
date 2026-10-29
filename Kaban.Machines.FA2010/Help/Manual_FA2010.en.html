@@ -60,8 +60,10 @@ the Exit's Robot Top Clamping &ndash; take theirs from their rows on <b>Machine 
 <p>As on the old program, in these tabs: <b>Axis</b> (the axes' limits, reference, calibration and reference activation, in the old
 order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting, with the bar of the axes' speed and steps at the top; <b>Send Axes to Reference</b>
 under them sends the axes ticked in the <i>Ref</i> column to their references), <b>Conveyor</b> and <b>Robot</b> (the old Entry Parameters), <b>Milling</b> and
-<b>Cutting</b> (the old Process Parameters), <b>Encoders</b>, <b>Others</b> and <b>Alarms</b>. Every value is in the unit shown beside it (mm,
+<b>Cutting</b> (the old Process Parameters), <b>Encoders</b>, <b>Others</b> and <b>Alarms and Logs</b>. Every value is in the unit shown beside it (mm,
 s, &deg;, %), divided as the old pages divided it. They need the <b>Maintenance</b> level.</p>
+<p><b>Alarms and Logs</b>: the alarms (<a href="#params">10</a>) and, while the HMI takes the machine's log (<a href="#i4log">11a</a>), its <b>PLC log area</b>:
+<code>R27000</code> on this machine, as the Industry 4 service had it (a field emptied goes back to it).</p>
 <p><b>Encoders</b>: a row per encoder (<a href="#params">10</a>) &ndash; Robot Gripper, Profile Recognition Front and Top, Milling Top,
 Milling-Cutting Left Front, Cutting Left Top, Cutting Right Front, Exit Carrying Top, Cutting Front Right Vertical, Left Profile
 Recognition Front and Top &ndash; its manual movement (to move it while setting it up), <b>Reference</b>, <b>Measuring tolerance</b>,

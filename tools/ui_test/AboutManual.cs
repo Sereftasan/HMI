@@ -30,9 +30,16 @@ class AM {
         Check("  which the build put in the Help folder", File.Exists(path), path);
         Check("  and is HTML", File.Exists(path) && File.ReadAllText(path).Contains("<html"));
 
+        // 30 October: "Answer to the Question 2: Yes" - a Turkish manual, and FA2010's chapter in Turkish.
+        LanguageManager.LoadCommonTranslations("CommonTranslations.csv");
         LanguageManager.ChangeLanguage("TR");
         string tr = HmiManual.ManualPath();
-        Check("Turkish, with no Turkish file yet: falls back to English", File.Exists(tr) && tr.EndsWith(".en.html"), tr);
+        Check("Turkish: the Turkish manual", File.Exists(tr) && tr.EndsWith("Kaban_HMI_Manual.tr.html"), tr);
+        string trChapter = TroubleshootingCatalog.ResolveLanguageFile("Manual_FA2010.html");
+        Check("  and FA2010's Turkish chapter", File.Exists(trChapter) && trChapter.EndsWith("Manual_FA2010.tr.html"), trChapter);
+        LanguageManager.ChangeLanguage("DE");
+        string de = HmiManual.ManualPath();
+        Check("German, with no German file: falls back to English", File.Exists(de) && de.EndsWith(".en.html"), de);
 
         LanguageManager.ChangeLanguage("EN");
 
@@ -89,6 +96,41 @@ class AM {
               sample.Contains("href=\"file:///opt/hmi/Help/Manual.pdf#page=3\""), sample);
         Check("the section on screen is bold in the Contents (its script and style)", template.Contains("nav.toc a.active{font-weight:700") &&
               template.Contains("addEventListener('scroll', mark"));
+
+        Console.WriteLine("--- the Turkish manual: the same sections, its words filled in Turkish ---");
+        string trTemplate = File.ReadAllText(tr);
+        Func<string, System.Collections.Generic.List<string>> idsOf = s =>
+            System.Text.RegularExpressions.Regex.Matches(s, "id=\"([^\"]+)\"").Cast<System.Text.RegularExpressions.Match>().Select(m => m.Groups[1].Value).ToList();
+        var enIds = idsOf(template);
+        var trIds = idsOf(trTemplate);
+        Check("the Turkish manual has every section of the English one, in its order (a section added to one is added to the other)",
+              enIds.SequenceEqual(trIds), string.Join(",", enIds.Except(trIds).Concat(trIds.Except(enIds).Select(x => "+" + x))));
+        Check("  its language is Turkish, it keeps the markers and names no machine", HmiManual.LanguageOf(trTemplate) == "TR" &&
+              trTemplate.Contains("<!--machine-chapter-->") && trTemplate.Contains("<!--svg-machines-->") && trTemplate.Contains("<!--machines-->") &&
+              !ids.Any(i => trTemplate.Contains(i)));
+        Check("  the English one is English", HmiManual.LanguageOf(template) == "EN");
+        string trChapterBody = HmiManual.ChapterBody(trChapter);
+        Check("  FA2010's Turkish chapter has the English one's sections", idsOf(trChapterBody).SequenceEqual(idsOf(body)),
+              string.Join(",", idsOf(trChapterBody)));
+        var faTr = new System.Collections.Generic.List<HmiManual.ManualMachine> {
+            new HmiManual.ManualMachine { Id = "FA2010", Name = "Processing Center", Station = 1, IsMain = true, Chapter = trChapterBody, Pages = { "Ana Sayfa" } },
+            new HmiManual.ManualMachine { Id = "H500", Name = "Screwing_Holing", Station = 3, Pages = { "Ana Sayfa" } },
+            new HmiManual.ManualMachine { Id = "H800", Name = "3D_HingeDrilling", Station = 4, Pages = { "Ana Sayfa" } } };
+        string forFaTr = HmiManual.ComposeManual(trTemplate, faTr);
+        Func<HmiManual.ManualMachine, string> enc = m => System.Net.WebUtility.HtmlEncode(m.Label);
+        Check("  composed: the line under the title in Turkish (the template's language, not the screen's)",
+              forFaTr.Contains("<b>" + enc(faTr[0]) + "</b> ve ona bağlı <b>" + enc(faTr[1]) + "</b> ile <b>" + enc(faTr[2]) + "</b> alt makineleri için."),
+              System.Text.RegularExpressions.Regex.Match(forFaTr, "<!--machines-->(.*?)<!--/machines-->").Groups[1].Value);
+        Check("  chapter 13's table in Turkish", forFaTr.Contains("<th>Makine</th><th>Kontrolör</th><th>Sayfaları</th>") &&
+              forFaTr.Contains("<i>(alt makine)</i>") && forFaTr.Contains("PLC istasyonu 3") && forFaTr.Contains("Bu program <b>FA2010"));
+        Check("  the drawing's caption bar's user in Turkish", forFaTr.Contains("KABAN &nbsp; " + enc(faTr[0]) + " &nbsp;&middot;&nbsp; kullanıcı"));
+        Check("  with FA2010's Turkish chapter", forFaTr.Contains("id=\"fa-home\"") && forFaTr.Contains("Kalıplı Sıkmalar"));
+        LanguageManager.ChangeLanguage("TR");
+        string enOnTr = HmiManual.ComposeManual(template, fa);
+        LanguageManager.ChangeLanguage("EN");
+        Check("  the English one composed in English as before - with the screen in Turkish too (a language with no manual of its own opens it)",
+              forFa.Contains("<th>Machine</th><th>Controller</th><th>Its pages</th>") && forFa.Contains("with the sub-machines <b>H500") &&
+              forFa.Contains("PLC station 3") && enOnTr == forFa);
 
         Console.WriteLine(fail == 0 ? "\nABOUT ALL PASS" : "\nABOUT " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

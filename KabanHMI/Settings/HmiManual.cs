@@ -139,6 +139,34 @@ namespace Kaban.UI.Settings
 
         private static string Enc(string s) { return WebUtility.HtmlEncode(s ?? ""); }
 
+        /// <summary>A word of the manual's language as it is (its letters kept: "Kontrolör", not "Kontrol&amp;#246;r") - only the marks HTML needs escaped.</summary>
+        private static string EncWord(string s)
+        {
+            return (s ?? "").Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
+        }
+
+        /// <summary>The template's language, from its &lt;html lang&gt; (English when it says none).</summary>
+        public static string LanguageOf(string template)
+        {
+            var m = Regex.Match(template ?? "", "<html[^>]*\\blang\\s*=\\s*\"([A-Za-z]+)", RegexOptions.IgnoreCase);
+            return m.Success ? m.Groups[1].Value.ToUpperInvariant() : "EN";
+        }
+
+        /// <summary>
+        /// A word the manual is filled in with, in the TEMPLATE's language (30 October: a Turkish manual) -
+        /// not the screen's: a language with no manual of its own opens the English one, and its sentences
+        /// must be English then. A translation that lost a placeholder of the English is not used.
+        /// </summary>
+        private static string Word(string lang, string key, string english, params object[] args)
+        {
+            string text = LanguageManager.GetStringIn(lang, key);
+            if (string.IsNullOrWhiteSpace(text)) text = english;
+            for (int i = 0; i < args.Length; i++)
+                if (text.IndexOf("{" + i + "}", StringComparison.Ordinal) < 0) { text = english; break; }
+            try { return args.Length == 0 ? text : string.Format(text, args); }
+            catch (FormatException) { return string.Format(english, args); }
+        }
+
         /// <summary>Replaces the text between &lt;!--name--&gt; and &lt;!--/name--&gt;, markers kept.</summary>
         private static string Fill(string html, string name, string content)
         {
@@ -162,13 +190,18 @@ namespace Kaban.UI.Settings
             var main = machines.FirstOrDefault(m => m.IsMain) ?? machines[0];
             var subs = machines.Where(m => m != main).ToList();
 
-            string line = "For <b>" + Enc(main.Label) + "</b>";
+            string lang = LanguageOf(template);
+            string who = "<b>" + Enc(main.Label) + "</b>";
             if (subs.Count > 0)
-                line += ", with " + (subs.Count == 1 ? "the sub-machine " : "the sub-machines ") +
-                        string.Join(" and ", subs.Select(m => "<b>" + Enc(m.Label) + "</b>")) + " mounted with it";
-            var html = Fill(template, "machines", line + ".");
+            {
+                string names = string.Join(" " + Word(lang, "Man_And", "and") + " ", subs.Select(m => "<b>" + Enc(m.Label) + "</b>"));
+                who = subs.Count == 1
+                    ? Word(lang, "Man_WithSub", "{0}, with the sub-machine {1} mounted with it", who, names)
+                    : Word(lang, "Man_WithSubs", "{0}, with the sub-machines {1} mounted with it", who, names);
+            }
+            var html = Fill(template, "machines", Word(lang, "Man_For", "For {0}.", who));
 
-            html = Fill(html, "svg-title", "KABAN &nbsp; " + Enc(main.Label) + " &nbsp;&middot;&nbsp; user");
+            html = Fill(html, "svg-title", "KABAN &nbsp; " + Enc(main.Label) + " &nbsp;&middot;&nbsp; " + EncWord(Word(lang, "Man_User", "user")));
 
             // The machine list of the drawing: the machines themselves, the first
             // one highlighted as on screen. Room for three.
@@ -183,12 +216,14 @@ namespace Kaban.UI.Settings
             html = Fill(html, "svg-machines", svg.ToString());
 
             var ch = new StringBuilder();
-            ch.Append("<p>This program runs ").Append(line.Substring(4)).Append(".</p>\r\n");
-            ch.Append("<table>\r\n<tr><th>Machine</th><th>Controller</th><th>Its pages</th></tr>\r\n");
+            ch.Append("<p>").Append(Word(lang, "Man_Runs", "This program runs {0}.", who)).Append("</p>\r\n");
+            ch.Append("<table>\r\n<tr><th>").Append(EncWord(Word(lang, "Man_Machine", "Machine"))).Append("</th><th>")
+              .Append(EncWord(Word(lang, "Man_Controller", "Controller"))).Append("</th><th>").Append(EncWord(Word(lang, "Man_Pages", "Its pages")))
+              .Append("</th></tr>\r\n");
             foreach (var m in new[] { main }.Concat(subs))
-                ch.Append("<tr><td>").Append(Enc(m.Label)).Append(m.IsMain ? "" : " <i>(sub-machine)</i>")
-                  .Append("</td><td>PLC station ").Append(m.Station)
-                  .Append("</td><td>").Append(Enc(string.Join(", ", m.Pages))).Append("</td></tr>\r\n");
+                ch.Append("<tr><td>").Append(Enc(m.Label)).Append(m.IsMain ? "" : " <i>" + EncWord(Word(lang, "Man_SubMachine", "(sub-machine)")) + "</i>")
+                  .Append("</td><td>").Append(EncWord(Word(lang, "Man_Station", "PLC station {0}", m.Station)))
+                  .Append("</td><td>").Append(EncWord(string.Join(", ", m.Pages))).Append("</td></tr>\r\n");
             ch.Append("</table>\r\n");
             foreach (var m in new[] { main }.Concat(subs).Where(x => !string.IsNullOrWhiteSpace(x.Chapter)))
             {

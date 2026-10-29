@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaban HMI - Operatör ve Mühendis Kılavuzu</title>
+<!--
+  HMI KILAVUZU (Türkçe). Üst çubuktaki "?" > "HMI kullanım kılavuzunu aç" ile açılır.
+
+  Her dil için bir dosya, Help klasöründe yan yana:
+      Kaban_HMI_Manual.en.html   İngilizce (asıl metin)
+      Kaban_HMI_Manual.tr.html   Türkçe (bu dosya)
+  HMI ekrandaki dilin dosyasını açar, o yoksa İngilizcesini.
+  İngilizce kılavuz değiştiğinde bu dosya da aynı bölümlerle (aynı id'lerle) güncellenir.
+
+  Resimler: çizimleri DOSYANIN İÇİNDE tutun (SVG, aşağıdaki gibi) ya da resim
+  dosyalarını aynı Help klasörüne koyup adıyla gösterin (<img src="Screen_Home.png">);
+  kılavuz ağı olmayan bir panel bilgisayarında da çalışmaya devam eder.
+
+  TEK KILAVUZ, HER MAKİNE. Bu dosya hiçbir makinenin adını vermez. "?" ile
+  açıldığında HMI, BU programın çalıştırdığı makineleri (ana makine ve ona
+  bağlı alt makineler) doldurur - başka hiçbir makine hakkında bir şey yazmaz.
+  Gövdedeki şu işaret yorumu çiftlerinin arasını değiştirir (bir yorum başka
+  bir yorumu içeremediği için burada köşeli parantezle yazılmıştır):
+    [machines] ... [/machines]                 başlığın altındaki satır
+    [svg-title] ... [/svg-title]               çizimdeki üst çubuk
+    [svg-machines] ... [/svg-machines]         çizimdeki makine listesi
+    [machine-chapter] ... [/machine-chapter]   13. bölüm
+  13. bölüm her makinenin sayfalarını listeler, ardından makinenin kendi bölüm
+  dosyası varsa onu ekler: o makinenin kendi projesindeki
+  Help\Manual_<ModuleId>.<dil>.html - <body> içindeki her şey. Çevirirken
+  işaretleri koruyun; aralarındaki metin, dosya tek başına açılırsa görünen metindir.
+  Doldurulan sözcükler (için, alt makine ...) bu dosyanın dilinde (html lang) ve
+  çeviri dosyasının Man_* anahtarlarından alınır.
+-->
+<style>
+ :root{--ink:#23262c;--muted:#5b6270;--rule:#d5d9df;--head:#1f4e79;--soft:#f4f6f9;--code:#f2f4f7;--red:#d62424;--blue:#1e78dc}
+ *{box-sizing:border-box}
+ body{font-family:"Segoe UI",Arial,sans-serif;color:var(--ink);line-height:1.5;font-size:15px;margin:0;background:#fff}
+ header{background:#111;color:#fff;padding:18px 28px}
+ header h1{margin:0;font-size:1.5em;font-weight:600}
+ header p{margin:.2em 0 0;color:#c9ced6}
+ .wrap{display:flex;max-width:1280px;margin:0 auto}
+ nav.toc{flex:0 0 250px;padding:18px 18px 40px 24px;border-right:1px solid var(--rule);position:sticky;top:0;align-self:flex-start;max-height:100vh;overflow:auto}
+ nav.toc b{display:block;margin:0 0 .5em;color:var(--muted);font-size:.85em;letter-spacing:.06em;text-transform:uppercase}
+ nav.toc a{display:block;color:var(--ink);text-decoration:none;padding:3px 0;font-size:.95em}
+ nav.toc a:hover{color:var(--blue)}
+ nav.toc a.active{font-weight:700;color:var(--head)}
+ main{flex:1;min-width:0;padding:10px 34px 60px}
+ h2{font-size:1.25em;color:var(--head);margin:1.9em 0 .5em;padding-top:.4em;border-top:1px solid var(--rule)}
+ h3{font-size:1.04em;margin:1.2em 0 .3em}
+ h4{font-size:1em;margin:1em 0 .25em;color:var(--head)}
+ p{margin:.35em 0}
+ ul,ol{margin:.3em 0 .6em 1.3em;padding:0}
+ li{margin:.15em 0}
+ table{border-collapse:collapse;width:100%;margin:.6em 0 1em}
+ td,th{border:1px solid #9aa1ab;padding:.4em .55em;vertical-align:top;text-align:left}
+ th{background:#e3e6ea}
+ code,kbd{background:var(--code);padding:0 .3em;border:1px solid #dde1e6;border-radius:3px;font-family:Consolas,monospace;font-size:.92em}
+ .note{background:#fff8e1;border-left:4px solid #e0a800;padding:.6em .9em;margin:.8em 0}
+ .safety{background:#fdecec;border-left:4px solid var(--red);padding:.6em .9em;margin:.8em 0}
+ .tip{background:#e9f3fd;border-left:4px solid var(--blue);padding:.6em .9em;margin:.8em 0}
+ figure{margin:1em 0 1.2em;padding:12px;background:var(--soft);border:1px solid var(--rule);border-radius:6px}
+ figcaption{color:var(--muted);font-size:.9em;margin-top:.5em}
+ svg{max-width:100%;height:auto;display:block}
+ .lvl{display:inline-block;padding:0 .5em;border-radius:10px;font-size:.85em;font-weight:600;color:#fff}
+ .l0{background:#7a828e}.l1{background:#2f7d4f}.l2{background:#b26b00}.l3{background:#9c2a2a}
+ footer{color:var(--muted);font-size:.85em;margin-top:3em}
+ @media (max-width:820px){.wrap{display:block}nav.toc{position:static;border-right:none;border-bottom:1px solid var(--rule);max-height:none}main{padding:10px 16px 40px}}
+ @media print{nav.toc{display:none}header{background:#fff;color:#000}h2{break-after:avoid}figure{break-inside:avoid}}
+</style></head><body>
+
+<header>
+ <h1>Kaban HMI &ndash; Operatör ve Mühendis Kılavuzu</h1>
+ <p><!--machines-->Bu programın çalıştırdığı makine ve ona bağlı alt makineler için.<!--/machines--></p>
+</header>
+
+<div class="wrap">
+<nav class="toc">
+ <b>İçindekiler</b>
+ <a href="#screen">1. Ekran</a>
+ <a href="#touch">&nbsp;&nbsp;1a. Dokunarak kullanım</a>
+ <a href="#signin">2. Oturum açma ve seviyeler</a>
+ <a href="#nav">3. Sayfalar arasında gezinme</a>
+ <a href="#notes">&nbsp;&nbsp;3b. Notlar ve geri bildirim</a>
+ <a href="#units">4. Manuel Hareket: üniteler</a>
+ <a href="#positioning">&nbsp;&nbsp;4a. Pnömatik pozisyonlamalar</a>
+ <a href="#encoders">&nbsp;&nbsp;4b. Enkoderli silindirler</a>
+ <a href="#motors">&nbsp;&nbsp;4c. Motorlar (invertörler)</a>
+ <a href="#keypad">5. Değer girme</a>
+ <a href="#alarms">6. Alarmlar</a>
+ <a href="#genalarms">&nbsp;&nbsp;6a. HMI'nin kendi ürettiği alarmlar</a>
+ <a href="#plcmsg">&nbsp;&nbsp;6b. PLC'den gelen mesajlar</a>
+ <a href="#conn">7. PLC bağlantısı</a>
+ <a href="#plcdata">&nbsp;&nbsp;7a. PLC verisi: yedek</a>
+ <a href="#unitset">8. Ölçü birimleri</a>
+ <a href="#hmiset">9. HMI Ayarları</a>
+ <a href="#translation">&nbsp;&nbsp;9a. Çeviri</a>
+ <a href="#features">&nbsp;&nbsp;9b. Özellikler</a>
+ <a href="#params">10. Makine Parametreleri</a>
+ <a href="#diag">11. Kayıtlar ve tanılama</a>
+ <a href="#i4log">&nbsp;&nbsp;11a. Makine kaydını HMI'nin alması</a>
+ <a href="#files">12. Nerede ne saklanır</a>
+ <a href="#machine">13. Bu makine</a>
+</nav>
+
+<main>
+
+<p class="tip"><b>Bu kılavuzu programın yanında tutun.</b> Üst çubuktaki <b>?</b> (<kbd>F1</kbd>) &rsaquo; <i>HMI kullanım kılavuzunu aç</i> ile açılır. Programın
+<code>Help</code> klasöründe bir dosyadır; ağı olmayan bir makinede de çalışır.</p>
+
+<!-- ================================================================== -->
+<h2 id="screen">1. Ekran</h2>
+
+<figure>
+<svg viewBox="0 0 900 470" role="img" aria-label="HMI ekranının düzeni">
+ <defs><style>.t{font:13px "Segoe UI",Arial;fill:#23262c}.w{font:13px "Segoe UI",Arial;fill:#fff}.s{font:11px "Segoe UI",Arial;fill:#5b6270}.n{font:bold 13px "Segoe UI",Arial;fill:#fff}</style></defs>
+ <!-- caption bar -->
+ <rect x="10" y="10" width="880" height="36" fill="#111"/>
+ <text class="w" x="24" y="33"><!--svg-title-->KABAN &nbsp; Makine &ndash; Adı &nbsp;&middot;&nbsp; kullanıcı<!--/svg-title--></text>
+ <rect x="440" y="16" width="30" height="24" rx="4" fill="#c81e1e"/><text class="n" x="450" y="33">!</text>
+ <rect x="480" y="16" width="30" height="24" rx="4" fill="#333"/><text class="w" x="486" y="33">&#128279;</text>
+ <circle cx="535" cy="28" r="10" fill="none" stroke="#fff" stroke-width="2"/>
+ <circle cx="572" cy="26" r="6" fill="none" stroke="#fff" stroke-width="2"/><line x1="569" y1="26" x2="575" y2="26" stroke="#fff" stroke-width="1.5"/><line x1="572" y1="23" x2="572" y2="29" stroke="#fff" stroke-width="1.5"/><line x1="576" y1="30" x2="581" y2="35" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text class="w" x="586" y="33">100% &#9662;</text>
+ <circle cx="655" cy="28" r="9" fill="none" stroke="#fff" stroke-width="2"/><text class="w" x="651" y="33" font-weight="bold">?</text><text class="w" x="668" y="33">&#9662;</text>
+ <rect x="690" y="16" width="62" height="24" rx="3" fill="#333"/><text class="w" x="698" y="33">TR &#9662;</text>
+ <text class="w" x="760" y="33">&#9472;</text><text class="w" x="800" y="33">&#9744;</text><text class="w" x="840" y="33">&#10005;</text>
+ <!-- nav bar -->
+ <rect x="10" y="46" width="190" height="414" fill="#eef0f3"/>
+ <rect x="10" y="60" width="190" height="38" fill="#fff"/><text class="t" x="40" y="84" font-weight="bold">Ana Sayfa</text>
+ <text class="t" x="40" y="124">Manuel Hareket</text>
+ <text class="t" x="40" y="162">Alarmlar</text>
+ <text class="t" x="40" y="200">Makine Parametreleri</text>
+ <text class="t" x="40" y="238">HMI Ayarları</text>
+ <line x1="22" y1="262" x2="188" y2="262" stroke="#c7ccd3"/>
+ <!--svg-machines--><rect x="16" y="300" width="178" height="30" rx="4" fill="#d1d6dd"/><text class="t" x="40" y="320">Ana makine</text>
+ <text class="t" x="40" y="352">Alt makine</text><!--/svg-machines-->
+ <text class="t" x="30" y="444">&#9664;</text><text class="t" x="70" y="444">&#9654;</text>
+ <!-- content -->
+ <rect x="200" y="46" width="648" height="414" fill="#fff" stroke="#d5d9df"/>
+ <text class="t" x="230" y="90" font-size="15">Seçtiğiniz makine için seçtiğiniz sayfa</text>
+ <!-- side bar -->
+ <rect x="850" y="46" width="40" height="414" fill="#f9f9fa" stroke="#d5d9df"/>
+ <text class="t" x="862" y="70">&#187;</text>
+ <circle cx="866" cy="96" r="5" fill="#4caf50" stroke="#23262c"/><line x1="874" y1="96" x2="884" y2="96" stroke="#285aaa" stroke-width="2"/>
+ <rect x="858" y="118" width="18" height="13" fill="none" stroke="#285aaa" stroke-width="2"/>
+ <!-- callouts -->
+ <g fill="#1e78dc">
+  <circle cx="455" cy="62" r="10"/><circle cx="495" cy="62" r="10"/><circle cx="535" cy="62" r="10"/><circle cx="598" cy="62" r="10"/><circle cx="657" cy="62" r="10"/><circle cx="720" cy="62" r="10"/><circle cx="800" cy="62" r="10"/>
+  <circle cx="190" cy="80" r="10"/><circle cx="190" cy="315" r="10"/><circle cx="110" cy="444" r="10"/>
+  <circle cx="838" cy="160" r="10"/>
+ </g>
+ <g class="n" text-anchor="middle">
+  <text x="455" y="66">1</text><text x="495" y="66">2</text><text x="535" y="66">3</text><text x="598" y="66">4</text><text x="657" y="66">5</text><text x="720" y="66">6</text><text x="800" y="66">7</text>
+  <text x="190" y="84">8</text><text x="190" y="319">9</text><text x="110" y="448">10</text><text x="838" y="164">11</text>
+ </g>
+</svg>
+<figcaption>Ekran. Üstte üst çubuk, solda sayfa menüsü, onun altında makine listesi, ortada sayfa, sağ kenarda yan çubuk.</figcaption>
+</figure>
+
+<table>
+<tr><th>#</th><th>Ne</th><th>Ne yapar</th></tr>
+<tr><td>1</td><td>Alarmlar (kırmızı, yanıp söner)</td><td>Yalnızca bir makine hata bildirirken görünür. Alarmdaki makinelerin listesi için tıklayın. Bkz. <a href="#alarms">6</a>.</td></tr>
+<tr><td>&ndash;</td><td>Bağlama (mavi bir zincir, yanıp söner)</td><td>Yukarıda çizili değil: yalnızca üniteler birlikte hareket etmek üzere bağlıyken, alarm işaretinin yanında görünür. Menüsü bağlı üniteleri listeler &ndash;
+birine tıklamak onun bağını çözer &ndash; en sonda <i>Tümünün bağını çöz</i>. Bkz. <a href="#couple">4</a>.</td></tr>
+<tr><td>2</td><td>Bağlantı uyarısı</td><td>Yalnızca bir kontrolör yanıt vermezken görünür. Hangisi olduğu ve nedeni için tıklayın. Bkz. <a href="#conn">7</a>.</td></tr>
+<tr><td>3</td><td>Kullanıcı</td><td>Biri oturum açana kadar yanıp söner. Oturum açıkken: Oturumu kapat veya Kullanıcı değiştir.</td></tr>
+<tr><td>4</td><td>Ekran ölçeği</td><td>İçinde <b>+</b> olan büyüteç (düz büyüteç <i>Bul</i>'dur) ve ekrandaki boyut, yüzde olarak (<b>100%</b>). Tüm ekranı büyütmek veya küçültmek için tıklayın. Bkz. <a href="#magnifier">9</a>.</td></tr>
+<tr><td>&ndash;</td><td>Fare veya dokunmatik (&#128433; / &#128070;)</td><td>Yukarıda çizili değil: ekran ölçeğinin yanında, yalnızca <b>HMI Ayarları &rsaquo; Özellikler</b>'de dokunmatik ekran açıkken görünür (<a href="#features">9b</a>).
+Ekranın şu an nasıl kullanıldığını gösterir &ndash; fare ile mi, parmakla mı; menüsü bunu hemen değiştirir: oturum açan kullanıcının kendine ait bir değeri varsa onu, yoksa panelinkini. Bkz. <a href="#touch">1a</a>.</td></tr>
+<tr><td>5</td><td>Yardım (<b>?</b>)</td><td><i>Kaban HMI hakkında</i>, <i>HMI kullanım kılavuzunu aç</i> ve HMI hakkında soru sorulacak bir AI (<kbd>F1</kbd>). Bkz. <a href="#help">aşağısı</a>.</td></tr>
+<tr><td>6</td><td>Dil</td><td>Ekrandaki dilin bayrağı ve kodu. Başka bir dil seçmek için tıklayın; her sayfa hemen değişir. Bu, panelin dilidir &ndash;
+herkesin dili, yeniden başlatmada korunur; bir kullanıcının kendine ait bir dili olabilir, oturum açtığında ekrana gelir (<a href="#viewprefs">Kullanıcılar ve Tercihler</a>).
+Bayraklar <a href="#translation">Çeviri</a> sekmesinde yapılır.</td></tr>
+<tr><td>7</td><td>Simge durumuna küçült, ekranı kapla, kapat</td><td>&#10005; önce sorar: <b>Kapat</b> veya <b>Programı yeniden başlat</b>; böylece yanlışlıkla bir dokunuş vardiyayı bitirmez.
+Her yeniden başlatmada oturum açık olan kişinin oturumu açık kalır.
+Windows görev çubuğundan veya <kbd>Alt</kbd>+<kbd>F4</kbd> ile kapatmak hemen kapatır. Ekranı kapla, pencerenin bulunduğu ekranı doldurur.</td></tr>
+<tr><td>8</td><td>Sayfa menüsü</td><td>Her makinede aynıdır. Açamayacağınız bir sayfa gösterilmez. Dişli <b>Makine Parametreleri</b>, dişlili ekran <b>HMI Ayarları</b>'dır.
+Tüm kontrolörleri kapalı olan (<i>Aktif</i> değil, bkz. <a href="#conn">7</a>) bir makinenin sayfası yoktur.</td></tr>
+<tr><td>9</td><td>Makine listesi</td><td>Alt makineler bağlıyken sayfanın hangi makineyi gösterdiği. Her makinenin, diğerleri gibi siyah çizilmiş kendi resmi vardır: ne yaptığı (bir freze bıçağı ve bir testere, bir vida, bir matkap ucu). Vurgulanan, ekrandaki makinedir.</td></tr>
+<tr><td>10</td><td>Geri / İleri</td><td>Bir web tarayıcısı gibi bulunduğunuz yerler arasında adım adım gider. Bkz. <a href="#nav">3</a>.</td></tr>
+<tr><td>11</td><td>Yan çubuk</td><td>Gösterilen sayfanın <b>yanında</b> açılan sayfalar: Girişler / Çıkışlar, Eksen İzleme, PLC Monitörü, makinenin kendi sayfaları
+&ndash; ve oraya koyduğunuz ana sayfalar (bir makinenin Ana Sayfası, Manuel Hareket, Alarmlar ...). Bkz. <a href="#side">3a</a>.</td></tr>
+</table>
+
+<p>Tıklanabilen her şey <b>el</b> imleci gösterir; şu an kullanılamayan her şey düz oku gösterir ve imleci üzerinde beklettiğinizde
+<b>nedenini</b> söyler (oturum açılmamış, seviye düşük, makine manuelde değil, kontrolör yanıt vermiyor). Bir <b>değer alanının</b> üzerinde bekletin, içine ne yazılabileceğini görün (<i>İzin verilen: 0.00 - 6500.00 mm</i>);
+bir <b>lambanın</b> üzerinde bekletin, adını ve durumunu görün &ndash; her kontrolün kenarlığı gibi halkası da imlecin altında maviye döner. Bir Admin ayrıca her birinin nasıl bağlandığını ve
+koşulları nedeniyle tutulan bir kontrol için her koşulu, okuduğu değerle sözcüklerle, karşılanmışsa işaretli olarak görür:
+<i>&#10003; Manuel Mod Aktif (M100 = 0) + &#10007; Kalıplı Sıkma Opsiyonu (L27 = 1)</i>.</p>
+<p>Şu an kullanılamayan bir <b>menü girdisi</b> yine de oradadır, <b>gri</b> olarak; ipucu nedenini söyler: seviyeniz, hiçbir şey seçilmemiş, gösterilecek bir şey yok
+(yan çubuğun <b>+</b> menüsünde seviyenizin üstündeki bir yan sayfa, dizi olmayan bir satırda <i>Diziyi aç</i>, arıza göstermeyen bir ünitenin AI girdileri).</p>
+
+<h3 id="help"><b>?</b>: hakkında, kılavuz, soru sorulacak bir AI</h3>
+<p>Üst çubuktaki <b>?</b>, ekran ölçeği ile dilin arasında (<kbd>F1</kbd>), herkes için:</p>
+<ul>
+ <li><b>Kaban HMI hakkında</b>: program, sürümü ve çalıştırdığı makineler, bir mesaj kutusunda.</li>
+ <li><b>HMI kullanım kılavuzunu aç</b>: bu kılavuz, tarayıcıda, ekrandaki dilde, 13. bölümde bu panelin makineleriyle.</li>
+ <li><b>AI istemi oluştur</b>: bir AI sohbeti (Claude, ChatGPT, Gemini, Grok&hellip;) için panoya bir istem koyar: program, makineleri
+     ve kontrolörleri, kimin hangi seviyede oturum açtığı, ekrandaki sayfa &ndash; <b>şu an gösterdikleri</b>: üniteleri, eksenleri, motorları, düğmeleri, değerleri,
+     lambaları ve opsiyonları, yukarıdan aşağıya, her birinin gösterdiği ve cihazıyla &ndash; yanındaki yan sayfa, listedeki alarmlar ve <b>bu kılavuzun tamamı</b> (metni).
+     Sohbete yapıştırın (<kbd>Ctrl</kbd>+<kbd>V</kbd>): AI birkaç satırda bu panelde sizin seviyenizde neye yardım edebileceğini söyler, sonra sorularınızı
+     kılavuza göre, adım adım ve ekranın dilinde yanıtlar; bir iş için kısa bir yardım sayfası yazabilir ve anlaşılmayanı yeniden açıklar.
+     İstem panoya <b>bir dosya olarak</b> konur (<i>Documents\Kaban HMI\AI prompts</i>, en yeni 50 tanesi saklanır): sohbette <kbd>Ctrl</kbd>+<kbd>V</kbd>
+     <b>dosyayı ekler</b>, ne kadar uzun olursa olsun. Ya da metni olarak: Kullanıcılar ve Tercihler'de <i>AI istemi şöyle kopyalanır</i> (<i>Yardım ve AI</i>). Pencerenin
+     altında kısa bir not ne yapılacağını söyler ve kendiliğinden kaybolur.</li>
+ <li><b>Sor: Claude</b>, <b>Sor: ChatGPT</b>, <b>Sor: Gemini</b>&hellip; &ndash; <b>listedeki her etkin AI sohbeti için</b> bir girdi, listedeki sırayla: aynı istem,
+     <b>o AI sohbeti tarayıcıda açılır</b> ve birkaç saniye sonra <b>kendiliğinden içine yapıştırılır</b> (<kbd>Ctrl</kbd>+<kbd>V</kbd>): istemin dosyası
+     ve AI'dan onu okuyup başlamasını isteyen kısa bir mesaj &ndash; ya da metin olarak kopyalandıysa istemin metni. <b>Kontrol edip siz gönderirsiniz</b>: <kbd>Enter</kbd>
+     size bırakılır. HMI hâlâ öndeyken (tarayıcı gelmediyse) hiçbir şeye basılmaz. Kullanıcılar ve Tercihler, <i>Yardım ve AI</i> &rsaquo;
+     <i>Sohbete yapıştır</i>: <i>Kendiliğinden (Ctrl+V)</i> veya <i>Kendim yapıştırırım</i>. İstem, sohbetin web adresinde taşınamayacak kadar uzundur;
+     panelde tarayıcı veya internet yoksa not bunu söyler; istem yine de panoda ve dosyasındadır, başka bir bilgisayarda veya telefonda kullanılabilir.</li>
+ <li>Sunulan sohbetler panelin listesidir: <span class="lvl l3">Admin</span> <b>HMI Ayarları &rsaquo; AI</b>, bir tablo
+     &ndash; her biri için bir ad, bir web adresi ve <b>Etkin</b>, menülerin sunduğu sırayla; &#10133; ekler, &#128465; seçileni siler, &#9650; &#9660; taşır, &#8635;
+     <i>olağan listeyi</i> geri getirir (Claude, ChatGPT, Gemini, Microsoft Copilot, Grok, DeepSeek, Perplexity), &#128190; saklar. Yalnızca web adresleri (<code>https://</code>) alınır.
+     <i>Etkin</i> işaretli olmayan bir sohbet web adresiyle tabloda kalır, menüler onu atlar.</li>
+</ul>
+<p>Bir alarmın yardım listesi (<b>Yardım</b> sütunu, bir ünitenin <b>?</b>'i) aynı <b>AI istemi oluştur</b> ve <b>Sor: &lt;AI&gt;</b> girdileriyle, o alarm için biter (bkz. <a href="#alarms">6</a>).</p>
+
+<h3 id="tables">Tablolar</h3>
+<p>Programın her tablosu aynı görünür ve aynı çalışır: açık gri üzerinde kalın başlıklar, satırlar arasında ince çizgiler, seçili satır açık mavi.
+Sütunların menüsü için <b>bir başlığa sağ tıklayın</b>:</p>
+<ul>
+ <li>Gösterilecek sütunları işaretleyin (işaretlerken menü açık kalır; sonuncusu kaldırılamaz).</li>
+ <li><i>Sütun genişlikleri...</i>: her sütunun genişliği yazılır, ya da tüm tablonun genişliği; gösterilen sütunlar bunu şimdi paylaştıkları gibi paylaşır.
+     <i>Genişlikleri içeriğe sığdır</i>.</li>
+ <li><b><i>Varsayılan olarak kaydet</i></b>: gösterilen sütunlar, sıraları ve genişlikleri bu panel için bu tablonun varsayılanı olarak saklanır.
+     <b><i>Varsayılan sütun ayarları</i></b> bu varsayılanı geri getirir &ndash; ya da hiç kaydedilmediyse tabloyu programın yaptığı gibi.
+     Bir varsayılan kaydedildikten sonra <i>Orijinal sütun ayarları</i> programın kendi ayarlarını geri getirir (kaydedilen varsayılan kalır).</li>
+</ul>
+<p>Bir tablo, sütunları bırakıldığı gibi açılır. Sütunu taşımak için başlığını, boyutlandırmak için kenarını sürükleyin; tablonun sıralanabildiği yerde başlığa tıklamak ona göre sıralar.</p>
+
+<h3 id="keys">Tuşlar</h3>
+<p>Programın düğmelerine klavyeden basılabilir. Bir düğmenin ipucu <b>ilk satırında</b> tuşunu, ikinci satırında ne yaptığını söyler
+(imleci düğmenin üzerinde bir an bekletin).</p>
+<table>
+<tr><th>Tuş</th><th>Düğme</th></tr>
+<tr><td><kbd>Del</kbd></td><td>&#128465; sil (kullanıcı, satır, vardiya...) &ndash; her zaman sorulduğu yerde önce sorulur</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>&#128190; kaydet; <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> &#128196; yeni olarak kaydet</td></tr>
+<tr><td><kbd>Insert</kbd></td><td>&#10133; yeni, ekle</td></tr>
+<tr><td><kbd>F5</kbd></td><td>&#8634; değişiklikleri at, yeniden oku</td></tr>
+<tr><td><kbd>F2</kbd></td><td>&#9999;&#65039; düzenle</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>E</kbd> / <kbd>Ctrl</kbd>+<kbd>I</kbd></td><td>&#128228; dışa aktar / &#128229; içe aktar</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>&#128194; bir klasör veya dosya aç</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td><td>&#128270; Bul &ndash; nerede kullanılıyor? (PLC Monitörü, Çeviri sekmesi, notlar sayfası)</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>&#8630; Geri al / &#8631; Yinele (PLC Monitörü, Çeviri sekmesi)</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd></td><td>&#128203; tüm raporu veya programı kopyala</td></tr>
+<tr><td><kbd>Esc</kbd></td><td>&#10006; temizle (kayıtların araması); bir kontrol seçmekten vazgeç (notlar sayfasının <i>Ekle</i>'si, PLC Monitörü'nün <i>sonraki kontrolün altındaki her şey</i>'i)</td></tr>
+<tr><td><kbd>Alt</kbd>+<kbd>&larr;</kbd> / <kbd>Alt</kbd>+<kbd>&rarr;</kbd></td><td>&#9664; Geri / &#9654; İleri</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>L</kbd></td><td>Oturum aç, oturumu kapat</td></tr>
+<tr><td><kbd>F12</kbd></td><td>PLC Monitörü (<span class="lvl l3">Admin</span>); kendi tuşları düğmelerinin ipuçlarındadır</td></tr>
+</table>
+<ul>
+ <li>Bir tuş, kullandığınız pencerede <b>görünen</b> ve çalıştığınız yere en yakın düğmeye basar: yan yana açık iki sayfada,
+     yazı yazdığınız sayfanın disketine. Bu tür iki düğme eşit uzaklıktaysa yanlışına basmak yerine hiçbirine basılmaz.</li>
+ <li>Bir kutuya veya tablo hücresine yazarken ihtiyaç duyduğu tuşlar onundur: orada <kbd>Del</kbd> satırı değil bir harfi siler.</li>
+ <li>Makinenin düğmelerinin (jog'lar, başlatmalar, sıfırlamalar, alarm onaylama) <b>tuşu yoktur</b>: bir makineyi hareket ettirmek için bir tuşa yanlışlıkla basmak çok kolaydır.</li>
+</ul>
+
+<h3 id="touch">1a. Dokunarak kullanım</h3>
+<p>Dokunmatik ekranlı bir panel parmakla kullanılabilir. Dokunmatik ekran <b>isteğe bağlı bir bölümdür</b>: bir <span class="lvl l3">Admin</span>
+<b>HMI Ayarları &rsaquo; Özellikler</b>'de açar (<a href="#features">9b</a>) &ndash; kapalıyken, başka ne ayarlanmış olursa olsun program fare ile kullanılır; ne üst çubuktaki
+fare / parmak düğmesi ne de <i>Ekran kullanımı</i> tercihi gösterilir. Açıkken ekran, <b>Ekran kullanımı</b> <i>Dokunmatik (parmak)</i> olduğu sürece
+&ndash; herkesin ya da oturum açtığında alınan bir kullanıcının kendi değeri (<a href="#viewprefs">Kullanıcılar ve Tercihler</a>) &ndash;
+ya da üst çubuktaki &#128433; / &#128070; düğmesi ona çevrildikten sonra dokunarak kullanılır. Dokunarak:</p>
+<ul>
+ <li><b>Parmak boyunda.</b> Menü girdileri, tablo satırları, onay kutuları ve seçenek düğmeleri, araç çubuğu düğmeleri ve sekmeler daha büyüktür &ndash; fare ile eskisi gibidir.</li>
+ <li><b>Basılı tutulan düğme basılı kalır.</b> Windows, ekranda tutulan bir parmağı sağ tıklamaya, parmakla sürüklemeyi de kendi kaydırmasına çevirmez: bir jog
+     düğmesi parmak üzerindeyken hareket eder, parmak kalkınca durur, fare ile olduğu gibi.</li>
+ <li><b>Uzun basış</b> (parmak yaklaşık yarım saniye kıpırdamadan tutulur), sağ tıklamanın bir menü açtığı yerde &ndash; bir tablonun başlıkları veya satırları, bir yan çubuk
+     düğmesi, bir PLC Monitörü sekmesi, bir modül değeri &ndash; o menüyü parmağın altında açar; parmağı kaldırmak hiçbir şey seçmez. Bir jog veya set düğmesi, bir kaydırıcı,
+     bir ayırıcı veya bir grafik bu şekilde asla menü açmaz. Satır menüsü olan bir tablonun seçili satırının sonunda ayrıca bir <b>&#8942;</b> vardır: dokunmak onu açar.</li>
+ <li><b>Gri bir şeye dokunmak</b> nedenini parmağın yanında söyler &ndash; fare ile ipucunun verdiği neden (seviyeniz, makine manuelde değil,
+     bir kontrolör yanıt vermiyor &hellip;).</li>
+ <li><b>Kapalı bir liste</b> (içine yazılan değil, seçilen bir liste) büyük girdili bir menü olarak açılır.</li>
+ <li><b>Parmakla sürüklemek kaydırır</b>: bir tablonun satırlarını ve sütunlarını, bir listeyi, ekrana sığmayacak kadar büyük bir sayfayı. Dokunmak bir satırı seçer (iki dokunuş çift tıklamadır);
+     sürükleme başladığı satırı seçmez ve başladığı düğmeye basılmaz. Bir kaydırıcı, bir jog düğmesi, bir ayırıcı, bir grafik, bir tablonun başlıkları
+     ve bir sekme şeridi bu şekilde kaydırılmaz &ndash; orada sürüklemenin kendisi iştir.</li>
+ <li><b>Yazma.</b> Bir metin kutusuna dokunmak bir <b>ekran klavyesi</b> getirir: Türkçe Q düzeni (ı i ğ ü ş ö ç; İ ve I
+     Türkçede yazıldığı gibi), üstte rakamlar, bir işaretler sayfası, ok tuşları, geri silme (basılı tutulursa tekrarlar), <kbd>Enter</kbd> ve kaldırmak için &#10005;.
+     Ekranın altında durur &ndash; kutu aşağıdaysa üstünde &ndash; ve kutudan çıkınca gider. Bir <b>sayı</b> &ndash; bir tablonun sayı
+     hücresi, okları olan bir kutu &ndash; sınırlarıyla <b>tuş takımını</b> (<a href="#keypad">5</a>) alır; OK onu yazar.</li>
+ <li>Operatör sayfalarında çift tıklamanın işinin kendi düğmesi vardır (notların <i>Görüntüle</i>'si, &hellip;); notlardaki <i>Bul</i> bir satırı tek dokunuşla açar.</li>
+</ul>
+<p class="note">Dokunmatik ekran panel için açılır. Kapalıyken bir kullanıcının <i>Ekran kullanımı</i> değeri saklanır ve yeniden açıldığında tekrar alınır.</p>
+
+<!-- ================================================================== -->
+<h2 id="signin">2. Oturum açma ve seviyeler</h2>
+
+<p>Üst çubuktaki kullanıcı simgesine tıklayın, listeden adınızı seçin ve şifrenizi yazın. Son oturum açan kişinin adı
+zaten seçilidir ve imleç şifre kutusunda bekler; <b>Kullanıcı değiştir</b> listeyi hemen açar.
+Biri oturum açınca simge yanıp sönmeyi bırakır. Beş yanlış şifre o hesabı bir dakika kilitler.</p>
+
+<table>
+<tr><th>Seviye</th><th>Genellikle</th><th>Yapabilecekleri</th></tr>
+<tr><td><span class="lvl l0">Yok</span></td><td>Oturum açılmamış</td><td>Her sayfayı izlemek. Hiçbir şeyi değiştirmemek.</td></tr>
+<tr><td><span class="lvl l1">Operatör</span></td><td>Makine operatörü</td><td>Manuel Hareket, ölçü birimleri, alarmları onaylama ve sıfırlama, makine kontrollerinin çoğu, notlar (metinler ve yardımcılar öneri olarak).</td></tr>
+<tr><td><span class="lvl l2">Bakım</span></td><td>Bakım / ayarcı</td><td>Bir operatörün yapabildiği her şey, ayrıca Makine Parametreleri (eksen ayarları, alarm ayarları), kayıtlar, ünite bağlama ve bir
+  silindiri ileri geri hareket ettirme (<a href="#couple">4</a>), çeviriler (<a href="#translation">9a</a>) ve bir PLC'nin verisinin yedeği (<a href="#plcdata">7a</a>).</td></tr>
+<tr><td><span class="lvl l3">Admin</span></td><td>Mühendis</td><td>Her şey: başka bir Admin'inki dışında her hesap (bkz. <a href="#viewprefs">Kullanıcılar ve Tercihler</a>), PLC bağlantısı, PLC tanılama, ayarları içe aktarma,
+  PLC bellek monitörü, bir yedeği PLC'ye yazma, simple motion modüllerinin parametreleri. İpuçları ayrıca bağlantıları da gösterir (adresler, koşullar).</td></tr>
+</table>
+
+<p class="note">Her kontrolörün de kendi seviyesi vardır. Bir sayfa size açık olabilir, ama üzerindeki bir alt makinenin kontrolleri
+yine de daha yüksek bir seviye isteyebilir &ndash; kontrolün ipucu bunu söyler.</p>
+
+<!-- ================================================================== -->
+<h2 id="nav">3. Sayfalar arasında gezinme</h2>
+<ul>
+ <li><b>Sayfa menüsü (sol):</b> Ana Sayfa, Alarmlar, Gösterge Paneli (bkz. <a href="#dashboard">11</a>), Manuel Hareket, Makine Parametreleri, HMI Ayarları &ndash; ayrıca makinenin kendi sayfaları (bkz. <a href="#machine">13</a>).</li>
+ <li><b>Makine listesi (altında):</b> alt makineler bağlıyken her sayfa her makine için bir kez vardır. Makineyi burada seçin.
+     Vurgulanan makine her zaman sayfası ekranda olan makinedir.</li>
+ <li><b>Sekmeler:</b> bazı sayfaların üst kısmında kendi sekmeleri vardır (HMI Ayarları, birkaç Manuel Hareket sayfası). Bir satıra sığmayan sekmeler
+     ikinci bir satıra geçer; böylece her sekmenin adı her zaman görünür &ndash; her ekran ölçeğinde, bir yan sayfa açık olsun ya da olmasın.
+     Manuel Hareket'in sekmelerinin üstünde makinenin kendi <b>çubuğu</b> olabilir, her sekmenin üstünde aynıdır (eksenlerin hızı ve jog adımları gibi &ndash; makinenin bölümüne bakın);
+     dar bir ekranda parçaları satırlara geçer.</li>
+ <li><b>&#9664; Geri / &#9654; İleri:</b> bulunduğunuz yere dönün &ndash; aynı sayfa, aynı makine ve aynı sekme.
+     Zaten bulunduğunuz sayfayı seçmek adım eklemez. Başka bir sayfayı açan bir <b>bağlantı</b> &ndash; bir notun <i>Kontrolünü bul</i>'u veya
+     <i>Çeviri tablosunda</i>'sı, <i>Bul</i>'un bulduğu bir kullanım, bağlantı uyarısının PLC Bağlantısı &ndash; <b>tek</b> adımdır: Geri, bağlantının izlendiği
+     yere, olduğu gibi döner.</li>
+ <li><b>Menüyü daraltın</b> üstündeki düğmeyle (&laquo;, yan çubuğun &raquo;'ı gibi), yalnızca simgelere; genişliğini ayarlamak için sağ kenarını sürükleyin. İkisi de hatırlanır.
+     Simgelerine katlanmışken menünün düğmeleri, imleç üzerlerinde beklerken adlarını söyler; açıkken, adlar göründüğü için ipuçları yoktur.</li>
+ <li><b>Bıraktığınız yerde:</b> program bulunduğu sayfada yeniden açılır &ndash; aynı makine ve sekmeler, açık olan yan sayfa ve
+     yan pencerelerle (sahip olduğu genişlikte; görev çubuğuna küçültülmüş bir yan pencere oraya geri gider) &ndash; yeniden başlatmadan veya
+     elektrik kesintisinden sonra. Başlangıçta oturum açan kişinin seviyesinin üstündeki bir sayfa veya yan sayfa, onu açabilecek ilk oturum açışta açılır &ndash;
+     o zamana kadar başka bir yere gitmediyseniz.</li>
+</ul>
+
+<h3 id="side">3a. Yan çubuk ve sayfaları</h3>
+<p>Sağ kenardaki, üst çubuğun altından en alta uzanan çubuk <b>yan sayfaları</b> açar &ndash; bir sayfayla <i>birlikte</i> izlediğiniz veya yaptığınız
+şeyler için: bir silindiri hareket ettirirken makinenin girişleri ve çıkışları, bir üniteyi denerken PLC Monitörü, bir makinenin kendi
+izleme veya sipariş sayfaları. Bir yan sayfa gösterilen sayfanın <b>yanında</b> açılır; sayfa yer açmak için daralır (artık sığmayınca
+kayar &ndash; altında veya yanında bir kaydırma çubuğu görünür): hiçbir şey hiçbir zaman örtülmez.</p>
+<ul>
+ <li><b>Açma / kapatma:</b> çubuktaki simgesi (açık olan işaretlidir) veya sayfanın başlığındaki &#10005; (başlık, sayfanın adının önünde aynı simgeyi gösterir). Kapatmak yalnızca gizler:
+     tam bıraktığınız gibi yeniden açılır.</li>
+ <li><b>Ekranı paylaşma:</b> sayfa ile yan sayfa arasındaki kenarı sürükleyin. <b>Kenara çift tıklayın</b>: yan sayfa, gösterdiği sayfanın tamamını
+     gösterecek kadar genişler &ndash; her düğme, PLC Monitörü sekmesinin her sütunu (altında Bul açıkken Bul'un listesininki de),
+     yan yana girişler ve çıkışlar her adları tam görünerek, bir eksen sayfasının satırları listelerinin işaretlediği sütunlarla (listelerin kendisi
+     verilen genişliği alır) &ndash;
+     kenarı geri almak için sayfadan bir şerit bırakarak (kenar o şeritten öteye gitmez). Genişlik hatırlanır ve
+     yan sayfa bir dahaki sefere, pencere tam boyutta olunca o genişlikte açılır.</li>
+ <li><b>Kendi penceresi</b> (ikinci bir ekran için): &#10005;'in yanındaki düğme. Pencerenin tek bir başlık çubuğu vardır &ndash; sayfanın
+     simgesi ve adı, ardından <b>yan panele geri</b>, simge durumuna küçült, ekranı kapla ve kapat. Başlığından sürükleyin (çift tıklama ekranı kaplatır), kenarlarından boyutlandırın;
+     görev çubuğu sayfanın simgesini gösterir. En son nerede idiyse orada açılır &ndash; panelde veya penceresinde.</li>
+ <li>Üst düğmesiyle <b>çubuğu</b> ince bir kenara <b>katlayın</b>, ve geri açın.</li>
+ <li><b>Sayfanın yanında bir ana sayfa:</b> bir makinenin <b>Ana Sayfa</b>, <b>Manuel Hareket</b>, <b>Makine Parametreleri</b>, <b>Alarmlar</b> veya <b>Gösterge Paneli</b> sayfası
+     yan sayfa olarak açılabilir. Sayfa menüsünde <b>düğmesine sağ tıklayın</b> &ndash; <i>Yan panelde aç</i>, sayfa her makine için bir kez
+     varsa ardından makine &ndash; ya da bu sayfaların listesi için yan çubuğun <b>+</b>'sına tıklayın (çubukta zaten olanlar işaretlidir).
+     Yan çubukta <b>+'nın altında</b> kendi düğmesini alır (programın kendi yan sayfaları onun üstünde kalır), makinesiyle adlandırılır
+     (<i>&lt;makine&gt; - Manuel Hareket</i>), ve herhangi bir yan sayfa gibi açılır, kapanır, ekranı
+     paylaşır ve kendi penceresine geçer. <b>Sayfanın kendisi gibi çalışır</b>: düğmeleri makineyi kendi
+     seviyeleri, koşulları ve kaydıyla hareket ettirir ve sayfanın seviyesini ister. <b>Yan çubuktaki düğmesine sağ tıklayın</b>: <i>Yan çubuktan kaldır</i>.
+     Oraya konan sayfalar bir sonraki başlangıçta da oradadır. HMI Ayarları ve bir kütüphaneyi düzenleyen sayfalar (profiller) orada açılamaz.
+     <b>+</b> listesinde ve bir sayfa düğmesinin <i>Yan panelde aç</i>'ında seviyenizin üstündeki bir sayfa, nedenini söyleyerek gridir.</li>
+ <li>Çubuk yalnızca seviyenizin açabileceği sayfaları gösterir, hiç yoksa çubuk da yoktur. Gösterecek bir şeyi olmayan bir yan sayfanın düğmesi yoktur:
+     Eksen İzleme'ninki, bir makinenin Eksen Ayarları sayfasında bir eksen tanımlanınca oradadır.</li>
+</ul>
+<table>
+<tr><th>Yan sayfa</th><th>Seviye</th><th>Ne gösterir</th></tr>
+<tr><td>Girişler / Çıkışlar</td><td><span class="lvl l0">Yok</span></td><td>Her fiziksel giriş (X) ve çıkış (Y), açıkken yanar:
+  girişler yeşil, çıkışlar kehribar. <i>Bul</i>, adresinde veya adında yazdığınız şey geçenleri tutar; <i>Yalnızca açık olanlar</i> gerisini gizler.
+  <b>Listeler</b> (yanlarında, ya da panel darken kendi satırında): hangi kontrolörlerin giriş ve çıkışlarının gösterileceğini işaretleyin &ndash; hiçbiri işaretli değilse
+  hepsi; gösterilenler en üste çıkar. Sizin seçiminiz, saklanır.
+  Yalnızca okunur &ndash; her seviyeye açık, operatörün bir arıza için ilk bakacağı yer. Liste programın yanındaki <code>IoList.csv</code>'den gelir.</td></tr>
+<tr><td>Eksen İzleme</td><td><span class="lvl l0">Yok</span></td><td>Her eksenin <b>pozisyonu</b> ve <b>motor akımı</b>, <i>Eksen Ayarları</i>
+  satırlarındaki gibi çizilir, makineye göre gruplanır &ndash; önce ana makinenin, sonra bağlandıkları sırayla alt makinelerin. Ona elle hiçbir şey eklenmez:
+  eksenler, makinelerin Eksen Ayarları sayfalarının satırlarıdır, her biri satırının görünürlük koşulları karşılandığı sürece listelenir. Üstünde, eksenlerini
+  listelediği her makinenin <b>çubuğu</b> (eksenlerinin hızı ve jog adımları), yan sayfa darken parçaları satırlarda.
+  <b>Eksen Pozisyonu</b> başlığına tıklamak, Eksen Ayarları sayfalarındaki gibi yan yana gösterilecek pozisyonları seçer, ve aynı seçimdir
+  (<a href="#params">10</a>). Üzerindeki üniteler bağlanabilir (<a href="#couple">4</a>).
+  <b>Eksen</b> başlığına tıklamak eksenlerin listesini açar (birden fazla makinenin ekseni varsa adın önünde makine): gösterilecekleri
+  işaretleyin &ndash; hiçbiri işaretli değilse hepsi; işaretlenenler birlikte yukarı çıkar. Bu liste herkeste vardır, her kullanıcının kendi seçimi.
+  Bir <span class="lvl l3">Admin</span>'in üstünde Eksen Ayarları sayfasının iki listesi vardır (<i>PLC eksen öğeleri</i>, <i>Hareket izleme öğeleri</i>, monitör için
+  kendi seçimi): <i>Tork izleme</i> dışında bir şey işaretliyken her eksen, işaretlenenlerle Eksen Ayarları satırı olarak gösterilir &ndash; pozisyon her zaman,
+  <i>Manuel hareket</i> jog düğmelerini ekler &ndash; başlıklar satırların üstünde, satırlar kayarken orada kalır, satırlar yana kayarken eksen adları solda. Ayarlar <b>gösterilir, girilmez</b> (sayfada girilir),
+  referans etkinleştirme işaretlenmez, gösterilir ve Kalibre Et düğmesi yoktur. <span class="lvl l2">Bakım</span> iki listeyi
+  gri görür &ndash; satırların gösterdiği gibi işaretli &ndash; ipucunda nedeniyle; bir Operatör onları görmez.</td></tr>
+<tr><td>Notlar ve geri bildirim</td><td><span class="lvl l0">Yok</span> (yazmak: oturum açık)</td><td>Her kontrol üzerinde yorumlar, çeviriler ve yardımcılar, ve
+  geri bildirim dosyası (<a href="#notes">3b</a>).</td></tr>
+<tr><td>PLC Monitörü</td><td><span class="lvl l3">Admin</span></td><td>Her kontrolörün her cihazı, okunur ve yazılır. Bkz. <a href="#diag">11</a>.</td></tr>
+<tr><td>Bir makinenin kendisine ait</td><td>kendi seviyesi</td><td>Makineyle birlikte tasarlanır: eksen pozisyonları, güç, çalıştırılan sipariş, ikinci seviye işlemler.</td></tr>
+</table>
+
+<h3 id="notes">3b. Notlar ve geri bildirim</h3>
+<p>Kullanıcıların HMI ve makine hakkında düşündükleri için bir yan sayfa, her kontrol üzerinde &ndash; fare ile olduğu kadar parmakla da:
+sağ tıklama gerekmez. Yan çubuktan açın. Programın diğer sayfaları gibi düzenlenmiştir, iki sekmede: <b>Notlar</b>, panelin her notu
+bir tabloda, ve <b>Ayrıntılar</b>, seçilen not veya kontrol. Notları herkes okuyabilir; not yazmak için oturum açık olmalıdır.</p>
+<p><b>Notlar</b>: tablonun üstünde düğmeler, altlarında filtreler, sonra notlar &ndash; türleri, kontrolü, sayfası, metni, kimin yazdığı, ne zaman ve durumu.</p>
+<ul>
+ <li>&#10133; <b>Ekle</b>: bir kontrol üzerinde not. <b>Sayfadaki bir kontrole bir sonraki dokunuş veya tıklama onu seçer</b> &ndash; bir alan, bir düğme, bir lamba, bir başlık,
+     bir değer, üst çubuk ve düğmeleri, menünün bir sayfa düğmesi, makine listesinin bir makinesi, bir sayfanın sekmesi &ndash; ve <b>hiçbir şey çalıştırılmaz</b>:
+     jog yok, başlatma yok, kontrolöre hiçbir şey yazılmaz, başka bir sayfa açılmaz (bir sayfa düğmesi veya bir sekme açtığı sayfayla not edilir). Beklerken
+     pencerenin geri kalanı gölgelenir; imlecin altındaki kontrol parlak kalır. Bir seferde tek kontrol: seçilince seçme kapanır ve
+     kontrol <b>Ayrıntılar</b>'da açılır. <kbd>Esc</kbd> veya notlar sayfasına bir dokunuş vazgeçer; notlar sayfasını kapatmak da öyle. Sayfa seçme kapalı açılır,
+     bu yüzden başka bir sayfanın kontrolünü not etmek için önce o sayfaya gidin, sonra Ekle.
+     Bir <b>tabloda</b> bir <b>başlığa</b> dokunmak başlığı seçer; yalnızca bir değer gösteren bir hücreye dokunmak o değeri seçer (satırıyla adlandırılır:
+     <i>Pozisyon (X)</i>). Bir silindir ünitesinin <b>çerçevesine</b> (adına, kenarına) dokunmak <b>üniteyi</b>, çevrilecek başlığıyla seçer.</li>
+ <li>&#128221; <b>Genel not</b>: hiçbir kontrole bağlı olmayan bir not &ndash; bir fikir, bir istek &ndash; isterseniz bir dosyayla.</li>
+ <li>&#128065; <b>Görüntüle</b> (veya nota çift tıklama): notun tamamı, Ayrıntılar'da. &#9999;&#65039; <b>Düzenle</b>: sözcükleri, metinleri, değeri, gerekçesi veya dosyası
+     orada değiştirilir, sonra <i>Kaydet</i> &ndash; yazarı ve zamanı korunur, kimin ne zaman değiştirdiği eklenir. Bir Operatörün değiştirdiği bir çeviri veya yardımcı
+     yeniden bir öneri olur.</li>
+ <li>&#128269; <b>Kontrolünü bul</b>: notun kontrolünün sayfası açılır (yer, not yazılırken notla birlikte saklanır) ve kontrol yanıp söner
+     &ndash; Geri için tek adım.</li>
+ <li>&#128465; <b>Kaldır</b>: seçilen notlar &ndash; birden fazlası bir kerede &ndash; tek bir soruyla. Bir not <b>yazarı</b> veya
+     <b>yazarın üstünde bir seviyedeki</b> bir kullanıcı tarafından değiştirilir veya kaldırılır: bir Admin bir Operatörün veya Bakım'ın notunu değiştirir, başka bir Admin'inkini değil. Kaldıramadıklarınız kalır ve
+     soru bunu söyler.</li>
+ <li>&#128228; <b>Geri bildirim dosyası</b> ve &#128194; klasörü (aşağıda).</li>
+ <li><b>Filtreler</b>: bir <b>arama</b> (her sözcük geçmelidir &ndash; kontrolde, metinde, sayfada, yazanda, büyük küçük harf fark etmeden), <b>tür</b>
+     (yorumlar, genel notlar, metinler, yardımcılar, değerler, ayarlar), <b>durum</b> (kabul edilecek öneriler, ya da geçerli metinler ve yardımcılar) ve <b>kimin</b>
+     yazdığı (herkes, benimkiler, bir kullanıcı); &#10006; onları temizler. Tablonun altındaki satır gösterilen notları sayar: <i>40 notun 12'si</i>.</li>
+</ul>
+<p><b>Ayrıntılar</b>, seçilen kontrol için:</p>
+<ul>
+ <li><b>Ne ve nerede</b>: ekrandaki adı (<i>Robot X - Min</i>) ve sayfası (<i>&lt;makine&gt; / Makine Parametreleri / Eksen Ayarları</i>).</li>
+ <li><b>İpucu</b> &ndash; dokunmatik bir ekranda onu okumanın tek yolu, çünkü bir kontrolün üzerinde bekletilecek imleç yoktur.</li>
+ <li><b>Değeri</b>, gösterilen bir değer için (bir gösterge, bir lamba, bir tablo hücresi): <i>Şu an gösterilen</i>, ardından <i>Öneriniz</i> (ne olması gerektiği) ve <i>Gerekçe</i>;
+     &#128190; <i>Notu kaydet</i>. Geri bildirim dosyasıyla makinenin üreticisine gider &ndash; ekranda hiçbir şey değişmez.</li>
+ <li><b>Metinleri</b>, bir tabloda: <i>Dil</i>, <i>Şu an</i>, <i>Öneriniz</i>, <i>Gerekçe</i>. Metnin ne olması gerektiğini <i>Öneriniz</i> altına yazın;
+     <i>Gerekçe</i> (neden) bir şey önerilince açılır. Bir ünitenin başlığı üniteyle (çerçevesine veya adına dokununca)
+     ve her düğmesi ve lambasıyla (<i>Ünite başlığı</i>) birlikte sunulur. <i>Diller:</i> listelenen dilleri seçer &ndash; sizinki olarak saklanır; hiçbiri seçilmezse
+     ekranın dili ve İngilizce. Bir değerin kendi metni yoktur (sütununun başlığı başlıkta çevrilir).
+     <span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span>: <i>Metinleri kaydet</i> onları <b>hemen ekrana</b> koyar,
+     bu paneldeki herkes için, ve anahtarlarının çeviri dosyasına yazar, <a href="#translation">Çeviri</a>'deki bir düzenlemenin yapacağı gibi
+     (geçmişi <i>&lt;kullanıcı&gt; (not)</i> der). <i>Çeviri tablosunda</i>, HMI Ayarları &rsaquo; Çeviri'yi o anahtarda açar &ndash; satırı işaretli,
+     yazmak için ekranın dilinin hücresi seçili. Bir <span class="lvl l1">Operatör</span>: <i>Metinleri öner</i> &ndash; Bakım veya bir Admin'in
+     aynı sayfada <b>kabul ettiği</b> bir öneri.</li>
+ <li><span class="lvl l3">Admin</span> <b>Ayarları</b>: kontrolün kendi ayarları bir tabloda &ndash; metin anahtarı, PLC'si, adresleri &hellip;
+     (ve bir ünitenin alanı için ünitesininkiler) &ndash; <i>Şu an</i>, <i>Öneriniz</i> ve <i>Gerekçe</i> ile; &#128190; <i>İstenen ayarları kaydet</i>.
+     Üretici içindir, geri bildirim dosyasında: <b>program değiştirilmez</b>.</li>
+ <li><b>Yardımcıları</b>: bu kontrol için bir metin ve bir dosya (bir belge, bir resim, bir video). Bakım'ın ve bir Admin'inkiler <b>hemen kontrolle birlikte</b>
+     sunulur: bir ünitenin <b>?</b>'inde, ya da başka bir kontrolün köşesinde küçük mavi bir <b>?</b> olarak &ndash; tıklamak onu açar
+     (dosyasını veya sözcüklerinin bir sayfasını). Bir Operatörünküler kabul edilecek önerilerdir. Dosya notlarla birlikte saklanır.</li>
+ <li><b>Yorumlar</b>: oturum açmış herkes, kontrol, sayfa, makine hakkında.</li>
+ <li>&#128270; <b>Bul</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>): seçilen kontrolün cihazlarının ve metinlerinin &ndash; ya da yazılan herhangi bir cihazın veya çeviri anahtarının &ndash;
+     her kullanımı tek bir listede; çift tıklama bir sayfanın kullanımını açar. Ayrıntılar'daki &#10133; sonraki kontrolü seçer.</li>
+</ul>
+<p><b>Yazılan hiçbir şey sorulmadan kaybolmaz.</b> Sayfa yeniden dolarken yazdıklarınız kalır; atılacakken &ndash; Ekle'ye basılınca, bir genel not
+başlatılınca, başka bir not gösterilince &ndash; sayfa sorar: <i>Kaydedilmemiş bir not girişi var.</i> <b>Kaydet</b> onları o anda not olarak saklar (yazılan değer, metinler,
+ayarlar, yardımcı ve yorum, bir genel not, değiştirilen bir not) ve Ayrıntılar'a geri dönmez; <b>At</b> onları atar; <b>Vazgeç</b> onlara geri döner.</p>
+<p><b>Geri bildirim dosyası</b> &ndash; &#128228; <i>Geri bildirim dosyası</i>'na tek tıklama (veya <kbd>Ctrl</kbd>+<kbd>E</kbd>): panelin her notu tek bir
+<code>.zip</code> içinde, <code>Documents\Kaban HMI\Feedback</code> klasöründe (<i>Feedback_&lt;makine&gt;_20261006_1430.zip</i>): okumak için <code>Notes.html</code>, sayfaya ve
+kontrole göre; bir elektronik tablo için <code>Notes.csv</code>; saklandığı gibi <code>Notes.xml</code>; yardımcıların ve genel notların dosyaları; ve üretici için
+<code>Translations.csv</code> (istenen metinler, çeviri dosyasının kendi biçiminde), <code>Properties.csv</code> (istenen ayarlar),
+<code>Values.csv</code> (istenen değerler) ve her dosyanın ne olduğunu söyleyen <code>README.txt</code>. Makinenin üreticisine gönderin.
+&#128194; onu klasöründe gösterir (<span class="lvl l2">Bakım</span>, <span class="lvl l3">Admin</span>). Notların kendisi panelde saklanır
+(<code>ProgramData\KabanHMI\Notes</code>, bkz. <a href="#files">12</a>).</p>
+
+<!-- ================================================================== -->
+<h2 id="units">4. Manuel Hareket: üniteler</h2>
+
+<p>Elle hareket ettirebileceğiniz her silindir, motor ve eksen bir <b>ünitedir</b>: üst satırında adı olan bir çerçeve, bir veya iki
+düğme ve bazen aralarında bir pozisyon değeri. Eksen üniteleri ve silindir üniteleri aynı boyutta ve biçimdedir, böylece bir sayfa tek bir tablo gibi okunur,
+ve her pozisyon aynı şekilde okunur: Eksen Ayarları satırlarındaki gibi gri üzerinde siyah kalın rakamlar.</p>
+<p>Bir makinenin kendi <b>Manuel Hareket</b> ve <b>Makine Parametreleri</b> sayfaları &ndash; sekmeleri, satırları ve bölümleri &ndash; makinenin bölümünde anlatılır (<a href="#machine">13. Bu makine</a>).
+Makinenin Manuel Hareket sekmelerinin üstündeki kendi çubuğu da öyle, varsa &ndash; örneğin eksenlerin hızı, JOG ve jog adımları, ve <i>Cylinder FW/Back</i> (aşağıda).</p>
+
+<figure>
+<svg viewBox="0 0 900 212" role="img" aria-label="Bir ünitenin yapısı">
+ <defs><style>.t{font:13px "Segoe UI",Arial;fill:#23262c}.s{font:12px "Segoe UI",Arial;fill:#5b6270}.b{font:bold 20px Consolas,monospace}</style></defs>
+ <!-- cylinder unit -->
+ <rect x="20" y="40" width="400" height="92" rx="5" fill="#fff" stroke="#b4b4b4"/>
+ <rect x="30" y="30" width="150" height="20" fill="#fff"/><text class="t" x="34" y="45">Sol Üst Sıkma</text>
+ <circle cx="396" cy="40" r="9" fill="#fff" stroke="#d62424" stroke-width="2"/><text x="392" y="45" font-weight="bold" font-size="12" fill="#d62424">?</text>
+ <circle cx="372" cy="40" r="9" fill="#fff" stroke="#2870be" stroke-width="1.5"/><text x="369" y="45" font-style="italic" font-weight="bold" font-size="12" fill="#2870be" font-family="Georgia">i</text>
+ <rect x="30" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#d62424" stroke-width="3"/>
+ <circle cx="42" cy="74" r="5" fill="#2fbf4a"/><text x="84" y="97" font-size="18" fill="#8a929c">&#9664;</text>
+ <rect x="160" y="62" width="120" height="56" rx="4" fill="#dcdcdc" stroke="#aab1bb"/><text x="186" y="97" font-size="17" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">125.0 mm</text>
+ <rect x="290" y="62" width="120" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="340" y="97" font-size="18" fill="#8a929c">&#9654;</text>
+ <!-- axis unit -->
+ <rect x="480" y="40" width="400" height="92" rx="5" fill="#fff" stroke="#b4b4b4"/>
+ <rect x="490" y="30" width="80" height="20" fill="#fff"/><text class="t" x="494" y="45">Kesim Z</text>
+ <circle cx="856" cy="40" r="9" fill="#d62424"/><text x="852" y="45" font-weight="bold" font-size="12" fill="#fff">?</text>
+ <rect x="490" y="62" width="100" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="530" y="97" font-size="18" fill="#8a929c">&#9664;</text>
+ <rect x="600" y="62" width="170" height="56" rx="4" fill="#dcdcdc" stroke="#d62424" stroke-width="3"/><text x="618" y="97" font-size="17" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">412.50 mm</text>
+ <rect x="780" y="62" width="90" height="56" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="815" y="97" font-size="18" fill="#8a929c">&#9654;</text>
+ <!-- labels -->
+ <text class="s" x="20" y="160">A hareketinde hata olan silindir ünitesi:</text>
+ <text class="s" x="20" y="178">üst satırda kırmızı <tspan font-weight="bold">?</tspan> belirir, A düğmesinin kenarı kırmızı yanıp söner.</text>
+ <text class="s" x="20" y="196">Yeşil nokta = sensör açık. Her pozisyon gri üzerinde siyah okunur.</text>
+ <text class="s" x="480" y="160">Hatadaki eksen ünitesi: POZİSYONunun kenarı kırmızı yanıp söner;</text>
+ <text class="s" x="480" y="178">sürücü bir kod gösterdiği sürece <tspan font-weight="bold">?</tspan> oradadır,</text>
+ <text class="s" x="480" y="196">her kod için bir menü girdisi.</text>
+</svg>
+<figcaption>Solda: pozisyon değeri olan bir silindir ünitesi. Sağda: bir eksen ünitesi. İkisi de hatadayken gösterilmiştir.</figcaption>
+</figure>
+
+<h3>Düğmeler</h3>
+<ul>
+ <li><b>Anlık</b> (jog): hareket <b>yalnızca düğmeyi basılı tuttuğunuz sürece</b> sürer. Bıraktığınızda durur &ndash; ayrıca imleç
+     bir mesajla alınırsa, sayfa değişirse, düğme gizlenir veya devre dışı kalırsa ya da oturumunuz kapanırsa da.</li>
+ <li><b>Kalıcı</b>: bir basış açar, sonraki kapatır (motorlar, soğutma, üfleme).</li>
+ <li>Bir düğme, rölesi açıkken <b>koyulaşır</b>, fiziksel çıkış açıkken <b>beyaz yazıyla</b> daha da koyulaşır.</li>
+ <li>Bir düğmenin dış köşesindeki küçük <b>noktalar</b> sensörleridir; hangisi olduğunu görmek için imleci birinin üzerinde bekletin.</li>
+ <li><b>Alarmı</b>: imleci bir düğmenin üzerinde bekletin &ndash; ipucu, ne yaptığından sonra hareketinin başarısız olduğunu bildiren <b>alarm bitini</b>
+     alarmın metniyle adlandırır (bit set iken <i>şu an AÇIK</i>); bir eksen ünitesinin düğmeleri sürücünün kod sözcüklerini ekler (servo alarmı, eksen alarmı, eksen uyarısı).
+     Ünitenin çerçevesi her iki hareketinin alarm bitlerini, her birini hareketin adıyla listeler. Her düğme bir tane adlandırabilir (<i>ErrorAddress</i>).</li>
+ <li>İşlevi olmayan bir yuva boş gri bir hücre olarak kalır, böylece komşu ünitelerin düğmeleri hizalı durur.</li>
+ <li>Bir <b>eksen ünitesinin</b> Eksen Ayarları satırının okları vardır &ndash; dikey bir eksen için &#9660; &#9650;, diğerleri için &#9664; &#9654; &ndash; ve yalnızca kendi
+     pozisyonunu gösterir (diğer pozisyonlar Eksen Ayarları sayfalarında ve Eksen İzleme'dedir).</li>
+</ul>
+
+<div class="safety"><b>Güvenlik.</b> HMI, algılayabildiği her durumda bir jog'u bırakır. Makinenin kendi kilitlemeleri,
+acil stop ve PLC programı korumanın kendisidir &ndash; bir hareketi durdurmak için asla ekrana güvenmeyin.</div>
+
+<h3 id="couple">Bağlı üniteler</h3>
+<p><span class="lvl l2">Bakım</span> Aynı türden üniteler birlikte hareket etmek üzere <b>bağlanabilir</b> &ndash; birkaç sıkma, birkaç eksen &ndash; sanki
+düğmelerine aynı anda basılmış gibi. Bağlama Bakım ve Admin kullanıcıları içindir (bir Operatör zincir görmez), <b>Manuel Hareket</b>,
+<b>Makine Parametreleri &rsaquo; Eksen</b> ve <b>Eksen İzleme</b>'de; başka bir sayfa açmak her bağlantıyı çözer.</p>
+<ul>
+ <li>Bir ünitenin üst satırının sağ ucundaki <b>zincir</b> (solunda <b>?</b>'i) onu bağlar: zincir kapanır ve çerçeve <b>maviye</b> döner. Bağını çözmek için
+     yeniden tıklayın; üç veya daha fazla bağlıyken <i>'&lt;ünite&gt;' bağını çöz</i> veya <i>Tümünün bağını çöz</i> sunar. Tek başına kalan bir ünite bağlantı değildir.</li>
+ <li>Silindirler silindirlerle, eksenler eksenlerle bağlanır &ndash; ve yalnızca birlikte hareket edebilenler: her ucunda sensör olan ve
+     <b>aynı uçta duran</b> silindirler (hepsi geride ya da hepsi ileride); pozisyonu okunan silindirler (bir pnömatik pozisyonlama, bir enkoder, bir analog
+     sensör) <b>aynı geri beslemeyle</b>, her biri nerede durursa dursun; <b>aynı sayfadaki eksenler</b>, her biri nerede durursa dursun ve yalnızca eksenler
+     <b>adım modundayken</b> (makinenin JOG'u kapalı &ndash; bu arada JOG seçilirse bağlantı bir sonraki basışta çözülür).</li>
+ <li>Üniteler bağlıyken katılamayan ünitelerin zincirleri <b>soluktur</b> ve hiçbir şey yapmaz &ndash; tıklama nedenini söyler. Hiçbir şey bağlı değilken
+     bir zincir, ünitesi hiç bağlanamıyorsa soluktur (uçlarının arasında, pozisyonu okunmuyor, başka bir sayfada).</li>
+ <li>Bağlı bir ünitenin bir düğmesine basın: <b>her bağlı ünitenin aynı düğmesine</b> basılır &ndash; siz tuttukça tutulur, bıraktığınızda bırakılır.
+     Açan bir düğmeye tıklamak onlarınkine de tıklar.</li>
+ <li>Her hareketten önce üniteler yeniden kontrol edilir: hâlâ ekranda, hâlâ aynı yerde, düğmeleri şu an kullanılabilir. Biri değilse
+     bağlantı çözülür, zincir nedenini söyler ve <b>yalnızca bastığınız ünite hareket eder</b>.</li>
+ <li>Ekrandan çıkan bir ünite (başka bir sayfa veya sekme) bağlantıdan çıkar; tek kalan ünite bağlantı değildir. Oturum açmak veya kapatmak her bağlantıyı çözer.</li>
+ <li>Üniteler bağlıyken üst çubuk yanıp sönen <b>mavi bir zincir</b> gösterir (<i>Dikkat işaretleri: Sabit</i> ile sabit): menüsü bağlı
+     üniteleri listeler &ndash; birine tıklamak onun bağını çözer &ndash; en sonda <i>Tümünün bağını çöz</i>.</li>
+</ul>
+<div class="safety"><b>Güvenlik.</b> Bağlı her düğme kendi koşullarını ve seviyesini korur. Üniteler hareket başlamadan önce kontrol edilir,
+hareket sürerken değil: birlikte hareket ederken bağlı her üniteyi izleyin.</div>
+
+<h3 id="fwback">Silindiri ileri geri hareket ettirme</h3>
+<p><span class="lvl l2">Bakım</span> <b>Cylinder FW/Back</b> (silindir ileri/geri) &ndash; makinenin Manuel Hareket sekmelerinin üstündeki çubuğunun bir düğmesi &ndash; HMI'nin
+bir işlevidir, deneme ve ayar için (kendi PLC biti yoktur). Açıkken (lambası yanar), bir <b>silindir</b> ünitesinin düğmesine basmak &ndash; bir
+silindir, bir pnömatik pozisyonlama, enkoderli bir silindir; eksen değil, motor değil &ndash; o silindiri <b>kendiliğinden ileri geri hareket ettirmeye</b> başlar:
+o tarafın komutu açık ve öbür tarafınki kapalı, sonra tersi (yaylı bir valf: bobini açık, sonra kapalı). Bağlı üniteleri onunla birlikte hareket eder.</p>
+<ul>
+ <li>Her yön, o yönde birlikte hareket eden ünitelerin <b>en kısa alarm gecikmesinden yarım saniye daha kısa</b> sürer &ndash; girilmişse bir hareketin kendi
+     <i>Silindir gecikmesi</i>, yoksa makinenin <i>Silindir alarm gecikmesi</i> (5 s: 4,5 s), asla yarım saniyenin altında değil (<a href="#params">10</a>):
+     varmak için zaman, ve alarm yok. İki yön farklı olabilir; farklıysa ünite ikisini de söyler.</li>
+ <li>Durur &ndash; iki taraf da kapalı &ndash; ünitenin bir düğmesine yeniden basılınca, Cylinder FW/Back kapatılınca, başka bir kullanıcı oturum açınca, ünite
+     ekrandan çıkınca, komutlarından biri artık çalışamayınca veya Manuel Hareket kapanınca.</li>
+ <li>Düğme yalnızca Manuel Hareket'te, Bakım ve Admin için gösterilir: Eksen sayfasındaki ve Eksen İzleme'deki aynı çubukta Cylinder FW/Back yoktur.</li>
+</ul>
+<div class="safety"><b>Güvenlik.</b> İleri geri hareket eden bir silindir, kimse bir düğmeyi tutmadan devam eder. Makinenin başında kalın, hareket edenden uzak durun ve
+sayfadan ayrılmadan önce Cylinder FW/Back'i kapatın.</div>
+
+<h3>Ünitenin <b>?</b>'i</h3>
+<p>Ünitenin üst satırında (zincirinin solunda) bir işaret, her zaman <b style="color:#2870be">mavi</b> &ndash; asla kırmızıya dönmez: düğmeler ve
+pozisyon değeri bir arızayı zaten gösterir. Ne sunduğu ana bağlıdır; <b>eklenen dosyalar</b> (hareketinki, alarmınınki, ünitenin kendisininki, bkz.
+<a href="#params">10</a>) her zaman önce gelir, HMI'nin bir arıza için yaptığı yardım onlardan sonra:</p>
+<table>
+<tr><th>İşaret</th><th>Ne zaman</th><th>Tıklayınca</th></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Ünitenin kendi dosyaları var (fotoğraflar, çizim, ayarlar) ve hiçbir şey başarısız olmadı</td><td>O dosyalar. Hiçbir şey başarısız olmamışken arıza giderme kılavuzu <b>sunulmaz</b>.</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Silindir: hata bitlerinden biri set iken, ya da hareketlerinden biri için HMI'nin kendi alarmı listedeyken (<a href="#genalarms">6a</a>)</td><td>Eklenen dosyalar, sonra
+ alarm listesinin hatayı adlandırdığı gibi adlandırılan <b>adım adım sayfası</b> (hareket için HMI'nin kendi alarmı, ya da hata bitinin alarmı; <i>Adım adım &ndash;
+ &lt;hareket&gt;</i> yalnızca hiçbir alarmın adlandırmadığı bir hata biti için): arızayı makinenin başında
+ çalışacağınız şekilde ele alan bir sayfa, <b>bu</b> silindir ve <b>bu</b> hareket için (adı çizimden alınır: <i>Sıkma</i>, <i>Yukarı</i>&hellip;).
+ <ul>
+  <li>Sayfanın başlığı, alarm listesinin gösterdiği gibi <b>alarmın kendisidir</b>; altındaki küçük satır <b>alarmın ne zaman geldiğini</b> ve <b>sayfanın ne zaman
+      yapıldığını</b> verir.</li>
+  <li><b>Sol tarafta</b> aşağı doğru: <b>yol</b>, olması gereken, kutular alt alta &ndash; PLC çıkışı, röle, valf bobini, valf, hava,
+      silindir, sonu onaylayan sensör. Her kutu numaralıdır ve o parçanın kontrolünü açar. HMI'nin kendi düğmeleri yolda değildir: sayfa
+      gerçek hareketle, PLC'nin girişleri ve çıkışları ve sürdükleriyle ilgilidir. Kaydırırken okuduğunuz parçanın kutusu yanar
+      (rengi onu işaretler) &ndash; gösterilen adımdaki veya ondan önceki son kutu. Son kutu <b>silindir kılavuzudur</b> (aşağıda).</li>
+  <li>Her kontrolün yanında <b>çizimler</b> vardır &ndash; ekranın sağındaki yan paneldeki <i>Girişler / Çıkışlar</i> sayfası, LED sıralarıyla PLC
+      kartı, klemens dizisi, röle, bobin konnektörü (çekilip ölçülmüş: bu konnektörlerde lamba yoktur), valf ve hortumları,
+      silindir ve sensörleri, mıknatısla denenen bir sensör (endüktif olanı çelik bir aletle) ve fişi ölçülürken &ndash; aranacak numara
+      işaretli, ve ne yapılacağını gösteren işaretli birkaç <b>kısa satır</b>: bakın, ölçün, elle basın, dinleyin, çalıştırın. Her ölçü aleti iki probuyla çizilir.
+      Çizimler fikri, parçaların genelde göründüğü gibi gösterir; her sayfada aynıdırlar, yalnızca numaralar değişir. Deneme için hareketi
+      çalıştırmak üzere sayfa, silindirin düğmesini manuel modda kullanmanızı söyler.</li>
+  <li>Pozisyonu bir <b>analog sensörle</b> veya bir <b>enkoderle</b> okunan bir silindir onunla birlikte çizilir &ndash; silindir boyunca sensör
+      (4 mA &hellip; 20 mA), yükün üzerinde ölçeğiyle enkoder &ndash; ve çizimlerin adlandırdığı gibi <b>onu okuyan modülle</b>
+      (<i>U19 FX5-8AD, CH1</i>; <i>U4 FX5U-64MT-ESS, X6/X7</i>). Adımlar da onu adlandırır ve nerede ölçüleceğini söyler.</li>
+  <li>Bir <b>5/3 valf</b>, ünitesinin valf tipinin söylediği gibi anlatılır: <b>kapalı merkez</b> (iki bobin de kapalı: durur ve havasını tutar) veya
+      <b>açık merkez</b> (iki taraf açık: kayabilir). Tasarımcıda bunlar <i>ValveType</i> değerleri <b>3WayClosedCenter</b> ve
+      <b>3WayOpenCenter</b>'dır (3 yollu bir valfin her zaman iki bobini vardır).</li>
+  <li>Çizimler bir hareketi kendi <b>tarafına</b> koyar: <b>A</b> tarafı mili dışarı iter (bir sıkma sıkar), <b>siyah</b> hortumdan; <b>B</b> tarafı
+      içeri çeker (bir sıkma açar), <b>sarı</b> hortumdan. Hareketin bobini valfin kendi hortumunun ucundadır, silindirdeki ok milin
+      gittiği yönü gösterir ve ulaştığı sensör o uçta yanar. Bir çıkışın hangi hortumu doldurduğu makinenin <code>Wiring.csv</code> dosyasındadır (sütun
+      <i>Hose</i>); o yoksa taraf düğmeden alınır.</li>
+  <li><b>HMI'nin gördüğü</b>: her cihaz olması gerektiği gibi, <b>alarm anında</b> (hata biti gelmeden önceki son okuma)
+      ve <b>şimdi</b>, yanlış olduğu yerde kırmızı. Buradan <b>Nereden başlamalı</b> sizi bir adıma gönderir: çıkış hiç açılmadı &ndash; çıkış adımı;
+      iki bobin de açık &ndash; aynı adım, bunu söyleyerek; çıkış açık ama silindir başlangıcından hiç ayrılmadı &ndash; karttan itibaren; ulaştı ama çok geç &ndash; süre.</li>
+  <li><b>1. adım: silindir nerede?</b> Hareket etmedi, yolda durdu ya da ulaştı &ndash; üç arama.
+      <b>Hareket etmedi</b>: PLC'den silindire giden sinyal, her seferinde bir soru &ndash; PLC çıkışı açıyor mu (açmıyorsa neden: düğme neyi bekliyor),
+      kartın LED'i yanıyor mu (kendi klemens adı, 0 V'a karşı 24 V), röle çekiyor mu, bobine enerji geliyor mu (konnektörünün pinlerinde; bobinin kendisi ohm kademesinde), valf konum değiştiriyor mu (manuel kumanda),
+      hava var mı, silindir serbest mi. <b>Yolda durdu</b>: sinyal tüm yol boyunca kalıyor mu (bir 5/3 veya yaylı valf buna ihtiyaç duyar), basınç korunuyor mu,
+      yolunu kesen bir şey var mı, yalnızca yavaş mı. <b>Ulaştı</b>: sensör onu görüyor mu (LED'i; sönükse &ndash; üzerinde tutulan bir mıknatıs, fişindeki 24 V; yanıyorsa &ndash; girişe kadar fişi ve kablosu),
+      öbür ucun sensörü söndü mü (fişini çekmek sensörü kısa devre olmuş bir kablodan ayırır), sıkmanın
+      basınç anahtarı, pozisyon değeri, referans, sonra izin verilen süre.</li>
+  <li>Her yanıt ya arızayı ve çözümünü adlandırır &ndash; ardından <i>yeniden deneyin; hâlâ başarısızsa n. adıma gidin</i> &ndash; ya da sizi ilerletir. Her şey
+      çizimlerdeki gibi adlandırılır: girişler ve çıkışlar, kart klemensleri, teller, sayfalar, röleler, bobinler, valfler, hortumlar, sensörler. PLC'nin <b>iç</b> cihazları (hata biti,
+      komut, pozisyon registeri) ve başlıktaki alarm numarası yalnızca <b>Admin</b> seviyesine gösterilir.</li>
+  <li><b>HMI'nin kendi ürettiği bir alarm</b> (<code>M844.2</code>, bkz. <a href="#genalarms">6a</a>) hangi sinyalin başarısız olduğunu bilir, bu yüzden sayfası <b>yalnızca o
+      sinyali</b> sorar: açık kalan bir başlangıç sensörü &ndash; <i>silindir başlangıcından ayrıldı mı?</i>, sonra karttan itibaren, ya da o sensör; açılmayan bir hedef sensör &ndash;
+      <i>nerede?</i>, sonra yol, ya da o sensör, sonra süre; iki sensör de açık &ndash; yalnızca başlangıç sensörü; iki bobin de açık &ndash; yalnızca iki
+      çıkış; değişmeyen ya da oturmayan bir pozisyon &ndash; valften itibaren veya yol, ve pozisyon değeri. <b>HMI'nin gördüğü</b> yalnızca
+      ilgili sinyalleri, süresi dolduğunda oldukları gibi listeler.</li>
+  <li>Bir silindirin iki hareketi, valfi veya geri beslemesi öyle değilse <b>birbirinin ayna görüntüsü değildir</b>: yaylı bir valfin dönüşü <i>bobin kapanmalı</i>dır
+      (röle bırakmalı, bobinin enerjisi kesilmeli, valf yayla geri dönmeli &ndash; kilitli bir manuel kumanda onu tutar), tek bir sensörün uzak ucu <i>sensör sönmeli ve
+      sonu hiçbir şey görmez</i>dir, bir sıkma basınç anahtarıyla, açılması geri sensörüyle onaylanır.</li>
+  <li>Sayfanın <b>sözcükleri</b> silindirin valf ve geri besleme tipine göre bir şablondan, HMI'nin dilinde gelir (<code>Help\Templates\EN</code>,
+      <code>Help\Templates\TR</code>; kendi şablonları olmayan bir dil İngilizceleri kullanır). Bir şablon tarayıcıda bir sayfa gibi okunur ve sözcükleri
+      bir metin düzenleyicide değiştirilebilir &ndash; açılan bir sonraki sayfa değişikliği kullanır. <b>Numaralar</b> &ndash; adresler, kart klemensleri, teller, sayfalar, röleler,
+      bobinler, valfler, hortumlar, sensörler &ndash; asla bir şablonda değildir: üniteden ve makinenin <code>Wiring.csv</code> dosyasından gelir (çizimlerin kendi etiketleri
+      çizildikleri gibi kalır).</li>
+ </ul>
+ Adımların arkasındaki genel görünüm olan <b>silindir kılavuzu</b> &ndash; yalnızca bu silindirin valfi (1.4) ve geri beslemesiyle (1.7), tek bir 1.1&hellip;1.8 tablosu olarak; başlık
+ satırı kaydırırken üstte kalır &ndash; <b>o sayfanın içinde</b>, sonunda katlıdır: kutusu soldaki yolu bitirir, son adımdan sonra numaralanır,
+ içerdiği ayrıntılarla; ona bir tıklama ya da bir adımın <i>kılavuz 1.6</i>'sı onu orada açar. Arıza başına bir sayfa: kılavuz yalnızca ele alınacak bir hareketin
+ olmadığı yerde tek başına sunulur.</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Eksen: sürücüsü bir kod gösterirken &ndash; servo alarmı, eksen alarmı veya eksen uyarısı (Eksen Ayarları satırının son üç sütunu). Hiçbiri yoksa: <b>?</b> yok.</td><td>Eklenen dosyalar, sonra
+ <b>kod başına bir sayfa</b>, kod ve eksenle başlıklı:
+ <ul>
+  <li><b>Eksenin ne yaptığı</b>: kod geldiğinde, HMI'nin bir önceki taramada okuduğu gibi &ndash; önce hareket modülü: duruyor, <b>referansa gidiyor</b>
+      (satırının <i>referansa git</i>'i açık, PLC onu referansa götürüyor), elle hareket ettiriliyor veya çevrimde; pozisyonu ve nasıl hareket ettiği (hareket etti, sonra durdu: sıkıştı),
+      sınırları (sayfanınkiler ve modülün kendi yazılım strok sınırları), referans sensörü (çizimin etiketi, giriş, kart, tel ve sayfayla).</li>
+  <li><b>Nereden başlamalı</b>, ve o an için kontroller: referansa giderken &ndash; referans sensörü; jog'da veya çevrimde &ndash; bir çarpma, sınırlar; dururken &ndash;
+      <b>dikey</b> bir eksen için (satırında &#9660; &#9650;, tutma freni olanlar yalnızca bunlar) freni.</li>
+  <li>Son adım olarak <b>kodun kılavuzundaki kendi girdisi</b> &ndash; bir servo alarmı için servo amplifikatörünün, bir eksen alarmı veya uyarısı için hareket modülünün:
+      nedenleri, her birinin nasıl kontrol edileceği, ne yapılacağı. Eksenden hiçbir şey izlenmemişse yalnızca girdi.</li>
+ </ul>
+ Aynı sayfa alarm listesinden, eksenin <b>?</b>'inden, eksen için PLC'nin kendi alarmından ve Eksen Ayarları satırındaki kodun hücresinden açılır (hemen, liste olmadan).</td></tr>
+<tr><td><b style="color:#2870be">?</b></td><td>Motor (<a href="#motors">4c</a>): invertörünün arıza kodu sıfır değilken</td><td>Eklenen dosyalar, sonra arızanın
+ invertör yardımındaki girdisi (ne olduğu, kontrol noktaları ve düzeltici işlemler), sonra invertörün kılavuzunun tamamı.</td></tr>
+</table>
+<p class="note">&ldquo;Sayfa 12.6&rdquo;, elektrik çiziminin 12. sayfası, 6. sütunudur; çizimin kendi çapraz referanslarının yazdığı gibi.
+&ldquo;Pnömatik sayfa 2 E3&rdquo;, pnömatik çizimin 2. sayfası, E3 bölgesidir. <i>Girişler / Çıkışlar</i> yan sayfası, imleci bir noktanın üzerinde beklettiğinizde aynısını gösterir.</p>
+<p><b>?</b> yanıp sönmez veya renk değiştirmez &ndash; başarısız olan parça değiştirir. Tek bir belge hemen açılır; birkaçı bir liste olarak sunulur. Açacak hiçbir şeyi olmayan bir ünite, bir şey başarısız olana kadar işaret göstermez.
+Aynı alarm için alarm listesinin yardımı aynı adım adım sayfasını aynı durumlarla sunar.
+Bir hata biti set iken başarısız olan parçanın kenarı kırmızı yanıp söner: başarısız olan hareketin düğmesi (silindir)
+ya da pozisyon değeri (eksen). Yanıt vermeyen bir kontrolör <b>?</b> göstermez: okuduğu değere güvenilemez.</p>
+<p>Listenin son girdileri <b>AI istemi oluştur</b> ve <b>Sor: &lt;AI&gt;</b>'dır (bkz. <a href="#alarms">6</a>): ünite arıza göstermezken
+gri olarak oradadırlar, nedenini söyleyerek.</p>
+
+<h3 id="positioning">4a. Pnömatik pozisyonlamalar</h3>
+<p>PLC'nin <b>bir pozisyona</b> sürdüğü bir silindir &ndash; bir 5/3 valf ve bir pozisyon sensörü, bir eksen gibi kullanılır &ndash; tek bir <b>satırdır</b>,
+Eksen Ayarları'nın bir satırı gibi düzenlenmiştir: sol ucunda adı, sonra başlıklarının altında bölümleri.</p>
+<figure>
+<svg viewBox="0 0 900 118" role="img" aria-label="Bir pnömatik pozisyonlama satırı">
+ <defs><style>.h{font:bold 11px "Segoe UI",Arial;fill:#6e747c}.n{font:13px "Segoe UI",Arial;fill:#23262c}.v{font:12px "Segoe UI",Arial;fill:#23262c}.s{font:12px "Segoe UI",Arial;fill:#5b6270}</style></defs>
+ <text class="h" x="262" y="18" text-anchor="middle">Manuel hareket</text>
+ <text class="h" x="448" y="18" text-anchor="middle">Hedef pozisyon</text>
+ <text class="h" x="580" y="18" text-anchor="middle">Kalibrasyon</text>
+ <text class="h" x="696" y="12" text-anchor="middle">Pozisyonlama</text><text class="h" x="696" y="25" text-anchor="middle">toleransı</text>
+ <text class="h" x="790" y="18" text-anchor="middle">Yön referansı</text>
+ <text class="n" x="132" y="56" text-anchor="end">Ön dikey kalıp</text>
+ <rect x="144" y="36" width="44" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="159" y="58" font-size="15" fill="#23262c">&#9660;</text>
+ <rect x="192" y="36" width="110" height="32" rx="4" fill="#dcdcdc" stroke="#aab1bb"/><text x="204" y="58" font-size="15" font-weight="bold" fill="#000" font-family="Segoe UI,Arial">118.00 mm</text>
+ <rect x="306" y="36" width="44" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="321" y="58" font-size="15" fill="#23262c">&#9650;</text>
+ <circle cx="362" cy="52" r="7" fill="#fff" stroke="#6e747c"/>
+ <rect x="384" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="458" y="57" text-anchor="end">118.00</text>
+ <rect x="468" y="36" width="40" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="478" y="58" font-size="14" fill="#23262c">&#9654;|</text>
+ <rect x="516" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="590" y="57" text-anchor="end">0.00</text>
+ <rect x="600" y="36" width="40" height="32" rx="4" fill="#eef0f2" stroke="#aab1bb"/><text x="610" y="58" font-size="14" fill="#23262c">&#9654;|</text>
+ <rect x="656" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="730" y="57" text-anchor="end">0.50</text>
+ <rect x="750" y="40" width="80" height="24" fill="#fff" stroke="#aab1bb"/><text class="v" x="824" y="57" text-anchor="end">1.20</text>
+ <text class="s" x="144" y="92">Elle hareket için &#9660; / &#9650; basılı tutun; zincir bağlar, bir ? yardımını açar.</text>
+ <text class="s" x="384" y="110">Bir hedef yazın, yanındaki &#9654;| düğmesine basın: PLC onu oraya sürer.</text>
+</svg>
+<figcaption>Bir pnömatik pozisyonlama satırı: manuel hareket, ardından hedefi, kalibrasyonu, toleransı ve yön referansı.</figcaption>
+</figure>
+<ul>
+ <li><b>Manuel hareket</b> &ndash; iki düğmesi (&#9664; &#9654;, dikey bir tanesi için &#9660; &#9650;) ve pozisyonu: yukarıdaki gibi bir ünite,
+     çerçevesiz. Zinciri ve <b>?</b>'i bölümün sağ ucunda durur; alarmları, yardımı ve bağlanması herhangi bir ünitenin gibidir.</li>
+ <li><b>Hedef pozisyon</b> &ndash; nereye gittiği, ve yanında pozisyonlamayı başlatan <b>&#9654;|</b> (PLC onu kapatır).</li>
+ <li><b>Kalibrasyon</b> &ndash; kalibrasyon pozisyonu, ve yanında kalibre eden <b>&#9654;|</b>: silindirin şu an durduğu yer o pozisyon olarak alınır.</li>
+ <li><b>Pozisyonlama toleransı</b> &ndash; hedeften ne kadar uzağın hâlâ hedefte sayıldığı; <b>Yön referansı</b> &ndash; yön referansı
+     (bazı sayfalar ona <i>durma ofseti</i> derdi): PLC gideceği yönü seçmek için hedefi onunla karşılaştırır &ndash; ondan büyük bir hedefe
+     silindir pozisyonun arttığı yönde gider, ondan küçük bir hedefe öbür yönde.</li>
+ <li>Hedef ve başlatılması <b>Operatör</b>'ündür; kalibrasyon, kalibre etme, tolerans ve yön referansı <b>Bakım</b> ister.
+     Yazılan her değer ve her basış kayıttadır.</li>
+ <li>Makinenin <b>yalnızca bir opsiyonla</b> sahip olduğu bir pozisyonlama yalnızca opsiyon açıkken gösterilir; altındaki satırlar <b>yukarı kayar</b>, böylece sayfada
+     boş satır olmaz. Satırlar, en geniş ad kadar geniş tek bir ad sütununu paylaşır.</li>
+ <li>Sayfa, bir eksen sayfası gibi bir <b>tablodur</b>: satırlar aşağı yukarı kayarken sütun adları <b>üstte kalır</b>, yana kayarken
+     <b>adlar solda kalır</b> (daha büyük bir ekran ölçeğinde bir satır ekrandan geniştir) &ndash; bir değerin hangi silindire ait olduğu her zaman görünür.</li>
+</ul>
+<div class="safety"><b>Güvenlik.</b> Kalibre etmek PLC'ye silindirin nerede olduğunu söyler. Yalnızca silindir, kalibrasyon pozisyonunun söylediği yerde
+dururken kalibre edin &ndash; yanlış bir kalibrasyon sonraki her pozisyonlamayı yanlış yere gönderir.</div>
+
+<h3 id="encoders">4b. Enkoderli silindirler</h3>
+<p>Pozisyonunu bir <b>enkoderin</b> saydığı bir sıkma veya bir stop (referans sensörü sayımı ayarlar) bir Manuel Hareket sayfasında herhangi bir
+ünite gibi görünür &ndash; adı, sensörleriyle iki düğmesi, aralarında pozisyonu, zinciri ve <b>?</b>'i. Ama <b>tek bir yerde</b> tanımlanır:
+<b>Makine Parametreleri</b>'nin makinenin enkoderler sayfasındaki satırında (<a href="#params">10</a>). Düğmeleri, sensörleri, pozisyonu,
+valfi ve geri beslemesi, hata bitleri ve yardımcıları o satırdan gelir; sayfadaki ünitede yalnızca enkoderin numarası, o sayfadaki başlığı
+(yoksa satırın adı) ve orada gösterildiği koşullar vardır.</p>
+<ul>
+ <li>Yeni bir adres, bir sensör, bir hata biti, bir yardımcı: enkoderin satırında değiştirin &ndash; o silindiri gösteren her sayfa bir sonraki başlangıçta onu alır.</li>
+ <li>Enkoderinin satırı olmayan bir ünite bunu başlığında söyler (<i>Enkoder 12: enkoder ayar satırı yok</i>) ve hiçbir şey yapmaz.</li>
+ <li>Enkoderler sayfası, pozisyonlama sayfası gibi bir tablodur: sütun adları üstte, adlar solda kalır.</li>
+ <li>Elle yerleştirilmiş bir silindir ünitesinin kendi pozisyonu yoktur: pozisyonu okunan bir silindir bir pnömatik pozisyonlama (<a href="#positioning">4a</a>)
+     ya da enkoderli bir silindirdir.</li>
+</ul>
+
+<h3 id="motors">4c. Motorlar (invertörler)</h3>
+<p>Bir <b>invertörün</b> (bir Mitsubishi FR-A800) sürdüğü bir motor, bir silindirinki gibi bir ünitedir: önünde bir <b>çalışma lambası</b> olan adı, düğmeleri (çalıştır, ya da
+iki yön), varsa aralarında değeri (bir hız, bir frekans), zinciri ve <b>?</b>'i. İnvertörün <b>arıza kodu</b> okunur
+ama ünitede <b>gösterilmez</b>:</p>
+<ul>
+ <li>Kod sıfır değilken <b>iki düğme de kırmızı yanıp söner</b> ve ünitenin <b>?</b>'i arızanın girdisini sunar &ndash; invertörün panelinin gösterdiği adı
+     (<i>E.OC1</i>), anlamı, kontrol noktaları ve düzeltici işlemler &ndash; sonra invertörün kılavuzunun tamamını: programın <code>Help</code>
+     klasöründeki kopya (<code>FR-A800_Instruction_Manual.pdf</code>), oradaysa arızanın sayfasında açılır; yoksa üreticinin çevrimiçi kılavuzu.
+     Listede olmayan bir kod bunu söyler ve kılavuzu sunar.</li>
+ <li><i>Eksen ve invertör alarmlarını HMI kendisi üretir</i> açıkken (<a href="#genalarms">6a</a>) arıza motorun alarmını hemen üretir &ndash;
+     <code>M830.E.OC1</code>: alarm biti, sonra panelin kodu &ndash; ve alarm bitini PLC'de SET eder. Kod okunmadan PLC'nin motor için kendi alarm biti
+     kılavuzu sunar.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="keypad">5. Değer girme</h2>
+<ul>
+ <li>Bir değer alanına dokunun: tuş takımı yanında açılır ve hangisini değiştirdiğinizi görebilmeniz için alanın çevresi mavi çizilir.
+     Dokunarak kullanımda (<a href="#touch">1a</a>) bir tablonun sayı hücresi ve okları olan bir sayı kutusu da tuş takımını, bir metin kutusu ise ekran klavyesini alır.</li>
+ <li>Üstteki satır izin verilen aralığı verir. Aralığın dışındaki bir değer reddedilir (giriş kırmızı yanıp söner) &ndash; hiçbir şey gönderilmez.</li>
+ <li><b>Açılar</b> (açı eksenlerinin ayarları) her zaman <b>0 &ndash; 360&deg;</b>'dir. Maksimumdan <b>büyük</b> bir minimum, sıfırdan geçen bir aralıktır:
+     minimum 270, maksimum 45, 270&hellip;360 ve 0&hellip;45'e izin verir ve satır <i>270.000 &le; &hellip; veya &hellip; &le; 45.000</i> okunur.
+     Maksimumdan küçük bir minimum sıradan bir aralıktır. Sınırlı her alan gibi, değeri dışarıdayken alan yanıp söner.</li>
+ <li>İlk tuş tüm değerin yerine geçer; tek bir rakamı değiştirmek için &#9664; &#9654; ile içinde ilerleyin.</li>
+ <li>Ondalıklar için tuş takımının <b>.</b> tuşunu kullanın &ndash; her Windows dil ayarında. Klavyede hem <kbd>.</kbd> hem <kbd>,</kbd> ondalık noktası yazar.</li>
+ <li>Değerler ekranda gösterilen birimle yazılır (mm veya inç, &deg;C veya &deg;F); HMI onları PLC için dönüştürür.</li>
+ <li>Bazı alanlar yazmadan önce onay ister.</li>
+ <li><b>Kaydırıcı olarak çizilmiş bir hız</b> (Ana Sayfa'nın hızı): tek bir çerçeve &ndash; başlığı, bir kaydırıcı ve sağ ucunda yüzde.
+     <b>Kaydırıcıyı sürükleyin</b> (veya dokunun) adımları boyunca &ndash; eşit aralıklı, değere kadar yeşil &ndash; değer bıraktığınızda yazılır;
+     <kbd>&larr;</kbd> <kbd>&rarr;</kbd> adım adım değiştirir. Tuş takımı için <b>yüzdeye</b> dokunun: ilk adımdan sonuncuya kadar herhangi bir tam değer. Başka
+     yerde ayarlanan bir değer olduğu gibi gösterilir. Seviyesi yokken veya kontrolörü yanıt vermezken gridir ve hiçbir şey yazmaz; ipucu nedenini söyler.</li>
+ <li><b>Kart olarak çizilmiş bir alan</b> (bir ilerleme hızı) üstte adını ve
+     altında <b>&minus;</b>, değer, bir <b>kaydırıcı</b> ve <b>+</b>'yı taşır. <b>&minus;</b> ve <b>+</b> değeri bir adım değiştirir
+     (basılı tutulunca adım atmaya devam ederler); <b>kaydırıcıyı</b> sınırlar arasında herhangi bir yere <b>sürükleyin</b> &ndash; değer bıraktığınızda yazılır;
+     tuş takımı için <b>değere</b> dokunun. Her biri tuş takımının yazdığı gibi yazar: aynı sınırlar, güvenlik seviyesi ve onay.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="alarms">6. Alarmlar</h2>
+<ul>
+ <li>Bir makine hata bildirirken <b>Alarmlar</b> sayfa düğmesi kırmızı atar ve üst çubukta kırmızı alarm düğmesi belirir.</li>
+ <li>Üst çubuktaki alarm düğmesi alarmdaki makineleri ve her birinin kaç alarmı olduğunu listeler. <b>(n) Aktif Alarmı Sıfırla</b> o makineyi sıfırlar:
+     makinenin alarm sıfırlamasını kendi kontrolörüne gönderir, Alarmlar sayfasındaki <b>Sıfırla</b> düğmesi gibi, ve listesini temizler.
+     Nedeni hâlâ duran bir alarm hemen geri gelir. <span class="lvl l1">Operatör</span> Sıfırlama gönderilemezse &ndash; oturum açılmamış,
+     kontrolör yanıt vermiyor &ndash; liste yine de temizlenir ve bir mesaj makinenin kendisinin sıfırlan<b>madığını</b> söyler.</li>
+ <li><b>Alarmlar</b> sayfası makine listesinde seçilen makinenin alarmlarını iki sekmede gösterir: <b>Aktif</b> ve <b>Geçmiş</b>.
+     İkisinin de sütunları aynıdır: <b>Kod</b> (alarmın kodu), <b>Alarm</b> (metni), <b>Neden</b> (neyin başarısız olduğu, HMI'nin kendi ürettiği bir alarm için &ndash;
+     bkz. <a href="#genalarms">6a</a>), <b>Önem</b>, <b>Zaman</b>, <b>Adres</b> (<span class="lvl l3">Admin</span>: PLC cihazı; HMI'nin
+     ürettiği bir alarm için hangi arıza, <code>M840.2</code>) ve <b>Yardım</b>. Bir başlığa tıklamak ona göre sıralar; Geçmiş sekmesindeki &#128228; onu aynı sütunlarla
+     bir dosyaya kaydeder.
+     <b>Geçmiş</b> sekmesi, makinenin bir <b>kayıt veritabanı</b> varsa ondan okunur (<a href="#dashboard">Gösterge paneli</a>): PLC'nin kaydettiği alarmlar
+     &ndash; yeniden başlatmalarda korunur, kaydı kim yazmış olursa olsun, Industry 4 servisi veya HMI (<a href="#i4log">11a</a>) &ndash; son 500 tanesi, en yenisi önce, her biri
+     HMI'nin alarm listesinin adlandırdığı gibi (metni ekrandaki dilde, önemi, adresi ve yardımı), listedeki hiçbir alarmın karşılamadığı bir kayıt biti kendi
+     adıyla; onlarla birlikte HMI'nin kendi ürettiği alarmlar (nedenleriyle) ve kaydın tutmadığı alarmlar. HMI'nin ürettiği bir alarm ile aynı cihaz için
+     aynı anda kaydedilen PLC biti tek satırdır. Kayıt veritabanı olmayan bir makine HMI başladığından beri gelenleri listeler. Tablonun
+     üstündeki satır hangisi olduğunu söyler.
+     <b>Yardım</b> sütunu alarmın yardımını açar: önce alarma veya ünitesine <b>eklenen dosyalar</b> (<a href="#params">10</a>), sonra HMI'nin
+     onun için yaptığı yardım &ndash; bir silindirin hareketi veya bir eksenin kodu için adım adım sayfası (<a href="#units">4</a>), bir motorun arızasının girdisi,
+     sürücülerin ve invertörün kılavuzları, silindir kılavuzu &ndash; ve en sonda AI girdileri. Yardımcı dosya olarak elle eklenen bir kılavuz, eklenen dosyalarla
+     listelenir. <b>Sıfırla</b> düğmesi makinenin sıfırlama cihazını
+     makinenin programının söylediği gibi sürer: kısa bir darbe, ya da <b>SET</b> &ndash; HMI cihazı açar ve her cihaz sıfırlanınca PLC onu
+     kendisi kapatır. Bir Admin cihazı ve nasıl sürüldüğünü düğmenin ipucunda görür.</li>
+ <li><b>AI istemi oluştur</b> ve <b>Sor: &lt;AI&gt;</b> (listedeki her sohbet için bir tane): her alarmın yardım listesinin son girdileri &ndash; <b>Yardım</b> sütununda (kendi belgesi olmayan bir alarm da
+     onları sunar) ve bir ünitenin <b>?</b>'inde, arıza gösterirken. <i>AI istemi oluştur</i> panoya alarm hakkında <b>HMI'nin bildiği her şeyi</b> içeren bir istem koyar:
+     makine, PLC'si ve kartları, alarmlarının nasıl üretildiği; alarm, kodu ve cihazı, HMI'nin neyin başarısız olduğunu gördüğü ve öncesindeki durumlar
+     (bir eksen için kodu geldiğinde ne yaptığı; bir motor için invertörünün arızası);
+     ünite, <b>iki</b> hareketiyle (komut, çıkış, sensörler, hata biti ve alarm, gecikme); <b>ilgili her cihaz</b>, PLC etiketiyle,
+     elektrik çizimindeki satırıyla (tel, röle, bobin, kart klemensi), hava hattıyla (valf, hortumlar, silindir), HMI'de nerede olduğu ve alarm anındaki ve şimdiki
+     durumuyla; listedeki diğer alarmlar ve istasyonun yakın zamandakileri; ünite üzerine bırakılan notlar; HMI'nin kendi yardımı &ndash; ve
+     izlenecek biçim olarak <b>adım adım sayfasının tamamı (HTML)</b>. AI'dan <b>onun gibi üç HTML sayfası</b> istenir: biri operatör, biri
+     bakım teknisyeni, biri otomasyon mühendisi için, HMI'nin dilinde &ndash; ve sonra açık kalıp anlamadığınız her kısmı, makinede ne gördüğünüzü
+     sorarak açıklaması. Herhangi bir AI sohbetini açın (Claude, ChatGPT, Gemini, Grok&hellip;) ve yapıştırın
+     (<kbd>Ctrl</kbd>+<kbd>V</kbd>). İlk istem biraz sürer (HMI cihazların nerede olduğunu her sayfada arar).
+     İstem uzundur: panoya <b>bir dosya olarak</b> konur (<i>Documents\Kaban HMI\AI prompts</i>), sohbet onu
+     <kbd>Ctrl</kbd>+<kbd>V</kbd> ile ekler &ndash; ya da metin olarak (bkz. <a href="#help">1</a>).
+     <i>Sor: Claude</i>, <i>Sor: ChatGPT</i>&hellip; (panelin listesindeki her etkin sohbet) aynısını yapar, o AI sohbetini tarayıcıda açar ve istemi
+     kendiliğinden içine yapıştırır, göndermeniz için (bkz. <a href="#help">1</a>).</li>
+ <li>Her makinenin, makinenin programında ayarlanan <b>kendi</b> sıfırlama cihazı vardır. Henüz ayarlanmadığı yerde Sıfırla düğmesi gridir ve bunu söyler,
+     ve üst çubuk menüsü makineyi sıfırlamadan listeyi temizler &ndash; tahminle hiçbir şeye darbe verilmez.</li>
+ <li>Her alarm <b>kendi kontrolöründe</b> izlenir: bir alt makinenin alarmı alt makinenin PLC'sinden gelir, asla ana makineninkinden değil.</li>
+ <li>Bir alarm yalnızca taze bir okumayla üretilir veya temizlenir. Bir kontrolör yanıt vermeyi bırakınca alarmları temizlenmez, olduğu gibi bırakılır.</li>
+ <li>Bir alarmın <b>metni</b> makinenin çeviri dosyasının bir satırıdır (<code>Translations.csv</code> içinde <code>Alarm_&lt;makine&gt;.&lt;etiket&gt;</code>),
+     diğer her metin gibi <a href="#translation">Çeviri</a>'de değiştirilir; Türkçesi Industry 4 programının kullandığı operatör sözcükleridir.</li>
+</ul>
+
+<h3 id="genalarms">6a. HMI'nin kendi ürettiği alarmlar</h3>
+<p>Makine başına iki anahtar, <b>Alarmlar ve Kayıtlar</b>'da (<a href="#params">10</a>). <b>Silindir alarmları</b> açıkken HMI, varmayan bir silindiri
+PLC'nin bildirmesini beklemez: her silindir ünitesinin hareketlerini kendisi zamanlar. <b>Eksen ve invertör alarmları</b> &ndash; kapatılmadıkça
+açık &ndash; her eksenin sürücüsünü ve her motorun invertörünü izler.</p>
+<ul>
+ <li><b>Süre ne zaman başlar:</b> hareketi süren çıkış bunu söylediğinde &ndash; <b>çift bobinli</b> bir valf için o hareketin kendi bobin çıkışı
+     <b>açılınca</b>; <b>tek bobinli</b> (yaylı) bir valf için bobinin hareketi için bobin çıkışı <b>açılınca</b>, yayınki için <b>kapanınca</b>.
+     Çıkış, ünitenin komutunun çizimlerde sürdüğü çıkıştır (ya da ünitenin kendi çıkış adresi); ikisi de olmayan bir ünite komutundan zamanlanır.
+     HMI başladığında zaten komut verilmiş bir hareket zamanlanmaz.</li>
+ <li><b>Onu ne onaylar:</b> geri beslemesi &ndash; sonundaki sensör <b>açık</b> ve başlangıcındaki <b>kapalı</b>; görmediği uç için tek bir sensörün
+     sönmesi; bir sıkmanın basınç anahtarı; hareket edip oturan bir pozisyon değeri (bir analog sensör, referansından uzakta bir enkoder). Sensörü
+     olmayan bir ünite zamanlanmaz.</li>
+ <li><b>Ne arıza değildir:</b> bir 5/3 valfin çıkışının sondan önce bırakılması (bir düğme bırakıldı), yaylı bir valfin çıkışının geri değişmesi, öbür bobin
+     tarafından ters çevrilen bir hareket. 5/2 çift bobinli bir valf kısa bir darbeden sonra devam eder ve zamanlanmaya devam eder.</li>
+ <li><b>Gecikmesi içinde onaylanmadıysa:</b> hareketin alarmı, başarısız olan sinyal için bir <b>alt numarayla</b> &ndash; bir sürücünün 50.1, 50.2'si gibi:
+  <table>
+  <tr><th>Kod</th><th>Ne başarısız oldu</th></tr>
+  <tr><td><code>M840.1</code></td><td>Başlangıç sensörü açık kaldı: silindir başlangıcından ayrılmadı (ya da o sensör sönmedi)</td></tr>
+  <tr><td><code>M840.2</code></td><td>Hedef sensör açılmadı: yolda durdu, ya da sensör onu görmüyor</td></tr>
+  <tr><td><code>M840.3</code></td><td>Hedef sensör açıldı, ama başlangıç sensörü açık kaldı</td></tr>
+  <tr><td><code>M840.4</code></td><td>İki bobin de açıktı: valf konum değiştiremez</td></tr>
+  <tr><td><code>M840.5</code></td><td>Pozisyon değeri değişmedi</td></tr>
+  <tr><td><code>M840.6</code></td><td>Pozisyon değeri hâlâ değişiyordu</td></tr>
+  </table>
+  Noktadan önceki numara hareketin hata bitidir (yoksa komut biti). Alarm listesinde alarm kendi kodunu ve
+  metnini, <b>Neden</b> sütununda neyin başarısız olduğuyla gösterir; alt numaralı kod, bir <span class="lvl l3">Admin</span> için <b>Adres</b> sütunundadır.
+  Hareket sonunda yine de onaylanınca ya da alarm onaylanınca alarm kendiliğinden gider. Yardımı, o arıza için adım adım sayfasıdır (<a href="#units">4</a>).</li>
+ <li><b>Bir eksen</b> (Eksen Ayarları'nın bir satırı), eksen alarmları açıkken: <b>Servo Alarmı</b> veya <b>Eksen Alarmı</b> 0'dan farklı bir kod gösterdiği
+     <b>anda</b> alarmı &ndash; gecikme yok &ndash; alt numara olarak kodla (<code>M801.16.3</code>, <code>M801.1904H</code>), kod temizlenene kadar.
+     Bir <b>Eksen Uyarısı</b> yalnızca bir uyarıdır: hiçbir şey üretmez. Kod geldiğinde eksenin ne yaptığı yardımı için onunla saklanır
+     (<a href="#units">4</a>) &ndash; eksen alarmları kapalıyken de.</li>
+ <li><b>Bir motor</b> (<a href="#motors">4c</a>), aynı anahtarla: invertörünün arıza kodu 0 olmadığı anda alarmı, arıza
+     invertörün panelinin adlandırdığı gibi (<code>M830.E.OC1</code>), kod temizlenene kadar.</li>
+ <li><b>PLC'ye bildirilir:</b> HMI bir alarm ürettiğinde <b>cihazını SET eder</b> &ndash; hareketin veya eksenin hata biti (<code>M840</code>,
+     <code>M801</code>, bir motorun <code>M830</code>'u) &ndash; böylece PLC programı bunu bilir; kendi alarmları gibi PLC'nin alarm sıfırlaması onu temizler. <b>Adres</b> sütunu
+     yalnızca o cihazı gösterir (<code>M801</code>); alt numara adresin değil kodun parçasıdır (<code>M801.16.3</code>). Hata biti olmayan bir hareket veya
+     eksene yazılmaz. Her yazma PLC yazma kaydındadır (<i>HMI alarm M801.16.3: its error bit set</i>).</li>
+ <li><b>Bir arıza, bir satır:</b> bir cihaz için HMI'nin alarmı listedeyken, PLC'nin aynı cihaz için kendi alarm biti yanında listelenmez.
+     PLC'nin biti hâlâ açıkken onaylanırsa PLC'nin alarmı her zamanki gibi görünür.</li>
+</ul>
+
+<h3 id="plcmsg">6b. PLC'den gelen mesajlar</h3>
+<p>Makinenin PLC'si HMI üzerinden operatöre bir şey sorabilir veya bir şey söyleyebilir: <i>Profil tanıma ünitesine hiçbir profil ulaşmadı</i>,
+<i>Yanlış profil</i>, <i>Eksenler referansa gidiyor&hellip;</i>. Mesaj ana pencerenin üzerinde, HMI'nin dilinde açılır. Bandı makineyi
+ve mesajın numarasını taşır; hata için kırmızı, uyarı için turuncu, soru için mavi, bilgi için koyu mavi.</p>
+<ul>
+ <li>Düğmeleriyle <b>yanıtlayın</b> &ndash; <i>Tamam</i>, <i>Evet</i> / <i>Hayır</i>, <i>Devam</i> / <i>İptal</i>, <i>Yeniden başlat</i> / <i>İptal</i>.
+     <kbd>Enter</kbd> ilk düğmedir, <kbd>Esc</kbd> <i>İptal</i> veya <i>Hayır</i>. Yanıt PLC'ye gider ve mesaj kapanır.
+     Bir yanıt bir komuttur: kontrolörün seviyesinde oturum açmış biri gerekir &ndash; yoksa düğmeler gridir, yanlarında <b>Giriş</b> vardır.</li>
+ <li>Bazı mesajlar açıkken PLC'den okunan <b>değerleri</b> gösterir: <i>Yanlış profil</i> tanımlı ve ölçülen genişlik ve yüksekliği,
+     <i>Servo sınır dışında</i> her ekseni <i>Referans gerekli</i> ve <i>Hata</i> lambalarıyla.</li>
+ <li>Arkasında sayfalar çalışmaya devam eder. Yanıtlanana veya PLC onu geri alana kadar kalır; aynı PLC'den gelen yeni bir mesaj onun yerini alır.</li>
+ <li><b>Düğmesi olmayan</b> bir mesaj (<i>Referansa gidiyor</i>) PLC'nin kendi durumunu söylemesidir: <b>Gizle</b> yalnızca gizler; PLC işini bitirince kapanır.</li>
+ <li>Yanıt PLC'ye ulaşmazsa mesaj kalır ve bunu söyler (<i>Cevap PLC'ye ulaşmadı</i>, ve nedeni): yeniden yanıtlayın.</li>
+ <li>Gösterilen, yanıtlanan (yanıtla ve kimin yanıtladığıyla) ve kapanan her mesaj denetim kaydındadır; yanıtın yazmaları PLC yazma kaydındadır
+     (<i>PLC message 2: Yes</i>).</li>
+</ul>
+<p class="note">Nasıl çalışır: PLC mesajın numarasını makinenin <code>PopupTriggerAddress</code> adresine yazar (makinenin programında ayarlanır, bkz. <a href="#machine">13</a>'teki bölümü).
+Bir düğme yanıtını <code>PopupResponseAddress</code> adresine yazar &ndash; İptal / Hayır 0, Tamam / Evet / Devam 1,
+Yeniden başlat / Tekrar dene 2 &ndash; ve sonra tetikleyiciye 0. Mesajlar, her dilde, makinenin <code>Popups.json</code> dosyasındadır; orada
+olmayan bir numara <i>PLC mesajı n</i> olarak, Tamam ile gösterilir.</p>
+
+<!-- ================================================================== -->
+<h2 id="conn">7. PLC bağlantısı</h2>
+<p>Bir kontrolör yalnızca okumalar başarılı olduğu sürece bağlı sayılır. Biri üç saniye yanıt vermezse:</p>
+<ul>
+ <li>üst çubukta kırmızı bağlantı işareti belirir;</li>
+ <li>o kontrolörün kontrolleri griye döner ve nedenini söyler, değerleri soluklaşır &ndash; bunlar canlı değil, bilinen son değerlerdir;</li>
+ <li>kontrolör yeniden yanıt verince kendiliğinden yeniden bağlanır. Başarısız bir denemeden sonra bir sonraki her seferinde biraz daha uzun bekler
+     (yarım saniye, sonra 1, 2 ve 4 s, sonra her 5 s), böylece geri gelen bir kontrolör 5 s içinde bulunur ve gelmediği sürece tekrar tekrar sorulmaz.</li>
+</ul>
+<table>
+<tr><th>Kod</th><th>Anlamı</th><th>Kontrol</th></tr>
+<tr><td>C01</td><td>Bu istasyon için sürücü tanımlı değil</td><td>HMI Ayarları &rsaquo; PLC Bağlantıları</td></tr>
+<tr><td>C02</td><td>Bağlantı açık değil</td><td>Kablo, enerji, IP adresi / istasyon numarası</td></tr>
+<tr><td>C03</td><td>Bağlantı açık ama yanıt yok</td><td>Ağ, switch, PLC RUN'da mı</td></tr>
+<tr><td>C04</td><td>Beklenmeyen yanıt</td><td>PLC Bağlantıları'nda sürücü tipi ve PLC modeli</td></tr>
+</table>
+<p><b>Makinenin diğer kontrolörünün bir cihazı.</b> Bir kontrol bir kontrolöre aittir (<code>PlcNumber</code>), ama cihazlarından biri
+başka bir kontrolöre bağlanmış olabilir &ndash; <b>@</b> ve o kontrolörün numarasıyla yazılır: <code>X12@2</code>, PLC 2'nin X12'sidir (ilk
+kontrolöründe ona boş giriş kalmamış bir makinede). HMI onu o kontrolörde okur, yazar, yakar ve izler; alarmları ve yardımı o kontrolörünkidir,
+ipuçları ve yardım sayfaları <i>X12 (PLC 2)</i> der. Bunun için nokta kullanılmaz: nokta zaten adreslerin parçasıdır (<code>D100.5</code>, bir word'ün 5. biti;
+Siemens'in <code>M10.3</code>'ü).</p>
+<p><b>Kapatılmış bir kontrolör.</b> <b>HMI Ayarları &rsaquo; PLC Bağlantıları</b>'nda her kontrolörün adı bir işarettir: <b>Aktif</b>. İşaretli değilse kontrolör
+bir sonraki başlangıçta sürücü almaz: okunmaz, izlenmez &ndash; onun için bağlantı uyarısı yoktur &ndash; ve satırı <i>Etkin değil</i> der. Hiçbir
+kontrolörü aktif olmayan bir makinenin <b>sayfası yoktur</b>: menüde, sekmelerinde, makine listesinde, eksenlerin çubuklarında ve yan sayfalarında, girişlerde ve çıkışlarda, Kayıtlar ve Raporlar'da yer almaz.
+HMI'nin kendi ayarları kalır. Takılı olmayan veya henüz kablolanmamış bir makinesi olan bir panel içindir.</p>
+
+<h3 id="plcdata">7a. PLC verisi: yedek ve geri yazma</h3>
+<p><b>HMI Ayarları &rsaquo; PLC Bağlantıları</b>'nda her kontrolörün satırının sonunda, <i>PLC verisi</i> altında: <b>Oku...</b>
+<span class="lvl l2">Bakım</span> ve <b>Yaz...</b> <span class="lvl l3">Admin</span> &ndash; yalnızca kontrolör bağlıyken.</p>
+<ul>
+ <li><b>Oku...</b> PLC'nin verisinin bir <b>yedeğini</b> alır. Önce sayfası: makine, PLC, CPU'su (MX Component'in adlandırdığı gibi), CPU'nun
+     <b>seri numarası</b> (etiketinden yazılır &ndash; MX Component onu okumaz; bu PLC için en son yazılan sunulur), kullanıcı, tarih ve
+     bir <b>açıklama</b> &ndash; ve ne okunduğu: o andaki <b>CPU'nun her cihazı</b> (X, Y, M, L, B, F, SB, S, zamanlayıcıların ve sayıcıların kontakları,
+     bobinleri ve değerleri, uzun sayıcılar, D, W, SW, R, Z, LZ, SM, SD &ndash; CPU'da olduğu kadarı) ve eksenlerinin üzerinde olduğu <b>simple motion modülleri</b>:
+     flash ROM'larının tuttukları (parametreler, pozisyonlama verisi, blok başlatma verisi, servo parametreleri, işaret algılama, senkron kontrol parametreleri, PLC CPU
+     not alanı) ve <b>kamları</b> &ndash; bir eksenin kullandıkları ve <i>Ayrıca okunacak kam No.</i>'ya yazılan numaralar (<i>1 - 10, 35</i>; bir dahaki sefere yeniden sunulur:
+     kamı olmayan bir numara modülün 1. ekseninde bir uyarı bırakır, bu yüzden var olan kamları yazın). İptal edilebilen bir pencereyle okur, ekranın
+     kendi okumalarına yol vererek; kopan bir bağlantı beklenir (15 s), geri gelmezse hiçbir şey kaydedilmez. Mesaj yedeğin nerede olduğunu
+     ve PLC'nin neye yanıt vermediğini söyler.</li>
+ <li><b>Yaz...</b> bir yedeği geri yazar. Önce onu seçin: bu PLC'nin yedekleri, en yenisi önce (veya hepsi), ya da <i>Dosya aç...</i> &ndash; bir USB
+     bellekteki. Sonra, GX Works3'ün <i>Select Data to Write</i>'ı gibi, işaretlenecek bir ağaç: <b>PLC CPU: cihazlar</b> &ndash; her cihaz bir satır &ndash; ve <b>Simple motion modülü
+     n</b> &ndash; pozisyonlama verisi, blok başlatma verisi, parametreleri, servo parametreleri, işaret algılama, senkron kontrol parametreleri, not alanı, kam verisi, ve en sonda
+     <i>Ardından modülün flash ROM'unu yaz</i>. Bir satır altındaki her şeyi işaretler; <i>Tümünü seç</i>, <i>Hiçbirini seçme</i>; <i>Ayrıntılar...</i> bir
+     modülün eksenlerini, ortak kısmını, enkoder eksenlerini, pozisyonlama verisinin numaralarını, kamları seçer.</li>
+ <li>Bir cihazın <b>kısmı</b>, <i>Bir cihazın kısmı şöyle girilir:</i>'in söylediği gibi yazılır (sizin seçiminiz, saklanır): <b>Nokta + Başlangıç</b> &ndash; okunan ilk cihaz
+     (<i>R1000</i>), kaç tane (<i>1000</i>), yazılan ilk cihaz (<i>D2500</i>) &ndash; ya da <b>Başlangıç + Bitiş</b> &ndash; okunan cihazlar (<i>R1000 - R1999</i>)
+     ve nereye gittikleri. Hiçbir şey yazılmazsa: tamamı, aynı cihazlara. Bir modülün verisi başka bir modüle gidebilir (<i>U2</i>). Yanlış bir giriş notunda söylenir.</li>
+ <li>Önce sorar: kısımlar, kaç cihaz, makinenin durdurulması gerektiği, ve <b>başka</b> bir PLC'nin yedeği bunu belirterek. Sonra, bugün yedeği alınmamış
+     <b>gerçek</b> bir PLC'de, <b>önce bir tane okur</b> (<i>Yazmadan önce kendiliğinden alındı &hellip;</i>), böylece her zaman bir geri dönüş yolu olur; iptal edilir veya
+     başarısız olursa onsuz yazıp yazmayacağını sorar. Yazılan her blok PLC yazma kaydının bir satırıdır.</li>
+ <li>Gerçek bir PLC'ye asla yazılmaz: girişleri, çıkışları, kontakları ve bobinleri, sistemin cihazları; 32 bitlik değerler yalnızca 32 bitlik cihazlara gider.
+     <b>Simülatöre</b> her şey yazılır, X ve Y de, böylece tezgâh simülasyonu gerçek bir makinenin verisinden başlatılabilir.</li>
+ <li>Bir modül, flash ROM'u yazılmadıkça yazılanı kapatılana kadar tutar: işaretlenmezse, Eksen Ayarları sayfasının flash ROM düğmesi
+     yazılana kadar yanıp söner (<a href="#params">10</a>).</li>
+ <li>Yedekler kendi dosyalarıdır (<code>.plcbak</code>), <code>ProgramData\KabanHMI\PlcBackups</code> içinde: adında tarih, makine ve PLC;
+     bilgileri ve açıklaması en üstte. PLC Monitörü onlardan tek tek etiketler yazar (<a href="#diag">11</a>).</li>
+</ul>
+<div class="safety"><b>Güvenlik.</b> Bir yedeği yazmak PLC'nin değerlerinin üzerine hemen yazar &ndash; pozisyonlar, reçeteler, parametreler. Önce makineyi durdurun ve
+yalnızca bu makinenin bir yedeğini yazın.</div>
+
+<!-- ================================================================== -->
+<h2 id="unitset">8. Ölçü birimleri</h2>
+<p><b>HMI Ayarları &rsaquo; Kullanıcılar ve Tercihler</b>, <i>Ölçü birimleri</i> bölümü: her tür değerin birimi &ndash; uzunluk, ağırlık,
+sıcaklık, basınç, zaman &ndash; programın her sayı alanı ve göstergesi için, ve onlara yazılan için.
+<b>Herkes</b>inkiler panelinkidir (<span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span> değiştirir); bir kullanıcının
+kendine ait birimleri olabilir, oturum açtığı anda alınır &ndash; açık sayfalar hemen uyar (bkz. <a href="#viewprefs">Kullanıcılar ve Tercihler</a>).
+Değerler her zaman makinenin birimlerinde <b>saklanır</b> ve yalnızca sizinkilerde <b>gösterilir</b>, bu yüzden değiştirmek hiçbir makine ayarını değiştirmez.</p>
+
+<!-- ================================================================== -->
+<h2 id="hmiset">9. HMI Ayarları</h2>
+<table>
+<tr><th>Sekme</th><th>Seviye</th><th>Ne için</th></tr>
+<tr><td>Kullanıcılar ve Tercihler</td><td><span class="lvl l1">Operatör</span></td><td>Hesaplar &ndash; adlar, şifreler, seviyeler, seviyeye göre (<a href="#viewprefs">aşağıda</a>) &ndash;
+  ve ekranın herkes için veya bir kullanıcının kendisine özel olarak nasıl gösterdiği: <b>ekran ölçeği</b>, <b>dil</b>, başlıklar, sayılar, tarihler, <b>ölçü birimleri</b> (bkz. 8),
+  tablolar, ipuçları, oturum açtıktan sonraki sayfa, bir alarmın sesi, AI istemi.</td></tr>
+<tr><td>Kayıtlar ve Raporlar</td><td><span class="lvl l2">Bakım</span></td><td>Kayıtların ayarları: HMI'nin kaydı, ve her makinenin kayıt veritabanı ve raporları
+  (bkz. <a href="#diag">11</a>). Kayıtların kendisi Gösterge Paneli sayfasında okunur. Bir makinenin kaydını kimin yazdığı orada söylenir; PLC kayıt alanı
+  Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar'dadır (<a href="#params">10</a>).
+  HMI'nin kaydını kapatmak ve kaç gün saklandığı: <span class="lvl l3">Admin</span>.</td></tr>
+<tr><td>PLC Bağlantıları</td><td><span class="lvl l2">Bakım</span></td><td>Kontrolörlerin tablosu: her birinin adı <b>Aktif</b> işaretiyle (<a href="#conn">7</a>), sürücüsü, istasyonu
+  ve adresi (bir <span class="lvl l3">Admin</span> değiştirir), ve durumu &ndash; bağlanınca CPU'nun modeli ve program sürümüyle: <i>Bağlı - FX5UCCPU (Sürüm: 1.41)</i>
+  &ndash; son yanıt, bugünkü kopmalar ve son hata; satırın sonunda <b>PLC verisi</b>, <i>Oku...</i> ve <i>Yaz...</i> (<a href="#plcdata">7a</a>).
+  Bağlantı olayları kayıtta okunur (bkz. <a href="#diag">11</a>).</td></tr>
+<tr><td>Yapılandırma Aktarımı</td><td><span class="lvl l3">Admin</span></td><td>Daha eski bir kurulumun PLC bağlantıları, alarm tanımları ve PLC etiket listesi bu programa getirilir,
+  her dosya önce karşılaştırılarak (<a href="#import">aşağıda</a>).</td></tr>
+<tr><td>AI</td><td><span class="lvl l3">Admin</span></td><td><b>?</b>'in ve alarmların yardım listelerinin sunduğu AI sohbetleri (<i>Sor: Claude</i>, <i>Sor: ChatGPT</i>&hellip;, bu sırayla), bir tablo olarak: ekle, kaldır, sırala,
+  <i>Etkin</i>, olağan liste (bkz. <a href="#help">1</a>).</td></tr>
+<tr><td>Çeviri</td><td><span class="lvl l2">Bakım</span></td><td>Programın her dildeki her metni, tek bir tabloda, panelde düzenlenir (<a href="#translation">9a</a>).</td></tr>
+<tr><td>Özellikler</td><td><span class="lvl l3">Admin</span></td><td>HMI'nin isteğe bağlı bölümlerini açıp kapatma: HMI'de Industry 4 kaydı ve dokunmatik ekran (<a href="#features">9b</a>).</td></tr>
+</table>
+
+<h3 id="magnifier">Ekran ölçeği</h3>
+<p>Tüm programı daha büyük veya daha küçük çizer &ndash; yazı, düğmeler, alanlar, menüler, resimler, sayfalar &ndash; <b>%80</b>'den (ekranda daha fazlası)
+<b>%150</b>'ye (bir buçuk katı) kadar. Üst çubuktaki, kullanıcı ile <b>?</b> arasındaki <b>büyütece</b> tıklayın. Menü ekrandaki
+boyutu başlığında gösterir (<i>Ekran ölçeği (100%)</i>) ve altında, bir hızın ayarlandığı gibi ayarlanan boyutu: olağan boyutlar boyunca bir <b>kaydırıcı</b> (%80, %90,
+%100 &hellip; %150) &ndash; sürükleyip bırakın &ndash; ve sağ ucunda, arada herhangi bir boyut için, %1'lik adımlarla tuş takımını açan <b>yüzde</b>.</p>
+<ul>
+ <li>Büyüteç, kim oturum açmış olursa olsun <b>panelin</b> ölçeğini ayarlar: programın başladığı ölçek ve kendine ait ölçek istemeyen herkesinki.
+     Bir değişiklik yeniden başlatmayı önerir: makine çalışmaya devam eder, ekran birkaç saniyede geri gelir ve oturum açık olan kişinin oturumu açık kalır.</li>
+ <li>Başka bir boyuta ihtiyaç duyan bir kullanıcının <i>Kullanıcılar ve Tercihler</i>'de bir <b>parametre</b> olarak boyutu vardır (<i>Ekran ölçeği</i>: aynı menü,
+     <i>Özel bir istek yok</i> ile: kaydırıcının yanında bir <b>x</b>, panelin boyutu o zaman gri gösterilir). Oturum açtıklarında ekran başka bir boyuttaysa
+     program onlarınkiyle yeniden başlatılıp başlatılmayacağını sorar.
+     Büyüteç bir kullanıcının parametresini asla değiştirmez.</li>
+</ul>
+<p class="note">Sayfalar panelin ekranı için %100'de tasarlanır: daha büyük bir boyutta veya bir yan sayfanın yanında artık sığmazlar ve
+<b>kayarlar</b> (sayfanın altında ve yanında kaydırma çubukları) &ndash; her sayfa kayar, böylece uzak kenarına her zaman ulaşılabilir; küçük bir
+ekranda %150'de bu, ona ulaşmak için kaydırmak demektir. Soldaki menü de düğmeleri artık sığmayınca kayar,
+<b>Geri / İleri</b> her zaman en altta. Bul, sayfayı açtığı üniteye kaydırır. Düğmelerin üzerindeki
+resimler ekranla büyür ve küçülür; programın kendi çizimleri (makineler, HMI Ayarları) o boyutta çizilir, diğerleri büyütülür.
+Windows'un kendi mesaj kutuları Windows'un boyutunu korur.</p>
+
+<h3 id="viewprefs">Kullanıcılar ve Tercihler</h3>
+<p>Hesaplar ve ekranın nasıl gösterdiği, tek bir sekmede. Sol üstte hesaplar, önce <b>Herkes (bu panel)</b>; değiştiremedikleriniz
+gridir. Listenin altında &ndash; kaç hesap olursa olsun her zaman aynı yerde &ndash; seçilenin <b>Kullanıcı</b>,
+<b>Şifre</b> ve <b>Seviye</b> alanları; sağda, yukarıdan, <b>Tercihleri</b>:</p>
+<ul>
+ <li><b>Herkes (bu panel)</b> &quot;şu an geçerli ayarlar&quot; değildir: <b>hiç kimse</b> oturum açmamışken geçerli olan ve her
+     kullanıcının <i>Herkes için olduğu gibi</i>'sinin izlediğidir. Onu değiştirmek, kendine ait değeri olmayan herkesin ekranını değiştirir; onun için gösterilen ekran
+     ölçeği büyütecinkidir.</li>
+ <li><b>Hesap</b> (Herkes için değil): ad, yeni bir şifre (boş bırakmak mevcut olanı korur), seviye ve onu kimin oluşturduğu.
+     &#10133; yeni bir hesap başlatır, &#128465; seçileni siler (önce sorulur), &#128190; sayfayı saklar, &#8634; değişiklikleri atar.</li>
+ <li><b>Şuradan oku</b>: başka bir kullanıcının ekran ölçeğini ve tercihlerini &ndash; ya da Herkes'inkileri &ndash; sayfaya kopyalar; &#128190; onları saklar.
+     Herkes'ten okunursa kullanıcı yeniden herkesinkini izler. Listesi açıkken imlecin altındaki kullanıcının tercihleri önizlemede,
+     satır satır: kendisininkiler kalın, <i>Herkes için olduğu gibi</i> olanlar gri.</li>
+ <li><b>Ekran ölçeği</b> ve aşağıdaki <b>görünüm tercihleri</b>. Bir kullanıcı için her biri <b>Herkes için olduğu gibi</b> (yanında panelin değeri gösterilir,
+     ölçek için <i>Özel bir istek yok</i>) ya da kendine ait bir değer olabilir, oturum açtıkları anda alınır. Herkes'inkiler, hiç kimse ya da kendine ait değeri
+     olmayan bir kullanıcı oturum açmışken geçerli olanlardır. Her şey hemen değişir &ndash; yeniden başlatma isteyen ekran ölçeği dışında
+     (kendinizinki için ve oturum açtığınızda hemen önerilir; Herkes'inki büyütecinkidir).</li>
+ <li><b>Önizleme</b>: bir liste açıkken yanında (sağında 50 px, kutusuyla aynı hizada), <b>imlecin altındaki</b> girdi çizilir &ndash;
+     başlıklarıyla alanlar, tarihi ve saatiyle bir alarm satırı, birimiyle bir değer, satırları ve harfleriyle bir tablo, yanıp sönen veya sabit üst çubuk
+     işaretleri &ndash; ve programda nerede etki ettiği; tıklanana kadar hiçbir şey seçilmez. Liste kapanınca gider.
+     Ekran ölçeğinin menüsünde de vardır. İpucu gecikmesi çizimde canlandırılır (imleç bekler, süre işler, ipucu görünür);
+     alarm sesi, imleç <i>Açık</i>'ın üzerine gelince bir kez duyulur.</li>
+</ul>
+<table>
+<tr><th>Bölüm</th><th>Tercih</th><th>Seçenekler (ilki programın her zaman olduğu gibidir)</th></tr>
+<tr><td rowspan="3">Ekran</td><td>Ekran ölçeği</td><td>%80 &ndash; %150 (bkz. yukarısı)</td></tr>
+<tr><td>Ekran kullanımı</td><td><b>Fare</b> &middot; Dokunmatik (parmak) &ndash; yalnızca dokunmatik ekran açıkken (<a href="#features">9b</a>); bkz. <a href="#touch">1a</a>.
+  Üst çubuğun &#128433; / &#128070; düğmesi aynısını değiştirir</td></tr>
+<tr><td>Dil</td><td><b>Herkes için olduğu gibi</b> (üst çubuktaki bayrak: panelin dili, yeniden başlatmada korunur) &middot; kendine ait bir dil, her biri
+  kendi adıyla listelenir &ndash; kullanıcı oturum açınca hemen ekrana konur, yeniden başlatma olmadan, oturumu kapatınca yeniden herkesinki</td></tr>
+<tr><td>Başlıklar</td><td>Başlıklar ve eksen adları</td><td><b>Sağda</b>, alanın yanında &middot; <b>Solda</b>, alt alta alanların başlıkları tek sütunda birlikte başlayarak
+  (combo'ların, sayı alanlarının ve düğmelerin başlıkları: <code>DescriptionText</code>) &ndash; ve Eksen Ayarları satırlarındaki ve Eksen İzleme'deki eksen adları</td></tr>
+<tr><td rowspan="3">Sayılar ve tarihler</td><td>Ondalık ayırıcı</td><td><b>Windows'taki gibi</b> &middot; Nokta (1234.56) &middot; Virgül (1234,56) &ndash; gösterilen her sayı, tuş takımının tuşu
+  (tuş takımı yine de ikisini de kabul eder)</td></tr>
+<tr><td>Tarih</td><td>2026-10-02 &middot; 02.10.2026 &middot; 10/02/2026 &ndash; alarm listeleri ve geçmişi, kayıtlar, Gösterge Paneli (seçiciler, vardiyalar, zaman çizelgesi, çubuk),
+  Kayıtlar ve Raporlar'daki vardiyalar, adım adım sayfaları; açık bir sayfa hemen uyar</td></tr>
+<tr><td>Saat</td><td>24 saat (14:31) &middot; 12 saat (2:31 PM)</td></tr>
+<tr><td>Ölçü birimleri</td><td>Uzunluk &middot; Ağırlık &middot; Sıcaklık &middot; Basınç &middot; Zaman</td><td>Uzunluk: <b>mm</b> &middot; cm &middot; m &middot; inç &middot; ft;
+  Ağırlık: <b>gr</b> &middot; kg &middot; lbs; Sıcaklık: <b>C</b> &middot; F; Basınç: <b>bar</b> &middot; psi; Zaman: <b>sn</b> &middot; dk (bkz. <a href="#unitset">8</a>)</td></tr>
+<tr><td rowspan="2">Tablolar</td><td>Tablo satırları</td><td>Normal (26 px) &middot; Dar (22) &middot; Büyük (32)</td></tr>
+<tr><td>Tablo yazısı</td><td>Normal &middot; Küçük &middot; Büyük &ndash; her tablo, açık olanlar da</td></tr>
+<tr><td rowspan="4">Oturum açma ve uyarılar</td><td>Oturum açtıktan sonra</td><td><b>Ekran olduğu yerde kalsın</b> &middot; Ana Sayfa &middot; Son sayfam (o kullanıcının en son bulunduğu yer)</td></tr>
+<tr><td>Yeni alarmda ses</td><td><b>Kapalı</b> &middot; Açık: listeye gelen her alarm için bir kez, listede kaldığı sürece değil</td></tr>
+<tr><td>Dikkat işaretleri</td><td><b>Yanıp sönsün</b> &middot; Sabit: kodlar, lambalar, kenarlıklar, üst çubuğun alarm ve bağlantı işaretleri ve oturum açma hatırlatıcısı sabit gösterilir</td></tr>
+<tr><td>İpuçlarının görünme süresi</td><td>Normal (1 s) &middot; Kısa (0,4 s) &middot; Uzun (2 s)</td></tr>
+<tr><td rowspan="2">Yardım ve AI</td><td>AI istemi şöyle kopyalanır</td><td><b>Bir dosya</b> (sohbette <kbd>Ctrl</kbd>+<kbd>V</kbd> onu ekler) &middot; Metni</td></tr>
+<tr><td>Sohbete yapıştır</td><td><b>Kendiliğinden (Ctrl+V)</b>: <i>Sor: &lt;AI&gt;</i> istemi açtığı sohbete yapıştırır &middot; Kendim yapıştırırım</td></tr>
+</table>
+<p>Kendine ait <b>dil</b> de aynı şekilde alınır: kendiniz için saklandığında hemen ekrandadır.</p>
+<p><b>Kim neyi değiştirebilir</b>:</p>
+<ul>
+ <li>Kendi hesabı ve tercihleri: oturum açmış herkes (şifre, ölçek, tercihler &ndash; kendi seviyesi değil, kendini silmek değil).</li>
+ <li>Kendi seviyesinin <b>altındaki</b> bir hesap: değiştirmek, silmek, kendi seviyesine kadar herhangi bir seviye vermek.</li>
+ <li><b>Kendi seviyesindeki</b> bir hesap: yalnızca onu oluşturan. Böylece bir <span class="lvl l3">Admin</span>, başka bir Admin'inki dışında her hesabı değiştirir &ndash;
+     onu kendisi oluşturmadıysa.</li>
+ <li>Yeni bir hesap: kendi seviyesinde veya daha düşük &ndash; bir Operatör bir Operatör oluşturabilir.</li>
+ <li>Herkes'in tercihleri ve ölçeği: <span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span>.</li>
+ <li>Son Admin silinemez veya seviyesi düşürülemez. Silinen bir hesap ölçeğini, tercihlerini ve oluşturduklarının kaydını da götürür.</li>
+</ul>
+
+<h3 id="import">Yapılandırma Aktarımı</h3>
+<p><span class="lvl l3">Admin</span> Daha eski bir kurulumun ayarlarını bu programa getirir: PLC bağlantılarını, alarm tanımlarını (<code>Alarms.json</code>)
+ve PLC etiket listesini (<code>PlcLabels.csv</code>). Sayfanın söylediği gibi üç adımda:</p>
+<ol>
+ <li>Eski programın klasörünü seçin (<i>Gözat...</i>, ya da yazıp <kbd>Enter</kbd>; kendi klasörü veya kurulumun kökü) ve
+     <i>Ayar dosyalarını listele</i>: bulunan her dosya bu programınkiyle karşılaştırılır &ndash; <i>aynı</i> (işaretsiz bırakılır), <i>burada yeni</i>, ya da kaç
+     satırın değiştiği, eklendiği, çıkarıldığı.</li>
+ <li><i>Karşılaştır...</i> (veya bir dosyaya çift tıklama) ikisini yan yana, satır satır gösterir &ndash; bu programın dosyası aktarmanın yazacağının
+     yanında &ndash; yalnızca farklar veya her satır, <i>Sonraki fark</i> / <i>Önceki fark</i> (<kbd>F8</kbd>).</li>
+ <li>Alınacak dosyaları işaretleyin ve <i>Seçilenleri aktar</i>: soru her birinde neyin değiştiğini listeler; bu programın dosyaları önce saklanır
+     (programın klasöründe <code>Backup_&lt;tarih&gt;</code> &ndash; <i>Yedekler...</i> en yenisini açar). Ayarlar yeniden başlatmadan sonra geçerli olur.</li>
+</ol>
+<p>Çeviriler kopyalanmaz: eski bir kurulumun metinleri <a href="#translation">Çeviri</a>'de getirilir, her değişiklik onaylanarak.</p>
+
+<h3 id="translation">9a. Çeviri</h3>
+<p><span class="lvl l2">Bakım</span> Programın her metni, her dilde, tek bir tabloda &ndash; panelde düzenlenir, programın
+çeviri dosyalarına yazılır. Bir satır bir <b>anahtardır</b> (programın bir metni bildiği ad): sahibi (<i>Genel</i>, programın kendisi &ndash; ya da bir makine,
+sayfaları ve alarmları), dil başına bir sütun, içinde bulunduğu dosya, ve burada en son kimin düzenlediği, ne zaman.</p>
+<ul>
+ <li><b>Bir metin bulma</b>: arama (her sözcük geçmelidir &ndash; anahtarda, sahibinde veya bir metinde, büyük küçük harf fark etmeden), sahibi (<i>Tümü</i>, <i>Genel</i>,
+     <i>Her makinenin</i>, bir makine), <i>Burada düzenlenenler</i>, <i>Eksik metin</i> (boş bir hücre ekranda İngilizcesini gösterir); &#10006; onları temizler.
+     Tablonun altındaki satır onları sayar: <i>4.210 anahtarın 120'si, 2 dil</i>. Tablo her tablo gibi çalışır (<a href="#tables">1</a>).</li>
+ <li><b>Düzenleme</b>: hücreye yazın (<kbd>Del</kbd> onu boşaltır). &#128190; <b>Kaydet</b> (<kbd>Ctrl</kbd>+<kbd>S</kbd>) yazılan metinleri ekrana koyar ve
+     her birini anahtarının okunduğu dosyaya yazar &ndash; <code>CommonTranslations.csv</code> veya bir makinenin <code>Translations.csv</code>'si (sayfalarının ve alarmlarının metinleri)
+     &ndash; dosyanın sırasını, açıklamalarını ve biçimini koruyarak. Bir dosya bir günde ilk kez yazılmadan önce o sabahki sürümü saklanır
+     (<code>ProgramData\KabanHMI\SafetyCopies\Translations\&lt;tarih&gt;</code>).</li>
+ <li>&#8630; <b>Geri al</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) ve &#8631; <b>Yinele</b> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>): yazılan bir metin, kopyalanan bir dil, bir Kaydet, bir içe aktarma &ndash;
+     bütün bir içe aktarma tek adımdır. Zaten yazılmış bir adım önce sorulur, sonra dosyalara geri yazılır.</li>
+ <li>&#128338; <b>Geçmiş</b>: burada değiştirilen her metin &ndash; kim, ne zaman, önce, sonra; bir notun metinleri <i>&lt;kullanıcı&gt; (not)</i> olarak. Çift tıklama
+     anahtara gider; &#128228; dışa aktarır (CSV). <span class="lvl l3">Admin</span>: &#128465; boşaltır (eski liste yanında <code>.bak</code> olarak saklanır; metinler kalır).</li>
+ <li>&#128270; <b>Nerede kullanılıyor?</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>): seçilen anahtarın kullanımları &ndash; menünün sayfa düğmeleri ve başlık verdiği sekmeler,
+     her sayfanın kontrolleri (bir başlık, bir ad, bir ipucu, bir tablonun başlığı), alarmlar ve programın satırları (bir mesaj kutusu, bir durum satırı, bir ipucu). Çift
+     tıklama bir sayfayı açar ve kontrolü gösterir. Programın kaynağı olmayan bir panelde satırlar programın yanındaki <code>TranslationUses.csv</code>'den gelir.</li>
+ <li>&#128203; <b>Bir dilin metinlerini</b> diğer dillerin boş hücrelerine <b>kopyalama</b>, her satır veya gösterilen satırlar için &ndash; Kaydet'e kadar yazılmış olarak kalır.</li>
+ <li><b>Bir dil</b>: &#10133; bir tane ekler &ndash; kodu (<i>PL</i>; İsveççe için ülkenin <i>SE</i>'si değil <i>SV</i>), İngilizce adı ve hangisinin metinleriyle
+     başladığı; &#128465; bir tanesini siler (asla İngilizceyi değil &ndash; metinleri yeniden eklendiği zaman için saklanır). Bayrak düğmesi bir dilin <b>bayrağını</b> yapar:
+     bir ülkenin (53 tanesi çizili &ndash; adı, kodu veya bayrak emojisi yazılır), seçilen renklerde şeritler veya bir haç, ya da bir resim; üst çubukta,
+     dil menüsünde ve tercihlerde gösterilir.</li>
+ <li>&#129302; <b>AI</b>: gösterilen satırlar için <i>Eksik metinleri çevir</i> veya <i>Her çeviriyi kontrol et</i> &ndash; her biri diğer AI menüleri gibi <i>AI istemi oluştur</i> ve
+     <i>Sor: &lt;AI&gt;</i> ile (<a href="#help">1</a>). İstem satırları dosyalarında tutar, her metnin nerede gösterildiğiyle (sayfa ve
+     kontrol, bir menü, bir mesaj, bir ipucu, bir alarm) ve metinlerin kurallarıyla, ve aynı dosyaları yalnızca değişen hücreler ve her biri için bir notla geri ister.
+     300 anahtarın üstünde önce sorar.</li>
+ <li>&#128229; <b>İçe aktar</b>: AI'ın yanıtı (dosyaları ya da kopyalanmış), çeviri dosyaları, ya da eski bir kurulumun klasörü. Boş bir hücre için bir metin
+     hemen yazılır; bir hücreyi değiştiren gözden geçirilmek üzere listelenir &ndash; şimdi, yeni, neden &ndash; ve yalnızca işaretlenenler yazılır (AI'ınkiler işaretli başlar).
+     İngilizcenin bir yer tutucusunu (<code>{0}</code>) kaybeden bir metin reddedilir; bilinmeyen anahtarlar ve diller bildirilir.</li>
+ <li>&#128228; <b>Dışa aktar</b>: gösterilen satırlar bir çeviri dosyası olarak; ya da bir Visual Studio derlemesinden, panelde girilen metinler projenin dosyalarına.</li>
+</ul>
+<p>Bir metin, programın bir değer koyduğu yerde <code>{0}</code>, <code>{1}</code>&hellip; ve yeni satır için <code>\r\n</code> korur. Bir metin
+<code>;</code> içeremez &ndash; o, dosyanın sütunlarını ayırır.</p>
+<p class="note">Bir alarmın metinleri makinesinin <code>Translations.csv</code> dosyasının satırlarıdır (<code>Alarm_&lt;makine&gt;.&lt;etiket&gt;</code>), diğer her anahtar gibi
+düzenlenir, içe aktarılır ve AI istemiyle çevrilir. Hâlâ metin içeren eski bir kurulumun <code>Alarms.json</code>'u okunur ve metinleri bu satırların üzerine
+içe aktarılır; çeviri dosyasının metni geçerlidir.</p>
+
+<h3 id="features">9b. Özellikler</h3>
+<p><span class="lvl l3">Admin</span> HMI'nin <b>isteğe bağlı bölümleri</b>, HMI Ayarları'nın son sekmesi. Her birinin <b>Açık</b> ve <b>Kapalı</b> düğmesi, ne yaptığı ve
+<b>şu an</b> ne yaptığı vardır; bu panel için, herkes için, hemen değiştirilir &ndash; yeniden başlatma yok &ndash; ve kayda yazılır. İkisi de açılana kadar <b>kapalıdır</b>.</p>
+<table>
+<tr><th>Özellik</th><th>Açık</th><th>Kapalı</th></tr>
+<tr><td>HMI'de Industry 4 kaydı</td><td>HMI her makinenin durumlarını, olaylarını ve alarmlarını PLC'sinden makinenin kayıt veritabanına alır &ndash;
+  Industry 4 servisinin işi &ndash; ve kendi kaydını (oturum açmalar, yazmalar, ayarlar) aynı veritabanında tutar (<a href="#i4log">11a</a>). Her makinenin PLC kayıt alanı
+  kendi Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasındadır. <i>Şu an</i> her makinenin kaydedicisinin durumunu verir.</td><td>Industry 4 servisi kaydeder (kurulu
+  olduğu yerde); HMI'nin kaydı eskisi gibi kendi dosyalarındadır.</td></tr>
+<tr><td>Dokunmatik ekran</td><td>Ekran dokunarak kullanılabilir (<a href="#touch">1a</a>): üst çubukta &#128433; / &#128070; düğmesi, ve Kullanıcılar ve Tercihler'de
+  <i>Ekran kullanımı</i>. <i>Şu an</i> dokunarak mı fare ile mi kullanıldığını söyler.</td><td>Fare ile kullanılır; ne düğme ne tercih gösterilir.</td></tr>
+</table>
+<div class="note">Industry 4 servisi panel bilgisayarında çalışırken HMI'nin kaydı <b>bekler</b> (ikisi aynı kayıtları alırdı) ve bunu söyler:
+HMI kaydetmeye başlayınca servisi durdurun &ndash; ya da kaldırın.</div>
+
+<!-- ================================================================== -->
+<h2 id="params">10. Makine Parametreleri</h2>
+<p><span class="lvl l2">Bakım</span> Makine başına bir sekme.</p>
+<ul>
+ <li><b>Eksen Ayarları:</b> eksen başına bir satır &ndash; &#9664; pozisyon <b>akım</b> &#9654;, min, maks, referans, kalibrasyon, kalibre et, yanında <b>Z mesafesiyle</b>
+     referans seçimi, sürücü kodları. Akım pozisyonun yanında durur (eksen hareket ederken ikisi de değişir),
+     Z mesafesi referansın yanında (referansın ne kadar iyi olduğunu söyler). Bir sütun, sayfadaki herhangi bir eksende varsa oradadır; başlıklar sütunları izler.
+     Manuel Hareket sayfalarındaki eksen üniteleri her şeyi bu satırlardan alır. Sayfanın üstünde, varsa makinenin kendi çubuğu
+     (Manuel Hareket sekmelerinin üstündeki gibi hız ve jog adımları); altında, sütun adlarının hemen üstünde iki liste.
+     <ul>
+      <li><b>Akım</b> %0,1 olarak okunur (212, %21,2'dir) ve işaretini korur &ndash; işaret yalnızca torkun yönüdür: göstergenin renkleri ve çubuğu
+          büyüklüğüne göredir.</li>
+      <li><b>Pozisyonlar</b>: <b>Eksen Pozisyonu</b> başlığına tıklamak, Eksen başlığının yaptığı gibi bir liste açar: <b>Eksen Pozisyonu</b> (her zaman),
+          <b>Servo Enkoder Değeri</b> (servo motorun kendi enkoderi: hareket modülünün gerçek mevcut değeri, Md.101 &ndash; bir simple motion modülündeki eksen için)
+          ve <b>Yük Konumu</b> (PLC'nin okuduğu yük tarafında bir enkoder, örneğin bir lineer cetvel: <code>LoadSideEncoderAddress</code>, bölünür
+          <code>LoadSideEncoderDivisor</code>'a &ndash; ayarlanana kadar satırın Bölen'ine &ndash; olan bir eksen için). İşaretlenenler yan yana
+          sütunlardır; hiçbiri işaretli değilse Eksen Pozisyonu. Sizin kendi seçiminiz, Eksen Ayarları sayfaları ve Eksen İzleme için tek bir seçim. Sunacak başka bir şeyi
+          olmayan bir pozisyon başlığı hiçbir şey açmaz.</li>
+      <li><b>PLC eksen öğeleri</b>, sayfanın üstündeki liste (kendini adlandırır: yanında başlık yoktur; sağında kaç tanesinin işaretli olduğu, <i>3/8</i>,
+          ya da <i>Tümü</i>; açıkken adı ilk satırıdır, işaretlenecek bir satır değil &ndash; Hareket izleme öğeleri de aynı, hiçbir şey işaretli değilken <i>Hiçbiri</i>):
+          satırın hangi gruplarının gösterileceği &ndash; <i>Manuel hareket</i> (jog düğmeleri ve pozisyon),
+          <i>Tork izleme</i> (akım), <i>Eksen ayar parametreleri</i> (min, maks, referans, kalibrasyon, kalibre et), <i>Referans etkinleştirme</i> (Ref),
+          <i>Referans sensörü - enkoder Z darbesi mesafesi</i>, <i>Alarm kodları</i>, <i>Tur başına hareket</i>, <i>Boşluk</i> &ndash; yalnızca sayfanın bir satırında
+          olanlar. <i>Tümü</i>, listenin son satırı (hiçbiri işaretli değil), satırın tamamıdır. Sayfa bir <b>tablodur</b>: iki liste ve sütun
+          adları, satırlar altlarında aşağı yukarı kayarken üstte kalır (ekranın gösterdiğinden fazla ekseni olan bir sayfa) ve yana kayarken satırları izler;
+          satırlar yana kayarken <b>eksen adları solda kalır</b> (sütunlar altlarından geçer), böylece bir değerin ekseni her zaman görünür. İşaretler oturum açan kullanıcının kendisinindir; gizlemek yalnızca
+          ekranındır &ndash; makine, manuel sayfaların eksen üniteleri ve HMI'nin kendi alarmları her adresi korur. Sayfa <b>liste kapanınca bir kez</b>
+          yeniden düzenlenir (Hareket izleme öğeleri için olduğu gibi), her işaretlemede değil; daha az öğeyle satırlar daha dardır ve sayfa yalnızca
+          son sütununa kadar kayar.</li>
+      <li><b>Gösterilen eksenler</b>: sayfanın eksenlerinin listesi için <b>Eksen</b> başlığına tıklayın ve görülecekleri işaretleyin (hiçbiri işaretli değilse: <i>Tüm eksenler</i>).
+          Liste kapanınca uygulanır. İşaretlenenler birlikte sayfanın en üstüne çıkar; bazıları gizliyken başlık kaç tanesinin
+          gösterildiğini gösterir (<i>2/17</i>), ipucu da hangilerinin. Eksenlerin altında duran bir düğme (örneğin <b>Eksenleri Referansa Gönder</b>)
+          gösterilen son ekseni izler. Sizin kendi seçiminiz, her Eksen Ayarları sayfası için saklanır; Eksen İzleme'nin kendisininki vardır
+          (<a href="#side">3a</a>). Gizlemek yalnızca ekranındır. Görünürlük koşullarıyla gizlenen bir eksen sunulmaz; işareti onunla birlikte geri gelir.</li>
+      <li><b>Tur başına hareket</b> ve <b>boşluk</b>, verildiklerinde (<code>TravelPerRevolutionAddress</code>, <code>BacklashAddress</code>),
+          son sütunlardır, eksenin biriminde son basamağına kadar (<i>0.0150 mm</i>), aynı şekilde girilir.</li>
+      <li>Bir satırın <b>görünürlük koşulları</b> olabilir (bir makinenin takılı olmayabilecek bir ekseni): karşılanmadıkça gizlidir, burada ve Eksen İzleme'de;
+          altındaki satırlar onun yerine yukarı kayar.</li>
+      <li>PLC bir referans istediğinde (<b>referans isteği</b>, <code>HomeRequestAddress</code>) <b>Ref</b> kutusunun kenarı <b>kırmızı yanıp söner</b>:
+          referansa gönderilecek eksen odur.</li>
+      <li><b>Hareket izleme öğeleri.</b> Bir simple motion modülünün sürdüğü bir eksenin modülün numarası (<code>MotionNumber</code>: U1 için 1) ve onun üzerindeki
+          ekseni (<code>MotionAxisIndex</code>: 1&ndash;8) vardır &ndash; <code>PlcNumber</code> ve <code>HMIAxisIndex</code> ile (manuel sayfaların
+          eksen ünitelerinin kullandığı numara), satırın <i>Device</i> özellikleri, tasarımcıda ayarlanır. O zaman sayfada <i>PLC eksen öğeleri</i>'nin yanında, aralarında boşlukla <i>Hareket izleme öğeleri</i> vardır:
+          görülecekleri işaretleyin (hiçbiri için son satır <i>Hiçbiri</i>), her biri her satırın sonunda bir sütundur ve doğrudan
+          modülün buffer belleğinden okunur (<code>U1\G2406</code> &hellip;). Hareket izleme öğeleri listesi, sayfa yana kaydırılırken <b>görünür kalır</b>:
+          sayfanın sol kenarına ulaşana kadar sayfayla kayar ve sayfa kaymaya devam ederken orada kalır &ndash; böylece modülün değerleri
+          sütunlarının bulunduğu yerde işaretlenebilir (<i>PLC eksen öğeleri</i> gizlediği sütunlarla birlikte kayıp gider).
+          <ul>
+           <li>Alarmlar ve durum: eksen hatası ve eksen uyarısı (kod olarak, arkalarında yardımları), servo alarmı, eksenin çalışma durumu sözcüklerle
+               (<i>Home return (7)</i>).</li>
+           <li>Bayraklar, lamba olarak: referans isteği, referans tamam, hata ve uyarı algılandı, pozisyonlama tamam, komut yerinde, BUSY,
+               servo READY, servo ON, yerinde, tork sınırı, mutlak pozisyon kayıp, servo uyarısı, sınır sinyalleri, yakınlık dog'u.</li>
+           <li>Pozisyonlar ve hızlar satırın kendi pozisyonu gibi: uzunluk satırında
+               <a href="#unitset">Kullanıcılar ve Tercihler</a>'in uzunluk biriminde (mm, cm, inç ... &ndash; onunla değişir), açı satırında derece olarak. Modülün
+               birim ayarında okunurlar (mm, inç veya derece; modülde mm olarak ayarlanmış bir açı ekseninin rakamları derecelerdir);
+               darbe olarak ayarlanmış bir eksen darbe olarak gösterilir: sapma sayacı, hedef, ilerleme hızı, mevcut hız, motor hızı ve aşağıdaki parametreler
+               (besleme ve gerçek mevcut değerler, yukarıdaki pozisyon başlığının seçenekleridir).</li>
+           <li>Yükler: motor akımı, tork sınırı, rejeneratif, efektif ve tepe yükü.</li>
+           <li>Modülün ayarlandığı gibi parametreleri: birim, devir başına darbe ve hareket, boşluk, yazılım strok sınırları,
+               hız sınırı, hızlanma ve yavaşlama süresi, referans adresi ve hızı.</li>
+          </ul>
+          <span class="lvl l3">Admin</span> <b>Modülün parametreleri</b> (Pr.1 &ndash; 3, 8 &ndash; 13, 45, 46) alanlardır: bir tıklama tuş takımını
+          hücrenin biriminde açar (birim ayarı, Pr.1, bir liste: mm, inç, derece, darbe); değer kılavuzun ayar aralığına göre kontrol edilir ve
+          modülün buffer belleğine yazılır, kayıtta Admin'in olarak. Bir modül değerine sağ tıklama: <i>Değiştir...</i> ve flash ROM, kullanılamadıklarında
+          nedeniyle gri. Modül bir parametreyi eksenin bir sonraki başlatmasında (Pr.8 &ndash; 10) ya da PLC READY yeniden açılınca (diğerleri) kullanır,
+          ve <b>flash ROM'u</b> yazılmadıkça <b>enerji kesilince unutur</b>: Hareket izleme öğeleri listesinin yanındaki <b>Modül n flash ROM'unu yaz</b>,
+          sayfanın eksenlerinin bir modülünde henüz flash ROM'una geçmemiş değişiklikler varken <b>kırmızı yanıp söner</b> &ndash; ipucu onları adlandırır; bir tıklama onu yazar
+          (<code>Un\G5900</code> = 1), modülün yanıtını bekler ve nasıl gittiğini söyler. Bir modüle yazılan bir yedek (<a href="#plcdata">7a</a>) değişiklik sayılır.
+          İşaretler oturum açan kullanıcının kendisinindir (oturum açılmamışsa: panelin). Değerler açık gri üzerinde göstergelerdir. Bir modülde olmayan bir satır sütunları boş bırakır, böylece hizada kalırlar;
+          modülde hiç ekseni olmayan bir sayfanın Hareket izleme öğeleri yoktur. Her başlığın ipucu tam adını ve modülün kılavuzundaki numarasını verir (<i>Md.31 b3</i>).</li>
+     </ul></li>
+ <li><b>Sürücü kodları</b> (son üç sütun): <b>eksen alarmı</b> ve <b>eksen uyarısı</b>, hareket modülünün kılavuzunun yazdığı gibi (<code>1904H</code>),
+     <b>servo alarmı</b> amplifikatörün ekranının gösterdiği gibi (<code>16.3</code> = alarm 16, ayrıntı 3). Sıfır olmayan bir kod <b>yanıp söner</b> ve bir bağlantıdır
+     (imleç bir ele dönüşür): bir tıklama yalnızca o kodun kılavuzdaki girdisini açar &ndash; alarm ve anlamı, kod,
+     ve nedenlerinin, her birinin nasıl kontrol edileceğinin ve ne yapılacağının tek bir tablosu.
+     Uyarılar kehribar, alarmlar kırmızıdır; boş bir hücre kod yok demektir.</li>
+ <li><b>Enkoderli silindirler</b> (onlara sahip bir makinede): enkoder başına bir satır, bir eksen satırı gibi düzenlenmiş &ndash; adı,
+     <b>manuel hareketi</b> (&#9664; pozisyon &#9654;), <b>Referans</b> (sayımın referans sensöründe aldığı pozisyon), <b>Ölçüm toleransı</b>,
+     <b>Minimum limit</b> ve <b>Açma aralığı</b>, başlıklarının altında; enkoderin sahip olmadığı bir alan boş bırakılır, sütunu korunur.
+     Manuel Hareket sayfalarının enkoder üniteleri her şeyi bu satırlardan alır (<a href="#encoders">4b</a>).</li>
+ <li><b>Alarmlar ve Kayıtlar:</b> her alarmın önemi ve <b>yardımcı bağlantıları</b> &ndash; alarmdan açılan <b>birkaç</b> belge, çizim, sayfa veya web adresi.
+     Liste için hücreye çift tıklayın (veya &#9999;&#65039;): <i>Dosya ekle...</i>, yazılan bir bağlantı, kaldır, yukarı ve aşağı;
+     ya da aralarında <b>;</b> ile hücreye yazın. &#128194; birini açar (birkaç tane varsa bir menü).
+     Kaydetmek makinenin kendi <code>Alarms.json</code> dosyasını yazar, böylece her makine kendi ayarlarını korur.
+     <ul>
+      <li>Tablonun üstünde, makine başına: <b>Eksen ve invertör alarmlarını HMI kendisi üretir</b> &ndash; kapatılmadıkça açık; bir eksenin veya bir motorun alarmı hemen gelir &ndash;
+          ve <b>Silindir alarmlarını HMI kendisi üretir</b> &ndash; açılmadıkça kapalı &ndash; bir hareketin alabileceği <b>Silindir alarm gecikmesi (s)</b> ile
+          (başta 5 s). Bkz. <a href="#genalarms">6a</a>. Gecikmeler ileri geri hareket eden bir silindiri de zamanlar (<a href="#fwback">4</a>).</li>
+      <li><b>Silindir gecikmesi (s)</b> sütunu: bir hareketin alarmı için <b>kendi</b> gecikmesi, saniye olarak; boşsa genel olanı kullanır. Yalnızca bir silindir ünitesinin
+          hareketinin bildirdiği bir alarmın gecikmesi olabilir: diğerleri gridir.</li>
+      <li><b>Makinenin PLC'den kaydı</b>, anahtarların altında &ndash; yalnızca <b>HMI Ayarları &rsaquo; Özellikler</b>'de HMI'de Industry 4 kaydı
+          açıkken (<a href="#features">9b</a>): HMI'nin bu makinenin kaydını PLC'sinden alıp almadığı, <b>PLC kayıt alanı</b> &ndash; PLC'nin kayıtlarını tuttuğu
+          word cihazı (<code>R27000</code>; her makinenin kendisininki vardır &ndash; alan geçerli olanı gösterir, boşaltılırsa makinenin kendisininkine döner), <i>Şu an</i> (makinenin kaydedicisinin ne yaptığı: kayıtları alıyor,
+          PLC'yi bekliyor, Industry 4 servisi çalışırken bekliyor &hellip;), ve bir kaydın Process ID'sinin bağlantısıyla <b>KMSystem</b> araması.
+          Sayfanın &#128190;'si onları saklar ve kaydedici yeni alanı hemen alır; word cihazı olmayan bir kayıt alanı bunu söyleyerek reddedilir. Kayıt
+          veritabanı olmayan bir makine bunu söyler. Bkz. <a href="#i4log">11a</a>.</li>
+     </ul></li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="diag">11. Kayıtlar ve tanılama</h2>
+<ul>
+ <li>HMI'den yapılan her değişiklik zamanı ve kullanıcısıyla <b>denetim kaydına</b> yazılır: gün başına bir dosya, <code>HmiAudit_yyyy-MM-dd.txt</code>.</li>
+ <li><code>[PLC DIAG]</code> ile başlayan satırlar haberleşme değişikliklerini kaydeder (kaybedilen bir istasyon, geri gelen bir istasyon).</li>
+ <li><b>PLC yazma kaydı</b>, <b>HMI'nin bir kontrolöre yaptığı her yazmayı</b> cihaz cihaz kaydeder, her sayfadan, iletişim kutusundan ve PLC Monitörü'nden &ndash;
+     böylece PLC programcısı HMI'nin ayarladığı bir değeri PLC programının ayarladığından ayırabilir. Denetim kaydının yanında gün başına bir dosya,
+     <code>PlcWrites_yyyy-MM-dd.csv</code> (Excel onu olduğu gibi açar), cihaz başına bir satır:
+     <i>Time</i> (milisaniyesine kadar), <i>Station</i>, <i>Controller</i>, <i>Device</i>, <i>Value</i>, <i>Hex</i>, <i>Before</i> (HMI'nin orada en son okuduğu değer,
+     hiçbir şey okumuyorsa boş), <i>Result</i> (OK, ya da kontrolörün koduyla FAILED), <i>User</i> ve <i>Source</i> &ndash; sayfa, kontrolün tasarımcının
+     bildiği adı, başlığı ve ne yapıldığı: <i>ManualCutting.btnSaw [Saw]: momentary press</i>, <i>PLC Monitor: typed 42 into D100 [Speed]</i>.
+     Bir double word iki word'üdür; rakamla belirtilen bir cihaz (<i>K4M100</i>) bitlerinin her biridir; bir word'ün biti (<i>D100.3</i>) bit ve word'dür.
+     Kontrolörün reddettiği bir yazma da kaydedilir. Kayıt denetim kaydı kadar saklanır ve onunla birlikte <b>kapatılmaz</b>.
+     Tezgâh simülasyonunun kendi hareketleri (PLC programının rolünü oynar) HMI yazması değildir ve kayıtta yoktur; makine kaydedicisinin
+     aldığı her kayıt için PLC'ye verdiği yanıtlar da (<a href="#i4log">11a</a>).</li>
+ <li><b>Kayıtlar ve Raporlar</b> (HMI Ayarları) <span class="lvl l2">Bakım</span> kayıtların <b>ayarlarını</b> tutar; kayıtların kendisi
+     <b>Gösterge Paneli</b> sayfasında okunur (<a href="#dashboard">Gösterge paneli</a>):
+  <ul>
+   <li>Yalnızca <span class="lvl l3">Admin</span>: HMI'nin kaydını <b>kapatmak</b> (önce sorar ve kimin kapattığını yazar; kapalıyken sayfa bunu kırmızıyla söyler)
+       ve kaç günün saklandığı. &#128194; kayıt klasörünü açar.</li>
+   <li>&#128452;&#65039; <b>Kayıt veritabanı ve raporlar</b>: bir makine seçin; altında, sayfada, kayıt veritabanı ve raporları &ndash; gösterge panelinin
+       ayarları (<a href="#dashboard">Gösterge paneli</a>). Sayfa kaydı kimin yazdığını söyler &ndash; Industry 4 servisi veya HMI (<a href="#features">9b</a>) &ndash;
+       ve makinenin PLC kayıt alanının kendi Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasında olduğunu. Veritabanının içeriğine sayfa açılırken bakılır &ndash; <i>12.345 kayıt,
+       2026-09-01 08:00 - 2026-10-01 09:12</i> &ndash; ya da, kırmızıyla, neden okunamadığı: bulunamadı, bir makine kaydı değil (<code>main_log</code> tablosu yok &ndash;
+       başka bir programın veritabanı), henüz kayıt yok, okuyamadığı tarihler, veritabanı olmayan bir dosya. &#128269; yeniden bakar.</li>
+   <li>Makineleri kayıt veritabanı tutmayan bir programın Gösterge Paneli sayfası yoktur: HMI'nin kaydı burada, aşağıdaki tabloda okunur.</li>
+  </ul></li>
+ <li><b>Kayıt tablosu</b> (Gösterge Paneli'nin <i>Tüm kayıtlar</i> sekmesi; makine kaydı olmayan bir programda Kayıtlar ve Raporlar &ndash; bağlantı olayları onun <i>Bağlantı</i> girdileridir),
+     en yenisi önce (sırayı çevirmek için <i>Zaman</i>'a tıklayın):
+  <ul>
+   <li>Gösterge Paneli'nin <i>Tüm kayıtlar</i> sekmesinde HMI'de yapılanın yanında makinenin <b>durumlarını</b> (kaç dakika sürdükleriyle; içinde bulunduğu için
+       <i>sürüyor</i>), <b>olaylarını</b> ve <b>alarmlarını</b> (açık olan hatalarla) listeler, bir <b>Kaynak</b> sütunuyla: <i>HMI</i> veya makine.
+       Orada filtreler sayfanınkilerdir, sol çubuğunda (bkz. <a href="#dashboard">Gösterge paneli</a>); tablo aramasını korur. Bir makinenin
+       girdileri ilk PLC'sindedir, bu yüzden <b>PLC</b>, HMI'nin o kontrolöre yazmalarını makinenin kaydettiklerinin yanında gösterir.</li>
+   <li><b>Dönem</b> (tablonun kendi dönemi olduğu yerde &ndash; Gösterge Paneli'nde sayfanın aralığıdır): son bir saat, bugün, dün, 7 veya 30 gün, saklanan tümü
+       &ndash; ya da herhangi bir <b>Başlangıç</b>/<b>Bitiş</b> (birini değiştirmek <i>Başlangıç - bitiş</i>'i seçer).</li>
+   <li>&#128269; <b>Arama</b>: yazılan her sözcük, büyük küçük harf fark etmeden geçmelidir &ndash; <i>D210 admin</i>, admin'in D210 hakkındaki girdilerini bulur.
+       <b>Kullanıcı</b>, <b>PLC</b> (bir girdinin ilgili olduğu kontrolör &ndash; numarası <i>PLC</i> sütunundadır) ve <b>Kayıt Türü</b>
+       (kullanıcı girişleri, bağlantı, PLC yazmaları, <b>PLC cihaz yazmaları</b> &ndash; PLC yazma kaydının satırları &ndash;, sorunlar, ayarlar, diğer; Gösterge Paneli'nde
+       soldaki <b>Kayıt Türü</b> filtresi; tablonun sütunu aynı adı taşır) daha da daraltır; &#10006; onları temizler.</li>
+   <li><b>Canlı</b> (kendi dönemiyle): dönem şimdiye kadar sürerken yeni girdiler yazıldıkça görünür; okuduğunuz satır yerinde kalır.</li>
+   <li>Seçilen girdi tablonun altında tam olarak gösterilir (bir istasyon taraması birkaç satırlık bir rapordur). &#128228; gösterilen girdileri bir kayıt dosyası veya bir CSV tablosu olarak dışa aktarır.</li>
+  </ul></li>
+ <li><b>PLC Bağlantıları</b> <span class="lvl l2">Bakım</span>: kontrolörlerin tablosunun kendisi, sekme yok &ndash; her kontrolörün adı <b>Aktif</b> işaretiyle
+     (<a href="#conn">7</a>), sürücüsü, mantıksal istasyonu ve adresi &ndash; kaydedildiği gibi, bir sonraki başlangıçtan itibaren kullanılır; bir <span class="lvl l3">Admin</span>
+     değiştirir ve kaydeder &#128190; &ndash; ve yanlarında şu an nasıl olduğu: yanıt verip vermediği, en son ne zaman verdiği, <b>bugünkü kopmalar</b>
+     (günde birçok kez kopan bir bağlantı programa değil bir kabloya, bir switch'e veya bir ağa işaret eder), sözcüklerle son hata ve program sürümü;
+     sonunda <b>PLC verisi</b>, <i>Oku...</i> ve <i>Yaz...</i> (<a href="#plcdata">7a</a>). Bağlantı olayları kayıttadır (yukarıda).</li>
+ <li><b>PLC Monitörü</b> <span class="lvl l3">Admin</span>: bir yan sayfa (<a href="#side">3a</a>) &ndash; yan çubuktaki simgesi ya da <kbd>F12</kbd> (kapatmak için yeniden).
+     Her kontrolörün her cihazını okur ve <b>yazar</b> &ndash; her kontrolün kendi kontrollerini atlar, bu yüzden dikkatle kullanın.
+  <ul>
+   <li>Her düğme, imleç üzerinde beklerken ne yaptığını söyler.</li>
+   <li><b>İstediğiniz kadar dar</b> yapın (yan panelin kenarını sürükleyin ya da kendi penceresini boyutlandırın): artık sığmayan düğmeler araç çubuğunun
+       sonundaki köşeli ok (&raquo;) altına geçer ve ipuçlarını orada korur.</li>
+   <li>Kontrolör başına bir sekme; her birinin altında <b>kendi sekmeleriniz</b> (&#128209;): son sekmeden sonraki <b>+</b> sona bir tane ekler; sekme menüsü (bir sekmeye sağ tıklayın)
+       gösterilenin <b>önüne</b> veya <b>arkasına</b> bir tane ekler; yeniden adlandır (ya da sekmeye çift tıklayın); sil &ndash; her sekme gidebilir, o zaman bir cihaz eklemek onun için bir <i>Ana</i> sekmesi yapar.
+       Bir sekmeyi şerit boyunca <b>sürükleyin</b>, istediğiniz kadar yer taşımak için.</li>
+   <li>&#128451; şunların kullandığı her cihazı ekler: görüntülenen ekran; tüm program &ndash; sayfa başına bir başlık satırıyla, ya da <b>tek bir liste</b> olarak
+       (her cihaz bir kez, böylece <i>Adres</i>'e tıklamak HMI'nin kullandığı her cihazı sıralar); her sayfa için bir sekme olarak tüm program; ya da
+       <b>PLC etiket listesinde</b> adı geçen her cihaz &ndash; programın yanındaki <code>PlcLabels.csv</code>: PLC programcısının cihazları için adları, monitördeki
+       cihazları adlandırır ve hiçbir sayfanın göstermediği cihazları içerir; ya da bu kontrolörden okunan <b>makine koşulları</b> (manuel mod,
+       robot güvenli pozisyonda ... &ndash; gri bir kontrolün <i>Required Machine State</i>'inin kastettiği): bir başlık, sonra her koşulun cihazı,
+       onunla adlandırılmış, ve bir <b>Koşul</b> sütunu &ndash; şu an <b>&#10004; karşılanıyor</b> veya <b>&#10006; karşılanmıyor</b>; imleç üzerindeyken koşulun ne istediğini
+       (<i>D300 &le; 3</i>) ve neyin okunduğunu söyler. Sütun, koşulu olan bir sekmede vardır.
+       İlk girdisi, <b>sonraki kontrolün / sayfanın altındakilerin tümü &ndash; bu sekmeye</b>: pencere gölgelenir ve sonraki tıklama kullanılmaz, alınır &ndash; menünün bir sayfa
+       düğmesi (açtığı her sayfa), makine listesinin bir makinesi, bir sekmenin başlığı (sayfası), bir kontrol (altındaki her şey; bir ünitenin başlığı,
+       ünite); çubuk ne yapılacağını söyler ve <i>Eklemeyi iptal et (Esc)</i> yanıp söner; <kbd>Esc</kbd> vazgeçer. Geri al onu geri alır. Bir sayfadan eklenen satırlar
+       kontrollerin başlıklarıyla adlandırılır (<i>Gripper Uzunluğu</i>).</li>
+   <li>&#128270; <b>Bul</b> (<kbd>Ctrl</kbd>+<kbd>F</kbd>, ya da bir satıra sağ tıklama: <i>Nerede kullanılıyor?</i>): bir adres, bir etiket veya bir ünitenin adının bir kısmını yazın.
+       Her kullanım listelenir &ndash; bir sayfa iki kez kullanıyorsa iki kez &ndash; sayfasıyla, listelerin altındaki bir bölmede (&#10005; veya <kbd>Esc</kbd> onu kapatır).
+       <b>Bir satıra tıklayın</b>: sayfa monitörün yanında açılır, ünite görünene kadar kayar ve ünite yanıp sönen mavi bir çerçeveye alınır.
+       Her satır ayrıca cihazın <b>Değer</b>'ini, <b>Görüntüleme Biçimi</b>'ni (değiştirmek için bir satıra sağ tıklayın; listelerden birindeki bir cihaz o satırın biçimiyle başlar)
+       ve en son ne zaman <b>Değiştirilme</b> olduğunu gösterir, listelerin yaptığı gibi &ndash; bulunan cihazlar sekmeninkilerle birlikte okunur.
+       Liste monitörünkine benzer; bir başlığa tıklamak onu sıralar, başlıklarını başka bir sıraya, kenarlarını boyutlandırmak için sürükleyin, sütunları kaldırmak veya genişliklerini yazmak için
+       bir başlığa sağ tıklayın: bir dahaki sefere saklanır.</li>
+   <li>&#10133; sona veya seçili satırın üstüne bir cihaz ekler &ndash; ya da bir <b>dizi</b>: <i>D100, 10 tane</i> <b>tek bir öğedir</b>,
+       &#9656; <i>Hızlar [10]</i>, ilk değerleri satırında; &#9656;'ya tıklayın (veya sağ tıklama: <i>Diziyi aç</i>) ve D100&hellip;D109
+       altında görünür, her biri değeriyle &ndash; değiştirmek için birine çift tıklayın. Taşınan, kopyalanan, sıralanan veya silinen dizi tek olarak gider; sayısı
+       düzenleyicisinde değiştirilebilir. Bir double word veya bir float ikişer sayar (D200, D202&hellip;), bir string ihtiyaç duyduğu word'ler kadar.
+       Bir <b>açıklama satırının</b> yalnızca metni vardır: altındaki satırlar için bir başlık. Yeni bir satır kendini etiket listesinden doldurur: yazılan bir adres
+       etiketini, bir etiket adresini, veri tipini ve bir dizinin uzunluğunu verir.</li>
+   <li><b>Yapılandırılmış veri tipleri</b> (Mitsubishi'nin: bir reçete adımı, bir profilin parametreleri): &#10133; menüsünde <i>Yapılandırılmış veri tipleri...</i>, ya da
+       bir satırın veri tipinin yanında <i>Yapılar...</i>. Her birinin bir adı, bir <b>uzunluğu</b> (cihaz &ndash; bir dizinin sonraki elemanı bu kadar ileride başlar), bir açıklaması
+       ve <b>etiketleri</b> vardır, her biri ofsetinde basit bir veri tipi (baştan word; bir Bit etiketi o word'ün bir biti), bir bölen ve ondalık basamaklarla.
+       Yeni, kopyala, sil ve taşı; uzunluğun ötesindeki bir etiket bir hatadır, tam olarak söylenir, ve OK onu reddeder. Yeniden adlandırılan bir tip eski adını korur, böylece
+       onunla kaydedilen listeler onu yine bulur. Her makinenin kendisininkiler vardır, <code>PlcLabels.csv</code>'sinin yanındaki <code>StructuredTypes.csv</code>'de. Bir satırın veri tipi
+       onları basit tiplerden sonra sunar: bir yapı etiketlerini altında gösterir (<i>Step.Speed</i>), bunlardan bir dizi elemanlarını (R0, R16, R32&hellip;),
+       her biri etiketlerine katlanır; katlıyken değerler süslü parantez içinde.</li>
+   <li><b>Değer (PLC)</b> ve <b>Değer (HMI)</b>: değer PLC'nin tuttuğu gibi ve HMI'nin gösterdiği gibi &ndash; etiketin <b>Bölen</b>'ine bölünmüş,
+       <b>Ondalık Basamak</b>'larıyla (iki sütun da, yerinde düzenlenir). Değer (HMI)'ye yazılan bir değer bölenle çarpılarak yazılır.</li>
+   <li><b>Sıfırla (cihazlarına 0)...</b> (bir satırın sağ tık menüsü): önce sorulur, sonra seçilen satırların her cihazına 0 yazılır &ndash; bir yapının
+       tüm uzunluğu, bir dizinin her elemanı; bir Bit etiketi yalnızca bitini.</li>
+   <li><b>Tablo görünümü</b>: <i>Bu etiketi tablo görünümünde göster</i> (bir dizi etiketinin menüsü) etiketi listeden sekmenin üstündeki bir <b>tabloya</b> taşır &ndash;
+       indeks başına bir satır, bir yapının etiketi başına bir sütun (veri tipinin üstünde adı), başlık olarak açıklaması. Başlığın altında: değerler
+       HMI'nin gösterdiği veya PLC'nin tuttuğu gibi, <i>Dizi ekle...</i> (aynı uzunlukta etiketler &ndash; bu sekmenin listesinden, diğer sekmelerden,
+       etiket listesinden ya da yeni bir tane &ndash; daha fazla sütun olarak), tablolar arasında yukarı ve aşağı, ve <i>Liste görünümü</i> (etiketleri listenin sonuna geri).
+       Bir sütunun menüsü etiketini düzenler veya tablodan çıkarır. Bir hücreye yazılan değer yazılır. İkisi de olan bir sekmenin altında iki sekme vardır,
+       <b>Liste görünümündeki etiketler</b> ve <b>Tablo görünümündeki etiketler</b>; tabloların sekmesinde bir tıklama bir tablo seçer ve araç çubuğu onun üzerinde çalışır (taşı, kopyala, yapıştır,
+       sil, üstüne veya altına yeni bir tablo veya bir açıklama satırı).</li>
+   <li><span class="lvl l3">Admin</span> <b>Yedekten PLC'ye yaz...</b> (araç çubuğu ve bir satırın menüsü): seçilen etiketler, sekmenin her etiketi ya da kontrolörün
+       her sekmesinin, seçilen bir yedekten (<a href="#plcdata">7a</a>). Yalnızca etiketlerin cihazları yazılır &ndash; bir dizinin elemanları, bir yapının
+       tüm uzunluğu, bir word'ün biti yalnızca o bit; soru değerleri ve yedekte olmayanları listeler. Gerçek bir PLC'nin girişleri, çıkışları ve sistem
+       cihazları yazılmaz, ve bugünün yedeği yoksa önce bir tane okunur (simülatörde değil).</li>
+   <li><b>Veri tipleri</b>: Bit, Word ve Double Word (işaretli veya işaretsiz), <b>Float [Single Precision]</b> (iki word) ve <b>String</b>
+       (word başına iki karakter; uzunluğu düzenleyicisinde). <b>Görüntüleme Biçimi</b> (bir sütun, düzenleyici veya sağ tıklama): <b>Onluk</b>,
+       <b>Onaltılık</b> (0x00F3) veya <b>İkilik</b> (0000 0000 1111 0011) &ndash; bir değer aynı biçimde yazılır (onaltılık bir satırda <i>1F</i>;
+       <i>0x&hellip;</i> ve <i>0b&hellip;</i> her satırda çalışır).</li>
+   <li><b>Kopyala</b> (iki sayfa) seçili satırları kopyalar (<kbd>Ctrl</kbd>+<kbd>C</kbd>), <b>Yapıştır</b> (pano) onları seçili satırın üstüne (<kbd>Ctrl</kbd>+<kbd>V</kbd>) veya sona yapıştırır;
+       çubuğa oklar (&#10514; &#10515;) veya sürükleme yeniden sıralar (<kbd>Ctrl</kbd>+<kbd>&uarr;</kbd>/<kbd>&darr;</kbd>).
+       Birkaç satırlık bir seçime sağ tıklamak hepsini seçili tutar, böylece Kopyala ve Kaldır hepsini alır.</li>
+   <li>&#128465; <b>siler</b>: seçili satırları (<kbd>Del</kbd>), bu sekmeyi, bu kontrolörün her sekmesini ya da her kontrolörün her sekmesini (bu ikisi önce sorar).</li>
+   <li>&#8630; <b>Geri al</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) listelerdeki son değişikliği geri alır &ndash; bir sıralama, bir silme, bir yapıştırma, bir taşıma, yazılan bir ad veya adres, eklenen,
+       yeniden adlandırılan, taşınan veya silinen bir sekme &ndash; her seferinde bir adım. Bir listenin sıralamadan önceki sırasını geri almanın yolu da budur. PLC'ye yazılan bir <b>değer</b> geri alınmaz.
+       &#8631; <b>Yinele</b> (<kbd>Ctrl</kbd>+<kbd>Y</kbd> veya <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>) Geri al'ın aldığını bir sonraki değişikliğe kadar geri koyar. İki düğme de ipuçlarında adımı adlandırır.</li>
+   <li>&#128228; sekmeyi bir CSV dosyasına dışa aktarır, &#128229; birinden cihaz alır (bir <code>PlcLabels.csv</code> olduğu gibi çalışır).</li>
+   <li><b>Sütunlar</b>: sütunu başka yere koymak için bir başlığı, boyutlandırmak için kenarını sürükleyin &ndash; diğerleri genişliklerini korur ve her sekme aynı düzeni kullanır.
+       Ona göre <b>sıralamak için bir başlığa tıklayın</b>, tersine çevirmek için yeniden; açıklama satırlarının altında her bölüm kendi içinde sıralanır ve başlığını korur. Adresler PLC'nin sırasında sıralanır (M2, M10'dan önce).
+       <b>Bir başlığa sağ tıklayın</b>: gösterilecek sütunları işaretleyin (işaretlerken menü açık kalır), her sütunun genişliğini yazmak için <i>Sütun genişlikleri...</i> &ndash;
+       ya da <i>Tüm tablo</i>'nun genişliği, gösterilen sütunlar onu şimdi paylaştıkları gibi paylaşır &ndash; <i>Genişlikleri içeriğe sığdır</i>,
+       <i>Varsayılan olarak kaydet</i> veya <i>Varsayılan sütun ayarları</i> (bkz. <a href="#tables">Tablolar</a>). Monitör sütunlar bırakıldığı gibi açılır.</li>
+   <li><b>Değiştirilme</b> (<i>Değer</i>'den sonraki bir sütun): cihazın en son ne zaman değiştiği ve <b>kimin değiştirdiği</b> &ndash; HMI o değeri hemen önce yazdıysa <b>HMI</b> (mavi),
+       yazmadıysa <b>PLC</b> (PLC programı veya makine). İmleç üzerindeyken neyden neye, hangi kontrolün veya sayfanın yazdığını
+       ve kullanıcıyı, ya da HMI'nin en son ne zaman yazdığını söyler. Bir değişiklik yalnızca HMI cihazı okurken bilinir (onu gösteren bir sayfa veya monitör): ondan önce <b>-</b> gösterir.
+       En son değişiklikleri önce sıralamak için başlığa tıklayın.</li>
+   <li>Orada, tabloda değiştirmek için <b>bir değere çift tıklayın</b> (veya <kbd>Enter</kbd>); başka bir şeyde o satırı alan seçili olarak açar. <kbd>F2</kbd> hücreyi yerinde düzenler.
+       <kbd>Shift</kbd>+<kbd>Enter</kbd>, satırın herhangi bir hücresinden: bir <b>Bit</b> çevrilir (0'dan 1'e, 1'den 0'a); diğer her cihaz değerini
+       sayı seçili olarak açar, böylece yazılan onun yerine geçer. Bir bit ayrıca yazılan <i>TRUE</i> / <i>FALSE</i>'u (ve <i>ON</i> / <i>OFF</i>'u) alır.</li>
+   <li>Sekme şeridindeki tuşlar: <kbd>Ins</kbd> yeni sekme, <kbd>F2</kbd> yeniden adlandır, <kbd>Del</kbd> sil, <kbd>Ctrl</kbd>+<kbd>&larr;</kbd>/<kbd>&rarr;</kbd> taşı,
+       <kbd>Ctrl</kbd>+<kbd>Tab</kbd> sonraki sekme. <kbd>Tab</kbd> tablo ile sekme şeritleri arasında gezinir.</li>
+   <li>Simüle edilen bir kontrolörde simülatörün tuttuğu her cihaz kendiliğinden listelenir ve listelenen her cihaz okunur; kaldırdığınız biri
+       &#128065; <i>Kaldırılan cihazları tekrar göster</i>'e kadar listeden çıkar. Gerçek bir kontrolörde yanıt vermediği bir cihaz bir süre dışarıda bırakılır &ndash; diğerleri değerlerini korur.</li>
+  </ul></li>
+</ul>
+
+<h3 id="i4log">11a. Makine kaydını HMI'nin alması</h3>
+<p>Bir makinenin <b>kaydı</b> &ndash; durumları, üretim olayları ve alarmları, değerleriyle &ndash; PLC'si tarafından bir <b>kayıt alanında</b> tutulur ve oradan
+makinenin <b>kayıt veritabanına</b> (<code>main_log</code>, <code>log_details</code>) alınır; Gösterge Paneli, raporları ve Alarmlar sayfasının Geçmiş'i onu okur.
+Bunu kendi başına bir Windows servisi olan <b>Industry 4 servisi</b> yapardı. <b>HMI'de Industry 4 kaydı</b> açıkken (<a href="#features">9b</a>)
+bunu HMI yapar, servisin yaptığı gibi kayıt kayıt, her makinenin ilk PLC'sine kendi bağlantısı üzerinden &ndash; servise artık gerek yoktur.</p>
+<ul>
+ <li>Kayıt veritabanı ve durum haritası olan makine başına bir <b>kaydedici</b>, ana pencereyle başlatılır. Durumu makinenin
+     Makine Parametreleri &rsaquo; Alarmlar ve Kayıtlar sayfasında ve HMI Ayarları &rsaquo; Özellikler'dedir: <i>Kayıtlar PLC istasyonu 1 (R27000) üzerinden alınıyor: başlangıçtan beri
+     120 yazıldı</i>, <i>PLC bekleniyor: bağlı değil</i>, <i>Kapalı</i> &hellip;</li>
+ <li><b>Kayıt alanı</b>: PLC'nin bir word cihazı (<code>R27000</code>) &ndash; ilk word'ü bekleyen kayıtlar, sonraki HMI'nin yanıtı, kayıtlar onuncu
+     word'ünden itibaren, her biri on word. Her makinenin kendisininki vardır, kendi Alarmlar ve Kayıtlar sayfasında ayarlanır (boş: makinenin programının verdiği).</li>
+ <li>Her kayıt, PLC'nin tarihiyle veritabanının bir satırıdır, ve değerleri ayrıntılar olarak &ndash; durum haritasının söylediği gibi bölünmüş, iki word'den 32 bitlik değerler,
+     açık olan her adlandırılmış bit kendi ayrıntısı. PLC'ye yanıt onunla birlikte yazılır: reddedilirse hiçbir şey saklanmaz ve PLC onu yeniden gönderir.
+     Yanıtlar PLC yazma kaydında değildir (her kayıt için bir el sıkışma, bir kullanıcının yazması değil); denetim kaydı bir kaydedicinin ne zaman başladığını söyler.</li>
+ <li>Bir kaydın <b>Process ID</b>'si açıldığında KMSystem'de (PostgreSQL) aranabilir &ndash; Profile Code ve Profile Data'sı eklenir &ndash; servisin yaptığı gibi
+     programın yanındaki <code>Npgsql.dll</code> ile.</li>
+ <li>Bilgisayarda <b>Industry 4 servisi çalışırken</b> HMI bekler ve bunu söyler (<i>Bekliyor: bu bilgisayarda Industry 4 servisi çalışıyor &hellip;</i>): ikisi
+     aynı kayıtları alırdı. Servisi durdurun ya da kaldırın.</li>
+ <li><b>HMI'nin kendi kaydı aynı veritabanında.</b> HMI kaydederken kaydının her girdisi &ndash; oturum açmalar, bağlantı olayları, yazmalar, ayarlar, sorunlar &ndash;
+     ve PLC yazma kaydının her cihazı da ana makinenin kayıt veritabanının bir satırıdır, kendi kodlarıyla (<b>1000</b> diğer, <b>1001</b> oturum açma,
+     <b>1002</b> bağlantı, <b>1003</b> bir kontrolün yazması, <b>1004</b> bir sorun, <b>1005</b> ayarlar, <b>1006</b> yazılan bir cihaz; makinenin kendi kodları
+     0 &ndash; 157'dir). Günlük dosyalar yine önce yazılır ve başlangıçta veritabanına getirilir. Gösterge paneli, sayımları ve raporlar
+     HMI'nin satırlarını dışarıda bırakır &ndash; rapor dosyaları eskisi gibidir; <i>Tüm kayıtlar</i> ve kayıt tabloları onları geri okur.</li>
+</ul>
+
+<h3 id="dashboard">Gösterge paneli</h3>
+<p><b>Gösterge Paneli</b> sayfası (sayfa menüsündeki gösterge, bir tane olan makinede) makinenin bir gün, bir hafta, bir vardiya boyunca ne yaptığını gösterir:
+durumlarını, olaylarını, alarmlarını ve kesimlerini, makinenin <b>Industry 4 kaydından</b> &ndash; kayıt servisinin ya da HMI'nin
+(<a href="#i4log">11a</a>) yazdığı veritabanı (<code>main_log</code> ve <code>log_details</code>). Ayrı gösterge paneli programının yerini alır ve aynı rapor dosyalarını yapar. Herkes bakabilir;
+sayfa kaydı yalnızca okur.</p>
+<ul>
+ <li><b>Aralık</b>, soldaki filtre çubuğunda: <b>Otomatik-Rapor Geçmişi</b> (otomatik raporların yapıldığı zamanlar, ilk kayıttan sonuncusuna &ndash;
+     seçilen biri o raporun kapsadığı aralığı gösterir), <b>Güncel</b> (son 15 dakikadan bir yıla kadar; aynısını yeniden seçmek onu şimdiye taşır) ya da herhangi bir
+     <b>Başlangıç</b> ve <b>Bitiş</b>. Sayfa son günde açılır. İçinde hiçbir şey olmayan bir aralık veritabanının ne tuttuğunu söyler
+     (<i>Veritabanında 12.345 kayıt var, 2026-09-01 08:00 - 2026-10-01 09:12</i>) ya da neden okunamadığını &ndash; yanlış bir dosya hemen görülür.</li>
+ <li><b>Aralığın neyi</b>, altında: <b>Vardiya Seçimi</b>, <b>Kayıt Türü</b>, <b>Kullanıcı</b>, <b>PLC</b> ve <b>Kaynak</b>. Her biri bir kerede <b>birkaç</b> değer
+     işaretlenecek bir liste açar; hiçbir şey işaretlenmemişse (<i>Tüm &hellip;</i>, listenin altındaki düğme de) her şey geçer. <b>Her sekme</b> için
+     geçerlidirler &ndash; makinenin grafikleri ve tabloları kadar <i>Tüm kayıtlar</i> için de:
+  <ul>
+   <li><b>Vardiya Seçimi</b>: her gün yalnızca işaretlenen vardiyaların saatleri (başlangıcında veya ondan önce biten bir vardiya ertesi gün biter; aralıktan
+       önceki gün başlayan bir gece vardiyası yine sayılır; buluşan veya çakışan vardiyalar birleştirilir). Liste
+       <b>HMI Ayarları &rsaquo; Kayıtlar ve Raporlar</b>'da ayarlanır <span class="lvl l2">Bakım</span>.</li>
+   <li><b>Kayıt Türü</b>: girdi türleri &ndash; makinenin <i>Makine durumu</i>, <i>Üretim olayı</i> ve <i>Makine alarmı</i>'ı, sonra HMI'nin
+       <i>Kullanıcı girişleri</i>, <i>Bağlantı</i>, <i>PLC yazmaları</i>, <i>PLC cihaz yazmaları</i>, <i>Ayarlar</i>, <i>Sorunlar</i>, <i>Diğer</i>'i. Yalnızca işaretlenen
+       okunur: makinenin durumları tek başına ayrıntıları olmadan okunur, HMI'nin kayıt dosyaları da yalnızca türlerinden biri işaretliyken &ndash;
+       daha dar bir seçim daha hızlı yüklenir.</li>
+   <li><b>Kullanıcı</b>, <b>PLC</b>, <b>Kaynak</b> (<i>HMI</i> veya makine). Makinenin kaydı henüz bir kullanıcı veya kontrolör kaydetmez: kaydedene kadar
+       girdileri makinenin ilk PLC'sinde <i>admin</i>'in sayılır. Onları dışarıda bırakan bir seçim (başka bir kullanıcı, başka bir PLC, Kaynak <i>HMI</i>)
+       makinenin tüm kaydını dışarıda bırakır.</li>
+  </ul>
+  Filtrelerin boş bıraktığı bir sekme bunu söyler: <i>Gösterilmiyor: soldaki filtreler bu kayıtları dışarıda bırakıyor.</i></li>
+ <li>Çubuğun altında, filtreler nerede biterse bitsin: <b>Seçili Kayıtları Raporla</b> ve yanında &#128194; <b>klasörde göster</b> <span class="lvl l2">Bakım</span>.</li>
+ <li><b>Sekmeler</b>: <b>Makine Performansı</b> (süre dağılımı, zaman çizelgesi ve durumların kayıtları), <b>Üretim Olayları</b> (adetler,
+     kesim detayları ve olayların kayıtları), <b>Alarmlar</b> (sol üstte filtresiyle alarm tablosu) &ndash; tüm bölümleri ayarlarda
+     kapatılmış bir sekme yoktur &ndash; ve <b>Tüm kayıtlar</b>: HMI'nin kaydı ve bu makinenin durumları, olayları ve alarmları tek bir tabloda
+     (<a href="#diag">Kayıt tablosu</a>), üstünde <b>Kayıtlarda ara</b>, &#10006; temizle ve &#128228; dışa aktar ile.</li>
+ <li><b>Bilgi çubuğu</b>, sayfanın altında: kayıtlar okunurken kalın <i>Veriler yükleniyor...</i>, sonra <b>kayıt aralığı</b>, <b>aktif vardiya</b>lar
+     (seçildiğinde) ve gösterilen sekmenin kaç girdi listelediği; sağında kaç kayıt okunduğu ve ne kadar sürdüğü,
+     ya da yazılan son rapor.</li>
+ <li><b>Bölümler</b>, Makine Performansı ve Üretim Olayları sekmelerinde, başlıklarıyla açılıp kapanır &ndash; yuvarlak işaret hangi
+     yönde olduğunu gösterir &ndash; ve bıraktığınız gibi kalır:
+  <ul>
+   <li><b>Süre Dağılımı</b>: durum başına bir dilim, durumun renginde (aktif yeşil, aktif değil mavi, duraklama sarı, hata turuncu,
+       acil stop kırmızı, kapalı gri); bir dilimin üzerindeki imleç dakikasını ve payını verir.</li>
+   <li><b>Zaman Çizelgesi</b>: bir zaman çizgisi üzerinde durumlar. <kbd>Ctrl</kbd> + tekerlek imlecin etrafında yakınlaştırır &ndash; geri (size doğru) çevirince yakınlaşır,
+       ileri uzaklaşır; <b>sağ</b> düğmeyle sürüklemek bir aralık işaretler ve ona yakınlaşır; sürüklemek boyunca kaydırır; çift tıklama tüm aralığı gösterir.
+       Tek başına tekerlek sayfayı kaydırır.</li>
+   <li><b>Kayıtlar</b> (Makine Performansı): her durum, ne zaman başladığı ve kaç dakika sürdüğü (aralığa göre kesilmiş).</li>
+   <li><b>Adetler</b>: olay türü başına bir çubuk, logaritmik ölçekte, böylece bir kez görülen bir tür bin kez görülenin yanında görünür.</li>
+   <li><b>Kesim Detayları</b>: kesilen parçalar, uzunluk ve açılara göre gruplanmış, en uzunu önce; başlık toplam uzunluğu verir.
+       (<i>yalnızca barkodlu kesim kayıtları</i> ile, barkod kaydı olmayan bir kesim olaylardan çıkarılır.)</li>
+   <li><b>Kayıtlar</b> (Üretim Olayları) ve <b>Alarmlar</b> sekmesi: ayrıntılarıyla her olay, açık olan hatalarla her alarm &ndash;
+       makinenin hemen ardından kendi kaydı olarak kaydettiği sonraki 32 hatayla birlikte (<i>Hata var (2)</i>: bir olay değil, bir alarm).
+       Tablonun üstündeki filtre (<i>Filtrelemek İstediğiniz İşlemleri Seçiniz...</i>, <i>Filtrelemek İstediğiniz Alarmları Seçiniz...</i>) türe göre filtreler &ndash; her birinin
+       kaç tane olduğuyla; hiçbir şey işaretlenmemişse her şey gösterilir.</li>
+  </ul>
+  Bir tablo başlığına tıklamak ona göre sıralar (tersine çevirmek için yeniden); <kbd>Ctrl</kbd>+<kbd>C</kbd> seçili satırları kopyalar.</li>
+ <li>Açıklamalar HMI'nin dilindedir. Zamanlar panelinkidir, ayarların saat diliminde (kayıt UTC tutar).</li>
+ <li><b>Seçili Kayıtları Raporla</b> gösterilenin dosyalarını (filtrelerin bıraktığı gibi) dışa aktarma klasörüne yazar: <code>event_log_&hellip;</code>, <code>alarm_log_&hellip;</code>,
+     <code>state_log_&hellip;</code> (ve ayarlar isterse veritabanı tabloları), başlangıç ve bitişe göre adlandırılmış
+     (<code>state_log_20260928_0000_20260928_2359.csv</code>). Yanındaki &#128194; klasörü açar <span class="lvl l2">Bakım</span>.</li>
+ <li><b>Otomatik raporlar</b>: program çalışırken raporlar programın zamanlarında yapılır &ndash; her gün belirli saatlerde, belirli haftanın günlerinde,
+     ayın günlerinde veya yılın tarihlerinde &ndash; her biri bir öncekinden beri geçen zamanı kapsar, rapor dilinde. Bir rapor zamanında panel
+     kapalıysa, o rapor panel yeniden açılınca, en sonuncusundan önce yapılır. Her biri denetim kaydına yazılır.</li>
+ <li><b>Gösterge panelinin ayarları</b> <span class="lvl l2">Bakım</span> <b>HMI Ayarları &rsaquo; Kayıtlar ve Raporlar</b>'dadır (orada seçilen makine):
+     veritabanı dosyası &ndash; yanındaki &#128269; dosyanın ne tuttuğunu gösterir &ndash; ve saat dilimi, yalnızca barkodlu kesimler, <b>vardiyalar</b> (her biri bir başlangıç ve bir bitiş,
+     <i>Vardiya ekle</i>, &#10006; birini kaldırır), sayfanın hangi bölümlere sahip olduğu (sekmelerinin adı altında), dışa aktarma klasörü, rapor dili, program, hangi dosyaların
+     yapıldığı ve bir sonraki otomatik raporun ne zaman olduğu. &#128190; onları saklar.</li>
+ <li>1,5 milyondan fazla kayıt girdisi olan bir aralık gösterilmez (panelin belleği yetmezdi); sayfa bunu söyler &ndash; daha kısa bir tane seçin.</li>
+</ul>
+
+<!-- ================================================================== -->
+<h2 id="files">12. Nerede ne saklanır</h2>
+<table>
+<tr><th>Ne</th><th>Nerede</th></tr>
+<tr><td>Kullanıcılar, birimler, PLC bağlantıları, denetim kayıtları, PLC yazma kaydı, düzenler</td><td><code>C:\ProgramData\KabanHMI\</code> (kayıtlar <code>AuditLogs</code> içinde: <code>HmiAudit_yyyy-MM-dd.txt</code>, <code>PlcWrites_yyyy-MM-dd.csv</code>)</td></tr>
+<tr><td>Gösterge panelinin ayarları (veritabanı, program, vardiyalar, bölümler)</td><td><code>C:\ProgramData\KabanHMI\Dashboard\&lt;makine&gt;.json</code> &ndash; programın yanındaki
+<code>Dashboard\config.json</code>'dan yapılır; makinenin durum haritası ve metinleri <code>Dashboard\StateMap.json</code> ve
+<code>Dashboard\Translation_JSON.csv</code>'dir</td></tr>
+<tr><td>Alarm tanımları ve ayarları (cihaz, kod, önem, yardım, PLC'nin kaydının onu nerede tuttuğu)</td><td>Her makinenin programının yanındaki <code>Alarms.json</code>
+(alt makineler kendi klasörlerinde); metinleri <code>Translations.csv</code>'sinin satırlarıdır</td></tr>
+<tr><td>Her dilin metinleri (programın, her makinenin, alarmlarının)</td><td>Programın yanındaki <code>CommonTranslations.csv</code>, her makinenin <code>Translations.csv</code>'si
+&ndash; Çeviri'nin Kaydet'i yazar. Geçmişi (<code>TranslationHistory.csv</code>), eklenen diller (<code>Languages.cfg</code>)
+ve bayrakları (<code>Flags</code>): <code>C:\ProgramData\KabanHMI\Translations\</code>; dosyaların değiştikleri her sabahki halleri:
+<code>C:\ProgramData\KabanHMI\SafetyCopies\Translations\</code>. Her anahtarın kullanıldığı yer: programın yanındaki <code>TranslationUses.csv</code></td></tr>
+<tr><td>PLC verisi yedekleri</td><td><code>C:\ProgramData\KabanHMI\PlcBackups\*.plcbak</code></td></tr>
+<tr><td>PLC etiketleri ve yapılandırılmış veri tipleri</td><td>Her makinenin programının yanındaki <code>PlcLabels.csv</code> ve <code>StructuredTypes.csv</code> (alt makineler kendi klasörlerinde)</td></tr>
+<tr><td>Yardım listelerinin AI sohbetleri</td><td><code>C:\ProgramData\KabanHMI\AiChats.cfg</code></td></tr>
+<tr><td>Açılan isteğe bağlı bölümler (HMI Ayarları &rsaquo; Özellikler)</td><td><code>C:\ProgramData\KabanHMI\Features.cfg</code></td></tr>
+<tr><td>Bir makinenin PLC'sinden alınan kaydı: açık veya kapalı, kayıt alanı, KMSystem araması</td><td>Makinenin gösterge paneli ayarları, <code>C:\ProgramData\KabanHMI\Dashboard\&lt;makine&gt;.json</code></td></tr>
+<tr><td>Yapılandırma Aktarımı'nın değiştirdiği dosyalar</td><td>Programın klasöründe <code>Backup_&lt;tarih&gt;</code></td></tr>
+<tr><td>PLC'nin operatöre mesajları (metinler, düğmeler, değerler, her dilde)</td><td>Makinenin programının yanındaki <code>Popups.json</code></td></tr>
+<tr><td>HMI'nin kendi ürettiği alarmlar, makine başına: silindir alarmları açık veya kapalı ve gecikmeleri, eksen alarmları açık veya kapalı</td><td><code>C:\ProgramData\KabanHMI\AlarmGeneration.cfg</code></td></tr>
+<tr><td>PLC Monitörü listeleri, sütun düzeni, yan sayfaların kendi pencerelerinin nerede olduğu (<code>Windows.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\Monitor\</code></td></tr>
+<tr><td>Ekran ölçeği (panelin, kullanıcıların, programın başladığı)</td><td><code>C:\ProgramData\KabanHMI\Display.cfg</code></td></tr>
+<tr><td>Yan panelin genişliği, katlanmış çubuk, pencerede tutulan sayfalar, yan çubuğa konan ana sayfalar</td><td><code>C:\ProgramData\KabanHMI\SidePanel.cfg</code></td></tr>
+<tr><td>Görünüm tercihleri (herkesin ve her kullanıcının, dilleri, son sayfaları, işaretlenen simple motion değerleri, eksenler, pozisyonlar ve gösterilen giriş / çıkış listeleri,
+notlar sayfasının dilleri, bir yedeğin kısımlarının nasıl yazıldığı)</td><td><code>C:\ProgramData\KabanHMI\View.cfg</code></td></tr>
+<tr><td>Hesaplar (<code>Users.dat</code>: ad, seviye, şifrenin hash'i) ve her birini kimin oluşturduğu (<code>UserCreators.cfg</code>)</td><td><code>C:\ProgramData\KabanHMI\</code></td></tr>
+<tr><td>Programın bulunduğu sayfa (bir sonraki başlangıçta yeniden açılır)</td><td><code>C:\ProgramData\KabanHMI\LastPage.cfg</code></td></tr>
+<tr><td>Notlar (yorumlar, çeviriler, yardımcılar, istenen değerler ve ayarlar, genel notlar: <code>Notes.xml</code>) ve dosyaları (<code>Files</code>)</td><td><code>C:\ProgramData\KabanHMI\Notes\</code>;
+onlardan yapılan geri bildirim dosyaları <code>Documents\Kaban HMI\Feedback</code> içinde</td></tr>
+<tr><td>Yan sayfa için girişler ve çıkışlar</td><td>Her makinenin programının yanındaki <code>IoList.csv</code> (alt makineler kendi klasörlerinde)</td></tr>
+<tr><td>Her noktanın makinenin çizimlerinde nerede olduğu (sensör etiketi ve teli, röle, valf bobini, hava valfi, hortumlar, silindir)</td><td>Makinenin programının yanındaki <code>Wiring.csv</code>, <code>tools\build_wiring.py</code> ile yapılır
+(çizimlerin başka bir dildeki metni kendi sütununda: <code>Measure.TR</code>)</td></tr>
+<tr><td>Silindir adım adım sayfalarının sözcükleri: valf ve geri besleme tipi başına, dil başına bir şablon</td><td>Programın yanındaki <code>Help\Templates\EN</code>, <code>Help\Templates\TR</code>;
+<code>tools\cylinder_templates</code>'ten <code>tools\build_cylinder_templates.py</code> ile yazılır (<code>README.md</code>'si içlerindeki işaretleri açıklar)</td></tr>
+<tr><td>Yardım belgeleri ve bu kılavuz</td><td>Programın yanındaki <code>Help</code> klasörü</td></tr>
+<tr><td>Sürücü kodu yardımı</td><td><code>Help\Servo_Alarm_Codes.en.html</code>, <code>Axis_Error_Codes.en.html</code>, <code>Axis_Warning_Codes.en.html</code>,
+yanlarındaki kılavuzlardan <code>tools\build_code_help.py</code> ile yapılır</td></tr>
+</table>
+<p class="tip">Ayar dosyaları güvenli yazılır: önce yeni sürüm tamamlanır, sonra yerine konur, böylece makineyi
+yanlış anda kapatmak yarım yazılmış bir dosya bırakamaz.</p>
+
+<!-- ================================================================== -->
+<h2 id="machine">13. Bu makine</h2>
+<!--machine-chapter--><p>Bu programın çalıştırdığı makineler, kontrolörleri ve kendi sayfaları, kılavuz üst çubuktaki <b>?</b>'den
+açıldığında burada listelenir.</p><!--/machine-chapter-->
+
+<footer>Kaban Machines &middot; HMI kılavuzu. Başka bir dile çevirmek için bu dosyayı aynı klasöre <code>Kaban_HMI_Manual.&lt;dil&gt;.html</code>
+olarak kopyalayın (örneğin <code>.de.html</code>).</footer>
+</main>
+</div>
+<script>
+// The Contents follows the reading: the section on screen is bold (14 October).
+(function () {
+  var nav = document.querySelector('nav.toc');
+  if (!nav || !document.getElementById) return;
+  var links = [], i;
+  var all = nav.getElementsByTagName('a');
+  for (i = 0; i < all.length; i++) {
+    var href = all[i].getAttribute('href') || '';
+    if (href.charAt(0) !== '#') continue;
+    var target = document.getElementById(href.substring(1));
+    if (target) links.push({ a: all[i], t: target });
+  }
+  if (!links.length) return;
+  var shown = null;
+  function mark() {
+    var line = 90, current = links[0], atEnd = (window.innerHeight + window.pageYOffset) >= document.body.scrollHeight - 2;
+    for (i = 0; i < links.length; i++)
+      if (links[i].t.getBoundingClientRect().top <= line) current = links[i];
+    if (atEnd) current = links[links.length - 1];
+    if (current === shown) return;
+    if (shown) shown.a.className = shown.a.className.replace(/\s*\bactive\b/g, '');
+    current.a.className += ' active';
+    shown = current;
+    // kept in sight in the Contents' own scrolling
+    var a = current.a, top = a.offsetTop - nav.offsetTop;
+    if (top < nav.scrollTop || top + a.offsetHeight > nav.scrollTop + nav.clientHeight)
+      nav.scrollTop = Math.max(0, top - nav.clientHeight / 3);
+  }
+  window.addEventListener('scroll', mark, false);
+  window.addEventListener('resize', mark, false);
+  window.addEventListener('hashchange', function () { setTimeout(mark, 0); }, false);
+  mark();
+})();
+</script>
+</body></html>

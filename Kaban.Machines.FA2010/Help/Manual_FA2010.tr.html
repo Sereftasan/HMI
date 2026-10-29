@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<title>Kaban HMI kılavuzu - FA2010 bölümü</title>
+<!--
+  FA2010'un HMI kılavuzundaki KENDİ BÖLÜMÜ (Türkçe). Kılavuz FA2010'u çalıştıran bir
+  programda üst çubuktaki "?" ile açıldığında bu sayfanın gövdesi 13. bölüme
+  ("Bu makine") eklenir. FA2010'u çalıştırmayan programlar onu hiç göstermez.
+
+  Kılavuzun bir parçası olarak yazın: h4 başlıklar (13. bölüm her makineyi bir h3 ile başlatır), kılavuzun sınıfları (note, tip,
+  safety). Kılavuz gibi dil başına bir dosya: Manual_FA2010.en.html (asıl metin), Manual_FA2010.tr.html (bu dosya).
+-->
+</head><body>
+
+<h4 id="fa-home">Ana Sayfa</h4>
+<p>Eski programın ana kontrol paneli: <b>Başlat</b> (<code>M21</code>, set; makine çalışırken yanar), <b>Duraklat</b> (<code>M111</code>, açık ve kapalı) ve
+<b>İptal</b> (<code>M24</code>, set &ndash; makine çalışırken önce sorulur, çalışmıyorken hemen), ve işin <b>hızı</b> (<code>D408</code>),
+eski kaydırma çubuğunun adımları boyunca bir kaydırıcı (0, 1, 2, 4 &hellip; 95, 100 %) ve herhangi bir değer yazmak için yüzdesi (<a href="#keypad">5</a>). İş listesi
+sayfada değildir.</p>
+
+<h4 id="fa-manual">Manuel Hareket</h4>
+<p>Sekmeler ve satırları, makinenin daha önce çalıştırdığı HMI programınınkilerdir: <b>Giriş Konveyörü, Robot, Profil Tanıma,
+Freze, Kesim, Çıkış, Diğer, Kalıplı Sıkmalar, YZ Çapraz Rulolar</b>. Her sayfa eski tablo gibi yukarıdan aşağıya,
+sütunlar halinde okunur; bölümleri başlıklardır (Freze: yan yana <i>Ünite 1</i> ve <i>Ünite 2</i>; Kesim: <i>Kesim</i> ve
+<i>V Kesim</i>). Eski <i>Geri</i> sütunu bir ünitenin &#9664; düğmesi, <i>İleri</i> onun &#9654;'ı, <i>Pozisyonlar</i> aralarındaki
+değerdir. Tek düğmeli bir satır bir düğmedir; <i>Açı Değiştir</i> ve <i>Takımlar Değiştirme Poz.</i> küçük düğmelerden oluşan
+bir gruptur.</p>
+<p><b>Sekmelerin üstündeki çubuk</b>, her sekmenin üstünde aynı (ve <b>Makine Parametreleri &rsaquo; Eksen</b>'in ve Eksen İzleme'nin üstünde): eksenlerin
+manuel <b>hızı</b> (<code>D409</code>, bir kaydırıcı ve yüzdesi), <b>JOG</b> &ndash; eksenler düğmeleri basılı tutulduğu sürece hareket eder (yanar: <code>M174</code>) &ndash;
+ya da basış başına bir <b>adım</b>: <b>10</b>, <b>1</b>, <b>0.1</b> veya <b>0.01 mm</b> (<code>M170</code> &ndash; <code>M173</code>; JOG onları kapatır).
+Yalnızca <span class="lvl l2">Bakım</span> ve <span class="lvl l3">Admin</span> için: <b>Safety Bypass</b> (güvenlik devre dışı, <code>M175</code>, açık ve kapalı &ndash; kullanıcı
+her değiştiğinde kapanır) ve Manuel Hareket'te <b>Cylinder FW/Back</b> (<a href="#fwback">4</a>). Eksenler yalnızca adım modunda, JOG kapalıyken bağlanabilir
+(<a href="#couple">4</a>).</p>
+<div class="safety"><b>Güvenlik.</b> Safety Bypass, PLC'nin kilitlemelerinin tutacağı şeyi hareket ettirmesine izin verir. Onu yalnızca makineyi kurtarmak için, izleyerek
+kullanın ve hemen kapatın.</div>
+<p><b>Motorlar</b> &ndash; Giriş Konveyörü'nün, Freze 1 ve 2'nin, Testere'nin, V Kesim testeresinin, Çıkış Konveyörü'nün &ndash; motor üniteleridir (<a href="#motors">4c</a>):
+düğmeleri, çalışma lambası ve değeri tek bir bütün; bir invertörün arızası sayı olarak gösterilmez, iki düğmeyi de kırmızı yanıp söndürür ve <b>?</b>'i
+arızanın girdisini ve FR-A800 kılavuzunu sunar. Alarmlarını HMI kendisi üretir (alarm bitleri <code>M827</code> &ndash; <code>M831</code>).</p>
+<p><b>Kalıplı Sıkmalar</b>: her kalıp için bir satır, bir pnömatik pozisyonlama (<a href="#positioning">4a</a>) &ndash; manuel
+hareketi (dikey bir kalıp için aşağı / yukarı, yatay bir kalıp için geri / ileri, ve pozisyonu), ardından <b>Hedef pozisyon</b> ve
+başlatması (eski <i>Pozisyona Gönder</i>, operatör için), <b>Kalibrasyon</b> ve <i>Kalibre Et</i>, <b>Pozisyonlama toleransı</b> ve
+<b>Yön referansı</b> (eski <i>Durma Ofseti</i>: PLC yönü seçmek için hedefi onunla karşılaştırır &ndash; ondan büyük bir
+hedefe pozisyonun arttığı yönde gidilir, ondan küçük birine öbür yönde) &ndash; Bakım. Bir hedef yazın, sonra yanındaki &#9654;| düğmesine basın: kalıp oraya gider.</p>
+<p>Altı <b>ön dikey</b> kalıp her zaman takılıdır. On <b>arka</b> kalıp, dikey ve yatay, yalnızca
+<b>Kalıplı Sıkma</b> opsiyonuyla takılıdır (<b>Makine Parametreleri &rsaquo; Diğerleri</b>, Makine Seçenekleri): onsuz gösterilmezler ve
+öndekiler sayfanın üstünde bir arada durur; opsiyonu işaretleyin, kendi yerlerinde görünürler.</p>
+<p>Arka kalıpların valfleri <b>ikinci kontrolöre</b> (PLC 2: Y0 &ndash; Y23) bağlıdır; enkoderli üç arka yatay kalıbın referans sensörleri de
+&ndash; Profil Tanıma, Kesim Sol ve Kesim Sağ Arka Yatay: <b>PLC 2'nin X12, X13, X14'ü</b>
+(sayfada <code>X12@2</code>; PLC 1'in enkoder girişleri doluydu). Düğmeleri diğerleri gibi PLC 1'indir; lambaları, yardımları ve HMI'nin
+onlar için alarmı PLC 2'yi okur ve bunu söyler (<i>X12 (PLC 2)</i>).</p>
+<p>Bir eksen ünitesi (Robot X, Ünite 1 X ...) düğmelerini, pozisyonunu ve referans lambasını <b>Makine Parametreleri &rsaquo; Eksen</b>'deki
+satırından alır; onları sayfada değil orada değiştirin. Robot X'in ayrıca bir lineer enkoderi vardır (<code>D22</code>, eski Enkoderler
+sayfasının <i>Robot Pozisyonu</i>): <b>Yük Konumu</b>, Eksen sayfasında ve Eksen İzleme'de pozisyon başlığının bir seçeneği (<a href="#params">10</a>).
+Açı eksenlerinde (Freze 1 ve 2 Açı, Kesim Açı) &#9664; &#9654; vardır; dikeylerde &#9660; &#9650;, ve tutma freni için yalnızca bunlar kontrol edilir.</p>
+<p>Enkoderli sıkmalar (<a href="#encoders">4b</a>) &ndash; Gripper, Profil Tanıma'nın Ön, Üst ve Sol Üst Sıkma'sı,
+Giriş Konveyörü'nün Profil Sıkma 7'si, Freze'nin Üst ve Ön Sıkma'sı, Kesim'in Sol Üst, Sağ Ön ve Sağ Ön Dikey Sıkma'sı,
+Çıkış'ın Robot Üst Sıkma'sı &ndash; kendilerininkini <b>Makine Parametreleri &rsaquo; Enkoderler</b>'deki satırlarından alır.</p>
+
+<h4 id="fa-params">Makine Parametreleri</h4>
+<p>Eski programdaki gibi, şu sekmelerde: <b>Eksen</b> (eksenlerin sınırları, referansı, kalibrasyonu ve referans etkinleştirmesi, eski
+sırayla: Robot, Freze 1, Freze 2, Kesim, Çıkış Robotu, V Kesim, üstte eksenlerin hız ve adım çubuğuyla; altlarındaki <b>Eksenleri Referansa Gönder</b>
+<i>Ref</i> sütununda işaretli eksenleri referanslarına gönderir), <b>Konveyör</b> ve <b>Robot</b> (eski Giriş Parametreleri), <b>Freze</b> ve
+<b>Kesim</b> (eski İşlem Parametreleri), <b>Enkoderler</b>, <b>Diğerleri</b> ve <b>Alarmlar ve Kayıtlar</b>. Her değer yanında gösterilen birimdedir (mm,
+s, &deg;, %), eski sayfaların böldüğü gibi bölünmüştür. <b>Bakım</b> seviyesi gerekir.</p>
+<p><b>Alarmlar ve Kayıtlar</b>: alarmlar (<a href="#params">10</a>) ve HMI makinenin kaydını alırken (<a href="#i4log">11a</a>) <b>PLC kayıt alanı</b>:
+bu makinede <code>R27000</code>, Industry 4 servisindeki gibi (boşaltılan alan ona döner).</p>
+<p><b>Enkoderler</b>: enkoder başına bir satır (<a href="#params">10</a>) &ndash; Robot Gripper, Profil Tanıma Ön ve Üst, Freze Üst,
+Freze-Kesim Sol Ön, Kesim Sol Üst, Kesim Sağ Ön, Çıkış Taşıma Üst, Kesim Ön Sağ Dikey, Sol Profil
+Tanıma Ön ve Üst &ndash; manuel hareketi (ayarlarken hareket ettirmek için), <b>Referans</b>, <b>Ölçüm toleransı</b>,
+<b>Minimum limit</b> (eski <i>Başlangıç Limiti</i>) ve <b>Açma aralığı</b>. Eski sayfanın ilk satırı <i>Robot Pozisyonu</i>, Robot X'tir
+(bir eksen). Robot Gripper'ın pozisyonu eski Robot sayfası gibi iki ondalık gösterir; <b>Referans</b>'ı (D516, eski Robot sayfasının
+<i>Enkoder Referansı</i>) yalnızca burada ayarlanır.</p>
+<p><b>Diğerleri</b>: çıkış konveyörü, üniteler arası mesafeler, yağlama, <b>Makine Seçenekleri</b>
+(makinenin sahip olduğu her opsiyon için bir onay kutusu: orta kayıt kertme, soğutma, taşıma ruloları, ters makine ...),
+<b>Ortakayıt Kertme Parametreleri</b> ve çapraz ruloların frezenin X sıfırına uzaklıkları.</p>
+<div class="safety"><b>Güvenlik.</b> Bir makine opsiyonu PLC programına makinenin neye sahip olduğunu söyler. Birini yalnızca makine o şekilde yapıldığında veya
+değiştirildiğinde değiştirin.</div>
+
+<h4 id="fa-labels">PLC etiketleri ve yapılandırılmış veri tipleri</h4>
+<p>PLC Monitörü (<a href="#diag">11</a>) bu makinenin cihazlarını <code>PlcLabels.csv</code>'den adlandırır ve yapılandırılmış veri tiplerini
+<code>StructuredTypes.csv</code>'den sunar, ikisi de programın yanında &ndash; Profiller &amp; İşlemler sayfasının tabloları için: <b>Milling Steps</b> (16 cihaz: soğutma ve
+motor seçimi, 0,01 mm olarak X, Y, Z, i, j, k, hız &ndash; ünite 1'inki <code>R0</code>'da, ünite 2'ninki <code>R12800</code>'de, her biri 400, ve yedekleri),
+<b>Profile Parameters</b> (<code>R25600</code>, 50 cihaz), <b>Milling Parameters</b> (<code>R26000</code>, 10'luk 100), <b>Special Cut Parameters</b>
+(<code>R25650</code>, 5'lik 10), <b>Special Cut Steps</b> ve <b>Mullion Notching Step</b> (ikisi de <code>R25700</code>, 10'luk 30), ve iş listesinin üç sütunu
+(<code>D5000</code>, <code>D6000</code>, <code>D7000</code>, her biri 500 double word). Bir dizinin etiketi, adım başına bir satırla tablo olarak gösterilebilir.</p>
+
+<h4 id="fa-messages">PLC'den gelen mesajlar</h4>
+<p>PLC bir mesajı numarasını <code>D71</code>'e yazarak ister; yanıt <code>D72</code>'ye yazılır
+(İptal / Hayır 0, Tamam / Evet / Devam 1, Yeniden başlat 2) ve <code>D71</code> yeniden 0'a ayarlanır. Mesajlar, her dilde, programın yanındaki
+<code>Popups.json</code>'dadır.</p>
+
+<h4 id="profiles">Profiller</h4>
+<p><b>Profiller</b> sayfası makinenin işlediği her profili, çizimiyle, donanımının ölçüldüğü noktalarla, aldığı aksesuarlarla ve onlardan yapılan programlarla
+tutar. Bir kütüphanedir: <b>bu sayfadaki hiçbir şey PLC'ye gönderilmez</b> &ndash; veri ve program dosyaları yapar. Kütüphaneyi değiştirmek <b>Bakım</b> seviyesi ister;
+onun altında sayfa her şeyi gösterir ve hiçbir şeyi değiştirmez.</p>
+
+<p><b>Bölmeler.</b> Profillerin tablosu, çizim, ayrıntılar, aksesuarlar ve programlar ayrı bölmelerdir: başlıklarından sürükleyin, herhangi bir kenardan
+boyutlandırın, <b>&ndash;</b> ile küçültün. Bir yerleşimi adıyla kaydedin ve <b>Yerleşim</b> kutusundan seçin; <b>Varsayılan</b> yerleşik olanı geri getirir, son
+yerleşiminiz kendiliğinden geri gelir. 📚 kütüphanenin kendi tablolarını açar.</p>
+
+<p><b>Kütüphane nasıl düzenlenir.</b> Üretici &rsaquo; seri &rsaquo; varyant &rsaquo; grup &rsaquo; profil. <b>Grup</b> bir profilin ne olduğunu
+söyler (kasa, kanat, kapı kanadı ...): aksesuarlar bir gruba bir kez verilir ve grubun her profili onları alır. <b>Seri</b> malzemeyi verir (PVC,
+alüminyum), bu da ilerleme hızlarını seçer. Bir profil başka birine <b>dayanabilir</b> (tabloda 📑): diğerinin grubunu, ölçülerini ve referans noktalarını alır
+ve yalnızca farklı olan girilir.</p>
+
+<p><b>Çizim.</b> Her profilin kesiti bir DXF dosyasıdır (<b>Ayrıntılar &rsaquo; Profil &rsaquo; Dosya</b>). Profil koordinatlarında okunur:
+<b>Y yatay</b>, solda dış yüzde 0, ve <b>Z yukarı</b>, tablada 0. Tersine yapılmış bir çizim <b>döndürülür</b> veya <b>aynalanır</b>
+(Ayrıntılar, ya da çizimde ⟳ ⟲ ⇋) &ndash; çizimin boyutu profilinkiyle uyuşmadığında sayfa bunu söyler ve <b>Döndür</b>'ü önerir. Profil olmayan katmanlar
+(ölçüler, yanına çizilmiş bir conta) <b>Profil olmayan</b> altında listelenir: gri çizilirler ve asla içlerinden kesilmez. Ayrıntıları saklamak için 💾'ye basın.</p>
+
+<p><b>Referans noktaları</b> (Ayrıntılar &rsaquo; Referans noktaları): dış ve iç yüz, merkez, tabla, donanım
+ekseni, cam referansı ... 🔍 onları çizimde şu güven sırasıyla bulur:</p>
+<ul>
+ <li>noktanın adını taşıyan bir <b>katman</b> (<code>REF_HARDWARE_AXIS</code>) &ndash; onun noktası, çemberi veya çizgisi;</li>
+ <li>onu adlandıran bir <b>metin</b>: <code>HARDWARE_AXIS 22 35</code> koordinatları verir, bir metindeki birkaç tanesi sayılır
+     (<code>OUTSIDE_SURFACE 0 0 INSIDE_SURFACE 70 0</code>);</li>
+ <li><b>dış hat</b>: yüzler, merkez ve tabla;</li>
+ <li>yukarıdan görülen, grubun donanım arayüzü kadar geniş <b>donanım kanalı</b>;</li>
+ <li>yakın yüzden aynı uzaklıkta, <b>benzer bir profilin</b> noktası (bir öneri).</li>
+</ul>
+<p>Bir nokta ayrıca yazılabilir (Y veya Z'ye çift tıklayın) ya da çizimde seçilebilir (🎯, sonra tıklayın; en yakın çizgi ucuna yapışır).
+<b>✔ seçili noktaları onaylar</b>. Onaylanan veya elle ayarlanan noktalar yeni bir aramayla asla değiştirilmez.</p>
+
+<p class="note"><b>Onaylanmamış hiçbir şey üretimde kesilmez.</b> Kimsenin onaylamadığı bir noktadan ölçülen bir yerleşim
+<i>önerilen</i> olarak kalır; onaylı noktalardan ölçülen <i>hesaplanmış</i>tır, bir deneme parçası için uygundur. Yalnızca bir kişinin
+onayladığı bir yerleşim bir üretim programına girer.</p>
+
+<p><b>Aksesuarlar.</b> Üstteki tablo profilin grubunun aksesuarlarını listeler (➕ gruba bir tane verir &ndash; donanım arayüzüne uyanlar
+önce gelir; işaret birini kaldırmadan kapatır). Alttaki tablo her işlemin bu profilde nereye düştüğünü listeler: kesim, takımın girdiği yüz,
+Y ve Z, düzeltme, profil boyunca nerede, ve takımın geçtiği duvarlarla derinlik. Seçilen kesitin üzerine çizilir: takımın girdiği ok, kırmızıyla kesim ve
+sarıyla duvarlar.</p>
+
+<p><b>Deneme ve ince ayar.</b> Seçili yerleşimi <b>Y</b> ve <b>Z</b> düğmeleriyle taşıyın (&plusmn;0.1, 0.5, 1 mm) &ndash; çizim
+nereye gideceğini gösterir. <b>Hareketi şunun için sakla</b>: bu profil, grubunun her profili ya da serisinin her profili, bu işlem
+veya <i>tüm işlemleri</i> için, ve 💾'ye basın: hareket gerekçesiyle bir <b>düzeltme</b> olarak saklanır ve aksesuarın kendi tanımına dokunulmaz.
+Taşınan bir yerleşim yeniden onaylanmalıdır. ✖ bu profilde olmayan bir işlemi işaretler, ↺ bir kararı yeniden açar, 🕘 geçmişi gösterir ve 🧮 profile ulaşan
+düzeltmeleri listeler (ve birini kaldırır).</p>
+
+<p><b>Programlar.</b></p>
+<ul>
+ <li><b>Aksesuarlar</b>: verilen uzunlukta bir profilin yan işlemesi. ⚙ onu onaylı yerleşimlerle yapar &ndash; bir deneme parçası için onaylanmamışları da
+     katmak üzere <b>deneme</b>'yi işaretleyin. Her işlem takılı en iyi takımı alır (deliğin boyutunda bir matkap, yoksa sığan en büyük parmak freze),
+     paso paso iner, her duvara giriş hızında (ince bir duvardan daha da yavaş) ve her hazneye yaklaşma ilerlemesinde girer, ve duvarın ilerlemesinde keser.
+     Yapılamayanlar programın altında kırmızıyla, nedeniyle listelenir. 💾 onu bir dosya olarak kaydeder.</li>
+ <li><b>Uç frezeleme</b>: çizimden, profilin ucu çevresinde frezelenen kontur. Çizimin araçları sınırı seçer ve düzenler; yeşil bant takımın
+     gerçek genişliğidir ve ona tıklamak eşleşen çizgiyi seçer (ve tersi). 💾 programı profille saklar; 📤 onu bir dosya olarak kaydeder.</li>
+</ul>
+
+<p><b>Kütüphanenin tabloları</b> (📚): üreticiler, seriler, varyantlar, gruplar, işleme aileleri ve donanım arayüzleri; işlemleriyle aksesuarlar
+(bir makro, yüz, derinlik &ndash; makronunki, ilk duvardan veya tüm profilden geçerek &ndash; referans noktası, ofset ve profil boyunca nerede),
+aksesuar grupları, donanım üreticileri ve serileri; yalnızca bir kesimin şekli olan <b>makrolar</b> (takım yok, ilerleme yok); ve bu makinenin
+<b>takımları</b> (ölçülen çapları ve kullanılabilir uzunlukları &ndash; çapı olmayan bir takım asla seçilmez), <b>yüzleri</b> (hangi freze ünitesinin hangi açıda hangi yüzü işlediği),
+malzeme sınıfı başına <b>ilerlemeleri</b>, başka bir malzeme olan <b>çizim katmanları</b> (çelik bir takviye) ve <b>program ayarları</b>. <b>Henüz onaylanmamış</b>
+hâlâ kontrol edilecek her referans noktasını ve yerleşimi listeler; profilini açmak için birine çift tıklayın.</p>
+
+<p class="safety">Kütüphane yeniyken sunulan örnek katalog ÖRNEK pozisyonlar tutar, bir donanım üreticisinin
+rakamlarını değil, ve makine yüzleri varsayılmıştır (yukarıdan 0&deg;, dış yüz 90&deg;, aşağıdan 180&deg;, iç yüz 270&deg;).
+İlk program çalıştırılmadan önce ikisini de makinede kontrol edin.</p>
+
+</body></html>

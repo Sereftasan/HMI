@@ -74,6 +74,7 @@
 <nav class="toc">
  <b>Contents</b>
  <a href="#screen">1. The screen</a>
+ <a href="#touch">&nbsp;&nbsp;1a. Using it by touch</a>
  <a href="#signin">2. Signing in and levels</a>
  <a href="#nav">3. Moving between pages</a>
  <a href="#notes">&nbsp;&nbsp;3b. Notes and feedback</a>
@@ -90,8 +91,10 @@
  <a href="#unitset">8. Units of measure</a>
  <a href="#hmiset">9. HMI Settings</a>
  <a href="#translation">&nbsp;&nbsp;9a. Translation</a>
+ <a href="#features">&nbsp;&nbsp;9b. Features</a>
  <a href="#params">10. Machine Parameters</a>
  <a href="#diag">11. Logs and diagnostics</a>
+ <a href="#i4log">&nbsp;&nbsp;11a. The machine's log, taken by the HMI</a>
  <a href="#files">12. Where things are kept</a>
  <a href="#machine">13. This machine</a>
 </nav>
@@ -158,6 +161,8 @@ a click on one uncouples it &ndash; and last <i>Uncouple all</i>. See <a href="#
 <tr><td>2</td><td>Connection warning</td><td>Only there while a controller is not answering. Click it for which one, and why. See <a href="#conn">7</a>.</td></tr>
 <tr><td>3</td><td>User</td><td>Pulses until someone signs in. Signed in: Logout or Change user.</td></tr>
 <tr><td>4</td><td>Screen scale</td><td>The glass with a <b>+</b> in it (the plain glass is <i>Find</i>) and the size on screen, in percent (<b>100%</b>). Click to make the whole screen larger or smaller. See <a href="#magnifier">9</a>.</td></tr>
+<tr><td>&ndash;</td><td>Mouse or touch (&#128433; / &#128070;)</td><td>Not drawn above: beside the screen scale, only while <b>HMI Settings &rsaquo; Features</b> has the touch screen on (<a href="#features">9b</a>).
+It shows how the screen is used now &ndash; a mouse or a finger; its menu switches it at once: the signed-in user's own when they keep one, else the panel's. See <a href="#touch">1a</a>.</td></tr>
 <tr><td>5</td><td>Help (<b>?</b>)</td><td><i>About Kaban HMI</i>, <i>Open the HMI manual</i>, and an AI to ask about the HMI (<kbd>F1</kbd>). See <a href="#help">below</a>.</td></tr>
 <tr><td>6</td><td>Language</td><td>The flag and code of the language on screen. Click to choose another; every page changes at once. It is the panel's language &ndash;
 everyone's, kept over a restart; a user may have one of their own, put on the screen when they sign in (<a href="#viewprefs">Users and Preferences</a>).
@@ -247,6 +252,33 @@ for a control held back by its conditions, each condition in words with what it 
  <li>While you type in a box or a table cell, the keys it needs are its own: <kbd>Del</kbd> deletes a letter there, not the row.</li>
  <li>The machine's buttons (jogs, starts, resets, acknowledging alarms) have <b>no keys</b>: a key is pressed by mistake too easily to move a machine.</li>
 </ul>
+
+<h3 id="touch">1a. Using it by touch</h3>
+<p>A panel with a touch screen can be used with a finger. The touch screen is an <b>optional part</b>: switched on by an <span class="lvl l3">Admin</span>
+on <b>HMI Settings &rsaquo; Features</b> (<a href="#features">9b</a>) &ndash; off, the program is used with a mouse whatever else is set, and neither the
+mouse / finger button on the caption bar nor the <i>Screen used with</i> preference is shown. Switched on, the screen is used by touch while
+<b>Screen used with</b> says <i>Touch (a finger)</i> &ndash; everyone's, or a user's own, taken when they sign in (<a href="#viewprefs">Users and Preferences</a>) &ndash;
+or after the caption bar's &#128433; / &#128070; button is switched to it. By touch:</p>
+<ul>
+ <li><b>A finger's size.</b> Menu entries, table rows, tick boxes and round options, toolbar buttons and tabs are larger &ndash; back as they were with a mouse.</li>
+ <li><b>A held button is held.</b> Windows does not turn a finger held on the screen into a right-click, nor a finger drag into its own pan: a jog
+     button moves while the finger is on it and stops when it lifts, as with a mouse.</li>
+ <li><b>A long press</b> (the finger held still for about half a second) where a right-click opens a menu &ndash; a table's headings or rows, a side bar
+     button, a PLC Monitor tab, a module's value &ndash; opens that menu under the finger; lifting it chooses nothing. A jog or set button, a slider,
+     a splitter or a chart never opens a menu that way. A table with a row menu also has a <b>&#8942;</b> at the end of the chosen row: a tap opens it.</li>
+ <li><b>A tap on something greyed</b> says why, beside the finger &ndash; the reason its tooltip gives with a mouse (your level, the machine not in manual,
+     a controller not answering &hellip;).</li>
+ <li><b>A closed list</b> (one you choose from, not type into) opens as a menu of large entries.</li>
+ <li><b>A finger drag scrolls</b>: a table's rows and columns, a list, a page too large for the screen. A tap chooses a row (two taps are a double click);
+     a drag does not choose the row it started on, and a button it starts on is not pressed. A slider, a jog button, a splitter, a chart, a table's headings
+     and a tab strip are not scrolled that way &ndash; there the drag is the work.</li>
+ <li><b>Typing.</b> A tap on a text box brings a <b>keyboard on the screen</b>: the Turkish Q layout (&#305; i &#287; &uuml; &#351; &ouml; &ccedil;, &#304; and I
+     as Turkish writes them), the digits along the top, a page of signs, the arrows, backspace (held, it repeats), <kbd>Enter</kbd>, and &#10005; to put it away.
+     It stands at the bottom of the screen &ndash; at its top when the box is down there &ndash; and goes when you leave the box. A <b>number</b> &ndash; a number
+     cell of a table, a box with arrows &ndash; gets the <b>keypad</b> (<a href="#keypad">5</a>) with its limits; its OK writes it in.</li>
+ <li>A double click's work has a button of its own on the operator's pages (the notes' <i>View</i>, &hellip;); <i>Find</i> in the notes opens a line on a tap.</li>
+</ul>
+<p class="note">The touch screen is switched on for the panel. While it is off, a user's <i>Screen used with</i> is kept, and taken again once it is on.</p>
 
 <!-- ================================================================== -->
 <h2 id="signin">2. Signing in and levels</h2>
@@ -673,7 +705,8 @@ but <b>not shown</b> on the unit:</p>
 <!-- ================================================================== -->
 <h2 id="keypad">5. Entering a value</h2>
 <ul>
- <li>Touch a value field: the keypad opens beside it and the field is outlined in blue so you can see which one you are changing.</li>
+ <li>Touch a value field: the keypad opens beside it and the field is outlined in blue so you can see which one you are changing.
+     By touch (<a href="#touch">1a</a>) a table's number cell and a number box with arrows get the keypad too, and a text box the keyboard on the screen.</li>
  <li>The line at the top gives the allowed range. A value outside it is refused (the entry flashes red) &ndash; nothing is sent.</li>
  <li><b>Angles</b> (the angle axes' settings) are always <b>0 &ndash; 360&deg;</b>. A minimum <b>above</b> the maximum is a range through zero:
      minimum 270, maximum 45 allows 270&hellip;360 and 0&hellip;45, and the line reads <i>270.000 &le; &hellip; or &hellip; &le; 45.000</i>.
@@ -705,6 +738,12 @@ but <b>not shown</b> on the unit:</p>
      see <a href="#genalarms">6a</a>), <b>Severity</b>, <b>Time</b>, <b>Address</b> (<span class="lvl l3">Admin</span>: the PLC device; for an alarm the
      HMI raised, which failure, <code>M840.2</code>) and <b>Help</b>. A click on a heading sorts on it; &#128228; on the History tab saves it to a file
      with the same columns.
+     The <b>History</b> tab is read from the machine's <b>log database</b> when it keeps one (<a href="#dashboard">The dashboard</a>): the alarms the PLC logged
+     &ndash; kept across restarts, whoever wrote the log, the Industry 4 service or the HMI (<a href="#i4log">11a</a>) &ndash; the last 500, newest first, each as
+     the HMI's alarm list names it (its text in the language on screen, its severity, address and help), a bit of the log no alarm of the list is for by its
+     own name; with them the alarms the HMI raised itself (with their cause) and those the log does not record. An alarm the HMI raised and the PLC's
+     bit for the same device logged at the same moment are one line. A machine with no log database lists what came since the HMI started. The line
+     above the table says which.
      The <b>Help</b> column opens the alarm's help: <b>the files added</b> to the alarm or to its unit first (<a href="#params">10</a>), then the help the HMI
      makes for it &ndash; the step-by-step page for a cylinder's movement or an axis's code (<a href="#units">4</a>), the entry of a motor's fault, the
      drives' and the inverter's manuals, the cylinder manual &ndash; and last the AI entries. A manual added by hand as a helper file is listed with the files
@@ -730,6 +769,8 @@ but <b>not shown</b> on the unit:</p>
      and the caption-bar menu clears the list without resetting the machine &ndash; nothing is pulsed on a guess.</li>
  <li>Each alarm is watched on <b>its own controller</b>: a sub-machine's alarm comes from the sub-machine's PLC, never from the main machine's.</li>
  <li>An alarm is only raised or cleared from a fresh reading. When a controller stops answering, its alarms are left as they were rather than cleared.</li>
+ <li>An alarm's <b>text</b> is a row of the machine's translation file (<code>Alarm_&lt;machine&gt;.&lt;tag&gt;</code> in its <code>Translations.csv</code>),
+     changed on <a href="#translation">Translation</a> as every other text; its Turkish is the operators' words the Industry 4 program had.</li>
 </ul>
 
 <h3 id="genalarms">6a. Alarms the HMI raises itself</h3>
@@ -870,7 +911,8 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
   and how the screen shows things for everyone or as a user's own: the <b>screen scale</b>, the <b>language</b>, captions, numbers, dates, the <b>units of measure</b> (see 8),
   tables, tooltips, the page after sign-in, an alarm's sound, the AI prompt.</td></tr>
 <tr><td>Logs and Reports</td><td><span class="lvl l2">Maintenance</span></td><td>The settings of the logs: the HMI's log, and each machine's log database and its reports
-  (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page.
+  (see <a href="#diag">11</a>). The logs themselves are read on the Dashboard page. Who writes a machine's log is said there; its PLC log area is on
+  Machine Parameters &rsaquo; Alarms and Logs (<a href="#params">10</a>).
   Switching the HMI's log off and how many days it is kept: <span class="lvl l3">Admin</span>.</td></tr>
 <tr><td>PLC Connections</td><td><span class="lvl l2">Maintenance</span></td><td>The controllers' table: each one's name with its <b>Active</b> tick (<a href="#conn">7</a>), its driver, station
   and address (changed by an <span class="lvl l3">Admin</span>), and its state &ndash; once connected, with the CPU's model and the program version: <i>Connected - FX5UCCPU (Version: 1.41)</i>
@@ -881,6 +923,7 @@ Values are always <b>stored</b> in the machine's units and only <b>shown</b> in 
 <tr><td>AI</td><td><span class="lvl l3">Admin</span></td><td>The AI chats the <b>?</b> and the alarms' help lists offer (<i>Ask Claude</i>, <i>Ask ChatGPT</i>&hellip;, in this order), as a table: add, remove, order,
   <i>Active</i>, the usual list (see <a href="#help">1</a>).</td></tr>
 <tr><td>Translation</td><td><span class="lvl l2">Maintenance</span></td><td>Every text of the program in every language, in one table, edited on the panel (<a href="#translation">9a</a>).</td></tr>
+<tr><td>Features</td><td><span class="lvl l3">Admin</span></td><td>The HMI's optional parts switched on and off: the Industry 4 logging in the HMI and the touch screen (<a href="#features">9b</a>).</td></tr>
 </table>
 
 <h3 id="magnifier">The screen scale</h3>
@@ -928,7 +971,9 @@ cannot change are grey. Under the list &ndash; always at the same place, however
 </ul>
 <table>
 <tr><th>Section</th><th>Preference</th><th>Choices (the first is how the program has always been)</th></tr>
-<tr><td rowspan="2">Screen</td><td>Screen scale</td><td>80% &ndash; 150% (see above)</td></tr>
+<tr><td rowspan="3">Screen</td><td>Screen scale</td><td>80% &ndash; 150% (see above)</td></tr>
+<tr><td>Screen used with</td><td><b>A mouse</b> &middot; Touch (a finger) &ndash; only while the touch screen is switched on (<a href="#features">9b</a>); see <a href="#touch">1a</a>.
+  The caption bar's &#128433; / &#128070; button switches the same</td></tr>
 <tr><td>Language</td><td><b>As for everyone</b> (the flag on the caption bar: the panel's language, kept over a restart) &middot; a language of one's own, each listed by
   its own name &ndash; put on the screen when the user signs in, at once, no restart, and everyone's again when they sign out</td></tr>
 <tr><td>Captions</td><td>Captions and axis names</td><td><b>Right</b>, against the field &middot; <b>Left</b>, the captions of the fields above each other starting together in one column
@@ -984,7 +1029,7 @@ its pages and alarms), a column per language, the file it is in, and who last ed
      <i>Every machine's</i>, one machine), <i>Edited here</i>, <i>A text missing</i> (an empty cell shows English on the screen); &#10006; clears them.
      The line under the table counts them: <i>120 of 4,210 keys, 2 languages</i>. The table works as every table (<a href="#tables">1</a>).</li>
  <li><b>Edit</b>: type in the cell (<kbd>Del</kbd> empties it). &#128190; <b>Save</b> (<kbd>Ctrl</kbd>+<kbd>S</kbd>) puts the texts typed on the screen and writes
-     each into the file its key was read from &ndash; <code>CommonTranslations.csv</code>, a machine's <code>Translations.csv</code>, its <code>Alarms.json</code>
+     each into the file its key was read from &ndash; <code>CommonTranslations.csv</code> or a machine's <code>Translations.csv</code> (its pages' and its alarms' texts)
      &ndash; keeping the file's order, comments and form. Before a file is first written on a day, its version of the morning is kept
      (<code>ProgramData\KabanHMI\SafetyCopies\Translations\&lt;date&gt;</code>).</li>
  <li>&#8630; <b>Undo</b> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) and &#8631; <b>Redo</b> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>): a text typed, a language copied, a Save, an import &ndash;
@@ -1010,6 +1055,24 @@ its pages and alarms), a column per language, the file it is in, and who last ed
 </ul>
 <p>A text keeps <code>{0}</code>, <code>{1}</code>&hellip; where the program puts a value, and <code>\r\n</code> for a new line. A text cannot hold a
 <code>;</code> &ndash; it separates the file's columns.</p>
+<p class="note">An alarm's texts are rows of its machine's <code>Translations.csv</code> (<code>Alarm_&lt;machine&gt;.&lt;tag&gt;</code>), edited, imported and
+translated by the AI prompt as any other key. An older installation's <code>Alarms.json</code> that still holds texts is read, and its texts are imported
+onto those rows; a text of the translation file wins.</p>
+
+<h3 id="features">9b. Features</h3>
+<p><span class="lvl l3">Admin</span> The HMI's <b>optional parts</b>, the last tab of HMI Settings. Each one has <b>On</b> and <b>Off</b>, what it does, and
+what it does <b>now</b>; it is switched for this panel, for everyone, at once &ndash; no restart &ndash; and written in the log. Both are <b>off</b> until switched on.</p>
+<table>
+<tr><th>Feature</th><th>On</th><th>Off</th></tr>
+<tr><td>Industry 4 logging in the HMI</td><td>The HMI takes each machine's states, events and alarms from its PLC into the machine's log database &ndash; the
+  Industry 4 service's job &ndash; and keeps its own log (sign-ins, writes, settings) in the same database (<a href="#i4log">11a</a>). Each machine's PLC log area
+  is on its Machine Parameters &rsaquo; Alarms and Logs. <i>Now</i> gives each machine's logger's state.</td><td>The Industry 4 service logs (where it is
+  installed); the HMI's log is in its files, as before.</td></tr>
+<tr><td>Touch screen</td><td>The screen may be used by touch (<a href="#touch">1a</a>): the &#128433; / &#128070; button on the caption bar, and <i>Screen used with</i>
+  in Users and Preferences. <i>Now</i> says whether it is used by touch or with a mouse.</td><td>Used with a mouse; neither the button nor the preference is shown.</td></tr>
+</table>
+<div class="note">While the Industry 4 service runs on the panel PC the HMI's logging <b>waits</b> (both would take the same records) and says so:
+stop the service &ndash; or uninstall it &ndash; once the HMI logs.</div>
 
 <!-- ================================================================== -->
 <h2 id="params">10. Machine Parameters</h2>
@@ -1091,7 +1154,7 @@ its pages and alarms), a column per language, the file it is in, and who last ed
      <b>manual movement</b> (&#9664; position &#9654;), <b>Reference</b> (the position the count takes at the reference sensor), <b>Measuring tolerance</b>,
      <b>Minimum limit</b> and <b>Unclamping interval</b>, under their headings; a field the encoder has not is left empty, its column kept.
      The encoder units of the Manual Movement pages take everything from these rows (<a href="#encoders">4b</a>).</li>
- <li><b>Alarms:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
+ <li><b>Alarms and Logs:</b> the severity of each alarm and its <b>helper links</b> &ndash; <b>several</b> documents, drawings, pages or web addresses
      opened from the alarm. Double-click the cell (or &#9999;&#65039;) for the list: <i>Add files&hellip;</i>, a link typed in, remove, up and down;
      or type them in the cell with <b>;</b> between them. &#128194; opens one (a menu when there are several).
      Saving writes the machine's own <code>Alarms.json</code>, so each machine keeps its own settings.
@@ -1101,6 +1164,12 @@ its pages and alarms), a column per language, the file it is in, and who last ed
           may take (5 s at first). See <a href="#genalarms">6a</a>. The delays also time a cylinder moving back and forth (<a href="#fwback">4</a>).</li>
       <li>The <b>Cylinder delay (s)</b> column: a movement's <b>own</b> delay for its alarm, in seconds; blank uses the general one. Only an alarm a cylinder unit's
           movement reports can have one: the others are grey.</li>
+      <li><b>The machine's log from its PLC</b>, under the switches &ndash; only while <b>HMI Settings &rsaquo; Features</b> has the Industry 4 logging in the HMI
+          on (<a href="#features">9b</a>): whether the HMI takes this machine's log from its PLC, its <b>PLC log area</b> &ndash; the word device the PLC keeps
+          its records at (<code>R27000</code>; each machine has its own &ndash; the field shows the one in force, emptied it goes back to the machine's own), <i>Now</i> (what the machine's logger does: taking the records,
+          waiting for the PLC, waiting while the Industry 4 service runs &hellip;), and the <b>KMSystem</b> lookup of a record's Process ID with its connection.
+          The page's &#128190; keeps them, and the logger takes the new area at once; a log area that is no word device is refused, saying so. A machine with no
+          log database says so. See <a href="#i4log">11a</a>.</li>
      </ul></li>
 </ul>
 
@@ -1117,14 +1186,16 @@ its pages and alarms), a column per language, the file it is in, and who last ed
      as the designer knows it, its caption and what was done: <i>ManualCutting.btnSaw [Saw]: momentary press</i>, <i>PLC Monitor: typed 42 into D100 [Speed]</i>.
      A double word is its two words; a digit-specified device (<i>K4M100</i>) is each of its bits; a bit of a word (<i>D100.3</i>) is the bit and the word.
      A write the controller refused is logged too. The log is kept as long as the audit log and is <b>not</b> switched off with it.
-     The bench simulation's own movements (it plays the PLC program's part) are not HMI writes and are not in it.</li>
+     The bench simulation's own movements (it plays the PLC program's part) are not HMI writes and are not in it, nor are the machine logger's answers
+     to the PLC for each record it takes (<a href="#i4log">11a</a>).</li>
  <li><b>Logs and Reports</b> (HMI Settings) <span class="lvl l2">Maintenance</span> holds the <b>settings</b> of the logs; the logs themselves are read
      on the <b>Dashboard</b> page (<a href="#dashboard">The dashboard</a>):
   <ul>
    <li><span class="lvl l3">Admin</span> only: switching the HMI's log <b>off</b> (it asks first, and writes who switched it off; while it is off the page says so in red)
        and how many days are kept. &#128194; opens the log folder.</li>
    <li>&#128452;&#65039; <b>Log database and reports</b>: choose a machine; below it, on the page, its log database and reports &ndash; the dashboard's
-       settings (<a href="#dashboard">The dashboard</a>). What the database holds is looked at as the page opens &ndash; <i>12,345 logs,
+       settings (<a href="#dashboard">The dashboard</a>). The page says who writes the log &ndash; the Industry 4 service or the HMI (<a href="#features">9b</a>) &ndash;
+       and that the machine's PLC log area is on its Machine Parameters &rsaquo; Alarms and Logs. What the database holds is looked at as the page opens &ndash; <i>12,345 logs,
        2026-09-01 08:00 - 2026-10-01 09:12</i> &ndash; or, in red, why it cannot be read: not found, not a machine log (no <code>main_log</code> table &ndash;
        another program's database), no logs yet, dates it cannot read, a file that is no database. &#128269; looks again.</li>
    <li>A program whose machines keep no log database has no Dashboard page: the HMI's log is read here, in the table below.</li>
@@ -1236,10 +1307,35 @@ its pages and alarms), a column per language, the file it is in, and who last ed
   </ul></li>
 </ul>
 
+<h3 id="i4log">11a. The machine's log, taken by the HMI</h3>
+<p>A machine's <b>log</b> &ndash; its states, its production events and its alarms, with their values &ndash; is kept by its PLC in a <b>log area</b> and taken from
+there into the machine's <b>log database</b> (<code>main_log</code>, <code>log_details</code>), which the Dashboard, its reports and the Alarms page's History read.
+The <b>Industry 4 service</b>, a Windows service of its own, did that. With <b>Industry 4 logging in the HMI</b> switched on (<a href="#features">9b</a>)
+the HMI does it, record for record as the service did, on its own connection to each machine's first PLC &ndash; the service is no longer needed.</p>
+<ul>
+ <li>One <b>logger</b> per machine with a log database and a state map, started with the main window. Its state is on the machine's
+     Machine Parameters &rsaquo; Alarms and Logs and on HMI Settings &rsaquo; Features: <i>Taking the records from PLC station 1 (R27000): 120 written
+     since the start</i>, <i>Waiting for the PLC: not connected</i>, <i>Switched off</i> &hellip;</li>
+ <li><b>The log area</b>: a word device of the PLC (<code>R27000</code>) &ndash; its first word the records waiting, the next the HMI's answer, the records from its
+     tenth word, ten words each. Each machine has its own, set on its Alarms and Logs (empty: the one the machine's program gives).</li>
+ <li>Each record is a row of the database, with the PLC's date, and its values as details &ndash; divided as the state map says, 32-bit values from two words,
+     each named bit that was on a detail of its own. The answer to the PLC is written with it: if it is refused, nothing is kept and the PLC sends it again.
+     The answers are not in the PLC write log (a handshake for every record, not a user's write); the audit log says when a logger starts.</li>
+ <li>A record's <b>Process ID</b> can be looked up in KMSystem (PostgreSQL) &ndash; its Profile Code and Profile Data added &ndash; when switched on, through
+     <code>Npgsql.dll</code> beside the program, as the service had it.</li>
+ <li><b>While the Industry 4 service runs</b> on the PC the HMI waits and says so (<i>Waiting: the Industry 4 service runs on this PC &hellip;</i>): both would
+     take the same records. Stop the service, or uninstall it.</li>
+ <li><b>The HMI's own log in the same database.</b> While the HMI logs, every entry of its log &ndash; sign-ins, connection events, writes, settings, problems &ndash;
+     and every device of the PLC write log is also a row of the main machine's log database, with codes of its own (<b>1000</b> other, <b>1001</b> sign-in,
+     <b>1002</b> connection, <b>1003</b> a control's write, <b>1004</b> a problem, <b>1005</b> settings, <b>1006</b> a device written; the machine's own are
+     0 &ndash; 157). The daily files are still written first, and brought into the database at the start. The dashboard, its counts and the reports leave
+     the HMI's rows out &ndash; the report files are as they were; <i>All logs</i> and the log tables read them back.</li>
+</ul>
+
 <h3 id="dashboard">The dashboard</h3>
 <p>The <b>Dashboard</b> page (the gauge in the page menu, on a machine that has one) shows what the machine did over a day, a week, a shift:
-its states, its events, its alarms and its cuts, from the machine's <b>Industry 4 log</b> &ndash; the database the logging service writes
-(<code>main_log</code> and <code>log_details</code>). It replaces the separate dashboard program and makes the same report files. Anyone may look;
+its states, its events, its alarms and its cuts, from the machine's <b>Industry 4 log</b> &ndash; the database the logging service, or the HMI
+(<a href="#i4log">11a</a>), writes (<code>main_log</code> and <code>log_details</code>). It replaces the separate dashboard program and makes the same report files. Anyone may look;
 the page only reads the log.</p>
 <ul>
  <li><b>The range</b>, on the filter bar at the left: <b>Auto-Report History</b> (the times the automatic reports are made, from the first log to the last &ndash;
@@ -1310,14 +1406,17 @@ the page only reads the log.</p>
 <tr><td>The dashboard's settings (database, schedule, shifts, sections)</td><td><code>C:\ProgramData\KabanHMI\Dashboard\&lt;machine&gt;.json</code> &ndash; made from
 <code>Dashboard\config.json</code> beside the program; the machine's state map and its texts are <code>Dashboard\StateMap.json</code> and
 <code>Dashboard\Translation_JSON.csv</code></td></tr>
-<tr><td>Alarm definitions and their settings</td><td><code>Alarms.json</code> beside each machine's program (sub-machines in their own folder)</td></tr>
-<tr><td>The texts of every language (the program's, each machine's)</td><td><code>CommonTranslations.csv</code> beside the program, each machine's <code>Translations.csv</code>
-and its alarms' in <code>Alarms.json</code> &ndash; written by Translation's Save. Its history (<code>TranslationHistory.csv</code>), the languages added (<code>Languages.cfg</code>)
+<tr><td>Alarm definitions and their settings (device, code, severity, help, where the PLC's log records it)</td><td><code>Alarms.json</code> beside each machine's program
+(sub-machines in their own folder); their texts are rows of its <code>Translations.csv</code></td></tr>
+<tr><td>The texts of every language (the program's, each machine's, its alarms')</td><td><code>CommonTranslations.csv</code> beside the program, each machine's <code>Translations.csv</code>
+&ndash; written by Translation's Save. Its history (<code>TranslationHistory.csv</code>), the languages added (<code>Languages.cfg</code>)
 and their flags (<code>Flags</code>): <code>C:\ProgramData\KabanHMI\Translations\</code>; the files as they were each morning they changed:
 <code>C:\ProgramData\KabanHMI\SafetyCopies\Translations\</code>. Where each key is used: <code>TranslationUses.csv</code> beside the program</td></tr>
 <tr><td>The PLC data backups</td><td><code>C:\ProgramData\KabanHMI\PlcBackups\*.plcbak</code></td></tr>
 <tr><td>The PLC labels and the structured data types</td><td><code>PlcLabels.csv</code> and <code>StructuredTypes.csv</code> beside each machine's program (sub-machines in their own folder)</td></tr>
 <tr><td>The AI chats of the help lists</td><td><code>C:\ProgramData\KabanHMI\AiChats.cfg</code></td></tr>
+<tr><td>The optional parts switched on (HMI Settings &rsaquo; Features)</td><td><code>C:\ProgramData\KabanHMI\Features.cfg</code></td></tr>
+<tr><td>A machine's log taken from its PLC: on or off, its log area, the KMSystem lookup</td><td>The machine's dashboard settings, <code>C:\ProgramData\KabanHMI\Dashboard\&lt;machine&gt;.json</code></td></tr>
 <tr><td>The files Config Import replaced</td><td><code>Backup_&lt;date&gt;</code> in the program's folder</td></tr>
 <tr><td>The PLC's messages to the operator (texts, buttons, values, in every language)</td><td><code>Popups.json</code> beside the machine's program</td></tr>
 <tr><td>The alarms the HMI raises itself, per machine: the cylinder alarms on or off and their delay, the axis alarms on or off</td><td><code>C:\ProgramData\KabanHMI\AlarmGeneration.cfg</code></td></tr>
