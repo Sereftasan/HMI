@@ -74,6 +74,8 @@ namespace Kaban.UI.Forms
             // The hand over everything clickable, in every window - the caption
             // bar, its dropdown menus and the dialogs included (see UiStyle).
             Kaban.UI.Controls.UiStyle.EnableHandCursorsEverywhere();
+            // A finger as well as a mouse (View Preferences > Screen > Screen used with).
+            Helpers.TouchInput.Install();
             // The program's buttons from the keyboard (Delete for a bin, Ctrl+S ...).
             Helpers.Shortcuts.Attach(this);
         }
@@ -901,6 +903,13 @@ namespace Kaban.UI.Forms
                 _btnZoom.Left = right - _btnZoom.Width;
                 right = _btnZoom.Left - gap;
             }
+            // mouse or touch, beside the screen scale (29 October)
+            if (_btnInput != null)
+            {
+                _btnInput.Top = midY - _btnInput.Height / 2;
+                _btnInput.Left = right - _btnInput.Width;
+                right = _btnInput.Left - gap;
+            }
             // login / logout
             if (_btnLogin != null)
             {
@@ -1076,6 +1085,7 @@ namespace Kaban.UI.Forms
             Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnLang, LanguageManager.GetString("Ttl_Language", "Language / Dil"));
             pnlTop.Controls.Add(_btnLang);
             SetupZoomButton();
+            SetupInputButton();
             SetupHelpButton();
 
             if (UseCustomCaption) SetupCaptionBar();

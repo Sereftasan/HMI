@@ -104,6 +104,7 @@
     <Compile Include="Helpers\SidePages.cs" />
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
+    <Compile Include="Helpers\TouchInput.cs" />
     <Compile Include="Helpers\UserLanguage.cs" />
     <Compile Include="Helpers\Shortcuts.cs" />
     <Compile Include="Helpers\AlarmAiPrompt.cs" />
@@ -398,6 +399,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Coupling.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Touch.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>

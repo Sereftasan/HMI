@@ -84,11 +84,19 @@ namespace Kaban.Core.Helpers
         /// to the preferences as well, under Screen ... just like Screen scale").
         /// </summary>
         public const string Language = "Language";
+        /// <summary>
+        /// How the screen is used: with a mouse, or by touch (29 October: "add an emoji dropdown button
+        /// on top of the screen to switch in between mouse and touch screen mode and add it to the view
+        /// preferences, just like the screen scale"). Touch: larger menus, rows, boxes and buttons, a long
+        /// press for a menu, a finger drag scrolls, a keyboard on the screen (see TouchInput).
+        /// </summary>
+        public const string InputMode = "InputMode";                // Mouse | Touch
 
         public static readonly IList<Preference> All = new List<Preference>
         {
             // the languages are the translations loaded (LanguageManager.AvailableLanguages)
             new Preference { Key = Language, Group = "Screen", Default = "EN" },
+            P(InputMode, "Screen", "Mouse", "Touch"),
             P(CaptionAlign, "Captions", "Right", "Left"),
             P(DecimalSeparator, "Numbers", "Windows", "Point", "Comma"),
             P(DateFormat, "Numbers", "Iso", "European", "Us"),
@@ -310,6 +318,8 @@ namespace Kaban.Core.Helpers
         public static bool AxisNamesLeft { get { return CaptionsLeft; } }
         public static bool BlinkingOn { get { return Get(Blinking) != "Off"; } }
         public static bool AlarmSoundOn { get { return Get(AlarmSound) == "On"; } }
+        /// <summary>The screen is used by touch (View Preferences > Screen > Using the screen).</summary>
+        public static bool TouchMode { get { return Get(InputMode) == "Touch"; } }
 
         /// <summary>How a number is written on screen: the decimal separator chosen (or Windows').</summary>
         public static NumberFormatInfo NumberFormat

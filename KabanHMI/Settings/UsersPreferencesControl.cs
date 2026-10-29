@@ -1024,6 +1024,7 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.AiPromptAs: return T("VP_AiPromptAs", "AI prompt copied as");
                 case ViewPreferences.AiPaste: return T("VP_AiPaste", "Paste into the chat");
                 case ViewPreferences.Language: return T("VP_Language", "Language");
+                case ViewPreferences.InputMode: return T("VP_InputMode", "Screen used with");
                 case UsersPreferencesControl.ScaleKey: return T("Usr_FactorOwn", "Screen scale");
                 default:
                     // a unit family: "Unit_Length" -> Length
@@ -1075,6 +1076,8 @@ namespace Kaban.UI.Settings
                 case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
                 case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
                 case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
+                case "InputMode.Mouse": return T("VP_InputMouse", "A mouse");
+                case "InputMode.Touch": return T("VP_InputTouch", "Touch (a finger)");
                 default: return value;
             }
         }

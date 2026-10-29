@@ -170,6 +170,8 @@ namespace Kaban.UI.Settings
                     return T("PV_Tooltip", "How long the pointer rests on a control before its tooltip shows - played out above.");
                 case ViewPreferences.Language:
                     return T("PV_Language", "Every page, menu and message in this language - taken at once when this user signs in. The flag on the top bar sets everyone's (this panel's).");
+                case ViewPreferences.InputMode:
+                    return T("PV_Input", "Touch: menus, table rows, tick boxes, tabs and buttons larger; a long press opens a menu (a right-click); a finger drag scrolls; a tap on a text box brings the keyboard, on a number cell the keypad; a tap on something greyed says why. The \U0001F5B1 / \U0001F446 button on the top bar switches it.");
                 case ViewPreferences.AiPromptAs:
                     return T("PV_AiAs", "How 'Create AI prompt' and 'Ask <AI>' put the prompt on the clipboard: as a file - pasted into the chat (Ctrl+V) it is attached, however long - or as its text.");
                 case ViewPreferences.AiPaste:
@@ -307,7 +309,34 @@ namespace Kaban.UI.Settings
                 case ViewPreferences.Blinking: DrawBlink(g, r); break;
                 case ViewPreferences.TooltipDelay: DrawTooltip(g, r); break;
                 case ViewPreferences.Language: DrawLanguage(g, r); break;
+                case ViewPreferences.InputMode: DrawInput(g, r); break;
             }
+        }
+
+        /// <summary>Mouse or touch: the picture of the way, and a menu's entries at the size it gives them.</summary>
+        private void DrawInput(Graphics g, Rectangle r)
+        {
+            bool touch = _valueOf(ViewPreferences.InputMode) == "Touch";
+            var pic = new Rectangle(r.Left, r.Top, S(40), S(40));
+            EmojiArt.Draw(g, pic, touch ? Kaban.UI.Helpers.TouchInput.TouchEmoji : Kaban.UI.Helpers.TouchInput.MouseEmoji, true, pic.Width);
+            using (var bf = F(10f, FontStyle.Bold))
+                TextRenderer.DrawText(g, PrefTexts.ValueText(ViewPreferences.InputMode, touch ? "Touch" : "Mouse"), bf,
+                                      new Rectangle(pic.Right + S(8), r.Top, r.Width - pic.Width - S(8), pic.Height), Ink,
+                                      TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
+            // a menu as it opens: its entries a finger's height in touch mode
+            int h = S(touch ? Kaban.UI.Helpers.TouchInput.MenuEntryHeight : 24);
+            var menu = new Rectangle(r.Left, pic.Bottom + S(10), Math.Min(r.Width, S(220)), h * 3 + S(4));
+            using (var back = new SolidBrush(Color.White)) g.FillRectangle(back, menu);
+            using (var pen = new Pen(Rule)) g.DrawRectangle(pen, menu);
+            string[] entries = { T("Mnu_MotionChange", "Change..."), T("PV_Copy", "Copy"), T("PV_Paste", "Paste") };
+            using (var f = F(10f))
+                for (int i = 0; i < entries.Length; i++)
+                {
+                    var e = new Rectangle(menu.Left + S(2), menu.Top + S(2) + i * h, menu.Width - S(4), h);
+                    if (i == 0) using (var sel = new SolidBrush(UiStyle.GridSelection)) g.FillRectangle(sel, e);
+                    TextRenderer.DrawText(g, entries[i], f, new Rectangle(e.Left + S(10), e.Top, e.Width - S(12), e.Height), Ink,
+                                          TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
+                }
         }
 
         /// <summary>A language: its flag and name, and the menu's buttons as they read in it.</summary>

@@ -62,6 +62,9 @@ EMOJI = [
     ('2702', 'scissors', []),
     ('1f916', 'robot', []),                       # the AI (22 October: "use this emoji for AI")
     ('1f4e5', 'inbox-tray', []),                  # an import
+    ('1f5b1', 'computer-mouse', []),              # 29 October: the caption bar's mouse / touch switch
+    ('1f446', 'backhand-index-pointing-up', []),  #   ... touch
+    ('2328', 'keyboard', []),                     #   ... the on-screen keyboard
 ]
 SIZES = [16, 20, 24, 28, 32, 40, 48]
 PALE = 0.15        # towards grey, then towards white: the colours stay, the glare goes
