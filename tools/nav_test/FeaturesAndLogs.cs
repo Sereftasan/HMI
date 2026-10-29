@@ -7,11 +7,13 @@ using System.Reflection;
 using System.Windows.Forms;
 using Kaban.Core.Enums;
 using Kaban.Core.Helpers;
+using Kaban.Core.Models;
 using Kaban.UI.Controls;
 using Kaban.UI.Dashboard;
 using Kaban.UI.Forms;
 using Kaban.UI.Helpers;
 using Kaban.UI.Settings;
+using Kaban.UI.Screens;
 
 // 30 October: "We need to make the Industry 4 service and touchscreen mode optional, and we need to add some
 // buttons to active and passive them on HMI setting" - and: "'R27000' logging device is configured in a JSON
@@ -130,6 +132,49 @@ class FL {
               (!All(logs.MachineSettings).OfType<TextBox>().Any(b => b.Text == "R27000") &&
                All(logs.MachineSettings).OfType<Label>().Any(l => l.Text == "Its PLC log area: Machine Parameters > Alarms and Logs.")));
         lhost.Close(); lhost.Dispose();
+
+        Console.WriteLine("--- Alarms > History: the machine's alarms from its log database ---");
+        // 30 October (asked): "Yes, from the log" - the History tab lists the PLC's logged alarms, kept across restarts
+        var histDb = Path.Combine(dir, "history", "database.sqlite");
+        var faBoard = DashboardService.Find("FA2010");
+        faBoard.Change(c => c.DatabasePath = histDb);
+        var t1 = DateTime.UtcNow.AddHours(-3); var t2 = DateTime.UtcNow.AddHours(-1);
+        t1 = new DateTime(t1.Year, t1.Month, t1.Day, t1.Hour, t1.Minute, t1.Second, DateTimeKind.Utc);
+        t2 = new DateTime(t2.Year, t2.Month, t2.Day, t2.Hour, t2.Minute, t2.Second, DateTimeKind.Utc);
+        using (var c = LogDatabase.OpenForWriting(histDb))
+        {
+            LogDatabase.Insert(c, 4, LogDatabase.ToDb(t1), new[] { new LogDatabase.Detail("Robot X Error", 1, null), new LogDatabase.Detail("Milling 1 X Error", 1, null) });
+            LogDatabase.Insert(c, 2, LogDatabase.ToDb(t1.AddMinutes(5)), null);
+            LogDatabase.Insert(c, 4, LogDatabase.ToDb(t2), new[] { new LogDatabase.Detail("Saw Dust Conveyor  Inverter Alarm", 1, null) });
+            LogDatabase.Insert(c, LogDatabase.HmiFirst + 1, LogDatabase.ToDb(t2), new[] { new LogDatabase.Detail("Text", null, "logged in") });
+        }
+        var zone = DashboardTime.Find(faBoard.Config.TimeZoneName);
+        var hist = MachineAlarmLog.Read("FA2010", new AlarmItem[0]);
+        Check("read: each bit that was on, as the HMI's alarm (its text, severity, address), newest first - the states and the HMI's log left out",
+              hist != null && hist.FromLog == 3 && hist.Items.Count == 3 && hist.Items[0].Address == "M832" &&
+              hist.Items[1].Address == "M801" && hist.Items[2].Address == "M802" && hist.Items[1].Text == "Robot X Error" &&
+              hist.Items[0].TriggerTime == DashboardTime.ToLocal(t2, zone) && hist.Items.All(x => x.Severity == AlarmSeverity.Fault),
+              hist == null ? "none" : string.Join(" | ", hist.Items.Select(x => x.Address + " " + x.Text + " " + x.TriggerTime.ToString("HH:mm:ss"))));
+        LanguageManager.ChangeLanguage("TR");
+        Check("  in Turkish: the alarms' texts of the translation files (Robot X Arıza)", hist.Items[1].Text == "Robot X Arıza", hist.Items[1].Text);
+        LanguageManager.ChangeLanguage("EN");
+        var raised = new AlarmItem("FA2010.Robot_X_Error", AlarmManager.FindByCode("FA2010.Robot_X_Error").TranslationKey, AlarmSeverity.Fault)
+        { Generated = true, Device = "M801", Address = "M801", SubCode = "16", Detail = "Axis alarm 16", TriggerTime = DashboardTime.ToLocal(t1, zone).AddSeconds(1) };
+        hist = MachineAlarmLog.Read("FA2010", new[] { raised });
+        Check("  an alarm the HMI raised itself: listed with its cause - its device's bit at that moment not twice",
+              hist.Items.Count == 3 && hist.Items.Count(x => x.Address == "M801") == 1 && hist.Items.Any(x => x.Generated && x.Cause == "Axis alarm 16"),
+              string.Join(" | ", hist.Items.Select(x => x.Address + " " + x.Generated)));
+        var screen = new MachineAlarmScreen(fa2010.Context);
+        var shost = new Form { ClientSize = new Size(1200, 600) };
+        screen.Dock = DockStyle.Fill; shost.Controls.Add(screen); shost.Show(); Pump(200);
+        var historyTab = (UserControl)typeof(MachineAlarmScreen).GetMethod("BuildHistory", Any).Invoke(screen, new object[] { "FA2010" });
+        var source = All(historyTab).OfType<Label>().First(l => l.Name == "historySource");
+        Check("the History tab: the machine's log, said above it", MachineAlarmScreen.LastHistory.Count == 3 && source.Text.StartsWith("From the machine's log"), source.Text);
+        faBoard.Change(c => c.DatabasePath = Path.Combine(dir, "nowhere", "database.sqlite"));
+        historyTab = (UserControl)typeof(MachineAlarmScreen).GetMethod("BuildHistory", Any).Invoke(screen, new object[] { "FA2010" });
+        source = All(historyTab).OfType<Label>().First(l => l.Name == "historySource");
+        Check("  no log database: the HMI's own history, since it started - said", MachineAlarmLog.Read("FA2010", null) == null && source.Text.StartsWith("Since the HMI started"), source.Text);
+        shost.Close(); shost.Dispose();
 
         Console.WriteLine(fail == 0 ? "FEATURES AND LOGS ALL PASS" : "FEATURES AND LOGS " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);

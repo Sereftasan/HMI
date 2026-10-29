@@ -223,18 +223,41 @@ namespace Kaban.UI.Screens
                 Text = LanguageManager.GetString("Alarm_NoHistory", "No alarms have been recorded yet.")
             };
 
+            // where it comes from: the machine's log (30 October, the two alarm handlings combined), or the HMI's own
+            var source = new Label
+            {
+                Name = "historySource", Dock = DockStyle.Top, Height = 24, Padding = new Padding(8, 4, 8, 0),
+                ForeColor = Color.FromArgb(90, 96, 106), Font = Kaban.UI.Controls.UiStyle.Small
+            };
+
             // newest first, or as a heading click sorts it
             var sortKeys = new List<KeyValuePair<string, bool>>();
             Action fill = () =>
             {
                 // This machine's history only - the same rule as the active list.
-                var items = new List<AlarmItem>(AlarmManager.History.Where(a =>
+                var mine = new List<AlarmItem>(AlarmManager.History.Where(a =>
                 {
                     if (string.IsNullOrEmpty(moduleId) || a == null || string.IsNullOrEmpty(a.AlarmCode)) return true;
                     int dot = a.AlarmCode.IndexOf('.');
                     return dot <= 0 || string.Equals(a.AlarmCode.Substring(0, dot), moduleId, StringComparison.OrdinalIgnoreCase);
                 }));
-                items.Reverse();                                  // newest first
+                // THE MACHINE'S LOG when it keeps one: its alarms kept across restarts, with the HMI's own
+                Kaban.UI.Dashboard.MachineAlarmLog.Result logged = null;
+                try { logged = Kaban.UI.Dashboard.MachineAlarmLog.Read(moduleId, mine); }
+                catch (Exception ex) { AuditLogger.Log("alarm history: the machine's log could not be read: " + ex.Message); }
+                List<AlarmItem> items;
+                if (logged != null)
+                {
+                    items = logged.Items;                          // newest first
+                    source.Text = LanguageManager.GetString("Alarm_HistoryFromLog", "From the machine's log - kept across restarts - with the alarms the HMI raised itself.");
+                }
+                else
+                {
+                    items = mine;
+                    items.Reverse();                              // newest first
+                    source.Text = LanguageManager.GetString("Alarm_HistorySinceStart", "Since the HMI started (the machine keeps no log database).");
+                }
+                LastHistory = items;
                 if (sortKeys.Count > 0)
                 {
                     // stable: equal ones stay newest first
@@ -292,12 +315,16 @@ namespace Kaban.UI.Screens
 
             host.Controls.Add(grid);
             host.Controls.Add(empty);
+            host.Controls.Add(source);
             host.Controls.Add(bar);
             fill();
             // Written again in the new date and time format when View Preferences change.
             UiStyle.OnViewPreferences(host, fill);
             return host;
         }
+
+        /// <summary>The history last shown (tests).</summary>
+        public static List<AlarmItem> LastHistory { get; private set; }
 
         /// <summary>The history as a file: the table's columns (the Address for an Admin only).</summary>
         public static string HistoryCsv(IEnumerable<AlarmItem> items)
