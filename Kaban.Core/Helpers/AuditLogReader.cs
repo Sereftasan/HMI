@@ -105,6 +105,27 @@ namespace Kaban.Core.Helpers
         /// </summary>
         public static List<AuditEntry> Read(DateTime from, DateTime to, bool withDeviceWrites)
         {
+            // 29 October: from the machine's log database, where the HMI's log goes too - the
+            // daily files when it has none or cannot be read
+            var store = Store;
+            if (store != null)
+            {
+                List<AuditEntry> fromStore = null;
+                try { fromStore = store(from, to, withDeviceWrites); } catch { fromStore = null; }
+                if (fromStore != null) return fromStore;
+            }
+            return ReadFiles(from, to, withDeviceWrites);
+        }
+
+        /// <summary>
+        /// Where the HMI's log is read from besides its daily files: the machine's log database
+        /// (HmiLogStore) - from, to, with the device writes; null: not there, read the files.
+        /// </summary>
+        public static Func<DateTime, DateTime, bool, List<AuditEntry>> Store;
+
+        /// <summary>The entries of the daily files themselves (the audit log and the PLC write log), whatever <see cref="Store"/> says.</summary>
+        public static List<AuditEntry> ReadFiles(DateTime from, DateTime to, bool withDeviceWrites)
+        {
             var result = ReadAudit(from, to);
             if (!withDeviceWrites) return result;
             var writes = PlcWriteLog.Read(from, to).Select(ToEntry).ToList();

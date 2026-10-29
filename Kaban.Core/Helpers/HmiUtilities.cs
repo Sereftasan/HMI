@@ -71,12 +71,20 @@ namespace Kaban.Core.Helpers
         private static readonly object _lock = new object();
         private static DateTime _lastCleanup = DateTime.MinValue;
 
+        /// <summary>
+        /// Raised for each entry as it is written (29 October: the HMI's log goes into the
+        /// machine's log database too - HmiLogStore copies each entry there). The file stays
+        /// the first place it is written, and the one read when the database cannot be.
+        /// </summary>
+        public static event Action<AuditEntry> Logged;
+
         public static void Log(string action)
         {
             if (!Enabled) return;
             try
             {
-                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                var now = DateTime.Now;
+                string timestamp = now.ToString("yyyy-MM-dd HH:mm:ss");
                 string user = SecurityManager.CurrentUser ?? "Guest";
                 string logLine = $"[{timestamp}] - User '{user}' {action}";
 
@@ -100,6 +108,21 @@ namespace Kaban.Core.Helpers
 
                 // Also print to console for debugging
                 Console.WriteLine(logLine);
+
+                var h = Logged;
+                if (h != null)
+                {
+                    var text = (action ?? "").Replace("\r\n", "\n");
+                    try
+                    {
+                        h(new AuditEntry
+                        {
+                            Time = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second),
+                            User = user, Text = text, Kind = AuditLogReader.Classify(text), Station = AuditLogReader.StationOf(text)
+                        });
+                    }
+                    catch { }
+                }
             }
             catch { /* Ignore logging failures so we don't crash the HMI */ }
         }

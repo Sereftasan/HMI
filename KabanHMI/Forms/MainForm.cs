@@ -631,7 +631,14 @@ namespace Kaban.UI.Forms
             // The machines' logs taken from their PLCs (the Industry 4 service's job until 29 October).
             try { Kaban.UI.Dashboard.MachineLoggers.Start(); }
             catch (Exception ex) { AuditLogger.Log("Machine log: could not start: " + ex.Message); }
-            FormClosed += (s6, e6) => { try { Kaban.UI.Dashboard.MachineLoggers.StopAll(); } catch { } };
+            // The HMI's own log into the same database, as codes of its own (29 October).
+            try { if (Kaban.UI.Dashboard.HmiLogStore.AutoStart) Kaban.UI.Dashboard.HmiLogStore.Start(); }
+            catch (Exception ex) { AuditLogger.Log("HMI log: the log database could not be used: " + ex.Message); }
+            FormClosed += (s6, e6) =>
+            {
+                try { Kaban.UI.Dashboard.MachineLoggers.StopAll(); } catch { }
+                try { Kaban.UI.Dashboard.HmiLogStore.Stop(); } catch { }
+            };
             // The PLC's messages to the operator (each machine's PopupTriggerAddress).
             Kaban.UI.Helpers.PlcPopupHost.SignIn = owner =>
             {

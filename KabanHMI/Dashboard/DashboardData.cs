@@ -181,16 +181,12 @@ namespace Kaban.UI.Dashboard
                                     " (" + (p.Tables.Count == 0 ? "-" : string.Join(", ", p.Tables.Take(8))) + ")";
                         return p;
                     }
-                    using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log"))
+                    // the machine's logs: the HMI's own rows (codes 1000 - 1099) are not the machine's
+                    using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log WHERE 1" + LogDatabase.NotHmi()))
                         p.Logs = Convert.ToInt64(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
                     if (p.Logs == 0) { p.Problem = LanguageText("Dsh_ProbeEmpty", "The database holds no logs yet."); return p; }
-                    using (var cmd = Command(c, "SELECT MIN(state_date), MAX(state_date) FROM main_log"))
-                    using (var r = cmd.ExecuteReader())
-                        if (r.Read())
-                        {
-                            p.FirstText = Convert.ToString(r.GetValue(0), CultureInfo.InvariantCulture);
-                            p.LastText = Convert.ToString(r.GetValue(1), CultureInfo.InvariantCulture);
-                        }
+                    p.FirstText = Convert.ToString(Edge(c, false), CultureInfo.InvariantCulture);
+                    p.LastText = Convert.ToString(Edge(c, true), CultureInfo.InvariantCulture);
                     var a = ParseDb(p.FirstText);
                     var b = ParseDb(p.LastText);
                     if (!a.HasValue || !b.HasValue)
@@ -308,21 +304,32 @@ namespace Kaban.UI.Dashboard
         public static DateTime[] Range(string path, TimeZoneInfo zone)
         {
             using (var c = Open(path))
-            using (var cmd = Command(c, "SELECT MIN(state_date), MAX(state_date) FROM main_log"))
-            using (var r = cmd.ExecuteReader())
             {
-                if (!r.Read()) return null;
-                var a = ParseDb(r.GetValue(0));
-                var b = ParseDb(r.GetValue(1));
+                var a = ParseDb(Edge(c, false));
+                var b = ParseDb(Edge(c, true));
                 if (!a.HasValue || !b.HasValue) return null;
                 return new[] { DashboardTime.ToLocal(a.Value, zone), DashboardTime.ToLocal(b.Value, zone) };
             }
         }
 
-        /// <summary>How many main_log rows a range holds (of the codes <paramref name="codes"/> lets in: "" every code).</summary>
+        /// <summary>
+        /// The machine's first (or last) log's date as written - along the date index, not MIN / MAX:
+        /// those lose the index's shortcut once the HMI's rows are left out, and read the whole table.
+        /// </summary>
+        private static object Edge(DbConnection c, bool last)
+        {
+            using (var cmd = Command(c, "SELECT state_date FROM main_log WHERE state_date IS NOT NULL" + LogDatabase.NotHmi() +
+                                        " ORDER BY state_date " + (last ? "DESC" : "ASC") + " LIMIT 1"))
+            {
+                var v = cmd.ExecuteScalar();
+                return v is DBNull ? null : v;
+            }
+        }
+
+        /// <summary>How many of the machine's main_log rows a range holds (of the codes <paramref name="codes"/> lets in: "" every code but the HMI's).</summary>
         public static long Count(DbConnection c, DateTime startUtc, DateTime endUtc, string codes = "")
         {
-            using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log WHERE state_date >= @p0 AND state_date < @p1" + codes, ToDb(startUtc), ToDb(endUtc)))
+            using (var cmd = Command(c, "SELECT COUNT(*) FROM main_log WHERE state_date >= @p0 AND state_date < @p1" + codes + LogDatabase.NotHmi(), ToDb(startUtc), ToDb(endUtc)))
                 return Convert.ToInt64(cmd.ExecuteScalar(), CultureInfo.InvariantCulture);
         }
 
@@ -399,8 +406,9 @@ namespace Kaban.UI.Dashboard
         {
             EnsureIndexes(path);
             var result = new Loaded { Start = startLocal, End = endLocal, Parts = parts, AlarmCodes = AlarmCodesOf(map) };
-            string codes = CodeCondition(parts, result.AlarmCodes);
-            string mCodes = CodeCondition(parts, result.AlarmCodes, "m.state_code");
+            // the machine's rows only: the HMI's own log is in the same tables under codes of its own (29 October)
+            string codes = CodeCondition(parts, result.AlarmCodes) + LogDatabase.NotHmi();
+            string mCodes = CodeCondition(parts, result.AlarmCodes, "m.state_code") + LogDatabase.NotHmi("m.state_code");
             var sUtc = DashboardTime.ToUtc(startLocal, zone);
             var eUtc = DashboardTime.ToUtc(endLocal, zone);
             var tr = map.TableOf(column);
@@ -429,7 +437,7 @@ namespace Kaban.UI.Dashboard
 
             using (var c = Open(path))
             {
-                long n = Count(c, sUtc, eUtc, codes);
+                long n = Count(c, sUtc, eUtc, CodeCondition(parts, result.AlarmCodes));
                 if (n > MaxRows) throw new TooManyRowsException(n);
 
                 long? prevId = null;

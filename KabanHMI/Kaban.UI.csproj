@@ -303,6 +303,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Dashboard\DashboardService.cs" />
+    <Compile Include="Dashboard\HmiLogStore.cs" />
     <Compile Include="Dashboard\LogDatabase.cs" />
     <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\MachineLogger.cs" />
