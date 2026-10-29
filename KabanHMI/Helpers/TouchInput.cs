@@ -70,6 +70,7 @@ namespace Kaban.UI.Helpers
         {
             _was = On;
             ApplyNativeToAll();
+            ApplySizesToAll();
             var h = ModeChanged;
             if (h == null) return;
             foreach (EventHandler each in h.GetInvocationList())
@@ -133,8 +134,11 @@ namespace Kaban.UI.Helpers
             foreach (Control child in ctl.Controls) Watch(child);
         }
 
-        /// <summary>A control met: the other parts' preparation (sizes, the row menus' button).</summary>
-        static partial void Prepared(Control c);
+        /// <summary>A control met: the other parts' preparation (its size for a finger).</summary>
+        private static void Prepared(Control c)
+        {
+            PrepareSizes(c);
+        }
 
         /// <summary>Every control of every open window (a mode change reaches them all).</summary>
         public static IEnumerable<Control> AllControls()

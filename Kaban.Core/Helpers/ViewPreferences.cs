@@ -395,11 +395,16 @@ namespace Kaban.Core.Helpers
         public static string TimeText(DateTime t, bool seconds = true, int fraction = 0) { return t.ToString(TimePattern(seconds, fraction), CultureInfo.InvariantCulture); }
         public static string DateTimeText(DateTime t, bool seconds = true, int fraction = 0) { return t.ToString(DateTimePattern(seconds, fraction), CultureInfo.InvariantCulture); }
 
-        /// <summary>A table's row height at factor 1: 22, 26 or 32 pixels.</summary>
-        public static int TableRowHeight { get { return RowHeightOf(Get(TableRows)); } }
+        /// <summary>A table's row height at factor 1: 22, 26 or 32 pixels - 34, 40 or 46 for a finger (touch mode).</summary>
+        public static int TableRowHeight { get { return RowHeightOf(Get(TableRows), TouchMode); } }
 
-        public static int RowHeightOf(string value)
+        public static int RowHeightOf(string value) { return RowHeightOf(value, false); }
+
+        public static int RowHeightOf(string value, bool touch)
         {
+            // a row a finger hits without taking the one beside it: 40 px is 8 - 9 mm on the
+            // machines' 17" and 19" 1920 x 1080 screens
+            if (touch) switch (value) { case "Compact": return 34; case "Large": return 46; default: return 40; }
             switch (value) { case "Compact": return 22; case "Large": return 32; default: return 26; }
         }
 

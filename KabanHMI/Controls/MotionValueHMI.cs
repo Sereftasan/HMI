@@ -205,6 +205,7 @@ namespace Kaban.UI.Controls
                                             !down && SecurityManager.HasAccess(SecurityLevel.Admin),
                                             down ? T("Why_PlcDown", "The PLC is not answering") : T("Why_AdminOnly", "For an Admin (sign in as one)")));
             m.Closed += (s, e) => BeginInvoke((Action)(() => m.Dispose()));
+            UiStyle.HandOverMenuItems(m);           // the program's menus' manners (a finger's size in touch mode)
             m.Show(this, at);
         }
 
@@ -240,6 +241,7 @@ namespace Kaban.UI.Controls
                     m.Items.Add(new ToolStripMenuItem(SimpleMotion.UnitName(u), null, (s, e) => WriteRaw(unit)) { Checked = now == u });
                 }
                 m.Closed += (s, e) => BeginInvoke((Action)(() => m.Dispose()));
+                UiStyle.HandOverMenuItems(m);
                 m.Show(this, new Point(0, Height));
                 return;
             }

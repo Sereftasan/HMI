@@ -171,6 +171,13 @@ namespace Kaban.UI.Controls
             var strip = ts;
             // a greyed entry says why in its tooltip (Unavailable) - a menu's own are off by default
             if (strip is ToolStripDropDown) strip.ShowItemToolTips = true;
+            // its entries a finger's height in touch mode (29 October) - as it opens, and now
+            var dropDown = strip as ToolStripDropDown;
+            if (dropDown != null)
+            {
+                dropDown.Opening += (s, e) => Kaban.UI.Helpers.TouchInput.SizeMenu(dropDown);
+                Kaban.UI.Helpers.TouchInput.SizeMenu(dropDown);
+            }
             strip.Disposed += (s, e) => _menuCued.Remove(strip);
             strip.MouseMove += (s, e) =>
             {
@@ -197,6 +204,8 @@ namespace Kaban.UI.Controls
             var dd = item as ToolStripDropDownItem;
             if (dd == null) return;
             dd.DropDownOpened += (s, e) => HandOverMenuItems(dd.DropDown);
+            // a submenu sized before it is laid out, its first time too
+            dd.DropDownOpening += (s, e) => { HandOverMenuItems(dd.DropDown); Kaban.UI.Helpers.TouchInput.SizeMenu(dd.DropDown); };
         }
 
         // ---- error border blink ------------------------------------------
@@ -1934,6 +1943,7 @@ namespace Kaban.UI.Controls
             b.Width = width > 0 ? UiScale.Px(width) : Math.Max(UiScale.Px(96), TextRenderer.MeasureText(b.Text, Body).Width + UiScale.Px(28));
             Round(b);
             if (onClick != null) b.Click += onClick;
+            Kaban.UI.Helpers.TouchInput.ToolbarButton(b);       // a finger's height in touch mode
             return b;
         }
 
@@ -1959,6 +1969,7 @@ namespace Kaban.UI.Controls
             };
             if (!string.IsNullOrEmpty(emoji) && b.Look == "text") b.ForeColor = ToolGlyphs.Ink;
             Round(b);
+            Kaban.UI.Helpers.TouchInput.ToolbarButton(b);       // a finger's height in touch mode
             // its usual key (the bin Delete, the floppy Ctrl+S ...), first in its tooltip
             var keys = Kaban.UI.Helpers.Shortcuts.Usual(emoji);
             if (keys != Keys.None) Kaban.UI.Helpers.Shortcuts.Set(b, keys, tips, tip);
@@ -2177,6 +2188,7 @@ namespace Kaban.UI.Controls
             b.Paint += (s, e) => glyph(e.Graphics, b.ClientRectangle, colour);
             if (onClick != null) b.Click += onClick;
             if (tips != null && !string.IsNullOrEmpty(tip)) UiStyle.SetTip(tips, b, tip);
+            Kaban.UI.Helpers.TouchInput.ToolbarButton(b);       // a finger's height in touch mode
             return b;
         }
     }

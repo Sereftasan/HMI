@@ -465,7 +465,7 @@ namespace Kaban.UI.Settings
 
         private void DrawTable(Graphics g, Rectangle r)
         {
-            int h = S(ViewPreferences.RowHeightOf(_valueOf(ViewPreferences.TableRows)));
+            int h = S(ViewPreferences.RowHeightOf(_valueOf(ViewPreferences.TableRows), _valueOf(ViewPreferences.InputMode) == "Touch"));
             float size = ViewPreferences.FontSizeOf(_valueOf(ViewPreferences.TableFont));
             using (var f = F(size))
             using (var hf = F(size, FontStyle.Bold))

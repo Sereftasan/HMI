@@ -159,6 +159,74 @@ class TM {
         Mode("Mouse");
         Check("a mouse again: the windows as Windows has them", !TouchInput.IsPreparedForTouch(form) && !TouchInput.IsPreparedForTouch(someButton));
 
+        Console.WriteLine("--- a finger's size: menus, rows, boxes, buttons, tabs ---");
+        var sz = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(40, 40), ClientSize = new Size(900, 600), Text = "sizes" };
+        var bar = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, WrapContents = false };
+        var tb1 = UiStyle.ToolButton("\u2795", "Add", null);
+        var tb2 = UiStyle.ToolButton("\U0001F5D1", "Delete", null);
+        bar.Controls.Add(tb1); bar.Controls.Add(tb2);
+        var free = new Panel { Location = new Point(0, 50), Size = new Size(400, 200) };
+        var tight = UiStyle.ToolButton("\u270F", "Edit", null); tight.Location = new Point(10, 10);
+        var under = new TextBox { Location = new Point(10, 46), Width = 200 };
+        var roomy = UiStyle.TextButton("Apply"); roomy.Location = new Point(220, 10);
+        free.Controls.Add(tight); free.Controls.Add(under); free.Controls.Add(roomy);
+        var box = new CheckBox { Text = "Keep the log", AutoSize = true, Location = new Point(420, 60), Checked = true };
+        var radio = new RadioButton { Text = "Every day", AutoSize = true, Location = new Point(420, 100), Checked = true };
+        var hmiBox = new CheckBoxHMI { Location = new Point(420, 140) };
+        var grid = new DataGridView { Location = new Point(0, 260), Size = new Size(500, 200), AllowUserToAddRows = false, RowHeadersVisible = false };
+        UiStyle.GridLook(grid);
+        grid.Columns.Add("a", "A"); grid.Columns.Add("b", "B");
+        for (int i = 0; i < 12; i++) grid.Rows.Add("row " + i, i);
+        var tabs = new TabControl { Location = new Point(520, 260), Size = new Size(360, 200) };
+        tabs.TabPages.Add("One"); tabs.TabPages.Add("Two");
+        sz.Controls.Add(free); sz.Controls.Add(box); sz.Controls.Add(radio); sz.Controls.Add(hmiBox); sz.Controls.Add(grid); sz.Controls.Add(tabs); sz.Controls.Add(bar);
+        sz.Show(); Pump(200); TouchInput.Sweep(); Pump(100);
+        int tbH = tb1.Height, tightH = tight.Height, roomyH = roomy.Height, barH = bar.Height, rowH = grid.Rows[0].Height, tabPadY = tabs.Padding.Y;
+        int boxW = box.Width;
+        var cm = UiStyle.Menu();
+        cm.Items.Add(new ToolStripMenuItem("Copy") { Name = "cmCopy" });
+        cm.Items.Add(new ToolStripMenuItem("Paste") { Name = "cmPaste", Enabled = false });
+        var sub = new ToolStripMenuItem("More") { Name = "cmMore" };
+        sub.DropDownItems.Add(new ToolStripMenuItem("Deeper") { Name = "cmDeeper" });
+        cm.Items.Add(sub);
+        UiStyle.ShowPopup(cm, sz, new Point(600, 60)); Pump(100);
+        int entryMouse = TouchInput.EntryHeight(Item(cm, "cmCopy"));
+        cm.Close(); Pump(50);
+        Check("in mouse mode: everything as it was (menu entry " + entryMouse + " px, row " + rowH + ", button " + tbH + ")",
+              entryMouse < 30 && rowH == 26 && tbH == 32,
+              "tab padding " + tabPadY);
+        Mode("Touch"); Pump(100);
+        Shot(sz, "sizes_touch");
+        UiStyle.ShowPopup(cm, sz, new Point(600, 60)); Pump(100);
+        Check("touch: a menu's entries a finger's height - greyed ones too", TouchInput.EntryHeight(Item(cm, "cmCopy")) >= TouchInput.MenuEntryHeight &&
+              TouchInput.EntryHeight(Item(cm, "cmPaste")) >= TouchInput.MenuEntryHeight,
+              TouchInput.EntryHeight(Item(cm, "cmCopy")) + " / " + TouchInput.EntryHeight(Item(cm, "cmPaste")));
+        sub.ShowDropDown(); Pump(100);
+        Check("  a submenu's too, its first time", TouchInput.EntryHeight(sub.DropDownItems[0]) >= TouchInput.MenuEntryHeight, TouchInput.EntryHeight(sub.DropDownItems[0]) + "");
+        Shot(sz, "menu_touch", null);
+        cm.Close(); Pump(50);
+        Check("  a table's rows 40 px (Normal), the open table at once", grid.Rows[0].Height == 40 && grid.RowTemplate.Height == 40 &&
+              ViewPreferences.TableRowHeight == 40 && ViewPreferences.RowHeightOf("Compact", true) == 34 && ViewPreferences.RowHeightOf("Large", true) == 46,
+              grid.Rows[0].Height + "");
+        Check("  the toolbar's buttons 40 px high, the bar grown to hold them", tb1.Height == 40 && tb2.Height == 40 && bar.Height >= 40 + tb1.Margin.Vertical,
+              tb1.Height + " / bar " + bar.Height);
+        Check("  a button that would cover the box under it keeps its height; one with room grows", tight.Height == tightH && roomy.Height == 40,
+              tight.Height + " / " + roomy.Height);
+        Check("  a tick box's and a round option's mark larger: the text moved over", box.Width >= boxW + TouchInput.BoxSize - 13 && box.Padding.Left > 0 &&
+              radio.Padding.Left > 0 && hmiBox.Padding.Left == 0, boxW + " -> " + box.Width);
+        Check("  the tabs taller", tabs.Padding.Y == tabPadY + TouchInput.TabExtra, tabs.Padding + "");
+        var lateBox = new CheckBox { Text = "Later", AutoSize = true, Location = new Point(420, 200) };
+        sz.Controls.Add(lateBox); Pump(50);
+        Check("  a box added in touch mode: larger at once", lateBox.Padding.Left > 0);
+        Mode("Mouse"); Pump(100);
+        UiStyle.ShowPopup(cm, sz, new Point(600, 60)); Pump(100);
+        Check("a mouse again: all back - menu, rows, buttons, bar, boxes, tabs", TouchInput.EntryHeight(Item(cm, "cmCopy")) == entryMouse && grid.Rows[0].Height == rowH &&
+              tb1.Height == tbH && roomy.Height == roomyH && bar.Height == barH && box.Width == boxW && box.Padding.Left == 0 && lateBox.Padding.Left == 0 &&
+              tabs.Padding.Y == tabPadY,
+              TouchInput.EntryHeight(Item(cm, "cmCopy")) + " " + grid.Rows[0].Height + " " + tb1.Height + " " + roomy.Height + " " + bar.Height + " " + box.Width + " " + tabs.Padding.Y);
+        cm.Close();
+        sz.Close(); sz.Dispose();
+
         Console.WriteLine(fail == 0 ? "TOUCH MODE ALL PASS" : "TOUCH MODE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }
