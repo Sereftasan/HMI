@@ -33,7 +33,9 @@ namespace Kaban.UI.Settings
                 new ImportSettingsPage(),
                 new AiPromptPage(),
                 // 21 October: every translation, edited on the panel, languages added and deleted (Maintenance)
-                new TranslationsPage()
+                new TranslationsPage(),
+                // 30 October: the HMI's optional parts on and off - Industry 4 logging, the touch screen (Admin)
+                new FeaturesPage()
                 // No "Manual" or "About" tab: both are the caption bar's "?" (9 October:
                 // "it is not a setting thing at all and the user's eyes don't catch it there")
             });

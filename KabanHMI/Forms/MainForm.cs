@@ -630,16 +630,19 @@ namespace Kaban.UI.Forms
             AlarmManager.AlarmsChanged += OnHmiAlarmsChanged;
             // A sound for a new alarm, when View Preferences ask for one.
             Kaban.UI.Helpers.AlarmSound.Start();
-            // The machines' logs taken from their PLCs (the Industry 4 service's job until 29 October).
-            try { Kaban.UI.Dashboard.MachineLoggers.Start(); }
-            catch (Exception ex) { AuditLogger.Log("Machine log: could not start: " + ex.Message); }
-            // The HMI's own log into the same database, as codes of its own (29 October).
-            try { if (Kaban.UI.Dashboard.HmiLogStore.AutoStart) Kaban.UI.Dashboard.HmiLogStore.Start(); }
-            catch (Exception ex) { AuditLogger.Log("HMI log: the log database could not be used: " + ex.Message); }
+            // The machines' logs taken from their PLCs (the Industry 4 service's job until 29 October) and
+            // the HMI's own log into the same database - while HMI Settings > Features has it on (30 October).
+            StartLogging();
+            EventHandler logging = (s7, e7) =>
+            {
+                Action apply = () => { if (HmiFeatures.LoggingOn) StartLogging(); else StopLogging(); };
+                try { if (InvokeRequired) BeginInvoke(apply); else apply(); } catch { }
+            };
+            HmiFeatures.Changed += logging;
             FormClosed += (s6, e6) =>
             {
-                try { Kaban.UI.Dashboard.MachineLoggers.StopAll(); } catch { }
-                try { Kaban.UI.Dashboard.HmiLogStore.Stop(); } catch { }
+                HmiFeatures.Changed -= logging;
+                StopLogging();
             };
             // The PLC's messages to the operator (each machine's PopupTriggerAddress).
             Kaban.UI.Helpers.PlcPopupHost.SignIn = owner =>
@@ -903,8 +906,8 @@ namespace Kaban.UI.Forms
                 _btnZoom.Left = right - _btnZoom.Width;
                 right = _btnZoom.Left - gap;
             }
-            // mouse or touch, beside the screen scale (29 October)
-            if (_btnInput != null)
+            // mouse or touch, beside the screen scale (29 October) - while the touch screen is switched on
+            if (_btnInput != null && HmiFeatures.TouchOn)
             {
                 _btnInput.Top = midY - _btnInput.Height / 2;
                 _btnInput.Left = right - _btnInput.Width;

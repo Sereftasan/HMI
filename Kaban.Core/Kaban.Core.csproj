@@ -106,6 +106,7 @@
     <Compile Include="Helpers\PlcPopups.cs" />
     <Compile Include="Helpers\DisplaySettings.cs" />
     <Compile Include="Helpers\ViewPreferences.cs" />
+    <Compile Include="Helpers\HmiFeatures.cs" />
     <Compile Include="Helpers\SimpleMotion.cs" />
     <Compile Include="Helpers\PlcBackup.cs" />
     <Compile Include="Helpers\PlcBlocks.cs" />

@@ -69,6 +69,8 @@ class TM {
         DisplaySettings.SettingsPath = Path.Combine(dir, "Display.cfg");
         ViewPreferences.SettingsPath = Path.Combine(dir, "View.cfg");
         ViewPreferences.Reload();
+        HmiFeatures.SettingsPath = Path.Combine(dir, "Features.cfg");
+        HmiFeatures.Reload();
         UserStore.CreatorsPath = Path.Combine(dir, "UserCreators.cfg");
         UserStore.ReloadCreators();
         NotesStore.Folder = Path.Combine(dir, "Notes");
@@ -91,6 +93,38 @@ class TM {
         form.Show();
         Pump(500);
         TouchInput.Sweep();
+
+        // 30 October: "We need to make the Industry 4 service and touchscreen mode optional, and we need to add
+        // some buttons to active and passive them on HMI setting" - both off until an Admin switches them on.
+        Console.WriteLine("--- the touch screen switched off (HMI Settings > Features): a mouse ---");
+        var inputOff = (Button)Get(form, "_btnInput");
+        Check("off at first: no mouse / touch button on the top bar, a mouse in force", !HmiFeatures.TouchOn && !inputOff.Visible && !TouchInput.On);
+        ViewPreferences.SetPanel(ViewPreferences.InputMode, "Touch"); Pump(50);
+        Check("  the panel's preference touch: still a mouse while the feature is off", !ViewPreferences.TouchMode && !TouchInput.On && !TouchInput.IsPreparedForTouch(form));
+        var offPage = new UsersPreferencesControl();
+        Check("  Users and Preferences: no 'Screen used with' row", offPage.ComboOf(ViewPreferences.InputMode) == null);
+        offPage.Dispose();
+        ViewPreferences.SetPanel(ViewPreferences.InputMode, null); Pump(50);
+        var hmiTabs = (SettingsScreen)new HmiSettingsPage().GetControl();
+        Check("HMI Settings has a Features tab, last, for an Admin", hmiTabs.AllPages.Last().TitleFallback == "Features" &&
+              hmiTabs.AllPages.Last().RequiredLevel == SecurityLevel.Admin, string.Join(",", hmiTabs.AllPages.Select(x => x.TitleFallback)));
+        var features = new FeaturesControl();
+        var fhost = new Form { ClientSize = new Size(900, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
+        features.Dock = DockStyle.Fill; fhost.Controls.Add(features); fhost.Show(); Pump(150);
+        Shot(fhost, "features_off");
+        Check("  its two features, each Off, said under it", features.SwitchOf(HmiFeatures.Industry4Logging, false).BackColor != Color.White &&
+              features.SwitchOf(HmiFeatures.TouchScreen, false).BackColor != Color.White && features.SwitchOf(HmiFeatures.TouchScreen, true).BackColor == Color.White &&
+              features.NowText(HmiFeatures.TouchScreen) == "Now: used with a mouse." && features.NowText(HmiFeatures.Industry4Logging).Contains("Industry 4 service logs"),
+              features.NowText(HmiFeatures.Industry4Logging));
+        features.SwitchOf(HmiFeatures.TouchScreen, true).PerformClick(); Pump(100);
+        Check("touch screen On: kept, the button on the top bar at once (a mouse until someone chooses touch)", HmiFeatures.TouchOn && inputOff.Visible && !TouchInput.On &&
+              features.SwitchOf(HmiFeatures.TouchScreen, true).BackColor != Color.White &&
+              features.NowText(HmiFeatures.TouchScreen).StartsWith("Now: used with a mouse - the button"), features.NowText(HmiFeatures.TouchScreen));
+        Check("  written in the log", Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("feature TouchScreen switched on")));
+        Shot(fhost, "features_touch_on");
+        fhost.Close(); fhost.Dispose();
+        HmiFeatures.Reload();
+        Check("  kept in Features.cfg", HmiFeatures.TouchOn && File.ReadAllText(Path.Combine(dir, "Features.cfg")).Contains("TouchScreen=On"));
 
         Console.WriteLine("--- the preference: View Preferences > Screen ---");
         var pref = ViewPreferences.Find(ViewPreferences.InputMode);

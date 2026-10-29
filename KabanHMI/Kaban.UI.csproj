@@ -105,6 +105,9 @@
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
     <Compile Include="Helpers\TouchInput.cs" />
+    <Compile Include="Settings\FeaturesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Helpers\TouchInput.Sizes.cs" />
     <Compile Include="Helpers\TouchInput.Gestures.cs" />
     <Compile Include="Helpers\TouchInput.Typing.cs" />
@@ -406,6 +409,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainForm.Coupling.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Features.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>

@@ -156,6 +156,8 @@ namespace Kaban.Core.Helpers
         {
             // A sign-in brings that user's own values (and a sign-out everyone's).
             SecurityManager.UserChanged += (s, e) => Raise();
+            // touch screen switched on or off on HMI Settings > Features: the mode in force may change
+            HmiFeatures.Changed += (s, e) => Raise();
         }
 
         /// <summary>The user whose own values are in force: the one signed in, or none.</summary>
@@ -318,8 +320,11 @@ namespace Kaban.Core.Helpers
         public static bool AxisNamesLeft { get { return CaptionsLeft; } }
         public static bool BlinkingOn { get { return Get(Blinking) != "Off"; } }
         public static bool AlarmSoundOn { get { return Get(AlarmSound) == "On"; } }
-        /// <summary>The screen is used by touch (View Preferences > Screen > Using the screen).</summary>
-        public static bool TouchMode { get { return Get(InputMode) == "Touch"; } }
+        /// <summary>
+        /// The screen is used by touch (View Preferences > Screen > Screen used with) - only while the
+        /// touch screen is switched on (HMI Settings > Features, 30 October); a mouse otherwise.
+        /// </summary>
+        public static bool TouchMode { get { return HmiFeatures.TouchOn && Get(InputMode) == "Touch"; } }
 
         /// <summary>How a number is written on screen: the decimal separator chosen (or Windows').</summary>
         public static NumberFormatInfo NumberFormat
