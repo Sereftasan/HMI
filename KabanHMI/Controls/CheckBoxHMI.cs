@@ -15,8 +15,19 @@ namespace Kaban.UI.Controls
 
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
-    public class CheckBoxHMI : CheckBox
+    public class CheckBoxHMI : CheckBox, UiStyle.IExplainsDisabled
     {
+        /// <summary>Why it cannot be ticked now (a tap in touch mode shows it); null while it can.</summary>
+        string UiStyle.IExplainsDisabled.WhyDisabled
+        {
+            get
+            {
+                if (DisplayOnly || string.IsNullOrEmpty(Address)) return null;
+                if (IsStale) return ConnectionMonitor.ReasonFor(PlcNumber);
+                return !_softEnabled && !string.IsNullOrEmpty(_disabledReason) ? _disabledReason : null;
+            }
+        }
+
         // ---- optional attached description (label hugging the LEFT edge) ----
         private AttachedDescription _descr;
         private AttachedDescription Descr => _descr ?? (_descr = new AttachedDescription(this));

@@ -112,6 +112,8 @@ namespace Kaban.UI.Screens
             _grid.Columns.Add(new DataGridViewTextBoxColumn { Name = "Line", HeaderText = T("Col_FndLine", "Line"), Width = 60 });
             UiStyle.EnableTableTools(_grid, "NotesFind");
             _grid.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) Open(e.RowIndex); };
+            // by touch a tap opens it: the list is there to be chosen from (as Find where it is used)
+            _grid.CellMouseClick += (s, e) => { if (e.Button == MouseButtons.Left && e.RowIndex >= 0 && Kaban.UI.Helpers.TouchInput.On) Open(e.RowIndex); };
             _grid.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter && _grid.CurrentRow != null) { Open(_grid.CurrentRow.Index); e.Handled = true; } };
 
             _status.Dock = DockStyle.Bottom;

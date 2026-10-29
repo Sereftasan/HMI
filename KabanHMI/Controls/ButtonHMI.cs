@@ -27,7 +27,7 @@ namespace Kaban.UI.Controls
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public partial class ButtonHMI : Button, IHmiControl, ILocalizable, UiStyle.IDrawsOwnHoverBorder,
-                                     UiStyle.IManagesOwnCursor
+                                     UiStyle.IManagesOwnCursor, UiStyle.IExplainsDisabled
     {
         /// <summary>Uniform standard height so mixed rows line up (buttons and
         /// numeric inputs/displays all default to 46).</summary>
@@ -1488,6 +1488,12 @@ namespace Kaban.UI.Controls
 
         /// <summary>True when the button would act on a press now (its conditions, its rights, shown).</summary>
         internal bool CanAct { get { return _softEnabled && Visible && !SlotDisabled && (BitActions.Count > 0 || WordActions.Count > 0); } }
+
+        /// <summary>Why it does nothing now (a tap in touch mode shows it); null while it can be used.</summary>
+        string UiStyle.IExplainsDisabled.WhyDisabled
+        {
+            get { return _softEnabled || SlotDisabled ? null : DisabledReasonOrDefault; }
+        }
 
         /// <summary>Its first sensor lamp lit (a cylinder's end position reached).</summary>
         internal bool Lamp1On { get { return _lamp1On; } }

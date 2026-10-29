@@ -62,7 +62,15 @@ namespace Kaban.UI.Controls
         /// Shows <paramref name="text"/> at the bottom centre of <paramref name="owner"/>'s
         /// window for a few seconds (a warning longer). One at a time: a new one replaces it.
         /// </summary>
-        public static void Show(IWin32Window owner, string text, bool warning = false)
+        public static void Show(IWin32Window owner, string text, bool warning = false) { Show(owner, text, warning, null); }
+
+        /// <summary>
+        /// The note just above a point of the screen (where a finger tapped - below it when there is
+        /// no room above), for a few seconds.
+        /// </summary>
+        public static void ShowAt(IWin32Window owner, string text, Point screenPoint, bool warning = false) { Show(owner, text, warning, screenPoint); }
+
+        private static void Show(IWin32Window owner, string text, bool warning, Point? near)
         {
             LastText = text;
             LastWarning = warning;
@@ -73,6 +81,15 @@ namespace Kaban.UI.Controls
                 var toast = new Toast(text, warning, warning ? 9000 : 5000);
                 Rectangle area = form != null && form.Visible ? form.Bounds : Screen.PrimaryScreen.WorkingArea;
                 toast.Location = new Point(area.Left + (area.Width - toast.Width) / 2, area.Bottom - toast.Height - UiScale.Px(48));
+                if (near.HasValue)
+                {
+                    // clear of the finger: its own width above it
+                    var screen = Screen.FromPoint(near.Value).WorkingArea;
+                    int x = Math.Max(screen.Left + 4, Math.Min(near.Value.X - toast.Width / 2, screen.Right - toast.Width - 4));
+                    int y = near.Value.Y - toast.Height - UiScale.Px(28);
+                    if (y < screen.Top + 4) y = near.Value.Y + UiScale.Px(28);
+                    toast.Location = new Point(x, y);
+                }
                 _current = toast;
                 if (form != null && form.Visible) toast.Show(form); else toast.Show();
                 toast._timer.Start();

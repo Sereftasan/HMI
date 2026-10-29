@@ -989,6 +989,7 @@ namespace Kaban.UI.Forms
             {
                 if (e.Button == MouseButtons.Left && SheetAt(mon, e.Location) >= 0) RenameSheet();
             };
+            Kaban.UI.Helpers.TouchInput.HasMenu(mon.SheetTabs);   // a long press on a tab: its menu (touch mode)
             mon.SheetTabs.MouseUp += (s, e) =>
             {
                 if (e.Button != MouseButtons.Right) return;

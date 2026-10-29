@@ -59,11 +59,8 @@ namespace Kaban.UI.Helpers
             };
             Application.Idle += (s, e) => Sweep();
             Sweep();
-            InstallParts();
+            InstallGestures();
         }
-
-        /// <summary>The other parts' start (the gestures' filter, the keyboard) - see their files.</summary>
-        static partial void InstallParts();
 
         /// <summary>Tells everyone the mode changed (tests call it after setting the preference).</summary>
         public static void RaiseModeChanged()
@@ -71,6 +68,7 @@ namespace Kaban.UI.Helpers
             _was = On;
             ApplyNativeToAll();
             ApplySizesToAll();
+            ApplyGesturesToAll();
             var h = ModeChanged;
             if (h == null) return;
             foreach (EventHandler each in h.GetInvocationList())
@@ -134,10 +132,11 @@ namespace Kaban.UI.Helpers
             foreach (Control child in ctl.Controls) Watch(child);
         }
 
-        /// <summary>A control met: the other parts' preparation (its size for a finger).</summary>
+        /// <summary>A control met: the other parts' preparation (its size for a finger, a table's "⋮").</summary>
         private static void Prepared(Control c)
         {
             PrepareSizes(c);
+            PrepareGestures(c);
         }
 
         /// <summary>Every control of every open window (a mode change reaches them all).</summary>

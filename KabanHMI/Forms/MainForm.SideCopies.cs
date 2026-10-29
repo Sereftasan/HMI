@@ -198,6 +198,7 @@ namespace Kaban.UI.Forms
         /// <summary>A page button's right-click: the side panel menu for its page.</summary>
         private void OfferSideMenu(Controls.ButtonHMI button, UserControl view)
         {
+            Helpers.TouchInput.HasMenu(button);                 // a long press opens it too (touch mode)
             button.MouseUp += (s, e) =>
             {
                 if (e.Button != MouseButtons.Right) return;
@@ -212,6 +213,7 @@ namespace Kaban.UI.Forms
         private void OfferRemove(Button b, SidePage page)
         {
             if (!page.Key.StartsWith(MainPagePrefix, StringComparison.OrdinalIgnoreCase)) return;
+            Helpers.TouchInput.HasMenu(b);
             b.MouseUp += (s, e) =>
             {
                 if (e.Button != MouseButtons.Right) return;

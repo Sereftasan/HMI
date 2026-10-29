@@ -42,6 +42,19 @@ class TM {
             Path.Combine(folder, name + ".png") + "')\"") { UseShellExecute = false });
         p.WaitForExit(10000);
     }
+    // A finger's messages, as Windows makes them of a touch: the filter first, then the control (unless taken).
+    static readonly MethodInfo WndProcOf = typeof(Control).GetMethod("WndProc", BindingFlags.Instance | BindingFlags.NonPublic);
+    static IntPtr LP(Point p) { return (IntPtr)(int)(((p.Y & 0xFFFF) << 16) | (p.X & 0xFFFF)); }
+    static bool Finger(Control c, int msg, Point client, int keys) {
+        var m = Message.Create(c.Handle, msg, (IntPtr)keys, LP(client));
+        bool taken = TouchInput.Handle(ref m);
+        if (!taken) WndProcOf.Invoke(c, new object[] { m });
+        return taken;
+    }
+    static bool Down(Control c, Point p) { return Finger(c, 0x201, p, 1); }
+    static bool MoveTo(Control c, Point p) { return Finger(c, 0x200, p, 1); }
+    static bool Up(Control c, Point p) { return Finger(c, 0x202, p, 0); }
+    static bool Tap(Control c, Point p) { bool a = Down(c, p); bool b = Up(c, p); Pump(60); return a || b; }
     static void Mode(string v) { ViewPreferences.SetPanel(ViewPreferences.InputMode, v); Pump(50); }
 
     [STAThread]
@@ -227,6 +240,101 @@ class TM {
         cm.Close();
         sz.Close(); sz.Dispose();
 
+        Console.WriteLine("--- a finger held, a tap on something greyed, a closed list, the row's ⋮ ---");
+        Mode("Touch");
+        var gf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(30, 30), ClientSize = new Size(900, 640), Text = "gestures" };
+        var rowGrid = new DataGridView { Location = new Point(10, 10), Size = new Size(520, 300), AllowUserToAddRows = false, RowHeadersVisible = false,
+                                         SelectionMode = DataGridViewSelectionMode.FullRowSelect, ReadOnly = true };
+        UiStyle.GridLook(rowGrid);
+        rowGrid.Columns.Add("name", "Name"); rowGrid.Columns.Add("value", "Value");
+        rowGrid.Columns[0].Width = 200; rowGrid.Columns[1].Width = 280;
+        for (int i = 0; i < 20; i++) rowGrid.Rows.Add("D" + (100 + i), i * 10);
+        var rowMenu = new ContextMenuStrip(); rowMenu.Items.Add(new ToolStripMenuItem("Copy") { Name = "rmCopy" });
+        rowGrid.ContextMenuStrip = rowMenu;
+        int rightRow = -1;
+        rowGrid.CellMouseDown += (s, e) => { if (e.Button == MouseButtons.Right && e.RowIndex >= 0) { rightRow = e.RowIndex; rowGrid.CurrentCell = rowGrid.Rows[e.RowIndex].Cells[0]; } };
+        var plain = new Button { Text = "Plain", Location = new Point(560, 10), Size = new Size(120, 44) };
+        int plainClicks = 0; plain.Click += (s, e) => plainClicks++;
+        var jog = new ButtonHMI { Location = new Point(560, 70), Size = new Size(120, 44) };
+        jog.BitActions.Add(new Kaban.Core.Models.BitAction());
+        var own = new Panel { Location = new Point(560, 130), Size = new Size(120, 44), BackColor = Color.LightGray };
+        int ownRight = 0; own.MouseUp += (s, e) => { if (e.Button == MouseButtons.Right) ownRight++; };
+        TouchInput.HasMenu(own);
+        var holder = new Panel { Location = new Point(560, 190), Size = new Size(300, 60) };
+        var off = new Button { Text = "Off", Location = new Point(10, 8), Size = new Size(120, 44), Enabled = false };
+        holder.Controls.Add(off);
+        var gtips = UiStyle.CreateTips();
+        UiStyle.SetTip(gtips, off, "Only while the machine stands still");
+        var soft = new ButtonHMI { Location = new Point(560, 260), Size = new Size(120, 44) };
+        soft.BitActions.Add(new Kaban.Core.Models.BitAction());
+        var list = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Location = new Point(560, 320), Width = 200 };
+        list.Items.AddRange(new object[] { "Every day", "Every week", "Every month" }); list.SelectedIndex = 0;
+        int committed = 0; list.SelectionChangeCommitted += (s, e) => committed++;
+        gf.Controls.Add(rowGrid); gf.Controls.Add(plain); gf.Controls.Add(jog); gf.Controls.Add(own); gf.Controls.Add(holder); gf.Controls.Add(soft); gf.Controls.Add(list);
+        gf.Show(); Pump(200); TouchInput.Sweep(); Pump(100);
+
+        var cellAt = rowGrid.GetCellDisplayRectangle(0, 3, false);
+        var press = new Point(cellAt.Left + 30, cellAt.Top + cellAt.Height / 2);
+        bool tookDown = Down(rowGrid, press);
+        Pump(TouchInput.LongPressMs + 250);
+        Check("held still on a table row with a menu: the menu opens - the row chosen as a right-click chooses it", !tookDown && TouchInput.LastHeld == rowGrid &&
+              rightRow == 3 && rowMenu.Visible, "held " + (TouchInput.LastHeld == null ? "-" : TouchInput.LastHeld.GetType().Name) + ", row " + rightRow + ", menu " + rowMenu.Visible);
+        Check("  the finger lifted: taken - nothing chosen in the menu, nothing clicked", MoveTo(rowGrid, press) && Up(rowGrid, press));
+        rowMenu.Close(); Pump(50);
+        Down(plain, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200);
+        bool plainUpTaken = Up(plain, new Point(20, 20)); Pump(50);
+        Check("held on a button without a menu: nothing opens - let go, it is a click as always", TouchInput.LastHeld == rowGrid && !plainUpTaken && plainClicks == 1, plainClicks + " clicks");
+        Down(jog, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(jog, new Point(20, 20));
+        Check("held on a jog button: the press is the work - never a menu", TouchInput.LastHeld == rowGrid);
+        Down(own, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(own, new Point(20, 20)); Pump(50);
+        Check("held on a control whose right-click makes its own menu (a side bar button, a motion value): its right-click given", TouchInput.LastHeld == own && ownRight == 1, ownRight + "");
+        Down(rowGrid, press); MoveTo(rowGrid, new Point(press.X, press.Y + 60)); Pump(TouchInput.LongPressMs + 200); Up(rowGrid, new Point(press.X, press.Y + 60));
+        Check("a finger that moved is not held", TouchInput.LastHeld == own && !rowMenu.Visible);
+
+        Toast.Show(gf, "-");
+        Tap(holder, new Point(off.Left + 20, off.Top + 20));
+        Check("a tap on a greyed button: why, beside the finger (its tooltip)", TouchInput.LastReason == "Only while the machine stands still" &&
+              Toast.LastText == "Only while the machine stands still", TouchInput.LastReason);
+        typeof(ButtonHMI).GetField("_softEnabled", Any).SetValue(soft, false);
+        typeof(ButtonHMI).GetField("_disabledReason", Any).SetValue(soft, "Action Disabled.\nRequired Machine State:\n  • Manual mode");
+        Tap(soft, new Point(20, 20));
+        Check("a tap on a button the program holds back: the conditions it waits for", TouchInput.LastReason != null && TouchInput.LastReason.Contains("Manual mode"), TouchInput.LastReason);
+        var greyMenu = UiStyle.Menu();
+        greyMenu.Items.Add(new ToolStripMenuItem("Delete") { Name = "gmDelete" });
+        greyMenu.Items.Add(UiStyle.Unavailable(new ToolStripMenuItem("Write to the PLC") { Name = "gmWrite" }, false, "For an Admin (sign in as one)"));
+        UiStyle.ShowPopup(greyMenu, gf, new Point(300, 350)); Pump(100);
+        var gi = Item(greyMenu, "gmWrite");
+        Tap(greyMenu, new Point(gi.Bounds.Left + 20, gi.Bounds.Top + gi.Bounds.Height / 2));
+        Check("a tap on a greyed menu entry: its reason", TouchInput.LastReason == "For an Admin (sign in as one)", TouchInput.LastReason);
+        greyMenu.Close(); Pump(50);
+
+        bool listDown = Down(list, new Point(30, 10)), listUp = Up(list, new Point(30, 10)); Pump(100);
+        var touchList = TouchInput.LastList;
+        Check("a tap on a closed list: its entries as a menu, a finger's height each, the one chosen ticked", listDown && listUp && touchList != null && touchList.Visible &&
+              touchList.Items.Count == 3 && ((ToolStripMenuItem)touchList.Items[0]).Checked && TouchInput.EntryHeight(touchList.Items[1]) >= TouchInput.MenuEntryHeight,
+              touchList == null ? "none" : touchList.Items.Count + " entries, " + TouchInput.EntryHeight(touchList.Items[1]) + " px");
+        Shot(gf, "touch_list");
+        ((ToolStripMenuItem)touchList.Items[2]).PerformClick(); Pump(50);
+        Check("  one chosen: chosen in the list, as a user's choice (SelectionChangeCommitted)", list.SelectedIndex == 2 && committed == 1, list.SelectedIndex + " / " + committed);
+        touchList.Close(); Pump(50);
+
+        rowGrid.CurrentCell = rowGrid.Rows[5].Cells[0]; Pump(50);
+        var dots = TouchInput.RowMenuOf(rowGrid);
+        var row5 = rowGrid.GetRowDisplayRectangle(5, true);
+        Check("a table with a row menu: a ⋮ at the end of its current row", dots != null && dots.Visible && dots.Top >= row5.Top && dots.Bottom <= row5.Bottom &&
+              dots.Right <= row5.Right && dots.Right >= row5.Right - 10, dots == null ? "none" : dots.Bounds + " in " + row5);
+        Shot(gf, "row_dots", new Rectangle(0, 0, 540, 320));
+        rightRow = -1;
+        typeof(Control).GetMethod("OnClick", Any).Invoke(dots, new object[] { EventArgs.Empty }); Pump(100);
+        Check("  tapped: the row's menu, for that row", rightRow == 5 && rowMenu.Visible, "row " + rightRow);
+        rowMenu.Close(); Pump(50);
+        Mode("Mouse"); Pump(50);
+        Check("a mouse again: no ⋮, a press held is a press", !dots.Visible);
+        Down(rowGrid, press); Pump(TouchInput.LongPressMs + 200); Up(rowGrid, press);
+        Check("  no menu from holding", !rowMenu.Visible);
+        gf.Close(); gf.Dispose();
+
+        UserStore.RemoveUser("tmop");                   // the store is shared with the other tests
         Console.WriteLine(fail == 0 ? "TOUCH MODE ALL PASS" : "TOUCH MODE " + fail + " FAILED");
         Environment.Exit(fail == 0 ? 0 : 1);
     }

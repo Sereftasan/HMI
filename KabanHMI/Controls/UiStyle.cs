@@ -402,6 +402,13 @@ namespace Kaban.UI.Controls
         /// </summary>
         public interface IDisplayOnly { }
 
+        /// <summary>
+        /// A control greyed by the program itself (its conditions, the PLC not answering, the level
+        /// signed in) that says why: a finger has no tooltip, so a tap on it shows this (touch mode).
+        /// Null or empty while it can be used.
+        /// </summary>
+        public interface IExplainsDisabled { string WhyDisabled { get; } }
+
         /// <summary>A display (IDisplayOnly), or a checkbox that only shows its bit.</summary>
         public static bool IsDisplayOnly(Control c)
         {

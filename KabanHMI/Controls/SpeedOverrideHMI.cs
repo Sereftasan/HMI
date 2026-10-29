@@ -28,8 +28,19 @@ namespace Kaban.UI.Controls
     /// </summary>
     [ToolboxItem(true)]
     [TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
-    public class SpeedOverrideHMI : PercentSlider, IPlcBoundControl, ILocalizable
+    public class SpeedOverrideHMI : PercentSlider, IPlcBoundControl, ILocalizable, UiStyle.IExplainsDisabled
     {
+        /// <summary>Why the speed cannot be changed now (a tap in touch mode shows it); null while it can.</summary>
+        string UiStyle.IExplainsDisabled.WhyDisabled
+        {
+            get
+            {
+                if (_softEnabled || string.IsNullOrWhiteSpace(Address)) return null;
+                return ConnectionMonitor.IsKnownDown(PlcNumber) ? ConnectionMonitor.ReasonFor(PlcNumber)
+                     : LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + RequiredSecurity;
+            }
+        }
+
         /// <summary>The old track bar's steps, in percent.</summary>
         public static readonly int[] DefaultSteps = { 0, 1, 2, 4, 6, 8, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100 };
 

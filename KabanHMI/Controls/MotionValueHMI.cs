@@ -23,8 +23,11 @@ namespace Kaban.UI.Controls
     /// memory - and the module counts as changed (MotionFlash): the page's blinking button writes
     /// its flash ROM, without which it forgets the value at power off. For anyone else a display.
     /// </summary>
-    public class MotionValueHMI : Control, IPlcExtraAddresses, UiStyle.IDisplayOnly
+    public class MotionValueHMI : Control, IPlcExtraAddresses, UiStyle.IDisplayOnly, UiStyle.IExplainsDisabled
     {
+        /// <summary>Why the value cannot be changed (a tap in touch mode shows it); null while it can.</summary>
+        string UiStyle.IExplainsDisabled.WhyDisabled { get { return Editable ? null : WhyNotEditable(); } }
+
         private readonly SimpleMotion.Item _item;
         private readonly SimpleMotion.RowUnit _rowUnit;
         private int _low, _high, _unitSetting;        // the last words read (shown again in another unit)
@@ -52,6 +55,7 @@ namespace Kaban.UI.Controls
             _module = module;
             _axis = axis;
             _decimals = Math.Max(0, decimals);
+            Kaban.UI.Helpers.TouchInput.HasMenu(this);           // its right-click menu: a long press too
             _first = SimpleMotion.Device(module, SimpleMotion.AddressOf(item, axis));
             _unit = SimpleMotion.NeedsUnit(item) ? SimpleMotion.UnitDevice(module, axis) : null;
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw, true);
