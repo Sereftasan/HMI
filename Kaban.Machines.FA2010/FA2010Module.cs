@@ -227,21 +227,18 @@ namespace Kaban.Machines.FA2010
                 Dashboard = new Kaban.UI.Dashboard.DashboardDefinition { LogArea = "R27000" },
 
                 // Machine-specific: Role = "" keeps its own button (the DXF workbench).
-                //Extra = new[]
-                //{
-                //    new MachineScreen
-                //    {
-                //        TitleKey = "Btn_Profiles",
-                //        TitleFallback = "Profiles",
-                //        Icon = () => Kaban.UI.Properties.Resources.bar_chart_24,
-                //        SortOrder = 30,
-                //        CreateView = () => new Screens.ProfilesScreen()
-                //    }
-                //}
-                // The same bar on the Axis Monitor (14 October). Machine Parameters > Axis has a
-                // copy of its controls on the page itself (16 October).
                 Extra = new[]
                 {
+                    new MachineScreen
+                    {
+                        TitleKey = "Btn_Profiles",
+                        TitleFallback = "Profiles",
+                        Icon = () => Kaban.UI.Properties.Resources.bar_chart_24,
+                        SortOrder = 30,
+                        CreateView = () => new Screens.ProfilesScreen()
+                    },
+                // The same bar on the Axis Monitor (14 October). Machine Parameters > Axis has a
+                // copy of its controls on the page itself (16 October).
                     new MachineScreen
                     {
                         Role = ScreenRoles.AxisBar,
