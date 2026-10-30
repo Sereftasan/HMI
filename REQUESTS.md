@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 30 October, night (the answers; the Options page's looks; touch menus; the locked build):
+  - bd3cff9 - Answer 1: Cutting > Right Front Vert. Clamping's position without L34 is the analogue sensor SN115 (wire 705,
+    U19 FX5-8AD channel 6) - its wiring row and step-by-step help say so.
+  - 1b00842 - Answer 2: with L35 the Milling / Cutting Front Clamping's valve is 3WayOpenCenter - its "?", the alarm list's
+    help, the AI prompt and the HMI's own alarm follow L35 (read on every scan).
+  - 5534b58 - Answer 3: Machine Parameters > Options in four looks side by side to choose from - switch rows, tiles,
+    switches beside their names, the tick boxes (Mullion Notching).
+  - 05f0e0c - Touch: a menu entry's words in the middle of its row (the Program Exit menu's Close / Restart).
+  - c95ebb4 - The build's "locked by Kaban.Machine.FA2010": a running instance holds the exes; a Restart of an instance
+    Visual Studio debugs now says that it runs outside the debugger.
+  - 86df0db - Test PagesDesignable up to date (the Axis page's bar 76 high).
 - 30 October, evening (the clamps' encoders; the Options page; touch):
   - 382059a - Machine Parameters > Options: Cutting Left Front with Encoder (L33), Cutting Right Front Vertical without
     Encoder (L34), Cutting Left Front with Air Exhaust (L35), in Turkish as the PLC's labels name them.

@@ -67,19 +67,22 @@
   is in the manual (9b), not on the page. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
-  right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 25 now), never between.
+  right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 26 now), never between.
 
 ## Open questions (answer here or in a message)
-1. **Cutting > Right Front Vert. Clamping on a machine without L34** (its encoder fitted, row "Cutting Front Right
-   Vertical", D7): where is that encoder wired? The older drawing you sent highlights X00 / X01 (wires 62 / 63,
-   "İşleme Kesim Ön Sıkma Enkoder Girişi") - that is the Milling / Cutting Front Clamping's, the L33 one.
-2. **L35 "Cutting Left Front with Air Exhaust"** (PC_KesimSolOn_HavaBosaltmali): only a tick box on the Options page
-   now. Does it change anything the HMI shows - the clamp's valve (and so its step-by-step help), a sensor?
-3. **Machine Parameters > Options**: the same switch rows as HMI Settings > Options (a name, a switch at the right
-   end), or keep the tick boxes?
+1. **Machine Parameters > Options shows four looks side by side** (CheckBoxHMI.Look): switch rows (Cooling ... Special
+   Reverse Machine), tiles (Cutting Right Top Clamping Long ... Cross Roller), a switch beside its name (L33 - L35) and
+   the tick boxes (Mullion Notching). Which one for the whole page (and for the other pages' tick boxes)?
 
 Answered (30 October): the back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are at the end of the BACK
 movement - as the program has them. Milling > Front Clamping has its encoder (D20) only with L33 (the older machines);
 Cutting > Right Front Vert. Clamping (D7) only without L34; Entry Conveyor > Profile Clamping 7 is the left profile
 recognition unit's front clamping, measured by the width encoder through K77 while Y120 selects the left unit (the
-right unit is the default) - each built so.
+right unit is the default) - each built so. Cutting > Right Front Vert. Clamping's position without L34 is the
+analogue sensor SN115 (wire 705, U19 FX5-8AD channel 6, sheet 34.5). L35 makes the Milling / Cutting Front Clamping's
+valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions).
+- A machine condition judged off its page (a unit's help from the alarm list): MachineConditionMap.ReadAlways (read on
+  every scan) and MetNow.
+- "Unable to copy ... Kaban.Machines.H500.exe ... locked by: Kaban.Machine.FA2010": an instance of the program is still
+  running - close it (Task Manager: Kaban.Machines.FA2010.exe) and build again. A Restart of an instance Visual Studio
+  debugs starts the new one outside the debugger; it says so when it starts.

@@ -58,7 +58,10 @@ the Exit's Robot Top Clamping &ndash; take theirs from their rows on <b>Machine 
 <p>Two of these encoders are options (<b>Machine Parameters &rsaquo; Options</b>): Milling's <b>Front Clamping</b> has one only with
 <b>Cutting Left Front with Encoder</b> (<code>L33</code>, the older machines), Cutting's <b>Right Front Vert. Clamping</b> only without
 <b>Cutting Right Front Vertical without Encoder</b> (<code>L34</code>). Without its encoder the clamp is a cylinder without a position: no
-position on its unit, its row not on the Encoders page, and the HMI's own alarm does not time it by a position.</p>
+position on its unit, its row not on the Encoders page, and the HMI's own alarm does not time it by a position. (The Right Front Vert.
+Clamping's position is the analogue sensor SN115, U19 FX5-8AD channel 6.) With <b>Cutting Left Front with Air Exhaust</b> (<code>L35</code>)
+the Front Clamping's valve is a 5/3 <b>open</b> centre instead of a closed one: its help (the &laquo;?&raquo;, the alarm list, the step-by-step
+page) says what that valve does when a button is let go of early.</p>
 <p>The profile recognition's <b>width</b> and <b>height</b> encoders &ndash; the right unit's and the left unit's &ndash; come in on the same
 inputs (X10/X11, X12/X13) through the relays K77 and K78. The right unit is the default; <b>Left End Encoders Active</b> (Y120) switches them to
 the left unit. So only the selected unit's cylinders show a position: the others show <b>&ndash;</b> (its tip says when it is read), and the
@@ -81,7 +84,8 @@ Recognition Front and Top &ndash; its manual movement (to move it while setting 
 <i>Encoder Reference</i>) is set here only. Milling-Cutting Left Front and Cutting Front Right Vertical are on the page only on a machine
 with their encoder (<a href="#fa-manual">above</a>); Profile Recognition Front and Top show their position while the right unit is selected,
 Left Profile Recognition Front and Top while the left one is.</p>
-<p><b>Options</b>: a tick box per option the machine has &ndash; cooling, the carrying rollers, the left profile recognition, a reverse machine,
+<p><b>Options</b>: a switch per option the machine has (for now in four looks side by side, to choose one: rows with the switch at the
+right end, tiles, a switch beside its name, the tick boxes) &ndash; cooling, the carrying rollers, the left profile recognition, a reverse machine,
 the clamping mould, the cross roller, mullion notching ... and the cutting front clamps: <b>Cutting Left Front with Encoder</b> (<code>L33</code>),
 <b>Cutting Right Front Vertical without Encoder</b> (<code>L34</code>) and <b>Cutting Left Front with Air Exhaust</b> (<code>L35</code>).</p>
 <p><b>Others</b>: the exit conveyor, the distances between the units, the lubrication, the
