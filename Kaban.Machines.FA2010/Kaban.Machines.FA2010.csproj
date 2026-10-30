@@ -796,6 +796,17 @@
   <Target Name="KabanAssert32Bit" BeforeTargets="Build">
     <Error Condition="'$(PlatformTarget)' == 'x64' Or '$(Prefer32Bit)' != 'true'" Text="Kaban HMI must run 32-bit for MX Component COM. PlatformTarget='$(PlatformTarget)' Prefer32Bit='$(Prefer32Bit)'. Use Any CPU with 'Prefer 32-bit' CHECKED." />
   </Target>
+  <!-- THE HMI STILL RUNNING FROM THIS FOLDER (30 October: "Unable to copy file ... Kaban.Core.dll to bin\Debug\Kaban.Core.dll.
+       The process cannot access the file ... because it is being used by another process", and H500's / H800's exes "locked by:
+       Kaban.Machine.FA2010"): an instance started from bin\Debug - with Ctrl+F5, from the folder, or a Restart of the one being
+       debugged - holds its exe and DLLs, and the build cannot replace them. Said first, in plain words, instead of the copy errors. -->
+  <Target Name="KabanHmiNotRunning" BeforeTargets="BeforeBuild" Condition="'$(OS)' == 'Windows_NT'">
+    <Exec Command="powershell -NoProfile -NonInteractive -Command &quot;if (Get-Process -Name 'Kaban.Machines.FA2010' -ErrorAction SilentlyContinue | Where-Object { $_.Path -and ([IO.Path]::GetFullPath($_.Path) -eq [IO.Path]::GetFullPath('$(ProjectDir)$(OutDir)$(TargetFileName)')) }) { exit 3 } else { exit 0 }&quot;"
+          IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="KabanHmiRunning" />
+    </Exec>
+    <Error Condition="'$(KabanHmiRunning)' == '3'" Text="Kaban HMI is still running from $(ProjectDir)$(OutDir) - close it (Task Manager: Kaban.Machines.FA2010.exe) and build again: while it runs, the build cannot replace its exe and DLLs. (A Restart of the program being debugged runs outside Visual Studio; Stop Debugging does not close it.)" />
+  </Target>
   <!-- Shared profile drawings: one source in KabanHMI\Profiles, copied to
        bin\Debug\Profiles\ at build - add a DXF there and every machine has it. -->
   <Target Name="CopySharedProfiles" AfterTargets="Build">
