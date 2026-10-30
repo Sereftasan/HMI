@@ -554,7 +554,32 @@ class TM {
         Check("  not from a slider, nor from a jog button: their drag is theirs", !sm && !jm && tall.AutoScrollPosition.Y == 0);
         Down(lb, new Point(40, 200)); MoveTo(lb, new Point(40, 200 - 10 * lb.ItemHeight)); Up(lb, new Point(40, 200 - 10 * lb.ItemHeight));
         Check("a list: its entries scroll", lb.TopIndex == 10 && lb.SelectedIndex < 0, lb.TopIndex + " top, chosen " + lb.SelectedIndex);
+        // (30 October: "The touch mode finger page drag makes the page blinking (changing the position up and down constantly
+        // probably)") - a finger is never still: a page follows it back only past a few pixels, a table a row well past its half
+        tall.AutoScrollPosition = new Point(0, 0); Pump(30);
+        // the finger's points on the SCREEN, as Windows gives them: the button moves with the page under it
+        var fingerAt = inPage.PointToScreen(new Point(30, 20));
+        Func<int, Point> up = by => inPage.PointToClient(new Point(fingerAt.X, fingerAt.Y - by));
+        Down(inPage, up(0)); MoveTo(inPage, up(100));
+        int at100 = -tall.AutoScrollPosition.Y;
+        MoveTo(inPage, up(98)); int tremble = -tall.AutoScrollPosition.Y;
+        MoveTo(inPage, up(101)); int on = -tall.AutoScrollPosition.Y;
+        MoveTo(inPage, up(90)); int back = -tall.AutoScrollPosition.Y;
+        Up(inPage, up(90)); Pump(30);
+        Check("a page: a finger trembling 2 px back leaves it where it is, a real move back takes it back",
+              at100 == 100 && tremble == 100 && on == 101 && back == 90, at100 + " " + tremble + " " + on + " " + back);
+        long1.FirstDisplayedScrollingRowIndex = 0; Pump(30);
+        var s0 = new Point(start.X, long1.GetCellDisplayRectangle(0, 2, false).Top + rowH2 / 2);
+        Down(long1, s0); MoveTo(long1, new Point(s0.X, s0.Y - 15));
+        MoveTo(long1, new Point(s0.X, s0.Y - (int)(rowH2 * 0.6))); int half = long1.FirstDisplayedScrollingRowIndex;
+        MoveTo(long1, new Point(s0.X, s0.Y - (int)(rowH2 * 0.8))); int past = long1.FirstDisplayedScrollingRowIndex;
+        MoveTo(long1, new Point(s0.X, s0.Y - (int)(rowH2 * 0.45))); int wobble = long1.FirstDisplayedScrollingRowIndex;
+        MoveTo(long1, new Point(s0.X, s0.Y - (int)(rowH2 * 0.2))); int down = long1.FirstDisplayedScrollingRowIndex;
+        Up(long1, new Point(s0.X, s0.Y)); Pump(30);
+        Check("a table: a finger on the edge between two rows does not move it a row up and down",
+              half == 0 && past == 1 && wobble == 1 && down == 0, half + " " + past + " " + wobble + " " + down);
         Mode("Mouse");
+        Check("a mouse: tooltips by resting the pointer again", !UiStyle.HoverTipsOff);
         long1.FirstDisplayedScrollingRowIndex = 0; Pump(30);
         bool md = Down(long1, start), mm = MoveTo(long1, new Point(start.X, start.Y - 5 * rowH2)); Up(long1, new Point(start.X, start.Y - 5 * rowH2));
         Check("a mouse: a drag is a drag (it chooses rows), nothing scrolls by itself", !md && !mm && long1.FirstDisplayedScrollingRowIndex == 0);

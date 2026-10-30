@@ -130,7 +130,7 @@ namespace Kaban.UI.Helpers
             var owner = window ?? Control.FromChildHandle(m.HWnd);
             if (owner == null || IsOwnWindow(owner)) return false;
             var client = PointOf(m.LParam);
-            var screen = ToScreen(m.HWnd, window ?? owner, client);
+            var screen = ScreenOf(ref m, window ?? owner, client);
             var target = window != null ? Deepest(window, client) : owner;
             var p = new Press { Hwnd = m.HWnd, Window = window, Owner = owner, Target = target, Client = client, Screen = screen, Last = screen, DownMsg = m.Msg };
             _press = p;
@@ -164,7 +164,7 @@ namespace Kaban.UI.Helpers
             if (p == null || ((int)(long)m.WParam & MkLButton) == 0) return false;
             if (p.Held) return true;                                    // the menu is open: nothing under it moves
             var window = Control.FromHandle(m.HWnd) ?? Control.FromChildHandle(m.HWnd);
-            var screen = ToScreen(m.HWnd, window, PointOf(m.LParam));
+            var screen = ScreenOf(ref m, window, PointOf(m.LParam));
             if (p.Panning) { PanTo(p, screen); return true; }
             if (!p.Moved && Distance(screen, p.Screen) > UiScale.Px(Slop))
             {
@@ -523,6 +523,28 @@ namespace Kaban.UI.Helpers
             if (target == null || target.IsDisposed || WndProcOf == null) return;
             var m = Message.Create(target.Handle, msg, (IntPtr)wParam, lParam);
             WndProcOf.Invoke(target, new object[] { m });
+        }
+
+        [DllImport("user32.dll")] private static extern int GetMessagePos();
+
+        /// <summary>
+        /// Where on the screen a mouse message of the queue happened. Windows: the screen point it was
+        /// made at (GetMessagePos) - not its window's point turned into the screen's, which moves when
+        /// a drag scrolls the window under the finger (30 October: "the finger page drag makes the
+        /// page blinking").
+        /// </summary>
+        private static Point ScreenOf(ref Message m, Control c, Point client)
+        {
+            if (IsWindows)
+            {
+                try
+                {
+                    int v = GetMessagePos();
+                    return new Point((short)(v & 0xFFFF), (short)((v >> 16) & 0xFFFF));
+                }
+                catch { }
+            }
+            return ToScreen(m.HWnd, c, client);
         }
 
         private static Point ToScreen(IntPtr hwnd, Control c, Point client)
