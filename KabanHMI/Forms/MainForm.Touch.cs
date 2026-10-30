@@ -42,9 +42,10 @@ namespace Kaban.UI.Forms
             _btnInput.Paint += (s, e) =>
             {
                 Func<int, int> px = UiScale.Px;
+                // a white line drawing, as the Help and screen scale buttons' (30 October: not a filled picture)
                 int side = Math.Min(px(22), _btnInput.Height - px(2));
                 var pic = new Rectangle(px(6), (_btnInput.Height - side) / 2, side, side);
-                EmojiArt.Draw(e.Graphics, pic, TouchInput.On ? TouchInput.TouchEmoji : TouchInput.MouseEmoji, true, side);
+                MenuGlyphs.DrawInput(e.Graphics, pic, Color.White, TouchInput.On);
                 using (var caret = new SolidBrush(Color.White))
                     e.Graphics.FillPolygon(caret, new[]
                     {
@@ -92,13 +93,12 @@ namespace Kaban.UI.Forms
                 Margin = new Padding(-34, 2, 2, 2)
             });
             menu.Items.Add(new ToolStripSeparator());
-            int px = UiScale.Px(22);
-            var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), EmojiArt.Image(TouchInput.MouseEmoji, px))
+            var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), MenuGlyphs.Mouse())
             {
                 Name = "inputMouse", Checked = !TouchInput.On
             };
             mouse.Click += (s, e) => { if (TouchInput.On) TouchInput.Choose(false); };
-            var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), EmojiArt.Image(TouchInput.TouchEmoji, px))
+            var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), MenuGlyphs.Touch())
             {
                 Name = "inputTouch", Checked = TouchInput.On
             };

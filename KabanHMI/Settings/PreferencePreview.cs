@@ -318,7 +318,7 @@ namespace Kaban.UI.Settings
         {
             bool touch = _valueOf(ViewPreferences.InputMode) == "Touch";
             var pic = new Rectangle(r.Left, r.Top, S(40), S(40));
-            EmojiArt.Draw(g, pic, touch ? Kaban.UI.Helpers.TouchInput.TouchEmoji : Kaban.UI.Helpers.TouchInput.MouseEmoji, true, pic.Width);
+            MenuGlyphs.DrawInput(g, pic, Ink, touch);
             using (var bf = F(10f, FontStyle.Bold))
                 TextRenderer.DrawText(g, PrefTexts.ValueText(ViewPreferences.InputMode, touch ? "Touch" : "Mouse"), bf,
                                       new Rectangle(pic.Right + S(8), r.Top, r.Width - pic.Width - S(8), pic.Height), Ink,

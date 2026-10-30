@@ -94,6 +94,55 @@ namespace Kaban.UI.Controls
             });
         }
 
+        // 30 October: "change the mouse and touch mode emojis to transparent drawing instead of fulfilled
+        // image to match with the other dropdown menu emojis" - the top bar's button (white, as its Help and
+        // screen scale glyphs) and its menu's entries (black, as here).
+
+        /// <summary>A mouse: the screen used with a mouse.</summary>
+        public static Image Mouse() { return Draw(MouseLines); }
+
+        /// <summary>A hand pointing up: the screen used by touch.</summary>
+        public static Image Touch() { return Draw(TouchLines); }
+
+        /// <summary>The mouse or the hand in a colour of its own, into a rectangle (the top bar's button).</summary>
+        public static void DrawInput(Graphics g, RectangleF r, Color colour, bool touch)
+        {
+            Paint(g, r, colour, touch ? (Action<Graphics, Pen, Brush, float>)TouchLines : MouseLines);
+        }
+
+        private static void MouseLines(Graphics g, Pen pen, Brush ink, float k)
+        {
+            // the body: a rounded long shape; its two buttons parted down the middle, the wheel between them
+            using (var body = Rounded(6 * k, 2.5f * k, 12 * k, 19 * k, 6 * k)) g.DrawPath(pen, body);
+            g.DrawLine(pen, 6 * k, 10.5f * k, 18 * k, 10.5f * k);
+            g.DrawLine(pen, 12 * k, 2.5f * k, 12 * k, 5 * k);
+            g.FillEllipse(ink, 10.9f * k, 5.6f * k, 2.2f * k, 3.4f * k);
+        }
+
+        private static void TouchLines(Graphics g, Pen pen, Brush ink, float k)
+        {
+            using (var hand = new GraphicsPath())
+            {
+                // the pointing finger, up from the palm
+                hand.AddLine(9 * k, 13.5f * k, 9 * k, 5 * k);
+                hand.AddArc(9 * k, 3 * k, 4 * k, 4 * k, 180, 180);
+                hand.AddLine(13 * k, 5 * k, 13 * k, 11 * k);
+                // the knuckles of the curled fingers
+                hand.AddArc(13 * k, 9.6f * k, 3 * k, 3 * k, 180, 180);
+                hand.AddArc(16 * k, 10.4f * k, 3 * k, 3 * k, 180, 180);
+                // the palm down to the wrist
+                hand.AddLine(19 * k, 11.9f * k, 19 * k, 16 * k);
+                hand.AddBezier(19 * k, 16 * k, 19 * k, 19.6f * k, 17 * k, 21.5f * k, 14 * k, 21.5f * k);
+                hand.AddLine(14 * k, 21.5f * k, 12 * k, 21.5f * k);
+                hand.AddBezier(12 * k, 21.5f * k, 10 * k, 21.5f * k, 8.6f * k, 20.4f * k, 7.2f * k, 18.4f * k);
+                // the thumb, out to the left and back to the finger
+                hand.AddLine(7.2f * k, 18.4f * k, 4.7f * k, 14.6f * k);
+                hand.AddBezier(4.7f * k, 14.6f * k, 3.7f * k, 13 * k, 5.6f * k, 11.4f * k, 7 * k, 12.6f * k);
+                hand.AddLine(7 * k, 12.6f * k, 9 * k, 14.6f * k);
+                g.DrawPath(pen, hand);
+            }
+        }
+
         private static GraphicsPath Rounded(float x, float y, float w, float h, float r)
         {
             var p = new GraphicsPath();
@@ -110,16 +159,25 @@ namespace Kaban.UI.Controls
         {
             int size = Size;
             var bmp = new Bitmap(size, size);
-            using (var g = Graphics.FromImage(bmp))
+            using (var g = Graphics.FromImage(bmp)) Paint(g, new RectangleF(0, 0, size, size), Color.Black, draw);
+            return bmp;
+        }
+
+        /// <summary><paramref name="draw"/> on a 24-unit grid into a square of <paramref name="r"/>, centred, in a colour.</summary>
+        private static void Paint(Graphics g, RectangleF r, Color colour, Action<Graphics, Pen, Brush, float> draw)
+        {
+            var state = g.Save();
+            try
             {
                 g.SmoothingMode = SmoothingMode.AntiAlias;
                 g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                float k = size / 24f;
-                using (var pen = new Pen(Color.Black, Math.Max(1.6f, 2.1f * k)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
-                using (var ink = new SolidBrush(Color.Black))
+                float side = Math.Min(r.Width, r.Height), k = side / 24f;
+                g.TranslateTransform(r.X + (r.Width - side) / 2f, r.Y + (r.Height - side) / 2f);
+                using (var pen = new Pen(colour, Math.Max(1.6f, 2.1f * k)) { StartCap = LineCap.Round, EndCap = LineCap.Round, LineJoin = LineJoin.Round })
+                using (var ink = new SolidBrush(colour))
                     draw(g, pen, ink, k);
             }
-            return bmp;
+            finally { g.Restore(state); }
         }
     }
 }
