@@ -79,7 +79,21 @@ namespace Kaban.UI.Settings
         public Action<double> OfferRestart;
 
         // ---- for the tests ----------------------------------------------------------
-        public ComboBox ComboOf(string key) { ComboBox c; return _combos.TryGetValue(key, out c) ? c : null; }
+        public ComboBox ComboOf(string key) { ComboBox c; return _combos.TryGetValue(key, out c) && RowShown(key) ? c : null; }
+
+        /// <summary>
+        /// A preference's row on the page now: "Screen used with" only while the touch screen is switched on
+        /// (HMI Settings > Options) - shown or taken away as it is switched, no restart (30 October: "'Screen used
+        /// with' selection needs restart to appear, it should be activated by just the option selection").
+        /// </summary>
+        private static bool RowShown(string key) { return key != ViewPreferences.InputMode || HmiFeatures.TouchOn; }
+
+        /// <summary>The preference a row's field is for ("vp" + its key); "" for another field.</summary>
+        private static string KeyOf(Control field)
+        {
+            var n = field != null ? field.Name ?? "" : "";
+            return n.StartsWith("vp", StringComparison.Ordinal) ? n.Substring(2) : "";
+        }
         public DataGridView Users { get { return _grid; } }
         public ComboBox ReadFrom { get { return _readFrom; } }
         public Button SaveButton { get { return _save; } }
@@ -175,6 +189,19 @@ namespace Kaban.UI.Settings
             Fill();
             SecurityManager.UserChanged += OnUserChanged;
             Disposed += (s, e) => SecurityManager.UserChanged -= OnUserChanged;
+            // the touch screen switched on or off (HMI Settings > Options): "Screen used with" shown or taken away
+            EventHandler features = (s, e) =>
+            {
+                try
+                {
+                    if (IsDisposed) return;
+                    if (IsHandleCreated && InvokeRequired) BeginInvoke((Action)(() => { if (!IsDisposed) LayoutBody(!IsEveryone); }));
+                    else LayoutBody(!IsEveryone);
+                }
+                catch { }
+            };
+            HmiFeatures.Changed += features;
+            Disposed += (s, e) => HmiFeatures.Changed -= features;
         }
 
         // BUILT AGAIN IN ANOTHER LANGUAGE (SettingsScreen): on the user that was selected
@@ -313,8 +340,7 @@ namespace Kaban.UI.Settings
                 }
                 foreach (var p in ViewPreferences.All.Where(x => x.Group == group && !x.Hidden))
                 {
-                    // mouse or touch: only while the touch screen is switched on (HMI Settings > Options)
-                    if (p.Key == ViewPreferences.InputMode && !HmiFeatures.TouchOn) continue;
+                    // mouse or touch: on the page only while the touch screen is switched on (RowShown)
                     var combo = PrefCombo(p.Key);
                     Row(group, p.Key, PrefTexts.NameOf(p.Key), combo);
                     _combos[p.Key] = combo;
@@ -361,6 +387,9 @@ namespace Kaban.UI.Settings
             string section = null;
             foreach (var r in _rows)
             {
+                bool shown = RowShown(KeyOf(r[1]));
+                r[0].Visible = r[1].Visible = shown;
+                if (!shown) continue;
                 string sec = (string)r[2].Tag;
                 if (sec != section)
                 {
@@ -756,6 +785,7 @@ namespace Kaban.UI.Settings
             });
             foreach (var kv in _combos)
             {
+                if (!RowShown(kv.Key)) continue;
                 string own = everyone ? PanelOf(kv.Key) : ViewPreferences.UserValue(who, kv.Key);
                 // "Time" twice (the clock and the unit): the units say so
                 string name = PrefTexts.NameOf(kv.Key);

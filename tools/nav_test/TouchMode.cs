@@ -102,8 +102,12 @@ class TM {
         ViewPreferences.SetPanel(ViewPreferences.InputMode, "Touch"); Pump(50);
         Check("  the panel's preference touch: still a mouse while the feature is off", !ViewPreferences.TouchMode && !TouchInput.On && !TouchInput.IsPreparedForTouch(form));
         var offPage = new UsersPreferencesControl();
-        Check("  Users and Preferences: no 'Screen used with' row", offPage.ComboOf(ViewPreferences.InputMode) == null);
-        offPage.Dispose();
+        var ohost = new Form { ClientSize = new Size(1000, 760), StartPosition = FormStartPosition.Manual, Location = new Point(40, 40) };
+        offPage.Dock = DockStyle.Fill; ohost.Controls.Add(offPage); ohost.Show(); Pump(150);
+        Func<List<Control>> prefFields = () => All(offPage).Where(c => c.Name.StartsWith("vp") && c.Visible).ToList();
+        int fieldsOff = prefFields().Count;
+        Check("  Users and Preferences: no 'Screen used with' row", offPage.ComboOf(ViewPreferences.InputMode) == null &&
+              !prefFields().Any(c => c.Name == "vp" + ViewPreferences.InputMode));
         ViewPreferences.SetPanel(ViewPreferences.InputMode, null); Pump(50);
         var hmiTabs = (SettingsScreen)new HmiSettingsPage().GetControl();
         // (30 October: "rename 'Features' page name in 'HMI setting' to 'Options' to match to the one on machine settings
@@ -141,6 +145,14 @@ class TM {
               HmiFeatures.TouchOn && inputOff.Visible && !TouchInput.On && touchSw.Checked &&
               features.NowText(HmiFeatures.TouchScreen).StartsWith("Now: used with a mouse - the button"), features.NowText(HmiFeatures.TouchScreen));
         Check("  written in the log", Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("feature TouchScreen switched on")));
+        // (30 October: "'Screen used with' selection needs restart to appear, it should be activated by just the option selection")
+        Pump(150);
+        var usedWith = offPage.ComboOf(ViewPreferences.InputMode);
+        var fieldsOn = prefFields();
+        Check("  Users and Preferences, open meanwhile: 'Screen used with' there at once - no restart - in a row of its own",
+              usedWith != null && usedWith.Visible && fieldsOn.Count == fieldsOff + 1 &&
+              !fieldsOn.Any(c => c != usedWith && c.Bounds.IntersectsWith(usedWith.Bounds)), fieldsOff + " -> " + fieldsOn.Count);
+        ohost.Close(); ohost.Dispose();
         Shot(fhost, "features_touch_on");
         fhost.Close(); fhost.Dispose();
         HmiFeatures.Reload();
