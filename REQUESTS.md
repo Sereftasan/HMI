@@ -6,6 +6,12 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 30 October, late (the build error again; the AI helper on alarms; the switches everywhere):
+  - 5e22dc1 - The build's "Kaban.Core.dll ... being used by another process": the HMI still running from bin\Debug - the
+    FA2010 project now says so first, in plain words (close it, Task Manager: Kaban.Machines.FA2010.exe).
+  - a63c8b8 - The AI prompts: an alarm stays on the list until it is reset, even when its cause is gone (the PLC holds it).
+  - 3b0edf6 - Your choice: every tick box an on / off switch - CheckBoxHMI a switch row by default (the Options pages all
+    rows), every plain tick box of the program a switch.
 - 30 October, night (the answers; the Options page's looks; touch menus; the locked build):
   - bd3cff9 - Answer 1: Cutting > Right Front Vert. Clamping's position without L34 is the analogue sensor SN115 (wire 705,
     U19 FX5-8AD channel 6) - its wiring row and step-by-step help say so.

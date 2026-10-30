@@ -65,14 +65,15 @@
 - Optional parts (30 October): HMI Settings > Options (was Features; the machine's Options tab's key, Tab_Options) - the
   Industry 4 logging in the HMI and the touch screen, a row each with a switch, both off until switched on; what they do
   is in the manual (9b), not on the page. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
+- Tick boxes (30 October, the user's choice): on / off switches. CheckBoxHMI is a switch row by default (Look; narrower
+  than 120 px: the switch alone, its caption beside it); every plain CheckBox is drawn as a switch (TouchInput.Sizes,
+  PaintSwitchBox). Lay a list of options out as rows: as wide as the column, 38 - 46 high, touching.
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
   right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 26 now), never between.
 
 ## Open questions (answer here or in a message)
-1. **Machine Parameters > Options shows four looks side by side** (CheckBoxHMI.Look): switch rows (Cooling ... Special
-   Reverse Machine), tiles (Cutting Right Top Clamping Long ... Cross Roller), a switch beside its name (L33 - L35) and
-   the tick boxes (Mullion Notching). Which one for the whole page (and for the other pages' tick boxes)?
+(none now)
 
 Answered (30 October): the back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are at the end of the BACK
 movement - as the program has them. Milling > Front Clamping has its encoder (D20) only with L33 (the older machines);
@@ -85,4 +86,6 @@ valve a 5/3 open centre (CylinderUnitHMI.OptionValveType / OptionValveConditions
   every scan) and MetNow.
 - "Unable to copy ... Kaban.Machines.H500.exe ... locked by: Kaban.Machine.FA2010": an instance of the program is still
   running - close it (Task Manager: Kaban.Machines.FA2010.exe) and build again. A Restart of an instance Visual Studio
-  debugs starts the new one outside the debugger; it says so when it starts.
+  debugs starts the new one outside the debugger; it says so when it starts. The FA2010 project checks first now
+  (KabanHmiNotRunning) and says so in plain words.
+- The AI prompts say how an alarm leaves the list (HmiAiPrompt.AlarmListRule): held by the PLC until reset.

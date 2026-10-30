@@ -276,8 +276,8 @@ Chk_BakOnlyThis;KabanHMI\Settings\PlcBackupForms.cs;396;Text;_onlyThis.Text = st
 Chk_BakOnlyThis;KabanHMI\Settings\PlcBackupSelection.cs;376;Text;_onlyThis.Text = string.Format(T("Chk_BakOnlyThis", "Only {0}'s backups"), (_machine + " " + _plc).Trim());
 Chk_CmpOnlyDiff;KabanHMI\Settings\SettingsCompareForm.cs;91;Text;_onlyDiff.Text = T("Chk_CmpOnlyDiff", "Only the differences");
 Chk_IoOnlyOn;KabanHMI\Screens\IoMonitorPage.cs;59;Text;_onlyOn.Text = T("Chk_IoOnlyOn", "Only the ones on");
-Chk_Off;KabanHMI\Controls\CheckBoxHMI.cs;341;Text;string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
-Chk_On;KabanHMI\Controls\CheckBoxHMI.cs;341;Text;string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
+Chk_Off;KabanHMI\Controls\CheckBoxHMI.cs;356;Text;string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
+Chk_On;KabanHMI\Controls\CheckBoxHMI.cs;356;Text;string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
 Code_AxisAlarm;Kaban.Core\Helpers\AxisCodeHelp.cs;147;Text;case AxisCodeKind.AxisError: return LanguageManager.GetString("Code_AxisAlarm", "Axis alarm");
 Code_AxisWarning;Kaban.Core\Helpers\AxisCodeHelp.cs;148;Text;case AxisCodeKind.AxisWarning: return LanguageManager.GetString("Code_AxisWarning", "Axis warning");
 Code_InverterFault;Kaban.Core\Helpers\AxisCodeHelp.cs;149;Text;case AxisCodeKind.InverterFault: return LanguageManager.GetString("Code_InverterFault", "Inverter fault");
@@ -1251,13 +1251,13 @@ Mot_Pick;KabanHMI\Controls\AxisPickBar.cs;252;Text;MotionPick.Heading = T("Mot_P
 Mot_PickNone;KabanHMI\Controls\AxisPickBar.cs;183;Text;AllText = T("Mot_PickNone", "None"),
 Mot_PickNone;KabanHMI\Controls\AxisPickBar.cs;253;Text;MotionPick.AllText = T("Mot_PickNone", "None");
 Msg_AddressRequired;KabanHMI\Forms\PlcRowEditorForm.cs;291;Text;problem = LanguageManager.GetString("Msg_AddressRequired", "An address is required.");
-Msg_AiAsked;KabanHMI\Helpers\AlarmAiPrompt.cs;993;Text;: LanguageManager.GetString("Msg_AiAsked", "{0} is opening: paste the prompt into the chat (Ctrl+V) and send it."), chat.Name);
-Msg_AiAskedFile;KabanHMI\Helpers\AlarmAiPrompt.cs;992;Text;? LanguageManager.GetString("Msg_AiAskedFile", "{0} is opening: paste the prompt file into the chat (Ctrl+V) and send it.")
-Msg_AiAskFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;994;Text;return string.Format(LanguageManager.GetString("Msg_AiAskFailed",
-Msg_AiPasting;KabanHMI\Helpers\AlarmAiPrompt.cs;983;Text;return string.Format(LanguageManager.GetString("Msg_AiPasting",
-Msg_AiPromptFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;915;Text;Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
-Msg_AiPromptFile;KabanHMI\Helpers\AlarmAiPrompt.cs;958;Text;? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
-Msg_AiPromptText;KabanHMI\Helpers\AlarmAiPrompt.cs;959;Text;: LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
+Msg_AiAsked;KabanHMI\Helpers\AlarmAiPrompt.cs;995;Text;: LanguageManager.GetString("Msg_AiAsked", "{0} is opening: paste the prompt into the chat (Ctrl+V) and send it."), chat.Name);
+Msg_AiAskedFile;KabanHMI\Helpers\AlarmAiPrompt.cs;994;Text;? LanguageManager.GetString("Msg_AiAskedFile", "{0} is opening: paste the prompt file into the chat (Ctrl+V) and send it.")
+Msg_AiAskFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;996;Text;return string.Format(LanguageManager.GetString("Msg_AiAskFailed",
+Msg_AiPasting;KabanHMI\Helpers\AlarmAiPrompt.cs;985;Text;return string.Format(LanguageManager.GetString("Msg_AiPasting",
+Msg_AiPromptFailed;KabanHMI\Helpers\AlarmAiPrompt.cs;917;Text;Tell(owner, LanguageManager.GetString("Msg_AiPromptFailed", "The prompt could not be put on the clipboard - try again."), true);
+Msg_AiPromptFile;KabanHMI\Helpers\AlarmAiPrompt.cs;960;Text;? LanguageManager.GetString("Msg_AiPromptFile", "The AI prompt is on the clipboard as a file: paste it into an AI chat (Ctrl+V) and send it.")
+Msg_AiPromptText;KabanHMI\Helpers\AlarmAiPrompt.cs;961;Text;: LanguageManager.GetString("Msg_AiPromptText", "The AI prompt is on the clipboard: paste it into an AI chat (Ctrl+V) and send it.");
 Msg_BakAsking;Kaban.Core\Helpers\PlcBackup.cs;369;Text;!progress(i++, Fx5.Count, string.Format(LanguageManager.GetString("Msg_BakAsking", "Asking the CPU how many it has: {0}..."), title)))
 Msg_BakBitsToBits;Kaban.Core\Helpers\PlcBackup.cs;1173;Text;error = area.Bits ? LanguageManager.GetString("Msg_BakBitsToBits", "Bits are written to bit devices (M, L, B, F, S).")
 Msg_BakCamBusy;Kaban.Core\Helpers\PlcBackup.cs;951;Text;if (!CamIdle(link, module)) return LanguageManager.GetString("Msg_BakCamBusy", "the module's cam data operation did not answer");
@@ -2252,7 +2252,7 @@ Sys_Description;Kaban.Machines.SB3012\Screens\AlarmScreen.cs;101;Heading;dgvAlar
 Sys_Description;Kaban.Machines.SB3015\Screens\AlarmScreen.cs;101;Heading;dgvAlarms.Columns["ColDesc"].HeaderText = LanguageManager.GetString("Sys_Description", "Description");
 Sys_Disabled;KabanHMI\Controls\BaseNumericHMI.cs;431;Text;string disabled = LanguageManager.GetString("Sys_Disabled", "Action Disabled.");
 Sys_Disabled;KabanHMI\Controls\ButtonHMI.cs;863;Text;sb.Append(LanguageManager.GetString("Sys_Disabled", "Action Disabled."));
-Sys_Disabled;KabanHMI\Controls\CheckBoxHMI.cs;487;Text;var sb = new System.Text.StringBuilder(LanguageManager.GetString("Sys_Disabled", "Action Disabled."));
+Sys_Disabled;KabanHMI\Controls\CheckBoxHMI.cs;502;Text;var sb = new System.Text.StringBuilder(LanguageManager.GetString("Sys_Disabled", "Action Disabled."));
 Sys_Disabled;KabanHMI\Controls\NumericInputHMI.cs;326;Text;string disabled = LanguageManager.GetString("Sys_Disabled", "Action Disabled.");
 Sys_Disabled;KabanHMI\Forms\MainForm.cs;105;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."),
 Sys_Disabled;KabanHMI\Forms\MainForm.SidePanel.cs;393;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."), MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2362,8 +2362,8 @@ Tip_AlarmSetLinks;KabanHMI\Settings\AlarmSettingsControl.cs;78;Tooltip;add(UiSty
 Tip_AlarmSetOpen;KabanHMI\Settings\AlarmSettingsControl.cs;80;Tooltip;_btnOpen = UiStyle.ToolButton("\uD83D\uDCC2", LanguageManager.GetString("Tip_AlarmSetOpen", "Open a helper document of the selected alarm"),
 Tip_AlarmSetRevert;KabanHMI\Settings\AlarmSettingsControl.cs;77;Tooltip;add(UiStyle.ToolButton("\u21BA", LanguageManager.GetString("Tip_AlarmSetRevert", "Throw the changes away and read the saved settings again"), tips, (s, e) => LoadRows()));
 Tip_AlarmSetSave;KabanHMI\Settings\AlarmSettingsControl.cs;74;Tooltip;_btnSave = UiStyle.ToolButton("\uD83D\uDCBE", LanguageManager.GetString("Tip_AlarmSetSave", "Save the alarm settings"), tips, (s, e) => Save());
-Tip_AlertBit;KabanHMI\Controls\CheckBoxHMI.cs;454;Tooltip;tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
-Tip_AlertOn;KabanHMI\Controls\CheckBoxHMI.cs;456;Tooltip;(_alert ? "  (" + LanguageManager.GetString("Tip_AlertOn", "now") + ")" : "");
+Tip_AlertBit;KabanHMI\Controls\CheckBoxHMI.cs;469;Tooltip;tip += "\n" + LanguageManager.GetString("Tip_AlertBit", "Asked for by") + ": " +
+Tip_AlertOn;KabanHMI\Controls\CheckBoxHMI.cs;471;Tooltip;(_alert ? "  (" + LanguageManager.GetString("Tip_AlertOn", "now") + ")" : "");
 Tip_Allowed;KabanHMI\Controls\NumericInputHMI.cs;342;Tooltip;if (!hasMin && !hasMax) return IsAngle ? LanguageManager.GetString("Tip_Allowed", "Allowed") + ": 0 - 360" : "";
 Tip_Allowed;KabanHMI\Controls\NumericInputHMI.cs;352;Tooltip;return LanguageManager.GetString("Tip_Allowed", "Allowed") + ": " +
 Tip_AxPositions;KabanHMI\Controls\AxisSettingHMI.cs;1173;Tooltip;return LanguageManager.GetString("Tip_AxPositions", "The positions shown side by side - a click: tick the ones to show (the Position, the servo encoder's value, the load-side en...
