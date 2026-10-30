@@ -56,6 +56,20 @@ namespace Kaban.UI.Helpers
             "Admin (everything: the users, the PLC connections, the PLC Monitor, writing a backup into a PLC, the simple motion modules' parameters). " +
             "What a level may not do is not shown, or shown greyed - and its tooltip says why.";
 
+        /// <summary>
+        /// HOW AN ALARM LEAVES THE LIST, as both briefings tell it (30 October: the AI helper asked "is the M833 Emergency
+        /// Stop alarm active now, or only in the history?" - "AI helper thinks the alarm resets automatically when the alarm
+        /// condition doesn't met anymore, you need to reset alarm first to not see it on the alarm list anymore even when the
+        /// cause is gone").
+        /// </summary>
+        public const string AlarmListRule =
+            "An alarm is on the HMI's alarm list while its alarm bit in the PLC is ON, and the PLC HOLDS its alarm bits until the alarms are RESET " +
+            "(the Reset alarms button on the Alarms page, or the machine's own reset button) - an alarm does NOT go by itself when its cause is gone " +
+            "(an emergency stop released, a door closed, a sensor back). So an alarm on the list is active for the HMI, but its cause may already be gone: " +
+            "after a reset, one that comes straight back still has its cause, one that stays away had a cause that has gone. Acknowledge (the tick) only " +
+            "takes the lines off the list: one whose bit is still ON comes back at the next scan. The alarm history (Alarms page, History) keeps every alarm " +
+            "that came, with its time - an alarm only there is not on the list now.";
+
         /// <summary>How many controls of the page on show are described, at most.</summary>
         public const int OnScreenMax = 150;
 
@@ -327,10 +341,11 @@ namespace Kaban.UI.Helpers
             // ---- now ----------------------------------------------------------------------------
             var alarms = Safe(() => AlarmManager.ActiveAlarms.Where(a => a != null).ToList(), new List<AlarmItem>());
             sb.AppendLine("## Now");
+            sb.AppendLine("- " + AlarmListRule);
             if (alarms.Count == 0) sb.AppendLine("- No alarm on the list.");
             else
             {
-                sb.AppendLine("- Alarms on the list (" + alarms.Count + "):");
+                sb.AppendLine("- Alarms on the list now (" + alarms.Count + " - each one active now, held until reset; you need not ask me whether one is):");
                 foreach (var a in alarms.Take(30))
                 {
                     var dev = !string.IsNullOrWhiteSpace(a.Device) ? a.Device : a.Address ?? "";

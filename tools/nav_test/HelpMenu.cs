@@ -135,6 +135,7 @@ class HM {
         Check("  who is signed in, the page on screen and the side page beside it",
               p.Contains("Signed in: admin, level Admin") && p.Contains("The page on my screen: ") && p.Contains("Manual Movement") && p.Contains("Open beside it (the side panel): "));
         Check("  the alarms now", p.Contains("## Now") && (p.Contains("No alarm on the list.") || p.Contains("Alarms on the list")));
+        Check("  how an alarm leaves the list: held until reset, not gone with its cause", p.Contains("- " + HmiAiPrompt.AlarmListRule));
         string manual = html < 0 ? "" : p.Substring(html, Math.Max(0, ask - html));
         // 14 October: a briefing an AI talks from - the manual's text, not its markup
         Check("  the manual whole as TEXT, with this panel's machines - no markup, script, or local path in it",

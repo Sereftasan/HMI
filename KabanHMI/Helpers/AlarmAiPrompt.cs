@@ -208,7 +208,7 @@ namespace Kaban.UI.Helpers
 
             // ---- how its alarms are raised --------------------------------------------
             sb.AppendLine("## How the alarms are raised");
-            sb.AppendLine("- The PLC program raises most alarms: it sets an alarm bit and the HMI lists the alarm while the bit is ON. The PLC's alarm reset clears them.");
+            sb.AppendLine("- The PLC program raises most alarms: it sets an alarm bit. " + HmiAiPrompt.AlarmListRule);
             var gen = AlarmGeneration.For(moduleId);
             sb.AppendLine("- The HMI also watches each cylinder's movements itself" + (gen.Enabled ? "" : " (switched off for this machine now)") +
                           ": when a movement's valve output comes ON, its end sensors must confirm it within " + Seconds(gen.DelaySeconds) +
@@ -238,7 +238,9 @@ namespace Kaban.UI.Helpers
                 sb.AppendLine("- Severity: " + item.Severity);
                 sb.AppendLine("- Came at: " + item.TriggerTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) +
                               " (the prompt was made at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + ")");
-                sb.AppendLine("- Still active: " + (AlarmManager.IsOnList(item) ? "yes" : "no (acknowledged or gone)"));
+                sb.AppendLine("- On the alarm list now: " + (AlarmManager.IsOnList(item)
+                    ? "yes - active (held until the alarms are reset: its cause may be gone already - a reset tells: back at once, the cause is still there)"
+                    : "no - reset, acknowledged or gone (in the history only)"));
             }
             string device = item != null && !string.IsNullOrWhiteSpace(item.Device) ? item.Device.Trim() : address;
             if (device.Length > 0)

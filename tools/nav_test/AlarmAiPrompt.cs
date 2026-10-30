@@ -122,7 +122,11 @@ class AAP {
         Check("  how the alarms are raised (the PLC's, the HMI's own with its delay and the SET, the sub-codes)",
               p.Contains("## How the alarms are raised") && p.Contains("within 5 s") && p.Contains("SETs that bit in the PLC") && p.Contains(".2 the target sensor did not come ON"));
         Check("the alarm: its text, code, device, time", p.Contains("\"Cutting Right Front Clamp Releasing Alarm\"") && p.Contains("PLC device of the alarm: M852") &&
-              p.Contains("Came at: ") && p.Contains("Still active: yes"));
+              p.Contains("Came at: ") && p.Contains("On the alarm list now: yes - active (held until the alarms are reset"));
+        // (30 October: "AI helper thinks the alarm resets automatically when the alarm condition doesn't met anymore, you need
+        // to reset alarm first to not see it on the alarm list anymore even when the cause is gone")
+        Check("  an alarm held by the PLC until it is reset - not gone by itself with its cause", p.Contains(HmiAiPrompt.AlarmListRule) &&
+              HmiAiPrompt.AlarmListRule.Contains("HOLDS its alarm bits until the alarms are RESET") && HmiAiPrompt.AlarmListRule.Contains("Reset alarms button"));
         Check("the unit: its name, valve, feedback, the movement, its output, its sensor, its position",
               p.Contains("Name on the HMI: Cutting Right Front") && p.Contains("closed center (3WayClosedCenter)") && p.Contains("Incremental encoder + reference sensor") &&
               p.Contains("The movement that failed: \"Back\"") && p.Contains("Its valve output: Y55") && p.Contains("Position reading: D16"));
