@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Kaban.Core.Helpers;
+using Kaban.UI.Controls;
 
 namespace Kaban.UI.Helpers
 {
@@ -50,6 +51,7 @@ namespace Kaban.UI.Helpers
             if (_installed) return;
             _installed = true;
             _was = On;
+            UiStyle.HoverTipsOff = _was;
             ViewPreferences.Changed += (s, e) =>
             {
                 bool now = On;
@@ -66,6 +68,7 @@ namespace Kaban.UI.Helpers
         public static void RaiseModeChanged()
         {
             _was = On;
+            UiStyle.HoverTipsOff = _was;
             ApplyNativeToAll();
             ApplySizesToAll();
             ApplyGesturesToAll();

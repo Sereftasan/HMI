@@ -1524,7 +1524,26 @@ namespace Kaban.UI.Controls
         public static int TooltipDelayMs { get { return Kaban.Core.Helpers.ViewPreferences.TooltipDelayMs; } }
 
         private static readonly List<WeakReference> _styledTips = new List<WeakReference>();
-        private static bool _tipsHooked;
+        private static bool _tipsHooked, _hoverTipsOff;
+
+        /// <summary>
+        /// The tooltips that come by resting the pointer on a control: off in touch mode (30 October: "Is there
+        /// any solution for the tooltips function for the touch mode") - a finger rests nowhere, and the pointer
+        /// Windows leaves where a finger lifted brought a tip up a second after each tap, to stay there. Held
+        /// still on a control instead, a finger shows its tip (TouchInput). The texts stay (TipOf reads them).
+        /// </summary>
+        public static bool HoverTipsOff
+        {
+            get { return _hoverTipsOff; }
+            set
+            {
+                if (_hoverTipsOff == value) return;
+                _hoverTipsOff = value;
+                List<ToolTip> live;
+                lock (_styledTips) live = _styledTips.Select(w => w.Target as ToolTip).Where(x => x != null).ToList();
+                foreach (var t in live) { try { t.Active = !value; } catch { } }
+            }
+        }
 
         /// <summary>The delay on a tooltip (AutomaticDelay first: setting it resets the others).</summary>
         private static void ApplyDelay(ToolTip t)
@@ -1554,6 +1573,7 @@ namespace Kaban.UI.Controls
                 }
             }
             ApplyDelay(t);
+            if (_hoverTipsOff) t.Active = false;
             // SHOWN WHETHER OR NOT ITS WINDOW IS ACTIVE. With ShowAlways off a tip
             // appears only while the window the tooltip belongs to is the active
             // one - and the program's ONE shared tooltip belongs to whichever
@@ -1782,7 +1802,7 @@ namespace Kaban.UI.Controls
                     {
                         timer.Stop();
                         var c = over;
-                        if (c == null || shown || c.Enabled || c.IsDisposed || host.IsDisposed || !host.IsHandleCreated || !c.Visible) return;
+                        if (c == null || shown || c.Enabled || c.IsDisposed || host.IsDisposed || !host.IsHandleCreated || !c.Visible || _hoverTipsOff) return;
                         OwnTip own;
                         string text = _ownTips.TryGetValue(c, out own) ? ShownTip(c, own) : "";
                         if (string.IsNullOrEmpty(text)) return;
@@ -1849,7 +1869,7 @@ namespace Kaban.UI.Controls
                     timer.Tick += (s2, e2) =>
                     {
                         timer.Stop();
-                        if (!inside || shown || c.IsDisposed || !c.IsHandleCreated || !c.Visible) return;
+                        if (!inside || shown || c.IsDisposed || !c.IsHandleCreated || !c.Visible || _hoverTipsOff) return;
                         string text;
                         try { text = build() ?? ""; } catch { text = ""; }
                         if (text.Length == 0) return;

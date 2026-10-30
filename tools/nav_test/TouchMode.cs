@@ -352,6 +352,21 @@ class TM {
         Check("held on a button without a menu: nothing opens - let go, it is a click as always", TouchInput.LastHeld == rowGrid && !plainUpTaken && plainClicks == 1, plainClicks + " clicks");
         Down(jog, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(jog, new Point(20, 20));
         Check("held on a jog button: the press is the work - never a menu", TouchInput.LastHeld == rowGrid);
+        // (30 October: "Is there any solution for the tooltips function for the touch mode")
+        var tipped = new Button { Text = "Start", Location = new Point(700, 8), Size = new Size(120, 44) };
+        int tippedClicks = 0; tipped.Click += (s, e) => tippedClicks++;
+        gf.Controls.Add(tipped); Pump(50);
+        UiStyle.SetTip(UiStyle.Tips(), tipped, "Starts the cycle from the first profile");
+        Check("touch mode: no tooltip comes by resting the pointer (a finger rests nowhere)", UiStyle.HoverTipsOff);
+        Down(tipped, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200);
+        bool tipUpTaken = Up(tipped, new Point(20, 20)); Pump(50);
+        Check("held on a button with a tooltip (no menu): its tooltip beside the finger - lifting clicks nothing",
+              TouchInput.LastTip == "Starts the cycle from the first profile" && Toast.LastText == TouchInput.LastTip && tipUpTaken && tippedClicks == 0,
+              TouchInput.LastTip + " / " + tippedClicks + " clicks");
+        Tap(tipped, new Point(20, 20)); Pump(50);
+        Check("  a tap on it: a click, as always", tippedClicks == 1, tippedClicks + " clicks");
+        Down(jog, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(jog, new Point(20, 20));
+        Check("  a jog button held: no tooltip either - held is held", TouchInput.LastTip == "Starts the cycle from the first profile");
         Down(own, new Point(20, 20)); Pump(TouchInput.LongPressMs + 200); Up(own, new Point(20, 20)); Pump(50);
         Check("held on a control whose right-click makes its own menu (a side bar button, a motion value): its right-click given", TouchInput.LastHeld == own && ownRight == 1, ownRight + "");
         Down(rowGrid, press); MoveTo(rowGrid, new Point(press.X, press.Y + 60)); Pump(TouchInput.LongPressMs + 200); Up(rowGrid, new Point(press.X, press.Y + 60));
