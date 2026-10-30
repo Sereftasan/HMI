@@ -88,6 +88,14 @@ class RO {
         Check("  through the shell: it inherits no handle of the old one", p.UseShellExecute);
         Check("  told to wait for this process, and who is signed in",
               p.Arguments.StartsWith("--await-exit " + Process.GetCurrentProcess().Id) && p.Arguments.Contains("--handoff"), p.Arguments);
+        // (30 October: a build could not replace H500 / H800's exes - "locked by: Kaban.Machine.FA2010")
+        Check("  not debugged: nothing about a debugger", !p.Arguments.Contains(Kaban.UI.AppBootstrap.FromDebuggerSwitch));
+        MainForm.DebuggerAttached = () => true;
+        string debugged = (string)typeof(MainForm).GetMethod("RestartArguments", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(form, new object[] { null });
+        MainForm.DebuggerAttached = () => false;
+        Check("  restarted while Visual Studio debugs it: the new one told it runs outside the debugger",
+              debugged.Contains(Kaban.UI.AppBootstrap.FromDebuggerSwitch) &&
+              Kaban.UI.AppBootstrap.RestartedFromDebugger(debugged.Split(' ')) && !Kaban.UI.AppBootstrap.RestartedFromDebugger(p.Arguments.Split(' ')), debugged);
         Check("  started AFTER every station was closed ('all 4 station(s) closed' already in the log)",
               logAtStart.Contains("[PLC DIAG] all 4 station(s) closed."));
         if (scripted)

@@ -19,6 +19,22 @@ namespace Kaban.UI
         public const string AwaitExitSwitch = "--await-exit";
 
         /// <summary>
+        /// On a restart's command line when the program restarted was being debugged (30 October: "Unable to copy
+        /// file ... Kaban.Machines.H500.exe ... The file is locked by: Kaban.Machine.FA2010"): the new instance runs
+        /// outside Visual Studio, which stops only the one it started - left open, it holds the exes and a build cannot
+        /// replace them. The new instance says so (MainForm).
+        /// </summary>
+        public const string FromDebuggerSwitch = "--restarted-from-debugger";
+
+        /// <summary>Whether this instance is a restart of one Visual Studio was debugging.</summary>
+        public static bool RestartedFromDebugger(string[] args)
+        {
+            if (args == null) return false;
+            foreach (var a in args) if (string.Equals(a, FromDebuggerSwitch, StringComparison.OrdinalIgnoreCase)) return true;
+            return false;
+        }
+
+        /// <summary>
         /// When this process was started by a RESTART, waits for the OLD instance to
         /// actually exit before returning. Call it FIRST in Main - before any driver
         /// is opened.

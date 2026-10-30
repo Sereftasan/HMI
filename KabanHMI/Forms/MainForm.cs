@@ -602,6 +602,7 @@ namespace Kaban.UI.Forms
             {
                 try { Kaban.UI.Helpers.AlarmHelpLinks.StartDiscovery(); }   // idle-time steps: the login is ready at once
                 catch (Exception ex) { AuditLogger.Log("help discovery failed: " + ex.Message); }
+                NoteRestartedFromDebugger();
             }));
             Kaban.UI.Settings.LogSettingsStore.Apply();   // persisted log options
             Kaban.Core.Helpers.HmiLayout.Load();
@@ -1415,8 +1416,28 @@ namespace Kaban.UI.Forms
                 try { extra = (extra + " " + Helpers.LoginHandoff.Switch + " " + Helpers.LoginHandoff.Write(SecurityManager.CurrentUser)).Trim(); }
                 catch (Exception ex) { AuditLogger.Log("[RESTART] sign-in hand-over not written (" + ex.Message + "): sign in again after the restart."); }
             }
+            // restarted while Visual Studio debugs this one: the new one is told (it runs outside the debugger)
+            if (DebuggerAttached() && extra.IndexOf(Kaban.UI.AppBootstrap.FromDebuggerSwitch, StringComparison.OrdinalIgnoreCase) < 0)
+                extra = (extra + " " + Kaban.UI.AppBootstrap.FromDebuggerSwitch).Trim();
             return Kaban.UI.AppBootstrap.AwaitExitSwitch + " " + System.Diagnostics.Process.GetCurrentProcess().Id +
                    (extra.Length == 0 ? "" : " " + extra);
+        }
+
+        /// <summary>Whether Visual Studio debugs this instance (tests answer it themselves).</summary>
+        public static Func<bool> DebuggerAttached = () => System.Diagnostics.Debugger.IsAttached;
+
+        /// <summary>
+        /// A restart of an instance Visual Studio was debugging: this one runs outside it - Stop Debugging does not
+        /// end it, and while it runs a build cannot replace the exes it holds. Said once, on the screen and in the log.
+        /// </summary>
+        private void NoteRestartedFromDebugger()
+        {
+            if (!Kaban.UI.AppBootstrap.RestartedFromDebugger(Environment.GetCommandLineArgs())) return;
+            string text = LanguageManager.GetString("Msg_RestartedOutsideDebugger",
+                "Started again OUTSIDE Visual Studio (a restart of the program it was debugging): Stop Debugging does not close " +
+                "this window - close it before you build, or the build cannot replace the files it holds.");
+            AuditLogger.Log("[RESTART] restarted from a program being debugged: this instance runs outside the debugger.");
+            try { Kaban.UI.Controls.Toast.Show(this, text, true); } catch { }
         }
 
         /// <summary>
