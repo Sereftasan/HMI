@@ -357,6 +357,10 @@ MEASURE = [
                      '(wires 62/63, sheet 11.1 of the older drawing) - Milling / Cutting Front Clamping encoder'),
     (('Y123', 'Y124'), 'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), '
                        'while Y120 selects the left unit'),
+    # (30 October, the answer with the drawing's sheet 34: the Cutting Right Front Vert. Clamping's position - the old
+    # Encoders page's "Cutting Front Right Vertical", D7 - on a machine without L34 is the analogue sensor SN115)
+    (('Y105', 'Y106'), 'only without the option Cutting Right Front Vertical without Encoder (L34): analogue sensor SN115 '
+                       '(SDAT-MHS-M100, 4-20 mA), wire 705 to U19 FX5-8AD channel 6 (sheet 34.5) - in the drawing\'s Mullion Milling box'),
     (('Y131', 'Y132'), 'analogue sensor SN110 (SDAT-MHS-M100, 4-20 mA), wire 700 to U19 FX5-8AD channel 1 (sheet 34.4)'),
     (('Y133', 'Y134'), 'analogue sensor SN111 (SDAT-MHS-M100, 4-20 mA), wire 701 to U19 FX5-8AD channel 2 (sheet 34.5)'),
     (('Y135', 'Y136'), 'analogue sensor SN112 (SDAT-MHS-M50, 4-20 mA), wire 702 to U19 FX5-8AD channel 3 (sheet 34.7)'),
@@ -409,6 +413,10 @@ TRANSLATED = {
         'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), while Y120 selects the left unit':
             'sol ünitenin yükseklik enkoderi (kablolar 104/105), K78 rölesi üzerinden X12/X13 girişlerine (kablolar 82/83, sayfa 11.6); '
             'Y120 sol üniteyi seçtiği sürece',
+        'only without the option Cutting Right Front Vertical without Encoder (L34): analogue sensor SN115 '
+        '(SDAT-MHS-M100, 4-20 mA), wire 705 to U19 FX5-8AD channel 6 (sheet 34.5) - in the drawing\'s Mullion Milling box':
+            'yalnız Kesim Sağ Ön Dikey Enkodersiz seçeneği olmadan (L34): analog sensör SN115 '
+            '(SDAT-MHS-M100, 4-20 mA), kablo 705 ile U19 FX5-8AD kanal 6 (sayfa 34.5) - çizimde Mullion Milling kutusunda',
         'analogue sensor SN110 (SDAT-MHS-M100, 4-20 mA), wire 700 to U19 FX5-8AD channel 1 (sheet 34.4)':
             'analog sensör SN110 (SDAT-MHS-M100, 4-20 mA), kablo 700 ile U19 FX5-8AD kanal 1 (sayfa 34.4)',
         'analogue sensor SN111 (SDAT-MHS-M100, 4-20 mA), wire 701 to U19 FX5-8AD channel 2 (sheet 34.5)':
