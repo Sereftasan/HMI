@@ -2255,6 +2255,17 @@ namespace Kaban.UI.Controls
             // The text colour must not change on hover either - a border is the
             // whole signal, and a colour shift on top of it says it twice.
             if (e.Item.Enabled) e.TextColor = Color.FromArgb(35, 40, 48);
+            // IN THE MIDDLE OF ITS ROW (30 October: "The label text is not vertically centered so doesn't look very
+            // nice in touch mode"): a menu lays an entry's text out at the top of the room its padding leaves,
+            // so on an entry made a finger's height (TouchInput.SizeMenu) the words sat above its picture.
+            var item = e.Item;
+            if (item != null && item.IsOnDropDown && (item is ToolStripMenuItem || item is ToolStripLabel))
+            {
+                var r = e.TextRectangle;
+                int y = Math.Max(0, (item.Height - r.Height) / 2);
+                if (r.Height > 0 && r.Y != y) e.TextRectangle = new Rectangle(r.X, y, r.Width, r.Height);
+                e.TextFormat = (e.TextFormat & ~(TextFormatFlags.Top | TextFormatFlags.Bottom)) | TextFormatFlags.VerticalCenter;
+            }
             base.OnRenderItemText(e);
         }
     }

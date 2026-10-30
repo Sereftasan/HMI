@@ -18,6 +18,12 @@ using Kaban.UI.Settings;
 // 1920x1080 resolution btw." - the plan: press-and-hold off for jog; menus, rows, check boxes and toolbar
 // buttons larger; a long press opens the menu, rows get a "⋮", a tap on a greyed entry shows its reason;
 // a keyboard on the screen (the number pad for number cells); a finger drag scrolls, a tap selects.
+// The menu's renderer, the text's place recorded as it is drawn.
+class TextProbe : HmiMenuRenderer {
+    public readonly Dictionary<string, Rectangle> Rects = new Dictionary<string, Rectangle>();
+    protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e) { base.OnRenderItemText(e); Rects[e.Item.Name] = e.TextRectangle; }
+}
+
 class TM {
     static int fail = 0;
     static void Check(string w, bool ok, string d = "") {
@@ -276,7 +282,14 @@ class TM {
               "tab padding " + tabPadY);
         Mode("Touch"); Pump(100);
         Shot(sz, "sizes_touch");
+        var probe = new TextProbe(); cm.Renderer = probe;
         UiStyle.ShowPopup(cm, sz, new Point(600, 60)); Pump(100);
+        // (30 October: "The label text is not vertically centered so doesn't look very nice in touch mode")
+        var copyItem = Item(cm, "cmCopy");
+        Rectangle copyText;
+        Check("touch: an entry's words in the middle of its (taller) row", probe.Rects.TryGetValue("cmCopy", out copyText) &&
+              Math.Abs(copyText.Top + copyText.Height / 2.0 - copyItem.Height / 2.0) <= 1,
+              probe.Rects.ContainsKey("cmCopy") ? copyText + " in " + copyItem.Height : "not drawn");
         Check("touch: a menu's entries a finger's height - greyed ones too", TouchInput.EntryHeight(Item(cm, "cmCopy")) >= TouchInput.MenuEntryHeight &&
               TouchInput.EntryHeight(Item(cm, "cmPaste")) >= TouchInput.MenuEntryHeight,
               TouchInput.EntryHeight(Item(cm, "cmCopy")) + " / " + TouchInput.EntryHeight(Item(cm, "cmPaste")));
