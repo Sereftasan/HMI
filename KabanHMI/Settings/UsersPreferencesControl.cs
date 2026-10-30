@@ -313,7 +313,7 @@ namespace Kaban.UI.Settings
                 }
                 foreach (var p in ViewPreferences.All.Where(x => x.Group == group && !x.Hidden))
                 {
-                    // mouse or touch: only while the touch screen is switched on (HMI Settings > Features)
+                    // mouse or touch: only while the touch screen is switched on (HMI Settings > Options)
                     if (p.Key == ViewPreferences.InputMode && !HmiFeatures.TouchOn) continue;
                     var combo = PrefCombo(p.Key);
                     Row(group, p.Key, PrefTexts.NameOf(p.Key), combo);

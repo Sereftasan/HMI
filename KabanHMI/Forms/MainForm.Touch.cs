@@ -59,7 +59,7 @@ namespace Kaban.UI.Forms
             pnlTop.Controls.Add(_btnInput);
             TouchInput.ModeChanged += InputModeChanged;
             Disposed += (s, e) => TouchInput.ModeChanged -= InputModeChanged;
-            // only while the touch screen is switched on (HMI Settings > Features, 30 October)
+            // only while the touch screen is switched on (HMI Settings > Options, 30 October)
             _btnInput.Visible = HmiFeatures.TouchOn;
             EventHandler features = (s, e) =>
             {

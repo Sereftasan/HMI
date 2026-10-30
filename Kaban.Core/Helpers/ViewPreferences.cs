@@ -156,7 +156,7 @@ namespace Kaban.Core.Helpers
         {
             // A sign-in brings that user's own values (and a sign-out everyone's).
             SecurityManager.UserChanged += (s, e) => Raise();
-            // touch screen switched on or off on HMI Settings > Features: the mode in force may change
+            // touch screen switched on or off on HMI Settings > Options: the mode in force may change
             HmiFeatures.Changed += (s, e) => Raise();
         }
 
@@ -322,7 +322,7 @@ namespace Kaban.Core.Helpers
         public static bool AlarmSoundOn { get { return Get(AlarmSound) == "On"; } }
         /// <summary>
         /// The screen is used by touch (View Preferences > Screen > Screen used with) - only while the
-        /// touch screen is switched on (HMI Settings > Features, 30 October); a mouse otherwise.
+        /// touch screen is switched on (HMI Settings > Options, 30 October); a mouse otherwise.
         /// </summary>
         public static bool TouchMode { get { return HmiFeatures.TouchOn && Get(InputMode) == "Touch"; } }
 

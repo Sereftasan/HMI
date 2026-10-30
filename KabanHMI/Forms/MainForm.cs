@@ -631,7 +631,7 @@ namespace Kaban.UI.Forms
             // A sound for a new alarm, when View Preferences ask for one.
             Kaban.UI.Helpers.AlarmSound.Start();
             // The machines' logs taken from their PLCs (the Industry 4 service's job until 29 October) and
-            // the HMI's own log into the same database - while HMI Settings > Features has it on (30 October).
+            // the HMI's own log into the same database - while HMI Settings > Options has it on (30 October).
             StartLogging();
             EventHandler logging = (s7, e7) =>
             {

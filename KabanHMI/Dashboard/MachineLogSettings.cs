@@ -14,7 +14,7 @@ namespace Kaban.UI.Dashboard
     /// (visible when HMI industry 4 logging activated). We can change the alarms setting page name to
     /// 'Alarms and Logs' and put the setting on the page").
     ///
-    /// Shown only while HMI Settings > Features has the Industry 4 logging in the HMI on: whether this
+    /// Shown only while HMI Settings > Options has the Industry 4 logging in the HMI on: whether this
     /// machine's log is taken, its PLC log area (empty: the machine's own), the KMSystem lookup of a
     /// record's Process ID, and what its logger does now. Kept in the machine's dashboard settings
     /// (Logs and Reports keeps its database and reports) - the page's Save writes them.
@@ -132,7 +132,7 @@ namespace Kaban.UI.Dashboard
             return new Label { Text = text + ":", AutoSize = true, Margin = new Padding(14, 6, 4, 2) };
         }
 
-        /// <summary>Shown only while the HMI does the logging (HMI Settings > Features).</summary>
+        /// <summary>Shown only while the HMI does the logging (HMI Settings > Options).</summary>
         private void Follow()
         {
             if (IsDisposed) return;

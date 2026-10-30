@@ -96,7 +96,7 @@ class TM {
 
         // 30 October: "We need to make the Industry 4 service and touchscreen mode optional, and we need to add
         // some buttons to active and passive them on HMI setting" - both off until an Admin switches them on.
-        Console.WriteLine("--- the touch screen switched off (HMI Settings > Features): a mouse ---");
+        Console.WriteLine("--- the touch screen switched off (HMI Settings > Options): a mouse ---");
         var inputOff = (Button)Get(form, "_btnInput");
         Check("off at first: no mouse / touch button on the top bar, a mouse in force", !HmiFeatures.TouchOn && !inputOff.Visible && !TouchInput.On);
         ViewPreferences.SetPanel(ViewPreferences.InputMode, "Touch"); Pump(50);
@@ -106,19 +106,39 @@ class TM {
         offPage.Dispose();
         ViewPreferences.SetPanel(ViewPreferences.InputMode, null); Pump(50);
         var hmiTabs = (SettingsScreen)new HmiSettingsPage().GetControl();
-        Check("HMI Settings has a Features tab, last, for an Admin", hmiTabs.AllPages.Last().TitleFallback == "Features" &&
-              hmiTabs.AllPages.Last().RequiredLevel == SecurityLevel.Admin, string.Join(",", hmiTabs.AllPages.Select(x => x.TitleFallback)));
+        // (30 October: "rename 'Features' page name in 'HMI setting' to 'Options' to match to the one on machine settings
+        // (and less translation)")
+        Check("HMI Settings has an Options tab, last, for an Admin - the machine's Options tab's key and words",
+              hmiTabs.AllPages.Last().TitleFallback == "Options" && hmiTabs.AllPages.Last().TitleKey == "Tab_Options" &&
+              hmiTabs.AllPages.Last().RequiredLevel == SecurityLevel.Admin && LanguageManager.GetString("Tab_Options", "") == "Options",
+              string.Join(",", hmiTabs.AllPages.Select(x => x.TitleFallback)));
+        LanguageManager.ChangeLanguage("TR");
+        Check("  in Turkish: Seçenekler, as the machine's", LanguageManager.GetString("Tab_Options", "") == "Seçenekler");
+        LanguageManager.ChangeLanguage("EN");
         var features = new FeaturesControl();
         var fhost = new Form { ClientSize = new Size(900, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         features.Dock = DockStyle.Fill; fhost.Controls.Add(features); fhost.Show(); Pump(150);
         Shot(fhost, "features_off");
-        Check("  its two features, each Off, said under it", features.SwitchOf(HmiFeatures.Industry4Logging, false).BackColor != Color.White &&
-              features.SwitchOf(HmiFeatures.TouchScreen, false).BackColor != Color.White && features.SwitchOf(HmiFeatures.TouchScreen, true).BackColor == Color.White &&
+        // (30 October: "redesign the items (selection toggles) as the attached image as well and remove the description
+        // notes for the items (we should put them into the manuals instead, they look too much on the screen)")
+        Check("  its two features, each a row: the name, what it does now in grey under it, its switch Off at the right end",
+              !features.SwitchOf(HmiFeatures.Industry4Logging).Checked && !features.SwitchOf(HmiFeatures.TouchScreen).Checked &&
               features.NowText(HmiFeatures.TouchScreen) == "Now: used with a mouse." && features.NowText(HmiFeatures.Industry4Logging).Contains("Industry 4 service logs"),
               features.NowText(HmiFeatures.Industry4Logging));
-        features.SwitchOf(HmiFeatures.TouchScreen, true).PerformClick(); Pump(100);
-        Check("touch screen On: kept, the button on the top bar at once (a mouse until someone chooses touch)", HmiFeatures.TouchOn && inputOff.Visible && !TouchInput.On &&
-              features.SwitchOf(HmiFeatures.TouchScreen, true).BackColor != Color.White &&
+        var touchRow = features.RowOf(HmiFeatures.TouchScreen); var logRow = features.RowOf(HmiFeatures.Industry4Logging);
+        var touchSw = features.SwitchOf(HmiFeatures.TouchScreen);
+        Check("  the rows one under the other, the switches at the same right end, in the middle of their rows",
+              touchRow.Top == logRow.Bottom && touchRow.Left == logRow.Left && touchSw.Right == touchRow.Width - 4 &&
+              touchSw.Left == features.SwitchOf(HmiFeatures.Industry4Logging).Left && Math.Abs(touchSw.Top + touchSw.Height / 2 - touchRow.Height / 2) <= 1);
+        Check("  no description notes: a row's name and its line under it only",
+              touchRow.Controls.OfType<Label>().Count() == 2 && logRow.Controls.OfType<Label>().Count() == 2 &&
+              !features.Controls.Cast<Control>().SelectMany(c => c.Controls.Cast<Control>()).OfType<Label>().Any() &&
+              touchRow.Controls.OfType<Label>().First(l => l.Name == "title").Text == "Touch screen");
+        // a click on the row's name turns it over, as on its switch
+        var onTitle = touchRow.Controls.OfType<Label>().First(l => l.Name == "title");
+        typeof(Control).GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(onTitle, new object[] { EventArgs.Empty }); Pump(100);
+        Check("touch screen On (a click on its row): kept, the button on the top bar at once (a mouse until someone chooses touch)",
+              HmiFeatures.TouchOn && inputOff.Visible && !TouchInput.On && touchSw.Checked &&
               features.NowText(HmiFeatures.TouchScreen).StartsWith("Now: used with a mouse - the button"), features.NowText(HmiFeatures.TouchScreen));
         Check("  written in the log", Directory.GetFiles(dir, "HmiAudit_*.txt").Any(f => File.ReadAllText(f).Contains("feature TouchScreen switched on")));
         Shot(fhost, "features_touch_on");

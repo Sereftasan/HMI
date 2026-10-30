@@ -220,7 +220,7 @@ namespace Kaban.UI.Settings
 
             // ---- the machine's log from its PLC (30 October: "visible when HMI industry 4 logging
             // activated ... change the alarms setting page name to 'Alarms and Logs' and put the setting
-            // on the page"): under the alarms the HMI raises, while HMI Settings > Features has it on
+            // on the page"): under the alarms the HMI raises, while HMI Settings > Options has it on
             _log = new Kaban.UI.Dashboard.MachineLogSettings(string.IsNullOrEmpty(moduleId) ? AlarmGeneration.ModuleOfStation(1) : moduleId);
             _log.Edited += (s, e) => _dirty.MarkDirty();
 

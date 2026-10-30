@@ -6,7 +6,7 @@ namespace Kaban.UI.Forms
     // ======================================================================
     // THE HMI'S OPTIONAL PARTS (30 October: "We need to make the Industry 4
     // service and touchscreen mode optional, and we need to add some buttons
-    // to active and passive them on HMI setting") - HMI Settings > Features.
+    // to active and passive them on HMI setting") - HMI Settings > Options.
     // The main window follows them as they are switched: the logging starts or
     // stops, the mouse / touch button comes or goes.
     // ======================================================================

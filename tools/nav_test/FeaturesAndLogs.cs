@@ -72,16 +72,16 @@ class FL {
         var features = new FeaturesControl();
         var host = new Form { ClientSize = new Size(900, 700), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         features.Dock = DockStyle.Fill; host.Controls.Add(features); host.Show(); Pump(100);
-        features.SwitchOf(HmiFeatures.Industry4Logging, true).PerformClick(); Pump(600);
+        features.SwitchOf(HmiFeatures.Industry4Logging).Toggle(); Pump(600);
         var fa = MachineLoggers.Of("FA2010");
         Check("switched on: a logger for the machine with a log database (FA2010), the HMI's log into the same database - at once",
               HmiFeatures.LoggingOn && fa != null && fa.Running && AuditLogReader.Store != null && HmiLogStore.Flush() && File.Exists(db),
               MachineLoggers.All.Count + " loggers, store " + (AuditLogReader.Store != null) + ", " + HmiLogStore.Problem);
         Pump(1200);
-        Check("  the Features tab says what it does now: the machine and its logger's state",
+        Check("  the Options tab says what it does now: the machine and its logger's state",
               features.NowText(HmiFeatures.Industry4Logging).StartsWith("Processing Center: Taking the records from PLC station 1 (R27000)"),
               features.NowText(HmiFeatures.Industry4Logging));
-        features.SwitchOf(HmiFeatures.Industry4Logging, false).PerformClick(); Pump(300);
+        features.SwitchOf(HmiFeatures.Industry4Logging).Toggle(); Pump(300);
         Check("switched off: the loggers stopped, the HMI's log back in its files", !HmiFeatures.LoggingOn && MachineLoggers.All.Count == 0 && !fa.Running &&
               AuditLogReader.Store == null, MachineLoggers.All.Count + " loggers");
         host.Close(); host.Dispose();

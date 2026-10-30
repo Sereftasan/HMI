@@ -91,8 +91,8 @@ namespace Kaban.UI.Dashboard
             Note("Dsh_SetTimeZoneNote", "The database keeps UTC. The dashboard shows the times of this zone.");
 
             // The machine's log taken from its PLC by the HMI (29 October): its settings are the machine's -
-            // Machine Parameters > Alarms and Logs (30 October), while HMI Settings > Features has it on.
-            Note("Plg_WhoNote", "Written by the Industry 4 service or the HMI (HMI Settings > Features).");
+            // Machine Parameters > Alarms and Logs (30 October), while HMI Settings > Options has it on.
+            Note("Plg_WhoNote", "Written by the Industry 4 service or the HMI (HMI Settings > Options).");
             Note("Plg_AreaNote", "Its PLC log area: Machine Parameters > Alarms and Logs.");
 
             Heading("Dsh_SetLogicHead", "\U0001F9E0", "Data logic");

@@ -587,7 +587,7 @@ namespace Kaban.UI.Dashboard
         /// <summary>Starts a logger for each machine that has a log database and a state map (once).</summary>
         public static void Start()
         {
-            // only while the HMI does the Industry 4 service's job (HMI Settings > Features, 30 October)
+            // only while the HMI does the Industry 4 service's job (HMI Settings > Options, 30 October)
             if (!MachineLogger.AutoStart || !HmiFeatures.LoggingOn) return;
             foreach (var m in Kaban.UI.Helpers.MachineLinks.WithLogs())
             {
