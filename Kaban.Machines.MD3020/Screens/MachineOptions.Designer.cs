@@ -37,7 +37,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cRun_Start.Address = "M20";
             this.cRun_Start.DescriptionText = "Run Start";
             this.cRun_Start.Location = new System.Drawing.Point(16, 16);
-            this.cRun_Start.Size = new System.Drawing.Size(440, 28);
+            this.cRun_Start.Size = new System.Drawing.Size(440, 38);
             this.cRun_Start.LogAction = true;
             this.cRun_Start.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cRun_Start);
@@ -49,7 +49,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cPause.Address = "M21";
             this.cPause.DescriptionText = "Pause";
             this.cPause.Location = new System.Drawing.Point(16, 54);
-            this.cPause.Size = new System.Drawing.Size(440, 28);
+            this.cPause.Size = new System.Drawing.Size(440, 38);
             this.cPause.LogAction = true;
             this.cPause.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cPause);
@@ -61,7 +61,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cCancel.Address = "M22";
             this.cCancel.DescriptionText = "Cancel";
             this.cCancel.Location = new System.Drawing.Point(16, 92);
-            this.cCancel.Size = new System.Drawing.Size(440, 28);
+            this.cCancel.Size = new System.Drawing.Size(440, 38);
             this.cCancel.LogAction = true;
             this.cCancel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cCancel);
@@ -73,7 +73,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cReset.Address = "M23";
             this.cReset.DescriptionText = "Reset";
             this.cReset.Location = new System.Drawing.Point(16, 130);
-            this.cReset.Size = new System.Drawing.Size(440, 28);
+            this.cReset.Size = new System.Drawing.Size(440, 38);
             this.cReset.LogAction = true;
             this.cReset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cReset);
@@ -85,7 +85,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cBarcode_Enable.Address = "L0";
             this.cBarcode_Enable.DescriptionText = "Barcode Enable";
             this.cBarcode_Enable.Location = new System.Drawing.Point(16, 168);
-            this.cBarcode_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cBarcode_Enable.Size = new System.Drawing.Size(440, 38);
             this.cBarcode_Enable.LogAction = true;
             this.cBarcode_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cBarcode_Enable);
@@ -97,7 +97,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cKenar_Cleaning_Enable.Address = "L1";
             this.cKenar_Cleaning_Enable.DescriptionText = "Kenar Cleaning Enable";
             this.cKenar_Cleaning_Enable.Location = new System.Drawing.Point(16, 206);
-            this.cKenar_Cleaning_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cKenar_Cleaning_Enable.Size = new System.Drawing.Size(440, 38);
             this.cKenar_Cleaning_Enable.LogAction = true;
             this.cKenar_Cleaning_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cKenar_Cleaning_Enable);
@@ -109,7 +109,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cProfile_Rotation_Enable.Address = "L2";
             this.cProfile_Rotation_Enable.DescriptionText = "Profile Rotation Enable";
             this.cProfile_Rotation_Enable.Location = new System.Drawing.Point(16, 244);
-            this.cProfile_Rotation_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cProfile_Rotation_Enable.Size = new System.Drawing.Size(440, 38);
             this.cProfile_Rotation_Enable.LogAction = true;
             this.cProfile_Rotation_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cProfile_Rotation_Enable);
@@ -121,7 +121,7 @@ namespace Kaban.Machines.MD3020.Screens
             this.cTrial_Machine.Address = "L3";
             this.cTrial_Machine.DescriptionText = "Trial Machine";
             this.cTrial_Machine.Location = new System.Drawing.Point(16, 282);
-            this.cTrial_Machine.Size = new System.Drawing.Size(440, 28);
+            this.cTrial_Machine.Size = new System.Drawing.Size(440, 38);
             this.cTrial_Machine.LogAction = true;
             this.cTrial_Machine.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cTrial_Machine);

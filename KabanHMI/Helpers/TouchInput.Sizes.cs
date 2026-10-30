@@ -100,7 +100,8 @@ namespace Kaban.UI.Helpers
             if (box != null && IsPlainBox(box) && !_boxPadding.TryGetValue(box, out seen))
             {
                 _boxPadding.Add(box, new Kept<Padding>(box.Padding));
-                box.Paint += PaintBigBox;
+                // a tick box is an on / off switch, with a mouse too (30 October); a round option a larger circle by touch
+                if (box is CheckBox) box.Paint += PaintSwitchBox; else box.Paint += PaintBigBox;
                 SizeBox(box);
             }
         }
@@ -208,12 +209,75 @@ namespace Kaban.UI.Helpers
         /// <summary>The box's mark for a finger, at the screen scale.</summary>
         public static int BoxPx { get { return UiScale.Px(BoxSize); } }
 
+        // ---- a tick box drawn as a switch (30 October: "you can make all the checkbox and the checkbox HMI default
+        // render this way as well" - the rows of Machine Parameters > Options: the name, an on / off switch) ----------------
+
+        /// <summary>A tick box's switch: its height at factor 1, with a mouse and by touch (its width 1.75 times that).</summary>
+        public const int SwitchHeight = 18, SwitchHeightTouch = 26;
+
+        /// <summary>The switch's height and width now (the mode and the screen scale).</summary>
+        public static int SwitchH { get { return UiScale.Px(On ? SwitchHeightTouch : SwitchHeight); } }
+        public static int SwitchW { get { return (int)Math.Round(SwitchH * 1.75); } }
+
+        /// <summary>
+        /// Room for the switch: a box that sizes itself (AutoSize) gets its switch where the tick was, its text after it -
+        /// its place and its column with the others kept; a box of a width of its own is a row: the text on the left,
+        /// the switch at its right end.
+        /// </summary>
+        private static void SizeSwitchBox(CheckBox box, Padding own)
+        {
+            if (!box.AutoSize) { if (box.Padding != own) box.Padding = own; return; }
+            int h = SwitchH, w = SwitchW, gap = UiScale.Px(6), system = 13 + 3;     // Windows' own mark and its gap, as its size counts them
+            int top = 0;
+            int ph = box.GetPreferredSize(Size.Empty).Height - box.Padding.Vertical + own.Vertical;
+            if (ph < h + 4) top = (h + 4 - ph + 1) / 2;
+            var p = new Padding(own.Left + Math.Max(0, w + gap - system), own.Top + top, own.Right, own.Bottom + top);
+            if (box.Padding != p) box.Padding = p;
+        }
+
+        /// <summary>The switch and the text, drawn over Windows' tick box.</summary>
+        private static void PaintSwitchBox(object sender, PaintEventArgs e)
+        {
+            var cb = sender as CheckBox;
+            if (cb == null) return;
+            var g = e.Graphics;
+            Color back = cb.BackColor;
+            for (var p = cb.Parent; back.A < 255 && p != null; p = p.Parent) back = p.BackColor;
+            if (back.A < 255) back = SystemColors.Control;
+            using (var brush = new SolidBrush(back)) g.FillRectangle(brush, cb.ClientRectangle);
+            Kept<Padding> kept;
+            var own = _boxPadding.TryGetValue(cb, out kept) ? kept.Value : Padding.Empty;
+            int W = cb.ClientSize.Width, H = cb.ClientSize.Height, gap = UiScale.Px(6);
+            float h = Math.Min(SwitchH, Math.Max(10, H - 2)), w = h * 1.75f;
+            RectangleF track;
+            Rectangle text;
+            if (cb.AutoSize)
+            {
+                track = new RectangleF(own.Left + 1, (H - h) / 2f, w, h);
+                text = new Rectangle((int)Math.Ceiling(track.Right) + gap, 0, Math.Max(1, W - (int)Math.Ceiling(track.Right) - gap), H);
+            }
+            else
+            {
+                track = new RectangleF(Math.Max(own.Left, W - own.Right - w - 2), (H - h) / 2f, w, h);
+                text = new Rectangle(own.Left, 0, Math.Max(1, (int)track.Left - gap - own.Left), H);
+            }
+            bool live = cb.Enabled;
+            Kaban.UI.Controls.ToggleSwitch.Draw(g, track, cb.CheckState == CheckState.Checked, live);
+            if (cb.CheckState == CheckState.Indeterminate)
+                using (var pen = new Pen(Color.FromArgb(116, 119, 117), Math.Max(2f, h / 8f)))
+                    g.DrawLine(pen, track.Left + w * 0.35f, track.Top + h / 2f, track.Right - w * 0.35f, track.Top + h / 2f);
+            TextRenderer.DrawText(g, cb.Text, cb.Font, text, live ? cb.ForeColor : SystemColors.GrayText,
+                                  TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | (cb.UseMnemonic ? 0 : TextFormatFlags.NoPrefix) |
+                                  (cb.AutoSize ? TextFormatFlags.SingleLine : TextFormatFlags.WordBreak));
+        }
+
         /// <summary>Room for the larger mark: its text moved over, the box as tall as the mark.</summary>
         private static void SizeBox(ButtonBase box)
         {
             Kept<Padding> kept;
             if (!_boxPadding.TryGetValue(box, out kept)) return;
             var own = kept.Value;
+            if (box is CheckBox) { SizeSwitchBox((CheckBox)box, own); return; }
             if (!On) { if (box.Padding != own) box.Padding = own; return; }
             int mark = BoxPx, system = 13;
             int top = 0;

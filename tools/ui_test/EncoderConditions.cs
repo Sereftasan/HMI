@@ -94,26 +94,28 @@ class ECT {
         var cross = box("L32");
         Check("  the same user level as the others, logged", new[] { "L33", "L34", "L35" }.Select(box).All(b => b.PlcNumber == 1 &&
                   b.RequiredSecurity == SecurityLevel.Maintenance && b.LogAction));
-        // (30 October: "Let me see a few of them in switch row so I can see how it looks ... You can make others in some
-        // different mode you think it looks nice as well so we decide which one to use")
-        var rowsLook = boxes.Where(b => b.Look == CheckBoxLook.SwitchRow).ToList();
-        var tiles = boxes.Where(b => b.Look == CheckBoxLook.Tile).ToList();
-        var switches = boxes.Where(b => b.Look == CheckBoxLook.Switch).ToList();
-        var ticks = boxes.Where(b => b.Look == CheckBoxLook.Box).ToList();
-        Check("four looks to compare: 9 switch rows, 6 tiles, 3 switches (L33 - L35), the Mullion Notching ones tick boxes",
-              rowsLook.Count == 9 && tiles.Count == 6 && switches.Select(b => b.Address).OrderBy(a => a).SequenceEqual(new[] { "L33", "L34", "L35" }) &&
-              ticks.Count == 5 && ticks.All(b => b.Parent != opt) && rowsLook[0].Address == "L6",
-              rowsLook.Count + " / " + tiles.Count + " / " + switches.Count + " / " + ticks.Count);
-        Check("  the rows one under the other, as wide, their captions on them (none beside)",
-              rowsLook.OrderBy(b => b.Top).Zip(rowsLook.OrderBy(b => b.Top).Skip(1), (x, y) => y.Top - x.Bottom).All(g => Math.Abs(g) <= 1) &&
-              rowsLook.All(b => b.Width == rowsLook[0].Width && b.Left == rowsLook[0].Left && b.CaptionShown.Length > 0) &&
-              !All(opt).OfType<Label>().Any(l => l.Text.StartsWith("Cooling")));
-        Check("  each row's switch at its right end, in the middle of its height; a tile's at its bottom right",
+        // (30 October, the looks compared: "this one look nice on your photo, you can make all the checkbox and the checkbox
+        // HMI default render this way as well" - the switch rows)
+        var rowsLook = boxes.Where(b => b.DrawnAsRow).ToList();
+        var standalone = rowsLook.Where(b => b.Parent == opt).ToList();
+        var mullion = rowsLook.Where(b => b.Parent != opt).ToList();
+        Check("every option a switch row (the default look): 18 on the page in two columns, the 5 of Mullion Notching in its box",
+              boxes.All(b => b.Look == CheckBoxLook.SwitchRow) && rowsLook.Count == 23 && standalone.Count == 18 && mullion.Count == 5 &&
+              standalone.Select(b => b.Left).Distinct().Count() == 2,
+              rowsLook.Count + " rows, columns at " + string.Join(", ", standalone.Select(b => b.Left).Distinct()));
+        Func<List<CheckBoxHMI>, bool> stacked = list => list.OrderBy(b => b.Top).Zip(list.OrderBy(b => b.Top).Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0 && g <= 1);
+        Check("  each column's rows one under the other, as wide, their captions on them (none beside)",
+              standalone.GroupBy(b => b.Left).All(c => stacked(c.ToList()) && c.All(b => b.Width == c.First().Width)) && stacked(mullion) &&
+              rowsLook.All(b => b.CaptionShown.Length > 0) && !All(opt).OfType<Label>().Any(l => l.Text.StartsWith("Cooling")));
+        Check("  each row's switch at its right end, in the middle of its height",
               rowsLook.All(b => b.SwitchTrack.Right <= b.Width - 4 && b.SwitchTrack.Right >= b.Width - 16 &&
-                                Math.Abs(b.SwitchTrack.Top + b.SwitchTrack.Height / 2 - b.Height / 2f) <= 1) &&
-              tiles.All(b => b.SwitchTrack.Right <= b.Width - 4 && b.SwitchTrack.Bottom <= b.Height - 4 && b.SwitchTrack.Top > b.Height / 2f));
-        Check("  inside the page, overlapping nothing", boxes.Where(b => b.Parent == opt).All(b => b.Bottom <= opt.Height && b.Right <= opt.Width &&
-              !boxes.Any(o => o != b && o.Parent == b.Parent && o.Bounds.IntersectsWith(b.Bounds))));
+                                Math.Abs(b.SwitchTrack.Top + b.SwitchTrack.Height / 2 - b.Height / 2f) <= 1));
+        Check("  inside the page (and the box), overlapping nothing", boxes.All(b => b.Bottom <= b.Parent.ClientSize.Height && b.Right <= b.Parent.ClientSize.Width &&
+              !boxes.Any(o => o != b && o.Parent == b.Parent && o.Bounds.IntersectsWith(b.Bounds))) &&
+              !standalone.Any(b => b.Bounds.IntersectsWith(mullion[0].Parent.Bounds)));
+        var narrow = new CheckBoxHMI { DescriptionText = "Ref", Size = new Size(44, 32) };
+        Check("  a box too narrow for its name (a table's, 44 px): the switch alone, its caption beside it", !narrow.DrawnAsRow &&
+              narrow.SwitchTrack.Width <= narrow.Width && narrow.SwitchTrack.Width > 30);
         var cool = box("L6");
         cool.Checked = true; Pump(50);
         Check("  a row switched on: its switch on (a blue track) - one click turns it, as the tick did", cool.Checked);

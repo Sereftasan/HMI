@@ -32,10 +32,23 @@ namespace Kaban.UI.Controls
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class CheckBoxHMI : CheckBox, UiStyle.IExplainsDisabled
     {
-        private CheckBoxLook _look = CheckBoxLook.Box;
+        // 30 October: the user chose the rows ("this one look nice on your photo, you can make all the checkbox and the
+        // checkbox HMI default render this way as well") - a row by default; one too narrow for its name (a tick box in a
+        // table, a 44 px box with its caption beside it) is the switch alone, its caption beside it as before.
+        private CheckBoxLook _look = CheckBoxLook.SwitchRow;
 
-        /// <summary>How it is drawn - a tick box, a switch, a row with a switch, a card (CheckBoxLook).</summary>
-        [Category("   Appearance"), DefaultValue(CheckBoxLook.Box)]
+        /// <summary>The least width a row takes, at factor 1: narrower, it is the switch alone (its caption beside it).</summary>
+        public const int RowMinWidth = 120;
+
+        /// <summary>Drawn as a row now: the row look, and room for its name.</summary>
+        [Browsable(false)]
+        public bool DrawnAsRow { get { return _look == CheckBoxLook.SwitchRow && Width >= UiScale.Px(RowMinWidth); } }
+
+        /// <summary>A row and a card carry their caption themselves; the switch and the tick box have it beside them.</summary>
+        private void PlaceCaption() { Descr.Suppressed = DrawnAsRow || _look == CheckBoxLook.Tile; }
+
+        /// <summary>How it is drawn - a row with a switch (the default), a switch, a card, a tick box (CheckBoxLook).</summary>
+        [Category("   Appearance"), DefaultValue(CheckBoxLook.SwitchRow)]
         [Description("How it is drawn. Box: a tick box, its caption beside it. Switch: an on / off switch, its caption beside it. " +
                      "SwitchRow: a row - the caption on the left, the switch at the right end, a line under it (make it as wide as the column). " +
                      "Tile: a card - the caption, On / Off, a small switch, tinted while on.")]
@@ -45,8 +58,7 @@ namespace Kaban.UI.Controls
             set
             {
                 _look = value;
-                // a row and a card carry their caption themselves
-                Descr.Suppressed = value == CheckBoxLook.SwitchRow || value == CheckBoxLook.Tile;
+                PlaceCaption();
                 Cursor = DisplayOnly ? Cursors.Default : Cursors.Hand;
                 ApplyCornerRegion();
                 Invalidate();
@@ -182,7 +194,7 @@ namespace Kaban.UI.Controls
         private void ApplyCornerRegion()
         {
             if (Width <= 0 || Height <= 0) return;
-            if (_cornerRadius <= 0 || _look == CheckBoxLook.SwitchRow) { Region = null; return; }
+            if (_cornerRadius <= 0 || DrawnAsRow) { Region = null; return; }
             int d = (_look == CheckBoxLook.Tile ? Math.Max(_cornerRadius, 8) : _cornerRadius) * 2;
             using (var path = new System.Drawing.Drawing2D.GraphicsPath())
             {
@@ -252,6 +264,7 @@ namespace Kaban.UI.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            PlaceCaption();
             ApplyCornerRegion();
         }
 
@@ -272,7 +285,8 @@ namespace Kaban.UI.Controls
         {
             get
             {
-                switch (_look)
+                var look = _look == CheckBoxLook.SwitchRow && !DrawnAsRow ? CheckBoxLook.Switch : _look;
+                switch (look)
                 {
                     case CheckBoxLook.SwitchRow:
                     {
@@ -286,7 +300,7 @@ namespace Kaban.UI.Controls
                     }
                     case CheckBoxLook.Switch:
                     {
-                        float h = Math.Max(12f, Math.Min(Height - 8f, Width / 1.85f)), w = h * 1.75f;
+                        float h = Math.Max(8f, Math.Min(Math.Min(Height - 8f, 24f), (Width - 4f) / 1.75f)), w = h * 1.75f;
                         return new RectangleF((Width - w) / 2f, (Height - h) / 2f, w, h);
                     }
                     default: return RectangleF.Empty;
@@ -303,7 +317,8 @@ namespace Kaban.UI.Controls
             var red = Color.FromArgb(200, 30, 30);
             bool alert = _alert && _alertBlinkOn;
             var font = UiStyle.Body;
-            switch (_look)
+            var look = _look == CheckBoxLook.SwitchRow && !DrawnAsRow ? CheckBoxLook.Switch : _look;
+            switch (look)
             {
                 case CheckBoxLook.Switch:
                     ToggleSwitch.Draw(g, SwitchTrack, Checked, live);

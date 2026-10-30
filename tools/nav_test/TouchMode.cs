@@ -268,6 +268,10 @@ class TM {
         sz.Show(); Pump(200); TouchInput.Sweep(); Pump(100);
         int tbH = tb1.Height, tightH = tight.Height, roomyH = roomy.Height, barH = bar.Height, rowH = grid.Rows[0].Height, tabPadY = tabs.Padding.Y;
         int boxW = box.Width;
+        var boxPadMouse = box.Padding;
+        // (30 October: "you can make all the checkbox and the checkbox HMI default render this way as well")
+        Check("a tick box an on / off switch, with a mouse too: room for the switch where the tick was",
+              boxPadMouse.Left == TouchInput.SwitchW + UiScale.Px(6) - 16 && TouchInput.SwitchH == UiScale.Px(TouchInput.SwitchHeight), boxPadMouse + "");
         var cm = UiStyle.Menu();
         cm.Items.Add(new ToolStripMenuItem("Copy") { Name = "cmCopy" });
         cm.Items.Add(new ToolStripMenuItem("Paste") { Name = "cmPaste", Enabled = false });
@@ -313,7 +317,7 @@ class TM {
         Mode("Mouse"); Pump(100);
         UiStyle.ShowPopup(cm, sz, new Point(600, 60)); Pump(100);
         Check("a mouse again: all back - menu, rows, buttons, bar, boxes, tabs", TouchInput.EntryHeight(Item(cm, "cmCopy")) == entryMouse && grid.Rows[0].Height == rowH &&
-              tb1.Height == tbH && roomy.Height == roomyH && bar.Height == barH && box.Width == boxW && box.Padding.Left == 0 && lateBox.Padding.Left == 0 &&
+              tb1.Height == tbH && roomy.Height == roomyH && bar.Height == barH && box.Width == boxW && box.Padding == boxPadMouse && lateBox.Padding.Left == boxPadMouse.Left &&
               tabs.Padding.Y == tabPadY,
               TouchInput.EntryHeight(Item(cm, "cmCopy")) + " " + grid.Rows[0].Height + " " + tb1.Height + " " + roomy.Height + " " + bar.Height + " " + box.Width + " " + tabs.Padding.Y);
         cm.Close();

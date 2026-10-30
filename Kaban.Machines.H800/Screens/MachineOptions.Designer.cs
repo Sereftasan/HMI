@@ -64,7 +64,7 @@ namespace Kaban.Machines.H800.Screens
             this.cProfile_Head_Check_Enable.Address = "L0";
             this.cProfile_Head_Check_Enable.DescriptionText = "Profile Head Check Enable";
             this.cProfile_Head_Check_Enable.Location = new System.Drawing.Point(16, 16);
-            this.cProfile_Head_Check_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cProfile_Head_Check_Enable.Size = new System.Drawing.Size(440, 38);
             this.cProfile_Head_Check_Enable.LogAction = true;
             this.cProfile_Head_Check_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cProfile_Head_Check_Enable);
@@ -76,7 +76,7 @@ namespace Kaban.Machines.H800.Screens
             this.cBarcode_Enable.Address = "L1";
             this.cBarcode_Enable.DescriptionText = "Barcode Enable";
             this.cBarcode_Enable.Location = new System.Drawing.Point(16, 54);
-            this.cBarcode_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cBarcode_Enable.Size = new System.Drawing.Size(440, 38);
             this.cBarcode_Enable.LogAction = true;
             this.cBarcode_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cBarcode_Enable);
@@ -88,7 +88,7 @@ namespace Kaban.Machines.H800.Screens
             this.cJob_At_End_Start_Poza.Address = "L2";
             this.cJob_At_End_Start_Poza.DescriptionText = "Job At End Start Poza";
             this.cJob_At_End_Start_Poza.Location = new System.Drawing.Point(16, 92);
-            this.cJob_At_End_Start_Poza.Size = new System.Drawing.Size(440, 28);
+            this.cJob_At_End_Start_Poza.Size = new System.Drawing.Size(440, 38);
             this.cJob_At_End_Start_Poza.LogAction = true;
             this.cJob_At_End_Start_Poza.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cJob_At_End_Start_Poza);
@@ -100,7 +100,7 @@ namespace Kaban.Machines.H800.Screens
             this.cProfile_Rotation_Advance_With_Angle_Togethe.Address = "L3";
             this.cProfile_Rotation_Advance_With_Angle_Togethe.DescriptionText = "Profile Rotation Advance With Angle Together";
             this.cProfile_Rotation_Advance_With_Angle_Togethe.Location = new System.Drawing.Point(16, 130);
-            this.cProfile_Rotation_Advance_With_Angle_Togethe.Size = new System.Drawing.Size(440, 28);
+            this.cProfile_Rotation_Advance_With_Angle_Togethe.Size = new System.Drawing.Size(440, 38);
             this.cProfile_Rotation_Advance_With_Angle_Togethe.LogAction = true;
             this.cProfile_Rotation_Advance_With_Angle_Togethe.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cProfile_Rotation_Advance_With_Angle_Togethe);
@@ -112,7 +112,7 @@ namespace Kaban.Machines.H800.Screens
             this.cAccessory_Partition_Disable.Address = "L7";
             this.cAccessory_Partition_Disable.DescriptionText = "Accessory Partition Disable";
             this.cAccessory_Partition_Disable.Location = new System.Drawing.Point(16, 168);
-            this.cAccessory_Partition_Disable.Size = new System.Drawing.Size(440, 28);
+            this.cAccessory_Partition_Disable.Size = new System.Drawing.Size(440, 38);
             this.cAccessory_Partition_Disable.LogAction = true;
             this.cAccessory_Partition_Disable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cAccessory_Partition_Disable);
@@ -124,7 +124,7 @@ namespace Kaban.Machines.H800.Screens
             this.cProfile_Rotation_With_Stopper.Address = "L8";
             this.cProfile_Rotation_With_Stopper.DescriptionText = "Profile Rotation With Stopper";
             this.cProfile_Rotation_With_Stopper.Location = new System.Drawing.Point(16, 206);
-            this.cProfile_Rotation_With_Stopper.Size = new System.Drawing.Size(440, 28);
+            this.cProfile_Rotation_With_Stopper.Size = new System.Drawing.Size(440, 38);
             this.cProfile_Rotation_With_Stopper.LogAction = true;
             this.cProfile_Rotation_With_Stopper.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cProfile_Rotation_With_Stopper);
@@ -136,7 +136,7 @@ namespace Kaban.Machines.H800.Screens
             this.cTrial_Machine.Address = "L9";
             this.cTrial_Machine.DescriptionText = "Trial Machine";
             this.cTrial_Machine.Location = new System.Drawing.Point(16, 244);
-            this.cTrial_Machine.Size = new System.Drawing.Size(440, 28);
+            this.cTrial_Machine.Size = new System.Drawing.Size(440, 38);
             this.cTrial_Machine.LogAction = true;
             this.cTrial_Machine.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cTrial_Machine);
@@ -148,7 +148,7 @@ namespace Kaban.Machines.H800.Screens
             this.cBarkoda_Job_Send.Address = "L10";
             this.cBarkoda_Job_Send.DescriptionText = "Barkoda Job Send";
             this.cBarkoda_Job_Send.Location = new System.Drawing.Point(16, 282);
-            this.cBarkoda_Job_Send.Size = new System.Drawing.Size(440, 28);
+            this.cBarkoda_Job_Send.Size = new System.Drawing.Size(440, 38);
             this.cBarkoda_Job_Send.LogAction = true;
             this.cBarkoda_Job_Send.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cBarkoda_Job_Send);
@@ -160,7 +160,7 @@ namespace Kaban.Machines.H800.Screens
             this.cJob_Gonderildi.Address = "L11";
             this.cJob_Gonderildi.DescriptionText = "Job Gonderildi";
             this.cJob_Gonderildi.Location = new System.Drawing.Point(16, 320);
-            this.cJob_Gonderildi.Size = new System.Drawing.Size(440, 28);
+            this.cJob_Gonderildi.Size = new System.Drawing.Size(440, 38);
             this.cJob_Gonderildi.LogAction = true;
             this.cJob_Gonderildi.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cJob_Gonderildi);
@@ -172,7 +172,7 @@ namespace Kaban.Machines.H800.Screens
             this.cJob_List_Empty.Address = "L12";
             this.cJob_List_Empty.DescriptionText = "Job List Empty";
             this.cJob_List_Empty.Location = new System.Drawing.Point(16, 358);
-            this.cJob_List_Empty.Size = new System.Drawing.Size(440, 28);
+            this.cJob_List_Empty.Size = new System.Drawing.Size(440, 38);
             this.cJob_List_Empty.LogAction = true;
             this.cJob_List_Empty.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cJob_List_Empty);
@@ -184,7 +184,7 @@ namespace Kaban.Machines.H800.Screens
             this.cJob_Row_Delete.Address = "L13";
             this.cJob_Row_Delete.DescriptionText = "Job Row Delete";
             this.cJob_Row_Delete.Location = new System.Drawing.Point(16, 396);
-            this.cJob_Row_Delete.Size = new System.Drawing.Size(440, 28);
+            this.cJob_Row_Delete.Size = new System.Drawing.Size(440, 38);
             this.cJob_Row_Delete.LogAction = true;
             this.cJob_Row_Delete.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cJob_Row_Delete);
@@ -196,7 +196,7 @@ namespace Kaban.Machines.H800.Screens
             this.cJob_List_Delete.Address = "L14";
             this.cJob_List_Delete.DescriptionText = "Job List Delete";
             this.cJob_List_Delete.Location = new System.Drawing.Point(16, 434);
-            this.cJob_List_Delete.Size = new System.Drawing.Size(440, 28);
+            this.cJob_List_Delete.Size = new System.Drawing.Size(440, 38);
             this.cJob_List_Delete.LogAction = true;
             this.cJob_List_Delete.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cJob_List_Delete);
@@ -208,7 +208,7 @@ namespace Kaban.Machines.H800.Screens
             this.cDischarge_1_Test.Address = "L15";
             this.cDischarge_1_Test.DescriptionText = "Discharge 1 Test";
             this.cDischarge_1_Test.Location = new System.Drawing.Point(16, 472);
-            this.cDischarge_1_Test.Size = new System.Drawing.Size(440, 28);
+            this.cDischarge_1_Test.Size = new System.Drawing.Size(440, 38);
             this.cDischarge_1_Test.LogAction = true;
             this.cDischarge_1_Test.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cDischarge_1_Test);
@@ -220,7 +220,7 @@ namespace Kaban.Machines.H800.Screens
             this.cProfile_Rotation_Test.Address = "L16";
             this.cProfile_Rotation_Test.DescriptionText = "Profile Rotation Test";
             this.cProfile_Rotation_Test.Location = new System.Drawing.Point(16, 510);
-            this.cProfile_Rotation_Test.Size = new System.Drawing.Size(440, 28);
+            this.cProfile_Rotation_Test.Size = new System.Drawing.Size(440, 38);
             this.cProfile_Rotation_Test.LogAction = true;
             this.cProfile_Rotation_Test.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cProfile_Rotation_Test);
@@ -232,7 +232,7 @@ namespace Kaban.Machines.H800.Screens
             this.cHoming_Start.Address = "B21";
             this.cHoming_Start.DescriptionText = "Homing Start";
             this.cHoming_Start.Location = new System.Drawing.Point(16, 548);
-            this.cHoming_Start.Size = new System.Drawing.Size(440, 28);
+            this.cHoming_Start.Size = new System.Drawing.Size(440, 38);
             this.cHoming_Start.LogAction = true;
             this.cHoming_Start.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cHoming_Start);
@@ -244,7 +244,7 @@ namespace Kaban.Machines.H800.Screens
             this.cRun_Start.Address = "M21";
             this.cRun_Start.DescriptionText = "Run Start";
             this.cRun_Start.Location = new System.Drawing.Point(16, 586);
-            this.cRun_Start.Size = new System.Drawing.Size(440, 28);
+            this.cRun_Start.Size = new System.Drawing.Size(440, 38);
             this.cRun_Start.LogAction = true;
             this.cRun_Start.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cRun_Start);
@@ -256,7 +256,7 @@ namespace Kaban.Machines.H800.Screens
             this.cCancel.Address = "M22";
             this.cCancel.DescriptionText = "Cancel";
             this.cCancel.Location = new System.Drawing.Point(536, 16);
-            this.cCancel.Size = new System.Drawing.Size(440, 28);
+            this.cCancel.Size = new System.Drawing.Size(440, 38);
             this.cCancel.LogAction = true;
             this.cCancel.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cCancel);
@@ -268,7 +268,7 @@ namespace Kaban.Machines.H800.Screens
             this.cSurekli.Address = "M23";
             this.cSurekli.DescriptionText = "Surekli";
             this.cSurekli.Location = new System.Drawing.Point(536, 54);
-            this.cSurekli.Size = new System.Drawing.Size(440, 28);
+            this.cSurekli.Size = new System.Drawing.Size(440, 38);
             this.cSurekli.LogAction = true;
             this.cSurekli.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cSurekli);
@@ -280,7 +280,7 @@ namespace Kaban.Machines.H800.Screens
             this.cSikmalar_Clamp.Address = "M24";
             this.cSikmalar_Clamp.DescriptionText = "Sikmalar Clamp";
             this.cSikmalar_Clamp.Location = new System.Drawing.Point(536, 92);
-            this.cSikmalar_Clamp.Size = new System.Drawing.Size(440, 28);
+            this.cSikmalar_Clamp.Size = new System.Drawing.Size(440, 38);
             this.cSikmalar_Clamp.LogAction = true;
             this.cSikmalar_Clamp.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cSikmalar_Clamp);
@@ -292,7 +292,7 @@ namespace Kaban.Machines.H800.Screens
             this.cPause.Address = "M25";
             this.cPause.DescriptionText = "Pause";
             this.cPause.Location = new System.Drawing.Point(536, 130);
-            this.cPause.Size = new System.Drawing.Size(440, 28);
+            this.cPause.Size = new System.Drawing.Size(440, 38);
             this.cPause.LogAction = true;
             this.cPause.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cPause);
@@ -304,7 +304,7 @@ namespace Kaban.Machines.H800.Screens
             this.cRun_Enable.Address = "M27";
             this.cRun_Enable.DescriptionText = "Run Enable";
             this.cRun_Enable.Location = new System.Drawing.Point(536, 168);
-            this.cRun_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cRun_Enable.Size = new System.Drawing.Size(440, 38);
             this.cRun_Enable.LogAction = true;
             this.cRun_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cRun_Enable);
@@ -316,7 +316,7 @@ namespace Kaban.Machines.H800.Screens
             this.cAlarm_Reset_Trigger.Address = "M28";
             this.cAlarm_Reset_Trigger.DescriptionText = "Alarm Reset Trigger";
             this.cAlarm_Reset_Trigger.Location = new System.Drawing.Point(536, 206);
-            this.cAlarm_Reset_Trigger.Size = new System.Drawing.Size(440, 28);
+            this.cAlarm_Reset_Trigger.Size = new System.Drawing.Size(440, 38);
             this.cAlarm_Reset_Trigger.LogAction = true;
             this.cAlarm_Reset_Trigger.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cAlarm_Reset_Trigger);
@@ -328,7 +328,7 @@ namespace Kaban.Machines.H800.Screens
             this.cX_Referans_Trigger.Address = "M29";
             this.cX_Referans_Trigger.DescriptionText = "X Referans Trigger";
             this.cX_Referans_Trigger.Location = new System.Drawing.Point(536, 244);
-            this.cX_Referans_Trigger.Size = new System.Drawing.Size(440, 28);
+            this.cX_Referans_Trigger.Size = new System.Drawing.Size(440, 38);
             this.cX_Referans_Trigger.LogAction = true;
             this.cX_Referans_Trigger.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cX_Referans_Trigger);
@@ -340,7 +340,7 @@ namespace Kaban.Machines.H800.Screens
             this.cAlarm_Reset.Address = "M102";
             this.cAlarm_Reset.DescriptionText = "Alarm Reset";
             this.cAlarm_Reset.Location = new System.Drawing.Point(536, 282);
-            this.cAlarm_Reset.Size = new System.Drawing.Size(440, 28);
+            this.cAlarm_Reset.Size = new System.Drawing.Size(440, 38);
             this.cAlarm_Reset.LogAction = true;
             this.cAlarm_Reset.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cAlarm_Reset);
@@ -352,7 +352,7 @@ namespace Kaban.Machines.H800.Screens
             this.cList_Temizle.Address = "M103";
             this.cList_Temizle.DescriptionText = "List Temizle";
             this.cList_Temizle.Location = new System.Drawing.Point(536, 320);
-            this.cList_Temizle.Size = new System.Drawing.Size(440, 28);
+            this.cList_Temizle.Size = new System.Drawing.Size(440, 38);
             this.cList_Temizle.LogAction = true;
             this.cList_Temizle.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cList_Temizle);
@@ -364,7 +364,7 @@ namespace Kaban.Machines.H800.Screens
             this.cX_1_Kalibre_Et.Address = "M140";
             this.cX_1_Kalibre_Et.DescriptionText = "X 1 Kalibre Et";
             this.cX_1_Kalibre_Et.Location = new System.Drawing.Point(536, 358);
-            this.cX_1_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cX_1_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cX_1_Kalibre_Et.LogAction = true;
             this.cX_1_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cX_1_Kalibre_Et);
@@ -376,7 +376,7 @@ namespace Kaban.Machines.H800.Screens
             this.cY_1_Kalibre_Et.Address = "M141";
             this.cY_1_Kalibre_Et.DescriptionText = "Y 1 Kalibre Et";
             this.cY_1_Kalibre_Et.Location = new System.Drawing.Point(536, 396);
-            this.cY_1_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cY_1_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cY_1_Kalibre_Et.LogAction = true;
             this.cY_1_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cY_1_Kalibre_Et);
@@ -388,7 +388,7 @@ namespace Kaban.Machines.H800.Screens
             this.cZ_1_Kalibre_Et.Address = "M142";
             this.cZ_1_Kalibre_Et.DescriptionText = "Z 1 Kalibre Et";
             this.cZ_1_Kalibre_Et.Location = new System.Drawing.Point(536, 434);
-            this.cZ_1_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cZ_1_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cZ_1_Kalibre_Et.LogAction = true;
             this.cZ_1_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cZ_1_Kalibre_Et);
@@ -400,7 +400,7 @@ namespace Kaban.Machines.H800.Screens
             this.cX_2_Kalibre_Et.Address = "M143";
             this.cX_2_Kalibre_Et.DescriptionText = "X 2 Kalibre Et";
             this.cX_2_Kalibre_Et.Location = new System.Drawing.Point(536, 472);
-            this.cX_2_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cX_2_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cX_2_Kalibre_Et.LogAction = true;
             this.cX_2_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cX_2_Kalibre_Et);
@@ -412,7 +412,7 @@ namespace Kaban.Machines.H800.Screens
             this.cY_2_Kalibre_Et.Address = "M144";
             this.cY_2_Kalibre_Et.DescriptionText = "Y 2 Kalibre Et";
             this.cY_2_Kalibre_Et.Location = new System.Drawing.Point(536, 510);
-            this.cY_2_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cY_2_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cY_2_Kalibre_Et.LogAction = true;
             this.cY_2_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cY_2_Kalibre_Et);
@@ -424,7 +424,7 @@ namespace Kaban.Machines.H800.Screens
             this.cZ_2_Kalibre_Et.Address = "M145";
             this.cZ_2_Kalibre_Et.DescriptionText = "Z 2 Kalibre Et";
             this.cZ_2_Kalibre_Et.Location = new System.Drawing.Point(536, 548);
-            this.cZ_2_Kalibre_Et.Size = new System.Drawing.Size(440, 28);
+            this.cZ_2_Kalibre_Et.Size = new System.Drawing.Size(440, 38);
             this.cZ_2_Kalibre_Et.LogAction = true;
             this.cZ_2_Kalibre_Et.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cZ_2_Kalibre_Et);
@@ -436,7 +436,7 @@ namespace Kaban.Machines.H800.Screens
             this.cN1_mm_Step_Enable.Address = "M173";
             this.cN1_mm_Step_Enable.DescriptionText = "1 mm Step Enable";
             this.cN1_mm_Step_Enable.Location = new System.Drawing.Point(536, 586);
-            this.cN1_mm_Step_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cN1_mm_Step_Enable.Size = new System.Drawing.Size(440, 38);
             this.cN1_mm_Step_Enable.LogAction = true;
             this.cN1_mm_Step_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cN1_mm_Step_Enable);
@@ -448,7 +448,7 @@ namespace Kaban.Machines.H800.Screens
             this.cN01_mm_Step_Enable.Address = "M172";
             this.cN01_mm_Step_Enable.DescriptionText = "01 mm Step Enable";
             this.cN01_mm_Step_Enable.Location = new System.Drawing.Point(1056, 16);
-            this.cN01_mm_Step_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cN01_mm_Step_Enable.Size = new System.Drawing.Size(440, 38);
             this.cN01_mm_Step_Enable.LogAction = true;
             this.cN01_mm_Step_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cN01_mm_Step_Enable);
@@ -460,7 +460,7 @@ namespace Kaban.Machines.H800.Screens
             this.cN001_mm_Step_Enable.Address = "M171";
             this.cN001_mm_Step_Enable.DescriptionText = "001 mm Step Enable";
             this.cN001_mm_Step_Enable.Location = new System.Drawing.Point(1056, 54);
-            this.cN001_mm_Step_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cN001_mm_Step_Enable.Size = new System.Drawing.Size(440, 38);
             this.cN001_mm_Step_Enable.LogAction = true;
             this.cN001_mm_Step_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cN001_mm_Step_Enable);
@@ -472,7 +472,7 @@ namespace Kaban.Machines.H800.Screens
             this.cN10_mm_Step_Enable.Address = "M170";
             this.cN10_mm_Step_Enable.DescriptionText = "10 mm Step Enable";
             this.cN10_mm_Step_Enable.Location = new System.Drawing.Point(1056, 92);
-            this.cN10_mm_Step_Enable.Size = new System.Drawing.Size(440, 28);
+            this.cN10_mm_Step_Enable.Size = new System.Drawing.Size(440, 38);
             this.cN10_mm_Step_Enable.LogAction = true;
             this.cN10_mm_Step_Enable.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
             this.Controls.Add(this.cN10_mm_Step_Enable);

@@ -144,7 +144,8 @@ class Emitter:
                      'this.{0}.Address = "{1}";'.format(nm, f["cmd"]["addr"]),
                      'this.{0}.DescriptionText = "{1}";'.format(nm, cap),
                      'this.{0}.Location = new System.Drawing.Point({1}, {2});'.format(nm, px, py),
-                     'this.{0}.Size = new System.Drawing.Size(440, 28);'.format(nm),
+                     # a switch row as tall as the place it is given: the rows touch, a line between them (30 October)
+                     'this.{0}.Size = new System.Drawing.Size(440, 38);'.format(nm),
                      'this.{0}.LogAction = true;'.format(nm),
                      'this.{0}.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;'.format(nm),
                      'this.Controls.Add(this.{0});'.format(nm)]
