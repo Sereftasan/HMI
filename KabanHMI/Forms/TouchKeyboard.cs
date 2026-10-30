@@ -56,9 +56,11 @@ namespace Kaban.UI.Forms
             var k = Current;
             if (k == null) _current = k = new TouchKeyboard();
             k._target = target;
+            k._away = 0;
             k.PlaceFor(target);
             if (!k.Visible) k.Show();
             EnableNative(k);
+            GiveBack(k, target);
             k._watch.Start();
             return k;
         }
@@ -81,7 +83,10 @@ namespace Kaban.UI.Forms
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
-            TopMost = true;
+            // ON TOP BY ITS STYLE ONLY (WS_EX_TOPMOST, CreateParams) - not TopMost = true: WinForms applies that
+            // with a SetWindowPos that ACTIVATES the window, and the keyboard, made the active window, took the
+            // focus from the text box; 0.3 s later it saw no text box with the focus and went (30 October: "the
+            // keyboard disappears as soon as appear, doesn't stay on the screen")
             BackColor = Color.FromArgb(232, 234, 238);
             _pad = new KeyPad(this) { Dock = DockStyle.Fill };
             Controls.Add(_pad);
@@ -122,13 +127,45 @@ namespace Kaban.UI.Forms
             Location = new Point(x, y);
         }
 
-        /// <summary>Gone when the focus is no longer in a text box of the program (a button tapped, a page left).</summary>
+        private int _away;
+
+        /// <summary>
+        /// Gone when the focus is no longer in a text box of the program (a button tapped, a page left) - seen
+        /// so twice running (0.6 s), not at a moment between two windows. The focus in the keyboard itself (Windows
+        /// made it the active window after all): given back to the box, the keyboard stays.
+        /// </summary>
         private void Watch()
         {
             if (!Visible) { _watch.Stop(); return; }
             var focused = TouchInput.FocusedTextControl();
-            if (focused != null) { _target = focused; return; }
-            if (TouchInput.IsWindows || _target == null || _target.IsDisposed || !_target.Visible) HideNow();
+            if (focused != null) { _target = focused; _away = 0; return; }
+            bool targetGone = _target == null || _target.IsDisposed || !_target.Visible;
+            if (!targetGone && HasFocusHere()) { GiveBack(this, _target); _away = 0; return; }
+            if (!TouchInput.IsWindows && !targetGone) return;
+            if (targetGone || ++_away >= 2) HideNow();
+        }
+
+        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+
+        /// <summary>The keyboard is the active window, or has the focus.</summary>
+        private bool HasFocusHere()
+        {
+            if (ContainsFocus || ActiveForm == this) return true;
+            if (!TouchInput.IsWindows || !IsHandleCreated) return false;
+            try { return GetForegroundWindow() == Handle; } catch { return false; }
+        }
+
+        /// <summary>The window of the text box made the active one again, the box given the focus (when the keyboard took them).</summary>
+        private static void GiveBack(TouchKeyboard k, Control target)
+        {
+            if (target == null || target.IsDisposed || !k.HasFocusHere()) return;
+            try
+            {
+                var f = target.FindForm();
+                if (f != null && !f.IsDisposed) f.Activate();
+                if (target.CanFocus) target.Focus();
+            }
+            catch { }
         }
 
         // ---- typing ---------------------------------------------------------------------------------

@@ -418,6 +418,13 @@ class TM {
         var kb = TouchKeyboard.Current;
         Check("a tap on a text box: the keyboard on the screen, for that box - never taking its focus",
               TouchKeyboard.IsShown && kb.Target == name && kb.Name == "touchKeyboard", kb == null ? "none" : "target " + (kb.Target == null ? "-" : kb.Target.Name));
+        // (30 October: "the keyboard disappears as soon as appear, doesn't stay on the screen") - on top by its window's
+        // style only: TopMost = true activated it, the box lost the focus, and the keyboard went
+        int exStyle = 0;
+        try { exStyle = ((CreateParams)typeof(Form).GetProperty("CreateParams", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(kb, null)).ExStyle; } catch { }
+        Pump(800);
+        Check("  it stays (several of its watches later), on top by its style - never made the active window",
+              TouchKeyboard.IsShown && !kb.TopMost && (exStyle & 0x00000008) != 0 && (exStyle & 0x08000000) != 0 && Form.ActiveForm != kb, exStyle.ToString("X"));
         Shot(kb, "keyboard");
         foreach (var k in new[] { "ş", "e", "k", "e", "r" }) kb.Press(k);
         kb.Press("Space");
