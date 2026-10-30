@@ -83,6 +83,34 @@ namespace Kaban.Core.Helpers
 
         public static IEnumerable<KeyValuePair<long, ConditionDefinition>> GetAllMachineBits() => _machineBits;
 
+        // ---- conditions judged at any time (30 October: a valve an option changes - FA2010's L35) ----
+
+        /// <summary>
+        /// The program's judgement of a set of conditions NOW, on the PLC values read last (the scanner sets
+        /// it on every scan); null before the first scan.
+        /// </summary>
+        public static Func<SystemCondition, bool> Now { get; set; }
+
+        private static long _readAlways;
+
+        /// <summary>
+        /// Conditions read on every scan whatever page is on the screen - for what is judged off its page
+        /// (a unit's help opened from the alarm list, the HMI's own alarms): MetNow can answer for them.
+        /// </summary>
+        public static void ReadAlways(SystemCondition set) { _readAlways |= (long)set; }
+
+        /// <summary>The conditions read on every scan (ReadAlways).</summary>
+        public static SystemCondition AlwaysRead { get { return (SystemCondition)_readAlways; } }
+
+        /// <summary>Whether a set of conditions is met now (None: yes; nothing read yet: no).</summary>
+        public static bool MetNow(SystemCondition set)
+        {
+            if (set == SystemCondition.None) return true;
+            var now = Now;
+            if (now == null) return false;
+            try { return now(set); } catch { return false; }
+        }
+
         /// <summary>One registered condition, as the PLC Monitor lists it.</summary>
         public sealed class Entry
         {

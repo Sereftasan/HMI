@@ -216,6 +216,8 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encMilling_Cutting_Left_Front.ForwardSensorAddress = "M243";
             this.encMilling_Cutting_Left_Front.Location = new System.Drawing.Point(16, 230);
             this.encMilling_Cutting_Left_Front.Name = "encMilling_Cutting_Left_Front";
+            this.encMilling_Cutting_Left_Front.OptionValveConditions = Kaban.Core.Enums.SystemCondition.MachineBit26;
+            this.encMilling_Cutting_Left_Front.OptionValveType = Kaban.UI.Controls.CylinderValve.ThreeWayOpenCenter;
             this.encMilling_Cutting_Left_Front.PositionAddress = "D20";
             this.encMilling_Cutting_Left_Front.PositionDecimalPlaces = 1;
             this.encMilling_Cutting_Left_Front.PositionDivisor = 10D;

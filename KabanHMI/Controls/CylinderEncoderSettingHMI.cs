@@ -88,6 +88,28 @@ namespace Kaban.UI.Controls
 
         protected override SystemCondition ShownConditions { get { return VisibilityConditions | _encoderConditions; } }
 
+        /// <summary>
+        /// The valve an option fits instead (30 October: FA2010's Cutting Left Front clamp is a 5/3 open centre with
+        /// "Cutting Left Front with Air Exhaust", L35): its units' OptionValveType / OptionValveConditions.
+        /// </summary>
+        [Category(" Valve & Feedback"), DefaultValue(CylinderValve.Unspecified)]
+        [Description("The valve fitted instead while OptionValveConditions are met (an option of the machine). Unspecified: none.")]
+        public CylinderValve OptionValveType
+        {
+            get { return Unit.OptionValveType; }
+            set { Unit.OptionValveType = value; }
+        }
+
+        [Category(" Valve & Feedback"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("While these are met the valve is OptionValveType (an option of the machine).")]
+        public SystemCondition OptionValveConditions
+        {
+            get { return Unit.OptionValveConditions; }
+            set { Unit.OptionValveConditions = value; }
+        }
+
         [Category(" Reference"), DefaultValue(""), Description("Word of the reference - the position the encoder's count takes at its reference sensor.")]
         public string ReferenceAddress { get { return FieldAddress("Reference"); } set { SetFieldAddress("Reference", value); } }
 
@@ -131,7 +153,8 @@ namespace Kaban.UI.Controls
                 Position = PositionAddress ?? "", PositionType = PositionDataType, Divisor = PositionDivisor,
                 Decimals = PositionDecimalPlaces, Digits = PositionDigits, Suffix = PositionSuffix ?? "",
                 UnitType = PositionUnitType, Valve = ValveType, Feedback = FeedbackType, Vertical = VerticalMovement,
-                Security = RequiredSecurity, EncoderConditions = _encoderConditions, MeasuredConditions = _measuredConditions
+                Security = RequiredSecurity, EncoderConditions = _encoderConditions, MeasuredConditions = _measuredConditions,
+                OptionValve = Unit.OptionValveType, OptionValveConditions = Unit.OptionValveConditions
             };
         }
     }

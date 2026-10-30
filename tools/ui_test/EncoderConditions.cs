@@ -125,6 +125,7 @@ class ECT {
         form.Controls.Add(enc); Pump(500);
         var rows = CylinderEncoderSettingHMI.RowsOf(enc);
         Func<int, CylinderEncoderSettingHMI> row = n => rows.First(r => r.EncoderNumber == n);
+        var row5Valve = row(5).ValveType; var row5Option = row(5).OptionValveType; var row5When = row(5).OptionValveConditions;
         Check("Milling-Cutting Left Front (5): the machine has it with L33; Cutting Front Right Vertical (9): without L34",
               row(5).EncoderConditions == (SystemCondition)l33 && row(9).EncoderConditions == (SystemCondition)l34 &&
               rows.Count(r => r.EncoderConditions != SystemCondition.None) == 2);
@@ -168,6 +169,39 @@ class ECT {
               mfc.Unit.PositionOff && !mfc.Unit.PositionDisplay.Visible && Pos(mfc.Unit) == null, mfc.Unit.PositionDisplay.Visible.ToString());
         mem["L33"] = 1; mem["D20"] = 456; Scan(milling);
         Check("  L33 ON: its position (D20) again", !mfc.Unit.PositionOff && mfc.Unit.PositionDisplay.Visible && Pos(mfc.Unit) != null);
+
+        // 30 October: "[L35] makes the valve selection '3WayOpenCenter', the helper should be shown accordingly"
+        Console.WriteLine("--- L35 (with Air Exhaust): the Cutting Left Front clamp's valve a 5/3 open centre ---");
+        long l35 = Bit("CuttingLeftFrontAirExhaust");
+        Check("condition 26: L35 = 1, after the others", l35 == 1L << 26 && rule(l35) == "Cutting Left Front with Air Exhaust L35Equal1", rule(l35));
+        Check("  the row (5) and its unit on Milling: 3WayClosedCenter, 3WayOpenCenter with it",
+              row5Valve == CylinderValve.ThreeWayClosedCenter && row5Option == CylinderValve.ThreeWayOpenCenter && row5When == (SystemCondition)l35 &&
+              mfc.Unit.ValveType == CylinderValve.ThreeWayClosedCenter && mfc.Unit.OptionValveType == CylinderValve.ThreeWayOpenCenter &&
+              mfc.Unit.OptionValveConditions == (SystemCondition)l35);
+        var scanner = new Kaban.UI.Plc.PlcScanner(milling);
+        scanner.RefreshTags();
+        var batch = (Dictionary<int, string[]>)typeof(Kaban.UI.Plc.PlcScanner).GetField("_plcBatch", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(scanner);
+        Check("  L35 read on every scan, whatever page is shown (its help may be opened from the alarm list)",
+              ((long)MachineConditionMap.AlwaysRead & l35) != 0 && batch.ContainsKey(1) && batch[1].Contains("L35"));
+        scanner.Dispose();
+        Func<CylinderUnitHMI, int> docValve = u => ((TroubleshootingCatalog.HelpDocument)typeof(CylinderUnitHMI)
+            .GetMethod("CylinderDocument", Any).Invoke(u, new object[] { "A" })).Valve;
+        var watch = mfc.Unit.BuildWatch();
+        MachineConditionMap.Now = Met;
+        mem["L35"] = 0;
+        Check("  L35 OFF: its valve, its '?' help and its alarm's step-by-step a 5/3 closed centre",
+              mfc.Unit.ValveNow == CylinderValve.ThreeWayClosedCenter && docValve(mfc.Unit) == (int)TroubleshootingCatalog.ValveType.ClosedCentre &&
+              watch != null && watch.ValveNow == TroubleshootingCatalog.ValveType.ClosedCentre);
+        mem["L35"] = 1;
+        Check("  L35 ON: all of them a 5/3 OPEN centre", mfc.Unit.ValveNow == CylinderValve.ThreeWayOpenCenter &&
+              docValve(mfc.Unit) == (int)TroubleshootingCatalog.ValveType.OpenCentre && watch.ValveNow == TroubleshootingCatalog.ValveType.OpenCentre,
+              mfc.Unit.ValveNow + " / " + docValve(mfc.Unit) + " / " + watch.ValveNow);
+        var link = new Kaban.UI.Helpers.AlarmHelpLinks.Link { Valve = 3, OptionValve = 4, OptionValveWhile = l35 };
+        Check("  the alarm list's help (its link) too", link.ValveNow == 4);
+        mem["L35"] = 0;
+        Check("    and back without it", link.ValveNow == 3);
+        MachineConditionMap.Now = null;
+        Check("  nothing read yet: the valve as drawn", mfc.Unit.ValveNow == CylinderValve.ThreeWayClosedCenter);
         form.Controls.Remove(milling);
 
         var cutting = Page("Manual", "ManualCutting");

@@ -275,7 +275,7 @@ namespace Kaban.UI.Helpers
                 bool isCylinder = (link != null && link.Kind == TC.ErrorType.CylinderMovement) || (link == null && cylinder != null);
                 if (isCylinder)
                 {
-                    int valve = link != null ? link.Valve : (int)cylinder.Valve, feedback = link != null ? link.Feedback : (int)cylinder.Feedback;
+                    int valve = link != null ? link.ValveNow : (int)cylinder.ValveNow, feedback = link != null ? link.Feedback : (int)cylinder.Feedback;
                     sb.AppendLine("- Kind: pneumatic cylinder");
                     sb.AppendLine("- Valve: " + TC.Describe((TC.ValveType)TC.CanonicalValve(valve)));
                     sb.AppendLine("- Feedback: " + TC.Describe((TC.FeedbackType)TC.CanonicalFeedback(feedback)));

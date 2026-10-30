@@ -135,6 +135,12 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("RightRecognitionEncoders"),
                 ctx.Scoped("RightRecognitionEncoders"), "Right Profile Recognition Encoders Selected", plc1, "M450",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+            // The Milling / Cutting Front Clamping's valve with "Cutting Left Front with Air Exhaust" (L35,
+            // PC_KesimSolOn_HavaBosaltmali): a 5/3 OPEN centre (30 October: "It makes the valve selection
+            // '3WayOpenCenter', the helper should be shown accordingly").
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("CuttingLeftFrontAirExhaust"),
+                ctx.Scoped("CuttingLeftFrontAirExhaust"), "Cutting Left Front with Air Exhaust", plc1, "L35",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>

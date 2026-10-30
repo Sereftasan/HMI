@@ -216,6 +216,23 @@ namespace Kaban.Core.Helpers
             /// right unit (30 October). A movement started while not met is not timed by its position.
             /// </summary>
             public long PositionWhile;
+            /// <summary>
+            /// A valve an option changes (30 October: FA2010's Cutting Left Front clamp is a 5/3 open centre with
+            /// "Cutting Left Front with Air Exhaust", L35): OptionValve while OptionValveWhile (a SystemCondition set)
+            /// is met - MachineConditionMap.MetNow, the PLC's values read last.
+            /// </summary>
+            public TroubleshootingCatalog.ValveType OptionValve;
+            public long OptionValveWhile;
+
+            /// <summary>The valve fitted now.</summary>
+            public TroubleshootingCatalog.ValveType ValveNow
+            {
+                get
+                {
+                    return OptionValve != 0 && OptionValveWhile != 0 && MachineConditionMap.MetNow((SystemCondition)OptionValveWhile)
+                        ? OptionValve : Valve;
+                }
+            }
 
             internal string Key
             {
@@ -1298,7 +1315,7 @@ namespace Kaban.Core.Helpers
                         (string.IsNullOrEmpty(unit.Unit) ? "" : " - " + unit.Unit) + " - " + TroubleshootingCatalog.MovementName(mv) +
                         // the alarm's bit is an internal device: named for an Admin only
                         (TroubleshootingCatalog.AdminView() ? " (" + item.ShownCode + ")" : ""),
-                Valve = TroubleshootingCatalog.CanonicalValve((int)unit.Valve),
+                Valve = TroubleshootingCatalog.CanonicalValve((int)unit.ValveNow),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)unit.Feedback),
                 Movement = mv,
                 Failure = FailureOf(item)

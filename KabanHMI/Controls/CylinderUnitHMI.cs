@@ -1154,6 +1154,40 @@ namespace Kaban.UI.Controls
                      "On an error the '?' opens the cylinder manual with only this valve's part.")]
         public CylinderValve ValveType { get { return _valve; } set { _valve = value; ApplySettings(); } }
 
+        private CylinderValve _optionValve = CylinderValve.Unspecified;
+        private SystemCondition _optionValveConditions = SystemCondition.None;
+
+        /// <summary>
+        /// THE VALVE AN OPTION FITS INSTEAD (30 October: "[L35] makes the valve selection '3WayOpenCenter', the
+        /// helper should be shown accordingly"): while OptionValveConditions are met this is the cylinder's valve -
+        /// its "?", the alarm list's help, the AI prompt and the HMI's own alarm say this one.
+        /// </summary>
+        [Category("  Valve & Feedback"), DefaultValue(CylinderValve.Unspecified),
+         Description("The valve fitted instead while OptionValveConditions are met (an option of the machine). Unspecified: none.")]
+        public CylinderValve OptionValveType { get { return _optionValve; } set { _optionValve = value; } }
+
+        /// <summary>When OptionValveType is the valve (read on every scan: its help may be opened from the alarm list).</summary>
+        [Category("  Valve & Feedback"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("While these are met the valve is OptionValveType (an option of the machine).")]
+        public SystemCondition OptionValveConditions
+        {
+            get { return _optionValveConditions; }
+            set { _optionValveConditions = value; if (value != SystemCondition.None) MachineConditionMap.ReadAlways(value); }
+        }
+
+        /// <summary>The valve fitted now: OptionValveType while its conditions are met (the PLC's values read last).</summary>
+        [Browsable(false)]
+        public CylinderValve ValveNow
+        {
+            get
+            {
+                return _optionValve != CylinderValve.Unspecified && _optionValveConditions != SystemCondition.None &&
+                       MachineConditionMap.MetNow(_optionValveConditions) ? _optionValve : _valve;
+            }
+        }
+
         /// <summary>The feedback fitted to this cylinder: only its part of detail 1.7 is shown.</summary>
         [Category("  Valve & Feedback"), DefaultValue(CylinderFeedback.Unspecified), RefreshProperties(RefreshProperties.All),
          Description("The feedback: it decides the LAMPS and the POSITION. SingleMagnetic / SingleInductive - one lamp (A or B). " +
@@ -1417,6 +1451,8 @@ namespace Kaban.UI.Controls
                         Station = _plcNumber,
                         Address = address,
                         Valve = _kind != UnitKind.Cylinder ? 0 : (int)_valve,
+                        OptionValve = _kind != UnitKind.Cylinder ? 0 : (int)_optionValve,
+                        OptionValveWhile = _kind != UnitKind.Cylinder ? 0 : (long)_optionValveConditions,
                         Feedback = _kind != UnitKind.Cylinder ? 0 : (int)_feedback,
                         Unit = name,
                         // That movement's own files: the other direction's are about another movement.
@@ -1488,6 +1524,12 @@ namespace Kaban.UI.Controls
             var w = AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
             // its position judged only while the machine has its measuring device and it reads this cylinder
             if (w != null) w.PositionWhile = (long)(_positionConditions | _positionMeasured);
+            // the valve an option fits instead: its help says that one
+            if (w != null && _optionValve != CylinderValve.Unspecified && _optionValveConditions != SystemCondition.None)
+            {
+                w.OptionValve = (TroubleshootingCatalog.ValveType)TroubleshootingCatalog.CanonicalValve((int)_optionValve);
+                w.OptionValveWhile = (long)_optionValveConditions;
+            }
             return w;
         }
 
@@ -1632,7 +1674,7 @@ namespace Kaban.UI.Controls
                 // movement is named - it is what tells two entries apart.
                 Title = LanguageManager.GetString("Hlp_Cylinder", "Cylinder troubleshooting") +
                         (mv == null ? "" : " - " + TroubleshootingCatalog.MovementName(mv)),
-                Valve = TroubleshootingCatalog.CanonicalValve((int)_valve),
+                Valve = TroubleshootingCatalog.CanonicalValve((int)ValveNow),
                 Feedback = TroubleshootingCatalog.CanonicalFeedback((int)_feedback),
                 Movement = mv,
                 Made = true

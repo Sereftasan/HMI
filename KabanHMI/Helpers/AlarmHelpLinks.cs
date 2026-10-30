@@ -40,6 +40,18 @@ namespace Kaban.UI.Helpers
             public string Address = "";
             public int Valve;
             public int Feedback;
+            /// <summary>A valve an option changes: OptionValve while OptionValveWhile is met (30 October, FA2010's L35).</summary>
+            public int OptionValve;
+            public long OptionValveWhile;
+            /// <summary>The valve fitted now.</summary>
+            public int ValveNow
+            {
+                get
+                {
+                    return OptionValve != 0 && OptionValveWhile != 0 &&
+                           Kaban.Core.Helpers.MachineConditionMap.MetNow((Kaban.Core.Enums.SystemCondition)OptionValveWhile) ? OptionValve : Valve;
+                }
+            }
             /// <summary>The unit or axis as it is named on its page.</summary>
             public string Unit = "";
             /// <summary>The unit's own help files, listed after its manual.</summary>
@@ -127,6 +139,9 @@ namespace Kaban.UI.Helpers
             public Kaban.Core.Enums.SecurityLevel Security = Kaban.Core.Enums.SecurityLevel.Operator;
             /// <summary>The machine has the encoder only while these are met; it reads this cylinder only while those.</summary>
             public Kaban.Core.Enums.SystemCondition EncoderConditions, MeasuredConditions;
+            /// <summary>The valve while these are met (an option's: FA2010's L35 makes a 5/3 open centre).</summary>
+            public Kaban.UI.Controls.CylinderValve OptionValve;
+            public Kaban.Core.Enums.SystemCondition OptionValveConditions;
         }
 
         private static readonly Dictionary<string, EncoderInfo> _encoders = new Dictionary<string, EncoderInfo>();
@@ -703,7 +718,7 @@ namespace Kaban.UI.Helpers
                         StepByStep = true,
                         Title = LanguageManager.GetString("Hlp_CylinderSteps", "Step by step") +
                                 (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit) + " - " + TC.MovementName(movement),
-                        Valve = TC.CanonicalValve(link.Valve),
+                        Valve = TC.CanonicalValve(link.ValveNow),
                         Feedback = TC.CanonicalFeedback(link.Feedback),
                         Movement = movement
                     });
@@ -715,7 +730,7 @@ namespace Kaban.UI.Helpers
                                           : LanguageManager.GetString("Hlp_Servo", "Servo drive troubleshooting"))
                                 + (string.IsNullOrEmpty(link.Unit) ? "" : " - " + link.Unit),
                         Made = true,
-                        Valve = cylinder ? TC.CanonicalValve(link.Valve) : 0,
+                        Valve = cylinder ? TC.CanonicalValve(link.ValveNow) : 0,
                         Feedback = cylinder ? TC.CanonicalFeedback(link.Feedback) : 0
                     });
             }

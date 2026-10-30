@@ -127,12 +127,12 @@ namespace Kaban.UI.Design
 
             ["MeterHMI"] = L(
                 C("Device", "PlcNumber", "Address"),
-                C("Display", "Caption", "ShowValue", "Divisor", "DecimalPlaces", "Suffix", "ScaleMinimum", "ScaleMaximum"),
+                C("Display", "Caption", "ShowValue", "Divisor", "DecimalPlaces", "Suffix", "Signed", "ScaleMinimum", "ScaleMaximum"),
                 C("Bands", "Bands", "LowAlarm", "LowWarning", "HighWarning", "HighAlarm")),
 
             ["MeterInputHMI"] = L(
                 C("Device", "PlcNumber", "Address"),
-                C("Display", "Caption", "ShowValue", "Divisor", "DecimalPlaces", "Suffix", "ScaleMinimum", "ScaleMaximum"),
+                C("Display", "Caption", "ShowValue", "Divisor", "DecimalPlaces", "Suffix", "Signed", "ScaleMinimum", "ScaleMaximum"),
                 C("Input", "Minimum", "Maximum", "Step"),
                 C("Bands", "Bands", "LowAlarm", "LowWarning", "HighWarning", "HighAlarm"),
                 C("Security", "RequiredSecurity", "LogAction")),
@@ -176,7 +176,7 @@ namespace Kaban.UI.Design
 
             // A cylinder with an encoder, as a row of Machine Parameters > Encoders.
             ["CylinderEncoderSettingHMI"] = L(
-                C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),
+                C("Valve & Feedback", "ValveType", "OptionValveType", "OptionValveConditions", "FeedbackType", "TypeCheck"),
                 C("Device", "PlcNumber", "EncoderNumber"),
                 C("Unit", "TitleTextKey", "NameWidth"),
                 C("Movement", "CommandBackAddress", "CommandForwardAddress", "VerticalMovement", "BackSensorAddress", "ForwardSensorAddress",
@@ -188,7 +188,7 @@ namespace Kaban.UI.Design
                 C("Minimum limit", "MinimumLimitAddress"),
                 C("Unclamping interval", "UnclampingIntervalAddress"),
                 C("Value", "SettingDataType", "Divisor", "DecimalPlaces", "Digits", "Suffix", "UnitType"),
-                C("Conditions", "VisibilityConditions", "EnableConditions"),
+                C("Conditions", "VisibilityConditions", "EncoderConditions", "MeasuredConditions", "EnableConditions"),
                 C("Security", "RequiredSecurity", "SettingsSecurity", "LogAction")),
 
             // A cylinder with an encoder on a manual page: its encoder's number, the rest from that row.
@@ -198,7 +198,7 @@ namespace Kaban.UI.Design
                 C("Conditions", "VisibilityConditions", "EnableConditions")),
 
             ["CylinderUnitHMI"] = L(
-                C("Valve & Feedback", "ValveType", "FeedbackType", "TypeCheck"),   // chosen first: they decide what else is needed
+                C("Valve & Feedback", "ValveType", "OptionValveType", "OptionValveConditions", "FeedbackType", "TypeCheck"),   // chosen first: they decide what else is needed
                 C("Device", "PlcNumber", "BaseOffset"),
                 C("Unit", "TitleTextKey", "TitleTipKey"),
                 C("Action A", Side("A")),

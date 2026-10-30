@@ -139,6 +139,8 @@ namespace Kaban.UI.Controls
             _unit.FeedbackType = CylinderFeedback.Unspecified;
             _unit.PositionConditions = SystemCondition.None;
             _unit.PositionMeasuredConditions = SystemCondition.None;
+            _unit.OptionValveType = CylinderValve.Unspecified;
+            _unit.OptionValveConditions = SystemCondition.None;
             if (InDesigner || _number <= 0)
             {
                 _unit.TitleTextKey = _title.Length > 0 ? _title : (_number > 0 ? "Encoder " + _number : "Encoder");
@@ -183,6 +185,9 @@ namespace Kaban.UI.Controls
             // the encoder an option, or read only while switched to this cylinder (30 October)
             _unit.PositionConditions = e.EncoderConditions;
             _unit.PositionMeasuredConditions = e.MeasuredConditions;
+            // a valve an option fits instead (30 October)
+            _unit.OptionValveType = e.OptionValve;
+            _unit.OptionValveConditions = e.OptionValveConditions;
             _unit.Arrows = e.Vertical ? ButtonArrowStyle.DownUp : ButtonArrowStyle.LeftRight;
             Row = e;
             IsResolved = true;

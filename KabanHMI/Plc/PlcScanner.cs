@@ -373,6 +373,8 @@ namespace Kaban.UI.Plc
             AddTo(1, Kaban.UI.Forms.MainForm.MachineErrorAddress);   // machine-error summary bit (main PLC)
             // the axes' step mode: coupled axes ask for it on any page (17 October)
             AddConditions(SystemCondition.AxisStepMode);
+            // what is judged off its page too (a valve an option changes: its help from the alarm list)
+            AddConditions(MachineConditionMap.AlwaysRead);
             foreach (var alarmDef in AlarmManager.GetAllDefinitions())
             {
                 if (string.IsNullOrEmpty(alarmDef.Address)) continue;
@@ -880,6 +882,7 @@ namespace Kaban.UI.Plc
             };
             Func<SystemCondition, bool> checkGlobal = cond => CheckGlobalCondition(cond, lookupFor);
             LastConditionCheck = checkGlobal;
+            MachineConditionMap.Now = checkGlobal;
 
             foreach (var num in _numerics) withLookup(num.PlcNumber, lk => num.UpdateState(lk, checkGlobal: checkGlobal));
             foreach (var btn in _buttons) withLookup(btn.PlcNumber, lk => btn.UpdateState(lk, checkGlobal: checkGlobal));
