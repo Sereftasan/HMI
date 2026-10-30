@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using Kaban.Core.Enums;
 
 namespace Kaban.UI.Controls
 {
@@ -50,6 +51,43 @@ namespace Kaban.UI.Controls
          Description("The encoder's number on the HMI. A CylinderEncoderUnitHMI with this number (its EncoderNumber) on a Manual Movement page shows this cylinder.")]
         public int EncoderNumber { get; set; }
 
+        private SystemCondition _encoderConditions = SystemCondition.None, _measuredConditions = SystemCondition.None;
+
+        /// <summary>
+        /// THE MACHINE HAS THIS ENCODER only while these are met - an option (30 October: FA2010's
+        /// Milling / Cutting Front Clamping has its encoder only on machines with "Cutting Left Front
+        /// with Encoder", L33; the Cutting Right Front Vertical Clamping only without "... without
+        /// Encoder", L34). Not met: this row is not on the page (the rows under it move up) and the
+        /// cylinder's units show no position - a cylinder without one.
+        /// </summary>
+        [Category(" Triggers"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("The machine has this encoder only while these are met (an option). Not met: the row is not shown and the cylinder's units show no position.")]
+        public SystemCondition EncoderConditions
+        {
+            get { return _encoderConditions; }
+            set { _encoderConditions = value; Unit.PositionConditions = value; }
+        }
+
+        /// <summary>
+        /// THE ENCODER READS THIS CYLINDER only while these are met - one input switched between two
+        /// encoders (30 October: FA2010's profile recognition width and height, "the left or the right
+        /// unit through K77 / K78", Y120 choosing the left; "right side is default"). Not met: its
+        /// position shows "–" and is not judged.
+        /// </summary>
+        [Category(" Triggers"), DefaultValue(SystemCondition.None)]
+        [TypeConverter(typeof(Kaban.UI.Design.ConditionTextConverter))]
+        [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(System.Drawing.Design.UITypeEditor))]
+        [Description("The encoder reads this cylinder only while these are met (one input switched between two encoders). Not met: its position shows '–'.")]
+        public SystemCondition MeasuredConditions
+        {
+            get { return _measuredConditions; }
+            set { _measuredConditions = value; Unit.PositionMeasuredConditions = value; }
+        }
+
+        protected override SystemCondition ShownConditions { get { return VisibilityConditions | _encoderConditions; } }
+
         [Category(" Reference"), DefaultValue(""), Description("Word of the reference - the position the encoder's count takes at its reference sensor.")]
         public string ReferenceAddress { get { return FieldAddress("Reference"); } set { SetFieldAddress("Reference", value); } }
 
@@ -93,7 +131,7 @@ namespace Kaban.UI.Controls
                 Position = PositionAddress ?? "", PositionType = PositionDataType, Divisor = PositionDivisor,
                 Decimals = PositionDecimalPlaces, Digits = PositionDigits, Suffix = PositionSuffix ?? "",
                 UnitType = PositionUnitType, Valve = ValveType, Feedback = FeedbackType, Vertical = VerticalMovement,
-                Security = RequiredSecurity
+                Security = RequiredSecurity, EncoderConditions = _encoderConditions, MeasuredConditions = _measuredConditions
             };
         }
     }

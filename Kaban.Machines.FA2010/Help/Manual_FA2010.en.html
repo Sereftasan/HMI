@@ -42,7 +42,7 @@ start (the old <i>Send To Position</i>, for the operator), <b>Calibration</b> an
 <b>Direction ref</b> (the old <i>Stopping Offset</i>: the PLC compares the target with it to choose the direction &ndash; a target
 above it is approached the way the position increases, one below it the other way) &ndash; Maintenance. Type a target, then press &#9654;| beside it: the mould goes there.</p>
 <p>The six <b>front vertical</b> moulds are always fitted. The ten <b>back</b> moulds, vertical and horizontal, are fitted only with the
-<b>Clamping Mould</b> option (<b>Machine Parameters &rsaquo; Others</b>, Machine Options): without it they are not shown and
+<b>Clamping Mould</b> option (<b>Machine Parameters &rsaquo; Options</b>): without it they are not shown and
 the front ones stand together at the top of the page; tick the option and they appear in their places.</p>
 <p>The back moulds' valves are wired to the <b>second controller</b> (PLC 2: Y0 &ndash; Y23), and so are the reference sensors of the three
 back horizontal moulds with an encoder &ndash; Profile Recognition, Cutting Left and Cutting Right Back Horizontal: <b>X12, X13, X14 of PLC 2</b>
@@ -55,9 +55,18 @@ The angle axes (Milling 1 and 2 Angle, Cutting Angle) have &#9664; &#9654;; the 
 <p>The clamps with an encoder (<a href="#encoders">4b</a>) &ndash; the Gripper, Profile Recognition's Front, Top and Left Top Clamping,
 Entry Conveyor's Profile Clamping 7, Milling's Top and Front Clamping, Cutting's Left Top, Right Front and Right Front Vert. Clamping,
 the Exit's Robot Top Clamping &ndash; take theirs from their rows on <b>Machine Parameters &rsaquo; Encoders</b>.</p>
+<p>Two of these encoders are options (<b>Machine Parameters &rsaquo; Options</b>): Milling's <b>Front Clamping</b> has one only with
+<b>Cutting Left Front with Encoder</b> (<code>L33</code>, the older machines), Cutting's <b>Right Front Vert. Clamping</b> only without
+<b>Cutting Right Front Vertical without Encoder</b> (<code>L34</code>). Without its encoder the clamp is a cylinder without a position: no
+position on its unit, its row not on the Encoders page, and the HMI's own alarm does not time it by a position.</p>
+<p>The profile recognition's <b>width</b> and <b>height</b> encoders &ndash; the right unit's and the left unit's &ndash; come in on the same
+inputs (X10/X11, X12/X13) through the relays K77 and K78. The right unit is the default; <b>Left End Encoders Active</b> (Y120) switches them to
+the left unit. So only the selected unit's cylinders show a position: the others show <b>&ndash;</b> (its tip says when it is read), and the
+HMI's own alarm does not time them by it meanwhile. Entry Conveyor's <b>Profile Clamping 7</b> is the left unit's front clamping: it measures
+the profile at the start of the process, while the left unit is selected.</p>
 
 <h4 id="fa-params">Machine Parameters</h4>
-<p>As on the old program, in these tabs: <b>Axis</b> (the axes' limits, reference, calibration and reference activation, in the old
+<p>As on the old program, in these tabs: <b>Options</b> (the machine's options, first), <b>Axis</b> (the axes' limits, reference, calibration and reference activation, in the old
 order: Robot, Milling 1, Milling 2, Cutting, Exit Robot, V Cutting, with the bar of the axes' speed and steps at the top; <b>Send Axes to Reference</b>
 under them sends the axes ticked in the <i>Ref</i> column to their references), <b>Conveyor</b> and <b>Robot</b> (the old Entry Parameters), <b>Milling</b> and
 <b>Cutting</b> (the old Process Parameters), <b>Encoders</b>, <b>Others</b> and <b>Alarms and Logs</b>. Every value is in the unit shown beside it (mm,
@@ -69,9 +78,13 @@ Milling-Cutting Left Front, Cutting Left Top, Cutting Right Front, Exit Carrying
 Recognition Front and Top &ndash; its manual movement (to move it while setting it up), <b>Reference</b>, <b>Measuring tolerance</b>,
 <b>Minimum limit</b> (the old <i>Start Limit</i>) and <b>Unclamping interval</b>. The old page's first row, <i>Robot Position</i>, is Robot X
 (an axis). The Robot Gripper's position shows two decimals, as the old Robot page did; its <b>Reference</b> (D516, the old Robot page's
-<i>Encoder Reference</i>) is set here only.</p>
-<p><b>Others</b>: the exit conveyor, the distances between the units, the lubrication, the <b>Machine Options</b>
-(a tick box per option the machine has: mullion notching, cooling, the carrying rollers, a reverse machine ...), the
+<i>Encoder Reference</i>) is set here only. Milling-Cutting Left Front and Cutting Front Right Vertical are on the page only on a machine
+with their encoder (<a href="#fa-manual">above</a>); Profile Recognition Front and Top show their position while the right unit is selected,
+Left Profile Recognition Front and Top while the left one is.</p>
+<p><b>Options</b>: a tick box per option the machine has &ndash; cooling, the carrying rollers, the left profile recognition, a reverse machine,
+the clamping mould, the cross roller, mullion notching ... and the cutting front clamps: <b>Cutting Left Front with Encoder</b> (<code>L33</code>),
+<b>Cutting Right Front Vertical without Encoder</b> (<code>L34</code>) and <b>Cutting Left Front with Air Exhaust</b> (<code>L35</code>).</p>
+<p><b>Others</b>: the exit conveyor, the distances between the units, the lubrication, the
 <b>Middle Register Notch Parameters</b> and the cross rollers' distances from the milling's X zero.</p>
 <div class="safety"><b>Safety.</b> A machine option tells the PLC program what the machine has. Change one only when the machine was built or
 changed that way.</div>

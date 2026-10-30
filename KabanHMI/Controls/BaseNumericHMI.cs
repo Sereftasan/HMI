@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using Kaban.Core.Enums;
@@ -210,6 +211,21 @@ namespace Kaban.UI.Controls
         [Editor("Kaban.UI.Design.UnifiedConditionEditor, Kaban.UI", typeof(UITypeEditor))]
         public SystemCondition VisibilityConditions { get; set; } = SystemCondition.None;
 
+        /// <summary>
+        /// THE VALUE IS MEASURED ONLY WHILE THESE ARE MET - a measuring device switched
+        /// between two cylinders (30 October: FA2010's profile recognition encoders, "X10-X11
+        /// Left profile recognition and profile recognition (right side is default)
+        /// encoders are read from the same PLC input (selected which one to use with K77)").
+        /// Not met, the word holds the other one's value: "–" is shown, and the tooltip says
+        /// why. Not a designer property: CylinderUnitHMI's PositionMeasuredConditions sets it.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SystemCondition MeasuredConditions { get; set; } = SystemCondition.None;
+
+        /// <summary>"–" now: its MeasuredConditions are not met.</summary>
+        [Browsable(false)]
+        public bool NotMeasuredNow { get; private set; }
+
         [Category(" Security")] public SecurityLevel RequiredSecurity { get; set; } = SecurityLevel.None;
         [Category(" Security")] public bool LogAction { get; set; } = false;
 
@@ -339,6 +355,11 @@ namespace Kaban.UI.Controls
         /// <summary>The compared value and the difference - the first lines of the tip.</summary>
         protected virtual string TooltipLead()
         {
+            if (NotMeasuredNow)
+                return string.Format(LanguageManager.GetString("Tip_NotMeasuredNow",
+                           "Not measured now - its measuring device reads another cylinder. It is read while: {0}"),
+                       string.Join(", ", MachineConditionMap.Parts(MeasuredConditions).Select(MachineConditionMap.NameOf)
+                                                            .Select(n => LanguageManager.Localize(n))));
             if (string.IsNullOrWhiteSpace(ComparedAddress)) return "";
             string caption = LanguageManager.GetString(ComparedCaptionKey, "Real position");
             if (!_comparedRaw.HasValue || !_lastRaw.HasValue)
@@ -421,6 +442,8 @@ namespace Kaban.UI.Controls
             bool vis = checkGlobal(VisibilityConditions);
             if (this.Visible != vis) this.Visible = vis;
             if (!vis || string.IsNullOrEmpty(Address)) return;
+            NotMeasuredNow = MeasuredConditions != SystemCondition.None && !checkGlobal(MeasuredConditions);
+            if (NotMeasuredNow) { this.Text = "\u2013"; return; }
 
             try
             {

@@ -202,7 +202,10 @@ namespace Kaban.UI.Controls
         internal bool HasEndSensors { get { return !string.IsNullOrWhiteSpace(_lamp1AAddress) && !string.IsNullOrWhiteSpace(_lamp1BAddress); } }
 
         /// <summary>A position reading (an axis, a cylinder measured by an encoder or an analogue sensor).</summary>
-        internal bool HasPosition { get { return !string.IsNullOrWhiteSpace(_positionAddress); } }
+        internal bool HasPosition { get { return PositionShown; } }
+
+        /// <summary>A position reading, and the machine has its measuring device now (PositionConditions).</summary>
+        private bool PositionShown { get { return !string.IsNullOrWhiteSpace(_positionAddress) && !_positionOff; } }
 
         /// <summary>Its chain may be clicked now, or is faded (UnitCoupling.RefreshAvailability).</summary>
         internal void ShowCouplingAvailable(bool on) { _couple.Available = on; }
@@ -212,7 +215,7 @@ namespace Kaban.UI.Controls
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(_positionAddress)) return null;
+                if (!PositionShown || _numPosition.NotMeasuredNow) return null;
                 var raw = _numPosition.LastRaw;
                 if (!raw.HasValue) return null;
                 double d = _positionDivisor == 0 ? 1 : _positionDivisor;
@@ -791,6 +794,44 @@ namespace Kaban.UI.Controls
         [Description("Word address of the encoder value. Empty hides the readout.")]
         public string PositionAddress { get { return _positionAddress; } set { _positionAddress = value; ApplySettings(); } }
 
+        // 30 October - FA2010's clamps whose encoder is an option ("PC_KesimSolOn_Enkoderli L33",
+        // "PC_KesimSagOnDikey_Enkodersiz L34") and its profile recognition encoders, the left and
+        // the right unit's read through one input (K77, K78). Set from the encoder's row
+        // (CylinderEncoderSettingHMI EncoderConditions, MeasuredConditions); not designer properties.
+        private SystemCondition _positionConditions = SystemCondition.None, _positionMeasured = SystemCondition.None;
+        private bool _positionOff;
+
+        /// <summary>
+        /// The position reading is there only while these are met - a measuring device the machine
+        /// has only with an option. Not met, the unit is a cylinder without a position: no readout,
+        /// nothing judged by it.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SystemCondition PositionConditions
+        {
+            get { return _positionConditions; }
+            set { _positionConditions = value; if (value == SystemCondition.None) _positionOff = false; ApplySettings(); }
+        }
+
+        /// <summary>
+        /// The position is measured only while these are met - a measuring device switched between
+        /// two cylinders. Not met, the readout shows "–" and says why.
+        /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public SystemCondition PositionMeasuredConditions
+        {
+            get { return _positionMeasured; }
+            set { _positionMeasured = value; _numPosition.MeasuredConditions = value; }
+        }
+
+        /// <summary>No position now: its PositionConditions are not met (tests).</summary>
+        [Browsable(false)]
+        public bool PositionOff { get { return _positionOff; } }
+
+        /// <summary>The position shows "–" now: its measuring device reads another cylinder (tests).</summary>
+        [Browsable(false)]
+        public bool PositionNotMeasuredNow { get { return PositionShown && _numPosition.NotMeasuredNow; } }
+
         private DataTypeEnum _positionDataType = DataTypeEnum.Bin_16;
         [Browsable(false)]
         [Category(" Position")]
@@ -876,6 +917,16 @@ namespace Kaban.UI.Controls
 
         public void UpdateState(Func<string, int> lookup, Func<SystemCondition, bool> checkGlobal)
         {
+            // the position's measuring device fitted (an option): without it, a cylinder without a position
+            if (_positionConditions != SystemCondition.None && checkGlobal != null)
+            {
+                bool off = !checkGlobal(_positionConditions);
+                if (off != _positionOff)
+                {
+                    _positionOff = off;
+                    ApplySettings();
+                }
+            }
             bool met = _visibilityConditions == SystemCondition.None || checkGlobal == null || checkGlobal(_visibilityConditions);
             if (met == !_hiddenByConditions) return;
             _hiddenByConditions = !met;
@@ -1434,7 +1485,10 @@ namespace Kaban.UI.Controls
         {
             if (_kind != UnitKind.Cylinder) return null;
             var name = string.IsNullOrEmpty(_titleText) ? Name : Tr(_titleText);
-            return AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
+            var w = AlarmGeneration.Build(_plcNumber, "", name, (int)_valve, (int)_feedback, MovementFor("A"), MovementFor("B"));
+            // its position judged only while the machine has its measuring device and it reads this cylinder
+            if (w != null) w.PositionWhile = (long)(_positionConditions | _positionMeasured);
+            return w;
         }
 
         /// <summary>
@@ -1492,7 +1546,7 @@ namespace Kaban.UI.Controls
                 OtherCommand = dev(a ? _commandBAddress : _commandAAddress, a ? _buttonBTip : _buttonATip),
                 OtherOutput = dev(DrivenOutput(a ? "B" : "A"), ""),
                 Error = Abs(a ? _errorAAddress : _errorBAddress),
-                Position = Abs(_positionAddress),
+                Position = PositionShown ? Abs(_positionAddress) : "",
                 AlarmTime = snap != null ? snap.Time : (DateTime?)null,
                 SeenRising = snap != null && snap.SeenRising
             };
@@ -1717,7 +1771,7 @@ namespace Kaban.UI.Controls
                 _visibilityBExtra, _enableBExtra, _enableTriggerB);
             ApplyAlarmTips();
 
-            bool hasPosition = !string.IsNullOrWhiteSpace(_positionAddress);
+            bool hasPosition = PositionShown;
             _numPosition.Visible = hasPosition;
             if (!hasPosition)
             {
@@ -1734,7 +1788,9 @@ namespace Kaban.UI.Controls
             _numPosition.Digits = _positionDigits;
             _numPosition.Suffix = _positionSuffix;
             _numPosition.UnitType = _positionUnitType;   // follows Unit Settings when set
-            _numPosition.VisibilityConditions = _visibilityConditions;
+            // with the position's own conditions: the scanner reads their devices with the readout's
+            _numPosition.VisibilityConditions = _visibilityConditions | _positionConditions;
+            _numPosition.MeasuredConditions = _positionMeasured;
 
             ApplyTranslation();
             LayoutChildren();
@@ -1957,13 +2013,13 @@ namespace Kaban.UI.Controls
                 LayoutTrace($"EARLY-RETURN area too small ({areaW}x{areaH})");
                 // Too small to lay out yet - make sure the readout isn't left
                 // floating over the caption.
-                if (string.IsNullOrWhiteSpace(_positionAddress)) _numPosition.Visible = false;
+                if (!PositionShown) _numPosition.Visible = false;
                 return;
             }
 
             bool hasA = !string.IsNullOrWhiteSpace(_commandAAddress);
             bool hasB = !string.IsNullOrWhiteSpace(_commandBAddress);
-            bool hasPos = !string.IsNullOrWhiteSpace(_positionAddress);
+            bool hasPos = PositionShown;
 
             // Cap button height so tall frames don't produce oversized buttons;
             // center the row vertically in the available area.
@@ -2121,7 +2177,7 @@ namespace Kaban.UI.Controls
             // The ERROR BIT, not whether the "?" is shown: an axis shows its "?"
             // for its drive codes, and a warning code must not blink the border.
             bool errA = _helpA.IsErrorSet, errB = _helpB.IsErrorSet;
-            bool hasPos = !string.IsNullOrWhiteSpace(_positionAddress);
+            bool hasPos = PositionShown;
             bool hasA = !string.IsNullOrWhiteSpace(_commandAAddress);
             bool hasB = !string.IsNullOrWhiteSpace(_commandBAddress);
 

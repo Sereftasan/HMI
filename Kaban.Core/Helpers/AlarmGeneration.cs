@@ -209,6 +209,13 @@ namespace Kaban.Core.Helpers
             public TroubleshootingCatalog.ValveType Valve;
             public TroubleshootingCatalog.FeedbackType Feedback;
             public readonly List<CylinderSide> Sides = new List<CylinderSide>();
+            /// <summary>
+            /// Its position is judged only while these machine conditions are met (a SystemCondition
+            /// set): the machine has its measuring device (an option), and the device reads THIS
+            /// cylinder - FA2010's profile recognition encoders are switched between the left and the
+            /// right unit (30 October). A movement started while not met is not timed by its position.
+            /// </summary>
+            public long PositionWhile;
 
             internal string Key
             {
@@ -411,6 +418,8 @@ namespace Kaban.Core.Helpers
                     foreach (var a in new[] { s.Drive, s.OtherDrive, s.Position }.Concat(s.MustOn.Select(x => x.Address)).Concat(s.MustOff.Select(x => x.Address)))
                         if (!string.IsNullOrWhiteSpace(a)) yield return new KeyValuePair<int, string>(c.Station, a.Trim());
                 }
+                foreach (var rule in PositionRules(c))
+                    if (!string.IsNullOrWhiteSpace(rule.Address)) yield return new KeyValuePair<int, string>(c.Station, rule.Address.Trim());
             }
             foreach (var x in _axes)
             {
@@ -684,7 +693,8 @@ namespace Kaban.Core.Helpers
 
             if (rising)
             {
-                s.Since = now;
+                // by its position only while the position is this cylinder's
+                s.Since = s.ByPosition && !PositionReadable(c, lookup) ? (DateTime?)null : now;
                 s.Moved = false;
                 s.PositionStart = s.PositionLast = s.ByPosition ? Word(lookup, s.Position) : (int?)null;
                 s.PositionChanged = now;
@@ -725,6 +735,27 @@ namespace Kaban.Core.Helpers
             s.Since = null;
             int sub = Diagnose(s, lookup, now);
             Raise(c, s, sub, lookup, now);
+        }
+
+        /// <summary>The machine conditions of a cylinder's PositionWhile.</summary>
+        private static IEnumerable<ConditionDefinition> PositionRules(Cylinder c)
+        {
+            if (c.PositionWhile == 0) yield break;
+            foreach (var part in MachineConditionMap.Parts((SystemCondition)c.PositionWhile))
+            {
+                if (ConditionBits.IsShared(part)) continue;
+                var def = MachineConditionMap.GetAllMachineBits().Where(kv => kv.Key == (long)part).Select(kv => kv.Value).FirstOrDefault();
+                if (def != null) yield return def;
+            }
+        }
+
+        /// <summary>Its position reads this cylinder now (every machine condition of PositionWhile met).</summary>
+        internal static bool PositionReadable(Cylinder c, Func<string, int> lookup)
+        {
+            if (c.PositionWhile == 0) return true;
+            foreach (var part in MachineConditionMap.Parts((SystemCondition)c.PositionWhile))
+                if (!ConditionBits.IsShared(part) && !MachineConditionMap.CheckMachineBit((long)part, lookup)) return false;
+            return true;
         }
 
         /// <summary>Which signal failed, from the states when the time ran out.</summary>

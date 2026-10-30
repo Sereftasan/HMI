@@ -347,8 +347,14 @@ MEASURE = [
                      'Y120 switches K77 to the left unit'),
     (('Y34', 'Y35'), 'height encoder (wires 106/107) through relay K78 to X12/X13 (wires 82/83, sheet 11.7); '
                      'Y120 switches K78 to the left unit'),
-    (('Y121', 'Y122'), 'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), '
-                       'while Y120 selects the left unit'),
+    # (30 October: "The left front profile recognition and conveyor clamping 7 is the same cylinder" - the
+    # left unit's width encoder measures P13, the Input Conveyor 7. Clamping, at the start of the process)
+    (('Y13', 'Y22'), 'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), '
+                     'while Y120 selects the left unit - the left profile recognition front clamping is this cylinder'),
+    # (30 October: the older machines, option "Cutting Left Front with Encoder" L33, had an encoder on it -
+    # the older drawing's "İşleme Kesim Ön Sıkma Enkoder Girişi (A/B Fazı)")
+    (('Y44', 'Y45'), 'only with the option Cutting Left Front with Encoder (L33, older machines): encoder X0/X1 '
+                     '(wires 62/63, sheet 11.1 of the older drawing) - Milling / Cutting Front Clamping encoder'),
     (('Y123', 'Y124'), 'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), '
                        'while Y120 selects the left unit'),
     (('Y131', 'Y132'), 'analogue sensor SN110 (SDAT-MHS-M100, 4-20 mA), wire 700 to U19 FX5-8AD channel 1 (sheet 34.4)'),
@@ -392,9 +398,14 @@ TRANSLATED = {
         'height encoder (wires 106/107) through relay K78 to X12/X13 (wires 82/83, sheet 11.7); Y120 switches K78 to the left unit':
             'yükseklik enkoderi (kablolar 106/107), K78 rölesi üzerinden X12/X13 girişlerine (kablolar 82/83, sayfa 11.7); '
             'Y120, K78 rölesini sol üniteye geçirir',
-        'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), while Y120 selects the left unit':
+        'width encoder of the left unit (wires 100/101) through relay K77 to X10/X11 (wires 80/81, sheet 11.4), '
+        'while Y120 selects the left unit - the left profile recognition front clamping is this cylinder':
             'sol ünitenin genişlik enkoderi (kablolar 100/101), K77 rölesi üzerinden X10/X11 girişlerine (kablolar 80/81, sayfa 11.4); '
-            'Y120 sol üniteyi seçtiği sürece',
+            'Y120 sol üniteyi seçtiği sürece - sol profil tanıma ön sıkma bu silindirdir',
+        'only with the option Cutting Left Front with Encoder (L33, older machines): encoder X0/X1 '
+        '(wires 62/63, sheet 11.1 of the older drawing) - Milling / Cutting Front Clamping encoder':
+            'yalnız Kesim Sol Ön Enkoderli seçeneğiyle (L33, eski makineler): enkoder X0/X1 '
+            '(kablolar 62/63, eski çizimde sayfa 11.1) - çizimde: İşleme Kesim Ön Sıkma Enkoder Girişi (A/B Fazı)',
         'height encoder of the left unit (wires 104/105) through relay K78 to X12/X13 (wires 82/83, sheet 11.6), while Y120 selects the left unit':
             'sol ünitenin yükseklik enkoderi (kablolar 104/105), K78 rölesi üzerinden X12/X13 girişlerine (kablolar 82/83, sayfa 11.6); '
             'Y120 sol üniteyi seçtiği sürece',

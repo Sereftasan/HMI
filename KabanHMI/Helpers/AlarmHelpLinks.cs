@@ -125,6 +125,8 @@ namespace Kaban.UI.Helpers
             public CylinderFeedback Feedback;
             public bool Vertical;
             public Kaban.Core.Enums.SecurityLevel Security = Kaban.Core.Enums.SecurityLevel.Operator;
+            /// <summary>The machine has the encoder only while these are met; it reads this cylinder only while those.</summary>
+            public Kaban.Core.Enums.SystemCondition EncoderConditions, MeasuredConditions;
         }
 
         private static readonly Dictionary<string, EncoderInfo> _encoders = new Dictionary<string, EncoderInfo>();

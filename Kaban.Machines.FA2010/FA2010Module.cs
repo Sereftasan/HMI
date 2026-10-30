@@ -116,6 +116,25 @@ namespace Kaban.Machines.FA2010
             MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("ConveyorWithClamps"),
                 ctx.Scoped("ConveyorWithClamps"), "Conveyor With Clamps", plc1, "L27",
                 DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+            // The front clamps' encoders are options (30 October, Machine Parameters > Options): the
+            // Milling / Cutting Front Clamping has one only with "Cutting Left Front with Encoder"
+            // (PC_KesimSolOn_Enkoderli, L33 - the older machines), the Cutting Right Front Vertical
+            // Clamping only WITHOUT "Cutting Right Front Vertical without Encoder" (L34).
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("CuttingLeftFrontEncoder"),
+                ctx.Scoped("CuttingLeftFrontEncoder"), "Cutting Left Front with Encoder", plc1, "L33",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("CuttingRightFrontVerticalEncoder"),
+                ctx.Scoped("CuttingRightFrontVerticalEncoder"), "Cutting Right Front Vertical with Encoder", plc1, "L34",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
+            // The profile recognition width / height encoders come in on one input pair each (X10/X11,
+            // X12/X13), switched by K77 / K78 (30 October): Y120 (its state M450, the "Left End Encoders
+            // Active" button) selects the left unit, the right one is the default.
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("LeftRecognitionEncoders"),
+                ctx.Scoped("LeftRecognitionEncoders"), "Left Profile Recognition Encoders Selected", plc1, "M450",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 1);
+            MachineConditionMap.RegisterMachineBit(ctx.AllocateMachineBit("RightRecognitionEncoders"),
+                ctx.Scoped("RightRecognitionEncoders"), "Right Profile Recognition Encoders Selected", plc1, "M450",
+                DataTypeEnum.Bin_16, ComparisonOperator.Equal, 0);
         }
 
         /// <summary>Where the PLC writes the number of the message to show (0: none).</summary>

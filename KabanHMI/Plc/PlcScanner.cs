@@ -248,6 +248,7 @@ namespace Kaban.UI.Plc
                 AddEffective(num.Address, num.AddressOffset, num.DataType);
                 AddDynamic(num.AddressOffset, DataTypeEnum.Bin_16);
                 AddConditions(num.VisibilityConditions);
+                AddConditions(num.MeasuredConditions);
                 // The value it is compared with (an axis's real position), same width.
                 AddEffective((num.ComparedAddress ?? "").Trim(), null, num.DataType);
 

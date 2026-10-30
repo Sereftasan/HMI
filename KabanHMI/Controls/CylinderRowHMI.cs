@@ -318,6 +318,15 @@ namespace Kaban.UI.Controls
         [Description("The row is shown only while these are met (an option the machine may not have); the rows under it move up.")]
         public SystemCondition VisibilityConditions { get; set; }
 
+        /// <summary>
+        /// The conditions the row is shown under: its VisibilityConditions and what a kind of row
+        /// adds (an encoder row: the machine has its encoder - CylinderEncoderSettingHMI). The
+        /// scanner reads their devices.
+        /// </summary>
+        protected virtual SystemCondition ShownConditions { get { return VisibilityConditions; } }
+
+        SystemCondition IConditionalControl.VisibilityConditions { get { return ShownConditions; } }
+
         private SystemCondition _enable = SystemCondition.None;
 
         [Category(" Triggers"), DefaultValue(SystemCondition.None)]
@@ -818,7 +827,8 @@ namespace Kaban.UI.Controls
         /// </summary>
         public void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)
         {
-            bool met = VisibilityConditions == SystemCondition.None || checkGlobal(VisibilityConditions);
+            var shown = ShownConditions;
+            bool met = shown == SystemCondition.None || checkGlobal(shown);
             bool changed = met != _conditionsMet;
             _conditionsMet = met;
             if (Visible != met) Visible = met;

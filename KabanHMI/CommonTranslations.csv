@@ -2067,6 +2067,7 @@ Plg_Service;Waiting: the Industry 4 service runs on this PC and takes the record
 Tch_NotNow;Not available now.;Şu an kullanılamaz.;;;;
 Tip_InputMouse;Used with a mouse;Fare ile kullanılıyor;;;;
 Tip_InputSwitch;Click to switch between a mouse and a touch screen;Fare ile dokunmatik ekran arasında geçmek için tıklayın;;;;
+Tip_NotMeasuredNow;Not measured now - its measuring device reads another cylinder. It is read while: {0};Şu an ölçülmüyor - ölçüm cihazı başka bir silindiri okuyor. Şu durumda okunur: {0};;;;
 Tip_InputTouch;Used by touch: larger menus, rows and buttons, a long press for a menu, a finger drag scrolls, a keyboard on the screen;Dokunmatik kullanılıyor: daha büyük menüler, satırlar ve düğmeler, menü için uzun basış, parmakla sürükleme kaydırır, ekranda klavye;;;;
 VP_InputMode;Screen used with;Ekran kullanımı;;;;
 VP_InputMouse;A mouse;Fare;;;;

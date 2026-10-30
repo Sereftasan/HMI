@@ -137,6 +137,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encProfile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             this.encProfile_Recognition_Front.ForwardSensorAddress = "M240";
             this.encProfile_Recognition_Front.Location = new System.Drawing.Point(16, 98);
+            this.encProfile_Recognition_Front.MeasuredConditions = Kaban.Core.Enums.SystemCondition.MachineBit25;
             this.encProfile_Recognition_Front.MeasuringToleranceAddress = "D479";
             this.encProfile_Recognition_Front.MinimumLimitAddress = "D483";
             this.encProfile_Recognition_Front.Name = "encProfile_Recognition_Front";
@@ -163,6 +164,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encProfile_Recognition_Top.ErrorForwardAddress = "M846";
             this.encProfile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
             this.encProfile_Recognition_Top.Location = new System.Drawing.Point(16, 142);
+            this.encProfile_Recognition_Top.MeasuredConditions = Kaban.Core.Enums.SystemCondition.MachineBit25;
             this.encProfile_Recognition_Top.MeasuringToleranceAddress = "D480";
             this.encProfile_Recognition_Top.MinimumLimitAddress = "D484";
             this.encProfile_Recognition_Top.Name = "encProfile_Recognition_Top";
@@ -208,6 +210,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encMilling_Cutting_Left_Front.CommandForwardAddress = "M652";
             this.encMilling_Cutting_Left_Front.DecimalPlaces = 1;
             this.encMilling_Cutting_Left_Front.Divisor = 10D;
+            this.encMilling_Cutting_Left_Front.EncoderConditions = Kaban.Core.Enums.SystemCondition.MachineBit22;
             this.encMilling_Cutting_Left_Front.EncoderNumber = 5;
             this.encMilling_Cutting_Left_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.MagneticPlusPressureSwitch;
             this.encMilling_Cutting_Left_Front.ForwardSensorAddress = "M243";
@@ -303,6 +306,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encCutting_Front_Right_Vertical.CommandForwardAddress = "M658";
             this.encCutting_Front_Right_Vertical.DecimalPlaces = 1;
             this.encCutting_Front_Right_Vertical.Divisor = 10D;
+            this.encCutting_Front_Right_Vertical.EncoderConditions = Kaban.Core.Enums.SystemCondition.MachineBit23;
             this.encCutting_Front_Right_Vertical.EncoderNumber = 9;
             this.encCutting_Front_Right_Vertical.FeedbackType = Kaban.UI.Controls.CylinderFeedback.SingleMagnetic;
             this.encCutting_Front_Right_Vertical.Location = new System.Drawing.Point(16, 406);
@@ -330,6 +334,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encLeft_Profile_Recognition_Front.ErrorForwardAddress = "M874";
             this.encLeft_Profile_Recognition_Front.FeedbackType = Kaban.UI.Controls.CylinderFeedback.TwoEndMagnetic;
             this.encLeft_Profile_Recognition_Front.ForwardSensorAddress = "M220";
+            this.encLeft_Profile_Recognition_Front.MeasuredConditions = Kaban.Core.Enums.SystemCondition.MachineBit24;
             this.encLeft_Profile_Recognition_Front.Location = new System.Drawing.Point(16, 450);
             this.encLeft_Profile_Recognition_Front.Name = "encLeft_Profile_Recognition_Front";
             this.encLeft_Profile_Recognition_Front.PositionAddress = "D4";
@@ -353,6 +358,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.encLeft_Profile_Recognition_Top.ErrorBackAddress = "M905";
             this.encLeft_Profile_Recognition_Top.ErrorForwardAddress = "M904";
             this.encLeft_Profile_Recognition_Top.FeedbackType = Kaban.UI.Controls.CylinderFeedback.EncoderPlusReference;
+            this.encLeft_Profile_Recognition_Top.MeasuredConditions = Kaban.Core.Enums.SystemCondition.MachineBit24;
             this.encLeft_Profile_Recognition_Top.Location = new System.Drawing.Point(16, 494);
             this.encLeft_Profile_Recognition_Top.Name = "encLeft_Profile_Recognition_Top";
             this.encLeft_Profile_Recognition_Top.PositionAddress = "D6";
