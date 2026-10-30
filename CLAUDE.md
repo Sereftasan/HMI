@@ -62,25 +62,24 @@
   `Alarms.json` by `tools\alarm_texts_to_translations.py`, the Industry 4 program's Turkish with them). `Alarms.json`
   keeps the alarm - device, code, severity, help - and `"Log"`: where the PLC's log records it (state code, value,
   bit). An older installation's `Alarms.json` with its texts still reads; the translation file's text wins.
-- Optional parts (30 October): HMI Settings > Features - the Industry 4 logging in the HMI and the touch screen, both
-  off until switched on. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
+- Optional parts (30 October): HMI Settings > Options (was Features; the machine's Options tab's key, Tab_Options) - the
+  Industry 4 logging in the HMI and the touch screen, a row each with a switch, both off until switched on; what they do
+  is in the manual (9b), not on the page. A machine's PLC log area: its Machine Parameters > Alarms and Logs.
+- An encoder the machine has only with an option, or one input switched between two encoders (30 October):
+  CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
+  right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 25 now), never between.
 
 ## Open questions (answer here or in a message)
-1. **Three clamps show a position, but the electrical drawing (134581 rev. 9, sheet 11) has no encoder for them.** The
-   drawing's encoder inputs (U4, X2 - X17) are the gripper, Milling Left Top, Cutting Left Top, Profile Recognition width
-   and height (the left or the right unit, switched by K77 / K78), Cutting Right Front and Cutting Right Top clamping.
-   The old program's Encoders page (Machine Parameters > Encoders now) has rows for these three as well:
-   - Cutting > **Right Front Vert. Clamping** - on the drawings the *Output Conveyor Front Clamping Cylinder* (P24,
-     Y105 / Y106, back sensor X76) - shows D7 (row "Cutting Front Right Vertical");
-   - Milling > **Front Clamping** - the *Milling / Cutting Front Clamping Cylinder* (P19, pressure switches SW2, SW3) -
-     shows D20 (row "Milling-Cutting Left Front");
-   - Entry Conveyor > **Profile Clamping 7** - the *Input Conveyor 7. Clamping Cylinder* (P13, Y13 / Y22, sensors X35,
-     X44) - shows D4 (row "Left Profile Recognition Front"), the profile recognition WIDTH, the same D4 as Profile
-     Recognition > Front Clamping.
+1. **Cutting > Right Front Vert. Clamping on a machine without L34** (its encoder fitted, row "Cutting Front Right
+   Vertical", D7): where is that encoder wired? The older drawing you sent highlights X00 / X01 (wires 62 / 63,
+   "İşleme Kesim Ön Sıkma Enkoder Girişi") - that is the Milling / Cutting Front Clamping's, the L33 one.
+2. **L35 "Cutting Left Front with Air Exhaust"** (PC_KesimSolOn_HavaBosaltmali): only a tick box on the Options page
+   now. Does it change anything the HMI shows - the clamp's valve (and so its step-by-step help), a sensor?
+3. **Machine Parameters > Options**: the same switch rows as HMI Settings > Options (a name, a switch at the right
+   end), or keep the tick boxes?
 
-   For each: does that cylinder have an encoder (then where is it wired - the drawing is missing it), or is the
-   position wrong there (then it shows none, as a plain cylinder)? For Profile Clamping 7: is it the left profile
-   recognition unit's clamp, measured by the width encoder through K77?
-
-Answered: the back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are at the end of the BACK movement
-(30 October) - as the program has them.
+Answered (30 October): the back horizontal moulds' reference sensors (X12@2, X13@2, X14@2) are at the end of the BACK
+movement - as the program has them. Milling > Front Clamping has its encoder (D20) only with L33 (the older machines);
+Cutting > Right Front Vert. Clamping (D7) only without L34; Entry Conveyor > Profile Clamping 7 is the left profile
+recognition unit's front clamping, measured by the width encoder through K77 while Y120 selects the left unit (the
+right unit is the default) - each built so.

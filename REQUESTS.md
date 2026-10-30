@@ -6,6 +6,21 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 30 October, evening (the clamps' encoders; the Options page; touch):
+  - 382059a - Machine Parameters > Options: Cutting Left Front with Encoder (L33), Cutting Right Front Vertical without
+    Encoder (L34), Cutting Left Front with Air Exhaust (L35), in Turkish as the PLC's labels name them.
+  - 887bb89 - The clamps follow them: Milling > Front Clamping has a position only with L33, Cutting > Right Front Vert.
+    Clamping only without L34 (else plain cylinders, their rows not on the Encoders page); the profile recognition's
+    width / height read only by the unit selected (Y120 the left one, the right the default) - the other shows "–" and
+    its tip says when it is read; Profile Clamping 7 is the left unit's front clamp. The HMI's own alarms follow.
+    Wiring.csv: the left width encoder on P13; the older machines' X0 / X1 encoder with L33.
+  - 812a3fa - The mouse / touch button and its menu: line drawings, as the other drop-down menus' pictures.
+  - 894f7fa - HMI Settings > Features is "Options" (the machine's tab's words), a row per option with a switch at its right
+    end, the description notes gone from the page (they are in the manual, 9b).
+  - dbd501c - "Screen used with" appears (and goes) on Users and Preferences as the touch screen is switched - no restart.
+  - d2dbe55 - Touch: the keyboard on the screen stays (it made itself the active window and so lost the text box).
+  - 3b76e31 - Touch: a finger held still on a control shows its tooltip (no tooltips by a resting pointer in touch mode).
+  - 58ee0b0 - Touch: a finger drag scrolls steadily - a finger's tremble no longer shakes the page or flips a table's row.
 - 30 October, later (the answers to the questions):
   - d1fcb7b - FA2010's bar: "Cylinder FW/Back" is "Automatic ON/OFF" (Otomatik ON/OFF), the button a little wider so
     "Automatic" fits; Safety Bypass in Turkish (Güvenlik Bypass); the manuals, the AI prompt and the log with the new name.
