@@ -8,15 +8,51 @@ using Kaban.Core.Helpers;
 namespace Kaban.UI.Controls
 {
     /// <summary>
+    /// How a CheckBoxHMI is drawn (30 October: "Let me see a few of them in switch row so I can see how it looks
+    /// ... You can make others in some different mode you think it looks nice as well so we decide which one to use").
+    /// </summary>
+    public enum CheckBoxLook
+    {
+        /// <summary>A tick box, its caption beside it (DescriptionText, DescriptionSide).</summary>
+        Box = 0,
+        /// <summary>An on / off switch in place of the box, its caption beside it.</summary>
+        Switch = 1,
+        /// <summary>A row as wide as the control: its caption on the left, a switch at the right end, a line under it.</summary>
+        SwitchRow = 2,
+        /// <summary>A card: its caption, On / Off under it, a small switch; tinted blue while on.</summary>
+        Tile = 3
+    }
+
+    /// <summary>
     /// PLC-bound CHECKBOX: reflects one bit and writes it on click, with the same
     /// security gating, audit logging and attached-description support as the rest
     /// of the family. Ticking is reverted when the user lacks permission.
     /// </summary>
-
     // The Properties window in the order of the work (see PropertyOrder).
     [System.ComponentModel.TypeDescriptionProvider(typeof(Kaban.UI.Design.PropertyOrder.Provider))]
     public class CheckBoxHMI : CheckBox, UiStyle.IExplainsDisabled
     {
+        private CheckBoxLook _look = CheckBoxLook.Box;
+
+        /// <summary>How it is drawn - a tick box, a switch, a row with a switch, a card (CheckBoxLook).</summary>
+        [Category("   Appearance"), DefaultValue(CheckBoxLook.Box)]
+        [Description("How it is drawn. Box: a tick box, its caption beside it. Switch: an on / off switch, its caption beside it. " +
+                     "SwitchRow: a row - the caption on the left, the switch at the right end, a line under it (make it as wide as the column). " +
+                     "Tile: a card - the caption, On / Off, a small switch, tinted while on.")]
+        public CheckBoxLook Look
+        {
+            get { return _look; }
+            set
+            {
+                _look = value;
+                // a row and a card carry their caption themselves
+                Descr.Suppressed = value == CheckBoxLook.SwitchRow || value == CheckBoxLook.Tile;
+                Cursor = DisplayOnly ? Cursors.Default : Cursors.Hand;
+                ApplyCornerRegion();
+                Invalidate();
+            }
+        }
+
         /// <summary>Why it cannot be ticked now (a tap in touch mode shows it); null while it can.</summary>
         string UiStyle.IExplainsDisabled.WhyDisabled
         {
@@ -146,8 +182,8 @@ namespace Kaban.UI.Controls
         private void ApplyCornerRegion()
         {
             if (Width <= 0 || Height <= 0) return;
-            if (_cornerRadius <= 0) { Region = null; return; }
-            int d = _cornerRadius * 2;
+            if (_cornerRadius <= 0 || _look == CheckBoxLook.SwitchRow) { Region = null; return; }
+            int d = (_look == CheckBoxLook.Tile ? Math.Max(_cornerRadius, 8) : _cornerRadius) * 2;
             using (var path = new System.Drawing.Drawing2D.GraphicsPath())
             {
                 var r = new Rectangle(0, 0, Width, Height);
@@ -185,6 +221,7 @@ namespace Kaban.UI.Controls
             var g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.Clear(Parent != null ? Parent.BackColor : Color.White);
+            if (_look != CheckBoxLook.Box) { PaintLook(g); return; }
 
             int side = Math.Min(Width, Height) - 2;
             var box = new Rectangle((Width - side) / 2, (Height - side) / 2, side, side);
@@ -216,6 +253,111 @@ namespace Kaban.UI.Controls
         {
             base.OnResize(e);
             ApplyCornerRegion();
+        }
+
+        private bool _over;
+        protected override void OnMouseEnter(EventArgs e) { _over = true; if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseEnter(e); }
+        protected override void OnMouseLeave(EventArgs e) { _over = false; if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseLeave(e); }
+
+        /// <summary>Its caption as shown (DescriptionText: a translation key or the text itself).</summary>
+        [Browsable(false)]
+        public string CaptionShown
+        {
+            get { var t = DescriptionText; return string.IsNullOrEmpty(t) ? "" : LanguageManager.GetString(t, t); }
+        }
+
+        /// <summary>The switch's track in the control (Switch, SwitchRow, Tile) - tests and the drawing.</summary>
+        [Browsable(false)]
+        public RectangleF SwitchTrack
+        {
+            get
+            {
+                switch (_look)
+                {
+                    case CheckBoxLook.SwitchRow:
+                    {
+                        float h = Math.Max(14f, Math.Min(Height - 16f, 24f)), w = h * 1.75f;
+                        return new RectangleF(Width - w - 10f, (Height - h) / 2f, w, h);
+                    }
+                    case CheckBoxLook.Tile:
+                    {
+                        float h = Math.Max(12f, Math.Min(Height / 4f, 20f)), w = h * 1.75f;
+                        return new RectangleF(Width - w - 12f, Height - h - 10f, w, h);
+                    }
+                    case CheckBoxLook.Switch:
+                    {
+                        float h = Math.Max(12f, Math.Min(Height - 8f, Width / 1.85f)), w = h * 1.75f;
+                        return new RectangleF((Width - w) / 2f, (Height - h) / 2f, w, h);
+                    }
+                    default: return RectangleF.Empty;
+                }
+            }
+        }
+
+        /// <summary>The switch looks: a switch alone, a row with one, a card.</summary>
+        private void PaintLook(Graphics g)
+        {
+            bool live = Enabled && !IsStale && _softEnabled;
+            var ink = live ? Color.FromArgb(32, 33, 36) : Color.FromArgb(160, 166, 174);
+            var grey = live ? Color.FromArgb(95, 99, 104) : Color.FromArgb(170, 176, 184);
+            var red = Color.FromArgb(200, 30, 30);
+            bool alert = _alert && _alertBlinkOn;
+            var font = UiStyle.Body;
+            switch (_look)
+            {
+                case CheckBoxLook.Switch:
+                    ToggleSwitch.Draw(g, SwitchTrack, Checked, live);
+                    if (alert) using (var path = ToggleSwitch.Pill(RectangleF.Inflate(SwitchTrack, 2f, 2f))) using (var pen = new Pen(red, 2f)) g.DrawPath(pen, path);
+                    break;
+
+                case CheckBoxLook.SwitchRow:
+                {
+                    if (_over && live) using (var back = new SolidBrush(Color.FromArgb(246, 248, 251))) g.FillRectangle(back, 0, 0, Width, Height - 1);
+                    var t = SwitchTrack;
+                    var text = new Rectangle(8, 0, Math.Max(10, (int)t.Left - 16), Height - 1);
+                    TextRenderer.DrawText(g, CaptionShown, font, text, ink,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
+                    ToggleSwitch.Draw(g, t, Checked, live);
+                    if (alert) using (var path = ToggleSwitch.Pill(RectangleF.Inflate(t, 2f, 2f))) using (var pen = new Pen(red, 2f)) g.DrawPath(pen, path);
+                    using (var pen = new Pen(UiStyle.GridRule)) g.DrawLine(pen, 0, Height - 1, Width, Height - 1);
+                    break;
+                }
+
+                case CheckBoxLook.Tile:
+                {
+                    int rad = Math.Max(_cornerRadius, 8);
+                    var card = new Rectangle(0, 0, Width - 1, Height - 1);
+                    using (var path = Rounded(card, rad))
+                    {
+                        var fill = Checked && live ? Color.FromArgb(232, 240, 254) : _over && live ? Color.FromArgb(246, 248, 251) : Color.White;
+                        using (var back = new SolidBrush(fill)) g.FillPath(back, path);
+                        var edge = alert ? red : Checked && live ? ToggleSwitch.OnColor : Color.FromArgb(205, 210, 217);
+                        using (var pen = new Pen(edge, alert || (Checked && live) ? 2f : 1f)) g.DrawPath(pen, path);
+                    }
+                    var t = SwitchTrack;
+                    var text = new Rectangle(12, 8, Width - 24, Math.Max(10, (int)t.Top - 10));
+                    TextRenderer.DrawText(g, CaptionShown, font, text, ink,
+                        TextFormatFlags.Left | TextFormatFlags.Top | TextFormatFlags.WordBreak | TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix);
+                    string state = Checked ? LanguageManager.GetString("Chk_On", "On") : LanguageManager.GetString("Chk_Off", "Off");
+                    var stateRect = new Rectangle(12, (int)t.Top - 2, Math.Max(10, (int)t.Left - 16), (int)t.Height + 4);
+                    TextRenderer.DrawText(g, state, UiStyle.FontVariant(UiStyle.Small, FontStyle.Bold), stateRect, Checked && live ? ToggleSwitch.OnColor : grey,
+                        TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix);
+                    ToggleSwitch.Draw(g, t, Checked, live);
+                    break;
+                }
+            }
+        }
+
+        private static System.Drawing.Drawing2D.GraphicsPath Rounded(Rectangle r, int radius)
+        {
+            var p = new System.Drawing.Drawing2D.GraphicsPath();
+            int d = Math.Max(1, radius * 2);
+            p.AddArc(r.X, r.Y, d, d, 180, 90);
+            p.AddArc(r.Right - d, r.Y, d, d, 270, 90);
+            p.AddArc(r.Right - d, r.Bottom - d, d, d, 0, 90);
+            p.AddArc(r.X, r.Bottom - d, d, d, 90, 90);
+            p.CloseFigure();
+            return p;
         }
 
         /// <summary>

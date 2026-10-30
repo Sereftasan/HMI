@@ -92,7 +92,7 @@ namespace Kaban.UI.Design
 
             ["CheckBoxHMI"] = L(
                 C("Device", "PlcNumber", "Address", "AlertAddress"),
-                C("Display", "DescriptionText", "DescriptionSide", "CornerRadius"),
+                C("Display", "Look", "DescriptionText", "DescriptionSide", "CornerRadius"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
                 C("Security", "RequiredSecurity", "LogAction"),
                 C("Help", "ToolTipCaption")),

@@ -92,16 +92,32 @@ class ECT {
               box("L34") != null && box("L34").DescriptionText == "Cutting Right Front Vertical without Encoder" &&
               box("L35") != null && box("L35").DescriptionText == "Cutting Left Front with Air Exhaust");
         var cross = box("L32");
-        Check("  under Cross Roller (L32), the same column, size and user level, as far apart as the boxes above",
-              new[] { "L33", "L34", "L35" }.Select(box).All(b => b.Left == cross.Left && b.Size == cross.Size && b.PlcNumber == 1 &&
-                  b.RequiredSecurity == SecurityLevel.Maintenance && b.LogAction) &&
-              // (the page scaled to the screen: a pixel either way)
-              new[] { box("L33").Top - cross.Top, box("L34").Top - box("L33").Top, box("L35").Top - box("L34").Top }
-                  .All(g => Math.Abs(g - (cross.Top - box("L27").Top)) <= 1),
-              string.Join(" ", new[] { "L27", "L32", "L33", "L34", "L35" }.Select(a => a + "@" + box(a).Left + "," + box(a).Top + " " + box(a).Size.Width + "x" + box(a).Size.Height)));
-        Check("  inside the page, overlapping nothing",
-              new[] { "L33", "L34", "L35" }.Select(box).All(b => b.Bottom <= opt.Height &&
-                  !boxes.Any(o => o != b && o.Parent == b.Parent && o.Bounds.IntersectsWith(b.Bounds))));
+        Check("  the same user level as the others, logged", new[] { "L33", "L34", "L35" }.Select(box).All(b => b.PlcNumber == 1 &&
+                  b.RequiredSecurity == SecurityLevel.Maintenance && b.LogAction));
+        // (30 October: "Let me see a few of them in switch row so I can see how it looks ... You can make others in some
+        // different mode you think it looks nice as well so we decide which one to use")
+        var rowsLook = boxes.Where(b => b.Look == CheckBoxLook.SwitchRow).ToList();
+        var tiles = boxes.Where(b => b.Look == CheckBoxLook.Tile).ToList();
+        var switches = boxes.Where(b => b.Look == CheckBoxLook.Switch).ToList();
+        var ticks = boxes.Where(b => b.Look == CheckBoxLook.Box).ToList();
+        Check("four looks to compare: 9 switch rows, 6 tiles, 3 switches (L33 - L35), the Mullion Notching ones tick boxes",
+              rowsLook.Count == 9 && tiles.Count == 6 && switches.Select(b => b.Address).OrderBy(a => a).SequenceEqual(new[] { "L33", "L34", "L35" }) &&
+              ticks.Count == 5 && ticks.All(b => b.Parent != opt) && rowsLook[0].Address == "L6",
+              rowsLook.Count + " / " + tiles.Count + " / " + switches.Count + " / " + ticks.Count);
+        Check("  the rows one under the other, as wide, their captions on them (none beside)",
+              rowsLook.OrderBy(b => b.Top).Zip(rowsLook.OrderBy(b => b.Top).Skip(1), (x, y) => y.Top - x.Bottom).All(g => Math.Abs(g) <= 1) &&
+              rowsLook.All(b => b.Width == rowsLook[0].Width && b.Left == rowsLook[0].Left && b.CaptionShown.Length > 0) &&
+              !All(opt).OfType<Label>().Any(l => l.Text.StartsWith("Cooling")));
+        Check("  each row's switch at its right end, in the middle of its height; a tile's at its bottom right",
+              rowsLook.All(b => b.SwitchTrack.Right <= b.Width - 4 && b.SwitchTrack.Right >= b.Width - 16 &&
+                                Math.Abs(b.SwitchTrack.Top + b.SwitchTrack.Height / 2 - b.Height / 2f) <= 1) &&
+              tiles.All(b => b.SwitchTrack.Right <= b.Width - 4 && b.SwitchTrack.Bottom <= b.Height - 4 && b.SwitchTrack.Top > b.Height / 2f));
+        Check("  inside the page, overlapping nothing", boxes.Where(b => b.Parent == opt).All(b => b.Bottom <= opt.Height && b.Right <= opt.Width &&
+              !boxes.Any(o => o != b && o.Parent == b.Parent && o.Bounds.IntersectsWith(b.Bounds))));
+        var cool = box("L6");
+        cool.Checked = true; Pump(50);
+        Check("  a row switched on: its switch on (a blue track) - one click turns it, as the tick did", cool.Checked);
+        cool.Checked = false;
         LanguageManager.ChangeLanguage("TR");
         Check("  in Turkish: Kesim Sol Ön Enkoderli, Kesim Sağ Ön Dikey Enkodersiz, Kesim Sol Ön Hava Boşaltmalı",
               LanguageManager.Localize("Cutting Left Front with Encoder") == "Kesim Sol Ön Enkoderli" &&

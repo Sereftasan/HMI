@@ -88,23 +88,7 @@ namespace Kaban.UI.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             var t = Track;
-            float r = t.Height / 2f;
-            Func<Color, Color> faded = c => Enabled ? c : Color.FromArgb(110, c);
-            using (var track = Pill(t))
-            {
-                if (_checked)
-                    using (var fill = new SolidBrush(faded(OnColor))) g.FillPath(fill, track);
-                else
-                {
-                    using (var fill = new SolidBrush(faded(OffTrack))) g.FillPath(fill, track);
-                    using (var line = new Pen(faded(OffInk), Math.Max(1.2f, t.Height / 13f))) g.DrawPath(line, track);
-                }
-            }
-            // the knob: large and white at the right while on, small and grey at the left while off
-            float d = _checked ? t.Height - Math.Max(4f, t.Height * 0.22f) : t.Height * 0.55f;
-            float cx = _checked ? t.Right - r : t.Left + r, cy = t.Top + r;
-            using (var knob = new SolidBrush(faded(_checked ? Color.White : OffInk)))
-                g.FillEllipse(knob, cx - d / 2f, cy - d / 2f, d, d);
+            Draw(g, t, _checked, Enabled);
             if (Focused && ShowFocusCues)
             {
                 var ring = RectangleF.Inflate(t, 2f, 2f);
@@ -113,7 +97,40 @@ namespace Kaban.UI.Controls
             }
         }
 
-        private static GraphicsPath Pill(RectangleF r)
+        /// <summary>
+        /// A switch drawn into a track rectangle (twice as wide as high, about): on - a blue track, a white knob at
+        /// the right; off - a light grey track with a grey outline, a small grey knob at the left. Faded when it
+        /// cannot be turned (CheckBoxHMI's Switch looks draw theirs with it).
+        /// </summary>
+        public static void Draw(Graphics g, RectangleF t, bool on, bool live)
+        {
+            var state = g.Save();
+            try
+            {
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                float r = t.Height / 2f;
+                Func<Color, Color> faded = c => live ? c : Color.FromArgb(110, c);
+                using (var track = Pill(t))
+                {
+                    if (on)
+                        using (var fill = new SolidBrush(faded(OnColor))) g.FillPath(fill, track);
+                    else
+                    {
+                        using (var fill = new SolidBrush(faded(OffTrack))) g.FillPath(fill, track);
+                        using (var line = new Pen(faded(OffInk), Math.Max(1.2f, t.Height / 13f))) g.DrawPath(line, track);
+                    }
+                }
+                // the knob: large and white at the right while on, small and grey at the left while off
+                float d = on ? t.Height - Math.Max(4f, t.Height * 0.22f) : t.Height * 0.55f;
+                float cx = on ? t.Right - r : t.Left + r, cy = t.Top + r;
+                using (var knob = new SolidBrush(faded(on ? Color.White : OffInk)))
+                    g.FillEllipse(knob, cx - d / 2f, cy - d / 2f, d, d);
+            }
+            finally { g.Restore(state); }
+        }
+
+        internal static GraphicsPath Pill(RectangleF r)
         {
             var p = new GraphicsPath();
             float d = r.Height;
