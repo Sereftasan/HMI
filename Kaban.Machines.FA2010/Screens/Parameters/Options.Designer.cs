@@ -43,6 +43,9 @@
             this.optGripper_0_90_Degree_Turn = new Kaban.UI.Controls.CheckBoxHMI();
             this.optClamping_Mould = new Kaban.UI.Controls.CheckBoxHMI();
             this.optCross_Roller = new Kaban.UI.Controls.CheckBoxHMI();
+            this.optCutting_Left_Front_Encoder = new Kaban.UI.Controls.CheckBoxHMI();
+            this.optCutting_Right_Front_Vertical_Without_Encoder = new Kaban.UI.Controls.CheckBoxHMI();
+            this.optCutting_Left_Front_Air_Exhaust = new Kaban.UI.Controls.CheckBoxHMI();
             this.groupBoxMullionNotching = new Kaban.UI.Controls.GroupBoxHMI();
             this.checkBoxWithBladeBackFinishCut = new Kaban.UI.Controls.CheckBoxHMI();
             this.checkBoxWithBladeLeftBackFinishCut = new Kaban.UI.Controls.CheckBoxHMI();
@@ -427,6 +430,81 @@
             this.optCross_Roller.TabIndex = 75;
             this.optCross_Roller.ToolTipCaption = null;
             // 
+            // optCutting_Left_Front_Encoder
+            // 
+            this.optCutting_Left_Front_Encoder.Address = "L33";
+            this.optCutting_Left_Front_Encoder.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Left_Front_Encoder.CornerRadius = 4;
+            this.optCutting_Left_Front_Encoder.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.optCutting_Left_Front_Encoder.DescriptionText = "Cutting Left Front with Encoder";
+            this.optCutting_Left_Front_Encoder.EnableTrigger.DescriptionKey = "";
+            this.optCutting_Left_Front_Encoder.EnableTrigger.MonitorAddress = "";
+            this.optCutting_Left_Front_Encoder.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCutting_Left_Front_Encoder.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Left_Front_Encoder.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Left_Front_Encoder.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCutting_Left_Front_Encoder.EnableTrigger.ValA = 0D;
+            this.optCutting_Left_Front_Encoder.EnableTrigger.ValB = 0D;
+            this.optCutting_Left_Front_Encoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.optCutting_Left_Front_Encoder.Location = new System.Drawing.Point(404, 593);
+            this.optCutting_Left_Front_Encoder.LogAction = true;
+            this.optCutting_Left_Front_Encoder.Name = "optCutting_Left_Front_Encoder";
+            this.optCutting_Left_Front_Encoder.PlcNumber = 1;
+            this.optCutting_Left_Front_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.optCutting_Left_Front_Encoder.Size = new System.Drawing.Size(44, 32);
+            this.optCutting_Left_Front_Encoder.TabIndex = 76;
+            this.optCutting_Left_Front_Encoder.ToolTipCaption = null;
+            // 
+            // optCutting_Right_Front_Vertical_Without_Encoder
+            // 
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Address = "L34";
+            this.optCutting_Right_Front_Vertical_Without_Encoder.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.CornerRadius = 4;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.DescriptionText = "Cutting Right Front Vertical without Encoder";
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.DescriptionKey = "";
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.MonitorAddress = "";
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.ValA = 0D;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.EnableTrigger.ValB = 0D;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Location = new System.Drawing.Point(404, 629);
+            this.optCutting_Right_Front_Vertical_Without_Encoder.LogAction = true;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Name = "optCutting_Right_Front_Vertical_Without_Encoder";
+            this.optCutting_Right_Front_Vertical_Without_Encoder.PlcNumber = 1;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.Size = new System.Drawing.Size(44, 32);
+            this.optCutting_Right_Front_Vertical_Without_Encoder.TabIndex = 77;
+            this.optCutting_Right_Front_Vertical_Without_Encoder.ToolTipCaption = null;
+            // 
+            // optCutting_Left_Front_Air_Exhaust
+            // 
+            this.optCutting_Left_Front_Air_Exhaust.Address = "L35";
+            this.optCutting_Left_Front_Air_Exhaust.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.optCutting_Left_Front_Air_Exhaust.CornerRadius = 4;
+            this.optCutting_Left_Front_Air_Exhaust.DescriptionSide = Kaban.Core.Enums.DescriptionSide.Left;
+            this.optCutting_Left_Front_Air_Exhaust.DescriptionText = "Cutting Left Front with Air Exhaust";
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.DescriptionKey = "";
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.MonitorAddress = "";
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.MonitorDataType = Kaban.Core.Enums.DataTypeEnum.Bin_16;
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.OpA = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.OpB = Kaban.Core.Enums.ComparisonOperator.None;
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.TriggerType = Kaban.Core.Enums.TriggerType.None;
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.ValA = 0D;
+            this.optCutting_Left_Front_Air_Exhaust.EnableTrigger.ValB = 0D;
+            this.optCutting_Left_Front_Air_Exhaust.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.optCutting_Left_Front_Air_Exhaust.Location = new System.Drawing.Point(404, 665);
+            this.optCutting_Left_Front_Air_Exhaust.LogAction = true;
+            this.optCutting_Left_Front_Air_Exhaust.Name = "optCutting_Left_Front_Air_Exhaust";
+            this.optCutting_Left_Front_Air_Exhaust.PlcNumber = 1;
+            this.optCutting_Left_Front_Air_Exhaust.RequiredSecurity = Kaban.Core.Enums.SecurityLevel.Maintenance;
+            this.optCutting_Left_Front_Air_Exhaust.Size = new System.Drawing.Size(44, 32);
+            this.optCutting_Left_Front_Air_Exhaust.TabIndex = 78;
+            this.optCutting_Left_Front_Air_Exhaust.ToolTipCaption = null;
+            // 
             // groupBoxMullionNotching
             // 
             this.groupBoxMullionNotching.Address = null;
@@ -596,6 +674,9 @@
             this.Controls.Add(this.optGripper_0_90_Degree_Turn);
             this.Controls.Add(this.optClamping_Mould);
             this.Controls.Add(this.optCross_Roller);
+            this.Controls.Add(this.optCutting_Left_Front_Encoder);
+            this.Controls.Add(this.optCutting_Right_Front_Vertical_Without_Encoder);
+            this.Controls.Add(this.optCutting_Left_Front_Air_Exhaust);
             this.Name = "Options";
             this.Size = new System.Drawing.Size(1269, 833);
             this.groupBoxMullionNotching.ResumeLayout(false);
@@ -621,6 +702,9 @@
         private UI.Controls.CheckBoxHMI optGripper_0_90_Degree_Turn;
         private UI.Controls.CheckBoxHMI optClamping_Mould;
         private UI.Controls.CheckBoxHMI optCross_Roller;
+        private UI.Controls.CheckBoxHMI optCutting_Left_Front_Encoder;
+        private UI.Controls.CheckBoxHMI optCutting_Right_Front_Vertical_Without_Encoder;
+        private UI.Controls.CheckBoxHMI optCutting_Left_Front_Air_Exhaust;
         private UI.Controls.GroupBoxHMI groupBoxMullionNotching;
         private UI.Controls.CheckBoxHMI optVithBlade;
         private UI.Controls.CheckBoxHMI optMullionNotching;

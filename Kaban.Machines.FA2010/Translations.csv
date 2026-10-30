@@ -27,6 +27,7 @@ Tab_ManualClamping_Moulds;Clamping Moulds;Kalıplı Sıkmalar;Прижимы с 
 Tab_ManualYZ_Cross_Rollers;YZ Cross Rollers;YZ Çapraz Rulolar;Поперечные ролики YZ;YZ-Querrollen;Rulli trasversali YZ;Rodillos transversales YZ
 Tab_AxisSettings;Axis;Eksen;Оси;Achsen;Assi;Ejes
 Tab_ParamEncoders;Encoders;Enkoderler;Энкодеры;Encoder;Encoder;Encoders
+Tab_Options;Options;Seçenekler;;;;
 Tab_ParamOther;Others;Diğerleri;Прочее;Sonstiges;Altri;Otros
 Tab_ParamConveyor;Conveyor;Konveyör;Конвейер;Förderer;Trasportatore;Transportador
 Tab_ParamRobot;Robot;Robot;Робот;Roboter;Robot;Robot
@@ -224,6 +225,12 @@ Top Clamping Reclamp;Top Clamping Reclamp;Üst Sıkma Aç/Kapa;Повторны�
 Gripper 0/90 Degree Turn;Gripper 0/90 Degree Turn;Gripper 0/90 Derece Dönüş;Поворот захвата 0/90°;Greiferdrehung 0/90°;Rotazione pinza 0/90°;Giro de la pinza 0/90°
 Clamping Mould;Clamping Mould;Kalıplı Sıkma;Прижим с шаблоном;Spannform;Bloccaggio a stampo;Sujeción con molde
 Cross Roller;Cross Roller;Çapraz Rulo;Поперечный ролик;Querrolle;Rullo trasversale;Rodillo transversal
+Cutting Left Front with Encoder;Cutting Left Front with Encoder;Kesim Sol Ön Enkoderli;;;;
+Cutting Right Front Vertical without Encoder;Cutting Right Front Vertical without Encoder;Kesim Sağ Ön Dikey Enkodersiz;;;;
+Cutting Right Front Vertical with Encoder;Cutting Right Front Vertical with Encoder;Kesim Sağ Ön Dikey Enkoderli;;;;
+Cutting Left Front with Air Exhaust;Cutting Left Front with Air Exhaust;Kesim Sol Ön Hava Boşaltmalı;;;;
+Left Profile Recognition Encoders Selected;Left Profile Recognition Encoders Selected;Sol Profil Tanıma Enkoderleri Seçili;;;;
+Right Profile Recognition Encoders Selected;Right Profile Recognition Encoders Selected;Sağ Profil Tanıma Enkoderleri Seçili;;;;
 Middle Register Notch Parameters;Middle Register Notch Parameters;Ortakayıt Kertme Parametreleri;Параметры надрезки импоста;Parameter Pfostenausklinkung;Parametri intaglio montante;Parámetros de entalladura de montante
 Mullion X Left Cut Offset;Mullion X Left Cut Offset;Ortakayıt X Sol Kesim Ofseti;Смещение левого реза импоста X;Pfosten X Versatz linker Schnitt;Offset taglio sinistro montante X;Desfase de corte izquierdo montante X
 Mullion X Right Cut Offset;Mullion X Right Cut Offset;Ortakayıt X Sağ Kesim Ofseti;Смещение правого реза импоста X;Pfosten X Versatz rechter Schnitt;Offset taglio destro montante X;Desfase de corte derecho montante X

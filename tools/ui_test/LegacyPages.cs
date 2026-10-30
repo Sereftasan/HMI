@@ -225,11 +225,13 @@ class LP {
               All(entryP).OfType<NumericInputHMI>().Count() == 8 && All(robotP).OfType<NumericInputHMI>().Count() == 19 &&
               All(robotP).OfType<NumericInputHMI>().OrderBy(n => n.Top).Last().Address == "D784");
         var other = Page("ParamOther");
-        // (14 October: the user moved the machine's options to an Options page of their own, 20 of them)
+        // (14 October: the user moved the machine's options to an Options page of their own, 20 of them;
+        // 30 October: "you can add these option selections to 'Machine Parameters / Options' page" - L33, L34, L35)
         var optionsPage = Page("Options");
         var opts = All(optionsPage).OfType<CheckBoxHMI>().ToList();
-        Check("Machine Options on the Options page: 20 switches, Mullion Notching L5 and the Clamping Mould option L27 among them; none left on Others",
-              opts.Count == 20 && opts.Any(o => o.Address == "L5") && opts.Any(o => o.Address == "L27") && !All(other).OfType<CheckBoxHMI>().Any(),
+        Check("Machine Options on the Options page: 23 switches, Mullion Notching L5, the Clamping Mould option L27 and L33 - L35 among them; none left on Others",
+              opts.Count == 23 && opts.Any(o => o.Address == "L5") && opts.Any(o => o.Address == "L27") &&
+              new[] { "L33", "L34", "L35" }.All(a => opts.Any(o => o.Address == a)) && !All(other).OfType<CheckBoxHMI>().Any(),
               opts.Count + ": " + string.Join(",", opts.Select(o => o.Address)));
         Check("Middle Register Notch Parameters (D840...)", at(other, "D840") != null && at(other, "D850") != null);
         Check("Lubrication Period in minutes (/60)", at(other, "D485").Divisor == 60);
