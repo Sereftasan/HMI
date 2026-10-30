@@ -72,8 +72,9 @@ class PD {
               lists + " lists; " + string.Join(", ", moved.Take(5)));
         var heads = axisPage.Controls.OfType<Label>().Where(l => l.Name.StartsWith("lblHead")).ToList();
         var rows = axisPage.Controls.OfType<Kaban.UI.Controls.AxisSettingHMI>().OrderBy(r => r.Top).ToList();
-        Check("  as saved: the jog bar at the top, the column names at 68, Robot X at 92, the rows one under the other",
-              heads.All(h => h.Top == 68) && rows[0].Name == "axRobot_X" && rows[0].Top == 92 && rows.Zip(rows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0) &&
+        // (the bar 76 high since its captions went onto two lines - 5dd9f35: the names at 76, Robot X at 100)
+        Check("  as saved: the jog bar at the top, the column names at 76, Robot X at 100, the rows one under the other",
+              heads.All(h => h.Top == 76) && rows[0].Name == "axRobot_X" && rows[0].Top == 100 && rows.Zip(rows.Skip(1), (x, y) => y.Top - x.Bottom).All(g => g >= 0) &&
               axisPage.Controls.Cast<Control>().Single(c => c.GetType() == bar).Top == 0,
               string.Join(" ", rows.Take(3).Select(r => r.Name + "@" + r.Top)));
         win.Close();
