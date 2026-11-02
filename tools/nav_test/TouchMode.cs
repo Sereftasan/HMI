@@ -504,6 +504,50 @@ class TM {
         typeof(Control).GetMethod("OnClick", Any).Invoke(dots, new object[] { EventArgs.Empty }); Pump(100);
         Check("  tapped: the row's menu, for that row", rightRow == 5 && rowMenu.Visible, "row " + rightRow);
         rowMenu.Close(); Pump(50);
+
+        // 2 November, the real touch screen: "the tooltip doesn't" - Windows still held a finger's press back (304 ms, the log),
+        // so the long press is timed from the finger's own pointer messages too
+        Console.WriteLine("--- a finger held still while Windows holds its press back ---");
+        var fingerWas2 = TouchInput.FingerPointer;
+        TouchInput.FingerPointer = id => id >= 100;
+        Func<Control, Point, int, int, bool> finger = (c, p, msg, id) =>
+        {
+            var fm = Message.Create(c.Handle, msg, (IntPtr)(id | (0x0004 << 16)), LP(c.PointToScreen(p)));
+            return TouchInput.Handle(ref fm);
+        };
+        int holdsBefore = TouchInput.FingerHolds; tippedClicks = 0;
+        Toast.HideNow();
+        bool fDown = finger(tipped, new Point(20, 20), 0x0246, 120);
+        finger(tipped, new Point(23, 21), 0x0245, 120);                       // a finger trembles a little
+        Pump(TouchInput.LongPressMs + 250);
+        bool fUp = finger(tipped, new Point(23, 21), 0x0247, 120); Pump(50);
+        Check("no press from Windows: held 0.6 s, its tooltip beside the finger all the same; the lift kept from Windows (no click)",
+              !fDown && TouchInput.FingerHolds == holdsBefore + 1 && TouchInput.LastFingerHold == "tip" && TouchInput.LastTip == "Starts the cycle from the first profile" &&
+              Toast.LastText == TouchInput.LastTip && fUp && tippedClicks == 0, TouchInput.LastFingerHold + " / " + TouchInput.LastTip + " / up taken " + fUp);
+        Toast.HideNow(); rightRow = -1;
+        var rowAt = rowGrid.GetCellDisplayRectangle(0, 7, true); var rowPoint = new Point(rowAt.Left + 30, rowAt.Top + rowAt.Height / 2);
+        finger(rowGrid, rowPoint, 0x0246, 121); Pump(TouchInput.LongPressMs + 250);
+        bool menuUp = finger(rowGrid, rowPoint, 0x0247, 121); Pump(50);
+        Check("  on a table's row: its menu, for that row", TouchInput.LastFingerHold == "menu" && TouchInput.LastHeld == rowGrid && rightRow == 7 && rowMenu.Visible && menuUp,
+              TouchInput.LastFingerHold + " row " + rightRow);
+        rowMenu.Close(); Pump(50);
+        holdsBefore = TouchInput.FingerHolds;
+        finger(tipped, new Point(20, 20), 0x0246, 122);
+        finger(tipped, new Point(60, 30), 0x0245, 122);                       // moved away: a drag, no long press
+        Pump(TouchInput.LongPressMs + 250);
+        bool movedUp = finger(tipped, new Point(60, 30), 0x0247, 122);
+        Check("  moved: no long press, the lift goes to Windows", TouchInput.FingerHolds == holdsBefore && !movedUp);
+        // Windows gives the press at the touch: the long press is the mouse messages' as before - shown once
+        holdsBefore = TouchInput.FingerHolds; int toastsBefore = Toast.Shown;
+        finger(tipped, new Point(20, 20), 0x0246, 123);
+        Down(tipped, new Point(20, 20)); Pump(TouchInput.LongPressMs + 250);
+        bool givenUp = finger(tipped, new Point(20, 20), 0x0247, 123); bool mouseUp = Up(tipped, new Point(20, 20)); Pump(50);
+        Check("  the press given at the touch: its long press as before, the tooltip shown once; the finger's lift to Windows",
+              TouchInput.FingerHolds == holdsBefore && Toast.Shown == toastsBefore + 1 && !givenUp && mouseUp && tippedClicks == 0,
+              (TouchInput.FingerHolds - holdsBefore) + " finger holds, " + (Toast.Shown - toastsBefore) + " toasts");
+        TouchInput.FingerPointer = fingerWas2;
+        Toast.HideNow();
+
         Mode("Mouse"); Pump(50);
         Check("a mouse again: no ⋮, a press held is a press", !dots.Visible);
         Down(rowGrid, press); Pump(TouchInput.LongPressMs + 200); Up(rowGrid, press);

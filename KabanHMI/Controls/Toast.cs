@@ -19,6 +19,14 @@ namespace Kaban.UI.Controls
         /// <summary>The note shown last (tests), and whether it was a warning.</summary>
         public static string LastText { get; private set; }
         public static bool LastWarning { get; private set; }
+        /// <summary>How many notes were shown (tests).</summary>
+        public static int Shown { get; private set; }
+
+        /// <summary>The note on the screen closed now (tests; a page that wants it gone).</summary>
+        public static void HideNow()
+        {
+            try { if (_current != null && !_current.IsDisposed) _current.Close(); } catch { }
+        }
 
         private Toast(string text, bool warning, int ms)
         {
@@ -74,6 +82,7 @@ namespace Kaban.UI.Controls
         {
             LastText = text;
             LastWarning = warning;
+            Shown++;
             try
             {
                 if (_current != null && !_current.IsDisposed) _current.Close();

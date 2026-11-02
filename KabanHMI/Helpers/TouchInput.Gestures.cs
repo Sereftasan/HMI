@@ -156,6 +156,7 @@ namespace Kaban.UI.Helpers
         {
             StopHold();
             _press = null;
+            if (TouchPressGiven()) return true;     // the finger's long press shown already (TouchInput.Fingers): not the control's
             var window = Control.FromHandle(m.HWnd);
             var owner = window ?? Control.FromChildHandle(m.HWnd);
             if (owner == null || IsOwnWindow(owner)) return false;

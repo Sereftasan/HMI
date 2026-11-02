@@ -25,6 +25,12 @@ namespace Kaban.UI.Helpers
     //     about the mouse: its bits on at the touch, off at the lift - Windows makes no mouse
     //     press of that finger then (a pointer message the program takes is not turned into one).
     // A mouse - and a finger on anything else - goes the way it went.
+    //
+    // A FINGER HELD STILL (2 November, the real touch screen again: "the tooltip doesn't" - the log had a finger's press
+    // given 304 ms late, so Windows still held some presses back): the long press - a tooltip, a menu - is timed from the
+    // finger's own WM_POINTERDOWN too. When Windows has given the press by then (TouchInput.Gestures times it from that), it
+    // goes as it went; when it still holds it back, the finger's own timer shows the tooltip or opens the menu, and the
+    // finger's lift is kept from Windows - it makes no click, no right-click of it.
     // ======================================================================
     public static partial class TouchInput
     {
@@ -99,12 +105,125 @@ namespace Kaban.UI.Helpers
                 if (m.Msg == WmPointerEnter || m.Msg == WmPointerDown) _lifted.Remove(id);   // a new contact
                 else return true;
             }
-            if (m.Msg != WmPointerEnter && m.Msg != WmPointerDown) return false;
+            if (m.Msg != WmPointerEnter && m.Msg != WmPointerDown) return Touching(ref m, id);
             var b = Control.FromHandle(m.HWnd) as ButtonHMI;
-            if (b == null || !b.TakesFinger || !FingerPointer(id)) return false;
+            if (b == null || !b.TakesFinger || !FingerPointer(id)) return Touching(ref m, id);
+            StopTouchHold();
+            _touch = null;
             _fingers[id] = b;
             if (m.Msg == WmPointerDown) b.FingerDown();
             return true;
+        }
+
+        // ---- a finger held still, timed from its own messages -------------------------------------
+
+        private sealed class Touch
+        {
+            public int Id;
+            public IntPtr Hwnd;
+            public Point Screen;
+            public DateTime At;
+            public bool Moved;
+            public bool MouseSeen;   // Windows gave its press: the long press is TouchInput.Gestures' (timed from that)
+            public bool Done;        // its tooltip shown or its menu opened here: its lift kept from Windows
+        }
+
+        private static Touch _touch;
+        private static Timer _touchHold;
+
+        /// <summary>What the last long press timed from the finger's own messages did ("tip", "menu"), and how many there were (tests).</summary>
+        public static string LastFingerHold { get; private set; }
+        public static int FingerHolds { get; private set; }
+
+        /// <summary>A finger's pointer message on anything but a hold-to-run button: true when it is kept from Windows.</summary>
+        private static bool Touching(ref Message m, int id)
+        {
+            var t = _touch;
+            switch (m.Msg)
+            {
+                case WmPointerDown:
+                    StopTouchHold();
+                    _touch = null;
+                    if (!FingerPointer(id)) return false;
+                    _touch = new Touch { Id = id, Hwnd = m.HWnd, Screen = PointOf(m.LParam), At = DateTime.Now };
+                    if (_touchHold == null)
+                    {
+                        _touchHold = new Timer { Interval = LongPressMs };
+                        _touchHold.Tick += (s, e) => { StopTouchHold(); TouchHeld(); };
+                    }
+                    _touchHold.Start();
+                    return false;
+                case WmPointerUpdate:
+                    if (t != null && t.Id == id && !t.Moved && !t.Done && Distance(PointOf(m.LParam), t.Screen) > UiScale.Px(Slop))
+                    {
+                        t.Moved = true;
+                        StopTouchHold();
+                    }
+                    return false;
+                case WmPointerUp:
+                case WmPointerCaptureChanged:
+                    if (t == null || t.Id != id) return false;
+                    StopTouchHold();
+                    _touch = null;
+                    return t.Done && m.Msg == WmPointerUp;      // shown already: Windows makes no click of the lift
+            }
+            return false;
+        }
+
+        private static void StopTouchHold() { if (_touchHold != null) _touchHold.Stop(); }
+
+        /// <summary>
+        /// A mouse press while a finger is on the glass: Windows gave the finger's press - its long press is timed from it
+        /// (true: the finger's long press was done here already - the press it gave late is not the control's).
+        /// </summary>
+        private static bool TouchPressGiven()
+        {
+            var t = _touch;
+            if (t == null || (DateTime.Now - t.At).TotalSeconds > 30) return false;
+            if (t.Done) return true;
+            t.MouseSeen = true;
+            StopTouchHold();
+            return false;
+        }
+
+        /// <summary>The finger held still LongPressMs with no press from Windows: its tooltip, or its menu, from here.</summary>
+        private static void TouchHeld()
+        {
+            var t = _touch;
+            if (t == null || t.Moved || t.MouseSeen || t.Done) return;
+            var window = Control.FromHandle(t.Hwnd);
+            var owner = window ?? Control.FromChildHandle(t.Hwnd);
+            if (owner == null || owner.IsDisposed || IsOwnWindow(owner)) return;
+            var at = window ?? owner;
+            var client = at.PointToClient(t.Screen);
+            string tip = null;
+            var strip = window as ToolStrip;
+            if (strip != null)
+            {
+                var item = strip.GetItemAt(client);
+                if (item != null && item.Available && item.Enabled && strip.ShowItemToolTips) tip = item.ToolTipText;
+                if (string.IsNullOrWhiteSpace(tip)) return;
+            }
+            else
+            {
+                var target = window != null ? Deepest(window, client) : owner;
+                if (CanHold(target, ToClient(target, t.Screen)))
+                {
+                    t.Done = true;
+                    LastHeld = target;
+                    LastFingerHold = "menu";
+                    FingerHolds++;
+                    RightClick(t.Hwnd, at, client, false);
+                    return;
+                }
+                tip = TipOf(target);
+                if (string.IsNullOrWhiteSpace(tip)) return;       // nothing to show: the lift goes as Windows makes it
+            }
+            t.Done = true;
+            LastTip = tip;
+            LastFingerHold = "tip";
+            FingerHolds++;
+            Toast.ShowAt(at, tip, t.Screen);
         }
 
         /// <summary>A pointer message's point (screen) on the button.</summary>
