@@ -89,31 +89,43 @@ namespace Kaban.UI.Settings
             BackColor = Color.White;
             var tips = Kaban.UI.Controls.UiStyle.Tips();
 
-            var pn = new FlowLayoutPanel
+            // ONE ROW, its parts on one middle line (2 November: "Aligning at 'HMI Setting / Logs and Reports' page are not
+            // done properly") - a table of one row: each part centred in its cell, whatever its height (the switch is taller)
+            var pn = new TableLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                WrapContents = true,
-                Padding = new Padding(0, 0, 0, 4),
-                BackColor = Color.White
+                RowCount = 1,
+                ColumnCount = 0,
+                Padding = new Padding(0, 4, 0, 4),
+                BackColor = Color.White,
+                Name = "logRow"
+            };
+            pn.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            Action<Control> add = c =>
+            {
+                c.Anchor = AnchorStyles.Left;              // left, and in the middle of the row
+                pn.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+                pn.ColumnCount++;
+                pn.Controls.Add(c, pn.ColumnCount - 1, 0);
             };
 
             _chkEnabled.Text = LanguageManager.GetString("Log_Enabled", "Audit logging enabled");
             _chkEnabled.AutoSize = true;
-            _chkEnabled.Margin = new Padding(2, 9, 16, 3);
+            _chkEnabled.Margin = new Padding(2, 3, 16, 3);
             _chkEnabled.Font = Kaban.UI.Controls.UiStyle.Body;
             _chkEnabled.Checked = AuditLogger.Enabled;
             _chkEnabled.CheckedChanged += (s, e) => OnEnabledChanged();
-            pn.Controls.Add(_chkEnabled);
+            add(_chkEnabled);
 
-            pn.Controls.Add(new Label
+            add(new Label
             {
                 Text = LanguageManager.GetString("Log_Retain", "Keep logs (days)") + ":",
-                AutoSize = true, Margin = new Padding(2, 10, 4, 3), Font = Kaban.UI.Controls.UiStyle.Body
+                AutoSize = true, Margin = new Padding(2, 3, 4, 3), Font = Kaban.UI.Controls.UiStyle.Body, Name = "retainCaption"
             });
             _numRetain.Width = 70;
-            _numRetain.Margin = new Padding(2, 6, 12, 3);
+            _numRetain.Margin = new Padding(2, 3, 12, 3);
             _numRetain.Minimum = 1; _numRetain.Maximum = 3650;
             _numRetain.Value = Math.Min(3650, Math.Max(1, AuditLogger.RetainDays));
             _numRetain.ValueChanged += (s, e) =>
@@ -129,19 +141,20 @@ namespace Kaban.UI.Settings
                 _retainLog.Stop();
                 AuditLogger.Log("set the audit log to keep " + AuditLogger.RetainDays + " days.");
             };
-            pn.Controls.Add(_numRetain);
+            add(_numRetain);
 
             var folder = Kaban.UI.Controls.UiStyle.ToolButton("\uD83D\uDCC2",
                 LanguageManager.GetString("Log_OpenFolder", "Open the log folder") + "\n" + AuditLogger.LogDirectory, tips,
                 (s, e) => { try { Process.Start("explorer.exe", AuditLogger.LogDirectory); } catch { } });
-            folder.Margin = new Padding(2, 1, 8, 1);
-            pn.Controls.Add(folder);
+            folder.Margin = new Padding(2, 2, 8, 2);
+            folder.Name = "logFolder";
+            add(folder);
 
             _adminNote.AutoSize = true;
-            _adminNote.Margin = new Padding(4, 10, 3, 3);
+            _adminNote.Margin = new Padding(4, 3, 3, 3);
             _adminNote.ForeColor = Color.FromArgb(120, 128, 138);
             _adminNote.Text = LanguageManager.GetString("Log_AdminOnly", "Only an Admin can change the log settings.");
-            pn.Controls.Add(_adminNote);
+            add(_adminNote);
 
             _off.Dock = DockStyle.Top;
             _off.Height = 30;

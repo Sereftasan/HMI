@@ -128,6 +128,26 @@ class LR {
         Check("  what its database holds, tested as the page opens", Until(() => ls.MachineSettings.LastProbe != null) &&
               ls.MachineSettings.LastProbe.Ok && ls.MachineSettings.LastProbe.Logs == 4);
         Check("no log table here: the logs are read on the Dashboard page", ls.Viewer == null);
+        // 2 November: "Aligning at 'HMI Setting / Logs and Reports' page are not done properly, make them aligned"
+        Func<Control, int> mid = c => c.Parent.RectangleToScreen(c.Bounds).Top + c.Height / 2;
+        Func<string, Control> named = n => ls.Controls.Find(n, true).FirstOrDefault();
+        var auditSwitch = (Control)typeof(LogSettingsControl).GetField("_chkEnabled", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(ls);
+        var retainBox = (Control)typeof(LogSettingsControl).GetField("_numRetain", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(ls);
+        Check("the audit log's row: its switch, 'Keep logs (days)', the number and the folder on one middle line",
+              new[] { named("retainCaption"), retainBox, named("logFolder") }.All(c => c != null && Math.Abs(mid(c) - mid(auditSwitch)) <= 1),
+              string.Join(" ", new[] { auditSwitch, named("retainCaption"), retainBox, named("logFolder") }.Select(c => c == null ? "?" : mid(c).ToString())));
+        Func<Control, int> right = c => c.Parent.RectangleToScreen(c.Bounds).Right;
+        var settings = ls.MachineSettings;
+        var switches = new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "cutting_details", "event_logs", "alarm_logs" }.Select(settings.SectionBox).ToList();
+        Check("  the switches end where the time zone's list ends (and the folder button)",
+              switches.All(c => Math.Abs(right(c) - right(settings.ZoneBox)) <= 1), right(settings.ZoneBox) + " / " + string.Join(" ", switches.Select(right)));
+        var shotDir = Environment.GetEnvironmentVariable("PAGE_SHOTS");
+        if (!string.IsNullOrEmpty(shotDir)) {
+            Directory.CreateDirectory(shotDir); Pump(200);
+            var at = host.PointToScreen(Point.Empty);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3", "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," +
+                (at.X + host.ClientSize.Width) + "," + (at.Y + host.ClientSize.Height) + "), xdisplay=':99').save('" + Path.Combine(shotDir, "logs_reports.png") + "')\"") { UseShellExecute = false }).WaitForExit(10000);
+        }
 
         Console.WriteLine("--- the Dashboard page: its tabs and its filters (2 October) ---");
         AuditLogger.Log("logged in as setter.");

@@ -251,11 +251,15 @@ namespace Kaban.UI.Dashboard
         }
 
         /// <param name="group">A caption on the row's left (the tab the dashboard sections are on); null: none.</param>
+        /// <remarks>
+        /// As wide as the fields: its switch (drawn at its right end) ends where the time zone's list and the folder
+        /// buttons end (2 November: the switches stood out past them).
+        /// </remarks>
         private void CheckRow(CheckBox cb, string key, string text, string group = null)
         {
             cb.Text = T(key, text);
             cb.AutoSize = false;
-            cb.Width = RowW - Caption - 8;
+            cb.Width = Field;
             cb.Height = 26;
             if (group == null)
             {
