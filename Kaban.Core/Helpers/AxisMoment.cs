@@ -226,8 +226,8 @@ namespace Kaban.Core.Helpers
         }
 
         /// <summary>
-        /// The hint (the most likely cause) for the moment: one phrase of the template,
-        /// "H_" + the name returned.
+        /// The most likely cause for the moment, by its name: it puts the checks in their order (StepsOf). The page
+        /// says it no longer as a "where to start" above them (2 November: the checks themselves go from what the HMI saw).
         /// </summary>
         public static string HintOf(AxisMoment m)
         {
@@ -486,6 +486,7 @@ namespace Kaban.Core.Helpers
             model["LimitMax"] = H(m.Shown(m.LimitMax));
             model["AtMin"] = m.AtMin;
             model["AtMax"] = m.AtMax;
+            model["PastSoftLimit"] = m.Fault == AxisFault.SoftLimit;
 
             // the reference sensor, with the drawing's numbers
             var p = m.RefPoint;
@@ -547,8 +548,6 @@ namespace Kaban.Core.Helpers
             else model["ManualN"] = "";
             model["Steps"] = steps;
             model["HasSteps"] = steps.Count > 0;
-            var hint = HintOf(m);
-            model["Hint"] = tpl.Phrase("H_" + hint, model);
             return model;
         }
     }

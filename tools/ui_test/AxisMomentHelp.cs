@@ -176,8 +176,12 @@ class AMH {
         Check("  what the HMI saw: homing, Home return (7), 600 mm from 500 mm, stood still about 0.8 s, the sensor OFF",
               text.Contains("homing (going to its reference)") && text.Contains("Home return (7)") && text.Contains("600.0000 mm (started at 500.0000 mm)") &&
               Regex.IsMatch(text, @"Stood still 0\.[89] s") && Regex.IsMatch(text, @"Reference sensor SN\.1 OFF"), text.Length > 900 ? text.Substring(0, 900) : text);
-        Check("  the hint: it was never seen, ran on into the end; the reference sensor is the first suspect",
-              text.Contains("never seen") && text.Contains("The reference sensor is the first suspect"));
+        // (2 November: "Where to start" removed - "the first step has those algoritm branchings anyway"; the axis page the same way)
+        Check("  no \"where to start\" above the checks: the most likely cause (the sensor not seen) puts them in their order; the sensor's check reads its OFF",
+              !text.Contains("Where to start") && !html.Contains("class=\"hint\"") && AxisSteps.HintOf(m) == "HomeStuck" &&
+              text.Contains("At the alarm the sensor was OFF - never seen: a homing axis runs until it switches, so it ran on into the mechanical end"),
+              Regex.Match(text, "At the alarm the sensor.{0,160}").Value);
+        Check("  the mechanics' check: it stood still pushing against something", text.Contains("and then stood still for 0.") && text.Contains("it was pushing against something"));
         var titles = Titles(html);
         Check("  the checks: the sensor, the homing direction, the mechanics - then the manual's entry",
               titles.Count >= 4 && titles[0].Contains("SN.1") && titles[1].Contains("towards its sensor") && titles[2].Contains("free to move") &&
@@ -220,7 +224,10 @@ class AMH {
         Check("moved back (away from the forward sensor), stuck: the homing direction, then the sensor",
               m.Direction == -1 && m.AwayFromReference && AxisSteps.StepsOf(m).Take(2).SequenceEqual(new[] { "HomeDirection", "RefSensor" }),
               string.Join(",", AxisSteps.StepsOf(m)));
-        Check("  the hint says so", Text(AxisSteps.Build(m, "EN")).Contains("moved away from the sensor's side"));
+        var awayPage = AxisSteps.Build(m, "EN");
+        Check("  its page: the homing direction the first check, with how it moved this time; no \"where to start\"",
+              Titles(awayPage).FirstOrDefault() == "Does the axis home towards its sensor?" && Text(awayPage).Contains("this time it moved from 800.0000 mm") && Text(awayPage).Contains(", away from it: this check first") &&
+              !Text(awayPage).Contains("Where to start"), string.Join(" | ", Titles(awayPage)) + " / " + Regex.Match(Text(awayPage), "this time.{0,60}").Value);
         mem["W0B"] = 0; mem["U1\\G2409"] = 0; Scan();
 
         Console.WriteLine("--- 1c. the PLC homing it by JOG, its 'go to reference' ON (19 October) ---");
@@ -331,10 +338,9 @@ class AMH {
               m != null && m.MinLimit == 0 && m.MaxLimit == 0 && m.PageLimitsUnset && m.ModuleMin == -5 && m.ModuleMax == 6500 && m.ModuleLimitsOn,
               m == null ? "" : m.MinLimit + " " + m.MaxLimit + " | " + m.ModuleMin + " " + m.ModuleMax);
         text = m == null ? "" : Text(AxisSteps.Build(m, "EN"));
-        Check("  the page shows both, the hint the module's (it stops the axis there)",
+        Check("  the page shows both",
               text.Contains("Limits ( Axis page) 0.0000 mm … 0.0000 mm - equal: not set".Replace("…", "&hellip;")) &&
-              text.Contains("Software stroke limits (motion module) -5.0000 mm &hellip; 6500.0000 mm") &&
-              text.Contains("(limits -5.0000 mm &hellip; 6500.0000 mm)"), Regex.Match(text, "Limits.{0,260}").Value);
+              text.Contains("Software stroke limits (motion module) -5.0000 mm &hellip; 6500.0000 mm"), Regex.Match(text, "Limits.{0,260}").Value);
         Check("  the limits check names the module's limits, on the Axis Monitor",
               text.Contains("software stroke limits (Pr.13 / Pr.12, on the Axis Monitor ): -5.0000 mm &hellip; 6500.0000 mm"), Regex.Match(text, "motion module's own.{0,160}").Value);
         mem["W4"] = 0; mem["U1\\G2409"] = 0; mem["M100"] = 1; Scan(2);
@@ -390,7 +396,8 @@ class AMH {
         TC.HelpFolder = emptyHelp;
         var builtIn = AxisSteps.TemplatePath("EN");
         Check("the template found all the same (built into the program)", builtIn.Length > 0 && File.Exists(builtIn) && !builtIn.StartsWith(emptyHelp), builtIn);
-        Check("  the page made from it", Text(AxisSteps.Build(qm, "EN")).Contains("Where to start"));
+        Check("  the page made from it", Text(AxisSteps.Build(qm, "EN")).Contains("What the HMI saw") && Titles(AxisSteps.Build(qm, "EN")).Count > 0,
+              Text(AxisSteps.Build(qm, "EN")).Substring(0, Math.Min(300, Text(AxisSteps.Build(qm, "EN")).Length)));
         TC.HelpFolder = helpWas;
 
         Console.WriteLine("--- the template ---");
@@ -398,9 +405,9 @@ class AMH {
         var hints = new[] { "HomeStuck", "HomeNoMove", "HomeMoving", "ManualCrash", "AutoCrash", "StandingVertical", "Standing", "Overload", "SoftLimitHoming",
                             "SoftLimit", "HardLimit", "HomeSensor", "HomeFirst", "HomeAtHome", "HomeParameters", "AbsoluteLost", "Encoder", "Supply", "Other" };
         var steps = new[] { "RefSensor", "HomeDirection", "Mechanics", "Brake", "Limits", "Dynamics", "LimitSwitch", "HomeAgain", "Parameters", "Battery", "EncoderCable", "Supply" };
-        Check("every hint and check the program can pick has its phrase and caption",
-              tpl != null && hints.All(h => tpl.HasPhrase("H_" + h)) && steps.All(s => tpl.HasPhrase("S_" + s) && tpl.HasPhrase("C_" + s)),
-              tpl == null ? "no template" : string.Join(",", hints.Where(h => !tpl.HasPhrase("H_" + h)).Concat(steps.Where(s => !tpl.HasPhrase("S_" + s)))));
+        Check("every check the program can pick has its phrase and caption; the causes no phrase of their own (no \"where to start\")",
+              tpl != null && !hints.Any(h => tpl.HasPhrase("H_" + h)) && steps.All(s => tpl.HasPhrase("S_" + s) && tpl.HasPhrase("C_" + s)),
+              tpl == null ? "no template" : string.Join(",", hints.Where(h => tpl.HasPhrase("H_" + h)).Concat(steps.Where(s => !tpl.HasPhrase("S_" + s)))));
         Check("  the motions' words too", tpl != null && Enum.GetNames(typeof(AxisMotion)).All(n => tpl.HasPhrase("M_" + n)));
         Check("  a language without its own copy uses English", AxisSteps.TemplatePath("RU") == AxisSteps.TemplatePath("EN"));
 

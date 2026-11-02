@@ -635,7 +635,7 @@ position reading already show a fault. What it offers depends on the moment; the
   <li><b>What the axis was doing</b> when the code came, as the HMI read it the scan before &ndash; the motion module first: standing still, <b>homing</b>
       (its row's <i>go to reference</i> on, the PLC homing it), moved by hand, or in the cycle; its position and how it moved (moved, then stood still: stuck),
       its limits (the page's and the module's own software stroke limits), its reference sensor (with the drawing's tag, input, card, wire and sheet).</li>
-  <li><b>Where to start</b>, and the checks for that moment: homing &ndash; the reference sensor; jogged or in the cycle &ndash; a crash, the limits; standing &ndash;
+  <li>The checks for that moment, the most likely first (no &ldquo;where to start&rdquo; above them: read what the HMI saw, then the checks): homing &ndash; the reference sensor; jogged or in the cycle &ndash; a crash, the limits; standing &ndash;
       for a <b>vertical</b> axis (&#9660; &#9650; on its row, the only ones with a holding brake) its brake.</li>
   <li>As the last step, the <b>code's own entry of its manual</b> &ndash; the servo amplifier's for a servo alarm, the motion module's for an axis alarm or warning:
       its causes, how to check each, what to do. With nothing of the axis watched, the entry alone.</li>
