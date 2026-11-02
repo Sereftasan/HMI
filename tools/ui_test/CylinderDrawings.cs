@@ -122,19 +122,23 @@ class CD {
             Check("  its cylinder: the arrow to the left", Svg(down, "look").Contains("<path d=\"M230 196 h-90\""));
         }
 
-        Console.WriteLine("--- the sensors: a magnet, the plug, the cable ---");
+        // (2 November: no plug - its wires at the terminals its cable is connected to; the meter on its signal, not its supply)
+        Console.WriteLine("--- the sensors: a magnet, its supply and its signal at its terminals, the cable ---");
         var c1 = Step(release, "C1");
-        Check("the sensor's step draws the sensor, a magnet held on it, its plug measured",
-              Regex.Matches(c1, "<svg class=\"pic\"").Count == 3 && c1.Contains(">magnet</text>") && c1.Contains(">+24 V</text>") && c1.Contains(">signal</text>"));
-        Check("  and asks it: the magnet, the 24 V at the plug, the plug and the cable",
-              Text(c1).Contains("Hold a magnet on the sensor") && Text(c1).Contains("+24 V (brown) against 0 V (blue) = 24 V") &&
-              Text(c1).Contains("move the cable gently"));
-        Check("  each answer: wrong place, no supply, broken sensor, no signal, a loose cable",
-              new[] { "It lights with the magnet, not with the cylinder.", "No 24 V at its plug.", "24 V there, the LED stays off even with the magnet.",
-                      "LED on, X34 stays OFF on the HMI.", "The input comes and goes when the cable moves." }.All(Text(c1).Contains));
+        Check("the sensor's step draws the sensor, a magnet held on it, its three wires measured at their terminals",
+              c1.Contains(">magnet</text>") && c1.Contains(">+24 V</text>") && c1.Contains(">signal &rarr; X34</text>") &&
+              c1.Contains(">20</text>") && c1.Contains(">119</text>") && c1.Contains(">21</text>"));
+        Check("  and asks it: the magnet, the 24 V supply, the signal against 0 V, the cable",
+              Text(c1).Contains("Hold a magnet on the sensor") && Text(c1).Contains("+24 V (brown, wire 20) against 0 V (blue, wire 21) = 24 V") &&
+              Text(c1).Contains("black (wire 119) against 0 V (blue, wire 21): 24 V while it sees the cylinder") && Text(c1).Contains("move the cable gently"));
+        Check("  each answer: wrong place, no supply, broken sensor, no output, no signal at the PLC, a loose cable",
+              new[] { "It lights with the magnet, not with the cylinder.", "No 24 V at its terminals.", "24 V there, the LED stays off even with the magnet.",
+                      "Its LED lit, no 24 V on its signal wire (119).", "24 V on its signal wire, X34 stays OFF on the HMI.",
+                      "The input comes and goes when the cable moves." }.All(Text(c1).Contains));
         var c2 = Step(release, "C2");
-        Check("the sensor that must go off: its plug pulled tells the sensor from the cable",
-              Text(c2).Contains("Pull its plug: the input goes OFF") && Text(c2).Contains("The input stays ON with the plug pulled."));
+        Check("the sensor that must go off: its signal wire out of its terminal tells the sensor from the cable",
+              Text(c2).Contains("Take its black (signal) wire out of its terminal where its cable is connected: the input goes OFF") &&
+              Text(c2).Contains("The input stays ON with its signal wire out."));
 
         Console.WriteLine("--- the left side follows the right ---");
         // 16 October: the box's colour is enough - its number no longer blinks
@@ -146,9 +150,9 @@ class CD {
 
         Console.WriteLine("--- in Turkish ---");
         var tr = page(clamp6, "A", "TR");
-        Check("the same drawings, the words in Turkish", Step(tr, "C1").Contains(">m\u0131knat\u0131s</text>") && Step(tr, "C1").Contains(">sinyal</text>") &&
+        Check("the same drawings, the words in Turkish", Step(tr, "C1").Contains(">m\u0131knat\u0131s</text>") && Step(tr, "C1").Contains(">sinyal &rarr; X34</text>") &&
               Svg(tr, "A6").Contains("<rect x=\"264\" y=\"88\""));
-        Check("  the coil's and the sensor's checks", Text(Step(tr, "A5")).Contains("Konnekt\u00f6rde 24 V yok.") && Text(Step(tr, "C1")).Contains("Soketinde 24 V yok.") &&
+        Check("  the coil's and the sensor's checks", Text(Step(tr, "A5")).Contains("Konnekt\u00f6rde 24 V yok.") && Text(Step(tr, "C1")).Contains("Klemenslerinde 24 V yok.") && Text(Step(tr, "C1")).Contains("Sinyal telinde 24 V var") &&
               !Text(Step(tr, "A5")).Contains("LED"));
         LanguageManager.ChangeLanguage("EN");
 

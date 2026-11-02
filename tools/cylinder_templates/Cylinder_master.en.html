@@ -564,14 +564,16 @@
 <li>{{Name}}{{Where}}{{#Text}} &ndash; {{Text}}{{/Text}}.</li>
 <li>{{>Look}} At the end of <b>{{Move}}</b>: the sensor's own <b>LED</b> lit{{#InHasLed}}, LED <b>{{InLed}}</b> in the <b>IN</b> row of card <b>{{InCardTag}}</b> lit{{/InHasLed}}{{#Io}}, {{Io}} <b>ON</b> on the <i>Inputs / Outputs</i> page{{/Io}}.{{#CopiedTo}} The PLC copies it into {{Dev}}.{{/CopiedTo}}</li>
 <li>{{>Hand}} Its LED off? {{^F3}}Hold a magnet on the sensor (a spare sensor's test magnet, any small magnet){{/F3}}{{#F3}}Hold a steel tool a few millimetres in front of its face{{/F3}}: its LED must light.</li>
-<li>{{>Measure}} Not even then? At the terminals its cable is connected to: <b>+24 V</b> (brown{{#SensorWire}}, wire {{SensorWire}}{{/SensorWire}}) against <b>0 V</b> (blue{{#ZeroWire}}, wire {{ZeroWire}}{{/ZeroWire}}) = 24 V.</li>
-<li>{{>Hand}} Its LED on, the input not? Tighten its wires in their terminals{{#Wire}} (its signal: black, wire {{Wire}}){{/Wire}}; move the cable gently along its way while you watch the input.</li>
+<li>{{>Measure}} Not even then? Its supply, at the terminals its cable is connected to: <b>+24 V</b> (brown{{#SensorWire}}, wire {{SensorWire}}{{/SensorWire}}) against <b>0 V</b> (blue{{#ZeroWire}}, wire {{ZeroWire}}{{/ZeroWire}}) = 24 V.</li>
+<li>{{>Measure}} Its signal, at the same terminals: <b>black</b>{{#Wire}} (wire {{Wire}}){{/Wire}} against <b>0 V</b> (blue{{#ZeroWire}}, wire {{ZeroWire}}{{/ZeroWire}}): <b>24 V</b> while it sees the cylinder (its LED lit), <b>0 V</b> when not.</li>
+<li>{{>Hand}} 24 V on its signal, the input not? Tighten its wires in their terminals; move the cable gently along its way while you watch the input.</li>
 </ul>
 <table class="out">
 <tr class="fault"><td class="when">It lights with the {{^F3}}magnet{{/F3}}{{#F3}}steel{{/F3}}, not with the cylinder.</td><td>The sensor works, it is in the wrong place. {{#F3}}Set the gap to its metal flag (flag not bent).{{/F3}}{{^F3}}Loosen it, slide it to where its LED lights reliably at the end, tighten it (the cylinder's magnet may also be weak).{{/F3}} {{>AgainNext}}</td></tr>
 <tr class="fault"><td class="when">No 24 V at its terminals.</td><td>The supply does not reach it: the cable, a loose terminal{{#SensorWire}}, the sensors' +24 V (wire {{SensorWire}}){{/SensorWire}}, its fuse. Repair it. {{>AgainNext}}</td></tr>
 <tr class="fault"><td class="when">24 V there, the LED stays off even with the {{^F3}}magnet{{/F3}}{{#F3}}steel{{/F3}}.</td><td>The sensor is broken: replace it with the same type and set it at the end. {{>AgainNext}}</td></tr>
-<tr class="fault"><td class="when">LED on, {{#Io}}{{Io}}{{/Io}}{{^Io}}the input{{/Io}} stays OFF on the HMI.</td><td>The signal does not reach the PLC: a loose terminal, the cable (cut, crushed){{#Wire}}, wire {{Wire}}{{/Wire}}{{#Card}}, the input {{Card}}{{/Card}}. Repair what is broken. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">Its LED lit, no 24 V on its signal wire{{#Wire}} ({{Wire}}){{/Wire}}.</td><td>Its output is broken: replace the sensor with the same type and set it at the end. {{>AgainNext}}</td></tr>
+<tr class="fault"><td class="when">24 V on its signal wire, {{#Io}}{{Io}}{{/Io}}{{^Io}}the input{{/Io}} stays OFF on the HMI.</td><td>The signal does not reach the PLC: a loose terminal, the cable (cut, crushed){{#Wire}}, wire {{Wire}}{{/Wire}}{{#Card}}, the input {{Card}}{{/Card}}. Repair what is broken. {{>AgainNext}}</td></tr>
 <tr class="fault"><td class="when">The input comes and goes when the cable moves.</td><td>A loose terminal or a cable broken inside: tighten its terminals, replace the cable. {{>AgainNext}}</td></tr>
 <tr class="good"><td class="when">It is ON.</td><td>&rarr; <a class="go" href="#{{Next}}"></a></td></tr>
 </table>

@@ -344,7 +344,13 @@ class CS {
         var sensorStep = Regex.Match(html, "<div class=\"step[^\"]*\" id=\"[^\"]+\"><div class=\"num\">\\d+</div><div class=\"body\">\\s*<h3>Does sensor <b>SN91</b>.*?</div></div>", RegexOptions.Singleline).Value;
         Check("  the 24 V measured at the terminals its cable is connected to: brown on wire 20, black on wire 144, blue on wire 21 - no plug",
               sensorStep.Contains(">20</text>") && sensorStep.Contains(">144</text>") && sensorStep.Contains(">21</text>") && sensorStep.Contains(">+24 V</text>") &&
-              Text(sensorStep).Contains("At the terminals its cable is connected to") && Text(sensorStep).Contains("wire 20") && !Text(sensorStep).ToLowerInvariant().Contains("plug"),
+              Text(sensorStep).Contains("at the terminals its cable is connected to") && Text(sensorStep).Contains("wire 20") && !Text(sensorStep).ToLowerInvariant().Contains("plug"),
+              Text(sensorStep));
+        // (2 November: "The voltmeter should meassure the sensor data, the drawing shown the supply power")
+        Check("  the meter on its signal: the red lead on the black wire's terminal (144), the black lead on 0 V; 24 V while it sees the cylinder",
+              sensorStep.Contains("<path d=\"M214 112 ") && sensorStep.Contains("<path d=\"M214 162 ") && !sensorStep.Contains("<path d=\"M214 62 ") &&
+              Text(sensorStep).Contains("Its signal, at the same terminals: black (wire 144) against 0 V (blue, wire 21): 24 V while it sees the cylinder") &&
+              Text(sensorStep).Contains("Its LED lit, no 24 V on its signal wire (144).") && Text(sensorStep).Contains("24 V on its signal wire, X"),
               Text(sensorStep));
 
         Console.WriteLine("--- an encoder; an analogue sensor ---");
