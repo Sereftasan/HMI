@@ -213,6 +213,7 @@
     </Compile>
     <Compile Include="Forms\SimulationMonitorForm.Backup.cs">
       <DependentUpon>SimulationMonitorForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SimulationMonitorForm.Table.cs">
       <DependentUpon>SimulationMonitorForm.cs</DependentUpon>
@@ -280,7 +281,9 @@
     <Compile Include="Controls\ToolGlyphs.cs" />
     <Compile Include="Controls\EmojiArt.cs" />
     <Compile Include="Controls\MenuGlyphs.cs" />
-    <Compile Include="Controls\ToggleSwitch.cs" />
+    <Compile Include="Controls\ToggleSwitch.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\FlashRomButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -319,7 +322,9 @@
     <Compile Include="Dashboard\LogDatabase.cs" />
     <Compile Include="Dashboard\MachineLogFeed.cs" />
     <Compile Include="Dashboard\MachineLogger.cs" />
-    <Compile Include="Dashboard\MachineLogSettings.cs" />
+    <Compile Include="Dashboard\MachineLogSettings.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Dashboard\MachineAlarmLog.cs" />
     <Compile Include="Dashboard\DashboardSettingsPage.cs">
       <SubType>UserControl</SubType>
