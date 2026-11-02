@@ -6,8 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, later (the keyboard's letters; the program above it; Windows' own keyboard):
+  - af035ea - The letters on their keys again (on Windows they stood at the left end, away from the keys); the keys across
+    the whole bar.
+  - 0a5f28b - The program laid out above the keyboard, as on a screen that much lower: the main window (and a page in a
+    window of its own), maximised, ends at its top - the navigation panel, the page and the side page scroll above it; the
+    box scrolled into sight; a dialog (the login) moved above it whole. All back when the keyboard goes.
+  - 210c515 - Windows' On-Screen Keyboard as the keyboard on the screen (the default; the HMI's own is a choice in the top
+    bar's mouse / finger menu, "Keyboard on the screen"): started along the bottom of the screen, the program above it.
+    Once it is open Windows lets no ordinary program move or close it - it stays until its own close button is tapped.
 - 2 November (the keyboard on the screen):
-  - The keyboard always along the bottom of the screen, as wide as it, its keys in the middle; the page scrolls until the
+  - 2bf9901 - The keyboard always along the bottom of the screen, as wide as it, its keys in the middle; the page scrolls until the
     box you type into is above it (a dialog moves up), and back when the keyboard goes.
 - 30 October, late (the build error again; the AI helper on alarms; the switches everywhere):
   - 5e22dc1 - The build's "Kaban.Core.dll ... being used by another process": the HMI still running from bin\Debug - the
