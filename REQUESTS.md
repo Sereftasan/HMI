@@ -6,6 +6,11 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, late (the parts' drawings; the sensor's wires):
+  - a0df5e3 - The parts' drawings upright: the PLC's card on top, the part under it; a narrow picture, a wider table;
+    the title block says the sheet's page only ("sheet 18") - the column is lit on the ruler above it.
+  - f065325 - A sensor's check measures at the terminals its cable is connected to: the drawing shows its three wires
+    with their numbers (brown 20, black its signal wire, blue 21) instead of a plug; the checks' words follow.
 - 2 November, night (a real touch screen; the cylinder step-by-step page):
   - 795f2cb - Touch: a hold-to-run button (a jog, a cylinder's button) is pressed at the finger's touch and released at
     its lift (it takes the finger's own pointer messages); Windows' gestures all off in touch mode, so a press - and a
