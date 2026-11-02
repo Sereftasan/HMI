@@ -6,6 +6,9 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November (the keyboard on the screen):
+  - The keyboard always along the bottom of the screen, as wide as it, its keys in the middle; the page scrolls until the
+    box you type into is above it (a dialog moves up), and back when the keyboard goes.
 - 30 October, late (the build error again; the AI helper on alarms; the switches everywhere):
   - 5e22dc1 - The build's "Kaban.Core.dll ... being used by another process": the HMI still running from bin\Debug - the
     FA2010 project now says so first, in plain words (close it, Task Manager: Kaban.Machines.FA2010.exe).

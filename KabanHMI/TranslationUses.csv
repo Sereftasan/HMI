@@ -245,6 +245,7 @@ Btn_OpenJob;KabanHMI\Screens\MachineHomeScreen.cs;360;Text;LanguageManager.GetSt
 Btn_OpenManual;KabanHMI\Forms\MainForm.Help.cs;133;Menu;var manual = new ToolStripMenuItem(LanguageManager.GetString("Btn_OpenManual", "Open the HMI manual"), MenuGlyphs.Book()) { Name = "helpManual" };
 Btn_PlcRead;KabanHMI\Settings\StationConnectionControl.cs;344;Text;var read = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcRead", "Read..."), 0);
 Btn_PlcWrite;KabanHMI\Settings\StationConnectionControl.cs;345;Text;var write = UiStyle.TextButton(LanguageManager.GetString("Btn_PlcWrite", "Write..."), 0);
+Btn_Profiles;Kaban.Machines.FA2010\FA2010Module.cs;234;Text;TitleKey = "Btn_Profiles",
 Btn_Refresh;KabanHMI\Screens\MachineAlarmScreen.cs;306;Text;LanguageManager.GetString("Btn_Refresh", "Refresh the history"), tips, (s, e) => fill()));
 Btn_Remove;KabanHMI\Settings\AlarmSettingsControl.cs;504;Text;btn(LanguageManager.GetString("Btn_Remove", "Remove"), (s, e) => RemoveSelected());
 Btn_Reset;Kaban.Machines.FA2010\Screens\AlarmScreen.Designer.cs;110;Text;this.btnReset.TranslationKey = "Btn_Reset";
