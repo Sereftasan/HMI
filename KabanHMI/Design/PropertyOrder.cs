@@ -63,7 +63,7 @@ namespace Kaban.UI.Design
             ["NumericInputHMI"] = L(
                 C("Device", NumericDevice),
                 C("Display", NumericFormat.Concat(new[] { "BarView", "BarHeader", "BarStep" }).Concat(NumericFrame).ToArray()),
-                C("Input", "MinLimit", "MaxLimit", "IsAngle", "OutOfLimitsWarning"),
+                C("Input", "MinLimit", "MaxLimit", "IsAngle", "OutOfLimitsWarning", "ActiveArea"),
                 C("Formula", "MathVariables", "ReadFormula", "WriteFormula", "FormulaCheck"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
                 C("Security", "RequiredSecurity", "ConfirmWrite", "LogAction"),
@@ -92,7 +92,7 @@ namespace Kaban.UI.Design
 
             ["CheckBoxHMI"] = L(
                 C("Device", "PlcNumber", "Address", "AlertAddress"),
-                C("Display", "Look", "DescriptionText", "DescriptionSide", "CornerRadius"),
+                C("Display", "Look", "ActiveArea", "DescriptionText", "DescriptionSide", "CornerRadius"),
                 C("Conditions", "VisibilityConditions", "EnableConditions", "EnableTrigger"),
                 C("Security", "RequiredSecurity", "ConfirmWrite", "LogAction"),
                 C("Help", "ToolTipCaption")),

@@ -350,6 +350,9 @@ namespace Kaban.UI.Helpers
         /// </summary>
         internal static string TipOf(Control target)
         {
+            // a caption that is part of its control (ActiveArea.Row): the control's tip
+            var acting = target != null ? Kaban.UI.Controls.AttachedDescription.ActingOwnerOf(target) : null;
+            if (acting != null) target = acting;
             if (target == null || !target.Enabled || Excluded(target)) return null;
             int depth = 0;
             for (var c = target; c != null && depth < 4; c = c.Parent, depth++)

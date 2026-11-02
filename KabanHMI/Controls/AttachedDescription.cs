@@ -67,6 +67,59 @@ namespace Kaban.UI.Controls
             return l != null && _owners.TryGetValue(l, out owner) ? owner : null;
         }
 
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Label, AttachedDescription> _byLabel =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<Label, AttachedDescription>();
+
+        /// <summary>The control a caption stands for - its row is the control's (ActiveArea.Row) - or null (TouchInput: its tooltip).</summary>
+        public static Control ActingOwnerOf(Control caption)
+        {
+            var l = caption as Label;
+            AttachedDescription d;
+            return l != null && _byLabel.TryGetValue(l, out d) && d._acts ? d._owner : null;
+        }
+
+        // ---- the caption as a part of its control (ActiveArea.Row) ----
+
+        private bool _acts, _rowHover;
+
+        /// <summary>The caption is part of its control: the pointer over it lights both, a click on it is a click on the control.</summary>
+        public bool ActsAsOwner
+        {
+            get { return _acts; }
+            set { _acts = value; ApplyActs(); }
+        }
+
+        /// <summary>A click (a tap) on the caption, while it acts as its control.</summary>
+        public event EventHandler CaptionClick;
+
+        /// <summary>The pointer came onto the caption (true) or left it (false), while it acts as its control.</summary>
+        public event Action<bool> CaptionHover;
+
+        /// <summary>The caption's light while its row is under the pointer (the control or the caption).</summary>
+        public static readonly Color RowHoverBack = Color.FromArgb(236, 242, 250);
+
+        /// <summary>The row under the pointer: the caption lit (only while it acts as its control).</summary>
+        public void SetRowHover(bool on)
+        {
+            _rowHover = on;
+            if (_label == null || _label.IsDisposed) return;
+            var want = _acts && on ? RowHoverBack : Color.Transparent;
+            if (_label.BackColor != want) _label.BackColor = want;
+        }
+
+        /// <summary>Lit now (tests).</summary>
+        public bool RowLit { get { return _label != null && _acts && _rowHover; } }
+
+        /// <summary>The caption's label (tests).</summary>
+        public Label CaptionLabel { get { return _label; } }
+
+        private void ApplyActs()
+        {
+            if (_label == null) return;
+            _label.Cursor = _acts && _owner.Enabled ? _owner.Cursor : Cursors.Default;
+            SetRowHover(_rowHover);
+        }
+
         public AttachedDescription(Control owner)
         {
             _owner = owner;
@@ -166,6 +219,11 @@ namespace Kaban.UI.Controls
                 };
                 _label.SizeChanged += (s, e) => Position();   // AutoSize settled -> re-anchor
                 _owners.Add(_label, _owner);
+                _byLabel.Add(_label, this);
+                _label.MouseEnter += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(true); } };
+                _label.MouseLeave += (s, e) => { if (_acts) { var h = CaptionHover; if (h != null) h(false); } };
+                _label.Click += (s, e) => { if (_acts && _owner.Enabled && _owner.Visible) { var h = CaptionClick; if (h != null) h(_owner, EventArgs.Empty); } };
+                ApplyActs();
             }
             // Key first, literal fallback - so DescriptionText is BOTH the key and
             // the text shown when no translation exists; there is no second property

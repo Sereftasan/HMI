@@ -364,6 +364,30 @@ namespace Kaban.UI.Controls
             this.BackColor = Color.White;
             _originalBackColor = this.BackColor;
             this.Cursor = Cursors.Hand;
+            // its caption part of it (ActiveArea.Row): the pointer over it lights the field, a click on it opens the keypad
+            CaptionPart.ActsAsOwner = true;
+            CaptionPart.CaptionHover += CaptionHovered;
+            CaptionPart.CaptionClick += (s, e) =>
+            {
+                if (_barView) return;                 // in bar view its name is in its own heading strip
+                _clickPart = BarPart.Value;
+                OnClick(EventArgs.Empty);
+            };
+        }
+
+        private ActiveArea _activeArea = ActiveArea.Row;
+
+        /// <summary>
+        /// Row (the default): the caption beside the field is part of it - the pointer over the caption lights the field, a click
+        /// or a tap on the caption opens the keypad as one on the field does. Control: only the field answers; the caption is
+        /// only words.
+        /// </summary>
+        [Category("  System"), DefaultValue(ActiveArea.Row)]
+        [Description("Row: the caption is part of the field - hovering it lights the field, clicking it opens the keypad. Control: only the field answers.")]
+        public ActiveArea ActiveArea
+        {
+            get { return _activeArea; }
+            set { _activeArea = value; CaptionPart.ActsAsOwner = value == ActiveArea.Row; Invalidate(); }
         }
 
         public override void UpdateState(Func<string, int> readPlc, Func<SystemCondition, bool> checkGlobal)

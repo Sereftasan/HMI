@@ -24,6 +24,21 @@ namespace Kaban.UI.Controls
     }
 
     /// <summary>
+    /// What of a field or a switch answers the pointer and the finger (2 November: "this checkbox HMI control render (making
+    /// the description area as the control area as well so the click or hovering on there acts same as the control itself)
+    /// could nice to use at the numerical controls as well. Is it possible to add another property to make numerical and
+    /// binary controls act these two ways according to the selection of the property").
+    /// </summary>
+    public enum ActiveArea
+    {
+        /// <summary>The whole row: its caption is part of it - a click or a tap on the caption is one on the control, the pointer
+        /// over either lights both.</summary>
+        Row = 0,
+        /// <summary>The control alone (the switch, the value box): its caption is only words.</summary>
+        Control = 1
+    }
+
+    /// <summary>
     /// PLC-bound CHECKBOX: reflects one bit and writes it on click, with the same
     /// security gating, audit logging and attached-description support as the rest
     /// of the family. Ticking is reverted when the user lacks permission.
@@ -116,6 +131,33 @@ namespace Kaban.UI.Controls
         /// <summary>How far, at factor 1, the switch is slid before it changes.</summary>
         public const int SwipeDistance = 18;
 
+        private ActiveArea _activeArea = ActiveArea.Row;
+
+        /// <summary>
+        /// Row (the default): its caption is part of it - a row's whole width, or the caption beside a switch or a box: a click
+        /// or a tap there changes it, the pointer there lights it. Control: only the switch (the box) itself answers; the caption
+        /// is only words.
+        /// </summary>
+        [Category("  System"), DefaultValue(ActiveArea.Row)]
+        [Description("Row: the caption is part of it - clicking or hovering the caption acts as on the switch. Control: only the switch (the box) answers.")]
+        public ActiveArea ActiveArea
+        {
+            get { return _activeArea; }
+            set { _activeArea = value; Descr.ActsAsOwner = value == ActiveArea.Row; Invalidate(); }
+        }
+
+        /// <summary>A point on the switch (the box) itself - with a little room round it for a finger.</summary>
+        private bool OnSwitchItself(Point p)
+        {
+            var look = _look == CheckBoxLook.SwitchRow && !DrawnAsRow ? CheckBoxLook.Switch : _look;
+            if (look != CheckBoxLook.SwitchRow && look != CheckBoxLook.Tile) return true;      // the control IS the switch (the box)
+            var t = SwitchTrack;
+            t.Inflate(UiScale.Px(8), UiScale.Px(6));
+            return t.Contains(p);
+        }
+
+        private bool _pressByPointer, _pressOnSwitch, _captionOver;
+
         /// <summary>The question before a tap's change: the box, and the state it would get - true: changed (tests answer it themselves).</summary>
         public static Func<CheckBoxHMI, bool, bool> Confirm = (box, on) => box.AskToChange(on);
 
@@ -156,12 +198,21 @@ namespace Kaban.UI.Controls
             _down = true;
             _slid = false;
             _downAt = e.Location;
+            _pressByPointer = true;
+            _pressOnSwitch = OnSwitchItself(e.Location);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            // only the switch answers (ActiveArea.Control): the hand over it alone
+            if (_activeArea == ActiveArea.Control && !_down)
+            {
+                var hand = !DisplayOnly && _softEnabled && OnSwitchItself(e.Location) ? Cursors.Hand : Cursors.Default;
+                if (Cursor != hand) Cursor = hand;
+            }
             if (!_down || _slid || (e.Button & MouseButtons.Left) == 0 || !Swipeable) return;
+            if (_activeArea == ActiveArea.Control && !_pressOnSwitch) return;
             int dx = e.X - _downAt.X, dy = e.Y - _downAt.Y;
             if (Math.Abs(dx) < UiScale.Px(SwipeDistance) || Math.Abs(dx) <= 2 * Math.Abs(dy)) return;
             // slid across: right ON, left OFF - no question (the click its lift makes changes nothing more)
@@ -177,7 +228,7 @@ namespace Kaban.UI.Controls
             base.OnMouseUp(e);
             _down = false;
             // the click of this lift (before or after this, as the framework has it) is the slide's: then it is over
-            if (_slid && IsHandleCreated) BeginInvoke(new Action(() => _slid = false));
+            if (IsHandleCreated) BeginInvoke(new Action(() => { _slid = false; _pressByPointer = false; }));
         }
 
         // ---- conditions and trigger, as a ButtonHMI's (14 October: "CheckBoxHMI should
@@ -253,7 +304,18 @@ namespace Kaban.UI.Controls
             // a wide empty field rather than a checkbox.
             Size = new Size(44, 32);
             CheckAlign = ContentAlignment.MiddleCenter;
+            // its caption beside it part of it (ActiveArea.Row): lit with it, a click on it is a click on the switch
+            Descr.ActsAsOwner = true;
+            Descr.CaptionHover += on => { _captionOver = on; Descr.SetRowHover(_over || on); if (_look != CheckBoxLook.Box) Invalidate(); };
+            Descr.CaptionClick += (s, e) => { _pressByPointer = false; OnClick(EventArgs.Empty); };
         }
+
+        /// <summary>The caption beside it (tests).</summary>
+        internal AttachedDescription CaptionPart { get { return Descr; } }
+
+        /// <summary>Lit as under the pointer now: the row's light (a row) or the caption's (beside it) - tests.</summary>
+        [Browsable(false)]
+        public bool RowLit { get { return (_over || _captionOver) && (_activeArea == ActiveArea.Row || !DrawnAsRow); } }
 
         /// <summary>
         /// The same footprint as a command button and a lamp, so the three line up
@@ -350,8 +412,8 @@ namespace Kaban.UI.Controls
         }
 
         private bool _over;
-        protected override void OnMouseEnter(EventArgs e) { _over = true; if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseEnter(e); }
-        protected override void OnMouseLeave(EventArgs e) { _over = false; if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseLeave(e); }
+        protected override void OnMouseEnter(EventArgs e) { _over = true; Descr.SetRowHover(true); if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseEnter(e); }
+        protected override void OnMouseLeave(EventArgs e) { _over = false; Descr.SetRowHover(_captionOver); if (_look != CheckBoxLook.Box) Invalidate(); base.OnMouseLeave(e); }
 
         /// <summary>Its caption as shown (DescriptionText: a translation key or the text itself).</summary>
         [Browsable(false)]
@@ -408,7 +470,8 @@ namespace Kaban.UI.Controls
 
                 case CheckBoxLook.SwitchRow:
                 {
-                    if (_over && live) using (var back = new SolidBrush(Color.FromArgb(246, 248, 251))) g.FillRectangle(back, 0, 0, Width, Height - 1);
+                    // the row lit under the pointer - while the whole row answers (ActiveArea.Row)
+                    if (_over && live && _activeArea == ActiveArea.Row) using (var back = new SolidBrush(Color.FromArgb(246, 248, 251))) g.FillRectangle(back, 0, 0, Width, Height - 1);
                     var t = SwitchTrack;
                     var text = new Rectangle(8, 0, Math.Max(10, (int)t.Left - 16), Height - 1);
                     TextRenderer.DrawText(g, CaptionShown, font, text, ink,
@@ -481,6 +544,8 @@ namespace Kaban.UI.Controls
         {
             if (IsStale || DisplayOnly || !_softEnabled) return;          // not ticked: nothing can be written
             if (_slid) return;                                            // the switch was slid: changed already, no question
+            // only the switch answers (ActiveArea.Control): a press beside it on the row changes nothing (a key still does)
+            if (_activeArea == ActiveArea.Control && _pressByPointer && !_pressOnSwitch) return;
             if (ConfirmWrite && !string.IsNullOrWhiteSpace(Address) && AutoCheck &&
                 SecurityManager.HasAccess(RequiredSecurity) && PlcManager.Instance.CheckPermission(PlcNumber))
             {

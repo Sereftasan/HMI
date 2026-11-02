@@ -127,7 +127,7 @@ namespace Kaban.UI.Controls
             var r = new System.Drawing.Rectangle(1, 1, Width - 3, Height - 3);
             using (var path = new System.Drawing.Drawing2D.GraphicsPath())
             using (var pen = new System.Drawing.Pen(
-                       UiStyle.BorderFor(_hovering(), ValueBorderColor), 1.6f))
+                       UiStyle.BorderFor(RowHovered, ValueBorderColor), 1.6f))
             {
                 path.AddArc(r.X, r.Y, d, d, 180, 90);
                 path.AddArc(r.Right - d, r.Y, d, d, 270, 90);
@@ -148,6 +148,22 @@ namespace Kaban.UI.Controls
 
         /// <summary>The attached caption hidden (true) while the control draws its name itself.</summary>
         protected void SuppressDescription(bool hidden) { Descr.Suppressed = hidden; }
+
+        /// <summary>The caption beside it (ActiveArea: whether it is part of the control).</summary>
+        internal AttachedDescription CaptionPart { get { return Descr; } }
+
+        private bool _captionHover;
+
+        /// <summary>The pointer over the field or - while its caption is part of it - over its caption.</summary>
+        protected bool RowHovered { get { return _hovering() || (_captionHover && Descr.ActsAsOwner); } }
+
+        /// <summary>The pointer on or off its caption: the field's border and the caption's light follow.</summary>
+        protected void CaptionHovered(bool on)
+        {
+            _captionHover = on;
+            Descr.SetRowHover(RowHovered);
+            Invalidate();
+        }
 
         [System.ComponentModel.Category("   Appearance")]
         [System.ComponentModel.Description("Optional description attached to the control's left edge. Enter a TRANSLATION KEY (rendered in the active language) or plain text (shown as-is when the key is not in the translation file). Empty = no label.")]
@@ -235,6 +251,9 @@ namespace Kaban.UI.Controls
         public BaseNumericHMI()
         {
             _hovering = UiStyle.HoverBorder(this);
+            // the field under the pointer: its caption lit too, while it is part of the field
+            MouseEnter += (s, e) => { if (_descr != null) _descr.SetRowHover(true); };
+            MouseLeave += (s, e) => { if (_descr != null) _descr.SetRowHover(RowHovered); };
             // The tip is built on EVERY visit and shown by the field itself once the
             // pointer rests on it - see UiStyle.HoverTip for why registering it was not enough.
             UiStyle.HoverTip(_toolTip, this, BuildTooltip);

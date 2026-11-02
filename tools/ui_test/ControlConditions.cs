@@ -128,6 +128,62 @@ class CN {
         Check("ConfirmWrite off: a tap changes it at once", asked == 3 && sw.Checked && sim.Read("M60") == 1);
         CheckBoxHMI.Confirm = confirmWas;
 
+        // 2 November: "this checkbox HMI control render (making the description area as the control area as well so the click or
+        // hovering on there acts same as the control itself) could nice to use at the numerical controls as well. Is it possible to add
+        // another property to make numerical and binary controls act these two ways according to the selection of the property"
+        Console.WriteLine("--- ActiveArea: the row, or the control alone ---");
+        var areaProp = System.ComponentModel.TypeDescriptor.GetProperties(typeof(NumericInputHMI))["ActiveArea"];
+        Check("a property of both, Row by default", areaProp != null && areaProp.IsBrowsable && new NumericInputHMI().ActiveArea == ActiveArea.Row &&
+              new CheckBoxHMI().ActiveArea == ActiveArea.Row && System.ComponentModel.TypeDescriptor.GetProperties(typeof(CheckBoxHMI))["ActiveArea"] != null);
+        var num = new NumericInputHMI { Name = "num", Address = "D70", DescriptionText = "Saw Speed", Location = new Point(1200, 380), Size = new Size(116, 26),
+                                        RequiredSecurity = SecurityLevel.Operator };
+        page.Controls.Add(num); scanner.RefreshTags(); Pump(500);
+        var numCaption = page.Controls.OfType<Label>().First(l => l.Text.StartsWith("Saw Speed"));
+        Action<Control, string> raise = (c, m) => typeof(Control).GetMethod(m, Any).Invoke(c, new object[] { m == "OnMouseDown" ? (object)new MouseEventArgs(MouseButtons.Left, 1, 4, 4, 0) : EventArgs.Empty });
+        int keypads = 0;
+        var closer = new Timer { Interval = 100 };
+        closer.Tick += (s, e) => { foreach (Form o in Application.OpenForms.Cast<Form>().ToList()) if (o is Kaban.UI.Forms.NumpadForm) { keypads++; o.DialogResult = DialogResult.Cancel; o.Close(); } };
+        closer.Start();
+        raise(numCaption, "OnMouseEnter"); Pump(50);
+        bool litOnCaption = numCaption.BackColor == Color.FromArgb(236, 242, 250);
+        raise(numCaption, "OnMouseLeave"); Pump(50);
+        bool darkAgain = numCaption.BackColor == Color.Transparent;
+        raise(num, "OnMouseEnter"); Pump(50);
+        bool litFromField = numCaption.BackColor == Color.FromArgb(236, 242, 250);
+        raise(num, "OnMouseLeave"); Pump(50);
+        Check("Row: the pointer on the caption lights it (and the field's border), off it - dark; on the field - the caption lit too",
+              litOnCaption && darkAgain && litFromField && numCaption.BackColor == Color.Transparent && numCaption.Cursor == Cursors.Hand);
+        raise(numCaption, "OnClick"); Pump(400);
+        Check("  a click on the caption opens the keypad, as one on the field", keypads == 1, keypads + " keypads");
+        num.ActiveArea = ActiveArea.Control; Pump(50);
+        raise(numCaption, "OnMouseEnter"); Pump(50);
+        bool stillDark = numCaption.BackColor == Color.Transparent;
+        raise(numCaption, "OnMouseLeave");
+        raise(numCaption, "OnClick"); Pump(400);
+        Check("Control: the caption is only words - not lit, its click opens nothing", stillDark && keypads == 1 && numCaption.Cursor == Cursors.Default, keypads + " keypads");
+        closer.Stop();
+
+        // the switch: a row (its caption in it) - Control: only the switch itself
+        sw.ActiveArea = ActiveArea.Control; Pump(50);
+        sim.Write("M60", 0); Pump(500);
+        var track = sw.SwitchTrack;
+        call("OnMouseDown", new object[] { at(20, 20) }); call("OnMouseUp", new object[] { at(20, 20) }); call("OnClick", new object[] { EventArgs.Empty }); Pump(300);
+        bool besideNothing = !sw.Checked && sim.Read("M60") == 0;
+        int tx = (int)(track.Left + track.Width / 2), ty = (int)(track.Top + track.Height / 2);
+        call("OnMouseDown", new object[] { at(tx, ty) }); call("OnMouseUp", new object[] { at(tx, ty) }); call("OnClick", new object[] { EventArgs.Empty }); Pump(300);
+        Check("Control, a row: a press on its words changes nothing, one on the switch does", besideNothing && sw.Checked && sim.Read("M60") == 1);
+        sw.ActiveArea = ActiveArea.Row; Pump(50);
+        call("OnMouseDown", new object[] { at(20, 20) }); call("OnMouseUp", new object[] { at(20, 20) }); call("OnClick", new object[] { EventArgs.Empty }); Pump(300);
+        Check("  Row: a press anywhere on the row changes it", !sw.Checked && sim.Read("M60") == 0);
+        var small = new CheckBoxHMI { Name = "small", Address = "M61", DescriptionText = "Air", Look = CheckBoxLook.Switch, Location = new Point(1200, 300), Size = new Size(44, 32) };
+        page.Controls.Add(small); scanner.RefreshTags(); sim.Write("M61", 0); Pump(500);
+        var smallCaption = page.Controls.OfType<Label>().First(l => l.Text.StartsWith("Air"));
+        raise(smallCaption, "OnClick"); Pump(300);
+        bool captionTicks = small.Checked && sim.Read("M61") == 1;
+        small.ActiveArea = ActiveArea.Control; Pump(50);
+        raise(smallCaption, "OnClick"); Pump(300);
+        Check("a switch with its caption beside it - Row: a click on the caption changes it; Control: not", captionTicks && small.Checked && sim.Read("M61") == 1);
+
         Console.WriteLine("--- AxisSettingHMI: the row's and each button's own conditions and triggers ---");
         sim.Write("L27", 1); sim.Write("M100", 0); sim.Write("M53", 1); Pump(900);
         var back = (ButtonHMI)Get(row, "_back"); var fwd = (ButtonHMI)Get(row, "_forward"); var cal = (ButtonHMI)Get(row, "_calibrate");
