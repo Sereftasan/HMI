@@ -233,12 +233,16 @@ class CS {
               rowOf("Pressure switch").Contains("SN83") && rowOf("Sensor").Contains("SN59") && rowOf("Main air").Contains("SW3"),
               rowOf("Relay") + " | " + rowOf("Valve coil"));
         var outPic = picOf("Valve output");
-        Check("  the output's drawing: card U4 FX5U-64MT-ESS, its terminal Y32, wire 226 to relay K29, sheet 19.6 - its column 6 lit",
-              outPic.Contains(">U4<") && outPic.Contains(">FX5U-64MT-ESS<") && outPic.Contains(">Y32<") && outPic.Contains(">226<") && outPic.Contains(">K29<") &&
-              Regex.IsMatch(outPic, "sheet 19\\.6</text>") && Regex.IsMatch(outPic, "fill=\"#d9480f\" font-weight=\"700\">6</text>"), Text(outPic));
+        // (2 November: "just 'sheet 12' is enough" - the column is on the ruler; "The PLC should stay on top and the connected component should be
+        // rendered on top or the bottom of it so the image take less horizontal and more vertical space")
+        Check("  the output's drawing: upright, card U4 FX5U-64MT-ESS on top, its terminal Y32, wire 226 down to relay K29; 'sheet 19' - its column 6 lit on the ruler",
+              outPic.Contains("viewBox=\"0 0 240 330\"") && outPic.Contains(">U4<") && outPic.Contains(">FX5U-64MT-ESS<") && outPic.Contains(">Y32<") && outPic.Contains(">226<") &&
+              outPic.Contains(">K29<") && Regex.IsMatch(outPic, ">sheet 19</text>") && Regex.IsMatch(outPic, "fill=\"#d9480f\" font-weight=\"700\">6</text>") &&
+              outPic.IndexOf(">U4<") < outPic.IndexOf(">K29<") && outPic.Contains("<figcaption>Electrical drawing, sheet 19.6"), Text(outPic));
         var relayPic = picOf("Relay");
         Check("  the relay's: its coil (A1 / A2) from U4:Y32 on wire 226, its contact 11 / 14 to coil Y.23 on wire 324 (sheet 26.7)",
-              relayPic.Contains(">A1<") && relayPic.Contains(">A2<") && relayPic.Contains(">11<") && relayPic.Contains(">14<") && relayPic.Contains("U4:Y32 /19.6") &&
+              relayPic.Contains(">A1<") && relayPic.Contains(">A2<") && relayPic.Contains(">11<") && relayPic.Contains(">14<") && relayPic.Contains(">U4<") &&
+              relayPic.Contains(">Y32<") && relayPic.Contains(">/19.6<") &&
               relayPic.Contains(">324<") && relayPic.Contains("Y.23 /26.7"), Text(relayPic));
         var coilPic = picOf("Valve coil");
         Check("  the coil's: wire 324 from K29:14 to its connector's pins 1 and 2, sheet 26.7", coilPic.Contains("K29:14 /19.6") && coilPic.Contains(">connector<") &&
@@ -249,7 +253,8 @@ class CS {
               sensorPic.Contains("(X51)") && sensorPic.Contains("sheet 13.5"), Text(sensorPic));
         var airPic = picOf("Valve, hoses, cylinder");
         Check("  the air's: the 5/3 valve, hoses 23 (A) and 24 (B), cylinder P16, pneumatic sheet 3 E8 - row E and column 8 lit",
-              airPic.Contains("23 (A)") && airPic.Contains("24 (B)") && airPic.Contains("P16 Profile Recognition") && airPic.Contains("pneumatic sheet 3 E8") &&
+              airPic.Contains("23 (A)") && airPic.Contains("24 (B)") && airPic.Contains("P16 Profile Recognition") && airPic.Contains(">pneumatic sheet 3</text>") &&
+              airPic.Contains("Pneumatic drawing, sheet 3 E8") &&
               Regex.IsMatch(airPic, ">E</text>") && Regex.IsMatch(airPic, "font-weight=\"700\">E</text>") && Regex.IsMatch(airPic, "font-weight=\"700\">8</text>"), Text(airPic));
         Check("  the drawing of the row chosen beside the table (the first at the start), the others hidden till chosen; the alarm's row has none",
               partsHtml.Contains("<div class=\"partpic\">") && html.Contains("table.parts tr[data-pic]") && !Regex.IsMatch(partsHtml, "<tr data-pic=\"[^\"]+\"[^>]*><td>Alarm</td>"));

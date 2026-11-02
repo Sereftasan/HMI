@@ -1063,7 +1063,7 @@ namespace Kaban.Core.Helpers
                 r["IsOther"] = false;
                 r["IsSwitch"] = false;
                 foreach (var k in new[] { "Unit", "Model", "Terminal", "Code", "Wire", "DrawSheet", "Relay", "RelaySheet", "Coil", "CoilWire", "CoilSheet",
-                                          "Tag", "From", "FromSheet", "Text" })
+                                          "Tag", "From", "FromSheet", "Text", "SheetNo" })
                     r[k] = "";
                 r["Cols"] = new List<IDictionary<string, object>>();
                 r["Rows"] = new List<IDictionary<string, object>>();
@@ -1087,25 +1087,29 @@ namespace Kaban.Core.Helpers
 
             /// <summary>
             /// The sheet's ruler with the column (and for the air, the zone's row) the part is in lit: "19.1" - page 19, column 1
-            /// of ten (0 - 9); "2 E3" - page 2, zone E3 (columns 1 - 8, rows A - F).
+            /// of ten (0 - 9); "2 E3" - page 2, zone E3 (columns 1 - 8, rows A - F). The title block says the page only - "sheet 19"
+            /// (2 November: "The top of the screen shows the horizontal position of the component so just 'sheet 12' is enough").
+            /// The drawing stands upright (240 x 330): the PLC's card on top, the part under it.
             /// </summary>
             private static void PutRuler(Dictionary<string, object> r, string sheet, bool pneumatic)
             {
                 sheet = (sheet ?? "").Trim();
                 r["DrawSheet"] = E(sheet);
+                var page = Regex.Match(sheet, @"^\s*(\d+)");
+                r["SheetNo"] = E(page.Success ? page.Groups[1].Value : sheet);
                 var cols = new List<IDictionary<string, object>>();
                 var rows = new List<IDictionary<string, object>>();
                 if (pneumatic)
                 {
                     var z = Regex.Match(sheet, @"([A-Fa-f])\s*(\d)\s*$");
                     for (int i = 1; i <= 8; i++)
-                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (24 + (i - 1) * 49).ToString(CultureInfo.InvariantCulture) },
-                                                                  { "W", "49" }, { "On", z.Success && z.Groups[2].Value == i.ToString(CultureInfo.InvariantCulture) } });
+                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (22 + (i - 1) * 27).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "W", "27" }, { "On", z.Success && z.Groups[2].Value == i.ToString(CultureInfo.InvariantCulture) } });
                     for (int i = 0; i < 6; i++)
                     {
                         string letter = ((char)('A' + i)).ToString();
-                        rows.Add(new Dictionary<string, object> { { "N", letter }, { "Y", (16 + i * 34).ToString(CultureInfo.InvariantCulture) },
-                                                                  { "TY", (36 + i * 34).ToString(CultureInfo.InvariantCulture) },
+                        rows.Add(new Dictionary<string, object> { { "N", letter }, { "Y", (16 + i * 46).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "TY", (43 + i * 46).ToString(CultureInfo.InvariantCulture) },
                                                                   { "On", z.Success && string.Equals(z.Groups[1].Value, letter, StringComparison.OrdinalIgnoreCase) } });
                     }
                 }
@@ -1113,8 +1117,8 @@ namespace Kaban.Core.Helpers
                 {
                     var c = Regex.Match(sheet, @"\.(\d)\s*$");
                     for (int i = 0; i <= 9; i++)
-                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (24 + i * 39).ToString(CultureInfo.InvariantCulture) },
-                                                                  { "W", "39" }, { "On", c.Success && c.Groups[1].Value == i.ToString(CultureInfo.InvariantCulture) } });
+                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (5 + i * 23).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "W", "23" }, { "On", c.Success && c.Groups[1].Value == i.ToString(CultureInfo.InvariantCulture) } });
                 }
                 foreach (var col in cols) col["TX"] = (int.Parse((string)col["X"], CultureInfo.InvariantCulture) + int.Parse((string)col["W"], CultureInfo.InvariantCulture) / 2).ToString(CultureInfo.InvariantCulture);
                 r["Cols"] = cols;
