@@ -6,6 +6,17 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, night (a real touch screen; the cylinder step-by-step page):
+  - 795f2cb - Touch: a hold-to-run button (a jog, a cylinder's button) is pressed at the finger's touch and released at
+    its lift (it takes the finger's own pointer messages); Windows' gestures all off in touch mode, so a press - and a
+    long press's tooltip - comes at the touch, not at the lift.
+  - 824ed81 - The step-by-step page: the safety notice first; the valve's outputs out of "What the HMI saw" (the PLC
+    drops them with the alarm); no "Where to start", no "How this page goes".
+  - 6be8d90 - The parts of the movement at the top, after the safety notice: the relays and the valve coils as rows of
+    their own; beside the table, a drawing of the part chosen as on the electrical / pneumatic drawing - its symbol,
+    connection points, wire numbers, the card's unit, model and terminal, the sheet with its column (zone) lit.
+  - The ContextSwitchDeadlock message: Visual Studio's warning that a thread holding a COM object (the UI, or MX
+    Component's own thread) did not answer for 60 s - see the report; no change yet.
 - 2 November, evening (the menu's words; Off; the keyboard in Users and Preferences; the preview):
   - fdf631a - The mouse / finger menu's words: Mouse, Touch; On-Screen Keyboard: Windows', HMI's (Turkish too).
   - fb40541 - On-Screen Keyboard: Off - a tap on a text box brings no keyboard (a keyboard of keys used); a number still

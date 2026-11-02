@@ -74,6 +74,12 @@
   (TouchKeyboard) or Off (a keyboard of keys) - ViewPreferences.ScreenKeyboard: the top bar's mouse / finger menu and
   Users and Preferences > Screen (everyone's or a user's own). osk is placed by HKCU\Software\Microsoft\Osk before it starts;
   once open, Windows lets no ordinary program move or close it (uiAccess) - it stays until its own close button.
+- A finger (2 November, a real touch screen): Windows gave a finger's mouse press only at its lift. In touch mode every
+  window has all of Windows' gestures off (SetGestureConfig, id 0), and a hold-to-run ButtonHMI takes the finger's own
+  pointer messages (TouchInput.Fingers: WM_POINTERDOWN ... UP) - pressed at the touch, released at the lift.
+- The cylinder step-by-step page (2 November): safety notice, then the parts of the movement with a drawing per part
+  (Drawings.html Schem*, PartRows), then what the HMI saw - the sensors only (the valve's outputs drop with the alarm);
+  no "where to start" / "how this page goes" (step 1 branches).
 - An encoder the machine has only with an option, or one input switched between two encoders (30 October):
   CylinderEncoderSettingHMI.EncoderConditions (FA2010: L33, L34) and MeasuredConditions (Y120 / M450, the left or the
   right profile recognition unit). New machine conditions go after the last one (FA2010: bits 22 - 26 now), never between.

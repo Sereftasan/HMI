@@ -2349,8 +2349,8 @@ Tbl_Save;KabanHMI\Profiles\TableEditor.cs;79;Tooltip;_save = UiStyle.ToolButton(
 Tbl_Saved;KabanHMI\Profiles\LibraryEditorForm.cs;503;Text;status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Saved;KabanHMI\Profiles\TableEditor.cs;457;Status;_status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Unsaved;KabanHMI\Profiles\TableEditor.cs;153;Status;_status.Text = T("Tbl_Unsaved", "changed - not saved yet");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;258;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;271;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;266;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;279;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
 Tip_AiAsk;KabanHMI\Helpers\AiMenu.cs;70;Tooltip;ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
 Tip_AiPrompt;KabanHMI\Helpers\AiMenu.cs;59;Tooltip;? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's o...
 Tip_AlarmBit;KabanHMI\Controls\ButtonHMI.cs;1438;Tooltip;lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
