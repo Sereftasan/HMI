@@ -6,6 +6,16 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, evening (a touch screen again; the monitoring time):
+  - b426381 - Step-by-step page, too slow: a PLC's alarm says its time is set in the PLC program, not on the HMI -
+    request support to have it reviewed (no "have the monitoring time raised"); the HMI's own alarm: its delay in
+    Alarm Settings, as before.
+  - 1c00451 - Touch: the long press (tooltip, menu) is timed from the finger's own messages too - when Windows still
+    holds the finger's press back, the tooltip shows (or the menu opens) all the same and the lift clicks nothing.
+  - f344b90 - Touch: grips on the borders - the side page's border wider with three grips (middle, near each end); a
+    side page in its own window a wider frame with a grip at each corner and the middle of each side.
+  - d3e73c0 - Dashboard time line: - / + / whole-range buttons at its top right, and two fingers spread apart or
+    pinched together zoom around the point between them.
 - 2 November, later (the meter on the sensor's signal; the axis page):
   - 8927ba4 - A sensor's check: the meter measures its signal - the red lead on the black (signal) wire's terminal,
     the black lead on 0 V: 24 V while it sees the cylinder, 0 V when not; its supply (+24 V against 0 V) a line of
