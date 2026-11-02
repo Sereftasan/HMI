@@ -93,12 +93,12 @@ namespace Kaban.UI.Forms
                 Margin = new Padding(-34, 2, 2, 2)
             });
             menu.Items.Add(new ToolStripSeparator());
-            var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "A mouse"), MenuGlyphs.Mouse())
+            var mouse = new ToolStripMenuItem(LanguageManager.GetString("VP_InputMouse", "Mouse"), MenuGlyphs.Mouse())
             {
                 Name = "inputMouse", Checked = !TouchInput.On
             };
             mouse.Click += (s, e) => { if (TouchInput.On) TouchInput.Choose(false); };
-            var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch (a finger)"), MenuGlyphs.Touch())
+            var touch = new ToolStripMenuItem(LanguageManager.GetString("VP_InputTouch", "Touch"), MenuGlyphs.Touch())
             {
                 Name = "inputTouch", Checked = TouchInput.On
             };
@@ -115,16 +115,16 @@ namespace Kaban.UI.Forms
             });
             // the keyboard a tap on a text box brings (2 November): Windows' On-Screen Keyboard, or the HMI's own - the panel's
             menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_Keyboard", "Keyboard on the screen"))
+            menu.Items.Add(new ToolStripLabel(LanguageManager.GetString("VP_Keyboard", "On-Screen Keyboard"))
             {
                 Font = MenuHeaderFont(),
                 ForeColor = Color.FromArgb(40, 46, 56),
                 Margin = new Padding(-34, 2, 2, 2)
             });
             bool windows = WindowsKeyboard.Chosen;
-            var osk = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardWindows", "Windows' On-Screen Keyboard")) { Name = "keyboardWindows", Checked = windows };
+            var osk = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardWindows", "Windows'")) { Name = "keyboardWindows", Checked = windows };
             osk.Click += (s, e) => ChooseKeyboard("Windows");
-            var own = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardOwn", "The HMI's own")) { Name = "keyboardOwn", Checked = !windows };
+            var own = new ToolStripMenuItem(LanguageManager.GetString("VP_KeyboardOwn", "HMI's")) { Name = "keyboardOwn", Checked = !windows };
             own.Click += (s, e) => ChooseKeyboard("Own");
             menu.Items.Add(osk);
             menu.Items.Add(own);

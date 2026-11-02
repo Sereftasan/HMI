@@ -170,7 +170,7 @@ class TM {
               pref != null && pref.Group == "Screen" && !pref.Hidden && string.Join(",", pref.Values) == "Mouse,Touch" && pref.Default == "Mouse" &&
               !ViewPreferences.TouchMode && !TouchInput.On);
         Check("  its words", PT("NameOf", ViewPreferences.InputMode) == "Screen used with" &&
-              PT("ValueText", ViewPreferences.InputMode, "Mouse") == "A mouse" && PT("ValueText", ViewPreferences.InputMode, "Touch") == "Touch (a finger)");
+              PT("ValueText", ViewPreferences.InputMode, "Mouse") == "Mouse" && PT("ValueText", ViewPreferences.InputMode, "Touch") == "Touch");
         var page = new UsersPreferencesControl();
         var host = new Form { ClientSize = new Size(1200, 800), StartPosition = FormStartPosition.Manual, Location = new Point(0, 0) };
         page.Dock = DockStyle.Fill; host.Controls.Add(page); host.Show(); Pump(200);
@@ -178,7 +178,7 @@ class TM {
         var combo = page.ComboOf(ViewPreferences.InputMode);
         var lang = page.ComboOf(ViewPreferences.Language);
         Check("  on the page: a row under Screen, below the language", combo != null && lang != null && combo.Top > lang.Top &&
-              combo.Items.Cast<object>().Select(o => o.ToString()).Where(s => s == "A mouse" || s == "Touch (a finger)").Count() == 2,
+              combo.Items.Cast<object>().Select(o => o.ToString()).Where(s => s == "Mouse" || s == "Touch").Count() == 2,
               combo == null ? "no combo" : combo.Top + " vs " + lang.Top + ": " + string.Join(" | ", combo.Items.Cast<object>()));
         var preview = new PreferencePreview();
         preview.ShowPreference(ViewPreferences.InputMode, k => k == ViewPreferences.InputMode ? "Touch" : ViewPreferences.PanelValue(k), false);
@@ -213,7 +213,7 @@ class TM {
         // (2 November: "The original windows on screen keyboard is very nice btw ... is it possible to just use it instead of creating a
         // personal one (we would just need to land it to the bottom of our screen instead if it is possible)")
         Check("  then the keyboard on the screen: Windows' On-Screen Keyboard ticked (the default), the HMI's own",
-              menu.Items.OfType<ToolStripLabel>().Any(l => l.Text == "Keyboard on the screen") && Item(menu, "keyboardWindows") != null &&
+              menu.Items.OfType<ToolStripLabel>().Any(l => l.Text == "On-Screen Keyboard") && Item(menu, "keyboardWindows") != null &&
               Item(menu, "keyboardWindows").Checked && !Item(menu, "keyboardOwn").Checked && WindowsKeyboard.Chosen,
               string.Join(" | ", menu.Items.Cast<ToolStripItem>().Select(i => i.Text)));
         Item(menu, "keyboardOwn").PerformClick(); Pump(30);

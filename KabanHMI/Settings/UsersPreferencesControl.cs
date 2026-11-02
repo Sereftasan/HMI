@@ -1108,8 +1108,8 @@ namespace Kaban.UI.Settings
                 case "AiPromptAs.Text": return T("VP_AiAsText", "Its text");
                 case "AiPaste.On": return T("VP_AiPasteOn", "By itself (Ctrl+V)");
                 case "AiPaste.Off": return T("VP_AiPasteOff", "I paste it myself");
-                case "InputMode.Mouse": return T("VP_InputMouse", "A mouse");
-                case "InputMode.Touch": return T("VP_InputTouch", "Touch (a finger)");
+                case "InputMode.Mouse": return T("VP_InputMouse", "Mouse");
+                case "InputMode.Touch": return T("VP_InputTouch", "Touch");
                 default: return value;
             }
         }
