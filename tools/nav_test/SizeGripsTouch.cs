@@ -99,15 +99,15 @@ class SG {
         SizeGrips.ForSplitter(split, 6);
         f.Show(); Pump(150);
         var grips = SizeGrips.Of(split);
-        Check("a mouse: the border as thin as before, no grips", grips.Count == 3 && split.Width == UiScale.For(split, 6) && grips.All(g => !g.Visible),
+        Check("a mouse: the border as thin as before, no grips", grips.Count == 1 && split.Width == UiScale.For(split, 6) && grips.All(g => !g.Visible),
               split.Width + " / " + grips.Count(g => g.Visible));
         Mode("Touch");
         int wide = UiScale.For(split, SizeGrips.TouchSplitter);
-        Check("touch: the border wider, three grips on it - its middle and near each end, centred on it, over the parts beside it",
-              split.Width == wide && grips.All(g => g.Visible && g.Parent == f) &&
+        // (2 November: "the corner extension controls ... not needed if only one way extension possible": its middle only)
+        Check("touch: the border wider, one grip on it - at its middle, centred on it, over the parts beside it",
+              split.Width == wide && grips.Count == 1 && grips[0].Visible && grips[0].Parent == f &&
               Math.Abs(grips[0].Left + grips[0].Width / 2 - (split.Left + split.Width / 2)) <= 1 &&
               Math.Abs(grips[0].Top + grips[0].Height / 2 - (split.Top + split.Height / 2)) <= 1 &&
-              grips[1].Top < split.Top + split.Height / 4 && grips[2].Bottom > split.Bottom - split.Height / 4 &&
               grips.All(g => g.Width > split.Width && f.Controls.GetChildIndex(g) < f.Controls.GetChildIndex(side)),
               split.Width + " " + string.Join(" ", grips.Select(g => g.Bounds.ToString())));
         Shot(f, "grips_splitter");
@@ -117,15 +117,12 @@ class SG {
               side.Width == before + 120 && moved > 0 && grips[0].Left + grips[0].Width / 2 == split.Left + split.Width / 2,
               before + " -> " + side.Width + ", moved " + moved);
         before = side.Width;
-        DragBy(grips[2], 2000, 0);
-        Check("  an end's grip dragged far to the right: no narrower than the border lets it (its MinSize)", side.Width == split.MinSize,
+        DragBy(grips[0], 2000, 0);
+        Check("  dragged far to the right: no narrower than the border lets it (its MinSize)", side.Width == split.MinSize,
               before + " -> " + side.Width);
-        DragBy(grips[1], -3000, 0);
+        DragBy(grips[0], -3000, 0);
         Check("  far to the left: the page keeps what the border leaves it (its MinExtra)", page.Width >= split.MinExtra - 1 && page.Width <= split.MinExtra + wide,
               "page " + page.Width + ", side " + side.Width);
-        f.ClientSize = new Size(1000, 200); Pump(80);
-        Check("  a short border: its middle grip only", grips[0].Visible && !grips[1].Visible && !grips[2].Visible);
-        f.ClientSize = new Size(1000, 640); Pump(80);
         Mode("Mouse");
         Check("a mouse again: thin, no grips", split.Width == UiScale.For(split, 6) && grips.All(g => !g.Visible));
         f.Close(); f.Dispose();
@@ -188,6 +185,39 @@ class SG {
         Check("a mouse again: its thin frame, no grips", w.Padding.Left == UiScale.For(w, 5) && wg.All(g => !g.Visible), w.Padding + "");
         w.Close(); w.Dispose();
 
+        Console.WriteLine("--- a pane on a page (the Profiles page's) ---");
+        Mode("Touch");
+        var pf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(20, 20), ClientSize = new Size(1000, 640), Text = "panes" };
+        var canvas = new Panel { Dock = DockStyle.Fill, BackColor = Color.FromArgb(246, 247, 249) };
+        pf.Controls.Add(canvas);
+        var pane = new FloatingPaneHMI("details", "Details") { Bounds = new Rectangle(300, 100, 320, 260) };
+        canvas.Controls.Add(pane);
+        pf.Show(); Pump(150);
+        var pg = SizeGrips.Of(pane);
+        Func<string, Control> pgrip = n => pg.First(g => g.Name == "sizeGrip" + n);
+        Check("touch: the pane's frame wider; a grip at each corner (both ways) and the middle of each side",
+              pane.Padding.Left == UiScale.Px(SizeGrips.TouchFrame) && pg.Count == 12 && pg.All(g => g.Visible && g.Parent == pane) &&
+              pgrip("LeftTopH").Location == Point.Empty && pgrip("RightBottomV").Right == pane.Width && pgrip("RightBottomV").Bottom == pane.Height,
+              pane.Padding + " " + pg.Count(g => g.Visible));
+        Shot(pf, "grips_pane");
+        var pb = pane.Bounds;
+        DragBy(pgrip("RightBottomH"), 50, 40);
+        Check("  its bottom right corner dragged (50, 40): wider and taller by as much", pane.Bounds == new Rectangle(pb.X, pb.Y, pb.Width + 50, pb.Height + 40), pb + " -> " + pane.Bounds);
+        pb = pane.Bounds;
+        DragBy(pgrip("LeftTopV"), -40, -30);
+        Check("  its top left corner: both of its sides", pane.Bounds == Rectangle.FromLTRB(pb.Left - 40, pb.Top - 30, pb.Right, pb.Bottom), pb + " -> " + pane.Bounds);
+        pb = pane.Bounds;
+        DragBy(pgrip("Left"), -2000, 0);
+        Check("  its left side dragged past the page's edge: it stops at the edge", pane.Left == 0 && pane.Right == pb.Right, pb + " -> " + pane.Bounds);
+        pane.State = FloatingPaneHMI.PaneState.Minimized; Pump(60);
+        Check("  minimised: no grips (it is parked), its caption bar the frame's height", pg.All(g => !g.Visible) && pane.Height == 26 + 2 * pane.Padding.Left);
+        pane.State = FloatingPaneHMI.PaneState.Normal; Pump(60);
+        Check("  floating again: its grips back", pg.All(g => g.Visible));
+        Mode("Mouse");
+        Check("a mouse: the pane's thin frame, no grips", pane.Padding.Left == 6 && pg.All(g => !g.Visible), pane.Padding + "");
+        Mode("Touch");
+        pf.Close(); pf.Dispose();
+
         Console.WriteLine("--- the program's own: the side page's border, its window ---");
         var prog = typeof(Kaban.Machines.FA2010.FA2010Module).Assembly.GetType("Kaban.Machines.FA2010.Program");
         Func<string, MethodInfo> pm = n => prog.GetMethod(n, BindingFlags.NonPublic | BindingFlags.Static);
@@ -206,8 +236,8 @@ class SG {
         main.ShowSidePage("IoMonitor"); Pump(300);
         var sideSplit = (Splitter)Get(main, "_sideSplitter");
         var sideGrips = SizeGrips.Of(sideSplit);
-        Check("the side page's border: wider, three grips on it", sideSplit.Visible && sideSplit.Width == UiScale.For(sideSplit, SizeGrips.TouchSplitter) &&
-              sideGrips.Count == 3 && sideGrips[0].Visible, sideSplit.Width + " / " + sideGrips.Count);
+        Check("the side page's border: wider, its middle grip on it", sideSplit.Visible && sideSplit.Width == UiScale.For(sideSplit, SizeGrips.TouchSplitter) &&
+              sideGrips.Count == 1 && sideGrips[0].Visible, sideSplit.Width + " / " + sideGrips.Count);
         Shot(main, "grips_side_page");
         var sidePanel = (Panel)Get(main, "_sidePanel");
         int sw = sidePanel.Width;

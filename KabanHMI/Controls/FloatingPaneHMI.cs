@@ -15,7 +15,10 @@ namespace Kaban.UI.Controls
     /// </summary>
     public class FloatingPaneHMI : Panel
     {
-        private const int Grip = 6;          // resize border thickness
+        private const int Grip = 6;          // resize border thickness (with a mouse)
+
+        /// <summary>The frame it is sized from now: wider in touch mode, where it carries grips a finger holds (SizeGrips).</summary>
+        private int Frame { get { return Math.Max(1, Padding.Left); } }
         private const int TitleH = 26;
 
         private readonly Panel _title = new Panel();
@@ -130,6 +133,20 @@ namespace Kaban.UI.Controls
             MouseDown += PaneMouseDown;
             MouseMove += PaneMouseMove;
             MouseUp += (s, e) => { _resizing = false; Cursor = Cursors.Default; };
+
+            // a finger (2 November, the Profiles page's panes: grips at their corners and the middle of their sides):
+            // a wider frame with grips on it in touch mode, sized while it floats
+            Kaban.UI.Helpers.SizeGrips.ForBox(this, ApplyFrame, () => CanMove, null);
+        }
+
+        /// <summary>Its frame for the screen's mode: a finger's in touch mode, the mouse's otherwise.</summary>
+        private void ApplyFrame()
+        {
+            int f = Kaban.UI.Helpers.TouchInput.On ? UiScale.Px(Kaban.UI.Helpers.SizeGrips.TouchFrame) : Grip;
+            if (Padding.Left == f) return;
+            Padding = new Padding(f);
+            MinimumSize = new Size(160, TitleH + 2 * f);
+            if (_state == PaneState.Minimized) Height = TitleH + 2 * f;
         }
 
         private static void StyleTitleButton(Button b, string glyph)
@@ -178,7 +195,7 @@ namespace Kaban.UI.Controls
                 {
                     case PaneState.Minimized:
                         Content.Visible = false;
-                        Height = TitleH + 2 * Grip;
+                        Height = TitleH + 2 * Frame;
                         _btnMin.Text = "\u25B2";      // up: bring me back
                         _btnMax.Visible = false;      // meaningless while parked
                         break;
@@ -357,8 +374,8 @@ namespace Kaban.UI.Controls
 
         private ResizeEdge EdgeAt(Point p)
         {
-            bool l = p.X <= Grip, r = p.X >= Width - Grip;
-            bool t = p.Y <= Grip, b = p.Y >= Height - Grip;
+            bool l = p.X <= Frame, r = p.X >= Width - Frame;
+            bool t = p.Y <= Frame, b = p.Y >= Height - Frame;
             if (l && t) return ResizeEdge.TL;
             if (r && t) return ResizeEdge.TR;
             if (l && b) return ResizeEdge.BL;

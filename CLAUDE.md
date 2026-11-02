@@ -80,7 +80,9 @@
   Windows still held some presses back (the log: 304 ms), so the long press (tooltip, menu) is timed from the finger's
   WM_POINTERDOWN too, and its lift kept from Windows when shown so. Two fingers zoom a control that is
   TouchInput.IPinchZoom (the dashboard's time line, which also has - / + / whole-range buttons). In touch mode a splitter
-  or a borderless window given SizeGrips (the side page's border, its own window) is wider with grips a finger holds.
+  given SizeGrips (the side page's border) is wider with one grip at its middle (a border sizing one way needs no corner
+  grips); a box sized from its frame (SizeGrips.ForBox: a side page's own window, a FloatingPaneHMI) gets a wider frame with
+  a grip at each corner (both ways) and the middle of each side.
 - The cylinder step-by-step page (2 November): safety notice, then the parts of the movement with a drawing per part
   (Drawings.html Schem*, PartRows), then what the HMI saw - the sensors only (the valve's outputs drop with the alarm);
   no "where to start" / "how this page goes" (step 1 branches).

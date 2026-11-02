@@ -13,10 +13,12 @@ namespace Kaban.UI.Helpers
     /// pages for the user to able to hold it with the finger touch easier").
     ///
     /// In touch mode:
-    ///   - a border between two parts of the window (a splitter: the side page's) is wider and carries three grips - at its
-    ///     middle and near each end; dragged, the part beside it is sized as it goes;
-    ///   - a page in a window of its own has a wider frame with a grip at each corner (two arms along the frame: an L) and at
-    ///     the middle of each side; dragged, the window is sized from that side or corner (the corner: both of its sides).
+    ///   - a border between two parts of the window (a splitter: the side page's) is wider and carries ONE grip, at its middle
+    ///     (2 November: "I meant the corner extension controls to be both direction, they are not needed if only one way
+    ///     extension possible"); dragged, the part beside it is sized as it goes;
+    ///   - a box sized from its frame - a page in a window of its own, a pane of the Profiles page - has a wider frame with a
+    ///     grip at each corner (two arms along the frame: an L; it sizes both of its sides) and at the middle of each side;
+    ///     dragged, the box is sized from that side or corner.
     /// A grip along a side is thicker than the border it is on - a little of the page beside it is under it.
     /// With a mouse the grips are not there and the borders are as thin as before - the pointer finds them.
     /// </summary>
@@ -64,8 +66,8 @@ namespace Kaban.UI.Helpers
                 var a = w.Target as Attached;
                 var s = a as SplitterGrips;
                 if (s != null && ReferenceEquals(s.Splitter, c)) return s.Grips;
-                var f = a as WindowGrips;
-                if (f != null && ReferenceEquals(f.Window, c)) return f.Grips;
+                var f = a as BoxGrips;
+                if (f != null && ReferenceEquals(f.Box, c)) return f.Grips;
             }
             return new Grip[0];
         }
@@ -73,8 +75,8 @@ namespace Kaban.UI.Helpers
         // ---- a splitter ---------------------------------------------------------------------------
 
         /// <summary>
-        /// A splitter's grips: in touch mode it is <see cref="TouchSplitter"/> wide with three grips on it; with a mouse as it
-        /// was (<paramref name="mouseWidth"/>, at factor 1). Dragging one moves the splitter as dragging it does.
+        /// A splitter's grip: in touch mode it is <see cref="TouchSplitter"/> wide with a grip at its middle; with a mouse as it
+        /// was (<paramref name="mouseWidth"/>, at factor 1). Dragging it moves the splitter as dragging the splitter does.
         /// </summary>
         public static void ForSplitter(Splitter splitter, int mouseWidth)
         {
@@ -99,13 +101,10 @@ namespace Kaban.UI.Helpers
                 _mouseWidth = mouseWidth;
                 _across = s.Dock == DockStyle.Left || s.Dock == DockStyle.Right;
                 var edge = _across ? Edge.Left : Edge.Top;
-                for (int i = 0; i < 3; i++)
-                {
-                    var g = new Grip(edge, false) { Name = "sizeGrip" + i, Visible = false };
-                    g.Begin += () => _start = Splitter.SplitPosition;
-                    g.Drag += (dx, dy, last) => Apply(dx, dy, last);
-                    Grips.Add(g);
-                }
+                var g = new Grip(edge, false) { Name = "sizeGrip0", Visible = false };
+                g.Begin += () => _start = Splitter.SplitPosition;
+                g.Drag += (dx, dy, last) => Apply(dx, dy, last);
+                Grips.Add(g);
                 EventHandler place = (o, e) => Place();
                 s.LocationChanged += place;
                 s.SizeChanged += place;
@@ -145,32 +144,15 @@ namespace Kaban.UI.Helpers
             {
                 if (Splitter.IsDisposed || Splitter.Parent == null) return;
                 bool show = TouchInput.On && Splitter.Visible;
-                int across = UiScale.For(Splitter, Across), along = UiScale.For(Splitter, Along), end = UiScale.For(Splitter, 24);
+                int across = UiScale.For(Splitter, Across), along = UiScale.For(Splitter, Along);
                 var r = Splitter.Bounds;
-                for (int i = 0; i < Grips.Count; i++)
-                {
-                    var g = Grips[i];
-                    if (!show) { if (g.Visible) g.Visible = false; continue; }
-                    Rectangle b;
-                    if (_across)
-                    {
-                        int room = r.Height;
-                        int y = i == 0 ? r.Top + (room - along) / 2 : i == 1 ? r.Top + end : r.Bottom - end - along;
-                        b = new Rectangle(r.Left + (r.Width - across) / 2, y, across, along);
-                        // too short for three: the middle one only
-                        if (i > 0 && room < along * 4) { if (g.Visible) g.Visible = false; continue; }
-                    }
-                    else
-                    {
-                        int room = r.Width;
-                        int x = i == 0 ? r.Left + (room - along) / 2 : i == 1 ? r.Left + end : r.Right - end - along;
-                        b = new Rectangle(x, r.Top + (r.Height - across) / 2, along, across);
-                        if (i > 0 && room < along * 4) { if (g.Visible) g.Visible = false; continue; }
-                    }
-                    if (g.Bounds != b) g.Bounds = b;
-                    if (!g.Visible) g.Visible = true;
-                    g.BringToFront();
-                }
+                var g = Grips[0];
+                if (!show) { if (g.Visible) g.Visible = false; return; }
+                var b = _across ? new Rectangle(r.Left + (r.Width - across) / 2, r.Top + (r.Height - along) / 2, across, along)
+                                : new Rectangle(r.Left + (r.Width - along) / 2, r.Top + (r.Height - across) / 2, along, across);
+                if (g.Bounds != b) g.Bounds = b;
+                if (!g.Visible) g.Visible = true;
+                g.BringToFront();
             }
         }
 
@@ -184,10 +166,22 @@ namespace Kaban.UI.Helpers
         public static void ForWindow(Form window, int mouseFrame, Action sized)
         {
             if (window == null) return;
+            ForBox(window, () => { var want = new Padding(FrameOf(window, mouseFrame)); if (window.Padding != want) window.Padding = want; },
+                   () => window.WindowState == FormWindowState.Normal, sized);
+        }
+
+        /// <summary>
+        /// A box sized from the frame round it (its Padding) - a borderless window, a pane on a page: <paramref name="applyFrame"/>
+        /// gives it its frame for the mode (called when the mode changes); <paramref name="canSize"/> says whether it may be sized
+        /// now (grips shown); <paramref name="sized"/>: told when a drag ends. A box inside another stays inside it.
+        /// </summary>
+        public static void ForBox(Control box, Action applyFrame, Func<bool> canSize, Action sized)
+        {
+            if (box == null) return;
             Follow();
-            var a = new WindowGrips(window, mouseFrame, sized);
+            var a = new BoxGrips(box, applyFrame, canSize, sized);
             _attached.Add(new WeakReference(a));
-            window.Disposed += (s, e) => _attached.RemoveAll(w => ReferenceEquals(w.Target, a));
+            box.Disposed += (s, e) => _attached.RemoveAll(w => ReferenceEquals(w.Target, a));
             a.Refresh();
         }
 
@@ -198,11 +192,12 @@ namespace Kaban.UI.Helpers
             return UiScale.For(window, TouchInput.On ? TouchFrame : mouseFrame);
         }
 
-        private sealed class WindowGrips : Attached
+        private sealed class BoxGrips : Attached
         {
-            public readonly Form Window;
-            private readonly Action _sized;
-            private readonly int _mouseFrame;
+            public readonly Control Box;
+            private Control Window { get { return Box; } }
+            private readonly Action _sized, _applyFrame;
+            private readonly Func<bool> _canSize;
             private Rectangle _start;
 
             private static readonly Edge[] Edges =
@@ -211,11 +206,12 @@ namespace Kaban.UI.Helpers
                 Edge.Right | Edge.Bottom, Edge.Bottom, Edge.Left | Edge.Bottom, Edge.Left
             };
 
-            public WindowGrips(Form f, int mouseFrame, Action sized)
+            public BoxGrips(Control f, Action applyFrame, Func<bool> canSize, Action sized)
             {
-                Window = f;
+                Box = f;
                 _sized = sized;
-                _mouseFrame = mouseFrame;
+                _applyFrame = applyFrame;
+                _canSize = canSize ?? (() => true);
                 foreach (var edge in Edges)
                 {
                     bool corner = (edge & (Edge.Left | Edge.Right)) != 0 && (edge & (Edge.Top | Edge.Bottom)) != 0;
@@ -236,7 +232,7 @@ namespace Kaban.UI.Helpers
 
             private void Apply(Edge edge, int dx, int dy, bool last)
             {
-                if (Window.IsDisposed || Window.WindowState != FormWindowState.Normal) return;
+                if (Window.IsDisposed || !_canSize()) return;
                 var min = Window.MinimumSize;
                 int minW = Math.Max(min.Width, UiScale.For(Window, 160)), minH = Math.Max(min.Height, UiScale.For(Window, 120));
                 int l = _start.Left, t = _start.Top, r = _start.Right, b = _start.Bottom;
@@ -244,6 +240,16 @@ namespace Kaban.UI.Helpers
                 if ((edge & Edge.Right) != 0) r = Math.Max(_start.Right + dx, l + minW);
                 if ((edge & Edge.Top) != 0) t = Math.Min(_start.Top + dy, b - minH);
                 if ((edge & Edge.Bottom) != 0) b = Math.Max(_start.Bottom + dy, t + minH);
+                // a pane on a page: no side past the page's
+                var page = Box is Form ? null : Box.Parent;
+                if (page != null)
+                {
+                    var room = page.ClientSize;
+                    if ((edge & Edge.Left) != 0) l = Math.Max(0, l);
+                    if ((edge & Edge.Top) != 0) t = Math.Max(0, t);
+                    if ((edge & Edge.Right) != 0) r = Math.Min(Math.Max(room.Width, l + minW), r);
+                    if ((edge & Edge.Bottom) != 0) b = Math.Min(Math.Max(room.Height, t + minH), b);
+                }
                 var want = Rectangle.FromLTRB(l, t, r, b);
                 if (Window.Bounds != want) Window.Bounds = want;
                 if (last && _sized != null) _sized();
@@ -252,8 +258,7 @@ namespace Kaban.UI.Helpers
             public override void Refresh()
             {
                 if (Window.IsDisposed) return;
-                var want = new Padding(FrameOf(Window, _mouseFrame));
-                if (Window.Padding != want) Window.Padding = want;
+                if (_applyFrame != null) _applyFrame();
                 Place();
                 Window.Invalidate();
             }
@@ -261,7 +266,7 @@ namespace Kaban.UI.Helpers
             private void Place()
             {
                 if (Window.IsDisposed) return;
-                bool show = TouchInput.On && Window.WindowState == FormWindowState.Normal;
+                bool show = TouchInput.On && _canSize();
                 int frame = Math.Max(1, Window.Padding.Left);
                 int across = Math.Max(frame, UiScale.For(Window, Across)), along = UiScale.For(Window, Along), arm = UiScale.For(Window, CornerArm);
                 var c = Window.ClientSize;
@@ -305,6 +310,8 @@ namespace Kaban.UI.Helpers
         private bool _down;
         private Point _from, _last;
 
+        // a corner's arms a shade darker than the frames they lie on (a pane's frame is nearly a pill's grey)
+        private static readonly Color CornerFill = Color.FromArgb(186, 198, 215);
         private static readonly Color Fill = Color.FromArgb(214, 220, 229), Line = Color.FromArgb(140, 150, 166),
                                       Dots = Color.FromArgb(70, 80, 96), Pressed = Color.FromArgb(31, 95, 168);
 
@@ -377,7 +384,7 @@ namespace Kaban.UI.Helpers
             if (IsCorner)
             {
                 // an arm of the corner's L: dots from the corner along it (the upright arm leaves the corner's own to the other)
-                using (var b = new SolidBrush(back)) g.FillRectangle(b, ClientRectangle);
+                using (var b = new SolidBrush(_down ? Pressed : CornerFill)) g.FillRectangle(b, ClientRectangle);
                 bool flat = Width >= Height, left = (Edges & SizeGrips.Edge.Left) != 0, top = (Edges & SizeGrips.Edge.Top) != 0;
                 float t = Math.Min(Width, Height), d = Math.Max(3f, UiScale.Px(4)), step = d * 2.4f;
                 using (var dot = new SolidBrush(ink))
