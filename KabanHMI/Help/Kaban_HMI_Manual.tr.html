@@ -595,9 +595,9 @@ pozisyon değeri bir arızayı zaten gösterir. Ne sunduğu ana bağlıdır; <b>
       içeri çeker (bir sıkma açar), <b>sarı</b> hortumdan. Hareketin bobini valfin kendi hortumunun ucundadır, silindirdeki ok milin
       gittiği yönü gösterir ve ulaştığı sensör o uçta yanar. Bir çıkışın hangi hortumu doldurduğu makinenin <code>Wiring.csv</code> dosyasındadır (sütun
       <i>Hose</i>); o yoksa taraf düğmeden alınır.</li>
-  <li><b>HMI'nin gördüğü</b>: her cihaz olması gerektiği gibi, <b>alarm anında</b> (hata biti gelmeden önceki son okuma)
-      ve <b>şimdi</b>, yanlış olduğu yerde kırmızı. Buradan <b>Nereden başlamalı</b> sizi bir adıma gönderir: çıkış hiç açılmadı &ndash; çıkış adımı;
-      iki bobin de açık &ndash; aynı adım, bunu söyleyerek; çıkış açık ama silindir başlangıcından hiç ayrılmadı &ndash; karttan itibaren; ulaştı ama çok geç &ndash; süre.</li>
+  <li>Sayfa <b>güvenlik uyarısıyla</b> açılır. Ardından <b>HMI'nin gördüğü</b>: her sensör olması gerektiği gibi, <b>alarm anında</b> (hata biti gelmeden
+      önceki son okuma) ve <b>şimdi</b>, yanlış olduğu yerde kırmızı. Valfin çıkışları listelenmez: PLC onları alarmla birlikte kapatır, bu yüzden alarm
+      anında hep KAPALI okunurlar. &ldquo;Nereden başlamalı&rdquo; yoktur: koşulları okuyun, sonra 1. adım sizi yönlendirir.</li>
   <li><b>1. adım: silindir nerede?</b> Hareket etmedi, yolda durdu ya da ulaştı &ndash; üç arama.
       <b>Hareket etmedi</b>: PLC'den silindire giden sinyal, her seferinde bir soru &ndash; PLC çıkışı açıyor mu (açmıyorsa neden: düğme neyi bekliyor),
       kartın LED'i yanıyor mu (kendi klemens adı, 0 V'a karşı 24 V), röle çekiyor mu, bobine enerji geliyor mu (konnektörünün pinlerinde; bobinin kendisi ohm kademesinde), valf konum değiştiriyor mu (manuel kumanda),

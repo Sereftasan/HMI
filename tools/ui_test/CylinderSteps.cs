@@ -167,9 +167,17 @@ class CS {
               openPage.Contains("5/3 valve: it moves only while") && TC.TemplateName(TC.ValveType.OpenCentre, TC.FeedbackType.PressureSwitch) == "Cylinder_5-3_PressureSwitch.html");
         Check("  the two kinds named apart", TC.Describe(TC.ValveType.ClosedCentre).Contains("closed center") && TC.Describe(TC.ValveType.OpenCentre).Contains("open center") &&
               TC.CanonicalValve(4) == 4 && TC.ManualValve(4) == 3 && TC.Parameter1(TC.ErrorType.CylinderMovement).Values.Contains(4));
-        Check("  what the HMI saw: Y32 OFF at the alarm, in red", Regex.IsMatch(html, "Valve output <code>Y32</code></td><td>ON</td><td><span class=\"st-bad\">OFF"));
-        Check("  where to start: Y32 was OFF - the step that asks whether the PLC switches it on",
-              Hint(html).Contains("Y32 was OFF") && Hint(html).Contains("Step " + StepNo(html, "Does the PLC switch on Y32?")), Hint(html));
+        // 2 November: "The safety notice should be moved to the top of the page", "Valve states should be removed from the alarm
+        // definition condition list because the valve turns OFF as soon as the alarm occurs so it shown wrong data", "'Where to start
+        // ...' and 'How this page goes ...' part should be removed, because the first step has those algoritm branchings anyway"
+        var mainHtml = Regex.Match(html, "<main>.*", RegexOptions.Singleline).Value;
+        Check("  the page opens with the safety notice", Regex.IsMatch(mainHtml, "^<main>\\s*<div class=\"safety\">"), mainHtml.Substring(0, Math.Min(80, mainHtml.Length)));
+        var seenTable = Regex.Match(html, "<table class=\"states\">.*?</table>", RegexOptions.Singleline).Value;
+        Check("  what the HMI saw: the sensors only - not the valve's outputs (the PLC drops them with the alarm)",
+              seenTable.Contains("SN83") && !seenTable.Contains("Valve output") && !seenTable.Contains("Other coil") && !seenTable.Contains("Y32"), Text(seenTable));
+        Check("  no 'Where to start', no 'How this page goes', no step marked as the start: step 1 first",
+              !html.Contains("class=\"hint\"") && !html.Contains("class=\"map\"") && !text.Contains("Where to start") && !text.Contains("How this page goes") &&
+              !html.Contains("class=\"here\""), Hint(html));
         Check("step 1: where is the cylinder - not moved / stopped / arrived, each to its own part",
               StepNo(html, "Where is the cylinder now?") == "1" && StepText(html, "Where is the cylinder now?").Contains("not moved") &&
               StepText(html, "Where is the cylinder now?").Contains("stopped on the way") && StepText(html, "Where is the cylinder now?").Contains("arrived"));
@@ -228,21 +236,21 @@ class CS {
         mem["Y32"] = 1; mem["M225"] = 1; mem["M240"] = 0; Scan(u1);
         mem["M844"] = 1; Scan(u1);
         html = Steps(u1, "B");
-        Check("X51 still ON at the start: from the card on", Hint(html).Contains("still ON") && Hint(html).Contains("Step " + StepNo(html, "Does the output card switch Y32?")), Hint(html));
+        Check("X51 still ON at the start: in the table (no hint any more)", Hint(html) == "" && Regex.IsMatch(Text(Regex.Match(html, "<table class=\"states\">.*?</table>", RegexOptions.Singleline).Value), "SN59.*ON"));
 
         Console.WriteLine("--- arrived, not in time ---");
         mem["M844"] = 0; Scan(u1);
         mem["Y32"] = 1; mem["M225"] = 0; mem["M240"] = 1; Scan(u1);
         mem["M844"] = 1; Scan(u1);
         html = Steps(u1, "B");
-        Check("X70 ON, X51 OFF at the alarm: the time", Hint(html).Contains("Step " + StepNo(html, "Did it arrive in time?")), Hint(html));
+        Check("X70 ON, X51 OFF at the alarm: the table says so (no hint)", Hint(html) == "" && StepNo(html, "Did it arrive in time?") != "?");
 
         Console.WriteLine("--- both coils ---");
         mem["M844"] = 0; Scan(u1);
         mem["Y32"] = 1; mem["Y33"] = 1; mem["M240"] = 0; Scan(u1);
         mem["M844"] = 1; Scan(u1);
         html = Steps(u1, "B");
-        Check("both coils ON: the output step, saying so", Hint(html).Contains("Both coils") && Hint(html).Contains("Step " + StepNo(html, "Does the PLC switch on Y32?")), Hint(html));
+        Check("both coils ON: no hint, the output step there (its both-ON answer)", Hint(html) == "" && StepText(html, "Does the PLC switch on Y32?").Contains("both ON"));
 
         Console.WriteLine("--- release (A): the back sensor confirms it, the pressure switch must go OFF ---");
         mem.Clear(); Scan(u1);
@@ -279,7 +287,7 @@ class CS {
         text = Text(html);
         Check("Down (the spring): Y116 must go OFF - no button of its own: end Up", text.Contains("\u201CDown\u201D did not complete") &&
               StepText(html, "Does the PLC switch Y116 OFF?").Contains("End Up") && !text.Contains("Press the"), StepText(html, "Does the PLC switch Y116 OFF?"));
-        Check("  where to start: Y116 was still ON", Hint(html).Contains("still ON") && Hint(html).Contains("Step " + StepNo(html, "Does the PLC switch Y116 OFF?")), Hint(html));
+        Check("  no hint: step 1 first, the spring's output step there", Hint(html) == "" && StepNo(html, "Does the PLC switch Y116 OFF?") != "?");
         Check("  the relay must drop out, the coil lose its power, the valve spring back (a locked override)",
               StepNo(html, "Does relay K75 drop out?") != "?" && StepNo(html, "Is coil Y.91 without power?") != "?" &&
               StepText(html, "Does the valve spring back?").Contains("locked"));

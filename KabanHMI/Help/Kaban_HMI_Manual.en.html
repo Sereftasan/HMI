@@ -593,9 +593,9 @@ position reading already show a fault. What it offers depends on the moment; the
       pulls it in (a clamp releases) through the <b>yellow</b> one. The movement's coil sits on its hose's end of the valve, the arrow on the cylinder points
       the way the rod goes, and the sensor it reaches is lit at that end. Which hose an output fills is in the machine's <code>Wiring.csv</code> (column
       <i>Hose</i>); without it, the side is taken from the button.</li>
-  <li><b>What the HMI saw</b>: each device as it should be, <b>at the alarm</b> (the last reading before the error bit came on)
-      and <b>now</b>, red where it is wrong. From that, <b>Where to start</b> sends you to a step: the output never came on &ndash; the output step;
-      both coils on &ndash; the same step, saying so; the output on but the cylinder never left its start &ndash; from the card on; it arrived but too late &ndash; the time.</li>
+  <li>The page opens with the <b>safety notice</b>. Then <b>What the HMI saw</b>: each sensor as it should be, <b>at the alarm</b> (the last reading before
+      the error bit came on) and <b>now</b>, red where it is wrong. The valve's outputs are not listed: the PLC switches them off with the alarm, so
+      at the alarm they always read OFF. There is no &ldquo;where to start&rdquo;: read the conditions, then step 1 sends you on.</li>
   <li><b>Step 1: where is the cylinder?</b> Not moved, stopped on the way, or arrived &ndash; three searches.
       <b>Not moved</b>: the signal from the PLC to the cylinder, one question at a time &ndash; does the PLC switch the output on (and why not: what the button waits for),
       does the card's LED light (its own terminal name, 24 V against 0 V), does the relay pull in, does the coil get power (at its connector's pins; the coil itself on ohms), does the valve switch (manual override),

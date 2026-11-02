@@ -1032,7 +1032,9 @@ namespace Kaban.Core.Helpers
                                 ((string)m["Pressure"]).Length > 0 || c.MainAir != null || error;
                 m["Drawn"] = o != null || _mustOn.Concat(_mustOff).Any(x => x.Point != null);
 
-                // where to start (filled in after the steps are known)
+                // no "where to start" any more (2 November: "'Where to start ...' and 'How this page goes ...' part should be
+                // removed, because the first step has those algoritm branchings anyway, it is better for the user to read the
+                // conditions first before the branching") - kept false for a template that still asks
                 m["Hint"] = false;
                 m["StartKey"] = "";
                 m["StepOneNote"] = false;
@@ -1062,23 +1064,17 @@ namespace Kaban.Core.Helpers
                         { "AtAlarm", State(d.AtAlarm, wantOn) }, { "Now", State(d.Now, wantOn) }
                     });
                 };
-                // With the failure known, only the signals it is about (the output that
-                // started the time, the sensors that decided it).
+                // With the failure known, only the sensors it is about (those that decided it).
+                // THE VALVE'S OUTPUTS ARE NOT LISTED (2 November: "Valve states should be removed from the alarm
+                // definition condition list because the valve turns OFF as soon as the alarm occurs so it shown wrong
+                // data") - the PLC drops them with the alarm, so "at the alarm" read them OFF whatever drove the valve.
+                // Nor the HMI's command: it is not part of the real operation.
                 bool all = _failure <= 0;
-                bool outputs = all || _failure != 3;
                 bool targets = all || _failure == 2 || _failure == 3 || _failure >= 5;
                 bool starts = all || _failure != 4;
-                // (the HMI's command is not listed: it is not part of the real operation)
-                if (_spring) { if (outputs) row("springcoil", OutDev, false, "", ""); }
-                else
-                {
-                    if (outputs) row("valve", OutDev, true, "", "");
-                    if ((all || _failure == 4) && _double && c.OtherDevice != null) row("other", c.OtherDevice, false, Dev(c.OtherDevice.Address), "");
-                }
                 if (targets) foreach (var s in _mustOn) row("sensor", s.Device, true, "", SensorName(s));
                 if (starts) foreach (var s in _mustOff) row("sensor", s.Device, false, "", SensorName(s));
-                bool known = rows.Count > 0 && (_mustOn.Concat(_mustOff).Any(s => s.Device.AtAlarm.HasValue || s.Device.Now.HasValue) ||
-                                                (OutDev != null && (OutDev.AtAlarm.HasValue || OutDev.Now.HasValue)));
+                bool known = rows.Count > 0 && _mustOn.Concat(_mustOff).Any(s => s.Device.AtAlarm.HasValue || s.Device.Now.HasValue);
                 m["SeenRows"] = rows;
                 m["Seen"] = known;
             }
@@ -1186,42 +1182,6 @@ namespace Kaban.Core.Helpers
                 return b != null ? b.Key : "end";
             }
 
-            // ---- where to start -----------------------------------------------------
-
-            /// <summary>From the states just before the alarm: the step to start at and why (a Why* flag; "" when not known).</summary>
-            private string StartAt(List<Block> steps, out string why, Dictionary<string, object> m)
-            {
-                why = "";
-                var od = OutDev;
-                int? outAtAlarm = od != null ? od.AtAlarm : null;
-                var start = _mustOff.Where(s => !s.IsPressureSwitch && s.Device.AtAlarm.HasValue).ToList();
-                bool stillAtStart = start.Count > 0 && start.Any(s => s.Device.AtAlarm == 1);
-                bool leftStart = start.Count > 0 && start.All(s => s.Device.AtAlarm == 0);
-                bool arrived = _mustOn.Count > 0 && _mustOn.All(s => s.Device.AtAlarm == 1);
-                var stuck = _mustOff.Where(s => s.Device.AtAlarm == 1).ToList();
-                Func<string, string> key = k => steps.Any(x => x.Key == k) ? k : "look";
-                m["StuckNames"] = Sensors(stuck);
-                m["StillNames"] = Sensors(start.Where(s => s.Device.AtAlarm == 1));
-                m["WhyStartNames"] = Sensors(start);
-
-                if (_spring)
-                {
-                    if (outAtAlarm == 1) { why = "WhySpringOn"; return "A1"; }
-                }
-                else
-                {
-                    if (outAtAlarm == 0) { why = "WhyOutOff"; return "A1"; }
-                    if (_double && outAtAlarm == 1 && c.OtherDevice != null && c.OtherDevice.AtAlarm == 1) { why = "WhyBothCoils"; return "A1"; }
-                }
-                if (arrived && stuck.Count == 0) { why = "WhyArrived"; return key(Symbolic("@time", steps)); }
-                if (arrived && stuck.Count > 0) { why = "WhyArrivedStuck"; return key(stuck.Any(s => s.IsPressureSwitch) || _mustOff.Count > 0 ? "C" + (_mustOn.Count + 1) : "C1"); }
-                if (stillAtStart && (outAtAlarm == 1 || (_spring && outAtAlarm == 0))) { why = "WhyStartOutOk"; return "A3"; }
-                if (stillAtStart) { why = "WhyStillAtStart"; return "A1"; }
-                if (leftStart && _mustOn.Count > 0) { why = "WhyLeftStart"; return "look"; }
-                if (leftStart && _endNotSensed) { why = "WhyLeftUnseen"; return "look"; }
-                return "";
-            }
-
             // ---- the page -----------------------------------------------------------------
 
             public string Page()
@@ -1232,26 +1192,9 @@ namespace Kaban.Core.Helpers
                 var all = Blocks(t.Render(m));
                 var kept = Focus(all);
                 var keptKeys = new HashSet<string>(kept.Select(x => x.Key));
-
-                // where to start
-                string why, start;
-                if (_failure > 0 && kept.Count > 0)
-                {
-                    start = kept[0].Key;
-                    why = _failure >= 1 && _failure <= 6 ? "WhyF" + _failure : "";
-                }
-                else start = StartAt(kept, out why, m);
-                var startBlock = kept.FirstOrDefault(x => x.Key == start);
-                if (startBlock != null && why.Length > 0)
-                {
-                    m["Hint"] = true;
-                    m[why] = true;
-                    m["StartKey"] = start;
-                    // "step 1 is still worth a look" - when step 1 is on the page and is not the start
-                    m["StepOneNote"] = start != "look" && keptKeys.Contains("look");
-                }
+                // read from step 1 on: no step marked as the start
                 var html = t.Render(m);
-                return Finish(html, all, kept, keptKeys, start, startBlock != null);
+                return Finish(html, all, kept, keptKeys, "", false);
             }
 
             /// <summary>The steps left out, numbered, linked; the start marked; the map and the boxes filled.</summary>
