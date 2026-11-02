@@ -11,6 +11,12 @@
   çizimlerdeki birkaç sözcük aşağıdaki W_ ifadeleridir.
 -->
 <!--include Drawings.html-->
+<!--def W_Sheet-->sayfa<!--/def-->
+<!--def W_PnSheet-->pnömatik sayfa<!--/def-->
+<!--def W_Connector-->konnektör<!--/def-->
+<!--def PartLabel-->{{#IsOut}}{{#Spring}}Bobin çıkışı ({{OtherMove}}){{/Spring}}{{^Spring}}{{#IsOther}}Diğer bobinin çıkışı ({{OtherMove}}){{/IsOther}}{{^IsOther}}Valf çıkışı{{/IsOther}}{{/Spring}}{{/IsOut}}{{#IsRelay}}Röle{{#IsOther}} ({{OtherMove}}){{/IsOther}}{{/IsRelay}}{{#IsCoil}}Valf bobini{{#IsOther}} ({{OtherMove}}){{/IsOther}}{{/IsCoil}}{{#IsPneu}}Valf, hortumlar, silindir{{/IsPneu}}{{#IsSensor}}{{#IsSwitch}}Basınç anahtarı{{/IsSwitch}}{{^IsSwitch}}Sensör{{/IsSwitch}}{{/IsSensor}}{{#IsMeasure}}Konumu ölçen{{/IsMeasure}}{{#IsPosition}}Konum{{/IsPosition}}{{#IsPressure}}Basınç{{/IsPressure}}{{#IsMainAir}}Ana hava{{/IsMainAir}}{{#IsAlarm}}Alarm{{/IsAlarm}}<!--/def-->
+<!--def PartCaption-->{{#IsPneu}}Pnömatik çizim{{#DrawSheet}}, sayfa {{DrawSheet}}{{/DrawSheet}}{{/IsPneu}}{{^IsPneu}}Elektrik çizimi{{#DrawSheet}}, sayfa {{DrawSheet}}{{/DrawSheet}}{{/IsPneu}} &ndash; nerede olduğunu ve neye bağlandığını göstermek için çizilmiştir; çizimin kopyası değildir.<!--/def-->
+<!--def PartNone-->Bir parça seçin: çizimlerdeki yeri burada görünür.<!--/def-->
 <!--def W_IoPage-->Girişler / Çıkışlar<!--/def-->
 <!--def W_Press-->basın<!--/def-->
 <!--def W_ValveShort-->valf<!--/def-->
@@ -161,6 +167,30 @@ terminal = klemens
 </nav>
 <main>
 <div class="safety"><b>&#9888; Önce güvenlik.</b> Silindire, valfe ya da hareket eden herhangi bir şeye dokunmadan önce makinenin <b>enerjisini kesin ve kilitleyin</b> (elektrik ve hava), silindirin iki tarafının da havasını boşaltın &ndash; hava geri gelince silindir aniden hareket edebilir. Bir koruyucuyu ya da acil stopu asla devre dışı bırakmayın. Pano içinde ölçüm ve parça değişimi eğitimli ve yetkili kişilerin işidir.</div>
+{{#HasParts}}
+<section class="partsbox" id="parts">
+<h2>Bu hareketin parçaları</h2>
+<div class="partsgrid">
+<table class="parts">
+{{#PartRows}}
+<tr{{#Pic}} data-pic="{{Pic}}" tabindex="0"{{/Pic}}><td>{{>PartLabel}}</td><td>{{Line}}</td></tr>
+{{/PartRows}}
+</table>
+<div class="partpic">
+{{#PartRows}}
+{{#Pic}}
+<figure class="pp" id="{{Pic}}">{{>PartDrawing}}<figcaption>{{>PartCaption}}</figcaption></figure>
+{{/Pic}}
+{{/PartRows}}
+<p class="ppnone">{{>PartNone}}</p>
+</div>
+</div>
+{{#Drawn}}
+<p class="ref">Sayfa 12.6, elektrik çiziminin 12. sayfasının 6. sütunudur; pnömatik sayfa 2 E3, pnömatik çizimin 2. sayfasının E3 bölgesidir.{{#ZeroWire}} 0 V: kablo {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} Sensörlerin +24 V beslemesi: kablo {{SensorWire}}.{{/SensorWire}} Bu sayfadaki çizimler nereye bakılacağını gösterir; bu makinenin birebir resmi değildir.</p>
+{{/Drawn}}
+</section>
+{{>PartsScript}}
+{{/HasParts}}
 {{#Seen}}
 <div class="seen"><p><b>HMI'nin gördüğü</b> (kırmızı: hareketin sonunda olması gerektiği gibi değil)</p>
 <table class="states"><tr><th></th><th>olması gereken</th><th>alarm anında</th><th>şimdi</th></tr>
@@ -741,46 +771,6 @@ terminal = klemens
 </ul>
 </div></div>
 
-{{#HasParts}}
-<h2>Bu hareketin parçaları</h2><table class="parts">
-{{#OutLine}}
-<tr><td>{{#Spring}}Bobin çıkışı ({{OtherMove}}){{/Spring}}{{^Spring}}Valf çıkışı{{/Spring}}</td><td>{{OutLine}}</td></tr>
-{{/OutLine}}
-{{^Spring}}
-{{#Double}}
-{{#OtherLine}}
-<tr><td>Diğer bobin ({{OtherMove}})</td><td>{{OtherLine}}</td></tr>
-{{/OtherLine}}
-{{/Double}}
-{{/Spring}}
-{{#PneuLine}}
-<tr><td>Valf, hortumlar, silindir</td><td>{{PneuLine}}</td></tr>
-{{/PneuLine}}
-{{#PartSensors}}
-<tr><td>{{#IsSwitch}}Basınç anahtarı{{/IsSwitch}}{{^IsSwitch}}Sensör{{/IsSwitch}}</td><td>{{Name}}{{Where}}{{#Text}} &ndash; çizimde: {{Text}}{{/Text}}</td></tr>
-{{/PartSensors}}
-{{#Measure}}
-<tr><td>Konumu ölçen</td><td>{{Measure}}{{#Position}} &ndash; {{Position}} adresinde okunur{{/Position}}</td></tr>
-{{/Measure}}
-{{^Measure}}
-{{#Position}}
-<tr><td>Konum</td><td>{{Position}} adresinde okunur</td></tr>
-{{/Position}}
-{{/Measure}}
-{{#Pressure}}
-<tr><td>Basınç</td><td>{{Pressure}}</td></tr>
-{{/Pressure}}
-{{#MainAir}}
-<tr><td>Ana hava</td><td>{{MainAirLine}}</td></tr>
-{{/MainAir}}
-{{#Error}}
-<tr><td>Alarm</td><td>{{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}</td></tr>
-{{/Error}}
-</table>
-{{#Drawn}}
-<p class="ref">Sayfa 12.6, elektrik çiziminin 12. sayfasının 6. sütunudur; pnömatik sayfa 2 E3, pnömatik çizimin 2. sayfasının E3 bölgesidir.{{#ZeroWire}} 0 V: kablo {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} Sensörlerin +24 V beslemesi: kablo {{SensorWire}}.{{/SensorWire}} Bu sayfadaki çizimler nereye bakılacağını gösterir; bu makinenin birebir resmi değildir.</p>
-{{/Drawn}}
-{{/HasParts}}
 <p class="ref">Genel silindir kılavuzu her kontrolü daha ayrıntılı anlatır; buradaki her adım ilgili bölümünü belirtir (&ldquo;kılavuz 1.6&rdquo;).</p>
 </main></div>
 {{>Script}}

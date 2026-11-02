@@ -595,7 +595,12 @@ pozisyon değeri bir arızayı zaten gösterir. Ne sunduğu ana bağlıdır; <b>
       içeri çeker (bir sıkma açar), <b>sarı</b> hortumdan. Hareketin bobini valfin kendi hortumunun ucundadır, silindirdeki ok milin
       gittiği yönü gösterir ve ulaştığı sensör o uçta yanar. Bir çıkışın hangi hortumu doldurduğu makinenin <code>Wiring.csv</code> dosyasındadır (sütun
       <i>Hose</i>); o yoksa taraf düğmeden alınır.</li>
-  <li>Sayfa <b>güvenlik uyarısıyla</b> açılır. Ardından <b>HMI'nin gördüğü</b>: her sensör olması gerektiği gibi, <b>alarm anında</b> (hata biti gelmeden
+  <li>Sayfa <b>güvenlik uyarısıyla</b> açılır, ardından <b>Bu hareketin parçaları</b>: kartındaki PLC çıkışı, onun sürdüğü röle ve rölenin anahtarladığı
+      valf bobini (valfin her bobini için), hortumları ve silindiriyle valf, sensörler, ana hava, alarm. Tablonun yanında, <b>seçilen parçanın küçük bir
+      çizimi</b> vardır (bir satırın üzerine gelin ya da dokunun), elektrik veya pnömatik çizimde göründüğü gibi: sembolü, bağlantı noktaları (kartın klemensi,
+      rölenin A1 / A2 ve 11 / 14'ü, bobin konnektörünün pinleri, bir sensörün BN / BU / BK'si, valfin portları ve hortumları), kablo numaraları, kartın
+      ünitesi ve modeli ve sayfa &ndash; cetvelde sütunu (havada bölgesi) yanar.</li>
+  <li><b>HMI'nin gördüğü</b>: her sensör olması gerektiği gibi, <b>alarm anında</b> (hata biti gelmeden
       önceki son okuma) ve <b>şimdi</b>, yanlış olduğu yerde kırmızı. Valfin çıkışları listelenmez: PLC onları alarmla birlikte kapatır, bu yüzden alarm
       anında hep KAPALI okunurlar. &ldquo;Nereden başlamalı&rdquo; yoktur: koşulları okuyun, sonra 1. adım sizi yönlendirir.</li>
   <li><b>1. adım: silindir nerede?</b> Hareket etmedi, yolda durdu ya da ulaştı &ndash; üç arama.

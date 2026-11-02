@@ -37,7 +37,11 @@ class CS {
     static readonly Regex Fold = new Regex("<details class=\"manual\".*?</details>", RegexOptions.Singleline);
     static string Page(CylinderUnitHMI u, string side) {
         var d = u.HelpDocuments().FirstOrDefault(x => x.StepByStep && x.Movement != null && x.Movement.Side == side);
-        return d == null ? "" : File.ReadAllText(TC.ExtractSection(d));
+        var page = d == null ? "" : File.ReadAllText(TC.ExtractSection(d));
+        // the page for a look in a browser (STEP_PAGES=folder)
+        var keep = Environment.GetEnvironmentVariable("STEP_PAGES");
+        if (!string.IsNullOrEmpty(keep) && page.Length > 0) { Directory.CreateDirectory(keep); File.WriteAllText(Path.Combine(keep, (u.Name ?? "unit") + "_" + (u.TitleTextKey ?? "") .Replace(' ', '_') + "_" + side + ".html"), page); }
+        return page;
     }
     /// <summary>The manual inside the movement's page.</summary>
     static string Chart(CylinderUnitHMI u, string side) { return Fold.Match(Page(u, side)).Value; }
@@ -209,7 +213,46 @@ class CS {
               c1.Contains("setpoint") && c1.Contains("gauge"), c1);
         Check("  then the back sensor SN59 (X51) must be OFF", StepText(html, "at the other end gone OFF?").Contains("SN59"));
         Check("every fault answer says: test again, else the next step", Regex.Matches(html, "Still failing").Count >= 15);
-        Check("the parts of this movement at the end", text.Contains("The parts of this movement") && text.Contains("0 V is wire 21") && text.Contains("+24 V is wire 20"));
+        // 2 November: "'The parts of the movement' part ... should be moved to the top of the document (just after the safety notice). And
+        // we should add electrical and pneumatic drawing page illustration drawings for each part here as an opening. We should add relays
+        // kind of mid elements as well ... The drawing should have the sensors, relays or valve drawing, it's connector poing with and the
+        // controller code and unit number and page numbers"
+        Check("the parts of this movement at the top: just after the safety notice, before what the HMI saw",
+              Regex.IsMatch(mainHtml, "^<main>\\s*<div class=\"safety\">.*?</div>\\s*<section class=\"partsbox\" id=\"parts\">\\s*<h2>The parts of this movement</h2>", RegexOptions.Singleline) &&
+              mainHtml.IndexOf("class=\"partsbox\"") < mainHtml.IndexOf("class=\"seen\"") && text.Contains("0 V is wire 21") && text.Contains("+24 V is wire 20"));
+        var partsHtml = Regex.Match(html, "<section class=\"partsbox\".*?</section>", RegexOptions.Singleline).Value;
+        Func<string, string> rowOf = label => Text(Regex.Match(partsHtml, "<tr[^>]*><td>" + Regex.Escape(label) + "</td><td>.*?</td></tr>", RegexOptions.Singleline).Value);
+        Func<string, string> picOf = label =>
+        {
+            var id = Regex.Match(partsHtml, "<tr data-pic=\"([^\"]+)\"[^>]*><td>" + Regex.Escape(label) + "</td>").Groups[1].Value;
+            return id.Length == 0 ? "" : Regex.Match(partsHtml, "<figure class=\"pp\" id=\"" + id + "\">.*?</figure>", RegexOptions.Singleline).Value;
+        };
+        Check("  its rows: the output, the relay and the valve coil (each side), the valve with its hoses and cylinder, the sensors, the air, the alarm",
+              rowOf("Valve output").Contains("Y32") && rowOf("Relay").Contains("relay K29 (sheet 19.6)") && rowOf("Valve coil").Contains("coil Y.23, wire 324 (sheet 26.7)") &&
+              rowOf("Relay (Release)").Contains("K30") && rowOf("Valve coil (Release)").Contains("Y.24") && rowOf("Valve, hoses, cylinder").Contains("P16") &&
+              rowOf("Pressure switch").Contains("SN83") && rowOf("Sensor").Contains("SN59") && rowOf("Main air").Contains("SW3"),
+              rowOf("Relay") + " | " + rowOf("Valve coil"));
+        var outPic = picOf("Valve output");
+        Check("  the output's drawing: card U4 FX5U-64MT-ESS, its terminal Y32, wire 226 to relay K29, sheet 19.6 - its column 6 lit",
+              outPic.Contains(">U4<") && outPic.Contains(">FX5U-64MT-ESS<") && outPic.Contains(">Y32<") && outPic.Contains(">226<") && outPic.Contains(">K29<") &&
+              Regex.IsMatch(outPic, "sheet 19\\.6</text>") && Regex.IsMatch(outPic, "fill=\"#d9480f\" font-weight=\"700\">6</text>"), Text(outPic));
+        var relayPic = picOf("Relay");
+        Check("  the relay's: its coil (A1 / A2) from U4:Y32 on wire 226, its contact 11 / 14 to coil Y.23 on wire 324 (sheet 26.7)",
+              relayPic.Contains(">A1<") && relayPic.Contains(">A2<") && relayPic.Contains(">11<") && relayPic.Contains(">14<") && relayPic.Contains("U4:Y32 /19.6") &&
+              relayPic.Contains(">324<") && relayPic.Contains("Y.23 /26.7"), Text(relayPic));
+        var coilPic = picOf("Valve coil");
+        Check("  the coil's: wire 324 from K29:14 to its connector's pins 1 and 2, sheet 26.7", coilPic.Contains("K29:14 /19.6") && coilPic.Contains(">connector<") &&
+              coilPic.Contains(">1<") && coilPic.Contains(">2<") && coilPic.Contains(">Y.23<") && coilPic.Contains("sheet 26.7"), Text(coilPic));
+        var sensorPic = picOf("Sensor");
+        Check("  a sensor's: SN59 (BN, BU, BK), wire 132 to card U7's terminal X11 (the PLC's X51), sheet 13.5",
+              sensorPic.Contains(">SN59<") && sensorPic.Contains(">BK<") && sensorPic.Contains(">132<") && sensorPic.Contains(">U7<") && sensorPic.Contains(">X11<") &&
+              sensorPic.Contains("(X51)") && sensorPic.Contains("sheet 13.5"), Text(sensorPic));
+        var airPic = picOf("Valve, hoses, cylinder");
+        Check("  the air's: the 5/3 valve, hoses 23 (A) and 24 (B), cylinder P16, pneumatic sheet 3 E8 - row E and column 8 lit",
+              airPic.Contains("23 (A)") && airPic.Contains("24 (B)") && airPic.Contains("P16 Profile Recognition") && airPic.Contains("pneumatic sheet 3 E8") &&
+              Regex.IsMatch(airPic, ">E</text>") && Regex.IsMatch(airPic, "font-weight=\"700\">E</text>") && Regex.IsMatch(airPic, "font-weight=\"700\">8</text>"), Text(airPic));
+        Check("  the drawing of the row chosen beside the table (the first at the start), the others hidden till chosen; the alarm's row has none",
+              partsHtml.Contains("<div class=\"partpic\">") && html.Contains("table.parts tr[data-pic]") && !Regex.IsMatch(partsHtml, "<tr data-pic=\"[^\"]+\"[^>]*><td>Alarm</td>"));
 
         var chart = Chart(u1, "B");
         Check("the manual folded at the end: the general view, its 5/3 part only, no notes in its checks, no link to another page",

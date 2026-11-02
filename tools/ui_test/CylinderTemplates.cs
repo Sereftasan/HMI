@@ -137,7 +137,7 @@ class CT {
         Console.WriteLine("--- an alarm the HMI raised itself: only its steps ---");
         var f1 = TC.BuildSteps(mv, TC.ValveType.ClosedCentre, TC.FeedbackType.PressureSwitch, 2, "TR");
         Check("Turkish, the target did not come on: where it is, the way, that switch, the time", Steps(f1).SequenceEqual(new[] { "look", "B1", "B2", "B3", "B4", "C1", "C3", "end" }) &&
-              Text(f1).Contains("s\u00fcre a\u015f\u0131m\u0131 alarm\u0131 verdi"), string.Join(",", Steps(f1)));
+              !f1.Contains("class=\"hint\"") && f1.Contains("<div class=\"safety\">"), string.Join(",", Steps(f1)));   // no 'where to start' (2 November): the safety notice first
         Check("  its answers point at the steps kept", !Regex.IsMatch(f1, "href=\"#(A[0-9]|C2)\"") && !f1.Contains("data-optional") && !f1.Contains("href=\"#@"));
 
         Console.WriteLine("--- an edited template is used at once ---");

@@ -1031,6 +1031,7 @@ namespace Kaban.Core.Helpers
                                 _mustOn.Count + _mustOff.Count > 0 || ((string)m["Measure"]).Length > 0 || ((string)m["Position"]).Length > 0 ||
                                 ((string)m["Pressure"]).Length > 0 || c.MainAir != null || error;
                 m["Drawn"] = o != null || _mustOn.Concat(_mustOff).Any(x => x.Point != null);
+                m["PartRows"] = PartRows(m);
 
                 // no "where to start" any more (2 November: "'Where to start ...' and 'How this page goes ...' part should be
                 // removed, because the first step has those algoritm branchings anyway, it is better for the user to read the
@@ -1041,6 +1042,193 @@ namespace Kaban.Core.Helpers
                 foreach (var w in WhyFlags) m[w] = false;
                 m["StuckNames"] = m["StillNames"] = m["WhyStartNames"] = "";
                 return m;
+            }
+
+            // ---- the parts of the movement, each with its place on the drawings ---------------------------
+            // (2 November: "'The parts of the movement' part ... should be moved to the top of the document (just after the safety
+            // notice). And we should add electrical and pneumatic drawing page illustration drawings for each part here as an
+            // opening. We should add relays kind of mid elements as well for the movement to this part. The drawing should have
+            // the sensors, relays or valve drawing, it's connector poing with and the controller code and unit number and page
+            // numbers")
+
+            private static readonly string[] PartKinds = { "IsOut", "IsRelay", "IsCoil", "IsPneu", "IsSensor", "IsMeasure", "IsPosition", "IsPressure", "IsMainAir", "IsAlarm" };
+
+            /// <summary>A row of the parts: its kind, its line, its drawing's numbers (empty where it has none).</summary>
+            private Dictionary<string, object> PartRow(string kind, string line, string pic)
+            {
+                var r = new Dictionary<string, object>(StringComparer.Ordinal);
+                foreach (var k in PartKinds) r[k] = k == kind;
+                r["Line"] = line;
+                r["Pic"] = pic;
+                r["IsOther"] = false;
+                r["IsSwitch"] = false;
+                foreach (var k in new[] { "Unit", "Model", "Terminal", "Code", "Wire", "DrawSheet", "Relay", "RelaySheet", "Coil", "CoilWire", "CoilSheet",
+                                          "Tag", "From", "FromSheet", "Text" })
+                    r[k] = "";
+                r["Cols"] = new List<IDictionary<string, object>>();
+                r["Rows"] = new List<IDictionary<string, object>>();
+                r["HasRows"] = false;
+                return r;
+            }
+
+            /// <summary>The PLC card's unit (U4) and model (FX5U-64MT-ESS), and the terminal on it (Y21).</summary>
+            private void PutCard(Dictionary<string, object> r, WiringTable.Point p)
+            {
+                string card, terminal;
+                CardParts(p, out card, out terminal);
+                var cm = Regex.Match(card, @"^(\S+)\s+(.+)$");
+                r["Unit"] = E(cm.Success ? cm.Groups[1].Value : card);
+                r["Model"] = E(cm.Success ? Words(cm.Groups[2].Value.Trim()) : "");
+                r["Terminal"] = E(terminal.Length > 0 ? terminal : p != null ? Shown(p.Address) : "");
+                // the PLC's own name for it, when the card's terminal is named otherwise (X43 on terminal X03)
+                bool other = p != null && terminal.Length > 0 && !string.Equals(terminal, Shown(p.Address), StringComparison.OrdinalIgnoreCase);
+                r["Code"] = other && (_admin || IsPhysicalIo(p.Address)) ? E(Shown(p.Address)) : "";
+            }
+
+            /// <summary>
+            /// The sheet's ruler with the column (and for the air, the zone's row) the part is in lit: "19.1" - page 19, column 1
+            /// of ten (0 - 9); "2 E3" - page 2, zone E3 (columns 1 - 8, rows A - F).
+            /// </summary>
+            private static void PutRuler(Dictionary<string, object> r, string sheet, bool pneumatic)
+            {
+                sheet = (sheet ?? "").Trim();
+                r["DrawSheet"] = E(sheet);
+                var cols = new List<IDictionary<string, object>>();
+                var rows = new List<IDictionary<string, object>>();
+                if (pneumatic)
+                {
+                    var z = Regex.Match(sheet, @"([A-Fa-f])\s*(\d)\s*$");
+                    for (int i = 1; i <= 8; i++)
+                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (24 + (i - 1) * 49).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "W", "49" }, { "On", z.Success && z.Groups[2].Value == i.ToString(CultureInfo.InvariantCulture) } });
+                    for (int i = 0; i < 6; i++)
+                    {
+                        string letter = ((char)('A' + i)).ToString();
+                        rows.Add(new Dictionary<string, object> { { "N", letter }, { "Y", (16 + i * 34).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "TY", (36 + i * 34).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "On", z.Success && string.Equals(z.Groups[1].Value, letter, StringComparison.OrdinalIgnoreCase) } });
+                    }
+                }
+                else
+                {
+                    var c = Regex.Match(sheet, @"\.(\d)\s*$");
+                    for (int i = 0; i <= 9; i++)
+                        cols.Add(new Dictionary<string, object> { { "N", i.ToString(CultureInfo.InvariantCulture) }, { "X", (24 + i * 39).ToString(CultureInfo.InvariantCulture) },
+                                                                  { "W", "39" }, { "On", c.Success && c.Groups[1].Value == i.ToString(CultureInfo.InvariantCulture) } });
+                }
+                foreach (var col in cols) col["TX"] = (int.Parse((string)col["X"], CultureInfo.InvariantCulture) + int.Parse((string)col["W"], CultureInfo.InvariantCulture) / 2).ToString(CultureInfo.InvariantCulture);
+                r["Cols"] = cols;
+                r["Rows"] = rows;
+                r["HasRows"] = rows.Count > 0;
+            }
+
+            /// <summary>An output's three parts: the card's terminal, the relay it drives, the valve coil the relay switches.</summary>
+            private void OutputParts(List<IDictionary<string, object>> list, WiringTable.Point p, MovementInfo.Device d, bool other, string id)
+            {
+                if (p == null)
+                {
+                    if (d != null && Dev(d.Address).Length > 0) { var bare = PartRow("IsOut", Dev(d.Address), ""); bare["IsOther"] = other; list.Add(bare); }
+                    return;
+                }
+                string card, terminal;
+                CardParts(p, out card, out terminal);
+                // the output: its terminal on the card, the wire, the sheet
+                var line = E(Shown(p)) + (p.Wire.Length > 0 ? " - " + Phrase("Wire", "V", E(p.Wire)) : "") +
+                           (p.Sheet.Length > 0 ? " " + Phrase("SheetParen", "V", E(p.Sheet)) : "") +
+                           (p.Card.Length > 0 ? " &ndash; " + E(Words(p.Card)) : "") + (p.Text.Length > 0 ? Phrase("DrawnAs", "V", E(p.Text)) : "");
+                var o = PartRow("IsOut", line, id + "out");
+                o["IsOther"] = other;
+                PutCard(o, p);
+                o["Wire"] = E(p.Wire);
+                o["Relay"] = E(p.Relay);
+                o["RelaySheet"] = E(p.RelaySheet);
+                o["Coil"] = E(p.Coil);
+                o["CoilSheet"] = E(p.CoilSheet);
+                PutRuler(o, p.Sheet.Length > 0 ? p.Sheet : p.RelaySheet, false);
+                list.Add(o);
+                // the relay: its coil from the output, its contact to the valve coil
+                if (p.Relay.Length > 0)
+                {
+                    var rl = Phrase("Relay", "V", E(p.Relay)) + (p.RelaySheet.Length > 0 ? " " + Phrase("SheetParen", "V", E(p.RelaySheet)) : "") + ": " +
+                             E(Shown(p)) + (p.Wire.Length > 0 ? ", " + Phrase("Wire", "V", E(p.Wire)) : "") +
+                             (p.Coil.Length > 0 ? " &rarr; " + Phrase("CoilWord", "V", E(p.Coil)) + (p.CoilWire.Length > 0 ? ", " + Phrase("Wire", "V", E(p.CoilWire)) : "") : "");
+                    var r = PartRow("IsRelay", rl, id + "relay");
+                    r["IsOther"] = other;
+                    PutCard(r, p);
+                    r["Wire"] = E(p.Wire);
+                    r["Relay"] = E(p.Relay);
+                    r["Coil"] = E(p.Coil);
+                    r["CoilWire"] = E(p.CoilWire);
+                    r["CoilSheet"] = E(p.CoilSheet);
+                    r["From"] = E(Shown(p));
+                    r["FromSheet"] = E(p.Sheet);
+                    PutRuler(r, p.RelaySheet.Length > 0 ? p.RelaySheet : p.Sheet, false);
+                    list.Add(r);
+                }
+                // the valve coil: its connector's pins, the wire from the relay (or the output)
+                if (p.Coil.Length > 0)
+                {
+                    var cl = Phrase("CoilWord", "V", E(p.Coil)) + (p.CoilWire.Length > 0 ? ", " + Phrase("Wire", "V", E(p.CoilWire)) : "") +
+                             (p.CoilSheet.Length > 0 ? " " + Phrase("SheetParen", "V", E(p.CoilSheet)) : "") +
+                             (p.Valve.Length > 0 ? " &ndash; " + Phrase("ValveWord", "V", E(Data(p, "Valve", p.Valve))) : "");
+                    var k = PartRow("IsCoil", cl, id + "coil");
+                    k["IsOther"] = other;
+                    k["Coil"] = E(p.Coil);
+                    k["CoilWire"] = E(p.CoilWire);
+                    k["Relay"] = E(p.Relay);
+                    k["RelaySheet"] = E(p.RelaySheet);
+                    k["From"] = E(p.Relay.Length > 0 ? p.Relay : Shown(p));
+                    k["FromSheet"] = E(p.Relay.Length > 0 ? p.RelaySheet : p.Sheet);
+                    k["Text"] = E(Data(p, "Valve", p.Valve));
+                    PutRuler(k, p.CoilSheet, false);
+                    list.Add(k);
+                }
+            }
+
+            /// <summary>An input's part: a sensor or a pressure switch, its wire to its terminal on the card.</summary>
+            private Dictionary<string, object> InputPart(string kind, string line, WiringTable.Point p, bool isSwitch, string id)
+            {
+                var r = PartRow(kind, line, p != null ? id : "");
+                r["IsSwitch"] = isSwitch;
+                if (p == null) return r;
+                PutCard(r, p);
+                r["Wire"] = E(p.Wire);
+                r["Tag"] = E(p.Tag);
+                PutRuler(r, p.Sheet, false);
+                return r;
+            }
+
+            private List<IDictionary<string, object>> PartRows(Dictionary<string, object> m)
+            {
+                var list = new List<IDictionary<string, object>>();
+                // the output this movement's coil is on (a spring's return: the coil's own), then the other coil's
+                OutputParts(list, OutPoint, OutDev, false, "p-");
+                if (!_spring && _double) OutputParts(list, c.OtherOut, c.OtherDevice, true, "p-o");
+                // the valve, the hoses, the cylinder
+                var air = c.Air;
+                if (air != null && ((string)m["PneuLine"]).Length > 0)
+                {
+                    var pn = PartRow("IsPneu", (string)m["PneuLine"], "p-air");
+                    PutRuler(pn, air.PnSheet, true);
+                    pn["DrawSheet"] = E(air.PnSheet);
+                    list.Add(pn);
+                }
+                // the sensors
+                int n = 0;
+                foreach (var s in _mustOn.Concat(_mustOff))
+                {
+                    var line = SensorName(s) + SensorWhere(s) + (s.Point != null && s.Point.Text.Length > 0 ? Phrase("DrawnAs", "V", E(s.Point.Text)) : "");
+                    list.Add(InputPart("IsSensor", line, s.Point, s.IsPressureSwitch, "p-s" + (++n)));
+                }
+                if (((string)m["Measure"]).Length > 0)
+                    list.Add(PartRow("IsMeasure", (string)m["Measure"] + (((string)m["Position"]).Length > 0 ? " &ndash; " + (string)m["Position"] : ""), ""));
+                else if (((string)m["Position"]).Length > 0)
+                    list.Add(PartRow("IsPosition", (string)m["Position"], ""));
+                if (((string)m["Pressure"]).Length > 0) list.Add(PartRow("IsPressure", (string)m["Pressure"], ""));
+                if (c.MainAir != null) list.Add(InputPart("IsMainAir", (string)m["MainAirLine"], c.MainAir, true, "p-main"));
+                if (((string)m["Error"]).Length > 0)
+                    list.Add(PartRow("IsAlarm", (string)m["Error"] + (((string)m["ErrorText"]).Length > 0 ? " " + (string)m["ErrorText"] : ""), ""));
+                return list;
             }
 
             private static readonly string[] WhyFlags =

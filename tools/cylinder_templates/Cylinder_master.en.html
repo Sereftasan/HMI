@@ -15,6 +15,12 @@
   {{ErrorShown}} are empty unless the reader is an Admin.
 -->
 <!--include Drawings.html-->
+<!--def W_Sheet-->sheet<!--/def-->
+<!--def W_PnSheet-->pneumatic sheet<!--/def-->
+<!--def W_Connector-->connector<!--/def-->
+<!--def PartLabel-->{{#IsOut}}{{#Spring}}Coil output ({{OtherMove}}){{/Spring}}{{^Spring}}{{#IsOther}}Other coil's output ({{OtherMove}}){{/IsOther}}{{^IsOther}}Valve output{{/IsOther}}{{/Spring}}{{/IsOut}}{{#IsRelay}}Relay{{#IsOther}} ({{OtherMove}}){{/IsOther}}{{/IsRelay}}{{#IsCoil}}Valve coil{{#IsOther}} ({{OtherMove}}){{/IsOther}}{{/IsCoil}}{{#IsPneu}}Valve, hoses, cylinder{{/IsPneu}}{{#IsSensor}}{{#IsSwitch}}Pressure switch{{/IsSwitch}}{{^IsSwitch}}Sensor{{/IsSwitch}}{{/IsSensor}}{{#IsMeasure}}Position measured by{{/IsMeasure}}{{#IsPosition}}Position{{/IsPosition}}{{#IsPressure}}Pressure{{/IsPressure}}{{#IsMainAir}}Main air{{/IsMainAir}}{{#IsAlarm}}Alarm{{/IsAlarm}}<!--/def-->
+<!--def PartCaption-->{{#IsPneu}}Pneumatic drawing{{#DrawSheet}}, sheet {{DrawSheet}}{{/DrawSheet}}{{/IsPneu}}{{^IsPneu}}Electrical drawing{{#DrawSheet}}, sheet {{DrawSheet}}{{/DrawSheet}}{{/IsPneu}} &ndash; drawn to show where it is and what it connects to, not a copy of the drawing.<!--/def-->
+<!--def PartNone-->Choose a part: where it is on the drawings shows here.<!--/def-->
 <!--def W_IoPage-->Inputs / Outputs<!--/def-->
 <!--def W_Press-->press<!--/def-->
 <!--def W_ValveShort-->valve<!--/def-->
@@ -115,6 +121,30 @@
 </nav>
 <main>
 <div class="safety"><b>&#9888; Safety first.</b> Before you touch the cylinder, the valve or anything that moves: <b>lock out</b> the machine (electrical and air) and exhaust both sides of the cylinder &ndash; it can move suddenly when air returns. Never bypass a guard or an emergency stop. Measuring in the cabinet and replacing parts is for trained, authorized people.</div>
+{{#HasParts}}
+<section class="partsbox" id="parts">
+<h2>The parts of this movement</h2>
+<div class="partsgrid">
+<table class="parts">
+{{#PartRows}}
+<tr{{#Pic}} data-pic="{{Pic}}" tabindex="0"{{/Pic}}><td>{{>PartLabel}}</td><td>{{Line}}</td></tr>
+{{/PartRows}}
+</table>
+<div class="partpic">
+{{#PartRows}}
+{{#Pic}}
+<figure class="pp" id="{{Pic}}">{{>PartDrawing}}<figcaption>{{>PartCaption}}</figcaption></figure>
+{{/Pic}}
+{{/PartRows}}
+<p class="ppnone">{{>PartNone}}</p>
+</div>
+</div>
+{{#Drawn}}
+<p class="ref">Sheet 12.6 is page 12, column 6 of the electrical drawing; pneumatic sheet 2 E3 is page 2, zone E3 of the pneumatic drawing.{{#ZeroWire}} 0 V is wire {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} The sensors' +24 V is wire {{SensorWire}}.{{/SensorWire}} The drawings on this page show where to look, not this machine exactly.</p>
+{{/Drawn}}
+</section>
+{{>PartsScript}}
+{{/HasParts}}
 {{#Seen}}
 <div class="seen"><p><b>What the HMI saw</b> (red: not as it should be at the end of the movement)</p>
 <table class="states"><tr><th></th><th>should be</th><th>at the alarm</th><th>now</th></tr>
@@ -695,46 +725,6 @@
 </ul>
 </div></div>
 
-{{#HasParts}}
-<h2>The parts of this movement</h2><table class="parts">
-{{#OutLine}}
-<tr><td>{{#Spring}}Coil output ({{OtherMove}}){{/Spring}}{{^Spring}}Valve output{{/Spring}}</td><td>{{OutLine}}</td></tr>
-{{/OutLine}}
-{{^Spring}}
-{{#Double}}
-{{#OtherLine}}
-<tr><td>Other coil ({{OtherMove}})</td><td>{{OtherLine}}</td></tr>
-{{/OtherLine}}
-{{/Double}}
-{{/Spring}}
-{{#PneuLine}}
-<tr><td>Valve, hoses, cylinder</td><td>{{PneuLine}}</td></tr>
-{{/PneuLine}}
-{{#PartSensors}}
-<tr><td>{{#IsSwitch}}Pressure switch{{/IsSwitch}}{{^IsSwitch}}Sensor{{/IsSwitch}}</td><td>{{Name}}{{Where}}{{#Text}} &ndash; {{Text}}{{/Text}}</td></tr>
-{{/PartSensors}}
-{{#Measure}}
-<tr><td>Position measured by</td><td>{{Measure}}{{#Position}} &ndash; shown at {{Position}}{{/Position}}</td></tr>
-{{/Measure}}
-{{^Measure}}
-{{#Position}}
-<tr><td>Position</td><td>shown at {{Position}}</td></tr>
-{{/Position}}
-{{/Measure}}
-{{#Pressure}}
-<tr><td>Pressure</td><td>{{Pressure}}</td></tr>
-{{/Pressure}}
-{{#MainAir}}
-<tr><td>Main air</td><td>{{MainAirLine}}</td></tr>
-{{/MainAir}}
-{{#Error}}
-<tr><td>Alarm</td><td>{{Error}}{{#ErrorText}} {{ErrorText}}{{/ErrorText}}</td></tr>
-{{/Error}}
-</table>
-{{#Drawn}}
-<p class="ref">Sheet 12.6 is page 12, column 6 of the electrical drawing; pneumatic sheet 2 E3 is page 2, zone E3 of the pneumatic drawing.{{#ZeroWire}} 0 V is wire {{ZeroWire}}.{{/ZeroWire}}{{#SensorWire}} The sensors' +24 V is wire {{SensorWire}}.{{/SensorWire}} The drawings on this page show where to look, not this machine exactly.</p>
-{{/Drawn}}
-{{/HasParts}}
 <p class="ref">The general cylinder manual explains every check in more depth; each step here names its detail (&ldquo;manual 1.6&rdquo;).</p>
 </main></div>
 {{>Script}}

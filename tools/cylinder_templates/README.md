@@ -29,6 +29,18 @@ The HMI uses the template of the HMI's language and falls back to English when
 a language has none. A template changed while the program runs is used for the
 next page opened.
 
+## The page's top (2 November)
+
+The safety notice comes first, then **the parts of this movement** (`PartRows`: the
+output on its card, the relay and the valve coil of each coil, the valve with its
+hoses and cylinder, the sensors, the main air, the alarm), each row with a small
+drawing of the part as the electrical or pneumatic drawing shows it (`Schem*` in
+Drawings.html: its symbol, its connection points, the wire numbers, the card's unit
+and model, the sheet with its column - the air's zone - lit on the ruler), shown
+beside the table for the row chosen (`PartsScript`). Then what the HMI saw - the
+sensors only: the PLC drops the valve's outputs with the alarm. No "where to start"
+and no "how this page goes" any more: step 1 does the branching.
+
 ## The page (2 October)
 
 * **The title is the alarm** as the alarm list shows it; under it, small and in
