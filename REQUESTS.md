@@ -6,6 +6,21 @@ Claude reads this file at the start of every batch, does the items, and moves ea
 ## To do
 
 ## Done
+- 2 November, night (alignment, titled frames, switches that ask, the row as the control):
+  - f453b4a - Logs and Reports: the audit log's row on one middle line; the dashboard settings' switches end where
+    the time zone's list and the folder buttons end.
+  - 91c2b0a - Titled frames (the Options page's group) on Logs and Reports, the dashboard's open sections (Machine
+    Performance, Production Events) and Machine Settings > Others.
+  - 09d79c5 - Too slow, a PLC's alarm: only "the cylinder must move faster" - nothing about the monitoring time; the
+    HMI's own alarm also offers its longer delay in Alarm Settings.
+  - fc86fd1 - CheckBoxHMI.ConfirmWrite: a tap asks first, the switch slid across (right ON, left OFF) does not; every
+    switch on Machine Parameters > Options asks.
+  - d61e252 - Grips only where a border sizes both ways: the side page's border keeps its middle grip; the Profiles
+    page's panes get corner and side grips.
+  - 4da2a73 - ActiveArea (numeric fields, switches): Row - the caption is part of the control (hover, click, tap);
+    Control - only the field or the switch itself.
+  - 4998e38 - Touch: no tooltip for a press (a hold-to-run button would run); a tap on something greyed says why;
+    tooltips are read on Notes and feedback.
 - 2 November, evening (a touch screen again; the monitoring time):
   - b426381 - Step-by-step page, too slow: a PLC's alarm says its time is set in the PLC program, not on the HMI -
     request support to have it reviewed (no "have the monitoring time raised"); the HMI's own alarm: its delay in
