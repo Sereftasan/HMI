@@ -210,6 +210,27 @@ class TM {
         Check("  its preview: where it comes, what it does, and Off for a keyboard of keys", kpv.Key == ViewPreferences.ScreenKeyboard && kpv.Value == "Windows" &&
               kpv.Description.Contains("along the bottom of the screen") && kpv.Description.Contains("Off"), kpv.Description);
         phost.Close(); phost.Dispose();
+        // (2 November: "The user preferences helper preview doesn't change anymore when the combo selections hovered") - in touch
+        // mode a list opens as a finger's menu, which the page does not draw: its entries previewed as they are pointed at
+        var rowsList = page.ComboOf(ViewPreferences.TableRows);
+        var fingerList = TouchInput.ShowTouchList(rowsList); Pump(150);
+        var shownNow = page.Preview;
+        var besideMenu = shownNow.RectangleToScreen(shownNow.ClientRectangle);
+        Check("a preference's list opened as a finger's menu: the preview beside the menu (not under it), for the value chosen",
+              fingerList != null && fingerList.Visible && shownNow.Visible && shownNow.Key == ViewPreferences.TableRows &&
+              (besideMenu.Left >= fingerList.Bounds.Right || besideMenu.Right <= fingerList.Bounds.Left),
+              (fingerList == null ? "no menu" : fingerList.Bounds.ToString()) + " preview " + shownNow.Visible + " " + shownNow.RectangleToScreen(shownNow.ClientRectangle));
+        var onEntry = typeof(ToolStripItem).GetMethod("OnMouseEnter", Any);
+        string seen = "";
+        for (int i = 0; i < fingerList.Items.Count; i++)
+        {
+            onEntry.Invoke(fingerList.Items[i], new object[] { EventArgs.Empty }); Pump(30);
+            seen += shownNow.Value + ",";
+        }
+        Check("  the pointer (or a finger) on each entry: that one previewed", seen == string.Join(",", rowsList.Items.Cast<object>().Select(o =>
+              { var v = o.GetType().GetField("Value") != null ? (string)o.GetType().GetField("Value").GetValue(o) : null; return v ?? ViewPreferences.PanelValue(ViewPreferences.TableRows); })) + ",", seen);
+        fingerList.Close(); Pump(80);
+        Check("  the menu closed: the preview gone", !shownNow.Visible);
         host.Close(); host.Dispose();
 
         Console.WriteLine("--- the button on the caption bar ---");

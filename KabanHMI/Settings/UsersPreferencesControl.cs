@@ -192,6 +192,15 @@ namespace Kaban.UI.Settings
             Fill();
             SecurityManager.UserChanged += OnUserChanged;
             Disposed += (s, e) => SecurityManager.UserChanged -= OnUserChanged;
+            // touch mode: a list opens as a finger's menu, not drawn by the page - its entry under the pointer previewed all the same
+            Action<ComboBox, int> listHover = (c, i) =>
+            {
+                if (IsDisposed) return;
+                if (c == _readFrom) { HoverItem(c, null, i); return; }
+                foreach (var kv in _combos) if (kv.Value == c) { HoverItem(c, kv.Key, i); return; }
+            };
+            Kaban.UI.Helpers.TouchInput.ListEntryHovered += listHover;
+            Disposed += (s, e) => Kaban.UI.Helpers.TouchInput.ListEntryHovered -= listHover;
             // the touch screen switched on or off (HMI Settings > Options): "Screen used with" shown or taken away
             EventHandler features = (s, e) =>
             {
@@ -710,7 +719,9 @@ namespace Kaban.UI.Settings
         internal void HoverItem(ComboBox combo, string key, int index)
         {
             if (index < 0 || index >= combo.Items.Count) return;
-            if (combo == _openList && index == _hovered && _preview.Visible) return;
+            var list = ListBounds(combo);
+            if (combo == _openList && index == _hovered && _preview.Visible && list == _besideList) return;
+            _besideList = list;
             var choice = combo.Items[index] as Choice;
             if (choice == null) return;
             bool moved = combo == _openList && _hovered >= 0;      // the pointer onto another entry (not the list opening)
@@ -729,12 +740,16 @@ namespace Kaban.UI.Settings
                 if (moved && key == ViewPreferences.AlarmSound && hovered == "On")
                     try { Kaban.UI.Helpers.AlarmSound.Play(); } catch { }
             }
-            PlaceBeside(ListBounds(combo), combo.PointToScreen(Point.Empty).Y);
+            PlaceBeside(list, combo.PointToScreen(Point.Empty).Y);
         }
 
-        /// <summary>Where an open list is on the screen (below its box, as tall as its entries).</summary>
+        private Rectangle _besideList;      // the open list the preview was placed beside
+
+        /// <summary>Where an open list is on the screen (below its box, as tall as its entries; in touch mode the finger's menu it opened as).</summary>
         private static Rectangle ListBounds(ComboBox combo)
         {
+            var menu = Kaban.UI.Helpers.TouchInput.TouchListBounds(combo);
+            if (!menu.IsEmpty) return menu;
             var at = combo.PointToScreen(new Point(0, combo.Height));
             int rows = Math.Max(1, Math.Min(combo.Items.Count, combo.MaxDropDownItems));
             return new Rectangle(at.X, at.Y, Math.Max(combo.DropDownWidth, combo.Width), rows * combo.ItemHeight + 2);

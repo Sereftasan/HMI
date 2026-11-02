@@ -79,6 +79,28 @@ namespace Kaban.UI.Helpers
         public static string LastReason { get; private set; }
         public static ContextMenuStrip LastList { get; private set; }
 
+        /// <summary>
+        /// The entry of a list opened as a finger's menu that the pointer or the finger is on (as it opens: the one chosen) - a
+        /// page may preview it as for its own drop-down (Users and Preferences; 2 November: "The user preferences helper preview
+        /// doesn't change anymore when the combo selections hovered").
+        /// </summary>
+        public static event Action<ComboBox, int> ListEntryHovered;
+
+        private static void ListHover(ComboBox combo, int index)
+        {
+            var h = ListEntryHovered;
+            if (h == null || combo == null || combo.IsDisposed) return;
+            try { h(combo, index); }
+            catch (Exception ex) { AuditLogger.Log("a list's entry not previewed: " + ex.Message); }
+        }
+
+        /// <summary>Where a list opened as a finger's menu is on the screen; empty when it is not open so.</summary>
+        public static Rectangle TouchListBounds(ComboBox combo)
+        {
+            var m = LastList;
+            return m != null && !m.IsDisposed && m.Visible && ReferenceEquals(m.Tag, combo) ? m.Bounds : Rectangle.Empty;
+        }
+
         /// <summary>A control whose right-click opens a menu it makes itself (no ContextMenuStrip): a long press opens it too.</summary>
         public static void HasMenu(Control c)
         {
@@ -358,6 +380,7 @@ namespace Kaban.UI.Helpers
             try { if (OnDropDown != null) OnDropDown.Invoke(combo, new object[] { EventArgs.Empty }); } catch { }
             var menu = UiStyle.Menu();
             menu.Name = "touchList";
+            menu.Tag = combo;
             menu.ShowImageMargin = false;
             menu.ShowCheckMargin = true;
             menu.MinimumSize = new Size(combo.Width, 0);
@@ -371,8 +394,11 @@ namespace Kaban.UI.Helpers
                     combo.SelectedIndex = index;
                     try { if (OnCommitted != null) OnCommitted.Invoke(combo, new object[] { EventArgs.Empty }); } catch { }
                 };
+                // the entry under the pointer (or the finger): previewed as the drop-down's own (DrawItem) was
+                item.MouseEnter += (s, e) => ListHover(combo, index);
                 menu.Items.Add(item);
             }
+            menu.Opened += (s, e) => ListHover(combo, combo.SelectedIndex);         // now where it is: the preview beside it
             menu.Closed += (s, e) => { try { if (!combo.IsDisposed && OnDropDownClosed != null) OnDropDownClosed.Invoke(combo, new object[] { EventArgs.Empty }); } catch { } };
             LastList = menu;
             UiStyle.ShowPopup(menu, combo, new Point(0, combo.Height));
