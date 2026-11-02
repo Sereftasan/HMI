@@ -104,6 +104,7 @@
     <Compile Include="Helpers\SidePages.cs" />
     <Compile Include="Helpers\LoginHandoff.cs" />
     <Compile Include="Helpers\PageScroll.cs" />
+    <Compile Include="Helpers\KeyboardRoom.cs" />
     <Compile Include="Helpers\TouchInput.cs" />
     <Compile Include="Settings\FeaturesControl.cs">
       <SubType>UserControl</SubType>

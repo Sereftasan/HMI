@@ -508,11 +508,42 @@ class TM {
         dlg.Controls.Add(dlgBox); dlg.Show(); Pump(150); TouchInput.Sweep();
         var dlgAt = dlg.Location;
         Tap(dlgBox, new Point(30, 8)); Pump(120);
-        Check("a dialog's box where the keyboard is: the dialog moved up above it", TouchKeyboard.IsShown && kb.Target == dlgBox && kb.CoversTarget == 0 &&
-              dlg.Top < dlgAt.Y, dlg.Location + " box bottom " + dlgBox.RectangleToScreen(dlgBox.ClientRectangle).Bottom + " keyboard " + kb.Top);
+        Check("a dialog's box where the keyboard is: the dialog moved up above it - all of it, its buttons too (2 November: the login's were under it)",
+              TouchKeyboard.IsShown && kb.Target == dlgBox && kb.CoversTarget == 0 && dlg.Top < dlgAt.Y && dlg.Bottom <= kb.Top, dlg.Location + " box bottom " + dlgBox.RectangleToScreen(dlgBox.ClientRectangle).Bottom + " keyboard " + kb.Top);
         kb.Press("Hide"); Pump(50);
         Check("  the keyboard put away: the dialog back where it was", dlg.Location == dlgAt, dlg.Location + "");
         dlg.Close(); dlg.Dispose();
+        // a window that fills the screen (the main window): laid out as on a screen ending at the keyboard's top - its side panel
+        // and its page scroll in what is left (2 November: "the vertical scrolls on all the navigation side panel, main page and
+        // second page should be positioned and shaped as if the screen height pixel is as much lower as it's height")
+        var full = new Form { Text = "full screen", StartPosition = FormStartPosition.Manual, Bounds = work, FormBorderStyle = FormBorderStyle.None };
+        var nav = new Panel { Name = "navPanel", Dock = DockStyle.Left, Width = 240, AutoScroll = true };
+        for (int i = 0; i < 12; i++) nav.Controls.Add(new Button { Text = "page " + i, Location = new Point(4, 4 + i * 60), Size = new Size(220, 54) });
+        var main = new Panel { Name = "mainPage", Dock = DockStyle.Fill, AutoScroll = true };
+        var deep = new TextBox { Name = "deep", Location = new Point(40, work.Height - 120), Width = 300 };
+        main.Controls.Add(deep); main.Controls.Add(new Label { Location = new Point(40, work.Height + 400), Text = "the page's end" });
+        full.Controls.Add(main); full.Controls.Add(nav);
+        full.Show(); full.WindowState = FormWindowState.Maximized; Pump(200); TouchInput.Sweep();
+        var fills = KeyboardRoom.FillsScreen;
+        KeyboardRoom.FillsScreen = f => f == full || fills(f);           // maximised (Mono without a window manager keeps it "Normal")
+        var fullAt = full.Bounds;
+        int deepScreen = deep.PointToScreen(Point.Empty).Y;
+        Tap(deep, new Point(30, 8)); Pump(150);
+        var navView = nav.RectangleToScreen(nav.ClientRectangle); var mainView = main.RectangleToScreen(main.ClientRectangle);
+        var deepBox = deep.RectangleToScreen(deep.ClientRectangle);
+        Check("the main window (maximised): its bottom at the keyboard's top - its side panel and its page end there, the box scrolled into sight above it",
+              TouchKeyboard.IsShown && kb.Target == deep && KeyboardRoom.Band == kb.Bounds && full.Bounds.Bottom == kb.Top && full.Top == fullAt.Top &&
+              navView.Bottom <= kb.Top && mainView.Bottom <= kb.Top && deepBox.Bottom <= kb.Top && deepBox.Top >= mainView.Top &&
+              main.AutoScrollPosition.Y < 0 && main.AutoScrollMinSize == Size.Empty && kb.CoversTarget == 0,
+              "window " + full.WindowState + " " + full.Bounds + " keyboard " + kb.Bounds + " nav " + navView + " page " + mainView + " box " + deepBox + " scrolled " + main.AutoScrollPosition.Y);
+        Check("  the area left above it: the screen's working area ending at the keyboard", KeyboardRoom.WorkArea(Screen.FromControl(full)) ==
+              new Rectangle(work.X, work.Y, work.Width, kb.Top - work.Y), KeyboardRoom.WorkArea(Screen.FromControl(full)) + "");
+        Shot(full, "above_keyboard");
+        kb.Press("Hide"); Pump(100);
+        Check("  the keyboard put away: the whole screen again, the page scrolled back", !TouchKeyboard.IsShown && full.Bounds == fullAt &&
+              KeyboardRoom.Band.IsEmpty && main.AutoScrollPosition.Y == 0 && deep.PointToScreen(Point.Empty).Y == deepScreen, full.Bounds + " page at " + main.AutoScrollPosition.Y);
+        KeyboardRoom.FillsScreen = fills;
+        full.Close(); full.Dispose();
         kf.Activate(); Pump(50);
         Tap(shown, new Point(30, 8)); Pump(80);
         Check("a box that is only read: no keyboard", !TouchKeyboard.IsShown);

@@ -61,7 +61,9 @@ namespace Kaban.UI.Forms
             if (!k.Visible) k.Show();
             EnableNative(k);
             GiveBack(k, target);
-            k.MakeRoom(target);
+            // the program's windows fitted above it, the box brought into sight above it
+            KeyboardRoom.SetBand(k.Bounds);
+            KeyboardRoom.Make(target);
             k._watch.Start();
             return k;
         }
@@ -74,7 +76,9 @@ namespace Kaban.UI.Forms
             k._watch.Stop();
             k._pad.Reset();
             if (k.Visible) k.Hide();
-            k.GiveRoomBack();
+            // the whole screen given back, then the pages scrolled back and the dialogs moved back where they were
+            if (KeyboardRoom.Band == k.Bounds) KeyboardRoom.SetBand(Rectangle.Empty);
+            KeyboardRoom.GiveBack();
             k._target = null;
         }
 
@@ -94,7 +98,12 @@ namespace Kaban.UI.Forms
             Controls.Add(_pad);
             ClientSize = _pad.WantedSize;
             _watch.Tick += (s, e) => Watch();
-            FormClosed += (s, e) => { _watch.Stop(); _watch.Dispose(); if (_current == this) _current = null; };
+            FormClosed += (s, e) =>
+            {
+                _watch.Stop(); _watch.Dispose();
+                if (_current == this) _current = null;
+                if (KeyboardRoom.Band == Bounds) { KeyboardRoom.SetBand(Rectangle.Empty); KeyboardRoom.GiveBack(); }
+            };
         }
 
         protected override bool ShowWithoutActivation { get { return true; } }
@@ -133,128 +142,8 @@ namespace Kaban.UI.Forms
             Bounds = new Rectangle(screen.Left, screen.Bottom - keys.Height, Math.Max(keys.Width, screen.Width), keys.Height);
         }
 
-        // ---- the box above the keyboard ------------------------------------------------------------
-        //
-        // The page under the box scrolls until the box is above the keyboard, with a finger's room to spare: the page
-        // given room below its last control as tall as the keyboard covers of it (a page whose parts are docked: kept
-        // above the keyboard instead), a table's rows scrolled to the cell being edited, a window that does not scroll
-        // (a dialog) moved up. All of it given back when the keyboard goes.
-
-        private sealed class Room
-        {
-            public ScrollableControl Host;
-            public Size MinSize;
-            public Point Scroll;
-            public Padding Pad;
-            public bool Padded;
-            public Form Moved;
-            public Point WasAt;
-        }
-
-        private readonly List<Room> _rooms = new List<Room>();
-
-        /// <summary>How far above the keyboard the box is kept, at factor 1.</summary>
-        public const int RoomAbove = 12;
-
-        /// <summary>The box on the screen, and how far the keyboard covers it (0: not).</summary>
-        private int Covered(Control target)
-        {
-            if (target == null || target.IsDisposed || !target.IsHandleCreated || !Visible) return 0;
-            Rectangle box;
-            try { box = target.RectangleToScreen(target.ClientRectangle); } catch { return 0; }
-            return Math.Max(0, box.Bottom + UiScale.Px(RoomAbove) - Top);
-        }
-
-        private static bool DocksItsParts(Control host)
-        {
-            foreach (Control c in host.Controls)
-                if (c.Visible && (c.Dock == DockStyle.Fill || c.Dock == DockStyle.Bottom || c.Dock == DockStyle.Left || c.Dock == DockStyle.Right)) return true;
-            return false;
-        }
-
-        /// <summary>The box brought above the keyboard (the room made before given back first).</summary>
-        internal void MakeRoom(Control target)
-        {
-            GiveRoomBack();
-            try
-            {
-                if (Covered(target) <= 0) return;
-                // the scrolling parts around the box, innermost first: each one the keyboard covers scrolls (or keeps
-                // its docked parts above the keyboard) until the box is clear of it
-                for (var c = target.Parent; c != null && !(c is Form) && Covered(target) > 0; c = c.Parent)
-                {
-                    var sc = c as ScrollableControl;
-                    if (sc == null || !sc.AutoScroll || !sc.IsHandleCreated) continue;
-                    var view = sc.RectangleToScreen(sc.ClientRectangle);
-                    int under = view.Bottom - Top;                 // how much of it the keyboard covers
-                    if (under <= 0) continue;
-                    var room = new Room { Host = sc, MinSize = sc.AutoScrollMinSize, Scroll = new Point(-sc.AutoScrollPosition.X, -sc.AutoScrollPosition.Y), Pad = sc.Padding };
-                    _rooms.Add(room);
-                    if (DocksItsParts(sc))
-                    {
-                        // a page of docked parts: they keep above the keyboard
-                        room.Padded = true;
-                        sc.Padding = new Padding(room.Pad.Left, room.Pad.Top, room.Pad.Right, room.Pad.Bottom + under);
-                        sc.PerformLayout();
-                    }
-                    else
-                    {
-                        // room below its last control as tall as the keyboard covers of it, then scrolled up by what covers the box
-                        int content = Math.Max(sc.DisplayRectangle.Height, room.MinSize.Height);
-                        sc.AutoScrollMinSize = new Size(room.MinSize.Width, content + under);
-                        int need = Covered(target);
-                        sc.AutoScrollPosition = new Point(room.Scroll.X, room.Scroll.Y + need);
-                    }
-                }
-                // a table's cell being edited: its rows scrolled to it
-                var grid = target as DataGridView ?? (target is IDataGridViewEditingControl ? ((IDataGridViewEditingControl)target).EditingControlDataGridView : null);
-                if (grid != null && Covered(target) > 0 && grid.CurrentCell != null)
-                {
-                    int shown = Math.Max(1, grid.DisplayedRowCount(false) - 1);
-                    int first = Math.Max(0, grid.CurrentCell.RowIndex - shown + 1);
-                    try { if (grid.FirstDisplayedScrollingRowIndex < first) grid.FirstDisplayedScrollingRowIndex = first; } catch { }
-                }
-                // a window that does not scroll (a dialog): up, as far as the screen lets it
-                var form = target.FindForm();
-                int still = Covered(target);
-                if (still > 0 && form != null && form.WindowState == FormWindowState.Normal && !(form is TouchKeyboard))
-                {
-                    var screen = Screen.FromControl(form).WorkingArea;
-                    int up = Math.Min(still, Math.Max(0, form.Top - screen.Top));
-                    if (up > 0)
-                    {
-                        _rooms.Add(new Room { Moved = form, WasAt = form.Location });
-                        form.Location = new Point(form.Left, form.Top - up);
-                    }
-                }
-            }
-            catch (Exception ex) { Kaban.Core.Helpers.AuditLogger.Log("keyboard: room for the box not made (" + ex.Message + ")."); }
-        }
-
-        /// <summary>The pages scrolled back and the windows moved back where they were.</summary>
-        internal void GiveRoomBack()
-        {
-            for (int i = _rooms.Count - 1; i >= 0; i--)
-            {
-                var r = _rooms[i];
-                try
-                {
-                    if (r.Moved != null) { if (!r.Moved.IsDisposed) r.Moved.Location = r.WasAt; continue; }
-                    if (r.Host == null || r.Host.IsDisposed) continue;
-                    if (r.Padded) r.Host.Padding = r.Pad;
-                    else
-                    {
-                        r.Host.AutoScrollMinSize = r.MinSize;
-                        r.Host.AutoScrollPosition = r.Scroll;
-                    }
-                }
-                catch { }
-            }
-            _rooms.Clear();
-        }
-
         /// <summary>How far the keyboard covers the box it types into now (tests: 0 - above it).</summary>
-        public int CoversTarget { get { return Covered(_target); } }
+        public int CoversTarget { get { return KeyboardRoom.Covered(_target); } }
 
         private int _away;
 
@@ -270,7 +159,7 @@ namespace Kaban.UI.Forms
             if (focused != null)
             {
                 // another box now (the next field tapped, Tab): the room made for it instead
-                if (!ReferenceEquals(focused, _target)) { _target = focused; MakeRoom(focused); }
+                if (!ReferenceEquals(focused, _target)) { _target = focused; KeyboardRoom.Make(focused); }
                 _away = 0;
                 return;
             }

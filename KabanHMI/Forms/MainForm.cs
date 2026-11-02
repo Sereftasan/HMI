@@ -1169,6 +1169,10 @@ namespace Kaban.UI.Forms
             // Moved to another monitor while restored: the next maximise - the
             // button, a double-click on the caption, Win+Up - fills THAT monitor.
             Move += (s, e) => { if (WindowState == FormWindowState.Normal) FitMaximizedBounds(); };
+            // a keyboard along the bottom of the screen (2 November): maximised, the window ends at its top (KeyboardRoom fits it)
+            EventHandler keyboard = (s, e) => { try { if (!IsDisposed) FitMaximizedBounds(); } catch { } };
+            Kaban.UI.Helpers.KeyboardRoom.Changed += keyboard;
+            Disposed += (s, e) => Kaban.UI.Helpers.KeyboardRoom.Changed -= keyboard;
             // 31, not 36. The bar carried more clear space above and below its
             // controls than it needed; on a panel that space is screen the machine
             // pages could be using. The controls below are sized from this, so they
@@ -1562,11 +1566,11 @@ namespace Kaban.UI.Forms
         // taskbar may sit on either screen.
         // ==================================================================
 
-        /// <summary>The working area of the window's monitor, relative to that monitor.</summary>
+        /// <summary>The working area of the window's monitor, relative to that monitor (above the keyboard on the screen while there is one).</summary>
         private void FitMaximizedBounds()
         {
             var scr = Screen.FromControl(this);
-            var wa = scr.WorkingArea;
+            var wa = Kaban.UI.Helpers.KeyboardRoom.WorkArea(scr);
             MaximizedBounds = new Rectangle(wa.X - scr.Bounds.X, wa.Y - scr.Bounds.Y, wa.Width, wa.Height);
         }
 
@@ -1585,7 +1589,7 @@ namespace Kaban.UI.Forms
         private static bool _noUser32;
         private const uint SWP_NOSIZE = 0x1, SWP_NOMOVE = 0x2;
 
-        /// <summary>A maximised window goes exactly onto its monitor's working area.</summary>
+        /// <summary>A maximised window goes exactly onto its monitor's working area - above the keyboard on the screen while there is one (KeyboardRoom).</summary>
         private void KeepMaximizedOnItsMonitor(ref Message m)
         {
             if (m.LParam == IntPtr.Zero || !IsZoomed(Handle)) return;
@@ -1597,7 +1601,7 @@ namespace Kaban.UI.Forms
             var target = (wp.flags & SWP_NOMOVE) == 0
                 ? Screen.FromRectangle(new Rectangle(wp.x, wp.y, Math.Max(1, wp.cx), Math.Max(1, wp.cy)))
                 : Screen.FromHandle(Handle);
-            var wa = target.WorkingArea;
+            var wa = Kaban.UI.Helpers.KeyboardRoom.WorkArea(target);
             if (wp.x == wa.X && wp.y == wa.Y && wp.cx == wa.Width && wp.cy == wa.Height) return;
             wp.x = wa.X; wp.y = wa.Y; wp.cx = wa.Width; wp.cy = wa.Height;
             wp.flags &= ~(SWP_NOMOVE | SWP_NOSIZE);

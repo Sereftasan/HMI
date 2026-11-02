@@ -848,6 +848,9 @@ namespace Kaban.UI.Forms
 
             Move += (s, e) => { if (WindowState == FormWindowState.Normal) FitMaximizedBounds(); };
             SizeChanged += (s, e) => { _btnMax.Invalidate(); Invalidate(); };
+            EventHandler keyboard = (s, e) => FitMaximizedBounds();          // above a keyboard along the bottom of the screen
+            KeyboardRoom.Changed += keyboard;
+            Disposed += (s, e) => KeyboardRoom.Changed -= keyboard;
 
             // Scaled first, then placed where it was: a kept size is not scaled again.
             UiScale.ApplyOnLoad(this);
@@ -885,13 +888,13 @@ namespace Kaban.UI.Forms
             WindowState = WindowState == FormWindowState.Maximized ? FormWindowState.Normal : FormWindowState.Maximized;
         }
 
-        /// <summary>Maximised onto the working area of its own monitor (the taskbar stays in sight).</summary>
+        /// <summary>Maximised onto the working area of its own monitor (the taskbar stays in sight; above the keyboard on the screen while there is one).</summary>
         private void FitMaximizedBounds()
         {
             try
             {
                 var scr = Screen.FromControl(this);
-                var wa = scr.WorkingArea;
+                var wa = Kaban.UI.Helpers.KeyboardRoom.WorkArea(scr);
                 MaximizedBounds = new Rectangle(wa.X - scr.Bounds.X, wa.Y - scr.Bounds.Y, wa.Width, wa.Height);
             }
             catch { }
