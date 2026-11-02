@@ -532,7 +532,7 @@ Dsh_Export;KabanHMI\Dashboard\DashboardScreen.cs;356;Text;_export.Text = T("Dsh_
 Dsh_Exported;KabanHMI\Dashboard\DashboardScreen.cs;824;Status;? string.Format(CultureInfo.CurrentCulture, T("Dsh_Exported", "{0} report files exported!"), files.Count) + "\n" + Config.ExportDirectory
 Dsh_ExportNone;KabanHMI\Dashboard\DashboardScreen.cs;825;Status;: T("Dsh_ExportNone", "No report file could be written - check the export folder in the settings."), files.Count == 0);
 Dsh_FilterAlarms;KabanHMI\Dashboard\DashboardScreen.Sections.cs;317;Text;_alarmFilter.Placeholder = T("Dsh_FilterAlarms", "Select Alarms to Filter...");
-Dsh_FilteredOut;KabanHMI\Dashboard\DashboardScreen.Sections.cs;366;Text;: T("Dsh_FilteredOut", "Not shown: the filters on the left leave these logs out.");
+Dsh_FilteredOut;KabanHMI\Dashboard\DashboardScreen.Sections.cs;370;Text;: T("Dsh_FilteredOut", "Not shown: the filters on the left leave these logs out.");
 Dsh_FilterEvents;KabanHMI\Dashboard\DashboardScreen.Sections.cs;316;Text;_eventFilter.Placeholder = T("Dsh_FilterEvents", "Select Events to Filter...");
 Dsh_FolderAccess;KabanHMI\Dashboard\DashboardScreen.cs;380;Text;(_openFolder.Enabled ? "" : "\n" + T("Dsh_FolderAccess", "Sign in as Maintenance or Admin to open it."))));
 Dsh_FolderError;KabanHMI\Dashboard\DashboardScreen.cs;844;Status;catch (Exception ex) { SetStatus(T("Dsh_FolderError", "The folder could not be opened:") + " " + ex.Message, true); }
@@ -543,25 +543,25 @@ Dsh_Length;KabanHMI\Dashboard\DashboardScreen.Sections.cs;308;Text;_cutGrid.SetC
 Dsh_Loading;KabanHMI\Dashboard\DashboardScreen.cs;634;Text;_barText.Text = T("Dsh_Loading", "Data loading...");
 Dsh_LogSearch;KabanHMI\Settings\LogViewerControl.cs;246;Text;Text = LanguageManager.GetString("Dsh_LogSearch", "Search the log"), AutoSize = true,
 Dsh_LogType;KabanHMI\Dashboard\DashboardScreen.cs;283;Text;_typePick = SidePick("Dsh_LogType", "Log Type", false);
-Dsh_Min;KabanHMI\Dashboard\DashboardScreen.Sections.cs;324;Text;_pieChart.Unit = " " + T("Dsh_Min", "min");
-Dsh_Min;KabanHMI\Dashboard\DashboardScreen.Sections.cs;381;Text;string min = T("Dsh_Min", "min");
+Dsh_Min;KabanHMI\Dashboard\DashboardScreen.Sections.cs;328;Text;_pieChart.Unit = " " + T("Dsh_Min", "min");
+Dsh_Min;KabanHMI\Dashboard\DashboardScreen.Sections.cs;385;Text;string min = T("Dsh_Min", "min");
 Dsh_Min;KabanHMI\Dashboard\MachineLogFeed.cs;158;Text;string min = LanguageManager.GetString("Dsh_Min", "min");
-Dsh_NoAlarms;KabanHMI\Dashboard\DashboardScreen.Sections.cs;432;Text;Wanted(DashboardData.Parts.Alarms, T("Dsh_NoAlarms", "No alarm logs in selected range!")));
-Dsh_NoCutting;KabanHMI\Dashboard\DashboardScreen.Sections.cs;410;Text;m == 0.0 ? T("Dsh_NoCutting", "No cutting logs in selected range!")
-Dsh_NoCuttingFormat;KabanHMI\Dashboard\DashboardScreen.Sections.cs;411;Text;: T("Dsh_NoCuttingFormat", "No valid cutting details found (Check data format).")));
+Dsh_NoAlarms;KabanHMI\Dashboard\DashboardScreen.Sections.cs;436;Text;Wanted(DashboardData.Parts.Alarms, T("Dsh_NoAlarms", "No alarm logs in selected range!")));
+Dsh_NoCutting;KabanHMI\Dashboard\DashboardScreen.Sections.cs;414;Text;m == 0.0 ? T("Dsh_NoCutting", "No cutting logs in selected range!")
+Dsh_NoCuttingFormat;KabanHMI\Dashboard\DashboardScreen.Sections.cs;415;Text;: T("Dsh_NoCuttingFormat", "No valid cutting details found (Check data format).")));
 Dsh_NoDatabase;KabanHMI\Dashboard\DashboardData.cs;166;Text;if (!p.Found) { p.Problem = LanguageText("Dsh_NoDatabase", "The database is not found:") + " " + path; return p; }
 Dsh_NoDatabase;KabanHMI\Dashboard\DashboardScreen.cs;766;Text;message = T("Dsh_NoDatabase", "The database is not found:") + " " + (string.IsNullOrWhiteSpace(path) ? "-" : path) +
-Dsh_NoEventMatch;KabanHMI\Dashboard\DashboardScreen.Sections.cs;421;Text;Wanted(DashboardData.Parts.Events, T("Dsh_NoEventMatch", "No events match the selected filter!")));
+Dsh_NoEventMatch;KabanHMI\Dashboard\DashboardScreen.Sections.cs;425;Text;Wanted(DashboardData.Parts.Events, T("Dsh_NoEventMatch", "No events match the selected filter!")));
 Dsh_NoEvents;KabanHMI\Dashboard\DashboardScreen.Sections.cs;322;Text;_barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
-Dsh_NoEvents;KabanHMI\Dashboard\DashboardScreen.Sections.cs;345;Text;_barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
+Dsh_NoEvents;KabanHMI\Dashboard\DashboardScreen.Sections.cs;349;Text;_barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
 Dsh_NoLogs;KabanHMI\Dashboard\DashboardScreen.cs;774;Text;? T("Dsh_NoLogs", "No logs in selected range!") + "\n" + T("Dsh_DatabaseHolds", "The database holds") + " " + r.Probe.Describe() + "."
 Dsh_NoLogs;KabanHMI\Dashboard\DashboardScreen.cs;815;Status;if (v == null) { SetStatus(T("Dsh_NoLogs", "No logs in selected range!"), true); return new List<string>(); }
-Dsh_NoLogs;KabanHMI\Dashboard\DashboardScreen.Sections.cs;338;Text;else if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
+Dsh_NoLogs;KabanHMI\Dashboard\DashboardScreen.Sections.cs;342;Text;else if (message == null && (v == null || v.Empty)) message = T("Dsh_NoLogs", "No logs in selected range!");
 Dsh_NoPie;KabanHMI\Dashboard\DashboardScreen.Sections.cs;321;Text;_pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
-Dsh_NoPie;KabanHMI\Dashboard\DashboardScreen.Sections.cs;344;Text;_pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
-Dsh_NoStateLogs;KabanHMI\Dashboard\DashboardScreen.Sections.cs;392;Text;Wanted(DashboardData.Parts.States, T("Dsh_NoStateLogs", "No machine state logs in selected time range!")));
+Dsh_NoPie;KabanHMI\Dashboard\DashboardScreen.Sections.cs;348;Text;_pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
+Dsh_NoStateLogs;KabanHMI\Dashboard\DashboardScreen.Sections.cs;396;Text;Wanted(DashboardData.Parts.States, T("Dsh_NoStateLogs", "No machine state logs in selected time range!")));
 Dsh_NoTimeline;KabanHMI\Dashboard\DashboardScreen.Sections.cs;320;Text;_timelineChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoTimeline", "No state data to show timeline!"));
-Dsh_NoTimeline;KabanHMI\Dashboard\DashboardScreen.Sections.cs;343;Text;_timelineChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoTimeline", "No state data to show timeline!"));
+Dsh_NoTimeline;KabanHMI\Dashboard\DashboardScreen.Sections.cs;347;Text;_timelineChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoTimeline", "No state data to show timeline!"));
 Dsh_ProbeDates;KabanHMI\Dashboard\DashboardData.cs;194;Text;p.Problem = string.Format(LanguageText("Dsh_ProbeDates",
 Dsh_ProbeEmpty;KabanHMI\Dashboard\DashboardData.cs;187;Text;if (p.Logs == 0) { p.Problem = LanguageText("Dsh_ProbeEmpty", "The database holds no logs yet."); return p; }
 Dsh_ProbeLogs;KabanHMI\Dashboard\DashboardData.cs;152;Text;return string.Format(CultureInfo.CurrentCulture, LanguageText("Dsh_ProbeLogs", "{0:#,0} logs, {1} - {2}"), Logs,
@@ -632,8 +632,12 @@ Dsh_Timestamp;KabanHMI\Dashboard\DashboardScreen.Sections.cs;306;Text;_stateGrid
 Dsh_Timestamp;KabanHMI\Dashboard\DashboardScreen.Sections.cs;312;Text;_eventGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, TableGrid.DateTimeFormat),
 Dsh_Timestamp;KabanHMI\Dashboard\DashboardScreen.Sections.cs;314;Text;_alarmGrid.SetColumns(new TableGrid.Col("#", 60, "0"), new TableGrid.Col(T("Dsh_Timestamp", "Timestamp"), 170, TableGrid.DateTimeFormat),
 Dsh_TipTimeline;KabanHMI\Dashboard\DashboardScreen.Sections.cs;323;Text;_timelineChart.Hint = T("Dsh_TipTimeline", "Ctrl + wheel: zoom around the pointer - right-drag: zoom to an interval - drag: move along - double click: the whole range");
+Dsh_TipTimelineTouch;KabanHMI\Dashboard\DashboardScreen.Sections.cs;324;Text;_timelineChart.TouchHint = T("Dsh_TipTimelineTouch", "Two fingers apart / together: zoom - drag: move along - two taps: the whole range");
 Dsh_TooMany;KabanHMI\Dashboard\DashboardScreen.cs;769;Text;message = string.Format(CultureInfo.CurrentCulture, T("Dsh_TooMany", "The range holds {0:#,0} records - too many to show at once. Choose a shorter range."), many.Rows);
-Dsh_TotalLength;KabanHMI\Dashboard\DashboardScreen.Sections.cs;406;Text;s.Suffix = " (" + T("Dsh_TotalLength", "Total Length") + ": " + m.ToString("0.00", CultureInfo.CurrentCulture) + " m)";
+Dsh_TotalLength;KabanHMI\Dashboard\DashboardScreen.Sections.cs;410;Text;s.Suffix = " (" + T("Dsh_TotalLength", "Total Length") + ": " + m.ToString("0.00", CultureInfo.CurrentCulture) + " m)";
+Dsh_ZoomAll;KabanHMI\Dashboard\DashboardScreen.Sections.cs;327;Text;_timelineChart.ZoomAllText = T("Dsh_ZoomAll", "The whole range");
+Dsh_ZoomIn;KabanHMI\Dashboard\DashboardScreen.Sections.cs;326;Text;_timelineChart.ZoomInText = T("Dsh_ZoomIn", "Zoom in: half as much shown, around its middle");
+Dsh_ZoomOut;KabanHMI\Dashboard\DashboardScreen.Sections.cs;325;Text;_timelineChart.ZoomOutText = T("Dsh_ZoomOut", "Zoom out: twice as much shown");
 Enc_NotFound;KabanHMI\Controls\CylinderEncoderUnitHMI.cs;161;Text;LanguageManager.GetString("Enc_NotFound", "Encoder {0}: no encoder settings row"), _number);
 Encoders;Kaban.Machines.FA2010\FA2010Module.cs;220;Text;new Screens.GeneratedPage("Tab_ParamEncoders", "Encoders", SecurityLevel.Maintenance, () => new Screens.Parameters.ParamEncoders()),
 Exit;Kaban.Machines.FA2010\FA2010Module.cs;200;Text;new Screens.GeneratedPage("Tab_ManualExit", "Exit", SecurityLevel.Operator, () => new Screens.Manual.ManualExit()),
@@ -2231,7 +2235,7 @@ Set_StationConn;KabanHMI\Settings\StationConnectionControl.cs;628;Text;public st
 Set_UsersPrefs;KabanHMI\Settings\UsersPreferencesControl.cs;15;Text;public string TitleKey => "Set_UsersPrefs";
 Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;149;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
 Side_OpenHere;KabanHMI\Forms\MainForm.SideCopies.cs;168;Text;menu.Items.Add(UiStyle.MenuHeader(LanguageManager.GetString("Side_OpenHere", "Open in the side panel")));
-Side_OpenHere;KabanHMI\Forms\MainForm.SidePanel.cs;268;Text;AccessibleName = LanguageManager.GetString("Side_OpenHere", "Open in the side panel")
+Side_OpenHere;KabanHMI\Forms\MainForm.SidePanel.cs;270;Text;AccessibleName = LanguageManager.GetString("Side_OpenHere", "Open in the side panel")
 Side_Remove;KabanHMI\Forms\MainForm.SideCopies.cs;221;Menu;var item = new ToolStripMenuItem(LanguageManager.GetString("Side_Remove", "Take it off the side bar")) { Name = "sideRemove" };
 St_Auto;KabanHMI\Profiles\LibraryEditorForm.cs;591;Text;case "AUTO": return T("St_Auto", "worked out");
 St_Confirmed;KabanHMI\Profiles\LibraryEditorForm.cs;593;Text;case "CONFIRMED": return T("St_Confirmed", "confirmed");
@@ -2258,7 +2262,7 @@ Sys_Disabled;KabanHMI\Controls\ButtonHMI.cs;863;Text;sb.Append(LanguageManager.G
 Sys_Disabled;KabanHMI\Controls\CheckBoxHMI.cs;502;Text;var sb = new System.Text.StringBuilder(LanguageManager.GetString("Sys_Disabled", "Action Disabled."));
 Sys_Disabled;KabanHMI\Controls\NumericInputHMI.cs;326;Text;string disabled = LanguageManager.GetString("Sys_Disabled", "Action Disabled.");
 Sys_Disabled;KabanHMI\Forms\MainForm.cs;105;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."),
-Sys_Disabled;KabanHMI\Forms\MainForm.SidePanel.cs;393;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+Sys_Disabled;KabanHMI\Forms\MainForm.SidePanel.cs;395;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."), MessageBoxButtons.OK, MessageBoxIcon.Warning);
 Sys_Disabled;KabanHMI\Settings\SettingsScreen.cs;278;Message;LanguageManager.GetString("Sys_Disabled", "Action Disabled."),
 Sys_InputTitle;KabanHMI\Controls\NumericInputHMI.cs;996;Text;LanguageManager.GetString("Sys_InputTitle", "Input"),
 Sys_InputTitle;KabanHMI\Forms\NumpadForm.cs;136;Text;Text = caption ?? LanguageManager.GetString("Sys_InputTitle", "Input");
@@ -2274,7 +2278,7 @@ Sys_ReqSec;KabanHMI\Controls\NumericInputHMI.cs;408;Text;_disableReason = Langua
 Sys_ReqSec;KabanHMI\Controls\SpeedOverrideHMI.cs;40;Text;: LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + RequiredSecurity;
 Sys_ReqSec;KabanHMI\Controls\SpeedOverrideHMI.cs;113;Text;: LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + RequiredSecurity);
 Sys_ReqSec;KabanHMI\Forms\MainForm.cs;103;Text;string msg = LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + needed;
-Sys_ReqSec;KabanHMI\Forms\MainForm.SidePanel.cs;392;Message;MessageBox.Show(this, LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + page.RequiredLevel,
+Sys_ReqSec;KabanHMI\Forms\MainForm.SidePanel.cs;394;Message;MessageBox.Show(this, LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + page.RequiredLevel,
 Sys_ReqSec;KabanHMI\Settings\SettingsScreen.cs;277;Message;MessageBox.Show(LanguageManager.GetString("Sys_ReqSec", "Requires Security Level:") + " " + page.RequiredLevel,
 Sys_ReqState;KabanHMI\Controls\NumericInputHMI.cs;411;Text;_disableReason = LanguageManager.GetString("Sys_ReqState", "Required Machine State:") +
 Sys_Time;Kaban.Machines.FA2010\Screens\AlarmScreen.cs;95;Heading;dgvAlarms.Columns["ColTime"].HeaderText = LanguageManager.GetString("Sys_Time", "Time");
@@ -2349,8 +2353,8 @@ Tbl_Save;KabanHMI\Profiles\TableEditor.cs;79;Tooltip;_save = UiStyle.ToolButton(
 Tbl_Saved;KabanHMI\Profiles\LibraryEditorForm.cs;503;Text;status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Saved;KabanHMI\Profiles\TableEditor.cs;457;Status;_status.Text = T("Tbl_Saved", "Saved.");
 Tbl_Unsaved;KabanHMI\Profiles\TableEditor.cs;153;Status;_status.Text = T("Tbl_Unsaved", "changed - not saved yet");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;266;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
-Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;279;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;267;Tooltip;return !string.IsNullOrWhiteSpace(item.ToolTipText) ? item.ToolTipText : LanguageManager.GetString("Tch_NotNow", "Not available now.");
+Tch_NotNow;KabanHMI\Helpers\TouchInput.Gestures.cs;280;Text;return LanguageManager.GetString("Tch_NotNow", "Not available now.");
 Tip_AiAsk;KabanHMI\Helpers\AiMenu.cs;70;Tooltip;ask.ToolTipText = string.Format(T("Tip_AiAsk", "Opens {0} in the browser and pastes the briefing into it by itself (Ctrl+V) - you check it and send it."), chat.Name);
 Tip_AiPrompt;KabanHMI\Helpers\AiMenu.cs;59;Tooltip;? T("Tip_AiPrompt", "Copies a briefing for an AI chat (Claude, ChatGPT, Gemini, Grok...) with everything about this alarm, its unit, its devices and the machine, and the HMI's o...
 Tip_AlarmBit;KabanHMI\Controls\ButtonHMI.cs;1438;Tooltip;lines.Add(LanguageManager.GetString("Tip_AlarmBit", "Alarm bit") + ": " + address +
@@ -2508,12 +2512,12 @@ Tip_RowCountLocked;KabanHMI\Forms\PlcRowEditorForm.cs;233;Tooltip;UiStyle.SetTip
 Tip_SaveConnections;KabanHMI\Settings\StationConnectionControl.cs;140;Tooltip;"Tip_SaveConnections", "Save these connections"), tips, (s, e) => Save());
 Tip_ScaleNone;KabanHMI\Controls\ScaleSlider.cs;161;Tooltip;UiStyle.SetTip(UiStyle.Tips(), _none, LanguageManager.GetString("Tip_ScaleNone", "No specific request: this user gets the panel's screen scale."));
 Tip_ScaleSlider;KabanHMI\Controls\ScaleSlider.cs;127;Tooltip;LanguageManager.GetString("Tip_ScaleSlider", "Drag the slider through the usual sizes, or tap the percentage to type any size from 80% to 150%.");
-Tip_SideAddPage;KabanHMI\Forms\MainForm.SidePanel.cs;280;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, add, LanguageManager.GetString("Tip_SideAddPage",
-Tip_SideBarHide;KabanHMI\Forms\MainForm.SidePanel.cs;372;Tooltip;: T("Tip_SideBarHide", "Fold the side bar to the edge"));
-Tip_SideBarShow;KabanHMI\Forms\MainForm.SidePanel.cs;371;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideBarToggle, _sideBarFolded ? T("Tip_SideBarShow", "Show the side bar")
+Tip_SideAddPage;KabanHMI\Forms\MainForm.SidePanel.cs;282;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, add, LanguageManager.GetString("Tip_SideAddPage",
+Tip_SideBarHide;KabanHMI\Forms\MainForm.SidePanel.cs;374;Tooltip;: T("Tip_SideBarHide", "Fold the side bar to the edge"));
+Tip_SideBarShow;KabanHMI\Forms\MainForm.SidePanel.cs;373;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideBarToggle, _sideBarFolded ? T("Tip_SideBarShow", "Show the side bar")
 Tip_SideClose;KabanHMI\Forms\MainForm.SidePanel.cs;157;Tooltip;_sideClose = HeaderButton(DrawCloseGlyph, "Close", T("Tip_SideClose", "Close (the page stays as you left it)"),
-Tip_SideClose;KabanHMI\Forms\MainForm.SidePanel.cs;830;Tooltip;_btnClose = CaptionButton(MainForm.DrawCloseGlyph, "Close", LanguageManager.GetString("Tip_SideClose", "Close (the page stays as you left it)"),
-Tip_SideDockBack;KabanHMI\Forms\MainForm.SidePanel.cs;824;Tooltip;LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"),
+Tip_SideClose;KabanHMI\Forms\MainForm.SidePanel.cs;832;Tooltip;_btnClose = CaptionButton(MainForm.DrawCloseGlyph, "Close", LanguageManager.GetString("Tip_SideClose", "Close (the page stays as you left it)"),
+Tip_SideDockBack;KabanHMI\Forms\MainForm.SidePanel.cs;826;Tooltip;LanguageManager.GetString("Tip_SideDockBack", "Back into the main window's side panel"),
 Tip_SidePopOut;KabanHMI\Forms\MainForm.SidePanel.cs;155;Tooltip;_sidePopOut = HeaderButton(DrawPopOutGlyph, "Pop out", T("Tip_SidePopOut", "Open in a window of its own (for a second screen)"),
 Tip_SideSplitter;KabanHMI\Forms\MainForm.SidePanel.cs;195;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_sideTips, _sideSplitter, T("Tip_SideSplitter", "Drag to size the side page. Double-click: just wide enough for all of it."));
 Tip_SimMonitor;KabanHMI\Forms\MainForm.cs;2988;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnSimMonitor, LanguageManager.GetString("Tip_SimMonitor", "Simulation Monitor (F12)"));
@@ -2575,8 +2579,8 @@ Tip_UsrNew;KabanHMI\Settings\UsersPreferencesControl.cs;129;Tooltip;_new = UiSty
 Tip_UsrPass;KabanHMI\Settings\UsersPreferencesControl.cs;290;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(UiStyle.Tips(), _pass, T("Tip_UsrPass", "A new password, empty keeps the one it has"));
 Tip_UsrPrefSave;KabanHMI\Settings\UsersPreferencesControl.cs;127;Tooltip;_save = UiStyle.ToolButton("\uD83D\uDCBE", T("Tip_UsrPrefSave", "Keep the account, its screen scale and its preferences"), tips, (s, e) => Save());
 Tip_ViewRevert;KabanHMI\Settings\UsersPreferencesControl.cs;128;Tooltip;_revert = UiStyle.ToolButton("\u21BA", T("Tip_ViewRevert", "Throw the changes away and show the kept preferences"), tips, (s, e) => Fill());
-Tip_WinMaximize;KabanHMI\Forms\MainForm.SidePanel.cs;829;Tooltip;"Maximize", LanguageManager.GetString("Tip_WinMaximize", "Maximize / Restore"), (s, e) => ToggleMaximize());
-Tip_WinMinimize;KabanHMI\Forms\MainForm.SidePanel.cs;826;Tooltip;_btnMin = CaptionButton(DrawMinimize, "Minimize", LanguageManager.GetString("Tip_WinMinimize", "Minimize"),
+Tip_WinMaximize;KabanHMI\Forms\MainForm.SidePanel.cs;831;Tooltip;"Maximize", LanguageManager.GetString("Tip_WinMaximize", "Maximize / Restore"), (s, e) => ToggleMaximize());
+Tip_WinMinimize;KabanHMI\Forms\MainForm.SidePanel.cs;828;Tooltip;_btnMin = CaptionButton(DrawMinimize, "Minimize", LanguageManager.GetString("Tip_WinMinimize", "Minimize"),
 Tip_Zoom;KabanHMI\Forms\MainForm.Magnifier.cs;131;Tooltip;Kaban.UI.Controls.UiStyle.SetTip(_topTips, _btnZoom, LanguageManager.GetString("Tip_Zoom",
 Tolerance;KabanHMI\Controls\CylinderEncoderSettingHMI.cs;43;Tooltip;AddSection("Tolerance", "Col_EncTolerance", "Measuring tolerance", "Tolerance", "Tip_EncTolerance");
 Tolerance;KabanHMI\Controls\CylinderEncoderSettingHMI.cs;117;Text;public string MeasuringToleranceAddress { get { return FieldAddress("Tolerance"); } set { SetFieldAddress("Tolerance", value); } }

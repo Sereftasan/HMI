@@ -268,6 +268,27 @@ class DP {
         tl.ZoomTo(Day.AddHours(9), Day.AddHours(9).AddSeconds(10));
         Check("  never less than a minute", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalSeconds - 60) < 0.5);
         tl.ResetView();
+        // 2 November: "zoom in / out function does not work on Dashboard / Machine Performance / Timeline chart" - buttons too
+        tl.Invalidate(); tl.Update(); Pump(50);
+        var zb = tl.ZoomButtons;
+        var wndProc = typeof(Control).GetMethod("WndProc", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Action<int, Point> mouse = (msg, p) => wndProc.Invoke(tl, new object[] { Message.Create(tl.Handle, msg, (IntPtr)(msg == 0x202 ? 0 : 1), (IntPtr)((p.Y << 16) | (p.X & 0xFFFF))) });
+        Func<Rectangle, Point> centre = r => new Point(r.Left + r.Width / 2, r.Top + r.Height / 2);
+        Check("  three zoom buttons at its top right (out, in, the whole range), the pointer's size with a mouse",
+              zb.All(r => r.Height == Kaban.UI.Controls.UiScale.Px(24) && r.Width == r.Height && r.Top < Kaban.UI.Controls.UiScale.Px(8)) && zb[0].Right < zb[1].Left && zb[1].Right < zb[2].Left &&
+              zb[2].Right <= tl.Width && tl.TipFor(centre(zb[1])) == "Zoom in: half as much shown, around its middle" && tl.TipFor(centre(zb[2])) == "The whole range",
+              string.Join(" ", zb.Select(r => r.ToString())));
+        mouse(0x201, centre(zb[1])); mouse(0x202, centre(zb[1])); Pump(30);
+        Check("  + : half as much shown, around its middle", tl.ViewFrom == Day.AddHours(6) && tl.ViewTo == Day.AddHours(18), tl.ViewFrom + " - " + tl.ViewTo);
+        mouse(0x203, centre(zb[1])); mouse(0x202, centre(zb[1])); Pump(30);
+        Check("  + pressed again at once (a double click): in once more - not the whole range", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalHours - 6) < 0.01 &&
+              tl.ViewFrom == Day.AddHours(9), tl.ViewFrom + " - " + tl.ViewTo);
+        mouse(0x201, centre(zb[0])); mouse(0x202, centre(zb[0])); Pump(30);
+        Check("  - : twice as much", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalHours - 12) < 0.01, tl.ViewFrom + " - " + tl.ViewTo);
+        mouse(0x201, centre(zb[1])); mouse(0x202, new Point(5, tl.Height - 5)); Pump(30);
+        Check("  pressed and let go elsewhere: nothing", Math.Abs((tl.ViewTo - tl.ViewFrom).TotalHours - 12) < 0.01);
+        mouse(0x201, centre(zb[2])); mouse(0x202, centre(zb[2])); Pump(30);
+        Check("  the four corners: the whole range", tl.ViewFrom == Day && tl.ViewTo == Day.AddDays(1));
 
         Console.WriteLine("-- the page's look (2 October)");
         Check("no title above the tabs; the tabs' names without pictures (Machine Performance, Production Events, Alarms, All logs)", !Has(page, "_title") &&

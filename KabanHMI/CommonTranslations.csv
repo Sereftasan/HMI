@@ -847,6 +847,10 @@ Dsh_TooMany;The range holds {0:#,0} records - too many to show at once. Choose a
 Dsh_Records;{0:#,0} records read in {1:0.0} s;{0:#,0} kayıt {1:0.0} sn'de okundu;Прочитано записей: {0:#,0} за {1:0.0} с;{0:#,0} Einträge in {1:0.0} s gelesen;{0:#,0} record letti in {1:0.0} s;{0:#,0} registros leídos en {1:0.0} s
 Dsh_Min;min;dk;мин;Min;min;min
 Dsh_TipTimeline;Ctrl + wheel: zoom around the pointer - right-drag: zoom to an interval - drag: move along - double click: the whole range;Ctrl + tekerlek: imleç çevresinde yakınlaştır - sağ tuşla sürükle: bir aralığa yakınlaştır - sürükle: kaydır - çift tık: tüm aralık;Ctrl + колесо: масштаб у указателя - правой кнопкой: выбрать интервал - перетаскивание: сдвиг - двойной щелчок: весь диапазон;Strg + Mausrad: Zoom am Zeiger - rechts ziehen: Intervall zoomen - ziehen: verschieben - Doppelklick: ganzer Bereich;Ctrl + rotella: zoom sul puntatore - trascina col destro: zoom su un intervallo - trascina: sposta - doppio clic: intervallo intero;Ctrl + rueda: zoom en el puntero - arrastrar con el derecho: zoom a un intervalo - arrastrar: desplazar - doble clic: todo el rango
+Dsh_TipTimelineTouch;Two fingers apart / together: zoom - drag: move along - two taps: the whole range;İki parmağı açın / kapatın: yakınlaştır / uzaklaştır - sürükleyin: kaydır - iki dokunuş: tüm aralık;;;;
+Dsh_ZoomOut;Zoom out: twice as much shown;Uzaklaştır: iki katı gösterilir;;;;
+Dsh_ZoomIn;Zoom in: half as much shown, around its middle;Yakınlaştır: ortası çevresinde yarısı gösterilir;;;;
+Dsh_ZoomAll;The whole range;Tüm aralık;;;;
 Dsh_SetDatabaseHead;Database;Veritabanı;База данных;Datenbank;Database;Base de datos
 Dsh_SetDatabasePath;Database file;Veritabanı dosyası;Файл базы данных;Datenbankdatei;File del database;Archivo de base de datos
 Dsh_Browse;Browse...;Gözat...;Обзор...;Durchsuchen...;Sfoglia...;Examinar...

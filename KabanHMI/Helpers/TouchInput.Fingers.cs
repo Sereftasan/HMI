@@ -115,6 +115,98 @@ namespace Kaban.UI.Helpers
             return true;
         }
 
+        // ---- two fingers spread or pinched: a zoom ------------------------------------------------
+        //
+        // (2 November: "zoom in / out function does not work on Dashboard / Machine Performance / Timeline chart") Windows'
+        // own zoom gesture is off in touch mode (every gesture is, for the press to come at the touch); a control that zooms
+        // (IPinchZoom) gets two fingers on it from their own pointer messages: how much nearer or further apart they are since
+        // the last move, and the point between them.
+
+        /// <summary>A control two fingers zoom: spread apart in (a factor below 1), pinched together out.</summary>
+        public interface IPinchZoom
+        {
+            /// <summary>The fingers moved: <paramref name="factor"/> = how far apart they were / are now; the point between them (client).</summary>
+            void PinchZoom(Point center, double factor);
+            /// <summary>One of them lifted.</summary>
+            void PinchEnd();
+        }
+
+        private static readonly Dictionary<int, Point> _contacts = new Dictionary<int, Point>();
+        private static Control _pinch;
+        private static int _pinchA, _pinchB;
+        private static double _pinchDistance;
+
+        /// <summary>Zoomed by two fingers since the program started (tests).</summary>
+        public static int Pinches { get; private set; }
+
+        private static double Apart(Point a, Point b) { return Math.Sqrt((double)(a.X - b.X) * (a.X - b.X) + (double)(a.Y - b.Y) * (a.Y - b.Y)); }
+
+        /// <summary>The control under a screen point that two fingers zoom (the point's own or one it is in), or null.</summary>
+        private static Control PinchTarget(IntPtr hwnd, Point screen)
+        {
+            var window = Control.FromHandle(hwnd) ?? Control.FromChildHandle(hwnd);
+            if (window == null || window.IsDisposed) return null;
+            Control c;
+            try { c = Deepest(window, window.PointToClient(screen)); } catch { c = window; }
+            for (; c != null; c = c.Parent) if (c is IPinchZoom) return c;
+            return null;
+        }
+
+        /// <summary>A finger's pointer message for a two-finger zoom (true: taken - the second finger's moves are the zoom's).</summary>
+        private static bool Pinching(ref Message m, int id)
+        {
+            var at = PointOf(m.LParam);
+            switch (m.Msg)
+            {
+                case WmPointerDown:
+                    if (!FingerPointer(id)) return false;
+                    // the first finger on the glass (POINTER_MESSAGE_FLAG_PRIMARY): no other is there - one whose lift was lost forgotten
+                    if (((((long)m.WParam) >> 16) & 0x2000) != 0) { _contacts.Clear(); _pinch = null; }
+                    _contacts[id] = at;
+                    if (_pinch == null && _contacts.Count == 2)
+                    {
+                        int other = -1;
+                        foreach (var k in _contacts.Keys) if (k != id) other = k;
+                        var target = PinchTarget(m.HWnd, at);
+                        if (target != null && ReferenceEquals(target, PinchTarget(m.HWnd, _contacts[other])))
+                        {
+                            _pinch = target;
+                            _pinchA = other;
+                            _pinchB = id;
+                            _pinchDistance = Math.Max(1, Apart(_contacts[other], at));
+                            StopTouchHold();
+                            _touch = null;              // two fingers: no long press
+                        }
+                    }
+                    return false;
+                case WmPointerUpdate:
+                    if (!_contacts.ContainsKey(id)) return false;
+                    _contacts[id] = at;
+                    if (_pinch == null || (id != _pinchA && id != _pinchB) || !_contacts.ContainsKey(_pinchA) || !_contacts.ContainsKey(_pinchB)) return false;
+                    double d = Math.Max(1, Apart(_contacts[_pinchA], _contacts[_pinchB]));
+                    if (Math.Abs(d - _pinchDistance) >= UiScale.Px(3) && !_pinch.IsDisposed)
+                    {
+                        var a = _contacts[_pinchA]; var b = _contacts[_pinchB];
+                        var center = _pinch.PointToClient(new Point((a.X + b.X) / 2, (a.Y + b.Y) / 2));
+                        try { ((IPinchZoom)_pinch).PinchZoom(center, _pinchDistance / d); Pinches++; }
+                        catch (Exception ex) { AuditLogger.Log("touch: a zoom by two fingers failed (" + ex.Message + ")."); }
+                        _pinchDistance = d;
+                    }
+                    return id == _pinchB;                // the second finger's moves: the zoom's only
+                case WmPointerUp:
+                case WmPointerCaptureChanged:
+                    _contacts.Remove(id);
+                    if (_pinch != null && (id == _pinchA || id == _pinchB))
+                    {
+                        var was = _pinch;
+                        _pinch = null;
+                        try { if (!was.IsDisposed) ((IPinchZoom)was).PinchEnd(); } catch { }
+                    }
+                    return false;
+            }
+            return false;
+        }
+
         // ---- a finger held still, timed from its own messages -------------------------------------
 
         private sealed class Touch
@@ -138,6 +230,7 @@ namespace Kaban.UI.Helpers
         /// <summary>A finger's pointer message on anything but a hold-to-run button: true when it is kept from Windows.</summary>
         private static bool Touching(ref Message m, int id)
         {
+            if (Pinching(ref m, id)) return true;
             var t = _touch;
             switch (m.Msg)
             {

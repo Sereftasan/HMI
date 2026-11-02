@@ -214,8 +214,13 @@ namespace Kaban.UI.Dashboard
     /// <summary>
     /// The states on a time line, a row per state. The wheel zooms around the
     /// pointer, dragging moves along, a double click shows the whole range again.
+    ///
+    /// 2 November, on a touch screen ("zoom in / out function does not work on Dashboard / Machine Performance / Timeline
+    /// chart"): Ctrl + the wheel and the right-drag are not a finger's. Now also three buttons at its top right - zoom out,
+    /// zoom in (around the middle of what is shown) and the whole range - a finger's size in touch mode, and two fingers
+    /// spread apart or pinched together zoom around the point between them (TouchInput.IPinchZoom).
     /// </summary>
-    public sealed class TimelineChart : ChartBase
+    public sealed class TimelineChart : ChartBase, Kaban.UI.Helpers.TouchInput.IPinchZoom
     {
         public sealed class Bar
         {
@@ -246,6 +251,16 @@ namespace Kaban.UI.Dashboard
                 {
                     _filterAdded = true;
                     try { Application.AddMessageFilter(new CtrlWheel()); } catch { }
+                    // touch mode or a mouse: the buttons' size and the hint follow
+                    Kaban.UI.Helpers.TouchInput.ModeChanged += (s, e) =>
+                    {
+                        lock (_charts)
+                            foreach (var w in _charts)
+                            {
+                                var c = w.Target as TimelineChart;
+                                if (c != null && !c.IsDisposed) c.Invalidate();
+                            }
+                    };
                 }
             }
         }
@@ -300,8 +315,46 @@ namespace Kaban.UI.Dashboard
             Invalidate();
         }
 
-        /// <summary>How to zoom, written small above the time line.</summary>
+        /// <summary>How to zoom, written small above the time line - with a mouse, and with a finger.</summary>
         public string Hint = "";
+        public string TouchHint = "";
+
+        /// <summary>The zoom buttons' words (tooltips): out, in, the whole range.</summary>
+        public string ZoomOutText = "Zoom out", ZoomInText = "Zoom in", ZoomAllText = "The whole range";
+
+        private Rectangle _btnOut, _btnIn, _btnAll;
+        private int _btnDown = -1;            // the button pressed: 0 out, 1 in, 2 the whole range
+        private bool _downOnButton, _pinching;
+
+        /// <summary>The zoom buttons' places (tests): out, in, the whole range.</summary>
+        public Rectangle[] ZoomButtons { get { return new[] { _btnOut, _btnIn, _btnAll }; } }
+
+        private static bool Touch { get { return Kaban.UI.Helpers.TouchInput.On; } }
+
+        /// <summary>A zoom button: out (0) - twice as much shown; in (1) - half as much, around its middle; the whole range (2).</summary>
+        public void PressZoom(int which)
+        {
+            if (!HasData) return;
+            if (which == 2) { ResetView(); return; }
+            var mid = _viewFrom.AddSeconds((_viewTo - _viewFrom).TotalSeconds / 2);
+            Zoom(mid, which == 0 ? 2.0 : 0.5);
+        }
+
+        /// <summary>Two fingers spread apart or pinched together (TouchInput): zoomed around the point between them.</summary>
+        public void PinchZoom(Point center, double factor)
+        {
+            if (!HasData || factor <= 0) return;
+            _pinching = true;
+            _drag = null;                     // the first finger's drag moves nothing while two zoom
+            var p = _plot.Contains(center) ? center : new Point(Math.Max(_plot.Left, Math.Min(_plot.Right, center.X)), _plot.Top + 1);
+            Zoom(TimeAt(p.X), factor);
+        }
+
+        public void PinchEnd()
+        {
+            _pinching = false;
+            _drag = null;
+        }
 
         public DateTime ViewFrom { get { return _viewFrom; } }
         public DateTime ViewTo { get { return _viewTo; } }
@@ -325,10 +378,20 @@ namespace Kaban.UI.Dashboard
             int labelW = 0;
             foreach (var row in _rows) labelW = Math.Max(labelW, TextRenderer.MeasureText(row, Plain).Width);
             labelW = Math.Min(labelW + Px(12), r.Width / 3);
-            int axisH = Px(40), hintH = string.IsNullOrEmpty(Hint) ? Px(6) : Px(20);
+            // the zoom buttons at the top right (a finger's size in touch mode), the hint left of them
+            int btn = Touch ? Px(38) : Px(24), gap = Px(4);
+            int axisH = Px(40), hintH = btn + Px(6);
             _plot = new Rectangle(r.Left + labelW, r.Top + hintH, Math.Max(10, r.Width - labelW - Px(16)), Math.Max(10, r.Height - axisH - hintH));
-            if (!string.IsNullOrEmpty(Hint))
-                TextRenderer.DrawText(g, Hint, Plain, new Rectangle(_plot.Left, r.Top + Px(1), _plot.Width, hintH - Px(2)), Muted,
+            int bx = _plot.Right - 3 * btn - 2 * gap, by = r.Top + Px(2);
+            _btnOut = new Rectangle(bx, by, btn, btn);
+            _btnIn = new Rectangle(bx + btn + gap, by, btn, btn);
+            _btnAll = new Rectangle(bx + 2 * (btn + gap), by, btn, btn);
+            DrawZoomButton(g, _btnOut, 0);
+            DrawZoomButton(g, _btnIn, 1);
+            DrawZoomButton(g, _btnAll, 2);
+            string hint = Touch && !string.IsNullOrEmpty(TouchHint) ? TouchHint : Hint;
+            if (!string.IsNullOrEmpty(hint))
+                TextRenderer.DrawText(g, hint, Plain, new Rectangle(_plot.Left, r.Top + Px(1), Math.Max(10, bx - Px(10) - _plot.Left), hintH - Px(2)), Muted,
                     TextFormatFlags.Right | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
             float rowH = _plot.Height / (float)Math.Max(1, _rows.Count);
 
@@ -386,6 +449,58 @@ namespace Kaban.UI.Dashboard
             using (var pen = new Pen(Color.FromArgb(200, 204, 211))) g.DrawRectangle(pen, _plot);
         }
 
+        /// <summary>A zoom button: a rounded square with its sign - minus, plus, or four arrows out to the corners (the whole range).</summary>
+        private void DrawZoomButton(Graphics g, Rectangle b, int which)
+        {
+            bool down = _btnDown == which;
+            bool can = which == 0 || which == 2 ? (_viewTo - _viewFrom) < (_to - _from) : (_viewTo - _viewFrom).TotalSeconds > 61;
+            var back = down ? Color.FromArgb(31, 95, 168) : Color.FromArgb(244, 246, 249);
+            var line = down ? Color.FromArgb(31, 95, 168) : Color.FromArgb(176, 184, 196);
+            var ink = down ? Color.White : can ? Ink : Color.FromArgb(180, 184, 192);
+            var old = g.SmoothingMode;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            using (var path = new GraphicsPath())
+            {
+                float rad = Math.Max(3f, b.Height / 6f), d = rad * 2;
+                path.AddArc(b.Left, b.Top, d, d, 180, 90);
+                path.AddArc(b.Right - 1 - d, b.Top, d, d, 270, 90);
+                path.AddArc(b.Right - 1 - d, b.Bottom - 1 - d, d, d, 0, 90);
+                path.AddArc(b.Left, b.Bottom - 1 - d, d, d, 90, 90);
+                path.CloseFigure();
+                using (var br = new SolidBrush(back)) g.FillPath(br, path);
+                using (var p = new Pen(line)) g.DrawPath(p, path);
+            }
+            float cx = b.Left + b.Width / 2f, cy = b.Top + b.Height / 2f, s = b.Width * 0.26f;
+            using (var pen = new Pen(ink, Math.Max(1.6f, b.Width / 13f)))
+            {
+                pen.StartCap = pen.EndCap = LineCap.Round;
+                if (which != 2) g.DrawLine(pen, cx - s, cy, cx + s, cy);
+                if (which == 1) g.DrawLine(pen, cx, cy - s, cx, cy + s);
+                if (which == 2)
+                {
+                    // four corners pointing out
+                    float a = s * 0.55f;
+                    foreach (var dx in new[] { -1, 1 })
+                        foreach (var dy in new[] { -1, 1 })
+                        {
+                            float x = cx + dx * s, y = cy + dy * s;
+                            g.DrawLine(pen, x, y, x - dx * a, y);
+                            g.DrawLine(pen, x, y, x, y - dy * a);
+                        }
+                }
+            }
+            g.SmoothingMode = old;
+        }
+
+        private int ButtonAt(Point p)
+        {
+            if (!HasData) return -1;
+            if (_btnOut.Contains(p)) return 0;
+            if (_btnIn.Contains(p)) return 1;
+            if (_btnAll.Contains(p)) return 2;
+            return -1;
+        }
+
         /// <summary>A label's left edge, moved in so the label stays whole.</summary>
         private static int Inside(float left, int width, Rectangle r)
         {
@@ -414,6 +529,8 @@ namespace Kaban.UI.Dashboard
 
         protected override string TipAt(Point p)
         {
+            int button = ButtonAt(p);
+            if (button >= 0) return button == 0 ? ZoomOutText : button == 1 ? ZoomInText : ZoomAllText;
             if (!_plot.Contains(p) || _rows.Count == 0) return "";
             float rowH = _plot.Height / (float)_rows.Count;
             int i = (int)((p.Y - _plot.Top) / rowH);
@@ -492,6 +609,14 @@ namespace Kaban.UI.Dashboard
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            int button = e.Button == MouseButtons.Left ? ButtonAt(e.Location) : -1;
+            _downOnButton = button >= 0;
+            if (button >= 0)
+            {
+                _btnDown = button;                // done when let go on it
+                Invalidate();
+                return;
+            }
             if (e.Button == MouseButtons.Left && _plot.Contains(e.Location))
             {
                 _drag = e.Location;
@@ -514,7 +639,8 @@ namespace Kaban.UI.Dashboard
                 Invalidate();
                 return;
             }
-            if (_drag.HasValue && e.Button == MouseButtons.Left)
+            if (_btnDown >= 0) return;
+            if (_drag.HasValue && e.Button == MouseButtons.Left && !_pinching)
             {
                 double secPerPx = (_dragTo - _dragFrom).TotalSeconds / Math.Max(1, _plot.Width);
                 double shift = -(e.X - _drag.Value.X) * secPerPx;
@@ -534,6 +660,14 @@ namespace Kaban.UI.Dashboard
         {
             base.OnMouseUp(e);
             _drag = null;
+            if (_btnDown >= 0)
+            {
+                int was = _btnDown;
+                _btnDown = -1;
+                if (ButtonAt(e.Location) == was) PressZoom(was);
+                else Invalidate();
+                return;
+            }
             if (_pickFrom.HasValue && e.Button == MouseButtons.Right)
             {
                 int a = _pickFrom.Value, b = _pickTo ?? a;
@@ -546,6 +680,7 @@ namespace Kaban.UI.Dashboard
         protected override void OnDoubleClick(EventArgs e)
         {
             base.OnDoubleClick(e);
+            if (_downOnButton) return;            // two quick presses of a zoom button: two zooms, not the whole range
             ResetView();
         }
     }

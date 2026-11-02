@@ -545,6 +545,43 @@ class TM {
         Check("  the press given at the touch: its long press as before, the tooltip shown once; the finger's lift to Windows",
               TouchInput.FingerHolds == holdsBefore && Toast.Shown == toastsBefore + 1 && !givenUp && mouseUp && tippedClicks == 0,
               (TouchInput.FingerHolds - holdsBefore) + " finger holds, " + (Toast.Shown - toastsBefore) + " toasts");
+        // 2 November: "zoom in / out function does not work on Dashboard / Machine Performance / Timeline chart"
+        Console.WriteLine("--- two fingers zoom the time line ---");
+        var zf = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(40, 40), ClientSize = new Size(1000, 360), Text = "timeline" };
+        var tline = new Kaban.UI.Dashboard.TimelineChart { Dock = DockStyle.Fill, Hint = "Ctrl + wheel ...", TouchHint = "Two fingers apart / together: zoom" };
+        var day = new DateTime(2026, 9, 28);
+        tline.Bars = new List<Kaban.UI.Dashboard.TimelineChart.Bar> {
+            new Kaban.UI.Dashboard.TimelineChart.Bar { Row = "Running", Start = day, End = day.AddHours(10), Color = Color.SeaGreen },
+            new Kaban.UI.Dashboard.TimelineChart.Bar { Row = "Stopped", Start = day.AddHours(10), End = day.AddHours(14), Color = Color.IndianRed },
+            new Kaban.UI.Dashboard.TimelineChart.Bar { Row = "Running", Start = day.AddHours(14), End = day.AddDays(1), Color = Color.SeaGreen } };
+        zf.Controls.Add(tline); zf.Show(); Pump(150);
+        var zbt = tline.ZoomButtons;
+        Check("touch: the time line's zoom buttons a finger's size, at its top right", zbt.All(r => r.Height == UiScale.Px(38) && r.Width == r.Height) &&
+              zbt[2].Right <= tline.Width && zbt[0].Top < UiScale.Px(8), string.Join(" ", zbt.Select(r => r.ToString())));
+        Shot(zf, "timeline_touch");
+        Func<int, int, Point, int, bool> ptr = (msg, id, client, flags) =>
+        {
+            var fm = Message.Create(tline.Handle, msg, (IntPtr)(id | (flags << 16)), LP(tline.PointToScreen(client)));
+            return TouchInput.Handle(ref fm);
+        };
+        int ty = tline.Height / 2, pinchesWas = TouchInput.Pinches;
+        ptr(0x0246, 130, new Point(400, ty), 0x2004);                         // the first finger (primary)
+        ptr(0x0246, 131, new Point(600, ty), 0x0004);                         // the second, 200 px from it
+        double hours0 = (tline.ViewTo - tline.ViewFrom).TotalHours;
+        bool spreadTaken = ptr(0x0245, 131, new Point(800, ty), 0x0004);      // spread to 400 px apart
+        double hours1 = (tline.ViewTo - tline.ViewFrom).TotalHours;
+        Check("two fingers spread from 200 to 400 px apart: half as much shown, around the point between them",
+              hours0 == 24 && Math.Abs(hours1 - 12) < 0.01 && spreadTaken && TouchInput.Pinches == pinchesWas + 1 && tline.ViewFrom > day && tline.ViewTo < day.AddDays(1),
+              hours0 + " h -> " + hours1 + " h (" + tline.ViewFrom + " - " + tline.ViewTo + ")");
+        ptr(0x0245, 131, new Point(500, ty), 0x0004);                         // pinched to 100 px apart
+        double hours2 = (tline.ViewTo - tline.ViewFrom).TotalHours;
+        Check("  pinched together to 100 px: four times as much (no more than the whole range)", Math.Abs(hours2 - 24) < 0.01, hours2 + " h");
+        ptr(0x0247, 131, new Point(500, ty), 0x0004); ptr(0x0247, 130, new Point(400, ty), 0x0004);
+        tline.ZoomTo(day.AddHours(8), day.AddHours(12));
+        ptr(0x0246, 132, new Point(400, ty), 0x2004); ptr(0x0245, 132, new Point(700, ty), 0x0004); ptr(0x0247, 132, new Point(700, ty), 0x0004);
+        Check("  one finger alone: no zoom (it moves the time line along, as before)", TouchInput.Pinches == pinchesWas + 2 &&
+              Math.Abs((tline.ViewTo - tline.ViewFrom).TotalHours - 4) < 0.01, (tline.ViewTo - tline.ViewFrom).TotalHours + " h");
+        zf.Close(); zf.Dispose();
         TouchInput.FingerPointer = fingerWas2;
         Toast.HideNow();
 

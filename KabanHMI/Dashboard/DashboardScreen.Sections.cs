@@ -321,6 +321,10 @@ namespace Kaban.UI.Dashboard
             _pieChart.EmptyText = Wanted(DashboardData.Parts.States, T("Dsh_NoPie", "No state data to show pie chart!"));
             _barChart.EmptyText = Wanted(DashboardData.Parts.Events, T("Dsh_NoEvents", "No events to show!"));
             _timelineChart.Hint = T("Dsh_TipTimeline", "Ctrl + wheel: zoom around the pointer - right-drag: zoom to an interval - drag: move along - double click: the whole range");
+            _timelineChart.TouchHint = T("Dsh_TipTimelineTouch", "Two fingers apart / together: zoom - drag: move along - two taps: the whole range");
+            _timelineChart.ZoomOutText = T("Dsh_ZoomOut", "Zoom out: twice as much shown");
+            _timelineChart.ZoomInText = T("Dsh_ZoomIn", "Zoom in: half as much shown, around its middle");
+            _timelineChart.ZoomAllText = T("Dsh_ZoomAll", "The whole range");
             _pieChart.Unit = " " + T("Dsh_Min", "min");
             if (_view != null) Show(_view, null);
         }
