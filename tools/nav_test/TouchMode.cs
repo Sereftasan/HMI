@@ -443,7 +443,10 @@ class TM {
         cells.Columns.Add(new DataGridViewTextBoxColumn { Name = "label", HeaderText = "Label" });
         cells.Columns.Add(new DataGridViewTextBoxColumn { Name = "count", HeaderText = "Count", ValueType = typeof(int) });
         for (int i = 0; i < 4; i++) cells.Rows.Add("item " + i, i);
-        kf.Controls.Add(name); kf.Controls.Add(low); kf.Controls.Add(shown); kf.Controls.Add(nud); kf.Controls.Add(cells);
+        // the boxes on a page that scrolls, as the program's pages do (PageScroll)
+        var kpage = new Panel { Name = "typingPage", Dock = DockStyle.Fill, AutoScroll = true };
+        kpage.Controls.Add(name); kpage.Controls.Add(low); kpage.Controls.Add(shown); kpage.Controls.Add(nud); kpage.Controls.Add(cells);
+        kf.Controls.Add(kpage);
         kf.Show(); Pump(200); TouchInput.Sweep();
         name.Focus(); Pump(30);
         Tap(name, new Point(30, 8)); Pump(80);
@@ -471,13 +474,38 @@ class TM {
         Check("  Shift twice: all capitals until tapped again", name.Text.EndsWith("ÇÖ") && kb.CapsLock, name.Text);
         kb.Press("Shift");
         var kbBounds = kb.Bounds;
-        Check("  at the bottom of the screen, the box seen above it", kbBounds.Bottom >= Screen.PrimaryScreen.WorkingArea.Bottom - 10 &&
-              !kbBounds.IntersectsWith(new Rectangle(name.PointToScreen(Point.Empty), name.Size)), kbBounds.ToString());
-        Tap(low, new Point(30, 8)); Pump(80);
-        Check("a box down where the keyboard would be: the keyboard at the top of the screen", TouchKeyboard.IsShown && kb.Target == low &&
-              kb.Top <= Screen.PrimaryScreen.WorkingArea.Top + 10, kb.Bounds + " target " + (kb.Target == null ? "-" : kb.Target.Name) + " box " + new Rectangle(low.PointToScreen(Point.Empty), low.Size));
+        var work = Screen.FromControl(kf).WorkingArea;
+        // (2 November: "we should open the control at the fixed position in the bottom of the screen (not like the numerical
+        // input pop-up) and move the page down until the edited control gets to the above of it (using the vertical scrolling function)")
+        Check("  along the bottom of the screen, as wide as it, its keys in the middle; the box seen above it",
+              kbBounds.Bottom == work.Bottom && kbBounds.Left == work.Left && kbBounds.Width == Math.Max(work.Width, kb.KeysSize.Width) &&
+              kb.CoversTarget == 0 && kpage.AutoScrollPosition.Y == 0, kbBounds + " in " + work);
+        int lowTopBefore = low.PointToScreen(Point.Empty).Y;
+        Tap(low, new Point(30, 8)); Pump(120);
+        var lowBox = new Rectangle(low.PointToScreen(Point.Empty), low.Size);
+        Check("a box down where the keyboard is: the keyboard in its same place, the page scrolled until the box is above it",
+              TouchKeyboard.IsShown && kb.Target == low && kb.Bounds == kbBounds && lowBox.Bottom <= kb.Top && kb.CoversTarget == 0 &&
+              kpage.AutoScrollPosition.Y < 0 && lowBox.Top < lowTopBefore,
+              kb.Bounds + " box " + lowBox + " page at " + kpage.AutoScrollPosition.Y);
+        Tap(name, new Point(30, 8)); Pump(120);
+        Check("  another box, high on the page: the page back where it was (no room needed)", kb.Target == name && kpage.AutoScrollPosition.Y == 0 &&
+              kb.CoversTarget == 0, kpage.AutoScrollPosition.Y + "");
+        Tap(low, new Point(30, 8)); Pump(120);
         kb.Press("Enter"); Pump(50);
-        Check("  Enter in a one-line box: done with - the keyboard goes", !TouchKeyboard.IsShown);
+        Check("  Enter in a one-line box: done with - the keyboard goes, the page back where it was",
+              !TouchKeyboard.IsShown && kpage.AutoScrollPosition.Y == 0 && kpage.AutoScrollMinSize == Size.Empty, kpage.AutoScrollPosition.Y + " " + kpage.AutoScrollMinSize);
+        // a window that does not scroll (a dialog): moved up, and back
+        var dlg = new Form { StartPosition = FormStartPosition.Manual, Location = new Point(200, work.Bottom - 240), ClientSize = new Size(400, 200), Text = "a dialog" };
+        var dlgBox = new TextBox { Name = "dlgBox", Location = new Point(20, 160), Width = 300 };
+        dlg.Controls.Add(dlgBox); dlg.Show(); Pump(150); TouchInput.Sweep();
+        var dlgAt = dlg.Location;
+        Tap(dlgBox, new Point(30, 8)); Pump(120);
+        Check("a dialog's box where the keyboard is: the dialog moved up above it", TouchKeyboard.IsShown && kb.Target == dlgBox && kb.CoversTarget == 0 &&
+              dlg.Top < dlgAt.Y, dlg.Location + " box bottom " + dlgBox.RectangleToScreen(dlgBox.ClientRectangle).Bottom + " keyboard " + kb.Top);
+        kb.Press("Hide"); Pump(50);
+        Check("  the keyboard put away: the dialog back where it was", dlg.Location == dlgAt, dlg.Location + "");
+        dlg.Close(); dlg.Dispose();
+        kf.Activate(); Pump(50);
         Tap(shown, new Point(30, 8)); Pump(80);
         Check("a box that is only read: no keyboard", !TouchKeyboard.IsShown);
         Tap(name, new Point(30, 8)); Pump(80);
