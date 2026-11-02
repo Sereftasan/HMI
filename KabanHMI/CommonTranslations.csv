@@ -42,6 +42,7 @@ Btn_Save;Save;Kaydet;Сохранить;Speichern;Salva;Guardar
 Usr_Name;User;Kullanıcı;Пользователь;Benutzer;Utente;Usuario
 Usr_Pass;Password;Şifre;Пароль;Passwort;Password;Contraseña
 Usr_Level;Level;Seviye;Уровень доступа;Berechtigungsstufe;Livello di accesso;Nivel de acceso
+Log_AuditHead;Audit log;Denetim kaydı;;;;
 Log_Enabled;Audit logging enabled;Denetim kaydı etkin;Журнал аудита включён;Audit-Protokoll aktiviert;Registro di audit attivo;Registro de auditoría activo
 Log_Retain;Keep logs (days);Kayıt saklama (gün);Хранить журналы (дней);Protokolle aufbewahren (Tage);Conserva i log (giorni);Conservar registros (días)
 Btn_Ack;Acknowledge;Onayla;Подтвердить;Quittieren;Conferma;Reconocer

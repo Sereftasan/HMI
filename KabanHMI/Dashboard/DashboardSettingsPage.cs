@@ -60,6 +60,9 @@ namespace Kaban.UI.Dashboard
 
         private const int Caption = 220, Field = 420, RowW = Caption + Field + 70;
 
+        /// <summary>The page's frames: all as wide (their rows, their margins, the frame's own sides), from this far left.</summary>
+        public const int GroupWidth = RowW + 6 + 20, GroupLeft = 16;
+
         public DashboardSettingsControl(MachineDashboard machine)
         {
             _machine = machine ?? new MachineDashboard();
@@ -105,10 +108,10 @@ namespace Kaban.UI.Dashboard
             _shiftRows.AutoSize = true;
             _shiftRows.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _shiftRows.Margin = new Padding(Caption + 8, 0, 0, 0);
-            _flow.Controls.Add(_shiftRows);
+            Add(_shiftRows);
             var addShift = UiStyle.TextButton(T("Dsh_SetShiftAdd", "Add a shift"), 0, (s, e) => AddShift(NextShiftStart(), NextShiftStart().Add(TimeSpan.FromHours(8))));
             addShift.Margin = new Padding(Caption + 8, 4, 0, 2);
-            _flow.Controls.Add(addShift);
+            Add(addShift);
             Note("Dsh_SetShiftsNote", "A shift that ends at or before its start ends the next day.");
 
             // the sections as the page has them (2 October): under their tab's name,
@@ -175,7 +178,8 @@ namespace Kaban.UI.Dashboard
             _next.Width = RowW;
             _next.Height = 26;
             _next.ForeColor = Color.DimGray;
-            _flow.Controls.Add(_next);
+            Add(_next);
+            _into = null;                     // the groups end here: the problem and the buttons under them
 
             _problem.AutoSize = false;
             _problem.Width = RowW;
@@ -197,7 +201,13 @@ namespace Kaban.UI.Dashboard
             // what the database holds, at once
             HandleCreated += (s, e) => { try { BeginInvoke(new Action(TestDatabase)); } catch { } };
             bool can = SecurityManager.HasAccess(SecurityLevel.Maintenance);
-            foreach (Control c in _flow.Controls) if (c != _next) c.Enabled = can;
+            foreach (Control c in _flow.Controls)
+            {
+                var g = c as GroupBoxHMI;
+                if (g == null) { c.Enabled = can; continue; }
+                // a group's rows (the next report's time read by everyone)
+                foreach (Control rows in g.Controls) foreach (Control r in rows.Controls) if (r != _next) r.Enabled = can;
+            }
             // View Preferences changed: the shifts' times and the next report in the new format.
             UiStyle.OnViewPreferences(this, () =>
             {
@@ -217,18 +227,40 @@ namespace Kaban.UI.Dashboard
 
         // ---- building
 
+        /// <summary>Where the rows go now: the last heading's group (null: the page itself).</summary>
+        private FlowLayoutPanel _into;
+        private readonly List<GroupBoxHMI> _groups = new List<GroupBoxHMI>();
+
+        private void Add(Control c) { (_into ?? _flow).Controls.Add(c); }
+
+        /// <summary>The page's parts framed, their titles on the frame's top line (2 November: the Options page's group -
+        /// "it looks nice seeing the title like that, I think we should use it at all the parted pages").</summary>
+        public IList<GroupBoxHMI> Groups { get { return _groups; } }
+
+        /// <summary>A part of the page: a frame with its title (its picture and words) on the top line; the rows after it go in it.</summary>
         private void Heading(string key, string icon, string text)
         {
-            _flow.Controls.Add(new Label
+            var group = new GroupBoxHMI
             {
-                Text = icon + " " + T(key, text), AutoSize = false, Width = RowW, Height = 30, Margin = new Padding(0, 14, 0, 2),
-                Font = UiStyle.FontVariant(UiStyle.Body, FontStyle.Bold), TextAlign = ContentAlignment.BottomLeft
-            });
+                TitleTextKey = T(key, text), Emoji = icon, Name = "group_" + key,
+                Margin = new Padding(0, 10, 0, 6), Width = GroupWidth
+            };
+            var rows = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoSize = true, AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Location = new Point(group.Padding.Left, group.Padding.Top + 4), BackColor = Color.White, Margin = Padding.Empty
+            };
+            // as tall as its rows (a row shown or hidden: the frame follows)
+            rows.SizeChanged += (s, e) => group.Size = new Size(GroupWidth, rows.Bottom + group.Padding.Bottom);
+            group.Controls.Add(rows);
+            _flow.Controls.Add(group);
+            _groups.Add(group);
+            _into = rows;
         }
 
         private void Note(string key, string text)
         {
-            _flow.Controls.Add(new Label
+            Add(new Label
             {
                 Text = T(key, text), AutoSize = false, Width = RowW, Height = 22, ForeColor = Color.DimGray,
                 Padding = new Padding(Caption + 8, 0, 0, 0)
@@ -246,7 +278,7 @@ namespace Kaban.UI.Dashboard
                 extra.Location = new Point(Caption + 8 + field.Width + 6, 0);
                 row.Controls.Add(extra);
             }
-            _flow.Controls.Add(row);
+            Add(row);
             return row;
         }
 
@@ -264,7 +296,7 @@ namespace Kaban.UI.Dashboard
             if (group == null)
             {
                 cb.Margin = new Padding(Caption + 8, 1, 0, 1);
-                _flow.Controls.Add(cb);
+                Add(cb);
                 return;
             }
             // a group's first row: its caption, then the box where the others are
@@ -273,7 +305,7 @@ namespace Kaban.UI.Dashboard
             cb.Location = new Point(Caption + 8, 0);
             cb.Margin = Padding.Empty;
             row.Controls.Add(cb);
-            _flow.Controls.Add(row);
+            Add(row);
         }
 
         private void ShowScheduleRows()

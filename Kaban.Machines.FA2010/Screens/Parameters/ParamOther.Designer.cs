@@ -24,22 +24,22 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
 
         private void InitializeComponent()
         {
-            this.lblExit_Conveyor = new Kaban.UI.Controls.LabelHMI();
+            this.grpExit_Conveyor = new Kaban.UI.Controls.GroupBoxHMI();
             this.numConveyor_Length = new Kaban.UI.Controls.NumericInputHMI();
             this.numDischarging_Plate_Height = new Kaban.UI.Controls.NumericInputHMI();
             this.numCut_Piece_Releasing_Position = new Kaban.UI.Controls.NumericInputHMI();
             this.numWaste_Profile_Releasing_Pos = new Kaban.UI.Controls.NumericInputHMI();
             this.numMin_Cutting_Short_Profile_Pos = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblDistances_Between_Units = new Kaban.UI.Controls.LabelHMI();
+            this.grpDistances_Between_Units = new Kaban.UI.Controls.GroupBoxHMI();
             this.numLength_Meas_Sensor_Milling = new Kaban.UI.Controls.NumericInputHMI();
             this.numMilling_Cutting_Center = new Kaban.UI.Controls.NumericInputHMI();
             this.numMilling_V_Cutting_Center = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblMachine_Lubrication = new Kaban.UI.Controls.LabelHMI();
+            this.grpMachine_Lubrication = new Kaban.UI.Controls.GroupBoxHMI();
             this.numLubrication_Period = new Kaban.UI.Controls.NumericInputHMI();
             this.numPulse_Number = new Kaban.UI.Controls.NumericInputHMI();
             this.numTank_Pulse_Capacity = new Kaban.UI.Controls.NumericInputHMI();
             this.numRobot_Lubrication_Ratio = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblMiddle_Register_Notch_Parameters = new Kaban.UI.Controls.LabelHMI();
+            this.grpMiddle_Register_Notch_Parameters = new Kaban.UI.Controls.GroupBoxHMI();
             this.numMullion_X_Left_Cut_Offset = new Kaban.UI.Controls.NumericInputHMI();
             this.numMullion_X_Right_Cut_Offset = new Kaban.UI.Controls.NumericInputHMI();
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount = new Kaban.UI.Controls.NumericInputHMI();
@@ -48,7 +48,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_Notching_Saw_Blade_Thickness = new Kaban.UI.Controls.NumericInputHMI();
             this.numMullion_Notching_Saw_Blade_Diameter = new Kaban.UI.Controls.NumericInputHMI();
             this.numMullion_Notching_Single_Cut_Speed = new Kaban.UI.Controls.NumericInputHMI();
-            this.lblMilling_X_Zero_Cross_Roller_Distance = new Kaban.UI.Controls.LabelHMI();
+            this.grpMilling_X_Zero_Cross_Roller_Distance = new Kaban.UI.Controls.GroupBoxHMI();
             this.numCross_Roller_Entry_Conveyor_1 = new Kaban.UI.Controls.NumericInputHMI();
             this.numCross_Roller_Entry_Conveyor_2 = new Kaban.UI.Controls.NumericInputHMI();
             this.numCross_Roller_Profile_Recognition = new Kaban.UI.Controls.NumericInputHMI();
@@ -56,19 +56,32 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Cutting_Left = new Kaban.UI.Controls.NumericInputHMI();
             this.numCross_Roller_Cutting_Right = new Kaban.UI.Controls.NumericInputHMI();
             this.numCross_Roller_Exit = new Kaban.UI.Controls.NumericInputHMI();
+            this.grpExit_Conveyor.SuspendLayout();
+            this.grpDistances_Between_Units.SuspendLayout();
+            this.grpMachine_Lubrication.SuspendLayout();
+            this.grpMiddle_Register_Notch_Parameters.SuspendLayout();
+            this.grpMilling_X_Zero_Cross_Roller_Distance.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lblExit_Conveyor
+            // grpExit_Conveyor
             // 
-            this.lblExit_Conveyor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblExit_Conveyor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblExit_Conveyor.Location = new System.Drawing.Point(16, 16);
-            this.lblExit_Conveyor.Name = "lblExit_Conveyor";
-            this.lblExit_Conveyor.Size = new System.Drawing.Size(326, 26);
-            this.lblExit_Conveyor.TabIndex = 0;
-            this.lblExit_Conveyor.Text = "Exit Conveyor";
-            this.lblExit_Conveyor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblExit_Conveyor.TranslationKey = "Exit Conveyor";
+            this.grpExit_Conveyor.BackColor = System.Drawing.Color.White;
+            this.grpExit_Conveyor.Controls.Add(this.numConveyor_Length);
+            this.grpExit_Conveyor.Controls.Add(this.numDischarging_Plate_Height);
+            this.grpExit_Conveyor.Controls.Add(this.numCut_Piece_Releasing_Position);
+            this.grpExit_Conveyor.Controls.Add(this.numWaste_Profile_Releasing_Pos);
+            this.grpExit_Conveyor.Controls.Add(this.numMin_Cutting_Short_Profile_Pos);
+            this.grpExit_Conveyor.Emoji = "";
+            this.grpExit_Conveyor.EnableAddress = "";
+            this.grpExit_Conveyor.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpExit_Conveyor.Location = new System.Drawing.Point(16, 16);
+            this.grpExit_Conveyor.Name = "grpExit_Conveyor";
+            this.grpExit_Conveyor.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpExit_Conveyor.PlcNumber = 1;
+            this.grpExit_Conveyor.Size = new System.Drawing.Size(395, 210);
+            this.grpExit_Conveyor.TitleTextKey = "Exit Conveyor";
+            this.grpExit_Conveyor.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpExit_Conveyor.VisibleAddress = "";
             // 
             // numConveyor_Length
             // 
@@ -99,7 +112,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numConveyor_Length.EnableTrigger.ValB = 0D;
             this.numConveyor_Length.FillZero = false;
             this.numConveyor_Length.IsEditing = false;
-            this.numConveyor_Length.Location = new System.Drawing.Point(281, 50);
+            this.numConveyor_Length.Location = new System.Drawing.Point(265, 30);
             this.numConveyor_Length.LogAction = true;
             this.numConveyor_Length.MaxLimit.StaticValue = 0D;
             this.numConveyor_Length.MaxLimit.TagAddress = "";
@@ -153,7 +166,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numDischarging_Plate_Height.EnableTrigger.ValB = 0D;
             this.numDischarging_Plate_Height.FillZero = false;
             this.numDischarging_Plate_Height.IsEditing = false;
-            this.numDischarging_Plate_Height.Location = new System.Drawing.Point(281, 86);
+            this.numDischarging_Plate_Height.Location = new System.Drawing.Point(265, 66);
             this.numDischarging_Plate_Height.LogAction = true;
             this.numDischarging_Plate_Height.MaxLimit.StaticValue = 0D;
             this.numDischarging_Plate_Height.MaxLimit.TagAddress = "";
@@ -207,7 +220,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCut_Piece_Releasing_Position.EnableTrigger.ValB = 0D;
             this.numCut_Piece_Releasing_Position.FillZero = false;
             this.numCut_Piece_Releasing_Position.IsEditing = false;
-            this.numCut_Piece_Releasing_Position.Location = new System.Drawing.Point(281, 122);
+            this.numCut_Piece_Releasing_Position.Location = new System.Drawing.Point(265, 102);
             this.numCut_Piece_Releasing_Position.LogAction = true;
             this.numCut_Piece_Releasing_Position.MaxLimit.StaticValue = 0D;
             this.numCut_Piece_Releasing_Position.MaxLimit.TagAddress = "";
@@ -261,7 +274,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numWaste_Profile_Releasing_Pos.EnableTrigger.ValB = 0D;
             this.numWaste_Profile_Releasing_Pos.FillZero = false;
             this.numWaste_Profile_Releasing_Pos.IsEditing = false;
-            this.numWaste_Profile_Releasing_Pos.Location = new System.Drawing.Point(281, 158);
+            this.numWaste_Profile_Releasing_Pos.Location = new System.Drawing.Point(265, 138);
             this.numWaste_Profile_Releasing_Pos.LogAction = true;
             this.numWaste_Profile_Releasing_Pos.MaxLimit.StaticValue = 0D;
             this.numWaste_Profile_Releasing_Pos.MaxLimit.TagAddress = "";
@@ -315,7 +328,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Cutting_Short_Profile_Pos.EnableTrigger.ValB = 0D;
             this.numMin_Cutting_Short_Profile_Pos.FillZero = false;
             this.numMin_Cutting_Short_Profile_Pos.IsEditing = false;
-            this.numMin_Cutting_Short_Profile_Pos.Location = new System.Drawing.Point(281, 194);
+            this.numMin_Cutting_Short_Profile_Pos.Location = new System.Drawing.Point(265, 174);
             this.numMin_Cutting_Short_Profile_Pos.LogAction = true;
             this.numMin_Cutting_Short_Profile_Pos.MaxLimit.StaticValue = 0D;
             this.numMin_Cutting_Short_Profile_Pos.MaxLimit.TagAddress = "";
@@ -340,17 +353,23 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMin_Cutting_Short_Profile_Pos.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
             this.numMin_Cutting_Short_Profile_Pos.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // lblDistances_Between_Units
+            // grpDistances_Between_Units
             // 
-            this.lblDistances_Between_Units.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblDistances_Between_Units.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblDistances_Between_Units.Location = new System.Drawing.Point(16, 264);
-            this.lblDistances_Between_Units.Name = "lblDistances_Between_Units";
-            this.lblDistances_Between_Units.Size = new System.Drawing.Size(326, 26);
-            this.lblDistances_Between_Units.TabIndex = 11;
-            this.lblDistances_Between_Units.Text = "Distances Between Units";
-            this.lblDistances_Between_Units.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblDistances_Between_Units.TranslationKey = "Distances Between Units";
+            this.grpDistances_Between_Units.BackColor = System.Drawing.Color.White;
+            this.grpDistances_Between_Units.Controls.Add(this.numLength_Meas_Sensor_Milling);
+            this.grpDistances_Between_Units.Controls.Add(this.numMilling_Cutting_Center);
+            this.grpDistances_Between_Units.Controls.Add(this.numMilling_V_Cutting_Center);
+            this.grpDistances_Between_Units.Emoji = "";
+            this.grpDistances_Between_Units.EnableAddress = "";
+            this.grpDistances_Between_Units.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpDistances_Between_Units.Location = new System.Drawing.Point(16, 242);
+            this.grpDistances_Between_Units.Name = "grpDistances_Between_Units";
+            this.grpDistances_Between_Units.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpDistances_Between_Units.PlcNumber = 1;
+            this.grpDistances_Between_Units.Size = new System.Drawing.Size(395, 138);
+            this.grpDistances_Between_Units.TitleTextKey = "Distances Between Units";
+            this.grpDistances_Between_Units.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpDistances_Between_Units.VisibleAddress = "";
             // 
             // numLength_Meas_Sensor_Milling
             // 
@@ -381,7 +400,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLength_Meas_Sensor_Milling.EnableTrigger.ValB = 0D;
             this.numLength_Meas_Sensor_Milling.FillZero = false;
             this.numLength_Meas_Sensor_Milling.IsEditing = false;
-            this.numLength_Meas_Sensor_Milling.Location = new System.Drawing.Point(281, 294);
+            this.numLength_Meas_Sensor_Milling.Location = new System.Drawing.Point(265, 30);
             this.numLength_Meas_Sensor_Milling.LogAction = true;
             this.numLength_Meas_Sensor_Milling.MaxLimit.StaticValue = 0D;
             this.numLength_Meas_Sensor_Milling.MaxLimit.TagAddress = "";
@@ -435,7 +454,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_Cutting_Center.EnableTrigger.ValB = 0D;
             this.numMilling_Cutting_Center.FillZero = false;
             this.numMilling_Cutting_Center.IsEditing = false;
-            this.numMilling_Cutting_Center.Location = new System.Drawing.Point(281, 330);
+            this.numMilling_Cutting_Center.Location = new System.Drawing.Point(265, 66);
             this.numMilling_Cutting_Center.LogAction = true;
             this.numMilling_Cutting_Center.MaxLimit.StaticValue = 0D;
             this.numMilling_Cutting_Center.MaxLimit.TagAddress = "";
@@ -489,7 +508,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_V_Cutting_Center.EnableTrigger.ValB = 0D;
             this.numMilling_V_Cutting_Center.FillZero = false;
             this.numMilling_V_Cutting_Center.IsEditing = false;
-            this.numMilling_V_Cutting_Center.Location = new System.Drawing.Point(281, 366);
+            this.numMilling_V_Cutting_Center.Location = new System.Drawing.Point(265, 102);
             this.numMilling_V_Cutting_Center.LogAction = true;
             this.numMilling_V_Cutting_Center.MaxLimit.StaticValue = 0D;
             this.numMilling_V_Cutting_Center.MaxLimit.TagAddress = "";
@@ -514,17 +533,24 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMilling_V_Cutting_Center.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
             this.numMilling_V_Cutting_Center.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // lblMachine_Lubrication
+            // grpMachine_Lubrication
             // 
-            this.lblMachine_Lubrication.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblMachine_Lubrication.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblMachine_Lubrication.Location = new System.Drawing.Point(16, 448);
-            this.lblMachine_Lubrication.Name = "lblMachine_Lubrication";
-            this.lblMachine_Lubrication.Size = new System.Drawing.Size(326, 26);
-            this.lblMachine_Lubrication.TabIndex = 18;
-            this.lblMachine_Lubrication.Text = "Machine Lubrication";
-            this.lblMachine_Lubrication.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblMachine_Lubrication.TranslationKey = "Machine Lubrication";
+            this.grpMachine_Lubrication.BackColor = System.Drawing.Color.White;
+            this.grpMachine_Lubrication.Controls.Add(this.numLubrication_Period);
+            this.grpMachine_Lubrication.Controls.Add(this.numPulse_Number);
+            this.grpMachine_Lubrication.Controls.Add(this.numTank_Pulse_Capacity);
+            this.grpMachine_Lubrication.Controls.Add(this.numRobot_Lubrication_Ratio);
+            this.grpMachine_Lubrication.Emoji = "";
+            this.grpMachine_Lubrication.EnableAddress = "";
+            this.grpMachine_Lubrication.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMachine_Lubrication.Location = new System.Drawing.Point(16, 396);
+            this.grpMachine_Lubrication.Name = "grpMachine_Lubrication";
+            this.grpMachine_Lubrication.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpMachine_Lubrication.PlcNumber = 1;
+            this.grpMachine_Lubrication.Size = new System.Drawing.Size(395, 174);
+            this.grpMachine_Lubrication.TitleTextKey = "Machine Lubrication";
+            this.grpMachine_Lubrication.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMachine_Lubrication.VisibleAddress = "";
             // 
             // numLubrication_Period
             // 
@@ -555,7 +581,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numLubrication_Period.EnableTrigger.ValB = 0D;
             this.numLubrication_Period.FillZero = false;
             this.numLubrication_Period.IsEditing = false;
-            this.numLubrication_Period.Location = new System.Drawing.Point(281, 478);
+            this.numLubrication_Period.Location = new System.Drawing.Point(265, 30);
             this.numLubrication_Period.LogAction = true;
             this.numLubrication_Period.MaxLimit.StaticValue = 0D;
             this.numLubrication_Period.MaxLimit.TagAddress = "";
@@ -609,7 +635,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numPulse_Number.EnableTrigger.ValB = 0D;
             this.numPulse_Number.FillZero = false;
             this.numPulse_Number.IsEditing = false;
-            this.numPulse_Number.Location = new System.Drawing.Point(281, 514);
+            this.numPulse_Number.Location = new System.Drawing.Point(265, 66);
             this.numPulse_Number.LogAction = true;
             this.numPulse_Number.MaxLimit.StaticValue = 0D;
             this.numPulse_Number.MaxLimit.TagAddress = "";
@@ -663,7 +689,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numTank_Pulse_Capacity.EnableTrigger.ValB = 0D;
             this.numTank_Pulse_Capacity.FillZero = false;
             this.numTank_Pulse_Capacity.IsEditing = false;
-            this.numTank_Pulse_Capacity.Location = new System.Drawing.Point(281, 550);
+            this.numTank_Pulse_Capacity.Location = new System.Drawing.Point(265, 102);
             this.numTank_Pulse_Capacity.LogAction = true;
             this.numTank_Pulse_Capacity.MaxLimit.StaticValue = 0D;
             this.numTank_Pulse_Capacity.MaxLimit.TagAddress = "";
@@ -717,7 +743,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRobot_Lubrication_Ratio.EnableTrigger.ValB = 0D;
             this.numRobot_Lubrication_Ratio.FillZero = false;
             this.numRobot_Lubrication_Ratio.IsEditing = false;
-            this.numRobot_Lubrication_Ratio.Location = new System.Drawing.Point(281, 586);
+            this.numRobot_Lubrication_Ratio.Location = new System.Drawing.Point(265, 138);
             this.numRobot_Lubrication_Ratio.LogAction = true;
             this.numRobot_Lubrication_Ratio.MaxLimit.StaticValue = 0D;
             this.numRobot_Lubrication_Ratio.MaxLimit.TagAddress = "";
@@ -742,17 +768,28 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numRobot_Lubrication_Ratio.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
             this.numRobot_Lubrication_Ratio.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // lblMiddle_Register_Notch_Parameters
+            // grpMiddle_Register_Notch_Parameters
             // 
-            this.lblMiddle_Register_Notch_Parameters.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblMiddle_Register_Notch_Parameters.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblMiddle_Register_Notch_Parameters.Location = new System.Drawing.Point(540, 16);
-            this.lblMiddle_Register_Notch_Parameters.Name = "lblMiddle_Register_Notch_Parameters";
-            this.lblMiddle_Register_Notch_Parameters.Size = new System.Drawing.Size(435, 26);
-            this.lblMiddle_Register_Notch_Parameters.TabIndex = 60;
-            this.lblMiddle_Register_Notch_Parameters.Text = "Middle Register Notch Parameters";
-            this.lblMiddle_Register_Notch_Parameters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblMiddle_Register_Notch_Parameters.TranslationKey = "Middle Register Notch Parameters";
+            this.grpMiddle_Register_Notch_Parameters.BackColor = System.Drawing.Color.White;
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_X_Left_Cut_Offset);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_X_Right_Cut_Offset);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMain_Saw_Blade_Thickness);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_Notching_Saw_Blade_Thickness);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_Notching_Saw_Blade_Diameter);
+            this.grpMiddle_Register_Notch_Parameters.Controls.Add(this.numMullion_Notching_Single_Cut_Speed);
+            this.grpMiddle_Register_Notch_Parameters.Emoji = "";
+            this.grpMiddle_Register_Notch_Parameters.EnableAddress = "";
+            this.grpMiddle_Register_Notch_Parameters.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMiddle_Register_Notch_Parameters.Location = new System.Drawing.Point(540, 16);
+            this.grpMiddle_Register_Notch_Parameters.Name = "grpMiddle_Register_Notch_Parameters";
+            this.grpMiddle_Register_Notch_Parameters.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpMiddle_Register_Notch_Parameters.PlcNumber = 1;
+            this.grpMiddle_Register_Notch_Parameters.Size = new System.Drawing.Size(449, 318);
+            this.grpMiddle_Register_Notch_Parameters.TitleTextKey = "Middle Register Notch Parameters";
+            this.grpMiddle_Register_Notch_Parameters.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMiddle_Register_Notch_Parameters.VisibleAddress = "";
             // 
             // numMullion_X_Left_Cut_Offset
             // 
@@ -783,7 +820,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_X_Left_Cut_Offset.EnableTrigger.ValB = 0D;
             this.numMullion_X_Left_Cut_Offset.FillZero = false;
             this.numMullion_X_Left_Cut_Offset.IsEditing = false;
-            this.numMullion_X_Left_Cut_Offset.Location = new System.Drawing.Point(859, 50);
+            this.numMullion_X_Left_Cut_Offset.Location = new System.Drawing.Point(319, 30);
             this.numMullion_X_Left_Cut_Offset.LogAction = true;
             this.numMullion_X_Left_Cut_Offset.MaxLimit.StaticValue = 0D;
             this.numMullion_X_Left_Cut_Offset.MaxLimit.TagAddress = "";
@@ -837,7 +874,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_X_Right_Cut_Offset.EnableTrigger.ValB = 0D;
             this.numMullion_X_Right_Cut_Offset.FillZero = false;
             this.numMullion_X_Right_Cut_Offset.IsEditing = false;
-            this.numMullion_X_Right_Cut_Offset.Location = new System.Drawing.Point(859, 86);
+            this.numMullion_X_Right_Cut_Offset.Location = new System.Drawing.Point(319, 66);
             this.numMullion_X_Right_Cut_Offset.LogAction = true;
             this.numMullion_X_Right_Cut_Offset.MaxLimit.StaticValue = 0D;
             this.numMullion_X_Right_Cut_Offset.MaxLimit.TagAddress = "";
@@ -891,7 +928,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.EnableTrigger.ValB = 0D;
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.FillZero = false;
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.IsEditing = false;
-            this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.Location = new System.Drawing.Point(859, 122);
+            this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.Location = new System.Drawing.Point(319, 102);
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.LogAction = true;
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.MaxLimit.StaticValue = 0D;
             this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount.MaxLimit.TagAddress = "";
@@ -945,7 +982,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.EnableTrigger.ValB = 0D;
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.FillZero = false;
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.IsEditing = false;
-            this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.Location = new System.Drawing.Point(859, 158);
+            this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.Location = new System.Drawing.Point(319, 138);
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.LogAction = true;
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.MaxLimit.StaticValue = 0D;
             this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position.MaxLimit.TagAddress = "";
@@ -999,7 +1036,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMain_Saw_Blade_Thickness.EnableTrigger.ValB = 0D;
             this.numMain_Saw_Blade_Thickness.FillZero = false;
             this.numMain_Saw_Blade_Thickness.IsEditing = false;
-            this.numMain_Saw_Blade_Thickness.Location = new System.Drawing.Point(859, 194);
+            this.numMain_Saw_Blade_Thickness.Location = new System.Drawing.Point(319, 174);
             this.numMain_Saw_Blade_Thickness.LogAction = true;
             this.numMain_Saw_Blade_Thickness.MaxLimit.StaticValue = 0D;
             this.numMain_Saw_Blade_Thickness.MaxLimit.TagAddress = "";
@@ -1053,7 +1090,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_Notching_Saw_Blade_Thickness.EnableTrigger.ValB = 0D;
             this.numMullion_Notching_Saw_Blade_Thickness.FillZero = false;
             this.numMullion_Notching_Saw_Blade_Thickness.IsEditing = false;
-            this.numMullion_Notching_Saw_Blade_Thickness.Location = new System.Drawing.Point(859, 230);
+            this.numMullion_Notching_Saw_Blade_Thickness.Location = new System.Drawing.Point(319, 210);
             this.numMullion_Notching_Saw_Blade_Thickness.LogAction = true;
             this.numMullion_Notching_Saw_Blade_Thickness.MaxLimit.StaticValue = 0D;
             this.numMullion_Notching_Saw_Blade_Thickness.MaxLimit.TagAddress = "";
@@ -1107,7 +1144,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_Notching_Saw_Blade_Diameter.EnableTrigger.ValB = 0D;
             this.numMullion_Notching_Saw_Blade_Diameter.FillZero = false;
             this.numMullion_Notching_Saw_Blade_Diameter.IsEditing = false;
-            this.numMullion_Notching_Saw_Blade_Diameter.Location = new System.Drawing.Point(859, 266);
+            this.numMullion_Notching_Saw_Blade_Diameter.Location = new System.Drawing.Point(319, 246);
             this.numMullion_Notching_Saw_Blade_Diameter.LogAction = true;
             this.numMullion_Notching_Saw_Blade_Diameter.MaxLimit.StaticValue = 0D;
             this.numMullion_Notching_Saw_Blade_Diameter.MaxLimit.TagAddress = "";
@@ -1161,7 +1198,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_Notching_Single_Cut_Speed.EnableTrigger.ValB = 0D;
             this.numMullion_Notching_Single_Cut_Speed.FillZero = false;
             this.numMullion_Notching_Single_Cut_Speed.IsEditing = false;
-            this.numMullion_Notching_Single_Cut_Speed.Location = new System.Drawing.Point(859, 302);
+            this.numMullion_Notching_Single_Cut_Speed.Location = new System.Drawing.Point(319, 282);
             this.numMullion_Notching_Single_Cut_Speed.LogAction = true;
             this.numMullion_Notching_Single_Cut_Speed.MaxLimit.StaticValue = 0D;
             this.numMullion_Notching_Single_Cut_Speed.MaxLimit.TagAddress = "";
@@ -1186,17 +1223,27 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numMullion_Notching_Single_Cut_Speed.ValueBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(150)))), ((int)(((byte)(158)))), ((int)(((byte)(170)))));
             this.numMullion_Notching_Single_Cut_Speed.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
             // 
-            // lblMilling_X_Zero_Cross_Roller_Distance
+            // grpMilling_X_Zero_Cross_Roller_Distance
             // 
-            this.lblMilling_X_Zero_Cross_Roller_Distance.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblMilling_X_Zero_Cross_Roller_Distance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(70)))), ((int)(((byte)(78)))));
-            this.lblMilling_X_Zero_Cross_Roller_Distance.Location = new System.Drawing.Point(540, 379);
-            this.lblMilling_X_Zero_Cross_Roller_Distance.Name = "lblMilling_X_Zero_Cross_Roller_Distance";
-            this.lblMilling_X_Zero_Cross_Roller_Distance.Size = new System.Drawing.Size(435, 26);
-            this.lblMilling_X_Zero_Cross_Roller_Distance.TabIndex = 77;
-            this.lblMilling_X_Zero_Cross_Roller_Distance.Text = "Milling X Zero - Cross Roller Distance";
-            this.lblMilling_X_Zero_Cross_Roller_Distance.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblMilling_X_Zero_Cross_Roller_Distance.TranslationKey = "Milling X Zero - Cross Roller Distance";
+            this.grpMilling_X_Zero_Cross_Roller_Distance.BackColor = System.Drawing.Color.White;
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Entry_Conveyor_1);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Entry_Conveyor_2);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Profile_Recognition);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Milling);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Cutting_Left);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Cutting_Right);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Controls.Add(this.numCross_Roller_Exit);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Emoji = "";
+            this.grpMilling_X_Zero_Cross_Roller_Distance.EnableAddress = "";
+            this.grpMilling_X_Zero_Cross_Roller_Distance.EnableConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Location = new System.Drawing.Point(540, 350);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Name = "grpMilling_X_Zero_Cross_Roller_Distance";
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Padding = new System.Windows.Forms.Padding(10, 22, 10, 8);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.PlcNumber = 1;
+            this.grpMilling_X_Zero_Cross_Roller_Distance.Size = new System.Drawing.Size(449, 282);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.TitleTextKey = "Milling X Zero - Cross Roller Distance";
+            this.grpMilling_X_Zero_Cross_Roller_Distance.VisibilityConditions = Kaban.Core.Enums.SystemCondition.None;
+            this.grpMilling_X_Zero_Cross_Roller_Distance.VisibleAddress = "";
             // 
             // numCross_Roller_Entry_Conveyor_1
             // 
@@ -1227,7 +1274,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Entry_Conveyor_1.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Entry_Conveyor_1.FillZero = false;
             this.numCross_Roller_Entry_Conveyor_1.IsEditing = false;
-            this.numCross_Roller_Entry_Conveyor_1.Location = new System.Drawing.Point(859, 413);
+            this.numCross_Roller_Entry_Conveyor_1.Location = new System.Drawing.Point(319, 30);
             this.numCross_Roller_Entry_Conveyor_1.LogAction = true;
             this.numCross_Roller_Entry_Conveyor_1.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Entry_Conveyor_1.MaxLimit.TagAddress = "";
@@ -1281,7 +1328,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Entry_Conveyor_2.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Entry_Conveyor_2.FillZero = false;
             this.numCross_Roller_Entry_Conveyor_2.IsEditing = false;
-            this.numCross_Roller_Entry_Conveyor_2.Location = new System.Drawing.Point(859, 449);
+            this.numCross_Roller_Entry_Conveyor_2.Location = new System.Drawing.Point(319, 66);
             this.numCross_Roller_Entry_Conveyor_2.LogAction = true;
             this.numCross_Roller_Entry_Conveyor_2.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Entry_Conveyor_2.MaxLimit.TagAddress = "";
@@ -1335,7 +1382,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Profile_Recognition.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Profile_Recognition.FillZero = false;
             this.numCross_Roller_Profile_Recognition.IsEditing = false;
-            this.numCross_Roller_Profile_Recognition.Location = new System.Drawing.Point(859, 485);
+            this.numCross_Roller_Profile_Recognition.Location = new System.Drawing.Point(319, 102);
             this.numCross_Roller_Profile_Recognition.LogAction = true;
             this.numCross_Roller_Profile_Recognition.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Profile_Recognition.MaxLimit.TagAddress = "";
@@ -1389,7 +1436,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Milling.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Milling.FillZero = false;
             this.numCross_Roller_Milling.IsEditing = false;
-            this.numCross_Roller_Milling.Location = new System.Drawing.Point(859, 521);
+            this.numCross_Roller_Milling.Location = new System.Drawing.Point(319, 138);
             this.numCross_Roller_Milling.LogAction = true;
             this.numCross_Roller_Milling.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Milling.MaxLimit.TagAddress = "";
@@ -1443,7 +1490,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Cutting_Left.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Cutting_Left.FillZero = false;
             this.numCross_Roller_Cutting_Left.IsEditing = false;
-            this.numCross_Roller_Cutting_Left.Location = new System.Drawing.Point(859, 557);
+            this.numCross_Roller_Cutting_Left.Location = new System.Drawing.Point(319, 174);
             this.numCross_Roller_Cutting_Left.LogAction = true;
             this.numCross_Roller_Cutting_Left.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Cutting_Left.MaxLimit.TagAddress = "";
@@ -1497,7 +1544,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Cutting_Right.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Cutting_Right.FillZero = false;
             this.numCross_Roller_Cutting_Right.IsEditing = false;
-            this.numCross_Roller_Cutting_Right.Location = new System.Drawing.Point(859, 593);
+            this.numCross_Roller_Cutting_Right.Location = new System.Drawing.Point(319, 210);
             this.numCross_Roller_Cutting_Right.LogAction = true;
             this.numCross_Roller_Cutting_Right.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Cutting_Right.MaxLimit.TagAddress = "";
@@ -1551,7 +1598,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.numCross_Roller_Exit.EnableTrigger.ValB = 0D;
             this.numCross_Roller_Exit.FillZero = false;
             this.numCross_Roller_Exit.IsEditing = false;
-            this.numCross_Roller_Exit.Location = new System.Drawing.Point(859, 629);
+            this.numCross_Roller_Exit.Location = new System.Drawing.Point(319, 246);
             this.numCross_Roller_Exit.LogAction = true;
             this.numCross_Roller_Exit.MaxLimit.StaticValue = 0D;
             this.numCross_Roller_Exit.MaxLimit.TagAddress = "";
@@ -1581,40 +1628,18 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.lblExit_Conveyor);
-            this.Controls.Add(this.numConveyor_Length);
-            this.Controls.Add(this.numDischarging_Plate_Height);
-            this.Controls.Add(this.numCut_Piece_Releasing_Position);
-            this.Controls.Add(this.numWaste_Profile_Releasing_Pos);
-            this.Controls.Add(this.numMin_Cutting_Short_Profile_Pos);
-            this.Controls.Add(this.lblDistances_Between_Units);
-            this.Controls.Add(this.numLength_Meas_Sensor_Milling);
-            this.Controls.Add(this.numMilling_Cutting_Center);
-            this.Controls.Add(this.numMilling_V_Cutting_Center);
-            this.Controls.Add(this.lblMachine_Lubrication);
-            this.Controls.Add(this.numLubrication_Period);
-            this.Controls.Add(this.numPulse_Number);
-            this.Controls.Add(this.numTank_Pulse_Capacity);
-            this.Controls.Add(this.numRobot_Lubrication_Ratio);
-            this.Controls.Add(this.lblMiddle_Register_Notch_Parameters);
-            this.Controls.Add(this.numMullion_X_Left_Cut_Offset);
-            this.Controls.Add(this.numMullion_X_Right_Cut_Offset);
-            this.Controls.Add(this.numMullion_X_Right_Cut_Robot_1_Retraction_Amount);
-            this.Controls.Add(this.numMullion_X_Right_Cut_Outfeed_Robot_Start_Position);
-            this.Controls.Add(this.numMain_Saw_Blade_Thickness);
-            this.Controls.Add(this.numMullion_Notching_Saw_Blade_Thickness);
-            this.Controls.Add(this.numMullion_Notching_Saw_Blade_Diameter);
-            this.Controls.Add(this.numMullion_Notching_Single_Cut_Speed);
-            this.Controls.Add(this.lblMilling_X_Zero_Cross_Roller_Distance);
-            this.Controls.Add(this.numCross_Roller_Entry_Conveyor_1);
-            this.Controls.Add(this.numCross_Roller_Entry_Conveyor_2);
-            this.Controls.Add(this.numCross_Roller_Profile_Recognition);
-            this.Controls.Add(this.numCross_Roller_Milling);
-            this.Controls.Add(this.numCross_Roller_Cutting_Left);
-            this.Controls.Add(this.numCross_Roller_Cutting_Right);
-            this.Controls.Add(this.numCross_Roller_Exit);
+            this.Controls.Add(this.grpExit_Conveyor);
+            this.Controls.Add(this.grpDistances_Between_Units);
+            this.Controls.Add(this.grpMachine_Lubrication);
+            this.Controls.Add(this.grpMiddle_Register_Notch_Parameters);
+            this.Controls.Add(this.grpMilling_X_Zero_Cross_Roller_Distance);
             this.Name = "ParamOther";
             this.Size = new System.Drawing.Size(1266, 883);
+            this.grpExit_Conveyor.ResumeLayout(false);
+            this.grpDistances_Between_Units.ResumeLayout(false);
+            this.grpMachine_Lubrication.ResumeLayout(false);
+            this.grpMiddle_Register_Notch_Parameters.ResumeLayout(false);
+            this.grpMilling_X_Zero_Cross_Roller_Distance.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1622,22 +1647,22 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
 
         #endregion
 
-        private Kaban.UI.Controls.LabelHMI lblExit_Conveyor;
+        private Kaban.UI.Controls.GroupBoxHMI grpExit_Conveyor;
         private Kaban.UI.Controls.NumericInputHMI numConveyor_Length;
         private Kaban.UI.Controls.NumericInputHMI numDischarging_Plate_Height;
         private Kaban.UI.Controls.NumericInputHMI numCut_Piece_Releasing_Position;
         private Kaban.UI.Controls.NumericInputHMI numWaste_Profile_Releasing_Pos;
         private Kaban.UI.Controls.NumericInputHMI numMin_Cutting_Short_Profile_Pos;
-        private Kaban.UI.Controls.LabelHMI lblDistances_Between_Units;
+        private Kaban.UI.Controls.GroupBoxHMI grpDistances_Between_Units;
         private Kaban.UI.Controls.NumericInputHMI numLength_Meas_Sensor_Milling;
         private Kaban.UI.Controls.NumericInputHMI numMilling_Cutting_Center;
         private Kaban.UI.Controls.NumericInputHMI numMilling_V_Cutting_Center;
-        private Kaban.UI.Controls.LabelHMI lblMachine_Lubrication;
+        private Kaban.UI.Controls.GroupBoxHMI grpMachine_Lubrication;
         private Kaban.UI.Controls.NumericInputHMI numLubrication_Period;
         private Kaban.UI.Controls.NumericInputHMI numPulse_Number;
         private Kaban.UI.Controls.NumericInputHMI numTank_Pulse_Capacity;
         private Kaban.UI.Controls.NumericInputHMI numRobot_Lubrication_Ratio;
-        private Kaban.UI.Controls.LabelHMI lblMiddle_Register_Notch_Parameters;
+        private Kaban.UI.Controls.GroupBoxHMI grpMiddle_Register_Notch_Parameters;
         private Kaban.UI.Controls.NumericInputHMI numMullion_X_Left_Cut_Offset;
         private Kaban.UI.Controls.NumericInputHMI numMullion_X_Right_Cut_Offset;
         private Kaban.UI.Controls.NumericInputHMI numMullion_X_Right_Cut_Robot_1_Retraction_Amount;
@@ -1646,7 +1671,7 @@ namespace Kaban.Machines.FA2010.Screens.Parameters
         private Kaban.UI.Controls.NumericInputHMI numMullion_Notching_Saw_Blade_Thickness;
         private Kaban.UI.Controls.NumericInputHMI numMullion_Notching_Saw_Blade_Diameter;
         private Kaban.UI.Controls.NumericInputHMI numMullion_Notching_Single_Cut_Speed;
-        private Kaban.UI.Controls.LabelHMI lblMilling_X_Zero_Cross_Roller_Distance;
+        private Kaban.UI.Controls.GroupBoxHMI grpMilling_X_Zero_Cross_Roller_Distance;
         private Kaban.UI.Controls.NumericInputHMI numCross_Roller_Entry_Conveyor_1;
         private Kaban.UI.Controls.NumericInputHMI numCross_Roller_Entry_Conveyor_2;
         private Kaban.UI.Controls.NumericInputHMI numCross_Roller_Profile_Recognition;

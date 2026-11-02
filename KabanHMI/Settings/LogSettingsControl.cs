@@ -156,6 +156,29 @@ namespace Kaban.UI.Settings
             _adminNote.Text = LanguageManager.GetString("Log_AdminOnly", "Only an Admin can change the log settings.");
             add(_adminNote);
 
+            // the audit log's row in a frame of its own, its title on the frame's top line (2 November: the Options page's
+            // group on the parted pages)
+            // - as wide as the frames of the log database's settings below it, and in line with them
+            var audit = new Kaban.UI.Controls.GroupBoxHMI
+            {
+                TitleTextKey = LanguageManager.GetString("Log_AuditHead", "Audit log"), Emoji = "\U0001F4DC", Name = "auditGroup"
+            };
+            audit.Padding = new Padding(10, 24, 10, 6);
+            pn.Dock = DockStyle.None;
+            pn.Location = new Point(audit.Padding.Left, audit.Padding.Top);
+            audit.Controls.Add(pn);
+            var auditHost = new Panel { Dock = DockStyle.Top, BackColor = Color.White, Name = "auditHost" };
+            audit.Location = new Point(Kaban.UI.Dashboard.DashboardSettingsControl.GroupLeft, 8);
+            auditHost.Controls.Add(audit);
+            Action fitAudit = () =>
+            {
+                audit.Size = new Size(Math.Max(Kaban.UI.Dashboard.DashboardSettingsControl.GroupWidth, pn.Width + audit.Padding.Horizontal),
+                                      pn.Height + audit.Padding.Vertical);
+                auditHost.Height = audit.Bottom + 6;
+            };
+            pn.SizeChanged += (s, e) => fitAudit();
+            fitAudit();
+
             _off.Dock = DockStyle.Top;
             _off.Height = 30;
             _off.TextAlign = ContentAlignment.MiddleLeft;
@@ -173,7 +196,7 @@ namespace Kaban.UI.Settings
             _machineRow.AutoSize = true;
             _machineRow.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             _machineRow.WrapContents = true;
-            _machineRow.Padding = new Padding(0, 6, 0, 2);
+            _machineRow.Padding = new Padding(Kaban.UI.Dashboard.DashboardSettingsControl.GroupLeft - 6, 6, 0, 2);   // in line with the frames
             _machineRow.BackColor = Color.FromArgb(246, 248, 251);
             _machineRow.Controls.Add(new Label
             {
@@ -209,7 +232,7 @@ namespace Kaban.UI.Settings
                 Controls.Add(gap);
             }
             Controls.Add(_off);
-            Controls.Add(pn);
+            Controls.Add(auditHost);
 
             _onUserChanged = (s, e) => ApplyAccess();
             SecurityManager.UserChanged += _onUserChanged;

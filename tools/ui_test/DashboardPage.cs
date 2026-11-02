@@ -317,8 +317,23 @@ class DP {
         Pump(50);
         Check("  the events tab: its table's", page.BarText.Contains("6 entries shown, 6 in the period"), page.BarText);
         var heads = new[] { "state_pie", "state_logs", "event_logs" }.Select(k => page.SectionOf(k).Head).ToList();
-        Check("the sections' headings: on the left, as wide as their words", heads.All(h => h.Left == 0 && h.Width < 500 && h.Width > 100),
+        Check("the sections' headings: on the left, as wide as their words", heads.All(h => h.Left == Kaban.UI.Controls.UiScale.Px(4) && h.Width < 500 && h.Width > 100),
               string.Join(",", heads.Select(h => h.Left + "/" + h.Width)));
+        // 2 November: the Options page's group on the parted pages - "dashboard machine performance and production events"
+        var framed = new[] { "state_pie", "state_timeline", "state_logs", "event_quantity", "event_logs" }.Select(k => page.SectionOf(k)).Where(s => s.Open).ToList();
+        Check("  an open section is a frame, its heading on the frame's top line; its contents inside the frame's sides",
+              framed.Count >= 3 && framed.All(s => s.Framed && s.Padding.Left > 0 && s.Padding.Right > 0 && s.Padding.Bottom > 0 &&
+                                                  s.Head.Parent.Left == s.Padding.Left) && !page.SectionOf("alarm_logs").Framed,
+              string.Join(" ", framed.Select(s => s.Key + ":" + s.Padding)));
+        var shotDir = Environment.GetEnvironmentVariable("PAGE_SHOTS");
+        if (!string.IsNullOrEmpty(shotDir)) {
+            page.SelectTab("states"); Pump(300);
+            Directory.CreateDirectory(shotDir);
+            var at = page.PointToScreen(Point.Empty);
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("python3", "-c \"from PIL import ImageGrab; ImageGrab.grab(bbox=(" + at.X + "," + at.Y + "," +
+                (at.X + page.Width) + "," + (at.Y + page.Height) + "), xdisplay=':99').save('" + Path.Combine(shotDir, "dashboard_states.png") + "')\"") { UseShellExecute = false }).WaitForExit(10000);
+            page.SelectTab("events"); Pump(100);
+        }
         Check("  space between the sections", page.SectionOf("state_pie").Margin.Bottom >= 12);
         Check("the event filter under its heading, on the left", page.EventFilter.Left == 0 && page.EventFilter.Parent.Top > page.SectionOf("event_logs").Head.Parent.Top);
         Check("the alarms tab is its table: no heading, the filter at the left", page.SectionOf("alarm_logs").Head == null && page.SectionOf("alarm_logs").Open &&

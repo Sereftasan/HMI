@@ -48,6 +48,8 @@ class CH {
             UiScale.ApplyOnLoad(form);
             form.Show(); Pump(800);
             int n = All(page).OfType<Label>().Count(x => OwnerOf.Invoke(null, new object[] { x }) != null);
+            // (30 October: the Options page's switches are rows - each draws its own name, no caption beside it)
+            if (which == "Options") n += All(page).OfType<CheckBoxHMI>().Count(c => c.DrawnAsRow);
             var bad = Clipped(page);
             Check("at 80%, captions " + side.ToLower() + ": every caption of " + which + " as high as its letters (" + n + ")", n >= 15 && bad.Count == 0,
                   string.Join(" | ", bad.Take(4)));

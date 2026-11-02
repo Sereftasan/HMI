@@ -473,6 +473,10 @@ namespace Kaban.UI.Dashboard
         /// round sign that opens and closes it - its filter under it (when it has one),
         /// then what it shows. A HEADLESS section is a tab on its own (the alarms): no
         /// heading, always open, its filter at the top left, its table filling the tab.
+        ///
+        /// Open, it is a FRAME with its heading on the frame's top line (2 November: the Options page's group -
+        /// "it looks nice seeing the title like that, I think we should use it at all the parted pages ... dashboard
+        /// machine performance and production events"); closed, its heading alone.
         /// </summary>
         public sealed class Section : Panel
         {
@@ -514,9 +518,22 @@ namespace Kaban.UI.Dashboard
                     if (_extraRow != null) Controls.Add(_extraRow);
                     return;
                 }
-                Margin = new Padding(0, 2, 0, UiScale.Px(18));
+                Margin = new Padding(0, 2, 0, UiScale.Px(14));
+                SetStyle(ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+                Padding = new Padding(UiScale.Px(10), 0, UiScale.Px(10), 0);
                 _headRow = new Panel { Dock = DockStyle.Top, Height = UiScale.Px(36), BackColor = Color.White };
-                _head = new SectionHead { Location = new Point(0, UiScale.Px(2)) };
+                _head = new SectionHead { Location = new Point(UiScale.Px(4), UiScale.Px(2)) };
+                // the frame's top line runs behind the heading: drawn here where the heading's row covers the frame
+                _headRow.Paint += (s, e) =>
+                {
+                    if (!Open) return;
+                    int y = _head.Top + _head.Height / 2;
+                    using (var pen = new Pen(FrameLine))
+                    {
+                        e.Graphics.DrawLine(pen, 0, y, Math.Max(0, _head.Left - UiScale.Px(3)), y);
+                        e.Graphics.DrawLine(pen, _head.Right + UiScale.Px(3), y, _headRow.Width, y);
+                    }
+                };
                 _head.Click += (s, e) => SetOpen(!Open, true);
                 _headRow.Controls.Add(_head);
                 _spacer = new Panel { Dock = DockStyle.Top, Height = UiScale.Px(4), BackColor = Color.White };
@@ -527,6 +544,35 @@ namespace Kaban.UI.Dashboard
                 Controls.Add(_headRow);
                 Height = _headRow.Height;
                 Retranslate();
+            }
+
+            /// <summary>The frame's colour: the Options page's group's.</summary>
+            internal static readonly Color FrameLine = Color.FromArgb(170, 176, 184);
+
+            /// <summary>Where the frame's top line runs: through the middle of the heading.</summary>
+            private int FrameTop { get { return _headRow.Top + _head.Top + _head.Height / 2; } }
+
+            /// <summary>Framed now: open, with a heading (tests).</summary>
+            public bool Framed { get { return !Headless && Open; } }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+                base.OnPaint(e);
+                if (!Framed) return;
+                int r = UiScale.Px(4), top = FrameTop;
+                var rect = new Rectangle(0, top, Width - 1, Height - 1 - top);
+                using (var path = new GraphicsPath())
+                using (var pen = new Pen(FrameLine))
+                {
+                    int d = r * 2;
+                    path.AddArc(rect.Left, rect.Top, d, d, 180, 90);
+                    path.AddArc(rect.Right - d, rect.Top, d, d, 270, 90);
+                    path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);
+                    path.AddArc(rect.Left, rect.Bottom - d, d, d, 90, 90);
+                    path.CloseFigure();
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                    e.Graphics.DrawPath(pen, path);
+                }
             }
 
             /// <summary>Written after the title (the cut length's total).</summary>
@@ -552,7 +598,11 @@ namespace Kaban.UI.Dashboard
                 Open = open;
                 _body.Visible = open;
                 if (_extraRow != null) _extraRow.Visible = open;
-                Height = _headRow.Height + (open ? _body.Height + _spacer.Height + (_extraRow != null ? _extraRow.Height : 0) : 0);
+                // open: the frame's bottom side under what it shows
+                Padding = new Padding(Padding.Left, 0, Padding.Right, open ? UiScale.Px(10) : 0);
+                Height = _headRow.Height + (open ? _body.Height + _spacer.Height + (_extraRow != null ? _extraRow.Height : 0) + Padding.Bottom : 0);
+                _headRow.Invalidate();
+                Invalidate();
                 Retranslate();
                 if (byUser)
                 {

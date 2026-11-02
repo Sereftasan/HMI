@@ -234,6 +234,15 @@ class LP {
               new[] { "L33", "L34", "L35" }.All(a => opts.Any(o => o.Address == a)) && !All(other).OfType<CheckBoxHMI>().Any(),
               opts.Count + ": " + string.Join(",", opts.Select(o => o.Address)));
         Check("Middle Register Notch Parameters (D840...)", at(other, "D840") != null && at(other, "D850") != null);
+        // 2 November: "I think we should use it at all the parted pages (... 'Machine Setting / Others' pages)"
+        var otherGroups = All(other).OfType<GroupBoxHMI>().ToList();
+        Check("  Others: its five parts in titled frames, as the Options page's group - each value in its own part, no heading labels",
+              otherGroups.Select(g => g.TitleTextKey).SequenceEqual(new[] { "Exit Conveyor", "Distances Between Units", "Machine Lubrication",
+                  "Middle Register Notch Parameters", "Milling X Zero - Cross Roller Distance" }) && !All(other).OfType<LabelHMI>().Any() &&
+              at(other, "D498").Parent.Name == "grpExit_Conveyor" && at(other, "D485").Parent.Name == "grpMachine_Lubrication" &&
+              at(other, "D840").Parent.Name == "grpMiddle_Register_Notch_Parameters" && at(other, "D780").Parent.Name == "grpMilling_X_Zero_Cross_Roller_Distance" &&
+              All(other).OfType<NumericInputHMI>().All(n => n.Parent is GroupBoxHMI && n.Bottom <= n.Parent.Height - 8),
+              string.Join(" | ", otherGroups.Select(g => g.TitleTextKey)));
         Check("Lubrication Period in minutes (/60)", at(other, "D485").Divisor == 60);
         Check("the parameters the machine no longer has are gone (D696, D698, D700, D548, D618)", new[] { "D696", "D698", "D700", "D548", "D618" }.All(a =>
               new[] { process, cuttingP, entryP, robotP, other }.All(pg => at(pg, a) == null)));
